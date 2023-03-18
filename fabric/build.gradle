@@ -105,7 +105,7 @@ dependencies {
     // JEI
     modCompileOnlyApi("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}") { transitive = false }
     modCompileOnlyApi("mezz.jei:jei-${minecraft_version}-fabric-api:${jei_version}") { transitive = false }
-    modCompileOnly("mezz.jei:jei-${minecraft_version}-fabric:${jei_version}") { transitive = false }
+    modImplementation("mezz.jei:jei-${minecraft_version}-fabric:${jei_version}") { transitive = false }
 
     // REI
     modCompileOnly("me.shedaniel:RoughlyEnoughItems-default-plugin-fabric:${rei_version}") { transitive = false }
@@ -113,7 +113,7 @@ dependencies {
     modCompileOnly("me.shedaniel:RoughlyEnoughItems-fabric:${rei_version}") { transitive = false }
 
     // TOP
-    modCompileOnly("mcjty.theoneprobe:theoneprobe-fabric:${top_fabric_version}")
+    modImplementation("mcjty.theoneprobe:theoneprobe-fabric:${top_fabric_version}")
 }
 
 processResources {
