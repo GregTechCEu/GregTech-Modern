@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": {
+      "item": "gtceu:circuit_board.good"
+    },
+    "C": {
+      "item": "gtceu:circuit.electronic"
+    },
+    "D": {
+      "item": "gtceu:component.diode"
+    },
+    "P": {
+      "tag": "forge:plates/steel"
+    },
+    "W": {
+      "tag": "forge:wire_gt_single/copper"
+    }
+  },
+  "pattern": [
+    "DPD",
+    "CBC",
+    "WCW"
+  ],
+  "result": {
+    "item": "gtceu:circuit.good_electronic"
+  }
+}

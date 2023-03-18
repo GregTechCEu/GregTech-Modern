@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "forge:cable_gt_single/tungsten"
+    },
+    "M": {
+      "item": "gtceu:electric.motor.iv"
+    },
+    "P": {
+      "item": "gtceu:electric.piston.iv"
+    },
+    "R": {
+      "tag": "forge:sticks/tungsten_steel"
+    },
+    "X": {
+      "tag": "forge:circuit/iv"
+    }
+  },
+  "pattern": [
+    "CCC",
+    "MRM",
+    "PXR"
+  ],
+  "result": {
+    "item": "gtceu:robot.arm.iv"
+  }
+}

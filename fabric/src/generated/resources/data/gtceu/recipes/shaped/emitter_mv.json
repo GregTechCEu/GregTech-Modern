@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "minecraft:cable_gt_single/copper"
+    },
+    "G": {
+      "tag": "minecraft:gems/flawless/emerald"
+    },
+    "R": {
+      "tag": "minecraft:sticks/electrum"
+    },
+    "X": {
+      "tag": "minecraft:circuit/mv"
+    }
+  },
+  "pattern": [
+    "CRX",
+    "RGR",
+    "XRC"
+  ],
+  "result": {
+    "item": "gtceu:emitter.mv"
+  }
+}

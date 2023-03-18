@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "G": {
+      "tag": "minecraft:gems/ender_eye"
+    },
+    "P": {
+      "tag": "minecraft:plates/aluminium"
+    },
+    "W": {
+      "tag": "minecraft:wire_gt_quadruple/magnesium_diboride"
+    },
+    "X": {
+      "tag": "minecraft:circuit/mv"
+    }
+  },
+  "pattern": [
+    "WPW",
+    "XGX",
+    "WPW"
+  ],
+  "result": {
+    "item": "gtceu:field.generator.mv"
+  }
+}

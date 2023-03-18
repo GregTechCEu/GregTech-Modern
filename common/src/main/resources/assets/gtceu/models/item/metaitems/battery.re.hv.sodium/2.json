@@ -1,0 +1,7 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "gtceu:item/battery.hull.hv",
+	"layer1": "gtceu:item/battery.re.hv.sodium/2"
+  }
+}

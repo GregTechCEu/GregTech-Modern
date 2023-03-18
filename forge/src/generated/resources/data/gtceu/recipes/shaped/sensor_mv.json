@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "G": {
+      "tag": "forge:gems/flawless/emerald"
+    },
+    "P": {
+      "tag": "forge:plates/aluminium"
+    },
+    "R": {
+      "tag": "forge:sticks/electrum"
+    },
+    "X": {
+      "tag": "forge:circuit/mv"
+    }
+  },
+  "pattern": [
+    "P G",
+    "PR ",
+    "XPP"
+  ],
+  "result": {
+    "item": "gtceu:sensor.mv"
+  }
+}

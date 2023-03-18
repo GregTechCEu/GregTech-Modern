@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": {
+      "item": "gtceu:board.coated"
+    },
+    "W": {
+      "tag": "minecraft:wire_gt_single/copper"
+    }
+  },
+  "pattern": [
+    "WWW",
+    "WBW",
+    "WWW"
+  ],
+  "result": {
+    "item": "gtceu:circuit_board.basic"
+  }
+}

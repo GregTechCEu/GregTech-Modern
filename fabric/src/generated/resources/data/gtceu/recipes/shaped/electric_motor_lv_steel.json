@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "minecraft:cable_gt_single/tin"
+    },
+    "M": {
+      "tag": "minecraft:sticks/steel_magnetic"
+    },
+    "R": {
+      "tag": "minecraft:sticks/steel"
+    },
+    "W": {
+      "tag": "minecraft:wire_gt_single/copper"
+    }
+  },
+  "pattern": [
+    "CWR",
+    "WMW",
+    "RWC"
+  ],
+  "result": {
+    "item": "gtceu:electric.motor.lv"
+  }
+}

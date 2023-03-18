@@ -1,0 +1,7 @@
+{
+  "parent": "item/handheld",
+  "textures": {
+    "layer0": "gtceu:item/tools/handle_file",
+    "layer1": "gtceu:item/tools/file"
+  }
+}

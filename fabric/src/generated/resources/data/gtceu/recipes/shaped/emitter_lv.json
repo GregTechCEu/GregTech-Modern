@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "minecraft:cable_gt_single/tin"
+    },
+    "G": {
+      "tag": "minecraft:gems/quartzite"
+    },
+    "R": {
+      "tag": "minecraft:sticks/brass"
+    },
+    "X": {
+      "tag": "minecraft:circuit/lv"
+    }
+  },
+  "pattern": [
+    "CRX",
+    "RGR",
+    "XRC"
+  ],
+  "result": {
+    "item": "gtceu:emitter.lv"
+  }
+}

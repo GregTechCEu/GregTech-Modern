@@ -1,0 +1,16 @@
+{
+  "replace": false,
+  "values": [
+    "#minecraft:springs/small/copper",
+    "#minecraft:springs/small/yttrium_barium_cuprate",
+    "#minecraft:springs/small/gold",
+    "#minecraft:springs/small/aluminium",
+    "#minecraft:springs/small/vanadium_gallium",
+    "#minecraft:springs/small/steel",
+    "#minecraft:springs/small/lead",
+    "#minecraft:springs/small/tin",
+    "#minecraft:springs/small/niobium_titanium",
+    "#minecraft:springs/small/iron",
+    "#minecraft:springs/small/tungsten"
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "minecraft:cable_gt_single/tungsten"
+    },
+    "G": {
+      "item": "gtceu:quantumstar"
+    },
+    "R": {
+      "tag": "minecraft:sticks/iridium"
+    },
+    "X": {
+      "tag": "minecraft:circuit/iv"
+    }
+  },
+  "pattern": [
+    "CRX",
+    "RGR",
+    "XRC"
+  ],
+  "result": {
+    "item": "gtceu:emitter.iv"
+  }
+}

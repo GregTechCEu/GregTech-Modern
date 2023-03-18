@@ -1,0 +1,47 @@
+{
+  "type": "gtceu:gt_recipe_serializer",
+  "duration": 1800,
+  "inputs": {
+    "fluid": [
+      {
+        "chance": 1.0,
+        "content": {
+          "amount": 1000,
+          "fluid": "minecraft:water"
+        }
+      }
+    ],
+    "item": [
+      {
+        "chance": 1.0,
+        "content": {
+          "item": "gtceu:wafer.low_power_integrated_circuit"
+        }
+      }
+    ]
+  },
+  "outputs": {
+    "item": [
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 4,
+          "fabric:type": "gtceu:sized",
+          "ingredient": {
+            "item": "gtceu:plate.low_power_integrated_circuit"
+          }
+        }
+      }
+    ]
+  },
+  "recipe_type": "gtceu:cutter",
+  "tickInputs": {
+    "eu": [
+      {
+        "chance": 1.0,
+        "content": 480
+      }
+    ]
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "type": "gtceu:gt_recipe_serializer",
+  "duration": 1200,
+  "inputs": {
+    "fluid": [
+      {
+        "chance": 1.0,
+        "content": {
+          "amount": 576,
+          "fluid": "gtceu:glowstone"
+        }
+      }
+    ],
+    "item": [
+      {
+        "chance": 1.0,
+        "content": {
+          "item": "gtceu:wafer.central_processing_unit"
+        }
+      },
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 16,
+          "fabric:type": "gtceu:sized",
+          "ingredient": {
+            "item": "gtceu:carbon.fibers"
+          }
+        }
+      }
+    ]
+  },
+  "outputs": {
+    "item": [
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 1,
+          "fabric:type": "gtceu:sized",
+          "ingredient": {
+            "item": "gtceu:wafer.nano_central_processing_unit"
+          }
+        }
+      }
+    ]
+  },
+  "recipe_type": "gtceu:large_chemical_reactor",
+  "tickInputs": {
+    "eu": [
+      {
+        "chance": 1.0,
+        "content": 1920
+      }
+    ]
+  }
+}

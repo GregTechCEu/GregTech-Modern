@@ -1,0 +1,32 @@
+{
+  "values": [
+    "#forge:rings/zinc",
+    "#forge:rings/naquadah_alloy",
+    "#forge:rings/silver",
+    "#forge:rings/nickel_zinc_ferrite",
+    "#forge:rings/gold",
+    "#forge:rings/rubber",
+    "#forge:rings/styrene_butadiene_rubber",
+    "#forge:rings/iron",
+    "#forge:rings/bronze",
+    "#forge:rings/darmstadtium",
+    "#forge:rings/tin",
+    "#forge:rings/steel",
+    "#forge:rings/lead",
+    "#forge:rings/electrum",
+    "#forge:rings/aluminium",
+    "#forge:rings/stainless_steel",
+    "#forge:rings/rhodium_plated_palladium",
+    "#forge:rings/silicone_rubber",
+    "#forge:rings/rose_gold",
+    "#forge:rings/wrought_iron",
+    "#forge:rings/tungsten_steel",
+    "#forge:rings/hsse",
+    "#forge:rings/chrome",
+    "#forge:rings/tritanium",
+    "#forge:rings/hsss",
+    "#forge:rings/titanium",
+    "#forge:rings/platinum",
+    "#forge:rings/osmiridium"
+  ]
+}

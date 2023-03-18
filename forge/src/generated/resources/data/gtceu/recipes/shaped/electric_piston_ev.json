@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "forge:cable_gt_single/aluminium"
+    },
+    "G": {
+      "tag": "forge:gears/small/titanium"
+    },
+    "M": {
+      "item": "gtceu:electric.motor.ev"
+    },
+    "P": {
+      "tag": "forge:plates/titanium"
+    },
+    "R": {
+      "tag": "forge:sticks/titanium"
+    }
+  },
+  "pattern": [
+    "PPP",
+    "CRR",
+    "CMG"
+  ],
+  "result": {
+    "item": "gtceu:electric.piston.ev"
+  }
+}

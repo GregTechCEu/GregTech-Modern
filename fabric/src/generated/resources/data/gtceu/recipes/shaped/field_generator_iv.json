@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "G": {
+      "item": "gtceu:quantumstar"
+    },
+    "P": {
+      "tag": "minecraft:plates/double/tungsten_steel"
+    },
+    "W": {
+      "tag": "minecraft:wire_gt_quadruple/samarium_iron_arsenic_oxide"
+    },
+    "X": {
+      "tag": "minecraft:circuit/iv"
+    }
+  },
+  "pattern": [
+    "WPW",
+    "XGX",
+    "WPW"
+  ],
+  "result": {
+    "item": "gtceu:field.generator.iv"
+  }
+}

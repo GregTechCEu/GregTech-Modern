@@ -1,0 +1,11 @@
+{
+  "replace": false,
+  "values": [
+    "#minecraft:lens/sapphire",
+    "#minecraft:lens/nether_star",
+    "#minecraft:lens/ruby",
+    "#minecraft:lens/glass",
+    "#minecraft:lens/emerald",
+    "#minecraft:lens/diamond"
+  ]
+}

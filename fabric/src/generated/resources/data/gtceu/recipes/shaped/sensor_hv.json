@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "G": {
+      "tag": "minecraft:gems/ender_eye"
+    },
+    "P": {
+      "tag": "minecraft:plates/stainless_steel"
+    },
+    "R": {
+      "tag": "minecraft:sticks/chrome"
+    },
+    "X": {
+      "tag": "minecraft:circuit/hv"
+    }
+  },
+  "pattern": [
+    "P G",
+    "PR ",
+    "XPP"
+  ],
+  "result": {
+    "item": "gtceu:sensor.hv"
+  }
+}

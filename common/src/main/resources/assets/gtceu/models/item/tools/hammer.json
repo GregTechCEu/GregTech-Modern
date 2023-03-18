@@ -1,0 +1,8 @@
+{
+  "parent": "item/handheld",
+  "textures": {
+    "layer0": "gtceu:item/tools/handle_hammer",
+    "layer1": "gtceu:item/tools/hammer",
+    "layer2": "gtceu:item/tools/hammer_overlay"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "parent": "gtceu:block/overlay_model",
+  "textures": {
+    "base_down": "#bottom",
+    "base_up": "#top",
+    "base_north": "#side",
+    "base_south": "#side",
+    "base_west": "#side",
+    "base_east": "#side",
+    "overlay_down": "#overlay_bottom",
+    "overlay_up": "#overlay_top",
+    "overlay_north": "#overlay_front",
+    "overlay_south": "#overlay_side",
+    "overlay_west": "#overlay_side",
+    "overlay_east": "#overlay_side"
+  }
+}

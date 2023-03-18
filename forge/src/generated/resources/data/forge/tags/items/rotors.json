@@ -1,0 +1,18 @@
+{
+  "values": [
+    "#forge:rotors/iron",
+    "#forge:rotors/bronze",
+    "#forge:rotors/rhodium_plated_palladium",
+    "#forge:rotors/titanium",
+    "#forge:rotors/osmiridium",
+    "#forge:rotors/naquadah_alloy",
+    "#forge:rotors/lead",
+    "#forge:rotors/stainless_steel",
+    "#forge:rotors/tin",
+    "#forge:rotors/tungsten_steel",
+    "#forge:rotors/hsss",
+    "#forge:rotors/darmstadtium",
+    "#forge:rotors/steel",
+    "#forge:rotors/chrome"
+  ]
+}

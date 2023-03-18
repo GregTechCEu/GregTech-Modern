@@ -1,0 +1,8 @@
+{
+  "parent": "item/handheld",
+  "textures": {
+    "layer0": "gtceu:item/tools/power_unit_hv",
+    "layer1": "gtceu:item/tools/wrench_electric",
+    "layer2": "gtceu:item/tools/wrench_electric_overlay"
+  }
+}

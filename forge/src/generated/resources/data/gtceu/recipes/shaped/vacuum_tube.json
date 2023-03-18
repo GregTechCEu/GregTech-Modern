@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "P": {
+      "tag": "forge:bolts/steel"
+    },
+    "T": {
+      "item": "gtceu:component.glass.tube"
+    },
+    "W": {
+      "tag": "forge:wire_gt_single/copper"
+    }
+  },
+  "pattern": [
+    "PTP",
+    "WWW"
+  ],
+  "result": {
+    "item": "gtceu:circuit.vacuum_tube"
+  }
+}

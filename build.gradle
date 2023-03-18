@@ -1,0 +1,98 @@
+plugins {
+    id "architectury-plugin" version "3.4-SNAPSHOT"
+    id "dev.architectury.loom" version "1.0-SNAPSHOT" apply false
+    id "io.github.juuxel.loom-quiltflower" version "1.+" apply false // Quiltflower, a better decompiler
+    id "io.github.p03w.machete" version "1.+" // automatic jar compressing on build
+}
+
+def is_root_project = project == rootProject
+
+architectury {
+    minecraft = rootProject.minecraft_version
+}
+
+subprojects {
+    apply plugin: "dev.architectury.loom"
+    apply plugin: "io.github.juuxel.loom-quiltflower"
+
+    loom {
+        silentMojangMappingsLicense()
+//        for (final def setting in runConfigs) {
+//            setting.vmArgs()
+//        }
+    }
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        maven { url = "https://maven.shedaniel.me/" } // Cloth Config, REI
+        maven { url = "https://dvs1.progwml6.com/files/maven/" } // JEI
+        maven { url = "https://maven.parchmentmc.org" } // Parchment mappings
+        maven { url = "https://maven.quiltmc.org/repository/release" } // Quilt Mappings
+        maven { // Flywheel
+            url = "https://maven.tterrag.com/"
+            content {
+                // need to be specific here due to version overlaps
+                includeGroup("com.jozufozu.flywheel")
+            }
+        }
+        maven { // TOP-Fabric
+            url "https://maven.wispforest.io"
+        }
+
+    }
+
+    dependencies {
+        minecraft "com.mojang:minecraft:${minecraft_version}"
+
+        if (is_root_project) {
+            // layered mappings - Mojmap names, parchment and QM docs and parameters
+            mappings(loom.layered {
+                it.mappings("org.quiltmc:quilt-mappings:${minecraft_version}+build.${qm_version}:intermediary-v2")
+                it.parchment("org.parchmentmc.data:parchment-${minecraft_version}:${parchment_version}@zip")
+                it.officialMojangMappings { nameSyntheticMembers = false }
+            })
+        }
+
+        // see each subproject for dependencies.
+
+        // lombok
+        compileOnly 'org.projectlombok:lombok:1.18.24'
+        annotationProcessor 'org.projectlombok:lombok:1.18.24'
+    }
+}
+
+allprojects {
+    apply plugin: "java"
+    apply plugin: "architectury-plugin"
+    apply plugin: "maven-publish"
+
+    archivesBaseName = rootProject.mod_id
+    group = rootProject.maven_group
+
+    // Formats the mod version to include the loader, Minecraft version, and build number (if present)
+    // example: 1.0.0+fabric-1.18.2-100
+    String buildNumber = System.getenv("GITHUB_RUN_NUMBER")
+    version = "${mod_version}+${project.name}-${minecraft_version}" + (buildNumber != null ? "-${buildNumber}" : "")
+
+    repositories {
+        // Add repositories to retrieve artifacts from in here.
+        // You should only use this when depending on other mods because
+        // Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
+        // See https://docs.gradle.org/current/userguide/declaring_repositories.html
+        // for more information about repositories.
+    }
+
+    tasks.withType(JavaCompile) {
+        options.encoding = "UTF-8"
+    }
+
+    java {
+        withSourcesJar()
+    }
+
+    machete {
+        // disable machete locally for faster builds
+        enabled = buildNumber != null
+    }
+}

@@ -1,0 +1,30 @@
+{
+	"credit": "Made with Blockbench",
+	"parent": "block/block",
+	"textures": {
+		"1": "gtceu:block/casings/solid/machine_coke_bricks",
+		"2": "gtceu:block/overlay/machine/overlay_hatch",
+		"particle": "gtceu:block/casings/solid/machine_coke_bricks"
+	},
+	"elements": [
+		{
+			"from": [0, 0, 0],
+			"to": [16, 16, 16],
+			"faces": {
+				"north": {"texture": "#1", "cullface": "north"},
+				"east": {"texture": "#1", "cullface": "east"},
+				"south": {"texture": "#1", "cullface": "south"},
+				"west": {"texture": "#1", "cullface": "west"},
+				"up": {"texture": "#1", "cullface": "up"},
+				"down": {"texture": "#1", "cullface": "down"}
+			}
+		},
+		{
+			"from": [0, 0, 0],
+			"to": [16, 16, 0],
+			"faces": {
+				"north": {"texture": "#2", "cullface": "north"}
+			}
+		}
+	]
+}

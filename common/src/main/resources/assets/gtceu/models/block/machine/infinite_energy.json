@@ -1,0 +1,45 @@
+{
+  "parent": "block/block",
+  "textures": {
+    "particle": "gtceu:block/casings/voltage/max/side",
+    "bot_down": "gtceu:block/casings/voltage/max/bottom",
+    "bot_up": "gtceu:block/casings/voltage/max/top",
+    "bot_north": "gtceu:block/casings/voltage/max/side",
+    "bot_east": "gtceu:block/casings/voltage/max/side",
+    "bot_south": "gtceu:block/casings/voltage/max/side",
+    "bot_west": "gtceu:block/casings/voltage/max/side",
+    "top_down": "gtceu:block/overlay/machine/overlay_energy_emitter",
+    "top_up": "gtceu:block/overlay/machine/overlay_energy_emitter",
+    "top_north": "gtceu:block/overlay/machine/overlay_energy_emitter",
+    "top_east": "gtceu:block/overlay/machine/overlay_energy_emitter",
+    "top_south": "gtceu:block/overlay/machine/overlay_energy_emitter",
+    "top_west": "gtceu:block/overlay/machine/overlay_energy_emitter"
+  },
+  "elements": [
+    {
+      "from": [  0,  0,  0 ],
+      "to":   [ 16, 16, 16 ],
+      "faces": {
+        "down":  { "texture": "#bot_down", "cullface": "down", "tintindex": 1 },
+        "up":    { "texture": "#bot_up", "cullface": "up", "tintindex": 1 },
+        "north": { "texture": "#bot_north", "cullface": "north", "tintindex": 1 },
+        "south": { "texture": "#bot_south", "cullface": "south", "tintindex": 1 },
+        "west":  { "texture": "#bot_west", "cullface": "west", "tintindex": 1 },
+        "east":  { "texture": "#bot_east", "cullface": "east", "tintindex": 1 }
+      }
+    },
+    {
+      "from": [  0,  0,  0 ],
+      "to":   [ 16, 16, 16 ],
+      "shade": false,
+      "faces": {
+        "down":  { "texture": "#top_down", "cullface": "down" },
+        "up":    { "texture": "#top_up", "cullface": "up" },
+        "north": { "texture": "#top_north", "cullface": "north" },
+        "south": { "texture": "#top_south", "cullface": "south" },
+        "west":  { "texture": "#top_west", "cullface": "west" },
+        "east":  { "texture": "#top_east", "cullface": "east" }
+      }
+    }
+  ]
+}

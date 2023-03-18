@@ -1,0 +1,24 @@
+{
+  "type": "gtceu:gt_recipe_serializer",
+  "duration": 6,
+  "inputs": {
+    "fluid": [
+      {
+        "chance": 1.0,
+        "content": {
+          "amount": 8,
+          "fluid": "gtceu:wood_gas"
+        }
+      }
+    ]
+  },
+  "recipe_type": "gtceu:gas_turbine",
+  "tickOutputs": {
+    "eu": [
+      {
+        "chance": 1.0,
+        "content": 32
+      }
+    ]
+  }
+}

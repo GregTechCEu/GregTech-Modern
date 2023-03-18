@@ -1,0 +1,37 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "forge:cable_gt_single/copper"
+    },
+    "M": {
+      "item": "gtceu:electric.motor.mv"
+    },
+    "P": {
+      "tag": "forge:pipe_normal_fluid/steel"
+    },
+    "R": {
+      "tag": "forge:rings/styrene_butadiene_rubber"
+    },
+    "S": {
+      "tag": "forge:screws/bronze"
+    },
+    "X": {
+      "tag": "forge:rotors/bronze"
+    },
+    "d": {
+      "tag": "forge:tool/screwdriver"
+    },
+    "w": {
+      "tag": "forge:tool/wrench"
+    }
+  },
+  "pattern": [
+    "SXR",
+    "dPw",
+    "RMC"
+  ],
+  "result": {
+    "item": "gtceu:electric.pump.mv"
+  }
+}

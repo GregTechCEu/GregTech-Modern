@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": {
+      "item": "gtceu:board.phenolic"
+    },
+    "W": {
+      "tag": "forge:wire_gt_single/silver"
+    }
+  },
+  "pattern": [
+    "WWW",
+    "WBW",
+    "WWW"
+  ],
+  "result": {
+    "item": "gtceu:circuit_board.good"
+  }
+}

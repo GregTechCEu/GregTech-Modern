@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "forge:cable_gt_single/tungsten"
+    },
+    "G": {
+      "tag": "forge:gears/small/tungsten_steel"
+    },
+    "M": {
+      "item": "gtceu:electric.motor.iv"
+    },
+    "P": {
+      "tag": "forge:plates/tungsten_steel"
+    },
+    "R": {
+      "tag": "forge:sticks/tungsten_steel"
+    }
+  },
+  "pattern": [
+    "PPP",
+    "CRR",
+    "CMG"
+  ],
+  "result": {
+    "item": "gtceu:electric.piston.iv"
+  }
+}

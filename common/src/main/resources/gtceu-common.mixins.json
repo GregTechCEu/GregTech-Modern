@@ -1,0 +1,21 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.lowdragmc.gtceu.core.mixins",
+  "compatibilityLevel": "JAVA_17",
+  "client": [
+    "BlockModelAccessor",
+    "MultiPlayerGameModeMixin"
+  ],
+  "mixins": [
+    "ChunkMixin",
+    "LevelMixin",
+    "RecipeManagerInvoker",
+    "RecipeManagerMixin",
+    "ServerChunkProviderMixin",
+    "ServerPlayerGameModeMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

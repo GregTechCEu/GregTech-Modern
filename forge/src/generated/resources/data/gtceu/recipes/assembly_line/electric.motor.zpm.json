@@ -1,0 +1,111 @@
+{
+  "type": "gtceu:gt_recipe_serializer",
+  "duration": 600,
+  "inputs": {
+    "fluid": [
+      {
+        "chance": 1.0,
+        "content": {
+          "amount": 288,
+          "fluid": "gtceu:soldering_alloy"
+        }
+      },
+      {
+        "chance": 1.0,
+        "content": {
+          "amount": 500,
+          "fluid": "gtceu:lubricant"
+        }
+      }
+    ],
+    "item": [
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 1,
+          "fabric:type": "gtceu:sized",
+          "tag": "forge:sticks/long/samarium_magnetic"
+        }
+      },
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 4,
+          "fabric:type": "gtceu:sized",
+          "tag": "forge:sticks/long/osmiridium"
+        }
+      },
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 4,
+          "fabric:type": "gtceu:sized",
+          "tag": "forge:rings/osmiridium"
+        }
+      },
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 8,
+          "fabric:type": "gtceu:sized",
+          "tag": "forge:rounds/osmiridium"
+        }
+      },
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 64,
+          "fabric:type": "gtceu:sized",
+          "tag": "forge:wires/fine/europium"
+        }
+      },
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 32,
+          "fabric:type": "gtceu:sized",
+          "tag": "forge:wires/fine/europium"
+        }
+      },
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 2,
+          "fabric:type": "gtceu:sized",
+          "tag": "forge:cable_gt_single/vanadium_gallium"
+        }
+      }
+    ]
+  },
+  "outputs": {
+    "item": [
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 1,
+          "fabric:type": "gtceu:sized",
+          "ingredient": {
+            "item": "gtceu:electric.motor.zpm"
+          }
+        }
+      }
+    ]
+  },
+  "recipe_type": "gtceu:assembly_line",
+  "tickInputs": {
+    "eu": [
+      {
+        "chance": 1.0,
+        "content": 24000
+      }
+    ]
+  }
+}

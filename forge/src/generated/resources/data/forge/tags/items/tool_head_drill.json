@@ -1,0 +1,27 @@
+{
+  "values": [
+    "#forge:tool_head_drill/hsse",
+    "#forge:tool_head_drill/tungsten_steel",
+    "#forge:tool_head_drill/invar",
+    "#forge:tool_head_drill/blue_steel",
+    "#forge:tool_head_drill/wrought_iron",
+    "#forge:tool_head_drill/red_steel",
+    "#forge:tool_head_drill/aluminium",
+    "#forge:tool_head_drill/duranium",
+    "#forge:tool_head_drill/sterling_silver",
+    "#forge:tool_head_drill/naquadah_alloy",
+    "#forge:tool_head_drill/ultimet",
+    "#forge:tool_head_drill/stainless_steel",
+    "#forge:tool_head_drill/neutronium",
+    "#forge:tool_head_drill/titanium",
+    "#forge:tool_head_drill/iron",
+    "#forge:tool_head_drill/diamond",
+    "#forge:tool_head_drill/bronze",
+    "#forge:tool_head_drill/cobalt_brass",
+    "#forge:tool_head_drill/damascus_steel",
+    "#forge:tool_head_drill/rose_gold",
+    "#forge:tool_head_drill/tungsten_carbide",
+    "#forge:tool_head_drill/vanadium_steel",
+    "#forge:tool_head_drill/steel"
+  ]
+}

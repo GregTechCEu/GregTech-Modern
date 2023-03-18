@@ -1,0 +1,8 @@
+{
+  "parent": "item/handheld",
+  "textures": {
+    "layer0": "gtceu:item/tools/handle_buzzsaw",
+    "layer1": "gtceu:item/tools/buzzsaw_tool",
+    "layer2": "gtceu:item/tools/buzzsaw_tool_overlay"
+  }
+}

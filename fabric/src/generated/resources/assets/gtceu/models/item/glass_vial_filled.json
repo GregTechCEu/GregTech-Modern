@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "gtceu:item/glass_vial/base",
+    "layer1": "gtceu:item/glass_vial/overlay"
+  }
+}

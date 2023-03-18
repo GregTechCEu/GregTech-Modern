@@ -1,0 +1,29 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:scythe_aluminium",
+    "gtceu:scythe_iron",
+    "gtceu:scythe_titanium",
+    "gtceu:scythe_neutronium",
+    "gtceu:scythe_duranium",
+    "gtceu:scythe_bronze",
+    "gtceu:scythe_diamond",
+    "gtceu:scythe_invar",
+    "gtceu:scythe_sterling_silver",
+    "gtceu:scythe_rose_gold",
+    "gtceu:scythe_stainless_steel",
+    "gtceu:scythe_steel",
+    "gtceu:scythe_ultimet",
+    "gtceu:scythe_wrought_iron",
+    "gtceu:scythe_tungsten_carbide",
+    "gtceu:scythe_damascus_steel",
+    "gtceu:scythe_tungsten_steel",
+    "gtceu:scythe_cobalt_brass",
+    "gtceu:scythe_vanadium_steel",
+    "gtceu:scythe_naquadah_alloy",
+    "gtceu:scythe_flint",
+    "gtceu:scythe_red_steel",
+    "gtceu:scythe_blue_steel",
+    "gtceu:scythe_hsse"
+  ]
+}

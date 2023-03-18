@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "G": {
+      "item": "gtceu:quantumeye"
+    },
+    "P": {
+      "tag": "forge:plates/stainless_steel"
+    },
+    "W": {
+      "tag": "forge:wire_gt_quadruple/mercury_barium_calcium_cuprate"
+    },
+    "X": {
+      "tag": "forge:circuit/hv"
+    }
+  },
+  "pattern": [
+    "WPW",
+    "XGX",
+    "WPW"
+  ],
+  "result": {
+    "item": "gtceu:field.generator.hv"
+  }
+}

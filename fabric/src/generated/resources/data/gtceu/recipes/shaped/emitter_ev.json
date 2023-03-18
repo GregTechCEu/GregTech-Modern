@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "minecraft:cable_gt_single/aluminium"
+    },
+    "G": {
+      "item": "gtceu:quantumeye"
+    },
+    "R": {
+      "tag": "minecraft:sticks/platinum"
+    },
+    "X": {
+      "tag": "minecraft:circuit/ev"
+    }
+  },
+  "pattern": [
+    "CRX",
+    "RGR",
+    "XRC"
+  ],
+  "result": {
+    "item": "gtceu:emitter.ev"
+  }
+}

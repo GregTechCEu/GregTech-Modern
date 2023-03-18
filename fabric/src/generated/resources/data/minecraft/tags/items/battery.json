@@ -1,0 +1,14 @@
+{
+  "replace": false,
+  "values": [
+    "#minecraft:battery/uv",
+    "#minecraft:battery/hv",
+    "#minecraft:battery/ulv",
+    "#minecraft:battery/luv",
+    "#minecraft:battery/lv",
+    "#minecraft:battery/ev",
+    "#minecraft:battery/mv",
+    "#minecraft:battery/zpm",
+    "#minecraft:battery/iv"
+  ]
+}

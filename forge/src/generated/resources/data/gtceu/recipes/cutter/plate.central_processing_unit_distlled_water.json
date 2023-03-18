@@ -1,0 +1,47 @@
+{
+  "type": "gtceu:gt_recipe_serializer",
+  "duration": 1350,
+  "inputs": {
+    "fluid": [
+      {
+        "chance": 1.0,
+        "content": {
+          "amount": 253,
+          "fluid": "gtceu:distilled_water"
+        }
+      }
+    ],
+    "item": [
+      {
+        "chance": 1.0,
+        "content": {
+          "item": "gtceu:wafer.central_processing_unit"
+        }
+      }
+    ]
+  },
+  "outputs": {
+    "item": [
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 8,
+          "fabric:type": "gtceu:sized",
+          "ingredient": {
+            "item": "gtceu:plate.central_processing_unit"
+          }
+        }
+      }
+    ]
+  },
+  "recipe_type": "gtceu:cutter",
+  "tickInputs": {
+    "eu": [
+      {
+        "chance": 1.0,
+        "content": 120
+      }
+    ]
+  }
+}

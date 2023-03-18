@@ -1,0 +1,7 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "gtceu:item/material_sets/dull/gem_exquisite",
+    "layer1": "gtceu:item/material_sets/dull/gem_exquisite_overlay"
+  }
+}

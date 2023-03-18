@@ -1,0 +1,52 @@
+{
+  "parent": "block/block",
+  "textures": {
+    "particle": "gtceu:block/casings/voltage/max/side",
+    "down": "gtceu:block/casings/voltage/lv/bottom",
+    "up": "gtceu:block/casings/voltage/lv/top",
+    "north": "gtceu:block/casings/voltage/lv/side",
+    "east": "gtceu:block/casings/voltage/lv/side",
+    "south": "gtceu:block/casings/voltage/lv/side",
+    "west": "gtceu:block/casings/voltage/lv/side"
+  },
+  "elements": [
+    {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        16,
+        16
+      ],
+      "faces": {
+        "down": {
+          "texture": "#down",
+          "cullface": "down"
+        },
+        "up": {
+          "texture": "#up",
+          "cullface": "up"
+        },
+        "north": {
+          "texture": "#north",
+          "cullface": "north"
+        },
+        "south": {
+          "texture": "#south",
+          "cullface": "south"
+        },
+        "west": {
+          "texture": "#west",
+          "cullface": "west"
+        },
+        "east": {
+          "texture": "#east",
+          "cullface": "east"
+        }
+      }
+    }
+  ]
+}

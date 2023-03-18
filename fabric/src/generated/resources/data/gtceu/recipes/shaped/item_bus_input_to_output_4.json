@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": {
+      "item": "gtceu:item_bus.import.ev"
+    },
+    "d": {
+      "tag": "minecraft:tool/screwdriver"
+    }
+  },
+  "pattern": [
+    "d",
+    "B"
+  ],
+  "result": {
+    "item": "gtceu:item_bus.export.ev"
+  }
+}

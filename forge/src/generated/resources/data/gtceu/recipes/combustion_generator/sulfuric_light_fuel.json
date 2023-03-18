@@ -1,0 +1,24 @@
+{
+  "type": "gtceu:gt_recipe_serializer",
+  "duration": 5,
+  "inputs": {
+    "fluid": [
+      {
+        "chance": 1.0,
+        "content": {
+          "amount": 4,
+          "fluid": "gtceu:sulfuric_light_fuel"
+        }
+      }
+    ]
+  },
+  "recipe_type": "gtceu:combustion_generator",
+  "tickOutputs": {
+    "eu": [
+      {
+        "chance": 1.0,
+        "content": 32
+      }
+    ]
+  }
+}

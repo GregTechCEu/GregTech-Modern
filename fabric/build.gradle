@@ -1,0 +1,182 @@
+plugins {
+    id "com.github.johnrengelman.shadow" version "7.1.2"
+}
+
+String getConfig(String key) {
+    return project.getParent().properties.get(key)
+}
+
+def parent_path = project.getParent() == rootProject ? "" : project.getParent().getPath()
+def mod_id = getConfig("mod_id")
+def common_project = project("${parent_path}:${mod_id}-common")
+def forge_project = project("${parent_path}:${mod_id}-forge")
+def version = getConfig("version")
+def mod_license = getConfig("mod_license")
+def mod_name = getConfig("mod_name")
+def mod_description = getConfig("mod_description")
+def mod_url = getConfig("mod_url")
+def minecraft_version = getConfig("minecraft_version")
+def ldlib_id = getConfig("ldlib_id")
+def ldlib_version = getConfig("ldlib_version")
+def fabric_loader_version = getConfig("fabric_loader_version")
+def fabric_api_version = getConfig("fabric_api_version")
+def registrate_fabric_version = getConfig("registrate_fabric_version")
+def create_fabric_version = getConfig("create_fabric_version")
+def jei_version = getConfig("jei_version")
+def rei_version = getConfig("rei_version")
+def lazydfu_version = getConfig("lazydfu_version")
+def modmenu_version = getConfig("modmenu_version")
+def top_fabric_version = getConfig("top_fabric_version")
+
+architectury {
+    platformSetupLoomIde()
+    fabric()
+}
+
+loom {
+    accessWidenerPath = common_project.file("src/main/resources/${mod_id}.accesswidener")
+
+    runs {
+        create("dataCommon") {
+            inherit(getByName("client"))
+            name("Minecraft Data")
+            property("fabric-api.datagen")
+            property("fabric-api.datagen.modid", "${mod_id}")
+            property("fabric-api.datagen.output-dir", project.file("src/generated/resources").absolutePath)
+            property("fabric-api.datagen.strict-validation")
+        }
+    }
+}
+
+sourceSets {
+    main {
+        resources {
+            srcDir("src/generated/resources")
+            exclude("**/.cache")
+//            srcDirs += [
+//                    forge_project.file("src/generated/resources").absolutePath
+//            ]
+        }
+    }
+}
+
+configurations {
+    common
+    shadowCommon // Don't use shadow from the shadow plugin because we don't want IDEA to index this.
+    compileClasspath.extendsFrom common
+    runtimeClasspath.extendsFrom common
+    developmentFabric.extendsFrom common
+}
+
+
+repositories {
+    // mavens for Fabric-exclusives
+    maven { url = "https://api.modrinth.com/maven" } // LazyDFU
+    maven { url = "https://maven.terraformersmc.com/releases/" } // Mod Menu
+    maven { url = "https://mvn.devos.one/snapshots/" } // Create Fabric, Porting Lib, Forge Tags, Milk Lib, Registrate Fabric
+    maven { url = "https://cursemaven.com" } // Forge Config API Port
+    maven { url = "https://maven.cafeteria.dev/releases" } // Fake Player API
+    maven { url = "https://maven.jamieswhiteshirt.com/libs-release" } // Reach Entity Attributes
+    maven { url = "https://jitpack.io/" } // Mixin Extras, Fabric ASM
+}
+
+dependencies {
+    modImplementation("net.fabricmc:fabric-loader:${fabric_loader_version}")
+    common(project(path: "${parent_path}:${mod_id}-common", configuration: "namedElements")) { transitive = false }
+    shadowCommon(project(path: "${parent_path}:${mod_id}-common", configuration: "transformProductionFabric")) { transitive = false }
+
+    // LDLib
+    modCompileOnly("com.lowdragmc.ldlib:${ldlib_id}:${ldlib_version}+${ldlib_id}-common-1.19.2") { transitive = false }
+    modImplementation("com.lowdragmc.ldlib:${ldlib_id}-${ldlib_id}-fabric:${ldlib_version}+${ldlib_id}-fabric-1.19.2") { transitive = false }
+
+    // dependencies
+    modImplementation("net.fabricmc.fabric-api:fabric-api:${fabric_api_version}")
+
+    // Registrate
+    modImplementation(include("com.tterrag.registrate_fabric:Registrate:${registrate_fabric_version}"))
+
+    // Create - dependencies are added transitively
+    modCompileOnly("com.simibubi.create:create-fabric-${minecraft_version}:${create_fabric_version}") { transitive = false }
+
+    // Development QOL
+    modCompileOnly("maven.modrinth:lazydfu:${lazydfu_version}")
+    modCompileOnly("com.terraformersmc:modmenu:${modmenu_version}")
+
+    // JEI
+    modCompileOnlyApi("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}") { transitive = false }
+    modCompileOnlyApi("mezz.jei:jei-${minecraft_version}-fabric-api:${jei_version}") { transitive = false }
+    modCompileOnly("mezz.jei:jei-${minecraft_version}-fabric:${jei_version}") { transitive = false }
+
+    // REI
+    modCompileOnly("me.shedaniel:RoughlyEnoughItems-default-plugin-fabric:${rei_version}") { transitive = false }
+    modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:${rei_version}") { transitive = false }
+    modCompileOnly("me.shedaniel:RoughlyEnoughItems-fabric:${rei_version}") { transitive = false }
+
+    // TOP
+    modCompileOnly("mcjty.theoneprobe:theoneprobe-fabric:${top_fabric_version}")
+}
+
+processResources {
+    // set up properties for filling into metadata
+    Map<String, String> properties = Map.of(
+            "version", version,
+            "mod_id", mod_id,
+            "fabric_loader_version", fabric_loader_version,
+            "fabric_api_version", fabric_api_version,
+            "minecraft_version", minecraft_version,
+            "mod_license", mod_license,
+            "mod_name", mod_name,
+            "mod_description", mod_description,
+            "mod_url", mod_url,
+            "ldlib_version", ldlib_version // on fabric, use the entire version, unlike forge
+    )
+    properties.forEach((k, v) -> inputs.property(k, v))
+
+    filesMatching("fabric.mod.json") {
+        expand properties
+    }
+}
+
+shadowJar {
+    exclude "architectury.common.json"
+
+    configurations = [project.configurations.shadowCommon]
+    classifier "dev-shadow"
+}
+
+remapJar {
+    injectAccessWidener = true
+    input.set shadowJar.archiveFile
+    dependsOn shadowJar
+    classifier null
+}
+
+jar {
+    classifier "dev"
+}
+
+sourcesJar {
+    def commonSources = common_project.sourcesJar
+    dependsOn commonSources
+    from commonSources.archiveFile.map { zipTree(it) }
+}
+
+components.java {
+    withVariantsFromConfiguration(project.configurations.shadowRuntimeElements) {
+        skip()
+    }
+}
+
+publishing {
+    publications {
+        mavenFabric(MavenPublication) {
+            artifactId = rootProject.mod_id + "-" + project.name
+            from components.java
+        }
+    }
+
+    // See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
+    repositories {
+        // Add repositories to publish to here.
+    }
+}

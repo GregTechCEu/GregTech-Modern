@@ -1,0 +1,6 @@
+{
+  "parent": "block/cross",
+  "textures": {
+    "cross": "gtceu:block/wood/rubber/sapling_rubber"
+  }
+}

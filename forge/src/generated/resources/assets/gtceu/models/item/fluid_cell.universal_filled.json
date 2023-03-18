@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "gtceu:item/fluid_cell.universal/base",
+    "layer1": "gtceu:item/fluid_cell.universal/overlay"
+  }
+}

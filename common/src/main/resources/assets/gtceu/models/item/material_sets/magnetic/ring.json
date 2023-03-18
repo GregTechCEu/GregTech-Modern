@@ -1,0 +1,6 @@
+{
+  "parent": "gtceu:item/material_sets/dull/ring",
+  "textures": {
+    "layer3": "gtceu:item/material_sets/magnetic/magnetic_overlay"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "minecraft:cable_gt_single/tungsten"
+    },
+    "M": {
+      "item": "gtceu:electric.motor.iv"
+    },
+    "R": {
+      "tag": "minecraft:plates/styrene_butadiene_rubber"
+    }
+  },
+  "pattern": [
+    "RRR",
+    "MCM",
+    "RRR"
+  ],
+  "result": {
+    "item": "gtceu:conveyor.module.iv"
+  }
+}

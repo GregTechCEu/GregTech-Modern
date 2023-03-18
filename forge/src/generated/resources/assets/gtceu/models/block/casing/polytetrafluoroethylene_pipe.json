@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "gtceu:block/casings/pipe/machine_casing_pipe_polytetrafluoroethylene"
+  }
+}

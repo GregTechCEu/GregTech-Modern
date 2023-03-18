@@ -1,0 +1,6 @@
+{
+  "parent": "gtceu:item/material_sets/rough/dust_pure",
+  "textures": {
+    "layer0": "gtceu:item/material_sets/quartz/dust"
+  }
+}

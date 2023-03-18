@@ -1,0 +1,28 @@
+{
+  "values": [
+    "gtceu:saw_aluminium",
+    "gtceu:saw_iron",
+    "gtceu:saw_titanium",
+    "gtceu:saw_neutronium",
+    "gtceu:saw_duranium",
+    "gtceu:saw_bronze",
+    "gtceu:saw_diamond",
+    "gtceu:saw_invar",
+    "gtceu:saw_sterling_silver",
+    "gtceu:saw_rose_gold",
+    "gtceu:saw_stainless_steel",
+    "gtceu:saw_steel",
+    "gtceu:saw_ultimet",
+    "gtceu:saw_wrought_iron",
+    "gtceu:saw_tungsten_carbide",
+    "gtceu:saw_damascus_steel",
+    "gtceu:saw_tungsten_steel",
+    "gtceu:saw_cobalt_brass",
+    "gtceu:saw_vanadium_steel",
+    "gtceu:saw_naquadah_alloy",
+    "gtceu:saw_flint",
+    "gtceu:saw_red_steel",
+    "gtceu:saw_blue_steel",
+    "gtceu:saw_hsse"
+  ]
+}

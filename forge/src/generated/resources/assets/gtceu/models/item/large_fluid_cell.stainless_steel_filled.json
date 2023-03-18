@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "gtceu:item/large_fluid_cell.stainless_steel/base",
+    "layer1": "gtceu:item/large_fluid_cell.stainless_steel/overlay"
+  }
+}

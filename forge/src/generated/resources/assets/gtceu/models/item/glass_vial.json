@@ -1,0 +1,20 @@
+{
+  "parent": "minecraft:item/generated",
+  "overrides": [
+    {
+      "model": "gtceu:item/glass_vial_empty",
+      "predicate": {
+        "gtceu:fluid_cell": 0.0
+      }
+    },
+    {
+      "model": "gtceu:item/glass_vial_filled",
+      "predicate": {
+        "gtceu:fluid_cell": 1.0
+      }
+    }
+  ],
+  "textures": {
+    "layer0": "gtceu:item/glass_vial/base"
+  }
+}

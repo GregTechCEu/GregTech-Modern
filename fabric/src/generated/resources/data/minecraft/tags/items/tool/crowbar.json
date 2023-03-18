@@ -1,0 +1,29 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:crowbar_aluminium",
+    "gtceu:crowbar_iron",
+    "gtceu:crowbar_titanium",
+    "gtceu:crowbar_neutronium",
+    "gtceu:crowbar_duranium",
+    "gtceu:crowbar_bronze",
+    "gtceu:crowbar_diamond",
+    "gtceu:crowbar_invar",
+    "gtceu:crowbar_sterling_silver",
+    "gtceu:crowbar_rose_gold",
+    "gtceu:crowbar_stainless_steel",
+    "gtceu:crowbar_steel",
+    "gtceu:crowbar_ultimet",
+    "gtceu:crowbar_wrought_iron",
+    "gtceu:crowbar_tungsten_carbide",
+    "gtceu:crowbar_damascus_steel",
+    "gtceu:crowbar_tungsten_steel",
+    "gtceu:crowbar_cobalt_brass",
+    "gtceu:crowbar_vanadium_steel",
+    "gtceu:crowbar_naquadah_alloy",
+    "gtceu:crowbar_flint",
+    "gtceu:crowbar_red_steel",
+    "gtceu:crowbar_blue_steel",
+    "gtceu:crowbar_hsse"
+  ]
+}

@@ -1,0 +1,6 @@
+{
+  "parent": "gtceu:item/material_sets/shiny/stick",
+  "textures": {
+    "layer1": "gtceu:item/material_sets/glass/stick_overlay"
+  }
+}

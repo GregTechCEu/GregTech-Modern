@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:circuit.mainframe",
+    "gtceu:circuit.nano_computer",
+    "gtceu:circuit.quantum_assembly",
+    "gtceu:circuit.crystal_processor"
+  ]
+}

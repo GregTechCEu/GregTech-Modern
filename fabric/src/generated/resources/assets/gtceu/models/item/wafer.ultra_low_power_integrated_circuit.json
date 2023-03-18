@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "gtceu:item/wafer.ultra_low_power_integrated_circuit"
+  }
+}

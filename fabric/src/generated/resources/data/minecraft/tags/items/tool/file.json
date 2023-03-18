@@ -1,0 +1,29 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:file_aluminium",
+    "gtceu:file_iron",
+    "gtceu:file_titanium",
+    "gtceu:file_neutronium",
+    "gtceu:file_duranium",
+    "gtceu:file_bronze",
+    "gtceu:file_diamond",
+    "gtceu:file_invar",
+    "gtceu:file_sterling_silver",
+    "gtceu:file_rose_gold",
+    "gtceu:file_stainless_steel",
+    "gtceu:file_steel",
+    "gtceu:file_ultimet",
+    "gtceu:file_wrought_iron",
+    "gtceu:file_tungsten_carbide",
+    "gtceu:file_damascus_steel",
+    "gtceu:file_tungsten_steel",
+    "gtceu:file_cobalt_brass",
+    "gtceu:file_vanadium_steel",
+    "gtceu:file_naquadah_alloy",
+    "gtceu:file_flint",
+    "gtceu:file_red_steel",
+    "gtceu:file_blue_steel",
+    "gtceu:file_hsse"
+  ]
+}

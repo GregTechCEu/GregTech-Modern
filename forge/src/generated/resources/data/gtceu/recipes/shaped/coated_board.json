@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "P": {
+      "tag": "forge:plates/wood"
+    },
+    "R": {
+      "item": "gtceu:rubber_drop"
+    }
+  },
+  "pattern": [
+    "RRR",
+    "PPP",
+    "RRR"
+  ],
+  "result": {
+    "count": 3,
+    "item": "gtceu:board.coated"
+  }
+}

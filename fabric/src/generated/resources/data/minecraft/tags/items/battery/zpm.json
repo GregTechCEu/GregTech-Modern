@@ -1,0 +1,7 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:battery.zpm.naquadria",
+    "gtceu:energy.module"
+  ]
+}

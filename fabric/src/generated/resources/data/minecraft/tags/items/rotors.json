@@ -1,0 +1,19 @@
+{
+  "replace": false,
+  "values": [
+    "#minecraft:rotors/steel",
+    "#minecraft:rotors/tin",
+    "#minecraft:rotors/naquadah_alloy",
+    "#minecraft:rotors/lead",
+    "#minecraft:rotors/osmiridium",
+    "#minecraft:rotors/iron",
+    "#minecraft:rotors/rhodium_plated_palladium",
+    "#minecraft:rotors/darmstadtium",
+    "#minecraft:rotors/tungsten_steel",
+    "#minecraft:rotors/bronze",
+    "#minecraft:rotors/hsss",
+    "#minecraft:rotors/stainless_steel",
+    "#minecraft:rotors/chrome",
+    "#minecraft:rotors/titanium"
+  ]
+}

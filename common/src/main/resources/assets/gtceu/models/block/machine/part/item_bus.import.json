@@ -1,0 +1,25 @@
+{
+	"credit": "Made with Blockbench",
+	"parent": "block/block",
+	"textures": {
+		"particle": "gtceu:block/overlay/machine/overlay_hatch",
+		"overlay_hatch": "gtceu:block/overlay/machine/overlay_pipe_in",
+		"overlay_item_hatch": "gtceu:block/overlay/machine/overlay_item_hatch"
+	},
+	"elements": [
+		{
+			"from": [0, 0, 0],
+			"to": [16, 16, 0],
+			"faces": {
+				"north": {"uv": [0, 0, 16, 16], "texture": "#overlay_hatch", "cullface": "north"}
+			}
+		},
+		{
+			"from": [0, 0, 0],
+			"to": [16, 16, 0],
+			"faces": {
+				"north": {"uv": [0, 0, 16, 16], "texture": "#overlay_item_hatch", "cullface": "north", "emissivity":  15}
+			}
+		}
+	]
+}

@@ -1,0 +1,35 @@
+{
+  "parent": "block/block",
+  "textures": {
+    "top": "gtceu:block/casings/solid/machine_bronze_plated_bricks",
+    "bottom": "gtceu:block/casings/solid/machine_bronze_plated_bricks",
+    "side": "gtceu:block/casings/firebox/machine_casing_firebox_bronze",
+    "active_side": "gtceu:block/casings/firebox/machine_casing_firebox_bloom",
+    "particle": "#bottom"
+  },
+  "elements": [
+    {
+      "from": [  0,  0,  0 ],
+      "to":   [ 16, 16, 16 ],
+      "faces": {
+        "up":    { "texture": "#top", "cullface": "up" },
+        "down":  { "texture": "#bottom", "cullface": "down" },
+        "north": { "texture": "#side", "cullface": "north" },
+        "south": { "texture": "#side", "cullface": "south" },
+        "west":  { "texture": "#side", "cullface": "west" },
+        "east":  { "texture": "#side", "cullface": "east" }
+      }
+    },
+    {
+      "from": [  0,  0,  0 ],
+      "to":   [ 16, 16, 16 ],
+      "shade": false,
+      "faces": {
+        "north": { "texture": "#active_side", "cullface": "north", "emissivity":  15},
+        "south": { "texture": "#active_side", "cullface": "south", "emissivity":  15},
+        "west":  { "texture": "#active_side", "cullface": "west", "emissivity":  15},
+        "east":  { "texture": "#active_side", "cullface": "east", "emissivity":  15}
+      }
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "#minecraft:component/capacitor",
+    "#minecraft:component/transistor",
+    "#minecraft:component/diode",
+    "#minecraft:component/inductor",
+    "#minecraft:component/resistor"
+  ]
+}

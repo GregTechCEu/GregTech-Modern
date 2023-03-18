@@ -1,0 +1,8 @@
+{
+  "parent": "item/handheld",
+  "textures": {
+    "layer0": "gtceu:item/tools/knife_base",
+    "layer1": "gtceu:item/tools/knife",
+    "layer2": "gtceu:item/tools/knife_overlay"
+  }
+}

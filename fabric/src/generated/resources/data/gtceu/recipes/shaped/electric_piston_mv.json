@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "minecraft:cable_gt_single/copper"
+    },
+    "G": {
+      "tag": "minecraft:gears/small/aluminium"
+    },
+    "M": {
+      "item": "gtceu:electric.motor.mv"
+    },
+    "P": {
+      "tag": "minecraft:plates/aluminium"
+    },
+    "R": {
+      "tag": "minecraft:sticks/aluminium"
+    }
+  },
+  "pattern": [
+    "PPP",
+    "CRR",
+    "CMG"
+  ],
+  "result": {
+    "item": "gtceu:electric.piston.mv"
+  }
+}

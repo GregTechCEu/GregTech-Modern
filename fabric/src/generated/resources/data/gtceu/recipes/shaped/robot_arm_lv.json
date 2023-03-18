@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "minecraft:cable_gt_single/tin"
+    },
+    "M": {
+      "item": "gtceu:electric.motor.lv"
+    },
+    "P": {
+      "item": "gtceu:electric.piston.lv"
+    },
+    "R": {
+      "tag": "minecraft:sticks/steel"
+    },
+    "X": {
+      "tag": "minecraft:circuit/lv"
+    }
+  },
+  "pattern": [
+    "CCC",
+    "MRM",
+    "PXR"
+  ],
+  "result": {
+    "item": "gtceu:robot.arm.lv"
+  }
+}

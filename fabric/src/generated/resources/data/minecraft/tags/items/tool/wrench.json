@@ -1,0 +1,29 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:wrench_aluminium",
+    "gtceu:wrench_iron",
+    "gtceu:wrench_titanium",
+    "gtceu:wrench_neutronium",
+    "gtceu:wrench_duranium",
+    "gtceu:wrench_bronze",
+    "gtceu:wrench_diamond",
+    "gtceu:wrench_invar",
+    "gtceu:wrench_sterling_silver",
+    "gtceu:wrench_rose_gold",
+    "gtceu:wrench_stainless_steel",
+    "gtceu:wrench_steel",
+    "gtceu:wrench_ultimet",
+    "gtceu:wrench_wrought_iron",
+    "gtceu:wrench_tungsten_carbide",
+    "gtceu:wrench_damascus_steel",
+    "gtceu:wrench_tungsten_steel",
+    "gtceu:wrench_cobalt_brass",
+    "gtceu:wrench_vanadium_steel",
+    "gtceu:wrench_naquadah_alloy",
+    "gtceu:wrench_flint",
+    "gtceu:wrench_red_steel",
+    "gtceu:wrench_blue_steel",
+    "gtceu:wrench_hsse"
+  ]
+}

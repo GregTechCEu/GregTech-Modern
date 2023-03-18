@@ -1,0 +1,6 @@
+{
+  "parent": "gtceu:item/material_sets/dull/ring",
+  "textures": {
+    "layer2": "gtceu:item/material_sets/shiny/ring_overlay"
+  }
+}

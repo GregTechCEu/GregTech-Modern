@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "forge:cable_gt_single/aluminium"
+    },
+    "M": {
+      "item": "gtceu:electric.motor.ev"
+    },
+    "P": {
+      "item": "gtceu:electric.piston.ev"
+    },
+    "R": {
+      "tag": "forge:sticks/titanium"
+    },
+    "X": {
+      "tag": "forge:circuit/ev"
+    }
+  },
+  "pattern": [
+    "CCC",
+    "MRM",
+    "PXR"
+  ],
+  "result": {
+    "item": "gtceu:robot.arm.ev"
+  }
+}

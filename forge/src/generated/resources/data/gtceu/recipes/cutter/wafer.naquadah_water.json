@@ -1,0 +1,47 @@
+{
+  "type": "gtceu:gt_recipe_serializer",
+  "duration": 3200,
+  "inputs": {
+    "fluid": [
+      {
+        "chance": 1.0,
+        "content": {
+          "amount": 1000,
+          "fluid": "minecraft:water"
+        }
+      }
+    ],
+    "item": [
+      {
+        "chance": 1.0,
+        "content": {
+          "item": "gtceu:boule.naquadah"
+        }
+      }
+    ]
+  },
+  "outputs": {
+    "item": [
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 64,
+          "fabric:type": "gtceu:sized",
+          "ingredient": {
+            "item": "gtceu:wafer.naquadah"
+          }
+        }
+      }
+    ]
+  },
+  "recipe_type": "gtceu:cutter",
+  "tickInputs": {
+    "eu": [
+      {
+        "chance": 1.0,
+        "content": 1920
+      }
+    ]
+  }
+}

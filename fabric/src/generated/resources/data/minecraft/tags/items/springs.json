@@ -1,0 +1,24 @@
+{
+  "replace": false,
+  "values": [
+    "#minecraft:springs/niobium_titanium",
+    "#minecraft:springs/yttrium_barium_cuprate",
+    "#minecraft:springs/kanthal",
+    "#minecraft:springs/tungsten_steel",
+    "#minecraft:springs/iron",
+    "#minecraft:springs/hssg",
+    "#minecraft:springs/vanadium_gallium",
+    "#minecraft:springs/cupronickel",
+    "#minecraft:springs/naquadah",
+    "#minecraft:springs/aluminium",
+    "#minecraft:springs/europium",
+    "#minecraft:springs/lead",
+    "#minecraft:springs/naquadah_alloy",
+    "#minecraft:springs/gold",
+    "#minecraft:springs/tungsten",
+    "#minecraft:springs/nichrome",
+    "#minecraft:springs/tin",
+    "#minecraft:springs/steel",
+    "#minecraft:springs/copper"
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:hammer_aluminium",
+    "gtceu:hammer_iron",
+    "gtceu:hammer_titanium",
+    "gtceu:hammer_neutronium",
+    "gtceu:hammer_duranium",
+    "gtceu:hammer_bronze",
+    "gtceu:hammer_diamond",
+    "gtceu:hammer_invar",
+    "gtceu:hammer_sterling_silver",
+    "gtceu:hammer_rose_gold",
+    "gtceu:hammer_stainless_steel",
+    "gtceu:hammer_steel",
+    "gtceu:hammer_ultimet",
+    "gtceu:hammer_wrought_iron",
+    "gtceu:hammer_tungsten_carbide",
+    "gtceu:hammer_damascus_steel",
+    "gtceu:hammer_tungsten_steel",
+    "gtceu:hammer_cobalt_brass",
+    "gtceu:hammer_vanadium_steel",
+    "gtceu:hammer_naquadah_alloy",
+    "gtceu:hammer_flint",
+    "gtceu:hammer_red_steel",
+    "gtceu:hammer_blue_steel",
+    "gtceu:hammer_hsse"
+  ]
+}

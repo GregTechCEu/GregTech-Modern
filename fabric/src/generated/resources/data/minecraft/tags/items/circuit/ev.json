@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:circuit.workstation",
+    "gtceu:circuit.nano_assembly",
+    "gtceu:circuit.quantum_processor"
+  ]
+}

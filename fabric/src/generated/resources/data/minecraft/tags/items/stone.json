@@ -1,0 +1,11 @@
+{
+  "replace": false,
+  "values": [
+    "#minecraft:stone/granite",
+    "#minecraft:stone/netherrack",
+    "#minecraft:stone/endstone",
+    "#minecraft:stone/andesite",
+    "#minecraft:stone/diorite",
+    "#minecraft:stone/obsidian"
+  ]
+}

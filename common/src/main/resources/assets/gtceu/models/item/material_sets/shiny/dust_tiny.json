@@ -1,0 +1,7 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "gtceu:item/material_sets/shiny/dust_tiny",
+    "layer1": "gtceu:item/material_sets/shiny/dust_tiny_overlay"
+  }
+}

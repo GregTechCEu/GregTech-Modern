@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "forge:dusts/coal"
+    },
+    "P": {
+      "item": "minecraft:paper"
+    },
+    "S": {
+      "item": "gtceu:rubber_drop"
+    },
+    "W": {
+      "tag": "forge:wire_gt_single/copper"
+    }
+  },
+  "pattern": [
+    "SPS",
+    "WCW",
+    " P "
+  ],
+  "result": {
+    "count": 2,
+    "item": "gtceu:component.resistor"
+  }
+}

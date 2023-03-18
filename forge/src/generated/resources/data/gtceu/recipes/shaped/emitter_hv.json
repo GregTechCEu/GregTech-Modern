@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "forge:cable_gt_single/gold"
+    },
+    "G": {
+      "tag": "forge:gems/ender_eye"
+    },
+    "R": {
+      "tag": "forge:sticks/chrome"
+    },
+    "X": {
+      "tag": "forge:circuit/hv"
+    }
+  },
+  "pattern": [
+    "CRX",
+    "RGR",
+    "XRC"
+  ],
+  "result": {
+    "item": "gtceu:emitter.hv"
+  }
+}

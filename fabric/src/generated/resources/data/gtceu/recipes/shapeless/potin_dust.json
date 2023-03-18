@@ -1,0 +1,36 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "tag": "minecraft:dusts/copper"
+    },
+    {
+      "tag": "minecraft:dusts/copper"
+    },
+    {
+      "tag": "minecraft:dusts/copper"
+    },
+    {
+      "tag": "minecraft:dusts/copper"
+    },
+    {
+      "tag": "minecraft:dusts/copper"
+    },
+    {
+      "tag": "minecraft:dusts/copper"
+    },
+    {
+      "tag": "minecraft:dusts/tin"
+    },
+    {
+      "tag": "minecraft:dusts/tin"
+    },
+    {
+      "tag": "minecraft:dusts/lead"
+    }
+  ],
+  "result": {
+    "count": 8,
+    "item": "gtceu:dust.potin"
+  }
+}

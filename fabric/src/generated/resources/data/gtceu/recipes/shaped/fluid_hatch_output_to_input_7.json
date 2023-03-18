@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": {
+      "item": "gtceu:fluid_hatch.export.zpm"
+    },
+    "d": {
+      "tag": "minecraft:tool/screwdriver"
+    }
+  },
+  "pattern": [
+    "d",
+    "B"
+  ],
+  "result": {
+    "item": "gtceu:fluid_hatch.import.zpm"
+  }
+}

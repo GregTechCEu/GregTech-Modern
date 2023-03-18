@@ -1,0 +1,47 @@
+{
+  "type": "gtceu:gt_recipe_serializer",
+  "duration": 600,
+  "inputs": {
+    "fluid": [
+      {
+        "chance": 1.0,
+        "content": {
+          "amount": 0,
+          "fluid": "gtceu:distilled_water"
+        }
+      }
+    ],
+    "item": [
+      {
+        "chance": 1.0,
+        "content": {
+          "item": "gtceu:boule.silicon"
+        }
+      }
+    ]
+  },
+  "outputs": {
+    "item": [
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 16,
+          "fabric:type": "gtceu:sized",
+          "ingredient": {
+            "item": "gtceu:wafer.silicon"
+          }
+        }
+      }
+    ]
+  },
+  "recipe_type": "gtceu:cutter",
+  "tickInputs": {
+    "eu": [
+      {
+        "chance": 1.0,
+        "content": 64
+      }
+    ]
+  }
+}

@@ -1,0 +1,81 @@
+package com.lowdragmc.gtceu.common.machine.multiblock.primitive;
+
+import com.lowdragmc.gtceu.api.GTValues;
+import com.lowdragmc.gtceu.api.gui.GuiTextures;
+import com.lowdragmc.gtceu.api.gui.UITemplate;
+import com.lowdragmc.gtceu.api.machine.IMetaMachineBlockEntity;
+import com.lowdragmc.gtceu.api.machine.feature.IUIMachine;
+import com.lowdragmc.gtceu.config.ConfigHolder;
+import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
+import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
+import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
+import com.lowdragmc.lowdraglib.gui.widget.*;
+import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.player.Player;
+
+import javax.annotation.ParametersAreNonnullByDefault;
+
+/**
+ * @author KilaBash
+ * @date 2023/3/16
+ * @implNote CokeOvenMachine
+ */
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
+public class CokeOvenMachine extends PrimitiveWorkableMachine implements IUIMachine {
+
+    public CokeOvenMachine(IMetaMachineBlockEntity holder, Object... args) {
+        super(holder, args);
+    }
+
+    @Override
+    public ModularUI createUI(Player entityPlayer) {
+        return new ModularUI(176, 166, this, entityPlayer)
+                .background(GuiTextures.PRIMITIVE_BACKGROUND)
+                .widget(new LabelWidget(5, 5, getBlockState().getBlock().getDescriptionId()))
+                .widget(new SlotWidget(importItems.storage, 0, 52, 30, true, true)
+                        .setBackgroundTexture(new GuiTextureGroup(GuiTextures.PRIMITIVE_SLOT, GuiTextures.PRIMITIVE_FURNACE_OVERLAY)))
+                .widget(new ProgressWidget(recipeLogic::getProgressPercent, 76, 32, 20, 15, GuiTextures.PRIMITIVE_BLAST_FURNACE_PROGRESS_BAR))
+                .widget(new SlotWidget(exportItems.storage, 0, 103, 30, true, false)
+                        .setBackgroundTexture(new GuiTextureGroup(GuiTextures.PRIMITIVE_SLOT, GuiTextures.PRIMITIVE_FURNACE_OVERLAY)))
+                .widget(new TankWidget(exportFluids.storages[0], 134, 13, 20, 58, true, false)
+                        .setBackground(GuiTextures.PRIMITIVE_LARGE_FLUID_TANK)
+                        .setOverlay(GuiTextures.PRIMITIVE_LARGE_FLUID_TANK_OVERLAY)
+                        .setFillDirection(ProgressTexture.FillDirection.DOWN_TO_UP))
+                .widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(), GuiTextures.PRIMITIVE_SLOT, 7, 84, true));
+    }
+
+    @Override
+    public void animateTick(RandomSource random) {
+        if (this.isActive()) {
+            final BlockPos pos = getPos();
+            float x = pos.getX() + 0.5F;
+            float z = pos.getZ() + 0.5F;
+
+            final var facing = getFrontFacing();
+            final float horizontalOffset = GTValues.RNG.nextFloat() * 0.6F - 0.3F;
+            final float y = pos.getY() + GTValues.RNG.nextFloat() * 0.375F + 0.3F;
+
+            if (facing.getAxis() == Direction.Axis.X) {
+                if (facing.getAxisDirection() == Direction.AxisDirection.POSITIVE) x += 0.52F;
+                else x -= 0.52F;
+                z += horizontalOffset;
+            } else if (facing.getAxis() == Direction.Axis.Z) {
+                if (facing.getAxisDirection() == Direction.AxisDirection.POSITIVE) z += 0.52F;
+                else z -= 0.52F;
+                x += horizontalOffset;
+            }
+            if (ConfigHolder.machines.machineSounds && GTValues.RNG.nextDouble() < 0.1) {
+                getLevel().playLocalSound(x, y, z, SoundEvents.FURNACE_FIRE_CRACKLE, SoundSource.BLOCKS, 1.0F, 1.0F, false);
+            }
+            getLevel().addParticle(ParticleTypes.LARGE_SMOKE, x, y, z, 0, 0, 0);
+            getLevel().addParticle(ParticleTypes.FLAME, x, y, z, 0, 0, 0);
+        }
+    }
+}

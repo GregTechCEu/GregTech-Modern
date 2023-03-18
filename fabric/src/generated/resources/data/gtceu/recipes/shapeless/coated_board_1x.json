@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "tag": "minecraft:plates/wood"
+    },
+    {
+      "item": "gtceu:rubber_drop"
+    },
+    {
+      "item": "gtceu:rubber_drop"
+    }
+  ],
+  "result": {
+    "item": "gtceu:board.coated"
+  }
+}

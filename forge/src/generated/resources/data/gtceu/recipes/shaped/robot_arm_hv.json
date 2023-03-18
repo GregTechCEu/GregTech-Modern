@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "forge:cable_gt_single/gold"
+    },
+    "M": {
+      "item": "gtceu:electric.motor.hv"
+    },
+    "P": {
+      "item": "gtceu:electric.piston.hv"
+    },
+    "R": {
+      "tag": "forge:sticks/stainless_steel"
+    },
+    "X": {
+      "tag": "forge:circuit/hv"
+    }
+  },
+  "pattern": [
+    "CCC",
+    "MRM",
+    "PXR"
+  ],
+  "result": {
+    "item": "gtceu:robot.arm.hv"
+  }
+}

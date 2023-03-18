@@ -1,0 +1,12 @@
+{
+    "ctm": {
+        "ctm_version": 1,
+        "type": "normal",
+        "layer": "BLOOM",
+        "gtceu": true,
+        "textures": [],
+        "extra": {
+            "light": 15
+        }
+    }
+}

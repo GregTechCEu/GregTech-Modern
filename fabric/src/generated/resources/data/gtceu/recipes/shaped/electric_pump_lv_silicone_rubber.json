@@ -1,0 +1,37 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "minecraft:cable_gt_single/tin"
+    },
+    "M": {
+      "item": "gtceu:electric.motor.lv"
+    },
+    "P": {
+      "tag": "minecraft:pipe_normal_fluid/bronze"
+    },
+    "R": {
+      "tag": "minecraft:rings/silicone_rubber"
+    },
+    "S": {
+      "tag": "minecraft:screws/tin"
+    },
+    "X": {
+      "tag": "minecraft:rotors/tin"
+    },
+    "d": {
+      "tag": "minecraft:tool/screwdriver"
+    },
+    "w": {
+      "tag": "minecraft:tool/wrench"
+    }
+  },
+  "pattern": [
+    "SXR",
+    "dPw",
+    "RMC"
+  ],
+  "result": {
+    "item": "gtceu:electric.pump.lv"
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "values": [
+    "#forge:pipe_quadruple_fluid/chrome",
+    "#forge:pipe_quadruple_fluid/polytetrafluoroethylene",
+    "#forge:pipe_quadruple_fluid/copper",
+    "#forge:pipe_quadruple_fluid/europium",
+    "#forge:pipe_quadruple_fluid/stainless_steel",
+    "#forge:pipe_quadruple_fluid/plastic",
+    "#forge:pipe_quadruple_fluid/tungsten_carbide",
+    "#forge:pipe_quadruple_fluid/polybenzimidazole",
+    "#forge:pipe_quadruple_fluid/lead",
+    "#forge:pipe_quadruple_fluid/titanium",
+    "#forge:pipe_quadruple_fluid/tin_alloy",
+    "#forge:pipe_quadruple_fluid/tungsten_steel",
+    "#forge:pipe_quadruple_fluid/tungsten",
+    "#forge:pipe_quadruple_fluid/aluminium",
+    "#forge:pipe_quadruple_fluid/vanadium_steel",
+    "#forge:pipe_quadruple_fluid/niobium_titanium",
+    "#forge:pipe_quadruple_fluid/steel",
+    "#forge:pipe_quadruple_fluid/duranium",
+    "#forge:pipe_quadruple_fluid/potin",
+    "#forge:pipe_quadruple_fluid/naquadah",
+    "#forge:pipe_quadruple_fluid/gold",
+    "#forge:pipe_quadruple_fluid/iridium",
+    "#forge:pipe_quadruple_fluid/neutronium",
+    "#forge:pipe_quadruple_fluid/bronze"
+  ]
+}

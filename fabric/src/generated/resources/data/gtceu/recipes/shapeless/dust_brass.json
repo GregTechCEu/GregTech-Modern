@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "tag": "minecraft:dusts/copper"
+    },
+    {
+      "tag": "minecraft:dusts/copper"
+    },
+    {
+      "tag": "minecraft:dusts/copper"
+    },
+    {
+      "tag": "minecraft:dusts/zinc"
+    }
+  ],
+  "result": {
+    "count": 3,
+    "item": "gtceu:dust.brass"
+  }
+}

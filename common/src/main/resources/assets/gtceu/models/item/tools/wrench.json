@@ -1,0 +1,8 @@
+{
+  "parent": "item/handheld",
+  "textures": {
+    "layer0": "gtceu:item/void",
+    "layer1": "gtceu:item/tools/wrench",
+    "layer2": "gtceu:item/tools/wrench_overlay"
+  }
+}

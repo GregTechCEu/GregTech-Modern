@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "forge:cable_gt_single/copper"
+    },
+    "M": {
+      "item": "gtceu:electric.motor.mv"
+    },
+    "R": {
+      "tag": "forge:plates/styrene_butadiene_rubber"
+    }
+  },
+  "pattern": [
+    "RRR",
+    "MCM",
+    "RRR"
+  ],
+  "result": {
+    "item": "gtceu:conveyor.module.mv"
+  }
+}

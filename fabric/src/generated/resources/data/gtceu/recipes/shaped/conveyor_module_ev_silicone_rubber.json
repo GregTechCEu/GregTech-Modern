@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "minecraft:cable_gt_single/aluminium"
+    },
+    "M": {
+      "item": "gtceu:electric.motor.ev"
+    },
+    "R": {
+      "tag": "minecraft:plates/silicone_rubber"
+    }
+  },
+  "pattern": [
+    "RRR",
+    "MCM",
+    "RRR"
+  ],
+  "result": {
+    "item": "gtceu:conveyor.module.ev"
+  }
+}

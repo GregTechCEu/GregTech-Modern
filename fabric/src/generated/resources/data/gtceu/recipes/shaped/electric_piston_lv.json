@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "minecraft:cable_gt_single/tin"
+    },
+    "G": {
+      "tag": "minecraft:gears/small/steel"
+    },
+    "M": {
+      "item": "gtceu:electric.motor.lv"
+    },
+    "P": {
+      "tag": "minecraft:plates/steel"
+    },
+    "R": {
+      "tag": "minecraft:sticks/steel"
+    }
+  },
+  "pattern": [
+    "PPP",
+    "CRR",
+    "CMG"
+  ],
+  "result": {
+    "item": "gtceu:electric.piston.lv"
+  }
+}

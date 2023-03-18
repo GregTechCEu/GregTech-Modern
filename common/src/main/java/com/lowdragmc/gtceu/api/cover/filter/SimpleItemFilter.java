@@ -1,0 +1,118 @@
+package com.lowdragmc.gtceu.api.cover.filter;
+
+import com.lowdragmc.gtceu.api.gui.GuiTextures;
+import com.lowdragmc.gtceu.api.gui.widget.ToggleButtonWidget;
+import com.lowdragmc.lowdraglib.gui.widget.PhantomSlotWidget;
+import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
+import com.lowdragmc.lowdraglib.msic.ItemStackTransfer;
+import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
+import lombok.Getter;
+import lombok.Setter;
+import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.world.item.ItemStack;
+
+import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.Arrays;
+import java.util.function.Consumer;
+
+/**
+ * @author KilaBash
+ * @date 2023/3/13
+ * @implNote ItemFilterHandler
+ */
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
+public class SimpleItemFilter implements ItemFilter {
+    @Getter
+    protected boolean isBlackList;
+    @Getter
+    protected boolean ignoreNbt;
+    @Getter
+    protected ItemStack[] matches = new ItemStack[9];
+    @Setter
+    protected Consumer<ItemFilter> onUpdated;
+
+    protected SimpleItemFilter() {
+        Arrays.fill(matches, ItemStack.EMPTY);
+    }
+
+    public static SimpleItemFilter loadFilter(ItemStack itemStack) {
+        return loadFilter(itemStack.getOrCreateTag(), filter -> itemStack.setTag(filter.saveFilter()));
+    }
+
+    public static SimpleItemFilter loadFilter(CompoundTag tag, Consumer<ItemFilter> onUpdated) {
+        var handler = new SimpleItemFilter();
+        handler.setOnUpdated(onUpdated);
+        handler.isBlackList = tag.getBoolean("isBlackList");
+        handler.ignoreNbt = tag.getBoolean("matchNbt");
+        var list = tag.getList("matches", Tag.TAG_COMPOUND);
+        for (int i = 0; i < list.size(); i++) {
+            handler.matches[i] = ItemStack.of((CompoundTag) list.get(i));
+        }
+        return handler;
+    }
+
+    public CompoundTag saveFilter() {
+        var tag = new CompoundTag();
+        tag.putBoolean("isBlackList", isBlackList);
+        tag.putBoolean("matchNbt", ignoreNbt);
+        var list = new ListTag();
+        for (var match : matches) {
+            list.add(match.save(new CompoundTag()));
+        }
+        tag.put("matches", list);
+        return tag;
+    }
+
+
+    public void setBlackList(boolean blackList) {
+        isBlackList = blackList;
+        onUpdated.accept(this);
+    }
+
+    public void setIgnoreNbt(boolean ingoreNbt) {
+        this.ignoreNbt = ingoreNbt;
+        onUpdated.accept(this);
+    }
+
+    public WidgetGroup openConfigurator(int x, int y) {
+        WidgetGroup group = new WidgetGroup(x, y, 18 * 3 + 25, 18 * 3); // 80 55
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                final int index = i * 3 + j;
+                var handler = new ItemStackTransfer(matches[index]);
+                var slot = new PhantomSlotWidget(handler, 0, i * 18, j * 18);
+                slot.setMaxStackSize(1);
+                slot.setChangeListener(() -> {
+                    matches[index] = handler.getStackInSlot(0);
+                    onUpdated.accept(this);
+                }).setBackground(GuiTextures.SLOT);
+                group.addWidget(slot);
+            }
+        }
+        group.addWidget(new ToggleButtonWidget(18 * 3 + 5, 0, 20, 20,
+                GuiTextures.BUTTON_BLACKLIST, this::isBlackList, this::setBlackList));
+        group.addWidget(new ToggleButtonWidget(18 * 3 + 5, 20, 20, 20,
+                GuiTextures.BUTTON_FILTER_NBT, this::isIgnoreNbt, this::setIgnoreNbt));
+        return group;
+    }
+
+    @Override
+    public boolean test(ItemStack itemStack) {
+        boolean found = false;
+        for (var match : matches) {
+            if (ignoreNbt) {
+                found = match.sameItem(itemStack);
+            } else {
+                found = ItemTransferHelper.canItemStacksStack(match, itemStack);
+            }
+            if (found) {
+                break;
+            }
+        }
+        return isBlackList != found;
+    }
+}

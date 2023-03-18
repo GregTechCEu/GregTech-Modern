@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "G": {
+      "tag": "minecraft:gems/nether_star"
+    },
+    "P": {
+      "tag": "minecraft:plates/double/titanium"
+    },
+    "W": {
+      "tag": "minecraft:wire_gt_quadruple/uranium_triplatinum"
+    },
+    "X": {
+      "tag": "minecraft:circuit/ev"
+    }
+  },
+  "pattern": [
+    "WPW",
+    "XGX",
+    "WPW"
+  ],
+  "result": {
+    "item": "gtceu:field.generator.ev"
+  }
+}
