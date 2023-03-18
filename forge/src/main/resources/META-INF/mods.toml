@@ -11,6 +11,7 @@ authors = "KilaBash"
 description = "${mod_description}"
 logoFile = "icon.png"
 displayURL = "${mod_url}"
+credits = "GregoriusT, Mr_Touchyou, Zerrens for making GregTech and textures, the GT5u authors and maintainers for providing the original code, and the community."
 
 [[dependencies.${mod_id}]]
 modId = "forge"
