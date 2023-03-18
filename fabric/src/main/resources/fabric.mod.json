@@ -16,25 +16,25 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "com.lowdragmc.gtceu.fabric.GTCEuFabric"
+      "com.gregtechceu.gtceu.fabric.GTCEuFabric"
     ],
     "client": [
-      "com.lowdragmc.gtceu.client.fabric.ClientProxyImpl"
+      "com.gregtechceu.gtceu.client.fabric.ClientProxyImpl"
     ],
     "top_plugin": [
-      "com.lowdragmc.gtceu.integration.top.fabric.TheOneProbePluginImpl"
+      "com.gregtechceu.gtceu.integration.top.fabric.TheOneProbePluginImpl"
     ],
     "rei_client": [
-      "com.lowdragmc.gtceu.integration.rei.fabric.REIPluginImpl"
+      "com.gregtechceu.gtceu.integration.rei.fabric.REIPluginImpl"
     ],
     "jei_mod_plugin": [
-      "com.lowdragmc.gtceu.integration.jei.fabric.JEIPluginImpl"
+      "com.gregtechceu.gtceu.integration.jei.fabric.JEIPluginImpl"
     ],
     "ldlib_pugin": [
-      "com.lowdragmc.gtceu.integration.ldlib.fabric.LDLibPlugin"
+      "com.gregtechceu.gtceu.integration.ldlib.fabric.LDLibPlugin"
     ],
     "fabric-datagen": [
-      "com.lowdragmc.gtceu.data.fabric.GregTechDatagen"
+      "com.gregtechceu.gtceu.data.fabric.GregTechDatagen"
     ]
   },
   "mixins": [
