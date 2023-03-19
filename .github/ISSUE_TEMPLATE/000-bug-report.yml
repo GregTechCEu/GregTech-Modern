@@ -19,7 +19,7 @@ body:
         - "JEI"
         - "REI"
         - "EMI"
-        - "None"
+        - "No Recipe Viewer"
     validations:
       required: false
   - type: input
