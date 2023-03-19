@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
+import com.gregtechceu.gtceu.common.block.variant.*;
 import com.gregtechceu.gtceu.common.data.GTCreativeModeTabs;
 import com.tterrag.registrate.providers.RegistrateLangProvider;
 
@@ -33,7 +34,6 @@ public class LangHandler {
         for (GTToolType toolType : GTToolType.values()) {
             provider.add(toolType.getUnlocalizedName(), toEnglishName(toolType));
         }
-
         // CreativeModeTabs
         provider.add(GTCreativeModeTabs.MATERIAL_FLUID, toEnglishName(GTCreativeModeTabs.MATERIAL_FLUID.getGroupId()));
         provider.add(GTCreativeModeTabs.MATERIAL_ITEM, toEnglishName(GTCreativeModeTabs.MATERIAL_ITEM.getGroupId()));
@@ -43,6 +43,22 @@ public class LangHandler {
         provider.add(GTCreativeModeTabs.TOOL, toEnglishName(GTCreativeModeTabs.TOOL.getGroupId()));
         provider.add(GTCreativeModeTabs.MACHINE, toEnglishName(GTCreativeModeTabs.MACHINE.getGroupId()));
         provider.add(GTCreativeModeTabs.ITEM, toEnglishName(GTCreativeModeTabs.ITEM.getGroupId()));
+        // Casings
+        for (var casing : CasingBlock.CasingType.values()) {
+            provider.add("variant." + casing.getSerializedName(), toEnglishName(casing.getSerializedName()));
+        }
+        for (var casing : ActiveCasingBlock.CasingType.values()) {
+            provider.add("variant." + casing.getSerializedName(), toEnglishName(casing.getSerializedName()));
+        }
+        for (var casing : CoilBlock.CoilType.values()) {
+            provider.add("variant." + casing.getSerializedName(), toEnglishName(casing.getSerializedName()));
+        }
+        for (var casing : BoilerFireBoxCasingBlock.CasingType.values()) {
+            provider.add("variant." + casing.getSerializedName(), toEnglishName(casing.getSerializedName()));
+        }
+        for (var casing : HullCasingBlock.CasingType.values()) {
+            provider.add("variant." + casing.getSerializedName(), toEnglishName(casing.getSerializedName()));
+        }
 
         provider.add("death.attack.heat", "%s was boiled alive");
         provider.add("death.attack.frost", "%s explored cryogenics");
