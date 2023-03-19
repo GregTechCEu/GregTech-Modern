@@ -20,8 +20,8 @@ import java.util.function.Consumer;
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.*;
 import static com.gregtechceu.gtceu.api.tag.TagPrefix.*;
-import static com.gregtechceu.gtceu.common.libs.GTItems.*;
-import static com.gregtechceu.gtceu.common.libs.GTRecipeTypes.*;
+import static com.gregtechceu.gtceu.common.data.GTItems.*;
+import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
 
 public class PartsRecipeHandler {
 

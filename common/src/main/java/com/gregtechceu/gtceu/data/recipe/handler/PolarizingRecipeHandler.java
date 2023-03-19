@@ -14,7 +14,7 @@ import java.util.function.Consumer;
 
 import static com.gregtechceu.gtceu.api.GTValues.LV;
 import static com.gregtechceu.gtceu.api.GTValues.VA;
-import static com.gregtechceu.gtceu.common.libs.GTRecipeTypes.POLARIZER_RECIPES;
+import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.POLARIZER_RECIPES;
 
 public class PolarizingRecipeHandler {
 

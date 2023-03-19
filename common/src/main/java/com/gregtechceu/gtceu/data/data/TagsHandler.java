@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.data.data;
 
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials;
-import com.gregtechceu.gtceu.common.libs.GTItems;
+import com.gregtechceu.gtceu.common.data.GTItems;
 import com.tterrag.registrate.providers.RegistrateTagsProvider;
 import net.minecraft.core.Registry;
 import net.minecraft.tags.TagKey;
@@ -10,7 +10,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 
 import static com.gregtechceu.gtceu.api.tag.TagPrefix.*;
-import static com.gregtechceu.gtceu.common.libs.GTMaterials.*;
+import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 
 /**
  * @author KilaBash

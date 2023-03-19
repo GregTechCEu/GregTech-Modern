@@ -75,8 +75,8 @@ public class FormattingUtil {
     /**
      * apple_orange.juice => Apple Orange (Juice)
      */
-    public static String toEnglishName(String internalName) {
-        return Arrays.stream(internalName.toLowerCase(Locale.ROOT).split("_"))
+    public static String toEnglishName(Object internalName) {
+        return Arrays.stream(internalName.toString().toLowerCase(Locale.ROOT).split("_"))
                 .map(StringUtils::capitalize)
                 .collect(Collectors.joining(" "));
     }

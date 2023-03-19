@@ -10,8 +10,8 @@ import net.minecraft.world.level.material.Fluids;
 
 import java.util.function.Consumer;
 
-import static com.gregtechceu.gtceu.common.libs.GTMaterials.*;
-import static com.gregtechceu.gtceu.common.libs.GTRecipeTypes.*;
+import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
+import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
 
 /**
  * @author KilaBash

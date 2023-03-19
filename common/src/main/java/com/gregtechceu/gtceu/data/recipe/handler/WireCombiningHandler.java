@@ -17,8 +17,8 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 import static com.gregtechceu.gtceu.api.tag.TagPrefix.*;
-import static com.gregtechceu.gtceu.common.libs.GTMaterials.Rubber;
-import static com.gregtechceu.gtceu.common.libs.GTRecipeTypes.PACKER_RECIPES;
+import static com.gregtechceu.gtceu.common.data.GTMaterials.Rubber;
+import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.PACKER_RECIPES;
 
 public class WireCombiningHandler {
 

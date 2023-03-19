@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.api.block.VariantActiveBlock;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.common.libs.GTMaterials;
+import com.gregtechceu.gtceu.common.data.GTMaterials;
 import lombok.Getter;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;

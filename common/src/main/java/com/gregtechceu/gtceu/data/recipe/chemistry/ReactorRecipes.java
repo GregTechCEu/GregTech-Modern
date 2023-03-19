@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.data.recipe.chemistry;
 
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials;
-import com.gregtechceu.gtceu.common.libs.GTMaterials;
+import com.gregtechceu.gtceu.common.data.GTMaterials;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -11,10 +11,10 @@ import net.minecraft.world.level.block.Blocks;
 
 import java.util.function.Consumer;
 
-import static com.gregtechceu.gtceu.common.libs.GTItems.*;
-import static com.gregtechceu.gtceu.common.libs.GTMaterials.*;
+import static com.gregtechceu.gtceu.common.data.GTItems.*;
+import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 import static com.gregtechceu.gtceu.api.tag.TagPrefix.*;
-import static com.gregtechceu.gtceu.common.libs.GTRecipeTypes.*;
+import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
 import static com.gregtechceu.gtceu.api.GTValues.*;
 
 public class ReactorRecipes {

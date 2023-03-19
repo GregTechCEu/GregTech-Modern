@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.client.renderer.item.ToolItemRenderer;
 import com.lowdragmc.lowdraglib.client.renderer.IItemRendererProvider;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
+import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import lombok.Getter;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -79,5 +80,10 @@ public class GTToolItem extends DiggerItem implements IItemRendererProvider, IIt
             return result;
         }
         return InteractionResult.PASS;
+    }
+
+    @Override
+    public String getDescriptionId(ItemStack stack) {
+        return "%s %s".formatted(LocalizationUtils.format(getTier().material.getUnlocalizedName()), LocalizationUtils.format(toolType.getUnlocalizedName()));
     }
 }

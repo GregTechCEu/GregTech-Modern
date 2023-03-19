@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.block.VariantBlock;
 import com.gregtechceu.gtceu.client.renderer.item.VariantBlockItemRenderer;
 import com.lowdragmc.lowdraglib.client.renderer.IItemRendererProvider;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
+import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
@@ -73,7 +74,7 @@ public class VariantBlockItem<R extends Enum<R> & StringRepresentable, T extends
         if (variant == null) {
             return super.getDescriptionId();
         }
-        return super.getDescriptionId() + '.' + variant.getSerializedName();
+        return "%s %s".formatted(LocalizationUtils.format("variant." + variant.getSerializedName()), LocalizationUtils.format(super.getDescriptionId()));
     }
 
     @Override

@@ -72,4 +72,8 @@ public abstract class MaterialPipeBlock<PipeType extends Enum<PipeType> & IPipeT
 
     protected abstract PipeModel createPipeModel();
 
+    @Override
+    public String getDescriptionId() {
+        return pipeType.getTagPrefix().getLocalNameForItem(material);
+    }
 }

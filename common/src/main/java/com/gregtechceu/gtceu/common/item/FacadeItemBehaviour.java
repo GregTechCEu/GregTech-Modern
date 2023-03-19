@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.common.item;
 import com.google.common.collect.ImmutableList;
 import com.gregtechceu.gtceu.api.item.ComponentItem;
 import com.gregtechceu.gtceu.client.renderer.cover.FacadeCoverRenderer;
-import com.gregtechceu.gtceu.common.libs.GTCreativeModeTabs;
+import com.gregtechceu.gtceu.common.data.GTCreativeModeTabs;
 import com.gregtechceu.gtceu.api.item.component.ICustomDescriptionId;
 import com.gregtechceu.gtceu.api.item.component.ICustomRenderer;
 import com.gregtechceu.gtceu.api.item.component.ISubItemHandler;

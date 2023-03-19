@@ -1,14 +1,11 @@
 package com.gregtechceu.gtceu.common;
 
 import com.gregtechceu.gtceu.api.gui.CoverUIFactory;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.common.libs.*;
+import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.api.gui.MachineUIFactory;
-import com.gregtechceu.gtceu.common.libs.materials.GTFoods;
+import com.gregtechceu.gtceu.common.data.materials.GTFoods;
 import com.gregtechceu.gtceu.data.data.GregTechDatagen;
-import com.gregtechceu.gtceu.data.data.TagsHandler;
 import com.lowdragmc.lowdraglib.gui.factory.UIFactory;
-import com.tterrag.registrate.providers.ProviderType;
 
 /**
  * @author KilaBash

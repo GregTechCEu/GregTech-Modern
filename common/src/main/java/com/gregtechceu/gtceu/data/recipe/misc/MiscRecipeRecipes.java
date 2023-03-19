@@ -23,13 +23,13 @@ import net.minecraft.world.level.material.Fluids;
 
 import java.util.function.Consumer;
 
-import static com.gregtechceu.gtceu.common.libs.GTMachines.*;
-import static com.gregtechceu.gtceu.common.libs.GTMaterials.*;
+import static com.gregtechceu.gtceu.common.data.GTMachines.*;
+import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.tag.TagPrefix.*;
-import static com.gregtechceu.gtceu.common.libs.GTRecipeTypes.*;
-import static com.gregtechceu.gtceu.common.libs.GTItems.*;
-import static com.gregtechceu.gtceu.common.libs.GTBlocks.*;
+import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
+import static com.gregtechceu.gtceu.common.data.GTItems.*;
+import static com.gregtechceu.gtceu.common.data.GTBlocks.*;
 import static com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials.*;
 
 public class MiscRecipeRecipes {

@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.data.chemical.material.properties;
 
 import com.gregtechceu.gtceu.api.data.chemical.fluid.FluidTypes;
-import com.gregtechceu.gtceu.common.libs.GTFluids;
+import com.gregtechceu.gtceu.common.data.GTFluids;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import lombok.Getter;

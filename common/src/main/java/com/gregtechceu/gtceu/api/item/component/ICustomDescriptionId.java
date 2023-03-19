@@ -8,8 +8,6 @@ import net.minecraft.world.item.ItemStack;
  * @implNote ICustomDescriptionId
  */
 public interface ICustomDescriptionId extends IItemComponent{
-    default String getItemStackDisplayName(ItemStack itemStack) {
-        return itemStack.getItem().getDescriptionId();
-    }
+    String getItemStackDisplayName(ItemStack itemStack);
 
 }

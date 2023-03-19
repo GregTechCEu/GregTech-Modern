@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.common.block.variant.BoilerFireBoxCasingBlock;
 import net.minecraft.world.level.block.state.BlockState;
 
 import static com.gregtechceu.gtceu.common.block.variant.CasingBlock.CasingType.*;
-import static com.gregtechceu.gtceu.common.libs.GTBlocks.*;
+import static com.gregtechceu.gtceu.common.data.GTBlocks.*;
 
 public enum BoilerType {
 

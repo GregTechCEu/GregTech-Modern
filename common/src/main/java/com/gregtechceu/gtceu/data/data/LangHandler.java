@@ -1,8 +1,10 @@
 package com.gregtechceu.gtceu.data.data;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.common.libs.GTCreativeModeTabs;
+import com.gregtechceu.gtceu.api.tag.TagPrefix;
+import com.gregtechceu.gtceu.common.data.GTCreativeModeTabs;
 import com.tterrag.registrate.providers.RegistrateLangProvider;
 
 import static com.gregtechceu.gtceu.utils.FormattingUtil.*;
@@ -23,6 +25,15 @@ public class LangHandler {
         for (var recipeType : GTRegistries.RECIPE_TYPES) {
             provider.add(recipeType.registryName.toLanguageKey(), toEnglishName(recipeType.registryName.getPath()));
         }
+        // TagPrefix
+        for (TagPrefix tagPrefix : TagPrefix.values()) {
+            provider.add(tagPrefix.getUnlocalizedName(), tagPrefix.langValue);
+        }
+        // GTToolType
+        for (GTToolType toolType : GTToolType.values()) {
+            provider.add(toolType.getUnlocalizedName(), toEnglishName(toolType));
+        }
+
         // CreativeModeTabs
         provider.add(GTCreativeModeTabs.MATERIAL_FLUID, toEnglishName(GTCreativeModeTabs.MATERIAL_FLUID.getGroupId()));
         provider.add(GTCreativeModeTabs.MATERIAL_ITEM, toEnglishName(GTCreativeModeTabs.MATERIAL_ITEM.getGroupId()));
@@ -206,8 +217,7 @@ public class LangHandler {
         provider.add("metaitem.shape.extruder.rod_long.tooltip", "Extruder Shape for making Long Rods");
         provider.add("metaitem.shape.extruder.rotor.tooltip", "Extruder Shape for making Rotors");
         provider.add("metaitem.spray.empty.tooltip", "Can be filled with sprays of various colors");
-        provider.add("metaitem.fluid_cell.empty", "Empty");
-        provider.add("metaitem.fluid_cell.universal.empty", "Empty");
+        provider.add("fluid_cell.empty", "Empty");
         provider.add("metaitem.tool.matchbox.tooltip", "This is not a Car");
         provider.add("metaitem.tool.lighter.platinum.tooltip", "A known Prank Master is engraved on it");
         provider.add("metaitem.battery.hull.lv.tooltip", "An empty §7LV §7Battery Hull");
@@ -650,107 +660,6 @@ public class LangHandler {
         provider.add("cover.advanced_item_detector.invert_tooltip", "Toggle to invert the redstone logic/nBy default, redstone stops emitting when less than the minimum amount of items, and starts emitting when greater than the min amount of items up to the set maximum");
         provider.add("cover.advanced_item_detector.max", "Maximum Items:");
         provider.add("cover.advanced_item_detector.min", "Minimum Items:");
-        provider.add("item.material.oreprefix.oreBlackgranite", "Granite %s Ore");
-        provider.add("item.material.oreprefix.oreRedgranite", "Granite %s Ore");
-        provider.add("item.material.oreprefix.oreMarble", "Marble %s Ore");
-        provider.add("item.material.oreprefix.oreBasalt", "Basalt %s Ore");
-        provider.add("item.material.oreprefix.oreSand", "Sand %s Ore");
-        provider.add("item.material.oreprefix.oreRedSand", "Red Sand %s Ore");
-        provider.add("item.material.oreprefix.oreNetherrack", "Nether %s Ore");
-        provider.add("item.material.oreprefix.oreNether", "Nether %s Ore");
-        provider.add("item.material.oreprefix.oreEndstone", "End %s Ore");
-        provider.add("item.material.oreprefix.oreEnd", "End %s Ore");
-        provider.add("item.material.oreprefix.ore", "%s Ore");
-        provider.add("item.material.oreprefix.oreGranite", "Granite %s Ore");
-        provider.add("item.material.oreprefix.oreDiorite", "Diorite %s Ore");
-        provider.add("item.material.oreprefix.oreAndesite", "Andesite %s Ore");
-        provider.add("item.material.oreprefix.crushedCentrifuged", "Centrifuged %s Ore");
-        provider.add("item.material.oreprefix.crushedPurified", "Purified %s Ore");
-        provider.add("item.material.oreprefix.crushed", "Crushed %s Ore");
-        provider.add("item.material.oreprefix.ingotHot", "Hot %s Ingot");
-        provider.add("item.material.oreprefix.ingot", "%s Ingot");
-        provider.add("item.material.oreprefix.gem", "%s");
-        provider.add("item.material.oreprefix.gemChipped", "Chipped %s");
-        provider.add("item.material.oreprefix.gemFlawed", "Flawed %s");
-        provider.add("item.material.oreprefix.gemFlawless", "Flawless %s");
-        provider.add("item.material.oreprefix.gemExquisite", "Exquisite %s");
-        provider.add("item.material.oreprefix.dustTiny", "Tiny Pile of %s Dust");
-        provider.add("item.material.oreprefix.dustSmall", "Small Pile of %s Dust");
-        provider.add("item.material.oreprefix.dustImpure", "Impure Pile of %s Dust");
-        provider.add("item.material.oreprefix.dustPure", "Purified Pile of %s Dust");
-        provider.add("item.material.oreprefix.dust", "%s Dust");
-        provider.add("item.material.oreprefix.nugget", "%s Nugget");
-        provider.add("item.material.oreprefix.plateDense", "Dense %s Plate");
-        provider.add("item.material.oreprefix.plateDouble", "Double %s Plate");
-        provider.add("item.material.oreprefix.plate", "%s Plate");
-        provider.add("item.material.oreprefix.plank", "%s Planks");
-        provider.add("item.material.oreprefix.foil", "%s Foil");
-        provider.add("item.material.oreprefix.stickLong", "Long %s Rod");
-        provider.add("item.material.oreprefix.stick", "%s Rod");
-        provider.add("item.material.oreprefix.round", "%s Round");
-        provider.add("item.material.oreprefix.bolt", "%s Bolt");
-        provider.add("item.material.oreprefix.screw", "%s Screw");
-        provider.add("item.material.oreprefix.ring", "%s Ring");
-        provider.add("item.material.oreprefix.springSmall", "Small %s Spring");
-        provider.add("item.material.oreprefix.spring", "%s Spring");
-        provider.add("item.material.oreprefix.wireFine", "Fine %s Wire");
-        provider.add("item.material.oreprefix.rotor", "%s Rotor");
-        provider.add("item.material.oreprefix.gearSmall", "Small %s Gear");
-        provider.add("item.material.oreprefix.gear", "%s Gear");
-        provider.add("item.material.oreprefix.lens", "%s Lens");
-        provider.add("item.material.oreprefix.toolHeadSword", "%s Sword Blade");
-        provider.add("item.material.oreprefix.toolHeadPickaxe", "%s Pickaxe Head");
-        provider.add("item.material.oreprefix.toolHeadShovel", "%s Shovel Head");
-        provider.add("item.material.oreprefix.toolHeadAxe", "%s Axe Head");
-        provider.add("item.material.oreprefix.toolHeadHoe", "%s Hoe Head");
-        provider.add("item.material.oreprefix.toolHeadScythe", "%s Scythe Blade");
-        provider.add("item.material.oreprefix.toolHeadFile", "%s File Head");
-        provider.add("item.material.oreprefix.toolHeadHammer", "%s Hammer Head");
-        provider.add("item.material.oreprefix.toolHeadSaw", "%s Saw Blade");
-        provider.add("item.material.oreprefix.toolHeadBuzzSaw", "%s Buzzsaw Blade");
-        provider.add("item.material.oreprefix.toolHeadScrewdriver", "%s Screwdriver Tip");
-        provider.add("item.material.oreprefix.toolHeadDrill", "%s Drill Tip");
-        provider.add("item.material.oreprefix.toolHeadChainsaw", "%s Chainsaw Tip");
-        provider.add("item.material.oreprefix.toolHeadWrench", "%s Wrench Tip");
-        provider.add("item.material.oreprefix.turbineBlade", "%s Turbine Blade");
-        provider.add("item.material.oreprefix.block", "Block of %s");
-        provider.add("item.material.oreprefix.frameGt", "%s Frame Box");
-        provider.add("item.material.oreprefix.pipeTinyFluid", "Tiny %s Fluid Pipe");
-        provider.add("item.material.oreprefix.pipeSmallFluid", "Small %s Fluid Pipe");
-        provider.add("item.material.oreprefix.pipeNormalFluid", "%s Fluid Pipe");
-        provider.add("item.material.oreprefix.pipeLargeFluid", "Large %s Fluid Pipe");
-        provider.add("item.material.oreprefix.pipeHugeFluid", "Huge %s Fluid Pipe");
-        provider.add("item.material.oreprefix.pipeQuadrupleFluid", "Quadruple %s Fluid Pipe");
-        provider.add("item.material.oreprefix.pipeNonupleFluid", "Nonuple %s Fluid Pipe");
-        provider.add("item.material.oreprefix.pipeTinyItem", "Tiny %s Item Pipe");
-        provider.add("item.material.oreprefix.pipeSmallItem", "Small %s Item Pipe");
-        provider.add("item.material.oreprefix.pipeNormalItem", "%s Item Pipe");
-        provider.add("item.material.oreprefix.pipeLargeItem", "Large %s Item Pipe");
-        provider.add("item.material.oreprefix.pipeHugeItem", "Huge %s Item Pipe");
-        provider.add("item.material.oreprefix.pipeTinyRestrictive", "Tiny Restrictive %s Item Pipe");
-        provider.add("item.material.oreprefix.pipeSmallRestrictive", "Small Restrictive %s Item Pipe");
-        provider.add("item.material.oreprefix.pipeNormalRestrictive", "Restrictive %s Item Pipe");
-        provider.add("item.material.oreprefix.pipeLargeRestrictive", "Large Restrictive %s Item Pipe");
-        provider.add("item.material.oreprefix.pipeHugeRestrictive", "Huge Restrictive %s Item Pipe");
-        provider.add("item.material.oreprefix.wireGtHex", "16x %s Wire");
-        provider.add("item.material.oreprefix.wireGtOctal", "8x %s Wire");
-        provider.add("item.material.oreprefix.wireGtQuadruple", "4x %s Wire");
-        provider.add("item.material.oreprefix.wireGtDouble", "2x %s Wire");
-        provider.add("item.material.oreprefix.wireGtSingle", "1x %s Wire");
-        provider.add("item.material.oreprefix.cableGtHex", "16x %s Cable");
-        provider.add("item.material.oreprefix.cableGtOctal", "8x %s Cable");
-        provider.add("item.material.oreprefix.cableGtQuadruple", "4x %s Cable");
-        provider.add("item.material.oreprefix.cableGtDouble", "2x %s Cable");
-        provider.add("item.material.oreprefix.cableGtSingle", "1x %s Cable");
-        provider.add("item.material.oreprefix.polymer.plate", "%s Sheet");
-        provider.add("item.material.oreprefix.polymer.foil", "Thin %s Sheet");
-        provider.add("item.material.oreprefix.polymer.nugget", "%s Chip");
-        provider.add("item.material.oreprefix.polymer.plateDense", "Dense %s Sheet");
-        provider.add("item.material.oreprefix.polymer.plateDouble", "Double %s Sheet");
-        provider.add("item.material.oreprefix.polymer.dustTiny", "Tiny Pile of %s Pulp");
-        provider.add("item.material.oreprefix.polymer.dustSmall", "Small Pile of %s Pulp");
-        provider.add("item.material.oreprefix.polymer.dust", "%s Pulp");
-        provider.add("item.material.oreprefix.polymer.ingot", "%s Bar");
         provider.add("item.nether_quartz.oreNetherrack", "Nether Quartz Ore");
         provider.add("item.gunpowder.dustTiny", "Tiny Pile of Gunpowder");
         provider.add("item.gunpowder.dustSmall", "Small Pile of Gunpowder");

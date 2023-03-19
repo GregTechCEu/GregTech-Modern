@@ -11,7 +11,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.IMaterialProp
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.common.libs.GTMaterials;
+import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
@@ -43,65 +43,79 @@ public class TagPrefix {
             .unificationEnabled(true)
             .generationCondition(hasOreProperty);
     public static final TagPrefix oreGranite = new TagPrefix("oreGranite", "ores", "ores/granite")
+            .langValue("Granite %s Ore")
             .materialIconType(MaterialIconType.ore)
             .unificationEnabled(true)
             .generationCondition(hasOreProperty);
     public static final TagPrefix oreDiorite = new TagPrefix("oreDiorite", "ores", "ores/diorite")
+            .langValue("Diorite %s Ore")
             .materialIconType(MaterialIconType.ore)
             .unificationEnabled(true)
             .generationCondition(hasOreProperty);
     public static final TagPrefix oreAndesite = new TagPrefix("oreAndesite", "ores", "ores/andesite")
+            .langValue("Andesite %s Ore")
             .materialIconType(MaterialIconType.ore)
             .unificationEnabled(true)
             .generationCondition(hasOreProperty);
     public static final TagPrefix oreBlackgranite = new TagPrefix("oreBlackgranite", "ores", "ores/black_granite")
+            .langValue("Granite %s Ore")
             .materialIconType(MaterialIconType.ore)
             .unificationEnabled(true)
             .generationCondition(hasOreProperty);
     public static final TagPrefix oreRedgranite = new TagPrefix("oreRedgranite", "ores", "ores/red_granite")
+            .langValue("Granite %s Ore")
             .materialIconType(MaterialIconType.ore)
             .unificationEnabled(true)
             .generationCondition(hasOreProperty);
     public static final TagPrefix oreMarble = new TagPrefix("oreMarble", "ores", "ores/marble")
+            .langValue("Marble %s Ore")
             .materialIconType(MaterialIconType.ore)
             .unificationEnabled(true)
             .generationCondition(hasOreProperty);
     public static final TagPrefix oreBasalt = new TagPrefix("oreBasalt", "ores", "ores/basalt")
+            .langValue("Basalt %s Ore")
             .materialIconType(MaterialIconType.ore)
             .unificationEnabled(true)
             .generationCondition(hasOreProperty);
     // In case of an Sand-Ores Mod. Ore -> Material is a Oneway Operation!
     public static final TagPrefix oreSand = new TagPrefix("oreSand", "ores", "ores/sand")
+            .langValue("Sand %s Ore")
             .materialIconType(MaterialIconType.ore)
             .unificationEnabled(true)
             .generationCondition(hasOreProperty);
     public static final TagPrefix oreRedSand = new TagPrefix("oreRedSand", "ores", "ores/red_sand")
+            .langValue("Red Sand %s Ore")
             .materialIconType(MaterialIconType.ore)
             .unificationEnabled(true)
             .generationCondition(hasOreProperty);
 
     // Prefix of the Nether-Ores Mod. Causes Ores to double. Ore -> Material is a Oneway Operation!
     public static final TagPrefix oreNetherrack = new TagPrefix("oreNetherrack", "ores", "ores/netherrack")
+            .langValue("Nether %s Ore")
             .materialIconType(MaterialIconType.ore)
             .unificationEnabled(true)
             .generationCondition(hasOreProperty);
     // In case of an End-Ores Mod. Ore -> Material is a Oneway Operation!
     public static final TagPrefix oreEndstone = new TagPrefix("oreEndstone", "ores", "ores/endstone")
+            .langValue("End %s Ore")
             .materialIconType(MaterialIconType.ore)
             .unificationEnabled(true)
             .generationCondition(hasOreProperty);
 
     public static final TagPrefix crushedCentrifuged = new TagPrefix("crushedCentrifuged","centrifuged_crushed")
+            .langValue("Centrifuged %s Ore")
             .materialIconType(MaterialIconType.crushedCentrifuged)
             .unificationEnabled(true)
             .generateItem(true)
             .generationCondition(hasOreProperty);
     public static final TagPrefix crushedPurified = new TagPrefix("crushedPurified","crushed_purified")
+            .langValue("Purified %s Ore")
             .materialIconType(MaterialIconType.crushedPurified)
             .unificationEnabled(true)
             .generateItem(true)
             .generationCondition(hasOreProperty);
     public static final TagPrefix crushed = new TagPrefix("crushed")
+            .langValue("Crushed %s Ore")
             .materialIconType(MaterialIconType.crushed)
             .unificationEnabled(true)
             .generateItem(true)
@@ -118,6 +132,7 @@ public class TagPrefix {
 
     // A hot Ingot, which has to be cooled down by a Vacuum Freezer.
     public static final TagPrefix ingotHot = new TagPrefix("ingotHot","ingots/hot")
+            .langValue("Hot %s Ingot")
             .materialAmount(GTValues.M)
             .materialIconType(MaterialIconType.ingotHot)
             .unificationEnabled(true)
@@ -142,6 +157,7 @@ public class TagPrefix {
 
     // A regular Gem worth one small Dust. Introduced by TerraFirmaCraft
     public static final TagPrefix gemChipped = new TagPrefix("gemChipped", "gems/chipped")
+            .langValue("Chipped %s")
             .materialAmount(GTValues.M / 4)
             .materialIconType(MaterialIconType.gemChipped)
             .unificationEnabled(true)
@@ -150,6 +166,7 @@ public class TagPrefix {
 
     // A regular Gem worth two small Dusts. Introduced by TerraFirmaCraft
     public static final TagPrefix gemFlawed = new TagPrefix("gemFlawed","gems/flawed")
+            .langValue("Flawed %s")
             .materialAmount(GTValues.M / 2)
             .materialIconType(MaterialIconType.gemFlawed)
             .unificationEnabled(true)
@@ -158,6 +175,7 @@ public class TagPrefix {
 
     // A regular Gem worth two Dusts. Introduced by TerraFirmaCraft
     public static final TagPrefix gemFlawless = new TagPrefix("gemFlawless", "gems/flawless")
+            .langValue("Flawless %s")
             .materialAmount(GTValues.M * 2)
             .maxStackSize(32)
             .materialIconType(MaterialIconType.gemFlawless)
@@ -167,6 +185,7 @@ public class TagPrefix {
 
     // A regular Gem worth four Dusts. Introduced by TerraFirmaCraft
     public static final TagPrefix gemExquisite = new TagPrefix("gemExquisite", "gems/exquisite")
+            .langValue("Exquisite %s")
             .materialAmount(GTValues.M * 4)
             .maxStackSize(16)
             .materialIconType(MaterialIconType.gemExquisite)
@@ -176,6 +195,7 @@ public class TagPrefix {
 
     // 1/4th of a Dust.
     public static final TagPrefix dustSmall = new TagPrefix("dustSmall", "dusts/small")
+            .langValue("Small Pile of %s Dust")
             .materialAmount(GTValues.M / 4)
             .materialIconType(MaterialIconType.dustSmall)
             .unificationEnabled(true)
@@ -184,6 +204,7 @@ public class TagPrefix {
 
     // 1/9th of a Dust.
     public static final TagPrefix dustTiny = new TagPrefix("dustTiny","dusts/tiny")
+            .langValue("Tiny Pile of %s Dust")
             .materialAmount(GTValues.M / 9)
             .materialIconType(MaterialIconType.dustTiny)
             .unificationEnabled(true)
@@ -192,6 +213,7 @@ public class TagPrefix {
 
     // Dust with impurities. 1 Unit of Main Material and 1/9 - 1/4 Unit of secondary Material
     public static final TagPrefix dustImpure = new TagPrefix("dustImpure", "dusts/impure")
+            .langValue("Impure Pile of %s Dust")
             .materialAmount(GTValues.M)
             .materialIconType(MaterialIconType.dustImpure)
             .unificationEnabled(true)
@@ -201,6 +223,7 @@ public class TagPrefix {
 
     // Pure Dust worth of one Ingot or Gem. Introduced by Alblaka.
     public static final TagPrefix dustPure = new TagPrefix("dustPure", "dusts/pure")
+            .langValue("Purified Pile of %s Dust")
             .materialAmount(GTValues.M)
             .materialIconType(MaterialIconType.dustPure)
             .unificationEnabled(true)
@@ -225,6 +248,7 @@ public class TagPrefix {
 
     // 9 Plates combined in one Item.
     public static final TagPrefix plateDense = new TagPrefix("plateDense", "plates/dense")
+            .langValue("Dense %s Plate")
             .materialAmount(GTValues.M * 9)
             .maxStackSize(7)
             .materialIconType(MaterialIconType.plateDense)
@@ -234,6 +258,7 @@ public class TagPrefix {
 
     // 2 Plates combined in one Item
     public static final TagPrefix plateDouble = new TagPrefix("plateDouble", "plates/double")
+            .langValue("Double %s Plate")
             .materialAmount(GTValues.M * 2)
             .maxStackSize(32)
             .materialIconType(MaterialIconType.plateDouble)
@@ -268,6 +293,7 @@ public class TagPrefix {
 
     // Stick made of an Ingot.
     public static final TagPrefix stickLong = new TagPrefix("stickLong", "sticks/long")
+            .langValue("Long %s Rod")
             .materialAmount(GTValues.M)
             .materialIconType(MaterialIconType.stickLong)
             .unificationEnabled(true)
@@ -276,6 +302,7 @@ public class TagPrefix {
 
     // Stick made of half an Ingot. Introduced by Eloraam
     public static final TagPrefix stick = new TagPrefix("stick", "sticks")
+            .langValue("%s Rod")
             .materialAmount(GTValues.M / 2)
             .materialIconType(MaterialIconType.stick)
             .unificationEnabled(true)
@@ -308,6 +335,7 @@ public class TagPrefix {
 
     // consisting out of 1 Fine Wire.
     public static final TagPrefix springSmall = new TagPrefix("springSmall", "springs/small")
+            .langValue("Small %s Spring")
             .materialAmount(GTValues.M / 4)
             .materialIconType(MaterialIconType.springSmall)
             .unificationEnabled(true)
@@ -324,6 +352,7 @@ public class TagPrefix {
 
     // consisting out of 1/8 Ingot or 1/4 Wire.
     public static final TagPrefix wireFine = new TagPrefix("wireFine", "wires/fine")
+            .langValue("Fine %s Wire")
             .materialAmount(GTValues.M / 8)
             .materialIconType(MaterialIconType.wireFine)
             .unificationEnabled(true)
@@ -340,6 +369,7 @@ public class TagPrefix {
             .generationCondition(mat -> mat.hasFlag(MaterialFlags.GENERATE_ROTOR));
 
     public static final TagPrefix gearSmall = new TagPrefix("gearSmall", "gears/small")
+            .langValue("Small %s Gear")
             .materialAmount(GTValues.M)
             .materialIconType(MaterialIconType.gearSmall)
             .unificationEnabled(true)
@@ -366,6 +396,7 @@ public class TagPrefix {
 
     // made of 4 Ingots.
     public static final TagPrefix toolHeadBuzzSaw = new TagPrefix("toolHeadBuzzSaw")
+            .langValue("%s Buzzsaw Blade")
             .materialAmount(GTValues.M * 4)
             .maxStackSize(16)
             .materialIconType(MaterialIconType.toolHeadBuzzSaw)
@@ -375,6 +406,7 @@ public class TagPrefix {
 
     // made of 1 Ingots.
     public static final TagPrefix toolHeadScrewdriver = new TagPrefix("toolHeadScrewdriver")
+            .langValue("%s Screwdriver Tip")
             .materialAmount(GTValues.M)
             .maxStackSize(16)
             .materialIconType(MaterialIconType.toolHeadScrewdriver)
@@ -384,6 +416,7 @@ public class TagPrefix {
 
     // made of 4 Ingots.
     public static final TagPrefix toolHeadDrill = new TagPrefix("toolHeadDrill")
+            .langValue("%s Drill Tip")
             .materialAmount(GTValues.M * 4)
             .maxStackSize(16)
             .materialIconType(MaterialIconType.toolHeadDrill)
@@ -393,6 +426,7 @@ public class TagPrefix {
 
     // made of 2 Ingots.
     public static final TagPrefix toolHeadChainsaw = new TagPrefix("toolHeadChainsaw")
+            .langValue("%s Chainsaw Tip")
             .materialAmount(GTValues.M * 2)
             .maxStackSize(16)
             .materialIconType(MaterialIconType.toolHeadChainsaw)
@@ -402,6 +436,7 @@ public class TagPrefix {
 
     // made of 4 Ingots.
     public static final TagPrefix toolHeadWrench = new TagPrefix("toolHeadWrench")
+            .langValue("%s Wrench Tip")
             .materialAmount(GTValues.M * 4)
             .maxStackSize(16)
             .materialIconType(MaterialIconType.toolHeadWrench)
@@ -411,6 +446,7 @@ public class TagPrefix {
 
     // made of 5 Ingots.
     public static final TagPrefix turbineBlade = new TagPrefix("turbineBlade")
+            .langValue("%s Turbine Blade")
             .materialAmount(GTValues.M * 10)
             .materialIconType(MaterialIconType.turbineBlade)
             .unificationEnabled(true)
@@ -418,15 +454,18 @@ public class TagPrefix {
             .generationCondition(hasRotorProperty.and(m -> m.hasFlags(MaterialFlags.GENERATE_BOLT_SCREW, MaterialFlags.GENERATE_PLATE) && !m.hasProperty(PropertyKey.GEM)));
 
     public static final TagPrefix paneGlass = new TagPrefix("paneGlass", "glass_panes")
+            .langValue("%s Glass Pane")
             .materialType(MarkerMaterials.Color.Colorless)
             .selfReferencing(true);
 
     public static final TagPrefix blockGlass = new TagPrefix("blockGlass", "glass")
+            .langValue("%s Glass")
             .materialType(MarkerMaterials.Color.Colorless)
             .selfReferencing(true);
 
     // Storage Block consisting out of 9 Ingots/Gems/Dusts. Introduced by CovertJaguar
     public static final TagPrefix block = new TagPrefix("block", "storage_blocks")
+            .langValue("Block of %s")
             .materialAmount(GTValues.M * 9)
             .materialIconType(MaterialIconType.block)
             .unificationEnabled(true);
@@ -443,44 +482,45 @@ public class TagPrefix {
             .selfReferencing(true);
 
     public static final TagPrefix frameGt = new TagPrefix("frameGt", "frames")
+            .langValue("%s Frame Box")
             .materialAmount(GTValues.M * 2)
             .materialIconType(MaterialIconType.frameGt)
             .unificationEnabled(true)
             .generationCondition(material -> material.hasFlag(MaterialFlags.GENERATE_FRAME));
 
-    public static final TagPrefix pipeTinyFluid = new TagPrefix("pipeTinyFluid").materialAmount(GTValues.M / 2).unificationEnabled(true);
-    public static final TagPrefix pipeSmallFluid = new TagPrefix("pipeSmallFluid").materialAmount(GTValues.M).unificationEnabled(true);
-    public static final TagPrefix pipeNormalFluid = new TagPrefix("pipeNormalFluid").materialAmount(GTValues.M * 3).unificationEnabled(true);
-    public static final TagPrefix pipeLargeFluid = new TagPrefix("pipeLargeFluid").materialAmount(GTValues.M * 6).unificationEnabled(true);
-    public static final TagPrefix pipeHugeFluid = new TagPrefix("pipeHugeFluid").materialAmount(GTValues.M * 12).unificationEnabled(true);
-    public static final TagPrefix pipeQuadrupleFluid = new TagPrefix("pipeQuadrupleFluid").materialAmount(GTValues.M * 4).unificationEnabled(true);
-    public static final TagPrefix pipeNonupleFluid = new TagPrefix("pipeNonupleFluid").materialAmount(GTValues.M * 9).unificationEnabled(true);
+    public static final TagPrefix pipeTinyFluid = new TagPrefix("pipeTinyFluid").langValue("Tiny %s Fluid Pipe").materialAmount(GTValues.M / 2).unificationEnabled(true);
+    public static final TagPrefix pipeSmallFluid = new TagPrefix("pipeSmallFluid").langValue("Small %s Fluid Pipe").materialAmount(GTValues.M).unificationEnabled(true);
+    public static final TagPrefix pipeNormalFluid = new TagPrefix("pipeNormalFluid").langValue("Normal %s Fluid Pipe").materialAmount(GTValues.M * 3).unificationEnabled(true);
+    public static final TagPrefix pipeLargeFluid = new TagPrefix("pipeLargeFluid").langValue("Large %s Fluid Pipe").materialAmount(GTValues.M * 6).unificationEnabled(true);
+    public static final TagPrefix pipeHugeFluid = new TagPrefix("pipeHugeFluid").langValue("Huge %s Fluid Pipe").materialAmount(GTValues.M * 12).unificationEnabled(true);
+    public static final TagPrefix pipeQuadrupleFluid = new TagPrefix("pipeQuadrupleFluid").langValue("Quadruple %s Fluid Pipe").materialAmount(GTValues.M * 4).unificationEnabled(true);
+    public static final TagPrefix pipeNonupleFluid = new TagPrefix("pipeNonupleFluid").langValue("Nonuple %s Fluid Pipe").materialAmount(GTValues.M * 9).unificationEnabled(true);
 
-    public static final TagPrefix pipeTinyItem = new TagPrefix("pipeTinyItem").materialAmount(GTValues.M / 2).unificationEnabled(true);
-    public static final TagPrefix pipeSmallItem = new TagPrefix("pipeSmallItem").materialAmount(GTValues.M).unificationEnabled(true);
-    public static final TagPrefix pipeNormalItem = new TagPrefix("pipeNormalItem").materialAmount(GTValues.M * 3).unificationEnabled(true);
-    public static final TagPrefix pipeLargeItem = new TagPrefix("pipeLargeItem").materialAmount(GTValues.M * 6).unificationEnabled(true);
-    public static final TagPrefix pipeHugeItem = new TagPrefix("pipeHugeItem").materialAmount(GTValues.M * 12).unificationEnabled(true);
+    public static final TagPrefix pipeTinyItem = new TagPrefix("pipeTinyItem").langValue("Tiny %s Item Pipe").materialAmount(GTValues.M / 2).unificationEnabled(true);
+    public static final TagPrefix pipeSmallItem = new TagPrefix("pipeSmallItem").langValue("Small %s Item Pipe").materialAmount(GTValues.M).unificationEnabled(true);
+    public static final TagPrefix pipeNormalItem = new TagPrefix("pipeNormalItem").langValue("Normal %s Item Pipe").materialAmount(GTValues.M * 3).unificationEnabled(true);
+    public static final TagPrefix pipeLargeItem = new TagPrefix("pipeLargeItem").langValue("Large %s Item Pipe").materialAmount(GTValues.M * 6).unificationEnabled(true);
+    public static final TagPrefix pipeHugeItem = new TagPrefix("pipeHugeItem").langValue("Huge %s Item Pipe").materialAmount(GTValues.M * 12).unificationEnabled(true);
 
-    public static final TagPrefix pipeSmallRestrictive = new TagPrefix("pipeSmallRestrictive").materialAmount(GTValues.M).unificationEnabled(true);
-    public static final TagPrefix pipeNormalRestrictive = new TagPrefix("pipeNormalRestrictive").materialAmount(GTValues.M * 3).unificationEnabled(true);
-    public static final TagPrefix pipeLargeRestrictive = new TagPrefix("pipeLargeRestrictive").materialAmount(GTValues.M * 6).unificationEnabled(true);
-    public static final TagPrefix pipeHugeRestrictive = new TagPrefix("pipeHugeRestrictive").materialAmount(GTValues.M * 12).unificationEnabled(true);
+    public static final TagPrefix pipeSmallRestrictive = new TagPrefix("pipeSmallRestrictive").langValue("Small Restrictive %s Item Pipe").materialAmount(GTValues.M).unificationEnabled(true);
+    public static final TagPrefix pipeNormalRestrictive = new TagPrefix("pipeNormalRestrictive").langValue("Normal Restrictive %s Item Pipe").materialAmount(GTValues.M * 3).unificationEnabled(true);
+    public static final TagPrefix pipeLargeRestrictive = new TagPrefix("pipeLargeRestrictive").langValue("Large Restrictive %s Item Pipe").materialAmount(GTValues.M * 6).unificationEnabled(true);
+    public static final TagPrefix pipeHugeRestrictive = new TagPrefix("pipeHugeRestrictive").langValue("Huge Restrictive %s Item Pipe").materialAmount(GTValues.M * 12).unificationEnabled(true);
 
-    public static final TagPrefix wireGtHex = new TagPrefix("wireGtHex").materialAmount(GTValues.M * 8).unificationEnabled(true);
-    public static final TagPrefix wireGtOctal = new TagPrefix("wireGtOctal").materialAmount(GTValues.M * 4).unificationEnabled(true);
-    public static final TagPrefix wireGtQuadruple = new TagPrefix("wireGtQuadruple").materialAmount(GTValues.M * 2).unificationEnabled(true);
-    public static final TagPrefix wireGtDouble = new TagPrefix("wireGtDouble").materialAmount(GTValues.M).unificationEnabled(true);
-    public static final TagPrefix wireGtSingle = new TagPrefix("wireGtSingle").materialAmount(GTValues.M / 2).unificationEnabled(true);
+    public static final TagPrefix wireGtHex = new TagPrefix("wireGtHex").langValue("16x %s Wire").materialAmount(GTValues.M * 8).unificationEnabled(true);
+    public static final TagPrefix wireGtOctal = new TagPrefix("wireGtOctal").langValue("8x %s Wire").materialAmount(GTValues.M * 4).unificationEnabled(true);
+    public static final TagPrefix wireGtQuadruple = new TagPrefix("wireGtQuadruple").langValue("4x %s Wire").materialAmount(GTValues.M * 2).unificationEnabled(true);
+    public static final TagPrefix wireGtDouble = new TagPrefix("wireGtDouble").langValue("2x %s Wire").materialAmount(GTValues.M).unificationEnabled(true);
+    public static final TagPrefix wireGtSingle = new TagPrefix("wireGtSingle").langValue("1x %s Wire").materialAmount(GTValues.M / 2).unificationEnabled(true);
 
-    public static final TagPrefix cableGtHex = new TagPrefix("cableGtHex").materialAmount(GTValues.M * 8).unificationEnabled(true);
-    public static final TagPrefix cableGtOctal = new TagPrefix("cableGtOctal").materialAmount(GTValues.M * 4).unificationEnabled(true);
-    public static final TagPrefix cableGtQuadruple = new TagPrefix("cableGtQuadruple").materialAmount(GTValues.M * 2).unificationEnabled(true);
-    public static final TagPrefix cableGtDouble = new TagPrefix("cableGtDouble").materialAmount(GTValues.M).unificationEnabled(true);
-    public static final TagPrefix cableGtSingle = new TagPrefix("cableGtSingle").materialAmount(GTValues.M / 2).unificationEnabled(true);
+    public static final TagPrefix cableGtHex = new TagPrefix("cableGtHex").langValue("16x %s Cable").materialAmount(GTValues.M * 8).unificationEnabled(true);
+    public static final TagPrefix cableGtOctal = new TagPrefix("cableGtOctal").langValue("8x %s Cable").materialAmount(GTValues.M * 4).unificationEnabled(true);
+    public static final TagPrefix cableGtQuadruple = new TagPrefix("cableGtQuadruple").langValue("4x %s Cable").materialAmount(GTValues.M * 2).unificationEnabled(true);
+    public static final TagPrefix cableGtDouble = new TagPrefix("cableGtDouble").langValue("2x %s Cable").materialAmount(GTValues.M).unificationEnabled(true);
+    public static final TagPrefix cableGtSingle = new TagPrefix("cableGtSingle").langValue("1x %s Cable").materialAmount(GTValues.M / 2).unificationEnabled(true);
 
     // Special Prefix used mainly for the Crafting Handler.
-    public static final TagPrefix craftingLens = new TagPrefix("craftingLens").isMarkerPrefix(true);;
+    public static final TagPrefix craftingLens = new TagPrefix("craftingLens").langValue("Crafting %s Lens").isMarkerPrefix(true);;
     // Used for the 16 dyes. Introduced by Eloraam
     public static final TagPrefix dye = new TagPrefix("dye","dyes").isMarkerPrefix(true);
 
@@ -521,6 +561,8 @@ public class TagPrefix {
     @Getter
     public final String name;
     public final String[] tagPaths;
+    @Setter @Getter
+    public String langValue;
 
     @Getter
     @Setter(value = AccessLevel.PROTECTED)
@@ -574,6 +616,7 @@ public class TagPrefix {
     protected TagPrefix(String name, String... tagPaths) {
         this.name = name;
         this.tagPaths = tagPaths.length > 0 ? tagPaths : new String[]{FormattingUtil.toLowerCaseUnder(name)};
+        this.langValue = "%s " + FormattingUtil.toEnglishName(FormattingUtil.toLowerCaseUnder(name));
         PREFIXES.put(name, this);
     }
 
@@ -663,13 +706,14 @@ public class TagPrefix {
         }
     }
 
+    public String getUnlocalizedName() {
+        return "tagprefix." + FormattingUtil.toLowerCaseUnderscore(name);
+    }
+
     public String getLocalNameForItem(Material material) {
-        String specifiedUnlocalized = "item." + material.toString() + "." + this.name;
-        if (LocalizationUtils.exist(specifiedUnlocalized)) return LocalizationUtils.format(specifiedUnlocalized);
-        String unlocalized = findUnlocalizedName(material);
-        String matLocalized = LocalizationUtils.format(material.getUnlocalizedName());
-        String formatted = LocalizationUtils.format(unlocalized, matLocalized);
-        return formatted.equals(unlocalized) ? matLocalized : formatted;
+        var prefix = LocalizationUtils.format(getUnlocalizedName());
+        var mat = LocalizationUtils.format(material.getUnlocalizedName());
+        return prefix.formatted(mat);
     }
 
     private String findUnlocalizedName(Material material) {

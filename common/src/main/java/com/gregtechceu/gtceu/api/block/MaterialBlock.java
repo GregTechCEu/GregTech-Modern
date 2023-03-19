@@ -45,4 +45,10 @@ public abstract class MaterialBlock extends Block implements IBlockRendererProvi
         }
         return -1;
     }
+
+    @Override
+    public String getDescriptionId() {
+        return tagPrefix.getLocalNameForItem(material);
+    }
+
 }

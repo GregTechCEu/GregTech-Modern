@@ -5,9 +5,13 @@ import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.machine.IMetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.tterrag.registrate.Registrate;
+import com.tterrag.registrate.builders.ItemBuilder;
+import com.tterrag.registrate.util.nullness.NonNullFunction;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 
 import javax.annotation.Nonnull;
 import java.util.Arrays;
@@ -57,6 +61,11 @@ public abstract class GTRegistrate extends Registrate {
 
     public SoundEntryBuilder sound(String name) {
         return new SoundEntryBuilder(GTCEu.id(name));
+    }
+
+    @Override
+    public <T extends Item> @Nonnull ItemBuilder<T, Registrate> item(String name, NonNullFunction<Item.Properties, T> factory) {
+        return super.item(name, factory).lang(FormattingUtil.toEnglishName(name.replaceAll("/.", "_")));
     }
 
 }

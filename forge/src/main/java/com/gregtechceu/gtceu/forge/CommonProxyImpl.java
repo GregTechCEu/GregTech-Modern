@@ -8,7 +8,7 @@ import com.gregtechceu.gtceu.api.capability.forge.GTCapabilities;
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.forge.SizedIngredientImpl;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.common.libs.GTSyncedFieldAccessors;
+import com.gregtechceu.gtceu.common.data.GTSyncedFieldAccessors;
 import com.lowdragmc.lowdraglib.LDLib;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.common.crafting.CraftingHelper;

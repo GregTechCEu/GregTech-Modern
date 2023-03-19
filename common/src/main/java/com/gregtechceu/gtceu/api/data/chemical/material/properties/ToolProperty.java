@@ -3,19 +3,11 @@ package com.gregtechceu.gtceu.api.data.chemical.material.properties;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.MaterialToolTier;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.sound.ExistingSoundEntry;
-import com.gregtechceu.gtceu.common.libs.GTSoundEntries;
 import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import lombok.Getter;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.item.enchantment.Enchantment;
 import org.apache.commons.lang3.ArrayUtils;
-
-import java.util.HashSet;
-import java.util.Set;
-import java.util.function.Predicate;
 
 import static com.gregtechceu.gtceu.api.item.tool.GTToolType.*;
 

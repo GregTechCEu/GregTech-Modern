@@ -12,14 +12,13 @@ import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import net.minecraft.data.recipes.FinishedRecipe;
 
 import javax.annotation.Nonnull;
-import java.util.Objects;
 import java.util.function.Consumer;
 
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.*;
 import static com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey.GEM;
 import static com.gregtechceu.gtceu.api.tag.TagPrefix.*;
-import static com.gregtechceu.gtceu.common.libs.GTItems.TOOL_ITEMS;
-import static com.gregtechceu.gtceu.common.libs.GTMaterials.Wood;
+import static com.gregtechceu.gtceu.common.data.GTItems.TOOL_ITEMS;
+import static com.gregtechceu.gtceu.common.data.GTMaterials.Wood;
 
 public class ToolRecipeHandler {
 
