@@ -24,6 +24,7 @@ public class FluidRecipeCapability extends RecipeCapability<FluidStack> {
 
     @Override
     public FluidStack copyWithModifier(FluidStack content, ContentModifier modifier) {
+        if (content.isEmpty()) return content.copy();
         FluidStack copy = content.copy();
         copy.setAmount(modifier.apply(copy.getAmount()).intValue());
         return copy;
