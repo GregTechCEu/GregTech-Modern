@@ -144,11 +144,12 @@ public class ToolProperty implements IMaterialProperty<ToolProperty> {
             return new Builder(harvestSpeed, attackDamage, durability, harvestLevel, new GTToolType[]{
                     SAW,
                     HARD_HAMMER,
-                    SOFT_MALLET,
+//                    SOFT_MALLET,
                     WRENCH,
                     FILE,
                     CROWBAR,
                     SCREWDRIVER,
+//                    MORTAR,
                     WIRE_CUTTER,
                     SCYTHE,
                     KNIFE,
