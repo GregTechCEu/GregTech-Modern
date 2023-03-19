@@ -1,5 +1,7 @@
 package com.gregtechceu.gtceu.api.item.component;
 
+import dev.architectury.injectables.annotations.ExpectPlatform;
+
 /**
  * @author KilaBash
  * @date 2023/2/22
@@ -14,7 +16,7 @@ public class ThermalFluidStats implements IItemComponent {
     public final boolean plasmaProof;
     public final boolean allowPartialFill;
 
-    public ThermalFluidStats(int capacity, int maxFluidTemperature, boolean gasProof, boolean acidProof, boolean cryoProof, boolean plasmaProof, boolean allowPartialFill) {
+    protected ThermalFluidStats(int capacity, int maxFluidTemperature, boolean gasProof, boolean acidProof, boolean cryoProof, boolean plasmaProof, boolean allowPartialFill) {
         this.capacity = capacity;
         this.maxFluidTemperature = maxFluidTemperature;
         this.gasProof = gasProof;
@@ -22,6 +24,11 @@ public class ThermalFluidStats implements IItemComponent {
         this.cryoProof = cryoProof;
         this.plasmaProof = plasmaProof;
         this.allowPartialFill = allowPartialFill;
+    }
+
+    @ExpectPlatform
+    public static ThermalFluidStats create(int capacity, int maxFluidTemperature, boolean gasProof, boolean acidProof, boolean cryoProof, boolean plasmaProof, boolean allowPartialFill) {
+        throw new AssertionError();
     }
 
 }

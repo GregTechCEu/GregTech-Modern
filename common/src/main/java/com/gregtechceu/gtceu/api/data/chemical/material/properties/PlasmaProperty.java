@@ -38,7 +38,7 @@ public class PlasmaProperty implements IMaterialProperty<PlasmaProperty> {
     }
 
     @Nullable
-    public FluidStack getPlasma(int amount) {
+    public FluidStack getPlasma(long amount) {
         var fluid = getPlasma();
         return fluid == null ? null : FluidStack.create(fluid, amount);
     }

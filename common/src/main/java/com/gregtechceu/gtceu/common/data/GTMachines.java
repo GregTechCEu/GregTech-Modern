@@ -36,17 +36,20 @@ import com.gregtechceu.gtceu.common.machine.steam.SteamLiquidBoilerMachine;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.lowdragmc.lowdraglib.client.renderer.impl.IModelRenderer;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
+import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.ints.Int2LongFunction;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.Fluids;
 
 import java.util.*;
+import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
@@ -220,6 +223,14 @@ public class GTMachines {
                     Component.translatable("gtceu.creative_tooltip.3"))
             .register();
 
+    public static BiConsumer<ItemStack, List<Component>> CHEST_TOOLTIPS = (stack, list) -> {
+        if (stack.hasTag()) {
+            ItemStack itemStack = ItemStack.of(stack.getOrCreateTagElement("stored"));
+            int storedAmount = stack.getOrCreateTag().getInt("storedAmount");
+            list.add(1, Component.translatable("gtceu.universal.tooltip.item_stored", itemStack.getDescriptionId(), storedAmount));
+        }
+    };
+
     public final static MachineDefinition[] SUPER_CHEST = registerTieredMachines("super_chest",
             (holder, tier) -> new QuantumChestMachine(holder, tier, 4000000 * (int) Math.pow(2, tier)),
             (tier, builder) -> builder
@@ -228,12 +239,12 @@ public class GTMachines {
                     .rotationState(RotationState.ALL)
                     .renderer(() -> new QuantumChestRenderer(tier))
                     .hasTESR(true)
+                    .tooltipBuilder(CHEST_TOOLTIPS)
                     .tooltips(Component.translatable("gtceu.machine.quantum_chest.tooltip"), Component.translatable("gtceu.universal.tooltip.item_storage_total", 4000000 * (int) Math.pow(2, tier)))
                     .register(),
             LOW_TIERS);
 
     // TODO do we really need UHV+?
-
     public final static MachineDefinition[] QUANTUM_CHEST = registerTieredMachines("quantum_chest",
             (holder, tier) -> new QuantumChestMachine(holder, tier, /*tier == GTValues.UHV ? Integer.MAX_VALUE :*/ 4000000 * (int) Math.pow(2, tier)),
             (tier, builder) -> builder
@@ -242,9 +253,17 @@ public class GTMachines {
                     .rotationState(RotationState.ALL)
                     .renderer(() -> new QuantumChestRenderer(tier))
                     .hasTESR(true)
+                    .tooltipBuilder(CHEST_TOOLTIPS)
                     .tooltips(Component.translatable("gtceu.machine.quantum_chest.tooltip"), Component.translatable("gtceu.universal.tooltip.item_storage_total", /*tier == GTValues.UHV ? Integer.MAX_VALUE :*/ 4000000 * (int) Math.pow(2, tier)))
                     .register(),
             HIGH_TIERS);
+
+    public static BiConsumer<ItemStack, List<Component>> TANK_TOOLTIPS = (stack, list) -> {
+        if (stack.hasTag()) {
+            FluidStack tank = FluidStack.loadFromTag(stack.getOrCreateTagElement("stored"));
+            list.add(1, Component.translatable("gtceu.universal.tooltip.fluid_stored", tank.getDisplayName(), tank.getAmount()));
+        }
+    };
 
     public final static MachineDefinition[] SUPER_TANK = registerTieredMachines("super_tank",
             (holder, tier) -> new QuantumTankMachine(holder, tier, 4000 * FluidHelper.getBucket() * (int) Math.pow(2, tier)),
@@ -254,6 +273,7 @@ public class GTMachines {
                     .rotationState(RotationState.ALL)
                     .renderer(() -> new QuantumTankRenderer(tier))
                     .hasTESR(true)
+                    .tooltipBuilder(TANK_TOOLTIPS)
                     .tooltips(Component.translatable("gtceu.machine.quantum_tank.tooltip"), Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity",4000000 * (int) Math.pow(2, tier)))
                     .register(),
             LOW_TIERS);
@@ -267,6 +287,7 @@ public class GTMachines {
                     .rotationState(RotationState.ALL)
                     .renderer(() -> new QuantumTankRenderer(tier))
                     .hasTESR(true)
+                    .tooltipBuilder(TANK_TOOLTIPS)
                     .tooltips(Component.translatable("gtceu.machine.quantum_tank.tooltip"), Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity", /*tier == GTValues.UHV ? Integer.MAX_VALUE :*/ 4000000 * (int) Math.pow(2, tier)))
                     .register(),
             HIGH_TIERS);

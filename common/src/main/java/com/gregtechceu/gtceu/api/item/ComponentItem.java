@@ -50,11 +50,6 @@ public class ComponentItem extends Item implements HeldItemUIFactory.IHeldItemUI
         throw new AssertionError();
     }
 
-    @ExpectPlatform
-    public static void onAttach(Item item, IItemComponent component) {
-        throw new AssertionError();
-    }
-
     public void attachComponents(IItemComponent... components) {
         this.components.addAll(Arrays.asList(components));
         for (IItemComponent component : components) {

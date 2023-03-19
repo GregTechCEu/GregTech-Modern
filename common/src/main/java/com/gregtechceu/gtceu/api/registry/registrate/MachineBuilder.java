@@ -44,10 +44,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
+import java.util.function.*;
 
 /**
  * @author KilaBash
@@ -89,6 +86,8 @@ public class MachineBuilder {
     private BiFunction<ItemStack, Integer, Integer> itemColor;
     private PartAbility[] abilities = new PartAbility[0];
     private final List<Component> tooltips = new ArrayList<>();
+    @Setter
+    private BiConsumer<ItemStack, List<Component>> tooltipBuilder;
     @Setter
     private OverclockingLogic overclockingLogic = OverclockingLogic.NON_PERFECT_OVERCLOCK;
     @Setter
@@ -141,6 +140,7 @@ public class MachineBuilder {
         tooltips.addAll(Arrays.stream(components).filter(Objects::nonNull).toList());
         return this;
     }
+
     public MachineBuilder abilities(PartAbility... abilities) {
         this.abilities = abilities;
         return this;
@@ -199,7 +199,10 @@ public class MachineBuilder {
         definition.setTier(tier);
         definition.setBlockEntityTypeSupplier(blockEntity::get);
         definition.setMachineSupplier(metaMachine);
-        definition.getTooltips().addAll(tooltips);
+        definition.setTooltipBuilder((itemStack, components) -> {
+            components.addAll(tooltips);
+            if (tooltipBuilder != null) tooltipBuilder.accept(itemStack, components);
+        });
         definition.setOverclockingLogic(overclockingLogic);
         if (renderer == null) {
             renderer = () -> new MachineRenderer(new ResourceLocation(registrate.getModid(), "block/machine/" + name));

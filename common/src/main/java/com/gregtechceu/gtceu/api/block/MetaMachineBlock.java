@@ -169,7 +169,7 @@ public class MetaMachineBlock extends Block implements EntityBlock, IBlockRender
 
     @Override
     public void appendHoverText(ItemStack stack, @Nullable BlockGetter level, List<Component> tooltip, TooltipFlag flag) {
-        tooltip.addAll(definition.getTooltips());
+        definition.getTooltipBuilder().accept(stack, tooltip);
         String mainKey = String.format("%s.machine.%s.tooltip", definition.getId().getNamespace(), definition.getId().getPath());
         if (LocalizationUtils.exist(mainKey)) {
             tooltip.add(1, Component.translatable(mainKey));

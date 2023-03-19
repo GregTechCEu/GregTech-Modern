@@ -285,7 +285,7 @@ public class Material implements Comparable<Material> {
         return prop == null ? null : prop.getPlasma();
     }
 
-    public FluidStack getPlasma(int amount) {
+    public FluidStack getPlasma(long amount) {
         PlasmaProperty prop = properties.getProperty(PropertyKey.PLASMA);
         return prop == null ? null : prop.getPlasma(amount);
     }

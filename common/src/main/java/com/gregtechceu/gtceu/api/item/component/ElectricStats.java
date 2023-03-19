@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.item.ComponentItem;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
+import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
@@ -24,7 +25,7 @@ import java.util.List;
 
 public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInformation, IItemLifeCycle, IDurabilityBar {
 
-    public static final ElectricStats EMPTY = new ElectricStats(0, 0, false, false);
+    public static final ElectricStats EMPTY = ElectricStats.create(0, 0, false, false);
 
     public final long maxCharge;
     public final int tier;
@@ -32,11 +33,16 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
     public final boolean chargeable;
     public final boolean dischargeable;
 
-    public ElectricStats(long maxCharge, long tier, boolean chargeable, boolean dischargeable) {
+    protected ElectricStats(long maxCharge, long tier, boolean chargeable, boolean dischargeable) {
         this.maxCharge = maxCharge;
         this.tier = (int) tier;
         this.chargeable = chargeable;
         this.dischargeable = dischargeable;
+    }
+
+    @ExpectPlatform
+    public static ElectricStats create(long maxCharge, long tier, boolean chargeable, boolean dischargeable) {
+        throw new AssertionError();
     }
 
     public static float getStoredPredicate(ItemStack itemStack) {
@@ -159,15 +165,15 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
     }
 
     public static ElectricStats createElectricItem(long maxCharge, long tier) {
-        return new ElectricStats(maxCharge, tier, true, false);
+        return ElectricStats.create(maxCharge, tier, true, false);
     }
 
     public static ElectricStats createRechargeableBattery(long maxCharge, int tier) {
-        return new ElectricStats(maxCharge, tier, true, true);
+        return ElectricStats.create(maxCharge, tier, true, true);
     }
 
     public static ElectricStats createBattery(long maxCharge, int tier, boolean rechargeable) {
-        return new ElectricStats(maxCharge, tier, rechargeable, true);
+        return ElectricStats.create(maxCharge, tier, rechargeable, true);
     }
 
     @Override

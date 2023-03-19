@@ -31,6 +31,7 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.Registry;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.inventory.InventoryMenu;
@@ -115,6 +116,12 @@ public class GTFluidBuilder<T extends SimpleFlowableFluid, P> extends AbstractBu
         this.flowingTexture = flowingTexture;
         this.fluidFactory = fluidFactory;
         this.attributeHandler = (temperature, density, luminance, viscosity) -> new FluidVariantAttributeHandler() {
+
+            @Override
+            public Component getName(FluidVariant fluidVariant) {
+                return Component.translatable("fluid." + Registry.FLUID.getKey(fluidVariant.getFluid()).toLanguageKey());
+            }
+
             @Override
             public int getLuminance(FluidVariant variant) {
                 return luminance;

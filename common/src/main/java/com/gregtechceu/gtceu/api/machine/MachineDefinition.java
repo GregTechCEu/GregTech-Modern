@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -59,8 +60,8 @@ public class MachineDefinition implements Supplier<MetaMachineBlock> {
     @Setter
     private VoxelShape shape;
     private final Map<Direction, VoxelShape> cache = new EnumMap<>(Direction.class);
-    @Getter
-    private final List<Component> tooltips = new ArrayList<>();
+    @Getter @Setter
+    private BiConsumer<ItemStack, List<Component>> tooltipBuilder;
 
     protected MachineDefinition(ResourceLocation id) {
         this.id = id;
