@@ -21,22 +21,30 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public abstract class MaterialBlock extends Block implements IBlockRendererProvider {
+public class MaterialBlock extends Block implements IBlockRendererProvider {
 
     public final TagPrefix tagPrefix;
     public final Material material;
+    public final IRenderer renderer;
 
     public MaterialBlock(Properties properties, TagPrefix tagPrefix, Material material) {
         super(properties);
         this.material = material;
         this.tagPrefix = tagPrefix;
-        MaterialBlockRenderer.getOrCreate(tagPrefix.materialIconType(), material.getMaterialIconSet());
+        this.renderer = MaterialBlockRenderer.getOrCreate(tagPrefix.materialIconType(), material.getMaterialIconSet());
+    }
+
+    public MaterialBlock(Properties properties, TagPrefix tagPrefix, Material material, IRenderer renderer) {
+        super(properties);
+        this.material = material;
+        this.tagPrefix = tagPrefix;
+        this.renderer = renderer;
     }
 
     @Nullable
     @Override
     public IRenderer getRenderer(BlockState state) {
-        return MaterialBlockRenderer.getOrCreate(tagPrefix.materialIconType(), material.getMaterialIconSet());
+        return renderer;
     }
 
     public static int tintedColor(BlockState blockState,  @Nullable BlockAndTintGetter blockAndTintGetter,  @Nullable  BlockPos blockPos, int index) {

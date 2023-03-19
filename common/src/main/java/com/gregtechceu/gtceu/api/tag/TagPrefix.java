@@ -24,66 +24,80 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 import org.apache.logging.log4j.util.TriConsumer;
 
 import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 import static com.gregtechceu.gtceu.api.tag.TagPrefix.Conditions.*;
 
 @Accessors(chain = true, fluent = true)
 public class TagPrefix {
     private final static Map<String, TagPrefix> PREFIXES = new HashMap<>();
+    public final static Map<TagPrefix, Supplier<BlockState>> ORES = new HashMap<>();
 
     // Regular Ore Prefix. Ore -> Material is a Oneway Operation! Introduced by Eloraam
     public static final TagPrefix ore = new TagPrefix("ore","ores")
+            .registerOre(Blocks.STONE::defaultBlockState)
             .materialIconType(MaterialIconType.ore)
             .unificationEnabled(true)
             .generationCondition(hasOreProperty);
     public static final TagPrefix oreGranite = new TagPrefix("oreGranite", "ores", "ores/granite")
+            .registerOre(Blocks.GRANITE::defaultBlockState)
             .langValue("Granite %s Ore")
             .materialIconType(MaterialIconType.ore)
             .unificationEnabled(true)
             .generationCondition(hasOreProperty);
     public static final TagPrefix oreDiorite = new TagPrefix("oreDiorite", "ores", "ores/diorite")
+            .registerOre(Blocks.DIORITE::defaultBlockState)
             .langValue("Diorite %s Ore")
             .materialIconType(MaterialIconType.ore)
             .unificationEnabled(true)
             .generationCondition(hasOreProperty);
     public static final TagPrefix oreAndesite = new TagPrefix("oreAndesite", "ores", "ores/andesite")
+            .registerOre(Blocks.ANDESITE::defaultBlockState)
             .langValue("Andesite %s Ore")
             .materialIconType(MaterialIconType.ore)
             .unificationEnabled(true)
             .generationCondition(hasOreProperty);
     public static final TagPrefix oreBlackgranite = new TagPrefix("oreBlackgranite", "ores", "ores/black_granite")
+//            .registerOre(Blocks.::defaultBlockState) TODO BLACK GRANITE?
             .langValue("Granite %s Ore")
             .materialIconType(MaterialIconType.ore)
             .unificationEnabled(true)
             .generationCondition(hasOreProperty);
     public static final TagPrefix oreRedgranite = new TagPrefix("oreRedgranite", "ores", "ores/red_granite")
+//            .registerOre(Blocks.::defaultBlockState) TODO BLACK GRANITE?
             .langValue("Granite %s Ore")
             .materialIconType(MaterialIconType.ore)
             .unificationEnabled(true)
             .generationCondition(hasOreProperty);
     public static final TagPrefix oreMarble = new TagPrefix("oreMarble", "ores", "ores/marble")
+//            .registerOre(Blocks.::defaultBlockState) TODO BLACK GRANITE?
             .langValue("Marble %s Ore")
             .materialIconType(MaterialIconType.ore)
             .unificationEnabled(true)
             .generationCondition(hasOreProperty);
     public static final TagPrefix oreBasalt = new TagPrefix("oreBasalt", "ores", "ores/basalt")
+            .registerOre(Blocks.BASALT::defaultBlockState)
             .langValue("Basalt %s Ore")
             .materialIconType(MaterialIconType.ore)
             .unificationEnabled(true)
             .generationCondition(hasOreProperty);
     // In case of an Sand-Ores Mod. Ore -> Material is a Oneway Operation!
     public static final TagPrefix oreSand = new TagPrefix("oreSand", "ores", "ores/sand")
+            .registerOre(Blocks.SAND::defaultBlockState)
             .langValue("Sand %s Ore")
             .materialIconType(MaterialIconType.ore)
             .unificationEnabled(true)
             .generationCondition(hasOreProperty);
     public static final TagPrefix oreRedSand = new TagPrefix("oreRedSand", "ores", "ores/red_sand")
+            .registerOre(Blocks.RED_SAND::defaultBlockState)
             .langValue("Red Sand %s Ore")
             .materialIconType(MaterialIconType.ore)
             .unificationEnabled(true)
@@ -91,30 +105,35 @@ public class TagPrefix {
 
     // Prefix of the Nether-Ores Mod. Causes Ores to double. Ore -> Material is a Oneway Operation!
     public static final TagPrefix oreNetherrack = new TagPrefix("oreNetherrack", "ores", "ores/netherrack")
+            .registerOre(Blocks.NETHERRACK::defaultBlockState)
             .langValue("Nether %s Ore")
             .materialIconType(MaterialIconType.ore)
             .unificationEnabled(true)
             .generationCondition(hasOreProperty);
     // In case of an End-Ores Mod. Ore -> Material is a Oneway Operation!
     public static final TagPrefix oreEndstone = new TagPrefix("oreEndstone", "ores", "ores/endstone")
+            .registerOre(Blocks.END_STONE::defaultBlockState)
             .langValue("End %s Ore")
             .materialIconType(MaterialIconType.ore)
             .unificationEnabled(true)
             .generationCondition(hasOreProperty);
 
     public static final TagPrefix crushedCentrifuged = new TagPrefix("crushedCentrifuged","centrifuged_crushed")
+//            .registerOre(Blocks.END_STONE::defaultBlockState) TODO ORE
             .langValue("Centrifuged %s Ore")
             .materialIconType(MaterialIconType.crushedCentrifuged)
             .unificationEnabled(true)
             .generateItem(true)
             .generationCondition(hasOreProperty);
     public static final TagPrefix crushedPurified = new TagPrefix("crushedPurified","crushed_purified")
+//            .registerOre(Blocks.END_STONE::defaultBlockState) TODO ORE
             .langValue("Purified %s Ore")
             .materialIconType(MaterialIconType.crushedPurified)
             .unificationEnabled(true)
             .generateItem(true)
             .generationCondition(hasOreProperty);
     public static final TagPrefix crushed = new TagPrefix("crushed")
+//            .registerOre(Blocks.END_STONE::defaultBlockState) TODO ORE
             .langValue("Crushed %s Ore")
             .materialIconType(MaterialIconType.crushed)
             .unificationEnabled(true)
@@ -661,6 +680,12 @@ public class TagPrefix {
     public static TagPrefix getPrefix(String prefixName, @Nullable TagPrefix replacement) {
         return PREFIXES.getOrDefault(prefixName, replacement);
     }
+
+    public TagPrefix registerOre(Supplier<BlockState> stone) {
+        ORES.put(this, stone);
+        return this;
+    }
+
 
     @SuppressWarnings("unchecked")
     public TagKey<Item>[] getItemTags() {
