@@ -1,0 +1,78 @@
+name: Bug Report
+description: Report a bug where something is not working as expected.
+labels: [ "bug" ]
+body:
+  - type: input
+    id: version
+    attributes:
+      label: GregTech CEu Version
+      description: The version of Gregtech CEu you were using when this bug was encountered. If you do not know where to find this, look for the mod jar file in the mods folder, or in the mods viewer in-game.
+      placeholder: "Example: v2.3.4"
+    validations:
+      required: true
+  - type: dropdown
+    id: recipe-viewer
+    attributes:
+      label: Recipe Viewer Installed
+      description: The recipe viewer installed. If you were not using addons, please leave this field blank.
+      options:
+        - "JEI"
+        - "REI"
+        - "EMI"
+        - "None"
+    validations:
+      required: false
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: "How you were playing on the world. Typical answers include: Singleplayer, Open to LAN, Dedicated Server."
+      placeholder: "Example: Singleplayer"
+    validations:
+      required: true
+  - type: dropdown
+    id: cross-mod
+    attributes:
+      label: Cross-Mod Interaction
+      description: Does this bug occur because of another mod installed alongside GregTech CEu?
+      options:
+        - "Yes"
+        - "No"
+        - "Unsure"
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: What you expected to happen. Attach screenshots here as necessary.
+      placeholder: "Example: Expected to produce X by consuming Y."
+    validations:
+      required: true
+  - type: textarea
+    id: result
+    attributes:
+      label: Actual Behavior
+      description: What happened despite your expectations. Attach screenshots here as necessary.
+      placeholder: "Example: Produced one X but Y was not consumed."
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to Reproduce
+      description: How to reproduce the bug.
+      placeholder: "Example: 1) I did X..."
+    validations:
+      required: true
+  - type: textarea
+    id: additional-info
+    attributes:
+      label: Additional Information
+      description: Any additional information you wish to provide. Please add anything which did not fit into the other sections here.
+      placeholder: "Example: This is likely caused by X because..."
+    validations:
+      required: false
+  - type: markdown
+    attributes:
+      value: Thank you for taking the time to fill out this bug report.
