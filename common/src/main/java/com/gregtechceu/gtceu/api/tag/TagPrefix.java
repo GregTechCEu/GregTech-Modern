@@ -657,7 +657,7 @@ public class TagPrefix {
 
     public <T extends IMaterialProperty<T>> void executeHandler(PropertyKey<T> propertyKey, TriConsumer<TagPrefix, Material, T> handler) {
         for (Material material : GTRegistries.MATERIALS) {
-            if (material.hasProperty(propertyKey) && !material.hasFlag(MaterialFlags.NO_UNIFICATION)) {
+            if (material.hasProperty(propertyKey) && !material.hasFlag(MaterialFlags.NO_UNIFICATION) && !ChemicalHelper.get(this, material).isEmpty()) {
                 handler.accept(this, material, material.getProperty(propertyKey));
             }
         }

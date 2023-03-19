@@ -14,6 +14,7 @@ public class ConfigHolder {
     public static class RecipeConfigs {
         public boolean generateLowQualityGems = true;
         public boolean disableManualCompression = true;
+        public boolean harderRods = false;
     }
 
     public static class WorldGenConfigs {

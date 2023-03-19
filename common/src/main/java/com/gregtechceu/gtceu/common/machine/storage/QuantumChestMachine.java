@@ -189,6 +189,11 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
         }
     }
 
+    @Override
+    public boolean savePickClone() {
+        return false;
+    }
+
     //////////////////////////////////////
     //*******     Auto Output    *******//
     //////////////////////////////////////

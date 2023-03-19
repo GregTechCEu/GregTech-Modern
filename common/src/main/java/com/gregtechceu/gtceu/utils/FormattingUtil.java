@@ -1,11 +1,15 @@
 package com.gregtechceu.gtceu.utils;
 
 import com.google.common.base.CaseFormat;
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.Arrays;
+import java.util.Locale;
+import java.util.stream.Collectors;
 
 /**
  * @author KilaBash
@@ -66,6 +70,15 @@ public class FormattingUtil {
      */
     public static String toLowerCaseUnder(String string) {
         return CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, string);
+    }
+
+    /**
+     * apple_orange.juice => Apple Orange (Juice)
+     */
+    public static String toEnglishName(String internalName) {
+        return Arrays.stream(internalName.toLowerCase(Locale.ROOT).split("_"))
+                .map(StringUtils::capitalize)
+                .collect(Collectors.joining(" "));
     }
 
     /**

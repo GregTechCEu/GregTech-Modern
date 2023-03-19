@@ -106,6 +106,59 @@ public class GTValues {
             BLUE + "OpV",
             RED.toString() + BOLD + "MAX"};
 
+
+    public static final String[] VLVH = new String[]{
+            DARK_GRAY + "Primitive",
+            GRAY + "Basic",
+            AQUA + "Advanced",
+            GOLD + "Advanced",
+            DARK_PURPLE + "Advanced",
+            DARK_BLUE + "Elite",
+            LIGHT_PURPLE + "Elite",
+            RED + "Elite",
+            DARK_AQUA + "Ultimate",
+            DARK_RED + "Epic",
+            GREEN + "Epic",
+            DARK_GREEN + "Epic",
+            YELLOW + "Epic",
+            BLUE + "Legendary",
+            RED.toString() + BOLD + "MAX"};
+
+    public static final String[] VLVT = new String[]{
+            "" + RESET,
+            "" + RESET,
+            "" + RESET,
+            "II" + RESET,
+            "III" + RESET,
+            "" + RESET,
+            "II" + RESET,
+            "III" + RESET,
+            "" + RESET,
+            "" + RESET,
+            "II" + RESET,
+            "III" + RESET,
+            "IV" + RESET,
+            "" + RESET,
+            "" + RESET};
+
+    public static final String[] LVT = new String[]{
+            "",
+            "I",
+            "II",
+            "III",
+            "IV",
+            "V",
+            "VI",
+            "VII",
+            "VIII",
+            "IX",
+            "X",
+            "XI",
+            "XII",
+            "XIII",
+            "XIV",
+    };
+
     /**
      * Color values for the voltages
      */

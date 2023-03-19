@@ -91,6 +91,8 @@ public class MachineBuilder {
     private final List<Component> tooltips = new ArrayList<>();
     @Setter
     private OverclockingLogic overclockingLogic = OverclockingLogic.NON_PERFECT_OVERCLOCK;
+    @Setter
+    private String langValue = null;
 
     protected MachineBuilder(Registrate registrate, String name, Function<IMetaMachineBlockEntity, MetaMachine> metaMachine) {
         this.registrate = registrate;
@@ -164,6 +166,9 @@ public class MachineBuilder {
                 .blockstate(NonNullBiConsumer.noop())
                 .properties(blockProp)
                 .onRegister(b -> Arrays.stream(abilities).forEach(a -> a.register(tier, b)));
+        if (this.langValue != null) {
+            blockBuilder.lang(langValue);
+        }
         if (this.blockBuilder != null) {
             this.blockBuilder.accept(blockBuilder);
         }

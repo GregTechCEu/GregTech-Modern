@@ -161,7 +161,7 @@ public class MetaMachineBlock extends Block implements EntityBlock, IBlockRender
     @Override
     public ItemStack getCloneItemStack(BlockGetter level, BlockPos pos, BlockState state) {
         ItemStack itemStack = super.getCloneItemStack(level, pos, state);
-        if (getMachine(level, pos) instanceof IDropSaveMachine dropSaveMachine) {
+        if (getMachine(level, pos) instanceof IDropSaveMachine dropSaveMachine && dropSaveMachine.savePickClone()) {
             dropSaveMachine.saveToItem(itemStack.getOrCreateTag());
         }
         return itemStack;
@@ -201,7 +201,7 @@ public class MetaMachineBlock extends Block implements EntityBlock, IBlockRender
             if (machine instanceof IMachineModifyDrops machineModifyDrops && entity instanceof Player) {
                 machineModifyDrops.onDrops(drops, (Player) entity);
             }
-            if (machine instanceof IDropSaveMachine dropSaveMachine) {
+            if (machine instanceof IDropSaveMachine dropSaveMachine && dropSaveMachine.saveBreak()) {
                 for (ItemStack drop : drops) {
                     if (drop.getItem() instanceof MetaMachineItem item && item.getBlock() == this) {
                         dropSaveMachine.saveToItem(drop.getOrCreateTag());

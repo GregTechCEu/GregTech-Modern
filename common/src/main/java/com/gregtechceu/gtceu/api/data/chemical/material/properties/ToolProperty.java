@@ -1,11 +1,23 @@
 package com.gregtechceu.gtceu.api.data.chemical.material.properties;
 
+import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.MaterialToolTier;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.sound.ExistingSoundEntry;
+import com.gregtechceu.gtceu.common.libs.GTSoundEntries;
 import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import lombok.Getter;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.item.enchantment.Enchantment;
+import org.apache.commons.lang3.ArrayUtils;
+
+import java.util.HashSet;
+import java.util.Set;
+import java.util.function.Predicate;
+
+import static com.gregtechceu.gtceu.api.item.tool.GTToolType.*;
 
 public class ToolProperty implements IMaterialProperty<ToolProperty> {
 
@@ -86,19 +98,26 @@ public class ToolProperty implements IMaterialProperty<ToolProperty> {
     private MaterialToolTier toolTier;
 
     /**
+     * Gen for given type
+     */
+    @Getter
+    private GTToolType[] types;
+
+    /**
      * Enchantment to be applied to tools made from this Material.
      */
     private final Object2IntMap<Enchantment> enchantments = new Object2IntArrayMap<>();
 
-    public ToolProperty(float harvestSpeed, float attackDamage, int durability, int harvestLevel) {
+    public ToolProperty(float harvestSpeed, float attackDamage, int durability, int harvestLevel, GTToolType[] types) {
         this.harvestSpeed = harvestSpeed;
         this.attackDamage = attackDamage;
         this.durability = durability;
         this.harvestLevel = harvestLevel;
+        this.types = types;
     }
 
     public ToolProperty() {
-        this(1.0F, 1.0F, 100, 2);
+        this(1.0F, 1.0F, 100, 2, GTToolType.values());
     }
 
     public Object2IntMap<Enchantment> getEnchantments() {
@@ -121,16 +140,37 @@ public class ToolProperty implements IMaterialProperty<ToolProperty> {
         return toolTier;
     }
 
+    public boolean hasType(GTToolType toolType) {
+        return ArrayUtils.contains(types, toolType);
+    }
+
     public static class Builder {
 
         private final ToolProperty toolProperty;
 
         public static Builder of(float harvestSpeed, float attackDamage, int durability, int harvestLevel) {
-            return new Builder(harvestSpeed, attackDamage, durability, harvestLevel);
+            return new Builder(harvestSpeed, attackDamage, durability, harvestLevel, new GTToolType[]{
+                    SAW,
+                    HARD_HAMMER,
+                    SOFT_MALLET,
+                    WRENCH,
+                    FILE,
+                    CROWBAR,
+                    SCREWDRIVER,
+                    WIRE_CUTTER,
+                    SCYTHE,
+                    KNIFE,
+                    BUTCHERY_KNIFE,
+                    PLUNGER
+            });
         }
 
-        private Builder(float harvestSpeed, float attackDamage, int durability, int harvestLevel) {
-            toolProperty = new ToolProperty(harvestSpeed, attackDamage, durability, harvestLevel);
+        public static Builder of(float harvestSpeed, float attackDamage, int durability, int harvestLevel, GTToolType... types) {
+            return new Builder(harvestSpeed, attackDamage, durability, harvestLevel, types);
+        }
+
+        private Builder(float harvestSpeed, float attackDamage, int durability, int harvestLevel, GTToolType[] types) {
+            toolProperty = new ToolProperty(harvestSpeed, attackDamage, durability, harvestLevel, types);
         }
 
         public Builder enchantability(int enchantability) {
@@ -150,6 +190,16 @@ public class ToolProperty implements IMaterialProperty<ToolProperty> {
 
         public Builder unbreakable() {
             toolProperty.isUnbreakable = true;
+            return this;
+        }
+
+        public Builder types(GTToolType... types) {
+            toolProperty.types = types;
+            return this;
+        }
+
+        public Builder addTypes(GTToolType... types) {
+            toolProperty.types = ArrayUtils.addAll(toolProperty.types, types);
             return this;
         }
 

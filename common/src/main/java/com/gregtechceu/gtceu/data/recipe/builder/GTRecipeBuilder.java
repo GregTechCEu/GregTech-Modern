@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeSerializer;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
@@ -202,7 +203,15 @@ public class GTRecipeBuilder {
         return inputItems(orePrefix, material, 1);
     }
 
-    public GTRecipeBuilder inputItems(TagPrefix orePrefix, Material material, int count) {
+    public GTRecipeBuilder inputItems(UnificationEntry input) {
+        return inputItems(input.tagPrefix, input.material, 1);
+    }
+
+    public GTRecipeBuilder inputItems(UnificationEntry input, int count) {
+        return inputItems(input.tagPrefix, input.material, count);
+    }
+
+    public GTRecipeBuilder inputItems(TagPrefix orePrefix, @Nullable  Material material, int count) {
         return inputItems(ChemicalHelper.getTag(orePrefix, material), count);
     }
 

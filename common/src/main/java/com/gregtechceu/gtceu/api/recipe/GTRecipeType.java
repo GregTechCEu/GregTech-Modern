@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.recipe;
 import com.google.common.collect.ImmutableMap;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
@@ -229,6 +230,10 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
 
     public GTRecipeBuilder recipeBuilder(String id, Object... append) {
         return recipeBuilder(GTCEu.id(id), append);
+    }
+
+    public GTRecipeBuilder recipeBuilder(UnificationEntry entry, Object... append) {
+        return recipeBuilder(GTCEu.id(entry.tagPrefix + (entry.material == null ? "" : "_" + entry.material)), append);
     }
 
     public GTRecipeBuilder recipeBuilder(Supplier<? extends ItemLike> item, Object... append) {

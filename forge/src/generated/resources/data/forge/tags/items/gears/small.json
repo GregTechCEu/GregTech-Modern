@@ -1,18 +1,18 @@
 {
   "values": [
-    "#forge:gears/small/osmiridium",
-    "#forge:gears/small/bronze",
-    "#forge:gears/small/hssg",
-    "#forge:gears/small/darmstadtium",
-    "#forge:gears/small/iron",
-    "#forge:gears/small/naquadah_alloy",
-    "#forge:gears/small/aluminium",
-    "#forge:gears/small/stainless_steel",
-    "#forge:gears/small/steel",
-    "#forge:gears/small/rhodium_plated_palladium",
-    "#forge:gears/small/titanium",
     "#forge:gears/small/hsss",
+    "#forge:gears/small/titanium",
+    "#forge:gears/small/aluminium",
+    "#forge:gears/small/iron",
+    "#forge:gears/small/rhodium_plated_palladium",
+    "#forge:gears/small/hssg",
+    "#forge:gears/small/bronze",
     "#forge:gears/small/tungsten_steel",
-    "#forge:gears/small/tritanium"
+    "#forge:gears/small/steel",
+    "#forge:gears/small/stainless_steel",
+    "#forge:gears/small/tritanium",
+    "#forge:gears/small/osmiridium",
+    "#forge:gears/small/naquadah_alloy",
+    "#forge:gears/small/darmstadtium"
   ]
 }

@@ -72,7 +72,7 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
     protected TickableSubscription autoOutputSubs;
     @Nullable
     protected ISubscription exportFluidSubs;
-    @DescSynced @Getter
+    @Persisted @DescSynced @Getter @DropSaved
     protected FluidStack stored = FluidStack.empty();
     @Persisted @Getter @Setter
     private boolean isVoiding;
@@ -137,6 +137,11 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
             exportFluidSubs.unsubscribe();
             exportFluidSubs = null;
         }
+    }
+
+    @Override
+    public boolean savePickClone() {
+        return false;
     }
 
     //////////////////////////////////////

@@ -70,12 +70,10 @@ public class GTRecipeTypeCategory extends ModularUIRecipeCategory<GTRecipeWrappe
     }
 
     public static void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
-        for (net.minecraft.world.item.crafting.RecipeType<?> recipeType : Registry.RECIPE_TYPE) {
-            if (recipeType instanceof GTRecipeType gtRecipeType) {
-                for (MachineDefinition machine : GTRegistries.MACHINES) {
-                    if (machine.getRecipeType() == gtRecipeType) {
-                        registration.addRecipeCatalyst(machine.asStack(), GTRecipeTypeCategory.TYPES.apply(gtRecipeType));
-                    }
+        for (GTRecipeType gtRecipeType : GTRegistries.RECIPE_TYPES) {
+            for (MachineDefinition machine : GTRegistries.MACHINES) {
+                if (machine.getRecipeType() == gtRecipeType) {
+                    registration.addRecipeCatalyst(machine.asStack(), GTRecipeTypeCategory.TYPES.apply(gtRecipeType));
                 }
             }
         }

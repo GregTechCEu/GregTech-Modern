@@ -20,6 +20,8 @@ import net.minecraft.world.level.ItemLike;
 import javax.annotation.Nullable;
 import java.util.*;
 
+import static com.gregtechceu.gtceu.api.GTValues.M;
+
 /**
  * @author KilaBash
  * @date 2023/2/22
@@ -66,6 +68,62 @@ public class ChemicalHelper {
         }
         ItemMaterialInfo info = ITEM_MATERIAL_INFO.get(itemStack.getItem());
         return info == null ? null : info.getMaterial().copy();
+    }
+
+    @Nullable
+    public static MaterialStack getMaterial(UnificationEntry entry) {
+        if (entry != null) {
+            Material entryMaterial = entry.material;
+            if (entryMaterial == null) {
+                entryMaterial = entry.tagPrefix.materialType();
+            }
+            if (entryMaterial != null) {
+                return new MaterialStack(entryMaterial, entry.tagPrefix.getMaterialAmount(entryMaterial));
+            }
+        }
+        return null;
+    }
+
+    public static ItemStack getDust(Material material, long materialAmount) {
+        if (!material.hasProperty(PropertyKey.DUST) || materialAmount <= 0)
+            return ItemStack.EMPTY;
+        if (materialAmount % M == 0 || materialAmount >= M * 16)
+            return get(TagPrefix.dust, material, (int) (materialAmount / M));
+        else if ((materialAmount * 4) % M == 0 || materialAmount >= M * 8)
+            return get(TagPrefix.dustSmall, material, (int) ((materialAmount * 4) / M));
+        else if ((materialAmount * 9) >= M)
+            return get(TagPrefix.dustTiny, material, (int) ((materialAmount * 9) / M));
+        return ItemStack.EMPTY;
+    }
+
+    public static ItemStack getDust(MaterialStack materialStack) {
+        return getDust(materialStack.material(), materialStack.amount());
+    }
+
+    public static ItemStack getIngot(Material material, long materialAmount) {
+        if (!material.hasProperty(PropertyKey.INGOT) || materialAmount <= 0)
+            return ItemStack.EMPTY;
+        if (materialAmount % (M * 9) == 0)
+            return get(TagPrefix.block, material, (int) (materialAmount / (M * 9)));
+        if (materialAmount % M == 0 || materialAmount >= M * 16)
+            return get(TagPrefix.ingot, material, (int) (materialAmount / M));
+        else if ((materialAmount * 9) >= M)
+            return get(TagPrefix.nugget, material, (int) ((materialAmount * 9) / M));
+        return ItemStack.EMPTY;
+    }
+
+    /**
+     * Returns an Ingot of the material if it exists. Otherwise it returns a Dust.
+     * Returns ItemStack.EMPTY if neither exist.
+     */
+    public static ItemStack getIngotOrDust(Material material, long materialAmount) {
+        ItemStack ingotStack = getIngot(material, materialAmount);
+        if (ingotStack != ItemStack.EMPTY) return ingotStack;
+        return getDust(material, materialAmount);
+    }
+
+    public static ItemStack getIngotOrDust(MaterialStack materialStack) {
+        return getIngotOrDust(materialStack.material(), materialStack.amount());
     }
 
     @Nullable
@@ -117,15 +175,4 @@ public class ChemicalHelper {
         return tags;
     }
 
-    public static ItemStack getDust(Material material, long materialAmount) {
-        if (!material.hasProperty(PropertyKey.DUST) || materialAmount <= 0)
-            return ItemStack.EMPTY;
-        if (materialAmount % GTValues.M == 0 || materialAmount >= GTValues.M * 16)
-            return get(TagPrefix.dust, material, (int) (materialAmount / GTValues.M));
-        else if ((materialAmount * 4) % GTValues.M == 0 || materialAmount >= GTValues.M * 8)
-            return get(TagPrefix.dustSmall, material, (int) ((materialAmount * 4) / GTValues.M));
-        else if ((materialAmount * 9) >= GTValues.M)
-            return get(TagPrefix.dustTiny, material, (int) ((materialAmount * 9) / GTValues.M));
-        return ItemStack.EMPTY;
-    }
 }

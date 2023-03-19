@@ -1176,7 +1176,7 @@ public class MiscRecipeRecipes {
                 .chancedOutput(dustTiny, Tungstate, 1200, 280)
                 .save(provider);
 
-        MACERATOR_RECIPES.recipeBuilder("nugget_gold")
+        MACERATOR_RECIPES.recipeBuilder("nugget_gold.0")
                 .inputItems(stone, Netherrack)
                 .outputItems(dust, Netherrack)
                 .chancedOutput(nugget, Gold, 500, 120)
