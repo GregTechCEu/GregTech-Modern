@@ -1,13 +1,13 @@
 {
   "values": [
-    "#forge:battery/mv",
-    "#forge:battery/uv",
-    "#forge:battery/luv",
-    "#forge:battery/zpm",
-    "#forge:battery/hv",
-    "#forge:battery/iv",
-    "#forge:battery/ev",
     "#forge:battery/ulv",
-    "#forge:battery/lv"
+    "#forge:battery/iv",
+    "#forge:battery/zpm",
+    "#forge:battery/ev",
+    "#forge:battery/luv",
+    "#forge:battery/hv",
+    "#forge:battery/lv",
+    "#forge:battery/uv",
+    "#forge:battery/mv"
   ]
 }

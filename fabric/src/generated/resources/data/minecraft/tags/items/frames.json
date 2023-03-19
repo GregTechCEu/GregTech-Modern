@@ -1,24 +1,24 @@
 {
   "replace": false,
   "values": [
-    "#minecraft:frames/tungsten_steel",
-    "#minecraft:frames/bronze",
-    "#minecraft:frames/hsss",
-    "#minecraft:frames/invar",
-    "#minecraft:frames/titanium",
-    "#minecraft:frames/black_steel",
-    "#minecraft:frames/neutronium",
-    "#minecraft:frames/tritanium",
-    "#minecraft:frames/wood",
-    "#minecraft:frames/naquadah_alloy",
-    "#minecraft:frames/steel",
-    "#minecraft:frames/europium",
     "#minecraft:frames/treated_wood",
+    "#minecraft:frames/neutronium",
+    "#minecraft:frames/wood",
+    "#minecraft:frames/steel",
+    "#minecraft:frames/naquadah_alloy",
+    "#minecraft:frames/bronze",
     "#minecraft:frames/hsse",
-    "#minecraft:frames/polytetrafluoroethylene",
     "#minecraft:frames/stainless_steel",
+    "#minecraft:frames/black_steel",
+    "#minecraft:frames/tritanium",
+    "#minecraft:frames/europium",
     "#minecraft:frames/hssg",
+    "#minecraft:frames/hsss",
     "#minecraft:frames/blue_steel",
-    "#minecraft:frames/aluminium"
+    "#minecraft:frames/polytetrafluoroethylene",
+    "#minecraft:frames/titanium",
+    "#minecraft:frames/tungsten_steel",
+    "#minecraft:frames/aluminium",
+    "#minecraft:frames/invar"
   ]
 }

@@ -1,7 +1,7 @@
 {
   "values": [
-    "#forge:rounds/hsss",
     "#forge:rounds/osmiridium",
-    "#forge:rounds/tritanium"
+    "#forge:rounds/tritanium",
+    "#forge:rounds/hsss"
   ]
 }

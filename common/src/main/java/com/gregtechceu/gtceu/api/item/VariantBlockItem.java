@@ -74,7 +74,7 @@ public class VariantBlockItem<R extends Enum<R> & StringRepresentable, T extends
         if (variant == null) {
             return super.getDescriptionId();
         }
-        return "%s %s".formatted(LocalizationUtils.format("variant." + variant.getSerializedName()), LocalizationUtils.format(super.getDescriptionId()));
+        return getBlock().getDescriptionId() + "." + variant.getSerializedName();
     }
 
     @Override

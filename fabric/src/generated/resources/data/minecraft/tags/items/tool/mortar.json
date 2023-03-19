@@ -1,29 +1,13 @@
 {
   "replace": false,
   "values": [
-    "gtceu:mortar_aluminium",
     "gtceu:mortar_iron",
-    "gtceu:mortar_titanium",
-    "gtceu:mortar_neutronium",
-    "gtceu:mortar_duranium",
     "gtceu:mortar_bronze",
-    "gtceu:mortar_diamond",
     "gtceu:mortar_invar",
-    "gtceu:mortar_sterling_silver",
-    "gtceu:mortar_rose_gold",
-    "gtceu:mortar_stainless_steel",
     "gtceu:mortar_steel",
-    "gtceu:mortar_ultimet",
     "gtceu:mortar_wrought_iron",
-    "gtceu:mortar_tungsten_carbide",
     "gtceu:mortar_damascus_steel",
-    "gtceu:mortar_tungsten_steel",
     "gtceu:mortar_cobalt_brass",
-    "gtceu:mortar_vanadium_steel",
-    "gtceu:mortar_naquadah_alloy",
-    "gtceu:mortar_flint",
-    "gtceu:mortar_red_steel",
-    "gtceu:mortar_blue_steel",
-    "gtceu:mortar_hsse"
+    "gtceu:mortar_flint"
   ]
 }

@@ -1,13 +1,13 @@
 {
   "values": [
-    "#forge:ores/lapis",
-    "#forge:ores/redstone",
     "#forge:ores/coal",
-    "#forge:ores/copper",
     "#forge:ores/gold",
-    "#forge:ores/nether_quartz",
-    "#forge:ores/emerald",
+    "#forge:ores/iron",
+    "#forge:ores/copper",
+    "#forge:ores/redstone",
     "#forge:ores/diamond",
-    "#forge:ores/iron"
+    "#forge:ores/lapis",
+    "#forge:ores/nether_quartz",
+    "#forge:ores/emerald"
   ]
 }

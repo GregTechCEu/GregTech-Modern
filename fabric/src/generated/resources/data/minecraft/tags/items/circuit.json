@@ -1,14 +1,14 @@
 {
   "replace": false,
   "values": [
+    "#minecraft:circuit/uv",
+    "#minecraft:circuit/mv",
+    "#minecraft:circuit/iv",
     "#minecraft:circuit/ev",
     "#minecraft:circuit/ulv",
-    "#minecraft:circuit/iv",
-    "#minecraft:circuit/uv",
+    "#minecraft:circuit/zpm",
     "#minecraft:circuit/lv",
     "#minecraft:circuit/hv",
-    "#minecraft:circuit/luv",
-    "#minecraft:circuit/mv",
-    "#minecraft:circuit/zpm"
+    "#minecraft:circuit/luv"
   ]
 }

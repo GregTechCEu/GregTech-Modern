@@ -1,4 +1,4 @@
-// 1.19.2	2023-03-19T01:09:15.8506323	Registrate Provider for gtceu [Recipes, Advancements, Loot tables, Tags (blocks), Tags (items), Tags (fluids), Tags (entity_types), Blockstates, Item models, Lang (en_us/en_ud)]
+// 1.19.2	2023-03-19T12:31:29.1473039	Registrate Provider for gtceu [Recipes, Advancements, Loot tables, Tags (blocks), Tags (items), Tags (fluids), Tags (entity_types), Blockstates, Item models, Lang (en_us/en_ud)]
 58f4311b7f1f675a24a97f28f44cec25f2c74e8b assets/gtceu/blockstates/active_casing.json
 5cb7efc7395aff9c34e521efd104e2012a901883 assets/gtceu/blockstates/boiler_firebox_casing.json
 825f516b0a62a5f4a4b2bea2e823018a42f86d88 assets/gtceu/blockstates/casing.json
@@ -11,8 +11,8 @@ b1eadf87561b9a158e041e9254dbb1997af252ef assets/gtceu/blockstates/oil_light.json
 41e5602b3a4c501043f2cd6f82075e3f3d829827 assets/gtceu/blockstates/steam.json
 9160b6a2ff00a736adf5a2f24fe74a2904943326 assets/gtceu/blockstates/tin.json
 74f7570ba8573f1c3eb1ef2d541670a903030ab2 assets/gtceu/blockstates/wire_coil.json
-409ae6c953f2112c7cc9ba1d2f81a0f6f3b39e66 assets/gtceu/lang/en_ud.json
-b90be51558525decae0151cd6e2a8a8fb4841429 assets/gtceu/lang/en_us.json
+209b87393feed4a5ddd278e7ed6f87ae8f054822 assets/gtceu/lang/en_ud.json
+8a0744820695c20c783acb748f70858efee94c94 assets/gtceu/lang/en_us.json
 6351d9c4136a077a2c7583b41981b0810973bd8a assets/gtceu/models/block/boiler_firebox_casing/bronze_firebox.json
 d42575731d11c4f4bb3a3fe99d6ab9a7940fc11f assets/gtceu/models/block/boiler_firebox_casing/bronze_firebox_active.json
 2555cc959a2768ec3bc8ef34505b33257558cfc9 assets/gtceu/models/block/boiler_firebox_casing/steel_firebox.json
@@ -691,7 +691,7 @@ dd91c88516e4947eb1bd1392ae53ee98c2be8a8d assets/gtceu/models/item/zpm/5.json
 44499ae88a0ae7d0601af6873fc41c62409983d0 assets/gtceu/models/item/zpm/7.json
 0622882b708f62a21c804f638725a3e7e0fbb055 data/forge/tags/blocks/mineable/wire_cutter.json
 66b977e99c75a29591a8c9e2f2e01c1f8a052f28 data/forge/tags/blocks/mineable/wrench.json
-499bfe16a559986c4b97da9ac2f12e75015d68c4 data/forge/tags/items/battery.json
+002aa5e1d9f6f02803afc9bd1b849c3a2ab2d627 data/forge/tags/items/battery.json
 5b2f78b9644d07f3b5d74f91b2175978f4e4156d data/forge/tags/items/battery/ev.json
 6ceda701984f59739e02420402d9ac1b3bc104c7 data/forge/tags/items/battery/hv.json
 dc9a0d2a7e562e229653656568dd493f57a819fc data/forge/tags/items/battery/iv.json
@@ -701,7 +701,7 @@ bb595a601c5798335da29b1a572f3b58c7920626 data/forge/tags/items/battery/luv.json
 5d527d5de357027c999d3ae84eef82b2872040ab data/forge/tags/items/battery/ulv.json
 d271ce0aebbac5264a3405e1c6a04f3c29cfe220 data/forge/tags/items/battery/uv.json
 4ef0aaf424fa65fc65f5e5b77608437d79a5b6bf data/forge/tags/items/battery/zpm.json
-17989e890ff31fa28fae6f7232f63f99ab036697 data/forge/tags/items/bolts.json
+581a6aba38cbffb0e1eeba52327cd8786abe51b3 data/forge/tags/items/bolts.json
 f9cb6897475d7a085871476dcb21c4f55ca59811 data/forge/tags/items/bolts/aluminium.json
 d5fb66e1799072181adf1feca99a76f9d66d26f0 data/forge/tags/items/bolts/annealed_copper.json
 f09c869f1c629356d0cb9c2becb32f6b2ab46b79 data/forge/tags/items/bolts/apatite.json
@@ -759,7 +759,7 @@ f340447318a3f8436533f9c982ab9231eb017dda data/forge/tags/items/bolts/titanium.js
 c715da136d6ab9a6d8558488a70fd19b7f45f56e data/forge/tags/items/bolts/wood.json
 6163605e0c710dc44c16ebbaf7b87b66d9a45b32 data/forge/tags/items/bolts/wrought_iron.json
 45e80e982e70810288ee88d58ce0a76db07c4c42 data/forge/tags/items/bolts/yttrium_barium_cuprate.json
-2c0af0795370f08f3f080cf4624555634c6fbb4e data/forge/tags/items/cable_gt_double.json
+e7b4c87fc862ed16d30f51aecbb6598b65dcaa70 data/forge/tags/items/cable_gt_double.json
 adcf695e23814cc38d311a3b8df274e8daee5b93 data/forge/tags/items/cable_gt_double/aluminium.json
 dc37d70ad565cb47568cdd2f8f42f2aef2285a5c data/forge/tags/items/cable_gt_double/annealed_copper.json
 1f5888ebd5a188b86d0b24eddac475a5e446d7da data/forge/tags/items/cable_gt_double/black_steel.json
@@ -802,7 +802,7 @@ efa3228b86beda36c85a90398063b42c8ef79c75 data/forge/tags/items/cable_gt_double/s
 cbfa732d7689654f858aa74c4a0a58a3dfa26c26 data/forge/tags/items/cable_gt_double/uranium_triplatinum.json
 b210bfad0abf6301f8ac518cf2b8d135a5a0f3b0 data/forge/tags/items/cable_gt_double/vanadium_gallium.json
 b64e5cdc2cd1014aff51ae96e83263d0972fe013 data/forge/tags/items/cable_gt_double/yttrium_barium_cuprate.json
-35c7f4680a9c9a37e1a32081a9689574565f48c8 data/forge/tags/items/cable_gt_hex.json
+ee26763dbae5c45f0d1c8d3d292ff5ce0500dce3 data/forge/tags/items/cable_gt_hex.json
 d5eb87de130b6f1a3dd36fbdc29f24277e802f62 data/forge/tags/items/cable_gt_hex/aluminium.json
 7fb0344a8fea3b50c3f7b093775f15447f4cd4a8 data/forge/tags/items/cable_gt_hex/annealed_copper.json
 e9dfeb8015c5a181e21e46c1137fa2a3ed3c793f data/forge/tags/items/cable_gt_hex/black_steel.json
@@ -845,7 +845,7 @@ f30eed2ddd93caf4b9d75e846f993181ed5962c2 data/forge/tags/items/cable_gt_hex/tung
 699fbf68b17457fef6203658d7023efeeeeac013 data/forge/tags/items/cable_gt_hex/uranium_triplatinum.json
 720d94f1c4010c9472952a68c6ac7059a3ce924c data/forge/tags/items/cable_gt_hex/vanadium_gallium.json
 c30a5c93a805a910088b344f7df6242aa71aebc0 data/forge/tags/items/cable_gt_hex/yttrium_barium_cuprate.json
-0245fe2478e1d3b9f74537fa448af95786904fe5 data/forge/tags/items/cable_gt_octal.json
+32f70ee01ea89f49ec9985073d4aaf839159a622 data/forge/tags/items/cable_gt_octal.json
 035793a54df9a9e95bf4b9be30a26e45d03a8325 data/forge/tags/items/cable_gt_octal/aluminium.json
 e56f020bafad054dd7de308e2c1aae8a46506ed6 data/forge/tags/items/cable_gt_octal/annealed_copper.json
 791ddc175a3192f2f6330cf2a2b6731a07576289 data/forge/tags/items/cable_gt_octal/black_steel.json
@@ -888,7 +888,7 @@ f291646cec44381ba46f867a2512aac42ed7e7ea data/forge/tags/items/cable_gt_octal/tu
 b828cdb2f616c64a5996d22d9285bd514f18e543 data/forge/tags/items/cable_gt_octal/uranium_triplatinum.json
 4cbe36107c6c1498ed0725fd363308dcd688812a data/forge/tags/items/cable_gt_octal/vanadium_gallium.json
 55a74985185474bcb96bfb0f2bcc49ba6b1c8112 data/forge/tags/items/cable_gt_octal/yttrium_barium_cuprate.json
-d90da5cee1e24ba8358309a63fa742c8a1733820 data/forge/tags/items/cable_gt_quadruple.json
+21b83458a14e88c6073196d6f81d313cd637937f data/forge/tags/items/cable_gt_quadruple.json
 5aa8011240a969f9051a19ca0cf36d5fda1d69b6 data/forge/tags/items/cable_gt_quadruple/aluminium.json
 0afb0fa49437d566f20aabc7058c19b45dfc239b data/forge/tags/items/cable_gt_quadruple/annealed_copper.json
 589de019b140174dafc30ae4f515bfef17c8cb61 data/forge/tags/items/cable_gt_quadruple/black_steel.json
@@ -931,7 +931,7 @@ da6fe45264e791f040d4ebae5242a0bd3ccfc50c data/forge/tags/items/cable_gt_quadrupl
 a928add5977596793f751b0bd76c9f8f3d56e427 data/forge/tags/items/cable_gt_quadruple/uranium_triplatinum.json
 887bc484dadd3a3528c14bfc620ac9ed5601e449 data/forge/tags/items/cable_gt_quadruple/vanadium_gallium.json
 b579f7eed5b18ac9cec06328873416963709f3bc data/forge/tags/items/cable_gt_quadruple/yttrium_barium_cuprate.json
-b47ceb643970a1bd08336cefef8847e07c2f02bc data/forge/tags/items/cable_gt_single.json
+3393c4c6ff635b451dbc94a35a6f0c73d1785bae data/forge/tags/items/cable_gt_single.json
 ad24f0e20b988d295d0b587954b37a5641b44aa4 data/forge/tags/items/cable_gt_single/aluminium.json
 3bef046b7784750b4ee8eb52ceaebee10eb87a85 data/forge/tags/items/cable_gt_single/annealed_copper.json
 de9d36ad3871873920d6d3f9c6ee1728b25a709b data/forge/tags/items/cable_gt_single/black_steel.json
@@ -974,7 +974,7 @@ b09d7b1d4efca46eede5f86e8c9ad3f158d365b4 data/forge/tags/items/cable_gt_single/t
 18c50235f5c3416baf31ba88dc78d70647e00858 data/forge/tags/items/cable_gt_single/uranium_triplatinum.json
 7bd509afe77a6aa608a7615beb14a441a7f74e4c data/forge/tags/items/cable_gt_single/vanadium_gallium.json
 251f5002eeb4d342d1dffde85801c20c2230a1e4 data/forge/tags/items/cable_gt_single/yttrium_barium_cuprate.json
-a77f70a87c6cf57dbcc42c3c964a3267859594ef data/forge/tags/items/centrifuged_crushed.json
+ef1e93e7ba45f8d6a50055ed0f5e49630fc8bded data/forge/tags/items/centrifuged_crushed.json
 27ab2b2d7165cb9dade72eeda880884d71d6c9a6 data/forge/tags/items/centrifuged_crushed/almandine.json
 70c286e3e8e6154af4b72bdcd567a1ba66c28fff data/forge/tags/items/centrifuged_crushed/aluminium.json
 39c7531b710d6b09a3ea0e730c3a183ef4e2c2af data/forge/tags/items/centrifuged_crushed/alunite.json
@@ -1085,7 +1085,7 @@ af0d3393fcf24456f0d4ee1f2a85b66ccc10092c data/forge/tags/items/centrifuged_crush
 459f3620f9f495f484c3261455db098701064759 data/forge/tags/items/centrifuged_crushed/wulfenite.json
 c1f694ea5f013c8cb75eb16f5d3f2b186349438a data/forge/tags/items/centrifuged_crushed/yellow_limonite.json
 e077c47e7109faf733b9a71d526fedcd738edbc6 data/forge/tags/items/centrifuged_crushed/zeolite.json
-e7be70b5f5b1f33fd098b8cd782ccfc72a00992b data/forge/tags/items/circuit.json
+8edd30590a1575543b9b4e222168a9a0ee9d430c data/forge/tags/items/circuit.json
 efc55bf65447be06da9c0f73e64659fe83f80a2b data/forge/tags/items/circuit/ev.json
 a0218d52927a8c9717658d6dbf03f727aefdc863 data/forge/tags/items/circuit/hv.json
 7cc4bc040bd8fa5c287967e69ebf20536f550b2e data/forge/tags/items/circuit/iv.json
@@ -1095,13 +1095,13 @@ ebe8f29f8166a89434e5a0a1b444df5d6bef5402 data/forge/tags/items/circuit/luv.json
 369ac9381ec260ab420b0edea847e8d4f1349d40 data/forge/tags/items/circuit/ulv.json
 568afd2e724cf79a9d92a78eec713990fac709bd data/forge/tags/items/circuit/uv.json
 4d735af5be91eed5a6cf4ce1538b0529cbf8622c data/forge/tags/items/circuit/zpm.json
-9e004f2f86d5f0125362039a18a98912ae7a07ca data/forge/tags/items/component.json
+2b0e15e9d27aa2a72bf2dbf37d19873d53e73df9 data/forge/tags/items/component.json
 b69b8b64f17b86dcde7bf03a133cb3f07c8b4cf5 data/forge/tags/items/component/capacitor.json
 5ad0e2976c92c3d3f94cd5af28b25bc29e1c6bfa data/forge/tags/items/component/diode.json
 64ad53276ae5470dc7424afb550be60fd3f32f1e data/forge/tags/items/component/inductor.json
 e3a6d7bb3b20f324c97481878cfc8bc4adf3b7fe data/forge/tags/items/component/resistor.json
 43ba1e4504a17b1c11526cdf3d9fba4348392e67 data/forge/tags/items/component/transistor.json
-c667f8520dde09c490ce50298aa0b9189c3695eb data/forge/tags/items/crafting_lens.json
+be66c5b5c70ac12918d9acec23098afcf54b139d data/forge/tags/items/crafting_lens.json
 da7cb31de9205980874898b4b8540db5b5fea63d data/forge/tags/items/crafting_lens/black.json
 841b7263557cd8daf90408645a17c71fca064b66 data/forge/tags/items/crafting_lens/blue.json
 9596e1462ede0726aad2f88da398b22f1aa3f885 data/forge/tags/items/crafting_lens/brown.json
@@ -1118,7 +1118,7 @@ bc0a732b52154ba0cf7ad1384b6fe57a01f56e9c data/forge/tags/items/crafting_lens/ora
 8c4429259ebd05083e194d4eefcc9c2b74d4caf6 data/forge/tags/items/crafting_lens/red.json
 d954c7505457e4d9c5738824807254bf759bf156 data/forge/tags/items/crafting_lens/white.json
 2610a97d3ee219f416ea046f3a5147085acc3ad2 data/forge/tags/items/crafting_lens/yellow.json
-bc772da4523a0423602fe347aa5cd1c80e38f0cd data/forge/tags/items/crushed.json
+1ffd9bf3444e48f13a241b8a861fc2bf5133514e data/forge/tags/items/crushed.json
 564d464225f6d5f8955477d4cddf9f05171cea4e data/forge/tags/items/crushed/almandine.json
 5fe512919782519f14a9b2946f8ff062968658b6 data/forge/tags/items/crushed/aluminium.json
 b460cfb5b3c65c149fcbfc69df629938990caec7 data/forge/tags/items/crushed/alunite.json
@@ -1229,7 +1229,7 @@ fe8cbaff29a679c0fdab02394818532c700f688a data/forge/tags/items/crushed/thorium.j
 8e5719e6e01306643ab258d711e4b06d9e15326d data/forge/tags/items/crushed/wulfenite.json
 4c2fab4156df2677b12bd46e91613af9d201a39c data/forge/tags/items/crushed/yellow_limonite.json
 a902840b56616ca4c5811bfc37f49e4463a8adbf data/forge/tags/items/crushed/zeolite.json
-9fac3e3b3da327496a773319ae042e3e1fdd3e8b data/forge/tags/items/crushed_purified.json
+2a596f86f7f74e9a3dad46d223ce470d120ee821 data/forge/tags/items/crushed_purified.json
 497387080bb1071e44201c567b272880cdf6d901 data/forge/tags/items/crushed_purified/almandine.json
 c72a316bcf7e3212a9cfcc4e982b38a9c4294bf5 data/forge/tags/items/crushed_purified/aluminium.json
 ed724d8d9b4770d672a0fdc500ee67f749f4c244 data/forge/tags/items/crushed_purified/alunite.json
@@ -1340,7 +1340,7 @@ d59ef0744197d34e1dae7502746f31f69059dd71 data/forge/tags/items/crushed_purified/
 4d1745989e4d64ed6d69960c63334afe317f093a data/forge/tags/items/crushed_purified/wulfenite.json
 3cc02af7e76728448f0cc4260615ee1b125bc0ad data/forge/tags/items/crushed_purified/yellow_limonite.json
 bba19a19b46bfcdc1b85ef982972570c056e3b9a data/forge/tags/items/crushed_purified/zeolite.json
-4038d31f667ac2fb530686b9e957cc9e8f39e08d data/forge/tags/items/dusts.json
+3a1b31763af69c7d0d41eee20b5594b079e283c7 data/forge/tags/items/dusts.json
 71b23c25231d41c8c6169bdc17e5f7e2353a09fe data/forge/tags/items/dusts/agar.json
 fc4ab3591a4986b5dca086d705db2ae502110796 data/forge/tags/items/dusts/almandine.json
 f06a53886054616441c6d76bffc5a84a5154321b data/forge/tags/items/dusts/aluminium.json
@@ -1473,7 +1473,7 @@ ec3606da96d06c623f5692032d5575ee3858031e data/forge/tags/items/dusts/hsse.json
 cea91f4e914db00473ccc0e0ddbd6d375251abe9 data/forge/tags/items/dusts/hsss.json
 c35e6c1003ba0977209138372a596e41cc2ad0d2 data/forge/tags/items/dusts/ice.json
 87b0cfcad2b06c70e268d70bb9a79b4acb62e88c data/forge/tags/items/dusts/ilmenite.json
-86b7baafb3f3892dc3007f1ad1dfd017f4dcb5bc data/forge/tags/items/dusts/impure.json
+32d3b5510b6d73b72848bbc707b92b3722448fe6 data/forge/tags/items/dusts/impure.json
 b0aef13f88785ffb1fcffb4e043108e3af5529f8 data/forge/tags/items/dusts/impure/almandine.json
 6d8f25e42bc54e9b08ee2a8d1369ebab1625eb89 data/forge/tags/items/dusts/impure/aluminium.json
 0f675838e2b8ee9b5fdcb77a9365cf249b8aee67 data/forge/tags/items/dusts/impure/alunite.json
@@ -1680,7 +1680,7 @@ a83a0ac89a706c5c7d5fb3dfb99c07d160caca75 data/forge/tags/items/dusts/polyvinyl_c
 1bc306d3d766fbb400e32b6f03b357e691f9207b data/forge/tags/items/dusts/potassium_feldspar.json
 8e9a15721f7b82da33bdc89ec0e1f622ea8b7cdd data/forge/tags/items/dusts/potin.json
 8b11840189a31056fefd62d5117582996f276ec5 data/forge/tags/items/dusts/powellite.json
-e547d4aea5b1f202add35d9ca984267f94e33c3e data/forge/tags/items/dusts/pure.json
+2e549721a39e220c82692ac54107a08cbf00f5cc data/forge/tags/items/dusts/pure.json
 3e6c3967e0aa6ede3cf57b45bb4ab386d478fc98 data/forge/tags/items/dusts/pure/almandine.json
 d2a09c4c39b5c766ce2a294091c447191506ec11 data/forge/tags/items/dusts/pure/aluminium.json
 aa1e9b144ccc093b0bb5a5fa569444817225854d data/forge/tags/items/dusts/pure/alunite.json
@@ -1830,7 +1830,7 @@ b0c3eac5a53effa5c4b1a486f15d1edaef1d470d data/forge/tags/items/dusts/ruby.json
 ea98ae9fdde13b952606b0af802bf95873d3934f data/forge/tags/items/dusts/silicone_rubber.json
 5fd7d99820e271d944c6a6186021bb09f5ac3524 data/forge/tags/items/dusts/silicon_dioxide.json
 c89bd4253303dfea8688334f7122e4a6e17a6da4 data/forge/tags/items/dusts/silver.json
-4c5d35fe5693a44f890a04a3eac55c2acadecbd9 data/forge/tags/items/dusts/small.json
+feafd0e800550295476bf0a83332220bfb313545 data/forge/tags/items/dusts/small.json
 8ecf0c5d5a5b61edf5f380dbed89c13addcbe0a2 data/forge/tags/items/dusts/small/agar.json
 7e3b6a0b0d7986aa79e5c105ec0a973847f12f1a data/forge/tags/items/dusts/small/almandine.json
 2a7ccf17bfa46a7b580646942a88af781a67f59c data/forge/tags/items/dusts/small/aluminium.json
@@ -2188,7 +2188,7 @@ a6da4cbbe3b24c3b18fe66aa1704c30a240f877b data/forge/tags/items/dusts/talc.json
 d478f4f9273fde2b77253ea47654ea7d50f05f18 data/forge/tags/items/dusts/tetrahedrite.json
 625f48a8fc3b4e6d37bc34f7895fd8a838bfc116 data/forge/tags/items/dusts/thorium.json
 fa63df36fab77c827b4749dd5220d9d9cbf99b8f data/forge/tags/items/dusts/tin.json
-ec008f6e526b1dee1198fd6d2d36d73413a61ff6 data/forge/tags/items/dusts/tiny.json
+caa072a633d6643c8a31ad985b827688c260a116 data/forge/tags/items/dusts/tiny.json
 2e7ff943baa9455d217b4cd9cf5f85ff947fd435 data/forge/tags/items/dusts/tiny/agar.json
 7c5030170d1dda666c6030721db12451ff5a4b95 data/forge/tags/items/dusts/tiny/almandine.json
 db876a634326eead15c0be1c837b414823702e72 data/forge/tags/items/dusts/tiny/aluminium.json
@@ -2572,7 +2572,7 @@ f8c171f31954bad8f93a22a23bc433982a567045 data/forge/tags/items/dye.purple.json
 7482ca4c69fc6e38da20913666447f16d31446bc data/forge/tags/items/dye.red.json
 dead71fc4be8ec84694b78a17d1feba9d3f2cca1 data/forge/tags/items/dye.white.json
 35ad690362f8aca113e485ea7655fda18067cebd data/forge/tags/items/dye.yellow.json
-2667f5203eff193af8136009e679eac3fb981f5b data/forge/tags/items/foils.json
+7a10810fedac5d04d3a197a6aedd96e70da229b4 data/forge/tags/items/foils.json
 f0c3a3812165d31bfe44f9334994a27d3d106fd0 data/forge/tags/items/foils/aluminium.json
 9fca71e0423ea39dd9f7f95914ff79a312a35711 data/forge/tags/items/foils/americium.json
 c3aecc5581e692eeb5650b84bed654f983a0094e data/forge/tags/items/foils/annealed_copper.json
@@ -2633,7 +2633,7 @@ f81eff7ce032eef372ce6d4126e11cf82227f9ba data/forge/tags/items/foils/tungsten_st
 3e969c0f0cad54f9280d2872a29256a3e5f0140c data/forge/tags/items/foils/wrought_iron.json
 b61a40a33cd262f3bc74432f2d19eebbb3f5d73c data/forge/tags/items/foils/yttrium_barium_cuprate.json
 1dde31161802c07fd84f2ffbea8bb583aa7fb4e8 data/forge/tags/items/foils/zinc.json
-c5aea4727498b654963bd789e1e1db1eedcc9c70 data/forge/tags/items/frames.json
+a41e7b2db57c3b703b9bb087f37cb6a94affd13f data/forge/tags/items/frames.json
 5bced34f41971fb1c0e3fef0ac34ff63f13957ec data/forge/tags/items/frames/aluminium.json
 970481cb35aefe47cc3b95fa86bdaec88814c5af data/forge/tags/items/frames/black_steel.json
 0dec3fc1d95fd5b2b0c08f201a4b749c614426d7 data/forge/tags/items/frames/blue_steel.json
@@ -2653,7 +2653,7 @@ f13ecb79d410498f033ef408254faf9d3e4779bb data/forge/tags/items/frames/treated_wo
 4465a8d0a79304c2ffd042385b68f350f2b45d77 data/forge/tags/items/frames/tritanium.json
 90ec903a9dd252c6fc94955d891c9a85e8d37600 data/forge/tags/items/frames/tungsten_steel.json
 15ca5c3d7e6cd811d46f5b23189a1047fcdad88a data/forge/tags/items/frames/wood.json
-4d08420ccfcff8d94636e54df0842ae5bdf4eb62 data/forge/tags/items/gears.json
+474ac7706528d70e657f241648df49d0b3d60be9 data/forge/tags/items/gears.json
 1c1ea68cb095726c869fc3e12e794bb147799f5d data/forge/tags/items/gears/aluminium.json
 28c17d570b13e6b847ba559e0cf2a4d98de00a08 data/forge/tags/items/gears/black_bronze.json
 97267ff7cf6eb3af6cfa1aed5e44c1dd87261e1e data/forge/tags/items/gears/black_steel.json
@@ -2677,7 +2677,7 @@ ee64db37a3f999b1e7f85dfabe8635d06b47b161 data/forge/tags/items/gears/rubber.json
 40b99f83f81e94c3fea20be3528d578c95e21516 data/forge/tags/items/gears/ruridit.json
 a5010fb6bff5bc7b3796f663a49f12671cce7d49 data/forge/tags/items/gears/ruthenium.json
 d8aa6eead0b434982f70e5053ab0cacfdb8e1cf7 data/forge/tags/items/gears/silicone_rubber.json
-126237e026bc404e344d1c865fa2c22894a9a1ca data/forge/tags/items/gears/small.json
+730cefe613f1c2f5f3bf287dafef46a59cd3620a data/forge/tags/items/gears/small.json
 bda29614a2142288190a8a70993710c87acd8484 data/forge/tags/items/gears/small/aluminium.json
 5d4232695d65925977f0cceadfe75d474de8a01f data/forge/tags/items/gears/small/bronze.json
 12a390f8efcac9e63a38c5dd59cafdfd18754ac1 data/forge/tags/items/gears/small/darmstadtium.json
@@ -2705,7 +2705,7 @@ b267d27fd9eb63ebd867c8e74f9b017d321f2308 data/forge/tags/items/gears/titanium.js
 f4759996774471fe722357a9979c895aceb4dabb data/forge/tags/items/gears/vanadium_steel.json
 6920fddf26de695769e46e8fc7a503b08c2b586a data/forge/tags/items/gears/wood.json
 a419fe1adfc55441939b79c69da26a6e429ccded data/forge/tags/items/gears/wrought_iron.json
-550ebe4f502fd9475f685cc58475beb17a1dc2e5 data/forge/tags/items/gems.json
+0ce8b08ff2f448648e3a97d2eb85469e135b7164 data/forge/tags/items/gems.json
 f7b99991bcbb5fac094699a69332603fd5c0a0b7 data/forge/tags/items/gems/almandine.json
 c2c10c5ad16cc42e31aab003228ac31b8595a2ad data/forge/tags/items/gems/amethyst.json
 3d6223285c9345934e57cebc9f58df8eae108031 data/forge/tags/items/gems/andradite.json
@@ -2713,7 +2713,7 @@ c2c10c5ad16cc42e31aab003228ac31b8595a2ad data/forge/tags/items/gems/amethyst.jso
 b36955460029ba6693bfc8f86bf68405f02c2906 data/forge/tags/items/gems/blue_topaz.json
 03451a2c3ab2c07c448e62087feddd6b92c911d8 data/forge/tags/items/gems/certus_quartz.json
 f470b0889459fb2d48176e69995c70ce18aa66ea data/forge/tags/items/gems/charcoal.json
-528868898e519f8f378bb29487c4a1d81fa94b3e data/forge/tags/items/gems/chipped.json
+b6db5584b072446567c53b1e2d1ac02d57c0e3cc data/forge/tags/items/gems/chipped.json
 3b4aeadc0ee0149ded6d0d04daef57ffd577d412 data/forge/tags/items/gems/chipped/almandine.json
 431cb315ef73f4546e46d4ae998898b884418dd3 data/forge/tags/items/gems/chipped/amethyst.json
 227f26496717eabbf02cc66d5e8ac9f776c9241c data/forge/tags/items/gems/chipped/andradite.json
@@ -2757,7 +2757,7 @@ fdab8ddd5529ae14b26bc1853b004131135318a4 data/forge/tags/items/gems/diamond.json
 8c4f379d97e2cd8c7f9297bf4fab7e60083ecb0d data/forge/tags/items/gems/emerald.json
 74eefeb986d633d26ad42202c4a6b5e71463c425 data/forge/tags/items/gems/ender_eye.json
 8c4603792263de771b44aee19f8f9239b6210fdb data/forge/tags/items/gems/ender_pearl.json
-b2a440e240b8c2dfb1a1cc94b7044233bd4023e4 data/forge/tags/items/gems/exquisite.json
+e3725c2389a3e1756d23756402acfd728c5d80ec data/forge/tags/items/gems/exquisite.json
 2ba4370414d511c82f1b4931277267d7c484ac18 data/forge/tags/items/gems/exquisite/almandine.json
 3ec3bf62586fa7cf91fe663e7ba6885a8eab944c data/forge/tags/items/gems/exquisite/amethyst.json
 0ae40deedb853cb32b1628131303d30050dea898 data/forge/tags/items/gems/exquisite/andradite.json
@@ -2793,7 +2793,7 @@ af8f198abb821edf21f4804053efd44bebc70c1f data/forge/tags/items/gems/exquisite/so
 a1e322465904bd46452c1fbee9ebf757e4c887cf data/forge/tags/items/gems/exquisite/spessartine.json
 ad4e662aae67172ff74d3bc58a85697f42d74063 data/forge/tags/items/gems/exquisite/topaz.json
 c00e1cbe56b3ae58e18820dd8f3e37544f37353a data/forge/tags/items/gems/exquisite/uvarovite.json
-874d85b327c56fad86ce6c058db4c71566be66e6 data/forge/tags/items/gems/flawed.json
+6ded57db7a13f4674fbcb97265315815fbb7c38c data/forge/tags/items/gems/flawed.json
 81a31a967b4e5c0a1c92ce1e1adc363c436a8a4e data/forge/tags/items/gems/flawed/almandine.json
 dff37549acb3f07ffbb80bbc28c75d79f24ba6d5 data/forge/tags/items/gems/flawed/amethyst.json
 ba4f6a99b0a71dd711738afeba67c41514217d92 data/forge/tags/items/gems/flawed/andradite.json
@@ -2830,7 +2830,7 @@ ad5f4950b7c102a2d82e0a827e37a81381b60123 data/forge/tags/items/gems/flawed/spess
 60cdfbafd1504b7108dc084d866f6183df631173 data/forge/tags/items/gems/flawed/sugar.json
 5b174fa630673d590d993e2063dc77e9b4100d52 data/forge/tags/items/gems/flawed/topaz.json
 474531c2934d4703f434fc47eee34412558f7faf data/forge/tags/items/gems/flawed/uvarovite.json
-478605428fa9f4e6bd760b105fa3c0c413dd1b7b data/forge/tags/items/gems/flawless.json
+e4873392335626358d7d7920dbfadfab6d0824ca data/forge/tags/items/gems/flawless.json
 fa9ba26d8847f1e6dde7f0b84191d0789bcbce78 data/forge/tags/items/gems/flawless/almandine.json
 4f0d0c1691b6fb09bb58dc92aefb373c3fcb456b data/forge/tags/items/gems/flawless/amethyst.json
 4631d8128763dcbe7d67c7c3d2cd7ff734a6bf87 data/forge/tags/items/gems/flawless/andradite.json
@@ -2894,7 +2894,7 @@ daea5438fdd821c8fbd2857b4395bd0e583ecd9b data/forge/tags/items/gems/sodalite.jso
 9e2c3e7034563bee2fa49fc1ba392d4d9ef1b862 data/forge/tags/items/gems/sugar.json
 a30342a1e96e065f23269dd5f80bb526e8655aa6 data/forge/tags/items/gems/topaz.json
 03fa99b0af2d868c86fba3f5628a3c453b52295f data/forge/tags/items/gems/uvarovite.json
-1923ecd6ade842404811a05d972961b3f5465832 data/forge/tags/items/ingots.json
+d6049a8fb494f66dc5056846c7cd8c6fa1c760aa data/forge/tags/items/ingots.json
 6b7ec236236038394439206c9ceb84f7d14f1d37 data/forge/tags/items/ingots/aluminium.json
 442281e81f6e151ed9f12d6693f5354cf0c9a2a3 data/forge/tags/items/ingots/americium.json
 65aad9bbff195134e6cfb7dd07e476eda18a1058 data/forge/tags/items/ingots/annealed_copper.json
@@ -2926,7 +2926,7 @@ a9c172677c694e036a75f1eceb3c8e8e5153e382 data/forge/tags/items/ingots/darmstadti
 e55fe063362826598f2969acdf7a38ca6eceb65b data/forge/tags/items/ingots/gallium.json
 58c62df2a40ee08058598922013a8d031fa635b2 data/forge/tags/items/ingots/gallium_arsenide.json
 f2aa87f54e7951ea0cf81ac252c2abe279b0c936 data/forge/tags/items/ingots/gold.json
-741b0e18b56deb127d09bf519e758cd815535c40 data/forge/tags/items/ingots/hot.json
+b931d79e3f42c651b1358f242cc0e47f8f4a50e0 data/forge/tags/items/ingots/hot.json
 10a424a9fa0872b2870e705c310dc2b9d299a052 data/forge/tags/items/ingots/hot/black_bronze.json
 c15c25aabfc1d703c7ff3c87f6b9f562ffcc81ae data/forge/tags/items/ingots/hot/enriched_naquadah_trinium_europium_duranide.json
 cb5be2aef283544381cd7b2641d5163a2c4242b8 data/forge/tags/items/ingots/hot/europium.json
@@ -3058,14 +3058,14 @@ d3a314dbe2bd5ce7236e716719ba235dfe7b3552 data/forge/tags/items/ingots/vanadium_s
 aecce1b0d4c5230a060157bc8eabf52e76b387dd data/forge/tags/items/ingots/yttrium.json
 ccbcbf6fac2e9e940c7423f98ce07321a6b34956 data/forge/tags/items/ingots/yttrium_barium_cuprate.json
 af4b9b74092281525f25f668b742d16b9d267a52 data/forge/tags/items/ingots/zinc.json
-f74a808e8ddb5ff1201c6adbec457d690598fb70 data/forge/tags/items/lens.json
+e5b54e02ce0151d477858679c7f69bdae32d63c2 data/forge/tags/items/lens.json
 6f4de67fb6812efd97a3048c16d54691d6d68b13 data/forge/tags/items/lens/diamond.json
 210cc17e51a363cb4bf7b4f956d56af613789b95 data/forge/tags/items/lens/emerald.json
 d954c7505457e4d9c5738824807254bf759bf156 data/forge/tags/items/lens/glass.json
 745a0c1e5ebc20acb62aa1ab0279fcd7e076a84a data/forge/tags/items/lens/nether_star.json
 4dfa3ce9d56400f0ec327d77cb11fe34384e0cf1 data/forge/tags/items/lens/ruby.json
 7132f150051c41c75493c3927a2488e8b3cf977c data/forge/tags/items/lens/sapphire.json
-32c688ee966da7177778257914af5fc3f805808f data/forge/tags/items/nuggets.json
+fe89cae7e8256c739ac47dbd5944bc9e1efc4ee1 data/forge/tags/items/nuggets.json
 17cbc9b3835a4292475cc02e5de695b7cc4243a6 data/forge/tags/items/nuggets/aluminium.json
 53ba76869c4f80e30879a933c5fa6c9874a36174 data/forge/tags/items/nuggets/americium.json
 7d9e888a3e201400d9961b7ae109457e25243b2b data/forge/tags/items/nuggets/annealed_copper.json
@@ -3186,7 +3186,7 @@ e616062103e00bac4896a436049cb256bc26d358 data/forge/tags/items/nuggets/vanadium_
 0e489581144665a9e0adc64c578156b21597ff09 data/forge/tags/items/nuggets/yttrium.json
 e13299c8775212f71e15db65f4dec80df89d73b9 data/forge/tags/items/nuggets/yttrium_barium_cuprate.json
 b8e09a0c1cedd90b574fb97c66c6b633c8898ef5 data/forge/tags/items/nuggets/zinc.json
-822d6e79d4ce98d8059827db2c5a16107e937636 data/forge/tags/items/ores.json
+c4bb3345fa3f746f27a3052ecd10b96e719aee14 data/forge/tags/items/ores.json
 73546511b0ca14e26814ecd0b7100c3050621402 data/forge/tags/items/ores/coal.json
 33e35d6ec29ee2053186b6de9f88e811dc4a1c24 data/forge/tags/items/ores/copper.json
 6a5bace01235d3ed61e233e19ffcdfab1f2e7b9e data/forge/tags/items/ores/diamond.json
@@ -3196,7 +3196,7 @@ ff10544a9f635066af18310860a04992b08ee654 data/forge/tags/items/ores/gold.json
 c5b10801a5039d6e6eba77b2bebb1327ebc12746 data/forge/tags/items/ores/lapis.json
 d6cc7b45842bf7bada70aae6db2b46a4d2882c31 data/forge/tags/items/ores/nether_quartz.json
 c125d95acc12ac0aa6d17c44ca006fbd0d40b45e data/forge/tags/items/ores/redstone.json
-c8a903c32dacf0b20788405370457d2ed4166ea1 data/forge/tags/items/pipe_huge_fluid.json
+e18184a2d04ff8f75253974082300b636789a3c9 data/forge/tags/items/pipe_huge_fluid.json
 966db32f4d0fb84ee180c808b673bffb8c9544b1 data/forge/tags/items/pipe_huge_fluid/aluminium.json
 68e6e25b06fba50feb15fa235afdc18940f51ebb data/forge/tags/items/pipe_huge_fluid/bronze.json
 bb06f783b6047afff681ef79e4a070a7c233a044 data/forge/tags/items/pipe_huge_fluid/chrome.json
@@ -3221,7 +3221,7 @@ d178b0895dd8087e2bb70733d7d39668657ce7c6 data/forge/tags/items/pipe_huge_fluid/t
 b205fc8396d06e985acae41f381b6721ffe7bd35 data/forge/tags/items/pipe_huge_fluid/tungsten_carbide.json
 abffa643121dea190af540b745f3f489ba5146dc data/forge/tags/items/pipe_huge_fluid/tungsten_steel.json
 8f9cf412a05f9b157c1962eda110ff3012e65ca7 data/forge/tags/items/pipe_huge_fluid/vanadium_steel.json
-8e3096770a719097a4f86b6fce133aeb13520c65 data/forge/tags/items/pipe_large_fluid.json
+0209579198d7d27901fcfb0f571cb8343c54f16c data/forge/tags/items/pipe_large_fluid.json
 71004c2168154cbac92c61f51b573a684fc30dbd data/forge/tags/items/pipe_large_fluid/aluminium.json
 edf7342e5faad20f46885ed1e4a5e5783a69f98a data/forge/tags/items/pipe_large_fluid/bronze.json
 3b57601a81db263eab739ffc6121ef34596dd99b data/forge/tags/items/pipe_large_fluid/chrome.json
@@ -3246,7 +3246,7 @@ a77de7a2246e5c55b0031e730b574a77182fed98 data/forge/tags/items/pipe_large_fluid/
 c0fbf7e9f28a8f2b630e01bcbff5c6cd460a8618 data/forge/tags/items/pipe_large_fluid/tungsten_carbide.json
 06a71b3e289b7f82f7aa9ef17b6b1deb1ca12acc data/forge/tags/items/pipe_large_fluid/tungsten_steel.json
 f8aa416b1bfbdae348969838c5d3828381351ce8 data/forge/tags/items/pipe_large_fluid/vanadium_steel.json
-190e313d93ff415daa660d71b60881adac1d7bb3 data/forge/tags/items/pipe_nonuple_fluid.json
+63648c57073644e2e2db1983d2abc8cef9c9c42e data/forge/tags/items/pipe_nonuple_fluid.json
 191d42eef040d3588cfaf50e5e5cf3b824829f90 data/forge/tags/items/pipe_nonuple_fluid/aluminium.json
 2938fab7ad38df92de26ee54558c5367e81710ce data/forge/tags/items/pipe_nonuple_fluid/bronze.json
 65f33a9aacd1439c0538552037e5eaf802761663 data/forge/tags/items/pipe_nonuple_fluid/chrome.json
@@ -3271,7 +3271,7 @@ adf15d47720b93d6fc458264dfc738786e1673ca data/forge/tags/items/pipe_nonuple_flui
 4ae3f579c1568f31e3a8f1859485fb2d9b34e8a3 data/forge/tags/items/pipe_nonuple_fluid/tungsten_carbide.json
 8a4c4e474cc8bea7afcc86943b831138c786604e data/forge/tags/items/pipe_nonuple_fluid/tungsten_steel.json
 fa467a147f6c31db6bae0257d62b164344cdeb32 data/forge/tags/items/pipe_nonuple_fluid/vanadium_steel.json
-5ba0d3a424d6f316bba039c5b94fa32e39251e54 data/forge/tags/items/pipe_normal_fluid.json
+9bce8408eeb27edee50e04c928310dfc604e3c56 data/forge/tags/items/pipe_normal_fluid.json
 65db82c79ee86bd12875273e3daa10cdd78f92f2 data/forge/tags/items/pipe_normal_fluid/aluminium.json
 8a6a7048a3a00e17fdf5e12ffa5f2237478007ea data/forge/tags/items/pipe_normal_fluid/bronze.json
 9b5d024f46344bfc163c6c970eb18e5d9edf9b00 data/forge/tags/items/pipe_normal_fluid/chrome.json
@@ -3296,7 +3296,7 @@ c04f5526f461633dd4c65d34149dd9fca4e354fe data/forge/tags/items/pipe_normal_fluid
 7fb19b8fa74239b31d29e4b1a2c7a71f253dbf0a data/forge/tags/items/pipe_normal_fluid/tungsten_carbide.json
 b6bebf21ac531daeb7db90fb8575c03523f6616d data/forge/tags/items/pipe_normal_fluid/tungsten_steel.json
 668a3c8f3021e6c156f0e9f34cc7a7358d3c3be0 data/forge/tags/items/pipe_normal_fluid/vanadium_steel.json
-5350a719221f76e3bdb97cc0f6daec8a9d10c628 data/forge/tags/items/pipe_quadruple_fluid.json
+ce02b83ed365d5d9738bf7a3b38770d829ecb0dc data/forge/tags/items/pipe_quadruple_fluid.json
 7e46346d78831bdbae7470fb1ffad2fd57ee79e1 data/forge/tags/items/pipe_quadruple_fluid/aluminium.json
 0011343e2e3f571afb1e11b32661080207fc6c6d data/forge/tags/items/pipe_quadruple_fluid/bronze.json
 154431702f70f68c969fcc86975e071be9196028 data/forge/tags/items/pipe_quadruple_fluid/chrome.json
@@ -3321,7 +3321,7 @@ f95c986faf42f70c7af759ecf57acbef7eb03fce data/forge/tags/items/pipe_quadruple_fl
 852e81e4afdbfe2b8c41690aa9f6a98397c2c1d3 data/forge/tags/items/pipe_quadruple_fluid/tungsten_carbide.json
 acc923dedb9b680618506c099854048434eb00b3 data/forge/tags/items/pipe_quadruple_fluid/tungsten_steel.json
 c501f5bc4bc35000f479be3514c464750ac3f972 data/forge/tags/items/pipe_quadruple_fluid/vanadium_steel.json
-1575740515ac068ff631856a5ccc31420dbe9c03 data/forge/tags/items/pipe_small_fluid.json
+3150cc76ba2a62571ad9ea72cbeccabda90bd5a1 data/forge/tags/items/pipe_small_fluid.json
 0335e3c6d9a83bdbe84e6b0fe2c10fd4f9980a8f data/forge/tags/items/pipe_small_fluid/aluminium.json
 f73e736a4ce02c92c0f3b92f10eabc1aa6a0d953 data/forge/tags/items/pipe_small_fluid/bronze.json
 4c1badce1bdd910619f86afa371db8fbe1dd8092 data/forge/tags/items/pipe_small_fluid/chrome.json
@@ -3346,7 +3346,7 @@ e26bd2547af227dedd2095fb844236e980ee9454 data/forge/tags/items/pipe_small_fluid/
 8ee3f1ca87ed38aedf2c39f4b884f4673d227064 data/forge/tags/items/pipe_small_fluid/tungsten_carbide.json
 60df4595d57333a84898131b5c3d698467e9f555 data/forge/tags/items/pipe_small_fluid/tungsten_steel.json
 cd1544f3fccd866c643cae725d017509d893ab4a data/forge/tags/items/pipe_small_fluid/vanadium_steel.json
-1c6c10f1d0c297e444ee1b9d201e3a7706a49538 data/forge/tags/items/pipe_tiny_fluid.json
+49b9b01cb6292ca2aa6bbabd5f903aa90e2d08b9 data/forge/tags/items/pipe_tiny_fluid.json
 6a6b4a64579c2d8db1c755c514626a499af9b572 data/forge/tags/items/pipe_tiny_fluid/aluminium.json
 2f9dba2e64e62eda76d18fa8d4dfd69ae237d532 data/forge/tags/items/pipe_tiny_fluid/bronze.json
 53012f6d7a0728e2b981bc787b5c65d0f3e2a1e7 data/forge/tags/items/pipe_tiny_fluid/chrome.json
@@ -3371,7 +3371,7 @@ d7cca3ea51cb0c7b4b251eeebeee9217f9f6a8a8 data/forge/tags/items/pipe_tiny_fluid/t
 255e832050fa1ccb3f7b5873309a3fe45f7b1012 data/forge/tags/items/pipe_tiny_fluid/tungsten_carbide.json
 5d92608b4d5094625b22ffaf3569d61e66bab331 data/forge/tags/items/pipe_tiny_fluid/tungsten_steel.json
 fdd6c125b8b16b88c7aa012f349ab4ded02aaf79 data/forge/tags/items/pipe_tiny_fluid/vanadium_steel.json
-e0934b06a638dfddb92b641d5efe9a2ce935b453 data/forge/tags/items/plates.json
+331710c323ac6cbf4a8c84d06354e4c354eb2713 data/forge/tags/items/plates.json
 cb1055a24a0707d48df229c5ec5ccb24cc27ff41 data/forge/tags/items/plates/aluminium.json
 47a2cdb5a8aa4c1b420b6ad6518141f6adce2933 data/forge/tags/items/plates/americium.json
 e7a98a6f36293155a9859e82c46f0404665c9c5a data/forge/tags/items/plates/amethyst.json
@@ -3394,13 +3394,13 @@ e1ac399d8c3a808af07cb609dc746f10794c061d data/forge/tags/items/plates/blue_topaz
 27ba78bc5e90ef03866c0e612193daff485db38f data/forge/tags/items/plates/cupronickel.json
 d2f8e2d08f2ff53b12e8d0f1bb95a65441bdc5d2 data/forge/tags/items/plates/damascus_steel.json
 78ce6d0f2bda1479af5cab68c6c5f11aea702743 data/forge/tags/items/plates/darmstadtium.json
-535875ada6ac3e6a33d95937dee8154289361477 data/forge/tags/items/plates/dense.json
+b97aaf10645e772132e533d207278554c37b97d6 data/forge/tags/items/plates/dense.json
 e11835818bbd350443870450233530da5248f129 data/forge/tags/items/plates/dense/darmstadtium.json
 982e9d3fa55c54232a2379ad516af48582d20d43 data/forge/tags/items/plates/dense/naquadah_alloy.json
 37de35454079417c82e07b388299f0210b883357 data/forge/tags/items/plates/dense/rhodium_plated_palladium.json
 8afe7cd43a569fae14ff1c1fc2fcef3a61840533 data/forge/tags/items/plates/dense/tungsten_steel.json
 79b813201ee95fa957493e47fc65d5451d1cb448 data/forge/tags/items/plates/diamond.json
-f653e70f6e99845e4997053deabd565feffb0ad9 data/forge/tags/items/plates/double.json
+531b0b574f4dd4d834351bab71f812ba8d9b80d1 data/forge/tags/items/plates/double.json
 44708e91a545fc5a01b51c6e2e61059b72aa5d00 data/forge/tags/items/plates/double/aluminium.json
 46203f64fddb9ecc9d708eae2d54147fe437feda data/forge/tags/items/plates/double/americium.json
 013df7bdbebe1e78d5b4e78b3bac07605edb61dd data/forge/tags/items/plates/double/annealed_copper.json
@@ -3591,7 +3591,7 @@ dbc30df59a40a6b4f4fc367300d8f0ea890c6699 data/forge/tags/items/plates/wood.json
 f71eaff65ae69305d60ceb6dee51fd83ae3edcaa data/forge/tags/items/plates/wrought_iron.json
 e9b2b58d2d8d3b28d253d30c401c9e1d4f909477 data/forge/tags/items/plates/yttrium_barium_cuprate.json
 fb48bae9df19beff4811e3d335ba48f1973daca2 data/forge/tags/items/plates/zinc.json
-1bfbb8ae6ed149543069fe5b3ed52bb7668a1d5c data/forge/tags/items/rings.json
+2f35e8af8648721457a43507e65ffab6aac908d5 data/forge/tags/items/rings.json
 76392c93cc6d96b242fd521f621c5cc8a97cb99a data/forge/tags/items/rings/aluminium.json
 1b480f56f388397d8c3be2bdc3701c1b32e73da9 data/forge/tags/items/rings/bronze.json
 ce700d7b6f5a69c2337d3f8ccd0ea0f397bb3eb1 data/forge/tags/items/rings/chrome.json
@@ -3620,7 +3620,7 @@ d61850f1c1a91978095eb258b692eaf2b4a22b81 data/forge/tags/items/rings/tritanium.j
 50c574dedc2ce6f01f86856ec410cd074351779b data/forge/tags/items/rings/tungsten_steel.json
 c9b05b8c11ebe286beb6b579640eb5ea0578a3ab data/forge/tags/items/rings/wrought_iron.json
 e21c4d52c4d1d5939758aa28d3e3be31738d0999 data/forge/tags/items/rings/zinc.json
-587663fe4fc86152ff7a0bded1f322e71720a808 data/forge/tags/items/rotors.json
+bb9ee526782c2643f3f6671226940b135ce76fb5 data/forge/tags/items/rotors.json
 1f44eda68f0705177438b808e7f7a05ef93e7558 data/forge/tags/items/rotors/bronze.json
 7a39f05ee1b800fd31df3b02a5ab826e981f8862 data/forge/tags/items/rotors/chrome.json
 23f976faaafa269aa8eaf3ed1cb7232427891324 data/forge/tags/items/rotors/darmstadtium.json
@@ -3635,11 +3635,11 @@ e4e56aa41ae0f83c9054960e69ee18a02584ce44 data/forge/tags/items/rotors/steel.json
 9612aaa01394b6235f98a7837d6a88b29e594019 data/forge/tags/items/rotors/tin.json
 390e93dcef2cbd9be5ef2ae7dcdd9d2c083e59ed data/forge/tags/items/rotors/titanium.json
 823bd3d1e312a020c880199e6adad060a0fa36c8 data/forge/tags/items/rotors/tungsten_steel.json
-e86d1bef3bba8b8d4b20bbc4d3bdd18e23e05ca0 data/forge/tags/items/rounds.json
+56486669831768143e3adf5e648829d504c5fc9d data/forge/tags/items/rounds.json
 bbff22f0f473e0310d10357557a18bbefb9d578c data/forge/tags/items/rounds/hsss.json
 328d68b858b8b4bc679b471f3f9d17bc0d83e2c6 data/forge/tags/items/rounds/osmiridium.json
 20434851a9cf5fcc1b3929b7db1060be0eb605f4 data/forge/tags/items/rounds/tritanium.json
-4a06fafb374410920eb7ba10114e13a736b6c6bc data/forge/tags/items/screws.json
+3684af12c60ecad171f74c7696c5c41d39454687 data/forge/tags/items/screws.json
 978c9a1909d73fe16c3960355460821e3a898050 data/forge/tags/items/screws/aluminium.json
 e83d8ace8c21ea9264d96576ca9d87a59adffc58 data/forge/tags/items/screws/annealed_copper.json
 6763496655190d6c14d1c2356d6123e2e6a2a9d2 data/forge/tags/items/screws/apatite.json
@@ -3697,7 +3697,7 @@ caf574b16246b4b1c3e39c822e2beea6d2615db9 data/forge/tags/items/screws/tungsten_s
 d56e365e64f5e41c672e0d64cb5a74a4fa23770f data/forge/tags/items/screws/wood.json
 c86741e61d4012a1294c7db27bd76df7af00347b data/forge/tags/items/screws/wrought_iron.json
 215bbb02362adb30819f0d45de4bdd6636876ac5 data/forge/tags/items/screws/yttrium_barium_cuprate.json
-0f3f6a95941a16c275291f8336122ab3768a9bd9 data/forge/tags/items/springs.json
+cd020dfac762ea82a2733d8d188c658ee1850db5 data/forge/tags/items/springs.json
 532ca2acea76ab17325df33527e1b0d465681a74 data/forge/tags/items/springs/aluminium.json
 46c8172dabdeca4416fba9a86f00215103ac5ce9 data/forge/tags/items/springs/copper.json
 86784a03d2eaa2e62c2f66b565d300072d444406 data/forge/tags/items/springs/cupronickel.json
@@ -3711,7 +3711,7 @@ b060672b19d0bef384434ef90fd096f357721448 data/forge/tags/items/springs/naquadah.
 7e84ef39259cb9b6c90295b73174118f767a4343 data/forge/tags/items/springs/naquadah_alloy.json
 81c4237f3cf55a6eb05b30bf8542b17ae8553fd5 data/forge/tags/items/springs/nichrome.json
 8dfdab333fac7a386c1e3d3e5214fab405c6512b data/forge/tags/items/springs/niobium_titanium.json
-7ac1f2cdf99586fb0611796bf98118caa3577b03 data/forge/tags/items/springs/small.json
+f85279180e49855b8d76b22002dced7add07c89d data/forge/tags/items/springs/small.json
 bb86bb6a4acdee7ae7cf291b989302646f704be9 data/forge/tags/items/springs/small/aluminium.json
 d729fb034fd12f375718d7815144cfdd722a8e53 data/forge/tags/items/springs/small/copper.json
 1d77c4d4a8353c0ed4c3a75330e6ecd3a8edb31e data/forge/tags/items/springs/small/gold.json
@@ -3729,7 +3729,7 @@ e232b0a66dac706bde3de5a1e113ec9d79e0a670 data/forge/tags/items/springs/steel.jso
 901916a5986cd69026495dbc844cb20fa4260cd2 data/forge/tags/items/springs/tungsten_steel.json
 6539632af7153cb3726ee2863c36eda801d521da data/forge/tags/items/springs/vanadium_gallium.json
 043884e54c7f37b2f64860c1489e13fdecce0129 data/forge/tags/items/springs/yttrium_barium_cuprate.json
-6d16daab6a914d98b00b866a00fe93882e4b906b data/forge/tags/items/sticks.json
+27faf4de85731e3e65cebe55d810ecb6707c8c0c data/forge/tags/items/sticks.json
 f6486653fae4db23c22f61057303be0d8e87e884 data/forge/tags/items/sticks/aluminium.json
 952b9d46134581c7ee1ccc318f00b3dcd56a4605 data/forge/tags/items/sticks/americium.json
 d3a265adca1015d370ad91d02df8eca01717b714 data/forge/tags/items/sticks/amethyst.json
@@ -3773,7 +3773,7 @@ ba6d616d7d6c18cebdef71f4894c508db455fd30 data/forge/tags/items/sticks/kanthal.js
 96fb1e7708b11b345da2124942a88b155dc48769 data/forge/tags/items/sticks/lapis.json
 372ec8daac6cc2e09a3d8018da9db749e8a2b74f data/forge/tags/items/sticks/lazurite.json
 fe8cdca482631021f5677226310720bc30e184b8 data/forge/tags/items/sticks/lead.json
-a264649a2ad5207cd42efdb147f5a705d8fdf9f7 data/forge/tags/items/sticks/long.json
+914aacf442a9d2917ae4c4937c6d099a41e88672 data/forge/tags/items/sticks/long.json
 e9a1426e09b1c45f851afb95e2a0cc5f9a698364 data/forge/tags/items/sticks/long/aluminium.json
 7af11a0728d65cbbff5e15de54e3dee24ec2732d data/forge/tags/items/sticks/long/annealed_copper.json
 e336819600ab3f59e51ddda4002e87b87c1d60ef data/forge/tags/items/sticks/long/bismuth_bronze.json
@@ -3893,14 +3893,14 @@ d1d5930eb1408cc8acc0350ae2c329bf105b495f data/forge/tags/items/sticks/uranium.js
 d713827aada734e28c667b4afef05a6a1e39362a data/forge/tags/items/sticks/wrought_iron.json
 bde49dc4a0792e7fa890819846386247710638e9 data/forge/tags/items/sticks/yttrium_barium_cuprate.json
 ef9acf2168502c5decc2193c6ea296e59c401953 data/forge/tags/items/sticks/zinc.json
-4af80d26f27296e7ba2f605c92782a1c58e9be7d data/forge/tags/items/stone.json
+bac2ece7f435121306996bd80d3177324b9a349f data/forge/tags/items/stone.json
 411f6180b37eea00f0069105f932d6024ebc8cfd data/forge/tags/items/stone/andesite.json
 bb23c35771e96cc866b5387d5569746e64c23a4c data/forge/tags/items/stone/diorite.json
 9994f212884e8264af96eaba34aa7e89696d8994 data/forge/tags/items/stone/endstone.json
 f92c41ce4c3dd51d875dafefe81e048bf6b8f9ed data/forge/tags/items/stone/granite.json
 8a041eecc7b70073db2ba62a874214480fcb7006 data/forge/tags/items/stone/netherrack.json
 26d89c4e3cfa827f5d2a7ef1ef43ec4c8c63cd6e data/forge/tags/items/stone/obsidian.json
-7a6905bdd6e0f7d0042536609cc0c61f72f3267b data/forge/tags/items/storage_blocks.json
+f5417dbd5bbf8a8831ee4d7321b1ad24621cd22f data/forge/tags/items/storage_blocks.json
 6c28bf2fa00bc4895ce20d85bac0d163ac80cbd3 data/forge/tags/items/storage_blocks/almandine.json
 65b256411cfcc9c95744ad8942a05082d206ed34 data/forge/tags/items/storage_blocks/aluminium.json
 2c05840c2b4cbb1647399fdf2330b5489c0203db data/forge/tags/items/storage_blocks/americium.json
@@ -4086,7 +4086,7 @@ c85de1a41859261f03183fc480b4ac54999b82ea data/forge/tags/items/tool/saw.json
 a0c841f032e11590da64c14ff9cd239a980cd8bd data/forge/tags/items/tool/scythe.json
 ce7b334e0a8ffac1c4d054b89991cd4dd94636ee data/forge/tags/items/tool/wire_cutter.json
 4864d507c7ba79837dc95949ac007eb5d1321703 data/forge/tags/items/tool/wrench.json
-74321aa7d08f60f5122236c6203777b3b52a08f9 data/forge/tags/items/tool_head_buzz_saw.json
+4c841e6d0357aef1b7f03e1ed21d7e6771afaf29 data/forge/tags/items/tool_head_buzz_saw.json
 38a5532193f9e8481b08f2ab0a77a2c665e3a4fe data/forge/tags/items/tool_head_buzz_saw/aluminium.json
 6864706a05963f6cd3a18f78d543e0365abfac1f data/forge/tags/items/tool_head_buzz_saw/blue_steel.json
 773c7c1fce9ba044f504c41bf67afe3791ade0f6 data/forge/tags/items/tool_head_buzz_saw/bronze.json
@@ -4115,7 +4115,7 @@ e8f186e444b6b1b19f3a20064ee61fc1e65004a1 data/forge/tags/items/tool_head_buzz_sa
 3c2c54e3945b9379a9c43873f7290e041e4b320c data/forge/tags/items/tool_head_buzz_saw/vanadium_steel.json
 9763bbf15d2df2fef239e80791bfc82c44cbbf77 data/forge/tags/items/tool_head_buzz_saw/wood.json
 cfbfe65f5546b68209c332c906df4581f5088146 data/forge/tags/items/tool_head_buzz_saw/wrought_iron.json
-75ac1dc0a642a3c4a226a58b97b708d8e2e67943 data/forge/tags/items/tool_head_chainsaw.json
+89b73797d584312c7b71fd5bf6484e4d1c4f29bf data/forge/tags/items/tool_head_chainsaw.json
 023e320948d2504d8db0a09d23dbe729a9889a98 data/forge/tags/items/tool_head_chainsaw/aluminium.json
 d2e908e1e74a177b0014a2120442bf5354b45045 data/forge/tags/items/tool_head_chainsaw/blue_steel.json
 04809fd2f0141b21593ae8a7cc204ac30ee4bc51 data/forge/tags/items/tool_head_chainsaw/bronze.json
@@ -4144,7 +4144,7 @@ ed71f6f6c7aa30627018d874eb3b583869ff52ce data/forge/tags/items/tool_head_chainsa
 2277a5e0d2344d76bf69e0b557c0bfb30130a9ae data/forge/tags/items/tool_head_chainsaw/vanadium_steel.json
 da4504416a79cffb3cdd5052bff9d7415c66e903 data/forge/tags/items/tool_head_chainsaw/wood.json
 3384e23592be88b81f104c7056aac5b67440c0d1 data/forge/tags/items/tool_head_chainsaw/wrought_iron.json
-2a4a53be7537cac6a184cfa7316590e4e5b0ae96 data/forge/tags/items/tool_head_drill.json
+5b919783c11c6dff0bc5e1104d95f019428f2a79 data/forge/tags/items/tool_head_drill.json
 18f34b13e5f19896846cd85887cec021fde79b85 data/forge/tags/items/tool_head_drill/aluminium.json
 d3f05c67d6f1741c3bb78fb7ab8cbba7aa600f85 data/forge/tags/items/tool_head_drill/blue_steel.json
 b24c836e947422f363d7b3a7f4a038832de22559 data/forge/tags/items/tool_head_drill/bronze.json
@@ -4173,7 +4173,7 @@ e2c8438fe4fd824d7d9490b68326e724f3e8d4f5 data/forge/tags/items/tool_head_drill/u
 ddd1e53bb4404cade3971faf6d5392f866bdbf35 data/forge/tags/items/tool_head_drill/vanadium_steel.json
 75ad39f352a19c1743f551f5027709ff0a8086ab data/forge/tags/items/tool_head_drill/wood.json
 f45f211d3e1b941b81dc9c351762c85617e1999d data/forge/tags/items/tool_head_drill/wrought_iron.json
-ce474d329d5e2e7151088359389486269ef952da data/forge/tags/items/tool_head_screwdriver.json
+a53d2739bf22d59e0639e80fe7ccf6c42a673a7c data/forge/tags/items/tool_head_screwdriver.json
 f0d719bf0cc7ed681513aef89ffd7f2f0d61f692 data/forge/tags/items/tool_head_screwdriver/aluminium.json
 5d8125f16fd0f4545802b52c962cc8c589b8227c data/forge/tags/items/tool_head_screwdriver/bronze.json
 e1b3b4137ecc500720b4fac4c64c1a4e33cd2bfd data/forge/tags/items/tool_head_screwdriver/cobalt_brass.json
@@ -4192,7 +4192,7 @@ d256856394d98281e5df78bb57b288fb3c707bda data/forge/tags/items/tool_head_screwdr
 1040c5e1c0d41621b728322fdc9ce43898b7d941 data/forge/tags/items/tool_head_screwdriver/vanadium_steel.json
 e0861b361df865c3e3943e5e7ebe8677939b589e data/forge/tags/items/tool_head_screwdriver/wood.json
 a1fff9afcc97d89b5d09fa84baf4c3f30b88bccb data/forge/tags/items/tool_head_screwdriver/wrought_iron.json
-63dd58adae0eac4644e8d8ca0ade9b849199e315 data/forge/tags/items/tool_head_wrench.json
+44d87cb0813125953c314f994859024db86b896d data/forge/tags/items/tool_head_wrench.json
 5f264260576be3d925975051ce37bf044b51d93c data/forge/tags/items/tool_head_wrench/aluminium.json
 42081ae858849ee71d98f32bac2c591afd8cf72f data/forge/tags/items/tool_head_wrench/blue_steel.json
 c31300231c98831f8ecb6e38162934ec7b52d261 data/forge/tags/items/tool_head_wrench/bronze.json
@@ -4221,7 +4221,7 @@ ee78777c791dc44aad4cc4ec64e8362ee5deec3c data/forge/tags/items/tool_head_wrench/
 1b06dc49ec56b8b19309309be01becdee3b46342 data/forge/tags/items/tool_head_wrench/vanadium_steel.json
 f948b36ca17d2d50b25a237a767870cab7028f05 data/forge/tags/items/tool_head_wrench/wood.json
 3d0b4f3635ffa33014111583e5c8d8d2c5a81955 data/forge/tags/items/tool_head_wrench/wrought_iron.json
-5636d916e89d6464350683192ac5f3d44d6ea1ff data/forge/tags/items/turbine_blade.json
+6ef8a15e6c74a8a1f9656c2aca886b963090a6a8 data/forge/tags/items/turbine_blade.json
 76863069b3dc6ba7dbf8b655f566fe93f05b7bd5 data/forge/tags/items/turbine_blade/aluminium.json
 ef5dd517981865521e1e32ac1c66a5302a3de0b4 data/forge/tags/items/turbine_blade/bismuth_bronze.json
 476f60fb28c884893a608b72a11dddab613a6932 data/forge/tags/items/turbine_blade/black_bronze.json
@@ -4257,7 +4257,7 @@ b48973b669ebdef184a7a5918834367816ac233d data/forge/tags/items/turbine_blade/ste
 ff07895c7bc448118575707f114e8335be2407a8 data/forge/tags/items/turbine_blade/ultimet.json
 da6402442f5a2577b49a4c324b49d70637172754 data/forge/tags/items/turbine_blade/vanadium_steel.json
 14d044578977c07dc7ac6d3a0ca56662553188ed data/forge/tags/items/turbine_blade/wrought_iron.json
-75864f218c02b63a6fc5d1b8a26b1129fa79c47c data/forge/tags/items/wires/fine.json
+4a8d263997dea5eb43a3d2cd98956f5bf9867d86 data/forge/tags/items/wires/fine.json
 b51e2aacff0ac7792cdc8649fa5003715553c8f7 data/forge/tags/items/wires/fine/aluminium.json
 981cd6f2a6e5236ab1f104040ae4bd2d7f790071 data/forge/tags/items/wires/fine/americium.json
 54c4823d25659ba842414f26b67b5e87b743abe6 data/forge/tags/items/wires/fine/annealed_copper.json
@@ -4290,7 +4290,7 @@ a275be2d72be035232e534dc7c6bba63d1723ea8 data/forge/tags/items/wires/fine/tin.js
 ee916fb2501756f34889403b0e4a2587df3ac048 data/forge/tags/items/wires/fine/uranium_rhodium_dinaquadide.json
 fedf69758b87b3464fc52f43fb328b9244d255e9 data/forge/tags/items/wires/fine/yttrium_barium_cuprate.json
 5415a980efac2636bf87fcec0e3c7cc4d301523b data/forge/tags/items/wires/fine/zinc.json
-2ea75e6497856f719a78c1dbcc231b83371bcd0a data/forge/tags/items/wire_gt_double.json
+338fbf504e179dc2dae0ba7fe5a65af86cddb1f4 data/forge/tags/items/wire_gt_double.json
 0cddc24ba38c7755d1141185f0ee4639369f4743 data/forge/tags/items/wire_gt_double/aluminium.json
 4a83a966c5bc0aaacde0b8a7e05484e364aa6e3c data/forge/tags/items/wire_gt_double/annealed_copper.json
 ef29004b23b0acf25ddadaa5c5e433a6515e575c data/forge/tags/items/wire_gt_double/black_steel.json
@@ -4333,7 +4333,7 @@ e67df14fae735c1177efb99124ea7c57f8b64049 data/forge/tags/items/wire_gt_double/ur
 b2cc73c8fa1a4baab6b9190bd6d376653a108829 data/forge/tags/items/wire_gt_double/uranium_triplatinum.json
 a07339a0aee4f4b725872f570edceefa641e599e data/forge/tags/items/wire_gt_double/vanadium_gallium.json
 3b0b84af866fc4732aa8255c46143af492a1062f data/forge/tags/items/wire_gt_double/yttrium_barium_cuprate.json
-a9228a268893297a2b3d0b262f7e466b52376b37 data/forge/tags/items/wire_gt_hex.json
+c9e0598f847f73a6e9c4e0531d5f377fffee357e data/forge/tags/items/wire_gt_hex.json
 9306876c4a35038a0ee1b0a302074517cafb8134 data/forge/tags/items/wire_gt_hex/aluminium.json
 85532ff50e597162ee9843a08f17f3d1e818e3a3 data/forge/tags/items/wire_gt_hex/annealed_copper.json
 eb8c97dc64487e40e60c050ad9ae0d5f0ca562c0 data/forge/tags/items/wire_gt_hex/black_steel.json
@@ -4376,7 +4376,7 @@ bd13a5815ecf270590152d610be7b03e86503001 data/forge/tags/items/wire_gt_hex/urani
 33478a15aad460609313e7fd8dec5fba3214ca25 data/forge/tags/items/wire_gt_hex/uranium_triplatinum.json
 61cb5dcaaca82a9d5649fdf952d4827e40071492 data/forge/tags/items/wire_gt_hex/vanadium_gallium.json
 febe74818d6b9b88f4524fb72ad66d321a3802d2 data/forge/tags/items/wire_gt_hex/yttrium_barium_cuprate.json
-26785d20123300c07f215dbfefe0dfa10b19d7cb data/forge/tags/items/wire_gt_octal.json
+73d9f5fe0b89c39528f3770c7f7f8a66cefbb2d7 data/forge/tags/items/wire_gt_octal.json
 3b3474375858e347889b9bb44638763c34755d0f data/forge/tags/items/wire_gt_octal/aluminium.json
 96fb667dec992f0cfb06d404307d07868c6b0f44 data/forge/tags/items/wire_gt_octal/annealed_copper.json
 16e99303565f1547dce36a3aa9fe2215040996fe data/forge/tags/items/wire_gt_octal/black_steel.json
@@ -4419,7 +4419,7 @@ cf7af51b2ad7e8d1dc7ecb4641f2a508911a4ddb data/forge/tags/items/wire_gt_octal/ura
 46b91ff6ebcc2be81acf904e723b13dbeedb927f data/forge/tags/items/wire_gt_octal/uranium_triplatinum.json
 b94488c02a6968b975e87a2a1413606ce8d75202 data/forge/tags/items/wire_gt_octal/vanadium_gallium.json
 26e91a6e32c5282471cf630d35f1be3ee137be65 data/forge/tags/items/wire_gt_octal/yttrium_barium_cuprate.json
-b338e9e7ddc2e0777398c8c2f6c98b211bb9dfae data/forge/tags/items/wire_gt_quadruple.json
+10c91d1b5bb6fbcab40f5aa825c5556429bfeb33 data/forge/tags/items/wire_gt_quadruple.json
 407e2ee6ddee478e00ce5ec387bc42347f187690 data/forge/tags/items/wire_gt_quadruple/aluminium.json
 9376dc13f700c2f23b59e9048747812160db57b1 data/forge/tags/items/wire_gt_quadruple/annealed_copper.json
 5e6ad6dd7148a055bb5eee76f3077d601555212c data/forge/tags/items/wire_gt_quadruple/black_steel.json
@@ -4462,7 +4462,7 @@ f8441d26f1b302707e144eb6abc0f31f675588f0 data/forge/tags/items/wire_gt_quadruple
 db64ff05a9c0347b6102023ccac70834f01cc2d8 data/forge/tags/items/wire_gt_quadruple/uranium_triplatinum.json
 cde200014451e82248ea412d5f8b5951a13d4afe data/forge/tags/items/wire_gt_quadruple/vanadium_gallium.json
 54a8817fca911db1999dc8a609ecedbf71a2a916 data/forge/tags/items/wire_gt_quadruple/yttrium_barium_cuprate.json
-71f39dcd44bd4541872942a21d80de1b9809f7b0 data/forge/tags/items/wire_gt_single.json
+95051e79e6b0e961551293bd3107fcc44ecc76ce data/forge/tags/items/wire_gt_single.json
 5cd7a11e7d7fca8aadc1e6e99c4dd7620770fdf3 data/forge/tags/items/wire_gt_single/aluminium.json
 e5f23b508f7072b40cbd7830ea61f6c63a2c2050 data/forge/tags/items/wire_gt_single/annealed_copper.json
 81d4619f69aa5dea1a1b7bb649e3136008e27db6 data/forge/tags/items/wire_gt_single/black_steel.json

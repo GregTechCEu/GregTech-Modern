@@ -317,9 +317,9 @@ public class GTItems {
             var held = FluidTransferHelper.getFluidContained(itemStack);
             var prefix = LocalizationUtils.format("fluid_cell.empty");
             if (held != null && !held.isEmpty()) {
-                prefix = LocalizationUtils.format(Registry.FLUID.getKey(held.getFluid()).toLanguageKey());
+                prefix = LocalizationUtils.format("fluid." + Registry.FLUID.getKey(held.getFluid()).toLanguageKey());
             }
-            return "%s %s".formatted(prefix, LocalizationUtils.format(itemStack.getDescriptionId()));
+            return "%s %s".formatted(prefix, LocalizationUtils.format(itemStack.getItem().getDescriptionId()));
         };
     }
 

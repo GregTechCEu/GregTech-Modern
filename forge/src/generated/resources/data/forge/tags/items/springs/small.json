@@ -1,15 +1,15 @@
 {
   "values": [
-    "#forge:springs/small/yttrium_barium_cuprate",
+    "#forge:springs/small/tungsten",
+    "#forge:springs/small/niobium_titanium",
     "#forge:springs/small/steel",
+    "#forge:springs/small/aluminium",
     "#forge:springs/small/tin",
     "#forge:springs/small/copper",
-    "#forge:springs/small/gold",
-    "#forge:springs/small/niobium_titanium",
-    "#forge:springs/small/aluminium",
-    "#forge:springs/small/lead",
-    "#forge:springs/small/vanadium_gallium",
     "#forge:springs/small/iron",
-    "#forge:springs/small/tungsten"
+    "#forge:springs/small/lead",
+    "#forge:springs/small/gold",
+    "#forge:springs/small/vanadium_gallium",
+    "#forge:springs/small/yttrium_barium_cuprate"
   ]
 }

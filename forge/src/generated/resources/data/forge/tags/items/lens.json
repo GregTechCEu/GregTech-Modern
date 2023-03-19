@@ -1,10 +1,10 @@
 {
   "values": [
+    "#forge:lens/glass",
     "#forge:lens/sapphire",
-    "#forge:lens/emerald",
-    "#forge:lens/nether_star",
     "#forge:lens/ruby",
-    "#forge:lens/diamond",
-    "#forge:lens/glass"
+    "#forge:lens/nether_star",
+    "#forge:lens/emerald",
+    "#forge:lens/diamond"
   ]
 }

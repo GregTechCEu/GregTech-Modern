@@ -711,9 +711,7 @@ public class TagPrefix {
     }
 
     public String getLocalNameForItem(Material material) {
-        var prefix = LocalizationUtils.format(getUnlocalizedName());
-        var mat = LocalizationUtils.format(material.getUnlocalizedName());
-        return prefix.formatted(mat);
+        return LocalizationUtils.format(getUnlocalizedName(), LocalizationUtils.format(material.getUnlocalizedName()));
     }
 
     private String findUnlocalizedName(Material material) {
