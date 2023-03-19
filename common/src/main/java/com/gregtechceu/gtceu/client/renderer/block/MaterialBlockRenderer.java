@@ -43,12 +43,6 @@ public class MaterialBlockRenderer extends IModelRenderer {
         this.blockTexture = type.getBlockTexturePath(iconSet);
     }
 
-    @Nullable
-    @Override
-    protected BakedModel getBlockBakedModel(BlockPos pos, BlockAndTintGetter blockAccess) {
-        return super.getBlockBakedModel(pos, blockAccess);
-    }
-
     @Override
     @Environment(EnvType.CLIENT)
     protected UnbakedModel getModel() {
@@ -60,6 +54,7 @@ public class MaterialBlockRenderer extends IModelRenderer {
     }
 
     @Override
+    @Environment(EnvType.CLIENT)
     public void onPrepareTextureAtlas(ResourceLocation atlasName, Consumer<ResourceLocation> register) {
         super.onPrepareTextureAtlas(atlasName, register);
         if (atlasName.equals(TextureAtlas.LOCATION_BLOCKS)) {
@@ -68,6 +63,7 @@ public class MaterialBlockRenderer extends IModelRenderer {
     }
 
     @Override
+    @Environment(EnvType.CLIENT)
     public boolean useAO() {
         return true;
     }

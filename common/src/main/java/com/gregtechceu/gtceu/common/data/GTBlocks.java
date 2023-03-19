@@ -5,9 +5,8 @@ import com.google.common.collect.Table;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.item.MaterialPipeBlockItem;
-import com.gregtechceu.gtceu.common.block.CompressedBlock;
+import com.gregtechceu.gtceu.client.renderer.block.OreBlockRenderer;
 import com.gregtechceu.gtceu.common.block.FluidPipeBlock;
-import com.gregtechceu.gtceu.common.block.FrameBlock;
 import com.gregtechceu.gtceu.common.block.variant.*;
 import com.gregtechceu.gtceu.common.pipelike.fluidpipe.FluidPipeType;
 import com.gregtechceu.gtceu.api.block.MaterialBlock;
@@ -21,21 +20,28 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.block.CableBlock;
 import com.gregtechceu.gtceu.common.pipelike.cable.Insulation;
+import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.tterrag.registrate.builders.BlockBuilder;
 import com.tterrag.registrate.builders.ItemBuilder;
 import com.tterrag.registrate.providers.ProviderType;
+import com.tterrag.registrate.providers.loot.RegistrateBlockLootTables;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import com.tterrag.registrate.util.nullness.NonNullFunction;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.storage.loot.entries.LootItem;
+import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount;
 import net.minecraftforge.client.model.generators.ConfiguredModel;
 
 import javax.annotation.Nonnull;
+
+import java.util.Objects;
 
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.*;
 import static com.gregtechceu.gtceu.api.registry.GTRegistries.REGISTRATE;
@@ -55,13 +61,12 @@ public class GTBlocks {
 
     static {
         REGISTRATE.creativeModeTab(() -> GTCreativeModeTabs.MATERIAL_BLOCK);
-
         ImmutableTable.Builder<TagPrefix, Material, BlockEntry<? extends MaterialBlock>> builder = ImmutableTable.builder();
         for (Material material : GTRegistries.MATERIALS) {
             // Compressed Block
             if ((material.hasProperty(PropertyKey.INGOT) || material.hasProperty(PropertyKey.GEM) || material.hasFlag(FORCE_GENERATE_BLOCK))
                     && !TagPrefix.block.isIgnored(material)) {
-                var entry = REGISTRATE.block("compressed_block_%s".formatted(material.getName()), properties -> new CompressedBlock(properties, material))
+                var entry = REGISTRATE.block("compressed_block_%s".formatted(material.getName()), properties -> new MaterialBlock(properties, TagPrefix.block, material))
                         .initialProperties(() -> Blocks.IRON_BLOCK)
                         .transform(unificationBlock(TagPrefix.block, material))
                         .addLayer(() -> RenderType::solid)
@@ -80,7 +85,7 @@ public class GTBlocks {
 
             // Frame Block
             if (material.hasProperty(PropertyKey.DUST) && material.hasFlag(GENERATE_FRAME)) {
-                var entry = REGISTRATE.block("frame_block_%s".formatted(material.getName()), properties -> new FrameBlock(properties, material))
+                var entry = REGISTRATE.block("frame_block_%s".formatted(material.getName()), properties -> new MaterialBlock(properties, TagPrefix.frameGt, material))
                         .initialProperties(() -> Blocks.IRON_BLOCK)
                         .properties(BlockBehaviour.Properties::noOcclusion)
                         .transform(unificationBlock(TagPrefix.frameGt, material))
@@ -96,6 +101,38 @@ public class GTBlocks {
                         .build()
                         .register();
                 builder.put(TagPrefix.frameGt, material, entry);
+            }
+
+            // Ore Block
+            if (material.hasProperty(PropertyKey.ORE)) {
+                for (var ore : TagPrefix.ORES.entrySet()) {
+                    var oreTag = ore.getKey();
+                    var oreProperty = material.getProperty(PropertyKey.ORE);
+                    var entry = REGISTRATE.block("%s_%s".formatted(FormattingUtil.toLowerCaseUnder(oreTag.name), material.getName()),
+                                    properties -> new MaterialBlock(properties, oreTag, material, new OreBlockRenderer(ore.getValue(),
+                                            Objects.requireNonNull(oreTag.materialIconType()).getBlockTexturePath(material.getMaterialIconSet()),
+                                            oreProperty.isEmissive())))
+                            .initialProperties(() -> Blocks.IRON_BLOCK)
+                            .properties(BlockBehaviour.Properties::noOcclusion)
+                            .transform(unificationBlock(oreTag, material))
+                            .addLayer(() -> RenderType::cutoutMipped)
+                            .blockstate(NonNullBiConsumer.noop())
+                            .setData(ProviderType.LANG, NonNullBiConsumer.noop())
+                            .tag(BlockTags.MINEABLE_WITH_PICKAXE)
+                            .color(() -> () -> MaterialBlock::tintedColor)
+                            // TODO whether we need loot for drops?
+//                            .loot((lt, b) -> lt.add(b,
+//                                    RegistrateBlockLootTables.createSilkTouchDispatchTable(b,
+//                                            RegistrateBlockLootTables.applyExplosionDecay(b, LootItem.lootTableItem(GTItems.MATERIAL_ITEMS.get(TagPrefix.dust, material).get())
+//                                                    .apply(ApplyBonusCount.addOreBonusCount(Enchantments.BLOCK_FORTUNE))))))
+                            .item(MaterialBlockItem::new)
+                            .model(NonNullBiConsumer.noop())
+                            .color(() -> () -> MaterialBlockItem::tintColor)
+                            .transform(unificationItem(oreTag, material))
+                            .build()
+                            .register();
+                    builder.put(oreTag, material, entry);
+                }
             }
         }
         MATERIAL_BLOCKS = builder.build();
