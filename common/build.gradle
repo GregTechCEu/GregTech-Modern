@@ -7,15 +7,6 @@ String getConfig(String key) {
 }
 
 def mod_id = getConfig("mod_id")
-def minecraft_version = getConfig("minecraft_version")
-def fabric_loader_version = getConfig("fabric_loader_version")
-def create_fabric_version = getConfig("create_fabric_version")
-def fabric_api_version = getConfig("fabric_api_version")
-def jei_version = getConfig("jei_version")
-def rei_version = getConfig("rei_version")
-def ldlib_id = getConfig("ldlib_id")
-def ldlib_version = getConfig("ldlib_version")
-def top_fabric_version = getConfig("top_fabric_version")
 
 loom {
     accessWidenerPath = file("src/main/resources/${mod_id}.accesswidener")
@@ -47,30 +38,29 @@ configurations {
 dependencies {
     // We depend on fabric loader here to use the fabric @Environment annotations and get the mixin dependencies
     // Do NOT use other classes from fabric loader
-    modImplementation("net.fabricmc:fabric-loader:${fabric_loader_version}")
-    // fabric api
-    modCompileOnly("net.fabricmc.fabric-api:fabric-api:${fabric_api_version}")
+    modImplementation fabric.fabricLoader
+    modCompileOnly fabric.fabricApi
 
     // Compile against Create Fabric in common
     // beware of differences across platforms!
     // dependencies must also be pulled in to minimize problems, from remapping issues to compile errors.
     // All dependencies except Flywheel and Registrate are NOT safe to use!
     // Flywheel and Registrate must also be used carefully due to differences.
-    modCompileOnly("com.simibubi.create:create-fabric-${minecraft_version}:${create_fabric_version}")
-    modImplementation("com.lowdragmc.ldlib:${ldlib_id}:${ldlib_version}+${ldlib_id}-common-1.19.2") { transitive = false }
+    modCompileOnly fabric.createFabric
+    modImplementation fabric.ldlib.common
 
     // JEI
-    modCompileOnly("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
-    modCompileOnly("mezz.jei:jei-${minecraft_version}-fabric-api:${jei_version}")
-    modCompileOnly("mezz.jei:jei-${minecraft_version}-fabric:${jei_version}")
+    modCompileOnly fabric.jei.common.api
+    modCompileOnly fabric.jei.fabric.api
+    modCompileOnly fabric.jei.fabric.impl
 
     // REI
-    modCompileOnly("me.shedaniel:RoughlyEnoughItems-default-plugin-fabric:${rei_version}")
-    modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:${rei_version}")
-    modCompileOnly("me.shedaniel:RoughlyEnoughItems-fabric:${rei_version}")
+    modCompileOnly fabric.rei.plugin
+    modCompileOnly fabric.rei.api
+    modCompileOnly fabric.rei.fabric
 
     // TOP
-    modCompileOnly("mcjty.theoneprobe:theoneprobe-fabric:${top_fabric_version}")
+    modCompileOnly fabric.theoneprobe
 }
 
 publishing {

@@ -1,8 +1,8 @@
 plugins {
-    id "architectury-plugin" version "3.4-SNAPSHOT"
-    id "dev.architectury.loom" version "1.0-SNAPSHOT" apply false
-    id "io.github.juuxel.loom-quiltflower" version "1.+" apply false // Quiltflower, a better decompiler
-    id "io.github.p03w.machete" version "1.+" // automatic jar compressing on build
+    alias libs.plugins.architectury
+    alias libs.plugins.architectury.loom apply false
+    alias libs.plugins.quiltFlower apply false // Quiltflower, a better decompiler
+    alias libs.plugins.machete // automatic jar compressing on build
 }
 
 def is_root_project = project == rootProject
@@ -44,15 +44,15 @@ subprojects {
     }
 
     dependencies {
-        minecraft "com.mojang:minecraft:${minecraft_version}"
+        minecraft "com.mojang:minecraft:${libs.versions.minecraft.get()}"
 
         if (is_root_project) {
             // layered mappings - Mojmap names, parchment and QM docs and parameters
-            mappings(loom.layered {
-                it.mappings("org.quiltmc:quilt-mappings:${minecraft_version}+build.${qm_version}:intermediary-v2")
-                it.parchment("org.parchmentmc.data:parchment-${minecraft_version}:${parchment_version}@zip")
+            mappings loom.layered {
+                it.mappings("org.quiltmc:quilt-mappings:${libs.versions.minecraft.get()}+build.${libs.versions.quiltMappings.get()}:intermediary-v2")
+                it.parchment("org.parchmentmc.data:parchment-${libs.versions.minecraft.get()}:${libs.versions.parchment.get()}@zip")
                 it.officialMojangMappings { nameSyntheticMembers = false }
-            })
+            }
         }
 
         // see each subproject for dependencies.

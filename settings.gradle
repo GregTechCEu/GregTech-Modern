@@ -8,6 +8,143 @@ pluginManagement {
     }
 }
 
+dependencyResolutionManagement {
+    repositories {
+         mavenCentral()
+    }
+    versionCatalogs {
+        // Minecraft Version
+        def minecraftVersion = "1.19.2"
+
+        // Mod Dependencies Versions
+        // Common
+        def jeiVersion = "11.5.0.297"
+        def reiVersion = "9.1.580"
+
+        // Fabric
+        def fabricLoaderVersion = "0.14.11" // https://fabricmc.net/develop/
+        def fabricApiVersion = "0.73.2" // https://fabricmc.net/develop/
+        def registrateVersion = "1.1.50"
+        def createVersion = "0.5.0.g-837"
+        def lazyDfuVersion = "0.1.3"
+        def modMenuVersion = "4.1.2"
+        def ldLibVersion = "1.0.0"
+        def topFabricVersion = "1.19-6.0.0"
+
+        // Forge
+        def forgeVersion = "43.2.0"
+        def registrateForgeVersion = "MC1.19-1.1.5"
+        def createForgeVersion = "0.5.0.h-21"
+        def flywheelForgeVersion = "0.6.8.a-14"
+        def topForgeVersion = "1.19-6.2.0-6"
+
+        // Libs
+        def quiltMappingsVersion = "21"  // https://lambdaurora.dev/tools/import_quilt.html
+        def parchmentVersion = "2022.11.27" // https://parchmentmc.org/docs/getting-started
+        def shadowVersion = "7.1.2"
+        def architecturyPluginVersion = "3.4-SNAPSHOT"
+        def architecturyLoomVersion = "1.0-SNAPSHOT"
+        def quiltFlowerVersion = "1.+"
+        def macheteVersion = "1.+"
+
+        fabric {
+            def parchment = version("parchment", parchmentVersion)
+            library("parchment", "org.parchmentmc.data", "parchment-${minecraftVersion}").versionRef(parchment)
+
+            def fabricLoader = version("fabricLoader", fabricLoaderVersion)
+            library("fabricLoader", "net.fabricmc", "fabric-loader").versionRef(fabricLoader)
+
+            def fabricApi = version("fabricApi", "${fabricApiVersion}+${minecraftVersion}")
+            library("fabricApi", "net.fabricmc.fabric-api", "fabric-api").versionRef(fabricApi)
+
+            def ldLib = version("ldlib", ldLibVersion)
+            library("ldlib-common", "com.lowdragmc.ldlib", "ldlib").version("${ldLibVersion}+ldlib-common-${minecraftVersion}")
+            library("ldlib-fabric", "com.lowdragmc.ldlib", "ldlib-ldlib-fabric").version("${ldLibVersion}+ldlib-fabric-${minecraftVersion}")
+
+            def registrate = version("registrate", "${registrateVersion}-MC${minecraftVersion}")
+            library("registrate", "com.tterrag.registrate_fabric", "Registrate").versionRef(registrate)
+
+            def createFabric = version("create-fabric", "${createVersion}+${minecraftVersion}")
+            library("createFabric", "com.simibubi.create", "create-fabric-${minecraftVersion}").versionRef(createFabric)
+
+            def lazyDfu = version("lazydfu", lazyDfuVersion)
+            library("lazydfu", "maven.modrinth", "lazydfu").versionRef(lazyDfu)
+
+            def modMenu = version("modmenu", modMenuVersion)
+            library("modmenu", "com.terraformersmc", "modmenu").versionRef(modMenu)
+
+            def jei = version("jei", jeiVersion)
+            library("jei-common-api", "mezz.jei", "jei-${minecraftVersion}-common-api").versionRef(jei)
+            library("jei-fabric-api", "mezz.jei", "jei-${minecraftVersion}-fabric-api").versionRef(jei)
+            library("jei-fabric-impl", "mezz.jei", "jei-${minecraftVersion}-fabric").versionRef(jei)
+            bundle("jei", ["jei-common-api", "jei-fabric-api"])
+
+            def rei = version("rei", reiVersion)
+            library("rei-plugin", "me.shedaniel", "RoughlyEnoughItems-default-plugin-fabric").versionRef(rei)
+            library("rei-api", "me.shedaniel", "RoughlyEnoughItems-api-fabric").versionRef(rei)
+            library("rei-fabric", "me.shedaniel", "RoughlyEnoughItems-fabric").versionRef(rei)
+
+            def theoneprobe = version("theoneprobe", topFabricVersion)
+            library("theoneprobe", "mcjty.theoneprobe", "theoneprobe-fabric").versionRef(theoneprobe)
+        }
+
+        forge {
+            version("forgeShortVersion", forgeVersion)
+            def minecraftForge = version("minecratfForge", "${minecraftVersion}-${forgeVersion}")
+            library("minecraftForge", "net.minecraftforge", "forge").versionRef(minecraftForge)
+
+            def ldLib = version("ldlib", ldLibVersion)
+            library("ldlib-common", "com.lowdragmc.ldlib", "ldlib").version("${ldLibVersion}+ldlib-common-${minecraftVersion}")
+            library("ldlib-forge", "com.lowdragmc.ldlib", "ldlib-ldlib-forge").version("${ldLibVersion}+ldlib-forge-${minecraftVersion}")
+
+            def registrate = version("registrate", registrateForgeVersion)
+            library("registrate", "com.tterrag.registrate", "Registrate").versionRef(registrate)
+
+            def createForge = version("createForge", createForgeVersion)
+            library("createForge", "com.simibubi.create", "create-${minecraftVersion}").versionRef(createForge)
+
+            def flywheel = version("flywheel", flywheelForgeVersion)
+            library("flywheel", "com.jozufozu.flywheel", "flywheel-forge-${minecraftVersion}").versionRef(flywheel)
+
+            def jei = version("jei", jeiVersion)
+            library("jei-common-api", "mezz.jei", "jei-${minecraftVersion}-common-api").versionRef(jei)
+            library("jei-forge-api", "mezz.jei", "jei-${minecraftVersion}-forge-api").versionRef(jei)
+            library("jei-forge-impl", "mezz.jei", "jei-${minecraftVersion}-forge").versionRef(jei)
+
+            def rei = version("rei", reiVersion)
+            library("rei-plugin", "me.shedaniel", "RoughlyEnoughItems-default-plugin-forge").versionRef(rei)
+            library("rei-api", "me.shedaniel", "RoughlyEnoughItems-api-forge").versionRef(rei)
+            library("rei-fabric", "me.shedaniel", "RoughlyEnoughItems-forge").versionRef(rei)
+
+            def theoneprobe = version("theoneprobe", topForgeVersion)
+            library("theoneprobe", "mcjty.theoneprobe", "theoneprobe").versionRef(theoneprobe)
+        }
+
+        libs {
+            version("quiltMappings", quiltMappingsVersion)
+            version("parchment", parchmentVersion)
+
+            def minecraft = version("minecraft", minecraftVersion)
+            library("minecraft", "com.mojang", "minecraft").versionRef(minecraft)
+
+            def shadow = version("shadow", shadowVersion)
+            plugin("shadow", "com.github.johnrengelman.shadow").versionRef(shadow)
+
+            def architecturyPlugin = version("architectury", architecturyPluginVersion)
+            plugin("architectury", "architectury-plugin").versionRef(architecturyPlugin)
+
+            def architecturyLoom = version("architectury-loom", architecturyLoomVersion)
+            plugin("architectury-loom", "dev.architectury.loom").versionRef(architecturyLoom)
+
+            def quiltFlower = version("quiltFlower", quiltFlowerVersion)
+            plugin("quiltFlower", "io.github.juuxel.loom-quiltflower").versionRef(quiltFlower)
+
+            def machete = version("machete", macheteVersion)
+            plugin("machete", "io.github.p03w.machete").versionRef(machete)
+        }
+    }
+}
+
 include("${mod_id}-common")
 include("${mod_id}-fabric")
 include("${mod_id}-forge")
