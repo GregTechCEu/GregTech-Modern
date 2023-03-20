@@ -103,10 +103,12 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
                 // TODO NBTIngredient?
 //                ItemStack output = ingredient instanceof NBTIngredient nbtIngredient ? ((NBTIngredientMixin) nbtIngredient).getStack() : ingredient.getItems()[0];
                 ItemStack output = ingredient.getItems()[0];
-                for (int i = 0; i < capability.getSlots(); i++) {
-                    ItemStack leftStack = capability.insertItem(i, output.copy(), simulate);
-                    output.setCount(leftStack.getCount());
-                    if (output.isEmpty()) break;
+                if (!output.isEmpty()) {
+                    for (int i = 0; i < capability.getSlots(); i++) {
+                        ItemStack leftStack = capability.insertItem(i, output.copy(), simulate);
+                        output.setCount(leftStack.getCount());
+                        if (output.isEmpty()) break;
+                    }
                 }
                 if (output.isEmpty()) iterator.remove();
             }
