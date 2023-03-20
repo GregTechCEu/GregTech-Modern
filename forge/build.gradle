@@ -1,29 +1,18 @@
 plugins {
-    id "com.github.johnrengelman.shadow" version "7.1.2"
+    alias(libs.plugins.shadow)
 }
 
 String getConfig(String key) {
     return project.getParent().properties.get(key)
 }
 
-def parent_path = project.getParent() == rootProject ? "" : project.getParent().getPath()
 def mod_id = getConfig("mod_id")
-def common_project = project("${parent_path}:${mod_id}-common")
+def common_project = project(":${mod_id}-common")
 def version = getConfig("version")
 def mod_license = getConfig("mod_license")
 def mod_name = getConfig("mod_name")
 def mod_description = getConfig("mod_description")
 def mod_url = getConfig("mod_url")
-def minecraft_version = getConfig("minecraft_version")
-def ldlib_id = getConfig("ldlib_id")
-def ldlib_version = getConfig("ldlib_version")
-def create_forge_version = getConfig("create_forge_version")
-def registrate_forge_version = getConfig("registrate_forge_version")
-def flywheel_forge_minecraft_version = getConfig("flywheel_forge_minecraft_version")
-def flywheel_forge_version = getConfig("flywheel_forge_version")
-def jei_version = getConfig("jei_version")
-def rei_version = getConfig("rei_version")
-def top_forge_version = getConfig("top_forge_version")
 
 architectury {
     platformSetupLoomIde()
@@ -92,40 +81,42 @@ repositories {
             includeGroup("com.simibubi.create")
         }
     }
+    maven { url = "https://maven.parchmentmc.org" } // Parchment mappings
+    maven { url = "https://maven.quiltmc.org/repository/release" } // Quilt Mappings
     maven { // TOP
         url "https://maven.k-4u.nl"
     }
 }
 
 dependencies {
-    forge("net.minecraftforge:forge:${minecraft_version}-${forge_version}")
-    common(project(path: "${parent_path}:${mod_id}-common", configuration: "namedElements")) { transitive = false }
-    shadowCommon(project(path: "${parent_path}:${mod_id}-common", configuration: "transformProductionForge")) { transitive = false }
+    forge forge.minecraftForge
+
+    common(project(path: ":${mod_id}-common", configuration: "namedElements")) { transitive = false }
+    shadowCommon(project(path: ":${mod_id}-common", configuration: "transformProductionForge")) { transitive = false }
 
     // LDLib
-    modCompileOnly("com.lowdragmc.ldlib:${ldlib_id}:${ldlib_version}+${ldlib_id}-common-1.19.2") { transitive = false }
-    modImplementation("com.lowdragmc.ldlib:${ldlib_id}-${ldlib_id}-forge:${ldlib_version}+${ldlib_id}-forge-1.19.2") { transitive = false }
+    modCompileOnly(forge.ldlib.common) { transitive = false }
+    modImplementation(forge.ldlib.forge) { transitive = false }
 
     // Registrate
-    modImplementation(include("com.tterrag.registrate:Registrate:${registrate_forge_version}"))
+    modImplementation forge.registrate
 
     // Create and its dependencies
-    modCompileOnly("com.simibubi.create:create-${minecraft_version}:${create_forge_version}:slim") { transitive = false }
-    modCompileOnly("com.jozufozu.flywheel:flywheel-forge-${flywheel_forge_minecraft_version}:${flywheel_forge_version}")
+    modCompileOnly(forge.createForge) { transitive = false }
+    modCompileOnly forge.flywheel
 
     // JEI
-    modCompileOnly("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
-    modCompileOnly("mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}")
-    modCompileOnly("mezz.jei:jei-${minecraft_version}-forge:${jei_version}")
+    modCompileOnly forge.jei.common.api
+    modCompileOnly forge.jei.forge.api
+    modCompileOnly forge.jei.forge.impl
 
     // REI
-    modCompileOnly("me.shedaniel:RoughlyEnoughItems-default-plugin-forge:${rei_version}")
-    modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-forge:${rei_version}")
-    modImplementation("me.shedaniel:RoughlyEnoughItems-forge:${rei_version}")
+    modCompileOnly forge.rei.plugin
+    modCompileOnly forge.rei.api
+    modImplementation forge.rei.fabric
 
     // TOP
-    modImplementation("mcjty.theoneprobe:theoneprobe:${top_forge_version}") { transitive = false }
-
+    modImplementation(forge.theoneprobe) { transitive = false }
 }
 
 processResources {
@@ -133,13 +124,13 @@ processResources {
     Map<String, String> properties = Map.of(
             "version", version,
             "mod_id", mod_id,
-            "forge_version", forge_version.split("\\.")[0], // only specify major version of forge
-            "minecraft_version", minecraft_version,
+            "forge_version", forge.versions.forgeShortVersion.get().split("\\.")[0], // only specify major version of forge
+            "minecraft_version", libs.versions.minecraft.get(),
             "mod_license", mod_license,
             "mod_name", mod_name,
             "mod_description", mod_description,
             "mod_url", mod_url,
-            "ldlib_version", ldlib_version
+            "ldlib_version", forge.versions.ldlib.get()
     )
     properties.forEach((k, v) -> inputs.property(k, v))
 
