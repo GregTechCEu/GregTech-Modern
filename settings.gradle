@@ -114,7 +114,7 @@ dependencyResolutionManagement {
             def rei = version("rei", reiVersion)
             library("rei-plugin", "me.shedaniel", "RoughlyEnoughItems-default-plugin-forge").versionRef(rei)
             library("rei-api", "me.shedaniel", "RoughlyEnoughItems-api-forge").versionRef(rei)
-            library("rei-fabric", "me.shedaniel", "RoughlyEnoughItems-forge").versionRef(rei)
+            library("rei-forge", "me.shedaniel", "RoughlyEnoughItems-forge").versionRef(rei)
 
             def theoneprobe = version("theoneprobe", topForgeVersion)
             library("theoneprobe", "mcjty.theoneprobe", "theoneprobe").versionRef(theoneprobe)

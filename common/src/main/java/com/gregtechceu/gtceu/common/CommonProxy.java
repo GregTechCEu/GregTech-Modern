@@ -17,6 +17,7 @@ public class CommonProxy {
     public static void init() {
         UIFactory.register(MachineUIFactory.INSTANCE);
         UIFactory.register(CoverUIFactory.INSTANCE);
+        GTFeatures.init();
         GTRecipeCapabilities.init();
         GTRecipeConditions.init();
         GTElements.init();
@@ -25,6 +26,7 @@ public class CommonProxy {
         GTCovers.init();
         GTFluids.init();
         GTBlocks.init();
+        GTOres.init();
         GTBlockEntities.init();
         GTRecipeTypes.init();
         GTMachines.init();

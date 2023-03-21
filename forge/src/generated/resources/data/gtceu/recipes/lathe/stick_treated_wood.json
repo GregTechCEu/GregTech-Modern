@@ -9,7 +9,7 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "minecraft:planks/treated_wood"
+          "tag": "c:planks/treated_wood"
         }
       }
     ]
