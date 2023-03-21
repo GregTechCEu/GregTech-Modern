@@ -34,7 +34,7 @@
           "count": 4,
           "fabric:type": "gtceu:sized",
           "ingredient": {
-            "item": "gtceu:ingot.cupronickel"
+            "item": "gtceu:ingot.bronze"
           }
         }
       },
@@ -45,7 +45,7 @@
           "count": 4,
           "fabric:type": "gtceu:sized",
           "ingredient": {
-            "item": "gtceu:ingot.bronze"
+            "item": "gtceu:ingot.cupronickel"
           }
         }
       },

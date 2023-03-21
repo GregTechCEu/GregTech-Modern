@@ -25,7 +25,7 @@
           "count": 7,
           "fabric:type": "gtceu:sized",
           "ingredient": {
-            "item": "gtceu:dust.wrought_iron"
+            "item": "gtceu:dust.bronze"
           }
         }
       },
@@ -36,7 +36,7 @@
           "count": 7,
           "fabric:type": "gtceu:sized",
           "ingredient": {
-            "item": "gtceu:dust.bronze"
+            "item": "gtceu:dust.wrought_iron"
           }
         }
       },

@@ -1,6 +1,6 @@
 {
   "type": "gtceu:gt_recipe_serializer",
-  "duration": 3385,
+  "duration": 1717,
   "inputs": {
     "item": [
       {
@@ -47,7 +47,7 @@
           "count": 12,
           "fabric:type": "gtceu:sized",
           "ingredient": {
-            "item": "gtceu:dust.stainless_steel"
+            "item": "gtceu:dust.graphene"
           }
         }
       },
@@ -58,7 +58,7 @@
           "count": 12,
           "fabric:type": "gtceu:sized",
           "ingredient": {
-            "item": "gtceu:dust.electrum"
+            "item": "gtceu:dust.stainless_steel"
           }
         }
       }

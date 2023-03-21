@@ -25,7 +25,7 @@
           "count": 9,
           "fabric:type": "gtceu:sized",
           "ingredient": {
-            "item": "gtceu:dust.tungsten"
+            "item": "gtceu:dust.rubber"
           }
         }
       },
@@ -36,18 +36,7 @@
           "count": 9,
           "fabric:type": "gtceu:sized",
           "ingredient": {
-            "item": "gtceu:dust.rubber"
-          }
-        }
-      },
-      {
-        "chance": 1.0,
-        "content": {
-          "type": "gtceu:sized",
-          "count": 8,
-          "fabric:type": "gtceu:sized",
-          "ingredient": {
-            "item": "gtceu:dust.vanadium_steel"
+            "item": "gtceu:dust.tungsten"
           }
         }
       },
@@ -59,6 +48,17 @@
           "fabric:type": "gtceu:sized",
           "ingredient": {
             "item": "gtceu:dust.graphene"
+          }
+        }
+      },
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 8,
+          "fabric:type": "gtceu:sized",
+          "ingredient": {
+            "item": "gtceu:dust.vanadium_steel"
           }
         }
       }

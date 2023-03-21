@@ -45,7 +45,7 @@
           "count": 1,
           "fabric:type": "gtceu:sized",
           "ingredient": {
-            "item": "gtceu:ingot.niobium_titanium"
+            "item": "gtceu:ingot.vanadium_gallium"
           }
         }
       },
@@ -56,7 +56,7 @@
           "count": 1,
           "fabric:type": "gtceu:sized",
           "ingredient": {
-            "item": "gtceu:ingot.vanadium_gallium"
+            "item": "gtceu:ingot.niobium_titanium"
           }
         }
       },

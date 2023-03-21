@@ -25,7 +25,7 @@
           "count": 8,
           "fabric:type": "gtceu:sized",
           "ingredient": {
-            "item": "gtceu:dust.magnesium_diboride"
+            "item": "gtceu:dust.neutronium"
           }
         }
       },
@@ -36,18 +36,7 @@
           "count": 8,
           "fabric:type": "gtceu:sized",
           "ingredient": {
-            "item": "gtceu:dust.neutronium"
-          }
-        }
-      },
-      {
-        "chance": 1.0,
-        "content": {
-          "type": "gtceu:sized",
-          "count": 6,
-          "fabric:type": "gtceu:sized",
-          "ingredient": {
-            "item": "gtceu:dust.titanium"
+            "item": "gtceu:dust.magnesium_diboride"
           }
         }
       },
@@ -59,6 +48,17 @@
           "fabric:type": "gtceu:sized",
           "ingredient": {
             "item": "gtceu:dust.duranium"
+          }
+        }
+      },
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 6,
+          "fabric:type": "gtceu:sized",
+          "ingredient": {
+            "item": "gtceu:dust.titanium"
           }
         }
       }

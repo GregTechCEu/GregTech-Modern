@@ -34,7 +34,7 @@ public class CasingBlock extends VariantBlock<CasingBlock.CasingType> {
         ASSEMBLY_CONTROL("assembly_control", GTCEu.id("block/casings/mechanic/machine_casing_assembly_control")),
         ASSEMBLY_LINE_CASING("assembly_line", GTCEu.id("block/casings/pipe/machine_casing_grate")),
         POLYTETRAFLUOROETHYLENE_PIPE("polytetrafluoroethylene_pipe", GTCEu.id("block/casings/pipe/machine_casing_pipe_polytetrafluoroethylene")),
-        LAMINATED_GLASS("laminated_glass", GTCEu.id("block/casings/transparent/laminated_glass")),
+        LAMINATED_GLASS("laminated_glass", GTCEu.id("block/casings/transparent/laminated_glass"), false),
         BRONZE_GEARBOX("bronze_gearbox",  GTCEu.id("block/casings/gearbox/machine_casing_gearbox_bronze")),
         STEEL_GEARBOX("steel_gearbox",  GTCEu.id("block/casings/gearbox/machine_casing_gearbox_steel")),
         STAINLESS_STEEL_GEARBOX("stainless_steel_gearbox",  GTCEu.id("block/casings/gearbox/machine_casing_gearbox_stainless_steel")),

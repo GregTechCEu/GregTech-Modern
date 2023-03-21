@@ -25,7 +25,7 @@
           "count": 12,
           "fabric:type": "gtceu:sized",
           "ingredient": {
-            "item": "gtceu:dust.titanium"
+            "item": "gtceu:dust.rubber"
           }
         }
       },
@@ -36,18 +36,7 @@
           "count": 12,
           "fabric:type": "gtceu:sized",
           "ingredient": {
-            "item": "gtceu:dust.rubber"
-          }
-        }
-      },
-      {
-        "chance": 1.0,
-        "content": {
-          "type": "gtceu:sized",
-          "count": 8,
-          "fabric:type": "gtceu:sized",
-          "ingredient": {
-            "item": "gtceu:dust.kanthal"
+            "item": "gtceu:dust.titanium"
           }
         }
       },
@@ -59,6 +48,17 @@
           "fabric:type": "gtceu:sized",
           "ingredient": {
             "item": "gtceu:dust.aluminium"
+          }
+        }
+      },
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 8,
+          "fabric:type": "gtceu:sized",
+          "ingredient": {
+            "item": "gtceu:dust.kanthal"
           }
         }
       }

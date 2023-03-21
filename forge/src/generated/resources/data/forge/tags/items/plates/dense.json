@@ -1,8 +1,8 @@
 {
   "values": [
-    "#forge:plates/dense/tungsten_steel",
-    "#forge:plates/dense/darmstadtium",
     "#forge:plates/dense/naquadah_alloy",
-    "#forge:plates/dense/rhodium_plated_palladium"
+    "#forge:plates/dense/darmstadtium",
+    "#forge:plates/dense/rhodium_plated_palladium",
+    "#forge:plates/dense/tungsten_steel"
   ]
 }

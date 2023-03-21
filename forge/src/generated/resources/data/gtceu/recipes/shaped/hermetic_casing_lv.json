@@ -16,7 +16,7 @@
   "result": {
     "item": "gtceu:hermetic_casing",
     "nbt": {
-      "variant": "low_voltage"
+      "variant": "low_voltage_hermetic"
     }
   }
 }

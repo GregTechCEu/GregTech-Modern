@@ -1,6 +1,6 @@
 {
   "type": "gtceu:gt_recipe_serializer",
-  "duration": 2712,
+  "duration": 2356,
   "inputs": {
     "item": [
       {
@@ -58,7 +58,7 @@
           "count": 4,
           "fabric:type": "gtceu:sized",
           "ingredient": {
-            "item": "gtceu:dust.gold"
+            "item": "gtceu:dust.silver"
           }
         }
       }

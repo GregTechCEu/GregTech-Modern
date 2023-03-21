@@ -34,7 +34,7 @@
           "count": 12,
           "fabric:type": "gtceu:sized",
           "ingredient": {
-            "item": "gtceu:ingot.electrum"
+            "item": "gtceu:dust.graphene"
           }
         }
       },
@@ -45,7 +45,7 @@
           "count": 12,
           "fabric:type": "gtceu:sized",
           "ingredient": {
-            "item": "gtceu:dust.graphene"
+            "item": "gtceu:ingot.electrum"
           }
         }
       },

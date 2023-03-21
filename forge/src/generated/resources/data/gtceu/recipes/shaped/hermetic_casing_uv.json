@@ -16,7 +16,7 @@
   "result": {
     "item": "gtceu:hermetic_casing",
     "nbt": {
-      "variant": "ultimate_voltage"
+      "variant": "ultimate_voltage_hermetic"
     }
   }
 }

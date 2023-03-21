@@ -1,14 +1,14 @@
 {
   "values": [
-    "#forge:circuit/mv",
-    "#forge:circuit/ulv",
-    "#forge:circuit/zpm",
-    "#forge:circuit/hv",
-    "#forge:circuit/uv",
     "#forge:circuit/ev",
+    "#forge:circuit/ulv",
     "#forge:circuit/uhv",
-    "#forge:circuit/lv",
+    "#forge:circuit/mv",
     "#forge:circuit/luv",
-    "#forge:circuit/iv"
+    "#forge:circuit/lv",
+    "#forge:circuit/uv",
+    "#forge:circuit/iv",
+    "#forge:circuit/zpm",
+    "#forge:circuit/hv"
   ]
 }

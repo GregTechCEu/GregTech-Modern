@@ -36,7 +36,7 @@
           "count": 1,
           "fabric:type": "gtceu:sized",
           "ingredient": {
-            "item": "gtceu:dust.naquadah"
+            "item": "gtceu:dust.vanadium_gallium"
           }
         }
       },
@@ -47,7 +47,7 @@
           "count": 1,
           "fabric:type": "gtceu:sized",
           "ingredient": {
-            "item": "gtceu:dust.vanadium_gallium"
+            "item": "gtceu:dust.naquadah"
           }
         }
       }

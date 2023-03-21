@@ -34,7 +34,7 @@
           "count": 7,
           "fabric:type": "gtceu:sized",
           "ingredient": {
-            "item": "gtceu:ingot.wrought_iron"
+            "item": "gtceu:ingot.bronze"
           }
         }
       },
@@ -45,7 +45,7 @@
           "count": 7,
           "fabric:type": "gtceu:sized",
           "ingredient": {
-            "item": "gtceu:ingot.bronze"
+            "item": "gtceu:ingot.wrought_iron"
           }
         }
       },

@@ -45,7 +45,7 @@
           "count": 1,
           "fabric:type": "gtceu:sized",
           "ingredient": {
-            "item": "gtceu:ingot.aluminium"
+            "item": "gtceu:ingot.neodymium"
           }
         }
       },
@@ -56,7 +56,7 @@
           "count": 1,
           "fabric:type": "gtceu:sized",
           "ingredient": {
-            "item": "gtceu:ingot.neodymium"
+            "item": "gtceu:ingot.aluminium"
           }
         }
       },

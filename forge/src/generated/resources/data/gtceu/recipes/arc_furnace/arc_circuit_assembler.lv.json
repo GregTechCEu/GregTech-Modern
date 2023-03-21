@@ -45,7 +45,7 @@
           "count": 1,
           "fabric:type": "gtceu:sized",
           "ingredient": {
-            "item": "gtceu:compressed_block_tin"
+            "item": "gtceu:compressed_block_wrought_iron"
           }
         }
       },
@@ -56,7 +56,7 @@
           "count": 1,
           "fabric:type": "gtceu:sized",
           "ingredient": {
-            "item": "gtceu:compressed_block_wrought_iron"
+            "item": "gtceu:compressed_block_tin"
           }
         }
       },

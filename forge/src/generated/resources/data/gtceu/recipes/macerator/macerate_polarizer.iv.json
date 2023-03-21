@@ -47,7 +47,7 @@
           "count": 1,
           "fabric:type": "gtceu:sized",
           "ingredient": {
-            "item": "gtceu:dust.platinum"
+            "item": "gtceu:dust.vanadium_gallium"
           }
         }
       },
@@ -58,7 +58,7 @@
           "count": 1,
           "fabric:type": "gtceu:sized",
           "ingredient": {
-            "item": "gtceu:dust.vanadium_gallium"
+            "item": "gtceu:dust.platinum"
           }
         }
       }

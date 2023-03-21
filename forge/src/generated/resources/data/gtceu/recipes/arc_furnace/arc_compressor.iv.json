@@ -1,12 +1,12 @@
 {
   "type": "gtceu:gt_recipe_serializer",
-  "duration": 2817,
+  "duration": 2766,
   "inputs": {
     "fluid": [
       {
         "chance": 1.0,
         "content": {
-          "amount": 2817,
+          "amount": 2766,
           "fluid": "gtceu:oxygen"
         }
       }
@@ -67,7 +67,7 @@
           "count": 1,
           "fabric:type": "gtceu:sized",
           "ingredient": {
-            "item": "gtceu:ingot.platinum"
+            "item": "gtceu:ingot.neodymium"
           }
         }
       }

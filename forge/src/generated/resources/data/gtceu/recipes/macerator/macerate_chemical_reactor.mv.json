@@ -25,7 +25,7 @@
           "count": 4,
           "fabric:type": "gtceu:sized",
           "ingredient": {
-            "item": "gtceu:dust.cupronickel"
+            "item": "gtceu:dust.bronze"
           }
         }
       },
@@ -47,7 +47,7 @@
           "count": 4,
           "fabric:type": "gtceu:sized",
           "ingredient": {
-            "item": "gtceu:dust.bronze"
+            "item": "gtceu:dust.cupronickel"
           }
         }
       },

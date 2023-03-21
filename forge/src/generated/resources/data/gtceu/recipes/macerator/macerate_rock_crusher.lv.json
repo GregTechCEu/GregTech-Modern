@@ -47,7 +47,7 @@
           "count": 4,
           "fabric:type": "gtceu:sized",
           "ingredient": {
-            "item": "gtceu:dust.tin"
+            "item": "gtceu:dust.copper"
           }
         }
       },
@@ -58,7 +58,7 @@
           "count": 4,
           "fabric:type": "gtceu:sized",
           "ingredient": {
-            "item": "gtceu:dust.copper"
+            "item": "gtceu:dust.tin"
           }
         }
       }

@@ -47,7 +47,7 @@
           "count": 4,
           "fabric:type": "gtceu:sized",
           "ingredient": {
-            "item": "gtceu:dust.rubber"
+            "item": "gtceu:dust.graphene"
           }
         }
       },
@@ -58,7 +58,7 @@
           "count": 4,
           "fabric:type": "gtceu:sized",
           "ingredient": {
-            "item": "gtceu:dust.graphene"
+            "item": "gtceu:dust.rubber"
           }
         }
       }

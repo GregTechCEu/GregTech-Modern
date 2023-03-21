@@ -47,7 +47,7 @@
           "count": 1,
           "fabric:type": "gtceu:sized",
           "ingredient": {
-            "item": "gtceu:dust.aluminium"
+            "item": "gtceu:dust.neodymium"
           }
         }
       },
@@ -58,7 +58,7 @@
           "count": 1,
           "fabric:type": "gtceu:sized",
           "ingredient": {
-            "item": "gtceu:dust.neodymium"
+            "item": "gtceu:dust.aluminium"
           }
         }
       }

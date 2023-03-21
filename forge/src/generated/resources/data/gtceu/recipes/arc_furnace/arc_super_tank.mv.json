@@ -1,12 +1,12 @@
 {
   "type": "gtceu:gt_recipe_serializer",
-  "duration": 10352,
+  "duration": 10216,
   "inputs": {
     "fluid": [
       {
         "chance": 1.0,
         "content": {
-          "amount": 10352,
+          "amount": 10216,
           "fluid": "gtceu:oxygen"
         }
       }
@@ -67,7 +67,7 @@
           "count": 4,
           "fabric:type": "gtceu:sized",
           "ingredient": {
-            "item": "gtceu:ingot.cupronickel"
+            "item": "gtceu:ingot.aluminium"
           }
         }
       }

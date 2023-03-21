@@ -25,17 +25,6 @@
           "count": 8,
           "fabric:type": "gtceu:sized",
           "ingredient": {
-            "item": "gtceu:dust.kanthal"
-          }
-        }
-      },
-      {
-        "chance": 1.0,
-        "content": {
-          "type": "gtceu:sized",
-          "count": 8,
-          "fabric:type": "gtceu:sized",
-          "ingredient": {
             "item": "gtceu:dust.steel"
           }
         }
@@ -48,6 +37,17 @@
           "fabric:type": "gtceu:sized",
           "ingredient": {
             "item": "gtceu:dust.rubber"
+          }
+        }
+      },
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 8,
+          "fabric:type": "gtceu:sized",
+          "ingredient": {
+            "item": "gtceu:dust.kanthal"
           }
         }
       },

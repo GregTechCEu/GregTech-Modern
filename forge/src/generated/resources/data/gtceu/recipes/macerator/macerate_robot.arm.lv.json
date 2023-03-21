@@ -36,7 +36,7 @@
           "count": 6,
           "fabric:type": "gtceu:sized",
           "ingredient": {
-            "item": "gtceu:dust.steel"
+            "item": "gtceu:dust.copper"
           }
         }
       },
@@ -47,7 +47,7 @@
           "count": 6,
           "fabric:type": "gtceu:sized",
           "ingredient": {
-            "item": "gtceu:dust.copper"
+            "item": "gtceu:dust.steel"
           }
         }
       },

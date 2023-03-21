@@ -56,7 +56,7 @@
           "count": 1,
           "fabric:type": "gtceu:sized",
           "ingredient": {
-            "item": "gtceu:ingot.tin_alloy"
+            "item": "gtceu:ingot.steel"
           }
         }
       },
@@ -67,7 +67,7 @@
           "count": 1,
           "fabric:type": "gtceu:sized",
           "ingredient": {
-            "item": "gtceu:ingot.steel"
+            "item": "gtceu:ingot.tin_alloy"
           }
         }
       }

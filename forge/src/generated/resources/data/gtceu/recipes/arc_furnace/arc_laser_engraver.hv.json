@@ -56,7 +56,7 @@
           "count": 4,
           "fabric:type": "gtceu:sized",
           "ingredient": {
-            "item": "minecraft:gold_ingot"
+            "item": "gtceu:ingot.silver"
           }
         }
       },
@@ -67,7 +67,7 @@
           "count": 4,
           "fabric:type": "gtceu:sized",
           "ingredient": {
-            "item": "gtceu:ingot.silver"
+            "item": "minecraft:gold_ingot"
           }
         }
       }
