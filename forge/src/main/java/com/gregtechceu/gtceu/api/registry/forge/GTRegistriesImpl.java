@@ -4,6 +4,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraftforge.registries.ForgeRegistries;
 
 /**
@@ -17,6 +18,10 @@ public class GTRegistriesImpl {
             ForgeRegistries.RECIPE_TYPES.register(name, (RecipeType<?>) value);
         } else if (registry == Registry.RECIPE_SERIALIZER) {
             ForgeRegistries.RECIPE_SERIALIZERS.register(name, (RecipeSerializer<?>) value);
+        } else if (registry == Registry.FEATURE) {
+            ForgeRegistries.FEATURES.register(name, (Feature<?>) value);
+        } else {
+            return Registry.register(registry, name, value);
         }
         return value;
     }

@@ -1,22 +1,22 @@
 {
   "values": [
-    "#forge:tool_head_screwdriver/aluminium",
-    "#forge:tool_head_screwdriver/iron",
-    "#forge:tool_head_screwdriver/titanium",
-    "#forge:tool_head_screwdriver/vanadium_steel",
-    "#forge:tool_head_screwdriver/steel",
-    "#forge:tool_head_screwdriver/wood",
-    "#forge:tool_head_screwdriver/bronze",
     "#forge:tool_head_screwdriver/cobalt_brass",
-    "#forge:tool_head_screwdriver/hsse",
-    "#forge:tool_head_screwdriver/rose_gold",
+    "#forge:tool_head_screwdriver/titanium",
     "#forge:tool_head_screwdriver/stainless_steel",
-    "#forge:tool_head_screwdriver/tungsten_carbide",
-    "#forge:tool_head_screwdriver/naquadah_alloy",
-    "#forge:tool_head_screwdriver/tungsten_steel",
     "#forge:tool_head_screwdriver/sterling_silver",
     "#forge:tool_head_screwdriver/wrought_iron",
+    "#forge:tool_head_screwdriver/naquadah_alloy",
+    "#forge:tool_head_screwdriver/iron",
+    "#forge:tool_head_screwdriver/steel",
+    "#forge:tool_head_screwdriver/invar",
+    "#forge:tool_head_screwdriver/tungsten_carbide",
+    "#forge:tool_head_screwdriver/wood",
+    "#forge:tool_head_screwdriver/aluminium",
+    "#forge:tool_head_screwdriver/tungsten_steel",
+    "#forge:tool_head_screwdriver/vanadium_steel",
+    "#forge:tool_head_screwdriver/bronze",
+    "#forge:tool_head_screwdriver/hsse",
     "#forge:tool_head_screwdriver/ultimet",
-    "#forge:tool_head_screwdriver/invar"
+    "#forge:tool_head_screwdriver/rose_gold"
   ]
 }

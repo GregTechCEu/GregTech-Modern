@@ -17,7 +17,6 @@ public class GTCEuFabric implements ModInitializer {
     public void onInitialize() {
         GTCEu.init();
         CommonProxy.init();
-        GTRegistries.REGISTRATE.registerRegistrate();
         CustomIngredientSerializer.register(SizedIngredientImpl.Serializer.INSTANCE);
         AttackBlockCallback.EVENT.register(((player, world, hand, pos, direction) -> {
             var blockState = world.getBlockState(pos);

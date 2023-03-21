@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.forge;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.common.CommonProxy;
+import com.gregtechceu.gtceu.common.data.forge.GTOresImpl;
 import com.gregtechceu.gtceu.integration.top.forge.TheOneProbePluginImpl;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapabilities;
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
@@ -24,8 +25,7 @@ public class CommonProxyImpl {
         // used for forge events (ClientProxy + CommonProxy)
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
         eventBus.register(this);
-
-        GTRegistries.REGISTRATE.registerRegistrate();
+        GTOresImpl.init(eventBus);
         // init common features
         CommonProxy.init();
         // register payloads

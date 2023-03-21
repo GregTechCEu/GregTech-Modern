@@ -1,23 +1,23 @@
 {
   "values": [
-    "#forge:frames/black_steel",
-    "#forge:frames/titanium",
-    "#forge:frames/hsse",
-    "#forge:frames/neutronium",
-    "#forge:frames/tritanium",
-    "#forge:frames/treated_wood",
-    "#forge:frames/blue_steel",
     "#forge:frames/wood",
-    "#forge:frames/naquadah_alloy",
-    "#forge:frames/bronze",
-    "#forge:frames/aluminium",
-    "#forge:frames/steel",
-    "#forge:frames/stainless_steel",
+    "#forge:frames/europium",
     "#forge:frames/tungsten_steel",
-    "#forge:frames/polytetrafluoroethylene",
+    "#forge:frames/tritanium",
     "#forge:frames/hssg",
-    "#forge:frames/invar",
+    "#forge:frames/treated_wood",
+    "#forge:frames/titanium",
+    "#forge:frames/neutronium",
+    "#forge:frames/hsse",
+    "#forge:frames/naquadah_alloy",
+    "#forge:frames/polytetrafluoroethylene",
+    "#forge:frames/stainless_steel",
     "#forge:frames/hsss",
-    "#forge:frames/europium"
+    "#forge:frames/steel",
+    "#forge:frames/invar",
+    "#forge:frames/black_steel",
+    "#forge:frames/aluminium",
+    "#forge:frames/bronze",
+    "#forge:frames/blue_steel"
   ]
 }
