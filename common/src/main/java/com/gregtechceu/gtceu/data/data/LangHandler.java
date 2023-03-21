@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
+import com.gregtechceu.gtceu.common.block.variant.CoilBlock;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTCreativeModeTabs;
 import com.tterrag.registrate.providers.RegistrateLangProvider;
@@ -50,6 +51,7 @@ public class LangHandler {
         casingLang(provider, GTBlocks.ACTIVE_CASING.get());
         casingLang(provider, GTBlocks.BOILER_FIREBOX_CASING.get());
         casingLang(provider, GTBlocks.HULL_CASING.get());
+        casingLang(provider, GTBlocks.HERMETIC_CASING.get());
 
         provider.add("death.attack.heat", "%s was boiled alive");
         provider.add("death.attack.frost", "%s explored cryogenics");
@@ -3118,7 +3120,9 @@ public class LangHandler {
 
     private static void casingLang(RegistrateLangProvider provider, VariantBlock<?> block) {
         for (var type : block.getVariantValues()) {
-            provider.add(block.getDescriptionId() + "." + type.getSerializedName(), toEnglishName(type.getSerializedName()));
+            provider.add(block.getDescriptionId() + "." + type.getSerializedName(), toEnglishName(type.getSerializedName()+
+                    (type.hasLangAppendage() ? (type instanceof CoilBlock.CoilType ? "_coil" : "_casing" ) : ""))
+            );
         }
     }
 }

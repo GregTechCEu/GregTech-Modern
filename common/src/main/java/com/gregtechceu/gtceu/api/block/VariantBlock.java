@@ -29,7 +29,7 @@ import java.util.List;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class VariantBlock<T extends Enum<T> & StringRepresentable> extends Block {
+public class VariantBlock<T extends Enum<T> & VariantBlock.AppendableStringRepresentable> extends Block {
     @Getter
     protected EnumProperty<T> variantProperty;
     @Getter
@@ -106,5 +106,9 @@ public class VariantBlock<T extends Enum<T> & StringRepresentable> extends Block
     @Override
     public List<ItemStack> getDrops(BlockState state, LootContext.Builder builder) {
         return List.of(getItemVariant(getVariant(state)));
+    }
+
+    public interface AppendableStringRepresentable extends StringRepresentable{
+         default boolean hasLangAppendage() { return true;}
     }
 }

@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.block.VariantBlock;
 import lombok.Getter;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 
 import javax.annotation.Nonnull;
@@ -15,7 +14,7 @@ public class SteamCasingBlock extends VariantBlock<SteamCasingBlock.CasingType> 
         super(properties);
     }
 
-    public enum CasingType implements StringRepresentable {
+    public enum CasingType implements AppendableStringRepresentable {
 
         BRONZE_HULL("bronze_hull", "bronze"),
         BRONZE_BRICKS_HULL("bronze_bricks_hull", "bricked_bronze"),

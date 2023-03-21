@@ -13,7 +13,7 @@
             "type": "forge:nbt",
             "count": 1,
             "item": "gtceu:casing",
-            "nbt": "{variant:\"steel_turbine_casing\"}"
+            "nbt": "{variant:\"steel_turbine\"}"
           }
         }
       },
@@ -54,7 +54,7 @@
             "type": "forge:nbt",
             "count": 2,
             "item": "gtceu:casing",
-            "nbt": "{variant:\"stainless_turbine_casing\"}"
+            "nbt": "{variant:\"stainless_turbine\"}"
           }
         }
       }

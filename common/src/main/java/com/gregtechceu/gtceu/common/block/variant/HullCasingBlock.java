@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.VariantBlock;
 import lombok.Getter;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.StringRepresentable;
 
 import javax.annotation.Nonnull;
 
@@ -20,7 +19,7 @@ public class HullCasingBlock extends VariantBlock<HullCasingBlock.CasingType> {
         super(properties);
     }
 
-    public enum CasingType implements StringRepresentable {
+    public enum CasingType implements AppendableStringRepresentable {
         ULV(makeName(GTValues.VOLTAGE_NAMES[0])),
         LV(makeName(GTValues.VOLTAGE_NAMES[1])),
         MV(makeName(GTValues.VOLTAGE_NAMES[2])),

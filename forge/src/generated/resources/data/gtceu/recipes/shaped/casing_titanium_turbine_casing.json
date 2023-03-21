@@ -5,7 +5,7 @@
       "type": "forge:nbt",
       "count": 1,
       "item": "gtceu:casing",
-      "nbt": "{variant:\"steel_turbine_casing\"}"
+      "nbt": "{variant:\"steel_turbine\"}"
     },
     "P": {
       "tag": "forge:plates/titanium"
@@ -26,7 +26,7 @@
     "count": 2,
     "item": "gtceu:casing",
     "nbt": {
-      "variant": "titanium_turbine_casing"
+      "variant": "titanium_turbine"
     }
   }
 }

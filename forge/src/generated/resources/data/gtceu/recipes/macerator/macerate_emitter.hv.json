@@ -25,7 +25,7 @@
           "count": 2,
           "fabric:type": "gtceu:sized",
           "ingredient": {
-            "item": "gtceu:dust.rubber"
+            "item": "gtceu:dust.chrome"
           }
         }
       },
@@ -36,18 +36,7 @@
           "count": 2,
           "fabric:type": "gtceu:sized",
           "ingredient": {
-            "item": "gtceu:dust.chrome"
-          }
-        }
-      },
-      {
-        "chance": 1.0,
-        "content": {
-          "type": "gtceu:sized",
-          "count": 1,
-          "fabric:type": "gtceu:sized",
-          "ingredient": {
-            "item": "gtceu:dust.ender_eye"
+            "item": "gtceu:dust.rubber"
           }
         }
       },
@@ -59,6 +48,17 @@
           "fabric:type": "gtceu:sized",
           "ingredient": {
             "item": "gtceu:dust.gold"
+          }
+        }
+      },
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 1,
+          "fabric:type": "gtceu:sized",
+          "ingredient": {
+            "item": "gtceu:dust.ender_eye"
           }
         }
       }

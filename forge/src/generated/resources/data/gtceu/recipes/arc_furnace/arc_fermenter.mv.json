@@ -56,7 +56,7 @@
           "count": 31,
           "fabric:type": "gtceu:sized",
           "ingredient": {
-            "item": "gtceu:nugget.annealed_copper"
+            "item": "gtceu:nugget.steel"
           }
         }
       },
@@ -67,7 +67,7 @@
           "count": 31,
           "fabric:type": "gtceu:sized",
           "ingredient": {
-            "item": "gtceu:nugget.steel"
+            "item": "gtceu:nugget.annealed_copper"
           }
         }
       }

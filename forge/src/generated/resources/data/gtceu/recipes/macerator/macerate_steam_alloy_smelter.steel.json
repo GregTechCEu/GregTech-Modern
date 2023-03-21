@@ -47,7 +47,7 @@
           "count": 1,
           "fabric:type": "gtceu:sized",
           "ingredient": {
-            "item": "gtceu:dust.steel"
+            "item": "gtceu:dust.tin_alloy"
           }
         }
       },
@@ -58,7 +58,7 @@
           "count": 1,
           "fabric:type": "gtceu:sized",
           "ingredient": {
-            "item": "gtceu:dust.tin_alloy"
+            "item": "gtceu:dust.steel"
           }
         }
       }

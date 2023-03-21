@@ -1,10 +1,10 @@
 {
   "values": [
     "#forge:stone/endstone",
-    "#forge:stone/netherrack",
     "#forge:stone/andesite",
-    "#forge:stone/granite",
     "#forge:stone/diorite",
-    "#forge:stone/obsidian"
+    "#forge:stone/obsidian",
+    "#forge:stone/granite",
+    "#forge:stone/netherrack"
   ]
 }

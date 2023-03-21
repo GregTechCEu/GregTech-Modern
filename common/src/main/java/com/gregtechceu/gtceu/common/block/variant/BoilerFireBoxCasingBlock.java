@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.block.VariantActiveBlock;
 import lombok.Getter;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.StringRepresentable;
 
 import javax.annotation.Nonnull;
 
@@ -19,7 +18,7 @@ public class BoilerFireBoxCasingBlock extends VariantActiveBlock<BoilerFireBoxCa
         super(properties);
     }
 
-    public enum CasingType implements StringRepresentable {
+    public enum CasingType implements AppendableStringRepresentable {
         BRONZE_FIREBOX("bronze_firebox", GTCEu.id("block/casings/solid/machine_bronze_plated_bricks")
                 , GTCEu.id("block/casings/solid/machine_bronze_plated_bricks")
                 , GTCEu.id("block/casings/firebox/machine_casing_firebox_bronze")),

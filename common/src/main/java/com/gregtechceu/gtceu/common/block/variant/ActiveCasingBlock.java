@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.block.VariantActiveBlock;
 import lombok.Getter;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.StringRepresentable;
 
 import javax.annotation.Nonnull;
 
@@ -19,7 +18,7 @@ public class ActiveCasingBlock extends VariantActiveBlock<ActiveCasingBlock.Casi
         super(properties);
     }
 
-    public enum CasingType implements StringRepresentable {
+    public enum CasingType implements AppendableStringRepresentable {
         ENGINE_INTAKE_CASING("engine_intake", GTCEu.id("block/variant/engine_intake"), GTCEu.id("block/variant/engine_intake_active")),
         EXTREME_ENGINE_INTAKE_CASING("extreme_engine_intake", GTCEu.id("block/variant/extreme_engine_intake"), GTCEu.id("block/variant/extreme_engine_intake_active")),
         ASSEMBLY_LINE_CASING("assembly_line", GTCEu.id("block/variant/assembly_line"), GTCEu.id("block/variant/assembly_line_active"));

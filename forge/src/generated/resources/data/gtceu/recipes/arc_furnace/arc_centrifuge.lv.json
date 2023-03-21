@@ -45,7 +45,7 @@
           "count": 3,
           "fabric:type": "gtceu:sized",
           "ingredient": {
-            "item": "gtceu:ingot.wrought_iron"
+            "item": "gtceu:ingot.tin"
           }
         }
       },
@@ -56,7 +56,7 @@
           "count": 3,
           "fabric:type": "gtceu:sized",
           "ingredient": {
-            "item": "gtceu:ingot.tin"
+            "item": "gtceu:ingot.wrought_iron"
           }
         }
       },

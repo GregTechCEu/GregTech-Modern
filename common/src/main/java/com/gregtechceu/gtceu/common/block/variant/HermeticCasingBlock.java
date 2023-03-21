@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.VariantBlock;
 import lombok.Getter;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 
 import javax.annotation.Nonnull;
@@ -16,7 +15,7 @@ public class HermeticCasingBlock extends VariantBlock<HermeticCasingBlock.Casing
         super(properties);
     }
 
-    public enum CasingType implements StringRepresentable {
+    public enum CasingType implements AppendableStringRepresentable {
         HERMETIC_ULV(makeName(GTValues.VOLTAGE_NAMES[0])),
         HERMETIC_LV(makeName(GTValues.VOLTAGE_NAMES[1])),
         HERMETIC_MV(makeName(GTValues.VOLTAGE_NAMES[2])),
@@ -67,5 +66,6 @@ public class HermeticCasingBlock extends VariantBlock<HermeticCasingBlock.Casing
         public ResourceLocation getSideTexture() {
             return GTCEu.id("block/casings/voltage/%s/side".formatted(name().split("_")[1].toLowerCase()));
         }
+
     }
 }

@@ -34,7 +34,7 @@
           "count": 6,
           "fabric:type": "gtceu:sized",
           "ingredient": {
-            "item": "gtceu:ingot.annealed_copper"
+            "item": "gtceu:ingot.steel"
           }
         }
       },
@@ -45,7 +45,7 @@
           "count": 6,
           "fabric:type": "gtceu:sized",
           "ingredient": {
-            "item": "gtceu:ingot.steel"
+            "item": "gtceu:ingot.annealed_copper"
           }
         }
       },

@@ -36,7 +36,7 @@
           "count": 8,
           "fabric:type": "gtceu:sized",
           "ingredient": {
-            "item": "gtceu:dust.uranium_triplatinum"
+            "item": "gtceu:dust.neutronium"
           }
         }
       },
@@ -47,7 +47,7 @@
           "count": 8,
           "fabric:type": "gtceu:sized",
           "ingredient": {
-            "item": "gtceu:dust.neutronium"
+            "item": "gtceu:dust.uranium_triplatinum"
           }
         }
       },

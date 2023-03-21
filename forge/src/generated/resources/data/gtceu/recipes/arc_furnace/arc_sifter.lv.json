@@ -56,7 +56,7 @@
           "count": 4,
           "fabric:type": "gtceu:sized",
           "ingredient": {
-            "item": "gtceu:ingot.zinc"
+            "item": "gtceu:ingot.annealed_copper"
           }
         }
       },
@@ -67,7 +67,7 @@
           "count": 4,
           "fabric:type": "gtceu:sized",
           "ingredient": {
-            "item": "gtceu:ingot.annealed_copper"
+            "item": "gtceu:ingot.zinc"
           }
         }
       }

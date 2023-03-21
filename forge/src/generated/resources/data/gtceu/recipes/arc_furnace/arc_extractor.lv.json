@@ -1,12 +1,12 @@
 {
   "type": "gtceu:gt_recipe_serializer",
-  "duration": 1704,
+  "duration": 1644,
   "inputs": {
     "fluid": [
       {
         "chance": 1.0,
         "content": {
-          "amount": 1704,
+          "amount": 1644,
           "fluid": "gtceu:oxygen"
         }
       }
@@ -67,7 +67,7 @@
           "count": 3,
           "fabric:type": "gtceu:sized",
           "ingredient": {
-            "item": "gtceu:ingot.bronze"
+            "item": "gtceu:ingot.wrought_iron"
           }
         }
       }

@@ -45,7 +45,7 @@
           "count": 8,
           "fabric:type": "gtceu:sized",
           "ingredient": {
-            "item": "gtceu:ingot.aluminium"
+            "item": "gtceu:ingot.kanthal"
           }
         }
       },
@@ -56,7 +56,7 @@
           "count": 8,
           "fabric:type": "gtceu:sized",
           "ingredient": {
-            "item": "gtceu:ingot.kanthal"
+            "item": "gtceu:ingot.aluminium"
           }
         }
       },

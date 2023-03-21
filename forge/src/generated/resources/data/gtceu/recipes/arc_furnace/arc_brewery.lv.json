@@ -45,7 +45,7 @@
           "count": 3,
           "fabric:type": "gtceu:sized",
           "ingredient": {
-            "item": "gtceu:ingot.bronze"
+            "item": "gtceu:ingot.annealed_copper"
           }
         }
       },
@@ -56,7 +56,7 @@
           "count": 3,
           "fabric:type": "gtceu:sized",
           "ingredient": {
-            "item": "gtceu:ingot.annealed_copper"
+            "item": "gtceu:ingot.bronze"
           }
         }
       },

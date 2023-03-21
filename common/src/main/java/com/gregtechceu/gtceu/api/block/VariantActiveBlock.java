@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.api.block;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -16,7 +15,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class VariantActiveBlock<T extends Enum<T> & StringRepresentable> extends VariantBlock<T> {
+public class VariantActiveBlock<T extends Enum<T> & VariantBlock.AppendableStringRepresentable> extends VariantBlock<T> {
     public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
 
     public VariantActiveBlock(Properties properties) {

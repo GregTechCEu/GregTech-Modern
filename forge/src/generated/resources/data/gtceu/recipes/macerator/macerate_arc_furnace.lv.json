@@ -25,7 +25,7 @@
           "count": 4,
           "fabric:type": "gtceu:sized",
           "ingredient": {
-            "item": "gtceu:dust.rubber"
+            "item": "gtceu:dust.tin"
           }
         }
       },
@@ -36,7 +36,7 @@
           "count": 4,
           "fabric:type": "gtceu:sized",
           "ingredient": {
-            "item": "gtceu:dust.tin"
+            "item": "gtceu:dust.rubber"
           }
         }
       },

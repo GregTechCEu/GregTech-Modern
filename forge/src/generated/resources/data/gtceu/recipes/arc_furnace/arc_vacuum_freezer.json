@@ -45,7 +45,7 @@
           "count": 12,
           "fabric:type": "gtceu:sized",
           "ingredient": {
-            "item": "gtceu:ingot.stainless_steel"
+            "item": "gtceu:dust.graphene"
           }
         }
       },
@@ -56,7 +56,7 @@
           "count": 12,
           "fabric:type": "gtceu:sized",
           "ingredient": {
-            "item": "gtceu:dust.graphene"
+            "item": "gtceu:ingot.stainless_steel"
           }
         }
       },

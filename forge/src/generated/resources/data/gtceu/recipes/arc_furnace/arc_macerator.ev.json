@@ -34,7 +34,7 @@
           "count": 8,
           "fabric:type": "gtceu:sized",
           "ingredient": {
-            "item": "gtceu:ingot.steel"
+            "item": "gtceu:ingot.kanthal"
           }
         }
       },
@@ -45,7 +45,7 @@
           "count": 8,
           "fabric:type": "gtceu:sized",
           "ingredient": {
-            "item": "gtceu:ingot.kanthal"
+            "item": "gtceu:ingot.steel"
           }
         }
       },

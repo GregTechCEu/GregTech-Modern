@@ -45,7 +45,7 @@
           "count": 40,
           "fabric:type": "gtceu:sized",
           "ingredient": {
-            "item": "gtceu:nugget.wrought_iron"
+            "item": "gtceu:nugget.tin"
           }
         }
       },
@@ -56,7 +56,7 @@
           "count": 40,
           "fabric:type": "gtceu:sized",
           "ingredient": {
-            "item": "gtceu:nugget.tin"
+            "item": "gtceu:nugget.wrought_iron"
           }
         }
       },

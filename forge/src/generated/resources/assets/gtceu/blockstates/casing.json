@@ -48,8 +48,8 @@
     "variant=stainless_steel_gearbox": {
       "model": "gtceu:block/casing/stainless_steel_gearbox"
     },
-    "variant=stainless_turbine_casing": {
-      "model": "gtceu:block/casing/stainless_turbine_casing"
+    "variant=stainless_turbine": {
+      "model": "gtceu:block/casing/stainless_turbine"
     },
     "variant=steel_gearbox": {
       "model": "gtceu:block/casing/steel_gearbox"
@@ -60,8 +60,8 @@
     "variant=steel_solid": {
       "model": "gtceu:block/casing/steel_solid"
     },
-    "variant=steel_turbine_casing": {
-      "model": "gtceu:block/casing/steel_turbine_casing"
+    "variant=steel_turbine": {
+      "model": "gtceu:block/casing/steel_turbine"
     },
     "variant=titanium_gearbox": {
       "model": "gtceu:block/casing/titanium_gearbox"
@@ -72,8 +72,8 @@
     "variant=titanium_stable": {
       "model": "gtceu:block/casing/titanium_stable"
     },
-    "variant=titanium_turbine_casing": {
-      "model": "gtceu:block/casing/titanium_turbine_casing"
+    "variant=titanium_turbine": {
+      "model": "gtceu:block/casing/titanium_turbine"
     },
     "variant=tungstensteel_gearbox": {
       "model": "gtceu:block/casing/tungstensteel_gearbox"
@@ -84,8 +84,8 @@
     "variant=tungstensteel_robust": {
       "model": "gtceu:block/casing/tungstensteel_robust"
     },
-    "variant=tungstensteel_turbine_casing": {
-      "model": "gtceu:block/casing/tungstensteel_turbine_casing"
+    "variant=tungstensteel_turbine": {
+      "model": "gtceu:block/casing/tungstensteel_turbine"
     }
   }
 }

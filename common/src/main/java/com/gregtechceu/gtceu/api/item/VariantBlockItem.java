@@ -4,11 +4,9 @@ import com.gregtechceu.gtceu.api.block.VariantBlock;
 import com.gregtechceu.gtceu.client.renderer.item.VariantBlockItemRenderer;
 import com.lowdragmc.lowdraglib.client.renderer.IItemRendererProvider;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
-import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
@@ -27,7 +25,7 @@ import java.util.List;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class VariantBlockItem<R extends Enum<R> & StringRepresentable, T extends VariantBlock<R>> extends BlockItem implements IItemRendererProvider {
+public class VariantBlockItem<R extends Enum<R> & VariantBlock.AppendableStringRepresentable, T extends VariantBlock<R>> extends BlockItem implements IItemRendererProvider {
     public VariantBlockItem(T block, Properties properties) {
         super(block, properties);
     }

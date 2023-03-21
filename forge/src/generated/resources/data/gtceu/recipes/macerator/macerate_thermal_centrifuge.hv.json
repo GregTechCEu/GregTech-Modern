@@ -47,7 +47,7 @@
           "count": 4,
           "fabric:type": "gtceu:sized",
           "ingredient": {
-            "item": "gtceu:dust.silver"
+            "item": "gtceu:dust.kanthal"
           }
         }
       },
@@ -58,7 +58,7 @@
           "count": 4,
           "fabric:type": "gtceu:sized",
           "ingredient": {
-            "item": "gtceu:dust.kanthal"
+            "item": "gtceu:dust.silver"
           }
         }
       }
