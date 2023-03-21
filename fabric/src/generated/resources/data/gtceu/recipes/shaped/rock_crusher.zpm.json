@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "c:cable_gt_single/vanadium_gallium"
+    },
+    "G": {
+      "tag": "c:glass"
+    },
+    "H": {
+      "item": "gtceu:hull.zpm"
+    },
+    "M": {
+      "item": "gtceu:electric.motor.zpm"
+    },
+    "P": {
+      "item": "gtceu:electric.piston.zpm"
+    },
+    "W": {
+      "item": "gtceu:component.grinder.tungsten"
+    }
+  },
+  "pattern": [
+    "PMW",
+    "CHC",
+    "GGG"
+  ],
+  "result": {
+    "item": "gtceu:rock_crusher.zpm"
+  }
+}

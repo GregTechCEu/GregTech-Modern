@@ -1,0 +1,34 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": {
+      "tag": "c:tool_head_buzz_saw/cobalt_brass"
+    },
+    "C": {
+      "tag": "c:circuit/lv"
+    },
+    "E": {
+      "item": "gtceu:electric.motor.lv"
+    },
+    "G": {
+      "tag": "c:glass"
+    },
+    "M": {
+      "item": "gtceu:hull.lv"
+    },
+    "V": {
+      "item": "gtceu:conveyor.module.lv"
+    },
+    "W": {
+      "tag": "c:cable_gt_single/tin"
+    }
+  },
+  "pattern": [
+    "WCG",
+    "VMB",
+    "CWE"
+  ],
+  "result": {
+    "item": "gtceu:cutter.lv"
+  }
+}

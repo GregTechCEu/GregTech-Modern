@@ -1,0 +1,85 @@
+{
+  "type": "gtceu:gt_recipe_serializer",
+  "duration": 1000,
+  "inputs": {
+    "fluid": [
+      {
+        "chance": 1.0,
+        "content": {
+          "amount": 12,
+          "fluid": "gtceu:oxygen"
+        }
+      }
+    ],
+    "item": [
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 1,
+          "fabric:type": "gtceu:sized",
+          "ingredient": {
+            "item": "gtceu:ore_washer.mv"
+          }
+        }
+      }
+    ]
+  },
+  "outputs": {
+    "item": [
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 8,
+          "fabric:type": "gtceu:sized",
+          "ingredient": {
+            "item": "gtceu:ingot.bronze"
+          }
+        }
+      },
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 4,
+          "fabric:type": "gtceu:sized",
+          "ingredient": {
+            "item": "gtceu:ingot.cupronickel"
+          }
+        }
+      },
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 2,
+          "fabric:type": "gtceu:sized",
+          "ingredient": {
+            "item": "gtceu:ingot.annealed_copper"
+          }
+        }
+      },
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 1,
+          "fabric:type": "gtceu:sized",
+          "ingredient": {
+            "item": "gtceu:ingot.aluminium"
+          }
+        }
+      }
+    ]
+  },
+  "recipe_type": "gtceu:arc_furnace",
+  "tickInputs": {
+    "eu": [
+      {
+        "chance": 1.0,
+        "content": 30
+      }
+    ]
+  }
+}

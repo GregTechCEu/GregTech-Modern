@@ -1,0 +1,83 @@
+{
+  "type": "gtceu:gt_recipe_serializer",
+  "duration": 100,
+  "inputs": {
+    "item": [
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 1,
+          "fabric:type": "gtceu:sized",
+          "tag": "c:cable_gt_single/gold"
+        }
+      },
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 1,
+          "fabric:type": "gtceu:sized",
+          "tag": "c:pipe_normal_fluid/stainless_steel"
+        }
+      },
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 1,
+          "fabric:type": "gtceu:sized",
+          "tag": "c:screws/steel"
+        }
+      },
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 1,
+          "fabric:type": "gtceu:sized",
+          "tag": "c:rotors/steel"
+        }
+      },
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 2,
+          "fabric:type": "gtceu:sized",
+          "tag": "c:rings/styrene_butadiene_rubber"
+        }
+      },
+      {
+        "chance": 1.0,
+        "content": {
+          "item": "gtceu:electric.motor.hv"
+        }
+      }
+    ]
+  },
+  "outputs": {
+    "item": [
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 1,
+          "fabric:type": "gtceu:sized",
+          "ingredient": {
+            "item": "gtceu:electric.pump.hv"
+          }
+        }
+      }
+    ]
+  },
+  "recipe_type": "gtceu:assembler",
+  "tickInputs": {
+    "eu": [
+      {
+        "chance": 1.0,
+        "content": 30
+      }
+    ]
+  }
+}

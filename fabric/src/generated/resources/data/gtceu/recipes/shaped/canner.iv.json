@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "c:circuit/iv"
+    },
+    "G": {
+      "tag": "c:glass"
+    },
+    "M": {
+      "item": "gtceu:hull.iv"
+    },
+    "P": {
+      "item": "gtceu:electric.pump.iv"
+    },
+    "W": {
+      "tag": "c:cable_gt_single/platinum"
+    }
+  },
+  "pattern": [
+    "WPW",
+    "CMC",
+    "GGG"
+  ],
+  "result": {
+    "item": "gtceu:canner.iv"
+  }
+}

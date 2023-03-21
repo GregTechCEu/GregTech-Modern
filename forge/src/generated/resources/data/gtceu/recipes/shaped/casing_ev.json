@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "P": {
+      "tag": "forge:plates/titanium"
+    },
+    "w": {
+      "tag": "forge:tool/wrench"
+    }
+  },
+  "pattern": [
+    "PPP",
+    "PwP",
+    "PPP"
+  ],
+  "result": {
+    "item": "gtceu:hull_casing",
+    "nbt": {
+      "variant": "extreme_voltage"
+    }
+  }
+}

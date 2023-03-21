@@ -1,0 +1,85 @@
+{
+  "type": "gtceu:gt_recipe_serializer",
+  "duration": 1271,
+  "inputs": {
+    "fluid": [
+      {
+        "chance": 1.0,
+        "content": {
+          "amount": 1271,
+          "fluid": "gtceu:oxygen"
+        }
+      }
+    ],
+    "item": [
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 1,
+          "fabric:type": "gtceu:sized",
+          "ingredient": {
+            "item": "gtceu:brewery.lv"
+          }
+        }
+      }
+    ]
+  },
+  "outputs": {
+    "item": [
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 59,
+          "fabric:type": "gtceu:sized",
+          "ingredient": {
+            "item": "gtceu:nugget.tin"
+          }
+        }
+      },
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 3,
+          "fabric:type": "gtceu:sized",
+          "ingredient": {
+            "item": "gtceu:ingot.bronze"
+          }
+        }
+      },
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 3,
+          "fabric:type": "gtceu:sized",
+          "ingredient": {
+            "item": "gtceu:ingot.annealed_copper"
+          }
+        }
+      },
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 13,
+          "fabric:type": "gtceu:sized",
+          "ingredient": {
+            "item": "gtceu:nugget.wrought_iron"
+          }
+        }
+      }
+    ]
+  },
+  "recipe_type": "gtceu:arc_furnace",
+  "tickInputs": {
+    "eu": [
+      {
+        "chance": 1.0,
+        "content": 30
+      }
+    ]
+  }
+}

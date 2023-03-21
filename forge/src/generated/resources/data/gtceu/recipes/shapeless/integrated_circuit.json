@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "tag": "forge:circuit/lv"
+    }
+  ],
+  "result": {
+    "item": "gtceu:circuit.integrated"
+  }
+}

@@ -1,0 +1,76 @@
+{
+  "type": "gtceu:gt_recipe_serializer",
+  "duration": 1125,
+  "inputs": {
+    "item": [
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 1,
+          "fabric:type": "gtceu:sized",
+          "ingredient": {
+            "item": "gtceu:autoclave.lv"
+          }
+        }
+      }
+    ]
+  },
+  "outputs": {
+    "item": [
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 50,
+          "fabric:type": "gtceu:sized",
+          "ingredient": {
+            "item": "gtceu:dust_tiny.tin"
+          }
+        }
+      },
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 4,
+          "fabric:type": "gtceu:sized",
+          "ingredient": {
+            "item": "gtceu:dust.steel"
+          }
+        }
+      },
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 14,
+          "fabric:type": "gtceu:sized",
+          "ingredient": {
+            "item": "gtceu:dust_small.rubber"
+          }
+        }
+      },
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 3,
+          "fabric:type": "gtceu:sized",
+          "ingredient": {
+            "item": "gtceu:dust.bronze"
+          }
+        }
+      }
+    ]
+  },
+  "recipe_type": "gtceu:macerator",
+  "tickInputs": {
+    "eu": [
+      {
+        "chance": 1.0,
+        "content": 8
+      }
+    ]
+  }
+}

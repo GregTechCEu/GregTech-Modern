@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "forge:circuit/lv"
+    },
+    "E": {
+      "item": "gtceu:electric.motor.lv"
+    },
+    "G": {
+      "tag": "forge:glass"
+    },
+    "M": {
+      "item": "gtceu:hull.lv"
+    },
+    "R": {
+      "tag": "forge:rotors/tin"
+    }
+  },
+  "pattern": [
+    "GRG",
+    "GEG",
+    "CMC"
+  ],
+  "result": {
+    "item": "gtceu:mixer.lv"
+  }
+}

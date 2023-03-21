@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [],
+  "result": {
+    "item": "gtceu:dust.glass"
+  }
+}

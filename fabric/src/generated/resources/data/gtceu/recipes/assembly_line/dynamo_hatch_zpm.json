@@ -1,0 +1,99 @@
+{
+  "type": "gtceu:gt_recipe_serializer",
+  "duration": 600,
+  "inputs": {
+    "fluid": [
+      {
+        "chance": 1.0,
+        "content": {
+          "amount": 98,
+          "fluid": "gtceu:sodium_potassium"
+        }
+      },
+      {
+        "chance": 1.0,
+        "content": {
+          "amount": 17,
+          "fluid": "gtceu:soldering_alloy"
+        }
+      }
+    ],
+    "item": [
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 1,
+          "fabric:type": "gtceu:sized",
+          "ingredient": {
+            "item": "gtceu:hull.zpm"
+          }
+        }
+      },
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 4,
+          "fabric:type": "gtceu:sized",
+          "tag": "c:springs/vanadium_gallium"
+        }
+      },
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 2,
+          "fabric:type": "gtceu:sized",
+          "ingredient": {
+            "item": "gtceu:plate.ultra_high_power_integrated_circuit"
+          }
+        }
+      },
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 1,
+          "fabric:type": "gtceu:sized",
+          "tag": "c:circuit/zpm"
+        }
+      },
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 2,
+          "fabric:type": "gtceu:sized",
+          "ingredient": {
+            "item": "gtceu:voltage_coil.zpm"
+          }
+        }
+      }
+    ]
+  },
+  "outputs": {
+    "item": [
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 1,
+          "fabric:type": "gtceu:sized",
+          "ingredient": {
+            "item": "gtceu:energy_hatch.output.zpm"
+          }
+        }
+      }
+    ]
+  },
+  "recipe_type": "gtceu:assembly_line",
+  "tickInputs": {
+    "eu": [
+      {
+        "chance": 1.0,
+        "content": 122880
+      }
+    ]
+  }
+}

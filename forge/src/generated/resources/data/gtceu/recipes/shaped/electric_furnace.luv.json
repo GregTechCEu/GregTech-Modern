@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "forge:wire_gt_double/hssg"
+    },
+    "E": {
+      "tag": "forge:circuit/luv"
+    },
+    "M": {
+      "item": "gtceu:hull.luv"
+    },
+    "W": {
+      "tag": "forge:cable_gt_single/niobium_titanium"
+    }
+  },
+  "pattern": [
+    "ECE",
+    "CMC",
+    "WCW"
+  ],
+  "result": {
+    "item": "gtceu:electric_furnace.luv"
+  }
+}

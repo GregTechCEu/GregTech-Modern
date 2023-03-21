@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "c:wire_gt_quadruple/tungsten_steel"
+    },
+    "E": {
+      "tag": "c:circuit/iv"
+    },
+    "M": {
+      "item": "gtceu:hull.iv"
+    },
+    "P": {
+      "tag": "c:pipe_normal_fluid/tungsten_steel"
+    },
+    "X": {
+      "item": "gtceu:electric.piston.iv"
+    }
+  },
+  "pattern": [
+    "CCE",
+    "XMP",
+    "CCE"
+  ],
+  "result": {
+    "item": "gtceu:extruder.iv"
+  }
+}

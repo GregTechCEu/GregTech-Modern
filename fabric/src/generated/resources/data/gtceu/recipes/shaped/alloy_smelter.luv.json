@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "c:wire_gt_quadruple/hssg"
+    },
+    "E": {
+      "tag": "c:circuit/luv"
+    },
+    "M": {
+      "item": "gtceu:hull.luv"
+    },
+    "W": {
+      "tag": "c:cable_gt_single/niobium_titanium"
+    }
+  },
+  "pattern": [
+    "ECE",
+    "CMC",
+    "WCW"
+  ],
+  "result": {
+    "item": "gtceu:alloy_smelter.luv"
+  }
+}

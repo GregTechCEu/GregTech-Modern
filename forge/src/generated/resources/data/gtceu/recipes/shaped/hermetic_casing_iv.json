@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "F": {
+      "tag": "forge:pipe_large_fluid/titanium"
+    },
+    "P": {
+      "tag": "forge:plates/tungsten_steel"
+    }
+  },
+  "pattern": [
+    "PPP",
+    "PFP",
+    "PPP"
+  ],
+  "result": {
+    "item": "gtceu:hermetic_casing",
+    "nbt": {
+      "variant": "insane_voltage"
+    }
+  }
+}

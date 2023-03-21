@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "c:circuit/zpm"
+    },
+    "G": {
+      "tag": "c:glass"
+    },
+    "M": {
+      "item": "gtceu:hull.zpm"
+    },
+    "O": {
+      "tag": "c:wire_gt_quadruple/naquadah"
+    },
+    "P": {
+      "item": "gtceu:electric.pump.zpm"
+    },
+    "W": {
+      "tag": "c:cable_gt_single/vanadium_gallium"
+    }
+  },
+  "pattern": [
+    "OGO",
+    "PMP",
+    "WCW"
+  ],
+  "result": {
+    "item": "gtceu:fluid_heater.zpm"
+  }
+}

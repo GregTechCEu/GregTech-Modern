@@ -2,19 +2,19 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "minecraft:cable_gt_single/gold"
+      "tag": "c:cable_gt_single/gold"
     },
     "G": {
-      "tag": "minecraft:gears/small/stainless_steel"
+      "tag": "c:gears/small/stainless_steel"
     },
     "M": {
       "item": "gtceu:electric.motor.hv"
     },
     "P": {
-      "tag": "minecraft:plates/stainless_steel"
+      "tag": "c:plates/stainless_steel"
     },
     "R": {
-      "tag": "minecraft:sticks/stainless_steel"
+      "tag": "c:sticks/stainless_steel"
     }
   },
   "pattern": [

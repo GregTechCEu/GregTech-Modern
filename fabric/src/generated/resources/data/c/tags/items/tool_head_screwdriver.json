@@ -1,0 +1,23 @@
+{
+  "replace": false,
+  "values": [
+    "#c:tool_head_screwdriver/ultimet",
+    "#c:tool_head_screwdriver/iron",
+    "#c:tool_head_screwdriver/stainless_steel",
+    "#c:tool_head_screwdriver/bronze",
+    "#c:tool_head_screwdriver/tungsten_carbide",
+    "#c:tool_head_screwdriver/aluminium",
+    "#c:tool_head_screwdriver/wrought_iron",
+    "#c:tool_head_screwdriver/tungsten_steel",
+    "#c:tool_head_screwdriver/vanadium_steel",
+    "#c:tool_head_screwdriver/cobalt_brass",
+    "#c:tool_head_screwdriver/rose_gold",
+    "#c:tool_head_screwdriver/naquadah_alloy",
+    "#c:tool_head_screwdriver/hsse",
+    "#c:tool_head_screwdriver/wood",
+    "#c:tool_head_screwdriver/sterling_silver",
+    "#c:tool_head_screwdriver/titanium",
+    "#c:tool_head_screwdriver/steel",
+    "#c:tool_head_screwdriver/invar"
+  ]
+}

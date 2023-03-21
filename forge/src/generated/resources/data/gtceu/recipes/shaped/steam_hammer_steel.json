@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "M": {
+      "item": "gtceu:steam_forge_hammer.bronze"
+    },
+    "P": {
+      "tag": "forge:pipe_small_fluid/tin_alloy"
+    },
+    "S": {
+      "tag": "forge:plates/steel"
+    },
+    "W": {
+      "tag": "forge:plates/wrought_iron"
+    }
+  },
+  "pattern": [
+    "WSW",
+    "PMP",
+    "WWW"
+  ],
+  "result": {
+    "item": "gtceu:steam_forge_hammer.steel"
+  }
+}

@@ -1,0 +1,59 @@
+{
+  "type": "gtceu:gt_recipe_serializer",
+  "duration": 100,
+  "inputs": {
+    "item": [
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 1,
+          "fabric:type": "gtceu:sized",
+          "tag": "forge:dusts/coal"
+        }
+      },
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 1,
+          "fabric:type": "gtceu:sized",
+          "tag": "forge:dusts/gunpowder"
+        }
+      },
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 1,
+          "fabric:type": "gtceu:sized",
+          "tag": "forge:dusts/blaze"
+        }
+      }
+    ]
+  },
+  "outputs": {
+    "item": [
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 3,
+          "fabric:type": "gtceu:sized",
+          "ingredient": {
+            "item": "minecraft:fire_charge"
+          }
+        }
+      }
+    ]
+  },
+  "recipe_type": "gtceu:mixer",
+  "tickInputs": {
+    "eu": [
+      {
+        "chance": 1.0,
+        "content": 30
+      }
+    ]
+  }
+}

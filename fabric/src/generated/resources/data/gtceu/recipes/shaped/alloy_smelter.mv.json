@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "c:wire_gt_quadruple/cupronickel"
+    },
+    "E": {
+      "tag": "c:circuit/mv"
+    },
+    "M": {
+      "item": "gtceu:hull.mv"
+    },
+    "W": {
+      "tag": "c:cable_gt_single/copper"
+    }
+  },
+  "pattern": [
+    "ECE",
+    "CMC",
+    "WCW"
+  ],
+  "result": {
+    "item": "gtceu:alloy_smelter.mv"
+  }
+}

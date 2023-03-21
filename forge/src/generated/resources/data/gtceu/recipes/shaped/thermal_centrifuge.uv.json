@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "forge:circuit/uv"
+    },
+    "E": {
+      "item": "gtceu:electric.motor.uv"
+    },
+    "M": {
+      "item": "gtceu:hull.uv"
+    },
+    "O": {
+      "tag": "forge:wire_gt_quadruple/naquadah_alloy"
+    },
+    "W": {
+      "tag": "forge:cable_gt_single/yttrium_barium_cuprate"
+    }
+  },
+  "pattern": [
+    "CEC",
+    "OMO",
+    "WEW"
+  ],
+  "result": {
+    "item": "gtceu:thermal_centrifuge.uv"
+  }
+}

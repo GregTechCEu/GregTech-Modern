@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:smelting",
+  "cookingtime": 0,
+  "experience": 0.0,
+  "ingredient": {
+    "tag": "forge:nuggets/iron"
+  },
+  "result": {
+    "item": "gtceu:nugget.wrought_iron"
+  }
+}

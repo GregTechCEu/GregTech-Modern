@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "c:circuit/mv"
+    },
+    "G": {
+      "tag": "c:glass"
+    },
+    "I": {
+      "tag": "c:plates/aluminium"
+    },
+    "M": {
+      "item": "gtceu:hull.mv"
+    },
+    "P": {
+      "item": "gtceu:electric.pump.mv"
+    }
+  },
+  "pattern": [
+    "IGI",
+    "IMI",
+    "CPC"
+  ],
+  "result": {
+    "item": "gtceu:autoclave.mv"
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "item": "gtceu:electric.pump.mv"
+    },
+    "E": {
+      "tag": "forge:circuit/mv"
+    },
+    "M": {
+      "item": "gtceu:hull.mv"
+    },
+    "P": {
+      "tag": "forge:wire_gt_quadruple/cupronickel"
+    },
+    "W": {
+      "item": "gtceu:electric.piston.mv"
+    }
+  },
+  "pattern": [
+    "WEP",
+    "EME",
+    "WCP"
+  ],
+  "result": {
+    "item": "gtceu:pyrolyse_oven"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "M": {
+      "item": "gtceu:hull.luv"
+    },
+    "S": {
+      "tag": "c:sticks/vanadium_gallium"
+    },
+    "W": {
+      "tag": "c:cable_gt_single/niobium_titanium"
+    },
+    "Z": {
+      "tag": "c:wire_gt_quadruple/niobium_nitride"
+    }
+  },
+  "pattern": [
+    "ZSZ",
+    "WMW",
+    "ZSZ"
+  ],
+  "result": {
+    "item": "gtceu:polarizer.luv"
+  }
+}

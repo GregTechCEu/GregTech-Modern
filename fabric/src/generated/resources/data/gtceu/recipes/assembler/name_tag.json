@@ -1,0 +1,63 @@
+{
+  "type": "gtceu:gt_recipe_serializer",
+  "duration": 100,
+  "inputs": {
+    "fluid": [
+      {
+        "chance": 1.0,
+        "content": {
+          "amount": 1,
+          "fluid": "gtceu:glue"
+        }
+      }
+    ],
+    "item": [
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 1,
+          "fabric:type": "gtceu:sized",
+          "ingredient": {
+            "item": "minecraft:leather"
+          }
+        }
+      },
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 1,
+          "fabric:type": "gtceu:sized",
+          "ingredient": {
+            "item": "minecraft:lead"
+          }
+        }
+      }
+    ]
+  },
+  "outputs": {
+    "item": [
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 1,
+          "fabric:type": "gtceu:sized",
+          "ingredient": {
+            "item": "minecraft:name_tag"
+          }
+        }
+      }
+    ]
+  },
+  "recipe_type": "gtceu:assembler",
+  "tickInputs": {
+    "eu": [
+      {
+        "chance": 1.0,
+        "content": 7
+      }
+    ]
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "forge:wire_gt_quadruple/tungsten_steel"
+    },
+    "E": {
+      "tag": "forge:circuit/iv"
+    },
+    "M": {
+      "item": "gtceu:hull.iv"
+    },
+    "W": {
+      "tag": "forge:cable_gt_single/platinum"
+    }
+  },
+  "pattern": [
+    "ECE",
+    "CMC",
+    "WCW"
+  ],
+  "result": {
+    "item": "gtceu:alloy_smelter.iv"
+  }
+}

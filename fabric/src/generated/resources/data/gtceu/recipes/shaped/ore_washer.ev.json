@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "c:circuit/ev"
+    },
+    "E": {
+      "item": "gtceu:electric.motor.ev"
+    },
+    "G": {
+      "tag": "c:glass"
+    },
+    "M": {
+      "item": "gtceu:hull.ev"
+    },
+    "R": {
+      "tag": "c:rotors/stainless_steel"
+    },
+    "W": {
+      "tag": "c:cable_gt_single/aluminium"
+    }
+  },
+  "pattern": [
+    "RGR",
+    "CEC",
+    "WMW"
+  ],
+  "result": {
+    "item": "gtceu:ore_washer.ev"
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "c:cable_gt_single/tin"
+    },
+    "H": {
+      "base": {
+        "item": "gtceu:hull_casing"
+      },
+      "fabric:type": "fabric:nbt",
+      "nbt": {
+        "variant": "low_voltage"
+      },
+      "strict": true
+    },
+    "L": {
+      "tag": "c:plates/steel"
+    },
+    "P": {
+      "tag": "c:plates/wrought_iron"
+    }
+  },
+  "pattern": [
+    "PLP",
+    "CHC"
+  ],
+  "result": {
+    "item": "gtceu:hull.lv"
+  }
+}

@@ -152,8 +152,7 @@ public class GTMaterials {
         nugget.setIgnored(Gold, Items.GOLD_NUGGET);
         nugget.setIgnored(Paper);
         nugget.setIgnored(Iron, Items.IRON_NUGGET);
-//        nugget.setIgnored(Copper);
-        plate.setIgnored(Paper);
+        plate.setIgnored(Paper, Items.PAPER);
 
         block.setIgnored(Iron, Blocks.IRON_BLOCK);
         block.setIgnored(Gold, Blocks.GOLD_BLOCK);
@@ -180,12 +179,13 @@ public class GTMaterials {
         block.setIgnored(Bone, Blocks.BONE_BLOCK);
         block.setIgnored(NetherQuartz, Blocks.QUARTZ_BLOCK);
         block.setIgnored(Ice, Blocks.ICE);
-        block.setIgnored(Netherrack);
+        block.setIgnored(Netherrack, Blocks.NETHERRACK);
         block.setIgnored(Concrete, Blocks.WHITE_CONCRETE, Blocks.ORANGE_CONCRETE, Blocks.MAGENTA_CONCRETE, Blocks.LIGHT_BLUE_CONCRETE, Blocks.YELLOW_CONCRETE, Blocks.LIME_CONCRETE,
                 Blocks.PINK_CONCRETE, Blocks.GRAY_CONCRETE, Blocks.LIGHT_GRAY_CONCRETE, Blocks.CYAN_CONCRETE, Blocks.PURPLE_CONCRETE, Blocks.BLUE_CONCRETE,
                 Blocks.BROWN_CONCRETE, Blocks.GREEN_CONCRETE, Blocks.RED_CONCRETE, Blocks.BLACK_CONCRETE);
         block.setIgnored(Blaze);
         block.setIgnored(Lapotron);
+        block.setIgnored(Obsidian, Blocks.OBSIDIAN);
 
         ore.addSecondaryMaterial(new MaterialStack(Stone, dust.materialAmount()));
         oreNetherrack.addSecondaryMaterial(new MaterialStack(Netherrack, dust.materialAmount()));
@@ -247,8 +247,14 @@ public class GTMaterials {
         registerUnificationItems(ore, NetherQuartz, Blocks.NETHER_QUARTZ_ORE);
         registerUnificationItems(ore, Copper, Blocks.COPPER_ORE);
 
-        registerUnificationItems(plate, Paper, Items.PAPER);
-        registerUnificationItems(block, Obsidian, Blocks.OBSIDIAN);
+        // todo deepslate
+        //registerUnificationItems(oreDeepslate, Coal, Blocks.DEEPSLATE_COAL_ORE);
+        //registerUnificationItems(oreDeepslate, Iron, Blocks.DEEPSLATE_IRON_ORE);
+        //registerUnificationItems(oreDeepslate, Lapis, Blocks.DEEPSLATE_LAPIS_ORE);
+        //registerUnificationItems(oreDeepslate, Redstone, Blocks.DEEPSLATE_REDSTONE_ORE);
+        //registerUnificationItems(oreDeepslate, Gold, Blocks.DEEPSLATE_GOLD_ORE);
+        //registerUnificationItems(oreDeepslate, Diamond, Blocks.DEEPSLATE_DIAMOND_ORE);
+        //registerUnificationItems(oreDeepslate, Copper, Blocks.DEEPSLATE_COPPER_ORE);
 
         registerUnificationItems(stone, Granite, Blocks.STONE);
         registerUnificationItems(stone, Andesite, Blocks.ANDESITE);

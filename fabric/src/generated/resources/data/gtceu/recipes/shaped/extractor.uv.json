@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "c:circuit/uv"
+    },
+    "E": {
+      "item": "gtceu:electric.piston.uv"
+    },
+    "G": {
+      "tag": "c:glass"
+    },
+    "M": {
+      "item": "gtceu:hull.uv"
+    },
+    "P": {
+      "item": "gtceu:electric.pump.uv"
+    },
+    "W": {
+      "tag": "c:cable_gt_single/yttrium_barium_cuprate"
+    }
+  },
+  "pattern": [
+    "GCG",
+    "EMP",
+    "WCW"
+  ],
+  "result": {
+    "item": "gtceu:extractor.uv"
+  }
+}

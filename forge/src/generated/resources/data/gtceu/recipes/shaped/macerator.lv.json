@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "forge:circuit/lv"
+    },
+    "E": {
+      "item": "gtceu:electric.motor.lv"
+    },
+    "G": {
+      "tag": "forge:gems/diamond"
+    },
+    "M": {
+      "item": "gtceu:hull.lv"
+    },
+    "P": {
+      "item": "gtceu:electric.piston.lv"
+    },
+    "W": {
+      "tag": "forge:cable_gt_single/tin"
+    }
+  },
+  "pattern": [
+    "PEG",
+    "WWM",
+    "CCW"
+  ],
+  "result": {
+    "item": "gtceu:macerator.lv"
+  }
+}

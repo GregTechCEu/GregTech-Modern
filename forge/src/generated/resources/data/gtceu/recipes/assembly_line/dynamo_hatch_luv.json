@@ -1,0 +1,99 @@
+{
+  "type": "gtceu:gt_recipe_serializer",
+  "duration": 400,
+  "inputs": {
+    "fluid": [
+      {
+        "chance": 1.0,
+        "content": {
+          "amount": 6000,
+          "fluid": "gtceu:sodium_potassium"
+        }
+      },
+      {
+        "chance": 1.0,
+        "content": {
+          "amount": 720,
+          "fluid": "gtceu:soldering_alloy"
+        }
+      }
+    ],
+    "item": [
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 1,
+          "fabric:type": "gtceu:sized",
+          "ingredient": {
+            "item": "gtceu:hull.luv"
+          }
+        }
+      },
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 4,
+          "fabric:type": "gtceu:sized",
+          "tag": "forge:springs/niobium_titanium"
+        }
+      },
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 2,
+          "fabric:type": "gtceu:sized",
+          "ingredient": {
+            "item": "gtceu:plate.high_power_integrated_circuit"
+          }
+        }
+      },
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 1,
+          "fabric:type": "gtceu:sized",
+          "tag": "forge:circuit/luv"
+        }
+      },
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 2,
+          "fabric:type": "gtceu:sized",
+          "ingredient": {
+            "item": "gtceu:voltage_coil.luv"
+          }
+        }
+      }
+    ]
+  },
+  "outputs": {
+    "item": [
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 1,
+          "fabric:type": "gtceu:sized",
+          "ingredient": {
+            "item": "gtceu:energy_hatch.output.luv"
+          }
+        }
+      }
+    ]
+  },
+  "recipe_type": "gtceu:assembly_line",
+  "tickInputs": {
+    "eu": [
+      {
+        "chance": 1.0,
+        "content": 30720
+      }
+    ]
+  }
+}

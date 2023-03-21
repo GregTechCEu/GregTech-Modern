@@ -29,6 +29,7 @@ import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import com.tterrag.registrate.util.nullness.NonNullFunction;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.enchantment.Enchantments;
@@ -231,7 +232,40 @@ public class GTBlocks {
                     .modelFile(prov.models().withExistingParent("block/%s/%s".formatted(ctx.getName(), ctx.getEntry().getVariant(blockState)),
                             GTCEu.id("block/cube_bottom_top_tintindex"))
                             .texture("bottom", ctx.getEntry().getVariant(blockState).getBottomTexture())
-                            .texture("top", ctx.getEntry().getVariant(blockState).geTopTexture())
+                            .texture("top", ctx.getEntry().getVariant(blockState).getTopTexture())
+                            .texture("side", ctx.getEntry().getVariant(blockState).getSideTexture()))
+                    .build()))
+            .tag(GTToolType.WRENCH.harvestTag, BlockTags.MINEABLE_WITH_PICKAXE)
+            .item(VariantBlockItem::new)
+            .model(NonNullBiConsumer.noop())
+            .build()
+            .register();
+
+    public final static BlockEntry<HermeticCasingBlock> HERMETIC_CASING = REGISTRATE.block("hermetic_casing", HermeticCasingBlock::new)
+            .initialProperties(() -> Blocks.IRON_BLOCK)
+            .addLayer(() -> RenderType::cutoutMipped)
+            .blockstate((ctx, prov) -> prov.getVariantBuilder(ctx.getEntry()).forAllStates(blockState -> ConfiguredModel.builder()
+                    .modelFile(prov.models().withExistingParent("block/%s/%s".formatted(ctx.getName(), ctx.getEntry().getVariant(blockState)),
+                            GTCEu.id("block/hermetic_casing"))
+                            .texture("bot_bottom", ctx.getEntry().getVariant(blockState).getBottomTexture())
+                            .texture("bot_top", ctx.getEntry().getVariant(blockState).getTopTexture())
+                            .texture("bot_side", ctx.getEntry().getVariant(blockState).getSideTexture())
+                            .texture("top_side", GTCEu.id("block/casings/hermetic_casing/hermetic_casing_overlay")))
+                    .build()))
+            .tag(GTToolType.WRENCH.harvestTag, BlockTags.MINEABLE_WITH_PICKAXE)
+            .item(VariantBlockItem::new)
+            .model(NonNullBiConsumer.noop())
+            .build()
+            .register();
+
+    public final static BlockEntry<SteamCasingBlock> STEAM_CASING = REGISTRATE.block("steam_casing", SteamCasingBlock::new)
+            .initialProperties(() -> Blocks.IRON_BLOCK)
+            .addLayer(() -> RenderType::cutoutMipped)
+            .blockstate((ctx, prov) -> prov.getVariantBuilder(ctx.getEntry()).forAllStates(blockState -> ConfiguredModel.builder()
+                    .modelFile(prov.models().withExistingParent("block/%s/%s".formatted(ctx.getName(), ctx.getEntry().getVariant(blockState)),
+                                    new ResourceLocation("minecraft:cube_bottom_top"))
+                            .texture("bottom", ctx.getEntry().getVariant(blockState).getBottomTexture())
+                            .texture("top", ctx.getEntry().getVariant(blockState).getTopTexture())
                             .texture("side", ctx.getEntry().getVariant(blockState).getSideTexture()))
                     .build()))
             .tag(GTToolType.WRENCH.harvestTag, BlockTags.MINEABLE_WITH_PICKAXE)

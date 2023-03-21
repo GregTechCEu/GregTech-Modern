@@ -1,0 +1,32 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "gtceu:credit.naquadah"
+    },
+    {
+      "item": "gtceu:credit.naquadah"
+    },
+    {
+      "item": "gtceu:credit.naquadah"
+    },
+    {
+      "item": "gtceu:credit.naquadah"
+    },
+    {
+      "item": "gtceu:credit.naquadah"
+    },
+    {
+      "item": "gtceu:credit.naquadah"
+    },
+    {
+      "item": "gtceu:credit.naquadah"
+    },
+    {
+      "item": "gtceu:credit.naquadah"
+    }
+  ],
+  "result": {
+    "item": "gtceu:credit.neutronium"
+  }
+}

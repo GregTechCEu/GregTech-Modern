@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "H": {
+      "item": "gtceu:hull.ulv"
+    },
+    "S": {
+      "tag": "c:springs/lead"
+    },
+    "V": {
+      "item": "gtceu:voltage_coil.ulv"
+    }
+  },
+  "pattern": [
+    " V ",
+    "SHS",
+    "   "
+  ],
+  "result": {
+    "item": "gtceu:energy_hatch.output.ulv"
+  }
+}

@@ -1,20 +1,18 @@
 package com.gregtechceu.gtceu.data.recipe.misc;
 
-import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
-import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
-import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
-import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials;
+import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials.Color;
+import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials.Tier;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.world.item.crafting.Ingredient;
 
 import java.util.function.Consumer;
 
-import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
+import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.tag.TagPrefix.*;
 import static com.gregtechceu.gtceu.common.data.GTItems.*;
+import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
+import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
 
 public class BatteryRecipes {
 
@@ -26,11 +24,11 @@ public class BatteryRecipes {
     private static void standardBatteries(Consumer<FinishedRecipe> provider) {
 
         // Tantalum Battery (since it doesn't fit elsewhere)
-        GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder(BATTERY_ULV_TANTALUM.getId())
+        ASSEMBLER_RECIPES.recipeBuilder("tantalum_capacitor")
                 .inputItems(dust, Tantalum)
                 .inputItems(foil, Manganese)
-                .inputFluids(Polyethylene.getFluid(GTValues.L))
-                .outputItems(BATTERY_ULV_TANTALUM.asStack(8))
+                .inputFluids(Polyethylene.getFluid(L))
+                .outputItems(BATTERY_ULV_TANTALUM, 8)
                 .duration(30).EUt(4).save(provider);
 
         // :trol:
@@ -48,11 +46,11 @@ public class BatteryRecipes {
                 'C', new UnificationEntry(cableGtSingle, Tin),
                 'P', new UnificationEntry(plate, BatteryAlloy));
 
-        GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder(BATTERY_HULL_LV.getId())
+        ASSEMBLER_RECIPES.recipeBuilder("battery_hull_lv")
                 .inputItems(cableGtSingle, Tin)
                 .inputItems(plate, BatteryAlloy)
-                .inputFluids(Polyethylene.getFluid(GTValues.L))
-                .outputItems(BATTERY_HULL_LV.asStack())
+                .inputFluids(Polyethylene.getFluid(L))
+                .outputItems(BATTERY_HULL_LV)
                 .duration(400).EUt(1).save(provider);
 
         // MV
@@ -61,354 +59,356 @@ public class BatteryRecipes {
                 'C', new UnificationEntry(cableGtSingle, Copper),
                 'P', new UnificationEntry(plate, BatteryAlloy));
 
-        GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder(BATTERY_HULL_MV.getId().getPath() + ".0")
+        ASSEMBLER_RECIPES.recipeBuilder("battery_hull_mv_copper")
                 .inputItems(cableGtSingle, Copper, 2)
                 .inputItems(plate, BatteryAlloy, 3)
-                .inputFluids(Polyethylene.getFluid(GTValues.L * 3))
-                .outputItems(BATTERY_HULL_MV.asStack())
+                .inputFluids(Polyethylene.getFluid(L * 3))
+                .outputItems(BATTERY_HULL_MV)
                 .duration(200).EUt(2).save(provider);
 
-        GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder(BATTERY_HULL_MV.getId().getPath() + ".1")
+        ASSEMBLER_RECIPES.recipeBuilder("battery_hull_mv_annealed")
                 .inputItems(cableGtSingle, AnnealedCopper, 2)
                 .inputItems(plate, BatteryAlloy, 3)
-                .inputFluids(Polyethylene.getFluid(GTValues.L * 3))
-                .outputItems(BATTERY_HULL_MV.asStack())
+                .inputFluids(Polyethylene.getFluid(L * 3))
+                .outputItems(BATTERY_HULL_MV)
                 .duration(200).EUt(2).save(provider);
 
         // HV
-        GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder(BATTERY_HULL_HV.getId()).duration(300).EUt(4)
+        ASSEMBLER_RECIPES.recipeBuilder("battery_hull_hv")
                 .inputItems(cableGtSingle, Gold, 4)
                 .inputItems(plate, BatteryAlloy, 9)
                 .inputFluids(Polyethylene.getFluid(1296))
-                .outputItems(BATTERY_HULL_HV.asStack())
-                .save(provider);
+                .outputItems(BATTERY_HULL_HV)
+                .duration(300).EUt(4).save(provider);
 
         // EV
-        GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder(BATTERY_HULL_SMALL_VANADIUM.getId()).duration(100).EUt(GTValues.VA[GTValues.HV])
+        ASSEMBLER_RECIPES.recipeBuilder("battery_hull_ev")
                 .inputItems(cableGtSingle, Aluminium, 2)
                 .inputItems(plate, BlueSteel, 2)
                 .inputFluids(Polytetrafluoroethylene.getFluid(144))
-                .outputItems(BATTERY_HULL_SMALL_VANADIUM.asStack())
-                .save(provider);
+                .outputItems(BATTERY_HULL_SMALL_VANADIUM)
+                .duration(100).EUt(VA[HV]).save(provider);
 
         // IV
-        GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder(BATTERY_HULL_MEDIUM_VANADIUM.getId()).duration(200).EUt(GTValues.VA[GTValues.EV])
+        ASSEMBLER_RECIPES.recipeBuilder("battery_hull_iv")
                 .inputItems(cableGtSingle, Platinum, 2)
                 .inputItems(plate, RoseGold, 6)
                 .inputFluids(Polytetrafluoroethylene.getFluid(288))
-                .outputItems(BATTERY_HULL_MEDIUM_VANADIUM.asStack())
-                .save(provider);
+                .outputItems(BATTERY_HULL_MEDIUM_VANADIUM)
+                .duration(200).EUt(VA[EV]).save(provider);
 
         // LuV
-        GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder(BATTERY_HULL_LARGE_VANADIUM.getId()).duration(300).EUt(GTValues.VA[GTValues.IV])
+        ASSEMBLER_RECIPES.recipeBuilder("battery_hull_luv")
                 .inputItems(cableGtSingle, NiobiumTitanium, 2)
                 .inputItems(plate, RedSteel, 18)
                 .inputFluids(Polybenzimidazole.getFluid(144))
-                .outputItems(BATTERY_HULL_LARGE_VANADIUM.asStack())
-                .save(provider);
+                .outputItems(BATTERY_HULL_LARGE_VANADIUM)
+                .duration(300).EUt(VA[IV]).save(provider);
 
         // ZPM
-        GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder(BATTERY_HULL_MEDIUM_NAQUADRIA.getId()).duration(200).EUt(GTValues.VA[GTValues.LuV])
+        ASSEMBLER_RECIPES.recipeBuilder("battery_hull_zpm")
                 .inputItems(cableGtSingle, Naquadah, 2)
                 .inputItems(plate, Europium, 6)
                 .inputFluids(Polybenzimidazole.getFluid(288))
-                .outputItems(BATTERY_HULL_MEDIUM_NAQUADRIA.asStack())
-                .save(provider);
+                .outputItems(BATTERY_HULL_MEDIUM_NAQUADRIA)
+                .duration(200).EUt(VA[LuV]).save(provider);
 
         // UV
-        GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder(BATTERY_HULL_LARGE_NAQUADRIA.getId()).duration(300).EUt(GTValues.VA[GTValues.ZPM])
+        ASSEMBLER_RECIPES.recipeBuilder("battery_hull_uv")
                 .inputItems(cableGtSingle, YttriumBariumCuprate, 2)
                 .inputItems(plate, Americium, 18)
                 .inputFluids(Polybenzimidazole.getFluid(576))
-                .outputItems(BATTERY_HULL_LARGE_NAQUADRIA.asStack())
-                .save(provider);
+                .outputItems(BATTERY_HULL_LARGE_NAQUADRIA)
+                .duration(300).EUt(VA[ZPM]).save(provider);
 
         // Battery Filling Recipes
 
         // LV
-        GTRecipeTypes.CANNER_RECIPES.recipeBuilder(BATTERY_LV_CADMIUM.getId()).duration(100).EUt(2)
-                .inputItems(Ingredient.of(BATTERY_HULL_LV.get()))
+        CANNER_RECIPES.recipeBuilder("cadmium_battery_lv")
+                .inputItems(BATTERY_HULL_LV)
                 .inputItems(dust, Cadmium, 2)
-                .outputItems(BATTERY_LV_CADMIUM.asStack())
-                .save(provider);
+                .outputItems(BATTERY_LV_CADMIUM)
+                .duration(100).EUt(2).save(provider);
 
-        GTRecipeTypes.CANNER_RECIPES.recipeBuilder(BATTERY_LV_LITHIUM.getId()).duration(100).EUt(2)
-                .inputItems(Ingredient.of(BATTERY_HULL_LV.get()))
+        CANNER_RECIPES.recipeBuilder("lithium_battery_lv")
+                .inputItems(BATTERY_HULL_LV)
                 .inputItems(dust, Lithium, 2)
-                .outputItems(BATTERY_LV_LITHIUM.asStack())
-                .save(provider);
+                .outputItems(BATTERY_LV_LITHIUM)
+                .duration(100).EUt(2).save(provider);
 
-        GTRecipeTypes.CANNER_RECIPES.recipeBuilder(BATTERY_LV_SODIUM.getId()).duration(100).EUt(2)
-                .inputItems(Ingredient.of(BATTERY_HULL_LV.get()))
+        CANNER_RECIPES.recipeBuilder("sodium_battery_lv")
+                .inputItems(BATTERY_HULL_LV)
                 .inputItems(dust, Sodium, 2)
-                .outputItems(BATTERY_LV_SODIUM.asStack())
-                .save(provider);
+                .outputItems(BATTERY_LV_SODIUM)
+                .duration(100).EUt(2).save(provider);
 
         // MV
-        GTRecipeTypes.CANNER_RECIPES.recipeBuilder(BATTERY_MV_CADMIUM.getId()).duration(400).EUt(2)
-                .inputItems(Ingredient.of(BATTERY_HULL_MV.get()))
+        CANNER_RECIPES.recipeBuilder("cadmium_battery_mv")
+                .inputItems(BATTERY_HULL_MV)
                 .inputItems(dust, Cadmium, 8)
-                .outputItems(BATTERY_MV_CADMIUM.asStack())
-                .save(provider);
+                .outputItems(BATTERY_MV_CADMIUM)
+                .duration(400).EUt(2).save(provider);
 
-        GTRecipeTypes.CANNER_RECIPES.recipeBuilder(BATTERY_MV_LITHIUM.getId()).duration(400).EUt(2)
-                .inputItems(Ingredient.of(BATTERY_HULL_MV.get()))
+        CANNER_RECIPES.recipeBuilder("lithium_battery_mv")
+                .inputItems(BATTERY_HULL_MV)
                 .inputItems(dust, Lithium, 8)
-                .outputItems(BATTERY_MV_LITHIUM.asStack())
-                .save(provider);
+                .outputItems(BATTERY_MV_LITHIUM)
+                .duration(400).EUt(2).save(provider);
 
-        GTRecipeTypes.CANNER_RECIPES.recipeBuilder(BATTERY_MV_SODIUM.getId()).duration(400).EUt(2)
-                .inputItems(Ingredient.of(BATTERY_HULL_MV.get()))
+        CANNER_RECIPES.recipeBuilder("sodium_battery_mv")
+                .inputItems(BATTERY_HULL_MV)
                 .inputItems(dust, Sodium, 8)
-                .outputItems(BATTERY_MV_SODIUM.asStack())
-                .save(provider);
+                .outputItems(BATTERY_MV_SODIUM)
+                .duration(400).EUt(2).save(provider);
 
         // HV
-        GTRecipeTypes.CANNER_RECIPES.recipeBuilder(BATTERY_HV_CADMIUM.getId()).duration(1600).EUt(2)
-                .inputItems(Ingredient.of(BATTERY_HULL_HV.get()))
+        CANNER_RECIPES.recipeBuilder("cadmium_battery_hv")
+                .inputItems(BATTERY_HULL_HV)
                 .inputItems(dust, Cadmium, 16)
-                .outputItems(BATTERY_HV_CADMIUM.asStack())
-                .save(provider);
+                .outputItems(BATTERY_HV_CADMIUM)
+                .duration(1600).EUt(2).save(provider);
 
-        GTRecipeTypes.CANNER_RECIPES.recipeBuilder(BATTERY_HV_LITHIUM.getId()).duration(1600).EUt(2)
-                .inputItems(Ingredient.of(BATTERY_HULL_HV.get()))
+        CANNER_RECIPES.recipeBuilder("lithium_battery_hv")
+                .inputItems(BATTERY_HULL_HV)
                 .inputItems(dust, Lithium, 16)
-                .outputItems(BATTERY_HV_LITHIUM.asStack())
-                .save(provider);
+                .outputItems(BATTERY_HV_LITHIUM)
+                .duration(1600).EUt(2).save(provider);
 
-        GTRecipeTypes.CANNER_RECIPES.recipeBuilder(BATTERY_HV_SODIUM.getId()).duration(1600).EUt(2)
-                .inputItems(Ingredient.of(BATTERY_HULL_HV.get()))
+        CANNER_RECIPES.recipeBuilder("sodium_battery_hv")
+                .inputItems(BATTERY_HULL_HV)
                 .inputItems(dust, Sodium, 16)
-                .outputItems(BATTERY_HV_SODIUM.asStack())
-                .save(provider);
+                .outputItems(BATTERY_HV_SODIUM)
+                .duration(1600).EUt(2).save(provider);
 
         // EV
-        GTRecipeTypes.CANNER_RECIPES.recipeBuilder(BATTERY_EV_VANADIUM.getId()).duration(100).EUt(GTValues.VA[GTValues.HV])
-                .inputItems(Ingredient.of(BATTERY_HULL_SMALL_VANADIUM.get()))
+        CANNER_RECIPES.recipeBuilder("vanadium_battery_ev")
+                .inputItems(BATTERY_HULL_SMALL_VANADIUM)
                 .inputItems(dust, Vanadium, 2)
-                .outputItems(BATTERY_EV_VANADIUM.asStack())
-                .save(provider);
+                .outputItems(BATTERY_EV_VANADIUM)
+                .duration(100).EUt(VA[HV]).save(provider);
 
         // IV
-        GTRecipeTypes.CANNER_RECIPES.recipeBuilder(BATTERY_IV_VANADIUM.getId()).duration(150).EUt(1024)
-                .inputItems(Ingredient.of(BATTERY_HULL_MEDIUM_VANADIUM.get()))
+        CANNER_RECIPES.recipeBuilder("vanadium_battery_iv")
+                .inputItems(BATTERY_HULL_MEDIUM_VANADIUM)
                 .inputItems(dust, Vanadium, 8)
-                .outputItems(BATTERY_IV_VANADIUM.asStack())
-                .save(provider);
+                .outputItems(BATTERY_IV_VANADIUM)
+                .duration(150).EUt(1024).save(provider);
 
         // LuV
-        GTRecipeTypes.CANNER_RECIPES.recipeBuilder(BATTERY_LUV_VANADIUM.getId()).duration(200).EUt(GTValues.VA[GTValues.EV])
-                .inputItems(Ingredient.of(BATTERY_HULL_LARGE_VANADIUM.get()))
+        CANNER_RECIPES.recipeBuilder("vanadium_battery_luv")
+                .inputItems(BATTERY_HULL_LARGE_VANADIUM)
                 .inputItems(dust, Vanadium, 16)
-                .outputItems(BATTERY_LUV_VANADIUM.asStack())
-                .save(provider);
+                .outputItems(BATTERY_LUV_VANADIUM)
+                .duration(200).EUt(VA[EV]).save(provider);
 
         // ZPM
-        GTRecipeTypes.CANNER_RECIPES.recipeBuilder(BATTERY_ZPM_NAQUADRIA.getId()).duration(250).EUt(4096)
-                .inputItems(Ingredient.of(BATTERY_HULL_MEDIUM_NAQUADRIA.get()))
+        CANNER_RECIPES.recipeBuilder("naquadria_battery_zpm")
+                .inputItems(BATTERY_HULL_MEDIUM_NAQUADRIA)
                 .inputItems(dust, Naquadria, 8)
-                .outputItems(BATTERY_ZPM_NAQUADRIA.asStack())
-                .save(provider);
+                .outputItems(BATTERY_ZPM_NAQUADRIA)
+                .duration(250).EUt(4096).save(provider);
 
         // UV
-        GTRecipeTypes.CANNER_RECIPES.recipeBuilder(BATTERY_UV_NAQUADRIA.getId()).duration(300).EUt(GTValues.VA[GTValues.IV])
-                .inputItems(Ingredient.of(BATTERY_HULL_LARGE_NAQUADRIA.get()))
+        CANNER_RECIPES.recipeBuilder("naquadria_battery_uv")
+                .inputItems(BATTERY_HULL_LARGE_NAQUADRIA)
                 .inputItems(dust, Naquadria, 16)
-                .outputItems(BATTERY_UV_NAQUADRIA.asStack())
-                .save(provider);
+                .outputItems(BATTERY_UV_NAQUADRIA)
+                .duration(300).EUt(VA[IV]).save(provider);
 
 
-        // Battery Recycling Recipes
-        GTRecipeTypes.EXTRACTOR_RECIPES.recipeBuilder(BATTERY_HULL_LV.getId().getPath() + ".0").inputItems(Ingredient.of(BATTERY_LV_CADMIUM.get())).outputItems(BATTERY_HULL_LV.asStack()).save(provider);
-        GTRecipeTypes.EXTRACTOR_RECIPES.recipeBuilder(BATTERY_HULL_LV.getId().getPath() + ".1").inputItems(Ingredient.of(BATTERY_LV_LITHIUM.get())).outputItems(BATTERY_HULL_LV.asStack()).save(provider);
-        GTRecipeTypes.EXTRACTOR_RECIPES.recipeBuilder(BATTERY_HULL_LV.getId().getPath() + ".2").inputItems(Ingredient.of(BATTERY_LV_SODIUM.get())).outputItems(BATTERY_HULL_LV.asStack()).save(provider);
+        // TODO Battery Recycling Recipes
+        /*
+        EXTRACTOR_RECIPES.recipeBuilder().inputNBT(BATTERY_LV_CADMIUM, NBTMatcher.ANY, NBTCondition.ANY).outputItems(BATTERY_HULL_LV).save(provider);
+        EXTRACTOR_RECIPES.recipeBuilder().inputNBT(BATTERY_LV_LITHIUM, NBTMatcher.ANY, NBTCondition.ANY).outputItems(BATTERY_HULL_LV).save(provider);
+        EXTRACTOR_RECIPES.recipeBuilder().inputNBT(BATTERY_LV_SODIUM, NBTMatcher.ANY, NBTCondition.ANY).outputItems(BATTERY_HULL_LV).save(provider);
 
-        GTRecipeTypes.EXTRACTOR_RECIPES.recipeBuilder(BATTERY_HULL_MV.getId().getPath() + ".0").inputItems(Ingredient.of(BATTERY_MV_CADMIUM.get())).outputItems(BATTERY_HULL_MV.asStack()).save(provider);
-        GTRecipeTypes.EXTRACTOR_RECIPES.recipeBuilder(BATTERY_HULL_MV.getId().getPath() + ".1").inputItems(Ingredient.of(BATTERY_MV_LITHIUM.get())).outputItems(BATTERY_HULL_MV.asStack()).save(provider);
-        GTRecipeTypes.EXTRACTOR_RECIPES.recipeBuilder(BATTERY_HULL_MV.getId().getPath() + ".2").inputItems(Ingredient.of(BATTERY_MV_SODIUM.get())).outputItems(BATTERY_HULL_MV.asStack()).save(provider);
+        EXTRACTOR_RECIPES.recipeBuilder().inputNBT(BATTERY_MV_CADMIUM, NBTMatcher.ANY, NBTCondition.ANY).outputItems(BATTERY_HULL_MV).save(provider);
+        EXTRACTOR_RECIPES.recipeBuilder().inputNBT(BATTERY_MV_LITHIUM, NBTMatcher.ANY, NBTCondition.ANY).outputItems(BATTERY_HULL_MV).save(provider);
+        EXTRACTOR_RECIPES.recipeBuilder().inputNBT(BATTERY_MV_SODIUM, NBTMatcher.ANY, NBTCondition.ANY).outputItems(BATTERY_HULL_MV).save(provider);
 
-        GTRecipeTypes.EXTRACTOR_RECIPES.recipeBuilder(BATTERY_HULL_HV.getId().getPath() + ".0").inputItems(Ingredient.of(BATTERY_HV_CADMIUM.get())).outputItems(BATTERY_HULL_HV.asStack()).save(provider);
-        GTRecipeTypes.EXTRACTOR_RECIPES.recipeBuilder(BATTERY_HULL_HV.getId().getPath() + ".1").inputItems(Ingredient.of(BATTERY_HV_LITHIUM.get())).outputItems(BATTERY_HULL_HV.asStack()).save(provider);
-        GTRecipeTypes.EXTRACTOR_RECIPES.recipeBuilder(BATTERY_HULL_HV.getId().getPath() + ".2").inputItems(Ingredient.of(BATTERY_HV_SODIUM.get())).outputItems(BATTERY_HULL_HV.asStack()).save(provider);
+        EXTRACTOR_RECIPES.recipeBuilder().inputNBT(BATTERY_HV_CADMIUM, NBTMatcher.ANY, NBTCondition.ANY).outputItems(BATTERY_HULL_HV).save(provider);
+        EXTRACTOR_RECIPES.recipeBuilder().inputNBT(BATTERY_HV_LITHIUM, NBTMatcher.ANY, NBTCondition.ANY).outputItems(BATTERY_HULL_HV).save(provider);
+        EXTRACTOR_RECIPES.recipeBuilder().inputNBT(BATTERY_HV_SODIUM, NBTMatcher.ANY, NBTCondition.ANY).outputItems(BATTERY_HULL_HV).save(provider);
 
-        GTRecipeTypes.EXTRACTOR_RECIPES.recipeBuilder(BATTERY_HULL_SMALL_VANADIUM.getId().getPath() + ".0").inputItems(Ingredient.of(BATTERY_EV_VANADIUM.get())).outputItems(BATTERY_HULL_SMALL_VANADIUM.asStack()).save(provider);
-        GTRecipeTypes.EXTRACTOR_RECIPES.recipeBuilder(BATTERY_HULL_SMALL_VANADIUM.getId().getPath() + ".1").inputItems(Ingredient.of(BATTERY_IV_VANADIUM.get())).outputItems(BATTERY_HULL_MEDIUM_VANADIUM.asStack()).save(provider);
-        GTRecipeTypes.EXTRACTOR_RECIPES.recipeBuilder(BATTERY_HULL_SMALL_VANADIUM.getId().getPath() + ".2").inputItems(Ingredient.of(BATTERY_LUV_VANADIUM.get())).outputItems(BATTERY_HULL_LARGE_VANADIUM.asStack()).save(provider);
+        EXTRACTOR_RECIPES.recipeBuilder().inputNBT(BATTERY_EV_VANADIUM, NBTMatcher.ANY, NBTCondition.ANY).outputItems(BATTERY_HULL_SMALL_VANADIUM).save(provider);
+        EXTRACTOR_RECIPES.recipeBuilder().inputNBT(BATTERY_IV_VANADIUM, NBTMatcher.ANY, NBTCondition.ANY).outputItems(BATTERY_HULL_MEDIUM_VANADIUM).save(provider);
+        EXTRACTOR_RECIPES.recipeBuilder().inputNBT(BATTERY_LUV_VANADIUM, NBTMatcher.ANY, NBTCondition.ANY).outputItems(BATTERY_HULL_LARGE_VANADIUM).save(provider);
 
-        GTRecipeTypes.EXTRACTOR_RECIPES.recipeBuilder(BATTERY_HULL_MEDIUM_NAQUADRIA.getId().getPath() + ".0").inputItems(Ingredient.of(BATTERY_ZPM_NAQUADRIA.get())).outputItems(BATTERY_HULL_MEDIUM_NAQUADRIA.asStack()).save(provider);
-        GTRecipeTypes.EXTRACTOR_RECIPES.recipeBuilder(BATTERY_HULL_MEDIUM_NAQUADRIA.getId().getPath() + ".1").inputItems(Ingredient.of(BATTERY_UV_NAQUADRIA.get())).outputItems(BATTERY_HULL_LARGE_NAQUADRIA.asStack()).save(provider);
+        EXTRACTOR_RECIPES.recipeBuilder().inputNBT(BATTERY_ZPM_NAQUADRIA, NBTMatcher.ANY, NBTCondition.ANY).outputItems(BATTERY_HULL_MEDIUM_NAQUADRIA).save(provider);
+        EXTRACTOR_RECIPES.recipeBuilder().inputNBT(BATTERY_UV_NAQUADRIA, NBTMatcher.ANY, NBTCondition.ANY).outputItems(BATTERY_HULL_LARGE_NAQUADRIA).save(provider);
+         */
     }
 
     private static void gemBatteries(Consumer<FinishedRecipe> provider) {
 
         // Energy Crystal
-        GTRecipeTypes.MIXER_RECIPES.recipeBuilder(ENERGIUM_DUST.getId()).duration(600).EUt(GTValues.VA[GTValues.MV])
+        MIXER_RECIPES.recipeBuilder("energium_dust")
                 .inputItems(dust, Redstone, 5)
                 .inputItems(dust, Ruby, 4)
                 .circuitMeta(1)
-                .outputItems(ENERGIUM_DUST.asStack(9))
-                .save(provider);
+                .outputItems(ENERGIUM_DUST, 9)
+                .duration(600).EUt(VA[MV]).save(provider);
 
-        GTRecipeTypes.AUTOCLAVE_RECIPES.recipeBuilder(ENERGIUM_CRYSTAL.getId().getPath() + ".0")
-                .inputItems(ENERGIUM_DUST.asStack(9))
+        AUTOCLAVE_RECIPES.recipeBuilder("energy_crystal_water")
+                .inputItems(ENERGIUM_DUST, 9)
                 .inputFluids(Water.getFluid(1000))
-                .outputItems(ENERGIUM_CRYSTAL.asStack())
-                .duration(1800).EUt(GTValues.VA[GTValues.HV]).save(provider);
+                .outputItems(ENERGIUM_CRYSTAL)
+                .duration(1800).EUt(VA[HV]).save(provider);
 
-        GTRecipeTypes.AUTOCLAVE_RECIPES.recipeBuilder(ENERGIUM_CRYSTAL.getId().getPath() + ".1")
-                .inputItems(ENERGIUM_DUST.asStack(9))
+        AUTOCLAVE_RECIPES.recipeBuilder("energy_crystal_distilled")
+                .inputItems(ENERGIUM_DUST, 9)
                 .inputFluids(DistilledWater.getFluid(1000))
-                .outputItems(ENERGIUM_CRYSTAL.asStack())
+                .outputItems(ENERGIUM_CRYSTAL)
                 .duration(1200).EUt(320).save(provider);
 
-        GTRecipeTypes.AUTOCLAVE_RECIPES.recipeBuilder(ENERGIUM_CRYSTAL.getId().getPath() + ".2")
-                .inputItems(ENERGIUM_DUST.asStack(9))
-                .inputFluids(BlackSteel.getFluid(GTValues.L * 2))
-                .outputItems(ENERGIUM_CRYSTAL.asStack())
+        AUTOCLAVE_RECIPES.recipeBuilder("energy_crystal_black_steel")
+                .inputItems(ENERGIUM_DUST, 9)
+                .inputFluids(BlackSteel.getFluid(L * 2))
+                .outputItems(ENERGIUM_CRYSTAL)
                 .duration(300).EUt(256).save(provider);
 
-        GTRecipeTypes.AUTOCLAVE_RECIPES.recipeBuilder(ENERGIUM_CRYSTAL.getId().getPath() + ".3")
-                .inputItems(ENERGIUM_DUST.asStack(9))
-                .inputFluids(BlueSteel.getFluid(GTValues.L / 2))
-                .outputItems(ENERGIUM_CRYSTAL.asStack())
+        AUTOCLAVE_RECIPES.recipeBuilder("energy_crystal_blue_steel")
+                .inputItems(ENERGIUM_DUST, 9)
+                .inputFluids(BlueSteel.getFluid(L / 2))
+                .outputItems(ENERGIUM_CRYSTAL)
                 .duration(150).EUt(192).save(provider);
 
         // Lapotron Crystal
-        GTRecipeTypes.MIXER_RECIPES.recipeBuilder("gem_" + Lapotron.getName() + ".0")
-                .inputItems(ENERGIUM_DUST.asStack(3))
+        MIXER_RECIPES.recipeBuilder("lapotron_dust")
+                .inputItems(ENERGIUM_DUST, 3)
                 .inputItems(dust, Lapis, 2)
                 .circuitMeta(2)
                 .outputItems(dust, Lapotron, 5)
-                .duration(200).EUt(GTValues.VA[GTValues.HV]).save(provider);
+                .duration(200).EUt(VA[HV]).save(provider);
 
-        GTRecipeTypes.AUTOCLAVE_RECIPES.recipeBuilder("gem_" + Lapotron.getName() + ".1")
+        AUTOCLAVE_RECIPES.recipeBuilder("lapotron_gem_water")
                 .inputItems(dust, Lapotron, 15)
                 .inputFluids(Water.getFluid(1000))
                 .outputItems(gem, Lapotron)
-                .duration(1800).EUt(GTValues.VA[GTValues.HV]).save(provider);
+                .duration(1800).EUt(VA[HV]).save(provider);
 
-        GTRecipeTypes.AUTOCLAVE_RECIPES.recipeBuilder("gem_" + Lapotron.getName() + ".2")
+        AUTOCLAVE_RECIPES.recipeBuilder("lapotron_gem_distilled")
                 .inputItems(dust, Lapotron, 15)
                 .inputFluids(DistilledWater.getFluid(1000))
                 .outputItems(gem, Lapotron)
                 .duration(1200).EUt(320).save(provider);
 
-        GTRecipeTypes.AUTOCLAVE_RECIPES.recipeBuilder("gem_" + Lapotron.getName() + ".3")
+        AUTOCLAVE_RECIPES.recipeBuilder("lapotron_gem_blue_steel")
                 .inputItems(dust, Lapotron, 15)
-                .inputFluids(BlueSteel.getFluid(GTValues.L * 2))
+                .inputFluids(BlueSteel.getFluid(L * 2))
                 .outputItems(gem, Lapotron)
                 .duration(300).EUt(256).save(provider);
 
-        GTRecipeTypes.AUTOCLAVE_RECIPES.recipeBuilder("gem_" + Lapotron.getName() + ".4")
+        AUTOCLAVE_RECIPES.recipeBuilder("lapotron_gem_red_steel")
                 .inputItems(dust, Lapotron, 15)
-                .inputFluids(RedSteel.getFluid(GTValues.L / 2))
+                .inputFluids(RedSteel.getFluid(L / 2))
                 .outputItems(gem, Lapotron)
                 .duration(150).EUt(192).save(provider);
 
-        GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder(LAPOTRON_CRYSTAL.getId())
+        ASSEMBLER_RECIPES.recipeBuilder("lapotron_crystal")
                 .inputItems(gem, Lapotron)
-                .inputItems(circuit, MarkerMaterials.Tier.HV, 2)
-                .outputItems(LAPOTRON_CRYSTAL.asStack())
-                .duration(600).EUt(GTValues.VA[GTValues.EV]).save(provider);
+                .inputItems(circuit, Tier.HV, 2)
+                .outputItems(LAPOTRON_CRYSTAL)
+                .duration(600).EUt(VA[EV]).save(provider);
 
         // Lapotronic Energy Orb
-        GTRecipeTypes.LASER_ENGRAVER_RECIPES.recipeBuilder(ENGRAVED_LAPOTRON_CHIP.getId())
-                .inputItems(LAPOTRON_CRYSTAL.asStack())
-                .notConsumable(ChemicalHelper.get(craftingLens, MarkerMaterials.Color.Blue))
-                .outputItems(ENGRAVED_LAPOTRON_CHIP.asStack(3))
-                .cleanroom(CleanroomType.CLEANROOM)
-                .duration(256).EUt(GTValues.VA[GTValues.HV]).save(provider);
+        LASER_ENGRAVER_RECIPES.recipeBuilder("engraved_lapotron_chip")
+                //.inputNBT(LAPOTRON_CRYSTAL, NBTMatcher.ANY, NBTCondition.ANY) todo NBT matching?
+                .inputItems(LAPOTRON_CRYSTAL)
+                .notConsumable(lens, Color.Blue)
+                .outputItems(ENGRAVED_LAPOTRON_CHIP, 3)
+                //.cleanroom(CleanroomType.CLEANROOM) todo cleanroom
+                .duration(256).EUt(VA[HV]).save(provider);
 
-        GTRecipeTypes.CIRCUIT_ASSEMBLER_RECIPES.recipeBuilder(ENERGY_LAPOTRONIC_ORB.getId()).duration(512).EUt(1024)
-                .inputItems(EXTREME_CIRCUIT_BOARD.asStack())
-                .inputItems(POWER_INTEGRATED_CIRCUIT.asStack(4))
-                .inputItems(ENGRAVED_LAPOTRON_CHIP.asStack(24))
-                .inputItems(NANO_CENTRAL_PROCESSING_UNIT.asStack(2))
+        CIRCUIT_ASSEMBLER_RECIPES.recipeBuilder("lapotronic_energy_orb")
+                .inputItems(EXTREME_CIRCUIT_BOARD)
+                .inputItems(POWER_INTEGRATED_CIRCUIT, 4)
+                .inputItems(ENGRAVED_LAPOTRON_CHIP, 24)
+                .inputItems(NANO_CENTRAL_PROCESSING_UNIT, 2)
                 .inputItems(wireFine, Platinum, 16)
                 .inputItems(plate, Platinum, 8)
-                .outputItems(ENERGY_LAPOTRONIC_ORB.asStack())
+                .outputItems(ENERGY_LAPOTRONIC_ORB)
                 .solderMultiplier(2)
-                .cleanroom(CleanroomType.CLEANROOM)
-                .save(provider);
+                //.cleanroom(CleanroomType.CLEANROOM) todo cleanroom
+                .duration(512).EUt(1024).save(provider);
 
         // Lapotronic Energy Cluster
-        GTRecipeTypes.ASSEMBLY_LINE_RECIPES.recipeBuilder(ENERGY_LAPOTRONIC_ORB_CLUSTER.getId()).EUt(80000).duration(1000)
-                .inputItems(EXTREME_CIRCUIT_BOARD.asStack())
+        ASSEMBLY_LINE_RECIPES.recipeBuilder("lapotronic_energy_orb_cluster")
+                .inputItems(EXTREME_CIRCUIT_BOARD)
                 .inputItems(plate, Europium, 8)
-                .inputItems(circuit, MarkerMaterials.Tier.LuV, 4)
-                .inputItems(Ingredient.of(ENERGY_LAPOTRONIC_ORB.get()))
-                .inputItems(Ingredient.of(FIELD_GENERATOR_IV.get()))
-                .inputItems(HIGH_POWER_INTEGRATED_CIRCUIT.asStack(16))
-                .inputItems(ADVANCED_SMD_DIODE.asStack(8))
-                .inputItems(ADVANCED_SMD_CAPACITOR.asStack(8))
-                .inputItems(ADVANCED_SMD_RESISTOR.asStack(8))
-                .inputItems(ADVANCED_SMD_TRANSISTOR.asStack(8))
-                .inputItems(ADVANCED_SMD_INDUCTOR.asStack(8))
+                .inputItems(circuit, Tier.LuV, 4)
+                .inputItems(ENERGY_LAPOTRONIC_ORB)
+                .inputItems(FIELD_GENERATOR_IV)
+                .inputItems(HIGH_POWER_INTEGRATED_CIRCUIT, 16)
+                .inputItems(ADVANCED_SMD_DIODE, 8)
+                .inputItems(ADVANCED_SMD_CAPACITOR, 8)
+                .inputItems(ADVANCED_SMD_RESISTOR, 8)
+                .inputItems(ADVANCED_SMD_TRANSISTOR, 8)
+                .inputItems(ADVANCED_SMD_INDUCTOR, 8)
                 .inputItems(wireFine, Platinum, 64)
                 .inputItems(bolt, Naquadah, 16)
-                .inputFluids(SolderingAlloy.getFluid(GTValues.L * 5))
-                .outputItems(ENERGY_LAPOTRONIC_ORB_CLUSTER.asStack())
-                .save(provider);
+                .inputFluids(SolderingAlloy.getFluid(L * 5))
+                .outputItems(ENERGY_LAPOTRONIC_ORB_CLUSTER)
+                .EUt(80000).duration(1000).save(provider);
 
         // Energy Module
-        GTRecipeTypes.ASSEMBLY_LINE_RECIPES.recipeBuilder(ENERGY_MODULE.getId()).EUt(100000).duration(1200)
-                .inputItems(Ingredient.of(ELITE_CIRCUIT_BOARD.get()))
+        ASSEMBLY_LINE_RECIPES.recipeBuilder("energy_module")
+                .inputItems(ELITE_CIRCUIT_BOARD)
                 .inputItems(plateDouble, Europium, 8)
-                .inputItems(circuit, MarkerMaterials.Tier.ZPM, 4)
-                .inputItems(Ingredient.of(ENERGY_LAPOTRONIC_ORB_CLUSTER.get()))
-                .inputItems(Ingredient.of(FIELD_GENERATOR_LuV.get()))
-                .inputItems(HIGH_POWER_INTEGRATED_CIRCUIT.asStack(32))
-                .inputItems(ADVANCED_SMD_DIODE.asStack(12))
-                .inputItems(ADVANCED_SMD_CAPACITOR.asStack(12))
-                .inputItems(ADVANCED_SMD_RESISTOR.asStack(12))
-                .inputItems(ADVANCED_SMD_TRANSISTOR.asStack(12))
-                .inputItems(ADVANCED_SMD_INDUCTOR.asStack(12))
+                .inputItems(circuit, Tier.ZPM, 4)
+                .inputItems(ENERGY_LAPOTRONIC_ORB_CLUSTER)
+                .inputItems(FIELD_GENERATOR_LuV)
+                .inputItems(HIGH_POWER_INTEGRATED_CIRCUIT, 32)
+                .inputItems(ADVANCED_SMD_DIODE, 12)
+                .inputItems(ADVANCED_SMD_CAPACITOR, 12)
+                .inputItems(ADVANCED_SMD_RESISTOR, 12)
+                .inputItems(ADVANCED_SMD_TRANSISTOR, 12)
+                .inputItems(ADVANCED_SMD_INDUCTOR, 12)
                 .inputItems(wireFine, Ruridit, 64)
                 .inputItems(bolt, Trinium, 16)
-                .inputFluids(SolderingAlloy.getFluid(GTValues.L * 10))
-                .outputItems(ENERGY_MODULE.asStack())
-                .save(provider);
+                .inputFluids(SolderingAlloy.getFluid(L * 10))
+                .outputItems(ENERGY_MODULE)
+                .EUt(100000).duration(1200).save(provider);
 
         // Energy Cluster
-        GTRecipeTypes.ASSEMBLY_LINE_RECIPES.recipeBuilder(ENERGY_CLUSTER.getId()).EUt(200000).duration(1400)
-                .inputItems(Ingredient.of(WETWARE_CIRCUIT_BOARD.get()))
+        ASSEMBLY_LINE_RECIPES.recipeBuilder("energy_cluster")
+                .inputItems(WETWARE_CIRCUIT_BOARD)
                 .inputItems(plate, Americium, 16)
-                .inputItems(WETWARE_SUPER_COMPUTER_UV.asStack(4))
-                .inputItems(Ingredient.of(ENERGY_MODULE.get()))
-                .inputItems(Ingredient.of(FIELD_GENERATOR_ZPM.get()))
-                .inputItems(ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT.asStack(32))
-                .inputItems(ADVANCED_SMD_DIODE.asStack(16))
-                .inputItems(ADVANCED_SMD_CAPACITOR.asStack(16))
-                .inputItems(ADVANCED_SMD_RESISTOR.asStack(16))
-                .inputItems(ADVANCED_SMD_TRANSISTOR.asStack(16))
-                .inputItems(ADVANCED_SMD_INDUCTOR.asStack(16))
+                .inputItems(WETWARE_SUPER_COMPUTER_UV, 4)
+                .inputItems(ENERGY_MODULE)
+                .inputItems(FIELD_GENERATOR_ZPM)
+                .inputItems(ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT, 32)
+                .inputItems(ADVANCED_SMD_DIODE, 16)
+                .inputItems(ADVANCED_SMD_CAPACITOR, 16)
+                .inputItems(ADVANCED_SMD_RESISTOR, 16)
+                .inputItems(ADVANCED_SMD_TRANSISTOR, 16)
+                .inputItems(ADVANCED_SMD_INDUCTOR, 16)
                 .inputItems(wireFine, Osmiridium, 64)
                 .inputItems(bolt, Naquadria, 16)
-                .inputFluids(SolderingAlloy.getFluid(GTValues.L * 20))
-                .inputFluids(Polybenzimidazole.getFluid(GTValues.L * 4))
-                .outputItems(ENERGY_CLUSTER.asStack())
-                .save(provider);
+                .inputFluids(SolderingAlloy.getFluid(L * 20))
+                .inputFluids(Polybenzimidazole.getFluid(L * 4))
+                .outputItems(ENERGY_CLUSTER)
+                .EUt(200000).duration(1400).save(provider);
 
-        // TODO do we really need UHV+?
         // Ultimate Battery
-//        ASSEMBLY_LINE_RECIPES.recipeBuilder(ULTIMATE_BATTERY.getId()).EUt(300000).duration(2000)
-//                .inputItems(plateDouble, Darmstadtium, 16)
-//                .inputItems(circuit, MarkerMaterials.Tier.UHV, 4)
-//                .inputItems(ENERGY_CLUSTER.asStack(16))
-//                .inputItems(FIELD_GENERATOR_UV.asStack(4))
-//                .inputItems(ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT_WAFER.asStack(64))
-//                .inputItems(ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT_WAFER.asStack(64))
-//                .inputItems(ADVANCED_SMD_DIODE.asStack(64))
-//                .inputItems(ADVANCED_SMD_CAPACITOR.asStack(64))
-//                .inputItems(ADVANCED_SMD_RESISTOR.asStack(64))
-//                .inputItems(ADVANCED_SMD_TRANSISTOR.asStack(64))
-//                .inputItems(ADVANCED_SMD_INDUCTOR.asStack(64))
-//                .inputItems(wireGtSingle, EnrichedNaquadahTriniumEuropiumDuranide, 64)
-//                .inputItems(bolt, Neutronium, 64)
-//                .inputFluids(SolderingAlloy.getFluid(L * 40))
-//                .inputFluids(Polybenzimidazole.getFluid(2304))
-//                .inputFluids(Naquadria.getFluid(L * 18))
-//                .outputItems(ULTIMATE_BATTERY.asStack())
-//                .save(provider);
+        ASSEMBLY_LINE_RECIPES.recipeBuilder("ultimate_battery")
+                .inputItems(plateDouble, Darmstadtium, 16)
+                .inputItems(circuit, Tier.UHV, 4)
+                .inputItems(ENERGY_CLUSTER, 16)
+                .inputItems(FIELD_GENERATOR_UV, 4)
+                .inputItems(ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT_WAFER, 64)
+                .inputItems(ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT_WAFER, 64)
+                .inputItems(ADVANCED_SMD_DIODE, 64)
+                .inputItems(ADVANCED_SMD_CAPACITOR, 64)
+                .inputItems(ADVANCED_SMD_RESISTOR, 64)
+                .inputItems(ADVANCED_SMD_TRANSISTOR, 64)
+                .inputItems(ADVANCED_SMD_INDUCTOR, 64)
+                .inputItems(wireGtSingle, EnrichedNaquadahTriniumEuropiumDuranide, 64)
+                .inputItems(bolt, Neutronium, 64)
+                .inputFluids(SolderingAlloy.getFluid(L * 40))
+                .inputFluids(Polybenzimidazole.getFluid(2304))
+                .inputFluids(Naquadria.getFluid(L * 18))
+                .outputItems(ULTIMATE_BATTERY)
+                .EUt(300000).duration(2000).save(provider);
     }
 }

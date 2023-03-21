@@ -1,0 +1,34 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": {
+      "tag": "c:tool_head_buzz_saw/hsse"
+    },
+    "C": {
+      "tag": "c:circuit/luv"
+    },
+    "E": {
+      "item": "gtceu:electric.motor.luv"
+    },
+    "G": {
+      "tag": "c:glass"
+    },
+    "M": {
+      "item": "gtceu:hull.luv"
+    },
+    "V": {
+      "item": "gtceu:conveyor.module.luv"
+    },
+    "W": {
+      "tag": "c:cable_gt_single/niobium_titanium"
+    }
+  },
+  "pattern": [
+    "WCG",
+    "VMB",
+    "CWE"
+  ],
+  "result": {
+    "item": "gtceu:cutter.luv"
+  }
+}

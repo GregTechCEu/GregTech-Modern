@@ -1,0 +1,43 @@
+{
+  "type": "gtceu:gt_recipe_serializer",
+  "duration": 400,
+  "inputs": {
+    "item": [
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 1,
+          "fabric:type": "gtceu:sized",
+          "ingredient": {
+            "item": "minecraft:azure_bluet"
+          }
+        }
+      }
+    ]
+  },
+  "outputs": {
+    "item": [
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 1,
+          "fabric:type": "gtceu:sized",
+          "ingredient": {
+            "item": "minecraft:light_gray_dye"
+          }
+        }
+      }
+    ]
+  },
+  "recipe_type": "gtceu:extractor",
+  "tickInputs": {
+    "eu": [
+      {
+        "chance": 1.0,
+        "content": 2
+      }
+    ]
+  }
+}

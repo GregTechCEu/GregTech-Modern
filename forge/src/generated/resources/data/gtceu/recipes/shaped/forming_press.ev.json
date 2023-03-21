@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "forge:circuit/ev"
+    },
+    "M": {
+      "item": "gtceu:hull.ev"
+    },
+    "P": {
+      "item": "gtceu:electric.piston.ev"
+    },
+    "W": {
+      "tag": "forge:cable_gt_single/aluminium"
+    }
+  },
+  "pattern": [
+    "WPW",
+    "CMC",
+    "WPW"
+  ],
+  "result": {
+    "item": "gtceu:forming_press.ev"
+  }
+}

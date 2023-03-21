@@ -15,7 +15,7 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "minecraft:rings/stainless_steel"
+          "tag": "c:rings/stainless_steel"
         }
       },
       {
@@ -24,7 +24,7 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "minecraft:sticks/stainless_steel"
+          "tag": "c:sticks/stainless_steel"
         }
       },
       {
@@ -33,7 +33,7 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "minecraft:rotors/chrome"
+          "tag": "c:rotors/chrome"
         }
       },
       {
@@ -42,7 +42,7 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "minecraft:cable_gt_single/gold"
+          "tag": "c:cable_gt_single/gold"
         }
       }
     ]

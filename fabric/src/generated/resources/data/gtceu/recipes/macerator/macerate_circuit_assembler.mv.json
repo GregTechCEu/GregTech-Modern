@@ -1,0 +1,76 @@
+{
+  "type": "gtceu:gt_recipe_serializer",
+  "duration": 2990,
+  "inputs": {
+    "item": [
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 1,
+          "fabric:type": "gtceu:sized",
+          "ingredient": {
+            "item": "gtceu:circuit_assembler.mv"
+          }
+        }
+      }
+    ]
+  },
+  "outputs": {
+    "item": [
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 37,
+          "fabric:type": "gtceu:sized",
+          "ingredient": {
+            "item": "gtceu:dust.rubber"
+          }
+        }
+      },
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 28,
+          "fabric:type": "gtceu:sized",
+          "ingredient": {
+            "item": "gtceu:dust.cupronickel"
+          }
+        }
+      },
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 13,
+          "fabric:type": "gtceu:sized",
+          "ingredient": {
+            "item": "gtceu:dust.aluminium"
+          }
+        }
+      },
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 50,
+          "fabric:type": "gtceu:sized",
+          "ingredient": {
+            "item": "gtceu:dust_small.copper"
+          }
+        }
+      }
+    ]
+  },
+  "recipe_type": "gtceu:macerator",
+  "tickInputs": {
+    "eu": [
+      {
+        "chance": 1.0,
+        "content": 8
+      }
+    ]
+  }
+}

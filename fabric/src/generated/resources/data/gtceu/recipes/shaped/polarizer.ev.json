@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "M": {
+      "item": "gtceu:hull.ev"
+    },
+    "S": {
+      "tag": "c:sticks/neodymium"
+    },
+    "W": {
+      "tag": "c:cable_gt_single/aluminium"
+    },
+    "Z": {
+      "tag": "c:wire_gt_quadruple/steel"
+    }
+  },
+  "pattern": [
+    "ZSZ",
+    "WMW",
+    "ZSZ"
+  ],
+  "result": {
+    "item": "gtceu:polarizer.ev"
+  }
+}

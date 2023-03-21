@@ -2,16 +2,16 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "minecraft:cable_gt_single/copper"
+      "tag": "c:cable_gt_single/copper"
     },
     "G": {
-      "tag": "minecraft:gems/flawless/emerald"
+      "tag": "c:gems/flawless/emerald"
     },
     "R": {
-      "tag": "minecraft:sticks/electrum"
+      "tag": "c:sticks/electrum"
     },
     "X": {
-      "tag": "minecraft:circuit/mv"
+      "tag": "c:circuit/mv"
     }
   },
   "pattern": [

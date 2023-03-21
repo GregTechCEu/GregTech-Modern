@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "forge:circuit/zpm"
+    },
+    "F": {
+      "item": "gtceu:field.generator.luv"
+    },
+    "H": {
+      "item": "gtceu:hull.zpm"
+    },
+    "P": {
+      "tag": "forge:plates/dense/naquadah_alloy"
+    }
+  },
+  "pattern": [
+    "CPC",
+    "PHP",
+    "CFC"
+  ],
+  "result": {
+    "item": "gtceu:quantum_chest.zpm"
+  }
+}

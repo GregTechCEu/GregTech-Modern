@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "type": "forge:nbt",
+      "count": 1,
+      "item": "gtceu:wire_coil",
+      "nbt": "{variant:\"cupronickel\"}"
+    },
+    "E": {
+      "item": "gtceu:electric.pump.hv"
+    },
+    "H": {
+      "item": "gtceu:hull.hv"
+    },
+    "P": {
+      "tag": "forge:circuit/hv"
+    }
+  },
+  "pattern": [
+    "CEC",
+    "PHP",
+    "CEC"
+  ],
+  "result": {
+    "item": "gtceu:cracker"
+  }
+}

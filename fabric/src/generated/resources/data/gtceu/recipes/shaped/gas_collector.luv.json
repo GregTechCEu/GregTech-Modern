@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "c:circuit/luv"
+    },
+    "F": {
+      "item": "gtceu:fluid_filter"
+    },
+    "H": {
+      "item": "gtceu:hull.luv"
+    },
+    "P": {
+      "item": "gtceu:electric.pump.luv"
+    },
+    "W": {
+      "item": "minecraft:iron_bars"
+    }
+  },
+  "pattern": [
+    "WFW",
+    "PHP",
+    "WCW"
+  ],
+  "result": {
+    "item": "gtceu:gas_collector.luv"
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "c:circuit/hv"
+    },
+    "E": {
+      "item": "gtceu:electric.motor.hv"
+    },
+    "M": {
+      "item": "gtceu:hull.hv"
+    },
+    "R": {
+      "tag": "c:rotors/steel"
+    },
+    "W": {
+      "tag": "c:cable_gt_single/gold"
+    }
+  },
+  "pattern": [
+    "CRC",
+    "RMR",
+    "EWE"
+  ],
+  "result": {
+    "item": "gtceu:gas_turbine.hv"
+  }
+}

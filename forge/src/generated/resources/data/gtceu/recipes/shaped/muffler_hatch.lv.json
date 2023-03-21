@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "H": {
+      "item": "gtceu:hull.lv"
+    },
+    "M": {
+      "item": "gtceu:electric.motor.lv"
+    },
+    "P": {
+      "tag": "forge:pipe_normal_fluid/bronze"
+    },
+    "R": {
+      "tag": "forge:rotors/tin"
+    }
+  },
+  "pattern": [
+    "HM",
+    "PR"
+  ],
+  "result": {
+    "item": "gtceu:muffler_hatch.lv"
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "A": {
+      "base": {
+        "item": "gtceu:boiler_firebox_casing"
+      },
+      "fabric:type": "fabric:nbt",
+      "nbt": {
+        "variant": "steel_firebox"
+      },
+      "strict": true
+    },
+    "P": {
+      "tag": "c:cable_gt_single/copper"
+    },
+    "S": {
+      "tag": "c:circuit/hv"
+    }
+  },
+  "pattern": [
+    "PSP",
+    "SAS",
+    "PSP"
+  ],
+  "result": {
+    "item": "gtceu:large_steel_boiler"
+  }
+}

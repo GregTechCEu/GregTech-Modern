@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "c:wire_gt_quadruple/naquadah"
+    },
+    "E": {
+      "tag": "c:circuit/zpm"
+    },
+    "M": {
+      "item": "gtceu:hull.zpm"
+    },
+    "P": {
+      "tag": "c:pipe_normal_fluid/iridium"
+    },
+    "X": {
+      "item": "gtceu:electric.piston.zpm"
+    }
+  },
+  "pattern": [
+    "CCE",
+    "XMP",
+    "CCE"
+  ],
+  "result": {
+    "item": "gtceu:extruder.zpm"
+  }
+}

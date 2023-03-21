@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "F": {
+      "tag": "c:frames/bronze"
+    },
+    "P": {
+      "tag": "c:plates/bronze"
+    },
+    "S": {
+      "tag": "c:sticks/bronze"
+    }
+  },
+  "pattern": [
+    "PSP",
+    "SFS",
+    "PSP"
+  ],
+  "result": {
+    "count": 2,
+    "item": "gtceu:boiler_firebox_casing",
+    "nbt": {
+      "variant": "bronze_firebox"
+    }
+  }
+}

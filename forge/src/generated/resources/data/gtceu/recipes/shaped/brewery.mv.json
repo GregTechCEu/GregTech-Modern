@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": {
+      "tag": "forge:springs/cupronickel"
+    },
+    "C": {
+      "tag": "forge:circuit/mv"
+    },
+    "G": {
+      "tag": "forge:glass"
+    },
+    "M": {
+      "item": "gtceu:hull.mv"
+    },
+    "P": {
+      "item": "gtceu:electric.pump.mv"
+    },
+    "W": {
+      "tag": "forge:cable_gt_single/copper"
+    }
+  },
+  "pattern": [
+    "GPG",
+    "WMW",
+    "CBC"
+  ],
+  "result": {
+    "item": "gtceu:brewery.mv"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "M": {
+      "item": "gtceu:hull.lv"
+    },
+    "S": {
+      "tag": "c:sticks/iron"
+    },
+    "W": {
+      "tag": "c:cable_gt_single/tin"
+    },
+    "Z": {
+      "tag": "c:wire_gt_double/tin"
+    }
+  },
+  "pattern": [
+    "ZSZ",
+    "WMW",
+    "ZSZ"
+  ],
+  "result": {
+    "item": "gtceu:polarizer.lv"
+  }
+}

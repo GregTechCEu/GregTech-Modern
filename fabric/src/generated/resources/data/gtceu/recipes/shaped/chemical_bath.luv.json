@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "c:circuit/luv"
+    },
+    "G": {
+      "tag": "c:glass"
+    },
+    "M": {
+      "item": "gtceu:hull.luv"
+    },
+    "P": {
+      "item": "gtceu:electric.pump.luv"
+    },
+    "V": {
+      "item": "gtceu:conveyor.module.luv"
+    },
+    "W": {
+      "tag": "c:cable_gt_single/niobium_titanium"
+    }
+  },
+  "pattern": [
+    "VGW",
+    "PGV",
+    "CMC"
+  ],
+  "result": {
+    "item": "gtceu:chemical_bath.luv"
+  }
+}

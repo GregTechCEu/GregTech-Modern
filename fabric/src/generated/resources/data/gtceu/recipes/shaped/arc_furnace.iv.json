@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "c:circuit/iv"
+    },
+    "G": {
+      "tag": "c:dusts/graphite"
+    },
+    "M": {
+      "item": "gtceu:hull.iv"
+    },
+    "P": {
+      "tag": "c:plates/tungsten_steel"
+    },
+    "W": {
+      "tag": "c:cable_gt_quadruple/platinum"
+    }
+  },
+  "pattern": [
+    "WGW",
+    "CMC",
+    "PPP"
+  ],
+  "result": {
+    "item": "gtceu:arc_furnace.iv"
+  }
+}

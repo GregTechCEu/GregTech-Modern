@@ -66,11 +66,10 @@ import static com.gregtechceu.gtceu.utils.FormattingUtil.*;
  * @implNote GTMachines
  */
 public class GTMachines {
-    // TODO do we really need UHV+?
-    public final static int[] ALL_TIERS = new int[] {GTValues.ULV, GTValues.LV, GTValues.MV, GTValues.HV, GTValues.EV, GTValues.IV, GTValues.LuV, GTValues.ZPM, GTValues.UV/*, UHV, UEV, UIV, UXV, OpV, MAX*/};
-    public final static int[] ELECTRIC_TIERS = new int[] {GTValues.LV, GTValues.MV, GTValues.HV, GTValues.EV, GTValues.IV, GTValues.LuV, GTValues.ZPM, GTValues.UV/*, UHV, UEV, UIV, UXV, OpV, MAX*/};
+    public final static int[] ALL_TIERS = new int[] {GTValues.ULV, GTValues.LV, GTValues.MV, GTValues.HV, GTValues.EV, GTValues.IV, GTValues.LuV, GTValues.ZPM, GTValues.UV, GTValues.UHV};
+    public final static int[] ELECTRIC_TIERS = new int[] {GTValues.LV, GTValues.MV, GTValues.HV, GTValues.EV, GTValues.IV, GTValues.LuV, GTValues.ZPM, GTValues.UV};
     public final static int[] LOW_TIERS = new int[] {GTValues.LV, GTValues.MV, GTValues.HV, GTValues.EV};
-    public final static int[] HIGH_TIERS = new int[] {GTValues.IV, GTValues.LuV, GTValues.ZPM, GTValues.UV/*, UHV*/};
+    public final static int[] HIGH_TIERS = new int[] {GTValues.IV, GTValues.LuV, GTValues.ZPM, GTValues.UV, GTValues.UHV};
     public static final Int2LongFunction defaultTankSizeFunction = tier -> (tier <= GTValues.LV ? 8 : tier == GTValues.MV ? 12 : tier == GTValues.HV ? 16 : tier == GTValues.EV ? 32 : 64) * FluidHelper.getBucket();
     public static final Int2LongFunction hvCappedTankSizeFunction = tier -> (tier <= GTValues.LV ? 8: tier == GTValues.MV ? 12 : 16) * FluidHelper.getBucket();
     public static final Int2LongFunction largeTankSizeFunction = tier -> (tier <= GTValues.LV ? 32 : tier == GTValues.MV ? 48 : 64) * FluidHelper.getBucket();
@@ -173,8 +172,7 @@ public class GTMachines {
                             Component.translatable("gtceu.machine.transformer.tooltip_transform_down", 4, GTValues.V[tier + 1], GTValues.VNF[tier + 1], 1, GTValues.V[tier], GTValues.VNF[tier]),
                             Component.translatable("gtceu.machine.transformer.tooltip_transform_up", 1, GTValues.V[tier], GTValues.VNF[tier], 4, GTValues.V[tier + 1], GTValues.VNF[tier + 1]))
                     .register(),
-            // TODO do we really need UHV+?
-            GTValues.LV, GTValues.MV, GTValues.HV, GTValues.EV, GTValues.IV, GTValues.LuV, GTValues.ZPM /*, UV, UHV, UEV, UIV, UXV, OpV*/);
+            GTValues.ULV, GTValues.LV, GTValues.MV, GTValues.HV, GTValues.EV, GTValues.IV, GTValues.LuV, GTValues.ZPM, GTValues.UV); // UHV not needed, as a UV transformer transforms up to UHV
 
     public final static MachineDefinition[] BATTERY_BUFFER_4 = registerTieredMachines("battery_buffer.4",
             (holder, tier) -> new BatteryBufferMachine(holder, tier, 4),
@@ -186,7 +184,7 @@ public class GTMachines {
                             Component.translatable("gtceu.universal.tooltip.amperage_in_till", 4 * BatteryBufferMachine.AMPS_PER_BATTERY),
                             Component.translatable("gtceu.universal.tooltip.amperage_out_till", 4))
                     .register(),
-            ELECTRIC_TIERS);
+            ALL_TIERS);
 
     public final static MachineDefinition[] BATTERY_BUFFER_8 = registerTieredMachines("battery_buffer.8",
             (holder, tier) -> new BatteryBufferMachine(holder, tier, 8),
@@ -198,7 +196,7 @@ public class GTMachines {
                             Component.translatable("gtceu.universal.tooltip.amperage_in_till", 8 * BatteryBufferMachine.AMPS_PER_BATTERY),
                             Component.translatable("gtceu.universal.tooltip.amperage_out_till", 8))
                     .register(),
-            ELECTRIC_TIERS);
+            ALL_TIERS);
 
     public final static MachineDefinition[] BATTERY_BUFFER_16 = registerTieredMachines("battery_buffer.16",
             (holder, tier) -> new BatteryBufferMachine(holder, tier, 16),
@@ -210,7 +208,7 @@ public class GTMachines {
                             Component.translatable("gtceu.universal.tooltip.amperage_in_till", 16 * BatteryBufferMachine.AMPS_PER_BATTERY),
                             Component.translatable("gtceu.universal.tooltip.amperage_out_till", 16))
                     .register(),
-            ELECTRIC_TIERS);
+            ALL_TIERS);
 
 
     //////////////////////////////////////
@@ -246,7 +244,7 @@ public class GTMachines {
 
     // TODO do we really need UHV+?
     public final static MachineDefinition[] QUANTUM_CHEST = registerTieredMachines("quantum_chest",
-            (holder, tier) -> new QuantumChestMachine(holder, tier, /*tier == GTValues.UHV ? Integer.MAX_VALUE :*/ 4000000 * (int) Math.pow(2, tier)),
+            (holder, tier) -> new QuantumChestMachine(holder, tier, tier == GTValues.UHV ? Integer.MAX_VALUE : 4000000 * (int) Math.pow(2, tier)),
             (tier, builder) -> builder
                     .langValue("Quantum Chest " + LVT[tier + 1 - LOW_TIERS[0]])
                     .blockProp(BlockBehaviour.Properties::dynamicShape)
@@ -280,7 +278,7 @@ public class GTMachines {
 
     // TODO do we really need UHV+?
     public final static MachineDefinition[] QUANTUM_TANK = registerTieredMachines("quantum_tank",
-            (holder, tier) -> new QuantumTankMachine(holder, tier, /*tier == GTValues.UHV ? Integer.MAX_VALUE :*/ 4000 * FluidHelper.getBucket() * (int) Math.pow(2, tier)),
+            (holder, tier) -> new QuantumTankMachine(holder, tier, tier == GTValues.UHV ? Integer.MAX_VALUE : 4000 * FluidHelper.getBucket() * (int) Math.pow(2, tier)),
             (tier, builder) -> builder
                     .langValue("Quantum Tank " + LVT[tier + 1 - LOW_TIERS[0]])
                     .blockProp(BlockBehaviour.Properties::dynamicShape)
@@ -304,7 +302,7 @@ public class GTMachines {
                     .abilities(tier == 0 ? new PartAbility[] {PartAbility.IMPORT_ITEMS, PartAbility.STEAM_IMPORT_ITEMS} : new PartAbility[]{PartAbility.IMPORT_ITEMS})
                     .overlayTieredHullRenderer("item_bus.import")
                     .register(),
-            ALL_TIERS);
+            ELECTRIC_TIERS);
 
     public final static MachineDefinition[] ITEM_EXPORT_BUS = registerTieredMachines("item_bus.export",
             (holder, tier) -> new ItemBusPartMachine(holder, tier, IO.OUT),
@@ -314,7 +312,7 @@ public class GTMachines {
                     .abilities(tier == 0 ? new PartAbility[] {PartAbility.EXPORT_ITEMS, PartAbility.STEAM_EXPORT_ITEMS} : new PartAbility[]{PartAbility.EXPORT_ITEMS})
                     .overlayTieredHullRenderer("item_bus.export")
                     .register(),
-            ALL_TIERS);
+            ELECTRIC_TIERS);
 
     public final static MachineDefinition[] FLUID_IMPORT_HATCH = registerTieredMachines("fluid_hatch.import",
             (holder, tier) -> new FluidHatchPartMachine(holder, tier, IO.IN),
@@ -324,7 +322,7 @@ public class GTMachines {
                     .abilities(PartAbility.IMPORT_FLUIDS)
                     .overlayTieredHullRenderer("fluid_hatch.import")
                     .register(),
-            ALL_TIERS);
+            ELECTRIC_TIERS);
 
     public final static MachineDefinition[] FLUID_EXPORT_HATCH = registerTieredMachines("fluid_hatch.export",
             (holder, tier) -> new FluidHatchPartMachine(holder, tier, IO.OUT),
@@ -335,7 +333,7 @@ public class GTMachines {
                     .abilities(PartAbility.EXPORT_FLUIDS)
                     .overlayTieredHullRenderer("fluid_hatch.export")
                     .register(),
-            ALL_TIERS);
+            ELECTRIC_TIERS);
 
     public final static MachineDefinition[] ENERGY_INPUT_HATCH = registerTieredMachines("energy_hatch.input",
             (holder, tier) -> new EnergyHatchPartMachine(holder, tier, IO.IN, 2),
@@ -346,7 +344,7 @@ public class GTMachines {
                     .abilities(PartAbility.INPUT_ENERGY)
                     .overlayTieredHullRenderer("energy_hatch.input")
                     .register(),
-            ELECTRIC_TIERS);
+            ALL_TIERS);
 
     public final static MachineDefinition[] ENERGY_OUTPUT_HATCH = registerTieredMachines("energy_hatch.output",
             (holder, tier) -> new EnergyHatchPartMachine(holder, tier, IO.OUT, 2),
@@ -357,7 +355,7 @@ public class GTMachines {
                     .abilities(PartAbility.OUTPUT_ENERGY)
                     .overlayTieredHullRenderer("energy_hatch.output")
                     .register(),
-            ELECTRIC_TIERS);
+            ALL_TIERS);
 
     public final static MachineDefinition[] ENERGY_INPUT_HATCH_4A = registerTieredMachines("energy_hatch.input_4a",
             (holder, tier) -> new EnergyHatchPartMachine(holder, tier, IO.IN, 4),
@@ -368,7 +366,7 @@ public class GTMachines {
                     .abilities(PartAbility.INPUT_ENERGY)
                     .overlayTieredHullRenderer("energy_hatch.input_4a")
                     .register(),
-            ELECTRIC_TIERS);
+            EV, IV, LuV, ZPM, UV, UHV);
 
     public final static MachineDefinition[] ENERGY_OUTPUT_HATCH_4A = registerTieredMachines("energy_hatch.output_4a",
             (holder, tier) -> new EnergyHatchPartMachine(holder, tier, IO.OUT, 4),
@@ -379,7 +377,7 @@ public class GTMachines {
                     .abilities(PartAbility.OUTPUT_ENERGY)
                     .overlayTieredHullRenderer("energy_hatch.output_4a")
                     .register(),
-            ELECTRIC_TIERS);
+            EV, IV, LuV, ZPM, UV, UHV);
 
     public final static MachineDefinition[] ENERGY_INPUT_HATCH_16A = registerTieredMachines("energy_hatch.input_16a",
             (holder, tier) -> new EnergyHatchPartMachine(holder, tier, IO.IN, 16),
@@ -390,7 +388,7 @@ public class GTMachines {
                     .abilities(PartAbility.INPUT_ENERGY)
                     .overlayTieredHullRenderer("energy_hatch.input_16a")
                     .register(),
-            ELECTRIC_TIERS);
+            EV, IV, LuV, ZPM, UV, UHV);
 
     public final static MachineDefinition[] ENERGY_OUTPUT_HATCH_16A = registerTieredMachines("energy_hatch.output_16a",
             (holder, tier) -> new EnergyHatchPartMachine(holder, tier, IO.OUT, 16),
@@ -400,7 +398,7 @@ public class GTMachines {
                     .abilities(PartAbility.OUTPUT_ENERGY)
                     .overlayTieredHullRenderer("energy_hatch.output_16a")
                     .register(),
-            ELECTRIC_TIERS);
+            EV, IV, LuV, ZPM, UV, UHV);
 
     public final static MachineDefinition[] MUFFLER_HATCH = registerTieredMachines("muffler_hatch",
             MufflerPartMachine::new,

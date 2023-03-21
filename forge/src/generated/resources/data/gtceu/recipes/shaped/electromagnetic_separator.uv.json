@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "forge:circuit/uv"
+    },
+    "M": {
+      "item": "gtceu:hull.uv"
+    },
+    "S": {
+      "tag": "forge:sticks/vanadium_gallium"
+    },
+    "V": {
+      "item": "gtceu:conveyor.module.uv"
+    },
+    "W": {
+      "tag": "forge:cable_gt_single/yttrium_barium_cuprate"
+    },
+    "Z": {
+      "tag": "forge:wire_gt_octal/yttrium_barium_cuprate"
+    }
+  },
+  "pattern": [
+    "VWZ",
+    "WMS",
+    "CWZ"
+  ],
+  "result": {
+    "item": "gtceu:electromagnetic_separator.uv"
+  }
+}

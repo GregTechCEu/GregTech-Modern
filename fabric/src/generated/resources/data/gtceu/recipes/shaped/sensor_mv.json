@@ -2,16 +2,16 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "G": {
-      "tag": "minecraft:gems/flawless/emerald"
+      "tag": "c:gems/flawless/emerald"
     },
     "P": {
-      "tag": "minecraft:plates/aluminium"
+      "tag": "c:plates/aluminium"
     },
     "R": {
-      "tag": "minecraft:sticks/electrum"
+      "tag": "c:sticks/electrum"
     },
     "X": {
-      "tag": "minecraft:circuit/mv"
+      "tag": "c:circuit/mv"
     }
   },
   "pattern": [

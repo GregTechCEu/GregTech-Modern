@@ -5,13 +5,13 @@
       "item": "gtceu:quantumstar"
     },
     "P": {
-      "tag": "minecraft:plates/tungsten_steel"
+      "tag": "c:plates/tungsten_steel"
     },
     "R": {
-      "tag": "minecraft:sticks/iridium"
+      "tag": "c:sticks/iridium"
     },
     "X": {
-      "tag": "minecraft:circuit/iv"
+      "tag": "c:circuit/iv"
     }
   },
   "pattern": [

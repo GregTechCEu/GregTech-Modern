@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "c:cable_gt_single/copper"
+    },
+    "H": {
+      "base": {
+        "item": "gtceu:hull_casing"
+      },
+      "fabric:type": "fabric:nbt",
+      "nbt": {
+        "variant": "medium_voltage"
+      },
+      "strict": true
+    },
+    "L": {
+      "tag": "c:plates/aluminium"
+    },
+    "P": {
+      "tag": "c:plates/wrought_iron"
+    }
+  },
+  "pattern": [
+    "PLP",
+    "CHC"
+  ],
+  "result": {
+    "item": "gtceu:hull.mv"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "type": "gtceu:gt_recipe_serializer",
+  "duration": 1,
+  "inputs": {
+    "fluid": [
+      {
+        "chance": 1.0,
+        "content": {
+          "amount": 16,
+          "fluid": "gtceu:creosote"
+        }
+      }
+    ]
+  },
+  "recipe_type": "gtceu:semi_fluid_generator",
+  "tickInputs": {
+    "eu": [
+      {
+        "chance": 1.0,
+        "content": 32
+      }
+    ]
+  }
+}

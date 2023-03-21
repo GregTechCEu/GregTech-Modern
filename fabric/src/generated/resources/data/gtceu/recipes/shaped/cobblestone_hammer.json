@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "item": "minecraft:stone"
+    },
+    "h": {
+      "tag": "c:tool/hammer"
+    }
+  },
+  "pattern": [
+    "h",
+    "C"
+  ],
+  "result": {
+    "item": "minecraft:cobblestone"
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "forge:circuit/uv"
+    },
+    "G": {
+      "tag": "forge:glass"
+    },
+    "M": {
+      "item": "gtceu:hull.uv"
+    },
+    "P": {
+      "item": "gtceu:electric.pump.uv"
+    },
+    "W": {
+      "tag": "forge:cable_gt_single/yttrium_barium_cuprate"
+    }
+  },
+  "pattern": [
+    "WPW",
+    "CMC",
+    "GGG"
+  ],
+  "result": {
+    "item": "gtceu:canner.uv"
+  }
+}

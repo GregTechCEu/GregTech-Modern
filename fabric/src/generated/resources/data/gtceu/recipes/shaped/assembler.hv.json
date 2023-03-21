@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "A": {
+      "item": "gtceu:robot.arm.hv"
+    },
+    "C": {
+      "tag": "c:circuit/hv"
+    },
+    "M": {
+      "item": "gtceu:hull.hv"
+    },
+    "V": {
+      "item": "gtceu:conveyor.module.hv"
+    },
+    "W": {
+      "tag": "c:cable_gt_single/gold"
+    }
+  },
+  "pattern": [
+    "ACA",
+    "VMV",
+    "WCW"
+  ],
+  "result": {
+    "item": "gtceu:assembler.hv"
+  }
+}

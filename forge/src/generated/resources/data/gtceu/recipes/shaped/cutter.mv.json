@@ -1,0 +1,34 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": {
+      "tag": "forge:tool_head_buzz_saw/vanadium_steel"
+    },
+    "C": {
+      "tag": "forge:circuit/mv"
+    },
+    "E": {
+      "item": "gtceu:electric.motor.mv"
+    },
+    "G": {
+      "tag": "forge:glass"
+    },
+    "M": {
+      "item": "gtceu:hull.mv"
+    },
+    "V": {
+      "item": "gtceu:conveyor.module.mv"
+    },
+    "W": {
+      "tag": "forge:cable_gt_single/copper"
+    }
+  },
+  "pattern": [
+    "WCG",
+    "VMB",
+    "CWE"
+  ],
+  "result": {
+    "item": "gtceu:cutter.mv"
+  }
+}

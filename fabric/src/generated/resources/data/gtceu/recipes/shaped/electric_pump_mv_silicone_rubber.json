@@ -2,28 +2,28 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "minecraft:cable_gt_single/copper"
+      "tag": "c:cable_gt_single/copper"
     },
     "M": {
       "item": "gtceu:electric.motor.mv"
     },
     "P": {
-      "tag": "minecraft:pipe_normal_fluid/steel"
+      "tag": "c:pipe_normal_fluid/steel"
     },
     "R": {
-      "tag": "minecraft:rings/silicone_rubber"
+      "tag": "c:rings/silicone_rubber"
     },
     "S": {
-      "tag": "minecraft:screws/bronze"
+      "tag": "c:screws/bronze"
     },
     "X": {
-      "tag": "minecraft:rotors/bronze"
+      "tag": "c:rotors/bronze"
     },
     "d": {
-      "tag": "minecraft:tool/screwdriver"
+      "tag": "c:tool/screwdriver"
     },
     "w": {
-      "tag": "minecraft:tool/wrench"
+      "tag": "c:tool/wrench"
     }
   },
   "pattern": [

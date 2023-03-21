@@ -1,0 +1,43 @@
+{
+  "type": "gtceu:gt_recipe_serializer",
+  "duration": 280,
+  "inputs": {
+    "item": [
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 1,
+          "fabric:type": "gtceu:sized",
+          "ingredient": {
+            "item": "gtceu:steam_casing"
+          }
+        }
+      }
+    ]
+  },
+  "outputs": {
+    "item": [
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 5,
+          "fabric:type": "gtceu:sized",
+          "ingredient": {
+            "item": "gtceu:dust.wrought_iron"
+          }
+        }
+      }
+    ]
+  },
+  "recipe_type": "gtceu:macerator",
+  "tickInputs": {
+    "eu": [
+      {
+        "chance": 1.0,
+        "content": 2
+      }
+    ]
+  }
+}

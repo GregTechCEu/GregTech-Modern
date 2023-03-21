@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "c:wire_gt_double/tungsten_steel"
+    },
+    "E": {
+      "tag": "c:circuit/iv"
+    },
+    "M": {
+      "item": "gtceu:hull.iv"
+    },
+    "W": {
+      "tag": "c:cable_gt_single/platinum"
+    }
+  },
+  "pattern": [
+    "ECE",
+    "CMC",
+    "WCW"
+  ],
+  "result": {
+    "item": "gtceu:electric_furnace.iv"
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "c:circuit/lv"
+    },
+    "E": {
+      "item": "gtceu:electric.piston.lv"
+    },
+    "G": {
+      "tag": "c:glass"
+    },
+    "M": {
+      "item": "gtceu:hull.lv"
+    },
+    "P": {
+      "item": "gtceu:electric.pump.lv"
+    },
+    "W": {
+      "tag": "c:cable_gt_single/tin"
+    }
+  },
+  "pattern": [
+    "GCG",
+    "EMP",
+    "WCW"
+  ],
+  "result": {
+    "item": "gtceu:extractor.lv"
+  }
+}

@@ -105,6 +105,10 @@ public class MachineDefinition implements Supplier<MetaMachineBlock> {
         return blockSupplier.get();
     }
 
+    public String getName() {
+        return id.getPath();
+    }
+
     @Override
     public String toString() {
         return "[Definition: %s]".formatted(id);

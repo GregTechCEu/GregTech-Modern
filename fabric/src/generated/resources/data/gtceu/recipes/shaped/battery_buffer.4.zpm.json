@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "M": {
+      "item": "gtceu:hull.zpm"
+    },
+    "T": {
+      "tag": "c:chests"
+    },
+    "W": {
+      "tag": "c:wire_gt_quadruple/vanadium_gallium"
+    }
+  },
+  "pattern": [
+    "WTW",
+    "WMW"
+  ],
+  "result": {
+    "item": "gtceu:battery_buffer.4.zpm"
+  }
+}

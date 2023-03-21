@@ -2,31 +2,31 @@
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
     {
-      "tag": "minecraft:dusts/copper"
+      "tag": "c:dusts/copper"
     },
     {
-      "tag": "minecraft:dusts/copper"
+      "tag": "c:dusts/copper"
     },
     {
-      "tag": "minecraft:dusts/copper"
+      "tag": "c:dusts/copper"
     },
     {
-      "tag": "minecraft:dusts/copper"
+      "tag": "c:dusts/copper"
     },
     {
-      "tag": "minecraft:dusts/copper"
+      "tag": "c:dusts/copper"
     },
     {
-      "tag": "minecraft:dusts/copper"
+      "tag": "c:dusts/copper"
     },
     {
-      "tag": "minecraft:dusts/tin"
+      "tag": "c:dusts/tin"
     },
     {
-      "tag": "minecraft:dusts/tin"
+      "tag": "c:dusts/tin"
     },
     {
-      "tag": "minecraft:dusts/lead"
+      "tag": "c:dusts/lead"
     }
   ],
   "result": {

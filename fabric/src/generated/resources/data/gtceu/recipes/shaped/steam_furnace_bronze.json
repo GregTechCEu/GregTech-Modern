@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "F": {
+      "item": "minecraft:furnace"
+    },
+    "M": {
+      "base": {
+        "item": "gtceu:steam_casing"
+      },
+      "fabric:type": "fabric:nbt",
+      "nbt": {
+        "variant": "bronze_bricks_hull"
+      },
+      "strict": true
+    },
+    "X": {
+      "tag": "c:pipe_small_fluid/bronze"
+    }
+  },
+  "pattern": [
+    "XXX",
+    "XMX",
+    "XFX"
+  ],
+  "result": {
+    "item": "gtceu:steam_furnace.bronze"
+  }
+}

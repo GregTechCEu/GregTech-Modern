@@ -18,7 +18,7 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "minecraft:plates/ruridit"
+          "tag": "c:plates/ruridit"
         }
       },
       {
@@ -27,7 +27,7 @@
           "type": "gtceu:sized",
           "count": 4,
           "fabric:type": "gtceu:sized",
-          "tag": "minecraft:plates/double/beryllium"
+          "tag": "c:plates/double/beryllium"
         }
       },
       {
@@ -36,7 +36,7 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "minecraft:plates/double/tungsten_carbide"
+          "tag": "c:plates/double/tungsten_carbide"
         }
       }
     ]

@@ -1,0 +1,32 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "F": {
+      "tag": "c:frames/tungsten_steel"
+    },
+    "G": {
+      "tag": "c:gears/tungsten_steel"
+    },
+    "P": {
+      "tag": "c:plates/tungsten_steel"
+    },
+    "h": {
+      "tag": "c:tool/hammer"
+    },
+    "w": {
+      "tag": "c:tool/wrench"
+    }
+  },
+  "pattern": [
+    "PhP",
+    "GFG",
+    "PwP"
+  ],
+  "result": {
+    "count": 2,
+    "item": "gtceu:casing",
+    "nbt": {
+      "variant": "tungstensteel_gearbox"
+    }
+  }
+}

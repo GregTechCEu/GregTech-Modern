@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": {
+      "tag": "forge:springs/nichrome"
+    },
+    "C": {
+      "tag": "forge:circuit/ev"
+    },
+    "G": {
+      "tag": "forge:glass"
+    },
+    "M": {
+      "item": "gtceu:hull.ev"
+    },
+    "P": {
+      "item": "gtceu:electric.pump.ev"
+    },
+    "W": {
+      "tag": "forge:cable_gt_single/aluminium"
+    }
+  },
+  "pattern": [
+    "GPG",
+    "WMW",
+    "CBC"
+  ],
+  "result": {
+    "item": "gtceu:brewery.ev"
+  }
+}

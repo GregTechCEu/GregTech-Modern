@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "P": {
+      "tag": "forge:plates/steel"
+    },
+    "f": {
+      "tag": "forge:tool/file"
+    },
+    "h": {
+      "tag": "forge:tool/hammer"
+    }
+  },
+  "pattern": [
+    "hf",
+    "PP",
+    "PP"
+  ],
+  "result": {
+    "item": "gtceu:shape.empty"
+  }
+}

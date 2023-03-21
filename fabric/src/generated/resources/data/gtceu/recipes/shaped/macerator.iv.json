@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "c:circuit/iv"
+    },
+    "E": {
+      "item": "gtceu:electric.motor.iv"
+    },
+    "G": {
+      "item": "gtceu:component.grinder.tungsten"
+    },
+    "M": {
+      "item": "gtceu:hull.iv"
+    },
+    "P": {
+      "item": "gtceu:electric.piston.iv"
+    },
+    "W": {
+      "tag": "c:cable_gt_single/platinum"
+    }
+  },
+  "pattern": [
+    "PEG",
+    "WWM",
+    "CCW"
+  ],
+  "result": {
+    "item": "gtceu:macerator.iv"
+  }
+}

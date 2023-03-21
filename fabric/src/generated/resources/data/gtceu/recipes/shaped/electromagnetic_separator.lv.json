@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "c:circuit/lv"
+    },
+    "M": {
+      "item": "gtceu:hull.lv"
+    },
+    "S": {
+      "tag": "c:sticks/iron"
+    },
+    "V": {
+      "item": "gtceu:conveyor.module.lv"
+    },
+    "W": {
+      "tag": "c:cable_gt_single/tin"
+    },
+    "Z": {
+      "tag": "c:wire_gt_double/tin"
+    }
+  },
+  "pattern": [
+    "VWZ",
+    "WMS",
+    "CWZ"
+  ],
+  "result": {
+    "item": "gtceu:electromagnetic_separator.lv"
+  }
+}

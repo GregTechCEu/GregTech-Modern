@@ -1750,6 +1750,8 @@
     "gtceu:nonuple.potin",
     "gtceu:casing",
     "gtceu:hull_casing",
+    "gtceu:hermetic_casing",
+    "gtceu:steam_casing",
     "gtceu:wire_coil",
     "gtceu:active_casing",
     "gtceu:boiler_firebox_casing"

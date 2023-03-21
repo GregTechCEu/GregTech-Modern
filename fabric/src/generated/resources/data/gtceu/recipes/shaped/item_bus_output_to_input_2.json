@@ -5,7 +5,7 @@
       "item": "gtceu:item_bus.export.mv"
     },
     "d": {
-      "tag": "minecraft:tool/screwdriver"
+      "tag": "c:tool/screwdriver"
     }
   },
   "pattern": [

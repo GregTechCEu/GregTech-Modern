@@ -1,0 +1,32 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "gtceu:credit.osmium"
+    },
+    {
+      "item": "gtceu:credit.osmium"
+    },
+    {
+      "item": "gtceu:credit.osmium"
+    },
+    {
+      "item": "gtceu:credit.osmium"
+    },
+    {
+      "item": "gtceu:credit.osmium"
+    },
+    {
+      "item": "gtceu:credit.osmium"
+    },
+    {
+      "item": "gtceu:credit.osmium"
+    },
+    {
+      "item": "gtceu:credit.osmium"
+    }
+  ],
+  "result": {
+    "item": "gtceu:credit.naquadah"
+  }
+}

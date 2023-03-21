@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "gtceu:credit.osmium"
+    }
+  ],
+  "result": {
+    "count": 8,
+    "item": "gtceu:credit.platinum"
+  }
+}

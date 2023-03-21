@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": {
+      "tag": "forge:springs/naquadah"
+    },
+    "C": {
+      "tag": "forge:circuit/zpm"
+    },
+    "G": {
+      "tag": "forge:glass"
+    },
+    "M": {
+      "item": "gtceu:hull.zpm"
+    },
+    "P": {
+      "item": "gtceu:electric.pump.zpm"
+    },
+    "W": {
+      "tag": "forge:cable_gt_single/vanadium_gallium"
+    }
+  },
+  "pattern": [
+    "GPG",
+    "WMW",
+    "CBC"
+  ],
+  "result": {
+    "item": "gtceu:brewery.zpm"
+  }
+}

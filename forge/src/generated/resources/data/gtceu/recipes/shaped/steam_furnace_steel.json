@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "M": {
+      "item": "gtceu:steam_furnace.bronze"
+    },
+    "P": {
+      "tag": "forge:plates/wrought_iron"
+    },
+    "S": {
+      "tag": "forge:plates/steel"
+    },
+    "X": {
+      "tag": "forge:pipe_small_fluid/tin_alloy"
+    }
+  },
+  "pattern": [
+    "XSX",
+    "PMP",
+    "XXX"
+  ],
+  "result": {
+    "item": "gtceu:steam_furnace.steel"
+  }
+}

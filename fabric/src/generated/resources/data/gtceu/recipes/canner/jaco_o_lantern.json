@@ -1,0 +1,54 @@
+{
+  "type": "gtceu:gt_recipe_serializer",
+  "duration": 100,
+  "inputs": {
+    "item": [
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 1,
+          "fabric:type": "gtceu:sized",
+          "ingredient": {
+            "item": "minecraft:pumpkin"
+          }
+        }
+      },
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 1,
+          "fabric:type": "gtceu:sized",
+          "ingredient": {
+            "item": "minecraft:torch"
+          }
+        }
+      }
+    ]
+  },
+  "outputs": {
+    "item": [
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 1,
+          "fabric:type": "gtceu:sized",
+          "ingredient": {
+            "item": "minecraft:jack_o_lantern"
+          }
+        }
+      }
+    ]
+  },
+  "recipe_type": "gtceu:canner",
+  "tickInputs": {
+    "eu": [
+      {
+        "chance": 1.0,
+        "content": 4
+      }
+    ]
+  }
+}

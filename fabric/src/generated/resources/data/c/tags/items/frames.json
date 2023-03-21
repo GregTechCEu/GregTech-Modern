@@ -1,0 +1,24 @@
+{
+  "replace": false,
+  "values": [
+    "#c:frames/wood",
+    "#c:frames/hssg",
+    "#c:frames/hsse",
+    "#c:frames/bronze",
+    "#c:frames/hsss",
+    "#c:frames/polytetrafluoroethylene",
+    "#c:frames/treated_wood",
+    "#c:frames/tritanium",
+    "#c:frames/neutronium",
+    "#c:frames/tungsten_steel",
+    "#c:frames/black_steel",
+    "#c:frames/aluminium",
+    "#c:frames/stainless_steel",
+    "#c:frames/blue_steel",
+    "#c:frames/europium",
+    "#c:frames/invar",
+    "#c:frames/naquadah_alloy",
+    "#c:frames/steel",
+    "#c:frames/titanium"
+  ]
+}

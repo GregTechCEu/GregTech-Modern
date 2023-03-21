@@ -1,0 +1,35 @@
+{
+  "type": "gtceu:gt_recipe_serializer",
+  "duration": 48,
+  "inputs": {
+    "fluid": [
+      {
+        "chance": 1.0,
+        "content": {
+          "amount": 0,
+          "fluid": "gtceu:oxygen_plasma"
+        }
+      }
+    ]
+  },
+  "outputs": {
+    "fluid": [
+      {
+        "chance": 1.0,
+        "content": {
+          "amount": 0,
+          "fluid": "gtceu:oxygen"
+        }
+      }
+    ]
+  },
+  "recipe_type": "gtceu:plasma_generator",
+  "tickInputs": {
+    "eu": [
+      {
+        "chance": 1.0,
+        "content": 2048
+      }
+    ]
+  }
+}

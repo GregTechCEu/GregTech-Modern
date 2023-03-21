@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "F": {
+      "tag": "forge:pipe_large_fluid/duranium"
+    },
+    "P": {
+      "tag": "forge:plates/neutronium"
+    }
+  },
+  "pattern": [
+    "PPP",
+    "PFP",
+    "PPP"
+  ],
+  "result": {
+    "item": "gtceu:hermetic_casing",
+    "nbt": {
+      "variant": "ultra_high_voltage"
+    }
+  }
+}

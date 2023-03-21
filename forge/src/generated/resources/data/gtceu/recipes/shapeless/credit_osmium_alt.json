@@ -1,0 +1,32 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "gtceu:credit.platinum"
+    },
+    {
+      "item": "gtceu:credit.platinum"
+    },
+    {
+      "item": "gtceu:credit.platinum"
+    },
+    {
+      "item": "gtceu:credit.platinum"
+    },
+    {
+      "item": "gtceu:credit.platinum"
+    },
+    {
+      "item": "gtceu:credit.platinum"
+    },
+    {
+      "item": "gtceu:credit.platinum"
+    },
+    {
+      "item": "gtceu:credit.platinum"
+    }
+  ],
+  "result": {
+    "item": "gtceu:credit.osmium"
+  }
+}

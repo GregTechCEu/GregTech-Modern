@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "forge:wire_gt_quadruple/kanthal"
+    },
+    "E": {
+      "tag": "forge:circuit/hv"
+    },
+    "M": {
+      "item": "gtceu:hull.hv"
+    },
+    "P": {
+      "tag": "forge:pipe_normal_fluid/stainless_steel"
+    },
+    "X": {
+      "item": "gtceu:electric.piston.hv"
+    }
+  },
+  "pattern": [
+    "CCE",
+    "XMP",
+    "CCE"
+  ],
+  "result": {
+    "item": "gtceu:extruder.hv"
+  }
+}

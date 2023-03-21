@@ -1,0 +1,34 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": {
+      "tag": "c:tool_head_buzz_saw/blue_steel"
+    },
+    "C": {
+      "tag": "c:circuit/hv"
+    },
+    "E": {
+      "item": "gtceu:electric.motor.hv"
+    },
+    "G": {
+      "tag": "c:glass"
+    },
+    "M": {
+      "item": "gtceu:hull.hv"
+    },
+    "V": {
+      "item": "gtceu:conveyor.module.hv"
+    },
+    "W": {
+      "tag": "c:cable_gt_single/gold"
+    }
+  },
+  "pattern": [
+    "WCG",
+    "VMB",
+    "CWE"
+  ],
+  "result": {
+    "item": "gtceu:cutter.hv"
+  }
+}

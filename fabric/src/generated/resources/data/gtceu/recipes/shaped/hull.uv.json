@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "c:cable_gt_single/yttrium_barium_cuprate"
+    },
+    "H": {
+      "base": {
+        "item": "gtceu:hull_casing"
+      },
+      "fabric:type": "fabric:nbt",
+      "nbt": {
+        "variant": "ultimate_voltage"
+      },
+      "strict": true
+    },
+    "L": {
+      "tag": "c:plates/darmstadtium"
+    },
+    "P": {
+      "tag": "c:plates/polybenzimidazole"
+    }
+  },
+  "pattern": [
+    "PLP",
+    "CHC"
+  ],
+  "result": {
+    "item": "gtceu:hull.uv"
+  }
+}

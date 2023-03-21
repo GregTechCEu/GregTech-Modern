@@ -1,0 +1,43 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "type": "forge:nbt",
+      "count": 1,
+      "item": "minecraft:golden_chestplate",
+      "nbt": "{Damage:0}"
+    },
+    "H": {
+      "type": "forge:nbt",
+      "count": 1,
+      "item": "minecraft:golden_helmet",
+      "nbt": "{Damage:0}"
+    },
+    "L": {
+      "type": "forge:nbt",
+      "count": 1,
+      "item": "minecraft:golden_leggings",
+      "nbt": "{Damage:0}"
+    },
+    "P": {
+      "tag": "forge:plates/gold"
+    },
+    "S": {
+      "tag": "forge:screws/gold"
+    },
+    "d": {
+      "tag": "forge:tool/screwdriver"
+    },
+    "h": {
+      "tag": "forge:tool/hammer"
+    }
+  },
+  "pattern": [
+    "hdH",
+    "PCP",
+    "LSL"
+  ],
+  "result": {
+    "item": "minecraft:golden_horse_armor"
+  }
+}

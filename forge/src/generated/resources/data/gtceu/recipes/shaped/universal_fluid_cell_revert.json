@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "item": "gtceu:fluid_cell.universal"
+    }
+  },
+  "pattern": [
+    "C ",
+    "  "
+  ],
+  "result": {
+    "item": "gtceu:fluid_cell"
+  }
+}

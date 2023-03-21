@@ -1,0 +1,50 @@
+{
+  "type": "gtceu:gt_recipe_serializer",
+  "duration": 300,
+  "inputs": {
+    "fluid": [
+      {
+        "chance": 1.0,
+        "content": {
+          "amount": 3,
+          "fluid": "gtceu:distilled_water"
+        }
+      }
+    ],
+    "item": [
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 1,
+          "fabric:type": "gtceu:sized",
+          "tag": "c:dusts/clay"
+        }
+      }
+    ]
+  },
+  "outputs": {
+    "item": [
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 1,
+          "fabric:type": "gtceu:sized",
+          "ingredient": {
+            "item": "minecraft:clay_ball"
+          }
+        }
+      }
+    ]
+  },
+  "recipe_type": "gtceu:autoclave",
+  "tickInputs": {
+    "eu": [
+      {
+        "chance": 1.0,
+        "content": 24
+      }
+    ]
+  }
+}

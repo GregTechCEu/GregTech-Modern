@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "c:circuit/hv"
+    },
+    "E": {
+      "item": "gtceu:electric.motor.hv"
+    },
+    "G": {
+      "tag": "c:glass"
+    },
+    "M": {
+      "item": "gtceu:hull.hv"
+    },
+    "R": {
+      "tag": "c:rotors/steel"
+    }
+  },
+  "pattern": [
+    "GRG",
+    "GEG",
+    "CMC"
+  ],
+  "result": {
+    "item": "gtceu:mixer.hv"
+  }
+}

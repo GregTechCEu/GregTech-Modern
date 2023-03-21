@@ -18,7 +18,7 @@
           "type": "gtceu:sized",
           "count": 5,
           "fabric:type": "gtceu:sized",
-          "tag": "minecraft:dusts/green_sapphire"
+          "tag": "c:dusts/green_sapphire"
         }
       }
     ]

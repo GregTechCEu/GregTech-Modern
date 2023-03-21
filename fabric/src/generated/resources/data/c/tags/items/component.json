@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "#c:component/capacitor",
+    "#c:component/diode",
+    "#c:component/inductor",
+    "#c:component/transistor",
+    "#c:component/resistor"
+  ]
+}

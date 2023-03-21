@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "forge:wire_gt_quadruple/naquadah"
+    },
+    "E": {
+      "tag": "forge:circuit/zpm"
+    },
+    "M": {
+      "item": "gtceu:hull.zpm"
+    },
+    "W": {
+      "tag": "forge:cable_gt_single/vanadium_gallium"
+    }
+  },
+  "pattern": [
+    "ECE",
+    "CMC",
+    "WCW"
+  ],
+  "result": {
+    "item": "gtceu:alloy_smelter.zpm"
+  }
+}

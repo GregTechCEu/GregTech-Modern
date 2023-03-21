@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "c:circuit/ev"
+    },
+    "G": {
+      "tag": "c:glass"
+    },
+    "M": {
+      "item": "gtceu:hull.ev"
+    },
+    "P": {
+      "item": "gtceu:electric.pump.ev"
+    },
+    "W": {
+      "tag": "c:cable_gt_single/aluminium"
+    }
+  },
+  "pattern": [
+    "WPW",
+    "CMC",
+    "GGG"
+  ],
+  "result": {
+    "item": "gtceu:canner.ev"
+  }
+}

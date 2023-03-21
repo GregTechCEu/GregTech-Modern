@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "F": {
+      "item": "minecraft:furnace"
+    },
+    "M": {
+      "type": "forge:nbt",
+      "count": 1,
+      "item": "gtceu:steam_casing",
+      "nbt": "{variant:\"bronze_bricks_hull\"}"
+    },
+    "X": {
+      "tag": "forge:pipe_small_fluid/bronze"
+    }
+  },
+  "pattern": [
+    "XXX",
+    "FMF",
+    "XXX"
+  ],
+  "result": {
+    "item": "gtceu:steam_alloy_smelter.bronze"
+  }
+}

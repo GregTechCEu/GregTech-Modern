@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "forge:wire_gt_quadruple/nichrome"
+    },
+    "E": {
+      "tag": "forge:circuit/ev"
+    },
+    "M": {
+      "item": "gtceu:hull.ev"
+    },
+    "W": {
+      "tag": "forge:cable_gt_single/aluminium"
+    }
+  },
+  "pattern": [
+    "ECE",
+    "CMC",
+    "WCW"
+  ],
+  "result": {
+    "item": "gtceu:alloy_smelter.ev"
+  }
+}

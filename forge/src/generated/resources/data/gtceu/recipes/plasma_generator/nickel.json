@@ -1,0 +1,35 @@
+{
+  "type": "gtceu:gt_recipe_serializer",
+  "duration": 192,
+  "inputs": {
+    "fluid": [
+      {
+        "chance": 1.0,
+        "content": {
+          "amount": 1,
+          "fluid": "gtceu:nickel_plasma"
+        }
+      }
+    ]
+  },
+  "outputs": {
+    "fluid": [
+      {
+        "chance": 1.0,
+        "content": {
+          "amount": 1,
+          "fluid": "gtceu:nickel"
+        }
+      }
+    ]
+  },
+  "recipe_type": "gtceu:plasma_generator",
+  "tickInputs": {
+    "eu": [
+      {
+        "chance": 1.0,
+        "content": 2048
+      }
+    ]
+  }
+}

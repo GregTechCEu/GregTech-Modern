@@ -1,0 +1,35 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "c:circuit/ev"
+    },
+    "F": {
+      "item": "gtceu:electric.pump.ev"
+    },
+    "G": {
+      "item": "gtceu:field.generator.mv"
+    },
+    "H": {
+      "base": {
+        "item": "gtceu:hermetic_casing"
+      },
+      "fabric:type": "fabric:nbt",
+      "nbt": {
+        "variant": "extreme_voltage"
+      },
+      "strict": true
+    },
+    "P": {
+      "tag": "c:plates/titanium"
+    }
+  },
+  "pattern": [
+    "CGC",
+    "PHP",
+    "CFC"
+  ],
+  "result": {
+    "item": "gtceu:super_tank.ev"
+  }
+}

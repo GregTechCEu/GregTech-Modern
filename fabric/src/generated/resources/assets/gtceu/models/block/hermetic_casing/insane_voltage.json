@@ -1,0 +1,9 @@
+{
+  "parent": "gtceu:block/hermetic_casing",
+  "textures": {
+    "bot_bottom": "gtceu:block/casings/voltage/iv/bottom",
+    "bot_side": "gtceu:block/casings/voltage/iv/side",
+    "bot_top": "gtceu:block/casings/voltage/iv/top",
+    "top_side": "gtceu:block/casings/hermetic_casing/hermetic_casing_overlay"
+  }
+}

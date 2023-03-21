@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "forge:circuit/uv"
+    },
+    "G": {
+      "tag": "forge:glass"
+    },
+    "I": {
+      "tag": "forge:plates/darmstadtium"
+    },
+    "M": {
+      "item": "gtceu:hull.uv"
+    },
+    "P": {
+      "item": "gtceu:electric.pump.uv"
+    }
+  },
+  "pattern": [
+    "IGI",
+    "IMI",
+    "CPC"
+  ],
+  "result": {
+    "item": "gtceu:autoclave.uv"
+  }
+}

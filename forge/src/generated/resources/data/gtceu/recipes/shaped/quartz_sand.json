@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "S": {
+      "item": "minecraft:sand"
+    },
+    "m": {
+      "tag": "forge:tool/mortar"
+    }
+  },
+  "pattern": [
+    "S",
+    "m"
+  ],
+  "result": {
+    "item": "gtceu:dust.quartz_sand"
+  }
+}

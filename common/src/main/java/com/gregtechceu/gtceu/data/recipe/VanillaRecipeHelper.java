@@ -2,16 +2,20 @@ package com.gregtechceu.gtceu.data.recipe;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
+import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterial;
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.ItemMaterialInfo;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.data.recipe.builder.ShapedRecipeBuilder;
 import com.gregtechceu.gtceu.data.recipe.builder.ShapelessRecipeBuilder;
 import com.gregtechceu.gtceu.data.recipe.builder.SmeltingRecipeBuilder;
-import it.unimi.dsi.fastutil.chars.Char2ObjectArrayMap;
-import it.unimi.dsi.fastutil.chars.Char2ObjectMap;
-import it.unimi.dsi.fastutil.chars.CharOpenHashSet;
-import it.unimi.dsi.fastutil.chars.CharSet;
+import com.tterrag.registrate.util.entry.ItemEntry;
+import it.unimi.dsi.fastutil.chars.*;
+import it.unimi.dsi.fastutil.objects.Object2LongMap;
+import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -20,7 +24,9 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 
 import javax.annotation.Nonnull;
+import java.util.Comparator;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 /**
  * @author KilaBash
@@ -28,8 +34,21 @@ import java.util.function.Consumer;
  * @implNote VanillaRecipeHelper
  */
 public class VanillaRecipeHelper {
+
     public static void addSmeltingRecipe(Consumer<FinishedRecipe> provider, @Nonnull String regName, TagKey<Item> input, ItemStack output) {
-        new SmeltingRecipeBuilder(GTCEu.id(regName.toLowerCase())).input(input).output(output).save(provider);
+        addSmeltingRecipe(provider, regName, input, output, 0.0f);
+    }
+
+    public static void addSmeltingRecipe(Consumer<FinishedRecipe> provider, @Nonnull String regName, TagKey<Item> input, ItemStack output, float experience) {
+        new SmeltingRecipeBuilder(GTCEu.id(regName.toLowerCase())).input(input).output(output).experience(experience).save(provider);
+    }
+
+    public static void addSmeltingRecipe(Consumer<FinishedRecipe> provider, @Nonnull String regName, ItemStack input, ItemStack output) {
+        addSmeltingRecipe(provider, regName, input, output, 0.0f);
+    }
+
+    public static void addSmeltingRecipe(Consumer<FinishedRecipe> provider, @Nonnull String regName, ItemStack input, ItemStack output, float experience) {
+        new SmeltingRecipeBuilder(GTCEu.id(regName.toLowerCase())).input(input).output(output).experience(experience).save(provider);
     }
 
     private static final Char2ObjectMap<TagKey<Item>> TOOLS = new Char2ObjectArrayMap<>();
@@ -45,6 +64,11 @@ public class VanillaRecipeHelper {
         TOOLS.put('w', GTToolType.WRENCH.itemTag);
         TOOLS.put('x', GTToolType.WIRE_CUTTER.itemTag);
     }
+
+    public static void addShapedRecipe(Consumer<FinishedRecipe> provider, @Nonnull String regName, @Nonnull ItemStack result, @Nonnull Object... recipe) {
+        addShapedRecipe(provider, false, regName, result, recipe);
+    }
+
     /**
      * Adds Shaped Crafting Recipes.
      * <p/>
@@ -70,7 +94,7 @@ public class VanillaRecipeHelper {
      * @param result  the output for the recipe
      * @param recipe  the contents of the recipe
      */
-    public static void addShapedRecipe(Consumer<FinishedRecipe> provider, @Nonnull String regName, @Nonnull ItemStack result, @Nonnull Object... recipe) {
+    public static void addShapedRecipe(Consumer<FinishedRecipe> provider, boolean withUnificationData, @Nonnull String regName, @Nonnull ItemStack result, @Nonnull Object... recipe) {
         var builder = new ShapedRecipeBuilder(GTCEu.id(regName.toLowerCase())).output(result);
         CharSet set = new CharOpenHashSet();
         for (int i = 0; i < recipe.length; i++) {
@@ -98,6 +122,8 @@ public class VanillaRecipeHelper {
                     builder.define(sign, ChemicalHelper.getTag(entry.tagPrefix, entry.material));
                 } else if (content instanceof TagPrefix tagPrefix && tagPrefix.getItemTags().length > 0) {
                     builder.define(sign, tagPrefix.getItemTags()[0]);
+                } else if (content instanceof ItemEntry<?> entry) {
+                    builder.define(sign, entry.asStack());
                 }
             }
         }
@@ -105,6 +131,10 @@ public class VanillaRecipeHelper {
             builder.define(c, TOOLS.get(c.charValue()));
         }
         builder.save(provider);
+
+        if (withUnificationData) {
+            ChemicalHelper.registerMaterialInfo(result.getItem(), getRecyclingIngredients(result.getCount(), recipe));
+        }
     }
 
     public static void addShapelessRecipe(Consumer<FinishedRecipe> provider, @Nonnull String regName, @Nonnull ItemStack result, @Nonnull Object... recipe) {
@@ -120,8 +150,100 @@ public class VanillaRecipeHelper {
                 builder.requires(itemLike);
             } else if (content instanceof UnificationEntry entry) {
                 builder.requires(ChemicalHelper.getTag(entry.tagPrefix, entry.material));
+            } else if (content instanceof ItemEntry<?> entry) {
+                builder.requires(entry.asStack());
             }
         }
         builder.save(provider);
+    }
+
+    public static ItemMaterialInfo getRecyclingIngredients(int outputCount, @Nonnull Object... recipe) {
+        Char2IntOpenHashMap inputCountMap = new Char2IntOpenHashMap();
+        Object2LongMap<Material> materialStacksExploded = new Object2LongOpenHashMap<>();
+
+        int itr = 0;
+        while (recipe[itr] instanceof String s) {
+            for (char c : s.toCharArray()) {
+                if (TOOLS.containsKey(c)) continue; // skip tools
+                int count = inputCountMap.getOrDefault(c, 0);
+                inputCountMap.put(c, count + 1);
+            }
+            itr++;
+        }
+
+        char lastChar = ' ';
+        for (int i = itr; i < recipe.length; i++) {
+            Object ingredient = recipe[i];
+
+            // Track the current working ingredient symbol
+            if (ingredient instanceof Character) {
+                lastChar = (char) ingredient;
+                continue;
+            }
+
+            // Should never happen if recipe is formatted correctly
+            // In the case that it isn't, this error should be handled
+            // by an earlier method call parsing the recipe.
+            if (lastChar == ' ') return null;
+
+            ItemLike itemLike;
+            if (ingredient instanceof Ingredient ingr) {
+                ItemStack[] stacks = ingr.itemStacks;
+                if (stacks.length == 0) continue;
+                ItemStack stack = stacks[0];
+                if (stack == ItemStack.EMPTY) continue;
+                itemLike = stack.getItem();
+            } else if (ingredient instanceof ItemStack itemStack) {
+                itemLike = itemStack.getItem();
+            } else if (ingredient instanceof TagKey<?> key) {
+                continue; // todo can this be improved?
+            } else if (ingredient instanceof ItemLike) {
+                itemLike = (ItemLike) ingredient;
+            } else if (ingredient instanceof UnificationEntry entry) {
+                ItemStack stack = ChemicalHelper.get(entry.tagPrefix, entry.material);
+                if (stack == ItemStack.EMPTY) continue;
+                itemLike = stack.getItem();
+            } else if (ingredient instanceof ItemEntry<?> entry) {
+                itemLike = entry.asStack().getItem();
+            } else continue; // throw out bad entries
+
+
+            // First try to get ItemMaterialInfo
+            ItemMaterialInfo info = ChemicalHelper.getMaterialInfo(itemLike);
+            if (info != null) {
+                for (MaterialStack ms : info.getMaterials()) {
+                    if (!(ms.material() instanceof MarkerMaterial)) {
+                        addMaterialStack(materialStacksExploded, inputCountMap, ms, lastChar);
+                    }
+                }
+                continue;
+            }
+
+            // Then try to get a single Material (UnificationEntry needs this, for example)
+            MaterialStack materialStack = ChemicalHelper.getMaterial(itemLike);
+            if (materialStack != null && !(materialStack.material() instanceof MarkerMaterial)) {
+                addMaterialStack(materialStacksExploded, inputCountMap, materialStack, lastChar);
+            }
+
+            // Gather any secondary materials if this item has an OrePrefix
+            TagPrefix prefix = ChemicalHelper.getPrefix(itemLike);
+            if (prefix != null && !prefix.secondaryMaterials().isEmpty()) {
+                for (MaterialStack ms : prefix.secondaryMaterials()) {
+                    addMaterialStack(materialStacksExploded, inputCountMap, ms, lastChar);
+                }
+            }
+        }
+
+        return new ItemMaterialInfo(materialStacksExploded.entrySet().stream()
+                .map(e -> new MaterialStack(e.getKey(), e.getValue() / outputCount))
+                .sorted(Comparator.comparingLong(m -> -m.amount()))
+                .collect(Collectors.toList())
+        );
+    }
+
+    private static void addMaterialStack(@Nonnull Object2LongMap<Material> materialStacksExploded,
+                                         @Nonnull Char2IntFunction inputCountMap, @Nonnull MaterialStack ms, char c) {
+        long amount = materialStacksExploded.getOrDefault(ms.material(), 0L);
+        materialStacksExploded.put(ms.material(), (ms.amount() * inputCountMap.get(c)) + amount);
     }
 }

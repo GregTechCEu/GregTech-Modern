@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "forge:circuit/luv"
+    },
+    "D": {
+      "item": "gtceu:component.grinder.tungsten"
+    },
+    "E": {
+      "item": "gtceu:electric.motor.luv"
+    },
+    "M": {
+      "item": "gtceu:hull.luv"
+    },
+    "P": {
+      "item": "gtceu:electric.piston.luv"
+    },
+    "W": {
+      "tag": "forge:cable_gt_single/niobium_titanium"
+    }
+  },
+  "pattern": [
+    "WCW",
+    "EMD",
+    "CWP"
+  ],
+  "result": {
+    "item": "gtceu:lathe.luv"
+  }
+}

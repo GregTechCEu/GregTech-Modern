@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "c:circuit/luv"
+    },
+    "E": {
+      "item": "gtceu:electric.motor.luv"
+    },
+    "G": {
+      "tag": "c:pipe_normal_fluid/polytetrafluoroethylene"
+    },
+    "M": {
+      "item": "gtceu:hull.luv"
+    },
+    "R": {
+      "tag": "c:rotors/rhodium_plated_palladium"
+    },
+    "W": {
+      "tag": "c:cable_gt_single/niobium_titanium"
+    }
+  },
+  "pattern": [
+    "GRG",
+    "WEW",
+    "CMC"
+  ],
+  "result": {
+    "item": "gtceu:chemical_reactor.luv"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "c:cable_gt_single/tin"
+    },
+    "H": {
+      "item": "gtceu:hull.lv"
+    },
+    "T": {
+      "tag": "c:cable_gt_single/copper"
+    }
+  },
+  "pattern": [
+    " CC",
+    "TH ",
+    " CC"
+  ],
+  "result": {
+    "item": "gtceu:transformer.lv"
+  }
+}

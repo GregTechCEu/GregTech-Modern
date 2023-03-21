@@ -1,0 +1,33 @@
+{
+  "replace": false,
+  "values": [
+    "#c:tool_head_chainsaw/wood",
+    "#c:tool_head_chainsaw/wrought_iron",
+    "#c:tool_head_chainsaw/hsse",
+    "#c:tool_head_chainsaw/sterling_silver",
+    "#c:tool_head_chainsaw/red_steel",
+    "#c:tool_head_chainsaw/bronze",
+    "#c:tool_head_chainsaw/polybenzimidazole",
+    "#c:tool_head_chainsaw/tungsten_carbide",
+    "#c:tool_head_chainsaw/polytetrafluoroethylene",
+    "#c:tool_head_chainsaw/rubber",
+    "#c:tool_head_chainsaw/neutronium",
+    "#c:tool_head_chainsaw/rose_gold",
+    "#c:tool_head_chainsaw/duranium",
+    "#c:tool_head_chainsaw/plastic",
+    "#c:tool_head_chainsaw/diamond",
+    "#c:tool_head_chainsaw/vanadium_steel",
+    "#c:tool_head_chainsaw/cobalt_brass",
+    "#c:tool_head_chainsaw/damascus_steel",
+    "#c:tool_head_chainsaw/tungsten_steel",
+    "#c:tool_head_chainsaw/aluminium",
+    "#c:tool_head_chainsaw/blue_steel",
+    "#c:tool_head_chainsaw/stainless_steel",
+    "#c:tool_head_chainsaw/ultimet",
+    "#c:tool_head_chainsaw/naquadah_alloy",
+    "#c:tool_head_chainsaw/iron",
+    "#c:tool_head_chainsaw/invar",
+    "#c:tool_head_chainsaw/titanium",
+    "#c:tool_head_chainsaw/steel"
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "G": {
+      "item": "minecraft:glass"
+    },
+    "M": {
+      "type": "forge:nbt",
+      "count": 1,
+      "item": "gtceu:steam_casing",
+      "nbt": "{variant:\"bronze_bricks_hull\"}"
+    },
+    "P": {
+      "tag": "forge:plates/bronze"
+    }
+  },
+  "pattern": [
+    "PPP",
+    "PGP",
+    "PMP"
+  ],
+  "result": {
+    "item": "gtceu:steam_liquid_boiler.bronze"
+  }
+}

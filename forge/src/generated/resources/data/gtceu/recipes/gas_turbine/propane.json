@@ -13,7 +13,7 @@
     ]
   },
   "recipe_type": "gtceu:gas_turbine",
-  "tickOutputs": {
+  "tickInputs": {
     "eu": [
       {
         "chance": 1.0,

@@ -25,7 +25,7 @@ public class MarkerMaterials {
 
         /**
          * Can be used only by direct specifying
-         * Means absence of color on OrePrefix
+         * Means absence of color on TagPrefix
          * Often a default value for color prefixes
          */
         public static final MarkerMaterial Colorless = new MarkerMaterial("colorless");
@@ -56,7 +56,7 @@ public class MarkerMaterials {
 
         /**
          * Gets color by it's name
-         * Name format is equal to EnumDyeColor
+         * Name format is equal to DyeColor
          */
         public static MarkerMaterial valueOf(String string) {
             for (MarkerMaterial color : VALUES) {
@@ -68,7 +68,7 @@ public class MarkerMaterials {
         }
 
         /**
-         * Contains associations between MC EnumDyeColor and Color MarkerMaterial
+         * Contains associations between MC DyeColor and Color MarkerMaterial
          */
         public static final HashBiMap<DyeColor, MarkerMaterial> COLORS = HashBiMap.create();
 
@@ -77,7 +77,6 @@ public class MarkerMaterials {
                 COLORS.put(color, Color.valueOf(color.getName()));
             }
         }
-
     }
 
     /**
@@ -93,13 +92,12 @@ public class MarkerMaterials {
         public static final Material LuV = new MarkerMaterial(GTValues.VN[GTValues.LuV].toLowerCase());
         public static final Material ZPM = new MarkerMaterial(GTValues.VN[GTValues.ZPM].toLowerCase());
         public static final Material UV = new MarkerMaterial(GTValues.VN[GTValues.UV].toLowerCase());
-        // TODO do we really need UHV+?
-//        public static final Material UHV = new MarkerMaterial(GTValues.VN[GTValues.UHV].toLowerCase());
-//        public static final Material UEV = new MarkerMaterial(GTValues.VN[GTValues.UEV].toLowerCase());
-//        public static final Material UIV = new MarkerMaterial(GTValues.VN[GTValues.UIV].toLowerCase());
-//        public static final Material UXV = new MarkerMaterial(GTValues.VN[GTValues.UXV].toLowerCase());
-//        public static final Material OpV = new MarkerMaterial(GTValues.VN[GTValues.OpV].toLowerCase());
-//        public static final Material MAX = new MarkerMaterial(GTValues.VN[GTValues.MAX].toLowerCase());
+        public static final Material UHV = new MarkerMaterial(GTValues.VN[GTValues.UHV].toLowerCase());
+        public static final Material UEV = new MarkerMaterial(GTValues.VN[GTValues.UEV].toLowerCase());
+        public static final Material UIV = new MarkerMaterial(GTValues.VN[GTValues.UIV].toLowerCase());
+        public static final Material UXV = new MarkerMaterial(GTValues.VN[GTValues.UXV].toLowerCase());
+        public static final Material OpV = new MarkerMaterial(GTValues.VN[GTValues.OpV].toLowerCase());
+        public static final Material MAX = new MarkerMaterial(GTValues.VN[GTValues.MAX].toLowerCase());
     }
 
     public static class Component {
@@ -110,4 +108,8 @@ public class MarkerMaterials {
         public static final Material Inductor = new MarkerMaterial("inductor");
     }
 
+    public static class Misc {
+        public static final Material Piston = new MarkerMaterial("piston");
+        public static final Material Chest = new MarkerMaterial("chest");
+    }
 }

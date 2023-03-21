@@ -5,13 +5,13 @@
       "item": "gtceu:quantumstar"
     },
     "P": {
-      "tag": "minecraft:plates/double/tungsten_steel"
+      "tag": "c:plates/double/tungsten_steel"
     },
     "W": {
-      "tag": "minecraft:wire_gt_quadruple/samarium_iron_arsenic_oxide"
+      "tag": "c:wire_gt_quadruple/samarium_iron_arsenic_oxide"
     },
     "X": {
-      "tag": "minecraft:circuit/iv"
+      "tag": "c:circuit/iv"
     }
   },
   "pattern": [

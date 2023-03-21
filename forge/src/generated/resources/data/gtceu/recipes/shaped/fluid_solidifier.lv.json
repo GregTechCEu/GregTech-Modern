@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": {
+      "tag": "forge:chests/wooden"
+    },
+    "C": {
+      "tag": "forge:circuit/lv"
+    },
+    "G": {
+      "tag": "forge:glass"
+    },
+    "M": {
+      "item": "gtceu:hull.lv"
+    },
+    "P": {
+      "item": "gtceu:electric.pump.lv"
+    },
+    "W": {
+      "tag": "forge:cable_gt_single/tin"
+    }
+  },
+  "pattern": [
+    "PGP",
+    "WMW",
+    "CBC"
+  ],
+  "result": {
+    "item": "gtceu:fluid_solidifier.lv"
+  }
+}

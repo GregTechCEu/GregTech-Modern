@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "forge:circuit/iv"
+    },
+    "M": {
+      "item": "gtceu:hull.iv"
+    },
+    "P": {
+      "item": "gtceu:electric.piston.iv"
+    },
+    "W": {
+      "tag": "forge:cable_gt_single/platinum"
+    }
+  },
+  "pattern": [
+    "WPW",
+    "CMC",
+    "WPW"
+  ],
+  "result": {
+    "item": "gtceu:forming_press.iv"
+  }
+}

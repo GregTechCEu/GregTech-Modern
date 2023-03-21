@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "c:circuit/lv"
+    },
+    "E": {
+      "item": "gtceu:electric.motor.lv"
+    },
+    "G": {
+      "item": "minecraft:glass"
+    },
+    "M": {
+      "item": "gtceu:hull.lv"
+    },
+    "R": {
+      "tag": "c:rotors/tin"
+    },
+    "W": {
+      "tag": "c:cable_gt_single/tin"
+    }
+  },
+  "pattern": [
+    "GRG",
+    "WEW",
+    "CMC"
+  ],
+  "result": {
+    "item": "gtceu:chemical_reactor.lv"
+  }
+}

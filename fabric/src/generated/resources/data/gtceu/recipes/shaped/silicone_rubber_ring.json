@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "P": {
+      "item": "gtceu:plate.silicone_rubber"
+    },
+    "k": {
+      "tag": "c:tool/knife"
+    }
+  },
+  "pattern": [
+    "k",
+    "P"
+  ],
+  "result": {
+    "item": "gtceu:ring.silicone_rubber"
+  }
+}

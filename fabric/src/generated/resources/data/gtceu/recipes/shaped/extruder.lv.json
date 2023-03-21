@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "c:wire_gt_quadruple/copper"
+    },
+    "E": {
+      "tag": "c:circuit/lv"
+    },
+    "M": {
+      "item": "gtceu:hull.lv"
+    },
+    "P": {
+      "tag": "c:pipe_normal_fluid/bronze"
+    },
+    "X": {
+      "item": "gtceu:electric.piston.lv"
+    }
+  },
+  "pattern": [
+    "CCE",
+    "XMP",
+    "CCE"
+  ],
+  "result": {
+    "item": "gtceu:extruder.lv"
+  }
+}

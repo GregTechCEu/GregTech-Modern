@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "forge:circuit/ev"
+    },
+    "G": {
+      "tag": "forge:glass"
+    },
+    "M": {
+      "item": "gtceu:hull.ev"
+    },
+    "O": {
+      "tag": "forge:wire_gt_quadruple/nichrome"
+    },
+    "P": {
+      "item": "gtceu:electric.pump.ev"
+    },
+    "W": {
+      "tag": "forge:cable_gt_single/aluminium"
+    }
+  },
+  "pattern": [
+    "OGO",
+    "PMP",
+    "WCW"
+  ],
+  "result": {
+    "item": "gtceu:fluid_heater.ev"
+  }
+}

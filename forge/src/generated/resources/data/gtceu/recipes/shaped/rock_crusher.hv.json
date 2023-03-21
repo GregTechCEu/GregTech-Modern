@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "forge:cable_gt_single/gold"
+    },
+    "G": {
+      "tag": "forge:glass"
+    },
+    "H": {
+      "item": "gtceu:hull.hv"
+    },
+    "M": {
+      "item": "gtceu:electric.motor.hv"
+    },
+    "P": {
+      "item": "gtceu:electric.piston.hv"
+    },
+    "W": {
+      "item": "gtceu:component.grinder.diamond"
+    }
+  },
+  "pattern": [
+    "PMW",
+    "CHC",
+    "GGG"
+  ],
+  "result": {
+    "item": "gtceu:rock_crusher.hv"
+  }
+}

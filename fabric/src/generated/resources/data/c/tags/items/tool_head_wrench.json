@@ -1,0 +1,33 @@
+{
+  "replace": false,
+  "values": [
+    "#c:tool_head_wrench/rubber",
+    "#c:tool_head_wrench/plastic",
+    "#c:tool_head_wrench/tungsten_carbide",
+    "#c:tool_head_wrench/steel",
+    "#c:tool_head_wrench/ultimet",
+    "#c:tool_head_wrench/polytetrafluoroethylene",
+    "#c:tool_head_wrench/invar",
+    "#c:tool_head_wrench/iron",
+    "#c:tool_head_wrench/wrought_iron",
+    "#c:tool_head_wrench/bronze",
+    "#c:tool_head_wrench/tungsten_steel",
+    "#c:tool_head_wrench/damascus_steel",
+    "#c:tool_head_wrench/duranium",
+    "#c:tool_head_wrench/red_steel",
+    "#c:tool_head_wrench/vanadium_steel",
+    "#c:tool_head_wrench/rose_gold",
+    "#c:tool_head_wrench/diamond",
+    "#c:tool_head_wrench/naquadah_alloy",
+    "#c:tool_head_wrench/neutronium",
+    "#c:tool_head_wrench/cobalt_brass",
+    "#c:tool_head_wrench/blue_steel",
+    "#c:tool_head_wrench/polybenzimidazole",
+    "#c:tool_head_wrench/aluminium",
+    "#c:tool_head_wrench/wood",
+    "#c:tool_head_wrench/hsse",
+    "#c:tool_head_wrench/stainless_steel",
+    "#c:tool_head_wrench/titanium",
+    "#c:tool_head_wrench/sterling_silver"
+  ]
+}

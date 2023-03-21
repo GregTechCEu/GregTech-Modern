@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "forge:circuit/hv"
+    },
+    "F": {
+      "item": "gtceu:fluid_filter"
+    },
+    "H": {
+      "item": "gtceu:hull.hv"
+    },
+    "P": {
+      "item": "gtceu:electric.pump.hv"
+    },
+    "W": {
+      "item": "minecraft:iron_bars"
+    }
+  },
+  "pattern": [
+    "WFW",
+    "PHP",
+    "WCW"
+  ],
+  "result": {
+    "item": "gtceu:gas_collector.hv"
+  }
+}

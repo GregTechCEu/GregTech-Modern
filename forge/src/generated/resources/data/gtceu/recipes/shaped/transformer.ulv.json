@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "forge:cable_gt_single/red_alloy"
+    },
+    "H": {
+      "item": "gtceu:hull.ulv"
+    },
+    "T": {
+      "tag": "forge:cable_gt_single/tin"
+    }
+  },
+  "pattern": [
+    " CC",
+    "TH ",
+    " CC"
+  ],
+  "result": {
+    "item": "gtceu:transformer.ulv"
+  }
+}

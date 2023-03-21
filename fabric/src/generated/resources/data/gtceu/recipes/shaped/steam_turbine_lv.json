@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "c:circuit/lv"
+    },
+    "E": {
+      "item": "gtceu:electric.motor.lv"
+    },
+    "M": {
+      "item": "gtceu:hull.lv"
+    },
+    "P": {
+      "tag": "c:pipe_normal_fluid/bronze"
+    },
+    "R": {
+      "tag": "c:rotors/tin"
+    },
+    "W": {
+      "tag": "c:cable_gt_single/tin"
+    }
+  },
+  "pattern": [
+    "PCP",
+    "RMR",
+    "EWE"
+  ],
+  "result": {
+    "item": "gtceu:steam_turbine.lv"
+  }
+}

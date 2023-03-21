@@ -1,0 +1,15 @@
+{
+  "replace": false,
+  "values": [
+    "#c:circuit/ev",
+    "#c:circuit/iv",
+    "#c:circuit/ulv",
+    "#c:circuit/uv",
+    "#c:circuit/hv",
+    "#c:circuit/uhv",
+    "#c:circuit/lv",
+    "#c:circuit/mv",
+    "#c:circuit/luv",
+    "#c:circuit/zpm"
+  ]
+}

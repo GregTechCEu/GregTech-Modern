@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "c:wire_gt_quadruple/kanthal"
+    },
+    "E": {
+      "tag": "c:circuit/hv"
+    },
+    "M": {
+      "item": "gtceu:hull.hv"
+    },
+    "W": {
+      "tag": "c:cable_gt_single/gold"
+    }
+  },
+  "pattern": [
+    "ECE",
+    "CMC",
+    "WCW"
+  ],
+  "result": {
+    "item": "gtceu:alloy_smelter.hv"
+  }
+}

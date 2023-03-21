@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "c:circuit/uv"
+    },
+    "F": {
+      "item": "gtceu:field.generator.zpm"
+    },
+    "H": {
+      "item": "gtceu:hull.uv"
+    },
+    "P": {
+      "tag": "c:plates/dense/darmstadtium"
+    }
+  },
+  "pattern": [
+    "CPC",
+    "PHP",
+    "CFC"
+  ],
+  "result": {
+    "item": "gtceu:quantum_chest.uv"
+  }
+}

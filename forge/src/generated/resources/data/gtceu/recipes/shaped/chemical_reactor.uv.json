@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "forge:circuit/uv"
+    },
+    "E": {
+      "item": "gtceu:electric.motor.uv"
+    },
+    "G": {
+      "tag": "forge:pipe_huge_fluid/polytetrafluoroethylene"
+    },
+    "M": {
+      "item": "gtceu:hull.uv"
+    },
+    "R": {
+      "tag": "forge:rotors/darmstadtium"
+    },
+    "W": {
+      "tag": "forge:cable_gt_single/yttrium_barium_cuprate"
+    }
+  },
+  "pattern": [
+    "GRG",
+    "WEW",
+    "CMC"
+  ],
+  "result": {
+    "item": "gtceu:chemical_reactor.uv"
+  }
+}

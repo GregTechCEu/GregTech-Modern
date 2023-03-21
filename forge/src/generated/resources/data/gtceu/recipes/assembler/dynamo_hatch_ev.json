@@ -1,0 +1,78 @@
+{
+  "type": "gtceu:gt_recipe_serializer",
+  "duration": 200,
+  "inputs": {
+    "fluid": [
+      {
+        "chance": 1.0,
+        "content": {
+          "amount": 2000,
+          "fluid": "gtceu:sodium_potassium"
+        }
+      }
+    ],
+    "item": [
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 1,
+          "fabric:type": "gtceu:sized",
+          "ingredient": {
+            "item": "gtceu:hull.ev"
+          }
+        }
+      },
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 2,
+          "fabric:type": "gtceu:sized",
+          "tag": "forge:springs/aluminium"
+        }
+      },
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 2,
+          "fabric:type": "gtceu:sized",
+          "ingredient": {
+            "item": "gtceu:plate.power_integrated_circuit"
+          }
+        }
+      },
+      {
+        "chance": 1.0,
+        "content": {
+          "item": "gtceu:voltage_coil.ev"
+        }
+      }
+    ]
+  },
+  "outputs": {
+    "item": [
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 1,
+          "fabric:type": "gtceu:sized",
+          "ingredient": {
+            "item": "gtceu:energy_hatch.output.ev"
+          }
+        }
+      }
+    ]
+  },
+  "recipe_type": "gtceu:assembler",
+  "tickInputs": {
+    "eu": [
+      {
+        "chance": 1.0,
+        "content": 1920
+      }
+    ]
+  }
+}

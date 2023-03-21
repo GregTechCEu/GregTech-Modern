@@ -1,896 +1,896 @@
 package com.gregtechceu.gtceu.data.recipe.misc;
 
-import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials;
-import com.gregtechceu.gtceu.common.data.GTItems;
-import com.gregtechceu.gtceu.common.data.GTMaterials;
-import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
-import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
+import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials.Tier;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
+import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Items;
 
 import java.util.Map;
 import java.util.function.Consumer;
 
+import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.tag.TagPrefix.*;
+import static com.gregtechceu.gtceu.common.data.GTItems.*;
+import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
+import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.ASSEMBLER_RECIPES;
+import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.ASSEMBLY_LINE_RECIPES;
 
 public class ComponentRecipes {
 
     public static void init(Consumer<FinishedRecipe> provider) {
 
         //Motors Start--------------------------------------------------------------------------------------------------
-        VanillaRecipeHelper.addShapedRecipe(provider, "electric_motor_lv_steel", GTItems.ELECTRIC_MOTOR_LV.asStack(), "CWR", "WMW", "RWC", 'C', new UnificationEntry(cableGtSingle, GTMaterials.Tin), 'W', new UnificationEntry(wireGtSingle, GTMaterials.Copper), 'R', new UnificationEntry(stick, GTMaterials.Steel), 'M', new UnificationEntry(stick, GTMaterials.SteelMagnetic));
-        VanillaRecipeHelper.addShapedRecipe(provider, "electric_motor_lv_iron", GTItems.ELECTRIC_MOTOR_LV.asStack(), "CWR", "WMW", "RWC", 'C', new UnificationEntry(cableGtSingle, GTMaterials.Tin), 'W', new UnificationEntry(wireGtSingle, GTMaterials.Copper), 'R', new UnificationEntry(stick, GTMaterials.Iron), 'M', new UnificationEntry(stick, GTMaterials.IronMagnetic));
-        VanillaRecipeHelper.addShapedRecipe(provider, "electric_motor_mv", GTItems.ELECTRIC_MOTOR_MV.asStack(), "CWR", "WMW", "RWC", 'C', new UnificationEntry(cableGtSingle, GTMaterials.Copper), 'W', new UnificationEntry(wireGtDouble, GTMaterials.Cupronickel), 'R', new UnificationEntry(stick, GTMaterials.Aluminium), 'M', new UnificationEntry(stick, GTMaterials.SteelMagnetic));
-        VanillaRecipeHelper.addShapedRecipe(provider, "electric_motor_hv", GTItems.ELECTRIC_MOTOR_HV.asStack(), "CWR", "WMW", "RWC", 'C', new UnificationEntry(cableGtDouble, GTMaterials.Silver), 'W', new UnificationEntry(wireGtDouble, GTMaterials.Electrum), 'R', new UnificationEntry(stick, GTMaterials.StainlessSteel), 'M', new UnificationEntry(stick, GTMaterials.SteelMagnetic));
-        VanillaRecipeHelper.addShapedRecipe(provider, "electric_motor_ev", GTItems.ELECTRIC_MOTOR_EV.asStack(), "CWR", "WMW", "RWC", 'C', new UnificationEntry(cableGtDouble, GTMaterials.Aluminium), 'W', new UnificationEntry(wireGtDouble, GTMaterials.Kanthal), 'R', new UnificationEntry(stick, GTMaterials.Titanium), 'M', new UnificationEntry(stick, GTMaterials.NeodymiumMagnetic));
-        VanillaRecipeHelper.addShapedRecipe(provider, "electric_motor_iv", GTItems.ELECTRIC_MOTOR_IV.asStack(), "CWR", "WMW", "RWC", 'C', new UnificationEntry(cableGtDouble, GTMaterials.Tungsten), 'W', new UnificationEntry(wireGtDouble, GTMaterials.Graphene), 'R', new UnificationEntry(stick, GTMaterials.TungstenSteel), 'M', new UnificationEntry(stick, GTMaterials.NeodymiumMagnetic));
+        VanillaRecipeHelper.addShapedRecipe(provider, "electric_motor_lv_steel", ELECTRIC_MOTOR_LV.asStack(), "CWR", "WMW", "RWC", 'C', new UnificationEntry(cableGtSingle, Tin), 'W', new UnificationEntry(wireGtSingle, Copper), 'R', new UnificationEntry(stick, Steel), 'M', new UnificationEntry(stick, SteelMagnetic));
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "electric_motor_lv_iron", ELECTRIC_MOTOR_LV.asStack(), "CWR", "WMW", "RWC", 'C', new UnificationEntry(cableGtSingle, Tin), 'W', new UnificationEntry(wireGtSingle, Copper), 'R', new UnificationEntry(stick, Iron), 'M', new UnificationEntry(stick, IronMagnetic));
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "electric_motor_mv", ELECTRIC_MOTOR_MV.asStack(), "CWR", "WMW", "RWC", 'C', new UnificationEntry(cableGtSingle, Copper), 'W', new UnificationEntry(wireGtDouble, Cupronickel), 'R', new UnificationEntry(stick, Aluminium), 'M', new UnificationEntry(stick, SteelMagnetic));
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "electric_motor_hv", ELECTRIC_MOTOR_HV.asStack(), "CWR", "WMW", "RWC", 'C', new UnificationEntry(cableGtDouble, Silver), 'W', new UnificationEntry(wireGtDouble, Electrum), 'R', new UnificationEntry(stick, StainlessSteel), 'M', new UnificationEntry(stick, SteelMagnetic));
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "electric_motor_ev", ELECTRIC_MOTOR_EV.asStack(), "CWR", "WMW", "RWC", 'C', new UnificationEntry(cableGtDouble, Aluminium), 'W', new UnificationEntry(wireGtDouble, Kanthal), 'R', new UnificationEntry(stick, Titanium), 'M', new UnificationEntry(stick, NeodymiumMagnetic));
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "electric_motor_iv", ELECTRIC_MOTOR_IV.asStack(), "CWR", "WMW", "RWC", 'C', new UnificationEntry(cableGtDouble, Tungsten), 'W', new UnificationEntry(wireGtDouble, Graphene), 'R', new UnificationEntry(stick, TungstenSteel), 'M', new UnificationEntry(stick, NeodymiumMagnetic));
 
-        GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder(new ResourceLocation(GTItems.ELECTRIC_MOTOR_LV.getId() + ".0"))
-                .inputItems(cableGtSingle, GTMaterials.Tin, 2)
-                .inputItems(stick, GTMaterials.Iron, 2)
-                .inputItems(stick, GTMaterials.IronMagnetic)
-                .inputItems(wireGtSingle, GTMaterials.Copper, 4)
-                .outputItems(GTItems.ELECTRIC_MOTOR_LV)
-                .duration(100).EUt(GTValues.VA[GTValues.LV]).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("electric_motor_lv_iron")
+                .inputItems(cableGtSingle, Tin, 2)
+                .inputItems(stick, Iron, 2)
+                .inputItems(stick, IronMagnetic)
+                .inputItems(wireGtSingle, Copper, 4)
+                .outputItems(ELECTRIC_MOTOR_LV)
+                .duration(100).EUt(VA[LV]).save(provider);
 
-        GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder(new ResourceLocation(GTItems.ELECTRIC_MOTOR_LV.getId() + ".1"))
-                .inputItems(cableGtSingle, GTMaterials.Tin, 2)
-                .inputItems(stick, GTMaterials.Steel, 2)
-                .inputItems(stick, GTMaterials.SteelMagnetic)
-                .inputItems(wireGtSingle, GTMaterials.Copper, 4)
-                .outputItems(GTItems.ELECTRIC_MOTOR_LV)
-                .duration(100).EUt(GTValues.VA[GTValues.LV]).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("electric_motor_lv_steel")
+                .inputItems(cableGtSingle, Tin, 2)
+                .inputItems(stick, Steel, 2)
+                .inputItems(stick, SteelMagnetic)
+                .inputItems(wireGtSingle, Copper, 4)
+                .outputItems(ELECTRIC_MOTOR_LV)
+                .duration(100).EUt(VA[LV]).save(provider);
 
-        GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder(GTItems.ELECTRIC_MOTOR_MV.getId())
-                .inputItems(cableGtSingle, GTMaterials.Copper, 2)
-                .inputItems(stick, GTMaterials.Aluminium, 2)
-                .inputItems(stick, GTMaterials.SteelMagnetic)
-                .inputItems(wireGtDouble, GTMaterials.Cupronickel, 4)
-                .outputItems(GTItems.ELECTRIC_MOTOR_MV)
-                .duration(100).EUt(GTValues.VA[GTValues.LV]).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("electric_motor_mv")
+                .inputItems(cableGtSingle, Copper, 2)
+                .inputItems(stick, Aluminium, 2)
+                .inputItems(stick, SteelMagnetic)
+                .inputItems(wireGtDouble, Cupronickel, 4)
+                .outputItems(ELECTRIC_MOTOR_MV)
+                .duration(100).EUt(VA[LV]).save(provider);
 
-        GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder(GTItems.ELECTRIC_MOTOR_HV.getId())
-                .inputItems(cableGtDouble, GTMaterials.Silver, 2)
-                .inputItems(stick, GTMaterials.StainlessSteel, 2)
-                .inputItems(stick, GTMaterials.SteelMagnetic)
-                .inputItems(wireGtDouble, GTMaterials.Electrum, 4)
-                .outputItems(GTItems.ELECTRIC_MOTOR_HV)
-                .duration(100).EUt(GTValues.VA[GTValues.LV]).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("electric_motor_hv")
+                .inputItems(cableGtDouble, Silver, 2)
+                .inputItems(stick, StainlessSteel, 2)
+                .inputItems(stick, SteelMagnetic)
+                .inputItems(wireGtDouble, Electrum, 4)
+                .outputItems(ELECTRIC_MOTOR_HV)
+                .duration(100).EUt(VA[LV]).save(provider);
 
-        GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder(GTItems.ELECTRIC_MOTOR_EV.getId())
-                .inputItems(cableGtDouble, GTMaterials.Aluminium, 2)
-                .inputItems(stick, GTMaterials.Titanium, 2)
-                .inputItems(stick, GTMaterials.NeodymiumMagnetic)
-                .inputItems(wireGtDouble, GTMaterials.Kanthal, 4)
-                .outputItems(GTItems.ELECTRIC_MOTOR_EV)
-                .duration(100).EUt(GTValues.VA[GTValues.LV]).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("electric_motor_ev")
+                .inputItems(cableGtDouble, Aluminium, 2)
+                .inputItems(stick, Titanium, 2)
+                .inputItems(stick, NeodymiumMagnetic)
+                .inputItems(wireGtDouble, Kanthal, 4)
+                .outputItems(ELECTRIC_MOTOR_EV)
+                .duration(100).EUt(VA[LV]).save(provider);
 
-        GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder(GTItems.ELECTRIC_MOTOR_IV.getId())
-                .inputItems(cableGtDouble, GTMaterials.Tungsten, 2)
-                .inputItems(stick, GTMaterials.TungstenSteel, 2)
-                .inputItems(stick, GTMaterials.NeodymiumMagnetic)
-                .inputItems(wireGtDouble, GTMaterials.Graphene, 4)
-                .outputItems(GTItems.ELECTRIC_MOTOR_IV)
-                .duration(100).EUt(GTValues.VA[GTValues.LV]).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("electric_motor_iv")
+                .inputItems(cableGtDouble, Tungsten, 2)
+                .inputItems(stick, TungstenSteel, 2)
+                .inputItems(stick, NeodymiumMagnetic)
+                .inputItems(wireGtDouble, Graphene, 4)
+                .outputItems(ELECTRIC_MOTOR_IV)
+                .duration(100).EUt(VA[LV]).save(provider);
 
-        GTRecipeTypes.ASSEMBLY_LINE_RECIPES.recipeBuilder(GTItems.ELECTRIC_MOTOR_LuV.getId())
-                .inputItems(stickLong, GTMaterials.SamariumMagnetic)
-                .inputItems(stickLong, GTMaterials.HSSS, 2)
-                .inputItems(ring, GTMaterials.HSSS, 2)
-                .inputItems(round, GTMaterials.HSSS, 4)
-                .inputItems(wireFine, GTMaterials.Ruridit, 64)
-                .inputItems(cableGtSingle, GTMaterials.NiobiumTitanium, 2)
-                .inputFluids(GTMaterials.SolderingAlloy.getFluid(GTValues.L))
-                .inputFluids(GTMaterials.Lubricant.getFluid(250))
-                .outputItems(GTItems.ELECTRIC_MOTOR_LuV)
+        ASSEMBLY_LINE_RECIPES.recipeBuilder("electric_motor_luv")
+                .inputItems(stickLong, SamariumMagnetic)
+                .inputItems(stickLong, HSSS, 2)
+                .inputItems(ring, HSSS, 2)
+                .inputItems(round, HSSS, 4)
+                .inputItems(wireFine, Ruridit, 64)
+                .inputItems(cableGtSingle, NiobiumTitanium, 2)
+                .inputFluids(SolderingAlloy.getFluid(L))
+                .inputFluids(Lubricant.getFluid(250))
+                .outputItems(ELECTRIC_MOTOR_LuV)
                 .duration(600).EUt(6000).save(provider);
 
-        GTRecipeTypes.ASSEMBLY_LINE_RECIPES.recipeBuilder(GTItems.ELECTRIC_MOTOR_ZPM.getId())
-                .inputItems(stickLong, GTMaterials.SamariumMagnetic)
-                .inputItems(stickLong, GTMaterials.Osmiridium, 4)
-                .inputItems(ring, GTMaterials.Osmiridium, 4)
-                .inputItems(round, GTMaterials.Osmiridium, 8)
-                .inputItems(wireFine, GTMaterials.Europium, 64)
-                .inputItems(wireFine, GTMaterials.Europium, 32)
-                .inputItems(cableGtSingle, GTMaterials.VanadiumGallium, 2)
-                .inputFluids(GTMaterials.SolderingAlloy.getFluid(GTValues.L * 2))
-                .inputFluids(GTMaterials.Lubricant.getFluid(500))
-                .outputItems(GTItems.ELECTRIC_MOTOR_ZPM)
+        ASSEMBLY_LINE_RECIPES.recipeBuilder("electric_motor_zpm")
+                .inputItems(stickLong, SamariumMagnetic)
+                .inputItems(stickLong, Osmiridium, 4)
+                .inputItems(ring, Osmiridium, 4)
+                .inputItems(round, Osmiridium, 8)
+                .inputItems(wireFine, Europium, 64)
+                .inputItems(wireFine, Europium, 32)
+                .inputItems(cableGtSingle, VanadiumGallium, 2)
+                .inputFluids(SolderingAlloy.getFluid(L * 2))
+                .inputFluids(Lubricant.getFluid(500))
+                .outputItems(ELECTRIC_MOTOR_ZPM)
                 .duration(600).EUt(24000).save(provider);
 
-        GTRecipeTypes.ASSEMBLY_LINE_RECIPES.recipeBuilder(GTItems.ELECTRIC_MOTOR_UV.getId())
-                .inputItems(stickLong, GTMaterials.SamariumMagnetic)
-                .inputItems(stickLong, GTMaterials.Tritanium, 4)
-                .inputItems(ring, GTMaterials.Tritanium, 4)
-                .inputItems(round, GTMaterials.Tritanium, 8)
-                .inputItems(wireFine, GTMaterials.Americium, 64)
-                .inputItems(wireFine, GTMaterials.Americium, 64)
-                .inputItems(cableGtSingle, GTMaterials.YttriumBariumCuprate, 2)
-                .inputFluids(GTMaterials.SolderingAlloy.getFluid(GTValues.L * 4))
-                .inputFluids(GTMaterials.Lubricant.getFluid(1000))
-                .inputFluids(GTMaterials.Naquadria.getFluid(GTValues.L * 4))
-                .outputItems(GTItems.ELECTRIC_MOTOR_UV)
+        ASSEMBLY_LINE_RECIPES.recipeBuilder("electric_motor_uv")
+                .inputItems(stickLong, SamariumMagnetic)
+                .inputItems(stickLong, Tritanium, 4)
+                .inputItems(ring, Tritanium, 4)
+                .inputItems(round, Tritanium, 8)
+                .inputItems(wireFine, Americium, 64)
+                .inputItems(wireFine, Americium, 64)
+                .inputItems(cableGtSingle, YttriumBariumCuprate, 2)
+                .inputFluids(SolderingAlloy.getFluid(L * 4))
+                .inputFluids(Lubricant.getFluid(1000))
+                .inputFluids(Naquadria.getFluid(L * 4))
+                .outputItems(ELECTRIC_MOTOR_UV)
                 .duration(600).EUt(100000).save(provider);
 
 
 
         //Conveyors Start-----------------------------------------------------------------------------------------------
         final Map<String, Material> rubberMaterials = new Object2ObjectOpenHashMap<>();
-        rubberMaterials.put("rubber", GTMaterials.Rubber);
-        rubberMaterials.put("silicone_rubber", GTMaterials.SiliconeRubber);
-        rubberMaterials.put("styrene_butadiene_rubber", GTMaterials.StyreneButadieneRubber);
+        rubberMaterials.put("rubber", Rubber);
+        rubberMaterials.put("silicone_rubber", SiliconeRubber);
+        rubberMaterials.put("styrene_butadiene_rubber", StyreneButadieneRubber);
 
         for (Map.Entry<String, Material> materialEntry : rubberMaterials.entrySet()) {
             Material material = materialEntry.getValue();
             String name = materialEntry.getKey();
 
-            VanillaRecipeHelper.addShapedRecipe(provider, String.format("conveyor_module_lv_%s", name), GTItems.CONVEYOR_MODULE_LV.asStack(), "RRR", "MCM", "RRR", 'R', new UnificationEntry(plate, material), 'C', new UnificationEntry(cableGtSingle, GTMaterials.Tin), 'M', GTItems.ELECTRIC_MOTOR_LV.get());
-            VanillaRecipeHelper.addShapedRecipe(provider, String.format("conveyor_module_mv_%s", name), GTItems.CONVEYOR_MODULE_MV.asStack(), "RRR", "MCM", "RRR", 'R', new UnificationEntry(plate, material), 'C', new UnificationEntry(cableGtSingle, GTMaterials.Copper), 'M', GTItems.ELECTRIC_MOTOR_MV.get());
-            VanillaRecipeHelper.addShapedRecipe(provider, String.format("conveyor_module_hv_%s", name), GTItems.CONVEYOR_MODULE_HV.asStack(), "RRR", "MCM", "RRR", 'R', new UnificationEntry(plate, material), 'C', new UnificationEntry(cableGtSingle, GTMaterials.Gold), 'M', GTItems.ELECTRIC_MOTOR_HV.get());
-            VanillaRecipeHelper.addShapedRecipe(provider, String.format("conveyor_module_ev_%s", name), GTItems.CONVEYOR_MODULE_EV.asStack(), "RRR", "MCM", "RRR", 'R', new UnificationEntry(plate, material), 'C', new UnificationEntry(cableGtSingle, GTMaterials.Aluminium), 'M', GTItems.ELECTRIC_MOTOR_EV.get());
-            if (!materialEntry.getValue().equals(GTMaterials.Rubber))
-                VanillaRecipeHelper.addShapedRecipe(provider, String.format("conveyor_module_iv_%s", materialEntry.getKey()), GTItems.CONVEYOR_MODULE_IV.asStack(), "RRR", "MCM", "RRR", 'R', new UnificationEntry(plate, material), 'C', new UnificationEntry(cableGtSingle, GTMaterials.Tungsten), 'M', GTItems.ELECTRIC_MOTOR_IV.get());
+            VanillaRecipeHelper.addShapedRecipe(provider, material.equals(Rubber), String.format("conveyor_module_lv_%s", name), CONVEYOR_MODULE_LV.asStack(), "RRR", "MCM", "RRR", 'R', new UnificationEntry(plate, material), 'C', new UnificationEntry(cableGtSingle, Tin), 'M', ELECTRIC_MOTOR_LV.asStack());
+            VanillaRecipeHelper.addShapedRecipe(provider, material.equals(Rubber), String.format("conveyor_module_mv_%s", name), CONVEYOR_MODULE_MV.asStack(), "RRR", "MCM", "RRR", 'R', new UnificationEntry(plate, material), 'C', new UnificationEntry(cableGtSingle, Copper), 'M', ELECTRIC_MOTOR_MV.asStack());
+            VanillaRecipeHelper.addShapedRecipe(provider, material.equals(Rubber), String.format("conveyor_module_hv_%s", name), CONVEYOR_MODULE_HV.asStack(), "RRR", "MCM", "RRR", 'R', new UnificationEntry(plate, material), 'C', new UnificationEntry(cableGtSingle, Gold), 'M', ELECTRIC_MOTOR_HV.asStack());
+            VanillaRecipeHelper.addShapedRecipe(provider, material.equals(Rubber), String.format("conveyor_module_ev_%s", name), CONVEYOR_MODULE_EV.asStack(), "RRR", "MCM", "RRR", 'R', new UnificationEntry(plate, material), 'C', new UnificationEntry(cableGtSingle, Aluminium), 'M', ELECTRIC_MOTOR_EV.asStack());
+            if (!materialEntry.getValue().equals(Rubber))
+                VanillaRecipeHelper.addShapedRecipe(provider, material.equals(SiliconeRubber), String.format("conveyor_module_iv_%s", materialEntry.getKey()), CONVEYOR_MODULE_IV.asStack(), "RRR", "MCM", "RRR", 'R', new UnificationEntry(plate, material), 'C', new UnificationEntry(cableGtSingle, Tungsten), 'M', ELECTRIC_MOTOR_IV.asStack());
 
-            GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder(new ResourceLocation(GTItems.CONVEYOR_MODULE_LV.getId() + "_" + name))
-                    .inputItems(cableGtSingle, GTMaterials.Tin)
-                    .inputItems(GTItems.ELECTRIC_MOTOR_LV.asStack(2))
-                    .inputFluids(materialEntry.getValue().getFluid(GTValues.L * 6))
+            ASSEMBLER_RECIPES.recipeBuilder("conveyor_module_lv_" + name)
+                    .inputItems(cableGtSingle, Tin)
+                    .inputItems(ELECTRIC_MOTOR_LV, 2)
+                    .inputFluids(materialEntry.getValue().getFluid(L * 6))
                     .circuitMeta(1)
-                    .outputItems(GTItems.CONVEYOR_MODULE_LV)
-                    .duration(100).EUt(GTValues.VA[GTValues.LV]).save(provider);
+                    .outputItems(CONVEYOR_MODULE_LV)
+                    .duration(100).EUt(VA[LV]).save(provider);
 
-            GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder(new ResourceLocation(GTItems.CONVEYOR_MODULE_MV.getId() + "_" + name))
-                    .inputItems(cableGtSingle, GTMaterials.Copper)
-                    .inputItems(GTItems.ELECTRIC_MOTOR_MV.asStack(2))
-                    .inputFluids(materialEntry.getValue().getFluid(GTValues.L * 6))
+            ASSEMBLER_RECIPES.recipeBuilder("conveyor_module_mv_" + name)
+                    .inputItems(cableGtSingle, Copper)
+                    .inputItems(ELECTRIC_MOTOR_MV, 2)
+                    .inputFluids(materialEntry.getValue().getFluid(L * 6))
                     .circuitMeta(1)
-                    .outputItems(GTItems.CONVEYOR_MODULE_MV)
-                    .duration(100).EUt(GTValues.VA[GTValues.LV]).save(provider);
+                    .outputItems(CONVEYOR_MODULE_MV)
+                    .duration(100).EUt(VA[LV]).save(provider);
 
-            GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder(new ResourceLocation(GTItems.CONVEYOR_MODULE_HV.getId() + "_" + name))
-                    .inputItems(cableGtSingle, GTMaterials.Gold)
-                    .inputItems(GTItems.ELECTRIC_MOTOR_HV.asStack(2))
-                    .inputFluids(materialEntry.getValue().getFluid(GTValues.L * 6))
+            ASSEMBLER_RECIPES.recipeBuilder("conveyor_module_hv_" + name)
+                    .inputItems(cableGtSingle, Gold)
+                    .inputItems(ELECTRIC_MOTOR_HV, 2)
+                    .inputFluids(materialEntry.getValue().getFluid(L * 6))
                     .circuitMeta(1)
-                    .outputItems(GTItems.CONVEYOR_MODULE_HV)
-                    .duration(100).EUt(GTValues.VA[GTValues.LV]).save(provider);
+                    .outputItems(CONVEYOR_MODULE_HV)
+                    .duration(100).EUt(VA[LV]).save(provider);
 
-            GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder(new ResourceLocation(GTItems.CONVEYOR_MODULE_EV.getId() + "_" + name))
-                    .inputItems(cableGtSingle, GTMaterials.Aluminium)
-                    .inputItems(GTItems.ELECTRIC_MOTOR_EV.asStack(2))
-                    .inputFluids(materialEntry.getValue().getFluid(GTValues.L * 6))
+            ASSEMBLER_RECIPES.recipeBuilder("conveyor_module_ev_" + name)
+                    .inputItems(cableGtSingle, Aluminium)
+                    .inputItems(ELECTRIC_MOTOR_EV, 2)
+                    .inputFluids(materialEntry.getValue().getFluid(L * 6))
                     .circuitMeta(1)
-                    .outputItems(GTItems.CONVEYOR_MODULE_EV)
-                    .duration(100).EUt(GTValues.VA[GTValues.LV]).save(provider);
+                    .outputItems(CONVEYOR_MODULE_EV)
+                    .duration(100).EUt(VA[LV]).save(provider);
 
-            if (!materialEntry.getValue().equals(GTMaterials.Rubber))
-                GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder(new ResourceLocation(GTItems.CONVEYOR_MODULE_IV.getId() + "_" + name))
-                        .inputItems(cableGtSingle, GTMaterials.Tungsten)
-                        .inputItems(GTItems.ELECTRIC_MOTOR_IV.asStack(2))
-                        .inputFluids(materialEntry.getValue().getFluid(GTValues.L * 6))
+            if (!materialEntry.getValue().equals(Rubber))
+                ASSEMBLER_RECIPES.recipeBuilder("conveyor_module_iv_" + name)
+                        .inputItems(cableGtSingle, Tungsten)
+                        .inputItems(ELECTRIC_MOTOR_IV, 2)
+                        .inputFluids(materialEntry.getValue().getFluid(L * 6))
                         .circuitMeta(1)
-                        .outputItems(GTItems.CONVEYOR_MODULE_IV)
-                        .duration(100).EUt(GTValues.VA[GTValues.LV]).save(provider);
+                        .outputItems(CONVEYOR_MODULE_IV)
+                        .duration(100).EUt(VA[LV]).save(provider);
 
 
             //Pumps Start---------------------------------------------------------------------------------------------------
-            VanillaRecipeHelper.addShapedRecipe(provider, String.format("electric_pump_lv_%s", name), GTItems.ELECTRIC_PUMP_LV.asStack(), "SXR", "dPw", "RMC", 'S', new UnificationEntry(screw, GTMaterials.Tin), 'X', new UnificationEntry(rotor, GTMaterials.Tin), 'P', new UnificationEntry(pipeNormalFluid, GTMaterials.Bronze), 'R', new UnificationEntry(ring, material), 'C', new UnificationEntry(cableGtSingle, GTMaterials.Tin), 'M', GTItems.ELECTRIC_MOTOR_LV.get());
-            VanillaRecipeHelper.addShapedRecipe(provider, String.format("electric_pump_mv_%s", name), GTItems.ELECTRIC_PUMP_MV.asStack(), "SXR", "dPw", "RMC", 'S', new UnificationEntry(screw, GTMaterials.Bronze), 'X', new UnificationEntry(rotor, GTMaterials.Bronze), 'P', new UnificationEntry(pipeNormalFluid, GTMaterials.Steel), 'R', new UnificationEntry(ring, material), 'C', new UnificationEntry(cableGtSingle, GTMaterials.Copper), 'M', GTItems.ELECTRIC_MOTOR_MV.get());
-            VanillaRecipeHelper.addShapedRecipe(provider, String.format("electric_pump_hv_%s", name), GTItems.ELECTRIC_PUMP_HV.asStack(), "SXR", "dPw", "RMC", 'S', new UnificationEntry(screw, GTMaterials.Steel), 'X', new UnificationEntry(rotor, GTMaterials.Steel), 'P', new UnificationEntry(pipeNormalFluid, GTMaterials.StainlessSteel), 'R', new UnificationEntry(ring, material), 'C', new UnificationEntry(cableGtSingle, GTMaterials.Gold), 'M', GTItems.ELECTRIC_MOTOR_HV.get());
-            VanillaRecipeHelper.addShapedRecipe(provider, String.format("electric_pump_ev_%s", name), GTItems.ELECTRIC_PUMP_EV.asStack(), "SXR", "dPw", "RMC", 'S', new UnificationEntry(screw, GTMaterials.StainlessSteel), 'X', new UnificationEntry(rotor, GTMaterials.StainlessSteel), 'P', new UnificationEntry(pipeNormalFluid, GTMaterials.Titanium), 'R', new UnificationEntry(ring, material), 'C', new UnificationEntry(cableGtSingle, GTMaterials.Aluminium), 'M', GTItems.ELECTRIC_MOTOR_EV.get());
-            if (!material.equals(GTMaterials.Rubber))
-                VanillaRecipeHelper.addShapedRecipe(provider, String.format("electric_pump_iv_%s", name), GTItems.ELECTRIC_PUMP_IV.asStack(), "SXR", "dPw", "RMC", 'S', new UnificationEntry(screw, GTMaterials.TungstenSteel), 'X', new UnificationEntry(rotor, GTMaterials.TungstenSteel), 'P', new UnificationEntry(pipeNormalFluid, GTMaterials.TungstenSteel), 'R', new UnificationEntry(ring, material), 'C', new UnificationEntry(cableGtSingle, GTMaterials.Tungsten), 'M', GTItems.ELECTRIC_MOTOR_IV.get());
+            VanillaRecipeHelper.addShapedRecipe(provider, material.equals(Rubber), String.format("electric_pump_lv_%s", name), ELECTRIC_PUMP_LV.asStack(), "SXR", "dPw", "RMC", 'S', new UnificationEntry(screw, Tin), 'X', new UnificationEntry(rotor, Tin), 'P', new UnificationEntry(pipeNormalFluid, Bronze), 'R', new UnificationEntry(ring, material), 'C', new UnificationEntry(cableGtSingle, Tin), 'M', ELECTRIC_MOTOR_LV.asStack());
+            VanillaRecipeHelper.addShapedRecipe(provider, material.equals(Rubber), String.format("electric_pump_mv_%s", name), ELECTRIC_PUMP_MV.asStack(), "SXR", "dPw", "RMC", 'S', new UnificationEntry(screw, Bronze), 'X', new UnificationEntry(rotor, Bronze), 'P', new UnificationEntry(pipeNormalFluid, Steel), 'R', new UnificationEntry(ring, material), 'C', new UnificationEntry(cableGtSingle, Copper), 'M', ELECTRIC_MOTOR_MV.asStack());
+            VanillaRecipeHelper.addShapedRecipe(provider, material.equals(Rubber), String.format("electric_pump_hv_%s", name), ELECTRIC_PUMP_HV.asStack(), "SXR", "dPw", "RMC", 'S', new UnificationEntry(screw, Steel), 'X', new UnificationEntry(rotor, Steel), 'P', new UnificationEntry(pipeNormalFluid, StainlessSteel), 'R', new UnificationEntry(ring, material), 'C', new UnificationEntry(cableGtSingle, Gold), 'M', ELECTRIC_MOTOR_HV.asStack());
+            VanillaRecipeHelper.addShapedRecipe(provider, material.equals(Rubber), String.format("electric_pump_ev_%s", name), ELECTRIC_PUMP_EV.asStack(), "SXR", "dPw", "RMC", 'S', new UnificationEntry(screw, StainlessSteel), 'X', new UnificationEntry(rotor, StainlessSteel), 'P', new UnificationEntry(pipeNormalFluid, Titanium), 'R', new UnificationEntry(ring, material), 'C', new UnificationEntry(cableGtSingle, Aluminium), 'M', ELECTRIC_MOTOR_EV.asStack());
+            if (!material.equals(Rubber))
+                VanillaRecipeHelper.addShapedRecipe(provider, material.equals(SiliconeRubber), String.format("electric_pump_iv_%s", name), ELECTRIC_PUMP_IV.asStack(), "SXR", "dPw", "RMC", 'S', new UnificationEntry(screw, TungstenSteel), 'X', new UnificationEntry(rotor, TungstenSteel), 'P', new UnificationEntry(pipeNormalFluid, TungstenSteel), 'R', new UnificationEntry(ring, material), 'C', new UnificationEntry(cableGtSingle, Tungsten), 'M', ELECTRIC_MOTOR_IV.asStack());
 
-            GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder(new ResourceLocation(GTItems.ELECTRIC_PUMP_LV.getId() + "_" + name))
-                    .inputItems(cableGtSingle, GTMaterials.Tin)
-                    .inputItems(pipeNormalFluid, GTMaterials.Bronze)
-                    .inputItems(screw, GTMaterials.Tin)
-                    .inputItems(rotor, GTMaterials.Tin)
+            ASSEMBLER_RECIPES.recipeBuilder("electric_pump_lv_" + name)
+                    .inputItems(cableGtSingle, Tin)
+                    .inputItems(pipeNormalFluid, Bronze)
+                    .inputItems(screw, Tin)
+                    .inputItems(rotor, Tin)
                     .inputItems(ring, materialEntry.getValue(), 2)
-                    .inputItems(GTItems.ELECTRIC_MOTOR_LV)
-                    .outputItems(GTItems.ELECTRIC_PUMP_LV)
-                    .duration(100).EUt(GTValues.VA[GTValues.LV]).save(provider);
+                    .inputItems(ELECTRIC_MOTOR_LV)
+                    .outputItems(ELECTRIC_PUMP_LV)
+                    .duration(100).EUt(VA[LV]).save(provider);
 
-            GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder(new ResourceLocation(GTItems.ELECTRIC_PUMP_MV.getId() + "_" + name))
-                    .inputItems(cableGtSingle, GTMaterials.Copper)
-                    .inputItems(pipeNormalFluid, GTMaterials.Steel)
-                    .inputItems(screw, GTMaterials.Bronze)
-                    .inputItems(rotor, GTMaterials.Bronze)
+            ASSEMBLER_RECIPES.recipeBuilder("electric_pump_mv_" + name)
+                    .inputItems(cableGtSingle, Copper)
+                    .inputItems(pipeNormalFluid, Steel)
+                    .inputItems(screw, Bronze)
+                    .inputItems(rotor, Bronze)
                     .inputItems(ring, materialEntry.getValue(), 2)
-                    .inputItems(GTItems.ELECTRIC_MOTOR_MV)
-                    .outputItems(GTItems.ELECTRIC_PUMP_MV)
-                    .duration(100).EUt(GTValues.VA[GTValues.LV]).save(provider);
+                    .inputItems(ELECTRIC_MOTOR_MV)
+                    .outputItems(ELECTRIC_PUMP_MV)
+                    .duration(100).EUt(VA[LV]).save(provider);
 
-            GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder(new ResourceLocation(GTItems.ELECTRIC_PUMP_HV.getId() + "_" + name))
-                    .inputItems(cableGtSingle, GTMaterials.Gold)
-                    .inputItems(pipeNormalFluid, GTMaterials.StainlessSteel)
-                    .inputItems(screw, GTMaterials.Steel)
-                    .inputItems(rotor, GTMaterials.Steel)
+            ASSEMBLER_RECIPES.recipeBuilder("electric_pump_hv_" + name)
+                    .inputItems(cableGtSingle, Gold)
+                    .inputItems(pipeNormalFluid, StainlessSteel)
+                    .inputItems(screw, Steel)
+                    .inputItems(rotor, Steel)
                     .inputItems(ring, materialEntry.getValue(), 2)
-                    .inputItems(GTItems.ELECTRIC_MOTOR_HV)
-                    .outputItems(GTItems.ELECTRIC_PUMP_HV)
-                    .duration(100).EUt(GTValues.VA[GTValues.LV]).save(provider);
+                    .inputItems(ELECTRIC_MOTOR_HV)
+                    .outputItems(ELECTRIC_PUMP_HV)
+                    .duration(100).EUt(VA[LV]).save(provider);
 
-            GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder(new ResourceLocation(GTItems.ELECTRIC_PUMP_EV.getId() + "_" + name))
-                    .inputItems(cableGtSingle, GTMaterials.Aluminium)
-                    .inputItems(pipeNormalFluid, GTMaterials.Titanium)
-                    .inputItems(screw, GTMaterials.StainlessSteel)
-                    .inputItems(rotor, GTMaterials.StainlessSteel)
+            ASSEMBLER_RECIPES.recipeBuilder("electric_pump_ev_" + name)
+                    .inputItems(cableGtSingle, Aluminium)
+                    .inputItems(pipeNormalFluid, Titanium)
+                    .inputItems(screw, StainlessSteel)
+                    .inputItems(rotor, StainlessSteel)
                     .inputItems(ring, materialEntry.getValue(), 2)
-                    .inputItems(GTItems.ELECTRIC_MOTOR_EV)
-                    .outputItems(GTItems.ELECTRIC_PUMP_EV)
-                    .duration(100).EUt(GTValues.VA[GTValues.LV]).save(provider);
+                    .inputItems(ELECTRIC_MOTOR_EV)
+                    .outputItems(ELECTRIC_PUMP_EV)
+                    .duration(100).EUt(VA[LV]).save(provider);
 
-            if (!materialEntry.getValue().equals(GTMaterials.Rubber))
-                GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder(new ResourceLocation(GTItems.ELECTRIC_PUMP_IV.getId() + "_" + name))
-                        .inputItems(cableGtSingle, GTMaterials.Tungsten)
-                        .inputItems(pipeNormalFluid, GTMaterials.TungstenSteel)
-                        .inputItems(screw, GTMaterials.TungstenSteel)
-                        .inputItems(rotor, GTMaterials.TungstenSteel)
+            if (!materialEntry.getValue().equals(Rubber))
+                ASSEMBLER_RECIPES.recipeBuilder("electric_pump_iv_" + name)
+                        .inputItems(cableGtSingle, Tungsten)
+                        .inputItems(pipeNormalFluid, TungstenSteel)
+                        .inputItems(screw, TungstenSteel)
+                        .inputItems(rotor, TungstenSteel)
                         .inputItems(ring, materialEntry.getValue(), 2)
-                        .inputItems(GTItems.ELECTRIC_MOTOR_IV)
-                        .outputItems(GTItems.ELECTRIC_PUMP_IV)
-                        .duration(100).EUt(GTValues.VA[GTValues.LV]).save(provider);
+                        .inputItems(ELECTRIC_MOTOR_IV)
+                        .outputItems(ELECTRIC_PUMP_IV)
+                        .duration(100).EUt(VA[LV]).save(provider);
         }
 
-        GTRecipeTypes.ASSEMBLY_LINE_RECIPES.recipeBuilder(GTItems.CONVEYOR_MODULE_LuV.getId())
-                .inputItems(GTItems.ELECTRIC_MOTOR_LuV, 2)
-                .inputItems(plate, GTMaterials.HSSS, 2)
-                .inputItems(ring, GTMaterials.HSSS, 4)
-                .inputItems(round, GTMaterials.HSSS, 16)
-                .inputItems(screw, GTMaterials.HSSS, 4)
-                .inputItems(cableGtSingle, GTMaterials.NiobiumTitanium, 2)
-                .inputFluids(GTMaterials.SolderingAlloy.getFluid(GTValues.L))
-                .inputFluids(GTMaterials.Lubricant.getFluid(250))
-                .inputFluids(GTMaterials.StyreneButadieneRubber.getFluid(GTValues.L * 8))
-                .outputItems(GTItems.CONVEYOR_MODULE_LuV)
+        ASSEMBLY_LINE_RECIPES.recipeBuilder("conveyor_module_luv")
+                .inputItems(ELECTRIC_MOTOR_LuV, 2)
+                .inputItems(plate, HSSS, 2)
+                .inputItems(ring, HSSS, 4)
+                .inputItems(round, HSSS, 16)
+                .inputItems(screw, HSSS, 4)
+                .inputItems(cableGtSingle, NiobiumTitanium, 2)
+                .inputFluids(SolderingAlloy.getFluid(L))
+                .inputFluids(Lubricant.getFluid(250))
+                .inputFluids(StyreneButadieneRubber.getFluid(L * 8))
+                .outputItems(CONVEYOR_MODULE_LuV)
                 .duration(600).EUt(6000).save(provider);
 
-        GTRecipeTypes.ASSEMBLY_LINE_RECIPES.recipeBuilder(GTItems.CONVEYOR_MODULE_ZPM.getId())
-                .inputItems(GTItems.ELECTRIC_MOTOR_ZPM, 2)
-                .inputItems(plate, GTMaterials.Osmiridium, 2)
-                .inputItems(ring, GTMaterials.Osmiridium, 4)
-                .inputItems(round, GTMaterials.Osmiridium, 16)
-                .inputItems(screw, GTMaterials.Osmiridium, 4)
-                .inputItems(cableGtSingle, GTMaterials.VanadiumGallium, 2)
-                .inputFluids(GTMaterials.SolderingAlloy.getFluid(GTValues.L * 2))
-                .inputFluids(GTMaterials.Lubricant.getFluid(500))
-                .inputFluids(GTMaterials.StyreneButadieneRubber.getFluid(GTValues.L * 16))
-                .outputItems(GTItems.CONVEYOR_MODULE_ZPM)
+        ASSEMBLY_LINE_RECIPES.recipeBuilder("conveyor_module_zpm")
+                .inputItems(ELECTRIC_MOTOR_ZPM, 2)
+                .inputItems(plate, Osmiridium, 2)
+                .inputItems(ring, Osmiridium, 4)
+                .inputItems(round, Osmiridium, 16)
+                .inputItems(screw, Osmiridium, 4)
+                .inputItems(cableGtSingle, VanadiumGallium, 2)
+                .inputFluids(SolderingAlloy.getFluid(L * 2))
+                .inputFluids(Lubricant.getFluid(500))
+                .inputFluids(StyreneButadieneRubber.getFluid(L * 16))
+                .outputItems(CONVEYOR_MODULE_ZPM)
                 .duration(600).EUt(24000).save(provider);
 
-        GTRecipeTypes.ASSEMBLY_LINE_RECIPES.recipeBuilder(GTItems.CONVEYOR_MODULE_UV.getId())
-                .inputItems(GTItems.ELECTRIC_MOTOR_UV, 2)
-                .inputItems(plate, GTMaterials.Tritanium, 2)
-                .inputItems(ring, GTMaterials.Tritanium, 4)
-                .inputItems(round, GTMaterials.Tritanium, 16)
-                .inputItems(screw, GTMaterials.Tritanium, 4)
-                .inputItems(cableGtSingle, GTMaterials.YttriumBariumCuprate, 2)
-                .inputFluids(GTMaterials.SolderingAlloy.getFluid(GTValues.L * 4))
-                .inputFluids(GTMaterials.Lubricant.getFluid(1000))
-                .inputFluids(GTMaterials.StyreneButadieneRubber.getFluid(GTValues.L * 24))
-                .inputFluids(GTMaterials.Naquadria.getFluid(GTValues.L * 4))
-                .outputItems(GTItems.CONVEYOR_MODULE_UV)
+        ASSEMBLY_LINE_RECIPES.recipeBuilder("conveyor_module_uv")
+                .inputItems(ELECTRIC_MOTOR_UV, 2)
+                .inputItems(plate, Tritanium, 2)
+                .inputItems(ring, Tritanium, 4)
+                .inputItems(round, Tritanium, 16)
+                .inputItems(screw, Tritanium, 4)
+                .inputItems(cableGtSingle, YttriumBariumCuprate, 2)
+                .inputFluids(SolderingAlloy.getFluid(L * 4))
+                .inputFluids(Lubricant.getFluid(1000))
+                .inputFluids(StyreneButadieneRubber.getFluid(L * 24))
+                .inputFluids(Naquadria.getFluid(L * 4))
+                .outputItems(CONVEYOR_MODULE_UV)
                 .duration(600).EUt(100000).save(provider);
 
-        GTRecipeTypes.ASSEMBLY_LINE_RECIPES.recipeBuilder(GTItems.ELECTRIC_PUMP_LuV.getId())
-                .inputItems(GTItems.ELECTRIC_MOTOR_LuV)
-                .inputItems(pipeSmallFluid, GTMaterials.NiobiumTitanium)
-                .inputItems(plate, GTMaterials.HSSS, 2)
-                .inputItems(screw, GTMaterials.HSSS, 8)
-                .inputItems(ring, GTMaterials.SiliconeRubber, 4)
-                .inputItems(rotor, GTMaterials.HSSS)
-                .inputItems(cableGtSingle, GTMaterials.NiobiumTitanium, 2)
-                .inputFluids(GTMaterials.SolderingAlloy.getFluid(GTValues.L))
-                .inputFluids(GTMaterials.Lubricant.getFluid(250))
-                .outputItems(GTItems.ELECTRIC_PUMP_LuV)
+        ASSEMBLY_LINE_RECIPES.recipeBuilder("electric_pump_luv")
+                .inputItems(ELECTRIC_MOTOR_LuV)
+                .inputItems(pipeSmallFluid, NiobiumTitanium)
+                .inputItems(plate, HSSS, 2)
+                .inputItems(screw, HSSS, 8)
+                .inputItems(ring, SiliconeRubber, 4)
+                .inputItems(rotor, HSSS)
+                .inputItems(cableGtSingle, NiobiumTitanium, 2)
+                .inputFluids(SolderingAlloy.getFluid(L))
+                .inputFluids(Lubricant.getFluid(250))
+                .outputItems(ELECTRIC_PUMP_LuV)
                 .duration(600).EUt(6000).save(provider);
 
-        GTRecipeTypes.ASSEMBLY_LINE_RECIPES.recipeBuilder(GTItems.ELECTRIC_PUMP_ZPM.getId())
-                .inputItems(GTItems.ELECTRIC_MOTOR_ZPM)
-                .inputItems(pipeNormalFluid, GTMaterials.Polybenzimidazole)
-                .inputItems(plate, GTMaterials.Osmiridium, 2)
-                .inputItems(screw, GTMaterials.Osmiridium, 8)
-                .inputItems(ring, GTMaterials.SiliconeRubber, 8)
-                .inputItems(rotor, GTMaterials.Osmiridium)
-                .inputItems(cableGtSingle, GTMaterials.VanadiumGallium, 2)
-                .inputFluids(GTMaterials.SolderingAlloy.getFluid(GTValues.L * 2))
-                .inputFluids(GTMaterials.Lubricant.getFluid(500))
-                .outputItems(GTItems.ELECTRIC_PUMP_ZPM)
+        ASSEMBLY_LINE_RECIPES.recipeBuilder("electric_pump_zpm")
+                .inputItems(ELECTRIC_MOTOR_ZPM)
+                .inputItems(pipeNormalFluid, Polybenzimidazole)
+                .inputItems(plate, Osmiridium, 2)
+                .inputItems(screw, Osmiridium, 8)
+                .inputItems(ring, SiliconeRubber, 8)
+                .inputItems(rotor, Osmiridium)
+                .inputItems(cableGtSingle, VanadiumGallium, 2)
+                .inputFluids(SolderingAlloy.getFluid(L * 2))
+                .inputFluids(Lubricant.getFluid(500))
+                .outputItems(ELECTRIC_PUMP_ZPM)
                 .duration(600).EUt(24000).save(provider);
 
-        GTRecipeTypes.ASSEMBLY_LINE_RECIPES.recipeBuilder(GTItems.ELECTRIC_PUMP_UV.getId())
-                .inputItems(GTItems.ELECTRIC_MOTOR_UV)
-                .inputItems(pipeLargeFluid, GTMaterials.Naquadah)
-                .inputItems(plate, GTMaterials.Tritanium, 2)
-                .inputItems(screw, GTMaterials.Tritanium, 8)
-                .inputItems(ring, GTMaterials.SiliconeRubber, 16)
-                .inputItems(rotor, GTMaterials.NaquadahAlloy)
-                .inputItems(cableGtSingle, GTMaterials.YttriumBariumCuprate, 2)
-                .inputFluids(GTMaterials.SolderingAlloy.getFluid(GTValues.L * 4))
-                .inputFluids(GTMaterials.Lubricant.getFluid(1000))
-                .inputFluids(GTMaterials.Naquadria.getFluid(GTValues.L * 4))
-                .outputItems(GTItems.ELECTRIC_PUMP_UV)
+        ASSEMBLY_LINE_RECIPES.recipeBuilder("electric_pump_uv")
+                .inputItems(ELECTRIC_MOTOR_UV)
+                .inputItems(pipeLargeFluid, Naquadah)
+                .inputItems(plate, Tritanium, 2)
+                .inputItems(screw, Tritanium, 8)
+                .inputItems(ring, SiliconeRubber, 16)
+                .inputItems(rotor, NaquadahAlloy)
+                .inputItems(cableGtSingle, YttriumBariumCuprate, 2)
+                .inputFluids(SolderingAlloy.getFluid(L * 4))
+                .inputFluids(Lubricant.getFluid(1000))
+                .inputFluids(Naquadria.getFluid(L * 4))
+                .outputItems(ELECTRIC_PUMP_UV)
                 .duration(600).EUt(100000).save(provider);
 
         //Fluid Regulators----------------------------------------------------------------------------------------------
 
-        GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder(GTItems.FLUID_REGULATOR_LV.getId())
-                .inputItems(GTItems.ELECTRIC_PUMP_LV)
-                .inputItems(circuit, MarkerMaterials.Tier.LV, 2)
+        ASSEMBLER_RECIPES.recipeBuilder("fluid_regulator_lv")
+                .inputItems(ELECTRIC_PUMP_LV)
+                .inputItems(circuit, Tier.LV, 2)
                 .circuitMeta(1)
-                .outputItems(GTItems.FLUID_REGULATOR_LV)
-                .EUt(GTValues.VA[GTValues.LV])
+                .outputItems(FLUID_REGULATOR_LV)
+                .EUt(VA[LV])
                 .duration(400)
                 .save(provider);
 
-        GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder(GTItems.FLUID_REGULATOR_MV.getId())
-                .inputItems(GTItems.ELECTRIC_PUMP_MV)
-                .inputItems(circuit, MarkerMaterials.Tier.MV, 2)
+        ASSEMBLER_RECIPES.recipeBuilder("fluid_regulator_mv")
+                .inputItems(ELECTRIC_PUMP_MV)
+                .inputItems(circuit, Tier.MV, 2)
                 .circuitMeta(1)
-                .outputItems(GTItems.FLUID_REGULATOR_MV)
-                .EUt(GTValues.VA[GTValues.MV])
+                .outputItems(FLUID_REGULATOR_MV)
+                .EUt(VA[MV])
                 .duration(350)
                 .save(provider);
 
-        GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder(GTItems.FLUID_REGULATOR_HV.getId())
-                .inputItems(GTItems.ELECTRIC_PUMP_HV)
-                .inputItems(circuit, MarkerMaterials.Tier.HV, 2)
+        ASSEMBLER_RECIPES.recipeBuilder("fluid_regulator_hv")
+                .inputItems(ELECTRIC_PUMP_HV)
+                .inputItems(circuit, Tier.HV, 2)
                 .circuitMeta(1)
-                .outputItems(GTItems.FLUID_REGULATOR_HV)
-                .EUt(GTValues.VA[GTValues.HV])
+                .outputItems(FLUID_REGULATOR_HV)
+                .EUt(VA[HV])
                 .duration(300)
                 .save(provider);
 
-        GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder(GTItems.FLUID_REGULATOR_EV.getId())
-                .inputItems(GTItems.ELECTRIC_PUMP_EV)
-                .inputItems(circuit, MarkerMaterials.Tier.EV, 2)
+        ASSEMBLER_RECIPES.recipeBuilder("fluid_regulator_ev")
+                .inputItems(ELECTRIC_PUMP_EV)
+                .inputItems(circuit, Tier.EV, 2)
                 .circuitMeta(1)
-                .outputItems(GTItems.FLUID_REGULATOR_EV)
-                .EUt(GTValues.VA[GTValues.EV])
+                .outputItems(FLUID_REGULATOR_EV)
+                .EUt(VA[EV])
                 .duration(250)
                 .save(provider);
 
-        GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder(GTItems.FLUID_REGULATOR_IV.getId())
-                .inputItems(GTItems.ELECTRIC_PUMP_IV)
-                .inputItems(circuit, MarkerMaterials.Tier.IV, 2)
+        ASSEMBLER_RECIPES.recipeBuilder("fluid_regulator_iv")
+                .inputItems(ELECTRIC_PUMP_IV)
+                .inputItems(circuit, Tier.IV, 2)
                 .circuitMeta(1)
-                .outputItems(GTItems.FLUID_REGULATOR_IV)
-                .EUt(GTValues.VA[GTValues.IV])
+                .outputItems(FLUID_REGULATOR_IV)
+                .EUt(VA[IV])
                 .duration(200)
                 .save(provider);
 
-        GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder(GTItems.FLUID_REGULATOR_LUV.getId())
-                .inputItems(GTItems.ELECTRIC_PUMP_LuV)
-                .inputItems(circuit, MarkerMaterials.Tier.LuV, 2)
+        ASSEMBLER_RECIPES.recipeBuilder("fluid_regulator_luv")
+                .inputItems(ELECTRIC_PUMP_LuV)
+                .inputItems(circuit, Tier.LuV, 2)
                 .circuitMeta(1)
-                .outputItems(GTItems.FLUID_REGULATOR_LUV)
-                .EUt(GTValues.VA[GTValues.LuV])
+                .outputItems(FLUID_REGULATOR_LUV)
+                .EUt(VA[LuV])
                 .duration(150)
                 .save(provider);
 
-        GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder(GTItems.FLUID_REGULATOR_ZPM.getId())
-                .inputItems(GTItems.ELECTRIC_PUMP_ZPM)
-                .inputItems(circuit, MarkerMaterials.Tier.ZPM, 2)
+        ASSEMBLER_RECIPES.recipeBuilder("fluid_regulator_zpm")
+                .inputItems(ELECTRIC_PUMP_ZPM)
+                .inputItems(circuit, Tier.ZPM, 2)
                 .circuitMeta(1)
-                .outputItems(GTItems.FLUID_REGULATOR_ZPM)
-                .EUt(GTValues.VA[GTValues.ZPM])
+                .outputItems(FLUID_REGULATOR_ZPM)
+                .EUt(VA[ZPM])
                 .duration(100)
                 .save(provider);
 
-        GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder(GTItems.FLUID_REGULATOR_UV.getId())
-                .inputItems(GTItems.ELECTRIC_PUMP_UV)
-                .inputItems(circuit, MarkerMaterials.Tier.UV, 2)
+        ASSEMBLER_RECIPES.recipeBuilder("fluid_regulator_uv")
+                .inputItems(ELECTRIC_PUMP_UV)
+                .inputItems(circuit, Tier.UV, 2)
                 .circuitMeta(1)
-                .outputItems(GTItems.FLUID_REGULATOR_UV)
-                .EUt(GTValues.VA[GTValues.UV])
+                .outputItems(FLUID_REGULATOR_UV)
+                .EUt(VA[UV])
                 .duration(50)
                 .save(provider);
 
         //Voiding Covers Start-----------------------------------------------------------------------------------------
 
-        VanillaRecipeHelper.addShapedRecipe(provider, "cover_item_voiding", GTItems.COVER_ITEM_VOIDING.asStack(), "SDS", "dPw", " E ", 'S', new UnificationEntry(screw, GTMaterials.Steel), 'D', GTItems.COVER_ITEM_DETECTOR.get(), 'P', new UnificationEntry(pipeNormalItem, GTMaterials.Brass), 'E', Items.ENDER_PEARL);
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "cover_item_voiding", COVER_ITEM_VOIDING.asStack(), "SDS", "dPw", " E ", 'S', new UnificationEntry(screw, Steel), 'D', COVER_ITEM_DETECTOR.asStack(), 'P', new UnificationEntry(pipeNormalItem, Brass), 'E', Items.ENDER_PEARL);
 
-        GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder(GTItems.COVER_ITEM_VOIDING.getId())
-                .inputItems(screw, GTMaterials.Steel, 2)
-                .inputItems(GTItems.COVER_ITEM_DETECTOR)
-                .inputItems(pipeNormalItem, GTMaterials.Brass)
+        ASSEMBLER_RECIPES.recipeBuilder("cover_item_voiding")
+                .inputItems(screw, Steel, 2)
+                .inputItems(COVER_ITEM_DETECTOR)
+                .inputItems(pipeNormalItem, Brass)
                 .inputItems(Items.ENDER_PEARL)
-                .outputItems(GTItems.COVER_ITEM_VOIDING)
-                .duration(100).EUt(GTValues.VA[GTValues.LV]).save(provider);
+                .outputItems(COVER_ITEM_VOIDING)
+                .duration(100).EUt(VA[LV]).save(provider);
 
-        GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder(GTItems.COVER_ITEM_VOIDING_ADVANCED.getId())
-                .inputItems(GTItems.COVER_ITEM_VOIDING)
-                .inputItems(circuit, MarkerMaterials.Tier.MV, 1)
-                .outputItems(GTItems.COVER_ITEM_VOIDING_ADVANCED)
-                .duration(100).EUt(GTValues.VA[GTValues.LV]).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("cover_item_voiding_advanced")
+                .inputItems(COVER_ITEM_VOIDING)
+                .inputItems(circuit, Tier.MV, 1)
+                .outputItems(COVER_ITEM_VOIDING_ADVANCED)
+                .duration(100).EUt(VA[LV]).save(provider);
 
-        VanillaRecipeHelper.addShapedRecipe(provider, "cover_fluid_voiding", GTItems.COVER_FLUID_VOIDING.asStack(), "SDS", "dPw", " E ", 'S', new UnificationEntry(screw, GTMaterials.Steel), 'D', GTItems.COVER_FLUID_DETECTOR.get(), 'P', new UnificationEntry(pipeNormalFluid, GTMaterials.Bronze), 'E', Items.ENDER_PEARL);
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "cover_fluid_voiding", COVER_FLUID_VOIDING.asStack(), "SDS", "dPw", " E ", 'S', new UnificationEntry(screw, Steel), 'D', COVER_FLUID_DETECTOR.asStack(), 'P', new UnificationEntry(pipeNormalFluid, Bronze), 'E', Items.ENDER_PEARL);
 
-        GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder(GTItems.COVER_FLUID_VOIDING.getId())
-                .inputItems(screw, GTMaterials.Steel, 2)
-                .inputItems(GTItems.COVER_FLUID_DETECTOR)
-                .inputItems(pipeNormalFluid, GTMaterials.Bronze)
+        ASSEMBLER_RECIPES.recipeBuilder("cover_fluid_voiding")
+                .inputItems(screw, Steel, 2)
+                .inputItems(COVER_FLUID_DETECTOR)
+                .inputItems(pipeNormalFluid, Bronze)
                 .inputItems(Items.ENDER_PEARL)
-                .outputItems(GTItems.COVER_FLUID_VOIDING)
-                .duration(100).EUt(GTValues.VA[GTValues.LV]).save(provider);
+                .outputItems(COVER_FLUID_VOIDING)
+                .duration(100).EUt(VA[LV]).save(provider);
 
-        GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder(GTItems.COVER_FLUID_VOIDING_ADVANCED.getId())
-                .inputItems(GTItems.COVER_FLUID_VOIDING)
-                .inputItems(circuit, MarkerMaterials.Tier.MV, 1)
-                .outputItems(GTItems.COVER_FLUID_VOIDING_ADVANCED)
-                .duration(100).EUt(GTValues.VA[GTValues.LV]).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("cover_fluid_voiding_advanced")
+                .inputItems(COVER_FLUID_VOIDING)
+                .inputItems(circuit, Tier.MV, 1)
+                .outputItems(COVER_FLUID_VOIDING_ADVANCED)
+                .duration(100).EUt(VA[LV]).save(provider);
 
         //Pistons Start-------------------------------------------------------------------------------------------------
-        VanillaRecipeHelper.addShapedRecipe(provider, "electric_piston_lv", GTItems.ELECTRIC_PISTON_LV.asStack(), "PPP", "CRR", "CMG", 'P', new UnificationEntry(plate, GTMaterials.Steel), 'C', new UnificationEntry(cableGtSingle, GTMaterials.Tin), 'R', new UnificationEntry(stick, GTMaterials.Steel), 'G', new UnificationEntry(gearSmall, GTMaterials.Steel), 'M', GTItems.ELECTRIC_MOTOR_LV.get());
-        VanillaRecipeHelper.addShapedRecipe(provider, "electric_piston_mv", GTItems.ELECTRIC_PISTON_MV.asStack(), "PPP", "CRR", "CMG", 'P', new UnificationEntry(plate, GTMaterials.Aluminium), 'C', new UnificationEntry(cableGtSingle, GTMaterials.Copper), 'R', new UnificationEntry(stick, GTMaterials.Aluminium), 'G', new UnificationEntry(gearSmall, GTMaterials.Aluminium), 'M', GTItems.ELECTRIC_MOTOR_MV.get());
-        VanillaRecipeHelper.addShapedRecipe(provider, "electric_piston_hv", GTItems.ELECTRIC_PISTON_HV.asStack(), "PPP", "CRR", "CMG", 'P', new UnificationEntry(plate, GTMaterials.StainlessSteel), 'C', new UnificationEntry(cableGtSingle, GTMaterials.Gold), 'R', new UnificationEntry(stick, GTMaterials.StainlessSteel), 'G', new UnificationEntry(gearSmall, GTMaterials.StainlessSteel), 'M', GTItems.ELECTRIC_MOTOR_HV.get());
-        VanillaRecipeHelper.addShapedRecipe(provider, "electric_piston_ev", GTItems.ELECTRIC_PISTON_EV.asStack(), "PPP", "CRR", "CMG", 'P', new UnificationEntry(plate, GTMaterials.Titanium), 'C', new UnificationEntry(cableGtSingle, GTMaterials.Aluminium), 'R', new UnificationEntry(stick, GTMaterials.Titanium), 'G', new UnificationEntry(gearSmall, GTMaterials.Titanium), 'M', GTItems.ELECTRIC_MOTOR_EV.get());
-        VanillaRecipeHelper.addShapedRecipe(provider, "electric_piston_iv", GTItems.ELECTRIC_PISTON_IV.asStack(), "PPP", "CRR", "CMG", 'P', new UnificationEntry(plate, GTMaterials.TungstenSteel), 'C', new UnificationEntry(cableGtSingle, GTMaterials.Tungsten), 'R', new UnificationEntry(stick, GTMaterials.TungstenSteel), 'G', new UnificationEntry(gearSmall, GTMaterials.TungstenSteel), 'M', GTItems.ELECTRIC_MOTOR_IV.get());
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "electric_piston_lv", ELECTRIC_PISTON_LV.asStack(), "PPP", "CRR", "CMG", 'P', new UnificationEntry(plate, Steel), 'C', new UnificationEntry(cableGtSingle, Tin), 'R', new UnificationEntry(stick, Steel), 'G', new UnificationEntry(gearSmall, Steel), 'M', ELECTRIC_MOTOR_LV.asStack());
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "electric_piston_mv", ELECTRIC_PISTON_MV.asStack(), "PPP", "CRR", "CMG", 'P', new UnificationEntry(plate, Aluminium), 'C', new UnificationEntry(cableGtSingle, Copper), 'R', new UnificationEntry(stick, Aluminium), 'G', new UnificationEntry(gearSmall, Aluminium), 'M', ELECTRIC_MOTOR_MV.asStack());
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "electric_piston_hv", ELECTRIC_PISTON_HV.asStack(), "PPP", "CRR", "CMG", 'P', new UnificationEntry(plate, StainlessSteel), 'C', new UnificationEntry(cableGtSingle, Gold), 'R', new UnificationEntry(stick, StainlessSteel), 'G', new UnificationEntry(gearSmall, StainlessSteel), 'M', ELECTRIC_MOTOR_HV.asStack());
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "electric_piston_ev", ELECTRIC_PISTON_EV.asStack(), "PPP", "CRR", "CMG", 'P', new UnificationEntry(plate, Titanium), 'C', new UnificationEntry(cableGtSingle, Aluminium), 'R', new UnificationEntry(stick, Titanium), 'G', new UnificationEntry(gearSmall, Titanium), 'M', ELECTRIC_MOTOR_EV.asStack());
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "electric_piston_iv", ELECTRIC_PISTON_IV.asStack(), "PPP", "CRR", "CMG", 'P', new UnificationEntry(plate, TungstenSteel), 'C', new UnificationEntry(cableGtSingle, Tungsten), 'R', new UnificationEntry(stick, TungstenSteel), 'G', new UnificationEntry(gearSmall, TungstenSteel), 'M', ELECTRIC_MOTOR_IV.asStack());
 
-        GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder(GTItems.ELECTRIC_PISTON_LV.getId())
-                .inputItems(stick, GTMaterials.Steel, 2)
-                .inputItems(cableGtSingle, GTMaterials.Tin, 2)
-                .inputItems(plate, GTMaterials.Steel, 3)
-                .inputItems(gearSmall, GTMaterials.Steel)
-                .inputItems(GTItems.ELECTRIC_MOTOR_LV)
-                .outputItems(GTItems.ELECTRIC_PISTON_LV)
-                .duration(100).EUt(GTValues.VA[GTValues.LV]).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("electric_piston_lv")
+                .inputItems(stick, Steel, 2)
+                .inputItems(cableGtSingle, Tin, 2)
+                .inputItems(plate, Steel, 3)
+                .inputItems(gearSmall, Steel)
+                .inputItems(ELECTRIC_MOTOR_LV)
+                .outputItems(ELECTRIC_PISTON_LV)
+                .duration(100).EUt(VA[LV]).save(provider);
 
-        GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder(GTItems.ELECTRIC_PISTON_MV.getId())
-                .inputItems(stick, GTMaterials.Aluminium, 2)
-                .inputItems(cableGtSingle, GTMaterials.Copper, 2)
-                .inputItems(plate, GTMaterials.Aluminium, 3)
-                .inputItems(gearSmall, GTMaterials.Aluminium)
-                .inputItems(GTItems.ELECTRIC_MOTOR_MV)
-                .outputItems(GTItems.ELECTRIC_PISTON_MV)
-                .duration(100).EUt(GTValues.VA[GTValues.LV]).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("electric_piston_mv")
+                .inputItems(stick, Aluminium, 2)
+                .inputItems(cableGtSingle, Copper, 2)
+                .inputItems(plate, Aluminium, 3)
+                .inputItems(gearSmall, Aluminium)
+                .inputItems(ELECTRIC_MOTOR_MV)
+                .outputItems(ELECTRIC_PISTON_MV)
+                .duration(100).EUt(VA[LV]).save(provider);
 
-        GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder(GTItems.ELECTRIC_PISTON_HV.getId())
-                .inputItems(stick, GTMaterials.StainlessSteel, 2)
-                .inputItems(cableGtSingle, GTMaterials.Gold, 2)
-                .inputItems(plate, GTMaterials.StainlessSteel, 3)
-                .inputItems(gearSmall, GTMaterials.StainlessSteel)
-                .inputItems(GTItems.ELECTRIC_MOTOR_HV)
-                .outputItems(GTItems.ELECTRIC_PISTON_HV)
-                .duration(100).EUt(GTValues.VA[GTValues.LV]).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("electric_piston_hv")
+                .inputItems(stick, StainlessSteel, 2)
+                .inputItems(cableGtSingle, Gold, 2)
+                .inputItems(plate, StainlessSteel, 3)
+                .inputItems(gearSmall, StainlessSteel)
+                .inputItems(ELECTRIC_MOTOR_HV)
+                .outputItems(ELECTRIC_PISTON_HV)
+                .duration(100).EUt(VA[LV]).save(provider);
 
-        GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder(GTItems.ELECTRIC_PISTON_EV.getId())
-                .inputItems(stick, GTMaterials.Titanium, 2)
-                .inputItems(cableGtSingle, GTMaterials.Aluminium, 2)
-                .inputItems(plate, GTMaterials.Titanium, 3)
-                .inputItems(gearSmall, GTMaterials.Titanium)
-                .inputItems(GTItems.ELECTRIC_MOTOR_EV)
-                .outputItems(GTItems.ELECTRIC_PISTON_EV)
-                .duration(100).EUt(GTValues.VA[GTValues.LV]).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("electric_piston_ev")
+                .inputItems(stick, Titanium, 2)
+                .inputItems(cableGtSingle, Aluminium, 2)
+                .inputItems(plate, Titanium, 3)
+                .inputItems(gearSmall, Titanium)
+                .inputItems(ELECTRIC_MOTOR_EV)
+                .outputItems(ELECTRIC_PISTON_EV)
+                .duration(100).EUt(VA[LV]).save(provider);
 
-        GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder(GTItems.ELECTRIC_PISTON_IV.getId())
-                .inputItems(stick, GTMaterials.TungstenSteel, 2)
-                .inputItems(cableGtSingle, GTMaterials.Tungsten, 2)
-                .inputItems(plate, GTMaterials.TungstenSteel, 3)
-                .inputItems(gearSmall, GTMaterials.TungstenSteel)
-                .inputItems(GTItems.ELECTRIC_MOTOR_IV)
-                .outputItems(GTItems.ELECTRIC_PISTON_IV)
-                .duration(100).EUt(GTValues.VA[GTValues.LV]).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("electric_piston_iv")
+                .inputItems(stick, TungstenSteel, 2)
+                .inputItems(cableGtSingle, Tungsten, 2)
+                .inputItems(plate, TungstenSteel, 3)
+                .inputItems(gearSmall, TungstenSteel)
+                .inputItems(ELECTRIC_MOTOR_IV)
+                .outputItems(ELECTRIC_PISTON_IV)
+                .duration(100).EUt(VA[LV]).save(provider);
 
 
-        GTRecipeTypes.ASSEMBLY_LINE_RECIPES.recipeBuilder(GTItems.ELECTRIC_PISTON_LUV.getId())
-                .inputItems(GTItems.ELECTRIC_MOTOR_LuV)
-                .inputItems(plate, GTMaterials.HSSS, 4)
-                .inputItems(ring, GTMaterials.HSSS, 4)
-                .inputItems(round, GTMaterials.HSSS, 16)
-                .inputItems(stick, GTMaterials.HSSS, 4)
-                .inputItems(gear, GTMaterials.HSSS)
-                .inputItems(gearSmall, GTMaterials.HSSS, 2)
-                .inputItems(cableGtSingle, GTMaterials.NiobiumTitanium, 2)
-                .inputFluids(GTMaterials.SolderingAlloy.getFluid(GTValues.L))
-                .inputFluids(GTMaterials.Lubricant.getFluid(250))
-                .outputItems(GTItems.ELECTRIC_PISTON_LUV)
+        ASSEMBLY_LINE_RECIPES.recipeBuilder("electric_piston_luv")
+                .inputItems(ELECTRIC_MOTOR_LuV)
+                .inputItems(plate, HSSS, 4)
+                .inputItems(ring, HSSS, 4)
+                .inputItems(round, HSSS, 16)
+                .inputItems(stick, HSSS, 4)
+                .inputItems(gear, HSSS)
+                .inputItems(gearSmall, HSSS, 2)
+                .inputItems(cableGtSingle, NiobiumTitanium, 2)
+                .inputFluids(SolderingAlloy.getFluid(L))
+                .inputFluids(Lubricant.getFluid(250))
+                .outputItems(ELECTRIC_PISTON_LUV)
                 .duration(600).EUt(6000).save(provider);
 
-        GTRecipeTypes.ASSEMBLY_LINE_RECIPES.recipeBuilder(GTItems.ELECTRIC_PISTON_ZPM.getId())
-                .inputItems(GTItems.ELECTRIC_MOTOR_ZPM)
-                .inputItems(plate, GTMaterials.Osmiridium, 4)
-                .inputItems(ring, GTMaterials.Osmiridium, 4)
-                .inputItems(round, GTMaterials.Osmiridium, 16)
-                .inputItems(stick, GTMaterials.Osmiridium, 4)
-                .inputItems(gear, GTMaterials.Osmiridium)
-                .inputItems(gearSmall, GTMaterials.Osmiridium, 2)
-                .inputItems(cableGtSingle, GTMaterials.VanadiumGallium, 2)
-                .inputFluids(GTMaterials.SolderingAlloy.getFluid(GTValues.L * 2))
-                .inputFluids(GTMaterials.Lubricant.getFluid(500))
-                .outputItems(GTItems.ELECTRIC_PISTON_ZPM)
+        ASSEMBLY_LINE_RECIPES.recipeBuilder("electric_piston_zpm")
+                .inputItems(ELECTRIC_MOTOR_ZPM)
+                .inputItems(plate, Osmiridium, 4)
+                .inputItems(ring, Osmiridium, 4)
+                .inputItems(round, Osmiridium, 16)
+                .inputItems(stick, Osmiridium, 4)
+                .inputItems(gear, Osmiridium)
+                .inputItems(gearSmall, Osmiridium, 2)
+                .inputItems(cableGtSingle, VanadiumGallium, 2)
+                .inputFluids(SolderingAlloy.getFluid(L * 2))
+                .inputFluids(Lubricant.getFluid(500))
+                .outputItems(ELECTRIC_PISTON_ZPM)
                 .duration(600).EUt(24000).save(provider);
 
-        GTRecipeTypes.ASSEMBLY_LINE_RECIPES.recipeBuilder(GTItems.ELECTRIC_PISTON_UV.getId())
-                .inputItems(GTItems.ELECTRIC_MOTOR_UV)
-                .inputItems(plate, GTMaterials.Tritanium, 4)
-                .inputItems(ring, GTMaterials.Tritanium, 4)
-                .inputItems(round, GTMaterials.Tritanium, 16)
-                .inputItems(stick, GTMaterials.Tritanium, 4)
-                .inputItems(gear, GTMaterials.NaquadahAlloy)
-                .inputItems(gearSmall, GTMaterials.NaquadahAlloy, 2)
-                .inputItems(cableGtSingle, GTMaterials.YttriumBariumCuprate, 2)
-                .inputFluids(GTMaterials.SolderingAlloy.getFluid(GTValues.L * 4))
-                .inputFluids(GTMaterials.Lubricant.getFluid(1000))
-                .inputFluids(GTMaterials.Naquadria.getFluid(GTValues.L * 4))
-                .outputItems(GTItems.ELECTRIC_PISTON_UV)
+        ASSEMBLY_LINE_RECIPES.recipeBuilder("electric_piston_uv")
+                .inputItems(ELECTRIC_MOTOR_UV)
+                .inputItems(plate, Tritanium, 4)
+                .inputItems(ring, Tritanium, 4)
+                .inputItems(round, Tritanium, 16)
+                .inputItems(stick, Tritanium, 4)
+                .inputItems(gear, NaquadahAlloy)
+                .inputItems(gearSmall, NaquadahAlloy, 2)
+                .inputItems(cableGtSingle, YttriumBariumCuprate, 2)
+                .inputFluids(SolderingAlloy.getFluid(L * 4))
+                .inputFluids(Lubricant.getFluid(1000))
+                .inputFluids(Naquadria.getFluid(L * 4))
+                .outputItems(ELECTRIC_PISTON_UV)
                 .duration(600).EUt(100000).save(provider);
 
 
 
         //Robot Arms Start ---------------------------------------------------------------------------------------------
-        VanillaRecipeHelper.addShapedRecipe(provider, "robot_arm_lv", GTItems.ROBOT_ARM_LV.asStack(), "CCC", "MRM", "PXR", 'C', new UnificationEntry(cableGtSingle, GTMaterials.Tin), 'R', new UnificationEntry(stick, GTMaterials.Steel), 'M', GTItems.ELECTRIC_MOTOR_LV.get(), 'P', GTItems.ELECTRIC_PISTON_LV.get(), 'X', new UnificationEntry(circuit, MarkerMaterials.Tier.LV));
-        VanillaRecipeHelper.addShapedRecipe(provider, "robot_arm_mv", GTItems.ROBOT_ARM_MV.asStack(), "CCC", "MRM", "PXR", 'C', new UnificationEntry(cableGtSingle, GTMaterials.Copper), 'R', new UnificationEntry(stick, GTMaterials.Aluminium), 'M', GTItems.ELECTRIC_MOTOR_MV.get(), 'P', GTItems.ELECTRIC_PISTON_MV.get(), 'X', new UnificationEntry(circuit, MarkerMaterials.Tier.MV));
-        VanillaRecipeHelper.addShapedRecipe(provider, "robot_arm_hv", GTItems.ROBOT_ARM_HV.asStack(), "CCC", "MRM", "PXR", 'C', new UnificationEntry(cableGtSingle, GTMaterials.Gold), 'R', new UnificationEntry(stick, GTMaterials.StainlessSteel), 'M', GTItems.ELECTRIC_MOTOR_HV.get(), 'P', GTItems.ELECTRIC_PISTON_HV.get(), 'X', new UnificationEntry(circuit, MarkerMaterials.Tier.HV));
-        VanillaRecipeHelper.addShapedRecipe(provider, "robot_arm_ev", GTItems.ROBOT_ARM_EV.asStack(), "CCC", "MRM", "PXR", 'C', new UnificationEntry(cableGtSingle, GTMaterials.Aluminium), 'R', new UnificationEntry(stick, GTMaterials.Titanium), 'M', GTItems.ELECTRIC_MOTOR_EV.get(), 'P', GTItems.ELECTRIC_PISTON_EV.get(), 'X', new UnificationEntry(circuit, MarkerMaterials.Tier.EV));
-        VanillaRecipeHelper.addShapedRecipe(provider, "robot_arm_iv", GTItems.ROBOT_ARM_IV.asStack(), "CCC", "MRM", "PXR", 'C', new UnificationEntry(cableGtSingle, GTMaterials.Tungsten), 'R', new UnificationEntry(stick, GTMaterials.TungstenSteel), 'M', GTItems.ELECTRIC_MOTOR_IV.get(), 'P', GTItems.ELECTRIC_PISTON_IV.get(), 'X', new UnificationEntry(circuit, MarkerMaterials.Tier.IV));
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "robot_arm_lv", ROBOT_ARM_LV.asStack(), "CCC", "MRM", "PXR", 'C', new UnificationEntry(cableGtSingle, Tin), 'R', new UnificationEntry(stick, Steel), 'M', ELECTRIC_MOTOR_LV.asStack(), 'P', ELECTRIC_PISTON_LV.asStack(), 'X', new UnificationEntry(circuit, Tier.LV));
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "robot_arm_mv", ROBOT_ARM_MV.asStack(), "CCC", "MRM", "PXR", 'C', new UnificationEntry(cableGtSingle, Copper), 'R', new UnificationEntry(stick, Aluminium), 'M', ELECTRIC_MOTOR_MV.asStack(), 'P', ELECTRIC_PISTON_MV.asStack(), 'X', new UnificationEntry(circuit, Tier.MV));
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "robot_arm_hv", ROBOT_ARM_HV.asStack(), "CCC", "MRM", "PXR", 'C', new UnificationEntry(cableGtSingle, Gold), 'R', new UnificationEntry(stick, StainlessSteel), 'M', ELECTRIC_MOTOR_HV.asStack(), 'P', ELECTRIC_PISTON_HV.asStack(), 'X', new UnificationEntry(circuit, Tier.HV));
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "robot_arm_ev", ROBOT_ARM_EV.asStack(), "CCC", "MRM", "PXR", 'C', new UnificationEntry(cableGtSingle, Aluminium), 'R', new UnificationEntry(stick, Titanium), 'M', ELECTRIC_MOTOR_EV.asStack(), 'P', ELECTRIC_PISTON_EV.asStack(), 'X', new UnificationEntry(circuit, Tier.EV));
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "robot_arm_iv", ROBOT_ARM_IV.asStack(), "CCC", "MRM", "PXR", 'C', new UnificationEntry(cableGtSingle, Tungsten), 'R', new UnificationEntry(stick, TungstenSteel), 'M', ELECTRIC_MOTOR_IV.asStack(), 'P', ELECTRIC_PISTON_IV.asStack(), 'X', new UnificationEntry(circuit, Tier.IV));
 
-        GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder(GTItems.ROBOT_ARM_LV.getId())
-                .inputItems(cableGtSingle, GTMaterials.Tin, 3)
-                .inputItems(stick, GTMaterials.Steel, 2)
-                .inputItems(GTItems.ELECTRIC_MOTOR_LV.asStack(2))
-                .inputItems(GTItems.ELECTRIC_PISTON_LV)
-                .inputItems(circuit, MarkerMaterials.Tier.LV)
-                .outputItems(GTItems.ROBOT_ARM_LV)
-                .duration(100).EUt(GTValues.VA[GTValues.LV]).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("robot_arm_lv")
+                .inputItems(cableGtSingle, Tin, 3)
+                .inputItems(stick, Steel, 2)
+                .inputItems(ELECTRIC_MOTOR_LV, 2)
+                .inputItems(ELECTRIC_PISTON_LV)
+                .inputItems(circuit, Tier.LV)
+                .outputItems(ROBOT_ARM_LV)
+                .duration(100).EUt(VA[LV]).save(provider);
 
-        GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder(GTItems.ROBOT_ARM_MV.getId())
-                .inputItems(cableGtSingle, GTMaterials.Copper, 3)
-                .inputItems(stick, GTMaterials.Aluminium, 2)
-                .inputItems(GTItems.ELECTRIC_MOTOR_MV.asStack(2))
-                .inputItems(GTItems.ELECTRIC_PISTON_MV)
-                .inputItems(circuit, MarkerMaterials.Tier.MV)
-                .outputItems(GTItems.ROBOT_ARM_MV)
-                .duration(100).EUt(GTValues.VA[GTValues.LV]).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("robot_arm_mv")
+                .inputItems(cableGtSingle, Copper, 3)
+                .inputItems(stick, Aluminium, 2)
+                .inputItems(ELECTRIC_MOTOR_MV, 2)
+                .inputItems(ELECTRIC_PISTON_MV)
+                .inputItems(circuit, Tier.MV)
+                .outputItems(ROBOT_ARM_MV)
+                .duration(100).EUt(VA[LV]).save(provider);
 
-        GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder(GTItems.ROBOT_ARM_HV.getId())
-                .inputItems(cableGtSingle, GTMaterials.Gold, 3)
-                .inputItems(stick, GTMaterials.StainlessSteel, 2)
-                .inputItems(GTItems.ELECTRIC_MOTOR_HV.asStack(2))
-                .inputItems(GTItems.ELECTRIC_PISTON_HV)
-                .inputItems(circuit, MarkerMaterials.Tier.HV)
-                .outputItems(GTItems.ROBOT_ARM_HV)
-                .duration(100).EUt(GTValues.VA[GTValues.LV]).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("robot_arm_hv")
+                .inputItems(cableGtSingle, Gold, 3)
+                .inputItems(stick, StainlessSteel, 2)
+                .inputItems(ELECTRIC_MOTOR_HV, 2)
+                .inputItems(ELECTRIC_PISTON_HV)
+                .inputItems(circuit, Tier.HV)
+                .outputItems(ROBOT_ARM_HV)
+                .duration(100).EUt(VA[LV]).save(provider);
 
-        GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder(GTItems.ROBOT_ARM_EV.getId())
-                .inputItems(cableGtSingle, GTMaterials.Aluminium, 3)
-                .inputItems(stick, GTMaterials.Titanium, 2)
-                .inputItems(GTItems.ELECTRIC_MOTOR_EV.asStack(2))
-                .inputItems(GTItems.ELECTRIC_PISTON_EV)
-                .inputItems(circuit, MarkerMaterials.Tier.EV)
-                .outputItems(GTItems.ROBOT_ARM_EV)
-                .duration(100).EUt(GTValues.VA[GTValues.LV]).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("robot_arm_ev")
+                .inputItems(cableGtSingle, Aluminium, 3)
+                .inputItems(stick, Titanium, 2)
+                .inputItems(ELECTRIC_MOTOR_EV, 2)
+                .inputItems(ELECTRIC_PISTON_EV)
+                .inputItems(circuit, Tier.EV)
+                .outputItems(ROBOT_ARM_EV)
+                .duration(100).EUt(VA[LV]).save(provider);
 
-        GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder(GTItems.ROBOT_ARM_IV.getId())
-                .inputItems(cableGtSingle, GTMaterials.Tungsten, 3)
-                .inputItems(stick, GTMaterials.TungstenSteel, 2)
-                .inputItems(GTItems.ELECTRIC_MOTOR_IV.asStack(2))
-                .inputItems(GTItems.ELECTRIC_PISTON_IV)
-                .inputItems(circuit, MarkerMaterials.Tier.IV)
-                .outputItems(GTItems.ROBOT_ARM_IV)
-                .duration(100).EUt(GTValues.VA[GTValues.LV]).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("robot_arm_iv")
+                .inputItems(cableGtSingle, Tungsten, 3)
+                .inputItems(stick, TungstenSteel, 2)
+                .inputItems(ELECTRIC_MOTOR_IV, 2)
+                .inputItems(ELECTRIC_PISTON_IV)
+                .inputItems(circuit, Tier.IV)
+                .outputItems(ROBOT_ARM_IV)
+                .duration(100).EUt(VA[LV]).save(provider);
 
-        GTRecipeTypes.ASSEMBLY_LINE_RECIPES.recipeBuilder(GTItems.ROBOT_ARM_LuV.getId())
-                .inputItems(stickLong, GTMaterials.HSSS, 4)
-                .inputItems(gear, GTMaterials.HSSS)
-                .inputItems(gearSmall, GTMaterials.HSSS, 3)
-                .inputItems(GTItems.ELECTRIC_MOTOR_LuV, 2)
-                .inputItems(GTItems.ELECTRIC_PISTON_LUV)
-                .inputItems(circuit, MarkerMaterials.Tier.LuV)
-                .inputItems(circuit, MarkerMaterials.Tier.IV, 2)
-                .inputItems(circuit, MarkerMaterials.Tier.EV, 4)
-                .inputItems(cableGtSingle, GTMaterials.NiobiumTitanium, 4)
-                .inputFluids(GTMaterials.SolderingAlloy.getFluid(GTValues.L * 4))
-                .inputFluids(GTMaterials.Lubricant.getFluid(250))
-                .outputItems(GTItems.ROBOT_ARM_LuV)
+        ASSEMBLY_LINE_RECIPES.recipeBuilder("robot_arm_luv")
+                .inputItems(stickLong, HSSS, 4)
+                .inputItems(gear, HSSS)
+                .inputItems(gearSmall, HSSS, 3)
+                .inputItems(ELECTRIC_MOTOR_LuV, 2)
+                .inputItems(ELECTRIC_PISTON_LUV)
+                .inputItems(circuit, Tier.LuV)
+                .inputItems(circuit, Tier.IV, 2)
+                .inputItems(circuit, Tier.EV, 4)
+                .inputItems(cableGtSingle, NiobiumTitanium, 4)
+                .inputFluids(SolderingAlloy.getFluid(L * 4))
+                .inputFluids(Lubricant.getFluid(250))
+                .outputItems(ROBOT_ARM_LuV)
                 .duration(600).EUt(6000).save(provider);
 
-        GTRecipeTypes.ASSEMBLY_LINE_RECIPES.recipeBuilder(GTItems.ROBOT_ARM_ZPM.getId())
-                .inputItems(stickLong, GTMaterials.Osmiridium, 4)
-                .inputItems(gear, GTMaterials.Osmiridium)
-                .inputItems(gearSmall, GTMaterials.Osmiridium, 3)
-                .inputItems(GTItems.ELECTRIC_MOTOR_ZPM, 2)
-                .inputItems(GTItems.ELECTRIC_PISTON_ZPM)
-                .inputItems(circuit, MarkerMaterials.Tier.ZPM)
-                .inputItems(circuit, MarkerMaterials.Tier.LuV, 2)
-                .inputItems(circuit, MarkerMaterials.Tier.IV, 4)
-                .inputItems(cableGtSingle, GTMaterials.VanadiumGallium, 4)
-                .inputFluids(GTMaterials.SolderingAlloy.getFluid(GTValues.L * 8))
-                .inputFluids(GTMaterials.Lubricant.getFluid(500))
-                .outputItems(GTItems.ROBOT_ARM_ZPM)
+        ASSEMBLY_LINE_RECIPES.recipeBuilder("robot_arm_zpm")
+                .inputItems(stickLong, Osmiridium, 4)
+                .inputItems(gear, Osmiridium)
+                .inputItems(gearSmall, Osmiridium, 3)
+                .inputItems(ELECTRIC_MOTOR_ZPM, 2)
+                .inputItems(ELECTRIC_PISTON_ZPM)
+                .inputItems(circuit, Tier.ZPM)
+                .inputItems(circuit, Tier.LuV, 2)
+                .inputItems(circuit, Tier.IV, 4)
+                .inputItems(cableGtSingle, VanadiumGallium, 4)
+                .inputFluids(SolderingAlloy.getFluid(L * 8))
+                .inputFluids(Lubricant.getFluid(500))
+                .outputItems(ROBOT_ARM_ZPM)
                 .duration(600).EUt(24000).save(provider);
 
-        GTRecipeTypes.ASSEMBLY_LINE_RECIPES.recipeBuilder(GTItems.ROBOT_ARM_UV.getId())
-                .inputItems(stickLong, GTMaterials.Tritanium, 4)
-                .inputItems(gear, GTMaterials.Tritanium)
-                .inputItems(gearSmall, GTMaterials.Tritanium, 3)
-                .inputItems(GTItems.ELECTRIC_MOTOR_UV, 2)
-                .inputItems(GTItems.ELECTRIC_PISTON_UV)
-                .inputItems(circuit, MarkerMaterials.Tier.UV)
-                .inputItems(circuit, MarkerMaterials.Tier.ZPM, 2)
-                .inputItems(circuit, MarkerMaterials.Tier.LuV, 4)
-                .inputItems(cableGtSingle, GTMaterials.YttriumBariumCuprate, 4)
-                .inputFluids(GTMaterials.SolderingAlloy.getFluid(GTValues.L * 12))
-                .inputFluids(GTMaterials.Lubricant.getFluid(1000))
-                .inputFluids(GTMaterials.Naquadria.getFluid(GTValues.L * 4))
-                .outputItems(GTItems.ROBOT_ARM_UV)
+        ASSEMBLY_LINE_RECIPES.recipeBuilder("robot_arm_uv")
+                .inputItems(stickLong, Tritanium, 4)
+                .inputItems(gear, Tritanium)
+                .inputItems(gearSmall, Tritanium, 3)
+                .inputItems(ELECTRIC_MOTOR_UV, 2)
+                .inputItems(ELECTRIC_PISTON_UV)
+                .inputItems(circuit, Tier.UV)
+                .inputItems(circuit, Tier.ZPM, 2)
+                .inputItems(circuit, Tier.LuV, 4)
+                .inputItems(cableGtSingle, YttriumBariumCuprate, 4)
+                .inputFluids(SolderingAlloy.getFluid(L * 12))
+                .inputFluids(Lubricant.getFluid(1000))
+                .inputFluids(Naquadria.getFluid(L * 4))
+                .outputItems(ROBOT_ARM_UV)
                 .duration(600).EUt(100000).save(provider);
 
 
 
         //Field Generators Start ---------------------------------------------------------------------------------------
-        VanillaRecipeHelper.addShapedRecipe(provider, "field_generator_lv", GTItems.FIELD_GENERATOR_LV.asStack(), "WPW", "XGX", "WPW", 'W', new UnificationEntry(wireGtQuadruple, GTMaterials.ManganesePhosphide), 'P', new UnificationEntry(plate, GTMaterials.Steel), 'G', new UnificationEntry(gem, GTMaterials.EnderPearl), 'X', new UnificationEntry(circuit, MarkerMaterials.Tier.LV));
-        VanillaRecipeHelper.addShapedRecipe(provider, "field_generator_mv", GTItems.FIELD_GENERATOR_MV.asStack(), "WPW", "XGX", "WPW", 'W', new UnificationEntry(wireGtQuadruple, GTMaterials.MagnesiumDiboride), 'P', new UnificationEntry(plate, GTMaterials.Aluminium), 'G', new UnificationEntry(gem, GTMaterials.EnderEye), 'X', new UnificationEntry(circuit, MarkerMaterials.Tier.MV));
-        VanillaRecipeHelper.addShapedRecipe(provider, "field_generator_hv", GTItems.FIELD_GENERATOR_HV.asStack(), "WPW", "XGX", "WPW", 'W', new UnificationEntry(wireGtQuadruple, GTMaterials.MercuryBariumCalciumCuprate), 'P', new UnificationEntry(plate, GTMaterials.StainlessSteel), 'G', GTItems.QUANTUM_EYE.get(), 'X', new UnificationEntry(circuit, MarkerMaterials.Tier.HV));
-        VanillaRecipeHelper.addShapedRecipe(provider, "field_generator_ev", GTItems.FIELD_GENERATOR_EV.asStack(), "WPW", "XGX", "WPW", 'W', new UnificationEntry(wireGtQuadruple, GTMaterials.UraniumTriplatinum), 'P', new UnificationEntry(plateDouble, GTMaterials.Titanium), 'G', new UnificationEntry(gem, GTMaterials.NetherStar), 'X', new UnificationEntry(circuit, MarkerMaterials.Tier.EV));
-        VanillaRecipeHelper.addShapedRecipe(provider, "field_generator_iv", GTItems.FIELD_GENERATOR_IV.asStack(), "WPW", "XGX", "WPW", 'W', new UnificationEntry(wireGtQuadruple, GTMaterials.SamariumIronArsenicOxide), 'P', new UnificationEntry(plateDouble, GTMaterials.TungstenSteel), 'G', GTItems.QUANTUM_STAR.get(), 'X', new UnificationEntry(circuit, MarkerMaterials.Tier.IV));
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "field_generator_lv", FIELD_GENERATOR_LV.asStack(), "WPW", "XGX", "WPW", 'W', new UnificationEntry(wireGtQuadruple, ManganesePhosphide), 'P', new UnificationEntry(plate, Steel), 'G', new UnificationEntry(gem, EnderPearl), 'X', new UnificationEntry(circuit, Tier.LV));
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "field_generator_mv", FIELD_GENERATOR_MV.asStack(), "WPW", "XGX", "WPW", 'W', new UnificationEntry(wireGtQuadruple, MagnesiumDiboride), 'P', new UnificationEntry(plate, Aluminium), 'G', new UnificationEntry(gem, EnderEye), 'X', new UnificationEntry(circuit, Tier.MV));
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "field_generator_hv", FIELD_GENERATOR_HV.asStack(), "WPW", "XGX", "WPW", 'W', new UnificationEntry(wireGtQuadruple, MercuryBariumCalciumCuprate), 'P', new UnificationEntry(plate, StainlessSteel), 'G', QUANTUM_EYE.asStack(), 'X', new UnificationEntry(circuit, Tier.HV));
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "field_generator_ev", FIELD_GENERATOR_EV.asStack(), "WPW", "XGX", "WPW", 'W', new UnificationEntry(wireGtQuadruple, UraniumTriplatinum), 'P', new UnificationEntry(plateDouble, Titanium), 'G', new UnificationEntry(gem, NetherStar), 'X', new UnificationEntry(circuit, Tier.EV));
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "field_generator_iv", FIELD_GENERATOR_IV.asStack(), "WPW", "XGX", "WPW", 'W', new UnificationEntry(wireGtQuadruple, SamariumIronArsenicOxide), 'P', new UnificationEntry(plateDouble, TungstenSteel), 'G', QUANTUM_STAR.asStack(), 'X', new UnificationEntry(circuit, Tier.IV));
 
-        GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder(GTItems.FIELD_GENERATOR_LV.getId())
-                .inputItems(gem, GTMaterials.EnderPearl)
-                .inputItems(plate, GTMaterials.Steel, 2)
-                .inputItems(circuit, MarkerMaterials.Tier.LV, 2)
-                .inputItems(wireGtQuadruple, GTMaterials.ManganesePhosphide, 4)
-                .outputItems(GTItems.FIELD_GENERATOR_LV)
-                .duration(100).EUt(GTValues.VA[GTValues.LV]).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("field_generator_lv")
+                .inputItems(gem, EnderPearl)
+                .inputItems(plate, Steel, 2)
+                .inputItems(circuit, Tier.LV, 2)
+                .inputItems(wireGtQuadruple, ManganesePhosphide, 4)
+                .outputItems(FIELD_GENERATOR_LV)
+                .duration(100).EUt(VA[LV]).save(provider);
 
-        GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder(GTItems.FIELD_GENERATOR_MV.getId())
-                .inputItems(gem, GTMaterials.EnderEye)
-                .inputItems(plate, GTMaterials.Aluminium, 2)
-                .inputItems(circuit, MarkerMaterials.Tier.MV, 2)
-                .inputItems(wireGtQuadruple, GTMaterials.MagnesiumDiboride, 4)
-                .outputItems(GTItems.FIELD_GENERATOR_MV)
-                .duration(100).EUt(GTValues.VA[GTValues.LV]).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("field_generator_mv")
+                .inputItems(gem, EnderEye)
+                .inputItems(plate, Aluminium, 2)
+                .inputItems(circuit, Tier.MV, 2)
+                .inputItems(wireGtQuadruple, MagnesiumDiboride, 4)
+                .outputItems(FIELD_GENERATOR_MV)
+                .duration(100).EUt(VA[LV]).save(provider);
 
-        GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder(GTItems.FIELD_GENERATOR_HV.getId())
-                .inputItems(GTItems.QUANTUM_EYE)
-                .inputItems(plate, GTMaterials.StainlessSteel, 2)
-                .inputItems(circuit, MarkerMaterials.Tier.HV, 2)
-                .inputItems(wireGtQuadruple, GTMaterials.MercuryBariumCalciumCuprate, 4)
-                .outputItems(GTItems.FIELD_GENERATOR_HV)
-                .duration(100).EUt(GTValues.VA[GTValues.LV]).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("field_generator_hv")
+                .inputItems(QUANTUM_EYE)
+                .inputItems(plate, StainlessSteel, 2)
+                .inputItems(circuit, Tier.HV, 2)
+                .inputItems(wireGtQuadruple, MercuryBariumCalciumCuprate, 4)
+                .outputItems(FIELD_GENERATOR_HV)
+                .duration(100).EUt(VA[LV]).save(provider);
 
-        GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder(GTItems.FIELD_GENERATOR_EV.getId())
-                .inputItems(gem, GTMaterials.NetherStar)
-                .inputItems(plateDouble, GTMaterials.Titanium, 2)
-                .inputItems(circuit, MarkerMaterials.Tier.EV, 2)
-                .inputItems(wireGtQuadruple, GTMaterials.UraniumTriplatinum, 4)
-                .outputItems(GTItems.FIELD_GENERATOR_EV)
-                .duration(100).EUt(GTValues.VA[GTValues.LV]).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("field_generator_ev")
+                .inputItems(gem, NetherStar)
+                .inputItems(plateDouble, Titanium, 2)
+                .inputItems(circuit, Tier.EV, 2)
+                .inputItems(wireGtQuadruple, UraniumTriplatinum, 4)
+                .outputItems(FIELD_GENERATOR_EV)
+                .duration(100).EUt(VA[LV]).save(provider);
 
-        GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder(GTItems.FIELD_GENERATOR_IV.getId())
-                .inputItems(GTItems.QUANTUM_STAR)
-                .inputItems(plateDouble, GTMaterials.TungstenSteel, 2)
-                .inputItems(circuit, MarkerMaterials.Tier.IV, 2)
-                .inputItems(wireGtQuadruple, GTMaterials.SamariumIronArsenicOxide, 4)
-                .outputItems(GTItems.FIELD_GENERATOR_IV)
-                .duration(100).EUt(GTValues.VA[GTValues.LV]).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("field_generator_iv")
+                .inputItems(QUANTUM_STAR)
+                .inputItems(plateDouble, TungstenSteel, 2)
+                .inputItems(circuit, Tier.IV, 2)
+                .inputItems(wireGtQuadruple, SamariumIronArsenicOxide, 4)
+                .outputItems(FIELD_GENERATOR_IV)
+                .duration(100).EUt(VA[LV]).save(provider);
 
-        GTRecipeTypes.ASSEMBLY_LINE_RECIPES.recipeBuilder(GTItems.FIELD_GENERATOR_LuV.get())
-                .inputItems(frameGt, GTMaterials.HSSS)
-                .inputItems(plate, GTMaterials.HSSS, 6)
-                .inputItems(GTItems.QUANTUM_STAR)
-                .inputItems(GTItems.EMITTER_LuV, 2)
-                .inputItems(circuit, MarkerMaterials.Tier.LuV, 2)
-                .inputItems(wireFine, GTMaterials.IndiumTinBariumTitaniumCuprate, 64)
-                .inputItems(wireFine, GTMaterials.IndiumTinBariumTitaniumCuprate, 64)
-                .inputItems(cableGtSingle, GTMaterials.NiobiumTitanium, 4)
-                .inputFluids(GTMaterials.SolderingAlloy.getFluid(GTValues.L * 4))
-                .outputItems(GTItems.FIELD_GENERATOR_LuV)
+        ASSEMBLY_LINE_RECIPES.recipeBuilder("field_generator_luv")
+                .inputItems(frameGt, HSSS)
+                .inputItems(plate, HSSS, 6)
+                .inputItems(QUANTUM_STAR)
+                .inputItems(EMITTER_LuV, 2)
+                .inputItems(circuit, Tier.LuV, 2)
+                .inputItems(wireFine, IndiumTinBariumTitaniumCuprate, 64)
+                .inputItems(wireFine, IndiumTinBariumTitaniumCuprate, 64)
+                .inputItems(cableGtSingle, NiobiumTitanium, 4)
+                .inputFluids(SolderingAlloy.getFluid(L * 4))
+                .outputItems(FIELD_GENERATOR_LuV)
                 .duration(600).EUt(6000).save(provider);
 
-        GTRecipeTypes.ASSEMBLY_LINE_RECIPES.recipeBuilder(GTItems.FIELD_GENERATOR_ZPM.getId())
-                .inputItems(frameGt, GTMaterials.NaquadahAlloy)
-                .inputItems(plate, GTMaterials.NaquadahAlloy, 6)
-                .inputItems(GTItems.QUANTUM_STAR)
-                .inputItems(GTItems.EMITTER_ZPM, 2)
-                .inputItems(circuit, MarkerMaterials.Tier.ZPM, 2)
-                .inputItems(wireFine, GTMaterials.UraniumRhodiumDinaquadide, 64)
-                .inputItems(wireFine, GTMaterials.UraniumRhodiumDinaquadide, 64)
-                .inputItems(cableGtSingle, GTMaterials.VanadiumGallium, 4)
-                .inputFluids(GTMaterials.SolderingAlloy.getFluid(GTValues.L * 8))
-                .outputItems(GTItems.FIELD_GENERATOR_ZPM)
+        ASSEMBLY_LINE_RECIPES.recipeBuilder("field_generator_zpm")
+                .inputItems(frameGt, NaquadahAlloy)
+                .inputItems(plate, NaquadahAlloy, 6)
+                .inputItems(QUANTUM_STAR)
+                .inputItems(EMITTER_ZPM, 2)
+                .inputItems(circuit, Tier.ZPM, 2)
+                .inputItems(wireFine, UraniumRhodiumDinaquadide, 64)
+                .inputItems(wireFine, UraniumRhodiumDinaquadide, 64)
+                .inputItems(cableGtSingle, VanadiumGallium, 4)
+                .inputFluids(SolderingAlloy.getFluid(L * 8))
+                .outputItems(FIELD_GENERATOR_ZPM)
                 .duration(600).EUt(24000).save(provider);
 
-        GTRecipeTypes.ASSEMBLY_LINE_RECIPES.recipeBuilder(GTItems.FIELD_GENERATOR_UV.getId())
-                .inputItems(frameGt, GTMaterials.Tritanium)
-                .inputItems(plate, GTMaterials.Tritanium, 6)
-                .inputItems(GTItems.GRAVI_STAR)
-                .inputItems(GTItems.EMITTER_UV, 2)
-                .inputItems(circuit, MarkerMaterials.Tier.UV, 2)
-                .inputItems(wireFine, GTMaterials.EnrichedNaquadahTriniumEuropiumDuranide, 64)
-                .inputItems(wireFine, GTMaterials.EnrichedNaquadahTriniumEuropiumDuranide, 64)
-                .inputItems(cableGtSingle, GTMaterials.YttriumBariumCuprate, 4)
-                .inputFluids(GTMaterials.SolderingAlloy.getFluid(GTValues.L * 12))
-                .inputFluids(GTMaterials.Naquadria.getFluid(GTValues.L * 4))
-                .outputItems(GTItems.FIELD_GENERATOR_UV)
+        ASSEMBLY_LINE_RECIPES.recipeBuilder("field_generator_uv")
+                .inputItems(frameGt, Tritanium)
+                .inputItems(plate, Tritanium, 6)
+                .inputItems(GRAVI_STAR)
+                .inputItems(EMITTER_UV, 2)
+                .inputItems(circuit, Tier.UV, 2)
+                .inputItems(wireFine, EnrichedNaquadahTriniumEuropiumDuranide, 64)
+                .inputItems(wireFine, EnrichedNaquadahTriniumEuropiumDuranide, 64)
+                .inputItems(cableGtSingle, YttriumBariumCuprate, 4)
+                .inputFluids(SolderingAlloy.getFluid(L * 12))
+                .inputFluids(Naquadria.getFluid(L * 4))
+                .outputItems(FIELD_GENERATOR_UV)
                 .duration(600).EUt(100000).save(provider);
 
 
 
         //Sensors Start-------------------------------------------------------------------------------------------------
-        VanillaRecipeHelper.addShapedRecipe(provider, "sensor_lv", GTItems.SENSOR_LV.asStack(), "P G", "PR ", "XPP", 'P', new UnificationEntry(plate, GTMaterials.Steel), 'R', new UnificationEntry(stick, GTMaterials.Brass), 'G', new UnificationEntry(gem, GTMaterials.Quartzite), 'X', new UnificationEntry(circuit, MarkerMaterials.Tier.LV));
-        VanillaRecipeHelper.addShapedRecipe(provider, "sensor_mv", GTItems.SENSOR_MV.asStack(), "P G", "PR ", "XPP", 'P', new UnificationEntry(plate, GTMaterials.Aluminium), 'R', new UnificationEntry(stick, GTMaterials.Electrum), 'G', new UnificationEntry(gemFlawless, GTMaterials.Emerald), 'X', new UnificationEntry(circuit, MarkerMaterials.Tier.MV));
-        VanillaRecipeHelper.addShapedRecipe(provider, "sensor_hv", GTItems.SENSOR_HV.asStack(), "P G", "PR ", "XPP", 'P', new UnificationEntry(plate, GTMaterials.StainlessSteel), 'R', new UnificationEntry(stick, GTMaterials.Chrome), 'G', new UnificationEntry(gem, GTMaterials.EnderEye), 'X', new UnificationEntry(circuit, MarkerMaterials.Tier.HV));
-        VanillaRecipeHelper.addShapedRecipe(provider, "sensor_ev", GTItems.SENSOR_EV.asStack(), "P G", "PR ", "XPP", 'P', new UnificationEntry(plate, GTMaterials.Titanium), 'R', new UnificationEntry(stick, GTMaterials.Platinum), 'G', GTItems.QUANTUM_EYE.get(), 'X', new UnificationEntry(circuit, MarkerMaterials.Tier.EV));
-        VanillaRecipeHelper.addShapedRecipe(provider, "sensor_iv", GTItems.SENSOR_IV.asStack(), "P G", "PR ", "XPP", 'P', new UnificationEntry(plate, GTMaterials.TungstenSteel), 'R', new UnificationEntry(stick, GTMaterials.Iridium), 'G', GTItems.QUANTUM_STAR.get(), 'X', new UnificationEntry(circuit, MarkerMaterials.Tier.IV));
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "sensor_lv", SENSOR_LV.asStack(), "P G", "PR ", "XPP", 'P', new UnificationEntry(plate, Steel), 'R', new UnificationEntry(stick, Brass), 'G', new UnificationEntry(gem, Quartzite), 'X', new UnificationEntry(circuit, Tier.LV));
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "sensor_mv", SENSOR_MV.asStack(), "P G", "PR ", "XPP", 'P', new UnificationEntry(plate, Aluminium), 'R', new UnificationEntry(stick, Electrum), 'G', new UnificationEntry(gemFlawless, Emerald), 'X', new UnificationEntry(circuit, Tier.MV));
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "sensor_hv", SENSOR_HV.asStack(), "P G", "PR ", "XPP", 'P', new UnificationEntry(plate, StainlessSteel), 'R', new UnificationEntry(stick, Chrome), 'G', new UnificationEntry(gem, EnderEye), 'X', new UnificationEntry(circuit, Tier.HV));
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "sensor_ev", SENSOR_EV.asStack(), "P G", "PR ", "XPP", 'P', new UnificationEntry(plate, Titanium), 'R', new UnificationEntry(stick, Platinum), 'G', QUANTUM_EYE.asStack(), 'X', new UnificationEntry(circuit, Tier.EV));
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "sensor_iv", SENSOR_IV.asStack(), "P G", "PR ", "XPP", 'P', new UnificationEntry(plate, TungstenSteel), 'R', new UnificationEntry(stick, Iridium), 'G', QUANTUM_STAR.asStack(), 'X', new UnificationEntry(circuit, Tier.IV));
 
-        GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder(GTItems.SENSOR_LV.getId())
-                .inputItems(stick, GTMaterials.Brass)
-                .inputItems(plate, GTMaterials.Steel, 4)
-                .inputItems(circuit, MarkerMaterials.Tier.LV)
-                .inputItems(gem, GTMaterials.Quartzite)
-                .outputItems(GTItems.SENSOR_LV)
-                .duration(100).EUt(GTValues.VA[GTValues.LV]).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("sensor_lv")
+                .inputItems(stick, Brass)
+                .inputItems(plate, Steel, 4)
+                .inputItems(circuit, Tier.LV)
+                .inputItems(gem, Quartzite)
+                .outputItems(SENSOR_LV)
+                .duration(100).EUt(VA[LV]).save(provider);
 
-        GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder(GTItems.SENSOR_MV.getId())
-                .inputItems(stick, GTMaterials.Electrum)
-                .inputItems(plate, GTMaterials.Aluminium, 4)
-                .inputItems(circuit, MarkerMaterials.Tier.MV)
-                .inputItems(gemFlawless, GTMaterials.Emerald)
-                .outputItems(GTItems.SENSOR_MV)
-                .duration(100).EUt(GTValues.VA[GTValues.LV]).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("sensor_mv")
+                .inputItems(stick, Electrum)
+                .inputItems(plate, Aluminium, 4)
+                .inputItems(circuit, Tier.MV)
+                .inputItems(gemFlawless, Emerald)
+                .outputItems(SENSOR_MV)
+                .duration(100).EUt(VA[LV]).save(provider);
 
-        GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder(GTItems.SENSOR_HV.getId())
-                .inputItems(stick, GTMaterials.Chrome)
-                .inputItems(plate, GTMaterials.StainlessSteel, 4)
-                .inputItems(circuit, MarkerMaterials.Tier.HV)
-                .inputItems(gem, GTMaterials.EnderEye)
-                .outputItems(GTItems.SENSOR_HV)
-                .duration(100).EUt(GTValues.VA[GTValues.LV]).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("sensor_hv")
+                .inputItems(stick, Chrome)
+                .inputItems(plate, StainlessSteel, 4)
+                .inputItems(circuit, Tier.HV)
+                .inputItems(gem, EnderEye)
+                .outputItems(SENSOR_HV)
+                .duration(100).EUt(VA[LV]).save(provider);
 
-        GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder(GTItems.SENSOR_EV.getId())
-                .inputItems(stick, GTMaterials.Platinum)
-                .inputItems(plate, GTMaterials.Titanium, 4)
-                .inputItems(circuit, MarkerMaterials.Tier.EV)
-                .inputItems(GTItems.QUANTUM_EYE)
-                .outputItems(GTItems.SENSOR_EV)
-                .duration(100).EUt(GTValues.VA[GTValues.LV]).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("sensor_ev")
+                .inputItems(stick, Platinum)
+                .inputItems(plate, Titanium, 4)
+                .inputItems(circuit, Tier.EV)
+                .inputItems(QUANTUM_EYE)
+                .outputItems(SENSOR_EV)
+                .duration(100).EUt(VA[LV]).save(provider);
 
-        GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder(GTItems.SENSOR_IV.getId())
-                .inputItems(stick, GTMaterials.Iridium)
-                .inputItems(plate, GTMaterials.TungstenSteel, 4)
-                .inputItems(circuit, MarkerMaterials.Tier.IV)
-                .inputItems(GTItems.QUANTUM_STAR)
-                .outputItems(GTItems.SENSOR_IV)
-                .duration(100).EUt(GTValues.VA[GTValues.LV]).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("sensor_iv")
+                .inputItems(stick, Iridium)
+                .inputItems(plate, TungstenSteel, 4)
+                .inputItems(circuit, Tier.IV)
+                .inputItems(QUANTUM_STAR)
+                .outputItems(SENSOR_IV)
+                .duration(100).EUt(VA[LV]).save(provider);
 
-        GTRecipeTypes.ASSEMBLY_LINE_RECIPES.recipeBuilder(GTItems.SENSOR_LuV.getId())
-                .inputItems(frameGt, GTMaterials.HSSS)
-                .inputItems(GTItems.ELECTRIC_MOTOR_LuV)
-                .inputItems(plate, GTMaterials.Ruridit, 4)
-                .inputItems(GTItems.QUANTUM_STAR)
-                .inputItems(circuit, MarkerMaterials.Tier.LuV, 2)
-                .inputItems(foil, GTMaterials.Palladium, 64)
-                .inputItems(foil, GTMaterials.Palladium, 32)
-                .inputItems(cableGtSingle, GTMaterials.NiobiumTitanium, 4)
-                .inputFluids(GTMaterials.SolderingAlloy.getFluid(GTValues.L * 2))
-                .outputItems(GTItems.SENSOR_LuV)
+        ASSEMBLY_LINE_RECIPES.recipeBuilder("sensor_luv")
+                .inputItems(frameGt, HSSS)
+                .inputItems(ELECTRIC_MOTOR_LuV)
+                .inputItems(plate, Ruridit, 4)
+                .inputItems(QUANTUM_STAR)
+                .inputItems(circuit, Tier.LuV, 2)
+                .inputItems(foil, Palladium, 64)
+                .inputItems(foil, Palladium, 32)
+                .inputItems(cableGtSingle, NiobiumTitanium, 4)
+                .inputFluids(SolderingAlloy.getFluid(L * 2))
+                .outputItems(SENSOR_LuV)
                 .duration(600).EUt(6000).save(provider);
 
-        GTRecipeTypes.ASSEMBLY_LINE_RECIPES.recipeBuilder(GTItems.SENSOR_ZPM.getId())
-                .inputItems(frameGt, GTMaterials.NaquadahAlloy)
-                .inputItems(GTItems.ELECTRIC_MOTOR_ZPM)
-                .inputItems(plate, GTMaterials.Osmiridium, 4)
-                .inputItems(GTItems.QUANTUM_STAR, 2)
-                .inputItems(circuit, MarkerMaterials.Tier.ZPM, 2)
-                .inputItems(foil, GTMaterials.Trinium, 64)
-                .inputItems(foil, GTMaterials.Trinium, 32)
-                .inputItems(cableGtSingle, GTMaterials.VanadiumGallium, 4)
-                .inputFluids(GTMaterials.SolderingAlloy.getFluid(GTValues.L * 4))
-                .outputItems(GTItems.SENSOR_ZPM)
+        ASSEMBLY_LINE_RECIPES.recipeBuilder("sensor_zpm")
+                .inputItems(frameGt, NaquadahAlloy)
+                .inputItems(ELECTRIC_MOTOR_ZPM)
+                .inputItems(plate, Osmiridium, 4)
+                .inputItems(QUANTUM_STAR, 2)
+                .inputItems(circuit, Tier.ZPM, 2)
+                .inputItems(foil, Trinium, 64)
+                .inputItems(foil, Trinium, 32)
+                .inputItems(cableGtSingle, VanadiumGallium, 4)
+                .inputFluids(SolderingAlloy.getFluid(L * 4))
+                .outputItems(SENSOR_ZPM)
                 .duration(600).EUt(24000).save(provider);
 
-        GTRecipeTypes.ASSEMBLY_LINE_RECIPES.recipeBuilder(GTItems.SENSOR_UV.getId())
-                .inputItems(frameGt, GTMaterials.Tritanium)
-                .inputItems(GTItems.ELECTRIC_MOTOR_UV)
-                .inputItems(plate, GTMaterials.Tritanium, 4)
-                .inputItems(GTItems.GRAVI_STAR)
-                .inputItems(circuit, MarkerMaterials.Tier.UV, 2)
-                .inputItems(foil, GTMaterials.Naquadria, 64)
-                .inputItems(foil, GTMaterials.Naquadria, 32)
-                .inputItems(cableGtSingle, GTMaterials.YttriumBariumCuprate, 4)
-                .inputFluids(GTMaterials.SolderingAlloy.getFluid(GTValues.L * 8))
-                .inputFluids(GTMaterials.Naquadria.getFluid(GTValues.L * 4))
-                .outputItems(GTItems.SENSOR_UV)
+        ASSEMBLY_LINE_RECIPES.recipeBuilder("sensor_uv")
+                .inputItems(frameGt, Tritanium)
+                .inputItems(ELECTRIC_MOTOR_UV)
+                .inputItems(plate, Tritanium, 4)
+                .inputItems(GRAVI_STAR)
+                .inputItems(circuit, Tier.UV, 2)
+                .inputItems(foil, Naquadria, 64)
+                .inputItems(foil, Naquadria, 32)
+                .inputItems(cableGtSingle, YttriumBariumCuprate, 4)
+                .inputFluids(SolderingAlloy.getFluid(L * 8))
+                .inputFluids(Naquadria.getFluid(L * 4))
+                .outputItems(SENSOR_UV)
                 .duration(600).EUt(100000).save(provider);
 
 
         //Emitters Start------------------------------------------------------------------------------------------------
-        VanillaRecipeHelper.addShapedRecipe(provider, "emitter_lv", GTItems.EMITTER_LV.asStack(), "CRX", "RGR", "XRC", 'R', new UnificationEntry(stick, GTMaterials.Brass), 'C', new UnificationEntry(cableGtSingle, GTMaterials.Tin), 'G', new UnificationEntry(gem, GTMaterials.Quartzite), 'X', new UnificationEntry(circuit, MarkerMaterials.Tier.LV));
-        VanillaRecipeHelper.addShapedRecipe(provider, "emitter_mv", GTItems.EMITTER_MV.asStack(), "CRX", "RGR", "XRC", 'R', new UnificationEntry(stick, GTMaterials.Electrum), 'C', new UnificationEntry(cableGtSingle, GTMaterials.Copper), 'G', new UnificationEntry(gemFlawless, GTMaterials.Emerald), 'X', new UnificationEntry(circuit, MarkerMaterials.Tier.MV));
-        VanillaRecipeHelper.addShapedRecipe(provider, "emitter_hv", GTItems.EMITTER_HV.asStack(), "CRX", "RGR", "XRC", 'R', new UnificationEntry(stick, GTMaterials.Chrome), 'C', new UnificationEntry(cableGtSingle, GTMaterials.Gold), 'G', new UnificationEntry(gem, GTMaterials.EnderEye), 'X', new UnificationEntry(circuit, MarkerMaterials.Tier.HV));
-        VanillaRecipeHelper.addShapedRecipe(provider, "emitter_ev", GTItems.EMITTER_EV.asStack(), "CRX", "RGR", "XRC", 'R', new UnificationEntry(stick, GTMaterials.Platinum), 'C', new UnificationEntry(cableGtSingle, GTMaterials.Aluminium), 'G', GTItems.QUANTUM_EYE.get(), 'X', new UnificationEntry(circuit, MarkerMaterials.Tier.EV));
-        VanillaRecipeHelper.addShapedRecipe(provider, "emitter_iv", GTItems.EMITTER_IV.asStack(), "CRX", "RGR", "XRC", 'R', new UnificationEntry(stick, GTMaterials.Iridium), 'C', new UnificationEntry(cableGtSingle, GTMaterials.Tungsten), 'G', GTItems.QUANTUM_STAR.get(), 'X', new UnificationEntry(circuit, MarkerMaterials.Tier.IV));
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "emitter_lv", EMITTER_LV.asStack(), "CRX", "RGR", "XRC", 'R', new UnificationEntry(stick, Brass), 'C', new UnificationEntry(cableGtSingle, Tin), 'G', new UnificationEntry(gem, Quartzite), 'X', new UnificationEntry(circuit, Tier.LV));
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "emitter_mv", EMITTER_MV.asStack(), "CRX", "RGR", "XRC", 'R', new UnificationEntry(stick, Electrum), 'C', new UnificationEntry(cableGtSingle, Copper), 'G', new UnificationEntry(gemFlawless, Emerald), 'X', new UnificationEntry(circuit, Tier.MV));
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "emitter_hv", EMITTER_HV.asStack(), "CRX", "RGR", "XRC", 'R', new UnificationEntry(stick, Chrome), 'C', new UnificationEntry(cableGtSingle, Gold), 'G', new UnificationEntry(gem, EnderEye), 'X', new UnificationEntry(circuit, Tier.HV));
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "emitter_ev", EMITTER_EV.asStack(), "CRX", "RGR", "XRC", 'R', new UnificationEntry(stick, Platinum), 'C', new UnificationEntry(cableGtSingle, Aluminium), 'G', QUANTUM_EYE.asStack(), 'X', new UnificationEntry(circuit, Tier.EV));
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "emitter_iv", EMITTER_IV.asStack(), "CRX", "RGR", "XRC", 'R', new UnificationEntry(stick, Iridium), 'C', new UnificationEntry(cableGtSingle, Tungsten), 'G', QUANTUM_STAR.asStack(), 'X', new UnificationEntry(circuit, Tier.IV));
 
-        GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder(GTItems.EMITTER_LV.getId())
-                .inputItems(stick, GTMaterials.Brass, 4)
-                .inputItems(cableGtSingle, GTMaterials.Tin, 2)
-                .inputItems(circuit, MarkerMaterials.Tier.LV, 2)
-                .inputItems(gem, GTMaterials.Quartzite)
+        ASSEMBLER_RECIPES.recipeBuilder("emitter_lv")
+                .inputItems(stick, Brass, 4)
+                .inputItems(cableGtSingle, Tin, 2)
+                .inputItems(circuit, Tier.LV, 2)
+                .inputItems(gem, Quartzite)
                 .circuitMeta(1)
-                .outputItems(GTItems.EMITTER_LV)
-                .duration(100).EUt(GTValues.VA[GTValues.LV]).save(provider);
+                .outputItems(EMITTER_LV)
+                .duration(100).EUt(VA[LV]).save(provider);
 
-        GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder(GTItems.EMITTER_MV.getId())
-                .inputItems(stick, GTMaterials.Electrum, 4)
-                .inputItems(cableGtSingle, GTMaterials.Copper, 2)
-                .inputItems(circuit, MarkerMaterials.Tier.MV, 2)
-                .inputItems(gemFlawless, GTMaterials.Emerald)
+        ASSEMBLER_RECIPES.recipeBuilder("emitter_mv")
+                .inputItems(stick, Electrum, 4)
+                .inputItems(cableGtSingle, Copper, 2)
+                .inputItems(circuit, Tier.MV, 2)
+                .inputItems(gemFlawless, Emerald)
                 .circuitMeta(1)
-                .outputItems(GTItems.EMITTER_MV)
-                .duration(100).EUt(GTValues.VA[GTValues.LV]).save(provider);
+                .outputItems(EMITTER_MV)
+                .duration(100).EUt(VA[LV]).save(provider);
 
-        GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder(GTItems.EMITTER_HV.getId())
-                .inputItems(stick, GTMaterials.Chrome, 4)
-                .inputItems(cableGtSingle, GTMaterials.Gold, 2)
-                .inputItems(circuit, MarkerMaterials.Tier.HV, 2)
-                .inputItems(gem, GTMaterials.EnderEye)
+        ASSEMBLER_RECIPES.recipeBuilder("emitter_hv")
+                .inputItems(stick, Chrome, 4)
+                .inputItems(cableGtSingle, Gold, 2)
+                .inputItems(circuit, Tier.HV, 2)
+                .inputItems(gem, EnderEye)
                 .circuitMeta(1)
-                .outputItems(GTItems.EMITTER_HV)
-                .duration(100).EUt(GTValues.VA[GTValues.LV]).save(provider);
+                .outputItems(EMITTER_HV)
+                .duration(100).EUt(VA[LV]).save(provider);
 
-        GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder(GTItems.EMITTER_EV.getId())
-                .inputItems(stick, GTMaterials.Platinum, 4)
-                .inputItems(cableGtSingle, GTMaterials.Aluminium, 2)
-                .inputItems(circuit, MarkerMaterials.Tier.EV, 2)
-                .inputItems(GTItems.QUANTUM_EYE)
+        ASSEMBLER_RECIPES.recipeBuilder("emitter_ev")
+                .inputItems(stick, Platinum, 4)
+                .inputItems(cableGtSingle, Aluminium, 2)
+                .inputItems(circuit, Tier.EV, 2)
+                .inputItems(QUANTUM_EYE)
                 .circuitMeta(1)
-                .outputItems(GTItems.EMITTER_EV)
-                .duration(100).EUt(GTValues.VA[GTValues.LV]).save(provider);
+                .outputItems(EMITTER_EV)
+                .duration(100).EUt(VA[LV]).save(provider);
 
-        GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder(GTItems.EMITTER_IV.getId())
-                .inputItems(stick, GTMaterials.Iridium, 4)
-                .inputItems(cableGtSingle, GTMaterials.Tungsten, 2)
-                .inputItems(circuit, MarkerMaterials.Tier.IV, 2)
-                .inputItems(GTItems.QUANTUM_STAR)
+        ASSEMBLER_RECIPES.recipeBuilder("emitter_iv")
+                .inputItems(stick, Iridium, 4)
+                .inputItems(cableGtSingle, Tungsten, 2)
+                .inputItems(circuit, Tier.IV, 2)
+                .inputItems(QUANTUM_STAR)
                 .circuitMeta(1)
-                .outputItems(GTItems.EMITTER_IV)
-                .duration(100).EUt(GTValues.VA[GTValues.LV]).save(provider);
+                .outputItems(EMITTER_IV)
+                .duration(100).EUt(VA[LV]).save(provider);
 
-        GTRecipeTypes.ASSEMBLY_LINE_RECIPES.recipeBuilder(GTItems.EMITTER_LuV.getId())
-                .inputItems(frameGt, GTMaterials.HSSS)
-                .inputItems(GTItems.ELECTRIC_MOTOR_LuV)
-                .inputItems(stickLong, GTMaterials.Ruridit, 4)
-                .inputItems(GTItems.QUANTUM_STAR)
-                .inputItems(circuit, MarkerMaterials.Tier.LuV, 2)
-                .inputItems(foil, GTMaterials.Palladium, 64)
-                .inputItems(foil, GTMaterials.Palladium, 32)
-                .inputItems(cableGtSingle, GTMaterials.NiobiumTitanium, 4)
-                .inputFluids(GTMaterials.SolderingAlloy.getFluid(GTValues.L * 2))
-                .outputItems(GTItems.EMITTER_LuV)
+        ASSEMBLY_LINE_RECIPES.recipeBuilder("emitter_luv")
+                .inputItems(frameGt, HSSS)
+                .inputItems(ELECTRIC_MOTOR_LuV)
+                .inputItems(stickLong, Ruridit, 4)
+                .inputItems(QUANTUM_STAR)
+                .inputItems(circuit, Tier.LuV, 2)
+                .inputItems(foil, Palladium, 64)
+                .inputItems(foil, Palladium, 32)
+                .inputItems(cableGtSingle, NiobiumTitanium, 4)
+                .inputFluids(SolderingAlloy.getFluid(L * 2))
+                .outputItems(EMITTER_LuV)
                 .duration(600).EUt(6000).save(provider);
 
-        GTRecipeTypes.ASSEMBLY_LINE_RECIPES.recipeBuilder(GTItems.EMITTER_ZPM.getId())
-                .inputItems(frameGt, GTMaterials.NaquadahAlloy)
-                .inputItems(GTItems.ELECTRIC_MOTOR_ZPM)
-                .inputItems(stickLong, GTMaterials.Osmiridium, 4)
-                .inputItems(GTItems.QUANTUM_STAR, 2)
-                .inputItems(circuit, MarkerMaterials.Tier.ZPM, 2)
-                .inputItems(foil, GTMaterials.Trinium, 64)
-                .inputItems(foil, GTMaterials.Trinium, 32)
-                .inputItems(cableGtSingle, GTMaterials.VanadiumGallium, 4)
-                .inputFluids(GTMaterials.SolderingAlloy.getFluid(GTValues.L * 4))
-                .outputItems(GTItems.EMITTER_ZPM)
+        ASSEMBLY_LINE_RECIPES.recipeBuilder("emitter_zpm")
+                .inputItems(frameGt, NaquadahAlloy)
+                .inputItems(ELECTRIC_MOTOR_ZPM)
+                .inputItems(stickLong, Osmiridium, 4)
+                .inputItems(QUANTUM_STAR, 2)
+                .inputItems(circuit, Tier.ZPM, 2)
+                .inputItems(foil, Trinium, 64)
+                .inputItems(foil, Trinium, 32)
+                .inputItems(cableGtSingle, VanadiumGallium, 4)
+                .inputFluids(SolderingAlloy.getFluid(L * 4))
+                .outputItems(EMITTER_ZPM)
                 .duration(600).EUt(24000).save(provider);
 
-        GTRecipeTypes.ASSEMBLY_LINE_RECIPES.recipeBuilder(GTItems.EMITTER_UV.getId())
-                .inputItems(frameGt, GTMaterials.Tritanium)
-                .inputItems(GTItems.ELECTRIC_MOTOR_UV)
-                .inputItems(stickLong, GTMaterials.Tritanium, 4)
-                .inputItems(GTItems.GRAVI_STAR)
-                .inputItems(circuit, MarkerMaterials.Tier.UV, 2)
-                .inputItems(foil, GTMaterials.Naquadria, 64)
-                .inputItems(foil, GTMaterials.Naquadria, 32)
-                .inputItems(cableGtSingle, GTMaterials.YttriumBariumCuprate, 4)
-                .inputFluids(GTMaterials.SolderingAlloy.getFluid(GTValues.L * 8))
-                .inputFluids(GTMaterials.Naquadria.getFluid(GTValues.L * 4))
-                .outputItems(GTItems.EMITTER_UV)
+        ASSEMBLY_LINE_RECIPES.recipeBuilder("emitter_uv")
+                .inputItems(frameGt, Tritanium)
+                .inputItems(ELECTRIC_MOTOR_UV)
+                .inputItems(stickLong, Tritanium, 4)
+                .inputItems(GRAVI_STAR)
+                .inputItems(circuit, Tier.UV, 2)
+                .inputItems(foil, Naquadria, 64)
+                .inputItems(foil, Naquadria, 32)
+                .inputItems(cableGtSingle, YttriumBariumCuprate, 4)
+                .inputFluids(SolderingAlloy.getFluid(L * 8))
+                .inputFluids(Naquadria.getFluid(L * 4))
+                .outputItems(EMITTER_UV)
                 .duration(600).EUt(100000).save(provider);
     }
 }

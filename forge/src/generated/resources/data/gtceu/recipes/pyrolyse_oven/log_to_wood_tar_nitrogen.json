@@ -1,0 +1,73 @@
+{
+  "type": "gtceu:gt_recipe_serializer",
+  "duration": 320,
+  "inputs": {
+    "fluid": [
+      {
+        "chance": 1.0,
+        "content": {
+          "amount": 1000,
+          "fluid": "gtceu:nitrogen"
+        }
+      }
+    ],
+    "item": [
+      {
+        "chance": 0.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 1,
+          "fabric:type": "gtceu:sized",
+          "ingredient": {
+            "type": "forge:nbt",
+            "count": 1,
+            "item": "gtceu:circuit.integrated",
+            "nbt": "{Configuration:10}"
+          }
+        }
+      },
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 16,
+          "fabric:type": "gtceu:sized",
+          "tag": "c:logs"
+        }
+      }
+    ]
+  },
+  "outputs": {
+    "fluid": [
+      {
+        "chance": 1.0,
+        "content": {
+          "amount": 1500,
+          "fluid": "gtceu:wood_tar"
+        }
+      }
+    ],
+    "item": [
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 20,
+          "fabric:type": "gtceu:sized",
+          "ingredient": {
+            "item": "minecraft:charcoal"
+          }
+        }
+      }
+    ]
+  },
+  "recipe_type": "gtceu:pyrolyse_oven",
+  "tickInputs": {
+    "eu": [
+      {
+        "chance": 1.0,
+        "content": 96
+      }
+    ]
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "X": {
+      "tag": "forge:plates/rubber"
+    },
+    "k": {
+      "tag": "forge:tool/knife"
+    }
+  },
+  "pattern": [
+    "k",
+    "X"
+  ],
+  "result": {
+    "item": "gtceu:ring.rubber"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "P": {
+      "tag": "forge:plates/neutronium"
+    },
+    "w": {
+      "tag": "forge:tool/wrench"
+    }
+  },
+  "pattern": [
+    "PPP",
+    "PwP",
+    "PPP"
+  ],
+  "result": {
+    "item": "gtceu:hull_casing",
+    "nbt": {
+      "variant": "ultra_high_voltage"
+    }
+  }
+}

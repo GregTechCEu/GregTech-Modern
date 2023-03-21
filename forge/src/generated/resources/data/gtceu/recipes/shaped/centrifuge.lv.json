@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "forge:circuit/lv"
+    },
+    "E": {
+      "item": "gtceu:electric.motor.lv"
+    },
+    "M": {
+      "item": "gtceu:hull.lv"
+    },
+    "W": {
+      "tag": "forge:cable_gt_single/tin"
+    }
+  },
+  "pattern": [
+    "CEC",
+    "WMW",
+    "CEC"
+  ],
+  "result": {
+    "item": "gtceu:centrifuge.lv"
+  }
+}

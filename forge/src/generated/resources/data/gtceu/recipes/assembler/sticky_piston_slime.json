@@ -1,0 +1,54 @@
+{
+  "type": "gtceu:gt_recipe_serializer",
+  "duration": 100,
+  "inputs": {
+    "item": [
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 1,
+          "fabric:type": "gtceu:sized",
+          "ingredient": {
+            "item": "minecraft:slime_ball"
+          }
+        }
+      },
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 1,
+          "fabric:type": "gtceu:sized",
+          "ingredient": {
+            "item": "minecraft:piston"
+          }
+        }
+      }
+    ]
+  },
+  "outputs": {
+    "item": [
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 1,
+          "fabric:type": "gtceu:sized",
+          "ingredient": {
+            "item": "minecraft:sticky_piston"
+          }
+        }
+      }
+    ]
+  },
+  "recipe_type": "gtceu:assembler",
+  "tickInputs": {
+    "eu": [
+      {
+        "chance": 1.0,
+        "content": 4
+      }
+    ]
+  }
+}

@@ -1,0 +1,99 @@
+{
+  "type": "gtceu:gt_recipe_serializer",
+  "duration": 800,
+  "inputs": {
+    "fluid": [
+      {
+        "chance": 1.0,
+        "content": {
+          "amount": 10000,
+          "fluid": "gtceu:sodium_potassium"
+        }
+      },
+      {
+        "chance": 1.0,
+        "content": {
+          "amount": 2880,
+          "fluid": "gtceu:soldering_alloy"
+        }
+      }
+    ],
+    "item": [
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 1,
+          "fabric:type": "gtceu:sized",
+          "ingredient": {
+            "item": "gtceu:hull.uv"
+          }
+        }
+      },
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 4,
+          "fabric:type": "gtceu:sized",
+          "tag": "forge:cable_gt_single/yttrium_barium_cuprate"
+        }
+      },
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 2,
+          "fabric:type": "gtceu:sized",
+          "ingredient": {
+            "item": "gtceu:plate.ultra_high_power_integrated_circuit"
+          }
+        }
+      },
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 1,
+          "fabric:type": "gtceu:sized",
+          "tag": "forge:circuit/uv"
+        }
+      },
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 2,
+          "fabric:type": "gtceu:sized",
+          "ingredient": {
+            "item": "gtceu:voltage_coil.uv"
+          }
+        }
+      }
+    ]
+  },
+  "outputs": {
+    "item": [
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 1,
+          "fabric:type": "gtceu:sized",
+          "ingredient": {
+            "item": "gtceu:energy_hatch.input.uv"
+          }
+        }
+      }
+    ]
+  },
+  "recipe_type": "gtceu:assembly_line",
+  "tickInputs": {
+    "eu": [
+      {
+        "chance": 1.0,
+        "content": 491520
+      }
+    ]
+  }
+}

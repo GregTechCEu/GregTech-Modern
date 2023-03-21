@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": {
+      "tag": "c:springs/tungsten_steel"
+    },
+    "C": {
+      "tag": "c:circuit/iv"
+    },
+    "G": {
+      "tag": "c:glass"
+    },
+    "M": {
+      "item": "gtceu:hull.iv"
+    },
+    "P": {
+      "item": "gtceu:electric.pump.iv"
+    },
+    "W": {
+      "tag": "c:cable_gt_single/platinum"
+    }
+  },
+  "pattern": [
+    "GPG",
+    "WMW",
+    "CBC"
+  ],
+  "result": {
+    "item": "gtceu:brewery.iv"
+  }
+}

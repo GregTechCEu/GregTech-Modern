@@ -1,0 +1,32 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "c:circuit/mv"
+    },
+    "F": {
+      "item": "gtceu:electric.pump.mv"
+    },
+    "H": {
+      "base": {
+        "item": "gtceu:hermetic_casing"
+      },
+      "fabric:type": "fabric:nbt",
+      "nbt": {
+        "variant": "medium_voltage"
+      },
+      "strict": true
+    },
+    "P": {
+      "tag": "c:plates/aluminium"
+    }
+  },
+  "pattern": [
+    "CPC",
+    "PHP",
+    "CFC"
+  ],
+  "result": {
+    "item": "gtceu:super_tank.mv"
+  }
+}

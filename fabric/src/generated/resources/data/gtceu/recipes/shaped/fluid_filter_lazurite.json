@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "X": {
+      "tag": "c:foils/zinc"
+    },
+    "Y": {
+      "tag": "c:plates/lazurite"
+    }
+  },
+  "pattern": [
+    "XXX",
+    "XYX",
+    "XXX"
+  ],
+  "result": {
+    "item": "gtceu:fluid_filter"
+  }
+}

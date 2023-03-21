@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "forge:circuit/ev"
+    },
+    "E": {
+      "item": "gtceu:electric.motor.ev"
+    },
+    "M": {
+      "item": "gtceu:hull.ev"
+    },
+    "O": {
+      "tag": "forge:wire_gt_quadruple/nichrome"
+    },
+    "W": {
+      "tag": "forge:cable_gt_single/aluminium"
+    }
+  },
+  "pattern": [
+    "CEC",
+    "OMO",
+    "WEW"
+  ],
+  "result": {
+    "item": "gtceu:thermal_centrifuge.ev"
+  }
+}

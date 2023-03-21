@@ -2,13 +2,13 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "B": {
-      "tag": "minecraft:bolts/iron"
+      "tag": "c:bolts/iron"
     },
     "D": {
-      "tag": "minecraft:dusts/tantalum"
+      "tag": "c:dusts/tantalum"
     },
     "F": {
-      "tag": "minecraft:foils/manganese"
+      "tag": "c:foils/manganese"
     }
   },
   "pattern": [

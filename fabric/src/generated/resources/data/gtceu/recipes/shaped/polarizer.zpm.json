@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "M": {
+      "item": "gtceu:hull.zpm"
+    },
+    "S": {
+      "tag": "c:sticks/vanadium_gallium"
+    },
+    "W": {
+      "tag": "c:cable_gt_single/vanadium_gallium"
+    },
+    "Z": {
+      "tag": "c:wire_gt_octal/vanadium_gallium"
+    }
+  },
+  "pattern": [
+    "ZSZ",
+    "WMW",
+    "ZSZ"
+  ],
+  "result": {
+    "item": "gtceu:polarizer.zpm"
+  }
+}

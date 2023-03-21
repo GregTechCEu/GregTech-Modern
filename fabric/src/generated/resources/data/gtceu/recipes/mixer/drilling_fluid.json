@@ -25,7 +25,7 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "minecraft:dusts/stone"
+          "tag": "c:dusts/stone"
         }
       }
     ]

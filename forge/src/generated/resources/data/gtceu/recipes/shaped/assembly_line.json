@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "A": {
+      "item": "gtceu:hull.iv"
+    },
+    "C": {
+      "type": "forge:nbt",
+      "count": 1,
+      "item": "gtceu:casing",
+      "nbt": "{variant:\"assembly_control\"}"
+    },
+    "R": {
+      "item": "gtceu:robot.arm.iv"
+    },
+    "S": {
+      "tag": "forge:circuit/iv"
+    }
+  },
+  "pattern": [
+    "CRC",
+    "SAS",
+    "CRC"
+  ],
+  "result": {
+    "item": "gtceu:assembly_line"
+  }
+}

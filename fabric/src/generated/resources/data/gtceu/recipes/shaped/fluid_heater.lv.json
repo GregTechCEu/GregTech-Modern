@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "c:circuit/lv"
+    },
+    "G": {
+      "tag": "c:glass"
+    },
+    "M": {
+      "item": "gtceu:hull.lv"
+    },
+    "O": {
+      "tag": "c:wire_gt_quadruple/copper"
+    },
+    "P": {
+      "item": "gtceu:electric.pump.lv"
+    },
+    "W": {
+      "tag": "c:cable_gt_single/tin"
+    }
+  },
+  "pattern": [
+    "OGO",
+    "PMP",
+    "WCW"
+  ],
+  "result": {
+    "item": "gtceu:fluid_heater.lv"
+  }
+}

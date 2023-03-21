@@ -1,0 +1,32 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "G": {
+      "item": "minecraft:glass"
+    },
+    "M": {
+      "base": {
+        "item": "gtceu:steam_casing"
+      },
+      "fabric:type": "fabric:nbt",
+      "nbt": {
+        "variant": "bronze_hull"
+      },
+      "strict": true
+    },
+    "P": {
+      "tag": "c:crafting/piston"
+    },
+    "X": {
+      "tag": "c:pipe_small_fluid/bronze"
+    }
+  },
+  "pattern": [
+    "XXX",
+    "PMG",
+    "XXX"
+  ],
+  "result": {
+    "item": "gtceu:steam_extractor.bronze"
+  }
+}

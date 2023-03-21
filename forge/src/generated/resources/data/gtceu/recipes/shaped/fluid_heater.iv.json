@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "forge:circuit/iv"
+    },
+    "G": {
+      "tag": "forge:glass"
+    },
+    "M": {
+      "item": "gtceu:hull.iv"
+    },
+    "O": {
+      "tag": "forge:wire_gt_quadruple/tungsten_steel"
+    },
+    "P": {
+      "item": "gtceu:electric.pump.iv"
+    },
+    "W": {
+      "tag": "forge:cable_gt_single/platinum"
+    }
+  },
+  "pattern": [
+    "OGO",
+    "PMP",
+    "WCW"
+  ],
+  "result": {
+    "item": "gtceu:fluid_heater.iv"
+  }
+}

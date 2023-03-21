@@ -64,7 +64,7 @@ public class HullCasingBlock extends VariantBlock<HullCasingBlock.CasingType> {
             return GTCEu.id("block/casings/voltage/%s/bottom".formatted(name().toLowerCase()));
         }
 
-        public ResourceLocation geTopTexture() {
+        public ResourceLocation getTopTexture() {
             return GTCEu.id("block/casings/voltage/%s/top".formatted(name().toLowerCase()));
         }
 

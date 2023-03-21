@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "D": {
+      "tag": "forge:gems/diamond"
+    },
+    "S": {
+      "tag": "forge:plates/double/vanadium_steel"
+    },
+    "W": {
+      "tag": "forge:plates/tungsten"
+    }
+  },
+  "pattern": [
+    "WSW",
+    "SDS",
+    "WSW"
+  ],
+  "result": {
+    "item": "gtceu:component.grinder.tungsten"
+  }
+}

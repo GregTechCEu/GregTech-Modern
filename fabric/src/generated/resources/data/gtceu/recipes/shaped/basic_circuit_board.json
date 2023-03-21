@@ -5,7 +5,7 @@
       "item": "gtceu:board.coated"
     },
     "W": {
-      "tag": "minecraft:wire_gt_single/copper"
+      "tag": "c:wire_gt_single/copper"
     }
   },
   "pattern": [

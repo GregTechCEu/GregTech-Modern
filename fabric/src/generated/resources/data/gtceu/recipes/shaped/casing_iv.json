@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "P": {
+      "tag": "c:plates/tungsten_steel"
+    },
+    "w": {
+      "tag": "c:tool/wrench"
+    }
+  },
+  "pattern": [
+    "PPP",
+    "PwP",
+    "PPP"
+  ],
+  "result": {
+    "item": "gtceu:hull_casing",
+    "nbt": {
+      "variant": "insane_voltage"
+    }
+  }
+}

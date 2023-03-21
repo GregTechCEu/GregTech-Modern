@@ -1,0 +1,32 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "F": {
+      "tag": "forge:frames/steel"
+    },
+    "G": {
+      "tag": "forge:gears/steel"
+    },
+    "P": {
+      "tag": "forge:plates/steel"
+    },
+    "h": {
+      "tag": "forge:tool/hammer"
+    },
+    "w": {
+      "tag": "forge:tool/wrench"
+    }
+  },
+  "pattern": [
+    "PhP",
+    "GFG",
+    "PwP"
+  ],
+  "result": {
+    "count": 2,
+    "item": "gtceu:casing",
+    "nbt": {
+      "variant": "steel_gearbox"
+    }
+  }
+}

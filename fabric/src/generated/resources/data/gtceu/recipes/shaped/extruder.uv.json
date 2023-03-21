@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "c:wire_gt_quadruple/naquadah_alloy"
+    },
+    "E": {
+      "tag": "c:circuit/uv"
+    },
+    "M": {
+      "item": "gtceu:hull.uv"
+    },
+    "P": {
+      "tag": "c:pipe_normal_fluid/naquadah"
+    },
+    "X": {
+      "item": "gtceu:electric.piston.uv"
+    }
+  },
+  "pattern": [
+    "CCE",
+    "XMP",
+    "CCE"
+  ],
+  "result": {
+    "item": "gtceu:extruder.uv"
+  }
+}

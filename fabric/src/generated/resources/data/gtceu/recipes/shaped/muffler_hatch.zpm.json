@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "H": {
+      "item": "gtceu:hull.zpm"
+    },
+    "M": {
+      "item": "gtceu:electric.motor.zpm"
+    },
+    "P": {
+      "tag": "c:pipe_normal_fluid/iridium"
+    },
+    "R": {
+      "tag": "c:rotors/naquadah_alloy"
+    }
+  },
+  "pattern": [
+    "HM",
+    "PR"
+  ],
+  "result": {
+    "item": "gtceu:muffler_hatch.zpm"
+  }
+}

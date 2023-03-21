@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "c:cable_gt_single/niobium_titanium"
+    },
+    "H": {
+      "base": {
+        "item": "gtceu:hull_casing"
+      },
+      "fabric:type": "fabric:nbt",
+      "nbt": {
+        "variant": "ludicrous_voltage"
+      },
+      "strict": true
+    },
+    "L": {
+      "tag": "c:plates/rhodium_plated_palladium"
+    },
+    "P": {
+      "tag": "c:plates/polytetrafluoroethylene"
+    }
+  },
+  "pattern": [
+    "PLP",
+    "CHC"
+  ],
+  "result": {
+    "item": "gtceu:hull.luv"
+  }
+}

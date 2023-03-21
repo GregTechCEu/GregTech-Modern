@@ -1,0 +1,35 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "c:circuit/hv"
+    },
+    "F": {
+      "item": "gtceu:electric.pump.hv"
+    },
+    "G": {
+      "item": "gtceu:field.generator.lv"
+    },
+    "H": {
+      "base": {
+        "item": "gtceu:hermetic_casing"
+      },
+      "fabric:type": "fabric:nbt",
+      "nbt": {
+        "variant": "high_voltage"
+      },
+      "strict": true
+    },
+    "P": {
+      "tag": "c:plates/stainless_steel"
+    }
+  },
+  "pattern": [
+    "CGC",
+    "PHP",
+    "CFC"
+  ],
+  "result": {
+    "item": "gtceu:super_tank.hv"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "forge:cable_gt_single/red_alloy"
+    },
+    "H": {
+      "type": "forge:nbt",
+      "count": 1,
+      "item": "gtceu:hull_casing",
+      "nbt": "{variant:\"ultra_low_voltage\"}"
+    },
+    "L": {
+      "tag": "forge:plates/wrought_iron"
+    },
+    "P": {
+      "tag": "forge:plates/wood"
+    }
+  },
+  "pattern": [
+    "PLP",
+    "CHC"
+  ],
+  "result": {
+    "item": "gtceu:hull.ulv"
+  }
+}

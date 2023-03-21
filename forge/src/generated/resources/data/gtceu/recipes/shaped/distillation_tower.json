@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": {
+      "tag": "forge:pipe_large_fluid/stainless_steel"
+    },
+    "C": {
+      "tag": "forge:circuit/ev"
+    },
+    "F": {
+      "item": "gtceu:electric.pump.hv"
+    },
+    "M": {
+      "item": "gtceu:hull.hv"
+    }
+  },
+  "pattern": [
+    "CBC",
+    "FMF",
+    "CBC"
+  ],
+  "result": {
+    "item": "gtceu:distillation_tower"
+  }
+}

@@ -51,6 +51,11 @@ public class CasingBlock extends VariantBlock<CasingBlock.CasingType> {
         TITANIUM_PIPE("titanium_pipe", GTCEu.id("block/casings/pipe/machine_casing_pipe_titanium")),
         TUNGSTENSTEEL_PIPE("tungstensteel_pipe", GTCEu.id("block/casings/pipe/machine_casing_pipe_tungstensteel"));
 
+
+        // todo primitive pump
+        //PUMP_DECK("pump_deck", GTCEu.id("")),
+        //WOOD_WALL("wood_wall", GTCEu.id(""));
+
         @Getter
         private final String name;
         @Getter

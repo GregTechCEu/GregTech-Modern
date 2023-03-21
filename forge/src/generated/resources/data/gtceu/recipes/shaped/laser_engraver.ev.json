@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "forge:circuit/ev"
+    },
+    "E": {
+      "item": "gtceu:emitter.ev"
+    },
+    "M": {
+      "item": "gtceu:hull.ev"
+    },
+    "P": {
+      "item": "gtceu:electric.piston.ev"
+    },
+    "W": {
+      "tag": "forge:cable_gt_single/aluminium"
+    }
+  },
+  "pattern": [
+    "PEP",
+    "CMC",
+    "WCW"
+  ],
+  "result": {
+    "item": "gtceu:laser_engraver.ev"
+  }
+}

@@ -2,13 +2,13 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "P": {
-      "tag": "minecraft:bolts/steel"
+      "tag": "c:bolts/steel"
     },
     "T": {
       "item": "gtceu:component.glass.tube"
     },
     "W": {
-      "tag": "minecraft:wire_gt_single/copper"
+      "tag": "c:wire_gt_single/copper"
     }
   },
   "pattern": [

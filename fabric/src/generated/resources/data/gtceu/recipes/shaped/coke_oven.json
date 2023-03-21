@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "I": {
+      "tag": "c:plates/iron"
+    },
+    "P": {
+      "base": {
+        "item": "gtceu:casing"
+      },
+      "fabric:type": "fabric:nbt",
+      "nbt": {
+        "variant": "coke_bricks"
+      },
+      "strict": true
+    },
+    "w": {
+      "tag": "c:tool/wrench"
+    }
+  },
+  "pattern": [
+    "PIP",
+    "IwI",
+    "PIP"
+  ],
+  "result": {
+    "item": "gtceu:coke_oven"
+  }
+}

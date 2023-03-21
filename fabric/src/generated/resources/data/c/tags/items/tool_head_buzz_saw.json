@@ -1,0 +1,33 @@
+{
+  "replace": false,
+  "values": [
+    "#c:tool_head_buzz_saw/titanium",
+    "#c:tool_head_buzz_saw/red_steel",
+    "#c:tool_head_buzz_saw/sterling_silver",
+    "#c:tool_head_buzz_saw/hsse",
+    "#c:tool_head_buzz_saw/naquadah_alloy",
+    "#c:tool_head_buzz_saw/bronze",
+    "#c:tool_head_buzz_saw/polybenzimidazole",
+    "#c:tool_head_buzz_saw/blue_steel",
+    "#c:tool_head_buzz_saw/wood",
+    "#c:tool_head_buzz_saw/steel",
+    "#c:tool_head_buzz_saw/invar",
+    "#c:tool_head_buzz_saw/iron",
+    "#c:tool_head_buzz_saw/duranium",
+    "#c:tool_head_buzz_saw/rubber",
+    "#c:tool_head_buzz_saw/tungsten_carbide",
+    "#c:tool_head_buzz_saw/polytetrafluoroethylene",
+    "#c:tool_head_buzz_saw/ultimet",
+    "#c:tool_head_buzz_saw/stainless_steel",
+    "#c:tool_head_buzz_saw/vanadium_steel",
+    "#c:tool_head_buzz_saw/neutronium",
+    "#c:tool_head_buzz_saw/rose_gold",
+    "#c:tool_head_buzz_saw/aluminium",
+    "#c:tool_head_buzz_saw/plastic",
+    "#c:tool_head_buzz_saw/diamond",
+    "#c:tool_head_buzz_saw/wrought_iron",
+    "#c:tool_head_buzz_saw/cobalt_brass",
+    "#c:tool_head_buzz_saw/tungsten_steel",
+    "#c:tool_head_buzz_saw/damascus_steel"
+  ]
+}

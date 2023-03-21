@@ -1,0 +1,64 @@
+{
+  "type": "gtceu:gt_recipe_serializer",
+  "duration": 200,
+  "inputs": {
+    "item": [
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 1,
+          "fabric:type": "gtceu:sized",
+          "ingredient": {
+            "item": "gtceu:hull.mv"
+          }
+        }
+      },
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 2,
+          "fabric:type": "gtceu:sized",
+          "tag": "c:springs/copper"
+        }
+      },
+      {
+        "chance": 1.0,
+        "content": {
+          "item": "gtceu:plate.ultra_low_power_integrated_circuit"
+        }
+      },
+      {
+        "chance": 1.0,
+        "content": {
+          "item": "gtceu:voltage_coil.mv"
+        }
+      }
+    ]
+  },
+  "outputs": {
+    "item": [
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 1,
+          "fabric:type": "gtceu:sized",
+          "ingredient": {
+            "item": "gtceu:energy_hatch.output.mv"
+          }
+        }
+      }
+    ]
+  },
+  "recipe_type": "gtceu:assembler",
+  "tickInputs": {
+    "eu": [
+      {
+        "chance": 1.0,
+        "content": 120
+      }
+    ]
+  }
+}

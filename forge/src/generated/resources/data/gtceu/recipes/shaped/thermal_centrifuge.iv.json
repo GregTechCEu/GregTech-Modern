@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "forge:circuit/iv"
+    },
+    "E": {
+      "item": "gtceu:electric.motor.iv"
+    },
+    "M": {
+      "item": "gtceu:hull.iv"
+    },
+    "O": {
+      "tag": "forge:wire_gt_quadruple/tungsten_steel"
+    },
+    "W": {
+      "tag": "forge:cable_gt_single/platinum"
+    }
+  },
+  "pattern": [
+    "CEC",
+    "OMO",
+    "WEW"
+  ],
+  "result": {
+    "item": "gtceu:thermal_centrifuge.iv"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "c:wire_gt_double/copper"
+    },
+    "E": {
+      "tag": "c:circuit/lv"
+    },
+    "M": {
+      "item": "gtceu:hull.lv"
+    },
+    "W": {
+      "tag": "c:cable_gt_single/tin"
+    }
+  },
+  "pattern": [
+    "ECE",
+    "CMC",
+    "WCW"
+  ],
+  "result": {
+    "item": "gtceu:electric_furnace.lv"
+  }
+}

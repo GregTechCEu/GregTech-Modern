@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "c:circuit/zpm"
+    },
+    "F": {
+      "item": "gtceu:item_filter"
+    },
+    "M": {
+      "item": "gtceu:hull.zpm"
+    },
+    "P": {
+      "item": "gtceu:electric.piston.zpm"
+    },
+    "W": {
+      "tag": "c:cable_gt_single/vanadium_gallium"
+    }
+  },
+  "pattern": [
+    "WFW",
+    "PMP",
+    "CFC"
+  ],
+  "result": {
+    "item": "gtceu:sifter.zpm"
+  }
+}

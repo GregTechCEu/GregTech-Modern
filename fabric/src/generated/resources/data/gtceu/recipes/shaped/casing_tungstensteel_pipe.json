@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "F": {
+      "tag": "c:frames/tungsten_steel"
+    },
+    "I": {
+      "tag": "c:pipe_normal_fluid/tungsten_steel"
+    },
+    "P": {
+      "tag": "c:plates/tungsten_steel"
+    }
+  },
+  "pattern": [
+    "PIP",
+    "IFI",
+    "PIP"
+  ],
+  "result": {
+    "count": 2,
+    "item": "gtceu:casing",
+    "nbt": {
+      "variant": "tungstensteel_pipe"
+    }
+  }
+}

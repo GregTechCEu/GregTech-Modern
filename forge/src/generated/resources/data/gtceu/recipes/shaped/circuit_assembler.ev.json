@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "item": "gtceu:conveyor.module.ev"
+    },
+    "E": {
+      "item": "gtceu:emitter.ev"
+    },
+    "H": {
+      "item": "gtceu:hull.ev"
+    },
+    "I": {
+      "tag": "forge:circuit/iv"
+    },
+    "R": {
+      "item": "gtceu:robot.arm.ev"
+    },
+    "W": {
+      "tag": "forge:cable_gt_single/aluminium"
+    }
+  },
+  "pattern": [
+    "RIE",
+    "CHC",
+    "WIW"
+  ],
+  "result": {
+    "item": "gtceu:circuit_assembler.ev"
+  }
+}

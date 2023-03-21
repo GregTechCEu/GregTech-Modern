@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "forge:circuit/zpm"
+    },
+    "G": {
+      "tag": "forge:dusts/graphite"
+    },
+    "M": {
+      "item": "gtceu:hull.zpm"
+    },
+    "P": {
+      "tag": "forge:plates/naquadah_alloy"
+    },
+    "W": {
+      "tag": "forge:cable_gt_quadruple/vanadium_gallium"
+    }
+  },
+  "pattern": [
+    "WGW",
+    "CMC",
+    "PPP"
+  ],
+  "result": {
+    "item": "gtceu:arc_furnace.zpm"
+  }
+}

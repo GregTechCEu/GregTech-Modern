@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "X": {
+      "tag": "c:planks"
+    },
+    "s": {
+      "tag": "c:tool/saw"
+    }
+  },
+  "pattern": [
+    "   ",
+    " X ",
+    "s  "
+  ],
+  "result": {
+    "item": "gtceu:wooden_form.empty"
+  }
+}

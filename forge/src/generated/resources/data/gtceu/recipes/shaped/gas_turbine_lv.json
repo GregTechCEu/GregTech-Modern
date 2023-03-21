@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "forge:circuit/lv"
+    },
+    "E": {
+      "item": "gtceu:electric.motor.lv"
+    },
+    "M": {
+      "item": "gtceu:hull.lv"
+    },
+    "R": {
+      "tag": "forge:rotors/tin"
+    },
+    "W": {
+      "tag": "forge:cable_gt_single/tin"
+    }
+  },
+  "pattern": [
+    "CRC",
+    "RMR",
+    "EWE"
+  ],
+  "result": {
+    "item": "gtceu:gas_turbine.lv"
+  }
+}

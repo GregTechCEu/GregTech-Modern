@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": {
+      "tag": "forge:springs/naquadah_alloy"
+    },
+    "C": {
+      "tag": "forge:circuit/uv"
+    },
+    "G": {
+      "tag": "forge:glass"
+    },
+    "M": {
+      "item": "gtceu:hull.uv"
+    },
+    "P": {
+      "item": "gtceu:electric.pump.uv"
+    },
+    "W": {
+      "tag": "forge:cable_gt_single/yttrium_barium_cuprate"
+    }
+  },
+  "pattern": [
+    "GBG",
+    "CMC",
+    "WPW"
+  ],
+  "result": {
+    "item": "gtceu:distillery.uv"
+  }
+}

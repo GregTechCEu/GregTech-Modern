@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "D": {
+      "tag": "forge:gems/diamond"
+    },
+    "S": {
+      "tag": "forge:plates/double/steel"
+    },
+    "X": {
+      "tag": "forge:dusts/diamond"
+    }
+  },
+  "pattern": [
+    "XSX",
+    "SDS",
+    "XSX"
+  ],
+  "result": {
+    "item": "gtceu:component.grinder.diamond"
+  }
+}

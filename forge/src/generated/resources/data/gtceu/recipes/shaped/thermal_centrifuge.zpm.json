@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "forge:circuit/zpm"
+    },
+    "E": {
+      "item": "gtceu:electric.motor.zpm"
+    },
+    "M": {
+      "item": "gtceu:hull.zpm"
+    },
+    "O": {
+      "tag": "forge:wire_gt_quadruple/naquadah"
+    },
+    "W": {
+      "tag": "forge:cable_gt_single/vanadium_gallium"
+    }
+  },
+  "pattern": [
+    "CEC",
+    "OMO",
+    "WEW"
+  ],
+  "result": {
+    "item": "gtceu:thermal_centrifuge.zpm"
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": {
+      "tag": "c:tool_head_buzz_saw/naquadah_alloy"
+    },
+    "C": {
+      "tag": "c:circuit/zpm"
+    },
+    "E": {
+      "item": "gtceu:electric.motor.zpm"
+    },
+    "G": {
+      "tag": "c:glass"
+    },
+    "M": {
+      "item": "gtceu:hull.zpm"
+    },
+    "V": {
+      "item": "gtceu:conveyor.module.zpm"
+    },
+    "W": {
+      "tag": "c:cable_gt_single/vanadium_gallium"
+    }
+  },
+  "pattern": [
+    "WCG",
+    "VMB",
+    "CWE"
+  ],
+  "result": {
+    "item": "gtceu:cutter.zpm"
+  }
+}

@@ -7,16 +7,17 @@ import com.mojang.blaze3d.platform.InputConstants;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.Direction;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nullable;
+import java.awt.*;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.*;
 import java.util.List;
-import java.util.NavigableMap;
-import java.util.TreeMap;
 
 
 /**
@@ -132,6 +133,21 @@ public class GTUtil {
         return stack;
     }
 
+    public static <M> M selectItemInList(int index, M replacement, List<M> list, Class<M> minClass) {
+        if (list.isEmpty())
+            return replacement;
+
+        M maybeResult;
+        if (list.size() <= index) {
+            maybeResult = list.get(list.size() - 1);
+        } else if (index < 0) {
+            maybeResult = list.get(0);
+        } else maybeResult = list.get(index);
+
+        if (maybeResult != null) return maybeResult;
+        return replacement;
+    }
+
     public static <M> M getItem(List<? extends M> list, int index, M replacement) {
         if (index >= 0 && index < list.size())
             return list.get(index);
@@ -171,5 +187,26 @@ public class GTUtil {
     @ExpectPlatform
     public static int getItemBurnTime(Item item) {
         throw new AssertionError();
+    }
+
+    /**
+     * Determines dye color nearest to specified RGB color
+     */
+    public static DyeColor determineDyeColor(int rgbColor) {
+        Color c = new Color(rgbColor);
+
+        Map<Double, DyeColor> distances = new HashMap<>();
+        for (DyeColor dyeColor : DyeColor.values()) {
+            Color c2 = new Color(dyeColor.getTextColor());
+
+            double distance = (c.getRed() - c2.getRed()) * (c.getRed() - c2.getRed())
+                    + (c.getGreen() - c2.getGreen()) * (c.getGreen() - c2.getGreen())
+                    + (c.getBlue() - c2.getBlue()) * (c.getBlue() - c2.getBlue());
+
+            distances.put(distance, dyeColor);
+        }
+
+        double min = Collections.min(distances.keySet());
+        return distances.get(min);
     }
 }

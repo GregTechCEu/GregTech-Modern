@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "X": {
+      "item": "gtceu:brick.coke"
+    }
+  },
+  "pattern": [
+    "XX",
+    "XX"
+  ],
+  "result": {
+    "item": "gtceu:casing",
+    "nbt": {
+      "variant": "coke_bricks"
+    }
+  }
+}

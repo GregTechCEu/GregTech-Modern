@@ -1,0 +1,52 @@
+{
+  "type": "gtceu:gt_recipe_serializer",
+  "duration": 25,
+  "inputs": {
+    "fluid": [
+      {
+        "chance": 1.0,
+        "content": {
+          "amount": 1,
+          "fluid": "gtceu:lubricant"
+        }
+      }
+    ],
+    "item": [
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 1,
+          "fabric:type": "gtceu:sized",
+          "ingredient": {
+            "item": "minecraft:stone_bricks"
+          }
+        }
+      }
+    ]
+  },
+  "outputs": {
+    "item": [
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 2,
+          "fabric:type": "gtceu:sized",
+          "ingredient": {
+            "item": "minecraft:stone_brick_slab"
+          }
+        }
+      }
+    ]
+  },
+  "recipe_type": "gtceu:cutter",
+  "tickInputs": {
+    "eu": [
+      {
+        "chance": 1.0,
+        "content": 7
+      }
+    ]
+  }
+}

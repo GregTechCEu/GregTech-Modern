@@ -13,8 +13,25 @@ public class ConfigHolder {
 
     public static class RecipeConfigs {
         public boolean generateLowQualityGems = true;
-        public boolean disableManualCompression = true;
+        public boolean disableManualCompression = false;
         public boolean harderRods = false;
+        public boolean harderBrickRecipes = false;
+        public boolean harderEBFControllerRecipe = false;
+        public boolean nerfWoodCrafting = false;
+        public boolean hardWoodRecipes = false;
+        public boolean hardIronRecipes = true;
+        public boolean hardRedstoneRecipes = false;
+        public boolean hardToolArmorRecipes = false;
+        public boolean hardMiscRecipes = false;
+        public boolean hardGlassRecipes = true;
+        public boolean nerfPaperCrafting = true;
+        public boolean hardAdvancedIronRecipes = false;
+        public boolean hardDyeRecipes = false;
+        public boolean harderCharcoalRecipe = true;
+
+        public boolean flintAndSteelRequireSteel = true;
+        public boolean disableConcreteInWorld = false;
+        public boolean removeVanillaBlockRecipes = false;
     }
 
     public static class WorldGenConfigs {

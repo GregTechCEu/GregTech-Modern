@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "c:wire_gt_double/naquadah_alloy"
+    },
+    "E": {
+      "tag": "c:circuit/uv"
+    },
+    "M": {
+      "item": "gtceu:hull.uv"
+    },
+    "W": {
+      "tag": "c:cable_gt_single/yttrium_barium_cuprate"
+    }
+  },
+  "pattern": [
+    "ECE",
+    "CMC",
+    "WCW"
+  ],
+  "result": {
+    "item": "gtceu:electric_furnace.uv"
+  }
+}

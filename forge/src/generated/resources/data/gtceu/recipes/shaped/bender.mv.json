@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "forge:circuit/mv"
+    },
+    "E": {
+      "item": "gtceu:electric.motor.mv"
+    },
+    "M": {
+      "item": "gtceu:hull.mv"
+    },
+    "P": {
+      "item": "gtceu:electric.piston.mv"
+    },
+    "W": {
+      "tag": "forge:cable_gt_single/copper"
+    },
+    "w": {
+      "tag": "forge:tool/wrench"
+    }
+  },
+  "pattern": [
+    "PwP",
+    "CMC",
+    "EWE"
+  ],
+  "result": {
+    "item": "gtceu:bender.mv"
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "F": {
+      "tag": "c:frames/bronze"
+    },
+    "I": {
+      "tag": "c:pipe_normal_fluid/bronze"
+    },
+    "P": {
+      "tag": "c:plates/bronze"
+    }
+  },
+  "pattern": [
+    "PIP",
+    "IFI",
+    "PIP"
+  ],
+  "result": {
+    "count": 2,
+    "item": "gtceu:casing",
+    "nbt": {
+      "variant": "bronze_pipe"
+    }
+  }
+}

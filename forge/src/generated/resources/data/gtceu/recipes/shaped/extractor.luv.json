@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "forge:circuit/luv"
+    },
+    "E": {
+      "item": "gtceu:electric.piston.luv"
+    },
+    "G": {
+      "tag": "forge:glass"
+    },
+    "M": {
+      "item": "gtceu:hull.luv"
+    },
+    "P": {
+      "item": "gtceu:electric.pump.luv"
+    },
+    "W": {
+      "tag": "forge:cable_gt_single/niobium_titanium"
+    }
+  },
+  "pattern": [
+    "GCG",
+    "EMP",
+    "WCW"
+  ],
+  "result": {
+    "item": "gtceu:extractor.luv"
+  }
+}

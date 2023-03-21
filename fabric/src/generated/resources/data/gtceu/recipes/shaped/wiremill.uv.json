@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "c:circuit/uv"
+    },
+    "E": {
+      "item": "gtceu:electric.motor.uv"
+    },
+    "M": {
+      "item": "gtceu:hull.uv"
+    },
+    "W": {
+      "tag": "c:cable_gt_single/yttrium_barium_cuprate"
+    }
+  },
+  "pattern": [
+    "EWE",
+    "CMC",
+    "EWE"
+  ],
+  "result": {
+    "item": "gtceu:wiremill.uv"
+  }
+}

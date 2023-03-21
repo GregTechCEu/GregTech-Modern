@@ -5,10 +5,10 @@
       "item": "gtceu:circuit_board.basic"
     },
     "C": {
-      "tag": "minecraft:cable_gt_single/red_alloy"
+      "tag": "c:cable_gt_single/red_alloy"
     },
     "P": {
-      "tag": "minecraft:plates/steel"
+      "tag": "c:plates/steel"
     },
     "R": {
       "item": "gtceu:component.resistor"

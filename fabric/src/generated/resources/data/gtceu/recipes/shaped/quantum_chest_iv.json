@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "c:circuit/iv"
+    },
+    "F": {
+      "item": "gtceu:field.generator.ev"
+    },
+    "H": {
+      "item": "gtceu:hull.iv"
+    },
+    "P": {
+      "tag": "c:plates/dense/tungsten_steel"
+    }
+  },
+  "pattern": [
+    "CPC",
+    "PHP",
+    "CFC"
+  ],
+  "result": {
+    "item": "gtceu:quantum_chest.iv"
+  }
+}

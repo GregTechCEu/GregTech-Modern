@@ -89,6 +89,11 @@ public class TagPrefix {
             .materialIconType(MaterialIconType.ore)
             .unificationEnabled(true)
             .generationCondition(hasOreProperty);
+    public static final TagPrefix oreDeepslate = new TagPrefix("oreDeepslate", "ores", "ores/deepslate")
+            .langValue("Deepslate %s Ore")
+            .materialIconType(MaterialIconType.ore)
+            .unificationEnabled(true)
+            .generationCondition(hasOreProperty);
     // In case of an Sand-Ores Mod. Ore -> Material is a Oneway Operation!
     public static final TagPrefix oreSand = new TagPrefix("oreSand", "ores", "ores/sand")
             .registerOre(Blocks.SAND::defaultBlockState)
@@ -472,28 +477,12 @@ public class TagPrefix {
             .generateItem(true)
             .generationCondition(hasRotorProperty.and(m -> m.hasFlags(MaterialFlags.GENERATE_BOLT_SCREW, MaterialFlags.GENERATE_PLATE) && !m.hasProperty(PropertyKey.GEM)));
 
-    public static final TagPrefix paneGlass = new TagPrefix("paneGlass", "glass_panes")
-            .langValue("%s Glass Pane")
-            .materialType(MarkerMaterials.Color.Colorless)
-            .selfReferencing(true);
-
-    public static final TagPrefix blockGlass = new TagPrefix("blockGlass", "glass")
-            .langValue("%s Glass")
-            .materialType(MarkerMaterials.Color.Colorless)
-            .selfReferencing(true);
-
     // Storage Block consisting out of 9 Ingots/Gems/Dusts. Introduced by CovertJaguar
     public static final TagPrefix block = new TagPrefix("block", "storage_blocks")
             .langValue("Block of %s")
             .materialAmount(GTValues.M * 9)
             .materialIconType(MaterialIconType.block)
             .unificationEnabled(true);
-
-    // Prefix used for Logs. Usually as "logWood". Introduced by Eloraam
-    public static final TagPrefix log = new TagPrefix("log","logs").vanillaTag(true);
-
-    // Prefix for Planks. Usually "plankWood". Introduced by Eloraam
-    public static final TagPrefix plank = new TagPrefix("plank","planks").vanillaTag(true);
 
     // Prefix to determine which kind of Rock this is.
     public static final TagPrefix stone = new TagPrefix("stone")
@@ -539,9 +528,16 @@ public class TagPrefix {
     public static final TagPrefix cableGtSingle = new TagPrefix("cableGtSingle").langValue("1x %s Cable").materialAmount(GTValues.M / 2).unificationEnabled(true);
 
     // Special Prefix used mainly for the Crafting Handler.
-    public static final TagPrefix craftingLens = new TagPrefix("craftingLens").langValue("Crafting %s Lens").isMarkerPrefix(true);;
     // Used for the 16 dyes. Introduced by Eloraam
     public static final TagPrefix dye = new TagPrefix("dye","dyes").isMarkerPrefix(true);
+
+    // Used for when a crafting-only tag should be added to a random assortment of items.
+    // Ex:
+    // - Chest and Trapped Chest
+    // - Piston and Sticky Piston
+    //
+    // Commonly used with MarkerMaterials.Misc though not exclusively
+    public static final TagPrefix crafting = new TagPrefix("crafting").isMarkerPrefix(true);
 
     /**
      * Electric Components.

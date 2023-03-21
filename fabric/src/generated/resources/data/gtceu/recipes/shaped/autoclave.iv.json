@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "c:circuit/iv"
+    },
+    "G": {
+      "tag": "c:glass"
+    },
+    "I": {
+      "tag": "c:plates/tungsten_steel"
+    },
+    "M": {
+      "item": "gtceu:hull.iv"
+    },
+    "P": {
+      "item": "gtceu:electric.pump.iv"
+    }
+  },
+  "pattern": [
+    "IGI",
+    "IMI",
+    "CPC"
+  ],
+  "result": {
+    "item": "gtceu:autoclave.iv"
+  }
+}

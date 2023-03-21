@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "forge:wire_gt_double/kanthal"
+    },
+    "E": {
+      "tag": "forge:circuit/hv"
+    },
+    "M": {
+      "item": "gtceu:hull.hv"
+    },
+    "W": {
+      "tag": "forge:cable_gt_single/gold"
+    }
+  },
+  "pattern": [
+    "ECE",
+    "CMC",
+    "WCW"
+  ],
+  "result": {
+    "item": "gtceu:electric_furnace.hv"
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "c:circuit/ev"
+    },
+    "E": {
+      "item": "gtceu:emitter.iv"
+    },
+    "F": {
+      "tag": "c:frames/tungsten_steel"
+    },
+    "M": {
+      "item": "gtceu:electric.motor.iv"
+    },
+    "P": {
+      "item": "gtceu:plate.high_power_integrated_circuit"
+    },
+    "S": {
+      "item": "gtceu:sensor.iv"
+    }
+  },
+  "pattern": [
+    "CPC",
+    "SFE",
+    "CMC"
+  ],
+  "result": {
+    "count": 2,
+    "item": "gtceu:casing",
+    "nbt": {
+      "variant": "assembly_control"
+    }
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "A": {
+      "item": "minecraft:anvil"
+    },
+    "C": {
+      "tag": "c:circuit/hv"
+    },
+    "M": {
+      "item": "gtceu:hull.hv"
+    },
+    "P": {
+      "item": "gtceu:electric.piston.hv"
+    },
+    "W": {
+      "tag": "c:cable_gt_single/gold"
+    }
+  },
+  "pattern": [
+    "WPW",
+    "CMC",
+    "WAW"
+  ],
+  "result": {
+    "item": "gtceu:forge_hammer.hv"
+  }
+}

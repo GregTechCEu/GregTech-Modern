@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "M": {
+      "item": "gtceu:hull.iv"
+    },
+    "S": {
+      "tag": "c:sticks/vanadium_gallium"
+    },
+    "W": {
+      "tag": "c:cable_gt_single/platinum"
+    },
+    "Z": {
+      "tag": "c:wire_gt_quadruple/graphene"
+    }
+  },
+  "pattern": [
+    "ZSZ",
+    "WMW",
+    "ZSZ"
+  ],
+  "result": {
+    "item": "gtceu:polarizer.iv"
+  }
+}

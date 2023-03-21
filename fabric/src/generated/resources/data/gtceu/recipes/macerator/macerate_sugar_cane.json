@@ -1,0 +1,35 @@
+{
+  "type": "gtceu:gt_recipe_serializer",
+  "duration": 400,
+  "inputs": {
+    "item": [
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 1,
+          "fabric:type": "gtceu:sized",
+          "ingredient": {
+            "item": "minecraft:sugar_cane"
+          }
+        }
+      }
+    ]
+  },
+  "outputs": {
+    "item": [
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 1,
+          "fabric:type": "gtceu:sized",
+          "ingredient": {
+            "item": "minecraft:sugar"
+          }
+        }
+      }
+    ]
+  },
+  "recipe_type": "gtceu:macerator"
+}

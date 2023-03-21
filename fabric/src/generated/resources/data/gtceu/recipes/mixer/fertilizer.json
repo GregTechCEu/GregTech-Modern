@@ -29,7 +29,7 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "minecraft:dusts/wood"
+          "tag": "c:dusts/wood"
         }
       },
       {

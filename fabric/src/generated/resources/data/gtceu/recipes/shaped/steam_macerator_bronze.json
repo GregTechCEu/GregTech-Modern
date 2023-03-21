@@ -1,0 +1,32 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "D": {
+      "tag": "c:gems/diamond"
+    },
+    "M": {
+      "base": {
+        "item": "gtceu:steam_casing"
+      },
+      "fabric:type": "fabric:nbt",
+      "nbt": {
+        "variant": "bronze_hull"
+      },
+      "strict": true
+    },
+    "P": {
+      "tag": "c:crafting/piston"
+    },
+    "X": {
+      "tag": "c:pipe_small_fluid/bronze"
+    }
+  },
+  "pattern": [
+    "DXD",
+    "XMX",
+    "PXP"
+  ],
+  "result": {
+    "item": "gtceu:steam_macerator.bronze"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "forge:cable_gt_single/gold"
+    },
+    "H": {
+      "item": "gtceu:hull.hv"
+    },
+    "T": {
+      "tag": "forge:cable_gt_single/aluminium"
+    },
+    "W": {
+      "item": "gtceu:plate.low_power_integrated_circuit"
+    }
+  },
+  "pattern": [
+    "WCC",
+    "TH ",
+    "WCC"
+  ],
+  "result": {
+    "item": "gtceu:transformer.hv"
+  }
+}

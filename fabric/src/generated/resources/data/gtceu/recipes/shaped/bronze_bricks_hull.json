@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": {
+      "item": "minecraft:bricks"
+    },
+    "P": {
+      "tag": "c:plates/bronze"
+    },
+    "h": {
+      "tag": "c:tool/hammer"
+    }
+  },
+  "pattern": [
+    "PPP",
+    "PhP",
+    "BBB"
+  ],
+  "result": {
+    "item": "gtceu:steam_casing",
+    "nbt": {
+      "variant": "bronze_bricks_hull"
+    }
+  }
+}

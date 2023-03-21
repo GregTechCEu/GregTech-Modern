@@ -1,0 +1,24 @@
+{
+  "replace": false,
+  "values": [
+    "#c:springs/yttrium_barium_cuprate",
+    "#c:springs/niobium_titanium",
+    "#c:springs/europium",
+    "#c:springs/kanthal",
+    "#c:springs/copper",
+    "#c:springs/gold",
+    "#c:springs/lead",
+    "#c:springs/iron",
+    "#c:springs/steel",
+    "#c:springs/nichrome",
+    "#c:springs/hssg",
+    "#c:springs/aluminium",
+    "#c:springs/naquadah_alloy",
+    "#c:springs/tin",
+    "#c:springs/tungsten",
+    "#c:springs/cupronickel",
+    "#c:springs/naquadah",
+    "#c:springs/tungsten_steel",
+    "#c:springs/vanadium_gallium"
+  ]
+}

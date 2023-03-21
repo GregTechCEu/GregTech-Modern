@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "c:circuit/luv"
+    },
+    "M": {
+      "item": "gtceu:hull.luv"
+    },
+    "S": {
+      "tag": "c:sticks/vanadium_gallium"
+    },
+    "V": {
+      "item": "gtceu:conveyor.module.luv"
+    },
+    "W": {
+      "tag": "c:cable_gt_single/niobium_titanium"
+    },
+    "Z": {
+      "tag": "c:wire_gt_quadruple/niobium_nitride"
+    }
+  },
+  "pattern": [
+    "VWZ",
+    "WMS",
+    "CWZ"
+  ],
+  "result": {
+    "item": "gtceu:electromagnetic_separator.luv"
+  }
+}

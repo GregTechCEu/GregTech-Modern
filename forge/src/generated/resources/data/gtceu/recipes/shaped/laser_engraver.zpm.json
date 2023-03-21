@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "forge:circuit/zpm"
+    },
+    "E": {
+      "item": "gtceu:emitter.zpm"
+    },
+    "M": {
+      "item": "gtceu:hull.zpm"
+    },
+    "P": {
+      "item": "gtceu:electric.piston.zpm"
+    },
+    "W": {
+      "tag": "forge:cable_gt_single/vanadium_gallium"
+    }
+  },
+  "pattern": [
+    "PEP",
+    "CMC",
+    "WCW"
+  ],
+  "result": {
+    "item": "gtceu:laser_engraver.zpm"
+  }
+}

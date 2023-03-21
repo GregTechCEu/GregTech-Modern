@@ -8,16 +8,16 @@
       "item": "minecraft:ender_pearl"
     },
     "P": {
-      "tag": "minecraft:pipe_normal_fluid/bronze"
+      "tag": "c:pipe_normal_fluid/bronze"
     },
     "S": {
-      "tag": "minecraft:screws/steel"
+      "tag": "c:screws/steel"
     },
     "d": {
-      "tag": "minecraft:tool/screwdriver"
+      "tag": "c:tool/screwdriver"
     },
     "w": {
-      "tag": "minecraft:tool/wrench"
+      "tag": "c:tool/wrench"
     }
   },
   "pattern": [

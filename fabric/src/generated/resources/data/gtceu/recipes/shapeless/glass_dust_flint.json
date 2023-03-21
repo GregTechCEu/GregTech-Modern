@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "tag": "c:dusts/quartz_sand"
+    },
+    {
+      "tag": "c:dusts/tiny/flint"
+    }
+  ],
+  "result": {
+    "item": "gtceu:dust.glass"
+  }
+}

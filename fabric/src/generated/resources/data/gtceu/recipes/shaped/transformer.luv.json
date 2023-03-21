@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "c:cable_gt_single/niobium_titanium"
+    },
+    "H": {
+      "item": "gtceu:hull.luv"
+    },
+    "T": {
+      "tag": "c:cable_gt_single/vanadium_gallium"
+    },
+    "W": {
+      "item": "gtceu:plate.high_power_integrated_circuit"
+    }
+  },
+  "pattern": [
+    "WCC",
+    "TH ",
+    "WCC"
+  ],
+  "result": {
+    "item": "gtceu:transformer.luv"
+  }
+}

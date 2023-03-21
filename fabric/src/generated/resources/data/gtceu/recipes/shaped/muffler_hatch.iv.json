@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "H": {
+      "item": "gtceu:hull.iv"
+    },
+    "M": {
+      "item": "gtceu:electric.motor.iv"
+    },
+    "P": {
+      "tag": "c:pipe_normal_fluid/tungsten_steel"
+    },
+    "R": {
+      "tag": "c:rotors/tungsten_steel"
+    }
+  },
+  "pattern": [
+    "HM",
+    "PR"
+  ],
+  "result": {
+    "item": "gtceu:muffler_hatch.iv"
+  }
+}

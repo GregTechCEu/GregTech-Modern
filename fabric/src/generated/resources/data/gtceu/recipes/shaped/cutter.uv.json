@@ -1,0 +1,34 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": {
+      "tag": "c:tool_head_buzz_saw/duranium"
+    },
+    "C": {
+      "tag": "c:circuit/uv"
+    },
+    "E": {
+      "item": "gtceu:electric.motor.uv"
+    },
+    "G": {
+      "tag": "c:glass"
+    },
+    "M": {
+      "item": "gtceu:hull.uv"
+    },
+    "V": {
+      "item": "gtceu:conveyor.module.uv"
+    },
+    "W": {
+      "tag": "c:cable_gt_single/yttrium_barium_cuprate"
+    }
+  },
+  "pattern": [
+    "WCG",
+    "VMB",
+    "CWE"
+  ],
+  "result": {
+    "item": "gtceu:cutter.uv"
+  }
+}

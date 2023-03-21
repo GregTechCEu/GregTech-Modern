@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": {
+      "tag": "c:springs/copper"
+    },
+    "C": {
+      "tag": "c:circuit/lv"
+    },
+    "G": {
+      "tag": "c:glass"
+    },
+    "M": {
+      "item": "gtceu:hull.lv"
+    },
+    "P": {
+      "item": "gtceu:electric.pump.lv"
+    },
+    "W": {
+      "tag": "c:cable_gt_single/tin"
+    }
+  },
+  "pattern": [
+    "GBG",
+    "CMC",
+    "WPW"
+  ],
+  "result": {
+    "item": "gtceu:distillery.lv"
+  }
+}

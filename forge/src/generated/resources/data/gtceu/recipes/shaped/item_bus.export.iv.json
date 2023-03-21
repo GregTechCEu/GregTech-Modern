@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "forge:chests/wooden"
+    },
+    "M": {
+      "item": "gtceu:hull.iv"
+    }
+  },
+  "pattern": [
+    " M",
+    " C"
+  ],
+  "result": {
+    "item": "gtceu:item_bus.export.iv"
+  }
+}

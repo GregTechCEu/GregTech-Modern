@@ -1,0 +1,77 @@
+{
+  "type": "gtceu:gt_recipe_serializer",
+  "duration": 300,
+  "inputs": {
+    "item": [
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 1,
+          "fabric:type": "gtceu:sized",
+          "tag": "c:dusts/iron"
+        }
+      },
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 1,
+          "fabric:type": "gtceu:sized",
+          "tag": "c:dusts/aluminium"
+        }
+      },
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 1,
+          "fabric:type": "gtceu:sized",
+          "tag": "c:dusts/chrome"
+        }
+      },
+      {
+        "chance": 0.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 1,
+          "fabric:type": "gtceu:sized",
+          "ingredient": {
+            "base": {
+              "item": "gtceu:circuit.integrated"
+            },
+            "fabric:type": "fabric:nbt",
+            "nbt": {
+              "Configuration": 1
+            },
+            "strict": true
+          }
+        }
+      }
+    ]
+  },
+  "outputs": {
+    "item": [
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 3,
+          "fabric:type": "gtceu:sized",
+          "ingredient": {
+            "item": "gtceu:dust.kanthal"
+          }
+        }
+      }
+    ]
+  },
+  "recipe_type": "gtceu:mixer",
+  "tickInputs": {
+    "eu": [
+      {
+        "chance": 1.0,
+        "content": 120
+      }
+    ]
+  }
+}

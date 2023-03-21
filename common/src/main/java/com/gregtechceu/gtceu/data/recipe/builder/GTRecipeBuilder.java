@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
+import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeSerializer;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
@@ -215,6 +216,14 @@ public class GTRecipeBuilder {
         return inputItems(ChemicalHelper.getTag(orePrefix, material), count);
     }
 
+    public GTRecipeBuilder inputItems(MachineDefinition machine) {
+        return inputItems(machine, 1);
+    }
+
+    public GTRecipeBuilder inputItems(MachineDefinition machine, int count) {
+        return inputItems(machine.asStack(count));
+    }
+
     public GTRecipeBuilder outputItems(ItemStack... outputs) {
         for (ItemStack itemStack : outputs) {
             if (itemStack.isEmpty()) {
@@ -247,6 +256,14 @@ public class GTRecipeBuilder {
 
     public GTRecipeBuilder outputItems(TagPrefix orePrefix, Material material, int count) {
         return outputItems(ChemicalHelper.get(orePrefix, material, count));
+    }
+
+    public GTRecipeBuilder outputItems(MachineDefinition machine) {
+        return outputItems(machine, 1);
+    }
+
+    public GTRecipeBuilder outputItems(MachineDefinition machine, int count) {
+        return outputItems(machine.asStack(count));
     }
 
     public GTRecipeBuilder notConsumable(ItemStack itemStack) {

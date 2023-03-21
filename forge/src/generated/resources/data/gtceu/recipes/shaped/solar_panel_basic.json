@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "forge:circuit/lv"
+    },
+    "P": {
+      "item": "gtceu:carbon.plate"
+    },
+    "W": {
+      "item": "gtceu:wafer.silicon"
+    }
+  },
+  "pattern": [
+    "WGW",
+    "CPC"
+  ],
+  "result": {
+    "item": "gtceu:cover.solar.panel"
+  }
+}

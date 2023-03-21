@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "forge:circuit/uhv"
+    },
+    "F": {
+      "item": "gtceu:field.generator.uv"
+    },
+    "H": {
+      "item": "gtceu:hull.uhv"
+    },
+    "P": {
+      "tag": "forge:plates/neutronium"
+    }
+  },
+  "pattern": [
+    "CPC",
+    "PHP",
+    "CFC"
+  ],
+  "result": {
+    "item": "gtceu:quantum_chest.uhv"
+  }
+}

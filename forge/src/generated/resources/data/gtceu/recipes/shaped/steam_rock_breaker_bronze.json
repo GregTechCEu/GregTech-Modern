@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "D": {
+      "tag": "forge:gems/diamond"
+    },
+    "M": {
+      "type": "forge:nbt",
+      "count": 1,
+      "item": "gtceu:steam_casing",
+      "nbt": "{variant:\"bronze_hull\"}"
+    },
+    "X": {
+      "tag": "forge:pipe_small_fluid/bronze"
+    }
+  },
+  "pattern": [
+    "PXP",
+    "XMX",
+    "DXD"
+  ],
+  "result": {
+    "item": "gtceu:steam_rock_crusher.bronze"
+  }
+}

@@ -1,9 +1,0 @@
-{
-  "replace": false,
-  "values": [
-    "#minecraft:plates/dense/rhodium_plated_palladium",
-    "#minecraft:plates/dense/naquadah_alloy",
-    "#minecraft:plates/dense/darmstadtium",
-    "#minecraft:plates/dense/tungsten_steel"
-  ]
-}

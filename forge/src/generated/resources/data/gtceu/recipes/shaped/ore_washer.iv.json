@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "forge:circuit/iv"
+    },
+    "E": {
+      "item": "gtceu:electric.motor.iv"
+    },
+    "G": {
+      "tag": "forge:glass"
+    },
+    "M": {
+      "item": "gtceu:hull.iv"
+    },
+    "R": {
+      "tag": "forge:rotors/tungsten_steel"
+    },
+    "W": {
+      "tag": "forge:cable_gt_single/platinum"
+    }
+  },
+  "pattern": [
+    "RGR",
+    "CEC",
+    "WMW"
+  ],
+  "result": {
+    "item": "gtceu:ore_washer.iv"
+  }
+}

@@ -5,13 +5,13 @@
       "item": "gtceu:quantumeye"
     },
     "P": {
-      "tag": "minecraft:plates/titanium"
+      "tag": "c:plates/titanium"
     },
     "R": {
-      "tag": "minecraft:sticks/platinum"
+      "tag": "c:sticks/platinum"
     },
     "X": {
-      "tag": "minecraft:circuit/ev"
+      "tag": "c:circuit/ev"
     }
   },
   "pattern": [

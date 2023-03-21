@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "c:chests"
+    },
+    "M": {
+      "item": "gtceu:hull.luv"
+    }
+  },
+  "pattern": [
+    " M",
+    " C"
+  ],
+  "result": {
+    "item": "gtceu:item_bus.export.luv"
+  }
+}

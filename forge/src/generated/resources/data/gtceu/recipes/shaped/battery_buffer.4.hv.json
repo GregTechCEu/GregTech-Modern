@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "M": {
+      "item": "gtceu:hull.hv"
+    },
+    "T": {
+      "tag": "forge:chests/wooden"
+    },
+    "W": {
+      "tag": "forge:wire_gt_quadruple/gold"
+    }
+  },
+  "pattern": [
+    "WTW",
+    "WMW"
+  ],
+  "result": {
+    "item": "gtceu:battery_buffer.4.hv"
+  }
+}

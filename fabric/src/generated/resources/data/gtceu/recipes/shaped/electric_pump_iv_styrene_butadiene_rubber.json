@@ -2,28 +2,28 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "minecraft:cable_gt_single/tungsten"
+      "tag": "c:cable_gt_single/tungsten"
     },
     "M": {
       "item": "gtceu:electric.motor.iv"
     },
     "P": {
-      "tag": "minecraft:pipe_normal_fluid/tungsten_steel"
+      "tag": "c:pipe_normal_fluid/tungsten_steel"
     },
     "R": {
-      "tag": "minecraft:rings/styrene_butadiene_rubber"
+      "tag": "c:rings/styrene_butadiene_rubber"
     },
     "S": {
-      "tag": "minecraft:screws/tungsten_steel"
+      "tag": "c:screws/tungsten_steel"
     },
     "X": {
-      "tag": "minecraft:rotors/tungsten_steel"
+      "tag": "c:rotors/tungsten_steel"
     },
     "d": {
-      "tag": "minecraft:tool/screwdriver"
+      "tag": "c:tool/screwdriver"
     },
     "w": {
-      "tag": "minecraft:tool/wrench"
+      "tag": "c:tool/wrench"
     }
   },
   "pattern": [

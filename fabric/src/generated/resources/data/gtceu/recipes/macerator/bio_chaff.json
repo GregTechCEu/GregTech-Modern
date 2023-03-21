@@ -1,16 +1,16 @@
 {
   "type": "gtceu:gt_recipe_serializer",
-  "duration": 300,
+  "duration": 200,
   "inputs": {
     "item": [
       {
         "chance": 1.0,
         "content": {
           "type": "gtceu:sized",
-          "count": 1,
+          "count": 2,
           "fabric:type": "gtceu:sized",
           "ingredient": {
-            "item": "gtceu:bio_chaff"
+            "item": "gtceu:plant_ball"
           }
         }
       }
@@ -25,7 +25,40 @@
           "count": 1,
           "fabric:type": "gtceu:sized",
           "ingredient": {
-            "item": "minecraft:dirt"
+            "item": "gtceu:bio_chaff"
+          }
+        }
+      },
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 1,
+          "fabric:type": "gtceu:sized",
+          "ingredient": {
+            "item": "gtceu:bio_chaff"
+          }
+        }
+      },
+      {
+        "chance": 0.5,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 1,
+          "fabric:type": "gtceu:sized",
+          "ingredient": {
+            "item": "gtceu:bio_chaff"
+          }
+        }
+      },
+      {
+        "chance": 0.25,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 1,
+          "fabric:type": "gtceu:sized",
+          "ingredient": {
+            "item": "gtceu:bio_chaff"
           }
         }
       }

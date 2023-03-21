@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "F": {
+      "tag": "forge:frames/titanium"
+    },
+    "P": {
+      "tag": "forge:plates/titanium"
+    },
+    "S": {
+      "tag": "forge:sticks/titanium"
+    }
+  },
+  "pattern": [
+    "PSP",
+    "SFS",
+    "PSP"
+  ],
+  "result": {
+    "count": 2,
+    "item": "gtceu:boiler_firebox_casing",
+    "nbt": {
+      "variant": "titanium_firebox"
+    }
+  }
+}

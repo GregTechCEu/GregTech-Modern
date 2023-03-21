@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "forge:circuit/hv"
+    },
+    "H": {
+      "item": "gtceu:hull.hv"
+    },
+    "M": {
+      "item": "gtceu:electric.motor.hv"
+    },
+    "P": {
+      "item": "gtceu:large.polytetrafluoroethylene"
+    },
+    "R": {
+      "item": "gtceu:rotor.stainless_steel"
+    }
+  },
+  "pattern": [
+    "CRC",
+    "PMP",
+    "CHC"
+  ],
+  "result": {
+    "item": "gtceu:large_chemical_reactor"
+  }
+}

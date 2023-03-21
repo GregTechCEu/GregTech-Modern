@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "F": {
+      "tag": "forge:pipe_large_fluid/niobium_titanium"
+    },
+    "P": {
+      "tag": "forge:plates/naquadah_alloy"
+    }
+  },
+  "pattern": [
+    "PPP",
+    "PFP",
+    "PPP"
+  ],
+  "result": {
+    "item": "gtceu:hermetic_casing",
+    "nbt": {
+      "variant": "zpm_voltage"
+    }
+  }
+}

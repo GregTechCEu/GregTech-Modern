@@ -1,0 +1,29 @@
+{
+  "replace": false,
+  "values": [
+    "#c:pipe_tiny_fluid/polybenzimidazole",
+    "#c:pipe_tiny_fluid/chrome",
+    "#c:pipe_tiny_fluid/copper",
+    "#c:pipe_tiny_fluid/niobium_titanium",
+    "#c:pipe_tiny_fluid/bronze",
+    "#c:pipe_tiny_fluid/aluminium",
+    "#c:pipe_tiny_fluid/neutronium",
+    "#c:pipe_tiny_fluid/tungsten_steel",
+    "#c:pipe_tiny_fluid/naquadah",
+    "#c:pipe_tiny_fluid/vanadium_steel",
+    "#c:pipe_tiny_fluid/tungsten",
+    "#c:pipe_tiny_fluid/steel",
+    "#c:pipe_tiny_fluid/duranium",
+    "#c:pipe_tiny_fluid/tungsten_carbide",
+    "#c:pipe_tiny_fluid/tin_alloy",
+    "#c:pipe_tiny_fluid/polytetrafluoroethylene",
+    "#c:pipe_tiny_fluid/stainless_steel",
+    "#c:pipe_tiny_fluid/plastic",
+    "#c:pipe_tiny_fluid/europium",
+    "#c:pipe_tiny_fluid/iridium",
+    "#c:pipe_tiny_fluid/lead",
+    "#c:pipe_tiny_fluid/titanium",
+    "#c:pipe_tiny_fluid/potin",
+    "#c:pipe_tiny_fluid/gold"
+  ]
+}

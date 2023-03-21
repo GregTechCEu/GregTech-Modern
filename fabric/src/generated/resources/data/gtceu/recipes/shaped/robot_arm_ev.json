@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "minecraft:cable_gt_single/aluminium"
+      "tag": "c:cable_gt_single/aluminium"
     },
     "M": {
       "item": "gtceu:electric.motor.ev"
@@ -11,10 +11,10 @@
       "item": "gtceu:electric.piston.ev"
     },
     "R": {
-      "tag": "minecraft:sticks/titanium"
+      "tag": "c:sticks/titanium"
     },
     "X": {
-      "tag": "minecraft:circuit/ev"
+      "tag": "c:circuit/ev"
     }
   },
   "pattern": [

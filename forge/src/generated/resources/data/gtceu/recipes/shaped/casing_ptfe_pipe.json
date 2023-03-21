@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "F": {
+      "tag": "forge:frames/polytetrafluoroethylene"
+    },
+    "I": {
+      "tag": "forge:pipe_normal_fluid/polytetrafluoroethylene"
+    },
+    "P": {
+      "tag": "forge:plates/polytetrafluoroethylene"
+    }
+  },
+  "pattern": [
+    "PIP",
+    "IFI",
+    "PIP"
+  ],
+  "result": {
+    "count": 2,
+    "item": "gtceu:casing",
+    "nbt": {
+      "variant": "polytetrafluoroethylene_pipe"
+    }
+  }
+}

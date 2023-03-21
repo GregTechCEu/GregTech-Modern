@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "c:circuit/zpm"
+    },
+    "M": {
+      "item": "gtceu:hull.zpm"
+    },
+    "S": {
+      "tag": "c:sticks/vanadium_gallium"
+    },
+    "V": {
+      "item": "gtceu:conveyor.module.zpm"
+    },
+    "W": {
+      "tag": "c:cable_gt_single/vanadium_gallium"
+    },
+    "Z": {
+      "tag": "c:wire_gt_octal/vanadium_gallium"
+    }
+  },
+  "pattern": [
+    "VWZ",
+    "WMS",
+    "CWZ"
+  ],
+  "result": {
+    "item": "gtceu:electromagnetic_separator.zpm"
+  }
+}

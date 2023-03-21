@@ -1,0 +1,29 @@
+{
+  "replace": false,
+  "values": [
+    "#c:pipe_nonuple_fluid/duranium",
+    "#c:pipe_nonuple_fluid/stainless_steel",
+    "#c:pipe_nonuple_fluid/tungsten_carbide",
+    "#c:pipe_nonuple_fluid/iridium",
+    "#c:pipe_nonuple_fluid/naquadah",
+    "#c:pipe_nonuple_fluid/vanadium_steel",
+    "#c:pipe_nonuple_fluid/polytetrafluoroethylene",
+    "#c:pipe_nonuple_fluid/tungsten",
+    "#c:pipe_nonuple_fluid/aluminium",
+    "#c:pipe_nonuple_fluid/plastic",
+    "#c:pipe_nonuple_fluid/neutronium",
+    "#c:pipe_nonuple_fluid/tungsten_steel",
+    "#c:pipe_nonuple_fluid/titanium",
+    "#c:pipe_nonuple_fluid/copper",
+    "#c:pipe_nonuple_fluid/chrome",
+    "#c:pipe_nonuple_fluid/bronze",
+    "#c:pipe_nonuple_fluid/polybenzimidazole",
+    "#c:pipe_nonuple_fluid/niobium_titanium",
+    "#c:pipe_nonuple_fluid/tin_alloy",
+    "#c:pipe_nonuple_fluid/gold",
+    "#c:pipe_nonuple_fluid/potin",
+    "#c:pipe_nonuple_fluid/europium",
+    "#c:pipe_nonuple_fluid/lead",
+    "#c:pipe_nonuple_fluid/steel"
+  ]
+}

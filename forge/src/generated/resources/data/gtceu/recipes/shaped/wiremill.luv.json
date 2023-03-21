@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "forge:circuit/luv"
+    },
+    "E": {
+      "item": "gtceu:electric.motor.luv"
+    },
+    "M": {
+      "item": "gtceu:hull.luv"
+    },
+    "W": {
+      "tag": "forge:cable_gt_single/niobium_titanium"
+    }
+  },
+  "pattern": [
+    "EWE",
+    "CMC",
+    "EWE"
+  ],
+  "result": {
+    "item": "gtceu:wiremill.luv"
+  }
+}

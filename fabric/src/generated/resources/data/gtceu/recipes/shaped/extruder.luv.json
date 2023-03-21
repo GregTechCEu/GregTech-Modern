@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "c:wire_gt_quadruple/hssg"
+    },
+    "E": {
+      "tag": "c:circuit/luv"
+    },
+    "M": {
+      "item": "gtceu:hull.luv"
+    },
+    "P": {
+      "tag": "c:pipe_normal_fluid/niobium_titanium"
+    },
+    "X": {
+      "item": "gtceu:electric.piston.luv"
+    }
+  },
+  "pattern": [
+    "CCE",
+    "XMP",
+    "CCE"
+  ],
+  "result": {
+    "item": "gtceu:extruder.luv"
+  }
+}

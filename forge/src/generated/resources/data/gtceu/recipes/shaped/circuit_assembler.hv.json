@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "item": "gtceu:conveyor.module.hv"
+    },
+    "E": {
+      "item": "gtceu:emitter.hv"
+    },
+    "H": {
+      "item": "gtceu:hull.hv"
+    },
+    "I": {
+      "tag": "forge:circuit/ev"
+    },
+    "R": {
+      "item": "gtceu:robot.arm.hv"
+    },
+    "W": {
+      "tag": "forge:cable_gt_single/gold"
+    }
+  },
+  "pattern": [
+    "RIE",
+    "CHC",
+    "WIW"
+  ],
+  "result": {
+    "item": "gtceu:circuit_assembler.hv"
+  }
+}

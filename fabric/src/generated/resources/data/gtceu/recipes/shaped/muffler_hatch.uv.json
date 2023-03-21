@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "H": {
+      "item": "gtceu:hull.uv"
+    },
+    "M": {
+      "item": "gtceu:electric.motor.uv"
+    },
+    "P": {
+      "tag": "c:pipe_normal_fluid/naquadah"
+    },
+    "R": {
+      "tag": "c:rotors/darmstadtium"
+    }
+  },
+  "pattern": [
+    "HM",
+    "PR"
+  ],
+  "result": {
+    "item": "gtceu:muffler_hatch.uv"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "bottom": "gtceu:block/casings/steam/bricked_steel/bottom",
+    "side": "gtceu:block/casings/steam/bricked_steel/side",
+    "top": "gtceu:block/casings/steam/bricked_steel/top"
+  }
+}

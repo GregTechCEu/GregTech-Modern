@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "forge:circuit/luv"
+    },
+    "G": {
+      "item": "gtceu:field.generator.iv"
+    },
+    "H": {
+      "type": "forge:nbt",
+      "count": 1,
+      "item": "gtceu:hermetic_casing",
+      "nbt": "{variant:\"ludicrous_voltage\"}"
+    },
+    "P": {
+      "tag": "forge:plates/dense/rhodium_plated_palladium"
+    },
+    "U": {
+      "item": "gtceu:electric.pump.luv"
+    }
+  },
+  "pattern": [
+    "CGC",
+    "PHP",
+    "CUC"
+  ],
+  "result": {
+    "item": "gtceu:quantum_tank.luv"
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "c:circuit/zpm"
+    },
+    "E": {
+      "item": "gtceu:electric.motor.zpm"
+    },
+    "G": {
+      "tag": "c:glass"
+    },
+    "M": {
+      "item": "gtceu:hull.zpm"
+    },
+    "R": {
+      "tag": "c:rotors/naquadah_alloy"
+    }
+  },
+  "pattern": [
+    "GRG",
+    "GEG",
+    "CMC"
+  ],
+  "result": {
+    "item": "gtceu:mixer.zpm"
+  }
+}

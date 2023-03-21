@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "X": {
+      "tag": "forge:foils/zinc"
+    },
+    "Y": {
+      "tag": "forge:plates/sodalite"
+    }
+  },
+  "pattern": [
+    "XXX",
+    "XYX",
+    "XXX"
+  ],
+  "result": {
+    "item": "gtceu:fluid_filter"
+  }
+}

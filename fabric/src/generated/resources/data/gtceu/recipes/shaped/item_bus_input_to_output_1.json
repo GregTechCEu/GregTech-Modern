@@ -5,7 +5,7 @@
       "item": "gtceu:item_bus.import.lv"
     },
     "d": {
-      "tag": "minecraft:tool/screwdriver"
+      "tag": "c:tool/screwdriver"
     }
   },
   "pattern": [

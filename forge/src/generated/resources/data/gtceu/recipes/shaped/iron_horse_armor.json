@@ -1,0 +1,43 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "type": "forge:nbt",
+      "count": 1,
+      "item": "minecraft:iron_chestplate",
+      "nbt": "{Damage:0}"
+    },
+    "H": {
+      "type": "forge:nbt",
+      "count": 1,
+      "item": "minecraft:iron_helmet",
+      "nbt": "{Damage:0}"
+    },
+    "L": {
+      "type": "forge:nbt",
+      "count": 1,
+      "item": "minecraft:iron_leggings",
+      "nbt": "{Damage:0}"
+    },
+    "P": {
+      "tag": "forge:plates/iron"
+    },
+    "S": {
+      "tag": "forge:screws/iron"
+    },
+    "d": {
+      "tag": "forge:tool/screwdriver"
+    },
+    "h": {
+      "tag": "forge:tool/hammer"
+    }
+  },
+  "pattern": [
+    "hdH",
+    "PCP",
+    "LSL"
+  ],
+  "result": {
+    "item": "minecraft:iron_horse_armor"
+  }
+}

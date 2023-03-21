@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "c:circuit/luv"
+    },
+    "E": {
+      "item": "gtceu:electric.motor.luv"
+    },
+    "G": {
+      "tag": "c:glass"
+    },
+    "M": {
+      "item": "gtceu:hull.luv"
+    },
+    "R": {
+      "tag": "c:rotors/rhodium_plated_palladium"
+    }
+  },
+  "pattern": [
+    "GRG",
+    "GEG",
+    "CMC"
+  ],
+  "result": {
+    "item": "gtceu:mixer.luv"
+  }
+}

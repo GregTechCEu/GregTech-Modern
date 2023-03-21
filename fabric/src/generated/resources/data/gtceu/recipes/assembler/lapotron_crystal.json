@@ -9,7 +9,7 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "minecraft:gems/lapotron"
+          "tag": "c:gems/lapotron"
         }
       },
       {
@@ -18,7 +18,7 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "minecraft:circuit/hv"
+          "tag": "c:circuit/hv"
         }
       }
     ]

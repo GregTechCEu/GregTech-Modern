@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "G": {
+      "tag": "c:glass"
+    },
+    "M": {
+      "item": "gtceu:hull.lv"
+    }
+  },
+  "pattern": [
+    " G",
+    " M"
+  ],
+  "result": {
+    "item": "gtceu:fluid_hatch.import.lv"
+  }
+}

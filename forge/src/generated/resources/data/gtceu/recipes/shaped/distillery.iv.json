@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": {
+      "tag": "forge:springs/tungsten_steel"
+    },
+    "C": {
+      "tag": "forge:circuit/iv"
+    },
+    "G": {
+      "tag": "forge:glass"
+    },
+    "M": {
+      "item": "gtceu:hull.iv"
+    },
+    "P": {
+      "item": "gtceu:electric.pump.iv"
+    },
+    "W": {
+      "tag": "forge:cable_gt_single/platinum"
+    }
+  },
+  "pattern": [
+    "GBG",
+    "CMC",
+    "WPW"
+  ],
+  "result": {
+    "item": "gtceu:distillery.iv"
+  }
+}

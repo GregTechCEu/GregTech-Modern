@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "A": {
+      "base": {
+        "item": "gtceu:boiler_firebox_casing"
+      },
+      "fabric:type": "fabric:nbt",
+      "nbt": {
+        "variant": "titanium_firebox"
+      },
+      "strict": true
+    },
+    "P": {
+      "tag": "c:cable_gt_single/gold"
+    },
+    "S": {
+      "tag": "c:circuit/ev"
+    }
+  },
+  "pattern": [
+    "PSP",
+    "SAS",
+    "PSP"
+  ],
+  "result": {
+    "item": "gtceu:large_titanium_boiler"
+  }
+}

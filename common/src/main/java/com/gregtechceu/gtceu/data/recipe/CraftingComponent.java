@@ -1,11 +1,14 @@
 package com.gregtechceu.gtceu.data.recipe;
 
-
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.BlastProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.tag.TagUtil;
+import com.gregtechceu.gtceu.common.block.variant.HullCasingBlock;
+import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import net.minecraft.world.item.ItemStack;
@@ -89,13 +92,6 @@ public class CraftingComponent {
                 {6, new UnificationEntry(TagPrefix.circuit, Tier.LuV)},
                 {7, new UnificationEntry(TagPrefix.circuit, Tier.ZPM)},
                 {8, new UnificationEntry(TagPrefix.circuit, Tier.UV)},
-                // TODO do we really need UHV+?
-//                {9, new UnificationEntry(TagPrefix.circuit, Tier.UHV)},
-//                {10, new UnificationEntry(TagPrefix.circuit, Tier.UEV)},
-//                {11, new UnificationEntry(TagPrefix.circuit, Tier.UIV)},
-//                {12, new UnificationEntry(TagPrefix.circuit, Tier.UXV)},
-//                {13, new UnificationEntry(TagPrefix.circuit, Tier.OpV)},
-//                {14, new UnificationEntry(TagPrefix.circuit, Tier.MAX)}
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
@@ -109,13 +105,6 @@ public class CraftingComponent {
                 {5, new UnificationEntry(TagPrefix.circuit, Tier.LuV)},
                 {6, new UnificationEntry(TagPrefix.circuit, Tier.ZPM)},
                 {7, new UnificationEntry(TagPrefix.circuit, Tier.UV)},
-                // TODO do we really need UHV+?
-//                {8, new UnificationEntry(TagPrefix.circuit, Tier.UHV)},
-//                {9, new UnificationEntry(TagPrefix.circuit, Tier.UEV)},
-//                {10, new UnificationEntry(TagPrefix.circuit, Tier.UIV)},
-//                {11, new UnificationEntry(TagPrefix.circuit, Tier.UXV)},
-//                {12, new UnificationEntry(TagPrefix.circuit, Tier.OpV)},
-//                {13, new UnificationEntry(TagPrefix.circuit, Tier.MAX)}
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
@@ -131,15 +120,6 @@ public class CraftingComponent {
                 {8, GTItems.ELECTRIC_PUMP_UV.asStack()},
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
-
-        // TODO do we really need UHV+?
-//        PUMP.appendIngredients(Stream.of(new Object[][]{
-//                {9, GTItems.ELECTRIC_PUMP_UHV.asStack()},
-//                {10, GTItems.ELECTRIC_PUMP_UEV.asStack()},
-//                {11, GTItems.ELECTRIC_PUMP_UIV.asStack()},
-//                {12, GTItems.ELECTRIC_PUMP_UXV.asStack()},
-//                {13, GTItems.ELECTRIC_PUMP_OpV.asStack()},
-//        }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
         WIRE_ELECTRIC = new Component(Stream.of(new Object[][]{
 
@@ -272,52 +252,35 @@ public class CraftingComponent {
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
-        // TODO HULL
-//        HULL = new Component(Stream.of(new Object[][]{
-//
-//                {0, MetaTileEntities.HULL[0].asStack()},
-//                {1, MetaTileEntities.HULL[1].asStack()},
-//                {2, MetaTileEntities.HULL[2].asStack()},
-//                {3, MetaTileEntities.HULL[3].asStack()},
-//                {4, MetaTileEntities.HULL[4].asStack()},
-//                {5, MetaTileEntities.HULL[5].asStack()},
-//                {6, MetaTileEntities.HULL[6].asStack()},
-//                {7, MetaTileEntities.HULL[7].asStack()},
-//                {8, MetaTileEntities.HULL[8].asStack()},
-//                {9, MetaTileEntities.HULL[9].asStack()},
-//
-//        }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
+        HULL = new Component(Stream.of(new Object[][]{
 
-//        HULL.appendIngredients(Stream.of(new Object[][]{
-//                {10, MetaTileEntities.HULL[10].asStack()},
-//                {11, MetaTileEntities.HULL[11].asStack()},
-//                {12, MetaTileEntities.HULL[12].asStack()},
-//                {13, MetaTileEntities.HULL[13].asStack()},
-//                {14, MetaTileEntities.HULL[14].asStack()},
-//        }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
+                {0, GTMachines.HULL[0].asStack()},
+                {1, GTMachines.HULL[1].asStack()},
+                {2, GTMachines.HULL[2].asStack()},
+                {3, GTMachines.HULL[3].asStack()},
+                {4, GTMachines.HULL[4].asStack()},
+                {5, GTMachines.HULL[5].asStack()},
+                {6, GTMachines.HULL[6].asStack()},
+                {7, GTMachines.HULL[7].asStack()},
+                {8, GTMachines.HULL[8].asStack()},
+                {9, GTMachines.HULL[9].asStack()},
 
-//        CASING = new Component(Stream.of(new Object[][]{
-//
-//                {0, MetaBlocks.MACHINE_CASING.getItemVariant(BlockMachineCasing.MachineCasingType.ULV)},
-//                {1, MetaBlocks.MACHINE_CASING.getItemVariant(BlockMachineCasing.MachineCasingType.LV)},
-//                {2, MetaBlocks.MACHINE_CASING.getItemVariant(BlockMachineCasing.MachineCasingType.MV)},
-//                {3, MetaBlocks.MACHINE_CASING.getItemVariant(BlockMachineCasing.MachineCasingType.HV)},
-//                {4, MetaBlocks.MACHINE_CASING.getItemVariant(BlockMachineCasing.MachineCasingType.EV)},
-//                {5, MetaBlocks.MACHINE_CASING.getItemVariant(BlockMachineCasing.MachineCasingType.IV)},
-//                {6, MetaBlocks.MACHINE_CASING.getItemVariant(BlockMachineCasing.MachineCasingType.LuV)},
-//                {7, MetaBlocks.MACHINE_CASING.getItemVariant(BlockMachineCasing.MachineCasingType.ZPM)},
-//                {8, MetaBlocks.MACHINE_CASING.getItemVariant(BlockMachineCasing.MachineCasingType.UV)},
-//                {9, MetaBlocks.MACHINE_CASING.getItemVariant(BlockMachineCasing.MachineCasingType.UHV)},
-//
-//        }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
+        }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
-//        CASING.appendIngredients(Stream.of(new Object[][]{
-//                {10, MetaBlocks.MACHINE_CASING.getItemVariant(BlockMachineCasing.MachineCasingType.UEV)},
-//                {11, MetaBlocks.MACHINE_CASING.getItemVariant(BlockMachineCasing.MachineCasingType.UIV)},
-//                {12, MetaBlocks.MACHINE_CASING.getItemVariant(BlockMachineCasing.MachineCasingType.UXV)},
-//                {13, MetaBlocks.MACHINE_CASING.getItemVariant(BlockMachineCasing.MachineCasingType.OpV)},
-//                {14, MetaBlocks.MACHINE_CASING.getItemVariant(BlockMachineCasing.MachineCasingType.MAX)},
-//        }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
+        CASING = new Component(Stream.of(new Object[][]{
+
+                {0, GTBlocks.HULL_CASING.get().getItemVariant(HullCasingBlock.CasingType.ULV)},
+                {1, GTBlocks.HULL_CASING.get().getItemVariant(HullCasingBlock.CasingType.LV)},
+                {2, GTBlocks.HULL_CASING.get().getItemVariant(HullCasingBlock.CasingType.MV)},
+                {3, GTBlocks.HULL_CASING.get().getItemVariant(HullCasingBlock.CasingType.HV)},
+                {4, GTBlocks.HULL_CASING.get().getItemVariant(HullCasingBlock.CasingType.EV)},
+                {5, GTBlocks.HULL_CASING.get().getItemVariant(HullCasingBlock.CasingType.IV)},
+                {6, GTBlocks.HULL_CASING.get().getItemVariant(HullCasingBlock.CasingType.LuV)},
+                {7, GTBlocks.HULL_CASING.get().getItemVariant(HullCasingBlock.CasingType.ZPM)},
+                {8, GTBlocks.HULL_CASING.get().getItemVariant(HullCasingBlock.CasingType.UV)},
+                {9, GTBlocks.HULL_CASING.get().getItemVariant(HullCasingBlock.CasingType.UHV)},
+
+        }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
         PIPE_NORMAL = new Component(Stream.of(new Object[][]{
 
@@ -348,20 +311,19 @@ public class CraftingComponent {
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
 
-        //TODO, Glass Tiers:
+        //TODO, Glass Tiers
         /*
         Glass: Steam-MV
         Tempered: HV, EV
         Laminated Glass: IV, LuV
         Fusion: ZPM, UV
-        Some gregicality thing: UHV+
          */
-//        GLASS = new Component(Stream.of(new Object[][]{
-//
-//                {GTValues.FALLBACK, new ItemStack(Blocks.GLASS, 1, GTValues.W)},
-//                {ULV, Blocks.GLASS},
-//                {LV, Blocks.GLASS},
-//                {MV, Blocks.GLASS},
+        GLASS = new Component(Stream.of(new Object[][]{
+
+                {GTValues.FALLBACK, TagUtil.createBlockTag("glass")},
+                {ULV, TagUtil.createBlockTag("glass")},
+                {LV, TagUtil.createBlockTag("glass")},
+                {MV, TagUtil.createBlockTag("glass")},
 //                {HV, MetaBlocks.TRANSPARENT_CASING.getItemVariant(
 //                        BlockGlassCasing.CasingType.TEMPERED_GLASS)},
 //                {EV, MetaBlocks.TRANSPARENT_CASING.getItemVariant(
@@ -375,7 +337,7 @@ public class CraftingComponent {
 //                {UV, MetaBlocks.TRANSPARENT_CASING.getItemVariant(
 //                        BlockGlassCasing.CasingType.FUSION_GLASS)}
 //
-//        }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
+        }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
         PLATE = new Component(Stream.of(new Object[][]{
 
@@ -420,15 +382,6 @@ public class CraftingComponent {
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
-        // TODO do we really need UHV+?
-//        MOTOR.appendIngredients(Stream.of(new Object[][]{
-//                {9, GTItems.ELECTRIC_MOTOR_UHV.asStack()},
-//                {10, GTItems.ELECTRIC_MOTOR_UEV.asStack()},
-//                {11, GTItems.ELECTRIC_MOTOR_UIV.asStack()},
-//                {12, GTItems.ELECTRIC_MOTOR_UXV.asStack()},
-//                {13, GTItems.ELECTRIC_MOTOR_OpV.asStack()},
-//        }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
-
         ROTOR = new Component(Stream.of(new Object[][]{
 
                 {0, new UnificationEntry(TagPrefix.rotor, GTMaterials.Tin)},
@@ -455,15 +408,6 @@ public class CraftingComponent {
                 {8, GTItems.SENSOR_UV.asStack()},
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
-
-        // TODO do we really need UHV+?
-//        SENSOR.appendIngredients(Stream.of(new Object[][]{
-//                {9, GTItems.SENSOR_UHV.asStack()},
-//                {10, GTItems.SENSOR_UEV.asStack()},
-//                {11, GTItems.SENSOR_UIV.asStack()},
-//                {12, GTItems.SENSOR_UXV.asStack()},
-//                {13, GTItems.SENSOR_OpV.asStack()},
-//        }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
         GRINDER = new Component(Stream.of(new Object[][]{
 
@@ -511,15 +455,6 @@ public class CraftingComponent {
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
-        // TODO do we really need UHV+?
-//        PISTON.appendIngredients(Stream.of(new Object[][]{
-//                {9, GTItems.ELECTRIC_PISTON_UHV.asStack()},
-//                {10, GTItems.ELECTRIC_PISTON_UEV.asStack()},
-//                {11, GTItems.ELECTRIC_PISTON_UIV.asStack()},
-//                {12, GTItems.ELECTRIC_PISTON_UXV.asStack()},
-//                {13, GTItems.ELECTRIC_PISTON_OpV.asStack()},
-//        }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
-
         EMITTER = new Component(Stream.of(new Object[][]{
 
                 {1, GTItems.EMITTER_LV.asStack()},
@@ -532,15 +467,6 @@ public class CraftingComponent {
                 {8, GTItems.EMITTER_UV.asStack()},
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
-
-        // TODO do we really need UHV+?
-//        EMITTER.appendIngredients(Stream.of(new Object[][]{
-//                {9, GTItems.EMITTER_UHV.asStack()},
-//                {10, GTItems.EMITTER_UEV.asStack()},
-//                {11, GTItems.EMITTER_UIV.asStack()},
-//                {12, GTItems.EMITTER_UXV.asStack()},
-//                {13, GTItems.EMITTER_OpV.asStack()},
-//        }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
         CONVEYOR = new Component(Stream.of(new Object[][]{
 
@@ -555,15 +481,6 @@ public class CraftingComponent {
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
-        // TODO do we really need UHV+?
-//        CONVEYOR.appendIngredients(Stream.of(new Object[][]{
-//                {9, GTItems.CONVEYOR_MODULE_UHV.asStack()},
-//                {10, GTItems.CONVEYOR_MODULE_UEV.asStack()},
-//                {11, GTItems.CONVEYOR_MODULE_UIV.asStack()},
-//                {12, GTItems.CONVEYOR_MODULE_UXV.asStack()},
-//                {13, GTItems.CONVEYOR_MODULE_OpV.asStack()},
-//        }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
-
         ROBOT_ARM = new Component(Stream.of(new Object[][]{
 
                 {1, GTItems.ROBOT_ARM_LV.asStack()},
@@ -576,15 +493,6 @@ public class CraftingComponent {
                 {8, GTItems.ROBOT_ARM_UV.asStack()},
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
-
-        // TODO do we really need UHV+?
-//        ROBOT_ARM.appendIngredients(Stream.of(new Object[][]{
-//                {9, GTItems.ROBOT_ARM_UHV.asStack()},
-//                {10, GTItems.ROBOT_ARM_UEV.asStack()},
-//                {11, GTItems.ROBOT_ARM_UIV.asStack()},
-//                {12, GTItems.ROBOT_ARM_UXV.asStack()},
-//                {13, GTItems.ROBOT_ARM_OpV.asStack()},
-//        }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
         COIL_HEATING = new Component(Stream.of(new Object[][]{
 
@@ -670,15 +578,6 @@ public class CraftingComponent {
                 {8, GTItems.FIELD_GENERATOR_UV.asStack()},
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
-
-        // TODO do we really need UHV+?
-//        FIELD_GENERATOR.appendIngredients(Stream.of(new Object[][]{
-//                {9, GTItems.FIELD_GENERATOR_UHV.asStack()},
-//                {10, GTItems.FIELD_GENERATOR_UEV.asStack()},
-//                {11, GTItems.FIELD_GENERATOR_UIV.asStack()},
-//                {12, GTItems.FIELD_GENERATOR_UXV.asStack()},
-//                {13, GTItems.FIELD_GENERATOR_OpV.asStack()},
-//        }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
         STICK_ELECTROMAGNETIC = new Component(Stream.of(new Object[][]{
 

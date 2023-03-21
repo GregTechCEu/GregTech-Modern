@@ -24,7 +24,7 @@
     ]
   },
   "recipe_type": "gtceu:steam_turbine",
-  "tickOutputs": {
+  "tickInputs": {
     "eu": [
       {
         "chance": 1.0,

@@ -142,6 +142,7 @@ public class GTRecipeTypes {
             .setSlotOverlay(true, true, GuiTextures.VIAL_OVERLAY_2)
             .setProgressBar(GuiTextures.PROGRESS_BAR_ARROW_MULTIPLE, LEFT_TO_RIGHT)
             .setSound(GTValues.FOOLS.get() ? GTSoundEntries.SCIENCE : GTSoundEntries.CHEMICAL_REACTOR)
+            // TODO consider allowing LCR to just read these recipes? instead of generating new (minimize extra jsons)
             .onRecipeBuild((recipeBuilder, provider) -> GTRecipeTypes.LARGE_CHEMICAL_RECIPES.copyFrom(recipeBuilder).save(provider));
 
     public final static GTRecipeType COMPRESSOR_RECIPES = register("compressor").setIOSize(1, 1, 1, 1, 0, 0, 0, 0)
@@ -373,6 +374,16 @@ public class GTRecipeTypes {
             .setProgressBar(GuiTextures.PROGRESS_BAR_GAS_COLLECTOR, LEFT_TO_RIGHT)
             .setSound(GTSoundEntries.TURBINE);
 
+    public final static GTRecipeType SEMI_FLUID_GENERATOR_FUELS = register("semi_fluid_generator").setIOSize(0, 0, 0, 0, 1, 1, 0, 0)
+            .setSlotOverlay(false, true, true, GuiTextures.FURNACE_OVERLAY_2)
+            .setProgressBar(GuiTextures.PROGRESS_BAR_ARROW_MULTIPLE, LEFT_TO_RIGHT)
+            .setSound(GTSoundEntries.COMBUSTION);
+
+    public final static GTRecipeType PLASMA_GENERATOR_FUELS = register("plasma_generator").setIOSize(0, 0, 0, 0, 1, 1, 0, 1)
+            .setSlotOverlay(false, true, true, GuiTextures.CENTRIFUGE_OVERLAY)
+            .setProgressBar(GuiTextures.PROGRESS_BAR_GAS_COLLECTOR, LEFT_TO_RIGHT)
+            .setSound(GTSoundEntries.TURBINE);
+
     //////////////////////////////////////
     //*******     Multiblock     *******//
     //////////////////////////////////////
@@ -398,6 +409,7 @@ public class GTRecipeTypes {
             })
             .setSound(GTSoundEntries.FURNACE);
 
+    // TODO Add small distillery recipes in .onRecipeBuild()
     public final static GTRecipeType DISTILLATION_RECIPES = register("distillation_tower").setIOSize(0, 0, 0, 1, 1, 1, 1, 12)
             .setSound(GTSoundEntries.CHEMICAL_REACTOR);
 

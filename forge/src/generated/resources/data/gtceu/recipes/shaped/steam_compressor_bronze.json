@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "M": {
+      "type": "forge:nbt",
+      "count": 1,
+      "item": "gtceu:steam_casing",
+      "nbt": "{variant:\"bronze_hull\"}"
+    },
+    "P": {
+      "tag": "forge:crafting/piston"
+    },
+    "X": {
+      "tag": "forge:pipe_small_fluid/bronze"
+    }
+  },
+  "pattern": [
+    "XXX",
+    "PMP",
+    "XXX"
+  ],
+  "result": {
+    "item": "gtceu:steam_compressor.bronze"
+  }
+}

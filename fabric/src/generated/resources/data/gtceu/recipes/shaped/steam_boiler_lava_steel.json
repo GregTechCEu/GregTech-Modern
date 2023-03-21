@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "G": {
+      "item": "minecraft:glass"
+    },
+    "M": {
+      "base": {
+        "item": "gtceu:steam_casing"
+      },
+      "fabric:type": "fabric:nbt",
+      "nbt": {
+        "variant": "steel_bricks_hull"
+      },
+      "strict": true
+    },
+    "P": {
+      "tag": "c:plates/steel"
+    }
+  },
+  "pattern": [
+    "PPP",
+    "PGP",
+    "PMP"
+  ],
+  "result": {
+    "item": "gtceu:steam_liquid_boiler.steel"
+  }
+}

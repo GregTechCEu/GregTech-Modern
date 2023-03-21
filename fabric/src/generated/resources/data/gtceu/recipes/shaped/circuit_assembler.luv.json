@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "item": "gtceu:conveyor.module.luv"
+    },
+    "E": {
+      "item": "gtceu:emitter.luv"
+    },
+    "H": {
+      "item": "gtceu:hull.luv"
+    },
+    "I": {
+      "tag": "c:circuit/zpm"
+    },
+    "R": {
+      "item": "gtceu:robot.arm.luv"
+    },
+    "W": {
+      "tag": "c:cable_gt_single/niobium_titanium"
+    }
+  },
+  "pattern": [
+    "RIE",
+    "CHC",
+    "WIW"
+  ],
+  "result": {
+    "item": "gtceu:circuit_assembler.luv"
+  }
+}

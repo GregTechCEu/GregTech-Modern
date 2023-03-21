@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "H": {
+      "item": "gtceu:hull.mv"
+    },
+    "P": {
+      "item": "gtceu:plate.ultra_low_power_integrated_circuit"
+    },
+    "S": {
+      "tag": "forge:springs/copper"
+    },
+    "V": {
+      "item": "gtceu:voltage_coil.mv"
+    }
+  },
+  "pattern": [
+    " V ",
+    "SHS",
+    " P "
+  ],
+  "result": {
+    "item": "gtceu:energy_hatch.output.mv"
+  }
+}

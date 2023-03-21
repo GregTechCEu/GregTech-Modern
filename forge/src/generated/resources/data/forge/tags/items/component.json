@@ -1,9 +1,9 @@
 {
   "values": [
-    "#forge:component/diode",
+    "#forge:component/transistor",
     "#forge:component/inductor",
+    "#forge:component/diode",
     "#forge:component/capacitor",
-    "#forge:component/resistor",
-    "#forge:component/transistor"
+    "#forge:component/resistor"
   ]
 }

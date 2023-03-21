@@ -5,7 +5,7 @@
       "item": "gtceu:fluid_hatch.import.hv"
     },
     "d": {
-      "tag": "minecraft:tool/screwdriver"
+      "tag": "c:tool/screwdriver"
     }
   },
   "pattern": [

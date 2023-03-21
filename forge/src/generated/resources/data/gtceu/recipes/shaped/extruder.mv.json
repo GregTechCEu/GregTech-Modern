@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "forge:wire_gt_quadruple/cupronickel"
+    },
+    "E": {
+      "tag": "forge:circuit/mv"
+    },
+    "M": {
+      "item": "gtceu:hull.mv"
+    },
+    "P": {
+      "tag": "forge:pipe_normal_fluid/steel"
+    },
+    "X": {
+      "item": "gtceu:electric.piston.mv"
+    }
+  },
+  "pattern": [
+    "CCE",
+    "XMP",
+    "CCE"
+  ],
+  "result": {
+    "item": "gtceu:extruder.mv"
+  }
+}

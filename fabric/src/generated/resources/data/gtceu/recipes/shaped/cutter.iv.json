@@ -1,0 +1,34 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": {
+      "tag": "c:tool_head_buzz_saw/tungsten_carbide"
+    },
+    "C": {
+      "tag": "c:circuit/iv"
+    },
+    "E": {
+      "item": "gtceu:electric.motor.iv"
+    },
+    "G": {
+      "tag": "c:glass"
+    },
+    "M": {
+      "item": "gtceu:hull.iv"
+    },
+    "V": {
+      "item": "gtceu:conveyor.module.iv"
+    },
+    "W": {
+      "tag": "c:cable_gt_single/platinum"
+    }
+  },
+  "pattern": [
+    "WCG",
+    "VMB",
+    "CWE"
+  ],
+  "result": {
+    "item": "gtceu:cutter.iv"
+  }
+}

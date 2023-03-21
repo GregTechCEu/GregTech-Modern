@@ -1,0 +1,34 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": {
+      "tag": "forge:tool_head_buzz_saw/ultimet"
+    },
+    "C": {
+      "tag": "forge:circuit/ev"
+    },
+    "E": {
+      "item": "gtceu:electric.motor.ev"
+    },
+    "G": {
+      "tag": "forge:glass"
+    },
+    "M": {
+      "item": "gtceu:hull.ev"
+    },
+    "V": {
+      "item": "gtceu:conveyor.module.ev"
+    },
+    "W": {
+      "tag": "forge:cable_gt_single/aluminium"
+    }
+  },
+  "pattern": [
+    "WCG",
+    "VMB",
+    "CWE"
+  ],
+  "result": {
+    "item": "gtceu:cutter.ev"
+  }
+}

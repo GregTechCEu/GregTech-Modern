@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "forge:circuit/luv"
+    },
+    "G": {
+      "tag": "forge:glass"
+    },
+    "M": {
+      "item": "gtceu:hull.luv"
+    },
+    "O": {
+      "tag": "forge:wire_gt_quadruple/hssg"
+    },
+    "P": {
+      "item": "gtceu:electric.pump.luv"
+    },
+    "W": {
+      "tag": "forge:cable_gt_single/niobium_titanium"
+    }
+  },
+  "pattern": [
+    "OGO",
+    "PMP",
+    "WCW"
+  ],
+  "result": {
+    "item": "gtceu:fluid_heater.luv"
+  }
+}

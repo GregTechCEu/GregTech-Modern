@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "forge:circuit/luv"
+    },
+    "F": {
+      "item": "gtceu:field.generator.iv"
+    },
+    "H": {
+      "item": "gtceu:hull.luv"
+    },
+    "P": {
+      "tag": "forge:plates/dense/rhodium_plated_palladium"
+    }
+  },
+  "pattern": [
+    "CPC",
+    "PHP",
+    "CFC"
+  ],
+  "result": {
+    "item": "gtceu:quantum_chest.luv"
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "forge:circuit/luv"
+    },
+    "E": {
+      "item": "gtceu:electric.motor.luv"
+    },
+    "G": {
+      "tag": "forge:glass"
+    },
+    "M": {
+      "item": "gtceu:hull.luv"
+    },
+    "R": {
+      "tag": "forge:rotors/rhodium_plated_palladium"
+    },
+    "W": {
+      "tag": "forge:cable_gt_single/niobium_titanium"
+    }
+  },
+  "pattern": [
+    "RGR",
+    "CEC",
+    "WMW"
+  ],
+  "result": {
+    "item": "gtceu:ore_washer.luv"
+  }
+}

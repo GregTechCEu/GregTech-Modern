@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "F": {
+      "tag": "c:frames/titanium"
+    },
+    "I": {
+      "tag": "c:pipe_normal_fluid/titanium"
+    },
+    "P": {
+      "tag": "c:plates/titanium"
+    }
+  },
+  "pattern": [
+    "PIP",
+    "IFI",
+    "PIP"
+  ],
+  "result": {
+    "count": 2,
+    "item": "gtceu:casing",
+    "nbt": {
+      "variant": "titanium_pipe"
+    }
+  }
+}

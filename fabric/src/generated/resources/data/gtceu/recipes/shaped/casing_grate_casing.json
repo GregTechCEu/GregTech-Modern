@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "F": {
+      "tag": "c:frames/steel"
+    },
+    "M": {
+      "item": "gtceu:electric.motor.mv"
+    },
+    "P": {
+      "item": "minecraft:iron_bars"
+    },
+    "V": {
+      "tag": "c:rotors/steel"
+    }
+  },
+  "pattern": [
+    "PVP",
+    "PFP",
+    "PMP"
+  ],
+  "result": {
+    "count": 2,
+    "item": "gtceu:casing",
+    "nbt": {
+      "variant": "grate"
+    }
+  }
+}

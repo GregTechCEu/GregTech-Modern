@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": {
+      "item": "minecraft:bricks"
+    },
+    "P": {
+      "tag": "c:plates/wrought_iron"
+    },
+    "h": {
+      "tag": "c:tool/hammer"
+    }
+  },
+  "pattern": [
+    "PPP",
+    "PhP",
+    "BBB"
+  ],
+  "result": {
+    "item": "gtceu:steam_casing",
+    "nbt": {
+      "variant": "steel_bricks_hull"
+    }
+  }
+}

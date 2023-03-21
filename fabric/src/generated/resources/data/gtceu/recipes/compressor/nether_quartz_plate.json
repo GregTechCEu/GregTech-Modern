@@ -9,7 +9,7 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "minecraft:dusts/nether_quartz"
+          "tag": "c:dusts/nether_quartz"
         }
       }
     ]

@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "F": {
+      "tag": "c:frames/steel"
+    },
+    "P": {
+      "tag": "c:plates/steel"
+    },
+    "h": {
+      "tag": "c:tool/hammer"
+    },
+    "w": {
+      "tag": "c:tool/wrench"
+    }
+  },
+  "pattern": [
+    "PhP",
+    "PFP",
+    "PwP"
+  ],
+  "result": {
+    "count": 2,
+    "item": "gtceu:casing",
+    "nbt": {
+      "variant": "steel_solid"
+    }
+  }
+}

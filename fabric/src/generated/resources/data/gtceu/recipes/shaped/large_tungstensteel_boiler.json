@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "A": {
+      "base": {
+        "item": "gtceu:boiler_firebox_casing"
+      },
+      "fabric:type": "fabric:nbt",
+      "nbt": {
+        "variant": "tungstensteel_firebox"
+      },
+      "strict": true
+    },
+    "P": {
+      "tag": "c:cable_gt_single/aluminium"
+    },
+    "S": {
+      "tag": "c:circuit/iv"
+    }
+  },
+  "pattern": [
+    "PSP",
+    "SAS",
+    "PSP"
+  ],
+  "result": {
+    "item": "gtceu:large_tungstensteel_boiler"
+  }
+}

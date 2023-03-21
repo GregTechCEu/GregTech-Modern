@@ -587,13 +587,12 @@ public class GTItems {
             .model(overrideModel(GTCEu.id("battery"), 8))
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
             .onRegister(attach(ElectricStats.createBattery(2000000000000L, GTValues.ZPM, true))).register();
-    // TODO do we really need UHV+?
-//    public static ItemEntry<ComponentItem> ULTIMATE_BATTERY = REGISTRATE.item("max_battery", ComponentItem::create)
-//            .properties(p -> p.stacksTo(1))
-//            .model(overrideModel(GTCEu.id("battery"), 8))
-//            .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
-//            .onRegister(attach(ElectricStats.createRechargeableBattery(Long.MAX_VALUE, GTValues.UHV)))
-//            .transform(unificationItem(TagPrefix.battery, MarkerMaterials.Tier.UHV)).register();
+    public static ItemEntry<ComponentItem> ULTIMATE_BATTERY = REGISTRATE.item("max_battery", ComponentItem::create)
+            .properties(p -> p.stacksTo(1))
+            .model(overrideModel(GTCEu.id("battery"), 8))
+            .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
+            .onRegister(attach(ElectricStats.createRechargeableBattery(Long.MAX_VALUE, GTValues.UHV)))
+            .transform(unificationItem(TagPrefix.battery, MarkerMaterials.Tier.UHV)).register();
 
     public static ItemEntry<Item> ELECTRIC_MOTOR_LV = REGISTRATE.item("electric.motor.lv", Item::new).lang("LV Electric Motor").register();
     public static ItemEntry<Item> ELECTRIC_MOTOR_MV = REGISTRATE.item("electric.motor.mv", Item::new).lang("MV Electric Motor").register();
@@ -603,12 +602,6 @@ public class GTItems {
     public static ItemEntry<Item> ELECTRIC_MOTOR_LuV = REGISTRATE.item("electric.motor.luv", Item::new).lang("LuV Electric Motor").register();
     public static ItemEntry<Item> ELECTRIC_MOTOR_ZPM = REGISTRATE.item("electric.motor.zpm", Item::new).lang("ZPM Electric Motor").register();
     public static ItemEntry<Item> ELECTRIC_MOTOR_UV = REGISTRATE.item("electric.motor.uv", Item::new).lang("UV Electric Motor").register();
-    // TODO do we really need UHV+?
-//    public static ItemEntry<Item> ELECTRIC_MOTOR_UHV = REGISTRATE.item("electric.motor.uhv", Item::new).register();
-//    public static ItemEntry<Item> ELECTRIC_MOTOR_UEV = REGISTRATE.item("electric.motor.uev", Item::new).register();
-//    public static ItemEntry<Item> ELECTRIC_MOTOR_UIV = REGISTRATE.item("electric.motor.uiv", Item::new).register();
-//    public static ItemEntry<Item> ELECTRIC_MOTOR_UXV = REGISTRATE.item("electric.motor.uxv", Item::new).register();
-//    public static ItemEntry<Item> ELECTRIC_MOTOR_OpV = REGISTRATE.item("electric.motor.opv", Item::new).register();
 
     public static ItemEntry<ComponentItem> ELECTRIC_PUMP_LV = REGISTRATE.item("electric.pump.lv", ComponentItem::create).lang("LV Electric Pump").onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[0]), new TooltipBehavior(lines -> {
         lines.add(Component.translatable("metaitem.electric.pump.tooltip"));
@@ -643,27 +636,6 @@ public class GTItems {
         lines.add(Component.translatable("metaitem.electric.pump.tooltip"));
         lines.add(Component.translatable("gregtech.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 64 * 4 / 20));
    }))).register();
-    // TODO do we really need UHV+?
-//    public static ItemEntry<ComponentItem> ELECTRIC_PUMP_UHV = REGISTRATE.item("electric.pump.uhv", ComponentItem::create).onRegister(attach(new TooltipBehavior(lines -> {
-//        lines.add(Component.translatable("metaitem.electric.pump.tooltip"));
-//        lines.add(Component.translatable("gregtech.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 64 * 4 / 20));
-//    }))).register();
-//    public static ItemEntry<ComponentItem> ELECTRIC_PUMP_UEV = REGISTRATE.item("electric.pump.uev", ComponentItem::create).onRegister(attach(new TooltipBehavior(lines -> {
-//        lines.add(Component.translatable("metaitem.electric.pump.tooltip"));
-//        lines.add(Component.translatable("gregtech.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 64 * 4 / 20));
-//    }))).register();
-//    public static ItemEntry<ComponentItem> ELECTRIC_PUMP_UIV = REGISTRATE.item("electric.pump.uiv", ComponentItem::create).onRegister(attach(new TooltipBehavior(lines -> {
-//        lines.add(Component.translatable("metaitem.electric.pump.tooltip"));
-//        lines.add(Component.translatable("gregtech.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 64 * 4 / 20));
-//    }))).register();
-//    public static ItemEntry<ComponentItem> ELECTRIC_PUMP_UXV = REGISTRATE.item("electric.pump.uxv", ComponentItem::create).onRegister(attach(new TooltipBehavior(lines -> {
-//        lines.add(Component.translatable("metaitem.electric.pump.tooltip"));
-//        lines.add(Component.translatable("gregtech.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 64 * 4 / 20));
-//    }))).register();
-//    public static ItemEntry<ComponentItem> ELECTRIC_PUMP_OpV = REGISTRATE.item("electric.pump.opv", ComponentItem::create).onRegister(attach(new TooltipBehavior(lines -> {
-//        lines.add(Component.translatable("metaitem.electric.pump.tooltip"));
-//        lines.add(Component.translatable("gregtech.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 64 * 4 / 20));
-//    }))).register();
 
     public static ItemEntry<ComponentItem> FLUID_REGULATOR_LV = REGISTRATE.item("fluid.regulator.lv", ComponentItem::create).lang("LV Fluid Regulator").onRegister(attach(new TooltipBehavior(lines -> {
         lines.add(Component.translatable("metaitem.fluid.regulator.tooltip"));
@@ -732,27 +704,6 @@ public class GTItems {
         lines.add(Component.translatable("metaitem.conveyor.module.tooltip"));
         lines.add(Component.translatable("gregtech.universal.tooltip.item_transfer_rate_stacks", 128));
     }))).register();
-    // TODO do we really need UHV+?
-//    public static ItemEntry<ComponentItem> CONVEYOR_MODULE_UHV = REGISTRATE.item("conveyor.module.uhv", ComponentItem::create).onRegister(attach(new CoverPlaceBehavior(GTCovers.CONVEYORS[5]), new TooltipBehavior(lines -> {
-//        lines.add(Component.translatable("metaitem.conveyor.module.tooltip"));
-//        lines.add(Component.translatable("gregtech.universal.tooltip.item_transfer_rate_stacks", 128));
-//    }))).register();
-//    public static ItemEntry<ComponentItem> CONVEYOR_MODULE_UEV = REGISTRATE.item("conveyor.module.uev", ComponentItem::create).onRegister(attach(new CoverPlaceBehavior(GTCovers.CONVEYORS[5]), new TooltipBehavior(lines -> {
-//        lines.add(Component.translatable("metaitem.conveyor.module.tooltip"));
-//        lines.add(Component.translatable("gregtech.universal.tooltip.item_transfer_rate_stacks", 128));
-//    }))).register();
-//    public static ItemEntry<ComponentItem> CONVEYOR_MODULE_UIV = REGISTRATE.item("conveyor.module.uiv", ComponentItem::create).onRegister(attach(new CoverPlaceBehavior(GTCovers.CONVEYORS[5]), new TooltipBehavior(lines -> {
-//        lines.add(Component.translatable("metaitem.conveyor.module.tooltip"));
-//        lines.add(Component.translatable("gregtech.universal.tooltip.item_transfer_rate_stacks", 128));
-//    }))).register();
-//    public static ItemEntry<ComponentItem> CONVEYOR_MODULE_UXV = REGISTRATE.item("conveyor.module.uxv", ComponentItem::create).onRegister(attach(new CoverPlaceBehavior(GTCovers.CONVEYORS[5]), new TooltipBehavior(lines -> {
-//        lines.add(Component.translatable("metaitem.conveyor.module.tooltip"));
-//        lines.add(Component.translatable("gregtech.universal.tooltip.item_transfer_rate_stacks", 128));
-//    }))).register();
-//    public static ItemEntry<ComponentItem> CONVEYOR_MODULE_OpV = REGISTRATE.item("conveyor.module.opv", ComponentItem::create).onRegister(attach(new CoverPlaceBehavior(GTCovers.CONVEYORS[5]), new TooltipBehavior(lines -> {
-//        lines.add(Component.translatable("metaitem.conveyor.module.tooltip"));
-//        lines.add(Component.translatable("gregtech.universal.tooltip.item_transfer_rate_stacks", 128));
-//    }))).register();
 
     public static ItemEntry<Item> ELECTRIC_PISTON_LV= REGISTRATE.item("electric.piston.lv", Item::new).lang("LV Electric Piston").register();
     public static ItemEntry<Item> ELECTRIC_PISTON_MV= REGISTRATE.item("electric.piston.mv", Item::new).lang("MV Electric Piston").register();
@@ -762,12 +713,6 @@ public class GTItems {
     public static ItemEntry<Item> ELECTRIC_PISTON_LUV= REGISTRATE.item("electric.piston.luv", Item::new).lang("LuV Electric Piston").register();
     public static ItemEntry<Item> ELECTRIC_PISTON_ZPM= REGISTRATE.item("electric.piston.zpm", Item::new).lang("ZPM Electric Piston").register();
     public static ItemEntry<Item> ELECTRIC_PISTON_UV= REGISTRATE.item("electric.piston.uv", Item::new).lang("UV Electric Piston").register();
-    // TODO do we really need UHV+?
-//    public static ItemEntry<Item> ELECTRIC_PISTON_UHV= REGISTRATE.item("electric.piston.uhv", Item::new).register();
-//    public static ItemEntry<Item> ELECTRIC_PISTON_UEV= REGISTRATE.item("electric.piston.uev", Item::new).register();
-//    public static ItemEntry<Item> ELECTRIC_PISTON_UIV= REGISTRATE.item("electric.piston.uiv", Item::new).register();
-//    public static ItemEntry<Item> ELECTRIC_PISTON_UXV= REGISTRATE.item("electric.piston.uxv", Item::new).register();
-//    public static ItemEntry<Item> ELECTRIC_PISTON_OpV= REGISTRATE.item("electric.piston.opv", Item::new).register();
 
     public static ItemEntry<ComponentItem> ROBOT_ARM_LV = REGISTRATE.item("robot.arm.lv", ComponentItem::create).lang("LV Robot Arm").onRegister(attach(new TooltipBehavior(lines -> {
         lines.add(Component.translatable("metaitem.robot.arm.tooltip"));
@@ -801,27 +746,6 @@ public class GTItems {
         lines.add(Component.translatable("metaitem.robot.arm.tooltip"));
         lines.add(Component.translatable("gregtech.universal.tooltip.item_transfer_rate_stacks", 16));
     }))).register();
-    // TODO do we really need UHV+?
-//    public static ItemEntry<ComponentItem> ROBOT_ARM_UHV = REGISTRATE.item("robot.arm.uhv", ComponentItem::create).onRegister(attach(new TooltipBehavior(lines -> {
-//        lines.add(Component.translatable("metaitem.robot.arm.tooltip"));
-//        lines.add(Component.translatable("gregtech.universal.tooltip.item_transfer_rate_stacks", 16));
-//    }))).register();
-//    public static ItemEntry<ComponentItem> ROBOT_ARM_UEV = REGISTRATE.item("robot.arm.uev", ComponentItem::create).onRegister(attach(new TooltipBehavior(lines -> {
-//        lines.add(Component.translatable("metaitem.robot.arm.tooltip"));
-//        lines.add(Component.translatable("gregtech.universal.tooltip.item_transfer_rate_stacks", 16));
-//    }))).register();
-//    public static ItemEntry<ComponentItem> ROBOT_ARM_UIV = REGISTRATE.item("robot.arm.uiv", ComponentItem::create).onRegister(attach(new TooltipBehavior(lines -> {
-//        lines.add(Component.translatable("metaitem.robot.arm.tooltip"));
-//        lines.add(Component.translatable("gregtech.universal.tooltip.item_transfer_rate_stacks", 16));
-//    }))).register();
-//    public static ItemEntry<ComponentItem> ROBOT_ARM_UXV = REGISTRATE.item("robot.arm.uxv", ComponentItem::create).onRegister(attach(new TooltipBehavior(lines -> {
-//        lines.add(Component.translatable("metaitem.robot.arm.tooltip"));
-//        lines.add(Component.translatable("gregtech.universal.tooltip.item_transfer_rate_stacks", 16));
-//    }))).register();
-//    public static ItemEntry<ComponentItem> ROBOT_ARM_OpV = REGISTRATE.item("robot.arm.opv", ComponentItem::create).onRegister(attach(new TooltipBehavior(lines -> {
-//        lines.add(Component.translatable("metaitem.robot.arm.tooltip"));
-//        lines.add(Component.translatable("gregtech.universal.tooltip.item_transfer_rate_stacks", 16));
-//    }))).register();
 
     public static ItemEntry<Item> FIELD_GENERATOR_LV= REGISTRATE.item("field.generator.lv", Item::new).lang("LV Field Generator").register();
     public static ItemEntry<Item> FIELD_GENERATOR_MV= REGISTRATE.item("field.generator.mv", Item::new).lang("MV Field Generator").register();
@@ -831,12 +755,6 @@ public class GTItems {
     public static ItemEntry<Item> FIELD_GENERATOR_LuV= REGISTRATE.item("field.generator.luv", Item::new).lang("LuV Field Generator").register();
     public static ItemEntry<Item> FIELD_GENERATOR_ZPM= REGISTRATE.item("field.generator.zpm", Item::new).lang("ZPM Field Generator").register();
     public static ItemEntry<Item> FIELD_GENERATOR_UV= REGISTRATE.item("field.generator.uv", Item::new).lang("UV Field Generator").register();
-    // TODO do we really need UHV+?
-//    public static ItemEntry<Item> FIELD_GENERATOR_UHV= REGISTRATE.item("field.generator.uhv", Item::new).register();
-//    public static ItemEntry<Item> FIELD_GENERATOR_UEV= REGISTRATE.item("field.generator.uev", Item::new).register();
-//    public static ItemEntry<Item> FIELD_GENERATOR_UIV= REGISTRATE.item("field.generator.uiv", Item::new).register();
-//    public static ItemEntry<Item> FIELD_GENERATOR_UXV= REGISTRATE.item("field.generator.uxv", Item::new).register();
-//    public static ItemEntry<Item> FIELD_GENERATOR_OpV= REGISTRATE.item("field.generator.opv", Item::new).register();
 
     public static ItemEntry<Item> EMITTER_LV= REGISTRATE.item("emitter.lv", Item::new).lang("LV Emitter").register();
     public static ItemEntry<Item> EMITTER_MV= REGISTRATE.item("emitter.mv", Item::new).lang("MV Emitter").register();
@@ -846,12 +764,6 @@ public class GTItems {
     public static ItemEntry<Item> EMITTER_LuV= REGISTRATE.item("emitter.luv", Item::new).lang("LuV Emitter").register();
     public static ItemEntry<Item> EMITTER_ZPM= REGISTRATE.item("emitter.zpm", Item::new).lang("ZPM Emitter").register();
     public static ItemEntry<Item> EMITTER_UV= REGISTRATE.item("emitter.uv", Item::new).lang("UV Emitter").register();
-    // TODO do we really need UHV+?
-//    public static ItemEntry<Item> EMITTER_UHV= REGISTRATE.item("emitter.uhv", Item::new).register();
-//    public static ItemEntry<Item> EMITTER_UEV= REGISTRATE.item("emitter.uev", Item::new).register();
-//    public static ItemEntry<Item> EMITTER_UIV= REGISTRATE.item("emitter.uiv", Item::new).register();
-//    public static ItemEntry<Item> EMITTER_UXV= REGISTRATE.item("emitter.uxv", Item::new).register();
-//    public static ItemEntry<Item> EMITTER_OpV= REGISTRATE.item("emitter.opv", Item::new).register();
 
     public static ItemEntry<Item> SENSOR_LV= REGISTRATE.item("sensor.lv", Item::new).lang("LV Sensor").register();
     public static ItemEntry<Item> SENSOR_MV= REGISTRATE.item("sensor.mv", Item::new).lang("MV Sensor").register();
@@ -861,12 +773,6 @@ public class GTItems {
     public static ItemEntry<Item> SENSOR_LuV= REGISTRATE.item("sensor.luv", Item::new).lang("LuV Sensor").register();
     public static ItemEntry<Item> SENSOR_ZPM= REGISTRATE.item("sensor.zpm", Item::new).lang("ZPM Sensor").register();
     public static ItemEntry<Item> SENSOR_UV= REGISTRATE.item("sensor.uv", Item::new).lang("UV Sensor").register();
-    // TODO do we really need UHV+?
-//    public static ItemEntry<Item> SENSOR_UHV= REGISTRATE.item("sensor.uhv", Item::new).register();
-//    public static ItemEntry<Item> SENSOR_UEV= REGISTRATE.item("sensor.uev", Item::new).register();
-//    public static ItemEntry<Item> SENSOR_UIV= REGISTRATE.item("sensor.uiv", Item::new).register();
-//    public static ItemEntry<Item> SENSOR_UXV= REGISTRATE.item("sensor.uxv", Item::new).register();
-//    public static ItemEntry<Item> SENSOR_OpV= REGISTRATE.item("sensor.opv", Item::new).register();
 
     public static ItemEntry<Item> TOOL_DATA_STICK= REGISTRATE.item("tool.datastick", Item::new).lang("Data Stick").register();
     public static ItemEntry<Item> TOOL_DATA_ORB= REGISTRATE.item("tool.dataorb", Item::new).lang("Data Orb").register();
@@ -879,7 +785,7 @@ public class GTItems {
             if (color != MarkerMaterials.Color.White) {
                 GLASS_LENSES.put(color, REGISTRATE.item(String.format("glass_lens.%s", color.toString()), Item::new)
                         .lang("Glass Lens (%s)".formatted(toEnglishName(color.getName())))
-                        .transform(unificationItem(TagPrefix.craftingLens, color))
+                        .transform(unificationItem(TagPrefix.lens, color))
                         .register());
             }
         }
@@ -1012,7 +918,7 @@ public class GTItems {
     public static ItemEntry<Item> WETWARE_PROCESSOR_LUV = REGISTRATE.item("circuit.wetware_processor", Item::new).lang("Wetware Processor").transform(unificationItem(TagPrefix.circuit, MarkerMaterials.Tier.LuV)).register();
     public static ItemEntry<Item> WETWARE_PROCESSOR_ASSEMBLY_ZPM = REGISTRATE.item("circuit.wetware_assembly", Item::new).lang("Wetware Assembly").transform(unificationItem(TagPrefix.circuit, MarkerMaterials.Tier.ZPM)).register();
     public static ItemEntry<Item> WETWARE_SUPER_COMPUTER_UV = REGISTRATE.item("circuit.wetware_computer", Item::new).lang("Wetware Supercomputer").transform(unificationItem(TagPrefix.circuit, MarkerMaterials.Tier.UV)).register();
-//    public static ItemEntry<Item> WETWARE_MAINFRAME_UHV = REGISTRATE.item("circuit.wetware_mainframe", Item::new).transform(unificationItem(TagPrefix.circuit, MarkerMaterials.Tier.UHV)).register();
+    public static ItemEntry<Item> WETWARE_MAINFRAME_UHV = REGISTRATE.item("circuit.wetware_mainframe", Item::new).transform(unificationItem(TagPrefix.circuit, MarkerMaterials.Tier.UHV)).register();
 
     public static ItemEntry<Item> COMPONENT_GRINDER_DIAMOND = REGISTRATE.item("component.grinder.diamond", Item::new).lang("Diamond Grinding Head").onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 8), new MaterialStack(GTMaterials.Diamond, GTValues.M * 5)))).register();
     public static ItemEntry<Item> COMPONENT_GRINDER_TUNGSTEN = REGISTRATE.item("component.grinder.tungsten", Item::new).lang("Tungsten Grinding Head").onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Tungsten, GTValues.M * 4), new MaterialStack(GTMaterials.VanadiumSteel, GTValues.M * 8), new MaterialStack(GTMaterials.Diamond, GTValues.M)))).register();

@@ -1,0 +1,34 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": {
+      "type": "forge:nbt",
+      "count": 1,
+      "item": "gtceu:casing",
+      "nbt": "{variant:\"primitive_bricks\"}"
+    },
+    "P": {
+      "tag": "forge:plates/iron"
+    },
+    "R": {
+      "tag": "forge:sticks/iron"
+    },
+    "S": {
+      "tag": "forge:screws/iron"
+    },
+    "d": {
+      "tag": "forge:tool/screwdriver"
+    },
+    "h": {
+      "tag": "forge:tool/hammer"
+    }
+  },
+  "pattern": [
+    "hRS",
+    "PBR",
+    "dRS"
+  ],
+  "result": {
+    "item": "gtceu:primitive_blast_furnace"
+  }
+}

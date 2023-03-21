@@ -1,0 +1,32 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "c:circuit/lv"
+    },
+    "F": {
+      "item": "minecraft:furnace"
+    },
+    "M": {
+      "base": {
+        "item": "gtceu:casing"
+      },
+      "fabric:type": "fabric:nbt",
+      "nbt": {
+        "variant": "invar_heatproof"
+      },
+      "strict": true
+    },
+    "W": {
+      "tag": "c:cable_gt_single/tin"
+    }
+  },
+  "pattern": [
+    "FFF",
+    "CMC",
+    "WCW"
+  ],
+  "result": {
+    "item": "gtceu:electric_blast_furnace"
+  }
+}

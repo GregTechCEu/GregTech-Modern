@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "S": {
+      "item": "gtceu:shape.empty"
+    },
+    "h": {
+      "tag": "forge:tool/hammer"
+    }
+  },
+  "pattern": [
+    " h ",
+    " S ",
+    "   "
+  ],
+  "result": {
+    "item": "gtceu:shape.mold.plate"
+  }
+}

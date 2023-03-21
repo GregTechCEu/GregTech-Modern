@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "forge:cable_gt_single/aluminium"
+    },
+    "H": {
+      "item": "gtceu:hull.ev"
+    },
+    "T": {
+      "tag": "forge:cable_gt_single/platinum"
+    },
+    "W": {
+      "item": "gtceu:plate.power_integrated_circuit"
+    }
+  },
+  "pattern": [
+    "WCC",
+    "TH ",
+    "WCC"
+  ],
+  "result": {
+    "item": "gtceu:transformer.ev"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "G": {
+      "item": "minecraft:glass"
+    },
+    "s": {
+      "tag": "c:tool/saw"
+    }
+  },
+  "pattern": [
+    "sG"
+  ],
+  "result": {
+    "count": 2,
+    "item": "minecraft:glass_pane"
+  }
+}

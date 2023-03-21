@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "c:cable_gt_single/tin"
+    },
+    "G": {
+      "tag": "c:glass"
+    },
+    "H": {
+      "item": "gtceu:hull.lv"
+    },
+    "M": {
+      "item": "gtceu:electric.motor.lv"
+    },
+    "P": {
+      "item": "gtceu:electric.piston.lv"
+    },
+    "W": {
+      "tag": "c:gems/diamond"
+    }
+  },
+  "pattern": [
+    "PMW",
+    "CHC",
+    "GGG"
+  ],
+  "result": {
+    "item": "gtceu:rock_crusher.lv"
+  }
+}

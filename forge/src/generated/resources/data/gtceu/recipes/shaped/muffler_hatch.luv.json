@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "H": {
+      "item": "gtceu:hull.luv"
+    },
+    "M": {
+      "item": "gtceu:electric.motor.luv"
+    },
+    "P": {
+      "tag": "forge:pipe_normal_fluid/niobium_titanium"
+    },
+    "R": {
+      "tag": "forge:rotors/rhodium_plated_palladium"
+    }
+  },
+  "pattern": [
+    "HM",
+    "PR"
+  ],
+  "result": {
+    "item": "gtceu:muffler_hatch.luv"
+  }
+}

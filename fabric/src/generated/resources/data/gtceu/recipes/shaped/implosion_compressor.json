@@ -1,0 +1,32 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "c:circuit/hv"
+    },
+    "M": {
+      "base": {
+        "item": "gtceu:casing"
+      },
+      "fabric:type": "fabric:nbt",
+      "nbt": {
+        "variant": "steel_solid"
+      },
+      "strict": true
+    },
+    "O": {
+      "tag": "c:storage_blocks/obsidian"
+    },
+    "W": {
+      "tag": "c:cable_gt_single/gold"
+    }
+  },
+  "pattern": [
+    "OOO",
+    "CMC",
+    "WCW"
+  ],
+  "result": {
+    "item": "gtceu:implosion_compressor"
+  }
+}

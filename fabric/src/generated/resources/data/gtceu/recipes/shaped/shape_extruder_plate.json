@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "S": {
+      "item": "gtceu:shape.extruder.foil"
+    },
+    "x": {
+      "tag": "c:tool/wire_cutter"
+    }
+  },
+  "pattern": [
+    "x  ",
+    " S ",
+    "   "
+  ],
+  "result": {
+    "item": "gtceu:shape.extruder.plate"
+  }
+}

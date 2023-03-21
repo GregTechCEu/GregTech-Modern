@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "F": {
+      "tag": "c:pipe_large_fluid/tungsten_steel"
+    },
+    "P": {
+      "tag": "c:plates/rhodium_plated_palladium"
+    }
+  },
+  "pattern": [
+    "PPP",
+    "PFP",
+    "PPP"
+  ],
+  "result": {
+    "item": "gtceu:hermetic_casing",
+    "nbt": {
+      "variant": "ludicrous_voltage"
+    }
+  }
+}

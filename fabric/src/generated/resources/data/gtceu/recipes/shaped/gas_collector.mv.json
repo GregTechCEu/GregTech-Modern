@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "c:circuit/mv"
+    },
+    "F": {
+      "item": "gtceu:fluid_filter"
+    },
+    "H": {
+      "item": "gtceu:hull.mv"
+    },
+    "P": {
+      "item": "gtceu:electric.pump.mv"
+    },
+    "W": {
+      "item": "minecraft:iron_bars"
+    }
+  },
+  "pattern": [
+    "WFW",
+    "PHP",
+    "WCW"
+  ],
+  "result": {
+    "item": "gtceu:gas_collector.mv"
+  }
+}

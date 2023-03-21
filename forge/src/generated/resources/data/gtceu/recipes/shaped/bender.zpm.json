@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "forge:circuit/zpm"
+    },
+    "E": {
+      "item": "gtceu:electric.motor.zpm"
+    },
+    "M": {
+      "item": "gtceu:hull.zpm"
+    },
+    "P": {
+      "item": "gtceu:electric.piston.zpm"
+    },
+    "W": {
+      "tag": "forge:cable_gt_single/vanadium_gallium"
+    },
+    "w": {
+      "tag": "forge:tool/wrench"
+    }
+  },
+  "pattern": [
+    "PwP",
+    "CMC",
+    "EWE"
+  ],
+  "result": {
+    "item": "gtceu:bender.zpm"
+  }
+}

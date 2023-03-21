@@ -1,0 +1,35 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "c:circuit/uv"
+    },
+    "G": {
+      "item": "gtceu:field.generator.zpm"
+    },
+    "H": {
+      "base": {
+        "item": "gtceu:hermetic_casing"
+      },
+      "fabric:type": "fabric:nbt",
+      "nbt": {
+        "variant": "ultimate_voltage"
+      },
+      "strict": true
+    },
+    "P": {
+      "tag": "c:plates/dense/darmstadtium"
+    },
+    "U": {
+      "item": "gtceu:electric.pump.uv"
+    }
+  },
+  "pattern": [
+    "CGC",
+    "PHP",
+    "CUC"
+  ],
+  "result": {
+    "item": "gtceu:quantum_tank.uv"
+  }
+}

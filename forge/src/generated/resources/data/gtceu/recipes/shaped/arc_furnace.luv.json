@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "forge:circuit/luv"
+    },
+    "G": {
+      "tag": "forge:dusts/graphite"
+    },
+    "M": {
+      "item": "gtceu:hull.luv"
+    },
+    "P": {
+      "tag": "forge:plates/rhodium_plated_palladium"
+    },
+    "W": {
+      "tag": "forge:cable_gt_quadruple/niobium_titanium"
+    }
+  },
+  "pattern": [
+    "WGW",
+    "CMC",
+    "PPP"
+  ],
+  "result": {
+    "item": "gtceu:arc_furnace.luv"
+  }
+}
