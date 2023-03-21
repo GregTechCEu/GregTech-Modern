@@ -85,6 +85,9 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
     public void onStructureFormed() {
         super.onStructureFormed();
         // attach parts' traits
+        capabilitiesProxy.clear();
+        traitSubscriptions.forEach(ISubscription::unsubscribe);
+        traitSubscriptions.clear();
         Map<Long, IO> ioMap = getMultiblockState().getMatchContext().getOrCreate("ioMap", Long2ObjectMaps::emptyMap);
         for (IMultiPart part : parts) {
             IO io = ioMap.getOrDefault(part.self().getPos().asLong(), IO.BOTH);

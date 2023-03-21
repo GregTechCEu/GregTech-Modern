@@ -113,7 +113,7 @@ dependencies {
     // REI
     modCompileOnly forge.rei.plugin
     modCompileOnly forge.rei.api
-    modImplementation forge.rei.fabric
+    modImplementation forge.rei.forge
 
     // TOP
     modImplementation(forge.theoneprobe) { transitive = false }

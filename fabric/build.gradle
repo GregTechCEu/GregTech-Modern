@@ -98,7 +98,7 @@ dependencies {
     modCompileOnly(fabric.rei.fabric) { transitive = false }
 
     // TOP
-    modImplementation fabric.theoneprobe
+    modCompileOnly fabric.theoneprobe
 }
 
 processResources {
