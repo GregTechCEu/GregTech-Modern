@@ -54,9 +54,9 @@ public class GTLayerOreFeature extends Feature<GTLayerOreFeatureConfiguration> {
         int length = size + 1;
         int height = size + 1;
 
-//        if (blockpos.getY() >= worldgenlevel.getHeight(Heightmap.Types.OCEAN_FLOOR_WG, blockpos.getX(),
-//                blockpos.getZ()))
-//            return false;
+        if (blockpos.getY() >= worldgenlevel.getHeight(Heightmap.Types.OCEAN_FLOOR_WG, blockpos.getX(),
+                blockpos.getZ()))
+            return false;
 
         List<GTLayerPattern.Layer> resolvedLayers = new ArrayList<>();
         List<Float> layerDiameterOffsets = new ArrayList<>();

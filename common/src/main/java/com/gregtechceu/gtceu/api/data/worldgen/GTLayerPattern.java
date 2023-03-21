@@ -1,22 +1,20 @@
 package com.gregtechceu.gtceu.api.data.worldgen;
 
-import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.tterrag.registrate.util.nullness.NonNullConsumer;
-import com.tterrag.registrate.util.nullness.NonNullSupplier;
-import net.minecraft.data.worldgen.features.OreFeatures;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration.TargetBlockState;
-import net.minecraft.world.level.levelgen.structure.templatesystem.AlwaysTrueTest;
+import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public class GTLayerPattern {
 	public static final Codec<GTLayerPattern> CODEC = Codec.list(Layer.CODEC)
@@ -45,22 +43,20 @@ public class GTLayerPattern {
 		return null;
 	}
 
-	public static Builder builder() {
-		return new Builder();
+	public static Builder builder(RuleTest... rules) {
+		return new Builder(rules);
 	}
 
 	public static class Builder {
 		private final List<Layer> layers = new ArrayList<>();
-		private boolean netherMode;
+		private final RuleTest[] rules;
 
-		public Builder inNether() {
-			netherMode = true;
-			return this;
+		protected Builder(RuleTest... rules) {
+			this.rules = rules;
 		}
 
-		public Builder layer(NonNullConsumer<Layer.Builder> builder) {
-			Layer.Builder layerBuilder = new Layer.Builder();
-			layerBuilder.netherMode = netherMode;
+		public Builder layer(Consumer<Layer.Builder> builder) {
+			Layer.Builder layerBuilder = new Layer.Builder(rules);
 			builder.accept(layerBuilder);
 			layers.add(layerBuilder.build());
 			return this;
@@ -72,22 +68,20 @@ public class GTLayerPattern {
 	}
 
 	public static class Layer {
-		public static final Codec<Layer> CODEC = RecordCodecBuilder.create(instance -> {
-			return instance.group(
+		public static final Codec<Layer> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 				Codec.list(Codec.list(TargetBlockState.CODEC))
-					.fieldOf("targets")
-					.forGetter(layer -> layer.targets),
+						.fieldOf("targets")
+						.forGetter(layer -> layer.targets),
 				Codec.intRange(0, Integer.MAX_VALUE)
-					.fieldOf("min_size")
-					.forGetter(layer -> layer.minSize),
+						.fieldOf("min_size")
+						.forGetter(layer -> layer.minSize),
 				Codec.intRange(0, Integer.MAX_VALUE)
-					.fieldOf("max_size")
-					.forGetter(layer -> layer.maxSize),
+						.fieldOf("max_size")
+						.forGetter(layer -> layer.maxSize),
 				Codec.intRange(0, Integer.MAX_VALUE)
-					.fieldOf("weight")
-					.forGetter(layer -> layer.weight)
-			).apply(instance, Layer::new);
-		});
+						.fieldOf("weight")
+						.forGetter(layer -> layer.weight)
+		).apply(instance, Layer::new));
 
 		public final List<List<TargetBlockState>> targets;
 		public final int minSize;
@@ -112,33 +106,22 @@ public class GTLayerPattern {
 			private int minSize = 1;
 			private int maxSize = 1;
 			private int weight = 1;
-			private boolean netherMode;
+			private final RuleTest[] rules;
 
-			public GTLayerPattern.Layer.Builder block(NonNullSupplier<? extends Block> block) {
-				return block(block.get());
+			protected Builder(RuleTest... rules) {
+				this.rules = rules;
 			}
 
-			public GTLayerPattern.Layer.Builder passiveBlock() {
-				return blocks(Blocks.STONE.defaultBlockState(), Blocks.DEEPSLATE.defaultBlockState());
+			public GTLayerPattern.Layer.Builder block(Supplier<? extends Block> block) {
+				return state(block.get().defaultBlockState());
 			}
 
-			public GTLayerPattern.Layer.Builder block(Block block) {
-				if (netherMode) {
-					this.targets.add(ImmutableList.of(OreConfiguration
-						.target(OreFeatures.NETHER_ORE_REPLACEABLES, block.defaultBlockState())));
-					return this;
-				}
-				return blocks(block.defaultBlockState(), block.defaultBlockState());
+			public GTLayerPattern.Layer.Builder state(Supplier<? extends BlockState> state) {
+				return state(state.get());
 			}
 
-			public GTLayerPattern.Layer.Builder blocks(Block block, Block deepblock) {
-				return blocks(block.defaultBlockState(), deepblock.defaultBlockState());
-			}
-
-			private GTLayerPattern.Layer.Builder blocks(BlockState stone, BlockState deepslate) {
-				this.targets.add(
-					ImmutableList.of(OreConfiguration.target(AlwaysTrueTest.INSTANCE, stone),
-						OreConfiguration.target(OreFeatures.DEEPSLATE_ORE_REPLACEABLES, deepslate)));
+			public GTLayerPattern.Layer.Builder state(BlockState state) {
+				this.targets.add(Arrays.stream(this.rules).map(rule -> OreConfiguration.target(rule, state)).toList());
 				return this;
 			}
 

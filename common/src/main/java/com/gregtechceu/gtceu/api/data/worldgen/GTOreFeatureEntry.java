@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.api.data.worldgen;
 import com.gregtechceu.gtceu.common.data.GTFeatures;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
-import com.simibubi.create.foundation.worldgen.OreFeatureConfigEntry;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Holder;
@@ -18,7 +17,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
 import net.minecraft.world.level.levelgen.placement.*;
-import net.minecraft.world.level.levelgen.structure.templatesystem.AlwaysTrueTest;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -43,16 +41,16 @@ public class GTOreFeatureEntry {
     public final ResourceLocation id;
     public final int clusterSize;
     public final float frequency;
-    public final int minHeight;
-    public final int maxHeight;
+    public final CountPlacement count;
+    public final HeightRangePlacement range;
     private DatagenExtension datagenExt;
 
-    public GTOreFeatureEntry(ResourceLocation id, int clusterSize, float frequency, int minHeight, int maxHeight) {
+    public GTOreFeatureEntry(ResourceLocation id, int clusterSize, float frequency, CountPlacement count, HeightRangePlacement range) {
         this.id = id;
         this.clusterSize = clusterSize;
         this.frequency = frequency;
-        this.minHeight = minHeight;
-        this.maxHeight = maxHeight;
+        this.count = count;
+        this.range = range;
         ALL.put(id, this);
     }
 
@@ -100,7 +98,11 @@ public class GTOreFeatureEntry {
         public PlacedFeature createPlacedFeature(RegistryAccess registryAccess) {
             Registry<ConfiguredFeature<?, ?>> featureRegistry = registryAccess.registryOrThrow(Registry.CONFIGURED_FEATURE_REGISTRY);
             Holder<ConfiguredFeature<?, ?>> featureHolder = featureRegistry.getOrCreateHolderOrThrow(ResourceKey.create(Registry.CONFIGURED_FEATURE_REGISTRY, GTOreFeatureEntry.this.id));
-            return new PlacedFeature(featureHolder, List.of(new GTOrePlacementModifier(GTOreFeatureEntry.this)));
+            return new PlacedFeature(featureHolder, List.of(
+                    count,
+                    new FrequencyModifier(frequency),
+                    range
+            ));
         }
 
         public GTOreFeatureEntry parent() {

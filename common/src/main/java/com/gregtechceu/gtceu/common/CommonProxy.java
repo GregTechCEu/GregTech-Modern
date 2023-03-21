@@ -1,6 +1,8 @@
 package com.gregtechceu.gtceu.common;
 
 import com.gregtechceu.gtceu.api.gui.CoverUIFactory;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.api.gui.MachineUIFactory;
 import com.gregtechceu.gtceu.common.data.materials.GTFoods;
@@ -17,7 +19,6 @@ public class CommonProxy {
     public static void init() {
         UIFactory.register(MachineUIFactory.INSTANCE);
         UIFactory.register(CoverUIFactory.INSTANCE);
-        GTFeatures.init();
         GTRecipeCapabilities.init();
         GTRecipeConditions.init();
         GTElements.init();
@@ -26,7 +27,6 @@ public class CommonProxy {
         GTCovers.init();
         GTFluids.init();
         GTBlocks.init();
-        GTOres.init();
         GTBlockEntities.init();
         GTRecipeTypes.init();
         GTMachines.init();
@@ -34,6 +34,12 @@ public class CommonProxy {
         GTItems.init();
         GTRecipes.init();
         GregTechDatagen.init();
+
+        // fabric exclusive, squeeze this in here to register before stuff is used
+        GTRegistries.REGISTRATE.registerRegistrate();
+
+        GTFeatures.init();
+        GTOres.init();
     }
 
 }

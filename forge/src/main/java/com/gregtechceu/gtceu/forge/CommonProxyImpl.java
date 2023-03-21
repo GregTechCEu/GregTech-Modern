@@ -26,7 +26,6 @@ public class CommonProxyImpl {
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
         eventBus.register(this);
         GTOresImpl.init(eventBus);
-        GTRegistries.REGISTRATE.registerRegistrate();
         // init common features
         CommonProxy.init();
         // register payloads
