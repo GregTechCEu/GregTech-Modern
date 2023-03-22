@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.item.tool.IToolGridHighLight;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputFluid;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputItem;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineFeature;
+import com.gregtechceu.gtceu.api.machine.feature.IMufflableMachine;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.common.cover.FluidFilterCover;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
@@ -275,6 +276,12 @@ public class MetaMachine implements IManaged, IToolable, ITickSubscription, IToo
     }
 
     protected InteractionResult onHardHammerClick(Player playerIn, InteractionHand hand, Direction gridSide, BlockHitResult hitResult) {
+        if (this instanceof IMufflableMachine mufflableMachine) {
+            if (!isRemote()) {
+                mufflableMachine.setMuffled(mufflableMachine.isMuffled());
+            }
+            return InteractionResult.CONSUME;
+        }
         return InteractionResult.PASS;
     }
 
@@ -345,6 +352,7 @@ public class MetaMachine implements IManaged, IToolable, ITickSubscription, IToo
     @Override
     public boolean shouldRenderGrid(Player player, ItemStack held, GTToolType toolType) {
         if (toolType == GTToolType.WRENCH || toolType == GTToolType.SCREWDRIVER) return true;
+        if (toolType == GTToolType.HARD_HAMMER && this instanceof IMufflableMachine) return true;
         for (CoverBehavior cover : coverContainer.getCovers()) {
             if (cover.shouldRenderGrid(player, held, toolType)) return true;
         }
@@ -362,6 +370,10 @@ public class MetaMachine implements IManaged, IToolable, ITickSubscription, IToo
         } else if (toolType == GTToolType.SOFT_MALLET) {
             if (this instanceof IControllable controllable) {
                 return controllable.isWorkingEnabled() ? GuiTextures.TOOL_PAUSE : GuiTextures.TOOL_START;
+            }
+        } else if (toolType == GTToolType.HARD_HAMMER) {
+            if (this instanceof IMufflableMachine mufflableMachine) {
+                return mufflableMachine.isMuffled() ? GuiTextures.TOOL_SOUND : GuiTextures.TOOL_MUTE;
             }
         }
         var cover = coverContainer.getCoverAtSide(side);
