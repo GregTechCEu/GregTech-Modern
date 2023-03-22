@@ -5,6 +5,7 @@ import com.google.common.collect.Tables;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMufflerMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.trait.IRecipeHandlerTrait;
@@ -14,6 +15,7 @@ import com.gregtechceu.gtceu.api.machine.IMetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.api.sound.AutoReleasedSound;
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
@@ -22,6 +24,8 @@ import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
 import it.unimi.dsi.fastutil.longs.LongSet;
 import it.unimi.dsi.fastutil.longs.LongSets;
 import lombok.Getter;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 
@@ -187,17 +191,6 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
                     muffler.recoverItemsTable(getDefinition().getRecoveryItems().get());
                     break;
                 }
-            }
-        }
-    }
-
-    @Override
-    public void clientTick() {
-        super.clientTick();
-        if (recipeLogic.isWorking()) {
-            var sound = getRecipeType().getSound();
-            if (sound != null && getOffsetTimer() % 20 == 0) {
-                sound.playAt(getLevel(), getPos(), 1, 1, true);
             }
         }
     }

@@ -27,8 +27,6 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFe
      * Called when recipe logic status changed
      */
     default void notifyStatusChanged(RecipeLogic.Status oldStatus, RecipeLogic.Status newStatus) {
-        self().markDirty();
-        self().scheduleRenderUpdate();
     }
 
     /**
@@ -95,6 +93,10 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFe
      * Whether progress decrease when machine is waiting for pertick ingredients. (e.g. lack of EU)
      */
     default boolean dampingWhenWaiting() {
+        return true;
+    }
+
+    default boolean shouldWorkingPlaySound() {
         return true;
     }
 

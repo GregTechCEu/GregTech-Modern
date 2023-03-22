@@ -21,6 +21,8 @@ import com.mojang.blaze3d.MethodsReturnNonnullByDefault;
 import it.unimi.dsi.fastutil.ints.Int2LongFunction;
 import lombok.Getter;
 import lombok.Setter;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
@@ -182,16 +184,5 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
     @Override
     public boolean keepSubscribing() {
         return false;
-    }
-
-    @Override
-    public void clientTick() {
-        super.clientTick();
-        if (recipeLogic.isWorking()) {
-            var sound = getRecipeType().getSound();
-            if (sound != null && getOffsetTimer() % 20 == 0) {
-                sound.playAt(getLevel(), getPos(), 1, 1, true);
-            }
-        }
     }
 }

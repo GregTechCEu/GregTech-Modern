@@ -3,6 +3,9 @@ package com.gregtechceu.gtceu.api.machine.steam;
 import com.google.common.collect.Table;
 import com.google.common.collect.Tables;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
+import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.item.tool.GTToolType;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.ISteamVentMachine;
 import com.gregtechceu.gtceu.api.machine.trait.IRecipeHandlerTrait;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
@@ -12,11 +15,15 @@ import com.gregtechceu.gtceu.api.machine.IMetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.api.sound.AutoReleasedSound;
+import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import lombok.Getter;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
@@ -48,7 +55,6 @@ public abstract class SteamWorkableMachine extends SteamMachine implements IReci
     public final GTRecipeType recipeType;
     @Persisted @DescSynced @Getter
     protected Direction ventFacing;
-
     @Getter
     protected final Table<IO, RecipeCapability<?>, List<IRecipeHandler<?>>> capabilitiesProxy;
     protected final List<ISubscription> traitSubscriptions;
@@ -115,14 +121,18 @@ public abstract class SteamWorkableMachine extends SteamMachine implements IReci
         return super.onWrenchClick(playerIn, hand, gridSide, hitResult);
     }
 
+    //////////////////////////////////////
+    //*******     Rendering     ********//
+    //////////////////////////////////////
     @Override
-    public void clientTick() {
-        super.clientTick();
-        if (recipeLogic.isWorking()) {
-            var sound = getRecipeType().getSound();
-            if (sound != null && getOffsetTimer() % 20 == 0) {
-                sound.playAt(getLevel(), getPos(), 1, 1, true);
+    public ResourceTexture sideTips(Player player, GTToolType toolType, Direction side) {
+        if (toolType == GTToolType.WRENCH) {
+            if (!player.isCrouching()) {
+                if (!hasFrontFacing() || side != getFrontFacing()) {
+                    return GuiTextures.TOOL_IO_FACING_ROTATION;
+                }
             }
         }
+        return super.sideTips(player, toolType, side);
     }
 }

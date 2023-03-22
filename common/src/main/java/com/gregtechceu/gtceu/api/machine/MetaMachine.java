@@ -34,6 +34,8 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import lombok.Getter;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -221,6 +223,7 @@ public class MetaMachine implements IManaged, IToolable, ITickSubscription, IToo
         }
     }
 
+    @Environment(EnvType.CLIENT)
     public void clientTick() {
 
     }

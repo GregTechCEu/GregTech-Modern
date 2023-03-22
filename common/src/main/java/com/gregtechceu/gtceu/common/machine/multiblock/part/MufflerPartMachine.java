@@ -18,6 +18,8 @@ import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import lombok.Getter;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -73,6 +75,7 @@ public class MufflerPartMachine extends TieredPartMachine implements IMufflerMac
     }
 
     @Override
+    @Environment(EnvType.CLIENT)
     public void clientTick() {
         super.clientTick();
         for (IMultiController controller : getControllers()) {
