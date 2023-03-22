@@ -1,8 +1,8 @@
 {
   "replace": false,
   "values": [
-    "#c:rounds/osmiridium",
     "#c:rounds/tritanium",
+    "#c:rounds/osmiridium",
     "#c:rounds/hsss"
   ]
 }

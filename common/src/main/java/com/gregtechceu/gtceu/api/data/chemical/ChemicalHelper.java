@@ -8,8 +8,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.tag.TagUtil;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
-import com.simibubi.create.foundation.item.UncontainableBlockItem;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.tags.TagKey;
@@ -30,9 +29,9 @@ import static com.gregtechceu.gtceu.api.GTValues.M;
  */
 public class ChemicalHelper {
 
-    public static final Map<ItemLike, ItemMaterialInfo> ITEM_MATERIAL_INFO = new HashMap<>();
+    public static final Map<ItemLike, ItemMaterialInfo> ITEM_MATERIAL_INFO = new Object2ObjectLinkedOpenHashMap<>();
     public static final Map<ItemLike, UnificationEntry> ITEM_UNIFICATION_ENTRY = new HashMap<>();
-    public static final Map<UnificationEntry, ArrayList<ItemLike>> UNIFICATION_ENTRY_ITEM = new Object2ObjectOpenHashMap<>();
+    public static final Map<UnificationEntry, ArrayList<ItemLike>> UNIFICATION_ENTRY_ITEM = new Object2ObjectLinkedOpenHashMap<>();
 
     public static void registerMaterialInfo(ItemLike item, ItemMaterialInfo materialInfo) {
         ITEM_MATERIAL_INFO.put(item, materialInfo);

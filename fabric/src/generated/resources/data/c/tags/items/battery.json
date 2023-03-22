@@ -1,15 +1,15 @@
 {
   "replace": false,
   "values": [
-    "#c:battery/iv",
-    "#c:battery/lv",
-    "#c:battery/ev",
-    "#c:battery/hv",
-    "#c:battery/zpm",
-    "#c:battery/mv",
-    "#c:battery/uv",
     "#c:battery/ulv",
+    "#c:battery/lv",
+    "#c:battery/mv",
+    "#c:battery/hv",
+    "#c:battery/ev",
+    "#c:battery/iv",
     "#c:battery/luv",
+    "#c:battery/zpm",
+    "#c:battery/uv",
     "#c:battery/uhv"
   ]
 }

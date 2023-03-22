@@ -3,9 +3,9 @@ package com.gregtechceu.gtceu.common.data.materials;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.fluid.FluidTypes;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.BlastProperty.GasTier;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.ToolProperty;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.BlastProperty.GasTier;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import net.minecraft.world.item.enchantment.Enchantments;
 
@@ -1186,16 +1186,14 @@ public class FirstDegreeMaterials {
                 .color(0x4BF52A)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Uranium235, 1, Fluorine, 6)
-                .buildAndRegister()
-                .setFormula("UF6", true);
+                .buildAndRegister();
 
         DepletedUraniumHexafluoride = new Material.Builder("depleted_uranium_hexafluoride")
                 .fluid(FluidTypes.GAS)
                 .color(0x74BA66)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Uranium238, 1, Fluorine, 6)
-                .buildAndRegister()
-                .setFormula("UF6", true);
+                .buildAndRegister();
 
         NitrousOxide = new Material.Builder("nitrous_oxide")
                 .fluid(FluidTypes.GAS)
