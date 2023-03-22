@@ -1,11 +1,11 @@
 {
   "replace": false,
   "values": [
-    "#c:stone/endstone",
-    "#c:stone/obsidian",
-    "#c:stone/diorite",
-    "#c:stone/andesite",
     "#c:stone/granite",
-    "#c:stone/netherrack"
+    "#c:stone/andesite",
+    "#c:stone/diorite",
+    "#c:stone/netherrack",
+    "#c:stone/endstone",
+    "#c:stone/obsidian"
   ]
 }

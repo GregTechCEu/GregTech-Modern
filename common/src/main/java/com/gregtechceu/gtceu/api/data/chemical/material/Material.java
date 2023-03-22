@@ -3,10 +3,6 @@ package com.gregtechceu.gtceu.api.data.chemical.material;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.*;
-import com.gregtechceu.gtceu.api.item.tool.MaterialToolTier;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.api.data.chemical.Element;
 import com.gregtechceu.gtceu.api.data.chemical.fluid.FluidType;
 import com.gregtechceu.gtceu.api.data.chemical.fluid.FluidTypes;
@@ -14,7 +10,11 @@ import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlag;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.*;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
+import com.gregtechceu.gtceu.api.item.tool.MaterialToolTier;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -59,7 +59,13 @@ public class Material implements Comparable<Material> {
     private String calculateChemicalFormula() {
         if (chemicalFormula != null) return this.chemicalFormula;
         if (materialInfo.element != null) {
-            return materialInfo.element.symbol();
+            String[] split = materialInfo.element.symbol().split("-");
+            String result;
+            if (split.length > 1) {
+                split[1] = FormattingUtil.toSmallUpNumbers(split[1]);
+                result = split[0] + split[1];
+            } else result = materialInfo.element.symbol();
+            return result;
         }
         if (!materialInfo.componentList.isEmpty()) {
             StringBuilder components = new StringBuilder();
@@ -75,7 +81,7 @@ public class Material implements Comparable<Material> {
     }
 
     public Material setFormula(String formula) {
-        return setFormula(formula, false);
+        return setFormula(formula, true);
     }
 
     public Material setFormula(String formula, boolean withFormatting) {
