@@ -34,6 +34,7 @@ import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.PyrolyseOvenMachine;
 import com.gregtechceu.gtceu.common.machine.steam.SteamLiquidBoilerMachine;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.data.data.LangHandler;
 import com.lowdragmc.lowdraglib.client.renderer.impl.IModelRenderer;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
@@ -407,10 +408,10 @@ public class GTMachines {
                     .rotationState(RotationState.ALL)
                     .abilities(PartAbility.MUFFLER)
                     .overlayTieredHullRenderer("muffler_hatch")
-                    .tooltips(Component.translatable("gtceu.machine.muffler_hatch.tooltip1"),
+                    .tooltips(LangHandler.getFromMultiLang("gtceu.machine.muffler_hatch.tooltip", 0),
                             Component.translatable("gtceu.muffler.recovery_tooltip", Math.max(1, tier * 10)),
                             Component.translatable("gtceu.universal.enabled"),
-                            Component.translatable("gtceu.machine.muffler_hatch.tooltip2").withStyle(ChatFormatting.DARK_RED))
+                            LangHandler.getFromMultiLang("gtceu.machine.muffler_hatch.tooltip", 1).withStyle(ChatFormatting.DARK_RED))
                     .register(),
             ELECTRIC_TIERS);
 
