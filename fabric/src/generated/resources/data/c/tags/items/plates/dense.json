@@ -1,9 +1,9 @@
 {
   "replace": false,
   "values": [
-    "#c:plates/dense/rhodium_plated_palladium",
-    "#c:plates/dense/tungsten_steel",
     "#c:plates/dense/darmstadtium",
-    "#c:plates/dense/naquadah_alloy"
+    "#c:plates/dense/tungsten_steel",
+    "#c:plates/dense/naquadah_alloy",
+    "#c:plates/dense/rhodium_plated_palladium"
   ]
 }
