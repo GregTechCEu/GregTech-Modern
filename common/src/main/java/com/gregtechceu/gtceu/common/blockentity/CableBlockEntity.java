@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.common.block.CableBlock;
 import com.gregtechceu.gtceu.common.pipelike.cable.CableData;
 import com.gregtechceu.gtceu.common.pipelike.cable.EnergyNet;
 import com.gregtechceu.gtceu.common.pipelike.cable.Insulation;
+import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -27,6 +28,7 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.lang.ref.WeakReference;
+import java.util.List;
 
 /**
  * @author KilaBash
@@ -94,12 +96,12 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, CableData> {
     }
 
     @Override
-    public boolean isSideUsed(Player player, GTToolType toolType, Direction side) {
+    public ResourceTexture sideTips(Player player, GTToolType toolType, Direction side) {
+        var tips = super.sideTips(player, toolType, side);
         if (toolType == GTToolType.WIRE_CUTTER) {
-            return isBlocked(side);
-        } else {
-            return super.isSideUsed(player, toolType, side);
+            // todo
         }
+        return tips;
     }
 
     @Override

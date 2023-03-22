@@ -19,6 +19,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -123,6 +124,7 @@ public interface ICoverable extends ITickSubscription {
         return false;
     }
 
+    @Nullable
     static Direction rayTraceCoverableSide(ICoverable coverable, Player player) {
         var rayTrace = RayTraceHelper.rayTraceRange(coverable.getLevel(), player, 4);
         if (rayTrace.getType() == HitResult.Type.MISS) {
@@ -140,6 +142,7 @@ public interface ICoverable extends ITickSubscription {
         }
     }
 
+    @Nullable
     static Direction traceCoverSide(BlockHitResult result) {
 //        if (result instanceof CuboidRayTraceResult) {
 //            CuboidRayTraceResult rayTraceResult = (CuboidRayTraceResult) result;
@@ -158,6 +161,7 @@ public interface ICoverable extends ITickSubscription {
         return determineGridSideHit(result);
     }
 
+    @Nullable
     static Direction determineGridSideHit(BlockHitResult result) {
         return GTUtil.determineWrenchingSide(result.getDirection(),
                 (float) (result.getLocation().x - result.getBlockPos().getX()),
