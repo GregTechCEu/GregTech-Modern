@@ -76,6 +76,10 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidStack
             if (io == IO.IN) {
                 while (iterator.hasNext()) {
                     FluidStack fluidStack = iterator.next();
+                    if (fluidStack.isEmpty()) {
+                        iterator.remove();
+                        continue;
+                    }
                     boolean found = false;
                     for (int i = 0; i < capability.getTanks(); i++) {
                         FluidStack stored = capability.getFluidInTank(i);
@@ -86,10 +90,6 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidStack
                     }
                     if (!found) continue;
                     FluidStack drained = capability.drain(fluidStack.copy(), simulate);
-                    if (drained.isEmpty()) {
-                        iterator.remove();
-                        continue;
-                    }
 
                     fluidStack.setAmount(fluidStack.getAmount() - drained.getAmount());
                     if (fluidStack.getAmount() <= 0) {
