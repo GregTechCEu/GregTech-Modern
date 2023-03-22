@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.common.data;
 
-import com.gregtechceu.gtceu.data.recipe.*;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.data.recipe.configurable.RecipeAddition;
 import com.gregtechceu.gtceu.data.recipe.configurable.RecipeRemoval;
@@ -40,7 +39,6 @@ public class GTRecipes {
         GTRegistries.REGISTRATE.addDataGenerator(ProviderType.RECIPE, MetaTileEntityLoader::init);
         GTRegistries.REGISTRATE.addDataGenerator(ProviderType.RECIPE, MetaTileEntityMachineRecipeLoader::init);
         GTRegistries.REGISTRATE.addDataGenerator(ProviderType.RECIPE, MiscRecipeLoader::init);
-        GTRegistries.REGISTRATE.addDataGenerator(ProviderType.RECIPE, RecyclingRecipes::init);
         GTRegistries.REGISTRATE.addDataGenerator(ProviderType.RECIPE, VanillaStandardRecipes::init);
         GTRegistries.REGISTRATE.addDataGenerator(ProviderType.RECIPE, WoodMachineRecipes::init);
 
@@ -71,6 +69,8 @@ public class GTRecipes {
 
         // Config-dependent recipes
         RecipeAddition.init(consumer);
+        // Must run recycling recipes very last
+        RecyclingRecipes.init(consumer);
     }
 
     /*
