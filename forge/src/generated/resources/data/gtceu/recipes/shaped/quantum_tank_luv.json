@@ -8,7 +8,10 @@
       "item": "gtceu:field.generator.iv"
     },
     "H": {
-      "item": "gtceu:hermetic_casing_luv"
+      "type": "forge:nbt",
+      "count": 1,
+      "item": "gtceu:hermetic_casing",
+      "nbt": "{variant:\"ludicrous_voltage_hermetic\"}"
     },
     "P": {
       "tag": "forge:plates/dense/rhodium_plated_palladium"

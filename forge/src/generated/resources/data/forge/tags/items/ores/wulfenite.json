@@ -10,13 +10,13 @@
     "gtceu:ore_granite_wulfenite",
     "gtceu:ore_andesite_wulfenite",
     "gtceu:ore_andesite_wulfenite",
-    "gtceu:ore_endstone_wulfenite",
-    "gtceu:ore_endstone_wulfenite",
     "gtceu:ore_red_sand_wulfenite",
     "gtceu:ore_red_sand_wulfenite",
-    "gtceu:ore_netherrack_wulfenite",
-    "gtceu:ore_netherrack_wulfenite",
     "gtceu:ore_diorite_wulfenite",
-    "gtceu:ore_diorite_wulfenite"
+    "gtceu:ore_diorite_wulfenite",
+    "gtceu:ore_endstone_wulfenite",
+    "gtceu:ore_endstone_wulfenite",
+    "gtceu:ore_netherrack_wulfenite",
+    "gtceu:ore_netherrack_wulfenite"
   ]
 }

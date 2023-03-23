@@ -1,0 +1,76 @@
+{
+  "type": "gtceu:gt_recipe_serializer",
+  "duration": 617,
+  "inputs": {
+    "item": [
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 1,
+          "fabric:type": "gtceu:sized",
+          "ingredient": {
+            "item": "gtceu:mixer.mv"
+          }
+        }
+      }
+    ]
+  },
+  "outputs": {
+    "item": [
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 4,
+          "fabric:type": "gtceu:sized",
+          "ingredient": {
+            "item": "gtceu:dust.bronze"
+          }
+        }
+      },
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 4,
+          "fabric:type": "gtceu:sized",
+          "ingredient": {
+            "item": "gtceu:dust.cupronickel"
+          }
+        }
+      },
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 2,
+          "fabric:type": "gtceu:sized",
+          "ingredient": {
+            "item": "gtceu:dust.rubber"
+          }
+        }
+      },
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 1,
+          "fabric:type": "gtceu:sized",
+          "ingredient": {
+            "item": "gtceu:dust.copper"
+          }
+        }
+      }
+    ]
+  },
+  "recipe_type": "gtceu:macerator",
+  "tickInputs": {
+    "eu": [
+      {
+        "chance": 1.0,
+        "content": 8
+      }
+    ]
+  }
+}

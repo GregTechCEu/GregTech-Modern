@@ -1,0 +1,49 @@
+{
+  "variants": {
+    "variant=extreme_voltage_hermetic": {
+      "model": "gtceu:block/hermetic_casing/extreme_voltage_hermetic"
+    },
+    "variant=high_voltage_hermetic": {
+      "model": "gtceu:block/hermetic_casing/high_voltage_hermetic"
+    },
+    "variant=insane_voltage_hermetic": {
+      "model": "gtceu:block/hermetic_casing/insane_voltage_hermetic"
+    },
+    "variant=low_voltage_hermetic": {
+      "model": "gtceu:block/hermetic_casing/low_voltage_hermetic"
+    },
+    "variant=ludicrous_voltage_hermetic": {
+      "model": "gtceu:block/hermetic_casing/ludicrous_voltage_hermetic"
+    },
+    "variant=maximum_voltage_hermetic": {
+      "model": "gtceu:block/hermetic_casing/maximum_voltage_hermetic"
+    },
+    "variant=medium_voltage_hermetic": {
+      "model": "gtceu:block/hermetic_casing/medium_voltage_hermetic"
+    },
+    "variant=overpowered_voltage_hermetic": {
+      "model": "gtceu:block/hermetic_casing/overpowered_voltage_hermetic"
+    },
+    "variant=ultimate_voltage_hermetic": {
+      "model": "gtceu:block/hermetic_casing/ultimate_voltage_hermetic"
+    },
+    "variant=ultra_excessive_voltage_hermetic": {
+      "model": "gtceu:block/hermetic_casing/ultra_excessive_voltage_hermetic"
+    },
+    "variant=ultra_extreme_voltage_hermetic": {
+      "model": "gtceu:block/hermetic_casing/ultra_extreme_voltage_hermetic"
+    },
+    "variant=ultra_high_voltage_hermetic": {
+      "model": "gtceu:block/hermetic_casing/ultra_high_voltage_hermetic"
+    },
+    "variant=ultra_immense_voltage_hermetic": {
+      "model": "gtceu:block/hermetic_casing/ultra_immense_voltage_hermetic"
+    },
+    "variant=ultra_low_voltage_hermetic": {
+      "model": "gtceu:block/hermetic_casing/ultra_low_voltage_hermetic"
+    },
+    "variant=zpm_voltage_hermetic": {
+      "model": "gtceu:block/hermetic_casing/zpm_voltage_hermetic"
+    }
+  }
+}

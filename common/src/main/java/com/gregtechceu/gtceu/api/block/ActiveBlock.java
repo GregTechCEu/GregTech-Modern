@@ -8,13 +8,17 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
+/**
+ * @author KilaBash
+ * @date 2023/3/4
+ * @implNote VariantActiveBlock
+ */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class ActiveBlock extends Block {
-
+public class VariantActiveBlock<T extends Enum<T> & VariantBlock.AppendableStringRepresentable> extends VariantBlock<T> {
     public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
 
-    public ActiveBlock(Properties properties) {
+    public VariantActiveBlock(Properties properties) {
         super(properties);
         registerDefaultState(defaultBlockState().setValue(ACTIVE, false));
     }
@@ -32,7 +36,12 @@ public class ActiveBlock extends Block {
         return state;
     }
 
+    public BlockState getState(T variant, boolean active) {
+        return changeActive(changeVariant(defaultBlockState(), variant), active);
+    }
+
     public boolean isActive(BlockState state) {
         return state.getValue(ACTIVE);
     }
+
 }

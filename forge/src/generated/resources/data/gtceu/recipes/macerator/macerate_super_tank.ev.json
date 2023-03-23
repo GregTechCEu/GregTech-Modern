@@ -1,0 +1,76 @@
+{
+  "type": "gtceu:gt_recipe_serializer",
+  "duration": 10200,
+  "inputs": {
+    "item": [
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 1,
+          "fabric:type": "gtceu:sized",
+          "ingredient": {
+            "item": "gtceu:super_tank.ev"
+          }
+        }
+      }
+    ]
+  },
+  "outputs": {
+    "item": [
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 8,
+          "fabric:type": "gtceu:sized",
+          "ingredient": {
+            "item": "gtceu:dust.neutronium"
+          }
+        }
+      },
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 8,
+          "fabric:type": "gtceu:sized",
+          "ingredient": {
+            "item": "gtceu:dust.magnesium_diboride"
+          }
+        }
+      },
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 6,
+          "fabric:type": "gtceu:sized",
+          "ingredient": {
+            "item": "gtceu:dust.duranium"
+          }
+        }
+      },
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 6,
+          "fabric:type": "gtceu:sized",
+          "ingredient": {
+            "item": "gtceu:dust.titanium"
+          }
+        }
+      }
+    ]
+  },
+  "recipe_type": "gtceu:macerator",
+  "tickInputs": {
+    "eu": [
+      {
+        "chance": 1.0,
+        "content": 32
+      }
+    ]
+  }
+}

@@ -1,23 +1,23 @@
 {
   "values": [
-    "#forge:springs/aluminium",
     "#forge:springs/copper",
-    "#forge:springs/europium",
-    "#forge:springs/gold",
-    "#forge:springs/iron",
     "#forge:springs/lead",
+    "#forge:springs/tungsten_steel",
     "#forge:springs/tin",
-    "#forge:springs/tungsten",
     "#forge:springs/naquadah",
     "#forge:springs/cupronickel",
-    "#forge:springs/kanthal",
-    "#forge:springs/nichrome",
-    "#forge:springs/niobium_titanium",
+    "#forge:springs/aluminium",
+    "#forge:springs/hssg",
+    "#forge:springs/tungsten",
     "#forge:springs/steel",
+    "#forge:springs/nichrome",
     "#forge:springs/vanadium_gallium",
     "#forge:springs/yttrium_barium_cuprate",
-    "#forge:springs/tungsten_steel",
-    "#forge:springs/naquadah_alloy",
-    "#forge:springs/hssg"
+    "#forge:springs/gold",
+    "#forge:springs/iron",
+    "#forge:springs/niobium_titanium",
+    "#forge:springs/europium",
+    "#forge:springs/kanthal",
+    "#forge:springs/naquadah_alloy"
   ]
 }

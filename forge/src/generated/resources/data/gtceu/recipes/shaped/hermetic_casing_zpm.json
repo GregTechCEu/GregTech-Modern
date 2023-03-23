@@ -14,6 +14,9 @@
     "PPP"
   ],
   "result": {
-    "item": "gtceu:hermetic_casing_zpm"
+    "item": "gtceu:hermetic_casing",
+    "nbt": {
+      "variant": "zpm_voltage_hermetic"
+    }
   }
 }
