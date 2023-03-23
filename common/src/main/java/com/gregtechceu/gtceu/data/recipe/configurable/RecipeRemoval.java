@@ -228,7 +228,7 @@ public class RecipeRemoval {
 
     private static void nerfPaperCrafting(Consumer<ResourceLocation> registry) {
         registry.accept(new ResourceLocation("minecraft:paper"));
-        registry.accept(new ResourceLocation("minecraft:sugar"));
+        registry.accept(new ResourceLocation("minecraft:sugar_from_sugar_cane"));
     }
 
     private static void hardAdvancedIronRecipes(Consumer<ResourceLocation> registry) {

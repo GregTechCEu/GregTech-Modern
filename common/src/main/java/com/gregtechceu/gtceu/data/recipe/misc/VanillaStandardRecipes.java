@@ -108,7 +108,7 @@ public class VanillaStandardRecipes {
     private static void glassRecipes(Consumer<FinishedRecipe> provider) {
         VanillaRecipeHelper.addShapedRecipe(provider, "glass_dust_hammer", ChemicalHelper.get(dust, Glass), "hG", 'G', new ItemStack(Blocks.GLASS));
 
-        VanillaRecipeHelper.addShapelessRecipe(provider, "glass_dust_handcrafting", ChemicalHelper.get(dust, Glass), "dustSand", "dustFlint");
+        VanillaRecipeHelper.addShapelessRecipe(provider, "glass_dust_handcrafting", ChemicalHelper.get(dust, Glass), new UnificationEntry(dust, QuartzSand), new UnificationEntry(dust, Flint));
 
         VanillaRecipeHelper.addShapedRecipe(provider, "quartz_sand", ChemicalHelper.get(dust, QuartzSand), "S", "m", 'S', new ItemStack(Blocks.SAND));
 

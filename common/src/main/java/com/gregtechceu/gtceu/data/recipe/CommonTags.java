@@ -18,6 +18,7 @@ public class CommonTags {
     public static final TagKey<Item> TAG_SIGNS = TagUtil.createItemTag("signs", true);
     public static final TagKey<Item> TAG_COALS = TagUtil.createItemTag("coals", true);
     public static final TagKey<Item> TAG_SAPLINGS = TagUtil.createItemTag("saplings", true);
+    public static final TagKey<Item> TAG_SAND = TagUtil.createItemTag("sand", true);
 
     // Platform-dependent tags
     public static final TagKey<Item> TAG_WOODEN_CHESTS;

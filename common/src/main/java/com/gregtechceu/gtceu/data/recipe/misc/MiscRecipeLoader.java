@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials.Color;
 import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials.Tier;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
-import com.gregtechceu.gtceu.common.block.variant.CasingBlock;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
@@ -452,13 +451,13 @@ public class MiscRecipeLoader {
 
         // Coke Brick and Firebrick decomposition
         EXTRACTOR_RECIPES.recipeBuilder("extract_coke_oven_bricks")
-                .inputItems(GTBlocks.CASING.get().getItemVariant(CasingBlock.CasingType.COKE_BRICKS))
+                .inputItems(GTBlocks.CASING_COKE_BRICKS.asStack())
                 .outputItems(COKE_OVEN_BRICK, 4)
                 .duration(300).EUt(2)
                 .save(provider);
 
         EXTRACTOR_RECIPES.recipeBuilder("extract_primitive_bricks")
-                .inputItems(GTBlocks.CASING.get().getItemVariant(CasingBlock.CasingType.PRIMITIVE_BRICKS))
+                .inputItems(GTBlocks.CASING_PRIMITIVE_BRICKS.asStack())
                 .outputItems(FIRECLAY_BRICK, 4)
                 .duration(300).EUt(2)
                 .save(provider);

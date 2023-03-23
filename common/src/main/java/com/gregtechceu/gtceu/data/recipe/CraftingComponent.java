@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.BlastProperty
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.tag.TagUtil;
-import com.gregtechceu.gtceu.common.block.variant.HullCasingBlock;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMachines;
@@ -269,16 +268,16 @@ public class CraftingComponent {
 
         CASING = new Component(Stream.of(new Object[][]{
 
-                {0, GTBlocks.HULL_CASING.get().getItemVariant(HullCasingBlock.CasingType.ULV)},
-                {1, GTBlocks.HULL_CASING.get().getItemVariant(HullCasingBlock.CasingType.LV)},
-                {2, GTBlocks.HULL_CASING.get().getItemVariant(HullCasingBlock.CasingType.MV)},
-                {3, GTBlocks.HULL_CASING.get().getItemVariant(HullCasingBlock.CasingType.HV)},
-                {4, GTBlocks.HULL_CASING.get().getItemVariant(HullCasingBlock.CasingType.EV)},
-                {5, GTBlocks.HULL_CASING.get().getItemVariant(HullCasingBlock.CasingType.IV)},
-                {6, GTBlocks.HULL_CASING.get().getItemVariant(HullCasingBlock.CasingType.LuV)},
-                {7, GTBlocks.HULL_CASING.get().getItemVariant(HullCasingBlock.CasingType.ZPM)},
-                {8, GTBlocks.HULL_CASING.get().getItemVariant(HullCasingBlock.CasingType.UV)},
-                {9, GTBlocks.HULL_CASING.get().getItemVariant(HullCasingBlock.CasingType.UHV)},
+                {0, GTBlocks.MACHINE_CASING_ULV.asStack()},
+                {1, GTBlocks.MACHINE_CASING_LV.asStack()},
+                {2, GTBlocks.MACHINE_CASING_MV.asStack()},
+                {3, GTBlocks.MACHINE_CASING_HV.asStack()},
+                {4, GTBlocks.MACHINE_CASING_EV.asStack()},
+                {5, GTBlocks.MACHINE_CASING_IV.asStack()},
+                {6, GTBlocks.MACHINE_CASING_LuV.asStack()},
+                {7, GTBlocks.MACHINE_CASING_ZPM.asStack()},
+                {8, GTBlocks.MACHINE_CASING_UV.asStack()},
+                {9, GTBlocks.MACHINE_CASING_UHV.asStack()},
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 

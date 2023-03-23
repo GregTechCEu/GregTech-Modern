@@ -1,33 +1,30 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.steam;
 
-
-import com.gregtechceu.gtceu.common.block.variant.BoilerFireBoxCasingBlock;
 import net.minecraft.world.level.block.state.BlockState;
 
-import static com.gregtechceu.gtceu.common.block.variant.CasingBlock.CasingType.*;
 import static com.gregtechceu.gtceu.common.data.GTBlocks.*;
 
 public enum BoilerType {
 
     BRONZE(800, 1200,
-            CASING.get().getState(BRONZE_BRICKS),
-            BOILER_FIREBOX_CASING.get().getState(BoilerFireBoxCasingBlock.CasingType.BRONZE_FIREBOX),
-            CASING.get().getState(BRONZE_PIPE)),
+            CASING_BRONZE_BRICKS.getDefaultState(),
+            FIREBOX_BRONZE.getDefaultState(),
+            CASING_BRONZE_PIPE.getDefaultState()),
 
     STEEL(1800, 1800,
-            CASING.get().getState(STEEL_SOLID),
-            BOILER_FIREBOX_CASING.get().getState(BoilerFireBoxCasingBlock.CasingType.STEEL_FIREBOX),
-            CASING.get().getState(STEEL_PIPE)),
+            CASING_STEEL_SOLID.getDefaultState(),
+            FIREBOX_STEEL.getDefaultState(),
+            CASING_STEEL_PIPE.getDefaultState()),
 
     TITANIUM(3200, 2400,
-            CASING.get().getState(TITANIUM_STABLE),
-            BOILER_FIREBOX_CASING.get().getState(BoilerFireBoxCasingBlock.CasingType.TITANIUM_FIREBOX),
-            CASING.get().getState(TITANIUM_PIPE)),
+            CASING_TITANIUM_STABLE.getDefaultState(),
+            FIREBOX_TITANIUM.getDefaultState(),
+            CASING_TITANIUM_PIPE.getDefaultState()),
 
     TUNGSTENSTEEL(6400, 3000,
-            CASING.get().getState(TUNGSTENSTEEL_ROBUST),
-            BOILER_FIREBOX_CASING.get().getState(BoilerFireBoxCasingBlock.CasingType.TUNGSTENSTEEL_FIREBOX),
-            CASING.get().getState(TUNGSTENSTEEL_PIPE));
+            CASING_TUNGSTENSTEEL_ROBUST.getDefaultState(),
+            FIREBOX_TUNGSTENSTEEL.getDefaultState(),
+            CASING_TUNGSTENSTEEL_PIPE.getDefaultState());
 
     // Workable Data
     private final int steamPerTick;

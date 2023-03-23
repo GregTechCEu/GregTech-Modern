@@ -9,7 +9,7 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.sound.ExistingSoundEntry;
-import com.gregtechceu.gtceu.common.block.variant.CoilBlock;
+import com.gregtechceu.gtceu.common.block.CoilBlock;
 import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
 import com.lowdragmc.lowdraglib.gui.widget.TankWidget;
 import com.lowdragmc.lowdraglib.msic.FluidStorage;
@@ -404,7 +404,7 @@ public class GTRecipeTypes {
             .setUiBuilder((recipe, widgetGroup) -> {
                 int temp = recipe.data.getInt("ebf_temp");
                 List<List<ItemStack>> items = new ArrayList<>();
-                items.add(Arrays.stream(CoilBlock.CoilType.values()).filter(coil -> coil.getCoilTemperature() >= temp).map(coil -> GTBlocks.WIRE_COIL.get().getItemVariant(coil)).toList());
+                items.add(Arrays.stream(CoilBlock.CoilType.values()).filter(coil -> coil.getCoilTemperature() >= temp).map(coil -> GTBlocks.ALL_COILS.get(coil).asStack()).toList());
                 widgetGroup.addWidget(new SlotWidget(new CycleItemStackHandler(items), 0, widgetGroup.getSize().width - 25, widgetGroup.getSize().height - 25, false, false));
             })
             .setSound(GTSoundEntries.FURNACE);
