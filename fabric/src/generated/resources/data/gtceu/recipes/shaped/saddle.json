@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:wool_carpets"
+      "tag": "minecraft:wool_carpets"
     },
     "L": {
       "item": "minecraft:leather"

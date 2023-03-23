@@ -4,6 +4,9 @@
     "C": {
       "tag": "c:circuit/lv"
     },
+    "G": {
+      "item": "minecraft:glass_pane"
+    },
     "P": {
       "item": "gtceu:carbon.plate"
     },

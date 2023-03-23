@@ -23,7 +23,7 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "c:wool"
+          "tag": "minecraft:wool"
         }
       },
       {

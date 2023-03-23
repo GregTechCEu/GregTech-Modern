@@ -24,9 +24,6 @@
   ],
   "result": {
     "count": 2,
-    "item": "gtceu:casing",
-    "nbt": {
-      "variant": "stainless_steel_gearbox"
-    }
+    "item": "gtceu:casing_stainless_steel_gearbox"
   }
 }

@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "active=false": {
+      "model": "gtceu:block/wire_coil/kanthal"
+    },
+    "active=true": {
+      "model": "gtceu:block/wire_coil/kanthal_active"
+    }
+  }
+}

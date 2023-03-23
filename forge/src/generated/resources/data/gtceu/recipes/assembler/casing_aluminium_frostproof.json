@@ -46,10 +46,7 @@
           "count": 2,
           "fabric:type": "gtceu:sized",
           "ingredient": {
-            "type": "forge:nbt",
-            "count": 2,
-            "item": "gtceu:casing",
-            "nbt": "{variant:\"aluminium_frostproof\"}"
+            "item": "gtceu:casing_aluminium_frostproof"
           }
         }
       }

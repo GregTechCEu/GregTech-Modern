@@ -10,14 +10,7 @@
           "count": 1,
           "fabric:type": "gtceu:sized",
           "ingredient": {
-            "base": {
-              "item": "gtceu:casing"
-            },
-            "fabric:type": "fabric:nbt",
-            "nbt": {
-              "variant": "steel_turbine_casing"
-            },
-            "strict": true
+            "item": "gtceu:casing_steel_turbine"
           }
         }
       },
@@ -59,14 +52,7 @@
           "count": 2,
           "fabric:type": "gtceu:sized",
           "ingredient": {
-            "base": {
-              "item": "gtceu:casing"
-            },
-            "fabric:type": "fabric:nbt",
-            "nbt": {
-              "variant": "titanium_turbine_casing"
-            },
-            "strict": true
+            "item": "gtceu:casing_titanium_turbine"
           }
         }
       }

@@ -50,14 +50,7 @@
           "count": 2,
           "fabric:type": "gtceu:sized",
           "ingredient": {
-            "base": {
-              "item": "gtceu:casing"
-            },
-            "fabric:type": "fabric:nbt",
-            "nbt": {
-              "variant": "steel_solid"
-            },
-            "strict": true
+            "item": "gtceu:casing_steel_solid"
           }
         }
       }

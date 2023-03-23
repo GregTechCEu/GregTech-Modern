@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "active=false": {
+      "model": "gtceu:block/boiler_firebox_casing/tungstensteel_firebox"
+    },
+    "active=true": {
+      "model": "gtceu:block/boiler_firebox_casing/tungstensteel_firebox_active"
+    }
+  }
+}

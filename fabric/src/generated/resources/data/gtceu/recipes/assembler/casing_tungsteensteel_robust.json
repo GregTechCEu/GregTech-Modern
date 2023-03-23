@@ -50,14 +50,7 @@
           "count": 2,
           "fabric:type": "gtceu:sized",
           "ingredient": {
-            "base": {
-              "item": "gtceu:casing"
-            },
-            "fabric:type": "fabric:nbt",
-            "nbt": {
-              "variant": "tungstensteel_robust"
-            },
-            "strict": true
+            "item": "gtceu:casing_tungstensteel_robust"
           }
         }
       }

@@ -2,6 +2,9 @@
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
     {
+      "tag": "c:tool/mortar"
+    },
+    {
       "item": "minecraft:blaze_rod"
     }
   ],

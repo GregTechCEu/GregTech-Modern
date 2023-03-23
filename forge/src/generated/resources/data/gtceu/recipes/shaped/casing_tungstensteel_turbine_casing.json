@@ -2,10 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "F": {
-      "type": "forge:nbt",
-      "count": 1,
-      "item": "gtceu:casing",
-      "nbt": "{variant:\"steel_turbine_casing\"}"
+      "item": "gtceu:casing_steel_turbine"
     },
     "P": {
       "tag": "forge:plates/tungsten_steel"
@@ -24,9 +21,6 @@
   ],
   "result": {
     "count": 2,
-    "item": "gtceu:casing",
-    "nbt": {
-      "variant": "tungstensteel_turbine_casing"
-    }
+    "item": "gtceu:casing_tungstensteel_turbine"
   }
 }

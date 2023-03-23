@@ -19,14 +19,7 @@
           "count": 1,
           "fabric:type": "gtceu:sized",
           "ingredient": {
-            "base": {
-              "item": "gtceu:casing"
-            },
-            "fabric:type": "fabric:nbt",
-            "nbt": {
-              "variant": "steel_solid"
-            },
-            "strict": true
+            "item": "gtceu:casing_steel_solid"
           }
         }
       },
@@ -59,14 +52,7 @@
           "count": 1,
           "fabric:type": "gtceu:sized",
           "ingredient": {
-            "base": {
-              "item": "gtceu:casing"
-            },
-            "fabric:type": "fabric:nbt",
-            "nbt": {
-              "variant": "ptfe_inert"
-            },
-            "strict": true
+            "item": "gtceu:casing_ptfe_inert"
           }
         }
       }

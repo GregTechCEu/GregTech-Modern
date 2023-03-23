@@ -59,14 +59,7 @@
           "count": 2,
           "fabric:type": "gtceu:sized",
           "ingredient": {
-            "base": {
-              "item": "gtceu:casing"
-            },
-            "fabric:type": "fabric:nbt",
-            "nbt": {
-              "variant": "stainless_steel_gearbox"
-            },
-            "strict": true
+            "item": "gtceu:casing_stainless_steel_gearbox"
           }
         }
       }

@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "X": {
-      "tag": "c:planks"
+      "tag": "minecraft:planks"
     },
     "s": {
       "tag": "c:tool/saw"

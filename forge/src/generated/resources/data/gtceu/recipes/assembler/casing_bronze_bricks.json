@@ -48,10 +48,7 @@
           "count": 2,
           "fabric:type": "gtceu:sized",
           "ingredient": {
-            "type": "forge:nbt",
-            "count": 2,
-            "item": "gtceu:casing",
-            "nbt": "{variant:\"bronze_bricks\"}"
+            "item": "gtceu:casing_bronze_bricks"
           }
         }
       }

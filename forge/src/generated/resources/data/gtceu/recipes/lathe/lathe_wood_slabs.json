@@ -9,7 +9,7 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "c:wooden_slabs"
+          "tag": "minecraft:wooden_slabs"
         }
       }
     ]

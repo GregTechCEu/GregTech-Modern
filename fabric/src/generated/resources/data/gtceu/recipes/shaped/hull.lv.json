@@ -5,14 +5,7 @@
       "tag": "c:cable_gt_single/tin"
     },
     "H": {
-      "base": {
-        "item": "gtceu:hull_casing"
-      },
-      "fabric:type": "fabric:nbt",
-      "nbt": {
-        "variant": "low_voltage"
-      },
-      "strict": true
+      "item": "gtceu:hull_casing_lv"
     },
     "L": {
       "tag": "c:plates/steel"

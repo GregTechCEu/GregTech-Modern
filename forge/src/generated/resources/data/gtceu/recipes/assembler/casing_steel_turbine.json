@@ -46,10 +46,7 @@
           "count": 2,
           "fabric:type": "gtceu:sized",
           "ingredient": {
-            "type": "forge:nbt",
-            "count": 2,
-            "item": "gtceu:casing",
-            "nbt": "{variant:\"steel_turbine_casing\"}"
+            "item": "gtceu:casing_steel_turbine"
           }
         }
       }

@@ -5,10 +5,7 @@
       "item": "minecraft:glass"
     },
     "M": {
-      "type": "forge:nbt",
-      "count": 1,
-      "item": "gtceu:steam_casing",
-      "nbt": "{variant:\"steel_bricks_hull\"}"
+      "item": "gtceu:steam_casing_bricked_steel"
     },
     "P": {
       "tag": "forge:plates/steel"

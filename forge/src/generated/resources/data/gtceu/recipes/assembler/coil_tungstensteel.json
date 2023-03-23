@@ -41,10 +41,7 @@
           "count": 1,
           "fabric:type": "gtceu:sized",
           "ingredient": {
-            "type": "forge:nbt",
-            "count": 1,
-            "item": "gtceu:wire_coil",
-            "nbt": "{variant:\"tungstensteel\"}"
+            "item": "gtceu:wire_coil_tungstensteel"
           }
         }
       }

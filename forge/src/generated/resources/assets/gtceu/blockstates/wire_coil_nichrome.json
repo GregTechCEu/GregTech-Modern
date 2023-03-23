@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "active=false": {
+      "model": "gtceu:block/wire_coil/nichrome"
+    },
+    "active=true": {
+      "model": "gtceu:block/wire_coil/nichrome_active"
+    }
+  }
+}

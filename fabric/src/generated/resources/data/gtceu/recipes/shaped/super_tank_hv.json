@@ -11,14 +11,7 @@
       "item": "gtceu:field.generator.lv"
     },
     "H": {
-      "base": {
-        "item": "gtceu:hermetic_casing"
-      },
-      "fabric:type": "fabric:nbt",
-      "nbt": {
-        "variant": "high_voltage"
-      },
-      "strict": true
+      "item": "gtceu:hermetic_casing_hv"
     },
     "P": {
       "tag": "c:plates/stainless_steel"

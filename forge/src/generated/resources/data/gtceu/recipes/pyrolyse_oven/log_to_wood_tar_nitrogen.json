@@ -32,7 +32,7 @@
           "type": "gtceu:sized",
           "count": 16,
           "fabric:type": "gtceu:sized",
-          "tag": "c:logs"
+          "tag": "minecraft:logs"
         }
       }
     ]

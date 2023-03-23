@@ -5,10 +5,7 @@
       "tag": "forge:cable_gt_single/niobium_titanium"
     },
     "H": {
-      "type": "forge:nbt",
-      "count": 1,
-      "item": "gtceu:hull_casing",
-      "nbt": "{variant:\"ludicrous_voltage\"}"
+      "item": "gtceu:hull_casing_luv"
     },
     "L": {
       "tag": "forge:plates/rhodium_plated_palladium"

@@ -1,6 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
   "key": {
+    "S": {
+      "tag": "minecraft:sand"
+    },
     "X": {
       "item": "minecraft:clay_ball"
     },
