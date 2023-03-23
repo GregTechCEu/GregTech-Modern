@@ -25,26 +25,9 @@ public class GTRecipes {
      * These recipes are meant to be changeable with Datapacks.
      */
     public static void init() {
-        // chemistry
-        GTRegistries.REGISTRATE.addDataGenerator(ProviderType.RECIPE, ChemistryRecipes::init);
-
-        // misc
-        GTRegistries.REGISTRATE.addDataGenerator(ProviderType.RECIPE, AssemblerRecipeLoader::init);
-        GTRegistries.REGISTRATE.addDataGenerator(ProviderType.RECIPE, AssemblyLineLoader::init);
-        GTRegistries.REGISTRATE.addDataGenerator(ProviderType.RECIPE, BatteryRecipes::init);
         GTRegistries.REGISTRATE.addDataGenerator(ProviderType.RECIPE, CircuitRecipes::init);
         GTRegistries.REGISTRATE.addDataGenerator(ProviderType.RECIPE, ComponentRecipes::init);
-        GTRegistries.REGISTRATE.addDataGenerator(ProviderType.RECIPE, CraftingRecipeLoader::init);
-        GTRegistries.REGISTRATE.addDataGenerator(ProviderType.RECIPE, FuelRecipes::init);
-        GTRegistries.REGISTRATE.addDataGenerator(ProviderType.RECIPE, FusionLoader::init);
-        GTRegistries.REGISTRATE.addDataGenerator(ProviderType.RECIPE, MachineRecipeLoader::init);
         GTRegistries.REGISTRATE.addDataGenerator(ProviderType.RECIPE, MetaTileEntityLoader::init);
-        GTRegistries.REGISTRATE.addDataGenerator(ProviderType.RECIPE, MetaTileEntityMachineRecipeLoader::init);
-        GTRegistries.REGISTRATE.addDataGenerator(ProviderType.RECIPE, MiscRecipeLoader::init);
-        GTRegistries.REGISTRATE.addDataGenerator(ProviderType.RECIPE, VanillaStandardRecipes::init);
-        GTRegistries.REGISTRATE.addDataGenerator(ProviderType.RECIPE, WoodMachineRecipes::init);
-
-        // NOT YET MENTIONED: VanillaOverrideRecipes
     }
 
     /*
@@ -71,6 +54,19 @@ public class GTRecipes {
         ToolRecipeHandler.init(consumer);
         WireCombiningHandler.init(consumer);
         WireRecipeHandler.init(consumer);
+
+        ChemistryRecipes.init(consumer);
+        MetaTileEntityMachineRecipeLoader.init(consumer);
+        MiscRecipeLoader.init(consumer);
+        VanillaStandardRecipes.init(consumer);
+        WoodMachineRecipes.init(consumer);
+        CraftingRecipeLoader.init(consumer);
+        FuelRecipes.init(consumer);
+        FusionLoader.init(consumer);
+        MachineRecipeLoader.init(consumer);
+        AssemblerRecipeLoader.init(consumer);
+        AssemblyLineLoader.init(consumer);
+        BatteryRecipes.init(consumer);
 
         // Config-dependent recipes
         RecipeAddition.init(consumer);
