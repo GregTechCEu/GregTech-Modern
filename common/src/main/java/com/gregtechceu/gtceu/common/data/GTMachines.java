@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.client.renderer.machine.*;
 import com.gregtechceu.gtceu.common.block.BoilerFireboxType;
 import com.gregtechceu.gtceu.common.block.CoilBlock;
 import com.gregtechceu.gtceu.common.machine.electric.BatteryBufferMachine;
+import com.gregtechceu.gtceu.common.machine.electric.PumpMachine;
 import com.gregtechceu.gtceu.common.machine.electric.TransformerMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.CrackerMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.ElectricBlastFurnaceMachine;
@@ -172,6 +173,7 @@ public class GTMachines {
             (tier, builder) -> builder
                     .rotationState(RotationState.ALL)
                     .renderer(() -> new TransformerRenderer(tier))
+                    .tooltips(explosion())
                     .tooltips(Component.translatable("gtceu.machine.transformer.description"),
                             Component.translatable("gtceu.machine.transformer.tooltip_tool_usage"),
                             Component.translatable("gtceu.machine.transformer.tooltip_transform_down", 4, GTValues.V[tier + 1], GTValues.VNF[tier + 1], 1, GTValues.V[tier], GTValues.VNF[tier]),
@@ -184,6 +186,7 @@ public class GTMachines {
             (tier, builder) -> builder
                     .rotationState(RotationState.ALL)
                     .renderer(() -> new BatteryBufferRenderer(tier, 4))
+                    .tooltips(explosion())
                     .tooltips(Component.translatable("gtceu.universal.tooltip.item_storage_capacity", 4),
                             Component.translatable("gtceu.universal.tooltip.voltage_in_out", GTValues.V[tier], GTValues.VNF[tier]),
                             Component.translatable("gtceu.universal.tooltip.amperage_in_till", 4 * BatteryBufferMachine.AMPS_PER_BATTERY),
@@ -196,6 +199,7 @@ public class GTMachines {
             (tier, builder) -> builder
                     .rotationState(RotationState.ALL)
                     .renderer(() -> new BatteryBufferRenderer(tier, 8))
+                    .tooltips(explosion())
                     .tooltips(Component.translatable("gtceu.universal.tooltip.item_storage_capacity", 8),
                             Component.translatable("gtceu.universal.tooltip.voltage_in_out", GTValues.V[tier], GTValues.VNF[tier]),
                             Component.translatable("gtceu.universal.tooltip.amperage_in_till", 8 * BatteryBufferMachine.AMPS_PER_BATTERY),
@@ -208,6 +212,7 @@ public class GTMachines {
             (tier, builder) -> builder
                     .rotationState(RotationState.ALL)
                     .renderer(() -> new BatteryBufferRenderer(tier, 16))
+                    .tooltips(explosion())
                     .tooltips(Component.translatable("gtceu.universal.tooltip.item_storage_capacity", 16),
                             Component.translatable("gtceu.universal.tooltip.voltage_in_out", GTValues.V[tier], GTValues.VNF[tier]),
                             Component.translatable("gtceu.universal.tooltip.amperage_in_till", 16 * BatteryBufferMachine.AMPS_PER_BATTERY),
@@ -215,6 +220,18 @@ public class GTMachines {
                     .register(),
             ALL_TIERS);
 
+    public final static MachineDefinition[] PUMP = registerTieredMachines("pump", PumpMachine::new,
+            (tier, builder) -> builder
+                    .rotationState(RotationState.NON_Y_AXIS)
+                    .hasTESR(true)
+                    .renderer(() -> new TieredHullMachineRenderer(tier, GTCEu.id("block/machine/pump_machine")))
+                    .tooltips(Component.translatable("gtceu.machine.pump.tooltip"),
+                            Component.translatable("gtceu.universal.tooltip.voltage_in", GTValues.V[tier], GTValues.VNF[tier]),
+                            Component.translatable("gtceu.universal.tooltip.energy_storage_capacity", GTValues.V[tier] * 64),
+                            Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity", 16 * FluidHelper.getBucket() * Math.max(1, tier)),
+                            Component.translatable("gtceu.universal.tooltip.working_area", PumpMachine.BASE_PUMP_RANGE + PumpMachine.EXTRA_PUMP_RANGE * tier, PumpMachine.BASE_PUMP_RANGE + PumpMachine.EXTRA_PUMP_RANGE * tier))
+                    .register(),
+            LV, MV, HV, EV);
 
     //////////////////////////////////////
     //*********     Storage    *********//
