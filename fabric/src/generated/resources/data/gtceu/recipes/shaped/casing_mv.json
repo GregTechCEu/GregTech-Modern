@@ -14,9 +14,6 @@
     "PPP"
   ],
   "result": {
-    "item": "gtceu:hull_casing",
-    "nbt": {
-      "variant": "medium_voltage"
-    }
+    "item": "gtceu:hull_casing_mv"
   }
 }

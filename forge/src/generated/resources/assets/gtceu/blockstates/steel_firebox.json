@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "active=false": {
+      "model": "gtceu:block/boiler_firebox_casing/steel_firebox"
+    },
+    "active=true": {
+      "model": "gtceu:block/boiler_firebox_casing/steel_firebox_active"
+    }
+  }
+}

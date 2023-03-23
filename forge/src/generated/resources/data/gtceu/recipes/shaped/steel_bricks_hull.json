@@ -17,9 +17,6 @@
     "BBB"
   ],
   "result": {
-    "item": "gtceu:steam_casing",
-    "nbt": {
-      "variant": "steel_bricks_hull"
-    }
+    "item": "gtceu:steam_casing_bricked_steel"
   }
 }

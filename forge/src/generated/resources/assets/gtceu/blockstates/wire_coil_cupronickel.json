@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "active=false": {
+      "model": "gtceu:block/wire_coil/cupronickel"
+    },
+    "active=true": {
+      "model": "gtceu:block/wire_coil/cupronickel_active"
+    }
+  }
+}

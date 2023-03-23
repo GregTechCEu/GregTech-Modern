@@ -1,17 +1,39 @@
 package com.gregtechceu.gtceu.data.recipe.generated;
 
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.ToolProperty;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
+import com.gregtechceu.gtceu.api.item.tool.GTToolType;
+import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
+import com.gregtechceu.gtceu.api.tag.TagPrefix;
+import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.gregtechceu.gtceu.data.recipe.CommonTags;
+import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
+import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.Blocks;
+
+import javax.annotation.Nonnull;
+import java.util.function.Consumer;
+
+import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.*;
+
 public class ToolRecipeHandler {
-/*
-    public static Map<Integer, ItemEntry<? extends Item>> motorItems = new HashMap<>();
-    public static Map<Integer, Material> baseMaterials = new HashMap<>();
-    public static Map<Integer, List<ItemEntry<? extends Item>>> batteryItems = new HashMap<>();
-    public static Map<Integer, ItemEntry<? extends Item>> powerUnitItems = new HashMap<>();
 
-    public static void init() {
-        //plate.addProcessingHandler(PropertyKey.TOOL, ToolRecipeHandler::processTool);
-        //plate.addProcessingHandler(PropertyKey.TOOL, ToolRecipeHandler::processElectricTool);
+    // todo electric tools
+    //public static Map<Integer, ItemEntry<? extends Item>> motorItems = new HashMap<>();
+    //public static Map<Integer, Material> baseMaterials = new HashMap<>();
+    //public static Map<Integer, List<ItemEntry<? extends Item>>> batteryItems = new HashMap<>();
+    //public static Map<Integer, ItemEntry<? extends Item>> powerUnitItems = new HashMap<>();
+
+    public static void init(Consumer<FinishedRecipe> provider) {
+        TagPrefix.plate.executeHandler(PropertyKey.TOOL, (tagPrefix, material, property) -> processTool(tagPrefix, material, property, provider));
+        //TagPrefix.plate.executeHandler(PropertyKey.TOOL, ToolRecipeHandler::processElectricTool);
+        registerCustomToolRecipes(provider);
     }
-
+/*
     public static void initializeGTItems() {
         motorItems.put(GTValues.LV, GTItems.ELECTRIC_MOTOR_LV);
         motorItems.put(GTValues.MV, GTItems.ELECTRIC_MOTOR_MV);
@@ -78,78 +100,78 @@ public class ToolRecipeHandler {
         }
 
     }
-
-    private static void processTool(TagPrefix prefix, Material material, ToolProperty property) {
+*/
+    private static void processTool(TagPrefix prefix, Material material, ToolProperty property, Consumer<FinishedRecipe> provider) {
         UnificationEntry stick = new UnificationEntry(TagPrefix.stick, GTMaterials.Wood);
         UnificationEntry plate = new UnificationEntry(TagPrefix.plate, material);
         UnificationEntry ingot = new UnificationEntry(material.hasProperty(PropertyKey.GEM) ? TagPrefix.gem : TagPrefix.ingot, material);
 
         if (material.hasFlag(GENERATE_PLATE)) {
-            addToolRecipe(material, ToolItems.MINING_HAMMER, true,
-                    "PPf", "PPS", "PPh",
-                    'P', plate,
-                    'S', stick);
+            //addToolRecipe(provider, material, GTToolType.MINING_HAMMER, true,
+            //        "PPf", "PPS", "PPh",
+            //        'P', plate,
+            //        'S', stick);
 
-            addToolRecipe(material, ToolItems.SPADE, false,
-                    "fPh", "PSP", " S ",
-                    'P', plate,
-                    'S', stick);
+            //addToolRecipe(provider, material, GTToolType.SPADE, false,
+            //        "fPh", "PSP", " S ",
+            //        'P', plate,
+            //        'S', stick);
 
-            addToolRecipe(material, ToolItems.SAW, false,
+            addToolRecipe(provider, material, GTToolType.SAW, false,
                     "PPS", "fhS",
                     'P', plate,
                     'S', stick);
 
-            addToolRecipe(material, ToolItems.AXE, false,
-                    "PIh", "PS ", "fS ",
-                    'P', plate,
-                    'I', ingot,
-                    'S', stick);
+            //addToolRecipe(provider, material, GTToolType.AXE, false,
+            //        "PIh", "PS ", "fS ",
+            //        'P', plate,
+            //        'I', ingot,
+            //        'S', stick);
 
-            addToolRecipe(material, ToolItems.HOE, false,
-                    "PIh", "fS ", " S ",
-                    'P', plate,
-                    'I', ingot,
-                    'S', stick);
+            //addToolRecipe(provider, material, GTToolType.HOE, false,
+            //        "PIh", "fS ", " S ",
+            //        'P', plate,
+            //        'I', ingot,
+            //        'S', stick);
 
-            addToolRecipe(material, ToolItems.PICKAXE, false,
-                    "PII", "fSh", " S ",
-                    'P', plate,
-                    'I', ingot,
-                    'S', stick);
+            //addToolRecipe(provider, material, GTToolType.PICKAXE, false,
+            //        "PII", "fSh", " S ",
+            //        'P', plate,
+            //        'I', ingot,
+            //        'S', stick);
 
-            addToolRecipe(material, ToolItems.SCYTHE, false,
+            addToolRecipe(provider, material, GTToolType.SCYTHE, false,
                     "PPI", "fSh", " S ",
                     'P', plate,
                     'I', ingot,
                     'S', stick);
 
-            addToolRecipe(material, ToolItems.SHOVEL, false,
-                    "fPh", " S ", " S ",
-                    'P', plate,
-                    'S', stick);
+            //addToolRecipe(provider, material, GTToolType.SHOVEL, false,
+            //        "fPh", " S ", " S ",
+            //        'P', plate,
+            //        'S', stick);
 
-            addToolRecipe(material, ToolItems.SWORD, false,
-                    " P ", "fPh", " S ",
-                    'P', plate,
-                    'S', stick);
+            //addToolRecipe(provider, material, GTToolType.SWORD, false,
+            //        " P ", "fPh", " S ",
+            //        'P', plate,
+            //        'S', stick);
 
-            addToolRecipe(material, ToolItems.HARD_HAMMER, true,
+            addToolRecipe(provider, material, GTToolType.HARD_HAMMER, true,
                     "II ", "IIS", "II ",
                     'I', ingot,
                     'S', stick);
 
-            addToolRecipe(material, ToolItems.FILE, true,
+            addToolRecipe(provider, material, GTToolType.FILE, true,
                     " P ", " P " , " S ",
                     'P', plate,
                     'S', stick);
 
-            addToolRecipe(material, ToolItems.KNIFE, false,
+            addToolRecipe(provider, material, GTToolType.KNIFE, false,
                     "fPh", " S ",
                     'P', plate,
                     'S', stick);
 
-            addToolRecipe(material, ToolItems.WRENCH, false,
+            addToolRecipe(provider, material, GTToolType.WRENCH, false,
                     "PhP", " P ", " P ",
                     'P', plate);
         }
@@ -158,32 +180,33 @@ public class ToolRecipeHandler {
             UnificationEntry rod = new UnificationEntry(TagPrefix.stick, material);
 
             if (material.hasFlag(GENERATE_PLATE)) {
-                addToolRecipe(material, ToolItems.BUTCHERY_KNIFE, false,
+                addToolRecipe(provider, material, GTToolType.BUTCHERY_KNIFE, false,
                         "PPf", "PP ", "Sh ",
                         'P', plate,
                         'S', rod);
 
                 if (material.hasFlag(GENERATE_BOLT_SCREW)) {
-                    addToolRecipe(material, ToolItems.WIRE_CUTTER, false,
+                    addToolRecipe(provider, material, GTToolType.WIRE_CUTTER, false,
                             "PfP", "hPd", "STS",
                             'P', plate,
-                            'T', new UnificationEntry(screw, material),
+                            'T', new UnificationEntry(TagPrefix.screw, material),
                             'S', rod);
                 }
             }
 
-            addToolRecipe(material, ToolItems.SCREWDRIVER, true,
+            addToolRecipe(provider, material, GTToolType.SCREWDRIVER, true,
                     " fS", " Sh", "W  ",
                     'S', rod,
                     'W', stick);
 
-            addToolRecipe(material, ToolItems.CROWBAR, true,
+            addToolRecipe(provider, material, GTToolType.CROWBAR, true,
                     "hDS", "DSD", "SDf",
                     'S', rod,
-                    'D', new UnificationEntry(dye, MarkerMaterials.Color.Blue));
+                    'D', new UnificationEntry(TagPrefix.gem, GTMaterials.Lapis)); // todo blue dyes
+                    //'D', new UnificationEntry(dye, MarkerMaterials.Color.Blue));
         }
     }
-
+/*
     private static void processElectricTool(TagPrefix prefix, Material material, ToolProperty property) {
         final int voltageMultiplier = material.getBlastTemperature() > 2800 ? VA[LV] : VA[ULV];
         TagPrefix toolPrefix;
@@ -270,109 +293,113 @@ public class ToolRecipeHandler {
                     'U', powerUnitStack);
         }
     }
-
-    public static void addToolRecipe(@Nonnull Material material, @Nonnull IGTTool tool, boolean mirrored, Object... recipe) {
-        if (mirrored) {
-            ModHandler.addMirroredShapedRecipe(String.format("%s_%s", tool.getId(), material),
-                    tool.get(material), recipe);
+*/
+    public static void addToolRecipe(Consumer<FinishedRecipe> provider, @Nonnull Material material, @Nonnull GTToolType tool, boolean mirrored, Object... recipe) {
+        ItemStack toolStack = ToolHelper.get(tool, material);
+        if (toolStack.isEmpty()) return;
+        if (mirrored) { // todo mirrored
+            VanillaRecipeHelper.addShapedRecipe(provider, String.format("%s_%s", tool.name, material),
+                    toolStack, recipe);
         } else {
-            ModHandler.addShapedRecipe(String.format("%s_%s", tool.getId(), material),
-                    tool.get(material), recipe);
+            VanillaRecipeHelper.addShapedRecipe(provider, String.format("%s_%s", tool.name, material),
+                    toolStack, recipe);
         }
     }
 
-    public static void registerCustomToolRecipes() {
-        registerFlintToolRecipes();
-        registerMortarRecipes();
-        registerSoftToolRecipes();
-        registerElectricRecipes();
+    public static void registerCustomToolRecipes(Consumer<FinishedRecipe> provider) {
+        registerFlintToolRecipes(provider);
+        registerMortarRecipes(provider);
+        registerSoftToolRecipes(provider);
+        //registerElectricRecipes(provider);
     }
 
-    private static void registerFlintToolRecipes() {
-        final UnificationEntry flint = new UnificationEntry(gem, Materials.Flint);
-        final UnificationEntry stick = new UnificationEntry(stick, Materials.Wood);
+    private static void registerFlintToolRecipes(Consumer<FinishedRecipe> provider) {
+        final UnificationEntry flint = new UnificationEntry(TagPrefix.gem, GTMaterials.Flint);
+        final ItemStack stick = new ItemStack(Items.STICK);
 
-        addToolRecipe(Materials.Flint, ToolItems.MORTAR, false,
+        addToolRecipe(provider, GTMaterials.Flint, GTToolType.MORTAR, false,
                 " I ", "SIS", "SSS",
                 'I', flint,
-                'S', stone);
+                'S', new ItemStack(Blocks.STONE));
 
-        addToolRecipe(Materials.Flint, ToolItems.SWORD, false,
-                "I", "I", "S",
-                'I', flint,
-                'S', stick);
+        //addToolRecipe(provider, GTMaterials.Flint, GTToolType.SWORD, false,
+        //        "I", "I", "S",
+        //        'I', flint,
+        //        'S', stick);
 
-        addToolRecipe(Materials.Flint, ToolItems.PICKAXE, false,
-                "III", " S ", " S ",
-                'I', flint,
-                'S', stick);
+        //addToolRecipe(provider, GTMaterials.Flint, GTToolType.PICKAXE, false,
+        //        "III", " S ", " S ",
+        //        'I', flint,
+        //        'S', stick);
 
-        addToolRecipe(Materials.Flint, ToolItems.SHOVEL, false,
-                "I", "S", "S",
-                'I', flint,
-                'S', stick);
+        //addToolRecipe(provider, GTMaterials.Flint, GTToolType.SHOVEL, false,
+        //        "I", "S", "S",
+        //        'I', flint,
+        //        'S', stick);
 
-        addToolRecipe(Materials.Flint, ToolItems.AXE, true,
-                "II", "IS", " S",
-                'I', flint,
-                'S', stick);
+        //addToolRecipe(provider, GTMaterials.Flint, GTToolType.AXE, true,
+        //        "II", "IS", " S",
+        //        'I', flint,
+        //        'S', stick);
 
-        addToolRecipe(Materials.Flint, ToolItems.HOE, true,
-                "II", " S", " S",
-                'I', flint,
-                'S', stick);
+        //addToolRecipe(provider, GTMaterials.Flint, GTToolType.HOE, true,
+        //        "II", " S", " S",
+        //        'I', flint,
+        //        'S', stick);
 
-        addToolRecipe(Materials.Flint, ToolItems.KNIFE, false,
+        addToolRecipe(provider, GTMaterials.Flint, GTToolType.KNIFE, false,
                 "I", "S",
                 'I', flint,
                 'S', stick);
     }
 
-    private static void registerMortarRecipes() {
+    private static void registerMortarRecipes(Consumer<FinishedRecipe> provider) {
         for (Material material : new Material[]{
-                Materials.Bronze, Materials.Iron, Materials.Invar, Materials.Steel,
-                Materials.DamascusSteel, Materials.CobaltBrass, Materials.WroughtIron }) {
+                GTMaterials.Bronze, GTMaterials.Iron, GTMaterials.Invar, GTMaterials.Steel,
+                GTMaterials.DamascusSteel, GTMaterials.CobaltBrass, GTMaterials.WroughtIron }) {
 
-            addToolRecipe(material, ToolItems.MORTAR, false,
+            addToolRecipe(provider, material, GTToolType.MORTAR, false,
                     " I ", "SIS", "SSS",
-                    'I', new UnificationEntry(material.hasProperty(GEM) ? gem : ingot, material),
-                    'S', stone);
+                    'I', new UnificationEntry(material.hasProperty(PropertyKey.GEM) ? TagPrefix.gem : TagPrefix.ingot, material),
+                    'S', new ItemStack(Blocks.STONE));
         }
     }
 
-    private static void registerSoftToolRecipes() {
+    private static void registerSoftToolRecipes(Consumer<FinishedRecipe> provider) {
         final Material[] softMaterials = new Material[]{
-                Materials.Wood, Materials.Rubber, Materials.Polyethylene,
-                Materials.Polytetrafluoroethylene, Materials.Polybenzimidazole
+                GTMaterials.Wood, GTMaterials.Rubber, GTMaterials.Polyethylene,
+                GTMaterials.Polytetrafluoroethylene, GTMaterials.Polybenzimidazole
         };
 
-        final UnificationEntry stick = new UnificationEntry(stick, Materials.Wood);
+        final ItemStack stick = new ItemStack(Items.STICK);
 
         for (int i = 0; i < softMaterials.length; i++) {
             Material material = softMaterials[i];
 
-            if (ModHandler.isMaterialWood(material)) {
-                ModHandler.addMirroredShapedRecipe(String.format("soft_mallet_%s", material),
-                        ToolHelper.getAndSetToolData(ToolItems.SOFT_MALLET, material, 48, 1, 4F, 1F),
+            if (material == GTMaterials.Wood) {
+                // todo allow these 3 to be mirrored
+                VanillaRecipeHelper.addShapedRecipe(provider, String.format("soft_mallet_%s", material),
+                        ToolHelper.get(GTToolType.SOFT_MALLET, material),
                         "II ", "IIS", "II ",
-                        'I', new UnificationEntry(plank, material),
+                        'I', CommonTags.TAG_PLANKS,
                         'S', stick);
             } else {
-                ModHandler.addMirroredShapedRecipe(String.format("soft_mallet_%s", material),
-                        ToolHelper.getAndSetToolData(ToolItems.SOFT_MALLET, material, 128 * (1 << i), 1, 4F, 1F),
+                VanillaRecipeHelper.addShapedRecipe(provider, String.format("soft_mallet_%s", material),
+                        ToolHelper.get(GTToolType.SOFT_MALLET, material),
                         "II ", "IIS", "II ",
-                        'I', new UnificationEntry(ingot, material),
+                        'I', new UnificationEntry(TagPrefix.ingot, material),
                         'S', stick);
 
-                ModHandler.addMirroredShapedRecipe(String.format("plunger_%s", material),
-                        ToolHelper.getAndSetToolData(ToolItems.PLUNGER, material, 128 * (i << 1), 1, 4F, 0F),
-                        "xPP", " SP", "S f",
-                        'P', new UnificationEntry(plate, material),
-                        'S', stick);
+                // todo fix plunger
+                //ModHandler.addMirroredShapedRecipe(String.format("plunger_%s", material),
+                //        ToolHelper.getAndSetToolData(GTToolType.PLUNGER, material, 128 * (i << 1), 1, 4F, 0F),
+                //        "xPP", " SP", "S f",
+                //        'P', new UnificationEntry(TagPrefix.plate, material),
+                //        'S', stick);
             }
         }
     }
-
+/*
     private static void registerElectricRecipes(Consumer<FinishedRecipe> provider) {
 
         for (MetaValueItem batteryItem : batteryItems.get(LV)) {
@@ -438,6 +465,6 @@ public class ToolRecipeHandler {
                     'C', new UnificationEntry(circuit, MarkerMaterials.Tier.LuV),
                     'B', batteryItem.asStack());
         }
-
-    }*/
+    }
+ */
 }

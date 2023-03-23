@@ -20,7 +20,8 @@ public class TagUtil {
     }
 
     public static <T> TagKey<T> createTag(Registry<T> registry, String path, boolean vanilla) {
-        return optionalTag(registry, (Platform.isForge() && !vanilla) ? new ResourceLocation("forge", path) : new ResourceLocation("c", path));
+        if (vanilla) return optionalTag(registry, new ResourceLocation("minecraft", path));
+        return optionalTag(registry, Platform.isForge() ? new ResourceLocation("forge", path) : new ResourceLocation("c", path));
     }
 
     public static TagKey<Block> createBlockTag(String path) {

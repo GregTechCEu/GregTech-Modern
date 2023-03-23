@@ -8,14 +8,7 @@
       "item": "gtceu:electric.pump.mv"
     },
     "H": {
-      "base": {
-        "item": "gtceu:hermetic_casing"
-      },
-      "fabric:type": "fabric:nbt",
-      "nbt": {
-        "variant": "medium_voltage"
-      },
-      "strict": true
+      "item": "gtceu:hermetic_casing_mv"
     },
     "P": {
       "tag": "c:plates/aluminium"

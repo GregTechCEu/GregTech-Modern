@@ -24,9 +24,6 @@
   ],
   "result": {
     "count": 2,
-    "item": "gtceu:casing",
-    "nbt": {
-      "variant": "bronze_gearbox"
-    }
+    "item": "gtceu:casing_bronze_gearbox"
   }
 }

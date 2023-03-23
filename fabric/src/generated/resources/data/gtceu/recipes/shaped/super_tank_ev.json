@@ -11,14 +11,7 @@
       "item": "gtceu:field.generator.mv"
     },
     "H": {
-      "base": {
-        "item": "gtceu:hermetic_casing"
-      },
-      "fabric:type": "fabric:nbt",
-      "nbt": {
-        "variant": "extreme_voltage"
-      },
-      "strict": true
+      "item": "gtceu:hermetic_casing_ev"
     },
     "P": {
       "tag": "c:plates/titanium"

@@ -1,11 +1,9 @@
 package com.gregtechceu.gtceu.data.data;
 
-import com.gregtechceu.gtceu.api.block.VariantBlock;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
-import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTCreativeModeTabs;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 import com.tterrag.registrate.providers.RegistrateLangProvider;
@@ -51,11 +49,11 @@ public class LangHandler {
         provider.add(GTCreativeModeTabs.MACHINE, toEnglishName(GTCreativeModeTabs.MACHINE.getGroupId()));
         provider.add(GTCreativeModeTabs.ITEM, toEnglishName(GTCreativeModeTabs.ITEM.getGroupId()));
         // Casings
-        casingLang(provider, GTBlocks.CASING.get());
-        casingLang(provider, GTBlocks.WIRE_COIL.get());
-        casingLang(provider, GTBlocks.ACTIVE_CASING.get());
-        casingLang(provider, GTBlocks.BOILER_FIREBOX_CASING.get());
-        casingLang(provider, GTBlocks.HULL_CASING.get());
+        //casingLang(provider, GTBlocks.CASING.get()); todo
+        //casingLang(provider, GTBlocks.WIRE_COIL.get());
+        //casingLang(provider, GTBlocks.ACTIVE_CASING.get());
+        //casingLang(provider, GTBlocks.BOILER_FIREBOX_CASING.get());
+        //casingLang(provider, GTBlocks.HULL_CASING.get()); todo
 
         provider.add("death.attack.heat", "%s was boiled alive");
         provider.add("death.attack.frost", "%s explored cryogenics");
@@ -3082,12 +3080,6 @@ public class LangHandler {
         provider.add("gtceu.key.armor_charging", "Armor Charging to Inventory Toggle");
         provider.add("gtceu.key.tool_aoe_change", "Tool AoE Mode Switch");
         provider.add("gtceu.debug.f3_h.enabled", "GregTech has modified the debug info! For Developers: enable the misc:debug config option in the GregTech config file to see more");
-    }
-
-    private static void casingLang(RegistrateLangProvider provider, VariantBlock<?> block) {
-        for (var type : block.getVariantValues()) {
-            provider.add(block.getDescriptionId() + "." + type.getSerializedName(), toEnglishName(type.getSerializedName()));
-        }
     }
 
     /**

@@ -2,10 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "B": {
-      "type": "forge:nbt",
-      "count": 1,
-      "item": "gtceu:casing",
-      "nbt": "{variant:\"primitive_bricks\"}"
+      "item": "gtceu:casing_primitive_bricks"
     },
     "P": {
       "tag": "forge:plates/iron"

@@ -152,6 +152,8 @@ public class VanillaRecipeHelper {
                 builder.requires(ChemicalHelper.getTag(entry.tagPrefix, entry.material));
             } else if (content instanceof ItemEntry<?> entry) {
                 builder.requires(entry.asStack());
+            } else if (content instanceof Character c) {
+                builder.requires(TOOLS.get(c.charValue()));
             }
         }
         builder.save(provider);

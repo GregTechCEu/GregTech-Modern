@@ -5,14 +5,7 @@
       "item": "minecraft:glass"
     },
     "M": {
-      "base": {
-        "item": "gtceu:steam_casing"
-      },
-      "fabric:type": "fabric:nbt",
-      "nbt": {
-        "variant": "bronze_bricks_hull"
-      },
-      "strict": true
+      "item": "gtceu:steam_casing_bricked_bronze"
     },
     "P": {
       "tag": "c:plates/bronze"

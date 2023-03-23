@@ -21,9 +21,6 @@
   ],
   "result": {
     "count": 2,
-    "item": "gtceu:casing",
-    "nbt": {
-      "variant": "aluminium_frostproof"
-    }
+    "item": "gtceu:casing_aluminium_frostproof"
   }
 }

@@ -1,10 +1,10 @@
 package com.gregtechceu.gtceu.api.pattern;
 
+import com.gregtechceu.gtceu.api.block.ActiveBlock;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.pattern.error.PatternError;
 import com.gregtechceu.gtceu.api.pattern.error.SinglePredicateError;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
-import com.gregtechceu.gtceu.api.block.VariantActiveBlock;
 import com.gregtechceu.gtceu.api.machine.IMetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
@@ -126,7 +126,7 @@ public class BlockPattern {
                                 }
                             }
                         }
-                        if (worldState.getBlockState().getBlock() instanceof VariantActiveBlock<?>) {
+                        if (worldState.getBlockState().getBlock() instanceof ActiveBlock) {
                             matchContext.getOrCreate("vaBlocks", LongOpenHashSet::new).add(worldState.getPos().asLong());
                         }
                         if (!predicate.test(worldState) || !canPartShared) { // matching failed

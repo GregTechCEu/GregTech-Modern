@@ -10,9 +10,6 @@
     "XX"
   ],
   "result": {
-    "item": "gtceu:casing",
-    "nbt": {
-      "variant": "coke_bricks"
-    }
+    "item": "gtceu:casing_coke_bricks"
   }
 }
