@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -71,7 +72,7 @@ public class GTRecipeWidget extends WidgetGroup {
                 outputFluids
         ));
 
-        int yOffset = 87;
+        int yOffset = 87 - (recipe.conditions.size() + recipe.recipeType.getDataInfos().size()) * 10;
         addWidget(new LabelWidget(3, yOffset,
                 LocalizationUtils.format("gtceu.recipe.duration", recipe.duration / 20f)));
         var EUt = RecipeHelper.getInputEUt(recipe);
@@ -85,6 +86,9 @@ public class GTRecipeWidget extends WidgetGroup {
                     LocalizationUtils.format("gtceu.recipe.total", EUt * recipe.duration)));
             addWidget(new LabelWidget(3, yOffset += 10,
                     LocalizationUtils.format(!isOutput ? "gtceu.recipe.eu" : "gregtech.recipe.eu_inverted", EUt, GTValues.VN[GTUtil.getTierByVoltage(EUt)])));
+        }
+        for (RecipeCondition condition : recipe.conditions) {
+            addWidget(new LabelWidget(3, yOffset += 10, condition.getTooltips().getString()));
         }
         for (Function<CompoundTag, String> dataInfo : recipe.recipeType.getDataInfos()) {
             addWidget(new LabelWidget(3, yOffset += 10, dataInfo.apply(recipe.data)));

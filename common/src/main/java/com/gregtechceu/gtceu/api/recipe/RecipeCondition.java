@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.recipe;
 
 import com.google.gson.JsonObject;
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
@@ -24,6 +25,7 @@ public abstract class RecipeCondition {
         try {
             return clazz.newInstance();
         } catch (Exception ignored) {
+            GTCEu.LOGGER.error("condition {} has no NonArgsConstructor", clazz);
             return null;
         }
     }

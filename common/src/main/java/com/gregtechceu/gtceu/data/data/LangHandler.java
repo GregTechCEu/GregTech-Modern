@@ -54,7 +54,13 @@ public class LangHandler {
         //casingLang(provider, GTBlocks.ACTIVE_CASING.get());
         //casingLang(provider, GTBlocks.BOILER_FIREBOX_CASING.get());
         //casingLang(provider, GTBlocks.HULL_CASING.get()); todo
-
+        provider.add("recipe.condition.thunder.tooltip", "Thunder Level: %d");
+        provider.add("recipe.condition.rain.tooltip", "Rain Level: %d");
+        provider.add("recipe.condition.dimension.tooltip", "Dimension: %s");
+        provider.add("recipe.condition.biome.tooltip", "Biome: %s");
+        provider.add("recipe.condition.pos_y.tooltip", "Y Level: %d <= Y <= %d");
+        provider.add("recipe.condition.steam_vent.tooltip", "Clean steam vent");
+        provider.add("recipe.condition.rock_breaker.tooltip", "Fluid blocks around");
         provider.add("death.attack.heat", "%s was boiled alive");
         provider.add("death.attack.frost", "%s explored cryogenics");
         provider.add("death.attack.chemical", "%s had a chemical accident");
