@@ -11,18 +11,18 @@ import javax.annotation.Nonnull;
  * @date 2023/3/9
  * @implNote BoilerFireBoxCasingBlock
  */
-public enum BoilerFireboxType {
+public class BoilerFireboxType {
 
-    BRONZE_FIREBOX("bronze_firebox", GTCEu.id("block/casings/solid/machine_bronze_plated_bricks")
+    public static BoilerFireboxType BRONZE_FIREBOX = new BoilerFireboxType("bronze_firebox", GTCEu.id("block/casings/solid/machine_bronze_plated_bricks")
             , GTCEu.id("block/casings/solid/machine_bronze_plated_bricks")
-            , GTCEu.id("block/casings/firebox/machine_casing_firebox_bronze")),
-    STEEL_FIREBOX("steel_firebox", GTCEu.id("block/casings/solid/machine_casing_solid_steel")
+            , GTCEu.id("block/casings/firebox/machine_casing_firebox_bronze"));
+    public static BoilerFireboxType STEEL_FIREBOX = new BoilerFireboxType("steel_firebox", GTCEu.id("block/casings/solid/machine_casing_solid_steel")
             , GTCEu.id("block/casings/solid/machine_casing_solid_steel")
-            , GTCEu.id("block/casings/firebox/machine_casing_firebox_steel")),
-    TITANIUM_FIREBOX("titanium_firebox", GTCEu.id("block/casings/solid/machine_casing_stable_titanium")
+            , GTCEu.id("block/casings/firebox/machine_casing_firebox_steel"));
+    public static BoilerFireboxType TITANIUM_FIREBOX = new BoilerFireboxType("titanium_firebox", GTCEu.id("block/casings/solid/machine_casing_stable_titanium")
             , GTCEu.id("block/casings/solid/machine_casing_stable_titanium")
-            , GTCEu.id("block/casings/firebox/machine_casing_firebox_titanium")),
-    TUNGSTENSTEEL_FIREBOX("tungstensteel_firebox", GTCEu.id("block/casings/solid/machine_casing_robust_tungstensteel")
+            , GTCEu.id("block/casings/firebox/machine_casing_firebox_titanium"));
+    public static BoilerFireboxType TUNGSTENSTEEL_FIREBOX = new BoilerFireboxType("tungstensteel_firebox", GTCEu.id("block/casings/solid/machine_casing_robust_tungstensteel")
             , GTCEu.id("block/casings/solid/machine_casing_robust_tungstensteel")
             , GTCEu.id("block/casings/firebox/machine_casing_firebox_tungstensteel"));
 
@@ -31,7 +31,7 @@ public enum BoilerFireboxType {
     @Getter
     private final ResourceLocation bottom, top, side;
 
-    BoilerFireboxType(String name, ResourceLocation bottom, ResourceLocation top, ResourceLocation side) {
+    public BoilerFireboxType(String name, ResourceLocation bottom, ResourceLocation top, ResourceLocation side) {
         this.name = name;
         this.bottom = bottom;
         this.top = top;

@@ -1,9 +1,0 @@
-{
-    "ctm": {
-        "ctm_version": 1,
-        "type": "CTM",
-        "layer": "CUTOUT",
-        "textures": [ "gtceu:block/casings/solid/machine_casing_frost_proof_ctm" ],
-        "extra": { "connect_inside": true }
-    }
-}

@@ -7,16 +7,11 @@ import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.core.mixins.BlockModelAccessor;
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
-import com.lowdragmc.lowdraglib.client.renderer.impl.IModelRenderer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.texture.TextureAtlas;
-import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.UnbakedModel;
-import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.BlockAndTintGetter;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.function.Consumer;
@@ -26,7 +21,7 @@ import java.util.function.Consumer;
  * @date 2023/2/27
  * @implNote MaterialBlockRenderer
  */
-public class MaterialBlockRenderer extends IModelRenderer {
+public class MaterialBlockRenderer extends CTMModelRenderer {
     private static final Table<MaterialIconType, MaterialIconSet, MaterialBlockRenderer> MODELS = Tables.newCustomTable(new HashMap<>(), HashMap::new);
 
     public static MaterialBlockRenderer getOrCreate(MaterialIconType type, MaterialIconSet iconSet) {

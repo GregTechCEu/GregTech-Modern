@@ -1,15 +1,6 @@
 {
-    "ctm": {
-        "ctm_version": 1,
-        "type": "CTM",
-        "layer": "BLOOM",
-        "gtceu": true,
-        "textures": [
-            "gtceu:block/casings/coils/machine_coil_nichrome_bloom_ctm"
-        ],
-        "extra": {
-            "connect_inside": true,
-            "light": 5
-        }
+    "ldlib": {
+        "connection": "gtceu:block/casings/coils/machine_coil_nichrome_bloom_ctm",
+        "emissive": true
     }
 }

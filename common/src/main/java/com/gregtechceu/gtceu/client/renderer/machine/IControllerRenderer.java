@@ -7,6 +7,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 
 import javax.annotation.Nullable;
@@ -18,6 +19,15 @@ import java.util.List;
  * @implNote IControllerRenderer
  */
 public interface IControllerRenderer {
+    /**
+     * Render a specific model for given part.
+     */
     @Environment(EnvType.CLIENT)
     void renderPartModel(List<BakedQuad> quads, IMultiController machine, IMultiPart part, Direction frontFacing, @Nullable Direction side, RandomSource rand, Direction modelFacing, ModelState modelState);
+
+    /**
+     * Get CTM id for given part.
+     */
+    @Nullable
+    ResourceLocation getPartConnectedID(IMultiController machine, IMultiPart part);
 }
