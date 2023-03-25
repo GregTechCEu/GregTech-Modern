@@ -1,0 +1,21 @@
+name: Feature Request
+description: Request a new feature.
+labels: [ "enhancement" ]
+body:
+  - type: input
+    id: cross-mod
+    attributes:
+      label: Cross-mod Integration
+      description: "Does this feature involve integration with another mod? If so specify the mod(s). Otherwise, leave this blank."
+      placeholder: "Example: Create Mod"
+  - type: textarea
+    id: description
+    attributes:
+      label: Feature Description
+      description: "What feature would you like to have? Please describe it here."
+      placeholder: "Example: I want to be able to do..."
+    validations:
+      required: true
+  - type: markdown
+    attributes:
+      value: Thank you for taking the time to fill out this feature request.
