@@ -1,9 +1,0 @@
-{
-    "ctm": {
-        "ctm_version": 1,
-        "type": "CTM",
-        "layer": "CUTOUT",
-        "textures": [ "gtceu:block/casings/firebox/machine_casing_firebox_bronze_ctm"  ],
-        "extra": { "connect_inside": true }
-    }
-}

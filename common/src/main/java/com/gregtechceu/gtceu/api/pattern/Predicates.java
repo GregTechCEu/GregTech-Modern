@@ -119,8 +119,8 @@ public class Predicates {
                         blockWorldState.setError(new PatternStringError("gtceu.multiblock.pattern.error.coils"));
                         return false;
                     }
+                    return true;
                 }
-                return true;
             }
             return false;
         }, () -> Arrays.stream(CoilBlock.CoilType.values())

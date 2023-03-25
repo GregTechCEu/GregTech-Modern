@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.common.block;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.block.ActiveBlock;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.client.renderer.block.TextureOverrideRenderer;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import lombok.Getter;
 import net.minecraft.resources.ResourceLocation;
@@ -10,6 +11,7 @@ import net.minecraft.util.StringRepresentable;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.Map;
 
 /**
  * @author KilaBash
@@ -18,9 +20,15 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @ParametersAreNonnullByDefault
 public class CoilBlock extends ActiveBlock {
+    public CoilBlock.CoilType coilType;
 
-    public CoilBlock(Properties properties) {
-        super(properties);
+    public CoilBlock(Properties properties, CoilBlock.CoilType coilType) {
+        super(properties, new TextureOverrideRenderer(new ResourceLocation("block/cube_all"),
+                        Map.of("all", coilType.getTexture().toString())),
+                new TextureOverrideRenderer(GTCEu.id("block/cube_2_layer_all"),
+                        Map.of("bot_all", coilType.getTexture().toString(),
+                                "top_all", coilType.getTexture() + "_bloom")));
+        this.coilType = coilType;
     }
 
     /*

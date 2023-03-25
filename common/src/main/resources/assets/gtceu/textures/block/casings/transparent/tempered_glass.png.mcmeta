@@ -1,13 +1,5 @@
 {
-    "ctm": {
-        "ctm_version": 1,
-        "type": "CTM",
-        "layer": "TRANSLUCENT",
-        "textures": [
-            "gtceu:block/casings/transparent/tempered_glass_ctm"
-        ],
-        "extra": {
-            "connect_inside": true
-        }
+    "ldlib": {
+        "connection": "gtceu:block/casings/transparent/tempered_glass_ctm"
     }
 }
