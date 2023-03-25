@@ -71,7 +71,7 @@ public class GTRecipeWidget extends WidgetGroup {
                 outputFluids
         ));
 
-        int yOffset = 60;
+        int yOffset = 87;
         addWidget(new LabelWidget(3, yOffset,
                 LocalizationUtils.format("gtceu.recipe.duration", recipe.duration / 20f)));
         var EUt = RecipeHelper.getInputEUt(recipe);
