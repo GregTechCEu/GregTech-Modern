@@ -260,7 +260,7 @@ public class PatternPreviewWidget extends WidgetGroup {
 
         LEVEL.addBlocks(blockMap);
         if (controllerBase != null) {
-            LEVEL.setBlockEntity(controllerBase.self().holder.getSelf());
+            LEVEL.setInnerBlockEntity(controllerBase.self().holder.getSelf());
         }
 
         Map<ItemStackKey, PartInfo> parts = gatherBlockDrops(blockMap);
