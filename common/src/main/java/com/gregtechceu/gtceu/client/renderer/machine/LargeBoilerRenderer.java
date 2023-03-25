@@ -23,7 +23,7 @@ import java.util.List;
  * @date 2023/3/16
  * @implNote LargeBoilerRenderer
  */
-public class LargeBoilerRenderer extends WorkableCasingMachineRenderer implements IControllerRenderer{
+public class LargeBoilerRenderer extends WorkableCasingMachineRenderer implements IControllerRenderer {
     public static final ResourceLocation BLOOM_OVERLAY = GTCEu.id("block/casings/firebox/machine_casing_firebox_bloom");
     public final BoilerFireboxType firebox;
 
@@ -56,4 +56,16 @@ public class LargeBoilerRenderer extends WorkableCasingMachineRenderer implement
             }
         }
     }
+
+    @Override
+    @Nullable
+    public ResourceLocation getPartConnectedID(IMultiController machine, IMultiPart part) {
+        if (machine.self().getPos().below().getY() == part.self().getPos().getY()) { // fire box
+            return GTCEu.id(firebox.getName());
+        } else {
+            // same as controller
+            return getConnectedID(machine.self().getLevel(), machine.self().getPos(), machine.self().getBlockState());
+        }
+    }
+
 }

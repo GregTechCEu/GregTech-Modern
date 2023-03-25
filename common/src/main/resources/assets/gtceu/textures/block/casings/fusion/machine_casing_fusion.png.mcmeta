@@ -1,9 +1,5 @@
 {
-    "ctm": {
-        "ctm_version": 1,
-        "type": "CTM",
-        "layer": "CUTOUT",
-        "textures": [ "gtceu:block/casings/fusion/machine_casing_fusion_ctm"  ],
-        "extra": { "connect_inside": true }
+    "ldlib": {
+        "connection": "gtceu:block/casings/fusion/machine_casing_fusion_ctm"
     }
 }
