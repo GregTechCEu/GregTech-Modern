@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import lombok.NoArgsConstructor;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -17,13 +18,11 @@ import javax.annotation.Nonnull;
  * @date 2022/05/27
  * @implNote DimensionCondition, specific dimension
  */
+@NoArgsConstructor
 public class DimensionCondition extends RecipeCondition {
 
     public final static DimensionCondition INSTANCE = new DimensionCondition();
     private ResourceLocation dimension = new ResourceLocation("dummy");
-
-    private DimensionCondition() {
-    }
 
     public DimensionCondition(ResourceLocation dimension) {
         this.dimension = dimension;
@@ -41,7 +40,7 @@ public class DimensionCondition extends RecipeCondition {
 
     @Override
     public Component getTooltips() {
-        return Component.translatable("multiblocked.recipe.condition.dimension.tooltip", dimension);
+        return Component.translatable("recipe.condition.dimension.tooltip", dimension);
     }
 
     public ResourceLocation getDimension() {
@@ -78,14 +77,14 @@ public class DimensionCondition extends RecipeCondition {
     @Override
     public RecipeCondition fromNetwork(FriendlyByteBuf buf) {
         super.fromNetwork(buf);
-        buf.writeUtf(dimension.toString());
+        dimension = new ResourceLocation(buf.readUtf());
         return this;
     }
 
     @Override
     public void toNetwork(FriendlyByteBuf buf) {
         super.toNetwork(buf);
-        dimension = new ResourceLocation(buf.readUtf());
+        buf.writeUtf(dimension.toString());
     }
 
 }

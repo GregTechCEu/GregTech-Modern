@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import lombok.NoArgsConstructor;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.GsonHelper;
@@ -15,14 +16,12 @@ import javax.annotation.Nonnull;
  * @date 2022/05/27
  * @implNote WhetherCondition, specific whether
  */
+@NoArgsConstructor
 public class PositionYCondition extends RecipeCondition {
 
     public final static PositionYCondition INSTANCE = new PositionYCondition();
     private int min;
     private int max;
-
-    private PositionYCondition() {
-    }
 
     public PositionYCondition(int min, int max) {
         this.min = min;
@@ -36,7 +35,7 @@ public class PositionYCondition extends RecipeCondition {
 
     @Override
     public Component getTooltips() {
-        return Component.translatable("multiblocked.recipe.condition.pos_y.tooltip", this.min, this.max);
+        return Component.translatable("recipe.condition.pos_y.tooltip", this.min, this.max);
     }
 
     public int getMin() {

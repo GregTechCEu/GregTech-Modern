@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import lombok.NoArgsConstructor;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.GsonHelper;
@@ -16,13 +17,11 @@ import javax.annotation.Nonnull;
  * @date 2022/05/27
  * @implNote WhetherCondition, specific whether
  */
+@NoArgsConstructor
 public class RainingCondition extends RecipeCondition {
 
     public final static RainingCondition INSTANCE = new RainingCondition();
     private float level;
-
-    private RainingCondition() {
-    }
 
     public RainingCondition(float level) {
         this.level = level;
@@ -35,7 +34,7 @@ public class RainingCondition extends RecipeCondition {
 
     @Override
     public Component getTooltips() {
-        return Component.translatable("multiblocked.recipe.condition.rain.tooltip", level);
+        return Component.translatable("recipe.condition.rain.tooltip", level);
     }
 
     public float getLevel() {
