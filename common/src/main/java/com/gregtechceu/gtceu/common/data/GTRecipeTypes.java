@@ -353,7 +353,6 @@ public class GTRecipeTypes {
                             .setBackground(GuiTextures.FLUID_SLOT).setShowAmount(false));
                 }
             })
-            .addDataInfo(tag -> "Place fluids horizontally adjacent")
             .setSound(GTSoundEntries.FIRE);
 
     //////////////////////////////////////

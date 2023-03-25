@@ -114,7 +114,7 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
     @NotNull
     public GTRecipe fromNetwork(@NotNull ResourceLocation id, @NotNull FriendlyByteBuf buf) {
         String recipeType = buf.readUtf();
-        int duration = buf.readInt();
+        int duration = buf.readVarInt();
         Map<RecipeCapability<?>, List<Content>> inputs = tuplesToMap(buf.readCollection(c -> new ArrayList<>(), GTRecipeSerializer::entryReader));
         Map<RecipeCapability<?>, List<Content>> tickInputs = tuplesToMap(buf.readCollection(c -> new ArrayList<>(), GTRecipeSerializer::entryReader));
         Map<RecipeCapability<?>, List<Content>> outputs = tuplesToMap(buf.readCollection(c -> new ArrayList<>(), GTRecipeSerializer::entryReader));
@@ -128,7 +128,7 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
     @Override
     public void toNetwork(FriendlyByteBuf buf, GTRecipe recipe) {
         buf.writeUtf(recipe.recipeType.toString());
-        buf.writeInt(recipe.duration);
+        buf.writeVarInt(recipe.duration);
         buf.writeCollection(recipe.inputs.entrySet(), GTRecipeSerializer::entryWriter);
         buf.writeCollection(recipe.tickInputs.entrySet(), GTRecipeSerializer::entryWriter);
         buf.writeCollection(recipe.outputs.entrySet(), GTRecipeSerializer::entryWriter);
