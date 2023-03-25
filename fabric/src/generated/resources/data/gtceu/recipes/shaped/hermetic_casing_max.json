@@ -14,9 +14,6 @@
     "PPP"
   ],
   "result": {
-    "item": "gtceu:hermetic_casing",
-    "nbt": {
-      "variant": "ultra_high_voltage"
-    }
+    "item": "gtceu:hermetic_casing_uhv"
   }
 }

@@ -5,14 +5,7 @@
       "item": "gtceu:hull.iv"
     },
     "C": {
-      "base": {
-        "item": "gtceu:casing"
-      },
-      "fabric:type": "fabric:nbt",
-      "nbt": {
-        "variant": "assembly_control"
-      },
-      "strict": true
+      "item": "gtceu:casing_assembly_control"
     },
     "R": {
       "item": "gtceu:robot.arm.iv"

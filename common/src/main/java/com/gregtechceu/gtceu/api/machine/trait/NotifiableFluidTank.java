@@ -99,6 +99,10 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidStack
             } else if (io == IO.OUT) {
                 while (iterator.hasNext()) {
                     FluidStack fluidStack = iterator.next();
+                    if (fluidStack.isEmpty()) {
+                        iterator.remove();
+                        continue;
+                    }
                     long filled = capability.fill(fluidStack.copy(), simulate);
                     if (!fluidStack.isEmpty()) {
                         fluidStack.setAmount(fluidStack.getAmount() - filled);

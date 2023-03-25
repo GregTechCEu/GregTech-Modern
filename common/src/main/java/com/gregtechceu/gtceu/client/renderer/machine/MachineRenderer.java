@@ -7,14 +7,17 @@ import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputFluid;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputItem;
+import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
+import com.gregtechceu.gtceu.client.model.IGTCTMPredicate;
 import com.gregtechceu.gtceu.client.model.ItemBakedModel;
+import com.gregtechceu.gtceu.client.renderer.block.CTMModelRenderer;
 import com.gregtechceu.gtceu.client.renderer.cover.ICoverableRenderer;
 import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
 import com.lowdragmc.lowdraglib.client.renderer.IItemRendererProvider;
-import com.lowdragmc.lowdraglib.client.renderer.impl.IModelRenderer;
 import com.mojang.blaze3d.vertex.PoseStack;
+import lombok.experimental.Accessors;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
@@ -44,7 +47,8 @@ import java.util.function.Consumer;
  * @date 2023/2/26
  * @implNote MachineRenderer
  */
-public class MachineRenderer extends IModelRenderer implements ICoverableRenderer, IPartRenderer {
+@Accessors(chain = true)
+public class MachineRenderer extends CTMModelRenderer implements ICoverableRenderer, IPartRenderer, IGTCTMPredicate {
 
     public static final ResourceLocation PIPE_OVERLAY = GTCEu.id("block/overlay/machine/overlay_pipe");
     public static final ResourceLocation FLUID_OUTPUT_OVERLAY = GTCEu.id("block/overlay/machine/overlay_fluid_output");
@@ -168,4 +172,26 @@ public class MachineRenderer extends IModelRenderer implements ICoverableRendere
             register.accept(ITEM_OUTPUT_OVERLAY);
         }
     }
+
+    //////////////////////////////////////
+    //**********     CTM     ***********//
+    //////////////////////////////////////
+    @Nullable
+    @Override
+    public ResourceLocation getConnectedID(BlockAndTintGetter level, BlockPos pos, BlockState state) {
+        var machine = MetaMachine.getMachine(level, pos);
+        if (machine != null) {
+            if (machine instanceof IMultiPart part) {
+                var connectedID = getPartConnectedID(part);
+                if (connectedID != null) {
+                    return connectedID;
+                }
+            } else if (machine instanceof IMultiController controller && !controller.isFormed()) {
+                return null;
+            }
+            return machine.getDefinition().getConnectedID().get();
+        }
+        return IGTCTMPredicate.super.getConnectedID(level, pos, state);
+    }
+
 }

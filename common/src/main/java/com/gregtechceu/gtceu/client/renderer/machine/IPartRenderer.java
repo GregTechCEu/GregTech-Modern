@@ -8,6 +8,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 
 import javax.annotation.Nullable;
@@ -40,5 +41,22 @@ public interface IPartRenderer {
             }
         }
         return false;
+    }
+
+    @Nullable
+    default ResourceLocation getPartConnectedID(IMultiPart part) {
+        var controllers = part.getControllers();
+        for (IMultiController controller : controllers) {
+            var state = controller.self().getBlockState();
+            if (state.getBlock() instanceof MetaMachineBlock block) {
+                var renderer = block.definition.getRenderer();
+                if (renderer instanceof IControllerRenderer controllerRenderer) {
+                    return controllerRenderer.getPartConnectedID(controller, part);
+                } else if (renderer instanceof MachineRenderer machineRenderer) {
+                    return machineRenderer.getConnectedID(controller.self().getLevel(), controller.self().getPos(), controller.self().getBlockState());
+                }
+            }
+        }
+        return null;
     }
 }

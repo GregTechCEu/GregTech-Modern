@@ -24,9 +24,6 @@
   ],
   "result": {
     "count": 2,
-    "item": "gtceu:casing",
-    "nbt": {
-      "variant": "titanium_gearbox"
-    }
+    "item": "gtceu:casing_titanium_gearbox"
   }
 }

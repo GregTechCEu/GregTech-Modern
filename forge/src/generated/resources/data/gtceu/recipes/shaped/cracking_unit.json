@@ -2,10 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "type": "forge:nbt",
-      "count": 1,
-      "item": "gtceu:wire_coil",
-      "nbt": "{variant:\"cupronickel\"}"
+      "item": "gtceu:wire_coil_cupronickel"
     },
     "E": {
       "item": "gtceu:electric.pump.hv"

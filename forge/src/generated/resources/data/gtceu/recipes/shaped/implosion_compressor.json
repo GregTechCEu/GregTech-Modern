@@ -5,10 +5,7 @@
       "tag": "forge:circuit/hv"
     },
     "M": {
-      "type": "forge:nbt",
-      "count": 1,
-      "item": "gtceu:casing",
-      "nbt": "{variant:\"steel_solid\"}"
+      "item": "gtceu:casing_steel_solid"
     },
     "O": {
       "tag": "forge:storage_blocks/obsidian"

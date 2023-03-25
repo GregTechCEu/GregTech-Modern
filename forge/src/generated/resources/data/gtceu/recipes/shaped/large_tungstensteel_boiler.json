@@ -2,10 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "A": {
-      "type": "forge:nbt",
-      "count": 1,
-      "item": "gtceu:boiler_firebox_casing",
-      "nbt": "{variant:\"tungstensteel_firebox\"}"
+      "item": "gtceu:tungstensteel_firebox"
     },
     "P": {
       "tag": "forge:cable_gt_single/aluminium"

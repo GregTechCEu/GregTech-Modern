@@ -1,13 +1,17 @@
 package com.gregtechceu.gtceu.data.data;
 
-import com.gregtechceu.gtceu.api.block.VariantBlock;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
-import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTCreativeModeTabs;
+import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 import com.tterrag.registrate.providers.RegistrateLangProvider;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+
+import java.util.ArrayList;
+import java.util.stream.IntStream;
 
 import static com.gregtechceu.gtceu.utils.FormattingUtil.*;
 
@@ -45,11 +49,11 @@ public class LangHandler {
         provider.add(GTCreativeModeTabs.MACHINE, toEnglishName(GTCreativeModeTabs.MACHINE.getGroupId()));
         provider.add(GTCreativeModeTabs.ITEM, toEnglishName(GTCreativeModeTabs.ITEM.getGroupId()));
         // Casings
-        casingLang(provider, GTBlocks.CASING.get());
-        casingLang(provider, GTBlocks.WIRE_COIL.get());
-        casingLang(provider, GTBlocks.ACTIVE_CASING.get());
-        casingLang(provider, GTBlocks.BOILER_FIREBOX_CASING.get());
-        casingLang(provider, GTBlocks.HULL_CASING.get());
+        //casingLang(provider, GTBlocks.CASING.get()); todo
+        //casingLang(provider, GTBlocks.WIRE_COIL.get());
+        //casingLang(provider, GTBlocks.ACTIVE_CASING.get());
+        //casingLang(provider, GTBlocks.BOILER_FIREBOX_CASING.get());
+        //casingLang(provider, GTBlocks.HULL_CASING.get()); todo
 
         provider.add("death.attack.heat", "%s was boiled alive");
         provider.add("death.attack.frost", "%s explored cryogenics");
@@ -149,8 +153,8 @@ public class LangHandler {
         provider.add("gtceu.multiblock.fusion_reactor.heat", "Heat: %d");
         provider.add("gtceu.multiblock.large_chemical_reactor.description", "The Large Chemical Reactor performs chemical reactions at 100%% energy efficiency. Overclocks multiply both speed and energy by 4. The multiblock requires exactly 1 Cupronickel Coil Block, which must be placed adjacent to the PTFE Pipe casing located in the center.");
         provider.add("gtceu.multiblock.primitive_water_pump.description", "The Primitive Water Pump is a pre-Steam Era multiblock that collects water once per second, depending on the Biome it is in. It can use a Pump, ULV, or LV Output Hatch, increasing the amount of water per tier. Follows the formula: Biome Coefficient * Hatch Multiplier.");
-        provider.add("gtceu.multiblock.primitive_water_pump.extra1", "Biome Coefficient:/n  Ocean, River: 1000 L/s/n  Swamp: 800 L/s/n  Jungle: 350 L/s/n  Snowy: 300 L/s/n  Plains, Forest: 250 L/s/n  Taiga: 175 L/s/n  Beach: 170 L/s/n  Other: 100 L/s");
-        provider.add("gtceu.multiblock.primitive_water_pump.extra2", "Hatch Multipliers:/n  Pump Hatch: 1x/n  ULV Output Hatch: 2x/n  LV Output Hatch: 4x/n/nWhile raining in the Pump's Biome, the total water production will be increased by 50%%.");
+        multilineLang(provider, "gtceu.multiblock.primitive_water_pump.extra1", "Biome Coefficient:\n  Ocean, River: 1000 L/s\n  Swamp: 800 L/s\n  Jungle: 350 L/s\n  Snowy: 300 L/s\n  Plains, Forest: 250 L/s\n  Taiga: 175 L/s\n  Beach: 170 L/s\n  Other: 100 L/s");
+        multilineLang(provider, "gtceu.multiblock.primitive_water_pump.extra2", "Hatch Multipliers:\n  Pump Hatch: 1x\n  ULV Output Hatch: 2x\n  LV Output Hatch: 4x\n\nWhile raining in the Pump's Biome, the total water production will be increased by 50%%.");
         provider.add("gtceu.multiblock.processing_array.description", "The Processing Array combines up to 16 single block machine(s) in a single multiblock, effectively easing automation.");
         provider.add("gtceu.multiblock.advanced_processing_array.description", "The Processing Array combines up to 64 single block machine(s) in a single multiblock, effectively easing automation.");
         provider.add("item.invalid.name", "Invalid item");
@@ -270,7 +274,7 @@ public class LangHandler {
         provider.add("metaitem.tool.dataorb.tooltip", "A High Capacity Data Storage");
         provider.add("metaitem.circuit.integrated.tooltip", "Use to open configuration GUI");
         provider.add("metaitem.circuit.integrated.gui", "Programmed Circuit Configuration");
-        provider.add("metaitem.circuit.integrated.jei_description", "JEI is only showing recipes for the given configuration.\n\nYou can select a configuration in the Programmed Circuit configuration tab.");
+        multilineLang(provider, "metaitem.circuit.integrated.jei_description", "JEI is only showing recipes for the given configuration.\n\nYou can select a configuration in the Programmed Circuit configuration tab.");
         provider.add("item.glass.lens", "Glass Lens (White)");
         provider.add("metaitem.boule.silicon.tooltip", "Raw Circuit");
         provider.add("metaitem.boule.glowstone.tooltip", "Raw Circuit");
@@ -294,7 +298,7 @@ public class LangHandler {
         provider.add("metaitem.circuit_board.extreme.tooltip", "A More Advanced Circuit Board");
         provider.add("metaitem.circuit_board.elite.tooltip", "An Elite Circuit Board");
         provider.add("metaitem.circuit_board.wetware.tooltip", "The Board that keeps life");
-        provider.add("metaitem.circuit.vacuum_tube.tooltip", "Technically a Diode/n§cULV-tier");
+        multilineLang(provider, "metaitem.circuit.vacuum_tube.tooltip", "Technically a Diode\n§cULV-tier");
         provider.add("metaitem.component.diode.tooltip", "Basic Electronic Component");
         provider.add("metaitem.component.resistor.tooltip", "Basic Electronic Component");
         provider.add("metaitem.component.transistor.tooltip", "Basic Electronic Component");
@@ -347,33 +351,33 @@ public class LangHandler {
         provider.add("metaitem.plate.random_access_memory.tooltip", "Random Access Memory");
         provider.add("metaitem.plate.system_on_chip.tooltip", "System on Chip");
         provider.add("metaitem.plate.simple_system_on_chip.tooltip", "Simple System on Chip");
-        provider.add("metaitem.circuit.electronic.tooltip", "Your First Circuit/n§cLV-Tier Circuit");
-        provider.add("metaitem.circuit.good_electronic.tooltip", "Your Second Circuit/n§cMV-Tier Circuit");
-        provider.add("metaitem.circuit.basic_integrated.tooltip", "Smaller and more powerful/n§6LV-Tier Circuit");
-        provider.add("metaitem.circuit.good_integrated.tooltip", "Smaller and more powerful/n§6MV-Tier Circuit");
-        provider.add("metaitem.circuit.advanced_integrated.tooltip", "Smaller and more powerful/n§6HV-Tier Circuit");
-        provider.add("metaitem.circuit.nand_chip.tooltip", "A Superior Simple Circuit/n§6ULV-Tier Circuit");
-        provider.add("metaitem.circuit.microprocessor.tooltip", "A Superior Basic Circuit/n§eLV-Tier Circuit");
-        provider.add("metaitem.circuit.processor.tooltip", "Amazing Computation Speed!/n§eMV-Tier Circuit");
-        provider.add("metaitem.circuit.assembly.tooltip", "Amazing Computation Speed!/n§eHV-Tier Circuit");
-        provider.add("metaitem.circuit.workstation.tooltip", "Amazing Computation Speed!/n§eEV-Tier Circuit");
-        provider.add("metaitem.circuit.mainframe.tooltip", "Amazing Computation Speed!/n§eIV-Tier Circuit");
-        provider.add("metaitem.circuit.nano_processor.tooltip", "Smaller than ever/n§bHV-Tier Circuit");
-        provider.add("metaitem.circuit.nano_assembly.tooltip", "Smaller than ever/n§bEV-Tier Circuit");
-        provider.add("metaitem.circuit.nano_computer.tooltip", "Smaller than ever/n§bIV-Tier Circuit");
-        provider.add("metaitem.circuit.nano_mainframe.tooltip", "Smaller than ever/n§bLuV-Tier Circuit");
-        provider.add("metaitem.circuit.quantum_processor.tooltip", "Quantum Computing comes to life!/n§aEV-Tier Circuit");
-        provider.add("metaitem.circuit.quantum_assembly.tooltip", "Quantum Computing comes to life!/n§aIV-Tier Circuit");
-        provider.add("metaitem.circuit.quantum_computer.tooltip", "Quantum Computing comes to life!/n§aLuV-Tier Circuit");
-        provider.add("metaitem.circuit.quantum_mainframe.tooltip", "Quantum Computing comes to life!/n§aZPM-Tier Circuit");
-        provider.add("metaitem.circuit.crystal_processor.tooltip", "Taking Advantage of Crystal Engraving/n§9IV-Tier Circuit");
-        provider.add("metaitem.circuit.crystal_assembly.tooltip", "Taking Advantage of Crystal Engraving/n§9LuV-Tier Circuit");
-        provider.add("metaitem.circuit.crystal_computer.tooltip", "Taking Advantage of Crystal Engraving/n§9ZPM-Tier Circuit");
-        provider.add("metaitem.circuit.crystal_mainframe.tooltip", "Taking Advantage of Crystal Engraving/n§9UV-Tier Circuit");
-        provider.add("metaitem.circuit.wetware_processor.tooltip", "You have a feeling like it's watching you/n§4LuV-Tier Circuit");
-        provider.add("metaitem.circuit.wetware_assembly.tooltip", "Can run Minecraft/n§4ZPM-tier Circuit");
-        provider.add("metaitem.circuit.wetware_computer.tooltip", "Ultimate fusion of Flesh and Machine/n§4UV-Tier Circuit");
-        provider.add("metaitem.circuit.wetware_mainframe.tooltip", "The best Man has ever seen/n§4UHV-Tier Circuit");
+        multilineLang(provider, "metaitem.circuit.electronic.tooltip", "Your First Circuit\n§cLV-Tier Circuit");
+        multilineLang(provider, "metaitem.circuit.good_electronic.tooltip", "Your Second Circuit\n§cMV-Tier Circuit");
+        multilineLang(provider, "metaitem.circuit.basic_integrated.tooltip", "Smaller and more powerful\n§6LV-Tier Circuit");
+        multilineLang(provider, "metaitem.circuit.good_integrated.tooltip", "Smaller and more powerful\n§6MV-Tier Circuit");
+        multilineLang(provider, "metaitem.circuit.advanced_integrated.tooltip", "Smaller and more powerful\n§6HV-Tier Circuit");
+        multilineLang(provider, "metaitem.circuit.nand_chip.tooltip", "A Superior Simple Circuit\n§6ULV-Tier Circuit");
+        multilineLang(provider, "metaitem.circuit.microprocessor.tooltip", "A Superior Basic Circuit\n§eLV-Tier Circuit");
+        multilineLang(provider, "metaitem.circuit.processor.tooltip", "Amazing Computation Speed!\n§eMV-Tier Circuit");
+        multilineLang(provider, "metaitem.circuit.assembly.tooltip", "Amazing Computation Speed!\n§eHV-Tier Circuit");
+        multilineLang(provider, "metaitem.circuit.workstation.tooltip", "Amazing Computation Speed!\n§eEV-Tier Circuit");
+        multilineLang(provider, "metaitem.circuit.mainframe.tooltip", "Amazing Computation Speed!\n§eIV-Tier Circuit");
+        multilineLang(provider, "metaitem.circuit.nano_processor.tooltip", "Smaller than ever\n§bHV-Tier Circuit");
+        multilineLang(provider, "metaitem.circuit.nano_assembly.tooltip", "Smaller than ever\n§bEV-Tier Circuit");
+        multilineLang(provider, "metaitem.circuit.nano_computer.tooltip", "Smaller than ever\n§bIV-Tier Circuit");
+        multilineLang(provider, "metaitem.circuit.nano_mainframe.tooltip", "Smaller than ever\n§bLuV-Tier Circuit");
+        multilineLang(provider, "metaitem.circuit.quantum_processor.tooltip", "Quantum Computing comes to life!\n§aEV-Tier Circuit");
+        multilineLang(provider, "metaitem.circuit.quantum_assembly.tooltip", "Quantum Computing comes to life!\n§aIV-Tier Circuit");
+        multilineLang(provider, "metaitem.circuit.quantum_computer.tooltip", "Quantum Computing comes to life!\n§aLuV-Tier Circuit");
+        multilineLang(provider, "metaitem.circuit.quantum_mainframe.tooltip", "Quantum Computing comes to life!\n§aZPM-Tier Circuit");
+        multilineLang(provider, "metaitem.circuit.crystal_processor.tooltip", "Taking Advantage of Crystal Engraving\n§9IV-Tier Circuit");
+        multilineLang(provider, "metaitem.circuit.crystal_assembly.tooltip", "Taking Advantage of Crystal Engraving\n§9LuV-Tier Circuit");
+        multilineLang(provider, "metaitem.circuit.crystal_computer.tooltip", "Taking Advantage of Crystal Engraving\n§9ZPM-Tier Circuit");
+        multilineLang(provider, "metaitem.circuit.crystal_mainframe.tooltip", "Taking Advantage of Crystal Engraving\n§9UV-Tier Circuit");
+        multilineLang(provider, "metaitem.circuit.wetware_processor.tooltip", "You have a feeling like it's watching you\n§4LuV-Tier Circuit");
+        multilineLang(provider, "metaitem.circuit.wetware_assembly.tooltip", "Can run Minecraft\n§4ZPM-tier Circuit");
+        multilineLang(provider, "metaitem.circuit.wetware_computer.tooltip", "Ultimate fusion of Flesh and Machine\n§4UV-Tier Circuit");
+        multilineLang(provider, "metaitem.circuit.wetware_mainframe.tooltip", "The best Man has ever seen\n§4UHV-Tier Circuit");
         provider.add("metaitem.stem_cells.tooltip", "Raw Intelligence");
         provider.add("metaitem.processor.neuro.tooltip", "Neuro CPU");
         provider.add("metaitem.petri_dish.tooltip", "For cultivating Cells");
@@ -382,10 +386,10 @@ public class LangHandler {
         provider.add("metaitem.quantumeye.tooltip", "Improved Ender Eye");
         provider.add("metaitem.quantumstar.tooltip", "Improved Nether Star");
         provider.add("metaitem.gravistar.tooltip", "Ultimate Nether Star");
-        provider.add("metaitem.item_filter.tooltip", "Filters §fItem§7 I/O as §fCover§7./nCan be used as a §fConveyor Module§7 and §fRobotic Arm§7 upgrade.");
-        provider.add("metaitem.ore_dictionary_filter.tooltip", "Filters §fItem§7 I/O with §fOre Dictionary§7 as §fCover§7./nCan be used as a §fConveyor Module§7 and §fRobotic Arm§7 upgrade.");
-        provider.add("metaitem.fluid_filter.tooltip", "Filters §fFluid§7 I/O as §fCover§7./nCan be used as an §fElectric Pump§7 and §fFluid Regulator§7 upgrade.");
-        provider.add("metaitem.smart_item_filter.tooltip", "Filters §fItem§7 I/O with §fMachine Recipes§7 as §fCover§7./nCan be used as a §fConveyor Module§7 and §fRobotic Arm§7 upgrade.");
+        multilineLang(provider, "metaitem.item_filter.tooltip", "Filters §fItem§7 I/O as §fCover§7.\nCan be used as a §fConveyor Module§7 and §fRobotic Arm§7 upgrade.");
+        multilineLang(provider, "metaitem.ore_dictionary_filter.tooltip", "Filters §fItem§7 I/O with §fOre Dictionary§7 as §fCover§7.\nCan be used as a §fConveyor Module§7 and §fRobotic Arm§7 upgrade.");
+        multilineLang(provider, "metaitem.fluid_filter.tooltip", "Filters §fFluid§7 I/O as §fCover§7.\nCan be used as an §fElectric Pump§7 and §fFluid Regulator§7 upgrade.");
+        multilineLang(provider, "metaitem.smart_item_filter.tooltip", "Filters §fItem§7 I/O with §fMachine Recipes§7 as §fCover§7.\nCan be used as a §fConveyor Module§7 and §fRobotic Arm§7 upgrade.");
         provider.add("metaitem.cover.controller.tooltip", "Turns Machines §fON/OFF§7 as §fCover§7.");
         provider.add("metaitem.cover.activity.detector.tooltip", "Gives out §fActivity Status§7 as Redstone as §fCover§7.");
         provider.add("metaitem.cover.activity.detector_advanced.tooltip", "Gives out §fMachine Progress§7 as Redstone as §fCover§7.");
@@ -395,22 +399,21 @@ public class LangHandler {
         provider.add("metaitem.cover.item.detector.advanced.tooltip", "Gives §fRS-Latch§7 controlled §fItem Storage Status§7 as Redstone as §fCover§7.");
         provider.add("metaitem.cover.energy.detector.tooltip", "Gives out §fEnergy Amount§7 as Redstone as §fCover§7.");
         provider.add("metaitem.cover.energy.detector.advanced.tooltip", "Gives §fRS-Latch§7 controlled §fEnergy Status§7 as Redstone as §fCover§7.");
-        provider.add("metaitem.cover.fluid.voiding.tooltip", "Voids §fFluids§7 as §fCover§7./nActivate with §fSoft Mallet§7 after placement.");
-        provider.add("metaitem.cover.fluid.voiding.advanced.tooltip", "Voids §fFluids§7 with amount control as §fCover§7./nActivate with §fSoft Mallet§7 after placement.");
-        provider.add("metaitem.cover.item.voiding.tooltip", "Voids §fItems§7 as §fCover§7./nActivate with §fSoft Mallet§7 after placement.");
-        provider.add("metaitem.cover.item.voiding.advanced.tooltip", "Voids §fItems§7 with amount control as §fCover§7./nActivate with §fSoft Mallet§7 after placement.");
+        multilineLang(provider, "metaitem.cover.fluid.voiding.tooltip", "Voids §fFluids§7 as §fCover§7.\nActivate with §fSoft Mallet§7 after placement.");
+        multilineLang(provider, "metaitem.cover.fluid.voiding.advanced.tooltip", "Voids §fFluids§7 with amount control as §fCover§7.\nActivate with §fSoft Mallet§7 after placement.");
+        multilineLang(provider, "metaitem.cover.item.voiding.tooltip", "Voids §fItems§7 as §fCover§7.\nActivate with §fSoft Mallet§7 after placement.");
+        multilineLang(provider, "metaitem.cover.item.voiding.advanced.tooltip", "Voids §fItems§7 with amount control as §fCover§7.\nActivate with §fSoft Mallet§7 after placement.");
         provider.add("metaitem.cover.facade.tooltip", "Decorative Outfit §fCover§7.");
         provider.add("metaitem.cover.screen.tooltip", "Displays §fData§7 as §fCover§7.");
         provider.add("metaitem.cover.crafting.tooltip", "§fAdvanced Workbench§7 on a Machine as §fCover§7.");
         provider.add("metaitem.cover.shutter.tooltip", "§fBlocks Transfer§7 through attached Side as §fCover§7.");
-        provider.add("metaitem.cover.solar.panel.tooltip.1", "May the Sun be with you.");
-        provider.add("metaitem.cover.solar.panel.tooltip.2", "Produces §fEnergy§7 from the §eSun§7 as §fCover§7.");
+        multilineLang(provider, "metaitem.cover.solar.panel.tooltip", "May the Sun be with you.\nProduces §fEnergy§7 from the §eSun§7 as §fCover§7.");
         provider.add("metaitem.cover.infinite_water.tooltip.1", "Fills attached containers with §9Water§7 as §fCover§7.");
         provider.add("metaitem.cover.ender_fluid_link.tooltip", "Transports §fFluids§7 with a §fWireless §dEnder§f Connection§7 as §fCover§7.");
         provider.add("metaitem.gelled_toluene.tooltip", "Raw Explosive");
         provider.add("metaitem.bottle.purple.drink.tooltip", "How about Lemonade. Or some Ice Tea? I got Purple Drink!");
-        provider.add("metaitem.tool_parts_box.tooltip", "Contains some tool parts/nRight click to open");
-        provider.add("metaitem.foam_sprayer.tooltip", "Sprays Construction Foam/nUse on a frame to foam connected frames/nFoam can be colored");
+        multilineLang(provider, "metaitem.tool_parts_box.tooltip", "Contains some tool parts\nRight click to open");
+        multilineLang(provider, "metaitem.foam_sprayer.tooltip", "Sprays Construction Foam\nUse on a frame to foam connected frames\nFoam can be colored");
         provider.add("metaitem.brick.fireclay.tooltip", "Heat resistant");
         provider.add("item.gt.tool.replace_tool_head", "Craft with a new Tool Head to replace it");
         provider.add("item.gt.tool.usable_as", "Usable as: §f%s");
@@ -483,13 +486,7 @@ public class LangHandler {
         provider.add("item.gt.tool.tooltip.mining_speed", "§d%s Mining Speed");
         provider.add("item.gt.tool.tooltip.harvest_level", "§eHarvest Level %s");
         provider.add("item.gt.tool.tooltip.harvest_level_extra", "§eHarvest Level %s §f(%s§f)");
-        provider.add("item.gt.tool.harvest_level.0", "§8Wood");
-        provider.add("item.gt.tool.harvest_level.1", "§7Stone");
-        provider.add("item.gt.tool.harvest_level.2", "§aIron");
-        provider.add("item.gt.tool.harvest_level.3", "§bDiamond");
-        provider.add("item.gt.tool.harvest_level.4", "§dUltimet");
-        provider.add("item.gt.tool.harvest_level.5", "§9Duranium");
-        provider.add("item.gt.tool.harvest_level.6", "§cNeutronium");
+        multiLang(provider, "item.gt.tool.harvest_level", "§8Wood", "§7Stone", "§aIron", "§bDiamond", "§dUltimet", "§9Duranium", "§cNeutronium");
         provider.add("item.gt.tool.tooltip.repair_info", "Hold SHIFT to show Repair Info");
         provider.add("item.gt.tool.tooltip.repair_material", "Repair with: §a%s");
         provider.add("item.gt.tool.aoe.rows", "Rows");
@@ -563,17 +560,16 @@ public class LangHandler {
         provider.add("metaitem.blacklight.tooltip", "Long-Wave §dUltraviolet§7 light source");
         provider.add("gui.widget.incrementButton.default_tooltip", "Hold Shift, Ctrl or both to change the amount");
         provider.add("gui.widget.recipeProgressWidget.default_tooltip", "Show Recipes");
-        provider.add("gtceu.recipe_memory_widget.tooltip.1", "§7Left click to automatically input this recipe into the crafting grid");
-        provider.add("gtceu.recipe_memory_widget.tooltip.2", "§7Shift click to lock/unlock this recipe");
+        multilineLang(provider, "gtceu.recipe_memory_widget.tooltip", "§7Left click to automatically input this recipe into the crafting grid\n§7Shift click to lock/unlock this recipe");
         provider.add("cover.filter.blacklist.disabled", "Whitelist");
         provider.add("cover.filter.blacklist.enabled", "Blacklist");
         provider.add("cover.ore_dictionary_filter.title", "Ore Dictionary Filter");
-        provider.add("cover.ore_dictionary_filter.info", "§bAccepts complex expressions/n& = AND/n| = OR/n^ = XOR/n! = NOT/n( ) for priority/n* for wildcard/n§bExample:/n§6dust*Gold | (plate* & !*Double*)/nWill match all gold dusts of all sizes or all plates, but not double plates");
+        multilineLang(provider, "cover.ore_dictionary_filter.info", "§bAccepts complex expressions\n& = AND\n| = OR\n^ = XOR\n! = NOT\n( ) for priority\n* for wildcard\n§bExample:\n§6dust*Gold | (plate* & !*Double*)\nWill match all gold dusts of all sizes or all plates, but not double plates");
         provider.add("cover.ore_dictionary_filter.test_slot.info", "Insert a item to test if it matches the filter expression");
         provider.add("cover.ore_dictionary_filter.matches", "Item matches");
         provider.add("cover.ore_dictionary_filter.matches_not", "Item does not match");
         provider.add("cover.fluid_filter.title", "Fluid Filter");
-        provider.add("cover.fluid_filter.config_amount", "Scroll wheel up increases amount, down decreases./nShift[§6x10§r],Ctrl[§ex100§r],Shift+Ctrl[§ax1000§r]/nRight click increases amount, left click decreases./nHold shift to double/halve./nMiddle click to clear");
+        multilineLang(provider, "cover.fluid_filter.config_amount", "Scroll wheel up increases amount, down decreases.\nShift[§6x10§r],Ctrl[§ex100§r],Shift+Ctrl[§ax1000§r]\nRight click increases amount, left click decreases.\nHold shift to double/halve.\nMiddle click to clear");
         provider.add("cover.fluid_filter.mode.filter_fill", "Filter Fill");
         provider.add("cover.fluid_filter.mode.filter_drain", "Filter Drain");
         provider.add("cover.fluid_filter.mode.filter_both", "Filter Fill & Drain");
@@ -587,7 +583,7 @@ public class LangHandler {
         provider.add("cover.item_filter.ignore_nbt.disabled", "Respect NBT");
         provider.add("cover.voiding.voiding_mode.void_any", "Void Matching");
         provider.add("cover.voiding.voiding_mode.void_overflow", "Void Overflow");
-        provider.add("cover.voiding.voiding_mode.description", "§eVoid Matching§r will void anything matching the filter. /n§eVoid Overflow§r will void anything matching the filter, up to the specified amount.");
+        multilineLang(provider, "cover.voiding.voiding_mode.description", "§eVoid Matching§r will void anything matching the filter. \n§eVoid Overflow§r will void anything matching the filter, up to the specified amount.");
         provider.add("cover.fluid.voiding.title", "Fluid Voiding Settings");
         provider.add("cover.fluid.voiding.advanced.title", "Advanced Fluid Voiding Settings");
         provider.add("cover.item.voiding.title", "Item Voiding Settings");
@@ -601,28 +597,27 @@ public class LangHandler {
         provider.add("cover.smart_item_filter.filtering_mode.electrolyzer", "Electrolyzer");
         provider.add("cover.smart_item_filter.filtering_mode.centrifuge", "Centrifuge");
         provider.add("cover.smart_item_filter.filtering_mode.sifter", "Sifter");
-        provider.add("cover.smart_item_filter.filtering_mode.description", "Select Machine this Smart Filter will use for filtering./nIt will automatically pick right portions of items for robotic arm.");
+        multilineLang(provider, "cover.smart_item_filter.filtering_mode.description", "Select Machine this Smart Filter will use for filtering.\nIt will automatically pick right portions of items for robotic arm.");
         provider.add("cover.conveyor.title", "Conveyor Cover Settings (%s)");
         provider.add("cover.conveyor.transfer_rate", "§7items/sec");
         provider.add("cover.conveyor.mode.export", "Mode: Export");
         provider.add("cover.conveyor.mode.import", "Mode: Import");
-        provider.add("cover.conveyor.distribution.round_robin_enhanced", "Distribution Mode/n§bEnhanced Round Robin§r/n§7Splits items equally to all inventories");
-        provider.add("cover.conveyor.distribution.round_robin", "Distribution Mode/n§bRound Robin§r with Priority/n§7Tries to split items equally to inventories");
-        provider.add("cover.conveyor.distribution.first_insert", "Distribution Mode/n§bFirst Insert§r/n§7Will insert into the first inventory it finds");
-        provider.add("cover.conveyor.blocks_input.enabled", "If enabled, items will not be inserted when cover is set to pull items from the inventory into pipe./n§aEnabled");
-        provider.add("cover.conveyor.blocks_input.disabled", "If enabled, items will not be inserted when cover is set to pull items from the inventory into pipe./n§cDisabled");
+        multilineLang(provider, "cover.conveyor.distribution.round_robin_enhanced", "Distribution Mode\n§bEnhanced Round Robin§r\n§7Splits items equally to all inventories");
+        multilineLang(provider, "cover.conveyor.distribution.round_robin", "Distribution Mode\n§bRound Robin§r with Priority\n§7Tries to split items equally to inventories");
+        multilineLang(provider, "cover.conveyor.distribution.first_insert", "Distribution Mode\n§bFirst Insert§r\n§7Will insert into the first inventory it finds");
+        multilineLang(provider, "cover.conveyor.blocks_input.enabled", "If enabled, items will not be inserted when cover is set to pull items from the inventory into pipe.\n§aEnabled");
+        multilineLang(provider, "cover.conveyor.blocks_input.disabled", "If enabled, items will not be inserted when cover is set to pull items from the inventory into pipe.\n§cDisabled");
         provider.add("cover.universal.manual_import_export.mode.disabled", "Manual I/O: Disabled");
         provider.add("cover.universal.manual_import_export.mode.filtered", "Manual I/O: Filtered");
         provider.add("cover.universal.manual_import_export.mode.unfiltered", "Manual I/O: Unfiltered");
-        provider.add("cover.universal.manual_import_export.mode.description", "§eDisabled§r - Items/fluids will only move as specified by the cover and its filter. /n§eAllow Filtered§r - Items/fluids can be extracted and inserted independently of the cover mode, as long as its filter matches (if any). /n§eAllow Unfiltered§r - Items/fluids can be moved independently of the cover mode. Filter applies to the items inserted or extracted by this cover");
+        multilineLang(provider, "cover.universal.manual_import_export.mode.description", "§eDisabled§r - Items/fluids will only move as specified by the cover and its filter. \n§eAllow Filtered§r - Items/fluids can be extracted and inserted independently of the cover mode, as long as its filter matches (if any). \n§eAllow Unfiltered§r - Items/fluids can be moved independently of the cover mode. Filter applies to the items inserted or extracted by this cover");
         provider.add("cover.conveyor.item_filter.title", "Item Filter");
-        provider.add("cover.conveyor.ore_dictionary.title", "Ore Dictionary Name");
-        provider.add("cover.conveyor.ore_dictionary.title2", "(use * for wildcard)");
+        multiLang(provider, "cover.conveyor.ore_dictionary.title", "Ore Dictionary Name", "(use * for wildcard)");
         provider.add("cover.robotic_arm.title", "Robotic Arm Settings (%s)");
         provider.add("cover.robotic_arm.transfer_mode.transfer_any", "Transfer Any");
         provider.add("cover.robotic_arm.transfer_mode.transfer_exact", "Supply Exact");
         provider.add("cover.robotic_arm.transfer_mode.keep_exact", "Keep Exact");
-        provider.add("cover.robotic_arm.transfer_mode.description", "§eTransfer Any§r - in this mode, cover will transfer as many items matching its filter as possible./n§eSupply Exact§r - in this mode, cover will supply items in portions specified in item filter slots (or variable under this button for ore dictionary filter). If amount of items is less than portion size, items won't be moved./n§eKeep Exact§r - in this mode, cover will keep specified amount of items in the destination inventory, supplying additional amount of items if required./n§7Tip: left/right click on filter slots to change item amount,  use shift clicking to change amount faster.");
+        multilineLang(provider, "cover.robotic_arm.transfer_mode.description", "§eTransfer Any§r - in this mode, cover will transfer as many items matching its filter as possible.\n§eSupply Exact§r - in this mode, cover will supply items in portions specified in item filter slots (or variable under this button for ore dictionary filter). If amount of items is less than portion size, items won't be moved.\n§eKeep Exact§r - in this mode, cover will keep specified amount of items in the destination inventory, supplying additional amount of items if required.\n§7Tip: left/right click on filter slots to change item amount,  use shift clicking to change amount faster.");
         provider.add("cover.pump.title", "Pump Cover Settings (%s)");
         provider.add("cover.pump.transfer_rate", "%s");
         provider.add("cover.pump.mode.export", "Mode: Export");
@@ -631,13 +626,13 @@ public class LangHandler {
         provider.add("cover.bucket.mode.bucket", "kL/s");
         provider.add("cover.bucket.mode.milli_bucket", "L/s");
         provider.add("cover.fluid_regulator.title", "Fluid Regulator Settings (%s)");
-        provider.add("cover.fluid_regulator.transfer_mode.description", "§eTransfer Any§r - in this mode, cover will transfer as many fluids matching its filter as possible./n§eSupply Exact§r - in this mode, cover will supply fluids in portions specified in the window underneath this button. If amount of fluids is less than portion size, fluids won't be moved./n§eKeep Exact§r - in this mode, cover will keep specified amount of fluids in the destination inventory, supplying additional amount of fluids if required./n§7Tip: shift click will multiply increase/decrease amounts by 10 and ctrl click will multiply by 100.");
+        multilineLang(provider, "cover.fluid_regulator.transfer_mode.description", "§eTransfer Any§r - in this mode, cover will transfer as many fluids matching its filter as possible.\n§eSupply Exact§r - in this mode, cover will supply fluids in portions specified in the window underneath this button. If amount of fluids is less than portion size, fluids won't be moved.\n§eKeep Exact§r - in this mode, cover will keep specified amount of fluids in the destination inventory, supplying additional amount of fluids if required.\n§7Tip: shift click will multiply increase/decrease amounts by 10 and ctrl click will multiply by 100.");
         provider.add("cover.fluid_regulator.supply_exact", "Supply Exact: %s");
         provider.add("cover.fluid_regulator.keep_exact", "Keep Exact: %s");
         provider.add("cover.machine_controller.title", "Machine Controller Settings");
         provider.add("cover.machine_controller.normal", "Normal");
         provider.add("cover.machine_controller.inverted", "Inverted");
-        provider.add("cover.machine_controller.inverted.description", "§eNormal§r - in this mode, the cover will require a signal weaker than the set redstone level to run/n§eInverted§r - in this mode, the cover will require a signal stronger than the set redstone level to run");
+        multilineLang(provider, "cover.machine_controller.inverted.description", "§eNormal§r - in this mode, the cover will require a signal weaker than the set redstone level to run\n§eInverted§r - in this mode, the cover will require a signal stronger than the set redstone level to run");
         provider.add("cover.machine_controller.redstone", "Min Redstone Strength: %d");
         provider.add("cover.machine_controller.mode.machine", "Control Machine");
         provider.add("cover.machine_controller.mode.cover_up", "Control Cover (Top)");
@@ -649,22 +644,22 @@ public class LangHandler {
         provider.add("cover.ender_fluid_link.title", "Ender Fluid Link");
         provider.add("cover.ender_fluid_link.iomode.enabled", "I/O Enabled");
         provider.add("cover.ender_fluid_link.iomode.disabled", "I/O Disabled");
-        provider.add("cover.ender_fluid_link.private.tooltip.disabled", "Switch to private tank mode/nPrivate mode uses the player who originally placed the cover");
+        multilineLang(provider, "cover.ender_fluid_link.private.tooltip.disabled", "Switch to private tank mode\nPrivate mode uses the player who originally placed the cover");
         provider.add("cover.ender_fluid_link.private.tooltip.enabled", "Switch to public tank mode");
-        provider.add("cover.ender_fluid_link.incomplete_hex", "Inputted color is incomplete!/nIt will be applied once complete (all 8 hex digits)/nClosing the gui will lose edits!");
+        multilineLang(provider, "cover.ender_fluid_link.incomplete_hex", "Inputted color is incomplete!\nIt will be applied once complete (all 8 hex digits)\nClosing the gui will lose edits!");
         provider.add("cover.advanced_energy_detector.label", "Advanced Energy Detector");
         provider.add("cover.advanced_energy_detector.min", "Minimum EU");
         provider.add("cover.advanced_energy_detector.max", "Maximum EU");
-        provider.add("cover.advanced_energy_detector.invert_tooltip", "Toggle to invert the redstone logic/nBy default, redstone is emitted when less than the minimum EU, and stops emitting when greater than the max EU");
+        multilineLang(provider, "cover.advanced_energy_detector.invert_tooltip", "Toggle to invert the redstone logic\nBy default, redstone is emitted when less than the minimum EU, and stops emitting when greater than the max EU");
         provider.add("cover.advanced_energy_detector.invert_label", "Inverted:");
         provider.add("cover.advanced_energy_detector.normal", "Normal");
         provider.add("cover.advanced_energy_detector.inverted", "Inverted");
         provider.add("cover.advanced_fluid_detector.label", "Advanced Fluid Detector");
-        provider.add("cover.advanced_fluid_detector.invert_tooltip", "Toggle to invert the redstone logic/nBy default, redstone stops emitting when less than the minimum L of fluid, and starts emitting when greater than the min L of fluid up to the set maximum");
+        multilineLang(provider, "cover.advanced_fluid_detector.invert_tooltip", "Toggle to invert the redstone logic\nBy default, redstone stops emitting when less than the minimum L of fluid, and starts emitting when greater than the min L of fluid up to the set maximum");
         provider.add("cover.advanced_fluid_detector.max", "Maximum Fluid:");
         provider.add("cover.advanced_fluid_detector.min", "Minimum Fluid:");
         provider.add("cover.advanced_item_detector.label", "Advanced Item Detector");
-        provider.add("cover.advanced_item_detector.invert_tooltip", "Toggle to invert the redstone logic/nBy default, redstone stops emitting when less than the minimum amount of items, and starts emitting when greater than the min amount of items up to the set maximum");
+        multilineLang(provider, "cover.advanced_item_detector.invert_tooltip", "Toggle to invert the redstone logic\nBy default, redstone stops emitting when less than the minimum amount of items, and starts emitting when greater than the min amount of items up to the set maximum");
         provider.add("cover.advanced_item_detector.max", "Maximum Items:");
         provider.add("cover.advanced_item_detector.min", "Minimum Items:");
         provider.add("item.nether_quartz.oreNetherrack", "Nether Quartz Ore");
@@ -826,8 +821,7 @@ public class LangHandler {
         provider.add("tile.planks.rubber.name", "Rubber Wood Planks");
         provider.add("tile.planks.treated.name", "Treated Wood Planks");
         provider.add("tile.brittle_charcoal.name", "Brittle Charcoal");
-        provider.add("tile.brittle_charcoal.tooltip.1", "Produced by the Charcoal Pile Igniter.");
-        provider.add("tile.brittle_charcoal.tooltip.2", "Mine this to get Charcoal.");
+        multilineLang(provider, "tile.brittle_charcoal.tooltip", "Produced by the Charcoal Pile Igniter.\nMine this to get Charcoal.");
         provider.add("metaitem.prospector.mode.ores", "§aOre Prospection Mode");
         provider.add("metaitem.prospector.mode.fluid", "§bFluid Prospection Mode");
         provider.add("metaitem.prospector.tooltip.ores", "Scans Ores in a %s Chunk Radius");
@@ -996,12 +990,10 @@ public class LangHandler {
         provider.add("gtceu.machine.locked_safe.malfunctioning", "§cMalfunctioning!");
         provider.add("gtceu.machine.locked_safe.requirements", "§7Replacements required:");
 
-        provider.add("gtceu.machine.workbench.tooltip1", "Better than Forestry");
-        provider.add("gtceu.machine.workbench.tooltip2", "Has Item Storage, Tool Storage, pulls from adjacent Inventories, and saves Recipes.");
+        multilineLang(provider, "gtceu.machine.workbench.tooltip", "Better than Forestry\nHas Item Storage, Tool Storage, pulls from adjacent Inventories, and saves Recipes.");
         provider.add("gtceu.machine.workbench.tab.workbench", "Crafting");
         provider.add("gtceu.machine.workbench.tab.item_list", "Storage");
-        provider.add("gtceu.machine.workbench.storage_note_1", "(Available items from connected");
-        provider.add("gtceu.machine.workbench.storage_note_2", "inventories usable for crafting)");
+        multilineLang(provider, "gtceu.machine.workbench.storage_note", "(Available items from connected\ninventories usable for crafting)");
         provider.add("gtceu.item_list.item_stored", "§7Stored: %d");
         provider.add("gtceu.machine.workbench.tab.crafting", "Crafting");
         provider.add("gtceu.machine.workbench.tab.container", "Container");
@@ -1152,7 +1144,7 @@ public class LangHandler {
         provider.add("gtceu.machine.gas_turbine.tooltip", "Requires flammable Gases");
 
 
-        provider.add("gtceu.machine.magic_energy_absorber.tooltip", "Max Voltage OUT: §a2048 §7(§5EV§7)/nCollects energy from end crystals on naturally generated obsidian pillars in the End within 64 blocks./nEach ender crystal adds 32 EU/t to output/nPlace Dragon Egg on top to amplify output/n/nWhen amplified:/nEach ender crystal adds 128 EU/t");
+        multilineLang(provider, "gtceu.machine.magic_energy_absorber.tooltip", "Max Voltage OUT: §a2048 §7(§5EV§7)\nCollects energy from end crystals on naturally generated obsidian pillars in the End within 64 blocks.\nEach ender crystal adds 32 EU/t to output\nPlace Dragon Egg on top to amplify output\n\nWhen amplified:\nEach ender crystal adds 128 EU/t");
 
 
         provider.add("gtceu.machine.block_breaker.tooltip", "Mines block on front face and collects its drops");
@@ -2463,39 +2455,31 @@ public class LangHandler {
         provider.add("gtceu.machine.fluid_drilling_rig.production", "§eProduction Multiplier: §f%dx, %fx overclocked");
         provider.add("gtceu.machine.fluid_drilling_rig.depletion", "§bDepletion Rate: §f%s%%");
 
-        provider.add("gtceu.machine.cleanroom.tooltip.1", "Place machines inside to run cleanroom recipes.");
-        provider.add("gtceu.machine.cleanroom.tooltip.2", "Uses §f30 EU/t§7 when dirty, §f4 EU/t§7 when clean.");
-        provider.add("gtceu.machine.cleanroom.tooltip.3", "Overclocking increases cleaning per cycle.");
-        provider.add("gtceu.machine.cleanroom.tooltip.4", "§bSize: §f5x5x5 to 15x15x15");
+        multiLang(provider, "gtceu.machine.cleanroom.tooltip",
+                "Place machines inside to run cleanroom recipes.",
+                "Uses §f30 EU/t§7 when dirty, §f4 EU/t§7 when clean.",
+                "Overclocking increases cleaning per cycle.",
+                "§bSize: §f5x5x5 to 15x15x15",
+                "Requires §fFilter Casings §7in the ceiling, excluding the edges.",
+                "Accepts up to §f4 Doors§7! Remains clean when the door is open.",
+                "Generators, Mufflers, Drills, and Primitive Machines are too dirty for the cleanroom!",
+                "Send power through §fHulls §7or §fDiodes §7in the walls.");
         provider.add("gtceu.machine.cleanroom.tooltip.hold_ctrl", "Hold CTRL to show additional Structure Information");
-        provider.add("gtceu.machine.cleanroom.tooltip.5", "Requires §fFilter Casings §7in the ceiling, excluding the edges.");
-        provider.add("gtceu.machine.cleanroom.tooltip.6", "Accepts up to §f4 Doors§7! Remains clean when the door is open.");
-        provider.add("gtceu.machine.cleanroom.tooltip.7", "Generators, Mufflers, Drills, and Primitive Machines are too dirty for the cleanroom!");
-        provider.add("gtceu.machine.cleanroom.tooltip.8", "Send power through §fHulls §7or §fDiodes §7in the walls.");
-        provider.add("gtceu.machine.cleanroom.tooltip.9", "Send items and fluids with §fPassthrough Hatches §7in the walls.");
         provider.add("gtceu.machine.cleanroom.tooltip.ae2.channels", "Send up to §f8 AE2 Channels §7through §fHulls§7 in the walls.");
         provider.add("gtceu.machine.cleanroom.tooltip.ae2.no_channels", "Send §aAE2 Networks§7 through §fHulls§7 in the walls.");
         provider.add("gtceu.multiblock.cleanroom.clean_state", "Status: §aCLEAN");
         provider.add("gtceu.multiblock.cleanroom.dirty_state", "Status: §4CONTAMINATED");
         provider.add("gtceu.multiblock.cleanroom.clean_amount", "Cleanliness: §a%s%%");
 
-        provider.add("gtceu.machine.charcoal_pile.tooltip.1", "Turns Logs into §aCharcoal§7 when §cignited§7.");
-        provider.add("gtceu.machine.charcoal_pile.tooltip.2", "Right Click with fire-starting items to start.");
-        provider.add("gtceu.machine.charcoal_pile.tooltip.3", "Pyrolysis occurs in up to a §b9x4x9§7 space beneath.");
-        provider.add("gtceu.machine.charcoal_pile.tooltip.4", "Logs must be not be exposed to §eAir§7!");
-        provider.add("gtceu.multiblock.charcoal_pile.description", "Converts logs into Brittle Charcoal in a 9x4x9 area beneath it.\n\nThe floor of the pit must be made from bricks, and any ground-related block can be used for the walls and roof. No air can be inside the pit.\n\nLarger pits take more time to process logs, but are more efficient.");
+        multiLang(provider, "gtceu.machine.charcoal_pile.tooltip", "Turns Logs into §aCharcoal§7 when §cignited§7.", "Right Click with fire-starting items to start.", "Pyrolysis occurs in up to a §b9x4x9§7 space beneath.", "Logs must be not be exposed to §eAir§7!");
+        multilineLang(provider, "gtceu.multiblock.charcoal_pile.description", "Converts logs into Brittle Charcoal in a 9x4x9 area beneath it.\n\nThe floor of the pit must be made from bricks, and any ground-related block can be used for the walls and roof. No air can be inside the pit.\n\nLarger pits take more time to process logs, but are more efficient.");
 
         provider.add("gtceu.multiblock.central_monitor.low_power", "Low Power");
         provider.add("gtceu.multiblock.central_monitor.height", "Screen Height:");
         provider.add("gtceu.multiblock.central_monitor.width", "Screen Width: %d");
         provider.add("gtceu.multiblock.central_monitor.height_modify", "Modify Height: %d");
-        provider.add("gtceu.multiblock.central_monitor.tooltip.1", "This is a machine that monitors machines proxied by the Digital Interface Cover. You can easily monitor the Fluids, Items, Energy, and States of machines proxied in Energy Network.");
-        provider.add("gtceu.multiblock.central_monitor.tooltip.2", "You can build the central monitor screen from 3X2 to %dX%d (width X height).");
-        provider.add("gtceu.multiblock.central_monitor.tooltip.3", "The default height is 3. You can adjust the screen height in the GUI before the structure is formed.");
-        provider.add("gtceu.multiblock.central_monitor.tooltip.4", "Energy consumption: %d EU/s for each screen.");
-        provider.add("gtceu.multiblock.monitor_screen.tooltip.1", "The GUI can be opened with a right-click of a screwdriver.");
-        provider.add("gtceu.multiblock.monitor_screen.tooltip.2", "The proxy mode of Digital Interface Cover can delegate machines' capabilities and GUI. (Yes, you can connect pipes directly on the screen.)");
-        provider.add("gtceu.multiblock.monitor_screen.tooltip.3", "The screen also supports plugins.");
+        multiLang(provider, "gtceu.multiblock.central_monitor.tooltip", "This is a machine that monitors machines proxied by the Digital Interface Cover. You can easily monitor the Fluids, Items, Energy, and States of machines proxied in Energy Network.", "You can build the central monitor screen from 3X2 to %dX%d (width X height).", "The default height is 3. You can adjust the screen height in the GUI before the structure is formed.", "Energy consumption: %d EU/s for each screen.");
+        multiLang(provider, "gtceu.multiblock.monitor_screen.tooltip", "The GUI can be opened with a right-click of a screwdriver.", "The proxy mode of Digital Interface Cover can delegate machines' capabilities and GUI. (Yes, you can connect pipes directly on the screen.)", "The screen also supports plugins.");
         provider.add("metaitem.cover.digital.mode.proxy.disabled", "Click to enable Proxy Mode");
         provider.add("metaitem.cover.digital.mode.proxy.enabled", "Proxy Mode enabled");
         provider.add("metaitem.cover.digital.mode.machine.disabled", "Click to enable Machine Mode");
@@ -2573,18 +2557,16 @@ public class LangHandler {
         provider.add("gtceu.machine.energy_hatch.output_hi_amp.tooltip", "Multiple Ampere Energy Output for Multiblocks");
 
 
-        provider.add("gtceu.machine.rotor_holder.tooltip1", "Rotor Holder for Multiblocks");
-        provider.add("gtceu.machine.rotor_holder.tooltip2", "Holds Rotor in place so it will not fly away");
+        multiLang(provider, "gtceu.machine.rotor_holder.tooltip", "Rotor Holder for Multiblocks", "Holds Rotor in place so it will not fly away");
 
 
         provider.add("gtceu.machine.maintenance_hatch.tooltip", "For maintaining Multiblocks");
 
-        provider.add("gtceu.machine.maintenance_hatch_configurable.tooltip", "For finer control over Multiblocks/nStarts with no Maintenance problems!");
+        multilineLang(provider, "gtceu.machine.maintenance_hatch_configurable.tooltip", "For finer control over Multiblocks\nStarts with no Maintenance problems!");
 
         provider.add("gtceu.machine.maintenance_hatch_full_auto.tooltip", "For automatically maintaining Multiblocks");
 
-        provider.add("gtceu.machine.maintenance_hatch_cleanroom_auto.tooltip.1", "For automatically maintaining Multiblocks with Cleaning!");
-        provider.add("gtceu.machine.maintenance_hatch.cleanroom_auto.tooltip.2", "Cleans as:");
+        multiLang(provider, "gtceu.machine.maintenance_hatch_cleanroom_auto.tooltip", "For automatically maintaining Multiblocks with Cleaning!", "Cleans as:");
         provider.add("gtceu.machine.maintenance_hatch_tool_slot.tooltip", "Click slot with empty hand when required tools are in inventory to solve problems");
         provider.add("gtceu.machine.maintenance_hatch_tape_slot.tooltip", "Insert Tape to prevent problems");
         provider.add("gtceu.maintenance.configurable_duration", "Duration: %fx");
@@ -2593,8 +2575,7 @@ public class LangHandler {
         provider.add("gtceu.maintenance.configurable_time", "Time: %fx");
         provider.add("gtceu.maintenance.configurable_time.unchanged_description", "Maintenance problems will occur at normal rate. Change configuration to update.");
         provider.add("gtceu.maintenance.configurable_time.changed_description", "Maintenance problems will occur at %fx the normal rate.");
-        provider.add("gtceu.machine.muffler_hatch.tooltip1", "Recovers waste from machines");
-        provider.add("gtceu.machine.muffler_hatch.tooltip2", "DO NOT OBSTRUCT THE OUTPUT!");
+        multiLang(provider, "gtceu.machine.muffler_hatch.tooltip", "Recovers waste from machines", "DO NOT OBSTRUCT THE OUTPUT!");
         provider.add("gtceu.muffler.recovery_tooltip", "§bRecovery Chance: §f%d%%");
         provider.add("gtceu.machine.pump_hatch.tooltip", "Primitive Fluid Output for Water Pump");
         provider.add("gtceu.machine.machine_hatch.locked", "Machine Interface Locked");
@@ -2687,9 +2668,9 @@ public class LangHandler {
         provider.add("gtceu.gui.fluid_amount", "Fluid Amount:");
         provider.add("gtceu.gui.toggle_view.disabled", "Toggle View (Fluids)");
         provider.add("gtceu.gui.toggle_view.enabled", "Toggle View (Items)");
-        provider.add("gtceu.gui.overclock.enabled", "Overclocking Enabled./nClick to Disable");
-        provider.add("gtceu.gui.overclock.disabled", "Overclocking Disabled./nClick to Enable");
-        provider.add("gtceu.gui.overclock.description", "Overclock Button/n§7Recipes can overclock up to the set tier");
+        multilineLang(provider, "gtceu.gui.overclock.enabled", "Overclocking Enabled.\nClick to Disable");
+        multilineLang(provider, "gtceu.gui.overclock.disabled", "Overclocking Disabled.\nClick to Enable");
+        multilineLang(provider, "gtceu.gui.overclock.description", "Overclock Button\n§7Recipes can overclock up to the set tier");
         provider.add("gtceu.gui.overclock.off", "X");
         provider.add("gtceu.gui.sort", "Sort");
         provider.add("gtceu.gui.fluid_auto_output.tooltip.enabled", "Fluid Auto-Output Enabled");
@@ -2700,8 +2681,8 @@ public class LangHandler {
         provider.add("gtceu.gui.item_auto_output.tooltip.disabled", "Item Auto-Output Disabled");
         provider.add("gtceu.gui.item_auto_input.tooltip.enabled", "Item Auto-Output Enabled");
         provider.add("gtceu.gui.item_auto_input.tooltip.disabled", "Item Auto-Output Disabled");
-        provider.add("gtceu.gui.charger_slot.tooltip", "§fCharger Slot§r/n§7Draws power from %s batteries§r/n§7Charges %s tools and batteries");
-        provider.add("gtceu.gui.configurator_slot.tooltip", "§fConfigurator Slot§r/n§7Place a §6Programmed Circuit§7 in this slot to/n§7change its configured value./n§7Hold §6Shift§7 when clicking buttons to change by §65./n§aA Programmed Circuit in this slot is also valid for recipe inputs.§r");
+        multilineLang(provider, "gtceu.gui.charger_slot.tooltip", "§fCharger Slot§r\n§7Draws power from %s batteries§r\n§7Charges %s tools and batteries");
+        multilineLang(provider, "gtceu.gui.configurator_slot.tooltip", "§fConfigurator Slot§r\n§7Place a §6Programmed Circuit§7 in this slot to\n§7change its configured value.\n§7Hold §6Shift§7 when clicking buttons to change by §65.\n§aA Programmed Circuit in this slot is also valid for recipe inputs.§r");
         provider.add("gtceu.gui.fluid_lock.tooltip.enabled", "Fluid Locking Enabled");
         provider.add("gtceu.gui.fluid_lock.tooltip.disabled", "Fluid Locking Disabled");
         provider.add("gtceu.gui.fluid_voiding_partial.tooltip.enabled", "Fluid Voiding Enabled");
@@ -2710,29 +2691,24 @@ public class LangHandler {
         provider.add("gtceu.gui.item_lock.tooltip.disabled", "Item Locking Disabled");
         provider.add("gtceu.gui.item_voiding_partial.tooltip.enabled", "Item Voiding Enabled");
         provider.add("gtceu.gui.item_voiding_partial.tooltip.disabled", "Item Voiding Disabled");
-        provider.add("gtceu.gui.silktouch.enabled", "Silk Touch Enabled: Click to Disable./n§7Switching requires an idle machine.");
-        provider.add("gtceu.gui.silktouch.disabled", "Silk Touch Disabled: Click to Enable./n§7Switching requires an idle machine.");
-        provider.add("gtceu.gui.chunkmode.enabled", "Chunk Mode Enabled: Click to Disable./n§7Switching requires an idle machine.");
-        provider.add("gtceu.gui.chunkmode.disabled", "Chunk Mode Disabled: Click to Enable./n§7Switching requires an idle machine.");
-        provider.add("gtceu.gui.multiblock_item_voiding", "Voiding Mode/n§7Voiding §6Items");
-        provider.add("gtceu.gui.multiblock_fluid_voiding", "Voiding Mode/n§7Voiding §9Fluids");
-        provider.add("gtceu.gui.multiblock_item_fluid_voiding", "Voiding Mode/n§7Voiding §6Items §7and §9Fluids");
-        provider.add("gtceu.gui.multiblock_no_voiding", "Voiding Mode/n§7Voiding Nothing");
+        multilineLang(provider, "gtceu.gui.silktouch.enabled", "Silk Touch Enabled: Click to Disable.\n§7Switching requires an idle machine.");
+        multilineLang(provider, "gtceu.gui.silktouch.disabled", "Silk Touch Disabled: Click to Enable.\n§7Switching requires an idle machine.");
+        multilineLang(provider, "gtceu.gui.chunkmode.enabled", "Chunk Mode Enabled: Click to Disable.\n§7Switching requires an idle machine.");
+        multilineLang(provider, "gtceu.gui.chunkmode.disabled", "Chunk Mode Disabled: Click to Enable.\n§7Switching requires an idle machine.");
+        multilineLang(provider, "gtceu.gui.multiblock_item_voiding", "Voiding Mode\n§7Voiding §6Items");
+        multilineLang(provider, "gtceu.gui.multiblock_fluid_voiding", "Voiding Mode\n§7Voiding §9Fluids");
+        multilineLang(provider, "gtceu.gui.multiblock_item_fluid_voiding", "Voiding Mode\n§7Voiding §6Items §7and §9Fluids");
+        multilineLang(provider, "gtceu.gui.multiblock_no_voiding", "Voiding Mode\n§7Voiding Nothing");
         provider.add("ore.spawnlocation.name", "Ore Spawn Information");
-        provider.add("gtceu.jei.ore.surface_rock_1", "Surface Rocks with this material denote vein spawn locations.");
-        provider.add("gtceu.jei.ore.surface_rock_2", "They can be broken for 3 Tiny Piles of the dust, with Fortune giving a bonus.");
+        multiLang(provider, "gtceu.jei.ore.surface_rock", "Surface Rocks with this material denote vein spawn locations.", "They can be broken for 3 Tiny Piles of the dust, with Fortune giving a bonus.");
         provider.add("gtceu.jei.ore.biome_weighting_title", "§dModified Biome Total Weights:");
         provider.add("gtceu.jei.ore.biome_weighting", "§d%s Weight: §3%d");
         provider.add("gtceu.jei.ore.biome_weighting_no_spawn", "§d%s Weight: §cCannot Spawn");
         provider.add("gtceu.jei.ore.ore_weight", "Weight in vein: %d%%");
-        provider.add("gtceu.jei.ore.primary_1", "Top Ore");
-        provider.add("gtceu.jei.ore.primary_2", "Spawns in the top %d layers of the vein");
-        provider.add("gtceu.jei.ore.secondary_1", "Bottom Ore");
-        provider.add("gtceu.jei.ore.secondary_2", "Spawns in the bottom %d layers of the vein");
-        provider.add("gtceu.jei.ore.between_1", "Between Ore");
-        provider.add("gtceu.jei.ore.between_2", "Spawns in the middle %d layers of the vein, with other ores");
-        provider.add("gtceu.jei.ore.sporadic_1", "Sporadic Ore");
-        provider.add("gtceu.jei.ore.sporadic_2", "Spawns anywhere in the vein");
+        multiLang(provider, "gtceu.jei.ore.primary", "Top Ore", "Spawns in the top %d layers of the vein");
+        multiLang(provider, "gtceu.jei.ore.secondary", "Bottom Ore", "Spawns in the bottom %d layers of the vein");
+        multiLang(provider, "gtceu.jei.ore.between", "Between Ore", "Spawns in the middle %d layers of the vein, with other ores");
+        multiLang(provider, "gtceu.jei.ore.sporadic", "Sporadic Ore", "Spawns anywhere in the vein");
         provider.add("fluid.spawnlocation.name", "Fluid Vein Information");
         provider.add("gtceu.jei.fluid.vein_weight", "Vein Weight: %d");
         provider.add("gtceu.jei.fluid.min_yield", "Minimum Yield: %d");
@@ -2801,10 +2777,7 @@ public class LangHandler {
         provider.add("gtceu.multiblock.pattern.error", "Expected components (%s) at (%s).");
         provider.add("gtceu.multiblock.pattern.error.limited_exact", "§cExactly: %d§r");
         provider.add("gtceu.multiblock.pattern.error.limited_within", "§cBetween %d and %d§r");
-        provider.add("gtceu.multiblock.pattern.error.limited.0", "§cMaximum: %d§r");
-        provider.add("gtceu.multiblock.pattern.error.limited.1", "§cMinimum: %d§r");
-        provider.add("gtceu.multiblock.pattern.error.limited.2", "§cMaximum: %d per layer§r");
-        provider.add("gtceu.multiblock.pattern.error.limited.3", "§cMinimum: %d per layer§r");
+        multiLang(provider, "gtceu.multiblock.pattern.error.limited", "§cMaximum: %d§r", "§cMinimum: %d§r", "§cMaximum: %d per layer§r", "§cMinimum: %d per layer§r");
         provider.add("gtceu.multiblock.pattern.error.coils", "§cAll heating coils must be the same§r");
         provider.add("gtceu.multiblock.pattern.error.filters", "§cAll filters must be the same§r");
         provider.add("gtceu.multiblock.pattern.clear_amount_1", "§6Must have a clear 1x1x1 space in front§r");
@@ -3010,31 +2983,28 @@ public class LangHandler {
         provider.add("terminal.recipe_chart.jei", "JEI Focus");
         provider.add("terminal.recipe_chart.tier", "Tier:");
         provider.add("terminal.recipe_chart.ratio", "Weight");
-        provider.add("terminal.recipe_chart.tier.0", "cache of 5 pages");
-        provider.add("terminal.recipe_chart.tier.1", "cache of 6 pages");
-        provider.add("terminal.recipe_chart.tier.2", "cache of 7 pages");
-        provider.add("terminal.recipe_chart.tier.3", "cache of 8 pages");
+        multiLang(provider, "terminal.recipe_chart.tier", IntStream.of(4)
+                .map(i -> i + 5)
+                .mapToObj(Integer::toString)
+                .map(i -> "cache of " + i + " pages")
+                .toArray(String[]::new));
         provider.add("terminal.prospector.vis_mode", "Switch color mode");
         provider.add("terminal.prospector.list", "All Resources");
         provider.add("terminal.prospector.ore", "Ore Data");
         provider.add("terminal.prospector.fluid", "Fluid Deposit Data");
         provider.add("terminal.prospector.fluid.info", "%s %s - %s%%");
         provider.add("terminal.ore_prospector.description", "Hate the scanner toy? Don't want to run around looking for ores? Come and look at it.");
-        provider.add("terminal.ore_prospector.tier.0", "radius size 1");
-        provider.add("terminal.ore_prospector.tier.1", "radius size 2");
-        provider.add("terminal.ore_prospector.tier.2", "radius size 3");
-        provider.add("terminal.ore_prospector.tier.3", "radius size 4");
-        provider.add("terminal.ore_prospector.tier.4", "radius size 5");
-        provider.add("terminal.ore_prospector.tier.5", "radius size 6");
-        provider.add("terminal.ore_prospector.tier.6", "radius size 7");
+        multiLang(provider, "terminal.ore_prospector.tier", IntStream.of(6)
+                .map(i -> i + 1)
+                .mapToObj(Integer::toString)
+                .map(i -> "radius size " + i)
+                .toArray(String[]::new));
         provider.add("terminal.fluid_prospector.description", "You know, there's gold in bedrocks.");
-        provider.add("terminal.fluid_prospector.tier.0", "radius size 1");
-        provider.add("terminal.fluid_prospector.tier.1", "radius size 2");
-        provider.add("terminal.fluid_prospector.tier.2", "radius size 3");
-        provider.add("terminal.fluid_prospector.tier.3", "radius size 4");
-        provider.add("terminal.fluid_prospector.tier.4", "radius size 5");
-        provider.add("terminal.fluid_prospector.tier.5", "radius size 6");
-        provider.add("terminal.fluid_prospector.tier.6", "radius size 7");
+        multiLang(provider, "terminal.fluid_prospector.tier", IntStream.of(6)
+                .map(i -> i + 1)
+                .mapToObj(Integer::toString)
+                .map(i -> "radius size " + i)
+                .toArray(String[]::new));
         provider.add("terminal.console.description", "A tool to help you free your inventory, it's time to say goodbye to wrench, screwdriver, hammer, and crowbar.");
         provider.add("terminal.console.notice", "Please shift-right-click a machine when opening the terminal.");
         provider.add("terminal.console.front", "Set as front");
@@ -3061,17 +3031,14 @@ public class LangHandler {
         provider.add("terminal.store.miss", "Requires %s (%d).");
         provider.add("terminal.ar.open", "Open AR");
         provider.add("terminal.multiblock_ar.description", "Remember the §cFreedom Wrench§r?  Unfortunately, it it's gone. It doesn't matter, we have a new technology now. This app can also help you build your multi-block machine.");
-        provider.add("terminal.multiblock_ar.tier.0", "AR Camera");
-        provider.add("terminal.multiblock_ar.tier.1", "3D Builder");
+        multiLang(provider, "terminal.multiblock_ar.tier", "AR Camera", "3D Builder");
         provider.add("terminal.multiblock_ar.unlock", "Unlock this mode after the upgrade");
         provider.add("terminal.multiblock_ar.builder.hover", "3D Builder");
         provider.add("terminal.multiblock_ar.builder.auto", "Automatic Build");
         provider.add("terminal.multiblock_ar.builder.place", "Place block");
         provider.add("terminal.multiblock_ar.builder.debug", "Debug");
-        provider.add("terminal.world_prospector.description", "\"I wish I had X-ray vision.\"\n\"Sir, I'm sorry, but we don't sell superpowers. You should trust the science.\"");
-        provider.add("terminal.world_prospector.tier.0", "Radius 15m (1 slot)");
-        provider.add("terminal.world_prospector.tier.1", "Radius 30m (2 slot)");
-        provider.add("terminal.world_prospector.tier.2", "Radius 60m (4 slot)");
+        multilineLang(provider, "terminal.world_prospector.description", "\"I wish I had X-ray vision.\"\n\"Sir, I'm sorry, but we don't sell superpowers. You should trust the science.\"");
+        multiLang(provider, "terminal.world_prospector.tier", "Radius 15m (1 slot)", "Radius 30m (2 slot)", "Radius 60m (4 slot)");
         provider.add("terminal.world_prospector.radius", "Radius %sm");
         provider.add("terminal.world_prospector.reference", "Select a reference");
         provider.add("terminal.world_prospector.color", "Select box color");
@@ -3084,23 +3051,22 @@ public class LangHandler {
         provider.add("terminal.maze.play", "Play");
         provider.add("terminal.maze.continue", "Continue");
         provider.add("terminal.maze.pause", "Game Paused");
-        provider.add("terminal.maze.death.1", "Oh no! You were eaten by the Minotaur!");
-        provider.add("terminal.maze.death.2", "You got through %s mazes before losing.");
+        multiLang(provider, "terminal.maze.death", "Oh no! You were eaten by the Minotaur!", "You got through %s mazes before losing.", "Try again?");
         provider.add("terminal.maze.death.3", "Try again?");
         provider.add("terminal.maze.retry", "Retry");
         provider.add("terminal.minesweeper.time", "%s seconds elapsed");
         provider.add("terminal.minesweeper.lose", "You lost. Game will restart in %s seconds.");
-        provider.add("terminal.minesweeper.win.1", "You won in %s seconds!");
-        provider.add("terminal.minesweeper.win.2", "Game will restart in %s");
+        multiLang(provider, "terminal.minesweeper.win", "You won in %s seconds!", "Game will restart in %s");
         provider.add("terminal.cape_selector.empty", "It looks like you haven't unlocked any capes yet!");
         provider.add("terminal.cape_selector.select", "Click on an unlocked cape to select it!");
         provider.add("terminal.cape_selector.tip", "You can get these from high-level advancements.");
         provider.add("metaitem.cover.digital.title.mode", "Mode:");
         provider.add("metaitem.cover.digital.title.spin", "Spin:");
-        provider.add("metaitem.cover.digital.wireless.tooltip.1", "§fWirelessly§7 connects machines to the §fCentral Monitor§7 as §fCover§7.");
-        provider.add("metaitem.cover.digital.wireless.tooltip.2", "§fRight Click§7 on the §fCentral Monitor§7 to remotely bind to it.");
-        provider.add("metaitem.cover.digital.wireless.tooltip.3", "§fSneak Right Click§7 to remove the current binding.");
-        provider.add("metaitem.cover.digital.wireless.tooltip.4", "§aBinding: §f%s");
+        multiLang(provider, "metaitem.cover.digital.wireless.tooltip",
+                "§fWirelessly§7 connects machines to the §fCentral Monitor§7 as §fCover§7.",
+                "§fRight Click§7 on the §fCentral Monitor§7 to remotely bind to it.",
+                "§fSneak Right Click§7 to remove the current binding.",
+                "§aBinding: §f%s");
         provider.add("monitor.gui.title.back", "Back");
         provider.add("monitor.gui.title.scale", "Scale:");
         provider.add("monitor.gui.title.argb", "ARGB:");
@@ -3116,9 +3082,143 @@ public class LangHandler {
         provider.add("gtceu.debug.f3_h.enabled", "GregTech has modified the debug info! For Developers: enable the misc:debug config option in the GregTech config file to see more");
     }
 
-    private static void casingLang(RegistrateLangProvider provider, VariantBlock<?> block) {
-        for (var type : block.getVariantValues()) {
-            provider.add(block.getDescriptionId() + "." + type.getSerializedName(), toEnglishName(type.getSerializedName()));
+    /**
+     * Returns the sub-key consisting of the given key plus the given index.<br>
+     * E.g.,<br>
+     * <pre>
+     * <code>getSubKey("terminal.fluid_prospector.tier", 0)</code></pre>
+     * returns the <code>String</code>:
+     * <pre>
+     * <code>
+     * "terminal.fluid_prospector.tier.0"</code></pre>
+     * @param key Base key of the sub-key.
+     * @param index Index of the sub-key.
+     * @return Sub-key consisting of key and index.
+     */
+    private static String getSubKey(String key, int index) {
+        return key + "." + index;
+    }
+
+    /**
+     * Registers multiple values under the same key with a given provider.<br><br>
+     * For example, a cumbersome way to add translations would be the following:<br>
+     * <pre>
+     * <code>provider.add("terminal.fluid_prospector.tier.0", "radius size 1");
+     * provider.add("terminal.fluid_prospector.tier.1", "radius size 2");
+     * provider.add("terminal.fluid_prospector.tier.2", "radius size 3");</code></pre>
+     * Instead, <code>multiLang</code> can be used for the same result:
+     * <pre>
+     * <code>multiLang(provider, "terminal.fluid_prospector.tier", "radius size 1", "radius size 2", "radius size 3");</code></pre>
+     * In situations requiring a large number of generated translations, the following could be used instead, which generates translations for 100 tiers:
+     * <pre>
+     * <code>multiLang(provider, "terminal.fluid_prospector.tier", IntStream.of(100)
+     *                 .map(i -> i + 1)
+     *                 .mapToObj(Integer::toString)
+     *                 .map(i -> "radius size " + i)
+     *                 .toArray(String[]::new));</code></pre>
+     * @param provider The provider to add to.
+     * @param key Base key of the key-value-pairs. The real key for each translation will be appended by ".0" for the first, ".1" for the second, etc. This ensures that the keys are unique.
+     * @param values All translation values.
+     */
+    private static void multiLang(RegistrateLangProvider provider, String key, String... values) {
+        for (var i = 0; i < values.length; i++) {
+            provider.add(getSubKey(key, i), values[i]);
         }
+    }
+
+    /**
+     * Gets all translation components from a multi lang's sub-keys.<br>
+     * E.g., given a multi lang:
+     * <pre>
+     * <code>multiLang(provider, "terminal.fluid_prospector.tier", "radius size 1", "radius size 2", "radius size 3");</code></pre>
+     * The following code can be used to print out the translations:
+     * <pre>
+     * <code>for (var component : getMultiLang("terminal.fluid_prospector.tier")) {
+     *     System.out.println(component.getString());
+     * }</code></pre>
+     * Result:
+     * <pre>
+     * <code>radius size 1
+     * radius size 2
+     * radius size 3</code></pre>
+     * @param key Base key of the multi lang. E.g. "terminal.fluid_prospector.tier".
+     * @return Returns all translation components from a multi lang's sub-keys
+     */
+    public static MutableComponent[] getMultiLang(String key) {
+        var outputKeys = new ArrayList<String>();
+        var i = 0;
+        var next = getSubKey(key, i);
+        while (LocalizationUtils.exist(next)) {
+            outputKeys.add(next);
+            next = getSubKey(key, ++i);
+        }
+        return outputKeys.stream().map(Component::translatable).toArray(MutableComponent[]::new);
+    }
+
+    /**
+     * Gets all translation components from a multi lang's sub-keys. Supports additional arguments for the translation components.<br>
+     * E.g., given a multi lang:
+     * <pre>
+     * <code>multiLang(provider, "terminal.fluid_prospector.tier", "radius size 1", "radius size 2", "radius size 3");</code></pre>
+     * The following code can be used to print out the translations:
+     * <pre>
+     * <code>for (var component : getMultiLang("terminal.fluid_prospector.tier")) {
+     *     System.out.println(component.getString());
+     * }</code></pre>
+     * Result:
+     * <pre>
+     * <code>radius size 1
+     * radius size 2
+     * radius size 3</code></pre>
+     * @param key Base key of the multi lang. E.g. "terminal.fluid_prospector.tier".
+     * @return Returns all translation components from a multi lang's sub-keys.
+     */
+    public static MutableComponent[] getMultiLang(String key, Object... args) {
+        var outputKeys = new ArrayList<String>();
+        var i = 0;
+        var next = getSubKey(key, i);
+        while (LocalizationUtils.exist(next)) {
+            outputKeys.add(next);
+            next = getSubKey(key, ++i);
+        }
+        return outputKeys.stream().map(k -> Component.translatable(k, args)).toArray(MutableComponent[]::new);
+    }
+
+    /**
+     * Gets a single translation from a multi lang.
+     * @param key Base key of the multi lang. E.g. "gtceu.gui.overclock.enabled".
+     * @param index Index of the single translation. E.g. 3 would return "gtceu.gui.overclock.enabled.3".
+     * @return Returns a single translation from a multi lang.
+     */
+    public static MutableComponent getFromMultiLang(String key, int index) {
+        return Component.translatable(getSubKey(key, index));
+    }
+
+    /**
+     * Gets a single translation from a multi lang. Supports additional arguments for the translation component.
+     * @param key Base key of the multi lang. E.g. "gtceu.gui.overclock.enabled".
+     * @param index Index of the single translation. E.g. 3 would return "gtceu.gui.overclock.enabled.3".
+     * @return Returns a single translation from a multi lang.
+     */
+    public static MutableComponent getFromMultiLang(String key, int index, Object... args) {
+        return Component.translatable(getSubKey(key, index), args);
+    }
+
+    /**
+     * Adds one key-value-pair to the given lang provider per line in the given multiline (a multiline is a String containing newline characters).<br>
+     * Example:
+     * <pre>
+     * <code>multilineLang(provider, "gtceu.gui.overclock.enabled", "Overclocking Enabled.\nClick to Disable");</code></pre>
+     * This results in the following translations:<br>
+     * <pre>
+     * <code>"gtceu.gui.overclock.enabled.0": "Overclocking Enabled.",
+     * "gtceu.gui.overclock.enabled.1": "Click to Disable",</code></pre>
+     * @param provider The provider to add to.
+     * @param key Base key of the key-value-pair. The real key for each line will be appended by ".0" for the first line, ".1" for the second, etc. This ensures that the keys are unique.
+     * @param multiline The multiline string. It is a multiline because it contains at least one newline character '\n'.
+     */
+    private static void multilineLang(RegistrateLangProvider provider, String key, String multiline) {
+        var lines = multiline.split("\n");
+        multiLang(provider, key, lines);
     }
 }

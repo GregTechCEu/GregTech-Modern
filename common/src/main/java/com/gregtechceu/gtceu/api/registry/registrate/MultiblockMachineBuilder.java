@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.registry.registrate;
 
 import com.google.common.base.Suppliers;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.data.RotationState;
@@ -26,16 +27,14 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.*;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
+import java.util.function.*;
 
 /**
  * @author KilaBash
@@ -169,6 +168,37 @@ public class MultiblockMachineBuilder extends MachineBuilder {
     public MultiblockMachineBuilder workableCasingRenderer(ResourceLocation baseCasing, ResourceLocation overlayModel, boolean tint) {
         return (MultiblockMachineBuilder) super.workableCasingRenderer(baseCasing, overlayModel, tint);
     }
+
+    @Override
+    public MultiblockMachineBuilder tooltipBuilder(BiConsumer<ItemStack, List<Component>> tooltipBuilder) {
+        return (MultiblockMachineBuilder) super.tooltipBuilder(tooltipBuilder);
+    }
+
+    @Override
+    public MultiblockMachineBuilder connectedID(Supplier<ResourceLocation> connectedID) {
+        return (MultiblockMachineBuilder) super.connectedID(connectedID);
+    }
+
+    @Override
+    public MultiblockMachineBuilder connectBlock(Supplier<? extends Block> block) {
+        return (MultiblockMachineBuilder) super.connectBlock(block);
+    }
+
+    @Override
+    public MultiblockMachineBuilder langValue(String langValue) {
+        return (MultiblockMachineBuilder) super.langValue(langValue);
+    }
+
+    @Override
+    public MultiblockMachineBuilder overlaySteamHullRenderer(String name) {
+        return (MultiblockMachineBuilder) super.overlaySteamHullRenderer(name);
+    }
+
+    @Override
+    public MultiblockMachineBuilder workableSteamHullRenderer(boolean isHighPressure, ResourceLocation workableModel) {
+        return (MultiblockMachineBuilder) super.workableSteamHullRenderer(isHighPressure, workableModel);
+    }
+
     @Override
     public MultiblockMachineBuilder tooltips(Component... components) {
         return (MultiblockMachineBuilder) super.tooltips(components);

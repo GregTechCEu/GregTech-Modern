@@ -18,7 +18,6 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
@@ -62,6 +61,8 @@ public class MachineDefinition implements Supplier<MetaMachineBlock> {
     private final Map<Direction, VoxelShape> cache = new EnumMap<>(Direction.class);
     @Getter @Setter
     private BiConsumer<ItemStack, List<Component>> tooltipBuilder;
+    @Getter @Setter
+    private Supplier<ResourceLocation> connectedID;
 
     protected MachineDefinition(ResourceLocation id) {
         this.id = id;

@@ -8,14 +8,7 @@
       "item": "gtceu:field.generator.zpm"
     },
     "H": {
-      "base": {
-        "item": "gtceu:hermetic_casing"
-      },
-      "fabric:type": "fabric:nbt",
-      "nbt": {
-        "variant": "ultimate_voltage"
-      },
-      "strict": true
+      "item": "gtceu:hermetic_casing_uv"
     },
     "P": {
       "tag": "c:plates/dense/darmstadtium"

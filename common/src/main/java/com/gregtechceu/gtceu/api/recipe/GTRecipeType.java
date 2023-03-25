@@ -262,7 +262,7 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
     //////////////////////////////////////
 
     public Size getJEISize() {
-        return new Size(176, 93 + dataInfos.size() * 10);
+        return new Size(176, 120 + dataInfos.size() * 10);
     }
 
     /**

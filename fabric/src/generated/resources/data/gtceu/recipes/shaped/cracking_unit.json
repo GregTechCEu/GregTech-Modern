@@ -2,14 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "base": {
-        "item": "gtceu:wire_coil"
-      },
-      "fabric:type": "fabric:nbt",
-      "nbt": {
-        "variant": "cupronickel"
-      },
-      "strict": true
+      "item": "gtceu:wire_coil_cupronickel"
     },
     "E": {
       "item": "gtceu:electric.pump.hv"

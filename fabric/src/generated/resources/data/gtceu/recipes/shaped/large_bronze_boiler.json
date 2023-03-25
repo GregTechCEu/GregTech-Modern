@@ -2,14 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "A": {
-      "base": {
-        "item": "gtceu:boiler_firebox_casing"
-      },
-      "fabric:type": "fabric:nbt",
-      "nbt": {
-        "variant": "bronze_firebox"
-      },
-      "strict": true
+      "item": "gtceu:bronze_firebox"
     },
     "P": {
       "tag": "c:cable_gt_single/tin"

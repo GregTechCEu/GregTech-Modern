@@ -27,10 +27,12 @@ import lombok.experimental.Accessors;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -91,6 +93,8 @@ public class MachineBuilder {
     @Setter
     private OverclockingLogic overclockingLogic = OverclockingLogic.NON_PERFECT_OVERCLOCK;
     @Setter
+    private Supplier<ResourceLocation> connectedID = () -> null;
+    @Setter
     private String langValue = null;
 
     protected MachineBuilder(Registrate registrate, String name, Function<IMetaMachineBlockEntity, MetaMachine> metaMachine) {
@@ -134,6 +138,11 @@ public class MachineBuilder {
 
     public MachineBuilder workableCasingRenderer(ResourceLocation baseCasing, ResourceLocation workableModel, boolean tint) {
         return renderer(() -> new WorkableCasingMachineRenderer(baseCasing, workableModel, tint));
+    }
+
+    public MachineBuilder connectBlock(Supplier<? extends Block> block) {
+        connectedID = () -> Registry.BLOCK.getKey(block.get());
+        return this;
     }
 
     public MachineBuilder tooltips(Component... components) {
@@ -210,6 +219,7 @@ public class MachineBuilder {
         if (recipeType != null && recipeType.getIconSupplier() == null) {
             recipeType.setIconSupplier(definition::asStack);
         }
+        definition.setConnectedID(connectedID);
         definition.setRenderer(renderer.get());
         definition.setShape(shape);
         definition.setDefaultPaintingColor(paintingColor);

@@ -14,9 +14,6 @@
     "PPP"
   ],
   "result": {
-    "item": "gtceu:hull_casing",
-    "nbt": {
-      "variant": "ultra_high_voltage"
-    }
+    "item": "gtceu:hull_casing_uhv"
   }
 }

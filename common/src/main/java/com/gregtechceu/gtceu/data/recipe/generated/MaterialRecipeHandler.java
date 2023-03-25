@@ -212,8 +212,9 @@ public class MaterialRecipeHandler {
         ItemStack smallDustStack = ChemicalHelper.get(orePrefix, material);
         ItemStack dustStack = ChemicalHelper.get(dust, material);
 
+        // todo this recipe doesnt work right
         VanillaRecipeHelper.addShapedRecipe(provider, String.format("small_dust_disassembling_%s", material),
-                GTUtil.copyAmount(4, smallDustStack), " X", "  ", 'X', new UnificationEntry(dust, material));
+                GTUtil.copyAmount(4, smallDustStack), " X ", "   ", "   ", 'X', new UnificationEntry(dust, material));
         VanillaRecipeHelper.addShapedRecipe(provider, String.format("small_dust_assembling_%s", material),
                 dustStack, "XX", "XX", 'X', new UnificationEntry(orePrefix, material));
 
@@ -234,8 +235,9 @@ public class MaterialRecipeHandler {
         ItemStack tinyDustStack = ChemicalHelper.get(orePrefix, material);
         ItemStack dustStack = ChemicalHelper.get(dust, material);
 
+        // todo this recipe doesnt work right
         VanillaRecipeHelper.addShapedRecipe(provider, String.format("tiny_dust_disassembling_%s", material),
-                GTUtil.copyAmount(9, tinyDustStack), "X ", "  ", 'X', new UnificationEntry(dust, material));
+                GTUtil.copyAmount(9, tinyDustStack), "X  ", "   ", "   ", 'X', new UnificationEntry(dust, material));
         VanillaRecipeHelper.addShapedRecipe(provider, String.format("tiny_dust_assembling_%s", material),
                 dustStack, "XXX", "XXX", "XXX", 'X', new UnificationEntry(orePrefix, material));
 
