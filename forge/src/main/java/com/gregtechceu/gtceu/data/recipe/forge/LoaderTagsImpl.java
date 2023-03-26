@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.api.tag.TagUtil;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 
-public class CommonTagsImpl {
+public class LoaderTagsImpl {
 
     public static TagKey<Item> getWoodChestTag() {
         return TagUtil.createItemTag("chests/wooden");
