@@ -22,7 +22,7 @@ import java.util.OptionalInt;
 public class GTConfiguredFeatures {
     public static final Holder<ConfiguredFeature<TreeConfiguration, ?>> RUBBER = FeatureUtils.register(GTCEu.MOD_ID + ":rubber", Feature.TREE,
             new TreeConfiguration.TreeConfigurationBuilder(
-                    BlockStateProvider.simple(GTBlocks.RUBBER_LOG.get()),
+                    BlockStateProvider.simple(GTBlocks.RUBBER_LOG.get().changeNatural(GTBlocks.RUBBER_LOG.getDefaultState(), true)),
                     new RubberTrunkPlacer(11, 3, 0),
                     BlockStateProvider.simple(GTBlocks.RUBBER_LEAVES.get()),
                     new RubberFoliagePlacer(ConstantInt.of(5), ConstantInt.of(2)),
