@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.common;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.gui.CoverUIFactory;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.api.gui.MachineUIFactory;
 import com.gregtechceu.gtceu.common.data.materials.GTFoods;
@@ -17,6 +17,15 @@ import com.lowdragmc.lowdraglib.gui.factory.UIFactory;
 public class CommonProxy {
 
     public static void init() {
+        if (!GTCEu.isKubeJSLoaded()) {
+            initInternal();
+        }
+    }
+
+    /**
+     * If kjs is loaded, make sure our mod is loaded after it. {@link com.gregtechceu.gtceu.core.mixins.kjs.KubeJSMixin}
+     */
+    public static void initInternal() {
         UIFactory.register(MachineUIFactory.INSTANCE);
         UIFactory.register(CoverUIFactory.INSTANCE);
         GTPlacerTypes.init();

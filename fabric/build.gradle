@@ -64,6 +64,13 @@ repositories {
     maven { url = "https://maven.cafeteria.dev/releases" } // Fake Player API
     maven { url = "https://maven.jamieswhiteshirt.com/libs-release" } // Reach Entity Attributes
     maven { url = "https://jitpack.io/" } // Mixin Extras, Fabric ASM
+    maven {
+        // saps.dev Maven (KubeJS and Rhino)
+        url = "https://maven.saps.dev/minecraft"
+        content {
+            includeGroup "dev.latvian.mods"
+        }
+    }
 }
 
 dependencies {
@@ -99,6 +106,10 @@ dependencies {
 
     // TOP
     modCompileOnly fabric.theoneprobe
+
+    // KJS
+    // fxxk architectury has a mixin error!!
+    modCompileOnly fabric.kubejs
 }
 
 processResources {
