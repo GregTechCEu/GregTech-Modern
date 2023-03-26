@@ -542,11 +542,6 @@ public class GTOres {
     }
 
     public static void init() {
-        register();
     }
 
-    @ExpectPlatform
-    public static void register() {
-        throw new AssertionError();
-    }
 }

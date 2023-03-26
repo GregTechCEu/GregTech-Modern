@@ -19,6 +19,7 @@ public class CommonProxy {
     public static void init() {
         UIFactory.register(MachineUIFactory.INSTANCE);
         UIFactory.register(CoverUIFactory.INSTANCE);
+        GTPlacerTypes.init();
         GTRecipeCapabilities.init();
         GTRecipeConditions.init();
         GTElements.init();
@@ -37,9 +38,8 @@ public class CommonProxy {
 
         // fabric exclusive, squeeze this in here to register before stuff is used
         GTRegistries.REGISTRATE.registerRegistrate();
-
-        GTFeatures.init();
         GTOres.init();
+        GTFeatures.init();
     }
 
 }

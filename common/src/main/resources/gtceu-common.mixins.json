@@ -9,6 +9,8 @@
   ],
   "mixins": [
     "ChunkMixin",
+    "IFoliagePlacerTypeAccessor",
+    "ITrunkPlacerTypeAccessor",
     "LevelMixin",
     "RecipeManagerInvoker",
     "RecipeManagerMixin",
