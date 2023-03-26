@@ -35,7 +35,7 @@
           "type": "gtceu:sized",
           "count": 8,
           "fabric:type": "gtceu:sized",
-          "tag": "c:pipe_small_fluid/polybenzimidazole"
+          "tag": "c:fluid_pipes/small/polybenzimidazole"
         }
       },
       {

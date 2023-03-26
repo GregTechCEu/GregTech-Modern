@@ -14,7 +14,7 @@
       "tag": "forge:plates/steel"
     },
     "W": {
-      "tag": "forge:wire_gt_single/copper"
+      "tag": "forge:wires/single/copper"
     }
   },
   "pattern": [

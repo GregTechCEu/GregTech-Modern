@@ -60,7 +60,7 @@
           "type": "gtceu:sized",
           "count": 8,
           "fabric:type": "gtceu:sized",
-          "tag": "c:wire_gt_single/niobium_titanium"
+          "tag": "c:wires/single/niobium_titanium"
         }
       },
       {

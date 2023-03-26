@@ -10,6 +10,8 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.sound.ExistingSoundEntry;
 import com.gregtechceu.gtceu.common.block.CoilBlock;
+import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
+import com.gregtechceu.gtceu.integration.kjs.events.RecipeTypeEventJS;
 import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
 import com.lowdragmc.lowdraglib.gui.widget.TankWidget;
 import com.lowdragmc.lowdraglib.msic.FluidStorage;
@@ -468,7 +470,13 @@ public class GTRecipeTypes {
     }
 
     public static void init() {
+        if (GTCEu.isKubeJSLoaded()) {
+            GTCEuStartupEvents.RECIPE_TYPES.post(new RecipeTypeEventJS());
+        }
         GTRegistries.register(Registry.RECIPE_SERIALIZER, GTCEu.id("gt_recipe_serializer"), GTRecipeSerializer.SERIALIZER);
     }
 
+    public static GTRecipeType get(String name) {
+        return GTRegistries.RECIPE_TYPES.get(GTCEu.id(name));
+    }
 }

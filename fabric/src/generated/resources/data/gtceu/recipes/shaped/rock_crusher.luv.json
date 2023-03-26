@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:cable_gt_single/niobium_titanium"
+      "tag": "c:cables/single/niobium_titanium"
     },
     "G": {
       "tag": "c:glass"

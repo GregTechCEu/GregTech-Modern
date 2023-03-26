@@ -8,7 +8,7 @@
       "item": "gtceu:electric.motor.zpm"
     },
     "P": {
-      "tag": "forge:pipe_normal_fluid/iridium"
+      "tag": "forge:fluid_pipes/normal/iridium"
     },
     "R": {
       "tag": "forge:rotors/naquadah_alloy"

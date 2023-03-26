@@ -4,51 +4,67 @@ import com.google.common.collect.ImmutableTable;
 import com.google.common.collect.Table;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.block.ActiveBlock;
-import com.gregtechceu.gtceu.api.block.RendererBlock;
+import com.gregtechceu.gtceu.api.block.*;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.item.MaterialPipeBlockItem;
 import com.gregtechceu.gtceu.api.item.RendererBlockItem;
 import com.gregtechceu.gtceu.client.renderer.block.CTMModelRenderer;
 import com.gregtechceu.gtceu.client.renderer.block.OreBlockRenderer;
 import com.gregtechceu.gtceu.client.renderer.block.TextureOverrideRenderer;
-import com.gregtechceu.gtceu.common.block.BoilerFireboxType;
-import com.gregtechceu.gtceu.common.block.CoilBlock;
-import com.gregtechceu.gtceu.common.block.FluidPipeBlock;
+import com.gregtechceu.gtceu.common.block.*;
 import com.gregtechceu.gtceu.common.pipelike.fluidpipe.FluidPipeType;
-import com.gregtechceu.gtceu.api.block.MaterialBlock;
-import com.gregtechceu.gtceu.api.block.MaterialPipeBlock;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.item.MaterialBlockItem;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
-import com.gregtechceu.gtceu.common.block.CableBlock;
 import com.gregtechceu.gtceu.common.pipelike.cable.Insulation;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.tterrag.registrate.builders.BlockBuilder;
-import com.tterrag.registrate.builders.ItemBuilder;
 import com.tterrag.registrate.providers.ProviderType;
+import com.tterrag.registrate.providers.loot.RegistrateBlockLootTables;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import com.tterrag.registrate.util.nullness.NonNullFunction;
+import net.minecraft.advancements.critereon.StatePropertiesPredicate;
+import net.minecraft.client.color.block.BlockColor;
+import net.minecraft.client.color.item.ItemColor;
+import net.minecraft.client.renderer.BiomeColors;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
+import net.minecraft.data.loot.BlockLoot;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.world.item.Item;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.FoliageColor;
+import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.grower.AbstractTreeGrower;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
+import net.minecraft.world.level.material.MaterialColor;
+import net.minecraft.world.level.storage.loot.LootPool;
+import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.world.level.storage.loot.entries.LootItem;
+import net.minecraft.world.level.storage.loot.predicates.LootItemBlockStatePropertyCondition;
+import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition;
+import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 
 import javax.annotation.Nonnull;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Supplier;
 
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.*;
 import static com.gregtechceu.gtceu.api.registry.GTRegistries.REGISTRATE;
+import static net.minecraftforge.client.model.generators.ModelProvider.BLOCK_FOLDER;
 
 /**
  * @author KilaBash
@@ -81,7 +97,6 @@ public class GTBlocks {
                         .item(MaterialBlockItem::new)
                         .model(NonNullBiConsumer.noop())
                         .color(() -> () -> MaterialBlockItem::tintColor)
-                        .transform(unificationItem(TagPrefix.block, material))
                         .build()
                         .register();
                 builder.put(TagPrefix.block, material, entry);
@@ -101,7 +116,6 @@ public class GTBlocks {
                         .item(MaterialBlockItem::new)
                         .model(NonNullBiConsumer.noop())
                         .color(() -> () -> MaterialBlockItem::tintColor)
-                        .transform(unificationItem(TagPrefix.frameGt, material))
                         .build()
                         .register();
                 builder.put(TagPrefix.frameGt, material, entry);
@@ -132,7 +146,6 @@ public class GTBlocks {
                             .item(MaterialBlockItem::new)
                             .model(NonNullBiConsumer.noop())
                             .color(() -> () -> MaterialBlockItem::tintColor)
-                            .transform(unificationItem(oreTag, material))
                             .build()
                             .register();
                     builder.put(oreTag, material, entry);
@@ -167,7 +180,6 @@ public class GTBlocks {
                             .item(MaterialPipeBlockItem::new)
                             .model(NonNullBiConsumer.noop())
                             .color(() -> () -> MaterialPipeBlockItem::tintColor)
-                            .transform(unificationItem(insulation.tagPrefix, material))
                             .build()
                             .register();
                     builder.put(insulation.tagPrefix, material, entry);
@@ -197,7 +209,6 @@ public class GTBlocks {
                             .item(MaterialPipeBlockItem::new)
                             .model(NonNullBiConsumer.noop())
                             .color(() -> () -> MaterialPipeBlockItem::tintColor)
-                            .transform(unificationItem(fluidPipeType.tagPrefix, material))
                             .build()
                             .register();
                     builder.put(fluidPipeType.tagPrefix, material, entry);
@@ -416,16 +427,87 @@ public class GTBlocks {
         return block;
     }
 
-    public static <P, T extends Block, S2 extends BlockBuilder<T, P>> NonNullFunction<S2, S2> unificationBlock(@Nonnull TagPrefix tagPrefix, @Nonnull Material mat) {
-        return builder -> {
-            builder.onRegister(block -> ChemicalHelper.registerUnificationItems(tagPrefix, mat, block));
-            return builder;
+    //////////////////////////////////////
+    //**********     Misc     **********//
+    //////////////////////////////////////
+
+    public static final BlockEntry<SaplingBlock> RUBBER_SAPLING = REGISTRATE.block("rubber_sapling", properties -> new SaplingBlock(new AbstractTreeGrower() {
+                protected Holder<? extends ConfiguredFeature<?, ?>> getConfiguredFeature(@Nonnull RandomSource random, boolean largeHive) {
+                    return GTConfiguredFeatures.RUBBER;
+                }
+            }, properties))
+            .initialProperties(() -> Blocks.OAK_SAPLING)
+            .blockstate((ctx, prov) -> prov.simpleBlock(ctx.getEntry(), prov.models().cross(Registry.BLOCK.getKey(ctx.getEntry()).getPath(), prov.blockTexture(ctx.getEntry()))))
+            .addLayer(() -> RenderType::cutoutMipped)
+            .tag(BlockTags.SAPLINGS)
+            .item()
+            .tag(ItemTags.SAPLINGS)
+            .build()
+            .register();
+
+    public static final BlockEntry<RubberLogBlock> RUBBER_LOG = REGISTRATE.block("rubber_log", RubberLogBlock::new,
+                    () -> BlockBehaviour.Properties.of(net.minecraft.world.level.material.Material.WOOD,
+                            (state) -> state.getValue(RotatedPillarBlock.AXIS) == Direction.Axis.Y ? MaterialColor.TERRACOTTA_GRAY : MaterialColor.COLOR_YELLOW))
+            .properties(p -> p.strength(2.0F).sound(SoundType.WOOD))
+            .loot((lt, b) -> lt.add(b, LootTable.lootTable()
+                        .withPool(BlockLoot.applyExplosionCondition(b, LootPool.lootPool().setRolls(ConstantValue.exactly(1.0F)))
+                                .add(LootItem.lootTableItem(b)))
+                        .withPool(BlockLoot.applyExplosionCondition(b, LootPool.lootPool().setRolls(ConstantValue.exactly(1.0F)))
+                                .add(LootItem.lootTableItem(GTItems.STICKY_RESIN.get())
+                                        .when(LootItemBlockStatePropertyCondition.hasBlockStateProperties(b)
+                                                .setProperties(StatePropertiesPredicate.Builder.properties()
+                                                        .hasProperty(RubberLogBlock.NATURAL, true)))
+                                        .when(LootItemRandomChanceCondition.randomChance(0.85F))))))
+            .tag(BlockTags.LOGS)
+            .blockstate((ctx, provider) -> provider.logBlock(ctx.get()))
+            .item()
+            .tag(ItemTags.LOGS)
+            .build()
+            .register();
+
+    // Fortune Level
+    public static final float[] RUBBER_LEAVES_DROPPING_CHANCE = new float[]{0.05F, 0.0625F, 0.083333336F, 0.1F};
+
+    public static Supplier<BlockColor> leavesBlockColor() {
+        return () -> (state, reader, pos, tintIndex) -> {
+            if (reader != null && pos != null) {
+                return BiomeColors.getAverageFoliageColor(reader, pos);
+            }
+            return FoliageColor.getDefaultColor();
         };
     }
 
-    public static <P, T extends Item, S2 extends ItemBuilder<T, P>> NonNullFunction<S2, S2> unificationItem(@Nonnull TagPrefix tagPrefix, @Nonnull Material mat) {
+    public static Supplier<ItemColor> leavesItemColor() {
+        return () -> (stack, tintIndex) -> FoliageColor.getDefaultColor();
+    }
+
+    public static final BlockEntry<LeavesBlock> RUBBER_LEAVES = REGISTRATE
+            .block("rubber_leaves", LeavesBlock::new)
+            .initialProperties(() -> Blocks.OAK_LEAVES)
+            .blockstate((ctx, prov) -> prov.simpleBlock(ctx.getEntry(), prov.models().singleTexture(Registry.BLOCK.getKey(ctx.getEntry()).getPath(), prov.mcLoc(BLOCK_FOLDER + "/leaves"), "all", prov.blockTexture(ctx.getEntry()))))
+            .loot((table, block) -> table.add(block, RegistrateBlockLootTables.createLeavesDrops(block, GTBlocks.RUBBER_SAPLING.get(), RUBBER_LEAVES_DROPPING_CHANCE)))
+            .tag(BlockTags.LEAVES)
+            .color(GTBlocks::leavesBlockColor)
+            .item()
+            .color(GTBlocks::leavesItemColor)
+            .tag(ItemTags.LEAVES)
+            .build()
+            .register();
+
+    public static final BlockEntry<Block> RUBBER_PLANK = REGISTRATE
+            .block("rubber_plank", Block::new)
+            .initialProperties(() -> Blocks.OAK_PLANKS)
+            .properties(p -> p.color(MaterialColor.TERRACOTTA_GRAY))
+            .tag(BlockTags.PLANKS)
+            .item()
+            .tag(ItemTags.PLANKS)
+            .build()
+            .register();
+
+
+    public static <P, T extends Block, S2 extends BlockBuilder<T, P>> NonNullFunction<S2, S2> unificationBlock(@Nonnull TagPrefix tagPrefix, @Nonnull Material mat) {
         return builder -> {
-            builder.onRegister(item -> ChemicalHelper.registerUnificationItems(tagPrefix, mat, item));
+            builder.onRegister(block -> ChemicalHelper.registerUnificationItems(tagPrefix, mat, block));
             return builder;
         };
     }

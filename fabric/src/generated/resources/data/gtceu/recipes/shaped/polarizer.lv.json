@@ -8,10 +8,10 @@
       "tag": "c:sticks/iron"
     },
     "W": {
-      "tag": "c:cable_gt_single/tin"
+      "tag": "c:cables/single/tin"
     },
     "Z": {
-      "tag": "c:wire_gt_double/tin"
+      "tag": "c:wires/double/tin"
     }
   },
   "pattern": [

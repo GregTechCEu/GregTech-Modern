@@ -30,6 +30,7 @@ dependencyResolutionManagement {
         def ldLibVersion = "1.0.2"
         def topFabricVersion = "1.19-6.0.0"
         def registrateFabricVersion = "1.1.50-MC1.19.2"
+        def kjsFabricVersion = "1902.6.0-build.142"
 
         // Forge
         def forgeVersion = "43.2.0"
@@ -37,6 +38,7 @@ dependencyResolutionManagement {
         def createForgeVersion = "0.5.0.h-21"
         def flywheelForgeVersion = "0.6.8.a-14"
         def topForgeVersion = "1.19-6.2.0-6"
+        def kjsForgeVersion = "1902.6.0-build.142"
 
         // Libs
         def quiltMappingsVersion = "21"  // https://lambdaurora.dev/tools/import_quilt.html
@@ -86,6 +88,9 @@ dependencyResolutionManagement {
 
             def theoneprobe = version("theoneprobe", topFabricVersion)
             library("theoneprobe", "mcjty.theoneprobe", "theoneprobe-fabric").versionRef(theoneprobe)
+
+            def kubejs = version("kubejs", kjsFabricVersion)
+            library("kubejs", "dev.latvian.mods", "kubejs-fabric").versionRef(kubejs)
         }
 
         forge {
@@ -118,6 +123,9 @@ dependencyResolutionManagement {
 
             def theoneprobe = version("theoneprobe", topForgeVersion)
             library("theoneprobe", "mcjty.theoneprobe", "theoneprobe").versionRef(theoneprobe)
+
+            def kubejs = version("kubejs", kjsForgeVersion)
+            library("kubejs", "dev.latvian.mods", "kubejs-forge").versionRef(kubejs)
         }
 
         libs {

@@ -31,7 +31,7 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "c:pipe_small_fluid/niobium_titanium"
+          "tag": "c:fluid_pipes/small/niobium_titanium"
         }
       },
       {
@@ -76,7 +76,7 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "c:cable_gt_single/niobium_titanium"
+          "tag": "c:cables/single/niobium_titanium"
         }
       }
     ]

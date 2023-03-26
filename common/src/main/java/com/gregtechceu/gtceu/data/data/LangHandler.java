@@ -683,7 +683,7 @@ public class LangHandler {
         provider.add("item.bone.dustTiny", "Tiny Pile of Bone Meal");
         provider.add("item.bone.dustSmall", "Small Pile of Bone Meal");
         provider.add("item.bone.dust", "Bone Meal");
-        provider.add("item.cassiterite_sand.crushedCentrifuged", "Centrifuged Cassiterite Sand");
+        provider.add("item.cassiterite_sand.crushedRefined", "Refined Cassiterite Sand");
         provider.add("item.cassiterite_sand.crushedPurified", "Purified Cassiterite Sand");
         provider.add("item.cassiterite_sand.crushed", "Ground Cassiterite Sand");
         provider.add("item.cassiterite_sand.dustTiny", "Tiny Pile of Cassiterite Sand");
@@ -748,7 +748,7 @@ public class LangHandler {
         provider.add("item.glauconite_sand.dustTiny", "Tiny Pile of Glauconite Sand");
         provider.add("item.glauconite_sand.dustSmall", "Small Pile of Glauconite Sand");
         provider.add("item.glauconite_sand.dust", "Glauconite Sand");
-        provider.add("item.bentonite.crushedCentrifuged", "Centrifuged Bentonite");
+        provider.add("item.bentonite.crushedRefined", "Refined Bentonite");
         provider.add("item.bentonite.crushedPurified", "Purified Bentonite");
         provider.add("item.bentonite.crushed", "Ground Bentonite");
         provider.add("item.bentonite.dustTiny", "Tiny Pile of Bentonite");
@@ -759,7 +759,7 @@ public class LangHandler {
         provider.add("item.fullers_earth.dustTiny", "Tiny Pile of Fullers Earth");
         provider.add("item.fullers_earth.dustSmall", "Small Pile of Fullers Earth");
         provider.add("item.fullers_earth.dust", "Fullers Earth");
-        provider.add("item.pitchblende.crushedCentrifuged", "Centrifuged Pitchblende");
+        provider.add("item.pitchblende.crushedRefined", "Refined Pitchblende");
         provider.add("item.pitchblende.crushedPurified", "Purified Pitchblende");
         provider.add("item.pitchblende.crushed", "Ground Pitchblende");
         provider.add("item.pitchblende.dustTiny", "Tiny Pile of Pitchblende");
@@ -767,7 +767,7 @@ public class LangHandler {
         provider.add("item.pitchblende.dustImpure", "Impure Pile of Pitchblende");
         provider.add("item.pitchblende.dustPure", "Purified Pile of Pitchblende");
         provider.add("item.pitchblende.dust", "Pitchblende");
-        provider.add("item.talc.crushedCentrifuged", "Centrifuged Talc");
+        provider.add("item.talc.crushedRefined", "Refined Talc");
         provider.add("item.talc.crushedPurified", "Purified Talc");
         provider.add("item.talc.crushed", "Ground Talc");
         provider.add("item.talc.dustTiny", "Tiny Pile of Talc");

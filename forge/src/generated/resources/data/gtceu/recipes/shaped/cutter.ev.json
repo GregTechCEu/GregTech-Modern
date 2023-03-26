@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "B": {
-      "tag": "forge:tool_head_buzz_saw/ultimet"
+      "tag": "forge:tool_heads/buzzsaw/ultimet"
     },
     "C": {
       "tag": "forge:circuit/ev"
@@ -20,7 +20,7 @@
       "item": "gtceu:conveyor.module.ev"
     },
     "W": {
-      "tag": "forge:cable_gt_single/aluminium"
+      "tag": "forge:cables/single/aluminium"
     }
   },
   "pattern": [

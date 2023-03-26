@@ -8,7 +8,7 @@
       "tag": "forge:chests/wooden"
     },
     "W": {
-      "tag": "forge:wire_gt_octal/niobium_titanium"
+      "tag": "forge:wires/octal/niobium_titanium"
     }
   },
   "pattern": [

@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:wire_gt_quadruple/copper"
+      "tag": "c:wires/quadruple/copper"
     },
     "E": {
       "tag": "c:circuit/lv"
@@ -11,7 +11,7 @@
       "item": "gtceu:hull.lv"
     },
     "W": {
-      "tag": "c:cable_gt_single/tin"
+      "tag": "c:cables/single/tin"
     }
   },
   "pattern": [

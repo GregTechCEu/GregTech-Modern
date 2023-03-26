@@ -14,7 +14,7 @@
       "tag": "c:plates/steel"
     },
     "W": {
-      "tag": "c:wire_gt_single/copper"
+      "tag": "c:wires/single/copper"
     }
   },
   "pattern": [

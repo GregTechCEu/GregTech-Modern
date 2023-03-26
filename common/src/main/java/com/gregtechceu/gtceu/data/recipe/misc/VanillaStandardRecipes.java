@@ -1,12 +1,11 @@
 package com.gregtechceu.gtceu.data.recipe.misc;
 
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
-import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
-import com.gregtechceu.gtceu.data.recipe.CommonTags;
+import com.gregtechceu.gtceu.data.recipe.LoaderTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
@@ -25,7 +24,6 @@ public class VanillaStandardRecipes {
         compressingRecipes(provider);
         glassRecipes(provider);
         smashingRecipes(provider);
-        engraverRecipes(provider);
         woodRecipes(provider);
         cuttingRecipes(provider);
         dyingCleaningRecipes(provider);
@@ -197,6 +195,19 @@ public class VanillaStandardRecipes {
      */
     private static void smashingRecipes(Consumer<FinishedRecipe> provider) {
         VanillaRecipeHelper.addShapedRecipe(provider, "cobblestone_hammer", new ItemStack(Blocks.COBBLESTONE), "h", "C", 'C', new ItemStack(Blocks.STONE));
+        VanillaRecipeHelper.addShapedRecipe(provider, "cobbled_deepslate_hammer", new ItemStack(Blocks.COBBLED_DEEPSLATE), "h", "C", 'C', new ItemStack(Blocks.DEEPSLATE));
+
+        FORGE_HAMMER_RECIPES.recipeBuilder("stone_to_cobblestone")
+                .inputItems(new ItemStack(Blocks.STONE))
+                .outputItems(new ItemStack(Blocks.COBBLESTONE))
+                .EUt(16).duration(10)
+                .save(provider);
+
+        FORGE_HAMMER_RECIPES.recipeBuilder("deepslate_to_cobbled_deepslate")
+                .inputItems(new ItemStack(Blocks.DEEPSLATE))
+                .outputItems(new ItemStack(Blocks.COBBLED_DEEPSLATE))
+                .EUt(16).duration(10)
+                .save(provider);
 
         FORGE_HAMMER_RECIPES.recipeBuilder("stone_to_cobblestone")
                 .inputItems(new ItemStack(Blocks.STONE))
@@ -205,7 +216,7 @@ public class VanillaStandardRecipes {
                 .save(provider);
 
         FORGE_HAMMER_RECIPES.recipeBuilder("cobblestone_to_gravel")
-                .inputItems(new ItemStack(Blocks.COBBLESTONE))
+                .inputItems(ItemTags.STONE_CRAFTING_MATERIALS)
                 .outputItems(new ItemStack(Blocks.GRAVEL))
                 .EUt(16).duration(10)
                 .save(provider);
@@ -300,7 +311,7 @@ public class VanillaStandardRecipes {
                 .save(provider);
 
         MACERATOR_RECIPES.recipeBuilder("macerate_wool")
-                .inputItems(CommonTags.TAG_WOOL)
+                .inputItems(ItemTags.WOOL)
                 .outputItems(new ItemStack(Items.STRING))
                 .chancedOutput(new ItemStack(Items.STRING), 9000, 0)
                 .chancedOutput(new ItemStack(Items.STRING), 5000, 0)
@@ -310,79 +321,44 @@ public class VanillaStandardRecipes {
     }
 
     /**
-     * + Adds Laser Engraver recipes for vanilla blocks
-     */
-    private static void engraverRecipes(Consumer<FinishedRecipe> provider) {
-        LASER_ENGRAVER_RECIPES.recipeBuilder("chiseled_sandstone")
-                .inputItems(new ItemStack(Blocks.CUT_SANDSTONE))
-                .notConsumable(lens, MarkerMaterials.Color.White)
-                .outputItems(new ItemStack(Blocks.CHISELED_SANDSTONE))
-                .duration(50).EUt(16).save(provider);
-
-        LASER_ENGRAVER_RECIPES.recipeBuilder("chiseled_red_sandstone")
-                .inputItems(new ItemStack(Blocks.CUT_RED_SANDSTONE))
-                .notConsumable(lens, MarkerMaterials.Color.White)
-                .outputItems(new ItemStack(Blocks.CHISELED_RED_SANDSTONE))
-                .duration(50).EUt(16).save(provider);
-
-        LASER_ENGRAVER_RECIPES.recipeBuilder("chiseled_stone_bricks")
-                .inputItems(new ItemStack(Blocks.STONE))
-                .notConsumable(lens, MarkerMaterials.Color.White)
-                .outputItems(new ItemStack(Blocks.CHISELED_STONE_BRICKS))
-                .duration(50).EUt(16).save(provider);
-
-        LASER_ENGRAVER_RECIPES.recipeBuilder("chiseled_quartz_block")
-                .inputItems(new ItemStack(Blocks.QUARTZ_BLOCK))
-                .notConsumable(lens, MarkerMaterials.Color.White)
-                .outputItems(new ItemStack(Blocks.CHISELED_QUARTZ_BLOCK))
-                .duration(50).EUt(16).save(provider);
-
-        LASER_ENGRAVER_RECIPES.recipeBuilder("purpur_pillar")
-                .inputItems(new ItemStack(Blocks.PURPUR_BLOCK))
-                .notConsumable(lens, MarkerMaterials.Color.White)
-                .outputItems(new ItemStack(Blocks.PURPUR_PILLAR))
-                .duration(50).EUt(16).save(provider);
-    }
-
-    /**
      * + Adds new recipes for wood related items and blocks
      */
     private static void woodRecipes(Consumer<FinishedRecipe> provider) {
         MACERATOR_RECIPES.recipeBuilder("macerate_logs")
-                .inputItems(CommonTags.TAG_LOGS)
+                .inputItems(ItemTags.LOGS)
                 .outputItems(dust, Wood, 6)
                 .chancedOutput(dust, Wood, 8000, 680)
                 .save(provider);
 
         LATHE_RECIPES.recipeBuilder("lathe_planks")
-                .inputItems(CommonTags.TAG_PLANKS)
+                .inputItems(ItemTags.PLANKS)
                 .outputItems(new ItemStack(Items.STICK, 2))
                 .duration(10).EUt(VA[ULV])
                 .save(provider);
 
         LATHE_RECIPES.recipeBuilder("lathe_logs")
-                .inputItems(CommonTags.TAG_LOGS)
+                .inputItems(ItemTags.LOGS)
                 .outputItems(stickLong, Wood, 4)
                 .outputItems(dust, Wood, 2)
                 .duration(160).EUt(VA[ULV])
                 .save(provider);
 
         LATHE_RECIPES.recipeBuilder("lathe_saplings")
-                .inputItems(CommonTags.TAG_SAPLINGS)
+                .inputItems(ItemTags.SAPLINGS)
                 .outputItems(new ItemStack(Items.STICK))
                 .outputItems(dustTiny, Wood)
                 .duration(16).EUt(VA[ULV])
                 .save(provider);
 
         LATHE_RECIPES.recipeBuilder("lathe_wood_slabs")
-                .inputItems(CommonTags.TAG_WOODEN_SLABS)
+                .inputItems(ItemTags.WOODEN_SLABS)
                 .outputItems(new ItemStack(Items.BOWL))
                 .outputItems(dustSmall, Wood)
                 .duration(50).EUt(VA[ULV])
                 .save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("bookshelf")
-                .inputItems(CommonTags.TAG_PLANKS, 6)
+                .inputItems(ItemTags.PLANKS, 6)
                 .inputItems(new ItemStack(Items.BOOK, 3))
                 .outputItems(new ItemStack(Blocks.BOOKSHELF))
                 .duration(100).EUt(4)
@@ -390,19 +366,19 @@ public class VanillaStandardRecipes {
 
         // todo trapdoors
         //ASSEMBLER_RECIPES.recipeBuilder()
-        //        .inputItems(CommonTags.TAG_PLANKS, 3).circuitMeta(3)
+        //        .inputItems(ItemTags.PLANKS, 3).circuitMeta(3)
         //        .outputItems(new ItemStack(Blocks.TRAPDOOR, 2))
         //        .duration(100).EUt(4)
         //        .save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("chest")
-                .inputItems(CommonTags.TAG_PLANKS, 8)
+                .inputItems(ItemTags.PLANKS, 8)
                 .outputItems(new ItemStack(Blocks.CHEST))
                 .duration(100).EUt(4).circuitMeta(8)
                 .save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("torch_coal")
-                .inputItems(CommonTags.TAG_COALS)
+                .inputItems(ItemTags.COALS)
                 .inputItems(new ItemStack(Items.STICK))
                 .outputItems(new ItemStack(Blocks.TORCH, 4))
                 .duration(100).EUt(1).save(provider);
@@ -533,7 +509,7 @@ public class VanillaStandardRecipes {
 
         ASSEMBLER_RECIPES.recipeBuilder("ladder").EUt(1).duration(40).circuitMeta(7).inputItems(new ItemStack(Items.STICK, 7)).outputItems(new ItemStack(Blocks.LADDER, 2)).save(provider);
 
-        ASSEMBLER_RECIPES.recipeBuilder("chest_minecart").EUt(4).duration(100).inputItems(new ItemStack(Items.MINECART)).inputItems(CommonTags.TAG_WOODEN_CHESTS).outputItems(new ItemStack(Items.CHEST_MINECART)).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("chest_minecart").EUt(4).duration(100).inputItems(new ItemStack(Items.MINECART)).inputItems(LoaderTags.TAG_WOODEN_CHESTS).outputItems(new ItemStack(Items.CHEST_MINECART)).save(provider);
         ASSEMBLER_RECIPES.recipeBuilder("furnace_minecart").EUt(4).duration(100).inputItems(new ItemStack(Items.MINECART)).inputItems(new ItemStack(Blocks.FURNACE)).outputItems(new ItemStack(Items.FURNACE_MINECART)).save(provider);
         ASSEMBLER_RECIPES.recipeBuilder("tnt_minecart").EUt(4).duration(100).inputItems(new ItemStack(Items.MINECART)).inputItems(new ItemStack(Blocks.TNT)).outputItems(new ItemStack(Items.TNT_MINECART)).save(provider);
         ASSEMBLER_RECIPES.recipeBuilder("hopper_minecart").EUt(4).duration(100).inputItems(new ItemStack(Items.MINECART)).inputItems(new ItemStack(Blocks.HOPPER)).outputItems(new ItemStack(Items.HOPPER_MINECART)).save(provider);
@@ -543,55 +519,10 @@ public class VanillaStandardRecipes {
      * + Adds cutting recipes for vanilla blocks
      */
     private static void cuttingRecipes(Consumer<FinishedRecipe> provider) {
-        CUTTER_RECIPES.recipeBuilder("stone_slab")
-                .inputItems(new ItemStack(Blocks.STONE))
-                .outputItems(new ItemStack(Blocks.STONE_SLAB, 2))
+        CUTTER_RECIPES.recipeBuilder("snow_layer")
+                .inputItems(new ItemStack(Blocks.SNOW_BLOCK))
+                .outputItems(new ItemStack(Blocks.SNOW, 12))
                 .duration(25).EUt(VA[ULV]).save(provider);
-
-        CUTTER_RECIPES.recipeBuilder("sandstone_slab")
-                .inputItems(new ItemStack(Blocks.SANDSTONE))
-                .outputItems(new ItemStack(Blocks.SANDSTONE_SLAB, 2))
-                .duration(25).EUt(VA[ULV]).save(provider);
-
-        CUTTER_RECIPES.recipeBuilder("cobblestone_slab")
-                .inputItems(new ItemStack(Blocks.COBBLESTONE))
-                .outputItems(new ItemStack(Blocks.COBBLESTONE_SLAB, 2))
-                .duration(25).EUt(VA[ULV]).save(provider);
-
-        CUTTER_RECIPES.recipeBuilder("brick_slab")
-                .inputItems(new ItemStack(Blocks.BRICKS))
-                .outputItems(new ItemStack(Blocks.BRICK_SLAB, 2))
-                .duration(25).EUt(VA[ULV]).save(provider);
-
-        CUTTER_RECIPES.recipeBuilder("stone_brick_slab")
-                .inputItems(new ItemStack(Blocks.STONE_BRICKS))
-                .outputItems(new ItemStack(Blocks.STONE_BRICK_SLAB, 2))
-                .duration(25).EUt(VA[ULV]).save(provider);
-
-        CUTTER_RECIPES.recipeBuilder("nether_brick_slab")
-                .inputItems(new ItemStack(Blocks.NETHER_BRICKS))
-                .outputItems(new ItemStack(Blocks.NETHER_BRICK_SLAB, 2))
-                .duration(25).EUt(VA[ULV]).save(provider);
-
-        CUTTER_RECIPES.recipeBuilder("quartz_slab")
-                .inputItems(new ItemStack(Blocks.QUARTZ_BLOCK, 1))
-                .outputItems(new ItemStack(Blocks.QUARTZ_SLAB, 2))
-                .duration(25).EUt(VA[ULV]).save(provider);
-
-        CUTTER_RECIPES.recipeBuilder("red_sandstone_slab")
-                .inputItems(new ItemStack(Blocks.RED_SANDSTONE))
-                .outputItems(new ItemStack(Blocks.RED_SANDSTONE_SLAB, 2))
-                .duration(25).EUt(VA[ULV]).save(provider);
-
-        CUTTER_RECIPES.recipeBuilder("purpur_slab")
-                .inputItems(new ItemStack(Blocks.PURPUR_BLOCK))
-                .outputItems(new ItemStack(Blocks.PURPUR_SLAB, 2))
-                .duration(25).EUt(VA[ULV]).save(provider);
-
-        //CUTTER_RECIPES.recipeBuilder()
-        //        .inputItems(new ItemStack(Blocks.SNOW, 1))
-        //        .outputItems(new ItemStack(Blocks.SNOW_LAYER, 16))
-        //        .duration(25).EUt(VA[ULV]).save(provider);
     }
 
     /**
@@ -663,13 +594,13 @@ public class VanillaStandardRecipes {
 
         // todo new tags to avoid white -> white recipe?
         CHEMICAL_BATH_RECIPES.recipeBuilder("decolor_wool")
-                .inputItems(CommonTags.TAG_WOOL)
+                .inputItems(ItemTags.WOOL)
                 .inputFluids(Chlorine.getFluid(50))
                 .outputItems(new ItemStack(Blocks.WHITE_WOOL))
                 .duration(400).EUt(2).save(provider);
 
         CHEMICAL_BATH_RECIPES.recipeBuilder("decolor_carpet")
-                .inputItems(CommonTags.TAG_CARPETS)
+                .inputItems(ItemTags.WOOL_CARPETS)
                 .inputFluids(Chlorine.getFluid(25))
                 .outputItems(new ItemStack(Blocks.WHITE_CARPET))
                 .duration(400).EUt(2).save(provider);
@@ -913,8 +844,8 @@ public class VanillaStandardRecipes {
 
         FLUID_SOLIDFICATION_RECIPES.recipeBuilder("snowball").duration(128).EUt(4).notConsumable(SHAPE_MOLD_BALL).inputFluids(Water.getFluid(250)).outputItems(new ItemStack(Items.SNOWBALL)).save(provider);
         FLUID_SOLIDFICATION_RECIPES.recipeBuilder("snowball_distilled").duration(128).EUt(4).notConsumable(SHAPE_MOLD_BALL).inputFluids(DistilledWater.getFluid(250)).outputItems(new ItemStack(Items.SNOWBALL)).save(provider);
-        FLUID_SOLIDFICATION_RECIPES.recipeBuilder("snow_block").duration(512).EUt(4).notConsumable(SHAPE_MOLD_BLOCK).inputFluids(Water.getFluid(1000)).outputItems(new ItemStack(Blocks.SNOW)).save(provider);
-        FLUID_SOLIDFICATION_RECIPES.recipeBuilder("snow_block_distilled").duration(512).EUt(4).notConsumable(SHAPE_MOLD_BLOCK).inputFluids(DistilledWater.getFluid(1000)).outputItems(new ItemStack(Blocks.SNOW)).save(provider);
+        FLUID_SOLIDFICATION_RECIPES.recipeBuilder("snow_block").duration(512).EUt(4).notConsumable(SHAPE_MOLD_BLOCK).inputFluids(Water.getFluid(1000)).outputItems(new ItemStack(Blocks.SNOW_BLOCK)).save(provider);
+        FLUID_SOLIDFICATION_RECIPES.recipeBuilder("snow_block_distilled").duration(512).EUt(4).notConsumable(SHAPE_MOLD_BLOCK).inputFluids(DistilledWater.getFluid(1000)).outputItems(new ItemStack(Blocks.SNOW_BLOCK)).save(provider);
         FLUID_SOLIDFICATION_RECIPES.recipeBuilder("obsidian").duration(1024).EUt(16).notConsumable(SHAPE_MOLD_BLOCK).inputFluids(Lava.getFluid(1000)).outputItems(new ItemStack(Blocks.OBSIDIAN)).save(provider);
 
         FLUID_SOLIDFICATION_RECIPES.recipeBuilder("solidify_anvil").duration(1680).EUt(16).notConsumable(SHAPE_MOLD_ANVIL).inputFluids(Iron.getFluid(L * 31)).outputItems(new ItemStack(Blocks.ANVIL)).save(provider);
@@ -940,28 +871,9 @@ public class VanillaStandardRecipes {
                 .outputItems(new ItemStack(Blocks.MOSSY_STONE_BRICKS))
                 .duration(40).EUt(1).save(provider);
 
-        ASSEMBLER_RECIPES.recipeBuilder("cobblestone_stairs").EUt(1).duration(100).circuitMeta(7).inputItems(new ItemStack(Blocks.COBBLESTONE, 6)).outputItems(new ItemStack(Blocks.COBBLESTONE_STAIRS, 4)).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("brick_stairs").EUt(1).duration(100).circuitMeta(7).inputItems(new ItemStack(Blocks.BRICKS, 6)).outputItems(new ItemStack(Blocks.BRICK_STAIRS, 4)).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("stone_brick_stairs").EUt(1).duration(100).circuitMeta(7).inputItems(new ItemStack(Blocks.STONE_BRICKS, 6)).outputItems(new ItemStack(Blocks.STONE_BRICK_STAIRS, 4)).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("nether_brick_stairs").EUt(1).duration(100).circuitMeta(7).inputItems(new ItemStack(Blocks.NETHER_BRICKS, 6)).outputItems(new ItemStack(Blocks.NETHER_BRICK_STAIRS, 4)).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("sandstone_stairs").EUt(1).duration(100).circuitMeta(7).inputItems(new ItemStack(Blocks.SANDSTONE, 6)).outputItems(new ItemStack(Blocks.SANDSTONE_STAIRS, 4)).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("quartz_stairs").EUt(1).duration(100).circuitMeta(7).inputItems(new ItemStack(Blocks.QUARTZ_BLOCK, 6)).outputItems(new ItemStack(Blocks.QUARTZ_STAIRS, 4)).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("purpur_stairs").EUt(1).duration(100).circuitMeta(7).inputItems(new ItemStack(Blocks.PURPUR_BLOCK, 6)).outputItems(new ItemStack(Blocks.PURPUR_STAIRS, 4)).save(provider);
 
 
-        ASSEMBLER_RECIPES.recipeBuilder("quartz_pillar").EUt(1).duration(100).circuitMeta(2).inputItems(new ItemStack(Blocks.QUARTZ_BLOCK)).outputItems(new ItemStack(Blocks.QUARTZ_PILLAR)).save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("stone_bricks").EUt(4).inputItems(new ItemStack(Blocks.STONE)).outputItems(new ItemStack(Blocks.STONE_BRICKS)).circuitMeta(4).duration(50).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("end_stone_bricks").EUt(4).inputItems(new ItemStack(Blocks.END_STONE)).outputItems(new ItemStack(Blocks.END_STONE_BRICKS)).circuitMeta(4).duration(50).save(provider);
-
-
-        ASSEMBLER_RECIPES.recipeBuilder("smooth_sandstone").EUt(4).inputItems(new ItemStack(Blocks.SANDSTONE)).outputItems(new ItemStack(Blocks.SMOOTH_SANDSTONE)).circuitMeta(1).duration(50).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("smooth_red_sandstone").EUt(4).inputItems(new ItemStack(Blocks.RED_SANDSTONE)).outputItems(new ItemStack(Blocks.SMOOTH_RED_SANDSTONE)).circuitMeta(1).duration(50).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("sandstone").EUt(4).inputItems(new ItemStack(Blocks.SMOOTH_SANDSTONE)).outputItems(new ItemStack(Blocks.SANDSTONE)).circuitMeta(1).duration(50).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("red_sandstone").EUt(4).inputItems(new ItemStack(Blocks.SMOOTH_RED_SANDSTONE)).outputItems(new ItemStack(Blocks.RED_SANDSTONE)).circuitMeta(1).duration(50).save(provider);
-
-
-        CANNER_RECIPES.recipeBuilder("jaco_o_lantern").EUt(4).duration(100).inputItems(new ItemStack(Blocks.PUMPKIN)).inputItems(new ItemStack(Blocks.TORCH)).outputItems(new ItemStack(Blocks.JACK_O_LANTERN)).save(provider);
+        CANNER_RECIPES.recipeBuilder("jack_o_lantern").EUt(4).duration(100).inputItems(new ItemStack(Blocks.PUMPKIN)).inputItems(new ItemStack(Blocks.TORCH)).outputItems(new ItemStack(Blocks.JACK_O_LANTERN)).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("sea_lantern").EUt(4).duration(40).inputItems(new ItemStack(Items.PRISMARINE_CRYSTALS, 5)).inputItems(new ItemStack(Items.PRISMARINE_SHARD, 4)).outputItems(new ItemStack(Blocks.SEA_LANTERN)).save(provider);
 
@@ -971,14 +883,11 @@ public class VanillaStandardRecipes {
 
         ASSEMBLER_RECIPES.recipeBuilder("ender_chest").duration(100).EUt(4).inputItems(new ItemStack(Blocks.OBSIDIAN, 8)).inputItems(new ItemStack(Items.ENDER_EYE)).outputItems(new ItemStack(Blocks.ENDER_CHEST)).save(provider);
 
-        ASSEMBLER_RECIPES.recipeBuilder("cobblestone_wall").duration(100).EUt(VA[ULV]).circuitMeta(6).inputItems(new ItemStack(Blocks.COBBLESTONE)).outputItems(new ItemStack(Blocks.COBBLESTONE_WALL)).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("mossy_cobblestone_wall").duration(100).EUt(VA[ULV]).circuitMeta(6).inputItems(new ItemStack(Blocks.MOSSY_COBBLESTONE)).outputItems(new ItemStack(Blocks.MOSSY_COBBLESTONE_WALL)).save(provider);
-
         ASSEMBLER_RECIPES.recipeBuilder("end_rod").duration(100).EUt(4).inputItems(new ItemStack(Items.POPPED_CHORUS_FRUIT)).inputItems(new ItemStack(Items.BLAZE_ROD)).outputItems(new ItemStack(Blocks.END_ROD, 4)).save(provider);
 
-        ASSEMBLER_RECIPES.recipeBuilder("purple_shulker_box").duration(100).EUt(VA[ULV]).inputItems(CommonTags.TAG_WOODEN_CHESTS).inputItems(new ItemStack(Items.SHULKER_SHELL, 2)).outputItems(new ItemStack(Blocks.PURPLE_SHULKER_BOX)).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("purple_shulker_box").duration(100).EUt(VA[ULV]).inputItems(LoaderTags.TAG_WOODEN_CHESTS).inputItems(new ItemStack(Items.SHULKER_SHELL, 2)).outputItems(new ItemStack(Blocks.PURPLE_SHULKER_BOX)).save(provider);
 
-        ASSEMBLER_RECIPES.recipeBuilder("painting").duration(100).EUt(4).circuitMeta(1).inputItems(CommonTags.TAG_WOOL).inputItems(new ItemStack(Items.STICK, 8)).outputItems(new ItemStack(Items.PAINTING)).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("painting").duration(100).EUt(4).circuitMeta(1).inputItems(ItemTags.WOOL).inputItems(new ItemStack(Items.STICK, 8)).outputItems(new ItemStack(Items.PAINTING)).save(provider);
         ASSEMBLER_RECIPES.recipeBuilder("item_frame").duration(100).EUt(4).inputItems(new ItemStack(Items.LEATHER)).inputItems(new ItemStack(Items.STICK, 8)).outputItems(new ItemStack(Items.ITEM_FRAME)).save(provider);
 
         // todo signs
@@ -1029,31 +938,10 @@ public class VanillaStandardRecipes {
 
         VanillaRecipeHelper.addShapedRecipe(provider, "saddle", new ItemStack(Items.SADDLE), "LLL", "LCL", "RSR",
                 'L', new ItemStack(Items.LEATHER),
-                'C', CommonTags.TAG_CARPETS,
+                'C', ItemTags.WOOL_CARPETS,
                 'R', new UnificationEntry(ring, Iron),
                 'S', new ItemStack(Items.STRING)
         );
-
-        for (FluidStack fluidStack : new FluidStack[]{Water.getFluid(200), DistilledWater.getFluid(36)}) {
-            String tail = fluidStack.getAmount() == 36 ? "_distilled" : "";
-            AUTOCLAVE_RECIPES.recipeBuilder("polished_granite" + tail)
-                    .inputItems(new ItemStack(Blocks.GRANITE))
-                    .inputFluids(fluidStack)
-                    .outputItems(new ItemStack(Blocks.POLISHED_GRANITE))
-                    .duration(100).EUt(VA[ULV]).save(provider);
-
-            AUTOCLAVE_RECIPES.recipeBuilder("polished_diorite" + tail)
-                    .inputItems(new ItemStack(Blocks.DIORITE))
-                    .inputFluids(fluidStack)
-                    .outputItems(new ItemStack(Blocks.POLISHED_DIORITE))
-                    .duration(100).EUt(VA[ULV]).save(provider);
-
-            AUTOCLAVE_RECIPES.recipeBuilder("polished_andesite" + tail)
-                    .inputItems(new ItemStack(Blocks.ANDESITE))
-                    .inputFluids(fluidStack)
-                    .outputItems(new ItemStack(Blocks.POLISHED_ANDESITE))
-                    .duration(100).EUt(VA[ULV]).save(provider);
-        }
 
         AUTOCLAVE_RECIPES.recipeBuilder("clay_from_dust")
                 .inputItems(dust, Clay)

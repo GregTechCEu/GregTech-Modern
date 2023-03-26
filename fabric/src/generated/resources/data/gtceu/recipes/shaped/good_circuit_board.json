@@ -5,7 +5,7 @@
       "item": "gtceu:board.phenolic"
     },
     "W": {
-      "tag": "c:wire_gt_single/silver"
+      "tag": "c:wires/single/silver"
     }
   },
   "pattern": [

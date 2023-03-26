@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "forge:cable_gt_double/aluminium"
+      "tag": "forge:cables/double/aluminium"
     },
     "M": {
       "tag": "forge:sticks/neodymium_magnetic"
@@ -11,7 +11,7 @@
       "tag": "forge:sticks/titanium"
     },
     "W": {
-      "tag": "forge:wire_gt_double/kanthal"
+      "tag": "forge:wires/double/kanthal"
     }
   },
   "pattern": [

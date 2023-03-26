@@ -3,17 +3,21 @@
   "minVersion": "0.8",
   "package": "com.gregtechceu.gtceu.core.mixins",
   "compatibilityLevel": "JAVA_17",
+  "plugin": "com.gregtechceu.gtceu.core.mixins.GregTechMixinPlugin",
   "client": [
     "BlockModelAccessor",
     "MultiPlayerGameModeMixin"
   ],
   "mixins": [
     "ChunkMixin",
+    "IFoliagePlacerTypeAccessor",
+    "ITrunkPlacerTypeAccessor",
     "LevelMixin",
     "RecipeManagerInvoker",
     "RecipeManagerMixin",
     "ServerChunkProviderMixin",
-    "ServerPlayerGameModeMixin"
+    "ServerPlayerGameModeMixin",
+    "kjs.KubeJSMixin"
   ],
   "injectors": {
     "defaultRequire": 1

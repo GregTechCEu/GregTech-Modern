@@ -8,7 +8,7 @@
       "tag": "forge:chests/wooden"
     },
     "W": {
-      "tag": "forge:wire_gt_octal/aluminium"
+      "tag": "forge:wires/octal/aluminium"
     }
   },
   "pattern": [

@@ -9,11 +9,11 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMachines;
-import com.gregtechceu.gtceu.data.recipe.CommonTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.tterrag.registrate.util.entry.ItemEntry;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -206,7 +206,7 @@ public class MachineRecipeLoader {
     }
 
     private static void registerCokeOvenRecipes(Consumer<FinishedRecipe> provider) {
-        COKE_OVEN_RECIPES.recipeBuilder("log_to_charcoal").inputItems(CommonTags.TAG_LOGS).outputItems(gem, Charcoal).outputFluids(Creosote.getFluid(250)).duration(900).save(provider);
+        COKE_OVEN_RECIPES.recipeBuilder("log_to_charcoal").inputItems(ItemTags.LOGS).outputItems(gem, Charcoal).outputFluids(Creosote.getFluid(250)).duration(900).save(provider);
         COKE_OVEN_RECIPES.recipeBuilder("coal_to_coke").inputItems(gem, Coal).outputItems(gem, Coke).outputFluids(Creosote.getFluid(500)).duration(900).save(provider);
         COKE_OVEN_RECIPES.recipeBuilder("coal_to_coke_block").inputItems(block, Coal).outputItems(block, Coke).outputFluids(Creosote.getFluid(4500)).duration(8100).save(provider);
     }
@@ -729,21 +729,20 @@ public class MachineRecipeLoader {
                 .duration(150).EUt(2)
                 .save(provider);
 
-        // TODO Rubber tree
-        //EXTRACTOR_RECIPES.recipeBuilder().duration(300).EUt(2)
-        //        .inputItems(new ItemStack(MetaBlocks.RUBBER_LEAVES, 16))
-        //        .outputItems(dust, RawRubber)
-        //        .save(provider);
+        EXTRACTOR_RECIPES.recipeBuilder("raw_rubber_from_leaves").duration(300).EUt(2)
+                .inputItems(GTBlocks.RUBBER_LEAVES.asStack(16))
+                .outputItems(dust, RawRubber)
+                .save(provider);
 
-        //EXTRACTOR_RECIPES.recipeBuilder().duration(300).EUt(2)
-        //        .inputItems(new ItemStack(MetaBlocks.RUBBER_LOG))
-        //        .outputItems(dust, RawRubber)
-        //        .save(provider);
+        EXTRACTOR_RECIPES.recipeBuilder("raw_rubber_from_log").duration(300).EUt(2)
+                .inputItems(GTBlocks.RUBBER_LOG.asStack())
+                .outputItems(dust, RawRubber)
+                .save(provider);
 
-        //EXTRACTOR_RECIPES.recipeBuilder().duration(300).EUt(2)
-        //        .inputItems(new ItemStack(MetaBlocks.RUBBER_SAPLING))
-        //        .outputItems(dust, RawRubber)
-        //        .save(provider);
+        EXTRACTOR_RECIPES.recipeBuilder("raw_rubber_from_sapling").duration(300).EUt(2)
+                .inputItems(GTBlocks.RUBBER_SAPLING.asStack())
+                .outputItems(dust, RawRubber)
+                .save(provider);
 
         EXTRACTOR_RECIPES.recipeBuilder("raw_rubber_from_slime").duration(150).EUt(2)
                 .inputItems(new ItemStack(Items.SLIME_BALL))

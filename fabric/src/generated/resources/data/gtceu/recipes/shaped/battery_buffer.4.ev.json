@@ -8,7 +8,7 @@
       "tag": "c:chests"
     },
     "W": {
-      "tag": "c:wire_gt_quadruple/aluminium"
+      "tag": "c:wires/quadruple/aluminium"
     }
   },
   "pattern": [

@@ -8,7 +8,7 @@
       "tag": "forge:plates/aluminium"
     },
     "W": {
-      "tag": "forge:wire_gt_quadruple/magnesium_diboride"
+      "tag": "forge:wires/quadruple/magnesium_diboride"
     },
     "X": {
       "tag": "forge:circuit/mv"

@@ -17,7 +17,7 @@
       "tag": "forge:rotors/naquadah_alloy"
     },
     "W": {
-      "tag": "forge:cable_gt_single/vanadium_gallium"
+      "tag": "forge:cables/single/vanadium_gallium"
     }
   },
   "pattern": [

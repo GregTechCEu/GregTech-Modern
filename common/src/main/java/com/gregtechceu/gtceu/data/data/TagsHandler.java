@@ -18,6 +18,7 @@ import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
  * @implNote ItemTagsHandler
  */
 public class TagsHandler {
+
     public static void initItem(RegistrateTagsProvider<Item> provider) {
         provider.getOrCreateRawBuilder(ChemicalHelper.getTag(lens, MarkerMaterials.Color.White)).addElement(GTItems.MATERIAL_ITEMS.get(lens, Glass).getId()).build();
         ChemicalHelper.UNIFICATION_ENTRY_ITEM.forEach((entry, itemLikes) -> {

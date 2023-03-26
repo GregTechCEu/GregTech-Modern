@@ -11,10 +11,10 @@
       "item": "gtceu:hull.lv"
     },
     "O": {
-      "tag": "c:wire_gt_quadruple/copper"
+      "tag": "c:wires/quadruple/copper"
     },
     "W": {
-      "tag": "c:cable_gt_single/tin"
+      "tag": "c:cables/single/tin"
     }
   },
   "pattern": [

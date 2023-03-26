@@ -3,10 +3,11 @@ package com.gregtechceu.gtceu.data.recipe.misc;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials.Tier;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
+import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.data.recipe.CommonTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
@@ -47,7 +48,7 @@ public class CraftingRecipeLoader {
         //VanillaRecipeHelper.addShapedRecipe(provider, "smart_item_filter_olivine", SMART_FILTER.asStack(), "XEX", "XCX", "XEX", 'X', new UnificationEntry(foil, Zinc), 'C', new UnificationEntry(circuit, Tier.LV), 'E', new UnificationEntry(plate, Olivine));
         //VanillaRecipeHelper.addShapedRecipe(provider, "smart_item_filter_emerald", SMART_FILTER.asStack(), "XEX", "XCX", "XEX", 'X', new UnificationEntry(foil, Zinc), 'C', new UnificationEntry(circuit, Tier.LV), 'E', new UnificationEntry(plate, Emerald));
 
-        VanillaRecipeHelper.addShapedRecipe(provider, "plank_to_wooden_shape", WOODEN_FORM_EMPTY.asStack(), "   ", " X ", "s  ", 'X', CommonTags.TAG_PLANKS);
+        VanillaRecipeHelper.addShapedRecipe(provider, "plank_to_wooden_shape", WOODEN_FORM_EMPTY.asStack(), "   ", " X ", "s  ", 'X', ItemTags.PLANKS);
         VanillaRecipeHelper.addShapedRecipe(provider, "wooden_shape_brick", WOODEN_FORM_BRICK.asStack(), "k ", " X", 'X', WOODEN_FORM_EMPTY.asStack());
 
         if (ConfigHolder.recipes.harderBrickRecipes) {
@@ -55,7 +56,7 @@ public class CraftingRecipeLoader {
             VanillaRecipeHelper.addSmeltingRecipe(provider, "brick_from_compressed_clay", COMPRESSED_CLAY.asStack(), new ItemStack(Items.BRICK), 0.3f);
         }
 
-        VanillaRecipeHelper.addShapedRecipe(provider, "compressed_coke_clay", COMPRESSED_COKE_CLAY.asStack(3), "XXX", "SYS", "SSS", 'Y', WOODEN_FORM_BRICK.asStack(), 'X', new ItemStack(Items.CLAY_BALL), 'S', CommonTags.TAG_SAND);
+        VanillaRecipeHelper.addShapedRecipe(provider, "compressed_coke_clay", COMPRESSED_COKE_CLAY.asStack(3), "XXX", "SYS", "SSS", 'Y', WOODEN_FORM_BRICK.asStack(), 'X', new ItemStack(Items.CLAY_BALL), 'S', ItemTags.SAND);
         VanillaRecipeHelper.addShapelessRecipe(provider, "fireclay_dust", ChemicalHelper.get(dust, Fireclay, 2), new UnificationEntry(dust, Brick), new UnificationEntry(dust, Clay));
         VanillaRecipeHelper.addSmeltingRecipe(provider, "coke_oven_brick", COMPRESSED_COKE_CLAY.asStack(), COKE_OVEN_BRICK.asStack(), 0.3f);
         VanillaRecipeHelper.addSmeltingRecipe(provider, "fireclay_brick", COMPRESSED_FIRECLAY.asStack(), FIRECLAY_BRICK.asStack(), 0.3f);
@@ -65,8 +66,8 @@ public class CraftingRecipeLoader {
         // TODO clipboard
         //VanillaRecipeHelper.addShapedRecipe(provider, "clipboard", CLIPBOARD.asStack(), " Sd", "BWR", "PPP", 'P', Items.PAPER, 'R', new UnificationEntry(springSmall, Iron), 'B', new UnificationEntry(bolt, Iron), 'S', new UnificationEntry(screw, Iron), 'W', new UnificationEntry(plate, Wood));
 
-        // TODO rubber wood, treated wood
-        //VanillaRecipeHelper.addShapelessRecipe("rubber_wood_planks", MetaBlocks.PLANKS.getItemVariant(BlockGregPlanks.BlockType.RUBBER_PLANK, 4), new ItemStack(MetaBlocks.RUBBER_LOG));
+        VanillaRecipeHelper.addShapelessRecipe(provider, "rubber_wood_planks", GTBlocks.RUBBER_PLANK.asStack(4), GTBlocks.RUBBER_LOG.asStack());
+        // TODO treated wood
         //VanillaRecipeHelper.addShapedRecipe(provider, "treated_wood_planks", MetaBlocks.PLANKS.getItemVariant(BlockGregPlanks.BlockType.TREATED_PLANK, 8), "PPP", "PBP", "PPP", 'P', "plankWood", 'B', FluidUtil.getFilledBucket(Creosote.getFluid(1000)));
         //VanillaRecipeHelper.addShapedRecipe(provider, "treated_wood_stick_saw", ChemicalHelper.get(stick, TreatedWood, ConfigHolder.recipes.nerfWoodCrafting ? 1 : 2), "s", "L", 'L', MetaBlocks.PLANKS.getItemVariant(BlockGregPlanks.BlockType.TREATED_PLANK));
         //if (!ConfigHolder.recipes.nerfWoodCrafting)

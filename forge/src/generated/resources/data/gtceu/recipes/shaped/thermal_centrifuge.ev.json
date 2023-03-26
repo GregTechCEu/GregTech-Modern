@@ -11,10 +11,10 @@
       "item": "gtceu:hull.ev"
     },
     "O": {
-      "tag": "forge:wire_gt_quadruple/nichrome"
+      "tag": "forge:wires/quadruple/nichrome"
     },
     "W": {
-      "tag": "forge:cable_gt_single/aluminium"
+      "tag": "forge:cables/single/aluminium"
     }
   },
   "pattern": [

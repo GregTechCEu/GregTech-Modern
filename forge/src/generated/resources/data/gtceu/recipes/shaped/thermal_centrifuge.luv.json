@@ -11,10 +11,10 @@
       "item": "gtceu:hull.luv"
     },
     "O": {
-      "tag": "forge:wire_gt_quadruple/hssg"
+      "tag": "forge:wires/quadruple/hssg"
     },
     "W": {
-      "tag": "forge:cable_gt_single/niobium_titanium"
+      "tag": "forge:cables/single/niobium_titanium"
     }
   },
   "pattern": [

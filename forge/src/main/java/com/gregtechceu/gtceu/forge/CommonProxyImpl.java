@@ -2,13 +2,13 @@ package com.gregtechceu.gtceu.forge;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.registry.forge.GTRegistriesImpl;
 import com.gregtechceu.gtceu.common.CommonProxy;
-import com.gregtechceu.gtceu.common.data.forge.GTOresImpl;
+import com.gregtechceu.gtceu.common.data.forge.GTFeaturesImpl;
 import com.gregtechceu.gtceu.integration.top.forge.TheOneProbePluginImpl;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapabilities;
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.forge.SizedIngredientImpl;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTSyncedFieldAccessors;
 import com.lowdragmc.lowdraglib.LDLib;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
@@ -25,7 +25,8 @@ public class CommonProxyImpl {
         // used for forge events (ClientProxy + CommonProxy)
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
         eventBus.register(this);
-        GTOresImpl.init(eventBus);
+        GTRegistriesImpl.init(eventBus);
+        GTFeaturesImpl.init(eventBus);
         // init common features
         CommonProxy.init();
         // register payloads

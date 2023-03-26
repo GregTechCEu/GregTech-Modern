@@ -5,7 +5,7 @@
       "tag": "c:frames/steel"
     },
     "I": {
-      "tag": "c:pipe_normal_fluid/steel"
+      "tag": "c:fluid_pipes/normal/steel"
     },
     "P": {
       "tag": "c:plates/steel"

@@ -9,7 +9,7 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "forge:cable_gt_double/silver"
+          "tag": "forge:cables/double/silver"
         }
       },
       {
@@ -36,7 +36,7 @@
           "type": "gtceu:sized",
           "count": 4,
           "fabric:type": "gtceu:sized",
-          "tag": "forge:wire_gt_double/electrum"
+          "tag": "forge:wires/double/electrum"
         }
       }
     ]

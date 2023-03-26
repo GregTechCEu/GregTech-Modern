@@ -9,7 +9,7 @@
           "type": "gtceu:sized",
           "count": 3,
           "fabric:type": "gtceu:sized",
-          "tag": "forge:cable_gt_single/copper"
+          "tag": "forge:cables/single/copper"
         }
       },
       {

@@ -8,7 +8,7 @@
       "tag": "c:plates/stainless_steel"
     },
     "W": {
-      "tag": "c:wire_gt_quadruple/mercury_barium_calcium_cuprate"
+      "tag": "c:wires/quadruple/mercury_barium_calcium_cuprate"
     },
     "X": {
       "tag": "c:circuit/hv"
