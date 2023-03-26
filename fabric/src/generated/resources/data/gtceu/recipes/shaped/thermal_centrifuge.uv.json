@@ -11,10 +11,10 @@
       "item": "gtceu:hull.uv"
     },
     "O": {
-      "tag": "c:wire_gt_quadruple/naquadah_alloy"
+      "tag": "c:wires/quadruple/naquadah_alloy"
     },
     "W": {
-      "tag": "c:cable_gt_single/yttrium_barium_cuprate"
+      "tag": "c:cables/single/yttrium_barium_cuprate"
     }
   },
   "pattern": [

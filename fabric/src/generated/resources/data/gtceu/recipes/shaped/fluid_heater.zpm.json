@@ -11,13 +11,13 @@
       "item": "gtceu:hull.zpm"
     },
     "O": {
-      "tag": "c:wire_gt_quadruple/naquadah"
+      "tag": "c:wires/quadruple/naquadah"
     },
     "P": {
       "item": "gtceu:electric.pump.zpm"
     },
     "W": {
-      "tag": "c:cable_gt_single/vanadium_gallium"
+      "tag": "c:cables/single/vanadium_gallium"
     }
   },
   "pattern": [

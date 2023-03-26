@@ -14,7 +14,7 @@
       "tag": "forge:plates/darmstadtium"
     },
     "W": {
-      "tag": "forge:cable_gt_quadruple/yttrium_barium_cuprate"
+      "tag": "forge:cables/quadruple/yttrium_barium_cuprate"
     }
   },
   "pattern": [

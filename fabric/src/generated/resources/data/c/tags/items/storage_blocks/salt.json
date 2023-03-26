@@ -1,7 +1,6 @@
 {
   "replace": false,
   "values": [
-    "gtceu:compressed_block_salt",
     "gtceu:compressed_block_salt"
   ]
 }

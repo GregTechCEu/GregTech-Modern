@@ -14,10 +14,10 @@
       "item": "gtceu:conveyor.module.iv"
     },
     "W": {
-      "tag": "c:cable_gt_single/platinum"
+      "tag": "c:cables/single/platinum"
     },
     "Z": {
-      "tag": "c:wire_gt_quadruple/graphene"
+      "tag": "c:wires/quadruple/graphene"
     }
   },
   "pattern": [

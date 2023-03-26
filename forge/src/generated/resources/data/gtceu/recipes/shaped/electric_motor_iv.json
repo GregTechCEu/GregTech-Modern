@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "forge:cable_gt_double/tungsten"
+      "tag": "forge:cables/double/tungsten"
     },
     "M": {
       "tag": "forge:sticks/neodymium_magnetic"
@@ -11,7 +11,7 @@
       "tag": "forge:sticks/tungsten_steel"
     },
     "W": {
-      "tag": "forge:wire_gt_double/graphene"
+      "tag": "forge:wires/double/graphene"
     }
   },
   "pattern": [

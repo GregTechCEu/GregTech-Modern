@@ -45,7 +45,7 @@ public class OreRecipeHandler {
 
         crushed.executeHandler(PropertyKey.ORE, (tagPrefix, material, property) -> processCrushedOre(tagPrefix, material, property, provider));
         crushedPurified.executeHandler(PropertyKey.ORE, (tagPrefix, material, property) -> processCrushedPurified(tagPrefix, material, property, provider));
-        crushedCentrifuged.executeHandler(PropertyKey.ORE, (tagPrefix, material, property) -> processCrushedCentrifuged(tagPrefix, material, property, provider));
+        crushedRefined.executeHandler(PropertyKey.ORE, (tagPrefix, material, property) -> processCrushedCentrifuged(tagPrefix, material, property, provider));
         dustImpure.executeHandler(PropertyKey.ORE, (tagPrefix, material, property) -> processDirtyDust(tagPrefix, material, property, provider));
         dustPure.executeHandler(PropertyKey.ORE, (tagPrefix, material, property) -> processPureDust(tagPrefix, material, property, provider));
     }
@@ -120,15 +120,6 @@ public class OreRecipeHandler {
         ItemStack impureDustStack = ChemicalHelper.get(dustImpure, material);
         Material byproductMaterial = GTUtil.selectItemInList(0, material, property.getOreByProducts(), Material.class);
 
-        //fallback for dirtyGravel, shard & clump
-        if (impureDustStack.isEmpty()) {
-            impureDustStack = GTUtil.copy(
-                    ChemicalHelper.get(dirtyGravel, material),
-                    ChemicalHelper.get(shard, material),
-                    ChemicalHelper.get(clump, material),
-                    ChemicalHelper.get(dust, material));
-        }
-
         FORGE_HAMMER_RECIPES.recipeBuilder("hammer_" + material.getName() + "_crushed_ore_to_impure_dust")
                 .inputItems(crushedPrefix, material)
                 .outputItems(impureDustStack)
@@ -146,7 +137,7 @@ public class OreRecipeHandler {
                 ChemicalHelper.get(crushedPurified, material),
                 ChemicalHelper.get(dust, material));
         ItemStack crushedCentrifugedOre = GTUtil.copy(
-                ChemicalHelper.get(crushedCentrifuged, material),
+                ChemicalHelper.get(crushedRefined, material),
                 ChemicalHelper.get(dust, material));
 
         ORE_WASHER_RECIPES.recipeBuilder("wash_" + material.getName() + "_crushed_ore_to_purified_ore_fast")
@@ -225,7 +216,7 @@ public class OreRecipeHandler {
     }
 
     public static void processCrushedPurified(TagPrefix purifiedPrefix, Material material, OreProperty property, Consumer<FinishedRecipe> provider) {
-        ItemStack crushedCentrifugedStack = ChemicalHelper.get(crushedCentrifuged, material);
+        ItemStack crushedCentrifugedStack = ChemicalHelper.get(crushedRefined, material);
         ItemStack dustStack = ChemicalHelper.get(dustPure, material);
         Material byproductMaterial = GTUtil.selectItemInList(
                 1, material, property.getOreByProducts(), Material.class);
@@ -347,13 +338,6 @@ public class OreRecipeHandler {
                     .chancedOutput(separatedStack2, 2000, 600)
                     .duration(200).EUt(24)
                     .save(provider);
-        }
-
-        if (dustStack.isEmpty()) {
-            //fallback for reduced & cleanGravel
-            dustStack = GTUtil.copy(
-                    ChemicalHelper.get(reduced, material),
-                    ChemicalHelper.get(cleanGravel, material));
         }
 
         CENTRIFUGE_RECIPES.recipeBuilder("centrifuge_" + material.getName() + "_pure_dust_to_dust")

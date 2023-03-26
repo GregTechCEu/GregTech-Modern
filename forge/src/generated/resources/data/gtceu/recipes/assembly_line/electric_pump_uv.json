@@ -38,7 +38,7 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "forge:pipe_large_fluid/naquadah"
+          "tag": "forge:fluid_pipes/large/naquadah"
         }
       },
       {
@@ -83,7 +83,7 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "forge:cable_gt_single/yttrium_barium_cuprate"
+          "tag": "forge:cables/single/yttrium_barium_cuprate"
         }
       }
     ]

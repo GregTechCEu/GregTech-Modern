@@ -2,13 +2,13 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:cable_gt_single/tin"
+      "tag": "c:cables/single/tin"
     },
     "M": {
       "item": "gtceu:electric.motor.lv"
     },
     "P": {
-      "tag": "c:pipe_normal_fluid/bronze"
+      "tag": "c:fluid_pipes/normal/bronze"
     },
     "R": {
       "tag": "c:rings/rubber"

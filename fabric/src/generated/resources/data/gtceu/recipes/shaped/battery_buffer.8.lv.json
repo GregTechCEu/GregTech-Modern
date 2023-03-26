@@ -8,7 +8,7 @@
       "tag": "c:chests"
     },
     "W": {
-      "tag": "c:wire_gt_octal/tin"
+      "tag": "c:wires/octal/tin"
     }
   },
   "pattern": [

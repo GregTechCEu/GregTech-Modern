@@ -11,7 +11,7 @@
       "tag": "c:crafting/piston"
     },
     "X": {
-      "tag": "c:pipe_small_fluid/bronze"
+      "tag": "c:fluid_pipes/small/bronze"
     }
   },
   "pattern": [

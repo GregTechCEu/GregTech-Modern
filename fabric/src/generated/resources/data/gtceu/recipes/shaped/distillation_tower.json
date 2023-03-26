@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "B": {
-      "tag": "c:pipe_large_fluid/stainless_steel"
+      "tag": "c:fluid_pipes/large/stainless_steel"
     },
     "C": {
       "tag": "c:circuit/ev"

@@ -120,7 +120,7 @@
           "type": "gtceu:sized",
           "count": 16,
           "fabric:type": "gtceu:sized",
-          "tag": "forge:wire_gt_double/enriched_naquadah_trinium_europium_duranide"
+          "tag": "forge:wires/double/enriched_naquadah_trinium_europium_duranide"
         }
       },
       {

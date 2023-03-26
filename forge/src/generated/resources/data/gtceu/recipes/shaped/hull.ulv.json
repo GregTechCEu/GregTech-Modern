@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "forge:cable_gt_single/red_alloy"
+      "tag": "forge:cables/single/red_alloy"
     },
     "H": {
       "item": "gtceu:hull_casing_ulv"

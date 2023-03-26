@@ -8,7 +8,7 @@
       "item": "gtceu:electric.motor.uv"
     },
     "G": {
-      "tag": "forge:pipe_huge_fluid/polytetrafluoroethylene"
+      "tag": "forge:fluid_pipes/huge/polytetrafluoroethylene"
     },
     "M": {
       "item": "gtceu:hull.uv"
@@ -17,7 +17,7 @@
       "tag": "forge:rotors/darmstadtium"
     },
     "W": {
-      "tag": "forge:cable_gt_single/yttrium_barium_cuprate"
+      "tag": "forge:cables/single/yttrium_barium_cuprate"
     }
   },
   "pattern": [

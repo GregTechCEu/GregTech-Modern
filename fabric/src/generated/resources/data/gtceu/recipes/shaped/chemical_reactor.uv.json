@@ -8,7 +8,7 @@
       "item": "gtceu:electric.motor.uv"
     },
     "G": {
-      "tag": "c:pipe_huge_fluid/polytetrafluoroethylene"
+      "tag": "c:fluid_pipes/huge/polytetrafluoroethylene"
     },
     "M": {
       "item": "gtceu:hull.uv"
@@ -17,7 +17,7 @@
       "tag": "c:rotors/darmstadtium"
     },
     "W": {
-      "tag": "c:cable_gt_single/yttrium_barium_cuprate"
+      "tag": "c:cables/single/yttrium_barium_cuprate"
     }
   },
   "pattern": [

@@ -18,7 +18,7 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "c:cable_gt_single/tungsten"
+          "tag": "c:cables/single/tungsten"
         }
       },
       {

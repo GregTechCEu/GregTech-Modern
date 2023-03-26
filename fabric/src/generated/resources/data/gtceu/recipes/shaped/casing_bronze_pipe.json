@@ -5,7 +5,7 @@
       "tag": "c:frames/bronze"
     },
     "I": {
-      "tag": "c:pipe_normal_fluid/bronze"
+      "tag": "c:fluid_pipes/normal/bronze"
     },
     "P": {
       "tag": "c:plates/bronze"

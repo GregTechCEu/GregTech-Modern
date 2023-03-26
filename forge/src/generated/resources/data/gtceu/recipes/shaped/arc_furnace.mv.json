@@ -14,7 +14,7 @@
       "tag": "forge:plates/aluminium"
     },
     "W": {
-      "tag": "forge:cable_gt_quadruple/copper"
+      "tag": "forge:cables/quadruple/copper"
     }
   },
   "pattern": [

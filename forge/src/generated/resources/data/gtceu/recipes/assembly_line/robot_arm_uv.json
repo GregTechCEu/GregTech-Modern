@@ -103,7 +103,7 @@
           "type": "gtceu:sized",
           "count": 4,
           "fabric:type": "gtceu:sized",
-          "tag": "forge:cable_gt_single/yttrium_barium_cuprate"
+          "tag": "forge:cables/single/yttrium_barium_cuprate"
         }
       }
     ]

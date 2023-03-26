@@ -25,13 +25,11 @@ import com.gregtechceu.gtceu.common.block.CableBlock;
 import com.gregtechceu.gtceu.common.pipelike.cable.Insulation;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.tterrag.registrate.builders.BlockBuilder;
-import com.tterrag.registrate.builders.ItemBuilder;
 import com.tterrag.registrate.providers.ProviderType;
 import com.tterrag.registrate.providers.loot.RegistrateBlockLootTables;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import com.tterrag.registrate.util.nullness.NonNullFunction;
-import com.tterrag.registrate.util.nullness.NonNullUnaryOperator;
 import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.renderer.BiomeColors;
@@ -43,14 +41,14 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.level.FoliageColor;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.grower.AbstractTreeGrower;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.material.MaterialColor;
-import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
 
@@ -94,7 +92,6 @@ public class GTBlocks {
                         .item(MaterialBlockItem::new)
                         .model(NonNullBiConsumer.noop())
                         .color(() -> () -> MaterialBlockItem::tintColor)
-                        .transform(unificationItem(TagPrefix.block, material))
                         .build()
                         .register();
                 builder.put(TagPrefix.block, material, entry);
@@ -114,7 +111,6 @@ public class GTBlocks {
                         .item(MaterialBlockItem::new)
                         .model(NonNullBiConsumer.noop())
                         .color(() -> () -> MaterialBlockItem::tintColor)
-                        .transform(unificationItem(TagPrefix.frameGt, material))
                         .build()
                         .register();
                 builder.put(TagPrefix.frameGt, material, entry);
@@ -145,7 +141,6 @@ public class GTBlocks {
                             .item(MaterialBlockItem::new)
                             .model(NonNullBiConsumer.noop())
                             .color(() -> () -> MaterialBlockItem::tintColor)
-                            .transform(unificationItem(oreTag, material))
                             .build()
                             .register();
                     builder.put(oreTag, material, entry);
@@ -180,7 +175,6 @@ public class GTBlocks {
                             .item(MaterialPipeBlockItem::new)
                             .model(NonNullBiConsumer.noop())
                             .color(() -> () -> MaterialPipeBlockItem::tintColor)
-                            .transform(unificationItem(insulation.tagPrefix, material))
                             .build()
                             .register();
                     builder.put(insulation.tagPrefix, material, entry);
@@ -210,7 +204,6 @@ public class GTBlocks {
                             .item(MaterialPipeBlockItem::new)
                             .model(NonNullBiConsumer.noop())
                             .color(() -> () -> MaterialPipeBlockItem::tintColor)
-                            .transform(unificationItem(fluidPipeType.tagPrefix, material))
                             .build()
                             .register();
                     builder.put(fluidPipeType.tagPrefix, material, entry);
@@ -502,13 +495,6 @@ public class GTBlocks {
     public static <P, T extends Block, S2 extends BlockBuilder<T, P>> NonNullFunction<S2, S2> unificationBlock(@Nonnull TagPrefix tagPrefix, @Nonnull Material mat) {
         return builder -> {
             builder.onRegister(block -> ChemicalHelper.registerUnificationItems(tagPrefix, mat, block));
-            return builder;
-        };
-    }
-
-    public static <P, T extends Item, S2 extends ItemBuilder<T, P>> NonNullFunction<S2, S2> unificationItem(@Nonnull TagPrefix tagPrefix, @Nonnull Material mat) {
-        return builder -> {
-            builder.onRegister(item -> ChemicalHelper.registerUnificationItems(tagPrefix, mat, item));
             return builder;
         };
     }

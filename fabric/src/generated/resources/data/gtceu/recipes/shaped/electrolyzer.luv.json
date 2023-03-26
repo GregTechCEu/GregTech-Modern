@@ -8,13 +8,13 @@
       "tag": "c:glass"
     },
     "I": {
-      "tag": "c:wire_gt_single/osmium"
+      "tag": "c:wires/single/osmium"
     },
     "M": {
       "item": "gtceu:hull.luv"
     },
     "W": {
-      "tag": "c:cable_gt_single/niobium_titanium"
+      "tag": "c:cables/single/niobium_titanium"
     }
   },
   "pattern": [

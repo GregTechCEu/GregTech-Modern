@@ -14,10 +14,10 @@
       "item": "gtceu:conveyor.module.uv"
     },
     "W": {
-      "tag": "forge:cable_gt_single/yttrium_barium_cuprate"
+      "tag": "forge:cables/single/yttrium_barium_cuprate"
     },
     "Z": {
-      "tag": "forge:wire_gt_octal/yttrium_barium_cuprate"
+      "tag": "forge:wires/octal/yttrium_barium_cuprate"
     }
   },
   "pattern": [

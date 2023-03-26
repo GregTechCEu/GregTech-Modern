@@ -36,7 +36,7 @@
           "type": "gtceu:sized",
           "count": 4,
           "fabric:type": "gtceu:sized",
-          "tag": "c:wire_gt_quadruple/uranium_triplatinum"
+          "tag": "c:wires/quadruple/uranium_triplatinum"
         }
       }
     ]

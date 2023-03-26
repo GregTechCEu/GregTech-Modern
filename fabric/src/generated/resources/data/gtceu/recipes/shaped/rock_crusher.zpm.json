@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:cable_gt_single/vanadium_gallium"
+      "tag": "c:cables/single/vanadium_gallium"
     },
     "G": {
       "tag": "c:glass"
