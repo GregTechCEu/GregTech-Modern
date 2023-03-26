@@ -729,21 +729,20 @@ public class MachineRecipeLoader {
                 .duration(150).EUt(2)
                 .save(provider);
 
-        // TODO Rubber tree
-        //EXTRACTOR_RECIPES.recipeBuilder().duration(300).EUt(2)
-        //        .inputItems(new ItemStack(MetaBlocks.RUBBER_LEAVES, 16))
-        //        .outputItems(dust, RawRubber)
-        //        .save(provider);
+        EXTRACTOR_RECIPES.recipeBuilder("raw_rubber_from_leaves").duration(300).EUt(2)
+                .inputItems(GTBlocks.RUBBER_LEAVES.asStack(16))
+                .outputItems(dust, RawRubber)
+                .save(provider);
 
-        //EXTRACTOR_RECIPES.recipeBuilder().duration(300).EUt(2)
-        //        .inputItems(new ItemStack(MetaBlocks.RUBBER_LOG))
-        //        .outputItems(dust, RawRubber)
-        //        .save(provider);
+        EXTRACTOR_RECIPES.recipeBuilder("raw_rubber_from_log").duration(300).EUt(2)
+                .inputItems(GTBlocks.RUBBER_LOG.asStack())
+                .outputItems(dust, RawRubber)
+                .save(provider);
 
-        //EXTRACTOR_RECIPES.recipeBuilder().duration(300).EUt(2)
-        //        .inputItems(new ItemStack(MetaBlocks.RUBBER_SAPLING))
-        //        .outputItems(dust, RawRubber)
-        //        .save(provider);
+        EXTRACTOR_RECIPES.recipeBuilder("raw_rubber_from_sapling").duration(300).EUt(2)
+                .inputItems(GTBlocks.RUBBER_SAPLING.asStack())
+                .outputItems(dust, RawRubber)
+                .save(provider);
 
         EXTRACTOR_RECIPES.recipeBuilder("raw_rubber_from_slime").duration(150).EUt(2)
                 .inputItems(new ItemStack(Items.SLIME_BALL))

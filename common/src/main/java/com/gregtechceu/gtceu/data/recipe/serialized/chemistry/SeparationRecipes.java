@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.data.recipe.serialized.chemistry;
 
+import com.gregtechceu.gtceu.common.data.GTBlocks;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -102,15 +103,14 @@ public class SeparationRecipes {
                 .outputFluids(Glue.getFluid(100))
                 .save(provider);
 
-        // TODO Rubber Log
-        //CENTRIFUGE_RECIPES.recipeBuilder("rubber_log_separation").duration(200).EUt(20)
-        //        .inputItems(new ItemStack(MetaBlocks.RUBBER_LOG))
-        //        .chancedOutput(STICKY_RESIN, 5000, 1200)
-        //        .chancedOutput(PLANT_BALL, 3750, 900)
-        //        .chancedOutput(dust, Carbon, 2500, 600)
-        //        .chancedOutput(dust, Wood, 2500, 700)
-        //        .outputFluids(Methane.getFluid(60))
-        //        .save(provider);
+        CENTRIFUGE_RECIPES.recipeBuilder("rubber_log_separation").duration(200).EUt(20)
+                .inputItems(GTBlocks.RUBBER_LOG.asStack())
+                .chancedOutput(STICKY_RESIN.asStack(), 5000, 1200)
+                .chancedOutput(PLANT_BALL.asStack(), 3750, 900)
+                .chancedOutput(dust, Carbon, 2500, 600)
+                .chancedOutput(dust, Wood, 2500, 700)
+                .outputFluids(Methane.getFluid(60))
+                .save(provider);
 
         // TODO Other kinds of dirt?
         CENTRIFUGE_RECIPES.recipeBuilder("dirt_separation").duration(250).EUt(VA[LV])

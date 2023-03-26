@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.data.recipe.misc;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials.Tier;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
+import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CommonTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
@@ -65,8 +66,8 @@ public class CraftingRecipeLoader {
         // TODO clipboard
         //VanillaRecipeHelper.addShapedRecipe(provider, "clipboard", CLIPBOARD.asStack(), " Sd", "BWR", "PPP", 'P', Items.PAPER, 'R', new UnificationEntry(springSmall, Iron), 'B', new UnificationEntry(bolt, Iron), 'S', new UnificationEntry(screw, Iron), 'W', new UnificationEntry(plate, Wood));
 
-        // TODO rubber wood, treated wood
-        //VanillaRecipeHelper.addShapelessRecipe("rubber_wood_planks", MetaBlocks.PLANKS.getItemVariant(BlockGregPlanks.BlockType.RUBBER_PLANK, 4), new ItemStack(MetaBlocks.RUBBER_LOG));
+        VanillaRecipeHelper.addShapelessRecipe(provider, "rubber_wood_planks", GTBlocks.RUBBER_PLANK.asStack(4), GTBlocks.RUBBER_LOG.asStack());
+        // TODO treated wood
         //VanillaRecipeHelper.addShapedRecipe(provider, "treated_wood_planks", MetaBlocks.PLANKS.getItemVariant(BlockGregPlanks.BlockType.TREATED_PLANK, 8), "PPP", "PBP", "PPP", 'P', "plankWood", 'B', FluidUtil.getFilledBucket(Creosote.getFluid(1000)));
         //VanillaRecipeHelper.addShapedRecipe(provider, "treated_wood_stick_saw", ChemicalHelper.get(stick, TreatedWood, ConfigHolder.recipes.nerfWoodCrafting ? 1 : 2), "s", "L", 'L', MetaBlocks.PLANKS.getItemVariant(BlockGregPlanks.BlockType.TREATED_PLANK));
         //if (!ConfigHolder.recipes.nerfWoodCrafting)
