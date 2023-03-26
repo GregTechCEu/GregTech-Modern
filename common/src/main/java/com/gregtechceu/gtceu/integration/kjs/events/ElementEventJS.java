@@ -10,11 +10,11 @@ import javax.annotation.Nullable;
 /**
  * @author KilaBash
  * @date 2023/3/26
- * @implNote MaterialEventJS
+ * @implNote ElementEventJS
  */
 public class ElementEventJS extends EventJS {
 
-    public Element createAndRegister(long protons, long neutrons, long halfLifeSeconds, String decayTo, String name, String symbol, boolean isIsotope) {
+    public Element create(long protons, long neutrons, long halfLifeSeconds, String decayTo, String name, String symbol, boolean isIsotope) {
         return GTElements.createAndRegister(protons, neutrons, halfLifeSeconds, decayTo, name, symbol, isIsotope);
     }
 

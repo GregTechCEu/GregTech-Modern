@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMa
 import com.gregtechceu.gtceu.api.machine.steam.SimpleSteamMachine;
 import com.gregtechceu.gtceu.api.pattern.Predicates;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.client.renderer.block.CTMModelRenderer;
 import com.gregtechceu.gtceu.client.renderer.machine.*;
@@ -38,6 +39,9 @@ import com.gregtechceu.gtceu.common.machine.multiblock.electric.PyrolyseOvenMach
 import com.gregtechceu.gtceu.common.machine.steam.SteamLiquidBoilerMachine;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.data.LangHandler;
+import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
+import com.gregtechceu.gtceu.integration.kjs.events.MachineEventJS;
+import com.gregtechceu.gtceu.integration.kjs.events.RecipeTypeEventJS;
 import com.lowdragmc.lowdraglib.client.renderer.impl.IModelRenderer;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
@@ -614,7 +618,7 @@ public class GTMachines {
                     .aisle("XXX", "XXX", "XXX")
                     .aisle("XXX", "X#X", "XXX")
                     .aisle("XXX", "XSX", "XXX")
-                    .where('S', Predicates.controller(blocks(definition.get())))
+                    .where('S', controller(blocks(definition.get())))
                     .where('X', blocks(CASING_STEEL_SOLID.get()).setMinGlobalLimited(14)
                             .or(Predicates.autoAbilities(definition.getRecipeType())))
                     .where('#', Predicates.air())
@@ -731,7 +735,7 @@ public class GTMachines {
     //////////////////////////////////////
     //**********     Misc     **********//
     //////////////////////////////////////
-    private static Pair<MachineDefinition, MachineDefinition> registerSteamMachines(String name, BiFunction<IMetaMachineBlockEntity, Boolean, MetaMachine> factory,
+    public static Pair<MachineDefinition, MachineDefinition> registerSteamMachines(String name, BiFunction<IMetaMachineBlockEntity, Boolean, MetaMachine> factory,
                                               BiFunction<Boolean, MachineBuilder, MachineDefinition> builder) {
         MachineDefinition lowTier = builder.apply(false, REGISTRATE.machine(name + "." + "bronze", holder -> factory.apply(holder, false))
                 .langValue("Small " + name)
@@ -742,7 +746,7 @@ public class GTMachines {
         return Pair.of(lowTier, highTier);
     }
 
-    private static MachineDefinition[] registerTieredMachines(String name,
+    public static MachineDefinition[] registerTieredMachines(String name,
                                                               BiFunction<IMetaMachineBlockEntity, Integer, MetaMachine> factory,
                                                               BiFunction<Integer, MachineBuilder, MachineDefinition> builder,
                                                               int... tiers) {
@@ -756,7 +760,7 @@ public class GTMachines {
         return definitions;
     }
 
-    private static MachineDefinition[] registerSimpleMachines(String name,
+    public static MachineDefinition[] registerSimpleMachines(String name,
                                                               GTRecipeType recipeType,
                                                               Int2LongFunction tankScalingFunction,
                                                               int... tiers) {
@@ -766,19 +770,19 @@ public class GTMachines {
                 .recipeType(recipeType)
                 .workableTieredHullRenderer(GTCEu.id("block/machines/" + name))
                 .tooltips(explosion())
-                .tooltips(workableTiered(tier, GTValues.V[tier], GTValues.V[tier] * 64, recipeType, tankScalingFunction.apply(tier), true))
+                .tooltips(workableTiered(tier, GTValues.V[tier], GTValues.V[tier] * 64, recipeType, (long)tankScalingFunction.apply(tier), true))
                 .register(), tiers);
     }
 
-    private static MachineDefinition[] registerSimpleMachines(String name, GTRecipeType recipeType, Int2LongFunction tankScalingFunction) {
+    public static MachineDefinition[] registerSimpleMachines(String name, GTRecipeType recipeType, Int2LongFunction tankScalingFunction) {
         return registerSimpleMachines(name, recipeType, tankScalingFunction, ELECTRIC_TIERS);
     }
 
-    private static MachineDefinition[] registerSimpleMachines(String name, GTRecipeType recipeType) {
+    public static MachineDefinition[] registerSimpleMachines(String name, GTRecipeType recipeType) {
         return registerSimpleMachines(name, recipeType, defaultTankSizeFunction);
     }
 
-    private static MachineDefinition[] registerSimpleGenerator(String name,
+    public static MachineDefinition[] registerSimpleGenerator(String name,
                                                               GTRecipeType recipeType,
                                                               Int2LongFunction tankScalingFunction,
                                                               int... tiers) {
@@ -789,11 +793,11 @@ public class GTMachines {
                 .renderer(() -> new SimpleGeneratorMachineRenderer(tier, GTCEu.id("block/generators/" + name)))
                 .overclockingLogic(OverclockingLogic.PERFECT_OVERCLOCK)
                 .tooltips(explosion())
-                .tooltips(workableTiered(tier, GTValues.V[tier], GTValues.V[tier] * 64, recipeType, tankScalingFunction.apply(tier), false))
+                .tooltips(workableTiered(tier, GTValues.V[tier], GTValues.V[tier] * 64, recipeType, (long)tankScalingFunction.apply(tier), false))
                 .register(), tiers);
     }
 
-    private static Pair<MachineDefinition, MachineDefinition> registerSimpleSteamMachines(String name, GTRecipeType recipeType) {
+    public static Pair<MachineDefinition, MachineDefinition> registerSimpleSteamMachines(String name, GTRecipeType recipeType) {
         return registerSteamMachines("steam_" + name, SimpleSteamMachine::new, (pressure, builder) -> builder
                 .rotationState(RotationState.NON_Y_AXIS)
                 .recipeType(recipeType)
@@ -828,13 +832,13 @@ public class GTMachines {
                 .register();
     }
 
-    private static Component explosion() {
+    public static Component explosion() {
         if (ConfigHolder.machines.doTerrainExplosion)
             return Component.translatable("gtceu.universal.tooltip.terrain_resist");
         return null;
     }
 
-    private static Component[] workableTiered(int tier, long voltage, long energyCapacity, GTRecipeType recipeType, long tankCapacity, boolean input) {
+    public static Component[] workableTiered(int tier, long voltage, long energyCapacity, GTRecipeType recipeType, long tankCapacity, boolean input) {
         List<Component> tooltipComponents = new ArrayList<>();
         tooltipComponents.add(input ? Component.translatable("gtceu.universal.tooltip.voltage_in", voltage, GTValues.VNF[tier]) :
                 Component.translatable("gtceu.universal.tooltip.voltage_out", voltage, GTValues.VNF[tier]));
@@ -845,8 +849,13 @@ public class GTMachines {
     }
 
     public static void init() {
-
+        if (GTCEu.isKubeJSLoaded()) {
+            GTCEuStartupEvents.MACHINES.post(new MachineEventJS());
+        }
     }
 
+    public static MachineDefinition get(String name) {
+        return GTRegistries.MACHINES.get(GTCEu.id(name));
+    }
 
 }

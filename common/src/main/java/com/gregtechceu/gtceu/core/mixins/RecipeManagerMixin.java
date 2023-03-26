@@ -5,6 +5,8 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.common.data.GTRecipes;
+import com.gregtechceu.gtceu.integration.kjs.GTCEuServerEvents;
+import com.gregtechceu.gtceu.integration.kjs.events.GTRecipeEventJS;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -44,6 +46,9 @@ public abstract class RecipeManagerMixin {
                 GTCEu.LOGGER.error("duplicated recipe: {}", id);
             }
         });
+        if (GTCEu.isKubeJSLoaded()) {
+            GTCEuServerEvents.RECIPE.post(new GTRecipeEventJS(map));
+        }
     }
 
     @Inject(method = "apply(Ljava/util/Map;Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/util/profiling/ProfilerFiller;)V",

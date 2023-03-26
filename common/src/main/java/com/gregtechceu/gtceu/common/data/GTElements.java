@@ -154,4 +154,8 @@ public class GTElements {
             GTCEuStartupEvents.ELEMENT.post(new ElementEventJS());
         }
     }
+
+    public static Element get(String name) {
+        return GTRegistries.ELEMENTS.get(name);
+    }
 }

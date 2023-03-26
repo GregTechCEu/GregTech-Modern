@@ -13,7 +13,7 @@ import javax.annotation.Nullable;
  */
 public class MaterialEventJS extends EventJS {
 
-    public Material.Builder builder(String name) {
+    public Material.Builder create(String name) {
         return new Material.Builder(name);
     }
 

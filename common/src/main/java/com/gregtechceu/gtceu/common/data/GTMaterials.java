@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.materials.*;
 import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterial;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
@@ -274,6 +275,10 @@ public class GTMaterials {
         if (GTCEu.isKubeJSLoaded()) {
             GTCEuStartupEvents.MATERIAL.post(new MaterialEventJS());
         }
+    }
+
+    public static Material get(String name) {
+        return GTRegistries.MATERIALS.get(name);
     }
 
     private static void excludeAllGems(Material material, ItemLike... items) {
