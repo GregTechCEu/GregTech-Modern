@@ -8,10 +8,10 @@
       "tag": "c:sticks/steel"
     },
     "W": {
-      "tag": "c:cable_gt_single/gold"
+      "tag": "c:cables/single/gold"
     },
     "Z": {
-      "tag": "c:wire_gt_double/silver"
+      "tag": "c:wires/double/silver"
     }
   },
   "pattern": [

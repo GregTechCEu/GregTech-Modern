@@ -11,13 +11,13 @@
       "item": "gtceu:hull.mv"
     },
     "P": {
-      "tag": "forge:pipe_normal_fluid/steel"
+      "tag": "forge:fluid_pipes/normal/steel"
     },
     "R": {
       "tag": "forge:rotors/bronze"
     },
     "W": {
-      "tag": "forge:cable_gt_single/copper"
+      "tag": "forge:cables/single/copper"
     }
   },
   "pattern": [

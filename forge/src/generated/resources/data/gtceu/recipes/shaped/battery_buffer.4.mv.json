@@ -8,7 +8,7 @@
       "tag": "forge:chests/wooden"
     },
     "W": {
-      "tag": "forge:wire_gt_quadruple/copper"
+      "tag": "forge:wires/quadruple/copper"
     }
   },
   "pattern": [

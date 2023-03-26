@@ -8,7 +8,7 @@
       "item": "gtceu:electric.motor.zpm"
     },
     "G": {
-      "tag": "forge:pipe_large_fluid/polytetrafluoroethylene"
+      "tag": "forge:fluid_pipes/large/polytetrafluoroethylene"
     },
     "M": {
       "item": "gtceu:hull.zpm"
@@ -17,7 +17,7 @@
       "tag": "forge:rotors/naquadah_alloy"
     },
     "W": {
-      "tag": "forge:cable_gt_single/vanadium_gallium"
+      "tag": "forge:cables/single/vanadium_gallium"
     }
   },
   "pattern": [

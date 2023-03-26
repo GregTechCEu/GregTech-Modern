@@ -5,7 +5,7 @@
       "tag": "c:frames/titanium"
     },
     "I": {
-      "tag": "c:pipe_normal_fluid/titanium"
+      "tag": "c:fluid_pipes/normal/titanium"
     },
     "P": {
       "tag": "c:plates/titanium"

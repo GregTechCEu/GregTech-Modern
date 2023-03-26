@@ -9,7 +9,7 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "c:cable_gt_single/tin"
+          "tag": "c:cables/single/tin"
         }
       },
       {
@@ -18,7 +18,7 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "c:pipe_normal_fluid/bronze"
+          "tag": "c:fluid_pipes/normal/bronze"
         }
       },
       {

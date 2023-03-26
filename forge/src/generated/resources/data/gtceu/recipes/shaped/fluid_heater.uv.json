@@ -11,13 +11,13 @@
       "item": "gtceu:hull.uv"
     },
     "O": {
-      "tag": "forge:wire_gt_quadruple/naquadah_alloy"
+      "tag": "forge:wires/quadruple/naquadah_alloy"
     },
     "P": {
       "item": "gtceu:electric.pump.uv"
     },
     "W": {
-      "tag": "forge:cable_gt_single/yttrium_barium_cuprate"
+      "tag": "forge:cables/single/yttrium_barium_cuprate"
     }
   },
   "pattern": [

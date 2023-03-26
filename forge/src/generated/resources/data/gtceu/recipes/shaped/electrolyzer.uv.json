@@ -8,13 +8,13 @@
       "tag": "forge:glass"
     },
     "I": {
-      "tag": "forge:wire_gt_single/osmium"
+      "tag": "forge:wires/single/osmium"
     },
     "M": {
       "item": "gtceu:hull.uv"
     },
     "W": {
-      "tag": "forge:cable_gt_single/yttrium_barium_cuprate"
+      "tag": "forge:cables/single/yttrium_barium_cuprate"
     }
   },
   "pattern": [

@@ -5,7 +5,7 @@
       "item": "gtceu:board.phenolic"
     },
     "W": {
-      "tag": "forge:wire_gt_single/silver"
+      "tag": "forge:wires/single/silver"
     }
   },
   "pattern": [

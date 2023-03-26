@@ -8,13 +8,13 @@
       "tag": "forge:glass"
     },
     "I": {
-      "tag": "forge:wire_gt_single/silver"
+      "tag": "forge:wires/single/silver"
     },
     "M": {
       "item": "gtceu:hull.mv"
     },
     "W": {
-      "tag": "forge:cable_gt_single/copper"
+      "tag": "forge:cables/single/copper"
     }
   },
   "pattern": [

@@ -8,7 +8,7 @@
       "tag": "c:plates/double/tungsten_steel"
     },
     "W": {
-      "tag": "c:wire_gt_quadruple/samarium_iron_arsenic_oxide"
+      "tag": "c:wires/quadruple/samarium_iron_arsenic_oxide"
     },
     "X": {
       "tag": "c:circuit/iv"

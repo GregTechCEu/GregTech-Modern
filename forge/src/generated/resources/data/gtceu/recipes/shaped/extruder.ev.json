@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "forge:wire_gt_quadruple/nichrome"
+      "tag": "forge:wires/quadruple/nichrome"
     },
     "E": {
       "tag": "forge:circuit/ev"
@@ -11,7 +11,7 @@
       "item": "gtceu:hull.ev"
     },
     "P": {
-      "tag": "forge:pipe_normal_fluid/titanium"
+      "tag": "forge:fluid_pipes/normal/titanium"
     },
     "X": {
       "item": "gtceu:electric.piston.ev"

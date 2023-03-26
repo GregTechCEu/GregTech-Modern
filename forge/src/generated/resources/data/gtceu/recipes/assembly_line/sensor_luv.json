@@ -75,7 +75,7 @@
           "type": "gtceu:sized",
           "count": 4,
           "fabric:type": "gtceu:sized",
-          "tag": "forge:cable_gt_single/niobium_titanium"
+          "tag": "forge:cables/single/niobium_titanium"
         }
       }
     ]

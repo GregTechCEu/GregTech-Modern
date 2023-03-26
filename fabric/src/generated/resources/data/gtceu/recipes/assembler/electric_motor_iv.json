@@ -9,7 +9,7 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "c:cable_gt_double/tungsten"
+          "tag": "c:cables/double/tungsten"
         }
       },
       {
@@ -36,7 +36,7 @@
           "type": "gtceu:sized",
           "count": 4,
           "fabric:type": "gtceu:sized",
-          "tag": "c:wire_gt_double/graphene"
+          "tag": "c:wires/double/graphene"
         }
       }
     ]

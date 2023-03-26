@@ -8,10 +8,10 @@
       "tag": "c:sticks/steel"
     },
     "W": {
-      "tag": "c:cable_gt_single/copper"
+      "tag": "c:cables/single/copper"
     },
     "Z": {
-      "tag": "c:wire_gt_double/copper"
+      "tag": "c:wires/double/copper"
     }
   },
   "pattern": [

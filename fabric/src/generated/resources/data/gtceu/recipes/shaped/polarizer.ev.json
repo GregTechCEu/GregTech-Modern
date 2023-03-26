@@ -8,10 +8,10 @@
       "tag": "c:sticks/neodymium"
     },
     "W": {
-      "tag": "c:cable_gt_single/aluminium"
+      "tag": "c:cables/single/aluminium"
     },
     "Z": {
-      "tag": "c:wire_gt_quadruple/steel"
+      "tag": "c:wires/quadruple/steel"
     }
   },
   "pattern": [

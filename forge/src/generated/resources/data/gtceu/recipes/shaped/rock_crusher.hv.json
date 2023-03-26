@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "forge:cable_gt_single/gold"
+      "tag": "forge:cables/single/gold"
     },
     "G": {
       "tag": "forge:glass"

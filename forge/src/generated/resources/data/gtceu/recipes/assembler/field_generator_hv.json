@@ -33,7 +33,7 @@
           "type": "gtceu:sized",
           "count": 4,
           "fabric:type": "gtceu:sized",
-          "tag": "forge:wire_gt_quadruple/mercury_barium_calcium_cuprate"
+          "tag": "forge:wires/quadruple/mercury_barium_calcium_cuprate"
         }
       }
     ]

@@ -9,7 +9,7 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "c:cable_gt_single/tin"
+          "tag": "c:cables/single/tin"
         }
       },
       {
@@ -36,7 +36,7 @@
           "type": "gtceu:sized",
           "count": 4,
           "fabric:type": "gtceu:sized",
-          "tag": "c:wire_gt_single/copper"
+          "tag": "c:wires/single/copper"
         }
       }
     ]

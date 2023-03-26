@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "B": {
-      "tag": "forge:tool_head_buzz_saw/blue_steel"
+      "tag": "forge:tool_heads/buzzsaw/blue_steel"
     },
     "C": {
       "tag": "forge:circuit/hv"
@@ -20,7 +20,7 @@
       "item": "gtceu:conveyor.module.hv"
     },
     "W": {
-      "tag": "forge:cable_gt_single/gold"
+      "tag": "forge:cables/single/gold"
     }
   },
   "pattern": [

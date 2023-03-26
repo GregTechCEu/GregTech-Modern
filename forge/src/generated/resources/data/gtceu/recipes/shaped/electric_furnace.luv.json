@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "forge:wire_gt_double/hssg"
+      "tag": "forge:wires/double/hssg"
     },
     "E": {
       "tag": "forge:circuit/luv"
@@ -11,7 +11,7 @@
       "item": "gtceu:hull.luv"
     },
     "W": {
-      "tag": "forge:cable_gt_single/niobium_titanium"
+      "tag": "forge:cables/single/niobium_titanium"
     }
   },
   "pattern": [

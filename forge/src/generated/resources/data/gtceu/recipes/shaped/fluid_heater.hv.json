@@ -11,13 +11,13 @@
       "item": "gtceu:hull.hv"
     },
     "O": {
-      "tag": "forge:wire_gt_quadruple/kanthal"
+      "tag": "forge:wires/quadruple/kanthal"
     },
     "P": {
       "item": "gtceu:electric.pump.hv"
     },
     "W": {
-      "tag": "forge:cable_gt_single/gold"
+      "tag": "forge:cables/single/gold"
     }
   },
   "pattern": [

@@ -11,10 +11,10 @@
       "item": "gtceu:hull.mv"
     },
     "O": {
-      "tag": "c:wire_gt_quadruple/cupronickel"
+      "tag": "c:wires/quadruple/cupronickel"
     },
     "W": {
-      "tag": "c:cable_gt_single/copper"
+      "tag": "c:cables/single/copper"
     }
   },
   "pattern": [

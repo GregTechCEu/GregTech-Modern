@@ -14,10 +14,10 @@
       "item": "gtceu:conveyor.module.zpm"
     },
     "W": {
-      "tag": "forge:cable_gt_single/vanadium_gallium"
+      "tag": "forge:cables/single/vanadium_gallium"
     },
     "Z": {
-      "tag": "forge:wire_gt_octal/vanadium_gallium"
+      "tag": "forge:wires/octal/vanadium_gallium"
     }
   },
   "pattern": [

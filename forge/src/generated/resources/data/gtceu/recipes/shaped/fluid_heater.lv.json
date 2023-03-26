@@ -11,13 +11,13 @@
       "item": "gtceu:hull.lv"
     },
     "O": {
-      "tag": "forge:wire_gt_quadruple/copper"
+      "tag": "forge:wires/quadruple/copper"
     },
     "P": {
       "item": "gtceu:electric.pump.lv"
     },
     "W": {
-      "tag": "forge:cable_gt_single/tin"
+      "tag": "forge:cables/single/tin"
     }
   },
   "pattern": [

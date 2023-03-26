@@ -24,7 +24,7 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "c:pipe_normal_item/brass"
+          "tag": "c:item_pipes/normal/brass"
         }
       },
       {

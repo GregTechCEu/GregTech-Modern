@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:cable_gt_single/copper"
+      "tag": "c:cables/single/copper"
     },
     "H": {
       "item": "gtceu:hull_casing_mv"

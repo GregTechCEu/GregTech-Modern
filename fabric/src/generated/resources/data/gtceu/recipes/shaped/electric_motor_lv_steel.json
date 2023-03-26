@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:cable_gt_single/tin"
+      "tag": "c:cables/single/tin"
     },
     "M": {
       "tag": "c:sticks/steel_magnetic"
@@ -11,7 +11,7 @@
       "tag": "c:sticks/steel"
     },
     "W": {
-      "tag": "c:wire_gt_single/copper"
+      "tag": "c:wires/single/copper"
     }
   },
   "pattern": [

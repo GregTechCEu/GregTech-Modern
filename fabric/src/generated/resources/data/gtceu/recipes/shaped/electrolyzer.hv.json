@@ -8,13 +8,13 @@
       "tag": "c:glass"
     },
     "I": {
-      "tag": "c:wire_gt_single/electrum"
+      "tag": "c:wires/single/electrum"
     },
     "M": {
       "item": "gtceu:hull.hv"
     },
     "W": {
-      "tag": "c:cable_gt_single/gold"
+      "tag": "c:cables/single/gold"
     }
   },
   "pattern": [

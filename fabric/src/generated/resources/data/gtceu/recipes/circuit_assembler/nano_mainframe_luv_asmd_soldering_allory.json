@@ -74,7 +74,7 @@
           "type": "gtceu:sized",
           "count": 32,
           "fabric:type": "gtceu:sized",
-          "tag": "c:wire_gt_single/annealed_copper"
+          "tag": "c:wires/single/annealed_copper"
         }
       }
     ]

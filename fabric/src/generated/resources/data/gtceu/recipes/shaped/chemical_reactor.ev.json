@@ -8,7 +8,7 @@
       "item": "gtceu:electric.motor.ev"
     },
     "G": {
-      "tag": "c:pipe_large_fluid/plastic"
+      "tag": "c:fluid_pipes/large/plastic"
     },
     "M": {
       "item": "gtceu:hull.ev"
@@ -17,7 +17,7 @@
       "tag": "c:rotors/stainless_steel"
     },
     "W": {
-      "tag": "c:cable_gt_single/aluminium"
+      "tag": "c:cables/single/aluminium"
     }
   },
   "pattern": [

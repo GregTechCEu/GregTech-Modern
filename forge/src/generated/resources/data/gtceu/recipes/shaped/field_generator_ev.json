@@ -8,7 +8,7 @@
       "tag": "forge:plates/double/titanium"
     },
     "W": {
-      "tag": "forge:wire_gt_quadruple/uranium_triplatinum"
+      "tag": "forge:wires/quadruple/uranium_triplatinum"
     },
     "X": {
       "tag": "forge:circuit/ev"

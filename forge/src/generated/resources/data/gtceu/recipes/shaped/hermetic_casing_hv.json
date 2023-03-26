@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "F": {
-      "tag": "forge:pipe_large_fluid/polytetrafluoroethylene"
+      "tag": "forge:fluid_pipes/large/polytetrafluoroethylene"
     },
     "P": {
       "tag": "forge:plates/stainless_steel"

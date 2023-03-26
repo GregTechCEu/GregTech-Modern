@@ -18,7 +18,7 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "forge:cable_gt_single/tin"
+          "tag": "forge:cables/single/tin"
         }
       },
       {

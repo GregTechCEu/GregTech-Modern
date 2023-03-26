@@ -14,10 +14,10 @@
       "item": "gtceu:conveyor.module.hv"
     },
     "W": {
-      "tag": "forge:cable_gt_single/gold"
+      "tag": "forge:cables/single/gold"
     },
     "Z": {
-      "tag": "forge:wire_gt_double/silver"
+      "tag": "forge:wires/double/silver"
     }
   },
   "pattern": [

@@ -8,7 +8,7 @@
       "tag": "forge:chests/wooden"
     },
     "W": {
-      "tag": "forge:wire_gt_hex/tin"
+      "tag": "forge:wires/hex/tin"
     }
   },
   "pattern": [

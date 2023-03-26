@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:cable_gt_single/platinum"
+      "tag": "c:cables/single/platinum"
     },
     "H": {
       "item": "gtceu:hull_casing_iv"
