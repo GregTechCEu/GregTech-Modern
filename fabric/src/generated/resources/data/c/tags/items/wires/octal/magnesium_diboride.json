@@ -1,7 +1,6 @@
 {
   "replace": false,
   "values": [
-    "gtceu:wire_octal.magnesium_diboride",
     "gtceu:wire_octal.magnesium_diboride"
   ]
 }

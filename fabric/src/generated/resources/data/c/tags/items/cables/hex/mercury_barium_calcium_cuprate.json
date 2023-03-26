@@ -1,7 +1,6 @@
 {
   "replace": false,
   "values": [
-    "gtceu:cable_hex.mercury_barium_calcium_cuprate",
     "gtceu:cable_hex.mercury_barium_calcium_cuprate"
   ]
 }

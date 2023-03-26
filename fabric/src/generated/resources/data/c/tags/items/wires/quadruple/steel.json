@@ -1,7 +1,6 @@
 {
   "replace": false,
   "values": [
-    "gtceu:wire_quadruple.steel",
     "gtceu:wire_quadruple.steel"
   ]
 }

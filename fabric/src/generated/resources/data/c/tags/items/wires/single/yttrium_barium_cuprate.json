@@ -1,7 +1,6 @@
 {
   "replace": false,
   "values": [
-    "gtceu:wire_single.yttrium_barium_cuprate",
     "gtceu:wire_single.yttrium_barium_cuprate"
   ]
 }

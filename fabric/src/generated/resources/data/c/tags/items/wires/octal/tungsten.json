@@ -1,7 +1,6 @@
 {
   "replace": false,
   "values": [
-    "gtceu:wire_octal.tungsten",
     "gtceu:wire_octal.tungsten"
   ]
 }

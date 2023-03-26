@@ -1,7 +1,6 @@
 {
   "replace": false,
   "values": [
-    "gtceu:wire_octal.annealed_copper",
     "gtceu:wire_octal.annealed_copper"
   ]
 }

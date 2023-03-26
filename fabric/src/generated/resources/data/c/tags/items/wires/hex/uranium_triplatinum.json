@@ -1,7 +1,6 @@
 {
   "replace": false,
   "values": [
-    "gtceu:wire_hex.uranium_triplatinum",
     "gtceu:wire_hex.uranium_triplatinum"
   ]
 }
