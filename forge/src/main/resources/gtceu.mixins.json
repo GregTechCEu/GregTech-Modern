@@ -6,6 +6,7 @@
   "client": [
   ],
   "mixins": [
+    "AppearanceBlockMixin"
   ],
   "injectors": {
     "defaultRequire": 1

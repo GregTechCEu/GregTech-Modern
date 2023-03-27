@@ -125,6 +125,7 @@ public class GTMaterials {
         gem.setIgnored(Lapis, Items.LAPIS_LAZULI);
         gem.setIgnored(NetherQuartz, Items.QUARTZ);
         gem.setIgnored(Coal, Items.COAL);
+        gem.setIgnored(Amethyst, Items.AMETHYST_SHARD);
         excludeAllGems(Charcoal, Items.CHARCOAL);
         excludeAllGems(Flint, Items.FLINT);
         excludeAllGems(EnderPearl, Items.ENDER_PEARL);
@@ -166,6 +167,7 @@ public class GTMaterials {
         block.setIgnored(Redstone, Blocks.REDSTONE_BLOCK);
         block.setIgnored(Diamond, Blocks.DIAMOND_BLOCK);
         block.setIgnored(Coal, Blocks.COAL_BLOCK);
+        block.setIgnored(Amethyst, Blocks.AMETHYST_BLOCK);
         block.setIgnored(Glass, Blocks.GLASS);
         block.setIgnored(Marble);
         block.setIgnored(Granite, Blocks.GRANITE);
@@ -273,7 +275,7 @@ public class GTMaterials {
 //                Items.BROWN_DYE, Items.GREEN_DYE, Items.RED_DYE, Items.BLACK_DYE);
 
         if (GTCEu.isKubeJSLoaded()) {
-            GTCEuStartupEvents.MATERIAL.post(new MaterialEventJS());
+            new MaterialEventJS().post();
         }
     }
 

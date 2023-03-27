@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.machine;
 
 import com.gregtechceu.gtceu.api.block.BlockProperties;
+import com.gregtechceu.gtceu.api.block.IAppearance;
 import com.gregtechceu.gtceu.api.blockentity.ITickSubscription;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
@@ -8,6 +9,7 @@ import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputFluid;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputItem;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineFeature;
+import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.common.cover.FluidFilterCover;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
@@ -43,6 +45,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -52,6 +55,7 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
@@ -68,7 +72,7 @@ import java.util.function.Predicate;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class MetaMachine implements IManaged, IToolable, ITickSubscription {
+public class MetaMachine implements IManaged, IToolable, ITickSubscription, IAppearance {
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(MetaMachine.class);
     @Getter
     private final FieldManagedStorage syncStorage = new FieldManagedStorage(this);
@@ -98,7 +102,7 @@ public class MetaMachine implements IManaged, IToolable, ITickSubscription {
     //////////////////////////////////////
     //*****     Initialization    ******//
     //////////////////////////////////////
-    protected void scheduleRender(String fieldName, Object oldName, Object newName) {
+    protected void scheduleRender(String fieldName, Object newValue, Object oldValue) {
         scheduleRenderUpdate();
     }
 
@@ -429,6 +433,18 @@ public class MetaMachine implements IManaged, IToolable, ITickSubscription {
     }
 
     public void animateTick(RandomSource random) {
+    }
+
+    @Override
+    @Nonnull
+    public BlockState getBlockAppearance(BlockState state, BlockAndTintGetter level, BlockPos pos, Direction side, BlockState sourceState, BlockPos sourcePos) {
+        var appearance = getCoverContainer().getBlockAppearance(state, level, pos, side, sourceState, sourcePos);
+        if (appearance != null) return appearance;
+        if (this instanceof IMultiPart part && part.isFormed()) {
+            appearance = part.getFormedAppearance(sourceState, sourcePos, side);
+            if (appearance != null) return appearance;
+        }
+        return getDefinition().getAppearance().get();
     }
 
     //////////////////////////////////////

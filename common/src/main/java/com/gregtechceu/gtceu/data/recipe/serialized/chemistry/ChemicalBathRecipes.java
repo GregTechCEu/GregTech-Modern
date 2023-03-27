@@ -1,6 +1,8 @@
 package com.gregtechceu.gtceu.data.recipe.serialized.chemistry;
 
+import com.gregtechceu.gtceu.common.data.GTBlocks;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
 
 import java.util.function.Consumer;
@@ -50,12 +52,11 @@ public class ChemicalBathRecipes {
                 .outputItems(Items.PAPER)
                 .duration(100).EUt(VA[ULV]).save(provider);
 
-        // TODO Treated Wood
-        //CHEMICAL_BATH_RECIPES.recipeBuilder("treated_planks")
-        //        .inputItems("plankWood", 1)
-        //        .inputFluids(Creosote.getFluid(100))
-        //        .outputs(MetaBlocks.PLANKS.getItemVariant(BlockGregPlanks.BlockType.TREATED_PLANK))
-        //        .duration(100).EUt(VA[ULV]).save(provider);
+        CHEMICAL_BATH_RECIPES.recipeBuilder("treated_planks")
+                .inputItems(ItemTags.PLANKS)
+                .inputFluids(Creosote.getFluid(100))
+                .outputItems(GTBlocks.TREATED_WOOD_PLANK.asStack())
+                .duration(100).EUt(VA[ULV]).save(provider);
 
         // TODO Concrete
         //CHEMICAL_BATH_RECIPES.recipeBuilder()

@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.forge;
+package com.gregtechceu.gtceu.common.forge;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
@@ -20,6 +20,15 @@ import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 public class CommonProxyImpl {
+    private static final Object LOCK = new Object();
+    private static boolean isKubJSSetup = false;
+
+    public static void onKubeJSSetup() {
+        synchronized (LOCK) {
+            isKubJSSetup = true;
+            LOCK.notify();
+        }
+    }
 
     public CommonProxyImpl() {
         // used for forge events (ClientProxy + CommonProxy)
@@ -28,6 +37,13 @@ public class CommonProxyImpl {
         GTRegistriesImpl.init(eventBus);
         GTFeaturesImpl.init(eventBus);
         // init common features
+        if (GTCEu.isKubeJSLoaded()) {
+            synchronized (LOCK) {
+                if (!isKubJSSetup) {
+                    try { LOCK.wait(); } catch (InterruptedException ignored) {}
+                }
+            }
+        }
         CommonProxy.init();
         // register payloads
         GTSyncedFieldAccessors.init();

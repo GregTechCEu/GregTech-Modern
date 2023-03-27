@@ -14,6 +14,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
@@ -62,7 +63,7 @@ public class MachineDefinition implements Supplier<MetaMachineBlock> {
     @Getter @Setter
     private BiConsumer<ItemStack, List<Component>> tooltipBuilder;
     @Getter @Setter
-    private Supplier<ResourceLocation> connectedID;
+    private Supplier<BlockState> appearance;
 
     protected MachineDefinition(ResourceLocation id) {
         this.id = id;

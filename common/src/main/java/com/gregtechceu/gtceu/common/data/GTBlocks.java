@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.block.*;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.item.MaterialPipeBlockItem;
 import com.gregtechceu.gtceu.api.item.RendererBlockItem;
+import com.gregtechceu.gtceu.api.tag.TagUtil;
 import com.gregtechceu.gtceu.client.renderer.block.CTMModelRenderer;
 import com.gregtechceu.gtceu.client.renderer.block.OreBlockRenderer;
 import com.gregtechceu.gtceu.client.renderer.block.TextureOverrideRenderer;
@@ -501,6 +502,17 @@ public class GTBlocks {
             .tag(BlockTags.PLANKS)
             .item()
             .tag(ItemTags.PLANKS)
+            .build()
+            .register();
+
+    public static final BlockEntry<Block> TREATED_WOOD_PLANK = REGISTRATE
+            .block("treated_wood_plank", Block::new)
+            .initialProperties(() -> Blocks.OAK_PLANKS)
+            .properties(p -> p.color(MaterialColor.TERRACOTTA_GRAY))
+            .tag(BlockTags.PLANKS)
+            .item()
+            // purposefully omit planks item tag as this block is treated differently from wood in recipes
+            .tag(TagUtil.createItemTag("treated_wood")) // matches IE treated wood tag
             .build()
             .register();
 

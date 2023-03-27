@@ -54,7 +54,7 @@ import java.util.List;
  */
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class MetaMachineBlock extends Block implements EntityBlock, IBlockRendererProvider {
+public class MetaMachineBlock extends AppearanceBlock implements EntityBlock, IBlockRendererProvider {
 
     public final MachineDefinition definition;
     public final RotationState rotationState;
@@ -313,5 +313,14 @@ public class MetaMachineBlock extends Block implements EntityBlock, IBlockRender
             }
         }
         return -1;
+    }
+
+    @Override
+    public BlockState getBlockAppearance(BlockState state, BlockAndTintGetter level, BlockPos pos, Direction side, BlockState sourceState, BlockPos sourcePos) {
+        var machine = getMachine(level, pos);
+        if (machine != null) {
+            return machine.getBlockAppearance(state, level, pos, side, sourceState, sourcePos);
+        }
+        return super.getBlockAppearance(state, level, pos, side, sourceState, sourcePos);
     }
 }

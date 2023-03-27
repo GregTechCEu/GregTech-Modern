@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.common.data;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.Element;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
 import com.gregtechceu.gtceu.integration.kjs.events.ElementEventJS;
 
 public class GTElements {
@@ -151,7 +150,7 @@ public class GTElements {
 
     public static void init() {
         if (GTCEu.isKubeJSLoaded()) {
-            GTCEuStartupEvents.ELEMENT.post(new ElementEventJS());
+            new ElementEventJS().post();
         }
     }
 

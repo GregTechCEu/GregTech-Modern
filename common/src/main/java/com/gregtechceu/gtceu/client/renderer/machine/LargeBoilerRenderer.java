@@ -57,15 +57,4 @@ public class LargeBoilerRenderer extends WorkableCasingMachineRenderer implement
         }
     }
 
-    @Override
-    @Nullable
-    public ResourceLocation getPartConnectedID(IMultiController machine, IMultiPart part) {
-        if (machine.self().getPos().below().getY() == part.self().getPos().getY()) { // fire box
-            return GTCEu.id(firebox.getName());
-        } else {
-            // same as controller
-            return getConnectedID(machine.self().getLevel(), machine.self().getPos(), machine.self().getBlockState());
-        }
-    }
-
 }

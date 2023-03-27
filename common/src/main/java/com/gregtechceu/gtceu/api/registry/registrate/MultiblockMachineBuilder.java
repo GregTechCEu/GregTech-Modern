@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.registry.registrate;
 
 import com.google.common.base.Suppliers;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.data.RotationState;
@@ -22,6 +22,7 @@ import com.tterrag.registrate.util.nullness.NonNullUnaryOperator;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
@@ -29,7 +30,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.apache.commons.lang3.function.TriFunction;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -51,6 +54,8 @@ public class MultiblockMachineBuilder extends MachineBuilder {
     private final List<Supplier<ItemStack[]>> recoveryItems = new ArrayList<>();
     @Setter
     private Comparator<IMultiPart> partSorter = (a, b) -> 0;
+    @Setter
+    private TriFunction<IMultiController, IMultiPart, Direction, BlockState> partAppearance;
 
     protected MultiblockMachineBuilder(Registrate registrate, String name, Function<IMetaMachineBlockEntity, ? extends MultiblockControllerMachine> metaMachine) {
         super(registrate, name, metaMachine::apply);
@@ -175,13 +180,13 @@ public class MultiblockMachineBuilder extends MachineBuilder {
     }
 
     @Override
-    public MultiblockMachineBuilder connectedID(Supplier<ResourceLocation> connectedID) {
-        return (MultiblockMachineBuilder) super.connectedID(connectedID);
+    public MultiblockMachineBuilder appearance(Supplier<BlockState> state) {
+        return (MultiblockMachineBuilder) super.appearance(state);
     }
 
     @Override
-    public MultiblockMachineBuilder connectBlock(Supplier<? extends Block> block) {
-        return (MultiblockMachineBuilder) super.connectBlock(block);
+    public MultiblockMachineBuilder appearanceBlock(Supplier<? extends Block> block) {
+        return (MultiblockMachineBuilder) super.appearanceBlock(block);
     }
 
     @Override
@@ -231,6 +236,10 @@ public class MultiblockMachineBuilder extends MachineBuilder {
             definition.setRecoveryItems(() -> recoveryItems.stream().map(Supplier::get).flatMap(Arrays::stream).toArray(ItemStack[]::new));
         }
         definition.setPartSorter(partSorter);
+        if (partAppearance == null) {
+            partAppearance = (controller, part, side) -> definition.getAppearance().get();
+        }
+        definition.setPartAppearance(partAppearance);
         return definition;
     }
 }
