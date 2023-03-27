@@ -849,7 +849,7 @@ public class GTMachines {
 
     public static void init() {
         if (GTCEu.isKubeJSLoaded()) {
-            GTCEuStartupEvents.MACHINES.post(new MachineEventJS());
+            new MachineEventJS().post();
         }
     }
 

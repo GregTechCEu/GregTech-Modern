@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.common.data.GTRecipes;
-import com.gregtechceu.gtceu.integration.kjs.GTCEuServerEvents;
 import com.gregtechceu.gtceu.integration.kjs.events.GTRecipeEventJS;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
@@ -47,7 +46,7 @@ public abstract class RecipeManagerMixin {
             }
         });
         if (GTCEu.isKubeJSLoaded()) {
-            GTCEuServerEvents.RECIPE.post(new GTRecipeEventJS(map));
+            new GTRecipeEventJS(map).post();
         }
     }
 

@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.integration.kjs.events;
 import com.gregtechceu.gtceu.api.data.chemical.Element;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTElements;
+import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
 import dev.latvian.mods.kubejs.event.EventJS;
 
 import javax.annotation.Nullable;
@@ -25,5 +26,9 @@ public class ElementEventJS extends EventJS {
     @Nullable
     public Element get(String name) {
         return GTRegistries.ELEMENTS.get(name);
+    }
+
+    public void post() {
+        GTCEuStartupEvents.ELEMENT.post(this);
     }
 }

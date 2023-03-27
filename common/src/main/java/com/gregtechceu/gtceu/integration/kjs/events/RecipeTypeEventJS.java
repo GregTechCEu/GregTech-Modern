@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
+import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
 import dev.latvian.mods.kubejs.event.EventJS;
 
 import javax.annotation.Nullable;
@@ -26,5 +27,9 @@ public class RecipeTypeEventJS extends EventJS {
     @Nullable
     public GTRecipeType get(String name) {
         return GTRegistries.RECIPE_TYPES.get(GTCEu.id(name));
+    }
+
+    public void post() {
+        GTCEuStartupEvents.RECIPE_TYPES.post(this);
     }
 }
