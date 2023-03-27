@@ -160,14 +160,4 @@ project(":${mod_id}-common").setProjectDir(new File("common"))
 project(":${mod_id}-forge").setProjectDir(new File("forge"))
 project(":${mod_id}-fabric").setProjectDir(new File("fabric"))
 
-//include("${ldlib_name}")
-//include("${ldlib_name}:${ldlib_id}-common")
-//include("${ldlib_name}:${ldlib_id}-fabric")
-//include("${ldlib_name}:${ldlib_id}-forge")
-//
-//project(":${ldlib_name}").setProjectDir(new File("LDLib-Architectury"))
-//project(":${ldlib_name}:${ldlib_id}-common").setProjectDir(new File("LDLib-Architectury/common"))
-//project(":${ldlib_name}:${ldlib_id}-forge").setProjectDir(new File("LDLib-Architectury/forge"))
-//project(":${ldlib_name}:${ldlib_id}-fabric").setProjectDir(new File("LDLib-Architectury/fabric"))
-
 rootProject.name = "${mod_name}"
