@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.tag;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableMap;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials;
@@ -629,34 +630,32 @@ public class TagPrefix {
         secondaryMaterials.add(secondaryMaterial);
     }
 
+    /**
+     * Mappings between materials and their corresponding material amount
+     */
+    private static final Map<Material, Long> MATERIAL_AMOUNT_MAP = ImmutableMap.ofEntries(
+
+            // Blocks (4 materials)
+            Map.entry(GTMaterials.Amethyst, GTValues.M * 4),
+            Map.entry(GTMaterials.Brick, GTValues.M * 4),
+            Map.entry(GTMaterials.Clay, GTValues.M * 4),
+            Map.entry(GTMaterials.Glowstone, GTValues.M * 4),
+            Map.entry(GTMaterials.NetherQuartz, GTValues.M * 4),
+
+            // Blocks (1 material)
+            Map.entry(GTMaterials.Concrete, GTValues.M),
+            Map.entry(GTMaterials.Glass, GTValues.M),
+            Map.entry(GTMaterials.Ice, GTValues.M),
+            Map.entry(GTMaterials.Obsidian, GTValues.M),
+
+            // Stick materials
+            Map.entry(GTMaterials.Blaze, GTValues.M * 4),
+            Map.entry(GTMaterials.Bone, GTValues.M * 5)
+
+    );
+
     public long getMaterialAmount(@Nullable Material material) {
-
-        if(material == null) {
-            return this.materialAmount;
-        }
-
-        if (this == block) {
-            //glowstone and nether quartz blocks use 4 gems (dusts)
-            if (material == GTMaterials.Glowstone ||
-                    material == GTMaterials.NetherQuartz ||
-                    material == GTMaterials.Brick ||
-                    material == GTMaterials.Clay ||
-                    material == GTMaterials.Amethyst)
-                return GTValues.M * 4;
-                //glass, ice and obsidian gain only one dust
-            else if (material == GTMaterials.Glass ||
-                    material == GTMaterials.Ice ||
-                    material == GTMaterials.Obsidian ||
-                    material == GTMaterials.Concrete)
-                return GTValues.M;
-        } else if (this == stick) {
-            if (material == GTMaterials.Blaze)
-                return GTValues.M * 4;
-            else if (material == GTMaterials.Bone)
-                return GTValues.M * 5;
-        }
-
-        return materialAmount;
+        return MATERIAL_AMOUNT_MAP.getOrDefault(material, materialAmount);
     }
 
     public static TagPrefix getPrefix(String prefixName) {
