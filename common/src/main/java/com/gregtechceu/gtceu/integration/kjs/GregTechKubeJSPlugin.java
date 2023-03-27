@@ -18,11 +18,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.data.*;
-import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
-import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import dev.latvian.mods.kubejs.KubeJSPlugin;
-import dev.latvian.mods.kubejs.fluid.FluidStackJS;
 import dev.latvian.mods.kubejs.script.BindingsEvent;
 import dev.latvian.mods.kubejs.script.ScriptType;
 import dev.latvian.mods.kubejs.util.ClassFilter;
@@ -74,8 +70,6 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         event.add("Predicates", Predicates.class);
         event.add("PartAbility", PartAbility.class);
         event.add("GuiTextures", GuiTextures.class);
-        event.add("ResourceTexture", ResourceTexture.class);
-        event.add("FillDirection", ProgressTexture.FillDirection.class);
 
         // ....TODO add global refs. for convenience, ppl do not need to import the java package themselves.
     }
@@ -83,11 +77,6 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
     @Override
     public void registerTypeWrappers(ScriptType type, TypeWrappers typeWrappers) {
         super.registerTypeWrappers(type, typeWrappers);
-        // TODO probably it should be moved to ldlib
-        typeWrappers.register(FluidStack.class, (ctx, o) -> {
-            var fluidStack = FluidStackJS.of(o).getFluidStack();
-            return FluidStack.create(fluidStack.getFluid(), fluidStack.getAmount(), fluidStack.getTag());
-        });
         typeWrappers.register(GTRecipeType.class, (ctx, o) -> {
             if (o instanceof GTRecipeType recipeType) return recipeType;
             if (o instanceof CharSequence chars) return GTRecipeTypes.get(chars.toString());

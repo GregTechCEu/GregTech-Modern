@@ -12,9 +12,11 @@ import com.lowdragmc.lowdraglib.pipelike.Node;
 import com.lowdragmc.lowdraglib.pipelike.PipeNet;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -37,7 +39,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public abstract class PipeBlock <PipeType extends Enum<PipeType> & IPipeType<NodeDataType>, NodeDataType extends IAttachData, WorldPipeNetType extends LevelPipeNet<NodeDataType, ? extends PipeNet<NodeDataType>>> extends Block implements EntityBlock, IBlockRendererProvider {
+public abstract class PipeBlock <PipeType extends Enum<PipeType> & IPipeType<NodeDataType>, NodeDataType extends IAttachData, WorldPipeNetType extends LevelPipeNet<NodeDataType, ? extends PipeNet<NodeDataType>>> extends AppearanceBlock implements EntityBlock, IBlockRendererProvider {
     public final PipeType pipeType;
 
     public PipeBlock(Properties properties, PipeType pipeType) {
@@ -138,6 +140,17 @@ public abstract class PipeBlock <PipeType extends Enum<PipeType> & IPipeType<Nod
             }
         }
         return null;
+    }
+
+
+    @Override
+    public BlockState getBlockAppearance(BlockState state, BlockAndTintGetter level, BlockPos pos, Direction side, BlockState sourceState, BlockPos sourcePos) {
+        var pipe = getPileTile(level, pos);
+        if (pipe != null) {
+            var appearance = pipe.getCoverContainer().getBlockAppearance(state, level, pos, side, sourceState, sourcePos);
+            if (appearance != null) return appearance;
+        }
+        return super.getBlockAppearance(state, level, pos, side, sourceState, sourcePos);
     }
 
 }

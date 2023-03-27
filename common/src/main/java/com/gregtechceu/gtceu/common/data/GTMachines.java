@@ -41,8 +41,6 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.data.LangHandler;
 import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
 import com.gregtechceu.gtceu.integration.kjs.events.MachineEventJS;
-import com.gregtechceu.gtceu.integration.kjs.events.RecipeTypeEventJS;
-import com.lowdragmc.lowdraglib.client.renderer.impl.IModelRenderer;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import it.unimi.dsi.fastutil.Pair;
@@ -458,19 +456,19 @@ public class GTMachines {
     //////////////////////////////////////
     //*******     Multiblock     *******//
     //////////////////////////////////////
-    public final static MultiblockMachineDefinition LARGE_BOILER_BRONZE = registerLargeBoiler("large_bronze_boiler", CASING_BRONZE_BRICKS, CASING_BRONZE_PIPE,
+    public final static MultiblockMachineDefinition LARGE_BOILER_BRONZE = registerLargeBoiler("large_bronze_boiler", CASING_BRONZE_BRICKS, CASING_BRONZE_PIPE, FIREBOX_BRONZE,
             GTCEu.id("block/casings/solid/machine_bronze_plated_bricks"), BoilerFireboxType.BRONZE_FIREBOX, 800, 1);
-    public final static MultiblockMachineDefinition LARGE_BOILER_STEEL = registerLargeBoiler("large_steel_boiler", CASING_STEEL_SOLID, CASING_STEEL_PIPE,
+    public final static MultiblockMachineDefinition LARGE_BOILER_STEEL = registerLargeBoiler("large_steel_boiler", CASING_STEEL_SOLID, CASING_STEEL_PIPE, FIREBOX_STEEL,
             GTCEu.id("block/casings/solid/machine_casing_solid_steel"), BoilerFireboxType.STEEL_FIREBOX, 1800, 1);
-    public final static MultiblockMachineDefinition LARGE_BOILER_TITANIUM = registerLargeBoiler("large_titanium_boiler", CASING_TITANIUM_STABLE, CASING_TITANIUM_PIPE,
+    public final static MultiblockMachineDefinition LARGE_BOILER_TITANIUM = registerLargeBoiler("large_titanium_boiler", CASING_TITANIUM_STABLE, CASING_TITANIUM_PIPE, FIREBOX_TITANIUM,
             GTCEu.id("block/casings/solid/machine_casing_stable_titanium"), BoilerFireboxType.TITANIUM_FIREBOX, 3200, 1);
-    public final static MultiblockMachineDefinition LARGE_BOILER_TUNGSTENSTEEL = registerLargeBoiler("large_tungstensteel_boiler", CASING_TUNGSTENSTEEL_ROBUST, CASING_TUNGSTENSTEEL_PIPE,
+    public final static MultiblockMachineDefinition LARGE_BOILER_TUNGSTENSTEEL = registerLargeBoiler("large_tungstensteel_boiler", CASING_TUNGSTENSTEEL_ROBUST, CASING_TUNGSTENSTEEL_PIPE, FIREBOX_TUNGSTENSTEEL,
             GTCEu.id("block/casings/solid/machine_casing_robust_tungstensteel"), BoilerFireboxType.TUNGSTENSTEEL_FIREBOX, 6400, 2);
 
     public final static MultiblockMachineDefinition COKE_OVEN = REGISTRATE.multiblock("coke_oven", CokeOvenMachine::new)
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeType(GTRecipeTypes.COKE_OVEN_RECIPES)
-            .connectBlock(CASING_COKE_BRICKS)
+            .appearanceBlock(CASING_COKE_BRICKS)
             .pattern(definition -> FactoryBlockPattern.start()
                     .aisle("XXX", "XXX", "XXX")
                     .aisle("XXX", "X#X", "XXX")
@@ -486,7 +484,7 @@ public class GTMachines {
     public final static MultiblockMachineDefinition PRIMITIVE_BLAST_FURNACE = REGISTRATE.multiblock("primitive_blast_furnace", PrimitiveBlastFurnaceMachine::new)
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeType(GTRecipeTypes.PRIMITIVE_BLAST_FURNACE_RECIPES)
-            .connectBlock(CASING_PRIMITIVE_BRICKS)
+            .appearanceBlock(CASING_PRIMITIVE_BRICKS)
             .pattern(definition -> FactoryBlockPattern.start()
                     .aisle("XXX", "XXX", "XXX", "XXX")
                     .aisle("XXX", "X&X", "X#X", "X#X")
@@ -503,7 +501,7 @@ public class GTMachines {
     public final static MultiblockMachineDefinition ELECTRIC_BLAST_FURNACE = REGISTRATE.multiblock("electric_blast_furnace", ElectricBlastFurnaceMachine::new)
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeType(GTRecipeTypes.BLAST_RECIPES)
-            .connectBlock(CASING_INVAR_HEATPROOF)
+            .appearanceBlock(CASING_INVAR_HEATPROOF)
             .pattern(definition -> FactoryBlockPattern.start()
                     .aisle("XXX", "CCC", "CCC", "XXX")
                     .aisle("XXX", "C#C", "C#C", "XMX")
@@ -546,7 +544,7 @@ public class GTMachines {
     public final static MultiblockMachineDefinition LARGE_CHEMICAL_REACTOR = REGISTRATE.multiblock("large_chemical_reactor", WorkableElectricMultiblockMachine::new)
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeType(GTRecipeTypes.LARGE_CHEMICAL_RECIPES)
-            .connectBlock(CASING_PTFE_INERT)
+            .appearanceBlock(CASING_PTFE_INERT)
             .pattern(definition -> {
                 var casing = blocks(CASING_PTFE_INERT.get()).setMinGlobalLimited(10);
                 var abilities = Predicates.autoAbilities(definition.getRecipeType());
@@ -613,7 +611,7 @@ public class GTMachines {
     public final static MultiblockMachineDefinition IMPLOSION_COMPRESSOR = REGISTRATE.multiblock("implosion_compressor", WorkableElectricMultiblockMachine::new)
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeType(GTRecipeTypes.IMPLOSION_RECIPES)
-            .connectBlock(CASING_STEEL_SOLID)
+            .appearanceBlock(CASING_STEEL_SOLID)
             .pattern(definition -> FactoryBlockPattern.start()
                     .aisle("XXX", "XXX", "XXX")
                     .aisle("XXX", "X#X", "XXX")
@@ -630,7 +628,7 @@ public class GTMachines {
     public final static MultiblockMachineDefinition PYROLYSE_OVEN = REGISTRATE.multiblock("pyrolyse_oven", PyrolyseOvenMachine::new)
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeType(GTRecipeTypes.PYROLYSE_RECIPES)
-            .connectBlock(MACHINE_CASING_ULV)
+            .appearanceBlock(MACHINE_CASING_ULV)
             .pattern(definition -> FactoryBlockPattern.start()
                     .aisle("XXX", "XXX", "XXX")
                     .aisle("CCC", "C#C", "CCC")
@@ -649,7 +647,7 @@ public class GTMachines {
     public final static MultiblockMachineDefinition CRACKER = REGISTRATE.multiblock("cracker", CrackerMachine::new)
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeType(GTRecipeTypes.CRACKING_RECIPES)
-            .connectBlock(CASING_STAINLESS_CLEAN)
+            .appearanceBlock(CASING_STAINLESS_CLEAN)
             .pattern(definition -> FactoryBlockPattern.start()
                     .aisle("HCHCH", "HCHCH", "HCHCH")
                     .aisle("HCHCH", "H###H", "HCHCH")
@@ -667,7 +665,7 @@ public class GTMachines {
     public final static MultiblockMachineDefinition DISTILLATION_TOWER = REGISTRATE.multiblock("distillation_tower", WorkableElectricMultiblockMachine::new)
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeType(GTRecipeTypes.DISTILLATION_RECIPES)
-            .connectBlock(CASING_STAINLESS_CLEAN)
+            .appearanceBlock(CASING_STAINLESS_CLEAN)
             .pattern(definition -> FactoryBlockPattern.start(RIGHT, BACK, UP)
                     .aisle("YSY", "YYY", "YYY")
                     .aisle("XXX", "X#X", "XXX").setRepeatable(1, 11)
@@ -689,7 +687,7 @@ public class GTMachines {
     public final static MultiblockMachineDefinition VACUUM_FREEZER = REGISTRATE.multiblock("vacuum_freezer", WorkableElectricMultiblockMachine::new)
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeType(GTRecipeTypes.VACUUM_RECIPES)
-            .connectBlock(CASING_ALUMINIUM_FROSTPROOF)
+            .appearanceBlock(CASING_ALUMINIUM_FROSTPROOF)
             .pattern(definition -> FactoryBlockPattern.start()
                     .aisle("XXX", "XXX", "XXX")
                     .aisle("XXX", "X#X", "XXX")
@@ -706,7 +704,7 @@ public class GTMachines {
     public final static MultiblockMachineDefinition ASSEMBLY_LINE = REGISTRATE.multiblock("assembly_line", WorkableElectricMultiblockMachine::new)
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeType(GTRecipeTypes.ASSEMBLY_LINE_RECIPES)
-            .connectBlock(CASING_STEEL_SOLID)
+            .appearanceBlock(CASING_STEEL_SOLID)
             .pattern(definition -> FactoryBlockPattern.start(BACK, UP, RIGHT)
                     .aisle("FIF", "RTR", "SAG", "#Y#")
                     .aisle("FIF", "RTR", "GAG", "#Y#").setRepeatable(3, 15)
@@ -805,11 +803,12 @@ public class GTMachines {
                 .register());
     }
 
-    public static MultiblockMachineDefinition registerLargeBoiler(String name, Supplier<? extends Block> casing, Supplier<? extends Block> pipe, ResourceLocation texture, BoilerFireboxType firebox, int maxTemperature, int heatSpeed) {
+    public static MultiblockMachineDefinition registerLargeBoiler(String name, Supplier<? extends Block> casing, Supplier<? extends Block> pipe, Supplier<? extends Block> fireBox, ResourceLocation texture, BoilerFireboxType firebox, int maxTemperature, int heatSpeed) {
         return REGISTRATE.multiblock(name, holder -> new LargeBoilerMachine(holder, maxTemperature, heatSpeed))
                 .rotationState(RotationState.NON_Y_AXIS)
                 .recipeType(GTRecipeTypes.LARGE_BOILER_RECIPES)
-                .connectBlock(casing)
+                .appearanceBlock(casing)
+                .partAppearance((controller, part, side) -> controller.self().getPos().below().getY() == part.self().getPos().getY() ? fireBox.get().defaultBlockState() : casing.get().defaultBlockState())
                 .pattern(definition -> FactoryBlockPattern.start()
                         .aisle("XXX", "CCC", "CCC", "CCC")
                         .aisle("XXX", "CPC", "CPC", "CCC")

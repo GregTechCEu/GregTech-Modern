@@ -4,8 +4,12 @@ import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineFeature;
 import com.gregtechceu.gtceu.api.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.pattern.MultiblockState;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.state.BlockState;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.List;
 
 /**
@@ -92,4 +96,15 @@ public interface IMultiController extends IMachineFeature {
      * Called from part, when part is invalid due to chunk unload or broken.
      */
     void onPartUnload();
+
+    /**
+     * get parts' Appearance. same as IForgeBlock.getAppearance() / IFabricBlock.getAppearance()
+     */
+    @Nullable
+    default BlockState getPartAppearance(IMultiPart part, Direction side, BlockState sourceState, BlockPos sourcePos) {
+        if (isFormed()) {
+            return ((MultiblockMachineDefinition)self().getDefinition()).getPartAppearance().apply(this, part, side);
+        }
+        return null;
+    }
 }

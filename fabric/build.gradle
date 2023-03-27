@@ -109,7 +109,7 @@ dependencies {
 
     // KJS
     // fxxk architectury has a mixin error!!
-    modCompileOnly fabric.kubejs
+    modImplementation fabric.kubejs
 }
 
 processResources {

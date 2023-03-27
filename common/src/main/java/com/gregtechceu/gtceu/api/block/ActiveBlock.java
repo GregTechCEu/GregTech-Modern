@@ -1,9 +1,11 @@
 package com.gregtechceu.gtceu.api.block;
 
-import com.gregtechceu.gtceu.client.model.IGTCTMPredicate;
 import com.lowdragmc.lowdraglib.client.renderer.IBlockRendererProvider;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -14,7 +16,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class ActiveBlock extends Block implements IBlockRendererProvider, IGTCTMPredicate {
+public class ActiveBlock extends AppearanceBlock implements IBlockRendererProvider{
 
     public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
 
@@ -51,4 +53,8 @@ public class ActiveBlock extends Block implements IBlockRendererProvider, IGTCTM
         return isActive(state) ? activeRenderer : renderer;
     }
 
+    @Override
+    public BlockState getBlockAppearance(BlockState state, BlockAndTintGetter level, BlockPos pos, Direction side, BlockState sourceState, BlockPos sourcePos) {
+        return defaultBlockState();
+    }
 }
