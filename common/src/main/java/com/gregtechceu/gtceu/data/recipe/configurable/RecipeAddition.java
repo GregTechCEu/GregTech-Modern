@@ -399,12 +399,59 @@ public class RecipeAddition {
                     'C', new UnificationEntry(TagPrefix.spring, GTMaterials.Iron)
             );
 
-            // todo
-            //VanillaRecipeHelper.addShapedRecipe("wooden_pressure_plate", new ItemStack(Blocks.WOODEN_PRESSURE_PLATE, 2), "SrS", "LCL", "SdS",
-            //        'S', new UnificationEntry(TagPrefix.bolt, GTMaterials.Wood),
-            //        'L', new UnificationEntry(TagPrefix.plate, GTMaterials.Wood),
-            //        'C', new UnificationEntry(TagPrefix.spring, GTMaterials.Iron)
-            //);
+            VanillaRecipeHelper.addShapedRecipe(provider, "oak_pressure_plate", new ItemStack(Blocks.OAK_PRESSURE_PLATE, 2), "SrS", "LCL", "SdS",
+                    'S', new UnificationEntry(TagPrefix.bolt, GTMaterials.Wood),
+                    'L', Blocks.OAK_SLAB.asItem(),
+                    'C', new UnificationEntry(TagPrefix.spring, GTMaterials.Iron)
+            );
+
+            VanillaRecipeHelper.addShapedRecipe(provider, "birch_pressure_plate", new ItemStack(Blocks.BIRCH_PRESSURE_PLATE, 2), "SrS", "LCL", "SdS",
+                    'S', new UnificationEntry(TagPrefix.bolt, GTMaterials.Wood),
+                    'L', Blocks.BIRCH_SLAB.asItem(),
+                    'C', new UnificationEntry(TagPrefix.spring, GTMaterials.Iron)
+            );
+
+            VanillaRecipeHelper.addShapedRecipe(provider, "spruce_pressure_plate", new ItemStack(Blocks.SPRUCE_PRESSURE_PLATE, 2), "SrS", "LCL", "SdS",
+                    'S', new UnificationEntry(TagPrefix.bolt, GTMaterials.Wood),
+                    'L', Blocks.SPRUCE_SLAB.asItem(),
+                    'C', new UnificationEntry(TagPrefix.spring, GTMaterials.Iron)
+            );
+
+            VanillaRecipeHelper.addShapedRecipe(provider, "jungle_pressure_plate", new ItemStack(Blocks.JUNGLE_PRESSURE_PLATE, 2), "SrS", "LCL", "SdS",
+                    'S', new UnificationEntry(TagPrefix.bolt, GTMaterials.Wood),
+                    'L', Blocks.JUNGLE_SLAB.asItem(),
+                    'C', new UnificationEntry(TagPrefix.spring, GTMaterials.Iron)
+            );
+
+            VanillaRecipeHelper.addShapedRecipe(provider, "acacia_pressure_plate", new ItemStack(Blocks.ACACIA_PRESSURE_PLATE, 2), "SrS", "LCL", "SdS",
+                    'S', new UnificationEntry(TagPrefix.bolt, GTMaterials.Wood),
+                    'L', Blocks.ACACIA_SLAB.asItem(),
+                    'C', new UnificationEntry(TagPrefix.spring, GTMaterials.Iron)
+            );
+
+            VanillaRecipeHelper.addShapedRecipe(provider, "dark_oak_pressure_plate", new ItemStack(Blocks.DARK_OAK_PRESSURE_PLATE, 2), "SrS", "LCL", "SdS",
+                    'S', new UnificationEntry(TagPrefix.bolt, GTMaterials.Wood),
+                    'L', Blocks.DARK_OAK_SLAB.asItem(),
+                    'C', new UnificationEntry(TagPrefix.spring, GTMaterials.Iron)
+            );
+
+            VanillaRecipeHelper.addShapedRecipe(provider, "crimson_pressure_plate", new ItemStack(Blocks.CRIMSON_PRESSURE_PLATE, 2), "SrS", "LCL", "SdS",
+                    'S', new UnificationEntry(TagPrefix.bolt, GTMaterials.Wood),
+                    'L', Blocks.CRIMSON_SLAB.asItem(),
+                    'C', new UnificationEntry(TagPrefix.spring, GTMaterials.Iron)
+            );
+
+            VanillaRecipeHelper.addShapedRecipe(provider, "warped_pressure_plate", new ItemStack(Blocks.WARPED_PRESSURE_PLATE, 2), "SrS", "LCL", "SdS",
+                    'S', new UnificationEntry(TagPrefix.bolt, GTMaterials.Wood),
+                    'L', Blocks.WARPED_SLAB.asItem(),
+                    'C', new UnificationEntry(TagPrefix.spring, GTMaterials.Iron)
+            );
+
+            VanillaRecipeHelper.addShapedRecipe(provider, "mangrove_pressure_plate", new ItemStack(Blocks.MANGROVE_PRESSURE_PLATE, 2), "SrS", "LCL", "SdS",
+                    'S', new UnificationEntry(TagPrefix.bolt, GTMaterials.Wood),
+                    'L', Blocks.MANGROVE_SLAB.asItem(),
+                    'C', new UnificationEntry(TagPrefix.spring, GTMaterials.Iron)
+            );
 
             VanillaRecipeHelper.addShapedRecipe(provider, "heavy_weighted_pressure_plate", new ItemStack(Blocks.LIGHT_WEIGHTED_PRESSURE_PLATE), "ShS", "LCL", "SdS",
                     'S', new UnificationEntry(TagPrefix.screw, GTMaterials.Steel),
@@ -424,12 +471,59 @@ public class RecipeAddition {
                     .outputItems(new ItemStack(Blocks.STONE_PRESSURE_PLATE, 2))
                     .duration(100).EUt(VA[ULV]).save(provider);
 
-            // todo
-            //GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder()
-            //        .inputItems(TagPrefix.spring, GTMaterials.Iron)
-            //        .inputItems(TagPrefix.plank, GTMaterials.Wood, 2)
-            //        .outputItems(new ItemStack(Blocks.WOODEN_PRESSURE_PLATE, 2))
-            //        .duration(100).EUt(VA[ULV]).save(provider);
+            GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder("oak_pressure_plate")
+                    .inputItems(TagPrefix.spring, GTMaterials.Iron)
+                    .inputItems(new ItemStack(Blocks.OAK_SLAB, 2))
+                    .outputItems(new ItemStack(Blocks.OAK_PRESSURE_PLATE, 2))
+                    .duration(100).EUt(VA[ULV]).save(provider);
+
+            GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder("birch_pressure_plate")
+                    .inputItems(TagPrefix.spring, GTMaterials.Iron)
+                    .inputItems(new ItemStack(Blocks.BIRCH_SLAB, 2))
+                    .outputItems(new ItemStack(Blocks.BIRCH_PRESSURE_PLATE, 2))
+                    .duration(100).EUt(VA[ULV]).save(provider);
+
+            GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder("spruce_pressure_plate")
+                    .inputItems(TagPrefix.spring, GTMaterials.Iron)
+                    .inputItems(new ItemStack(Blocks.SPRUCE_SLAB, 2))
+                    .outputItems(new ItemStack(Blocks.SPRUCE_PRESSURE_PLATE, 2))
+                    .duration(100).EUt(VA[ULV]).save(provider);
+
+            GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder("jungle_pressure_plate")
+                    .inputItems(TagPrefix.spring, GTMaterials.Iron)
+                    .inputItems(new ItemStack(Blocks.JUNGLE_SLAB, 2))
+                    .outputItems(new ItemStack(Blocks.JUNGLE_PRESSURE_PLATE, 2))
+                    .duration(100).EUt(VA[ULV]).save(provider);
+
+            GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder("acacia_pressure_plate")
+                    .inputItems(TagPrefix.spring, GTMaterials.Iron)
+                    .inputItems(new ItemStack(Blocks.ACACIA_SLAB, 2))
+                    .outputItems(new ItemStack(Blocks.ACACIA_PRESSURE_PLATE, 2))
+                    .duration(100).EUt(VA[ULV]).save(provider);
+
+            GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder("dark_oak_pressure_plate")
+                    .inputItems(TagPrefix.spring, GTMaterials.Iron)
+                    .inputItems(new ItemStack(Blocks.DARK_OAK_SLAB, 2))
+                    .outputItems(new ItemStack(Blocks.DARK_OAK_PRESSURE_PLATE, 2))
+                    .duration(100).EUt(VA[ULV]).save(provider);
+
+            GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder("crimson_pressure_plate")
+                    .inputItems(TagPrefix.spring, GTMaterials.Iron)
+                    .inputItems(new ItemStack(Blocks.CRIMSON_SLAB, 2))
+                    .outputItems(new ItemStack(Blocks.CRIMSON_PRESSURE_PLATE, 2))
+                    .duration(100).EUt(VA[ULV]).save(provider);
+
+            GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder("warped_pressure_plate")
+                    .inputItems(TagPrefix.spring, GTMaterials.Iron)
+                    .inputItems(new ItemStack(Blocks.WARPED_SLAB, 2))
+                    .outputItems(new ItemStack(Blocks.WARPED_PRESSURE_PLATE, 2))
+                    .duration(100).EUt(VA[ULV]).save(provider);
+
+            GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder("mangrove_pressure_plate")
+                    .inputItems(TagPrefix.spring, GTMaterials.Iron)
+                    .inputItems(new ItemStack(Blocks.MANGROVE_SLAB, 2))
+                    .outputItems(new ItemStack(Blocks.MANGROVE_PRESSURE_PLATE, 2))
+                    .duration(100).EUt(VA[ULV]).save(provider);
 
             GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder("light_weighted_pressure_plate")
                     .inputItems(TagPrefix.spring, GTMaterials.Steel)
@@ -447,19 +541,82 @@ public class RecipeAddition {
             VanillaRecipeHelper.addShapedRecipe(provider, "stone_button", new ItemStack(Blocks.STONE_BUTTON, 6), "sP",
                     'P', new ItemStack(Blocks.STONE_PRESSURE_PLATE));
 
-            // todo
-            //VanillaRecipeHelper.addShapedRecipe("wooden_button", new ItemStack(Blocks.WOODEN_BUTTON, 6), "sP",
-            //        'P', new ItemStack(Blocks.WOODEN_PRESSURE_PLATE));
+            VanillaRecipeHelper.addShapedRecipe(provider, "oak_button", new ItemStack(Blocks.OAK_BUTTON, 6), "sP",
+                    'P', new ItemStack(Blocks.OAK_PRESSURE_PLATE));
+
+            VanillaRecipeHelper.addShapedRecipe(provider, "birch_button", new ItemStack(Blocks.BIRCH_BUTTON, 6), "sP",
+                    'P', new ItemStack(Blocks.BIRCH_PRESSURE_PLATE));
+
+            VanillaRecipeHelper.addShapedRecipe(provider, "spruce_button", new ItemStack(Blocks.SPRUCE_BUTTON, 6), "sP",
+                    'P', new ItemStack(Blocks.SPRUCE_PRESSURE_PLATE));
+
+            VanillaRecipeHelper.addShapedRecipe(provider, "jungle_button", new ItemStack(Blocks.JUNGLE_BUTTON, 6), "sP",
+                    'P', new ItemStack(Blocks.JUNGLE_PRESSURE_PLATE));
+
+            VanillaRecipeHelper.addShapedRecipe(provider, "acacia_button", new ItemStack(Blocks.ACACIA_BUTTON, 6), "sP",
+                    'P', new ItemStack(Blocks.ACACIA_PRESSURE_PLATE));
+
+            VanillaRecipeHelper.addShapedRecipe(provider, "dark_oak_button", new ItemStack(Blocks.DARK_OAK_BUTTON, 6), "sP",
+                    'P', new ItemStack(Blocks.DARK_OAK_PRESSURE_PLATE));
+
+            VanillaRecipeHelper.addShapedRecipe(provider, "crimson_button", new ItemStack(Blocks.CRIMSON_BUTTON, 6), "sP",
+                    'P', new ItemStack(Blocks.CRIMSON_PRESSURE_PLATE));
+
+            VanillaRecipeHelper.addShapedRecipe(provider, "warped_button", new ItemStack(Blocks.WARPED_BUTTON, 6), "sP",
+                    'P', new ItemStack(Blocks.WARPED_PRESSURE_PLATE));
+
+            VanillaRecipeHelper.addShapedRecipe(provider, "mangrove_button", new ItemStack(Blocks.MANGROVE_BUTTON, 6), "sP",
+                    'P', new ItemStack(Blocks.MANGROVE_PRESSURE_PLATE));
 
             GTRecipeTypes.CUTTER_RECIPES.recipeBuilder("stone_button")
                     .inputItems(new ItemStack(Blocks.STONE_PRESSURE_PLATE))
                     .outputItems(new ItemStack(Blocks.STONE_BUTTON, 12))
                     .duration(25).EUt(VA[ULV]).save(provider);
 
-            //GTRecipeTypes.CUTTER_RECIPES.recipeBuilder()
-            //        .inputItems(new ItemStack(Blocks.WOODEN_PRESSURE_PLATE))
-            //        .outputItems(new ItemStack(Blocks.WOODEN_BUTTON, 12))
-            //        .duration(25).EUt(VA[ULV]).save(provider);
+            GTRecipeTypes.CUTTER_RECIPES.recipeBuilder("oak_button")
+                    .inputItems(new ItemStack(Blocks.OAK_PRESSURE_PLATE))
+                    .outputItems(new ItemStack(Blocks.OAK_BUTTON, 12))
+                    .duration(25).EUt(VA[ULV]).save(provider);
+
+            GTRecipeTypes.CUTTER_RECIPES.recipeBuilder("birch_button")
+                    .inputItems(new ItemStack(Blocks.BIRCH_PRESSURE_PLATE))
+                    .outputItems(new ItemStack(Blocks.BIRCH_BUTTON, 12))
+                    .duration(25).EUt(VA[ULV]).save(provider);
+
+            GTRecipeTypes.CUTTER_RECIPES.recipeBuilder("spruce_button")
+                    .inputItems(new ItemStack(Blocks.SPRUCE_PRESSURE_PLATE))
+                    .outputItems(new ItemStack(Blocks.SPRUCE_BUTTON, 12))
+                    .duration(25).EUt(VA[ULV]).save(provider);
+
+            GTRecipeTypes.CUTTER_RECIPES.recipeBuilder("jungle_button")
+                    .inputItems(new ItemStack(Blocks.JUNGLE_PRESSURE_PLATE))
+                    .outputItems(new ItemStack(Blocks.JUNGLE_BUTTON, 12))
+                    .duration(25).EUt(VA[ULV]).save(provider);
+
+            GTRecipeTypes.CUTTER_RECIPES.recipeBuilder("acacia_button")
+                    .inputItems(new ItemStack(Blocks.ACACIA_PRESSURE_PLATE))
+                    .outputItems(new ItemStack(Blocks.ACACIA_BUTTON, 12))
+                    .duration(25).EUt(VA[ULV]).save(provider);
+
+            GTRecipeTypes.CUTTER_RECIPES.recipeBuilder("dark_oak_button")
+                    .inputItems(new ItemStack(Blocks.DARK_OAK_PRESSURE_PLATE))
+                    .outputItems(new ItemStack(Blocks.DARK_OAK_BUTTON, 12))
+                    .duration(25).EUt(VA[ULV]).save(provider);
+
+            GTRecipeTypes.CUTTER_RECIPES.recipeBuilder("crimson_button")
+                    .inputItems(new ItemStack(Blocks.CRIMSON_PRESSURE_PLATE))
+                    .outputItems(new ItemStack(Blocks.CRIMSON_BUTTON, 12))
+                    .duration(25).EUt(VA[ULV]).save(provider);
+
+            GTRecipeTypes.CUTTER_RECIPES.recipeBuilder("warped_button")
+                    .inputItems(new ItemStack(Blocks.WARPED_PRESSURE_PLATE))
+                    .outputItems(new ItemStack(Blocks.WARPED_BUTTON, 12))
+                    .duration(25).EUt(VA[ULV]).save(provider);
+
+            GTRecipeTypes.CUTTER_RECIPES.recipeBuilder("mangrove_button")
+                    .inputItems(new ItemStack(Blocks.MANGROVE_PRESSURE_PLATE))
+                    .outputItems(new ItemStack(Blocks.MANGROVE_BUTTON, 12))
+                    .duration(25).EUt(VA[ULV]).save(provider);
 
             VanillaRecipeHelper.addShapedRecipe(provider, "lever", new ItemStack(Blocks.LEVER), "B", "S",
                     'B', new ItemStack(Blocks.STONE_BUTTON),
