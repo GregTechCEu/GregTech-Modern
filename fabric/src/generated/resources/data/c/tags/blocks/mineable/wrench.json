@@ -1167,6 +1167,13 @@
     "gtceu:cracker",
     "gtceu:distillation_tower",
     "gtceu:vacuum_freezer",
-    "gtceu:assembly_line"
+    "gtceu:assembly_line",
+    "gtceu:wood_crate",
+    "gtceu:bronze_crate",
+    "gtceu:steel_crate",
+    "gtceu:aluminium_crate",
+    "gtceu:stainless_steel_crate",
+    "gtceu:titanium_crate",
+    "gtceu:tungsten_steel_crate"
   ]
 }

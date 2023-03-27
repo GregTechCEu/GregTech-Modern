@@ -71,7 +71,7 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
         this.tankScalingFunction = tankScalingFunction;
         this.capabilitiesProxy = Tables.newCustomTable(new EnumMap<>(IO.class), HashMap::new);
         this.traitSubscriptions = new ArrayList<>();
-        this. recipeLogic = createRecipeLogic(args);
+        this.recipeLogic = createRecipeLogic(args);
         this.importItems = createImportItemHandler(args);
         this.exportItems = createExportItemHandler(args);
         this.importFluids = createImportFluidHandler(args);
