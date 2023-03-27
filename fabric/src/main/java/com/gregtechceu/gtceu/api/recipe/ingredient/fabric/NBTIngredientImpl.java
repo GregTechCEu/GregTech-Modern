@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.recipe.ingredient.fabric;
 
-import net.fabricmc.fabric.impl.recipe.ingredient.builtin.NbtIngredient;
+import net.fabricmc.fabric.api.recipe.v1.ingredient.DefaultCustomIngredients;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 
@@ -9,8 +9,9 @@ import net.minecraft.world.item.crafting.Ingredient;
  * @date 2023/2/21
  * @implNote NBTIngredientImpl
  */
+@SuppressWarnings("unused")
 public class NBTIngredientImpl {
     public static Ingredient createNBTIngredient(ItemStack itemStack) {
-        return new NbtIngredient(Ingredient.of(itemStack), itemStack.getTag(), true).toVanilla();
+        return DefaultCustomIngredients.nbt(Ingredient.of(itemStack), itemStack.getTag(), true);
     }
 }
