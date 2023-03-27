@@ -98,7 +98,7 @@ public class MetaMachine implements IManaged, IToolable, ITickSubscription {
     //////////////////////////////////////
     //*****     Initialization    ******//
     //////////////////////////////////////
-    protected void scheduleRender(String fieldName, Object oldName, Object newName) {
+    protected void scheduleRender(String fieldName, Object newValue, Object oldValue) {
         scheduleRenderUpdate();
     }
 
