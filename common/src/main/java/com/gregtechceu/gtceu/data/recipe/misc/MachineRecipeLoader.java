@@ -179,11 +179,6 @@ public class MachineRecipeLoader {
                 .inputItems(COKE_OVEN_BRICK, 4)
                 .outputItems(GTBlocks.CASING_COKE_BRICKS.asStack())
                 .duration(300).EUt(2).save(provider);
-
-        COMPRESSOR_RECIPES.recipeBuilder("wood_plate")
-                .inputItems(dust, Wood)
-                .outputItems(plate, Wood)
-                .duration(100).EUt(2).save(provider);
     }
 
     private static void registerPrimitiveBlastFurnaceRecipes(Consumer<FinishedRecipe> provider) {
