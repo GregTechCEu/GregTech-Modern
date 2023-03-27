@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.machine.*;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
@@ -39,19 +40,13 @@ import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.PyrolyseOvenMachine;
 import com.gregtechceu.gtceu.common.machine.steam.SteamLiquidBoilerMachine;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.core.mixins.BlockModelAccessor;
 import com.gregtechceu.gtceu.data.data.LangHandler;
 import com.gregtechceu.gtceu.integration.kjs.events.MachineEventJS;
-import com.lowdragmc.lowdraglib.client.model.ModelFactory;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.ints.Int2LongFunction;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.renderer.texture.TextureAtlas;
-import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -65,13 +60,11 @@ import net.minecraft.world.level.material.Fluids;
 import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.pattern.Predicates.*;
 import static com.gregtechceu.gtceu.api.pattern.util.RelativeDirection.*;
-import static com.gregtechceu.gtceu.api.registry.GTRegistries.MATERIALS;
 import static com.gregtechceu.gtceu.api.registry.GTRegistries.REGISTRATE;
 import static com.gregtechceu.gtceu.common.data.GTBlocks.*;
 import static com.gregtechceu.gtceu.common.data.GTCreativeModeTabs.*;
@@ -322,6 +315,14 @@ public class GTMachines {
                     .tooltips(Component.translatable("gtceu.machine.quantum_tank.tooltip"), Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity", /*tier == GTValues.UHV ? Integer.MAX_VALUE :*/ 4000000 * (int) Math.pow(2, tier)))
                     .register(),
             HIGH_TIERS);
+
+    public static MachineDefinition WOODEN_CRATE = registerCrate(GTMaterials.Wood, 27, "Wooden Crate");
+    public static MachineDefinition BRONZE_CRATE = registerCrate(GTMaterials.Bronze, 54, "Bronze Crate");
+    public static MachineDefinition STEEL_CRATE = registerCrate(GTMaterials.Steel, 72, "Steel Crate");
+    public static MachineDefinition ALUMINIUM_CRATE = registerCrate(GTMaterials.Aluminium, 90, "Aluminium Crate");
+    public static MachineDefinition STAINLESS_STEEL_CRATE = registerCrate(GTMaterials.StainlessSteel, 108, "Stainless Steel Crate");
+    public static MachineDefinition TITANIUM_CRATE = registerCrate(GTMaterials.Titanium, 126, "Titanium Crate");
+    public static MachineDefinition TUNGSTENSTEEL_CRATE = registerCrate(GTMaterials.TungstenSteel, 144, "Tungstensteel Crate");
 
 
     //////////////////////////////////////
@@ -734,7 +735,6 @@ public class GTMachines {
             .register();
 
 
-    public static MachineDefinition[] CRATES = registerCrates(Pair.of("wood",27),Pair.of("bronze",54),Pair.of("steel",72),Pair.of("aluminium",90),Pair.of("stainless_steel",108),Pair.of("titanium",126),Pair.of("tungsten_steel",144));
 
 
 
@@ -840,49 +840,18 @@ public class GTMachines {
                 .register();
     }
 
-    public static MachineDefinition[] registerCrates(Pair<String,Integer>...materials){
-        MachineDefinition[] machineDefinitions = new MachineDefinition[materials.length];
-        for (int i = 0; i<materials.length;i++) {
-            Pair<String,Integer> material = materials[i];
-            boolean wooden = Objects.equals(material.first(), "wood");
+    public static MachineDefinition registerCrate(Material material, int capacity, String lang) {
+        boolean wooden = GTMaterials.Wood.equals(material) || GTMaterials.TreatedWood.equals(material);
 
-            machineDefinitions[i] = REGISTRATE.machine(material.first()+"_crate",holder->
-                    new CrateMachine(holder, MATERIALS.get(material.first()),material.second()))
-                    .rotationState(RotationState.NONE)
-                    .tooltips(Component.translatable("gtceu.universal.tooltip.item_storage_capacity",material.second()))
-                    .renderer(()->new CTMModelRenderer(GTCEu.id("block/machine/crate/"+(wooden?"wooden":"metal")+"_crate")){
-
-                        private final ResourceLocation crateTexture = GTCEu.id("block/storage/crates/"+(wooden?"wooden":"metal")+"_crate");
-                        @Override
-                        @Environment(EnvType.CLIENT)
-                        protected UnbakedModel getModel() {
-                            var model = super.getModel();
-                            if (model instanceof BlockModelAccessor blockModelAccessor) {
-                                blockModelAccessor.getTextureMap().put("all", ModelFactory.parseBlockTextureLocationOrReference(crateTexture.toString()));
-                            }
-                            return model;
-                        }
-
-                        @Override
-                        @Environment(EnvType.CLIENT)
-                        public void onPrepareTextureAtlas(ResourceLocation atlasName, Consumer<ResourceLocation> register) {
-                            super.onPrepareTextureAtlas(atlasName, register);
-                            if (atlasName.equals(TextureAtlas.LOCATION_BLOCKS)) {
-                                register.accept(crateTexture);
-                            }
-                        }
-                        @Override
-                        @Environment(EnvType.CLIENT)
-                        public boolean useAO() {
-                            return true;
-                        }
-                    })
-                    .hasTESR(true)
-                    .paintingColor(wooden?0xffffff:MATERIALS.get(material.first()).getMaterialRGB())
-                    .itemColor((s,t)->wooden?0xffffff:MATERIALS.get(material.first()).getMaterialRGB())
-                    .register();
-        }
-        return machineDefinitions;
+        return REGISTRATE.machine("crate." + material, holder -> new CrateMachine(holder, material, capacity))
+                .langValue(lang)
+                .rotationState(RotationState.NONE)
+                .tooltips(Component.translatable("gtceu.universal.tooltip.item_storage_capacity", capacity))
+                .renderer(() -> new MachineRenderer(GTCEu.id("block/machine/crate/" + (wooden ? "wooden" : "metal") + "_crate")))
+                .hasTESR(true)
+                .paintingColor(wooden ? 0xFFFFFF : material.getMaterialRGB())
+                .itemColor((s, t) -> wooden ? 0xFFFFFF : material.getMaterialRGB())
+                .register();
     }
 
     public static Component explosion() {
