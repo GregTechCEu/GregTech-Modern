@@ -24,6 +24,7 @@ import com.gregtechceu.gtceu.common.machine.multiblock.primitive.CokeOvenMachine
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.PrimitiveBlastFurnaceMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.steam.LargeBoilerMachine;
 import com.gregtechceu.gtceu.common.machine.steam.SteamSolidBoilerMachine;
+import com.gregtechceu.gtceu.common.machine.storage.CrateMachine;
 import com.gregtechceu.gtceu.common.machine.storage.CreativeEnergyContainerMachine;
 import com.gregtechceu.gtceu.common.machine.storage.QuantumChestMachine;
 import com.gregtechceu.gtceu.common.machine.storage.QuantumTankMachine;
@@ -38,14 +39,19 @@ import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.PyrolyseOvenMachine;
 import com.gregtechceu.gtceu.common.machine.steam.SteamLiquidBoilerMachine;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.core.mixins.BlockModelAccessor;
 import com.gregtechceu.gtceu.data.data.LangHandler;
-import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
 import com.gregtechceu.gtceu.integration.kjs.events.MachineEventJS;
+import com.lowdragmc.lowdraglib.client.model.ModelFactory;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.ints.Int2LongFunction;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -59,11 +65,13 @@ import net.minecraft.world.level.material.Fluids;
 import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.pattern.Predicates.*;
 import static com.gregtechceu.gtceu.api.pattern.util.RelativeDirection.*;
+import static com.gregtechceu.gtceu.api.registry.GTRegistries.MATERIALS;
 import static com.gregtechceu.gtceu.api.registry.GTRegistries.REGISTRATE;
 import static com.gregtechceu.gtceu.common.data.GTBlocks.*;
 import static com.gregtechceu.gtceu.common.data.GTCreativeModeTabs.*;
@@ -726,6 +734,7 @@ public class GTMachines {
             .register();
 
 
+    public static MachineDefinition[] CRATES = registerCrates(Pair.of("wood",27),Pair.of("bronze",54),Pair.of("steel",72),Pair.of("aluminium",90),Pair.of("stainless_steel",108),Pair.of("titanium",126),Pair.of("tungsten_steel",144));
 
 
 
@@ -829,6 +838,51 @@ public class GTMachines {
                         Component.translatable("gtceu.multiblock.large_boiler.heat_time_tooltip", maxTemperature / heatSpeed / 20),
                         Component.translatable("gtceu.multiblock.large_boiler.explosion_tooltip").withStyle(ChatFormatting.DARK_RED))
                 .register();
+    }
+
+    public static MachineDefinition[] registerCrates(Pair<String,Integer>...materials){
+        MachineDefinition[] machineDefinitions = new MachineDefinition[materials.length];
+        for (int i = 0; i<materials.length;i++) {
+            Pair<String,Integer> material = materials[i];
+            boolean wooden = Objects.equals(material.first(), "wood");
+
+            machineDefinitions[i] = REGISTRATE.machine(material.first()+"_crate",holder->
+                    new CrateMachine(holder, MATERIALS.get(material.first()),material.second()))
+                    .rotationState(RotationState.NONE)
+                    .tooltips(Component.translatable("gtceu.universal.tooltip.item_storage_capacity",material.second()))
+                    .renderer(()->new CTMModelRenderer(GTCEu.id("block/machine/crate/"+(wooden?"wooden":"metal")+"_crate")){
+
+                        private final ResourceLocation crateTexture = GTCEu.id("block/storage/crates/"+(wooden?"wooden":"metal")+"_crate");
+                        @Override
+                        @Environment(EnvType.CLIENT)
+                        protected UnbakedModel getModel() {
+                            var model = super.getModel();
+                            if (model instanceof BlockModelAccessor blockModelAccessor) {
+                                blockModelAccessor.getTextureMap().put("all", ModelFactory.parseBlockTextureLocationOrReference(crateTexture.toString()));
+                            }
+                            return model;
+                        }
+
+                        @Override
+                        @Environment(EnvType.CLIENT)
+                        public void onPrepareTextureAtlas(ResourceLocation atlasName, Consumer<ResourceLocation> register) {
+                            super.onPrepareTextureAtlas(atlasName, register);
+                            if (atlasName.equals(TextureAtlas.LOCATION_BLOCKS)) {
+                                register.accept(crateTexture);
+                            }
+                        }
+                        @Override
+                        @Environment(EnvType.CLIENT)
+                        public boolean useAO() {
+                            return true;
+                        }
+                    })
+                    .hasTESR(true)
+                    .paintingColor(wooden?0xffffff:MATERIALS.get(material.first()).getMaterialRGB())
+                    .itemColor((s,t)->wooden?0xffffff:MATERIALS.get(material.first()).getMaterialRGB())
+                    .register();
+        }
+        return machineDefinitions;
     }
 
     public static Component explosion() {
