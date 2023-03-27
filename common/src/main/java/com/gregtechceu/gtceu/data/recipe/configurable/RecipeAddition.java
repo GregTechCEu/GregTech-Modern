@@ -82,7 +82,7 @@ public class RecipeAddition {
 
         GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder("oak_door")
                 .inputItems(new ItemStack(Blocks.OAK_TRAPDOOR))
-                .inputItems(new ItemStack(Blocks.OAK_PLANKS))
+                .inputItems(new ItemStack(Blocks.OAK_PLANKS, 4))
                 .inputFluids(GTMaterials.Iron.getFluid(GTValues.L / 9))
                 .outputItems(new ItemStack(Items.OAK_DOOR))
                 .duration(400).EUt(4).save(provider);
@@ -97,7 +97,7 @@ public class RecipeAddition {
 
         GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder("spruce_door")
                 .inputItems(new ItemStack(Blocks.SPRUCE_TRAPDOOR))
-                .inputItems(new ItemStack(Blocks.SPRUCE_PLANKS))
+                .inputItems(new ItemStack(Blocks.SPRUCE_PLANKS, 4))
                 .inputFluids(GTMaterials.Iron.getFluid(GTValues.L / 9))
                 .outputItems(new ItemStack(Items.SPRUCE_DOOR))
                 .duration(400).EUt(4).save(provider);
@@ -112,7 +112,7 @@ public class RecipeAddition {
 
         GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder("birch_door")
                 .inputItems(new ItemStack(Blocks.BIRCH_TRAPDOOR))
-                .inputItems(new ItemStack(Blocks.BIRCH_PLANKS))
+                .inputItems(new ItemStack(Blocks.BIRCH_PLANKS, 4))
                 .inputFluids(GTMaterials.Iron.getFluid(GTValues.L / 9))
                 .outputItems(new ItemStack(Items.BIRCH_DOOR))
                 .duration(400).EUt(4).save(provider);
@@ -127,7 +127,7 @@ public class RecipeAddition {
 
         GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder("jungle_door")
                 .inputItems(new ItemStack(Blocks.JUNGLE_TRAPDOOR))
-                .inputItems(new ItemStack(Blocks.JUNGLE_PLANKS))
+                .inputItems(new ItemStack(Blocks.JUNGLE_PLANKS, 4))
                 .inputFluids(GTMaterials.Iron.getFluid(GTValues.L / 9))
                 .outputItems(new ItemStack(Items.JUNGLE_DOOR))
                 .duration(400).EUt(4).save(provider);
@@ -142,7 +142,7 @@ public class RecipeAddition {
 
         GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder("acacia_door")
                 .inputItems(new ItemStack(Blocks.ACACIA_TRAPDOOR))
-                .inputItems(new ItemStack(Blocks.ACACIA_PLANKS))
+                .inputItems(new ItemStack(Blocks.ACACIA_PLANKS, 4))
                 .inputFluids(GTMaterials.Iron.getFluid(GTValues.L / 9))
                 .outputItems(new ItemStack(Items.ACACIA_DOOR))
                 .duration(400).EUt(4).save(provider);
@@ -157,7 +157,7 @@ public class RecipeAddition {
 
         GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder("dark_oak_door")
                 .inputItems(new ItemStack(Blocks.DARK_OAK_TRAPDOOR))
-                .inputItems(new ItemStack(Blocks.DARK_OAK_PLANKS))
+                .inputItems(new ItemStack(Blocks.DARK_OAK_PLANKS, 4))
                 .inputFluids(GTMaterials.Iron.getFluid(GTValues.L / 9))
                 .outputItems(new ItemStack(Items.DARK_OAK_DOOR))
                 .duration(400).EUt(4).save(provider);
@@ -170,7 +170,7 @@ public class RecipeAddition {
         );
 
         GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder("mangrove_door")
-                .inputItems(new ItemStack(Blocks.MANGROVE_PLANKS))
+                .inputItems(new ItemStack(Blocks.MANGROVE_PLANKS, 4))
                 .inputItems(new ItemStack(Blocks.MANGROVE_TRAPDOOR))
                 .inputFluids(GTMaterials.Iron.getFluid(GTValues.L / 9))
                 .outputItems(new ItemStack(Items.MANGROVE_DOOR))
@@ -185,7 +185,7 @@ public class RecipeAddition {
 
         GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder("crimson_door")
                 .inputItems(new ItemStack(Blocks.CRIMSON_TRAPDOOR))
-                .inputItems(new ItemStack(Blocks.CRIMSON_PLANKS))
+                .inputItems(new ItemStack(Blocks.CRIMSON_PLANKS, 4))
                 .inputFluids(GTMaterials.Iron.getFluid(GTValues.L / 9))
                 .outputItems(new ItemStack(Items.CRIMSON_DOOR))
                 .duration(400).EUt(4).save(provider);
@@ -199,7 +199,7 @@ public class RecipeAddition {
 
         GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder("warped_door")
                 .inputItems(new ItemStack(Blocks.WARPED_TRAPDOOR))
-                .inputItems(new ItemStack(Blocks.WARPED_PLANKS))
+                .inputItems(new ItemStack(Blocks.WARPED_PLANKS, 4))
                 .inputFluids(GTMaterials.Iron.getFluid(GTValues.L / 9))
                 .outputItems(new ItemStack(Items.WARPED_DOOR))
                 .duration(400).EUt(4).save(provider);
