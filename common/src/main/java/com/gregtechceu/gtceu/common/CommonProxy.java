@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.gui.MachineUIFactory;
 import com.gregtechceu.gtceu.common.data.materials.GTFoods;
 import com.gregtechceu.gtceu.data.data.GregTechDatagen;
 import com.lowdragmc.lowdraglib.gui.factory.UIFactory;
+import dev.architectury.injectables.annotations.ExpectPlatform;
 
 /**
  * @author KilaBash
@@ -15,27 +16,17 @@ import com.lowdragmc.lowdraglib.gui.factory.UIFactory;
  * @implNote CommonProxy
  */
 public class CommonProxy {
-    private static final Object LOCK = new Object();
-    private static boolean isKubJSSetup = false;
 
     /**
      * If kjs is loaded, make sure our mod is loaded after it. {@link com.gregtechceu.gtceu.core.mixins.kjs.KubeJSMixin}
      */
-    public static void setKubeJSSetup() {
-        synchronized (LOCK) {
-            isKubJSSetup = true;
-            LOCK.notify();
-        }
+    @ExpectPlatform
+    public static void onKubeJSSetup() {
+        throw new AssertionError();
     }
 
     public static void init() {
-        if (GTCEu.isKubeJSLoaded()) {
-            synchronized (LOCK) {
-                if (!isKubJSSetup) {
-                    try { LOCK.wait(); } catch (InterruptedException ignored) {}
-                }
-            }
-        }
+        GTCEu.LOGGER.info("GTCEu common proxy init!");
         UIFactory.register(MachineUIFactory.INSTANCE);
         UIFactory.register(CoverUIFactory.INSTANCE);
         GTPlacerTypes.init();

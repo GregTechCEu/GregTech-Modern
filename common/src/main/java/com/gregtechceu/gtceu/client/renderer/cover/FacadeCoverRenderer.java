@@ -60,7 +60,7 @@ public class FacadeCoverRenderer implements ICoverRenderer {
 
         if (!itemModel.isCustomRenderer()) {
             matrixStack.pushPose();
-            itemModel.getTransforms().getTransform(transformType).apply(leftHand, matrixStack);
+            ModelFactory.MODEL_TRANSFORM_BLOCK.getTransform(transformType).apply(leftHand, matrixStack);
             matrixStack.translate(0, -0.1D, -0.5D);
             if (transformType == ItemTransforms.TransformType.FIRST_PERSON_LEFT_HAND || transformType == ItemTransforms.TransformType.FIRST_PERSON_RIGHT_HAND) {
                 matrixStack.translate(0.5, 0.5, 0.5);
