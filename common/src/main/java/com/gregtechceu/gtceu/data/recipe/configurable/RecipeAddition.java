@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
+import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
@@ -34,8 +35,8 @@ public class RecipeAddition {
         disableManualCompression(provider);
         hardToolArmorRecipes(provider);
         harderRods(provider);
+        nerfWoodCrafting(provider);
         if (ConfigHolder.recipes.harderBrickRecipes) harderBrickRecipes(provider);
-        if (ConfigHolder.recipes.nerfWoodCrafting) nerfWoodCrafting(provider);
         if (ConfigHolder.recipes.hardWoodRecipes) hardWoodRecipes(provider);
         if (ConfigHolder.recipes.hardIronRecipes) hardIronRecipes(provider);
         if (ConfigHolder.recipes.hardGlassRecipes) hardGlassRecipes(provider);
@@ -60,8 +61,12 @@ public class RecipeAddition {
     }
 
     private static void nerfWoodCrafting(Consumer<FinishedRecipe> provider) {
-        VanillaRecipeHelper.addShapedRecipe(provider, "stick_saw", new ItemStack(Items.STICK, 4), "s", "P", "P", 'P', ItemTags.PLANKS);
-        VanillaRecipeHelper.addShapedRecipe(provider, "stick_normal", new ItemStack(Items.STICK, 2), "P", "P", 'P', ItemTags.PLANKS);
+        if (ConfigHolder.recipes.nerfWoodCrafting) {
+            VanillaRecipeHelper.addShapedRecipe(provider, "stick_saw", new ItemStack(Items.STICK, 4), "s", "P", "P", 'P', ItemTags.PLANKS);
+            VanillaRecipeHelper.addShapedRecipe(provider, "stick_normal", new ItemStack(Items.STICK, 2), "P", "P", 'P', ItemTags.PLANKS);
+        } else {
+            VanillaRecipeHelper.addShapedRecipe(provider, "treated_wood_stick", ChemicalHelper.get(stick, TreatedWood, 4), "L", "L", 'L', GTBlocks.TREATED_WOOD_PLANK.asStack());
+        }
     }
 
     private static void hardWoodRecipes(Consumer<FinishedRecipe> provider) {
