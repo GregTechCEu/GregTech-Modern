@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.IMaterialProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -633,29 +634,30 @@ public class TagPrefix {
     /**
      * Mappings between materials and their corresponding material amount
      */
-    private static final Map<Material, Long> MATERIAL_AMOUNT_MAP = ImmutableMap.ofEntries(
+    private static final Map<UnificationEntry, Long> MATERIAL_AMOUNT_MAP = ImmutableMap.ofEntries(
 
             // Blocks (4 materials)
-            Map.entry(GTMaterials.Amethyst, GTValues.M * 4),
-            Map.entry(GTMaterials.Brick, GTValues.M * 4),
-            Map.entry(GTMaterials.Clay, GTValues.M * 4),
-            Map.entry(GTMaterials.Glowstone, GTValues.M * 4),
-            Map.entry(GTMaterials.NetherQuartz, GTValues.M * 4),
+            Map.entry(new UnificationEntry(TagPrefix.block, GTMaterials.Amethyst), GTValues.M * 4),
+            Map.entry(new UnificationEntry(TagPrefix.block, GTMaterials.Brick), GTValues.M * 4),
+            Map.entry(new UnificationEntry(TagPrefix.block, GTMaterials.Clay), GTValues.M * 4),
+            Map.entry(new UnificationEntry(TagPrefix.block, GTMaterials.Glowstone), GTValues.M * 4),
+            Map.entry(new UnificationEntry(TagPrefix.block, GTMaterials.NetherQuartz), GTValues.M * 4),
 
             // Blocks (1 material)
-            Map.entry(GTMaterials.Concrete, GTValues.M),
-            Map.entry(GTMaterials.Glass, GTValues.M),
-            Map.entry(GTMaterials.Ice, GTValues.M),
-            Map.entry(GTMaterials.Obsidian, GTValues.M),
+            Map.entry(new UnificationEntry(TagPrefix.block, GTMaterials.Concrete), GTValues.M),
+            Map.entry(new UnificationEntry(TagPrefix.block, GTMaterials.Glass), GTValues.M),
+            Map.entry(new UnificationEntry(TagPrefix.block, GTMaterials.Ice), GTValues.M),
+            Map.entry(new UnificationEntry(TagPrefix.block, GTMaterials.Obsidian), GTValues.M),
 
             // Stick materials
-            Map.entry(GTMaterials.Blaze, GTValues.M * 4),
-            Map.entry(GTMaterials.Bone, GTValues.M * 5)
+            Map.entry(new UnificationEntry(TagPrefix.stick, GTMaterials.Blaze), GTValues.M * 4),
+            Map.entry(new UnificationEntry(TagPrefix.stick, GTMaterials.Bone), GTValues.M * 5)
 
     );
 
     public long getMaterialAmount(@Nullable Material material) {
-        return MATERIAL_AMOUNT_MAP.getOrDefault(material, materialAmount);
+        UnificationEntry key = new UnificationEntry(this, material);
+        return MATERIAL_AMOUNT_MAP.getOrDefault(key, materialAmount);
     }
 
     public static TagPrefix getPrefix(String prefixName) {
