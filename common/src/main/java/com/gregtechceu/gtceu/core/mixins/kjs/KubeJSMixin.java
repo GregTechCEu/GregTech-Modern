@@ -20,7 +20,7 @@ public abstract class KubeJSMixin {
      */
     @Inject(method = "setup", at = @At(value = "RETURN"), remap = false)
     public void injectInit(CallbackInfo ci) {
-        CommonProxy.initInternal();
+        CommonProxy.setKubeJSSetup();
     }
 
 }

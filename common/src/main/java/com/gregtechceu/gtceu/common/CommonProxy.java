@@ -15,17 +15,27 @@ import com.lowdragmc.lowdraglib.gui.factory.UIFactory;
  * @implNote CommonProxy
  */
 public class CommonProxy {
-
-    public static void init() {
-        if (!GTCEu.isKubeJSLoaded()) {
-            initInternal();
-        }
-    }
+    private static final Object LOCK = new Object();
+    private static boolean isKubJSSetup = false;
 
     /**
      * If kjs is loaded, make sure our mod is loaded after it. {@link com.gregtechceu.gtceu.core.mixins.kjs.KubeJSMixin}
      */
-    public static void initInternal() {
+    public static void setKubeJSSetup() {
+        synchronized (LOCK) {
+            isKubJSSetup = true;
+            LOCK.notify();
+        }
+    }
+
+    public static void init() {
+        if (GTCEu.isKubeJSLoaded()) {
+            synchronized (LOCK) {
+                if (!isKubJSSetup) {
+                    try { LOCK.wait(); } catch (InterruptedException ignored) {}
+                }
+            }
+        }
         UIFactory.register(MachineUIFactory.INSTANCE);
         UIFactory.register(CoverUIFactory.INSTANCE);
         GTPlacerTypes.init();
