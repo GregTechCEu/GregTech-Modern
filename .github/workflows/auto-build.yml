@@ -3,7 +3,7 @@ name: 1.19.2 Auto Build
 on:
   push:
     branches:
-      - '1.19.2'
+      - 'master'
     paths:
       - 'settings.gradle'
 
