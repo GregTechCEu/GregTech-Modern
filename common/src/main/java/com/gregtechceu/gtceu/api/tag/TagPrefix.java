@@ -640,7 +640,8 @@ public class TagPrefix {
             if (material == GTMaterials.Glowstone ||
                     material == GTMaterials.NetherQuartz ||
                     material == GTMaterials.Brick ||
-                    material == GTMaterials.Clay)
+                    material == GTMaterials.Clay ||
+                    material == GTMaterials.Amethyst)
                 return GTValues.M * 4;
                 //glass, ice and obsidian gain only one dust
             else if (material == GTMaterials.Glass ||

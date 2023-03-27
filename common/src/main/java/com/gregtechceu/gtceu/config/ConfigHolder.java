@@ -12,26 +12,25 @@ public class ConfigHolder {
     public static ClientConfigs client = new ClientConfigs();
 
     public static class RecipeConfigs {
-        public boolean generateLowQualityGems = true;
-        public boolean disableManualCompression = false;
-        public boolean harderRods = false;
-        public boolean harderBrickRecipes = false;
-        public boolean harderEBFControllerRecipe = false;
-        public boolean nerfWoodCrafting = false;
-        public boolean hardWoodRecipes = false;
-        public boolean hardIronRecipes = true;
-        public boolean hardRedstoneRecipes = false;
-        public boolean hardToolArmorRecipes = false;
-        public boolean hardMiscRecipes = false;
-        public boolean hardGlassRecipes = true;
-        public boolean nerfPaperCrafting = true;
-        public boolean hardAdvancedIronRecipes = false;
-        public boolean hardDyeRecipes = false;
-        public boolean harderCharcoalRecipe = true;
-
-        public boolean flintAndSteelRequireSteel = true;
-        public boolean disableConcreteInWorld = false;
-        public boolean removeVanillaBlockRecipes = false;
+        public boolean generateLowQualityGems = true; // default true
+        public boolean disableManualCompression = false; // default false
+        public boolean harderRods = false; // default false
+        public boolean harderBrickRecipes = false; // default false
+        public boolean harderEBFControllerRecipe = false; // default false
+        public boolean nerfWoodCrafting = false; // default false
+        public boolean hardWoodRecipes = false; // default false
+        public boolean hardIronRecipes = true; // default true
+        public boolean hardRedstoneRecipes = false; // default false
+        public boolean hardToolArmorRecipes = false; // default false
+        public boolean hardMiscRecipes = false; // default false
+        public boolean hardGlassRecipes = true; // default true
+        public boolean nerfPaperCrafting = true; // default true
+        public boolean hardAdvancedIronRecipes = false; // default false
+        public boolean hardDyeRecipes = false; // default false
+        public boolean harderCharcoalRecipe = true; // default true
+        public boolean flintAndSteelRequireSteel = true; // default true
+        public boolean disableConcreteInWorld = true; // default false
+        public boolean removeVanillaBlockRecipes = false; // default false
     }
 
     public static class WorldGenConfigs {

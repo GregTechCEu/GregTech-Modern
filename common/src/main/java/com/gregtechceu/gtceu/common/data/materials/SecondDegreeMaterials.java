@@ -60,7 +60,7 @@ public class SecondDegreeMaterials {
 
         Amethyst = new Material.Builder("amethyst")
                 .gem(3).ore()
-                .color(0xD232D2).iconSet(RUBY)
+                .color(0x8464BC).iconSet(RUBY)
                 .appendFlags(EXT_METAL, NO_SMASHING, NO_SMELTING, HIGH_SIFTER_OUTPUT)
                 .components(SiliconDioxide, 4, Iron, 1)
                 .buildAndRegister();

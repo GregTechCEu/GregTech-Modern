@@ -29,7 +29,7 @@ public class CraftingRecipeLoader {
         //VanillaRecipeHelper.addShapedRecipe(provider, "normal_wooden_pipe", ChemicalHelper.get(pipeNormalFluid, Wood), "WWW", "s r", 'W', CommonTags.TAG_PLANKS);
         //VanillaRecipeHelper.addShapedRecipe(provider, "large_wooden_pipe", ChemicalHelper.get(pipeLargeFluid, Wood), "WWW", "s r", "WWW", 'W', CommonTags.TAG_PLANKS);
 
-        // TODO Treated wood
+        // TODO Treated wood pipes
         //VanillaRecipeHelper.addShapedRecipe(provider, "small_treated_wooden_pipe", ChemicalHelper.get(pipeSmallFluid, TreatedWood), "sWr", 'W', new UnificationEntry(plank, TreatedWood));
         //VanillaRecipeHelper.addShapedRecipe(provider, "normal_treated_wooden_pipe", ChemicalHelper.get(pipeNormalFluid, TreatedWood), "WWW", "s r", 'W', new UnificationEntry(plank, TreatedWood));
         //VanillaRecipeHelper.addShapedRecipe(provider, "large_treated_wooden_pipe", ChemicalHelper.get(pipeLargeFluid, TreatedWood), "WWW", "s r", "WWW", 'W', new UnificationEntry(plank, TreatedWood));
@@ -67,11 +67,9 @@ public class CraftingRecipeLoader {
         //VanillaRecipeHelper.addShapedRecipe(provider, "clipboard", CLIPBOARD.asStack(), " Sd", "BWR", "PPP", 'P', Items.PAPER, 'R', new UnificationEntry(springSmall, Iron), 'B', new UnificationEntry(bolt, Iron), 'S', new UnificationEntry(screw, Iron), 'W', new UnificationEntry(plate, Wood));
 
         VanillaRecipeHelper.addShapelessRecipe(provider, "rubber_wood_planks", GTBlocks.RUBBER_PLANK.asStack(4), GTBlocks.RUBBER_LOG.asStack());
-        // TODO treated wood
-        //VanillaRecipeHelper.addShapedRecipe(provider, "treated_wood_planks", MetaBlocks.PLANKS.getItemVariant(BlockGregPlanks.BlockType.TREATED_PLANK, 8), "PPP", "PBP", "PPP", 'P', "plankWood", 'B', FluidUtil.getFilledBucket(Creosote.getFluid(1000)));
-        //VanillaRecipeHelper.addShapedRecipe(provider, "treated_wood_stick_saw", ChemicalHelper.get(stick, TreatedWood, ConfigHolder.recipes.nerfWoodCrafting ? 1 : 2), "s", "L", 'L', MetaBlocks.PLANKS.getItemVariant(BlockGregPlanks.BlockType.TREATED_PLANK));
-        //if (!ConfigHolder.recipes.nerfWoodCrafting)
-        //    VanillaRecipeHelper.addShapedRecipe(provider, "treated_wood_stick", ChemicalHelper.get(stick, TreatedWood, 4), "L", "L", 'L', MetaBlocks.PLANKS.getItemVariant(BlockGregPlanks.BlockType.TREATED_PLANK));
+        // todo material fluid buckets
+        //VanillaRecipeHelper.addShapedRecipe(provider, "treated_wood_planks", GTBlocks.TREATED_WOOD_PLANK.asStack(8), "PPP", "PBP", "PPP", 'P', ItemTags.PLANKS, 'B', Creosote.getFluid().getBucket());
+        VanillaRecipeHelper.addShapedRecipe(provider, "treated_wood_stick_saw", ChemicalHelper.get(stick, TreatedWood, ConfigHolder.recipes.nerfWoodCrafting ? 1 : 2), "s", "L", 'L', GTBlocks.TREATED_WOOD_PLANK.asStack());
 
         VanillaRecipeHelper.addShapedRecipe(provider, "rubber_ring", ChemicalHelper.get(ring, Rubber), "k", "X", 'X', new UnificationEntry(plate, Rubber));
         VanillaRecipeHelper.addShapedRecipe(provider, "silicone_rubber_ring", ChemicalHelper.get(ring, SiliconeRubber), "k", "P", 'P', ChemicalHelper.get(plate, SiliconeRubber));
