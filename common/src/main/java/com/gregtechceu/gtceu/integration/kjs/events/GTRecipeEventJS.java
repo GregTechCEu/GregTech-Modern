@@ -4,6 +4,8 @@ import com.google.gson.JsonElement;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
+import com.gregtechceu.gtceu.integration.kjs.GTCEuServerEvents;
+import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
 import dev.latvian.mods.kubejs.event.EventJS;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
@@ -42,5 +44,9 @@ public class GTRecipeEventJS extends EventJS {
 
     public Map<ResourceLocation, JsonElement> getRecipes() {
         return recipes;
+    }
+
+    public void post() {
+        GTCEuServerEvents.RECIPE.post(this);
     }
 }

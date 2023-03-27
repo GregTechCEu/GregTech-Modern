@@ -6,10 +6,10 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.MultiblockMachineBuilder;
 import com.gregtechceu.gtceu.common.data.GTMachines;
+import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
 import dev.latvian.mods.kubejs.event.EventJS;
 import it.unimi.dsi.fastutil.Function;
 import it.unimi.dsi.fastutil.Pair;
-import it.unimi.dsi.fastutil.ints.Int2LongFunction;
 
 /**
  * @author KilaBash
@@ -34,4 +34,7 @@ public class MachineEventJS extends EventJS {
         return GTRegistries.REGISTRATE.multiblock(name, WorkableElectricMultiblockMachine::new);
     }
 
+    public void post() {
+        GTCEuStartupEvents.MACHINES.post(this);
+    }
 }

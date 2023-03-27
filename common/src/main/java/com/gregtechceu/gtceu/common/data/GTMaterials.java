@@ -275,7 +275,7 @@ public class GTMaterials {
 //                Items.BROWN_DYE, Items.GREEN_DYE, Items.RED_DYE, Items.BLACK_DYE);
 
         if (GTCEu.isKubeJSLoaded()) {
-            GTCEuStartupEvents.MATERIAL.post(new MaterialEventJS());
+            new MaterialEventJS().post();
         }
     }
 

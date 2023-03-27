@@ -108,7 +108,6 @@ dependencies {
     modCompileOnly fabric.theoneprobe
 
     // KJS
-    // fxxk architectury has a mixin error!!
     modImplementation fabric.kubejs
 }
 

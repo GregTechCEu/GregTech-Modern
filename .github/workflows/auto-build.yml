@@ -5,7 +5,7 @@ on:
     branches:
       - 'master'
     paths:
-      - 'settings.gradle'
+      - 'gradle.properties'
 
 jobs:
   build:
