@@ -114,6 +114,10 @@ public abstract class GTRegistry<K, V> implements Iterable<V> {
     @Nullable
     public abstract V loadFromNBT(Tag tag);
 
+    public boolean remove(K name) {
+        return registry.remove(name) != null;
+    }
+
     //************************ Built-in Registry ************************//
 
     public static class String<V> extends GTRegistry<java.lang.String, V> {

@@ -1,14 +1,10 @@
 package com.gregtechceu.gtceu.common.data.fabric;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.data.worldgen.FrequencyModifier;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreFeatureEntry;
-import com.gregtechceu.gtceu.common.data.GTConfiguredFeatures;
-import com.gregtechceu.gtceu.common.data.GTFeatures;
 import com.gregtechceu.gtceu.common.data.GTPlacements;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.data.worldgen.placement.PlacementUtils;

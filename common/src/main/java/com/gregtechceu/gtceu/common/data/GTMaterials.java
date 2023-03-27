@@ -1,12 +1,16 @@
 package com.gregtechceu.gtceu.common.data;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.materials.*;
 import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterial;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlag;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
+import com.gregtechceu.gtceu.integration.kjs.events.MaterialEventJS;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
@@ -121,6 +125,7 @@ public class GTMaterials {
         gem.setIgnored(Lapis, Items.LAPIS_LAZULI);
         gem.setIgnored(NetherQuartz, Items.QUARTZ);
         gem.setIgnored(Coal, Items.COAL);
+        gem.setIgnored(Amethyst, Items.AMETHYST_SHARD);
         excludeAllGems(Charcoal, Items.CHARCOAL);
         excludeAllGems(Flint, Items.FLINT);
         excludeAllGems(EnderPearl, Items.ENDER_PEARL);
@@ -162,6 +167,7 @@ public class GTMaterials {
         block.setIgnored(Redstone, Blocks.REDSTONE_BLOCK);
         block.setIgnored(Diamond, Blocks.DIAMOND_BLOCK);
         block.setIgnored(Coal, Blocks.COAL_BLOCK);
+        block.setIgnored(Amethyst, Blocks.AMETHYST_BLOCK);
         block.setIgnored(Glass, Blocks.GLASS);
         block.setIgnored(Marble);
         block.setIgnored(Granite, Blocks.GRANITE);
@@ -268,6 +274,13 @@ public class GTMaterials {
 //                Items.LIGHT_GRAY_DYE, Items.CYAN_DYE, Items.PURPLE_DYE, Items.BLUE_DYE, 
 //                Items.BROWN_DYE, Items.GREEN_DYE, Items.RED_DYE, Items.BLACK_DYE);
 
+        if (GTCEu.isKubeJSLoaded()) {
+            new MaterialEventJS().post();
+        }
+    }
+
+    public static Material get(String name) {
+        return GTRegistries.MATERIALS.get(name);
     }
 
     private static void excludeAllGems(Material material, ItemLike... items) {

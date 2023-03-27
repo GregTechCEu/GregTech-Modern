@@ -62,7 +62,7 @@ public class OrganicChemistryMaterials {
         ReinforcedEpoxyResin = new Material.Builder("reinforced_epoxy_resin")
                 .polymer()
                 .color(0xA07A10)
-                .flags(STD_METAL)
+                .appendFlags(STD_METAL)
                 .components(Carbon, 6, Hydrogen, 4, Oxygen, 1)
                 .fluidTemp(600)
                 .buildAndRegister();
@@ -70,7 +70,7 @@ public class OrganicChemistryMaterials {
         PolyvinylChloride = new Material.Builder("polyvinyl_chloride")
                 .polymer()
                 .color(0xD7E6E6)
-                .flags(EXT_METAL, GENERATE_FOIL)
+                .appendFlags(EXT_METAL, GENERATE_FOIL)
                 .components(Carbon, 2, Hydrogen, 3, Chlorine, 1)
                 .itemPipeProperties(512, 4)
                 .fluidTemp(373)
@@ -79,7 +79,7 @@ public class OrganicChemistryMaterials {
         PolyphenyleneSulfide = new Material.Builder("polyphenylene_sulfide")
                 .polymer()
                 .color(0xAA8800)
-                .flags(EXT_METAL, GENERATE_FOIL)
+                .appendFlags(EXT_METAL, GENERATE_FOIL)
                 .components(Carbon, 6, Hydrogen, 4, Sulfur, 1)
                 .fluidTemp(500)
                 .buildAndRegister();
@@ -120,7 +120,7 @@ public class OrganicChemistryMaterials {
         Epoxy = new Material.Builder("epoxy")
                 .polymer(1)
                 .color(0xC88C14)
-                .flags(STD_METAL)
+                .appendFlags(STD_METAL)
                 .components(Carbon, 21, Hydrogen, 25, Chlorine, 1, Oxygen, 5)
                 .fluidTemp(400)
                 .buildAndRegister();
@@ -130,7 +130,7 @@ public class OrganicChemistryMaterials {
         Polycaprolactam = new Material.Builder("polycaprolactam")
                 .polymer(1)
                 .color(0x323232)
-                .flags(STD_METAL, GENERATE_FOIL)
+                .appendFlags(STD_METAL, GENERATE_FOIL)
                 .components(Carbon, 6, Hydrogen, 11, Nitrogen, 1, Oxygen, 1)
                 .fluidTemp(493)
                 .buildAndRegister();
@@ -138,7 +138,7 @@ public class OrganicChemistryMaterials {
         Polytetrafluoroethylene = new Material.Builder("polytetrafluoroethylene")
                 .polymer(1)
                 .color(0x646464)
-                .flags(STD_METAL, GENERATE_FRAME, GENERATE_FOIL)
+                .appendFlags(STD_METAL, GENERATE_FRAME, GENERATE_FOIL)
                 .toolStats(ToolProperty.Builder.of(1.0F, 1.0F, 128, 1, GTToolType.SOFT_MALLET).build())
                 .components(Carbon, 2, Fluorine, 4)
                 .fluidPipeProperties(600, 100, true, true, false, false)

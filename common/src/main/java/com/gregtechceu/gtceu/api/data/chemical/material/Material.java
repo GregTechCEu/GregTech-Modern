@@ -719,7 +719,8 @@ public class Material implements Comparable<Material> {
          * @param f1 A {@link Collection} of {@link MaterialFlag}. Provided this way for easy Flag presets to be applied.
          * @param f2 An Array of {@link MaterialFlag}. If no {@link Collection} is required, use {@link Builder#flags(MaterialFlag...)}.
          */
-        public Builder flags(Collection<MaterialFlag> f1, MaterialFlag... f2) {
+        // rename for kjs conflicts
+        public Builder appendFlags(Collection<MaterialFlag> f1, MaterialFlag... f2) {
             this.flags.addFlags(f1.toArray(new MaterialFlag[0]));
             this.flags.addFlags(f2);
             return this;

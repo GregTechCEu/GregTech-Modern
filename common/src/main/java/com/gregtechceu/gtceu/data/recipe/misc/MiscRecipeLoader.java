@@ -442,12 +442,11 @@ public class MiscRecipeLoader {
         //        .outputItems(GTBlocks.CASING.get().getItemVariant(BlockGlassCasing.CasingType.LAMINATED_GLASS))
         //        .duration(200).EUt(VA[HV]).save(provider);
 
-        // todo treated wood
-        //LATHE_RECIPES.recipeBuilder("treated_wood_sticks")
-        //        .inputItems(plank, TreatedWood)
-        //        .outputItems(stick, TreatedWood, 2)
-        //        .duration(10).EUt(VA[ULV])
-        //        .save(provider);
+        LATHE_RECIPES.recipeBuilder("treated_wood_sticks")
+                .inputItems(GTBlocks.TREATED_WOOD_PLANK.asStack())
+                .outputItems(stick, TreatedWood, 2)
+                .duration(10).EUt(VA[ULV])
+                .save(provider);
 
         // Coke Brick and Firebrick decomposition
         EXTRACTOR_RECIPES.recipeBuilder("extract_coke_oven_bricks")

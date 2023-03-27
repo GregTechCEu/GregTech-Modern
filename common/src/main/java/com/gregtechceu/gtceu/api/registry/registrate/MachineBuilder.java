@@ -27,7 +27,6 @@ import lombok.experimental.Accessors;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
@@ -92,8 +91,7 @@ public class MachineBuilder {
     private BiConsumer<ItemStack, List<Component>> tooltipBuilder;
     @Setter
     private OverclockingLogic overclockingLogic = OverclockingLogic.NON_PERFECT_OVERCLOCK;
-    @Setter
-    private Supplier<ResourceLocation> connectedID = () -> null;
+    private Supplier<BlockState> appearance;
     @Setter
     private String langValue = null;
 
@@ -140,8 +138,13 @@ public class MachineBuilder {
         return renderer(() -> new WorkableCasingMachineRenderer(baseCasing, workableModel, tint));
     }
 
-    public MachineBuilder connectBlock(Supplier<? extends Block> block) {
-        connectedID = () -> Registry.BLOCK.getKey(block.get());
+    public MachineBuilder appearanceBlock(Supplier<? extends Block> block) {
+        appearance = () -> block.get().defaultBlockState();
+        return this;
+    }
+
+    public MachineBuilder appearance(Supplier<BlockState> state) {
+        appearance = state;
         return this;
     }
 
@@ -219,7 +222,10 @@ public class MachineBuilder {
         if (recipeType != null && recipeType.getIconSupplier() == null) {
             recipeType.setIconSupplier(definition::asStack);
         }
-        definition.setConnectedID(connectedID);
+        if (appearance == null) {
+            appearance = block::getDefaultState;
+        }
+        definition.setAppearance(appearance);
         definition.setRenderer(renderer.get());
         definition.setShape(shape);
         definition.setDefaultPaintingColor(paintingColor);

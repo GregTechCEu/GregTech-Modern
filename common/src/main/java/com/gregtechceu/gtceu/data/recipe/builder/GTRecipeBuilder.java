@@ -162,6 +162,19 @@ public class GTRecipeBuilder {
         return output(EURecipeCapability.CAP, eu);
     }
 
+    // for kjs
+    public GTRecipeBuilder itemInputs(Ingredient... inputs) {
+        return input(ItemRecipeCapability.CAP, inputs);
+    }
+
+    public GTRecipeBuilder itemInput(UnificationEntry input) {
+        return inputItems(input);
+    }
+
+    public GTRecipeBuilder itemInput(UnificationEntry input, int count) {
+        return inputItems(input, count);
+    }
+
     public GTRecipeBuilder inputItems(Ingredient... inputs) {
         return input(ItemRecipeCapability.CAP, inputs);
     }
@@ -222,6 +235,19 @@ public class GTRecipeBuilder {
 
     public GTRecipeBuilder inputItems(MachineDefinition machine, int count) {
         return inputItems(machine.asStack(count));
+    }
+
+    // for kjs
+    public GTRecipeBuilder itemOutputs(ItemStack... outputs) {
+        return outputItems(outputs);
+    }
+
+    public GTRecipeBuilder itemOutput(UnificationEntry unificationEntry) {
+        return outputItems(unificationEntry.tagPrefix, unificationEntry.material);
+    }
+
+    public GTRecipeBuilder itemOutput(UnificationEntry unificationEntry, int count) {
+        return outputItems(unificationEntry.tagPrefix, unificationEntry.material, count);
     }
 
     public GTRecipeBuilder outputItems(ItemStack... outputs) {

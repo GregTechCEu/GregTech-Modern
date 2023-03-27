@@ -125,7 +125,7 @@ public class ReactorRecipes {
                 .duration(60).EUt(VA[ULV]).save(provider);
 
         // NaCl + H2SO4 -> NaHSO4 + HCl
-        CHEMICAL_RECIPES.recipeBuilder("sodium_bisulfate")
+        CHEMICAL_RECIPES.recipeBuilder("sodium_bisulfate_from_salt")
                 .inputItems(dust, Salt, 2)
                 .circuitMeta(1)
                 .inputFluids(SulfuricAcid.getFluid(1000))
@@ -142,7 +142,7 @@ public class ReactorRecipes {
                 .duration(400).EUt(VA[LV])
                 .save(provider);
 
-        CHEMICAL_RECIPES.recipeBuilder("chloromethane")
+        CHEMICAL_RECIPES.recipeBuilder("chloromethane_from_methane")
                 .circuitMeta(3)
                 .inputFluids(Chlorine.getFluid(2000))
                 .inputFluids(Methane.getFluid(1000))
@@ -417,7 +417,7 @@ public class ReactorRecipes {
                 .outputFluids(Dimethylamine.getFluid(1000))
                 .duration(240).EUt(VA[MV]).save(provider);
 
-        CHEMICAL_RECIPES.recipeBuilder("chloromethane")
+        CHEMICAL_RECIPES.recipeBuilder("chloromethane_from_methanol")
                 .circuitMeta(1)
                 .inputFluids(HydrochloricAcid.getFluid(1000))
                 .inputFluids(Methanol.getFluid(1000))
@@ -501,7 +501,7 @@ public class ReactorRecipes {
                 .outputFluids(DinitrogenTetroxide.getFluid(1000))
                 .duration(640).EUt(VA[LV]).save(provider);
 
-        CHEMICAL_RECIPES.recipeBuilder("sodium_bisulfate")
+        CHEMICAL_RECIPES.recipeBuilder("sodium_bisulfate_from_hydroxide")
                 .inputItems(dust, SodiumHydroxide, 3)
                 .inputFluids(SulfuricAcid.getFluid(1000))
                 .outputItems(dust, SodiumBisulfate, 7)
@@ -553,8 +553,8 @@ public class ReactorRecipes {
                 .outputFluids(Rubber.getFluid(1296))
                 .duration(600).EUt(16).save(provider);
 
-        CHEMICAL_RECIPES.recipeBuilder("glistening_melon")
-                .inputItems(Items.MELON)
+        CHEMICAL_RECIPES.recipeBuilder("glistening_melon_slice")
+                .inputItems(Items.MELON_SLICE)
                 .inputItems(nugget, Gold, 8)
                 .outputItems(Items.GLISTERING_MELON_SLICE)
                 .duration(50).EUt(VA[LV]).save(provider);
