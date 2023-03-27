@@ -27,9 +27,10 @@ dependencyResolutionManagement {
         def createVersion = "0.5.0.g-837"
         def lazyDfuVersion = "0.1.3"
         def modMenuVersion = "4.1.2"
-        def ldLibVersion = "1.0.2"
+        def ldLibVersion = "1.0.3"
         def topFabricVersion = "1.19-6.0.0"
         def registrateFabricVersion = "1.1.50-MC1.19.2"
+        def kjsVersion = "1902.6.0-build.142"
 
         // Forge
         def forgeVersion = "43.2.0"
@@ -86,6 +87,9 @@ dependencyResolutionManagement {
 
             def theoneprobe = version("theoneprobe", topFabricVersion)
             library("theoneprobe", "mcjty.theoneprobe", "theoneprobe-fabric").versionRef(theoneprobe)
+
+            def kubejs = version("kubejs", kjsVersion)
+            library("kubejs", "dev.latvian.mods", "kubejs-fabric").versionRef(kubejs)
         }
 
         forge {
@@ -118,6 +122,9 @@ dependencyResolutionManagement {
 
             def theoneprobe = version("theoneprobe", topForgeVersion)
             library("theoneprobe", "mcjty.theoneprobe", "theoneprobe").versionRef(theoneprobe)
+
+            def kubejs = version("kubejs", kjsVersion)
+            library("kubejs", "dev.latvian.mods", "kubejs-forge").versionRef(kubejs)
         }
 
         libs {
@@ -152,15 +159,5 @@ include("${mod_id}-forge")
 project(":${mod_id}-common").setProjectDir(new File("common"))
 project(":${mod_id}-forge").setProjectDir(new File("forge"))
 project(":${mod_id}-fabric").setProjectDir(new File("fabric"))
-
-//include("${ldlib_name}")
-//include("${ldlib_name}:${ldlib_id}-common")
-//include("${ldlib_name}:${ldlib_id}-fabric")
-//include("${ldlib_name}:${ldlib_id}-forge")
-//
-//project(":${ldlib_name}").setProjectDir(new File("LDLib-Architectury"))
-//project(":${ldlib_name}:${ldlib_id}-common").setProjectDir(new File("LDLib-Architectury/common"))
-//project(":${ldlib_name}:${ldlib_id}-forge").setProjectDir(new File("LDLib-Architectury/forge"))
-//project(":${ldlib_name}:${ldlib_id}-fabric").setProjectDir(new File("LDLib-Architectury/fabric"))
 
 rootProject.name = "${mod_name}"

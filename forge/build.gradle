@@ -86,6 +86,13 @@ repositories {
     maven { // TOP
         url "https://maven.k-4u.nl"
     }
+    maven {
+        // saps.dev Maven (KubeJS and Rhino)
+        url = "https://maven.saps.dev/minecraft"
+        content {
+            includeGroup "dev.latvian.mods"
+        }
+    }
 }
 
 dependencies {
@@ -119,6 +126,9 @@ dependencies {
 
     // TOP
     modImplementation(forge.theoneprobe) { transitive = false }
+
+    // KJS
+    modImplementation forge.kubejs
 }
 
 processResources {

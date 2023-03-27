@@ -4,8 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.api.recipe.ingredient.fabric.SizedIngredientImpl;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.common.CommonProxy;
+import com.gregtechceu.gtceu.common.fabric.CommonProxyImpl;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredientSerializer;
@@ -16,7 +15,7 @@ public class GTCEuFabric implements ModInitializer {
     @Override
     public void onInitialize() {
         GTCEu.init();
-        CommonProxy.init();
+        CommonProxyImpl.init();
         CustomIngredientSerializer.register(SizedIngredientImpl.Serializer.INSTANCE);
         AttackBlockCallback.EVENT.register(((player, world, hand, pos, direction) -> {
             var blockState = world.getBlockState(pos);

@@ -8,9 +8,9 @@ import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
-import com.gregtechceu.gtceu.data.recipe.CommonTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
@@ -381,7 +381,7 @@ public class ToolRecipeHandler {
                 VanillaRecipeHelper.addShapedRecipe(provider, String.format("soft_mallet_%s", material),
                         ToolHelper.get(GTToolType.SOFT_MALLET, material),
                         "II ", "IIS", "II ",
-                        'I', CommonTags.TAG_PLANKS,
+                        'I', ItemTags.PLANKS,
                         'S', stick);
             } else {
                 VanillaRecipeHelper.addShapedRecipe(provider, String.format("soft_mallet_%s", material),

@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.data.recipe.misc;
 
-import com.gregtechceu.gtceu.data.recipe.CommonTags;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
@@ -103,7 +103,7 @@ public class WoodMachineRecipes {
 
         // Charcoal Byproducts
         PYROLYSE_RECIPES.recipeBuilder("log_to_charcoal_byproducts").circuitMeta(4)
-                .inputItems(CommonTags.TAG_LOGS, 16)
+                .inputItems(ItemTags.LOGS, 16)
                 .inputFluids(Nitrogen.getFluid(1000))
                 .outputItems(new ItemStack(Items.CHARCOAL, 20))
                 .outputFluids(CharcoalByproducts.getFluid(4000))
@@ -112,14 +112,14 @@ public class WoodMachineRecipes {
 
         // Wood Tar
         PYROLYSE_RECIPES.recipeBuilder("log_to_wood_tar").circuitMeta(9)
-                .inputItems(CommonTags.TAG_LOGS, 16)
+                .inputItems(ItemTags.LOGS, 16)
                 .outputItems(new ItemStack(Items.CHARCOAL, 20))
                 .outputFluids(WoodTar.getFluid(1500))
                 .duration(640).EUt(64)
                 .save(provider);
 
         PYROLYSE_RECIPES.recipeBuilder("log_to_wood_tar_nitrogen").circuitMeta(10)
-                .inputItems(CommonTags.TAG_LOGS, 16)
+                .inputItems(ItemTags.LOGS, 16)
                 .inputFluids(Nitrogen.getFluid(1000))
                 .outputItems(new ItemStack(Items.CHARCOAL, 20))
                 .outputFluids(WoodTar.getFluid(1500))
@@ -128,14 +128,14 @@ public class WoodMachineRecipes {
 
         // Wood Gas
         PYROLYSE_RECIPES.recipeBuilder("log_to_wood_gas").circuitMeta(5)
-                .inputItems(CommonTags.TAG_LOGS, 16)
+                .inputItems(ItemTags.LOGS, 16)
                 .outputItems(new ItemStack(Items.CHARCOAL, 20))
                 .outputFluids(WoodGas.getFluid(1500))
                 .duration(640).EUt(64)
                 .save(provider);
 
         PYROLYSE_RECIPES.recipeBuilder("log_to_wood_gas_nitrogen").circuitMeta(6)
-                .inputItems(CommonTags.TAG_LOGS, 16)
+                .inputItems(ItemTags.LOGS, 16)
                 .inputFluids(Nitrogen.getFluid(1000))
                 .outputItems(new ItemStack(Items.CHARCOAL, 20))
                 .outputFluids(WoodGas.getFluid(1500))
@@ -144,14 +144,14 @@ public class WoodMachineRecipes {
 
         // Wood Vinegar
         PYROLYSE_RECIPES.recipeBuilder("log_to_wood_vinegar").circuitMeta(7)
-                .inputItems(CommonTags.TAG_LOGS, 16)
+                .inputItems(ItemTags.LOGS, 16)
                 .outputItems(new ItemStack(Items.CHARCOAL, 20))
                 .outputFluids(WoodVinegar.getFluid(3000))
                 .duration(640).EUt(64)
                 .save(provider);
 
         PYROLYSE_RECIPES.recipeBuilder("log_to_wood_vinegar_nitrogen").circuitMeta(8)
-                .inputItems(CommonTags.TAG_LOGS, 16)
+                .inputItems(ItemTags.LOGS, 16)
                 .inputFluids(Nitrogen.getFluid(1000))
                 .outputItems(new ItemStack(Items.CHARCOAL, 20))
                 .outputFluids(WoodVinegar.getFluid(3000))
@@ -160,14 +160,14 @@ public class WoodMachineRecipes {
 
         // Creosote
         PYROLYSE_RECIPES.recipeBuilder("log_to_creosote").circuitMeta(1)
-                .inputItems(CommonTags.TAG_LOGS, 16)
+                .inputItems(ItemTags.LOGS, 16)
                 .outputItems(new ItemStack(Items.CHARCOAL, 20))
                 .outputFluids(Creosote.getFluid(4000))
                 .duration(640).EUt(64)
                 .save(provider);
 
         PYROLYSE_RECIPES.recipeBuilder("log_to_creosote_nitrogen").circuitMeta(2)
-                .inputItems(CommonTags.TAG_LOGS, 16)
+                .inputItems(ItemTags.LOGS, 16)
                 .inputFluids(Nitrogen.getFluid(1000))
                 .outputItems(new ItemStack(Items.CHARCOAL, 20))
                 .outputFluids(Creosote.getFluid(4000))
@@ -176,7 +176,7 @@ public class WoodMachineRecipes {
 
         // Heavy Oil
         PYROLYSE_RECIPES.recipeBuilder("log_to_heavy_oil").circuitMeta(3)
-                .inputItems(CommonTags.TAG_LOGS, 16)
+                .inputItems(ItemTags.LOGS, 16)
                 .outputItems(dust, Ash, 4)
                 .outputFluids(OilHeavy.getFluid(200))
                 .duration(320).EUt(192)
@@ -248,7 +248,7 @@ public class WoodMachineRecipes {
 
         // From Log
         PYROLYSE_RECIPES.recipeBuilder("log_to_coal_gas").circuitMeta(20)
-                .inputItems(CommonTags.TAG_LOGS, 16)
+                .inputItems(ItemTags.LOGS, 16)
                 .inputFluids(Steam.getFluid(1000))
                 .outputItems(new ItemStack(Items.CHARCOAL, 20))
                 .outputFluids(CoalGas.getFluid(2000))

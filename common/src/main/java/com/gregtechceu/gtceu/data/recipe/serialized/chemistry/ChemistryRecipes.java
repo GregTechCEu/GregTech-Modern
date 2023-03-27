@@ -16,22 +16,22 @@ public class ChemistryRecipes {
 
     public static void init(Consumer<FinishedRecipe> provider) {
 
-        PetrochemRecipes.init(provider);
-        DistillationRecipes.init(provider);
-        //SeparationRecipes.init(provider);
-        MixerRecipes.init(provider);
+        AcidRecipes.init(provider);
         BrewingRecipes.init(provider);
         ChemicalBathRecipes.init(provider);
-        //ReactorRecipes.init(provider);
-        PolymerRecipes.init(provider);
-        LCRCombined.init(provider);
-        GrowthMediumRecipes.init(provider);
-        NuclearRecipes.init(provider);
+        DistillationRecipes.init(provider);
         FuelRecipeChains.init(provider);
         GemSlurryRecipes.init(provider);
-        PlatGroupMetalsRecipes.init(provider);
+        GrowthMediumRecipes.init(provider);
+        LCRCombined.init(provider);
+        MixerRecipes.init(provider);
         NaquadahRecipes.init(provider);
-        AcidRecipes.init(provider);
+        NuclearRecipes.init(provider);
+        PetrochemRecipes.init(provider);
+        PlatGroupMetalsRecipes.init(provider);
+        PolymerRecipes.init(provider);
+        ReactorRecipes.init(provider);
+        SeparationRecipes.init(provider);
 
 
         // A Few Random Recipes
