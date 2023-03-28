@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.IToolGridHighLight;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
+import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.syncdata.managed.MultiManagedStorage;
 import lombok.Getter;
 import net.minecraft.core.BlockPos;
@@ -17,6 +18,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+
+import java.util.List;
 
 /**
  * @author KilaBash
@@ -113,11 +116,11 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMetaMachineB
 
     @Override
     public boolean shouldRenderGrid(Player player, ItemStack held, GTToolType toolType) {
-        return toolType == GTToolType.WRENCH || toolType == GTToolType.SCREWDRIVER;
+        return metaMachine.shouldRenderGrid(player, held, toolType);
     }
 
     @Override
-    public boolean isSideUsed(Player player, GTToolType toolType, Direction side) {
-        return metaMachine.isSideUsed(player, toolType, side);
+    public ResourceTexture sideTips(Player player, GTToolType toolType, Direction side) {
+        return metaMachine.sideTips(player, toolType, side);
     }
 }

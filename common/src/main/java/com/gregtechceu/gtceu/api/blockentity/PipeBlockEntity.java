@@ -1,7 +1,9 @@
 package com.gregtechceu.gtceu.api.blockentity;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
+import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
 import com.gregtechceu.gtceu.api.pipenet.PipeCoverContainer;
 import com.gregtechceu.gtceu.api.block.BlockProperties;
@@ -12,6 +14,7 @@ import com.gregtechceu.gtceu.api.item.tool.IToolGridHighLight;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.pipenet.IAttachData;
 import com.gregtechceu.gtceu.api.pipenet.IPipeType;
+import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.pipelike.Node;
 import com.lowdragmc.lowdraglib.syncdata.IManaged;
 import com.lowdragmc.lowdraglib.syncdata.IManagedStorage;
@@ -214,18 +217,27 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
     //////////////////////////////////////
     @Override
     public boolean shouldRenderGrid(Player player, ItemStack held, GTToolType toolType) {
-        return toolType == GTToolType.WRENCH || toolType == GTToolType.SCREWDRIVER || toolType == GTToolType.SOFT_MALLET;
+        if (toolType == GTToolType.WRENCH || toolType == GTToolType.SCREWDRIVER) return true;
+        for (CoverBehavior cover : coverContainer.getCovers()) {
+            if (cover.shouldRenderGrid(player, held, toolType)) return true;
+        }
+        return false;
+    }
+
+    public ResourceTexture getPipeTexture(boolean isBlock) {
+        return isBlock? GuiTextures.TOOL_PIPE_CONNECT : GuiTextures.TOOL_PIPE_BLOCK;
     }
 
     @Override
-    public boolean isSideUsed(Player player, GTToolType toolType, Direction side) {
+    public ResourceTexture sideTips(Player player, GTToolType toolType, Direction side) {
         if (toolType == GTToolType.WRENCH) {
-            return isBlocked(side);
+            return getPipeTexture(isBlocked(side));
         }
-        if (toolType == GTToolType.SCREWDRIVER || toolType == GTToolType.SOFT_MALLET || toolType == GTToolType.CROWBAR) {
-            return !coverContainer.hasCover(side);
+        var cover = coverContainer.getCoverAtSide(side);
+        if (cover != null) {
+            return cover.sideTips(player, toolType, side);
         }
-        return false;
+        return null;
     }
 
     @Override

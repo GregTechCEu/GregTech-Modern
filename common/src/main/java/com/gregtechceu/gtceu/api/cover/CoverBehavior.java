@@ -3,13 +3,18 @@ package com.gregtechceu.gtceu.api.cover;
 import com.google.common.collect.Lists;
 import com.gregtechceu.gtceu.api.gui.CoverUIFactory;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
+import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.item.tool.GTToolType;
+import com.gregtechceu.gtceu.api.item.tool.IToolGridHighLight;
 import com.gregtechceu.gtceu.client.renderer.cover.ICoverRenderer;
+import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.syncdata.IManaged;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import lombok.Getter;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
@@ -21,6 +26,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.Nullable;
 import java.util.List;
 
@@ -28,7 +34,9 @@ import java.util.List;
  * Represents cover instance attached on the specific side of meta tile entity
  * Cover filters out interaction and logic of meta tile entity
  */
-public abstract class CoverBehavior implements IManaged {
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
+public abstract class CoverBehavior implements IManaged, IToolGridHighLight {
 
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(CoverBehavior.class);
 
@@ -142,6 +150,22 @@ public abstract class CoverBehavior implements IManaged {
 
     public ICoverRenderer getCoverRenderer() {
         return coverDefinition.getCoverRenderer();
+    }
+
+    @Override
+    public boolean shouldRenderGrid(Player player, ItemStack held, GTToolType toolType) {
+        return toolType == GTToolType.CROWBAR || (toolType == GTToolType.SCREWDRIVER && this instanceof IUICover);
+    }
+
+    @Override
+    public ResourceTexture sideTips(Player player, GTToolType toolType, Direction side) {
+        if (toolType == GTToolType.CROWBAR) {
+            return GuiTextures.TOOL_REMOVE_COVER;
+        }
+        if (toolType == GTToolType.SCREWDRIVER && this instanceof IUICover) {
+            return GuiTextures.TOOL_COVER_SETTINGS;
+        }
+        return null;
     }
 
     /**

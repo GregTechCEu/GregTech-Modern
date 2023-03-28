@@ -96,7 +96,7 @@ public class GTRecipeTypes {
             .prepareBuilder(recipeBuilder -> recipeBuilder.duration(128).EUt(4))
             .setSlotOverlay(false, false, GuiTextures.BREWER_OVERLAY)
             .setProgressBar(GuiTextures.PROGRESS_BAR_ARROW_MULTIPLE, LEFT_TO_RIGHT)
-            .setSound(GTSoundEntries.CHEMICAL_REACTOR);
+            .setSound(GTSoundEntries.CHEMICAL);
 
     public final static GTRecipeType MACERATOR_RECIPES = register("macerator").setIOSize(1, 1, 1, 4, 0, 0, 0, 0)
             .setSlotOverlay(false, false, GuiTextures.CRUSHED_ORE_OVERLAY)
@@ -143,7 +143,7 @@ public class GTRecipeTypes {
             .setSlotOverlay(true, false, GuiTextures.VIAL_OVERLAY_1)
             .setSlotOverlay(true, true, GuiTextures.VIAL_OVERLAY_2)
             .setProgressBar(GuiTextures.PROGRESS_BAR_ARROW_MULTIPLE, LEFT_TO_RIGHT)
-            .setSound(GTValues.FOOLS.get() ? GTSoundEntries.SCIENCE : GTSoundEntries.CHEMICAL_REACTOR)
+            .setSound(GTValues.FOOLS.get() ? GTSoundEntries.SCIENCE : GTSoundEntries.CHEMICAL)
             // TODO consider allowing LCR to just read these recipes? instead of generating new (minimize extra jsons)
             .onRecipeBuild((recipeBuilder, provider) -> GTRecipeTypes.LARGE_CHEMICAL_RECIPES.copyFrom(recipeBuilder).save(provider));
 
@@ -224,7 +224,7 @@ public class GTRecipeTypes {
             .setSlotOverlay(false, false, true, GuiTextures.DUST_OVERLAY)
             .setSlotOverlay(true, false, true, GuiTextures.DUST_OVERLAY)
             .setProgressBar(GuiTextures.PROGRESS_BAR_ARROW, LEFT_TO_RIGHT)
-            .setSound(GTSoundEntries.CHEMICAL_REACTOR);
+            .setSound(GTSoundEntries.CHEMICAL);
 
 
     public final static GTRecipeType FLUID_HEATER_RECIPES = register("fluid_heater").setIOSize(1, 1, 0, 0, 1, 1, 1, 1)
@@ -412,7 +412,7 @@ public class GTRecipeTypes {
 
     // TODO Add small distillery recipes in .onRecipeBuild()
     public final static GTRecipeType DISTILLATION_RECIPES = register("distillation_tower").setIOSize(0, 0, 0, 1, 1, 1, 1, 12)
-            .setSound(GTSoundEntries.CHEMICAL_REACTOR);
+            .setSound(GTSoundEntries.CHEMICAL);
 
     public final static GTRecipeType PYROLYSE_RECIPES = register("pyrolyse_oven").setIOSize(2, 2, 0, 1, 0, 1, 0, 1)
             .setSound(GTSoundEntries.FIRE);
@@ -447,7 +447,7 @@ public class GTRecipeTypes {
             .setSlotOverlay(false, true, true, GuiTextures.MOLECULAR_OVERLAY_4)
             .setSlotOverlay(true, false, GuiTextures.VIAL_OVERLAY_1)
             .setSlotOverlay(true, true, GuiTextures.VIAL_OVERLAY_2)
-            .setSound(GTValues.FOOLS.get() ? GTSoundEntries.SCIENCE : GTSoundEntries.CHEMICAL_REACTOR)
+            .setSound(GTValues.FOOLS.get() ? GTSoundEntries.SCIENCE : GTSoundEntries.CHEMICAL)
             .setProgressBar(GuiTextures.PROGRESS_BAR_ARROW_MULTIPLE, LEFT_TO_RIGHT)
             .setSmallRecipeMap(CHEMICAL_RECIPES);
 

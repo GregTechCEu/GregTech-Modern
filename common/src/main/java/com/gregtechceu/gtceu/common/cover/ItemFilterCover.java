@@ -10,14 +10,19 @@ import com.gregtechceu.gtceu.api.gui.UITemplate;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Player;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * @author KilaBash
  * @date 2023/3/13
  * @implNote ItemFilterCover
  */
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class ItemFilterCover extends CoverBehavior implements IUICover {
 
     protected ItemFilter itemFilter;

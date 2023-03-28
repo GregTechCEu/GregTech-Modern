@@ -53,14 +53,14 @@
     ],
     "subtitle": "gtceu.subtitle.chainsaw"
   },
-  "chemical_reactor": {
+  "chemical": {
     "sounds": [
       {
         "type": "file",
-        "name": "gtceu:chemical_reactor"
+        "name": "gtceu:chemical"
       }
     ],
-    "subtitle": "gtceu.subtitle.chemical_reactor"
+    "subtitle": "gtceu.subtitle.chemical"
   },
   "combustion": {
     "sounds": [

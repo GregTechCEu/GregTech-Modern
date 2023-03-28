@@ -1,8 +1,11 @@
 package com.gregtechceu.gtceu.api.item.tool;
 
+import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+
+import javax.annotation.Nullable;
 
 /**
  * @author KilaBash
@@ -10,8 +13,13 @@ import net.minecraft.world.item.ItemStack;
  * @implNote IBlockGridHighLight
  */
 public interface IToolGridHighLight {
-    boolean shouldRenderGrid(Player player, ItemStack held, GTToolType toolType);
+    default boolean shouldRenderGrid(Player player, ItemStack held, GTToolType toolType) {
+        return true;
+    }
 
-    boolean isSideUsed(Player player, GTToolType toolType, Direction side);
+    @Nullable
+    default ResourceTexture sideTips(Player player, GTToolType toolType, Direction side) {
+        return null;
+    }
 
 }

@@ -127,6 +127,7 @@ public interface ICoverable extends ITickSubscription, IAppearance {
         return false;
     }
 
+    @Nullable
     static Direction rayTraceCoverableSide(ICoverable coverable, Player player) {
         var rayTrace = RayTraceHelper.rayTraceRange(coverable.getLevel(), player, 4);
         if (rayTrace.getType() == HitResult.Type.MISS) {
@@ -144,6 +145,7 @@ public interface ICoverable extends ITickSubscription, IAppearance {
         }
     }
 
+    @Nullable
     static Direction traceCoverSide(BlockHitResult result) {
 //        if (result instanceof CuboidRayTraceResult) {
 //            CuboidRayTraceResult rayTraceResult = (CuboidRayTraceResult) result;
@@ -162,6 +164,7 @@ public interface ICoverable extends ITickSubscription, IAppearance {
         return determineGridSideHit(result);
     }
 
+    @Nullable
     static Direction determineGridSideHit(BlockHitResult result) {
         return GTUtil.determineWrenchingSide(result.getDirection(),
                 (float) (result.getLocation().x - result.getBlockPos().getX()),
@@ -190,10 +193,6 @@ public interface ICoverable extends ITickSubscription, IAppearance {
             }
         }
         return false;
-    }
-
-    default boolean canRenderMachineGrid() {
-        return true;
     }
 
     @Nullable

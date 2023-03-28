@@ -16,7 +16,7 @@ public class GTSoundEntries {
     // Machine Sounds
     public static final SoundEntry FORGE_HAMMER = REGISTRATE.sound("forge_hammer").build();
     public static final SoundEntry MACERATOR = REGISTRATE.sound("macerator").build();
-    public static final SoundEntry CHEMICAL_REACTOR = REGISTRATE.sound("chemical_reactor").build();
+    public static final SoundEntry CHEMICAL = REGISTRATE.sound("chemical").build();
     public static final SoundEntry ASSEMBLER = REGISTRATE.sound("assembler").build();
     public static final SoundEntry CENTRIFUGE = REGISTRATE.sound("centrifuge").build();
     public static final SoundEntry COMPRESSOR = REGISTRATE.sound("compressor").build();

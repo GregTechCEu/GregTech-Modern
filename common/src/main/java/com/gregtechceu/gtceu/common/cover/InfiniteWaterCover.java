@@ -7,14 +7,19 @@ import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.material.Fluids;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * @author KilaBash
  * @date 2023/3/15
  * @implNote InfiniteWaterCover
  */
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class InfiniteWaterCover extends CoverBehavior {
 
     private TickableSubscription subscription;

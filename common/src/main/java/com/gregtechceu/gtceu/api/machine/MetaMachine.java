@@ -6,9 +6,12 @@ import com.gregtechceu.gtceu.api.blockentity.ITickSubscription;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
+import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.item.tool.IToolGridHighLight;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputFluid;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputItem;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineFeature;
+import com.gregtechceu.gtceu.api.machine.feature.IMufflableMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.common.cover.FluidFilterCover;
@@ -22,6 +25,7 @@ import com.gregtechceu.gtceu.api.misc.IOFluidTransferList;
 import com.gregtechceu.gtceu.api.misc.IOItemTransferList;
 import com.gregtechceu.gtceu.common.cover.ItemFilterCover;
 import com.lowdragmc.lowdraglib.LDLib;
+import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.msic.FluidTransferList;
 import com.lowdragmc.lowdraglib.msic.ItemTransferList;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
@@ -33,6 +37,8 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import lombok.Getter;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -72,7 +78,7 @@ import java.util.function.Predicate;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class MetaMachine implements IManaged, IToolable, ITickSubscription, IAppearance {
+public class MetaMachine implements IManaged, IToolable, ITickSubscription, IAppearance, IToolGridHighLight {
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(MetaMachine.class);
     @Getter
     private final FieldManagedStorage syncStorage = new FieldManagedStorage(this);
@@ -222,6 +228,7 @@ public class MetaMachine implements IManaged, IToolable, ITickSubscription, IApp
         }
     }
 
+    @Environment(EnvType.CLIENT)
     public void clientTick() {
 
     }
@@ -273,6 +280,12 @@ public class MetaMachine implements IManaged, IToolable, ITickSubscription, IApp
     }
 
     protected InteractionResult onHardHammerClick(Player playerIn, InteractionHand hand, Direction gridSide, BlockHitResult hitResult) {
+        if (this instanceof IMufflableMachine mufflableMachine) {
+            if (!isRemote()) {
+                mufflableMachine.setMuffled(mufflableMachine.isMuffled());
+            }
+            return InteractionResult.CONSUME;
+        }
         return InteractionResult.PASS;
     }
 
@@ -281,7 +294,7 @@ public class MetaMachine implements IManaged, IToolable, ITickSubscription, IApp
     }
 
     protected InteractionResult onWrenchClick(Player playerIn, InteractionHand hand, Direction gridSide, BlockHitResult hitResult) {
-        if (!needsSneakToRotate() || playerIn.isCrouching()) {
+        if (playerIn.isCrouching()) {
             if (gridSide == getFrontFacing() || !isFacingValid(gridSide) || !hasFrontFacing()) {
                 return InteractionResult.FAIL;
             }
@@ -308,13 +321,6 @@ public class MetaMachine implements IManaged, IToolable, ITickSubscription, IApp
 
     protected InteractionResult onScrewdriverClick(Player playerIn, InteractionHand hand, Direction gridSide, BlockHitResult hitResult) {
         return InteractionResult.PASS;
-    }
-
-    /**
-     * @return true if the player must sneak to rotate this machine, otherwise false
-     */
-    public boolean needsSneakToRotate() {
-        return false;
     }
 
 
@@ -347,25 +353,38 @@ public class MetaMachine implements IManaged, IToolable, ITickSubscription, IApp
         }
     }
 
-    public boolean isSideUsed(Player player, GTToolType toolType, Direction face) {
-        if (toolType == GTToolType.WRENCH) {
-            if (player.isCrouching()) {
-                return !hasFrontFacing() || (face == this.getFrontFacing() && this.canRenderFrontFaceX()) || !isFacingValid(face);
-            }
-        }
-        if (toolType == GTToolType.SOFT_MALLET) {
-            if (this instanceof IControllable) {
-                return false;
-            }
-        }
-        if (toolType == GTToolType.SCREWDRIVER || toolType == GTToolType.SOFT_MALLET || toolType == GTToolType.CROWBAR) {
-            return !coverContainer.hasCover(face);
+    @Override
+    public boolean shouldRenderGrid(Player player, ItemStack held, GTToolType toolType) {
+        if (toolType == GTToolType.WRENCH || toolType == GTToolType.SCREWDRIVER) return true;
+        if (toolType == GTToolType.HARD_HAMMER && this instanceof IMufflableMachine) return true;
+        for (CoverBehavior cover : coverContainer.getCovers()) {
+            if (cover.shouldRenderGrid(player, held, toolType)) return true;
         }
         return false;
     }
 
-    public boolean canRenderFrontFaceX() {
-        return true;
+    @Override
+    public ResourceTexture sideTips(Player player, GTToolType toolType, Direction side) {
+        if (toolType == GTToolType.WRENCH) {
+            if (player.isCrouching()) {
+                if (hasFrontFacing() && side != this.getFrontFacing() && isFacingValid(side)) {
+                    return GuiTextures.TOOL_FRONT_FACING_ROTATION;
+                }
+            }
+        } else if (toolType == GTToolType.SOFT_MALLET) {
+            if (this instanceof IControllable controllable) {
+                return controllable.isWorkingEnabled() ? GuiTextures.TOOL_PAUSE : GuiTextures.TOOL_START;
+            }
+        } else if (toolType == GTToolType.HARD_HAMMER) {
+            if (this instanceof IMufflableMachine mufflableMachine) {
+                return mufflableMachine.isMuffled() ? GuiTextures.TOOL_SOUND : GuiTextures.TOOL_MUTE;
+            }
+        }
+        var cover = coverContainer.getCoverAtSide(side);
+        if (cover != null) {
+            return cover.sideTips(player, toolType, side);
+        }
+        return null;
     }
 
 

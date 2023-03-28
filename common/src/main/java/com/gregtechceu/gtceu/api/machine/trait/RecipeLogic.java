@@ -1,16 +1,20 @@
 package com.gregtechceu.gtceu.api.machine.trait;
 
-import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
+import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.sound.AutoReleasedSound;
 import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.syncdata.IManaged;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import lombok.Getter;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.world.item.crafting.RecipeManager;
 
 import javax.annotation.Nullable;
@@ -47,11 +51,22 @@ public class RecipeLogic extends MachineTrait implements IManaged, IWorkable {
     public long timeStamp;
     protected boolean recipeDirty;
     protected TickableSubscription subscription;
+    @Environment(EnvType.CLIENT)
+    protected AutoReleasedSound workingSound;
 
     public RecipeLogic(IRecipeLogicMachine machine) {
         super(machine.self());
         this.machine = machine;
         this.timeStamp = Long.MIN_VALUE;
+        if (getMachine().isRemote()) {
+            addSyncUpdateListener("status", this::onStatusSynced);
+        }
+    }
+
+    @Environment(EnvType.CLIENT)
+    protected void onStatusSynced(String fieldName, Status newValue, Status oldValue) {
+        getMachine().scheduleRenderUpdate();
+        updateSound();
     }
 
     /**
@@ -377,6 +392,31 @@ public class RecipeLogic extends MachineTrait implements IManaged, IWorkable {
     @Override
     public ManagedFieldHolder getFieldHolder() {
         return MANAGED_FIELD_HOLDER;
+    }
+
+    @Environment(EnvType.CLIENT)
+    public void updateSound() {
+        if (isWorking() && machine.shouldWorkingPlaySound()) {
+            var sound = machine.getRecipeType().getSound();
+            if (workingSound != null) {
+                if (workingSound.soundEntry == sound && !workingSound.isStopped()) {
+                    return;
+                }
+                workingSound.release();
+                workingSound = null;
+            }
+            if (sound != null) {
+                workingSound = sound.playAutoReleasedSound(() ->
+                        machine.shouldWorkingPlaySound()
+                                && isWorking()
+                                && !getMachine().isInValid()
+                                && getMachine().getLevel().isLoaded(getMachine().getPos())
+                                && MetaMachine.getMachine(getMachine().getLevel(), getMachine().getPos()) == getMachine(), getMachine().getPos(), true, 0, 1, 1);
+            }
+        } else if (workingSound != null) {
+            workingSound.release();
+            workingSound = null;
+        }
     }
 
 }

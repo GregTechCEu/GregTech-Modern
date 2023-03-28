@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.common.blockentity;
 
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
+import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.common.pipelike.cable.EnergyNetHandler;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
@@ -10,6 +11,7 @@ import com.gregtechceu.gtceu.common.block.CableBlock;
 import com.gregtechceu.gtceu.common.pipelike.cable.CableData;
 import com.gregtechceu.gtceu.common.pipelike.cable.EnergyNet;
 import com.gregtechceu.gtceu.common.pipelike.cable.Insulation;
+import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -94,12 +96,16 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, CableData> {
     }
 
     @Override
-    public boolean isSideUsed(Player player, GTToolType toolType, Direction side) {
+    public ResourceTexture getPipeTexture(boolean isBlock) {
+        return isBlock ? GuiTextures.TOOL_WIRE_CONNECT : GuiTextures.TOOL_WIRE_BLOCK;
+    }
+
+    @Override
+    public ResourceTexture sideTips(Player player, GTToolType toolType, Direction side) {
         if (toolType == GTToolType.WIRE_CUTTER) {
-            return isBlocked(side);
-        } else {
-            return super.isSideUsed(player, toolType, side);
+            return getPipeTexture(isBlocked(side));
         }
+        return super.sideTips(player, toolType, side);
     }
 
     @Override
