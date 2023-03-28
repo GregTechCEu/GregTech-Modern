@@ -72,10 +72,12 @@ public class PatternPreviewWidget extends WidgetGroup {
                 .setRenderFacing(false)
                 .setRenderFacing(false));
 
-        if (!RenderSystem.isOnRenderThread()) {
-            RenderSystem.recordRenderCall(sceneWidget::useCacheBuffer);
-        } else {
-            sceneWidget.useCacheBuffer();
+        if (!GTCEu.isIrisLoaded()) {
+            if (!RenderSystem.isOnRenderThread()) {
+                RenderSystem.recordRenderCall(sceneWidget::useCacheBuffer);
+            } else {
+                sceneWidget.useCacheBuffer();
+            }
         }
 
         addWidget(new ImageWidget(3, 3, 170, 10,
