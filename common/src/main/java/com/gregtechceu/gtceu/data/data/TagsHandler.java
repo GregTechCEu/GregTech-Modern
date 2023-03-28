@@ -1,16 +1,11 @@
 package com.gregtechceu.gtceu.data.data;
 
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
-import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials;
-import com.gregtechceu.gtceu.common.data.GTItems;
 import com.tterrag.registrate.providers.RegistrateTagsProvider;
 import net.minecraft.core.Registry;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
-
-import static com.gregtechceu.gtceu.api.tag.TagPrefix.*;
-import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 
 /**
  * @author KilaBash
@@ -20,7 +15,6 @@ import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 public class TagsHandler {
 
     public static void initItem(RegistrateTagsProvider<Item> provider) {
-        provider.getOrCreateRawBuilder(ChemicalHelper.getTag(lens, MarkerMaterials.Color.White)).addElement(GTItems.MATERIAL_ITEMS.get(lens, Glass).getId()).build();
         ChemicalHelper.UNIFICATION_ENTRY_ITEM.forEach((entry, itemLikes) -> {
             if (itemLikes.isEmpty()) return;
             var material = entry.material;
@@ -44,8 +38,8 @@ public class TagsHandler {
                 }
                 builder.build();
             }
-
         });
+        TagLoader.init(provider);
     }
 
     public static void initBlock(RegistrateTagsProvider<Block> provider) {

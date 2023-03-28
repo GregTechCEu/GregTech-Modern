@@ -11,6 +11,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
 
+// todo removeme
 public class TagLoader {
 
     public static final String OREDICT_FUEL_COKE = "fuelCoke";
@@ -20,11 +21,6 @@ public class TagLoader {
         //OreDictionary.registerUnificationEntry(OREDICT_FUEL_COKE, ChemicalHelper.get(TagPrefix.gem, GTMaterials.Coke));
         //OreDictionary.registerUnificationEntry(OREDICT_BLOCK_FUEL_COKE, ChemicalHelper.get(TagPrefix.block, GTMaterials.Coke));
         //OreDictionary.registerUnificationEntry("crystalCertusQuartz", ChemicalHelper.get(TagPrefix.gem, GTMaterials.CertusQuartz));
-
-        ChemicalHelper.registerUnificationEntry(Blocks.CLAY.asItem(), TagPrefix.block, GTMaterials.Clay);
-        ChemicalHelper.registerUnificationEntry(Blocks.BRICKS.asItem(), TagPrefix.block, GTMaterials.Brick);
-        ChemicalHelper.registerUnificationEntry(Items.CLAY_BALL, TagPrefix.ingot, GTMaterials.Clay);
-        ChemicalHelper.registerUnificationEntry(Items.FLINT, TagPrefix.gem, GTMaterials.Flint);
 
         // TODO Expand for all terracottas, move to Info Loader
         //ChemicalHelper.registerUnificationEntry(new ItemStack(Blocks.HARDENED_CLAY, 1, W), new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, M * 4)));
@@ -143,11 +139,5 @@ public class TagLoader {
         ChemicalHelper.registerUnificationEntry(new ItemStack(Items.WRITTEN_BOOK, 1, W), "craftingBook");
         ChemicalHelper.registerUnificationEntry(new ItemStack(Items.ENCHANTED_BOOK, 1, W), "craftingBook");
          */
-
-        // "crafting" prefix tags
-        ChemicalHelper.registerUnificationEntry(Blocks.CHEST, TagPrefix.crafting, MarkerMaterials.Misc.Chest);
-        ChemicalHelper.registerUnificationEntry(Blocks.TRAPPED_CHEST, TagPrefix.crafting, MarkerMaterials.Misc.Chest);
-        ChemicalHelper.registerUnificationEntry(Blocks.PISTON, TagPrefix.crafting, MarkerMaterials.Misc.Piston);
-        ChemicalHelper.registerUnificationEntry(Blocks.STICKY_PISTON, TagPrefix.crafting, MarkerMaterials.Misc.Piston);
     }
 }
