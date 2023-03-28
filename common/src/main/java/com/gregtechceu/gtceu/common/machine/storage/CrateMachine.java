@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.UITemplate;
 import com.gregtechceu.gtceu.api.machine.IMetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.feature.IMachineModifyDrops;
 import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
@@ -14,13 +15,16 @@ import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import lombok.Getter;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+
+import java.util.List;
 
 /**
  * @author h3tR
  * @date 2023/3/27
  * @implNote CrateMachine
  */
-public class CrateMachine extends MetaMachine implements IUIMachine {
+public class CrateMachine extends MetaMachine implements IUIMachine, IMachineModifyDrops {
     @Getter
     private final Material material;
     @Getter
@@ -59,4 +63,8 @@ public class CrateMachine extends MetaMachine implements IUIMachine {
         return modularUI;
     }
 
+    @Override
+    public void onDrops(List<ItemStack> drops, Player entity) {
+        MetaMachine.clearInventory(drops, inventory.storage);
+    }
 }
