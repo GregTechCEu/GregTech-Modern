@@ -3,8 +3,6 @@ package com.gregtechceu.gtceu.common.data;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.FluidPipeProperties;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.machine.*;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
@@ -188,44 +186,11 @@ public class GTMachines {
                     .register(),
             GTValues.ULV, GTValues.LV, GTValues.MV, GTValues.HV, GTValues.EV, GTValues.IV, GTValues.LuV, GTValues.ZPM, GTValues.UV); // UHV not needed, as a UV transformer transforms up to UHV
 
-    public final static MachineDefinition[] BATTERY_BUFFER_4 = registerTieredMachines("battery_buffer.4",
-            (holder, tier) -> new BatteryBufferMachine(holder, tier, 4),
-            (tier, builder) -> builder
-                    .rotationState(RotationState.ALL)
-                    .renderer(() -> new BatteryBufferRenderer(tier, 4))
-                    .tooltips(explosion())
-                    .tooltips(Component.translatable("gtceu.universal.tooltip.item_storage_capacity", 4),
-                            Component.translatable("gtceu.universal.tooltip.voltage_in_out", GTValues.V[tier], GTValues.VNF[tier]),
-                            Component.translatable("gtceu.universal.tooltip.amperage_in_till", 4 * BatteryBufferMachine.AMPS_PER_BATTERY),
-                            Component.translatable("gtceu.universal.tooltip.amperage_out_till", 4))
-                    .register(),
-            ALL_TIERS);
+    public final static MachineDefinition[] BATTERY_BUFFER_4 = registerBatteryBuffer(4);
 
-    public final static MachineDefinition[] BATTERY_BUFFER_8 = registerTieredMachines("battery_buffer.8",
-            (holder, tier) -> new BatteryBufferMachine(holder, tier, 8),
-            (tier, builder) -> builder
-                    .rotationState(RotationState.ALL)
-                    .renderer(() -> new BatteryBufferRenderer(tier, 8))
-                    .tooltips(explosion())
-                    .tooltips(Component.translatable("gtceu.universal.tooltip.item_storage_capacity", 8),
-                            Component.translatable("gtceu.universal.tooltip.voltage_in_out", GTValues.V[tier], GTValues.VNF[tier]),
-                            Component.translatable("gtceu.universal.tooltip.amperage_in_till", 8 * BatteryBufferMachine.AMPS_PER_BATTERY),
-                            Component.translatable("gtceu.universal.tooltip.amperage_out_till", 8))
-                    .register(),
-            ALL_TIERS);
+    public final static MachineDefinition[] BATTERY_BUFFER_8 = registerBatteryBuffer(8);
 
-    public final static MachineDefinition[] BATTERY_BUFFER_16 = registerTieredMachines("battery_buffer.16",
-            (holder, tier) -> new BatteryBufferMachine(holder, tier, 16),
-            (tier, builder) -> builder
-                    .rotationState(RotationState.ALL)
-                    .renderer(() -> new BatteryBufferRenderer(tier, 16))
-                    .tooltips(explosion())
-                    .tooltips(Component.translatable("gtceu.universal.tooltip.item_storage_capacity", 16),
-                            Component.translatable("gtceu.universal.tooltip.voltage_in_out", GTValues.V[tier], GTValues.VNF[tier]),
-                            Component.translatable("gtceu.universal.tooltip.amperage_in_till", 16 * BatteryBufferMachine.AMPS_PER_BATTERY),
-                            Component.translatable("gtceu.universal.tooltip.amperage_out_till", 16))
-                    .register(),
-            ALL_TIERS);
+    public final static MachineDefinition[] BATTERY_BUFFER_16 = registerBatteryBuffer(16);
 
     public final static MachineDefinition[] PUMP = registerTieredMachines("pump", PumpMachine::new,
             (tier, builder) -> builder
@@ -819,6 +784,21 @@ public class GTMachines {
                 .recipeType(recipeType)
                 .renderer(() -> new WorkableSteamMachineRenderer(pressure, GTCEu.id("block/machines/" + name)))
                 .register());
+    }
+
+    public static MachineDefinition[] registerBatteryBuffer(int batterySlotSize){
+        return registerTieredMachines("battery_buffer." + batterySlotSize,
+                (holder, tier) -> new BatteryBufferMachine(holder, tier, batterySlotSize),
+                (tier, builder) -> builder
+                        .rotationState(RotationState.ALL)
+                        .renderer(() -> new BatteryBufferRenderer(tier, batterySlotSize))
+                        .tooltips(explosion())
+                        .tooltips(Component.translatable("gtceu.universal.tooltip.item_storage_capacity", batterySlotSize),
+                                Component.translatable("gtceu.universal.tooltip.voltage_in_out", GTValues.V[tier], GTValues.VNF[tier]),
+                                Component.translatable("gtceu.universal.tooltip.amperage_in_till", batterySlotSize * BatteryBufferMachine.AMPS_PER_BATTERY),
+                                Component.translatable("gtceu.universal.tooltip.amperage_out_till", batterySlotSize))
+                        .register(),
+                ALL_TIERS);
     }
 
     public static MultiblockMachineDefinition registerLargeBoiler(String name, Supplier<? extends Block> casing, Supplier<? extends Block> pipe, Supplier<? extends Block> fireBox, ResourceLocation texture, BoilerFireboxType firebox, int maxTemperature, int heatSpeed) {
