@@ -65,7 +65,7 @@ public abstract class PipeBlock <PipeType extends Enum<PipeType> & IPipeType<Nod
     /**
      * Add data via placement.
      */
-    public abstract NodeDataType createRawData(BlockState pState, ItemStack pStack);
+    public abstract NodeDataType createRawData(BlockState pState, @Nullable ItemStack pStack);
 
     /**
      * Sometimes some people
@@ -92,8 +92,24 @@ public abstract class PipeBlock <PipeType extends Enum<PipeType> & IPipeType<Nod
         super.setPlacedBy(pLevel, pPos, pState, pPlacer, pStack);
         var pipeNode = getPileTile(pLevel, pPos);
         if (pipeNode != null && pLevel instanceof ServerLevel serverLevel) {
-            getWorldPipeNet(serverLevel).addNode(pPos, pipeType.modifyProperties(createRawData(pState, pStack)), Node.DEFAULT_MARK, Node.ALL_OPENED, true);
+            var net = getWorldPipeNet(serverLevel);
+            if (net.getNetFromPos(pPos) == null) {
+                net.addNode(pPos, pipeType.modifyProperties(createRawData(pState, pStack)), Node.DEFAULT_MARK, Node.ALL_OPENED, true);
+            } else {
+                net.updateData(pPos, pipeType.modifyProperties(createRawData(pState, pStack)));
+            }
             pipeNode.updateConnections();
+        }
+    }
+
+    @Override
+    public void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean isMoving) {
+        super.onPlace(state, level, pos, oldState, isMoving);
+        if (!oldState.is(state.getBlock()) && level instanceof ServerLevel serverLevel) {
+            var net = getWorldPipeNet(serverLevel);
+            if (net.getNetFromPos(pos) == null) {
+                net.addNode(pos, pipeType.modifyProperties(createRawData(state, null)), Node.DEFAULT_MARK, Node.ALL_OPENED, true);
+            }
         }
     }
 

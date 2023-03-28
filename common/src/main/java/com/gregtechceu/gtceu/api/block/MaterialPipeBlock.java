@@ -54,7 +54,7 @@ public abstract class MaterialPipeBlock<PipeType extends Enum<PipeType> & IPipeT
     }
 
     @Override
-    public final NodeDataType createRawData(BlockState pState, ItemStack pStack) {
+    public final NodeDataType createRawData(BlockState pState, @Nullable ItemStack pStack) {
         return createMaterialData();
     }
 

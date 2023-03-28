@@ -3,10 +3,12 @@ package com.gregtechceu.gtceu.data.recipe.misc;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials.Tier;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
+import com.gregtechceu.gtceu.api.recipe.FacadeCoverRecipe;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.SpecialRecipeBuilder;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -171,9 +173,13 @@ public class CraftingRecipeLoader {
         //VanillaRecipeHelper.addShapedRecipe(provider, "nano_boots", MetaItems.NANO_BOOTS.asStack(), "PxP", "PEP", 'P', MetaItems.CARBON_FIBER_PLATE.asStack(), 'E', MetaItems.ENERGIUM_CRYSTAL.asStack());
         //VanillaRecipeHelper.addShapedRecipe(provider, "nano_chestplate_advanced", MetaItems.NANO_CHESTPLATE_ADVANCED.asStack(), "xJd", "PNP", "WCW", 'J', MetaItems.ELECTRIC_JETPACK_ADVANCED.asStack(), 'P', MetaItems.LOW_POWER_INTEGRATED_CIRCUIT.asStack(), 'N', MetaItems.NANO_CHESTPLATE.asStack(), 'W', new UnificationEntry(wireGtQuadruple, Platinum), 'C', new UnificationEntry(circuit, Tier.IV));
         //VanillaRecipeHelper.addShapedRecipe(provider, "gravitation_engine", MetaItems.GRAVITATION_ENGINE.asStack(), "ESE", "POP", "ESE", 'E', MetaItems.EMITTER_LuV.asStack(), 'S', new UnificationEntry(wireGtQuadruple, Osmium), 'P', new UnificationEntry(plateDouble, Iridium), 'O', MetaItems.ENERGY_LAPOTRONIC_ORB.asStack());
+
+        ///////////////////////////////////////////////////
+        //                    Special                    //
+        ///////////////////////////////////////////////////
+        SpecialRecipeBuilder.special(FacadeCoverRecipe.SERIALIZER).save(provider, "gtceu:crafting/facade_cover");
     }
 
-    // TODO Facades
     //private static void registerFacadeRecipe(Consumer<FinishedRecipe> provider, Material material, int facadeAmount) {
     //    OreIngredient ingredient = new OreIngredient(new UnificationEntry(plate, material).toString());
     //    ForgeRegistries.RECIPES.register(new FacadeRecipe(null, ingredient, facadeAmount).setRegistryName("facade_" + material));
