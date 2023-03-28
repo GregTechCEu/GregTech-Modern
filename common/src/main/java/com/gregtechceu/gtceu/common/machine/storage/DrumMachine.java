@@ -31,6 +31,7 @@ import com.mojang.blaze3d.MethodsReturnNonnullByDefault;
 import lombok.Getter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
@@ -66,7 +67,7 @@ public class DrumMachine extends MetaMachine implements IAutoOutputFluid, IDropS
     protected TickableSubscription autoOutputSubs;
     @Nullable
     protected ISubscription exportFluidSubs;
-    @Persisted @DescSynced @Getter @DropSaved
+    @Persisted(key = "Fluid") @DescSynced @Getter @DropSaved // rename "Fluid" for Item capability
     protected FluidStack stored = FluidStack.empty();
     @Getter
     protected final Material material;
@@ -81,6 +82,9 @@ public class DrumMachine extends MetaMachine implements IAutoOutputFluid, IDropS
         }
     }
 
+    //////////////////////////////////////
+    //*****     Initialization     *****//
+    //////////////////////////////////////
     @Override
     public ManagedFieldHolder getFieldHolder() {
         return MANAGED_FIELD_HOLDER;
@@ -134,6 +138,17 @@ public class DrumMachine extends MetaMachine implements IAutoOutputFluid, IDropS
             exportFluidSubs.unsubscribe();
             exportFluidSubs = null;
         }
+    }
+
+    //////////////////////////////////////
+    //******     Fluid Logic     *******//
+    //////////////////////////////////////
+
+    @Override
+    public void loadFromItem(CompoundTag tag) {
+        IDropSaveMachine.super.loadFromItem(tag);
+        // "stored" may not be same as cache (due to item's fluid cap). we should update it.
+        cache.storages[0].setFluid(stored.copy());
     }
 
     @Override

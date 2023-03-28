@@ -28,18 +28,15 @@ public class FluidHandlerItemStack implements SingleSlotStorage<FluidVariant> {
 
     public @NotNull FluidStack getFluid() {
         CompoundTag tagCompound = this.container.getItemVariant().getNbt();
-        return tagCompound != null && tagCompound.contains("Fluid") ? FluidStack.loadFromTag(tagCompound.getCompound("Fluid")) : FluidStack.empty();
+        return tagCompound != null && tagCompound.contains(FLUID_NBT_KEY) ? FluidStack.loadFromTag(tagCompound.getCompound(FLUID_NBT_KEY)) : FluidStack.empty();
     }
 
     protected boolean setFluid(FluidStack fluid, TransactionContext tx) {
         ItemStack newStack = this.container.getItemVariant().toStack();
-        if (!newStack.hasTag()) {
-            newStack.setTag(new CompoundTag());
-        }
 
         CompoundTag fluidTag = new CompoundTag();
         fluid.saveToTag(fluidTag);
-        newStack.getTag().put("Fluid", fluidTag);
+        newStack.getOrCreateTag().put(FLUID_NBT_KEY, fluidTag);
         return this.container.exchange(ItemVariant.of(newStack), 1L, tx) == 1L;
     }
 
@@ -119,7 +116,7 @@ public class FluidHandlerItemStack implements SingleSlotStorage<FluidVariant> {
 
     protected boolean setContainerToEmpty(TransactionContext tx) {
         ItemStack newStack = this.container.getItemVariant().toStack();
-        newStack.removeTagKey("Fluid");
+        newStack.removeTagKey(FLUID_NBT_KEY);
         return this.container.exchange(ItemVariant.of(newStack), 1L, tx) == 1L;
     }
 

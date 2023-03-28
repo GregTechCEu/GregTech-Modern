@@ -1,7 +1,9 @@
 package com.gregtechceu.gtceu.forge;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.item.DrumMachineItem;
 import com.gregtechceu.gtceu.api.item.forge.ComponentItemImpl;
+import com.gregtechceu.gtceu.api.item.forge.DrumMachineItemImpl;
 import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import net.minecraft.core.Direction;
@@ -35,6 +37,15 @@ public class ForgeCommonEventListener {
                 @Override
                 public <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
                     return componentItem.getCapability(itemStack, cap);
+                }
+            });
+        }
+        if (event.getObject().getItem() instanceof DrumMachineItemImpl drumMachineItem) {
+            final ItemStack itemStack = event.getObject();
+            event.addCapability(GTCEu.id("fluid"), new ICapabilityProvider() {
+                @Override
+                public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> capability, @Nullable Direction arg) {
+                    return drumMachineItem.getCapability(itemStack, capability);
                 }
             });
         }

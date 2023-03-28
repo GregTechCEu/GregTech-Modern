@@ -1,6 +1,10 @@
 package com.gregtechceu.gtceu.api.registry.registrate;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
+import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
+import com.gregtechceu.gtceu.api.item.MetaMachineItem;
+import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.machine.IMetaMachineBlockEntity;
@@ -13,10 +17,14 @@ import com.tterrag.registrate.util.nullness.NonNullFunction;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
+import org.apache.commons.lang3.function.TriFunction;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -59,16 +67,30 @@ public abstract class GTRegistrate extends Registrate {
         return entry(name, callback -> GTBlockBuilder.create(this, self(), name, callback, factory, initialProperties));
     }
 
+    public MachineBuilder machine(String name, Function<IMetaMachineBlockEntity, MetaMachine> metaMachine,
+                                  BiFunction<BlockBehaviour.Properties, MachineDefinition, MetaMachineBlock> blockFactory,
+                                  BiFunction<MetaMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
+                                  TriFunction<BlockEntityType<?>, BlockPos, BlockState, MetaMachineBlockEntity> blockEntityFactory) {
+        return MachineBuilder.create(this, name, metaMachine, blockFactory, itemFactory, blockEntityFactory);
+    }
+
     public MachineBuilder machine(String name, Function<IMetaMachineBlockEntity, MetaMachine> metaMachine) {
-        return MachineBuilder.create(this, name, metaMachine);
+        return MachineBuilder.create(this, name, metaMachine, MetaMachineBlock::new, MetaMachineItem::new, MultiblockMachineBuilder::createBlockEntity);
     }
 
     public Stream<MachineBuilder> machine(String name, BiFunction<IMetaMachineBlockEntity, Integer, MetaMachine> metaMachine, int... tiers) {
-        return Arrays.stream(tiers).mapToObj(tier -> MachineBuilder.create(this, name + "." + GTValues.VN[tier].toLowerCase(), holder -> metaMachine.apply(holder, tier)));
+        return Arrays.stream(tiers).mapToObj(tier -> MachineBuilder.create(this, name + "." + GTValues.VN[tier].toLowerCase(), holder -> metaMachine.apply(holder, tier), MetaMachineBlock::new, MetaMachineItem::new, MultiblockMachineBuilder::createBlockEntity));
+    }
+
+    public MultiblockMachineBuilder multiblock(String name, Function<IMetaMachineBlockEntity, ? extends MultiblockControllerMachine> metaMachine,
+                                               BiFunction<BlockBehaviour.Properties, MachineDefinition, MetaMachineBlock> blockFactory,
+                                               BiFunction<MetaMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
+                                               TriFunction<BlockEntityType<?>, BlockPos, BlockState, MetaMachineBlockEntity> blockEntityFactory) {
+        return MultiblockMachineBuilder.createMulti(this, name, metaMachine, blockFactory, itemFactory, blockEntityFactory);
     }
 
     public MultiblockMachineBuilder multiblock(String name, Function<IMetaMachineBlockEntity, ? extends MultiblockControllerMachine> metaMachine) {
-        return MultiblockMachineBuilder.createMulti(this, name, metaMachine);
+        return MultiblockMachineBuilder.createMulti(this, name, metaMachine, MetaMachineBlock::new, MetaMachineItem::new, MultiblockMachineBuilder::createBlockEntity);
     }
 
     public SoundEntryBuilder sound(String name) {

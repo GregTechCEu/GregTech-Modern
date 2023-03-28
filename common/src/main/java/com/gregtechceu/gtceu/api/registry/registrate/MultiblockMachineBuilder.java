@@ -1,6 +1,8 @@
 package com.gregtechceu.gtceu.api.registry.registrate;
 
 import com.google.common.base.Suppliers;
+import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
@@ -22,6 +24,7 @@ import com.tterrag.registrate.util.nullness.NonNullUnaryOperator;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -29,6 +32,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -57,12 +61,18 @@ public class MultiblockMachineBuilder extends MachineBuilder {
     @Setter
     private TriFunction<IMultiController, IMultiPart, Direction, BlockState> partAppearance;
 
-    protected MultiblockMachineBuilder(Registrate registrate, String name, Function<IMetaMachineBlockEntity, ? extends MultiblockControllerMachine> metaMachine) {
-        super(registrate, name, metaMachine::apply);
+    protected MultiblockMachineBuilder(Registrate registrate, String name, Function<IMetaMachineBlockEntity, ? extends MultiblockControllerMachine> metaMachine,
+                                       BiFunction<BlockBehaviour.Properties, MachineDefinition, MetaMachineBlock> blockFactory,
+                                       BiFunction<MetaMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
+                                       TriFunction<BlockEntityType<?>, BlockPos, BlockState, MetaMachineBlockEntity> blockEntityFactory) {
+        super(registrate, name, metaMachine::apply, blockFactory, itemFactory, blockEntityFactory);
     }
 
-    public static MultiblockMachineBuilder createMulti(Registrate registrate, String name, Function<IMetaMachineBlockEntity, ? extends MultiblockControllerMachine> metaMachine) {
-        return new MultiblockMachineBuilder(registrate, name, metaMachine);
+    public static MultiblockMachineBuilder createMulti(Registrate registrate, String name, Function<IMetaMachineBlockEntity, ? extends MultiblockControllerMachine> metaMachine,
+                                                       BiFunction<BlockBehaviour.Properties, MachineDefinition, MetaMachineBlock> blockFactory,
+                                                       BiFunction<MetaMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
+                                                       TriFunction<BlockEntityType<?>, BlockPos, BlockState, MetaMachineBlockEntity> blockEntityFactory) {
+        return new MultiblockMachineBuilder(registrate, name, metaMachine, blockFactory, itemFactory, blockEntityFactory);
     }
 
     public MultiblockMachineBuilder shapeInfo(Function<MultiblockMachineDefinition, MultiblockShapeInfo> shape) {
