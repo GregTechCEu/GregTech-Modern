@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "c:circuit/mv"
+    },
+    "F": {
+      "item": "gtceu:crate.aluminium"
+    },
+    "P": {
+      "tag": "c:plates/aluminium"
+    }
+  },
+  "pattern": [
+    "CPC",
+    "PFP",
+    "CPC"
+  ],
+  "result": {
+    "item": "gtceu:super_chest.mv"
+  }
+}

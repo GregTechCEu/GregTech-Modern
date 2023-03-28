@@ -23,10 +23,11 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.ArrayList;
+import javax.annotation.Nullable;
 import java.util.List;
 
 /**
@@ -164,6 +165,13 @@ public abstract class CoverBehavior implements IManaged, IToolGridHighLight {
         if (toolType == GTToolType.SCREWDRIVER && this instanceof IUICover) {
             return GuiTextures.TOOL_COVER_SETTINGS;
         }
+        return null;
+    }
+
+    /**
+     * get Appearance. same as IForgeBlock.getAppearance() / IFabricBlock.getAppearance()
+     */
+    public BlockState getAppearance(BlockState sourceState, BlockPos sourcePos) {
         return null;
     }
 

@@ -5,7 +5,7 @@
       "tag": "c:circuit/iv"
     },
     "F": {
-      "item": "gtceu:field.generator.ev"
+      "item": "gtceu:field.generator.hv"
     },
     "H": {
       "item": "gtceu:hull.iv"

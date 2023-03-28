@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "F": {
-      "tag": "c:pipe_large_fluid/plastic"
+      "tag": "c:fluid_pipes/large/plastic"
     },
     "P": {
       "tag": "c:plates/steel"
@@ -14,9 +14,6 @@
     "PPP"
   ],
   "result": {
-    "item": "gtceu:hermetic_casing",
-    "nbt": {
-      "variant": "low_voltage"
-    }
+    "item": "gtceu:hermetic_casing_lv"
   }
 }

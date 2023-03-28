@@ -10,12 +10,14 @@ import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -58,5 +60,10 @@ public class FacadeCover extends CoverBehavior {
      */
     public boolean blockPipePassThrough() {
         return false;
+    }
+
+    @Nullable
+    public BlockState getAppearance(BlockState sourceState, BlockPos sourcePos) {
+        return facadeState;
     }
 }

@@ -64,6 +64,13 @@ repositories {
     maven { url = "https://maven.cafeteria.dev/releases" } // Fake Player API
     maven { url = "https://maven.jamieswhiteshirt.com/libs-release" } // Reach Entity Attributes
     maven { url = "https://jitpack.io/" } // Mixin Extras, Fabric ASM
+    maven {
+        // saps.dev Maven (KubeJS and Rhino)
+        url = "https://maven.saps.dev/minecraft"
+        content {
+            includeGroup "dev.latvian.mods"
+        }
+    }
 }
 
 dependencies {
@@ -74,11 +81,10 @@ dependencies {
     shadowCommon(project(path: ":${mod_id}-common", configuration: "transformProductionFabric")) { transitive = false }
 
     // LDLib
-    modCompileOnly(fabric.ldlib.common) { transitive = false }
     modImplementation(fabric.ldlib.fabric) { transitive = false }
 
-    // Registrate
-    modImplementation fabric.registrate
+    // Registrate TODO use forge.registrate?
+    modImplementation(include("com.tterrag.registrate_fabric:Registrate:${"1.1.50-MC1.19.2"}"))
 
     // Create - dependencies are added transitively
     modCompileOnly fabric.createFabric
@@ -99,6 +105,9 @@ dependencies {
 
     // TOP
     modCompileOnly fabric.theoneprobe
+
+    // KJS
+    modImplementation fabric.kubejs
 }
 
 processResources {

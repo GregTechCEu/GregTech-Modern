@@ -11,10 +11,10 @@
       "item": "gtceu:hull.iv"
     },
     "O": {
-      "tag": "c:wire_gt_quadruple/tungsten_steel"
+      "tag": "c:wires/quadruple/tungsten_steel"
     },
     "W": {
-      "tag": "c:cable_gt_single/platinum"
+      "tag": "c:cables/single/platinum"
     }
   },
   "pattern": [

@@ -5,16 +5,13 @@
       "item": "minecraft:anvil"
     },
     "M": {
-      "type": "forge:nbt",
-      "count": 1,
-      "item": "gtceu:steam_casing",
-      "nbt": "{variant:\"bronze_hull\"}"
+      "item": "gtceu:steam_casing_bronze"
     },
     "P": {
-      "tag": "forge:crafting/piston"
+      "tag": "forge:pistons"
     },
     "X": {
-      "tag": "forge:pipe_small_fluid/bronze"
+      "tag": "forge:fluid_pipes/small/bronze"
     }
   },
   "pattern": [

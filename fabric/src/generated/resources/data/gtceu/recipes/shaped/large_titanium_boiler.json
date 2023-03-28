@@ -2,17 +2,10 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "A": {
-      "base": {
-        "item": "gtceu:boiler_firebox_casing"
-      },
-      "fabric:type": "fabric:nbt",
-      "nbt": {
-        "variant": "titanium_firebox"
-      },
-      "strict": true
+      "item": "gtceu:titanium_firebox"
     },
     "P": {
-      "tag": "c:cable_gt_single/gold"
+      "tag": "c:cables/single/gold"
     },
     "S": {
       "tag": "c:circuit/ev"

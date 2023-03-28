@@ -5,13 +5,10 @@
       "tag": "forge:circuit/uv"
     },
     "G": {
-      "item": "gtceu:field.generator.zpm"
+      "item": "gtceu:field.generator.luv"
     },
     "H": {
-      "type": "forge:nbt",
-      "count": 1,
-      "item": "gtceu:hermetic_casing",
-      "nbt": "{variant:\"ultimate_voltage\"}"
+      "item": "gtceu:hermetic_casing_uv"
     },
     "P": {
       "tag": "forge:plates/dense/darmstadtium"

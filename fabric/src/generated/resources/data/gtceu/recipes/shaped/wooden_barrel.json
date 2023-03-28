@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "P": {
+      "tag": "minecraft:planks"
+    },
+    "R": {
+      "tag": "c:sticks/long/iron"
+    },
+    "S": {
+      "item": "gtceu:rubber_drop"
+    },
+    "r": {
+      "tag": "c:tool/mallet"
+    },
+    "s": {
+      "tag": "c:tool/saw"
+    }
+  },
+  "pattern": [
+    "rSs",
+    "PRP",
+    "PRP"
+  ],
+  "result": {
+    "item": "gtceu:drum.wood"
+  }
+}

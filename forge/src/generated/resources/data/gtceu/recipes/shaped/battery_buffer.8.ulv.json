@@ -8,7 +8,7 @@
       "tag": "forge:chests/wooden"
     },
     "W": {
-      "tag": "forge:wire_gt_octal/lead"
+      "tag": "forge:wires/octal/lead"
     }
   },
   "pattern": [

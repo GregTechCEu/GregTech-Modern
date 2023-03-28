@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "P": {
+      "tag": "c:plates/aluminium"
+    },
+    "R": {
+      "tag": "c:sticks/long/aluminium"
+    },
+    "h": {
+      "tag": "c:tool/hammer"
+    }
+  },
+  "pattern": [
+    "RPR",
+    "PhP",
+    "RPR"
+  ],
+  "result": {
+    "item": "gtceu:crate.aluminium"
+  }
+}

@@ -538,15 +538,11 @@ public class GTOres {
     }
 
     private static Supplier<? extends Block> ore(TagPrefix oreTag, Material material) {
-        return GTBlocks.MATERIAL_BLOCKS.get(oreTag, material);
+        var block = GTBlocks.MATERIAL_BLOCKS.get(oreTag, material);
+        return block == null ? () -> Blocks.AIR : block;
     }
 
     public static void init() {
-        register();
     }
 
-    @ExpectPlatform
-    public static void register() {
-        throw new AssertionError();
-    }
 }

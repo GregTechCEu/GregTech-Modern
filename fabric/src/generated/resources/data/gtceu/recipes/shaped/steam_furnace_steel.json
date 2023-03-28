@@ -11,7 +11,7 @@
       "tag": "c:plates/steel"
     },
     "X": {
-      "tag": "c:pipe_small_fluid/tin_alloy"
+      "tag": "c:fluid_pipes/small/tin_alloy"
     }
   },
   "pattern": [

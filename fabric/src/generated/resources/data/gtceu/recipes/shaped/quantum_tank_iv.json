@@ -5,17 +5,10 @@
       "tag": "c:circuit/iv"
     },
     "G": {
-      "item": "gtceu:field.generator.ev"
+      "item": "gtceu:field.generator.hv"
     },
     "H": {
-      "base": {
-        "item": "gtceu:hermetic_casing"
-      },
-      "fabric:type": "fabric:nbt",
-      "nbt": {
-        "variant": "insane_voltage"
-      },
-      "strict": true
+      "item": "gtceu:hermetic_casing_iv"
     },
     "P": {
       "tag": "c:plates/dense/tungsten_steel"

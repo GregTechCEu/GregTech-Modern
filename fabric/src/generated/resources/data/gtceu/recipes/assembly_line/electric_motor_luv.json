@@ -70,7 +70,7 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "c:cable_gt_single/niobium_titanium"
+          "tag": "c:cables/single/niobium_titanium"
         }
       }
     ]

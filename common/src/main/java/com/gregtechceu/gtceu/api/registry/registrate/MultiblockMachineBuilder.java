@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.registry.registrate;
 
 import com.google.common.base.Suppliers;
+import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.data.RotationState;
@@ -21,21 +22,22 @@ import com.tterrag.registrate.util.nullness.NonNullUnaryOperator;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.apache.commons.lang3.function.TriFunction;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.*;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
+import java.util.function.*;
 
 /**
  * @author KilaBash
@@ -52,6 +54,8 @@ public class MultiblockMachineBuilder extends MachineBuilder {
     private final List<Supplier<ItemStack[]>> recoveryItems = new ArrayList<>();
     @Setter
     private Comparator<IMultiPart> partSorter = (a, b) -> 0;
+    @Setter
+    private TriFunction<IMultiController, IMultiPart, Direction, BlockState> partAppearance;
 
     protected MultiblockMachineBuilder(Registrate registrate, String name, Function<IMetaMachineBlockEntity, ? extends MultiblockControllerMachine> metaMachine) {
         super(registrate, name, metaMachine::apply);
@@ -169,6 +173,37 @@ public class MultiblockMachineBuilder extends MachineBuilder {
     public MultiblockMachineBuilder workableCasingRenderer(ResourceLocation baseCasing, ResourceLocation overlayModel, boolean tint) {
         return (MultiblockMachineBuilder) super.workableCasingRenderer(baseCasing, overlayModel, tint);
     }
+
+    @Override
+    public MultiblockMachineBuilder tooltipBuilder(BiConsumer<ItemStack, List<Component>> tooltipBuilder) {
+        return (MultiblockMachineBuilder) super.tooltipBuilder(tooltipBuilder);
+    }
+
+    @Override
+    public MultiblockMachineBuilder appearance(Supplier<BlockState> state) {
+        return (MultiblockMachineBuilder) super.appearance(state);
+    }
+
+    @Override
+    public MultiblockMachineBuilder appearanceBlock(Supplier<? extends Block> block) {
+        return (MultiblockMachineBuilder) super.appearanceBlock(block);
+    }
+
+    @Override
+    public MultiblockMachineBuilder langValue(String langValue) {
+        return (MultiblockMachineBuilder) super.langValue(langValue);
+    }
+
+    @Override
+    public MultiblockMachineBuilder overlaySteamHullRenderer(String name) {
+        return (MultiblockMachineBuilder) super.overlaySteamHullRenderer(name);
+    }
+
+    @Override
+    public MultiblockMachineBuilder workableSteamHullRenderer(boolean isHighPressure, ResourceLocation workableModel) {
+        return (MultiblockMachineBuilder) super.workableSteamHullRenderer(isHighPressure, workableModel);
+    }
+
     @Override
     public MultiblockMachineBuilder tooltips(Component... components) {
         return (MultiblockMachineBuilder) super.tooltips(components);
@@ -201,6 +236,10 @@ public class MultiblockMachineBuilder extends MachineBuilder {
             definition.setRecoveryItems(() -> recoveryItems.stream().map(Supplier::get).flatMap(Arrays::stream).toArray(ItemStack[]::new));
         }
         definition.setPartSorter(partSorter);
+        if (partAppearance == null) {
+            partAppearance = (controller, part, side) -> definition.getAppearance().get();
+        }
+        definition.setPartAppearance(partAppearance);
         return definition;
     }
 }

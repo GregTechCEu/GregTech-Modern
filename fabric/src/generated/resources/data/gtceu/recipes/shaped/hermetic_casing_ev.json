@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "F": {
-      "tag": "c:pipe_large_fluid/stainless_steel"
+      "tag": "c:fluid_pipes/large/stainless_steel"
     },
     "P": {
       "tag": "c:plates/titanium"
@@ -14,9 +14,6 @@
     "PPP"
   ],
   "result": {
-    "item": "gtceu:hermetic_casing",
-    "nbt": {
-      "variant": "extreme_voltage"
-    }
+    "item": "gtceu:hermetic_casing_ev"
   }
 }

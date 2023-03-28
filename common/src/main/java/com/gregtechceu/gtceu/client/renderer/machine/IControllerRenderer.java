@@ -18,6 +18,10 @@ import java.util.List;
  * @implNote IControllerRenderer
  */
 public interface IControllerRenderer {
+    /**
+     * Render a specific model for given part.
+     */
     @Environment(EnvType.CLIENT)
     void renderPartModel(List<BakedQuad> quads, IMultiController machine, IMultiPart part, Direction frontFacing, @Nullable Direction side, RandomSource rand, Direction modelFacing, ModelState modelState);
+
 }

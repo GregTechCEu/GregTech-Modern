@@ -14,11 +14,11 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
@@ -62,6 +62,8 @@ public class MachineDefinition implements Supplier<MetaMachineBlock> {
     private final Map<Direction, VoxelShape> cache = new EnumMap<>(Direction.class);
     @Getter @Setter
     private BiConsumer<ItemStack, List<Component>> tooltipBuilder;
+    @Getter @Setter
+    private Supplier<BlockState> appearance;
 
     protected MachineDefinition(ResourceLocation id) {
         this.id = id;

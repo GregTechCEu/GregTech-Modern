@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.common.recipe;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
+import lombok.NoArgsConstructor;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
@@ -14,6 +15,7 @@ import org.jetbrains.annotations.NotNull;
  * @date 2023/3/15
  * @implNote RockBreakerCondition
  */
+@NoArgsConstructor
 public class RockBreakerCondition extends RecipeCondition {
     public final static RockBreakerCondition INSTANCE = new RockBreakerCondition();
     @Override
@@ -23,7 +25,7 @@ public class RockBreakerCondition extends RecipeCondition {
 
     @Override
     public Component getTooltips() {
-        return Component.translatable("multiblocked.recipe.condition.rock_breaker.tooltip");
+        return Component.translatable("recipe.condition.rock_breaker.tooltip");
     }
 
     @Override

@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "forge:cable_gt_single/copper"
+      "tag": "forge:cables/single/copper"
     },
     "M": {
       "tag": "forge:sticks/steel_magnetic"
@@ -11,7 +11,7 @@
       "tag": "forge:sticks/aluminium"
     },
     "W": {
-      "tag": "forge:wire_gt_double/cupronickel"
+      "tag": "forge:wires/double/cupronickel"
     }
   },
   "pattern": [

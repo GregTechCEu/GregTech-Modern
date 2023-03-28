@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.recipe.FacadeCoverRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeSerializer;
 import com.gregtechceu.gtceu.common.recipe.RockBreakerCondition;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
@@ -9,7 +10,8 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.sound.ExistingSoundEntry;
-import com.gregtechceu.gtceu.common.block.variant.CoilBlock;
+import com.gregtechceu.gtceu.common.block.CoilBlock;
+import com.gregtechceu.gtceu.integration.kjs.events.RecipeTypeEventJS;
 import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
 import com.lowdragmc.lowdraglib.gui.widget.TankWidget;
 import com.lowdragmc.lowdraglib.msic.FluidStorage;
@@ -353,7 +355,6 @@ public class GTRecipeTypes {
                             .setBackground(GuiTextures.FLUID_SLOT).setShowAmount(false));
                 }
             })
-            .addDataInfo(tag -> "Place fluids horizontally adjacent")
             .setSound(GTSoundEntries.FIRE);
 
     //////////////////////////////////////
@@ -404,7 +405,7 @@ public class GTRecipeTypes {
             .setUiBuilder((recipe, widgetGroup) -> {
                 int temp = recipe.data.getInt("ebf_temp");
                 List<List<ItemStack>> items = new ArrayList<>();
-                items.add(Arrays.stream(CoilBlock.CoilType.values()).filter(coil -> coil.getCoilTemperature() >= temp).map(coil -> GTBlocks.WIRE_COIL.get().getItemVariant(coil)).toList());
+                items.add(Arrays.stream(CoilBlock.CoilType.values()).filter(coil -> coil.getCoilTemperature() >= temp).map(coil -> GTBlocks.ALL_COILS.get(coil).asStack()).toList());
                 widgetGroup.addWidget(new SlotWidget(new CycleItemStackHandler(items), 0, widgetGroup.getSize().width - 25, widgetGroup.getSize().height - 25, false, false));
             })
             .setSound(GTSoundEntries.FURNACE);
@@ -469,7 +470,14 @@ public class GTRecipeTypes {
     }
 
     public static void init() {
+        if (GTCEu.isKubeJSLoaded()) {
+            new RecipeTypeEventJS().post();
+        }
         GTRegistries.register(Registry.RECIPE_SERIALIZER, GTCEu.id("gt_recipe_serializer"), GTRecipeSerializer.SERIALIZER);
+        GTRegistries.register(Registry.RECIPE_SERIALIZER, GTCEu.id("facade_cover_serializer"), FacadeCoverRecipe.SERIALIZER);
     }
 
+    public static GTRecipeType get(String name) {
+        return GTRegistries.RECIPE_TYPES.get(GTCEu.id(name));
+    }
 }

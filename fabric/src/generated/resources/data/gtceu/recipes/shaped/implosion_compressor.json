@@ -5,20 +5,13 @@
       "tag": "c:circuit/hv"
     },
     "M": {
-      "base": {
-        "item": "gtceu:casing"
-      },
-      "fabric:type": "fabric:nbt",
-      "nbt": {
-        "variant": "steel_solid"
-      },
-      "strict": true
+      "item": "gtceu:casing_steel_solid"
     },
     "O": {
       "tag": "c:storage_blocks/obsidian"
     },
     "W": {
-      "tag": "c:cable_gt_single/gold"
+      "tag": "c:cables/single/gold"
     }
   },
   "pattern": [

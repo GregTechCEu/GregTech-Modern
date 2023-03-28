@@ -8,10 +8,10 @@
       "tag": "forge:sticks/iron"
     },
     "W": {
-      "tag": "forge:cable_gt_single/tin"
+      "tag": "forge:cables/single/tin"
     },
     "Z": {
-      "tag": "forge:wire_gt_double/tin"
+      "tag": "forge:wires/double/tin"
     }
   },
   "pattern": [

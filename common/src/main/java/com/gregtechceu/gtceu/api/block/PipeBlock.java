@@ -12,9 +12,11 @@ import com.lowdragmc.lowdraglib.pipelike.Node;
 import com.lowdragmc.lowdraglib.pipelike.PipeNet;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -37,7 +39,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public abstract class PipeBlock <PipeType extends Enum<PipeType> & IPipeType<NodeDataType>, NodeDataType extends IAttachData, WorldPipeNetType extends LevelPipeNet<NodeDataType, ? extends PipeNet<NodeDataType>>> extends Block implements EntityBlock, IBlockRendererProvider {
+public abstract class PipeBlock <PipeType extends Enum<PipeType> & IPipeType<NodeDataType>, NodeDataType extends IAttachData, WorldPipeNetType extends LevelPipeNet<NodeDataType, ? extends PipeNet<NodeDataType>>> extends AppearanceBlock implements EntityBlock, IBlockRendererProvider {
     public final PipeType pipeType;
 
     public PipeBlock(Properties properties, PipeType pipeType) {
@@ -63,7 +65,7 @@ public abstract class PipeBlock <PipeType extends Enum<PipeType> & IPipeType<Nod
     /**
      * Add data via placement.
      */
-    public abstract NodeDataType createRawData(BlockState pState, ItemStack pStack);
+    public abstract NodeDataType createRawData(BlockState pState, @Nullable ItemStack pStack);
 
     /**
      * Sometimes some people
@@ -90,8 +92,24 @@ public abstract class PipeBlock <PipeType extends Enum<PipeType> & IPipeType<Nod
         super.setPlacedBy(pLevel, pPos, pState, pPlacer, pStack);
         var pipeNode = getPileTile(pLevel, pPos);
         if (pipeNode != null && pLevel instanceof ServerLevel serverLevel) {
-            getWorldPipeNet(serverLevel).addNode(pPos, pipeType.modifyProperties(createRawData(pState, pStack)), Node.DEFAULT_MARK, Node.ALL_OPENED, true);
+            var net = getWorldPipeNet(serverLevel);
+            if (net.getNetFromPos(pPos) == null) {
+                net.addNode(pPos, pipeType.modifyProperties(createRawData(pState, pStack)), Node.DEFAULT_MARK, Node.ALL_OPENED, true);
+            } else {
+                net.updateData(pPos, pipeType.modifyProperties(createRawData(pState, pStack)));
+            }
             pipeNode.updateConnections();
+        }
+    }
+
+    @Override
+    public void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean isMoving) {
+        super.onPlace(state, level, pos, oldState, isMoving);
+        if (!oldState.is(state.getBlock()) && level instanceof ServerLevel serverLevel) {
+            var net = getWorldPipeNet(serverLevel);
+            if (net.getNetFromPos(pos) == null) {
+                net.addNode(pos, pipeType.modifyProperties(createRawData(state, null)), Node.DEFAULT_MARK, Node.ALL_OPENED, true);
+            }
         }
     }
 
@@ -138,6 +156,17 @@ public abstract class PipeBlock <PipeType extends Enum<PipeType> & IPipeType<Nod
             }
         }
         return null;
+    }
+
+
+    @Override
+    public BlockState getBlockAppearance(BlockState state, BlockAndTintGetter level, BlockPos pos, Direction side, BlockState sourceState, BlockPos sourcePos) {
+        var pipe = getPileTile(level, pos);
+        if (pipe != null) {
+            var appearance = pipe.getCoverContainer().getBlockAppearance(state, level, pos, side, sourceState, sourcePos);
+            if (appearance != null) return appearance;
+        }
+        return super.getBlockAppearance(state, level, pos, side, sourceState, sourcePos);
     }
 
 }

@@ -86,6 +86,13 @@ repositories {
     maven { // TOP
         url "https://maven.k-4u.nl"
     }
+    maven {
+        // saps.dev Maven (KubeJS and Rhino)
+        url = "https://maven.saps.dev/minecraft"
+        content {
+            includeGroup "dev.latvian.mods"
+        }
+    }
 }
 
 dependencies {
@@ -95,13 +102,13 @@ dependencies {
     shadowCommon(project(path: ":${mod_id}-common", configuration: "transformProductionForge")) { transitive = false }
 
     // LDLib
-    modCompileOnly(forge.ldlib.common) { transitive = false }
     modImplementation(forge.ldlib.forge) { transitive = false }
 
-    // Registrate
-    modImplementation forge.registrate
+    // Registrate TODO use forge.registrate?
+    modImplementation(include("com.tterrag.registrate:Registrate:${"MC1.19-1.1.5"}"))
+//    modImplementation(include(forge.registrate))
 
-    // Create and its dependencies
+    // Create and its dependencies TODO use forge.createForge?
     modCompileOnly("com.simibubi.create:create-${"1.19.2"}:${"0.5.0.h-21"}:slim") { transitive = false }
 //    modCompileOnly(forge.createForge) { transitive = false }
     modCompileOnly forge.flywheel
@@ -118,6 +125,9 @@ dependencies {
 
     // TOP
     modImplementation(forge.theoneprobe) { transitive = false }
+
+    // KJS
+    modImplementation forge.kubejs
 }
 
 processResources {

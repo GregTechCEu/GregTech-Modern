@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "F": {
-      "tag": "c:pipe_large_item/polyvinyl_chloride"
+      "tag": "c:item_pipes/large/polyvinyl_chloride"
     },
     "P": {
       "tag": "c:plates/aluminium"
@@ -14,9 +14,6 @@
     "PPP"
   ],
   "result": {
-    "item": "gtceu:hermetic_casing",
-    "nbt": {
-      "variant": "medium_voltage"
-    }
+    "item": "gtceu:hermetic_casing_mv"
   }
 }

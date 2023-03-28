@@ -33,7 +33,7 @@
           "type": "gtceu:sized",
           "count": 4,
           "fabric:type": "gtceu:sized",
-          "tag": "c:wire_gt_quadruple/samarium_iron_arsenic_oxide"
+          "tag": "c:wires/quadruple/samarium_iron_arsenic_oxide"
         }
       }
     ]

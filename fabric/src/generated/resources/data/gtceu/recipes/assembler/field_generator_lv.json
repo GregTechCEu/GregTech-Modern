@@ -36,7 +36,7 @@
           "type": "gtceu:sized",
           "count": 4,
           "fabric:type": "gtceu:sized",
-          "tag": "c:wire_gt_quadruple/manganese_phosphide"
+          "tag": "c:wires/quadruple/manganese_phosphide"
         }
       }
     ]

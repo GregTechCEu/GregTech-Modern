@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "P": {
+      "tag": "c:plates/stainless_steel"
+    },
+    "R": {
+      "tag": "c:sticks/long/stainless_steel"
+    },
+    "h": {
+      "tag": "c:tool/hammer"
+    }
+  },
+  "pattern": [
+    " h ",
+    "PRP",
+    "PRP"
+  ],
+  "result": {
+    "item": "gtceu:drum.stainless_steel"
+  }
+}

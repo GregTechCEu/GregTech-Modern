@@ -1,0 +1,12 @@
+{
+  "parent": "gtceu:block/cube",
+  "textures": {
+    "particle": "gtceu:block/storage/drums/wooden_drum/side",
+    "down": "gtceu:block/storage/drums/wooden_drum/bottom",
+    "up": "gtceu:block/storage/drums/wooden_drum/top",
+    "north": "gtceu:block/storage/drums/wooden_drum/side",
+    "east": "gtceu:block/storage/drums/wooden_drum/side",
+    "south": "gtceu:block/storage/drums/wooden_drum/side",
+    "west": "gtceu:block/storage/drums/wooden_drum/side"
+  }
+}

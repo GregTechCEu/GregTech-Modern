@@ -2,17 +2,10 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:cable_gt_single/red_alloy"
+      "tag": "c:cables/single/red_alloy"
     },
     "H": {
-      "base": {
-        "item": "gtceu:hull_casing"
-      },
-      "fabric:type": "fabric:nbt",
-      "nbt": {
-        "variant": "ultra_low_voltage"
-      },
-      "strict": true
+      "item": "gtceu:hull_casing_ulv"
     },
     "L": {
       "tag": "c:plates/wrought_iron"

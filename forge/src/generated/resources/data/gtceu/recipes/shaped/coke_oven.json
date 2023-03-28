@@ -5,10 +5,7 @@
       "tag": "forge:plates/iron"
     },
     "P": {
-      "type": "forge:nbt",
-      "count": 1,
-      "item": "gtceu:casing",
-      "nbt": "{variant:\"coke_bricks\"}"
+      "item": "gtceu:casing_coke_bricks"
     },
     "w": {
       "tag": "forge:tool/wrench"

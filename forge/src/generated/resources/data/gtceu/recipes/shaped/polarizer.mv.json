@@ -8,10 +8,10 @@
       "tag": "forge:sticks/steel"
     },
     "W": {
-      "tag": "forge:cable_gt_single/copper"
+      "tag": "forge:cables/single/copper"
     },
     "Z": {
-      "tag": "forge:wire_gt_double/copper"
+      "tag": "forge:wires/double/copper"
     }
   },
   "pattern": [

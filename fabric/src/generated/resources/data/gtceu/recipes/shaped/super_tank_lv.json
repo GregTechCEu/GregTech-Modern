@@ -8,14 +8,7 @@
       "item": "gtceu:electric.pump.lv"
     },
     "H": {
-      "base": {
-        "item": "gtceu:hermetic_casing"
-      },
-      "fabric:type": "fabric:nbt",
-      "nbt": {
-        "variant": "low_voltage"
-      },
-      "strict": true
+      "item": "gtceu:hermetic_casing_lv"
     },
     "P": {
       "tag": "c:plates/steel"

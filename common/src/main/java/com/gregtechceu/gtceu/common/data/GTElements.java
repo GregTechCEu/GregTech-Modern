@@ -1,12 +1,11 @@
 package com.gregtechceu.gtceu.common.data;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.Element;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.integration.kjs.events.ElementEventJS;
 
 public class GTElements {
-
-    private GTElements() {
-    }
 
     public static final Element H = createAndRegister(1, 0, -1, null, "Hydrogen", "H", false);
     public static final Element D = createAndRegister(1, 1, -1, "H", "Deuterium", "D", true);
@@ -143,12 +142,19 @@ public class GTElements {
     public static final Element Sp = createAndRegister(1, 0, -1, null, "Space", "Sp", false);
     public static final Element Ma = createAndRegister(1, 0, -1, null, "Magic", "Ma", false);
 
-    private static Element createAndRegister(long protons, long neutrons, long halfLifeSeconds, String decayTo, String name, String symbol, boolean isIsotope) {
+    public static Element createAndRegister(long protons, long neutrons, long halfLifeSeconds, String decayTo, String name, String symbol, boolean isIsotope) {
         Element element = new Element(protons, neutrons, halfLifeSeconds, decayTo, name, symbol, isIsotope);
         GTRegistries.ELEMENTS.register(name, element);
         return element;
     }
 
     public static void init() {
+        if (GTCEu.isKubeJSLoaded()) {
+            new ElementEventJS().post();
+        }
+    }
+
+    public static Element get(String name) {
+        return GTRegistries.ELEMENTS.get(name);
     }
 }

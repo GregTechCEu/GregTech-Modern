@@ -9,7 +9,7 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "c:cable_gt_single/tungsten"
+          "tag": "c:cables/single/tungsten"
         }
       },
       {
@@ -18,7 +18,7 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "c:pipe_normal_fluid/tungsten_steel"
+          "tag": "c:fluid_pipes/normal/tungsten_steel"
         }
       },
       {

@@ -8,13 +8,10 @@
       "item": "minecraft:furnace"
     },
     "M": {
-      "type": "forge:nbt",
-      "count": 1,
-      "item": "gtceu:casing",
-      "nbt": "{variant:\"invar_heatproof\"}"
+      "item": "gtceu:casing_invar_heatproof"
     },
     "W": {
-      "tag": "forge:cable_gt_single/tin"
+      "tag": "forge:cables/single/tin"
     }
   },
   "pattern": [

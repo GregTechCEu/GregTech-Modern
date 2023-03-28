@@ -11,13 +11,13 @@
       "item": "gtceu:hull.mv"
     },
     "O": {
-      "tag": "c:wire_gt_quadruple/cupronickel"
+      "tag": "c:wires/quadruple/cupronickel"
     },
     "P": {
       "item": "gtceu:electric.pump.mv"
     },
     "W": {
-      "tag": "c:cable_gt_single/copper"
+      "tag": "c:cables/single/copper"
     }
   },
   "pattern": [

@@ -5,10 +5,7 @@
       "item": "gtceu:hull.iv"
     },
     "C": {
-      "type": "forge:nbt",
-      "count": 1,
-      "item": "gtceu:casing",
-      "nbt": "{variant:\"assembly_control\"}"
+      "item": "gtceu:casing_assembly_control"
     },
     "R": {
       "item": "gtceu:robot.arm.iv"

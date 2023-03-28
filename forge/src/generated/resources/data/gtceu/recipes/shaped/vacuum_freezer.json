@@ -5,16 +5,13 @@
       "tag": "forge:circuit/ev"
     },
     "M": {
-      "type": "forge:nbt",
-      "count": 1,
-      "item": "gtceu:casing",
-      "nbt": "{variant:\"aluminium_frostproof\"}"
+      "item": "gtceu:casing_aluminium_frostproof"
     },
     "P": {
       "item": "gtceu:electric.pump.hv"
     },
     "W": {
-      "tag": "forge:cable_gt_single/gold"
+      "tag": "forge:cables/single/gold"
     }
   },
   "pattern": [

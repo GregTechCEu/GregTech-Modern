@@ -5,13 +5,10 @@
       "tag": "forge:circuit/uhv"
     },
     "G": {
-      "item": "gtceu:field.generator.uv"
+      "item": "gtceu:field.generator.zpm"
     },
     "H": {
-      "type": "forge:nbt",
-      "count": 1,
-      "item": "gtceu:hermetic_casing",
-      "nbt": "{variant:\"ultra_high_voltage\"}"
+      "item": "gtceu:hermetic_casing_uhv"
     },
     "P": {
       "tag": "forge:plates/neutronium"

@@ -40,7 +40,7 @@ public class VanillaRecipeHelper {
     }
 
     public static void addSmeltingRecipe(Consumer<FinishedRecipe> provider, @Nonnull String regName, TagKey<Item> input, ItemStack output, float experience) {
-        new SmeltingRecipeBuilder(GTCEu.id(regName.toLowerCase())).input(input).output(output).experience(experience).save(provider);
+        new SmeltingRecipeBuilder(GTCEu.id(regName.toLowerCase())).input(input).output(output).cookingTime(80).experience(experience).save(provider);
     }
 
     public static void addSmeltingRecipe(Consumer<FinishedRecipe> provider, @Nonnull String regName, ItemStack input, ItemStack output) {
@@ -48,7 +48,7 @@ public class VanillaRecipeHelper {
     }
 
     public static void addSmeltingRecipe(Consumer<FinishedRecipe> provider, @Nonnull String regName, ItemStack input, ItemStack output, float experience) {
-        new SmeltingRecipeBuilder(GTCEu.id(regName.toLowerCase())).input(input).output(output).experience(experience).save(provider);
+        new SmeltingRecipeBuilder(GTCEu.id(regName.toLowerCase())).input(input).output(output).cookingTime(80).experience(experience).save(provider);
     }
 
     private static final Char2ObjectMap<TagKey<Item>> TOOLS = new Char2ObjectArrayMap<>();
@@ -152,6 +152,8 @@ public class VanillaRecipeHelper {
                 builder.requires(ChemicalHelper.getTag(entry.tagPrefix, entry.material));
             } else if (content instanceof ItemEntry<?> entry) {
                 builder.requires(entry.asStack());
+            } else if (content instanceof Character c) {
+                builder.requires(TOOLS.get(c.charValue()));
             }
         }
         builder.save(provider);

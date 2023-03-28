@@ -11,10 +11,10 @@
       "item": "gtceu:hull.hv"
     },
     "O": {
-      "tag": "forge:wire_gt_quadruple/kanthal"
+      "tag": "forge:wires/quadruple/kanthal"
     },
     "W": {
-      "tag": "forge:cable_gt_single/gold"
+      "tag": "forge:cables/single/gold"
     }
   },
   "pattern": [

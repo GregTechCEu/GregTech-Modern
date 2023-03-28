@@ -5,13 +5,10 @@
       "tag": "forge:circuit/iv"
     },
     "G": {
-      "item": "gtceu:field.generator.ev"
+      "item": "gtceu:field.generator.hv"
     },
     "H": {
-      "type": "forge:nbt",
-      "count": 1,
-      "item": "gtceu:hermetic_casing",
-      "nbt": "{variant:\"insane_voltage\"}"
+      "item": "gtceu:hermetic_casing_iv"
     },
     "P": {
       "tag": "forge:plates/dense/tungsten_steel"

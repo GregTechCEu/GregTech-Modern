@@ -15,6 +15,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
+import static com.gregtechceu.gtceu.api.registry.GTRegistries.REGISTRATE;
+
 /**
  * @author KilaBash
  * @date 2023/2/13
@@ -28,6 +30,7 @@ public class GTFluids {
     public static void init() {
         handleNonMaterialFluids(GTMaterials.Water, () -> Fluids.WATER);
         handleNonMaterialFluids(GTMaterials.Lava, () -> Fluids.LAVA);
+        REGISTRATE.creativeModeTab(() -> GTCreativeModeTabs.MATERIAL_FLUID);
         // register fluids for materials
         for (var material : GTRegistries.MATERIALS) {
             var fluidProperty = material.getProperty(PropertyKey.FLUID);

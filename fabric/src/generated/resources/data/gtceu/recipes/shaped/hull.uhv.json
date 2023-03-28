@@ -2,17 +2,10 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:cable_gt_single/europium"
+      "tag": "c:cables/single/europium"
     },
     "H": {
-      "base": {
-        "item": "gtceu:hull_casing"
-      },
-      "fabric:type": "fabric:nbt",
-      "nbt": {
-        "variant": "ultra_high_voltage"
-      },
-      "strict": true
+      "item": "gtceu:hull_casing_uhv"
     },
     "L": {
       "tag": "c:plates/neutronium"

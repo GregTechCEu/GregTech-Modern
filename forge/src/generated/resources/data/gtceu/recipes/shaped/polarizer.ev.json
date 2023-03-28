@@ -8,10 +8,10 @@
       "tag": "forge:sticks/neodymium"
     },
     "W": {
-      "tag": "forge:cable_gt_single/aluminium"
+      "tag": "forge:cables/single/aluminium"
     },
     "Z": {
-      "tag": "forge:wire_gt_quadruple/steel"
+      "tag": "forge:wires/quadruple/steel"
     }
   },
   "pattern": [

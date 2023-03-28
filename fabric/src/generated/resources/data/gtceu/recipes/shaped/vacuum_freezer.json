@@ -5,20 +5,13 @@
       "tag": "c:circuit/ev"
     },
     "M": {
-      "base": {
-        "item": "gtceu:casing"
-      },
-      "fabric:type": "fabric:nbt",
-      "nbt": {
-        "variant": "aluminium_frostproof"
-      },
-      "strict": true
+      "item": "gtceu:casing_aluminium_frostproof"
     },
     "P": {
       "item": "gtceu:electric.pump.hv"
     },
     "W": {
-      "tag": "c:cable_gt_single/gold"
+      "tag": "c:cables/single/gold"
     }
   },
   "pattern": [

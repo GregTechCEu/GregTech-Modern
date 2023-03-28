@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.client.forge;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.client.TooltipsHandler;
 import com.gregtechceu.gtceu.client.renderer.BlockHighLightRenderer;
+import net.minecraft.world.item.crafting.SimpleCookingSerializer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RenderHighlightEvent;

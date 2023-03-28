@@ -8,13 +8,13 @@
       "tag": "c:glass"
     },
     "I": {
-      "tag": "c:wire_gt_single/silver"
+      "tag": "c:wires/single/silver"
     },
     "M": {
       "item": "gtceu:hull.mv"
     },
     "W": {
-      "tag": "c:cable_gt_single/copper"
+      "tag": "c:cables/single/copper"
     }
   },
   "pattern": [

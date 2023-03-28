@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "F": {
-      "tag": "c:pipe_large_fluid/polytetrafluoroethylene"
+      "tag": "c:fluid_pipes/large/polytetrafluoroethylene"
     },
     "P": {
       "tag": "c:plates/stainless_steel"
@@ -14,9 +14,6 @@
     "PPP"
   ],
   "result": {
-    "item": "gtceu:hermetic_casing",
-    "nbt": {
-      "variant": "high_voltage"
-    }
+    "item": "gtceu:hermetic_casing_hv"
   }
 }

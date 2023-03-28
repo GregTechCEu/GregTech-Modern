@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.registry.registrate.forge;
 
 import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
+import com.gregtechceu.gtceu.api.item.forge.GTBucketItem;
 import com.gregtechceu.gtceu.api.registry.registrate.IGTFluidBuilder;
 import com.tterrag.registrate.AbstractRegistrate;
 import com.tterrag.registrate.builders.*;
@@ -20,8 +21,6 @@ import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.BucketItem;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -70,36 +69,6 @@ public class GTFluidBuilder<T extends ForgeFlowingFluid, P> extends AbstractBuil
         FluidType create(FluidType.Properties properties, ResourceLocation stillTexture, ResourceLocation flowingTexture, int color);
     }
 
-    public static <P> GTFluidBuilder<ForgeFlowingFluid.Flowing, P> create(AbstractRegistrate<?> owner, P parent, String name, BuilderCallback callback, ResourceLocation stillTexture, ResourceLocation flowingTexture) {
-        return create(owner, parent, name, callback, stillTexture, flowingTexture, GTFluidBuilder::defaultFluidType, ForgeFlowingFluid.Flowing::new);
-    }
-
-    public static <P> GTFluidBuilder<ForgeFlowingFluid.Flowing, P> create(AbstractRegistrate<?> owner, P parent, String name, BuilderCallback callback, ResourceLocation stillTexture, ResourceLocation flowingTexture, GTFluidBuilder.FluidTypeFactory typeFactory) {
-        return create(owner, parent, name, callback, stillTexture, flowingTexture, typeFactory, ForgeFlowingFluid.Flowing::new);
-    }
-
-    public static <P> GTFluidBuilder<ForgeFlowingFluid.Flowing, P> create(AbstractRegistrate<?> owner, P parent, String name, BuilderCallback callback, ResourceLocation stillTexture, ResourceLocation flowingTexture, NonNullSupplier<FluidType> fluidType) {
-        return create(owner, parent, name, callback, stillTexture, flowingTexture, fluidType, ForgeFlowingFluid.Flowing::new);
-    }
-
-    public static <T extends ForgeFlowingFluid, P> GTFluidBuilder<T, P> create(AbstractRegistrate<?> owner, P parent, String name, BuilderCallback callback, ResourceLocation stillTexture, ResourceLocation flowingTexture,
-                                                                             NonNullFunction<ForgeFlowingFluid.Properties, T> fluidFactory) {
-        return create(owner, parent, name, callback, stillTexture, flowingTexture, GTFluidBuilder::defaultFluidType, fluidFactory);
-    }
-
-    public static <T extends ForgeFlowingFluid, P> GTFluidBuilder<T, P> create(AbstractRegistrate<?> owner, P parent, String name, BuilderCallback callback, ResourceLocation stillTexture, ResourceLocation flowingTexture,
-                                                                             GTFluidBuilder.FluidTypeFactory typeFactory, NonNullFunction<ForgeFlowingFluid.Properties, T> fluidFactory) {
-        GTFluidBuilder<T, P> ret = new GTFluidBuilder<>(owner, parent, name, callback, stillTexture, flowingTexture, typeFactory, fluidFactory)
-                .defaultLang().defaultSource().defaultBlock().defaultBucket();
-        return ret;
-    }
-    public static <T extends ForgeFlowingFluid, P> GTFluidBuilder<T, P> create(AbstractRegistrate<?> owner, P parent, String name, BuilderCallback callback, ResourceLocation stillTexture, ResourceLocation flowingTexture,
-                                                                             NonNullSupplier<FluidType> fluidType, NonNullFunction<ForgeFlowingFluid.Properties, T> fluidFactory) {
-        GTFluidBuilder<T, P> ret = new GTFluidBuilder<>(owner, parent, name, callback, stillTexture, flowingTexture, fluidType, fluidFactory)
-                .defaultLang().defaultSource().defaultBlock().defaultBucket();
-        return ret;
-    }
-
     private final String sourceName, bucketName;
 
     private final ResourceLocation stillTexture, flowingTexture;
@@ -132,37 +101,17 @@ public class GTFluidBuilder<T extends ForgeFlowingFluid, P> extends AbstractBuil
         this.fluidFactory = fluidFactory;
         this.fluidType = NonNullSupplier.lazy(() -> typeFactory.create(makeTypeProperties(), this.stillTexture, this.flowingTexture, this.color));
         this.registerType = true;
-        this.fluidProperties = p -> {};
+        defaultBucket();
 
 //        String bucketName = this.bucketName;
-//        this.fluidProperties = p -> p.bucket(() -> owner.get(bucketName, ForgeRegistries.Keys.ITEMS).get())
-//                .block(() -> owner.<Block, LiquidBlock>get(name, ForgeRegistries.Keys.BLOCKS).get());
-    }
-
-    public GTFluidBuilder(AbstractRegistrate<?> owner, P parent, String name, BuilderCallback callback, ResourceLocation stillTexture, ResourceLocation flowingTexture, NonNullSupplier<FluidType> fluidType, NonNullFunction<ForgeFlowingFluid.Properties, T> fluidFactory) {
-        super(owner, parent, "flowing_" + name, callback, ForgeRegistries.Keys.FLUIDS);
-        this.sourceName = name;
-        this.bucketName = name + "_bucket";
-        this.stillTexture = stillTexture;
-        this.flowingTexture = flowingTexture;
-        this.fluidFactory = fluidFactory;
-        this.fluidType = fluidType;
-        this.registerType = false; // Don't register if we have a fluid from outside.
-        this.fluidProperties = p -> {};
-
-//        String bucketName = this.bucketName;
-//        this.fluidProperties = p -> p.bucket(() -> owner.get(bucketName, ForgeRegistries.Keys.ITEMS).get())
-//                .block(() -> owner.<Block, LiquidBlock>get(name, ForgeRegistries.Keys.BLOCKS).get());
-    }
-
-    public GTFluidBuilder<T, P> properties(NonNullConsumer<FluidType.Properties> cons) {
-        typeProperties = typeProperties.andThen(cons);
-        return this;
-    }
-
-    public GTFluidBuilder<T, P> fluidProperties(NonNullConsumer<ForgeFlowingFluid.Properties> cons) {
-        fluidProperties = fluidProperties.andThen(cons);
-        return this;
+        this.fluidProperties = p -> {
+            if (defaultBucket != null && defaultBucket){
+                p = p.bucket(() -> owner.get(bucketName, ForgeRegistries.Keys.ITEMS).get());
+            }
+            if (defaultBlock != null && defaultBlock) {
+                p.block(() -> owner.<Block, LiquidBlock>get(name, ForgeRegistries.Keys.BLOCKS).get());
+            }
+        };
     }
 
     public GTFluidBuilder<T, P> defaultLang() {
@@ -229,7 +178,6 @@ public class GTFluidBuilder<T extends ForgeFlowingFluid, P> extends AbstractBuil
         if (this.defaultBlock == Boolean.FALSE) {
             throw new IllegalStateException("Only one call to block/noBlock per builder allowed");
         }
-        this.defaultBlock = false;
         NonNullSupplier<T> supplier = asSupplier();
 
         this.fluidProperties.andThen(p -> p.block(() -> getOwner().<Block, LiquidBlock>get(getName(), ForgeRegistries.Keys.BLOCKS).get()));
@@ -257,34 +205,20 @@ public class GTFluidBuilder<T extends ForgeFlowingFluid, P> extends AbstractBuil
         return this;
     }
 
-    public ItemBuilder<BucketItem, GTFluidBuilder<T, P>> bucket() {
-        return bucket(BucketItem::new);
-    }
-
-    public <I extends BucketItem> ItemBuilder<I, GTFluidBuilder<T, P>> bucket(NonNullBiFunction<Supplier<? extends ForgeFlowingFluid>, Item.Properties, ? extends I> factory) {
+    public ItemBuilder<GTBucketItem, GTFluidBuilder<T, P>> bucket() {
         if (this.defaultBucket == Boolean.FALSE) {
             throw new IllegalStateException("Only one call to bucket/noBucket per builder allowed");
         }
-        this.defaultBucket = false;
         NonNullSupplier<? extends ForgeFlowingFluid> source = this.source;
-        // TODO: Can we find a way to circumvent this limitation?
         if (source == null) {
             throw new IllegalStateException("Cannot create a bucket before creating a source block");
         }
 
         this.fluidProperties.andThen(p -> p.bucket(() -> getOwner().get(bucketName, ForgeRegistries.Keys.ITEMS).get()));
-        return getOwner().<I, GTFluidBuilder<T, P>>item(this, bucketName, p -> factory.apply(source::get, p))
+        return getOwner().item(this, bucketName, p -> new GTBucketItem(source, p, density < 0))
                 .properties(p -> p.craftRemainder(Items.BUCKET).stacksTo(1))
-                .model((ctx, prov) -> prov.generated(ctx::getEntry, new ResourceLocation(getOwner().getModid(), "item/" + bucketName)));
-    }
-
-    @Beta
-    public GTFluidBuilder<T, P> noBucket() {
-        if (this.defaultBucket == Boolean.FALSE) {
-            throw new IllegalStateException("Only one call to bucket/noBucket per builder allowed");
-        }
-        this.defaultBucket = false;
-        return this;
+                .color(() -> () -> GTBucketItem::color)
+                .model(NonNullBiConsumer.noop());
     }
 
     @SafeVarargs
@@ -296,12 +230,6 @@ public class GTFluidBuilder<T extends ForgeFlowingFluid, P> extends AbstractBuil
         }
         this.tags.addAll(Arrays.asList(tags));
         return ret;
-    }
-
-    @SafeVarargs
-    public final GTFluidBuilder<T, P> removeTag(TagKey<Fluid>... tags) {
-        this.tags.removeAll(Arrays.asList(tags));
-        return this.removeTag(ProviderType.FLUID_TAGS, tags);
     }
 
     private ForgeFlowingFluid getSource() {
@@ -334,7 +262,7 @@ public class GTFluidBuilder<T extends ForgeFlowingFluid, P> extends AbstractBuil
             properties.descriptionId(Util.makeDescriptionId("fluid", new ResourceLocation(getOwner().getModid(), sourceName)));
         }
 
-        return properties;
+        return properties.temperature(temperature).density(density).viscosity(viscosity).lightLevel(luminance);
     }
 
     @Override

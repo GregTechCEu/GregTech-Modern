@@ -8,7 +8,7 @@
       "tag": "forge:chests/wooden"
     },
     "W": {
-      "tag": "forge:wire_gt_hex/yttrium_barium_cuprate"
+      "tag": "forge:wires/hex/yttrium_barium_cuprate"
     }
   },
   "pattern": [

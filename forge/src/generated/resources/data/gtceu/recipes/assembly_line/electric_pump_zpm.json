@@ -31,7 +31,7 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "forge:pipe_normal_fluid/polybenzimidazole"
+          "tag": "forge:fluid_pipes/normal/polybenzimidazole"
         }
       },
       {
@@ -76,7 +76,7 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "forge:cable_gt_single/vanadium_gallium"
+          "tag": "forge:cables/single/vanadium_gallium"
         }
       }
     ]

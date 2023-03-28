@@ -8,13 +8,13 @@
       "tag": "forge:glass"
     },
     "I": {
-      "tag": "forge:wire_gt_single/osmium"
+      "tag": "forge:wires/single/osmium"
     },
     "M": {
       "item": "gtceu:hull.iv"
     },
     "W": {
-      "tag": "forge:cable_gt_single/platinum"
+      "tag": "forge:cables/single/platinum"
     }
   },
   "pattern": [

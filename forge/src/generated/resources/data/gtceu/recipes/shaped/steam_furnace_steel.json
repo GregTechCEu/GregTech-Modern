@@ -11,7 +11,7 @@
       "tag": "forge:plates/steel"
     },
     "X": {
-      "tag": "forge:pipe_small_fluid/tin_alloy"
+      "tag": "forge:fluid_pipes/small/tin_alloy"
     }
   },
   "pattern": [

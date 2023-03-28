@@ -6,6 +6,8 @@
   "client": [
   ],
   "mixins": [
+    "AppearanceBlockMixin",
+    "SimpleCookingSerializerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

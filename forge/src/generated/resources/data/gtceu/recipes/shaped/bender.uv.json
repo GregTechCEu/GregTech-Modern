@@ -14,7 +14,7 @@
       "item": "gtceu:electric.piston.uv"
     },
     "W": {
-      "tag": "forge:cable_gt_single/yttrium_barium_cuprate"
+      "tag": "forge:cables/single/yttrium_barium_cuprate"
     },
     "w": {
       "tag": "forge:tool/wrench"

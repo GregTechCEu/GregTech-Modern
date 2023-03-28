@@ -2,17 +2,10 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:cable_gt_single/vanadium_gallium"
+      "tag": "c:cables/single/vanadium_gallium"
     },
     "H": {
-      "base": {
-        "item": "gtceu:hull_casing"
-      },
-      "fabric:type": "fabric:nbt",
-      "nbt": {
-        "variant": "zpm_voltage"
-      },
-      "strict": true
+      "item": "gtceu:hull_casing_zpm"
     },
     "L": {
       "tag": "c:plates/naquadah_alloy"

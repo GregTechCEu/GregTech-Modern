@@ -7,13 +7,19 @@ import com.gregtechceu.gtceu.api.machine.IMetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.tterrag.registrate.Registrate;
+import com.tterrag.registrate.builders.BlockBuilder;
 import com.tterrag.registrate.builders.ItemBuilder;
 import com.tterrag.registrate.util.nullness.NonNullFunction;
+import com.tterrag.registrate.util.nullness.NonNullSupplier;
 import dev.architectury.injectables.annotations.ExpectPlatform;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Arrays;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -24,6 +30,8 @@ import java.util.stream.Stream;
  * @date 2023/2/14
  * @implNote GTRegistrate
  */
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public abstract class GTRegistrate extends Registrate {
 
     protected GTRegistrate(String modId) {
@@ -45,6 +53,10 @@ public abstract class GTRegistrate extends Registrate {
     @ExpectPlatform
     public static IGTFluidBuilder fluid(GTRegistrate parent, String name, ResourceLocation stillTexture, ResourceLocation flowingTexture) {
         throw new AssertionError();
+    }
+
+    public <T extends Block> BlockBuilder<T, Registrate> block(String name, NonNullFunction<BlockBehaviour.Properties, T> factory, NonNullSupplier<BlockBehaviour.Properties> initialProperties) {
+        return entry(name, callback -> GTBlockBuilder.create(this, self(), name, callback, factory, initialProperties));
     }
 
     public MachineBuilder machine(String name, Function<IMetaMachineBlockEntity, MetaMachine> metaMachine) {

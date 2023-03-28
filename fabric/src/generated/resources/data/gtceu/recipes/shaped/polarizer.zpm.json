@@ -8,10 +8,10 @@
       "tag": "c:sticks/vanadium_gallium"
     },
     "W": {
-      "tag": "c:cable_gt_single/vanadium_gallium"
+      "tag": "c:cables/single/vanadium_gallium"
     },
     "Z": {
-      "tag": "c:wire_gt_octal/vanadium_gallium"
+      "tag": "c:wires/octal/vanadium_gallium"
     }
   },
   "pattern": [

@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.pattern.TraceabilityPredicate;
 import com.gregtechceu.gtceu.api.pattern.error.SinglePredicateError;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.pattern.error.PatternStringError;
+import com.gregtechceu.gtceu.data.data.LangHandler;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.utils.BlockInfo;
 import it.unimi.dsi.fastutil.longs.Long2ObjectArrayMap;
@@ -80,10 +81,10 @@ public class SimplePredicate {
             result.add(Component.translatable("gtceu.multiblock.pattern.error.limited_within", minCount, maxCount));
         } else {
             if (minCount != -1) {
-                result.add(Component.translatable("gtceu.multiblock.pattern.error.limited.1", minCount));
+                result.add(LangHandler.getFromMultiLang("gtceu.multiblock.pattern.error.limited", 1, minCount));
             }
             if (maxCount != -1) {
-                result.add(Component.translatable("gtceu.multiblock.pattern.error.limited.0", maxCount));
+                result.add(LangHandler.getFromMultiLang("gtceu.multiblock.pattern.error.limited", 0, maxCount));
             }
         }
         if (predicates == null) return result;

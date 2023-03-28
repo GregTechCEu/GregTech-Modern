@@ -2,13 +2,10 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "forge:cable_gt_single/tin"
+      "tag": "forge:cables/single/tin"
     },
     "H": {
-      "type": "forge:nbt",
-      "count": 1,
-      "item": "gtceu:hull_casing",
-      "nbt": "{variant:\"low_voltage\"}"
+      "item": "gtceu:hull_casing_lv"
     },
     "L": {
       "tag": "forge:plates/steel"

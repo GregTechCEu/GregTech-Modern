@@ -5,17 +5,10 @@
       "tag": "c:circuit/luv"
     },
     "G": {
-      "item": "gtceu:field.generator.iv"
+      "item": "gtceu:field.generator.ev"
     },
     "H": {
-      "base": {
-        "item": "gtceu:hermetic_casing"
-      },
-      "fabric:type": "fabric:nbt",
-      "nbt": {
-        "variant": "ludicrous_voltage"
-      },
-      "strict": true
+      "item": "gtceu:hermetic_casing_luv"
     },
     "P": {
       "tag": "c:plates/dense/rhodium_plated_palladium"

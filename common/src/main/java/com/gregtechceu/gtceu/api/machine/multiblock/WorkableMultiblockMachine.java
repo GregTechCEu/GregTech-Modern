@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.machine.multiblock;
 
 import com.google.common.collect.Table;
 import com.google.common.collect.Tables;
+import com.gregtechceu.gtceu.api.block.ActiveBlock;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
@@ -11,7 +12,6 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMufflerMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.trait.IRecipeHandlerTrait;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
-import com.gregtechceu.gtceu.api.block.VariantActiveBlock;
 import com.gregtechceu.gtceu.api.machine.IMetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
@@ -128,7 +128,7 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
     @Override
     public void onStructureInvalid() {
         super.onStructureInvalid();
-        updateVBBlocks(false);
+        updateActiveBlocks(false);
         capabilitiesProxy.clear();
         traitSubscriptions.forEach(ISubscription::unsubscribe);
         traitSubscriptions.clear();
@@ -139,7 +139,7 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
     @Override
     public void onPartUnload() {
         super.onPartUnload();
-        updateVBBlocks(false);
+        updateActiveBlocks(false);
         capabilitiesProxy.clear();
         traitSubscriptions.forEach(ISubscription::unsubscribe);
         traitSubscriptions.clear();
@@ -153,12 +153,12 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
     //******     RECIPE LOGIC    *******//
     //////////////////////////////////////
 
-    public void updateVBBlocks(boolean active) {
-        LongSet vaBlocks = getMultiblockState().getMatchContext().getOrDefault("vaBlocks", LongSets.emptySet());
-        for (Long pos : vaBlocks) {
+    public void updateActiveBlocks(boolean active) {
+        LongSet activeBlocks = getMultiblockState().getMatchContext().getOrDefault("vaBlocks", LongSets.emptySet());
+        for (Long pos : activeBlocks) {
             var blockPos = BlockPos.of(pos);
             var blockState = getLevel().getBlockState(blockPos);
-            if (blockState.getBlock() instanceof VariantActiveBlock<?> block) {
+            if (blockState.getBlock() instanceof ActiveBlock block) {
                 var newState = block.changeActive(blockState, active);
                 if (newState != blockState) {
                     getLevel().setBlockAndUpdate(blockPos, newState);
@@ -176,7 +176,7 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
     public void notifyStatusChanged(RecipeLogic.Status oldStatus, RecipeLogic.Status newStatus) {
         IRecipeLogicMachine.super.notifyStatusChanged(oldStatus, newStatus);
         if (newStatus == RecipeLogic.Status.WORKING || oldStatus == RecipeLogic.Status.WORKING) {
-            updateVBBlocks(newStatus == RecipeLogic.Status.WORKING);
+            updateActiveBlocks(newStatus == RecipeLogic.Status.WORKING);
         }
     }
 

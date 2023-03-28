@@ -9,7 +9,7 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "forge:cable_gt_single/gold"
+          "tag": "forge:cables/single/gold"
         }
       },
       {
@@ -18,7 +18,7 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "forge:pipe_normal_fluid/stainless_steel"
+          "tag": "forge:fluid_pipes/normal/stainless_steel"
         }
       },
       {

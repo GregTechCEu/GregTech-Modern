@@ -3,30 +3,23 @@ package com.gregtechceu.gtceu.common.item;
 import com.google.common.collect.ImmutableList;
 import com.gregtechceu.gtceu.api.item.ComponentItem;
 import com.gregtechceu.gtceu.client.renderer.cover.FacadeCoverRenderer;
+import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTCreativeModeTabs;
 import com.gregtechceu.gtceu.api.item.component.ICustomDescriptionId;
 import com.gregtechceu.gtceu.api.item.component.ICustomRenderer;
 import com.gregtechceu.gtceu.api.item.component.ISubItemHandler;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RenderShape;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.FluidState;
-import net.minecraft.world.level.material.Fluids;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Objects;
@@ -54,7 +47,7 @@ public class FacadeItemBehaviour implements ISubItemHandler, ICustomDescriptionI
     @Override
     public void fillItemCategory(ComponentItem item, CreativeModeTab category, NonNullList<ItemStack> items) {
         if (category == GTCreativeModeTabs.ITEM) {
-            List<ItemStack> validFacades = ImmutableList.of(new ItemStack(Blocks.STONE), new ItemStack(Blocks.GLASS), new ItemStack(Blocks.GRASS));
+            List<ItemStack> validFacades = ImmutableList.of(new ItemStack(Blocks.STONE), GTBlocks.COIL_CUPRONICKEL.asStack(), new ItemStack(Blocks.GLASS));
             for (ItemStack facadeStack : validFacades) {
                 ItemStack resultStack = item.getDefaultInstance();
                 setFacadeStack(resultStack, facadeStack);
@@ -81,37 +74,7 @@ public class FacadeItemBehaviour implements ISubItemHandler, ICustomDescriptionI
             return false;
         }
         var rawBlockState = blockItem.getBlock().defaultBlockState();
-        return !rawBlockState.hasBlockEntity()
-                && rawBlockState.getRenderShape() == RenderShape.MODEL
-                && Block.isShapeFullBlock(rawBlockState.getCollisionShape(new BlockGetter() {
-            @Nullable
-            @Override
-            public BlockEntity getBlockEntity(@Nonnull BlockPos pos) {
-                return null;
-            }
-
-            @Override
-            @Nonnull
-            public BlockState getBlockState(@Nonnull BlockPos pos) {
-                return rawBlockState;
-            }
-
-            @Override
-            @Nonnull
-            public FluidState getFluidState(@Nonnull BlockPos pos) {
-                return Fluids.EMPTY.defaultFluidState();
-            }
-
-            @Override
-            public int getHeight() {
-                return 256;
-            }
-
-            @Override
-            public int getMinBuildHeight() {
-                return -256;
-            }
-        }, BlockPos.ZERO));
+        return !rawBlockState.hasBlockEntity() && rawBlockState.getRenderShape() == RenderShape.MODEL;
     }
 
     public static ItemStack getFacadeStack(ItemStack itemStack) {

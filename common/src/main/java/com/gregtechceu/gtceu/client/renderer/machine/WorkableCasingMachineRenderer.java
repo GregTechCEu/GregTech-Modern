@@ -11,8 +11,6 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlas;
-import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.core.Direction;
@@ -51,15 +49,6 @@ public class WorkableCasingMachineRenderer extends MachineRenderer {
             blockModelAccessor.getTextureMap().put("all", ModelFactory.parseBlockTextureLocationOrReference(baseCasing.toString()));
         }
         return super.getModel();
-    }
-
-    @Override
-    public BakedModel getRotatedModel(Direction frontFacing) {
-        return blockModels.computeIfAbsent(frontFacing, facing -> getModel().bake(
-                ModelFactory.getModeBakery(),
-                Material::sprite,
-                ModelFactory.getRotation(facing, true), // lock UV here!!!!
-                modelLocation));
     }
 
     @Override

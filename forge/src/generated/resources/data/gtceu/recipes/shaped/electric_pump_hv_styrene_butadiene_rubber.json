@@ -2,13 +2,13 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "forge:cable_gt_single/gold"
+      "tag": "forge:cables/single/gold"
     },
     "M": {
       "item": "gtceu:electric.motor.hv"
     },
     "P": {
-      "tag": "forge:pipe_normal_fluid/stainless_steel"
+      "tag": "forge:fluid_pipes/normal/stainless_steel"
     },
     "R": {
       "tag": "forge:rings/styrene_butadiene_rubber"
