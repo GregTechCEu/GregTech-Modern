@@ -857,7 +857,6 @@ public class GTMachines {
                 .rotationState(RotationState.NONE)
                 .tooltips(Component.translatable("gtceu.universal.tooltip.item_storage_capacity", capacity))
                 .renderer(() -> new MachineRenderer(GTCEu.id("block/machine/crate/" + (wooden ? "wooden" : "metal") + "_crate")))
-                .hasTESR(true)
                 .paintingColor(wooden ? 0xFFFFFF : material.getMaterialRGB())
                 .itemColor((s, t) -> wooden ? 0xFFFFFF : material.getMaterialRGB())
                 .register();

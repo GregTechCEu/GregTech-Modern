@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.UITemplate;
 import com.gregtechceu.gtceu.api.machine.IMetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.feature.IMachineModifyDrops;
 import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
@@ -14,13 +15,17 @@ import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import lombok.Getter;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+
+import java.util.List;
 
 /**
  * @author h3tR
  * @date 2023/3/27
  * @implNote CrateMachine
  */
-public class CrateMachine extends MetaMachine implements IUIMachine {
+public class CrateMachine extends MetaMachine implements IUIMachine, IMachineModifyDrops {
+    @Getter
     private final Material material;
     @Getter
     private final int inventorySize;
@@ -32,25 +37,25 @@ public class CrateMachine extends MetaMachine implements IUIMachine {
         super(holder);
         this.material = material;
         this.inventorySize = inventorySize;
-        this.inventory = new NotifiableItemStackHandler(this,inventorySize, IO.BOTH);
+        this.inventory = new NotifiableItemStackHandler(this, inventorySize, IO.BOTH);
     }
 
     @Override
     public ModularUI createUI(Player entityPlayer) {
-        int xOffset = inventorySize>=90?162:0;
-        int yOverflow = xOffset>0?18:9;
-        int yOffset = inventorySize>3*yOverflow?(inventorySize-3*yOverflow-(inventorySize-3*yOverflow)%yOverflow)/yOverflow*18:0;
-        var modularUI = new ModularUI(176+xOffset,166+yOffset, this, entityPlayer)
+        int xOffset = inventorySize >= 90 ? 162 : 0;
+        int yOverflow = xOffset > 0 ? 18 : 9;
+        int yOffset = inventorySize > 3 * yOverflow ? (inventorySize - 3 * yOverflow - (inventorySize - 3 * yOverflow) % yOverflow) / yOverflow * 18 : 0;
+        var modularUI = new ModularUI(176 + xOffset, 166 + yOffset, this, entityPlayer)
                 .background(GuiTextures.BACKGROUND)
                 .widget(new LabelWidget(5, 5, getBlockState().getBlock().getDescriptionId()))
-                .widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(), GuiTextures.SLOT,7+xOffset/2,82+yOffset,true));
+                .widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(), GuiTextures.SLOT, 7 + xOffset / 2, 82 + yOffset, true));
         int x = 0;
         int y = 0;
-        for (int slot = 0;slot<inventorySize;slot++){
-            modularUI.widget(new SlotWidget(inventory,slot,x*18+7,y*18+17)
+        for (int slot = 0; slot < inventorySize; slot++) {
+            modularUI.widget(new SlotWidget(inventory, slot, x * 18 + 7, y * 18 + 17)
                     .setBackgroundTexture(GuiTextures.SLOT));
             x++;
-            if(x==yOverflow) {
+            if (x == yOverflow) {
                 x = 0;
                 y++;
             }
@@ -58,4 +63,8 @@ public class CrateMachine extends MetaMachine implements IUIMachine {
         return modularUI;
     }
 
+    @Override
+    public void onDrops(List<ItemStack> drops, Player entity) {
+        MetaMachine.clearInventory(drops, inventory.storage);
+    }
 }
