@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "P": {
+      "tag": "c:plates/bronze"
+    },
+    "R": {
+      "tag": "c:sticks/long/bronze"
+    },
+    "h": {
+      "tag": "c:tool/hammer"
+    }
+  },
+  "pattern": [
+    "RPR",
+    "PhP",
+    "RPR"
+  ],
+  "result": {
+    "item": "gtceu:crate.bronze"
+  }
+}

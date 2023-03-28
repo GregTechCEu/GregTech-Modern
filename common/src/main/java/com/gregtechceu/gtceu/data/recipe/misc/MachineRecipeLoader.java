@@ -579,20 +579,19 @@ public class MachineRecipeLoader {
         ASSEMBLER_RECIPES.recipeBuilder("hopper_iron").EUt(2).inputItems(crafting, MarkerMaterials.Misc.Chest).inputItems(plate, Iron, 5).outputItems(new ItemStack(Blocks.HOPPER)).duration(800).save(provider);
         ASSEMBLER_RECIPES.recipeBuilder("hopper_wrought_iron").EUt(2).inputItems(crafting, MarkerMaterials.Misc.Chest).inputItems(plate, WroughtIron, 5).outputItems(new ItemStack(Blocks.HOPPER)).duration(800).save(provider);
 
-        // TODO Crates
-        //ASSEMBLER_RECIPES.recipeBuilder().EUt(16).inputItems(plank, Wood, 4).inputItems(screw, Iron, 4).outputItems(WOODEN_CRATE).duration(100).circuitMeta(5).save(provider);
-        //ASSEMBLER_RECIPES.recipeBuilder().EUt(16).inputItems(stickLong, Bronze, 4).inputItems(plate, Bronze, 4).outputItems(BRONZE_CRATE).duration(200).circuitMeta(1).save(provider);
-        //ASSEMBLER_RECIPES.recipeBuilder().EUt(16).inputItems(stickLong, Steel, 4).inputItems(plate, Steel, 4).outputItems(STEEL_CRATE).duration(200).circuitMeta(1).save(provider);
-        //ASSEMBLER_RECIPES.recipeBuilder().EUt(16).inputItems(stickLong, Aluminium, 4).inputItems(plate, Aluminium, 4).outputItems(ALUMINIUM_CRATE).duration(200).circuitMeta(1).save(provider);
-        //ASSEMBLER_RECIPES.recipeBuilder().EUt(16).inputItems(stickLong, StainlessSteel, 4).inputItems(plate, StainlessSteel, 4).outputItems(STAINLESS_STEEL_CRATE).circuitMeta(1).duration(200).save(provider);
-        //ASSEMBLER_RECIPES.recipeBuilder().EUt(16).inputItems(stickLong, Titanium, 4).inputItems(plate, Titanium, 4).outputItems(TITANIUM_CRATE).duration(200).circuitMeta(1).save(provider);
-        //ASSEMBLER_RECIPES.recipeBuilder().EUt(16).inputItems(stickLong, TungstenSteel, 4).inputItems(plate, TungstenSteel, 4).outputItems(TUNGSTENSTEEL_CRATE).duration(200).circuitMeta(1).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("wooden_crate").EUt(16).inputItems(ItemTags.PLANKS, 4).inputItems(screw, Iron, 4).outputItems(WOODEN_CRATE).duration(100).circuitMeta(5).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("bronze_crate").EUt(16).inputItems(stickLong, Bronze, 4).inputItems(plate, Bronze, 4).outputItems(BRONZE_CRATE).duration(200).circuitMeta(1).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("steel_crate").EUt(16).inputItems(stickLong, Steel, 4).inputItems(plate, Steel, 4).outputItems(STEEL_CRATE).duration(200).circuitMeta(1).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("aluminium_crate").EUt(16).inputItems(stickLong, Aluminium, 4).inputItems(plate, Aluminium, 4).outputItems(ALUMINIUM_CRATE).duration(200).circuitMeta(1).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("stainless_steel_crate").EUt(16).inputItems(stickLong, StainlessSteel, 4).inputItems(plate, StainlessSteel, 4).outputItems(STAINLESS_STEEL_CRATE).circuitMeta(1).duration(200).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("titanium_crate").EUt(16).inputItems(stickLong, Titanium, 4).inputItems(plate, Titanium, 4).outputItems(TITANIUM_CRATE).duration(200).circuitMeta(1).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("tungstensteel_crate").EUt(16).inputItems(stickLong, TungstenSteel, 4).inputItems(plate, TungstenSteel, 4).outputItems(TUNGSTENSTEEL_CRATE).duration(200).circuitMeta(1).save(provider);
 
-        // TODO Drums
-        //ASSEMBLER_RECIPES.recipeBuilder().EUt(16).inputItems(stickLong, Bronze, 2).inputItems(plate, Bronze, 4).outputItems(BRONZE_DRUM).duration(200).circuitMeta(2).save(provider);
-        //ASSEMBLER_RECIPES.recipeBuilder().EUt(16).inputItems(stickLong, Steel, 2).inputItems(plate, Steel, 4).outputItems(STEEL_DRUM).duration(200).circuitMeta(2).save(provider);
-        //ASSEMBLER_RECIPES.recipeBuilder().EUt(16).inputItems(stickLong, Aluminium, 2).inputItems(plate, Aluminium, 4).outputItems(ALUMINIUM_DRUM).duration(200).circuitMeta(2).save(provider);
-        //ASSEMBLER_RECIPES.recipeBuilder().EUt(16).inputItems(stickLong, StainlessSteel, 2).inputItems(plate, StainlessSteel, 4).outputItems(STAINLESS_STEEL_DRUM).duration(200).circuitMeta(2).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("wood_barrel").EUt(16).inputItems(ItemTags.PLANKS, 4).inputItems(stickLong, Iron, 2).outputItems(WOODEN_DRUM).duration(200).circuitMeta(2).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("bronze_drum").EUt(16).inputItems(stickLong, Bronze, 2).inputItems(plate, Bronze, 4).outputItems(BRONZE_DRUM).duration(200).circuitMeta(2).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("steel_drum").EUt(16).inputItems(stickLong, Steel, 2).inputItems(plate, Steel, 4).outputItems(STEEL_DRUM).duration(200).circuitMeta(2).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("aluminium_drum").EUt(16).inputItems(stickLong, Aluminium, 2).inputItems(plate, Aluminium, 4).outputItems(ALUMINIUM_DRUM).duration(200).circuitMeta(2).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("stainless_steel_drum").EUt(16).inputItems(stickLong, StainlessSteel, 2).inputItems(plate, StainlessSteel, 4).outputItems(STAINLESS_STEEL_DRUM).duration(200).circuitMeta(2).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("duct_tape_polyethylene").EUt(VA[LV]).inputItems(foil, Polyethylene, 4).inputItems(CARBON_MESH).inputFluids(Polyethylene.getFluid(288)).outputItems(DUCT_TAPE).duration(100).save(provider);
         ASSEMBLER_RECIPES.recipeBuilder("duct_tape_silicone_rubber").EUt(VA[LV]).inputItems(foil, SiliconeRubber, 2).inputItems(CARBON_MESH).inputFluids(Polyethylene.getFluid(288)).outputItems(DUCT_TAPE, 2).duration(100).save(provider);

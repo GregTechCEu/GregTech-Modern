@@ -5,7 +5,7 @@
       "tag": "c:circuit/uhv"
     },
     "F": {
-      "item": "gtceu:field.generator.uv"
+      "item": "gtceu:field.generator.zpm"
     },
     "H": {
       "item": "gtceu:hull.uhv"

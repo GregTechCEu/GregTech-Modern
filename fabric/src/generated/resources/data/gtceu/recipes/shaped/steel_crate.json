@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "P": {
+      "tag": "c:plates/steel"
+    },
+    "R": {
+      "tag": "c:sticks/long/steel"
+    },
+    "h": {
+      "tag": "c:tool/hammer"
+    }
+  },
+  "pattern": [
+    "RPR",
+    "PhP",
+    "RPR"
+  ],
+  "result": {
+    "item": "gtceu:crate.steel"
+  }
+}

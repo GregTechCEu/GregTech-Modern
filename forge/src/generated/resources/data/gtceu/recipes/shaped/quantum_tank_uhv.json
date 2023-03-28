@@ -5,7 +5,7 @@
       "tag": "forge:circuit/uhv"
     },
     "G": {
-      "item": "gtceu:field.generator.uv"
+      "item": "gtceu:field.generator.zpm"
     },
     "H": {
       "item": "gtceu:hermetic_casing_uhv"

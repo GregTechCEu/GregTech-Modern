@@ -1068,6 +1068,18 @@
     "gtceu:quantum_tank.zpm",
     "gtceu:quantum_tank.uv",
     "gtceu:quantum_tank.uhv",
+    "gtceu:crate.wood",
+    "gtceu:crate.bronze",
+    "gtceu:crate.steel",
+    "gtceu:crate.aluminium",
+    "gtceu:crate.stainless_steel",
+    "gtceu:crate.titanium",
+    "gtceu:crate.tungsten_steel",
+    "gtceu:drum.wood",
+    "gtceu:drum.bronze",
+    "gtceu:drum.steel",
+    "gtceu:drum.aluminium",
+    "gtceu:drum.stainless_steel",
     "gtceu:item_bus.import.lv",
     "gtceu:item_bus.import.mv",
     "gtceu:item_bus.import.hv",
@@ -1167,13 +1179,6 @@
     "gtceu:cracker",
     "gtceu:distillation_tower",
     "gtceu:vacuum_freezer",
-    "gtceu:assembly_line",
-    "gtceu:wood_crate",
-    "gtceu:bronze_crate",
-    "gtceu:steel_crate",
-    "gtceu:aluminium_crate",
-    "gtceu:stainless_steel_crate",
-    "gtceu:titanium_crate",
-    "gtceu:tungsten_steel_crate"
+    "gtceu:assembly_line"
   ]
 }
