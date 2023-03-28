@@ -13,11 +13,13 @@
     "IFoliagePlacerTypeAccessor",
     "ITrunkPlacerTypeAccessor",
     "LevelMixin",
+    "RecipeManagerAccessor",
     "RecipeManagerInvoker",
     "RecipeManagerMixin",
     "ServerChunkProviderMixin",
     "ServerPlayerGameModeMixin",
-    "kjs.KubeJSMixin"
+    "kjs.KubeJSMixin",
+    "kjs.RecipeEventJSMixin"
   ],
   "injectors": {
     "defaultRequire": 1

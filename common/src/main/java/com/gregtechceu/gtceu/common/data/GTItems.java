@@ -934,6 +934,7 @@ public class GTItems {
     public static ItemEntry<Item> COVER_ITEM_VOIDING_ADVANCED = REGISTRATE.item("cover.item.voiding.advanced", Item::new).lang("Advanced Item Voiding Cover").register();
 
     public static ItemEntry<ComponentItem> COVER_FACADE = REGISTRATE.item("cover.facade", ComponentItem::create)
+            .lang("Cover Facade")
             .onRegister(attach(new FacadeItemBehaviour(), new CoverPlaceBehavior(GTCovers.FACADE)))
             .model(NonNullBiConsumer.noop())
             .register();
