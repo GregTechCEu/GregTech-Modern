@@ -12,6 +12,8 @@
     "#c:storage_blocks/amethyst",
     "#c:storage_blocks/glass",
     "#c:storage_blocks/granite",
+    "#c:storage_blocks/andesite",
+    "#c:storage_blocks/diorite",
     "#c:storage_blocks/stone",
     "#c:storage_blocks/glowstone",
     "#c:storage_blocks/endstone",

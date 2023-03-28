@@ -11,6 +11,8 @@
     "#forge:storage_blocks/amethyst",
     "#forge:storage_blocks/glass",
     "#forge:storage_blocks/granite",
+    "#forge:storage_blocks/andesite",
+    "#forge:storage_blocks/diorite",
     "#forge:storage_blocks/stone",
     "#forge:storage_blocks/glowstone",
     "#forge:storage_blocks/endstone",

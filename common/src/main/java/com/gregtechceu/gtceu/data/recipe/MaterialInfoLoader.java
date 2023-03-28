@@ -168,6 +168,10 @@ public class MaterialInfoLoader {
         //        new MaterialStack(GTMaterials.Glass, M / 2) // 1 block / 2
         //));
 
+        // TODO Expand for all terracottas
+        //ChemicalHelper.registerUnificationEntry(new ItemStack(Blocks.HARDENED_CLAY, 1, W), new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, M * 4)));
+        //ChemicalHelper.registerUnificationEntry(new ItemStack(Blocks.STAINED_HARDENED_CLAY, 1, W), new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, M * 4)));
+
         ChemicalHelper.registerMaterialInfo(GTBlocks.CASING_PRIMITIVE_BRICKS.get(), new ItemMaterialInfo(new MaterialStack(GTMaterials.Fireclay, M * 4)));
 
         if (ConfigHolder.recipes.hardWoodRecipes) {

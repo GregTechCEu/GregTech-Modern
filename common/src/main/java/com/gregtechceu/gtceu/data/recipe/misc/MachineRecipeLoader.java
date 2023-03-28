@@ -2,13 +2,13 @@ package com.gregtechceu.gtceu.data.recipe.misc;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
-import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials;
 import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials.Tier;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMachines;
+import com.gregtechceu.gtceu.data.recipe.LoaderTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.tterrag.registrate.util.entry.ItemEntry;
@@ -576,8 +576,8 @@ public class MachineRecipeLoader {
         ASSEMBLER_RECIPES.recipeBuilder("hull_uv").duration(50).EUt(16).inputItems(GTBlocks.MACHINE_CASING_UV.asStack()).inputItems(cableGtSingle, YttriumBariumCuprate, 2).inputFluids(Polybenzimidazole.getFluid(L * 2)).outputItems(GTMachines.HULL[8]).save(provider);
         ASSEMBLER_RECIPES.recipeBuilder("hull_uhv").duration(50).EUt(16).inputItems(GTBlocks.MACHINE_CASING_UHV.asStack()).inputItems(cableGtSingle, Europium, 2).inputFluids(Polybenzimidazole.getFluid(L * 2)).outputItems(GTMachines.HULL[9]).save(provider);
 
-        ASSEMBLER_RECIPES.recipeBuilder("hopper_iron").EUt(2).inputItems(crafting, MarkerMaterials.Misc.Chest).inputItems(plate, Iron, 5).outputItems(new ItemStack(Blocks.HOPPER)).duration(800).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("hopper_wrought_iron").EUt(2).inputItems(crafting, MarkerMaterials.Misc.Chest).inputItems(plate, WroughtIron, 5).outputItems(new ItemStack(Blocks.HOPPER)).duration(800).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("hopper_iron").EUt(2).inputItems(LoaderTags.TAG_WOODEN_CHESTS).inputItems(plate, Iron, 5).outputItems(new ItemStack(Blocks.HOPPER)).duration(800).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("hopper_wrought_iron").EUt(2).inputItems(LoaderTags.TAG_WOODEN_CHESTS).inputItems(plate, WroughtIron, 5).outputItems(new ItemStack(Blocks.HOPPER)).duration(800).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("wooden_crate").EUt(16).inputItems(ItemTags.PLANKS, 4).inputItems(screw, Iron, 4).outputItems(WOODEN_CRATE).duration(100).circuitMeta(5).save(provider);
         ASSEMBLER_RECIPES.recipeBuilder("bronze_crate").EUt(16).inputItems(stickLong, Bronze, 4).inputItems(plate, Bronze, 4).outputItems(BRONZE_CRATE).duration(200).circuitMeta(1).save(provider);
@@ -791,43 +791,43 @@ public class MachineRecipeLoader {
         //            .save(provider);
 
         MACERATOR_RECIPES.recipeBuilder("macerate_marble")
-                .inputItems(stone, Marble)
+                .inputItems(block, Marble)
                 .outputItems(dust, Marble)
                 .chancedOutput(dust, Marble, 1000, 380)
                 .save(provider);
 
         MACERATOR_RECIPES.recipeBuilder("macerate_basalt")
-                .inputItems(new ItemStack(Blocks.BASALT))
+                .inputItems(Blocks.BASALT.asItem())
                 .outputItems(dust, Basalt)
                 .chancedOutput(dust, Basalt, 1000, 380)
                 .save(provider);
 
         MACERATOR_RECIPES.recipeBuilder("macerate_black_granite")
-                .inputItems(stone, GraniteBlack)
+                .inputItems(block, GraniteBlack)
                 .outputItems(dust, GraniteBlack)
                 .chancedOutput(dust, Thorium, 100, 40)
                 .save(provider);
 
         MACERATOR_RECIPES.recipeBuilder("macerate_red_granite")
-                .inputItems(stone, GraniteRed)
+                .inputItems(block, GraniteRed)
                 .outputItems(dust, GraniteRed)
                 .chancedOutput(dustSmall, Uranium238, 100, 40)
                 .save(provider);
 
         MACERATOR_RECIPES.recipeBuilder("macerate_andesite")
-                .inputItems(stone, Andesite)
+                .inputItems(Blocks.ANDESITE.asItem())
                 .outputItems(dust, Andesite)
                 .chancedOutput(dustSmall, Stone, 100, 40)
                 .save(provider);
 
         MACERATOR_RECIPES.recipeBuilder("macerate_diorite")
-                .inputItems(stone, Diorite)
+                .inputItems(Blocks.DIORITE.asItem())
                 .outputItems(dust, Diorite)
                 .chancedOutput(dustSmall, Stone, 100, 40)
                 .save(provider);
 
         MACERATOR_RECIPES.recipeBuilder("macerate_granite")
-                .inputItems(stone, Granite)
+                .inputItems(Blocks.GRANITE.asItem())
                 .outputItems(dust, Granite)
                 .chancedOutput(dustSmall, Stone, 100, 40)
                 .save(provider);

@@ -20,10 +20,20 @@ public class TagLoader {
     public static void init(RegistrateTagsProvider<Item> provider) {
         create(provider, lens, Color.White, GTItems.MATERIAL_ITEMS.get(lens, Glass).getId());
         create(provider, "pistons", rl("piston"), rl("sticky_piston"));
+
+        // TODO add to planks mc tag?
+        //for (Material material : new Material[]{GTMaterials.Wood, GTMaterials.TreatedWood}) {
+        //    for (ItemLike woodPlateStack : ChemicalHelper.getItems(new UnificationEntry(TagPrefix.plate, material))) {
+        //        ChemicalHelper.registerUnificationEntry(woodPlateStack, TagPrefix.plank, material);
+        //    }
+        //}
+
+        // todo match ae2 certus quartz tag
+        //OreDictionary.registerUnificationEntry("crystalCertusQuartz", ChemicalHelper.get(TagPrefix.gem, GTMaterials.CertusQuartz));
     }
 
     private static void create(RegistrateTagsProvider<Item> provider, String tagName, ResourceLocation... rls) {
-        create(provider, TagUtil.createItemTag(tagName));
+        create(provider, TagUtil.createItemTag(tagName), rls);
     }
 
     private static void create(RegistrateTagsProvider<Item> provider, TagPrefix prefix, Material material, ResourceLocation... rls) {

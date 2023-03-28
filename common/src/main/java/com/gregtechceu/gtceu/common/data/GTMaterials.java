@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.materials.*;
@@ -9,7 +10,6 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlag;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
 import com.gregtechceu.gtceu.integration.kjs.events.MaterialEventJS;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
@@ -161,7 +161,7 @@ public class GTMaterials {
 
         block.setIgnored(Iron, Blocks.IRON_BLOCK);
         block.setIgnored(Gold, Blocks.GOLD_BLOCK);
-        block.setIgnored(Copper, Blocks.COAL_BLOCK);
+        block.setIgnored(Copper, Blocks.COPPER_BLOCK);
         block.setIgnored(Lapis, Blocks.LAPIS_BLOCK);
         block.setIgnored(Emerald, Blocks.EMERALD_BLOCK);
         block.setIgnored(Redstone, Blocks.REDSTONE_BLOCK);
@@ -172,6 +172,8 @@ public class GTMaterials {
         block.setIgnored(Marble);
         block.setIgnored(Granite, Blocks.GRANITE);
         block.setIgnored(GraniteRed);
+        block.setIgnored(Andesite, Blocks.ANDESITE);
+        block.setIgnored(Diorite, Blocks.DIORITE);
         block.setIgnored(Stone, Blocks.STONE);
         block.setIgnored(Glowstone, Blocks.GLOWSTONE);
         block.setIgnored(Endstone, Blocks.END_STONE);
@@ -241,6 +243,24 @@ public class GTMaterials {
         dustSmall.setIgnored(Lapotron);
         dustTiny.setIgnored(Lapotron);
 
+        // todo dyes
+        //dye.setIgnored(DyeBlack, Items.BLACK_DYE);
+        //dye.setIgnored(DyeRed, Items.RED_DYE);
+        //dye.setIgnored(DyeGreen, Items.GREEN_DYE);
+        //dye.setIgnored(DyeBrown, Items.BROWN_DYE);
+        //dye.setIgnored(DyeBlue, Items.BLUE_DYE);
+        //dye.setIgnored(DyePurple, Items.PURPLE_DYE);
+        //dye.setIgnored(DyeCyan, Items.CYAN_DYE);
+        //dye.setIgnored(DyeLightGray, Items.LIGHT_GRAY_DYE);
+        //dye.setIgnored(DyeGray, Items.GRAY_DYE);
+        //dye.setIgnored(DyePink, Items.PINK_DYE);
+        //dye.setIgnored(DyeLime, Items.LIME_DYE);
+        //dye.setIgnored(DyeYellow, Items.YELLOW_DYE);
+        //dye.setIgnored(DyeLightBlue, Items.LIGHT_BLUE_DYE);
+        //dye.setIgnored(DyeMagenta, Items.MAGENTA_DYE);
+        //dye.setIgnored(DyeOrange, Items.ORANGE_DYE);
+        //dye.setIgnored(DyeWhite, Items.WHITE_DYE);
+
         // register vanilla materials
         registerUnificationItems(ingot, Clay, Items.CLAY_BALL);
         registerUnificationItems(ore, Coal, Blocks.COAL_ORE);
@@ -252,6 +272,13 @@ public class GTMaterials {
         registerUnificationItems(ore, Emerald, Blocks.EMERALD_ORE);
         registerUnificationItems(ore, NetherQuartz, Blocks.NETHER_QUARTZ_ORE);
         registerUnificationItems(ore, Copper, Blocks.COPPER_ORE);
+        // todo dyes
+        //registerUnificationItems(dye, DyeBlue, ChemicalHelper.get(gem, Lapis).getItem());
+        //registerUnificationItems(dye, DyeBlue, ChemicalHelper.get(gem, Lazurite).getItem());
+        //registerUnificationItems(dye, DyeBlue, ChemicalHelper.get(gem, Sodalite).getItem());
+        //registerUnificationItems(dye, DyeBlue, ChemicalHelper.get(dust, Lapis).getItem());
+        //registerUnificationItems(dye, DyeBlue, ChemicalHelper.get(dust, Lazurite).getItem());
+        //registerUnificationItems(dye, DyeBlue, ChemicalHelper.get(dust, Sodalite).getItem());
 
         // todo deepslate
         //registerUnificationItems(oreDeepslate, Coal, Blocks.DEEPSLATE_COAL_ORE);
@@ -262,17 +289,14 @@ public class GTMaterials {
         //registerUnificationItems(oreDeepslate, Diamond, Blocks.DEEPSLATE_DIAMOND_ORE);
         //registerUnificationItems(oreDeepslate, Copper, Blocks.DEEPSLATE_COPPER_ORE);
 
-        registerUnificationItems(stone, Granite, Blocks.STONE);
-        registerUnificationItems(stone, Andesite, Blocks.ANDESITE);
-        registerUnificationItems(stone, Diorite, Blocks.DIORITE);
-        registerUnificationItems(stone, Netherrack, Blocks.NETHERRACK);
-        registerUnificationItems(stone, Endstone, Blocks.END_STONE);
-        registerUnificationItems(stone, Obsidian, Blocks.OBSIDIAN);
+        // TODO GT stone types, move out of this file
+        //ChemicalHelper.registerUnificationEntry(MetaBlocks.STONE_SMOOTH.getItemVariant(BlockStoneSmooth.BlockType.BLACK_GRANITE, 1), TagPrefix.stone, GTMaterials.GraniteBlack);
+        //ChemicalHelper.registerUnificationEntry(MetaBlocks.STONE_SMOOTH.getItemVariant(BlockStoneSmooth.BlockType.RED_GRANITE, 1), TagPrefix.stone, GTMaterials.GraniteRed);
+        //ChemicalHelper.registerUnificationEntry(MetaBlocks.STONE_SMOOTH.getItemVariant(BlockStoneSmooth.BlockType.MARBLE, 1), TagPrefix.stone, GTMaterials.Marble);
+        //ChemicalHelper.registerUnificationEntry(MetaBlocks.STONE_SMOOTH.getItemVariant(BlockStoneSmooth.BlockType.BASALT, 1), TagPrefix.stone, GTMaterials.Basalt);
+        //ChemicalHelper.registerUnificationEntry(MetaBlocks.STONE_SMOOTH.getItemVariant(BlockStoneSmooth.BlockType.CONCRETE_LIGHT, 1), TagPrefix.block, GTMaterials.Concrete);
+        //ChemicalHelper.registerUnificationEntry(MetaBlocks.STONE_SMOOTH.getItemVariant(BlockStoneSmooth.BlockType.CONCRETE_DARK, 1), TagPrefix.block, GTMaterials.Concrete);
 
-//        registerUnificationItems(dye, null, Items.WHITE_DYE, Items.ORANGE_DYE, Items.MAGENTA_DYE, Items.LIGHT_BLUE_DYE,
-//                Items.YELLOW_DYE, Items.LIME_DYE, Items.PINK_DYE, Items.GRAY_DYE, 
-//                Items.LIGHT_GRAY_DYE, Items.CYAN_DYE, Items.PURPLE_DYE, Items.BLUE_DYE, 
-//                Items.BROWN_DYE, Items.GREEN_DYE, Items.RED_DYE, Items.BLACK_DYE);
 
         if (GTCEu.isKubeJSLoaded()) {
             new MaterialEventJS().post();

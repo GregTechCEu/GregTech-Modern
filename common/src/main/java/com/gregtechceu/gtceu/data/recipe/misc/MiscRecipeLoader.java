@@ -92,22 +92,22 @@ public class MiscRecipeLoader {
                 .save(provider);
 
         ROCK_BREAKER_RECIPES.recipeBuilder("andesite")
-                .notConsumable(stone, Andesite)
-                .outputItems(stone, Andesite)
+                .notConsumable(Blocks.ANDESITE.asItem())
+                .outputItems(Blocks.ANDESITE.asItem())
                 .duration(16)
                 .EUt(60)
                 .save(provider);
 
         ROCK_BREAKER_RECIPES.recipeBuilder("granite")
-                .notConsumable(stone, Granite)
-                .outputItems(stone, Granite)
+                .notConsumable(Blocks.GRANITE.asItem())
+                .outputItems(Blocks.GRANITE.asItem())
                 .duration(16)
                 .EUt(60)
                 .save(provider);
 
         ROCK_BREAKER_RECIPES.recipeBuilder("diorite")
-                .notConsumable(stone, Diorite)
-                .outputItems(stone, Diorite)
+                .notConsumable(Blocks.DIORITE.asItem())
+                .outputItems(Blocks.DIORITE.asItem())
                 .duration(16)
                 .EUt(60)
                 .save(provider);

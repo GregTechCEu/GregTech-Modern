@@ -476,12 +476,6 @@ public class TagPrefix {
             .materialIconType(MaterialIconType.block)
             .unificationEnabled(true);
 
-    // Prefix to determine which kind of Rock this is.
-    // todo remove?
-    public static final TagPrefix stone = new TagPrefix("stone")
-            .materialType(GTMaterials.Stone)
-            .selfReferencing(true);
-
     public static final TagPrefix frameGt = new TagPrefix("frameGt", "frames")
             .langValue("%s Frame Box")
             .materialAmount(GTValues.M * 2)
@@ -523,14 +517,6 @@ public class TagPrefix {
     // Special Prefix used mainly for the Crafting Handler.
     // Used for the 16 dyes.
     public static final TagPrefix dye = new TagPrefix("dye", "dyes").isMarkerPrefix(true);
-
-    // Used for when a crafting-only tag should be added to a random assortment of items.
-    // Ex:
-    // - Chest and Trapped Chest
-    // - Piston and Sticky Piston
-    //
-    // Commonly used with MarkerMaterials.Misc though not exclusively
-    public static final TagPrefix crafting = new TagPrefix("crafting").isMarkerPrefix(true);
 
     /**
      * Electric Components.

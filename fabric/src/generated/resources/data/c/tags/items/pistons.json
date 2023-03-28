@@ -1,4 +1,7 @@
 {
   "replace": false,
-  "values": []
+  "values": [
+    "minecraft:piston",
+    "minecraft:sticky_piston"
+  ]
 }
