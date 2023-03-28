@@ -38,6 +38,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.apache.commons.lang3.function.TriFunction;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -59,6 +60,9 @@ public class MachineBuilder {
 
     protected final Registrate registrate;
     protected final String name;
+    protected final BiFunction<BlockBehaviour.Properties, MachineDefinition, MetaMachineBlock> blockFactory;
+    protected final BiFunction<MetaMachineBlock, Item.Properties, MetaMachineItem> itemFactory;
+    protected final TriFunction<BlockEntityType<?>, BlockPos, BlockState, MetaMachineBlockEntity> blockEntityFactory;
     protected final Function<IMetaMachineBlockEntity, MetaMachine> metaMachine;
     @Nullable
     @Setter
@@ -95,14 +99,23 @@ public class MachineBuilder {
     @Setter
     private String langValue = null;
 
-    protected MachineBuilder(Registrate registrate, String name, Function<IMetaMachineBlockEntity, MetaMachine> metaMachine) {
+    protected MachineBuilder(Registrate registrate, String name, Function<IMetaMachineBlockEntity, MetaMachine> metaMachine,
+                             BiFunction<BlockBehaviour.Properties, MachineDefinition, MetaMachineBlock> blockFactory,
+                             BiFunction<MetaMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
+                             TriFunction<BlockEntityType<?>, BlockPos, BlockState, MetaMachineBlockEntity> blockEntityFactory) {
         this.registrate = registrate;
         this.name = name;
         this.metaMachine = metaMachine;
+        this.blockFactory = blockFactory;
+        this.itemFactory = itemFactory;
+        this.blockEntityFactory = blockEntityFactory;
     }
 
-    public static MachineBuilder create(Registrate registrate, String name, Function<IMetaMachineBlockEntity, MetaMachine> metaMachine) {
-        return new MachineBuilder(registrate, name, metaMachine);
+    public static MachineBuilder create(Registrate registrate, String name, Function<IMetaMachineBlockEntity, MetaMachine> metaMachine,
+                                        BiFunction<BlockBehaviour.Properties, MachineDefinition, MetaMachineBlock> blockFactory,
+                                        BiFunction<MetaMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
+                                        TriFunction<BlockEntityType<?>, BlockPos, BlockState, MetaMachineBlockEntity> blockEntityFactory) {
+        return new MachineBuilder(registrate, name, metaMachine, blockFactory, itemFactory, blockEntityFactory);
     }
 
     public MachineBuilder modelRenderer(Supplier<ResourceLocation> model) {
@@ -167,7 +180,7 @@ public class MachineBuilder {
 
         var blockBuilder = registrate.block(name, properties -> {
                     RotationState.set(rotationState);
-                    var b = new MetaMachineBlock(properties, definition);
+                    var b = blockFactory.apply(properties, definition);
                     RotationState.clear();
                     return b;
                 })
@@ -186,7 +199,7 @@ public class MachineBuilder {
         }
         var block = blockBuilder.register();
 
-        var itemBuilder = registrate.item(name, properties -> new MetaMachineItem(block.get(), properties))
+        var itemBuilder = registrate.item(name, properties -> itemFactory.apply(block.get(), properties))
                 .setData(ProviderType.LANG, NonNullBiConsumer.noop()) // do not gen any lang keys
                 .model(NonNullBiConsumer.noop())
                 .properties(itemProp);
@@ -198,7 +211,7 @@ public class MachineBuilder {
         }
         var item = itemBuilder.register();
 
-        var blockEntityBuilder = registrate.blockEntity(name, MachineBuilder::createBlockEntity)
+        var blockEntityBuilder = registrate.blockEntity(name, blockEntityFactory::apply)
                 .onRegister(MachineBuilder::onBlockEntityRegister)
                 .validBlock(block);
         if (hasTESR) {

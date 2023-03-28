@@ -2,7 +2,11 @@ package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
+import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.item.DrumMachineItem;
+import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.machine.*;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
@@ -47,6 +51,9 @@ import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.ints.Int2LongFunction;
+import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2LongArrayMap;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -86,6 +93,7 @@ public class GTMachines {
     public static final Int2LongFunction largeTankSizeFunction = tier -> (tier <= GTValues.LV ? 32 : tier == GTValues.MV ? 48 : 64) * FluidHelper.getBucket();
     public static final Int2LongFunction steamGeneratorTankSizeFunction = tier -> Math.min(16 * (1 << (tier - 1)), 64) * FluidHelper.getBucket();
     public static final Int2LongFunction genericGeneratorTankSizeFunction = tier -> Math.min(4 * (1 << (tier - 1)), 16) * FluidHelper.getBucket();
+    public static Object2IntMap<MachineDefinition> DRUM_CAPACITY = new Object2IntArrayMap<>();
 
     static {
         REGISTRATE.creativeModeTab(() -> MACHINE);
@@ -250,12 +258,14 @@ public class GTMachines {
                     .register(),
             HIGH_TIERS);
 
-    public static BiConsumer<ItemStack, List<Component>> TANK_TOOLTIPS = (stack, list) -> {
-        if (stack.hasTag()) {
-            FluidStack tank = FluidStack.loadFromTag(stack.getOrCreateTagElement("stored"));
-            list.add(1, Component.translatable("gtceu.universal.tooltip.fluid_stored", tank.getDisplayName(), tank.getAmount()));
-        }
-    };
+    public static BiConsumer<ItemStack, List<Component>> createTankTooltips(String nbtName) {
+        return (stack, list) -> {
+            if (stack.hasTag()) {
+                FluidStack tank = FluidStack.loadFromTag(stack.getOrCreateTagElement(nbtName));
+                list.add(1, Component.translatable("gtceu.universal.tooltip.fluid_stored", tank.getDisplayName(), tank.getAmount()));
+            }
+        };
+    }
 
     public final static MachineDefinition[] SUPER_TANK = registerTieredMachines("super_tank",
             (holder, tier) -> new QuantumTankMachine(holder, tier, 4000 * FluidHelper.getBucket() * (int) Math.pow(2, tier)),
@@ -265,7 +275,7 @@ public class GTMachines {
                     .rotationState(RotationState.ALL)
                     .renderer(() -> new QuantumTankRenderer(tier))
                     .hasTESR(true)
-                    .tooltipBuilder(TANK_TOOLTIPS)
+                    .tooltipBuilder(createTankTooltips("stored"))
                     .tooltips(Component.translatable("gtceu.machine.quantum_tank.tooltip"), Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity",4000000 * (int) Math.pow(2, tier)))
                     .register(),
             LOW_TIERS);
@@ -279,7 +289,7 @@ public class GTMachines {
                     .rotationState(RotationState.ALL)
                     .renderer(() -> new QuantumTankRenderer(tier))
                     .hasTESR(true)
-                    .tooltipBuilder(TANK_TOOLTIPS)
+                    .tooltipBuilder(createTankTooltips("stored"))
                     .tooltips(Component.translatable("gtceu.machine.quantum_tank.tooltip"), Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity", /*tier == GTValues.UHV ? Integer.MAX_VALUE :*/ 4000000 * (int) Math.pow(2, tier)))
                     .register(),
             HIGH_TIERS);
@@ -292,11 +302,11 @@ public class GTMachines {
     public static MachineDefinition TITANIUM_CRATE = registerCrate(GTMaterials.Titanium, 126, "Titanium Crate");
     public static MachineDefinition TUNGSTENSTEEL_CRATE = registerCrate(GTMaterials.TungstenSteel, 144, "Tungstensteel Crate");
 
-    public static MachineDefinition WOODEN_DRUM = registerDrum(GTMaterials.Wood, 16000, "Wooden Barrel");
-    public static MachineDefinition BRONZE_DRUM = registerDrum(GTMaterials.Bronze, 32000, "Bronze Drum");
-    public static MachineDefinition STEEL_DRUM = registerDrum(GTMaterials.Steel, 64000, "Steel Drum");
-    public static MachineDefinition ALUMINIUM_DRUM = registerDrum(GTMaterials.Aluminium, 128000, "Aluminium Drum");
-    public static MachineDefinition STAINLESS_STEEL_DRUM = registerDrum(GTMaterials.StainlessSteel, 256000, "Stainless Steel Drum");
+    public static MachineDefinition WOODEN_DRUM = registerDrum(GTMaterials.Wood, (int) (16 * FluidHelper.getBucket()), "Wooden Barrel");
+    public static MachineDefinition BRONZE_DRUM = registerDrum(GTMaterials.Bronze, (int) (32 * FluidHelper.getBucket()), "Bronze Drum");
+    public static MachineDefinition STEEL_DRUM = registerDrum(GTMaterials.Steel, (int) (64 * FluidHelper.getBucket()), "Steel Drum");
+    public static MachineDefinition ALUMINIUM_DRUM = registerDrum(GTMaterials.Aluminium, (int) (128 * FluidHelper.getBucket()), "Aluminium Drum");
+    public static MachineDefinition STAINLESS_STEEL_DRUM = registerDrum(GTMaterials.StainlessSteel, (int) (256 * FluidHelper.getBucket()), "Stainless Steel Drum");
 
 
     //////////////////////////////////////
@@ -844,16 +854,17 @@ public class GTMachines {
 
     public static MachineDefinition registerDrum(Material material, int capacity, String lang) {
         boolean wooden = GTMaterials.Wood.equals(material) || GTMaterials.TreatedWood.equals(material);
-
-        return REGISTRATE.machine("drum." + material, holder -> new DrumMachine(holder, material, capacity))
+        var definition = REGISTRATE.machine("drum." + material, holder -> new DrumMachine(holder, material, capacity), MetaMachineBlock::new, DrumMachineItem::create, MachineBuilder::createBlockEntity)
                 .langValue(lang)
                 .rotationState(RotationState.NONE)
                 .renderer(() -> new MachineRenderer(GTCEu.id("block/machine/" + (wooden ? "wooden" : "metal") + "_drum")))
-                .tooltipBuilder(TANK_TOOLTIPS)
-                .tooltips(Component.translatable("gtceu.machine.quantum_tank.tooltip"), Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity", 16000))
+                .tooltipBuilder(createTankTooltips("Fluid"))
+                .tooltips(Component.translatable("gtceu.machine.quantum_tank.tooltip"), Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity", 16 * FluidHelper.getBucket()))
                 .paintingColor(wooden ? 0xFFFFFF : material.getMaterialRGB())
                 .itemColor((s, i) -> wooden ? 0xFFFFFF : material.getMaterialRGB())
                 .register();
+        DRUM_CAPACITY.put(definition, capacity);
+        return definition;
     }
 
     public static Component explosion() {
