@@ -28,7 +28,6 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.tag.TagUtil;
 import com.gregtechceu.gtceu.data.data.LangHandler;
-import com.lowdragmc.lowdraglib.msic.ItemStackTransfer;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
@@ -43,7 +42,6 @@ import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import com.tterrag.registrate.util.nullness.NonNullFunction;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.client.color.item.ItemColor;
-import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.*;
@@ -328,38 +326,7 @@ public class GTItems {
             .model(cellModel())
             .color(() -> GTItems::cellColor)
             .onRegister(modelPredicate(GTCEu.id("fluid_cell"), (itemStack) -> FluidTransferHelper.getFluidContained(itemStack) == null ? 0f : 1f))
-            .onRegister(attach(ThermalFluidStats.create((int)FluidHelper.getBucket(), 1800, true, false, false, false, false), new ItemFluidContainer(),
-                    new ISubItemHandler() {
-                        @Override
-                        public void fillItemCategory(ComponentItem item, CreativeModeTab category, NonNullList<ItemStack> items) {
-                            ISubItemHandler.super.fillItemCategory(item, category, items);
-                            if (category == MATERIAL_FLUID) {
-                                for (Material material : GTRegistries.MATERIALS) {
-                                    if (material.hasFluid()) {
-                                        var fluidStack = material.getFluid(FluidHelper.getBucket());
-                                        var cell = new ItemStack(item);
-                                        var storage = new ItemStackTransfer(cell);
-                                        var transfer = FluidTransferHelper.getFluidTransfer(storage, 0);
-                                        if (transfer != null && transfer.fill(fluidStack, false) > 0) {
-                                            items.add(storage.getStackInSlot(0));
-                                        }
-                                    }
-                                    if (material.hasProperty(PropertyKey.PLASMA)) {
-                                        var fluidStack = material.getPlasma(FluidHelper.getBucket());
-                                        if (fluidStack != null) {
-                                            var cell = new ItemStack(item);
-                                            var storage = new ItemStackTransfer(cell);
-                                            var transfer = FluidTransferHelper.getFluidTransfer(storage, 0);
-                                            if (transfer != null && transfer.fill(fluidStack, false) > 0) {
-                                                items.add(storage.getStackInSlot(0));
-                                            }
-                                        }
-                                    }
-                                }
-
-                            }
-                        }
-                    }, cellName())).register();
+            .onRegister(attach(ThermalFluidStats.create((int)FluidHelper.getBucket(), 1800, true, false, false, false, false), new ItemFluidContainer(), cellName())).register();
     public static ItemEntry<ComponentItem> FLUID_CELL_UNIVERSAL = REGISTRATE.item("fluid_cell.universal", ComponentItem::create)
             .lang("Universal Cell")
             .model(cellModel())

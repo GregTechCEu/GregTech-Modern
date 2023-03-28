@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.registry.registrate.fabric;
 
 import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
+import com.gregtechceu.gtceu.api.item.fabric.GTBucketItem;
 import com.gregtechceu.gtceu.api.registry.registrate.IGTFluidBuilder;
 import com.tterrag.registrate.AbstractRegistrate;
 import com.tterrag.registrate.builders.*;
@@ -13,10 +14,7 @@ import com.tterrag.registrate.providers.ProviderType;
 import com.tterrag.registrate.providers.RegistrateLangProvider;
 import com.tterrag.registrate.util.entry.FluidEntry;
 import com.tterrag.registrate.util.entry.RegistryEntry;
-import com.tterrag.registrate.util.nullness.NonNullBiFunction;
-import com.tterrag.registrate.util.nullness.NonNullConsumer;
-import com.tterrag.registrate.util.nullness.NonNullFunction;
-import com.tterrag.registrate.util.nullness.NonNullSupplier;
+import com.tterrag.registrate.util.nullness.*;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import net.fabricmc.api.EnvType;
@@ -35,8 +33,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.inventory.InventoryMenu;
-import net.minecraft.world.item.BucketItem;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -78,16 +74,6 @@ public class GTFluidBuilder<T extends SimpleFlowableFluid, P> extends AbstractBu
     public int viscosity = 1000;
     @Setter
     public int color = -1;
-
-    public static <P> GTFluidBuilder<SimpleFlowableFluid.Flowing, P> create(AbstractRegistrate<?> owner, P parent, String name, BuilderCallback callback, ResourceLocation stillTexture, ResourceLocation flowingTexture) {
-        return create(owner, parent, name, callback, stillTexture, flowingTexture, SimpleFlowableFluid.Flowing::new);
-    }
-
-    public static <T extends SimpleFlowableFluid, P> GTFluidBuilder<T, P> create(AbstractRegistrate<?> owner, P parent, String name, BuilderCallback callback, ResourceLocation stillTexture, ResourceLocation flowingTexture, NonNullFunction<SimpleFlowableFluid.Properties, T> fluidFactory) {
-        GTFluidBuilder<T, P> ret = new GTFluidBuilder<>(owner, parent, name, callback, stillTexture, flowingTexture, fluidFactory)
-                .defaultLang().defaultSource().defaultBlock().defaultBucket();
-        return ret;
-    }
 
     private final String sourceName, bucketName;
 
@@ -143,6 +129,7 @@ public class GTFluidBuilder<T extends SimpleFlowableFluid, P> extends AbstractBu
             }
         };
         this.fluidProperties = p -> {};
+        defaultBucket();
 
 //        String bucketName = this.bucketName;
 //        this.fluidProperties = p -> p.bucket(() -> owner.get(bucketName, Registry.ITEM_REGISTRY).get())
@@ -249,11 +236,7 @@ public class GTFluidBuilder<T extends SimpleFlowableFluid, P> extends AbstractBu
         return this;
     }
 
-    public ItemBuilder<BucketItem, GTFluidBuilder<T, P>> bucket() {
-        return bucket(BucketItem::new);
-    }
-
-    public <I extends BucketItem> ItemBuilder<I, GTFluidBuilder<T, P>> bucket(NonNullBiFunction<? extends SimpleFlowableFluid, Item.Properties, ? extends I> factory) {
+    public ItemBuilder<GTBucketItem, GTFluidBuilder<T, P>> bucket() {
         if (this.defaultBucket == Boolean.FALSE) {
             throw new IllegalStateException("Only one call to bucket/noBucket per builder allowed");
         }
@@ -264,18 +247,10 @@ public class GTFluidBuilder<T extends SimpleFlowableFluid, P> extends AbstractBu
             throw new IllegalStateException("Cannot create a bucket before creating a source block");
         }
         this.fluidProperties = p -> p.bucket(() -> getOwner().get(bucketName, Registry.ITEM_REGISTRY).get());
-        return getOwner().<I, GTFluidBuilder<T, P>>item(this, bucketName, p -> ((NonNullBiFunction<SimpleFlowableFluid, Item.Properties, ? extends I>) factory).apply(this.source.get(), p))
+        return getOwner().item(this, bucketName, p -> new GTBucketItem(this.source, p))
                 .properties(p -> p.craftRemainder(Items.BUCKET).stacksTo(1))
-                .model((ctx, prov) -> prov.generated(ctx::getEntry, new ResourceLocation(getOwner().getModid(), "item/" + bucketName)));
-    }
-
-    @Beta
-    public GTFluidBuilder<T, P> noBucket() {
-        if (this.defaultBucket == Boolean.FALSE) {
-            throw new IllegalStateException("Only one call to bucket/noBucket per builder allowed");
-        }
-        this.defaultBucket = false;
-        return this;
+                .color(() -> () -> GTBucketItem::color)
+                .model(NonNullBiConsumer.noop());
     }
 
     @SafeVarargs
@@ -287,12 +262,6 @@ public class GTFluidBuilder<T extends SimpleFlowableFluid, P> extends AbstractBu
         }
         this.tags.addAll(Arrays.asList(tags));
         return ret;
-    }
-
-    @SafeVarargs
-    public final GTFluidBuilder<T, P> removeTag(TagKey<Fluid>... tags) {
-        this.tags.removeAll(Arrays.asList(tags));
-        return this.removeTag(ProviderType.FLUID_TAGS, tags);
     }
 
     private SimpleFlowableFluid getSource() {

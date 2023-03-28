@@ -81,7 +81,6 @@ dependencies {
     shadowCommon(project(path: ":${mod_id}-common", configuration: "transformProductionFabric")) { transitive = false }
 
     // LDLib
-    modCompileOnly(fabric.ldlib.common) { transitive = false }
     modImplementation(fabric.ldlib.fabric) { transitive = false }
 
     // Registrate TODO use forge.registrate?
