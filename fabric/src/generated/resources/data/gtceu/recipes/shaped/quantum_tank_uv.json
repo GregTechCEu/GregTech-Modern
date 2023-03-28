@@ -5,7 +5,7 @@
       "tag": "c:circuit/uv"
     },
     "G": {
-      "item": "gtceu:field.generator.zpm"
+      "item": "gtceu:field.generator.luv"
     },
     "H": {
       "item": "gtceu:hermetic_casing_uv"

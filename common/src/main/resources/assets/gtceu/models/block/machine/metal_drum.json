@@ -1,0 +1,18 @@
+{
+  "parent": "gtceu:block/cube_2_layer_tintindex",
+  "textures": {
+    "particle": "gtceu:block/storage/drums/drum/side",
+    "bot_down": "gtceu:block/storage/drums/drum/bottom",
+    "bot_up": "gtceu:block/storage/drums/drum/top",
+    "bot_north": "gtceu:block/storage/drums/drum/side",
+    "bot_east": "gtceu:block/storage/drums/drum/side",
+    "bot_south": "gtceu:block/storage/drums/drum/side",
+    "bot_west": "gtceu:block/storage/drums/drum/side",
+    "top_down": "gtceu:block/storage/drums/drum_top/bottom",
+    "top_up": "gtceu:block/storage/drums/drum_top/top",
+    "top_north": "gtceu:block/storage/drums/drum_top/side",
+    "top_east": "gtceu:block/storage/drums/drum_top/side",
+    "top_south": "gtceu:block/storage/drums/drum_top/side",
+    "top_west": "gtceu:block/storage/drums/drum_top/side"
+  }
+}

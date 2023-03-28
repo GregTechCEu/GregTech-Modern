@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "G": {
+      "item": "gtceu:electric.pump.hv"
+    },
+    "M": {
+      "item": "gtceu:hull.hv"
+    },
+    "T": {
+      "tag": "forge:fluid_pipes/large/stainless_steel"
+    },
+    "W": {
+      "tag": "forge:circuit/hv"
+    }
+  },
+  "pattern": [
+    "WGW",
+    "GMG",
+    "TGT"
+  ],
+  "result": {
+    "item": "gtceu:pump.hv"
+  }
+}

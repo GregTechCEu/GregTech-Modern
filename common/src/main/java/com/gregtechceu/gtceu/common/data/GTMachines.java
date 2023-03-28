@@ -3,6 +3,8 @@ package com.gregtechceu.gtceu.common.data;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.FluidPipeProperties;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.machine.*;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
@@ -27,6 +29,7 @@ import com.gregtechceu.gtceu.common.machine.multiblock.steam.LargeBoilerMachine;
 import com.gregtechceu.gtceu.common.machine.steam.SteamSolidBoilerMachine;
 import com.gregtechceu.gtceu.common.machine.storage.CrateMachine;
 import com.gregtechceu.gtceu.common.machine.storage.CreativeEnergyContainerMachine;
+import com.gregtechceu.gtceu.common.machine.storage.DrumMachine;
 import com.gregtechceu.gtceu.common.machine.storage.QuantumChestMachine;
 import com.gregtechceu.gtceu.common.machine.storage.QuantumTankMachine;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
@@ -323,6 +326,12 @@ public class GTMachines {
     public static MachineDefinition STAINLESS_STEEL_CRATE = registerCrate(GTMaterials.StainlessSteel, 108, "Stainless Steel Crate");
     public static MachineDefinition TITANIUM_CRATE = registerCrate(GTMaterials.Titanium, 126, "Titanium Crate");
     public static MachineDefinition TUNGSTENSTEEL_CRATE = registerCrate(GTMaterials.TungstenSteel, 144, "Tungstensteel Crate");
+
+    public static MachineDefinition WOODEN_DRUM = registerDrum(GTMaterials.Wood, 16000, "Wooden Barrel");
+    public static MachineDefinition BRONZE_DRUM = registerDrum(GTMaterials.Bronze, 32000, "Bronze Drum");
+    public static MachineDefinition STEEL_DRUM = registerDrum(GTMaterials.Steel, 64000, "Steel Drum");
+    public static MachineDefinition ALUMINIUM_DRUM = registerDrum(GTMaterials.Aluminium, 128000, "Aluminium Drum");
+    public static MachineDefinition STAINLESS_STEEL_DRUM = registerDrum(GTMaterials.StainlessSteel, 256000, "Stainless Steel Drum");
 
 
     //////////////////////////////////////
@@ -850,6 +859,20 @@ public class GTMachines {
                 .renderer(() -> new MachineRenderer(GTCEu.id("block/machine/crate/" + (wooden ? "wooden" : "metal") + "_crate")))
                 .paintingColor(wooden ? 0xFFFFFF : material.getMaterialRGB())
                 .itemColor((s, t) -> wooden ? 0xFFFFFF : material.getMaterialRGB())
+                .register();
+    }
+
+    public static MachineDefinition registerDrum(Material material, int capacity, String lang) {
+        boolean wooden = GTMaterials.Wood.equals(material) || GTMaterials.TreatedWood.equals(material);
+
+        return REGISTRATE.machine("drum." + material, holder -> new DrumMachine(holder, material, capacity))
+                .langValue(lang)
+                .rotationState(RotationState.NONE)
+                .renderer(() -> new MachineRenderer(GTCEu.id("block/machine/" + (wooden ? "wooden" : "metal") + "_drum")))
+                .tooltipBuilder(TANK_TOOLTIPS)
+                .tooltips(Component.translatable("gtceu.machine.quantum_tank.tooltip"), Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity", 16000))
+                .paintingColor(wooden ? 0xFFFFFF : material.getMaterialRGB())
+                .itemColor((s, i) -> wooden ? 0xFFFFFF : material.getMaterialRGB())
                 .register();
     }
 

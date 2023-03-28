@@ -310,7 +310,7 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
                 .widget(new LabelWidget(6, 6, getBlockState().getBlock().getDescriptionId()))
                 .widget(new TankWidget(cache.storages[0], 90, 35, true, true)
                         .setBackground(GuiTextures.FLUID_SLOT))
-                .widget(new PhantomFluidWidget(lockedFluid, 69, 53, 18, 18)
+                .widget(new PhantomFluidWidget(lockedFluid, 70, 53, 18, 18)
                         .setShowAmount(false)
                         .setBackground(GuiTextures.FLUID_SLOT))
                 .widget(new ToggleButtonWidget(7, 53, 18, 18,

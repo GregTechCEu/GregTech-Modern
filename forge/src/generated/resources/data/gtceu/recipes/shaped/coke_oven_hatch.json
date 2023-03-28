@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "item": "gtceu:casing_coke_bricks"
+    },
+    "D": {
+      "item": "gtceu:drum.wood"
+    }
+  },
+  "pattern": [
+    "CD"
+  ],
+  "result": {
+    "item": "gtceu:coke_oven_hatch"
+  }
+}
