@@ -21,6 +21,16 @@ public class GuiTextures {
     public static final ResourceTexture TOOL_COVER_SETTINGS = new ResourceTexture("gtceu:textures/gui/overlay/tool_cover_settings.png");
     public static final ResourceTexture TOOL_MUTE = new ResourceTexture("gtceu:textures/gui/overlay/tool_mute.png");
     public static final ResourceTexture TOOL_SOUND = new ResourceTexture("gtceu:textures/gui/overlay/tool_sound.png");
+    public static final ResourceTexture TOOL_ALLOW_INPUT = new ResourceTexture("gtceu:textures/gui/overlay/tool_allow_input.png");
+    public static final ResourceTexture TOOL_ATTACH_COVER = new ResourceTexture("gtceu:textures/gui/overlay/tool_attach_cover.png");
+    public static final ResourceTexture TOOL_REMOVE_COVER = new ResourceTexture("gtceu:textures/gui/overlay/tool_remove_cover.png");
+    public static final ResourceTexture TOOL_PIPE_BLOCK = new ResourceTexture("gtceu:textures/gui/overlay/tool_pipe_block.png");
+    public static final ResourceTexture TOOL_PIPE_CONNECT = new ResourceTexture("gtceu:textures/gui/overlay/tool_pipe_connect.png");
+    public static final ResourceTexture TOOL_WIRE_BLOCK = new ResourceTexture("gtceu:textures/gui/overlay/tool_wire_block.png");
+    public static final ResourceTexture TOOL_WIRE_CONNECT = new ResourceTexture("gtceu:textures/gui/overlay/tool_wire_connect.png");
+    public static final ResourceTexture TOOL_AUTO_OUTPUT = new ResourceTexture("gtceu:textures/gui/overlay/tool_auto_output.png");
+    public static final ResourceTexture TOOL_DISABLE_AUTO_OUTPUT = new ResourceTexture("gtceu:textures/gui/overlay/tool_disable_auto_output.png");
+
 
     //BASE TEXTURES
     public static final ResourceBorderTexture BACKGROUND = new ResourceBorderTexture("gtceu:textures/gui/base/background.png", 176, 166, 3, 3);

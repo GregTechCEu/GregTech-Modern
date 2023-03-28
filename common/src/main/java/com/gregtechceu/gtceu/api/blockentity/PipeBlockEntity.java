@@ -224,11 +224,14 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
         return false;
     }
 
+    public ResourceTexture getPipeTexture(boolean isBlock) {
+        return isBlock? GuiTextures.TOOL_PIPE_CONNECT : GuiTextures.TOOL_PIPE_BLOCK;
+    }
+
     @Override
     public ResourceTexture sideTips(Player player, GTToolType toolType, Direction side) {
         if (toolType == GTToolType.WRENCH) {
-            // TODO PIPE
-//            tips.add(isBlocked(side) ? GuiTextures.TOOL_FRONT_FACING_ROTATION : );
+            return getPipeTexture(isBlocked(side));
         }
         var cover = coverContainer.getCoverAtSide(side);
         if (cover != null) {

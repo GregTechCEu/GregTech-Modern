@@ -160,7 +160,7 @@ public abstract class CoverBehavior implements IManaged, IToolGridHighLight {
     @Override
     public ResourceTexture sideTips(Player player, GTToolType toolType, Direction side) {
         if (toolType == GTToolType.CROWBAR) {
-            return GuiTextures.ICON_REMOVE;
+            return GuiTextures.TOOL_REMOVE_COVER;
         }
         if (toolType == GTToolType.SCREWDRIVER && this instanceof IUICover) {
             return GuiTextures.TOOL_COVER_SETTINGS;
@@ -171,6 +171,7 @@ public abstract class CoverBehavior implements IManaged, IToolGridHighLight {
     /**
      * get Appearance. same as IForgeBlock.getAppearance() / IFabricBlock.getAppearance()
      */
+    @Nullable
     public BlockState getAppearance(BlockState sourceState, BlockPos sourcePos) {
         return null;
     }

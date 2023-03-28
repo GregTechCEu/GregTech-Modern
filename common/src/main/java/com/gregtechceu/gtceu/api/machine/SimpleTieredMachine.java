@@ -32,6 +32,7 @@ import com.mojang.blaze3d.MethodsReturnNonnullByDefault;
 import it.unimi.dsi.fastutil.ints.Int2LongFunction;
 import lombok.Getter;
 import lombok.Setter;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -400,6 +401,11 @@ public class SimpleTieredMachine extends WorkableTieredMachine implements IAutoO
                 if (!hasFrontFacing() || side != getFrontFacing()) {
                     return GuiTextures.TOOL_IO_FACING_ROTATION;
                 }
+            }
+        }
+        if (toolType == GTToolType.SCREWDRIVER) {
+            if (side == getOutputFacingItems() || side == getOutputFacingFluids()) {
+                return GuiTextures.TOOL_ALLOW_INPUT;
             }
         }
         return super.sideTips(player, toolType, side);

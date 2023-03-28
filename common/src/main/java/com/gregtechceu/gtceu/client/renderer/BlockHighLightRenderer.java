@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.client.renderer;
 
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
+import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.item.GTToolItem;
 import com.gregtechceu.gtceu.api.item.tool.IToolGridHighLight;
 import com.gregtechceu.gtceu.common.item.CoverPlaceBehavior;
@@ -85,8 +86,7 @@ public class BlockHighLightRenderer {
                 var buffer = multiBufferSource.getBuffer(RenderType.lines());
                 RenderSystem.lineWidth(3);
 
-                // TODO
-                drawGridOverlays(poseStack, buffer, target, side -> null);
+                drawGridOverlays(poseStack, buffer, target, side -> coverable.hasCover(side) ? null : GuiTextures.TOOL_ATTACH_COVER);
 
                 poseStack.popPose();
             }

@@ -6,6 +6,8 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.FluidPipeProperties;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.FluidProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
+import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.IMetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
@@ -15,6 +17,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.common.data.GTFluids;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.side.fluid.FluidActionResult;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
@@ -234,5 +237,18 @@ public class DrumMachine extends MetaMachine implements IAutoOutputFluid, IDropS
             }
         }
         return super.onScrewdriverClick(playerIn, hand, gridSide, hitResult);
+    }
+
+    //////////////////////////////////////
+    //*******     Rendering     ********//
+    //////////////////////////////////////
+    @Override
+    public ResourceTexture sideTips(Player player, GTToolType toolType, Direction side) {
+        if (toolType == GTToolType.SCREWDRIVER) {
+            if (side == getOutputFacingFluids()) {
+                return isAutoOutputFluids() ? GuiTextures.TOOL_DISABLE_AUTO_OUTPUT : GuiTextures.TOOL_AUTO_OUTPUT;
+            }
+        }
+        return super.sideTips(player, toolType, side);
     }
 }

@@ -421,6 +421,10 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
                     return GuiTextures.TOOL_IO_FACING_ROTATION;
                 }
             }
+        } else if (toolType == GTToolType.SCREWDRIVER) {
+            if (side == getOutputFacingItems()) {
+                return GuiTextures.TOOL_ALLOW_INPUT;
+            }
         }
         return super.sideTips(player, toolType, side);
     }

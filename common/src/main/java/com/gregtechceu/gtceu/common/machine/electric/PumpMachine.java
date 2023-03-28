@@ -5,12 +5,14 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.UITemplate;
 import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
+import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.IMetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TieredEnergyMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputFluid;
 import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
+import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.gui.widget.*;
 import com.lowdragmc.lowdraglib.msic.FluidBlockTransfer;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
@@ -241,6 +243,21 @@ public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid
                         .setShouldUseBaseBackground()
                         .setTooltipText("gtceu.gui.fluid_auto_output.tooltip"))
                 .widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(), GuiTextures.SLOT, 7, 84, true));
+    }
+
+    //////////////////////////////////////
+    //*******     Rendering     ********//
+    //////////////////////////////////////
+    @Override
+    public ResourceTexture sideTips(Player player, GTToolType toolType, Direction side) {
+        if (toolType == GTToolType.WRENCH) {
+            if (player.isCrouching()) {
+                if (hasFrontFacing() && side != this.getFrontFacing() && isFacingValid(side)) {
+                    return GuiTextures.TOOL_IO_FACING_ROTATION;
+                }
+            }
+        }
+        return super.sideTips(player, toolType, side);
     }
 
 }

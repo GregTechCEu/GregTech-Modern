@@ -23,7 +23,6 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -194,10 +193,6 @@ public interface ICoverable extends ITickSubscription, IAppearance {
             }
         }
         return false;
-    }
-
-    default boolean canRenderMachineGrid() {
-        return true;
     }
 
     @Nullable

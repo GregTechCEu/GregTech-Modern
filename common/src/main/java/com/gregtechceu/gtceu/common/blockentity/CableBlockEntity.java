@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.common.blockentity;
 
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
+import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.common.pipelike.cable.EnergyNetHandler;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
@@ -28,7 +29,6 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.lang.ref.WeakReference;
-import java.util.List;
 
 /**
  * @author KilaBash
@@ -96,12 +96,16 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, CableData> {
     }
 
     @Override
+    public ResourceTexture getPipeTexture(boolean isBlock) {
+        return isBlock ? GuiTextures.TOOL_WIRE_CONNECT : GuiTextures.TOOL_WIRE_BLOCK;
+    }
+
+    @Override
     public ResourceTexture sideTips(Player player, GTToolType toolType, Direction side) {
-        var tips = super.sideTips(player, toolType, side);
         if (toolType == GTToolType.WIRE_CUTTER) {
-            // todo
+            return getPipeTexture(isBlocked(side));
         }
-        return tips;
+        return super.sideTips(player, toolType, side);
     }
 
     @Override

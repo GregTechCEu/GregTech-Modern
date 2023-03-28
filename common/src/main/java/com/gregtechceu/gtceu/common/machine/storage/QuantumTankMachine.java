@@ -341,6 +341,10 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
                     return GuiTextures.TOOL_IO_FACING_ROTATION;
                 }
             }
+        } else if (toolType == GTToolType.SCREWDRIVER) {
+            if (side == getOutputFacingFluids()) {
+                return GuiTextures.TOOL_ALLOW_INPUT;
+            }
         }
         return super.sideTips(player, toolType, side);
     }
