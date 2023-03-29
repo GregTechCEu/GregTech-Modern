@@ -15,6 +15,7 @@ import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.gui.widget.*;
 import com.lowdragmc.lowdraglib.jei.IngredientIO;
+import com.lowdragmc.lowdraglib.msic.ItemStackTransfer;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidStorage;
 import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.utils.Position;
@@ -263,6 +264,11 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
 
     public Size getJEISize() {
         return new Size(176, 120 + dataInfos.size() * 10);
+    }
+
+
+    public void saveBuiltinUITemplate() {
+//        var widget = createUITemplate(ProgressWidget.JEIProgress, new ItemStackTransfer())
     }
 
     /**
