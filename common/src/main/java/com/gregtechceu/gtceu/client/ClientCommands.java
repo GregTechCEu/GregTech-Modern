@@ -2,9 +2,6 @@ package com.gregtechceu.gtceu.client;
 
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
-import com.lowdragmc.lowdraglib.client.shader.Shaders;
-import com.lowdragmc.lowdraglib.client.shader.management.ShaderManager;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;

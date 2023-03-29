@@ -15,7 +15,9 @@ import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.gui.widget.*;
 import com.lowdragmc.lowdraglib.jei.IngredientIO;
+import com.lowdragmc.lowdraglib.msic.FluidStorage;
 import com.lowdragmc.lowdraglib.msic.ItemStackTransfer;
+import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidStorage;
 import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.utils.Position;
@@ -268,7 +270,14 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
 
 
     public void saveBuiltinUITemplate() {
-//        var widget = createUITemplate(ProgressWidget.JEIProgress, new ItemStackTransfer())
+        IFluidStorage[] importFluids = new IFluidStorage[getMaxInputs(FluidRecipeCapability.CAP)];
+        IFluidStorage[] exportFluids = new IFluidStorage[getMaxOutputs(FluidRecipeCapability.CAP)];
+        Arrays.fill(importFluids, new FluidStorage(1000));
+        Arrays.fill(exportFluids, new FluidStorage(1000));
+        var widget = createUITemplate(ProgressWidget.JEIProgress,
+                new ItemStackTransfer(getMaxInputs(ItemRecipeCapability.CAP)),
+                new ItemStackTransfer(getMaxOutputs(ItemRecipeCapability.CAP)),
+                importFluids, exportFluids, false, false);
     }
 
     /**
