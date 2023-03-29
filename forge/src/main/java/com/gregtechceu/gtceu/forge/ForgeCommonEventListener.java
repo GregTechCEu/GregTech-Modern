@@ -1,12 +1,11 @@
 package com.gregtechceu.gtceu.forge;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.item.DrumMachineItem;
 import com.gregtechceu.gtceu.api.item.forge.ComponentItemImpl;
 import com.gregtechceu.gtceu.api.item.forge.DrumMachineItemImpl;
 import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
-import com.lowdragmc.lowdraglib.ServerCommands;
+import com.gregtechceu.gtceu.common.ServerCommands;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.Capability;
@@ -66,8 +65,7 @@ public class ForgeCommonEventListener {
 
     @SubscribeEvent
     public static void registerCommand(RegisterCommandsEvent event) {
-        var dispatcher = event.getDispatcher();
-        ServerCommands.createServerCommands().forEach(dispatcher::register);
+        ServerCommands.createServerCommands().forEach(event.getDispatcher()::register);
     }
 
 }

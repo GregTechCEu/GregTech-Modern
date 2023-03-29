@@ -14,7 +14,7 @@ public class FluidRecipeCapability extends RecipeCapability<FluidStack> {
     public final static FluidRecipeCapability CAP = new FluidRecipeCapability();
 
     protected FluidRecipeCapability() {
-        super("fluid", SerializerFluidStack.INSTANCE);
+        super("fluid", 0xFF3C70EE, SerializerFluidStack.INSTANCE);
     }
 
     @Override

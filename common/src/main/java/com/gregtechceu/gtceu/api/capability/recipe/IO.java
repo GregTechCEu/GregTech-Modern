@@ -8,4 +8,11 @@ public enum IO {
     OUT,
     BOTH,
     NONE;
+
+    public boolean support(IO io) {
+        if (io == this) return true;
+        if (io == NONE) return false;
+        return this == BOTH;
+    }
+
 }

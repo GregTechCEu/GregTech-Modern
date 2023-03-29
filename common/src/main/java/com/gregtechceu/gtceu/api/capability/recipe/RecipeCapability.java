@@ -11,10 +11,12 @@ import net.minecraft.network.FriendlyByteBuf;
 public class RecipeCapability<T> {
 
     public final String name;
+    public final int color;
     public final IContentSerializer<T> serializer;
 
-    protected RecipeCapability(String name, IContentSerializer<T> serializer) {
+    protected RecipeCapability(String name, int color, IContentSerializer<T> serializer) {
         this.name = name;
+        this.color = color;
         this.serializer = serializer;
     }
 
@@ -49,6 +51,14 @@ public class RecipeCapability<T> {
      */
     public T of(Object o) {
         return serializer.of(o);
+    }
+
+    public String slotName(IO io) {
+        return "%s_%s".formatted(name, io.name().toLowerCase());
+    }
+
+    public String slotName(IO io, int index) {
+        return "%s_%s_%s".formatted(name, io.name().toLowerCase(), index);
     }
 
 }

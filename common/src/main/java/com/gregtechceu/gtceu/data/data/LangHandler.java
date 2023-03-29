@@ -54,8 +54,10 @@ public class LangHandler {
         //casingLang(provider, GTBlocks.ACTIVE_CASING.get());
         //casingLang(provider, GTBlocks.BOILER_FIREBOX_CASING.get());
         //casingLang(provider, GTBlocks.HULL_CASING.get()); todo
+        provider.add("gtceu.gui.editor.tips.citation", "Number of citations");
+        provider.add("gtceu.gui.editor.group.recipe_type", "cap");
         provider.add("ldlib.gui.editor.register.project.rtui", "RecipeType UI Project");
-        provider.add("ldlib.gui.editor.register.menu.recipe_type_tab", "RecipeType UI");
+        provider.add("ldlib.gui.editor.register.menu.recipe_type_tab", "recipe type");
         provider.add("recipe.condition.thunder.tooltip", "Thunder Level: %d");
         provider.add("recipe.condition.rain.tooltip", "Rain Level: %d");
         provider.add("recipe.condition.dimension.tooltip", "Dimension: %s");

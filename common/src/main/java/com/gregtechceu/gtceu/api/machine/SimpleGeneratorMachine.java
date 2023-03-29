@@ -18,6 +18,7 @@ import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
 import com.lowdragmc.lowdraglib.gui.widget.CycleButtonWidget;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
+import com.lowdragmc.lowdraglib.utils.Position;
 import com.mojang.blaze3d.MethodsReturnNonnullByDefault;
 import it.unimi.dsi.fastutil.ints.Int2LongFunction;
 import net.minecraft.world.entity.player.Player;
@@ -99,13 +100,13 @@ public class SimpleGeneratorMachine extends WorkableTieredMachine implements IUI
     //////////////////////////////////////
     @Override
     public ModularUI createUI(Player entityPlayer) {
-        int yOffset = 0;
-        if (recipeType.getMaxInputs(ItemRecipeCapability.CAP) >= 6 || recipeType.getMaxInputs(FluidRecipeCapability.CAP) >= 6 || recipeType.getMaxOutputs(ItemRecipeCapability.CAP) >= 6 || recipeType.getMaxOutputs(FluidRecipeCapability.CAP) >= 6) {
-            yOffset = 9;
-        }
+        var group = recipeType.createUITemplate(recipeLogic::getProgressPercent, importItems.storage, exportItems.storage, importFluids.storages, exportFluids.storages);
+        var size = group.getSize();
+        var yOffset = size.height - 83;
+        group.setSelfPosition(new Position((176 - size.width) / 2, 0));
         var modularUI = new ModularUI(176, 166 + yOffset, this, entityPlayer)
                 .background(GuiTextures.BACKGROUND)
-                .widget(recipeType.createUITemplate(recipeLogic::getProgressPercent, importItems.storage, exportItems.storage, importFluids.storages, exportFluids.storages))
+                .widget(group)
                 .widget(new LabelWidget(6, 6, getBlockState().getBlock().getDescriptionId()))
                 .widget(new PredicatedImageWidget(79, 42 + yOffset, 18, 18, new ResourceTexture("gtceu:textures/gui/base/indicator_no_energy.png"))
                         .setPredicate(recipeLogic::isHasNotEnoughEnergy))

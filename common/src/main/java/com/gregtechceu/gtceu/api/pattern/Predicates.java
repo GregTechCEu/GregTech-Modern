@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.pattern;
 
 import com.gregtechceu.gtceu.api.block.ActiveBlock;
+import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
@@ -64,44 +65,44 @@ public class Predicates {
     }
 
     public static TraceabilityPredicate autoAbilities(GTRecipeType recipeType) {
-        return autoAbilities(recipeType, true, true, true, true, true);
+        return autoAbilities(recipeType, true, true, true, true, true, true);
     }
 
     public static TraceabilityPredicate autoAbilities(GTRecipeType recipeType,
                                                       boolean checkEnergyIn,
+                                                      boolean checkEnergOut,
                                                       boolean checkItemIn,
                                                       boolean checkItemOut,
                                                       boolean checkFluidIn,
                                                       boolean checkFluidOut) {
-//        TraceabilityPredicate predicate = super.autoAbilities(checkMaintenance, checkMuffler)
-        TraceabilityPredicate predicate = new TraceabilityPredicate()
-                .or(checkEnergyIn ? abilities(PartAbility.INPUT_ENERGY).setMinGlobalLimited(1).setMaxGlobalLimited(3).setPreviewCount(1) : new TraceabilityPredicate());
-
+        TraceabilityPredicate predicate = new TraceabilityPredicate();
+        if (checkEnergyIn) {
+            if (recipeType.getMaxInputs(EURecipeCapability.CAP) > 0) {
+                predicate = predicate.or(abilities(PartAbility.INPUT_ENERGY).setMaxGlobalLimited(3).setPreviewCount(1));
+            }
+        }
+        if (checkEnergOut) {
+            if (recipeType.getMaxOutputs(EURecipeCapability.CAP) > 0) {
+                predicate = predicate.or(abilities(PartAbility.OUTPUT_ENERGY).setMaxGlobalLimited(3).setPreviewCount(1));
+            }
+        }
         if (checkItemIn) {
-            if (recipeType.getMinInputs(ItemRecipeCapability.CAP) > 0) {
-                predicate = predicate.or(abilities(PartAbility.IMPORT_ITEMS).setMinGlobalLimited(1).setPreviewCount(1));
-            } else if (recipeType.getMaxInputs(ItemRecipeCapability.CAP) > 0) {
+            if (recipeType.getMaxInputs(ItemRecipeCapability.CAP) > 0) {
                 predicate = predicate.or(abilities(PartAbility.IMPORT_ITEMS).setPreviewCount(1));
             }
         }
         if (checkItemOut) {
-            if (recipeType.getMinOutputs(ItemRecipeCapability.CAP) > 0) {
-                predicate = predicate.or(abilities(PartAbility.EXPORT_ITEMS).setMinGlobalLimited(1).setPreviewCount(1));
-            } else if (recipeType.getMaxOutputs(ItemRecipeCapability.CAP) > 0) {
+            if (recipeType.getMaxOutputs(ItemRecipeCapability.CAP) > 0) {
                 predicate = predicate.or(abilities(PartAbility.EXPORT_ITEMS).setPreviewCount(1));
             }
         }
         if (checkFluidIn) {
-            if (recipeType.getMinInputs(FluidRecipeCapability.CAP) > 0) {
-                predicate = predicate.or(abilities(PartAbility.IMPORT_FLUIDS).setMinGlobalLimited(1).setPreviewCount(recipeType.getMinInputs(ItemRecipeCapability.CAP)));
-            } else if (recipeType.getMaxInputs(FluidRecipeCapability.CAP) > 0) {
+            if (recipeType.getMaxInputs(FluidRecipeCapability.CAP) > 0) {
                 predicate = predicate.or(abilities(PartAbility.IMPORT_FLUIDS).setPreviewCount(1));
             }
         }
         if (checkFluidOut) {
-            if (recipeType.getMinOutputs(FluidRecipeCapability.CAP) > 0) {
-                predicate = predicate.or(abilities(PartAbility.EXPORT_FLUIDS).setMinGlobalLimited(1).setPreviewCount(recipeType.getMinOutputs(ItemRecipeCapability.CAP)));
-            } else if (recipeType.getMaxOutputs(FluidRecipeCapability.CAP) > 0) {
+            if (recipeType.getMaxOutputs(FluidRecipeCapability.CAP) > 0) {
                 predicate = predicate.or(abilities(PartAbility.EXPORT_FLUIDS).setPreviewCount(1));
             }
         }

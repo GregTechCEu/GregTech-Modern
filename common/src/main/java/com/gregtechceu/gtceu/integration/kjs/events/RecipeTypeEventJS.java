@@ -16,8 +16,8 @@ import javax.annotation.Nullable;
  */
 public class RecipeTypeEventJS extends EventJS {
 
-    public GTRecipeType create(String name) {
-        return GTRecipeTypes.register(name);
+    public GTRecipeType create(String name, String group) {
+        return GTRecipeTypes.register(name, group);
     }
 
     public boolean remove(String name) {

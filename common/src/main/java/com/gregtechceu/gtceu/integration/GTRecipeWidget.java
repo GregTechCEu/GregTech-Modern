@@ -15,6 +15,7 @@ import com.lowdragmc.lowdraglib.msic.FluidStorage;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidStorage;
 import com.lowdragmc.lowdraglib.utils.CycleItemStackHandler;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
+import com.lowdragmc.lowdraglib.utils.Position;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -65,14 +66,17 @@ public class GTRecipeWidget extends WidgetGroup {
             outputFluids[i] = new FluidStorage(FluidRecipeCapability.CAP.of(outputFluidContents.get(i).content));
         }
 
-        addWidget(recipe.recipeType.createUITemplate(ProgressWidget.JEIProgress,
+        var group = recipe.recipeType.createUITemplate(ProgressWidget.JEIProgress,
                 new CycleItemStackHandler(inputStacks),
                 new CycleItemStackHandler(outputStacks),
                 inputFluids,
                 outputFluids
-        ));
+        );
+        var size = group.getSize();
+        group.setSelfPosition(new Position((176 - size.width) / 2, 0));
+        addWidget(group);
 
-        int yOffset = 87 - (recipe.conditions.size() + recipe.recipeType.getDataInfos().size()) * 10;
+        int yOffset = 87 - (recipe.conditions.size() + recipe.recipeType.getDataInfos().size()) * 10 + (size.height - 83);
         addWidget(new LabelWidget(3, yOffset,
                 LocalizationUtils.format("gtceu.recipe.duration", recipe.duration / 20f)));
         var EUt = RecipeHelper.getInputEUt(recipe);

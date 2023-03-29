@@ -5,19 +5,21 @@ import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.SteamTexture;
+import com.gregtechceu.gtceu.api.gui.WidgetUtils;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
 import com.gregtechceu.gtceu.core.mixins.RecipeManagerInvoker;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
+import com.lowdragmc.lowdraglib.LDLib;
+import com.lowdragmc.lowdraglib.Platform;
+import com.lowdragmc.lowdraglib.gui.editor.configurator.IConfigurableWidget;
+import com.lowdragmc.lowdraglib.gui.editor.data.Resources;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.gui.widget.*;
 import com.lowdragmc.lowdraglib.jei.IngredientIO;
-import com.lowdragmc.lowdraglib.msic.FluidStorage;
-import com.lowdragmc.lowdraglib.msic.ItemStackTransfer;
-import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidStorage;
 import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.utils.Position;
@@ -31,9 +33,13 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import net.minecraft.client.Minecraft;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtAccounter;
+import net.minecraft.nbt.NbtIo;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeManager;
@@ -42,6 +48,8 @@ import net.minecraft.world.item.crafting.SmeltingRecipe;
 import net.minecraft.world.level.ItemLike;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.DataInputStream;
+import java.io.InputStream;
 import java.util.*;
 import java.util.function.*;
 
@@ -53,10 +61,9 @@ import java.util.function.*;
 @Accessors(chain = true)
 public class GTRecipeType implements RecipeType<GTRecipe> {
     public final ResourceLocation registryName;
-    private final Object2IntMap<RecipeCapability<?>> maxInputs = new Object2IntOpenHashMap<>();
-    private final Object2IntMap<RecipeCapability<?>> maxOutputs = new Object2IntOpenHashMap<>();
-    private final Object2IntMap<RecipeCapability<?>> minInputs = new Object2IntOpenHashMap<>();
-    private final Object2IntMap<RecipeCapability<?>> minOutputs = new Object2IntOpenHashMap<>();
+    public final String group;
+    public final Object2IntMap<RecipeCapability<?>> maxInputs = new Object2IntOpenHashMap<>();
+    public final Object2IntMap<RecipeCapability<?>> maxOutputs = new Object2IntOpenHashMap<>();
     @Setter
     private GTRecipeBuilder recipeBuilder;
     @Setter
@@ -87,9 +94,11 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
     protected boolean isFuelRecipeType;
     @Getter
     protected final Map<RecipeType<?>, List<GTRecipe>> proxyRecipes;
+    private CompoundTag customUICache;
 
-    public GTRecipeType(ResourceLocation registryName, RecipeType<?>... proxyRecipes) {
+    public GTRecipeType(ResourceLocation registryName, String group, RecipeType<?>... proxyRecipes) {
         this.registryName = registryName;
+        this.group = group;
         recipeBuilder = new GTRecipeBuilder(registryName, this);
         // must be linked to stop json contents from shuffling
         Map<RecipeType<?>, List<GTRecipe>> map = new Object2ObjectLinkedOpenHashMap<>();
@@ -99,11 +108,19 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
         this.proxyRecipes = map;
     }
 
-    public GTRecipeType setIOSize(int minInputs, int maxInputs, int minOutputs, int maxOutputs, int minFluidInputs, int maxFluidInputs, int minFluidOutputs, int maxFluidOutputs) {
-        return setMinSize(IO.IN, ItemRecipeCapability.CAP, minInputs).setMinSize(IO.IN, FluidRecipeCapability.CAP, minFluidInputs)
-                .setMinSize(IO.OUT, ItemRecipeCapability.CAP, minOutputs).setMinSize(IO.OUT, FluidRecipeCapability.CAP, minFluidOutputs)
-                .setMaxSize(IO.IN, ItemRecipeCapability.CAP, maxInputs).setMaxSize(IO.IN, FluidRecipeCapability.CAP, maxFluidInputs)
+    public GTRecipeType setMaxIOSize(int maxInputs, int maxOutputs, int maxFluidInputs, int maxFluidOutputs) {
+        return setMaxSize(IO.IN, ItemRecipeCapability.CAP, maxInputs).setMaxSize(IO.IN, FluidRecipeCapability.CAP, maxFluidInputs)
                 .setMaxSize(IO.OUT, ItemRecipeCapability.CAP, maxOutputs).setMaxSize(IO.OUT, FluidRecipeCapability.CAP, maxFluidOutputs);
+    }
+
+    public GTRecipeType setEUIO(IO io) {
+        if (io.support(IO.IN)) {
+            setMaxSize(IO.IN, EURecipeCapability.CAP, 1);
+        }
+        if (io.support(IO.OUT)) {
+            setMaxSize(IO.OUT, EURecipeCapability.CAP, 1);
+        }
+        return this;
     }
 
     public GTRecipeType setMaxSize(IO io, RecipeCapability<?> cap, int max) {
@@ -112,16 +129,6 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
         }
         if (io == IO.OUT || io == IO.BOTH) {
             maxOutputs.put(cap, max);
-        }
-        return this;
-    }
-
-    public GTRecipeType setMinSize(IO io, RecipeCapability<?> cap, int max) {
-        if (io == IO.IN || io == IO.BOTH) {
-            minInputs.put(cap, max);
-        }
-        if (io == IO.OUT || io == IO.BOTH) {
-            minOutputs.put(cap, max);
         }
         return this;
     }
@@ -209,15 +216,6 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
         return maxOutputs.getOrDefault(cap, 0);
     }
 
-    public int getMinInputs(RecipeCapability<?> cap) {
-        return minInputs.getOrDefault(cap, 0);
-
-    }
-
-    public int getMinOutputs(RecipeCapability<?> cap) {
-        return minOutputs.getOrDefault(cap, 0);
-    }
-
     //////////////////////////////////////
     //*****     Recipe Builder    ******//
     //////////////////////////////////////
@@ -264,20 +262,50 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
     //***********     UI    ************//
     //////////////////////////////////////
 
-    public Size getJEISize() {
-        return new Size(176, 120 + dataInfos.size() * 10);
+    public CompoundTag getCustomUI() {
+        if (this.customUICache == null) {
+            ResourceManager resourceManager = null;
+            if (LDLib.isClient()) {
+                resourceManager = Minecraft.getInstance().getResourceManager();
+            } else if (Platform.getMinecraftServer() != null) {
+                resourceManager = Platform.getMinecraftServer().getResourceManager();
+            }
+            if (resourceManager == null) {
+                this.customUICache = new CompoundTag();
+            } else {
+                try {
+                    var resource = resourceManager.getResourceOrThrow(new ResourceLocation(registryName.getNamespace(), "ui/recipe_type/%s.rtui".formatted(registryName.getPath())));
+                    try (InputStream inputStream = resource.open()){
+                        try (DataInputStream dataInputStream = new DataInputStream(inputStream);){
+                            this.customUICache = NbtIo.read(dataInputStream, NbtAccounter.UNLIMITED);
+                        }
+                    }
+                } catch (Exception e) {
+                    this.customUICache = new CompoundTag();
+                }
+                if (this.customUICache == null) {
+                    this.customUICache = new CompoundTag();
+                }
+            }
+        }
+        return this.customUICache;
     }
 
+    public boolean hasCustomUI() {
+        return !getCustomUI().isEmpty();
+    }
 
-    public void saveBuiltinUITemplate() {
-        IFluidStorage[] importFluids = new IFluidStorage[getMaxInputs(FluidRecipeCapability.CAP)];
-        IFluidStorage[] exportFluids = new IFluidStorage[getMaxOutputs(FluidRecipeCapability.CAP)];
-        Arrays.fill(importFluids, new FluidStorage(1000));
-        Arrays.fill(exportFluids, new FluidStorage(1000));
-        var widget = createUITemplate(ProgressWidget.JEIProgress,
-                new ItemStackTransfer(getMaxInputs(ItemRecipeCapability.CAP)),
-                new ItemStackTransfer(getMaxOutputs(ItemRecipeCapability.CAP)),
-                importFluids, exportFluids, false, false);
+    public void reloadCustomUI() {
+        this.customUICache = null;
+    }
+
+    public Size getJEISize() {
+        if (hasCustomUI()) {
+            var tag = getCustomUI();
+            var size = tag.getCompound("root").getCompound("size");
+            return new Size(176, 120 + dataInfos.size() * 10 + size.getInt("height") - 83);
+        }
+        return new Size(176, 120 + dataInfos.size() * 10);
     }
 
     /**
@@ -285,15 +313,75 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
      * @param progressSupplier progress. To create a JEI / REI UI, use the para {@link ProgressWidget#JEIProgress}.
      */
     public WidgetGroup createUITemplate(DoubleSupplier progressSupplier, IItemTransfer importItems, IItemTransfer exportItems, IFluidStorage[] importFluids, IFluidStorage[] exportFluids, boolean isSteam, boolean isHighPressure) {
-        var group = new WidgetGroup(0, 0, 176, 83);
-        group.addWidget(new ProgressWidget(progressSupplier, 78, 23, 20, 20,
-                (isSteam && steamProgressBarTexture != null) ? new ProgressTexture(
+        var isJEI = progressSupplier == ProgressWidget.JEIProgress;
+        WidgetGroup group;
+        if (hasCustomUI()) {
+            var nbt = getCustomUI();
+            group = new WidgetGroup();
+            IConfigurableWidget.deserializeNBT(group, nbt.getCompound("root"), Resources.fromNBT(nbt.getCompound("resources")), false);
+            group.setSelfPosition(new Position(0, 0));
+        } else {
+            group = createDefaultUITemplate();
+        }
+        WidgetUtils.widgetByIdForEach(group, "^progress$", ProgressWidget.class, progressWidget -> {
+            progressWidget.setProgressSupplier(progressSupplier);
+            if (!hasCustomUI()) {
+                progressWidget.setProgressBar((isSteam && steamProgressBarTexture != null) ? new ProgressTexture(
                         steamProgressBarTexture.get(isHighPressure).getSubTexture(0, 0, 1, 0.5),
                         steamProgressBarTexture.get(isHighPressure).getSubTexture(0, 0.5, 1, 0.5))
                         .setFillDirection(steamMoveType)
-                        : progressBarTexture));
-        addInventorySlotGroup(group, importItems, importFluids, false, progressSupplier == ProgressWidget.JEIProgress, isSteam, isHighPressure);
-        addInventorySlotGroup(group, exportItems, exportFluids, true, progressSupplier == ProgressWidget.JEIProgress, isSteam, isHighPressure);
+                        : progressBarTexture);
+            }
+        });
+        WidgetUtils.widgetByIdForEach(group, "^%s_[0-9]+$".formatted(ItemRecipeCapability.CAP.slotName(IO.IN)), SlotWidget.class, slot -> {
+           var index = WidgetUtils.widgetIdIndex(slot);
+           if (index >= 0 && index < importItems.getSlots()) {
+               slot.setHandlerSlot(importItems, index);
+               slot.setCanTakeItems(!isJEI);
+               slot.setCanPutItems(!isJEI);
+               slot.setBackground(getOverlaysForSlot(false, false, index == importItems.getSlots() - 1, isSteam, isHighPressure));
+           }
+        });
+        WidgetUtils.widgetByIdForEach(group, "^%s_[0-9]+$".formatted(ItemRecipeCapability.CAP.slotName(IO.OUT)), SlotWidget.class, slot -> {
+            var index = WidgetUtils.widgetIdIndex(slot);
+            if (index >= 0 && index < exportItems.getSlots()) {
+                slot.setHandlerSlot(exportItems, index);
+                slot.setCanTakeItems(!isJEI);
+                slot.setCanPutItems(false);
+                slot.setBackground(getOverlaysForSlot(true, false, index == exportItems.getSlots() - 1, isSteam, isHighPressure));
+            }
+        });
+        WidgetUtils.widgetByIdForEach(group, "^%s_[0-9]+$".formatted(FluidRecipeCapability.CAP.slotName(IO.IN)), TankWidget.class, tank -> {
+            var index = WidgetUtils.widgetIdIndex(tank);
+            if (index >= 0 && index < importFluids.length) {
+                tank.setFluidTank(importFluids[index]);
+                tank.setAllowClickFilled(!isJEI);
+                tank.setAllowClickDrained(!isJEI);
+                tank.setBackground(getOverlaysForSlot(false, true, index == importFluids.length - 1, isSteam, isHighPressure));
+            }
+        });
+        WidgetUtils.widgetByIdForEach(group, "^%s_[0-9]+$".formatted(FluidRecipeCapability.CAP.slotName(IO.OUT)), TankWidget.class, tank -> {
+            var index = WidgetUtils.widgetIdIndex(tank);
+            if (index >= 0 && index < exportFluids.length) {
+                tank.setFluidTank(exportFluids[index]);
+                tank.setAllowClickFilled(!isJEI);
+                tank.setAllowClickDrained(false);
+                tank.setBackground(getOverlaysForSlot(true, true, index == exportFluids.length - 1, isSteam, isHighPressure));
+            }
+        });
+        return group;
+    }
+
+    /**
+     * Auto layout UI template for recipes.
+     */
+    public WidgetGroup createDefaultUITemplate() {
+        var group = new WidgetGroup(0, 0, 176, 83);
+        var progressWidget = new ProgressWidget(ProgressWidget.JEIProgress, 78, 23, 20, 20, progressBarTexture);
+        progressWidget.setId("progress");
+        group.addWidget(progressWidget);
+        addInventorySlotGroup(group, false);
+        addInventorySlotGroup(group, true);
         if (this.specialTexture != null && this.specialTexturePosition != null) addSpecialTexture(group);
         return group;
     }
@@ -306,47 +394,60 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
         group.addWidget(new ImageWidget(specialTexturePosition.left, specialTexturePosition.up, specialTexturePosition.getWidth(), specialTexturePosition.getHeight(), specialTexture));
     }
 
-    protected void addInventorySlotGroup(WidgetGroup group, IItemTransfer itemHandler, IFluidStorage[] fluidHandler, boolean isOutputs, boolean isJEI, boolean isSteam, boolean isHighPressure) {
-        int itemInputsCount = itemHandler.getSlots();
-        int fluidInputsCount = fluidHandler.length;
+    protected void addInventorySlotGroup(WidgetGroup group, boolean isOutputs) {
+        int itemCount = isOutputs ? getMaxOutputs(ItemRecipeCapability.CAP) : getMaxInputs(ItemRecipeCapability.CAP);
+        int fluidCount = isOutputs ? getMaxOutputs(FluidRecipeCapability.CAP) : getMaxInputs(FluidRecipeCapability.CAP);
         boolean invertFluids = false;
-        if (itemInputsCount == 0) {
-            int tmp = itemInputsCount;
-            itemInputsCount = fluidInputsCount;
-            fluidInputsCount = tmp;
+        if (itemCount == 0) {
+            int tmp = itemCount;
+            itemCount = fluidCount;
+            fluidCount = tmp;
             invertFluids = true;
         }
-        int[] inputSlotGrid = determineSlotsGrid(itemInputsCount);
+        int[] inputSlotGrid = determineSlotsGrid(itemCount);
         int itemSlotsToLeft = inputSlotGrid[0];
         int itemSlotsToDown = inputSlotGrid[1];
         int startInputsX = isOutputs ? 106 : 70 - itemSlotsToLeft * 18;
         int startInputsY = 33 - (int) (itemSlotsToDown / 2.0 * 18);
-        boolean wasGroup = itemHandler.getSlots() + fluidHandler.length == 12;
+        boolean wasGroup = itemCount + fluidCount == 12;
         if (wasGroup) startInputsY -= 9;
-        else if (itemHandler.getSlots() >= 6 && fluidHandler.length >= 2 && !isOutputs) startInputsY -= 9;
+        else if (itemCount >= 6 && fluidCount >= 2 && !isOutputs) startInputsY -= 9;
         for (int i = 0; i < itemSlotsToDown; i++) {
             for (int j = 0; j < itemSlotsToLeft; j++) {
                 int slotIndex = i * itemSlotsToLeft + j;
-                if (slotIndex >= itemInputsCount) break;
-                int x = startInputsX + 18 * j;
-                int y = startInputsY + 18 * i;
-                addSlot(group, x, y, slotIndex, itemHandler, fluidHandler, invertFluids, isOutputs, isJEI, isSteam, isHighPressure);
+                if (slotIndex >= itemCount) break;
+                var slot = new SlotWidget();
+                slot.setSelfPosition(new Position(startInputsX + 18 * j, startInputsY + 18 * i));
+                slot.setIngredientIO(isOutputs ? IngredientIO.OUTPUT : IngredientIO.INPUT);
+                slot.setBackground(getOverlaysForSlot(isOutputs, false, slotIndex == itemCount - 1, false, false));
+                slot.setId(ItemRecipeCapability.CAP.slotName(isOutputs ? IO.OUT : IO.IN, slotIndex));
+                group.addWidget(slot);
             }
         }
         if (wasGroup) startInputsY += 2;
-        if (fluidInputsCount > 0 || invertFluids) {
-            if (itemSlotsToDown >= fluidInputsCount && itemSlotsToLeft < 3) {
+        if (fluidCount > 0 || invertFluids) {
+            if (itemSlotsToDown >= fluidCount && itemSlotsToLeft < 3) {
                 int startSpecX = isOutputs ? startInputsX + itemSlotsToLeft * 18 : startInputsX - 18;
-                for (int i = 0; i < fluidInputsCount; i++) {
+                for (int i = 0; i < fluidCount; i++) {
                     int y = startInputsY + 18 * i;
-                    addSlot(group, startSpecX, y, i, itemHandler, fluidHandler, !invertFluids, isOutputs, isJEI, isSteam, isHighPressure);
+                    var tank = new TankWidget();
+                    tank.setSelfPosition(new Position(startSpecX, y));
+                    tank.setIngredientIO(isOutputs ? IngredientIO.OUTPUT : IngredientIO.INPUT);
+                    tank.setBackground(getOverlaysForSlot(isOutputs, true, i == fluidCount - 1, false, false));
+                    tank.setId(FluidRecipeCapability.CAP.slotName(isOutputs ? IO.OUT : IO.IN, i));
+                    group.addWidget(tank);
                 }
             } else {
                 int startSpecY = startInputsY + itemSlotsToDown * 18;
-                for (int i = 0; i < fluidInputsCount; i++) {
+                for (int i = 0; i < fluidCount; i++) {
                     int x = isOutputs ? startInputsX + 18 * (i % 3) : startInputsX + itemSlotsToLeft * 18 - 18 - 18 * (i % 3);
                     int y = startSpecY + (i / 3) * 18;
-                    addSlot(group, x, y, i, itemHandler, fluidHandler, !invertFluids, isOutputs, isJEI, isSteam, isHighPressure);
+                    var tank = new TankWidget();
+                    tank.setSelfPosition(new Position(x, y));
+                    tank.setIngredientIO(isOutputs ? IngredientIO.OUTPUT : IngredientIO.INPUT);
+                    tank.setBackground(getOverlaysForSlot(isOutputs, true, i == fluidCount - 1, false, false));
+                    tank.setId(FluidRecipeCapability.CAP.slotName(isOutputs ? IO.OUT : IO.IN, i));
+                    group.addWidget(tank);
                 }
             }
         }
