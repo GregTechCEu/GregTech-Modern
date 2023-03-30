@@ -75,39 +75,7 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType, FluidPi
     @Nullable
     public IFluidTransfer getFluidHandler(@Nullable Direction side) {
         if (isRemote()) { // for rendering? other mods may need it.
-            return new IFluidTransfer() {
-                @Override
-                public int getTanks() {
-                    return 0;
-                }
-
-                @NotNull
-                @Override
-                public FluidStack getFluidInTank(int tank) {
-                    return FluidStack.empty();
-                }
-
-                @Override
-                public long getTankCapacity(int tank) {
-                    return 0;
-                }
-
-                @Override
-                public boolean isFluidValid(int tank, @NotNull FluidStack stack) {
-                    return false;
-                }
-
-                @Override
-                public long fill(FluidStack resource, boolean simulate) {
-                    return 0;
-                }
-
-                @NotNull
-                @Override
-                public FluidStack drain(FluidStack resource, boolean simulate) {
-                    return FluidStack.empty();
-                }
-            };
+            return IFluidTransfer.EMPTY;
         }
         var net = getFluidPipeNet();
         if (net != null) {
