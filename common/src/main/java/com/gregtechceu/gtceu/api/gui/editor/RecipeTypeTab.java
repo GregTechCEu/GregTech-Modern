@@ -41,7 +41,8 @@ public class RecipeTypeTab extends MenuTab {
                     }
                     menu.leaf(icon, recipeType.registryName.toLanguageKey(), () -> {
                         project.root.clearAllWidgets();
-                        var widget = recipeType.createDefaultUITemplate();
+                        var widget = recipeType.createDefaultUITemplate(true);
+                        project.root.setSize(widget.getSize());
                         for (Widget children : widget.widgets) {
                             project.root.addWidget(children);
                         }

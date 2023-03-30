@@ -166,9 +166,11 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IMachine
     //////////////////////////////////////
     @Override
     public ModularUI createUI(Player entityPlayer) {
+        var group = recipeType.createUITemplate(recipeLogic::getProgressPercent, importItems.storage, exportItems.storage, new IFluidStorage[0], new IFluidStorage[0], true, isHighPressure);
+        group.addSelfPosition(0, 20);
         return new ModularUI(176, 166, this, entityPlayer)
                 .background(GuiTextures.BACKGROUND_STEAM.get(isHighPressure))
-                .widget(recipeType.createUITemplate(recipeLogic::getProgressPercent, importItems.storage, exportItems.storage, new IFluidStorage[0], new IFluidStorage[0], true, isHighPressure))
+                .widget(group)
                 .widget(new LabelWidget(5, 5, getBlockState().getBlock().getDescriptionId()))
                 .widget(new PredicatedImageWidget(79, 42, 18, 18, GuiTextures.INDICATOR_NO_STEAM.get(isHighPressure))
                         .setPredicate(recipeLogic::isHasNotEnoughEnergy))

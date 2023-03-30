@@ -42,7 +42,7 @@ import static com.lowdragmc.lowdraglib.gui.texture.ProgressTexture.FillDirection
 public class GTRecipeTypes {
     public static final String STEAM = "steam";
     public static final String ELECTRIC = "electric";
-    public static final String GENERATOR = "common";
+    public static final String GENERATOR = "generator";
     public static final String MULTIBLOCK = "multiblock";
 
     //////////////////////////////////////

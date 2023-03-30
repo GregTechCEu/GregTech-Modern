@@ -102,13 +102,13 @@ public class SimpleGeneratorMachine extends WorkableTieredMachine implements IUI
     public ModularUI createUI(Player entityPlayer) {
         var group = recipeType.createUITemplate(recipeLogic::getProgressPercent, importItems.storage, exportItems.storage, importFluids.storages, exportFluids.storages);
         var size = group.getSize();
-        var yOffset = size.height - 83;
-        group.setSelfPosition(new Position((176 - size.width) / 2, 0));
+        var yOffset = 2 + size.height - 40;
+        group.setSelfPosition(new Position((176 - size.width) / 2, 20));
         var modularUI = new ModularUI(176, 166 + yOffset, this, entityPlayer)
                 .background(GuiTextures.BACKGROUND)
                 .widget(group)
-                .widget(new LabelWidget(6, 6, getBlockState().getBlock().getDescriptionId()))
-                .widget(new PredicatedImageWidget(79, 42 + yOffset, 18, 18, new ResourceTexture("gtceu:textures/gui/base/indicator_no_energy.png"))
+                .widget(new LabelWidget(5, 5, getBlockState().getBlock().getDescriptionId()))
+                .widget(new PredicatedImageWidget(79, (size.height - 18) / 2 + 20, 18, 18, new ResourceTexture("gtceu:textures/gui/base/indicator_no_energy.png"))
                         .setPredicate(recipeLogic::isHasNotEnoughEnergy))
                 .widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(), GuiTextures.SLOT, 7, 84 + yOffset, true));
 
