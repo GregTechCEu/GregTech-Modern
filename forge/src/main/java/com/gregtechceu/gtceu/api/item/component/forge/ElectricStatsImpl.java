@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.item.component.forge;
 
-import com.gregtechceu.gtceu.api.capability.forge.GTCapabilities;
+import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.item.capability.ElectricItem;
 import com.gregtechceu.gtceu.api.item.component.ElectricStats;
 import net.minecraft.world.item.ItemStack;
@@ -24,8 +24,8 @@ public class ElectricStatsImpl extends ElectricStats implements IComponentCapabi
 
     @Override
     public @NotNull <T> LazyOptional<T> getCapability(ItemStack itemStack,  @NotNull Capability<T> capability) {
-        if (capability == GTCapabilities.CAPABILITY_ELECTRIC_ITEM) {
-            return GTCapabilities.CAPABILITY_ELECTRIC_ITEM.orEmpty(capability, LazyOptional.of(() -> new ElectricItem(itemStack, maxCharge, tier, chargeable, dischargeable)));
+        if (capability == GTCapability.CAPABILITY_ELECTRIC_ITEM) {
+            return GTCapability.CAPABILITY_ELECTRIC_ITEM.orEmpty(capability, LazyOptional.of(() -> new ElectricItem(itemStack, maxCharge, tier, chargeable, dischargeable)));
         }
         return LazyOptional.empty();
     }

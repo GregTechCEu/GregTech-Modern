@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.common.blockentity.forge;
 
 import com.gregtechceu.gtceu.common.blockentity.CableBlockEntity;
-import com.gregtechceu.gtceu.api.capability.forge.GTCapabilities;
+import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -32,12 +32,12 @@ public class CableBlockEntityImpl extends CableBlockEntity {
 
     @Override
     public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-        if (cap == GTCapabilities.CAPABILITY_ENERGY_CONTAINER) {
-            return GTCapabilities.CAPABILITY_ENERGY_CONTAINER.orEmpty(cap, LazyOptional.of(this::getEnergyContainer));
-        } else if (cap == GTCapabilities.CAPABILITY_COVERABLE) {
-            return GTCapabilities.CAPABILITY_COVERABLE.orEmpty(cap, LazyOptional.of(this::getCoverContainer));
-        } else if (cap == GTCapabilities.CAPABILITY_TOOLABLE) {
-            return GTCapabilities.CAPABILITY_TOOLABLE.orEmpty(cap, LazyOptional.of(() -> this));
+        if (cap == GTCapability.CAPABILITY_ENERGY_CONTAINER) {
+            return GTCapability.CAPABILITY_ENERGY_CONTAINER.orEmpty(cap, LazyOptional.of(this::getEnergyContainer));
+        } else if (cap == GTCapability.CAPABILITY_COVERABLE) {
+            return GTCapability.CAPABILITY_COVERABLE.orEmpty(cap, LazyOptional.of(this::getCoverContainer));
+        } else if (cap == GTCapability.CAPABILITY_TOOLABLE) {
+            return GTCapability.CAPABILITY_TOOLABLE.orEmpty(cap, LazyOptional.of(() -> this));
         }
         return super.getCapability(cap, side);
     }

@@ -12,7 +12,7 @@ import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
  * @date 2023/2/18
  * @implNote GTCapabilities
  */
-public class GTCapabilities {
+public class GTCapability {
     public static final Capability<IEnergyContainer> CAPABILITY_ENERGY_CONTAINER = CapabilityManager.get(new CapabilityToken<>() {});
     public static final Capability<ICoverable> CAPABILITY_COVERABLE = CapabilityManager.get(new CapabilityToken<>() {});
     public static final Capability<IToolable> CAPABILITY_TOOLABLE = CapabilityManager.get(new CapabilityToken<>() {});
