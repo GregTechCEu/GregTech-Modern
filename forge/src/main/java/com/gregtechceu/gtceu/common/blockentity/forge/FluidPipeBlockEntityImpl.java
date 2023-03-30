@@ -35,7 +35,10 @@ public class FluidPipeBlockEntityImpl extends FluidPipeBlockEntity {
     @Override
     public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
         if (cap == ForgeCapabilities.FLUID_HANDLER) {
-            return ForgeCapabilities.FLUID_HANDLER.orEmpty(cap, LazyOptional.of(() -> FluidTransferHelperImpl.toFluidHandler(getFluidHandler(side))));
+            var handler = getFluidHandler(side);
+            if (handler != null) {
+                return ForgeCapabilities.FLUID_HANDLER.orEmpty(cap, LazyOptional.of(() -> FluidTransferHelperImpl.toFluidHandler(handler)));
+            }
         } else if (cap == GTCapabilities.CAPABILITY_COVERABLE) {
             return GTCapabilities.CAPABILITY_COVERABLE.orEmpty(cap, LazyOptional.of(this::getCoverContainer));
         } else if (cap == GTCapabilities.CAPABILITY_TOOLABLE) {
