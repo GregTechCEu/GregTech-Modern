@@ -27,7 +27,13 @@ public class DrumMachineItemImpl extends DrumMachineItem {
 
     public @NotNull <T> LazyOptional<T> getCapability(ItemStack itemStack, @NotNull Capability<T> cap) {
         if (cap == ForgeCapabilities.FLUID_HANDLER_ITEM) {
-            return ForgeCapabilities.FLUID_HANDLER_ITEM.orEmpty(cap, LazyOptional.of(() -> new FluidHandlerItemStack(itemStack, Math.toIntExact(GTMachines.DRUM_CAPACITY.get(getDefinition())))));
+            return ForgeCapabilities.FLUID_HANDLER_ITEM.orEmpty(cap, LazyOptional.of(
+                            () -> new FluidHandlerItemStack(
+                                    itemStack,
+                                    Math.toIntExact(GTMachines.DRUM_CAPACITY.get(getDefinition()))
+                            )
+                    )
+            );
         }
         return LazyOptional.empty();
     }
