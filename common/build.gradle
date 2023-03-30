@@ -76,7 +76,7 @@ dependencies {
 publishing {
     publications {
         mavenCommon(MavenPublication) {
-            artifactId = rootProject.mod_id
+            artifactId = archivesBaseName
             from components.java
         }
     }

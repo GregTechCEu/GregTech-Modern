@@ -83,8 +83,8 @@ dependencies {
     // LDLib
     modImplementation(fabric.ldlib.fabric) { transitive = false }
 
-    // Registrate TODO use forge.registrate?
-    modImplementation(include("com.tterrag.registrate_fabric:Registrate:${"1.1.50-MC1.19.2"}"))
+    // Registrate
+    modImplementation(include("com.tterrag.registrate_fabric:Registrate:${fabric.versions.registrate.get()}"))
 
     // Create - dependencies are added transitively
     modCompileOnly fabric.createFabric
@@ -164,7 +164,7 @@ components.java {
 publishing {
     publications {
         mavenFabric(MavenPublication) {
-            artifactId = rootProject.mod_id + "-" + project.name
+            artifactId = archivesBaseName
             from components.java
         }
     }

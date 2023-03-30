@@ -68,13 +68,9 @@ allprojects {
     apply plugin: "architectury-plugin"
     apply plugin: "maven-publish"
 
-    archivesBaseName = rootProject.mod_id
+    archivesBaseName = "${project.name}-${libs.versions.minecraft.get()}"
     group = rootProject.maven_group
-
-    // Formats the mod version to include the loader, Minecraft version, and build number (if present)
-    // example: 1.0.0+fabric-1.18.2-100
-    String buildNumber = System.getenv("GITHUB_RUN_NUMBER")
-    version = "${mod_version}+${project.name}-${libs.versions.minecraft.get()}" + (buildNumber != null ? "-${buildNumber}" : "")
+    version = "${mod_version}"
 
     repositories {
         // Add repositories to retrieve artifacts from in here.
@@ -94,6 +90,6 @@ allprojects {
 
     machete {
         // disable machete locally for faster builds
-        enabled = buildNumber != null
+        enabled = false
     }
 }

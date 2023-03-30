@@ -104,13 +104,11 @@ dependencies {
     // LDLib
     modImplementation(forge.ldlib.forge) { transitive = false }
 
-    // Registrate TODO use forge.registrate?
-    modImplementation(include("com.tterrag.registrate:Registrate:${"MC1.19-1.1.5"}"))
-//    modImplementation(include(forge.registrate))
+    // Registrate
+    modImplementation(include("com.tterrag.registrate:Registrate:${forge.versions.registrate.get()}"))
 
-    // Create and its dependencies TODO use forge.createForge?
-    modCompileOnly("com.simibubi.create:create-${"1.19.2"}:${"0.5.0.h-21"}:slim") { transitive = false }
-//    modCompileOnly(forge.createForge) { transitive = false }
+    // Create and its dependencies
+    modCompileOnly("com.simibubi.create:create-${libs.versions.minecraft.get()}:${forge.versions.createForge.get()}:slim") { transitive = false }
     modCompileOnly forge.flywheel
 
     // JEI
@@ -183,7 +181,7 @@ components.java {
 publishing {
     publications {
         mavenForge(MavenPublication) {
-            artifactId = rootProject.mod_id + "-" + project.name
+            artifactId = archivesBaseName
             from components.java
         }
     }

@@ -59,8 +59,8 @@ dependencyResolutionManagement {
             library("fabricApi", "net.fabricmc.fabric-api", "fabric-api").versionRef(fabricApi)
 
             def ldLib = version("ldlib", ldLibVersion)
-            library("ldlib-common", "com.lowdragmc.ldlib", "ldlib").version("${ldLibVersion}+ldlib-common-${minecraftVersion}")
-            library("ldlib-fabric", "com.lowdragmc.ldlib", "ldlib-ldlib-fabric").version("${ldLibVersion}+ldlib-fabric-${minecraftVersion}")
+            library("ldlib-common", "com.lowdragmc.ldlib", "ldlib-common-${minecraftVersion}").versionRef(ldLib)
+            library("ldlib-fabric", "com.lowdragmc.ldlib", "ldlib-fabric-${minecraftVersion}").versionRef(ldLib)
 
             def registrate = version("registrate", registrateFabricVersion)
             library("registrate", "com.tterrag.registrate_fabric", "Registrate").versionRef(registrate)
@@ -98,8 +98,7 @@ dependencyResolutionManagement {
             library("minecraftForge", "net.minecraftforge", "forge").versionRef(minecraftForge)
 
             def ldLib = version("ldlib", ldLibVersion)
-            library("ldlib-common", "com.lowdragmc.ldlib", "ldlib").version("${ldLibVersion}+ldlib-common-${minecraftVersion}")
-            library("ldlib-forge", "com.lowdragmc.ldlib", "ldlib-ldlib-forge").version("${ldLibVersion}+ldlib-forge-${minecraftVersion}")
+            library("ldlib-forge", "com.lowdragmc.ldlib", "ldlib-forge-${minecraftVersion}").versionRef(ldLib)
 
             def registrate = version("registrate", registrateForgeVersion)
             library("registrate", "com.tterrag.registrate", "Registrate").versionRef(registrate)
