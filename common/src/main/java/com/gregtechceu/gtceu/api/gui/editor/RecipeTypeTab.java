@@ -3,6 +3,8 @@ package com.gregtechceu.gtceu.api.gui.editor;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.lowdragmc.lowdraglib.gui.editor.annotation.RegisterUI;
+import com.lowdragmc.lowdraglib.gui.editor.configurator.IConfigurableWidget;
+import com.lowdragmc.lowdraglib.gui.editor.data.Resources;
 import com.lowdragmc.lowdraglib.gui.editor.ui.menu.MenuTab;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
@@ -41,10 +43,15 @@ public class RecipeTypeTab extends MenuTab {
                     }
                     menu.leaf(icon, recipeType.registryName.toLanguageKey(), () -> {
                         project.root.clearAllWidgets();
-                        var widget = recipeType.createDefaultUITemplate(true);
-                        project.root.setSize(widget.getSize());
-                        for (Widget children : widget.widgets) {
-                            project.root.addWidget(children);
+                        if (recipeType.hasCustomUI()) {
+                            var nbt = recipeType.getCustomUI();
+                            IConfigurableWidget.deserializeNBT(project.root, nbt.getCompound("root"), Resources.fromNBT(nbt.getCompound("resources")), false);
+                        } else {
+                            var widget = recipeType.createDefaultUITemplate(false);
+                            project.root.setSize(widget.getSize());
+                            for (Widget children : widget.widgets) {
+                                project.root.addWidget(children);
+                            }
                         }
                         project.setRecipeType(recipeType);
                         var resources = editor.getResourcePanel().getResources();

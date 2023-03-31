@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.machine.steam;
 
-import com.gregtechceu.gtceu.api.machine.IMetaMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
@@ -27,7 +27,7 @@ public abstract class SteamMachine extends MetaMachine implements ITieredMachine
     @Persisted
     public final NotifiableFluidTank steamTank;
 
-    public SteamMachine(IMetaMachineBlockEntity holder, boolean isHighPressure, Object... args) {
+    public SteamMachine(IMachineBlockEntity holder, boolean isHighPressure, Object... args) {
         super(holder);
         this.isHighPressure = isHighPressure;
         this.steamTank = createSteamTank(args);

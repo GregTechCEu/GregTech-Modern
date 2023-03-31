@@ -28,7 +28,7 @@ public class TieredEnergyMachine extends TieredMachine implements ITieredMachine
     protected TickableSubscription explosionSubs;
     protected ISubscription energyListener;
 
-    public TieredEnergyMachine(IMetaMachineBlockEntity holder, int tier, Object... args) {
+    public TieredEnergyMachine(IMachineBlockEntity holder, int tier, Object... args) {
         super(holder, tier);
         energyContainer = createEnergyContainer(args);
     }

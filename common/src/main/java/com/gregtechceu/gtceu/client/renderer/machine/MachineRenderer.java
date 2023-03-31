@@ -141,7 +141,7 @@ public class MachineRenderer extends CTMModelRenderer implements ICoverableRende
 
     @Environment(EnvType.CLIENT)
     public void renderBaseModel(List<BakedQuad> quads, MachineDefinition definition, @Nullable MetaMachine machine, Direction frontFacing, @Nullable Direction side, RandomSource rand) {
-        quads.addAll(getRotatedModel(frontFacing).getQuads(definition.get().defaultBlockState(), side, rand));
+        quads.addAll(getRotatedModel(frontFacing).getQuads(definition.defaultBlockState(), side, rand));
     }
 
     /**

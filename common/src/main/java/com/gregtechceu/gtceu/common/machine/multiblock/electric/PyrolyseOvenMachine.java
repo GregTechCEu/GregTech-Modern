@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.electric;
 
-import com.gregtechceu.gtceu.api.machine.IMetaMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
@@ -28,7 +28,7 @@ public class PyrolyseOvenMachine extends WorkableElectricMultiblockMachine {
     @Getter
     private int coilTier;
 
-    public PyrolyseOvenMachine(IMetaMachineBlockEntity holder) {
+    public PyrolyseOvenMachine(IMachineBlockEntity holder) {
         super(holder);
     }
 

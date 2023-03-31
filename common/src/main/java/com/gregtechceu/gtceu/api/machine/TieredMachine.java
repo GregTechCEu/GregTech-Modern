@@ -13,7 +13,7 @@ public class TieredMachine extends MetaMachine implements ITieredMachine {
     @Getter
     protected final int tier;
 
-    public TieredMachine(IMetaMachineBlockEntity holder, int tier) {
+    public TieredMachine(IMachineBlockEntity holder, int tier) {
         super(holder);
         this.tier = tier;
     }

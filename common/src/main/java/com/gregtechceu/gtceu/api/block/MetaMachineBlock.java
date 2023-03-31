@@ -2,14 +2,14 @@ package com.gregtechceu.gtceu.api.block;
 
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
-import com.gregtechceu.gtceu.api.machine.IMetaMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.*;
 import com.gregtechceu.gtceu.api.data.RotationState;
-import com.lowdragmc.lowdraglib.client.renderer.IBlockRendererProvider;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
+import lombok.Getter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -54,9 +54,11 @@ import java.util.List;
  */
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class MetaMachineBlock extends AppearanceBlock implements EntityBlock, IBlockRendererProvider {
+public class MetaMachineBlock extends AppearanceBlock implements EntityBlock, IMachineBlock {
 
+    @Getter
     public final MachineDefinition definition;
+    @Getter
     public final RotationState rotationState;
 
     public MetaMachineBlock(Properties properties, MachineDefinition definition) {
@@ -150,10 +152,6 @@ public class MetaMachineBlock extends AppearanceBlock implements EntityBlock, IB
         return state;
     }
 
-    public RotationState getRotationState() {
-        return this.rotationState;
-    }
-
     public Direction getFrontFacing(BlockState state) {
         return getRotationState() == RotationState.NONE ? Direction.NORTH : state.getValue(getRotationState().property);
     }
@@ -196,7 +194,7 @@ public class MetaMachineBlock extends AppearanceBlock implements EntityBlock, IB
         Entity entity = context.getParamOrNull(LootContextParams.THIS_ENTITY);
         BlockEntity tileEntity = context.getParamOrNull(LootContextParams.BLOCK_ENTITY);
         var drops = super.getDrops(pState, pBuilder);
-        if (tileEntity instanceof IMetaMachineBlockEntity holder) {
+        if (tileEntity instanceof IMachineBlockEntity holder) {
             var machine = holder.getMetaMachine();
             if (machine instanceof IMachineModifyDrops machineModifyDrops && entity instanceof Player) {
                 machineModifyDrops.onDrops(drops, (Player) entity);
@@ -305,15 +303,7 @@ public class MetaMachineBlock extends AppearanceBlock implements EntityBlock, IB
         super.neighborChanged(state, level, pos, block, fromPos, isMoving);
     }
 
-    public static int colorTinted(BlockState blockState, @Nullable BlockAndTintGetter level, @Nullable BlockPos pos, int index) {
-        if (level != null && pos != null) {
-            var machine = MetaMachine.getMachine(level, pos);
-            if (machine != null) {
-                return machine.tintColor(index);
-            }
-        }
-        return -1;
-    }
+
 
     @Override
     public BlockState getBlockAppearance(BlockState state, BlockAndTintGetter level, BlockPos pos, Direction side, BlockState sourceState, BlockPos sourcePos) {

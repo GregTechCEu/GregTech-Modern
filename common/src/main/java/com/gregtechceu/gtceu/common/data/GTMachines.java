@@ -3,10 +3,8 @@ package com.gregtechceu.gtceu.common.data;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
-import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.item.DrumMachineItem;
-import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.machine.*;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
@@ -53,7 +51,6 @@ import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.ints.Int2LongFunction;
 import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.Object2LongArrayMap;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -726,7 +723,7 @@ public class GTMachines {
     //////////////////////////////////////
     //**********     Misc     **********//
     //////////////////////////////////////
-    public static Pair<MachineDefinition, MachineDefinition> registerSteamMachines(String name, BiFunction<IMetaMachineBlockEntity, Boolean, MetaMachine> factory,
+    public static Pair<MachineDefinition, MachineDefinition> registerSteamMachines(String name, BiFunction<IMachineBlockEntity, Boolean, MetaMachine> factory,
                                               BiFunction<Boolean, MachineBuilder, MachineDefinition> builder) {
         MachineDefinition lowTier = builder.apply(false, REGISTRATE.machine(name + "." + "bronze", holder -> factory.apply(holder, false))
                 .langValue("Small " + name)
@@ -738,7 +735,7 @@ public class GTMachines {
     }
 
     public static MachineDefinition[] registerTieredMachines(String name,
-                                                              BiFunction<IMetaMachineBlockEntity, Integer, MetaMachine> factory,
+                                                              BiFunction<IMachineBlockEntity, Integer, MetaMachine> factory,
                                                               BiFunction<Integer, MachineBuilder, MachineDefinition> builder,
                                                               int... tiers) {
         MachineDefinition[] definitions = new MachineDefinition[tiers.length];

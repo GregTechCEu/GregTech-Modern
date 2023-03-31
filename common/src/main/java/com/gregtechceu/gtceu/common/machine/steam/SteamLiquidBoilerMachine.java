@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.steam;
 
-import com.gregtechceu.gtceu.api.machine.IMetaMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.steam.SteamBoilerMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
@@ -37,7 +37,7 @@ public class SteamLiquidBoilerMachine extends SteamBoilerMachine {
     @Persisted
     public final NotifiableFluidTank fuelTank;
 
-    public SteamLiquidBoilerMachine(IMetaMachineBlockEntity holder, boolean isHighPressure, Object... args) {
+    public SteamLiquidBoilerMachine(IMachineBlockEntity holder, boolean isHighPressure, Object... args) {
         super(holder, isHighPressure, args);
         this.fuelTank = createFuelTank(args).setFilter(fluid -> FUEL_CACHE.computeIfAbsent(fluid.getFluid(), f -> {
             if (isRemote())  return true;

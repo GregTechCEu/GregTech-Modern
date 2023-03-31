@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.common.machine.storage;
 
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
-import com.gregtechceu.gtceu.api.machine.IMetaMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.TieredMachine;
@@ -82,7 +82,7 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
     @Persisted @Getter
     private final ItemStackTransfer lockedItem;
 
-    public QuantumChestMachine(IMetaMachineBlockEntity holder, int tier, int maxStoredItems, Object... args) {
+    public QuantumChestMachine(IMachineBlockEntity holder, int tier, int maxStoredItems, Object... args) {
         super(holder, tier);
         this.outputFacingItems = getFrontFacing().getOpposite();
         this.maxStoredItems = maxStoredItems;

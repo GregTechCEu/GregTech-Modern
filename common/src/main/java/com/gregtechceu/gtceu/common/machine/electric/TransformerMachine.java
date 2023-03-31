@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.common.machine.electric;
 import com.gregtechceu.gtceu.api.machine.TieredEnergyMachine;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.IControllable;
-import com.gregtechceu.gtceu.api.machine.IMetaMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
@@ -34,7 +34,7 @@ public class TransformerMachine extends TieredEnergyMachine implements IControll
     @Persisted @Getter @Setter
     private boolean isWorkingEnabled;
 
-    public TransformerMachine(IMetaMachineBlockEntity holder, int tier, Object... args) {
+    public TransformerMachine(IMachineBlockEntity holder, int tier, Object... args) {
         super(holder, tier, args);
         this.isWorkingEnabled = true;
         if (isRemote()) {

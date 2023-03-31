@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.item;
 
 
+import com.gregtechceu.gtceu.api.block.IMachineBlock;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 
@@ -10,12 +11,12 @@ import dev.architectury.injectables.annotations.ExpectPlatform;
  * @implNote DrumMachineItem
  */
 public class DrumMachineItem extends MetaMachineItem {
-    protected DrumMachineItem(MetaMachineBlock block, Properties properties) {
+    protected DrumMachineItem(IMachineBlock block, Properties properties) {
         super(block, properties);
     }
 
     @ExpectPlatform
-    public static DrumMachineItem create(MetaMachineBlock block, Properties properties) {
+    public static DrumMachineItem create(IMachineBlock block, Properties properties) {
         throw new AssertionError();
     }
 

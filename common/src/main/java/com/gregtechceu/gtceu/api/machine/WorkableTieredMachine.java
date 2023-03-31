@@ -63,7 +63,7 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
     @Persisted @DescSynced @Getter @Setter
     protected boolean isMuffled;
 
-    public WorkableTieredMachine(IMetaMachineBlockEntity holder, int tier, Int2LongFunction tankScalingFunction, Object... args) {
+    public WorkableTieredMachine(IMachineBlockEntity holder, int tier, Int2LongFunction tankScalingFunction, Object... args) {
         super(holder, tier, args);
         this.overclockTier = getMaxOverclockTier();
         this.recipeType = getDefinition().getRecipeType();

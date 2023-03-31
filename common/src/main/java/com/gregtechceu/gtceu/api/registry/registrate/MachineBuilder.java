@@ -1,13 +1,12 @@
 package com.gregtechceu.gtceu.api.registry.registrate;
 
-import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
-import com.gregtechceu.gtceu.api.machine.IMetaMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.client.renderer.machine.*;
-import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
+import com.gregtechceu.gtceu.api.block.IMachineBlock;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
@@ -33,6 +32,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
@@ -60,10 +60,10 @@ public class MachineBuilder {
 
     protected final Registrate registrate;
     protected final String name;
-    protected final BiFunction<BlockBehaviour.Properties, MachineDefinition, MetaMachineBlock> blockFactory;
-    protected final BiFunction<MetaMachineBlock, Item.Properties, MetaMachineItem> itemFactory;
-    protected final TriFunction<BlockEntityType<?>, BlockPos, BlockState, MetaMachineBlockEntity> blockEntityFactory;
-    protected final Function<IMetaMachineBlockEntity, MetaMachine> metaMachine;
+    protected final BiFunction<BlockBehaviour.Properties, MachineDefinition, IMachineBlock> blockFactory;
+    protected final BiFunction<IMachineBlock, Item.Properties, MetaMachineItem> itemFactory;
+    protected final TriFunction<BlockEntityType<?>, BlockPos, BlockState, IMachineBlockEntity> blockEntityFactory;
+    protected final Function<IMachineBlockEntity, MetaMachine> metaMachine;
     @Nullable
     @Setter
     private Supplier<IRenderer> renderer;
@@ -78,7 +78,7 @@ public class MachineBuilder {
     @Setter
     private NonNullUnaryOperator<Item.Properties> itemProp = p -> p;
     @Setter
-    private Consumer<BlockBuilder<? extends MetaMachineBlock, ?>> blockBuilder;
+    private Consumer<BlockBuilder<? extends Block, ?>> blockBuilder;
     @Setter
     private Consumer<ItemBuilder<? extends MetaMachineItem, ?>> itemBuilder;
     @Setter
@@ -99,10 +99,10 @@ public class MachineBuilder {
     @Setter
     private String langValue = null;
 
-    protected MachineBuilder(Registrate registrate, String name, Function<IMetaMachineBlockEntity, MetaMachine> metaMachine,
-                             BiFunction<BlockBehaviour.Properties, MachineDefinition, MetaMachineBlock> blockFactory,
-                             BiFunction<MetaMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
-                             TriFunction<BlockEntityType<?>, BlockPos, BlockState, MetaMachineBlockEntity> blockEntityFactory) {
+    protected MachineBuilder(Registrate registrate, String name, Function<IMachineBlockEntity, MetaMachine> metaMachine,
+                             BiFunction<BlockBehaviour.Properties, MachineDefinition, IMachineBlock> blockFactory,
+                             BiFunction<IMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
+                             TriFunction<BlockEntityType<?>, BlockPos, BlockState, IMachineBlockEntity> blockEntityFactory) {
         this.registrate = registrate;
         this.name = name;
         this.metaMachine = metaMachine;
@@ -111,10 +111,10 @@ public class MachineBuilder {
         this.blockEntityFactory = blockEntityFactory;
     }
 
-    public static MachineBuilder create(Registrate registrate, String name, Function<IMetaMachineBlockEntity, MetaMachine> metaMachine,
-                                        BiFunction<BlockBehaviour.Properties, MachineDefinition, MetaMachineBlock> blockFactory,
-                                        BiFunction<MetaMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
-                                        TriFunction<BlockEntityType<?>, BlockPos, BlockState, MetaMachineBlockEntity> blockEntityFactory) {
+    public static MachineBuilder create(Registrate registrate, String name, Function<IMachineBlockEntity, MetaMachine> metaMachine,
+                                        BiFunction<BlockBehaviour.Properties, MachineDefinition, IMachineBlock> blockFactory,
+                                        BiFunction<IMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
+                                        TriFunction<BlockEntityType<?>, BlockPos, BlockState, IMachineBlockEntity> blockEntityFactory) {
         return new MachineBuilder(registrate, name, metaMachine, blockFactory, itemFactory, blockEntityFactory);
     }
 
@@ -182,9 +182,9 @@ public class MachineBuilder {
                     RotationState.set(rotationState);
                     var b = blockFactory.apply(properties, definition);
                     RotationState.clear();
-                    return b;
+                    return b.self();
                 })
-                .color(() -> () -> MetaMachineBlock::colorTinted)
+                .color(() -> () -> IMachineBlock::colorTinted)
                 .initialProperties(() -> Blocks.DISPENSER)
                 .addLayer(() -> RenderType::cutoutMipped)
                 .tag(GTToolType.WRENCH.harvestTag)
@@ -199,7 +199,7 @@ public class MachineBuilder {
         }
         var block = blockBuilder.register();
 
-        var itemBuilder = registrate.item(name, properties -> itemFactory.apply(block.get(), properties))
+        var itemBuilder = registrate.item(name, properties -> itemFactory.apply((IMachineBlock) block.get(), properties))
                 .setData(ProviderType.LANG, NonNullBiConsumer.noop()) // do not gen any lang keys
                 .model(NonNullBiConsumer.noop())
                 .properties(itemProp);
@@ -211,7 +211,7 @@ public class MachineBuilder {
         }
         var item = itemBuilder.register();
 
-        var blockEntityBuilder = registrate.blockEntity(name, blockEntityFactory::apply)
+        var blockEntityBuilder = registrate.blockEntity(name, (type, pos, state) -> blockEntityFactory.apply(type, pos, state).self())
                 .onRegister(MachineBuilder::onBlockEntityRegister)
                 .validBlock(block);
         if (hasTESR) {
@@ -247,12 +247,12 @@ public class MachineBuilder {
     }
 
     @ExpectPlatform
-    private static void onBlockEntityRegister(BlockEntityType<MetaMachineBlockEntity> metaMachineBlockEntityBlockEntityType) {
+    private static void onBlockEntityRegister(BlockEntityType<BlockEntity> metaMachineBlockEntityBlockEntityType) {
         throw new AssertionError();
     }
 
     @ExpectPlatform
-    public static MetaMachineBlockEntity createBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
+    public static IMachineBlockEntity createBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
         throw new AssertionError();
     }
 

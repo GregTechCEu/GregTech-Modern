@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.machine.IMetaMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -45,7 +45,7 @@ public class CreativeEnergyContainerMachine extends MetaMachine implements IEner
     private long ampsReceived = 0;
     private boolean doExplosion = false;
 
-    public CreativeEnergyContainerMachine(IMetaMachineBlockEntity holder) {
+    public CreativeEnergyContainerMachine(IMachineBlockEntity holder) {
         super(holder);
     }
 

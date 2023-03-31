@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.machine.IMetaMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.steam.SteamBoilerMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
@@ -45,7 +45,7 @@ public class SteamSolidBoilerMachine extends SteamBoilerMachine  implements IMac
     @Persisted
     public final NotifiableItemStackHandler fuelHandler, ashHandler;
 
-    public SteamSolidBoilerMachine(IMetaMachineBlockEntity holder, boolean isHighPressure, Object... args) {
+    public SteamSolidBoilerMachine(IMachineBlockEntity holder, boolean isHighPressure, Object... args) {
         super(holder, isHighPressure, args);
         this.fuelHandler = createFuelHandler(args).setFilter(itemStack -> FUEL_CACHE.computeIfAbsent(itemStack.getItem(), item -> {
             if (isRemote())  return true;

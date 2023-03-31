@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
-import com.gregtechceu.gtceu.api.machine.IMetaMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
@@ -45,7 +45,7 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IUIMac
     @Nullable
     protected ISubscription tankSubs;
 
-    public FluidHatchPartMachine(IMetaMachineBlockEntity holder, int tier, IO io, Object... args) {
+    public FluidHatchPartMachine(IMachineBlockEntity holder, int tier, IO io, Object... args) {
         super(holder, tier, io);
         this.tank = createTank(args);
     }

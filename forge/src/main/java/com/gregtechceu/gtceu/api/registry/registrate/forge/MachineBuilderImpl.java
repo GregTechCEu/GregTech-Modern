@@ -1,8 +1,9 @@
 package com.gregtechceu.gtceu.api.registry.registrate.forge;
 
-import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.blockentity.MetaMachineBlockEntityImpl;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -12,10 +13,10 @@ import net.minecraft.world.level.block.state.BlockState;
  * @implNote MachineBuilderImpl
  */
 public class MachineBuilderImpl {
-    public static MetaMachineBlockEntity createBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
+    public static IMachineBlockEntity createBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
         return new MetaMachineBlockEntityImpl(type, pos, blockState);
     }
 
-    public static void onBlockEntityRegister(BlockEntityType<MetaMachineBlockEntity> metaMachineBlockEntityBlockEntityType) {
+    public static void onBlockEntityRegister(BlockEntityType<BlockEntity> metaMachineBlockEntityBlockEntityType) {
     }
 }

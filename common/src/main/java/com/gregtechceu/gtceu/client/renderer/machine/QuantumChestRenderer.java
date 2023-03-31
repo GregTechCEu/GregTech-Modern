@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.client.renderer.machine;
 
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.machine.IMetaMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.common.machine.storage.QuantumChestMachine;
 import com.lowdragmc.lowdraglib.client.utils.RenderUtils;
 import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
@@ -62,7 +62,7 @@ public class QuantumChestRenderer extends TieredHullMachineRenderer {
     @Override
     @Environment(EnvType.CLIENT)
     public void render(BlockEntity blockEntity, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int combinedLight, int combinedOverlay) {
-        if (blockEntity instanceof IMetaMachineBlockEntity machineBlockEntity && machineBlockEntity.getMetaMachine() instanceof QuantumChestMachine machine) {
+        if (blockEntity instanceof IMachineBlockEntity machineBlockEntity && machineBlockEntity.getMetaMachine() instanceof QuantumChestMachine machine) {
             var level = machine.getLevel();
             var frontFacing = machine.getFrontFacing();
             float tick = level.getGameTime() + partialTicks;

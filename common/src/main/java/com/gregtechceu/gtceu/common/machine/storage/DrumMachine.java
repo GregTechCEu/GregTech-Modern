@@ -8,7 +8,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.FluidProperty
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
-import com.gregtechceu.gtceu.api.machine.IMetaMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputFluid;
@@ -72,7 +72,7 @@ public class DrumMachine extends MetaMachine implements IAutoOutputFluid, IDropS
     @Getter
     protected final Material material;
 
-    public DrumMachine(IMetaMachineBlockEntity holder, Material material, int maxStoredFluids, Object... args) {
+    public DrumMachine(IMachineBlockEntity holder, Material material, int maxStoredFluids, Object... args) {
         super(holder);
         this.material = material;
         this.maxStoredFluids = maxStoredFluids;

@@ -1,14 +1,13 @@
 package com.gregtechceu.gtceu.api.registry.registrate;
 
 import com.google.common.base.Suppliers;
-import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
-import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
+import com.gregtechceu.gtceu.api.block.IMachineBlock;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
-import com.gregtechceu.gtceu.api.machine.IMetaMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
@@ -61,17 +60,17 @@ public class MultiblockMachineBuilder extends MachineBuilder {
     @Setter
     private TriFunction<IMultiController, IMultiPart, Direction, BlockState> partAppearance;
 
-    protected MultiblockMachineBuilder(Registrate registrate, String name, Function<IMetaMachineBlockEntity, ? extends MultiblockControllerMachine> metaMachine,
-                                       BiFunction<BlockBehaviour.Properties, MachineDefinition, MetaMachineBlock> blockFactory,
-                                       BiFunction<MetaMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
-                                       TriFunction<BlockEntityType<?>, BlockPos, BlockState, MetaMachineBlockEntity> blockEntityFactory) {
+    protected MultiblockMachineBuilder(Registrate registrate, String name, Function<IMachineBlockEntity, ? extends MultiblockControllerMachine> metaMachine,
+                                       BiFunction<BlockBehaviour.Properties, MachineDefinition, IMachineBlock> blockFactory,
+                                       BiFunction<IMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
+                                       TriFunction<BlockEntityType<?>, BlockPos, BlockState, IMachineBlockEntity> blockEntityFactory) {
         super(registrate, name, metaMachine::apply, blockFactory, itemFactory, blockEntityFactory);
     }
 
-    public static MultiblockMachineBuilder createMulti(Registrate registrate, String name, Function<IMetaMachineBlockEntity, ? extends MultiblockControllerMachine> metaMachine,
-                                                       BiFunction<BlockBehaviour.Properties, MachineDefinition, MetaMachineBlock> blockFactory,
-                                                       BiFunction<MetaMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
-                                                       TriFunction<BlockEntityType<?>, BlockPos, BlockState, MetaMachineBlockEntity> blockEntityFactory) {
+    public static MultiblockMachineBuilder createMulti(Registrate registrate, String name, Function<IMachineBlockEntity, ? extends MultiblockControllerMachine> metaMachine,
+                                                       BiFunction<BlockBehaviour.Properties, MachineDefinition, IMachineBlock> blockFactory,
+                                                       BiFunction<IMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
+                                                       TriFunction<BlockEntityType<?>, BlockPos, BlockState, IMachineBlockEntity> blockEntityFactory) {
         return new MultiblockMachineBuilder(registrate, name, metaMachine, blockFactory, itemFactory, blockEntityFactory);
     }
 
@@ -126,7 +125,7 @@ public class MultiblockMachineBuilder extends MachineBuilder {
     }
 
     @Override
-    public MultiblockMachineBuilder blockBuilder(Consumer<BlockBuilder<? extends MetaMachineBlock, ?>> blockBuilder) {
+    public MultiblockMachineBuilder blockBuilder(Consumer<BlockBuilder<? extends Block, ?>> blockBuilder) {
         return (MultiblockMachineBuilder) super.blockBuilder(blockBuilder);
     }
 

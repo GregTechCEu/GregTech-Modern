@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.machine.IMetaMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDisplayUIMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
@@ -49,7 +49,7 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
     private boolean hasNoWater;
     @Nullable
     protected TickableSubscription temperatureSubs;
-    public LargeBoilerMachine(IMetaMachineBlockEntity holder, int maxTemperature, int heatSpeed, Object... args) {
+    public LargeBoilerMachine(IMachineBlockEntity holder, int maxTemperature, int heatSpeed, Object... args) {
         super(holder, args);
         this.maxTemperature = maxTemperature;
         this.heatSpeed = heatSpeed;

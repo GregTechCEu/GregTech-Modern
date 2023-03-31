@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.machine.steam;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.machine.IMetaMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IExplosionMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
@@ -65,7 +65,7 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine implements
     protected TickableSubscription temperatureSubs, autoOutputSubs;
     @Nullable
     protected ISubscription steamTankSubs;
-    public SteamBoilerMachine(IMetaMachineBlockEntity holder, boolean isHighPressure, Object... args) {
+    public SteamBoilerMachine(IMachineBlockEntity holder, boolean isHighPressure, Object... args) {
         super(holder, isHighPressure, args);
         this.waterTank = createWaterTank(args);
         this.waterTank.setFilter(fluid -> Fluids.WATER == fluid.getFluid());
