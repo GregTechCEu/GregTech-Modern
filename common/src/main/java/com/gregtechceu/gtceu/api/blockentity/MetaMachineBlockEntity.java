@@ -4,9 +4,9 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
-import com.gregtechceu.gtceu.api.item.tool.IToolGridHighLight;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.syncdata.managed.MultiManagedStorage;
+import dev.architectury.injectables.annotations.ExpectPlatform;
 import lombok.Getter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -21,15 +21,25 @@ import net.minecraft.world.level.block.state.BlockState;
  * @date 2023/2/17
  * @implNote MetaMachineBlockEntity
  */
-public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlockEntity, IToolGridHighLight {
+public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlockEntity {
     public final MultiManagedStorage managedStorage = new MultiManagedStorage();
     @Getter
     public final MetaMachine metaMachine;
     private final long offset = GTValues.RNG.nextInt(20);
 
-    public MetaMachineBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
+    protected MetaMachineBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
         super(type, pos, blockState);
         this.metaMachine = getDefinition().createMetaMachine(this);
+    }
+
+    @ExpectPlatform
+    public static MetaMachineBlockEntity createBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
+        throw new AssertionError();
+    }
+
+    @ExpectPlatform
+    public static void onBlockEntityRegister(BlockEntityType<BlockEntity> metaMachineBlockEntityBlockEntityType) {
+        throw new AssertionError();
     }
 
     @Override

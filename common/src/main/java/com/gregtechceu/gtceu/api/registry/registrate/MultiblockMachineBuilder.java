@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.api.registry.registrate;
 
 import com.google.common.base.Suppliers;
-import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.block.IMachineBlock;
@@ -19,6 +18,7 @@ import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import com.tterrag.registrate.Registrate;
 import com.tterrag.registrate.builders.BlockBuilder;
 import com.tterrag.registrate.builders.ItemBuilder;
+import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import com.tterrag.registrate.util.nullness.NonNullUnaryOperator;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -31,6 +31,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
@@ -50,7 +51,7 @@ import java.util.function.*;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 @Accessors(chain = true, fluent = true)
-public class MultiblockMachineBuilder extends MachineBuilder {
+public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDefinition> {
     @Setter
     private Function<MultiblockMachineDefinition, BlockPattern> pattern;
     private final List<Function<MultiblockMachineDefinition, List<MultiblockShapeInfo>>> shapeInfos = new ArrayList<>();
@@ -61,14 +62,14 @@ public class MultiblockMachineBuilder extends MachineBuilder {
     private TriFunction<IMultiController, IMultiPart, Direction, BlockState> partAppearance;
 
     protected MultiblockMachineBuilder(Registrate registrate, String name, Function<IMachineBlockEntity, ? extends MultiblockControllerMachine> metaMachine,
-                                       BiFunction<BlockBehaviour.Properties, MachineDefinition, IMachineBlock> blockFactory,
+                                       BiFunction<BlockBehaviour.Properties, MultiblockMachineDefinition, IMachineBlock> blockFactory,
                                        BiFunction<IMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
                                        TriFunction<BlockEntityType<?>, BlockPos, BlockState, IMachineBlockEntity> blockEntityFactory) {
-        super(registrate, name, metaMachine::apply, blockFactory, itemFactory, blockEntityFactory);
+        super(registrate, name, MultiblockMachineDefinition::createDefinition, metaMachine::apply, blockFactory, itemFactory, blockEntityFactory);
     }
 
     public static MultiblockMachineBuilder createMulti(Registrate registrate, String name, Function<IMachineBlockEntity, ? extends MultiblockControllerMachine> metaMachine,
-                                                       BiFunction<BlockBehaviour.Properties, MachineDefinition, IMachineBlock> blockFactory,
+                                                       BiFunction<BlockBehaviour.Properties, MultiblockMachineDefinition, IMachineBlock> blockFactory,
                                                        BiFunction<IMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
                                                        TriFunction<BlockEntityType<?>, BlockPos, BlockState, IMachineBlockEntity> blockEntityFactory) {
         return new MultiblockMachineBuilder(registrate, name, metaMachine, blockFactory, itemFactory, blockEntityFactory);
@@ -229,8 +230,8 @@ public class MultiblockMachineBuilder extends MachineBuilder {
     }
 
     @Override
-    protected MultiblockMachineDefinition createDefinition() {
-        return MultiblockMachineDefinition.create(new ResourceLocation(registrate.getModid(), name));
+    public MultiblockMachineBuilder onBlockEntityRegister(NonNullConsumer<BlockEntityType<BlockEntity>> onBlockEntityRegister) {
+        return (MultiblockMachineBuilder) super.onBlockEntityRegister(onBlockEntityRegister);
     }
 
     @Override

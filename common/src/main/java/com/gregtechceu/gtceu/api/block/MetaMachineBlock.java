@@ -1,12 +1,11 @@
 package com.gregtechceu.gtceu.api.block;
 
-import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
+import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.*;
-import com.gregtechceu.gtceu.api.data.RotationState;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 import lombok.Getter;
@@ -28,11 +27,8 @@ import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityTicker;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.storage.loot.LootContext;
@@ -54,7 +50,7 @@ import java.util.List;
  */
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class MetaMachineBlock extends AppearanceBlock implements EntityBlock, IMachineBlock {
+public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
 
     @Getter
     public final MachineDefinition definition;
@@ -240,34 +236,6 @@ public class MetaMachineBlock extends AppearanceBlock implements EntityBlock, IM
             return interactedMachine.onUse(state, world, pos, player, hand, hit);
         }
         return InteractionResult.PASS;
-    }
-
-    @Nullable
-    @Override
-    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return definition.getBlockEntityType().create(pos, state);
-    }
-
-    @Nullable
-    @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
-        if (blockEntityType == definition.getBlockEntityType()) {
-            if (state.getValue(BlockProperties.SERVER_TICK) && !level.isClientSide) {
-                return (pLevel, pPos, pState, pTile) -> {
-                    if (pTile instanceof MetaMachineBlockEntity metaMachine) {
-                        metaMachine.getMetaMachine().serverTick();
-                    }
-                };
-            }
-            if (level.isClientSide) {
-                return (pLevel, pPos, pState, pTile) -> {
-                    if (pTile instanceof MetaMachineBlockEntity metaMachine) {
-                        metaMachine.getMetaMachine().clientTick();
-                    }
-                };
-            }
-        }
-        return null;
     }
 
     @Override

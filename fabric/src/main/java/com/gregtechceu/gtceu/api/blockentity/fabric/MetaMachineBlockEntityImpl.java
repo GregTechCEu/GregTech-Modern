@@ -1,14 +1,14 @@
-package com.gregtechceu.gtceu.api.registry.registrate.fabric;
+package com.gregtechceu.gtceu.api.blockentity.fabric;
 
-import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntityImpl;
+import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.capability.fabric.GTCapability;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
-import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.lowdragmc.lowdraglib.side.fluid.fabric.FluidTransferHelperImpl;
 import com.lowdragmc.lowdraglib.side.item.fabric.ItemTransferHelperImpl;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
@@ -20,11 +20,16 @@ import net.minecraft.world.level.block.state.BlockState;
 
 /**
  * @author KilaBash
- * @date 2023/2/19
- * @implNote MachineBuilderImpl
+ * @date 2023/2/17
+ * @implNote MetaMachineBlockEntity
  */
-public class MachineBuilderImpl {
-    public static IMachineBlockEntity createBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
+public class MetaMachineBlockEntityImpl extends MetaMachineBlockEntity {
+
+    public MetaMachineBlockEntityImpl(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
+        super(type, pos, blockState);
+    }
+
+    public static MetaMachineBlockEntity createBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
         return new MetaMachineBlockEntityImpl(type, pos, blockState);
     }
 
@@ -77,4 +82,5 @@ public class MachineBuilderImpl {
             return transfer == null ? null : FluidTransferHelperImpl.toFluidVariantStorage(transfer);
         }, type);
     }
+
 }

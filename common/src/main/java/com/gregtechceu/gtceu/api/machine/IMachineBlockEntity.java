@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.machine;
 
 import com.gregtechceu.gtceu.api.block.IMachineBlock;
+import com.gregtechceu.gtceu.api.item.tool.IToolGridHighLight;
 import com.lowdragmc.lowdraglib.syncdata.blockentity.IAsyncAutoSyncBlockEntity;
 import com.lowdragmc.lowdraglib.syncdata.blockentity.IAutoPersistBlockEntity;
 import com.lowdragmc.lowdraglib.syncdata.blockentity.IRPCBlockEntity;
@@ -15,7 +16,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
  * <p/>
  * Also delivers most of the Information about TileEntities.
  */
-public interface IMachineBlockEntity extends IAsyncAutoSyncBlockEntity, IRPCBlockEntity, IAutoPersistBlockEntity {
+public interface IMachineBlockEntity extends IToolGridHighLight, IAsyncAutoSyncBlockEntity, IRPCBlockEntity, IAutoPersistBlockEntity {
 
     default BlockEntity self() {
         return (BlockEntity) this;

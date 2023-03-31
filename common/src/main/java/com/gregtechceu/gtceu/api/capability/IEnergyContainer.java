@@ -54,7 +54,7 @@ public interface IEnergyContainer {
      * @return amount of energy removed
      */
     default long removeEnergy(long energyToRemove) {
-        return changeEnergy(-energyToRemove);
+        return -changeEnergy(-energyToRemove);
     }
 
     /**

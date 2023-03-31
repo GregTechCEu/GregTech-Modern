@@ -13,6 +13,8 @@ public interface ITieredMachine extends IMachineFeature {
      *
      * @return tier of this machine
      */
-    int getTier();
+    default int getTier() {
+        return self().getDefinition().getTier();
+    }
 
 }

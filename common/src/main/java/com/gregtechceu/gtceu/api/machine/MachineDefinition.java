@@ -124,4 +124,19 @@ public class MachineDefinition implements Supplier<IMachineBlock> {
     public BlockState defaultBlockState() {
         return getBlock().defaultBlockState();
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        MachineDefinition that = (MachineDefinition) o;
+
+        return id.equals(that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
+    }
 }
