@@ -28,6 +28,8 @@ public class GregTechMixinPlugin implements IMixinConfigPlugin {
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
         if (mixinClassName.contains("com.gregtechceu.gtceu.core.mixins.kjs")) {
             return MixinPluginShared.isClassFound("dev.latvian.mods.kubejs.KubeJSPlugin");
+        } else if (mixinClassName.contains("com.gregtechceu.gtceu.core.mixins.create")) {
+            return MixinPluginShared.isClassFound("com.simibubi.create.compat.Mods");
         }
         return true;
     }

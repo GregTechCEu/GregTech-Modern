@@ -117,11 +117,6 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
     }
 
     @Override
-    public Set<String> getSlotNames() {
-        return null;
-    }
-
-    @Override
     public RecipeCapability<Ingredient> getCapability() {
         return ItemRecipeCapability.CAP;
     }

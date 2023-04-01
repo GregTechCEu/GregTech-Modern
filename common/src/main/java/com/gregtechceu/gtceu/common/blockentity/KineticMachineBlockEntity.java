@@ -5,12 +5,16 @@ import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.common.machine.KineticMachineDefinition;
+import com.jozufozu.flywheel.api.MaterialManager;
+import com.jozufozu.flywheel.backend.instancing.blockentity.BlockEntityInstance;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.syncdata.managed.MultiManagedStorage;
 import com.simibubi.create.content.contraptions.KineticNetwork;
 import com.simibubi.create.content.contraptions.base.IRotate;
+import com.simibubi.create.content.contraptions.base.KineticEffectHandler;
 import com.simibubi.create.content.contraptions.base.KineticTileEntity;
 import com.simibubi.create.foundation.utility.Lang;
+import com.tterrag.registrate.util.nullness.NonNullSupplier;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import lombok.Getter;
 import net.minecraft.ChatFormatting;
@@ -25,6 +29,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.List;
+import java.util.function.BiFunction;
 
 /**
  * @author KilaBash
@@ -50,7 +55,7 @@ public class KineticMachineBlockEntity extends KineticTileEntity implements IMac
     }
 
     @ExpectPlatform
-    public static void onBlockEntityRegister(BlockEntityType<BlockEntity> blockEntityType) {
+    public static void onBlockEntityRegister(BlockEntityType blockEntityType, NonNullSupplier<BiFunction<MaterialManager, KineticMachineBlockEntity, BlockEntityInstance<? super KineticMachineBlockEntity>>> instanceFactory, boolean renderNormally) {
         throw new AssertionError();
     }
 
@@ -112,6 +117,10 @@ public class KineticMachineBlockEntity extends KineticTileEntity implements IMac
     //*********     Create     *********//
     //////////////////////////////////////
 
+    public KineticEffectHandler getEffects() {
+        return effects;
+    }
+
     public float scheduleWorking(float su, boolean simulate) {
         if (getDefinition().isSource()) {
             float speed = Math.min(256f, su / getDefinition().getTorque());
@@ -124,8 +133,8 @@ public class KineticMachineBlockEntity extends KineticTileEntity implements IMac
         return 0;
     }
 
-    public float scheduleWorking(float su) {
-        return scheduleWorking(su, false);
+    public void scheduleWorking(float su) {
+        scheduleWorking(su, false);
     }
 
     public void stopWorking() {

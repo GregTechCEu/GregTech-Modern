@@ -158,7 +158,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IMachineM
             for (int x = 0; x < rowSize; x++) {
                 int index = y * rowSize + x;
                 modular.widget(new SlotWidget(inventory.storage, index,
-                        (88 - rowSize * 9 + x * 18) + xOffset, 18 + y * 18, true, io == IO.BOTH || io == IO.IN)
+                        (88 - rowSize * 9 + x * 18) + xOffset, 18 + y * 18, true, io.support(IO.IN))
                         .setBackgroundTexture(GuiTextures.SLOT));
             }
         }

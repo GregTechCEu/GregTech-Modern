@@ -76,7 +76,7 @@ public class GTRecipeWidget extends WidgetGroup {
         group.setSelfPosition(new Position((176 - size.width) / 2, 0));
         addWidget(group);
 
-        int yOffset = 87 - (recipe.conditions.size() + recipe.recipeType.getDataInfos().size()) * 10 + (size.height - 83);
+        int yOffset = 87 - (recipe.conditions.size() - recipe.recipeType.getMaxConditions() + recipe.recipeType.getDataInfos().size()) * 10 + (size.height - 83);
         addWidget(new LabelWidget(3, yOffset,
                 LocalizationUtils.format("gtceu.recipe.duration", recipe.duration / 20f)));
         var EUt = RecipeHelper.getInputEUt(recipe);

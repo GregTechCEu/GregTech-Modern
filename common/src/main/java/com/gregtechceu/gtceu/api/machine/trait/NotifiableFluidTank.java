@@ -125,11 +125,6 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidStack
     }
 
     @Override
-    public Set<String> getSlotNames() {
-        return null;
-    }
-
-    @Override
     public RecipeCapability<FluidStack> getCapability() {
         return FluidRecipeCapability.CAP;
     }

@@ -1,6 +1,8 @@
 package com.gregtechceu.gtceu.integration.kjs;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.data.chemical.Element;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
@@ -59,6 +61,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         event.add("GTRecipeTypes", GTRecipeTypes.class);
         event.add("TagPrefix", TagPrefix.class);
         event.add("UnificationEntry", UnificationEntry.class);
+        event.add("RecipeCapability", RecipeCapability.class);
 
         event.add("GTValues", GTValues.class);
         event.add("GTMaterialIconSet", MaterialIconSet.class);
@@ -70,6 +73,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         event.add("Predicates", Predicates.class);
         event.add("PartAbility", PartAbility.class);
         event.add("GuiTextures", GuiTextures.class);
+        event.add("GTCEu", GTCEu.class);
 
         // ....TODO add global refs. for convenience, ppl do not need to import the java package themselves.
     }
@@ -113,6 +117,11 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
                     return new UnificationEntry(TagPrefix.getPrefix(values[0]), GTMaterials.get(values[1]));
                 }
             }
+            return null;
+        });
+        typeWrappers.register(RecipeCapability.class, (ctx, o) -> {
+            if (o instanceof RecipeCapability<?> capability) return capability;
+            if (o instanceof CharSequence chars) return GTRegistries.RECIPE_CAPABILITIES.get(chars.toString());
             return null;
         });
 

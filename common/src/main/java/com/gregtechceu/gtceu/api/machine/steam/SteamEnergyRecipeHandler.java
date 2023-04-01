@@ -55,12 +55,6 @@ public class SteamEnergyRecipeHandler implements IRecipeHandler<Long> {
         steamTank.setTimeStamp(timeStamp);
     }
 
-    @Nullable
-    @Override
-    public Set<String> getSlotNames() {
-        return null;
-    }
-
     @Override
     public RecipeCapability<Long> getCapability() {
         return EURecipeCapability.CAP;

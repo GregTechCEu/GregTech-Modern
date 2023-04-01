@@ -3,12 +3,16 @@ package com.gregtechceu.gtceu.common.block;
 import com.gregtechceu.gtceu.api.block.BlockProperties;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.common.blockentity.KineticMachineBlockEntity;
 import com.gregtechceu.gtceu.common.machine.KineticMachineDefinition;
+import com.gregtechceu.gtceu.common.machine.kinetic.IKineticMachine;
 import com.simibubi.create.content.contraptions.base.IRotate;
+import com.simibubi.create.content.contraptions.base.KineticTileEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
@@ -29,12 +33,67 @@ public class KineticMachineBlock extends MetaMachineBlock implements IRotate {
 
     @Override
     public boolean hasShaftTowards(LevelReader world, BlockPos pos, BlockState state, Direction face) {
-        return getFrontFacing(state) == face;
+        if (MetaMachine.getMachine(world, pos) instanceof IKineticMachine kineticMachine) {
+            return kineticMachine.hasShaftTowards(face);
+        }
+        return false;
+    }
+
+    public Direction getRotationFacing(BlockState state) {
+        var frontFacing = getFrontFacing(state);
+        return ((KineticMachineDefinition)definition).isFrontRotation() ? frontFacing : (frontFacing.getAxis() == Direction.Axis.Y ? Direction.NORTH : frontFacing.getClockWise());
     }
 
     @Override
     public Direction.Axis getRotationAxis(BlockState state) {
-        return getFrontFacing(state).getAxis();
+        return getRotationFacing(state).getAxis();
+    }
+
+    @Override
+    public void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean isMoving) {
+        // onBlockAdded is useless for init, as sometimes the TE gets re-instantiated
+
+        // however, if a block change occurs that does not change kinetic connections,
+        // we can prevent a major re-propagation here
+
+        BlockEntity tileEntity = level.getBlockEntity(pos);
+        if (tileEntity instanceof KineticTileEntity kineticTileEntity) {
+            kineticTileEntity.preventSpeedUpdate = 0;
+
+            if (oldState.getBlock() != state.getBlock())
+                return;
+            if (state.hasBlockEntity() != oldState.hasBlockEntity())
+                return;
+            if (!areStatesKineticallyEquivalent(oldState, state))
+                return;
+
+            kineticTileEntity.preventSpeedUpdate = 2;
+        }
+    }
+
+    public boolean areStatesKineticallyEquivalent(BlockState oldState, BlockState newState) {
+        if (oldState.getBlock() != newState.getBlock())
+            return false;
+        return getRotationAxis(newState) == getRotationAxis(oldState);
+    }
+
+    @Override
+    public void updateIndirectNeighbourShapes(BlockState stateIn, LevelAccessor worldIn, BlockPos pos, int flags, int count) {
+        if (worldIn.isClientSide())
+            return;
+
+        BlockEntity tileEntity = worldIn.getBlockEntity(pos);
+        if (!(tileEntity instanceof KineticTileEntity))
+            return;
+        KineticTileEntity kte = (KineticTileEntity) tileEntity;
+
+        if (kte.preventSpeedUpdate > 0)
+            return;
+
+        // Remove previous information when block is added
+        kte.warnOfMovement();
+        kte.clearKineticInformation();
+        kte.updateSpeed = true;
     }
 
     @Override

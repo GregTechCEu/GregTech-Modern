@@ -93,7 +93,7 @@ public class MachineRenderer extends CTMModelRenderer implements ICoverableRende
             var machine = machineBlock.getMachine(level, pos);
             if (machine != null) {
                 var definition = machine.getDefinition();
-                var modelState = ModelFactory.getRotation(frontFacing, true);
+                var modelState = ModelFactory.getRotation(frontFacing);
                 var modelFacing = side == null ? null : ModelFactory.modelFacing(side, frontFacing);
                 var quads = new LinkedList<BakedQuad>();
                 // render machine additional quads

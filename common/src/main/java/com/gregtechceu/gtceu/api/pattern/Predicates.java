@@ -75,7 +75,7 @@ public class Predicates {
 
     public static TraceabilityPredicate autoAbilities(GTRecipeType recipeType,
                                                       boolean checkEnergyIn,
-                                                      boolean checkEnergOut,
+                                                      boolean checkEnergyOut,
                                                       boolean checkItemIn,
                                                       boolean checkItemOut,
                                                       boolean checkFluidIn,
@@ -86,7 +86,7 @@ public class Predicates {
                 predicate = predicate.or(abilities(PartAbility.INPUT_ENERGY).setMaxGlobalLimited(3).setPreviewCount(1));
             }
         }
-        if (checkEnergOut) {
+        if (checkEnergyOut) {
             if (recipeType.getMaxOutputs(EURecipeCapability.CAP) > 0) {
                 predicate = predicate.or(abilities(PartAbility.OUTPUT_ENERGY).setMaxGlobalLimited(3).setPreviewCount(1));
             }

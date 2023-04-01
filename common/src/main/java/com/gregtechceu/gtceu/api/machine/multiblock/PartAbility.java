@@ -15,22 +15,24 @@ import java.util.*;
  * Fine, It's not really needed。It used to specify which blocks are available.
  * Only registered blocks can be used as part of gtceu's multiblock.
  */
-public enum PartAbility {
-    EXPORT_ITEMS("export_items"),
-    IMPORT_ITEMS("import_items"),
-    EXPORT_FLUIDS("export_fluids"),
-    IMPORT_FLUIDS("import_fluids"),
-    INPUT_ENERGY("input_energy"),
-    OUTPUT_ENERGY("output_energy"),
-    ROTOR_HOLDER("rotor_holder"),
-    PUMP_FLUID_HATCH("pump_fluid_hatch"),
-    STEAM("steam"),
-    STEAM_IMPORT_ITEMS("steam_import_items"),
-    STEAM_EXPORT_ITEMS("steam_export_items"),
-    MAINTENANCE("maintenance"),
-    MUFFLER("muffler"),
-    TANK_VALVE("tank_valve"),
-    PASSTHROUGH_HATCH("passthrough_hatch");
+public class PartAbility {
+    public static final PartAbility EXPORT_ITEMS = new PartAbility("export_items");
+    public static final PartAbility IMPORT_ITEMS = new PartAbility("import_items");
+    public static final PartAbility EXPORT_FLUIDS = new PartAbility("export_fluids");
+    public static final PartAbility IMPORT_FLUIDS = new PartAbility("import_fluids");
+    public static final PartAbility INPUT_ENERGY = new PartAbility("input_energy");
+    public static final PartAbility OUTPUT_ENERGY = new PartAbility("output_energy");
+    public static final PartAbility INPUT_KINETIC = new PartAbility("input_kinetic");
+    public static final PartAbility OUTPUT_KINETIC = new PartAbility("output_kinetic");
+    public static final PartAbility ROTOR_HOLDER = new PartAbility("rotor_holder");
+    public static final PartAbility PUMP_FLUID_HATCH = new PartAbility("pump_fluid_hatch");
+    public static final PartAbility STEAM = new PartAbility("steam");
+    public static final PartAbility STEAM_IMPORT_ITEMS = new PartAbility("steam_import_items");
+    public static final PartAbility STEAM_EXPORT_ITEMS = new PartAbility("steam_export_items");
+    public static final PartAbility MAINTENANCE = new PartAbility("maintenance");
+    public static final PartAbility MUFFLER = new PartAbility("muffler");
+    public static final PartAbility TANK_VALVE = new PartAbility("tank_valve");
+    public static final PartAbility PASSTHROUGH_HATCH = new PartAbility("passthrough_hatch");
 
     /**
      * tier -> available blocks

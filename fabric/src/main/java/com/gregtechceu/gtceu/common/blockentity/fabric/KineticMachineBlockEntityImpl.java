@@ -2,10 +2,17 @@ package com.gregtechceu.gtceu.common.blockentity.fabric;
 
 import com.gregtechceu.gtceu.api.blockentity.fabric.MetaMachineBlockEntityImpl;
 import com.gregtechceu.gtceu.common.blockentity.KineticMachineBlockEntity;
+import com.jozufozu.flywheel.api.MaterialManager;
+import com.jozufozu.flywheel.backend.instancing.InstancedRenderRegistry;
+import com.jozufozu.flywheel.backend.instancing.blockentity.BlockEntityInstance;
+import com.tterrag.registrate.util.nullness.NonNullSupplier;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.function.BiFunction;
 
 /**
  * @author KilaBash
@@ -22,7 +29,15 @@ public class KineticMachineBlockEntityImpl extends KineticMachineBlockEntity{
         return new KineticMachineBlockEntityImpl(typeIn, pos, state);
     }
 
-    public static void onBlockEntityRegister(BlockEntityType<BlockEntity> blockEntityType) {
+    public static void onBlockEntityRegister(BlockEntityType blockEntityType,
+                                             @Nullable NonNullSupplier<BiFunction<MaterialManager, KineticMachineBlockEntity, BlockEntityInstance<? super KineticMachineBlockEntity>>> instanceFactory,
+                                             boolean renderNormally) {
         MetaMachineBlockEntityImpl.onBlockEntityRegister(blockEntityType);
+        if (instanceFactory != null) {
+            InstancedRenderRegistry.configure(blockEntityType)
+                    .factory(instanceFactory.get())
+                    .skipRender(be -> !renderNormally)
+                    .apply();
+        }
     }
 }

@@ -20,6 +20,7 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import lombok.Getter;
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 
@@ -58,11 +59,16 @@ public class ElectricGearBoxMachine extends TieredEnergyMachine implements IKine
     protected NotifiableEnergyContainer createEnergyContainer(Object... args) {
         var tierVoltage = GTValues.V[tier];
         var amps = (int)args[0];
+        NotifiableEnergyContainer container;
         if (isEnergyEmitter()) {
-            return NotifiableEnergyContainer.emitterContainer(this,
-                    tierVoltage * 64L, tierVoltage, amps);
-        } else return NotifiableEnergyContainer.receiverContainer(this,
-                tierVoltage * 64L, tierVoltage, amps);
+            container = NotifiableEnergyContainer.emitterContainer(this, tierVoltage * 64L, tierVoltage, amps);
+            container.setSideOutputCondition(dir -> dir.getAxis() != getRotationFacing().getAxis());
+        } else {
+            container = NotifiableEnergyContainer.receiverContainer(this, tierVoltage * 64L, tierVoltage, amps);
+            container.setSideInputCondition(dir -> dir.getAxis() != getRotationFacing().getAxis());
+        }
+        container.setCapabilityValidator(dir -> dir.getAxis() != getRotationFacing().getAxis());
+        return container;
     }
 
     @Override
@@ -76,7 +82,7 @@ public class ElectricGearBoxMachine extends TieredEnergyMachine implements IKine
     }
 
     public void setCurrentAmps(int currentAmps) {
-        this.currentAmps = Mth.clamp(maxAmps, 0 , currentAmps);
+        this.currentAmps = Mth.clamp(currentAmps, 0 , maxAmps);
     }
 
     public float getCurrentRPM() {
@@ -89,9 +95,32 @@ public class ElectricGearBoxMachine extends TieredEnergyMachine implements IKine
         subscribeServerTick(this::outputRotation);
     }
 
+    @Override
+    public void onRotated(Direction oldFacing, Direction newFacing) {
+        super.onRotated(oldFacing, newFacing);
+        if (!isRemote()) {
+            if (oldFacing.getAxis() != newFacing.getAxis()) {
+                var holder = getKineticHolder();
+                if (holder.hasNetwork()) {
+                    holder.getOrCreateNetwork().remove(holder);
+                }
+                holder.detachKinetics();
+                holder.removeSource();
+            }
+        }
+    }
+
     //////////////////////////////////////
     //*****     Rotation Logic     *****//
     //////////////////////////////////////
+
+
+    @Override
+    public float getRotationSpeedModifier(Direction direction) {
+        if (direction == getRotationFacing().getOpposite())
+            return -1;
+        return 1;
+    }
 
     protected void outputRotation() {
         if (getKineticDefinition().isSource()) {
@@ -110,7 +139,7 @@ public class ElectricGearBoxMachine extends TieredEnergyMachine implements IKine
 
     @Override
     public ModularUI createUI(Player entityPlayer) {
-        return new ModularUI(176, 128, this, entityPlayer)
+        return new ModularUI(176, 148, this, entityPlayer)
                 .background(GuiTextures.BACKGROUND)
                 .widget(new LabelWidget(5, 5, getDefinition().getDescriptionId()))
                 .widget(new ImageWidget(42, 20, 92, 20, new TextTexture("").setSupplier(() -> "Speed: " + getKineticHolder().workingSpeed)))

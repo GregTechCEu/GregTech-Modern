@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMa
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.MultiblockMachineBuilder;
+import com.gregtechceu.gtceu.common.data.GTCreateMachines;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
 import dev.latvian.mods.kubejs.event.EventJS;
@@ -28,6 +29,10 @@ public class MachineEventJS extends EventJS {
 
     public static MachineDefinition[] simpleMachines(String name, GTRecipeType recipeType, Function<Object, Double> tankScalingFunction, int... tiers) {
         return GTMachines.registerSimpleMachines(name, recipeType, tier -> tankScalingFunction.apply(tier).longValue(), tiers);
+    }
+
+    public static MachineDefinition[] simpleKineticMachines(String name, GTRecipeType recipeType, int... tiers) {
+        return GTCreateMachines.registerSimpleKineticElectricMachine(name, recipeType, tiers);
     }
 
     public static MultiblockMachineBuilder simpleMultiblock(String name) {
