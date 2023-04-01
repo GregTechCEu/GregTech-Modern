@@ -74,34 +74,35 @@ public class FluidPipeBlockEntityImpl extends FluidPipeBlockEntity {
 
         @Override
         public Iterator<StorageView<FluidVariant>> iterator() {
-            Collection<StorageView<FluidVariant>> list = List.of(new StorageView<>() {
-                @Override
-                public long extract(FluidVariant resource, long maxAmount, TransactionContext transaction) {
-                    return 0;
-                }
-
-                @Override
-                public boolean isResourceBlank() {
-                    return true;
-                }
-
-                @Override
-                public FluidVariant getResource() {
-                    return FluidVariant.blank();
-                }
-
-                @Override
-                public long getAmount() {
-                    return 0;
-                }
-
-                @Override
-                public long getCapacity() {
-                    return 0;
-                }
-            });
-
+            Collection<StorageView<FluidVariant>> list = List.of(new FluidPipeBlockStorageView());
             return list.iterator();
+        }
+
+        private record FluidPipeBlockStorageView() implements StorageView<FluidVariant> {
+            @Override
+            public long extract(FluidVariant resource, long maxAmount, TransactionContext transaction) {
+                return 0;
+            }
+
+            @Override
+            public boolean isResourceBlank() {
+                return true;
+            }
+
+            @Override
+            public FluidVariant getResource() {
+                return FluidVariant.blank();
+            }
+
+            @Override
+            public long getAmount() {
+                return 0;
+            }
+
+            @Override
+            public long getCapacity() {
+                return 0;
+            }
         }
     }
 }
