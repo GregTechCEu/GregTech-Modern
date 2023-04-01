@@ -46,7 +46,7 @@ public class MultiblockMachineDefinition extends MachineDefinition {
         super(id);
     }
 
-    public static MultiblockMachineDefinition create(ResourceLocation id) {
+    public static MultiblockMachineDefinition createDefinition(ResourceLocation id) {
         return new MultiblockMachineDefinition(id);
     }
 

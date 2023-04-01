@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.data;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.common.recipe.*;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
@@ -18,6 +19,9 @@ public class GTRecipeConditions {
         GTRegistries.RECIPE_CONDITIONS.register(SteamVentCondition.INSTANCE.getType(), SteamVentCondition.class);
         GTRegistries.RECIPE_CONDITIONS.register(ThunderCondition.INSTANCE.getType(), ThunderCondition.class);
         GTRegistries.RECIPE_CONDITIONS.register(RockBreakerCondition.INSTANCE.getType(), RockBreakerCondition.class);
+        if (GTCEu.isCreateLoaded()) {
+            GTRegistries.RECIPE_CONDITIONS.register(RPMCondition.INSTANCE.getType(), RPMCondition.class);
+        }
     }
 
 }

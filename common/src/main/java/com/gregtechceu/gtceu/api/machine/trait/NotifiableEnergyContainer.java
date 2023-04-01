@@ -241,12 +241,6 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Long
         return sum <= 0 ? null : Collections.singletonList(sum);
     }
 
-    @Nullable
-    @Override
-    public Set<String> getSlotNames() {
-        return null;
-    }
-
     @Override
     public RecipeCapability<Long> getCapability() {
         return EURecipeCapability.CAP;

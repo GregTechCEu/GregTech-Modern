@@ -87,6 +87,9 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
     @Getter
     protected List<Function<CompoundTag, String>> dataInfos = new ArrayList<>();
     @Setter
+    @Getter
+    protected int maxConditions;
+    @Setter
     @Nullable
     protected BiConsumer<GTRecipe, WidgetGroup> uiBuilder;
     @Setter
@@ -300,7 +303,7 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
     }
 
     public Size getJEISize() {
-        return new Size(176, (dataInfos.size() + 3) * 10 + 5 + createDefaultUITemplate(true).getSize().height);
+        return new Size(176, (dataInfos.size() + 3 + maxConditions) * 10 + 5 + createDefaultUITemplate(true).getSize().height);
     }
 
     /**
@@ -429,6 +432,7 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
         }
         for (int i = 0; i < fluidCount; i++) {
             var tank = new TankWidget();
+            tank.setFillDirection(ProgressTexture.FillDirection.ALWAYS_FULL);
             tank.setSelfPosition(new Position((index % 3) * 18 + 4, (index / 3) * 18 + 4));
             tank.setIngredientIO(isOutputs ? IngredientIO.OUTPUT : IngredientIO.INPUT);
             tank.setBackground(getOverlaysForSlot(isOutputs, true, i == fluidCount - 1, false, false));

@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.pattern;
 
 import com.gregtechceu.gtceu.api.block.ActiveBlock;
+import com.gregtechceu.gtceu.api.block.IMachineBlock;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
@@ -45,6 +46,10 @@ public class Predicates {
         return new TraceabilityPredicate(new PredicateBlocks(blocks));
     }
 
+    public static TraceabilityPredicate blocks(IMachineBlock... blocks) {
+        return new TraceabilityPredicate(new PredicateBlocks(Arrays.stream(blocks).map(IMachineBlock::self).toArray(Block[]::new)));
+    }
+
     public static TraceabilityPredicate fluids(Fluid... fluids) {
         return new TraceabilityPredicate(new PredicateFluids(fluids));
     }
@@ -70,7 +75,7 @@ public class Predicates {
 
     public static TraceabilityPredicate autoAbilities(GTRecipeType recipeType,
                                                       boolean checkEnergyIn,
-                                                      boolean checkEnergOut,
+                                                      boolean checkEnergyOut,
                                                       boolean checkItemIn,
                                                       boolean checkItemOut,
                                                       boolean checkFluidIn,
@@ -81,7 +86,7 @@ public class Predicates {
                 predicate = predicate.or(abilities(PartAbility.INPUT_ENERGY).setMaxGlobalLimited(3).setPreviewCount(1));
             }
         }
-        if (checkEnergOut) {
+        if (checkEnergyOut) {
             if (recipeType.getMaxOutputs(EURecipeCapability.CAP) > 0) {
                 predicate = predicate.or(abilities(PartAbility.OUTPUT_ENERGY).setMaxGlobalLimited(3).setPreviewCount(1));
             }

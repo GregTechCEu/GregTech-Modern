@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
-import com.gregtechceu.gtceu.api.machine.IMetaMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
@@ -45,7 +45,7 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IUIMac
     @Nullable
     protected ISubscription tankSubs;
 
-    public FluidHatchPartMachine(IMetaMachineBlockEntity holder, int tier, IO io, Object... args) {
+    public FluidHatchPartMachine(IMachineBlockEntity holder, int tier, IO io, Object... args) {
         super(holder, tier, io);
         this.tank = createTank(args);
     }
@@ -138,9 +138,9 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IUIMac
                 .background(GuiTextures.BACKGROUND)
                 .widget(new ImageWidget(7, 16, 81, 55, GuiTextures.DISPLAY))
                 .widget(new LabelWidget(11, 20, "gtceu.gui.fluid_amount"))
-                .widget(new LabelWidget(11, 30, () -> tank.getFluidInTank(0).getAmount() + "").setTextColor(-1).setDropShadow(true))
+                .widget(new LabelWidget(11, 30, () -> String.valueOf(tank.getFluidInTank(0).getAmount())).setTextColor(-1).setDropShadow(true))
                 .widget(new LabelWidget(6, 6, getBlockState().getBlock().getDescriptionId()))
-                .widget(new TankWidget(tank.storages[0], 90, 35, true, true)
+                .widget(new TankWidget(tank.storages[0], 90, 35, true, io.support(IO.IN))
                         .setBackground(GuiTextures.FLUID_SLOT))
                 .widget(new ToggleButtonWidget(7, 53, 18, 18,
                         GuiTextures.BUTTON_FLUID_OUTPUT, this::isWorkingEnabled, this::setWorkingEnabled)

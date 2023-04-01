@@ -2,11 +2,7 @@ package com.gregtechceu.gtceu.api.machine;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
-import com.gregtechceu.gtceu.api.capability.IControllable;
-import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
-import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.UITemplate;
 import com.gregtechceu.gtceu.api.gui.widget.PredicatedButtonWidget;
@@ -33,7 +29,6 @@ import com.mojang.blaze3d.MethodsReturnNonnullByDefault;
 import it.unimi.dsi.fastutil.ints.Int2LongFunction;
 import lombok.Getter;
 import lombok.Setter;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -81,7 +76,7 @@ public class SimpleTieredMachine extends WorkableTieredMachine implements IAutoO
     @Nullable
     protected ISubscription exportItemSubs, exportFluidSubs, energySubs;
 
-    public SimpleTieredMachine(IMetaMachineBlockEntity holder, int tier, Int2LongFunction tankScalingFunction, Object... args) {
+    public SimpleTieredMachine(IMachineBlockEntity holder, int tier, Int2LongFunction tankScalingFunction, Object... args) {
         super(holder, tier, tankScalingFunction, args);
         this.outputFacingItems = hasFrontFacing() ? getFrontFacing().getOpposite() : Direction.UP;
         this.outputFacingFluids = outputFacingItems;
@@ -317,36 +312,35 @@ public class SimpleTieredMachine extends WorkableTieredMachine implements IAutoO
     public ModularUI createUI(Player entityPlayer) {
         var group = recipeType.createUITemplate(recipeLogic::getProgressPercent, importItems.storage, exportItems.storage, importFluids.storages, exportFluids.storages);
         var size = group.getSize();
-        var yOffset = 2 + size.height - 40;
         group.setSelfPosition(new Position((176 - size.width) / 2, 20));
-        var modularUI = new ModularUI(176, 166 + yOffset, this, entityPlayer)
+        var modularUI = new ModularUI(176, 128 + size.height, this, entityPlayer)
                 .background(GuiTextures.BACKGROUND)
                 .widget(group)
                 .widget(new LabelWidget(5, 5, getBlockState().getBlock().getDescriptionId()))
-                .widget(new SlotWidget(chargerInventory, 0, 79, 62 + yOffset, true, true)
+                .widget(new SlotWidget(chargerInventory, 0, 79, 24 + size.height, true, true)
                         .setBackground(GuiTextures.SLOT, GuiTextures.CHARGER_OVERLAY)
                         .setHoverTooltips(LangHandler.getMultiLang("gtceu.gui.charger_slot.tooltip", GTValues.VNF[getTier()], GTValues.VNF[getTier()])))
                 .widget(new PredicatedImageWidget(79, (size.height - 18) / 2 + 20, 18, 18, new ResourceTexture("gtceu:textures/gui/base/indicator_no_energy.png"))
                         .setPredicate(recipeLogic::isHasNotEnoughEnergy))
-                .widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(), GuiTextures.SLOT, 7, 84 + yOffset, true));
+                .widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(), GuiTextures.SLOT, 7, 46 + size.height, true));
 
         int leftButtonStartX = 7;
         if (exportItems.getSlots() > 0) {
-            modularUI.widget(new ToggleButtonWidget(leftButtonStartX, 62 + yOffset, 18, 18,
+            modularUI.widget(new ToggleButtonWidget(leftButtonStartX, 24 + size.height, 18, 18,
                     GuiTextures.BUTTON_ITEM_OUTPUT, this::isAutoOutputItems, this::setAutoOutputItems)
                     .setShouldUseBaseBackground()
                     .setTooltipText("gtceu.gui.item_auto_output.tooltip"));
             leftButtonStartX += 18;
         }
         if (exportFluids.getTanks() > 0) {
-            modularUI.widget(new ToggleButtonWidget(leftButtonStartX, 62 + yOffset, 18, 18,
+            modularUI.widget(new ToggleButtonWidget(leftButtonStartX, 24 + size.height, 18, 18,
                     GuiTextures.BUTTON_FLUID_OUTPUT, this::isAutoOutputFluids, this::setAutoOutputFluids)
                     .setShouldUseBaseBackground()
                     .setTooltipText("gtceu.gui.fluid_auto_output.tooltip"));
             leftButtonStartX += 18;
         }
 
-        modularUI.widget(new CycleButtonWidget(leftButtonStartX, 62 + yOffset, 18, 18, getMaxOverclockTier() + 1,
+        modularUI.widget(new CycleButtonWidget(leftButtonStartX, 24 + size.height, 18, 18, getMaxOverclockTier() + 1,
                 index -> new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON, new TextTexture(GTValues.VNF[index])), index -> {
             overclockTier = index;
             if (!isRemote()) {
@@ -355,11 +349,11 @@ public class SimpleTieredMachine extends WorkableTieredMachine implements IAutoO
         }).setIndexSupplier(() -> overclockTier).setHoverTooltips(LangHandler.getMultiLang("gtceu.gui.overclock.description")));
 
         if (exportItems.storage.getSlots() + exportFluids.storages.length <= 9) {
-            SlotWidget circuitSlot = new SlotWidget(circuitInventory.storage, 0, 124, 62 + yOffset, true, true)
+            SlotWidget circuitSlot = new SlotWidget(circuitInventory.storage, 0, 124, 24 + size.height, true, true)
                     .setBackgroundTexture(new GuiTextureGroup(GuiTextures.SLOT, getCircuitSlotOverlay()));
             modularUI.widget(getCircuitSlotTooltip(circuitSlot))
-                    .widget(new ImageWidget(152, 63 + yOffset, 17, 17, GTValues.XMAS.get() ? GuiTextures.GREGTECH_LOGO_XMAS : GuiTextures.GREGTECH_LOGO))
-                    .widget(new PredicatedButtonWidget(115, 62 + yOffset, 9, 9, GuiTextures.BUTTON_INT_CIRCUIT_PLUS, clickData -> {
+                    .widget(new ImageWidget(152, 24 + size.height, 18, 18, GTValues.XMAS.get() ? GuiTextures.GREGTECH_LOGO_XMAS : GuiTextures.GREGTECH_LOGO))
+                    .widget(new PredicatedButtonWidget(115, 24 + size.height, 9, 9, GuiTextures.BUTTON_INT_CIRCUIT_PLUS, clickData -> {
                         if (!clickData.isRemote) {
                             ItemStack stack = circuitInventory.storage.getStackInSlot(0).copy();
                             if (IntCircuitBehaviour.isIntegratedCircuit(stack)) {
@@ -368,7 +362,7 @@ public class SimpleTieredMachine extends WorkableTieredMachine implements IAutoO
                             }
                         }
                     }).setPredicate(() -> IntCircuitBehaviour.isIntegratedCircuit(circuitInventory.storage.getStackInSlot(0))))
-                    .widget(new PredicatedButtonWidget(115, 71 + yOffset, 9, 9, GuiTextures.BUTTON_INT_CIRCUIT_MINUS, clickData -> {
+                    .widget(new PredicatedButtonWidget(115, 33 + size.height, 9, 9, GuiTextures.BUTTON_INT_CIRCUIT_MINUS, clickData -> {
                         if (!clickData.isRemote) {
                             ItemStack stack = circuitInventory.storage.getStackInSlot(0).copy();
                             if (IntCircuitBehaviour.isIntegratedCircuit(stack)) {

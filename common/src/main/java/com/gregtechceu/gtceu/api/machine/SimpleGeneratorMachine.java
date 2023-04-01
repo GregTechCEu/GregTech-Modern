@@ -1,10 +1,8 @@
 package com.gregtechceu.gtceu.api.machine;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.UITemplate;
 import com.gregtechceu.gtceu.api.gui.widget.PredicatedImageWidget;
@@ -35,7 +33,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class SimpleGeneratorMachine extends WorkableTieredMachine implements IUIMachine {
 
-    public SimpleGeneratorMachine(IMetaMachineBlockEntity holder, int tier, Int2LongFunction tankScalingFunction, Object... args) {
+    public SimpleGeneratorMachine(IMachineBlockEntity holder, int tier, Int2LongFunction tankScalingFunction, Object... args) {
         super(holder, tier, tankScalingFunction, args);
     }
 
@@ -102,19 +100,18 @@ public class SimpleGeneratorMachine extends WorkableTieredMachine implements IUI
     public ModularUI createUI(Player entityPlayer) {
         var group = recipeType.createUITemplate(recipeLogic::getProgressPercent, importItems.storage, exportItems.storage, importFluids.storages, exportFluids.storages);
         var size = group.getSize();
-        var yOffset = 2 + size.height - 40;
         group.setSelfPosition(new Position((176 - size.width) / 2, 20));
-        var modularUI = new ModularUI(176, 166 + yOffset, this, entityPlayer)
+        var modularUI = new ModularUI(176, 128 + size.height, this, entityPlayer)
                 .background(GuiTextures.BACKGROUND)
                 .widget(group)
                 .widget(new LabelWidget(5, 5, getBlockState().getBlock().getDescriptionId()))
                 .widget(new PredicatedImageWidget(79, (size.height - 18) / 2 + 20, 18, 18, new ResourceTexture("gtceu:textures/gui/base/indicator_no_energy.png"))
                         .setPredicate(recipeLogic::isHasNotEnoughEnergy))
-                .widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(), GuiTextures.SLOT, 7, 84 + yOffset, true));
+                .widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(), GuiTextures.SLOT, 7, 46 + size.height, true));
 
         int leftButtonStartX = 7;
 
-        modularUI.widget(new CycleButtonWidget(leftButtonStartX, 62 + yOffset, 18, 18, getMaxOverclockTier() + 1,
+        modularUI.widget(new CycleButtonWidget(leftButtonStartX, 24 + size.height, 18, 18, getMaxOverclockTier() + 1,
                 index -> new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON, new TextTexture(GTValues.VNF[index])), index -> {
             overclockTier = index;
             if (!isRemote()) {

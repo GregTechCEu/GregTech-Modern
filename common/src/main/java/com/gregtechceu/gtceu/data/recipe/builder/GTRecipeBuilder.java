@@ -3,8 +3,7 @@ package com.gregtechceu.gtceu.data.recipe.builder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
-import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
+import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
@@ -12,8 +11,6 @@ import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeSerializer;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.common.recipe.*;
-import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
-import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
@@ -353,6 +350,14 @@ public class GTRecipeBuilder {
         return output(FluidRecipeCapability.CAP, outputs);
     }
 
+    public GTRecipeBuilder inputStress(float stress) {
+        return input(StressRecipeCapability.CAP, stress);
+    }
+
+    public GTRecipeBuilder outputStress(float stress) {
+        return output(StressRecipeCapability.CAP, stress);
+    }
+
     //////////////////////////////////////
     //**********     DATA    ***********//
     //////////////////////////////////////
@@ -443,6 +448,14 @@ public class GTRecipeBuilder {
 
     public GTRecipeBuilder posY(int min, int max) {
         return posY(min, max, false);
+    }
+
+    public GTRecipeBuilder rpm(float rpm, boolean reverse) {
+        return addCondition(new RPMCondition(rpm).setReverse(reverse));
+    }
+
+    public GTRecipeBuilder rpm(float rpm) {
+        return rpm(rpm, false);
     }
 
     public void toJson(JsonObject json) {

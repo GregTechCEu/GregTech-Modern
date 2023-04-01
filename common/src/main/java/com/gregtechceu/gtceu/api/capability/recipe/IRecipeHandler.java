@@ -46,7 +46,9 @@ public interface IRecipeHandler<K> {
     }
 
     @Nullable
-    Set<String> getSlotNames();
+    default Set<String> getSlotNames() {
+        return null;
+    }
     
     RecipeCapability<K> getCapability();
 

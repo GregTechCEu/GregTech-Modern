@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.machine.multiblock.part;
 
-import com.gregtechceu.gtceu.api.machine.IMetaMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.trait.IRecipeHandlerTrait;
@@ -31,7 +31,7 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
     @DescSynced
     protected final Set<BlockPos> controllerPositions;
 
-    public MultiblockPartMachine(IMetaMachineBlockEntity holder) {
+    public MultiblockPartMachine(IMachineBlockEntity holder) {
         super(holder);
         this.controllerPositions = new HashSet<>();
         if (isRemote()) {

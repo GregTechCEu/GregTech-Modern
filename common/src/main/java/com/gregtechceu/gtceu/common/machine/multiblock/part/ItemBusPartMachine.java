@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.UITemplate;
 import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
-import com.gregtechceu.gtceu.api.machine.IMetaMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineModifyDrops;
 import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
@@ -47,7 +47,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IMachineM
     @Nullable
     protected ISubscription inventorySubs;
 
-    public ItemBusPartMachine(IMetaMachineBlockEntity holder, int tier, IO io, Object... args) {
+    public ItemBusPartMachine(IMachineBlockEntity holder, int tier, IO io, Object... args) {
         super(holder, tier, io);
         this.inventory = createInventory(args);
     }
@@ -158,7 +158,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IMachineM
             for (int x = 0; x < rowSize; x++) {
                 int index = y * rowSize + x;
                 modular.widget(new SlotWidget(inventory.storage, index,
-                        (88 - rowSize * 9 + x * 18) + xOffset, 18 + y * 18, true, io == IO.BOTH || io == IO.IN)
+                        (88 - rowSize * 9 + x * 18) + xOffset, 18 + y * 18, true, io.support(IO.IN))
                         .setBackgroundTexture(GuiTextures.SLOT));
             }
         }

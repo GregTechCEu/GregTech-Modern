@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.common.machine.multiblock.part;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.UITemplate;
-import com.gregtechceu.gtceu.api.machine.IMetaMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
@@ -29,7 +29,7 @@ public class SteamHatchPartMachine extends FluidHatchPartMachine implements IUIM
     public static final long INITIAL_TANK_CAPACITY = 64 * FluidHelper.getBucket();
     public static final boolean IS_STEEL = ConfigHolder.machines.steelSteamMultiblocks;
 
-    public SteamHatchPartMachine(IMetaMachineBlockEntity holder, Object... args) {
+    public SteamHatchPartMachine(IMachineBlockEntity holder, Object... args) {
         super(holder, 0, IO.IN, args);
     }
 

@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.item.DrumMachineItem;
-import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.machine.*;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
@@ -53,7 +52,6 @@ import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.ints.Int2LongFunction;
 import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.Object2LongArrayMap;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -726,8 +724,8 @@ public class GTMachines {
     //////////////////////////////////////
     //**********     Misc     **********//
     //////////////////////////////////////
-    public static Pair<MachineDefinition, MachineDefinition> registerSteamMachines(String name, BiFunction<IMetaMachineBlockEntity, Boolean, MetaMachine> factory,
-                                              BiFunction<Boolean, MachineBuilder, MachineDefinition> builder) {
+    public static Pair<MachineDefinition, MachineDefinition> registerSteamMachines(String name, BiFunction<IMachineBlockEntity, Boolean, MetaMachine> factory,
+                                              BiFunction<Boolean, MachineBuilder<MachineDefinition>, MachineDefinition> builder) {
         MachineDefinition lowTier = builder.apply(false, REGISTRATE.machine(name + "." + "bronze", holder -> factory.apply(holder, false))
                 .langValue("Small " + name)
                 .tier(0));
@@ -738,8 +736,8 @@ public class GTMachines {
     }
 
     public static MachineDefinition[] registerTieredMachines(String name,
-                                                              BiFunction<IMetaMachineBlockEntity, Integer, MetaMachine> factory,
-                                                              BiFunction<Integer, MachineBuilder, MachineDefinition> builder,
+                                                              BiFunction<IMachineBlockEntity, Integer, MetaMachine> factory,
+                                                              BiFunction<Integer, MachineBuilder<MachineDefinition>, MachineDefinition> builder,
                                                               int... tiers) {
         MachineDefinition[] definitions = new MachineDefinition[tiers.length];
         for (int i = 0; i < tiers.length; i++) {
@@ -854,7 +852,7 @@ public class GTMachines {
 
     public static MachineDefinition registerDrum(Material material, int capacity, String lang) {
         boolean wooden = GTMaterials.Wood.equals(material) || GTMaterials.TreatedWood.equals(material);
-        var definition = REGISTRATE.machine("drum." + material, holder -> new DrumMachine(holder, material, capacity), MetaMachineBlock::new, DrumMachineItem::create, MachineBuilder::createBlockEntity)
+        var definition = REGISTRATE.machine("drum." + material, MachineDefinition::createDefinition, holder -> new DrumMachine(holder, material, capacity), MetaMachineBlock::new, DrumMachineItem::create, MetaMachineBlockEntity::createBlockEntity)
                 .langValue(lang)
                 .rotationState(RotationState.NONE)
                 .renderer(() -> new MachineRenderer(GTCEu.id("block/machine/" + (wooden ? "wooden" : "metal") + "_drum")))
@@ -884,6 +882,9 @@ public class GTMachines {
     }
 
     public static void init() {
+        if (GTCEu.isCreateLoaded()) {
+            new GTCreateMachines();
+        }
         if (GTCEu.isKubeJSLoaded()) {
             new MachineEventJS().post();
         }

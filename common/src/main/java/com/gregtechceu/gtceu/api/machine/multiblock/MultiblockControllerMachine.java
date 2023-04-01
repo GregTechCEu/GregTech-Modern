@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.api.machine.multiblock;
 
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.pattern.MultiblockState;
-import com.gregtechceu.gtceu.api.machine.IMetaMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
@@ -42,7 +42,7 @@ public class MultiblockControllerMachine extends MetaMachine implements IMultiCo
     @DescSynced
     protected boolean isFormed;
 
-    public MultiblockControllerMachine(IMetaMachineBlockEntity holder) {
+    public MultiblockControllerMachine(IMachineBlockEntity holder) {
         super(holder);
         if (isRemote()) {
             addSyncUpdateListener("isFormed", this::scheduleRender);

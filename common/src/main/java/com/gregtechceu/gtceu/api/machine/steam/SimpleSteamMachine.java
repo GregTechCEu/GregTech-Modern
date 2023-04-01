@@ -12,7 +12,7 @@ import com.gregtechceu.gtceu.api.data.damagesource.DamageSources;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.UITemplate;
 import com.gregtechceu.gtceu.api.gui.widget.PredicatedImageWidget;
-import com.gregtechceu.gtceu.api.machine.IMetaMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
@@ -55,7 +55,7 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IMachine
     @Persisted
     public final NotifiableItemStackHandler exportItems;
 
-    public SimpleSteamMachine(IMetaMachineBlockEntity holder, boolean isHighPressure, Object... args) {
+    public SimpleSteamMachine(IMachineBlockEntity holder, boolean isHighPressure, Object... args) {
         super(holder, isHighPressure, args);
         this.importItems = createImportItemHandler(args);
         this.exportItems = createExportItemHandler(args);

@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.pattern.error.PatternError;
 import com.gregtechceu.gtceu.api.pattern.error.SinglePredicateError;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
-import com.gregtechceu.gtceu.api.machine.IMetaMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.pattern.error.PatternStringError;
@@ -116,7 +116,7 @@ public class BlockPattern {
                             }
                         }
                         boolean canPartShared = true;
-                        if (worldState.getTileEntity() instanceof IMetaMachineBlockEntity machineBlockEntity && machineBlockEntity.getMetaMachine() instanceof IMultiPart part) { // add detected parts
+                        if (worldState.getTileEntity() instanceof IMachineBlockEntity machineBlockEntity && machineBlockEntity.getMetaMachine() instanceof IMultiPart part) { // add detected parts
                             if (!predicate.isAny()) {
                                 if (part.isFormed() && !part.canShared() && !part.hasController(worldState.controllerPos)) { // check part can be shared
                                     canPartShared = false;
@@ -293,7 +293,7 @@ public class BlockPattern {
                             BlockItem itemBlock = (BlockItem) found.getItem();
                             BlockPlaceContext context = new BlockPlaceContext(world, player, InteractionHand.MAIN_HAND, found, BlockHitResult.miss(player.getEyePosition(0), Direction.UP, pos));
                             itemBlock.place(context);
-                            if (world.getBlockEntity(pos) instanceof IMetaMachineBlockEntity machineBlockEntity) {
+                            if (world.getBlockEntity(pos) instanceof IMachineBlockEntity machineBlockEntity) {
                                 blocks.put(pos, machineBlockEntity.getMetaMachine());
                             } else {
                                 blocks.put(pos, world.getBlockState(pos));
@@ -470,7 +470,7 @@ public class BlockPattern {
                 BlockInfo blockInfo = blocks.get(p.relative(f));
                 if (blockInfo == null || blockInfo.getBlockState().getBlock() == Blocks.AIR) {
                     if (blocks.get(pos).getBlockState().getBlock() instanceof MetaMachineBlock machineBlock) {
-                        if (machineBlock.newBlockEntity(BlockPos.ZERO, machineBlock.defaultBlockState()) instanceof IMetaMachineBlockEntity machineBlockEntity) {
+                        if (machineBlock.newBlockEntity(BlockPos.ZERO, machineBlock.defaultBlockState()) instanceof IMachineBlockEntity machineBlockEntity) {
                             var machine = machineBlockEntity.getMetaMachine();
                             if (machine instanceof IMultiController) {
                                 return false;

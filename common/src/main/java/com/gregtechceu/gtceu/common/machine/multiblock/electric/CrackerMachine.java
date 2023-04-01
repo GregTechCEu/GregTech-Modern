@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.electric;
 
-import com.gregtechceu.gtceu.api.machine.IMetaMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
@@ -28,7 +28,7 @@ public class CrackerMachine extends WorkableElectricMultiblockMachine {
     @Getter
     private int coilTier;
 
-    public CrackerMachine(IMetaMachineBlockEntity holder) {
+    public CrackerMachine(IMachineBlockEntity holder) {
         super(holder);
     }
 

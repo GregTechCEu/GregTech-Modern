@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.machine.multiblock;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.machine.IMetaMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDisplayUIMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -30,7 +30,7 @@ import java.util.List;
 @MethodsReturnNonnullByDefault
 public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine implements IDisplayUIMachine, ITieredMachine {
 
-    public WorkableElectricMultiblockMachine(IMetaMachineBlockEntity holder) {
+    public WorkableElectricMultiblockMachine(IMachineBlockEntity holder) {
         super(holder);
     }
 

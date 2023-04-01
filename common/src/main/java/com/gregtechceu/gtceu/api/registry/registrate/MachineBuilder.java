@@ -2,12 +2,12 @@ package com.gregtechceu.gtceu.api.registry.registrate;
 
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
-import com.gregtechceu.gtceu.api.machine.IMetaMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.client.renderer.machine.*;
-import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
+import com.gregtechceu.gtceu.api.block.IMachineBlock;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
@@ -20,8 +20,8 @@ import com.tterrag.registrate.builders.BlockBuilder;
 import com.tterrag.registrate.builders.ItemBuilder;
 import com.tterrag.registrate.providers.ProviderType;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
+import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import com.tterrag.registrate.util.nullness.NonNullUnaryOperator;
-import dev.architectury.injectables.annotations.ExpectPlatform;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -33,6 +33,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
@@ -56,14 +57,15 @@ import java.util.function.*;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 @Accessors(chain = true, fluent = true)
-public class MachineBuilder {
+public class MachineBuilder<DEFINITION extends MachineDefinition> {
 
     protected final Registrate registrate;
     protected final String name;
-    protected final BiFunction<BlockBehaviour.Properties, MachineDefinition, MetaMachineBlock> blockFactory;
-    protected final BiFunction<MetaMachineBlock, Item.Properties, MetaMachineItem> itemFactory;
-    protected final TriFunction<BlockEntityType<?>, BlockPos, BlockState, MetaMachineBlockEntity> blockEntityFactory;
-    protected final Function<IMetaMachineBlockEntity, MetaMachine> metaMachine;
+    protected final BiFunction<BlockBehaviour.Properties, DEFINITION, IMachineBlock> blockFactory;
+    protected final BiFunction<IMachineBlock, Item.Properties, MetaMachineItem> itemFactory;
+    protected final TriFunction<BlockEntityType<?>, BlockPos, BlockState, IMachineBlockEntity> blockEntityFactory;
+    protected final Function<IMachineBlockEntity, MetaMachine> metaMachine;
+    protected final Function<ResourceLocation, DEFINITION> definitionFactory;
     @Nullable
     @Setter
     private Supplier<IRenderer> renderer;
@@ -78,9 +80,11 @@ public class MachineBuilder {
     @Setter
     private NonNullUnaryOperator<Item.Properties> itemProp = p -> p;
     @Setter
-    private Consumer<BlockBuilder<? extends MetaMachineBlock, ?>> blockBuilder;
+    private Consumer<BlockBuilder<? extends Block, ?>> blockBuilder;
     @Setter
     private Consumer<ItemBuilder<? extends MetaMachineItem, ?>> itemBuilder;
+    @Setter
+    private NonNullConsumer<BlockEntityType<BlockEntity>> onBlockEntityRegister = MetaMachineBlockEntity::onBlockEntityRegister;
     @Setter
     private GTRecipeType recipeType;
     @Setter
@@ -99,92 +103,97 @@ public class MachineBuilder {
     @Setter
     private String langValue = null;
 
-    protected MachineBuilder(Registrate registrate, String name, Function<IMetaMachineBlockEntity, MetaMachine> metaMachine,
-                             BiFunction<BlockBehaviour.Properties, MachineDefinition, MetaMachineBlock> blockFactory,
-                             BiFunction<MetaMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
-                             TriFunction<BlockEntityType<?>, BlockPos, BlockState, MetaMachineBlockEntity> blockEntityFactory) {
+    protected MachineBuilder(Registrate registrate, String name,
+                             Function<ResourceLocation, DEFINITION> definitionFactory,
+                             Function<IMachineBlockEntity, MetaMachine> metaMachine,
+                             BiFunction<BlockBehaviour.Properties, DEFINITION, IMachineBlock> blockFactory,
+                             BiFunction<IMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
+                             TriFunction<BlockEntityType<?>, BlockPos, BlockState, IMachineBlockEntity> blockEntityFactory) {
         this.registrate = registrate;
         this.name = name;
         this.metaMachine = metaMachine;
         this.blockFactory = blockFactory;
         this.itemFactory = itemFactory;
         this.blockEntityFactory = blockEntityFactory;
+        this.definitionFactory = definitionFactory;
     }
 
-    public static MachineBuilder create(Registrate registrate, String name, Function<IMetaMachineBlockEntity, MetaMachine> metaMachine,
-                                        BiFunction<BlockBehaviour.Properties, MachineDefinition, MetaMachineBlock> blockFactory,
-                                        BiFunction<MetaMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
-                                        TriFunction<BlockEntityType<?>, BlockPos, BlockState, MetaMachineBlockEntity> blockEntityFactory) {
-        return new MachineBuilder(registrate, name, metaMachine, blockFactory, itemFactory, blockEntityFactory);
+    public static <DEFINITION extends MachineDefinition> MachineBuilder<DEFINITION> create(Registrate registrate, String name,
+                                                                                           Function<ResourceLocation, DEFINITION> definitionFactory,
+                                                                                           Function<IMachineBlockEntity, MetaMachine> metaMachine,
+                                                                                           BiFunction<BlockBehaviour.Properties, DEFINITION, IMachineBlock> blockFactory,
+                                                                                           BiFunction<IMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
+                                                                                           TriFunction<BlockEntityType<?>, BlockPos, BlockState, IMachineBlockEntity> blockEntityFactory) {
+        return new MachineBuilder<>(registrate, name, definitionFactory, metaMachine, blockFactory, itemFactory, blockEntityFactory);
     }
 
-    public MachineBuilder modelRenderer(Supplier<ResourceLocation> model) {
+    public MachineBuilder<DEFINITION> modelRenderer(Supplier<ResourceLocation> model) {
         this.renderer = () -> new MachineRenderer(model.get());
         return this;
     }
 
-    public MachineBuilder defaultModelRenderer() {
+    public MachineBuilder<DEFINITION> defaultModelRenderer() {
         return modelRenderer(() -> new ResourceLocation(registrate.getModid(), "block/" + name));
     }
 
-    public MachineBuilder overlayTieredHullRenderer(String name) {
+    public MachineBuilder<DEFINITION> overlayTieredHullRenderer(String name) {
         return renderer(() -> new OverlayTieredMachineRenderer(tier, new ResourceLocation(registrate.getModid(), "block/machine/part/" + name)));
     }
 
-    public MachineBuilder overlaySteamHullRenderer(String name) {
+    public MachineBuilder<DEFINITION> overlaySteamHullRenderer(String name) {
         return renderer(() -> new OverlaySteamMachineRenderer(new ResourceLocation(registrate.getModid(), "block/machine/part/" + name)));
     }
 
-    public MachineBuilder workableTieredHullRenderer(ResourceLocation workableModel) {
+    public MachineBuilder<DEFINITION> workableTieredHullRenderer(ResourceLocation workableModel) {
         return renderer(() -> new WorkableTieredHullMachineRenderer(tier, workableModel));
     }
 
-    public MachineBuilder workableSteamHullRenderer(boolean isHighPressure, ResourceLocation workableModel) {
+    public MachineBuilder<DEFINITION> workableSteamHullRenderer(boolean isHighPressure, ResourceLocation workableModel) {
         return renderer(() -> new WorkableSteamMachineRenderer(isHighPressure, workableModel));
     }
 
-    public MachineBuilder workableCasingRenderer(ResourceLocation baseCasing, ResourceLocation workableModel) {
+    public MachineBuilder<DEFINITION> workableCasingRenderer(ResourceLocation baseCasing, ResourceLocation workableModel) {
         return renderer(() -> new WorkableCasingMachineRenderer(baseCasing, workableModel));
     }
 
-    public MachineBuilder workableCasingRenderer(ResourceLocation baseCasing, ResourceLocation workableModel, boolean tint) {
+    public MachineBuilder<DEFINITION> workableCasingRenderer(ResourceLocation baseCasing, ResourceLocation workableModel, boolean tint) {
         return renderer(() -> new WorkableCasingMachineRenderer(baseCasing, workableModel, tint));
     }
 
-    public MachineBuilder appearanceBlock(Supplier<? extends Block> block) {
+    public MachineBuilder<DEFINITION> appearanceBlock(Supplier<? extends Block> block) {
         appearance = () -> block.get().defaultBlockState();
         return this;
     }
 
-    public MachineBuilder appearance(Supplier<BlockState> state) {
+    public MachineBuilder<DEFINITION> appearance(Supplier<BlockState> state) {
         appearance = state;
         return this;
     }
 
-    public MachineBuilder tooltips(Component... components) {
+    public MachineBuilder<DEFINITION> tooltips(Component... components) {
         tooltips.addAll(Arrays.stream(components).filter(Objects::nonNull).toList());
         return this;
     }
 
-    public MachineBuilder abilities(PartAbility... abilities) {
+    public MachineBuilder<DEFINITION> abilities(PartAbility... abilities) {
         this.abilities = abilities;
         return this;
     }
 
-    protected MachineDefinition createDefinition() {
-        return MachineDefinition.createDefinition(new ResourceLocation(registrate.getModid(), name));
+    protected DEFINITION createDefinition() {
+        return definitionFactory.apply(new ResourceLocation(registrate.getModid(), name));
     }
 
-    public MachineDefinition register() {
+    public DEFINITION register() {
         var definition = createDefinition();
 
         var blockBuilder = registrate.block(name, properties -> {
                     RotationState.set(rotationState);
                     var b = blockFactory.apply(properties, definition);
                     RotationState.clear();
-                    return b;
+                    return b.self();
                 })
-                .color(() -> () -> MetaMachineBlock::colorTinted)
+                .color(() -> () -> IMachineBlock::colorTinted)
                 .initialProperties(() -> Blocks.DISPENSER)
                 .addLayer(() -> RenderType::cutoutMipped)
                 .tag(GTToolType.WRENCH.harvestTag)
@@ -199,7 +208,7 @@ public class MachineBuilder {
         }
         var block = blockBuilder.register();
 
-        var itemBuilder = registrate.item(name, properties -> itemFactory.apply(block.get(), properties))
+        var itemBuilder = registrate.item(name, properties -> itemFactory.apply((IMachineBlock) block.get(), properties))
                 .setData(ProviderType.LANG, NonNullBiConsumer.noop()) // do not gen any lang keys
                 .model(NonNullBiConsumer.noop())
                 .properties(itemProp);
@@ -211,8 +220,8 @@ public class MachineBuilder {
         }
         var item = itemBuilder.register();
 
-        var blockEntityBuilder = registrate.blockEntity(name, blockEntityFactory::apply)
-                .onRegister(MachineBuilder::onBlockEntityRegister)
+        var blockEntityBuilder = registrate.blockEntity(name, (type, pos, state) -> blockEntityFactory.apply(type, pos, state).self())
+                .onRegister(onBlockEntityRegister)
                 .validBlock(block);
         if (hasTESR) {
             blockEntityBuilder = blockEntityBuilder.renderer(() -> GTRendererProvider::getOrCreate);
@@ -244,16 +253,6 @@ public class MachineBuilder {
         definition.setDefaultPaintingColor(paintingColor);
         GTRegistries.MACHINES.register(definition.getId(), definition);
         return definition;
-    }
-
-    @ExpectPlatform
-    private static void onBlockEntityRegister(BlockEntityType<MetaMachineBlockEntity> metaMachineBlockEntityBlockEntityType) {
-        throw new AssertionError();
-    }
-
-    @ExpectPlatform
-    public static MetaMachineBlockEntity createBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
-        throw new AssertionError();
     }
 
 }

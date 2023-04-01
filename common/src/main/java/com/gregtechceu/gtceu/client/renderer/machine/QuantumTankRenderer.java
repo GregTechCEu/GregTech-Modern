@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.client.renderer.machine;
 
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.machine.IMetaMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.common.machine.storage.QuantumTankMachine;
 import com.lowdragmc.lowdraglib.client.utils.RenderBufferUtils;
 import com.lowdragmc.lowdraglib.client.utils.RenderUtils;
@@ -59,7 +59,7 @@ public class QuantumTankRenderer extends TieredHullMachineRenderer {
     @Override
     @Environment(EnvType.CLIENT)
     public void render(BlockEntity blockEntity, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int combinedLight, int combinedOverlay) {
-        if (blockEntity instanceof IMetaMachineBlockEntity machineBlockEntity && machineBlockEntity.getMetaMachine() instanceof QuantumTankMachine machine) {
+        if (blockEntity instanceof IMachineBlockEntity machineBlockEntity && machineBlockEntity.getMetaMachine() instanceof QuantumTankMachine machine) {
             renderTank(poseStack, buffer, machine.getFrontFacing(), machine.getStored());
         }
     }

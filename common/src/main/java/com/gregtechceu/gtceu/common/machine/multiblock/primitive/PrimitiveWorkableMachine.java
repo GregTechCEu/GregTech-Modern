@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.primitive;
 
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
-import com.gregtechceu.gtceu.api.machine.IMetaMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineModifyDrops;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
@@ -38,7 +38,7 @@ public class PrimitiveWorkableMachine extends WorkableMultiblockMachine implemen
     @Persisted
     public final NotifiableFluidTank exportFluids;
 
-    public PrimitiveWorkableMachine(IMetaMachineBlockEntity holder, Object... args) {
+    public PrimitiveWorkableMachine(IMachineBlockEntity holder, Object... args) {
         super(holder, args);
         this.importItems = createImportItemHandler(args);
         this.exportItems = createExportItemHandler(args);

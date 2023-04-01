@@ -1,9 +1,10 @@
-package com.gregtechceu.gtceu.blockentity;
+package com.gregtechceu.gtceu.api.blockentity.forge;
 
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.IWorkable;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapabilities;
@@ -12,6 +13,7 @@ import com.lowdragmc.lowdraglib.side.fluid.forge.FluidTransferHelperImpl;
 import com.lowdragmc.lowdraglib.side.item.forge.ItemTransferHelperImpl;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
@@ -31,55 +33,68 @@ public class MetaMachineBlockEntityImpl extends MetaMachineBlockEntity {
         super(type, pos, blockState);
     }
 
+    public static MetaMachineBlockEntity createBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
+        return new MetaMachineBlockEntityImpl(type, pos, blockState);
+    }
+
     @Override
     public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
+        var result = getCapability(getMetaMachine(), cap, side);
+        return result == null ? super.getCapability(cap, side) : result;
+    }
+
+    @Nullable
+    public static <T> LazyOptional<T> getCapability(MetaMachine machine,  @NotNull Capability<T> cap, @Nullable Direction side) {
         if (cap == GTCapabilities.CAPABILITY_COVERABLE) {
-            return GTCapabilities.CAPABILITY_COVERABLE.orEmpty(cap, LazyOptional.of(() -> getMetaMachine().getCoverContainer()));
+            return GTCapabilities.CAPABILITY_COVERABLE.orEmpty(cap, LazyOptional.of(machine::getCoverContainer));
         } else if (cap == GTCapabilities.CAPABILITY_TOOLABLE) {
-            return GTCapabilities.CAPABILITY_TOOLABLE.orEmpty(cap, LazyOptional.of(this::getMetaMachine));
+            return GTCapabilities.CAPABILITY_TOOLABLE.orEmpty(cap, LazyOptional.of(() -> machine));
         } else if (cap == GTCapabilities.CAPABILITY_WORKABLE) {
-            if (getMetaMachine() instanceof IWorkable workable) {
+            if (machine instanceof IWorkable workable) {
                 return GTCapabilities.CAPABILITY_WORKABLE.orEmpty(cap, LazyOptional.of(() -> workable));
             }
-            for (MachineTrait trait : getMetaMachine().getTraits()) {
+            for (MachineTrait trait : machine.getTraits()) {
                 if (trait instanceof IWorkable workable) {
                     return GTCapabilities.CAPABILITY_WORKABLE.orEmpty(cap, LazyOptional.of(() -> workable));
                 }
             }
         } else if (cap == GTCapabilities.CAPABILITY_CONTROLLABLE) {
-            if (getMetaMachine() instanceof IControllable controllable) {
+            if (machine instanceof IControllable controllable) {
                 return GTCapabilities.CAPABILITY_CONTROLLABLE.orEmpty(cap, LazyOptional.of(() -> controllable));
             }
-            for (MachineTrait trait : getMetaMachine().getTraits()) {
+            for (MachineTrait trait : machine.getTraits()) {
                 if (trait instanceof IControllable controllable) {
                     return GTCapabilities.CAPABILITY_CONTROLLABLE.orEmpty(cap, LazyOptional.of(() -> controllable));
                 }
             }
         } else if (cap == GTCapabilities.CAPABILITY_RECIPE_LOGIC) {
-            for (MachineTrait trait : getMetaMachine().getTraits()) {
+            for (MachineTrait trait : machine.getTraits()) {
                 if (trait instanceof RecipeLogic recipeLogic) {
                     return GTCapabilities.CAPABILITY_RECIPE_LOGIC.orEmpty(cap, LazyOptional.of(() -> recipeLogic));
                 }
             }
         } else if (cap == GTCapabilities.CAPABILITY_ENERGY_CONTAINER) {
-            if (getMetaMachine() instanceof IEnergyContainer energyContainer) {
+            if (machine instanceof IEnergyContainer energyContainer) {
                 return GTCapabilities.CAPABILITY_ENERGY_CONTAINER.orEmpty(cap, LazyOptional.of(() -> energyContainer));
             }
-            var list = getMetaMachine().getTraits().stream().filter(IEnergyContainer.class::isInstance).filter(t -> t.hasCapability(side)).map(IEnergyContainer.class::cast).toList();
+            var list = machine.getTraits().stream().filter(IEnergyContainer.class::isInstance).filter(t -> t.hasCapability(side)).map(IEnergyContainer.class::cast).toList();
             if (!list.isEmpty()) {
                 return GTCapabilities.CAPABILITY_ENERGY_CONTAINER.orEmpty(cap, LazyOptional.of(() -> list.size() == 1 ? list.get(0) : new EnergyContainerList(list)));
             }
         } else if (cap == ForgeCapabilities.ITEM_HANDLER) {
-            var transfer = getMetaMachine().getItemTransferCap(side);
+            var transfer = machine.getItemTransferCap(side);
             if (transfer != null) {
                 return ForgeCapabilities.ITEM_HANDLER.orEmpty(cap, LazyOptional.of(() -> ItemTransferHelperImpl.toItemHandler(transfer)));
             }
         } else if (cap == ForgeCapabilities.FLUID_HANDLER) {
-            var transfer = getMetaMachine().getFluidTransferCap(side);
+            var transfer = machine.getFluidTransferCap(side);
             if (transfer != null) {
                 return ForgeCapabilities.FLUID_HANDLER.orEmpty(cap, LazyOptional.of(() -> FluidTransferHelperImpl.toFluidHandler(transfer)));
             }
         }
-        return super.getCapability(cap, side);
+        return null;
+    }
+
+    public static void onBlockEntityRegister(BlockEntityType<BlockEntity> metaMachineBlockEntityBlockEntityType) {
     }
 }

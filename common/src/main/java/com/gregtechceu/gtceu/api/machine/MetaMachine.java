@@ -83,7 +83,7 @@ public class MetaMachine implements IManaged, IToolable, ITickSubscription, IApp
     @Getter
     private final FieldManagedStorage syncStorage = new FieldManagedStorage(this);
     @Getter
-    public final IMetaMachineBlockEntity holder;
+    public final IMachineBlockEntity holder;
     @Getter
     @DescSynced
     @Persisted(key = "cover")
@@ -93,7 +93,7 @@ public class MetaMachine implements IManaged, IToolable, ITickSubscription, IApp
     private final List<TickableSubscription> serverTicks;
     private final List<TickableSubscription> waitingToAdd;
 
-    public MetaMachine(IMetaMachineBlockEntity holder) {
+    public MetaMachine(IMachineBlockEntity holder) {
         this.holder = holder;
         this.coverContainer = new MachineCoverContainer(this);
         this.traits = new ArrayList<>();
@@ -330,7 +330,7 @@ public class MetaMachine implements IManaged, IToolable, ITickSubscription, IApp
 
     @Nullable
     public static MetaMachine getMachine(BlockGetter level, BlockPos pos) {
-        if (level.getBlockEntity(pos) instanceof IMetaMachineBlockEntity machineBlockEntity) {
+        if (level.getBlockEntity(pos) instanceof IMachineBlockEntity machineBlockEntity) {
             return machineBlockEntity.getMetaMachine();
         }
         return null;

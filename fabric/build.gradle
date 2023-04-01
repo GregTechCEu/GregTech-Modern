@@ -87,7 +87,7 @@ dependencies {
     modImplementation(include("com.tterrag.registrate_fabric:Registrate:${fabric.versions.registrate.get()}"))
 
     // Create - dependencies are added transitively
-    modCompileOnly fabric.createFabric
+    modImplementation fabric.createFabric
 
     // Development QOL
     modCompileOnly fabric.lazydfu
