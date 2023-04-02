@@ -1,12 +1,10 @@
 package com.gregtechceu.gtceu.api.blockentity.fabric;
 
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
-import com.gregtechceu.gtceu.api.capability.IControllable;
-import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
-import com.gregtechceu.gtceu.api.capability.IWorkable;
+import com.gregtechceu.gtceu.api.capability.*;
 import com.gregtechceu.gtceu.api.capability.fabric.GTCapability;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
-import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.lowdragmc.lowdraglib.side.fluid.fabric.FluidTransferHelperImpl;
@@ -17,6 +15,10 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Function;
 
 /**
  * @author KilaBash
@@ -33,54 +35,103 @@ public class MetaMachineBlockEntityImpl extends MetaMachineBlockEntity {
         return new MetaMachineBlockEntityImpl(type, pos, blockState);
     }
 
-    public static void onBlockEntityRegister(BlockEntityType<BlockEntity> type) {
-        GTCapability.CAPABILITY_COVERABLE.registerForBlockEntity((blockEntity, direction) -> ((IMachineBlockEntity)blockEntity).getMetaMachine().getCoverContainer(), type);
-        GTCapability.CAPABILITY_TOOLABLE.registerForBlockEntity((blockEntity, direction) -> ((IMachineBlockEntity)blockEntity).getMetaMachine(), type);
-        GTCapability.CAPABILITY_WORKABLE.registerForBlockEntity((blockEntity, direction) -> {
-            if (((IMachineBlockEntity)blockEntity).getMetaMachine() instanceof IWorkable workable) {
-                return workable;
-            }
-            for (MachineTrait trait : ((IMachineBlockEntity)blockEntity).getMetaMachine().getTraits()) {
-                if (trait instanceof IWorkable workable) {
-                    return workable;
-                }
-            }
-            return null;
-        }, type);
-        GTCapability.CAPABILITY_CONTROLLABLE.registerForBlockEntity((blockEntity, direction) -> {
-            if (((IMachineBlockEntity)blockEntity).getMetaMachine() instanceof IControllable controllable) {
-                return controllable;
-            }
-            for (MachineTrait trait : ((IMachineBlockEntity)blockEntity).getMetaMachine().getTraits()) {
-                if (trait instanceof IControllable controllable) {
-                    return controllable;
-                }
-            }
-            return null;
-        }, type);
-        GTCapability.CAPABILITY_RECIPE_LOGIC.registerForBlockEntity((blockEntity, direction) -> {
-            for (MachineTrait trait : ((IMachineBlockEntity)blockEntity).getMetaMachine().getTraits()) {
-                if (trait instanceof RecipeLogic recipeLogic) {
-                    return recipeLogic;
-                }
-            }
-            return null;
-        }, type);
-        GTCapability.CAPABILITY_ENERGY.registerForBlockEntity((blockEntity, side) -> {
-            if (((IMachineBlockEntity)blockEntity).getMetaMachine() instanceof IEnergyContainer energyContainer) {
-                return  energyContainer;
-            }
-            var list = ((IMachineBlockEntity)blockEntity).getMetaMachine().getTraits().stream().filter(IEnergyContainer.class::isInstance).filter(t -> t.hasCapability(side)).map(IEnergyContainer.class::cast).toList();
-            return list.isEmpty() ? null : list.size() == 1 ? list.get(0) : new EnergyContainerList(list);
-        }, type);
-        ItemStorage.SIDED.registerForBlockEntity((blockEntity, side) -> {
-            var transfer = ((IMachineBlockEntity)blockEntity).getMetaMachine().getItemTransferCap(side);
-            return transfer == null ? null : ItemTransferHelperImpl.toItemVariantStorage(transfer);
-        }, type);
-        FluidStorage.SIDED.registerForBlockEntity((blockEntity, side) -> {
-            var transfer = ((IMachineBlockEntity)blockEntity).getMetaMachine().getFluidTransferCap(side);
-            return transfer == null ? null : FluidTransferHelperImpl.toFluidVariantStorage(transfer);
-        }, type);
+    private static <T, R> Optional<R> castInstance(T object, Class<R> castTo) {
+        if (castTo.isInstance(object.getClass())) {
+            return Optional.of(castTo.cast(object));
+        } else return Optional.empty();
     }
 
+    private static <R> Optional<R> getMachineCapability(BlockEntity blockEntity, Function<MetaMachine, R> mapper) {
+        IMachineBlockEntity machineBlockEntity = (IMachineBlockEntity) blockEntity;
+        MetaMachine machine = machineBlockEntity.getMetaMachine();
+
+        return Optional.ofNullable(mapper.apply(machine));
+    }
+
+    private static <T> Optional<T> getMachineCapability(BlockEntity blockEntity, Class<T> capabilityInterface) {
+        IMachineBlockEntity machineBlockEntity = (IMachineBlockEntity) blockEntity;
+        MetaMachine machine = machineBlockEntity.getMetaMachine();
+
+        return castInstance(machine, capabilityInterface);
+    }
+
+    private static <T> Optional<T> getTraitCapability(BlockEntity blockEntity, Class<T> capabilityInterface) {
+        IMachineBlockEntity machineBlockEntity = (IMachineBlockEntity) blockEntity;
+        MetaMachine machine = machineBlockEntity.getMetaMachine();
+
+        return machine.getTraits().stream()
+                .map(t -> castInstance(t, capabilityInterface))
+                .reduce(Optional.empty(), (acc, trait) -> acc.or(() -> trait));
+    }
+
+    private static <T, C extends T> Optional<T> getAllTraitCapabilities(
+            BlockEntity blockEntity,
+            Class<T> capabilityInterface,
+            Function<List<T>, C> capabilityContainerFactory
+    ) {
+        IMachineBlockEntity machineBlockEntity = (IMachineBlockEntity) blockEntity;
+        MetaMachine machine = machineBlockEntity.getMetaMachine();
+
+        List<T> capabilities = machine.getTraits().stream()
+                .map(t -> castInstance(t, capabilityInterface))
+                .flatMap(Optional::stream)
+                .toList();
+
+        if (capabilities.size() == 0) return Optional.empty();
+        if (capabilities.size() == 1) return Optional.ofNullable(capabilities.get(0));
+
+        return Optional.ofNullable(capabilityContainerFactory.apply(capabilities));
+    }
+
+    public static void onBlockEntityRegister(BlockEntityType<BlockEntity> type) {
+        GTCapability.CAPABILITY_COVERABLE.registerForBlockEntity(
+                (blockEntity, side) -> getMachineCapability(blockEntity, MetaMachine::getCoverContainer)
+                        .orElse(null),
+                type
+        );
+        GTCapability.CAPABILITY_TOOLABLE.registerForBlockEntity(
+                (blockEntity, side) -> getMachineCapability(blockEntity, IToolable.class::cast)
+                        .orElse(null),
+                type
+        );
+        GTCapability.CAPABILITY_WORKABLE.registerForBlockEntity(
+                (blockEntity, side) -> getMachineCapability(blockEntity, IWorkable.class)
+                        .or(() -> getTraitCapability(blockEntity, IWorkable.class))
+                        .orElse(null),
+                type
+        );
+        GTCapability.CAPABILITY_CONTROLLABLE.registerForBlockEntity(
+                (blockEntity, side) -> getMachineCapability(blockEntity, IControllable.class)
+                        .or(() -> getTraitCapability(blockEntity, IControllable.class))
+                        .orElse(null),
+                type
+        );
+        GTCapability.CAPABILITY_RECIPE_LOGIC.registerForBlockEntity(
+                (blockEntity, side) -> getTraitCapability(blockEntity, RecipeLogic.class)
+                        .orElse(null),
+                type
+        );
+        GTCapability.CAPABILITY_ENERGY.registerForBlockEntity(
+                (blockEntity, side) -> getMachineCapability(blockEntity, IEnergyContainer.class)
+                        .or(() -> getAllTraitCapabilities(blockEntity, IEnergyContainer.class, EnergyContainerList::new))
+                        .orElse(null),
+                type
+        );
+        ItemStorage.SIDED.registerForBlockEntity(
+                (blockEntity, side) -> getMachineCapability(blockEntity, machine ->
+                        Optional.ofNullable(machine.getItemTransferCap(side))
+                                .map(ItemTransferHelperImpl::toItemVariantStorage)
+                                .orElse(null))
+                        .orElse(null),
+                type
+        );
+        FluidStorage.SIDED.registerForBlockEntity(
+                (blockEntity, side) -> getMachineCapability(blockEntity, machine ->
+                        Optional.ofNullable(machine.getFluidTransferCap(side))
+                                .map(FluidTransferHelperImpl::toFluidVariantStorage)
+                                .orElse(null))
+                        .orElse(null),
+                type
+        );
+    }
 }
