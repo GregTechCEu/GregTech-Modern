@@ -82,10 +82,10 @@ dependencies {
     modImplementation(include("com.tterrag.registrate_fabric:Registrate:${fabric.versions.registrate.get()}"))
 
     // Registrate
-    modImplementation(include("net.minecraftforge:forgeconfigapiport-fabric:${fabric.versions.forgeConfigApi.get()}"))
+    modImplementation fabric.forgeConfigApi
     // Night Config
-    modImplementation(include("com.electronwill.night-config:core:${fabric.versions.nightConfigCore.get()}"))
-    modImplementation(include("com.electronwill.night-config:toml:${fabric.versions.nightConfigToml.get()}"))
+    modImplementation fabric.nightConfigCore
+    modImplementation fabric.nightConfigToml
 
     // Create - dependencies are added transitively
     modImplementation fabric.createFabric
