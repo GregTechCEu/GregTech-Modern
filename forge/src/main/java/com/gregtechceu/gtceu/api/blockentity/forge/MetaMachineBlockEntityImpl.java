@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
-import com.gregtechceu.gtceu.api.capability.forge.GTCapabilities;
+import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.lowdragmc.lowdraglib.side.fluid.forge.FluidTransferHelperImpl;
 import com.lowdragmc.lowdraglib.side.item.forge.ItemTransferHelperImpl;
@@ -45,41 +45,41 @@ public class MetaMachineBlockEntityImpl extends MetaMachineBlockEntity {
 
     @Nullable
     public static <T> LazyOptional<T> getCapability(MetaMachine machine,  @NotNull Capability<T> cap, @Nullable Direction side) {
-        if (cap == GTCapabilities.CAPABILITY_COVERABLE) {
-            return GTCapabilities.CAPABILITY_COVERABLE.orEmpty(cap, LazyOptional.of(machine::getCoverContainer));
-        } else if (cap == GTCapabilities.CAPABILITY_TOOLABLE) {
-            return GTCapabilities.CAPABILITY_TOOLABLE.orEmpty(cap, LazyOptional.of(() -> machine));
-        } else if (cap == GTCapabilities.CAPABILITY_WORKABLE) {
+        if (cap == GTCapability.CAPABILITY_COVERABLE) {
+            return GTCapability.CAPABILITY_COVERABLE.orEmpty(cap, LazyOptional.of(machine::getCoverContainer));
+        } else if (cap == GTCapability.CAPABILITY_TOOLABLE) {
+            return GTCapability.CAPABILITY_TOOLABLE.orEmpty(cap, LazyOptional.of(() -> machine));
+        } else if (cap == GTCapability.CAPABILITY_WORKABLE) {
             if (machine instanceof IWorkable workable) {
-                return GTCapabilities.CAPABILITY_WORKABLE.orEmpty(cap, LazyOptional.of(() -> workable));
+                return GTCapability.CAPABILITY_WORKABLE.orEmpty(cap, LazyOptional.of(() -> workable));
             }
             for (MachineTrait trait : machine.getTraits()) {
                 if (trait instanceof IWorkable workable) {
-                    return GTCapabilities.CAPABILITY_WORKABLE.orEmpty(cap, LazyOptional.of(() -> workable));
+                    return GTCapability.CAPABILITY_WORKABLE.orEmpty(cap, LazyOptional.of(() -> workable));
                 }
             }
-        } else if (cap == GTCapabilities.CAPABILITY_CONTROLLABLE) {
+        } else if (cap == GTCapability.CAPABILITY_CONTROLLABLE) {
             if (machine instanceof IControllable controllable) {
-                return GTCapabilities.CAPABILITY_CONTROLLABLE.orEmpty(cap, LazyOptional.of(() -> controllable));
+                return GTCapability.CAPABILITY_CONTROLLABLE.orEmpty(cap, LazyOptional.of(() -> controllable));
             }
             for (MachineTrait trait : machine.getTraits()) {
                 if (trait instanceof IControllable controllable) {
-                    return GTCapabilities.CAPABILITY_CONTROLLABLE.orEmpty(cap, LazyOptional.of(() -> controllable));
+                    return GTCapability.CAPABILITY_CONTROLLABLE.orEmpty(cap, LazyOptional.of(() -> controllable));
                 }
             }
-        } else if (cap == GTCapabilities.CAPABILITY_RECIPE_LOGIC) {
+        } else if (cap == GTCapability.CAPABILITY_RECIPE_LOGIC) {
             for (MachineTrait trait : machine.getTraits()) {
                 if (trait instanceof RecipeLogic recipeLogic) {
-                    return GTCapabilities.CAPABILITY_RECIPE_LOGIC.orEmpty(cap, LazyOptional.of(() -> recipeLogic));
+                    return GTCapability.CAPABILITY_RECIPE_LOGIC.orEmpty(cap, LazyOptional.of(() -> recipeLogic));
                 }
             }
-        } else if (cap == GTCapabilities.CAPABILITY_ENERGY_CONTAINER) {
+        } else if (cap == GTCapability.CAPABILITY_ENERGY_CONTAINER) {
             if (machine instanceof IEnergyContainer energyContainer) {
-                return GTCapabilities.CAPABILITY_ENERGY_CONTAINER.orEmpty(cap, LazyOptional.of(() -> energyContainer));
+                return GTCapability.CAPABILITY_ENERGY_CONTAINER.orEmpty(cap, LazyOptional.of(() -> energyContainer));
             }
             var list = machine.getTraits().stream().filter(IEnergyContainer.class::isInstance).filter(t -> t.hasCapability(side)).map(IEnergyContainer.class::cast).toList();
             if (!list.isEmpty()) {
-                return GTCapabilities.CAPABILITY_ENERGY_CONTAINER.orEmpty(cap, LazyOptional.of(() -> list.size() == 1 ? list.get(0) : new EnergyContainerList(list)));
+                return GTCapability.CAPABILITY_ENERGY_CONTAINER.orEmpty(cap, LazyOptional.of(() -> list.size() == 1 ? list.get(0) : new EnergyContainerList(list)));
             }
         } else if (cap == ForgeCapabilities.ITEM_HANDLER) {
             var transfer = machine.getItemTransferCap(side);

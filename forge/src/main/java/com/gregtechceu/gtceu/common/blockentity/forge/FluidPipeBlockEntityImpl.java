@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.common.blockentity.forge;
 
-import com.gregtechceu.gtceu.api.capability.forge.GTCapabilities;
+import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.common.blockentity.FluidPipeBlockEntity;
 import com.lowdragmc.lowdraglib.side.fluid.forge.FluidTransferHelperImpl;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -39,10 +39,10 @@ public class FluidPipeBlockEntityImpl extends FluidPipeBlockEntity {
             if (handler != null) {
                 return ForgeCapabilities.FLUID_HANDLER.orEmpty(cap, LazyOptional.of(() -> FluidTransferHelperImpl.toFluidHandler(handler)));
             }
-        } else if (cap == GTCapabilities.CAPABILITY_COVERABLE) {
-            return GTCapabilities.CAPABILITY_COVERABLE.orEmpty(cap, LazyOptional.of(this::getCoverContainer));
-        } else if (cap == GTCapabilities.CAPABILITY_TOOLABLE) {
-            return GTCapabilities.CAPABILITY_TOOLABLE.orEmpty(cap, LazyOptional.of(() -> this));
+        } else if (cap == GTCapability.CAPABILITY_COVERABLE) {
+            return GTCapability.CAPABILITY_COVERABLE.orEmpty(cap, LazyOptional.of(this::getCoverContainer));
+        } else if (cap == GTCapability.CAPABILITY_TOOLABLE) {
+            return GTCapability.CAPABILITY_TOOLABLE.orEmpty(cap, LazyOptional.of(() -> this));
         }
         return super.getCapability(cap, side);
     }
