@@ -64,13 +64,8 @@ repositories {
     maven { url = "https://maven.cafeteria.dev/releases" } // Fake Player API
     maven { url = "https://maven.jamieswhiteshirt.com/libs-release" } // Reach Entity Attributes
     maven { url = "https://jitpack.io/" } // Mixin Extras, Fabric ASM
-    maven {
-        // saps.dev Maven (KubeJS and Rhino)
-        url = "https://maven.saps.dev/minecraft"
-        content {
-            includeGroup "dev.latvian.mods"
-        }
-    }
+    maven { url = "https://raw.githubusercontent.com/Fuzss/modresources/main/maven/" }
+    maven { url = "https://maven.saps.dev/minecraft" } // saps.dev Maven (KubeJS and Rhino)
 }
 
 dependencies {
@@ -85,6 +80,12 @@ dependencies {
 
     // Registrate
     modImplementation(include("com.tterrag.registrate_fabric:Registrate:${fabric.versions.registrate.get()}"))
+
+    // Registrate
+    modImplementation fabric.forgeConfigApi
+    // Night Config
+    modImplementation fabric.nightConfigCore
+    modImplementation fabric.nightConfigToml
 
     // Create - dependencies are added transitively
     modCompileOnly fabric.createFabric

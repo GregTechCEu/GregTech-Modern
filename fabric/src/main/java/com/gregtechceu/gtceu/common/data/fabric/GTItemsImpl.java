@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.common.data.fabric;
 
 import com.gregtechceu.gtceu.api.item.ComponentItem;
+import com.lowdragmc.lowdraglib.LDLib;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.minecraft.client.renderer.item.ItemProperties;
@@ -21,6 +22,10 @@ public class GTItemsImpl {
     }
 
     public static <T extends Item> NonNullConsumer<T> modelPredicate(ResourceLocation predicate, Function<ItemStack, Float> property) {
-        return item -> ItemProperties.register(item, predicate, (itemStack, c, l, i) -> property.apply(itemStack));
+        return item -> {
+            if (LDLib.isClient()) {
+                ItemProperties.register(item, predicate, (itemStack, c, l, i) -> property.apply(itemStack));
+            }
+        };
     }
 }

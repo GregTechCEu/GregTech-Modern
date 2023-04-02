@@ -11,7 +11,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "gtceu:kinetic_mixer.uv"
+          "name": "gtceu:kinetic_input_box.uv"
         }
       ],
       "rolls": 1.0
