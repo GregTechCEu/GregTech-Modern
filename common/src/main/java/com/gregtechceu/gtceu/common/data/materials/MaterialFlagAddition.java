@@ -355,7 +355,7 @@ public class MaterialFlagAddition {
         oreProp.setOreByProducts(BandedIron, Sapphire);
 
         oreProp = GraniticMineralSand.getProperty(PropertyKey.ORE);
-        oreProp.setOreByProducts(GraniteBlack, Magnetite);
+        oreProp.setOreByProducts(Deepslate, Magnetite);
         oreProp.setSeparatedInto(Gold);
         oreProp.setDirectSmeltResult(Iron);
 

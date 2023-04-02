@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials.Tier;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.recipe.FacadeCoverRecipe;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
-import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.SpecialRecipeBuilder;
@@ -53,11 +52,6 @@ public class CraftingRecipeLoader {
         VanillaRecipeHelper.addShapedRecipe(provider, "plank_to_wooden_shape", WOODEN_FORM_EMPTY.asStack(), "   ", " X ", "s  ", 'X', ItemTags.PLANKS);
         VanillaRecipeHelper.addShapedRecipe(provider, "wooden_shape_brick", WOODEN_FORM_BRICK.asStack(), "k ", " X", 'X', WOODEN_FORM_EMPTY.asStack());
 
-        if (ConfigHolder.recipes.harderBrickRecipes) {
-            VanillaRecipeHelper.addShapelessRecipe(provider, "compressed_clay", COMPRESSED_CLAY.asStack(), WOODEN_FORM_BRICK.asStack(), new ItemStack(Items.CLAY_BALL));
-            VanillaRecipeHelper.addSmeltingRecipe(provider, "brick_from_compressed_clay", COMPRESSED_CLAY.asStack(), new ItemStack(Items.BRICK), 0.3f);
-        }
-
         VanillaRecipeHelper.addShapedRecipe(provider, "compressed_coke_clay", COMPRESSED_COKE_CLAY.asStack(3), "XXX", "SYS", "SSS", 'Y', WOODEN_FORM_BRICK.asStack(), 'X', new ItemStack(Items.CLAY_BALL), 'S', ItemTags.SAND);
         VanillaRecipeHelper.addShapelessRecipe(provider, "fireclay_dust", ChemicalHelper.get(dust, Fireclay, 2), new UnificationEntry(dust, Brick), new UnificationEntry(dust, Clay));
         VanillaRecipeHelper.addSmeltingRecipe(provider, "coke_oven_brick", COMPRESSED_COKE_CLAY.asStack(), COKE_OVEN_BRICK.asStack(), 0.3f);
@@ -69,9 +63,7 @@ public class CraftingRecipeLoader {
         //VanillaRecipeHelper.addShapedRecipe(provider, "clipboard", CLIPBOARD.asStack(), " Sd", "BWR", "PPP", 'P', Items.PAPER, 'R', new UnificationEntry(springSmall, Iron), 'B', new UnificationEntry(bolt, Iron), 'S', new UnificationEntry(screw, Iron), 'W', new UnificationEntry(plate, Wood));
 
         VanillaRecipeHelper.addShapelessRecipe(provider, "rubber_wood_planks", GTBlocks.RUBBER_PLANK.asStack(4), GTBlocks.RUBBER_LOG.asStack());
-        // todo material fluid buckets
-        //VanillaRecipeHelper.addShapedRecipe(provider, "treated_wood_planks", GTBlocks.TREATED_WOOD_PLANK.asStack(8), "PPP", "PBP", "PPP", 'P', ItemTags.PLANKS, 'B', Creosote.getFluid().getBucket());
-        VanillaRecipeHelper.addShapedRecipe(provider, "treated_wood_stick_saw", ChemicalHelper.get(stick, TreatedWood, ConfigHolder.recipes.nerfWoodCrafting ? 1 : 2), "s", "L", 'L', GTBlocks.TREATED_WOOD_PLANK.asStack());
+        VanillaRecipeHelper.addShapedRecipe(provider, "treated_wood_planks", GTBlocks.TREATED_WOOD_PLANK.asStack(8), "PPP", "PBP", "PPP", 'P', ItemTags.PLANKS, 'B', Creosote.getBucket());
 
         VanillaRecipeHelper.addShapedRecipe(provider, "rubber_ring", ChemicalHelper.get(ring, Rubber), "k", "X", 'X', new UnificationEntry(plate, Rubber));
         VanillaRecipeHelper.addShapedRecipe(provider, "silicone_rubber_ring", ChemicalHelper.get(ring, SiliconeRubber), "k", "P", 'P', ChemicalHelper.get(plate, SiliconeRubber));

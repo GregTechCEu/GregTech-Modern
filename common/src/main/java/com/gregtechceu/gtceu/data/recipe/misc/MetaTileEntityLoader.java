@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.data.recipe.misc;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
-import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials;
 import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials.Tier;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
@@ -11,7 +10,6 @@ import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
-import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.LoaderTags;
 import com.gregtechceu.gtceu.data.recipe.CraftingComponent;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
@@ -47,27 +45,6 @@ public class MetaTileEntityLoader {
 
         // If these recipes are changed, change the values in MaterialInfoLoader.java
         registerMachineRecipe(provider, false, GTMachines.HULL, "PLP", "CHC", 'P', HULL_PLATE, 'L', PLATE, 'C', CABLE, 'H', CASING);
-
-        // TODO Fluid stuff? also move to config loaded recipe classes
-        /*
-        if (ConfigHolder.recipes.harderBrickRecipes) {
-            VanillaRecipeHelper.addFluidReplaceRecipe("bucket_of_concrete", FluidUtil.getFilledBucket(GTMaterials.Concrete.getFluid(1000)),
-                    "C S", "CWQ", " L ",
-                    'C', new UnificationEntry(TagPrefix.dust, GTMaterials.Calcite),
-                    'S', new UnificationEntry(TagPrefix.dust, GTMaterials.Stone),
-                    'W', new ItemStack(Items.WATER_BUCKET),
-                    'Q', new UnificationEntry(TagPrefix.dust, GTMaterials.QuartzSand),
-                    'L', new UnificationEntry(TagPrefix.dust, GTMaterials.Clay));
-
-            VanillaRecipeHelper.addShapedRecipe(provider, "casing_primitive_bricks", GTBlocks.CASING.get().getItemVariant(PRIMITIVE_BRICKS),
-                    "BGB", "BCB", "BGB",
-                    'B', GTItems.FIRECLAY_BRICK.asStack(),
-                    'G', new UnificationEntry(TagPrefix.dust, GTMaterials.Gypsum),
-                    'C', FluidUtil.getFilledBucket(GTMaterials.Concrete.getFluid(1000)));
-        } else {
-            VanillaRecipeHelper.addShapedRecipe(provider, "casing_primitive_bricks", GTBlocks.CASING.get().getItemVariant(PRIMITIVE_BRICKS, 1), "XX", "XX", 'X', GTItems.FIRECLAY_BRICK);
-        }
-         */
 
         VanillaRecipeHelper.addShapedRecipe(provider, true, "casing_coke_bricks", GTBlocks.CASING_COKE_BRICKS.asStack(), "XX", "XX", 'X', GTItems.COKE_OVEN_BRICK);
         VanillaRecipeHelper.addShapedRecipe(provider, true, "casing_bronze_bricks", GTBlocks.CASING_BRONZE_BRICKS.asStack(2), "PhP", "PBP", "PwP", 'P', new UnificationEntry(TagPrefix.plate, GTMaterials.Bronze), 'B', new ItemStack(Blocks.BRICKS));
@@ -211,6 +188,7 @@ public class MetaTileEntityLoader {
         VanillaRecipeHelper.addShapedRecipe(provider, true, "bronze_primitive_blast_furnace", GTMachines.PRIMITIVE_BLAST_FURNACE.asStack(), "hRS", "PBR", "dRS", 'R', new UnificationEntry(TagPrefix.stick, GTMaterials.Iron), 'S', new UnificationEntry(TagPrefix.screw, GTMaterials.Iron), 'P', new UnificationEntry(TagPrefix.plate, GTMaterials.Iron), 'B', GTBlocks.CASING_PRIMITIVE_BRICKS.asStack());
         VanillaRecipeHelper.addShapedRecipe(provider, true, "coke_oven", GTMachines.COKE_OVEN.asStack(), "PIP", "IwI", "PIP", 'P', GTBlocks.CASING_COKE_BRICKS.asStack(), 'I', new UnificationEntry(TagPrefix.plate, GTMaterials.Iron));
         VanillaRecipeHelper.addShapedRecipe(provider, true, "coke_oven_hatch", GTMachines.COKE_OVEN_HATCH.asStack(), "CD", 'C', GTBlocks.CASING_COKE_BRICKS.asStack(), 'D', GTMachines.WOODEN_DRUM.asStack());
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "electric_blast_furnace", GTMachines.ELECTRIC_BLAST_FURNACE.asStack(), "FFF", "CMC", "WCW", 'M', GTBlocks.CASING_INVAR_HEATPROOF.asStack(), 'F', Blocks.FURNACE.asItem(), 'C', new UnificationEntry(TagPrefix.circuit, Tier.LV), 'W', new UnificationEntry(TagPrefix.cableGtSingle, GTMaterials.Tin));
         VanillaRecipeHelper.addShapedRecipe(provider, true, "vacuum_freezer", GTMachines.VACUUM_FREEZER.asStack(), "PPP", "CMC", "WCW", 'M', GTBlocks.CASING_ALUMINIUM_FROSTPROOF.asStack(), 'P', GTItems.ELECTRIC_PUMP_HV, 'C', new UnificationEntry(TagPrefix.circuit, Tier.EV), 'W', new UnificationEntry(TagPrefix.cableGtSingle, GTMaterials.Gold));
         VanillaRecipeHelper.addShapedRecipe(provider, true, "implosion_compressor", GTMachines.IMPLOSION_COMPRESSOR.asStack(), "OOO", "CMC", "WCW", 'M', GTBlocks.CASING_STEEL_SOLID.asStack(), 'O', new UnificationEntry(TagPrefix.block, GTMaterials.Obsidian), 'C', new UnificationEntry(TagPrefix.circuit, Tier.HV), 'W', new UnificationEntry(TagPrefix.cableGtSingle, GTMaterials.Gold));
         VanillaRecipeHelper.addShapedRecipe(provider, true, "distillation_tower", GTMachines.DISTILLATION_TOWER.asStack(), "CBC", "FMF", "CBC", 'M', GTMachines.HULL[GTValues.HV].asStack(), 'B', new UnificationEntry(TagPrefix.pipeLargeFluid, GTMaterials.StainlessSteel), 'C', new UnificationEntry(TagPrefix.circuit, Tier.EV), 'F', GTItems.ELECTRIC_PUMP_HV);
@@ -240,19 +218,19 @@ public class MetaTileEntityLoader {
         VanillaRecipeHelper.addShapedRecipe(provider, true, "large_chemical_reactor", GTMachines.LARGE_CHEMICAL_REACTOR.asStack(), "CRC", "PMP", "CHC", 'C', new UnificationEntry(TagPrefix.circuit, Tier.HV), 'R', ChemicalHelper.get(TagPrefix.rotor, GTMaterials.StainlessSteel), 'P', ChemicalHelper.get(TagPrefix.pipeLargeFluid, GTMaterials.Polytetrafluoroethylene), 'M', GTItems.ELECTRIC_MOTOR_HV.asStack(), 'H', GTMachines.HULL[GTValues.HV].asStack());
 
         // TODO Steam multiblocks
-        if (ConfigHolder.machines.steelSteamMultiblocks) {
+        //if (ConfigHolder.machines.steelSteamMultiblocks) {
             //VanillaRecipeHelper.addShapedRecipe(provider, true, "steam_oven", GTMachines.STEAM_OVEN.getStackForm(), "CGC", "FMF", "CGC", 'F', MetaBlocks.BOILER_FIREBOX_CASING.getItemVariant(STEEL_FIREBOX), 'C', MetaBlocks.METAL_CASING.getItemVariant(STEEL_SOLID), 'M', GTMachines.STEAM_FURNACE_STEEL.getStackForm(), 'G', new UnificationEntry(TagPrefix.gear, GTMaterials.Invar));
             //VanillaRecipeHelper.addShapedRecipe(provider, true, "steam_grinder", GTMachines.STEAM_GRINDER.getStackForm(), "CGC", "CFC", "CGC", 'G', new UnificationEntry(TagPrefix.gear, GTMaterials.Potin), 'F', GTMachines.STEAM_MACERATOR_STEEL.getStackForm(), 'C', MetaBlocks.METAL_CASING.getItemVariant(STEEL_SOLID));
             //VanillaRecipeHelper.addShapedRecipe(provider, true, "steam_hatch", GTMachines.STEAM_HATCH.asStack(), "BPB", "BTB", "BPB", 'B', new UnificationEntry(TagPrefix.plate, GTMaterials.Steel), 'P', new UnificationEntry(TagPrefix.pipeNormalFluid, GTMaterials.Steel), 'T', GTMachines.STEEL_DRUM.getStackForm());
             //VanillaRecipeHelper.addShapedRecipe(provider, true, "steam_input_bus", GTMachines.STEAM_IMPORT_BUS.getStackForm(), "C", "H", 'H', MetaBlocks.STEAM_CASING.getItemVariant(STEEL_HULL), 'C', OreDictNames.chestWood);
             //VanillaRecipeHelper.addShapedRecipe(provider, true, "steam_output_bus", GTMachines.STEAM_EXPORT_BUS.getStackForm(), "H", "C", 'H', MetaBlocks.STEAM_CASING.getItemVariant(STEEL_HULL), 'C', OreDictNames.chestWood);
-        } else {
+        //} else {
             //VanillaRecipeHelper.addShapedRecipe(provider, true, "steam_oven", GTMachines.STEAM_OVEN.getStackForm(), "CGC", "FMF", "CGC", 'F', MetaBlocks.BOILER_FIREBOX_CASING.getItemVariant(BRONZE_FIREBOX), 'C', MetaBlocks.METAL_CASING.getItemVariant(BRONZE_BRICKS), 'M', GTMachines.STEAM_FURNACE_BRONZE.getStackForm(), 'G', new UnificationEntry(TagPrefix.gear, GTMaterials.Invar));
             //VanillaRecipeHelper.addShapedRecipe(provider, true, "steam_grinder", GTMachines.STEAM_GRINDER.getStackForm(), "CGC", "CFC", "CGC", 'G', new UnificationEntry(TagPrefix.gear, GTMaterials.Potin), 'F', GTMachines.STEAM_MACERATOR_BRONZE.getStackForm(), 'C', MetaBlocks.METAL_CASING.getItemVariant(BRONZE_BRICKS));
             //VanillaRecipeHelper.addShapedRecipe(provider, true, "steam_hatch", GTMachines.STEAM_HATCH.asStack(), "BPB", "BTB", "BPB", 'B', new UnificationEntry(TagPrefix.plate, GTMaterials.Bronze), 'P', new UnificationEntry(TagPrefix.pipeNormalFluid, GTMaterials.Bronze), 'T', GTMachines.BRONZE_DRUM.getStackForm());
             //VanillaRecipeHelper.addShapedRecipe(provider, true, "steam_input_bus", GTMachines.STEAM_IMPORT_BUS.getStackForm(), "C", "H", 'H', MetaBlocks.STEAM_CASING.getItemVariant(BRONZE_HULL), 'C', OreDictNames.chestWood);
             //VanillaRecipeHelper.addShapedRecipe(provider, true, "steam_output_bus", GTMachines.STEAM_EXPORT_BUS.getStackForm(), "H", "C", 'H', MetaBlocks.STEAM_CASING.getItemVariant(BRONZE_HULL), 'C', OreDictNames.chestWood);
-        }
+        //}
 
         // TODO Processing array
         //VanillaRecipeHelper.addShapedRecipe(provider, true, "processing_array", GTMachines.PROCESSING_ARRAY.getStackForm(), "COC", "RHR", "CPC", 'C', new UnificationEntry(TagPrefix.circuit, Tier.IV), 'O', MetaItems.TOOL_DATA_ORB.getStackForm(), 'R', MetaItems.ROBOT_ARM_EV.getStackForm(), 'P', OreDictUnifier.get(TagPrefix.pipeLargeFluid, GTMaterials.StainlessSteel), 'H', GTMachines.HULL[GTValues.EV].getStackForm());
@@ -412,17 +390,6 @@ public class MetaTileEntityLoader {
         //VanillaRecipeHelper.addShapedRecipe(provider, true, "buffer_lv", GTMachines.BUFFER[0].getStackForm(), "HP", "CV", 'H', GTMachines.HULL[GTValues.LV].getStackForm(), 'P', MetaItems.ELECTRIC_PUMP_LV.getStackForm(), 'V', MetaItems.CONVEYOR_MODULE_LV.getStackForm(), 'C', new UnificationEntry(TagPrefix.circuit, MarkerGTMaterials.Tier.LV));
         //VanillaRecipeHelper.addShapedRecipe(provider, true, "buffer_mv", GTMachines.BUFFER[1].getStackForm(), "HP", "CV", 'H', GTMachines.HULL[GTValues.MV].getStackForm(), 'P', MetaItems.ELECTRIC_PUMP_MV.getStackForm(), 'V', MetaItems.CONVEYOR_MODULE_MV.getStackForm(), 'C', new UnificationEntry(TagPrefix.circuit, MarkerGTMaterials.Tier.LV));
         //VanillaRecipeHelper.addShapedRecipe(provider, true, "buffer_hv", GTMachines.BUFFER[2].getStackForm(), "HP", "CV", 'H', GTMachines.HULL[GTValues.HV].getStackForm(), 'P', MetaItems.ELECTRIC_PUMP_HV.getStackForm(), 'V', MetaItems.CONVEYOR_MODULE_HV.getStackForm(), 'C', new UnificationEntry(TagPrefix.circuit, MarkerGTMaterials.Tier.LV));
-
-        if (ConfigHolder.recipes.harderEBFControllerRecipe) {
-            VanillaRecipeHelper.addShapedRecipe(provider, true, "electric_blast_furnace", GTMachines.ELECTRIC_BLAST_FURNACE.asStack(),
-                    "FFF", "CHC", "WCW",
-                    'F', GTMachines.ELECTRIC_FURNACE[1].asStack(),
-                    'C', new UnificationEntry(TagPrefix.circuit, Tier.LV),
-                    'H', GTBlocks.CASING_INVAR_HEATPROOF.asStack(),
-                    'W', new UnificationEntry(TagPrefix.cableGtSingle, GTMaterials.Tin));
-        } else {
-            VanillaRecipeHelper.addShapedRecipe(provider, true, "electric_blast_furnace", GTMachines.ELECTRIC_BLAST_FURNACE.asStack(), "FFF", "CMC", "WCW", 'M', GTBlocks.CASING_INVAR_HEATPROOF.asStack(), 'F', Blocks.FURNACE.asItem(), 'C', new UnificationEntry(TagPrefix.circuit, Tier.LV), 'W', new UnificationEntry(TagPrefix.cableGtSingle, GTMaterials.Tin));
-        }
 
         // TODO Cleanroom
         //VanillaRecipeHelper.addShapedRecipe(provider, true, "cleanroom", GTMachines.CLEANROOM.getStackForm(), "FFF", "RHR", "MCM", 'F', MetaItems.ITEM_FILTER.getStackForm(), 'R', new UnificationEntry(TagPrefix.rotor, GTMaterials.StainlessSteel), 'H', HULL.getIngredient(GTValues.HV), 'M', MetaItems.ELECTRIC_MOTOR_HV.getStackForm(), 'C', new UnificationEntry(TagPrefix.circuit, Tier.HV));

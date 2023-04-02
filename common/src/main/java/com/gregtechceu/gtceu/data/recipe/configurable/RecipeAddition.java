@@ -22,7 +22,8 @@ import java.util.function.Consumer;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.tag.TagPrefix.*;
-import static com.gregtechceu.gtceu.common.data.GTItems.STICKY_RESIN;
+import static com.gregtechceu.gtceu.common.data.GTItems.*;
+import static com.gregtechceu.gtceu.common.data.GTItems.COMPRESSED_CLAY;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.ASSEMBLER_RECIPES;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.LATHE_RECIPES;
@@ -36,7 +37,7 @@ public class RecipeAddition {
         hardToolArmorRecipes(provider);
         harderRods(provider);
         nerfWoodCrafting(provider);
-        if (ConfigHolder.recipes.harderBrickRecipes) harderBrickRecipes(provider);
+        harderBrickRecipes(provider);
         if (ConfigHolder.recipes.hardWoodRecipes) hardWoodRecipes(provider);
         if (ConfigHolder.recipes.hardIronRecipes) hardIronRecipes(provider);
         if (ConfigHolder.recipes.hardGlassRecipes) hardGlassRecipes(provider);
@@ -55,17 +56,43 @@ public class RecipeAddition {
     }
 
     private static void harderBrickRecipes(Consumer<FinishedRecipe> provider) {
-        VanillaRecipeHelper.addShapedRecipe(provider, "brick_from_water", new ItemStack(Blocks.BRICKS, 2), "BBB", "BWB", "BBB",
-                'B', new ItemStack(Items.BRICK),
-                'W', new ItemStack(Items.WATER_BUCKET));
+        if (ConfigHolder.recipes.harderBrickRecipes) {
+            VanillaRecipeHelper.addShapedRecipe(provider, "brick_from_water", new ItemStack(Blocks.BRICKS, 2), "BBB", "BWB", "BBB",
+                    'B', new ItemStack(Items.BRICK),
+                    'W', new ItemStack(Items.WATER_BUCKET));
+
+            VanillaRecipeHelper.addShapedRecipe(provider, "bucket_of_concrete", new ItemStack(Concrete.getBucket()),
+                    "CBS", "CWQ", " L ",
+                    'C', new UnificationEntry(dust, Calcite),
+                    'S', new UnificationEntry(dust, Stone),
+                    'W', new ItemStack(Items.WATER_BUCKET),
+                    'Q', new UnificationEntry(dust, QuartzSand),
+                    'L', new UnificationEntry(dust, Clay),
+                    'B', new ItemStack(Items.BUCKET));
+
+            VanillaRecipeHelper.addShapedRecipe(provider, "casing_primitive_bricks", GTBlocks.CASING_PRIMITIVE_BRICKS.asStack(),
+                    "BGB", "BCB", "BGB",
+                    'B', GTItems.FIRECLAY_BRICK.asStack(),
+                    'G', new UnificationEntry(dust, Gypsum),
+                    'C', new ItemStack(Concrete.getBucket()));
+
+            VanillaRecipeHelper.addShapelessRecipe(provider, "compressed_clay", COMPRESSED_CLAY.asStack(), WOODEN_FORM_BRICK.asStack(), new ItemStack(Items.CLAY_BALL));
+            VanillaRecipeHelper.addSmeltingRecipe(provider, "brick_from_compressed_clay", COMPRESSED_CLAY.asStack(), new ItemStack(Items.BRICK), 0.3f);
+        } else {
+            VanillaRecipeHelper.addShapedRecipe(provider, "casing_primitive_bricks", GTBlocks.CASING_PRIMITIVE_BRICKS.asStack(),
+                    "XX", "XX",
+                    'X', GTItems.FIRECLAY_BRICK);
+        }
     }
 
     private static void nerfWoodCrafting(Consumer<FinishedRecipe> provider) {
         if (ConfigHolder.recipes.nerfWoodCrafting) {
             VanillaRecipeHelper.addShapedRecipe(provider, "stick_saw", new ItemStack(Items.STICK, 4), "s", "P", "P", 'P', ItemTags.PLANKS);
             VanillaRecipeHelper.addShapedRecipe(provider, "stick_normal", new ItemStack(Items.STICK, 2), "P", "P", 'P', ItemTags.PLANKS);
+            VanillaRecipeHelper.addShapedRecipe(provider, "treated_wood_stick_saw", ChemicalHelper.get(stick, TreatedWood, 4), "s", "P", "P", 'P', GTBlocks.TREATED_WOOD_PLANK.asStack());
+            VanillaRecipeHelper.addShapedRecipe(provider, "treated_wood_stick_normal", ChemicalHelper.get(stick, TreatedWood, 2), "P", "P", 'P', GTBlocks.TREATED_WOOD_PLANK.asStack());
         } else {
-            VanillaRecipeHelper.addShapedRecipe(provider, "treated_wood_stick", ChemicalHelper.get(stick, TreatedWood, 4), "L", "L", 'L', GTBlocks.TREATED_WOOD_PLANK.asStack());
+            VanillaRecipeHelper.addShapedRecipe(provider, "treated_wood_stick_normal", ChemicalHelper.get(stick, TreatedWood, 4), "L", "L", 'L', GTBlocks.TREATED_WOOD_PLANK.asStack());
         }
     }
 

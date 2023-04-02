@@ -802,9 +802,9 @@ public class MachineRecipeLoader {
                 .chancedOutput(dust, Basalt, 1000, 380)
                 .save(provider);
 
-        MACERATOR_RECIPES.recipeBuilder("macerate_black_granite")
-                .inputItems(block, GraniteBlack)
-                .outputItems(dust, GraniteBlack)
+        MACERATOR_RECIPES.recipeBuilder("macerate_deepslate")
+                .inputItems(Blocks.DEEPSLATE.asItem())
+                .outputItems(dust, Deepslate)
                 .chancedOutput(dust, Thorium, 100, 40)
                 .save(provider);
 

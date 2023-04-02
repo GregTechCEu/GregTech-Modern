@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.block.*;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.item.MaterialPipeBlockItem;
 import com.gregtechceu.gtceu.api.item.RendererBlockItem;
+import com.gregtechceu.gtceu.api.tag.OreTagType;
 import com.gregtechceu.gtceu.api.tag.TagUtil;
 import com.gregtechceu.gtceu.client.renderer.block.CTMModelRenderer;
 import com.gregtechceu.gtceu.client.renderer.block.OreBlockRenderer;
@@ -129,13 +130,12 @@ public class GTBlocks {
 
             // Ore Block
             if (material.hasProperty(PropertyKey.ORE)) {
-                for (var ore : TagPrefix.ORES.entrySet()) {
-                    var oreTag = ore.getKey();
-                    var oreProperty = material.getProperty(PropertyKey.ORE);
+                var oreProperty = material.getProperty(PropertyKey.ORE);
+                for (var oreTag : OreTagType.getAllOreTypes()) {
                     var entry = REGISTRATE.block("%s_%s".formatted(FormattingUtil.toLowerCaseUnder(oreTag.name), material.getName()),
-                                    properties -> new MaterialBlock(properties, oreTag, material, LDLib.isClient() ? new OreBlockRenderer(ore.getValue(),
+                                    properties -> new MaterialBlock(properties, oreTag, material, LDLib.isClient() ? new OreBlockRenderer(oreTag.getStoneType(),
                                             Objects.requireNonNull(oreTag.materialIconType()).getBlockTexturePath(material.getMaterialIconSet()),
-                                            oreProperty.isEmissive()): IRenderer.EMPTY))
+                                            oreProperty.isEmissive()) : IRenderer.EMPTY))
                             .initialProperties(() -> Blocks.IRON_BLOCK)
                             .transform(unificationBlock(oreTag, material))
                             .addLayer(() -> RenderType::cutoutMipped)
@@ -143,11 +143,6 @@ public class GTBlocks {
                             .setData(ProviderType.LANG, NonNullBiConsumer.noop())
                             .tag(BlockTags.MINEABLE_WITH_PICKAXE)
                             .color(() -> () -> MaterialBlock::tintedColor)
-                            // TODO whether we need loot for drops?
-//                            .loot((lt, b) -> lt.add(b,
-//                                    RegistrateBlockLootTables.createSilkTouchDispatchTable(b,
-//                                            RegistrateBlockLootTables.applyExplosionDecay(b, LootItem.lootTableItem(GTItems.MATERIAL_ITEMS.get(TagPrefix.dust, material).get())
-//                                                    .apply(ApplyBonusCount.addOreBonusCount(Enchantments.BLOCK_FORTUNE))))))
                             .item(MaterialBlockItem::new)
                             .model(NonNullBiConsumer.noop())
                             .color(() -> () -> MaterialBlockItem::tintColor)

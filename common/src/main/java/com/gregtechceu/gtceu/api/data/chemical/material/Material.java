@@ -18,6 +18,8 @@ import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.material.Fluid;
 
@@ -194,6 +196,11 @@ public class Material implements Comparable<Material> {
 
     public FluidStack getFluid(long amount) {
         return FluidStack.create(getFluid(), amount);
+    }
+
+    public Item getBucket() {
+        Fluid fluid = getFluid();
+        return fluid.getBucket();
     }
 
     public int getBlockHarvestLevel() {

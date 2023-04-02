@@ -493,8 +493,7 @@ public class VanillaStandardRecipes {
         VanillaRecipeHelper.addShapedRecipe(provider, "torch_charcoal_dust", new ItemStack(Blocks.TORCH, 4), "C", "S", 'C', new UnificationEntry(dust, Charcoal), 'S', new ItemStack(Items.STICK));
         VanillaRecipeHelper.addShapedRecipe(provider, "torch_coke", new ItemStack(Blocks.TORCH, 8), "C", "S", 'C', new UnificationEntry(gem, Coke), 'S', new ItemStack(Items.STICK));
         VanillaRecipeHelper.addShapedRecipe(provider, "torch_coke_dust", new ItemStack(Blocks.TORCH, 8), "C", "S", 'C', new UnificationEntry(dust, Coke), 'S', new ItemStack(Items.STICK));
-        // todo bucket in recipe
-        //ModHandler.addShapedRecipe("torch_creosote", new ItemStack(Blocks.TORCH, 16), "WB", "S ", 'W', OreDictUnifier.get("wool"), 'S', new ItemStack(Items.STICK), 'B', FluidUtil.getFilledBucket(Creosote.getFluid(1000)));
+        VanillaRecipeHelper.addShapedRecipe(provider, "torch_creosote", new ItemStack(Blocks.TORCH, 16), "WB", "S ", 'W', ItemTags.WOOL, 'S', new ItemStack(Items.STICK), 'B', Creosote.getBucket());
 
         ASSEMBLER_RECIPES.recipeBuilder("redstone_torch").EUt(1).inputItems(dust, Redstone).inputItems(new ItemStack(Items.STICK)).outputItems(new ItemStack(Blocks.REDSTONE_TORCH, 1)).duration(100).save(provider);
         ASSEMBLER_RECIPES.recipeBuilder("torch_sulfur").EUt(1).inputItems(new ItemStack(Items.STICK)).inputItems(dust, Sulfur).outputItems(new ItemStack(Blocks.TORCH, 2)).duration(100).save(provider);
