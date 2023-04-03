@@ -4,20 +4,26 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.steam.SteamMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.utils.GTUtil;
+import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
+import mcjty.theoneprobe.api.CompoundText;
 import mcjty.theoneprobe.api.IProbeHitData;
 import mcjty.theoneprobe.api.IProbeInfo;
 import mcjty.theoneprobe.api.TextStyleClass;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.Nullable;
+
+import static mcjty.theoneprobe.api.TextStyleClass.WARNING;
 
 
 public class RecipeLogicInfoProvider extends CapabilityInfoProvider<RecipeLogic> {
@@ -54,11 +60,11 @@ public class RecipeLogicInfoProvider extends CapabilityInfoProvider<RecipeLogic>
 
                 if (blockEntity instanceof IMachineBlockEntity machineBlockEntity) {
                     var machine = machineBlockEntity.getMetaMachine();
-                    // TODO SteamMetaTileEntity
-//                    if (machine instanceof SteamMetaTileEntity) {
-//                        text = TextFormatting.RED.toString() + absEUt + TextStyleClass.INFO + " L/t " + "{*material.steam*}";
-//                    }
+                    if (machine instanceof SteamMachine) {
+                        text = ChatFormatting.RED.toString() + absEUt + TextStyleClass.INFO + " L/t " + LocalizationUtils.format("material.steam");
+                    }
                 }
+
                 if (text == null) {
                     // Default behavior, if this TE is not a steam machine (or somehow not instanceof IGregTechTileEntity...)
                     text = ChatFormatting.RED.toString() + absEUt + TextStyleClass.INFO + " EU/t" + ChatFormatting.GREEN + " (" + GTValues.VNF[GTUtil.getTierByVoltage(absEUt)] + ChatFormatting.GREEN + ")";
@@ -66,9 +72,9 @@ public class RecipeLogicInfoProvider extends CapabilityInfoProvider<RecipeLogic>
 
                 if (EUt > 0) {
                     if (isInput) {
-                        probeInfo.text(TextStyleClass.INFO + "{*gtceu.top.energy_consumption*} " + text);
+                        probeInfo.text(CompoundText.create().text(Component.translatable("gtceu.top.energy_consumption").append(" ").append(text)).style(TextStyleClass.INFO));
                     } else {
-                        probeInfo.text(TextStyleClass.INFO + "{*gtceu.top.energy_production*} " + text);
+                        probeInfo.text(CompoundText.create().text(Component.translatable("gtceu.top.energy_production").append(" ").append(text)).style(TextStyleClass.INFO));
                     }
                 }
             }
