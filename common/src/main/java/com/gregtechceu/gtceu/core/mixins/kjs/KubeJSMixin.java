@@ -18,9 +18,9 @@ public abstract class KubeJSMixin {
     /**
      * Make sure our mod is loaded after kjs
      */
-    @Inject(method = "setup", at = @At(value = "RETURN"), remap = false)
+    //@Inject(method = "setup", at = @At(value = "RETURN"), remap = false)
     public void injectInit(CallbackInfo ci) {
-        CommonProxy.onKubeJSSetup();
+        //CommonProxy.onKubeJSSetup();
     }
 
 }
