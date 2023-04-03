@@ -5,7 +5,7 @@
       "tag": "forge:tool_heads/buzzsaw/cobalt_brass"
     },
     "C": {
-      "tag": "forge:circuit/lv"
+      "tag": "forge:lv_circuits"
     },
     "E": {
       "item": "gtceu:electric.motor.lv"

@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:circuit/uhv"
+      "tag": "c:uhv_circuits"
     },
     "G": {
       "item": "gtceu:field.generator.zpm"
@@ -11,7 +11,7 @@
       "item": "gtceu:hermetic_casing_uhv"
     },
     "P": {
-      "tag": "c:plates/neutronium"
+      "tag": "c:neutronium_plates"
     },
     "U": {
       "item": "gtceu:electric.pump.uv"

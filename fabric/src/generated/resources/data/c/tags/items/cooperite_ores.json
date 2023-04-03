@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:deepslate_cooperite",
+    "gtceu:sand_cooperite",
+    "gtceu:basalt_cooperite",
+    "gtceu:granite_cooperite",
+    "gtceu:andesite_cooperite",
+    "gtceu:red_sand_cooperite",
+    "gtceu:stone_cooperite",
+    "gtceu:diorite_cooperite"
+  ]
+}

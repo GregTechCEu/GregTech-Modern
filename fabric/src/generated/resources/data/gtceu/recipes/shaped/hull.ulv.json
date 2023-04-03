@@ -2,16 +2,16 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:cables/single/red_alloy"
+      "tag": "c:red_alloy_single_cables"
     },
     "H": {
       "item": "gtceu:hull_casing_ulv"
     },
     "L": {
-      "tag": "c:plates/wrought_iron"
+      "tag": "c:wrought_iron_plates"
     },
     "P": {
-      "tag": "c:plates/wood"
+      "tag": "c:wood_plates"
     }
   },
   "pattern": [

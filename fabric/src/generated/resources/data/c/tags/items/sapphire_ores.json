@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:deepslate_sapphire",
+    "gtceu:sand_sapphire",
+    "gtceu:basalt_sapphire",
+    "gtceu:granite_sapphire",
+    "gtceu:andesite_sapphire",
+    "gtceu:red_sand_sapphire",
+    "gtceu:stone_sapphire",
+    "gtceu:diorite_sapphire"
+  ]
+}

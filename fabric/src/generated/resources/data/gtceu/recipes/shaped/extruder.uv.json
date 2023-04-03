@@ -2,16 +2,16 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:wires/quadruple/naquadah_alloy"
+      "tag": "c:naquadah_alloy_quadruple_wires"
     },
     "E": {
-      "tag": "c:circuit/uv"
+      "tag": "c:uv_circuits"
     },
     "M": {
       "item": "gtceu:hull.uv"
     },
     "P": {
-      "tag": "c:fluid_pipes/normal/naquadah"
+      "tag": "c:naquadah_normal_fluid_pipes"
     },
     "X": {
       "item": "gtceu:electric.piston.uv"

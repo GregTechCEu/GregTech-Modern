@@ -1,14 +1,13 @@
 {
   "values": [
     "minecraft:gold_ore",
-    "gtceu:ore_gold",
-    "gtceu:ore_basalt_gold",
-    "gtceu:ore_sand_gold",
-    "gtceu:ore_granite_gold",
-    "gtceu:ore_andesite_gold",
-    "gtceu:ore_endstone_gold",
-    "gtceu:ore_red_sand_gold",
-    "gtceu:ore_netherrack_gold",
-    "gtceu:ore_diorite_gold"
+    "gtceu:stone_gold",
+    "gtceu:deepslate_gold",
+    "gtceu:sand_gold",
+    "gtceu:basalt_gold",
+    "gtceu:granite_gold",
+    "gtceu:andesite_gold",
+    "gtceu:red_sand_gold",
+    "gtceu:diorite_gold"
   ]
 }

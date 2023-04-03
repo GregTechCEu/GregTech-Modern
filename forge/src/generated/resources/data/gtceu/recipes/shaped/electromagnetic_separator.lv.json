@@ -2,13 +2,13 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "forge:circuit/lv"
+      "tag": "forge:lv_circuits"
     },
     "M": {
       "item": "gtceu:hull.lv"
     },
     "S": {
-      "tag": "forge:sticks/iron"
+      "tag": "forge:rods/iron"
     },
     "V": {
       "item": "gtceu:conveyor.module.lv"

@@ -18,7 +18,7 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "forge:sticks/titanium"
+          "tag": "forge:rods/titanium"
         }
       },
       {
@@ -27,7 +27,7 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "forge:sticks/neodymium_magnetic"
+          "tag": "forge:rods/neodymium_magnetic"
         }
       },
       {

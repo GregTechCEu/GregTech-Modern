@@ -1,13 +1,12 @@
 {
   "values": [
-    "gtceu:ore_ilmenite",
-    "gtceu:ore_basalt_ilmenite",
-    "gtceu:ore_sand_ilmenite",
-    "gtceu:ore_granite_ilmenite",
-    "gtceu:ore_andesite_ilmenite",
-    "gtceu:ore_endstone_ilmenite",
-    "gtceu:ore_red_sand_ilmenite",
-    "gtceu:ore_netherrack_ilmenite",
-    "gtceu:ore_diorite_ilmenite"
+    "gtceu:deepslate_ilmenite",
+    "gtceu:sand_ilmenite",
+    "gtceu:basalt_ilmenite",
+    "gtceu:granite_ilmenite",
+    "gtceu:andesite_ilmenite",
+    "gtceu:red_sand_ilmenite",
+    "gtceu:stone_ilmenite",
+    "gtceu:diorite_ilmenite"
   ]
 }

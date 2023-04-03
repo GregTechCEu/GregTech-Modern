@@ -1,13 +1,12 @@
 {
   "values": [
-    "gtceu:ore_beryllium",
-    "gtceu:ore_basalt_beryllium",
-    "gtceu:ore_sand_beryllium",
-    "gtceu:ore_granite_beryllium",
-    "gtceu:ore_andesite_beryllium",
-    "gtceu:ore_endstone_beryllium",
-    "gtceu:ore_red_sand_beryllium",
-    "gtceu:ore_netherrack_beryllium",
-    "gtceu:ore_diorite_beryllium"
+    "gtceu:deepslate_beryllium",
+    "gtceu:sand_beryllium",
+    "gtceu:basalt_beryllium",
+    "gtceu:granite_beryllium",
+    "gtceu:andesite_beryllium",
+    "gtceu:red_sand_beryllium",
+    "gtceu:stone_beryllium",
+    "gtceu:diorite_beryllium"
   ]
 }

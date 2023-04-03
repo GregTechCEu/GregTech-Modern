@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "I": {
-      "tag": "c:plates/iron"
+      "tag": "c:iron_plates"
     },
     "P": {
       "item": "gtceu:casing_coke_bricks"

@@ -8,7 +8,7 @@
       "tag": "c:chests"
     },
     "W": {
-      "tag": "c:wires/octal/niobium_titanium"
+      "tag": "c:niobium_titanium_octal_wires"
     }
   },
   "pattern": [

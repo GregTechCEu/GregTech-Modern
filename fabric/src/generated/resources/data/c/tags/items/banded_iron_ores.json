@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:deepslate_banded_iron",
+    "gtceu:sand_banded_iron",
+    "gtceu:basalt_banded_iron",
+    "gtceu:granite_banded_iron",
+    "gtceu:andesite_banded_iron",
+    "gtceu:red_sand_banded_iron",
+    "gtceu:stone_banded_iron",
+    "gtceu:diorite_banded_iron"
+  ]
+}

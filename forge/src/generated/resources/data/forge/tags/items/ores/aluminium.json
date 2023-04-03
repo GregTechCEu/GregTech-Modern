@@ -1,13 +1,12 @@
 {
   "values": [
-    "gtceu:ore_aluminium",
-    "gtceu:ore_basalt_aluminium",
-    "gtceu:ore_sand_aluminium",
-    "gtceu:ore_granite_aluminium",
-    "gtceu:ore_andesite_aluminium",
-    "gtceu:ore_endstone_aluminium",
-    "gtceu:ore_red_sand_aluminium",
-    "gtceu:ore_netherrack_aluminium",
-    "gtceu:ore_diorite_aluminium"
+    "gtceu:deepslate_aluminium",
+    "gtceu:sand_aluminium",
+    "gtceu:basalt_aluminium",
+    "gtceu:granite_aluminium",
+    "gtceu:andesite_aluminium",
+    "gtceu:red_sand_aluminium",
+    "gtceu:stone_aluminium",
+    "gtceu:diorite_aluminium"
   ]
 }

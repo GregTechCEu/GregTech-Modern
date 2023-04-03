@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:deepslate_pyrochlore",
+    "gtceu:sand_pyrochlore",
+    "gtceu:basalt_pyrochlore",
+    "gtceu:granite_pyrochlore",
+    "gtceu:andesite_pyrochlore",
+    "gtceu:red_sand_pyrochlore",
+    "gtceu:stone_pyrochlore",
+    "gtceu:diorite_pyrochlore"
+  ]
+}

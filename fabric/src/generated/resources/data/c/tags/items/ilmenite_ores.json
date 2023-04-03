@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:deepslate_ilmenite",
+    "gtceu:sand_ilmenite",
+    "gtceu:basalt_ilmenite",
+    "gtceu:granite_ilmenite",
+    "gtceu:andesite_ilmenite",
+    "gtceu:red_sand_ilmenite",
+    "gtceu:stone_ilmenite",
+    "gtceu:diorite_ilmenite"
+  ]
+}

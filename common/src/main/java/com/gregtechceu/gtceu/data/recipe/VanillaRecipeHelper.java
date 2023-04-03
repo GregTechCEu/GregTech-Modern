@@ -120,8 +120,6 @@ public class VanillaRecipeHelper {
                     builder.define(sign, itemLike);
                 } else if (content instanceof UnificationEntry entry) {
                     builder.define(sign, ChemicalHelper.getTag(entry.tagPrefix, entry.material));
-                } else if (content instanceof TagPrefix tagPrefix && tagPrefix.getItemTags().length > 0) {
-                    builder.define(sign, tagPrefix.getItemTags()[0]);
                 } else if (content instanceof ItemEntry<?> entry) {
                     builder.define(sign, entry.asStack());
                 }

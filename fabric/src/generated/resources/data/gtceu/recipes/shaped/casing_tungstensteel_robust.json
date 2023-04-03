@@ -2,10 +2,10 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "F": {
-      "tag": "c:frames/tungsten_steel"
+      "tag": "c:tungsten_steel_frames"
     },
     "P": {
-      "tag": "c:plates/tungsten_steel"
+      "tag": "c:tungsten_steel_plates"
     },
     "h": {
       "tag": "c:tool/hammer"

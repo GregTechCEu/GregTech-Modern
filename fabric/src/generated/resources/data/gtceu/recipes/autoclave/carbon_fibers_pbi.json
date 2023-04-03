@@ -18,7 +18,7 @@
           "type": "gtceu:sized",
           "count": 8,
           "fabric:type": "gtceu:sized",
-          "tag": "c:dusts/carbon"
+          "tag": "c:carbon_dusts"
         }
       }
     ]

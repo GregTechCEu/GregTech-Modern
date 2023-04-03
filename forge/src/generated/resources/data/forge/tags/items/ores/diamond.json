@@ -1,14 +1,13 @@
 {
   "values": [
     "minecraft:diamond_ore",
-    "gtceu:ore_diamond",
-    "gtceu:ore_basalt_diamond",
-    "gtceu:ore_sand_diamond",
-    "gtceu:ore_granite_diamond",
-    "gtceu:ore_andesite_diamond",
-    "gtceu:ore_endstone_diamond",
-    "gtceu:ore_red_sand_diamond",
-    "gtceu:ore_netherrack_diamond",
-    "gtceu:ore_diorite_diamond"
+    "gtceu:stone_diamond",
+    "gtceu:deepslate_diamond",
+    "gtceu:sand_diamond",
+    "gtceu:basalt_diamond",
+    "gtceu:granite_diamond",
+    "gtceu:andesite_diamond",
+    "gtceu:red_sand_diamond",
+    "gtceu:diorite_diamond"
   ]
 }

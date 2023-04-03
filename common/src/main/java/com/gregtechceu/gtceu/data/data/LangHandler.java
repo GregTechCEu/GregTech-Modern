@@ -719,14 +719,14 @@ public class LangHandler {
         provider.add("item.wood.dustSmall", "Small Pile of Wood Pulp");
         provider.add("item.wood.dust", "Wood Pulp");
         provider.add("item.wood.plate", "Wood Plank");
-        provider.add("item.wood.stickLong", "Long Wood Stick");
+        provider.add("item.wood.rodLong", "Long Wood Stick");
         provider.add("item.wood.bolt", "Short Wood Stick");
         provider.add("item.treated_wood.dustTiny", "Tiny Pile of Treated Wood Pulp");
         provider.add("item.treated_wood.dustSmall", "Small Pile of Treated Wood Pulp");
         provider.add("item.treated_wood.dust", "Treated Wood Pulp");
         provider.add("item.treated_wood.plate", "Treated Wood Plank");
-        provider.add("item.treated_wood.stick", "Treated Wood Stick");
-        provider.add("item.treated_wood.stickLong", "Long Treated Wood Stick");
+        provider.add("item.treated_wood.rod", "Treated Wood Stick");
+        provider.add("item.treated_wood.rodLong", "Long Treated Wood Stick");
         provider.add("item.treated_wood.bolt", "Short Treated Wood Stick");
         provider.add("item.glass.gem", "Glass Crystal");
         provider.add("item.glass.gemChipped", "Chipped Glass Crystal");

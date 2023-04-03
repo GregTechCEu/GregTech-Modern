@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:deepslate_oilsands",
+    "gtceu:sand_oilsands",
+    "gtceu:basalt_oilsands",
+    "gtceu:granite_oilsands",
+    "gtceu:andesite_oilsands",
+    "gtceu:red_sand_oilsands",
+    "gtceu:stone_oilsands",
+    "gtceu:diorite_oilsands"
+  ]
+}

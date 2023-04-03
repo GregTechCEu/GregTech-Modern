@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:circuit/zpm"
+      "tag": "c:zpm_circuits"
     },
     "E": {
       "item": "gtceu:electric.motor.zpm"
@@ -14,7 +14,7 @@
       "item": "gtceu:hull.zpm"
     },
     "R": {
-      "tag": "c:rotors/naquadah_alloy"
+      "tag": "c:naquadah_alloy_rotors"
     }
   },
   "pattern": [

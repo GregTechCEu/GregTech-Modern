@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:deepslate_pyrope",
+    "gtceu:sand_pyrope",
+    "gtceu:basalt_pyrope",
+    "gtceu:granite_pyrope",
+    "gtceu:andesite_pyrope",
+    "gtceu:red_sand_pyrope",
+    "gtceu:stone_pyrope",
+    "gtceu:diorite_pyrope"
+  ]
+}

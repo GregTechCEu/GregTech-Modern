@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:deepslate_bornite",
+    "gtceu:sand_bornite",
+    "gtceu:basalt_bornite",
+    "gtceu:granite_bornite",
+    "gtceu:andesite_bornite",
+    "gtceu:red_sand_bornite",
+    "gtceu:stone_bornite",
+    "gtceu:diorite_bornite"
+  ]
+}

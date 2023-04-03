@@ -12,7 +12,7 @@
           "type": "gtceu:sized",
           "count": 32,
           "fabric:type": "gtceu:sized",
-          "tag": "c:dusts/silicon"
+          "tag": "c:silicon_dusts"
         }
       },
       {
@@ -21,7 +21,7 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "c:dusts/small/gallium_arsenide"
+          "tag": "c:gallium_arsenide_small_dusts"
         }
       }
     ]

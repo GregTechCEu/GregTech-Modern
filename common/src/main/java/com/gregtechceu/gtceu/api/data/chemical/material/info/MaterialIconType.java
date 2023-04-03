@@ -49,7 +49,7 @@ public record MaterialIconType(String name) {
     public static final MaterialIconType plateQuintuple = new MaterialIconType("plateQuintuple");
     public static final MaterialIconType plateDense = new MaterialIconType("plateDense");
 
-    public static final MaterialIconType stick = new MaterialIconType("stick");
+    public static final MaterialIconType stick = new MaterialIconType("rod");
     public static final MaterialIconType lens = new MaterialIconType("lens");
     public static final MaterialIconType round = new MaterialIconType("round");
     public static final MaterialIconType bolt = new MaterialIconType("bolt");
@@ -58,7 +58,7 @@ public record MaterialIconType(String name) {
     public static final MaterialIconType wireFine = new MaterialIconType("wireFine");
     public static final MaterialIconType gearSmall = new MaterialIconType("gearSmall");
     public static final MaterialIconType rotor = new MaterialIconType("rotor");
-    public static final MaterialIconType stickLong = new MaterialIconType("stickLong");
+    public static final MaterialIconType stickLong = new MaterialIconType("rodLong");
     public static final MaterialIconType springSmall = new MaterialIconType("springSmall");
     public static final MaterialIconType spring = new MaterialIconType("spring");
     public static final MaterialIconType gear = new MaterialIconType("gear");

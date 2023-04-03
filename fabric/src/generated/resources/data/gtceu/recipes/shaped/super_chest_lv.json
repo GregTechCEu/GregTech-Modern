@@ -2,13 +2,13 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:circuit/lv"
+      "tag": "c:lv_circuits"
     },
     "F": {
       "item": "gtceu:crate.steel"
     },
     "P": {
-      "tag": "c:plates/steel"
+      "tag": "c:steel_plates"
     }
   },
   "pattern": [

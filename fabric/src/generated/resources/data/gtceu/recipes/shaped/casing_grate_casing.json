@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "F": {
-      "tag": "c:frames/steel"
+      "tag": "c:steel_frames"
     },
     "M": {
       "item": "gtceu:electric.motor.mv"
@@ -11,7 +11,7 @@
       "item": "minecraft:iron_bars"
     },
     "V": {
-      "tag": "c:rotors/steel"
+      "tag": "c:steel_rotors"
     }
   },
   "pattern": [

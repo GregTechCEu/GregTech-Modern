@@ -2,13 +2,13 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:circuit/ev"
+      "tag": "c:ev_circuits"
     },
     "E": {
       "item": "gtceu:emitter.iv"
     },
     "F": {
-      "tag": "c:frames/tungsten_steel"
+      "tag": "c:tungsten_steel_frames"
     },
     "M": {
       "item": "gtceu:electric.motor.iv"

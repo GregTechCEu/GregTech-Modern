@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:circuit/hv"
+      "tag": "c:hv_circuits"
     },
     "F": {
       "item": "gtceu:electric.pump.hv"
@@ -14,7 +14,7 @@
       "item": "gtceu:hermetic_casing_hv"
     },
     "P": {
-      "tag": "c:plates/stainless_steel"
+      "tag": "c:stainless_steel_plates"
     }
   },
   "pattern": [

@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:deepslate_bentonite",
+    "gtceu:sand_bentonite",
+    "gtceu:basalt_bentonite",
+    "gtceu:granite_bentonite",
+    "gtceu:andesite_bentonite",
+    "gtceu:red_sand_bentonite",
+    "gtceu:stone_bentonite",
+    "gtceu:diorite_bentonite"
+  ]
+}

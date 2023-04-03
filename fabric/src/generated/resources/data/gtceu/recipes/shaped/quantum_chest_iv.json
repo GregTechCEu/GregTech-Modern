@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:circuit/iv"
+      "tag": "c:iv_circuits"
     },
     "F": {
       "item": "gtceu:field.generator.hv"
@@ -11,7 +11,7 @@
       "item": "gtceu:hull.iv"
     },
     "P": {
-      "tag": "c:plates/dense/tungsten_steel"
+      "tag": "c:tungsten_steel_dense_plates"
     }
   },
   "pattern": [

@@ -9,7 +9,7 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "c:cables/single/tungsten"
+          "tag": "c:tungsten_single_cables"
         }
       },
       {
@@ -18,7 +18,7 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "c:fluid_pipes/normal/tungsten_steel"
+          "tag": "c:tungsten_steel_normal_fluid_pipes"
         }
       },
       {
@@ -27,7 +27,7 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "c:screws/tungsten_steel"
+          "tag": "c:tungsten_steel_screws"
         }
       },
       {
@@ -36,7 +36,7 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "c:rotors/tungsten_steel"
+          "tag": "c:tungsten_steel_rotors"
         }
       },
       {
@@ -45,7 +45,7 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "c:rings/styrene_butadiene_rubber"
+          "tag": "c:styrene_butadiene_rubber_rings"
         }
       },
       {

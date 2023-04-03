@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:deepslate_electrotine",
+    "gtceu:sand_electrotine",
+    "gtceu:basalt_electrotine",
+    "gtceu:granite_electrotine",
+    "gtceu:andesite_electrotine",
+    "gtceu:red_sand_electrotine",
+    "gtceu:stone_electrotine",
+    "gtceu:diorite_electrotine"
+  ]
+}

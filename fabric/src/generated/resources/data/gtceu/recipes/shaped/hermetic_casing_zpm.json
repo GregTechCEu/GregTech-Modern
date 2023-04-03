@@ -2,10 +2,10 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "F": {
-      "tag": "c:fluid_pipes/large/niobium_titanium"
+      "tag": "c:niobium_titanium_large_fluid_pipes"
     },
     "P": {
-      "tag": "c:plates/naquadah_alloy"
+      "tag": "c:naquadah_alloy_plates"
     }
   },
   "pattern": [

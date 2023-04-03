@@ -24,7 +24,7 @@
           "type": "gtceu:sized",
           "count": 8,
           "fabric:type": "gtceu:sized",
-          "tag": "c:foils/electrum"
+          "tag": "c:electrum_foils"
         }
       }
     ]

@@ -11,7 +11,7 @@
       "item": "gtceu:hull.ev"
     },
     "I": {
-      "tag": "forge:circuit/iv"
+      "tag": "forge:iv_circuits"
     },
     "R": {
       "item": "gtceu:robot.arm.ev"

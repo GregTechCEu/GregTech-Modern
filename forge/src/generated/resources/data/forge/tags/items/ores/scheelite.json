@@ -1,13 +1,12 @@
 {
   "values": [
-    "gtceu:ore_scheelite",
-    "gtceu:ore_basalt_scheelite",
-    "gtceu:ore_sand_scheelite",
-    "gtceu:ore_granite_scheelite",
-    "gtceu:ore_andesite_scheelite",
-    "gtceu:ore_endstone_scheelite",
-    "gtceu:ore_red_sand_scheelite",
-    "gtceu:ore_netherrack_scheelite",
-    "gtceu:ore_diorite_scheelite"
+    "gtceu:deepslate_scheelite",
+    "gtceu:sand_scheelite",
+    "gtceu:basalt_scheelite",
+    "gtceu:granite_scheelite",
+    "gtceu:andesite_scheelite",
+    "gtceu:red_sand_scheelite",
+    "gtceu:stone_scheelite",
+    "gtceu:diorite_scheelite"
   ]
 }

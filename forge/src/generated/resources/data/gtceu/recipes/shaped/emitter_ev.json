@@ -8,10 +8,10 @@
       "item": "gtceu:quantumeye"
     },
     "R": {
-      "tag": "forge:sticks/platinum"
+      "tag": "forge:rods/platinum"
     },
     "X": {
-      "tag": "forge:circuit/ev"
+      "tag": "forge:ev_circuits"
     }
   },
   "pattern": [

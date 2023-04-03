@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:deepslate_sulfur",
+    "gtceu:sand_sulfur",
+    "gtceu:basalt_sulfur",
+    "gtceu:granite_sulfur",
+    "gtceu:andesite_sulfur",
+    "gtceu:red_sand_sulfur",
+    "gtceu:stone_sulfur",
+    "gtceu:diorite_sulfur"
+  ]
+}

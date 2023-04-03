@@ -1,10 +1,10 @@
 package com.gregtechceu.gtceu.data.recipe.misc;
 
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
-import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials.Tier;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.recipe.FacadeCoverRecipe;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
+import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.SpecialRecipeBuilder;
@@ -35,7 +35,7 @@ public class CraftingRecipeLoader {
         //VanillaRecipeHelper.addShapedRecipe(provider, "normal_treated_wooden_pipe", ChemicalHelper.get(pipeNormalFluid, TreatedWood), "WWW", "s r", 'W', new UnificationEntry(plank, TreatedWood));
         //VanillaRecipeHelper.addShapedRecipe(provider, "large_treated_wooden_pipe", ChemicalHelper.get(pipeLargeFluid, TreatedWood), "WWW", "s r", "WWW", 'W', new UnificationEntry(plank, TreatedWood));
 
-        VanillaRecipeHelper.addShapelessRecipe(provider, "integrated_circuit", INTEGRATED_CIRCUIT.asStack(), new UnificationEntry(circuit, Tier.LV));
+        VanillaRecipeHelper.addShapelessRecipe(provider, "integrated_circuit", INTEGRATED_CIRCUIT.asStack(), CustomTags.LV_CIRCUITS);
 
         VanillaRecipeHelper.addShapedRecipe(provider, "item_filter", ITEM_FILTER.asStack(), "XXX", "XYX", "XXX", 'X', new UnificationEntry(foil, Zinc), 'Y', new UnificationEntry(plate, Steel));
         VanillaRecipeHelper.addShapedRecipe(provider, "fluid_filter_lapis", FLUID_FILTER.asStack(), "XXX", "XYX", "XXX", 'X', new UnificationEntry(foil, Zinc), 'Y', new UnificationEntry(plate, Lapis));
@@ -69,7 +69,7 @@ public class CraftingRecipeLoader {
         VanillaRecipeHelper.addShapedRecipe(provider, "silicone_rubber_ring", ChemicalHelper.get(ring, SiliconeRubber), "k", "P", 'P', ChemicalHelper.get(plate, SiliconeRubber));
         VanillaRecipeHelper.addShapedRecipe(provider, "styrene_rubber_ring", ChemicalHelper.get(ring, StyreneButadieneRubber), "k", "P", 'P', ChemicalHelper.get(plate, StyreneButadieneRubber));
 
-        VanillaRecipeHelper.addShapelessRecipe(provider, "iron_magnetic_stick", ChemicalHelper.get(stick, IronMagnetic), new UnificationEntry(stick, Iron), new UnificationEntry(dust, Redstone), new UnificationEntry(dust, Redstone), new UnificationEntry(dust, Redstone), new UnificationEntry(dust, Redstone));
+        VanillaRecipeHelper.addShapelessRecipe(provider, "iron_magnetic_stick", ChemicalHelper.get(rod, IronMagnetic), new UnificationEntry(rod, Iron), new UnificationEntry(dust, Redstone), new UnificationEntry(dust, Redstone), new UnificationEntry(dust, Redstone), new UnificationEntry(dust, Redstone));
 
         VanillaRecipeHelper.addShapedRecipe(provider, "component_grinder_diamond", COMPONENT_GRINDER_DIAMOND.asStack(), "XSX", "SDS", "XSX", 'X', new UnificationEntry(dust, Diamond), 'S', new UnificationEntry(plateDouble, Steel), 'D', new UnificationEntry(gem, Diamond));
         VanillaRecipeHelper.addShapedRecipe(provider, "component_grinder_tungsten", COMPONENT_GRINDER_TUNGSTEN.asStack(), "WSW", "SDS", "WSW", 'W', new UnificationEntry(plate, Tungsten), 'S', new UnificationEntry(plateDouble, VanadiumSteel), 'D', new UnificationEntry(gem, Diamond));
@@ -77,7 +77,7 @@ public class CraftingRecipeLoader {
         // todo nanosaber
         //VanillaRecipeHelper.addShapedRecipe(provider, "nano_saber", NANO_SABER.asStack(), "PIC", "PIC", "XEX", 'P', new UnificationEntry(plate, Platinum), 'I', new UnificationEntry(plate, Ruridit), 'C', CARBON_FIBER_PLATE.asStack(), 'X', new UnificationEntry(circuit, Tier.EV), 'E', ENERGIUM_CRYSTAL.asStack());
 
-        VanillaRecipeHelper.addShapedRecipe(provider, "solar_panel_basic", COVER_SOLAR_PANEL.asStack(), "WGW", "CPC", 'W', SILICON_WAFER.asStack(), 'G', new ItemStack(Blocks.GLASS_PANE), 'C', new UnificationEntry(circuit, Tier.LV), 'P', CARBON_FIBER_PLATE.asStack());
+        VanillaRecipeHelper.addShapedRecipe(provider, "solar_panel_basic", COVER_SOLAR_PANEL.asStack(), "WGW", "CPC", 'W', SILICON_WAFER.asStack(), 'G', new ItemStack(Blocks.GLASS_PANE), 'C', CustomTags.LV_CIRCUITS, 'P', CARBON_FIBER_PLATE.asStack());
         // TODO glass tiers
         //VanillaRecipeHelper.addShapedRecipe(provider, "solar_panel_ulv", COVER_SOLAR_PANEL_ULV.asStack(), "WGW", "CAC", "P P", 'W', GLOWSTONE_WAFER.asStack(), 'G', "paneGlass", 'C', new UnificationEntry(circuit, Tier.HV), 'P', ChemicalHelper.get(plate, GalliumArsenide), 'A', ChemicalHelper.get(wireGtQuadruple, Graphene));
         //VanillaRecipeHelper.addShapedRecipe(provider, "solar_panel_lv", COVER_SOLAR_PANEL_LV.asStack(), "WGW", "CAC", "P P", 'W', NAQUADAH_WAFER.asStack(), 'G', MetaBlocks.TRANSPARENT_CASING.getItemVariant(

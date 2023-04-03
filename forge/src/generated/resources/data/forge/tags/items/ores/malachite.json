@@ -1,13 +1,12 @@
 {
   "values": [
-    "gtceu:ore_malachite",
-    "gtceu:ore_basalt_malachite",
-    "gtceu:ore_sand_malachite",
-    "gtceu:ore_granite_malachite",
-    "gtceu:ore_andesite_malachite",
-    "gtceu:ore_endstone_malachite",
-    "gtceu:ore_red_sand_malachite",
-    "gtceu:ore_netherrack_malachite",
-    "gtceu:ore_diorite_malachite"
+    "gtceu:deepslate_malachite",
+    "gtceu:sand_malachite",
+    "gtceu:basalt_malachite",
+    "gtceu:granite_malachite",
+    "gtceu:andesite_malachite",
+    "gtceu:red_sand_malachite",
+    "gtceu:stone_malachite",
+    "gtceu:diorite_malachite"
   ]
 }

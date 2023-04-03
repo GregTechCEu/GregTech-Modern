@@ -2,13 +2,13 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:cables/single/gold"
+      "tag": "c:gold_single_cables"
     },
     "H": {
       "item": "gtceu:hull.hv"
     },
     "T": {
-      "tag": "c:cables/single/aluminium"
+      "tag": "c:aluminium_single_cables"
     },
     "W": {
       "item": "gtceu:plate.low_power_integrated_circuit"

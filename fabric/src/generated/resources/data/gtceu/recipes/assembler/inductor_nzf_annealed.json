@@ -18,7 +18,7 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "c:rings/nickel_zinc_ferrite"
+          "tag": "c:nickel_zinc_ferrite_rings"
         }
       },
       {
@@ -27,7 +27,7 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "c:wires/fine/annealed_copper"
+          "tag": "c:annealed_copper_fine_wires"
         }
       }
     ]

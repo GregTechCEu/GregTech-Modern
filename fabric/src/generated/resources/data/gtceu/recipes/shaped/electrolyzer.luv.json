@@ -2,19 +2,19 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:circuit/luv"
+      "tag": "c:luv_circuits"
     },
     "G": {
       "tag": "c:glass"
     },
     "I": {
-      "tag": "c:wires/single/osmium"
+      "tag": "c:osmium_single_wires"
     },
     "M": {
       "item": "gtceu:hull.luv"
     },
     "W": {
-      "tag": "c:cables/single/niobium_titanium"
+      "tag": "c:niobium_titanium_single_cables"
     }
   },
   "pattern": [

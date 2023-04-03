@@ -1,14 +1,13 @@
 {
   "values": [
     "minecraft:copper_ore",
-    "gtceu:ore_copper",
-    "gtceu:ore_basalt_copper",
-    "gtceu:ore_sand_copper",
-    "gtceu:ore_granite_copper",
-    "gtceu:ore_andesite_copper",
-    "gtceu:ore_endstone_copper",
-    "gtceu:ore_red_sand_copper",
-    "gtceu:ore_netherrack_copper",
-    "gtceu:ore_diorite_copper"
+    "gtceu:stone_copper",
+    "gtceu:deepslate_copper",
+    "gtceu:sand_copper",
+    "gtceu:basalt_copper",
+    "gtceu:granite_copper",
+    "gtceu:andesite_copper",
+    "gtceu:red_sand_copper",
+    "gtceu:diorite_copper"
   ]
 }

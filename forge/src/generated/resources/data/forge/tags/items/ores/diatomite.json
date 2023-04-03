@@ -1,13 +1,12 @@
 {
   "values": [
-    "gtceu:ore_diatomite",
-    "gtceu:ore_basalt_diatomite",
-    "gtceu:ore_sand_diatomite",
-    "gtceu:ore_granite_diatomite",
-    "gtceu:ore_andesite_diatomite",
-    "gtceu:ore_endstone_diatomite",
-    "gtceu:ore_red_sand_diatomite",
-    "gtceu:ore_netherrack_diatomite",
-    "gtceu:ore_diorite_diatomite"
+    "gtceu:deepslate_diatomite",
+    "gtceu:sand_diatomite",
+    "gtceu:basalt_diatomite",
+    "gtceu:granite_diatomite",
+    "gtceu:andesite_diatomite",
+    "gtceu:red_sand_diatomite",
+    "gtceu:stone_diatomite",
+    "gtceu:diorite_diatomite"
   ]
 }

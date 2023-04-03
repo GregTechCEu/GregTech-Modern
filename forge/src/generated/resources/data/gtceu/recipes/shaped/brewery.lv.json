@@ -5,7 +5,7 @@
       "tag": "forge:springs/copper"
     },
     "C": {
-      "tag": "forge:circuit/lv"
+      "tag": "forge:lv_circuits"
     },
     "G": {
       "tag": "forge:glass"

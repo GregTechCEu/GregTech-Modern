@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:deepslate_yellow_limonite",
+    "gtceu:sand_yellow_limonite",
+    "gtceu:basalt_yellow_limonite",
+    "gtceu:granite_yellow_limonite",
+    "gtceu:andesite_yellow_limonite",
+    "gtceu:red_sand_yellow_limonite",
+    "gtceu:stone_yellow_limonite",
+    "gtceu:diorite_yellow_limonite"
+  ]
+}

@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:circuit/hv"
+      "tag": "c:hv_circuits"
     },
     "E": {
       "item": "gtceu:electric.motor.hv"
@@ -11,13 +11,13 @@
       "item": "gtceu:hull.hv"
     },
     "P": {
-      "tag": "c:fluid_pipes/normal/stainless_steel"
+      "tag": "c:stainless_steel_normal_fluid_pipes"
     },
     "R": {
-      "tag": "c:rotors/steel"
+      "tag": "c:steel_rotors"
     },
     "W": {
-      "tag": "c:cables/single/gold"
+      "tag": "c:gold_single_cables"
     }
   },
   "pattern": [

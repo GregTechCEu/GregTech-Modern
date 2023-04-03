@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:deepslate_gypsum",
+    "gtceu:sand_gypsum",
+    "gtceu:basalt_gypsum",
+    "gtceu:granite_gypsum",
+    "gtceu:andesite_gypsum",
+    "gtceu:red_sand_gypsum",
+    "gtceu:stone_gypsum",
+    "gtceu:diorite_gypsum"
+  ]
+}

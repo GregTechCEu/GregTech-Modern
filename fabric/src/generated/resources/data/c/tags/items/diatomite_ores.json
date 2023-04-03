@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:deepslate_diatomite",
+    "gtceu:sand_diatomite",
+    "gtceu:basalt_diatomite",
+    "gtceu:granite_diatomite",
+    "gtceu:andesite_diatomite",
+    "gtceu:red_sand_diatomite",
+    "gtceu:stone_diatomite",
+    "gtceu:diorite_diatomite"
+  ]
+}

@@ -8,7 +8,7 @@
       "tag": "forge:cables/single/tin"
     },
     "S": {
-      "tag": "forge:circuit/lv"
+      "tag": "forge:lv_circuits"
     }
   },
   "pattern": [

@@ -1,0 +1,14 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:diamond_ore",
+    "gtceu:stone_diamond",
+    "gtceu:deepslate_diamond",
+    "gtceu:sand_diamond",
+    "gtceu:basalt_diamond",
+    "gtceu:granite_diamond",
+    "gtceu:andesite_diamond",
+    "gtceu:red_sand_diamond",
+    "gtceu:diorite_diamond"
+  ]
+}

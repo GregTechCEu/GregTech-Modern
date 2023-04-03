@@ -2,19 +2,19 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:circuit/zpm"
+      "tag": "c:zpm_circuits"
     },
     "G": {
       "tag": "c:glass"
     },
     "I": {
-      "tag": "c:wires/single/osmium"
+      "tag": "c:osmium_single_wires"
     },
     "M": {
       "item": "gtceu:hull.zpm"
     },
     "W": {
-      "tag": "c:cables/single/vanadium_gallium"
+      "tag": "c:vanadium_gallium_single_cables"
     }
   },
   "pattern": [

@@ -47,7 +47,7 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "c:circuit/iv"
+          "tag": "c:iv_circuits"
         }
       },
       {
@@ -56,7 +56,7 @@
           "type": "gtceu:sized",
           "count": 16,
           "fabric:type": "gtceu:sized",
-          "tag": "c:foils/niobium_titanium"
+          "tag": "c:niobium_titanium_foils"
         }
       }
     ]

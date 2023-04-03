@@ -2,13 +2,13 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "F": {
-      "tag": "c:frames/steel"
+      "tag": "c:steel_frames"
     },
     "I": {
-      "tag": "c:fluid_pipes/normal/steel"
+      "tag": "c:steel_normal_fluid_pipes"
     },
     "P": {
-      "tag": "c:plates/steel"
+      "tag": "c:steel_plates"
     }
   },
   "pattern": [

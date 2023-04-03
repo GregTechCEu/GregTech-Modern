@@ -2,13 +2,13 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "F": {
-      "tag": "c:frames/titanium"
+      "tag": "c:titanium_frames"
     },
     "I": {
-      "tag": "c:fluid_pipes/normal/titanium"
+      "tag": "c:titanium_normal_fluid_pipes"
     },
     "P": {
-      "tag": "c:plates/titanium"
+      "tag": "c:titanium_plates"
     }
   },
   "pattern": [

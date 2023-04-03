@@ -1,13 +1,12 @@
 {
   "values": [
-    "gtceu:ore_mica",
-    "gtceu:ore_basalt_mica",
-    "gtceu:ore_sand_mica",
-    "gtceu:ore_granite_mica",
-    "gtceu:ore_andesite_mica",
-    "gtceu:ore_endstone_mica",
-    "gtceu:ore_red_sand_mica",
-    "gtceu:ore_netherrack_mica",
-    "gtceu:ore_diorite_mica"
+    "gtceu:deepslate_mica",
+    "gtceu:sand_mica",
+    "gtceu:basalt_mica",
+    "gtceu:granite_mica",
+    "gtceu:andesite_mica",
+    "gtceu:red_sand_mica",
+    "gtceu:stone_mica",
+    "gtceu:diorite_mica"
   ]
 }

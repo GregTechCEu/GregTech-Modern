@@ -24,7 +24,7 @@
           "type": "gtceu:sized",
           "count": 32,
           "fabric:type": "gtceu:sized",
-          "tag": "c:foils/niobium_titanium"
+          "tag": "c:niobium_titanium_foils"
         }
       }
     ]

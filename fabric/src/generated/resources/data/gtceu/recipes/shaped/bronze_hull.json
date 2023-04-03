@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "P": {
-      "tag": "c:plates/bronze"
+      "tag": "c:bronze_plates"
     },
     "h": {
       "tag": "c:tool/hammer"

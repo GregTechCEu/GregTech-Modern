@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:deepslate_almandine",
+    "gtceu:sand_almandine",
+    "gtceu:basalt_almandine",
+    "gtceu:granite_almandine",
+    "gtceu:andesite_almandine",
+    "gtceu:red_sand_almandine",
+    "gtceu:stone_almandine",
+    "gtceu:diorite_almandine"
+  ]
+}

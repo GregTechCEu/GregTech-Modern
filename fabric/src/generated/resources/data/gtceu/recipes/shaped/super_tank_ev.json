@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:circuit/ev"
+      "tag": "c:ev_circuits"
     },
     "F": {
       "item": "gtceu:electric.pump.ev"
@@ -14,7 +14,7 @@
       "item": "gtceu:hermetic_casing_ev"
     },
     "P": {
-      "tag": "c:plates/titanium"
+      "tag": "c:titanium_plates"
     }
   },
   "pattern": [

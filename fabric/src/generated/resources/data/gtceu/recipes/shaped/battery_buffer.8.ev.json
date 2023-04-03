@@ -8,7 +8,7 @@
       "tag": "c:chests"
     },
     "W": {
-      "tag": "c:wires/octal/aluminium"
+      "tag": "c:aluminium_octal_wires"
     }
   },
   "pattern": [

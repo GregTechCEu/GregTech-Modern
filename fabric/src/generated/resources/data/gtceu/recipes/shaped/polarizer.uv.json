@@ -5,13 +5,13 @@
       "item": "gtceu:hull.uv"
     },
     "S": {
-      "tag": "c:sticks/vanadium_gallium"
+      "tag": "c:vanadium_gallium_rods"
     },
     "W": {
-      "tag": "c:cables/single/yttrium_barium_cuprate"
+      "tag": "c:yttrium_barium_cuprate_single_cables"
     },
     "Z": {
-      "tag": "c:wires/octal/yttrium_barium_cuprate"
+      "tag": "c:yttrium_barium_cuprate_octal_wires"
     }
   },
   "pattern": [

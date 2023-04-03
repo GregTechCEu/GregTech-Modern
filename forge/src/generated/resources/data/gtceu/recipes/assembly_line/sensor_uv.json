@@ -55,7 +55,7 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "forge:circuit/uv"
+          "tag": "forge:uv_circuits"
         }
       },
       {

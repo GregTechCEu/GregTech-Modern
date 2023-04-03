@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:deepslate_powellite",
+    "gtceu:sand_powellite",
+    "gtceu:basalt_powellite",
+    "gtceu:granite_powellite",
+    "gtceu:andesite_powellite",
+    "gtceu:red_sand_powellite",
+    "gtceu:stone_powellite",
+    "gtceu:diorite_powellite"
+  ]
+}

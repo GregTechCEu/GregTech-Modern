@@ -2,16 +2,16 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:cables/single/copper"
+      "tag": "c:copper_single_cables"
     },
     "M": {
-      "tag": "c:sticks/steel_magnetic"
+      "tag": "c:steel_magnetic_rods"
     },
     "R": {
-      "tag": "c:sticks/aluminium"
+      "tag": "c:aluminium_rods"
     },
     "W": {
-      "tag": "c:wires/double/cupronickel"
+      "tag": "c:cupronickel_double_wires"
     }
   },
   "pattern": [

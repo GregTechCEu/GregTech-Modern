@@ -2,10 +2,10 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "F": {
-      "tag": "c:fluid_pipes/large/naquadah"
+      "tag": "c:naquadah_large_fluid_pipes"
     },
     "P": {
-      "tag": "c:plates/darmstadtium"
+      "tag": "c:darmstadtium_plates"
     }
   },
   "pattern": [

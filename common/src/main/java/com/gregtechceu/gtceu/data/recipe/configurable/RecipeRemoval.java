@@ -101,7 +101,7 @@ public class RecipeRemoval {
     }
 
     private static void nerfWoodCrafting(Consumer<ResourceLocation> registry) {
-        registry.accept(new ResourceLocation("minecraft:stick"));
+        registry.accept(new ResourceLocation("minecraft:rod"));
     }
 
     private static void hardWoodRecipes(Consumer<ResourceLocation> registry) {

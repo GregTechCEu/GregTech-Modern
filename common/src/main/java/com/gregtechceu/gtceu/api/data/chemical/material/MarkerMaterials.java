@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.api.data.chemical.material;
 
 import com.google.common.collect.HashBiMap;
-import com.gregtechceu.gtceu.api.GTValues;
 import net.minecraft.world.item.DyeColor;
 
 public class MarkerMaterials {
@@ -9,7 +8,6 @@ public class MarkerMaterials {
     @SuppressWarnings("ResultOfMethodCallIgnored")
     public static void register() {
         Color.Colorless.toString();
-        Tier.ULV.toString();
         Empty.toString();
     }
 
@@ -77,39 +75,5 @@ public class MarkerMaterials {
                 COLORS.put(color, Color.valueOf(color.getName()));
             }
         }
-    }
-
-    /**
-     * Circuitry, batteries and other technical things
-     */
-    public static class Tier {
-        public static final Material ULV = new MarkerMaterial(GTValues.VN[GTValues.ULV].toLowerCase());
-        public static final Material LV = new MarkerMaterial(GTValues.VN[GTValues.LV].toLowerCase());
-        public static final Material MV = new MarkerMaterial(GTValues.VN[GTValues.MV].toLowerCase());
-        public static final Material HV = new MarkerMaterial(GTValues.VN[GTValues.HV].toLowerCase());
-        public static final Material EV = new MarkerMaterial(GTValues.VN[GTValues.EV].toLowerCase());
-        public static final Material IV = new MarkerMaterial(GTValues.VN[GTValues.IV].toLowerCase());
-        public static final Material LuV = new MarkerMaterial(GTValues.VN[GTValues.LuV].toLowerCase());
-        public static final Material ZPM = new MarkerMaterial(GTValues.VN[GTValues.ZPM].toLowerCase());
-        public static final Material UV = new MarkerMaterial(GTValues.VN[GTValues.UV].toLowerCase());
-        public static final Material UHV = new MarkerMaterial(GTValues.VN[GTValues.UHV].toLowerCase());
-        public static final Material UEV = new MarkerMaterial(GTValues.VN[GTValues.UEV].toLowerCase());
-        public static final Material UIV = new MarkerMaterial(GTValues.VN[GTValues.UIV].toLowerCase());
-        public static final Material UXV = new MarkerMaterial(GTValues.VN[GTValues.UXV].toLowerCase());
-        public static final Material OpV = new MarkerMaterial(GTValues.VN[GTValues.OpV].toLowerCase());
-        public static final Material MAX = new MarkerMaterial(GTValues.VN[GTValues.MAX].toLowerCase());
-    }
-
-    public static class Component {
-        public static final Material Resistor = new MarkerMaterial("resistor");
-        public static final Material Transistor = new MarkerMaterial("transistor");
-        public static final Material Capacitor = new MarkerMaterial("capacitor");
-        public static final Material Diode = new MarkerMaterial("diode");
-        public static final Material Inductor = new MarkerMaterial("inductor");
-    }
-
-    public static class Misc {
-        public static final Material Piston = new MarkerMaterial("piston");
-        public static final Material Chest = new MarkerMaterial("chest");
     }
 }

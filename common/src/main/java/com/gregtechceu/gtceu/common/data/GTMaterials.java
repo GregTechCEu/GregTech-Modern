@@ -18,8 +18,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.*;
-import static com.gregtechceu.gtceu.api.tag.OreTagType.*;
 import static com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper.*;
+import static com.gregtechceu.gtceu.api.tag.TagPrefix.*;
 
 
 /**
@@ -138,10 +138,10 @@ public class GTMaterials {
         dust.setIgnored(Bone, Items.BONE_MEAL);
         dust.setIgnored(Blaze, Items.BLAZE_POWDER);
 
-        stick.setIgnored(Wood, Items.STICK);
-        stick.setIgnored(Bone, Items.BONE);
-        stick.setIgnored(Blaze, Items.BLAZE_ROD);
-        stick.setIgnored(Paper);
+        rod.setIgnored(Wood, Items.STICK);
+        rod.setIgnored(Bone, Items.BONE);
+        rod.setIgnored(Blaze, Items.BLAZE_ROD);
+        rod.setIgnored(Paper);
 
         ingot.setIgnored(Iron, Items.IRON_INGOT);
         ingot.setIgnored(Gold, Items.GOLD_INGOT);

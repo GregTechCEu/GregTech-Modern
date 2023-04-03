@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:deepslate_wulfenite",
+    "gtceu:sand_wulfenite",
+    "gtceu:basalt_wulfenite",
+    "gtceu:granite_wulfenite",
+    "gtceu:andesite_wulfenite",
+    "gtceu:red_sand_wulfenite",
+    "gtceu:stone_wulfenite",
+    "gtceu:diorite_wulfenite"
+  ]
+}

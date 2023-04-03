@@ -11,10 +11,10 @@
       "item": "gtceu:electric.piston.hv"
     },
     "R": {
-      "tag": "forge:sticks/stainless_steel"
+      "tag": "forge:rods/stainless_steel"
     },
     "X": {
-      "tag": "forge:circuit/hv"
+      "tag": "forge:hv_circuits"
     }
   },
   "pattern": [

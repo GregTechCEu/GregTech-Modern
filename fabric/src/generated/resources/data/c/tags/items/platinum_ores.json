@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:deepslate_platinum",
+    "gtceu:sand_platinum",
+    "gtceu:basalt_platinum",
+    "gtceu:granite_platinum",
+    "gtceu:andesite_platinum",
+    "gtceu:red_sand_platinum",
+    "gtceu:stone_platinum",
+    "gtceu:diorite_platinum"
+  ]
+}

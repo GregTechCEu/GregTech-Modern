@@ -18,7 +18,7 @@
           "type": "gtceu:sized",
           "count": 4,
           "fabric:type": "gtceu:sized",
-          "tag": "c:wires/fine/copper"
+          "tag": "c:copper_fine_wires"
         }
       },
       {
@@ -27,7 +27,7 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "c:dusts/small/gallium_arsenide"
+          "tag": "c:gallium_arsenide_small_dusts"
         }
       }
     ]

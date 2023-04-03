@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.data.recipe.serialized.chemistry;
 
-import com.gregtechceu.gtceu.api.tag.OreTagType;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.world.item.ItemStack;
@@ -49,7 +48,7 @@ public class SeparationRecipes {
                 .duration(24).EUt(5).save(provider);
 
         CENTRIFUGE_RECIPES.recipeBuilder("oilsands_ore_separation")
-                .inputItems(OreTagType.ore, Oilsands)
+                .inputItems(ore, Oilsands)
                 .chancedOutput(new ItemStack(Blocks.SAND), 5000, 5000)
                 .outputFluids(Oil.getFluid(500))
                 .duration(200).EUt(5).save(provider);

@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:deepslate_naquadah",
+    "gtceu:sand_naquadah",
+    "gtceu:basalt_naquadah",
+    "gtceu:granite_naquadah",
+    "gtceu:andesite_naquadah",
+    "gtceu:red_sand_naquadah",
+    "gtceu:stone_naquadah",
+    "gtceu:diorite_naquadah"
+  ]
+}

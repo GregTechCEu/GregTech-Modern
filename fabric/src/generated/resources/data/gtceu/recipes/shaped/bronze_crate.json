@@ -2,10 +2,10 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "P": {
-      "tag": "c:plates/bronze"
+      "tag": "c:bronze_plates"
     },
     "R": {
-      "tag": "c:sticks/long/bronze"
+      "tag": "c:bronze_long_rods"
     },
     "h": {
       "tag": "c:tool/hammer"

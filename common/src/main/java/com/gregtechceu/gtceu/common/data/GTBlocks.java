@@ -8,7 +8,6 @@ import com.gregtechceu.gtceu.api.block.*;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.item.MaterialPipeBlockItem;
 import com.gregtechceu.gtceu.api.item.RendererBlockItem;
-import com.gregtechceu.gtceu.api.tag.OreTagType;
 import com.gregtechceu.gtceu.api.tag.TagUtil;
 import com.gregtechceu.gtceu.client.renderer.block.CTMModelRenderer;
 import com.gregtechceu.gtceu.client.renderer.block.OreBlockRenderer;
@@ -34,6 +33,7 @@ import com.tterrag.registrate.util.nullness.NonNullFunction;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
 import net.minecraft.advancements.critereon.StatePropertiesPredicate;
 import net.minecraft.client.color.item.ItemColor;
+import net.minecraft.client.renderer.BiomeColors;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -131,9 +131,10 @@ public class GTBlocks {
             // Ore Block
             if (material.hasProperty(PropertyKey.ORE)) {
                 var oreProperty = material.getProperty(PropertyKey.ORE);
-                for (var oreTag : OreTagType.getAllOreTypes()) {
+                for (var ore : TagPrefix.ORES.entrySet()) {
+                    var oreTag = ore.getKey();
                     var entry = REGISTRATE.block("%s_%s".formatted(FormattingUtil.toLowerCaseUnder(oreTag.name), material.getName()),
-                                    properties -> new MaterialBlock(properties, oreTag, material, LDLib.isClient() ? new OreBlockRenderer(oreTag.getStoneType(),
+                                    properties -> new MaterialBlock(properties, oreTag, material, LDLib.isClient() ? new OreBlockRenderer(ore.getValue(),
                                             Objects.requireNonNull(oreTag.materialIconType()).getBlockTexturePath(material.getMaterialIconSet()),
                                             oreProperty.isEmissive()) : IRenderer.EMPTY))
                             .initialProperties(() -> Blocks.IRON_BLOCK)
@@ -474,7 +475,8 @@ public class GTBlocks {
 
     public static int leavesBlockColor(BlockState state, @Nullable BlockAndTintGetter reader, @Nullable BlockPos pos, int tintIndex) {
         if (reader != null && pos != null) {
-            return reader.getBlockTint(pos, (biome, x, z) -> biome.getFoliageColor());
+            //return reader.getBlockTint(pos, (biome, x, z) -> biome.getFoliageColor());
+            return BiomeColors.getAverageFoliageColor(reader, pos);
         }
         return FoliageColor.getDefaultColor();
     }

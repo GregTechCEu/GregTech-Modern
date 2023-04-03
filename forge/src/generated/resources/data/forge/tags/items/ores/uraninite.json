@@ -1,13 +1,12 @@
 {
   "values": [
-    "gtceu:ore_uraninite",
-    "gtceu:ore_basalt_uraninite",
-    "gtceu:ore_sand_uraninite",
-    "gtceu:ore_granite_uraninite",
-    "gtceu:ore_andesite_uraninite",
-    "gtceu:ore_endstone_uraninite",
-    "gtceu:ore_red_sand_uraninite",
-    "gtceu:ore_netherrack_uraninite",
-    "gtceu:ore_diorite_uraninite"
+    "gtceu:deepslate_uraninite",
+    "gtceu:sand_uraninite",
+    "gtceu:basalt_uraninite",
+    "gtceu:granite_uraninite",
+    "gtceu:andesite_uraninite",
+    "gtceu:red_sand_uraninite",
+    "gtceu:stone_uraninite",
+    "gtceu:diorite_uraninite"
   ]
 }

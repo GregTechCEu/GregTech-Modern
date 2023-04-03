@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:deepslate_plutonium",
+    "gtceu:sand_plutonium",
+    "gtceu:basalt_plutonium",
+    "gtceu:granite_plutonium",
+    "gtceu:andesite_plutonium",
+    "gtceu:red_sand_plutonium",
+    "gtceu:stone_plutonium",
+    "gtceu:diorite_plutonium"
+  ]
+}

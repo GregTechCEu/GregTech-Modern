@@ -18,7 +18,7 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "c:frames/hsse"
+          "tag": "c:hsse_frames"
         }
       },
       {
@@ -60,7 +60,7 @@
           "type": "gtceu:sized",
           "count": 8,
           "fabric:type": "gtceu:sized",
-          "tag": "c:wires/single/niobium_titanium"
+          "tag": "c:niobium_titanium_single_wires"
         }
       },
       {

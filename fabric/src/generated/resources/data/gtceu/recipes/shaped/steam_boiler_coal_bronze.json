@@ -8,7 +8,7 @@
       "item": "minecraft:furnace"
     },
     "P": {
-      "tag": "c:plates/bronze"
+      "tag": "c:bronze_plates"
     },
     "w": {
       "tag": "c:tool/wrench"

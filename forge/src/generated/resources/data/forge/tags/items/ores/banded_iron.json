@@ -1,13 +1,12 @@
 {
   "values": [
-    "gtceu:ore_banded_iron",
-    "gtceu:ore_basalt_banded_iron",
-    "gtceu:ore_sand_banded_iron",
-    "gtceu:ore_granite_banded_iron",
-    "gtceu:ore_andesite_banded_iron",
-    "gtceu:ore_endstone_banded_iron",
-    "gtceu:ore_red_sand_banded_iron",
-    "gtceu:ore_netherrack_banded_iron",
-    "gtceu:ore_diorite_banded_iron"
+    "gtceu:deepslate_banded_iron",
+    "gtceu:sand_banded_iron",
+    "gtceu:basalt_banded_iron",
+    "gtceu:granite_banded_iron",
+    "gtceu:andesite_banded_iron",
+    "gtceu:red_sand_banded_iron",
+    "gtceu:stone_banded_iron",
+    "gtceu:diorite_banded_iron"
   ]
 }

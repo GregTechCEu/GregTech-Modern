@@ -1,13 +1,12 @@
 {
   "values": [
-    "gtceu:ore_tungstate",
-    "gtceu:ore_basalt_tungstate",
-    "gtceu:ore_sand_tungstate",
-    "gtceu:ore_granite_tungstate",
-    "gtceu:ore_andesite_tungstate",
-    "gtceu:ore_endstone_tungstate",
-    "gtceu:ore_red_sand_tungstate",
-    "gtceu:ore_netherrack_tungstate",
-    "gtceu:ore_diorite_tungstate"
+    "gtceu:deepslate_tungstate",
+    "gtceu:sand_tungstate",
+    "gtceu:basalt_tungstate",
+    "gtceu:granite_tungstate",
+    "gtceu:andesite_tungstate",
+    "gtceu:red_sand_tungstate",
+    "gtceu:stone_tungstate",
+    "gtceu:diorite_tungstate"
   ]
 }

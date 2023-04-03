@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:deepslate_bastnasite",
+    "gtceu:sand_bastnasite",
+    "gtceu:basalt_bastnasite",
+    "gtceu:granite_bastnasite",
+    "gtceu:andesite_bastnasite",
+    "gtceu:red_sand_bastnasite",
+    "gtceu:stone_bastnasite",
+    "gtceu:diorite_bastnasite"
+  ]
+}

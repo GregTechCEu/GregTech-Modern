@@ -8,7 +8,7 @@
       "tag": "forge:cables/single/copper"
     },
     "S": {
-      "tag": "forge:circuit/hv"
+      "tag": "forge:hv_circuits"
     }
   },
   "pattern": [

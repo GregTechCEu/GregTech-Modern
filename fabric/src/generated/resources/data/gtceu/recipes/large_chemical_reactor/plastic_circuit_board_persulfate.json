@@ -24,7 +24,7 @@
           "type": "gtceu:sized",
           "count": 6,
           "fabric:type": "gtceu:sized",
-          "tag": "c:foils/copper"
+          "tag": "c:copper_foils"
         }
       }
     ]

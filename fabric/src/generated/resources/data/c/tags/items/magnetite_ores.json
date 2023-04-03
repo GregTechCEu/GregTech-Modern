@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:deepslate_magnetite",
+    "gtceu:sand_magnetite",
+    "gtceu:basalt_magnetite",
+    "gtceu:granite_magnetite",
+    "gtceu:andesite_magnetite",
+    "gtceu:red_sand_magnetite",
+    "gtceu:stone_magnetite",
+    "gtceu:diorite_magnetite"
+  ]
+}

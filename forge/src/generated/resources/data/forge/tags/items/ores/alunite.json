@@ -1,13 +1,12 @@
 {
   "values": [
-    "gtceu:ore_alunite",
-    "gtceu:ore_basalt_alunite",
-    "gtceu:ore_sand_alunite",
-    "gtceu:ore_granite_alunite",
-    "gtceu:ore_andesite_alunite",
-    "gtceu:ore_endstone_alunite",
-    "gtceu:ore_red_sand_alunite",
-    "gtceu:ore_netherrack_alunite",
-    "gtceu:ore_diorite_alunite"
+    "gtceu:deepslate_alunite",
+    "gtceu:sand_alunite",
+    "gtceu:basalt_alunite",
+    "gtceu:granite_alunite",
+    "gtceu:andesite_alunite",
+    "gtceu:red_sand_alunite",
+    "gtceu:stone_alunite",
+    "gtceu:diorite_alunite"
   ]
 }

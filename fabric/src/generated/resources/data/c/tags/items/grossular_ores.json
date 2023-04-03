@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:deepslate_grossular",
+    "gtceu:sand_grossular",
+    "gtceu:basalt_grossular",
+    "gtceu:granite_grossular",
+    "gtceu:andesite_grossular",
+    "gtceu:red_sand_grossular",
+    "gtceu:stone_grossular",
+    "gtceu:diorite_grossular"
+  ]
+}

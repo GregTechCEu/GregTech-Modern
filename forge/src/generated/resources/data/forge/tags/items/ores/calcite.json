@@ -1,13 +1,12 @@
 {
   "values": [
-    "gtceu:ore_calcite",
-    "gtceu:ore_basalt_calcite",
-    "gtceu:ore_sand_calcite",
-    "gtceu:ore_granite_calcite",
-    "gtceu:ore_andesite_calcite",
-    "gtceu:ore_endstone_calcite",
-    "gtceu:ore_red_sand_calcite",
-    "gtceu:ore_netherrack_calcite",
-    "gtceu:ore_diorite_calcite"
+    "gtceu:deepslate_calcite",
+    "gtceu:sand_calcite",
+    "gtceu:basalt_calcite",
+    "gtceu:granite_calcite",
+    "gtceu:andesite_calcite",
+    "gtceu:red_sand_calcite",
+    "gtceu:stone_calcite",
+    "gtceu:diorite_calcite"
   ]
 }

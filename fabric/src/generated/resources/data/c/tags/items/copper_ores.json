@@ -1,0 +1,14 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:copper_ore",
+    "gtceu:stone_copper",
+    "gtceu:deepslate_copper",
+    "gtceu:sand_copper",
+    "gtceu:basalt_copper",
+    "gtceu:granite_copper",
+    "gtceu:andesite_copper",
+    "gtceu:red_sand_copper",
+    "gtceu:diorite_copper"
+  ]
+}

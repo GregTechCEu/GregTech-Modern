@@ -1,13 +1,12 @@
 {
   "values": [
-    "gtceu:ore_opal",
-    "gtceu:ore_basalt_opal",
-    "gtceu:ore_sand_opal",
-    "gtceu:ore_granite_opal",
-    "gtceu:ore_andesite_opal",
-    "gtceu:ore_endstone_opal",
-    "gtceu:ore_red_sand_opal",
-    "gtceu:ore_netherrack_opal",
-    "gtceu:ore_diorite_opal"
+    "gtceu:deepslate_opal",
+    "gtceu:sand_opal",
+    "gtceu:basalt_opal",
+    "gtceu:granite_opal",
+    "gtceu:andesite_opal",
+    "gtceu:red_sand_opal",
+    "gtceu:stone_opal",
+    "gtceu:diorite_opal"
   ]
 }

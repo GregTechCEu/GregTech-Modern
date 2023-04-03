@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "P": {
-      "tag": "c:plates/wood"
+      "tag": "c:wood_plates"
     },
     "R": {
       "item": "gtceu:rubber_drop"

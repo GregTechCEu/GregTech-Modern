@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:deepslate_tin",
+    "gtceu:sand_tin",
+    "gtceu:basalt_tin",
+    "gtceu:granite_tin",
+    "gtceu:andesite_tin",
+    "gtceu:red_sand_tin",
+    "gtceu:stone_tin",
+    "gtceu:diorite_tin"
+  ]
+}

@@ -1,13 +1,12 @@
 {
   "values": [
-    "gtceu:ore_chalcopyrite",
-    "gtceu:ore_basalt_chalcopyrite",
-    "gtceu:ore_sand_chalcopyrite",
-    "gtceu:ore_granite_chalcopyrite",
-    "gtceu:ore_andesite_chalcopyrite",
-    "gtceu:ore_endstone_chalcopyrite",
-    "gtceu:ore_red_sand_chalcopyrite",
-    "gtceu:ore_netherrack_chalcopyrite",
-    "gtceu:ore_diorite_chalcopyrite"
+    "gtceu:deepslate_chalcopyrite",
+    "gtceu:sand_chalcopyrite",
+    "gtceu:basalt_chalcopyrite",
+    "gtceu:granite_chalcopyrite",
+    "gtceu:andesite_chalcopyrite",
+    "gtceu:red_sand_chalcopyrite",
+    "gtceu:stone_chalcopyrite",
+    "gtceu:diorite_chalcopyrite"
   ]
 }

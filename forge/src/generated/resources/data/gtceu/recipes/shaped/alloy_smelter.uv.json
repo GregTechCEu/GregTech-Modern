@@ -5,7 +5,7 @@
       "tag": "forge:wires/quadruple/naquadah_alloy"
     },
     "E": {
-      "tag": "forge:circuit/uv"
+      "tag": "forge:uv_circuits"
     },
     "M": {
       "item": "gtceu:hull.uv"

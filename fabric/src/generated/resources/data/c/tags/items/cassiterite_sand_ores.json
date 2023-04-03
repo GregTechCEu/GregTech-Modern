@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:deepslate_cassiterite_sand",
+    "gtceu:sand_cassiterite_sand",
+    "gtceu:basalt_cassiterite_sand",
+    "gtceu:granite_cassiterite_sand",
+    "gtceu:andesite_cassiterite_sand",
+    "gtceu:red_sand_cassiterite_sand",
+    "gtceu:stone_cassiterite_sand",
+    "gtceu:diorite_cassiterite_sand"
+  ]
+}

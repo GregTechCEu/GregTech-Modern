@@ -1,13 +1,12 @@
 {
   "values": [
-    "gtceu:ore_lazurite",
-    "gtceu:ore_basalt_lazurite",
-    "gtceu:ore_sand_lazurite",
-    "gtceu:ore_granite_lazurite",
-    "gtceu:ore_andesite_lazurite",
-    "gtceu:ore_endstone_lazurite",
-    "gtceu:ore_red_sand_lazurite",
-    "gtceu:ore_netherrack_lazurite",
-    "gtceu:ore_diorite_lazurite"
+    "gtceu:deepslate_lazurite",
+    "gtceu:sand_lazurite",
+    "gtceu:basalt_lazurite",
+    "gtceu:granite_lazurite",
+    "gtceu:andesite_lazurite",
+    "gtceu:red_sand_lazurite",
+    "gtceu:stone_lazurite",
+    "gtceu:diorite_lazurite"
   ]
 }

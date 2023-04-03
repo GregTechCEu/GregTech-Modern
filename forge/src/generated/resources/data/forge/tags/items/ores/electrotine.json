@@ -1,13 +1,12 @@
 {
   "values": [
-    "gtceu:ore_electrotine",
-    "gtceu:ore_basalt_electrotine",
-    "gtceu:ore_sand_electrotine",
-    "gtceu:ore_granite_electrotine",
-    "gtceu:ore_andesite_electrotine",
-    "gtceu:ore_endstone_electrotine",
-    "gtceu:ore_red_sand_electrotine",
-    "gtceu:ore_netherrack_electrotine",
-    "gtceu:ore_diorite_electrotine"
+    "gtceu:deepslate_electrotine",
+    "gtceu:sand_electrotine",
+    "gtceu:basalt_electrotine",
+    "gtceu:granite_electrotine",
+    "gtceu:andesite_electrotine",
+    "gtceu:red_sand_electrotine",
+    "gtceu:stone_electrotine",
+    "gtceu:diorite_electrotine"
   ]
 }

@@ -18,7 +18,7 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "c:plates/reinforced_epoxy_resin"
+          "tag": "c:reinforced_epoxy_resin_plates"
         }
       },
       {
@@ -27,7 +27,7 @@
           "type": "gtceu:sized",
           "count": 8,
           "fabric:type": "gtceu:sized",
-          "tag": "c:foils/annealed_copper"
+          "tag": "c:annealed_copper_foils"
         }
       }
     ]

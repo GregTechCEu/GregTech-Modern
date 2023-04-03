@@ -1,13 +1,12 @@
 {
   "values": [
-    "gtceu:ore_trona",
-    "gtceu:ore_basalt_trona",
-    "gtceu:ore_sand_trona",
-    "gtceu:ore_granite_trona",
-    "gtceu:ore_andesite_trona",
-    "gtceu:ore_endstone_trona",
-    "gtceu:ore_red_sand_trona",
-    "gtceu:ore_netherrack_trona",
-    "gtceu:ore_diorite_trona"
+    "gtceu:deepslate_trona",
+    "gtceu:sand_trona",
+    "gtceu:basalt_trona",
+    "gtceu:granite_trona",
+    "gtceu:andesite_trona",
+    "gtceu:red_sand_trona",
+    "gtceu:stone_trona",
+    "gtceu:diorite_trona"
   ]
 }

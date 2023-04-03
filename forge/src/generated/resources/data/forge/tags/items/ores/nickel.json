@@ -1,13 +1,12 @@
 {
   "values": [
-    "gtceu:ore_nickel",
-    "gtceu:ore_basalt_nickel",
-    "gtceu:ore_sand_nickel",
-    "gtceu:ore_granite_nickel",
-    "gtceu:ore_andesite_nickel",
-    "gtceu:ore_endstone_nickel",
-    "gtceu:ore_red_sand_nickel",
-    "gtceu:ore_netherrack_nickel",
-    "gtceu:ore_diorite_nickel"
+    "gtceu:deepslate_nickel",
+    "gtceu:sand_nickel",
+    "gtceu:basalt_nickel",
+    "gtceu:granite_nickel",
+    "gtceu:andesite_nickel",
+    "gtceu:red_sand_nickel",
+    "gtceu:stone_nickel",
+    "gtceu:diorite_nickel"
   ]
 }

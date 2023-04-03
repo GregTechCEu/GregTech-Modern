@@ -2,16 +2,16 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:wires/double/copper"
+      "tag": "c:copper_double_wires"
     },
     "E": {
-      "tag": "c:circuit/lv"
+      "tag": "c:lv_circuits"
     },
     "M": {
       "item": "gtceu:hull.lv"
     },
     "W": {
-      "tag": "c:cables/single/tin"
+      "tag": "c:tin_single_cables"
     }
   },
   "pattern": [

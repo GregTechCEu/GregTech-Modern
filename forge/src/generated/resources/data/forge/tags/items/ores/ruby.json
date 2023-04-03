@@ -1,13 +1,12 @@
 {
   "values": [
-    "gtceu:ore_ruby",
-    "gtceu:ore_basalt_ruby",
-    "gtceu:ore_sand_ruby",
-    "gtceu:ore_granite_ruby",
-    "gtceu:ore_andesite_ruby",
-    "gtceu:ore_endstone_ruby",
-    "gtceu:ore_red_sand_ruby",
-    "gtceu:ore_netherrack_ruby",
-    "gtceu:ore_diorite_ruby"
+    "gtceu:deepslate_ruby",
+    "gtceu:sand_ruby",
+    "gtceu:basalt_ruby",
+    "gtceu:granite_ruby",
+    "gtceu:andesite_ruby",
+    "gtceu:red_sand_ruby",
+    "gtceu:stone_ruby",
+    "gtceu:diorite_ruby"
   ]
 }

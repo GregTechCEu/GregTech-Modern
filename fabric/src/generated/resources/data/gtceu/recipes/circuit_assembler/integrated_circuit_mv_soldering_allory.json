@@ -35,7 +35,7 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "c:component/resistor"
+          "tag": "c:resistors"
         }
       },
       {
@@ -44,7 +44,7 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "c:component/diode"
+          "tag": "c:diodes"
         }
       },
       {
@@ -53,7 +53,7 @@
           "type": "gtceu:sized",
           "count": 4,
           "fabric:type": "gtceu:sized",
-          "tag": "c:wires/fine/gold"
+          "tag": "c:gold_fine_wires"
         }
       },
       {
@@ -62,7 +62,7 @@
           "type": "gtceu:sized",
           "count": 4,
           "fabric:type": "gtceu:sized",
-          "tag": "c:bolts/silver"
+          "tag": "c:silver_bolts"
         }
       }
     ]
