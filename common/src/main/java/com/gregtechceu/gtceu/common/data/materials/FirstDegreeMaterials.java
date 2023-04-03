@@ -51,7 +51,7 @@ public class FirstDegreeMaterials {
                 .components(Carbon, 1)
                 .buildAndRegister();
 
-        BandedIron = new Material.Builder("banded_iron")
+        Hematite = new Material.Builder("hematite")
                 .dust().ore()
                 .color(0x915A5A)
                 .components(Iron, 2, Oxygen, 3)
@@ -101,7 +101,7 @@ public class FirstDegreeMaterials {
                 .fluidTemp(1357)
                 .buildAndRegister();
 
-        BrownLimonite = new Material.Builder("brown_limonite")
+        Goethite = new Material.Builder("goethite")
                 .dust(1).ore()
                 .color(0xC86400).iconSet(METALLIC)
                 .flags(DECOMPOSITION_BY_CENTRIFUGING, BLAST_FURNACE_CALCITE_TRIPLE)
@@ -1057,7 +1057,7 @@ public class FirstDegreeMaterials {
                 .components(Aluminium, 2, Silicon, 1, Oxygen, 5)
                 .buildAndRegister();
 
-        IronMagnetic = new Material.Builder("iron_magnetic")
+        IronMagnetic = new Material.Builder("magnetic_iron")
                 .ingot()
                 .color(0xC8C8C8).iconSet(MAGNETIC)
                 .flags(GENERATE_BOLT_SCREW, IS_MAGNETIC)
@@ -1214,7 +1214,7 @@ public class FirstDegreeMaterials {
                 .components(Potassium, 1, Aluminium, 1, Silicon, 1, Oxygen, 8)
                 .buildAndRegister();
 
-        NeodymiumMagnetic = new Material.Builder("neodymium_magnetic")
+        NeodymiumMagnetic = new Material.Builder("magnetic_neodymium")
                 .ingot()
                 .color(0x646464).iconSet(MAGNETIC)
                 .flags(GENERATE_ROD, IS_MAGNETIC)
@@ -1251,7 +1251,7 @@ public class FirstDegreeMaterials {
                 .components(Sodium, 1, Potassium, 1)
                 .buildAndRegister();
 
-        SamariumMagnetic = new Material.Builder("samarium_magnetic")
+        SamariumMagnetic = new Material.Builder("magnetic_samarium")
                 .ingot()
                 .color(0xFFFFCD).iconSet(MAGNETIC)
                 .flags(GENERATE_LONG_ROD, IS_MAGNETIC)

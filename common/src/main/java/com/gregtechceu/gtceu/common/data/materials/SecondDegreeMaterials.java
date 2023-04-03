@@ -3,9 +3,9 @@ package com.gregtechceu.gtceu.common.data.materials;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.fluid.FluidTypes;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.BlastProperty.GasTier;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.ToolProperty;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.BlastProperty.GasTier;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import net.minecraft.world.item.enchantment.Enchantments;
 
@@ -145,14 +145,14 @@ public class SecondDegreeMaterials {
                 .components(Calcium, 3, Phosphate, 2)
                 .buildAndRegister();
 
-        GarnetRed = new Material.Builder("garnet_red")
+        GarnetRed = new Material.Builder("red_garnet")
                 .gem().ore(4, 1)
                 .color(0xC85050).iconSet(RUBY)
                 .appendFlags(EXT_METAL, NO_SMASHING, NO_SMELTING, HIGH_SIFTER_OUTPUT, DECOMPOSITION_BY_CENTRIFUGING)
                 .components(Pyrope, 3, Almandine, 5, Spessartine, 8)
                 .buildAndRegister();
 
-        GarnetYellow = new Material.Builder("garnet_yellow")
+        GarnetYellow = new Material.Builder("yellow_garnet")
                 .gem().ore(4, 1)
                 .color(0xC8C850).iconSet(RUBY)
                 .appendFlags(EXT_METAL, NO_SMASHING, NO_SMELTING, HIGH_SIFTER_OUTPUT, DECOMPOSITION_BY_CENTRIFUGING)
@@ -266,7 +266,7 @@ public class SecondDegreeMaterials {
                 .fluidTemp(286)
                 .buildAndRegister();
 
-        SteelMagnetic = new Material.Builder("steel_magnetic")
+        SteelMagnetic = new Material.Builder("magnetic_steel")
                 .ingot()
                 .color(0x808080).iconSet(MAGNETIC)
                 .flags(GENERATE_ROD, IS_MAGNETIC)

@@ -4,6 +4,7 @@
   "package": "com.gregtechceu.gtceu.forge.core.mixins",
   "compatibilityLevel": "JAVA_17",
   "client": [
+    "LanguageProviderMixin"
   ],
   "mixins": [
     "AppearanceBlockMixin"

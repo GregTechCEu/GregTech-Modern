@@ -3,10 +3,10 @@ package com.gregtechceu.gtceu.common.data.materials;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.fluid.FluidTypes;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.BlastProperty.GasTier;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.ToolProperty;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.common.data.GTElements;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.BlastProperty.GasTier;
 
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.*;
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet.*;
@@ -847,7 +847,7 @@ public class ElementMaterials {
                 .blastTemp(5000, GasTier.HIGH, GTValues.VA[GTValues.IV], 600)
                 .buildAndRegister();
 
-        NaquadahEnriched = new Material.Builder("naquadah_enriched")
+        NaquadahEnriched = new Material.Builder("enriched_naquadah")
                 .ingot(4).fluid().fluidCustomTexture()
                 .color(0x3C3C3C, false).iconSet(METALLIC)
                 .appendFlags(EXT_METAL, GENERATE_FOIL)

@@ -29,7 +29,7 @@ public class HigherDegreeMaterials {
         Diatomite = new Material.Builder("diatomite")
                 .dust(1).ore()
                 .color(0xE1E1E1)
-                .components(Flint, 8, BandedIron, 1, Sapphire, 1)
+                .components(Flint, 8, Hematite, 1, Sapphire, 1)
                 .buildAndRegister();
 
         RedSteel = new Material.Builder("red_steel")

@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.data.GTCreativeModeTabs;
+import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 import com.tterrag.registrate.providers.RegistrateLangProvider;
 import net.minecraft.network.chat.Component;
@@ -13,7 +14,7 @@ import net.minecraft.network.chat.MutableComponent;
 import java.util.ArrayList;
 import java.util.stream.IntStream;
 
-import static com.gregtechceu.gtceu.utils.FormattingUtil.*;
+import static com.gregtechceu.gtceu.utils.FormattingUtil.toEnglishName;
 
 /**
  * @author KilaBash
@@ -21,6 +22,8 @@ import static com.gregtechceu.gtceu.utils.FormattingUtil.*;
  * @implNote LangHandler
  */
 public class LangHandler {
+
+    public static boolean MANUAL_OVERRIDE_PHASE = false;
 
     public static void init(RegistrateLangProvider provider) {
         // Materials
@@ -673,6 +676,17 @@ public class LangHandler {
         multilineLang(provider, "cover.advanced_item_detector.invert_tooltip", "Toggle to invert the redstone logic\nBy default, redstone stops emitting when less than the minimum amount of items, and starts emitting when greater than the min amount of items up to the set maximum");
         provider.add("cover.advanced_item_detector.max", "Maximum Items:");
         provider.add("cover.advanced_item_detector.min", "Minimum Items:");
+
+        MANUAL_OVERRIDE_PHASE = true;
+
+        provider.add(GTMaterials.FullersEarth.getUnlocalizedName(), "Fuller's Earth");
+        provider.add(GTMaterials.Cooperite.getUnlocalizedName(), "Sheldonite"); //greg's humor is now on 1.19...
+        provider.add(GTMaterials.HSSG.getUnlocalizedName(), "HSS-G");
+        provider.add(GTMaterials.HSSE.getUnlocalizedName(), "HSS-E");
+        provider.add(GTMaterials.HSSS.getUnlocalizedName(), "HSS-S");
+        provider.add(GTMaterials.UUMatter.getUnlocalizedName(), "UU-Matter");
+
+        // TODO all individual material item overrides do not work
         provider.add("item.nether_quartz.oreNetherrack", "Nether Quartz Ore");
         provider.add("item.gunpowder.dustTiny", "Tiny Pile of Gunpowder");
         provider.add("item.gunpowder.dustSmall", "Small Pile of Gunpowder");
@@ -809,6 +823,9 @@ public class LangHandler {
         provider.add("item.iridium_metal_residue.dustTiny", "Tiny Pile of Iridium Metal Residue");
         provider.add("item.iridium_metal_residue.dustSmall", "Small Pile of Iridium Metal Residue");
         provider.add("item.iridium_metal_residue.dust", "Iridium Metal Residue");
+
+        MANUAL_OVERRIDE_PHASE = false;
+
         provider.add("behaviour.hoe", "Can till dirt");
         provider.add("behaviour.soft_hammer", "Activates and Deactivates Machines");
         provider.add("behaviour.soft_hammer.enabled", "Working Enabled");
