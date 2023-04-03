@@ -8,10 +8,10 @@
       "tag": "forge:plates/steel"
     },
     "W": {
-      "tag": "forge:wires/quadruple/manganese_phosphide"
+      "item": "gtceu:wire_quadruple.manganese_phosphide"
     },
     "X": {
-      "tag": "forge:circuit/lv"
+      "tag": "forge:lv_circuits"
     }
   },
   "pattern": [

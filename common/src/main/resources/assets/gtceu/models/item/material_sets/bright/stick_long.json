@@ -1,6 +1,0 @@
-{
-  "parent": "gtceu:item/material_sets/shiny/stick_long",
-  "textures": {
-    "layer1": "gtceu:item/material_sets/bright/stick_long_overlay"
-  }
-}

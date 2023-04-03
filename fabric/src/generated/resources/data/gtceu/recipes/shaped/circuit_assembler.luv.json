@@ -11,13 +11,13 @@
       "item": "gtceu:hull.luv"
     },
     "I": {
-      "tag": "c:circuit/zpm"
+      "tag": "c:zpm_circuits"
     },
     "R": {
       "item": "gtceu:robot.arm.luv"
     },
     "W": {
-      "tag": "c:cables/single/niobium_titanium"
+      "item": "gtceu:cable_single.niobium_titanium"
     }
   },
   "pattern": [

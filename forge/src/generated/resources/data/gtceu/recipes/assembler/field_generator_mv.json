@@ -27,7 +27,7 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "forge:circuit/mv"
+          "tag": "forge:mv_circuits"
         }
       },
       {
@@ -36,7 +36,9 @@
           "type": "gtceu:sized",
           "count": 4,
           "fabric:type": "gtceu:sized",
-          "tag": "forge:wires/quadruple/magnesium_diboride"
+          "ingredient": {
+            "item": "gtceu:wire_quadruple.magnesium_diboride"
+          }
         }
       }
     ]

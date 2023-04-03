@@ -1,0 +1,14 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:lapis_ore",
+    "gtceu:stone_lapis",
+    "gtceu:deepslate_lapis",
+    "gtceu:sand_lapis",
+    "gtceu:basalt_lapis",
+    "gtceu:granite_lapis",
+    "gtceu:andesite_lapis",
+    "gtceu:red_sand_lapis",
+    "gtceu:diorite_lapis"
+  ]
+}

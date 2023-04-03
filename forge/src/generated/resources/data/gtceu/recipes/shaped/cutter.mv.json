@@ -2,10 +2,10 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "B": {
-      "tag": "forge:tool_heads/buzzsaw/vanadium_steel"
+      "item": "gtceu:tool_head_buzz_saw.vanadium_steel"
     },
     "C": {
-      "tag": "forge:circuit/mv"
+      "tag": "forge:mv_circuits"
     },
     "E": {
       "item": "gtceu:electric.motor.mv"
@@ -20,7 +20,7 @@
       "item": "gtceu:conveyor.module.mv"
     },
     "W": {
-      "tag": "forge:cables/single/copper"
+      "item": "gtceu:cable_single.copper"
     }
   },
   "pattern": [

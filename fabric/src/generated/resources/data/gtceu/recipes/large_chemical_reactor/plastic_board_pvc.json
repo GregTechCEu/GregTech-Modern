@@ -18,7 +18,7 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "c:plates/polyvinyl_chloride"
+          "tag": "c:polyvinyl_chloride_plates"
         }
       },
       {
@@ -27,7 +27,7 @@
           "type": "gtceu:sized",
           "count": 4,
           "fabric:type": "gtceu:sized",
-          "tag": "c:foils/copper"
+          "tag": "c:copper_foils"
         }
       }
     ]

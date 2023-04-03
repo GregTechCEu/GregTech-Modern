@@ -2,19 +2,19 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "forge:circuit/iv"
+      "tag": "forge:iv_circuits"
     },
     "G": {
       "tag": "forge:glass"
     },
     "I": {
-      "tag": "forge:wires/single/osmium"
+      "item": "gtceu:wire_single.osmium"
     },
     "M": {
       "item": "gtceu:hull.iv"
     },
     "W": {
-      "tag": "forge:cables/single/platinum"
+      "item": "gtceu:cable_single.platinum"
     }
   },
   "pattern": [

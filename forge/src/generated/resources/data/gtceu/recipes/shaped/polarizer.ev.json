@@ -5,13 +5,13 @@
       "item": "gtceu:hull.ev"
     },
     "S": {
-      "tag": "forge:sticks/neodymium"
+      "tag": "forge:rods/neodymium"
     },
     "W": {
-      "tag": "forge:cables/single/aluminium"
+      "item": "gtceu:cable_single.aluminium"
     },
     "Z": {
-      "tag": "forge:wires/quadruple/steel"
+      "item": "gtceu:wire_quadruple.steel"
     }
   },
   "pattern": [

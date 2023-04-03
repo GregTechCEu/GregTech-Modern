@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:deepslate_uraninite",
+    "gtceu:sand_uraninite",
+    "gtceu:basalt_uraninite",
+    "gtceu:granite_uraninite",
+    "gtceu:andesite_uraninite",
+    "gtceu:red_sand_uraninite",
+    "gtceu:stone_uraninite",
+    "gtceu:diorite_uraninite"
+  ]
+}

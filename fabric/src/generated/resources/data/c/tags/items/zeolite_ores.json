@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:deepslate_zeolite",
+    "gtceu:sand_zeolite",
+    "gtceu:basalt_zeolite",
+    "gtceu:granite_zeolite",
+    "gtceu:andesite_zeolite",
+    "gtceu:red_sand_zeolite",
+    "gtceu:stone_zeolite",
+    "gtceu:diorite_zeolite"
+  ]
+}

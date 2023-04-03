@@ -1,14 +1,13 @@
 {
   "values": [
     "minecraft:redstone_ore",
-    "gtceu:ore_redstone",
-    "gtceu:ore_basalt_redstone",
-    "gtceu:ore_sand_redstone",
-    "gtceu:ore_granite_redstone",
-    "gtceu:ore_andesite_redstone",
-    "gtceu:ore_endstone_redstone",
-    "gtceu:ore_red_sand_redstone",
-    "gtceu:ore_netherrack_redstone",
-    "gtceu:ore_diorite_redstone"
+    "gtceu:stone_redstone",
+    "gtceu:deepslate_redstone",
+    "gtceu:sand_redstone",
+    "gtceu:basalt_redstone",
+    "gtceu:granite_redstone",
+    "gtceu:andesite_redstone",
+    "gtceu:red_sand_redstone",
+    "gtceu:diorite_redstone"
   ]
 }

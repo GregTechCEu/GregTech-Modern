@@ -16,7 +16,6 @@ public class ConfigHolder {
         public boolean disableManualCompression = false; // default false
         public boolean harderRods = false; // default false
         public boolean harderBrickRecipes = false; // default false
-        public boolean harderEBFControllerRecipe = false; // default false
         public boolean nerfWoodCrafting = false; // default false
         public boolean hardWoodRecipes = false; // default false
         public boolean hardIronRecipes = true; // default true
@@ -29,7 +28,6 @@ public class ConfigHolder {
         public boolean hardDyeRecipes = false; // default false
         public boolean harderCharcoalRecipe = true; // default true
         public boolean flintAndSteelRequireSteel = true; // default true
-        public boolean disableConcreteInWorld = true; // default false
         public boolean removeVanillaBlockRecipes = false; // default false
     }
 

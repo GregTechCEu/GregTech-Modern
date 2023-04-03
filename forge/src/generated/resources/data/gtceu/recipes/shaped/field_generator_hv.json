@@ -8,10 +8,10 @@
       "tag": "forge:plates/stainless_steel"
     },
     "W": {
-      "tag": "forge:wires/quadruple/mercury_barium_calcium_cuprate"
+      "item": "gtceu:wire_quadruple.mercury_barium_calcium_cuprate"
     },
     "X": {
-      "tag": "forge:circuit/hv"
+      "tag": "forge:hv_circuits"
     }
   },
   "pattern": [

@@ -1,13 +1,12 @@
 {
   "values": [
-    "gtceu:ore_realgar",
-    "gtceu:ore_basalt_realgar",
-    "gtceu:ore_sand_realgar",
-    "gtceu:ore_granite_realgar",
-    "gtceu:ore_andesite_realgar",
-    "gtceu:ore_endstone_realgar",
-    "gtceu:ore_red_sand_realgar",
-    "gtceu:ore_netherrack_realgar",
-    "gtceu:ore_diorite_realgar"
+    "gtceu:deepslate_realgar",
+    "gtceu:sand_realgar",
+    "gtceu:basalt_realgar",
+    "gtceu:granite_realgar",
+    "gtceu:andesite_realgar",
+    "gtceu:red_sand_realgar",
+    "gtceu:stone_realgar",
+    "gtceu:diorite_realgar"
   ]
 }

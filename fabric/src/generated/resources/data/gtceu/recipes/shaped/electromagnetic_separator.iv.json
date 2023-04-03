@@ -2,22 +2,22 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:circuit/iv"
+      "tag": "c:iv_circuits"
     },
     "M": {
       "item": "gtceu:hull.iv"
     },
     "S": {
-      "tag": "c:sticks/vanadium_gallium"
+      "tag": "c:vanadium_gallium_rods"
     },
     "V": {
       "item": "gtceu:conveyor.module.iv"
     },
     "W": {
-      "tag": "c:cables/single/platinum"
+      "item": "gtceu:cable_single.platinum"
     },
     "Z": {
-      "tag": "c:wires/quadruple/graphene"
+      "item": "gtceu:wire_quadruple.graphene"
     }
   },
   "pattern": [

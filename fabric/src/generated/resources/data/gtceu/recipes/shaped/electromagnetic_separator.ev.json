@@ -2,22 +2,22 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:circuit/ev"
+      "tag": "c:ev_circuits"
     },
     "M": {
       "item": "gtceu:hull.ev"
     },
     "S": {
-      "tag": "c:sticks/neodymium"
+      "tag": "c:neodymium_rods"
     },
     "V": {
       "item": "gtceu:conveyor.module.ev"
     },
     "W": {
-      "tag": "c:cables/single/aluminium"
+      "item": "gtceu:cable_single.aluminium"
     },
     "Z": {
-      "tag": "c:wires/quadruple/steel"
+      "item": "gtceu:wire_quadruple.steel"
     }
   },
   "pattern": [

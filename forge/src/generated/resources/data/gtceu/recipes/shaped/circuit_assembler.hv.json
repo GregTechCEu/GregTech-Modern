@@ -11,13 +11,13 @@
       "item": "gtceu:hull.hv"
     },
     "I": {
-      "tag": "forge:circuit/ev"
+      "tag": "forge:ev_circuits"
     },
     "R": {
       "item": "gtceu:robot.arm.hv"
     },
     "W": {
-      "tag": "forge:cables/single/gold"
+      "item": "gtceu:cable_single.gold"
     }
   },
   "pattern": [

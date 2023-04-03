@@ -2,16 +2,16 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:cables/double/silver"
+      "item": "gtceu:cable_double.silver"
     },
     "M": {
-      "tag": "c:sticks/steel_magnetic"
+      "tag": "c:steel_magnetic_rods"
     },
     "R": {
-      "tag": "c:sticks/stainless_steel"
+      "tag": "c:stainless_steel_rods"
     },
     "W": {
-      "tag": "c:wires/double/electrum"
+      "item": "gtceu:wire_double.electrum"
     }
   },
   "pattern": [

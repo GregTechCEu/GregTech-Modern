@@ -2,16 +2,16 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:wires/quadruple/nichrome"
+      "item": "gtceu:wire_quadruple.nichrome"
     },
     "E": {
-      "tag": "c:circuit/ev"
+      "tag": "c:ev_circuits"
     },
     "M": {
       "item": "gtceu:hull.ev"
     },
     "W": {
-      "tag": "c:cables/single/aluminium"
+      "item": "gtceu:cable_single.aluminium"
     }
   },
   "pattern": [

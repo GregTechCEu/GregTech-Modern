@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.data.recipe.misc;
 
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
-import com.gregtechceu.gtceu.data.recipe.LoaderTags;
+import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.tags.ItemTags;
@@ -13,7 +13,7 @@ import net.minecraft.world.level.block.Blocks;
 import java.util.function.Consumer;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
-import static com.gregtechceu.gtceu.api.tag.TagPrefix.*;
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
 import static com.gregtechceu.gtceu.common.data.GTItems.*;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
@@ -338,7 +338,7 @@ public class VanillaStandardRecipes {
 
         LATHE_RECIPES.recipeBuilder("lathe_logs")
                 .inputItems(ItemTags.LOGS)
-                .outputItems(stickLong, Wood, 4)
+                .outputItems(rodLong, Wood, 4)
                 .outputItems(dust, Wood, 2)
                 .duration(160).EUt(VA[ULV])
                 .save(provider);
@@ -446,42 +446,42 @@ public class VanillaStandardRecipes {
 
         ASSEMBLER_RECIPES.recipeBuilder("oak_fence_gate")
                 .inputItems(new ItemStack(Blocks.OAK_PLANKS, 2))
-                .inputItems(stick, Wood, 2)
+                .inputItems(rod, Wood, 2)
                 .outputItems(new ItemStack(Blocks.OAK_FENCE_GATE))
                 .circuitMeta(2)
                 .duration(100).EUt(4).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("spruce_fence_gate")
                 .inputItems(new ItemStack(Blocks.SPRUCE_PLANKS, 2))
-                .inputItems(stick, Wood, 2)
+                .inputItems(rod, Wood, 2)
                 .outputItems(new ItemStack(Blocks.SPRUCE_FENCE_GATE))
                 .circuitMeta(2)
                 .duration(100).EUt(4).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("birch_fence_gate")
                 .inputItems(new ItemStack(Blocks.BIRCH_PLANKS, 2))
-                .inputItems(stick, Wood, 2)
+                .inputItems(rod, Wood, 2)
                 .outputItems(new ItemStack(Blocks.BIRCH_FENCE_GATE))
                 .circuitMeta(2)
                 .duration(100).EUt(4).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("jungle_fence_gate")
                 .inputItems(new ItemStack(Blocks.JUNGLE_PLANKS, 2))
-                .inputItems(stick, Wood, 2)
+                .inputItems(rod, Wood, 2)
                 .outputItems(new ItemStack(Blocks.JUNGLE_FENCE_GATE))
                 .circuitMeta(2)
                 .duration(100).EUt(4).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("acacia_fence_gate")
                 .inputItems(new ItemStack(Blocks.ACACIA_PLANKS, 2))
-                .inputItems(stick, Wood, 2)
+                .inputItems(rod, Wood, 2)
                 .outputItems(new ItemStack(Blocks.ACACIA_FENCE_GATE))
                 .circuitMeta(2)
                 .duration(100).EUt(4).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("dark_oak_fence_gate")
                 .inputItems(new ItemStack(Blocks.DARK_OAK_PLANKS, 2))
-                .inputItems(stick, Wood, 2)
+                .inputItems(rod, Wood, 2)
                 .outputItems(new ItemStack(Blocks.DARK_OAK_FENCE_GATE))
                 .circuitMeta(2)
                 .duration(100).EUt(4).save(provider);
@@ -493,8 +493,7 @@ public class VanillaStandardRecipes {
         VanillaRecipeHelper.addShapedRecipe(provider, "torch_charcoal_dust", new ItemStack(Blocks.TORCH, 4), "C", "S", 'C', new UnificationEntry(dust, Charcoal), 'S', new ItemStack(Items.STICK));
         VanillaRecipeHelper.addShapedRecipe(provider, "torch_coke", new ItemStack(Blocks.TORCH, 8), "C", "S", 'C', new UnificationEntry(gem, Coke), 'S', new ItemStack(Items.STICK));
         VanillaRecipeHelper.addShapedRecipe(provider, "torch_coke_dust", new ItemStack(Blocks.TORCH, 8), "C", "S", 'C', new UnificationEntry(dust, Coke), 'S', new ItemStack(Items.STICK));
-        // todo bucket in recipe
-        //ModHandler.addShapedRecipe("torch_creosote", new ItemStack(Blocks.TORCH, 16), "WB", "S ", 'W', OreDictUnifier.get("wool"), 'S', new ItemStack(Items.STICK), 'B', FluidUtil.getFilledBucket(Creosote.getFluid(1000)));
+        VanillaRecipeHelper.addShapedRecipe(provider, "torch_creosote", new ItemStack(Blocks.TORCH, 16), "WB", "S ", 'W', ItemTags.WOOL, 'S', new ItemStack(Items.STICK), 'B', Creosote.getBucket());
 
         ASSEMBLER_RECIPES.recipeBuilder("redstone_torch").EUt(1).inputItems(dust, Redstone).inputItems(new ItemStack(Items.STICK)).outputItems(new ItemStack(Blocks.REDSTONE_TORCH, 1)).duration(100).save(provider);
         ASSEMBLER_RECIPES.recipeBuilder("torch_sulfur").EUt(1).inputItems(new ItemStack(Items.STICK)).inputItems(dust, Sulfur).outputItems(new ItemStack(Blocks.TORCH, 2)).duration(100).save(provider);
@@ -509,7 +508,7 @@ public class VanillaStandardRecipes {
 
         ASSEMBLER_RECIPES.recipeBuilder("ladder").EUt(1).duration(40).circuitMeta(7).inputItems(new ItemStack(Items.STICK, 7)).outputItems(new ItemStack(Blocks.LADDER, 2)).save(provider);
 
-        ASSEMBLER_RECIPES.recipeBuilder("chest_minecart").EUt(4).duration(100).inputItems(new ItemStack(Items.MINECART)).inputItems(LoaderTags.TAG_WOODEN_CHESTS).outputItems(new ItemStack(Items.CHEST_MINECART)).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("chest_minecart").EUt(4).duration(100).inputItems(new ItemStack(Items.MINECART)).inputItems(CustomTags.TAG_WOODEN_CHESTS).outputItems(new ItemStack(Items.CHEST_MINECART)).save(provider);
         ASSEMBLER_RECIPES.recipeBuilder("furnace_minecart").EUt(4).duration(100).inputItems(new ItemStack(Items.MINECART)).inputItems(new ItemStack(Blocks.FURNACE)).outputItems(new ItemStack(Items.FURNACE_MINECART)).save(provider);
         ASSEMBLER_RECIPES.recipeBuilder("tnt_minecart").EUt(4).duration(100).inputItems(new ItemStack(Items.MINECART)).inputItems(new ItemStack(Blocks.TNT)).outputItems(new ItemStack(Items.TNT_MINECART)).save(provider);
         ASSEMBLER_RECIPES.recipeBuilder("hopper_minecart").EUt(4).duration(100).inputItems(new ItemStack(Items.MINECART)).inputItems(new ItemStack(Blocks.HOPPER)).outputItems(new ItemStack(Items.HOPPER_MINECART)).save(provider);
@@ -659,13 +658,13 @@ public class VanillaStandardRecipes {
                 .duration(100).EUt(4).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("tripwire_hook_iron")
-                .inputItems(stick, Wood, 2)
+                .inputItems(rod, Wood, 2)
                 .inputItems(ring, Iron, 2)
                 .outputItems(new ItemStack(Blocks.TRIPWIRE_HOOK, 1))
                 .duration(100).EUt(4).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("tripwire_hook_wrought_iron")
-                .inputItems(stick, Wood, 2)
+                .inputItems(rod, Wood, 2)
                 .inputItems(ring, WroughtIron, 2)
                 .outputItems(new ItemStack(Blocks.TRIPWIRE_HOOK, 1))
                 .duration(100).EUt(4).save(provider);
@@ -764,7 +763,7 @@ public class VanillaStandardRecipes {
                 .duration(700).EUt(4).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("iron_nars")
-                .inputItems(stick, Iron, 3)
+                .inputItems(rod, Iron, 3)
                 .outputItems(new ItemStack(Blocks.IRON_BARS, 4))
                 .circuitMeta(3)
                 .duration(300).EUt(4).save(provider);
@@ -838,7 +837,7 @@ public class VanillaStandardRecipes {
 
         ASSEMBLER_RECIPES.recipeBuilder("bow")
                 .inputItems(new ItemStack(Items.STRING, 3))
-                .inputItems(stick, Wood, 3)
+                .inputItems(rod, Wood, 3)
                 .outputItems(new ItemStack(Items.BOW, 1))
                 .duration(100).EUt(4).save(provider);
 
@@ -885,7 +884,7 @@ public class VanillaStandardRecipes {
 
         ASSEMBLER_RECIPES.recipeBuilder("end_rod").duration(100).EUt(4).inputItems(new ItemStack(Items.POPPED_CHORUS_FRUIT)).inputItems(new ItemStack(Items.BLAZE_ROD)).outputItems(new ItemStack(Blocks.END_ROD, 4)).save(provider);
 
-        ASSEMBLER_RECIPES.recipeBuilder("purple_shulker_box").duration(100).EUt(VA[ULV]).inputItems(LoaderTags.TAG_WOODEN_CHESTS).inputItems(new ItemStack(Items.SHULKER_SHELL, 2)).outputItems(new ItemStack(Blocks.PURPLE_SHULKER_BOX)).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("purple_shulker_box").duration(100).EUt(VA[ULV]).inputItems(CustomTags.TAG_WOODEN_CHESTS).inputItems(new ItemStack(Items.SHULKER_SHELL, 2)).outputItems(new ItemStack(Blocks.PURPLE_SHULKER_BOX)).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("painting").duration(100).EUt(4).circuitMeta(1).inputItems(ItemTags.WOOL).inputItems(new ItemStack(Items.STICK, 8)).outputItems(new ItemStack(Items.PAINTING)).save(provider);
         ASSEMBLER_RECIPES.recipeBuilder("item_frame").duration(100).EUt(4).inputItems(new ItemStack(Items.LEATHER)).inputItems(new ItemStack(Items.STICK, 8)).outputItems(new ItemStack(Items.ITEM_FRAME)).save(provider);
@@ -900,14 +899,14 @@ public class VanillaStandardRecipes {
         ASSEMBLER_RECIPES.recipeBuilder("end_crystal").duration(30).EUt(16).inputItems(new ItemStack(Items.GHAST_TEAR)).inputItems(new ItemStack(Items.ENDER_EYE)).outputItems(new ItemStack(Items.END_CRYSTAL)).inputFluids(Glass.getFluid(L * 7)).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("rail")
-                .inputItems(stick, Iron, 12)
+                .inputItems(rod, Iron, 12)
                 .inputItems(new ItemStack(Items.STICK))
                 .circuitMeta(1)
                 .outputItems(new ItemStack(Blocks.RAIL, 32))
                 .duration(100).EUt(VA[LV]).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("powered_rail")
-                .inputItems(stick, Gold, 12)
+                .inputItems(rod, Gold, 12)
                 .inputItems(new ItemStack(Items.STICK))
                 .inputItems(dust, Redstone)
                 .circuitMeta(1)
@@ -915,7 +914,7 @@ public class VanillaStandardRecipes {
                 .duration(100).EUt(VA[LV]).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("detector_rail")
-                .inputItems(stick, Iron, 12)
+                .inputItems(rod, Iron, 12)
                 .inputItems(new ItemStack(Items.STICK))
                 .inputItems(dust, Redstone)
                 .circuitMeta(5)
@@ -923,7 +922,7 @@ public class VanillaStandardRecipes {
                 .duration(100).EUt(VA[LV]).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("activator_rail")
-                .inputItems(stick, Iron, 12)
+                .inputItems(rod, Iron, 12)
                 .inputItems(new ItemStack(Items.STICK, 2))
                 .inputItems(new ItemStack(Blocks.REDSTONE_TORCH))
                 .circuitMeta(5)

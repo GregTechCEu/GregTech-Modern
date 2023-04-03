@@ -2,16 +2,16 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "forge:cables/single/tin"
+      "item": "gtceu:cable_single.tin"
     },
     "M": {
-      "tag": "forge:sticks/iron_magnetic"
+      "tag": "forge:rods/iron_magnetic"
     },
     "R": {
-      "tag": "forge:sticks/iron"
+      "tag": "forge:rods/iron"
     },
     "W": {
-      "tag": "forge:wires/single/copper"
+      "item": "gtceu:wire_single.copper"
     }
   },
   "pattern": [

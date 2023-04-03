@@ -18,7 +18,7 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "c:dusts/carbon"
+          "tag": "c:carbon_dusts"
         }
       },
       {
@@ -27,7 +27,7 @@
           "type": "gtceu:sized",
           "count": 4,
           "fabric:type": "gtceu:sized",
-          "tag": "c:wires/fine/electrum"
+          "tag": "c:electrum_fine_wires"
         }
       }
     ]

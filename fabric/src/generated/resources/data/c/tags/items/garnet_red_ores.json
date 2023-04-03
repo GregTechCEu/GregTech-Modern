@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:deepslate_garnet_red",
+    "gtceu:sand_garnet_red",
+    "gtceu:basalt_garnet_red",
+    "gtceu:granite_garnet_red",
+    "gtceu:andesite_garnet_red",
+    "gtceu:red_sand_garnet_red",
+    "gtceu:stone_garnet_red",
+    "gtceu:diorite_garnet_red"
+  ]
+}

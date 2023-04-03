@@ -9,7 +9,7 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "c:screws/steel"
+          "tag": "c:steel_screws"
         }
       },
       {
@@ -24,7 +24,9 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "c:fluid_pipes/normal/bronze"
+          "ingredient": {
+            "item": "gtceu:normal.bronze"
+          }
         }
       },
       {

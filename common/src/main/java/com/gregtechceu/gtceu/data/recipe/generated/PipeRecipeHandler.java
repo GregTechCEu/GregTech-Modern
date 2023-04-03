@@ -8,7 +8,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.IMaterialProp
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.ItemPipeProperties;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
-import com.gregtechceu.gtceu.api.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -19,7 +19,7 @@ import java.util.function.Consumer;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.NO_SMASHING;
-import static com.gregtechceu.gtceu.api.tag.TagPrefix.*;
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.Iron;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
 
@@ -35,18 +35,18 @@ public class PipeRecipeHandler {
         pipeQuadrupleFluid.executeHandler(PropertyKey.FLUID_PIPE, (tagPrefix, material, property) -> processPipeQuadruple(tagPrefix, material, property, provider));
         pipeNonupleFluid.executeHandler(PropertyKey.FLUID_PIPE, (tagPrefix, material, property) -> processPipeNonuple(tagPrefix, material, property, provider));
 
-        pipeTinyItem.executeHandler(PropertyKey.ITEM_PIPE, (tagPrefix, material, property) -> processPipeTiny(tagPrefix, material, property, provider));
-        pipeSmallItem.executeHandler(PropertyKey.ITEM_PIPE, (tagPrefix, material, property) -> processPipeSmall(tagPrefix, material, property, provider));
-        pipeNormalItem.executeHandler(PropertyKey.ITEM_PIPE, (tagPrefix, material, property) -> processPipeNormal(tagPrefix, material, property, provider));
-        pipeLargeItem.executeHandler(PropertyKey.ITEM_PIPE, (tagPrefix, material, property) -> processPipeLarge(tagPrefix, material, property, provider));
-        pipeHugeItem.executeHandler(PropertyKey.ITEM_PIPE, (tagPrefix, material, property) -> processPipeHuge(tagPrefix, material, property, provider));
+        //pipeTinyItem.executeHandler(PropertyKey.ITEM_PIPE, (tagPrefix, material, property) -> processPipeTiny(tagPrefix, material, property, provider));
+        //pipeSmallItem.executeHandler(PropertyKey.ITEM_PIPE, (tagPrefix, material, property) -> processPipeSmall(tagPrefix, material, property, provider));
+        //pipeNormalItem.executeHandler(PropertyKey.ITEM_PIPE, (tagPrefix, material, property) -> processPipeNormal(tagPrefix, material, property, provider));
+        //pipeLargeItem.executeHandler(PropertyKey.ITEM_PIPE, (tagPrefix, material, property) -> processPipeLarge(tagPrefix, material, property, provider));
+        //pipeHugeItem.executeHandler(PropertyKey.ITEM_PIPE, (tagPrefix, material, property) -> processPipeHuge(tagPrefix, material, property, provider));
 
-        pipeSmallRestrictive.executeHandler(PropertyKey.ITEM_PIPE, (tagPrefix, material, property) -> processRestrictivePipe(tagPrefix, material, property, provider));
-        pipeNormalRestrictive.executeHandler(PropertyKey.ITEM_PIPE, (tagPrefix, material, property) -> processRestrictivePipe(tagPrefix, material, property, provider));
-        pipeLargeRestrictive.executeHandler(PropertyKey.ITEM_PIPE, (tagPrefix, material, property) -> processRestrictivePipe(tagPrefix, material, property, provider));
-        pipeHugeRestrictive.executeHandler(PropertyKey.ITEM_PIPE, (tagPrefix, material, property) -> processRestrictivePipe(tagPrefix, material, property, provider));
+        //pipeSmallRestrictive.executeHandler(PropertyKey.ITEM_PIPE, (tagPrefix, material, property) -> processRestrictivePipe(tagPrefix, material, property, provider));
+        //pipeNormalRestrictive.executeHandler(PropertyKey.ITEM_PIPE, (tagPrefix, material, property) -> processRestrictivePipe(tagPrefix, material, property, provider));
+        //pipeLargeRestrictive.executeHandler(PropertyKey.ITEM_PIPE, (tagPrefix, material, property) -> processRestrictivePipe(tagPrefix, material, property, provider));
+        //pipeHugeRestrictive.executeHandler(PropertyKey.ITEM_PIPE, (tagPrefix, material, property) -> processRestrictivePipe(tagPrefix, material, property, provider));
     }
-
+/*
     private static void processRestrictivePipe(TagPrefix pipePrefix, Material material, ItemPipeProperties property, Consumer<FinishedRecipe> provider) {
         TagPrefix unrestrictive;
         if (pipePrefix == pipeSmallRestrictive) unrestrictive = pipeSmallItem;
@@ -67,7 +67,7 @@ public class PipeRecipeHandler {
                 ChemicalHelper.get(pipePrefix, material), "PR", "Rh",
                 'P', new UnificationEntry(unrestrictive, material), 'R', ChemicalHelper.get(ring, Iron));
     }
-
+*/
     private static void processPipeTiny(TagPrefix pipePrefix, Material material, IMaterialProperty<?> property, Consumer<FinishedRecipe> provider) {
         ItemStack pipeStack = ChemicalHelper.get(pipePrefix, material);
         EXTRUDER_RECIPES.recipeBuilder("extrude_" + material.getName() + "_tiny_pipe")

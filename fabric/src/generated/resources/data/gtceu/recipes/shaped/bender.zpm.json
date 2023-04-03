@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:circuit/zpm"
+      "tag": "c:zpm_circuits"
     },
     "E": {
       "item": "gtceu:electric.motor.zpm"
@@ -14,7 +14,7 @@
       "item": "gtceu:electric.piston.zpm"
     },
     "W": {
-      "tag": "c:cables/single/vanadium_gallium"
+      "item": "gtceu:cable_single.vanadium_gallium"
     },
     "w": {
       "tag": "c:tool/wrench"

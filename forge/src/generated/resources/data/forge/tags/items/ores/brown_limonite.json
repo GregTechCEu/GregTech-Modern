@@ -1,13 +1,12 @@
 {
   "values": [
-    "gtceu:ore_brown_limonite",
-    "gtceu:ore_basalt_brown_limonite",
-    "gtceu:ore_sand_brown_limonite",
-    "gtceu:ore_granite_brown_limonite",
-    "gtceu:ore_andesite_brown_limonite",
-    "gtceu:ore_endstone_brown_limonite",
-    "gtceu:ore_red_sand_brown_limonite",
-    "gtceu:ore_netherrack_brown_limonite",
-    "gtceu:ore_diorite_brown_limonite"
+    "gtceu:deepslate_brown_limonite",
+    "gtceu:sand_brown_limonite",
+    "gtceu:basalt_brown_limonite",
+    "gtceu:granite_brown_limonite",
+    "gtceu:andesite_brown_limonite",
+    "gtceu:red_sand_brown_limonite",
+    "gtceu:stone_brown_limonite",
+    "gtceu:diorite_brown_limonite"
   ]
 }

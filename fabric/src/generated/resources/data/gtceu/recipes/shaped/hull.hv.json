@@ -2,16 +2,16 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:cables/single/gold"
+      "item": "gtceu:cable_single.gold"
     },
     "H": {
       "item": "gtceu:hull_casing_hv"
     },
     "L": {
-      "tag": "c:plates/stainless_steel"
+      "tag": "c:stainless_steel_plates"
     },
     "P": {
-      "tag": "c:plates/plastic"
+      "tag": "c:plastic_plates"
     }
   },
   "pattern": [

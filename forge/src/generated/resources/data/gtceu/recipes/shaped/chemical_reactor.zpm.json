@@ -2,13 +2,13 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "forge:circuit/zpm"
+      "tag": "forge:zpm_circuits"
     },
     "E": {
       "item": "gtceu:electric.motor.zpm"
     },
     "G": {
-      "tag": "forge:fluid_pipes/large/polytetrafluoroethylene"
+      "item": "gtceu:large.polytetrafluoroethylene"
     },
     "M": {
       "item": "gtceu:hull.zpm"
@@ -17,7 +17,7 @@
       "tag": "forge:rotors/naquadah_alloy"
     },
     "W": {
-      "tag": "forge:cables/single/vanadium_gallium"
+      "item": "gtceu:cable_single.vanadium_gallium"
     }
   },
   "pattern": [

@@ -48,7 +48,7 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "forge:circuit/luv"
+          "tag": "forge:luv_circuits"
         }
       },
       {
@@ -75,7 +75,9 @@
           "type": "gtceu:sized",
           "count": 4,
           "fabric:type": "gtceu:sized",
-          "tag": "forge:cables/single/niobium_titanium"
+          "ingredient": {
+            "item": "gtceu:cable_single.niobium_titanium"
+          }
         }
       }
     ]

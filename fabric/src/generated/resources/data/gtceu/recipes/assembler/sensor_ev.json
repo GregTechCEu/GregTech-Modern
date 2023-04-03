@@ -9,7 +9,7 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "c:sticks/platinum"
+          "tag": "c:platinum_rods"
         }
       },
       {
@@ -18,7 +18,7 @@
           "type": "gtceu:sized",
           "count": 4,
           "fabric:type": "gtceu:sized",
-          "tag": "c:plates/titanium"
+          "tag": "c:titanium_plates"
         }
       },
       {
@@ -27,7 +27,7 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "c:circuit/ev"
+          "tag": "c:ev_circuits"
         }
       },
       {

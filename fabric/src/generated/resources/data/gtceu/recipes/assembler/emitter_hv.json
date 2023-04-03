@@ -9,7 +9,7 @@
           "type": "gtceu:sized",
           "count": 4,
           "fabric:type": "gtceu:sized",
-          "tag": "c:sticks/chrome"
+          "tag": "c:chrome_rods"
         }
       },
       {
@@ -18,7 +18,9 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "c:cables/single/gold"
+          "ingredient": {
+            "item": "gtceu:cable_single.gold"
+          }
         }
       },
       {
@@ -27,7 +29,7 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "c:circuit/hv"
+          "tag": "c:hv_circuits"
         }
       },
       {
@@ -36,7 +38,7 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "c:gems/ender_eye"
+          "tag": "c:ender_eye_gems"
         }
       },
       {

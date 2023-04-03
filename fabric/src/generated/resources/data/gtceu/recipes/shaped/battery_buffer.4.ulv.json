@@ -8,7 +8,7 @@
       "tag": "c:chests"
     },
     "W": {
-      "tag": "c:wires/quadruple/lead"
+      "item": "gtceu:wire_quadruple.lead"
     }
   },
   "pattern": [

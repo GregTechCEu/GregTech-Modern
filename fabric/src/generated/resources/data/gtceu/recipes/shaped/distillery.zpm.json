@@ -2,10 +2,10 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "B": {
-      "tag": "c:springs/naquadah"
+      "tag": "c:naquadah_springs"
     },
     "C": {
-      "tag": "c:circuit/zpm"
+      "tag": "c:zpm_circuits"
     },
     "G": {
       "tag": "c:glass"
@@ -17,7 +17,7 @@
       "item": "gtceu:electric.pump.zpm"
     },
     "W": {
-      "tag": "c:cables/single/vanadium_gallium"
+      "item": "gtceu:cable_single.vanadium_gallium"
     }
   },
   "pattern": [

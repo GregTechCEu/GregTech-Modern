@@ -2,9 +2,9 @@ package com.gregtechceu.gtceu.data.recipe.misc;
 
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials.Color;
-import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials.Tier;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
+import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.tterrag.registrate.util.entry.ItemEntry;
@@ -17,7 +17,7 @@ import net.minecraft.world.level.block.Blocks;
 import java.util.function.Consumer;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
-import static com.gregtechceu.gtceu.api.tag.TagPrefix.*;
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
 import static com.gregtechceu.gtceu.common.data.GTItems.*;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
@@ -153,7 +153,7 @@ public class MiscRecipeLoader {
         ASSEMBLER_RECIPES.recipeBuilder("power_thruster").duration(200).EUt(30)
                 .inputItems(ELECTRIC_MOTOR_MV)
                 .inputItems(ring, Aluminium, 2)
-                .inputItems(stick, Aluminium)
+                .inputItems(rod, Aluminium)
                 .inputItems(rotor, Steel)
                 .inputItems(cableGtSingle, Copper, 2)
                 .outputItems(POWER_THRUSTER)
@@ -162,7 +162,7 @@ public class MiscRecipeLoader {
         ASSEMBLER_RECIPES.recipeBuilder("power_thruster_advanced").duration(200).EUt(30)
                 .inputItems(ELECTRIC_MOTOR_HV)
                 .inputItems(ring, StainlessSteel, 2)
-                .inputItems(stick, StainlessSteel)
+                .inputItems(rod, StainlessSteel)
                 .inputItems(rotor, Chrome)
                 .inputItems(cableGtSingle, Gold, 2)
                 .outputItems(POWER_THRUSTER_ADVANCED)
@@ -266,7 +266,7 @@ public class MiscRecipeLoader {
         ASSEMBLER_RECIPES.recipeBuilder("cover_digital_interface").duration(100).EUt(VA[HV])
                 .inputItems(COVER_SCREEN)
                 .inputItems(plate, Aluminium)
-                .inputItems(circuit, Tier.MV)
+                .inputItems(CustomTags.MV_CIRCUITS)
                 .inputItems(screw, StainlessSteel, 4)
                 .inputFluids(Polyethylene.getFluid(L))
                 .outputItems(COVER_DIGITAL_INTERFACE)
@@ -444,7 +444,7 @@ public class MiscRecipeLoader {
 
         LATHE_RECIPES.recipeBuilder("treated_wood_sticks")
                 .inputItems(GTBlocks.TREATED_WOOD_PLANK.asStack())
-                .outputItems(stick, TreatedWood, 2)
+                .outputItems(rod, TreatedWood, 2)
                 .duration(10).EUt(VA[ULV])
                 .save(provider);
 

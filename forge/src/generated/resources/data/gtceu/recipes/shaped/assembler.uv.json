@@ -5,7 +5,7 @@
       "item": "gtceu:robot.arm.uv"
     },
     "C": {
-      "tag": "forge:circuit/uv"
+      "tag": "forge:uv_circuits"
     },
     "M": {
       "item": "gtceu:hull.uv"
@@ -14,7 +14,7 @@
       "item": "gtceu:conveyor.module.uv"
     },
     "W": {
-      "tag": "forge:cables/single/yttrium_barium_cuprate"
+      "item": "gtceu:cable_single.yttrium_barium_cuprate"
     }
   },
   "pattern": [

@@ -1,13 +1,12 @@
 {
   "values": [
-    "gtceu:ore_molybdenum",
-    "gtceu:ore_basalt_molybdenum",
-    "gtceu:ore_sand_molybdenum",
-    "gtceu:ore_granite_molybdenum",
-    "gtceu:ore_andesite_molybdenum",
-    "gtceu:ore_endstone_molybdenum",
-    "gtceu:ore_red_sand_molybdenum",
-    "gtceu:ore_netherrack_molybdenum",
-    "gtceu:ore_diorite_molybdenum"
+    "gtceu:deepslate_molybdenum",
+    "gtceu:sand_molybdenum",
+    "gtceu:basalt_molybdenum",
+    "gtceu:granite_molybdenum",
+    "gtceu:andesite_molybdenum",
+    "gtceu:red_sand_molybdenum",
+    "gtceu:stone_molybdenum",
+    "gtceu:diorite_molybdenum"
   ]
 }

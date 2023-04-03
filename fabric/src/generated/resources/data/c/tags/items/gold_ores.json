@@ -1,0 +1,14 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:gold_ore",
+    "gtceu:stone_gold",
+    "gtceu:deepslate_gold",
+    "gtceu:sand_gold",
+    "gtceu:basalt_gold",
+    "gtceu:granite_gold",
+    "gtceu:andesite_gold",
+    "gtceu:red_sand_gold",
+    "gtceu:diorite_gold"
+  ]
+}

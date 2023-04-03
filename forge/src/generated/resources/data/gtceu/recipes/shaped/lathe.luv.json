@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "forge:circuit/luv"
+      "tag": "forge:luv_circuits"
     },
     "D": {
       "item": "gtceu:component.grinder.tungsten"
@@ -17,7 +17,7 @@
       "item": "gtceu:electric.piston.luv"
     },
     "W": {
-      "tag": "forge:cables/single/niobium_titanium"
+      "item": "gtceu:cable_single.niobium_titanium"
     }
   },
   "pattern": [

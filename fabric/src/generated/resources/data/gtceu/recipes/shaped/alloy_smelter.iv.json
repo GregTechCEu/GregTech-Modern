@@ -2,16 +2,16 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:wires/quadruple/tungsten_steel"
+      "item": "gtceu:wire_quadruple.tungsten_steel"
     },
     "E": {
-      "tag": "c:circuit/iv"
+      "tag": "c:iv_circuits"
     },
     "M": {
       "item": "gtceu:hull.iv"
     },
     "W": {
-      "tag": "c:cables/single/platinum"
+      "item": "gtceu:cable_single.platinum"
     }
   },
   "pattern": [

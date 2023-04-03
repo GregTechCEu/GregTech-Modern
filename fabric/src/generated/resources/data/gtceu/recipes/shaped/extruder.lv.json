@@ -2,16 +2,16 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:wires/quadruple/copper"
+      "item": "gtceu:wire_quadruple.copper"
     },
     "E": {
-      "tag": "c:circuit/lv"
+      "tag": "c:lv_circuits"
     },
     "M": {
       "item": "gtceu:hull.lv"
     },
     "P": {
-      "tag": "c:fluid_pipes/normal/bronze"
+      "item": "gtceu:normal.bronze"
     },
     "X": {
       "item": "gtceu:electric.piston.lv"

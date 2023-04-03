@@ -2,13 +2,13 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:circuit/iv"
+      "tag": "c:iv_circuits"
     },
     "G": {
       "tag": "c:glass"
     },
     "I": {
-      "tag": "c:plates/tungsten_steel"
+      "tag": "c:tungsten_steel_plates"
     },
     "M": {
       "item": "gtceu:hull.iv"

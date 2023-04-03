@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:deepslate_amethyst",
+    "gtceu:sand_amethyst",
+    "gtceu:basalt_amethyst",
+    "gtceu:granite_amethyst",
+    "gtceu:andesite_amethyst",
+    "gtceu:red_sand_amethyst",
+    "gtceu:stone_amethyst",
+    "gtceu:diorite_amethyst"
+  ]
+}

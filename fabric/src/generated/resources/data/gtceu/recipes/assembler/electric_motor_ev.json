@@ -9,7 +9,9 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "c:cables/double/aluminium"
+          "ingredient": {
+            "item": "gtceu:cable_double.aluminium"
+          }
         }
       },
       {
@@ -18,7 +20,7 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "c:sticks/titanium"
+          "tag": "c:titanium_rods"
         }
       },
       {
@@ -27,7 +29,7 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "c:sticks/neodymium_magnetic"
+          "tag": "c:neodymium_magnetic_rods"
         }
       },
       {
@@ -36,7 +38,9 @@
           "type": "gtceu:sized",
           "count": 4,
           "fabric:type": "gtceu:sized",
-          "tag": "c:wires/double/kanthal"
+          "ingredient": {
+            "item": "gtceu:wire_double.kanthal"
+          }
         }
       }
     ]

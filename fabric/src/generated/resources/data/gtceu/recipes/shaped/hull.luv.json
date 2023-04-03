@@ -2,16 +2,16 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:cables/single/niobium_titanium"
+      "item": "gtceu:cable_single.niobium_titanium"
     },
     "H": {
       "item": "gtceu:hull_casing_luv"
     },
     "L": {
-      "tag": "c:plates/rhodium_plated_palladium"
+      "tag": "c:rhodium_plated_palladium_plates"
     },
     "P": {
-      "tag": "c:plates/polytetrafluoroethylene"
+      "tag": "c:polytetrafluoroethylene_plates"
     }
   },
   "pattern": [

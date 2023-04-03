@@ -5,10 +5,10 @@
       "item": "gtceu:bronze_firebox"
     },
     "P": {
-      "tag": "c:cables/single/tin"
+      "item": "gtceu:cable_single.tin"
     },
     "S": {
-      "tag": "c:circuit/lv"
+      "tag": "c:lv_circuits"
     }
   },
   "pattern": [

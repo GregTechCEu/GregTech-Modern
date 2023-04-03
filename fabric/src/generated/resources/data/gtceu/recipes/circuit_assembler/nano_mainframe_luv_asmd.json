@@ -21,7 +21,7 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "c:frames/aluminium"
+          "tag": "c:aluminium_frames"
         }
       },
       {
@@ -74,7 +74,9 @@
           "type": "gtceu:sized",
           "count": 32,
           "fabric:type": "gtceu:sized",
-          "tag": "c:wires/single/annealed_copper"
+          "ingredient": {
+            "item": "gtceu:wire_single.annealed_copper"
+          }
         }
       }
     ]

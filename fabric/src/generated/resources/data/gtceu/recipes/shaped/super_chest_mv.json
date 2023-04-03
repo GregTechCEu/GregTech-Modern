@@ -2,13 +2,13 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:circuit/mv"
+      "tag": "c:mv_circuits"
     },
     "F": {
       "item": "gtceu:crate.aluminium"
     },
     "P": {
-      "tag": "c:plates/aluminium"
+      "tag": "c:aluminium_plates"
     }
   },
   "pattern": [

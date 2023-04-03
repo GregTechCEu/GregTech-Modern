@@ -1,14 +1,14 @@
 package com.gregtechceu.gtceu.data.recipe.misc;
 
-import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials.Tier;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
+import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import net.minecraft.data.recipes.FinishedRecipe;
 
 import java.util.function.Consumer;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
-import static com.gregtechceu.gtceu.api.tag.TagPrefix.*;
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
 import static com.gregtechceu.gtceu.common.data.GTItems.*;
 import static com.gregtechceu.gtceu.common.data.GTMachines.*;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
@@ -93,7 +93,7 @@ public class MetaTileEntityMachineRecipeLoader {
                 .inputItems(HULL[LuV])
                 .inputItems(spring, NiobiumTitanium, 4)
                 .inputItems(HIGH_POWER_INTEGRATED_CIRCUIT, 2)
-                .inputItems(circuit, Tier.LuV)
+                .inputItems(CustomTags.LuV_CIRCUITS)
                 .inputItems(VOLTAGE_COIL_LuV, 2)
                 .inputFluids(SodiumPotassium.getFluid(6000))
                 .inputFluids(SolderingAlloy.getFluid(720))
@@ -104,7 +104,7 @@ public class MetaTileEntityMachineRecipeLoader {
                 .inputItems(HULL[ZPM])
                 .inputItems(spring, VanadiumGallium, 4)
                 .inputItems(ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT, 2)
-                .inputItems(circuit, Tier.ZPM)
+                .inputItems(CustomTags.ZPM_CIRCUITS)
                 .inputItems(VOLTAGE_COIL_ZPM, 2)
                 .inputFluids(SodiumPotassium.getFluid(8000))
                 .inputFluids(SolderingAlloy.getFluid(1440))
@@ -115,7 +115,7 @@ public class MetaTileEntityMachineRecipeLoader {
                 .inputItems(HULL[UV])
                 .inputItems(spring, YttriumBariumCuprate, 4)
                 .inputItems(ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT, 2)
-                .inputItems(circuit, Tier.UV)
+                .inputItems(CustomTags.UV_CIRCUITS)
                 .inputItems(VOLTAGE_COIL_UV, 2)
                 .inputFluids(SodiumPotassium.getFluid(10000))
                 .inputFluids(SolderingAlloy.getFluid(2880))
@@ -126,7 +126,7 @@ public class MetaTileEntityMachineRecipeLoader {
                 .inputItems(HULL[UHV])
                 .inputItems(spring, Europium, 4)
                 .inputItems(ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT, 2)
-                .inputItems(circuit, Tier.UHV)
+                .inputItems(CustomTags.UHV_CIRCUITS)
                 .inputItems(wireGtDouble, RutheniumTriniumAmericiumNeutronate, 2)
                 .inputFluids(SodiumPotassium.getFluid(12000))
                 .inputFluids(SolderingAlloy.getFluid(5760))
@@ -207,7 +207,7 @@ public class MetaTileEntityMachineRecipeLoader {
                 .inputItems(HULL[LuV])
                 .inputItems(cableGtSingle, NiobiumTitanium, 4)
                 .inputItems(HIGH_POWER_INTEGRATED_CIRCUIT, 2)
-                .inputItems(circuit, Tier.LuV)
+                .inputItems(CustomTags.LuV_CIRCUITS)
                 .inputItems(VOLTAGE_COIL_LuV, 2)
                 .inputFluids(SodiumPotassium.getFluid(6000))
                 .inputFluids(SolderingAlloy.getFluid(720))
@@ -218,7 +218,7 @@ public class MetaTileEntityMachineRecipeLoader {
                 .inputItems(HULL[ZPM])
                 .inputItems(cableGtSingle, VanadiumGallium, 4)
                 .inputItems(ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT, 2)
-                .inputItems(circuit, Tier.ZPM)
+                .inputItems(CustomTags.ZPM_CIRCUITS)
                 .inputItems(VOLTAGE_COIL_ZPM, 2)
                 .inputFluids(SodiumPotassium.getFluid(8000))
                 .inputFluids(SolderingAlloy.getFluid(1440))
@@ -229,7 +229,7 @@ public class MetaTileEntityMachineRecipeLoader {
                 .inputItems(HULL[UV])
                 .inputItems(cableGtSingle, YttriumBariumCuprate, 4)
                 .inputItems(ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT, 2)
-                .inputItems(circuit, Tier.UV)
+                .inputItems(CustomTags.UV_CIRCUITS)
                 .inputItems(VOLTAGE_COIL_UV, 2)
                 .inputFluids(SodiumPotassium.getFluid(10000))
                 .inputFluids(SolderingAlloy.getFluid(2880))
@@ -240,7 +240,7 @@ public class MetaTileEntityMachineRecipeLoader {
                 .inputItems(HULL[UHV])
                 .inputItems(cableGtSingle, Europium, 4)
                 .inputItems(ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT, 2)
-                .inputItems(circuit, Tier.UHV)
+                .inputItems(CustomTags.UHV_CIRCUITS)
                 .inputItems(wireGtDouble, RutheniumTriniumAmericiumNeutronate, 2)
                 .inputFluids(SodiumPotassium.getFluid(12000))
                 .inputFluids(SolderingAlloy.getFluid(5760))

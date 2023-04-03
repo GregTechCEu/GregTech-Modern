@@ -2,13 +2,13 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:circuit/ev"
+      "tag": "c:ev_circuits"
     },
     "G": {
       "tag": "c:glass"
     },
     "I": {
-      "tag": "c:plates/titanium"
+      "tag": "c:titanium_plates"
     },
     "M": {
       "item": "gtceu:hull.ev"

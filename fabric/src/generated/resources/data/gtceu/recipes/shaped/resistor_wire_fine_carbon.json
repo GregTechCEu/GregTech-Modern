@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:dusts/carbon"
+      "tag": "c:carbon_dusts"
     },
     "P": {
       "item": "minecraft:paper"
@@ -11,7 +11,7 @@
       "item": "gtceu:rubber_drop"
     },
     "W": {
-      "tag": "c:wires/fine/copper"
+      "tag": "c:copper_fine_wires"
     }
   },
   "pattern": [

@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:circuit/hv"
+      "tag": "c:hv_circuits"
     },
     "H": {
       "item": "gtceu:hull.hv"

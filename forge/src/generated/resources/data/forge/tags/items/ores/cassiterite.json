@@ -1,13 +1,12 @@
 {
   "values": [
-    "gtceu:ore_cassiterite",
-    "gtceu:ore_basalt_cassiterite",
-    "gtceu:ore_sand_cassiterite",
-    "gtceu:ore_granite_cassiterite",
-    "gtceu:ore_andesite_cassiterite",
-    "gtceu:ore_endstone_cassiterite",
-    "gtceu:ore_red_sand_cassiterite",
-    "gtceu:ore_netherrack_cassiterite",
-    "gtceu:ore_diorite_cassiterite"
+    "gtceu:deepslate_cassiterite",
+    "gtceu:sand_cassiterite",
+    "gtceu:basalt_cassiterite",
+    "gtceu:granite_cassiterite",
+    "gtceu:andesite_cassiterite",
+    "gtceu:red_sand_cassiterite",
+    "gtceu:stone_cassiterite",
+    "gtceu:diorite_cassiterite"
   ]
 }

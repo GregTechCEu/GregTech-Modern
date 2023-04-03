@@ -5,7 +5,7 @@ import net.minecraft.data.recipes.FinishedRecipe;
 import java.util.function.Consumer;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
-import static com.gregtechceu.gtceu.api.tag.TagPrefix.*;
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
 import static com.gregtechceu.gtceu.common.data.GTBlocks.*;
 import static com.gregtechceu.gtceu.common.data.GTItems.*;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
@@ -172,63 +172,63 @@ public class AssemblerRecipeLoader {
 
         // Voltage Coils
         ASSEMBLER_RECIPES.recipeBuilder("voltage_coil_ulv").duration(200).EUt(VA[ULV])
-                .inputItems(stick, IronMagnetic)
+                .inputItems(rod, IronMagnetic)
                 .inputItems(wireFine, Lead, 16)
                 .circuitMeta(1)
                 .outputItems(VOLTAGE_COIL_ULV)
                 .save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("voltage_coil_lv").duration(200).EUt(VA[LV])
-                .inputItems(stick, IronMagnetic)
+                .inputItems(rod, IronMagnetic)
                 .inputItems(wireFine, Steel, 16)
                 .circuitMeta(1)
                 .outputItems(VOLTAGE_COIL_LV)
                 .save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("voltage_coil_mv").duration(200).EUt(VA[MV])
-                .inputItems(stick, SteelMagnetic)
+                .inputItems(rod, SteelMagnetic)
                 .inputItems(wireFine, Aluminium, 16)
                 .circuitMeta(1)
                 .outputItems(VOLTAGE_COIL_MV)
                 .save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("voltage_coil_hv").duration(200).EUt(VA[HV])
-                .inputItems(stick, SteelMagnetic)
+                .inputItems(rod, SteelMagnetic)
                 .inputItems(wireFine, BlackSteel, 16)
                 .circuitMeta(1)
                 .outputItems(VOLTAGE_COIL_HV)
                 .save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("voltage_coil_ev").duration(200).EUt(VA[EV])
-                .inputItems(stick, NeodymiumMagnetic)
+                .inputItems(rod, NeodymiumMagnetic)
                 .inputItems(wireFine, TungstenSteel, 16)
                 .circuitMeta(1)
                 .outputItems(VOLTAGE_COIL_EV)
                 .save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("voltage_coil_iv").duration(200).EUt(VA[IV])
-                .inputItems(stick, NeodymiumMagnetic)
+                .inputItems(rod, NeodymiumMagnetic)
                 .inputItems(wireFine, Iridium, 16)
                 .circuitMeta(1)
                 .outputItems(VOLTAGE_COIL_IV)
                 .save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("voltage_coil_luv").duration(200).EUt(VA[LuV])
-                .inputItems(stick, SamariumMagnetic)
+                .inputItems(rod, SamariumMagnetic)
                 .inputItems(wireFine, Osmiridium, 16)
                 .circuitMeta(1)
                 .outputItems(VOLTAGE_COIL_LuV)
                 .save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("voltage_coil_zpm").duration(200).EUt(VA[ZPM])
-                .inputItems(stick, SamariumMagnetic)
+                .inputItems(rod, SamariumMagnetic)
                 .inputItems(wireFine, Europium, 16)
                 .circuitMeta(1)
                 .outputItems(VOLTAGE_COIL_ZPM)
                 .save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("voltage_coil_uv").duration(200).EUt(VA[UV])
-                .inputItems(stick, SamariumMagnetic)
+                .inputItems(rod, SamariumMagnetic)
                 .inputItems(wireFine, Tritanium, 16)
                 .circuitMeta(1)
                 .outputItems(VOLTAGE_COIL_UV)

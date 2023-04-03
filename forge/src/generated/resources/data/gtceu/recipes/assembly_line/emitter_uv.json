@@ -40,7 +40,7 @@
           "type": "gtceu:sized",
           "count": 4,
           "fabric:type": "gtceu:sized",
-          "tag": "forge:sticks/long/tritanium"
+          "tag": "forge:rods/long/tritanium"
         }
       },
       {
@@ -55,7 +55,7 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "forge:circuit/uv"
+          "tag": "forge:uv_circuits"
         }
       },
       {
@@ -82,7 +82,9 @@
           "type": "gtceu:sized",
           "count": 4,
           "fabric:type": "gtceu:sized",
-          "tag": "forge:cables/single/yttrium_barium_cuprate"
+          "ingredient": {
+            "item": "gtceu:cable_single.yttrium_barium_cuprate"
+          }
         }
       }
     ]

@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.*;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
-import com.gregtechceu.gtceu.api.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
@@ -17,7 +17,7 @@ import java.util.function.Consumer;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.*;
-import static com.gregtechceu.gtceu.api.tag.TagPrefix.*;
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
 
 public class PartsRecipeHandler {
@@ -26,8 +26,8 @@ public class PartsRecipeHandler {
     }
 
     public static void init(Consumer<FinishedRecipe> provider) {
-        stick.executeHandler(PropertyKey.DUST, (tagPrefix, material, property) -> processStick(tagPrefix, material, property, provider));
-        stickLong.executeHandler(PropertyKey.DUST, (tagPrefix, material, property) -> processLongStick(tagPrefix, material, property, provider));
+        rod.executeHandler(PropertyKey.DUST, (tagPrefix, material, property) -> processStick(tagPrefix, material, property, provider));
+        rodLong.executeHandler(PropertyKey.DUST, (tagPrefix, material, property) -> processLongStick(tagPrefix, material, property, provider));
         plate.executeHandler(PropertyKey.DUST, (tagPrefix, material, property) -> processPlate(tagPrefix, material, property, provider));
         plateDouble.executeHandler(PropertyKey.INGOT, (tagPrefix, material, property) -> processPlateDouble(tagPrefix, material, property, provider));
         plateDense.executeHandler(PropertyKey.INGOT, (tagPrefix, material, property) -> processPlateDense(tagPrefix, material, property, provider));
@@ -198,7 +198,7 @@ public class PartsRecipeHandler {
         if (material.hasFlag(GENERATE_PLATE) && material.hasFlag(GENERATE_ROD)) {
             if (gearPrefix == gearSmall) {
                 VanillaRecipeHelper.addShapedRecipe(provider, String.format("small_gear_%s", material), ChemicalHelper.get(gearSmall, material),
-                        " R ", "hPx", " R ", 'R', new UnificationEntry(stick, material), 'P', new UnificationEntry(plate, material));
+                        " R ", "hPx", " R ", 'R', new UnificationEntry(rod, material), 'P', new UnificationEntry(plate, material));
 
                 EXTRUDER_RECIPES.recipeBuilder("extrude_" + material.getName() + "_ingot_to_small_gear")
                         .inputItems(ingot, material)
@@ -228,7 +228,7 @@ public class PartsRecipeHandler {
                 VanillaRecipeHelper.addShapedRecipe(provider, String.format("gear_%s", material), stack,
                         "RPR", "PwP", "RPR",
                         'P', new UnificationEntry(plate, material),
-                        'R', new UnificationEntry(stick, material));
+                        'R', new UnificationEntry(rod, material));
             }
         }
     }
@@ -336,7 +336,7 @@ public class PartsRecipeHandler {
             VanillaRecipeHelper.addShapedRecipe(provider, String.format("ring_%s", material),
                     ChemicalHelper.get(ringPrefix, material),
                     "h ", " X",
-                    'X', new UnificationEntry(stick, material));
+                    'X', new UnificationEntry(rod, material));
         } else {
             EXTRUDER_RECIPES.recipeBuilder("extrude_" + material.getName() + "_dust_to_ring")
                     .inputItems(dust, material)
@@ -351,11 +351,11 @@ public class PartsRecipeHandler {
     public static void processSpringSmall(TagPrefix springPrefix, Material material, IngotProperty property, Consumer<FinishedRecipe> provider) {
         VanillaRecipeHelper.addShapedRecipe(provider, String.format("spring_small_%s", material.toString()),
                 ChemicalHelper.get(springSmall, material),
-                " s ", "fRx", 'R', new UnificationEntry(stick, material));
+                " s ", "fRx", 'R', new UnificationEntry(rod, material));
 
         BENDER_RECIPES.recipeBuilder("bend_" + material.getName() + "_rod_to_small_spring")
                 .duration((int) (material.getMass() / 2)).EUt(VA[ULV])
-                .inputItems(stick, material)
+                .inputItems(rod, material)
                 .outputItems(springSmall, material, 2)
                 .circuitMeta(1)
                 .save(provider);
@@ -363,7 +363,7 @@ public class PartsRecipeHandler {
 
     public static void processSpring(TagPrefix springPrefix, Material material, IngotProperty property, Consumer<FinishedRecipe> provider) {
         BENDER_RECIPES.recipeBuilder("bend_" + material.getName() + "_long_rod_to_spring")
-                .inputItems(stickLong, material)
+                .inputItems(rodLong, material)
                 .outputItems(spring, material)
                 .circuitMeta(1)
                 .duration(200)
@@ -372,7 +372,7 @@ public class PartsRecipeHandler {
 
         VanillaRecipeHelper.addShapedRecipe(provider, String.format("spring_%s", material.toString()),
                 ChemicalHelper.get(spring, material),
-                " s ", "fRx", " R ", 'R', new UnificationEntry(stickLong, material));
+                " s ", "fRx", " R ", 'R', new UnificationEntry(rodLong, material));
     }
 
     public static void processRotor(TagPrefix rotorPrefix, Material material, IngotProperty property, Consumer<FinishedRecipe> provider) {
@@ -420,10 +420,10 @@ public class PartsRecipeHandler {
                     .EUt(16);
 
             if (ConfigHolder.recipes.harderRods) {
-                builder.outputItems(stick, material);
+                builder.outputItems(rod, material);
                 builder.outputItems(dustSmall, material, 2);
             } else {
-                builder.outputItems(stick, material, 2);
+                builder.outputItems(rod, material, 2);
             }
             builder.save(provider);
         }
@@ -440,13 +440,13 @@ public class PartsRecipeHandler {
             VanillaRecipeHelper.addShapedRecipe(provider, String.format("bolt_saw_%s", material),
                     GTUtil.copyAmount(2, boltStack),
                     "s ", " X",
-                    'X', new UnificationEntry(stick, material));
+                    'X', new UnificationEntry(rod, material));
         }
     }
 
     public static void processLongStick(TagPrefix longStickPrefix, Material material, DustProperty property, Consumer<FinishedRecipe> provider) {
         ItemStack stack = ChemicalHelper.get(longStickPrefix, material);
-        ItemStack stickStack = ChemicalHelper.get(stick, material);
+        ItemStack stickStack = ChemicalHelper.get(rod, material);
 
         CUTTER_RECIPES.recipeBuilder("cut_" + material.getName() + "_long_rod_to_rod")
                 .inputItems(longStickPrefix, material)
@@ -456,7 +456,7 @@ public class PartsRecipeHandler {
 
         VanillaRecipeHelper.addShapedRecipe(provider, String.format("stick_long_%s", material),
                 GTUtil.copyAmount(2, stickStack),
-                "s", "X", 'X', new UnificationEntry(stickLong, material));
+                "s", "X", 'X', new UnificationEntry(rodLong, material));
 
         if(material.hasProperty(PropertyKey.GEM)) {
             VanillaRecipeHelper.addShapedRecipe(provider, String.format("stick_long_gem_flawless_%s", material),
@@ -474,10 +474,10 @@ public class PartsRecipeHandler {
 
         VanillaRecipeHelper.addShapedRecipe(provider, String.format("stick_long_stick_%s", material), stack,
                 "ShS",
-                'S', new UnificationEntry(stick, material));
+                'S', new UnificationEntry(rod, material));
 
         FORGE_HAMMER_RECIPES.recipeBuilder("hammer_" + material.getName() + "_rod_to_long_rod")
-                .inputItems(stick, material, 2)
+                .inputItems(rod, material, 2)
                 .outputItems(stack)
                 .duration((int) Math.max(material.getMass(), 1L))
                 .EUt(16)
@@ -513,7 +513,7 @@ public class PartsRecipeHandler {
 
         ASSEMBLER_RECIPES.recipeBuilder("assemble_" + material.getName() + "_turbine_blade")
                 .inputItems(turbineBlade, material, 8)
-                .inputItems(stickLong, Magnalium)
+                .inputItems(rodLong, Magnalium)
                 .outputItems(rotorStack)
                 .duration(200)
                 .EUt(400)

@@ -5,10 +5,10 @@
       "item": "gtceu:titanium_firebox"
     },
     "P": {
-      "tag": "c:cables/single/gold"
+      "item": "gtceu:cable_single.gold"
     },
     "S": {
-      "tag": "c:circuit/ev"
+      "tag": "c:ev_circuits"
     }
   },
   "pattern": [

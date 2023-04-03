@@ -5,13 +5,13 @@
       "item": "gtceu:quantumeye"
     },
     "P": {
-      "tag": "c:plates/stainless_steel"
+      "tag": "c:stainless_steel_plates"
     },
     "W": {
-      "tag": "c:wires/quadruple/mercury_barium_calcium_cuprate"
+      "item": "gtceu:wire_quadruple.mercury_barium_calcium_cuprate"
     },
     "X": {
-      "tag": "c:circuit/hv"
+      "tag": "c:hv_circuits"
     }
   },
   "pattern": [

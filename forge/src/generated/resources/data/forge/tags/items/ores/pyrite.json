@@ -1,13 +1,12 @@
 {
   "values": [
-    "gtceu:ore_pyrite",
-    "gtceu:ore_basalt_pyrite",
-    "gtceu:ore_sand_pyrite",
-    "gtceu:ore_granite_pyrite",
-    "gtceu:ore_andesite_pyrite",
-    "gtceu:ore_endstone_pyrite",
-    "gtceu:ore_red_sand_pyrite",
-    "gtceu:ore_netherrack_pyrite",
-    "gtceu:ore_diorite_pyrite"
+    "gtceu:deepslate_pyrite",
+    "gtceu:sand_pyrite",
+    "gtceu:basalt_pyrite",
+    "gtceu:granite_pyrite",
+    "gtceu:andesite_pyrite",
+    "gtceu:red_sand_pyrite",
+    "gtceu:stone_pyrite",
+    "gtceu:diorite_pyrite"
   ]
 }

@@ -2,10 +2,10 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "B": {
-      "tag": "c:springs/tungsten_steel"
+      "tag": "c:tungsten_steel_springs"
     },
     "C": {
-      "tag": "c:circuit/iv"
+      "tag": "c:iv_circuits"
     },
     "G": {
       "tag": "c:glass"
@@ -17,7 +17,7 @@
       "item": "gtceu:electric.pump.iv"
     },
     "W": {
-      "tag": "c:cables/single/platinum"
+      "item": "gtceu:cable_single.platinum"
     }
   },
   "pattern": [

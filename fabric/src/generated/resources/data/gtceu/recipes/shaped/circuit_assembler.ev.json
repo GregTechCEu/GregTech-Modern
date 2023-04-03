@@ -11,13 +11,13 @@
       "item": "gtceu:hull.ev"
     },
     "I": {
-      "tag": "c:circuit/iv"
+      "tag": "c:iv_circuits"
     },
     "R": {
       "item": "gtceu:robot.arm.ev"
     },
     "W": {
-      "tag": "c:cables/single/aluminium"
+      "item": "gtceu:cable_single.aluminium"
     }
   },
   "pattern": [

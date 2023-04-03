@@ -1,13 +1,12 @@
 {
   "values": [
-    "gtceu:ore_bauxite",
-    "gtceu:ore_basalt_bauxite",
-    "gtceu:ore_sand_bauxite",
-    "gtceu:ore_granite_bauxite",
-    "gtceu:ore_andesite_bauxite",
-    "gtceu:ore_endstone_bauxite",
-    "gtceu:ore_red_sand_bauxite",
-    "gtceu:ore_netherrack_bauxite",
-    "gtceu:ore_diorite_bauxite"
+    "gtceu:deepslate_bauxite",
+    "gtceu:sand_bauxite",
+    "gtceu:basalt_bauxite",
+    "gtceu:granite_bauxite",
+    "gtceu:andesite_bauxite",
+    "gtceu:red_sand_bauxite",
+    "gtceu:stone_bauxite",
+    "gtceu:diorite_bauxite"
   ]
 }

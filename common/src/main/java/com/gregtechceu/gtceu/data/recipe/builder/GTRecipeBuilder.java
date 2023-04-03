@@ -17,7 +17,7 @@ import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.api.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.lowdragmc.lowdraglib.utils.NBTToJsonConverter;
@@ -222,8 +222,12 @@ public class GTRecipeBuilder {
         return inputItems(input.tagPrefix, input.material, count);
     }
 
-    public GTRecipeBuilder inputItems(TagPrefix orePrefix, @Nullable  Material material, int count) {
-        return inputItems(ChemicalHelper.getTag(orePrefix, material), count);
+    public GTRecipeBuilder inputItems(TagPrefix orePrefix, Material material, int count) {
+        TagKey<Item> tag = ChemicalHelper.getTag(orePrefix, material);
+        if (tag == null) {
+            return inputItems(ChemicalHelper.get(orePrefix, material, count));
+        }
+        return inputItems(tag, count);
     }
 
     public GTRecipeBuilder inputItems(MachineDefinition machine) {

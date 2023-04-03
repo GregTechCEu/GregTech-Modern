@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "F": {
-      "tag": "forge:fluid_pipes/large/plastic"
+      "item": "gtceu:large.plastic"
     },
     "P": {
       "tag": "forge:plates/steel"

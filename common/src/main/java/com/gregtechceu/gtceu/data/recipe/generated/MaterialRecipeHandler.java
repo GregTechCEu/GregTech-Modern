@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.*;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
-import com.gregtechceu.gtceu.api.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CraftingComponent;
@@ -25,7 +25,7 @@ import java.util.function.Consumer;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.*;
-import static com.gregtechceu.gtceu.api.tag.TagPrefix.*;
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
 
@@ -262,14 +262,14 @@ public class MaterialRecipeHandler {
 
         if (material.hasFlag(GENERATE_ROD)) {
             VanillaRecipeHelper.addShapedRecipe(provider, String.format("stick_%s", material),
-                    ChemicalHelper.get(stick, material),
+                    ChemicalHelper.get(rod, material),
                     "f ", " X",
                     'X', new UnificationEntry(ingotPrefix, material));
             if (!material.hasFlag(NO_WORKING)) {
                 EXTRUDER_RECIPES.recipeBuilder("extrude_" + material.getName() + "_to_rod")
                         .inputItems(ingotPrefix, material)
                         .notConsumable(GTItems.SHAPE_EXTRUDER_ROD)
-                        .outputItems(stick, material, 2)
+                        .outputItems(rod, material, 2)
                         .duration((int) material.getMass() * 2)
                         .EUt(6L * getVoltageMultiplier(material))
                         .save(provider);
@@ -447,10 +447,10 @@ public class MaterialRecipeHandler {
             VanillaRecipeHelper.addShapedRecipe(provider, String.format("frame_%s", material),
                     ChemicalHelper.get(framePrefix, material, 2),
                     "SSS", isWoodenFrame ? "SsS" : "SwS", "SSS",
-                    'S', new UnificationEntry(stick, material));
+                    'S', new UnificationEntry(rod, material));
 
             ASSEMBLER_RECIPES.recipeBuilder("assemble_" + material.getName() + "_frame")
-                    .inputItems(stick, material, 4)
+                    .inputItems(rod, material, 4)
                     .circuitMeta(4)
                     .outputItems(framePrefix, material)
                     .EUt(VA[ULV]).duration(64)

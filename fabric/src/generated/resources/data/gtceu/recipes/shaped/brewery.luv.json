@@ -2,10 +2,10 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "B": {
-      "tag": "c:springs/hssg"
+      "tag": "c:hssg_springs"
     },
     "C": {
-      "tag": "c:circuit/luv"
+      "tag": "c:luv_circuits"
     },
     "G": {
       "tag": "c:glass"
@@ -17,7 +17,7 @@
       "item": "gtceu:electric.pump.luv"
     },
     "W": {
-      "tag": "c:cables/single/niobium_titanium"
+      "item": "gtceu:cable_single.niobium_titanium"
     }
   },
   "pattern": [

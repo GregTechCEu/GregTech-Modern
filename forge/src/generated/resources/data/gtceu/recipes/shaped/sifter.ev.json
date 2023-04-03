@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "forge:circuit/ev"
+      "tag": "forge:ev_circuits"
     },
     "F": {
       "item": "gtceu:item_filter"
@@ -14,7 +14,7 @@
       "item": "gtceu:electric.piston.ev"
     },
     "W": {
-      "tag": "forge:cables/single/aluminium"
+      "item": "gtceu:cable_single.aluminium"
     }
   },
   "pattern": [

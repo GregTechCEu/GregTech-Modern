@@ -8,10 +8,10 @@
       "item": "gtceu:electric.motor.iv"
     },
     "P": {
-      "tag": "c:fluid_pipes/normal/tungsten_steel"
+      "item": "gtceu:normal.tungsten_steel"
     },
     "R": {
-      "tag": "c:rotors/tungsten_steel"
+      "tag": "c:tungsten_steel_rotors"
     }
   },
   "pattern": [

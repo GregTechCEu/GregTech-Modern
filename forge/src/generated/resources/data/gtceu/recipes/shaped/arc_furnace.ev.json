@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "forge:circuit/ev"
+      "tag": "forge:ev_circuits"
     },
     "G": {
       "tag": "forge:dusts/graphite"
@@ -14,7 +14,7 @@
       "tag": "forge:plates/titanium"
     },
     "W": {
-      "tag": "forge:cables/quadruple/aluminium"
+      "item": "gtceu:cable_quadruple.aluminium"
     }
   },
   "pattern": [

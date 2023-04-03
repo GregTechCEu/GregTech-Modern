@@ -25,7 +25,7 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "c:sticks/long/samarium_magnetic"
+          "tag": "c:samarium_magnetic_long_rods"
         }
       },
       {
@@ -34,7 +34,7 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "c:sticks/long/hsss"
+          "tag": "c:hsss_long_rods"
         }
       },
       {
@@ -43,7 +43,7 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "c:rings/hsss"
+          "tag": "c:hsss_rings"
         }
       },
       {
@@ -52,7 +52,7 @@
           "type": "gtceu:sized",
           "count": 4,
           "fabric:type": "gtceu:sized",
-          "tag": "c:rounds/hsss"
+          "tag": "c:hsss_rounds"
         }
       },
       {
@@ -61,7 +61,7 @@
           "type": "gtceu:sized",
           "count": 64,
           "fabric:type": "gtceu:sized",
-          "tag": "c:wires/fine/ruridit"
+          "tag": "c:ruridit_fine_wires"
         }
       },
       {
@@ -70,7 +70,9 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "c:cables/single/niobium_titanium"
+          "ingredient": {
+            "item": "gtceu:cable_single.niobium_titanium"
+          }
         }
       }
     ]

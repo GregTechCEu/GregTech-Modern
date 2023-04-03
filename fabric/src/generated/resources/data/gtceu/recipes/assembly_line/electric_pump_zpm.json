@@ -31,7 +31,9 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "c:fluid_pipes/normal/polybenzimidazole"
+          "ingredient": {
+            "item": "gtceu:normal.polybenzimidazole"
+          }
         }
       },
       {
@@ -40,7 +42,7 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "c:plates/osmiridium"
+          "tag": "c:osmiridium_plates"
         }
       },
       {
@@ -49,7 +51,7 @@
           "type": "gtceu:sized",
           "count": 8,
           "fabric:type": "gtceu:sized",
-          "tag": "c:screws/osmiridium"
+          "tag": "c:osmiridium_screws"
         }
       },
       {
@@ -58,7 +60,7 @@
           "type": "gtceu:sized",
           "count": 8,
           "fabric:type": "gtceu:sized",
-          "tag": "c:rings/silicone_rubber"
+          "tag": "c:silicone_rubber_rings"
         }
       },
       {
@@ -67,7 +69,7 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "c:rotors/osmiridium"
+          "tag": "c:osmiridium_rotors"
         }
       },
       {
@@ -76,7 +78,9 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "c:cables/single/vanadium_gallium"
+          "ingredient": {
+            "item": "gtceu:cable_single.vanadium_gallium"
+          }
         }
       }
     ]

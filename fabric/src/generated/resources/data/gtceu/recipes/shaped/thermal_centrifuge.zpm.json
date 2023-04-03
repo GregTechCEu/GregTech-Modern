@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:circuit/zpm"
+      "tag": "c:zpm_circuits"
     },
     "E": {
       "item": "gtceu:electric.motor.zpm"
@@ -11,10 +11,10 @@
       "item": "gtceu:hull.zpm"
     },
     "O": {
-      "tag": "c:wires/quadruple/naquadah"
+      "item": "gtceu:wire_quadruple.naquadah"
     },
     "W": {
-      "tag": "c:cables/single/vanadium_gallium"
+      "item": "gtceu:cable_single.vanadium_gallium"
     }
   },
   "pattern": [

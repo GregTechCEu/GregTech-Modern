@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:deepslate_mica",
+    "gtceu:sand_mica",
+    "gtceu:basalt_mica",
+    "gtceu:granite_mica",
+    "gtceu:andesite_mica",
+    "gtceu:red_sand_mica",
+    "gtceu:stone_mica",
+    "gtceu:diorite_mica"
+  ]
+}

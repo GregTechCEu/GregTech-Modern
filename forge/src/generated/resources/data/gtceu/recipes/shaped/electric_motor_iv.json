@@ -2,16 +2,16 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "forge:cables/double/tungsten"
+      "item": "gtceu:cable_double.tungsten"
     },
     "M": {
-      "tag": "forge:sticks/neodymium_magnetic"
+      "tag": "forge:rods/neodymium_magnetic"
     },
     "R": {
-      "tag": "forge:sticks/tungsten_steel"
+      "tag": "forge:rods/tungsten_steel"
     },
     "W": {
-      "tag": "forge:wires/double/graphene"
+      "item": "gtceu:wire_double.graphene"
     }
   },
   "pattern": [

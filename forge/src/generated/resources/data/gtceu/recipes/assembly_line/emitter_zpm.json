@@ -33,7 +33,7 @@
           "type": "gtceu:sized",
           "count": 4,
           "fabric:type": "gtceu:sized",
-          "tag": "forge:sticks/long/osmiridium"
+          "tag": "forge:rods/long/osmiridium"
         }
       },
       {
@@ -53,7 +53,7 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "forge:circuit/zpm"
+          "tag": "forge:zpm_circuits"
         }
       },
       {
@@ -80,7 +80,9 @@
           "type": "gtceu:sized",
           "count": 4,
           "fabric:type": "gtceu:sized",
-          "tag": "forge:cables/single/vanadium_gallium"
+          "ingredient": {
+            "item": "gtceu:cable_single.vanadium_gallium"
+          }
         }
       }
     ]

@@ -1,7 +1,0 @@
-{
-  "parent": "item/handheld",
-  "textures": {
-    "layer0": "gtceu:item/material_sets/shiny/stick",
-    "layer1": "gtceu:item/material_sets/shiny/stick_overlay"
-  }
-}

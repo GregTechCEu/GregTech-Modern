@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "P": {
-      "tag": "c:plates/neutronium"
+      "tag": "c:neutronium_plates"
     },
     "w": {
       "tag": "c:tool/wrench"

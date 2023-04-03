@@ -4,10 +4,8 @@ import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.OreProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
-import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
-import com.gregtechceu.gtceu.api.tag.TagPrefix;
-import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -20,7 +18,7 @@ import java.util.function.Consumer;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.HIGH_SIFTER_OUTPUT;
-import static com.gregtechceu.gtceu.api.tag.TagPrefix.*;
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
 
@@ -29,19 +27,9 @@ public class OreRecipeHandler {
 
     public static void init(Consumer<FinishedRecipe> provider) {
         ore.executeHandler(PropertyKey.ORE, (tagPrefix, material, property) -> processOre(tagPrefix, material, property, provider));
-        oreEndstone.executeHandler(PropertyKey.ORE, (tagPrefix, material, property) -> processOre(tagPrefix, material, property, provider));
+        // skip other types like andesite, granite, etc., as their tag is identical to stone
         oreNetherrack.executeHandler(PropertyKey.ORE, (tagPrefix, material, property) -> processOre(tagPrefix, material, property, provider));
-        if (ConfigHolder.worldgen.allUniqueStoneTypes) {
-            oreGranite.executeHandler(PropertyKey.ORE, (tagPrefix, material, property) -> processOre(tagPrefix, material, property, provider));
-            oreDiorite.executeHandler(PropertyKey.ORE, (tagPrefix, material, property) -> processOre(tagPrefix, material, property, provider));
-            oreAndesite.executeHandler(PropertyKey.ORE, (tagPrefix, material, property) -> processOre(tagPrefix, material, property, provider));
-            oreBasalt.executeHandler(PropertyKey.ORE, (tagPrefix, material, property) -> processOre(tagPrefix, material, property, provider));
-            oreBlackgranite.executeHandler(PropertyKey.ORE, (tagPrefix, material, property) -> processOre(tagPrefix, material, property, provider));
-            oreMarble.executeHandler(PropertyKey.ORE, (tagPrefix, material, property) -> processOre(tagPrefix, material, property, provider));
-            oreRedgranite.executeHandler(PropertyKey.ORE, (tagPrefix, material, property) -> processOre(tagPrefix, material, property, provider));
-            oreSand.executeHandler(PropertyKey.ORE, (tagPrefix, material, property) -> processOre(tagPrefix, material, property, provider));
-            oreRedSand.executeHandler(PropertyKey.ORE, (tagPrefix, material, property) -> processOre(tagPrefix, material, property, provider));
-        }
+        oreEndstone.executeHandler(PropertyKey.ORE, (tagPrefix, material, property) -> processOre(tagPrefix, material, property, provider));
 
         crushed.executeHandler(PropertyKey.ORE, (tagPrefix, material, property) -> processCrushedOre(tagPrefix, material, property, provider));
         crushedPurified.executeHandler(PropertyKey.ORE, (tagPrefix, material, property) -> processCrushedPurified(tagPrefix, material, property, provider));
@@ -79,8 +67,8 @@ public class OreRecipeHandler {
         } else {
             ingotStack = ChemicalHelper.get(dust, smeltingMaterial);
         }
-        int oreTypeMultiplier = orePrefix == oreNetherrack || orePrefix == oreEndstone ? 2 : 1;
-        ingotStack.setCount(ingotStack.getCount() * property.getOreMultiplier() * oreTypeMultiplier);
+        int oreMultiplier = orePrefix == oreEndstone || orePrefix == oreNetherrack ? 2 : 1;
+        ingotStack.setCount(ingotStack.getCount() * property.getOreMultiplier() * oreMultiplier);
         crushedStack.setCount(crushedStack.getCount() * property.getOreMultiplier());
 
         if (!crushedStack.isEmpty()) {
@@ -88,23 +76,17 @@ public class OreRecipeHandler {
                     .inputItems(orePrefix, material)
                     .duration(10).EUt(16);
             if (material.hasProperty(PropertyKey.GEM) && !gem.isIgnored(material)) {
-                builder.outputItems(GTUtil.copyAmount((int) Math.ceil(amountOfCrushedOre) * oreTypeMultiplier, ChemicalHelper.get(gem, material, crushedStack.getCount())));
+                builder.outputItems(GTUtil.copyAmount((int) Math.ceil(amountOfCrushedOre) * oreMultiplier, ChemicalHelper.get(gem, material, crushedStack.getCount())));
             } else {
-                builder.outputItems(GTUtil.copyAmount((int) Math.ceil(amountOfCrushedOre) * oreTypeMultiplier, crushedStack));
+                builder.outputItems(GTUtil.copyAmount((int) Math.ceil(amountOfCrushedOre) * oreMultiplier, crushedStack));
             }
             builder.save(provider);
 
             builder = MACERATOR_RECIPES.recipeBuilder("macerate_" + material.getName() + "_" + orePrefix.name + "_to_crushed_ore")
                     .inputItems(orePrefix, material)
-                    .outputItems(GTUtil.copyAmount((int) Math.round(amountOfCrushedOre) * 2 * oreTypeMultiplier, crushedStack))
+                    .outputItems(GTUtil.copyAmount((int) Math.round(amountOfCrushedOre) * 2 * oreMultiplier, crushedStack))
                     .chancedOutput(byproductStack, 1400, 850)
                     .duration(400);
-            for (MaterialStack secondaryMaterial : orePrefix.secondaryMaterials()) {
-                if (secondaryMaterial.material().hasProperty(PropertyKey.DUST)) {
-                    ItemStack dustStack = ChemicalHelper.getGem(secondaryMaterial);
-                    builder.chancedOutput(dustStack, 6700, 800);
-                }
-            }
 
             builder.save(provider);
         }

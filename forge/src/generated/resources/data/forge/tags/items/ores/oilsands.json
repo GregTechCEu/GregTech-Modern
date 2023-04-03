@@ -1,13 +1,12 @@
 {
   "values": [
-    "gtceu:ore_oilsands",
-    "gtceu:ore_basalt_oilsands",
-    "gtceu:ore_sand_oilsands",
-    "gtceu:ore_granite_oilsands",
-    "gtceu:ore_andesite_oilsands",
-    "gtceu:ore_endstone_oilsands",
-    "gtceu:ore_red_sand_oilsands",
-    "gtceu:ore_netherrack_oilsands",
-    "gtceu:ore_diorite_oilsands"
+    "gtceu:deepslate_oilsands",
+    "gtceu:sand_oilsands",
+    "gtceu:basalt_oilsands",
+    "gtceu:granite_oilsands",
+    "gtceu:andesite_oilsands",
+    "gtceu:red_sand_oilsands",
+    "gtceu:stone_oilsands",
+    "gtceu:diorite_oilsands"
   ]
 }

@@ -2,16 +2,16 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "G": {
-      "tag": "c:gems/nether_star"
+      "tag": "c:nether_star_gems"
     },
     "P": {
-      "tag": "c:plates/double/titanium"
+      "tag": "c:titanium_double_plates"
     },
     "W": {
-      "tag": "c:wires/quadruple/uranium_triplatinum"
+      "item": "gtceu:wire_quadruple.uranium_triplatinum"
     },
     "X": {
-      "tag": "c:circuit/ev"
+      "tag": "c:ev_circuits"
     }
   },
   "pattern": [

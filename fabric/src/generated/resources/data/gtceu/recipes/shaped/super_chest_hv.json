@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:circuit/hv"
+      "tag": "c:hv_circuits"
     },
     "F": {
       "item": "gtceu:crate.stainless_steel"
@@ -11,7 +11,7 @@
       "item": "gtceu:field.generator.lv"
     },
     "P": {
-      "tag": "c:plates/stainless_steel"
+      "tag": "c:stainless_steel_plates"
     }
   },
   "pattern": [

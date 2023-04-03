@@ -1,0 +1,14 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:iron_ore",
+    "gtceu:stone_iron",
+    "gtceu:deepslate_iron",
+    "gtceu:sand_iron",
+    "gtceu:basalt_iron",
+    "gtceu:granite_iron",
+    "gtceu:andesite_iron",
+    "gtceu:red_sand_iron",
+    "gtceu:diorite_iron"
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:deepslate_aluminium",
+    "gtceu:sand_aluminium",
+    "gtceu:basalt_aluminium",
+    "gtceu:granite_aluminium",
+    "gtceu:andesite_aluminium",
+    "gtceu:red_sand_aluminium",
+    "gtceu:stone_aluminium",
+    "gtceu:diorite_aluminium"
+  ]
+}

@@ -5,13 +5,13 @@
       "item": "gtceu:hull.luv"
     },
     "S": {
-      "tag": "forge:sticks/vanadium_gallium"
+      "tag": "forge:rods/vanadium_gallium"
     },
     "W": {
-      "tag": "forge:cables/single/niobium_titanium"
+      "item": "gtceu:cable_single.niobium_titanium"
     },
     "Z": {
-      "tag": "forge:wires/quadruple/niobium_nitride"
+      "item": "gtceu:wire_quadruple.niobium_nitride"
     }
   },
   "pattern": [

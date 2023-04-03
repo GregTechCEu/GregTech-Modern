@@ -2,16 +2,16 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:circuit/hv"
+      "tag": "c:hv_circuits"
     },
     "M": {
       "item": "gtceu:casing_steel_solid"
     },
     "O": {
-      "tag": "c:storage_blocks/obsidian"
+      "tag": "c:obsidian_blocks"
     },
     "W": {
-      "tag": "c:cables/single/gold"
+      "item": "gtceu:cable_single.gold"
     }
   },
   "pattern": [

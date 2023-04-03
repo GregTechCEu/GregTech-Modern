@@ -2,16 +2,16 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "forge:wires/quadruple/naquadah"
+      "item": "gtceu:wire_quadruple.naquadah"
     },
     "E": {
-      "tag": "forge:circuit/zpm"
+      "tag": "forge:zpm_circuits"
     },
     "M": {
       "item": "gtceu:hull.zpm"
     },
     "P": {
-      "tag": "forge:fluid_pipes/normal/iridium"
+      "item": "gtceu:normal.iridium"
     },
     "X": {
       "item": "gtceu:electric.piston.zpm"

@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "forge:cables/single/vanadium_gallium"
+      "item": "gtceu:cable_single.vanadium_gallium"
     },
     "H": {
       "item": "gtceu:hull_casing_zpm"

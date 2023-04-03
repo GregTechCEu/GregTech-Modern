@@ -5,10 +5,10 @@
       "item": "gtceu:tungstensteel_firebox"
     },
     "P": {
-      "tag": "c:cables/single/aluminium"
+      "item": "gtceu:cable_single.aluminium"
     },
     "S": {
-      "tag": "c:circuit/iv"
+      "tag": "c:iv_circuits"
     }
   },
   "pattern": [

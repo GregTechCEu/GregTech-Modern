@@ -2,10 +2,10 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "F": {
-      "tag": "c:frames/aluminium"
+      "tag": "c:aluminium_frames"
     },
     "P": {
-      "tag": "c:plates/aluminium"
+      "tag": "c:aluminium_plates"
     },
     "h": {
       "tag": "c:tool/hammer"

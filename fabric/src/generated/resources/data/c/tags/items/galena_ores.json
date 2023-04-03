@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:deepslate_galena",
+    "gtceu:sand_galena",
+    "gtceu:basalt_galena",
+    "gtceu:granite_galena",
+    "gtceu:andesite_galena",
+    "gtceu:red_sand_galena",
+    "gtceu:stone_galena",
+    "gtceu:diorite_galena"
+  ]
+}

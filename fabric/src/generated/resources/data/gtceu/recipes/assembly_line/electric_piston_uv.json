@@ -38,7 +38,7 @@
           "type": "gtceu:sized",
           "count": 4,
           "fabric:type": "gtceu:sized",
-          "tag": "c:plates/tritanium"
+          "tag": "c:tritanium_plates"
         }
       },
       {
@@ -47,7 +47,7 @@
           "type": "gtceu:sized",
           "count": 4,
           "fabric:type": "gtceu:sized",
-          "tag": "c:rings/tritanium"
+          "tag": "c:tritanium_rings"
         }
       },
       {
@@ -56,7 +56,7 @@
           "type": "gtceu:sized",
           "count": 16,
           "fabric:type": "gtceu:sized",
-          "tag": "c:rounds/tritanium"
+          "tag": "c:tritanium_rounds"
         }
       },
       {
@@ -65,7 +65,7 @@
           "type": "gtceu:sized",
           "count": 4,
           "fabric:type": "gtceu:sized",
-          "tag": "c:sticks/tritanium"
+          "tag": "c:tritanium_rods"
         }
       },
       {
@@ -74,7 +74,7 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "c:gears/naquadah_alloy"
+          "tag": "c:naquadah_alloy_gears"
         }
       },
       {
@@ -83,7 +83,7 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "c:gears/small/naquadah_alloy"
+          "tag": "c:naquadah_alloy_small_gears"
         }
       },
       {
@@ -92,7 +92,9 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "c:cables/single/yttrium_barium_cuprate"
+          "ingredient": {
+            "item": "gtceu:cable_single.yttrium_barium_cuprate"
+          }
         }
       }
     ]

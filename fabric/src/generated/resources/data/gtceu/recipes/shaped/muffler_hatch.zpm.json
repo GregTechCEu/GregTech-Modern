@@ -8,10 +8,10 @@
       "item": "gtceu:electric.motor.zpm"
     },
     "P": {
-      "tag": "c:fluid_pipes/normal/iridium"
+      "item": "gtceu:normal.iridium"
     },
     "R": {
-      "tag": "c:rotors/naquadah_alloy"
+      "tag": "c:naquadah_alloy_rotors"
     }
   },
   "pattern": [

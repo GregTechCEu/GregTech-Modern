@@ -21,7 +21,7 @@
           "type": "gtceu:sized",
           "count": 16,
           "fabric:type": "gtceu:sized",
-          "tag": "c:storage_blocks/silicon"
+          "tag": "c:silicon_blocks"
         }
       },
       {
@@ -30,7 +30,7 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "c:ingots/naquadah"
+          "tag": "c:naquadah_ingots"
         }
       }
     ]

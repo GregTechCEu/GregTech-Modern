@@ -5,13 +5,13 @@
       "item": "gtceu:hull.hv"
     },
     "S": {
-      "tag": "forge:sticks/steel"
+      "tag": "forge:rods/steel"
     },
     "W": {
-      "tag": "forge:cables/single/gold"
+      "item": "gtceu:cable_single.gold"
     },
     "Z": {
-      "tag": "forge:wires/double/silver"
+      "item": "gtceu:wire_double.silver"
     }
   },
   "pattern": [

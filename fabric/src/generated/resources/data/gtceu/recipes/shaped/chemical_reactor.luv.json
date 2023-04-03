@@ -2,22 +2,22 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:circuit/luv"
+      "tag": "c:luv_circuits"
     },
     "E": {
       "item": "gtceu:electric.motor.luv"
     },
     "G": {
-      "tag": "c:fluid_pipes/normal/polytetrafluoroethylene"
+      "item": "gtceu:normal.polytetrafluoroethylene"
     },
     "M": {
       "item": "gtceu:hull.luv"
     },
     "R": {
-      "tag": "c:rotors/rhodium_plated_palladium"
+      "tag": "c:rhodium_plated_palladium_rotors"
     },
     "W": {
-      "tag": "c:cables/single/niobium_titanium"
+      "item": "gtceu:cable_single.niobium_titanium"
     }
   },
   "pattern": [

@@ -5,7 +5,7 @@
       "tag": "forge:springs/kanthal"
     },
     "C": {
-      "tag": "forge:circuit/hv"
+      "tag": "forge:hv_circuits"
     },
     "G": {
       "tag": "forge:glass"
@@ -17,7 +17,7 @@
       "item": "gtceu:electric.pump.hv"
     },
     "W": {
-      "tag": "forge:cables/single/gold"
+      "item": "gtceu:cable_single.gold"
     }
   },
   "pattern": [

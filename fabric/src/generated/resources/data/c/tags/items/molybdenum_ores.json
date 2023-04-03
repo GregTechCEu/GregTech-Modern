@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:deepslate_molybdenum",
+    "gtceu:sand_molybdenum",
+    "gtceu:basalt_molybdenum",
+    "gtceu:granite_molybdenum",
+    "gtceu:andesite_molybdenum",
+    "gtceu:red_sand_molybdenum",
+    "gtceu:stone_molybdenum",
+    "gtceu:diorite_molybdenum"
+  ]
+}

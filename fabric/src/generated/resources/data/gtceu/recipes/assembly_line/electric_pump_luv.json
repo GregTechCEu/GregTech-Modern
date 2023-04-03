@@ -31,7 +31,9 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "c:fluid_pipes/small/niobium_titanium"
+          "ingredient": {
+            "item": "gtceu:small.niobium_titanium"
+          }
         }
       },
       {
@@ -40,7 +42,7 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "c:plates/hsss"
+          "tag": "c:hsss_plates"
         }
       },
       {
@@ -49,7 +51,7 @@
           "type": "gtceu:sized",
           "count": 8,
           "fabric:type": "gtceu:sized",
-          "tag": "c:screws/hsss"
+          "tag": "c:hsss_screws"
         }
       },
       {
@@ -58,7 +60,7 @@
           "type": "gtceu:sized",
           "count": 4,
           "fabric:type": "gtceu:sized",
-          "tag": "c:rings/silicone_rubber"
+          "tag": "c:silicone_rubber_rings"
         }
       },
       {
@@ -67,7 +69,7 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "c:rotors/hsss"
+          "tag": "c:hsss_rotors"
         }
       },
       {
@@ -76,7 +78,9 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "c:cables/single/niobium_titanium"
+          "ingredient": {
+            "item": "gtceu:cable_single.niobium_titanium"
+          }
         }
       }
     ]

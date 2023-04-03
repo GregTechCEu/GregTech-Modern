@@ -38,7 +38,7 @@
           "type": "gtceu:sized",
           "count": 4,
           "fabric:type": "gtceu:sized",
-          "tag": "forge:component/inductor"
+          "tag": "forge:inductors"
         }
       },
       {
@@ -47,7 +47,7 @@
           "type": "gtceu:sized",
           "count": 8,
           "fabric:type": "gtceu:sized",
-          "tag": "forge:component/capacitor"
+          "tag": "forge:capacitors"
         }
       },
       {

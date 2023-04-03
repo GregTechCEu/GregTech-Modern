@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:deepslate_asbestos",
+    "gtceu:sand_asbestos",
+    "gtceu:basalt_asbestos",
+    "gtceu:granite_asbestos",
+    "gtceu:andesite_asbestos",
+    "gtceu:red_sand_asbestos",
+    "gtceu:stone_asbestos",
+    "gtceu:diorite_asbestos"
+  ]
+}

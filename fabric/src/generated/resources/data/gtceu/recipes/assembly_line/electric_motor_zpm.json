@@ -25,7 +25,7 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "c:sticks/long/samarium_magnetic"
+          "tag": "c:samarium_magnetic_long_rods"
         }
       },
       {
@@ -34,7 +34,7 @@
           "type": "gtceu:sized",
           "count": 4,
           "fabric:type": "gtceu:sized",
-          "tag": "c:sticks/long/osmiridium"
+          "tag": "c:osmiridium_long_rods"
         }
       },
       {
@@ -43,7 +43,7 @@
           "type": "gtceu:sized",
           "count": 4,
           "fabric:type": "gtceu:sized",
-          "tag": "c:rings/osmiridium"
+          "tag": "c:osmiridium_rings"
         }
       },
       {
@@ -52,7 +52,7 @@
           "type": "gtceu:sized",
           "count": 8,
           "fabric:type": "gtceu:sized",
-          "tag": "c:rounds/osmiridium"
+          "tag": "c:osmiridium_rounds"
         }
       },
       {
@@ -61,7 +61,7 @@
           "type": "gtceu:sized",
           "count": 64,
           "fabric:type": "gtceu:sized",
-          "tag": "c:wires/fine/europium"
+          "tag": "c:europium_fine_wires"
         }
       },
       {
@@ -70,7 +70,7 @@
           "type": "gtceu:sized",
           "count": 32,
           "fabric:type": "gtceu:sized",
-          "tag": "c:wires/fine/europium"
+          "tag": "c:europium_fine_wires"
         }
       },
       {
@@ -79,7 +79,9 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "c:cables/single/vanadium_gallium"
+          "ingredient": {
+            "item": "gtceu:cable_single.vanadium_gallium"
+          }
         }
       }
     ]

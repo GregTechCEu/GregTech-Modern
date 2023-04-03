@@ -66,6 +66,10 @@ dependencies {
     modCompileOnly fabric.rei.api
     modCompileOnly fabric.rei.fabric
 
+    // EMI
+    modCompileOnly("dev.emi:emi:${fabric.versions.emi.get()}:api")
+    modCompileOnly fabric.emi
+
     // TOP
     modCompileOnly fabric.theoneprobe
 

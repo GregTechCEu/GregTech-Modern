@@ -2,16 +2,16 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "forge:wires/double/cupronickel"
+      "item": "gtceu:wire_double.cupronickel"
     },
     "E": {
-      "tag": "forge:circuit/mv"
+      "tag": "forge:mv_circuits"
     },
     "M": {
       "item": "gtceu:hull.mv"
     },
     "W": {
-      "tag": "forge:cables/single/copper"
+      "item": "gtceu:cable_single.copper"
     }
   },
   "pattern": [

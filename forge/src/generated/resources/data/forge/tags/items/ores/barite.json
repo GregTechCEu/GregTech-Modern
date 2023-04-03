@@ -1,13 +1,12 @@
 {
   "values": [
-    "gtceu:ore_barite",
-    "gtceu:ore_basalt_barite",
-    "gtceu:ore_sand_barite",
-    "gtceu:ore_granite_barite",
-    "gtceu:ore_andesite_barite",
-    "gtceu:ore_endstone_barite",
-    "gtceu:ore_red_sand_barite",
-    "gtceu:ore_netherrack_barite",
-    "gtceu:ore_diorite_barite"
+    "gtceu:deepslate_barite",
+    "gtceu:sand_barite",
+    "gtceu:basalt_barite",
+    "gtceu:granite_barite",
+    "gtceu:andesite_barite",
+    "gtceu:red_sand_barite",
+    "gtceu:stone_barite",
+    "gtceu:diorite_barite"
   ]
 }

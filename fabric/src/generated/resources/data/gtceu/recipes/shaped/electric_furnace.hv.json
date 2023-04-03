@@ -2,16 +2,16 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:wires/double/kanthal"
+      "item": "gtceu:wire_double.kanthal"
     },
     "E": {
-      "tag": "c:circuit/hv"
+      "tag": "c:hv_circuits"
     },
     "M": {
       "item": "gtceu:hull.hv"
     },
     "W": {
-      "tag": "c:cables/single/gold"
+      "item": "gtceu:cable_single.gold"
     }
   },
   "pattern": [

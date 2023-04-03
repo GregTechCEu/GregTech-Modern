@@ -2,19 +2,19 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:cables/single/copper"
+      "item": "gtceu:cable_single.copper"
     },
     "G": {
-      "tag": "c:gears/small/aluminium"
+      "tag": "c:aluminium_small_gears"
     },
     "M": {
       "item": "gtceu:electric.motor.mv"
     },
     "P": {
-      "tag": "c:plates/aluminium"
+      "tag": "c:aluminium_plates"
     },
     "R": {
-      "tag": "c:sticks/aluminium"
+      "tag": "c:aluminium_rods"
     }
   },
   "pattern": [

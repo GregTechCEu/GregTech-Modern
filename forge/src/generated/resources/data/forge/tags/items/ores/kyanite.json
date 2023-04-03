@@ -1,13 +1,12 @@
 {
   "values": [
-    "gtceu:ore_kyanite",
-    "gtceu:ore_basalt_kyanite",
-    "gtceu:ore_sand_kyanite",
-    "gtceu:ore_granite_kyanite",
-    "gtceu:ore_andesite_kyanite",
-    "gtceu:ore_endstone_kyanite",
-    "gtceu:ore_red_sand_kyanite",
-    "gtceu:ore_netherrack_kyanite",
-    "gtceu:ore_diorite_kyanite"
+    "gtceu:deepslate_kyanite",
+    "gtceu:sand_kyanite",
+    "gtceu:basalt_kyanite",
+    "gtceu:granite_kyanite",
+    "gtceu:andesite_kyanite",
+    "gtceu:red_sand_kyanite",
+    "gtceu:stone_kyanite",
+    "gtceu:diorite_kyanite"
   ]
 }

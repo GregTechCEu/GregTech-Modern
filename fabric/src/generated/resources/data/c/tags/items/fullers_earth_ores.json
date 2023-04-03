@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:deepslate_fullers_earth",
+    "gtceu:sand_fullers_earth",
+    "gtceu:basalt_fullers_earth",
+    "gtceu:granite_fullers_earth",
+    "gtceu:andesite_fullers_earth",
+    "gtceu:red_sand_fullers_earth",
+    "gtceu:stone_fullers_earth",
+    "gtceu:diorite_fullers_earth"
+  ]
+}

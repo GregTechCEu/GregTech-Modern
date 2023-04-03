@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:deepslate_tetrahedrite",
+    "gtceu:sand_tetrahedrite",
+    "gtceu:basalt_tetrahedrite",
+    "gtceu:granite_tetrahedrite",
+    "gtceu:andesite_tetrahedrite",
+    "gtceu:red_sand_tetrahedrite",
+    "gtceu:stone_tetrahedrite",
+    "gtceu:diorite_tetrahedrite"
+  ]
+}

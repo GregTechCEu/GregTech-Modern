@@ -8,7 +8,7 @@
       "tag": "c:chests"
     },
     "W": {
-      "tag": "c:wires/hex/vanadium_gallium"
+      "item": "gtceu:wire_hex.vanadium_gallium"
     }
   },
   "pattern": [

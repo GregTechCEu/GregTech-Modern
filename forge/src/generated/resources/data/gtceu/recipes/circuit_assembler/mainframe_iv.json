@@ -41,7 +41,7 @@
           "type": "gtceu:sized",
           "count": 8,
           "fabric:type": "gtceu:sized",
-          "tag": "forge:component/inductor"
+          "tag": "forge:inductors"
         }
       },
       {
@@ -50,7 +50,7 @@
           "type": "gtceu:sized",
           "count": 16,
           "fabric:type": "gtceu:sized",
-          "tag": "forge:component/capacitor"
+          "tag": "forge:capacitors"
         }
       },
       {
@@ -70,7 +70,9 @@
           "type": "gtceu:sized",
           "count": 16,
           "fabric:type": "gtceu:sized",
-          "tag": "forge:wires/single/annealed_copper"
+          "ingredient": {
+            "item": "gtceu:wire_single.annealed_copper"
+          }
         }
       }
     ]

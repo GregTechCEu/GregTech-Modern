@@ -30,7 +30,7 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "forge:component/resistor"
+          "tag": "forge:resistors"
         }
       },
       {
@@ -39,7 +39,7 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "forge:component/capacitor"
+          "tag": "forge:capacitors"
         }
       },
       {
@@ -48,7 +48,7 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "forge:component/transistor"
+          "tag": "forge:transistors"
         }
       },
       {

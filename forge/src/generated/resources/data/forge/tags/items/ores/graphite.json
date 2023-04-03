@@ -1,13 +1,12 @@
 {
   "values": [
-    "gtceu:ore_graphite",
-    "gtceu:ore_basalt_graphite",
-    "gtceu:ore_sand_graphite",
-    "gtceu:ore_granite_graphite",
-    "gtceu:ore_andesite_graphite",
-    "gtceu:ore_endstone_graphite",
-    "gtceu:ore_red_sand_graphite",
-    "gtceu:ore_netherrack_graphite",
-    "gtceu:ore_diorite_graphite"
+    "gtceu:deepslate_graphite",
+    "gtceu:sand_graphite",
+    "gtceu:basalt_graphite",
+    "gtceu:granite_graphite",
+    "gtceu:andesite_graphite",
+    "gtceu:red_sand_graphite",
+    "gtceu:stone_graphite",
+    "gtceu:diorite_graphite"
   ]
 }

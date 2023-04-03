@@ -9,7 +9,7 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "forge:sticks/aluminium"
+          "tag": "forge:rods/aluminium"
         }
       },
       {
@@ -18,7 +18,9 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "forge:cables/single/copper"
+          "ingredient": {
+            "item": "gtceu:cable_single.copper"
+          }
         }
       },
       {

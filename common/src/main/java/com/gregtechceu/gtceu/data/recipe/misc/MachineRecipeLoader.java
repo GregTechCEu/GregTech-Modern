@@ -2,13 +2,12 @@ package com.gregtechceu.gtceu.data.recipe.misc;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
-import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials.Tier;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMachines;
-import com.gregtechceu.gtceu.data.recipe.LoaderTags;
+import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.tterrag.registrate.util.entry.ItemEntry;
@@ -22,7 +21,7 @@ import net.minecraft.world.level.block.Blocks;
 import java.util.function.Consumer;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
-import static com.gregtechceu.gtceu.api.tag.TagPrefix.*;
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
 import static com.gregtechceu.gtceu.common.data.GTItems.*;
 import static com.gregtechceu.gtceu.common.data.GTMachines.*;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
@@ -410,7 +409,7 @@ public class MachineRecipeLoader {
 
         ASSEMBLER_RECIPES.recipeBuilder("cover_energy_detector")
                 .inputItems(cableGtSingle, Copper, 4)
-                .inputItems(circuit, Tier.LV)
+                .inputItems(CustomTags.LV_CIRCUITS)
                 .inputItems(plate, material)
                 .inputFluids(solder)
                 .outputItems(COVER_ENERGY_DETECTOR)
@@ -435,7 +434,7 @@ public class MachineRecipeLoader {
 
         ASSEMBLER_RECIPES.recipeBuilder("cover_advanced_activity_cover")
                 .inputItems(wireFine, Gold, 4)
-                .inputItems(circuit, Tier.HV)
+                .inputItems(CustomTags.HV_CIRCUITS)
                 .inputItems(plate, Aluminium)
                 .inputFluids(solder)
                 .outputItems(COVER_ACTIVITY_DETECTOR_ADVANCED)
@@ -477,7 +476,7 @@ public class MachineRecipeLoader {
         ASSEMBLER_RECIPES.recipeBuilder("cover_screen")
                 .inputItems(plate, Glass)
                 .inputItems(foil, Aluminium, 4)
-                .inputItems(circuit, Tier.LV)
+                .inputItems(CustomTags.LV_CIRCUITS)
                 .inputItems(wireFine, Copper, 4)
                 .outputItems(COVER_SCREEN)
                 .EUt(16).duration(50)
@@ -486,7 +485,7 @@ public class MachineRecipeLoader {
         ASSEMBLER_RECIPES.recipeBuilder("cover_infinite_water")
                 .inputItems(ELECTRIC_PUMP_HV, 2)
                 .inputItems(new ItemStack(Items.CAULDRON))
-                .inputItems(circuit, Tier.HV)
+                .inputItems(CustomTags.HV_CIRCUITS)
                 .outputItems(COVER_INFINITE_WATER)
                 .EUt(VA[HV]).duration(100)
                 .save(provider);
@@ -576,22 +575,22 @@ public class MachineRecipeLoader {
         ASSEMBLER_RECIPES.recipeBuilder("hull_uv").duration(50).EUt(16).inputItems(GTBlocks.MACHINE_CASING_UV.asStack()).inputItems(cableGtSingle, YttriumBariumCuprate, 2).inputFluids(Polybenzimidazole.getFluid(L * 2)).outputItems(GTMachines.HULL[8]).save(provider);
         ASSEMBLER_RECIPES.recipeBuilder("hull_uhv").duration(50).EUt(16).inputItems(GTBlocks.MACHINE_CASING_UHV.asStack()).inputItems(cableGtSingle, Europium, 2).inputFluids(Polybenzimidazole.getFluid(L * 2)).outputItems(GTMachines.HULL[9]).save(provider);
 
-        ASSEMBLER_RECIPES.recipeBuilder("hopper_iron").EUt(2).inputItems(LoaderTags.TAG_WOODEN_CHESTS).inputItems(plate, Iron, 5).outputItems(new ItemStack(Blocks.HOPPER)).duration(800).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("hopper_wrought_iron").EUt(2).inputItems(LoaderTags.TAG_WOODEN_CHESTS).inputItems(plate, WroughtIron, 5).outputItems(new ItemStack(Blocks.HOPPER)).duration(800).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("hopper_iron").EUt(2).inputItems(CustomTags.TAG_WOODEN_CHESTS).inputItems(plate, Iron, 5).outputItems(new ItemStack(Blocks.HOPPER)).duration(800).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("hopper_wrought_iron").EUt(2).inputItems(CustomTags.TAG_WOODEN_CHESTS).inputItems(plate, WroughtIron, 5).outputItems(new ItemStack(Blocks.HOPPER)).duration(800).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("wooden_crate").EUt(16).inputItems(ItemTags.PLANKS, 4).inputItems(screw, Iron, 4).outputItems(WOODEN_CRATE).duration(100).circuitMeta(5).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("bronze_crate").EUt(16).inputItems(stickLong, Bronze, 4).inputItems(plate, Bronze, 4).outputItems(BRONZE_CRATE).duration(200).circuitMeta(1).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("steel_crate").EUt(16).inputItems(stickLong, Steel, 4).inputItems(plate, Steel, 4).outputItems(STEEL_CRATE).duration(200).circuitMeta(1).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("aluminium_crate").EUt(16).inputItems(stickLong, Aluminium, 4).inputItems(plate, Aluminium, 4).outputItems(ALUMINIUM_CRATE).duration(200).circuitMeta(1).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("stainless_steel_crate").EUt(16).inputItems(stickLong, StainlessSteel, 4).inputItems(plate, StainlessSteel, 4).outputItems(STAINLESS_STEEL_CRATE).circuitMeta(1).duration(200).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("titanium_crate").EUt(16).inputItems(stickLong, Titanium, 4).inputItems(plate, Titanium, 4).outputItems(TITANIUM_CRATE).duration(200).circuitMeta(1).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("tungstensteel_crate").EUt(16).inputItems(stickLong, TungstenSteel, 4).inputItems(plate, TungstenSteel, 4).outputItems(TUNGSTENSTEEL_CRATE).duration(200).circuitMeta(1).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("bronze_crate").EUt(16).inputItems(rodLong, Bronze, 4).inputItems(plate, Bronze, 4).outputItems(BRONZE_CRATE).duration(200).circuitMeta(1).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("steel_crate").EUt(16).inputItems(rodLong, Steel, 4).inputItems(plate, Steel, 4).outputItems(STEEL_CRATE).duration(200).circuitMeta(1).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("aluminium_crate").EUt(16).inputItems(rodLong, Aluminium, 4).inputItems(plate, Aluminium, 4).outputItems(ALUMINIUM_CRATE).duration(200).circuitMeta(1).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("stainless_steel_crate").EUt(16).inputItems(rodLong, StainlessSteel, 4).inputItems(plate, StainlessSteel, 4).outputItems(STAINLESS_STEEL_CRATE).circuitMeta(1).duration(200).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("titanium_crate").EUt(16).inputItems(rodLong, Titanium, 4).inputItems(plate, Titanium, 4).outputItems(TITANIUM_CRATE).duration(200).circuitMeta(1).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("tungstensteel_crate").EUt(16).inputItems(rodLong, TungstenSteel, 4).inputItems(plate, TungstenSteel, 4).outputItems(TUNGSTENSTEEL_CRATE).duration(200).circuitMeta(1).save(provider);
 
-        ASSEMBLER_RECIPES.recipeBuilder("wood_barrel").EUt(16).inputItems(ItemTags.PLANKS, 4).inputItems(stickLong, Iron, 2).outputItems(WOODEN_DRUM).duration(200).circuitMeta(2).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("bronze_drum").EUt(16).inputItems(stickLong, Bronze, 2).inputItems(plate, Bronze, 4).outputItems(BRONZE_DRUM).duration(200).circuitMeta(2).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("steel_drum").EUt(16).inputItems(stickLong, Steel, 2).inputItems(plate, Steel, 4).outputItems(STEEL_DRUM).duration(200).circuitMeta(2).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("aluminium_drum").EUt(16).inputItems(stickLong, Aluminium, 2).inputItems(plate, Aluminium, 4).outputItems(ALUMINIUM_DRUM).duration(200).circuitMeta(2).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("stainless_steel_drum").EUt(16).inputItems(stickLong, StainlessSteel, 2).inputItems(plate, StainlessSteel, 4).outputItems(STAINLESS_STEEL_DRUM).duration(200).circuitMeta(2).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("wood_barrel").EUt(16).inputItems(ItemTags.PLANKS, 4).inputItems(rodLong, Iron, 2).outputItems(WOODEN_DRUM).duration(200).circuitMeta(2).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("bronze_drum").EUt(16).inputItems(rodLong, Bronze, 2).inputItems(plate, Bronze, 4).outputItems(BRONZE_DRUM).duration(200).circuitMeta(2).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("steel_drum").EUt(16).inputItems(rodLong, Steel, 2).inputItems(plate, Steel, 4).outputItems(STEEL_DRUM).duration(200).circuitMeta(2).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("aluminium_drum").EUt(16).inputItems(rodLong, Aluminium, 2).inputItems(plate, Aluminium, 4).outputItems(ALUMINIUM_DRUM).duration(200).circuitMeta(2).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("stainless_steel_drum").EUt(16).inputItems(rodLong, StainlessSteel, 2).inputItems(plate, StainlessSteel, 4).outputItems(STAINLESS_STEEL_DRUM).duration(200).circuitMeta(2).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("duct_tape_polyethylene").EUt(VA[LV]).inputItems(foil, Polyethylene, 4).inputItems(CARBON_MESH).inputFluids(Polyethylene.getFluid(288)).outputItems(DUCT_TAPE).duration(100).save(provider);
         ASSEMBLER_RECIPES.recipeBuilder("duct_tape_silicone_rubber").EUt(VA[LV]).inputItems(foil, SiliconeRubber, 2).inputItems(CARBON_MESH).inputFluids(Polyethylene.getFluid(288)).outputItems(DUCT_TAPE, 2).duration(100).save(provider);
@@ -802,9 +801,9 @@ public class MachineRecipeLoader {
                 .chancedOutput(dust, Basalt, 1000, 380)
                 .save(provider);
 
-        MACERATOR_RECIPES.recipeBuilder("macerate_black_granite")
-                .inputItems(block, GraniteBlack)
-                .outputItems(dust, GraniteBlack)
+        MACERATOR_RECIPES.recipeBuilder("macerate_deepslate")
+                .inputItems(Blocks.DEEPSLATE.asItem())
+                .outputItems(dust, Deepslate)
                 .chancedOutput(dust, Thorium, 100, 40)
                 .save(provider);
 

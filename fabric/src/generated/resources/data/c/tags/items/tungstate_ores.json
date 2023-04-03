@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:deepslate_tungstate",
+    "gtceu:sand_tungstate",
+    "gtceu:basalt_tungstate",
+    "gtceu:granite_tungstate",
+    "gtceu:andesite_tungstate",
+    "gtceu:red_sand_tungstate",
+    "gtceu:stone_tungstate",
+    "gtceu:diorite_tungstate"
+  ]
+}

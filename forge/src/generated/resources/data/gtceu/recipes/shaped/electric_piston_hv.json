@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "forge:cables/single/gold"
+      "item": "gtceu:cable_single.gold"
     },
     "G": {
       "tag": "forge:gears/small/stainless_steel"
@@ -14,7 +14,7 @@
       "tag": "forge:plates/stainless_steel"
     },
     "R": {
-      "tag": "forge:sticks/stainless_steel"
+      "tag": "forge:rods/stainless_steel"
     }
   },
   "pattern": [

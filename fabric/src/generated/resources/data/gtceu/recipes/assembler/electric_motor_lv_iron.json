@@ -9,7 +9,9 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "c:cables/single/tin"
+          "ingredient": {
+            "item": "gtceu:cable_single.tin"
+          }
         }
       },
       {
@@ -18,7 +20,7 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "c:sticks/iron"
+          "tag": "c:iron_rods"
         }
       },
       {
@@ -27,7 +29,7 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "c:sticks/iron_magnetic"
+          "tag": "c:iron_magnetic_rods"
         }
       },
       {
@@ -36,7 +38,9 @@
           "type": "gtceu:sized",
           "count": 4,
           "fabric:type": "gtceu:sized",
-          "tag": "c:wires/single/copper"
+          "ingredient": {
+            "item": "gtceu:wire_single.copper"
+          }
         }
       }
     ]

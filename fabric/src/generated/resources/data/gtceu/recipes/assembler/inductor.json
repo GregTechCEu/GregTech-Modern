@@ -18,7 +18,7 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "c:rings/steel"
+          "tag": "c:steel_rings"
         }
       },
       {
@@ -27,7 +27,7 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "c:wires/fine/copper"
+          "tag": "c:copper_fine_wires"
         }
       }
     ]

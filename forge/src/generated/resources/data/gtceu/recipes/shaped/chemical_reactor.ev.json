@@ -2,13 +2,13 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "forge:circuit/ev"
+      "tag": "forge:ev_circuits"
     },
     "E": {
       "item": "gtceu:electric.motor.ev"
     },
     "G": {
-      "tag": "forge:fluid_pipes/large/plastic"
+      "item": "gtceu:large.plastic"
     },
     "M": {
       "item": "gtceu:hull.ev"
@@ -17,7 +17,7 @@
       "tag": "forge:rotors/stainless_steel"
     },
     "W": {
-      "tag": "forge:cables/single/aluminium"
+      "item": "gtceu:cable_single.aluminium"
     }
   },
   "pattern": [

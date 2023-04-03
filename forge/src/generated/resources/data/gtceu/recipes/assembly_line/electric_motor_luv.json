@@ -25,7 +25,7 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "forge:sticks/long/samarium_magnetic"
+          "tag": "forge:rods/long/samarium_magnetic"
         }
       },
       {
@@ -34,7 +34,7 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "forge:sticks/long/hsss"
+          "tag": "forge:rods/long/hsss"
         }
       },
       {
@@ -70,7 +70,9 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "forge:cables/single/niobium_titanium"
+          "ingredient": {
+            "item": "gtceu:cable_single.niobium_titanium"
+          }
         }
       }
     ]

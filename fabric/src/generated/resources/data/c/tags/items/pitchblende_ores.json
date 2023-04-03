@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:deepslate_pitchblende",
+    "gtceu:sand_pitchblende",
+    "gtceu:basalt_pitchblende",
+    "gtceu:granite_pitchblende",
+    "gtceu:andesite_pitchblende",
+    "gtceu:red_sand_pitchblende",
+    "gtceu:stone_pitchblende",
+    "gtceu:diorite_pitchblende"
+  ]
+}

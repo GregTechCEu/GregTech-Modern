@@ -18,7 +18,7 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "c:foils/silicone_rubber"
+          "tag": "c:silicone_rubber_foils"
         }
       },
       {
@@ -27,7 +27,7 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "c:foils/tantalum"
+          "tag": "c:tantalum_foils"
         }
       }
     ]

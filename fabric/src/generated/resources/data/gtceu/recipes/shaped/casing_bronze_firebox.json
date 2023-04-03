@@ -2,13 +2,13 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "F": {
-      "tag": "c:frames/bronze"
+      "tag": "c:bronze_frames"
     },
     "P": {
-      "tag": "c:plates/bronze"
+      "tag": "c:bronze_plates"
     },
     "S": {
-      "tag": "c:sticks/bronze"
+      "tag": "c:bronze_rods"
     }
   },
   "pattern": [

@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "forge:circuit/iv"
+      "tag": "forge:iv_circuits"
     },
     "G": {
       "tag": "forge:glass"
@@ -11,13 +11,13 @@
       "item": "gtceu:hull.iv"
     },
     "O": {
-      "tag": "forge:wires/quadruple/tungsten_steel"
+      "item": "gtceu:wire_quadruple.tungsten_steel"
     },
     "P": {
       "item": "gtceu:electric.pump.iv"
     },
     "W": {
-      "tag": "forge:cables/single/platinum"
+      "item": "gtceu:cable_single.platinum"
     }
   },
   "pattern": [

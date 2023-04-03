@@ -35,7 +35,9 @@
           "type": "gtceu:sized",
           "count": 8,
           "fabric:type": "gtceu:sized",
-          "tag": "forge:fluid_pipes/small/polybenzimidazole"
+          "ingredient": {
+            "item": "gtceu:small.polybenzimidazole"
+          }
         }
       },
       {

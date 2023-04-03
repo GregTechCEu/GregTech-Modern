@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "forge:circuit/uv"
+      "tag": "forge:uv_circuits"
     },
     "E": {
       "item": "gtceu:electric.motor.uv"
@@ -11,10 +11,10 @@
       "item": "gtceu:hull.uv"
     },
     "O": {
-      "tag": "forge:wires/quadruple/naquadah_alloy"
+      "item": "gtceu:wire_quadruple.naquadah_alloy"
     },
     "W": {
-      "tag": "forge:cables/single/yttrium_barium_cuprate"
+      "item": "gtceu:cable_single.yttrium_barium_cuprate"
     }
   },
   "pattern": [

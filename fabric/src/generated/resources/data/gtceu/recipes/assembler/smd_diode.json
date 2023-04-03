@@ -18,7 +18,7 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "c:dusts/gallium_arsenide"
+          "tag": "c:gallium_arsenide_dusts"
         }
       },
       {
@@ -27,7 +27,7 @@
           "type": "gtceu:sized",
           "count": 8,
           "fabric:type": "gtceu:sized",
-          "tag": "c:wires/fine/platinum"
+          "tag": "c:platinum_fine_wires"
         }
       }
     ]

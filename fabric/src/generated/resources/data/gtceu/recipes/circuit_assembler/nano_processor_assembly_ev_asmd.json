@@ -66,7 +66,7 @@
           "type": "gtceu:sized",
           "count": 16,
           "fabric:type": "gtceu:sized",
-          "tag": "c:wires/fine/electrum"
+          "tag": "c:electrum_fine_wires"
         }
       }
     ]

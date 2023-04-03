@@ -2,22 +2,22 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:circuit/uv"
+      "tag": "c:uv_circuits"
     },
     "E": {
       "item": "gtceu:electric.motor.uv"
     },
     "G": {
-      "tag": "c:fluid_pipes/huge/polytetrafluoroethylene"
+      "item": "gtceu:huge.polytetrafluoroethylene"
     },
     "M": {
       "item": "gtceu:hull.uv"
     },
     "R": {
-      "tag": "c:rotors/darmstadtium"
+      "tag": "c:darmstadtium_rotors"
     },
     "W": {
-      "tag": "c:cables/single/yttrium_barium_cuprate"
+      "item": "gtceu:cable_single.yttrium_barium_cuprate"
     }
   },
   "pattern": [

@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "forge:cables/single/europium"
+      "item": "gtceu:cable_single.europium"
     },
     "H": {
       "item": "gtceu:hull_casing_uhv"

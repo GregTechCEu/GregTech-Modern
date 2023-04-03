@@ -32,7 +32,7 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "c:sticks/long/samarium_magnetic"
+          "tag": "c:samarium_magnetic_long_rods"
         }
       },
       {
@@ -41,7 +41,7 @@
           "type": "gtceu:sized",
           "count": 4,
           "fabric:type": "gtceu:sized",
-          "tag": "c:sticks/long/tritanium"
+          "tag": "c:tritanium_long_rods"
         }
       },
       {
@@ -50,7 +50,7 @@
           "type": "gtceu:sized",
           "count": 4,
           "fabric:type": "gtceu:sized",
-          "tag": "c:rings/tritanium"
+          "tag": "c:tritanium_rings"
         }
       },
       {
@@ -59,7 +59,7 @@
           "type": "gtceu:sized",
           "count": 8,
           "fabric:type": "gtceu:sized",
-          "tag": "c:rounds/tritanium"
+          "tag": "c:tritanium_rounds"
         }
       },
       {
@@ -68,7 +68,7 @@
           "type": "gtceu:sized",
           "count": 64,
           "fabric:type": "gtceu:sized",
-          "tag": "c:wires/fine/americium"
+          "tag": "c:americium_fine_wires"
         }
       },
       {
@@ -77,7 +77,7 @@
           "type": "gtceu:sized",
           "count": 64,
           "fabric:type": "gtceu:sized",
-          "tag": "c:wires/fine/americium"
+          "tag": "c:americium_fine_wires"
         }
       },
       {
@@ -86,7 +86,9 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "c:cables/single/yttrium_barium_cuprate"
+          "ingredient": {
+            "item": "gtceu:cable_single.yttrium_barium_cuprate"
+          }
         }
       }
     ]

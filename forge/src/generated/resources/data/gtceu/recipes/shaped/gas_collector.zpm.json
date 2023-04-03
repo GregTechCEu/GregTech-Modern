@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "forge:circuit/zpm"
+      "tag": "forge:zpm_circuits"
     },
     "F": {
       "item": "gtceu:fluid_filter"

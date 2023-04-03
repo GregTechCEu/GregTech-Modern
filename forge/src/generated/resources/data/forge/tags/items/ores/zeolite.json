@@ -1,13 +1,12 @@
 {
   "values": [
-    "gtceu:ore_zeolite",
-    "gtceu:ore_basalt_zeolite",
-    "gtceu:ore_sand_zeolite",
-    "gtceu:ore_granite_zeolite",
-    "gtceu:ore_andesite_zeolite",
-    "gtceu:ore_endstone_zeolite",
-    "gtceu:ore_red_sand_zeolite",
-    "gtceu:ore_netherrack_zeolite",
-    "gtceu:ore_diorite_zeolite"
+    "gtceu:deepslate_zeolite",
+    "gtceu:sand_zeolite",
+    "gtceu:basalt_zeolite",
+    "gtceu:granite_zeolite",
+    "gtceu:andesite_zeolite",
+    "gtceu:red_sand_zeolite",
+    "gtceu:stone_zeolite",
+    "gtceu:diorite_zeolite"
   ]
 }

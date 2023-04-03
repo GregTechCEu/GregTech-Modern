@@ -2,13 +2,13 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:cables/single/tin"
+      "item": "gtceu:cable_single.tin"
     },
     "H": {
       "item": "gtceu:hull.lv"
     },
     "T": {
-      "tag": "c:cables/single/copper"
+      "item": "gtceu:cable_single.copper"
     }
   },
   "pattern": [

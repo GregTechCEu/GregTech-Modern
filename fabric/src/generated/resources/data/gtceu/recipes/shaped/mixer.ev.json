@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:circuit/ev"
+      "tag": "c:ev_circuits"
     },
     "E": {
       "item": "gtceu:electric.motor.ev"
@@ -14,7 +14,7 @@
       "item": "gtceu:hull.ev"
     },
     "R": {
-      "tag": "c:rotors/stainless_steel"
+      "tag": "c:stainless_steel_rotors"
     }
   },
   "pattern": [

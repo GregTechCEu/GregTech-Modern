@@ -2,13 +2,13 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:circuit/zpm"
+      "tag": "c:zpm_circuits"
     },
     "G": {
       "tag": "c:glass"
     },
     "I": {
-      "tag": "c:plates/naquadah_alloy"
+      "tag": "c:naquadah_alloy_plates"
     },
     "M": {
       "item": "gtceu:hull.zpm"

@@ -1,13 +1,12 @@
 {
   "values": [
-    "gtceu:ore_quartzite",
-    "gtceu:ore_basalt_quartzite",
-    "gtceu:ore_sand_quartzite",
-    "gtceu:ore_granite_quartzite",
-    "gtceu:ore_andesite_quartzite",
-    "gtceu:ore_endstone_quartzite",
-    "gtceu:ore_red_sand_quartzite",
-    "gtceu:ore_netherrack_quartzite",
-    "gtceu:ore_diorite_quartzite"
+    "gtceu:deepslate_quartzite",
+    "gtceu:sand_quartzite",
+    "gtceu:basalt_quartzite",
+    "gtceu:granite_quartzite",
+    "gtceu:andesite_quartzite",
+    "gtceu:red_sand_quartzite",
+    "gtceu:stone_quartzite",
+    "gtceu:diorite_quartzite"
   ]
 }

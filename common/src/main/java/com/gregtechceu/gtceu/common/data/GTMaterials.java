@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.materials.*;
@@ -9,7 +8,6 @@ import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterial;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlag;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
-import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.kjs.events.MaterialEventJS;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
@@ -20,8 +18,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.*;
-import static com.gregtechceu.gtceu.api.tag.TagPrefix.*;
 import static com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper.*;
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
 
 
 /**
@@ -140,10 +138,10 @@ public class GTMaterials {
         dust.setIgnored(Bone, Items.BONE_MEAL);
         dust.setIgnored(Blaze, Items.BLAZE_POWDER);
 
-        stick.setIgnored(Wood, Items.STICK);
-        stick.setIgnored(Bone, Items.BONE);
-        stick.setIgnored(Blaze, Items.BLAZE_ROD);
-        stick.setIgnored(Paper);
+        rod.setIgnored(Wood, Items.STICK);
+        rod.setIgnored(Bone, Items.BONE);
+        rod.setIgnored(Blaze, Items.BLAZE_ROD);
+        rod.setIgnored(Paper);
 
         ingot.setIgnored(Iron, Items.IRON_INGOT);
         ingot.setIgnored(Gold, Items.GOLD_INGOT);
@@ -195,22 +193,6 @@ public class GTMaterials {
         block.setIgnored(Lapotron);
         block.setIgnored(Obsidian, Blocks.OBSIDIAN);
 
-        ore.addSecondaryMaterial(new MaterialStack(Stone, dust.materialAmount()));
-        oreNetherrack.addSecondaryMaterial(new MaterialStack(Netherrack, dust.materialAmount()));
-        oreEndstone.addSecondaryMaterial(new MaterialStack(Endstone, dust.materialAmount()));
-
-        if (ConfigHolder.worldgen.allUniqueStoneTypes) {
-            oreGranite.addSecondaryMaterial(new MaterialStack(Granite, dust.materialAmount()));
-            oreDiorite.addSecondaryMaterial(new MaterialStack(Diorite, dust.materialAmount()));
-            oreAndesite.addSecondaryMaterial(new MaterialStack(Andesite, dust.materialAmount()));
-            oreRedgranite.addSecondaryMaterial(new MaterialStack(GraniteRed, dust.materialAmount()));
-            oreBlackgranite.addSecondaryMaterial(new MaterialStack(GraniteBlack, dust.materialAmount()));
-            oreBasalt.addSecondaryMaterial(new MaterialStack(Basalt, dust.materialAmount()));
-            oreMarble.addSecondaryMaterial(new MaterialStack(Marble, dust.materialAmount()));
-            oreSand.addSecondaryMaterial(new MaterialStack(SiliconDioxide, dustTiny.materialAmount()));
-            oreRedSand.addSecondaryMaterial(new MaterialStack(SiliconDioxide, dustTiny.materialAmount()));
-        }
-
         crushed.addSecondaryMaterial(new MaterialStack(Stone, dust.materialAmount()));
 
         toolHeadDrill.addSecondaryMaterial(new MaterialStack(Steel, plate.materialAmount() * 4));
@@ -225,10 +207,11 @@ public class GTMaterials {
         pipeHugeFluid.setIgnored(TreatedWood);
         pipeQuadrupleFluid.setIgnored(TreatedWood);
         pipeNonupleFluid.setIgnored(TreatedWood);
-        pipeSmallRestrictive.addSecondaryMaterial(new MaterialStack(Iron, ring.materialAmount() * 2));
-        pipeNormalRestrictive.addSecondaryMaterial(new MaterialStack(Iron, ring.materialAmount() * 2));
-        pipeLargeRestrictive.addSecondaryMaterial(new MaterialStack(Iron, ring.materialAmount() * 2));
-        pipeHugeRestrictive.addSecondaryMaterial(new MaterialStack(Iron, ring.materialAmount() * 2));
+        // TODO Item pipes
+        //pipeSmallRestrictive.addSecondaryMaterial(new MaterialStack(Iron, ring.materialAmount() * 2));
+        //pipeNormalRestrictive.addSecondaryMaterial(new MaterialStack(Iron, ring.materialAmount() * 2));
+        //pipeLargeRestrictive.addSecondaryMaterial(new MaterialStack(Iron, ring.materialAmount() * 2));
+        //pipeHugeRestrictive.addSecondaryMaterial(new MaterialStack(Iron, ring.materialAmount() * 2));
 
         cableGtSingle.addSecondaryMaterial(new MaterialStack(Rubber, plate.materialAmount()));
         cableGtDouble.addSecondaryMaterial(new MaterialStack(Rubber, plate.materialAmount()));
@@ -290,7 +273,7 @@ public class GTMaterials {
         //registerUnificationItems(oreDeepslate, Copper, Blocks.DEEPSLATE_COPPER_ORE);
 
         // TODO GT stone types, move out of this file
-        //ChemicalHelper.registerUnificationEntry(MetaBlocks.STONE_SMOOTH.getItemVariant(BlockStoneSmooth.BlockType.BLACK_GRANITE, 1), TagPrefix.stone, GTMaterials.GraniteBlack);
+        //ChemicalHelper.registerUnificationEntry(MetaBlocks.STONE_SMOOTH.getItemVariant(BlockStoneSmooth.BlockType.BLACK_GRANITE, 1), TagPrefix.stone, GTMaterials.Deepslate);
         //ChemicalHelper.registerUnificationEntry(MetaBlocks.STONE_SMOOTH.getItemVariant(BlockStoneSmooth.BlockType.RED_GRANITE, 1), TagPrefix.stone, GTMaterials.GraniteRed);
         //ChemicalHelper.registerUnificationEntry(MetaBlocks.STONE_SMOOTH.getItemVariant(BlockStoneSmooth.BlockType.MARBLE, 1), TagPrefix.stone, GTMaterials.Marble);
         //ChemicalHelper.registerUnificationEntry(MetaBlocks.STONE_SMOOTH.getItemVariant(BlockStoneSmooth.BlockType.BASALT, 1), TagPrefix.stone, GTMaterials.Basalt);
@@ -908,7 +891,7 @@ public class GTMaterials {
     public static Material GarnetRed;
     public static Material GarnetYellow;
     public static Material Marble;
-    public static Material GraniteBlack;
+    public static Material Deepslate;
     public static Material GraniteRed;
     public static Material VanadiumMagnetite;
     public static Material QuartzSand;

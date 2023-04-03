@@ -5,13 +5,13 @@
       "item": "gtceu:hull.zpm"
     },
     "S": {
-      "tag": "c:sticks/vanadium_gallium"
+      "tag": "c:vanadium_gallium_rods"
     },
     "W": {
-      "tag": "c:cables/single/vanadium_gallium"
+      "item": "gtceu:cable_single.vanadium_gallium"
     },
     "Z": {
-      "tag": "c:wires/octal/vanadium_gallium"
+      "item": "gtceu:wire_octal.vanadium_gallium"
     }
   },
   "pattern": [

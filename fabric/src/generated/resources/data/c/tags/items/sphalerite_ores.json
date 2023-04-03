@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:deepslate_sphalerite",
+    "gtceu:sand_sphalerite",
+    "gtceu:basalt_sphalerite",
+    "gtceu:granite_sphalerite",
+    "gtceu:andesite_sphalerite",
+    "gtceu:red_sand_sphalerite",
+    "gtceu:stone_sphalerite",
+    "gtceu:diorite_sphalerite"
+  ]
+}

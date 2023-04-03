@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "forge:cables/single/aluminium"
+      "item": "gtceu:cable_single.aluminium"
     },
     "G": {
       "tag": "forge:gears/small/titanium"
@@ -14,7 +14,7 @@
       "tag": "forge:plates/titanium"
     },
     "R": {
-      "tag": "forge:sticks/titanium"
+      "tag": "forge:rods/titanium"
     }
   },
   "pattern": [

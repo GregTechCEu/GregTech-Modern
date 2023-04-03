@@ -395,11 +395,6 @@ public class GTRecipeTypes {
             .setProgressBar(GuiTextures.PROGRESS_BAR_GAS_COLLECTOR, LEFT_TO_RIGHT)
             .setSound(GTSoundEntries.TURBINE);
 
-    public final static GTRecipeType SEMI_FLUID_GENERATOR_FUELS = register("semi_fluid_generator", GENERATOR).setMaxIOSize(0, 0, 1, 0).setEUIO(IO.OUT)
-            .setSlotOverlay(false, true, true, GuiTextures.FURNACE_OVERLAY_2)
-            .setProgressBar(GuiTextures.PROGRESS_BAR_ARROW_MULTIPLE, LEFT_TO_RIGHT)
-            .setSound(GTSoundEntries.COMBUSTION);
-
     public final static GTRecipeType PLASMA_GENERATOR_FUELS = register("plasma_generator", GENERATOR).setMaxIOSize(0, 0, 1, 1).setEUIO(IO.OUT)
             .setSlotOverlay(false, true, true, GuiTextures.CENTRIFUGE_OVERLAY)
             .setProgressBar(GuiTextures.PROGRESS_BAR_GAS_COLLECTOR, LEFT_TO_RIGHT)

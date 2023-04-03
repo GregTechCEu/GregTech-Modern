@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.ToolProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
-import com.gregtechceu.gtceu.api.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import net.minecraft.data.recipes.FinishedRecipe;
@@ -102,7 +102,7 @@ public class ToolRecipeHandler {
     }
 */
     private static void processTool(TagPrefix prefix, Material material, ToolProperty property, Consumer<FinishedRecipe> provider) {
-        UnificationEntry stick = new UnificationEntry(TagPrefix.stick, GTMaterials.Wood);
+        UnificationEntry stick = new UnificationEntry(TagPrefix.rod, GTMaterials.Wood);
         UnificationEntry plate = new UnificationEntry(TagPrefix.plate, material);
         UnificationEntry ingot = new UnificationEntry(material.hasProperty(PropertyKey.GEM) ? TagPrefix.gem : TagPrefix.ingot, material);
 
@@ -110,12 +110,12 @@ public class ToolRecipeHandler {
             //addToolRecipe(provider, material, GTToolType.MINING_HAMMER, true,
             //        "PPf", "PPS", "PPh",
             //        'P', plate,
-            //        'S', stick);
+            //        'S', rod);
 
             //addToolRecipe(provider, material, GTToolType.SPADE, false,
             //        "fPh", "PSP", " S ",
             //        'P', plate,
-            //        'S', stick);
+            //        'S', rod);
 
             addToolRecipe(provider, material, GTToolType.SAW, false,
                     "PPS", "fhS",
@@ -126,19 +126,19 @@ public class ToolRecipeHandler {
             //        "PIh", "PS ", "fS ",
             //        'P', plate,
             //        'I', ingot,
-            //        'S', stick);
+            //        'S', rod);
 
             //addToolRecipe(provider, material, GTToolType.HOE, false,
             //        "PIh", "fS ", " S ",
             //        'P', plate,
             //        'I', ingot,
-            //        'S', stick);
+            //        'S', rod);
 
             //addToolRecipe(provider, material, GTToolType.PICKAXE, false,
             //        "PII", "fSh", " S ",
             //        'P', plate,
             //        'I', ingot,
-            //        'S', stick);
+            //        'S', rod);
 
             addToolRecipe(provider, material, GTToolType.SCYTHE, false,
                     "PPI", "fSh", " S ",
@@ -149,12 +149,12 @@ public class ToolRecipeHandler {
             //addToolRecipe(provider, material, GTToolType.SHOVEL, false,
             //        "fPh", " S ", " S ",
             //        'P', plate,
-            //        'S', stick);
+            //        'S', rod);
 
             //addToolRecipe(provider, material, GTToolType.SWORD, false,
             //        " P ", "fPh", " S ",
             //        'P', plate,
-            //        'S', stick);
+            //        'S', rod);
 
             addToolRecipe(provider, material, GTToolType.HARD_HAMMER, true,
                     "II ", "IIS", "II ",
@@ -177,7 +177,7 @@ public class ToolRecipeHandler {
         }
 
         if (material.hasFlag(GENERATE_ROD)) {
-            UnificationEntry rod = new UnificationEntry(TagPrefix.stick, material);
+            UnificationEntry rod = new UnificationEntry(TagPrefix.rod, material);
 
             if (material.hasFlag(GENERATE_PLATE)) {
                 addToolRecipe(provider, material, GTToolType.BUTCHERY_KNIFE, false,
@@ -275,7 +275,7 @@ public class ToolRecipeHandler {
             ModHandler.addShapedRecipe(String.format("screwdriver_tip_%s", material),
                     OreDictUnifier.get(toolPrefix, material),
                     "fR", " h",
-                    'R', new UnificationEntry(stickLong, material));
+                    'R', new UnificationEntry(rodLong, material));
         }
     }
 
@@ -325,27 +325,27 @@ public class ToolRecipeHandler {
         //addToolRecipe(provider, GTMaterials.Flint, GTToolType.SWORD, false,
         //        "I", "I", "S",
         //        'I', flint,
-        //        'S', stick);
+        //        'S', rod);
 
         //addToolRecipe(provider, GTMaterials.Flint, GTToolType.PICKAXE, false,
         //        "III", " S ", " S ",
         //        'I', flint,
-        //        'S', stick);
+        //        'S', rod);
 
         //addToolRecipe(provider, GTMaterials.Flint, GTToolType.SHOVEL, false,
         //        "I", "S", "S",
         //        'I', flint,
-        //        'S', stick);
+        //        'S', rod);
 
         //addToolRecipe(provider, GTMaterials.Flint, GTToolType.AXE, true,
         //        "II", "IS", " S",
         //        'I', flint,
-        //        'S', stick);
+        //        'S', rod);
 
         //addToolRecipe(provider, GTMaterials.Flint, GTToolType.HOE, true,
         //        "II", " S", " S",
         //        'I', flint,
-        //        'S', stick);
+        //        'S', rod);
 
         addToolRecipe(provider, GTMaterials.Flint, GTToolType.KNIFE, false,
                 "I", "S",
@@ -395,7 +395,7 @@ public class ToolRecipeHandler {
                 //        ToolHelper.getAndSetToolData(GTToolType.PLUNGER, material, 128 * (i << 1), 1, 4F, 0F),
                 //        "xPP", " SP", "S f",
                 //        'P', new UnificationEntry(TagPrefix.plate, material),
-                //        'S', stick);
+                //        'S', rod);
             }
         }
     }
@@ -416,7 +416,7 @@ public class ToolRecipeHandler {
             ModHandler.addShapedEnergyTransferRecipe("magnet_lv_" + batteryItem.unlocalizedName, GTItems.ITEM_MAGNET_LV.getStackForm(),
                     batteryItem::isItemEqual, true, true,
                     "MwM", "MBM", "CPC",
-                    'M', new UnificationEntry(stick, Materials.SteelMagnetic),
+                    'M', new UnificationEntry(rod, Materials.SteelMagnetic),
                     'P', new UnificationEntry(plate, Materials.Steel),
                     'C', new UnificationEntry(cableGtSingle, Materials.Tin),
                     'B', batteryItem.getStackForm());
@@ -448,7 +448,7 @@ public class ToolRecipeHandler {
             ModHandler.addShapedEnergyTransferRecipe("magnet_hv_" + batteryItem.unlocalizedName, GTItems.ITEM_MAGNET_HV.getStackForm(),
                     batteryItem::isItemEqual, true, true,
                     "MwM", "MBM", "CPC",
-                    'M', new UnificationEntry(stick, Materials.NeodymiumMagnetic),
+                    'M', new UnificationEntry(rod, Materials.NeodymiumMagnetic),
                     'P', new UnificationEntry(plate, Materials.StainlessSteel),
                     'C', new UnificationEntry(cableGtSingle, Materials.Gold),
                     'B', batteryItem.getStackForm());

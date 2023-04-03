@@ -8,10 +8,10 @@
       "item": "gtceu:hull.hv"
     },
     "T": {
-      "tag": "c:fluid_pipes/large/stainless_steel"
+      "item": "gtceu:large.stainless_steel"
     },
     "W": {
-      "tag": "c:circuit/hv"
+      "tag": "c:hv_circuits"
     }
   },
   "pattern": [

@@ -2,16 +2,16 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:cables/single/vanadium_gallium"
+      "item": "gtceu:cable_single.vanadium_gallium"
     },
     "H": {
       "item": "gtceu:hull_casing_zpm"
     },
     "L": {
-      "tag": "c:plates/naquadah_alloy"
+      "tag": "c:naquadah_alloy_plates"
     },
     "P": {
-      "tag": "c:plates/polybenzimidazole"
+      "tag": "c:polybenzimidazole_plates"
     }
   },
   "pattern": [

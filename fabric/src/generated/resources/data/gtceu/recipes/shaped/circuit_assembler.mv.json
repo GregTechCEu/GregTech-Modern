@@ -11,13 +11,13 @@
       "item": "gtceu:hull.mv"
     },
     "I": {
-      "tag": "c:circuit/hv"
+      "tag": "c:hv_circuits"
     },
     "R": {
       "item": "gtceu:robot.arm.mv"
     },
     "W": {
-      "tag": "c:cables/single/copper"
+      "item": "gtceu:cable_single.copper"
     }
   },
   "pattern": [

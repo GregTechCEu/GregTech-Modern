@@ -2,22 +2,22 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:cables/single/aluminium"
+      "item": "gtceu:cable_single.aluminium"
     },
     "M": {
       "item": "gtceu:electric.motor.ev"
     },
     "P": {
-      "tag": "c:fluid_pipes/normal/titanium"
+      "item": "gtceu:normal.titanium"
     },
     "R": {
-      "tag": "c:rings/silicone_rubber"
+      "tag": "c:silicone_rubber_rings"
     },
     "S": {
-      "tag": "c:screws/stainless_steel"
+      "tag": "c:stainless_steel_screws"
     },
     "X": {
-      "tag": "c:rotors/stainless_steel"
+      "tag": "c:stainless_steel_rotors"
     },
     "d": {
       "tag": "c:tool/screwdriver"

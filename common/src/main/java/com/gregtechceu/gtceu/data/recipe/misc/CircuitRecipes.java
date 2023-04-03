@@ -1,9 +1,8 @@
 package com.gregtechceu.gtceu.data.recipe.misc;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials.Color;
-import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials.Component;
-import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials.Tier;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
+import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.world.item.ItemStack;
@@ -12,7 +11,7 @@ import net.minecraft.world.item.Items;
 import java.util.function.Consumer;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
-import static com.gregtechceu.gtceu.api.tag.TagPrefix.*;
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
 import static com.gregtechceu.gtceu.common.data.GTItems.*;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
@@ -850,7 +849,7 @@ public class CircuitRecipes {
                 .inputItems(PETRI_DISH)
                 .inputItems(ELECTRIC_PUMP_LuV)
                 .inputItems(SENSOR_IV)
-                .inputItems(circuit, Tier.IV)
+                .inputItems(CustomTags.IV_CIRCUITS)
                 .inputItems(foil, NiobiumTitanium, 16)
                 .inputFluids(SterileGrowthMedium.getFluid(4000))
                 .outputItems(WETWARE_BOARD, 16)
@@ -889,9 +888,9 @@ public class CircuitRecipes {
 
         CIRCUIT_ASSEMBLER_RECIPES.recipeBuilder("electronic_circuit_lv").EUt(16).duration(200)
                 .inputItems(BASIC_CIRCUIT_BOARD)
-                .inputItems(component, Component.Resistor, 2)
+                .inputItems(CustomTags.RESISTORS, 2)
                 .inputItems(wireGtSingle, RedAlloy, 2)
-                .inputItems(circuit, Tier.ULV, 2)
+                .inputItems(CustomTags.ULV_CIRCUITS, 2)
                 .outputItems(ELECTRONIC_CIRCUIT_LV, 2)
                 .save(provider);
 
@@ -906,8 +905,8 @@ public class CircuitRecipes {
 
         CIRCUIT_ASSEMBLER_RECIPES.recipeBuilder("electronic_circuit_mv").EUt(VA[LV]).duration(300)
                 .inputItems(GOOD_CIRCUIT_BOARD)
-                .inputItems(circuit, Tier.LV, 2)
-                .inputItems(component, Component.Diode, 2)
+                .inputItems(CustomTags.LV_CIRCUITS, 2)
+                .inputItems(CustomTags.DIODES, 2)
                 .inputItems(wireGtSingle, Copper, 2)
                 .outputItems(ELECTRONIC_CIRCUIT_MV)
                 .save(provider);
@@ -918,8 +917,8 @@ public class CircuitRecipes {
         CIRCUIT_ASSEMBLER_RECIPES.recipeBuilder("integrated_circuit_lv").EUt(16).duration(200)
                 .inputItems(BASIC_CIRCUIT_BOARD)
                 .inputItems(INTEGRATED_LOGIC_CIRCUIT)
-                .inputItems(component, Component.Resistor, 2)
-                .inputItems(component, Component.Diode, 2)
+                .inputItems(CustomTags.RESISTORS, 2)
+                .inputItems(CustomTags.DIODES, 2)
                 .inputItems(wireFine, Copper, 2)
                 .inputItems(bolt, Tin, 2)
                 .outputItems(INTEGRATED_CIRCUIT_LV, 2)
@@ -929,8 +928,8 @@ public class CircuitRecipes {
         CIRCUIT_ASSEMBLER_RECIPES.recipeBuilder("integrated_circuit_mv").EUt(24).duration(400)
                 .inputItems(GOOD_CIRCUIT_BOARD)
                 .inputItems(INTEGRATED_CIRCUIT_LV, 2)
-                .inputItems(component, Component.Resistor, 2)
-                .inputItems(component, Component.Diode, 2)
+                .inputItems(CustomTags.RESISTORS, 2)
+                .inputItems(CustomTags.DIODES, 2)
                 .inputItems(wireFine, Gold, 4)
                 .inputItems(bolt, Silver, 4)
                 .outputItems(INTEGRATED_CIRCUIT_MV, 2)
@@ -941,7 +940,7 @@ public class CircuitRecipes {
                 .inputItems(INTEGRATED_CIRCUIT_MV, 2)
                 .inputItems(INTEGRATED_LOGIC_CIRCUIT, 2)
                 .inputItems(RANDOM_ACCESS_MEMORY, 2)
-                .inputItems(component, Component.Transistor, 4)
+                .inputItems(CustomTags.TRANSISTORS, 4)
                 .inputItems(wireFine, Electrum, 8)
                 .inputItems(bolt, AnnealedCopper, 8)
                 .outputItems(INTEGRATED_CIRCUIT_HV)
@@ -970,9 +969,9 @@ public class CircuitRecipes {
         CIRCUIT_ASSEMBLER_RECIPES.recipeBuilder("microprocessor_lv").EUt(60).duration(200)
                 .inputItems(PLASTIC_CIRCUIT_BOARD)
                 .inputItems(CENTRAL_PROCESSING_UNIT)
-                .inputItems(component, Component.Resistor, 2)
-                .inputItems(component, Component.Capacitor, 2)
-                .inputItems(component, Component.Transistor, 2)
+                .inputItems(CustomTags.RESISTORS, 2)
+                .inputItems(CustomTags.CAPACITORS, 2)
+                .inputItems(CustomTags.TRANSISTORS, 2)
                 .inputItems(wireFine, Copper, 2)
                 .outputItems(MICROPROCESSOR_LV, 3)
                 .save(provider);
@@ -993,9 +992,9 @@ public class CircuitRecipes {
         CIRCUIT_ASSEMBLER_RECIPES.recipeBuilder("processor_mv").EUt(60).duration(200)
                 .inputItems(PLASTIC_CIRCUIT_BOARD)
                 .inputItems(CENTRAL_PROCESSING_UNIT)
-                .inputItems(component, Component.Resistor, 4)
-                .inputItems(component, Component.Capacitor, 4)
-                .inputItems(component, Component.Transistor, 4)
+                .inputItems(CustomTags.RESISTORS, 4)
+                .inputItems(CustomTags.CAPACITORS, 4)
+                .inputItems(CustomTags.TRANSISTORS, 4)
                 .inputItems(wireFine, RedAlloy, 4)
                 .outputItems(PROCESSOR_MV, 2)
                 .save(provider);
@@ -1014,8 +1013,8 @@ public class CircuitRecipes {
         CIRCUIT_ASSEMBLER_RECIPES.recipeBuilder("processor_assembly_hv").EUt(VA[MV]).duration(400)
                 .inputItems(PLASTIC_CIRCUIT_BOARD)
                 .inputItems(PROCESSOR_MV, 2)
-                .inputItems(component, Component.Inductor, 4)
-                .inputItems(component, Component.Capacitor, 8)
+                .inputItems(CustomTags.INDUCTORS, 4)
+                .inputItems(CustomTags.CAPACITORS, 8)
                 .inputItems(RANDOM_ACCESS_MEMORY, 4)
                 .inputItems(wireFine, RedAlloy, 8)
                 .outputItems(PROCESSOR_ASSEMBLY_HV, 2)
@@ -1026,7 +1025,7 @@ public class CircuitRecipes {
         CIRCUIT_ASSEMBLER_RECIPES.recipeBuilder("workstation_ev").EUt(VA[MV]).duration(400)
                 .inputItems(PLASTIC_CIRCUIT_BOARD)
                 .inputItems(PROCESSOR_ASSEMBLY_HV, 2)
-                .inputItems(component, Component.Diode, 4)
+                .inputItems(CustomTags.DIODES, 4)
                 .inputItems(RANDOM_ACCESS_MEMORY, 4)
                 .inputItems(wireFine, Electrum, 16)
                 .inputItems(bolt, BlueAlloy, 16)
@@ -1039,8 +1038,8 @@ public class CircuitRecipes {
         CIRCUIT_ASSEMBLER_RECIPES.recipeBuilder("mainframe_iv").EUt(VA[HV]).duration(800)
                 .inputItems(frameGt, Aluminium, 2)
                 .inputItems(WORKSTATION_EV, 2)
-                .inputItems(component, Component.Inductor, 8)
-                .inputItems(component, Component.Capacitor, 16)
+                .inputItems(CustomTags.INDUCTORS, 8)
+                .inputItems(CustomTags.CAPACITORS, 16)
                 .inputItems(RANDOM_ACCESS_MEMORY, 16)
                 .inputItems(wireGtSingle, AnnealedCopper, 16)
                 .outputItems(MAINFRAME_IV)
@@ -1444,7 +1443,7 @@ public class CircuitRecipes {
         // Data Orb
         CIRCUIT_ASSEMBLER_RECIPES.recipeBuilder("data_orb")
                 .inputItems(ADVANCED_CIRCUIT_BOARD)
-                .inputItems(circuit, Tier.HV, 2)
+                .inputItems(CustomTags.HV_CIRCUITS, 2)
                 .inputItems(RANDOM_ACCESS_MEMORY, 4)
                 .inputItems(NOR_MEMORY_CHIP, 32)
                 .inputItems(NAND_MEMORY_CHIP, 64)

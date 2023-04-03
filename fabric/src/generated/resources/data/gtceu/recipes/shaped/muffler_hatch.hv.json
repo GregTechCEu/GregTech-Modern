@@ -8,10 +8,10 @@
       "item": "gtceu:electric.motor.hv"
     },
     "P": {
-      "tag": "c:fluid_pipes/normal/stainless_steel"
+      "item": "gtceu:normal.stainless_steel"
     },
     "R": {
-      "tag": "c:rotors/steel"
+      "tag": "c:steel_rotors"
     }
   },
   "pattern": [

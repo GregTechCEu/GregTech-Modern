@@ -8,10 +8,10 @@
       "item": "gtceu:hull.ev"
     },
     "T": {
-      "tag": "c:fluid_pipes/large/titanium"
+      "item": "gtceu:large.titanium"
     },
     "W": {
-      "tag": "c:circuit/ev"
+      "tag": "c:ev_circuits"
     }
   },
   "pattern": [

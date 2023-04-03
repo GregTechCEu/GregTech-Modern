@@ -31,7 +31,7 @@
           "type": "gtceu:sized",
           "count": 4,
           "fabric:type": "gtceu:sized",
-          "tag": "c:plates/hsss"
+          "tag": "c:hsss_plates"
         }
       },
       {
@@ -40,7 +40,7 @@
           "type": "gtceu:sized",
           "count": 4,
           "fabric:type": "gtceu:sized",
-          "tag": "c:rings/hsss"
+          "tag": "c:hsss_rings"
         }
       },
       {
@@ -49,7 +49,7 @@
           "type": "gtceu:sized",
           "count": 16,
           "fabric:type": "gtceu:sized",
-          "tag": "c:rounds/hsss"
+          "tag": "c:hsss_rounds"
         }
       },
       {
@@ -58,7 +58,7 @@
           "type": "gtceu:sized",
           "count": 4,
           "fabric:type": "gtceu:sized",
-          "tag": "c:sticks/hsss"
+          "tag": "c:hsss_rods"
         }
       },
       {
@@ -67,7 +67,7 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "c:gears/hsss"
+          "tag": "c:hsss_gears"
         }
       },
       {
@@ -76,7 +76,7 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "c:gears/small/hsss"
+          "tag": "c:hsss_small_gears"
         }
       },
       {
@@ -85,7 +85,9 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "c:cables/single/niobium_titanium"
+          "ingredient": {
+            "item": "gtceu:cable_single.niobium_titanium"
+          }
         }
       }
     ]

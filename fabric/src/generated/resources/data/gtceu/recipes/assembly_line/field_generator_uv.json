@@ -25,7 +25,7 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "c:frames/tritanium"
+          "tag": "c:tritanium_frames"
         }
       },
       {
@@ -34,7 +34,7 @@
           "type": "gtceu:sized",
           "count": 6,
           "fabric:type": "gtceu:sized",
-          "tag": "c:plates/tritanium"
+          "tag": "c:tritanium_plates"
         }
       },
       {
@@ -60,7 +60,7 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "c:circuit/uv"
+          "tag": "c:uv_circuits"
         }
       },
       {
@@ -69,7 +69,7 @@
           "type": "gtceu:sized",
           "count": 64,
           "fabric:type": "gtceu:sized",
-          "tag": "c:wires/fine/enriched_naquadah_trinium_europium_duranide"
+          "tag": "c:enriched_naquadah_trinium_europium_duranide_fine_wires"
         }
       },
       {
@@ -78,7 +78,7 @@
           "type": "gtceu:sized",
           "count": 64,
           "fabric:type": "gtceu:sized",
-          "tag": "c:wires/fine/enriched_naquadah_trinium_europium_duranide"
+          "tag": "c:enriched_naquadah_trinium_europium_duranide_fine_wires"
         }
       },
       {
@@ -87,7 +87,9 @@
           "type": "gtceu:sized",
           "count": 4,
           "fabric:type": "gtceu:sized",
-          "tag": "c:cables/single/yttrium_barium_cuprate"
+          "ingredient": {
+            "item": "gtceu:cable_single.yttrium_barium_cuprate"
+          }
         }
       }
     ]

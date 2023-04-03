@@ -5,7 +5,7 @@
       "item": "gtceu:robot.arm.luv"
     },
     "C": {
-      "tag": "c:circuit/luv"
+      "tag": "c:luv_circuits"
     },
     "M": {
       "item": "gtceu:hull.luv"
@@ -14,7 +14,7 @@
       "item": "gtceu:conveyor.module.luv"
     },
     "W": {
-      "tag": "c:cables/single/niobium_titanium"
+      "item": "gtceu:cable_single.niobium_titanium"
     }
   },
   "pattern": [

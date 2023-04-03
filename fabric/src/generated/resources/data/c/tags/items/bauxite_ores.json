@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:deepslate_bauxite",
+    "gtceu:sand_bauxite",
+    "gtceu:basalt_bauxite",
+    "gtceu:granite_bauxite",
+    "gtceu:andesite_bauxite",
+    "gtceu:red_sand_bauxite",
+    "gtceu:stone_bauxite",
+    "gtceu:diorite_bauxite"
+  ]
+}

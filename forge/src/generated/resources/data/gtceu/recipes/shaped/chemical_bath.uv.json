@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "forge:circuit/uv"
+      "tag": "forge:uv_circuits"
     },
     "G": {
       "tag": "forge:glass"
@@ -17,7 +17,7 @@
       "item": "gtceu:conveyor.module.uv"
     },
     "W": {
-      "tag": "forge:cables/single/yttrium_barium_cuprate"
+      "item": "gtceu:cable_single.yttrium_barium_cuprate"
     }
   },
   "pattern": [

@@ -5,13 +5,13 @@
       "item": "gtceu:quantumstar"
     },
     "P": {
-      "tag": "c:plates/double/tungsten_steel"
+      "tag": "c:tungsten_steel_double_plates"
     },
     "W": {
-      "tag": "c:wires/quadruple/samarium_iron_arsenic_oxide"
+      "item": "gtceu:wire_quadruple.samarium_iron_arsenic_oxide"
     },
     "X": {
-      "tag": "c:circuit/iv"
+      "tag": "c:iv_circuits"
     }
   },
   "pattern": [

@@ -11,13 +11,13 @@
       "item": "gtceu:hull.lv"
     },
     "I": {
-      "tag": "c:circuit/mv"
+      "tag": "c:mv_circuits"
     },
     "R": {
       "item": "gtceu:robot.arm.lv"
     },
     "W": {
-      "tag": "c:cables/single/tin"
+      "item": "gtceu:cable_single.tin"
     }
   },
   "pattern": [

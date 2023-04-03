@@ -9,7 +9,9 @@
           "type": "gtceu:sized",
           "count": 3,
           "fabric:type": "gtceu:sized",
-          "tag": "forge:cables/single/gold"
+          "ingredient": {
+            "item": "gtceu:cable_single.gold"
+          }
         }
       },
       {
@@ -18,7 +20,7 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "forge:sticks/stainless_steel"
+          "tag": "forge:rods/stainless_steel"
         }
       },
       {
@@ -44,7 +46,7 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "forge:circuit/hv"
+          "tag": "forge:hv_circuits"
         }
       }
     ]

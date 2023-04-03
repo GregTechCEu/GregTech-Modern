@@ -5,7 +5,7 @@
       "item": "minecraft:bricks"
     },
     "P": {
-      "tag": "c:plates/wrought_iron"
+      "tag": "c:wrought_iron_plates"
     },
     "h": {
       "tag": "c:tool/hammer"

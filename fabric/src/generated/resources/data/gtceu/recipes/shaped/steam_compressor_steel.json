@@ -5,13 +5,13 @@
       "item": "gtceu:steam_compressor.bronze"
     },
     "P": {
-      "tag": "c:fluid_pipes/small/tin_alloy"
+      "item": "gtceu:small.tin_alloy"
     },
     "S": {
-      "tag": "c:plates/steel"
+      "tag": "c:steel_plates"
     },
     "W": {
-      "tag": "c:plates/wrought_iron"
+      "tag": "c:wrought_iron_plates"
     }
   },
   "pattern": [

@@ -2,16 +2,16 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "G": {
-      "tag": "c:gems/ender_eye"
+      "tag": "c:ender_eye_gems"
     },
     "P": {
-      "tag": "c:plates/stainless_steel"
+      "tag": "c:stainless_steel_plates"
     },
     "R": {
-      "tag": "c:sticks/chrome"
+      "tag": "c:chrome_rods"
     },
     "X": {
-      "tag": "c:circuit/hv"
+      "tag": "c:hv_circuits"
     }
   },
   "pattern": [

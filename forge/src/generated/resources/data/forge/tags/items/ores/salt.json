@@ -1,13 +1,12 @@
 {
   "values": [
-    "gtceu:ore_salt",
-    "gtceu:ore_basalt_salt",
-    "gtceu:ore_sand_salt",
-    "gtceu:ore_granite_salt",
-    "gtceu:ore_andesite_salt",
-    "gtceu:ore_endstone_salt",
-    "gtceu:ore_red_sand_salt",
-    "gtceu:ore_netherrack_salt",
-    "gtceu:ore_diorite_salt"
+    "gtceu:deepslate_salt",
+    "gtceu:sand_salt",
+    "gtceu:basalt_salt",
+    "gtceu:granite_salt",
+    "gtceu:andesite_salt",
+    "gtceu:red_sand_salt",
+    "gtceu:stone_salt",
+    "gtceu:diorite_salt"
   ]
 }

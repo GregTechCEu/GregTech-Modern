@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:circuit/luv"
+      "tag": "c:luv_circuits"
     },
     "E": {
       "item": "gtceu:electric.motor.luv"
@@ -11,10 +11,10 @@
       "item": "gtceu:hull.luv"
     },
     "O": {
-      "tag": "c:wires/quadruple/hssg"
+      "item": "gtceu:wire_quadruple.hssg"
     },
     "W": {
-      "tag": "c:cables/single/niobium_titanium"
+      "item": "gtceu:cable_single.niobium_titanium"
     }
   },
   "pattern": [

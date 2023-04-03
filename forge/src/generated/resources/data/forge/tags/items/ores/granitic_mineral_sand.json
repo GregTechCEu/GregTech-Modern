@@ -1,13 +1,12 @@
 {
   "values": [
-    "gtceu:ore_granitic_mineral_sand",
-    "gtceu:ore_basalt_granitic_mineral_sand",
-    "gtceu:ore_sand_granitic_mineral_sand",
-    "gtceu:ore_granite_granitic_mineral_sand",
-    "gtceu:ore_andesite_granitic_mineral_sand",
-    "gtceu:ore_endstone_granitic_mineral_sand",
-    "gtceu:ore_red_sand_granitic_mineral_sand",
-    "gtceu:ore_netherrack_granitic_mineral_sand",
-    "gtceu:ore_diorite_granitic_mineral_sand"
+    "gtceu:deepslate_granitic_mineral_sand",
+    "gtceu:sand_granitic_mineral_sand",
+    "gtceu:basalt_granitic_mineral_sand",
+    "gtceu:granite_granitic_mineral_sand",
+    "gtceu:andesite_granitic_mineral_sand",
+    "gtceu:red_sand_granitic_mineral_sand",
+    "gtceu:stone_granitic_mineral_sand",
+    "gtceu:diorite_granitic_mineral_sand"
   ]
 }

@@ -1,0 +1,14 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:redstone_ore",
+    "gtceu:stone_redstone",
+    "gtceu:deepslate_redstone",
+    "gtceu:sand_redstone",
+    "gtceu:basalt_redstone",
+    "gtceu:granite_redstone",
+    "gtceu:andesite_redstone",
+    "gtceu:red_sand_redstone",
+    "gtceu:diorite_redstone"
+  ]
+}

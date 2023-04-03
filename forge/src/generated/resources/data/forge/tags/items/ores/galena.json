@@ -1,13 +1,12 @@
 {
   "values": [
-    "gtceu:ore_galena",
-    "gtceu:ore_basalt_galena",
-    "gtceu:ore_sand_galena",
-    "gtceu:ore_granite_galena",
-    "gtceu:ore_andesite_galena",
-    "gtceu:ore_endstone_galena",
-    "gtceu:ore_red_sand_galena",
-    "gtceu:ore_netherrack_galena",
-    "gtceu:ore_diorite_galena"
+    "gtceu:deepslate_galena",
+    "gtceu:sand_galena",
+    "gtceu:basalt_galena",
+    "gtceu:granite_galena",
+    "gtceu:andesite_galena",
+    "gtceu:red_sand_galena",
+    "gtceu:stone_galena",
+    "gtceu:diorite_galena"
   ]
 }

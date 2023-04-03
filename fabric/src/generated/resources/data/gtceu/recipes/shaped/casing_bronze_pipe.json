@@ -2,13 +2,13 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "F": {
-      "tag": "c:frames/bronze"
+      "tag": "c:bronze_frames"
     },
     "I": {
-      "tag": "c:fluid_pipes/normal/bronze"
+      "item": "gtceu:normal.bronze"
     },
     "P": {
-      "tag": "c:plates/bronze"
+      "tag": "c:bronze_plates"
     }
   },
   "pattern": [

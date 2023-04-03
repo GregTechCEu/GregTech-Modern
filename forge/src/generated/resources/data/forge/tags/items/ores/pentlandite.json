@@ -1,13 +1,12 @@
 {
   "values": [
-    "gtceu:ore_pentlandite",
-    "gtceu:ore_basalt_pentlandite",
-    "gtceu:ore_sand_pentlandite",
-    "gtceu:ore_granite_pentlandite",
-    "gtceu:ore_andesite_pentlandite",
-    "gtceu:ore_endstone_pentlandite",
-    "gtceu:ore_red_sand_pentlandite",
-    "gtceu:ore_netherrack_pentlandite",
-    "gtceu:ore_diorite_pentlandite"
+    "gtceu:deepslate_pentlandite",
+    "gtceu:sand_pentlandite",
+    "gtceu:basalt_pentlandite",
+    "gtceu:granite_pentlandite",
+    "gtceu:andesite_pentlandite",
+    "gtceu:red_sand_pentlandite",
+    "gtceu:stone_pentlandite",
+    "gtceu:diorite_pentlandite"
   ]
 }

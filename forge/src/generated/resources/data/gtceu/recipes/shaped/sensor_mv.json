@@ -8,10 +8,10 @@
       "tag": "forge:plates/aluminium"
     },
     "R": {
-      "tag": "forge:sticks/electrum"
+      "tag": "forge:rods/electrum"
     },
     "X": {
-      "tag": "forge:circuit/mv"
+      "tag": "forge:mv_circuits"
     }
   },
   "pattern": [

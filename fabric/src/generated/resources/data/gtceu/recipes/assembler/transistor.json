@@ -18,7 +18,7 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "c:plates/silicon"
+          "tag": "c:silicon_plates"
         }
       },
       {
@@ -27,7 +27,7 @@
           "type": "gtceu:sized",
           "count": 6,
           "fabric:type": "gtceu:sized",
-          "tag": "c:wires/fine/tin"
+          "tag": "c:tin_fine_wires"
         }
       }
     ]

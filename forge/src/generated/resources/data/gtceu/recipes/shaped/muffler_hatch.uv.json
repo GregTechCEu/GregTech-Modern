@@ -8,7 +8,7 @@
       "item": "gtceu:electric.motor.uv"
     },
     "P": {
-      "tag": "forge:fluid_pipes/normal/naquadah"
+      "item": "gtceu:normal.naquadah"
     },
     "R": {
       "tag": "forge:rotors/darmstadtium"

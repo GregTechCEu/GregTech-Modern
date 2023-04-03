@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "D": {
-      "tag": "c:gems/diamond"
+      "tag": "c:diamond_gems"
     },
     "M": {
       "item": "gtceu:steam_casing_bronze"
@@ -11,7 +11,7 @@
       "tag": "c:pistons"
     },
     "X": {
-      "tag": "c:fluid_pipes/small/bronze"
+      "item": "gtceu:small.bronze"
     }
   },
   "pattern": [

@@ -4,13 +4,13 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
-import com.gregtechceu.gtceu.api.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.data.recipe.LoaderTags;
+import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.tags.ItemTags;
@@ -21,8 +21,9 @@ import net.minecraft.world.level.block.Blocks;
 import java.util.function.Consumer;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
-import static com.gregtechceu.gtceu.api.tag.TagPrefix.*;
-import static com.gregtechceu.gtceu.common.data.GTItems.STICKY_RESIN;
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
+import static com.gregtechceu.gtceu.common.data.GTItems.*;
+import static com.gregtechceu.gtceu.common.data.GTItems.COMPRESSED_CLAY;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.ASSEMBLER_RECIPES;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.LATHE_RECIPES;
@@ -36,7 +37,7 @@ public class RecipeAddition {
         hardToolArmorRecipes(provider);
         harderRods(provider);
         nerfWoodCrafting(provider);
-        if (ConfigHolder.recipes.harderBrickRecipes) harderBrickRecipes(provider);
+        harderBrickRecipes(provider);
         if (ConfigHolder.recipes.hardWoodRecipes) hardWoodRecipes(provider);
         if (ConfigHolder.recipes.hardIronRecipes) hardIronRecipes(provider);
         if (ConfigHolder.recipes.hardGlassRecipes) hardGlassRecipes(provider);
@@ -55,17 +56,43 @@ public class RecipeAddition {
     }
 
     private static void harderBrickRecipes(Consumer<FinishedRecipe> provider) {
-        VanillaRecipeHelper.addShapedRecipe(provider, "brick_from_water", new ItemStack(Blocks.BRICKS, 2), "BBB", "BWB", "BBB",
-                'B', new ItemStack(Items.BRICK),
-                'W', new ItemStack(Items.WATER_BUCKET));
+        if (ConfigHolder.recipes.harderBrickRecipes) {
+            VanillaRecipeHelper.addShapedRecipe(provider, "brick_from_water", new ItemStack(Blocks.BRICKS, 2), "BBB", "BWB", "BBB",
+                    'B', new ItemStack(Items.BRICK),
+                    'W', new ItemStack(Items.WATER_BUCKET));
+
+            VanillaRecipeHelper.addShapedRecipe(provider, "bucket_of_concrete", new ItemStack(Concrete.getBucket()),
+                    "CBS", "CWQ", " L ",
+                    'C', new UnificationEntry(dust, Calcite),
+                    'S', new UnificationEntry(dust, Stone),
+                    'W', new ItemStack(Items.WATER_BUCKET),
+                    'Q', new UnificationEntry(dust, QuartzSand),
+                    'L', new UnificationEntry(dust, Clay),
+                    'B', new ItemStack(Items.BUCKET));
+
+            VanillaRecipeHelper.addShapedRecipe(provider, "casing_primitive_bricks", GTBlocks.CASING_PRIMITIVE_BRICKS.asStack(),
+                    "BGB", "BCB", "BGB",
+                    'B', GTItems.FIRECLAY_BRICK.asStack(),
+                    'G', new UnificationEntry(dust, Gypsum),
+                    'C', new ItemStack(Concrete.getBucket()));
+
+            VanillaRecipeHelper.addShapelessRecipe(provider, "compressed_clay", COMPRESSED_CLAY.asStack(), WOODEN_FORM_BRICK.asStack(), new ItemStack(Items.CLAY_BALL));
+            VanillaRecipeHelper.addSmeltingRecipe(provider, "brick_from_compressed_clay", COMPRESSED_CLAY.asStack(), new ItemStack(Items.BRICK), 0.3f);
+        } else {
+            VanillaRecipeHelper.addShapedRecipe(provider, "casing_primitive_bricks", GTBlocks.CASING_PRIMITIVE_BRICKS.asStack(),
+                    "XX", "XX",
+                    'X', GTItems.FIRECLAY_BRICK);
+        }
     }
 
     private static void nerfWoodCrafting(Consumer<FinishedRecipe> provider) {
         if (ConfigHolder.recipes.nerfWoodCrafting) {
             VanillaRecipeHelper.addShapedRecipe(provider, "stick_saw", new ItemStack(Items.STICK, 4), "s", "P", "P", 'P', ItemTags.PLANKS);
             VanillaRecipeHelper.addShapedRecipe(provider, "stick_normal", new ItemStack(Items.STICK, 2), "P", "P", 'P', ItemTags.PLANKS);
+            VanillaRecipeHelper.addShapedRecipe(provider, "treated_wood_stick_saw", ChemicalHelper.get(rod, TreatedWood, 4), "s", "P", "P", 'P', GTBlocks.TREATED_WOOD_PLANK.asStack());
+            VanillaRecipeHelper.addShapedRecipe(provider, "treated_wood_stick_normal", ChemicalHelper.get(rod, TreatedWood, 2), "P", "P", 'P', GTBlocks.TREATED_WOOD_PLANK.asStack());
         } else {
-            VanillaRecipeHelper.addShapedRecipe(provider, "treated_wood_stick", ChemicalHelper.get(stick, TreatedWood, 4), "L", "L", 'L', GTBlocks.TREATED_WOOD_PLANK.asStack());
+            VanillaRecipeHelper.addShapedRecipe(provider, "treated_wood_stick_normal", ChemicalHelper.get(rod, TreatedWood, 4), "L", "L", 'L', GTBlocks.TREATED_WOOD_PLANK.asStack());
         }
     }
 
@@ -303,13 +330,13 @@ public class RecipeAddition {
 
         VanillaRecipeHelper.addShapedRecipe(provider, "hopper", new ItemStack(Blocks.HOPPER), "XCX", "XGX", "wXh",
                 'X', new UnificationEntry(TagPrefix.plate, GTMaterials.Iron),
-                'C', LoaderTags.TAG_WOODEN_CHESTS,
+                'C', CustomTags.TAG_WOODEN_CHESTS,
                 'G', new UnificationEntry(TagPrefix.gearSmall, GTMaterials.Iron)
         );
 
 
         VanillaRecipeHelper.addShapedRecipe(provider, "iron_bars", new ItemStack(Blocks.IRON_BARS, 8), " h ", "XXX", "XXX",
-                'X', new UnificationEntry(TagPrefix.stick, GTMaterials.Iron)
+                'X', new UnificationEntry(TagPrefix.rod, GTMaterials.Iron)
         );
 
         VanillaRecipeHelper.addShapedRecipe(provider, "iron_bucket", new ItemStack(Items.BUCKET), "XhX", " X ", 'X', new UnificationEntry(TagPrefix.plate, GTMaterials.Iron));
@@ -323,14 +350,14 @@ public class RecipeAddition {
                     'S', new UnificationEntry(TagPrefix.spring, GTMaterials.Iron),
                     'T', new ItemStack(Items.STRING),
                     'G', new UnificationEntry(TagPrefix.gearSmall, GTMaterials.Iron),
-                    'A', new UnificationEntry(TagPrefix.stick, GTMaterials.RedAlloy));
+                    'A', new UnificationEntry(TagPrefix.rod, GTMaterials.RedAlloy));
 
             GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder("dispenser").duration(100).EUt(VA[LV])
                     .inputItems(ItemTags.STONE_CRAFTING_MATERIALS, 2)
                     .inputItems(TagPrefix.ring, GTMaterials.Iron)
                     .inputItems(TagPrefix.spring, GTMaterials.Iron, 2)
                     .inputItems(TagPrefix.gearSmall, GTMaterials.Iron, 2)
-                    .inputItems(TagPrefix.stick, GTMaterials.RedAlloy)
+                    .inputItems(TagPrefix.rod, GTMaterials.RedAlloy)
                     .inputItems(new ItemStack(Items.STRING))
                     .outputItems(new ItemStack(Blocks.DISPENSER))
                     .save(provider);
@@ -349,7 +376,7 @@ public class RecipeAddition {
             );
 
             GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder("piston_iron")
-                    .inputItems(TagPrefix.stick, GTMaterials.Iron)
+                    .inputItems(TagPrefix.rod, GTMaterials.Iron)
                     .inputItems(TagPrefix.gearSmall, GTMaterials.Iron)
                     .inputItems(ItemTags.WOODEN_SLABS)
                     .inputItems(ItemTags.STONE_CRAFTING_MATERIALS)
@@ -358,7 +385,7 @@ public class RecipeAddition {
                     .duration(240).EUt(VA[ULV]).save(provider);
 
             GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder("piston_steel")
-                    .inputItems(TagPrefix.stick, GTMaterials.Steel)
+                    .inputItems(TagPrefix.rod, GTMaterials.Steel)
                     .inputItems(TagPrefix.gearSmall, GTMaterials.Steel)
                     .inputItems(ItemTags.WOODEN_SLABS, 2)
                     .inputItems(ItemTags.STONE_CRAFTING_MATERIALS, 2)
@@ -367,7 +394,7 @@ public class RecipeAddition {
                     .duration(240).EUt(16).save(provider);
 
             GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder("piston_aluminium")
-                    .inputItems(TagPrefix.stick, GTMaterials.Aluminium)
+                    .inputItems(TagPrefix.rod, GTMaterials.Aluminium)
                     .inputItems(TagPrefix.gearSmall, GTMaterials.Aluminium)
                     .inputItems(ItemTags.WOODEN_SLABS, 4)
                     .inputItems(ItemTags.STONE_CRAFTING_MATERIALS, 4)
@@ -376,7 +403,7 @@ public class RecipeAddition {
                     .duration(240).EUt(VA[LV]).save(provider);
 
             GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder("piston_stainless_steel")
-                    .inputItems(TagPrefix.stick, GTMaterials.StainlessSteel)
+                    .inputItems(TagPrefix.rod, GTMaterials.StainlessSteel)
                     .inputItems(TagPrefix.gearSmall, GTMaterials.StainlessSteel)
                     .inputItems(ItemTags.WOODEN_SLABS, 8)
                     .inputItems(ItemTags.STONE_CRAFTING_MATERIALS, 8)
@@ -385,7 +412,7 @@ public class RecipeAddition {
                     .duration(600).EUt(VA[LV]).save(provider);
 
             GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder("piston_titanium")
-                    .inputItems(TagPrefix.stick, GTMaterials.Titanium)
+                    .inputItems(TagPrefix.rod, GTMaterials.Titanium)
                     .inputItems(TagPrefix.gearSmall, GTMaterials.Titanium)
                     .inputItems(ItemTags.WOODEN_SLABS, 16)
                     .inputItems(ItemTags.STONE_CRAFTING_MATERIALS, 16)
@@ -627,27 +654,27 @@ public class RecipeAddition {
                     'G', new ItemStack(Blocks.GLASS),
                     'P', new UnificationEntry(TagPrefix.plate, GTMaterials.NetherQuartz),
                     'S', ItemTags.WOODEN_SLABS,
-                    'R', new UnificationEntry(TagPrefix.stick, GTMaterials.RedAlloy)
+                    'R', new UnificationEntry(TagPrefix.rod, GTMaterials.RedAlloy)
             );
 
             VanillaRecipeHelper.addShapedRecipe(provider, "daylight_detector_certus", new ItemStack(Blocks.DAYLIGHT_DETECTOR), "GGG", "PPP", "SRS",
                     'G', new ItemStack(Blocks.GLASS),
                     'P', new UnificationEntry(TagPrefix.plate, GTMaterials.CertusQuartz),
                     'S', ItemTags.WOODEN_SLABS,
-                    'R', new UnificationEntry(TagPrefix.stick, GTMaterials.RedAlloy)
+                    'R', new UnificationEntry(TagPrefix.rod, GTMaterials.RedAlloy)
             );
 
             VanillaRecipeHelper.addShapedRecipe(provider, "daylight_detector_quartzite", new ItemStack(Blocks.DAYLIGHT_DETECTOR), "GGG", "PPP", "SRS",
                     'G', new ItemStack(Blocks.GLASS, 1),
                     'P', new UnificationEntry(TagPrefix.plate, GTMaterials.Quartzite),
                     'S', ItemTags.WOODEN_SLABS,
-                    'R', new UnificationEntry(TagPrefix.stick, GTMaterials.RedAlloy)
+                    'R', new UnificationEntry(TagPrefix.rod, GTMaterials.RedAlloy)
             );
 
             VanillaRecipeHelper.addShapedRecipe(provider, "redstone_lamp", new ItemStack(Blocks.REDSTONE_LAMP), "PPP", "PGP", "PRP",
                     'P', new ItemStack(Blocks.GLASS_PANE),
                     'G', new ItemStack(Blocks.GLOWSTONE),
-                    'R', new UnificationEntry(TagPrefix.stick, GTMaterials.RedAlloy)
+                    'R', new UnificationEntry(TagPrefix.rod, GTMaterials.RedAlloy)
             );
 
             VanillaRecipeHelper.addShapedRecipe(provider, "tripwire_hook", new ItemStack(Blocks.TRIPWIRE_HOOK), "IRI", "SRS", " S ",
@@ -662,7 +689,7 @@ public class RecipeAddition {
                     'S', new UnificationEntry(TagPrefix.springSmall, GTMaterials.Iron),
                     'T', new ItemStack(Items.STRING),
                     'G', new UnificationEntry(TagPrefix.gearSmall, GTMaterials.Iron),
-                    'A', new UnificationEntry(TagPrefix.stick, GTMaterials.RedAlloy)
+                    'A', new UnificationEntry(TagPrefix.rod, GTMaterials.RedAlloy)
             );
 
             VanillaRecipeHelper.addShapedRecipe(provider, "observer", new ItemStack(Blocks.OBSERVER), "RCR", "CQC", "GSG",
@@ -670,7 +697,7 @@ public class RecipeAddition {
                     'C', ItemTags.STONE_CRAFTING_MATERIALS,
                     'Q', new UnificationEntry(TagPrefix.plate, GTMaterials.NetherQuartz),
                     'G', new UnificationEntry(TagPrefix.gearSmall, GTMaterials.Iron),
-                    'S', new UnificationEntry(TagPrefix.stick, GTMaterials.RedAlloy)
+                    'S', new UnificationEntry(TagPrefix.rod, GTMaterials.RedAlloy)
             );
 
             VanillaRecipeHelper.addShapedRecipe(provider, "observer_certus", new ItemStack(Blocks.OBSERVER), "RCR", "CQC", "GSG",
@@ -678,7 +705,7 @@ public class RecipeAddition {
                     'C', ItemTags.STONE_CRAFTING_MATERIALS,
                     'Q', new UnificationEntry(TagPrefix.plate, GTMaterials.CertusQuartz),
                     'G', new UnificationEntry(TagPrefix.gearSmall, GTMaterials.Iron),
-                    'S', new UnificationEntry(TagPrefix.stick, GTMaterials.RedAlloy)
+                    'S', new UnificationEntry(TagPrefix.rod, GTMaterials.RedAlloy)
             );
 
             VanillaRecipeHelper.addShapedRecipe(provider, "observer_quartzite", new ItemStack(Blocks.OBSERVER), "RCR", "CQC", "GSG",
@@ -686,14 +713,14 @@ public class RecipeAddition {
                     'C', ItemTags.STONE_CRAFTING_MATERIALS,
                     'Q', new UnificationEntry(TagPrefix.plate, GTMaterials.Quartzite),
                     'G', new UnificationEntry(TagPrefix.gearSmall, GTMaterials.Iron),
-                    'S', new UnificationEntry(TagPrefix.stick, GTMaterials.RedAlloy)
+                    'S', new UnificationEntry(TagPrefix.rod, GTMaterials.RedAlloy)
             );
 
             VanillaRecipeHelper.addShapedRecipe(provider, "repeater", new ItemStack(Items.REPEATER), "S S", "TdT", "PRP",
                     'S', new UnificationEntry(TagPrefix.screw, GTMaterials.Iron),
                     'T', new ItemStack(Blocks.REDSTONE_TORCH),
                     'P', new ItemStack(Blocks.STONE_PRESSURE_PLATE),
-                    'R', new UnificationEntry(TagPrefix.stick, GTMaterials.RedAlloy)
+                    'R', new UnificationEntry(TagPrefix.rod, GTMaterials.RedAlloy)
             );
 
             VanillaRecipeHelper.addShapedRecipe(provider, "comparator", new ItemStack(Items.COMPARATOR), "STS", "TQT", "PdP",
@@ -720,28 +747,28 @@ public class RecipeAddition {
             VanillaRecipeHelper.addShapedRecipe(provider, "powered_rail", new ItemStack(Blocks.POWERED_RAIL, 6), "SPS", "IWI", "GdG",
                     'S', new UnificationEntry(TagPrefix.screw, GTMaterials.Steel),
                     'P', new UnificationEntry(TagPrefix.plate, GTMaterials.RedAlloy),
-                    'I', new UnificationEntry(TagPrefix.stick, GTMaterials.Iron),
+                    'I', new UnificationEntry(TagPrefix.rod, GTMaterials.Iron),
                     'W', new ItemStack(Items.STICK),
-                    'G', new UnificationEntry(TagPrefix.stick, GTMaterials.Gold)
+                    'G', new UnificationEntry(TagPrefix.rod, GTMaterials.Gold)
             );
 
             VanillaRecipeHelper.addShapedRecipe(provider, "detector_rail", new ItemStack(Blocks.DETECTOR_RAIL, 6), "SPS", "IWI", "IdI",
                     'S', new UnificationEntry(TagPrefix.screw, GTMaterials.Iron),
                     'P', new ItemStack(Blocks.HEAVY_WEIGHTED_PRESSURE_PLATE),
-                    'I', new UnificationEntry(TagPrefix.stick, GTMaterials.Iron),
+                    'I', new UnificationEntry(TagPrefix.rod, GTMaterials.Iron),
                     'W', new ItemStack(Items.STICK)
             );
 
             VanillaRecipeHelper.addShapedRecipe(provider, "rail", new ItemStack(Blocks.RAIL, 8), "ShS", "IWI", "IdI",
                     'S', new UnificationEntry(TagPrefix.screw, GTMaterials.Iron),
-                    'I', new UnificationEntry(TagPrefix.stick, GTMaterials.Iron),
+                    'I', new UnificationEntry(TagPrefix.rod, GTMaterials.Iron),
                     'W', new ItemStack(Items.STICK)
             );
 
             VanillaRecipeHelper.addShapedRecipe(provider, "activator_rail", new ItemStack(Blocks.ACTIVATOR_RAIL, 6), "SPS", "IWI", "IdI",
                     'S', new UnificationEntry(TagPrefix.screw, GTMaterials.Iron),
                     'P', new ItemStack(Blocks.REDSTONE_TORCH),
-                    'I', new UnificationEntry(TagPrefix.stick, GTMaterials.Iron),
+                    'I', new UnificationEntry(TagPrefix.rod, GTMaterials.Iron),
                     'W', new ItemStack(Items.STICK)
             );
 
@@ -876,7 +903,7 @@ public class RecipeAddition {
 
 
             VanillaRecipeHelper.addShapedRecipe(provider, "fishing_rod", new ItemStack(Items.FISHING_ROD), "  S", " SL", "SxR",
-                    'S', new UnificationEntry(TagPrefix.stickLong, GTMaterials.Wood),
+                    'S', new UnificationEntry(TagPrefix.rodLong, GTMaterials.Wood),
                     'L', new ItemStack(Items.STRING),
                     'R', new UnificationEntry(TagPrefix.ring, GTMaterials.Iron)
             );
@@ -910,8 +937,8 @@ public class RecipeAddition {
 
             VanillaRecipeHelper.addShapedRecipe(provider, "shield", new ItemStack(Items.SHIELD), "BRB", "LPL", "BRB",
                     'B', new UnificationEntry(TagPrefix.bolt, GTMaterials.Iron),
-                    'R', new UnificationEntry(TagPrefix.stick, GTMaterials.Iron),
-                    'L', new UnificationEntry(TagPrefix.stickLong, GTMaterials.Iron),
+                    'R', new UnificationEntry(TagPrefix.rod, GTMaterials.Iron),
+                    'L', new UnificationEntry(TagPrefix.rodLong, GTMaterials.Iron),
                     'P', new UnificationEntry(TagPrefix.plate, GTMaterials.Wood)
             );
         } else {
@@ -934,27 +961,27 @@ public class RecipeAddition {
         if (ConfigHolder.recipes.harderRods) {
             LATHE_RECIPES.recipeBuilder("stone_rod_from_cobblestone")
                     .inputItems(ItemTags.STONE_CRAFTING_MATERIALS)
-                    .outputItems(stick, Stone, 1)
+                    .outputItems(rod, Stone, 1)
                     .outputItems(dustSmall, Stone, 2)
                     .duration(20).EUt(VA[ULV])
                     .save(provider);
 
             LATHE_RECIPES.recipeBuilder("stone_rod_from_stone")
                     .inputItems(new ItemStack(Blocks.STONE))
-                    .outputItems(stick, Stone, 1)
+                    .outputItems(rod, Stone, 1)
                     .outputItems(dustSmall, Stone, 2)
                     .duration(20).EUt(VA[ULV])
                     .save(provider);
         } else {
             LATHE_RECIPES.recipeBuilder("stone_rod_from_cobblestone")
                     .inputItems(ItemTags.STONE_CRAFTING_MATERIALS)
-                    .outputItems(stick, Stone, 2)
+                    .outputItems(rod, Stone, 2)
                     .duration(20).EUt(VA[ULV])
                     .save(provider);
 
             LATHE_RECIPES.recipeBuilder("stone_rod_from_stone")
                     .inputItems(new ItemStack(Blocks.STONE))
-                    .outputItems(stick, Stone, 2)
+                    .outputItems(rod, Stone, 2)
                     .duration(20).EUt(VA[ULV])
                     .save(provider);
         }
@@ -984,8 +1011,8 @@ public class RecipeAddition {
 
             VanillaRecipeHelper.addShapedRecipe(provider, "brewing_stand", new ItemStack(Items.BREWING_STAND), "RBR", "ABA", "SCS",
                     'R', new UnificationEntry(TagPrefix.ring, GTMaterials.Aluminium),
-                    'B', new UnificationEntry(TagPrefix.stick, GTMaterials.Blaze),
-                    'A', new UnificationEntry(TagPrefix.stick, GTMaterials.Aluminium),
+                    'B', new UnificationEntry(TagPrefix.rod, GTMaterials.Blaze),
+                    'A', new UnificationEntry(TagPrefix.rod, GTMaterials.Aluminium),
                     'S', new UnificationEntry(TagPrefix.screw, GTMaterials.Aluminium),
                     'C', new ItemStack(Items.CAULDRON)
             );
@@ -1019,13 +1046,13 @@ public class RecipeAddition {
                     'P', new UnificationEntry(TagPrefix.plate, GTMaterials.Wood),
                     'B', new ItemStack(Blocks.IRON_BARS),
                     'G', new UnificationEntry(TagPrefix.gear, GTMaterials.Wood),
-                    'R', new UnificationEntry(TagPrefix.stick, GTMaterials.RedAlloy)
+                    'R', new UnificationEntry(TagPrefix.rod, GTMaterials.RedAlloy)
             );
 
             GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder("note_block")
                     .inputItems(TagPrefix.plate, GTMaterials.Wood, 4)
                     .inputItems(TagPrefix.gear, GTMaterials.Wood)
-                    .inputItems(TagPrefix.stick, GTMaterials.RedAlloy)
+                    .inputItems(TagPrefix.rod, GTMaterials.RedAlloy)
                     .inputItems(new ItemStack(Blocks.IRON_BARS, 2))
                     .outputItems(new ItemStack(Blocks.NOTE_BLOCK))
                     .duration(100).EUt(16).save(provider);
@@ -1061,7 +1088,7 @@ public class RecipeAddition {
             );
 
             VanillaRecipeHelper.addShapedRecipe(provider, "bow", new ItemStack(Items.BOW), "hLS", "LRS", "fLS",
-                    'L', new UnificationEntry(TagPrefix.stickLong, GTMaterials.Wood),
+                    'L', new UnificationEntry(TagPrefix.rodLong, GTMaterials.Wood),
                     'S', new ItemStack(Items.STRING),
                     'R', new UnificationEntry(TagPrefix.ring, GTMaterials.Iron));
 
@@ -1080,7 +1107,7 @@ public class RecipeAddition {
                     'C', ItemTags.WOOL_CARPETS);
 
 
-            VanillaRecipeHelper.addShapedRecipe(provider, "chest_minecart", new ItemStack(Items.CHEST_MINECART), "hIw", " M ", " d ", 'I', LoaderTags.TAG_WOODEN_CHESTS, 'M', new ItemStack(Items.MINECART));
+            VanillaRecipeHelper.addShapedRecipe(provider, "chest_minecart", new ItemStack(Items.CHEST_MINECART), "hIw", " M ", " d ", 'I', CustomTags.TAG_WOODEN_CHESTS, 'M', new ItemStack(Items.MINECART));
             VanillaRecipeHelper.addShapedRecipe(provider, "furnace_minecart", new ItemStack(Items.FURNACE_MINECART), "hIw", " M ", " d ", 'I', new ItemStack(Blocks.FURNACE), 'M', new ItemStack(Items.MINECART));
             VanillaRecipeHelper.addShapedRecipe(provider, "tnt_minecart", new ItemStack(Items.TNT_MINECART), "hIw", " M ", " d ", 'I', new ItemStack(Blocks.TNT), 'M', new ItemStack(Items.MINECART));
             VanillaRecipeHelper.addShapedRecipe(provider, "hopper_minecart", new ItemStack(Items.HOPPER_MINECART), "hIw", " M ", " d ", 'I', new ItemStack(Blocks.HOPPER), 'M', new ItemStack(Items.MINECART));

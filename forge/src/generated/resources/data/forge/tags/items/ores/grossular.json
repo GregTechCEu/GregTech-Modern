@@ -1,13 +1,12 @@
 {
   "values": [
-    "gtceu:ore_grossular",
-    "gtceu:ore_basalt_grossular",
-    "gtceu:ore_sand_grossular",
-    "gtceu:ore_granite_grossular",
-    "gtceu:ore_andesite_grossular",
-    "gtceu:ore_endstone_grossular",
-    "gtceu:ore_red_sand_grossular",
-    "gtceu:ore_netherrack_grossular",
-    "gtceu:ore_diorite_grossular"
+    "gtceu:deepslate_grossular",
+    "gtceu:sand_grossular",
+    "gtceu:basalt_grossular",
+    "gtceu:granite_grossular",
+    "gtceu:andesite_grossular",
+    "gtceu:red_sand_grossular",
+    "gtceu:stone_grossular",
+    "gtceu:diorite_grossular"
   ]
 }

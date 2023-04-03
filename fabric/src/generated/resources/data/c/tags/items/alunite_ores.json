@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:deepslate_alunite",
+    "gtceu:sand_alunite",
+    "gtceu:basalt_alunite",
+    "gtceu:granite_alunite",
+    "gtceu:andesite_alunite",
+    "gtceu:red_sand_alunite",
+    "gtceu:stone_alunite",
+    "gtceu:diorite_alunite"
+  ]
+}

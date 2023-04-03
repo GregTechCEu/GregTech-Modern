@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:deepslate_silver",
+    "gtceu:sand_silver",
+    "gtceu:basalt_silver",
+    "gtceu:granite_silver",
+    "gtceu:andesite_silver",
+    "gtceu:red_sand_silver",
+    "gtceu:stone_silver",
+    "gtceu:diorite_silver"
+  ]
+}

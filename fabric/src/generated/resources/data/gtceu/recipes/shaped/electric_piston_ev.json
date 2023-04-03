@@ -2,19 +2,19 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:cables/single/aluminium"
+      "item": "gtceu:cable_single.aluminium"
     },
     "G": {
-      "tag": "c:gears/small/titanium"
+      "tag": "c:titanium_small_gears"
     },
     "M": {
       "item": "gtceu:electric.motor.ev"
     },
     "P": {
-      "tag": "c:plates/titanium"
+      "tag": "c:titanium_plates"
     },
     "R": {
-      "tag": "c:sticks/titanium"
+      "tag": "c:titanium_rods"
     }
   },
   "pattern": [

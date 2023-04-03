@@ -1,7 +1,5 @@
 package com.gregtechceu.gtceu.data.recipe.serialized.chemistry;
 
-import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials;
-import com.gregtechceu.gtceu.common.data.GTMaterials;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
@@ -9,7 +7,7 @@ import net.minecraft.world.level.block.Blocks;
 import java.util.function.Consumer;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
-import static com.gregtechceu.gtceu.api.tag.TagPrefix.*;
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
 import static com.gregtechceu.gtceu.common.data.GTItems.GELLED_TOLUENE;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.CHEMICAL_RECIPES;
@@ -628,14 +626,15 @@ public class ReactorRecipes {
                 .duration(200).EUt(VA[HV]).save(provider);
 
         // Dyes
-        for (int i = 0; i < GTMaterials.CHEMICAL_DYES.length; i++) {
-            CHEMICAL_RECIPES.recipeBuilder("chemical_dye_" + MarkerMaterials.Color.VALUES[i])
-                    .inputItems(dye, MarkerMaterials.Color.VALUES[i])
-                    .inputItems(dust, Salt, 2)
-                    .inputFluids(SulfuricAcid.getFluid(250))
-                    .outputFluids(GTMaterials.CHEMICAL_DYES[i].getFluid(288))
-                    .duration(600).EUt(24).save(provider);
-        }
+        // TODO
+        //for (int i = 0; i < GTMaterials.CHEMICAL_DYES.length; i++) {
+        //    CHEMICAL_RECIPES.recipeBuilder("chemical_dye_" + MarkerMaterials.Color.VALUES[i])
+        //            .inputItems(dye, MarkerMaterials.Color.VALUES[i])
+        //            .inputItems(dust, Salt, 2)
+        //            .inputFluids(SulfuricAcid.getFluid(250))
+        //            .outputFluids(GTMaterials.CHEMICAL_DYES[i].getFluid(288))
+        //            .duration(600).EUt(24).save(provider);
+        //}
 
         CHEMICAL_RECIPES.recipeBuilder("blaze_powder")
                 .inputItems(dust, Carbon)

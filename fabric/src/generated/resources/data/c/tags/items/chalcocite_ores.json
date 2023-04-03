@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:deepslate_chalcocite",
+    "gtceu:sand_chalcocite",
+    "gtceu:basalt_chalcocite",
+    "gtceu:granite_chalcocite",
+    "gtceu:andesite_chalcocite",
+    "gtceu:red_sand_chalcocite",
+    "gtceu:stone_chalcocite",
+    "gtceu:diorite_chalcocite"
+  ]
+}

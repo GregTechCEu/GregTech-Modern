@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:deepslate_blue_topaz",
+    "gtceu:sand_blue_topaz",
+    "gtceu:basalt_blue_topaz",
+    "gtceu:granite_blue_topaz",
+    "gtceu:andesite_blue_topaz",
+    "gtceu:red_sand_blue_topaz",
+    "gtceu:stone_blue_topaz",
+    "gtceu:diorite_blue_topaz"
+  ]
+}

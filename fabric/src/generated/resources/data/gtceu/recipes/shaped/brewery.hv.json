@@ -2,10 +2,10 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "B": {
-      "tag": "c:springs/kanthal"
+      "tag": "c:kanthal_springs"
     },
     "C": {
-      "tag": "c:circuit/hv"
+      "tag": "c:hv_circuits"
     },
     "G": {
       "tag": "c:glass"
@@ -17,7 +17,7 @@
       "item": "gtceu:electric.pump.hv"
     },
     "W": {
-      "tag": "c:cables/single/gold"
+      "item": "gtceu:cable_single.gold"
     }
   },
   "pattern": [

@@ -1,13 +1,12 @@
 {
   "values": [
-    "gtceu:ore_olivine",
-    "gtceu:ore_basalt_olivine",
-    "gtceu:ore_sand_olivine",
-    "gtceu:ore_granite_olivine",
-    "gtceu:ore_andesite_olivine",
-    "gtceu:ore_endstone_olivine",
-    "gtceu:ore_red_sand_olivine",
-    "gtceu:ore_netherrack_olivine",
-    "gtceu:ore_diorite_olivine"
+    "gtceu:deepslate_olivine",
+    "gtceu:sand_olivine",
+    "gtceu:basalt_olivine",
+    "gtceu:granite_olivine",
+    "gtceu:andesite_olivine",
+    "gtceu:red_sand_olivine",
+    "gtceu:stone_olivine",
+    "gtceu:diorite_olivine"
   ]
 }

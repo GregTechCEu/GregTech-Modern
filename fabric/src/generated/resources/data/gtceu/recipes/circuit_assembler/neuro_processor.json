@@ -35,7 +35,9 @@
           "type": "gtceu:sized",
           "count": 8,
           "fabric:type": "gtceu:sized",
-          "tag": "c:fluid_pipes/small/polybenzimidazole"
+          "ingredient": {
+            "item": "gtceu:small.polybenzimidazole"
+          }
         }
       },
       {
@@ -44,7 +46,7 @@
           "type": "gtceu:sized",
           "count": 8,
           "fabric:type": "gtceu:sized",
-          "tag": "c:plates/electrum"
+          "tag": "c:electrum_plates"
         }
       },
       {
@@ -53,7 +55,7 @@
           "type": "gtceu:sized",
           "count": 16,
           "fabric:type": "gtceu:sized",
-          "tag": "c:foils/silicone_rubber"
+          "tag": "c:silicone_rubber_foils"
         }
       },
       {
@@ -62,7 +64,7 @@
           "type": "gtceu:sized",
           "count": 8,
           "fabric:type": "gtceu:sized",
-          "tag": "c:bolts/hsse"
+          "tag": "c:hsse_bolts"
         }
       }
     ]

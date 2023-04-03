@@ -8,7 +8,7 @@
       "tag": "c:pistons"
     },
     "X": {
-      "tag": "c:fluid_pipes/small/bronze"
+      "item": "gtceu:small.bronze"
     }
   },
   "pattern": [

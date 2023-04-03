@@ -8,7 +8,7 @@
       "item": "gtceu:electric.motor.ev"
     },
     "P": {
-      "tag": "forge:fluid_pipes/normal/titanium"
+      "item": "gtceu:normal.titanium"
     },
     "R": {
       "tag": "forge:rotors/stainless_steel"

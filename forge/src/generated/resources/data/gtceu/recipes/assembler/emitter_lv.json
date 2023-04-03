@@ -9,7 +9,7 @@
           "type": "gtceu:sized",
           "count": 4,
           "fabric:type": "gtceu:sized",
-          "tag": "forge:sticks/brass"
+          "tag": "forge:rods/brass"
         }
       },
       {
@@ -18,7 +18,9 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "forge:cables/single/tin"
+          "ingredient": {
+            "item": "gtceu:cable_single.tin"
+          }
         }
       },
       {
@@ -27,7 +29,7 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "forge:circuit/lv"
+          "tag": "forge:lv_circuits"
         }
       },
       {

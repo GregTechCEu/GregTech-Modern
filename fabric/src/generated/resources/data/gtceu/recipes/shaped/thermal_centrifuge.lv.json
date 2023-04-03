@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:circuit/lv"
+      "tag": "c:lv_circuits"
     },
     "E": {
       "item": "gtceu:electric.motor.lv"
@@ -11,10 +11,10 @@
       "item": "gtceu:hull.lv"
     },
     "O": {
-      "tag": "c:wires/quadruple/copper"
+      "item": "gtceu:wire_quadruple.copper"
     },
     "W": {
-      "tag": "c:cables/single/tin"
+      "item": "gtceu:cable_single.tin"
     }
   },
   "pattern": [

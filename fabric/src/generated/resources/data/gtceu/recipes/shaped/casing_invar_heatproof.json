@@ -2,10 +2,10 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "F": {
-      "tag": "c:frames/invar"
+      "tag": "c:invar_frames"
     },
     "P": {
-      "tag": "c:plates/invar"
+      "tag": "c:invar_plates"
     },
     "h": {
       "tag": "c:tool/hammer"

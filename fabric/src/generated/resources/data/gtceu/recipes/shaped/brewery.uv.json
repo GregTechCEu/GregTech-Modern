@@ -2,10 +2,10 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "B": {
-      "tag": "c:springs/naquadah_alloy"
+      "tag": "c:naquadah_alloy_springs"
     },
     "C": {
-      "tag": "c:circuit/uv"
+      "tag": "c:uv_circuits"
     },
     "G": {
       "tag": "c:glass"
@@ -17,7 +17,7 @@
       "item": "gtceu:electric.pump.uv"
     },
     "W": {
-      "tag": "c:cables/single/yttrium_barium_cuprate"
+      "item": "gtceu:cable_single.yttrium_barium_cuprate"
     }
   },
   "pattern": [
