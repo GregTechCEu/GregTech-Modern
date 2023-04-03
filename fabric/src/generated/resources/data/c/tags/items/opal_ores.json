@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:deepslate_opal",
+    "gtceu:sand_opal",
+    "gtceu:basalt_opal",
+    "gtceu:granite_opal",
+    "gtceu:andesite_opal",
+    "gtceu:red_sand_opal",
+    "gtceu:stone_opal",
+    "gtceu:diorite_opal"
+  ]
+}

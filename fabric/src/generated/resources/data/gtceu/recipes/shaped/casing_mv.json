@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "P": {
-      "tag": "c:plates/aluminium"
+      "tag": "c:aluminium_plates"
     },
     "w": {
       "tag": "c:tool/wrench"

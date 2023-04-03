@@ -1,13 +1,12 @@
 {
   "values": [
-    "gtceu:ore_amethyst",
-    "gtceu:ore_basalt_amethyst",
-    "gtceu:ore_sand_amethyst",
-    "gtceu:ore_granite_amethyst",
-    "gtceu:ore_andesite_amethyst",
-    "gtceu:ore_endstone_amethyst",
-    "gtceu:ore_red_sand_amethyst",
-    "gtceu:ore_netherrack_amethyst",
-    "gtceu:ore_diorite_amethyst"
+    "gtceu:deepslate_amethyst",
+    "gtceu:sand_amethyst",
+    "gtceu:basalt_amethyst",
+    "gtceu:granite_amethyst",
+    "gtceu:andesite_amethyst",
+    "gtceu:red_sand_amethyst",
+    "gtceu:stone_amethyst",
+    "gtceu:diorite_amethyst"
   ]
 }

@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:deepslate_scheelite",
+    "gtceu:sand_scheelite",
+    "gtceu:basalt_scheelite",
+    "gtceu:granite_scheelite",
+    "gtceu:andesite_scheelite",
+    "gtceu:red_sand_scheelite",
+    "gtceu:stone_scheelite",
+    "gtceu:diorite_scheelite"
+  ]
+}

@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:circuit/mv"
+      "tag": "c:mv_circuits"
     },
     "F": {
       "item": "gtceu:fluid_filter"

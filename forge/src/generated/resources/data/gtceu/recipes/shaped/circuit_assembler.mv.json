@@ -11,7 +11,7 @@
       "item": "gtceu:hull.mv"
     },
     "I": {
-      "tag": "forge:circuit/hv"
+      "tag": "forge:hv_circuits"
     },
     "R": {
       "item": "gtceu:robot.arm.mv"

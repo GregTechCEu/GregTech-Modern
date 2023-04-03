@@ -68,7 +68,7 @@
           "type": "gtceu:sized",
           "count": 24,
           "fabric:type": "gtceu:sized",
-          "tag": "c:wires/fine/yttrium_barium_cuprate"
+          "tag": "c:yttrium_barium_cuprate_fine_wires"
         }
       },
       {
@@ -77,7 +77,7 @@
           "type": "gtceu:sized",
           "count": 32,
           "fabric:type": "gtceu:sized",
-          "tag": "c:foils/polybenzimidazole"
+          "tag": "c:polybenzimidazole_foils"
         }
       },
       {
@@ -86,7 +86,7 @@
           "type": "gtceu:sized",
           "count": 4,
           "fabric:type": "gtceu:sized",
-          "tag": "c:plates/europium"
+          "tag": "c:europium_plates"
         }
       }
     ]

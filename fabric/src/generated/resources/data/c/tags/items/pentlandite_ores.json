@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:deepslate_pentlandite",
+    "gtceu:sand_pentlandite",
+    "gtceu:basalt_pentlandite",
+    "gtceu:granite_pentlandite",
+    "gtceu:andesite_pentlandite",
+    "gtceu:red_sand_pentlandite",
+    "gtceu:stone_pentlandite",
+    "gtceu:diorite_pentlandite"
+  ]
+}

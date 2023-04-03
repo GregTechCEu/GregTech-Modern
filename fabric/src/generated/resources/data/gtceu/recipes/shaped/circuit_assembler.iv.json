@@ -11,13 +11,13 @@
       "item": "gtceu:hull.iv"
     },
     "I": {
-      "tag": "c:circuit/luv"
+      "tag": "c:luv_circuits"
     },
     "R": {
       "item": "gtceu:robot.arm.iv"
     },
     "W": {
-      "tag": "c:cables/single/platinum"
+      "tag": "c:platinum_single_cables"
     }
   },
   "pattern": [

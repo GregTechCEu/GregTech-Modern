@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:deepslate_basaltic_mineral_sand",
+    "gtceu:sand_basaltic_mineral_sand",
+    "gtceu:basalt_basaltic_mineral_sand",
+    "gtceu:granite_basaltic_mineral_sand",
+    "gtceu:andesite_basaltic_mineral_sand",
+    "gtceu:red_sand_basaltic_mineral_sand",
+    "gtceu:stone_basaltic_mineral_sand",
+    "gtceu:diorite_basaltic_mineral_sand"
+  ]
+}

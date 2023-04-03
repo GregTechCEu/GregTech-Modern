@@ -8,10 +8,10 @@
       "item": "gtceu:electric.motor.mv"
     },
     "P": {
-      "tag": "c:fluid_pipes/normal/steel"
+      "tag": "c:steel_normal_fluid_pipes"
     },
     "R": {
-      "tag": "c:rotors/bronze"
+      "tag": "c:bronze_rotors"
     }
   },
   "pattern": [

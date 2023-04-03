@@ -5,13 +5,13 @@
       "item": "gtceu:hull.lv"
     },
     "S": {
-      "tag": "c:sticks/iron"
+      "tag": "c:iron_rods"
     },
     "W": {
-      "tag": "c:cables/single/tin"
+      "tag": "c:tin_single_cables"
     },
     "Z": {
-      "tag": "c:wires/double/tin"
+      "tag": "c:tin_double_wires"
     }
   },
   "pattern": [

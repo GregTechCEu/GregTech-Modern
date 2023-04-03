@@ -2,10 +2,10 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "F": {
-      "tag": "c:item_pipes/large/polyvinyl_chloride"
+      "tag": "c:polyvinyl_chloride_large_item_pipes"
     },
     "P": {
-      "tag": "c:plates/aluminium"
+      "tag": "c:aluminium_plates"
     }
   },
   "pattern": [

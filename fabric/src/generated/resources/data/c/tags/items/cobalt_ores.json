@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:deepslate_cobalt",
+    "gtceu:sand_cobalt",
+    "gtceu:basalt_cobalt",
+    "gtceu:granite_cobalt",
+    "gtceu:andesite_cobalt",
+    "gtceu:red_sand_cobalt",
+    "gtceu:stone_cobalt",
+    "gtceu:diorite_cobalt"
+  ]
+}

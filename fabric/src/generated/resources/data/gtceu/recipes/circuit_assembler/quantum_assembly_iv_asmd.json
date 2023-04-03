@@ -71,7 +71,7 @@
           "type": "gtceu:sized",
           "count": 16,
           "fabric:type": "gtceu:sized",
-          "tag": "c:wires/fine/platinum"
+          "tag": "c:platinum_fine_wires"
         }
       }
     ]

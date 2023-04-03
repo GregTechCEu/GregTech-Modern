@@ -1,13 +1,12 @@
 {
   "values": [
-    "gtceu:ore_pyrope",
-    "gtceu:ore_basalt_pyrope",
-    "gtceu:ore_sand_pyrope",
-    "gtceu:ore_granite_pyrope",
-    "gtceu:ore_andesite_pyrope",
-    "gtceu:ore_endstone_pyrope",
-    "gtceu:ore_red_sand_pyrope",
-    "gtceu:ore_netherrack_pyrope",
-    "gtceu:ore_diorite_pyrope"
+    "gtceu:deepslate_pyrope",
+    "gtceu:sand_pyrope",
+    "gtceu:basalt_pyrope",
+    "gtceu:granite_pyrope",
+    "gtceu:andesite_pyrope",
+    "gtceu:red_sand_pyrope",
+    "gtceu:stone_pyrope",
+    "gtceu:diorite_pyrope"
   ]
 }

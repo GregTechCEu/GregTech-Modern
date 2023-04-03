@@ -27,7 +27,7 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "c:circuit/hv"
+          "tag": "c:hv_circuits"
         }
       },
       {
@@ -69,7 +69,7 @@
           "type": "gtceu:sized",
           "count": 32,
           "fabric:type": "gtceu:sized",
-          "tag": "c:wires/fine/platinum"
+          "tag": "c:platinum_fine_wires"
         }
       }
     ]

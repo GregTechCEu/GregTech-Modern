@@ -1,13 +1,12 @@
 {
   "values": [
-    "gtceu:ore_cinnabar",
-    "gtceu:ore_basalt_cinnabar",
-    "gtceu:ore_sand_cinnabar",
-    "gtceu:ore_granite_cinnabar",
-    "gtceu:ore_andesite_cinnabar",
-    "gtceu:ore_endstone_cinnabar",
-    "gtceu:ore_red_sand_cinnabar",
-    "gtceu:ore_netherrack_cinnabar",
-    "gtceu:ore_diorite_cinnabar"
+    "gtceu:deepslate_cinnabar",
+    "gtceu:sand_cinnabar",
+    "gtceu:basalt_cinnabar",
+    "gtceu:granite_cinnabar",
+    "gtceu:andesite_cinnabar",
+    "gtceu:red_sand_cinnabar",
+    "gtceu:stone_cinnabar",
+    "gtceu:diorite_cinnabar"
   ]
 }

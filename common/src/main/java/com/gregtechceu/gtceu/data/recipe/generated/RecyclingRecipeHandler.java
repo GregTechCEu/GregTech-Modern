@@ -20,7 +20,7 @@ import static com.gregtechceu.gtceu.api.tag.TagPrefix.*;
 public class RecyclingRecipeHandler {
 
     private static final List<Object> CRUSHING_PREFIXES = Arrays.asList(
-            ingot, gem, stick, plate, ring, stickLong, foil, bolt, screw,
+            ingot, gem, rod, plate, ring, rodLong, foil, bolt, screw,
             nugget, gearSmall, gear, frameGt, plateDense, spring, springSmall,
             block, wireFine, rotor, lens, turbineBlade, round, plateDouble, dust,
             (Predicate<TagPrefix>) orePrefix -> orePrefix.name().startsWith("toolHead"),

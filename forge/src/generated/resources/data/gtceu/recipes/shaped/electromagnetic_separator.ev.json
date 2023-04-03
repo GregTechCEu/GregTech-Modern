@@ -2,13 +2,13 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "forge:circuit/ev"
+      "tag": "forge:ev_circuits"
     },
     "M": {
       "item": "gtceu:hull.ev"
     },
     "S": {
-      "tag": "forge:sticks/neodymium"
+      "tag": "forge:rods/neodymium"
     },
     "V": {
       "item": "gtceu:conveyor.module.ev"

@@ -5,7 +5,7 @@
       "item": "gtceu:robot.arm.mv"
     },
     "C": {
-      "tag": "forge:circuit/mv"
+      "tag": "forge:mv_circuits"
     },
     "M": {
       "item": "gtceu:hull.mv"

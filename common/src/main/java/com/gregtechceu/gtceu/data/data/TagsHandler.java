@@ -19,25 +19,25 @@ public class TagsHandler {
             if (itemLikes.isEmpty()) return;
             var material = entry.material;
             if (material != null) {
-                var materialTags = entry.tagPrefix.getSubItemTags(material);
+                var materialTags = entry.tagPrefix.getItemTags(material);
                 for (TagKey<Item> materialTag : materialTags) {
                     var builder = provider.getOrCreateRawBuilder(materialTag);
                     itemLikes.forEach(item -> builder.addElement(Registry.ITEM.getKey(item.asItem())));
                     builder.build();
                 }
             }
-            var tagPrefixes = entry.tagPrefix.getItemTags();
-            for (TagKey<Item> tagPrefixTag : tagPrefixes) {
-                var builder = provider.getOrCreateRawBuilder(tagPrefixTag);
+            //var tagPrefixes = entry.tagPrefix.getItemTags();
+            //for (TagKey<Item> tagPrefixTag : tagPrefixes) {
+            //    var builder = provider.getOrCreateRawBuilder(tagPrefixTag);
 //                itemLikes.forEach(item -> builder.addElement(Registry.ITEM.getKey(item.asItem())));
-                if (material != null) {
-                    var materialTags = entry.tagPrefix.getSubItemTags(material);
-                    for (TagKey<Item> materialTag : materialTags) {
-                        builder.addTag(materialTag.location());
-                    }
-                }
-                builder.build();
-            }
+            //    if (material != null) {
+            //        var materialTags = entry.tagPrefix.getSubItemTags(material);
+            //        for (TagKey<Item> materialTag : materialTags) {
+            //            builder.addTag(materialTag.location());
+            //        }
+             //   }
+            //    builder.build();
+            //}
         });
         TagLoader.init(provider);
     }

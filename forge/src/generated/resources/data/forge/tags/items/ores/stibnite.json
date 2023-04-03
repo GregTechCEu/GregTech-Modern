@@ -1,13 +1,12 @@
 {
   "values": [
-    "gtceu:ore_stibnite",
-    "gtceu:ore_basalt_stibnite",
-    "gtceu:ore_sand_stibnite",
-    "gtceu:ore_granite_stibnite",
-    "gtceu:ore_andesite_stibnite",
-    "gtceu:ore_endstone_stibnite",
-    "gtceu:ore_red_sand_stibnite",
-    "gtceu:ore_netherrack_stibnite",
-    "gtceu:ore_diorite_stibnite"
+    "gtceu:deepslate_stibnite",
+    "gtceu:sand_stibnite",
+    "gtceu:basalt_stibnite",
+    "gtceu:granite_stibnite",
+    "gtceu:andesite_stibnite",
+    "gtceu:red_sand_stibnite",
+    "gtceu:stone_stibnite",
+    "gtceu:diorite_stibnite"
   ]
 }

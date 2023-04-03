@@ -11,7 +11,7 @@
       "item": "gtceu:hull.zpm"
     },
     "I": {
-      "tag": "forge:circuit/uv"
+      "tag": "forge:uv_circuits"
     },
     "R": {
       "item": "gtceu:robot.arm.zpm"

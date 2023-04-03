@@ -2,13 +2,13 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:cables/single/copper"
+      "tag": "c:copper_single_cables"
     },
     "M": {
       "item": "gtceu:electric.motor.mv"
     },
     "R": {
-      "tag": "c:plates/silicone_rubber"
+      "tag": "c:silicone_rubber_plates"
     }
   },
   "pattern": [

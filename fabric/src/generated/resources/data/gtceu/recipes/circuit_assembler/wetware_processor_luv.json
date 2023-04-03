@@ -58,7 +58,7 @@
           "type": "gtceu:sized",
           "count": 8,
           "fabric:type": "gtceu:sized",
-          "tag": "c:wires/fine/yttrium_barium_cuprate"
+          "tag": "c:yttrium_barium_cuprate_fine_wires"
         }
       }
     ]

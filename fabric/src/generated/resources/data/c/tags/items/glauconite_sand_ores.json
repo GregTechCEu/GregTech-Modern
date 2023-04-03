@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:deepslate_glauconite_sand",
+    "gtceu:sand_glauconite_sand",
+    "gtceu:basalt_glauconite_sand",
+    "gtceu:granite_glauconite_sand",
+    "gtceu:andesite_glauconite_sand",
+    "gtceu:red_sand_glauconite_sand",
+    "gtceu:stone_glauconite_sand",
+    "gtceu:diorite_glauconite_sand"
+  ]
+}

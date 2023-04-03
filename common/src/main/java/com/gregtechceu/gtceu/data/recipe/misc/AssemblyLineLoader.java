@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.data.recipe.misc;
 
-import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials.Tier;
 import net.minecraft.data.recipes.FinishedRecipe;
 
 import java.util.function.Consumer;

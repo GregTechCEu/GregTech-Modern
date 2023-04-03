@@ -2,16 +2,16 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:wires/quadruple/tungsten_steel"
+      "tag": "c:tungsten_steel_quadruple_wires"
     },
     "E": {
-      "tag": "c:circuit/iv"
+      "tag": "c:iv_circuits"
     },
     "M": {
       "item": "gtceu:hull.iv"
     },
     "P": {
-      "tag": "c:fluid_pipes/normal/tungsten_steel"
+      "tag": "c:tungsten_steel_normal_fluid_pipes"
     },
     "X": {
       "item": "gtceu:electric.piston.iv"

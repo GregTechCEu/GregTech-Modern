@@ -2,13 +2,13 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:circuit/hv"
+      "tag": "c:hv_circuits"
     },
     "G": {
       "tag": "c:glass"
     },
     "I": {
-      "tag": "c:plates/stainless_steel"
+      "tag": "c:stainless_steel_plates"
     },
     "M": {
       "item": "gtceu:hull.hv"

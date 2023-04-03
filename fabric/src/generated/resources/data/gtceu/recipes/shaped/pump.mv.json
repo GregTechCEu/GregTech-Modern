@@ -8,10 +8,10 @@
       "item": "gtceu:hull.mv"
     },
     "T": {
-      "tag": "c:fluid_pipes/large/steel"
+      "tag": "c:steel_large_fluid_pipes"
     },
     "W": {
-      "tag": "c:circuit/mv"
+      "tag": "c:mv_circuits"
     }
   },
   "pattern": [

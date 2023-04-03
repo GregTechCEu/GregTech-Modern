@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:circuit/lv"
+      "tag": "c:lv_circuits"
     },
     "E": {
       "item": "gtceu:electric.motor.lv"
@@ -14,7 +14,7 @@
       "item": "gtceu:hull.lv"
     },
     "R": {
-      "tag": "c:rotors/tin"
+      "tag": "c:tin_rotors"
     }
   },
   "pattern": [

@@ -2,13 +2,13 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "F": {
-      "tag": "c:frames/stainless_steel"
+      "tag": "c:stainless_steel_frames"
     },
     "G": {
-      "tag": "c:gears/stainless_steel"
+      "tag": "c:stainless_steel_gears"
     },
     "P": {
-      "tag": "c:plates/stainless_steel"
+      "tag": "c:stainless_steel_plates"
     },
     "h": {
       "tag": "c:tool/hammer"

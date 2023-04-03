@@ -5,10 +5,10 @@
       "tag": "forge:cables/single/tin"
     },
     "M": {
-      "tag": "forge:sticks/iron_magnetic"
+      "tag": "forge:rods/iron_magnetic"
     },
     "R": {
-      "tag": "forge:sticks/iron"
+      "tag": "forge:rods/iron"
     },
     "W": {
       "tag": "forge:wires/single/copper"

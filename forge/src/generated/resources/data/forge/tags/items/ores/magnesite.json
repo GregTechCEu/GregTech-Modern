@@ -1,13 +1,12 @@
 {
   "values": [
-    "gtceu:ore_magnesite",
-    "gtceu:ore_basalt_magnesite",
-    "gtceu:ore_sand_magnesite",
-    "gtceu:ore_granite_magnesite",
-    "gtceu:ore_andesite_magnesite",
-    "gtceu:ore_endstone_magnesite",
-    "gtceu:ore_red_sand_magnesite",
-    "gtceu:ore_netherrack_magnesite",
-    "gtceu:ore_diorite_magnesite"
+    "gtceu:deepslate_magnesite",
+    "gtceu:sand_magnesite",
+    "gtceu:basalt_magnesite",
+    "gtceu:granite_magnesite",
+    "gtceu:andesite_magnesite",
+    "gtceu:red_sand_magnesite",
+    "gtceu:stone_magnesite",
+    "gtceu:diorite_magnesite"
   ]
 }

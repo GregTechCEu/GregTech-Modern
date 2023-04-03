@@ -1,13 +1,12 @@
 {
   "values": [
-    "gtceu:ore_almandine",
-    "gtceu:ore_basalt_almandine",
-    "gtceu:ore_sand_almandine",
-    "gtceu:ore_granite_almandine",
-    "gtceu:ore_andesite_almandine",
-    "gtceu:ore_endstone_almandine",
-    "gtceu:ore_red_sand_almandine",
-    "gtceu:ore_netherrack_almandine",
-    "gtceu:ore_diorite_almandine"
+    "gtceu:deepslate_almandine",
+    "gtceu:sand_almandine",
+    "gtceu:basalt_almandine",
+    "gtceu:granite_almandine",
+    "gtceu:andesite_almandine",
+    "gtceu:red_sand_almandine",
+    "gtceu:stone_almandine",
+    "gtceu:diorite_almandine"
   ]
 }

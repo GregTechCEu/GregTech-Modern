@@ -2,13 +2,13 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:circuit/lv"
+      "tag": "c:lv_circuits"
     },
     "G": {
       "tag": "c:glass"
     },
     "I": {
-      "tag": "c:plates/steel"
+      "tag": "c:steel_plates"
     },
     "M": {
       "item": "gtceu:hull.lv"

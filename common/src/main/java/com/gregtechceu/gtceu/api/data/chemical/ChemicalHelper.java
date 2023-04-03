@@ -16,6 +16,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -189,18 +190,19 @@ public class ChemicalHelper {
         return get(orePrefix, material, 1);
     }
 
-    public static TagKey<Item> getTag(TagPrefix orePrefix, @Nullable Material material) {
-        var tags = material == null ? orePrefix.getItemTags() : orePrefix.getSubItemTags(material);
+    public static TagKey<Item> getTag(TagPrefix orePrefix, @Nonnull Material material) {
+        var tags = orePrefix.getItemTags(material);
         if (tags.length > 0) {
             return tags[0];
         }
-        return TagUtil.createItemTag(FormattingUtil.toLowerCaseUnder(orePrefix.name) + (material == null ? "" : ("/" + material.getName())));
+        return TagUtil.createItemTag(FormattingUtil.toLowerCaseUnder(orePrefix.name) + "/" + material.getName());
     }
 
-    public static TagKey<Item>[] getTags(TagPrefix orePrefix, @Nullable Material material) {
-        var tags = material == null ? orePrefix.getItemTags() : orePrefix.getSubItemTags(material);
+    @SuppressWarnings("unchecked")
+    public static TagKey<Item>[] getTags(TagPrefix orePrefix, @Nonnull Material material) {
+        var tags = orePrefix.getItemTags(material);
         if (tags.length == 0) {
-            tags = new TagKey[]{TagUtil.createItemTag(FormattingUtil.toLowerCaseUnder(orePrefix.name) + (material == null ? "" : ("/" + material.getName())))};
+            tags = new TagKey[]{TagUtil.createItemTag(FormattingUtil.toLowerCaseUnder(orePrefix.name) + "/" + material.getName())};
         }
         return tags;
     }

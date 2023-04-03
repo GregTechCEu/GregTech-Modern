@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:deepslate_talc",
+    "gtceu:sand_talc",
+    "gtceu:basalt_talc",
+    "gtceu:granite_talc",
+    "gtceu:andesite_talc",
+    "gtceu:red_sand_talc",
+    "gtceu:stone_talc",
+    "gtceu:diorite_talc"
+  ]
+}

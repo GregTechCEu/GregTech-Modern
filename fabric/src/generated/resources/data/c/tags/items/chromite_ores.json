@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:deepslate_chromite",
+    "gtceu:sand_chromite",
+    "gtceu:basalt_chromite",
+    "gtceu:granite_chromite",
+    "gtceu:andesite_chromite",
+    "gtceu:red_sand_chromite",
+    "gtceu:stone_chromite",
+    "gtceu:diorite_chromite"
+  ]
+}

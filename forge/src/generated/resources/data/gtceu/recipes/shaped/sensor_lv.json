@@ -8,10 +8,10 @@
       "tag": "forge:plates/steel"
     },
     "R": {
-      "tag": "forge:sticks/brass"
+      "tag": "forge:rods/brass"
     },
     "X": {
-      "tag": "forge:circuit/lv"
+      "tag": "forge:lv_circuits"
     }
   },
   "pattern": [

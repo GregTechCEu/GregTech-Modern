@@ -1,13 +1,12 @@
 {
   "values": [
-    "gtceu:ore_palladium",
-    "gtceu:ore_basalt_palladium",
-    "gtceu:ore_sand_palladium",
-    "gtceu:ore_granite_palladium",
-    "gtceu:ore_andesite_palladium",
-    "gtceu:ore_endstone_palladium",
-    "gtceu:ore_red_sand_palladium",
-    "gtceu:ore_netherrack_palladium",
-    "gtceu:ore_diorite_palladium"
+    "gtceu:deepslate_palladium",
+    "gtceu:sand_palladium",
+    "gtceu:basalt_palladium",
+    "gtceu:granite_palladium",
+    "gtceu:andesite_palladium",
+    "gtceu:red_sand_palladium",
+    "gtceu:stone_palladium",
+    "gtceu:diorite_palladium"
   ]
 }

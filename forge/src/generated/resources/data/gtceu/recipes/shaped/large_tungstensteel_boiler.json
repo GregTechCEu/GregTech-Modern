@@ -8,7 +8,7 @@
       "tag": "forge:cables/single/aluminium"
     },
     "S": {
-      "tag": "forge:circuit/iv"
+      "tag": "forge:iv_circuits"
     }
   },
   "pattern": [

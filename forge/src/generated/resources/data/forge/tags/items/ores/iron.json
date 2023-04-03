@@ -1,14 +1,13 @@
 {
   "values": [
     "minecraft:iron_ore",
-    "gtceu:ore_iron",
-    "gtceu:ore_basalt_iron",
-    "gtceu:ore_sand_iron",
-    "gtceu:ore_granite_iron",
-    "gtceu:ore_andesite_iron",
-    "gtceu:ore_endstone_iron",
-    "gtceu:ore_red_sand_iron",
-    "gtceu:ore_netherrack_iron",
-    "gtceu:ore_diorite_iron"
+    "gtceu:stone_iron",
+    "gtceu:deepslate_iron",
+    "gtceu:sand_iron",
+    "gtceu:basalt_iron",
+    "gtceu:granite_iron",
+    "gtceu:andesite_iron",
+    "gtceu:red_sand_iron",
+    "gtceu:diorite_iron"
   ]
 }

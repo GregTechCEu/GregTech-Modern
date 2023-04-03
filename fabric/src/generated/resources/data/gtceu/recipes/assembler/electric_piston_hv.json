@@ -9,7 +9,7 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "c:sticks/stainless_steel"
+          "tag": "c:stainless_steel_rods"
         }
       },
       {
@@ -18,7 +18,7 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "c:cables/single/gold"
+          "tag": "c:gold_single_cables"
         }
       },
       {
@@ -27,7 +27,7 @@
           "type": "gtceu:sized",
           "count": 3,
           "fabric:type": "gtceu:sized",
-          "tag": "c:plates/stainless_steel"
+          "tag": "c:stainless_steel_plates"
         }
       },
       {
@@ -36,7 +36,7 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "c:gears/small/stainless_steel"
+          "tag": "c:stainless_steel_small_gears"
         }
       },
       {

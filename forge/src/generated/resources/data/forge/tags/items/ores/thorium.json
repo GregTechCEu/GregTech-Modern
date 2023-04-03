@@ -1,13 +1,12 @@
 {
   "values": [
-    "gtceu:ore_thorium",
-    "gtceu:ore_basalt_thorium",
-    "gtceu:ore_sand_thorium",
-    "gtceu:ore_granite_thorium",
-    "gtceu:ore_andesite_thorium",
-    "gtceu:ore_endstone_thorium",
-    "gtceu:ore_red_sand_thorium",
-    "gtceu:ore_netherrack_thorium",
-    "gtceu:ore_diorite_thorium"
+    "gtceu:deepslate_thorium",
+    "gtceu:sand_thorium",
+    "gtceu:basalt_thorium",
+    "gtceu:granite_thorium",
+    "gtceu:andesite_thorium",
+    "gtceu:red_sand_thorium",
+    "gtceu:stone_thorium",
+    "gtceu:diorite_thorium"
   ]
 }

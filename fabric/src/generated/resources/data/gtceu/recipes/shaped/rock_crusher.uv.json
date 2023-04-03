@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:cables/single/yttrium_barium_cuprate"
+      "tag": "c:yttrium_barium_cuprate_single_cables"
     },
     "G": {
       "tag": "c:glass"

@@ -5,7 +5,7 @@
       "tag": "forge:tool_heads/buzzsaw/ultimet"
     },
     "C": {
-      "tag": "forge:circuit/ev"
+      "tag": "forge:ev_circuits"
     },
     "E": {
       "item": "gtceu:electric.motor.ev"

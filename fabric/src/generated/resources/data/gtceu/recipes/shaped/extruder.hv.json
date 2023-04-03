@@ -2,16 +2,16 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:wires/quadruple/kanthal"
+      "tag": "c:kanthal_quadruple_wires"
     },
     "E": {
-      "tag": "c:circuit/hv"
+      "tag": "c:hv_circuits"
     },
     "M": {
       "item": "gtceu:hull.hv"
     },
     "P": {
-      "tag": "c:fluid_pipes/normal/stainless_steel"
+      "tag": "c:stainless_steel_normal_fluid_pipes"
     },
     "X": {
       "item": "gtceu:electric.piston.hv"

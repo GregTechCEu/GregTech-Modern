@@ -28,6 +28,7 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.tag.TagUtil;
 import com.gregtechceu.gtceu.data.data.LangHandler;
+import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
@@ -400,7 +401,7 @@ public class GTItems {
             .lang("Tantalum Capacitor")
             .properties(p -> p.stacksTo(1))
             .onRegister(attach(ElectricStats.createRechargeableBattery(1000, GTValues.ULV)))
-            .transform(unificationItem(TagPrefix.battery, MarkerMaterials.Tier.ULV)).register();
+            .tag(CustomTags.ULV_BATTERIES).register();
 
     public static ItemEntry<ComponentItem> BATTERY_LV_SODIUM = REGISTRATE.item("battery.re.lv.sodium", ComponentItem::create)
             .lang("Small Sodium Battery")
@@ -408,21 +409,21 @@ public class GTItems {
             .model(overrideModel(GTCEu.id("battery"), 8))
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
             .onRegister(attach(ElectricStats.createRechargeableBattery(80000, GTValues.LV)))
-            .transform(unificationItem(TagPrefix.battery, MarkerMaterials.Tier.LV)).register();
+            .tag(CustomTags.LV_BATTERIES).register();
     public static ItemEntry<ComponentItem> BATTERY_MV_SODIUM = REGISTRATE.item("battery.re.mv.sodium", ComponentItem::create)
             .lang("Medium Sodium Battery")
             .properties(p -> p.stacksTo(1))
             .model(overrideModel(GTCEu.id("battery"), 8))
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
             .onRegister(attach(ElectricStats.createRechargeableBattery(360000, GTValues.MV)))
-            .transform(unificationItem(TagPrefix.battery, MarkerMaterials.Tier.MV)).register();
+            .tag(CustomTags.MV_BATTERIES).register();
     public static ItemEntry<ComponentItem> BATTERY_HV_SODIUM = REGISTRATE.item("battery.re.hv.sodium", ComponentItem::create)
             .lang("Large Sodium Battery")
             .properties(p -> p.stacksTo(1))
             .model(overrideModel(GTCEu.id("battery"), 8))
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
             .onRegister(attach(ElectricStats.createRechargeableBattery(1200000, GTValues.HV)))
-            .transform(unificationItem(TagPrefix.battery, MarkerMaterials.Tier.HV)).register();
+            .tag(CustomTags.HV_BATTERIES).register();
 
     public static ItemEntry<ComponentItem> BATTERY_LV_LITHIUM = REGISTRATE.item("battery.re.lv.lithium", ComponentItem::create)
             .lang("Small Lithium Battery")
@@ -430,21 +431,21 @@ public class GTItems {
             .model(overrideModel(GTCEu.id("battery"), 8))
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
             .onRegister(attach(ElectricStats.createRechargeableBattery(120000, GTValues.LV)))
-            .transform(unificationItem(TagPrefix.battery, MarkerMaterials.Tier.LV)).register();
+            .tag(CustomTags.LV_BATTERIES).register();
     public static ItemEntry<ComponentItem> BATTERY_MV_LITHIUM = REGISTRATE.item("battery.re.mv.lithium", ComponentItem::create)
             .lang("Medium Lithium Battery")
             .properties(p -> p.stacksTo(1))
             .model(overrideModel(GTCEu.id("battery"), 8))
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
             .onRegister(attach(ElectricStats.createRechargeableBattery(420000, GTValues.MV)))
-            .transform(unificationItem(TagPrefix.battery, MarkerMaterials.Tier.MV)).register();
+            .tag(CustomTags.MV_BATTERIES).register();
     public static ItemEntry<ComponentItem> BATTERY_HV_LITHIUM = REGISTRATE.item("battery.re.hv.lithium", ComponentItem::create)
             .lang("Large Lithium Battery")
             .properties(p -> p.stacksTo(1))
             .model(overrideModel(GTCEu.id("battery"), 8))
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
             .onRegister(attach(ElectricStats.createRechargeableBattery(1800000, GTValues.HV)))
-            .transform(unificationItem(TagPrefix.battery, MarkerMaterials.Tier.HV)).register();
+            .tag(CustomTags.HV_BATTERIES).register();
 
     public static ItemEntry<ComponentItem> BATTERY_LV_CADMIUM = REGISTRATE.item("battery.re.lv.cadmium", ComponentItem::create)
             .lang("Small Cadmium Battery")
@@ -452,21 +453,21 @@ public class GTItems {
             .model(overrideModel(GTCEu.id("battery"), 8))
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
             .onRegister(attach(ElectricStats.createRechargeableBattery(100000, GTValues.LV)))
-            .transform(unificationItem(TagPrefix.battery, MarkerMaterials.Tier.LV)).register();
+            .tag(CustomTags.LV_BATTERIES).register();
     public static ItemEntry<ComponentItem> BATTERY_MV_CADMIUM = REGISTRATE.item("battery.re.mv.cadmium", ComponentItem::create)
             .lang("Medium Cadmium Battery")
             .properties(p -> p.stacksTo(1))
             .model(overrideModel(GTCEu.id("battery"), 8))
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
             .onRegister(attach(ElectricStats.createRechargeableBattery(400000, GTValues.MV)))
-            .transform(unificationItem(TagPrefix.battery, MarkerMaterials.Tier.MV)).register();
+            .tag(CustomTags.MV_BATTERIES).register();
     public static ItemEntry<ComponentItem> BATTERY_HV_CADMIUM = REGISTRATE.item("battery.re.hv.cadmium", ComponentItem::create)
             .lang("Large Cadmium Battery")
             .properties(p -> p.stacksTo(1))
             .model(overrideModel(GTCEu.id("battery"), 8))
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
             .onRegister(attach(ElectricStats.createRechargeableBattery(1600000, GTValues.HV)))
-            .transform(unificationItem(TagPrefix.battery, MarkerMaterials.Tier.HV)).register();
+            .tag(CustomTags.HV_BATTERIES).register();
 
     public static ItemEntry<ComponentItem> ENERGIUM_CRYSTAL = REGISTRATE.item("energy_crystal", ComponentItem::create)
             .lang("Energium Crystal")
@@ -474,13 +475,13 @@ public class GTItems {
             .model(overrideModel(GTCEu.id("battery"), 8))
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
             .onRegister(attach(ElectricStats.createRechargeableBattery(6_400_000L, GTValues.HV)))
-            .transform(unificationItem(TagPrefix.battery, MarkerMaterials.Tier.HV)).register();
+            .tag(CustomTags.HV_BATTERIES).register();
     public static ItemEntry<ComponentItem> LAPOTRON_CRYSTAL = REGISTRATE.item("lapotron_crystal", ComponentItem::create)
             .properties(p -> p.stacksTo(1))
             .model(overrideModel(GTCEu.id("battery"), 8))
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
             .onRegister(attach(ElectricStats.createRechargeableBattery(25_000_000L, GTValues.EV)))
-            .transform(unificationItem(TagPrefix.battery, MarkerMaterials.Tier.EV)).register();
+            .tag(CustomTags.EV_BATTERIES).register();
 
     public static ItemEntry<ComponentItem> BATTERY_EV_VANADIUM = REGISTRATE.item("battery.ev.vanadium", ComponentItem::create)
             .lang("Small Vanadium Battery")
@@ -488,21 +489,21 @@ public class GTItems {
             .model(overrideModel(GTCEu.id("battery"), 8))
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
             .onRegister(attach(ElectricStats.createRechargeableBattery(10_240_000L, GTValues.EV)))
-            .transform(unificationItem(TagPrefix.battery, MarkerMaterials.Tier.EV)).register();
+            .tag(CustomTags.EV_BATTERIES).register();
     public static ItemEntry<ComponentItem> BATTERY_IV_VANADIUM = REGISTRATE.item("battery.iv.vanadium", ComponentItem::create)
             .lang("Medium Vanadium Battery")
             .properties(p -> p.stacksTo(1))
             .model(overrideModel(GTCEu.id("battery"), 8))
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
             .onRegister(attach(ElectricStats.createRechargeableBattery(40_960_000L, GTValues.IV)))
-            .transform(unificationItem(TagPrefix.battery, MarkerMaterials.Tier.IV)).register();
+            .tag(CustomTags.IV_BATTERIES).register();
     public static ItemEntry<ComponentItem> BATTERY_LUV_VANADIUM = REGISTRATE.item("battery.luv.vanadium", ComponentItem::create)
             .lang("Large Vanadium Battery")
             .properties(p -> p.stacksTo(1))
             .model(overrideModel(GTCEu.id("battery"), 8))
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
             .onRegister(attach(ElectricStats.createRechargeableBattery(163_840_000L, GTValues.LuV)))
-            .transform(unificationItem(TagPrefix.battery, MarkerMaterials.Tier.LuV)).register();
+            .tag(CustomTags.LuV_BATTERIES).register();
 
     public static ItemEntry<ComponentItem> BATTERY_ZPM_NAQUADRIA = REGISTRATE.item("battery.zpm.naquadria", ComponentItem::create)
             .lang("Medium Naquadria Battery")
@@ -510,14 +511,14 @@ public class GTItems {
             .model(overrideModel(GTCEu.id("battery"), 8))
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
             .onRegister(attach(ElectricStats.createRechargeableBattery(655_360_000L, GTValues.ZPM)))
-            .transform(unificationItem(TagPrefix.battery, MarkerMaterials.Tier.ZPM)).register();
+            .tag(CustomTags.ZPM_BATTERIES).register();
     public static ItemEntry<ComponentItem> BATTERY_UV_NAQUADRIA = REGISTRATE.item("battery.uv.naquadria", ComponentItem::create)
             .lang("Large Naquadria Battery")
             .properties(p -> p.stacksTo(1))
             .model(overrideModel(GTCEu.id("battery"), 8))
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
             .onRegister(attach(ElectricStats.createRechargeableBattery(2_621_440_000L, GTValues.UV)))
-            .transform(unificationItem(TagPrefix.battery, MarkerMaterials.Tier.UV)).register();
+            .tag(CustomTags.UV_BATTERIES).register();
 
     public static ItemEntry<ComponentItem> ENERGY_LAPOTRONIC_ORB = REGISTRATE.item("energy.lapotronic_orb", ComponentItem::create)
             .lang("Lapotronic Energy Orb")
@@ -525,27 +526,27 @@ public class GTItems {
             .model(overrideModel(GTCEu.id("battery"), 8))
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
             .onRegister(attach(ElectricStats.createRechargeableBattery(250_000_000L, GTValues.IV)))
-            .transform(unificationItem(TagPrefix.battery, MarkerMaterials.Tier.IV)).register();
+            .tag(CustomTags.IV_BATTERIES).register();
     public static ItemEntry<ComponentItem> ENERGY_LAPOTRONIC_ORB_CLUSTER = REGISTRATE.item("energy.lapotronic_orb_cluster", ComponentItem::create)
             .lang("Lapotronic Energy Orb Cluster")
             .properties(p -> p.stacksTo(1))
             .model(overrideModel(GTCEu.id("battery"), 8))
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
             .onRegister(attach(ElectricStats.createRechargeableBattery(1_000_000_000L, GTValues.LuV)))
-            .transform(unificationItem(TagPrefix.battery, MarkerMaterials.Tier.LuV)).register();
+            .tag(CustomTags.LuV_BATTERIES).register();
 
     public static ItemEntry<ComponentItem> ENERGY_MODULE = REGISTRATE.item("energy.module", ComponentItem::create)
             .properties(p -> p.stacksTo(1))
             .model(overrideModel(GTCEu.id("battery"), 8))
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
             .onRegister(attach(ElectricStats.createRechargeableBattery(4_000_000_000L, GTValues.ZPM)))
-            .transform(unificationItem(TagPrefix.battery, MarkerMaterials.Tier.ZPM)).register();
+            .tag(CustomTags.ZPM_BATTERIES).register();
     public static ItemEntry<ComponentItem> ENERGY_CLUSTER = REGISTRATE.item("energy.cluster", ComponentItem::create)
             .properties(p -> p.stacksTo(1))
             .model(overrideModel(GTCEu.id("battery"), 8))
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
             .onRegister(attach(ElectricStats.createRechargeableBattery(20_000_000_000L, GTValues.UV)))
-            .transform(unificationItem(TagPrefix.battery, MarkerMaterials.Tier.UV)).register();
+            .tag(CustomTags.UV_BATTERIES).register();
 
     public static ItemEntry<ComponentItem> ZERO_POINT_MODULE = REGISTRATE.item("zpm", ComponentItem::create)
             .lang("Zero Point Module")
@@ -558,7 +559,7 @@ public class GTItems {
             .model(overrideModel(GTCEu.id("battery"), 8))
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
             .onRegister(attach(ElectricStats.createRechargeableBattery(Long.MAX_VALUE, GTValues.UHV)))
-            .transform(unificationItem(TagPrefix.battery, MarkerMaterials.Tier.UHV)).register();
+            .tag(CustomTags.UHV_BATTERIES).register();
 
     public static ItemEntry<Item> ELECTRIC_MOTOR_LV = REGISTRATE.item("electric.motor.lv", Item::new).lang("LV Electric Motor").register();
     public static ItemEntry<Item> ELECTRIC_MOTOR_MV = REGISTRATE.item("electric.motor.mv", Item::new).lang("MV Electric Motor").register();
@@ -825,18 +826,18 @@ public class GTItems {
     public static ItemEntry<Item> ELITE_CIRCUIT_BOARD = REGISTRATE.item("circuit_board.elite", Item::new).lang("Elite Circuit Board").register();
     public static ItemEntry<Item> WETWARE_CIRCUIT_BOARD = REGISTRATE.item("circuit_board.wetware", Item::new).lang("Master Circuit Board").register();
 
-    public static ItemEntry<Item> VACUUM_TUBE = REGISTRATE.item("circuit.vacuum_tube", Item::new).lang("Vacuum Tube").transform(unificationItem(TagPrefix.circuit, MarkerMaterials.Tier.ULV)).register();
+    public static ItemEntry<Item> VACUUM_TUBE = REGISTRATE.item("circuit.vacuum_tube", Item::new).lang("Vacuum Tube").tag(CustomTags.ULV_CIRCUITS).register();
     public static ItemEntry<Item> GLASS_TUBE = REGISTRATE.item("component.glass.tube", Item::new).lang("Glass Tube").register();
-    public static ItemEntry<Item> TRANSISTOR = REGISTRATE.item("component.transistor", Item::new).lang("Transistor").transform(unificationItem(TagPrefix.component, MarkerMaterials.Component.Transistor)).register();
-    public static ItemEntry<Item> RESISTOR = REGISTRATE.item("component.resistor", Item::new).lang("Resistor").transform(unificationItem(TagPrefix.component, MarkerMaterials.Component.Resistor)).register();
-    public static ItemEntry<Item> CAPACITOR = REGISTRATE.item("component.capacitor", Item::new).lang("Capacitor").transform(unificationItem(TagPrefix.component, MarkerMaterials.Component.Capacitor)).register();
-    public static ItemEntry<Item> DIODE = REGISTRATE.item("component.diode", Item::new).lang("Diode").transform(unificationItem(TagPrefix.component, MarkerMaterials.Component.Diode)).register();
-    public static ItemEntry<Item> INDUCTOR = REGISTRATE.item("component.inductor", Item::new).lang("Inductor").transform(unificationItem(TagPrefix.component, MarkerMaterials.Component.Inductor)).register();
-    public static ItemEntry<Item> SMD_TRANSISTOR = REGISTRATE.item("component.smd.transistor", Item::new).lang("SMD Transistor").transform(unificationItem(TagPrefix.component, MarkerMaterials.Component.Transistor)).register();
-    public static ItemEntry<Item> SMD_RESISTOR = REGISTRATE.item("component.smd.resistor", Item::new).lang("SMD Resistor").transform(unificationItem(TagPrefix.component, MarkerMaterials.Component.Resistor)).register();
-    public static ItemEntry<Item> SMD_CAPACITOR = REGISTRATE.item("component.smd.capacitor", Item::new).lang("SMD Capacitor").transform(unificationItem(TagPrefix.component, MarkerMaterials.Component.Capacitor)).register();
-    public static ItemEntry<Item> SMD_DIODE = REGISTRATE.item("component.smd.diode", Item::new).lang("SMD Diode").transform(unificationItem(TagPrefix.component, MarkerMaterials.Component.Diode)).register();
-    public static ItemEntry<Item> SMD_INDUCTOR = REGISTRATE.item("component.smd.inductor", Item::new).lang("SMD Inductor").transform(unificationItem(TagPrefix.component, MarkerMaterials.Component.Inductor)).register();
+    public static ItemEntry<Item> TRANSISTOR = REGISTRATE.item("component.transistor", Item::new).lang("Transistor").tag(CustomTags.TRANSISTORS).register();
+    public static ItemEntry<Item> RESISTOR = REGISTRATE.item("component.resistor", Item::new).lang("Resistor").tag(CustomTags.RESISTORS).register();
+    public static ItemEntry<Item> CAPACITOR = REGISTRATE.item("component.capacitor", Item::new).lang("Capacitor").tag(CustomTags.CAPACITORS).register();
+    public static ItemEntry<Item> DIODE = REGISTRATE.item("component.diode", Item::new).lang("Diode").tag(CustomTags.DIODES).register();
+    public static ItemEntry<Item> INDUCTOR = REGISTRATE.item("component.inductor", Item::new).lang("Inductor").tag(CustomTags.INDUCTORS).register();
+    public static ItemEntry<Item> SMD_TRANSISTOR = REGISTRATE.item("component.smd.transistor", Item::new).lang("SMD Transistor").tag(CustomTags.TRANSISTORS).register();
+    public static ItemEntry<Item> SMD_RESISTOR = REGISTRATE.item("component.smd.resistor", Item::new).lang("SMD Resistor").tag(CustomTags.RESISTORS).register();
+    public static ItemEntry<Item> SMD_CAPACITOR = REGISTRATE.item("component.smd.capacitor", Item::new).lang("SMD Capacitor").tag(CustomTags.CAPACITORS).register();
+    public static ItemEntry<Item> SMD_DIODE = REGISTRATE.item("component.smd.diode", Item::new).lang("SMD Diode").tag(CustomTags.DIODES).register();
+    public static ItemEntry<Item> SMD_INDUCTOR = REGISTRATE.item("component.smd.inductor", Item::new).lang("SMD Inductor").tag(CustomTags.INDUCTORS).register();
     public static ItemEntry<Item> ADVANCED_SMD_TRANSISTOR = REGISTRATE.item("component.advanced_smd.transistor", Item::new).lang("Advanced SMD Transistor").register();
     public static ItemEntry<Item> ADVANCED_SMD_RESISTOR = REGISTRATE.item("component.advanced_smd.resistor", Item::new).lang("Advanced SMD Resistor").register();
     public static ItemEntry<Item> ADVANCED_SMD_CAPACITOR = REGISTRATE.item("component.advanced_smd.capacitor", Item::new).lang("Advanced SMD Capacitor").register();
@@ -844,47 +845,47 @@ public class GTItems {
     public static ItemEntry<Item> ADVANCED_SMD_INDUCTOR = REGISTRATE.item("component.advanced_smd.inductor", Item::new).lang("Advanced SMD Inductor").register();
 
     // T1: Electronic
-    public static ItemEntry<Item> ELECTRONIC_CIRCUIT_LV = REGISTRATE.item("circuit.electronic", Item::new).lang("Electronic Circuit").transform(unificationItem(TagPrefix.circuit, MarkerMaterials.Tier.LV)).register();
-    public static ItemEntry<Item> ELECTRONIC_CIRCUIT_MV = REGISTRATE.item("circuit.good_electronic", Item::new).lang("Good Electronic Circuit").transform(unificationItem(TagPrefix.circuit, MarkerMaterials.Tier.MV)).register();
+    public static ItemEntry<Item> ELECTRONIC_CIRCUIT_LV = REGISTRATE.item("circuit.electronic", Item::new).lang("Electronic Circuit").tag(CustomTags.LV_CIRCUITS).register();
+    public static ItemEntry<Item> ELECTRONIC_CIRCUIT_MV = REGISTRATE.item("circuit.good_electronic", Item::new).lang("Good Electronic Circuit").tag(CustomTags.MV_CIRCUITS).register();
 
     // T2: Integrated
-    public static ItemEntry<Item> INTEGRATED_CIRCUIT_LV = REGISTRATE.item("circuit.basic_integrated", Item::new).lang("Integrated Logic Circuit").transform(unificationItem(TagPrefix.circuit, MarkerMaterials.Tier.LV)).register();
-    public static ItemEntry<Item> INTEGRATED_CIRCUIT_MV = REGISTRATE.item("circuit.good_integrated", Item::new).lang("Good Integrated Circuit").transform(unificationItem(TagPrefix.circuit, MarkerMaterials.Tier.MV)).register();
-    public static ItemEntry<Item> INTEGRATED_CIRCUIT_HV = REGISTRATE.item("circuit.advanced_integrated", Item::new).lang("Advanced Integrated Circuit").transform(unificationItem(TagPrefix.circuit, MarkerMaterials.Tier.HV)).register();
+    public static ItemEntry<Item> INTEGRATED_CIRCUIT_LV = REGISTRATE.item("circuit.basic_integrated", Item::new).lang("Integrated Logic Circuit").tag(CustomTags.LV_CIRCUITS).register();
+    public static ItemEntry<Item> INTEGRATED_CIRCUIT_MV = REGISTRATE.item("circuit.good_integrated", Item::new).lang("Good Integrated Circuit").tag(CustomTags.MV_CIRCUITS).register();
+    public static ItemEntry<Item> INTEGRATED_CIRCUIT_HV = REGISTRATE.item("circuit.advanced_integrated", Item::new).lang("Advanced Integrated Circuit").tag(CustomTags.HV_CIRCUITS).register();
 
     // ULV/LV easier circuits
-    public static ItemEntry<Item> NAND_CHIP_ULV = REGISTRATE.item("circuit.nand_chip", Item::new).lang("NAND Chip").transform(unificationItem(TagPrefix.circuit, MarkerMaterials.Tier.ULV)).register();
-    public static ItemEntry<Item> MICROPROCESSOR_LV = REGISTRATE.item("circuit.microprocessor", Item::new).lang("Microprocessor").transform(unificationItem(TagPrefix.circuit, MarkerMaterials.Tier.LV)).register();
+    public static ItemEntry<Item> NAND_CHIP_ULV = REGISTRATE.item("circuit.nand_chip", Item::new).lang("NAND Chip").tag(CustomTags.ULV_CIRCUITS).register();
+    public static ItemEntry<Item> MICROPROCESSOR_LV = REGISTRATE.item("circuit.microprocessor", Item::new).lang("Microprocessor").tag(CustomTags.LV_CIRCUITS).register();
 
     // T3: Processor
-    public static ItemEntry<Item> PROCESSOR_MV = REGISTRATE.item("circuit.processor", Item::new).lang("Integrated Processor").transform(unificationItem(TagPrefix.circuit, MarkerMaterials.Tier.MV)).register();
-    public static ItemEntry<Item> PROCESSOR_ASSEMBLY_HV = REGISTRATE.item("circuit.assembly", Item::new).lang("Processor Assembly").transform(unificationItem(TagPrefix.circuit, MarkerMaterials.Tier.HV)).register();
-    public static ItemEntry<Item> WORKSTATION_EV = REGISTRATE.item("circuit.workstation", Item::new).lang("Workstation").transform(unificationItem(TagPrefix.circuit, MarkerMaterials.Tier.EV)).register();
-    public static ItemEntry<Item> MAINFRAME_IV = REGISTRATE.item("circuit.mainframe", Item::new).lang("Mainframe").transform(unificationItem(TagPrefix.circuit, MarkerMaterials.Tier.IV)).register();
+    public static ItemEntry<Item> PROCESSOR_MV = REGISTRATE.item("circuit.processor", Item::new).lang("Integrated Processor").tag(CustomTags.MV_CIRCUITS).register();
+    public static ItemEntry<Item> PROCESSOR_ASSEMBLY_HV = REGISTRATE.item("circuit.assembly", Item::new).lang("Processor Assembly").tag(CustomTags.HV_CIRCUITS).register();
+    public static ItemEntry<Item> WORKSTATION_EV = REGISTRATE.item("circuit.workstation", Item::new).lang("Workstation").tag(CustomTags.EV_CIRCUITS).register();
+    public static ItemEntry<Item> MAINFRAME_IV = REGISTRATE.item("circuit.mainframe", Item::new).lang("Mainframe").tag(CustomTags.IV_CIRCUITS).register();
 
     // T4: Nano
-    public static ItemEntry<Item> NANO_PROCESSOR_HV = REGISTRATE.item("circuit.nano_processor", Item::new).lang("Nanoprocessor").transform(unificationItem(TagPrefix.circuit, MarkerMaterials.Tier.HV)).register();
-    public static ItemEntry<Item> NANO_PROCESSOR_ASSEMBLY_EV = REGISTRATE.item("circuit.nano_assembly", Item::new).lang("Nanoprocessor Assembly").transform(unificationItem(TagPrefix.circuit, MarkerMaterials.Tier.EV)).register();
-    public static ItemEntry<Item> NANO_COMPUTER_IV = REGISTRATE.item("circuit.nano_computer", Item::new).lang("Nano Supercomputer").transform(unificationItem(TagPrefix.circuit, MarkerMaterials.Tier.IV)).register();
-    public static ItemEntry<Item> NANO_MAINFRAME_LUV = REGISTRATE.item("circuit.nano_mainframe", Item::new).lang("Nanoprocessor Mainframe").transform(unificationItem(TagPrefix.circuit, MarkerMaterials.Tier.LuV)).register();
+    public static ItemEntry<Item> NANO_PROCESSOR_HV = REGISTRATE.item("circuit.nano_processor", Item::new).lang("Nanoprocessor").tag(CustomTags.HV_CIRCUITS).register();
+    public static ItemEntry<Item> NANO_PROCESSOR_ASSEMBLY_EV = REGISTRATE.item("circuit.nano_assembly", Item::new).lang("Nanoprocessor Assembly").tag(CustomTags.EV_CIRCUITS).register();
+    public static ItemEntry<Item> NANO_COMPUTER_IV = REGISTRATE.item("circuit.nano_computer", Item::new).lang("Nano Supercomputer").tag(CustomTags.IV_CIRCUITS).register();
+    public static ItemEntry<Item> NANO_MAINFRAME_LUV = REGISTRATE.item("circuit.nano_mainframe", Item::new).lang("Nanoprocessor Mainframe").tag(CustomTags.LuV_CIRCUITS).register();
 
     // T5: Quantum
-    public static ItemEntry<Item> QUANTUM_PROCESSOR_EV = REGISTRATE.item("circuit.quantum_processor", Item::new).lang("Quantumprocessor").transform(unificationItem(TagPrefix.circuit, MarkerMaterials.Tier.EV)).register();
-    public static ItemEntry<Item> QUANTUM_ASSEMBLY_IV = REGISTRATE.item("circuit.quantum_assembly", Item::new).lang("Quantumprocessor Assembly").transform(unificationItem(TagPrefix.circuit, MarkerMaterials.Tier.IV)).register();
-    public static ItemEntry<Item> QUANTUM_COMPUTER_LUV = REGISTRATE.item("circuit.quantum_computer", Item::new).lang("Quantum Supercomputer").transform(unificationItem(TagPrefix.circuit, MarkerMaterials.Tier.LuV)).register();
-    public static ItemEntry<Item> QUANTUM_MAINFRAME_ZPM = REGISTRATE.item("circuit.quantum_mainframe", Item::new).lang("Quantumprocessor Mainframe").transform(unificationItem(TagPrefix.circuit, MarkerMaterials.Tier.ZPM)).register();
+    public static ItemEntry<Item> QUANTUM_PROCESSOR_EV = REGISTRATE.item("circuit.quantum_processor", Item::new).lang("Quantumprocessor").tag(CustomTags.EV_CIRCUITS).register();
+    public static ItemEntry<Item> QUANTUM_ASSEMBLY_IV = REGISTRATE.item("circuit.quantum_assembly", Item::new).lang("Quantumprocessor Assembly").tag(CustomTags.IV_CIRCUITS).register();
+    public static ItemEntry<Item> QUANTUM_COMPUTER_LUV = REGISTRATE.item("circuit.quantum_computer", Item::new).lang("Quantum Supercomputer").tag(CustomTags.LuV_CIRCUITS).register();
+    public static ItemEntry<Item> QUANTUM_MAINFRAME_ZPM = REGISTRATE.item("circuit.quantum_mainframe", Item::new).lang("Quantumprocessor Mainframe").tag(CustomTags.ZPM_CIRCUITS).register();
 
     // T6: Crystal
-    public static ItemEntry<Item> CRYSTAL_PROCESSOR_IV = REGISTRATE.item("circuit.crystal_processor", Item::new).lang("Crystal Processor").transform(unificationItem(TagPrefix.circuit, MarkerMaterials.Tier.IV)).register();
-    public static ItemEntry<Item> CRYSTAL_ASSEMBLY_LUV = REGISTRATE.item("circuit.crystal_assembly", Item::new).lang("Crystal Processor Assembly").transform(unificationItem(TagPrefix.circuit, MarkerMaterials.Tier.LuV)).register();
-    public static ItemEntry<Item> CRYSTAL_COMPUTER_ZPM = REGISTRATE.item("circuit.crystal_computer", Item::new).lang("Crystal Supercomputer").transform(unificationItem(TagPrefix.circuit, MarkerMaterials.Tier.ZPM)).register();
-    public static ItemEntry<Item> CRYSTAL_MAINFRAME_UV = REGISTRATE.item("circuit.crystal_mainframe", Item::new).lang("Crystal Processor Mainframe").transform(unificationItem(TagPrefix.circuit, MarkerMaterials.Tier.UV)).register();
+    public static ItemEntry<Item> CRYSTAL_PROCESSOR_IV = REGISTRATE.item("circuit.crystal_processor", Item::new).lang("Crystal Processor").tag(CustomTags.IV_CIRCUITS).register();
+    public static ItemEntry<Item> CRYSTAL_ASSEMBLY_LUV = REGISTRATE.item("circuit.crystal_assembly", Item::new).lang("Crystal Processor Assembly").tag(CustomTags.LuV_CIRCUITS).register();
+    public static ItemEntry<Item> CRYSTAL_COMPUTER_ZPM = REGISTRATE.item("circuit.crystal_computer", Item::new).lang("Crystal Supercomputer").tag(CustomTags.ZPM_CIRCUITS).register();
+    public static ItemEntry<Item> CRYSTAL_MAINFRAME_UV = REGISTRATE.item("circuit.crystal_mainframe", Item::new).lang("Crystal Processor Mainframe").tag(CustomTags.UV_CIRCUITS).register();
 
     // T7: Wetware
-    public static ItemEntry<Item> WETWARE_PROCESSOR_LUV = REGISTRATE.item("circuit.wetware_processor", Item::new).lang("Wetware Processor").transform(unificationItem(TagPrefix.circuit, MarkerMaterials.Tier.LuV)).register();
-    public static ItemEntry<Item> WETWARE_PROCESSOR_ASSEMBLY_ZPM = REGISTRATE.item("circuit.wetware_assembly", Item::new).lang("Wetware Assembly").transform(unificationItem(TagPrefix.circuit, MarkerMaterials.Tier.ZPM)).register();
-    public static ItemEntry<Item> WETWARE_SUPER_COMPUTER_UV = REGISTRATE.item("circuit.wetware_computer", Item::new).lang("Wetware Supercomputer").transform(unificationItem(TagPrefix.circuit, MarkerMaterials.Tier.UV)).register();
-    public static ItemEntry<Item> WETWARE_MAINFRAME_UHV = REGISTRATE.item("circuit.wetware_mainframe", Item::new).transform(unificationItem(TagPrefix.circuit, MarkerMaterials.Tier.UHV)).register();
+    public static ItemEntry<Item> WETWARE_PROCESSOR_LUV = REGISTRATE.item("circuit.wetware_processor", Item::new).lang("Wetware Processor").tag(CustomTags.LuV_CIRCUITS).register();
+    public static ItemEntry<Item> WETWARE_PROCESSOR_ASSEMBLY_ZPM = REGISTRATE.item("circuit.wetware_assembly", Item::new).lang("Wetware Assembly").tag(CustomTags.ZPM_CIRCUITS).register();
+    public static ItemEntry<Item> WETWARE_SUPER_COMPUTER_UV = REGISTRATE.item("circuit.wetware_computer", Item::new).lang("Wetware Supercomputer").tag(CustomTags.UV_CIRCUITS).register();
+    public static ItemEntry<Item> WETWARE_MAINFRAME_UHV = REGISTRATE.item("circuit.wetware_mainframe", Item::new).tag(CustomTags.UHV_CIRCUITS).register();
 
     public static ItemEntry<Item> COMPONENT_GRINDER_DIAMOND = REGISTRATE.item("component.grinder.diamond", Item::new).lang("Diamond Grinding Head").onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 8), new MaterialStack(GTMaterials.Diamond, GTValues.M * 5)))).register();
     public static ItemEntry<Item> COMPONENT_GRINDER_TUNGSTEN = REGISTRATE.item("component.grinder.tungsten", Item::new).lang("Tungsten Grinding Head").onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Tungsten, GTValues.M * 4), new MaterialStack(GTMaterials.VanadiumSteel, GTValues.M * 8), new MaterialStack(GTMaterials.Diamond, GTValues.M)))).register();

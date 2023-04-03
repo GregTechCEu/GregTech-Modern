@@ -2,13 +2,13 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:cables/single/red_alloy"
+      "tag": "c:red_alloy_single_cables"
     },
     "H": {
       "item": "gtceu:hull.ulv"
     },
     "T": {
-      "tag": "c:cables/single/tin"
+      "tag": "c:tin_single_cables"
     }
   },
   "pattern": [

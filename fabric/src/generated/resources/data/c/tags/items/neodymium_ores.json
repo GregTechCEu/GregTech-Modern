@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:deepslate_neodymium",
+    "gtceu:sand_neodymium",
+    "gtceu:basalt_neodymium",
+    "gtceu:granite_neodymium",
+    "gtceu:andesite_neodymium",
+    "gtceu:red_sand_neodymium",
+    "gtceu:stone_neodymium",
+    "gtceu:diorite_neodymium"
+  ]
+}

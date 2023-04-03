@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:deepslate_pollucite",
+    "gtceu:sand_pollucite",
+    "gtceu:basalt_pollucite",
+    "gtceu:granite_pollucite",
+    "gtceu:andesite_pollucite",
+    "gtceu:red_sand_pollucite",
+    "gtceu:stone_pollucite",
+    "gtceu:diorite_pollucite"
+  ]
+}

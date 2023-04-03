@@ -24,7 +24,7 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "c:dusts/indium_gallium_phosphide"
+          "tag": "c:indium_gallium_phosphide_dusts"
         }
       }
     ]

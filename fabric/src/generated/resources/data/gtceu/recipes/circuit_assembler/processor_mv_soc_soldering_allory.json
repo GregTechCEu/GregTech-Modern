@@ -30,7 +30,7 @@
           "type": "gtceu:sized",
           "count": 4,
           "fabric:type": "gtceu:sized",
-          "tag": "c:wires/fine/red_alloy"
+          "tag": "c:red_alloy_fine_wires"
         }
       },
       {
@@ -39,7 +39,7 @@
           "type": "gtceu:sized",
           "count": 4,
           "fabric:type": "gtceu:sized",
-          "tag": "c:bolts/annealed_copper"
+          "tag": "c:annealed_copper_bolts"
         }
       }
     ]

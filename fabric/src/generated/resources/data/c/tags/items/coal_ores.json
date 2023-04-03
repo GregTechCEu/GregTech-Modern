@@ -1,0 +1,14 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:coal_ore",
+    "gtceu:stone_coal",
+    "gtceu:deepslate_coal",
+    "gtceu:sand_coal",
+    "gtceu:basalt_coal",
+    "gtceu:granite_coal",
+    "gtceu:andesite_coal",
+    "gtceu:red_sand_coal",
+    "gtceu:diorite_coal"
+  ]
+}

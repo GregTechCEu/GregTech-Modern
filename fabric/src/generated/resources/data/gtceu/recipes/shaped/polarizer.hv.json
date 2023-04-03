@@ -5,13 +5,13 @@
       "item": "gtceu:hull.hv"
     },
     "S": {
-      "tag": "c:sticks/steel"
+      "tag": "c:steel_rods"
     },
     "W": {
-      "tag": "c:cables/single/gold"
+      "tag": "c:gold_single_cables"
     },
     "Z": {
-      "tag": "c:wires/double/silver"
+      "tag": "c:silver_double_wires"
     }
   },
   "pattern": [

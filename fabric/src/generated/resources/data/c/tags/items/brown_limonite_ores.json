@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:deepslate_brown_limonite",
+    "gtceu:sand_brown_limonite",
+    "gtceu:basalt_brown_limonite",
+    "gtceu:granite_brown_limonite",
+    "gtceu:andesite_brown_limonite",
+    "gtceu:red_sand_brown_limonite",
+    "gtceu:stone_brown_limonite",
+    "gtceu:diorite_brown_limonite"
+  ]
+}

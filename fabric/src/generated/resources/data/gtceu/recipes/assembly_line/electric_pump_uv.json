@@ -38,7 +38,7 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "c:fluid_pipes/large/naquadah"
+          "tag": "c:naquadah_large_fluid_pipes"
         }
       },
       {
@@ -47,7 +47,7 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "c:plates/tritanium"
+          "tag": "c:tritanium_plates"
         }
       },
       {
@@ -56,7 +56,7 @@
           "type": "gtceu:sized",
           "count": 8,
           "fabric:type": "gtceu:sized",
-          "tag": "c:screws/tritanium"
+          "tag": "c:tritanium_screws"
         }
       },
       {
@@ -65,7 +65,7 @@
           "type": "gtceu:sized",
           "count": 16,
           "fabric:type": "gtceu:sized",
-          "tag": "c:rings/silicone_rubber"
+          "tag": "c:silicone_rubber_rings"
         }
       },
       {
@@ -74,7 +74,7 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "c:rotors/naquadah_alloy"
+          "tag": "c:naquadah_alloy_rotors"
         }
       },
       {
@@ -83,7 +83,7 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "c:cables/single/yttrium_barium_cuprate"
+          "tag": "c:yttrium_barium_cuprate_single_cables"
         }
       }
     ]

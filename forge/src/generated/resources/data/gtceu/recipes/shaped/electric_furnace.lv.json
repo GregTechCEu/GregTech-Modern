@@ -5,7 +5,7 @@
       "tag": "forge:wires/double/copper"
     },
     "E": {
-      "tag": "forge:circuit/lv"
+      "tag": "forge:lv_circuits"
     },
     "M": {
       "item": "gtceu:hull.lv"

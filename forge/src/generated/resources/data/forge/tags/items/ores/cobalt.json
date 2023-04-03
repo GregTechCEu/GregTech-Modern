@@ -1,13 +1,12 @@
 {
   "values": [
-    "gtceu:ore_cobalt",
-    "gtceu:ore_basalt_cobalt",
-    "gtceu:ore_sand_cobalt",
-    "gtceu:ore_granite_cobalt",
-    "gtceu:ore_andesite_cobalt",
-    "gtceu:ore_endstone_cobalt",
-    "gtceu:ore_red_sand_cobalt",
-    "gtceu:ore_netherrack_cobalt",
-    "gtceu:ore_diorite_cobalt"
+    "gtceu:deepslate_cobalt",
+    "gtceu:sand_cobalt",
+    "gtceu:basalt_cobalt",
+    "gtceu:granite_cobalt",
+    "gtceu:andesite_cobalt",
+    "gtceu:red_sand_cobalt",
+    "gtceu:stone_cobalt",
+    "gtceu:diorite_cobalt"
   ]
 }

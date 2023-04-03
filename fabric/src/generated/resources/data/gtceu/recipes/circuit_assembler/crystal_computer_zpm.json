@@ -71,7 +71,7 @@
           "type": "gtceu:sized",
           "count": 32,
           "fabric:type": "gtceu:sized",
-          "tag": "c:wires/fine/niobium_titanium"
+          "tag": "c:niobium_titanium_fine_wires"
         }
       }
     ]

@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:deepslate_lead",
+    "gtceu:sand_lead",
+    "gtceu:basalt_lead",
+    "gtceu:granite_lead",
+    "gtceu:andesite_lead",
+    "gtceu:red_sand_lead",
+    "gtceu:stone_lead",
+    "gtceu:diorite_lead"
+  ]
+}

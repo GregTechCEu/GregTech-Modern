@@ -2,13 +2,13 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "F": {
-      "tag": "c:frames/titanium"
+      "tag": "c:titanium_frames"
     },
     "P": {
-      "tag": "c:plates/titanium"
+      "tag": "c:titanium_plates"
     },
     "S": {
-      "tag": "c:sticks/titanium"
+      "tag": "c:titanium_rods"
     }
   },
   "pattern": [

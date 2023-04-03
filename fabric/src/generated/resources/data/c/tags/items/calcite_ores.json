@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:deepslate_calcite",
+    "gtceu:sand_calcite",
+    "gtceu:basalt_calcite",
+    "gtceu:granite_calcite",
+    "gtceu:andesite_calcite",
+    "gtceu:red_sand_calcite",
+    "gtceu:stone_calcite",
+    "gtceu:diorite_calcite"
+  ]
+}

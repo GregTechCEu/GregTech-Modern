@@ -9,7 +9,7 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "c:cables/single/copper"
+          "tag": "c:copper_single_cables"
         }
       },
       {
@@ -18,7 +18,7 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "c:sticks/aluminium"
+          "tag": "c:aluminium_rods"
         }
       },
       {
@@ -27,7 +27,7 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "c:sticks/steel_magnetic"
+          "tag": "c:steel_magnetic_rods"
         }
       },
       {
@@ -36,7 +36,7 @@
           "type": "gtceu:sized",
           "count": 4,
           "fabric:type": "gtceu:sized",
-          "tag": "c:wires/double/cupronickel"
+          "tag": "c:cupronickel_double_wires"
         }
       }
     ]

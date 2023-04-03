@@ -11,7 +11,7 @@
       "tag": "forge:wires/quadruple/uranium_triplatinum"
     },
     "X": {
-      "tag": "forge:circuit/ev"
+      "tag": "forge:ev_circuits"
     }
   },
   "pattern": [

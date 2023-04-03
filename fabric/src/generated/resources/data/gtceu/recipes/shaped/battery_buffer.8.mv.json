@@ -8,7 +8,7 @@
       "tag": "c:chests"
     },
     "W": {
-      "tag": "c:wires/octal/copper"
+      "tag": "c:copper_octal_wires"
     }
   },
   "pattern": [

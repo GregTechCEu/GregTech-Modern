@@ -15,7 +15,7 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "c:circuit/lv"
+          "tag": "c:lv_circuits"
         }
       },
       {

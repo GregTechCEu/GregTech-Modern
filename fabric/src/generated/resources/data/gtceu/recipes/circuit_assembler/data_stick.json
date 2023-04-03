@@ -60,7 +60,7 @@
           "type": "gtceu:sized",
           "count": 16,
           "fabric:type": "gtceu:sized",
-          "tag": "c:wires/fine/red_alloy"
+          "tag": "c:red_alloy_fine_wires"
         }
       },
       {
@@ -69,7 +69,7 @@
           "type": "gtceu:sized",
           "count": 4,
           "fabric:type": "gtceu:sized",
-          "tag": "c:plates/plastic"
+          "tag": "c:plastic_plates"
         }
       }
     ]

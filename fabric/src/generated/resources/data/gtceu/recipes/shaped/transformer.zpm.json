@@ -2,13 +2,13 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:cables/single/vanadium_gallium"
+      "tag": "c:vanadium_gallium_single_cables"
     },
     "H": {
       "item": "gtceu:hull.zpm"
     },
     "T": {
-      "tag": "c:cables/single/yttrium_barium_cuprate"
+      "tag": "c:yttrium_barium_cuprate_single_cables"
     },
     "W": {
       "item": "gtceu:plate.ultra_high_power_integrated_circuit"

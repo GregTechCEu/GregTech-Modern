@@ -1,13 +1,12 @@
 {
   "values": [
-    "gtceu:ore_talc",
-    "gtceu:ore_basalt_talc",
-    "gtceu:ore_sand_talc",
-    "gtceu:ore_granite_talc",
-    "gtceu:ore_andesite_talc",
-    "gtceu:ore_endstone_talc",
-    "gtceu:ore_red_sand_talc",
-    "gtceu:ore_netherrack_talc",
-    "gtceu:ore_diorite_talc"
+    "gtceu:deepslate_talc",
+    "gtceu:sand_talc",
+    "gtceu:basalt_talc",
+    "gtceu:granite_talc",
+    "gtceu:andesite_talc",
+    "gtceu:red_sand_talc",
+    "gtceu:stone_talc",
+    "gtceu:diorite_talc"
   ]
 }

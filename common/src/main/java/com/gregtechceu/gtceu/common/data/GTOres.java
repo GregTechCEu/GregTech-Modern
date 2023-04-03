@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.worldgen.GTLayerPattern;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreFeatureEntry;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
-import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.data.worldgen.features.OreFeatures;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.world.level.block.Block;
@@ -17,6 +16,7 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.BlockMatchTes
 import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;
 
 import java.util.function.Supplier;
+
 import static com.gregtechceu.gtceu.api.tag.TagPrefix.*;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 

@@ -2,13 +2,13 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "F": {
-      "tag": "c:frames/polytetrafluoroethylene"
+      "tag": "c:polytetrafluoroethylene_frames"
     },
     "I": {
-      "tag": "c:fluid_pipes/normal/polytetrafluoroethylene"
+      "tag": "c:polytetrafluoroethylene_normal_fluid_pipes"
     },
     "P": {
-      "tag": "c:plates/polytetrafluoroethylene"
+      "tag": "c:polytetrafluoroethylene_plates"
     }
   },
   "pattern": [

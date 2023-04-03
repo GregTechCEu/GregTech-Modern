@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:deepslate_vanadium_magnetite",
+    "gtceu:sand_vanadium_magnetite",
+    "gtceu:basalt_vanadium_magnetite",
+    "gtceu:granite_vanadium_magnetite",
+    "gtceu:andesite_vanadium_magnetite",
+    "gtceu:red_sand_vanadium_magnetite",
+    "gtceu:stone_vanadium_magnetite",
+    "gtceu:diorite_vanadium_magnetite"
+  ]
+}

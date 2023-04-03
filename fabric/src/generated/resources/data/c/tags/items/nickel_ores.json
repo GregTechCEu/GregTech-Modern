@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:deepslate_nickel",
+    "gtceu:sand_nickel",
+    "gtceu:basalt_nickel",
+    "gtceu:granite_nickel",
+    "gtceu:andesite_nickel",
+    "gtceu:red_sand_nickel",
+    "gtceu:stone_nickel",
+    "gtceu:diorite_nickel"
+  ]
+}

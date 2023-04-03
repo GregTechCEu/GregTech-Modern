@@ -11,7 +11,7 @@
       "tag": "forge:fluid_pipes/large/titanium"
     },
     "W": {
-      "tag": "forge:circuit/ev"
+      "tag": "forge:ev_circuits"
     }
   },
   "pattern": [

@@ -1,13 +1,12 @@
 {
   "values": [
-    "gtceu:ore_spodumene",
-    "gtceu:ore_basalt_spodumene",
-    "gtceu:ore_sand_spodumene",
-    "gtceu:ore_granite_spodumene",
-    "gtceu:ore_andesite_spodumene",
-    "gtceu:ore_endstone_spodumene",
-    "gtceu:ore_red_sand_spodumene",
-    "gtceu:ore_netherrack_spodumene",
-    "gtceu:ore_diorite_spodumene"
+    "gtceu:deepslate_spodumene",
+    "gtceu:sand_spodumene",
+    "gtceu:basalt_spodumene",
+    "gtceu:granite_spodumene",
+    "gtceu:andesite_spodumene",
+    "gtceu:red_sand_spodumene",
+    "gtceu:stone_spodumene",
+    "gtceu:diorite_spodumene"
   ]
 }

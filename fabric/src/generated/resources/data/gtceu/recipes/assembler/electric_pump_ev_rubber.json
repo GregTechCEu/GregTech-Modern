@@ -9,7 +9,7 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "c:cables/single/aluminium"
+          "tag": "c:aluminium_single_cables"
         }
       },
       {
@@ -18,7 +18,7 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "c:fluid_pipes/normal/titanium"
+          "tag": "c:titanium_normal_fluid_pipes"
         }
       },
       {
@@ -27,7 +27,7 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "c:screws/stainless_steel"
+          "tag": "c:stainless_steel_screws"
         }
       },
       {
@@ -36,7 +36,7 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "c:rotors/stainless_steel"
+          "tag": "c:stainless_steel_rotors"
         }
       },
       {
@@ -45,7 +45,7 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "c:rings/rubber"
+          "tag": "c:rubber_rings"
         }
       },
       {

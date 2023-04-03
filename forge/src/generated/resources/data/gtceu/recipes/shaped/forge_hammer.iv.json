@@ -5,7 +5,7 @@
       "item": "minecraft:anvil"
     },
     "C": {
-      "tag": "forge:circuit/iv"
+      "tag": "forge:iv_circuits"
     },
     "M": {
       "item": "gtceu:hull.iv"

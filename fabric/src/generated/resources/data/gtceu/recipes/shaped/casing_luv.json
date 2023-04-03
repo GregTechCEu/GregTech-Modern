@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "P": {
-      "tag": "c:plates/rhodium_plated_palladium"
+      "tag": "c:rhodium_plated_palladium_plates"
     },
     "w": {
       "tag": "c:tool/wrench"

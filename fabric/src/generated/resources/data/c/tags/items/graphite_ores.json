@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:deepslate_graphite",
+    "gtceu:sand_graphite",
+    "gtceu:basalt_graphite",
+    "gtceu:granite_graphite",
+    "gtceu:andesite_graphite",
+    "gtceu:red_sand_graphite",
+    "gtceu:stone_graphite",
+    "gtceu:diorite_graphite"
+  ]
+}

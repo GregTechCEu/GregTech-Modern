@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:deepslate_pyrolusite",
+    "gtceu:sand_pyrolusite",
+    "gtceu:basalt_pyrolusite",
+    "gtceu:granite_pyrolusite",
+    "gtceu:andesite_pyrolusite",
+    "gtceu:red_sand_pyrolusite",
+    "gtceu:stone_pyrolusite",
+    "gtceu:diorite_pyrolusite"
+  ]
+}

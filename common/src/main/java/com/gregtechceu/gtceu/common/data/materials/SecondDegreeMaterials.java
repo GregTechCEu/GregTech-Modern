@@ -166,7 +166,7 @@ public class SecondDegreeMaterials {
                 .components(Magnesium, 1, Calcite, 7)
                 .buildAndRegister();
 
-        GraniteBlack = new Material.Builder("granite_black")
+        Deepslate = new Material.Builder("deepslate")
                 .dust()
                 .color(0x0A0A0A).iconSet(ROUGH)
                 .flags(NO_SMASHING, DECOMPOSITION_BY_CENTRIFUGING)

@@ -24,7 +24,7 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "c:circuit/lv"
+          "tag": "c:lv_circuits"
         }
       },
       {
@@ -33,7 +33,7 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "c:component/diode"
+          "tag": "c:diodes"
         }
       },
       {
@@ -42,7 +42,7 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "c:wires/single/copper"
+          "tag": "c:copper_single_wires"
         }
       }
     ]

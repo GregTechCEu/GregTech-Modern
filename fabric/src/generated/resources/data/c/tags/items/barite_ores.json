@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:deepslate_barite",
+    "gtceu:sand_barite",
+    "gtceu:basalt_barite",
+    "gtceu:granite_barite",
+    "gtceu:andesite_barite",
+    "gtceu:red_sand_barite",
+    "gtceu:stone_barite",
+    "gtceu:diorite_barite"
+  ]
+}

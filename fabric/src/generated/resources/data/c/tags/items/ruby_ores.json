@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:deepslate_ruby",
+    "gtceu:sand_ruby",
+    "gtceu:basalt_ruby",
+    "gtceu:granite_ruby",
+    "gtceu:andesite_ruby",
+    "gtceu:red_sand_ruby",
+    "gtceu:stone_ruby",
+    "gtceu:diorite_ruby"
+  ]
+}

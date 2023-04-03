@@ -5,7 +5,7 @@
       "tag": "forge:tool_heads/buzzsaw/hsse"
     },
     "C": {
-      "tag": "forge:circuit/luv"
+      "tag": "forge:luv_circuits"
     },
     "E": {
       "item": "gtceu:electric.motor.luv"

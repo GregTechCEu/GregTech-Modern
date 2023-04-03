@@ -8,10 +8,10 @@
       "item": "gtceu:frame_block_tungsten_steel"
     },
     "G": {
-      "tag": "c:gears/ruridit"
+      "tag": "c:ruridit_gears"
     },
     "P": {
-      "tag": "c:plates/steel"
+      "tag": "c:steel_plates"
     }
   },
   "pattern": [

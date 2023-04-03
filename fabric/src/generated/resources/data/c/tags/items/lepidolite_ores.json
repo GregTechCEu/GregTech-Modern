@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:deepslate_lepidolite",
+    "gtceu:sand_lepidolite",
+    "gtceu:basalt_lepidolite",
+    "gtceu:granite_lepidolite",
+    "gtceu:andesite_lepidolite",
+    "gtceu:red_sand_lepidolite",
+    "gtceu:stone_lepidolite",
+    "gtceu:diorite_lepidolite"
+  ]
+}

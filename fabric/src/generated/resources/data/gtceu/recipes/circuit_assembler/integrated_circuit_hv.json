@@ -51,7 +51,7 @@
           "type": "gtceu:sized",
           "count": 4,
           "fabric:type": "gtceu:sized",
-          "tag": "c:component/transistor"
+          "tag": "c:transistors"
         }
       },
       {
@@ -60,7 +60,7 @@
           "type": "gtceu:sized",
           "count": 8,
           "fabric:type": "gtceu:sized",
-          "tag": "c:wires/fine/electrum"
+          "tag": "c:electrum_fine_wires"
         }
       },
       {
@@ -69,7 +69,7 @@
           "type": "gtceu:sized",
           "count": 8,
           "fabric:type": "gtceu:sized",
-          "tag": "c:bolts/annealed_copper"
+          "tag": "c:annealed_copper_bolts"
         }
       }
     ]

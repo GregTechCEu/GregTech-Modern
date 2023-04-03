@@ -2,13 +2,13 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "forge:circuit/uv"
+      "tag": "forge:uv_circuits"
     },
     "M": {
       "item": "gtceu:hull.uv"
     },
     "S": {
-      "tag": "forge:sticks/vanadium_gallium"
+      "tag": "forge:rods/vanadium_gallium"
     },
     "V": {
       "item": "gtceu:conveyor.module.uv"

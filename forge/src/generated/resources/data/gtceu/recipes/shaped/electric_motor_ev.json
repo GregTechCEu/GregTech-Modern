@@ -5,10 +5,10 @@
       "tag": "forge:cables/double/aluminium"
     },
     "M": {
-      "tag": "forge:sticks/neodymium_magnetic"
+      "tag": "forge:rods/neodymium_magnetic"
     },
     "R": {
-      "tag": "forge:sticks/titanium"
+      "tag": "forge:rods/titanium"
     },
     "W": {
       "tag": "forge:wires/double/kanthal"

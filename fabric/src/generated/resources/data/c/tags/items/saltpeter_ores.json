@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:deepslate_saltpeter",
+    "gtceu:sand_saltpeter",
+    "gtceu:basalt_saltpeter",
+    "gtceu:granite_saltpeter",
+    "gtceu:andesite_saltpeter",
+    "gtceu:red_sand_saltpeter",
+    "gtceu:stone_saltpeter",
+    "gtceu:diorite_saltpeter"
+  ]
+}

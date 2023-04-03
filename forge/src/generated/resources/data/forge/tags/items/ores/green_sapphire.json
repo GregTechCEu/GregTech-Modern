@@ -1,13 +1,12 @@
 {
   "values": [
-    "gtceu:ore_green_sapphire",
-    "gtceu:ore_basalt_green_sapphire",
-    "gtceu:ore_sand_green_sapphire",
-    "gtceu:ore_granite_green_sapphire",
-    "gtceu:ore_andesite_green_sapphire",
-    "gtceu:ore_endstone_green_sapphire",
-    "gtceu:ore_red_sand_green_sapphire",
-    "gtceu:ore_netherrack_green_sapphire",
-    "gtceu:ore_diorite_green_sapphire"
+    "gtceu:deepslate_green_sapphire",
+    "gtceu:sand_green_sapphire",
+    "gtceu:basalt_green_sapphire",
+    "gtceu:granite_green_sapphire",
+    "gtceu:andesite_green_sapphire",
+    "gtceu:red_sand_green_sapphire",
+    "gtceu:stone_green_sapphire",
+    "gtceu:diorite_green_sapphire"
   ]
 }

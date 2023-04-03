@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:deepslate_rock_salt",
+    "gtceu:sand_rock_salt",
+    "gtceu:basalt_rock_salt",
+    "gtceu:granite_rock_salt",
+    "gtceu:andesite_rock_salt",
+    "gtceu:red_sand_rock_salt",
+    "gtceu:stone_rock_salt",
+    "gtceu:diorite_rock_salt"
+  ]
+}

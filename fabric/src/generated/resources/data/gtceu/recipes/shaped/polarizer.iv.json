@@ -5,13 +5,13 @@
       "item": "gtceu:hull.iv"
     },
     "S": {
-      "tag": "c:sticks/vanadium_gallium"
+      "tag": "c:vanadium_gallium_rods"
     },
     "W": {
-      "tag": "c:cables/single/platinum"
+      "tag": "c:platinum_single_cables"
     },
     "Z": {
-      "tag": "c:wires/quadruple/graphene"
+      "tag": "c:graphene_quadruple_wires"
     }
   },
   "pattern": [

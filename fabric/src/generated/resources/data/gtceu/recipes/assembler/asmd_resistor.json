@@ -18,7 +18,7 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "c:dusts/graphene"
+          "tag": "c:graphene_dusts"
         }
       },
       {
@@ -27,7 +27,7 @@
           "type": "gtceu:sized",
           "count": 4,
           "fabric:type": "gtceu:sized",
-          "tag": "c:wires/fine/platinum"
+          "tag": "c:platinum_fine_wires"
         }
       }
     ]

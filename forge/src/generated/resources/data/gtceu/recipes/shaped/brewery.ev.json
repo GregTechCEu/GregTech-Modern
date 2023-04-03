@@ -5,7 +5,7 @@
       "tag": "forge:springs/nichrome"
     },
     "C": {
-      "tag": "forge:circuit/ev"
+      "tag": "forge:ev_circuits"
     },
     "G": {
       "tag": "forge:glass"

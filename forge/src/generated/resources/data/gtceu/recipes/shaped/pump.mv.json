@@ -11,7 +11,7 @@
       "tag": "forge:fluid_pipes/large/steel"
     },
     "W": {
-      "tag": "forge:circuit/mv"
+      "tag": "forge:mv_circuits"
     }
   },
   "pattern": [

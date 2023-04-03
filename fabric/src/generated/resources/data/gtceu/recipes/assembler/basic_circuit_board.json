@@ -18,7 +18,7 @@
           "type": "gtceu:sized",
           "count": 4,
           "fabric:type": "gtceu:sized",
-          "tag": "c:foils/copper"
+          "tag": "c:copper_foils"
         }
       },
       {
@@ -27,7 +27,7 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "c:plates/wood"
+          "tag": "c:wood_plates"
         }
       }
     ]

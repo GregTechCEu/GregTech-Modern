@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:deepslate_lazurite",
+    "gtceu:sand_lazurite",
+    "gtceu:basalt_lazurite",
+    "gtceu:granite_lazurite",
+    "gtceu:andesite_lazurite",
+    "gtceu:red_sand_lazurite",
+    "gtceu:stone_lazurite",
+    "gtceu:diorite_lazurite"
+  ]
+}

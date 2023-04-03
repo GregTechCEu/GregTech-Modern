@@ -2,16 +2,16 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:wires/quadruple/hssg"
+      "tag": "c:hssg_quadruple_wires"
     },
     "E": {
-      "tag": "c:circuit/luv"
+      "tag": "c:luv_circuits"
     },
     "M": {
       "item": "gtceu:hull.luv"
     },
     "P": {
-      "tag": "c:fluid_pipes/normal/niobium_titanium"
+      "tag": "c:niobium_titanium_normal_fluid_pipes"
     },
     "X": {
       "item": "gtceu:electric.piston.luv"

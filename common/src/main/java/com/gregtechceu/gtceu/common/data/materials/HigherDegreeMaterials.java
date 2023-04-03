@@ -62,7 +62,7 @@ public class HigherDegreeMaterials {
         GraniticMineralSand = new Material.Builder("granitic_mineral_sand")
                 .dust(1).ore()
                 .color(0x283C3C).iconSet(SAND)
-                .components(Magnetite, 1, GraniteBlack, 1)
+                .components(Magnetite, 1, Deepslate, 1)
                 .flags(BLAST_FURNACE_CALCITE_DOUBLE)
                 .buildAndRegister();
 

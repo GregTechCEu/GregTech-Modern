@@ -5,13 +5,13 @@
       "item": "gtceu:hull.ev"
     },
     "S": {
-      "tag": "c:sticks/neodymium"
+      "tag": "c:neodymium_rods"
     },
     "W": {
-      "tag": "c:cables/single/aluminium"
+      "tag": "c:aluminium_single_cables"
     },
     "Z": {
-      "tag": "c:wires/quadruple/steel"
+      "tag": "c:steel_quadruple_wires"
     }
   },
   "pattern": [

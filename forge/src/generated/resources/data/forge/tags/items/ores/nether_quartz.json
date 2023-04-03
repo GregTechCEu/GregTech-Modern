@@ -1,14 +1,13 @@
 {
   "values": [
     "minecraft:nether_quartz_ore",
-    "gtceu:ore_nether_quartz",
-    "gtceu:ore_basalt_nether_quartz",
-    "gtceu:ore_sand_nether_quartz",
-    "gtceu:ore_granite_nether_quartz",
-    "gtceu:ore_andesite_nether_quartz",
-    "gtceu:ore_endstone_nether_quartz",
-    "gtceu:ore_red_sand_nether_quartz",
-    "gtceu:ore_netherrack_nether_quartz",
-    "gtceu:ore_diorite_nether_quartz"
+    "gtceu:stone_nether_quartz",
+    "gtceu:deepslate_nether_quartz",
+    "gtceu:sand_nether_quartz",
+    "gtceu:basalt_nether_quartz",
+    "gtceu:granite_nether_quartz",
+    "gtceu:andesite_nether_quartz",
+    "gtceu:red_sand_nether_quartz",
+    "gtceu:diorite_nether_quartz"
   ]
 }

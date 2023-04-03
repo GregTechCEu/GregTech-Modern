@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "forge:circuit/iv"
+      "tag": "forge:iv_circuits"
     },
     "F": {
       "item": "gtceu:field.generator.hv"

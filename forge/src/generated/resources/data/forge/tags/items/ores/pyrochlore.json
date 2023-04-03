@@ -1,13 +1,12 @@
 {
   "values": [
-    "gtceu:ore_pyrochlore",
-    "gtceu:ore_basalt_pyrochlore",
-    "gtceu:ore_sand_pyrochlore",
-    "gtceu:ore_granite_pyrochlore",
-    "gtceu:ore_andesite_pyrochlore",
-    "gtceu:ore_endstone_pyrochlore",
-    "gtceu:ore_red_sand_pyrochlore",
-    "gtceu:ore_netherrack_pyrochlore",
-    "gtceu:ore_diorite_pyrochlore"
+    "gtceu:deepslate_pyrochlore",
+    "gtceu:sand_pyrochlore",
+    "gtceu:basalt_pyrochlore",
+    "gtceu:granite_pyrochlore",
+    "gtceu:andesite_pyrochlore",
+    "gtceu:red_sand_pyrochlore",
+    "gtceu:stone_pyrochlore",
+    "gtceu:diorite_pyrochlore"
   ]
 }

@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:circuit/iv"
+      "tag": "c:iv_circuits"
     },
     "E": {
       "item": "gtceu:electric.motor.iv"
@@ -14,7 +14,7 @@
       "item": "gtceu:hull.iv"
     },
     "R": {
-      "tag": "c:rotors/tungsten_steel"
+      "tag": "c:tungsten_steel_rotors"
     }
   },
   "pattern": [

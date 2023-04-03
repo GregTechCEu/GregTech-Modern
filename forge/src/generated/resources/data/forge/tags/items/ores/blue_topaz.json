@@ -1,13 +1,12 @@
 {
   "values": [
-    "gtceu:ore_blue_topaz",
-    "gtceu:ore_basalt_blue_topaz",
-    "gtceu:ore_sand_blue_topaz",
-    "gtceu:ore_granite_blue_topaz",
-    "gtceu:ore_andesite_blue_topaz",
-    "gtceu:ore_endstone_blue_topaz",
-    "gtceu:ore_red_sand_blue_topaz",
-    "gtceu:ore_netherrack_blue_topaz",
-    "gtceu:ore_diorite_blue_topaz"
+    "gtceu:deepslate_blue_topaz",
+    "gtceu:sand_blue_topaz",
+    "gtceu:basalt_blue_topaz",
+    "gtceu:granite_blue_topaz",
+    "gtceu:andesite_blue_topaz",
+    "gtceu:red_sand_blue_topaz",
+    "gtceu:stone_blue_topaz",
+    "gtceu:diorite_blue_topaz"
   ]
 }

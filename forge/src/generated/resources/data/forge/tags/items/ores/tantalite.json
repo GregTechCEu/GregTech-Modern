@@ -1,13 +1,12 @@
 {
   "values": [
-    "gtceu:ore_tantalite",
-    "gtceu:ore_basalt_tantalite",
-    "gtceu:ore_sand_tantalite",
-    "gtceu:ore_granite_tantalite",
-    "gtceu:ore_andesite_tantalite",
-    "gtceu:ore_endstone_tantalite",
-    "gtceu:ore_red_sand_tantalite",
-    "gtceu:ore_netherrack_tantalite",
-    "gtceu:ore_diorite_tantalite"
+    "gtceu:deepslate_tantalite",
+    "gtceu:sand_tantalite",
+    "gtceu:basalt_tantalite",
+    "gtceu:granite_tantalite",
+    "gtceu:andesite_tantalite",
+    "gtceu:red_sand_tantalite",
+    "gtceu:stone_tantalite",
+    "gtceu:diorite_tantalite"
   ]
 }

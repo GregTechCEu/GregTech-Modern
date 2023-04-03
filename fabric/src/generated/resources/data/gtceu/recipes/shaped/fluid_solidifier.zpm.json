@@ -5,7 +5,7 @@
       "tag": "c:chests"
     },
     "C": {
-      "tag": "c:circuit/zpm"
+      "tag": "c:zpm_circuits"
     },
     "G": {
       "tag": "c:glass"
@@ -17,7 +17,7 @@
       "item": "gtceu:electric.pump.zpm"
     },
     "W": {
-      "tag": "c:cables/single/vanadium_gallium"
+      "tag": "c:vanadium_gallium_single_cables"
     }
   },
   "pattern": [

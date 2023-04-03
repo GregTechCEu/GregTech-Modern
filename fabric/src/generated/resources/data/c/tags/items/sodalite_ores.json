@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:deepslate_sodalite",
+    "gtceu:sand_sodalite",
+    "gtceu:basalt_sodalite",
+    "gtceu:granite_sodalite",
+    "gtceu:andesite_sodalite",
+    "gtceu:red_sand_sodalite",
+    "gtceu:stone_sodalite",
+    "gtceu:diorite_sodalite"
+  ]
+}

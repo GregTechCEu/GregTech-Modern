@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:deepslate_tricalcium_phosphate",
+    "gtceu:sand_tricalcium_phosphate",
+    "gtceu:basalt_tricalcium_phosphate",
+    "gtceu:granite_tricalcium_phosphate",
+    "gtceu:andesite_tricalcium_phosphate",
+    "gtceu:red_sand_tricalcium_phosphate",
+    "gtceu:stone_tricalcium_phosphate",
+    "gtceu:diorite_tricalcium_phosphate"
+  ]
+}
