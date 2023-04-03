@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.materials.*;
@@ -10,7 +9,10 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlag;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.integration.kjs.events.MaterialEventJS;
+import com.gregtechceu.gtceu.core.mixins.IRegistryAccessor;
+import com.gregtechceu.gtceu.integration.kjs.registrymirror.GTStringRegistryWrapper;
+import com.mojang.serialization.Lifecycle;
+import dev.latvian.mods.kubejs.KubeJSRegistries;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
@@ -299,7 +301,8 @@ public class GTMaterials {
 
 
         if (GTCEu.isKubeJSLoaded()) {
-            new MaterialEventJS().post();
+            GTRegistries.MATERIALS_WRAPPED = IRegistryAccessor.invokeInternalRegister(GTRegistries.MATERIALS_REGISTRY, new GTStringRegistryWrapper<>(GTRegistries.MATERIALS_REGISTRY, Lifecycle.experimental(), GTRegistries.MATERIALS), val -> GTMaterials.Neutronium, Lifecycle.experimental());
+            KubeJSRegistries.init(GTRegistries.MATERIALS_REGISTRY);
         }
     }
 

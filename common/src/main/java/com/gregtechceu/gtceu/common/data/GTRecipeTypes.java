@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.common.data;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.capability.recipe.StressRecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.FacadeCoverRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeSerializer;
 import com.gregtechceu.gtceu.common.recipe.RPMCondition;
@@ -14,7 +13,8 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.sound.ExistingSoundEntry;
 import com.gregtechceu.gtceu.common.block.CoilBlock;
-import com.gregtechceu.gtceu.integration.kjs.events.RecipeTypeEventJS;
+import com.gregtechceu.gtceu.core.mixins.IRegistryAccessor;
+import com.gregtechceu.gtceu.integration.kjs.registrymirror.GTRLRegistryWrapper;
 import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
 import com.lowdragmc.lowdraglib.gui.widget.TankWidget;
 import com.lowdragmc.lowdraglib.msic.FluidStorage;
@@ -22,9 +22,10 @@ import com.lowdragmc.lowdraglib.msic.ItemStackTransfer;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.lowdragmc.lowdraglib.utils.CycleItemStackHandler;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
+import com.mojang.serialization.Lifecycle;
 import com.simibubi.create.AllBlocks;
+import dev.latvian.mods.kubejs.KubeJSRegistries;
 import net.minecraft.core.Registry;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -492,6 +493,12 @@ public class GTRecipeTypes {
         return recipeType;
     }
 
+    public static GTRecipeType registerNoVanilla(String name, String group, RecipeType<?>... proxyRecipes) {
+        var recipeType = new GTRecipeType(GTCEu.id(name), group, proxyRecipes);
+        GTRegistries.RECIPE_TYPES.register(recipeType.registryName, recipeType);
+        return recipeType;
+    }
+
     public static void init() {
         if (GTCEu.isCreateLoaded()) {
             CREATE_MIXER_RECIPES = register("create_mixer", KINETIC).setMaxIOSize(6, 1, 2, 1).setEUIO(IO.IN)
@@ -515,7 +522,9 @@ public class GTRecipeTypes {
             });
         }
         if (GTCEu.isKubeJSLoaded()) {
-            new RecipeTypeEventJS().post();
+            GTRegistries.RECIPE_TYPES_WRAPPED = IRegistryAccessor.invokeInternalRegister(GTRegistries.RECIPE_TYPES_REGISTRY, new GTRLRegistryWrapper<>(GTRegistries.RECIPE_TYPES_REGISTRY, Lifecycle.experimental(), GTRegistries.RECIPE_TYPES), val -> GTRecipeTypes.FURNACE_RECIPES, Lifecycle.experimental());
+            KubeJSRegistries.init(Registry.RECIPE_TYPE_REGISTRY);
+            KubeJSRegistries.init(GTRegistries.RECIPE_TYPES_REGISTRY);
         }
         GTRegistries.register(Registry.RECIPE_SERIALIZER, GTCEu.id("gt_recipe_serializer"), GTRecipeSerializer.SERIALIZER);
         GTRegistries.register(Registry.RECIPE_SERIALIZER, GTCEu.id("facade_cover_serializer"), FacadeCoverRecipe.SERIALIZER);

@@ -20,11 +20,21 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.data.*;
+import com.gregtechceu.gtceu.integration.kjs.builders.ElementBuilder;
+import com.gregtechceu.gtceu.integration.kjs.builders.GTRecipeTypeBuilder;
+import com.gregtechceu.gtceu.integration.kjs.builders.MaterialBuilder;
+import com.gregtechceu.gtceu.integration.kjs.builders.machine.*;
+import dev.architectury.registry.registries.Registries;
 import dev.latvian.mods.kubejs.KubeJSPlugin;
+import dev.latvian.mods.kubejs.KubeJSRegistries;
+import dev.latvian.mods.kubejs.RegistryObjectBuilderTypes;
 import dev.latvian.mods.kubejs.script.BindingsEvent;
 import dev.latvian.mods.kubejs.script.ScriptType;
 import dev.latvian.mods.kubejs.util.ClassFilter;
 import dev.latvian.mods.rhino.util.wrap.TypeWrappers;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.crafting.RecipeType;
 
 /**
  * @author KilaBash
@@ -32,6 +42,27 @@ import dev.latvian.mods.rhino.util.wrap.TypeWrappers;
  * @implNote GregTechKubeJSPlugin
  */
 public class GregTechKubeJSPlugin extends KubeJSPlugin {
+
+    public static final RegistryObjectBuilderTypes<Element> ELEMENT = RegistryObjectBuilderTypes.add(GTRegistries.ELEMENTS_REGISTRY, Element.class);
+    public static final RegistryObjectBuilderTypes<Material> MATERIAL = RegistryObjectBuilderTypes.add(GTRegistries.MATERIALS_REGISTRY, Material.class);
+    public static final RegistryObjectBuilderTypes<GTRecipeType> GT_RECIPE_TYPE = RegistryObjectBuilderTypes.add(GTRegistries.RECIPE_TYPES_REGISTRY, GTRecipeType.class);
+    public static final RegistryObjectBuilderTypes<RecipeType<?>> RECIPE_TYPE = RegistryObjectBuilderTypes.add(Registry.RECIPE_TYPE_REGISTRY, GTRecipeType.class);
+    public static final RegistryObjectBuilderTypes<MachineDefinition> MACHINE = RegistryObjectBuilderTypes.add(GTRegistries.MACHINES_REGISTRY, MachineDefinition.class);
+
+    @Override
+    public void init() {
+        ELEMENT.addType("basic", ElementBuilder.class, ElementBuilder::new);
+
+        MATERIAL.addType("basic", MaterialBuilder.class, MaterialBuilder::new);
+
+        RECIPE_TYPE.addType("gtceu", GTRecipeTypeBuilder.class, GTRecipeTypeBuilder::new);
+
+        MACHINE.addType("basic", SimpleMachineBuilder.class, SimpleMachineBuilder::new);
+        MACHINE.addType("generator", GeneratorBuilder.class, GeneratorBuilder::new);
+        MACHINE.addType("steam", SteamMachineBuilder.class, SteamMachineBuilder::new);
+        MACHINE.addType("kinetic", KineticMachineBuilder.class, KineticMachineBuilder::new);
+        MACHINE.addType("multiblock", MultiblockBuilder.class, MultiblockBuilder::new);
+    }
 
     @Override
     public void registerEvents() {

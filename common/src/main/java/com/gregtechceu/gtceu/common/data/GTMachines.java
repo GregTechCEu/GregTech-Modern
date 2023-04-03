@@ -4,16 +4,24 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
+import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
+import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.item.DrumMachineItem;
 import com.gregtechceu.gtceu.api.machine.*;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
 import com.gregtechceu.gtceu.api.machine.steam.SimpleSteamMachine;
+import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
+import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.api.pattern.Predicates;
+import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
+import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.client.renderer.block.CTMModelRenderer;
 import com.gregtechceu.gtceu.client.renderer.machine.*;
 import com.gregtechceu.gtceu.common.block.BoilerFireboxType;
@@ -23,31 +31,22 @@ import com.gregtechceu.gtceu.common.machine.electric.PumpMachine;
 import com.gregtechceu.gtceu.common.machine.electric.TransformerMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.CrackerMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.ElectricBlastFurnaceMachine;
+import com.gregtechceu.gtceu.common.machine.multiblock.electric.PyrolyseOvenMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.*;
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.CokeOvenMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.PrimitiveBlastFurnaceMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.steam.LargeBoilerMachine;
-import com.gregtechceu.gtceu.common.machine.steam.SteamSolidBoilerMachine;
-import com.gregtechceu.gtceu.common.machine.storage.CrateMachine;
-import com.gregtechceu.gtceu.common.machine.storage.CreativeEnergyContainerMachine;
-import com.gregtechceu.gtceu.common.machine.storage.DrumMachine;
-import com.gregtechceu.gtceu.common.machine.storage.QuantumChestMachine;
-import com.gregtechceu.gtceu.common.machine.storage.QuantumTankMachine;
-import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
-import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.data.RotationState;
-import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
-import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
-import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
-import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
-import com.gregtechceu.gtceu.api.tag.TagPrefix;
-import com.gregtechceu.gtceu.common.machine.multiblock.electric.PyrolyseOvenMachine;
 import com.gregtechceu.gtceu.common.machine.steam.SteamLiquidBoilerMachine;
+import com.gregtechceu.gtceu.common.machine.steam.SteamSolidBoilerMachine;
+import com.gregtechceu.gtceu.common.machine.storage.*;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.core.mixins.IRegistryAccessor;
 import com.gregtechceu.gtceu.data.data.LangHandler;
-import com.gregtechceu.gtceu.integration.kjs.events.MachineEventJS;
+import com.gregtechceu.gtceu.integration.kjs.registrymirror.GTRLRegistryWrapper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
+import com.mojang.serialization.Lifecycle;
+import dev.latvian.mods.kubejs.KubeJSRegistries;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.ints.Int2LongFunction;
 import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
@@ -63,7 +62,10 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.Fluids;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
@@ -73,8 +75,8 @@ import static com.gregtechceu.gtceu.api.pattern.Predicates.*;
 import static com.gregtechceu.gtceu.api.pattern.util.RelativeDirection.*;
 import static com.gregtechceu.gtceu.api.registry.GTRegistries.REGISTRATE;
 import static com.gregtechceu.gtceu.common.data.GTBlocks.*;
-import static com.gregtechceu.gtceu.common.data.GTCreativeModeTabs.*;
-import static com.gregtechceu.gtceu.utils.FormattingUtil.*;
+import static com.gregtechceu.gtceu.common.data.GTCreativeModeTabs.MACHINE;
+import static com.gregtechceu.gtceu.utils.FormattingUtil.toEnglishName;
 
 /**
  * @author KilaBash
@@ -886,7 +888,8 @@ public class GTMachines {
             new GTCreateMachines();
         }
         if (GTCEu.isKubeJSLoaded()) {
-            new MachineEventJS().post();
+            GTRegistries.MACHINES_WRAPPED = IRegistryAccessor.invokeInternalRegister(GTRegistries.MACHINES_REGISTRY, new GTRLRegistryWrapper<>(GTRegistries.MACHINES_REGISTRY, Lifecycle.experimental(), GTRegistries.MACHINES), val -> GTMachines.ELECTRIC_FURNACE[0], Lifecycle.experimental());
+            KubeJSRegistries.init(GTRegistries.MACHINES_REGISTRY);
         }
     }
 

@@ -3,7 +3,11 @@ package com.gregtechceu.gtceu.common.data;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.Element;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.integration.kjs.events.ElementEventJS;
+import com.gregtechceu.gtceu.core.mixins.IRegistryAccessor;
+import com.gregtechceu.gtceu.integration.kjs.registrymirror.GTRLRegistryWrapper;
+import com.gregtechceu.gtceu.integration.kjs.registrymirror.GTStringRegistryWrapper;
+import com.mojang.serialization.Lifecycle;
+import dev.latvian.mods.kubejs.KubeJSRegistries;
 
 public class GTElements {
 
@@ -150,7 +154,8 @@ public class GTElements {
 
     public static void init() {
         if (GTCEu.isKubeJSLoaded()) {
-            new ElementEventJS().post();
+            GTRegistries.ELEMENTS_WRAPPED = IRegistryAccessor.invokeInternalRegister(GTRegistries.ELEMENTS_REGISTRY, new GTStringRegistryWrapper<>(GTRegistries.ELEMENTS_REGISTRY, Lifecycle.experimental(), GTRegistries.ELEMENTS), val -> GTElements.Nt, Lifecycle.experimental());
+            KubeJSRegistries.init(GTRegistries.ELEMENTS_REGISTRY);
         }
     }
 
