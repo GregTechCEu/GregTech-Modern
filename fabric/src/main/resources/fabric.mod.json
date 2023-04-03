@@ -35,6 +35,9 @@
     ],
     "fabric-datagen": [
       "com.gregtechceu.gtceu.data.fabric.GregTechDatagen"
+    ],
+    "jade": [
+      "com.gregtechceu.gtceu.integration.jade.GTJadePlugin"
     ]
   },
   "mixins": [
