@@ -31,7 +31,9 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "forge:fluid_pipes/small/niobium_titanium"
+          "ingredient": {
+            "item": "gtceu:small.niobium_titanium"
+          }
         }
       },
       {
@@ -76,7 +78,9 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "forge:cables/single/niobium_titanium"
+          "ingredient": {
+            "item": "gtceu:cable_single.niobium_titanium"
+          }
         }
       }
     ]

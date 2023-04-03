@@ -8,7 +8,7 @@
       "item": "gtceu:electric.motor.zpm"
     },
     "G": {
-      "tag": "c:polytetrafluoroethylene_large_fluid_pipes"
+      "item": "gtceu:large.polytetrafluoroethylene"
     },
     "M": {
       "item": "gtceu:hull.zpm"
@@ -17,7 +17,7 @@
       "tag": "c:naquadah_alloy_rotors"
     },
     "W": {
-      "tag": "c:vanadium_gallium_single_cables"
+      "item": "gtceu:cable_single.vanadium_gallium"
     }
   },
   "pattern": [

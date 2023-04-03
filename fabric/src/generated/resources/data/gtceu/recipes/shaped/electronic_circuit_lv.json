@@ -5,7 +5,7 @@
       "item": "gtceu:circuit_board.basic"
     },
     "C": {
-      "tag": "c:red_alloy_single_cables"
+      "item": "gtceu:cable_single.red_alloy"
     },
     "P": {
       "tag": "c:steel_plates"

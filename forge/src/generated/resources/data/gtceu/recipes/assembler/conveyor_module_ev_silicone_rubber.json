@@ -18,7 +18,9 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "forge:cables/single/aluminium"
+          "ingredient": {
+            "item": "gtceu:cable_single.aluminium"
+          }
         }
       },
       {

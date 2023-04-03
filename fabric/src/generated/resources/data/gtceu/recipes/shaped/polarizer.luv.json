@@ -8,10 +8,10 @@
       "tag": "c:vanadium_gallium_rods"
     },
     "W": {
-      "tag": "c:niobium_titanium_single_cables"
+      "item": "gtceu:cable_single.niobium_titanium"
     },
     "Z": {
-      "tag": "c:niobium_nitride_quadruple_wires"
+      "item": "gtceu:wire_quadruple.niobium_nitride"
     }
   },
   "pattern": [

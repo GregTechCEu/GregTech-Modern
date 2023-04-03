@@ -14,10 +14,10 @@
       "item": "gtceu:conveyor.module.luv"
     },
     "W": {
-      "tag": "forge:cables/single/niobium_titanium"
+      "item": "gtceu:cable_single.niobium_titanium"
     },
     "Z": {
-      "tag": "forge:wires/quadruple/niobium_nitride"
+      "item": "gtceu:wire_quadruple.niobium_nitride"
     }
   },
   "pattern": [

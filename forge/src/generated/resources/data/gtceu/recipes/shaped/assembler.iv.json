@@ -14,7 +14,7 @@
       "item": "gtceu:conveyor.module.iv"
     },
     "W": {
-      "tag": "forge:cables/single/platinum"
+      "item": "gtceu:cable_single.platinum"
     }
   },
   "pattern": [

@@ -17,7 +17,7 @@
       "item": "gtceu:robot.arm.hv"
     },
     "W": {
-      "tag": "c:gold_single_cables"
+      "item": "gtceu:cable_single.gold"
     }
   },
   "pattern": [

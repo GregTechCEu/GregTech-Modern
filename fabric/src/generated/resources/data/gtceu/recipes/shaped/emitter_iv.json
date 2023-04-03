@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:tungsten_single_cables"
+      "item": "gtceu:cable_single.tungsten"
     },
     "G": {
       "item": "gtceu:quantumstar"

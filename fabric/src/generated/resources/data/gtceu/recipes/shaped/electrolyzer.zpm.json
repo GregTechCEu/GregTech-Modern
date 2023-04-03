@@ -8,13 +8,13 @@
       "tag": "c:glass"
     },
     "I": {
-      "tag": "c:osmium_single_wires"
+      "item": "gtceu:wire_single.osmium"
     },
     "M": {
       "item": "gtceu:hull.zpm"
     },
     "W": {
-      "tag": "c:vanadium_gallium_single_cables"
+      "item": "gtceu:cable_single.vanadium_gallium"
     }
   },
   "pattern": [

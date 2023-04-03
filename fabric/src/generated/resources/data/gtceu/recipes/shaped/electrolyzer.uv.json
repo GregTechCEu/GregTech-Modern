@@ -8,13 +8,13 @@
       "tag": "c:glass"
     },
     "I": {
-      "tag": "c:osmium_single_wires"
+      "item": "gtceu:wire_single.osmium"
     },
     "M": {
       "item": "gtceu:hull.uv"
     },
     "W": {
-      "tag": "c:yttrium_barium_cuprate_single_cables"
+      "item": "gtceu:cable_single.yttrium_barium_cuprate"
     }
   },
   "pattern": [

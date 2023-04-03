@@ -14,10 +14,10 @@
       "item": "gtceu:conveyor.module.ev"
     },
     "W": {
-      "tag": "c:aluminium_single_cables"
+      "item": "gtceu:cable_single.aluminium"
     },
     "Z": {
-      "tag": "c:steel_quadruple_wires"
+      "item": "gtceu:wire_quadruple.steel"
     }
   },
   "pattern": [

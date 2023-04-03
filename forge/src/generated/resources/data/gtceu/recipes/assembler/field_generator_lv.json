@@ -36,7 +36,9 @@
           "type": "gtceu:sized",
           "count": 4,
           "fabric:type": "gtceu:sized",
-          "tag": "forge:wires/quadruple/manganese_phosphide"
+          "ingredient": {
+            "item": "gtceu:wire_quadruple.manganese_phosphide"
+          }
         }
       }
     ]

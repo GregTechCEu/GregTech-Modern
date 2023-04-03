@@ -11,13 +11,13 @@
       "item": "gtceu:hull.hv"
     },
     "P": {
-      "tag": "forge:fluid_pipes/normal/stainless_steel"
+      "item": "gtceu:normal.stainless_steel"
     },
     "R": {
       "tag": "forge:rotors/steel"
     },
     "W": {
-      "tag": "forge:cables/single/gold"
+      "item": "gtceu:cable_single.gold"
     }
   },
   "pattern": [

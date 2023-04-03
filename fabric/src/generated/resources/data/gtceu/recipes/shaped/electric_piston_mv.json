@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:copper_single_cables"
+      "item": "gtceu:cable_single.copper"
     },
     "G": {
       "tag": "c:aluminium_small_gears"

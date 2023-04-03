@@ -11,7 +11,7 @@
       "item": "gtceu:hull.mv"
     },
     "P": {
-      "tag": "forge:wires/quadruple/cupronickel"
+      "item": "gtceu:wire_quadruple.cupronickel"
     },
     "W": {
       "item": "gtceu:electric.piston.mv"

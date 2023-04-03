@@ -5,7 +5,7 @@
       "item": "gtceu:titanium_firebox"
     },
     "P": {
-      "tag": "forge:cables/single/gold"
+      "item": "gtceu:cable_single.gold"
     },
     "S": {
       "tag": "forge:ev_circuits"

@@ -222,8 +222,12 @@ public class GTRecipeBuilder {
         return inputItems(input.tagPrefix, input.material, count);
     }
 
-    public GTRecipeBuilder inputItems(TagPrefix orePrefix, @Nullable Material material, int count) {
-        return inputItems(ChemicalHelper.getTag(orePrefix, material), count);
+    public GTRecipeBuilder inputItems(TagPrefix orePrefix, Material material, int count) {
+        TagKey<Item> tag = ChemicalHelper.getTag(orePrefix, material);
+        if (tag == null) {
+            return inputItems(ChemicalHelper.get(orePrefix, material, count));
+        }
+        return inputItems(tag, count);
     }
 
     public GTRecipeBuilder inputItems(MachineDefinition machine) {

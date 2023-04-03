@@ -8,7 +8,7 @@
       "item": "gtceu:hull.mv"
     },
     "T": {
-      "tag": "forge:fluid_pipes/large/steel"
+      "item": "gtceu:large.steel"
     },
     "W": {
       "tag": "forge:mv_circuits"

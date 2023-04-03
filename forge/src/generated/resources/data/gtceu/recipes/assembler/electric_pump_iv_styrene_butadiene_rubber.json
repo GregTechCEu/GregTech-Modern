@@ -9,7 +9,9 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "forge:cables/single/tungsten"
+          "ingredient": {
+            "item": "gtceu:cable_single.tungsten"
+          }
         }
       },
       {
@@ -18,7 +20,9 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "forge:fluid_pipes/normal/tungsten_steel"
+          "ingredient": {
+            "item": "gtceu:normal.tungsten_steel"
+          }
         }
       },
       {

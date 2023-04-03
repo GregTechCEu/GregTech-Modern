@@ -14,7 +14,7 @@
       "tag": "c:aluminium_plates"
     },
     "W": {
-      "tag": "c:copper_quadruple_cables"
+      "item": "gtceu:cable_quadruple.copper"
     }
   },
   "pattern": [

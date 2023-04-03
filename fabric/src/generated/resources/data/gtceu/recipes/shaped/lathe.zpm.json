@@ -17,7 +17,7 @@
       "item": "gtceu:electric.piston.zpm"
     },
     "W": {
-      "tag": "c:vanadium_gallium_single_cables"
+      "item": "gtceu:cable_single.vanadium_gallium"
     }
   },
   "pattern": [

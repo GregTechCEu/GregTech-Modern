@@ -8,7 +8,7 @@
       "item": "gtceu:electric.motor.luv"
     },
     "G": {
-      "tag": "c:polytetrafluoroethylene_normal_fluid_pipes"
+      "item": "gtceu:normal.polytetrafluoroethylene"
     },
     "M": {
       "item": "gtceu:hull.luv"
@@ -17,7 +17,7 @@
       "tag": "c:rhodium_plated_palladium_rotors"
     },
     "W": {
-      "tag": "c:niobium_titanium_single_cables"
+      "item": "gtceu:cable_single.niobium_titanium"
     }
   },
   "pattern": [

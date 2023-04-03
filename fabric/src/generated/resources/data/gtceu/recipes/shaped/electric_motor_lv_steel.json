@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:tin_single_cables"
+      "item": "gtceu:cable_single.tin"
     },
     "M": {
       "tag": "c:magnetic_steel_rods"
@@ -11,7 +11,7 @@
       "tag": "c:steel_rods"
     },
     "W": {
-      "tag": "c:copper_single_wires"
+      "item": "gtceu:wire_single.copper"
     }
   },
   "pattern": [

@@ -33,7 +33,9 @@
           "type": "gtceu:sized",
           "count": 4,
           "fabric:type": "gtceu:sized",
-          "tag": "forge:wires/quadruple/samarium_iron_arsenic_oxide"
+          "ingredient": {
+            "item": "gtceu:wire_quadruple.samarium_iron_arsenic_oxide"
+          }
         }
       }
     ]

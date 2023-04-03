@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "forge:cables/single/gold"
+      "item": "gtceu:cable_single.gold"
     },
     "M": {
       "item": "gtceu:electric.motor.hv"

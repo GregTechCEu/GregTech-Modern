@@ -9,7 +9,9 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "c:tin_single_cables"
+          "ingredient": {
+            "item": "gtceu:cable_single.tin"
+          }
         }
       },
       {
@@ -36,7 +38,9 @@
           "type": "gtceu:sized",
           "count": 4,
           "fabric:type": "gtceu:sized",
-          "tag": "c:copper_single_wires"
+          "ingredient": {
+            "item": "gtceu:wire_single.copper"
+          }
         }
       }
     ]

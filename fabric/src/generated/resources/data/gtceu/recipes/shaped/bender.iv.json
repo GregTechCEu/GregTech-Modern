@@ -14,7 +14,7 @@
       "item": "gtceu:electric.piston.iv"
     },
     "W": {
-      "tag": "c:platinum_single_cables"
+      "item": "gtceu:cable_single.platinum"
     },
     "w": {
       "tag": "c:tool/wrench"

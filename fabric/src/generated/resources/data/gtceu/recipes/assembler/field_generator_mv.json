@@ -36,7 +36,9 @@
           "type": "gtceu:sized",
           "count": 4,
           "fabric:type": "gtceu:sized",
-          "tag": "c:magnesium_diboride_quadruple_wires"
+          "ingredient": {
+            "item": "gtceu:wire_quadruple.magnesium_diboride"
+          }
         }
       }
     ]

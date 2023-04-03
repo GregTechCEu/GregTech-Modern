@@ -8,7 +8,7 @@
       "tag": "forge:chests/wooden"
     },
     "W": {
-      "tag": "forge:wires/hex/vanadium_gallium"
+      "item": "gtceu:wire_hex.vanadium_gallium"
     }
   },
   "pattern": [
