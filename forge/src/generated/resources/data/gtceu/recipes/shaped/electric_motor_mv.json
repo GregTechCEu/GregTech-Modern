@@ -5,7 +5,7 @@
       "tag": "forge:cables/single/copper"
     },
     "M": {
-      "tag": "forge:rods/steel_magnetic"
+      "tag": "forge:rods/magnetic_steel"
     },
     "R": {
       "tag": "forge:rods/aluminium"

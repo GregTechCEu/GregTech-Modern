@@ -32,7 +32,7 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "forge:rods/long/samarium_magnetic"
+          "tag": "forge:rods/long/magnetic_samarium"
         }
       },
       {

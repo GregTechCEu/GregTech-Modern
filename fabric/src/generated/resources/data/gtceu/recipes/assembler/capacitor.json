@@ -7,7 +7,7 @@
         "chance": 1.0,
         "content": {
           "amount": 1,
-          "fluid": "gtceu:plastic"
+          "fluid": "gtceu:polyethylene"
         }
       }
     ],
@@ -18,7 +18,7 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "c:plastic_foils"
+          "tag": "c:polyethylene_foils"
         }
       },
       {
