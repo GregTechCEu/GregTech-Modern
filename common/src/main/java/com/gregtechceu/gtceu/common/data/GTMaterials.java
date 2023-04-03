@@ -19,7 +19,8 @@ import java.util.List;
 
 import static com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper.registerUnificationItems;
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.*;
-import static com.gregtechceu.gtceu.api.tag.TagPrefix.*;
+import static com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper.*;
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
 
 
 /**

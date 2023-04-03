@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.api.tag;
+package com.gregtechceu.gtceu.api.data.tag;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
@@ -37,7 +37,7 @@ import java.util.function.BiFunction;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import static com.gregtechceu.gtceu.api.tag.TagPrefix.Conditions.*;
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.Conditions.*;
 
 @Accessors(chain = true, fluent = true)
 public class TagPrefix {

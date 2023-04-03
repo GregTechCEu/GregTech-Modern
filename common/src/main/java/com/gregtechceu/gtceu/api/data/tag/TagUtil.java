@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.api.tag;
+package com.gregtechceu.gtceu.api.data.tag;
 
 import com.lowdragmc.lowdraglib.Platform;
 import net.minecraft.core.Registry;
