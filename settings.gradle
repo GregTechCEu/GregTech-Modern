@@ -20,6 +20,7 @@ dependencyResolutionManagement {
         // Common
         def jeiVersion = "11.5.0.297"
         def reiVersion = "9.1.580"
+        def emiVersion = "0.7.3+1.19.2"
 
         // Fabric
         def fabricLoaderVersion = "0.14.11" // https://fabricmc.net/develop/
@@ -27,7 +28,7 @@ dependencyResolutionManagement {
         def createVersion = "0.5.0.g-837"
         def lazyDfuVersion = "0.1.3"
         def modMenuVersion = "4.1.2"
-        def ldLibVersion = "1.0.4.c"
+        def ldLibVersion = "1.0.4.e"
         def topFabricVersion = "1.19-6.0.0"
         def registrateFabricVersion = "1.1.50-MC1.19.2"
         def kjsVersion = "1902.6.0-build.142"
@@ -86,6 +87,9 @@ dependencyResolutionManagement {
             library("rei-plugin", "me.shedaniel", "RoughlyEnoughItems-default-plugin-fabric").versionRef(rei)
             library("rei-api", "me.shedaniel", "RoughlyEnoughItems-api-fabric").versionRef(rei)
             library("rei-fabric", "me.shedaniel", "RoughlyEnoughItems-fabric").versionRef(rei)
+
+            def emi = version("emi", emiVersion)
+            library("emi", "dev.emi", "emi").versionRef(emi)
 
             def theoneprobe = version("theoneprobe", topFabricVersion)
             library("theoneprobe", "mcjty.theoneprobe", "theoneprobe-fabric").versionRef(theoneprobe)

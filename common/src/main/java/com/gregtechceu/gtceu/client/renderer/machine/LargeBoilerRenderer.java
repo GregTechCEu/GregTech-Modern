@@ -40,11 +40,11 @@ public class LargeBoilerRenderer extends WorkableCasingMachineRenderer implement
             // firebox
             if (side != null && modelFacing != null) {
                 if (side == Direction.UP) {
-                    quads.add(FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(firebox.getTop()), modelState));
+                    quads.add(FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(firebox.top()), modelState));
                 } else if (side == Direction.DOWN) {
-                    quads.add(FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(firebox.getBottom()), modelState));
+                    quads.add(FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(firebox.bottom()), modelState));
                 } else {
-                    quads.add(FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(firebox.getSide()), modelState));
+                    quads.add(FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(firebox.side()), modelState));
                     if (machine instanceof IRecipeLogicMachine recipeLogicMachine && recipeLogicMachine.getRecipeLogic().isWorking()) {
                         quads.add(FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(BLOOM_OVERLAY), modelState, -1, 15, true, false));
                     }

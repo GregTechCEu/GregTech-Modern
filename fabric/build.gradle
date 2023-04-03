@@ -104,6 +104,10 @@ dependencies {
     modCompileOnly(fabric.rei.api) { transitive = false }
     modCompileOnly(fabric.rei.fabric) { transitive = false }
 
+    // EMI
+    modCompileOnly("dev.emi:emi:${fabric.versions.emi.get()}:api")
+    modCompileOnly fabric.emi
+
     // TOP
     modCompileOnly fabric.theoneprobe
 

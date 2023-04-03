@@ -411,15 +411,15 @@ public class GTBlocks {
     }
 
     private static BlockEntry<ActiveBlock> createFireboxCasing(BoilerFireboxType type) {
-        BlockEntry<ActiveBlock> block = REGISTRATE.block(type.getName(), p -> new ActiveBlock(p,
+        BlockEntry<ActiveBlock> block = REGISTRATE.block(type.name(), p -> new ActiveBlock(p,
                         new TextureOverrideRenderer(new ResourceLocation("block/cube_bottom_top"),
-                                Map.of("bottom", type.getBottom(),
-                                        "top", type.getTop(),
-                                        "side", type.getSide())),
+                                Map.of("bottom", type.bottom(),
+                                        "top", type.top(),
+                                        "side", type.side())),
                         new TextureOverrideRenderer(GTCEu.id("block/fire_box_active"),
-                                Map.of("bottom", type.getBottom(),
-                                        "top", type.getTop(),
-                                        "side", type.getSide()))))
+                                Map.of("bottom", type.bottom(),
+                                        "top", type.top(),
+                                        "side", type.side()))))
                 .initialProperties(() -> Blocks.IRON_BLOCK)
                 .addLayer(() -> RenderType::cutoutMipped)
                 .blockstate(NonNullBiConsumer.noop())
