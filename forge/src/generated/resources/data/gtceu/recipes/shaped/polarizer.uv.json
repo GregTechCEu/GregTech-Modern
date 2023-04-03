@@ -8,10 +8,10 @@
       "tag": "forge:rods/vanadium_gallium"
     },
     "W": {
-      "tag": "forge:cables/single/yttrium_barium_cuprate"
+      "item": "gtceu:cable_single.yttrium_barium_cuprate"
     },
     "Z": {
-      "tag": "forge:wires/octal/yttrium_barium_cuprate"
+      "item": "gtceu:wire_octal.yttrium_barium_cuprate"
     }
   },
   "pattern": [

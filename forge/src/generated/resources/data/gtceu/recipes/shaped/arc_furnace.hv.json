@@ -14,7 +14,7 @@
       "tag": "forge:plates/stainless_steel"
     },
     "W": {
-      "tag": "forge:cables/quadruple/gold"
+      "item": "gtceu:cable_quadruple.gold"
     }
   },
   "pattern": [

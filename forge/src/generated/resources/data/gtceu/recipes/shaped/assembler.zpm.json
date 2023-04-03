@@ -14,7 +14,7 @@
       "item": "gtceu:conveyor.module.zpm"
     },
     "W": {
-      "tag": "forge:cables/single/vanadium_gallium"
+      "item": "gtceu:cable_single.vanadium_gallium"
     }
   },
   "pattern": [

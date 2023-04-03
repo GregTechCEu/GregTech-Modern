@@ -14,7 +14,7 @@
       "tag": "c:naquadah_alloy_plates"
     },
     "W": {
-      "tag": "c:vanadium_gallium_quadruple_cables"
+      "item": "gtceu:cable_quadruple.vanadium_gallium"
     }
   },
   "pattern": [

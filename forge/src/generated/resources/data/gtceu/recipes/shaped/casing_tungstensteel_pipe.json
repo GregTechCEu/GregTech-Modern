@@ -5,7 +5,7 @@
       "tag": "forge:frames/tungsten_steel"
     },
     "I": {
-      "tag": "forge:fluid_pipes/normal/tungsten_steel"
+      "item": "gtceu:normal.tungsten_steel"
     },
     "P": {
       "tag": "forge:plates/tungsten_steel"

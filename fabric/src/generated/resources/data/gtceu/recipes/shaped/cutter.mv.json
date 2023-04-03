@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "B": {
-      "tag": "c:vanadium_steel_buzzsaw_tool_heads"
+      "item": "gtceu:tool_head_buzz_saw.vanadium_steel"
     },
     "C": {
       "tag": "c:mv_circuits"
@@ -20,7 +20,7 @@
       "item": "gtceu:conveyor.module.mv"
     },
     "W": {
-      "tag": "c:copper_single_cables"
+      "item": "gtceu:cable_single.copper"
     }
   },
   "pattern": [

@@ -8,7 +8,7 @@
       "tag": "c:aluminium_plates"
     },
     "W": {
-      "tag": "c:magnesium_diboride_quadruple_wires"
+      "item": "gtceu:wire_quadruple.magnesium_diboride"
     },
     "X": {
       "tag": "c:mv_circuits"

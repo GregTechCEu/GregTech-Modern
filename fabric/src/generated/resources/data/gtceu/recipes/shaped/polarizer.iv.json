@@ -8,10 +8,10 @@
       "tag": "c:vanadium_gallium_rods"
     },
     "W": {
-      "tag": "c:platinum_single_cables"
+      "item": "gtceu:cable_single.platinum"
     },
     "Z": {
-      "tag": "c:graphene_quadruple_wires"
+      "item": "gtceu:wire_quadruple.graphene"
     }
   },
   "pattern": [

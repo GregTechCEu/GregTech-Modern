@@ -5,7 +5,7 @@
       "tag": "c:titanium_frames"
     },
     "I": {
-      "tag": "c:titanium_normal_fluid_pipes"
+      "item": "gtceu:normal.titanium"
     },
     "P": {
       "tag": "c:titanium_plates"

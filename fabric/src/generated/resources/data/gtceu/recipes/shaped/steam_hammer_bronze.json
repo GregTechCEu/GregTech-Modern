@@ -11,7 +11,7 @@
       "tag": "c:pistons"
     },
     "X": {
-      "tag": "c:bronze_small_fluid_pipes"
+      "item": "gtceu:small.bronze"
     }
   },
   "pattern": [

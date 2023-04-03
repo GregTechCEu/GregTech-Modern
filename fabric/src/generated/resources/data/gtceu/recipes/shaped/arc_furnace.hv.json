@@ -14,7 +14,7 @@
       "tag": "c:stainless_steel_plates"
     },
     "W": {
-      "tag": "c:gold_quadruple_cables"
+      "item": "gtceu:cable_quadruple.gold"
     }
   },
   "pattern": [

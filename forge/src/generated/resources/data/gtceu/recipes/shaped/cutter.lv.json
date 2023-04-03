@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "B": {
-      "tag": "forge:tool_heads/buzzsaw/cobalt_brass"
+      "item": "gtceu:tool_head_buzz_saw.cobalt_brass"
     },
     "C": {
       "tag": "forge:lv_circuits"
@@ -20,7 +20,7 @@
       "item": "gtceu:conveyor.module.lv"
     },
     "W": {
-      "tag": "forge:cables/single/tin"
+      "item": "gtceu:cable_single.tin"
     }
   },
   "pattern": [

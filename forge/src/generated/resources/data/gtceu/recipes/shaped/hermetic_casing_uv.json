@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "F": {
-      "tag": "forge:fluid_pipes/large/naquadah"
+      "item": "gtceu:large.naquadah"
     },
     "P": {
       "tag": "forge:plates/darmstadtium"

@@ -5,7 +5,7 @@
       "item": "gtceu:steam_rock_crusher.bronze"
     },
     "P": {
-      "tag": "forge:fluid_pipes/small/tin_alloy"
+      "item": "gtceu:small.tin_alloy"
     },
     "S": {
       "tag": "forge:plates/steel"

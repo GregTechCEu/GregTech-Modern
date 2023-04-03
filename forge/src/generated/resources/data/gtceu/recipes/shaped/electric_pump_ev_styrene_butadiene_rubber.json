@@ -2,13 +2,13 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "forge:cables/single/aluminium"
+      "item": "gtceu:cable_single.aluminium"
     },
     "M": {
       "item": "gtceu:electric.motor.ev"
     },
     "P": {
-      "tag": "forge:fluid_pipes/normal/titanium"
+      "item": "gtceu:normal.titanium"
     },
     "R": {
       "tag": "forge:rings/styrene_butadiene_rubber"

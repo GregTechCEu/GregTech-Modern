@@ -5,7 +5,7 @@
       "item": "gtceu:bronze_firebox"
     },
     "P": {
-      "tag": "forge:cables/single/tin"
+      "item": "gtceu:cable_single.tin"
     },
     "S": {
       "tag": "forge:lv_circuits"

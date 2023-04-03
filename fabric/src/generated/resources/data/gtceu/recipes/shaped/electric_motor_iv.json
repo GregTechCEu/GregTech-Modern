@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:tungsten_double_cables"
+      "item": "gtceu:cable_double.tungsten"
     },
     "M": {
       "tag": "c:neodymium_magnetic_rods"
@@ -11,7 +11,7 @@
       "tag": "c:tungsten_steel_rods"
     },
     "W": {
-      "tag": "c:graphene_double_wires"
+      "item": "gtceu:wire_double.graphene"
     }
   },
   "pattern": [

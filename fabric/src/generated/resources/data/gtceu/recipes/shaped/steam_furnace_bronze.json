@@ -8,7 +8,7 @@
       "item": "gtceu:steam_casing_bricked_bronze"
     },
     "X": {
-      "tag": "c:bronze_small_fluid_pipes"
+      "item": "gtceu:small.bronze"
     }
   },
   "pattern": [

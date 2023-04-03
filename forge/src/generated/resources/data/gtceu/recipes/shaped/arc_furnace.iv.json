@@ -14,7 +14,7 @@
       "tag": "forge:plates/tungsten_steel"
     },
     "W": {
-      "tag": "forge:cables/quadruple/platinum"
+      "item": "gtceu:cable_quadruple.platinum"
     }
   },
   "pattern": [

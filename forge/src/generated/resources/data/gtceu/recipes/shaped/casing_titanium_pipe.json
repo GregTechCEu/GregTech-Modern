@@ -5,7 +5,7 @@
       "tag": "forge:frames/titanium"
     },
     "I": {
-      "tag": "forge:fluid_pipes/normal/titanium"
+      "item": "gtceu:normal.titanium"
     },
     "P": {
       "tag": "forge:plates/titanium"

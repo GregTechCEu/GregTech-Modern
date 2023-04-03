@@ -9,7 +9,9 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "c:silver_double_cables"
+          "ingredient": {
+            "item": "gtceu:cable_double.silver"
+          }
         }
       },
       {
@@ -36,7 +38,9 @@
           "type": "gtceu:sized",
           "count": 4,
           "fabric:type": "gtceu:sized",
-          "tag": "c:electrum_double_wires"
+          "ingredient": {
+            "item": "gtceu:wire_double.electrum"
+          }
         }
       }
     ]

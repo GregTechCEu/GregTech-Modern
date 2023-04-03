@@ -33,7 +33,9 @@
           "type": "gtceu:sized",
           "count": 4,
           "fabric:type": "gtceu:sized",
-          "tag": "c:mercury_barium_calcium_cuprate_quadruple_wires"
+          "ingredient": {
+            "item": "gtceu:wire_quadruple.mercury_barium_calcium_cuprate"
+          }
         }
       }
     ]

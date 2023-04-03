@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:nichrome_double_wires"
+      "item": "gtceu:wire_double.nichrome"
     },
     "E": {
       "tag": "c:ev_circuits"
@@ -11,7 +11,7 @@
       "item": "gtceu:hull.ev"
     },
     "W": {
-      "tag": "c:aluminium_single_cables"
+      "item": "gtceu:cable_single.aluminium"
     }
   },
   "pattern": [

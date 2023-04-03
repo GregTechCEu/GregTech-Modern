@@ -9,7 +9,9 @@
           "type": "gtceu:sized",
           "count": 3,
           "fabric:type": "gtceu:sized",
-          "tag": "c:copper_single_cables"
+          "ingredient": {
+            "item": "gtceu:cable_single.copper"
+          }
         }
       },
       {

@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "forge:wires/quadruple/cupronickel"
+      "item": "gtceu:wire_quadruple.cupronickel"
     },
     "E": {
       "tag": "forge:mv_circuits"
@@ -11,7 +11,7 @@
       "item": "gtceu:hull.mv"
     },
     "P": {
-      "tag": "forge:fluid_pipes/normal/steel"
+      "item": "gtceu:normal.steel"
     },
     "X": {
       "item": "gtceu:electric.piston.mv"

@@ -9,7 +9,9 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "c:copper_single_cables"
+          "ingredient": {
+            "item": "gtceu:cable_single.copper"
+          }
         }
       },
       {
@@ -18,7 +20,9 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "c:steel_normal_fluid_pipes"
+          "ingredient": {
+            "item": "gtceu:normal.steel"
+          }
         }
       },
       {

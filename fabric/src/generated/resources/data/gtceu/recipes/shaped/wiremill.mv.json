@@ -11,7 +11,7 @@
       "item": "gtceu:hull.mv"
     },
     "W": {
-      "tag": "c:copper_single_cables"
+      "item": "gtceu:cable_single.copper"
     }
   },
   "pattern": [

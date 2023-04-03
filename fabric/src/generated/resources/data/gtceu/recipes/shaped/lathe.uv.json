@@ -17,7 +17,7 @@
       "item": "gtceu:electric.piston.uv"
     },
     "W": {
-      "tag": "c:yttrium_barium_cuprate_single_cables"
+      "item": "gtceu:cable_single.yttrium_barium_cuprate"
     }
   },
   "pattern": [

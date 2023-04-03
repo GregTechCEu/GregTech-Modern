@@ -8,7 +8,7 @@
       "tag": "c:chests"
     },
     "W": {
-      "tag": "c:tungsten_octal_wires"
+      "item": "gtceu:wire_octal.tungsten"
     }
   },
   "pattern": [

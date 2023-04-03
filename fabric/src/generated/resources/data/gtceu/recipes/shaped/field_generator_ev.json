@@ -8,7 +8,7 @@
       "tag": "c:titanium_double_plates"
     },
     "W": {
-      "tag": "c:uranium_triplatinum_quadruple_wires"
+      "item": "gtceu:wire_quadruple.uranium_triplatinum"
     },
     "X": {
       "tag": "c:ev_circuits"

@@ -14,7 +14,7 @@
       "tag": "forge:plates/steel"
     },
     "W": {
-      "tag": "forge:cables/quadruple/tin"
+      "item": "gtceu:cable_quadruple.tin"
     }
   },
   "pattern": [

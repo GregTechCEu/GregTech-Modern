@@ -14,7 +14,7 @@
       "tag": "forge:rotors/steel"
     },
     "W": {
-      "tag": "forge:cables/single/gold"
+      "item": "gtceu:cable_single.gold"
     }
   },
   "pattern": [

@@ -8,7 +8,7 @@
       "item": "gtceu:electric.motor.iv"
     },
     "G": {
-      "tag": "forge:fluid_pipes/huge/plastic"
+      "item": "gtceu:huge.plastic"
     },
     "M": {
       "item": "gtceu:hull.iv"
@@ -17,7 +17,7 @@
       "tag": "forge:rotors/tungsten_steel"
     },
     "W": {
-      "tag": "forge:cables/single/platinum"
+      "item": "gtceu:cable_single.platinum"
     }
   },
   "pattern": [

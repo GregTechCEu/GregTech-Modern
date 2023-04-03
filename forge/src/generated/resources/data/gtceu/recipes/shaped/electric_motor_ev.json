@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "forge:cables/double/aluminium"
+      "item": "gtceu:cable_double.aluminium"
     },
     "M": {
       "tag": "forge:rods/neodymium_magnetic"
@@ -11,7 +11,7 @@
       "tag": "forge:rods/titanium"
     },
     "W": {
-      "tag": "forge:wires/double/kanthal"
+      "item": "gtceu:wire_double.kanthal"
     }
   },
   "pattern": [

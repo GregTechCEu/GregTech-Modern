@@ -14,7 +14,7 @@
       "tag": "c:titanium_plates"
     },
     "W": {
-      "tag": "c:aluminium_quadruple_cables"
+      "item": "gtceu:cable_quadruple.aluminium"
     }
   },
   "pattern": [

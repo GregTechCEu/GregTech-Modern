@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "forge:wires/double/tungsten_steel"
+      "item": "gtceu:wire_double.tungsten_steel"
     },
     "E": {
       "tag": "forge:iv_circuits"
@@ -11,7 +11,7 @@
       "item": "gtceu:hull.iv"
     },
     "W": {
-      "tag": "forge:cables/single/platinum"
+      "item": "gtceu:cable_single.platinum"
     }
   },
   "pattern": [

@@ -5,7 +5,7 @@
       "tag": "forge:frames/polytetrafluoroethylene"
     },
     "I": {
-      "tag": "forge:fluid_pipes/normal/polytetrafluoroethylene"
+      "item": "gtceu:normal.polytetrafluoroethylene"
     },
     "P": {
       "tag": "forge:plates/polytetrafluoroethylene"

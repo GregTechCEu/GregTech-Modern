@@ -8,7 +8,7 @@
       "item": "minecraft:ender_pearl"
     },
     "P": {
-      "tag": "c:bronze_normal_fluid_pipes"
+      "item": "gtceu:normal.bronze"
     },
     "S": {
       "tag": "c:steel_screws"

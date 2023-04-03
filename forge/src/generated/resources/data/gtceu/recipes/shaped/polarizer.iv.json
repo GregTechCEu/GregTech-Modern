@@ -8,10 +8,10 @@
       "tag": "forge:rods/vanadium_gallium"
     },
     "W": {
-      "tag": "forge:cables/single/platinum"
+      "item": "gtceu:cable_single.platinum"
     },
     "Z": {
-      "tag": "forge:wires/quadruple/graphene"
+      "item": "gtceu:wire_quadruple.graphene"
     }
   },
   "pattern": [

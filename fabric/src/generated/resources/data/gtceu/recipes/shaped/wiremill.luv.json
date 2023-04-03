@@ -11,7 +11,7 @@
       "item": "gtceu:hull.luv"
     },
     "W": {
-      "tag": "c:niobium_titanium_single_cables"
+      "item": "gtceu:cable_single.niobium_titanium"
     }
   },
   "pattern": [

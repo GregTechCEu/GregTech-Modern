@@ -17,7 +17,7 @@
       "tag": "c:tungsten_steel_rotors"
     },
     "W": {
-      "tag": "c:platinum_single_cables"
+      "item": "gtceu:cable_single.platinum"
     }
   },
   "pattern": [

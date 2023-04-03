@@ -8,7 +8,7 @@
       "tag": "c:chests"
     },
     "W": {
-      "tag": "c:lead_hex_wires"
+      "item": "gtceu:wire_hex.lead"
     }
   },
   "pattern": [

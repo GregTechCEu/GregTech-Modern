@@ -11,13 +11,13 @@
       "item": "gtceu:hull.hv"
     },
     "P": {
-      "tag": "c:stainless_steel_normal_fluid_pipes"
+      "item": "gtceu:normal.stainless_steel"
     },
     "R": {
       "tag": "c:steel_rotors"
     },
     "W": {
-      "tag": "c:gold_single_cables"
+      "item": "gtceu:cable_single.gold"
     }
   },
   "pattern": [

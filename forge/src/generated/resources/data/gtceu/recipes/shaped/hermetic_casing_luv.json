@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "F": {
-      "tag": "forge:fluid_pipes/large/tungsten_steel"
+      "item": "gtceu:large.tungsten_steel"
     },
     "P": {
       "tag": "forge:plates/rhodium_plated_palladium"
