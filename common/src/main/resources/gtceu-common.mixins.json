@@ -11,6 +11,9 @@
   "mixins": [
     "ChunkMixin",
     "IFoliagePlacerTypeAccessor",
+    "IHolder$ReferenceAccessor",
+    "IMappedRegistryAccessor",
+    "IRegistryAccessor",
     "ITrunkPlacerTypeAccessor",
     "LevelMixin",
     "RecipeManagerAccessor",

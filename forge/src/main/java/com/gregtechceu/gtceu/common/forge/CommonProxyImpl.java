@@ -24,10 +24,11 @@ public class CommonProxyImpl {
     private static boolean isKubJSSetup = false;
 
     public static void onKubeJSSetup() {
-        synchronized (LOCK) {
+        CommonProxy.init();
+        /*synchronized (LOCK) {
             isKubJSSetup = true;
             LOCK.notify();
-        }
+        }*/
     }
 
     public CommonProxyImpl() {
@@ -37,14 +38,14 @@ public class CommonProxyImpl {
         GTRegistriesImpl.init(eventBus);
         GTFeaturesImpl.init(eventBus);
         // init common features
-        if (GTCEu.isKubeJSLoaded()) {
-            synchronized (LOCK) {
+        /*if (!GTCEu.isKubeJSLoaded()) {
+            CommonProxy.init();
+            /*synchronized (LOCK) {
                 if (!isKubJSSetup) {
                     try { LOCK.wait(); } catch (InterruptedException ignored) {}
                 }
             }
-        }
-        CommonProxy.init();
+        }*/
         // register payloads
         GTSyncedFieldAccessors.init();
     }
