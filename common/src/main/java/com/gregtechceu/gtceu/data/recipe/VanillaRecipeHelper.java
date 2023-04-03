@@ -8,7 +8,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.stack.ItemMaterialInfo;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
-import com.gregtechceu.gtceu.api.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.data.recipe.builder.ShapedRecipeBuilder;
 import com.gregtechceu.gtceu.data.recipe.builder.ShapelessRecipeBuilder;
 import com.gregtechceu.gtceu.data.recipe.builder.SmeltingRecipeBuilder;

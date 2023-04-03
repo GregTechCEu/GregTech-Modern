@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.api.tag;
+package com.gregtechceu.gtceu.api.data.tag;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import net.minecraft.tags.TagKey;

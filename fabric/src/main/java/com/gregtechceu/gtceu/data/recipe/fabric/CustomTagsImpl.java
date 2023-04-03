@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.data.recipe.fabric;
 
-import com.gregtechceu.gtceu.api.tag.TagUtil;
+import com.gregtechceu.gtceu.api.data.tag.TagUtil;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 
