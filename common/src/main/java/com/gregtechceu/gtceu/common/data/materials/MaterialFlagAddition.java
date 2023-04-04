@@ -124,7 +124,7 @@ public class MaterialFlagAddition {
         oreProp.setDirectSmeltResult(Copper);
 
         oreProp = Chromite.getProperty(PropertyKey.ORE);
-        oreProp.setOreByProducts(Iron, Magnesium, Chrome);
+        oreProp.setOreByProducts(Iron, Magnesium, Chromium);
         oreProp.setSeparatedInto(Iron);
 
         oreProp = Cinnabar.getProperty(PropertyKey.ORE);
@@ -207,7 +207,7 @@ public class MaterialFlagAddition {
         oreProp.setOreByProducts(Salt, Borax);
 
         oreProp = Ruby.getProperty(PropertyKey.ORE);
-        oreProp.setOreByProducts(Chrome, GarnetRed, Chrome);
+        oreProp.setOreByProducts(Chromium, GarnetRed, Chromium);
 
         oreProp = Salt.getProperty(PropertyKey.ORE);
         oreProp.setOreByProducts(RockSalt, Borax);

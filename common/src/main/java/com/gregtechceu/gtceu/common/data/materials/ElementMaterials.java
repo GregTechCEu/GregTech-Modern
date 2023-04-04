@@ -154,7 +154,7 @@ public class ElementMaterials {
                 .element(GTElements.Cl)
                 .buildAndRegister();
 
-        Chrome = new Material.Builder("chrome")
+        Chromium = new Material.Builder("chromium")
                 .ingot(3).fluid()
                 .color(0xEAC4D8).iconSet(SHINY)
                 .appendFlags(EXT_METAL, GENERATE_ROTOR)

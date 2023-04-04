@@ -142,7 +142,7 @@ public class FirstDegreeMaterials {
         Chromite = new Material.Builder("chromite")
                 .dust(1).ore()
                 .color(0x23140F).iconSet(METALLIC)
-                .components(Iron, 1, Chrome, 2, Oxygen, 4)
+                .components(Iron, 1, Chromium, 2, Oxygen, 4)
                 .buildAndRegister();
 
         Cinnabar = new Material.Builder("cinnabar")
@@ -304,7 +304,7 @@ public class FirstDegreeMaterials {
                 .ingot().fluid()
                 .color(0xC2D2DF).iconSet(METALLIC)
                 .appendFlags(EXT_METAL, GENERATE_SPRING)
-                .components(Iron, 1, Aluminium, 1, Chrome, 1)
+                .components(Iron, 1, Aluminium, 1, Chromium, 1)
                 .cableProperties(GTValues.V[3], 4, 3)
                 .blastTemp(1800, GasTier.LOW, GTValues.VA[GTValues.MV], 1000)
                 .fluidTemp(1708)
@@ -349,7 +349,7 @@ public class FirstDegreeMaterials {
                 .ingot().fluid()
                 .color(0xCDCEF6).iconSet(METALLIC)
                 .appendFlags(EXT_METAL, GENERATE_SPRING)
-                .components(Nickel, 4, Chrome, 1)
+                .components(Nickel, 4, Chromium, 1)
                 .cableProperties(GTValues.V[4], 4, 4)
                 .blastTemp(2700, GasTier.LOW, GTValues.VA[GTValues.HV], 1300)
                 .fluidTemp(1818)
@@ -495,7 +495,7 @@ public class FirstDegreeMaterials {
                 .gem().ore()
                 .color(0xFF6464).iconSet(RUBY)
                 .appendFlags(EXT_METAL, NO_SMASHING, NO_SMELTING, HIGH_SIFTER_OUTPUT, GENERATE_LENS)
-                .components(Chrome, 1, Aluminium, 2, Oxygen, 3)
+                .components(Chromium, 1, Aluminium, 2, Oxygen, 3)
                 .buildAndRegister();
 
         Salt = new Material.Builder("salt")
@@ -577,7 +577,7 @@ public class FirstDegreeMaterials {
                 .ingot(3).fluid()
                 .color(0xC8C8DC).iconSet(SHINY)
                 .appendFlags(EXT2_METAL, GENERATE_ROTOR, GENERATE_SMALL_GEAR, GENERATE_FRAME, GENERATE_LONG_ROD, GENERATE_FOIL, GENERATE_GEAR)
-                .components(Iron, 6, Chrome, 1, Manganese, 1, Nickel, 1)
+                .components(Iron, 6, Chromium, 1, Manganese, 1, Nickel, 1)
                 .toolStats(ToolProperty.Builder.of(7.0F, 5.0F, 1024, 3)
                         .enchantability(14).build())
                 .rotorStats(7.0f, 4.0f, 480)
@@ -645,7 +645,7 @@ public class FirstDegreeMaterials {
                 .ingot(4).fluid()
                 .color(0xB4B4E6).iconSet(SHINY)
                 .appendFlags(EXT2_METAL, GENERATE_GEAR)
-                .components(Cobalt, 5, Chrome, 2, Nickel, 1, Molybdenum, 1)
+                .components(Cobalt, 5, Chromium, 2, Nickel, 1, Molybdenum, 1)
                 .toolStats(ToolProperty.Builder.of(10.0F, 7.0F, 2048, 4)
                         .attackSpeed(0.1F).enchantability(21).build())
                 .rotorStats(9.0f, 4.0f, 2048)
@@ -665,7 +665,7 @@ public class FirstDegreeMaterials {
         Uvarovite = new Material.Builder("uvarovite")
                 .gem()
                 .color(0xB4ffB4).iconSet(RUBY)
-                .components(Calcium, 3, Chrome, 2, Silicon, 3, Oxygen, 12)
+                .components(Calcium, 3, Chromium, 2, Silicon, 3, Oxygen, 12)
                 .buildAndRegister();
 
         VanadiumGallium = new Material.Builder("vanadium_gallium")
@@ -908,13 +908,13 @@ public class FirstDegreeMaterials {
         PotassiumDichromate = new Material.Builder("potassium_dichromate")
                 .dust(1)
                 .color(0xFF084E)
-                .components(Potassium, 2, Chrome, 2, Oxygen, 7)
+                .components(Potassium, 2, Chromium, 2, Oxygen, 7)
                 .buildAndRegister();
 
         ChromiumTrioxide = new Material.Builder("chromium_trioxide")
                 .dust(1)
                 .color(0xFFE4E1)
-                .components(Chrome, 1, Oxygen, 3)
+                .components(Chromium, 1, Oxygen, 3)
                 .buildAndRegister();
 
         AntimonyTrioxide = new Material.Builder("antimony_trioxide")

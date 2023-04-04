@@ -468,7 +468,7 @@ public class PolymerRecipes {
                 .save(provider);
 
         CHEMICAL_RECIPES.recipeBuilder("chromium_trioxide").EUt(60).duration(100)
-                .inputItems(dust, Chrome)
+                .inputItems(dust, Chromium)
                 .inputFluids(Oxygen.getFluid(3000))
                 .outputItems(dust, ChromiumTrioxide, 4)
                 .save(provider);

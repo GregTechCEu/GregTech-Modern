@@ -25,7 +25,7 @@ public class GemSlurryRecipes {
         CENTRIFUGE_RECIPES.recipeBuilder("ruby_slurry_centrifuging").duration(320).EUt(VA[HV])
                 .inputFluids(RubySlurry.getFluid(3000))
                 .outputItems(dust, Aluminium, 2)
-                .outputItems(dust, Chrome)
+                .outputItems(dust, Chromium)
                 .chancedOutput(dustTiny, Titanium, 2000, 0)
                 .chancedOutput(dustTiny, Iron, 2000, 0)
                 .chancedOutput(dustTiny, Vanadium, 2000, 0)

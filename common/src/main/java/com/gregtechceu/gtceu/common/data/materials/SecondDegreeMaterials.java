@@ -281,7 +281,7 @@ public class SecondDegreeMaterials {
                 .ingot(3).fluid()
                 .color(0xc0c0c0).iconSet(METALLIC)
                 .appendFlags(EXT2_METAL, GENERATE_FOIL, GENERATE_GEAR)
-                .components(Vanadium, 1, Chrome, 1, Steel, 7)
+                .components(Vanadium, 1, Chromium, 1, Steel, 7)
                 .toolStats(ToolProperty.Builder.of(3.0F, 3.0F, 1536, 3)
                         .attackSpeed(-0.2F).enchantability(5).build())
                 .rotorStats(7.0f, 3.0f, 1920)

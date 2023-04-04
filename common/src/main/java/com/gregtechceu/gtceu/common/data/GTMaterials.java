@@ -19,7 +19,6 @@ import java.util.List;
 
 import static com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper.registerUnificationItems;
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.*;
-import static com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper.*;
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
 
 
@@ -342,7 +341,7 @@ public class GTMaterials {
     public static Material Cadmium;
     public static Material Cerium;
     public static Material Chlorine;
-    public static Material Chrome;
+    public static Material Chromium;
     public static Material Cobalt;
     public static Material Copernicium;
     public static Material Copper;
