@@ -14,7 +14,7 @@
       "tag": "c:rhodium_plated_palladium_plates"
     },
     "W": {
-      "tag": "c:niobium_titanium_quadruple_cables"
+      "item": "gtceu:cable_quadruple.niobium_titanium"
     }
   },
   "pattern": [

@@ -8,7 +8,7 @@
       "item": "gtceu:hull.lv"
     },
     "T": {
-      "tag": "forge:fluid_pipes/large/bronze"
+      "item": "gtceu:large.bronze"
     },
     "W": {
       "tag": "forge:lv_circuits"

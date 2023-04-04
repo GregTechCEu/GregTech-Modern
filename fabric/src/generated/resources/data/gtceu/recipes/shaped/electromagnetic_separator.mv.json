@@ -14,10 +14,10 @@
       "item": "gtceu:conveyor.module.mv"
     },
     "W": {
-      "tag": "c:copper_single_cables"
+      "item": "gtceu:cable_single.copper"
     },
     "Z": {
-      "tag": "c:copper_double_wires"
+      "item": "gtceu:wire_double.copper"
     }
   },
   "pattern": [

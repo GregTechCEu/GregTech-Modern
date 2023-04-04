@@ -11,13 +11,13 @@
       "item": "gtceu:hull.luv"
     },
     "O": {
-      "tag": "forge:wires/quadruple/hssg"
+      "item": "gtceu:wire_quadruple.hssg"
     },
     "P": {
       "item": "gtceu:electric.pump.luv"
     },
     "W": {
-      "tag": "forge:cables/single/niobium_titanium"
+      "item": "gtceu:cable_single.niobium_titanium"
     }
   },
   "pattern": [

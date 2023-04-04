@@ -80,7 +80,9 @@
           "type": "gtceu:sized",
           "count": 4,
           "fabric:type": "gtceu:sized",
-          "tag": "c:niobium_titanium_single_cables"
+          "ingredient": {
+            "item": "gtceu:cable_single.niobium_titanium"
+          }
         }
       }
     ]

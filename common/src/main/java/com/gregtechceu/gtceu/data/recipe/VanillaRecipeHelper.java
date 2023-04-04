@@ -119,7 +119,10 @@ public class VanillaRecipeHelper {
                 } else if (content instanceof ItemLike itemLike) {
                     builder.define(sign, itemLike);
                 } else if (content instanceof UnificationEntry entry) {
-                    builder.define(sign, ChemicalHelper.getTag(entry.tagPrefix, entry.material));
+                    TagKey<Item> tag = ChemicalHelper.getTag(entry.tagPrefix, entry.material);
+                    if (tag != null) {
+                        builder.define(sign, tag);
+                    } else builder.define(sign, ChemicalHelper.get(entry.tagPrefix, entry.material));
                 } else if (content instanceof ItemEntry<?> entry) {
                     builder.define(sign, entry.asStack());
                 }
@@ -147,7 +150,10 @@ public class VanillaRecipeHelper {
             } else if (content instanceof ItemLike itemLike) {
                 builder.requires(itemLike);
             } else if (content instanceof UnificationEntry entry) {
-                builder.requires(ChemicalHelper.getTag(entry.tagPrefix, entry.material));
+                TagKey<Item> tag = ChemicalHelper.getTag(entry.tagPrefix, entry.material);
+                if (tag != null) {
+                    builder.requires(tag);
+                } else builder.requires(ChemicalHelper.get(entry.tagPrefix, entry.material));
             } else if (content instanceof ItemEntry<?> entry) {
                 builder.requires(entry.asStack());
             } else if (content instanceof Character c) {

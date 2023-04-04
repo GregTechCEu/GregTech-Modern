@@ -14,7 +14,7 @@
       "tag": "forge:plates/titanium"
     },
     "W": {
-      "tag": "forge:cables/quadruple/aluminium"
+      "item": "gtceu:cable_quadruple.aluminium"
     }
   },
   "pattern": [

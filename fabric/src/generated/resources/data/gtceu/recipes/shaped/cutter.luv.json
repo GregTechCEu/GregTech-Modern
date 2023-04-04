@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "B": {
-      "tag": "c:hsse_buzzsaw_tool_heads"
+      "item": "gtceu:tool_head_buzz_saw.hsse"
     },
     "C": {
       "tag": "c:luv_circuits"
@@ -20,7 +20,7 @@
       "item": "gtceu:conveyor.module.luv"
     },
     "W": {
-      "tag": "c:niobium_titanium_single_cables"
+      "item": "gtceu:cable_single.niobium_titanium"
     }
   },
   "pattern": [

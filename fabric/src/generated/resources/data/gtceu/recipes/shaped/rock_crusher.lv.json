@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:tin_single_cables"
+      "item": "gtceu:cable_single.tin"
     },
     "G": {
       "tag": "c:glass"

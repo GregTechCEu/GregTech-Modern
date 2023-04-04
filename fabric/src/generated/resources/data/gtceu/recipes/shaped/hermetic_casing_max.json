@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "F": {
-      "tag": "c:duranium_large_fluid_pipes"
+      "item": "gtceu:large.duranium"
     },
     "P": {
       "tag": "c:neutronium_plates"

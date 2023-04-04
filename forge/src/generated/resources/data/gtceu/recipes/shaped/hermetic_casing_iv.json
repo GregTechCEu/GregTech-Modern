@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "F": {
-      "tag": "forge:fluid_pipes/large/titanium"
+      "item": "gtceu:large.titanium"
     },
     "P": {
       "tag": "forge:plates/tungsten_steel"

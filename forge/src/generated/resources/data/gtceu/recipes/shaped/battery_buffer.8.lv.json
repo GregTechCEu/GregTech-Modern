@@ -8,7 +8,7 @@
       "tag": "forge:chests/wooden"
     },
     "W": {
-      "tag": "forge:wires/octal/tin"
+      "item": "gtceu:wire_octal.tin"
     }
   },
   "pattern": [

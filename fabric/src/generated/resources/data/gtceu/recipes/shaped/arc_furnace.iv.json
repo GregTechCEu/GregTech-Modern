@@ -14,7 +14,7 @@
       "tag": "c:tungsten_steel_plates"
     },
     "W": {
-      "tag": "c:platinum_quadruple_cables"
+      "item": "gtceu:cable_quadruple.platinum"
     }
   },
   "pattern": [

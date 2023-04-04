@@ -8,10 +8,10 @@
       "tag": "c:vanadium_gallium_rods"
     },
     "W": {
-      "tag": "c:vanadium_gallium_single_cables"
+      "item": "gtceu:cable_single.vanadium_gallium"
     },
     "Z": {
-      "tag": "c:vanadium_gallium_octal_wires"
+      "item": "gtceu:wire_octal.vanadium_gallium"
     }
   },
   "pattern": [

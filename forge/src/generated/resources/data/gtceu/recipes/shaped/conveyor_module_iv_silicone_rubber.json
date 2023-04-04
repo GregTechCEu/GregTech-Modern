@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "forge:cables/single/tungsten"
+      "item": "gtceu:cable_single.tungsten"
     },
     "M": {
       "item": "gtceu:electric.motor.iv"

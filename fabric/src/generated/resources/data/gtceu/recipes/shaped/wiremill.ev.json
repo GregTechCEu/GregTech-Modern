@@ -11,7 +11,7 @@
       "item": "gtceu:hull.ev"
     },
     "W": {
-      "tag": "c:aluminium_single_cables"
+      "item": "gtceu:cable_single.aluminium"
     }
   },
   "pattern": [

@@ -8,7 +8,7 @@
       "item": "gtceu:electric.motor.luv"
     },
     "P": {
-      "tag": "c:niobium_titanium_normal_fluid_pipes"
+      "item": "gtceu:normal.niobium_titanium"
     },
     "R": {
       "tag": "c:rhodium_plated_palladium_rotors"

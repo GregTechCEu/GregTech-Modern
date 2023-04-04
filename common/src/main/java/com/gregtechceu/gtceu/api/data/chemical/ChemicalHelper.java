@@ -6,8 +6,6 @@ import com.gregtechceu.gtceu.api.data.chemical.material.stack.ItemMaterialInfo;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
-import com.gregtechceu.gtceu.api.data.tag.TagUtil;
-import com.gregtechceu.gtceu.utils.FormattingUtil;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
@@ -30,8 +28,11 @@ import static com.gregtechceu.gtceu.api.GTValues.M;
  */
 public class ChemicalHelper {
 
+    /** Used for custom material data for items that do not fall into the normal "prefix, material" pair */
     public static final Map<ItemLike, ItemMaterialInfo> ITEM_MATERIAL_INFO = new Object2ObjectLinkedOpenHashMap<>();
+    /** Mapping of an item to a "prefix, material" pair */
     public static final Map<ItemLike, UnificationEntry> ITEM_UNIFICATION_ENTRY = new HashMap<>();
+    /** Mapping of all items that represent a "prefix, material" pair */
     public static final Map<UnificationEntry, ArrayList<ItemLike>> UNIFICATION_ENTRY_ITEM = new Object2ObjectLinkedOpenHashMap<>();
 
     public static void registerMaterialInfo(ItemLike item, ItemMaterialInfo materialInfo) {
@@ -42,19 +43,11 @@ public class ChemicalHelper {
         return ITEM_MATERIAL_INFO.get(item);
     }
 
-    public static void registerUnificationEntry(ItemLike item, UnificationEntry unificationEntry) {
-        ITEM_UNIFICATION_ENTRY.put(item, unificationEntry);
-    }
-
-    public static void registerUnificationEntry(ItemLike item, TagPrefix prefix, Material material) {
-        registerUnificationEntry(item, new UnificationEntry(prefix, material));
-    }
-
     public static void registerUnificationItems(UnificationEntry unificationEntry, ItemLike... items) {
         UNIFICATION_ENTRY_ITEM.computeIfAbsent(unificationEntry, entry -> new ArrayList<>())
                 .addAll(Arrays.stream(items).toList());
         for (ItemLike item : items) {
-            registerUnificationEntry(item, unificationEntry);
+            ITEM_UNIFICATION_ENTRY.put(item, unificationEntry);
         }
     }
 
@@ -72,9 +65,6 @@ public class ChemicalHelper {
     public static MaterialStack getMaterial(UnificationEntry entry) {
         if (entry != null) {
             Material entryMaterial = entry.material;
-            if (entryMaterial == null) {
-                entryMaterial = entry.tagPrefix.materialType();
-            }
             if (entryMaterial != null) {
                 return new MaterialStack(entryMaterial, entry.tagPrefix.getMaterialAmount(entryMaterial));
             }
@@ -87,9 +77,6 @@ public class ChemicalHelper {
         var entry = ITEM_UNIFICATION_ENTRY.get(itemLike);
         if (entry != null) {
             Material entryMaterial = entry.material;
-            if (entryMaterial == null) {
-                entryMaterial = entry.tagPrefix.materialType();
-            }
             if (entryMaterial != null) {
                 return new MaterialStack(entryMaterial, entry.tagPrefix.getMaterialAmount(entryMaterial));
             }
@@ -170,6 +157,10 @@ public class ChemicalHelper {
                     items.add(itemHolder.value());
                 }
             }
+            TagPrefix prefix = unificationEntry.tagPrefix;
+            if (items.isEmpty() && prefix.hasItemTable() && prefix.doGenerateItem(unificationEntry.material)) {
+                return new ArrayList<>(List.of(prefix.getItemFromTable(unificationEntry.material).get()));
+            }
             return items;
         });
     }
@@ -190,21 +181,17 @@ public class ChemicalHelper {
         return get(orePrefix, material, 1);
     }
 
+    @Nullable
     public static TagKey<Item> getTag(TagPrefix orePrefix, @Nonnull Material material) {
         var tags = orePrefix.getItemTags(material);
         if (tags.length > 0) {
             return tags[0];
         }
-        return TagUtil.createItemTag(FormattingUtil.toLowerCaseUnder(orePrefix.name) + "/" + material.getName());
+        return null;
     }
 
-    @SuppressWarnings("unchecked")
     public static TagKey<Item>[] getTags(TagPrefix orePrefix, @Nonnull Material material) {
-        var tags = orePrefix.getItemTags(material);
-        if (tags.length == 0) {
-            tags = new TagKey[]{TagUtil.createItemTag(FormattingUtil.toLowerCaseUnder(orePrefix.name) + "/" + material.getName())};
-        }
-        return tags;
+        return orePrefix.getItemTags(material);
     }
 
     public static List<Map.Entry<ItemStack, ItemMaterialInfo>> getAllItemInfos() {

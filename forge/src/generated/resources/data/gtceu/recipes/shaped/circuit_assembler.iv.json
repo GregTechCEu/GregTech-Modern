@@ -17,7 +17,7 @@
       "item": "gtceu:robot.arm.iv"
     },
     "W": {
-      "tag": "forge:cables/single/platinum"
+      "item": "gtceu:cable_single.platinum"
     }
   },
   "pattern": [

@@ -38,7 +38,9 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "c:naquadah_large_fluid_pipes"
+          "ingredient": {
+            "item": "gtceu:large.naquadah"
+          }
         }
       },
       {
@@ -83,7 +85,9 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "c:yttrium_barium_cuprate_single_cables"
+          "ingredient": {
+            "item": "gtceu:cable_single.yttrium_barium_cuprate"
+          }
         }
       }
     ]

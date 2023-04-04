@@ -11,7 +11,7 @@
       "tag": "c:obsidian_blocks"
     },
     "W": {
-      "tag": "c:gold_single_cables"
+      "item": "gtceu:cable_single.gold"
     }
   },
   "pattern": [

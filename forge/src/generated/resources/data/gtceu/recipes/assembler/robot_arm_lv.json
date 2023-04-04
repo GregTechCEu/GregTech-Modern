@@ -9,7 +9,9 @@
           "type": "gtceu:sized",
           "count": 3,
           "fabric:type": "gtceu:sized",
-          "tag": "forge:cables/single/tin"
+          "ingredient": {
+            "item": "gtceu:cable_single.tin"
+          }
         }
       },
       {

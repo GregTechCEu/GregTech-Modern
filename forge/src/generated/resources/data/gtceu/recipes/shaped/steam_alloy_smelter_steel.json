@@ -5,7 +5,7 @@
       "item": "gtceu:steam_alloy_smelter.bronze"
     },
     "P": {
-      "tag": "forge:fluid_pipes/small/tin_alloy"
+      "item": "gtceu:small.tin_alloy"
     },
     "S": {
       "tag": "forge:plates/steel"

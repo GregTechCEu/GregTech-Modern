@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:nichrome_quadruple_wires"
+      "item": "gtceu:wire_quadruple.nichrome"
     },
     "E": {
       "tag": "c:ev_circuits"
@@ -11,7 +11,7 @@
       "item": "gtceu:hull.ev"
     },
     "P": {
-      "tag": "c:titanium_normal_fluid_pipes"
+      "item": "gtceu:normal.titanium"
     },
     "X": {
       "item": "gtceu:electric.piston.ev"

@@ -24,7 +24,9 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "forge:wires/single/copper"
+          "ingredient": {
+            "item": "gtceu:wire_single.copper"
+          }
         }
       },
       {

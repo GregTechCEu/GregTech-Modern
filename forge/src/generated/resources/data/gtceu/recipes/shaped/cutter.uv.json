@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "B": {
-      "tag": "forge:tool_heads/buzzsaw/duranium"
+      "item": "gtceu:tool_head_buzz_saw.duranium"
     },
     "C": {
       "tag": "forge:uv_circuits"
@@ -20,7 +20,7 @@
       "item": "gtceu:conveyor.module.uv"
     },
     "W": {
-      "tag": "forge:cables/single/yttrium_barium_cuprate"
+      "item": "gtceu:cable_single.yttrium_barium_cuprate"
     }
   },
   "pattern": [

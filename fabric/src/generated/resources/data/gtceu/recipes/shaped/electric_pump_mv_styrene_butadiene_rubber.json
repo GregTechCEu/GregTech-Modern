@@ -2,13 +2,13 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:copper_single_cables"
+      "item": "gtceu:cable_single.copper"
     },
     "M": {
       "item": "gtceu:electric.motor.mv"
     },
     "P": {
-      "tag": "c:steel_normal_fluid_pipes"
+      "item": "gtceu:normal.steel"
     },
     "R": {
       "tag": "c:styrene_butadiene_rubber_rings"

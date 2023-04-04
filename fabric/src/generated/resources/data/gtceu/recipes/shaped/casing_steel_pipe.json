@@ -5,7 +5,7 @@
       "tag": "c:steel_frames"
     },
     "I": {
-      "tag": "c:steel_normal_fluid_pipes"
+      "item": "gtceu:normal.steel"
     },
     "P": {
       "tag": "c:steel_plates"

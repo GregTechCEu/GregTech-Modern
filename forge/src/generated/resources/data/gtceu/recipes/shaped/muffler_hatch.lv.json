@@ -8,7 +8,7 @@
       "item": "gtceu:electric.motor.lv"
     },
     "P": {
-      "tag": "forge:fluid_pipes/normal/bronze"
+      "item": "gtceu:normal.bronze"
     },
     "R": {
       "tag": "forge:rotors/tin"

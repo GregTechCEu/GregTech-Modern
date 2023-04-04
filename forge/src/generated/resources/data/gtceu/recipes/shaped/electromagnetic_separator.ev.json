@@ -14,10 +14,10 @@
       "item": "gtceu:conveyor.module.ev"
     },
     "W": {
-      "tag": "forge:cables/single/aluminium"
+      "item": "gtceu:cable_single.aluminium"
     },
     "Z": {
-      "tag": "forge:wires/quadruple/steel"
+      "item": "gtceu:wire_quadruple.steel"
     }
   },
   "pattern": [

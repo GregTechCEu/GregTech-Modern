@@ -11,13 +11,13 @@
       "item": "gtceu:hull.uv"
     },
     "O": {
-      "tag": "c:naquadah_alloy_quadruple_wires"
+      "item": "gtceu:wire_quadruple.naquadah_alloy"
     },
     "P": {
       "item": "gtceu:electric.pump.uv"
     },
     "W": {
-      "tag": "c:yttrium_barium_cuprate_single_cables"
+      "item": "gtceu:cable_single.yttrium_barium_cuprate"
     }
   },
   "pattern": [

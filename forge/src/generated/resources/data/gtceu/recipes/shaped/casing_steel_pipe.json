@@ -5,7 +5,7 @@
       "tag": "forge:frames/steel"
     },
     "I": {
-      "tag": "forge:fluid_pipes/normal/steel"
+      "item": "gtceu:normal.steel"
     },
     "P": {
       "tag": "forge:plates/steel"

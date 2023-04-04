@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "B": {
-      "tag": "forge:tool_heads/buzzsaw/tungsten_carbide"
+      "item": "gtceu:tool_head_buzz_saw.tungsten_carbide"
     },
     "C": {
       "tag": "forge:iv_circuits"
@@ -20,7 +20,7 @@
       "item": "gtceu:conveyor.module.iv"
     },
     "W": {
-      "tag": "forge:cables/single/platinum"
+      "item": "gtceu:cable_single.platinum"
     }
   },
   "pattern": [

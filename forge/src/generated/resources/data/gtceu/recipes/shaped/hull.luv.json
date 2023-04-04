@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "forge:cables/single/niobium_titanium"
+      "item": "gtceu:cable_single.niobium_titanium"
     },
     "H": {
       "item": "gtceu:hull_casing_luv"

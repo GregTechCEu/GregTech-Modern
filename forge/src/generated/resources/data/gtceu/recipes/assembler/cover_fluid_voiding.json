@@ -24,7 +24,9 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "forge:fluid_pipes/normal/bronze"
+          "ingredient": {
+            "item": "gtceu:normal.bronze"
+          }
         }
       },
       {

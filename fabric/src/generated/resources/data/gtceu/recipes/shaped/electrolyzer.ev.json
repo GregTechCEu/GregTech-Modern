@@ -8,13 +8,13 @@
       "tag": "c:glass"
     },
     "I": {
-      "tag": "c:platinum_single_wires"
+      "item": "gtceu:wire_single.platinum"
     },
     "M": {
       "item": "gtceu:hull.ev"
     },
     "W": {
-      "tag": "c:aluminium_single_cables"
+      "item": "gtceu:cable_single.aluminium"
     }
   },
   "pattern": [

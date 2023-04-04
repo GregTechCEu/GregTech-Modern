@@ -2,13 +2,13 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "forge:cables/single/tungsten"
+      "item": "gtceu:cable_single.tungsten"
     },
     "M": {
       "item": "gtceu:electric.motor.iv"
     },
     "P": {
-      "tag": "forge:fluid_pipes/normal/tungsten_steel"
+      "item": "gtceu:normal.tungsten_steel"
     },
     "R": {
       "tag": "forge:rings/styrene_butadiene_rubber"
