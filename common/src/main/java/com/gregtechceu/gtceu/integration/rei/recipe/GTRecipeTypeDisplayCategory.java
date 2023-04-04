@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.integration.rei.recipe;
 
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
+import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
@@ -14,7 +15,6 @@ import me.shedaniel.rei.api.client.registry.display.DisplayRegistry;
 import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import me.shedaniel.rei.api.common.util.EntryStacks;
 import net.minecraft.Util;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Items;
@@ -67,9 +67,7 @@ public class GTRecipeTypeDisplayCategory extends ModularUIDisplayCategory<GTReci
     public static void registerDisplays(DisplayRegistry registry) {
         for (RecipeType<?> recipeType : Registry.RECIPE_TYPE) {
             if (recipeType instanceof GTRecipeType gtRecipeType) {
-                Minecraft.getInstance().getConnection().getRecipeManager().getAllRecipesFor(gtRecipeType).stream()
-                        .map(recipe -> new GTRecipeDisplay(gtRecipeType, recipe))
-                        .forEach(registry::add);
+                registry.registerRecipeFiller(GTRecipe.class, gtRecipeType, GTRecipeDisplay::new);
             }
         }
     }

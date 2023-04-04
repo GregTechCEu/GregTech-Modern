@@ -38,6 +38,9 @@
     ],
     "emi": [
       "com.gregtechceu.gtceu.integration.emi.fabric.EMIPlugin"
+    ],
+    "jade": [
+      "com.gregtechceu.gtceu.integration.jade.GTJadePlugin"
     ]
   },
   "mixins": [

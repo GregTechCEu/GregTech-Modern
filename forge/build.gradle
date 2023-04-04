@@ -73,6 +73,7 @@ configurations {
 
 repositories {
     // mavens for Forge-exclusives
+    maven { url = "https://api.modrinth.com/maven" } // Jade
     maven { url = "https://maven.theillusivec4.top/" } // Curios
     maven { // Create Forge and Registrate Forge
         url = "https://maven.tterrag.com/"
@@ -122,7 +123,10 @@ dependencies {
     modImplementation forge.rei.forge
 
     // TOP
-    modImplementation(forge.theoneprobe) { transitive = false }
+    modCompileOnly(forge.theoneprobe) { transitive = false }
+
+    // Jade
+    modImplementation forge.jade
 
     // KJS
     modImplementation forge.kubejs

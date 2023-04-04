@@ -30,6 +30,7 @@ dependencyResolutionManagement {
         def modMenuVersion = "4.1.2"
         def ldLibVersion = "1.0.4.e"
         def topFabricVersion = "1.19-6.0.0"
+        def jadeFabricVersion = "8.7.3"
         def registrateFabricVersion = "1.1.50-MC1.19.2"
         def kjsVersion = "1902.6.0-build.142"
         def forgeConfigApiVersion = "4.2.11"
@@ -41,6 +42,7 @@ dependencyResolutionManagement {
         def createForgeVersion = "0.5.0.h-21"
         def flywheelForgeVersion = "0.6.8.a-14"
         def topForgeVersion = "1.19-6.2.0-6"
+        def jadeForgeVersion = "8.8.1"
 
         // Libs
         def quiltMappingsVersion = "21"  // https://lambdaurora.dev/tools/import_quilt.html
@@ -94,6 +96,9 @@ dependencyResolutionManagement {
             def theoneprobe = version("theoneprobe", topFabricVersion)
             library("theoneprobe", "mcjty.theoneprobe", "theoneprobe-fabric").versionRef(theoneprobe)
 
+            def jade = version("jade", jadeFabricVersion)
+            library("jade", "maven.modrinth", "jade").versionRef(jade)
+
             def kubejs = version("kubejs", kjsVersion)
             library("kubejs", "dev.latvian.mods", "kubejs-fabric").versionRef(kubejs)
 
@@ -134,6 +139,9 @@ dependencyResolutionManagement {
 
             def theoneprobe = version("theoneprobe", topForgeVersion)
             library("theoneprobe", "mcjty.theoneprobe", "theoneprobe").versionRef(theoneprobe)
+
+            def jade = version("jade", jadeForgeVersion)
+            library("jade", "maven.modrinth", "jade").versionRef(jade)
 
             def kubejs = version("kubejs", kjsVersion)
             library("kubejs", "dev.latvian.mods", "kubejs-forge").versionRef(kubejs)
