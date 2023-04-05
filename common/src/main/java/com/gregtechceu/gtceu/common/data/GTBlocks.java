@@ -43,6 +43,7 @@ import net.minecraft.data.loot.BlockLoot;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.FoliageColor;
@@ -201,7 +202,7 @@ public class GTBlocks {
                     var entry = REGISTRATE.block(fluidPipeType.name + "." + material.getName(), p -> new FluidPipeBlock(p, fluidPipeType, material))
                             .initialProperties(() -> Blocks.IRON_BLOCK)
                             .properties(p -> p.dynamicShape().noOcclusion())
-                            .tag(BlockTags.MINEABLE_WITH_PICKAXE, GTToolType.WRENCH.harvestTag)
+                            .tag(getPipeTags(material))
                             .transform(unificationBlock(fluidPipeType.tagPrefix, material))
                             .blockstate(NonNullBiConsumer.noop())
                             .setData(ProviderType.LANG, NonNullBiConsumer.noop())
@@ -217,6 +218,16 @@ public class GTBlocks {
             }
         }
         FLUID_PIPE_BLOCKS = builder.build();
+    }
+
+    @SuppressWarnings("unchecked")
+    private static TagKey<Block>[] getPipeTags(Material material) {
+        TagKey<Block>[] tags = new TagKey[2];
+        tags[0] = GTToolType.WRENCH.harvestTag;
+        if (material == GTMaterials.Wood || material == GTMaterials.TreatedWood) {
+            tags[1] = BlockTags.MINEABLE_WITH_AXE;
+        } else tags[1] = BlockTags.MINEABLE_WITH_PICKAXE;
+        return tags;
     }
 
     static {

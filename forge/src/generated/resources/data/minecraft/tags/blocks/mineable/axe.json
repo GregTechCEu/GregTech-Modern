@@ -1,5 +1,11 @@
 {
   "values": [
+    "gtceu:small.wood",
+    "gtceu:small.treated_wood",
+    "gtceu:normal.wood",
+    "gtceu:normal.treated_wood",
+    "gtceu:large.wood",
+    "gtceu:large.treated_wood",
     "gtceu:casing_pump_deck"
   ]
 }

@@ -123,8 +123,6 @@ public class AssemblerRecipeLoader {
         //        .outputItems(TOOL_MATCHES, 4)
         //        .duration(64).EUt(16).save(provider);
 
-        // todo Wood Pipes
-        /*
         ASSEMBLER_RECIPES.recipeBuilder("small_wood_pipe").duration(200).EUt(VA[LV])
                 .inputItems(plate, Wood)
                 .circuitMeta(12)
@@ -168,7 +166,6 @@ public class AssemblerRecipeLoader {
                 .outputItems(pipeLargeFluid, TreatedWood)
                 .save(provider);
 
-         */
 
         // Voltage Coils
         ASSEMBLER_RECIPES.recipeBuilder("voltage_coil_ulv").duration(200).EUt(VA[ULV])

@@ -25,15 +25,13 @@ public class CraftingRecipeLoader {
         // todo facades
         //registerFacadeRecipe(provider, Iron, 4);
 
-        // todo wood pipes
-        //VanillaRecipeHelper.addShapedRecipe(provider, "small_wooden_pipe", ChemicalHelper.get(pipeSmallFluid, Wood), "sWr", 'W', CommonTags.TAG_PLANKS);
-        //VanillaRecipeHelper.addShapedRecipe(provider, "normal_wooden_pipe", ChemicalHelper.get(pipeNormalFluid, Wood), "WWW", "s r", 'W', CommonTags.TAG_PLANKS);
-        //VanillaRecipeHelper.addShapedRecipe(provider, "large_wooden_pipe", ChemicalHelper.get(pipeLargeFluid, Wood), "WWW", "s r", "WWW", 'W', CommonTags.TAG_PLANKS);
+        VanillaRecipeHelper.addShapedRecipe(provider, "small_wooden_pipe", ChemicalHelper.get(pipeSmallFluid, Wood), "sWr", 'W', ItemTags.PLANKS);
+        VanillaRecipeHelper.addShapedRecipe(provider, "normal_wooden_pipe", ChemicalHelper.get(pipeNormalFluid, Wood), "WWW", "s r", 'W', ItemTags.PLANKS);
+        VanillaRecipeHelper.addShapedRecipe(provider, "large_wooden_pipe", ChemicalHelper.get(pipeLargeFluid, Wood), "WWW", "s r", "WWW", 'W', ItemTags.PLANKS);
 
-        // TODO Treated wood pipes
-        //VanillaRecipeHelper.addShapedRecipe(provider, "small_treated_wooden_pipe", ChemicalHelper.get(pipeSmallFluid, TreatedWood), "sWr", 'W', new UnificationEntry(plank, TreatedWood));
-        //VanillaRecipeHelper.addShapedRecipe(provider, "normal_treated_wooden_pipe", ChemicalHelper.get(pipeNormalFluid, TreatedWood), "WWW", "s r", 'W', new UnificationEntry(plank, TreatedWood));
-        //VanillaRecipeHelper.addShapedRecipe(provider, "large_treated_wooden_pipe", ChemicalHelper.get(pipeLargeFluid, TreatedWood), "WWW", "s r", "WWW", 'W', new UnificationEntry(plank, TreatedWood));
+        VanillaRecipeHelper.addShapedRecipe(provider, "small_treated_wooden_pipe", ChemicalHelper.get(pipeSmallFluid, TreatedWood), "sWr", 'W', GTBlocks.TREATED_WOOD_PLANK.asStack());
+        VanillaRecipeHelper.addShapedRecipe(provider, "normal_treated_wooden_pipe", ChemicalHelper.get(pipeNormalFluid, TreatedWood), "WWW", "s r", 'W', GTBlocks.TREATED_WOOD_PLANK.asStack());
+        VanillaRecipeHelper.addShapedRecipe(provider, "large_treated_wooden_pipe", ChemicalHelper.get(pipeLargeFluid, TreatedWood), "WWW", "s r", "WWW", 'W', GTBlocks.TREATED_WOOD_PLANK.asStack());
 
         VanillaRecipeHelper.addShapelessRecipe(provider, "integrated_circuit", INTEGRATED_CIRCUIT.asStack(), CustomTags.LV_CIRCUITS);
 
