@@ -1,8 +1,8 @@
 {
   "parent": "block/block",
   "textures": {
-    "top": "gtceu:block/casings/solid/machine_bronze_plated_bricks",
-    "bottom": "gtceu:block/casings/solid/machine_bronze_plated_bricks",
+    "top": "gtceu:block/casings/solid/machine_casing_bronze_plated_bricks",
+    "bottom": "gtceu:block/casings/solid/machine_casing_bronze_plated_bricks",
     "side": "gtceu:block/casings/firebox/machine_casing_firebox_bronze",
     "active_side": "gtceu:block/casings/firebox/machine_casing_firebox_bloom",
     "particle": "#bottom"

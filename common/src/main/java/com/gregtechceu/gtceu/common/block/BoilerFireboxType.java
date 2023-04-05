@@ -13,8 +13,8 @@ import javax.annotation.Nonnull;
  */
 public record BoilerFireboxType(@Getter String name, @Getter ResourceLocation bottom, @Getter ResourceLocation top, @Getter ResourceLocation side) {
 
-    public static BoilerFireboxType BRONZE_FIREBOX = new BoilerFireboxType("bronze_firebox", GTCEu.id("block/casings/solid/machine_bronze_plated_bricks")
-            , GTCEu.id("block/casings/solid/machine_bronze_plated_bricks")
+    public static BoilerFireboxType BRONZE_FIREBOX = new BoilerFireboxType("bronze_firebox", GTCEu.id("block/casings/solid/machine_casing_bronze_plated_bricks")
+            , GTCEu.id("block/casings/solid/machine_casing_bronze_plated_bricks")
             , GTCEu.id("block/casings/firebox/machine_casing_firebox_bronze"));
     public static BoilerFireboxType STEEL_FIREBOX = new BoilerFireboxType("steel_firebox", GTCEu.id("block/casings/solid/machine_casing_solid_steel")
             , GTCEu.id("block/casings/solid/machine_casing_solid_steel")
