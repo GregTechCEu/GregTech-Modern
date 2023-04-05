@@ -33,10 +33,3 @@ mandatory=true
 versionRange="${ldlib_version}"
 ordering="NONE"
 side="BOTH"
-
-[[dependencies.${mod_id}]]
-modId="kubejs"
-mandatory=false
-versionRange="${kubejs_version}"
-ordering="BEFORE"
-side="BOTH"

@@ -16,12 +16,12 @@ import java.util.function.Consumer;
 @Mixin(KubeJSForge.class)
 public class KubeJSForgeMixin {
 
-    @Shadow
+    @Shadow(remap = false)
     private static void initRegistries(RegisterEvent event) {
         throw new NotImplementedException("Mixin failed to apply");
     }
 
-    @Redirect(method = "<init>", at = @At(value = "INVOKE", ordinal = 1, target = "Lnet/minecraftforge/eventbus/api/IEventBus;addListener(Ljava/util/function/Consumer;)V"))
+    @Redirect(remap = false, method = "<init>", at = @At(value = "INVOKE", ordinal = 1, target = "Lnet/minecraftforge/eventbus/api/IEventBus;addListener(Ljava/util/function/Consumer;)V"))
     public void init(IEventBus bus, Consumer<? extends Event> consumer) {
         CommonProxy.onKubeJSSetup();
         bus.addListener(consumer);

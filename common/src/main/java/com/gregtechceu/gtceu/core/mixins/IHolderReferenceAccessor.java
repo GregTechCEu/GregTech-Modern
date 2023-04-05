@@ -6,7 +6,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Invoker;
 
 @Mixin(Holder.Reference.class)
-public interface IHolder$ReferenceAccessor<T> extends Holder<T> {
+public interface IHolderReferenceAccessor<T> extends Holder<T> {
 
     @Invoker
     void invokeBind(ResourceKey<T> key, T value);
