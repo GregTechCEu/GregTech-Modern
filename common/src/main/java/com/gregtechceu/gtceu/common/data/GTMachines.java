@@ -28,6 +28,7 @@ import com.gregtechceu.gtceu.common.machine.multiblock.primitive.CokeOvenMachine
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.PrimitiveBlastFurnaceMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.PrimitivePumpMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.steam.LargeBoilerMachine;
+import com.gregtechceu.gtceu.common.machine.multiblock.steam.SteamParallelMultiblockMachine;
 import com.gregtechceu.gtceu.common.machine.steam.SteamSolidBoilerMachine;
 import com.gregtechceu.gtceu.common.machine.storage.CrateMachine;
 import com.gregtechceu.gtceu.common.machine.storage.CreativeEnergyContainerMachine;
@@ -431,6 +432,18 @@ public class GTMachines {
                     .register(),
             ELECTRIC_TIERS);
 
+    public final static MachineDefinition STEAM_IMPORT_BUS = REGISTRATE.machine("item_bus.import.steam", holder -> new SteamItemBusPartMachine(holder, IO.IN))
+            .rotationState(RotationState.ALL)
+            .abilities(PartAbility.STEAM_IMPORT_ITEMS)
+            .overlaySteamHullRenderer("item_bus.import")
+            .register();
+
+    public final static MachineDefinition STEAM_EXPORT_BUS = REGISTRATE.machine("item_bus.export.steam", holder -> new SteamItemBusPartMachine(holder, IO.OUT))
+            .rotationState(RotationState.ALL)
+            .abilities(PartAbility.STEAM_EXPORT_ITEMS)
+            .overlaySteamHullRenderer("item_bus.export")
+            .register();
+
     public final static MachineDefinition STEAM_HATCH = REGISTRATE.machine("steam_hatch", SteamHatchPartMachine::new)
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.STEAM)
@@ -740,6 +753,45 @@ public class GTMachines {
             .sidedWorkableCasingRenderer("block/casings/pump_deck", GTCEu.id("block/multiblock/primitive_pump"), false)
             .register();
 
+    public final static MultiblockMachineDefinition STEAM_GRINDER = REGISTRATE.multiblock("steam_grinder", SteamParallelMultiblockMachine::new)
+            .rotationState(RotationState.NON_Y_AXIS)
+            .appearanceBlock(CASING_BRONZE_BRICKS)
+            .recipeType(GTRecipeTypes.MACERATOR_RECIPES)
+            .pattern(definition -> FactoryBlockPattern.start()
+                    .aisle("XXX", "XXX", "XXX")
+                    .aisle("XXX", "X#X", "XXX")
+                    .aisle("XXX", "XSX", "XXX")
+                    .where('S', Predicates.controller(blocks(definition.getBlock())))
+                    .where('#', Predicates.air())
+                    .where('X', blocks(CASING_BRONZE_BRICKS.get()).setMinGlobalLimited(14)
+                            .or(Predicates.abilities(PartAbility.STEAM_IMPORT_ITEMS))
+                            .or(Predicates.abilities(PartAbility.STEAM_EXPORT_ITEMS))
+                            .or(Predicates.abilities(PartAbility.STEAM).setExactLimit(1)))
+                    .build())
+            .workableCasingRenderer(GTCEu.id("block/casings/solid/machine_casing_bronze_plated_bricks"),
+                    GTCEu.id("block/multiblock/steam_grinder"), false)
+            .register();
+
+    public final static MultiblockMachineDefinition STEAM_OVEN = REGISTRATE.multiblock("steam_oven", SteamParallelMultiblockMachine::new)
+            .rotationState(RotationState.NON_Y_AXIS)
+            .appearanceBlock(CASING_BRONZE_BRICKS)
+            .recipeType(GTRecipeTypes.FURNACE_RECIPES)
+            .pattern(definition -> FactoryBlockPattern.start()
+                    .aisle("FFF", "XXX", " X ")
+                    .aisle("FFF", "X#X", " X ")
+                    .aisle("FFF", "XSX", " X ")
+                    .where('S', Predicates.controller(blocks(definition.getBlock())))
+                    .where('#', Predicates.air())
+                    .where(' ', Predicates.any())
+                    .where('X', blocks(CASING_BRONZE_BRICKS.get()).setMinGlobalLimited(6)
+                            .or(Predicates.abilities(PartAbility.STEAM_IMPORT_ITEMS))
+                            .or(Predicates.abilities(PartAbility.STEAM_EXPORT_ITEMS)))
+                    .where('F', blocks(FIREBOX_BRONZE.get())
+                            .or(Predicates.abilities(PartAbility.STEAM).setExactLimit(1)))
+                    .build())
+            .renderer(() -> new LargeBoilerRenderer(GTCEu.id("block/casings/solid/machine_casing_bronze_plated_bricks"), BoilerFireboxType.BRONZE_FIREBOX,
+                    GTCEu.id("block/multiblock/steam_oven")))
+            .register();
 
 
 

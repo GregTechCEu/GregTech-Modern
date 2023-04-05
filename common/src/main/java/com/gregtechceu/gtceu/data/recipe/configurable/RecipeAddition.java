@@ -5,10 +5,7 @@ import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
-import com.gregtechceu.gtceu.common.data.GTBlocks;
-import com.gregtechceu.gtceu.common.data.GTItems;
-import com.gregtechceu.gtceu.common.data.GTMaterials;
-import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
+import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
@@ -38,6 +35,7 @@ public class RecipeAddition {
         harderRods(provider);
         nerfWoodCrafting(provider);
         harderBrickRecipes(provider);
+        steelSteamMultiblocks(provider);
         if (ConfigHolder.recipes.hardWoodRecipes) hardWoodRecipes(provider);
         if (ConfigHolder.recipes.hardIronRecipes) hardIronRecipes(provider);
         if (ConfigHolder.recipes.hardGlassRecipes) hardGlassRecipes(provider);
@@ -47,6 +45,22 @@ public class RecipeAddition {
         if (ConfigHolder.recipes.harderCharcoalRecipe) harderCharcoalRecipes(provider);
         if (ConfigHolder.recipes.flintAndSteelRequireSteel) flintAndSteelRequireSteel(provider);
         if (ConfigHolder.recipes.removeVanillaBlockRecipes) removeVanillaBlockRecipes(provider);
+    }
+
+    private static void steelSteamMultiblocks(Consumer<FinishedRecipe> provider) {
+        if (ConfigHolder.machines.steelSteamMultiblocks) {
+            VanillaRecipeHelper.addShapedRecipe(provider, true, "steam_oven", GTMachines.STEAM_OVEN.asStack(), "CGC", "FMF", "CGC", 'F', GTBlocks.FIREBOX_STEEL.asStack(), 'C', GTBlocks.CASING_STEEL_SOLID.asStack(), 'M', GTMachines.STEAM_FURNACE.right().asStack(), 'G', new UnificationEntry(TagPrefix.gear, GTMaterials.Invar));
+            VanillaRecipeHelper.addShapedRecipe(provider, true, "steam_grinder", GTMachines.STEAM_GRINDER.asStack(), "CGC", "CFC", "CGC", 'G', new UnificationEntry(TagPrefix.gear, GTMaterials.Potin), 'F', GTMachines.STEAM_MACERATOR.right().asStack(), 'C', GTBlocks.CASING_STEEL_SOLID.asStack());
+            VanillaRecipeHelper.addShapedRecipe(provider, true, "steam_hatch", GTMachines.STEAM_HATCH.asStack(), "BPB", "BTB", "BPB", 'B', new UnificationEntry(TagPrefix.plate, GTMaterials.Steel), 'P', new UnificationEntry(TagPrefix.pipeNormalFluid, GTMaterials.Steel), 'T', GTMachines.STEEL_DRUM.asStack());
+            VanillaRecipeHelper.addShapedRecipe(provider, true, "steam_input_bus", GTMachines.STEAM_IMPORT_BUS.asStack(), "C", "H", 'H', GTBlocks.STEEL_HULL.asStack(), 'C', CustomTags.TAG_WOODEN_CHESTS);
+            VanillaRecipeHelper.addShapedRecipe(provider, true, "steam_output_bus", GTMachines.STEAM_EXPORT_BUS.asStack(), "H", "C", 'H', GTBlocks.STEEL_HULL.asStack(), 'C', CustomTags.TAG_WOODEN_CHESTS);
+        } else {
+            VanillaRecipeHelper.addShapedRecipe(provider, true, "steam_oven", GTMachines.STEAM_OVEN.asStack(), "CGC", "FMF", "CGC", 'F', GTBlocks.FIREBOX_BRONZE.asStack(), 'C', GTBlocks.CASING_BRONZE_BRICKS.asStack(), 'M', GTMachines.STEAM_FURNACE.left().asStack(), 'G', new UnificationEntry(TagPrefix.gear, GTMaterials.Invar));
+            VanillaRecipeHelper.addShapedRecipe(provider, true, "steam_grinder", GTMachines.STEAM_GRINDER.asStack(), "CGC", "CFC", "CGC", 'G', new UnificationEntry(TagPrefix.gear, GTMaterials.Potin), 'F', GTMachines.STEAM_MACERATOR.left().asStack(), 'C', GTBlocks.CASING_BRONZE_BRICKS.asStack());
+            VanillaRecipeHelper.addShapedRecipe(provider, true, "steam_hatch", GTMachines.STEAM_HATCH.asStack(), "BPB", "BTB", "BPB", 'B', new UnificationEntry(TagPrefix.plate, GTMaterials.Bronze), 'P', new UnificationEntry(TagPrefix.pipeNormalFluid, GTMaterials.Bronze), 'T', GTMachines.BRONZE_DRUM.asStack());
+            VanillaRecipeHelper.addShapedRecipe(provider, true, "steam_input_bus", GTMachines.STEAM_IMPORT_BUS.asStack(), "C", "H", 'H', GTBlocks.BRONZE_HULL.asStack(), 'C', CustomTags.TAG_WOODEN_CHESTS);
+            VanillaRecipeHelper.addShapedRecipe(provider, true, "steam_output_bus", GTMachines.STEAM_EXPORT_BUS.asStack(), "H", "C", 'H', GTBlocks.BRONZE_HULL.asStack(), 'C', CustomTags.TAG_WOODEN_CHESTS);
+        }
     }
 
     private static void disableManualCompression(Consumer<FinishedRecipe> provider) {

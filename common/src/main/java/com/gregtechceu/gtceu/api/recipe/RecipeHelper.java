@@ -29,6 +29,14 @@ public class RecipeHelper {
                 .sum();
     }
 
+    public static void setInputEUt(GTRecipe recipe, long eut) {
+        recipe.getTickInputContents(EURecipeCapability.CAP).forEach(c -> c.content = eut);
+    }
+
+    public static void setOutputEUt(GTRecipe recipe, long eut) {
+        recipe.getTickOutputContents(EURecipeCapability.CAP).forEach(c -> c.content = eut);
+    }
+
     public static int getRecipeEUtTier(GTRecipe recipe) {
         long EUt = getInputEUt(recipe);
         if (EUt == 0) {
