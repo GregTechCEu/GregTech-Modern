@@ -491,12 +491,12 @@ public class Material implements Comparable<Material> {
         /**
          * Add a {@link WoodProperty} to this Material.<br>
          * Useful for marking a Material as Wood for various additional behaviors.<br>
-         * Will be created with a Harvest Level of 2, and a Burn Time of 300 (Furnace Fuel).
+         * Will be created with a Harvest Level of 0, and a Burn Time of 300 (Furnace Fuel).
          *
          * @throws IllegalArgumentException If a {@link DustProperty} has already been added to this Material.
          */
         public Builder wood() {
-            return wood(2, 300);
+            return wood(0, 300);
         }
 
         /**

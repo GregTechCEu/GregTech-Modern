@@ -36,7 +36,7 @@
           "count": 8,
           "fabric:type": "gtceu:sized",
           "ingredient": {
-            "item": "gtceu:small.polybenzimidazole"
+            "item": "gtceu:fluid_pipe_small.polybenzimidazole"
           }
         }
       },

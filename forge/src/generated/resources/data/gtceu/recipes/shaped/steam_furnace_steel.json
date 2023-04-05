@@ -11,7 +11,7 @@
       "tag": "forge:plates/steel"
     },
     "X": {
-      "item": "gtceu:small.tin_alloy"
+      "item": "gtceu:fluid_pipe_small.tin_alloy"
     }
   },
   "pattern": [

@@ -8,7 +8,7 @@
       "item": "gtceu:electric.motor.iv"
     },
     "P": {
-      "item": "gtceu:normal.tungsten_steel"
+      "item": "gtceu:fluid_pipe_normal.tungsten_steel"
     },
     "R": {
       "tag": "forge:rings/styrene_butadiene_rubber"

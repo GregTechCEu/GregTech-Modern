@@ -39,7 +39,7 @@
           "count": 1,
           "fabric:type": "gtceu:sized",
           "ingredient": {
-            "item": "gtceu:large.naquadah"
+            "item": "gtceu:fluid_pipe_large.naquadah"
           }
         }
       },

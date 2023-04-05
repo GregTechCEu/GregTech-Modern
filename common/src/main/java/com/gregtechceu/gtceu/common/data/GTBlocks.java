@@ -199,7 +199,7 @@ public class GTBlocks {
         for (var fluidPipeType : FluidPipeType.values()) {
             for (Material material : GTRegistries.MATERIALS) {
                 if (material.hasProperty(PropertyKey.FLUID_PIPE) && !fluidPipeType.tagPrefix.isIgnored(material)) {
-                    var entry = REGISTRATE.block(fluidPipeType.name + "." + material.getName(), p -> new FluidPipeBlock(p, fluidPipeType, material))
+                    var entry = REGISTRATE.block("fluid_pipe_" + fluidPipeType.name + "." + material.getName(), p -> new FluidPipeBlock(p, fluidPipeType, material))
                             .initialProperties(() -> Blocks.IRON_BLOCK)
                             .properties(p -> p.dynamicShape().noOcclusion())
                             .tag(getPipeTags(material))

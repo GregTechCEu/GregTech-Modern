@@ -8,7 +8,7 @@
       "item": "gtceu:electric.motor.mv"
     },
     "P": {
-      "item": "gtceu:normal.steel"
+      "item": "gtceu:fluid_pipe_normal.steel"
     },
     "R": {
       "tag": "forge:rings/silicone_rubber"
