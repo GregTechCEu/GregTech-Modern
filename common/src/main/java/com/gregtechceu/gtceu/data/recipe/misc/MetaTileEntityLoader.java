@@ -17,6 +17,7 @@ import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import org.apache.commons.lang3.ArrayUtils;
@@ -251,10 +252,10 @@ public class MetaTileEntityLoader {
         // TODO Crafting station
         //VanillaRecipeHelper.addShapedRecipe(provider, true, "workbench_bronze", GTMachines.WORKBENCH.getStackForm(), "CSC", "PWP", "PsP", 'C', OreDictNames.chestWood, 'W', new ItemStack(Blocks.CRAFTING_TABLE), 'S', OreDictUnifier.get("slabWood"), 'P', new UnificationEntry(TagPrefix.plank, GTMaterials.Wood));
 
-        // TODO Primitive Pump
-        //VanillaRecipeHelper.addShapedRecipe(provider, true, "primitive_pump", GTMachines.PRIMITIVE_WATER_PUMP.getStackForm(), "RGS", "OWd", "CLC", 'R', new UnificationEntry(TagPrefix.ring, GTMaterials.Iron), 'G', new UnificationEntry(TagPrefix.pipeNormalFluid, GTMaterials.Wood), 'S', new UnificationEntry(TagPrefix.screw, GTMaterials.Iron), 'O', new UnificationEntry(TagPrefix.rotor, GTMaterials.Iron), 'W', MetaBlocks.PLANKS.getItemVariant(BlockGregPlanks.BlockType.TREATED_PLANK), 'C', new ItemStack(Blocks.STONE_SLAB, 1, 3), 'L', new UnificationEntry(TagPrefix.pipeLargeFluid, GTMaterials.Wood));
-        //VanillaRecipeHelper.addShapedRecipe(provider, true, "pump_deck", MetaBlocks.STEAM_CASING.getItemVariant(PUMP_DECK, 2), "SWS", "dCh", 'S', new UnificationEntry(TagPrefix.screw, GTMaterials.Iron), 'W', MetaBlocks.PLANKS.getItemVariant(BlockGregPlanks.BlockType.TREATED_PLANK), 'C', new ItemStack(Blocks.STONE_SLAB, 1, 3));
-        //VanillaRecipeHelper.addShapedRecipe(provider, true, "pump_hatch", GTMachines.PUMP_OUTPUT_HATCH.getStackForm(), "SRd", "PLP", "CRC", 'S', new UnificationEntry(TagPrefix.screw, GTMaterials.Iron), 'R', new UnificationEntry(TagPrefix.ring, GTMaterials.Iron), 'P', MetaBlocks.PLANKS.getItemVariant(BlockGregPlanks.BlockType.TREATED_PLANK), 'L', new UnificationEntry(TagPrefix.pipeLargeFluid, GTMaterials.Wood), 'C', new ItemStack(Blocks.STONE_SLAB, 1, 3));
+        // todo wood pipes
+        //VanillaRecipeHelper.addShapedRecipe(provider, true, "primitive_pump", GTMachines.PRIMITIVE_PUMP.asStack(), "RGS", "OWd", "CLC", 'R', new UnificationEntry(TagPrefix.ring, GTMaterials.Iron), 'G', new UnificationEntry(TagPrefix.pipeNormalFluid, GTMaterials.Wood), 'S', new UnificationEntry(TagPrefix.screw, GTMaterials.Iron), 'O', new UnificationEntry(TagPrefix.rotor, GTMaterials.Iron), 'W', GTBlocks.TREATED_WOOD_PLANK.asStack(), 'C', new ItemStack(Items.COBBLESTONE_SLAB), 'L', new UnificationEntry(TagPrefix.pipeLargeFluid, GTMaterials.Wood));
+        //VanillaRecipeHelper.addShapedRecipe(provider, true, "pump_deck", GTBlocks.CASING_PUMP_DECK.asStack(2), "SWS", "dCh", 'S', new UnificationEntry(TagPrefix.screw, GTMaterials.Iron), 'W', GTBlocks.TREATED_WOOD_PLANK.asStack(), 'C', new ItemStack(Items.COBBLESTONE_SLAB));
+        //VanillaRecipeHelper.addShapedRecipe(provider, true, "pump_hatch", GTMachines.PUMP_HATCH.asStack(), "SRd", "PLP", "CRC", 'S', new UnificationEntry(TagPrefix.screw, GTMaterials.Iron), 'R', new UnificationEntry(TagPrefix.ring, GTMaterials.Iron), 'P', GTBlocks.TREATED_WOOD_PLANK.asStack(), 'L', new UnificationEntry(TagPrefix.pipeLargeFluid, GTMaterials.Wood), 'C', new ItemStack(Items.COBBLESTONE_SLAB));
 
         // TODO Multiblock tanks
         //VanillaRecipeHelper.addShapedRecipe(provider, true, "wood_multiblock_tank", GTMachines.WOODEN_TANK.getStackForm(), " R ", "rCs", " R ", 'R', new UnificationEntry(TagPrefix.ring, GTMaterials.Lead), 'C', MetaBlocks.STEAM_CASING.getItemVariant(WOOD_WALL));

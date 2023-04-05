@@ -7,9 +7,11 @@ import com.mojang.blaze3d.platform.InputConstants;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.biome.Biome;
 import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nullable;
@@ -208,5 +210,10 @@ public class GTUtil {
 
         double min = Collections.min(distances.keySet());
         return distances.get(min);
+    }
+
+    @ExpectPlatform
+    public static long getPumpBiomeModifier(Holder<Biome> biome) {
+        throw new AssertionError();
     }
 }

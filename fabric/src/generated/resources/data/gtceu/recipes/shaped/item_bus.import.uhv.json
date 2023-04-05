@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "c:chests"
+    },
+    "M": {
+      "item": "gtceu:hull.uhv"
+    }
+  },
+  "pattern": [
+    " C",
+    " M"
+  ],
+  "result": {
+    "item": "gtceu:item_bus.import.uhv"
+  }
+}

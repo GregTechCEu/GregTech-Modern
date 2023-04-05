@@ -26,6 +26,7 @@ import com.gregtechceu.gtceu.common.machine.multiblock.electric.ElectricBlastFur
 import com.gregtechceu.gtceu.common.machine.multiblock.part.*;
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.CokeOvenMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.PrimitiveBlastFurnaceMachine;
+import com.gregtechceu.gtceu.common.machine.multiblock.primitive.PrimitivePumpMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.steam.LargeBoilerMachine;
 import com.gregtechceu.gtceu.common.machine.steam.SteamSolidBoilerMachine;
 import com.gregtechceu.gtceu.common.machine.storage.CrateMachine;
@@ -318,7 +319,7 @@ public class GTMachines {
                     .abilities(tier == 0 ? new PartAbility[] {PartAbility.IMPORT_ITEMS, PartAbility.STEAM_IMPORT_ITEMS} : new PartAbility[]{PartAbility.IMPORT_ITEMS})
                     .overlayTieredHullRenderer("item_bus.import")
                     .register(),
-            ELECTRIC_TIERS);
+            ALL_TIERS);
 
     public final static MachineDefinition[] ITEM_EXPORT_BUS = registerTieredMachines("item_bus.export",
             (holder, tier) -> new ItemBusPartMachine(holder, tier, IO.OUT),
@@ -328,7 +329,7 @@ public class GTMachines {
                     .abilities(tier == 0 ? new PartAbility[] {PartAbility.EXPORT_ITEMS, PartAbility.STEAM_EXPORT_ITEMS} : new PartAbility[]{PartAbility.EXPORT_ITEMS})
                     .overlayTieredHullRenderer("item_bus.export")
                     .register(),
-            ELECTRIC_TIERS);
+            ALL_TIERS);
 
     public final static MachineDefinition[] FLUID_IMPORT_HATCH = registerTieredMachines("fluid_hatch.import",
             (holder, tier) -> new FluidHatchPartMachine(holder, tier, IO.IN),
@@ -338,7 +339,7 @@ public class GTMachines {
                     .abilities(PartAbility.IMPORT_FLUIDS)
                     .overlayTieredHullRenderer("fluid_hatch.import")
                     .register(),
-            ELECTRIC_TIERS);
+            ALL_TIERS);
 
     public final static MachineDefinition[] FLUID_EXPORT_HATCH = registerTieredMachines("fluid_hatch.export",
             (holder, tier) -> new FluidHatchPartMachine(holder, tier, IO.OUT),
@@ -349,7 +350,7 @@ public class GTMachines {
                     .abilities(PartAbility.EXPORT_FLUIDS)
                     .overlayTieredHullRenderer("fluid_hatch.export")
                     .register(),
-            ELECTRIC_TIERS);
+            ALL_TIERS);
 
     public final static MachineDefinition[] ENERGY_INPUT_HATCH = registerTieredMachines("energy_hatch.input",
             (holder, tier) -> new EnergyHatchPartMachine(holder, tier, IO.IN, 2),
@@ -441,6 +442,13 @@ public class GTMachines {
     public final static MachineDefinition COKE_OVEN_HATCH = REGISTRATE.machine("coke_oven_hatch", CokeOvenHatch::new)
             .rotationState(RotationState.ALL)
             .renderer(() -> new CTMModelRenderer(GTCEu.id("block/machine/part/coke_oven_hatch")))
+            .register();
+
+    public final static MachineDefinition PUMP_HATCH = REGISTRATE.machine("pump_hatch", PumpHatchPartMachine::new)
+            .rotationState(RotationState.ALL)
+            .abilities(PartAbility.PUMP_FLUID_HATCH)
+            .modelRenderer(() -> GTCEu.id("block/machine/part/pump_hatch"))
+            //.renderer(() -> new CTMModelRenderer(GTCEu.id("block/machine/part/pump_hatch")))
             .register();
 
 
@@ -716,7 +724,21 @@ public class GTMachines {
                     GTCEu.id("block/multiblock/assembly_line"), false)
             .register();
 
-
+    public final static MultiblockMachineDefinition PRIMITIVE_PUMP = REGISTRATE.multiblock("primitive_pump", PrimitivePumpMachine::new)
+            .rotationState(RotationState.NON_Y_AXIS)
+            .appearanceBlock(CASING_PUMP_DECK)
+            .pattern(definition -> FactoryBlockPattern.start()
+                    .aisle("XXXX", "##F#", "##F#")
+                    .aisle("XXHX", "F##F", "FFFF")
+                    .aisle("SXXX", "##F#", "##F#")
+                    .where('S', Predicates.controller(blocks(definition.getBlock())))
+                    .where('X', blocks(CASING_PUMP_DECK.get()))
+                    .where('F', blocks(MATERIAL_BLOCKS.get(TagPrefix.frameGt, GTMaterials.TreatedWood).get()))
+                    .where('H', Predicates.abilities(PartAbility.PUMP_FLUID_HATCH).or(blocks(FLUID_EXPORT_HATCH[0].get(), FLUID_EXPORT_HATCH[1].get())))
+                    .where('#', Predicates.any())
+                    .build())
+            .sidedWorkableCasingRenderer("block/casings/pump_deck", GTCEu.id("block/multiblock/primitive_pump"), false)
+            .register();
 
 
 

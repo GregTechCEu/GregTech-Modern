@@ -164,10 +164,10 @@ public class GTBlocks {
     static {
         REGISTRATE.creativeModeTab(() -> GTCreativeModeTabs.MATERIAL_PIPE);
 
+        // Cable/Wire Blocks
         ImmutableTable.Builder<TagPrefix, Material, BlockEntry<CableBlock>> builder = ImmutableTable.builder();
         for (Insulation insulation : Insulation.values()) {
             for (Material material : GTRegistries.MATERIALS) {
-                // Compressed Block
                 if (material.hasProperty(PropertyKey.WIRE) && !insulation.tagPrefix.isIgnored(material)) {
                     var entry = REGISTRATE.block(insulation.name + "." + material.getName(), p -> new CableBlock(p, insulation, material))
                             .initialProperties(() -> Blocks.IRON_BLOCK)
@@ -193,10 +193,10 @@ public class GTBlocks {
     public final static Table<TagPrefix, Material, BlockEntry<FluidPipeBlock>> FLUID_PIPE_BLOCKS;
 
     static {
+        // Fluid Pipe Blocks
         ImmutableTable.Builder<TagPrefix, Material, BlockEntry<FluidPipeBlock>> builder = ImmutableTable.builder();
         for (var fluidPipeType : FluidPipeType.values()) {
             for (Material material : GTRegistries.MATERIALS) {
-                // Compressed Block
                 if (material.hasProperty(PropertyKey.FLUID_PIPE) && !fluidPipeType.tagPrefix.isIgnored(material)) {
                     var entry = REGISTRATE.block(fluidPipeType.name + "." + material.getName(), p -> new FluidPipeBlock(p, fluidPipeType, material))
                             .initialProperties(() -> Blocks.IRON_BLOCK)
@@ -256,8 +256,21 @@ public class GTBlocks {
     public static final BlockEntry<Block> CASING_STEEL_PIPE = createCasingBlock("steel_pipe", GTCEu.id("block/casings/pipe/machine_casing_pipe_steel"));
     public static final BlockEntry<Block> CASING_TITANIUM_PIPE = createCasingBlock("titanium_pipe", GTCEu.id("block/casings/pipe/machine_casing_pipe_titanium"));
     public static final BlockEntry<Block> CASING_TUNGSTENSTEEL_PIPE = createCasingBlock("tungstensteel_pipe", GTCEu.id("block/casings/pipe/machine_casing_pipe_tungstensteel"));
-    // todo primitive pump
-    //PUMP_DECK("pump_deck", GTCEu.id("")),
+    public static final BlockEntry<Block> CASING_PUMP_DECK = REGISTRATE.block("casing_pump_deck", p -> (Block) new RendererBlock(p,
+                    new TextureOverrideRenderer(new ResourceLocation("block/cube_bottom_top"),
+                            Map.of("bottom",  GTCEu.id("block/casings/pump_deck/bottom"),
+                                    "top",  GTCEu.id("block/casings/pump_deck/top"),
+                                    "side",  GTCEu.id("block/casings/pump_deck/side")))))
+            .initialProperties(() -> Blocks.IRON_BLOCK)
+            .properties(p -> p.sound(SoundType.WOOD).color(MaterialColor.WOOD))
+            .addLayer(() -> RenderType::cutoutMipped)
+            .blockstate(NonNullBiConsumer.noop())
+            .tag(GTToolType.WRENCH.harvestTag, BlockTags.MINEABLE_WITH_AXE)
+            .item(RendererBlockItem::new)
+            .model(NonNullBiConsumer.noop())
+            .build()
+            .register();
+    // todo multiblock tanks
     //WOOD_WALL("wood_wall", GTCEu.id(""));
 
     public static final BlockEntry<Block> MACHINE_CASING_ULV = createMachineCasingBlock(GTValues.ULV);
