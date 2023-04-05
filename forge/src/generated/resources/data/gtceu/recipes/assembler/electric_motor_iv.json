@@ -29,7 +29,7 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "forge:rods/neodymium_magnetic"
+          "tag": "forge:rods/magnetic_neodymium"
         }
       },
       {

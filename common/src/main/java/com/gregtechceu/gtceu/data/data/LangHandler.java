@@ -1,14 +1,17 @@
 package com.gregtechceu.gtceu.data.data;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.data.GTCreativeModeTabs;
+import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 import com.tterrag.registrate.providers.RegistrateLangProvider;
+import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.stream.IntStream;
@@ -673,6 +676,15 @@ public class LangHandler {
         multilineLang(provider, "cover.advanced_item_detector.invert_tooltip", "Toggle to invert the redstone logic\nBy default, redstone stops emitting when less than the minimum amount of items, and starts emitting when greater than the min amount of items up to the set maximum");
         provider.add("cover.advanced_item_detector.max", "Maximum Items:");
         provider.add("cover.advanced_item_detector.min", "Minimum Items:");
+
+        replace(provider, GTMaterials.FullersEarth.getUnlocalizedName(), "Fuller's Earth");
+        replace(provider, GTMaterials.Cooperite.getUnlocalizedName(), "Sheldonite"); //greg's humor is now on 1.19...
+        replace(provider, GTMaterials.HSSG.getUnlocalizedName(), "HSS-G");
+        replace(provider, GTMaterials.HSSE.getUnlocalizedName(), "HSS-E");
+        replace(provider, GTMaterials.HSSS.getUnlocalizedName(), "HSS-S");
+        replace(provider, GTMaterials.UUMatter.getUnlocalizedName(), "UU-Matter");
+
+        // TODO all individual material item overrides do not work
         provider.add("item.nether_quartz.oreNetherrack", "Nether Quartz Ore");
         provider.add("item.gunpowder.dustTiny", "Tiny Pile of Gunpowder");
         provider.add("item.gunpowder.dustSmall", "Small Pile of Gunpowder");
@@ -809,6 +821,7 @@ public class LangHandler {
         provider.add("item.iridium_metal_residue.dustTiny", "Tiny Pile of Iridium Metal Residue");
         provider.add("item.iridium_metal_residue.dustSmall", "Small Pile of Iridium Metal Residue");
         provider.add("item.iridium_metal_residue.dust", "Iridium Metal Residue");
+
         provider.add("behaviour.hoe", "Can till dirt");
         provider.add("behaviour.soft_hammer", "Activates and Deactivates Machines");
         provider.add("behaviour.soft_hammer.enabled", "Working Enabled");
@@ -3242,5 +3255,17 @@ public class LangHandler {
     private static void multilineLang(RegistrateLangProvider provider, String key, String multiline) {
         var lines = multiline.split("\n");
         multiLang(provider, key, lines);
+    }
+
+    /**
+     * Replace a value in a language provider's mappings
+     *
+     * @param provider the provider whose mappings should be modified
+     * @param key the key for the value
+     * @param value the value to use in place of the old one
+     */
+    @ExpectPlatform
+    private static void replace(@NotNull RegistrateLangProvider provider, @NotNull String key, @NotNull String value) {
+        throw new AssertionError();
     }
 }

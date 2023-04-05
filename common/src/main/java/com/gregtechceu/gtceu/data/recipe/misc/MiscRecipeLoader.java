@@ -163,7 +163,7 @@ public class MiscRecipeLoader {
                 .inputItems(ELECTRIC_MOTOR_HV)
                 .inputItems(ring, StainlessSteel, 2)
                 .inputItems(rod, StainlessSteel)
-                .inputItems(rotor, Chrome)
+                .inputItems(rotor, Chromium)
                 .inputItems(cableGtSingle, Gold, 2)
                 .outputItems(POWER_THRUSTER_ADVANCED)
                 .save(provider);

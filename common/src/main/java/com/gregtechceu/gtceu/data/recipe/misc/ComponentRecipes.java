@@ -717,7 +717,7 @@ public class ComponentRecipes {
         //Sensors Start-------------------------------------------------------------------------------------------------
         VanillaRecipeHelper.addShapedRecipe(provider, true, "sensor_lv", SENSOR_LV.asStack(), "P G", "PR ", "XPP", 'P', new UnificationEntry(plate, Steel), 'R', new UnificationEntry(rod, Brass), 'G', new UnificationEntry(gem, Quartzite), 'X', CustomTags.LV_CIRCUITS);
         VanillaRecipeHelper.addShapedRecipe(provider, true, "sensor_mv", SENSOR_MV.asStack(), "P G", "PR ", "XPP", 'P', new UnificationEntry(plate, Aluminium), 'R', new UnificationEntry(rod, Electrum), 'G', new UnificationEntry(gemFlawless, Emerald), 'X', CustomTags.MV_CIRCUITS);
-        VanillaRecipeHelper.addShapedRecipe(provider, true, "sensor_hv", SENSOR_HV.asStack(), "P G", "PR ", "XPP", 'P', new UnificationEntry(plate, StainlessSteel), 'R', new UnificationEntry(rod, Chrome), 'G', new UnificationEntry(gem, EnderEye), 'X', CustomTags.HV_CIRCUITS);
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "sensor_hv", SENSOR_HV.asStack(), "P G", "PR ", "XPP", 'P', new UnificationEntry(plate, StainlessSteel), 'R', new UnificationEntry(rod, Chromium), 'G', new UnificationEntry(gem, EnderEye), 'X', CustomTags.HV_CIRCUITS);
         VanillaRecipeHelper.addShapedRecipe(provider, true, "sensor_ev", SENSOR_EV.asStack(), "P G", "PR ", "XPP", 'P', new UnificationEntry(plate, Titanium), 'R', new UnificationEntry(rod, Platinum), 'G', QUANTUM_EYE.asStack(), 'X', CustomTags.EV_CIRCUITS);
         VanillaRecipeHelper.addShapedRecipe(provider, true, "sensor_iv", SENSOR_IV.asStack(), "P G", "PR ", "XPP", 'P', new UnificationEntry(plate, TungstenSteel), 'R', new UnificationEntry(rod, Iridium), 'G', QUANTUM_STAR.asStack(), 'X', CustomTags.IV_CIRCUITS);
 
@@ -738,7 +738,7 @@ public class ComponentRecipes {
                 .duration(100).EUt(VA[LV]).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("sensor_hv")
-                .inputItems(rod, Chrome)
+                .inputItems(rod, Chromium)
                 .inputItems(plate, StainlessSteel, 4)
                 .inputItems(CustomTags.HV_CIRCUITS)
                 .inputItems(gem, EnderEye)
@@ -805,7 +805,7 @@ public class ComponentRecipes {
         //Emitters Start------------------------------------------------------------------------------------------------
         VanillaRecipeHelper.addShapedRecipe(provider, true, "emitter_lv", EMITTER_LV.asStack(), "CRX", "RGR", "XRC", 'R', new UnificationEntry(rod, Brass), 'C', new UnificationEntry(cableGtSingle, Tin), 'G', new UnificationEntry(gem, Quartzite), 'X', CustomTags.LV_CIRCUITS);
         VanillaRecipeHelper.addShapedRecipe(provider, true, "emitter_mv", EMITTER_MV.asStack(), "CRX", "RGR", "XRC", 'R', new UnificationEntry(rod, Electrum), 'C', new UnificationEntry(cableGtSingle, Copper), 'G', new UnificationEntry(gemFlawless, Emerald), 'X', CustomTags.MV_CIRCUITS);
-        VanillaRecipeHelper.addShapedRecipe(provider, true, "emitter_hv", EMITTER_HV.asStack(), "CRX", "RGR", "XRC", 'R', new UnificationEntry(rod, Chrome), 'C', new UnificationEntry(cableGtSingle, Gold), 'G', new UnificationEntry(gem, EnderEye), 'X', CustomTags.HV_CIRCUITS);
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "emitter_hv", EMITTER_HV.asStack(), "CRX", "RGR", "XRC", 'R', new UnificationEntry(rod, Chromium), 'C', new UnificationEntry(cableGtSingle, Gold), 'G', new UnificationEntry(gem, EnderEye), 'X', CustomTags.HV_CIRCUITS);
         VanillaRecipeHelper.addShapedRecipe(provider, true, "emitter_ev", EMITTER_EV.asStack(), "CRX", "RGR", "XRC", 'R', new UnificationEntry(rod, Platinum), 'C', new UnificationEntry(cableGtSingle, Aluminium), 'G', QUANTUM_EYE.asStack(), 'X', CustomTags.EV_CIRCUITS);
         VanillaRecipeHelper.addShapedRecipe(provider, true, "emitter_iv", EMITTER_IV.asStack(), "CRX", "RGR", "XRC", 'R', new UnificationEntry(rod, Iridium), 'C', new UnificationEntry(cableGtSingle, Tungsten), 'G', QUANTUM_STAR.asStack(), 'X', CustomTags.IV_CIRCUITS);
 
@@ -828,7 +828,7 @@ public class ComponentRecipes {
                 .duration(100).EUt(VA[LV]).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("emitter_hv")
-                .inputItems(rod, Chrome, 4)
+                .inputItems(rod, Chromium, 4)
                 .inputItems(cableGtSingle, Gold, 2)
                 .inputItems(CustomTags.HV_CIRCUITS, 2)
                 .inputItems(gem, EnderEye)

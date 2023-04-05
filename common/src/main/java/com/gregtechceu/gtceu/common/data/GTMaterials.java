@@ -1,13 +1,13 @@
 package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.common.data.materials.*;
 import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterial;
+import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlag;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.common.data.materials.*;
 import com.gregtechceu.gtceu.integration.kjs.events.MaterialEventJS;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
@@ -17,8 +17,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper.registerUnificationItems;
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.*;
-import static com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper.*;
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
 
 
@@ -339,7 +339,7 @@ public class GTMaterials {
     public static Material Cadmium;
     public static Material Cerium;
     public static Material Chlorine;
-    public static Material Chrome;
+    public static Material Chromium;
     public static Material Cobalt;
     public static Material Copernicium;
     public static Material Copper;
@@ -461,13 +461,13 @@ public class GTMaterials {
     public static Material AnnealedCopper;
     public static Material Asbestos;
     public static Material Ash;
-    public static Material BandedIron;
+    public static Material Hematite;
     public static Material BatteryAlloy;
     public static Material BlueTopaz;
     public static Material Bone;
     public static Material Brass;
     public static Material Bronze;
-    public static Material BrownLimonite;
+    public static Material Goethite;
     public static Material Calcite;
     public static Material Cassiterite;
     public static Material CassiteriteSand;

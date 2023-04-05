@@ -29,7 +29,7 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "c:iron_magnetic_rods"
+          "tag": "c:magnetic_iron_rods"
         }
       },
       {

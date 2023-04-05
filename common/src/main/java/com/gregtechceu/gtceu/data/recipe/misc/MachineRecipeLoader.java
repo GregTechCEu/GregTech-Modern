@@ -663,7 +663,7 @@ public class MachineRecipeLoader {
     private static void registerBlastFurnaceMetallurgyRecipes(Consumer<FinishedRecipe> provider) {
         createSulfurDioxideRecipe(provider, Stibnite, AntimonyTrioxide, 1500);
         createSulfurDioxideRecipe(provider, Sphalerite, Zincite, 1000);
-        createSulfurDioxideRecipe(provider, Pyrite, BandedIron, 2000);
+        createSulfurDioxideRecipe(provider, Pyrite, Hematite, 2000);
         createSulfurDioxideRecipe(provider, Pentlandite, Garnierite, 1000);
 
         BLAST_RECIPES.recipeBuilder("tetrahedrite_metallurgy").duration(120).EUt(VA[MV]).blastFurnaceTemp(1200)

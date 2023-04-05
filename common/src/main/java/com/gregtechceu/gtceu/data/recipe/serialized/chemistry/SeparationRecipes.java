@@ -142,7 +142,7 @@ public class SeparationRecipes {
                 .chancedOutput(dustSmall, Magnesia, 6000, 0)
                 .chancedOutput(dustTiny, PhosphorusPentoxide, 500, 0)
                 .chancedOutput(dustTiny, SodaAsh, 5000, 0)
-                .chancedOutput(dustTiny, BandedIron, 2500, 0)
+                .chancedOutput(dustTiny, Hematite, 2500, 0)
                 .save(provider);
 
 
@@ -272,7 +272,7 @@ public class SeparationRecipes {
 
         CENTRIFUGE_RECIPES.recipeBuilder("metal_mixture_separation").duration(1000).EUt(900)
                 .inputItems(dust, MetalMixture)
-                .outputItems(dustSmall, BandedIron)
+                .outputItems(dustSmall, Hematite)
                 .outputItems(dustSmall, Bauxite)
                 .outputItems(dustTiny, Pyrolusite, 2)
                 .outputItems(dustTiny, Barite)

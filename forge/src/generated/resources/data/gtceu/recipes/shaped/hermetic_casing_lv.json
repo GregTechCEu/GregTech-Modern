@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "F": {
-      "item": "gtceu:large.plastic"
+      "item": "gtceu:large.polyethylene"
     },
     "P": {
       "tag": "forge:plates/steel"
