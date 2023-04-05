@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.pattern.TraceabilityPredicate;
 import com.gregtechceu.gtceu.api.pattern.error.SinglePredicateError;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.pattern.error.PatternStringError;
-import com.gregtechceu.gtceu.data.data.LangHandler;
+import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.utils.BlockInfo;
 import it.unimi.dsi.fastutil.longs.Long2ObjectArrayMap;

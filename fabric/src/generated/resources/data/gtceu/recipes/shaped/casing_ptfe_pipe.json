@@ -5,7 +5,7 @@
       "tag": "c:polytetrafluoroethylene_frames"
     },
     "I": {
-      "item": "gtceu:normal.polytetrafluoroethylene"
+      "item": "gtceu:fluid_pipe_normal.polytetrafluoroethylene"
     },
     "P": {
       "tag": "c:polytetrafluoroethylene_plates"

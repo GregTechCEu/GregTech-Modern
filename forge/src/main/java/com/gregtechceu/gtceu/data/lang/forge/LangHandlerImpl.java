@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.data.data.forge;
+package com.gregtechceu.gtceu.data.lang.forge;
 
 import com.tterrag.registrate.providers.RegistrateLangProvider;
 import net.minecraftforge.common.data.LanguageProvider;
@@ -9,7 +9,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Map;
 
-public final class LangHandlerImpl {
+public class LangHandlerImpl {
 
     private LangHandlerImpl() {/**/}
 

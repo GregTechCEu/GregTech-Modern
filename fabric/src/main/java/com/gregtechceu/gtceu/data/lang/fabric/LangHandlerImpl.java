@@ -1,9 +1,9 @@
-package com.gregtechceu.gtceu.data.data.fabric;
+package com.gregtechceu.gtceu.data.lang.fabric;
 
 import com.tterrag.registrate.providers.RegistrateLangProvider;
 import org.jetbrains.annotations.NotNull;
 
-public final class LangHandlerImpl {
+public class LangHandlerImpl {
 
     private LangHandlerImpl() {/**/}
 

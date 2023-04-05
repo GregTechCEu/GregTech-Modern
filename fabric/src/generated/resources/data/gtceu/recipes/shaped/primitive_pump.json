@@ -5,10 +5,10 @@
       "item": "minecraft:cobblestone_slab"
     },
     "G": {
-      "item": "gtceu:normal.wood"
+      "item": "gtceu:fluid_pipe_normal.wood"
     },
     "L": {
-      "item": "gtceu:large.wood"
+      "item": "gtceu:fluid_pipe_large.wood"
     },
     "O": {
       "tag": "c:iron_rotors"

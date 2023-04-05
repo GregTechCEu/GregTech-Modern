@@ -21,7 +21,7 @@
           "count": 1,
           "fabric:type": "gtceu:sized",
           "ingredient": {
-            "item": "gtceu:normal.stainless_steel"
+            "item": "gtceu:fluid_pipe_normal.stainless_steel"
           }
         }
       },

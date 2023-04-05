@@ -13,7 +13,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputBoth;
 import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
-import com.gregtechceu.gtceu.data.data.LangHandler;
+import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.texture.*;
 import com.lowdragmc.lowdraglib.gui.widget.*;

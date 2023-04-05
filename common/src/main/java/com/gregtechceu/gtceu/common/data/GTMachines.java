@@ -47,7 +47,7 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.PyrolyseOvenMachine;
 import com.gregtechceu.gtceu.common.machine.steam.SteamLiquidBoilerMachine;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.data.data.LangHandler;
+import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.integration.kjs.events.MachineEventJS;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;

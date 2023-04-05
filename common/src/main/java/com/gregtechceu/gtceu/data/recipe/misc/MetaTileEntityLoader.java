@@ -80,7 +80,7 @@ public class MetaTileEntityLoader {
 
         VanillaRecipeHelper.addShapedRecipe(provider, true, "casing_grate_casing", GTBlocks.CASING_GRATE.asStack(2), "PVP", "PFP", "PMP", 'P', new ItemStack(Blocks.IRON_BARS, 1), 'F', new UnificationEntry(TagPrefix.frameGt, GTMaterials.Steel), 'M', GTItems.ELECTRIC_MOTOR_MV, 'V', new UnificationEntry(TagPrefix.rotor, GTMaterials.Steel));
         VanillaRecipeHelper.addShapedRecipe(provider, true, "casing_assembly_control", GTBlocks.CASING_ASSEMBLY_CONTROL.asStack(2), "CPC", "SFE", "CMC", 'C', CustomTags.EV_CIRCUITS, 'P', GTItems.HIGH_POWER_INTEGRATED_CIRCUIT, 'S', GTItems.SENSOR_IV.asStack(), 'F', new UnificationEntry(TagPrefix.frameGt, GTMaterials.TungstenSteel), 'E', GTItems.EMITTER_IV.asStack(), 'M', GTItems.ELECTRIC_MOTOR_IV);
-        VanillaRecipeHelper.addShapedRecipe(provider, true, "casing_assembly_line", GTBlocks.CASING_ASSEMBLY_LINE_GRATE.asStack(2), "PGP", "AFA", "PGP", 'P', new UnificationEntry(TagPrefix.plate, GTMaterials.Steel), 'G', new UnificationEntry(TagPrefix.gear, GTMaterials.Ruridit), 'A', GTItems.ROBOT_ARM_IV.asStack(), 'F', ChemicalHelper.get(TagPrefix.frameGt, GTMaterials.TungstenSteel));
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "casing_assembly_line", GTBlocks.CASING_ASSEMBLY_LINE.asStack(2), "PGP", "AFA", "PGP", 'P', new UnificationEntry(TagPrefix.plate, GTMaterials.Steel), 'G', new UnificationEntry(TagPrefix.gear, GTMaterials.Ruridit), 'A', GTItems.ROBOT_ARM_IV.asStack(), 'F', ChemicalHelper.get(TagPrefix.frameGt, GTMaterials.TungstenSteel));
 
         // TODO Hazard sign blocks
         /*

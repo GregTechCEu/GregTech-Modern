@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.data.data;
+package com.gregtechceu.gtceu.data.tags;
 
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.tterrag.registrate.providers.RegistrateTagsProvider;

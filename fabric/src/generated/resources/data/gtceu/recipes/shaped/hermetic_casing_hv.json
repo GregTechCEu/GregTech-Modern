@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "F": {
-      "item": "gtceu:large.polytetrafluoroethylene"
+      "item": "gtceu:fluid_pipe_large.polytetrafluoroethylene"
     },
     "P": {
       "tag": "c:stainless_steel_plates"

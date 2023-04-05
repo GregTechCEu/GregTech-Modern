@@ -106,8 +106,8 @@ public class GTValues {
 
 
     public static final String[] VLVH = new String[]{
-            DARK_GRAY + "Primitive",
-            GRAY + "Basic",
+            "Primitive", // not doing the gray color for these first two because it looks weird
+            "Basic",
             AQUA + "Advanced",
             GOLD + "Advanced",
             DARK_PURPLE + "Advanced",

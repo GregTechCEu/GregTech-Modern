@@ -21,7 +21,7 @@
           "count": 1,
           "fabric:type": "gtceu:sized",
           "ingredient": {
-            "item": "gtceu:normal.titanium"
+            "item": "gtceu:fluid_pipe_normal.titanium"
           }
         }
       },

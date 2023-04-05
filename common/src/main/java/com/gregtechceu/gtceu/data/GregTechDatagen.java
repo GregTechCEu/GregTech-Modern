@@ -1,6 +1,8 @@
-package com.gregtechceu.gtceu.data.data;
+package com.gregtechceu.gtceu.data;
 
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.data.lang.LangHandler;
+import com.gregtechceu.gtceu.data.tags.TagsHandler;
 import com.tterrag.registrate.providers.ProviderType;
 
 /**
