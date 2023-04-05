@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.data;
 
+import com.google.common.base.Suppliers;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
@@ -106,7 +107,7 @@ public class GTMachines {
             (pressure, builder) -> builder.rotationState(RotationState.NON_Y_AXIS)
                     .recipeType(GTRecipeTypes.STEAM_BOILER_RECIPES)
                     .workableSteamHullRenderer(pressure, GTCEu.id("block/generators/boiler/coal"))
-                    .tooltips(Component.translatable("gtceu.universal.tooltip.produces_fluid", (pressure ? 300 : 120) * FluidHelper.getBucket() / 20000))
+                    .tooltips(() -> Component.translatable("gtceu.universal.tooltip.produces_fluid", (pressure ? 300 : 120) * FluidHelper.getBucket() / 20000))
                     .register());
 
     public final static Pair<MachineDefinition, MachineDefinition> STEAM_LIQUID_BOILER = registerSteamMachines("steam_liquid_boiler",
@@ -114,7 +115,7 @@ public class GTMachines {
             (pressure, builder) -> builder.rotationState(RotationState.NON_Y_AXIS)
                     .recipeType(GTRecipeTypes.STEAM_BOILER_RECIPES)
                     .workableSteamHullRenderer(pressure, GTCEu.id("block/generators/boiler/lava"))
-                    .tooltips(Component.translatable("gtceu.universal.tooltip.produces_fluid", (pressure ? 600 : 240) * FluidHelper.getBucket() / 20000))
+                    .tooltips(() -> Component.translatable("gtceu.universal.tooltip.produces_fluid", (pressure ? 600 : 240) * FluidHelper.getBucket() / 20000))
                     .register());
 
     public final static Pair<MachineDefinition, MachineDefinition> STEAM_EXTRACTOR = registerSimpleSteamMachines("extractor", GTRecipeTypes.EXTRACTOR_RECIPES);
@@ -131,7 +132,7 @@ public class GTMachines {
     public final static MachineDefinition[] HULL = registerTieredMachines("hull", TieredPartMachine::new, (tier, builder) -> builder
             .rotationState(RotationState.ALL)
             .overlayTieredHullRenderer("hull")
-            .tooltips(Component.translatable("gtceu.machine.hull.tooltip"))
+            .tooltips(() -> Component.translatable("gtceu.machine.hull.tooltip"))
             .register(), ALL_TIERS);
 
     public final static MachineDefinition[] ELECTRIC_FURNACE = registerSimpleMachines("electric_furnace", GTRecipeTypes.FURNACE_RECIPES);
@@ -187,10 +188,10 @@ public class GTMachines {
                     .rotationState(RotationState.ALL)
                     .renderer(() -> new TransformerRenderer(tier))
                     .tooltips(explosion())
-                    .tooltips(Component.translatable("gtceu.machine.transformer.description"),
-                            Component.translatable("gtceu.machine.transformer.tooltip_tool_usage"),
-                            Component.translatable("gtceu.machine.transformer.tooltip_transform_down", 4, GTValues.V[tier + 1], GTValues.VNF[tier + 1], 1, GTValues.V[tier], GTValues.VNF[tier]),
-                            Component.translatable("gtceu.machine.transformer.tooltip_transform_up", 1, GTValues.V[tier], GTValues.VNF[tier], 4, GTValues.V[tier + 1], GTValues.VNF[tier + 1]))
+                    .tooltips(() -> Component.translatable("gtceu.machine.transformer.description"),
+                            () -> Component.translatable("gtceu.machine.transformer.tooltip_tool_usage"),
+                            () -> Component.translatable("gtceu.machine.transformer.tooltip_transform_down", 4, GTValues.V[tier + 1], GTValues.VNF[tier + 1], 1, GTValues.V[tier], GTValues.VNF[tier]),
+                            () -> Component.translatable("gtceu.machine.transformer.tooltip_transform_up", 1, GTValues.V[tier], GTValues.VNF[tier], 4, GTValues.V[tier + 1], GTValues.VNF[tier + 1]))
                     .register(),
             GTValues.ULV, GTValues.LV, GTValues.MV, GTValues.HV, GTValues.EV, GTValues.IV, GTValues.LuV, GTValues.ZPM, GTValues.UV); // UHV not needed, as a UV transformer transforms up to UHV
 
@@ -205,11 +206,11 @@ public class GTMachines {
                     .rotationState(RotationState.NON_Y_AXIS)
                     .hasTESR(true)
                     .renderer(() -> new TieredHullMachineRenderer(tier, GTCEu.id("block/machine/pump_machine")))
-                    .tooltips(Component.translatable("gtceu.machine.pump.tooltip"),
-                            Component.translatable("gtceu.universal.tooltip.voltage_in", GTValues.V[tier], GTValues.VNF[tier]),
-                            Component.translatable("gtceu.universal.tooltip.energy_storage_capacity", GTValues.V[tier] * 64),
-                            Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity", 16 * FluidHelper.getBucket() * Math.max(1, tier)),
-                            Component.translatable("gtceu.universal.tooltip.working_area", PumpMachine.BASE_PUMP_RANGE + PumpMachine.EXTRA_PUMP_RANGE * tier, PumpMachine.BASE_PUMP_RANGE + PumpMachine.EXTRA_PUMP_RANGE * tier))
+                    .tooltips(() -> Component.translatable("gtceu.machine.pump.tooltip"),
+                            () -> Component.translatable("gtceu.universal.tooltip.voltage_in", GTValues.V[tier], GTValues.VNF[tier]),
+                            () -> Component.translatable("gtceu.universal.tooltip.energy_storage_capacity", GTValues.V[tier] * 64),
+                            () -> Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity", 16 * FluidHelper.getBucket() * Math.max(1, tier)),
+                            () -> Component.translatable("gtceu.universal.tooltip.working_area", PumpMachine.BASE_PUMP_RANGE + PumpMachine.EXTRA_PUMP_RANGE * tier, PumpMachine.BASE_PUMP_RANGE + PumpMachine.EXTRA_PUMP_RANGE * tier))
                     .register(),
             LV, MV, HV, EV);
 
@@ -218,9 +219,9 @@ public class GTMachines {
     //////////////////////////////////////
     public final static MachineDefinition CREATIVE_ENERGY = REGISTRATE.machine("infinite_energy", CreativeEnergyContainerMachine::new)
             .rotationState(RotationState.NONE)
-            .tooltips(Component.translatable("gtceu.creative_tooltip.1"),
-                    Component.translatable("gtceu.creative_tooltip.2"),
-                    Component.translatable("gtceu.creative_tooltip.3"))
+            .tooltips(() -> Component.translatable("gtceu.creative_tooltip.1"),
+                    () -> Component.translatable("gtceu.creative_tooltip.2"),
+                    () -> Component.translatable("gtceu.creative_tooltip.3"))
             .register();
 
     public static BiConsumer<ItemStack, List<Component>> CHEST_TOOLTIPS = (stack, list) -> {
@@ -240,7 +241,7 @@ public class GTMachines {
                     .renderer(() -> new QuantumChestRenderer(tier))
                     .hasTESR(true)
                     .tooltipBuilder(CHEST_TOOLTIPS)
-                    .tooltips(Component.translatable("gtceu.machine.quantum_chest.tooltip"), Component.translatable("gtceu.universal.tooltip.item_storage_total", 4000000 * (int) Math.pow(2, tier)))
+                    .tooltips(() -> Component.translatable("gtceu.machine.quantum_chest.tooltip"), () -> Component.translatable("gtceu.universal.tooltip.item_storage_total", 4000000 * (int) Math.pow(2, tier)))
                     .register(),
             LOW_TIERS);
 
@@ -254,7 +255,7 @@ public class GTMachines {
                     .renderer(() -> new QuantumChestRenderer(tier))
                     .hasTESR(true)
                     .tooltipBuilder(CHEST_TOOLTIPS)
-                    .tooltips(Component.translatable("gtceu.machine.quantum_chest.tooltip"), Component.translatable("gtceu.universal.tooltip.item_storage_total", /*tier == GTValues.UHV ? Integer.MAX_VALUE :*/ 4000000 * (int) Math.pow(2, tier)))
+                    .tooltips(() -> Component.translatable("gtceu.machine.quantum_chest.tooltip"), () -> Component.translatable("gtceu.universal.tooltip.item_storage_total", /*tier == GTValues.UHV ? Integer.MAX_VALUE :*/ 4000000 * (int) Math.pow(2, tier)))
                     .register(),
             HIGH_TIERS);
 
@@ -276,7 +277,7 @@ public class GTMachines {
                     .renderer(() -> new QuantumTankRenderer(tier))
                     .hasTESR(true)
                     .tooltipBuilder(createTankTooltips("stored"))
-                    .tooltips(Component.translatable("gtceu.machine.quantum_tank.tooltip"), Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity",4000000 * (int) Math.pow(2, tier)))
+                    .tooltips(() -> Component.translatable("gtceu.machine.quantum_tank.tooltip"), () -> Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity",4000000 * (int) Math.pow(2, tier)))
                     .register(),
             LOW_TIERS);
 
@@ -290,7 +291,7 @@ public class GTMachines {
                     .renderer(() -> new QuantumTankRenderer(tier))
                     .hasTESR(true)
                     .tooltipBuilder(createTankTooltips("stored"))
-                    .tooltips(Component.translatable("gtceu.machine.quantum_tank.tooltip"), Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity", /*tier == GTValues.UHV ? Integer.MAX_VALUE :*/ 4000000 * (int) Math.pow(2, tier)))
+                    .tooltips(() -> Component.translatable("gtceu.machine.quantum_tank.tooltip"), () -> Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity", /*tier == GTValues.UHV ? Integer.MAX_VALUE :*/ 4000000 * (int) Math.pow(2, tier)))
                     .register(),
             HIGH_TIERS);
 
@@ -425,10 +426,10 @@ public class GTMachines {
                     .rotationState(RotationState.ALL)
                     .abilities(PartAbility.MUFFLER)
                     .overlayTieredHullRenderer("muffler_hatch")
-                    .tooltips(LangHandler.getFromMultiLang("gtceu.machine.muffler_hatch.tooltip", 0),
-                            Component.translatable("gtceu.muffler.recovery_tooltip", Math.max(1, tier * 10)),
-                            Component.translatable("gtceu.universal.enabled"),
-                            LangHandler.getFromMultiLang("gtceu.machine.muffler_hatch.tooltip", 1).withStyle(ChatFormatting.DARK_RED))
+                    .tooltips(() -> LangHandler.getFromMultiLang("gtceu.machine.muffler_hatch.tooltip", 0),
+                            () -> Component.translatable("gtceu.muffler.recovery_tooltip", Math.max(1, tier * 10)),
+                            () -> Component.translatable("gtceu.universal.enabled"),
+                            () -> LangHandler.getFromMultiLang("gtceu.machine.muffler_hatch.tooltip", 1).withStyle(ChatFormatting.DARK_RED))
                     .register(),
             ELECTRIC_TIERS);
 
@@ -436,8 +437,8 @@ public class GTMachines {
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.STEAM)
             .overlaySteamHullRenderer("steam_hatch")
-            .tooltips(Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity", SteamHatchPartMachine.INITIAL_TANK_CAPACITY),
-                    Component.translatable("gregtech.machine.steam.steam_hatch.tooltip"))
+            .tooltips(() -> Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity", SteamHatchPartMachine.INITIAL_TANK_CAPACITY),
+                    () -> Component.translatable("gregtech.machine.steam.steam_hatch.tooltip"))
             .register();
 
     public final static MachineDefinition COKE_OVEN_HATCH = REGISTRATE.machine("coke_oven_hatch", CokeOvenHatch::new)
@@ -777,6 +778,7 @@ public class GTMachines {
                                                               GTRecipeType recipeType,
                                                               Int2LongFunction tankScalingFunction,
                                                               int... tiers) {
+        //noinspection unchecked
         return registerTieredMachines(name, (holder, tier) -> new SimpleGeneratorMachine(holder, tier, tankScalingFunction), (tier, builder) -> builder
                 .langValue("%s %s Generator %s".formatted(VLVH[tier], toEnglishName(name), VLVT[tier]))
                 .rotationState(RotationState.NON_Y_AXIS)
@@ -797,16 +799,17 @@ public class GTMachines {
     }
 
     public static MachineDefinition[] registerBatteryBuffer(int batterySlotSize){
+        //noinspection unchecked
         return registerTieredMachines("battery_buffer." + batterySlotSize,
                 (holder, tier) -> new BatteryBufferMachine(holder, tier, batterySlotSize),
                 (tier, builder) -> builder
                         .rotationState(RotationState.ALL)
                         .renderer(() -> new BatteryBufferRenderer(tier, batterySlotSize))
                         .tooltips(explosion())
-                        .tooltips(Component.translatable("gtceu.universal.tooltip.item_storage_capacity", batterySlotSize),
-                                Component.translatable("gtceu.universal.tooltip.voltage_in_out", GTValues.V[tier], GTValues.VNF[tier]),
-                                Component.translatable("gtceu.universal.tooltip.amperage_in_till", batterySlotSize * BatteryBufferMachine.AMPS_PER_BATTERY),
-                                Component.translatable("gtceu.universal.tooltip.amperage_out_till", batterySlotSize))
+                        .tooltips(() -> Component.translatable("gtceu.universal.tooltip.item_storage_capacity", batterySlotSize),
+                                () -> Component.translatable("gtceu.universal.tooltip.voltage_in_out", GTValues.V[tier], GTValues.VNF[tier]),
+                                () -> Component.translatable("gtceu.universal.tooltip.amperage_in_till", batterySlotSize * BatteryBufferMachine.AMPS_PER_BATTERY),
+                                () -> Component.translatable("gtceu.universal.tooltip.amperage_out_till", batterySlotSize))
                         .register(),
                 ALL_TIERS);
     }
@@ -842,16 +845,18 @@ public class GTMachines {
     public static MachineDefinition registerCrate(Material material, int capacity, String lang) {
         boolean wooden = GTMaterials.Wood.equals(material) || GTMaterials.TreatedWood.equals(material);
 
+        //noinspection unchecked
         return REGISTRATE.machine("crate." + material, holder -> new CrateMachine(holder, material, capacity))
                 .langValue(lang)
                 .rotationState(RotationState.NONE)
-                .tooltips(Component.translatable("gtceu.universal.tooltip.item_storage_capacity", capacity))
+                .tooltips(() -> Component.translatable("gtceu.universal.tooltip.item_storage_capacity", capacity))
                 .renderer(() -> new MachineRenderer(GTCEu.id("block/machine/crate/" + (wooden ? "wooden" : "metal") + "_crate")))
                 .paintingColor(wooden ? 0xFFFFFF : material.getMaterialRGB())
                 .itemColor((s, t) -> wooden ? 0xFFFFFF : material.getMaterialRGB())
                 .register();
     }
 
+    @SuppressWarnings("unchecked")
     public static MachineDefinition registerDrum(Material material, int capacity, String lang) {
         boolean wooden = GTMaterials.Wood.equals(material) || GTMaterials.TreatedWood.equals(material);
         var definition = REGISTRATE.machine("drum." + material, MachineDefinition::createDefinition, holder -> new DrumMachine(holder, material, capacity), MetaMachineBlock::new, DrumMachineItem::create, MetaMachineBlockEntity::createBlockEntity)
@@ -859,7 +864,7 @@ public class GTMachines {
                 .rotationState(RotationState.NONE)
                 .renderer(() -> new MachineRenderer(GTCEu.id("block/machine/" + (wooden ? "wooden" : "metal") + "_drum")))
                 .tooltipBuilder(createTankTooltips("Fluid"))
-                .tooltips(Component.translatable("gtceu.machine.quantum_tank.tooltip"), Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity", 16 * FluidHelper.getBucket()))
+                .tooltips(() -> Component.translatable("gtceu.machine.quantum_tank.tooltip"), () -> Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity", 16 * FluidHelper.getBucket()))
                 .paintingColor(wooden ? 0xFFFFFF : material.getMaterialRGB())
                 .itemColor((s, i) -> wooden ? 0xFFFFFF : material.getMaterialRGB())
                 .register();
@@ -867,20 +872,21 @@ public class GTMachines {
         return definition;
     }
 
-    public static Component explosion() {
+    public static Supplier<Component> explosion() {
         if (ConfigHolder.machines.doTerrainExplosion)
-            return Component.translatable("gtceu.universal.tooltip.terrain_resist");
+            return () -> Component.translatable("gtceu.universal.tooltip.terrain_resist");
         return null;
     }
 
-    public static Component[] workableTiered(int tier, long voltage, long energyCapacity, GTRecipeType recipeType, long tankCapacity, boolean input) {
+    public static Supplier<Component>[] workableTiered(int tier, long voltage, long energyCapacity, GTRecipeType recipeType, long tankCapacity, boolean input) {
         List<Component> tooltipComponents = new ArrayList<>();
         tooltipComponents.add(input ? Component.translatable("gtceu.universal.tooltip.voltage_in", voltage, GTValues.VNF[tier]) :
                 Component.translatable("gtceu.universal.tooltip.voltage_out", voltage, GTValues.VNF[tier]));
         tooltipComponents.add(Component.translatable("gtceu.universal.tooltip.energy_storage_capacity", energyCapacity));
         if (recipeType.getMaxInputs(FluidRecipeCapability.CAP) > 0 || recipeType.getMaxOutputs(FluidRecipeCapability.CAP) > 0)
             tooltipComponents.add(Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity", tankCapacity));
-        return tooltipComponents.toArray(Component[]::new);
+        //noinspection unchecked
+        return tooltipComponents.stream().<Supplier<Component>>map(val -> () -> val).toArray(Supplier[]::new);
     }
 
     public static void init() {
@@ -889,7 +895,7 @@ public class GTMachines {
         }
         if (GTCEu.isKubeJSLoaded()) {
             GTRegistries.MACHINES_WRAPPED = IRegistryAccessor.invokeInternalRegister(GTRegistries.MACHINES_REGISTRY, new GTRLRegistryWrapper<>(GTRegistries.MACHINES_REGISTRY, Lifecycle.experimental(), GTRegistries.MACHINES), val -> GTMachines.ELECTRIC_FURNACE[0], Lifecycle.experimental());
-            KubeJSRegistries.init(GTRegistries.MACHINES_REGISTRY);
+            //KubeJSRegistries.init(GTRegistries.MACHINES_REGISTRY);
         }
     }
 

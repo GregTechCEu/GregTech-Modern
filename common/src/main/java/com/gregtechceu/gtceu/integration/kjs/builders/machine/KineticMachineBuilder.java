@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.common.data.GTCreateMachines;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.Block;
 
 /**
  * @author Screret
@@ -24,7 +25,8 @@ public class KineticMachineBuilder extends MachineBuilder {
     }
 
     @Override
-    public MachineDefinition createObject() {
-        return GTCreateMachines.registerSimpleKineticElectricMachine(name, recipeType, tiers)[0];
+    public Block createObject() {
+        var val = GTCreateMachines.registerSimpleKineticElectricMachine(name, recipeType, tiers);
+        return null;
     }
 }

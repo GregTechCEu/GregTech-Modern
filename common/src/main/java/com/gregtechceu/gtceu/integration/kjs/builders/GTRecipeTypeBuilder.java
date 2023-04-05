@@ -24,10 +24,14 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
 public class GTRecipeTypeBuilder extends BuilderBase<GTRecipeType> {
+    public static final List<GTRecipeTypeBuilder> BUILDERS = new ArrayList<>();
+
     public transient String name, category;
     public transient final Object2IntMap<RecipeCapability<?>> maxInputs;
     public transient final Object2IntMap<RecipeCapability<?>> maxOutputs;
@@ -62,6 +66,8 @@ public class GTRecipeTypeBuilder extends BuilderBase<GTRecipeType> {
         this.smallRecipeMap = null;
         this.iconSupplier = null;
         this.uiBuilder = null;
+
+        BUILDERS.add(this);
     }
 
     @Override
@@ -160,9 +166,8 @@ public class GTRecipeTypeBuilder extends BuilderBase<GTRecipeType> {
         return GregTechKubeJSPlugin.RECIPE_TYPE;
     }
 
-    @Override
-    public GTRecipeType createObject() {
-        var type = GTRecipeTypes.registerNoVanilla(name, category);
+    public GTRecipeType register() {
+        var type = GTRecipeTypes.register(name, category);
         type.maxInputs.putAll(maxInputs);
         type.maxOutputs.putAll(maxOutputs);
         type.setSpecialTexture(specialTexturePosition, specialTexture);
@@ -177,5 +182,11 @@ public class GTRecipeTypeBuilder extends BuilderBase<GTRecipeType> {
         type.setIconSupplier(iconSupplier);
         type.setUiBuilder(uiBuilder);
         return type;
+    }
+
+    @Override
+    public GTRecipeType createObject() {
+        //register();
+        return null;
     }
 }

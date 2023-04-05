@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.integration.kjs.builders.machine;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.Block;
 
 /**
  * @author Screret
@@ -15,8 +16,8 @@ public class SteamMachineBuilder extends MachineBuilder {
     }
 
     @Override
-    public MachineDefinition createObject() {
+    public Block createObject() {
         var machinePair = GTMachines.registerSimpleSteamMachines(name, recipeType);
-        return machinePair.first();
+        return null;
     }
 }

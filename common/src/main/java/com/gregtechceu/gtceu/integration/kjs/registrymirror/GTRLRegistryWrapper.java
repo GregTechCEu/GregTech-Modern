@@ -1,8 +1,7 @@
 package com.gregtechceu.gtceu.integration.kjs.registrymirror;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.registry.GTRegistry;
-import com.gregtechceu.gtceu.core.mixins.IHolder$ReferenceAccessor;
+import com.gregtechceu.gtceu.core.mixins.IHolderReferenceAccessor;
 import com.gregtechceu.gtceu.core.mixins.IMappedRegistryAccessor;
 import com.mojang.serialization.Lifecycle;
 import net.minecraft.core.Holder;
@@ -33,6 +32,7 @@ public class GTRLRegistryWrapper<T> extends MappedRegistry<T> {
         var byKey = registry.entries().stream().map(val -> {
             var id = ResourceKey.create(key, val.getKey());
             var value = Holder.Reference.createStandAlone(GTRLRegistryWrapper.this, id);
+            ((IHolderReferenceAccessor<T>)value).invokeBind(id, val.getValue());
             return Map.entry(id, value);
         }).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
         accessor.getByKey().putAll(byKey);
@@ -40,6 +40,7 @@ public class GTRLRegistryWrapper<T> extends MappedRegistry<T> {
         var byLocation = registry.entries().stream().map(val -> {
             var id = ResourceKey.create(key, val.getKey());
             var value = Holder.Reference.createStandAlone(GTRLRegistryWrapper.this, id);
+            ((IHolderReferenceAccessor<T>)value).invokeBind(id, val.getValue());
             return Map.entry(id.location(), value);
         }).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
         accessor.getByLocation().putAll(byLocation);
@@ -51,6 +52,7 @@ public class GTRLRegistryWrapper<T> extends MappedRegistry<T> {
         var byValue = registry.entries().stream().map(val -> {
             var id = ResourceKey.create(key, val.getKey());
             var value = Holder.Reference.createStandAlone(GTRLRegistryWrapper.this, id);
+            ((IHolderReferenceAccessor<T>)value).invokeBind(id, val.getValue());
             return Map.entry(val.getValue(), value);
         }).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
         accessor.getByValue().putAll(byValue);
@@ -76,7 +78,7 @@ public class GTRLRegistryWrapper<T> extends MappedRegistry<T> {
     public Optional<Holder<T>> getHolder(ResourceKey<T> key) {
         ResourceKey<T> keyReal = ResourceKey.create(this.key, key.location());
         var ref = Holder.Reference.createStandAlone(this, keyReal);
-        ((IHolder$ReferenceAccessor<T>)ref).invokeBind(keyReal, registry.get(key.location()));
+        ((IHolderReferenceAccessor<T>)ref).invokeBind(keyReal, registry.get(key.location()));
         return Optional.of(ref);
     }
 

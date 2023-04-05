@@ -21,14 +21,14 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 public class CommonProxyImpl {
     private static final Object LOCK = new Object();
-    private static boolean isKubJSSetup = false;
+    private static boolean isKubJSSetup = true /*false*/;
 
     public static void onKubeJSSetup() {
-        CommonProxy.init();
-        /*synchronized (LOCK) {
+        //CommonProxy.init();
+        synchronized (LOCK) {
             isKubJSSetup = true;
             LOCK.notify();
-        }*/
+        }
     }
 
     public CommonProxyImpl() {
@@ -38,14 +38,14 @@ public class CommonProxyImpl {
         GTRegistriesImpl.init(eventBus);
         GTFeaturesImpl.init(eventBus);
         // init common features
-        /*if (!GTCEu.isKubeJSLoaded()) {
-            CommonProxy.init();
-            /*synchronized (LOCK) {
+        if (GTCEu.isKubeJSLoaded()) {
+            synchronized (LOCK) {
                 if (!isKubJSSetup) {
                     try { LOCK.wait(); } catch (InterruptedException ignored) {}
                 }
-            }
-        }*/
+           }
+        }
+        CommonProxy.init();
         // register payloads
         GTSyncedFieldAccessors.init();
     }

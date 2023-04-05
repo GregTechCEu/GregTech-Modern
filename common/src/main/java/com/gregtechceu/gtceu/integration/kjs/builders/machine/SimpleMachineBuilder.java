@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.common.data.GTMachines;
 import it.unimi.dsi.fastutil.Function;
 import it.unimi.dsi.fastutil.ints.Int2LongFunction;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.Block;
 
 /**
  * @author Screret
@@ -32,7 +33,8 @@ public class SimpleMachineBuilder extends MachineBuilder {
     }
 
     @Override
-    public MachineDefinition createObject() {
-        return GTMachines.registerSimpleMachines(name, recipeType, tier -> tankScalingFunction.apply(tier), tiers)[0];
+    public Block createObject() {
+        var val = GTMachines.registerSimpleMachines(name, recipeType, tier -> tankScalingFunction.apply(tier), tiers);
+        return null;
     }
 }

@@ -1,9 +1,8 @@
 package com.gregtechceu.gtceu.integration.kjs.registrymirror;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.GTRegistry;
-import com.gregtechceu.gtceu.core.mixins.IHolder$ReferenceAccessor;
+import com.gregtechceu.gtceu.core.mixins.IHolderReferenceAccessor;
 import com.gregtechceu.gtceu.core.mixins.IMappedRegistryAccessor;
 import com.mojang.serialization.Lifecycle;
 import net.minecraft.core.Holder;
@@ -28,12 +27,18 @@ public class GTStringRegistryWrapper<T> extends MappedRegistry<T> {
         IMappedRegistryAccessor<T> accessor = (IMappedRegistryAccessor<T>) this;
         accessor.setNextId(registry.keys().size());
 
-        var byId = registry.entries().stream().map(val -> Holder.Reference.createStandAlone(this, ResourceKey.create(key, new ResourceLocation(GTCEu.MOD_ID, val.getKey().toLowerCase(Locale.ROOT))))).toList();
+        var byId = registry.entries().stream().map(val -> {
+            var id = ResourceKey.create(key, new ResourceLocation(GTCEu.MOD_ID, val.getKey().toLowerCase(Locale.ROOT)));
+            var value = Holder.Reference.createStandAlone(GTStringRegistryWrapper.this, id);
+            ((IHolderReferenceAccessor<T>)value).invokeBind(id, val.getValue());
+            return value;
+        }).toList();
         accessor.getById().addAll(byId);
 
         var byKey = registry.entries().stream().map(val -> {
             var id = ResourceKey.create(key, new ResourceLocation(GTCEu.MOD_ID, val.getKey().toLowerCase(Locale.ROOT)));
             var value = Holder.Reference.createStandAlone(GTStringRegistryWrapper.this, id);
+            ((IHolderReferenceAccessor<T>)value).invokeBind(id, val.getValue());
             return Map.entry(id, value);
         }).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
         accessor.getByKey().putAll(byKey);
@@ -52,6 +57,7 @@ public class GTStringRegistryWrapper<T> extends MappedRegistry<T> {
         var byValue = registry.entries().stream().map(val -> {
             var id = ResourceKey.create(key, new ResourceLocation(GTCEu.MOD_ID, val.getKey().toLowerCase(Locale.ROOT)));
             var value = Holder.Reference.createStandAlone(GTStringRegistryWrapper.this, id);
+            ((IHolderReferenceAccessor<T>)value).invokeBind(id, val.getValue());
             return Map.entry(val.getValue(), value);
         }).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
         accessor.getByValue().putAll(byValue);
@@ -83,7 +89,7 @@ public class GTStringRegistryWrapper<T> extends MappedRegistry<T> {
     public Optional<Holder<T>> getHolder(ResourceKey<T> key) {
         ResourceKey<T> keyReal = ResourceKey.create(this.key, key.location());
         var ref = Holder.Reference.createStandAlone(this, keyReal);
-        ((IHolder$ReferenceAccessor<T>)ref).invokeBind(keyReal, registry.get(key.location().getPath()));
+        ((IHolderReferenceAccessor<T>)ref).invokeBind(keyReal, registry.get(key.location().getPath()));
         return Optional.of(ref);
     }
 

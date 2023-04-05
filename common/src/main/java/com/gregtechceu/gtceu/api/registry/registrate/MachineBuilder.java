@@ -94,7 +94,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> {
     @Setter
     private BiFunction<ItemStack, Integer, Integer> itemColor;
     private PartAbility[] abilities = new PartAbility[0];
-    private final List<Component> tooltips = new ArrayList<>();
+    private final List<Supplier<Component>> tooltips = new ArrayList<>();
     @Setter
     private BiConsumer<ItemStack, List<Component>> tooltipBuilder;
     @Setter
@@ -170,7 +170,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> {
         return this;
     }
 
-    public MachineBuilder<DEFINITION> tooltips(Component... components) {
+    public MachineBuilder<DEFINITION> tooltips(Supplier<Component>... components) {
         tooltips.addAll(Arrays.stream(components).filter(Objects::nonNull).toList());
         return this;
     }
@@ -234,7 +234,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> {
         definition.setBlockEntityTypeSupplier(blockEntity::get);
         definition.setMachineSupplier(metaMachine);
         definition.setTooltipBuilder((itemStack, components) -> {
-            components.addAll(tooltips);
+            components.addAll(tooltips.stream().map(Supplier::get).toList());
             if (tooltipBuilder != null) tooltipBuilder.accept(itemStack, components);
         });
         definition.setOverclockingLogic(overclockingLogic);

@@ -38,6 +38,7 @@ public final class GTRegistries {
     public static final GTRegistry.RL<GTRecipeType> RECIPE_TYPES = new GTRegistry.RL<>(GTCEu.id("recipe_type"));
 
     public static final GTRegistry.RL<CoverDefinition> COVERS = new GTRegistry.RL<>(GTCEu.id("cover"));
+
     public static final ResourceKey<Registry<MachineDefinition>> MACHINES_REGISTRY = ResourceKey.createRegistryKey(GTCEu.id("machine"));
     public static Registry<MachineDefinition> MACHINES_WRAPPED;
     public static final GTRegistry.RL<MachineDefinition> MACHINES = new GTRegistry.RL<>(GTCEu.id("machine"));

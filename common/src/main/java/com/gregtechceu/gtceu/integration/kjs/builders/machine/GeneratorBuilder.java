@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.integration.kjs.builders.machine;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.Block;
 
 /**
  * @author Screret
@@ -15,7 +16,8 @@ public class GeneratorBuilder extends SimpleMachineBuilder {
     }
 
     @Override
-    public MachineDefinition createObject() {
-        return GTMachines.registerSimpleGenerator(name, recipeType, tier -> tankScalingFunction.apply(tier), tiers)[0];
+    public Block createObject() {
+        var val = GTMachines.registerSimpleGenerator(name, recipeType, tier -> tankScalingFunction.apply(tier), tiers);
+        return null;
     }
 }

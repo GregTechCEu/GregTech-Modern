@@ -72,6 +72,7 @@ public class GTCreateMachines {
                     .register()
             , () -> SplitShaftInstance::new, false, ELECTRIC_TIERS);
 
+    @SuppressWarnings("unchecked")
     public static KineticMachineDefinition[] registerElectricGearBox(int maxAmps, int... tiers) {
         return registerTieredMachines("electric_gear_box." + maxAmps, (tier, id) -> new KineticMachineDefinition(id, true, GTValues.V[tier]).setFrontRotation(true),
                 (holder, tier) -> new ElectricGearBoxMachine(holder, tier, maxAmps), (tier, builder) -> builder
@@ -85,6 +86,7 @@ public class GTCreateMachines {
                 , () -> SplitShaftInstance::new, false, tiers);
     }
 
+    @SuppressWarnings("unchecked")
     public static KineticMachineDefinition[] registerSimpleKineticElectricMachine(String name, GTRecipeType recipeType, int... tiers) {
         return registerTieredMachines(name, (tier, id) -> new KineticMachineDefinition(id, false, GTValues.V[tier]),
                 (holder, tier) -> new SimpleKineticElectricWorkableMachine(holder, tier, defaultTankSizeFunction), (tier, builder) -> builder

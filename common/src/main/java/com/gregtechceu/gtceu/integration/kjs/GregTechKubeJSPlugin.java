@@ -31,6 +31,7 @@ import dev.latvian.mods.kubejs.RegistryObjectBuilderTypes;
 import dev.latvian.mods.kubejs.script.BindingsEvent;
 import dev.latvian.mods.kubejs.script.ScriptType;
 import dev.latvian.mods.kubejs.util.ClassFilter;
+import dev.latvian.mods.rhino.Wrapper;
 import dev.latvian.mods.rhino.util.wrap.TypeWrappers;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
@@ -45,9 +46,9 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
 
     public static final RegistryObjectBuilderTypes<Element> ELEMENT = RegistryObjectBuilderTypes.add(GTRegistries.ELEMENTS_REGISTRY, Element.class);
     public static final RegistryObjectBuilderTypes<Material> MATERIAL = RegistryObjectBuilderTypes.add(GTRegistries.MATERIALS_REGISTRY, Material.class);
-    public static final RegistryObjectBuilderTypes<GTRecipeType> GT_RECIPE_TYPE = RegistryObjectBuilderTypes.add(GTRegistries.RECIPE_TYPES_REGISTRY, GTRecipeType.class);
-    public static final RegistryObjectBuilderTypes<RecipeType<?>> RECIPE_TYPE = RegistryObjectBuilderTypes.add(Registry.RECIPE_TYPE_REGISTRY, GTRecipeType.class);
-    public static final RegistryObjectBuilderTypes<MachineDefinition> MACHINE = RegistryObjectBuilderTypes.add(GTRegistries.MACHINES_REGISTRY, MachineDefinition.class);
+    //public static final RegistryObjectBuilderTypes<GTRecipeType> GT_RECIPE_TYPE = RegistryObjectBuilderTypes.add(GTRegistries.RECIPE_TYPES_REGISTRY, GTRecipeType.class);
+    public static RegistryObjectBuilderTypes<RecipeType<?>> RECIPE_TYPE = RegistryObjectBuilderTypes.add(Registry.RECIPE_TYPE_REGISTRY, RecipeType.class);
+    //public static final RegistryObjectBuilderTypes<MachineDefinition> MACHINE = RegistryObjectBuilderTypes.add(GTRegistries.MACHINES_REGISTRY, MachineDefinition.class);
 
     @Override
     public void init() {
@@ -57,17 +58,16 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
 
         RECIPE_TYPE.addType("gtceu", GTRecipeTypeBuilder.class, GTRecipeTypeBuilder::new);
 
-        MACHINE.addType("basic", SimpleMachineBuilder.class, SimpleMachineBuilder::new);
-        MACHINE.addType("generator", GeneratorBuilder.class, GeneratorBuilder::new);
-        MACHINE.addType("steam", SteamMachineBuilder.class, SteamMachineBuilder::new);
-        MACHINE.addType("kinetic", KineticMachineBuilder.class, KineticMachineBuilder::new);
-        MACHINE.addType("multiblock", MultiblockBuilder.class, MultiblockBuilder::new);
+        RegistryObjectBuilderTypes.BLOCK.addType("gtceu:simple", SimpleMachineBuilder.class, SimpleMachineBuilder::new);
+        RegistryObjectBuilderTypes.BLOCK.addType("gtceu:generator", GeneratorBuilder.class, GeneratorBuilder::new);
+        RegistryObjectBuilderTypes.BLOCK.addType("gtceu:steam", SteamMachineBuilder.class, SteamMachineBuilder::new);
+        RegistryObjectBuilderTypes.BLOCK.addType("gtceu:kinetic", KineticMachineBuilder.class, KineticMachineBuilder::new);
+        RegistryObjectBuilderTypes.BLOCK.addType("gtceu:multiblock", MultiblockBuilder.class, MultiblockBuilder::new);
     }
 
     @Override
     public void registerEvents() {
         super.registerEvents();
-        GTCEuStartupEvents.GROUP.register();
         GTCEuServerEvents.GROUP.register();
     }
 
@@ -113,6 +113,9 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
     public void registerTypeWrappers(ScriptType type, TypeWrappers typeWrappers) {
         super.registerTypeWrappers(type, typeWrappers);
         typeWrappers.register(GTRecipeType.class, (ctx, o) -> {
+            if (o instanceof Wrapper w) {
+                o = w.unwrap();
+            }
             if (o instanceof GTRecipeType recipeType) return recipeType;
             if (o instanceof CharSequence chars) return GTRecipeTypes.get(chars.toString());
             return null;

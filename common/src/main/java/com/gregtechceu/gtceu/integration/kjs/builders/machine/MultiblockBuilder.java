@@ -206,7 +206,8 @@ public class MultiblockBuilder extends MachineBuilder {
     }
 
     @Override
-    public MachineDefinition createObject() {
-        return this.builder.register();
+    public Block createObject() {
+        var val = this.builder.register();
+        return null;
     }
 }
