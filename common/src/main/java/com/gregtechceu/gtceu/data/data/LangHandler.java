@@ -3255,6 +3255,6 @@ public class LangHandler {
      */
     @ExpectPlatform
     private static void replace(@NotNull RegistrateLangProvider provider, @NotNull String key, @NotNull String value) {
-        throw new IllegalStateException("Platform could not be found");
+        throw new AssertionError();
     }
 }
