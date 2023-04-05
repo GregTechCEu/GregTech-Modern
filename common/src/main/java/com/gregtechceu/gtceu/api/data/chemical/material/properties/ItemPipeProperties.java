@@ -62,7 +62,9 @@ public class ItemPipeProperties implements IMaterialProperty<ItemPipeProperties>
 
     @Override
     public void verifyProperty(MaterialProperties properties) {
-        properties.ensureSet(PropertyKey.INGOT, true);
+        if (!properties.hasProperty(PropertyKey.WOOD)) {
+            properties.ensureSet(PropertyKey.INGOT, true);
+        }
 
         if (properties.hasProperty(PropertyKey.FLUID_PIPE)) {
             throw new IllegalStateException(

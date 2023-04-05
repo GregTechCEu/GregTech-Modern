@@ -489,6 +489,47 @@ public class Material implements Comparable<Material> {
         }
 
         /**
+         * Add a {@link WoodProperty} to this Material.<br>
+         * Useful for marking a Material as Wood for various additional behaviors.<br>
+         * Will be created with a Harvest Level of 2, and a Burn Time of 300 (Furnace Fuel).
+         *
+         * @throws IllegalArgumentException If a {@link DustProperty} has already been added to this Material.
+         */
+        public Builder wood() {
+            return wood(2, 300);
+        }
+
+        /**
+         * Add a {@link WoodProperty} to this Material.<br>
+         * Useful for marking a Material as Wood for various additional behaviors.<br>
+         * Will be created with a Burn Time of 300 (Furnace Fuel).
+         *
+         * @param harvestLevel The Harvest Level of this block for Mining.<br>
+         *                     If this Material also has a {@link ToolProperty}, this value will
+         *                     also be used to determine the tool's Mining Level.
+         * @throws IllegalArgumentException If a {@link DustProperty} has already been added to this Material.
+         */
+        public Builder wood(int harvestLevel) {
+            return wood(harvestLevel, 300);
+        }
+
+        /**
+         * Add a {@link WoodProperty} to this Material.<br>
+         * Useful for marking a Material as Wood for various additional behaviors.<br>
+         *
+         * @param harvestLevel The Harvest Level of this block for Mining.<br>
+         *                     If this Material also has a {@link ToolProperty}, this value will
+         *                     also be used to determine the tool's Mining Level.
+         * @param burnTime     The Burn Time (in ticks) of this Material as a Furnace Fuel.
+         * @throws IllegalArgumentException If a {@link DustProperty} has already been added to this Material.
+         */
+        public Builder wood(int harvestLevel, int burnTime) {
+            properties.setProperty(PropertyKey.DUST, new DustProperty(harvestLevel, burnTime));
+            properties.ensureSet(PropertyKey.WOOD);
+            return this;
+        }
+
+        /**
          * Add an {@link IngotProperty} to this Material.<br>
          * Will be created with a Harvest Level of 2 and no Burn Time (Furnace Fuel).<br>
          * Will automatically add a {@link DustProperty} to this Material if it does not already have one.
@@ -903,13 +944,11 @@ public class Material implements Comparable<Material> {
         }
 
         public Builder fluidPipeProperties(int maxTemp, int throughput, boolean gasProof, boolean acidProof, boolean cryoProof, boolean plasmaProof) {
-            properties.ensureSet(PropertyKey.INGOT);
             properties.setProperty(PropertyKey.FLUID_PIPE, new FluidPipeProperties(maxTemp, throughput, gasProof, acidProof, cryoProof, plasmaProof));
             return this;
         }
 
         public Builder itemPipeProperties(int priority, float stacksPerSec) {
-            properties.ensureSet(PropertyKey.INGOT);
             properties.setProperty(PropertyKey.ITEM_PIPE, new ItemPipeProperties(priority, stacksPerSec));
             return this;
         }

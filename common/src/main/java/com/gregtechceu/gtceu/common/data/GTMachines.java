@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.item.DrumMachineItem;
 import com.gregtechceu.gtceu.api.machine.*;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
@@ -912,7 +913,7 @@ public class GTMachines {
     }
 
     public static MachineDefinition registerCrate(Material material, int capacity, String lang) {
-        boolean wooden = GTMaterials.Wood.equals(material) || GTMaterials.TreatedWood.equals(material);
+        boolean wooden = material.hasProperty(PropertyKey.WOOD);
 
         return REGISTRATE.machine("crate." + material, holder -> new CrateMachine(holder, material, capacity))
                 .langValue(lang)
@@ -925,7 +926,7 @@ public class GTMachines {
     }
 
     public static MachineDefinition registerDrum(Material material, int capacity, String lang) {
-        boolean wooden = GTMaterials.Wood.equals(material) || GTMaterials.TreatedWood.equals(material);
+        boolean wooden = material.hasProperty(PropertyKey.WOOD);
         var definition = REGISTRATE.machine("drum." + material, MachineDefinition::createDefinition, holder -> new DrumMachine(holder, material, capacity), MetaMachineBlock::new, DrumMachineItem::create, MetaMachineBlockEntity::createBlockEntity)
                 .langValue(lang)
                 .rotationState(RotationState.NONE)

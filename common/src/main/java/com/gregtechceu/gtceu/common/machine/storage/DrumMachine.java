@@ -96,13 +96,6 @@ public class DrumMachine extends MetaMachine implements IAutoOutputFluid, IDropS
                     if (stack == null || stack.getFluid() == null) return false;
 
                     Fluid fluid = stack.getFluid();
-                    if (material == GTMaterials.Wood || material == GTMaterials.TreatedWood) {
-                        if (GTFluids.PLASMA_FLUIDS.get(fluid) != null) return false;
-                        FluidProperty fluidMaterial = GTFluids.MATERIAL_FLUIDS.get(fluid);
-                        return fluidMaterial.getFluidType() == FluidTypes.LIQUID
-                                && fluidMaterial.getFluidTemperature() <= 340;
-                    }
-
                     FluidPipeProperties pipeProperties = material.getProperty(PropertyKey.FLUID_PIPE);
                     if (GTFluids.PLASMA_FLUIDS.get(fluid) != null && !pipeProperties.isPlasmaProof()) return false;
                     FluidProperty fluidMaterial = GTFluids.MATERIAL_FLUIDS.get(fluid);

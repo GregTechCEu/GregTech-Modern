@@ -102,7 +102,7 @@ public class ToolRecipeHandler {
     }
 */
     private static void processTool(TagPrefix prefix, Material material, ToolProperty property, Consumer<FinishedRecipe> provider) {
-        UnificationEntry stick = new UnificationEntry(TagPrefix.rod, GTMaterials.Wood);
+        ItemStack stick = new ItemStack(Items.STICK);
         UnificationEntry plate = new UnificationEntry(TagPrefix.plate, material);
         UnificationEntry ingot = new UnificationEntry(material.hasProperty(PropertyKey.GEM) ? TagPrefix.gem : TagPrefix.ingot, material);
 
@@ -376,7 +376,7 @@ public class ToolRecipeHandler {
         for (int i = 0; i < softMaterials.length; i++) {
             Material material = softMaterials[i];
 
-            if (material == GTMaterials.Wood) {
+            if (material.hasProperty(PropertyKey.WOOD)) {
                 // todo allow these 3 to be mirrored
                 VanillaRecipeHelper.addShapedRecipe(provider, String.format("soft_mallet_%s", material),
                         ToolHelper.get(GTToolType.SOFT_MALLET, material),

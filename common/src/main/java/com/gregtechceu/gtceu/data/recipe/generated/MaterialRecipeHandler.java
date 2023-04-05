@@ -443,7 +443,7 @@ public class MaterialRecipeHandler {
 
     public static void processFrame(TagPrefix framePrefix, Material material, DustProperty property, Consumer<FinishedRecipe> provider) {
         if (material.hasFlag(GENERATE_FRAME)) {
-            boolean isWoodenFrame = material == Wood || material == TreatedWood;
+            boolean isWoodenFrame = material.hasProperty(PropertyKey.WOOD);
             VanillaRecipeHelper.addShapedRecipe(provider, String.format("frame_%s", material),
                     ChemicalHelper.get(framePrefix, material, 2),
                     "SSS", isWoodenFrame ? "SsS" : "SwS", "SSS",

@@ -61,7 +61,7 @@ public class FluidPipeProperties implements IMaterialProperty<FluidPipePropertie
 
     @Override
     public void verifyProperty(MaterialProperties properties) {
-        if (properties.getMaterial() != GTMaterials.Wood && properties.getMaterial() != GTMaterials.TreatedWood) {
+        if (!properties.hasProperty(PropertyKey.WOOD)) {
             properties.ensureSet(PropertyKey.INGOT, true);
         }
 

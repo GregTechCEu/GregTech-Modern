@@ -1,11 +1,9 @@
 package com.gregtechceu.gtceu.data.recipe.generated;
 
-import com.google.common.base.CaseFormat;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.FluidPipeProperties;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.IMaterialProperty;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.ItemPipeProperties;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
@@ -20,7 +18,6 @@ import java.util.function.Consumer;
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.NO_SMASHING;
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
-import static com.gregtechceu.gtceu.common.data.GTMaterials.Iron;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
 
 public class PipeRecipeHandler {
@@ -69,6 +66,7 @@ public class PipeRecipeHandler {
     }
 */
     private static void processPipeTiny(TagPrefix pipePrefix, Material material, IMaterialProperty<?> property, Consumer<FinishedRecipe> provider) {
+        if (material.hasProperty(PropertyKey.WOOD)) return;
         ItemStack pipeStack = ChemicalHelper.get(pipePrefix, material);
         EXTRUDER_RECIPES.recipeBuilder("extrude_" + material.getName() + "_tiny_pipe")
                 .inputItems(ingot, material, 1)
@@ -94,6 +92,7 @@ public class PipeRecipeHandler {
     }
 
     private static void processPipeSmall(TagPrefix pipePrefix, Material material, IMaterialProperty<?> property, Consumer<FinishedRecipe> provider) {
+        if (material.hasProperty(PropertyKey.WOOD)) return;
         ItemStack pipeStack = ChemicalHelper.get(pipePrefix, material);
         EXTRUDER_RECIPES.recipeBuilder("extrude_" + material.getName() + "_small_pipe")
                 .inputItems(ingot, material, 1)
@@ -119,6 +118,7 @@ public class PipeRecipeHandler {
     }
 
     private static void processPipeNormal(TagPrefix pipePrefix, Material material, IMaterialProperty<?> property, Consumer<FinishedRecipe> provider) {
+        if (material.hasProperty(PropertyKey.WOOD)) return;
         ItemStack pipeStack = ChemicalHelper.get(pipePrefix, material);
         EXTRUDER_RECIPES.recipeBuilder("extrude_" + material.getName() + "_pipe")
                 .inputItems(ingot, material, 3)
@@ -144,6 +144,7 @@ public class PipeRecipeHandler {
     }
 
     private static void processPipeLarge(TagPrefix pipePrefix, Material material, IMaterialProperty<?> property, Consumer<FinishedRecipe> provider) {
+        if (material.hasProperty(PropertyKey.WOOD)) return;
         ItemStack pipeStack = ChemicalHelper.get(pipePrefix, material);
         EXTRUDER_RECIPES.recipeBuilder("extrude_" + material.getName() + "_large_pipe")
                 .inputItems(ingot, material, 6)
@@ -169,6 +170,7 @@ public class PipeRecipeHandler {
     }
 
     private static void processPipeHuge(TagPrefix pipePrefix, Material material, IMaterialProperty<?> property, Consumer<FinishedRecipe> provider) {
+        if (material.hasProperty(PropertyKey.WOOD)) return;
         ItemStack pipeStack = ChemicalHelper.get(pipePrefix, material);
         EXTRUDER_RECIPES.recipeBuilder("extrude_" + material.getName() + "_huge_pipe")
                 .inputItems(ingot, material, 12)
@@ -194,6 +196,7 @@ public class PipeRecipeHandler {
     }
 
     private static void processPipeQuadruple(TagPrefix pipePrefix, Material material, FluidPipeProperties property, Consumer<FinishedRecipe> provider) {
+        if (material.hasProperty(PropertyKey.WOOD)) return;
         ItemStack smallPipe = ChemicalHelper.get(pipeSmallFluid, material);
         ItemStack quadPipe = ChemicalHelper.get(pipePrefix, material);
         VanillaRecipeHelper.addShapedRecipe(provider, String.format("quadruple_%s_pipe", material.toString()),
@@ -210,6 +213,7 @@ public class PipeRecipeHandler {
     }
 
     private static void processPipeNonuple(TagPrefix pipePrefix, Material material, FluidPipeProperties property, Consumer<FinishedRecipe> provider) {
+        if (material.hasProperty(PropertyKey.WOOD)) return;
         ItemStack smallPipe = ChemicalHelper.get(pipeSmallFluid, material);
         ItemStack nonuplePipe = ChemicalHelper.get(pipePrefix, material);
         VanillaRecipeHelper.addShapedRecipe(provider, String.format("nonuple_%s_pipe", material.toString()),

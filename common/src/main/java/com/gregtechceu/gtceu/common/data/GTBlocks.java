@@ -224,7 +224,7 @@ public class GTBlocks {
     private static TagKey<Block>[] getPipeTags(Material material) {
         TagKey<Block>[] tags = new TagKey[2];
         tags[0] = GTToolType.WRENCH.harvestTag;
-        if (material == GTMaterials.Wood || material == GTMaterials.TreatedWood) {
+        if (material.hasProperty(PropertyKey.WOOD)) {
             tags[1] = BlockTags.MINEABLE_WITH_AXE;
         } else tags[1] = BlockTags.MINEABLE_WITH_PICKAXE;
         return tags;

@@ -1,12 +1,12 @@
 package com.gregtechceu.gtceu.common.pipelike.fluidpipe;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.pipenet.IMaterialPipeType;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.FluidPipeProperties;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.client.model.PipeModel;
-import com.gregtechceu.gtceu.common.data.GTMaterials;
 import lombok.Getter;
 
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
@@ -65,7 +65,7 @@ public enum FluidPipeType implements IMaterialPipeType<FluidPipeData> {
     }
 
     public PipeModel createPipeModel(Material material) {
-        if (material == GTMaterials.Wood || material == GTMaterials.TreatedWood) {
+        if (material.hasProperty(PropertyKey.WOOD)) {
             return new PipeModel(thickness, GTCEu.id("block/pipe/pipe_side_wood"));
         }
         return new PipeModel(thickness, GTCEu.id("block/pipe/pipe_side"));

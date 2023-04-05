@@ -146,15 +146,10 @@ public class GTMaterials {
         ingot.setIgnored(Iron, Items.IRON_INGOT);
         ingot.setIgnored(Gold, Items.GOLD_INGOT);
         ingot.setIgnored(Copper, Items.COPPER_INGOT);
-        ingot.setIgnored(Wood);
-        ingot.setIgnored(TreatedWood);
-        ingot.setIgnored(Paper);
 
-        nugget.setIgnored(Wood);
-        nugget.setIgnored(TreatedWood);
         nugget.setIgnored(Gold, Items.GOLD_NUGGET);
-        nugget.setIgnored(Paper);
         nugget.setIgnored(Iron, Items.IRON_NUGGET);
+
         plate.setIgnored(Paper, Items.PAPER);
 
         block.setIgnored(Iron, Blocks.IRON_BLOCK);
