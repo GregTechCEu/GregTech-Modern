@@ -55,7 +55,7 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
 
     public WorkableMultiblockMachine(IMachineBlockEntity holder, Object... args) {
         super(holder);
-        this.recipeType = getDefinition().getRecipeType();
+        this.recipeType = getDefinition().getRecipeType() == null ? getDefinition().getRecipeTypeSupplier().get() : getDefinition().getRecipeType();
         this.recipeLogic = createRecipeLogic(args);
         this.capabilitiesProxy = Tables.newCustomTable(new EnumMap<>(IO.class), HashMap::new);
         this.traitSubscriptions = new ArrayList<>();

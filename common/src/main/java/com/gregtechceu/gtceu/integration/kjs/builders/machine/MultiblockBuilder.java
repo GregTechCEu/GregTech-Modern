@@ -105,7 +105,7 @@ public class MultiblockBuilder extends MachineBuilder {
     }
 
     @Override
-    public MultiblockBuilder recipeType(GTRecipeType recipeType) {
+    public MultiblockBuilder recipeType(String recipeType) {
         builder.recipeType(recipeType);
         return this;
     }

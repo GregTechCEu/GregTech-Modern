@@ -30,8 +30,6 @@ import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
 public class GTRecipeTypeBuilder extends BuilderBase<GTRecipeType> {
-    public static final List<GTRecipeTypeBuilder> BUILDERS = new ArrayList<>();
-
     public transient String name, category;
     public transient final Object2IntMap<RecipeCapability<?>> maxInputs;
     public transient final Object2IntMap<RecipeCapability<?>> maxOutputs;
@@ -66,13 +64,11 @@ public class GTRecipeTypeBuilder extends BuilderBase<GTRecipeType> {
         this.smallRecipeMap = null;
         this.iconSupplier = null;
         this.uiBuilder = null;
-
-        BUILDERS.add(this);
     }
 
     @Override
     public void createAdditionalObjects() {
-        super.createAdditionalObjects();
+        this.createObject();
     }
 
     public GTRecipeTypeBuilder category(String category) {
@@ -186,7 +182,7 @@ public class GTRecipeTypeBuilder extends BuilderBase<GTRecipeType> {
 
     @Override
     public GTRecipeType createObject() {
-        //register();
+        register();
         return null;
     }
 }

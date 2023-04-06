@@ -86,7 +86,6 @@ public class GTCreateMachines {
                 , () -> SplitShaftInstance::new, false, tiers);
     }
 
-    @SuppressWarnings("unchecked")
     public static KineticMachineDefinition[] registerSimpleKineticElectricMachine(String name, GTRecipeType recipeType, int... tiers) {
         return registerTieredMachines(name, (tier, id) -> new KineticMachineDefinition(id, false, GTValues.V[tier]),
                 (holder, tier) -> new SimpleKineticElectricWorkableMachine(holder, tier, defaultTankSizeFunction), (tier, builder) -> builder
@@ -95,6 +94,21 @@ public class GTCreateMachines {
                         .blockProp(BlockBehaviour.Properties::dynamicShape)
                         .blockProp(BlockBehaviour.Properties::noOcclusion)
                         .recipeType(recipeType)
+                        .renderer(() -> new KineticWorkableTieredHullMachineRenderer(tier, GTCEu.id("block/machine/kinetic_electric_machine"), GTCEu.id("block/machines/" + name)))
+                        .tooltips(explosion())
+                        .tooltips(workableTiered(tier, GTValues.V[tier], GTValues.V[tier] * 64, recipeType.registryName.getPath(), defaultTankSizeFunction.apply(tier), true))
+                        .register()
+                , () -> SplitShaftInstance::new, false, tiers);
+    }
+
+    public static KineticMachineDefinition[] registerSimpleKineticElectricMachine(String name, String recipeType, int... tiers) {
+        return registerTieredMachines(name, (tier, id) -> new KineticMachineDefinition(id, false, GTValues.V[tier]),
+                (holder, tier) -> new SimpleKineticElectricWorkableMachine(holder, tier, defaultTankSizeFunction), (tier, builder) -> builder
+                        .langValue("%s %s %s".formatted(VLVH[tier], toEnglishName(name), VLVT[tier]))
+                        .rotationState(RotationState.NON_Y_AXIS)
+                        .blockProp(BlockBehaviour.Properties::dynamicShape)
+                        .blockProp(BlockBehaviour.Properties::noOcclusion)
+                        .recipeTypeSupplier(() -> GTRecipeTypes.get(recipeType))
                         .renderer(() -> new KineticWorkableTieredHullMachineRenderer(tier, GTCEu.id("block/machine/kinetic_electric_machine"), GTCEu.id("block/machines/" + name)))
                         .tooltips(explosion())
                         .tooltips(workableTiered(tier, GTValues.V[tier], GTValues.V[tier] * 64, recipeType, defaultTankSizeFunction.apply(tier), true))

@@ -524,6 +524,7 @@ public class GTRecipeTypes {
         if (GTCEu.isKubeJSLoaded()) {
             //GTRegistries.RECIPE_TYPES_WRAPPED = IRegistryAccessor.invokeInternalRegister(GTRegistries.RECIPE_TYPES_REGISTRY, new GTRLRegistryWrapper<>(GTRegistries.RECIPE_TYPES_REGISTRY, Lifecycle.experimental(), GTRegistries.RECIPE_TYPES), val -> GTRecipeTypes.FURNACE_RECIPES, Lifecycle.experimental());
             //KubeJSRegistries.init(Registry.RECIPE_TYPE_REGISTRY);
+            /*
             ((IRegistryObjectBuilderTypesAccessor)(Object) GregTechKubeJSPlugin.RECIPE_TYPE).invokePostEvent();
             for (var builder : GregTechKubeJSPlugin.RECIPE_TYPE.objects.values()) {
                 if(builder instanceof GTRecipeTypeBuilder realBuilder) {
@@ -531,6 +532,7 @@ public class GTRecipeTypes {
                     GTCEu.LOGGER.error("registered builder: " + realBuilder);
                 }
             }
+            */
         }
         GTRegistries.register(Registry.RECIPE_SERIALIZER, GTCEu.id("gt_recipe_serializer"), GTRecipeSerializer.SERIALIZER);
         GTRegistries.register(Registry.RECIPE_SERIALIZER, GTCEu.id("facade_cover_serializer"), FacadeCoverRecipe.SERIALIZER);

@@ -62,7 +62,7 @@ public abstract class SteamWorkableMachine extends SteamMachine implements IReci
     public SteamWorkableMachine(IMachineBlockEntity holder, boolean isHighPressure, Object... args) {
         super(holder, isHighPressure, args);
         this.recipeLogic = createRecipeLogic(args);
-        this.recipeType = getDefinition().getRecipeType();
+        this.recipeType = getDefinition().getRecipeType() == null ? getDefinition().getRecipeTypeSupplier().get() : getDefinition().getRecipeType();
         this.capabilitiesProxy = Tables.newCustomTable(new EnumMap<>(IO.class), HashMap::new);
         this.traitSubscriptions = new ArrayList<>();
         this.ventFacing = hasFrontFacing() ? getFrontFacing().getOpposite() : Direction.UP;

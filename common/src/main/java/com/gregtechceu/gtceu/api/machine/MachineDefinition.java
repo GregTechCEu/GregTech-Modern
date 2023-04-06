@@ -50,6 +50,10 @@ public class MachineDefinition implements Supplier<IMachineBlock> {
     private GTRecipeType recipeType;
     @Getter
     @Setter
+    @Nullable
+    private Supplier<GTRecipeType> recipeTypeSupplier;
+    @Getter
+    @Setter
     private int tier;
     @Setter @Getter
     private int defaultPaintingColor;

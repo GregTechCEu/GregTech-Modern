@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.common.data;
 
-import com.google.common.base.Suppliers;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
@@ -41,13 +40,9 @@ import com.gregtechceu.gtceu.common.machine.steam.SteamLiquidBoilerMachine;
 import com.gregtechceu.gtceu.common.machine.steam.SteamSolidBoilerMachine;
 import com.gregtechceu.gtceu.common.machine.storage.*;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.core.mixins.IRegistryAccessor;
 import com.gregtechceu.gtceu.data.data.LangHandler;
-import com.gregtechceu.gtceu.integration.kjs.registrymirror.GTRLRegistryWrapper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
-import com.mojang.serialization.Lifecycle;
-import dev.latvian.mods.kubejs.KubeJSRegistries;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.ints.Int2LongFunction;
 import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
@@ -762,6 +757,20 @@ public class GTMachines {
                 .recipeType(recipeType)
                 .workableTieredHullRenderer(GTCEu.id("block/machines/" + name))
                 .tooltips(explosion())
+                .tooltips(workableTiered(tier, GTValues.V[tier], GTValues.V[tier] * 64, recipeType.registryName.getPath(), (long)tankScalingFunction.apply(tier), true))
+                .register(), tiers);
+    }
+
+    public static MachineDefinition[] registerSimpleMachines(String name,
+                                                             String recipeType,
+                                                             Int2LongFunction tankScalingFunction,
+                                                             int... tiers) {
+        return registerTieredMachines(name, (holder, tier) -> new SimpleTieredMachine(holder, tier, tankScalingFunction), (tier, builder) -> builder
+                .langValue("%s %s %s".formatted(VLVH[tier], toEnglishName(name), VLVT[tier]))
+                .rotationState(RotationState.NON_Y_AXIS)
+                .recipeTypeSupplier(() -> GTRecipeTypes.get(recipeType))
+                .workableTieredHullRenderer(GTCEu.id("block/machines/" + name))
+                .tooltips(explosion())
                 .tooltips(workableTiered(tier, GTValues.V[tier], GTValues.V[tier] * 64, recipeType, (long)tankScalingFunction.apply(tier), true))
                 .register(), tiers);
     }
@@ -778,11 +787,25 @@ public class GTMachines {
                                                               GTRecipeType recipeType,
                                                               Int2LongFunction tankScalingFunction,
                                                               int... tiers) {
-        //noinspection unchecked
         return registerTieredMachines(name, (holder, tier) -> new SimpleGeneratorMachine(holder, tier, tankScalingFunction), (tier, builder) -> builder
                 .langValue("%s %s Generator %s".formatted(VLVH[tier], toEnglishName(name), VLVT[tier]))
                 .rotationState(RotationState.NON_Y_AXIS)
                 .recipeType(recipeType)
+                .renderer(() -> new SimpleGeneratorMachineRenderer(tier, GTCEu.id("block/generators/" + name)))
+                .overclockingLogic(OverclockingLogic.PERFECT_OVERCLOCK)
+                .tooltips(explosion())
+                .tooltips(workableTiered(tier, GTValues.V[tier], GTValues.V[tier] * 64, recipeType.registryName.getPath(), (long)tankScalingFunction.apply(tier), false))
+                .register(), tiers);
+    }
+
+    public static MachineDefinition[] registerSimpleGenerator(String name,
+                                                              String recipeType,
+                                                              Int2LongFunction tankScalingFunction,
+                                                              int... tiers) {
+        return registerTieredMachines(name, (holder, tier) -> new SimpleGeneratorMachine(holder, tier, tankScalingFunction), (tier, builder) -> builder
+                .langValue("%s %s Generator %s".formatted(VLVH[tier], toEnglishName(name), VLVT[tier]))
+                .rotationState(RotationState.NON_Y_AXIS)
+                .recipeTypeSupplier(() -> GTRecipeTypes.get(recipeType))
                 .renderer(() -> new SimpleGeneratorMachineRenderer(tier, GTCEu.id("block/generators/" + name)))
                 .overclockingLogic(OverclockingLogic.PERFECT_OVERCLOCK)
                 .tooltips(explosion())
@@ -794,6 +817,14 @@ public class GTMachines {
         return registerSteamMachines("steam_" + name, SimpleSteamMachine::new, (pressure, builder) -> builder
                 .rotationState(RotationState.NON_Y_AXIS)
                 .recipeType(recipeType)
+                .renderer(() -> new WorkableSteamMachineRenderer(pressure, GTCEu.id("block/machines/" + name)))
+                .register());
+    }
+
+    public static Pair<MachineDefinition, MachineDefinition> registerSimpleSteamMachines(String name, String recipeType) {
+        return registerSteamMachines("steam_" + name, SimpleSteamMachine::new, (pressure, builder) -> builder
+                .rotationState(RotationState.NON_Y_AXIS)
+                .recipeTypeSupplier(() -> GTRecipeTypes.get(recipeType))
                 .renderer(() -> new WorkableSteamMachineRenderer(pressure, GTCEu.id("block/machines/" + name)))
                 .register());
     }
@@ -878,13 +909,14 @@ public class GTMachines {
         return null;
     }
 
-    public static Supplier<Component[]> workableTiered(int tier, long voltage, long energyCapacity, GTRecipeType recipeType, long tankCapacity, boolean input) {
+    public static Supplier<Component[]> workableTiered(int tier, long voltage, long energyCapacity, String recipeType, long tankCapacity, boolean input) {
         return () -> {
+            GTRecipeType type = GTRecipeTypes.get(recipeType);
             List<Component> tooltipComponents = new ArrayList<>();
             tooltipComponents.add(input ? Component.translatable("gtceu.universal.tooltip.voltage_in", voltage, GTValues.VNF[tier]) :
                     Component.translatable("gtceu.universal.tooltip.voltage_out", voltage, GTValues.VNF[tier]));
             tooltipComponents.add(Component.translatable("gtceu.universal.tooltip.energy_storage_capacity", energyCapacity));
-            if (recipeType.getMaxInputs(FluidRecipeCapability.CAP) > 0 || recipeType.getMaxOutputs(FluidRecipeCapability.CAP) > 0)
+            if (type.getMaxInputs(FluidRecipeCapability.CAP) > 0 || type.getMaxOutputs(FluidRecipeCapability.CAP) > 0)
                 tooltipComponents.add(Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity", tankCapacity));
             return tooltipComponents.toArray(Component[]::new);
         };
@@ -895,7 +927,7 @@ public class GTMachines {
             new GTCreateMachines();
         }
         if (GTCEu.isKubeJSLoaded()) {
-            GTRegistries.MACHINES_WRAPPED = IRegistryAccessor.invokeInternalRegister(GTRegistries.MACHINES_REGISTRY, new GTRLRegistryWrapper<>(GTRegistries.MACHINES_REGISTRY, Lifecycle.experimental(), GTRegistries.MACHINES), val -> GTMachines.ELECTRIC_FURNACE[0], Lifecycle.experimental());
+            //GTRegistries.MACHINES_WRAPPED = IRegistryAccessor.invokeInternalRegister(GTRegistries.MACHINES_REGISTRY, new GTRLRegistryWrapper<>(GTRegistries.MACHINES_REGISTRY, Lifecycle.experimental(), GTRegistries.MACHINES), val -> GTMachines.ELECTRIC_FURNACE[0], Lifecycle.experimental());
             //KubeJSRegistries.init(GTRegistries.MACHINES_REGISTRY);
         }
     }

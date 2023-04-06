@@ -88,6 +88,8 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> {
     @Setter
     private GTRecipeType recipeType;
     @Setter
+    private Supplier<GTRecipeType> recipeTypeSupplier;
+    @Setter
     private int tier;
     @Setter
     private int paintingColor = -1;
@@ -233,7 +235,11 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> {
             blockEntityBuilder = blockEntityBuilder.renderer(() -> GTRendererProvider::getOrCreate);
         }
         var blockEntity = blockEntityBuilder.register();
-        definition.setRecipeType(recipeType);
+        if (recipeType != null) {
+            definition.setRecipeType(recipeType);
+        } else {
+            definition.setRecipeTypeSupplier(recipeTypeSupplier);
+        }
         definition.setBlockSupplier(block);
         definition.setItemSupplier(item);
         definition.setTier(tier);
