@@ -1,35 +1,33 @@
 package com.gregtechceu.gtceu.integration.kjs.builders.machine;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.machine.MachineDefinition;
-import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.integration.kjs.GregTechKubeJSPlugin;
 import dev.latvian.mods.kubejs.BuilderBase;
-import dev.latvian.mods.kubejs.CommonProperties;
 import dev.latvian.mods.kubejs.RegistryObjectBuilderTypes;
-import dev.latvian.mods.kubejs.block.BlockBuilder;
-import dev.latvian.mods.kubejs.util.ConsoleJS;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.Block;
 
 /**
  * @author Screret
  * @date 2023/4/01
  * @implNote MachineBuilder
  */
-public abstract class MachineBuilder extends BlockBuilder {
+public abstract class MachineBuilder extends BuilderBase<Block> {
     public transient String name;
-    public transient GTRecipeType recipeType;
+    public transient String recipeType;
 
     public MachineBuilder(ResourceLocation i) {
         super(new ResourceLocation(GTCEu.MOD_ID, i.getPath()));
         this.name = i.getPath();
-        this.recipeType = GTRegistries.RECIPE_TYPES.get(i);
+        this.recipeType = null;
     }
 
-    public MachineBuilder recipeType(GTRecipeType type) {
+    public MachineBuilder recipeType(String type) {
         this.recipeType = type;
         return this;
     }
 
+    @Override
+    public RegistryObjectBuilderTypes<? super Block> getRegistryType() {
+        return RegistryObjectBuilderTypes.BLOCK;
+    }
 }

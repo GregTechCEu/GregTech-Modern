@@ -33,14 +33,14 @@ public final class GTRegistries {
     public static Registry<Material> MATERIALS_WRAPPED;
     public static final GTRegistry.String<Material> MATERIALS = new GTRegistry.String<>(GTCEu.id("material"));
 
-    public static final ResourceKey<Registry<GTRecipeType>> RECIPE_TYPES_REGISTRY = ResourceKey.createRegistryKey(GTCEu.id("recipe_type"));
-    public static Registry<GTRecipeType> RECIPE_TYPES_WRAPPED;
+    /*public static final ResourceKey<Registry<GTRecipeType>> RECIPE_TYPES_REGISTRY = ResourceKey.createRegistryKey(GTCEu.id("recipe_type"));
+    public static Registry<GTRecipeType> RECIPE_TYPES_WRAPPED;*/
     public static final GTRegistry.RL<GTRecipeType> RECIPE_TYPES = new GTRegistry.RL<>(GTCEu.id("recipe_type"));
 
     public static final GTRegistry.RL<CoverDefinition> COVERS = new GTRegistry.RL<>(GTCEu.id("cover"));
 
-    public static final ResourceKey<Registry<MachineDefinition>> MACHINES_REGISTRY = ResourceKey.createRegistryKey(GTCEu.id("machine"));
-    public static Registry<MachineDefinition> MACHINES_WRAPPED;
+    /*public static final ResourceKey<Registry<MachineDefinition>> MACHINES_REGISTRY = ResourceKey.createRegistryKey(GTCEu.id("machine"));
+    public static Registry<MachineDefinition> MACHINES_WRAPPED;*/
     public static final GTRegistry.RL<MachineDefinition> MACHINES = new GTRegistry.RL<>(GTCEu.id("machine"));
 
     public static final GTRegistry.String<RecipeCapability<?>> RECIPE_CAPABILITIES = new GTRegistry.String<>(GTCEu.id("recipe_capability"));
