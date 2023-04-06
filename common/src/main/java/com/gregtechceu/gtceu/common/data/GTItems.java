@@ -139,17 +139,20 @@ public class GTItems {
     public static ItemEntry<Item> CREDIT_NEUTRONIUM = REGISTRATE.item("credit.neutronium", Item::new).lang("Neutronium Credit").properties(p -> p.rarity(Rarity.EPIC)).register();
     public static ItemEntry<Item> COIN_GOLD_ANCIENT = REGISTRATE.item("coin.gold.ancient", Item::new).lang("Ancient Gold Coin").properties(p -> p.rarity(Rarity.RARE))
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Gold, GTValues.M / 4)))).register();
-    public static ItemEntry<Item> COIN_DOGE = REGISTRATE.item("coin.doge", Item::new).lang("Dog Coin").properties(p -> p.rarity(Rarity.EPIC))
+    public static ItemEntry<Item> COIN_DOGE = REGISTRATE.item("coin.doge", Item::new).lang("Doge Coin").properties(p -> p.rarity(Rarity.EPIC))
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Brass, GTValues.M / 4)))).register();
     public static ItemEntry<Item> COIN_CHOCOLATE = REGISTRATE.item("coin.chocolate", Item::new)
             .lang("Chocolate Coin")
             .properties(p -> p.rarity(Rarity.EPIC).food(GTFoods.CHOCOLATE))
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Gold, GTValues.M / 4)))).register();
     public static ItemEntry<Item> COMPRESSED_CLAY = REGISTRATE.item("compressed.clay", Item::new)
+            .lang("Compressed Clay")
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, GTValues.M)))).register();
     public static ItemEntry<Item> COMPRESSED_COKE_CLAY = REGISTRATE.item("compressed.coke_clay", Item::new)
+            .lang("Compressed Coke Clay")
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, GTValues.M)))).register();
     public static ItemEntry<Item> COMPRESSED_FIRECLAY = REGISTRATE.item("compressed.fireclay", Item::new)
+            .lang("Compressed Fireclay")
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Fireclay, GTValues.M)))).register();
     public static ItemEntry<Item> FIRECLAY_BRICK = REGISTRATE.item("brick.fireclay", Item::new)
             .lang("Firebrick")
@@ -536,12 +539,14 @@ public class GTItems {
             .tag(CustomTags.LuV_BATTERIES).register();
 
     public static ItemEntry<ComponentItem> ENERGY_MODULE = REGISTRATE.item("energy.module", ComponentItem::create)
+            .lang("Energy Module")
             .properties(p -> p.stacksTo(1))
             .model(overrideModel(GTCEu.id("battery"), 8))
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
             .onRegister(attach(ElectricStats.createRechargeableBattery(4_000_000_000L, GTValues.ZPM)))
             .tag(CustomTags.ZPM_BATTERIES).register();
     public static ItemEntry<ComponentItem> ENERGY_CLUSTER = REGISTRATE.item("energy.cluster", ComponentItem::create)
+            .lang("Energy Cluster")
             .properties(p -> p.stacksTo(1))
             .model(overrideModel(GTCEu.id("battery"), 8))
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
@@ -555,6 +560,7 @@ public class GTItems {
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
             .onRegister(attach(ElectricStats.createBattery(2000000000000L, GTValues.ZPM, true))).register();
     public static ItemEntry<ComponentItem> ULTIMATE_BATTERY = REGISTRATE.item("max_battery", ComponentItem::create)
+            .lang("Ultimate Battery")
             .properties(p -> p.stacksTo(1))
             .model(overrideModel(GTCEu.id("battery"), 8))
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
@@ -571,105 +577,105 @@ public class GTItems {
     public static ItemEntry<Item> ELECTRIC_MOTOR_UV = REGISTRATE.item("electric.motor.uv", Item::new).lang("UV Electric Motor").register();
 
     public static ItemEntry<ComponentItem> ELECTRIC_PUMP_LV = REGISTRATE.item("electric.pump.lv", ComponentItem::create).lang("LV Electric Pump").onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[0]), new TooltipBehavior(lines -> {
-        lines.add(Component.translatable("metaitem.electric.pump.tooltip"));
-        lines.add(Component.translatable("gregtech.universal.tooltip.fluid_transfer_rate", 1280 / 20));
+        lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
+        lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 / 20));
     }))).register();
 
     public static ItemEntry<ComponentItem> ELECTRIC_PUMP_MV = REGISTRATE.item("electric.pump.mv", ComponentItem::create).lang("MV Electric Pump").onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[1]), new TooltipBehavior(lines -> {
-        lines.add(Component.translatable("metaitem.electric.pump.tooltip"));
-        lines.add(Component.translatable("gregtech.universal.tooltip.fluid_transfer_rate", 1280 * 4 / 20));
+        lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
+        lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 4 / 20));
    }))).register();
     public static ItemEntry<ComponentItem> ELECTRIC_PUMP_HV = REGISTRATE.item("electric.pump.hv", ComponentItem::create).lang("V Electric Pump").onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[2]), new TooltipBehavior(lines -> {
-        lines.add(Component.translatable("metaitem.electric.pump.tooltip"));
-        lines.add(Component.translatable("gregtech.universal.tooltip.fluid_transfer_rate", 1280 * 16 / 20));
+        lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
+        lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 16 / 20));
    }))).register();
     public static ItemEntry<ComponentItem> ELECTRIC_PUMP_EV = REGISTRATE.item("electric.pump.ev", ComponentItem::create).lang("EV Electric Pump").onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[3]), new TooltipBehavior(lines -> {
-        lines.add(Component.translatable("metaitem.electric.pump.tooltip"));
-        lines.add(Component.translatable("gregtech.universal.tooltip.fluid_transfer_rate", 1280 * 64 / 20));
+        lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
+        lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 / 20));
    }))).register();
     public static ItemEntry<ComponentItem> ELECTRIC_PUMP_IV = REGISTRATE.item("electric.pump.iv", ComponentItem::create).lang("IV Electric Pump").onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[4]), new TooltipBehavior(lines -> {
-        lines.add(Component.translatable("metaitem.electric.pump.tooltip"));
-        lines.add(Component.translatable("gregtech.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 4 / 20));
+        lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
+        lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 4 / 20));
    }))).register();
     public static ItemEntry<ComponentItem> ELECTRIC_PUMP_LuV = REGISTRATE.item("electric.pump.luv", ComponentItem::create).lang("LuV Electric Pump").onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[5]), new TooltipBehavior(lines -> {
-        lines.add(Component.translatable("metaitem.electric.pump.tooltip"));
-        lines.add(Component.translatable("gregtech.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 16 / 20));
+        lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
+        lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 16 / 20));
    }))).register();
     public static ItemEntry<ComponentItem> ELECTRIC_PUMP_ZPM = REGISTRATE.item("electric.pump.zpm", ComponentItem::create).lang("ZPM Electric Pump").onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[5]), new TooltipBehavior(lines -> {
-        lines.add(Component.translatable("metaitem.electric.pump.tooltip"));
-        lines.add(Component.translatable("gregtech.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 64 / 20));
+        lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
+        lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 64 / 20));
    }))).register();
     public static ItemEntry<ComponentItem> ELECTRIC_PUMP_UV = REGISTRATE.item("electric.pump.uv", ComponentItem::create).lang("UV Electric Pump").onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[5]), new TooltipBehavior(lines -> {
-        lines.add(Component.translatable("metaitem.electric.pump.tooltip"));
-        lines.add(Component.translatable("gregtech.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 64 * 4 / 20));
+        lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
+        lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 64 * 4 / 20));
    }))).register();
 
     public static ItemEntry<ComponentItem> FLUID_REGULATOR_LV = REGISTRATE.item("fluid.regulator.lv", ComponentItem::create).lang("LV Fluid Regulator").onRegister(attach(new TooltipBehavior(lines -> {
-        lines.add(Component.translatable("metaitem.fluid.regulator.tooltip"));
-        lines.add(Component.translatable("gregtech.universal.tooltip.fluid_transfer_rate", 1280 / 20));
+        lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
+        lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 / 20));
     }))).register();
     public static ItemEntry<ComponentItem> FLUID_REGULATOR_MV = REGISTRATE.item("fluid.regulator.mv", ComponentItem::create).lang("MV Fluid Regulator").onRegister(attach(new TooltipBehavior(lines -> {
-        lines.add(Component.translatable("metaitem.fluid.regulator.tooltip"));
-        lines.add(Component.translatable("gregtech.universal.tooltip.fluid_transfer_rate", 1280 * 4 / 20));
+        lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
+        lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 4 / 20));
     }))).register();
     public static ItemEntry<ComponentItem> FLUID_REGULATOR_HV = REGISTRATE.item("fluid.regulator.hv", ComponentItem::create).lang("HV Fluid Regulator").onRegister(attach(new TooltipBehavior(lines -> {
-        lines.add(Component.translatable("metaitem.fluid.regulator.tooltip"));
-        lines.add(Component.translatable("gregtech.universal.tooltip.fluid_transfer_rate", 1280 * 16 / 20));
+        lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
+        lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 16 / 20));
     }))).register();
     public static ItemEntry<ComponentItem> FLUID_REGULATOR_EV = REGISTRATE.item("fluid.regulator.ev", ComponentItem::create).lang("EV Fluid Regulator").onRegister(attach(new TooltipBehavior(lines -> {
-        lines.add(Component.translatable("metaitem.fluid.regulator.tooltip"));
-        lines.add(Component.translatable("gregtech.universal.tooltip.fluid_transfer_rate", 1280 * 64 / 20));
+        lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
+        lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 / 20));
     }))).register();
     public static ItemEntry<ComponentItem> FLUID_REGULATOR_IV = REGISTRATE.item("fluid.regulator.iv", ComponentItem::create).lang("IV Fluid Regulator").onRegister(attach(new TooltipBehavior(lines -> {
-        lines.add(Component.translatable("metaitem.fluid.regulator.tooltip"));
-        lines.add(Component.translatable("gregtech.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 4 / 20));
+        lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
+        lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 4 / 20));
     }))).register();
     public static ItemEntry<ComponentItem> FLUID_REGULATOR_LUV = REGISTRATE.item("fluid.regulator.luv", ComponentItem::create).lang("LuV Fluid Regulator").onRegister(attach(new TooltipBehavior(lines -> {
-        lines.add(Component.translatable("metaitem.fluid.regulator.tooltip"));
-        lines.add(Component.translatable("gregtech.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 16 / 20));
+        lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
+        lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 16 / 20));
     }))).register();
     public static ItemEntry<ComponentItem> FLUID_REGULATOR_ZPM = REGISTRATE.item("fluid.regulator.zpm", ComponentItem::create).lang("ZPM Fluid Regulator").onRegister(attach(new TooltipBehavior(lines -> {
-        lines.add(Component.translatable("metaitem.fluid.regulator.tooltip"));
-        lines.add(Component.translatable("gregtech.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 64 / 20));
+        lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
+        lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 64 / 20));
     }))).register();
     public static ItemEntry<ComponentItem> FLUID_REGULATOR_UV = REGISTRATE.item("fluid.regulator.uv", ComponentItem::create).lang("UV Fluid Regulator").onRegister(attach(new TooltipBehavior(lines -> {
-        lines.add(Component.translatable("metaitem.fluid.regulator.tooltip"));
-        lines.add(Component.translatable("gregtech.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 64 * 4/ 20));
+        lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
+        lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 64 * 4/ 20));
     }))).register();
 
     public static ItemEntry<ComponentItem> DYNAMITE; // TODO
 
     public static ItemEntry<ComponentItem> CONVEYOR_MODULE_LV = REGISTRATE.item("conveyor.module.lv", ComponentItem::create).lang("LV Conveyor Module").onRegister(attach(new CoverPlaceBehavior(GTCovers.CONVEYORS[0]), new TooltipBehavior(lines -> {
-        lines.add(Component.translatable("metaitem.conveyor.module.tooltip"));
-        lines.add(Component.translatable("gregtech.universal.tooltip.item_transfer_rate", 8));
+        lines.add(Component.translatable("item.gtceu.conveyor.module.tooltip"));
+        lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate", 8));
     }))).register();
     public static ItemEntry<ComponentItem> CONVEYOR_MODULE_MV = REGISTRATE.item("conveyor.module.mv", ComponentItem::create).lang("MV Conveyor Module").onRegister(attach(new CoverPlaceBehavior(GTCovers.CONVEYORS[1]), new TooltipBehavior(lines -> {
-        lines.add(Component.translatable("metaitem.conveyor.module.tooltip"));
-        lines.add(Component.translatable("gregtech.universal.tooltip.item_transfer_rate", 32));
+        lines.add(Component.translatable("item.gtceu.conveyor.module.tooltip"));
+        lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate", 32));
     }))).register();
     public static ItemEntry<ComponentItem> CONVEYOR_MODULE_HV = REGISTRATE.item("conveyor.module.hv", ComponentItem::create).lang("HV Conveyor Module").onRegister(attach(new CoverPlaceBehavior(GTCovers.CONVEYORS[2]), new TooltipBehavior(lines -> {
-        lines.add(Component.translatable("metaitem.conveyor.module.tooltip"));
-        lines.add(Component.translatable("gregtech.universal.tooltip.item_transfer_rate", 128));
+        lines.add(Component.translatable("item.gtceu.conveyor.module.tooltip"));
+        lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate", 128));
     }))).register();
     public static ItemEntry<ComponentItem> CONVEYOR_MODULE_EV = REGISTRATE.item("conveyor.module.ev", ComponentItem::create).lang("EV Conveyor Module").onRegister(attach(new CoverPlaceBehavior(GTCovers.CONVEYORS[3]), new TooltipBehavior(lines -> {
-        lines.add(Component.translatable("metaitem.conveyor.module.tooltip"));
-        lines.add(Component.translatable("gregtech.universal.tooltip.item_transfer_rate_stacks", 8));
+        lines.add(Component.translatable("item.gtceu.conveyor.module.tooltip"));
+        lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 8));
     }))).register();
     public static ItemEntry<ComponentItem> CONVEYOR_MODULE_IV = REGISTRATE.item("conveyor.module.iv", ComponentItem::create).lang("IV Conveyor Module").onRegister(attach(new CoverPlaceBehavior(GTCovers.CONVEYORS[4]), new TooltipBehavior(lines -> {
-        lines.add(Component.translatable("metaitem.conveyor.module.tooltip"));
-        lines.add(Component.translatable("gregtech.universal.tooltip.item_transfer_rate_stacks", 32));
+        lines.add(Component.translatable("item.gtceu.conveyor.module.tooltip"));
+        lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 32));
     }))).register();
     public static ItemEntry<ComponentItem> CONVEYOR_MODULE_LuV = REGISTRATE.item("conveyor.module.luv", ComponentItem::create).lang("LuV Conveyor Module").onRegister(attach(new CoverPlaceBehavior(GTCovers.CONVEYORS[5]), new TooltipBehavior(lines -> {
-        lines.add(Component.translatable("metaitem.conveyor.module.tooltip"));
-        lines.add(Component.translatable("gregtech.universal.tooltip.item_transfer_rate_stacks", 128));
+        lines.add(Component.translatable("item.gtceu.conveyor.module.tooltip"));
+        lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 128));
     }))).register();
     public static ItemEntry<ComponentItem> CONVEYOR_MODULE_ZPM = REGISTRATE.item("conveyor.module.zpm", ComponentItem::create).lang("ZPM Conveyor Module").onRegister(attach(new CoverPlaceBehavior(GTCovers.CONVEYORS[5]), new TooltipBehavior(lines -> {
-        lines.add(Component.translatable("metaitem.conveyor.module.tooltip"));
-        lines.add(Component.translatable("gregtech.universal.tooltip.item_transfer_rate_stacks", 128));
+        lines.add(Component.translatable("item.gtceu.conveyor.module.tooltip"));
+        lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 128));
     }))).register();
     public static ItemEntry<ComponentItem> CONVEYOR_MODULE_UV = REGISTRATE.item("conveyor.module.uv", ComponentItem::create).lang("UV Conveyor Module").onRegister(attach(new CoverPlaceBehavior(GTCovers.CONVEYORS[5]), new TooltipBehavior(lines -> {
-        lines.add(Component.translatable("metaitem.conveyor.module.tooltip"));
-        lines.add(Component.translatable("gregtech.universal.tooltip.item_transfer_rate_stacks", 128));
+        lines.add(Component.translatable("item.gtceu.conveyor.module.tooltip"));
+        lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 128));
     }))).register();
 
     public static ItemEntry<Item> ELECTRIC_PISTON_LV= REGISTRATE.item("electric.piston.lv", Item::new).lang("LV Electric Piston").register();
@@ -682,36 +688,36 @@ public class GTItems {
     public static ItemEntry<Item> ELECTRIC_PISTON_UV= REGISTRATE.item("electric.piston.uv", Item::new).lang("UV Electric Piston").register();
 
     public static ItemEntry<ComponentItem> ROBOT_ARM_LV = REGISTRATE.item("robot.arm.lv", ComponentItem::create).lang("LV Robot Arm").onRegister(attach(new TooltipBehavior(lines -> {
-        lines.add(Component.translatable("metaitem.robot.arm.tooltip"));
-        lines.add(Component.translatable("gregtech.universal.tooltip.item_transfer_rate", 8));
+        lines.add(Component.translatable("item.gtceu.robot.arm.tooltip"));
+        lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate", 8));
     }))).register();
     public static ItemEntry<ComponentItem> ROBOT_ARM_MV = REGISTRATE.item("robot.arm.mv", ComponentItem::create).lang("MV Robot Arm").onRegister(attach(new TooltipBehavior(lines -> {
-        lines.add(Component.translatable("metaitem.robot.arm.tooltip"));
-        lines.add(Component.translatable("gregtech.universal.tooltip.item_transfer_rate", 32));
+        lines.add(Component.translatable("item.gtceu.robot.arm.tooltip"));
+        lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate", 32));
     }))).register();
     public static ItemEntry<ComponentItem> ROBOT_ARM_HV = REGISTRATE.item("robot.arm.hv", ComponentItem::create).lang("HV Robot Arm").onRegister(attach(new TooltipBehavior(lines -> {
-        lines.add(Component.translatable("metaitem.robot.arm.tooltip"));
-        lines.add(Component.translatable("gregtech.universal.tooltip.item_transfer_rate", 64));
+        lines.add(Component.translatable("item.gtceu.robot.arm.tooltip"));
+        lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate", 64));
     }))).register();
     public static ItemEntry<ComponentItem> ROBOT_ARM_EV = REGISTRATE.item("robot.arm.ev", ComponentItem::create).lang("EV Robot Arm").onRegister(attach(new TooltipBehavior(lines -> {
-        lines.add(Component.translatable("metaitem.robot.arm.tooltip"));
-        lines.add(Component.translatable("gregtech.universal.tooltip.item_transfer_rate_stacks", 3));
+        lines.add(Component.translatable("item.gtceu.robot.arm.tooltip"));
+        lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 3));
     }))).register();
     public static ItemEntry<ComponentItem> ROBOT_ARM_IV = REGISTRATE.item("robot.arm.iv", ComponentItem::create).lang("IV Robot Arm").onRegister(attach(new TooltipBehavior(lines -> {
-        lines.add(Component.translatable("metaitem.robot.arm.tooltip"));
-        lines.add(Component.translatable("gregtech.universal.tooltip.item_transfer_rate_stacks", 8));
+        lines.add(Component.translatable("item.gtceu.robot.arm.tooltip"));
+        lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 8));
     }))).register();
     public static ItemEntry<ComponentItem> ROBOT_ARM_LuV = REGISTRATE.item("robot.arm.luv", ComponentItem::create).lang("LuV Robot Arm").onRegister(attach(new TooltipBehavior(lines -> {
-        lines.add(Component.translatable("metaitem.robot.arm.tooltip"));
-        lines.add(Component.translatable("gregtech.universal.tooltip.item_transfer_rate_stacks", 16));
+        lines.add(Component.translatable("item.gtceu.robot.arm.tooltip"));
+        lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 16));
     }))).register();
     public static ItemEntry<ComponentItem> ROBOT_ARM_ZPM = REGISTRATE.item("robot.arm.zpm", ComponentItem::create).lang("ZPM Robot Arm").onRegister(attach(new TooltipBehavior(lines -> {
-        lines.add(Component.translatable("metaitem.robot.arm.tooltip"));
-        lines.add(Component.translatable("gregtech.universal.tooltip.item_transfer_rate_stacks", 16));
+        lines.add(Component.translatable("item.gtceu.robot.arm.tooltip"));
+        lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 16));
     }))).register();
     public static ItemEntry<ComponentItem> ROBOT_ARM_UV = REGISTRATE.item("robot.arm.uv", ComponentItem::create).lang("UV Robot Arm").onRegister(attach(new TooltipBehavior(lines -> {
-        lines.add(Component.translatable("metaitem.robot.arm.tooltip"));
-        lines.add(Component.translatable("gregtech.universal.tooltip.item_transfer_rate_stacks", 16));
+        lines.add(Component.translatable("item.gtceu.robot.arm.tooltip"));
+        lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 16));
     }))).register();
 
     public static ItemEntry<Item> FIELD_GENERATOR_LV= REGISTRATE.item("field.generator.lv", Item::new).lang("LV Field Generator").register();
@@ -784,8 +790,8 @@ public class GTItems {
     public static ItemEntry<Item> HIGH_POWER_INTEGRATED_CIRCUIT_WAFER= REGISTRATE.item("wafer.high_power_integrated_circuit", Item::new).lang("HPIC Wafer").register();
     public static ItemEntry<Item> ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT_WAFER= REGISTRATE.item("wafer.ultra_high_power_integrated_circuit", Item::new).lang("UHPIC Wafer").register();
 
-    public static ItemEntry<Item> ENGRAVED_CRYSTAL_CHIP = REGISTRATE.item("engraved.crystal_chip", Item::new).register();
-    public static ItemEntry<Item> ENGRAVED_LAPOTRON_CHIP = REGISTRATE.item("engraved.lapotron_chip", Item::new).register();
+    public static ItemEntry<Item> ENGRAVED_CRYSTAL_CHIP = REGISTRATE.item("engraved.crystal_chip", Item::new).lang("Engraved Crystal Chip").register();
+    public static ItemEntry<Item> ENGRAVED_LAPOTRON_CHIP = REGISTRATE.item("engraved.lapotron_chip", Item::new).lang("Engraved Lapotron Crystal Chip").register();
 
     public static ItemEntry<Item> CENTRAL_PROCESSING_UNIT = REGISTRATE.item( "plate.central_processing_unit", Item::new).lang("CPU").register();
     public static ItemEntry<Item> RANDOM_ACCESS_MEMORY = REGISTRATE.item( "plate.random_access_memory", Item::new).lang("RAM").register();
@@ -885,7 +891,7 @@ public class GTItems {
     public static ItemEntry<Item> WETWARE_PROCESSOR_LUV = REGISTRATE.item("circuit.wetware_processor", Item::new).lang("Wetware Processor").tag(CustomTags.LuV_CIRCUITS).register();
     public static ItemEntry<Item> WETWARE_PROCESSOR_ASSEMBLY_ZPM = REGISTRATE.item("circuit.wetware_assembly", Item::new).lang("Wetware Assembly").tag(CustomTags.ZPM_CIRCUITS).register();
     public static ItemEntry<Item> WETWARE_SUPER_COMPUTER_UV = REGISTRATE.item("circuit.wetware_computer", Item::new).lang("Wetware Supercomputer").tag(CustomTags.UV_CIRCUITS).register();
-    public static ItemEntry<Item> WETWARE_MAINFRAME_UHV = REGISTRATE.item("circuit.wetware_mainframe", Item::new).tag(CustomTags.UHV_CIRCUITS).register();
+    public static ItemEntry<Item> WETWARE_MAINFRAME_UHV = REGISTRATE.item("circuit.wetware_mainframe", Item::new).lang("Wetware Mainframe").tag(CustomTags.UHV_CIRCUITS).register();
 
     public static ItemEntry<Item> COMPONENT_GRINDER_DIAMOND = REGISTRATE.item("component.grinder.diamond", Item::new).lang("Diamond Grinding Head").onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 8), new MaterialStack(GTMaterials.Diamond, GTValues.M * 5)))).register();
     public static ItemEntry<Item> COMPONENT_GRINDER_TUNGSTEN = REGISTRATE.item("component.grinder.tungsten", Item::new).lang("Tungsten Grinding Head").onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Tungsten, GTValues.M * 4), new MaterialStack(GTMaterials.VanadiumSteel, GTValues.M * 8), new MaterialStack(GTMaterials.Diamond, GTValues.M)))).register();
@@ -899,12 +905,14 @@ public class GTItems {
             .onRegister(attach(new ItemFilterBehaviour(SimpleItemFilter::loadFilter), new CoverPlaceBehavior(GTCovers.ITEM_FILTER)))
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Zinc, GTValues.M * 2), new MaterialStack(GTMaterials.Steel, GTValues.M)))).register();
     public static ItemEntry<ComponentItem> ORE_DICTIONARY_FILTER = REGISTRATE.item("ore_dictionary_filter", ComponentItem::create)
+            .lang("Item Tag Filter")
             .onRegister(attach(new ItemFilterBehaviour(TagItemFilter::loadFilter), new CoverPlaceBehavior(GTCovers.ITEM_FILTER)))
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Zinc, GTValues.M * 2)))).register();
     public static ItemEntry<ComponentItem> FLUID_FILTER = REGISTRATE.item("fluid_filter", ComponentItem::create)
             .onRegister(attach(new FluidFilterBehaviour(SimpleFluidFilter::loadFilter), new CoverPlaceBehavior(GTCovers.FLUID_FILTER)))
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Zinc, GTValues.M * 2)))).register();
     public static ItemEntry<ComponentItem> TAG_FLUID_FILTER = REGISTRATE.item("tag_fluid_filter", ComponentItem::create)
+            .lang("Fluid Tag Filter")
             .onRegister(attach(new FluidFilterBehaviour(TagFluidFilter::loadFilter), new CoverPlaceBehavior(GTCovers.FLUID_FILTER)))
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Zinc, GTValues.M * 3 / 2)))).register();
 
@@ -921,7 +929,6 @@ public class GTItems {
     public static ItemEntry<Item> COVER_CRAFTING = REGISTRATE.item("cover.crafting", Item::new).lang("Crafting Table Cover").register();
     public static ItemEntry<Item> COVER_SHUTTER = REGISTRATE.item("cover.shutter", Item::new).lang("Shutter Module").register();
     public static ItemEntry<ComponentItem> COVER_INFINITE_WATER = REGISTRATE.item("cover.infinite_water", ComponentItem::create).lang("Infinite Water Cover").onRegister(attach(new TooltipBehavior(lines -> {
-        lines.add(Component.translatable("metaitem.cover.infinite_water.tooltip.1"));
         lines.add(Component.translatable("gtceu.universal.tooltip.produces_fluid", 16_000 / 20));
     }), new CoverPlaceBehavior(GTCovers.INFINITE_WATER))).register();
     public static ItemEntry<Item> COVER_ENDER_FLUID_LINK = REGISTRATE.item("cover.ender_fluid_link", Item::new).lang("Ender Fluid Link").register();
@@ -940,43 +947,43 @@ public class GTItems {
 
     // Solar Panels: ID 331-346
     public static ItemEntry<ComponentItem> COVER_SOLAR_PANEL = REGISTRATE.item("cover.solar.panel", ComponentItem::create).lang("Solar Panel").onRegister(attach(new TooltipBehavior(lines -> {
-        lines.addAll(Arrays.asList(LangHandler.getMultiLang("metaitem.cover.solar.panel.tooltip")));
+        lines.addAll(LangHandler.getMultiLang("metaitem.cover.solar.panel.tooltip"));
         lines.add(Component.translatable("gregtech.universal.tooltip.voltage_out", 1, GTValues.VNF[GTValues.ULV]));
     }))).register();
     public static ItemEntry<ComponentItem> COVER_SOLAR_PANEL_ULV = REGISTRATE.item("cover.solar.panel.ulv", ComponentItem::create).lang("Ultra Low Voltage Solar Panel").onRegister(attach(new TooltipBehavior(lines -> {
-        lines.addAll(Arrays.asList(LangHandler.getMultiLang("metaitem.cover.solar.panel.tooltip")));
+        lines.addAll(LangHandler.getMultiLang("metaitem.cover.solar.panel.tooltip"));
         lines.add(Component.translatable("gregtech.universal.tooltip.voltage_out", GTValues.V[GTValues.ULV], GTValues.VNF[GTValues.ULV]));
     }))).register();
     public static ItemEntry<ComponentItem> COVER_SOLAR_PANEL_LV = REGISTRATE.item("cover.solar.panel.lv", ComponentItem::create).lang("Low Voltage Solar Panel").onRegister(attach(new TooltipBehavior(lines -> {
-        lines.addAll(Arrays.asList(LangHandler.getMultiLang("metaitem.cover.solar.panel.tooltip")));
+        lines.addAll(LangHandler.getMultiLang("metaitem.cover.solar.panel.tooltip"));
         lines.add(Component.translatable("gregtech.universal.tooltip.voltage_out", GTValues.V[GTValues.LV], GTValues.VNF[GTValues.LV]));
     }))).register();
     public static ItemEntry<ComponentItem> COVER_SOLAR_PANEL_MV = REGISTRATE.item("cover.solar.panel.mv", ComponentItem::create).lang("Medium Voltage Solar Panel").onRegister(attach(new TooltipBehavior(lines -> {
-        lines.addAll(Arrays.asList(LangHandler.getMultiLang("metaitem.cover.solar.panel.tooltip")));
+        lines.addAll(LangHandler.getMultiLang("metaitem.cover.solar.panel.tooltip"));
         lines.add(Component.translatable("gregtech.universal.tooltip.voltage_out", GTValues.V[GTValues.MV], GTValues.VNF[GTValues.MV]));
     }))).register();
     public static ItemEntry<ComponentItem> COVER_SOLAR_PANEL_HV = REGISTRATE.item("cover.solar.panel.hv", ComponentItem::create).lang("High Voltage Solar Panel").onRegister(attach(new TooltipBehavior(lines -> {
-        lines.addAll(Arrays.asList(LangHandler.getMultiLang("metaitem.cover.solar.panel.tooltip")));
+        lines.addAll(LangHandler.getMultiLang("metaitem.cover.solar.panel.tooltip"));
         lines.add(Component.translatable("gregtech.universal.tooltip.voltage_out", GTValues.V[GTValues.HV], GTValues.VNF[GTValues.HV]));
     }))).register();
     public static ItemEntry<ComponentItem> COVER_SOLAR_PANEL_EV = REGISTRATE.item("cover.solar.panel.ev", ComponentItem::create).lang("Extreme Voltage Solar Panel").onRegister(attach(new TooltipBehavior(lines -> {
-        lines.addAll(Arrays.asList(LangHandler.getMultiLang("metaitem.cover.solar.panel.tooltip")));
+        lines.addAll(LangHandler.getMultiLang("metaitem.cover.solar.panel.tooltip"));
         lines.add(Component.translatable("gregtech.universal.tooltip.voltage_out", GTValues.V[GTValues.EV], GTValues.VNF[GTValues.EV]));
     }))).register();
     public static ItemEntry<ComponentItem> COVER_SOLAR_PANEL_IV = REGISTRATE.item("cover.solar.panel.iv", ComponentItem::create).lang("Insane Voltage Solar Panel").onRegister(attach(new TooltipBehavior(lines -> {
-        lines.addAll(Arrays.asList(LangHandler.getMultiLang("metaitem.cover.solar.panel.tooltip")));
+        lines.addAll(LangHandler.getMultiLang("metaitem.cover.solar.panel.tooltip"));
         lines.add(Component.translatable("gregtech.universal.tooltip.voltage_out", GTValues.V[GTValues.IV], GTValues.VNF[GTValues.IV]));
     }))).register();
     public static ItemEntry<ComponentItem> COVER_SOLAR_PANEL_LUV = REGISTRATE.item("cover.solar.panel.luv", ComponentItem::create).lang("Ludicrous Voltage Solar Panel").onRegister(attach(new TooltipBehavior(lines -> {
-        lines.addAll(Arrays.asList(LangHandler.getMultiLang("metaitem.cover.solar.panel.tooltip")));
+        lines.addAll(LangHandler.getMultiLang("metaitem.cover.solar.panel.tooltip"));
         lines.add(Component.translatable("gregtech.universal.tooltip.voltage_out", GTValues.V[GTValues.LuV], GTValues.VNF[GTValues.LuV]));
     }))).register();
     public static ItemEntry<ComponentItem> COVER_SOLAR_PANEL_ZPM = REGISTRATE.item("cover.solar.panel.zpm", ComponentItem::create).lang("Zero Point Module Solar Panel").onRegister(attach(new TooltipBehavior(lines -> {
-        lines.addAll(Arrays.asList(LangHandler.getMultiLang("metaitem.cover.solar.panel.tooltip")));
+        lines.addAll(LangHandler.getMultiLang("metaitem.cover.solar.panel.tooltip"));
         lines.add(Component.translatable("gregtech.universal.tooltip.voltage_out", GTValues.V[GTValues.ZPM], GTValues.VNF[GTValues.ZPM]));
     }))).register();
     public static ItemEntry<ComponentItem> COVER_SOLAR_PANEL_UV = REGISTRATE.item("cover.solar.panel.uv", ComponentItem::create).lang("Ultimate Voltage Solar Panel").onRegister(attach(new TooltipBehavior(lines -> {
-        lines.addAll(Arrays.asList(LangHandler.getMultiLang("metaitem.cover.solar.panel.tooltip")));
+        lines.addAll(LangHandler.getMultiLang("metaitem.cover.solar.panel.tooltip"));
         lines.add(Component.translatable("gregtech.universal.tooltip.voltage_out", GTValues.V[GTValues.UV], GTValues.VNF[GTValues.UV]));
     }))).register();
 
