@@ -66,11 +66,6 @@ public class GTRecipeTypeBuilder extends BuilderBase<GTRecipeType> {
         this.uiBuilder = null;
     }
 
-    @Override
-    public void createAdditionalObjects() {
-        this.createObject();
-    }
-
     public GTRecipeTypeBuilder category(String category) {
         this.category = category;
         return this;

@@ -23,13 +23,14 @@ public abstract class BuilderBaseMixin<T> implements Supplier<T> {
     @Inject(remap = false, method = "registerObject(Z)Z", cancellable = true, at = @At(value = "INVOKE", target = "Ldev/architectury/registry/registries/DeferredRegister;register(Lnet/minecraft/resources/ResourceLocation;Ljava/util/function/Supplier;)Ldev/architectury/registry/registries/RegistrySupplier;"))
     public void gtceu$registerObject(boolean all, CallbackInfoReturnable<Boolean> cir) {
         if (((BuilderBase<T>)(Object)this) instanceof MachineBuilder builder) {
-            //builder.createObject();
+            builder.createObject();
             cir.setReturnValue(true);
             cir.cancel();
         } else if (((BuilderBase<T>)(Object)this) instanceof GTRecipeTypeBuilder builder) {
-            //builder.createObject();
+            builder.createObject();
             cir.setReturnValue(true);
             cir.cancel();
         }
     }
 }
+

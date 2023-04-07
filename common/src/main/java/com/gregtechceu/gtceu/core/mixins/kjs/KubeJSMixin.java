@@ -18,8 +18,8 @@ public abstract class KubeJSMixin {
     /**
      * Make sure our mod is loaded after kjs
      */
-    //@Inject(method = "setup", at = @At(value = "RETURN"), remap = false)
-    public void injectInit(CallbackInfo ci) {
+    @Inject(method = "setup", at = @At(value = "RETURN"), remap = false)
+    public void gtceu$injectInit(CallbackInfo ci) {
         CommonProxy.onKubeJSSetup();
     }
 

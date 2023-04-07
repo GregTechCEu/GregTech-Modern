@@ -2,28 +2,26 @@ package com.gregtechceu.gtceu.forge.core.mixins.kjs;
 
 import com.gregtechceu.gtceu.common.CommonProxy;
 import dev.latvian.mods.kubejs.forge.KubeJSForge;
+import net.minecraft.core.Registry;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.RegisterEvent;
 import org.apache.commons.lang3.NotImplementedException;
+import org.checkerframework.checker.units.qual.C;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.function.Consumer;
 
 @Mixin(KubeJSForge.class)
 public class KubeJSForgeMixin {
 
-    @Shadow(remap = false)
-    private static void initRegistries(RegisterEvent event) {
-        throw new NotImplementedException("Mixin failed to apply");
-    }
-
-    @Redirect(remap = false, method = "<init>", at = @At(value = "INVOKE", ordinal = 1, target = "Lnet/minecraftforge/eventbus/api/IEventBus;addListener(Ljava/util/function/Consumer;)V"))
-    public void init(IEventBus bus, Consumer<? extends Event> consumer) {
-        CommonProxy.onKubeJSSetup();
-        bus.addListener(consumer);
+    @Inject(remap = false, method = "<init>", at = @At(value = "RETURN"))
+    private void gtceu$init(CallbackInfo ci) {
+        CommonProxy.register();
     }
 }

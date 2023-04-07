@@ -10,8 +10,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(KubeJSFabric.class)
 public class KubeJSFabricMixin {
 
-    @Inject(remap = false, method = "onInitialize()V", at = @At(value = "NEW", ordinal = 0, target = "Ldev/latvian/mods/kubejs/KubeJS;<init>()V"))
-    public void init(CallbackInfo ci) {
-        CommonProxy.onKubeJSSetup();
+    @Inject(remap = false, method = "onInitialize()V", at = @At(value = "RETURN"))
+    public void gtceu$init(CallbackInfo ci) {
+        CommonProxy.register();
     }
 }

@@ -22,6 +22,11 @@ public class SimpleMachineBuilder extends MachineBuilder {
         this.tiers = GTMachines.ELECTRIC_TIERS;
     }
 
+    @Override
+    public void register() {
+        var val = GTMachines.registerSimpleMachines(name, recipeType, tier -> tankScalingFunction.apply(tier), tiers);
+    }
+
     public SimpleMachineBuilder tiers(int... tiers) {
         this.tiers = tiers;
         return this;

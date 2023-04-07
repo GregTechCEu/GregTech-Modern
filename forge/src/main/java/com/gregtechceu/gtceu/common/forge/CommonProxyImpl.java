@@ -5,12 +5,16 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.registry.forge.GTRegistriesImpl;
 import com.gregtechceu.gtceu.common.CommonProxy;
 import com.gregtechceu.gtceu.common.data.forge.GTFeaturesImpl;
+import com.gregtechceu.gtceu.integration.kjs.builders.machine.MachineBuilder;
 import com.gregtechceu.gtceu.integration.top.forge.TheOneProbePluginImpl;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapabilities;
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.forge.SizedIngredientImpl;
 import com.gregtechceu.gtceu.common.data.GTSyncedFieldAccessors;
 import com.lowdragmc.lowdraglib.LDLib;
+import dev.latvian.mods.kubejs.KubeJSRegistries;
+import dev.latvian.mods.kubejs.RegistryObjectBuilderTypes;
+import net.minecraft.core.Registry;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -21,10 +25,9 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 public class CommonProxyImpl {
     private static final Object LOCK = new Object();
-    private static boolean isKubJSSetup = true /*false*/;
+    private static boolean isKubJSSetup = false;
 
     public static void onKubeJSSetup() {
-        //CommonProxy.init();
         synchronized (LOCK) {
             isKubJSSetup = true;
             LOCK.notify();
@@ -38,12 +41,13 @@ public class CommonProxyImpl {
         GTRegistriesImpl.init(eventBus);
         GTFeaturesImpl.init(eventBus);
         // init common features
+        CommonProxy.initRegistries();
         if (GTCEu.isKubeJSLoaded()) {
             synchronized (LOCK) {
                 if (!isKubJSSetup) {
                     try { LOCK.wait(); } catch (InterruptedException ignored) {}
                 }
-           }
+            }
         }
         CommonProxy.init();
         // register payloads

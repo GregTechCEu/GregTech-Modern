@@ -16,6 +16,11 @@ public class SteamMachineBuilder extends MachineBuilder {
     }
 
     @Override
+    public void register() {
+        var machinePair = GTMachines.registerSimpleSteamMachines(name, recipeType);
+    }
+
+    @Override
     public Block createObject() {
         var machinePair = GTMachines.registerSimpleSteamMachines(name, recipeType);
         return null;

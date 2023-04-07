@@ -19,12 +19,16 @@ public abstract class MachineBuilder extends BuilderBase<Block> {
         super(new ResourceLocation(GTCEu.MOD_ID, i.getPath()));
         this.name = i.getPath();
         this.recipeType = null;
+
+        //this.dummyBuilder = true;
     }
 
     public MachineBuilder recipeType(String type) {
         this.recipeType = type;
         return this;
     }
+
+    public abstract void register();
 
     @Override
     public RegistryObjectBuilderTypes<? super Block> getRegistryType() {

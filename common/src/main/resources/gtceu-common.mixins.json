@@ -23,7 +23,6 @@
     "ServerPlayerGameModeMixin",
     "create.RotationPropagatorMixin",
     "kjs.BuilderBaseMixin",
-    "kjs.IRegistryObjectBuilderTypesAccessor",
     "kjs.KubeJSMixin",
     "kjs.RecipeEventJSMixin"
   ],

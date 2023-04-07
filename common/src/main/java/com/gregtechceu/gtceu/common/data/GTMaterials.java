@@ -299,11 +299,6 @@ public class GTMaterials {
         //ChemicalHelper.registerUnificationEntry(MetaBlocks.STONE_SMOOTH.getItemVariant(BlockStoneSmooth.BlockType.CONCRETE_LIGHT, 1), TagPrefix.block, GTMaterials.Concrete);
         //ChemicalHelper.registerUnificationEntry(MetaBlocks.STONE_SMOOTH.getItemVariant(BlockStoneSmooth.BlockType.CONCRETE_DARK, 1), TagPrefix.block, GTMaterials.Concrete);
 
-
-        if (GTCEu.isKubeJSLoaded()) {
-            GTRegistries.MATERIALS_WRAPPED = IRegistryAccessor.invokeInternalRegister(GTRegistries.MATERIALS_REGISTRY, new GTStringRegistryWrapper<>(GTRegistries.MATERIALS_REGISTRY, Lifecycle.experimental(), GTRegistries.MATERIALS), val -> GTMaterials.Neutronium, Lifecycle.experimental());
-            KubeJSRegistries.init(GTRegistries.MATERIALS_REGISTRY);
-        }
     }
 
     public static Material get(String name) {

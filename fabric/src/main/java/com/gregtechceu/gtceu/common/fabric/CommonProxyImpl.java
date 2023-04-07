@@ -14,6 +14,8 @@ public class CommonProxyImpl {
     }
 
     public static void init() {
+        CommonProxy.initRegistries();
+
         if (!GTCEu.isKubeJSLoaded()) {
             CommonProxy.init();
         }

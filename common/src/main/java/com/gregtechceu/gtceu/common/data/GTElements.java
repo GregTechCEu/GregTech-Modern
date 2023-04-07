@@ -153,10 +153,7 @@ public class GTElements {
     }
 
     public static void init() {
-        if (GTCEu.isKubeJSLoaded()) {
-            GTRegistries.ELEMENTS_WRAPPED = IRegistryAccessor.invokeInternalRegister(GTRegistries.ELEMENTS_REGISTRY, new GTStringRegistryWrapper<>(GTRegistries.ELEMENTS_REGISTRY, Lifecycle.experimental(), GTRegistries.ELEMENTS), val -> GTElements.Nt, Lifecycle.experimental());
-            KubeJSRegistries.init(GTRegistries.ELEMENTS_REGISTRY);
-        }
+
     }
 
     public static Element get(String name) {
