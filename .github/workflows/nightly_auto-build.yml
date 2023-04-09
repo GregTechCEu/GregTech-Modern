@@ -29,10 +29,14 @@ jobs:
       with:
         arguments: build
         
-    - name: Upload Jars
+    - name: Upload Jars (Fabric)
       uses: actions/upload-artifact@v3
-      with:         
-        name: GTCEu
-        path: |
-          fabric/build/libs/
-          forge/build/libs/
+      with:
+        name: GTCEu (Fabric)
+        path: fabric/build/libs/
+
+    - name: Upload Jars (Forge)
+      uses: actions/upload-artifact@v3
+      with:
+        name: GTCEu (Forge)
+        path: forge/build/libs/
