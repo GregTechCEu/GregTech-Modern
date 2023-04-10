@@ -41,15 +41,14 @@ public class CommonProxyImpl {
         GTRegistriesImpl.init(eventBus);
         GTFeaturesImpl.init(eventBus);
         // init common features
-        CommonProxy.initRegistries();
-        /*if (GTCEu.isKubeJSLoaded()) {
+        if (GTCEu.isKubeJSLoaded()) {
             synchronized (LOCK) {
                 if (!isKubJSSetup) {
                     try { LOCK.wait(); } catch (InterruptedException ignored) {}
                 }
             }
         }
-        //CommonProxy.init();*/
+        CommonProxy.init();
         // register payloads
         GTSyncedFieldAccessors.init();
     }

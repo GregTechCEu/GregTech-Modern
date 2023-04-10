@@ -14,7 +14,9 @@ import net.minecraft.world.level.block.Block;
 public class KineticMachineBuilder extends MachineBuilder {
     public transient int[] tiers;
 
-    public KineticMachineBuilder(ResourceLocation i) {
+    private MachineDefinition value = null;
+
+    public KineticMachineBuilder(ResourceLocation i, Object... args) {
         super(i);
         this.tiers = GTMachines.ELECTRIC_TIERS;
     }
@@ -25,8 +27,13 @@ public class KineticMachineBuilder extends MachineBuilder {
     }
 
     @Override
-    public Block createObject() {
-        var val = GTCreateMachines.registerSimpleKineticElectricMachine(name, recipeType, tiers);
-        return null;
+    public MachineDefinition register() {
+        value = GTCreateMachines.registerSimpleKineticElectricMachine(name, recipeType, tiers)[0];
+        return value;
+    }
+
+    @Override
+    public MachineDefinition get() {
+        return value;
     }
 }

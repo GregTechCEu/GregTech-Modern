@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.integration.kjs.registrymirror;
+package com.gregtechceu.gtceu.integration.kjs.registrywrapper;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.registry.GTRegistry;

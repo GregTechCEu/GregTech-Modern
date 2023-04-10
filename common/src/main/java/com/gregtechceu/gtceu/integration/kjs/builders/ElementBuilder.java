@@ -1,8 +1,9 @@
 package com.gregtechceu.gtceu.integration.kjs.builders;
 
 import com.gregtechceu.gtceu.api.data.chemical.Element;
+import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
+import com.gregtechceu.gtceu.common.data.GTElements;
 import com.gregtechceu.gtceu.integration.kjs.GregTechKubeJSPlugin;
-import dev.latvian.mods.kubejs.BuilderBase;
 import dev.latvian.mods.kubejs.RegistryObjectBuilderTypes;
 import net.minecraft.resources.ResourceLocation;
 
@@ -11,50 +12,26 @@ public class ElementBuilder extends BuilderBase<Element> {
     public transient String decayTo, name, symbol;
     public transient boolean isIsotope;
 
+    private Element value = null;
 
-    public ElementBuilder(ResourceLocation i) {
+    public ElementBuilder(ResourceLocation i, Object... args) {
         super(i);
-        protons = -1;
-        neutrons = -1;
-        halfLifeSeconds = -1;
-        decayTo = null;
+        protons = ((Double)args[0]).intValue();
+        neutrons = ((Double)args[1]).intValue();
+        halfLifeSeconds = ((Double)args[2]).intValue();
+        decayTo = args[3] == null ? null : args[3].toString();
         name = i.getPath();
-        symbol = "";
-        isIsotope = false;
-    }
-
-    public ElementBuilder protons(long protons) {
-        this.protons = protons;
-        return this;
-    }
-
-    public ElementBuilder neutrons(long neutrons) {
-        this.neutrons = neutrons;
-        return this;
-    }
-
-    public ElementBuilder halfLifeSeconds(long halfLifeSeconds) {
-        this.halfLifeSeconds = halfLifeSeconds;
-        return this;
-    }
-
-    public ElementBuilder decayTo(String decayTo) {
-        this.decayTo = decayTo;
-        return this;
-    }
-
-    public ElementBuilder symbol(String symbol) {
-        this.symbol = symbol;
-        return this;
+        symbol = args[4] == null ? "" : args[4].toString();
+        isIsotope = (Boolean) args[5];
     }
 
     @Override
-    public RegistryObjectBuilderTypes<? super Element> getRegistryType() {
-        return GregTechKubeJSPlugin.ELEMENT;
+    public Element register() {
+        return value = new Element(protons, neutrons, halfLifeSeconds, decayTo, name, symbol, isIsotope);
     }
 
     @Override
-    public Element createObject() {
-        return new Element(protons, neutrons, halfLifeSeconds, decayTo, name, symbol, isIsotope);
+    public Element get() {
+        return value;
     }
 }

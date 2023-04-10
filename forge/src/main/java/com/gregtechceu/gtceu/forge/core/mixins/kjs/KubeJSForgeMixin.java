@@ -22,6 +22,6 @@ public class KubeJSForgeMixin {
 
     @Inject(remap = false, method = "<init>", at = @At(value = "RETURN"))
     private void gtceu$init(CallbackInfo ci) {
-        CommonProxy.init();
+        //CommonProxy.init();
     }
 }

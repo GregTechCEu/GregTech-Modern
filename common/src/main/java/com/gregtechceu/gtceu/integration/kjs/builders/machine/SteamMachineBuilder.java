@@ -11,13 +11,21 @@ import net.minecraft.world.level.block.Block;
  * @implNote MachineBuilder
  */
 public class SteamMachineBuilder extends MachineBuilder {
-    public SteamMachineBuilder(ResourceLocation i) {
+    private MachineDefinition value;
+
+    public SteamMachineBuilder(ResourceLocation i, Object... args) {
         super(i);
     }
 
     @Override
-    public Block createObject() {
-        var machinePair = GTMachines.registerSimpleSteamMachines(name, recipeType);
-        return null;
+    public MachineDefinition register() {
+        var pair = GTMachines.registerSimpleSteamMachines(name, recipeType);
+        value = pair.first();
+        return value;
+    }
+
+    @Override
+    public MachineDefinition get() {
+        return value;
     }
 }

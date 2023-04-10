@@ -4,24 +4,17 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
-import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
-import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.item.DrumMachineItem;
 import com.gregtechceu.gtceu.api.machine.*;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
-import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
 import com.gregtechceu.gtceu.api.machine.steam.SimpleSteamMachine;
-import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
-import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.api.pattern.Predicates;
-import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
-import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.client.renderer.block.CTMModelRenderer;
 import com.gregtechceu.gtceu.client.renderer.machine.*;
 import com.gregtechceu.gtceu.common.block.BoilerFireboxType;
@@ -31,17 +24,31 @@ import com.gregtechceu.gtceu.common.machine.electric.PumpMachine;
 import com.gregtechceu.gtceu.common.machine.electric.TransformerMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.CrackerMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.ElectricBlastFurnaceMachine;
-import com.gregtechceu.gtceu.common.machine.multiblock.electric.PyrolyseOvenMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.*;
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.CokeOvenMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.PrimitiveBlastFurnaceMachine;
+import com.gregtechceu.gtceu.common.machine.multiblock.primitive.PrimitivePumpMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.steam.LargeBoilerMachine;
-import com.gregtechceu.gtceu.common.machine.steam.SteamLiquidBoilerMachine;
+import com.gregtechceu.gtceu.common.machine.multiblock.steam.SteamParallelMultiblockMachine;
 import com.gregtechceu.gtceu.common.machine.steam.SteamSolidBoilerMachine;
-import com.gregtechceu.gtceu.common.machine.storage.*;
+import com.gregtechceu.gtceu.common.machine.storage.CrateMachine;
+import com.gregtechceu.gtceu.common.machine.storage.CreativeEnergyContainerMachine;
+import com.gregtechceu.gtceu.common.machine.storage.DrumMachine;
+import com.gregtechceu.gtceu.common.machine.storage.QuantumChestMachine;
+import com.gregtechceu.gtceu.common.machine.storage.QuantumTankMachine;
+import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
+import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.data.RotationState;
+import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
+import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
+import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
+import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.common.machine.multiblock.electric.PyrolyseOvenMachine;
+import com.gregtechceu.gtceu.common.machine.steam.SteamLiquidBoilerMachine;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.data.data.LangHandler;
-import com.gregtechceu.gtceu.utils.Lazy;
+import com.gregtechceu.gtceu.data.lang.LangHandler;
+import com.gregtechceu.gtceu.integration.kjs.GTRegistryObjectBuilderTypes;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import it.unimi.dsi.fastutil.Pair;
@@ -59,10 +66,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.Fluids;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
@@ -72,8 +76,8 @@ import static com.gregtechceu.gtceu.api.pattern.Predicates.*;
 import static com.gregtechceu.gtceu.api.pattern.util.RelativeDirection.*;
 import static com.gregtechceu.gtceu.api.registry.GTRegistries.REGISTRATE;
 import static com.gregtechceu.gtceu.common.data.GTBlocks.*;
-import static com.gregtechceu.gtceu.common.data.GTCreativeModeTabs.MACHINE;
-import static com.gregtechceu.gtceu.utils.FormattingUtil.toEnglishName;
+import static com.gregtechceu.gtceu.common.data.GTCreativeModeTabs.*;
+import static com.gregtechceu.gtceu.utils.FormattingUtil.*;
 
 /**
  * @author KilaBash
@@ -317,7 +321,7 @@ public class GTMachines {
                     .abilities(tier == 0 ? new PartAbility[] {PartAbility.IMPORT_ITEMS, PartAbility.STEAM_IMPORT_ITEMS} : new PartAbility[]{PartAbility.IMPORT_ITEMS})
                     .overlayTieredHullRenderer("item_bus.import")
                     .register(),
-            ELECTRIC_TIERS);
+            ALL_TIERS);
 
     public final static MachineDefinition[] ITEM_EXPORT_BUS = registerTieredMachines("item_bus.export",
             (holder, tier) -> new ItemBusPartMachine(holder, tier, IO.OUT),
@@ -327,7 +331,7 @@ public class GTMachines {
                     .abilities(tier == 0 ? new PartAbility[] {PartAbility.EXPORT_ITEMS, PartAbility.STEAM_EXPORT_ITEMS} : new PartAbility[]{PartAbility.EXPORT_ITEMS})
                     .overlayTieredHullRenderer("item_bus.export")
                     .register(),
-            ELECTRIC_TIERS);
+            ALL_TIERS);
 
     public final static MachineDefinition[] FLUID_IMPORT_HATCH = registerTieredMachines("fluid_hatch.import",
             (holder, tier) -> new FluidHatchPartMachine(holder, tier, IO.IN),
@@ -337,7 +341,7 @@ public class GTMachines {
                     .abilities(PartAbility.IMPORT_FLUIDS)
                     .overlayTieredHullRenderer("fluid_hatch.import")
                     .register(),
-            ELECTRIC_TIERS);
+            ALL_TIERS);
 
     public final static MachineDefinition[] FLUID_EXPORT_HATCH = registerTieredMachines("fluid_hatch.export",
             (holder, tier) -> new FluidHatchPartMachine(holder, tier, IO.OUT),
@@ -348,7 +352,7 @@ public class GTMachines {
                     .abilities(PartAbility.EXPORT_FLUIDS)
                     .overlayTieredHullRenderer("fluid_hatch.export")
                     .register(),
-            ELECTRIC_TIERS);
+            ALL_TIERS);
 
     public final static MachineDefinition[] ENERGY_INPUT_HATCH = registerTieredMachines("energy_hatch.input",
             (holder, tier) -> new EnergyHatchPartMachine(holder, tier, IO.IN, 2),
@@ -429,6 +433,18 @@ public class GTMachines {
                     .register(),
             ELECTRIC_TIERS);
 
+    public final static MachineDefinition STEAM_IMPORT_BUS = REGISTRATE.machine("item_bus.import.steam", holder -> new SteamItemBusPartMachine(holder, IO.IN))
+            .rotationState(RotationState.ALL)
+            .abilities(PartAbility.STEAM_IMPORT_ITEMS)
+            .overlaySteamHullRenderer("item_bus.import")
+            .register();
+
+    public final static MachineDefinition STEAM_EXPORT_BUS = REGISTRATE.machine("item_bus.export.steam", holder -> new SteamItemBusPartMachine(holder, IO.OUT))
+            .rotationState(RotationState.ALL)
+            .abilities(PartAbility.STEAM_EXPORT_ITEMS)
+            .overlaySteamHullRenderer("item_bus.export")
+            .register();
+
     public final static MachineDefinition STEAM_HATCH = REGISTRATE.machine("steam_hatch", SteamHatchPartMachine::new)
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.STEAM)
@@ -442,12 +458,19 @@ public class GTMachines {
             .renderer(() -> new CTMModelRenderer(GTCEu.id("block/machine/part/coke_oven_hatch")))
             .register();
 
+    public final static MachineDefinition PUMP_HATCH = REGISTRATE.machine("pump_hatch", PumpHatchPartMachine::new)
+            .rotationState(RotationState.ALL)
+            .abilities(PartAbility.PUMP_FLUID_HATCH)
+            .modelRenderer(() -> GTCEu.id("block/machine/part/pump_hatch"))
+            //.renderer(() -> new CTMModelRenderer(GTCEu.id("block/machine/part/pump_hatch")))
+            .register();
+
 
     //////////////////////////////////////
     //*******     Multiblock     *******//
     //////////////////////////////////////
     public final static MultiblockMachineDefinition LARGE_BOILER_BRONZE = registerLargeBoiler("large_bronze_boiler", CASING_BRONZE_BRICKS, CASING_BRONZE_PIPE, FIREBOX_BRONZE,
-            GTCEu.id("block/casings/solid/machine_bronze_plated_bricks"), BoilerFireboxType.BRONZE_FIREBOX, 800, 1);
+            GTCEu.id("block/casings/solid/machine_casing_bronze_plated_bricks"), BoilerFireboxType.BRONZE_FIREBOX, 800, 1);
     public final static MultiblockMachineDefinition LARGE_BOILER_STEEL = registerLargeBoiler("large_steel_boiler", CASING_STEEL_SOLID, CASING_STEEL_PIPE, FIREBOX_STEEL,
             GTCEu.id("block/casings/solid/machine_casing_solid_steel"), BoilerFireboxType.STEEL_FIREBOX, 1800, 1);
     public final static MultiblockMachineDefinition LARGE_BOILER_TITANIUM = registerLargeBoiler("large_titanium_boiler", CASING_TITANIUM_STABLE, CASING_TITANIUM_PIPE, FIREBOX_TITANIUM,
@@ -715,8 +738,61 @@ public class GTMachines {
                     GTCEu.id("block/multiblock/assembly_line"), false)
             .register();
 
+    public final static MultiblockMachineDefinition PRIMITIVE_PUMP = REGISTRATE.multiblock("primitive_pump", PrimitivePumpMachine::new)
+            .rotationState(RotationState.NON_Y_AXIS)
+            .appearanceBlock(CASING_PUMP_DECK)
+            .pattern(definition -> FactoryBlockPattern.start()
+                    .aisle("XXXX", "##F#", "##F#")
+                    .aisle("XXHX", "F##F", "FFFF")
+                    .aisle("SXXX", "##F#", "##F#")
+                    .where('S', Predicates.controller(blocks(definition.getBlock())))
+                    .where('X', blocks(CASING_PUMP_DECK.get()))
+                    .where('F', blocks(MATERIAL_BLOCKS.get(TagPrefix.frameGt, GTMaterials.TreatedWood).get()))
+                    .where('H', Predicates.abilities(PartAbility.PUMP_FLUID_HATCH).or(blocks(FLUID_EXPORT_HATCH[0].get(), FLUID_EXPORT_HATCH[1].get())))
+                    .where('#', Predicates.any())
+                    .build())
+            .sidedWorkableCasingRenderer("block/casings/pump_deck", GTCEu.id("block/multiblock/primitive_pump"), false)
+            .register();
 
+    public final static MultiblockMachineDefinition STEAM_GRINDER = REGISTRATE.multiblock("steam_grinder", SteamParallelMultiblockMachine::new)
+            .rotationState(RotationState.NON_Y_AXIS)
+            .appearanceBlock(CASING_BRONZE_BRICKS)
+            .recipeType(GTRecipeTypes.MACERATOR_RECIPES)
+            .pattern(definition -> FactoryBlockPattern.start()
+                    .aisle("XXX", "XXX", "XXX")
+                    .aisle("XXX", "X#X", "XXX")
+                    .aisle("XXX", "XSX", "XXX")
+                    .where('S', Predicates.controller(blocks(definition.getBlock())))
+                    .where('#', Predicates.air())
+                    .where('X', blocks(CASING_BRONZE_BRICKS.get()).setMinGlobalLimited(14)
+                            .or(Predicates.abilities(PartAbility.STEAM_IMPORT_ITEMS))
+                            .or(Predicates.abilities(PartAbility.STEAM_EXPORT_ITEMS))
+                            .or(Predicates.abilities(PartAbility.STEAM).setExactLimit(1)))
+                    .build())
+            .workableCasingRenderer(GTCEu.id("block/casings/solid/machine_casing_bronze_plated_bricks"),
+                    GTCEu.id("block/multiblock/steam_grinder"), false)
+            .register();
 
+    public final static MultiblockMachineDefinition STEAM_OVEN = REGISTRATE.multiblock("steam_oven", SteamParallelMultiblockMachine::new)
+            .rotationState(RotationState.NON_Y_AXIS)
+            .appearanceBlock(CASING_BRONZE_BRICKS)
+            .recipeType(GTRecipeTypes.FURNACE_RECIPES)
+            .pattern(definition -> FactoryBlockPattern.start()
+                    .aisle("FFF", "XXX", " X ")
+                    .aisle("FFF", "X#X", " X ")
+                    .aisle("FFF", "XSX", " X ")
+                    .where('S', Predicates.controller(blocks(definition.getBlock())))
+                    .where('#', Predicates.air())
+                    .where(' ', Predicates.any())
+                    .where('X', blocks(CASING_BRONZE_BRICKS.get()).setMinGlobalLimited(6)
+                            .or(Predicates.abilities(PartAbility.STEAM_IMPORT_ITEMS))
+                            .or(Predicates.abilities(PartAbility.STEAM_EXPORT_ITEMS)))
+                    .where('F', blocks(FIREBOX_BRONZE.get())
+                            .or(Predicates.abilities(PartAbility.STEAM).setExactLimit(1)))
+                    .build())
+            .renderer(() -> new LargeBoilerRenderer(GTCEu.id("block/casings/solid/machine_casing_bronze_plated_bricks"), BoilerFireboxType.BRONZE_FIREBOX,
+                    GTCEu.id("block/multiblock/steam_oven")))
+            .register();
 
 
 
@@ -758,20 +834,6 @@ public class GTMachines {
                 .recipeType(recipeType)
                 .workableTieredHullRenderer(GTCEu.id("block/machines/" + name))
                 .tooltips(explosion())
-                .tooltips(workableTiered(tier, GTValues.V[tier], GTValues.V[tier] * 64, recipeType.registryName.getPath(), (long)tankScalingFunction.apply(tier), true))
-                .register(), tiers);
-    }
-
-    public static MachineDefinition[] registerSimpleMachines(String name,
-                                                             String recipeType,
-                                                             Int2LongFunction tankScalingFunction,
-                                                             int... tiers) {
-        return registerTieredMachines(name, (holder, tier) -> new SimpleTieredMachine(holder, tier, tankScalingFunction), (tier, builder) -> builder
-                .langValue("%s %s %s".formatted(VLVH[tier], toEnglishName(name), VLVT[tier]))
-                .rotationState(RotationState.NON_Y_AXIS)
-                .recipeTypeSupplier(Lazy.of(() -> GTRecipeTypes.get(recipeType)))
-                .workableTieredHullRenderer(GTCEu.id("block/machines/" + name))
-                .tooltips(explosion())
                 .tooltips(workableTiered(tier, GTValues.V[tier], GTValues.V[tier] * 64, recipeType, (long)tankScalingFunction.apply(tier), true))
                 .register(), tiers);
     }
@@ -795,21 +857,6 @@ public class GTMachines {
                 .renderer(() -> new SimpleGeneratorMachineRenderer(tier, GTCEu.id("block/generators/" + name)))
                 .overclockingLogic(OverclockingLogic.PERFECT_OVERCLOCK)
                 .tooltips(explosion())
-                .tooltips(workableTiered(tier, GTValues.V[tier], GTValues.V[tier] * 64, recipeType.registryName.getPath(), (long)tankScalingFunction.apply(tier), false))
-                .register(), tiers);
-    }
-
-    public static MachineDefinition[] registerSimpleGenerator(String name,
-                                                              String recipeType,
-                                                              Int2LongFunction tankScalingFunction,
-                                                              int... tiers) {
-        return registerTieredMachines(name, (holder, tier) -> new SimpleGeneratorMachine(holder, tier, tankScalingFunction), (tier, builder) -> builder
-                .langValue("%s %s Generator %s".formatted(VLVH[tier], toEnglishName(name), VLVT[tier]))
-                .rotationState(RotationState.NON_Y_AXIS)
-                .recipeTypeSupplier(Lazy.of(() -> GTRecipeTypes.get(recipeType)))
-                .renderer(() -> new SimpleGeneratorMachineRenderer(tier, GTCEu.id("block/generators/" + name)))
-                .overclockingLogic(OverclockingLogic.PERFECT_OVERCLOCK)
-                .tooltips(explosion())
                 .tooltips(workableTiered(tier, GTValues.V[tier], GTValues.V[tier] * 64, recipeType, (long)tankScalingFunction.apply(tier), false))
                 .register(), tiers);
     }
@@ -822,16 +869,7 @@ public class GTMachines {
                 .register());
     }
 
-    public static Pair<MachineDefinition, MachineDefinition> registerSimpleSteamMachines(String name, String recipeType) {
-        return registerSteamMachines("steam_" + name, SimpleSteamMachine::new, (pressure, builder) -> builder
-                .rotationState(RotationState.NON_Y_AXIS)
-                .recipeTypeSupplier(Lazy.of(() -> GTRecipeTypes.get(recipeType)))
-                .renderer(() -> new WorkableSteamMachineRenderer(pressure, GTCEu.id("block/machines/" + name)))
-                .register());
-    }
-
     public static MachineDefinition[] registerBatteryBuffer(int batterySlotSize){
-        //noinspection unchecked
         return registerTieredMachines("battery_buffer." + batterySlotSize,
                 (holder, tier) -> new BatteryBufferMachine(holder, tier, batterySlotSize),
                 (tier, builder) -> builder
@@ -875,9 +913,8 @@ public class GTMachines {
     }
 
     public static MachineDefinition registerCrate(Material material, int capacity, String lang) {
-        boolean wooden = GTMaterials.Wood.equals(material) || GTMaterials.TreatedWood.equals(material);
+        boolean wooden = material.hasProperty(PropertyKey.WOOD);
 
-        //noinspection unchecked
         return REGISTRATE.machine("crate." + material, holder -> new CrateMachine(holder, material, capacity))
                 .langValue(lang)
                 .rotationState(RotationState.NONE)
@@ -888,9 +925,8 @@ public class GTMachines {
                 .register();
     }
 
-    @SuppressWarnings("unchecked")
     public static MachineDefinition registerDrum(Material material, int capacity, String lang) {
-        boolean wooden = GTMaterials.Wood.equals(material) || GTMaterials.TreatedWood.equals(material);
+        boolean wooden = material.hasProperty(PropertyKey.WOOD);
         var definition = REGISTRATE.machine("drum." + material, MachineDefinition::createDefinition, holder -> new DrumMachine(holder, material, capacity), MetaMachineBlock::new, DrumMachineItem::create, MetaMachineBlockEntity::createBlockEntity)
                 .langValue(lang)
                 .rotationState(RotationState.NONE)
@@ -910,17 +946,14 @@ public class GTMachines {
         return null;
     }
 
-    public static Supplier<Component[]> workableTiered(int tier, long voltage, long energyCapacity, String recipeType, long tankCapacity, boolean input) {
-        return () -> {
-            GTRecipeType type = GTRecipeTypes.get(recipeType);
-            List<Component> tooltipComponents = new ArrayList<>();
-            tooltipComponents.add(input ? Component.translatable("gtceu.universal.tooltip.voltage_in", voltage, GTValues.VNF[tier]) :
-                    Component.translatable("gtceu.universal.tooltip.voltage_out", voltage, GTValues.VNF[tier]));
-            tooltipComponents.add(Component.translatable("gtceu.universal.tooltip.energy_storage_capacity", energyCapacity));
-            if (type.getMaxInputs(FluidRecipeCapability.CAP) > 0 || type.getMaxOutputs(FluidRecipeCapability.CAP) > 0)
-                tooltipComponents.add(Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity", tankCapacity));
-            return tooltipComponents.toArray(Component[]::new);
-        };
+    public static Component[] workableTiered(int tier, long voltage, long energyCapacity, GTRecipeType recipeType, long tankCapacity, boolean input) {
+        List<Component> tooltipComponents = new ArrayList<>();
+        tooltipComponents.add(input ? Component.translatable("gtceu.universal.tooltip.voltage_in", voltage, GTValues.VNF[tier]) :
+                Component.translatable("gtceu.universal.tooltip.voltage_out", voltage, GTValues.VNF[tier]));
+        tooltipComponents.add(Component.translatable("gtceu.universal.tooltip.energy_storage_capacity", energyCapacity));
+        if (recipeType.getMaxInputs(FluidRecipeCapability.CAP) > 0 || recipeType.getMaxOutputs(FluidRecipeCapability.CAP) > 0)
+            tooltipComponents.add(Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity", tankCapacity));
+        return tooltipComponents.toArray(Component[]::new);
     }
 
     public static void init() {
@@ -928,8 +961,7 @@ public class GTMachines {
             new GTCreateMachines();
         }
         if (GTCEu.isKubeJSLoaded()) {
-            //GTRegistries.MACHINES_WRAPPED = IRegistryAccessor.invokeInternalRegister(GTRegistries.MACHINES_REGISTRY, new GTRLRegistryWrapper<>(GTRegistries.MACHINES_REGISTRY, Lifecycle.experimental(), GTRegistries.MACHINES), val -> GTMachines.ELECTRIC_FURNACE[0], Lifecycle.experimental());
-            //KubeJSRegistries.init(GTRegistries.MACHINES_REGISTRY);
+            GTRegistryObjectBuilderTypes.MACHINE.postEvent();
         }
     }
 

@@ -22,7 +22,6 @@
     "ServerChunkProviderMixin",
     "ServerPlayerGameModeMixin",
     "create.RotationPropagatorMixin",
-    "kjs.BuilderBaseMixin",
     "kjs.KubeJSMixin",
     "kjs.RecipeEventJSMixin"
   ],

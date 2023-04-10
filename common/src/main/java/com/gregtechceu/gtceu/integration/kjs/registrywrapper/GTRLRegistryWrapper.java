@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.integration.kjs.registrymirror;
+package com.gregtechceu.gtceu.integration.kjs.registrywrapper;
 
 import com.gregtechceu.gtceu.api.registry.GTRegistry;
 import com.gregtechceu.gtceu.core.mixins.IHolderReferenceAccessor;

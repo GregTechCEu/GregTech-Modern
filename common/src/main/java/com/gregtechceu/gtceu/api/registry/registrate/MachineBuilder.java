@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.registry.registrate;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
@@ -15,7 +14,7 @@ import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.client.renderer.GTRendererProvider;
-import com.gregtechceu.gtceu.utils.Lazy;
+import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import com.tterrag.registrate.Registrate;
 import com.tterrag.registrate.builders.BlockBuilder;
@@ -90,8 +89,6 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> {
     @Setter
     private GTRecipeType recipeType;
     @Setter
-    private Lazy<GTRecipeType> recipeTypeSupplier;
-    @Setter
     private int tier;
     @Setter
     private int paintingColor = -1;
@@ -99,7 +96,6 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> {
     private BiFunction<ItemStack, Integer, Integer> itemColor;
     private PartAbility[] abilities = new PartAbility[0];
     private final List<Component> tooltips = new ArrayList<>();
-    private final List<Supplier<Component[]>> tooltipSuppliers = new ArrayList<>();
     @Setter
     private BiConsumer<ItemStack, List<Component>> tooltipBuilder;
     @Setter
@@ -165,6 +161,10 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> {
         return renderer(() -> new WorkableCasingMachineRenderer(baseCasing, workableModel, tint));
     }
 
+    public MachineBuilder<DEFINITION> sidedWorkableCasingRenderer(String basePath, ResourceLocation overlayModel, boolean tint) {
+        return renderer(() -> new WorkableSidedCasingMachineRenderer(basePath, overlayModel, tint));
+    }
+
     public MachineBuilder<DEFINITION> appearanceBlock(Supplier<? extends Block> block) {
         appearance = () -> block.get().defaultBlockState();
         return this;
@@ -177,11 +177,6 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> {
 
     public MachineBuilder<DEFINITION> tooltips(Component... components) {
         tooltips.addAll(Arrays.stream(components).filter(Objects::nonNull).toList());
-        return this;
-    }
-
-    public MachineBuilder<DEFINITION> tooltips(Supplier<Component[]> components) {
-        tooltipSuppliers.add(components);
         return this;
     }
 
@@ -237,11 +232,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> {
             blockEntityBuilder = blockEntityBuilder.renderer(() -> GTRendererProvider::getOrCreate);
         }
         var blockEntity = blockEntityBuilder.register();
-        if (recipeType != null) {
-            definition.setRecipeType(recipeType);
-        } else if (recipeTypeSupplier != null) {
-            definition.setRecipeTypeSupplier(recipeTypeSupplier);
-        }
+        definition.setRecipeType(recipeType);
         definition.setBlockSupplier(block);
         definition.setItemSupplier(item);
         definition.setTier(tier);
@@ -249,7 +240,6 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> {
         definition.setMachineSupplier(metaMachine);
         definition.setTooltipBuilder((itemStack, components) -> {
             components.addAll(tooltips);
-            components.addAll(tooltipSuppliers.stream().map(Supplier::get).flatMap(Arrays::stream).toList());
             if (tooltipBuilder != null) tooltipBuilder.accept(itemStack, components);
         });
         definition.setOverclockingLogic(overclockingLogic);
@@ -263,7 +253,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> {
             appearance = block::getDefaultState;
         }
         definition.setAppearance(appearance);
-        definition.setRenderer(renderer.get());
+        definition.setRenderer(LDLib.isClient() ? renderer.get() : IRenderer.EMPTY);
         definition.setShape(shape);
         definition.setDefaultPaintingColor(paintingColor);
         GTRegistries.MACHINES.register(definition.getId(), definition);

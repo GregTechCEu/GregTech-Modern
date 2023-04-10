@@ -23,6 +23,14 @@ public class GTCEu {
         return new ResourceLocation(MOD_ID, FormattingUtil.toLowerCaseUnder(path));
     }
 
+    public static String appendIdString(String id) {
+        return id.indexOf(':') == -1 ? (MOD_ID + ":" + id) : id;
+    }
+
+    public static ResourceLocation appendId(String id) {
+        return new ResourceLocation(id.indexOf(':') == -1 ? (MOD_ID + ":" + id) : id);
+    }
+
     public static boolean isKubeJSLoaded() {
         return LDLib.isModLoaded(MODID_KUBEJS);
     }

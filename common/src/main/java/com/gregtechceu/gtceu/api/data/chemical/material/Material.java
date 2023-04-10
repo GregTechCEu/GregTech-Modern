@@ -14,6 +14,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.*;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.item.tool.MaterialToolTier;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import net.minecraft.network.chat.Component;
@@ -362,7 +363,7 @@ public class Material implements Comparable<Material> {
     /**
      * @since GTCEu 2.0.0
      */
-    public static class Builder {
+    public static class Builder extends BuilderBase<Material> {
 
         private final MaterialInfo materialInfo;
         private final MaterialProperties properties;
@@ -387,11 +388,16 @@ public class Material implements Comparable<Material> {
          * @since GTCEu 2.0.0
          */
         public Builder(String name) {
+            super(GTCEu.id(name));
             if (name.charAt(name.length() - 1) == '_')
                 throw new IllegalArgumentException("Material name cannot end with a '_'!");
             materialInfo = new MaterialInfo(name);
             properties = new MaterialProperties();
             flags = new MaterialFlags();
+        }
+
+        public Builder(ResourceLocation id, Object... args) {
+            this(id.getPath());
         }
 
         /*
@@ -922,6 +928,18 @@ public class Material implements Comparable<Material> {
             materialInfo.verifyInfo(properties, averageRGB);
             mat.registerMaterial();
             return mat;
+        }
+
+        private Material value = null;
+
+        @Override
+        public Material register() {
+            return value = buildAndRegister();
+        }
+
+        @Override
+        public Material get() {
+            return value;
         }
     }
 
