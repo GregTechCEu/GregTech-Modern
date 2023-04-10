@@ -35,6 +35,11 @@ public class IntCircuitBehaviour implements IItemUIFactory, IAddInformation {
         return stack;
     }
 
+    public static void setCircuitConfiguration(HeldItemUIFactory.HeldItemHolder holder, int configuration) {
+        setCircuitConfiguration(holder.getHeld(), configuration);
+        holder.markAsDirty();
+    }
+
     public static void setCircuitConfiguration(ItemStack itemStack, int configuration) {
         if (configuration < 0 || configuration > CIRCUIT_MAX)
             throw new IllegalArgumentException("Given configuration number is out of range!");
@@ -100,17 +105,34 @@ public class IntCircuitBehaviour implements IItemUIFactory, IAddInformation {
 
     @Override
     public ModularUI createUI(HeldItemUIFactory.HeldItemHolder holder, Player entityPlayer) {
-        int configuration = getCircuitConfiguration(holder.getHeld());
         var modular = new ModularUI(176, 200, holder, entityPlayer)
                 .widget(new LabelWidget(9, 8, "metaitem.circuit.integrated.gui"))
-                .widget(new ButtonWidget(15, 24, 20, 20, new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("0")), data -> adjustConfiguration(holder, (configuration - 0) * -1)))
-                .widget(new ButtonWidget(35, 24, 20, 20, new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("1")), data -> adjustConfiguration(holder, (configuration - 1) * -1)))
-                .widget(new ButtonWidget(55, 24, 20, 20, new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("2")), data -> adjustConfiguration(holder, (configuration - 2) * -1)))
-                .widget(new ButtonWidget(75, 24, 20, 20, new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("3")), data -> adjustConfiguration(holder, (configuration - 3) * -1)))
-                .widget(new ButtonWidget(95, 24, 20, 20, new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("4")), data -> adjustConfiguration(holder, (configuration - 4) * -1)))
-                .widget(new ButtonWidget(115, 24, 20, 20, new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("5")), data -> adjustConfiguration(holder, (configuration - 5) * -1)))
-                .widget(new ButtonWidget(15, 44, 20, 20, new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("6")), data -> adjustConfiguration(holder, (configuration - 6) * -1)))
-                .widget(new ButtonWidget(35, 24, 20, 20, new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("7")), data -> adjustConfiguration(holder, (configuration - 7) * -1)));
+                .widget(new ButtonWidget(15, 24, 20, 20, new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("0")), data -> setCircuitConfiguration(holder, 0)))
+                .widget(new ButtonWidget(35, 24, 20, 20, new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("1")), data -> setCircuitConfiguration(holder, 1)))
+                .widget(new ButtonWidget(55, 24, 20, 20, new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("2")), data -> setCircuitConfiguration(holder, 2)))
+                .widget(new ButtonWidget(75, 24, 20, 20, new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("3")), data -> setCircuitConfiguration(holder, 3)))
+                .widget(new ButtonWidget(95, 24, 20, 20, new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("4")), data -> setCircuitConfiguration(holder, 4)))
+                .widget(new ButtonWidget(115, 24, 20, 20, new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("5")), data -> setCircuitConfiguration(holder, 5)))
+                .widget(new ButtonWidget(15, 44, 20, 20, new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("6")), data -> setCircuitConfiguration(holder, 6)))
+                .widget(new ButtonWidget(35, 44, 20, 20, new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("7")), data -> setCircuitConfiguration(holder, 7)))
+                .widget(new ButtonWidget(55, 44, 20, 20, new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("8")), data -> setCircuitConfiguration(holder, 8)))
+                .widget(new ButtonWidget(75, 44, 20, 20, new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("9")), data -> setCircuitConfiguration(holder, 9)))
+                .widget(new ButtonWidget(95, 44, 20, 20, new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("10")), data -> setCircuitConfiguration(holder, 10)))
+                .widget(new ButtonWidget(115, 44, 20, 20, new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("11")), data -> setCircuitConfiguration(holder, 11)))
+                .widget(new ButtonWidget(15, 64, 20, 20, new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("12")), data -> setCircuitConfiguration(holder, 12)))
+                .widget(new ButtonWidget(35, 64, 20, 20, new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("13")), data -> setCircuitConfiguration(holder, 13)))
+                .widget(new ButtonWidget(55, 64, 20, 20, new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("14")), data -> setCircuitConfiguration(holder, 14)))
+                .widget(new ButtonWidget(75, 64, 20, 20, new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("15")), data -> setCircuitConfiguration(holder, 15)))
+                .widget(new ButtonWidget(95, 64, 20, 20, new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("16")), data -> setCircuitConfiguration(holder, 16)))
+                .widget(new ButtonWidget(115, 64, 20, 20, new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("17")), data -> setCircuitConfiguration(holder, 17)))
+                .widget(new ButtonWidget(15, 84, 20, 20, new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("18")), data -> setCircuitConfiguration(holder, 18)))
+                .widget(new ButtonWidget(35, 84, 20, 20, new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("19")), data -> setCircuitConfiguration(holder, 19)))
+                .widget(new ButtonWidget(55, 84, 20, 20, new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("20")), data -> setCircuitConfiguration(holder, 20)))
+                .widget(new ButtonWidget(75, 84, 20, 20, new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("21")), data -> setCircuitConfiguration(holder, 21)))
+                .widget(new ButtonWidget(95, 84, 20, 20, new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("22")), data -> setCircuitConfiguration(holder, 22)))
+                .widget(new ButtonWidget(115, 84, 20, 20, new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("23")), data -> setCircuitConfiguration(holder, 23)))
+                .widget(new ButtonWidget(15, 104, 20, 20, new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("24")), data -> setCircuitConfiguration(holder, 24)))
+
         modular.mainGroup.setBackground(GuiTextures.BACKGROUND);
         return modular;
     }
