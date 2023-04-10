@@ -1,6 +1,8 @@
 package com.gregtechceu.gtceu.integration.kjs.builders.machine;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.machine.MachineDefinition;
+import com.gregtechceu.gtceu.integration.kjs.GregTechKubeJSPlugin;
 import dev.latvian.mods.kubejs.BuilderBase;
 import dev.latvian.mods.kubejs.RegistryObjectBuilderTypes;
 import net.minecraft.resources.ResourceLocation;
@@ -27,8 +29,6 @@ public abstract class MachineBuilder extends BuilderBase<Block> {
         this.recipeType = type;
         return this;
     }
-
-    public abstract void register();
 
     @Override
     public RegistryObjectBuilderTypes<? super Block> getRegistryType() {

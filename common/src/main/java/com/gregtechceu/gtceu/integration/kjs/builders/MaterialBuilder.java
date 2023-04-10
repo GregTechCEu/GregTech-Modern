@@ -14,12 +14,14 @@ import com.gregtechceu.gtceu.integration.kjs.GregTechKubeJSPlugin;
 import dev.latvian.mods.kubejs.BuilderBase;
 import dev.latvian.mods.kubejs.RegistryObjectBuilderTypes;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.level.block.Block;
 
 import java.util.Collection;
 
 @SuppressWarnings("unused")
-public class MaterialBuilder extends BuilderBase<Material> {
+public class MaterialBuilder extends BuilderBase<Block> {
     public transient Material.Builder builder;
 
     public MaterialBuilder(ResourceLocation i) {
@@ -492,12 +494,13 @@ public class MaterialBuilder extends BuilderBase<Material> {
     }
 
     @Override
-    public RegistryObjectBuilderTypes<? super Material> getRegistryType() {
-        return GregTechKubeJSPlugin.MATERIAL;
+    public RegistryObjectBuilderTypes<? super Block> getRegistryType() {
+        return RegistryObjectBuilderTypes.BLOCK;
     }
 
     @Override
-    public Material createObject() {
-        return builder.buildAndRegister();
+    public Block createObject() {
+        builder.buildAndRegister();
+        return null;
     }
 }

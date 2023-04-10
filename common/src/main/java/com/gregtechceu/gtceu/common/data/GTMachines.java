@@ -41,6 +41,7 @@ import com.gregtechceu.gtceu.common.machine.steam.SteamSolidBoilerMachine;
 import com.gregtechceu.gtceu.common.machine.storage.*;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.data.LangHandler;
+import com.gregtechceu.gtceu.utils.Lazy;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import it.unimi.dsi.fastutil.Pair;
@@ -768,7 +769,7 @@ public class GTMachines {
         return registerTieredMachines(name, (holder, tier) -> new SimpleTieredMachine(holder, tier, tankScalingFunction), (tier, builder) -> builder
                 .langValue("%s %s %s".formatted(VLVH[tier], toEnglishName(name), VLVT[tier]))
                 .rotationState(RotationState.NON_Y_AXIS)
-                .recipeTypeSupplier(() -> GTRecipeTypes.get(recipeType))
+                .recipeTypeSupplier(Lazy.of(() -> GTRecipeTypes.get(recipeType)))
                 .workableTieredHullRenderer(GTCEu.id("block/machines/" + name))
                 .tooltips(explosion())
                 .tooltips(workableTiered(tier, GTValues.V[tier], GTValues.V[tier] * 64, recipeType, (long)tankScalingFunction.apply(tier), true))
@@ -805,7 +806,7 @@ public class GTMachines {
         return registerTieredMachines(name, (holder, tier) -> new SimpleGeneratorMachine(holder, tier, tankScalingFunction), (tier, builder) -> builder
                 .langValue("%s %s Generator %s".formatted(VLVH[tier], toEnglishName(name), VLVT[tier]))
                 .rotationState(RotationState.NON_Y_AXIS)
-                .recipeTypeSupplier(() -> GTRecipeTypes.get(recipeType))
+                .recipeTypeSupplier(Lazy.of(() -> GTRecipeTypes.get(recipeType)))
                 .renderer(() -> new SimpleGeneratorMachineRenderer(tier, GTCEu.id("block/generators/" + name)))
                 .overclockingLogic(OverclockingLogic.PERFECT_OVERCLOCK)
                 .tooltips(explosion())
@@ -824,7 +825,7 @@ public class GTMachines {
     public static Pair<MachineDefinition, MachineDefinition> registerSimpleSteamMachines(String name, String recipeType) {
         return registerSteamMachines("steam_" + name, SimpleSteamMachine::new, (pressure, builder) -> builder
                 .rotationState(RotationState.NON_Y_AXIS)
-                .recipeTypeSupplier(() -> GTRecipeTypes.get(recipeType))
+                .recipeTypeSupplier(Lazy.of(() -> GTRecipeTypes.get(recipeType)))
                 .renderer(() -> new WorkableSteamMachineRenderer(pressure, GTCEu.id("block/machines/" + name)))
                 .register());
     }

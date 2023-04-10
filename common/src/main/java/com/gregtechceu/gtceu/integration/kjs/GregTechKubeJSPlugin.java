@@ -25,10 +25,12 @@ import com.gregtechceu.gtceu.integration.kjs.builders.ElementBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.GTRecipeTypeBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.MaterialBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.machine.*;
+import com.gregtechceu.gtceu.integration.kjs.recipe.GTRecipeBuilderJS;
 import dev.architectury.registry.registries.Registries;
 import dev.latvian.mods.kubejs.KubeJSPlugin;
 import dev.latvian.mods.kubejs.KubeJSRegistries;
 import dev.latvian.mods.kubejs.RegistryObjectBuilderTypes;
+import dev.latvian.mods.kubejs.recipe.RegisterRecipeTypesEvent;
 import dev.latvian.mods.kubejs.script.BindingsEvent;
 import dev.latvian.mods.kubejs.script.ScriptType;
 import dev.latvian.mods.kubejs.util.ClassFilter;
@@ -36,6 +38,7 @@ import dev.latvian.mods.rhino.Wrapper;
 import dev.latvian.mods.rhino.util.wrap.TypeWrappers;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeType;
 
 /**
@@ -46,7 +49,7 @@ import net.minecraft.world.item.crafting.RecipeType;
 public class GregTechKubeJSPlugin extends KubeJSPlugin {
 
     public static final RegistryObjectBuilderTypes<Element> ELEMENT = RegistryObjectBuilderTypes.add(GTRegistries.ELEMENTS_REGISTRY, Element.class);
-    public static final RegistryObjectBuilderTypes<Material> MATERIAL = RegistryObjectBuilderTypes.add(GTRegistries.MATERIALS_REGISTRY, Material.class);
+    //public static final RegistryObjectBuilderTypes<Material> MATERIAL = RegistryObjectBuilderTypes.add(GTRegistries.MATERIALS_REGISTRY, Material.class);
     //public static final RegistryObjectBuilderTypes<GTRecipeType> GT_RECIPE_TYPE = RegistryObjectBuilderTypes.add(GTRegistries.RECIPE_TYPES_REGISTRY, GTRecipeType.class);
     public static RegistryObjectBuilderTypes<RecipeType<?>> RECIPE_TYPE = RegistryObjectBuilderTypes.add(Registry.RECIPE_TYPE_REGISTRY, RecipeType.class);
     //public static final RegistryObjectBuilderTypes<MachineDefinition> MACHINE = RegistryObjectBuilderTypes.add(GTRegistries.MACHINES_REGISTRY, MachineDefinition.class);
@@ -55,21 +58,15 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
     public void init() {
         ELEMENT.addType("basic", ElementBuilder.class, ElementBuilder::new);
 
-        MATERIAL.addType("basic", MaterialBuilder.class, MaterialBuilder::new);
+        RegistryObjectBuilderTypes.BLOCK.addType("gtceu:material", MaterialBuilder.class, MaterialBuilder::new);
 
         RECIPE_TYPE.addType("gtceu", GTRecipeTypeBuilder.class, GTRecipeTypeBuilder::new);
 
-        RegistryObjectBuilderTypes.BLOCK.addType("gtceu:simple", SimpleMachineBuilder.class, SimpleMachineBuilder::new);
-        RegistryObjectBuilderTypes.BLOCK.addType("gtceu:generator", GeneratorBuilder.class, GeneratorBuilder::new);
-        RegistryObjectBuilderTypes.BLOCK.addType("gtceu:steam", SteamMachineBuilder.class, SteamMachineBuilder::new);
-        RegistryObjectBuilderTypes.BLOCK.addType("gtceu:kinetic", KineticMachineBuilder.class, KineticMachineBuilder::new);
-        RegistryObjectBuilderTypes.BLOCK.addType("gtceu:multiblock", MultiblockBuilder.class, MultiblockBuilder::new);
-    }
-
-    @Override
-    public void registerEvents() {
-        super.registerEvents();
-        GTCEuServerEvents.GROUP.register();
+        RegistryObjectBuilderTypes.BLOCK.addType("gtceu:machine/simple", SimpleMachineBuilder.class, SimpleMachineBuilder::new);
+        RegistryObjectBuilderTypes.BLOCK.addType("gtceu:machine/generator", GeneratorBuilder.class, GeneratorBuilder::new);
+        RegistryObjectBuilderTypes.BLOCK.addType("gtceu:machine/steam", SteamMachineBuilder.class, SteamMachineBuilder::new);
+        RegistryObjectBuilderTypes.BLOCK.addType("gtceu:machine/kinetic", KineticMachineBuilder.class, KineticMachineBuilder::new);
+        RegistryObjectBuilderTypes.BLOCK.addType("gtceu:machine/multiblock", MultiblockBuilder.class, MultiblockBuilder::new);
     }
 
     @Override
@@ -77,6 +74,13 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         super.registerClasses(type, filter);
         // allow user to access all gtceu classes by importing them.
         filter.allow("com.gregtechceu.gtceu");
+    }
+
+    @Override
+    public void registerRecipeTypes(RegisterRecipeTypesEvent event) {
+        super.registerRecipeTypes(event);
+
+        event.register(GTCEu.id("gt_recipe_serializer"), GTRecipeBuilderJS::new);
     }
 
     @Override

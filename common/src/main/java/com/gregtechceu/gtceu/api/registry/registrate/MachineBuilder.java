@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.registry.registrate;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
@@ -14,6 +15,7 @@ import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.client.renderer.GTRendererProvider;
+import com.gregtechceu.gtceu.utils.Lazy;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import com.tterrag.registrate.Registrate;
 import com.tterrag.registrate.builders.BlockBuilder;
@@ -88,7 +90,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> {
     @Setter
     private GTRecipeType recipeType;
     @Setter
-    private Supplier<GTRecipeType> recipeTypeSupplier;
+    private Lazy<GTRecipeType> recipeTypeSupplier;
     @Setter
     private int tier;
     @Setter
@@ -237,7 +239,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> {
         var blockEntity = blockEntityBuilder.register();
         if (recipeType != null) {
             definition.setRecipeType(recipeType);
-        } else {
+        } else if (recipeTypeSupplier != null) {
             definition.setRecipeTypeSupplier(recipeTypeSupplier);
         }
         definition.setBlockSupplier(block);
