@@ -84,17 +84,34 @@ public class IntCircuitBehaviour implements IItemUIFactory, IAddInformation {
         tooltipComponents.add(Component.translatable("metaitem.int_circuit.configuration", configuration));
     }
 
+//    saving this one for later use
+//    @Override
+//    public ModularUI createUI(HeldItemUIFactory.HeldItemHolder holder, Player entityPlayer) {
+//        var modular = new ModularUI(176, 60, holder, entityPlayer)
+//                .widget(new LabelWidget(9, 8, "metaitem.circuit.integrated.gui"))
+//                .widget(new LabelWidget(82, 30, () -> Integer.toString(getCircuitConfiguration(holder.getHeld()))))
+//                .widget(new ButtonWidget(15, 24, 20, 20, new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("-5")), data -> adjustConfiguration(holder, -5)))
+//                .widget(new ButtonWidget(50, 24, 20, 20, new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("-1")), data -> adjustConfiguration(holder, -1)))
+//                .widget(new ButtonWidget(104, 24, 20, 20, new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("+1")), data -> adjustConfiguration(holder, +1)))
+//                .widget(new ButtonWidget(141, 24, 20, 20, new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("+5")), data -> adjustConfiguration(holder, +5)));
+//        modular.mainGroup.setBackground(GuiTextures.BACKGROUND);
+//        return modular;
+//    }
+
     @Override
     public ModularUI createUI(HeldItemUIFactory.HeldItemHolder holder, Player entityPlayer) {
-        var modular = new ModularUI(176, 60, holder, entityPlayer)
+        int configuration = getCircuitConfiguration(holder);
+        var modular = new ModularUI(176, 200, holder, entityPlayer)
                 .widget(new LabelWidget(9, 8, "metaitem.circuit.integrated.gui"))
-                .widget(new LabelWidget(82, 30, () -> Integer.toString(getCircuitConfiguration(holder.getHeld()))))
-                .widget(new ButtonWidget(15, 24, 20, 20, new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("-5")), data -> adjustConfiguration(holder, -5)))
-                .widget(new ButtonWidget(50, 24, 20, 20, new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("-1")), data -> adjustConfiguration(holder, -1)))
-                .widget(new ButtonWidget(104, 24, 20, 20, new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("+1")), data -> adjustConfiguration(holder, +1)))
-                .widget(new ButtonWidget(141, 24, 20, 20, new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("+5")), data -> adjustConfiguration(holder, +5)));
+                .widget(new ButtonWidget(15, 24, 20, 20, new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("0")), data -> adjustConfiguration(holder, (configuration - 0) * -1)))
+                .widget(new ButtonWidget(35, 24, 20, 20, new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("1")), data -> adjustConfiguration(holder, (configuration - 1) * -1)))
+                .widget(new ButtonWidget(55, 24, 20, 20, new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("2")), data -> adjustConfiguration(holder, (configuration - 2) * -1)))
+                .widget(new ButtonWidget(75, 24, 20, 20, new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("3")), data -> adjustConfiguration(holder, (configuration - 3) * -1)))
+                .widget(new ButtonWidget(95, 24, 20, 20, new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("4")), data -> adjustConfiguration(holder, (configuration - 4) * -1)))
+                .widget(new ButtonWidget(115, 24, 20, 20, new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("5")), data -> adjustConfiguration(holder, (configuration - 5) * -1)))
+                .widget(new ButtonWidget(15, 44, 20, 20, new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("6")), data -> adjustConfiguration(holder, (configuration - 6) * -1)))
+                .widget(new ButtonWidget(35, 24, 20, 20, new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("7")), data -> adjustConfiguration(holder, (configuration - 7) * -1)))
         modular.mainGroup.setBackground(GuiTextures.BACKGROUND);
         return modular;
     }
-
 }
