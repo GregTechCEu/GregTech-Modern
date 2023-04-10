@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:deepslate_thorium",
+    "gtceu:sand_thorium",
+    "gtceu:basalt_thorium",
+    "gtceu:granite_thorium",
+    "gtceu:andesite_thorium",
+    "gtceu:red_sand_thorium",
+    "gtceu:stone_thorium",
+    "gtceu:diorite_thorium"
+  ]
+}

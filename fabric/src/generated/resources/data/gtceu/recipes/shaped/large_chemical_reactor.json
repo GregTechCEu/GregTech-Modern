@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:circuit/hv"
+      "tag": "c:hv_circuits"
     },
     "H": {
       "item": "gtceu:hull.hv"
@@ -11,7 +11,7 @@
       "item": "gtceu:electric.motor.hv"
     },
     "P": {
-      "item": "gtceu:large.polytetrafluoroethylene"
+      "item": "gtceu:fluid_pipe_large.polytetrafluoroethylene"
     },
     "R": {
       "item": "gtceu:rotor.stainless_steel"

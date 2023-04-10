@@ -2,19 +2,19 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:circuit/iv"
+      "tag": "c:iv_circuits"
     },
     "G": {
-      "tag": "c:dusts/graphite"
+      "tag": "c:graphite_dusts"
     },
     "M": {
       "item": "gtceu:hull.iv"
     },
     "P": {
-      "tag": "c:plates/tungsten_steel"
+      "tag": "c:tungsten_steel_plates"
     },
     "W": {
-      "tag": "c:cables/quadruple/platinum"
+      "item": "gtceu:cable_quadruple.platinum"
     }
   },
   "pattern": [

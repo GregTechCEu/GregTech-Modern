@@ -9,7 +9,7 @@
           "type": "gtceu:sized",
           "count": 4,
           "fabric:type": "gtceu:sized",
-          "tag": "forge:sticks/platinum"
+          "tag": "forge:rods/platinum"
         }
       },
       {
@@ -18,7 +18,9 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "forge:cables/single/aluminium"
+          "ingredient": {
+            "item": "gtceu:cable_single.aluminium"
+          }
         }
       },
       {
@@ -27,7 +29,7 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "forge:circuit/ev"
+          "tag": "forge:ev_circuits"
         }
       },
       {

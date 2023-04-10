@@ -8,7 +8,7 @@ import net.minecraft.data.recipes.FinishedRecipe;
 import java.util.function.Consumer;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
-import static com.gregtechceu.gtceu.api.tag.TagPrefix.dust;
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.dust;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.MIXER_RECIPES;
 
@@ -304,14 +304,14 @@ public class MixerRecipes {
         MIXER_RECIPES.recipeBuilder("kanthal").duration(300).EUt(VA[MV])
                 .inputItems(dust, Iron)
                 .inputItems(dust, Aluminium)
-                .inputItems(dust, Chrome)
+                .inputItems(dust, Chromium)
                 .circuitMeta(1)
                 .outputItems(dust, Kanthal, 3)
                 .save(provider);
 
         MIXER_RECIPES.recipeBuilder("nichrome").duration(500).EUt(VA[MV])
                 .inputItems(dust, Nickel, 4)
-                .inputItems(dust, Chrome)
+                .inputItems(dust, Chromium)
                 .circuitMeta(2)
                 .outputItems(dust, Nichrome, 5)
                 .save(provider);
@@ -327,7 +327,7 @@ public class MixerRecipes {
                 .inputItems(dust, Iron, 4)
                 .inputItems(dust, Invar, 3)
                 .inputItems(dust, Manganese)
-                .inputItems(dust, Chrome)
+                .inputItems(dust, Chromium)
                 .circuitMeta(1)
                 .outputItems(dust, StainlessSteel, 9)
                 .save(provider);
@@ -336,7 +336,7 @@ public class MixerRecipes {
                 .inputItems(dust, Iron, 6)
                 .inputItems(dust, Nickel)
                 .inputItems(dust, Manganese)
-                .inputItems(dust, Chrome)
+                .inputItems(dust, Chromium)
                 .circuitMeta(3)
                 .outputItems(dust, StainlessSteel, 9)
                 .save(provider);
@@ -352,14 +352,14 @@ public class MixerRecipes {
         MIXER_RECIPES.recipeBuilder("vanadiumsteel").duration(400).EUt(VA[MV])
                 .inputItems(dust, Steel, 7)
                 .inputItems(dust, Vanadium)
-                .inputItems(dust, Chrome)
+                .inputItems(dust, Chromium)
                 .circuitMeta(1)
                 .outputItems(dust, VanadiumSteel, 9)
                 .save(provider);
 
         MIXER_RECIPES.recipeBuilder("ultimet").duration(900).EUt(VA[HV])
                 .inputItems(dust, Cobalt, 5)
-                .inputItems(dust, Chrome, 2)
+                .inputItems(dust, Chromium, 2)
                 .inputItems(dust, Nickel)
                 .inputItems(dust, Molybdenum)
                 .circuitMeta(1)
@@ -389,7 +389,7 @@ public class MixerRecipes {
 
         MIXER_RECIPES.recipeBuilder("hssg").duration(400).EUt(VA[EV])
                 .inputItems(dust, TungstenSteel, 5)
-                .inputItems(dust, Chrome)
+                .inputItems(dust, Chromium)
                 .inputItems(dust, Molybdenum, 2)
                 .inputItems(dust, Vanadium)
                 .circuitMeta(1)

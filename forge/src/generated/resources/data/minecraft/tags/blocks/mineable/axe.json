@@ -1,0 +1,11 @@
+{
+  "values": [
+    "gtceu:fluid_pipe_small.wood",
+    "gtceu:fluid_pipe_small.treated_wood",
+    "gtceu:fluid_pipe_normal.wood",
+    "gtceu:fluid_pipe_normal.treated_wood",
+    "gtceu:fluid_pipe_large.wood",
+    "gtceu:fluid_pipe_large.treated_wood",
+    "gtceu:casing_pump_deck"
+  ]
+}

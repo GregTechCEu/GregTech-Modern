@@ -11,13 +11,13 @@
       "item": "gtceu:hull.zpm"
     },
     "I": {
-      "tag": "c:circuit/uv"
+      "tag": "c:uv_circuits"
     },
     "R": {
       "item": "gtceu:robot.arm.zpm"
     },
     "W": {
-      "tag": "c:cables/single/vanadium_gallium"
+      "item": "gtceu:cable_single.vanadium_gallium"
     }
   },
   "pattern": [

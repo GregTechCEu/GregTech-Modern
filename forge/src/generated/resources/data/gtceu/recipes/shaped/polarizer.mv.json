@@ -5,13 +5,13 @@
       "item": "gtceu:hull.mv"
     },
     "S": {
-      "tag": "forge:sticks/steel"
+      "tag": "forge:rods/steel"
     },
     "W": {
-      "tag": "forge:cables/single/copper"
+      "item": "gtceu:cable_single.copper"
     },
     "Z": {
-      "tag": "forge:wires/double/copper"
+      "item": "gtceu:wire_double.copper"
     }
   },
   "pattern": [

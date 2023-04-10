@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:deepslate_beryllium",
+    "gtceu:sand_beryllium",
+    "gtceu:basalt_beryllium",
+    "gtceu:granite_beryllium",
+    "gtceu:andesite_beryllium",
+    "gtceu:red_sand_beryllium",
+    "gtceu:stone_beryllium",
+    "gtceu:diorite_beryllium"
+  ]
+}

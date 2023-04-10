@@ -1,13 +1,12 @@
 {
   "values": [
-    "gtceu:ore_powellite",
-    "gtceu:ore_basalt_powellite",
-    "gtceu:ore_sand_powellite",
-    "gtceu:ore_granite_powellite",
-    "gtceu:ore_andesite_powellite",
-    "gtceu:ore_endstone_powellite",
-    "gtceu:ore_red_sand_powellite",
-    "gtceu:ore_netherrack_powellite",
-    "gtceu:ore_diorite_powellite"
+    "gtceu:deepslate_powellite",
+    "gtceu:sand_powellite",
+    "gtceu:basalt_powellite",
+    "gtceu:granite_powellite",
+    "gtceu:andesite_powellite",
+    "gtceu:red_sand_powellite",
+    "gtceu:stone_powellite",
+    "gtceu:diorite_powellite"
   ]
 }

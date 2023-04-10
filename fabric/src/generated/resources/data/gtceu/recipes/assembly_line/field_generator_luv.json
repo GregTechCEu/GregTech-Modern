@@ -18,7 +18,7 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "c:frames/hsss"
+          "tag": "c:hsss_frames"
         }
       },
       {
@@ -27,7 +27,7 @@
           "type": "gtceu:sized",
           "count": 6,
           "fabric:type": "gtceu:sized",
-          "tag": "c:plates/hsss"
+          "tag": "c:hsss_plates"
         }
       },
       {
@@ -53,7 +53,7 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "c:circuit/luv"
+          "tag": "c:luv_circuits"
         }
       },
       {
@@ -62,7 +62,7 @@
           "type": "gtceu:sized",
           "count": 64,
           "fabric:type": "gtceu:sized",
-          "tag": "c:wires/fine/indium_tin_barium_titanium_cuprate"
+          "tag": "c:indium_tin_barium_titanium_cuprate_fine_wires"
         }
       },
       {
@@ -71,7 +71,7 @@
           "type": "gtceu:sized",
           "count": 64,
           "fabric:type": "gtceu:sized",
-          "tag": "c:wires/fine/indium_tin_barium_titanium_cuprate"
+          "tag": "c:indium_tin_barium_titanium_cuprate_fine_wires"
         }
       },
       {
@@ -80,7 +80,9 @@
           "type": "gtceu:sized",
           "count": 4,
           "fabric:type": "gtceu:sized",
-          "tag": "c:cables/single/niobium_titanium"
+          "ingredient": {
+            "item": "gtceu:cable_single.niobium_titanium"
+          }
         }
       }
     ]

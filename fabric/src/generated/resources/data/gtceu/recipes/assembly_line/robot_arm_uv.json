@@ -32,7 +32,7 @@
           "type": "gtceu:sized",
           "count": 4,
           "fabric:type": "gtceu:sized",
-          "tag": "c:sticks/long/tritanium"
+          "tag": "c:tritanium_long_rods"
         }
       },
       {
@@ -41,7 +41,7 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "c:gears/tritanium"
+          "tag": "c:tritanium_gears"
         }
       },
       {
@@ -50,7 +50,7 @@
           "type": "gtceu:sized",
           "count": 3,
           "fabric:type": "gtceu:sized",
-          "tag": "c:gears/small/tritanium"
+          "tag": "c:tritanium_small_gears"
         }
       },
       {
@@ -76,7 +76,7 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "c:circuit/uv"
+          "tag": "c:uv_circuits"
         }
       },
       {
@@ -85,7 +85,7 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "c:circuit/zpm"
+          "tag": "c:zpm_circuits"
         }
       },
       {
@@ -94,7 +94,7 @@
           "type": "gtceu:sized",
           "count": 4,
           "fabric:type": "gtceu:sized",
-          "tag": "c:circuit/luv"
+          "tag": "c:luv_circuits"
         }
       },
       {
@@ -103,7 +103,9 @@
           "type": "gtceu:sized",
           "count": 4,
           "fabric:type": "gtceu:sized",
-          "tag": "c:cables/single/yttrium_barium_cuprate"
+          "ingredient": {
+            "item": "gtceu:cable_single.yttrium_barium_cuprate"
+          }
         }
       }
     ]

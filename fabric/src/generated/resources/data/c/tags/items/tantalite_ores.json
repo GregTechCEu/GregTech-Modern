@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:deepslate_tantalite",
+    "gtceu:sand_tantalite",
+    "gtceu:basalt_tantalite",
+    "gtceu:granite_tantalite",
+    "gtceu:andesite_tantalite",
+    "gtceu:red_sand_tantalite",
+    "gtceu:stone_tantalite",
+    "gtceu:diorite_tantalite"
+  ]
+}

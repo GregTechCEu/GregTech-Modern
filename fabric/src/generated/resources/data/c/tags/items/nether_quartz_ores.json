@@ -1,0 +1,14 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:nether_quartz_ore",
+    "gtceu:stone_nether_quartz",
+    "gtceu:deepslate_nether_quartz",
+    "gtceu:sand_nether_quartz",
+    "gtceu:basalt_nether_quartz",
+    "gtceu:granite_nether_quartz",
+    "gtceu:andesite_nether_quartz",
+    "gtceu:red_sand_nether_quartz",
+    "gtceu:diorite_nether_quartz"
+  ]
+}

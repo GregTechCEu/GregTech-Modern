@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:circuit/uv"
+      "tag": "c:uv_circuits"
     },
     "G": {
       "item": "gtceu:field.generator.luv"
@@ -11,7 +11,7 @@
       "item": "gtceu:hermetic_casing_uv"
     },
     "P": {
-      "tag": "c:plates/dense/darmstadtium"
+      "tag": "c:darmstadtium_dense_plates"
     },
     "U": {
       "item": "gtceu:electric.pump.uv"

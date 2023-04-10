@@ -14,7 +14,7 @@ loom {
 
 repositories {
     // mavens for Create Fabric and dependencies
-    maven { url = "https://api.modrinth.com/maven" } // LazyDFU
+    maven { url = "https://api.modrinth.com/maven" } // LazyDFU, Jade
     maven { url = "https://maven.terraformersmc.com/releases/" } // Mod Menu
     maven { url = "https://mvn.devos.one/snapshots/" } // Create Fabric, Porting Lib, Forge Tags, Milk Lib, Registrate Fabric
     maven { url = "https://cursemaven.com" } // Forge Config API Port
@@ -66,8 +66,15 @@ dependencies {
     modCompileOnly fabric.rei.api
     modCompileOnly fabric.rei.fabric
 
+    // EMI
+    modCompileOnly("dev.emi:emi:${fabric.versions.emi.get()}:api")
+    modCompileOnly fabric.emi
+
     // TOP
     modCompileOnly fabric.theoneprobe
+
+    // Jade
+    modCompileOnly fabric.jade
 
     // KJS
     modCompileOnly fabric.kubejs

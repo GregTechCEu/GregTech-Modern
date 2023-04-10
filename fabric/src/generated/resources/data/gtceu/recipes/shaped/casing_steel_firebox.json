@@ -2,13 +2,13 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "F": {
-      "tag": "c:frames/steel"
+      "tag": "c:steel_frames"
     },
     "P": {
-      "tag": "c:plates/steel"
+      "tag": "c:steel_plates"
     },
     "S": {
-      "tag": "c:sticks/steel"
+      "tag": "c:steel_rods"
     }
   },
   "pattern": [

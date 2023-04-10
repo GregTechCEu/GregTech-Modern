@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:deepslate_garnierite",
+    "gtceu:sand_garnierite",
+    "gtceu:basalt_garnierite",
+    "gtceu:granite_garnierite",
+    "gtceu:andesite_garnierite",
+    "gtceu:red_sand_garnierite",
+    "gtceu:stone_garnierite",
+    "gtceu:diorite_garnierite"
+  ]
+}

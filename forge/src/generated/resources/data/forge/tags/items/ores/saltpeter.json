@@ -1,13 +1,12 @@
 {
   "values": [
-    "gtceu:ore_saltpeter",
-    "gtceu:ore_basalt_saltpeter",
-    "gtceu:ore_sand_saltpeter",
-    "gtceu:ore_granite_saltpeter",
-    "gtceu:ore_andesite_saltpeter",
-    "gtceu:ore_endstone_saltpeter",
-    "gtceu:ore_red_sand_saltpeter",
-    "gtceu:ore_netherrack_saltpeter",
-    "gtceu:ore_diorite_saltpeter"
+    "gtceu:deepslate_saltpeter",
+    "gtceu:sand_saltpeter",
+    "gtceu:basalt_saltpeter",
+    "gtceu:granite_saltpeter",
+    "gtceu:andesite_saltpeter",
+    "gtceu:red_sand_saltpeter",
+    "gtceu:stone_saltpeter",
+    "gtceu:diorite_saltpeter"
   ]
 }

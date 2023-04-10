@@ -2,16 +2,16 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:cables/single/platinum"
+      "item": "gtceu:cable_single.platinum"
     },
     "H": {
       "item": "gtceu:hull_casing_iv"
     },
     "L": {
-      "tag": "c:plates/tungsten_steel"
+      "tag": "c:tungsten_steel_plates"
     },
     "P": {
-      "tag": "c:plates/polytetrafluoroethylene"
+      "tag": "c:polytetrafluoroethylene_plates"
     }
   },
   "pattern": [

@@ -9,7 +9,7 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "c:gems/nether_star"
+          "tag": "c:nether_star_gems"
         }
       },
       {
@@ -18,7 +18,7 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "c:plates/double/titanium"
+          "tag": "c:titanium_double_plates"
         }
       },
       {
@@ -27,7 +27,7 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "c:circuit/ev"
+          "tag": "c:ev_circuits"
         }
       },
       {
@@ -36,7 +36,9 @@
           "type": "gtceu:sized",
           "count": 4,
           "fabric:type": "gtceu:sized",
-          "tag": "c:wires/quadruple/uranium_triplatinum"
+          "ingredient": {
+            "item": "gtceu:wire_quadruple.uranium_triplatinum"
+          }
         }
       }
     ]

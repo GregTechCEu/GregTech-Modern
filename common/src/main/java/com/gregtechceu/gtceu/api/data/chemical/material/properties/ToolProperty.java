@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.data.chemical.material.properties;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.MaterialToolTier;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.common.data.GTMaterials;
 import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import lombok.Getter;
@@ -118,7 +119,9 @@ public class ToolProperty implements IMaterialProperty<ToolProperty> {
 
     @Override
     public void verifyProperty(MaterialProperties properties) {
-        if (!properties.hasProperty(PropertyKey.GEM)) properties.ensureSet(PropertyKey.INGOT, true);
+        if (!properties.hasProperty(PropertyKey.WOOD)) {
+            if (!properties.hasProperty(PropertyKey.GEM)) properties.ensureSet(PropertyKey.INGOT, true);
+        }
     }
 
     public void addEnchantmentForTools(Enchantment enchantment, int level) {

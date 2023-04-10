@@ -20,7 +20,7 @@ public class GTCapabilityHelperImpl {
         if (level.getBlockState(pos).hasBlockEntity()) {
             var blockEntity = level.getBlockEntity(pos);
             if (blockEntity != null) {
-                return blockEntity.getCapability(GTCapabilities.CAPABILITY_ENERGY_CONTAINER, side).resolve().orElse(null);
+                return blockEntity.getCapability(GTCapability.CAPABILITY_ENERGY_CONTAINER, side).resolve().orElse(null);
             }
         }
         return null;
@@ -31,7 +31,7 @@ public class GTCapabilityHelperImpl {
         if (level.getBlockState(pos).hasBlockEntity()) {
             var blockEntity = level.getBlockEntity(pos);
             if (blockEntity != null) {
-                return blockEntity.getCapability(GTCapabilities.CAPABILITY_COVERABLE, side).resolve().orElse(null);
+                return blockEntity.getCapability(GTCapability.CAPABILITY_COVERABLE, side).resolve().orElse(null);
             }
         }
         return null;
@@ -42,7 +42,7 @@ public class GTCapabilityHelperImpl {
         if (level.getBlockState(pos).hasBlockEntity()) {
             var blockEntity = level.getBlockEntity(pos);
             if (blockEntity != null) {
-                return blockEntity.getCapability(GTCapabilities.CAPABILITY_TOOLABLE, side).resolve().orElse(null);
+                return blockEntity.getCapability(GTCapability.CAPABILITY_TOOLABLE, side).resolve().orElse(null);
             }
         }
         return null;
@@ -53,7 +53,7 @@ public class GTCapabilityHelperImpl {
         if (level.getBlockState(pos).hasBlockEntity()) {
             var blockEntity = level.getBlockEntity(pos);
             if (blockEntity != null) {
-                return blockEntity.getCapability(GTCapabilities.CAPABILITY_WORKABLE, side).resolve().orElse(null);
+                return blockEntity.getCapability(GTCapability.CAPABILITY_WORKABLE, side).resolve().orElse(null);
             }
         }
         return null;
@@ -64,7 +64,7 @@ public class GTCapabilityHelperImpl {
         if (level.getBlockState(pos).hasBlockEntity()) {
             var blockEntity = level.getBlockEntity(pos);
             if (blockEntity != null) {
-                return blockEntity.getCapability(GTCapabilities.CAPABILITY_CONTROLLABLE, side).resolve().orElse(null);
+                return blockEntity.getCapability(GTCapability.CAPABILITY_CONTROLLABLE, side).resolve().orElse(null);
             }
         }
         return null;
@@ -75,7 +75,7 @@ public class GTCapabilityHelperImpl {
         if (level.getBlockState(pos).hasBlockEntity()) {
             var blockEntity = level.getBlockEntity(pos);
             if (blockEntity != null) {
-                return blockEntity.getCapability(GTCapabilities.CAPABILITY_RECIPE_LOGIC, side).resolve().orElse(null);
+                return blockEntity.getCapability(GTCapability.CAPABILITY_RECIPE_LOGIC, side).resolve().orElse(null);
             }
         }
         return null;
@@ -83,6 +83,6 @@ public class GTCapabilityHelperImpl {
 
     @Nullable
     public static IElectricItem getElectricItem(ItemStack itemStack) {
-        return itemStack.getCapability(GTCapabilities.CAPABILITY_ELECTRIC_ITEM).resolve().orElse(null);
+        return itemStack.getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM).resolve().orElse(null);
     }
 }

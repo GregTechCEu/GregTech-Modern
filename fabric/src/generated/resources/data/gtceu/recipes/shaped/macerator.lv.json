@@ -2,13 +2,13 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:circuit/lv"
+      "tag": "c:lv_circuits"
     },
     "E": {
       "item": "gtceu:electric.motor.lv"
     },
     "G": {
-      "tag": "c:gems/diamond"
+      "tag": "c:diamond_gems"
     },
     "M": {
       "item": "gtceu:hull.lv"
@@ -17,7 +17,7 @@
       "item": "gtceu:electric.piston.lv"
     },
     "W": {
-      "tag": "c:cables/single/tin"
+      "item": "gtceu:cable_single.tin"
     }
   },
   "pattern": [

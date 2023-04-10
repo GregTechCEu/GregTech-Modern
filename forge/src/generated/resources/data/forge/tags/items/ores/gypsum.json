@@ -1,13 +1,12 @@
 {
   "values": [
-    "gtceu:ore_gypsum",
-    "gtceu:ore_basalt_gypsum",
-    "gtceu:ore_sand_gypsum",
-    "gtceu:ore_granite_gypsum",
-    "gtceu:ore_andesite_gypsum",
-    "gtceu:ore_endstone_gypsum",
-    "gtceu:ore_red_sand_gypsum",
-    "gtceu:ore_netherrack_gypsum",
-    "gtceu:ore_diorite_gypsum"
+    "gtceu:deepslate_gypsum",
+    "gtceu:sand_gypsum",
+    "gtceu:basalt_gypsum",
+    "gtceu:granite_gypsum",
+    "gtceu:andesite_gypsum",
+    "gtceu:red_sand_gypsum",
+    "gtceu:stone_gypsum",
+    "gtceu:diorite_gypsum"
   ]
 }

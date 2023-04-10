@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:deepslate_kyanite",
+    "gtceu:sand_kyanite",
+    "gtceu:basalt_kyanite",
+    "gtceu:granite_kyanite",
+    "gtceu:andesite_kyanite",
+    "gtceu:red_sand_kyanite",
+    "gtceu:stone_kyanite",
+    "gtceu:diorite_kyanite"
+  ]
+}

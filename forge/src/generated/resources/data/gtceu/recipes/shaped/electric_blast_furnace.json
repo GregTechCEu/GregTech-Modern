@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "forge:circuit/lv"
+      "tag": "forge:lv_circuits"
     },
     "F": {
       "item": "minecraft:furnace"
@@ -11,7 +11,7 @@
       "item": "gtceu:casing_invar_heatproof"
     },
     "W": {
-      "tag": "forge:cables/single/tin"
+      "item": "gtceu:cable_single.tin"
     }
   },
   "pattern": [

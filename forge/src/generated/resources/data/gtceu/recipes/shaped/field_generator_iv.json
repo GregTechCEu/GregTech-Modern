@@ -8,10 +8,10 @@
       "tag": "forge:plates/double/tungsten_steel"
     },
     "W": {
-      "tag": "forge:wires/quadruple/samarium_iron_arsenic_oxide"
+      "item": "gtceu:wire_quadruple.samarium_iron_arsenic_oxide"
     },
     "X": {
-      "tag": "forge:circuit/iv"
+      "tag": "forge:iv_circuits"
     }
   },
   "pattern": [

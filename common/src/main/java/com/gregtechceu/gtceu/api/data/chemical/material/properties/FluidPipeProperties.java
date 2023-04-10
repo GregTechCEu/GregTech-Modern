@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.data.chemical.material.properties;
 
 import com.gregtechceu.gtceu.api.data.chemical.fluid.FluidTypes;
 import com.gregtechceu.gtceu.common.data.GTFluids;
+import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import lombok.Getter;
@@ -60,7 +61,9 @@ public class FluidPipeProperties implements IMaterialProperty<FluidPipePropertie
 
     @Override
     public void verifyProperty(MaterialProperties properties) {
-        properties.ensureSet(PropertyKey.INGOT, true);
+        if (!properties.hasProperty(PropertyKey.WOOD)) {
+            properties.ensureSet(PropertyKey.INGOT, true);
+        }
 
         if (properties.hasProperty(PropertyKey.ITEM_PIPE)) {
             throw new IllegalStateException(

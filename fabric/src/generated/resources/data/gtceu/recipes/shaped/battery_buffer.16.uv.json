@@ -8,7 +8,7 @@
       "tag": "c:chests"
     },
     "W": {
-      "tag": "c:wires/hex/yttrium_barium_cuprate"
+      "item": "gtceu:wire_hex.yttrium_barium_cuprate"
     }
   },
   "pattern": [

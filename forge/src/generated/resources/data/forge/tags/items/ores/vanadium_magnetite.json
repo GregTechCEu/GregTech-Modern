@@ -1,13 +1,12 @@
 {
   "values": [
-    "gtceu:ore_vanadium_magnetite",
-    "gtceu:ore_basalt_vanadium_magnetite",
-    "gtceu:ore_sand_vanadium_magnetite",
-    "gtceu:ore_granite_vanadium_magnetite",
-    "gtceu:ore_andesite_vanadium_magnetite",
-    "gtceu:ore_endstone_vanadium_magnetite",
-    "gtceu:ore_red_sand_vanadium_magnetite",
-    "gtceu:ore_netherrack_vanadium_magnetite",
-    "gtceu:ore_diorite_vanadium_magnetite"
+    "gtceu:deepslate_vanadium_magnetite",
+    "gtceu:sand_vanadium_magnetite",
+    "gtceu:basalt_vanadium_magnetite",
+    "gtceu:granite_vanadium_magnetite",
+    "gtceu:andesite_vanadium_magnetite",
+    "gtceu:red_sand_vanadium_magnetite",
+    "gtceu:stone_vanadium_magnetite",
+    "gtceu:diorite_vanadium_magnetite"
   ]
 }

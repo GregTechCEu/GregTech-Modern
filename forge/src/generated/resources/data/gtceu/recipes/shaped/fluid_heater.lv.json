@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "forge:circuit/lv"
+      "tag": "forge:lv_circuits"
     },
     "G": {
       "tag": "forge:glass"
@@ -11,13 +11,13 @@
       "item": "gtceu:hull.lv"
     },
     "O": {
-      "tag": "forge:wires/quadruple/copper"
+      "item": "gtceu:wire_quadruple.copper"
     },
     "P": {
       "item": "gtceu:electric.pump.lv"
     },
     "W": {
-      "tag": "forge:cables/single/tin"
+      "item": "gtceu:cable_single.tin"
     }
   },
   "pattern": [

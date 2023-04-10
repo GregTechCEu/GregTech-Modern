@@ -3,8 +3,8 @@ package com.gregtechceu.gtceu.data.recipe;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.BlastProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
-import com.gregtechceu.gtceu.api.tag.TagPrefix;
-import com.gregtechceu.gtceu.api.tag.TagUtil;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.data.tag.TagUtil;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMachines;
@@ -19,7 +19,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
-import static com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials.*;
 
 public class CraftingComponent {
 
@@ -82,28 +81,30 @@ public class CraftingComponent {
          */
         CIRCUIT = new Component(Stream.of(new Object[][]{
 
-                {0, new UnificationEntry(TagPrefix.circuit, Tier.ULV)},
-                {1, new UnificationEntry(TagPrefix.circuit, Tier.LV)},
-                {2, new UnificationEntry(TagPrefix.circuit, Tier.MV)},
-                {3, new UnificationEntry(TagPrefix.circuit, Tier.HV)},
-                {4, new UnificationEntry(TagPrefix.circuit, Tier.EV)},
-                {5, new UnificationEntry(TagPrefix.circuit, Tier.IV)},
-                {6, new UnificationEntry(TagPrefix.circuit, Tier.LuV)},
-                {7, new UnificationEntry(TagPrefix.circuit, Tier.ZPM)},
-                {8, new UnificationEntry(TagPrefix.circuit, Tier.UV)},
+                {0, CustomTags.ULV_CIRCUITS},
+                {1, CustomTags.LV_CIRCUITS},
+                {2, CustomTags.MV_CIRCUITS},
+                {3, CustomTags.HV_CIRCUITS},
+                {4, CustomTags.EV_CIRCUITS},
+                {5, CustomTags.IV_CIRCUITS},
+                {6, CustomTags.LuV_CIRCUITS},
+                {7, CustomTags.ZPM_CIRCUITS},
+                {8, CustomTags.UV_CIRCUITS},
+                {9, CustomTags.UHV_CIRCUITS},
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
         BETTER_CIRCUIT = new Component(Stream.of(new Object[][]{
 
-                {0, new UnificationEntry(TagPrefix.circuit, Tier.LV)},
-                {1, new UnificationEntry(TagPrefix.circuit, Tier.MV)},
-                {2, new UnificationEntry(TagPrefix.circuit, Tier.HV)},
-                {3, new UnificationEntry(TagPrefix.circuit, Tier.EV)},
-                {4, new UnificationEntry(TagPrefix.circuit, Tier.IV)},
-                {5, new UnificationEntry(TagPrefix.circuit, Tier.LuV)},
-                {6, new UnificationEntry(TagPrefix.circuit, Tier.ZPM)},
-                {7, new UnificationEntry(TagPrefix.circuit, Tier.UV)},
+                {0, CustomTags.LV_CIRCUITS},
+                {1, CustomTags.MV_CIRCUITS},
+                {2, CustomTags.HV_CIRCUITS},
+                {3, CustomTags.EV_CIRCUITS},
+                {4, CustomTags.IV_CIRCUITS},
+                {5, CustomTags.LuV_CIRCUITS},
+                {6, CustomTags.ZPM_CIRCUITS},
+                {7, CustomTags.UV_CIRCUITS},
+                {8, CustomTags.UHV_CIRCUITS},
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
@@ -538,21 +539,21 @@ public class CraftingComponent {
 
         STICK_MAGNETIC = new Component(Stream.of(new Object[][]{
 
-                {0, new UnificationEntry(TagPrefix.stick, GTMaterials.IronMagnetic)},
-                {1, new UnificationEntry(TagPrefix.stick, GTMaterials.IronMagnetic)},
-                {2, new UnificationEntry(TagPrefix.stick, GTMaterials.SteelMagnetic)},
-                {3, new UnificationEntry(TagPrefix.stick, GTMaterials.SteelMagnetic)},
-                {4, new UnificationEntry(TagPrefix.stick, GTMaterials.NeodymiumMagnetic)},
-                {5, new UnificationEntry(TagPrefix.stick, GTMaterials.NeodymiumMagnetic)},
-                {6, new UnificationEntry(TagPrefix.stickLong, GTMaterials.NeodymiumMagnetic)},
-                {7, new UnificationEntry(TagPrefix.stickLong, GTMaterials.NeodymiumMagnetic)},
+                {0, new UnificationEntry(TagPrefix.rod, GTMaterials.IronMagnetic)},
+                {1, new UnificationEntry(TagPrefix.rod, GTMaterials.IronMagnetic)},
+                {2, new UnificationEntry(TagPrefix.rod, GTMaterials.SteelMagnetic)},
+                {3, new UnificationEntry(TagPrefix.rod, GTMaterials.SteelMagnetic)},
+                {4, new UnificationEntry(TagPrefix.rod, GTMaterials.NeodymiumMagnetic)},
+                {5, new UnificationEntry(TagPrefix.rod, GTMaterials.NeodymiumMagnetic)},
+                {6, new UnificationEntry(TagPrefix.rodLong, GTMaterials.NeodymiumMagnetic)},
+                {7, new UnificationEntry(TagPrefix.rodLong, GTMaterials.NeodymiumMagnetic)},
                 {8, new UnificationEntry(TagPrefix.block, GTMaterials.NeodymiumMagnetic)},
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
         STICK_DISTILLATION = new Component(Stream.of(new Object[][]{
 
-                {0, new UnificationEntry(TagPrefix.stick, GTMaterials.Blaze)},
+                {0, new UnificationEntry(TagPrefix.rod, GTMaterials.Blaze)},
                 {1, new UnificationEntry(TagPrefix.spring, GTMaterials.Copper)},
                 {2, new UnificationEntry(TagPrefix.spring, GTMaterials.Cupronickel)},
                 {3, new UnificationEntry(TagPrefix.spring, GTMaterials.Kanthal)},
@@ -561,7 +562,7 @@ public class CraftingComponent {
                 {6, new UnificationEntry(TagPrefix.spring, GTMaterials.HSSG)},
                 {7, new UnificationEntry(TagPrefix.spring, GTMaterials.Naquadah)},
                 {8, new UnificationEntry(TagPrefix.spring, GTMaterials.NaquadahAlloy)},
-                {GTValues.FALLBACK, new UnificationEntry(TagPrefix.stick, GTMaterials.Blaze)},
+                {GTValues.FALLBACK, new UnificationEntry(TagPrefix.rod, GTMaterials.Blaze)},
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
@@ -580,22 +581,22 @@ public class CraftingComponent {
 
         STICK_ELECTROMAGNETIC = new Component(Stream.of(new Object[][]{
 
-                {0, new UnificationEntry(TagPrefix.stick, GTMaterials.Iron)},
-                {1, new UnificationEntry(TagPrefix.stick, GTMaterials.Iron)},
-                {2, new UnificationEntry(TagPrefix.stick, GTMaterials.Steel)},
-                {3, new UnificationEntry(TagPrefix.stick, GTMaterials.Steel)},
-                {4, new UnificationEntry(TagPrefix.stick, GTMaterials.Neodymium)},
-                {GTValues.FALLBACK, new UnificationEntry(TagPrefix.stick, GTMaterials.VanadiumGallium)},
+                {0, new UnificationEntry(TagPrefix.rod, GTMaterials.Iron)},
+                {1, new UnificationEntry(TagPrefix.rod, GTMaterials.Iron)},
+                {2, new UnificationEntry(TagPrefix.rod, GTMaterials.Steel)},
+                {3, new UnificationEntry(TagPrefix.rod, GTMaterials.Steel)},
+                {4, new UnificationEntry(TagPrefix.rod, GTMaterials.Neodymium)},
+                {GTValues.FALLBACK, new UnificationEntry(TagPrefix.rod, GTMaterials.VanadiumGallium)},
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
         STICK_RADIOACTIVE = new Component(Stream.of(new Object[][]{
 
-                {4, new UnificationEntry(TagPrefix.stick, GTMaterials.Uranium235)},
-                {5, new UnificationEntry(TagPrefix.stick, GTMaterials.Plutonium241)},
-                {6, new UnificationEntry(TagPrefix.stick, GTMaterials.NaquadahEnriched)},
-                {7, new UnificationEntry(TagPrefix.stick, GTMaterials.Americium)},
-                {GTValues.FALLBACK, new UnificationEntry(TagPrefix.stick, GTMaterials.Tritanium)},
+                {4, new UnificationEntry(TagPrefix.rod, GTMaterials.Uranium235)},
+                {5, new UnificationEntry(TagPrefix.rod, GTMaterials.Plutonium241)},
+                {6, new UnificationEntry(TagPrefix.rod, GTMaterials.NaquadahEnriched)},
+                {7, new UnificationEntry(TagPrefix.rod, GTMaterials.Americium)},
+                {GTValues.FALLBACK, new UnificationEntry(TagPrefix.rod, GTMaterials.Tritanium)},
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 

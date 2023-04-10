@@ -25,7 +25,7 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "c:frames/tritanium"
+          "tag": "c:tritanium_frames"
         }
       },
       {
@@ -100,7 +100,7 @@
           "type": "gtceu:sized",
           "count": 64,
           "fabric:type": "gtceu:sized",
-          "tag": "c:foils/polybenzimidazole"
+          "tag": "c:polybenzimidazole_foils"
         }
       },
       {
@@ -120,7 +120,9 @@
           "type": "gtceu:sized",
           "count": 16,
           "fabric:type": "gtceu:sized",
-          "tag": "c:wires/double/enriched_naquadah_trinium_europium_duranide"
+          "ingredient": {
+            "item": "gtceu:wire_double.enriched_naquadah_trinium_europium_duranide"
+          }
         }
       },
       {
@@ -129,7 +131,7 @@
           "type": "gtceu:sized",
           "count": 8,
           "fabric:type": "gtceu:sized",
-          "tag": "c:plates/europium"
+          "tag": "c:europium_plates"
         }
       }
     ]

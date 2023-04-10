@@ -2,16 +2,16 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:cables/single/yttrium_barium_cuprate"
+      "item": "gtceu:cable_single.yttrium_barium_cuprate"
     },
     "H": {
       "item": "gtceu:hull_casing_uv"
     },
     "L": {
-      "tag": "c:plates/darmstadtium"
+      "tag": "c:darmstadtium_plates"
     },
     "P": {
-      "tag": "c:plates/polybenzimidazole"
+      "tag": "c:polybenzimidazole_plates"
     }
   },
   "pattern": [

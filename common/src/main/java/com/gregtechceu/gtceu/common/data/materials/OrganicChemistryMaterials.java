@@ -107,7 +107,7 @@ public class OrganicChemistryMaterials {
                 .components(Carbon, 2, Hydrogen, 6, Oxygen, 1, Silicon, 1)
                 .buildAndRegister();
 
-        Polyethylene = new Material.Builder("plastic") //todo add polyethylene oredicts
+        Polyethylene = new Material.Builder("polyethylene")
                 .polymer(1)
                 .color(0xC8C8C8)
                 .flags(GENERATE_FOIL)

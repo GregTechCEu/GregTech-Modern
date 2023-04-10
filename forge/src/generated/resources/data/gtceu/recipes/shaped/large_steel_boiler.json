@@ -5,10 +5,10 @@
       "item": "gtceu:steel_firebox"
     },
     "P": {
-      "tag": "forge:cables/single/copper"
+      "item": "gtceu:cable_single.copper"
     },
     "S": {
-      "tag": "forge:circuit/hv"
+      "tag": "forge:hv_circuits"
     }
   },
   "pattern": [

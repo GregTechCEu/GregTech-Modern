@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:deepslate_malachite",
+    "gtceu:sand_malachite",
+    "gtceu:basalt_malachite",
+    "gtceu:granite_malachite",
+    "gtceu:andesite_malachite",
+    "gtceu:red_sand_malachite",
+    "gtceu:stone_malachite",
+    "gtceu:diorite_malachite"
+  ]
+}

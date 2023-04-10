@@ -2,13 +2,13 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:cables/single/tungsten"
+      "item": "gtceu:cable_single.tungsten"
     },
     "M": {
       "item": "gtceu:electric.motor.iv"
     },
     "R": {
-      "tag": "c:plates/styrene_butadiene_rubber"
+      "tag": "c:styrene_butadiene_rubber_plates"
     }
   },
   "pattern": [

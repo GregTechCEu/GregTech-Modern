@@ -2,16 +2,16 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "forge:wires/double/hssg"
+      "item": "gtceu:wire_double.hssg"
     },
     "E": {
-      "tag": "forge:circuit/luv"
+      "tag": "forge:luv_circuits"
     },
     "M": {
       "item": "gtceu:hull.luv"
     },
     "W": {
-      "tag": "forge:cables/single/niobium_titanium"
+      "item": "gtceu:cable_single.niobium_titanium"
     }
   },
   "pattern": [

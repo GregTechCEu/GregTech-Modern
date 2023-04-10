@@ -190,6 +190,10 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
         return (MultiblockMachineBuilder) super.workableCasingRenderer(baseCasing, overlayModel, tint);
     }
 
+    public MultiblockMachineBuilder sidedWorkableCasingRenderer(String basePath, ResourceLocation overlayModel, boolean tint) {
+        return (MultiblockMachineBuilder) super.sidedWorkableCasingRenderer(basePath, overlayModel, tint);
+    }
+
     @Override
     public MultiblockMachineBuilder tooltipBuilder(BiConsumer<ItemStack, List<Component>> tooltipBuilder) {
         return (MultiblockMachineBuilder) super.tooltipBuilder(tooltipBuilder);

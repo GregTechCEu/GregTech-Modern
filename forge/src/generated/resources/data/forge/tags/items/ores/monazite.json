@@ -1,13 +1,12 @@
 {
   "values": [
-    "gtceu:ore_monazite",
-    "gtceu:ore_basalt_monazite",
-    "gtceu:ore_sand_monazite",
-    "gtceu:ore_granite_monazite",
-    "gtceu:ore_andesite_monazite",
-    "gtceu:ore_endstone_monazite",
-    "gtceu:ore_red_sand_monazite",
-    "gtceu:ore_netherrack_monazite",
-    "gtceu:ore_diorite_monazite"
+    "gtceu:deepslate_monazite",
+    "gtceu:sand_monazite",
+    "gtceu:basalt_monazite",
+    "gtceu:granite_monazite",
+    "gtceu:andesite_monazite",
+    "gtceu:red_sand_monazite",
+    "gtceu:stone_monazite",
+    "gtceu:diorite_monazite"
   ]
 }

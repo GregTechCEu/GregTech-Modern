@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "forge:circuit/zpm"
+      "tag": "forge:zpm_circuits"
     },
     "G": {
       "tag": "forge:dusts/graphite"
@@ -14,7 +14,7 @@
       "tag": "forge:plates/naquadah_alloy"
     },
     "W": {
-      "tag": "forge:cables/quadruple/vanadium_gallium"
+      "item": "gtceu:cable_quadruple.vanadium_gallium"
     }
   },
   "pattern": [

@@ -1,15 +1,15 @@
 package com.gregtechceu.gtceu.api.recipe;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.item.FacadeItemBehaviour;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.inventory.CraftingContainer;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -46,17 +46,11 @@ public class FacadeCoverRecipe implements CraftingRecipe {
                 foundBlockItem = true;
                 continue;
             }
-            var plate = false;
-            for (TagKey<Item> itemTag : TagPrefix.plate.getItemTags()) {
-                if (item.is(itemTag)) {
-                    plateSize++;
-                    plate = true;
-                    break;
-                }
+            if (item.is(ChemicalHelper.getTag(TagPrefix.plate, GTMaterials.Iron))) {
+                plateSize++;
+                continue;
             }
-            if (!plate) {
-                return false;
-            }
+            return false;
         }
         return foundBlockItem && plateSize == 3;
     }
@@ -78,9 +72,9 @@ public class FacadeCoverRecipe implements CraftingRecipe {
     @Override
     public NonNullList<Ingredient> getIngredients() {
         return NonNullList.of(Ingredient.EMPTY,
-                Ingredient.of(TagPrefix.plate.getItemTags()[0]),
-                Ingredient.of(TagPrefix.plate.getItemTags()[0]),
-                Ingredient.of(TagPrefix.plate.getItemTags()[0]),
+                Ingredient.of(ChemicalHelper.getTag(TagPrefix.plate, GTMaterials.Iron)),
+                Ingredient.of(ChemicalHelper.getTag(TagPrefix.plate, GTMaterials.Iron)),
+                Ingredient.of(ChemicalHelper.getTag(TagPrefix.plate, GTMaterials.Iron)),
                 Ingredient.of(Blocks.STONE));
     }
 

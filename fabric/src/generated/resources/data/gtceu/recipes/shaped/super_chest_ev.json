@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:circuit/ev"
+      "tag": "c:ev_circuits"
     },
     "F": {
       "item": "gtceu:crate.titanium"
@@ -11,7 +11,7 @@
       "item": "gtceu:field.generator.mv"
     },
     "P": {
-      "tag": "c:plates/titanium"
+      "tag": "c:titanium_plates"
     }
   },
   "pattern": [

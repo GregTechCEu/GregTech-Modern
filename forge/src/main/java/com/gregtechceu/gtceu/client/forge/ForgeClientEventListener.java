@@ -1,7 +1,9 @@
 package com.gregtechceu.gtceu.client.forge;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.client.ClientCommands;
+import com.gregtechceu.gtceu.client.TooltipHelper;
 import com.gregtechceu.gtceu.client.TooltipsHandler;
 import com.gregtechceu.gtceu.client.renderer.BlockHighLightRenderer;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
@@ -10,6 +12,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RegisterClientCommandsEvent;
 import net.minecraftforge.client.event.RenderHighlightEvent;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -40,5 +43,13 @@ public class ForgeClientEventListener {
         var dispatcher = event.getDispatcher();
         List<LiteralArgumentBuilder<CommandSourceStack>> commands = ClientCommands.createClientCommands();
         commands.forEach(dispatcher::register);
+    }
+
+    @SubscribeEvent
+    public static void onClientTickEvent(TickEvent.ClientTickEvent event) {
+        if (event.phase == TickEvent.Phase.END) {
+            TooltipHelper.onClientTick();
+            GTValues.CLIENT_TIME++;
+        }
     }
 }

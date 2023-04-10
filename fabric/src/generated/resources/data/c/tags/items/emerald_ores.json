@@ -1,0 +1,14 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:emerald_ore",
+    "gtceu:stone_emerald",
+    "gtceu:deepslate_emerald",
+    "gtceu:sand_emerald",
+    "gtceu:basalt_emerald",
+    "gtceu:granite_emerald",
+    "gtceu:andesite_emerald",
+    "gtceu:red_sand_emerald",
+    "gtceu:diorite_emerald"
+  ]
+}

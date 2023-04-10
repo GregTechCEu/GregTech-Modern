@@ -57,20 +57,15 @@ configurations {
 
 repositories {
     // mavens for Fabric-exclusives
-    maven { url = "https://api.modrinth.com/maven" } // LazyDFU
+    maven { url = "https://api.modrinth.com/maven" } // LazyDFU, Jade
     maven { url = "https://maven.terraformersmc.com/releases/" } // Mod Menu
     maven { url = "https://mvn.devos.one/snapshots/" } // Create Fabric, Porting Lib, Forge Tags, Milk Lib, Registrate Fabric
     maven { url = "https://cursemaven.com" } // Forge Config API Port
     maven { url = "https://maven.cafeteria.dev/releases" } // Fake Player API
     maven { url = "https://maven.jamieswhiteshirt.com/libs-release" } // Reach Entity Attributes
     maven { url = "https://jitpack.io/" } // Mixin Extras, Fabric ASM
-    maven {
-        // saps.dev Maven (KubeJS and Rhino)
-        url = "https://maven.saps.dev/minecraft"
-        content {
-            includeGroup "dev.latvian.mods"
-        }
-    }
+    maven { url = "https://raw.githubusercontent.com/Fuzss/modresources/main/maven/" }
+    maven { url = "https://maven.saps.dev/minecraft" } // saps.dev Maven (KubeJS and Rhino)
 }
 
 dependencies {
@@ -85,6 +80,12 @@ dependencies {
 
     // Registrate
     modImplementation(include("com.tterrag.registrate_fabric:Registrate:${fabric.versions.registrate.get()}"))
+
+    // Registrate
+    modImplementation fabric.forgeConfigApi
+    // Night Config
+    modImplementation fabric.nightConfigCore
+    modImplementation fabric.nightConfigToml
 
     // Create - dependencies are added transitively
     modImplementation fabric.createFabric
@@ -103,8 +104,15 @@ dependencies {
     modCompileOnly(fabric.rei.api) { transitive = false }
     modCompileOnly(fabric.rei.fabric) { transitive = false }
 
+    // EMI
+    modCompileOnly("dev.emi:emi:${fabric.versions.emi.get()}:api")
+    modCompileOnly fabric.emi
+
     // TOP
     modCompileOnly fabric.theoneprobe
+
+    // Jade
+    modCompileOnly fabric.jade
 
     // KJS
     modImplementation fabric.kubejs

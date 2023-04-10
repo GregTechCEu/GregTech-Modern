@@ -38,7 +38,7 @@
           "type": "gtceu:sized",
           "count": 4,
           "fabric:type": "gtceu:sized",
-          "tag": "forge:component/diode"
+          "tag": "forge:diodes"
         }
       },
       {

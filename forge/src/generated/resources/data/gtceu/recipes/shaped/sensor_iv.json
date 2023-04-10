@@ -8,10 +8,10 @@
       "tag": "forge:plates/tungsten_steel"
     },
     "R": {
-      "tag": "forge:sticks/iridium"
+      "tag": "forge:rods/iridium"
     },
     "X": {
-      "tag": "forge:circuit/iv"
+      "tag": "forge:iv_circuits"
     }
   },
   "pattern": [

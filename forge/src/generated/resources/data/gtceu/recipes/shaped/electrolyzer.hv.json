@@ -2,19 +2,19 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "forge:circuit/hv"
+      "tag": "forge:hv_circuits"
     },
     "G": {
       "tag": "forge:glass"
     },
     "I": {
-      "tag": "forge:wires/single/electrum"
+      "item": "gtceu:wire_single.electrum"
     },
     "M": {
       "item": "gtceu:hull.hv"
     },
     "W": {
-      "tag": "forge:cables/single/gold"
+      "item": "gtceu:cable_single.gold"
     }
   },
   "pattern": [

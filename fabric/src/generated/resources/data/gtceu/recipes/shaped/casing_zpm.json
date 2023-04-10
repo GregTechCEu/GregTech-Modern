@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "P": {
-      "tag": "c:plates/naquadah_alloy"
+      "tag": "c:naquadah_alloy_plates"
     },
     "w": {
       "tag": "c:tool/wrench"

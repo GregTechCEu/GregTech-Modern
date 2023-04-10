@@ -15,7 +15,7 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "c:circuit/mv"
+          "tag": "c:mv_circuits"
         }
       }
     ]

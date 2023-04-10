@@ -5,13 +5,13 @@
       "item": "gtceu:casing_primitive_bricks"
     },
     "P": {
-      "tag": "c:plates/iron"
+      "tag": "c:iron_plates"
     },
     "R": {
-      "tag": "c:sticks/iron"
+      "tag": "c:iron_rods"
     },
     "S": {
-      "tag": "c:screws/iron"
+      "tag": "c:iron_screws"
     },
     "d": {
       "tag": "c:tool/screwdriver"

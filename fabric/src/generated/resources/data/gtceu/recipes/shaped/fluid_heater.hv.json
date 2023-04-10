@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:circuit/hv"
+      "tag": "c:hv_circuits"
     },
     "G": {
       "tag": "c:glass"
@@ -11,13 +11,13 @@
       "item": "gtceu:hull.hv"
     },
     "O": {
-      "tag": "c:wires/quadruple/kanthal"
+      "item": "gtceu:wire_quadruple.kanthal"
     },
     "P": {
       "item": "gtceu:electric.pump.hv"
     },
     "W": {
-      "tag": "c:cables/single/gold"
+      "item": "gtceu:cable_single.gold"
     }
   },
   "pattern": [

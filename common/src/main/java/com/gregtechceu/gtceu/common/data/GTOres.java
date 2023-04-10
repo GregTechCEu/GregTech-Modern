@@ -4,8 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.worldgen.GTLayerPattern;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreFeatureEntry;
-import com.gregtechceu.gtceu.api.tag.TagPrefix;
-import dev.architectury.injectables.annotations.ExpectPlatform;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import net.minecraft.data.worldgen.features.OreFeatures;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.world.level.block.Block;
@@ -17,7 +16,8 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.BlockMatchTes
 import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;
 
 import java.util.function.Supplier;
-import static com.gregtechceu.gtceu.api.tag.TagPrefix.*;
+
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 
 /**
@@ -113,9 +113,9 @@ public class GTOres {
                     .layeredDatagenExt()
                     .withLayerPattern(() -> GTLayerPattern.builder(NETHER_RULES)
                             .layer(l -> l.weight(2).state(Blocks.END_STONE::defaultBlockState))
-                            .layer(l -> l.weight(3).block(ore(oreNetherrack, BrownLimonite)).size(2, 4))
+                            .layer(l -> l.weight(3).block(ore(oreNetherrack, Goethite)).size(2, 4))
                             .layer(l -> l.weight(2).block(ore(oreNetherrack, YellowLimonite)).size(1, 1))
-                            .layer(l -> l.weight(2).block(ore(oreNetherrack, BandedIron)).size(1, 1))
+                            .layer(l -> l.weight(2).block(ore(oreNetherrack, Hematite)).size(1, 1))
                             .layer(l -> l.weight(1).block(ore(oreNetherrack, Gold)).size(1, 1))
                             .build())
                     .biomeTag(BiomeTags.IS_NETHER)
@@ -374,9 +374,9 @@ public class GTOres {
                     .layeredDatagenExt()
                     .withLayerPattern(() -> GTLayerPattern.builder(OVERWORLD_RULES)
                             .layer(l -> l.weight(2).state(Blocks.STONE::defaultBlockState))
-                            .layer(l -> l.weight(3).block(ore(ore, BrownLimonite)).size(2, 4))
+                            .layer(l -> l.weight(3).block(ore(ore, Goethite)).size(2, 4))
                             .layer(l -> l.weight(2).block(ore(ore, YellowLimonite)).size(1, 1))
-                            .layer(l -> l.weight(2).block(ore(ore, BandedIron)).size(1, 1))
+                            .layer(l -> l.weight(2).block(ore(ore, Hematite)).size(1, 1))
                             .layer(l -> l.weight(1).block(ore(ore, Malachite)).size(1, 1))
                             .build())
                     .biomeTag(BiomeTags.IS_OVERWORLD)

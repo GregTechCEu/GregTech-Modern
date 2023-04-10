@@ -5,7 +5,7 @@
       "item": "gtceu:robot.arm.ev"
     },
     "C": {
-      "tag": "c:circuit/ev"
+      "tag": "c:ev_circuits"
     },
     "M": {
       "item": "gtceu:hull.ev"
@@ -14,7 +14,7 @@
       "item": "gtceu:conveyor.module.ev"
     },
     "W": {
-      "tag": "c:cables/single/aluminium"
+      "item": "gtceu:cable_single.aluminium"
     }
   },
   "pattern": [

@@ -2,16 +2,16 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:cables/single/tungsten"
+      "item": "gtceu:cable_single.tungsten"
     },
     "G": {
       "item": "gtceu:quantumstar"
     },
     "R": {
-      "tag": "c:sticks/iridium"
+      "tag": "c:iridium_rods"
     },
     "X": {
-      "tag": "c:circuit/iv"
+      "tag": "c:iv_circuits"
     }
   },
   "pattern": [

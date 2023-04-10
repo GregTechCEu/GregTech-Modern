@@ -1,0 +1,37 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "item": "minecraft:cobblestone_slab"
+    },
+    "G": {
+      "item": "gtceu:fluid_pipe_normal.wood"
+    },
+    "L": {
+      "item": "gtceu:fluid_pipe_large.wood"
+    },
+    "O": {
+      "tag": "c:iron_rotors"
+    },
+    "R": {
+      "tag": "c:iron_rings"
+    },
+    "S": {
+      "tag": "c:iron_screws"
+    },
+    "W": {
+      "item": "gtceu:treated_wood_plank"
+    },
+    "d": {
+      "tag": "c:tool/screwdriver"
+    }
+  },
+  "pattern": [
+    "RGS",
+    "OWd",
+    "CLC"
+  ],
+  "result": {
+    "item": "gtceu:primitive_pump"
+  }
+}

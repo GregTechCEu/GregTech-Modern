@@ -2,22 +2,22 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:circuit/luv"
+      "tag": "c:luv_circuits"
     },
     "M": {
       "item": "gtceu:hull.luv"
     },
     "S": {
-      "tag": "c:sticks/vanadium_gallium"
+      "tag": "c:vanadium_gallium_rods"
     },
     "V": {
       "item": "gtceu:conveyor.module.luv"
     },
     "W": {
-      "tag": "c:cables/single/niobium_titanium"
+      "item": "gtceu:cable_single.niobium_titanium"
     },
     "Z": {
-      "tag": "c:wires/quadruple/niobium_nitride"
+      "item": "gtceu:wire_quadruple.niobium_nitride"
     }
   },
   "pattern": [

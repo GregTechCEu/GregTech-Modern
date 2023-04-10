@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:deepslate_realgar",
+    "gtceu:sand_realgar",
+    "gtceu:basalt_realgar",
+    "gtceu:granite_realgar",
+    "gtceu:andesite_realgar",
+    "gtceu:red_sand_realgar",
+    "gtceu:stone_realgar",
+    "gtceu:diorite_realgar"
+  ]
+}

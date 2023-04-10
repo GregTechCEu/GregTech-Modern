@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:circuit/mv"
+      "tag": "c:mv_circuits"
     },
     "F": {
       "item": "gtceu:electric.pump.mv"
@@ -11,7 +11,7 @@
       "item": "gtceu:hermetic_casing_mv"
     },
     "P": {
-      "tag": "c:plates/aluminium"
+      "tag": "c:aluminium_plates"
     }
   },
   "pattern": [

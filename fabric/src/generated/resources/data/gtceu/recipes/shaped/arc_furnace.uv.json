@@ -2,19 +2,19 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:circuit/uv"
+      "tag": "c:uv_circuits"
     },
     "G": {
-      "tag": "c:dusts/graphite"
+      "tag": "c:graphite_dusts"
     },
     "M": {
       "item": "gtceu:hull.uv"
     },
     "P": {
-      "tag": "c:plates/darmstadtium"
+      "tag": "c:darmstadtium_plates"
     },
     "W": {
-      "tag": "c:cables/quadruple/yttrium_barium_cuprate"
+      "item": "gtceu:cable_quadruple.yttrium_barium_cuprate"
     }
   },
   "pattern": [

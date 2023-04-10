@@ -21,7 +21,7 @@
           "type": "gtceu:sized",
           "count": 64,
           "fabric:type": "gtceu:sized",
-          "tag": "c:dusts/silicon"
+          "tag": "c:silicon_dusts"
         }
       },
       {
@@ -30,7 +30,7 @@
           "type": "gtceu:sized",
           "count": 8,
           "fabric:type": "gtceu:sized",
-          "tag": "c:dusts/glowstone"
+          "tag": "c:glowstone_dusts"
         }
       }
     ]

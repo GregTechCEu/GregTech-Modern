@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:deepslate_lithium",
+    "gtceu:sand_lithium",
+    "gtceu:basalt_lithium",
+    "gtceu:granite_lithium",
+    "gtceu:andesite_lithium",
+    "gtceu:red_sand_lithium",
+    "gtceu:stone_lithium",
+    "gtceu:diorite_lithium"
+  ]
+}

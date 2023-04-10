@@ -24,7 +24,7 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "c:bolts/steel"
+          "tag": "c:steel_bolts"
         }
       },
       {
@@ -33,7 +33,9 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "c:wires/single/copper"
+          "ingredient": {
+            "item": "gtceu:wire_single.copper"
+          }
         }
       }
     ]

@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:circuit/mv"
+      "tag": "c:mv_circuits"
     },
     "E": {
       "item": "gtceu:electric.motor.mv"
@@ -11,7 +11,7 @@
       "item": "gtceu:hull.mv"
     },
     "W": {
-      "tag": "c:cables/single/copper"
+      "item": "gtceu:cable_single.copper"
     }
   },
   "pattern": [

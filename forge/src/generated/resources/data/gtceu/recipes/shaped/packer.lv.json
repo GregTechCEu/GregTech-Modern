@@ -5,7 +5,7 @@
       "tag": "forge:chests/wooden"
     },
     "C": {
-      "tag": "forge:circuit/lv"
+      "tag": "forge:lv_circuits"
     },
     "M": {
       "item": "gtceu:hull.lv"
@@ -17,7 +17,7 @@
       "item": "gtceu:conveyor.module.lv"
     },
     "W": {
-      "tag": "forge:cables/single/tin"
+      "item": "gtceu:cable_single.tin"
     }
   },
   "pattern": [

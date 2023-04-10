@@ -1,13 +1,12 @@
 {
   "values": [
-    "gtceu:ore_tricalcium_phosphate",
-    "gtceu:ore_basalt_tricalcium_phosphate",
-    "gtceu:ore_sand_tricalcium_phosphate",
-    "gtceu:ore_granite_tricalcium_phosphate",
-    "gtceu:ore_andesite_tricalcium_phosphate",
-    "gtceu:ore_endstone_tricalcium_phosphate",
-    "gtceu:ore_red_sand_tricalcium_phosphate",
-    "gtceu:ore_netherrack_tricalcium_phosphate",
-    "gtceu:ore_diorite_tricalcium_phosphate"
+    "gtceu:deepslate_tricalcium_phosphate",
+    "gtceu:sand_tricalcium_phosphate",
+    "gtceu:basalt_tricalcium_phosphate",
+    "gtceu:granite_tricalcium_phosphate",
+    "gtceu:andesite_tricalcium_phosphate",
+    "gtceu:red_sand_tricalcium_phosphate",
+    "gtceu:stone_tricalcium_phosphate",
+    "gtceu:diorite_tricalcium_phosphate"
   ]
 }

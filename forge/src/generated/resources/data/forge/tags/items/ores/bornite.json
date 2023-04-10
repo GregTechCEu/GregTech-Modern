@@ -1,13 +1,12 @@
 {
   "values": [
-    "gtceu:ore_bornite",
-    "gtceu:ore_basalt_bornite",
-    "gtceu:ore_sand_bornite",
-    "gtceu:ore_granite_bornite",
-    "gtceu:ore_andesite_bornite",
-    "gtceu:ore_endstone_bornite",
-    "gtceu:ore_red_sand_bornite",
-    "gtceu:ore_netherrack_bornite",
-    "gtceu:ore_diorite_bornite"
+    "gtceu:deepslate_bornite",
+    "gtceu:sand_bornite",
+    "gtceu:basalt_bornite",
+    "gtceu:granite_bornite",
+    "gtceu:andesite_bornite",
+    "gtceu:red_sand_bornite",
+    "gtceu:stone_bornite",
+    "gtceu:diorite_bornite"
   ]
 }

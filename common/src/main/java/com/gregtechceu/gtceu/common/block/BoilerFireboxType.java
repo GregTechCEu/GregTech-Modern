@@ -11,10 +11,10 @@ import javax.annotation.Nonnull;
  * @date 2023/3/9
  * @implNote BoilerFireBoxCasingBlock
  */
-public class BoilerFireboxType {
+public record BoilerFireboxType(@Getter String name, @Getter ResourceLocation bottom, @Getter ResourceLocation top, @Getter ResourceLocation side) {
 
-    public static BoilerFireboxType BRONZE_FIREBOX = new BoilerFireboxType("bronze_firebox", GTCEu.id("block/casings/solid/machine_bronze_plated_bricks")
-            , GTCEu.id("block/casings/solid/machine_bronze_plated_bricks")
+    public static BoilerFireboxType BRONZE_FIREBOX = new BoilerFireboxType("bronze_firebox", GTCEu.id("block/casings/solid/machine_casing_bronze_plated_bricks")
+            , GTCEu.id("block/casings/solid/machine_casing_bronze_plated_bricks")
             , GTCEu.id("block/casings/firebox/machine_casing_firebox_bronze"));
     public static BoilerFireboxType STEEL_FIREBOX = new BoilerFireboxType("steel_firebox", GTCEu.id("block/casings/solid/machine_casing_solid_steel")
             , GTCEu.id("block/casings/solid/machine_casing_solid_steel")
@@ -26,21 +26,9 @@ public class BoilerFireboxType {
             , GTCEu.id("block/casings/solid/machine_casing_robust_tungstensteel")
             , GTCEu.id("block/casings/firebox/machine_casing_firebox_tungstensteel"));
 
-    @Getter
-    private final String name;
-    @Getter
-    private final ResourceLocation bottom, top, side;
-
-    public BoilerFireboxType(String name, ResourceLocation bottom, ResourceLocation top, ResourceLocation side) {
-        this.name = name;
-        this.bottom = bottom;
-        this.top = top;
-        this.side = side;
-    }
-
     @Nonnull
     @Override
     public String toString() {
-            return getName();
-        }
+        return name();
+    }
 }

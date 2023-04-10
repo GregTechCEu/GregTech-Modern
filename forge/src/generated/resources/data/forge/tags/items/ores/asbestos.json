@@ -1,13 +1,12 @@
 {
   "values": [
-    "gtceu:ore_asbestos",
-    "gtceu:ore_basalt_asbestos",
-    "gtceu:ore_sand_asbestos",
-    "gtceu:ore_granite_asbestos",
-    "gtceu:ore_andesite_asbestos",
-    "gtceu:ore_endstone_asbestos",
-    "gtceu:ore_red_sand_asbestos",
-    "gtceu:ore_netherrack_asbestos",
-    "gtceu:ore_diorite_asbestos"
+    "gtceu:deepslate_asbestos",
+    "gtceu:sand_asbestos",
+    "gtceu:basalt_asbestos",
+    "gtceu:granite_asbestos",
+    "gtceu:andesite_asbestos",
+    "gtceu:red_sand_asbestos",
+    "gtceu:stone_asbestos",
+    "gtceu:diorite_asbestos"
   ]
 }

@@ -5,7 +5,7 @@
       "tag": "forge:springs/naquadah"
     },
     "C": {
-      "tag": "forge:circuit/zpm"
+      "tag": "forge:zpm_circuits"
     },
     "G": {
       "tag": "forge:glass"
@@ -17,7 +17,7 @@
       "item": "gtceu:electric.pump.zpm"
     },
     "W": {
-      "tag": "forge:cables/single/vanadium_gallium"
+      "item": "gtceu:cable_single.vanadium_gallium"
     }
   },
   "pattern": [

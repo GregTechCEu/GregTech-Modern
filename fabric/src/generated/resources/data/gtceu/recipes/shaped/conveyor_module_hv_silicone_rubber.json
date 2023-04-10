@@ -2,13 +2,13 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:cables/single/gold"
+      "item": "gtceu:cable_single.gold"
     },
     "M": {
       "item": "gtceu:electric.motor.hv"
     },
     "R": {
-      "tag": "c:plates/silicone_rubber"
+      "tag": "c:silicone_rubber_plates"
     }
   },
   "pattern": [

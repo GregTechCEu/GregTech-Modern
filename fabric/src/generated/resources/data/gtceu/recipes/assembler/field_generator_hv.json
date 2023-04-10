@@ -15,7 +15,7 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "c:plates/stainless_steel"
+          "tag": "c:stainless_steel_plates"
         }
       },
       {
@@ -24,7 +24,7 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "c:circuit/hv"
+          "tag": "c:hv_circuits"
         }
       },
       {
@@ -33,7 +33,9 @@
           "type": "gtceu:sized",
           "count": 4,
           "fabric:type": "gtceu:sized",
-          "tag": "c:wires/quadruple/mercury_barium_calcium_cuprate"
+          "ingredient": {
+            "item": "gtceu:wire_quadruple.mercury_barium_calcium_cuprate"
+          }
         }
       }
     ]

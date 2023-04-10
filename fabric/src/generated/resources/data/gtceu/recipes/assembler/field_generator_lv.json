@@ -9,7 +9,7 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "c:gems/ender_pearl"
+          "tag": "c:ender_pearl_gems"
         }
       },
       {
@@ -18,7 +18,7 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "c:plates/steel"
+          "tag": "c:steel_plates"
         }
       },
       {
@@ -27,7 +27,7 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "c:circuit/lv"
+          "tag": "c:lv_circuits"
         }
       },
       {
@@ -36,7 +36,9 @@
           "type": "gtceu:sized",
           "count": 4,
           "fabric:type": "gtceu:sized",
-          "tag": "c:wires/quadruple/manganese_phosphide"
+          "ingredient": {
+            "item": "gtceu:wire_quadruple.manganese_phosphide"
+          }
         }
       }
     ]

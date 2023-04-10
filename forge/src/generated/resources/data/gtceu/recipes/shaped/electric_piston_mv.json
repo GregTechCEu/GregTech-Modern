@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "forge:cables/single/copper"
+      "item": "gtceu:cable_single.copper"
     },
     "G": {
       "tag": "forge:gears/small/aluminium"
@@ -14,7 +14,7 @@
       "tag": "forge:plates/aluminium"
     },
     "R": {
-      "tag": "forge:sticks/aluminium"
+      "tag": "forge:rods/aluminium"
     }
   },
   "pattern": [

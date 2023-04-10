@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "item": "gtceu:conveyor.module.uv"
+    },
+    "E": {
+      "item": "gtceu:emitter.uv"
+    },
+    "H": {
+      "item": "gtceu:hull.uv"
+    },
+    "I": {
+      "tag": "forge:uhv_circuits"
+    },
+    "R": {
+      "item": "gtceu:robot.arm.uv"
+    },
+    "W": {
+      "item": "gtceu:cable_single.yttrium_barium_cuprate"
+    }
+  },
+  "pattern": [
+    "RIE",
+    "CHC",
+    "WIW"
+  ],
+  "result": {
+    "item": "gtceu:circuit_assembler.uv"
+  }
+}

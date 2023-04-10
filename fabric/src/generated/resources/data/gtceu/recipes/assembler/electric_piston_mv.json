@@ -9,7 +9,7 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "c:sticks/aluminium"
+          "tag": "c:aluminium_rods"
         }
       },
       {
@@ -18,7 +18,9 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "c:cables/single/copper"
+          "ingredient": {
+            "item": "gtceu:cable_single.copper"
+          }
         }
       },
       {
@@ -27,7 +29,7 @@
           "type": "gtceu:sized",
           "count": 3,
           "fabric:type": "gtceu:sized",
-          "tag": "c:plates/aluminium"
+          "tag": "c:aluminium_plates"
         }
       },
       {
@@ -36,7 +38,7 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "c:gears/small/aluminium"
+          "tag": "c:aluminium_small_gears"
         }
       },
       {

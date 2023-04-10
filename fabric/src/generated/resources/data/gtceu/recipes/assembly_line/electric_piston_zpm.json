@@ -31,7 +31,7 @@
           "type": "gtceu:sized",
           "count": 4,
           "fabric:type": "gtceu:sized",
-          "tag": "c:plates/osmiridium"
+          "tag": "c:osmiridium_plates"
         }
       },
       {
@@ -40,7 +40,7 @@
           "type": "gtceu:sized",
           "count": 4,
           "fabric:type": "gtceu:sized",
-          "tag": "c:rings/osmiridium"
+          "tag": "c:osmiridium_rings"
         }
       },
       {
@@ -49,7 +49,7 @@
           "type": "gtceu:sized",
           "count": 16,
           "fabric:type": "gtceu:sized",
-          "tag": "c:rounds/osmiridium"
+          "tag": "c:osmiridium_rounds"
         }
       },
       {
@@ -58,7 +58,7 @@
           "type": "gtceu:sized",
           "count": 4,
           "fabric:type": "gtceu:sized",
-          "tag": "c:sticks/osmiridium"
+          "tag": "c:osmiridium_rods"
         }
       },
       {
@@ -67,7 +67,7 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "c:gears/osmiridium"
+          "tag": "c:osmiridium_gears"
         }
       },
       {
@@ -76,7 +76,7 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "c:gears/small/osmiridium"
+          "tag": "c:osmiridium_small_gears"
         }
       },
       {
@@ -85,7 +85,9 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "c:cables/single/vanadium_gallium"
+          "ingredient": {
+            "item": "gtceu:cable_single.vanadium_gallium"
+          }
         }
       }
     ]

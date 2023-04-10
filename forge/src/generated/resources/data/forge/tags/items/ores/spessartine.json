@@ -1,13 +1,12 @@
 {
   "values": [
-    "gtceu:ore_spessartine",
-    "gtceu:ore_basalt_spessartine",
-    "gtceu:ore_sand_spessartine",
-    "gtceu:ore_granite_spessartine",
-    "gtceu:ore_andesite_spessartine",
-    "gtceu:ore_endstone_spessartine",
-    "gtceu:ore_red_sand_spessartine",
-    "gtceu:ore_netherrack_spessartine",
-    "gtceu:ore_diorite_spessartine"
+    "gtceu:deepslate_spessartine",
+    "gtceu:sand_spessartine",
+    "gtceu:basalt_spessartine",
+    "gtceu:granite_spessartine",
+    "gtceu:andesite_spessartine",
+    "gtceu:red_sand_spessartine",
+    "gtceu:stone_spessartine",
+    "gtceu:diorite_spessartine"
   ]
 }

@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:deepslate_quartzite",
+    "gtceu:sand_quartzite",
+    "gtceu:basalt_quartzite",
+    "gtceu:granite_quartzite",
+    "gtceu:andesite_quartzite",
+    "gtceu:red_sand_quartzite",
+    "gtceu:stone_quartzite",
+    "gtceu:diorite_quartzite"
+  ]
+}

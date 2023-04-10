@@ -2,13 +2,13 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:circuit/uv"
+      "tag": "c:uv_circuits"
     },
     "G": {
       "tag": "c:glass"
     },
     "I": {
-      "tag": "c:plates/darmstadtium"
+      "tag": "c:darmstadtium_plates"
     },
     "M": {
       "item": "gtceu:hull.uv"

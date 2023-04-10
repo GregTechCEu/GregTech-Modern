@@ -18,7 +18,7 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "c:foils/polybenzimidazole"
+          "tag": "c:polybenzimidazole_foils"
         }
       },
       {
@@ -27,7 +27,7 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "c:foils/hsss"
+          "tag": "c:hsss_foils"
         }
       }
     ]

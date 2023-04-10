@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:deepslate_goethite",
+    "gtceu:sand_goethite",
+    "gtceu:basalt_goethite",
+    "gtceu:granite_goethite",
+    "gtceu:andesite_goethite",
+    "gtceu:red_sand_goethite",
+    "gtceu:stone_goethite",
+    "gtceu:diorite_goethite"
+  ]
+}

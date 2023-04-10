@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "item": "minecraft:cobblestone_slab"
+    },
+    "S": {
+      "tag": "c:iron_screws"
+    },
+    "W": {
+      "item": "gtceu:treated_wood_plank"
+    },
+    "d": {
+      "tag": "c:tool/screwdriver"
+    },
+    "h": {
+      "tag": "c:tool/hammer"
+    }
+  },
+  "pattern": [
+    "SWS",
+    "dCh"
+  ],
+  "result": {
+    "count": 2,
+    "item": "gtceu:casing_pump_deck"
+  }
+}

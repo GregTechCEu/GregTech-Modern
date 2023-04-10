@@ -1,13 +1,12 @@
 {
   "values": [
-    "gtceu:ore_apatite",
-    "gtceu:ore_basalt_apatite",
-    "gtceu:ore_sand_apatite",
-    "gtceu:ore_granite_apatite",
-    "gtceu:ore_andesite_apatite",
-    "gtceu:ore_endstone_apatite",
-    "gtceu:ore_red_sand_apatite",
-    "gtceu:ore_netherrack_apatite",
-    "gtceu:ore_diorite_apatite"
+    "gtceu:deepslate_apatite",
+    "gtceu:sand_apatite",
+    "gtceu:basalt_apatite",
+    "gtceu:granite_apatite",
+    "gtceu:andesite_apatite",
+    "gtceu:red_sand_apatite",
+    "gtceu:stone_apatite",
+    "gtceu:diorite_apatite"
   ]
 }

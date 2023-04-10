@@ -18,7 +18,7 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "c:frames/naquadah_alloy"
+          "tag": "c:naquadah_alloy_frames"
         }
       },
       {
@@ -27,7 +27,7 @@
           "type": "gtceu:sized",
           "count": 6,
           "fabric:type": "gtceu:sized",
-          "tag": "c:plates/naquadah_alloy"
+          "tag": "c:naquadah_alloy_plates"
         }
       },
       {
@@ -53,7 +53,7 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "c:circuit/zpm"
+          "tag": "c:zpm_circuits"
         }
       },
       {
@@ -62,7 +62,7 @@
           "type": "gtceu:sized",
           "count": 64,
           "fabric:type": "gtceu:sized",
-          "tag": "c:wires/fine/uranium_rhodium_dinaquadide"
+          "tag": "c:uranium_rhodium_dinaquadide_fine_wires"
         }
       },
       {
@@ -71,7 +71,7 @@
           "type": "gtceu:sized",
           "count": 64,
           "fabric:type": "gtceu:sized",
-          "tag": "c:wires/fine/uranium_rhodium_dinaquadide"
+          "tag": "c:uranium_rhodium_dinaquadide_fine_wires"
         }
       },
       {
@@ -80,7 +80,9 @@
           "type": "gtceu:sized",
           "count": 4,
           "fabric:type": "gtceu:sized",
-          "tag": "c:cables/single/vanadium_gallium"
+          "ingredient": {
+            "item": "gtceu:cable_single.vanadium_gallium"
+          }
         }
       }
     ]

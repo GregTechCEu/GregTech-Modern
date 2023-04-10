@@ -11,7 +11,7 @@
       "item": "gtceu:robot.arm.iv"
     },
     "S": {
-      "tag": "c:circuit/iv"
+      "tag": "c:iv_circuits"
     }
   },
   "pattern": [

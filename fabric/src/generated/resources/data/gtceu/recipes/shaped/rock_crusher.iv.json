@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:cables/single/platinum"
+      "item": "gtceu:cable_single.platinum"
     },
     "G": {
       "tag": "c:glass"

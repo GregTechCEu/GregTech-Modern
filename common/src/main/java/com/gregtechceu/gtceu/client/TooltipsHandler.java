@@ -1,11 +1,15 @@
 package com.gregtechceu.gtceu.client;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
+import com.gregtechceu.gtceu.data.lang.LangHandler;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 
@@ -18,6 +22,10 @@ import java.util.List;
  */
 @Environment(EnvType.CLIENT)
 public class TooltipsHandler {
+
+    private static final String ITEM_PREFIX = "item." + GTCEu.MOD_ID;
+    private static final String BLOCK_PREFIX = "block." + GTCEu.MOD_ID;
+
     public static void appendTooltips(ItemStack stack, TooltipFlag flag, List<Component> tooltips) {
         // Energy Item
         var energyItem = GTCapabilityHelper.getElectricItem(stack);
@@ -30,10 +38,23 @@ public class TooltipsHandler {
 
         // Formula
         var unificationEntry = ChemicalHelper.getUnificationEntry(stack.getItem());
-
         if (unificationEntry != null && unificationEntry.material != null) {
             if (unificationEntry.material.getChemicalFormula() != null && !unificationEntry.material.getChemicalFormula().isEmpty())
-                tooltips.add(Component.literal(unificationEntry.material.getChemicalFormula()).withStyle(ChatFormatting.YELLOW));
+                tooltips.add(1, Component.literal(unificationEntry.material.getChemicalFormula()).withStyle(ChatFormatting.YELLOW));
+        }
+
+        // Block/Item custom tooltips
+        String translationKey = stack.getDescriptionId();
+        if (translationKey.startsWith(ITEM_PREFIX) || translationKey.startsWith(BLOCK_PREFIX)) {
+            String tooltipKey = translationKey + ".tooltip";
+            if (I18n.exists(tooltipKey)) {
+                tooltips.add(1, Component.translatable(tooltipKey));
+            } else {
+                List<MutableComponent> multiLang = LangHandler.getMultiLang(tooltipKey);
+                if (multiLang != null && multiLang.size() > 0) {
+                    tooltips.addAll(1, multiLang);
+                }
+            }
         }
     }
 }

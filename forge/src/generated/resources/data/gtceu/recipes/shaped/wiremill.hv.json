@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "forge:circuit/hv"
+      "tag": "forge:hv_circuits"
     },
     "E": {
       "item": "gtceu:electric.motor.hv"
@@ -11,7 +11,7 @@
       "item": "gtceu:hull.hv"
     },
     "W": {
-      "tag": "forge:cables/single/gold"
+      "item": "gtceu:cable_single.gold"
     }
   },
   "pattern": [

@@ -1,13 +1,12 @@
 {
   "values": [
-    "gtceu:ore_soapstone",
-    "gtceu:ore_basalt_soapstone",
-    "gtceu:ore_sand_soapstone",
-    "gtceu:ore_granite_soapstone",
-    "gtceu:ore_andesite_soapstone",
-    "gtceu:ore_endstone_soapstone",
-    "gtceu:ore_red_sand_soapstone",
-    "gtceu:ore_netherrack_soapstone",
-    "gtceu:ore_diorite_soapstone"
+    "gtceu:deepslate_soapstone",
+    "gtceu:sand_soapstone",
+    "gtceu:basalt_soapstone",
+    "gtceu:granite_soapstone",
+    "gtceu:andesite_soapstone",
+    "gtceu:red_sand_soapstone",
+    "gtceu:stone_soapstone",
+    "gtceu:diorite_soapstone"
   ]
 }

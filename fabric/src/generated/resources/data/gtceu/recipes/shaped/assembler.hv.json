@@ -5,7 +5,7 @@
       "item": "gtceu:robot.arm.hv"
     },
     "C": {
-      "tag": "c:circuit/hv"
+      "tag": "c:hv_circuits"
     },
     "M": {
       "item": "gtceu:hull.hv"
@@ -14,7 +14,7 @@
       "item": "gtceu:conveyor.module.hv"
     },
     "W": {
-      "tag": "c:cables/single/gold"
+      "item": "gtceu:cable_single.gold"
     }
   },
   "pattern": [

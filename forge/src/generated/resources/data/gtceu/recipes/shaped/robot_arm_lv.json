@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "forge:cables/single/tin"
+      "item": "gtceu:cable_single.tin"
     },
     "M": {
       "item": "gtceu:electric.motor.lv"
@@ -11,10 +11,10 @@
       "item": "gtceu:electric.piston.lv"
     },
     "R": {
-      "tag": "forge:sticks/steel"
+      "tag": "forge:rods/steel"
     },
     "X": {
-      "tag": "forge:circuit/lv"
+      "tag": "forge:lv_circuits"
     }
   },
   "pattern": [

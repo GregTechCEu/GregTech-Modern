@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:cables/single/copper"
+      "item": "gtceu:cable_single.copper"
     },
     "G": {
       "tag": "c:glass"
@@ -17,7 +17,7 @@
       "item": "gtceu:electric.piston.mv"
     },
     "W": {
-      "tag": "c:gems/diamond"
+      "tag": "c:diamond_gems"
     }
   },
   "pattern": [

@@ -2,22 +2,22 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:circuit/mv"
+      "tag": "c:mv_circuits"
     },
     "M": {
       "item": "gtceu:hull.mv"
     },
     "S": {
-      "tag": "c:sticks/steel"
+      "tag": "c:steel_rods"
     },
     "V": {
       "item": "gtceu:conveyor.module.mv"
     },
     "W": {
-      "tag": "c:cables/single/copper"
+      "item": "gtceu:cable_single.copper"
     },
     "Z": {
-      "tag": "c:wires/double/copper"
+      "item": "gtceu:wire_double.copper"
     }
   },
   "pattern": [

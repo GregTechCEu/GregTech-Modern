@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:circuit/uv"
+      "tag": "c:uv_circuits"
     },
     "G": {
       "tag": "c:glass"
@@ -11,13 +11,13 @@
       "item": "gtceu:hull.uv"
     },
     "O": {
-      "tag": "c:wires/quadruple/naquadah_alloy"
+      "item": "gtceu:wire_quadruple.naquadah_alloy"
     },
     "P": {
       "item": "gtceu:electric.pump.uv"
     },
     "W": {
-      "tag": "c:cables/single/yttrium_barium_cuprate"
+      "item": "gtceu:cable_single.yttrium_barium_cuprate"
     }
   },
   "pattern": [

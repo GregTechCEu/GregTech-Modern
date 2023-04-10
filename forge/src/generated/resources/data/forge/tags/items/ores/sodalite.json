@@ -1,13 +1,12 @@
 {
   "values": [
-    "gtceu:ore_sodalite",
-    "gtceu:ore_basalt_sodalite",
-    "gtceu:ore_sand_sodalite",
-    "gtceu:ore_granite_sodalite",
-    "gtceu:ore_andesite_sodalite",
-    "gtceu:ore_endstone_sodalite",
-    "gtceu:ore_red_sand_sodalite",
-    "gtceu:ore_netherrack_sodalite",
-    "gtceu:ore_diorite_sodalite"
+    "gtceu:deepslate_sodalite",
+    "gtceu:sand_sodalite",
+    "gtceu:basalt_sodalite",
+    "gtceu:granite_sodalite",
+    "gtceu:andesite_sodalite",
+    "gtceu:red_sand_sodalite",
+    "gtceu:stone_sodalite",
+    "gtceu:diorite_sodalite"
   ]
 }

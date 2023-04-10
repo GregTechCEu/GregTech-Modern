@@ -73,7 +73,7 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
         return copied;
     }
 
-    public void modifyContents(Map<RecipeCapability<?>, List<Content>> contents, ContentModifier modifier) {
+    public static void modifyContents(Map<RecipeCapability<?>, List<Content>> contents, ContentModifier modifier) {
         for (Map.Entry<RecipeCapability<?>, List<Content>> entry : contents.entrySet()) {
             var cap = entry.getKey();
             for (Content content : entry.getValue()) {

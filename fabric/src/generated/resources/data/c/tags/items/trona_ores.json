@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:deepslate_trona",
+    "gtceu:sand_trona",
+    "gtceu:basalt_trona",
+    "gtceu:granite_trona",
+    "gtceu:andesite_trona",
+    "gtceu:red_sand_trona",
+    "gtceu:stone_trona",
+    "gtceu:diorite_trona"
+  ]
+}

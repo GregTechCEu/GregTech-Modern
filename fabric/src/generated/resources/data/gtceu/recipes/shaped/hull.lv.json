@@ -2,16 +2,16 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:cables/single/tin"
+      "item": "gtceu:cable_single.tin"
     },
     "H": {
       "item": "gtceu:hull_casing_lv"
     },
     "L": {
-      "tag": "c:plates/steel"
+      "tag": "c:steel_plates"
     },
     "P": {
-      "tag": "c:plates/wrought_iron"
+      "tag": "c:wrought_iron_plates"
     }
   },
   "pattern": [

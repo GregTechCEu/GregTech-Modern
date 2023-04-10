@@ -24,7 +24,7 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "c:component/resistor"
+          "tag": "c:resistors"
         }
       },
       {
@@ -33,7 +33,9 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "c:wires/single/red_alloy"
+          "ingredient": {
+            "item": "gtceu:wire_single.red_alloy"
+          }
         }
       },
       {
@@ -42,7 +44,7 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "c:circuit/ulv"
+          "tag": "c:ulv_circuits"
         }
       }
     ]

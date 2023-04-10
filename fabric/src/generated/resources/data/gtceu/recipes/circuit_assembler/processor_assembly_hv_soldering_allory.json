@@ -38,7 +38,7 @@
           "type": "gtceu:sized",
           "count": 4,
           "fabric:type": "gtceu:sized",
-          "tag": "c:component/inductor"
+          "tag": "c:inductors"
         }
       },
       {
@@ -47,7 +47,7 @@
           "type": "gtceu:sized",
           "count": 8,
           "fabric:type": "gtceu:sized",
-          "tag": "c:component/capacitor"
+          "tag": "c:capacitors"
         }
       },
       {
@@ -67,7 +67,7 @@
           "type": "gtceu:sized",
           "count": 8,
           "fabric:type": "gtceu:sized",
-          "tag": "c:wires/fine/red_alloy"
+          "tag": "c:red_alloy_fine_wires"
         }
       }
     ]

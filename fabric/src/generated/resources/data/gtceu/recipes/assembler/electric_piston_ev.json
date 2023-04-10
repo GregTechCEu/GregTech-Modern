@@ -9,7 +9,7 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "c:sticks/titanium"
+          "tag": "c:titanium_rods"
         }
       },
       {
@@ -18,7 +18,9 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "c:cables/single/aluminium"
+          "ingredient": {
+            "item": "gtceu:cable_single.aluminium"
+          }
         }
       },
       {
@@ -27,7 +29,7 @@
           "type": "gtceu:sized",
           "count": 3,
           "fabric:type": "gtceu:sized",
-          "tag": "c:plates/titanium"
+          "tag": "c:titanium_plates"
         }
       },
       {
@@ -36,7 +38,7 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "c:gears/small/titanium"
+          "tag": "c:titanium_small_gears"
         }
       },
       {

@@ -1,13 +1,12 @@
 {
   "values": [
-    "gtceu:ore_pollucite",
-    "gtceu:ore_basalt_pollucite",
-    "gtceu:ore_sand_pollucite",
-    "gtceu:ore_granite_pollucite",
-    "gtceu:ore_andesite_pollucite",
-    "gtceu:ore_endstone_pollucite",
-    "gtceu:ore_red_sand_pollucite",
-    "gtceu:ore_netherrack_pollucite",
-    "gtceu:ore_diorite_pollucite"
+    "gtceu:deepslate_pollucite",
+    "gtceu:sand_pollucite",
+    "gtceu:basalt_pollucite",
+    "gtceu:granite_pollucite",
+    "gtceu:andesite_pollucite",
+    "gtceu:red_sand_pollucite",
+    "gtceu:stone_pollucite",
+    "gtceu:diorite_pollucite"
   ]
 }

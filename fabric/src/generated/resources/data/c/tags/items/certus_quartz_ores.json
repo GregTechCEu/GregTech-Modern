@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:deepslate_certus_quartz",
+    "gtceu:sand_certus_quartz",
+    "gtceu:basalt_certus_quartz",
+    "gtceu:granite_certus_quartz",
+    "gtceu:andesite_certus_quartz",
+    "gtceu:red_sand_certus_quartz",
+    "gtceu:stone_certus_quartz",
+    "gtceu:diorite_certus_quartz"
+  ]
+}

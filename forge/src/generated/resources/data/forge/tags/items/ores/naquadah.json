@@ -1,13 +1,12 @@
 {
   "values": [
-    "gtceu:ore_naquadah",
-    "gtceu:ore_basalt_naquadah",
-    "gtceu:ore_sand_naquadah",
-    "gtceu:ore_granite_naquadah",
-    "gtceu:ore_andesite_naquadah",
-    "gtceu:ore_endstone_naquadah",
-    "gtceu:ore_red_sand_naquadah",
-    "gtceu:ore_netherrack_naquadah",
-    "gtceu:ore_diorite_naquadah"
+    "gtceu:deepslate_naquadah",
+    "gtceu:sand_naquadah",
+    "gtceu:basalt_naquadah",
+    "gtceu:granite_naquadah",
+    "gtceu:andesite_naquadah",
+    "gtceu:red_sand_naquadah",
+    "gtceu:stone_naquadah",
+    "gtceu:diorite_naquadah"
   ]
 }

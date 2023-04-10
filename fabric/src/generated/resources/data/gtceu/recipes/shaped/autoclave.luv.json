@@ -2,13 +2,13 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:circuit/luv"
+      "tag": "c:luv_circuits"
     },
     "G": {
       "tag": "c:glass"
     },
     "I": {
-      "tag": "c:plates/rhodium_plated_palladium"
+      "tag": "c:rhodium_plated_palladium_plates"
     },
     "M": {
       "item": "gtceu:hull.luv"

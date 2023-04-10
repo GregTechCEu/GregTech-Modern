@@ -8,7 +8,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.stack.ItemMaterialInfo;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
-import com.gregtechceu.gtceu.api.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.data.recipe.builder.ShapedRecipeBuilder;
 import com.gregtechceu.gtceu.data.recipe.builder.ShapelessRecipeBuilder;
 import com.gregtechceu.gtceu.data.recipe.builder.SmeltingRecipeBuilder;
@@ -119,9 +119,10 @@ public class VanillaRecipeHelper {
                 } else if (content instanceof ItemLike itemLike) {
                     builder.define(sign, itemLike);
                 } else if (content instanceof UnificationEntry entry) {
-                    builder.define(sign, ChemicalHelper.getTag(entry.tagPrefix, entry.material));
-                } else if (content instanceof TagPrefix tagPrefix && tagPrefix.getItemTags().length > 0) {
-                    builder.define(sign, tagPrefix.getItemTags()[0]);
+                    TagKey<Item> tag = ChemicalHelper.getTag(entry.tagPrefix, entry.material);
+                    if (tag != null) {
+                        builder.define(sign, tag);
+                    } else builder.define(sign, ChemicalHelper.get(entry.tagPrefix, entry.material));
                 } else if (content instanceof ItemEntry<?> entry) {
                     builder.define(sign, entry.asStack());
                 }
@@ -149,7 +150,10 @@ public class VanillaRecipeHelper {
             } else if (content instanceof ItemLike itemLike) {
                 builder.requires(itemLike);
             } else if (content instanceof UnificationEntry entry) {
-                builder.requires(ChemicalHelper.getTag(entry.tagPrefix, entry.material));
+                TagKey<Item> tag = ChemicalHelper.getTag(entry.tagPrefix, entry.material);
+                if (tag != null) {
+                    builder.requires(tag);
+                } else builder.requires(ChemicalHelper.get(entry.tagPrefix, entry.material));
             } else if (content instanceof ItemEntry<?> entry) {
                 builder.requires(entry.asStack());
             } else if (content instanceof Character c) {

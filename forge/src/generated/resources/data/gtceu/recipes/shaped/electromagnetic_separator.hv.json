@@ -2,22 +2,22 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "forge:circuit/hv"
+      "tag": "forge:hv_circuits"
     },
     "M": {
       "item": "gtceu:hull.hv"
     },
     "S": {
-      "tag": "forge:sticks/steel"
+      "tag": "forge:rods/steel"
     },
     "V": {
       "item": "gtceu:conveyor.module.hv"
     },
     "W": {
-      "tag": "forge:cables/single/gold"
+      "item": "gtceu:cable_single.gold"
     },
     "Z": {
-      "tag": "forge:wires/double/silver"
+      "item": "gtceu:wire_double.silver"
     }
   },
   "pattern": [

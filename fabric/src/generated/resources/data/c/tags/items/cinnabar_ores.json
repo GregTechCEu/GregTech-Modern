@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:deepslate_cinnabar",
+    "gtceu:sand_cinnabar",
+    "gtceu:basalt_cinnabar",
+    "gtceu:granite_cinnabar",
+    "gtceu:andesite_cinnabar",
+    "gtceu:red_sand_cinnabar",
+    "gtceu:stone_cinnabar",
+    "gtceu:diorite_cinnabar"
+  ]
+}

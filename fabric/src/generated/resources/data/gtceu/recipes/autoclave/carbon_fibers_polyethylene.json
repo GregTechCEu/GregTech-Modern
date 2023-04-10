@@ -7,7 +7,7 @@
         "chance": 1.0,
         "content": {
           "amount": 0,
-          "fluid": "gtceu:plastic"
+          "fluid": "gtceu:polyethylene"
         }
       }
     ],
@@ -18,7 +18,7 @@
           "type": "gtceu:sized",
           "count": 4,
           "fabric:type": "gtceu:sized",
-          "tag": "c:dusts/carbon"
+          "tag": "c:carbon_dusts"
         }
       }
     ]

@@ -9,7 +9,7 @@
           "type": "gtceu:sized",
           "count": 4,
           "fabric:type": "gtceu:sized",
-          "tag": "forge:sticks/iridium"
+          "tag": "forge:rods/iridium"
         }
       },
       {
@@ -18,7 +18,9 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "forge:cables/single/tungsten"
+          "ingredient": {
+            "item": "gtceu:cable_single.tungsten"
+          }
         }
       },
       {
@@ -27,7 +29,7 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "forge:circuit/iv"
+          "tag": "forge:iv_circuits"
         }
       },
       {

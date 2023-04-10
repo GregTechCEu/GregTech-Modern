@@ -5,10 +5,10 @@
       "item": "gtceu:circuit_board.basic"
     },
     "C": {
-      "tag": "c:cables/single/red_alloy"
+      "item": "gtceu:cable_single.red_alloy"
     },
     "P": {
-      "tag": "c:plates/steel"
+      "tag": "c:steel_plates"
     },
     "R": {
       "item": "gtceu:component.resistor"

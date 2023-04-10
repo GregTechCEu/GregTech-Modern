@@ -74,7 +74,9 @@
           "type": "gtceu:sized",
           "count": 48,
           "fabric:type": "gtceu:sized",
-          "tag": "forge:wires/single/annealed_copper"
+          "ingredient": {
+            "item": "gtceu:wire_single.annealed_copper"
+          }
         }
       }
     ]

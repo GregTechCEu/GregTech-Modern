@@ -24,7 +24,7 @@
           "type": "gtceu:sized",
           "count": 12,
           "fabric:type": "gtceu:sized",
-          "tag": "c:foils/annealed_copper"
+          "tag": "c:annealed_copper_foils"
         }
       }
     ]

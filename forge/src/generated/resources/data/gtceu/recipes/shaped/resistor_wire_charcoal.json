@@ -11,7 +11,7 @@
       "item": "gtceu:rubber_drop"
     },
     "W": {
-      "tag": "forge:wires/single/copper"
+      "item": "gtceu:wire_single.copper"
     }
   },
   "pattern": [

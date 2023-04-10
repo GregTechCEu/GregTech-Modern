@@ -11,7 +11,7 @@
       "item": "gtceu:hull.hv"
     },
     "P": {
-      "tag": "forge:circuit/hv"
+      "tag": "forge:hv_circuits"
     }
   },
   "pattern": [

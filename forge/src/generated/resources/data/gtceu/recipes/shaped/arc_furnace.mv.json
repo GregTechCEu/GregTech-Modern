@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "forge:circuit/mv"
+      "tag": "forge:mv_circuits"
     },
     "G": {
       "tag": "forge:dusts/graphite"
@@ -14,7 +14,7 @@
       "tag": "forge:plates/aluminium"
     },
     "W": {
-      "tag": "forge:cables/quadruple/copper"
+      "item": "gtceu:cable_quadruple.copper"
     }
   },
   "pattern": [

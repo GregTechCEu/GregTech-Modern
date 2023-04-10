@@ -1,13 +1,12 @@
 {
   "values": [
-    "gtceu:ore_lepidolite",
-    "gtceu:ore_basalt_lepidolite",
-    "gtceu:ore_sand_lepidolite",
-    "gtceu:ore_granite_lepidolite",
-    "gtceu:ore_andesite_lepidolite",
-    "gtceu:ore_endstone_lepidolite",
-    "gtceu:ore_red_sand_lepidolite",
-    "gtceu:ore_netherrack_lepidolite",
-    "gtceu:ore_diorite_lepidolite"
+    "gtceu:deepslate_lepidolite",
+    "gtceu:sand_lepidolite",
+    "gtceu:basalt_lepidolite",
+    "gtceu:granite_lepidolite",
+    "gtceu:andesite_lepidolite",
+    "gtceu:red_sand_lepidolite",
+    "gtceu:stone_lepidolite",
+    "gtceu:diorite_lepidolite"
   ]
 }

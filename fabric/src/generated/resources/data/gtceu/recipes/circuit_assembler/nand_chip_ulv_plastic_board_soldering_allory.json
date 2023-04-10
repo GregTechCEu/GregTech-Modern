@@ -30,7 +30,7 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "c:bolts/red_alloy"
+          "tag": "c:red_alloy_bolts"
         }
       },
       {
@@ -39,7 +39,7 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "c:wires/fine/tin"
+          "tag": "c:tin_fine_wires"
         }
       }
     ]

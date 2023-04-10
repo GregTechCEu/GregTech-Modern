@@ -2,16 +2,16 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:cables/single/europium"
+      "item": "gtceu:cable_single.europium"
     },
     "H": {
       "item": "gtceu:hull_casing_uhv"
     },
     "L": {
-      "tag": "c:plates/neutronium"
+      "tag": "c:neutronium_plates"
     },
     "P": {
-      "tag": "c:plates/polybenzimidazole"
+      "tag": "c:polybenzimidazole_plates"
     }
   },
   "pattern": [

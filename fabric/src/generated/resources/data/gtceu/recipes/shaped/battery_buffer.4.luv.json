@@ -8,7 +8,7 @@
       "tag": "c:chests"
     },
     "W": {
-      "tag": "c:wires/quadruple/niobium_titanium"
+      "item": "gtceu:wire_quadruple.niobium_titanium"
     }
   },
   "pattern": [

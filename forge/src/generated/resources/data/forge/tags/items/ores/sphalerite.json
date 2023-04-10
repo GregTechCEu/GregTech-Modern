@@ -1,13 +1,12 @@
 {
   "values": [
-    "gtceu:ore_sphalerite",
-    "gtceu:ore_basalt_sphalerite",
-    "gtceu:ore_sand_sphalerite",
-    "gtceu:ore_granite_sphalerite",
-    "gtceu:ore_andesite_sphalerite",
-    "gtceu:ore_endstone_sphalerite",
-    "gtceu:ore_red_sand_sphalerite",
-    "gtceu:ore_netherrack_sphalerite",
-    "gtceu:ore_diorite_sphalerite"
+    "gtceu:deepslate_sphalerite",
+    "gtceu:sand_sphalerite",
+    "gtceu:basalt_sphalerite",
+    "gtceu:granite_sphalerite",
+    "gtceu:andesite_sphalerite",
+    "gtceu:red_sand_sphalerite",
+    "gtceu:stone_sphalerite",
+    "gtceu:diorite_sphalerite"
   ]
 }

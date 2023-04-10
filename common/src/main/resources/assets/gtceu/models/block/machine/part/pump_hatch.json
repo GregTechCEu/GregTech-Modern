@@ -1,0 +1,39 @@
+{
+  "parent": "block/block",
+  "textures": {
+    "particle": "gtceu:block/casings/pump_deck/side",
+    "top": "gtceu:block/casings/pump_deck/top",
+    "bot": "gtceu:block/casings/pump_deck/bottom",
+    "side": "gtceu:block/casings/pump_deck/side",
+    "overlay_hatch": "gtceu:block/overlay/machine/overlay_pipe_out",
+    "overlay_fluid_hatch": "gtceu:block/overlay/machine/overlay_fluid_hatch"
+  },
+  "elements": [
+    {
+      "from": [0, 0, 0],
+      "to": [16, 16, 16],
+      "faces": {
+        "north": {"texture": "#side", "cullface": "north"},
+        "east": {"texture": "#side", "cullface": "east"},
+        "south": {"texture": "#side", "cullface": "south"},
+        "west": {"texture": "#side", "cullface": "west"},
+        "up": {"texture": "#top", "cullface": "up"},
+        "down": {"texture": "#bot", "cullface": "down"}
+      }
+    },
+    {
+      "from": [0, 0, 0],
+      "to": [16, 16, 0],
+      "faces": {
+        "north": {"uv": [0, 0, 16, 16], "texture": "#overlay_hatch", "cullface": "north"}
+      }
+    },
+    {
+      "from": [0, 0, 0],
+      "to": [16, 16, 0],
+      "faces": {
+        "north": {"uv": [0, 0, 16, 16], "texture": "#overlay_fluid_hatch", "cullface": "north", "emissivity":  15}
+      }
+    }
+  ]
+}

@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:circuit/luv"
+      "tag": "c:luv_circuits"
     },
     "F": {
       "item": "gtceu:field.generator.ev"
@@ -11,7 +11,7 @@
       "item": "gtceu:hull.luv"
     },
     "P": {
-      "tag": "c:plates/dense/rhodium_plated_palladium"
+      "tag": "c:rhodium_plated_palladium_dense_plates"
     }
   },
   "pattern": [

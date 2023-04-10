@@ -5,7 +5,7 @@
       "tag": "c:chests"
     },
     "C": {
-      "tag": "c:circuit/mv"
+      "tag": "c:mv_circuits"
     },
     "G": {
       "tag": "c:glass"
@@ -17,7 +17,7 @@
       "item": "gtceu:electric.pump.mv"
     },
     "W": {
-      "tag": "c:cables/single/copper"
+      "item": "gtceu:cable_single.copper"
     }
   },
   "pattern": [

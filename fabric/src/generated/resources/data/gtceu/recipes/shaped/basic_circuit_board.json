@@ -5,7 +5,7 @@
       "item": "gtceu:board.coated"
     },
     "W": {
-      "tag": "c:wires/single/copper"
+      "item": "gtceu:wire_single.copper"
     }
   },
   "pattern": [

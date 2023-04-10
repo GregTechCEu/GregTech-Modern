@@ -13,7 +13,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputBoth;
 import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
-import com.gregtechceu.gtceu.data.data.LangHandler;
+import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.texture.*;
 import com.lowdragmc.lowdraglib.gui.widget.*;
@@ -32,6 +32,7 @@ import lombok.Setter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
@@ -319,7 +320,7 @@ public class SimpleTieredMachine extends WorkableTieredMachine implements IAutoO
                 .widget(new LabelWidget(5, 5, getBlockState().getBlock().getDescriptionId()))
                 .widget(new SlotWidget(chargerInventory, 0, 79, 24 + size.height, true, true)
                         .setBackground(GuiTextures.SLOT, GuiTextures.CHARGER_OVERLAY)
-                        .setHoverTooltips(LangHandler.getMultiLang("gtceu.gui.charger_slot.tooltip", GTValues.VNF[getTier()], GTValues.VNF[getTier()])))
+                        .setHoverTooltips(LangHandler.getMultiLang("gtceu.gui.charger_slot.tooltip", GTValues.VNF[getTier()], GTValues.VNF[getTier()]).toArray(new MutableComponent[0])))
                 .widget(new PredicatedImageWidget(79, (size.height - 18) / 2 + 20, 18, 18, new ResourceTexture("gtceu:textures/gui/base/indicator_no_energy.png"))
                         .setPredicate(recipeLogic::isHasNotEnoughEnergy))
                 .widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(), GuiTextures.SLOT, 7, 46 + size.height, true));
@@ -346,7 +347,7 @@ public class SimpleTieredMachine extends WorkableTieredMachine implements IAutoO
             if (!isRemote()) {
                 recipeLogic.markLastRecipeDirty();
             }
-        }).setIndexSupplier(() -> overclockTier).setHoverTooltips(LangHandler.getMultiLang("gtceu.gui.overclock.description")));
+        }).setIndexSupplier(() -> overclockTier).setHoverTooltips(LangHandler.getMultiLang("gtceu.gui.overclock.description").toArray(new MutableComponent[0])));
 
         if (exportItems.storage.getSlots() + exportFluids.storages.length <= 9) {
             SlotWidget circuitSlot = new SlotWidget(circuitInventory.storage, 0, 124, 24 + size.height, true, true)
@@ -377,7 +378,7 @@ public class SimpleTieredMachine extends WorkableTieredMachine implements IAutoO
 
     // Method provided to override
     protected SlotWidget getCircuitSlotTooltip(SlotWidget widget) {
-        widget.setHoverTooltips(LangHandler.getMultiLang("gtceu.gui.configurator_slot.tooltip"));
+        widget.setHoverTooltips(LangHandler.getMultiLang("gtceu.gui.configurator_slot.tooltip").toArray(new MutableComponent[0]));
         return widget;
     }
 

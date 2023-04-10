@@ -81,6 +81,7 @@ public class PipeBlockRenderer implements IRenderer, ICoverableRenderer {
 
     @NotNull
     @Override
+    @Environment(EnvType.CLIENT)
     public TextureAtlasSprite getParticleTexture() {
         return pipeModel.getParticleTexture();
     }

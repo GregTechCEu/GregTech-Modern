@@ -8,7 +8,7 @@
       "tag": "c:chests"
     },
     "W": {
-      "tag": "c:wires/octal/vanadium_gallium"
+      "item": "gtceu:wire_octal.vanadium_gallium"
     }
   },
   "pattern": [

@@ -9,7 +9,7 @@
           "type": "gtceu:sized",
           "count": 4,
           "fabric:type": "gtceu:sized",
-          "tag": "c:sticks/electrum"
+          "tag": "c:electrum_rods"
         }
       },
       {
@@ -18,7 +18,9 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "c:cables/single/copper"
+          "ingredient": {
+            "item": "gtceu:cable_single.copper"
+          }
         }
       },
       {
@@ -27,7 +29,7 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "c:circuit/mv"
+          "tag": "c:mv_circuits"
         }
       },
       {
@@ -36,7 +38,7 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "c:gems/flawless/emerald"
+          "tag": "c:emerald_flawless_gems"
         }
       },
       {

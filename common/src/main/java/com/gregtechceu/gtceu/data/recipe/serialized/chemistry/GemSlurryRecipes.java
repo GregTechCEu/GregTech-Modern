@@ -5,8 +5,8 @@ import net.minecraft.data.recipes.FinishedRecipe;
 import java.util.function.Consumer;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
-import static com.gregtechceu.gtceu.api.tag.TagPrefix.dust;
-import static com.gregtechceu.gtceu.api.tag.TagPrefix.dustTiny;
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.dust;
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.dustTiny;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.CENTRIFUGE_RECIPES;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.MIXER_RECIPES;
@@ -25,7 +25,7 @@ public class GemSlurryRecipes {
         CENTRIFUGE_RECIPES.recipeBuilder("ruby_slurry_centrifuging").duration(320).EUt(VA[HV])
                 .inputFluids(RubySlurry.getFluid(3000))
                 .outputItems(dust, Aluminium, 2)
-                .outputItems(dust, Chrome)
+                .outputItems(dust, Chromium)
                 .chancedOutput(dustTiny, Titanium, 2000, 0)
                 .chancedOutput(dustTiny, Iron, 2000, 0)
                 .chancedOutput(dustTiny, Vanadium, 2000, 0)

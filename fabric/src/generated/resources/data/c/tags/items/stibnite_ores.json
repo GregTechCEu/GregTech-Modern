@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:deepslate_stibnite",
+    "gtceu:sand_stibnite",
+    "gtceu:basalt_stibnite",
+    "gtceu:granite_stibnite",
+    "gtceu:andesite_stibnite",
+    "gtceu:red_sand_stibnite",
+    "gtceu:stone_stibnite",
+    "gtceu:diorite_stibnite"
+  ]
+}

@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.common.CommonProxy;
 import com.gregtechceu.gtceu.common.data.forge.GTFeaturesImpl;
 import com.gregtechceu.gtceu.integration.kjs.builders.machine.MachineBuilder;
 import com.gregtechceu.gtceu.integration.top.forge.TheOneProbePluginImpl;
-import com.gregtechceu.gtceu.api.capability.forge.GTCapabilities;
+import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.forge.SizedIngredientImpl;
 import com.gregtechceu.gtceu.common.data.GTSyncedFieldAccessors;
@@ -74,7 +74,7 @@ public class CommonProxyImpl {
 
     @SubscribeEvent
     public void registerCapabilities(RegisterCapabilitiesEvent event) {
-        GTCapabilities.register(event);
+        GTCapability.register(event);
     }
 
 }

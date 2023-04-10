@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:deepslate_apatite",
+    "gtceu:sand_apatite",
+    "gtceu:basalt_apatite",
+    "gtceu:granite_apatite",
+    "gtceu:andesite_apatite",
+    "gtceu:red_sand_apatite",
+    "gtceu:stone_apatite",
+    "gtceu:diorite_apatite"
+  ]
+}

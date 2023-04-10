@@ -1,13 +1,12 @@
 {
   "values": [
-    "gtceu:ore_tin",
-    "gtceu:ore_basalt_tin",
-    "gtceu:ore_sand_tin",
-    "gtceu:ore_granite_tin",
-    "gtceu:ore_andesite_tin",
-    "gtceu:ore_endstone_tin",
-    "gtceu:ore_red_sand_tin",
-    "gtceu:ore_netherrack_tin",
-    "gtceu:ore_diorite_tin"
+    "gtceu:deepslate_tin",
+    "gtceu:sand_tin",
+    "gtceu:basalt_tin",
+    "gtceu:granite_tin",
+    "gtceu:andesite_tin",
+    "gtceu:red_sand_tin",
+    "gtceu:stone_tin",
+    "gtceu:diorite_tin"
   ]
 }

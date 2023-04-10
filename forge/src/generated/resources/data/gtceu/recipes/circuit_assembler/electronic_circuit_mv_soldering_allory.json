@@ -24,7 +24,7 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "forge:circuit/lv"
+          "tag": "forge:lv_circuits"
         }
       },
       {
@@ -33,7 +33,7 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "forge:component/diode"
+          "tag": "forge:diodes"
         }
       },
       {
@@ -42,7 +42,9 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "forge:wires/single/copper"
+          "ingredient": {
+            "item": "gtceu:wire_single.copper"
+          }
         }
       }
     ]

@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:circuit/iv"
+      "tag": "c:iv_circuits"
     },
     "E": {
       "item": "gtceu:electric.motor.iv"
@@ -11,10 +11,10 @@
       "item": "gtceu:hull.iv"
     },
     "O": {
-      "tag": "c:wires/quadruple/tungsten_steel"
+      "item": "gtceu:wire_quadruple.tungsten_steel"
     },
     "W": {
-      "tag": "c:cables/single/platinum"
+      "item": "gtceu:cable_single.platinum"
     }
   },
   "pattern": [

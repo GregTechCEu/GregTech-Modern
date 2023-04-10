@@ -8,7 +8,7 @@
       "item": "gtceu:component.glass.tube"
     },
     "W": {
-      "tag": "forge:wires/single/copper"
+      "item": "gtceu:wire_single.copper"
     }
   },
   "pattern": [

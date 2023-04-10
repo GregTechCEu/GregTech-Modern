@@ -2,16 +2,16 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "G": {
-      "tag": "c:gems/ender_pearl"
+      "tag": "c:ender_pearl_gems"
     },
     "P": {
-      "tag": "c:plates/steel"
+      "tag": "c:steel_plates"
     },
     "W": {
-      "tag": "c:wires/quadruple/manganese_phosphide"
+      "item": "gtceu:wire_quadruple.manganese_phosphide"
     },
     "X": {
-      "tag": "c:circuit/lv"
+      "tag": "c:lv_circuits"
     }
   },
   "pattern": [

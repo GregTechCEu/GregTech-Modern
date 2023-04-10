@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:deepslate_olivine",
+    "gtceu:sand_olivine",
+    "gtceu:basalt_olivine",
+    "gtceu:granite_olivine",
+    "gtceu:andesite_olivine",
+    "gtceu:red_sand_olivine",
+    "gtceu:stone_olivine",
+    "gtceu:diorite_olivine"
+  ]
+}

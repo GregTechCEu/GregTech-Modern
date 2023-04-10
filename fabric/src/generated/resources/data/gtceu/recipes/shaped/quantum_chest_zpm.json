@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:circuit/zpm"
+      "tag": "c:zpm_circuits"
     },
     "F": {
       "item": "gtceu:field.generator.iv"
@@ -11,7 +11,7 @@
       "item": "gtceu:hull.zpm"
     },
     "P": {
-      "tag": "c:plates/dense/naquadah_alloy"
+      "tag": "c:naquadah_alloy_dense_plates"
     }
   },
   "pattern": [

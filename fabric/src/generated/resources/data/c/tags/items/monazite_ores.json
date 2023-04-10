@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:deepslate_monazite",
+    "gtceu:sand_monazite",
+    "gtceu:basalt_monazite",
+    "gtceu:granite_monazite",
+    "gtceu:andesite_monazite",
+    "gtceu:red_sand_monazite",
+    "gtceu:stone_monazite",
+    "gtceu:diorite_monazite"
+  ]
+}

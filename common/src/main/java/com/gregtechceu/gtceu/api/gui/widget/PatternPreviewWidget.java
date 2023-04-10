@@ -72,7 +72,7 @@ public class PatternPreviewWidget extends WidgetGroup {
                 .setRenderFacing(false)
                 .setRenderFacing(false));
 
-        if (!GTCEu.isIrisLoaded()) {
+        if (!GTCEu.isIrisLoaded() && !LDLib.isEmiLoaded()) {
             if (!RenderSystem.isOnRenderThread()) {
                 RenderSystem.recordRenderCall(sceneWidget::useCacheBuffer);
             } else {

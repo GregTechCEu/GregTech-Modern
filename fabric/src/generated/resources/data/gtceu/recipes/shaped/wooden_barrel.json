@@ -5,7 +5,7 @@
       "tag": "minecraft:planks"
     },
     "R": {
-      "tag": "c:sticks/long/iron"
+      "tag": "c:iron_long_rods"
     },
     "S": {
       "item": "gtceu:rubber_drop"

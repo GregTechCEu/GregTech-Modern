@@ -18,7 +18,7 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "c:frames/hsss"
+          "tag": "c:hsss_frames"
         }
       },
       {
@@ -33,7 +33,7 @@
           "type": "gtceu:sized",
           "count": 4,
           "fabric:type": "gtceu:sized",
-          "tag": "c:sticks/long/ruridit"
+          "tag": "c:ruridit_long_rods"
         }
       },
       {
@@ -48,7 +48,7 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "c:circuit/luv"
+          "tag": "c:luv_circuits"
         }
       },
       {
@@ -57,7 +57,7 @@
           "type": "gtceu:sized",
           "count": 64,
           "fabric:type": "gtceu:sized",
-          "tag": "c:foils/palladium"
+          "tag": "c:palladium_foils"
         }
       },
       {
@@ -66,7 +66,7 @@
           "type": "gtceu:sized",
           "count": 32,
           "fabric:type": "gtceu:sized",
-          "tag": "c:foils/palladium"
+          "tag": "c:palladium_foils"
         }
       },
       {
@@ -75,7 +75,9 @@
           "type": "gtceu:sized",
           "count": 4,
           "fabric:type": "gtceu:sized",
-          "tag": "c:cables/single/niobium_titanium"
+          "ingredient": {
+            "item": "gtceu:cable_single.niobium_titanium"
+          }
         }
       }
     ]

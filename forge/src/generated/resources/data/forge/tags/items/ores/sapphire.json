@@ -1,13 +1,12 @@
 {
   "values": [
-    "gtceu:ore_sapphire",
-    "gtceu:ore_basalt_sapphire",
-    "gtceu:ore_sand_sapphire",
-    "gtceu:ore_granite_sapphire",
-    "gtceu:ore_andesite_sapphire",
-    "gtceu:ore_endstone_sapphire",
-    "gtceu:ore_red_sand_sapphire",
-    "gtceu:ore_netherrack_sapphire",
-    "gtceu:ore_diorite_sapphire"
+    "gtceu:deepslate_sapphire",
+    "gtceu:sand_sapphire",
+    "gtceu:basalt_sapphire",
+    "gtceu:granite_sapphire",
+    "gtceu:andesite_sapphire",
+    "gtceu:red_sand_sapphire",
+    "gtceu:stone_sapphire",
+    "gtceu:diorite_sapphire"
   ]
 }

@@ -2,16 +2,16 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "c:cables/single/aluminium"
+      "item": "gtceu:cable_single.aluminium"
     },
     "G": {
       "item": "gtceu:quantumeye"
     },
     "R": {
-      "tag": "c:sticks/platinum"
+      "tag": "c:platinum_rods"
     },
     "X": {
-      "tag": "c:circuit/ev"
+      "tag": "c:ev_circuits"
     }
   },
   "pattern": [
