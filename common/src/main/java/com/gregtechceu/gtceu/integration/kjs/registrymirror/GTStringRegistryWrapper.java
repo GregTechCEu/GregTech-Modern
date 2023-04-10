@@ -64,7 +64,7 @@ public class GTStringRegistryWrapper<T> extends MappedRegistry<T> {
     }
 
     public Holder<T> register(ResourceKey<T> key, T value, Lifecycle lifecycle) {
-        return this.registerMapping(((IMappedRegistryAccessor)this).getNextId(), key, value, lifecycle);
+        return this.registerMapping(((IMappedRegistryAccessor<T>)this).getNextId(), key, value, lifecycle);
     }
 
     @Override

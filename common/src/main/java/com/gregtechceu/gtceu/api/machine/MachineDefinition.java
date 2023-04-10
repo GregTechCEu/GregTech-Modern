@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.block.IMachineBlock;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.utils.Lazy;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import com.lowdragmc.lowdraglib.utils.ShapeUtils;
 import lombok.Getter;
@@ -44,14 +45,13 @@ public class MachineDefinition implements Supplier<IMachineBlock> {
     private Supplier<BlockEntityType<? extends BlockEntity>> blockEntityTypeSupplier;
     @Setter
     private Function<IMachineBlockEntity, MetaMachine> machineSupplier;
-    @Getter
     @Setter
     @Nullable
     private GTRecipeType recipeType;
     @Getter
     @Setter
     @Nullable
-    private Supplier<GTRecipeType> recipeTypeSupplier;
+    private Lazy<GTRecipeType> recipeTypeSupplier;
     @Getter
     @Setter
     private int tier;
@@ -114,6 +114,12 @@ public class MachineDefinition implements Supplier<IMachineBlock> {
 
     public String getName() {
         return id.getPath();
+    }
+
+    @Nullable
+    public GTRecipeType getRecipeType() {
+        if (recipeType == null && recipeTypeSupplier != null) recipeType = recipeTypeSupplier.get();
+        return recipeType;
     }
 
     @Override

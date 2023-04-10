@@ -79,9 +79,8 @@ public class GTBlocks {
     //*****     Material Blocks    *****//
     //////////////////////////////////////
 
-    public final static Table<TagPrefix, Material, BlockEntry<? extends MaterialBlock>> MATERIAL_BLOCKS;
-
-    static {
+    public static Table<TagPrefix, Material, BlockEntry<? extends MaterialBlock>> MATERIAL_BLOCKS;
+    public static void generateMaterialBlocks() {
         REGISTRATE.creativeModeTab(() -> GTCreativeModeTabs.MATERIAL_BLOCK);
         ImmutableTable.Builder<TagPrefix, Material, BlockEntry<? extends MaterialBlock>> builder = ImmutableTable.builder();
         for (Material material : GTRegistries.MATERIALS) {
@@ -160,9 +159,8 @@ public class GTBlocks {
     //////////////////////////////////////
     //*****     Material Pipes    ******//
     //////////////////////////////////////
-    public final static Table<TagPrefix, Material, BlockEntry<CableBlock>> CABLE_BLOCKS;
-
-    static {
+    public static Table<TagPrefix, Material, BlockEntry<CableBlock>> CABLE_BLOCKS;
+    public static void generateCableBlocks() {
         REGISTRATE.creativeModeTab(() -> GTCreativeModeTabs.MATERIAL_PIPE);
 
         ImmutableTable.Builder<TagPrefix, Material, BlockEntry<CableBlock>> builder = ImmutableTable.builder();
@@ -530,5 +528,7 @@ public class GTBlocks {
     }
 
     public static void init() {
+        generateMaterialBlocks();
+        generateCableBlocks();
     }
 }

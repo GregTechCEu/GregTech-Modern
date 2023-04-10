@@ -19,11 +19,6 @@ public class KineticMachineBuilder extends MachineBuilder {
         this.tiers = GTMachines.ELECTRIC_TIERS;
     }
 
-    @Override
-    public void register() {
-        var val = GTCreateMachines.registerSimpleKineticElectricMachine(name, recipeType, tiers);
-    }
-
     public KineticMachineBuilder tiers(int... tiers) {
         this.tiers = tiers;
         return this;

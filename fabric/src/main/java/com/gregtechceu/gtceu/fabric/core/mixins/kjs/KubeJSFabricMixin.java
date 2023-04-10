@@ -12,6 +12,6 @@ public class KubeJSFabricMixin {
 
     @Inject(remap = false, method = "onInitialize()V", at = @At(value = "RETURN"))
     public void gtceu$init(CallbackInfo ci) {
-        CommonProxy.register();
+        CommonProxy.init();
     }
 }

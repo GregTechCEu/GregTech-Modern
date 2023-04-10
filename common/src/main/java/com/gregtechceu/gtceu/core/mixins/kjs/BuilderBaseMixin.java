@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.core.mixins.kjs;
 
 import com.gregtechceu.gtceu.integration.kjs.builders.GTRecipeTypeBuilder;
+import com.gregtechceu.gtceu.integration.kjs.builders.MaterialBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.machine.MachineBuilder;
 import dev.architectury.registry.registries.DeferredRegister;
 import dev.architectury.registry.registries.RegistrySupplier;
@@ -27,6 +28,10 @@ public abstract class BuilderBaseMixin<T> implements Supplier<T> {
             cir.setReturnValue(true);
             cir.cancel();
         } else if (((BuilderBase<T>)(Object)this) instanceof GTRecipeTypeBuilder builder) {
+            builder.createObject();
+            cir.setReturnValue(true);
+            cir.cancel();
+        } else if (((BuilderBase<T>)(Object)this) instanceof MaterialBuilder builder) {
             builder.createObject();
             cir.setReturnValue(true);
             cir.cancel();

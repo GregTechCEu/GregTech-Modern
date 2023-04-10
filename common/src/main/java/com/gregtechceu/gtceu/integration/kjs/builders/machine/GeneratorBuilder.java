@@ -15,12 +15,6 @@ public class GeneratorBuilder extends SimpleMachineBuilder {
         super(i);
     }
 
-
-    @Override
-    public void register() {
-        var val = GTMachines.registerSimpleGenerator(name, recipeType, tier -> tankScalingFunction.apply(tier), tiers);
-    }
-
     @Override
     public Block createObject() {
         var val = GTMachines.registerSimpleGenerator(name, recipeType, tier -> tankScalingFunction.apply(tier), tiers);

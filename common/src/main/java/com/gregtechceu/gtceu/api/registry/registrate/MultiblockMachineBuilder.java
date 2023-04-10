@@ -15,6 +15,7 @@ import com.gregtechceu.gtceu.api.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
+import com.gregtechceu.gtceu.utils.Lazy;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import com.tterrag.registrate.Registrate;
 import com.tterrag.registrate.builders.BlockBuilder;
@@ -142,7 +143,7 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
     }
 
     public MultiblockMachineBuilder recipeType(String recipeType) {
-        return (MultiblockMachineBuilder) super.recipeTypeSupplier(() -> GTRecipeTypes.get(recipeType));
+        return (MultiblockMachineBuilder) super.recipeTypeSupplier(Lazy.of(() -> GTRecipeTypes.get(recipeType)));
     }
 
     @Override
