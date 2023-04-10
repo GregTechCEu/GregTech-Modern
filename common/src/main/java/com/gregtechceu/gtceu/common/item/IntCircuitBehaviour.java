@@ -100,7 +100,7 @@ public class IntCircuitBehaviour implements IItemUIFactory, IAddInformation {
 
     @Override
     public ModularUI createUI(HeldItemUIFactory.HeldItemHolder holder, Player entityPlayer) {
-        int configuration = getCircuitConfiguration(holder);
+        int configuration = getCircuitConfiguration(holder.getHeld());
         var modular = new ModularUI(176, 200, holder, entityPlayer)
                 .widget(new LabelWidget(9, 8, "metaitem.circuit.integrated.gui"))
                 .widget(new ButtonWidget(15, 24, 20, 20, new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("0")), data -> adjustConfiguration(holder, (configuration - 0) * -1)))
