@@ -131,7 +131,7 @@ public class IntCircuitBehaviour implements IItemUIFactory, IAddInformation {
                 .widget(new ButtonWidget(75, 84, 20, 20, new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("21")), data -> setCircuitConfiguration(holder, 21)))
                 .widget(new ButtonWidget(95, 84, 20, 20, new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("22")), data -> setCircuitConfiguration(holder, 22)))
                 .widget(new ButtonWidget(115, 84, 20, 20, new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("23")), data -> setCircuitConfiguration(holder, 23)))
-                .widget(new ButtonWidget(15, 104, 20, 20, new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("24")), data -> setCircuitConfiguration(holder, 24)))
+                .widget(new ButtonWidget(15, 104, 20, 20, new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("24")), data -> setCircuitConfiguration(holder, 24))):
 
         modular.mainGroup.setBackground(GuiTextures.BACKGROUND);
         return modular;
