@@ -40,7 +40,7 @@ public class VanillaRecipeHelper {
     }
 
     public static void addSmeltingRecipe(Consumer<FinishedRecipe> provider, @Nonnull String regName, TagKey<Item> input, ItemStack output, float experience) {
-        new SmeltingRecipeBuilder(GTCEu.id(regName.toLowerCase())).input(input).output(output).cookingTime(80).experience(experience).save(provider);
+        new SmeltingRecipeBuilder(GTCEu.id(regName.toLowerCase())).input(input).output(output).cookingTime(200).experience(experience).save(provider);
     }
 
     public static void addSmeltingRecipe(Consumer<FinishedRecipe> provider, @Nonnull String regName, ItemStack input, ItemStack output) {
