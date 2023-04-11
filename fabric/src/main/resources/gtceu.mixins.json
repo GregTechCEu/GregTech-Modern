@@ -7,8 +7,7 @@
   ],
   "mixins": [
     "AppearanceBlockMixin",
-    "SimpleCookingSerializerMixin",
-    "kjs.KubeJSFabricMixin"
+    "SimpleCookingSerializerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

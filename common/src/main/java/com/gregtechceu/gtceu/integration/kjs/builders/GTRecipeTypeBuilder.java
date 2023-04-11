@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.gui.SteamTexture;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.integration.kjs.GregTechKubeJSPlugin;
@@ -14,7 +15,6 @@ import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.utils.Position;
 import com.lowdragmc.lowdraglib.utils.Rect;
 import com.lowdragmc.lowdraglib.utils.Size;
-import dev.latvian.mods.kubejs.BuilderBase;
 import dev.latvian.mods.kubejs.RegistryObjectBuilderTypes;
 import it.unimi.dsi.fastutil.bytes.Byte2ObjectArrayMap;
 import it.unimi.dsi.fastutil.bytes.Byte2ObjectMap;
@@ -49,7 +49,7 @@ public class GTRecipeTypeBuilder extends BuilderBase<GTRecipeType> {
     @Nullable
     protected BiConsumer<GTRecipe, WidgetGroup> uiBuilder;
 
-    public GTRecipeTypeBuilder(ResourceLocation i) {
+    public GTRecipeTypeBuilder(ResourceLocation i, Object... args) {
         super(i);
         name = i.getPath();
         maxInputs = new Object2IntOpenHashMap<>();
@@ -153,10 +153,6 @@ public class GTRecipeTypeBuilder extends BuilderBase<GTRecipeType> {
     }
 
     @Override
-    public RegistryObjectBuilderTypes<? super GTRecipeType> getRegistryType() {
-        return GregTechKubeJSPlugin.RECIPE_TYPE;
-    }
-
     public GTRecipeType register() {
         var type = GTRecipeTypes.register(name, category);
         type.maxInputs.putAll(maxInputs);
@@ -172,12 +168,6 @@ public class GTRecipeTypeBuilder extends BuilderBase<GTRecipeType> {
         type.setSmallRecipeMap(smallRecipeMap);
         type.setIconSupplier(iconSupplier);
         type.setUiBuilder(uiBuilder);
-        return type;
-    }
-
-    @Override
-    public GTRecipeType createObject() {
-        register();
-        return null;
+        return value = type;
     }
 }

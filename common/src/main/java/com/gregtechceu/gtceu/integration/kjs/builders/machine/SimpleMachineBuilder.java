@@ -16,7 +16,9 @@ public class SimpleMachineBuilder extends MachineBuilder {
     public transient Int2LongFunction tankScalingFunction;
     public transient int[] tiers;
 
-    public SimpleMachineBuilder(ResourceLocation i) {
+    protected MachineDefinition value = null;
+
+    public SimpleMachineBuilder(ResourceLocation i, Object... args) {
         super(i);
         this.tankScalingFunction = GTMachines.defaultTankSizeFunction;
         this.tiers = GTMachines.ELECTRIC_TIERS;
@@ -33,8 +35,13 @@ public class SimpleMachineBuilder extends MachineBuilder {
     }
 
     @Override
-    public Block createObject() {
-        var val = GTMachines.registerSimpleMachines(name, recipeType, tier -> tankScalingFunction.apply(tier), tiers);
-        return null;
+    public MachineDefinition register() {
+        value = GTMachines.registerSimpleMachines(name, recipeType, tier -> tankScalingFunction.apply(tier), tiers)[0];
+        return value;
+    }
+
+    @Override
+    public MachineDefinition get() {
+        return value;
     }
 }

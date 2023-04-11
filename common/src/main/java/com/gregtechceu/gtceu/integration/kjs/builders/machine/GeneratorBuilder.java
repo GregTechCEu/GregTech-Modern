@@ -11,13 +11,13 @@ import net.minecraft.world.level.block.Block;
  * @implNote MachineBuilder
  */
 public class GeneratorBuilder extends SimpleMachineBuilder {
-    public GeneratorBuilder(ResourceLocation i) {
-        super(i);
+    public GeneratorBuilder(ResourceLocation i, Object... args) {
+        super(i, args);
     }
 
     @Override
-    public Block createObject() {
-        var val = GTMachines.registerSimpleGenerator(name, recipeType, tier -> tankScalingFunction.apply(tier), tiers);
-        return null;
+    public MachineDefinition register() {
+        value = GTMachines.registerSimpleGenerator(name, recipeType, tier -> tankScalingFunction.apply(tier), tiers)[0];
+        return value;
     }
 }

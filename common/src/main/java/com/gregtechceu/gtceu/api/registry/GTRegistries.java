@@ -13,7 +13,6 @@ import com.gregtechceu.gtceu.api.data.chemical.Element;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 
 /**
@@ -24,25 +23,17 @@ import net.minecraft.resources.ResourceLocation;
 public final class GTRegistries {
     public static final GTRegistrate REGISTRATE = GTRegistrate.create(GTCEu.MOD_ID);
 
+    public static final GTRegistry.RL<GTRegistry<?, ?>> REGISTRIES = new GTRegistry.RL<>(GTCEu.id("root"));
+
     // GT Registry
-    public static final ResourceKey<Registry<Element>> ELEMENTS_REGISTRY = ResourceKey.createRegistryKey(GTCEu.id("element"));
-    public static Registry<Element> ELEMENTS_WRAPPED;
     public static final GTRegistry.String<Element> ELEMENTS = new GTRegistry.String<>(GTCEu.id("element"));
 
-    public static final ResourceKey<Registry<Material>> MATERIALS_REGISTRY = ResourceKey.createRegistryKey(GTCEu.id("material"));
-    public static Registry<Material> MATERIALS_WRAPPED;
     public static final GTRegistry.String<Material> MATERIALS = new GTRegistry.String<>(GTCEu.id("material"));
 
-    /*public static final ResourceKey<Registry<GTRecipeType>> RECIPE_TYPES_REGISTRY = ResourceKey.createRegistryKey(GTCEu.id("recipe_type"));
-    public static Registry<GTRecipeType> RECIPE_TYPES_WRAPPED;*/
     public static final GTRegistry.RL<GTRecipeType> RECIPE_TYPES = new GTRegistry.RL<>(GTCEu.id("recipe_type"));
-
     public static final GTRegistry.RL<CoverDefinition> COVERS = new GTRegistry.RL<>(GTCEu.id("cover"));
 
-    public static final ResourceKey<Registry<MachineDefinition>> MACHINES_REGISTRY = ResourceKey.createRegistryKey(GTCEu.id("machine"));
-    public static Registry<MachineDefinition> MACHINES_WRAPPED;
     public static final GTRegistry.RL<MachineDefinition> MACHINES = new GTRegistry.RL<>(GTCEu.id("machine"));
-
     public static final GTRegistry.String<RecipeCapability<?>> RECIPE_CAPABILITIES = new GTRegistry.String<>(GTCEu.id("recipe_capability"));
     public static final GTRegistry.String<Class<? extends RecipeCondition>> RECIPE_CONDITIONS = new GTRegistry.String<>(GTCEu.id("recipe_condition"));
     public static final GTRegistry.RL<SoundEntry> SOUNDS = new GTRegistry.RL<>(GTCEu.id("sound"));

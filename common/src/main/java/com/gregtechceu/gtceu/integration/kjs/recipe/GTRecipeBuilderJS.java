@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
@@ -17,7 +18,6 @@ import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.common.recipe.*;
@@ -134,6 +134,31 @@ public class GTRecipeBuilderJS extends RecipeJS {
         if (backingBuilder.isFuel) {
             json.addProperty("isFuel", true);
         }
+    }
+
+    public <T> GTRecipeBuilderJS duration(int duration) {
+        backingBuilder.duration(duration);
+        return this;
+    }
+
+    public <T> GTRecipeBuilderJS perTick(boolean perTick) {
+        backingBuilder.perTick(perTick);
+        return this;
+    }
+
+    public <T> GTRecipeBuilderJS slotName(String slotName) {
+        backingBuilder.slotName(slotName);
+        return this;
+    }
+
+    public <T> GTRecipeBuilderJS uiName(String uiName) {
+        backingBuilder.uiName(uiName);
+        return this;
+    }
+
+    public <T> GTRecipeBuilderJS chance(float chance) {
+        backingBuilder.chance(chance);
+        return this;
     }
 
     public <T> GTRecipeBuilderJS input(RecipeCapability<T> capability, T... obj) {

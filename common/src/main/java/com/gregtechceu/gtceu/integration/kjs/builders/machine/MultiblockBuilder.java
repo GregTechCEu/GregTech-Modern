@@ -39,7 +39,7 @@ import java.util.function.*;
 public class MultiblockBuilder extends MachineBuilder {
     public transient MultiblockMachineBuilder builder;
 
-    public MultiblockBuilder(ResourceLocation i) {
+    public MultiblockBuilder(ResourceLocation i, Object... args) {
         super(i);
         this.builder = GTRegistries.REGISTRATE.multiblock(name, WorkableElectricMultiblockMachine::new);
     }
@@ -105,7 +105,7 @@ public class MultiblockBuilder extends MachineBuilder {
     }
 
     @Override
-    public MultiblockBuilder recipeType(String recipeType) {
+    public MultiblockBuilder recipeType(GTRecipeType recipeType) {
         builder.recipeType(recipeType);
         return this;
     }
@@ -205,9 +205,16 @@ public class MultiblockBuilder extends MachineBuilder {
         return this;
     }
 
+    private MachineDefinition value;
+
     @Override
-    public Block createObject() {
-        var val = this.builder.register();
-        return null;
+    public MachineDefinition register() {
+        value = this.builder.register();
+        return value;
+    }
+
+    @Override
+    public MachineDefinition get() {
+        return value;
     }
 }

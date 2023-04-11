@@ -142,10 +142,6 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
         return (MultiblockMachineBuilder) super.recipeType(recipeType);
     }
 
-    public MultiblockMachineBuilder recipeType(String recipeType) {
-        return (MultiblockMachineBuilder) super.recipeTypeSupplier(Lazy.of(() -> GTRecipeTypes.get(recipeType)));
-    }
-
     @Override
     public MultiblockMachineBuilder tier(int tier) {
         return (MultiblockMachineBuilder) super.tier(tier);

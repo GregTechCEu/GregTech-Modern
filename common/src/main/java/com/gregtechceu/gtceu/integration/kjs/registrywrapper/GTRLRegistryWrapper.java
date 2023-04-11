@@ -1,4 +1,5 @@
-package com.gregtechceu.gtceu.integration.kjs.registrymirror;
+/*
+package com.gregtechceu.gtceu.integration.kjs.registrywrapper;
 
 import com.gregtechceu.gtceu.api.registry.GTRegistry;
 import com.gregtechceu.gtceu.core.mixins.IHolderReferenceAccessor;
@@ -56,10 +57,6 @@ public class GTRLRegistryWrapper<T> extends MappedRegistry<T> {
             return Map.entry(val.getValue(), value);
         }).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
         accessor.getByValue().putAll(byValue);
-    }
-
-    public Holder<T> register(ResourceKey<T> key, T value, Lifecycle lifecycle) {
-        return this.registerMapping(((IMappedRegistryAccessor<T>)this).getNextId(), key, value, lifecycle);
     }
 
     @Override
@@ -130,3 +127,4 @@ public class GTRLRegistryWrapper<T> extends MappedRegistry<T> {
     }
 
 }
+*/

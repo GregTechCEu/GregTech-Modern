@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.sound.ExistingSoundEntry;
 import com.gregtechceu.gtceu.common.block.CoilBlock;
+import com.gregtechceu.gtceu.integration.kjs.GTRegistryObjectBuilderTypes;
 import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
 import com.lowdragmc.lowdraglib.gui.widget.TankWidget;
 import com.lowdragmc.lowdraglib.msic.FluidStorage;
@@ -507,17 +508,7 @@ public class GTRecipeTypes {
             });
         }
         if (GTCEu.isKubeJSLoaded()) {
-            //GTRegistries.RECIPE_TYPES_WRAPPED = IRegistryAccessor.invokeInternalRegister(GTRegistries.RECIPE_TYPES_REGISTRY, new GTRLRegistryWrapper<>(GTRegistries.RECIPE_TYPES_REGISTRY, Lifecycle.experimental(), GTRegistries.RECIPE_TYPES), val -> GTRecipeTypes.FURNACE_RECIPES, Lifecycle.experimental());
-            //KubeJSRegistries.init(Registry.RECIPE_TYPE_REGISTRY);
-            /*
-            ((IRegistryObjectBuilderTypesAccessor)(Object) GregTechKubeJSPlugin.RECIPE_TYPE).invokePostEvent();
-            for (var builder : GregTechKubeJSPlugin.RECIPE_TYPE.objects.values()) {
-                if(builder instanceof GTRecipeTypeBuilder realBuilder) {
-                    realBuilder.register();
-                    GTCEu.LOGGER.error("registered builder: " + realBuilder);
-                }
-            }
-            */
+            GTRegistryObjectBuilderTypes.registerFor(GTRegistries.RECIPE_TYPES);
         }
         GTRegistries.register(Registry.RECIPE_SERIALIZER, GTCEu.id("gt_recipe_serializer"), GTRecipeSerializer.SERIALIZER);
         GTRegistries.register(Registry.RECIPE_SERIALIZER, GTCEu.id("facade_cover_serializer"), FacadeCoverRecipe.SERIALIZER);

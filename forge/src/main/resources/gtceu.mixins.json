@@ -6,8 +6,7 @@
   "client": [
   ],
   "mixins": [
-    "AppearanceBlockMixin",
-    "kjs.KubeJSForgeMixin"
+    "AppearanceBlockMixin"
   ],
   "injectors": {
     "defaultRequire": 1
