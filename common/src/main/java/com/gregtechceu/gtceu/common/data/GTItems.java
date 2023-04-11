@@ -164,7 +164,7 @@ public class GTItems {
     public static ItemEntry<ComponentItem> WOODEN_FORM_BRICK = REGISTRATE.item("wooden_form.brick", ComponentItem::create)
             .lang("Brick Wooden Form")
             .properties(p -> p.craftRemainder(Items.AIR))
-            .onRegister(attach((IRecipeRemainder) itemStack -> itemStack)).register();
+            .onRegister(attach((IRecipeRemainder) ItemStack::copy)).register();
 
     public static ItemEntry<Item> SHAPE_EMPTY = REGISTRATE.item("shape.empty", Item::new)
             .lang("Empty Shape Plate")
