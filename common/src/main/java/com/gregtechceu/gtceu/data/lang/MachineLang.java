@@ -2,46 +2,38 @@ package com.gregtechceu.gtceu.data.lang;
 
 import com.tterrag.registrate.providers.RegistrateLangProvider;
 
-import static com.gregtechceu.gtceu.data.lang.LangHandler.multiLang;
-import static com.gregtechceu.gtceu.data.lang.LangHandler.multilineLang;
+import static com.gregtechceu.gtceu.data.lang.LangHandler.*;
 
 public class MachineLang {
 
     protected static void init(RegistrateLangProvider provider) {
-        initMachineLang(provider);
-        initMachineTooltips(provider);
-    }
-
-    private static void initMachineLang(RegistrateLangProvider provider) {
-
-    }
-
-    private static void initMachineTooltips(RegistrateLangProvider provider) {
 
         // Steam machines
+        replace(provider, "block.gtceu.steam_solid_boiler.bronze", "Small Steam Solid Boiler");
+        replace(provider, "block.gtceu.steam_liquid_boiler.bronze", "Small Steam Liquid Boiler");
 
-        provider.add("gtceu.machine.steam_boiler_coal_bronze.tooltip", "§7An early way to get Steam Power");
-        provider.add("gtceu.machine.steam_boiler_coal_steel.tooltip", "§7Faster than the Small Steam Solid Fuel Boiler");
-        provider.add("gtceu.machine.steam_boiler_solar_bronze.tooltip", "§7Steam Power by Sun");
-        provider.add("gtceu.machine.steam_boiler_solar_steel.tooltip", "§7Steam Power by Sun");
-        provider.add("gtceu.machine.steam_boiler_lava_bronze.tooltip", "§7A Boiler running off Liquids");
-        provider.add("gtceu.machine.steam_boiler_lava_steel.tooltip", "§7Faster than Small Steam Liquid Boiler");
+        provider.add("gtceu.machine.steam_solid_boiler.bronze.tooltip", "§7An early way to get Steam Power");
+        provider.add("gtceu.machine.steam_solid_boiler.steel.tooltip", "§7Faster than the Small Steam Solid Fuel Boiler");
+        provider.add("gtceu.machine.steam_solar_boiler.bronze.tooltip", "§7Steam Power by Sun");
+        provider.add("gtceu.machine.steam_solar_boiler.steel.tooltip", "§7Steam Power by Sun");
+        provider.add("gtceu.machine.steam_liquid_boiler.bronze.tooltip", "§7A Boiler running off Liquids");
+        provider.add("gtceu.machine.steam_liquid_boiler.steel.tooltip", "§7Faster than Small Steam Liquid Boiler");
         provider.add("gtceu.machine.steam_boiler.heat_amount", "Heat Capacity: %s %%");
 
-        provider.add("gtceu.machine.steam_extractor_bronze.tooltip", "§7Extracting your first Rubber");
-        provider.add("gtceu.machine.steam_extractor_steel.tooltip", "§7Extracting your first Rubber");
-        provider.add("gtceu.machine.steam_macerator_bronze.tooltip", "§7Macerating your Ores");
-        provider.add("gtceu.machine.steam_macerator_steel.tooltip", "§7Macerating your Ores");
-        provider.add("gtceu.machine.steam_compressor_bronze.tooltip", "§7Compressing Items");
-        provider.add("gtceu.machine.steam_compressor_steel.tooltip", "§7Compressing Items");
-        provider.add("gtceu.machine.steam_hammer_bronze.tooltip", "§7Forge Hammer");
-        provider.add("gtceu.machine.steam_hammer_steel.tooltip", "§7Forge Hammer");
-        provider.add("gtceu.machine.steam_furnace_bronze.tooltip", "§7Smelting things with compressed Steam");
-        provider.add("gtceu.machine.steam_furnace_steel.tooltip", "§7Smelting things with compressed Steam");
-        provider.add("gtceu.machine.steam_alloy_smelter_bronze.tooltip", "§7Combination Smelter");
-        provider.add("gtceu.machine.steam_alloy_smelter_steel.tooltip", "§7Combination Smelter");
-        provider.add("gtceu.machine.steam_rock_breaker_bronze.tooltip", "§7Place Water and Lava horizontally adjacent");
-        provider.add("gtceu.machine.steam_rock_breaker_steel.tooltip", "§7Place Water and Lava horizontally adjacent");
+        provider.add("gtceu.machine.steam_extractor.bronze.tooltip", "§7Extracting your first Rubber");
+        provider.add("gtceu.machine.steam_extractor.steel.tooltip", "§7Extracting your first Rubber");
+        provider.add("gtceu.machine.steam_macerator.bronze.tooltip", "§7Macerating your Ores");
+        provider.add("gtceu.machine.steam_macerator.steel.tooltip", "§7Macerating your Ores");
+        provider.add("gtceu.machine.steam_compressor.bronze.tooltip", "§7Compressing Items");
+        provider.add("gtceu.machine.steam_compressor.steel.tooltip", "§7Compressing Items");
+        provider.add("gtceu.machine.steam_forge_hammer.bronze.tooltip", "§7Forge Hammer");
+        provider.add("gtceu.machine.steam_forge_hammer.steel.tooltip", "§7Forge Hammer");
+        provider.add("gtceu.machine.steam_furnace.bronze.tooltip", "§7Smelting things with compressed Steam");
+        provider.add("gtceu.machine.steam_furnace.steel.tooltip", "§7Smelting things with compressed Steam");
+        provider.add("gtceu.machine.steam_alloy_smelter.bronze.tooltip", "§7Combination Smelter");
+        provider.add("gtceu.machine.steam_alloy_smelter.steel.tooltip", "§7Combination Smelter");
+        provider.add("gtceu.machine.steam_rock_crusher.bronze.tooltip", "§7Place Water and Lava horizontally adjacent");
+        provider.add("gtceu.machine.steam_rock_crusher.steel.tooltip", "§7Place Water and Lava horizontally adjacent");
         provider.add("gtceu.machine.steam_miner.tooltip", "§7Mines ores below the Miner!");
 
         provider.add("gtceu.machine.combustion_generator.tooltip", "§7Requires flammable Liquids");
