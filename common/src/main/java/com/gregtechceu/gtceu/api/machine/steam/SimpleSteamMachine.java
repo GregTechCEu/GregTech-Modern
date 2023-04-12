@@ -54,6 +54,7 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IMachine
     public final NotifiableItemStackHandler importItems;
     @Persisted
     public final NotifiableItemStackHandler exportItems;
+    private boolean needsVenting;
 
     public SimpleSteamMachine(IMachineBlockEntity holder, boolean isHighPressure, Object... args) {
         super(holder, isHighPressure, args);
@@ -83,8 +84,14 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IMachine
     }
 
     @Override
+    public boolean isVentingStuck() {
+        return needsVenting || super.isVentingStuck();
+    }
+
+    @Override
     public void onLoad() {
         super.onLoad();
+        subscribeServerTick(this::checkVenting);
         // Fine, we use it to provide eu cap for recipe, simulating an EU machine.
         capabilitiesProxy.put(IO.IN, EURecipeCapability.CAP, List.of(new SteamEnergyRecipeHandler(steamTank, FluidHelper.getBucket() / 1000d)));
     }
@@ -119,10 +126,8 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IMachine
         return copied;
     }
 
-    @Override
-    public void onWorking() {
-        super.onWorking();
-        if (recipeLogic.getProgress() % 10 == 0) {
+    public void checkVenting() {
+        if (!getLevel().isClientSide() && needsVenting && getOffsetTimer() % 10 == 0) {
             tryDoVenting();
         }
     }
@@ -130,7 +135,9 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IMachine
     @Override
     public void afterWorking() {
         super.afterWorking();
-        tryDoVenting();
+        if (!getLevel().isClientSide()) {
+            needsVenting = true;
+        }
     }
 
     public void tryDoVenting() {
@@ -157,6 +164,7 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IMachine
             if (ConfigHolder.machines.machineSounds){
                 serverLevel.playSound(null, posX, posY, posZ, SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 1.0f, 1.0f);
             }
+            needsVenting = false;
         }
 
     }
