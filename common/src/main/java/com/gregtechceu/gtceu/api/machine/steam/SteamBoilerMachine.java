@@ -197,7 +197,8 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine implements
                         getLevel().playSound(null, x, y, z, SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 1.0f, 1.0f);
                     }
 
-                    steamTank.drain(FluidHelper.getBucket() * 4, false);
+                    // bypass capability check for special case behavior
+                    steamTank.drainInternal(FluidHelper.getBucket() * 4, false);
                 }
             } else this.hasNoWater = false;
         }
