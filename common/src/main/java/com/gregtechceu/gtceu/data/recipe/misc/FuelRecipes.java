@@ -5,6 +5,7 @@ import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import net.minecraft.core.Registry;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.entity.FurnaceBlockEntity;
 import net.minecraft.world.level.material.Fluids;
 
 import java.util.function.Consumer;
@@ -17,7 +18,14 @@ public class FuelRecipes {
 
     public static void init(Consumer<FinishedRecipe> provider) {
 
-        // TODO Can this be done better?
+        // TODO this all needs to be cleaned up, but this will make it somewhat work for now
+        // do these first because for some reason vanilla fuels are not set up yet at this phase?
+        for (var fuelEntry : FurnaceBlockEntity.getFuel().entrySet()) {
+            STEAM_BOILER_RECIPES.recipeBuilder(fuelEntry.getKey().getDescriptionId())
+                    .inputItems(fuelEntry.getKey())
+                    .duration(fuelEntry.getValue() * 12)
+                    .save(provider);
+        }
         for (Item item : Registry.ITEM) {
             var burnTime = GTUtil.getItemBurnTime(item);
             if (burnTime > 0) {

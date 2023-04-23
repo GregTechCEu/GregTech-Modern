@@ -63,7 +63,6 @@ public class BlockLang {
         replace(provider, "block.gtceu.casing_tungstensteel_pipe", "Tungstensteel Pipe Casing");
         replace(provider, "block.gtceu.casing_pump_deck", "Pump Deck");
 
-        // todo these tooltips dont work
         replace(provider, "block.gtceu.steam_casing_bronze", "Bronze Hull");
         provider.add("block.gtceu.steam_casing_bronze.tooltip", "§7For your first Steam Machines");
         replace(provider, "block.gtceu.steam_casing_bricked_bronze", "Bricked Bronze Hull");

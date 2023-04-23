@@ -49,6 +49,7 @@ import com.gregtechceu.gtceu.common.machine.steam.SteamLiquidBoilerMachine;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.integration.kjs.events.MachineEventJS;
+import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import it.unimi.dsi.fastutil.Pair;
@@ -802,10 +803,10 @@ public class GTMachines {
     public static Pair<MachineDefinition, MachineDefinition> registerSteamMachines(String name, BiFunction<IMachineBlockEntity, Boolean, MetaMachine> factory,
                                               BiFunction<Boolean, MachineBuilder<MachineDefinition>, MachineDefinition> builder) {
         MachineDefinition lowTier = builder.apply(false, REGISTRATE.machine(name + "." + "bronze", holder -> factory.apply(holder, false))
-                .langValue("Small " + name)
+                .langValue(FormattingUtil.toEnglishName(name))
                 .tier(0));
         MachineDefinition highTier = builder.apply(true, REGISTRATE.machine(name + "." + "steel", holder -> factory.apply(holder, true))
-                .langValue("High Pressure " + name)
+                .langValue("High Pressure " + FormattingUtil.toEnglishName(name))
                 .tier(1));
         return Pair.of(lowTier, highTier);
     }
