@@ -20,6 +20,7 @@
     "ServerChunkProviderMixin",
     "ServerPlayerGameModeMixin",
     "TagLoaderMixin",
+    "TagManagerMixin",
     "create.RotationPropagatorMixin",
     "kjs.KubeJSMixin",
     "kjs.RecipeEventJSMixin"

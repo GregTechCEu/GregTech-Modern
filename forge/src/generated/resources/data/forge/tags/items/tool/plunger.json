@@ -1,0 +1,27 @@
+{
+  "values": [
+    "gtceu:plunger_aluminium",
+    "gtceu:plunger_iron",
+    "gtceu:plunger_titanium",
+    "gtceu:plunger_neutronium",
+    "gtceu:plunger_duranium",
+    "gtceu:plunger_bronze",
+    "gtceu:plunger_diamond",
+    "gtceu:plunger_invar",
+    "gtceu:plunger_sterling_silver",
+    "gtceu:plunger_rose_gold",
+    "gtceu:plunger_stainless_steel",
+    "gtceu:plunger_steel",
+    "gtceu:plunger_ultimet",
+    "gtceu:plunger_wrought_iron",
+    "gtceu:plunger_tungsten_carbide",
+    "gtceu:plunger_damascus_steel",
+    "gtceu:plunger_tungsten_steel",
+    "gtceu:plunger_cobalt_brass",
+    "gtceu:plunger_vanadium_steel",
+    "gtceu:plunger_naquadah_alloy",
+    "gtceu:plunger_red_steel",
+    "gtceu:plunger_blue_steel",
+    "gtceu:plunger_hsse"
+  ]
+}
