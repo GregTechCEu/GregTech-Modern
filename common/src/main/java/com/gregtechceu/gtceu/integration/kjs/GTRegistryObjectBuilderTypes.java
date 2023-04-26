@@ -1,7 +1,9 @@
 package com.gregtechceu.gtceu.integration.kjs;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.Element;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
@@ -13,6 +15,7 @@ import dev.latvian.mods.kubejs.util.ConsoleJS;
 import dev.latvian.mods.kubejs.util.UtilsJS;
 import net.minecraft.resources.ResourceLocation;
 
+import javax.annotation.Nullable;
 import java.util.*;
 
 public class GTRegistryObjectBuilderTypes<K, V> {
@@ -24,21 +27,21 @@ public class GTRegistryObjectBuilderTypes<K, V> {
     public record BuilderType<T>(String type, Class<? extends BuilderBase<? extends T>> builderClass, BuilderFactory<T> factory) {
     }
 
-    public static final Map<GTRegistry<?, ?>, GTRegistryObjectBuilderTypes<?, ?>> MAP = new LinkedHashMap<>();
-    public static final Map<GTRegistry<?, ?>, List<GTRegistryObjectBuilderTypes<?, ?>>> POST_AT = new HashMap<>();
+    public static final Map<ResourceLocation, GTRegistryObjectBuilderTypes<?, ?>> MAP = new LinkedHashMap<>();
+    public static final Map<ResourceLocation, List<GTRegistryObjectBuilderTypes<?, ?>>> POST_AT = new HashMap<>();
     public static final List<BuilderBase<?>> ALL_BUILDERS = new ArrayList<>();
 
     public static final GTRegistryObjectBuilderTypes<String, Element> ELEMENT = add(GTRegistries.ELEMENTS, Element.class);
     public static final GTRegistryObjectBuilderTypes<String, Material> MATERIAL = add(GTRegistries.MATERIALS, Material.class);
     public static final GTRegistryObjectBuilderTypes<ResourceLocation, GTRecipeType> RECIPE_TYPE = add(GTRegistries.RECIPE_TYPES, GTRecipeType.class);
     public static final GTRegistryObjectBuilderTypes<ResourceLocation, MachineDefinition> MACHINE = add(GTRegistries.MACHINES, MachineDefinition.class);
+    public static final GTRegistryObjectBuilderTypes<String, MaterialIconSet> MATERIAL_ICON_SET = add(GTCEu.id("material_icon_set"), MaterialIconSet.ICON_SETS, MachineDefinition.class);
     /*public static final GTRegistryObjectBuilderTypes<String, RecipeCapability<?>> RECIPE_CAPABILITY = add(GTRegistries.RECIPE_CAPABILITIES, RecipeCapability.class);
     public static final GTRegistryObjectBuilderTypes<String, Class<? extends RecipeCondition>> RECIPE_CONDITION = add(GTRegistries.RECIPE_CONDITIONS, RecipeCondition.class);
     public static final GTRegistryObjectBuilderTypes<ResourceLocation, SoundEntry> SOUND = add(GTRegistries.SOUNDS, SoundEntry.class);*/
 
     public final ResourceLocation registryKey;
     public final Class<V> objectBaseClass;
-    public final GTRegistry<K, V> registry;
     public final Map<String, BuilderType<V>> types;
     public final Map<ResourceLocation, BuilderBase<? extends V>> objects;
     private BuilderType<V> defaultType;
@@ -47,20 +50,40 @@ public class GTRegistryObjectBuilderTypes<K, V> {
     private GTRegistryObjectBuilderTypes(GTRegistry<K, V> registry, Class<V> baseClass) {
         registryKey = registry.getRegistryName();
         objectBaseClass = baseClass;
-        this.registry = registry;
         types = new LinkedHashMap<>();
         objects = new LinkedHashMap<>();
         current = null;
     }
 
+    private GTRegistryObjectBuilderTypes(ResourceLocation key, Class<V> baseClass) {
+        registryKey = key;
+        objectBaseClass = baseClass;
+        types = new LinkedHashMap<>();
+        objects = new LinkedHashMap<>();
+        current = null;
+    }
+
+
     public static <K, V> GTRegistryObjectBuilderTypes<K, V> add(GTRegistry<K, V> key, Class<?> baseClass) {
         var types = new GTRegistryObjectBuilderTypes<>(key, UtilsJS.cast(baseClass));
 
-        if (MAP.put(key, types) != null) {
+        if (MAP.put(key.getRegistryName(), types) != null) {
             throw new IllegalStateException("Registry with id '" + key + "' already exists!");
         }
 
-        POST_AT.computeIfAbsent(key, (k) -> new LinkedList<>()).add(types);
+        POST_AT.computeIfAbsent(key.getRegistryName(), (k) -> new LinkedList<>()).add(types);
+
+        return types;
+    }
+
+    public static <K, V> GTRegistryObjectBuilderTypes<K, V> add(ResourceLocation id, Map<K, V> key, Class<?> baseClass) {
+        var types = new GTRegistryObjectBuilderTypes<K, V>(id, UtilsJS.cast(baseClass));
+
+        if (MAP.put(id, types) != null) {
+            throw new IllegalStateException("Registry with id '" + key + "' already exists!");
+        }
+
+        POST_AT.computeIfAbsent(id, (k) -> new LinkedList<>()).add(types);
 
         return types;
     }
@@ -109,7 +132,7 @@ public class GTRegistryObjectBuilderTypes<K, V> {
         GTCEuStartupEvents.REGISTRY.post(registryKey, new GTRegistryEventJS<>(this));
     }
 
-    public static void registerFor(GTRegistry<?, ?> registry) {
+    public static void registerFor(ResourceLocation registry) {
         for (var type : POST_AT.getOrDefault(registry, List.of())) {
             type.postEvent();
 

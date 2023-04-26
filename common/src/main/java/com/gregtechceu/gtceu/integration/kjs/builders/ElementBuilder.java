@@ -14,9 +14,9 @@ public class ElementBuilder extends BuilderBase<Element> {
 
     public ElementBuilder(ResourceLocation i, Object... args) {
         super(i);
-        protons = ((Double)args[0]).intValue();
-        neutrons = ((Double)args[1]).intValue();
-        halfLifeSeconds = ((Double)args[2]).intValue();
+        protons = ((Number)args[0]).intValue();
+        neutrons = ((Number)args[1]).intValue();
+        halfLifeSeconds = ((Number)args[2]).intValue();
         decayTo = args[3] == null ? null : args[3].toString();
         name = i.getPath();
         symbol = args[4] == null ? "" : args[4].toString();

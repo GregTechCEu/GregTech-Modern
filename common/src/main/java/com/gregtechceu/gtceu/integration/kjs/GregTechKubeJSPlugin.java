@@ -22,6 +22,7 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.integration.kjs.builders.ElementBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.GTRecipeTypeBuilder;
+import com.gregtechceu.gtceu.integration.kjs.builders.MaterialIconSetBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.machine.*;
 import com.gregtechceu.gtceu.integration.kjs.recipe.GTRecipeBuilderJS;
 import dev.latvian.mods.kubejs.KubeJSPlugin;
@@ -46,6 +47,8 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
     public void init() {
         super.init();
         GTRegistryObjectBuilderTypes.ELEMENT.addType("basic", ElementBuilder.class, ElementBuilder::new, true);
+
+        GTRegistryObjectBuilderTypes.MATERIAL_ICON_SET.addType("basic", MaterialIconSetBuilder.class, MaterialIconSetBuilder::new, true);
 
         GTRegistryObjectBuilderTypes.MATERIAL.addType("basic", Material.Builder.class, Material.Builder::new, true);
 
@@ -157,6 +160,11 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         typeWrappers.register(RecipeCapability.class, (ctx, o) -> {
             if (o instanceof RecipeCapability<?> capability) return capability;
             if (o instanceof CharSequence chars) return GTRegistries.RECIPE_CAPABILITIES.get(chars.toString());
+            return null;
+        });
+        typeWrappers.register(MaterialIconSet.class, (ctx, o) -> {
+            if (o instanceof MaterialIconSet iconSet) return iconSet;
+            if (o instanceof CharSequence chars) return MaterialIconSet.getByName(chars.toString());
             return null;
         });
 

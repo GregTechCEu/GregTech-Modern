@@ -508,7 +508,7 @@ public class GTRecipeTypes {
             });
         }
         if (GTCEu.isKubeJSLoaded()) {
-            GTRegistryObjectBuilderTypes.registerFor(GTRegistries.RECIPE_TYPES);
+            GTRegistryObjectBuilderTypes.registerFor(GTRegistries.RECIPE_TYPES.getRegistryName());
         }
         GTRegistries.register(Registry.RECIPE_SERIALIZER, GTCEu.id("gt_recipe_serializer"), GTRecipeSerializer.SERIALIZER);
         GTRegistries.register(Registry.RECIPE_SERIALIZER, GTCEu.id("facade_cover_serializer"), FacadeCoverRecipe.SERIALIZER);

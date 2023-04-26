@@ -278,7 +278,7 @@ public class GTMaterials {
         //ChemicalHelper.registerUnificationEntry(MetaBlocks.STONE_SMOOTH.getItemVariant(BlockStoneSmooth.BlockType.CONCRETE_DARK, 1), TagPrefix.block, GTMaterials.Concrete);
 
         if (GTCEu.isKubeJSLoaded()) {
-            GTRegistryObjectBuilderTypes.registerFor(GTRegistries.MATERIALS);
+            GTRegistryObjectBuilderTypes.registerFor(GTRegistries.MATERIALS.getRegistryName());
         }
     }
 

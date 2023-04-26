@@ -962,7 +962,7 @@ public class GTMachines {
             new GTCreateMachines();
         }
         if (GTCEu.isKubeJSLoaded()) {
-            GTRegistryObjectBuilderTypes.registerFor(GTRegistries.MACHINES);
+            GTRegistryObjectBuilderTypes.registerFor(GTRegistries.MACHINES.getRegistryName());
         }
     }
 

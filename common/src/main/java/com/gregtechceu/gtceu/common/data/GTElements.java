@@ -150,7 +150,7 @@ public class GTElements {
 
     public static void init() {
         if (GTCEu.isKubeJSLoaded()) {
-            GTRegistryObjectBuilderTypes.registerFor(GTRegistries.ELEMENTS);
+            GTRegistryObjectBuilderTypes.registerFor(GTRegistries.ELEMENTS.getRegistryName());
         }
     }
 
