@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.addon.fabric;
 
+import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.entrypoint.EntrypointContainer;
@@ -7,13 +8,17 @@ import net.fabricmc.loader.api.entrypoint.EntrypointContainer;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class AddonFinderImpl {
+public class AddonFinderImpl extends AddonFinder {
     private AddonFinderImpl() {
 
     }
 
     public static List<IGTAddon> getAddons() {
-        return getInstances("gtceu_addon", IGTAddon.class);
+        if (cache == null) {
+            cache = getInstances("gtceu_addon", IGTAddon.class);
+        }
+
+        return cache;
     }
 
     @SuppressWarnings("SameParameterValue")

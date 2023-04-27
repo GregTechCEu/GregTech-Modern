@@ -2,6 +2,8 @@ package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.addon.AddonFinder;
+import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.StressRecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.FacadeCoverRecipe;
@@ -509,6 +511,7 @@ public class GTRecipeTypes {
                         .save(provider);
             });
         }
+        AddonFinder.getAddons().forEach(IGTAddon::registerRecipeTypes);
         if (GTCEu.isKubeJSLoaded()) {
             new RecipeTypeEventJS().post();
         }

@@ -1,6 +1,8 @@
 package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.addon.AddonFinder;
+import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.api.data.chemical.Element;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.integration.kjs.events.ElementEventJS;
@@ -149,6 +151,7 @@ public class GTElements {
     }
 
     public static void init() {
+        AddonFinder.getAddons().forEach(IGTAddon::registerElements);
         if (GTCEu.isKubeJSLoaded()) {
             new ElementEventJS().post();
         }

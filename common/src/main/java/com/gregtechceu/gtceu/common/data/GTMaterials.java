@@ -1,6 +1,8 @@
 package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.addon.AddonFinder;
+import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterial;
 import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
@@ -278,6 +280,7 @@ public class GTMaterials {
         //ChemicalHelper.registerUnificationEntry(MetaBlocks.STONE_SMOOTH.getItemVariant(BlockStoneSmooth.BlockType.CONCRETE_DARK, 1), TagPrefix.block, GTMaterials.Concrete);
 
 
+        AddonFinder.getAddons().forEach(IGTAddon::registerMaterials);
         if (GTCEu.isKubeJSLoaded()) {
             new MaterialEventJS().post();
         }

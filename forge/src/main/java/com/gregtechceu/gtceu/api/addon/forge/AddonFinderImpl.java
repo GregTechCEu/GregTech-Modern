@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.addon.forge;
 
+import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.GTAddon;
 import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import net.minecraftforge.fml.ModList;
@@ -11,7 +12,7 @@ import org.objectweb.asm.Type;
 import java.lang.reflect.Constructor;
 import java.util.*;
 
-public class AddonFinderImpl {
+public class AddonFinderImpl extends AddonFinder {
     private static final Logger LOGGER = LogManager.getLogger();
 
     private AddonFinderImpl() {
@@ -19,7 +20,11 @@ public class AddonFinderImpl {
     }
 
     public static List<IGTAddon> getAddons() {
-        return getInstances(GTAddon.class, IGTAddon.class);
+        if (cache == null) {
+            cache = getInstances(GTAddon.class, IGTAddon.class);
+        }
+
+        return cache;
     }
 
     @SuppressWarnings("SameParameterValue")
