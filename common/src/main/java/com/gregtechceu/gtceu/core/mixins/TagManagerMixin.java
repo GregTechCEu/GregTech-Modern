@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.core.mixins;
 
 import com.gregtechceu.gtceu.core.IGTTagLoader;
-import dev.latvian.mods.kubejs.core.TagLoaderKJS;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
@@ -27,9 +26,9 @@ public class TagManagerMixin {
             shift = At.Shift.BY,
             by = 2
     ), locals = LocalCapture.CAPTURE_FAILHARD)
-    private <T> void kjs$saveRegistryToTagLoader(ResourceManager rm, Executor executor, RegistryAccess.RegistryEntry<T> reg,
-                                                 CallbackInfoReturnable<CompletableFuture<TagManager.LoadResult<T>>> cir,
-                                                 ResourceKey<? extends Registry<T>> key, Registry<T> registry, TagLoader<Holder<T>> loader) {
+    private <T> void gtceu$saveRegistryToTagLoader(ResourceManager rm, Executor executor, RegistryAccess.RegistryEntry<T> reg,
+                                                   CallbackInfoReturnable<CompletableFuture<TagManager.LoadResult<T>>> cir,
+                                                   ResourceKey<? extends Registry<T>> key, Registry<T> registry, TagLoader<Holder<T>> loader) {
         ((IGTTagLoader<T>) loader).gtceu$setRegistry(registry);
     }
 }
