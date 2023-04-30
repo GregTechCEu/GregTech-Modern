@@ -15,7 +15,6 @@ import net.minecraft.world.item.ItemStack;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Consumer;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
@@ -107,9 +106,11 @@ public class OreRecipeHandler {
         }
 
         //do not try to add smelting recipes for materials which require blast furnace
-        if (!ingotStack.isEmpty() && doesMaterialUseNormalFurnace(smeltingMaterial)) {
+        if (!ingotStack.isEmpty() && doesMaterialUseNormalFurnace(smeltingMaterial) && !orePrefix.isIgnored(material)) {
             VanillaRecipeHelper.addSmeltingRecipe(provider, "smelt_" + material.getName() + "_" + orePrefix.name + "_to_ingot",
-                    ChemicalHelper.getTag(orePrefix, material), ingotStack, 0.5f);
+                    ChemicalHelper.getTag(orePrefix, material), ingotStack, 0.7f);
+            VanillaRecipeHelper.addBlastingRecipe(provider, "smelt_" + material.getName() + "_" + orePrefix.name + "_to_ingot",
+                    ChemicalHelper.getTag(orePrefix, material), ingotStack, 0.7f);
         }
     }
 
@@ -184,6 +185,7 @@ public class OreRecipeHandler {
 
         VanillaRecipeHelper.addShapelessRecipe(provider, String.format("crushed_ore_to_dust_%s", material),
                 impureDustStack, 'h', new UnificationEntry(crushedPrefix, material));
+
 
         processMetalSmelting(crushedPrefix, material, property, provider);
     }
@@ -357,4 +359,6 @@ public class OreRecipeHandler {
     private static boolean doesMaterialUseNormalFurnace(Material material) {
         return !material.hasProperty(PropertyKey.BLAST);
     }
+
+
 }

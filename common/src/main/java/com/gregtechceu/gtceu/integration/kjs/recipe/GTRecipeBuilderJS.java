@@ -86,7 +86,7 @@ public class GTRecipeBuilderJS extends RecipeJS {
             }
         }
         boolean isFuel = GsonHelper.getAsBoolean(json, "isFuel", false);
-        backingBuilder = new GTRecipeBuilder(id, (GTRecipeType) Registry.RECIPE_TYPE.get(new ResourceLocation(recipeType.indexOf(':') != -1 ? recipeType : GTCEu.MOD_ID + ":" + recipeType)))
+        backingBuilder = new GTRecipeBuilder(id, (GTRecipeType) Registry.RECIPE_TYPE.get(GTCEu.appendId(recipeType)))
                 .duration(duration)
                 .isFuel(isFuel);
         backingBuilder.data = data;

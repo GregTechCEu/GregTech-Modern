@@ -9,9 +9,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
-import com.gregtechceu.gtceu.data.recipe.builder.ShapedRecipeBuilder;
-import com.gregtechceu.gtceu.data.recipe.builder.ShapelessRecipeBuilder;
-import com.gregtechceu.gtceu.data.recipe.builder.SmeltingRecipeBuilder;
+import com.gregtechceu.gtceu.data.recipe.builder.*;
 import com.tterrag.registrate.util.entry.ItemEntry;
 import it.unimi.dsi.fastutil.chars.*;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
@@ -41,6 +39,14 @@ public class VanillaRecipeHelper {
 
     public static void addSmeltingRecipe(Consumer<FinishedRecipe> provider, @Nonnull String regName, TagKey<Item> input, ItemStack output, float experience) {
         new SmeltingRecipeBuilder(GTCEu.id(regName.toLowerCase())).input(input).output(output).cookingTime(200).experience(experience).save(provider);
+    }
+
+    public static void addBlastingRecipe(Consumer<FinishedRecipe> provider, @Nonnull String regName, TagKey<Item> input, ItemStack output, float experience) {
+        new BlastingRecipeBuilder(GTCEu.id(regName.toLowerCase())).input(input).output(output).cookingTime(100).experience(experience).save(provider);
+    }
+
+    public static void addSmokingRecipe(Consumer<FinishedRecipe> provider, @Nonnull String regName, TagKey<Item> input, ItemStack output, float experience) {
+        new SmokingRecipeBuilder(GTCEu.id(regName.toLowerCase())).input(input).output(output).cookingTime(100).experience(experience).save(provider);
     }
 
     public static void addSmeltingRecipe(Consumer<FinishedRecipe> provider, @Nonnull String regName, ItemStack input, ItemStack output) {
