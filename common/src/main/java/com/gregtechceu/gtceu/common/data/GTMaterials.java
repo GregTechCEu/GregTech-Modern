@@ -188,6 +188,27 @@ public class GTMaterials {
         block.setIgnored(Lapotron);
         block.setIgnored(Obsidian, Blocks.OBSIDIAN);
 
+        ore.setIgnored(Redstone, Blocks.REDSTONE_ORE);
+        oreDeepslate.setIgnored(Redstone, Blocks.DEEPSLATE_REDSTONE_ORE);
+        ore.setIgnored(Coal, Blocks.COAL_ORE);
+        oreDeepslate.setIgnored(Coal, Blocks.DEEPSLATE_COAL_ORE);
+        ore.setIgnored(Gold, Blocks.GOLD_ORE);
+        oreDeepslate.setIgnored(Gold, Blocks.DEEPSLATE_GOLD_ORE);
+        oreNetherrack.setIgnored(Gold, Blocks.NETHER_GOLD_ORE);
+        ore.setIgnored(Iron, Blocks.IRON_ORE);
+        oreDeepslate.setIgnored(Iron, Blocks.DEEPSLATE_IRON_ORE);
+        ore.setIgnored(Lapis, Blocks.LAPIS_ORE);
+        oreDeepslate.setIgnored(Lapis, Blocks.DEEPSLATE_LAPIS_ORE);
+        ore.setIgnored(Diamond, Blocks.DIAMOND_ORE);
+        oreDeepslate.setIgnored(Diamond, Blocks.DEEPSLATE_DIAMOND_ORE);
+        ore.setIgnored(Emerald, Blocks.EMERALD_ORE);
+        oreDeepslate.setIgnored(Emerald, Blocks.DEEPSLATE_EMERALD_ORE);
+        ore.setIgnored(Copper, Blocks.COPPER_ORE);
+        oreDeepslate.setIgnored(Copper, Blocks.DEEPSLATE_COPPER_ORE);
+        ore.setIgnored(Copper, Blocks.COPPER_ORE);
+        oreDeepslate.setIgnored(Copper, Blocks.DEEPSLATE_COPPER_ORE);
+        oreNetherrack.setIgnored(NetherQuartz, Blocks.NETHER_QUARTZ_ORE);
+
         crushed.addSecondaryMaterial(new MaterialStack(Stone, dust.materialAmount()));
 
         toolHeadDrill.addSecondaryMaterial(new MaterialStack(Steel, plate.materialAmount() * 4));

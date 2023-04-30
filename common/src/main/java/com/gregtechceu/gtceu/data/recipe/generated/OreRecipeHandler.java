@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.OreProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -88,13 +89,20 @@ public class OreRecipeHandler {
                     .chancedOutput(byproductStack, 1400, 850)
                     .duration(400);
 
+            Material outputDustMat = GTRegistries.MATERIALS.get(orePrefix.name);
+            if (outputDustMat != null) {
+                builder.outputItems(dust, outputDustMat);
+            }
+
             builder.save(provider);
         }
 
         //do not try to add smelting recipes for materials which require blast furnace
-        if (!ingotStack.isEmpty() && doesMaterialUseNormalFurnace(smeltingMaterial)) {
+        if (!ingotStack.isEmpty() && doesMaterialUseNormalFurnace(smeltingMaterial) && !orePrefix.isIgnored(material)) {
             VanillaRecipeHelper.addSmeltingRecipe(provider, "smelt_" + material.getName() + "_" + orePrefix.name + "_to_ingot",
-                    ChemicalHelper.getTag(orePrefix, material), ingotStack, 0.5f);
+                    ChemicalHelper.getTag(orePrefix, material), ingotStack, 0.7f);
+            VanillaRecipeHelper.addBlastingRecipe(provider, "smelt_" + material.getName() + "_" + orePrefix.name + "_to_ingot",
+                    ChemicalHelper.getTag(orePrefix, material), ingotStack, 0.7f);
         }
     }
 
