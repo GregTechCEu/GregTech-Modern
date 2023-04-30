@@ -23,6 +23,8 @@ import net.minecraft.resources.ResourceLocation;
 public final class GTRegistries {
     public static final GTRegistrate REGISTRATE = GTRegistrate.create(GTCEu.MOD_ID);
 
+
+    public static final GTRegistry.RL<GTRegistry<?, ?>> REGISTRIES = new GTRegistry.RL<>(GTCEu.id("root"));
     // GT Registry
     public static final GTRegistry.String<Element> ELEMENTS = new GTRegistry.String<>(GTCEu.id("element"));
     public static final GTRegistry.String<Material> MATERIALS = new GTRegistry.String<>(GTCEu.id("material"));

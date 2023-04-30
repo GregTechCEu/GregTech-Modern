@@ -70,9 +70,11 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
     private ProgressTexture progressBarTexture = new ProgressTexture();
     @Setter
     private SteamTexture steamProgressBarTexture = null;
+    @Setter
     private ProgressTexture.FillDirection steamMoveType = ProgressTexture.FillDirection.LEFT_TO_RIGHT;
     private IGuiTexture specialTexture;
     private Rect specialTexturePosition;
+    @Getter
     private final Byte2ObjectMap<IGuiTexture> slotOverlays = new Byte2ObjectArrayMap<>();
     @Setter
     @Getter
@@ -138,6 +140,12 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
 
     public GTRecipeType setSpecialTexture(int x, int y, int width, int height, IGuiTexture area) {
         this.specialTexturePosition = Rect.of(new Position(x, y), new Size(width, height));
+        this.specialTexture = area;
+        return this;
+    }
+
+    public GTRecipeType setSpecialTexture(Rect specialTexturePosition, IGuiTexture area) {
+        this.specialTexturePosition = specialTexturePosition;
         this.specialTexture = area;
         return this;
     }
