@@ -14,7 +14,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.sound.ExistingSoundEntry;
 import com.gregtechceu.gtceu.common.block.CoilBlock;
-import com.gregtechceu.gtceu.integration.kjs.events.RecipeTypeEventJS;
+import com.gregtechceu.gtceu.integration.kjs.GTRegistryObjectBuilderTypes;
 import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
 import com.lowdragmc.lowdraglib.gui.widget.TankWidget;
 import com.lowdragmc.lowdraglib.msic.FluidStorage;
@@ -510,7 +510,7 @@ public class GTRecipeTypes {
             });
         }
         if (GTCEu.isKubeJSLoaded()) {
-            new RecipeTypeEventJS().post();
+            GTRegistryObjectBuilderTypes.registerFor(GTRegistries.RECIPE_TYPES.getRegistryName());
         }
         GTRegistries.register(Registry.RECIPE_SERIALIZER, GTCEu.id("gt_recipe_serializer"), GTRecipeSerializer.SERIALIZER);
         GTRegistries.register(Registry.RECIPE_SERIALIZER, GTCEu.id("facade_cover_serializer"), FacadeCoverRecipe.SERIALIZER);

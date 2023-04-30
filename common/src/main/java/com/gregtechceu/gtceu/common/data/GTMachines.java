@@ -48,7 +48,7 @@ import com.gregtechceu.gtceu.common.machine.multiblock.electric.PyrolyseOvenMach
 import com.gregtechceu.gtceu.common.machine.steam.SteamLiquidBoilerMachine;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
-import com.gregtechceu.gtceu.integration.kjs.events.MachineEventJS;
+import com.gregtechceu.gtceu.integration.kjs.GTRegistryObjectBuilderTypes;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
@@ -962,7 +962,7 @@ public class GTMachines {
             new GTCreateMachines();
         }
         if (GTCEu.isKubeJSLoaded()) {
-            new MachineEventJS().post();
+            GTRegistryObjectBuilderTypes.registerFor(GTRegistries.MACHINES.getRegistryName());
         }
     }
 

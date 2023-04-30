@@ -1,6 +1,9 @@
 package com.gregtechceu.gtceu.api.data.chemical.material.info;
 
 import com.google.common.base.Preconditions;
+import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.integration.kjs.GTRegistryObjectBuilderTypes;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -85,6 +88,10 @@ public class MaterialIconSet {
 
     public static MaterialIconSet getByName(@Nonnull String name) {
         return ICON_SETS.get(name.toLowerCase(Locale.ENGLISH));
+    }
+
+    public static void init() {
+        GTRegistryObjectBuilderTypes.registerFor(GTRegistryObjectBuilderTypes.MATERIAL_ICON_SET.registryKey);
     }
 
     @Override

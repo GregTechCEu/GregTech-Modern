@@ -15,17 +15,6 @@ import net.minecraft.world.level.block.Block;
 public class TagsHandler {
 
     public static void initItem(RegistrateTagsProvider<Item> provider) {
-        ChemicalHelper.UNIFICATION_ENTRY_ITEM.forEach((entry, itemLikes) -> {
-            if (itemLikes.isEmpty()) return;
-            var material = entry.material;
-            if (material != null) {
-                var materialTags = entry.tagPrefix.getItemTags(material);
-                for (TagKey<Item> materialTag : materialTags) {
-                    var builder = provider.getOrCreateRawBuilder(materialTag);
-                    itemLikes.forEach(item -> builder.addElement(Registry.ITEM.getKey(item.asItem())));
-                    builder.build();
-                }
-            }
             //var tagPrefixes = entry.tagPrefix.getItemTags();
             //for (TagKey<Item> tagPrefixTag : tagPrefixes) {
             //    var builder = provider.getOrCreateRawBuilder(tagPrefixTag);
@@ -38,7 +27,6 @@ public class TagsHandler {
              //   }
             //    builder.build();
             //}
-        });
         TagLoader.init(provider);
     }
 
