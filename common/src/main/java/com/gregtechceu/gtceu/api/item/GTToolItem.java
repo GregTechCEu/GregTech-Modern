@@ -84,6 +84,6 @@ public class GTToolItem extends DiggerItem implements IItemRendererProvider, IIt
 
     @Override
     public String getDescriptionId(ItemStack stack) {
-        return "%s %s".formatted(LocalizationUtils.format(getTier().material.getUnlocalizedName()), LocalizationUtils.format(toolType.getUnlocalizedName()));
+        return "%s%s".formatted(LocalizationUtils.format(getTier().material.getUnlocalizedName()), LocalizationUtils.format(toolType.getUnlocalizedName()));
     }
 }
