@@ -20,7 +20,6 @@ import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.material.Fluid;
 
@@ -746,12 +745,12 @@ public class Material implements Comparable<Material> {
             return this;
         }
 
-        public Builder components(MaterialStack... components) {
+        public Builder componentStacks(MaterialStack... components) {
             composition = Arrays.asList(components);
             return this;
         }
 
-        public Builder components(ImmutableList<MaterialStack> components) {
+        public Builder componentStacks(ImmutableList<MaterialStack> components) {
             composition = components;
             return this;
         }
