@@ -19,6 +19,7 @@
     "gtceu:frame_block_hssg",
     "gtceu:frame_block_hsse",
     "gtceu:frame_block_hsss",
+    "gtceu:frame_block_test_material",
     "gtceu:wire_single.aluminium",
     "gtceu:wire_single.cobalt",
     "gtceu:wire_single.copper",
@@ -1228,6 +1229,18 @@
     "gtceu:kinetic_output_box.iv",
     "gtceu:kinetic_output_box.luv",
     "gtceu:kinetic_output_box.zpm",
-    "gtceu:kinetic_output_box.uv"
+    "gtceu:kinetic_output_box.uv",
+    "gtceu:steam_test_simple_steam_machine.bronze",
+    "gtceu:steam_test_simple_steam_machine.steel",
+    "gtceu:test_simple_electric_machine.lv",
+    "gtceu:test_simple_electric_machine.mv",
+    "gtceu:test_simple_electric_machine.hv",
+    "gtceu:test_simple_electric_machine.ev",
+    "gtceu:test_simple_multiblock",
+    "gtceu:test_simple_kinetic_machine.lv",
+    "gtceu:test_simple_kinetic_machine.mv",
+    "gtceu:test_simple_kinetic_machine.hv",
+    "gtceu:test_simple_kinetic_machine.ev",
+    "gtceu:test_kinetic_multiblock"
   ]
 }

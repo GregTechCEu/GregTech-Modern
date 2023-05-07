@@ -37,7 +37,7 @@ public class SerializerFluidStack implements IContentSerializer<FluidStack> {
             }
             var jObj = json.getAsJsonObject();
             var fluid = new ResourceLocation(jObj.get("fluid").getAsString());
-            var amount = jObj.get("amount").getAsLong() * FluidHelper.getBucket() / 1000;
+            var amount = jObj.get("amount").getAsLong();
             var fluidStack = FluidStack.create(Objects.requireNonNull(Registry.FLUID.get(fluid)), amount);
             if (jObj.has("nbt")) {
                 try {
@@ -58,7 +58,7 @@ public class SerializerFluidStack implements IContentSerializer<FluidStack> {
         var json = new JsonObject();
         json.addProperty("fluid", Objects.requireNonNull(Registry.FLUID.getKey(content.getFluid())).toString());
         // TODO Fabric and Forge have their own magic number
-        json.addProperty("amount", content.getAmount() * 1000 / FluidHelper.getBucket());
+        json.addProperty("amount", content.getAmount() * FluidHelper.getBucket() / 1000);
         if (content.hasTag())
             json.addProperty("nbt", content.getTag().toString());
         return json;

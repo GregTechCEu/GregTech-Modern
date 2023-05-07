@@ -1269,6 +1269,8 @@
     "gtceu:compressed_block_hsss",
     "gtceu:frame_block_hsss",
     "gtceu:compressed_block_blue_alloy",
+    "gtceu:compressed_block_test_material",
+    "gtceu:frame_block_test_material",
     "gtceu:wire_single.aluminium",
     "gtceu:wire_single.cobalt",
     "gtceu:wire_single.copper",

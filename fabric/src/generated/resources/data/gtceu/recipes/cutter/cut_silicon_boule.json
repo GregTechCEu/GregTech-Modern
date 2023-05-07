@@ -6,7 +6,7 @@
       {
         "chance": 1.0,
         "content": {
-          "amount": 0,
+          "amount": 1620,
           "fluid": "gtceu:lubricant"
         }
       }
