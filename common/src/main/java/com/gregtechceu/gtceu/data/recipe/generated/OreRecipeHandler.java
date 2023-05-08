@@ -87,7 +87,7 @@ public class OreRecipeHandler {
                     .inputItems(orePrefix, material)
                     .outputItems(GTUtil.copyAmount((int) Math.round(amountOfCrushedOre) * 2 * oreMultiplier, crushedStack))
                     .chancedOutput(byproductStack, 1400, 850)
-                    .duration(400);
+                    .duration(400).EUt(2);
 
             Material outputDustMat = GTRegistries.MATERIALS.get(orePrefix.name);
             if (outputDustMat != null) {
