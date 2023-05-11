@@ -119,7 +119,7 @@ public class OreRecipeHandler {
         MACERATOR_RECIPES.recipeBuilder("macerate_" + material.getName() + "_crushed_ore_to_impure_dust")
                 .inputItems(crushedPrefix, material)
                 .outputItems(impureDustStack)
-                .duration(400)
+                .duration(400).EUt(2)
                 .chancedOutput(ChemicalHelper.get(dust, byproductMaterial, property.getByProductMultiplier()), 1400, 850)
                 .save(provider);
 
@@ -196,7 +196,7 @@ public class OreRecipeHandler {
                 .inputItems(centrifugedPrefix, material)
                 .outputItems(dustStack)
                 .chancedOutput(byproductStack, 1400, 850)
-                .duration(400)
+                .duration(400).EUt(2)
                 .save(provider);
 
         VanillaRecipeHelper.addShapelessRecipe(provider, String.format("centrifuged_ore_to_dust_%s", material), dustStack,
@@ -223,7 +223,7 @@ public class OreRecipeHandler {
                 .inputItems(purifiedPrefix, material)
                 .outputItems(dustStack)
                 .chancedOutput(byproductStack, 1400, 850)
-                .duration(400)
+                .duration(400).EUt(2)
                 .save(provider);
 
         VanillaRecipeHelper.addShapelessRecipe(provider, String.format("purified_ore_to_dust_%s", material), dustStack,
