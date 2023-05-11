@@ -183,4 +183,6 @@ public class GTValues {
         return yearMonthDay[1].equals("12") && (yearMonthDay[2].equals("24") || yearMonthDay[2].equals("25"));
     };
 
+
+    public static final String CUSTOM_TAG_SOURCE = "GTCEu Custom Tags";
 }

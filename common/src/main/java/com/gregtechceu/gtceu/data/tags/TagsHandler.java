@@ -15,7 +15,7 @@ import net.minecraft.world.level.block.Block;
 public class TagsHandler {
 
     public static void initItem(RegistrateTagsProvider<Item> provider) {
-        ChemicalHelper.UNIFICATION_ENTRY_ITEM.forEach((entry, itemLikes) -> {
+        /*ChemicalHelper.UNIFICATION_ENTRY_ITEM.forEach((entry, itemLikes) -> {
             if (itemLikes.isEmpty()) return;
             var material = entry.material;
             if (material != null) {
@@ -38,7 +38,7 @@ public class TagsHandler {
              //   }
             //    builder.build();
             //}
-        });
+        });*/
         TagLoader.init(provider);
     }
 

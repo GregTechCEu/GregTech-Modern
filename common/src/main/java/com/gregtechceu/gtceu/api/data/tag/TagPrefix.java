@@ -47,8 +47,12 @@ public class TagPrefix {
     public static final Map<TagPrefix, Supplier<BlockState>> ORES = new HashMap<>();
 
     public static final TagPrefix ore = new TagPrefix("stone")
+            .prefixTagPath(FORGE, "ores/%s/%s")
             .defaultTagPath(FORGE, "ores/%s")
+            .prefixOnlyTagPath(FORGE, "ores_in_ground/%s")
+            .prefixTagPath(FABRIC, "%s_%s_ores")
             .defaultTagPath(FABRIC, "%s_ores")
+            .prefixOnlyTagPath(FABRIC, "%s_ores_in_ground")
             .langValue("%s Ore")
             .materialIconType(MaterialIconType.ore)
             .unificationEnabled(true)
@@ -56,8 +60,12 @@ public class TagPrefix {
             .registerOre(Blocks.STONE::defaultBlockState);
 
     public static final TagPrefix oreGranite = new TagPrefix("granite")
+            .prefixTagPath(FORGE, "ores/%s/%s")
             .defaultTagPath(FORGE, "ores/%s")
+            .prefixOnlyTagPath(FORGE, "ores_in_ground/%s")
+            .prefixTagPath(FABRIC, "%s_%s_ores")
             .defaultTagPath(FABRIC, "%s_ores")
+            .prefixOnlyTagPath(FABRIC, "%s_ores_in_ground")
             .langValue("Granite %s Ore")
             .materialIconType(MaterialIconType.ore)
             .unificationEnabled(true)
@@ -65,8 +73,12 @@ public class TagPrefix {
             .registerOre(Blocks.GRANITE::defaultBlockState);
 
     public static final TagPrefix oreDiorite = new TagPrefix("diorite")
+            .prefixTagPath(FORGE, "ores/%s/%s")
             .defaultTagPath(FORGE, "ores/%s")
+            .prefixOnlyTagPath(FORGE, "ores_in_ground/%s")
+            .prefixTagPath(FABRIC, "%s_%s_ores")
             .defaultTagPath(FABRIC, "%s_ores")
+            .prefixOnlyTagPath(FABRIC, "%s_ores_in_ground")
             .langValue("Diorite %s Ore")
             .materialIconType(MaterialIconType.ore)
             .unificationEnabled(true)
@@ -74,8 +86,12 @@ public class TagPrefix {
             .registerOre(Blocks.DIORITE::defaultBlockState);
 
     public static final TagPrefix oreAndesite = new TagPrefix("andesite")
+            .prefixTagPath(FORGE, "ores/%s/%s")
             .defaultTagPath(FORGE, "ores/%s")
+            .prefixOnlyTagPath(FORGE, "ores_in_ground/%s")
+            .prefixTagPath(FABRIC, "%s_%s_ores")
             .defaultTagPath(FABRIC, "%s_ores")
+            .prefixOnlyTagPath(FABRIC, "%s_ores_in_ground")
             .langValue("Andesite %s Ore")
             .materialIconType(MaterialIconType.ore)
             .unificationEnabled(true)
@@ -84,8 +100,12 @@ public class TagPrefix {
 
     // todo move to doubling, since this is a nether block?
     public static final TagPrefix oreBasalt = new TagPrefix("basalt")
+            .prefixTagPath(FORGE, "ores/%s/%s")
             .defaultTagPath(FORGE, "ores/%s")
+            .prefixOnlyTagPath(FORGE, "ores_in_ground/%s")
+            .prefixTagPath(FABRIC, "%s_%s_ores")
             .defaultTagPath(FABRIC, "%s_ores")
+            .prefixOnlyTagPath(FABRIC, "%s_ores_in_ground")
             .langValue("Basalt %s Ore")
             .materialIconType(MaterialIconType.ore)
             .unificationEnabled(true)
@@ -93,8 +113,12 @@ public class TagPrefix {
             .registerOre(Blocks.BASALT::defaultBlockState);
 
     public static final TagPrefix oreDeepslate = new TagPrefix("deepslate")
+            .prefixTagPath(FORGE, "ores/%s/%s")
             .defaultTagPath(FORGE, "ores/%s")
+            .prefixOnlyTagPath(FORGE, "ores_in_ground/%s")
+            .prefixTagPath(FABRIC, "%s_%s_ores")
             .defaultTagPath(FABRIC, "%s_ores")
+            .prefixOnlyTagPath(FABRIC, "%s_ores_in_ground")
             .langValue("Deepslate %s Ore")
             .materialIconType(MaterialIconType.ore)
             .unificationEnabled(true)
@@ -102,8 +126,12 @@ public class TagPrefix {
             .registerOre(Blocks.DEEPSLATE::defaultBlockState);
 
     public static final TagPrefix oreSand = new TagPrefix("sand")
+            .prefixTagPath(FORGE, "ores/%s/%s")
             .defaultTagPath(FORGE, "ores/%s")
+            .prefixOnlyTagPath(FORGE, "ores_in_ground/%s")
+            .prefixTagPath(FABRIC, "%s_%s_ores")
             .defaultTagPath(FABRIC, "%s_ores")
+            .prefixOnlyTagPath(FABRIC, "%s_ores_in_ground")
             .langValue("Sand %s Ore")
             .materialIconType(MaterialIconType.ore)
             .unificationEnabled(true)
@@ -111,8 +139,12 @@ public class TagPrefix {
             .registerOre(Blocks.SAND::defaultBlockState);
 
     public static final TagPrefix oreRedSand = new TagPrefix("redSand")
+            .prefixTagPath(FORGE, "ores/%s/%s")
             .defaultTagPath(FORGE, "ores/%s")
+            .prefixOnlyTagPath(FORGE, "ores_in_ground/%s")
+            .prefixTagPath(FABRIC, "%s_%s_ores")
             .defaultTagPath(FABRIC, "%s_ores")
+            .prefixOnlyTagPath(FABRIC, "%s_ores_in_ground")
             .langValue("Red Sand %s Ore")
             .materialIconType(MaterialIconType.ore)
             .unificationEnabled(true)
@@ -120,8 +152,12 @@ public class TagPrefix {
             .registerOre(Blocks.RED_SAND::defaultBlockState);
 
     public static final TagPrefix oreNetherrack = new TagPrefix("netherrack")
-            .prefixTagPath(FORGE, "%s_ores/%s")
+            .prefixTagPath(FORGE, "ores/%s/%s")
+            .defaultTagPath(FORGE, "ores/%s")
+            .prefixOnlyTagPath(FORGE, "ores_in_ground/%s")
             .prefixTagPath(FABRIC, "%s_%s_ores")
+            .defaultTagPath(FABRIC, "%s_ores")
+            .prefixOnlyTagPath(FABRIC, "%s_ores_in_ground")
             .langValue("Nether %s Ore")
             .materialIconType(MaterialIconType.ore)
             .unificationEnabled(true)
@@ -129,8 +165,12 @@ public class TagPrefix {
             .registerOre(Blocks.NETHERRACK::defaultBlockState);
 
     public static final TagPrefix oreEndstone = new TagPrefix("endstone")
-            .prefixTagPath(FORGE, "%s_ores/%s")
+            .prefixTagPath(FORGE, "ores/%s/%s")
+            .defaultTagPath(FORGE, "ores/%s")
+            .prefixOnlyTagPath(FORGE, "ores_in_ground/%s")
             .prefixTagPath(FABRIC, "%s_%s_ores")
+            .defaultTagPath(FABRIC, "%s_ores")
+            .prefixOnlyTagPath(FABRIC, "%s_ores_in_ground")
             .langValue("End %s Ore")
             .materialIconType(MaterialIconType.ore)
             .unificationEnabled(true)
@@ -697,6 +737,11 @@ public class TagPrefix {
 
     protected TagPrefix prefixTagPath(LoaderType loader, String path) {
         loader.apply(this, TagType.withPrefixFormatter(path));
+        return this;
+    }
+
+    protected TagPrefix prefixOnlyTagPath(LoaderType loader, String path) {
+        loader.apply(this, TagType.withPrefixOnlyFormatter(path));
         return this;
     }
 

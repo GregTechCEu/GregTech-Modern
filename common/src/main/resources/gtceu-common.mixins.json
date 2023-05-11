@@ -11,6 +11,7 @@
   "mixins": [
     "ChunkMixin",
     "IFoliagePlacerTypeAccessor",
+    "IHolderReferenceAccessor",
     "ITrunkPlacerTypeAccessor",
     "LevelMixin",
     "RecipeManagerAccessor",
@@ -18,6 +19,8 @@
     "RecipeManagerMixin",
     "ServerChunkProviderMixin",
     "ServerPlayerGameModeMixin",
+    "TagLoaderMixin",
+    "TagManagerMixin",
     "create.RotationPropagatorMixin",
     "kjs.KubeJSMixin",
     "kjs.RecipeEventJSMixin"
