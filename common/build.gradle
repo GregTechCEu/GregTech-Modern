@@ -54,7 +54,7 @@ dependencies {
     // All dependencies except Flywheel and Registrate are NOT safe to use!
     // Flywheel and Registrate must also be used carefully due to differences.
     modCompileOnly fabric.createFabric
-    modImplementation fabric.ldlib.common
+    modImplementation fabric.gtlib.common
 
     // JEI
     modCompileOnly fabric.jei.common.api
