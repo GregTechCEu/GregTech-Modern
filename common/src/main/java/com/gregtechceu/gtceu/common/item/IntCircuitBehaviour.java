@@ -7,11 +7,12 @@ import com.gregtechceu.gtceu.common.data.GTItems;
 import com.lowdragmc.lowdraglib.gui.factory.HeldItemUIFactory;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
-import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
+import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.gui.widget.ButtonWidget;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -70,11 +71,15 @@ public class IntCircuitBehaviour implements IItemUIFactory, IAddInformation {
         return isCircuit;
     }
 
+    // deprecated, not needed (for now)
+    @Deprecated
     public static void adjustConfiguration(HeldItemUIFactory.HeldItemHolder holder, int amount) {
         adjustConfiguration(holder.getHeld(), amount);
         holder.markAsDirty();
     }
 
+    // deprecated, not needed (for now)
+    @Deprecated
     public static void adjustConfiguration(ItemStack stack, int amount) {
         if (!isIntegratedCircuit(stack)) return;
         int configuration = getCircuitConfiguration(stack);
@@ -83,56 +88,26 @@ public class IntCircuitBehaviour implements IItemUIFactory, IAddInformation {
         setCircuitConfiguration(stack, configuration);
     }
 
+
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
         int configuration = getCircuitConfiguration(stack);
         tooltipComponents.add(Component.translatable("metaitem.int_circuit.configuration", configuration));
     }
 
-//    saving this one for later use
-//    @Override
-//    public ModularUI createUI(HeldItemUIFactory.HeldItemHolder holder, Player entityPlayer) {
-//        var modular = new ModularUI(176, 60, holder, entityPlayer)
-//                .widget(new LabelWidget(9, 8, "metaitem.circuit.integrated.gui"))
-//                .widget(new LabelWidget(82, 30, () -> Integer.toString(getCircuitConfiguration(holder.getHeld()))))
-//                .widget(new ButtonWidget(15, 24, 20, 20, new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("-5")), data -> adjustConfiguration(holder, -5)))
-//                .widget(new ButtonWidget(50, 24, 20, 20, new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("-1")), data -> adjustConfiguration(holder, -1)))
-//                .widget(new ButtonWidget(104, 24, 20, 20, new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("+1")), data -> adjustConfiguration(holder, +1)))
-//                .widget(new ButtonWidget(141, 24, 20, 20, new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("+5")), data -> adjustConfiguration(holder, +5)));
-//        modular.mainGroup.setBackground(GuiTextures.BACKGROUND);
-//        return modular;
-//    }
-
     @Override
     public ModularUI createUI(HeldItemUIFactory.HeldItemHolder holder, Player entityPlayer) {
-        var modular = new ModularUI(176, 200, holder, entityPlayer)
-                .widget(new LabelWidget(9, 8, "metaitem.circuit.integrated.gui"))
-                .widget(new ButtonWidget(15, 24, 20, 20, new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("0")), data -> setCircuitConfiguration(holder, 0)))
-                .widget(new ButtonWidget(35, 24, 20, 20, new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("1")), data -> setCircuitConfiguration(holder, 1)))
-                .widget(new ButtonWidget(55, 24, 20, 20, new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("2")), data -> setCircuitConfiguration(holder, 2)))
-                .widget(new ButtonWidget(75, 24, 20, 20, new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("3")), data -> setCircuitConfiguration(holder, 3)))
-                .widget(new ButtonWidget(95, 24, 20, 20, new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("4")), data -> setCircuitConfiguration(holder, 4)))
-                .widget(new ButtonWidget(115, 24, 20, 20, new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("5")), data -> setCircuitConfiguration(holder, 5)))
-                .widget(new ButtonWidget(15, 44, 20, 20, new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("6")), data -> setCircuitConfiguration(holder, 6)))
-                .widget(new ButtonWidget(35, 44, 20, 20, new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("7")), data -> setCircuitConfiguration(holder, 7)))
-                .widget(new ButtonWidget(55, 44, 20, 20, new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("8")), data -> setCircuitConfiguration(holder, 8)))
-                .widget(new ButtonWidget(75, 44, 20, 20, new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("9")), data -> setCircuitConfiguration(holder, 9)))
-                .widget(new ButtonWidget(95, 44, 20, 20, new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("10")), data -> setCircuitConfiguration(holder, 10)))
-                .widget(new ButtonWidget(115, 44, 20, 20, new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("11")), data -> setCircuitConfiguration(holder, 11)))
-                .widget(new ButtonWidget(15, 64, 20, 20, new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("12")), data -> setCircuitConfiguration(holder, 12)))
-                .widget(new ButtonWidget(35, 64, 20, 20, new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("13")), data -> setCircuitConfiguration(holder, 13)))
-                .widget(new ButtonWidget(55, 64, 20, 20, new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("14")), data -> setCircuitConfiguration(holder, 14)))
-                .widget(new ButtonWidget(75, 64, 20, 20, new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("15")), data -> setCircuitConfiguration(holder, 15)))
-                .widget(new ButtonWidget(95, 64, 20, 20, new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("16")), data -> setCircuitConfiguration(holder, 16)))
-                .widget(new ButtonWidget(115, 64, 20, 20, new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("17")), data -> setCircuitConfiguration(holder, 17)))
-                .widget(new ButtonWidget(15, 84, 20, 20, new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("18")), data -> setCircuitConfiguration(holder, 18)))
-                .widget(new ButtonWidget(35, 84, 20, 20, new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("19")), data -> setCircuitConfiguration(holder, 19)))
-                .widget(new ButtonWidget(55, 84, 20, 20, new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("20")), data -> setCircuitConfiguration(holder, 20)))
-                .widget(new ButtonWidget(75, 84, 20, 20, new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("21")), data -> setCircuitConfiguration(holder, 21)))
-                .widget(new ButtonWidget(95, 84, 20, 20, new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("22")), data -> setCircuitConfiguration(holder, 22)))
-                .widget(new ButtonWidget(115, 84, 20, 20, new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("23")), data -> setCircuitConfiguration(holder, 23)))
-                .widget(new ButtonWidget(15, 104, 20, 20, new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("24")), data -> setCircuitConfiguration(holder, 24)));
-
+        var modular = new ModularUI(180, 135, holder, entityPlayer)
+                .widget(new LabelWidget(9, 8, "metaitem.circuit.integrated.gui"));
+        int idx = 0;
+        for(int x = 0; x <= 3; x++) {
+            for(int y = 0; y <= 7; y++) {
+                int finalIdx = idx;
+                modular.widget(new ButtonWidget(10 + (20 * y), 24 + (20 * x), 20, 20, new GuiTextureGroup(GuiTextures.SLOT, new ResourceTexture(new ResourceLocation("gtceu:textures/item/circuit.integrated/" + (idx + 1) + ".png"), 0.0f, 0.0f, 1.0f, 1.0f)), data -> setCircuitConfiguration(holder, finalIdx)));
+                idx++;
+            }
+        }
+        modular.widget(new ButtonWidget(10, 104, 20, 20, new GuiTextureGroup(GuiTextures.SLOT, new ResourceTexture(new ResourceLocation("gtceu:textures/item/circuit.integrated/33.png"), 0.0f, 0.0f, 1.0f, 1.0f)), data -> setCircuitConfiguration(holder, 32)));
         modular.mainGroup.setBackground(GuiTextures.BACKGROUND);
         return modular;
     }
