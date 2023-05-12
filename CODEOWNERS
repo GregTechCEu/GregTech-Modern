@@ -1,0 +1,17 @@
+# All other changes require the primary team
+* @GregTechCEu/gregtech-1-19-devs
+
+# GitHub Actions changes require admin approval
+/.github/** @GregTechCEu/admin
+
+# Specific files requiring admin approval
+CHANGELOG.md @GregTechCEu/admin
+CHANGELOG-GTCEU.md @GregTechCEu/admin
+CODEOWNERS @GregTechCEu/admin
+CODESTYLE.md @GregTechCEu/admin
+LICENSE @GregTechCEu/admin
+README.md @GregTechCEu/admin
+permission*.png @GregTechCEu/admin
+
+# Gradle changes require specific reviewers
+**gradle** @DStrand1

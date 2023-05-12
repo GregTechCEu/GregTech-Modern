@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.common.data;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.Element;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.integration.kjs.events.ElementEventJS;
+import com.gregtechceu.gtceu.integration.kjs.GTRegistryObjectBuilderTypes;
 
 public class GTElements {
 
@@ -150,7 +150,7 @@ public class GTElements {
 
     public static void init() {
         if (GTCEu.isKubeJSLoaded()) {
-            new ElementEventJS().post();
+            GTRegistryObjectBuilderTypes.registerFor(GTRegistries.ELEMENTS.getRegistryName());
         }
     }
 

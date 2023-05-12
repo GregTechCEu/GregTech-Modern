@@ -69,9 +69,9 @@ public class GTItems {
     //////////////////////////////////////
     //*****     Material Items    ******//
     //////////////////////////////////////
-    public final static Table<TagPrefix, Material, ItemEntry<TagPrefixItem>> MATERIAL_ITEMS;
+    public static Table<TagPrefix, Material, ItemEntry<TagPrefixItem>> MATERIAL_ITEMS;
 
-    static {
+    public static void generateMaterialItems() {
         REGISTRATE.creativeModeTab(() -> MATERIAL_ITEM);
         ImmutableTable.Builder<TagPrefix, Material, ItemEntry<TagPrefixItem>> builder = ImmutableTable.builder();
         for (var tagPrefix : TagPrefix.values()) {
@@ -99,7 +99,8 @@ public class GTItems {
     public final static Table<MaterialToolTier, GTToolType, ItemEntry<GTToolItem>> TOOL_ITEMS =
             ArrayTable.create(GTRegistries.MATERIALS.values().stream().filter(mat -> mat.hasProperty(PropertyKey.TOOL)).map(Material::getToolTier).toList(),
                     Arrays.stream(GTToolType.values()).toList());
-    static {
+
+    public static void generateTools() {
         REGISTRATE.creativeModeTab(() -> TOOL);
 
         for (Material material : GTRegistries.MATERIALS.values()) {
@@ -119,7 +120,6 @@ public class GTItems {
                 }
             }
         }
-
     }
 
 
@@ -1104,7 +1104,8 @@ public class GTItems {
     public static ItemEntry<Item> BLACKLIGHT = REGISTRATE.item("blacklight", Item::new).register();
 
     public static void init() {
-
+        generateMaterialItems();
+        generateTools();
     }
 
     public static <T extends ItemLike> NonNullConsumer<T> materialInfo(ItemMaterialInfo materialInfo) {

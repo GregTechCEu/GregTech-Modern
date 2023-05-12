@@ -12,14 +12,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
  * @date 2023/3/26
  * @implNote KubeJSMixin
  */
-@Mixin(KubeJS.class)
+@Mixin(value = KubeJS.class, remap = false)
 public abstract class KubeJSMixin {
 
     /**
      * Make sure our mod is loaded after kjs
      */
     @Inject(method = "setup", at = @At(value = "RETURN"), remap = false)
-    public void injectInit(CallbackInfo ci) {
+    public void gtceu$injectInit(CallbackInfo ci) {
         CommonProxy.onKubeJSSetup();
     }
 

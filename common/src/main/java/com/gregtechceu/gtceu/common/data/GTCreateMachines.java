@@ -20,6 +20,7 @@ import com.gregtechceu.gtceu.common.machine.KineticMachineDefinition;
 import com.gregtechceu.gtceu.common.machine.kinetic.ElectricGearBoxMachine;
 import com.gregtechceu.gtceu.common.machine.kinetic.SimpleKineticElectricWorkableMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.KineticPartMachine;
+import com.gregtechceu.gtceu.utils.Lazy;
 import com.jozufozu.flywheel.api.MaterialManager;
 import com.jozufozu.flywheel.backend.instancing.blockentity.BlockEntityInstance;
 import com.simibubi.create.foundation.block.BlockStressValues;
@@ -72,6 +73,7 @@ public class GTCreateMachines {
                     .register()
             , () -> SplitShaftInstance::new, false, ELECTRIC_TIERS);
 
+    @SuppressWarnings("unchecked")
     public static KineticMachineDefinition[] registerElectricGearBox(int maxAmps, int... tiers) {
         return registerTieredMachines("electric_gear_box." + maxAmps, (tier, id) -> new KineticMachineDefinition(id, true, GTValues.V[tier]).setFrontRotation(true),
                 (holder, tier) -> new ElectricGearBoxMachine(holder, tier, maxAmps), (tier, builder) -> builder

@@ -1,6 +1,8 @@
 package com.gregtechceu.gtceu.api.data.tag;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.utils.FormattingUtil;
+import com.gregtechceu.gtceu.utils.GTUtil;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 
@@ -32,7 +34,17 @@ public class TagType {
      */
     public static TagType withPrefixFormatter(String tagPath) {
         TagType type = new TagType(tagPath);
-        type.formatter = (prefix, mat) -> TagUtil.createItemTag(type.tagPath.formatted(prefix.name, mat.getName()));
+        type.formatter = (prefix, mat) -> TagUtil.createItemTag(type.tagPath.formatted(FormattingUtil.toLowerCaseUnderscore(prefix.name), mat.getName()));
+        return type;
+    }
+
+    /**
+     * Create a tag with a specified path, with the "default" formatter, meaning
+     * that there is 1 "%s" format character in the path, intended for the prefix name.
+     */
+    public static TagType withPrefixOnlyFormatter(String tagPath) {
+        TagType type = new TagType(tagPath);
+        type.formatter = (prefix, mat) -> TagUtil.createItemTag(type.tagPath.formatted(FormattingUtil.toLowerCaseUnderscore(prefix.name)));
         return type;
     }
 

@@ -13,7 +13,7 @@ public class ConfigHolder {
 
     public static class RecipeConfigs {
         public boolean generateLowQualityGems = true; // default true
-        public boolean disableManualCompression = false; // default false
+        public boolean disableManualCompression = true; // default true
         public boolean harderRods = false; // default false
         public boolean harderBrickRecipes = false; // default false
         public boolean nerfWoodCrafting = false; // default false

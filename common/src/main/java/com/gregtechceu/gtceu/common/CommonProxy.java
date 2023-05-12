@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.common;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
 import com.gregtechceu.gtceu.api.gui.CoverUIFactory;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.*;
@@ -33,6 +34,7 @@ public class CommonProxy {
         GTRecipeCapabilities.init();
         GTRecipeConditions.init();
         GTElements.init();
+        MaterialIconSet.init();
         GTMaterials.init();
         GTSoundEntries.init();
         GTCovers.init();

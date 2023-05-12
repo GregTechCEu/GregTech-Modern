@@ -23,6 +23,7 @@ import java.util.Set;
  */
 public abstract class GTRegistry<K, V> implements Iterable<V> {
     protected final BiMap<K, V> registry;
+    @Getter
     protected final ResourceLocation registryName;
     @Getter
     protected boolean isFrozen = false;
@@ -30,6 +31,10 @@ public abstract class GTRegistry<K, V> implements Iterable<V> {
     public GTRegistry(ResourceLocation registryName) {
         registry = initRegistry();
         this.registryName = registryName;
+
+        if (!registryName.getPath().equals("root")) {
+            GTRegistries.REGISTRIES.register(registryName, this);
+        }
     }
 
     protected BiMap<K, V> initRegistry() {
