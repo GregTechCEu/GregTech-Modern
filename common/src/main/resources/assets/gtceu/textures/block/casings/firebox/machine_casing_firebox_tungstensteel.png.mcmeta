@@ -1,5 +1,5 @@
 {
-    "ldlib": {
+    "gtlib": {
         "connection": "gtceu:block/casings/firebox/machine_casing_firebox_tungstensteel_ctm"
     }
 }

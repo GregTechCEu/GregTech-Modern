@@ -5,16 +5,12 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.registry.forge.GTRegistriesImpl;
 import com.gregtechceu.gtceu.common.CommonProxy;
 import com.gregtechceu.gtceu.common.data.forge.GTFeaturesImpl;
-import com.gregtechceu.gtceu.integration.kjs.builders.machine.MachineBuilder;
 import com.gregtechceu.gtceu.integration.top.forge.TheOneProbePluginImpl;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.forge.SizedIngredientImpl;
 import com.gregtechceu.gtceu.common.data.GTSyncedFieldAccessors;
-import com.lowdragmc.lowdraglib.LDLib;
-import dev.latvian.mods.kubejs.KubeJSRegistries;
-import dev.latvian.mods.kubejs.RegistryObjectBuilderTypes;
-import net.minecraft.core.Registry;
+import com.gregtechceu.gtlib.GTLib;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -64,7 +60,7 @@ public class CommonProxyImpl {
     @SubscribeEvent
     public void loadComplete(FMLLoadCompleteEvent e) {
         e.enqueueWork(() -> {
-            if (LDLib.isModLoaded(GTValues.MODID_TOP)) {
+            if (GTLib.isModLoaded(GTValues.MODID_TOP)) {
                 GTCEu.LOGGER.info("TheOneProbe found. Enabling integration...");
                 TheOneProbePluginImpl.init();
             }

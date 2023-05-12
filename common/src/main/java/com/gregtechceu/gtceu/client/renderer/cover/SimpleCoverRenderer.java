@@ -1,10 +1,10 @@
 package com.gregtechceu.gtceu.client.renderer.cover;
 
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
-import com.lowdragmc.lowdraglib.LDLib;
-import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
-import com.lowdragmc.lowdraglib.client.model.ModelFactory;
-import com.lowdragmc.lowdraglib.utils.ResourceHelper;
+import com.gregtechceu.gtlib.GTLib;
+import com.gregtechceu.gtlib.client.bakedpipeline.FaceQuad;
+import com.gregtechceu.gtlib.client.model.ModelFactory;
+import com.gregtechceu.gtlib.utils.ResourceHelper;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -30,7 +30,7 @@ public class SimpleCoverRenderer implements ICoverRenderer {
 
     public SimpleCoverRenderer(ResourceLocation texture) {
         this.texture = texture;
-        if (LDLib.isClient()) {
+        if (GTLib.isClient()) {
             registerEvent();
         }
     }

@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.integration.emi.fabric.recipe;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.lowdragmc.lowdraglib.emi.ModularUIEmiRecipeCategory;
+import com.gregtechceu.gtlib.emi.ModularUIEmiRecipeCategory;
 import dev.emi.emi.api.EmiRegistry;
 import dev.emi.emi.api.stack.EmiStack;
 import net.minecraft.Util;

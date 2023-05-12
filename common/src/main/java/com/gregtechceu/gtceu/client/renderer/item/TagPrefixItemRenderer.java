@@ -4,7 +4,7 @@ import com.google.common.collect.Table;
 import com.google.common.collect.Tables;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
-import com.lowdragmc.lowdraglib.client.renderer.impl.IModelRenderer;
+import com.gregtechceu.gtlib.client.renderer.impl.IModelRenderer;
 
 import java.util.HashMap;
 

@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.client.renderer.item;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.lowdragmc.lowdraglib.client.renderer.impl.IModelRenderer;
+import com.gregtechceu.gtlib.client.renderer.impl.IModelRenderer;
 
 /**
  * @author KilaBash

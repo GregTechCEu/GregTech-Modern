@@ -3,9 +3,9 @@ package com.gregtechceu.gtceu.common.pipelike.cable;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.WireProperties;
-import com.lowdragmc.lowdraglib.pipelike.LevelPipeNet;
-import com.lowdragmc.lowdraglib.pipelike.Node;
-import com.lowdragmc.lowdraglib.pipelike.PipeNet;
+import com.gregtechceu.gtlib.pipelike.LevelPipeNet;
+import com.gregtechceu.gtlib.pipelike.Node;
+import com.gregtechceu.gtlib.pipelike.PipeNet;
 import it.unimi.dsi.fastutil.longs.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

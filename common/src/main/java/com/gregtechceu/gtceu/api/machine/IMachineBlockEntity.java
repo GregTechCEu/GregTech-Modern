@@ -2,10 +2,10 @@ package com.gregtechceu.gtceu.api.machine;
 
 import com.gregtechceu.gtceu.api.block.IMachineBlock;
 import com.gregtechceu.gtceu.api.item.tool.IToolGridHighLight;
-import com.lowdragmc.lowdraglib.syncdata.blockentity.IAsyncAutoSyncBlockEntity;
-import com.lowdragmc.lowdraglib.syncdata.blockentity.IAutoPersistBlockEntity;
-import com.lowdragmc.lowdraglib.syncdata.blockentity.IRPCBlockEntity;
-import com.lowdragmc.lowdraglib.syncdata.managed.MultiManagedStorage;
+import com.gregtechceu.gtlib.syncdata.blockentity.IAsyncAutoSyncBlockEntity;
+import com.gregtechceu.gtlib.syncdata.blockentity.IAutoPersistBlockEntity;
+import com.gregtechceu.gtlib.syncdata.blockentity.IRPCBlockEntity;
+import com.gregtechceu.gtlib.syncdata.managed.MultiManagedStorage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;

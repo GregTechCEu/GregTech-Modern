@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.client.renderer.block;
 
-import com.lowdragmc.lowdraglib.client.renderer.impl.IModelRenderer;
+import com.gregtechceu.gtlib.client.renderer.impl.IModelRenderer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.resources.ResourceLocation;
