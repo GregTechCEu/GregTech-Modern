@@ -104,6 +104,7 @@ dependencies {
 
     // GTLib
     modImplementation(forge.gtlib.forge) { transitive = false }
+    include(forge.gtlib.forge)
 
     // Registrate
     modImplementation(include("com.tterrag.registrate:Registrate:${forge.versions.registrate.get()}"))
