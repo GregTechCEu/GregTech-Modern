@@ -8,10 +8,10 @@
       "tag": "forge:plates/steel"
     },
     "h": {
-      "tag": "forge:tool/hammer"
+      "tag": "forge:tools/hammer"
     },
     "w": {
-      "tag": "forge:tool/wrench"
+      "tag": "forge:tools/wrench"
     }
   },
   "pattern": [

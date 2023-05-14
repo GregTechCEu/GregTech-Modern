@@ -14,10 +14,10 @@
       "tag": "c:iron_screws"
     },
     "d": {
-      "tag": "c:tool/screwdriver"
+      "tag": "c:screwdrivers"
     },
     "h": {
-      "tag": "c:tool/hammer"
+      "tag": "c:hammers"
     }
   },
   "pattern": [

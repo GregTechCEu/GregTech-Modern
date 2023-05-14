@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "forge:luv_circuits"
+      "tag": "forge:circuits/luv"
     },
     "F": {
       "item": "gtceu:field.generator.ev"

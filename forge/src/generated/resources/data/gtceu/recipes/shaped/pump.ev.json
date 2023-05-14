@@ -11,7 +11,7 @@
       "item": "gtceu:fluid_pipe_large.titanium"
     },
     "W": {
-      "tag": "forge:ev_circuits"
+      "tag": "forge:circuits/ev"
     }
   },
   "pattern": [

@@ -5,7 +5,7 @@
       "tag": "forge:chests/wooden"
     },
     "C": {
-      "tag": "forge:ev_circuits"
+      "tag": "forge:circuits/ev"
     },
     "M": {
       "item": "gtceu:hull.ev"

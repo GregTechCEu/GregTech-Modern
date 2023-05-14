@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "forge:uv_circuits"
+      "tag": "forge:circuits/uv"
     },
     "E": {
       "item": "gtceu:electric.motor.uv"
@@ -17,7 +17,7 @@
       "item": "gtceu:cable_single.yttrium_barium_cuprate"
     },
     "w": {
-      "tag": "forge:tool/wrench"
+      "tag": "forge:tools/wrench"
     }
   },
   "pattern": [

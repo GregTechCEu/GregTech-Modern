@@ -1,5 +1,5 @@
 {
-  "type": "gtceu:gt_recipe_serializer",
+  "type": "gtceu:autoclave",
   "duration": 480,
   "inputs": {
     "fluid": [
@@ -35,7 +35,6 @@
       }
     ]
   },
-  "recipe_type": "gtceu:autoclave",
   "tickInputs": {
     "eu": [
       {

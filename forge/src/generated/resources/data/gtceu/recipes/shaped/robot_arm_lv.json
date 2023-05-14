@@ -14,7 +14,7 @@
       "tag": "forge:rods/steel"
     },
     "X": {
-      "tag": "forge:lv_circuits"
+      "tag": "forge:circuits/lv"
     }
   },
   "pattern": [

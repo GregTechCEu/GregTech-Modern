@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "forge:uhv_circuits"
+      "tag": "forge:circuits/uhv"
     },
     "F": {
       "item": "gtceu:field.generator.zpm"

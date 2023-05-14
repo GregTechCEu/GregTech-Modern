@@ -5,7 +5,7 @@
       "tag": "forge:springs/naquadah"
     },
     "C": {
-      "tag": "forge:zpm_circuits"
+      "tag": "forge:circuits/zpm"
     },
     "G": {
       "tag": "forge:glass"

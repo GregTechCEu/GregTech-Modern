@@ -14,7 +14,7 @@
       "tag": "forge:rods/stainless_steel"
     },
     "X": {
-      "tag": "forge:hv_circuits"
+      "tag": "forge:circuits/hv"
     }
   },
   "pattern": [

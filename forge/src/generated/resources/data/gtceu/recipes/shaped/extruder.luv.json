@@ -5,7 +5,7 @@
       "item": "gtceu:wire_quadruple.hssg"
     },
     "E": {
-      "tag": "forge:luv_circuits"
+      "tag": "forge:circuits/luv"
     },
     "M": {
       "item": "gtceu:hull.luv"

@@ -5,7 +5,7 @@
       "tag": "forge:springs/cupronickel"
     },
     "C": {
-      "tag": "forge:mv_circuits"
+      "tag": "forge:circuits/mv"
     },
     "G": {
       "tag": "forge:glass"

@@ -5,7 +5,7 @@
       "item": "gtceu:tool_head_buzz_saw.duranium"
     },
     "C": {
-      "tag": "forge:uv_circuits"
+      "tag": "forge:circuits/uv"
     },
     "E": {
       "item": "gtceu:electric.motor.uv"

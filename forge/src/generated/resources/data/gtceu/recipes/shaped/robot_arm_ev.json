@@ -14,7 +14,7 @@
       "tag": "forge:rods/titanium"
     },
     "X": {
-      "tag": "forge:ev_circuits"
+      "tag": "forge:circuits/ev"
     }
   },
   "pattern": [

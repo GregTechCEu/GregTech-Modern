@@ -1,5 +1,5 @@
 {
-  "type": "gtceu:gt_recipe_serializer",
+  "type": "gtceu:assembler",
   "duration": 100,
   "inputs": {
     "item": [
@@ -27,7 +27,7 @@
           "type": "gtceu:sized",
           "count": 1,
           "fabric:type": "gtceu:sized",
-          "tag": "forge:mv_circuits"
+          "tag": "forge:circuits/mv"
         }
       },
       {
@@ -56,7 +56,6 @@
       }
     ]
   },
-  "recipe_type": "gtceu:assembler",
   "tickInputs": {
     "eu": [
       {

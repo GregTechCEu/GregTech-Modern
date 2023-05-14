@@ -1,5 +1,5 @@
 {
-  "type": "gtceu:gt_recipe_serializer",
+  "type": "gtceu:large_chemical_reactor",
   "duration": 1800,
   "inputs": {
     "fluid": [
@@ -44,7 +44,6 @@
       }
     ]
   },
-  "recipe_type": "gtceu:large_chemical_reactor",
   "tickInputs": {
     "eu": [
       {

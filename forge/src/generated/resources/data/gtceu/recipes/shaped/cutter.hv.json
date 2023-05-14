@@ -5,7 +5,7 @@
       "item": "gtceu:tool_head_buzz_saw.blue_steel"
     },
     "C": {
-      "tag": "forge:hv_circuits"
+      "tag": "forge:circuits/hv"
     },
     "E": {
       "item": "gtceu:electric.motor.hv"

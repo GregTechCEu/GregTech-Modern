@@ -11,10 +11,10 @@
       "item": "gtceu:rubber_drop"
     },
     "r": {
-      "tag": "c:tool/mallet"
+      "tag": "c:mallets"
     },
     "s": {
-      "tag": "c:tool/saw"
+      "tag": "c:saws"
     }
   },
   "pattern": [

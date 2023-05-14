@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "forge:zpm_circuits"
+      "tag": "forge:circuits/zpm"
     },
     "E": {
       "item": "gtceu:electric.piston.zpm"

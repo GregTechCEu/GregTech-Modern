@@ -11,7 +11,7 @@
       "item": "gtceu:wire_quadruple.magnesium_diboride"
     },
     "X": {
-      "tag": "forge:mv_circuits"
+      "tag": "forge:circuits/mv"
     }
   },
   "pattern": [

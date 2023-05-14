@@ -14,10 +14,10 @@
       "tag": "c:steel_screws"
     },
     "d": {
-      "tag": "c:tool/screwdriver"
+      "tag": "c:screwdrivers"
     },
     "w": {
-      "tag": "c:tool/wrench"
+      "tag": "c:wrenches"
     }
   },
   "pattern": [

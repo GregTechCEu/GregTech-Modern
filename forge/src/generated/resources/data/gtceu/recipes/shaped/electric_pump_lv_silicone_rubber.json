@@ -20,10 +20,10 @@
       "tag": "forge:rotors/tin"
     },
     "d": {
-      "tag": "forge:tool/screwdriver"
+      "tag": "forge:tools/screwdriver"
     },
     "w": {
-      "tag": "forge:tool/wrench"
+      "tag": "forge:tools/wrench"
     }
   },
   "pattern": [

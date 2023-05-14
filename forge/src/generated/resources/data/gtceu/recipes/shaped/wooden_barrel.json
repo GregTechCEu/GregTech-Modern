@@ -11,10 +11,10 @@
       "item": "gtceu:rubber_drop"
     },
     "r": {
-      "tag": "forge:tool/mallet"
+      "tag": "forge:tools/mallet"
     },
     "s": {
-      "tag": "forge:tool/saw"
+      "tag": "forge:tools/saw"
     }
   },
   "pattern": [

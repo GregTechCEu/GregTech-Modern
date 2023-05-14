@@ -11,7 +11,7 @@
       "item": "gtceu:wire_quadruple.manganese_phosphide"
     },
     "X": {
-      "tag": "forge:lv_circuits"
+      "tag": "forge:circuits/lv"
     }
   },
   "pattern": [

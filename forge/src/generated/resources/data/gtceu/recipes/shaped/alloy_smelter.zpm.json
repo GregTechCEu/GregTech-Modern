@@ -5,7 +5,7 @@
       "item": "gtceu:wire_quadruple.naquadah"
     },
     "E": {
-      "tag": "forge:zpm_circuits"
+      "tag": "forge:circuits/zpm"
     },
     "M": {
       "item": "gtceu:hull.zpm"

@@ -5,7 +5,7 @@
       "item": "gtceu:fluid_pipe_large.stainless_steel"
     },
     "C": {
-      "tag": "forge:ev_circuits"
+      "tag": "forge:circuits/ev"
     },
     "F": {
       "item": "gtceu:electric.pump.hv"

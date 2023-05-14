@@ -463,7 +463,7 @@ public class GTRecipeBuilder {
     }
 
     public void toJson(JsonObject json) {
-        json.addProperty("recipe_type", recipeType.registryName.toString());
+        json.addProperty("type", recipeType.registryName.toString());
         json.addProperty("duration", Math.abs(duration));
         if (data != null && !data.isEmpty()) {
             json.add("data", NBTToJsonConverter.getObject(data));

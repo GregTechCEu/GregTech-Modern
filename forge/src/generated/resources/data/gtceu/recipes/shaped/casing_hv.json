@@ -5,7 +5,7 @@
       "tag": "forge:plates/stainless_steel"
     },
     "w": {
-      "tag": "forge:tool/wrench"
+      "tag": "forge:tools/wrench"
     }
   },
   "pattern": [

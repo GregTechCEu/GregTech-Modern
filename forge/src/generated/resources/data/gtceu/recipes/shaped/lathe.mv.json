@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "forge:mv_circuits"
+      "tag": "forge:circuits/mv"
     },
     "D": {
       "tag": "forge:gems/diamond"

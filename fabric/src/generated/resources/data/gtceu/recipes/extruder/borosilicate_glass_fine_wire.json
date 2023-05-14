@@ -1,5 +1,5 @@
 {
-  "type": "gtceu:gt_recipe_serializer",
+  "type": "gtceu:extruder",
   "duration": 160,
   "inputs": {
     "item": [
@@ -35,7 +35,6 @@
       }
     ]
   },
-  "recipe_type": "gtceu:extruder",
   "tickInputs": {
     "eu": [
       {

@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "forge:ev_circuits"
+      "tag": "forge:circuits/ev"
     },
     "F": {
       "item": "gtceu:item_filter"

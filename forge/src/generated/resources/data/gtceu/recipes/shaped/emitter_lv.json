@@ -11,7 +11,7 @@
       "tag": "forge:rods/brass"
     },
     "X": {
-      "tag": "forge:lv_circuits"
+      "tag": "forge:circuits/lv"
     }
   },
   "pattern": [

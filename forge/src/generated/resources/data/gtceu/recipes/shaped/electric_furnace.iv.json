@@ -5,7 +5,7 @@
       "item": "gtceu:wire_double.tungsten_steel"
     },
     "E": {
-      "tag": "forge:iv_circuits"
+      "tag": "forge:circuits/iv"
     },
     "M": {
       "item": "gtceu:hull.iv"

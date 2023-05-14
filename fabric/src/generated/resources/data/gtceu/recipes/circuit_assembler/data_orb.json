@@ -1,5 +1,5 @@
 {
-  "type": "gtceu:gt_recipe_serializer",
+  "type": "gtceu:circuit_assembler",
   "data": {
     "solderMultiplier": 2.0
   },
@@ -89,7 +89,6 @@
       }
     ]
   },
-  "recipe_type": "gtceu:circuit_assembler",
   "tickInputs": {
     "eu": [
       {

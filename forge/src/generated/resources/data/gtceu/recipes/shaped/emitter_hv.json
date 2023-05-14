@@ -11,7 +11,7 @@
       "tag": "forge:rods/chromium"
     },
     "X": {
-      "tag": "forge:hv_circuits"
+      "tag": "forge:circuits/hv"
     }
   },
   "pattern": [

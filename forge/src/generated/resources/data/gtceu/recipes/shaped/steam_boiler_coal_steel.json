@@ -11,7 +11,7 @@
       "tag": "forge:plates/steel"
     },
     "w": {
-      "tag": "forge:tool/wrench"
+      "tag": "forge:tools/wrench"
     }
   },
   "pattern": [

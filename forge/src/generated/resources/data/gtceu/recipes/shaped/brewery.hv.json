@@ -5,7 +5,7 @@
       "tag": "forge:springs/kanthal"
     },
     "C": {
-      "tag": "forge:hv_circuits"
+      "tag": "forge:circuits/hv"
     },
     "G": {
       "tag": "forge:glass"

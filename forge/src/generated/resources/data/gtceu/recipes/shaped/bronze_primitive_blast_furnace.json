@@ -14,10 +14,10 @@
       "tag": "forge:screws/iron"
     },
     "d": {
-      "tag": "forge:tool/screwdriver"
+      "tag": "forge:tools/screwdriver"
     },
     "h": {
-      "tag": "forge:tool/hammer"
+      "tag": "forge:tools/hammer"
     }
   },
   "pattern": [

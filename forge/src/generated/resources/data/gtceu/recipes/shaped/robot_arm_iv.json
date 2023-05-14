@@ -14,7 +14,7 @@
       "tag": "forge:rods/tungsten_steel"
     },
     "X": {
-      "tag": "forge:iv_circuits"
+      "tag": "forge:circuits/iv"
     }
   },
   "pattern": [

@@ -8,7 +8,7 @@
       "item": "gtceu:cable_single.gold"
     },
     "S": {
-      "tag": "forge:ev_circuits"
+      "tag": "forge:circuits/ev"
     }
   },
   "pattern": [

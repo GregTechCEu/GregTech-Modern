@@ -1,5 +1,5 @@
 {
-  "type": "gtceu:gt_recipe_serializer",
+  "type": "gtceu:assembler",
   "duration": 100,
   "inputs": {
     "item": [
@@ -29,7 +29,7 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "forge:hv_circuits"
+          "tag": "forge:circuits/hv"
         }
       },
       {
@@ -72,7 +72,6 @@
       }
     ]
   },
-  "recipe_type": "gtceu:assembler",
   "tickInputs": {
     "eu": [
       {

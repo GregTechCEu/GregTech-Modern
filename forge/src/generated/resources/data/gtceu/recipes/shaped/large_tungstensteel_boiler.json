@@ -8,7 +8,7 @@
       "item": "gtceu:cable_single.aluminium"
     },
     "S": {
-      "tag": "forge:iv_circuits"
+      "tag": "forge:circuits/iv"
     }
   },
   "pattern": [

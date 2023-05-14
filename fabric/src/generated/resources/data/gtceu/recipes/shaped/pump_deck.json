@@ -11,10 +11,10 @@
       "item": "gtceu:treated_wood_plank"
     },
     "d": {
-      "tag": "c:tool/screwdriver"
+      "tag": "c:screwdrivers"
     },
     "h": {
-      "tag": "c:tool/hammer"
+      "tag": "c:hammers"
     }
   },
   "pattern": [

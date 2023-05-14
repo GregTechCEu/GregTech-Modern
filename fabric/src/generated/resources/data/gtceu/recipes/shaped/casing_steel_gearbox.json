@@ -11,10 +11,10 @@
       "tag": "c:steel_plates"
     },
     "h": {
-      "tag": "c:tool/hammer"
+      "tag": "c:hammers"
     },
     "w": {
-      "tag": "c:tool/wrench"
+      "tag": "c:wrenches"
     }
   },
   "pattern": [

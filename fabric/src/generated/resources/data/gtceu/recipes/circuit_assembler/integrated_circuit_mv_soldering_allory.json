@@ -1,5 +1,5 @@
 {
-  "type": "gtceu:gt_recipe_serializer",
+  "type": "gtceu:circuit_assembler",
   "duration": 400,
   "inputs": {
     "fluid": [
@@ -82,7 +82,6 @@
       }
     ]
   },
-  "recipe_type": "gtceu:circuit_assembler",
   "tickInputs": {
     "eu": [
       {

@@ -11,7 +11,7 @@
       "item": "gtceu:wire_quadruple.mercury_barium_calcium_cuprate"
     },
     "X": {
-      "tag": "forge:hv_circuits"
+      "tag": "forge:circuits/hv"
     }
   },
   "pattern": [

@@ -11,7 +11,7 @@
       "item": "gtceu:fluid_pipe_large.steel"
     },
     "W": {
-      "tag": "forge:mv_circuits"
+      "tag": "forge:circuits/mv"
     }
   },
   "pattern": [

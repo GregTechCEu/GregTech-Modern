@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "forge:mv_circuits"
+      "tag": "forge:circuits/mv"
     },
     "E": {
       "item": "gtceu:electric.motor.mv"
@@ -17,7 +17,7 @@
       "item": "gtceu:cable_single.copper"
     },
     "w": {
-      "tag": "forge:tool/wrench"
+      "tag": "forge:tools/wrench"
     }
   },
   "pattern": [

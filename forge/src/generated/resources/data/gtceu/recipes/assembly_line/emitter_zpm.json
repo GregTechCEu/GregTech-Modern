@@ -1,5 +1,5 @@
 {
-  "type": "gtceu:gt_recipe_serializer",
+  "type": "gtceu:assembly_line",
   "duration": 600,
   "inputs": {
     "fluid": [
@@ -53,7 +53,7 @@
           "type": "gtceu:sized",
           "count": 2,
           "fabric:type": "gtceu:sized",
-          "tag": "forge:zpm_circuits"
+          "tag": "forge:circuits/zpm"
         }
       },
       {
@@ -102,7 +102,6 @@
       }
     ]
   },
-  "recipe_type": "gtceu:assembly_line",
   "tickInputs": {
     "eu": [
       {

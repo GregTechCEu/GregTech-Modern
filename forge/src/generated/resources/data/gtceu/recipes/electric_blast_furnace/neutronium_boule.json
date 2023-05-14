@@ -1,5 +1,5 @@
 {
-  "type": "gtceu:gt_recipe_serializer",
+  "type": "gtceu:electric_blast_furnace",
   "data": {
     "ebf_temp": 6484.0
   },
@@ -50,7 +50,6 @@
       }
     ]
   },
-  "recipe_type": "gtceu:electric_blast_furnace",
   "tickInputs": {
     "eu": [
       {

@@ -8,7 +8,7 @@
       "item": "gtceu:cable_single.copper"
     },
     "S": {
-      "tag": "forge:hv_circuits"
+      "tag": "forge:circuits/hv"
     }
   },
   "pattern": [

@@ -11,7 +11,7 @@
       "tag": "forge:rods/iridium"
     },
     "X": {
-      "tag": "forge:iv_circuits"
+      "tag": "forge:circuits/iv"
     }
   },
   "pattern": [

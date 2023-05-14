@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "forge:lv_circuits"
+      "tag": "forge:circuits/lv"
     },
     "F": {
       "item": "gtceu:electric.pump.lv"

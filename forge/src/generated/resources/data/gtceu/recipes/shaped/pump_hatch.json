@@ -17,7 +17,7 @@
       "tag": "forge:screws/iron"
     },
     "d": {
-      "tag": "forge:tool/screwdriver"
+      "tag": "forge:tools/screwdriver"
     }
   },
   "pattern": [

@@ -5,7 +5,7 @@
       "item": "gtceu:tool_head_buzz_saw.vanadium_steel"
     },
     "C": {
-      "tag": "forge:mv_circuits"
+      "tag": "forge:circuits/mv"
     },
     "E": {
       "item": "gtceu:electric.motor.mv"

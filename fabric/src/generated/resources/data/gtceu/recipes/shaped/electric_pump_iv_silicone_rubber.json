@@ -20,10 +20,10 @@
       "tag": "c:tungsten_steel_rotors"
     },
     "d": {
-      "tag": "c:tool/screwdriver"
+      "tag": "c:screwdrivers"
     },
     "w": {
-      "tag": "c:tool/wrench"
+      "tag": "c:wrenches"
     }
   },
   "pattern": [

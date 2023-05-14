@@ -1,5 +1,5 @@
 {
-  "type": "gtceu:gt_recipe_serializer",
+  "type": "gtceu:chemical_bath",
   "duration": 480,
   "inputs": {
     "fluid": [
@@ -38,7 +38,6 @@
       }
     ]
   },
-  "recipe_type": "gtceu:chemical_bath",
   "tickInputs": {
     "eu": [
       {

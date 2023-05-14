@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "tag": "forge:lv_circuits"
+      "tag": "forge:circuits/lv"
     },
     "E": {
       "item": "gtceu:electric.motor.lv"
@@ -17,7 +17,7 @@
       "item": "gtceu:cable_single.tin"
     },
     "w": {
-      "tag": "forge:tool/wrench"
+      "tag": "forge:tools/wrench"
     }
   },
   "pattern": [

@@ -8,7 +8,7 @@
       "item": "gtceu:cable_single.tin"
     },
     "S": {
-      "tag": "forge:lv_circuits"
+      "tag": "forge:circuits/lv"
     }
   },
   "pattern": [

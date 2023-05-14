@@ -5,7 +5,7 @@
       "tag": "forge:plates/aluminium"
     },
     "w": {
-      "tag": "forge:tool/wrench"
+      "tag": "forge:tools/wrench"
     }
   },
   "pattern": [
