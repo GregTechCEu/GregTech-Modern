@@ -1,15 +1,15 @@
 package com.gregtechceu.gtceu.api.machine.steam;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.gui.UITemplate;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IExplosionMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.UITemplate;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtlib.gui.modular.ModularUI;
@@ -39,6 +39,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -51,6 +52,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public abstract class SteamBoilerMachine extends SteamWorkableMachine implements IUIMachine, IExplosionMachine {
+
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(SteamBoilerMachine.class, SteamWorkableMachine.MANAGED_FIELD_HOLDER);
 
     @Persisted
@@ -65,6 +67,7 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine implements
     protected TickableSubscription temperatureSubs, autoOutputSubs;
     @Nullable
     protected ISubscription steamTankSubs;
+
     public SteamBoilerMachine(IMachineBlockEntity holder, boolean isHighPressure, Object... args) {
         super(holder, isHighPressure, args);
         this.waterTank = createWaterTank(args);
@@ -84,7 +87,7 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine implements
         return new NotifiableFluidTank(this, 1, 16 * FluidHelper.getBucket(), IO.OUT);
     }
 
-    protected NotifiableFluidTank createWaterTank(Object... args) {
+    protected NotifiableFluidTank createWaterTank(@SuppressWarnings("unused") Object... args) {
         return new NotifiableFluidTank(this, 1, 16 * FluidHelper.getBucket(), IO.IN);
     }
 
@@ -107,8 +110,9 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine implements
         }
     }
 
-    public void setVentFacing(Direction ventFacing) {
-        super.setVentFacing(ventFacing);
+    @Override
+    public void setOutputFacing(@NotNull Direction outputFacing) {
+        super.setOutputFacing(outputFacing);
         updateAutoOutputSubscription();
     }
 
@@ -123,17 +127,23 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine implements
     }
 
     protected void updateAutoOutputSubscription() {
-        if (FluidTransferHelper.getFluidTransfer(getLevel(), getPos().relative(ventFacing), ventFacing.getOpposite()) != null) {
-            autoOutputSubs = subscribeServerTick(autoOutputSubs, this::autoOutput);
+        Direction[] directions = Direction.stream()
+                .filter(direction -> direction != getFrontFacing() && direction != Direction.DOWN)
+                .filter(direction -> FluidTransferHelper.getFluidTransfer(getLevel(),
+                        getPos().relative(direction), direction.getOpposite()) != null)
+                .toArray(Direction[]::new);
+
+        if (directions.length > 0) {
+            autoOutputSubs = subscribeServerTick(autoOutputSubs, () -> this.autoOutput(directions));
         } else if (autoOutputSubs != null) {
             autoOutputSubs.unsubscribe();
             autoOutputSubs = null;
         }
     }
 
-    protected void autoOutput() {
+    protected void autoOutput(@NotNull Direction @NotNull [] directions) {
         if (getOffsetTimer() % 5 == 0) {
-            steamTank.exportToNearby(ventFacing);
+            steamTank.exportToNearby(directions);
         }
         updateAutoOutputSubscription();
     }
@@ -209,6 +219,7 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine implements
         return isHighPressure ? 40 : 45;
     }
 
+    @SuppressWarnings("MethodMayBeStatic")
     protected int getCoolDownRate() {
         return 1;
     }
@@ -241,18 +252,13 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine implements
 
     @Override
     public void afterWorking() {
+        super.afterWorking();
         this.timeBeforeCoolingDown = getCooldownInterval();
     }
 
     //////////////////////////////////////
     //*******     Interaction    *******//
     //////////////////////////////////////
-
-    @Override
-    public boolean isFacingValid(Direction facing) {
-        if (facing == ventFacing) return false;
-        return super.isFacingValid(facing);
-    }
 
     @Override
     protected InteractionResult onSoftMalletClick(Player playerIn, InteractionHand hand, Direction gridSide, BlockHitResult hitResult) {
@@ -315,5 +321,4 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine implements
         getLevel().addParticle(isHighPressure ? ParticleTypes.LARGE_SMOKE : ParticleTypes.SMOKE, x, y, z, 0, 0, 0);
         getLevel().addParticle(ParticleTypes.FLAME, x, y, z, 0, 0, 0);
     }
-
 }
