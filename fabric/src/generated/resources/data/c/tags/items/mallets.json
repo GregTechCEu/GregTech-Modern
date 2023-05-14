@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:mallet_polybenzimidazole",
+    "gtceu:mallet_polyethylene",
+    "gtceu:mallet_polytetrafluoroethylene",
+    "gtceu:mallet_rubber",
+    "gtceu:mallet_wood"
+  ]
+}
