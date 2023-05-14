@@ -1,23 +1,21 @@
 package com.gregtechceu.gtceu.api.machine.steam;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
-import com.gregtechceu.gtceu.api.machine.feature.IMachineModifyDrops;
-import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
-import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.data.damagesource.DamageSources;
+import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.UITemplate;
 import com.gregtechceu.gtceu.api.gui.widget.PredicatedImageWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.feature.IExhaustVentMachine;
+import com.gregtechceu.gtceu.api.machine.feature.IMachineModifyDrops;
+import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
-import com.gregtechceu.gtceu.common.recipe.SteamVentCondition;
-import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtlib.gui.modular.ModularUI;
 import com.gregtechceu.gtlib.gui.widget.LabelWidget;
 import com.gregtechceu.gtlib.side.fluid.FluidHelper;
@@ -26,34 +24,27 @@ import com.gregtechceu.gtlib.syncdata.annotation.Persisted;
 import com.gregtechceu.gtlib.syncdata.field.ManagedFieldHolder;
 import it.unimi.dsi.fastutil.longs.LongIntPair;
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
-/**
- * @author KilaBash
- * @date 2023/3/15
- * @implNote SimpleSteamMachine
- */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class SimpleSteamMachine extends SteamWorkableMachine implements IMachineModifyDrops, IUIMachine {
+public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaustVentMachine, IMachineModifyDrops, IUIMachine {
+
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(SimpleSteamMachine.class, SteamWorkableMachine.MANAGED_FIELD_HOLDER);
 
     @Persisted
     public final NotifiableItemStackHandler importItems;
     @Persisted
     public final NotifiableItemStackHandler exportItems;
+    @Persisted
     private boolean needsVenting;
 
     public SimpleSteamMachine(IMachineBlockEntity holder, boolean isHighPressure, Object... args) {
@@ -65,6 +56,7 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IMachine
     //////////////////////////////////////
     //*****     Initialization     *****//
     //////////////////////////////////////
+
     @Override
     public ManagedFieldHolder getFieldHolder() {
         return MANAGED_FIELD_HOLDER;
@@ -75,25 +67,20 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IMachine
         return new NotifiableFluidTank(this, 1, 16 * FluidHelper.getBucket(), IO.IN);
     }
 
-    protected NotifiableItemStackHandler createImportItemHandler(Object... args) {
+    protected NotifiableItemStackHandler createImportItemHandler(@SuppressWarnings("unused") Object... args) {
         return new NotifiableItemStackHandler(this, getRecipeType().getMaxInputs(ItemRecipeCapability.CAP), IO.IN);
     }
 
-    protected NotifiableItemStackHandler createExportItemHandler(Object... args) {
+    protected NotifiableItemStackHandler createExportItemHandler(@SuppressWarnings("unused") Object... args) {
         return new NotifiableItemStackHandler(this, getRecipeType().getMaxOutputs(ItemRecipeCapability.CAP), IO.OUT);
-    }
-
-    @Override
-    public boolean isVentingStuck() {
-        return needsVenting || super.isVentingStuck();
     }
 
     @Override
     public void onLoad() {
         super.onLoad();
-        subscribeServerTick(this::checkVenting);
         // Fine, we use it to provide eu cap for recipe, simulating an EU machine.
-        capabilitiesProxy.put(IO.IN, EURecipeCapability.CAP, List.of(new SteamEnergyRecipeHandler(steamTank, FluidHelper.getBucket() / 1000d)));
+        capabilitiesProxy.put(IO.IN, EURecipeCapability.CAP,
+                List.of(new SteamEnergyRecipeHandler(steamTank, FluidHelper.getBucket() / 1000d)));
     }
 
     @Override
@@ -103,33 +90,73 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IMachine
     }
 
     //////////////////////////////////////
+    //******     Venting Logic    ******//
+    //////////////////////////////////////
+
+    @Override
+    public void serverTick() {
+        super.serverTick();
+        // check venting every 10 ticks
+        if (getOffsetTimer() % 10 == 0) {
+            checkVenting();
+        }
+    }
+
+    @Override
+    public float getVentingDamage() {
+        return isHighPressure() ? 12F : 6F;
+    }
+
+    /**
+     * Checks the venting state. Performs venting only if required.
+     * <strong>Server-Side Only.</strong>
+     *
+     * @return if the machine does not need venting
+     */
+    protected boolean checkVenting() {
+        if (needsVenting()) {
+            if (getLevel() instanceof ServerLevel serverLevel) {
+                tryDoVenting(serverLevel, getPos());
+            } else {
+                throw new IllegalStateException("Must be Sever-Side to check steam venting");
+            }
+        }
+
+        return !needsVenting();
+    }
+
+    @Override
+    public @NotNull Direction getVentingDirection() {
+        return getOutputFacing();
+    }
+
+    @Override
+    public boolean needsVenting() {
+        return this.needsVenting;
+    }
+
+    @Override
+    public void markVentingComplete() {
+        this.needsVenting = false;
+    }
+
+    //////////////////////////////////////
     //******     Recipe Logic     ******//
     //////////////////////////////////////
 
     @Nullable
     @Override
     public GTRecipe modifyRecipe(GTRecipe recipe) {
-        var tier =  GTValues.V[GTValues.LV];
-        if (isVentingStuck() || RecipeHelper.getRecipeEUtTier(recipe) > tier) {
+        if (RecipeHelper.getRecipeEUtTier(recipe) > GTValues.LV || !checkVenting()) {
             return null;
         }
-        var copied =  RecipeHelper.applyOverclock(new OverclockingLogic(false) {
+
+        return RecipeHelper.applyOverclock(new OverclockingLogic(false) {
             @Override
             protected LongIntPair runOverclockingLogic(@NotNull GTRecipe recipe, long recipeEUt, long maxVoltage, int duration, int amountOC) {
                 return LongIntPair.of(isHighPressure ? recipeEUt * 2 : recipeEUt, isHighPressure ? duration : duration * 2);
             }
-        }, recipe, tier);
-        if (copied == recipe) {
-            copied = recipe.copy();
-        }
-        copied.conditions.add(SteamVentCondition.INSTANCE);
-        return copied;
-    }
-
-    public void checkVenting() {
-        if (!getLevel().isClientSide() && needsVenting && getOffsetTimer() % 10 == 0) {
-            tryDoVenting();
-        }
+        }, recipe, GTValues.V[GTValues.LV]);
     }
 
     @Override
@@ -137,41 +164,14 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IMachine
         super.afterWorking();
         if (!getLevel().isClientSide()) {
             needsVenting = true;
+            checkVenting();
         }
-    }
-
-    public void tryDoVenting() {
-        var machinePos = getPos();
-        var ventingSide = getVentFacing();
-        if (!isVentingStuck() && getLevel() instanceof ServerLevel serverLevel) {
-            serverLevel.getEntitiesOfClass(LivingEntity.class, new AABB(machinePos.relative(ventingSide)), entity -> !(entity instanceof Player player) || !player.isSpectator() && !(player.isCreative()))
-                    .forEach(entity -> {
-                        entity.hurt(DamageSources.getHeatDamage(), this.isHighPressure ? 12.0f : 6.0f);
-                        // TODO ADVANCEMENT
-//                        if (entity instanceof ServerPlayer) {
-//                            AdvancementTriggers.STEAM_VENT_DEATH.trigger((EntityPlayerMP) entity);
-//                        }
-                    });
-            double posX = machinePos.getX() + 0.5 + ventingSide.getStepX() * 0.6;
-            double posY = machinePos.getY() + 0.5 + ventingSide.getStepY() * 0.6;
-            double posZ = machinePos.getZ() + 0.5 + ventingSide.getStepZ() * 0.6;
-
-            serverLevel.sendParticles(ParticleTypes.CLOUD, posX, posY, posZ,
-                    7 + serverLevel.random.nextInt(3),
-                    ventingSide.getStepX() / 2.0,
-                    ventingSide.getStepY() / 2.0,
-                    ventingSide.getStepZ() / 2.0, 0.1);
-            if (ConfigHolder.machines.machineSounds){
-                serverLevel.playSound(null, posX, posY, posZ, SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 1.0f, 1.0f);
-            }
-            needsVenting = false;
-        }
-
     }
 
     //////////////////////////////////////
     //***********     GUI    ***********//
     //////////////////////////////////////
+
     @Override
     public ModularUI createUI(Player entityPlayer) {
         var group = recipeType.createUITemplate(recipeLogic::getProgressPercent, importItems.storage, exportItems.storage, new IFluidStorage[0], new IFluidStorage[0], true, isHighPressure);
