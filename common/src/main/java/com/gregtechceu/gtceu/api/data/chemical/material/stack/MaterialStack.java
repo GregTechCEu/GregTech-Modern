@@ -4,12 +4,11 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.WeakHashMap;
 
 public record MaterialStack(Material material, long amount) {
-    static Map<String, MaterialStack> PARSE_CACHE = new HashMap<>();
-    static MaterialStack EMPTY = new MaterialStack(GTMaterials.Air, 0);
+    private static final Map<String, MaterialStack> PARSE_CACHE = new WeakHashMap<>();
 
     public MaterialStack copy(long amount) {
         return new MaterialStack(material, amount);
@@ -20,25 +19,25 @@ public record MaterialStack(Material material, long amount) {
     }
 
     public static MaterialStack fromString(CharSequence str) {
-        var os = str.toString().trim();
-        var s = os;
+        String trimmed = str.toString().trim();
+        String copy = trimmed;
 
-        var cached = PARSE_CACHE.get(os);
+        var cached = PARSE_CACHE.get(trimmed);
 
         if (cached != null) {
-            return cached.isEmpty() ? MaterialStack.EMPTY : cached.copy();
+            return cached.isEmpty() ? null : cached.copy();
         }
 
         var count = 1;
-        var spaceIndex = s.indexOf(' ');
+        var spaceIndex = copy.indexOf(' ');
 
-        if (spaceIndex >= 2 && s.indexOf('x') == spaceIndex - 1) {
-            count = Integer.parseInt(s.substring(0, spaceIndex - 1));
-            s = s.substring(spaceIndex + 1);
+        if (spaceIndex >= 2 && copy.indexOf('x') == spaceIndex - 1) {
+            count = Integer.parseInt(copy.substring(0, spaceIndex - 1));
+            copy = copy.substring(spaceIndex + 1);
         }
 
-        cached = new MaterialStack(GTMaterials.get(s), count);
-        PARSE_CACHE.put(os, cached);
+        cached = new MaterialStack(GTMaterials.get(copy), count);
+        PARSE_CACHE.put(trimmed, cached);
         return cached.copy();
     }
 

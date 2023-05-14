@@ -98,8 +98,6 @@ public class GTRecipeBuilderJS extends RecipeJS {
 
     @Override
     public void serialize() {
-        backingBuilder.id(this.id);
-        //json.addProperty("type", backingBuilder.recipeType.registryName.toString());
         json.addProperty("duration", Math.abs(backingBuilder.duration));
         if (backingBuilder.data != null && !backingBuilder.data.isEmpty()) {
             json.add("data", NBTToJsonConverter.getObject(backingBuilder.data));
