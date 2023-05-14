@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.utils.forge;
 
-import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
+import com.gregtechceu.gtlib.side.fluid.FluidHelper;
 import net.minecraft.core.Holder;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.world.item.Item;

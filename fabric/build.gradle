@@ -75,8 +75,9 @@ dependencies {
     common(project(path: ":${mod_id}-common", configuration: "namedElements")) { transitive = false }
     shadowCommon(project(path: ":${mod_id}-common", configuration: "transformProductionFabric")) { transitive = false }
 
-    // LDLib
-    modImplementation(fabric.ldlib.fabric) { transitive = false }
+    // GTLib
+    modImplementation(fabric.gtlib.fabric) { transitive = false }
+    include(fabric.gtlib.fabric)
 
     // Registrate
     modImplementation(include("com.tterrag.registrate_fabric:Registrate:${fabric.versions.registrate.get()}"))
@@ -130,7 +131,7 @@ processResources {
             "mod_name", mod_name,
             "mod_description", mod_description,
             "mod_url", mod_url,
-            "ldlib_version", fabric.versions.ldlib.get() // on fabric, use the entire version, unlike forge
+            "gtlib_version", fabric.versions.gtlib.get() // on fabric, use the entire version, unlike forge
     )
     properties.forEach((k, v) -> inputs.property(k, v))
 

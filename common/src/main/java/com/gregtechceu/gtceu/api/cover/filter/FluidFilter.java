@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.cover.filter;
 
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
+import com.gregtechceu.gtlib.side.fluid.FluidStack;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 

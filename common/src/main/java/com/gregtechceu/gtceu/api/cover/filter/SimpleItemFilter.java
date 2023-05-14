@@ -2,10 +2,10 @@ package com.gregtechceu.gtceu.api.cover.filter;
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
-import com.lowdragmc.lowdraglib.gui.widget.PhantomSlotWidget;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.msic.ItemStackTransfer;
-import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
+import com.gregtechceu.gtlib.gui.widget.PhantomSlotWidget;
+import com.gregtechceu.gtlib.gui.widget.WidgetGroup;
+import com.gregtechceu.gtlib.misc.ItemStackTransfer;
+import com.gregtechceu.gtlib.side.item.ItemTransferHelper;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.MethodsReturnNonnullByDefault;

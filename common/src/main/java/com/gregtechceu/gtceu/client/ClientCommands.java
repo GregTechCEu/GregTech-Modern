@@ -15,7 +15,7 @@ import java.util.List;
 public class ClientCommands {
 
     public static LiteralArgumentBuilder createLiteral(String command) {
-        return com.lowdragmc.lowdraglib.client.ClientCommands.createLiteral(command);
+        return com.gregtechceu.gtlib.client.ClientCommands.createLiteral(command);
     }
 
     @SuppressWarnings("unchecked")

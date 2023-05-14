@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.core.mixins.BlockModelAccessor;
-import com.lowdragmc.lowdraglib.client.model.ModelFactory;
+import com.gregtechceu.gtlib.client.model.ModelFactory;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.block.model.BakedQuad;

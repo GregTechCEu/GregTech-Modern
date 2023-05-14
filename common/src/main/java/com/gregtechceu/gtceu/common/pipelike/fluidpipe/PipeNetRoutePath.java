@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.common.pipelike.fluidpipe;
 
-import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
-import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
+import com.gregtechceu.gtlib.side.fluid.FluidTransferHelper;
+import com.gregtechceu.gtlib.side.fluid.IFluidTransfer;
 import lombok.Getter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

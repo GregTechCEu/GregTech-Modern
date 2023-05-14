@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.data.tag;
 
-import com.lowdragmc.lowdraglib.Platform;
+import com.gregtechceu.gtlib.Platform;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;

@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.utils;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.lowdragmc.lowdraglib.LDLib;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
+import com.gregtechceu.gtlib.GTLib;
+import com.gregtechceu.gtlib.side.fluid.FluidStack;
 import com.mojang.blaze3d.platform.InputConstants;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.client.Minecraft;
@@ -163,7 +163,7 @@ public class GTUtil {
     }
 
     public static boolean isShiftDown() {
-        if (LDLib.isClient()) {
+        if (GTLib.isClient()) {
             var id = Minecraft.getInstance().getWindow().getWindow();
             return InputConstants.isKeyDown(id, GLFW.GLFW_KEY_LEFT_SHIFT) || InputConstants.isKeyDown(id, GLFW.GLFW_KEY_LEFT_SHIFT);
         }
@@ -171,7 +171,7 @@ public class GTUtil {
     }
 
     public static boolean isCtrlDown() {
-        if (LDLib.isClient()) {
+        if (GTLib.isClient()) {
             var id = Minecraft.getInstance().getWindow().getWindow();
             return InputConstants.isKeyDown(id, GLFW.GLFW_KEY_LEFT_CONTROL) || InputConstants.isKeyDown(id, GLFW.GLFW_KEY_RIGHT_CONTROL);
         }

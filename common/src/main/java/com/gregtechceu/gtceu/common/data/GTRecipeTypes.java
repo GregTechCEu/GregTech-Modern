@@ -14,13 +14,13 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.sound.ExistingSoundEntry;
 import com.gregtechceu.gtceu.common.block.CoilBlock;
 import com.gregtechceu.gtceu.integration.kjs.GTRegistryObjectBuilderTypes;
-import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
-import com.lowdragmc.lowdraglib.gui.widget.TankWidget;
-import com.lowdragmc.lowdraglib.msic.FluidStorage;
-import com.lowdragmc.lowdraglib.msic.ItemStackTransfer;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
-import com.lowdragmc.lowdraglib.utils.CycleItemStackHandler;
-import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
+import com.gregtechceu.gtlib.gui.widget.SlotWidget;
+import com.gregtechceu.gtlib.gui.widget.TankWidget;
+import com.gregtechceu.gtlib.misc.FluidStorage;
+import com.gregtechceu.gtlib.misc.ItemStackTransfer;
+import com.gregtechceu.gtlib.side.fluid.FluidStack;
+import com.gregtechceu.gtlib.utils.CycleItemStackHandler;
+import com.gregtechceu.gtlib.utils.LocalizationUtils;
 import com.simibubi.create.AllBlocks;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
@@ -36,7 +36,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static com.lowdragmc.lowdraglib.gui.texture.ProgressTexture.FillDirection.*;
+import static com.gregtechceu.gtlib.gui.texture.ProgressTexture.FillDirection.*;
 
 /**
  * @author KilaBash

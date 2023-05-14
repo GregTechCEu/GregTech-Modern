@@ -1,10 +1,10 @@
 package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.syncdata.GTRecipeAccessor;
-import com.lowdragmc.lowdraglib.syncdata.IAccessor;
-import com.lowdragmc.lowdraglib.syncdata.payload.FriendlyBufPayload;
+import com.gregtechceu.gtlib.syncdata.IAccessor;
+import com.gregtechceu.gtlib.syncdata.payload.FriendlyBufPayload;
 
-import static com.lowdragmc.lowdraglib.syncdata.TypedPayloadRegistries.*;
+import static com.gregtechceu.gtlib.syncdata.TypedPayloadRegistries.*;
 
 /**
  * @author KilaBash

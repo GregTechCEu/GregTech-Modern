@@ -2,10 +2,10 @@ package com.gregtechceu.gtceu.api.machine.trait;
 
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
-import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
-import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import com.gregtechceu.gtlib.side.fluid.FluidStack;
+import com.gregtechceu.gtlib.side.fluid.FluidTransferHelper;
+import com.gregtechceu.gtlib.side.fluid.IFluidTransfer;
+import com.gregtechceu.gtlib.syncdata.field.ManagedFieldHolder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;

@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.client.model.WorkableOverlayModel;
 import com.gregtechceu.gtceu.core.mixins.BlockModelAccessor;
-import com.lowdragmc.lowdraglib.client.model.ModelFactory;
+import com.gregtechceu.gtlib.client.model.ModelFactory;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.block.model.BakedQuad;

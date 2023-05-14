@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.api.gui.widget;
 
-import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
-import com.lowdragmc.lowdraglib.gui.util.ClickData;
-import com.lowdragmc.lowdraglib.gui.widget.ButtonWidget;
+import com.gregtechceu.gtlib.gui.texture.IGuiTexture;
+import com.gregtechceu.gtlib.gui.util.ClickData;
+import com.gregtechceu.gtlib.gui.widget.ButtonWidget;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import net.fabricmc.api.EnvType;

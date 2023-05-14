@@ -1,10 +1,10 @@
 package com.gregtechceu.gtceu.api.item.fabric;
 
 import com.gregtechceu.gtceu.client.renderer.item.GTBucketItemRenderer;
-import com.lowdragmc.lowdraglib.client.renderer.IItemRendererProvider;
-import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
-import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
+import com.gregtechceu.gtlib.client.renderer.IItemRendererProvider;
+import com.gregtechceu.gtlib.client.renderer.IRenderer;
+import com.gregtechceu.gtlib.side.fluid.FluidHelper;
+import com.gregtechceu.gtlib.side.fluid.FluidStack;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;

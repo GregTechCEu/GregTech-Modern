@@ -2,8 +2,8 @@ package com.gregtechceu.gtceu.api.capability;
 
 import com.gregtechceu.gtceu.api.data.chemical.fluid.FluidType;
 import com.gregtechceu.gtceu.api.data.chemical.fluid.FluidTypes;
-import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
+import com.gregtechceu.gtlib.side.fluid.FluidHelper;
+import com.gregtechceu.gtlib.side.fluid.FluidStack;
 import net.minecraft.world.level.material.Fluid;
 
 /**

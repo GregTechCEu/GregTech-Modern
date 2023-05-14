@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.client.renderer.machine;
 
 import com.gregtechceu.gtceu.common.blockentity.KineticMachineBlockEntity;
 import com.jozufozu.flywheel.backend.Backend;
-import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
+import com.gregtechceu.gtlib.client.renderer.IRenderer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.simibubi.create.content.contraptions.base.KineticTileEntityRenderer;
 import com.simibubi.create.foundation.render.CachedBufferer;

@@ -28,7 +28,7 @@ dependencyResolutionManagement {
         def createVersion = "0.5.0.g-837"
         def lazyDfuVersion = "0.1.3"
         def modMenuVersion = "4.1.2"
-        def ldLibVersion = "1.0.4.e"
+        def gtLibVersion = "1.0.5.a"
         def topFabricVersion = "1.19-6.0.0"
         def jadeFabricVersion = "8.7.3"
         def registrateFabricVersion = "1.1.50-MC1.19.2"
@@ -63,9 +63,9 @@ dependencyResolutionManagement {
             def fabricApi = version("fabricApi", "${fabricApiVersion}+${minecraftVersion}")
             library("fabricApi", "net.fabricmc.fabric-api", "fabric-api").versionRef(fabricApi)
 
-            def ldLib = version("ldlib", ldLibVersion)
-            library("ldlib-common", "com.lowdragmc.ldlib", "ldlib-common-${minecraftVersion}").versionRef(ldLib)
-            library("ldlib-fabric", "com.lowdragmc.ldlib", "ldlib-fabric-${minecraftVersion}").versionRef(ldLib)
+            def gtLib = version("gtlib", gtLibVersion)
+            library("gtlib-common", "com.gregtechceu.gregtechlib", "gtlib-common-${minecraftVersion}").versionRef(gtLib)
+            library("gtlib-fabric", "com.gregtechceu.gregtechlib", "gtlib-fabric-${minecraftVersion}").versionRef(gtLib)
 
             def registrate = version("registrate", registrateFabricVersion)
             library("registrate", "com.tterrag.registrate_fabric", "Registrate").versionRef(registrate)
@@ -115,8 +115,8 @@ dependencyResolutionManagement {
             def minecraftForge = version("minecratfForge", "${minecraftVersion}-${forgeVersion}")
             library("minecraftForge", "net.minecraftforge", "forge").versionRef(minecraftForge)
 
-            def ldLib = version("ldlib", ldLibVersion)
-            library("ldlib-forge", "com.lowdragmc.ldlib", "ldlib-forge-${minecraftVersion}").versionRef(ldLib)
+            def gtLib = version("gtlib", gtLibVersion)
+            library("gtlib-forge", "com.gregtechceu.gregtechlib", "gtlib-forge-${minecraftVersion}").versionRef(gtLib)
 
             def registrate = version("registrate", registrateForgeVersion)
             library("registrate", "com.tterrag.registrate", "Registrate").versionRef(registrate)

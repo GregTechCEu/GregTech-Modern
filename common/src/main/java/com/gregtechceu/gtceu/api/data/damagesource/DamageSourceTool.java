@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.data.damagesource;
 
 
-import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
+import com.gregtechceu.gtlib.utils.LocalizationUtils;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.damagesource.EntityDamageSource;
