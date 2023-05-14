@@ -112,8 +112,7 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine implements
 
     @Override
     public void setOutputFacing(@NotNull Direction outputFacing) {
-        super.setOutputFacing(outputFacing);
-        updateAutoOutputSubscription();
+        // no op - boilers do not have output facings
     }
 
     //////////////////////////////////////

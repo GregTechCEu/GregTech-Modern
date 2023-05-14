@@ -106,6 +106,9 @@ public abstract class SteamWorkableMachine extends SteamMachine implements IReci
         recipeLogic.inValid();
     }
 
+    /**
+     * @param outputFacing the facing to set
+     */
     public void setOutputFacing(@NotNull Direction outputFacing) {
         if (!hasFrontFacing() || this.outputFacing != getFrontFacing()) {
             this.outputFacing = outputFacing;
