@@ -57,7 +57,6 @@ public class SerializerFluidStack implements IContentSerializer<FluidStack> {
     public JsonElement toJson(FluidStack content) {
         var json = new JsonObject();
         json.addProperty("fluid", Objects.requireNonNull(Registry.FLUID.getKey(content.getFluid())).toString());
-        // TODO Fabric and Forge have their own magic number
         json.addProperty("amount", content.getAmount() * FluidHelper.getBucket() / 1000);
         if (content.hasTag())
             json.addProperty("nbt", content.getTag().toString());
