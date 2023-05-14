@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.data.chemical.Element;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
@@ -165,6 +166,12 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         typeWrappers.register(MaterialIconSet.class, (ctx, o) -> {
             if (o instanceof MaterialIconSet iconSet) return iconSet;
             if (o instanceof CharSequence chars) return MaterialIconSet.getByName(chars.toString());
+            return null;
+        });
+        typeWrappers.register(MaterialStack.class, (ctx, o) -> {
+            if (o instanceof MaterialStack stack) return stack;
+            if (o instanceof Material material) return new MaterialStack(material, 1);
+            if (o instanceof CharSequence chars) return MaterialStack.fromString(chars);
             return null;
         });
 

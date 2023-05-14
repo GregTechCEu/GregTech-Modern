@@ -66,7 +66,7 @@ public class RecyclingRecipes {
         int voltageMultiplier = calculateVoltageMultiplier(components);
 
         if (prefix != TagPrefix.dust) {
-            registerMaceratorRecycling(provider, input, components, voltageMultiplier);
+            registerMaceratorRecycling(provider, input, components, voltageMultiplier, prefix);
         }
         if (prefix != null) {
             registerExtractorRecycling(provider, input, components, voltageMultiplier, prefix);
@@ -95,7 +95,9 @@ public class RecyclingRecipes {
         registerArcRecycling(provider, input, components, prefix);
     }
 
-    private static void registerMaceratorRecycling(Consumer<FinishedRecipe> provider, ItemStack input, List<MaterialStack> materials, int multiplier) {
+    private static void registerMaceratorRecycling(Consumer<FinishedRecipe> provider, ItemStack input, List<MaterialStack> materials, int multiplier, TagPrefix prefix) {
+
+        if (materials.stream().anyMatch(materialStack -> prefix.isIgnored(materialStack.material()))) return;
 
         // Finalize the output list.
         List<ItemStack> outputs = finalizeOutputs(

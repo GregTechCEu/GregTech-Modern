@@ -12,6 +12,7 @@ import net.minecraft.world.level.levelgen.feature.trunkplacers.TrunkPlacerType;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.ForgeRegistry;
 
 import static net.minecraft.core.Registry.RECIPE_TYPE_REGISTRY;
 
@@ -29,6 +30,7 @@ public class GTRegistriesImpl {
         if (registryKey == RECIPE_TYPE_REGISTRY) {
             ForgeRegistries.RECIPE_TYPES.register(name, (RecipeType<?>) value);
         } else if (registryKey == Registry.RECIPE_SERIALIZER_REGISTRY) {
+            //have to register multiple keys to same value here, sorry forge
             ForgeRegistries.RECIPE_SERIALIZERS.register(name, (RecipeSerializer<?>) value);
         } else if (registryKey == Registry.FEATURE_REGISTRY) {
             ForgeRegistries.FEATURES.register(name, (Feature<?>) value);

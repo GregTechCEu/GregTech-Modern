@@ -50,13 +50,13 @@ public class GTRecipeBuilderJS extends RecipeJS {
 
     @Override
     public void create(RecipeArguments args) {
-        this.id = ResourceLocation.tryParse(args.getString(1, null));
-        backingBuilder = GTRecipeTypes.get(args.getString(0, null)).recipeBuilder(this.getOrCreateId());
+        this.id = ResourceLocation.tryParse(args.getString(0, null));
+        backingBuilder = GTRecipeTypes.get(this.type.toString()).recipeBuilder(this.getOrCreateId());
     }
 
     @Override
     public void deserialize() {
-        String recipeType = GsonHelper.getAsString(json, "recipe_type");
+        String recipeType = GsonHelper.getAsString(json, "type");
         int duration = json.has("duration") ? GsonHelper.getAsInt(json, "duration") : 100;
         Component component = json.has("text") ? Component.translatable(GsonHelper.getAsString(json, "text")) : null;
         CompoundTag data = new CompoundTag();
@@ -98,7 +98,8 @@ public class GTRecipeBuilderJS extends RecipeJS {
 
     @Override
     public void serialize() {
-        json.addProperty("recipe_type", backingBuilder.recipeType.registryName.toString());
+        backingBuilder.id(this.id);
+        //json.addProperty("type", backingBuilder.recipeType.registryName.toString());
         json.addProperty("duration", Math.abs(backingBuilder.duration));
         if (backingBuilder.data != null && !backingBuilder.data.isEmpty()) {
             json.add("data", NBTToJsonConverter.getObject(backingBuilder.data));
