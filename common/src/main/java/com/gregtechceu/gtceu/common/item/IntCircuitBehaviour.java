@@ -4,12 +4,12 @@ import com.gregtechceu.gtceu.api.item.component.IItemUIFactory;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.common.data.GTItems;
-import com.lowdragmc.lowdraglib.gui.factory.HeldItemUIFactory;
-import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
-import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
-import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
-import com.lowdragmc.lowdraglib.gui.widget.ButtonWidget;
-import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
+import com.gregtechceu.gtlib.gui.factory.HeldItemUIFactory;
+import com.gregtechceu.gtlib.gui.modular.ModularUI;
+import com.gregtechceu.gtlib.gui.texture.GuiTextureGroup;
+import com.gregtechceu.gtlib.gui.texture.TextTexture;
+import com.gregtechceu.gtlib.gui.widget.ButtonWidget;
+import com.gregtechceu.gtlib.gui.widget.LabelWidget;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -97,17 +97,18 @@ public class IntCircuitBehaviour implements IItemUIFactory, IAddInformation {
 
     @Override
     public ModularUI createUI(HeldItemUIFactory.HeldItemHolder holder, Player entityPlayer) {
-        var modular = new ModularUI(180, 135, holder, entityPlayer)
+        var modular = new ModularUI(178, 133, holder, entityPlayer)
                 .widget(new LabelWidget(9, 8, "metaitem.circuit.integrated.gui"));
         int idx = 0;
+        //TODO: fix the motherfucking circuit textures
         for(int x = 0; x <= 3; x++) {
             for(int y = 0; y <= 7; y++) {
                 int finalIdx = idx;
-                modular.widget(new ButtonWidget(10 + (20 * y), 24 + (20 * x), 20, 20, new GuiTextureGroup(GuiTextures.SLOT, new ResourceTexture(new ResourceLocation("gtceu:textures/item/circuit.integrated/" + (idx + 1) + ".png"), 0.0f, 0.0f, 1.0f, 1.0f)), data -> setCircuitConfiguration(holder, finalIdx)));
+                modular.widget(new ButtonWidget(10 + (18 * y), 24 + (18 * x), 18, 18, new GuiTextureGroup(GuiTextures.SLOT, new ResourceTexture(new ResourceLocation("gtceu:textures/item/circuit.integrated/" + (idx + 1) + ".png"), 0.2f, 0.2f, 1.2f, 1.2f)), data -> setCircuitConfiguration(holder, finalIdx)));
                 idx++;
             }
         }
-        modular.widget(new ButtonWidget(10, 104, 20, 20, new GuiTextureGroup(GuiTextures.SLOT, new ResourceTexture(new ResourceLocation("gtceu:textures/item/circuit.integrated/33.png"), 0.0f, 0.0f, 1.0f, 1.0f)), data -> setCircuitConfiguration(holder, 32)));
+        modular.widget(new ButtonWidget(10, 96, 18, 18, new GuiTextureGroup(GuiTextures.SLOT, new ResourceTexture(new ResourceLocation("gtceu:textures/item/circuit.integrated/33.png"), 0.0f, 0.0f, 1.0f, 1.0f)), data -> setCircuitConfiguration(holder, 32)));
         modular.mainGroup.setBackground(GuiTextures.BACKGROUND);
         return modular;
     }
