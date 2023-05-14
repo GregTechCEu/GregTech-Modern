@@ -59,6 +59,7 @@ public interface IExhaustVentMachine extends IMachineFeature {
      * Attempts to vent, if needed
      *
      * @param serverLevel the level containing the machine venting
+     * @param pos the position of the machine
      */
     default void tryDoVenting(@NotNull ServerLevel serverLevel, @NotNull BlockPos pos) {
         if (needsVenting() && !isVentingBlocked()) {
@@ -81,6 +82,7 @@ public interface IExhaustVentMachine extends IMachineFeature {
      * Damages entities upon venting
      *
      * @param serverLevel the level containing the machine and entities
+     * @param pos the position of the machine venting
      */
     default void doVentingDamage(@NotNull ServerLevel serverLevel, @NotNull BlockPos pos) {
         for (LivingEntity entity : serverLevel.getEntitiesOfClass(LivingEntity.class,
