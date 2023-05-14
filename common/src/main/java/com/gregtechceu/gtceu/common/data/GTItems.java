@@ -1040,7 +1040,7 @@ public class GTItems {
             var dyeColor = DyeColor.values()[i];
             DYE_ONLY_ITEMS[i] = REGISTRATE.item("dye." + dyeColor.getName(), Item::new)
                     .lang("Chemical %s Dye".formatted(toEnglishName(dyeColor.getName())))
-                    .tag(TagUtil.createItemTag("dye." + dyeColor.getName())).register();
+                    .tag(TagUtil.createPlatformItemTag("dyes/" + dyeColor.getName(), dyeColor.getName() + "_dyes")).register();
         }
     }
     
