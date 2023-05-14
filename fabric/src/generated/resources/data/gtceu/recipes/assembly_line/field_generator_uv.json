@@ -6,14 +6,14 @@
       {
         "chance": 1.0,
         "content": {
-          "amount": 21,
+          "amount": 139968,
           "fluid": "gtceu:soldering_alloy"
         }
       },
       {
         "chance": 1.0,
         "content": {
-          "amount": 7,
+          "amount": 46656,
           "fluid": "gtceu:naquadria"
         }
       }

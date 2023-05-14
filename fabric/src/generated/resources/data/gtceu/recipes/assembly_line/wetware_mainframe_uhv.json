@@ -6,14 +6,14 @@
       {
         "chance": 1.0,
         "content": {
-          "amount": 35,
+          "amount": 233280,
           "fluid": "gtceu:soldering_alloy"
         }
       },
       {
         "chance": 1.0,
         "content": {
-          "amount": 14,
+          "amount": 93312,
           "fluid": "gtceu:polybenzimidazole"
         }
       }
