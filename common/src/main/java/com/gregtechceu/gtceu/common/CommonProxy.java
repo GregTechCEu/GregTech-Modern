@@ -11,11 +11,6 @@ import com.gregtechceu.gtceu.data.GregTechDatagen;
 import com.gregtechceu.gtlib.gui.factory.UIFactory;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 
-/**
- * @author KilaBash
- * @date 2023/2/13
- * @implNote CommonProxy
- */
 public class CommonProxy {
 
     /**
@@ -45,7 +40,6 @@ public class CommonProxy {
         GTMachines.init();
         GTFoods.init();
         GTItems.init();
-        GTRecipes.init();
         GregTechDatagen.init();
 
         // fabric exclusive, squeeze this in here to register before stuff is used
@@ -53,5 +47,4 @@ public class CommonProxy {
         GTOres.init();
         GTFeatures.init();
     }
-
 }
