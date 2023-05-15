@@ -81,6 +81,7 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
         // Fine, we use it to provide eu cap for recipe, simulating an EU machine.
         capabilitiesProxy.put(IO.IN, EURecipeCapability.CAP,
                 List.of(new SteamEnergyRecipeHandler(steamTank, FluidHelper.getBucket() / 1000d)));
+        subscribeServerTick(this::tryDoVenting);
     }
 
     @Override
@@ -93,9 +94,7 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
     //******     Venting Logic    ******//
     //////////////////////////////////////
 
-    @Override
-    public void serverTick() {
-        super.serverTick();
+    public void tryDoVenting() {
         // check venting every 10 ticks
         if (getOffsetTimer() % 10 == 0) {
             checkVenting();

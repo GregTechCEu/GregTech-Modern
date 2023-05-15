@@ -207,7 +207,7 @@ public class MetaMachine implements IManaged, IToolable, ITickSubscription, IApp
         }
     }
 
-    public void serverTick() {
+    public final void serverTick() {
         if (!waitingToAdd.isEmpty()) {
             serverTicks.addAll(waitingToAdd);
             waitingToAdd.clear();
