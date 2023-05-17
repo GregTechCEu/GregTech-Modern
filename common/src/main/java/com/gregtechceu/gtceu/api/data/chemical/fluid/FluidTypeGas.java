@@ -17,6 +17,6 @@ public class FluidTypeGas extends FluidType {
 
     @Override
     public void addAdditionalTooltips(List<Component> tooltips) {
-        tooltips.add(Component.translatable("gregtech.fluid.state_gas"));
+        tooltips.add(Component.translatable("gtceu.fluid.state_gas"));
     }
 }

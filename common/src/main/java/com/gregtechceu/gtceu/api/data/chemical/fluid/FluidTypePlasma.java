@@ -17,6 +17,6 @@ public class FluidTypePlasma extends FluidType {
 
     @Override
     public void addAdditionalTooltips(List<Component> tooltips) {
-        tooltips.add(Component.translatable("gregtech.fluid.state_plasma"));
+        tooltips.add(Component.translatable("gtceu.fluid.state_plasma"));
     }
 }

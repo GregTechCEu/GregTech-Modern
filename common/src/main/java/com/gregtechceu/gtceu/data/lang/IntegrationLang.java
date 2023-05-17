@@ -11,7 +11,7 @@ public class IntegrationLang {
 
     /** JEI, REI, EMI */
     private static void initRecipeViewerLang(RegistrateLangProvider provider) {
-
+        provider.add("gtceu.jei.multiblock_info", "Multiblock Info");
     }
 
     /** Jade, TheOneProbe, WTHIT */
