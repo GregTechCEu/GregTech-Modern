@@ -75,7 +75,10 @@ public class GTToolItem extends DiggerItem implements IItemRendererProvider, IIt
             var result = toolable.onToolClick(getToolType(), itemStack, context);
             if (result == InteractionResult.CONSUME && context.getPlayer() instanceof ServerPlayer serverPlayer) {
                 ToolHelper.playToolSound(toolType, serverPlayer);
-                ToolHelper.damageItem(itemStack, context.getLevel().getRandom(), serverPlayer);
+
+                if (!serverPlayer.isCreative()) {
+                    ToolHelper.damageItem(itemStack, context.getLevel().getRandom(), serverPlayer);
+                }
             }
             return result;
         }
