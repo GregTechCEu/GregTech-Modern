@@ -53,7 +53,7 @@ public class CoverProvider extends CapabilityInfoProvider<ICoverable> {
 //     * @param voiding   the voiding cover to get data from
 //     */
 //    private static void itemVoidingInfo(@Nonnull IProbeInfo probeInfo, @Nonnull CoverItemVoiding voiding) {
-//        String unit = " {*gregtech.top.unit.items*}";
+//        String unit = " {*gtceu.top.unit.items*}";
 //
 //        ItemFilterContainer container = voiding.getItemFilterContainer();
 //        if (voiding instanceof CoverItemVoidingAdvanced) {
@@ -94,7 +94,7 @@ public class CoverProvider extends CapabilityInfoProvider<ICoverable> {
 //     * @param voiding   the voiding cover to get data from
 //     */
 //    private static void fluidVoidingInfo(@Nonnull IProbeInfo probeInfo, @Nonnull CoverFluidVoiding voiding) {
-//        String unit = voiding.getBucketMode() == CoverPump.BucketMode.BUCKET ? " {*gregtech.top.unit.fluid_buckets*}" : " {*gregtech.top.unit.fluid_milibuckets*}";
+//        String unit = voiding.getBucketMode() == CoverPump.BucketMode.BUCKET ? " {*gtceu.top.unit.fluid_buckets*}" : " {*gtceu.top.unit.fluid_milibuckets*}";
 //
 //        if (voiding instanceof CoverFluidVoidingAdvanced) {
 //            CoverFluidVoidingAdvanced advanced = (CoverFluidVoidingAdvanced) voiding;
@@ -137,7 +137,7 @@ public class CoverProvider extends CapabilityInfoProvider<ICoverable> {
 //        fluidFilterText(probeInfo, enderFluidLink.getFluidFilterContainer().getFilterWrapper().getFluidFilter());
 //
 //        if (!enderFluidLink.getColorStr().isEmpty()) {
-//            probeInfo.text(TextStyleClass.INFO + "{*gregtech.top.link_cover.color*} " + enderFluidLink.getColorStr());
+//            probeInfo.text(TextStyleClass.INFO + "{*gtceu.top.link_cover.color*} " + enderFluidLink.getColorStr());
 //        }
 //    }
 //
@@ -151,7 +151,7 @@ public class CoverProvider extends CapabilityInfoProvider<ICoverable> {
 //     * @param rate      the transfer rate of the mode
 //     */
 //    private static void transferRateText(@Nonnull IProbeInfo probeInfo, @Nonnull IIOMode mode, @Nonnull String rateUnit, int rate) {
-//        String modeText = mode.isImport() ? "{*gregtech.top.mode.import*} " : "{*gregtech.top.mode.export*} ";
+//        String modeText = mode.isImport() ? "{*gtceu.top.mode.import*} " : "{*gtceu.top.mode.export*} ";
 //        probeInfo.text(TextStyleClass.OK + modeText + TextStyleClass.LABEL + GTUtility.formatNumbers(rate) + rateUnit);
 //    }
 //
@@ -202,7 +202,7 @@ public class CoverProvider extends CapabilityInfoProvider<ICoverable> {
 //     * @param filter    the filter to display info from
 //     */
 //    private static void itemFilterText(@Nonnull IProbeInfo probeInfo, @Nullable ItemFilter filter) {
-//        String label = TextStyleClass.INFO + "{*gregtech.top.filter.label*} ";
+//        String label = TextStyleClass.INFO + "{*gtceu.top.filter.label*} ";
 //        if (filter instanceof OreDictionaryItemFilter) {
 //            String expression = ((OreDictionaryItemFilter) filter).getOreDictFilterExpression();
 //            if (!expression.isEmpty()) probeInfo.text(label + expression);

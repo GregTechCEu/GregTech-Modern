@@ -89,7 +89,7 @@ public class GTRecipeWidget extends WidgetGroup {
             addWidget(new LabelWidget(3, yOffset += 10,
                     LocalizationUtils.format("gtceu.recipe.total", EUt * recipe.duration)));
             addWidget(new LabelWidget(3, yOffset += 10,
-                    LocalizationUtils.format(!isOutput ? "gtceu.recipe.eu" : "gregtech.recipe.eu_inverted", EUt, GTValues.VN[GTUtil.getTierByVoltage(EUt)])));
+                    LocalizationUtils.format(!isOutput ? "gtceu.recipe.eu" : "gtceu.recipe.eu_inverted", EUt, GTValues.VN[GTUtil.getTierByVoltage(EUt)])));
         }
         for (RecipeCondition condition : recipe.conditions) {
             addWidget(new LabelWidget(3, yOffset += 10, condition.getTooltips().getString()));
