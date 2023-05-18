@@ -207,12 +207,6 @@ public class VanillaStandardRecipes {
                 .EUt(16).duration(10)
                 .save(provider);
 
-        FORGE_HAMMER_RECIPES.recipeBuilder("stone_to_cobblestone")
-                .inputItems(new ItemStack(Blocks.STONE))
-                .outputItems(new ItemStack(Blocks.COBBLESTONE))
-                .EUt(16).duration(10)
-                .save(provider);
-
         FORGE_HAMMER_RECIPES.recipeBuilder("cobblestone_to_gravel")
                 .inputItems(ItemTags.STONE_CRAFTING_MATERIALS)
                 .outputItems(new ItemStack(Blocks.GRAVEL))

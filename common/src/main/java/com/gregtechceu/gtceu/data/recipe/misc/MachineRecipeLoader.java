@@ -762,16 +762,18 @@ public class MachineRecipeLoader {
 
     private static void registerRecyclingRecipes(Consumer<FinishedRecipe> provider) {
 
-        MACERATOR_RECIPES.recipeBuilder("macerate_endstone")
+        MACERATOR_RECIPES.recipeBuilder("macerate_end_stone")
                 .inputItems(new ItemStack(Blocks.END_STONE))
                 .outputItems(dust, Endstone)
                 .chancedOutput(dustTiny, Tungstate, 1200, 280)
+                .duration(150).EUt(2)
                 .save(provider);
 
         MACERATOR_RECIPES.recipeBuilder("macerate_netherrack")
                 .inputItems(new ItemStack(Blocks.NETHERRACK))
                 .outputItems(dust, Netherrack)
                 .chancedOutput(nugget, Gold, 500, 120)
+                .duration(150).EUt(2)
                 .save(provider);
 
         // TODO Stone-type tags?
@@ -780,6 +782,7 @@ public class MachineRecipeLoader {
         //            .inputItems(stone, Soapstone)
         //            .outputItems(dustImpure, Talc)
         //            .chancedOutput(dustTiny, Chromite, 1000, 280)
+        //            .duration(150).EUt(2)
         //            .save(provider);
 
         //if (!OreDictionary.getOres("stoneRedrock").isEmpty())
@@ -787,48 +790,56 @@ public class MachineRecipeLoader {
         //            .inputItems(stone, Redrock)
         //            .outputItems(dust, Redrock)
         //            .chancedOutput(dust, Redrock, 1000, 380)
+        //            .duration(150).EUt(2)
         //            .save(provider);
 
         MACERATOR_RECIPES.recipeBuilder("macerate_marble")
                 .inputItems(block, Marble)
                 .outputItems(dust, Marble)
                 .chancedOutput(dust, Marble, 1000, 380)
+                .duration(150).EUt(2)
                 .save(provider);
 
         MACERATOR_RECIPES.recipeBuilder("macerate_basalt")
                 .inputItems(Blocks.BASALT.asItem())
                 .outputItems(dust, Basalt)
                 .chancedOutput(dust, Basalt, 1000, 380)
+                .duration(150).EUt(2)
                 .save(provider);
 
         MACERATOR_RECIPES.recipeBuilder("macerate_deepslate")
                 .inputItems(Blocks.DEEPSLATE.asItem())
                 .outputItems(dust, Deepslate)
                 .chancedOutput(dust, Thorium, 100, 40)
+                .duration(150).EUt(2)
                 .save(provider);
 
         MACERATOR_RECIPES.recipeBuilder("macerate_red_granite")
                 .inputItems(block, GraniteRed)
                 .outputItems(dust, GraniteRed)
                 .chancedOutput(dustSmall, Uranium238, 100, 40)
+                .duration(150).EUt(2)
                 .save(provider);
 
         MACERATOR_RECIPES.recipeBuilder("macerate_andesite")
                 .inputItems(Blocks.ANDESITE.asItem())
                 .outputItems(dust, Andesite)
                 .chancedOutput(dustSmall, Stone, 100, 40)
+                .duration(150).EUt(2)
                 .save(provider);
 
         MACERATOR_RECIPES.recipeBuilder("macerate_diorite")
                 .inputItems(Blocks.DIORITE.asItem())
                 .outputItems(dust, Diorite)
                 .chancedOutput(dustSmall, Stone, 100, 40)
+                .duration(150).EUt(2)
                 .save(provider);
 
         MACERATOR_RECIPES.recipeBuilder("macerate_granite")
                 .inputItems(Blocks.GRANITE.asItem())
                 .outputItems(dust, Granite)
                 .chancedOutput(dustSmall, Stone, 100, 40)
+                .duration(150).EUt(2)
                 .save(provider);
 
         // TODO add other foods
@@ -836,38 +847,38 @@ public class MachineRecipeLoader {
                 .inputItems(new ItemStack(Items.PORKCHOP))
                 .outputItems(dustSmall, Meat, 6)
                 .outputItems(dustTiny, Bone)
-                .duration(102).save(provider);
+                .duration(102).EUt(2).save(provider);
 
         // TODO all fish
         //MACERATOR_RECIPES.recipeBuilder("macerate_fish")
         //        .inputItems(new ItemStack(Items.FISH, 1, GTValues.W))
         //        .outputItems(dustSmall, Meat, 6)
         //        .outputItems(dustTiny, Bone)
-        //        .duration(102).save(provider);
+        //        .duration(102).EUt(2).save(provider);
 
         MACERATOR_RECIPES.recipeBuilder("macerate_chicken")
                 .inputItems(new ItemStack(Items.CHICKEN))
                 .outputItems(dust, Meat)
                 .outputItems(dustTiny, Bone)
-                .duration(102).save(provider);
+                .duration(102).EUt(2).save(provider);
 
         MACERATOR_RECIPES.recipeBuilder("macerate_steak")
                 .inputItems(new ItemStack(Items.BEEF))
                 .outputItems(dustSmall, Meat, 6)
                 .outputItems(dustTiny, Bone)
-                .duration(102).save(provider);
+                .duration(102).EUt(2).save(provider);
 
         MACERATOR_RECIPES.recipeBuilder("macerate_rabbit")
                 .inputItems(new ItemStack(Items.RABBIT))
                 .outputItems(dustSmall, Meat, 6)
                 .outputItems(dustTiny, Bone)
-                .duration(102).save(provider);
+                .duration(102).EUt(2).save(provider);
 
         MACERATOR_RECIPES.recipeBuilder("macerate_mutton")
                 .inputItems(new ItemStack(Items.MUTTON))
                 .outputItems(dust, Meat)
                 .outputItems(dustTiny, Bone)
-                .duration(102).save(provider);
+                .duration(102).EUt(2).save(provider);
     }
 
     private static void registerFluidRecipes(Consumer<FinishedRecipe> provider) {
