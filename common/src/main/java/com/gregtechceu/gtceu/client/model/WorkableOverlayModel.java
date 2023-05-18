@@ -22,6 +22,7 @@ import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -119,6 +120,11 @@ public class WorkableOverlayModel {
     public Table<Direction, Direction, List<BakedQuad>[][]> caches;
 
     @Environment(EnvType.CLIENT)
+    public static final AABB SLIGHTLY_LARGER_CUBE = new AABB(-0.0002, -0.0002, -0.0002, 1.0002, 1.0002, 1.0002);
+    @Environment(EnvType.CLIENT)
+    public static final AABB EVEN_SLIGHTLY_LARGER_CUBE = new AABB(-0.0003, -0.0003, -0.0003, 1.0003, 1.0003, 1.0003);
+
+    @Environment(EnvType.CLIENT)
     public List<BakedQuad> bakeQuads(@Nullable Direction side, Direction frontFacing, boolean isActive, boolean isWorkingEnabled) {
         synchronized (caches) {
             if (side == null) return Collections.emptyList();
@@ -135,7 +141,7 @@ public class WorkableOverlayModel {
                     if (predicate != null) {
                         var texture = predicate.getSprite(isActive, isWorkingEnabled);
                         if (texture != null) {
-                            var quad = FaceQuad.bakeFace(renderSide, texture, rotation);
+                            var quad = FaceQuad.bakeFace(SLIGHTLY_LARGER_CUBE, renderSide, texture, rotation, -1, 0, true, true);
                             if (quad.getDirection() == side) {
                                 quads.add(quad);
                             }
@@ -144,12 +150,12 @@ public class WorkableOverlayModel {
                         texture = predicate.getEmissiveSprite(isActive, isWorkingEnabled);
                         if (texture != null) {
                             if (ConfigHolder.client.machinesEmissiveTextures) {
-                                var quad = FaceQuad.bakeFace(renderSide, texture, rotation, 0, 15, true, false);
+                                var quad = FaceQuad.bakeFace(EVEN_SLIGHTLY_LARGER_CUBE, renderSide, texture, rotation, 0, 15, true, false);
                                 if (quad.getDirection() == side) {
                                     quads.add(quad);
                                 }
                             } else {
-                                var quad = FaceQuad.bakeFace(renderSide, texture, rotation);
+                                var quad = FaceQuad.bakeFace(EVEN_SLIGHTLY_LARGER_CUBE, renderSide, texture, rotation, -1, 0, true, true);
                                 if (quad.getDirection() == side) {
                                     quads.add(quad);
                                 }
