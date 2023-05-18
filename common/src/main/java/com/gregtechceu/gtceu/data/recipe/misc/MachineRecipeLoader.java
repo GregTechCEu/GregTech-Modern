@@ -766,14 +766,14 @@ public class MachineRecipeLoader {
                 .inputItems(new ItemStack(Blocks.END_STONE))
                 .outputItems(dust, Endstone)
                 .chancedOutput(dustTiny, Tungstate, 1200, 280)
-                .EUt(2)
+                .duration(150).EUt(2)
                 .save(provider);
 
         MACERATOR_RECIPES.recipeBuilder("macerate_netherrack")
                 .inputItems(new ItemStack(Blocks.NETHERRACK))
                 .outputItems(dust, Netherrack)
                 .chancedOutput(nugget, Gold, 500, 120)
-                .EUt(2)
+                .duration(150).EUt(2)
                 .save(provider);
 
         // TODO Stone-type tags?
@@ -795,49 +795,49 @@ public class MachineRecipeLoader {
                 .inputItems(block, Marble)
                 .outputItems(dust, Marble)
                 .chancedOutput(dust, Marble, 1000, 380)
-                .EUt(2)
+                .duration(150).EUt(2)
                 .save(provider);
 
         MACERATOR_RECIPES.recipeBuilder("macerate_basalt")
                 .inputItems(Blocks.BASALT.asItem())
                 .outputItems(dust, Basalt)
                 .chancedOutput(dust, Basalt, 1000, 380)
-                .EUt(2)
+                .duration(150).EUt(2)
                 .save(provider);
 
         MACERATOR_RECIPES.recipeBuilder("macerate_deepslate")
                 .inputItems(Blocks.DEEPSLATE.asItem())
                 .outputItems(dust, Deepslate)
                 .chancedOutput(dust, Thorium, 100, 40)
-                .EUt(2)
+                .duration(150).EUt(2)
                 .save(provider);
 
         MACERATOR_RECIPES.recipeBuilder("macerate_red_granite")
                 .inputItems(block, GraniteRed)
                 .outputItems(dust, GraniteRed)
                 .chancedOutput(dustSmall, Uranium238, 100, 40)
-                .EUt(2)
+                .duration(150).EUt(2)
                 .save(provider);
 
         MACERATOR_RECIPES.recipeBuilder("macerate_andesite")
                 .inputItems(Blocks.ANDESITE.asItem())
                 .outputItems(dust, Andesite)
                 .chancedOutput(dustSmall, Stone, 100, 40)
-                .EUt(2)
+                .duration(150).EUt(2)
                 .save(provider);
 
         MACERATOR_RECIPES.recipeBuilder("macerate_diorite")
                 .inputItems(Blocks.DIORITE.asItem())
                 .outputItems(dust, Diorite)
                 .chancedOutput(dustSmall, Stone, 100, 40)
-                .EUt(2)
+                .duration(150).EUt(2)
                 .save(provider);
 
         MACERATOR_RECIPES.recipeBuilder("macerate_granite")
                 .inputItems(Blocks.GRANITE.asItem())
                 .outputItems(dust, Granite)
                 .chancedOutput(dustSmall, Stone, 100, 40)
-                .EUt(2)
+                .duration(150).EUt(2)
                 .save(provider);
 
         // TODO add other foods
