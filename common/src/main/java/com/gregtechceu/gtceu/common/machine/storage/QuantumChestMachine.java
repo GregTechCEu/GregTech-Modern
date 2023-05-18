@@ -1,15 +1,15 @@
 package com.gregtechceu.gtceu.common.machine.storage;
 
-import com.gregtechceu.gtceu.api.item.tool.GTToolType;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.TickableSubscription;
-import com.gregtechceu.gtceu.api.machine.TieredMachine;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.UITemplate;
 import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
+import com.gregtechceu.gtceu.api.item.tool.GTToolType;
+import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.TickableSubscription;
+import com.gregtechceu.gtceu.api.machine.TieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputItem;
 import com.gregtechceu.gtceu.api.machine.feature.IDropSaveMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
@@ -207,7 +207,7 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
     }
 
     @Override
-    public void setOutputFacingItems(Direction outputFacing) {
+    public void setOutputFacingItems(@Nullable Direction outputFacing) {
         this.outputFacingItems = outputFacing;
         updateAutoOutputSubscription();
     }
@@ -294,17 +294,13 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
             var tool = playerIn.getItemInHand(hand);
             if (tool.getDamageValue() >= tool.getMaxDamage()) return InteractionResult.PASS;
             if (hasFrontFacing() && gridSide == getFrontFacing()) return InteractionResult.PASS;
-            var itemFacing = getOutputFacingItems();
-            if (itemFacing == null) {
+            if (gridSide != getOutputFacingItems()) {
                 setOutputFacingItems(gridSide);
-                return InteractionResult.CONSUME;
-            }
-            if (itemFacing == gridSide) {
+            } else {
                 setOutputFacingItems(null);
-                return InteractionResult.CONSUME;
             }
-            setOutputFacingItems(gridSide);
             return InteractionResult.CONSUME;
+
         }
 
         return super.onWrenchClick(playerIn, hand, gridSide, hitResult);
