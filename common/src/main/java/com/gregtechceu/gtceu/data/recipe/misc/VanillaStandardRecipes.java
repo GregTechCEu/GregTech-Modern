@@ -111,7 +111,7 @@ public class VanillaStandardRecipes {
         MACERATOR_RECIPES.recipeBuilder("quartz_sand_from_sand")
                 .inputItems(new ItemStack(Blocks.SAND))
                 .outputItems(dust, QuartzSand)
-                .duration(30).save(provider);
+                .duration(30).EUt(2).save(provider);
 
         VanillaRecipeHelper.addShapelessRecipe(provider, "glass_dust_flint", ChemicalHelper.get(dust, Glass),
                 new UnificationEntry(dust, QuartzSand),
@@ -229,7 +229,7 @@ public class VanillaStandardRecipes {
                 .inputItems(new ItemStack(Blocks.GRAVEL, 1))
                 .outputItems(dust, Stone)
                 .chancedOutput(new ItemStack(Items.FLINT), 1000, 1000)
-                .duration(400)
+                .duration(400).EUt(2)
                 .save(provider);
 
         // todo other sandstone types?
@@ -280,32 +280,32 @@ public class VanillaStandardRecipes {
         MACERATOR_RECIPES.recipeBuilder("macerate_cocoa")
                 .inputItems(new ItemStack(Items.COCOA_BEANS))
                 .outputItems(dust, Cocoa)
-                .duration(400)
+                .duration(400).EUt(2)
                 .save(provider);
 
         MACERATOR_RECIPES.recipeBuilder("macerate_sugar_cane")
                 .inputItems(new ItemStack(Items.SUGAR_CANE))
                 .outputItems(new ItemStack(Items.SUGAR))
-                .duration(400)
+                .duration(400).EUt(2)
                 .save(provider);
 
         MACERATOR_RECIPES.recipeBuilder("macerate_melon_block")
                 .inputItems(new ItemStack(Blocks.MELON))
                 .outputItems(new ItemStack(Items.MELON, 8))
                 .chancedOutput(new ItemStack(Items.MELON_SEEDS), 8000, 500)
-                .duration(400)
+                .duration(400).EUt(2)
                 .save(provider);
 
         MACERATOR_RECIPES.recipeBuilder("macerate_pumpkin")
                 .inputItems(new ItemStack(Blocks.PUMPKIN))
                 .outputItems(new ItemStack(Items.PUMPKIN_SEEDS, 4))
-                .duration(400)
+                .duration(400).EUt(2)
                 .save(provider);
 
         MACERATOR_RECIPES.recipeBuilder("macerate_melon_slice")
                 .inputItems(new ItemStack(Items.MELON))
                 .outputItems(new ItemStack(Items.MELON_SEEDS))
-                .duration(400)
+                .duration(400).EUt(2)
                 .save(provider);
 
         MACERATOR_RECIPES.recipeBuilder("macerate_wool")
@@ -314,7 +314,7 @@ public class VanillaStandardRecipes {
                 .chancedOutput(new ItemStack(Items.STRING), 9000, 0)
                 .chancedOutput(new ItemStack(Items.STRING), 5000, 0)
                 .chancedOutput(new ItemStack(Items.STRING), 2000, 0)
-                .duration(200)
+                .duration(200).EUt(2)
                 .save(provider);
     }
 
