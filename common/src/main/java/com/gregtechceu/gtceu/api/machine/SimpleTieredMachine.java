@@ -16,7 +16,10 @@ import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtlib.gui.modular.ModularUI;
 import com.gregtechceu.gtlib.gui.texture.*;
-import com.gregtechceu.gtlib.gui.widget.*;
+import com.gregtechceu.gtlib.gui.widget.CycleButtonWidget;
+import com.gregtechceu.gtlib.gui.widget.ImageWidget;
+import com.gregtechceu.gtlib.gui.widget.LabelWidget;
+import com.gregtechceu.gtlib.gui.widget.SlotWidget;
 import com.gregtechceu.gtlib.misc.ItemStackTransfer;
 import com.gregtechceu.gtlib.side.fluid.FluidTransferHelper;
 import com.gregtechceu.gtlib.side.item.ItemTransferHelper;
@@ -239,6 +242,13 @@ public class SimpleTieredMachine extends WorkableTieredMachine implements IAutoO
         updateAutoOutputSubscription();
     }
 
+    @Override
+    public boolean isFacingValid(Direction facing) {
+        if (facing == getOutputFacingItems() || facing == getOutputFacingFluids()) {
+            return false;
+        }
+        return super.isFacingValid(facing);
+    }
 
     //////////////////////////////////////
     //*******     Interaction    *******//
