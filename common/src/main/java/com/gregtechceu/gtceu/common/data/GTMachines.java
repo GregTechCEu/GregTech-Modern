@@ -189,6 +189,7 @@ public class GTMachines {
             (tier, builder) -> builder
                     .rotationState(RotationState.ALL)
                     .renderer(() -> new TransformerRenderer(tier))
+                    .langValue("%s Transformer".formatted(VOLTAGE_NAMES[tier]))
                     .tooltips(explosion())
                     .tooltips(Component.translatable("gtceu.machine.transformer.description"),
                             Component.translatable("gtceu.machine.transformer.tooltip_tool_usage"),
