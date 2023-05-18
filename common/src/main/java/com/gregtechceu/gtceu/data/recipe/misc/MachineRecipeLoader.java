@@ -845,7 +845,7 @@ public class MachineRecipeLoader {
                 .inputItems(new ItemStack(Items.PORKCHOP))
                 .outputItems(dustSmall, Meat, 6)
                 .outputItems(dustTiny, Bone)
-                .duration(102).save(provider);
+                .duration(102).EUt(2).save(provider);
 
         // TODO all fish
         //MACERATOR_RECIPES.recipeBuilder("macerate_fish")
@@ -858,25 +858,25 @@ public class MachineRecipeLoader {
                 .inputItems(new ItemStack(Items.CHICKEN))
                 .outputItems(dust, Meat)
                 .outputItems(dustTiny, Bone)
-                .duration(102).save(provider);
+                .duration(102).EUt(2).save(provider);
 
         MACERATOR_RECIPES.recipeBuilder("macerate_steak")
                 .inputItems(new ItemStack(Items.BEEF))
                 .outputItems(dustSmall, Meat, 6)
                 .outputItems(dustTiny, Bone)
-                .duration(102).save(provider);
+                .duration(102).EUt(2).save(provider);
 
         MACERATOR_RECIPES.recipeBuilder("macerate_rabbit")
                 .inputItems(new ItemStack(Items.RABBIT))
                 .outputItems(dustSmall, Meat, 6)
                 .outputItems(dustTiny, Bone)
-                .duration(102).save(provider);
+                .duration(102).EUt(2).save(provider);
 
         MACERATOR_RECIPES.recipeBuilder("macerate_mutton")
                 .inputItems(new ItemStack(Items.MUTTON))
                 .outputItems(dust, Meat)
                 .outputItems(dustTiny, Bone)
-                .duration(102).save(provider);
+                .duration(102).EUt(2).save(provider);
     }
 
     private static void registerFluidRecipes(Consumer<FinishedRecipe> provider) {
