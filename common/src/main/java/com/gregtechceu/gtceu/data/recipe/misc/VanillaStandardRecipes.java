@@ -111,7 +111,7 @@ public class VanillaStandardRecipes {
         MACERATOR_RECIPES.recipeBuilder("quartz_sand_from_sand")
                 .inputItems(new ItemStack(Blocks.SAND))
                 .outputItems(dust, QuartzSand)
-                .duration(30).save(provider);
+                .duration(30).EUt(2).save(provider);
 
         VanillaRecipeHelper.addShapelessRecipe(provider, "glass_dust_flint", ChemicalHelper.get(dust, Glass),
                 new UnificationEntry(dust, QuartzSand),
@@ -223,7 +223,7 @@ public class VanillaStandardRecipes {
                 .inputItems(new ItemStack(Blocks.GRAVEL, 1))
                 .outputItems(dust, Stone)
                 .chancedOutput(new ItemStack(Items.FLINT), 1000, 1000)
-                .duration(400)
+                .duration(400).EUt(2)
                 .save(provider);
 
         // todo other sandstone types?

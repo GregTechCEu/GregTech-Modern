@@ -353,8 +353,8 @@ public class MachineRecipeLoader {
                     .save(provider);
         }
 
-        COMPRESSOR_RECIPES.recipeBuilder("carbon_mesh").inputItems(CARBON_FIBERS, 2).outputItems(CARBON_MESH).duration(100).save(provider);
-        COMPRESSOR_RECIPES.recipeBuilder("carbon_fiber_plate").inputItems(CARBON_MESH).outputItems(CARBON_FIBER_PLATE).save(provider);
+        COMPRESSOR_RECIPES.recipeBuilder("carbon_mesh").inputItems(CARBON_FIBERS, 2).outputItems(CARBON_MESH).duration(100).EUt(2).save(provider);
+        COMPRESSOR_RECIPES.recipeBuilder("carbon_fiber_plate").inputItems(CARBON_MESH).outputItems(CARBON_FIBER_PLATE).duration(200).EUt(2).save(provider);
 
         ALLOY_SMELTER_RECIPES.recipeBuilder("rubber_sheet").duration(10).EUt(VA[ULV]).inputItems(ingot, Rubber, 2).notConsumable(SHAPE_MOLD_PLATE).outputItems(plate, Rubber).save(provider);
         ALLOY_SMELTER_RECIPES.recipeBuilder("rubber_bar").duration(100).EUt(VA[ULV]).inputItems(dust, Sulfur).inputItems(dust, RawRubber, 3).outputItems(ingot, Rubber).save(provider);
