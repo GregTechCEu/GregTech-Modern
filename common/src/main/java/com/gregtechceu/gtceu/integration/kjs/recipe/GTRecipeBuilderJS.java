@@ -489,10 +489,20 @@ public class GTRecipeBuilderJS extends RecipeJS {
 
     @Override
     public boolean hasInput(IngredientMatch match) {
-        for (var item : backingBuilder.input.get(ItemRecipeCapability.CAP)) {
-            Ingredient in = ItemRecipeCapability.CAP.of(item);
-            if (match.contains(in)) {
-                return true;
+        if (backingBuilder.input.containsKey(ItemRecipeCapability.CAP)) {
+            for (Content item : backingBuilder.input.get(ItemRecipeCapability.CAP)) {
+                Ingredient in = ItemRecipeCapability.CAP.of(item);
+                if (match.contains(in)) {
+                    return true;
+                }
+            }
+        }
+        if (backingBuilder.tickInput.containsKey(ItemRecipeCapability.CAP)) {
+            for (Content item : backingBuilder.tickInput.get(ItemRecipeCapability.CAP)) {
+                Ingredient in = ItemRecipeCapability.CAP.of(item);
+                if (match.contains(in)) {
+                    return true;
+                }
             }
         }
         return false;
@@ -527,10 +537,20 @@ public class GTRecipeBuilderJS extends RecipeJS {
 
     @Override
     public boolean hasOutput(IngredientMatch match) {
-        for (var item : backingBuilder.output.get(ItemRecipeCapability.CAP)) {
-            Ingredient in = ItemRecipeCapability.CAP.of(item);
-            if (match.contains(in)) {
-                return true;
+        if (backingBuilder.output.containsKey(ItemRecipeCapability.CAP)) {
+            for (Content item : backingBuilder.output.get(ItemRecipeCapability.CAP)) {
+                Ingredient in = ItemRecipeCapability.CAP.of(item);
+                if (match.contains(in)) {
+                    return true;
+                }
+            }
+        }
+        if (backingBuilder.tickOutput.containsKey(ItemRecipeCapability.CAP)) {
+            for (Content item : backingBuilder.tickOutput.get(ItemRecipeCapability.CAP)) {
+                Ingredient in = ItemRecipeCapability.CAP.of(item);
+                if (match.contains(in)) {
+                    return true;
+                }
             }
         }
         return false;

@@ -9,7 +9,10 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.client.forge.ClientProxyImpl;
 import com.gregtechceu.gtceu.client.renderer.item.TagPrefixItemRenderer;
 import com.gregtechceu.gtceu.common.forge.CommonProxyImpl;
+import net.minecraft.client.Minecraft;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.event.ModelEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
@@ -21,7 +24,7 @@ public class GTCEuForge {
         DistExecutor.unsafeRunForDist(() -> ClientProxyImpl::new, () -> CommonProxyImpl::new);
     }
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void onModelRegister(ModelEvent.RegisterAdditional event) {
         for (TagPrefix tagPrefix : TagPrefix.values()) {
             for (Material material : GTRegistries.MATERIALS.values()) {
@@ -29,11 +32,13 @@ public class GTCEuForge {
                     GTCEu.LOGGER.info("registering item model for " + tagPrefix + " of " + material);
                     MaterialIconSet iconSet = material.getMaterialIconSet();
                     MaterialIconType type = tagPrefix.materialIconType();
-                    event.register(GTCEu.id(String.format("item/material_sets/%s/%s", iconSet.name, type.name())));
-                    TagPrefixItemRenderer.MODELS.put(type, iconSet, new TagPrefixItemRenderer(type, iconSet));
+                    ResourceLocation model = GTCEu.id(String.format("item/material_sets/%s/%s", iconSet.name, type.name()));
+                    if (Minecraft.getInstance().getResourceManager().getResource(GTCEu.id(String.format("models/item/material_sets/%s/%s.json", iconSet.name, type.name()))).isPresent()) {
+                        event.register(model);
+                    }
+                    TagPrefixItemRenderer.MODELS.get(type, iconSet).setModelLocation(model);
                 }
             }
         }
     }
-
 }

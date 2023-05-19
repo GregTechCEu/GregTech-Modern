@@ -23,6 +23,7 @@ import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.Minecraft;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.BlockHitResult;
 
 import java.util.List;
@@ -55,15 +56,17 @@ public class ClientProxyImpl implements ClientModInitializer {
         });
 
         ModelLoadingRegistry.INSTANCE.registerModelProvider((manager, out) -> {
-            TagPrefixItemRenderer.MODELS.clear();
             for (TagPrefix tagPrefix : TagPrefix.values()) {
                 for (Material material : GTRegistries.MATERIALS.values()) {
                     if (tagPrefix.doGenerateItem(material)) {
                         GTCEu.LOGGER.info("registering item model for " + tagPrefix + " of " + material);
                         MaterialIconSet iconSet = material.getMaterialIconSet();
                         MaterialIconType type = tagPrefix.materialIconType();
-                        out.accept(GTCEu.id(String.format("item/material_sets/%s/%s", iconSet.name, type.name())));
-                        TagPrefixItemRenderer.MODELS.put(type, iconSet, new TagPrefixItemRenderer(type, iconSet));
+                        ResourceLocation model = GTCEu.id(String.format("item/material_sets/%s/%s", iconSet.name, type.name()));
+                        if (Minecraft.getInstance().getResourceManager().getResource(GTCEu.id(String.format("models/item/material_sets/%s/%s.json", iconSet.name, type.name()))).isPresent()) {
+                            out.accept(model);
+                        }
+                        TagPrefixItemRenderer.MODELS.get(type, iconSet).setModelLocation(model);
                     }
                 }
             }

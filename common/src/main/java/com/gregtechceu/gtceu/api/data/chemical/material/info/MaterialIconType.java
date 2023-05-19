@@ -10,10 +10,10 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.ResourceManager;
 
 import javax.annotation.Nonnull;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -161,6 +161,12 @@ public record MaterialIconType(String name) {
     @Environment(EnvType.CLIENT)
     private static boolean doesResourceExist(@Nonnull ResourceLocation resource) {
         ResourceManager manager = Minecraft.getInstance().getResourceManager();
+        /*if (manager.getResource(resource).isEmpty() && manager.listPacks().noneMatch(pack -> pack.hasResource(PackType.CLIENT_RESOURCES, resource))) {
+            Minecraft.getInstance().getResourcePackRepository().reload();
+            return Minecraft.getInstance().getResourcePackRepository().openAllSelected().stream().anyMatch(pack -> pack.hasResource(PackType.CLIENT_RESOURCES, resource));
+        }
+        return false;*/
+        //noinspection ConstantValue
         return manager != null && manager.getResource(resource).isPresent();
     }
     @Override
