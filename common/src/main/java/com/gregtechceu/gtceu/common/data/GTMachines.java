@@ -359,7 +359,7 @@ public class GTMachines {
     public final static MachineDefinition[] ENERGY_INPUT_HATCH = registerTieredMachines("energy_hatch.input",
             (holder, tier) -> new EnergyHatchPartMachine(holder, tier, IO.IN, 2),
             (tier, builder) -> builder
-                    .langValue("Energy Import Hatch " + VNF[tier])
+                    .langValue(VNF[tier] + " Energy Hatch")
                     .rotationState(RotationState.ALL)
                     .itemColor((itemStack, index) -> index == 2 ? GTValues.VC[tier] : -1)
                     .abilities(PartAbility.INPUT_ENERGY)
@@ -370,7 +370,7 @@ public class GTMachines {
     public final static MachineDefinition[] ENERGY_OUTPUT_HATCH = registerTieredMachines("energy_hatch.output",
             (holder, tier) -> new EnergyHatchPartMachine(holder, tier, IO.OUT, 2),
             (tier, builder) -> builder
-                    .langValue("Energy Export Hatch " + VNF[tier])
+                    .langValue(VNF[tier] + " Dynamo Hatch")
                     .rotationState(RotationState.ALL)
                     .itemColor((itemStack, index) -> index == 2 ? GTValues.VC[tier] : -1)
                     .abilities(PartAbility.OUTPUT_ENERGY)
@@ -381,7 +381,8 @@ public class GTMachines {
     public final static MachineDefinition[] ENERGY_INPUT_HATCH_4A = registerTieredMachines("energy_hatch.input_4a",
             (holder, tier) -> new EnergyHatchPartMachine(holder, tier, IO.IN, 4),
             (tier, builder) -> builder
-                    .langValue("Energy Import Hatch (4A) " + VNF[tier])
+                    .langValue(VNF[tier] + " 4A Energy Hatch")
+                    .langValue(VNF[tier] + " 4A Energy Hatch")
                     .rotationState(RotationState.ALL)
                     .itemColor((itemStack, index) -> index == 2 ? GTValues.VC[tier] : -1)
                     .abilities(PartAbility.INPUT_ENERGY)
@@ -392,7 +393,7 @@ public class GTMachines {
     public final static MachineDefinition[] ENERGY_OUTPUT_HATCH_4A = registerTieredMachines("energy_hatch.output_4a",
             (holder, tier) -> new EnergyHatchPartMachine(holder, tier, IO.OUT, 4),
             (tier, builder) -> builder
-                    .langValue("Energy Export Hatch (4A) " + VNF[tier])
+                    .langValue(VNF[tier] + " 4A Dynamo Hatch")
                     .rotationState(RotationState.ALL)
                     .itemColor((itemStack, index) -> index == 2 ? GTValues.VC[tier] : -1)
                     .abilities(PartAbility.OUTPUT_ENERGY)
@@ -403,7 +404,7 @@ public class GTMachines {
     public final static MachineDefinition[] ENERGY_INPUT_HATCH_16A = registerTieredMachines("energy_hatch.input_16a",
             (holder, tier) -> new EnergyHatchPartMachine(holder, tier, IO.IN, 16),
             (tier, builder) -> builder
-                    .langValue("Energy Import Hatch (16A) " + VNF[tier])
+                    .langValue(VNF[tier] + " 16A Energy Hatch")
                     .rotationState(RotationState.ALL)
                     .itemColor((itemStack, index) -> index == 2 ? GTValues.VC[tier] : -1)
                     .abilities(PartAbility.INPUT_ENERGY)
@@ -414,7 +415,7 @@ public class GTMachines {
     public final static MachineDefinition[] ENERGY_OUTPUT_HATCH_16A = registerTieredMachines("energy_hatch.output_16a",
             (holder, tier) -> new EnergyHatchPartMachine(holder, tier, IO.OUT, 16),
             (tier, builder) -> builder
-                    .langValue("Energy Export Hatch (16A) " + VNF[tier])
+                    .langValue(VNF[tier] + " 16A Dynamo Hatch")
                     .rotationState(RotationState.ALL)
                     .abilities(PartAbility.OUTPUT_ENERGY)
                     .overlayTieredHullRenderer("energy_hatch.output_16a")
