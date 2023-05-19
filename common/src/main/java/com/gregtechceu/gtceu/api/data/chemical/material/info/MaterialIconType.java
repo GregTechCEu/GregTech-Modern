@@ -6,7 +6,11 @@ import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtlib.Platform;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.ResourceManager;
 
 import javax.annotation.Nonnull;
 import java.net.URL;
@@ -112,8 +116,10 @@ public record MaterialIconType(String name) {
         //noinspection ConstantConditions
         if (!iconSet.isRootIconset && Platform.isClient()) { // check minecraft for null for CI environments
             while (!iconSet.isRootIconset) {
-                URL url = MaterialIconType.class.getResource(String.format("/assets/%s/textures/block/material_sets/%s/%s.png", GTCEu.MOD_ID, iconSet.name, this.name));
-                if (url != null) break;
+                //URL url = MaterialIconType.class.getResource(String.format("/assets/%s/textures/block/material_sets/%s/%s.png", GTCEu.MOD_ID, iconSet.name, this.name));
+                //if (url != null) break;
+                ResourceLocation location = GTCEu.id(String.format("textures/block/material_sets/%s/%s.png", iconSet.name, this.name));
+                if (doesResourceExist(location)) break;
                 iconSet = iconSet.parentIconset;
             }
         }
@@ -134,8 +140,10 @@ public record MaterialIconType(String name) {
         //noinspection ConstantConditions
         if (!iconSet.isRootIconset && Platform.isClient()) { // check minecraft for null for CI environments
             while (!iconSet.isRootIconset) {
-                URL url = MaterialIconType.class.getResource(String.format("/assets/%s/models/item/material_sets/%s/%s.json", GTCEu.MOD_ID, iconSet.name, this.name));
-                if (url != null) break;
+                //URL url = MaterialIconType.class.getResource(String.format("/assets/%s/models/item/material_sets/%s/%s.json", GTCEu.MOD_ID, iconSet.name, this.name));
+                //if (url != null) break;
+                ResourceLocation location = GTCEu.id(String.format("models/item/material_sets/%s/%s.json", iconSet.name, this.name));
+                if (doesResourceExist(location)) break;
                 iconSet = iconSet.parentIconset;
             }
         }
@@ -146,6 +154,15 @@ public record MaterialIconType(String name) {
         return location;
     }
 
+    /**
+     * @param resource the location of the resource, formatted with the root dir and file extension
+     * @return if the resource exists
+     */
+    @Environment(EnvType.CLIENT)
+    private static boolean doesResourceExist(@Nonnull ResourceLocation resource) {
+        ResourceManager manager = Minecraft.getInstance().getResourceManager();
+        return manager != null && manager.getResource(resource).isPresent();
+    }
     @Override
     public String toString() {
         return this.name;
