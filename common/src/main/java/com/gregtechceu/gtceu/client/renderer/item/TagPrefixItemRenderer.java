@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.client.renderer.item;
 
 import com.google.common.collect.Table;
 import com.google.common.collect.Tables;
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
 import com.gregtechceu.gtlib.client.renderer.impl.IModelRenderer;
@@ -14,9 +15,9 @@ import java.util.HashMap;
  * @implNote TagPrefixItemRenderer
  */
 public class TagPrefixItemRenderer extends IModelRenderer {
-    private static final Table<MaterialIconType, MaterialIconSet, TagPrefixItemRenderer> MODELS = Tables.newCustomTable(new HashMap<>(), HashMap::new);
+    public static final Table<MaterialIconType, MaterialIconSet, TagPrefixItemRenderer> MODELS = Tables.newCustomTable(new HashMap<>(), HashMap::new);
 
-    protected TagPrefixItemRenderer(MaterialIconType type, MaterialIconSet iconSet) {
+    public TagPrefixItemRenderer(MaterialIconType type, MaterialIconSet iconSet) {
         super(type.getItemModelPath(iconSet));
     }
 
@@ -26,5 +27,4 @@ public class TagPrefixItemRenderer extends IModelRenderer {
         }
         return MODELS.get(type, iconSet);
     }
-
 }

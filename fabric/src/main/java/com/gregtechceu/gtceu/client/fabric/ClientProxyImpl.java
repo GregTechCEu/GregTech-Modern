@@ -1,10 +1,17 @@
 package com.gregtechceu.gtceu.client.fabric;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
+import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.client.ClientCommands;
 import com.gregtechceu.gtceu.client.TooltipHelper;
 import com.gregtechceu.gtceu.client.renderer.BlockHighLightRenderer;
 import com.gregtechceu.gtceu.client.TooltipsHandler;
+import com.gregtechceu.gtceu.client.renderer.item.TagPrefixItemRenderer;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
@@ -13,6 +20,7 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallba
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
+import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.phys.BlockHitResult;
@@ -44,6 +52,21 @@ public class ClientProxyImpl implements ClientModInitializer {
         ClientTickEvents.END_CLIENT_TICK.register(listener -> {
             TooltipHelper.onClientTick();
             GTValues.CLIENT_TIME++;
+        });
+
+        ModelLoadingRegistry.INSTANCE.registerModelProvider((manager, out) -> {
+            TagPrefixItemRenderer.MODELS.clear();
+            for (TagPrefix tagPrefix : TagPrefix.values()) {
+                for (Material material : GTRegistries.MATERIALS.values()) {
+                    if (tagPrefix.doGenerateItem(material)) {
+                        GTCEu.LOGGER.info("registering item model for " + tagPrefix + " of " + material);
+                        MaterialIconSet iconSet = material.getMaterialIconSet();
+                        MaterialIconType type = tagPrefix.materialIconType();
+                        out.accept(GTCEu.id(String.format("item/material_sets/%s/%s", iconSet.name, type.name())));
+                        TagPrefixItemRenderer.MODELS.put(type, iconSet, new TagPrefixItemRenderer(type, iconSet));
+                    }
+                }
+            }
         });
     }
 }
