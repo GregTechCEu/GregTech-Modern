@@ -1,0 +1,37 @@
+{
+  "type": "gtceu:forge_hammer",
+  "duration": 100,
+  "inputs": {
+    "item": [
+      {
+        "chance": 1.0,
+        "content": {
+          "item": "gtceu:crystal.raw"
+        }
+      }
+    ]
+  },
+  "outputs": {
+    "item": [
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 9,
+          "fabric:type": "gtceu:sized",
+          "ingredient": {
+            "item": "gtceu:crystal.raw_chip"
+          }
+        }
+      }
+    ]
+  },
+  "tickInputs": {
+    "eu": [
+      {
+        "chance": 1.0,
+        "content": 480
+      }
+    ]
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "type": "gtceu:cutter",
+  "duration": 900,
+  "inputs": {
+    "fluid": [
+      {
+        "chance": 1.0,
+        "content": {
+          "amount": 20250,
+          "fluid": "gtceu:lubricant"
+        }
+      }
+    ],
+    "item": [
+      {
+        "chance": 1.0,
+        "content": {
+          "item": "gtceu:wafer.low_power_integrated_circuit"
+        }
+      }
+    ]
+  },
+  "outputs": {
+    "item": [
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 4,
+          "fabric:type": "gtceu:sized",
+          "ingredient": {
+            "item": "gtceu:plate.low_power_integrated_circuit"
+          }
+        }
+      }
+    ]
+  },
+  "tickInputs": {
+    "eu": [
+      {
+        "chance": 1.0,
+        "content": 480
+      }
+    ]
+  }
+}

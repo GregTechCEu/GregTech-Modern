@@ -1,0 +1,55 @@
+{
+  "type": "gtceu:large_chemical_reactor",
+  "duration": 1800,
+  "inputs": {
+    "fluid": [
+      {
+        "chance": 1.0,
+        "content": {
+          "amount": 810000,
+          "fluid": "gtceu:sodium_persulfate"
+        }
+      }
+    ],
+    "item": [
+      {
+        "chance": 1.0,
+        "content": {
+          "item": "gtceu:board.wetware"
+        }
+      },
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 32,
+          "fabric:type": "gtceu:sized",
+          "tag": "c:niobium_titanium_foils"
+        }
+      }
+    ]
+  },
+  "outputs": {
+    "item": [
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 1,
+          "fabric:type": "gtceu:sized",
+          "ingredient": {
+            "item": "gtceu:circuit_board.wetware"
+          }
+        }
+      }
+    ]
+  },
+  "tickInputs": {
+    "eu": [
+      {
+        "chance": 1.0,
+        "content": 480
+      }
+    ]
+  }
+}

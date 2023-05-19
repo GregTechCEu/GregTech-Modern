@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "F": {
+      "tag": "c:stainless_steel_frames"
+    },
+    "G": {
+      "tag": "c:stainless_steel_gears"
+    },
+    "P": {
+      "tag": "c:stainless_steel_plates"
+    },
+    "h": {
+      "tag": "c:hammers"
+    },
+    "w": {
+      "tag": "c:wrenches"
+    }
+  },
+  "pattern": [
+    "PhP",
+    "GFG",
+    "PwP"
+  ],
+  "result": {
+    "count": 2,
+    "item": "gtceu:casing_stainless_steel_gearbox"
+  }
+}

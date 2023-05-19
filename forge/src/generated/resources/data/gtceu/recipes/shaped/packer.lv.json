@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": {
+      "tag": "forge:chests/wooden"
+    },
+    "C": {
+      "tag": "forge:circuits/lv"
+    },
+    "M": {
+      "item": "gtceu:hull.lv"
+    },
+    "R": {
+      "item": "gtceu:robot.arm.lv"
+    },
+    "V": {
+      "item": "gtceu:conveyor.module.lv"
+    },
+    "W": {
+      "item": "gtceu:cable_single.tin"
+    }
+  },
+  "pattern": [
+    "BCB",
+    "RMV",
+    "WCW"
+  ],
+  "result": {
+    "item": "gtceu:packer.lv"
+  }
+}

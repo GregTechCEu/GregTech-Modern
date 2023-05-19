@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "A": {
+      "item": "gtceu:tungstensteel_firebox"
+    },
+    "P": {
+      "item": "gtceu:cable_single.aluminium"
+    },
+    "S": {
+      "tag": "forge:circuits/iv"
+    }
+  },
+  "pattern": [
+    "PSP",
+    "SAS",
+    "PSP"
+  ],
+  "result": {
+    "item": "gtceu:large_tungstensteel_boiler"
+  }
+}

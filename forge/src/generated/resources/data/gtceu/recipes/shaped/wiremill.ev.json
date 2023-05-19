@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "forge:circuits/ev"
+    },
+    "E": {
+      "item": "gtceu:electric.motor.ev"
+    },
+    "M": {
+      "item": "gtceu:hull.ev"
+    },
+    "W": {
+      "item": "gtceu:cable_single.aluminium"
+    }
+  },
+  "pattern": [
+    "EWE",
+    "CMC",
+    "EWE"
+  ],
+  "result": {
+    "item": "gtceu:wiremill.ev"
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "forge:circuits/luv"
+    },
+    "G": {
+      "tag": "forge:glass"
+    },
+    "I": {
+      "item": "gtceu:wire_single.osmium"
+    },
+    "M": {
+      "item": "gtceu:hull.luv"
+    },
+    "W": {
+      "item": "gtceu:cable_single.niobium_titanium"
+    }
+  },
+  "pattern": [
+    "IGI",
+    "IMI",
+    "CWC"
+  ],
+  "result": {
+    "item": "gtceu:electrolyzer.luv"
+  }
+}

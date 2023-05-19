@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": {
+      "tag": "forge:springs/kanthal"
+    },
+    "C": {
+      "tag": "forge:circuits/hv"
+    },
+    "G": {
+      "tag": "forge:glass"
+    },
+    "M": {
+      "item": "gtceu:hull.hv"
+    },
+    "P": {
+      "item": "gtceu:electric.pump.hv"
+    },
+    "W": {
+      "item": "gtceu:cable_single.gold"
+    }
+  },
+  "pattern": [
+    "GBG",
+    "CMC",
+    "WPW"
+  ],
+  "result": {
+    "item": "gtceu:distillery.hv"
+  }
+}

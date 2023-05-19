@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "item": "gtceu:conveyor.module.zpm"
+    },
+    "E": {
+      "item": "gtceu:emitter.zpm"
+    },
+    "H": {
+      "item": "gtceu:hull.zpm"
+    },
+    "I": {
+      "tag": "forge:circuits/uv"
+    },
+    "R": {
+      "item": "gtceu:robot.arm.zpm"
+    },
+    "W": {
+      "item": "gtceu:cable_single.vanadium_gallium"
+    }
+  },
+  "pattern": [
+    "RIE",
+    "CHC",
+    "WIW"
+  ],
+  "result": {
+    "item": "gtceu:circuit_assembler.zpm"
+  }
+}

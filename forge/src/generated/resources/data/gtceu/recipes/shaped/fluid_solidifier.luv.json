@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": {
+      "tag": "forge:chests/wooden"
+    },
+    "C": {
+      "tag": "forge:circuits/luv"
+    },
+    "G": {
+      "tag": "forge:glass"
+    },
+    "M": {
+      "item": "gtceu:hull.luv"
+    },
+    "P": {
+      "item": "gtceu:electric.pump.luv"
+    },
+    "W": {
+      "item": "gtceu:cable_single.niobium_titanium"
+    }
+  },
+  "pattern": [
+    "PGP",
+    "WMW",
+    "CBC"
+  ],
+  "result": {
+    "item": "gtceu:fluid_solidifier.luv"
+  }
+}

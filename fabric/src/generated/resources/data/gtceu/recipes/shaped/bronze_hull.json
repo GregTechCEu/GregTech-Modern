@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "P": {
+      "tag": "c:bronze_plates"
+    },
+    "h": {
+      "tag": "c:hammers"
+    }
+  },
+  "pattern": [
+    "PPP",
+    "PhP",
+    "PPP"
+  ],
+  "result": {
+    "item": "gtceu:steam_casing_bronze"
+  }
+}

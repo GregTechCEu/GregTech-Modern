@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "G": {
+      "item": "gtceu:electric.pump.lv"
+    },
+    "M": {
+      "item": "gtceu:hull.lv"
+    },
+    "T": {
+      "item": "gtceu:fluid_pipe_large.bronze"
+    },
+    "W": {
+      "tag": "forge:circuits/lv"
+    }
+  },
+  "pattern": [
+    "WGW",
+    "GMG",
+    "TGT"
+  ],
+  "result": {
+    "item": "gtceu:pump.lv"
+  }
+}

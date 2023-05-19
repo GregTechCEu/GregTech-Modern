@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "D": {
+      "item": "gtceu:cover.fluid.detector"
+    },
+    "E": {
+      "item": "minecraft:ender_pearl"
+    },
+    "P": {
+      "item": "gtceu:fluid_pipe_normal.bronze"
+    },
+    "S": {
+      "tag": "c:steel_screws"
+    },
+    "d": {
+      "tag": "c:screwdrivers"
+    },
+    "w": {
+      "tag": "c:wrenches"
+    }
+  },
+  "pattern": [
+    "SDS",
+    "dPw",
+    " E "
+  ],
+  "result": {
+    "item": "gtceu:cover.fluid.voiding"
+  }
+}

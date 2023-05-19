@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "forge:circuits/zpm"
+    },
+    "G": {
+      "item": "gtceu:field.generator.iv"
+    },
+    "H": {
+      "item": "gtceu:hermetic_casing_zpm"
+    },
+    "P": {
+      "tag": "forge:plates/dense/naquadah_alloy"
+    },
+    "U": {
+      "item": "gtceu:electric.pump.zpm"
+    }
+  },
+  "pattern": [
+    "CGC",
+    "PHP",
+    "CUC"
+  ],
+  "result": {
+    "item": "gtceu:quantum_tank.zpm"
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "forge:circuits/hv"
+    },
+    "G": {
+      "tag": "forge:glass"
+    },
+    "I": {
+      "item": "gtceu:wire_single.electrum"
+    },
+    "M": {
+      "item": "gtceu:hull.hv"
+    },
+    "W": {
+      "item": "gtceu:cable_single.gold"
+    }
+  },
+  "pattern": [
+    "IGI",
+    "IMI",
+    "CWC"
+  ],
+  "result": {
+    "item": "gtceu:electrolyzer.hv"
+  }
+}

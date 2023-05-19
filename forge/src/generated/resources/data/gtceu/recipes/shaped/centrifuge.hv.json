@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "forge:circuits/hv"
+    },
+    "E": {
+      "item": "gtceu:electric.motor.hv"
+    },
+    "M": {
+      "item": "gtceu:hull.hv"
+    },
+    "W": {
+      "item": "gtceu:cable_single.gold"
+    }
+  },
+  "pattern": [
+    "CEC",
+    "WMW",
+    "CEC"
+  ],
+  "result": {
+    "item": "gtceu:centrifuge.hv"
+  }
+}

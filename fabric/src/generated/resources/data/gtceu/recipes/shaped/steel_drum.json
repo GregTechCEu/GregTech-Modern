@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "P": {
+      "tag": "c:steel_plates"
+    },
+    "R": {
+      "tag": "c:steel_long_rods"
+    },
+    "h": {
+      "tag": "c:hammers"
+    }
+  },
+  "pattern": [
+    " h ",
+    "PRP",
+    "PRP"
+  ],
+  "result": {
+    "item": "gtceu:drum.steel"
+  }
+}

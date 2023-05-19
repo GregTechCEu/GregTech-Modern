@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "c:luv_circuits"
+    },
+    "E": {
+      "item": "gtceu:electric.motor.luv"
+    },
+    "M": {
+      "item": "gtceu:hull.luv"
+    },
+    "P": {
+      "item": "gtceu:electric.piston.luv"
+    },
+    "W": {
+      "item": "gtceu:cable_single.niobium_titanium"
+    },
+    "w": {
+      "tag": "c:wrenches"
+    }
+  },
+  "pattern": [
+    "PwP",
+    "CMC",
+    "EWE"
+  ],
+  "result": {
+    "item": "gtceu:bender.luv"
+  }
+}

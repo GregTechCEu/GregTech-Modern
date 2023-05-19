@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "forge:circuits/uv"
+    },
+    "E": {
+      "item": "gtceu:electric.motor.uv"
+    },
+    "G": {
+      "item": "gtceu:component.grinder.tungsten"
+    },
+    "M": {
+      "item": "gtceu:hull.uv"
+    },
+    "P": {
+      "item": "gtceu:electric.piston.uv"
+    },
+    "W": {
+      "item": "gtceu:cable_single.yttrium_barium_cuprate"
+    }
+  },
+  "pattern": [
+    "PEG",
+    "WWM",
+    "CCW"
+  ],
+  "result": {
+    "item": "gtceu:macerator.uv"
+  }
+}

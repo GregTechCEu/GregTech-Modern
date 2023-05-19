@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "forge:circuits/iv"
+    },
+    "M": {
+      "item": "gtceu:hull.iv"
+    },
+    "S": {
+      "tag": "forge:rods/vanadium_gallium"
+    },
+    "V": {
+      "item": "gtceu:conveyor.module.iv"
+    },
+    "W": {
+      "item": "gtceu:cable_single.platinum"
+    },
+    "Z": {
+      "item": "gtceu:wire_quadruple.graphene"
+    }
+  },
+  "pattern": [
+    "VWZ",
+    "WMS",
+    "CWZ"
+  ],
+  "result": {
+    "item": "gtceu:electromagnetic_separator.iv"
+  }
+}

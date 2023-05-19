@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "forge:circuits/uv"
+    },
+    "E": {
+      "item": "gtceu:emitter.uv"
+    },
+    "M": {
+      "item": "gtceu:hull.uv"
+    },
+    "P": {
+      "item": "gtceu:electric.piston.uv"
+    },
+    "W": {
+      "item": "gtceu:cable_single.yttrium_barium_cuprate"
+    }
+  },
+  "pattern": [
+    "PEP",
+    "CMC",
+    "WCW"
+  ],
+  "result": {
+    "item": "gtceu:laser_engraver.uv"
+  }
+}

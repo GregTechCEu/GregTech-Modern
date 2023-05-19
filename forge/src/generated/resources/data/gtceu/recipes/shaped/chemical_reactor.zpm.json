@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "forge:circuits/zpm"
+    },
+    "E": {
+      "item": "gtceu:electric.motor.zpm"
+    },
+    "G": {
+      "item": "gtceu:fluid_pipe_large.polytetrafluoroethylene"
+    },
+    "M": {
+      "item": "gtceu:hull.zpm"
+    },
+    "R": {
+      "tag": "forge:rotors/naquadah_alloy"
+    },
+    "W": {
+      "item": "gtceu:cable_single.vanadium_gallium"
+    }
+  },
+  "pattern": [
+    "GRG",
+    "WEW",
+    "CMC"
+  ],
+  "result": {
+    "item": "gtceu:chemical_reactor.zpm"
+  }
+}

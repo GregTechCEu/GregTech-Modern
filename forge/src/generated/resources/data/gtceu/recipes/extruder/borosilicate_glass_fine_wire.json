@@ -1,0 +1,46 @@
+{
+  "type": "gtceu:extruder",
+  "duration": 160,
+  "inputs": {
+    "item": [
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 1,
+          "fabric:type": "gtceu:sized",
+          "tag": "forge:ingots/borosilicate_glass"
+        }
+      },
+      {
+        "chance": 0.0,
+        "content": {
+          "item": "gtceu:shape.extruder.wire"
+        }
+      }
+    ]
+  },
+  "outputs": {
+    "item": [
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 8,
+          "fabric:type": "gtceu:sized",
+          "ingredient": {
+            "item": "gtceu:wire_fine.borosilicate_glass"
+          }
+        }
+      }
+    ]
+  },
+  "tickInputs": {
+    "eu": [
+      {
+        "chance": 1.0,
+        "content": 96
+      }
+    ]
+  }
+}

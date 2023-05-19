@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "forge:circuits/hv"
+    },
+    "M": {
+      "item": "gtceu:hull.hv"
+    },
+    "P": {
+      "item": "gtceu:electric.piston.hv"
+    },
+    "W": {
+      "item": "gtceu:cable_single.gold"
+    }
+  },
+  "pattern": [
+    "WPW",
+    "CMC",
+    "WPW"
+  ],
+  "result": {
+    "item": "gtceu:forming_press.hv"
+  }
+}

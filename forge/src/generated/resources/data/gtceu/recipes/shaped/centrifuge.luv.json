@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "forge:circuits/luv"
+    },
+    "E": {
+      "item": "gtceu:electric.motor.luv"
+    },
+    "M": {
+      "item": "gtceu:hull.luv"
+    },
+    "W": {
+      "item": "gtceu:cable_single.niobium_titanium"
+    }
+  },
+  "pattern": [
+    "CEC",
+    "WMW",
+    "CEC"
+  ],
+  "result": {
+    "item": "gtceu:centrifuge.luv"
+  }
+}

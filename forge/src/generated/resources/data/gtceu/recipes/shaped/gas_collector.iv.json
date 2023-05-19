@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "forge:circuits/iv"
+    },
+    "F": {
+      "item": "gtceu:fluid_filter"
+    },
+    "H": {
+      "item": "gtceu:hull.iv"
+    },
+    "P": {
+      "item": "gtceu:electric.pump.iv"
+    },
+    "W": {
+      "item": "minecraft:iron_bars"
+    }
+  },
+  "pattern": [
+    "WFW",
+    "PHP",
+    "WCW"
+  ],
+  "result": {
+    "item": "gtceu:gas_collector.iv"
+  }
+}

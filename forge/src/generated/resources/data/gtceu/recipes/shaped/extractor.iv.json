@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "forge:circuits/iv"
+    },
+    "E": {
+      "item": "gtceu:electric.piston.iv"
+    },
+    "G": {
+      "tag": "forge:glass"
+    },
+    "M": {
+      "item": "gtceu:hull.iv"
+    },
+    "P": {
+      "item": "gtceu:electric.pump.iv"
+    },
+    "W": {
+      "item": "gtceu:cable_single.platinum"
+    }
+  },
+  "pattern": [
+    "GCG",
+    "EMP",
+    "WCW"
+  ],
+  "result": {
+    "item": "gtceu:extractor.iv"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "G": {
+      "item": "gtceu:quantumstar"
+    },
+    "P": {
+      "tag": "forge:plates/tungsten_steel"
+    },
+    "R": {
+      "tag": "forge:rods/iridium"
+    },
+    "X": {
+      "tag": "forge:circuits/iv"
+    }
+  },
+  "pattern": [
+    "P G",
+    "PR ",
+    "XPP"
+  ],
+  "result": {
+    "item": "gtceu:sensor.iv"
+  }
+}

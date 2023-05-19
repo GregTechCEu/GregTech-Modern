@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "forge:circuits/hv"
+    },
+    "G": {
+      "tag": "forge:glass"
+    },
+    "M": {
+      "item": "gtceu:hull.hv"
+    },
+    "P": {
+      "item": "gtceu:electric.pump.hv"
+    },
+    "V": {
+      "item": "gtceu:conveyor.module.hv"
+    },
+    "W": {
+      "item": "gtceu:cable_single.gold"
+    }
+  },
+  "pattern": [
+    "VGW",
+    "PGV",
+    "CMC"
+  ],
+  "result": {
+    "item": "gtceu:chemical_bath.hv"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "P": {
+      "tag": "c:tungsten_steel_plates"
+    },
+    "R": {
+      "tag": "c:tungsten_steel_long_rods"
+    },
+    "h": {
+      "tag": "c:hammers"
+    }
+  },
+  "pattern": [
+    "RPR",
+    "PhP",
+    "RPR"
+  ],
+  "result": {
+    "item": "gtceu:crate.tungsten_steel"
+  }
+}

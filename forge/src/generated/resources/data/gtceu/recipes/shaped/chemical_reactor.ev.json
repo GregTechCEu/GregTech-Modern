@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "forge:circuits/ev"
+    },
+    "E": {
+      "item": "gtceu:electric.motor.ev"
+    },
+    "G": {
+      "item": "gtceu:fluid_pipe_large.polyethylene"
+    },
+    "M": {
+      "item": "gtceu:hull.ev"
+    },
+    "R": {
+      "tag": "forge:rotors/stainless_steel"
+    },
+    "W": {
+      "item": "gtceu:cable_single.aluminium"
+    }
+  },
+  "pattern": [
+    "GRG",
+    "WEW",
+    "CMC"
+  ],
+  "result": {
+    "item": "gtceu:chemical_reactor.ev"
+  }
+}

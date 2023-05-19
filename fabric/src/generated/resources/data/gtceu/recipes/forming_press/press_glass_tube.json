@@ -1,0 +1,46 @@
+{
+  "type": "gtceu:forming_press",
+  "duration": 80,
+  "inputs": {
+    "item": [
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 1,
+          "fabric:type": "gtceu:sized",
+          "tag": "c:glass_dusts"
+        }
+      },
+      {
+        "chance": 0.0,
+        "content": {
+          "item": "gtceu:shape.mold.ball"
+        }
+      }
+    ]
+  },
+  "outputs": {
+    "item": [
+      {
+        "chance": 1.0,
+        "content": {
+          "type": "gtceu:sized",
+          "count": 1,
+          "fabric:type": "gtceu:sized",
+          "ingredient": {
+            "item": "gtceu:component.glass.tube"
+          }
+        }
+      }
+    ]
+  },
+  "tickInputs": {
+    "eu": [
+      {
+        "chance": 1.0,
+        "content": 7
+      }
+    ]
+  }
+}

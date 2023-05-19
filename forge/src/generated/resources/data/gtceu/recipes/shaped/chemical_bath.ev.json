@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "forge:circuits/ev"
+    },
+    "G": {
+      "tag": "forge:glass"
+    },
+    "M": {
+      "item": "gtceu:hull.ev"
+    },
+    "P": {
+      "item": "gtceu:electric.pump.ev"
+    },
+    "V": {
+      "item": "gtceu:conveyor.module.ev"
+    },
+    "W": {
+      "item": "gtceu:cable_single.aluminium"
+    }
+  },
+  "pattern": [
+    "VGW",
+    "PGV",
+    "CMC"
+  ],
+  "result": {
+    "item": "gtceu:chemical_bath.ev"
+  }
+}

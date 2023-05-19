@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "item": "gtceu:wire_quadruple.nichrome"
+    },
+    "E": {
+      "tag": "forge:circuits/ev"
+    },
+    "M": {
+      "item": "gtceu:hull.ev"
+    },
+    "P": {
+      "item": "gtceu:fluid_pipe_normal.titanium"
+    },
+    "X": {
+      "item": "gtceu:electric.piston.ev"
+    }
+  },
+  "pattern": [
+    "CCE",
+    "XMP",
+    "CCE"
+  ],
+  "result": {
+    "item": "gtceu:extruder.ev"
+  }
+}

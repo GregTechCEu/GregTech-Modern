@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "forge:circuits/hv"
+    },
+    "E": {
+      "item": "gtceu:electric.motor.hv"
+    },
+    "M": {
+      "item": "gtceu:hull.hv"
+    },
+    "P": {
+      "item": "gtceu:fluid_pipe_normal.stainless_steel"
+    },
+    "R": {
+      "tag": "forge:rotors/steel"
+    },
+    "W": {
+      "item": "gtceu:cable_single.gold"
+    }
+  },
+  "pattern": [
+    "PCP",
+    "RMR",
+    "EWE"
+  ],
+  "result": {
+    "item": "gtceu:steam_turbine.hv"
+  }
+}

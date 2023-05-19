@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "forge:circuits/iv"
+    },
+    "E": {
+      "item": "gtceu:electric.motor.iv"
+    },
+    "M": {
+      "item": "gtceu:hull.iv"
+    },
+    "W": {
+      "item": "gtceu:cable_single.platinum"
+    }
+  },
+  "pattern": [
+    "CEC",
+    "WMW",
+    "CEC"
+  ],
+  "result": {
+    "item": "gtceu:centrifuge.iv"
+  }
+}

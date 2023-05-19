@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "P": {
+      "tag": "minecraft:planks"
+    },
+    "R": {
+      "tag": "c:iron_screws"
+    },
+    "s": {
+      "tag": "c:saws"
+    }
+  },
+  "pattern": [
+    "RPR",
+    "PsP",
+    "RPR"
+  ],
+  "result": {
+    "item": "gtceu:crate.wood"
+  }
+}

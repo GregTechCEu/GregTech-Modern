@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "A": {
+      "item": "gtceu:robot.arm.iv"
+    },
+    "C": {
+      "tag": "forge:circuits/iv"
+    },
+    "M": {
+      "item": "gtceu:hull.iv"
+    },
+    "V": {
+      "item": "gtceu:conveyor.module.iv"
+    },
+    "W": {
+      "item": "gtceu:cable_single.platinum"
+    }
+  },
+  "pattern": [
+    "ACA",
+    "VMV",
+    "WCW"
+  ],
+  "result": {
+    "item": "gtceu:assembler.iv"
+  }
+}
