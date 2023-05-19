@@ -25,6 +25,7 @@ import com.gregtechceu.gtlib.GTLib;
 import com.gregtechceu.gtlib.side.fluid.FluidStack;
 import com.gregtechceu.gtlib.utils.NBTToJsonConverter;
 import dev.latvian.mods.kubejs.recipe.*;
+import dev.latvian.mods.rhino.util.HideFromJS;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -50,8 +51,14 @@ public class GTRecipeBuilderJS extends RecipeJS {
 
     @Override
     public void create(RecipeArguments args) {
-        this.id = ResourceLocation.tryParse(args.getString(0, null));
+        this.id = ResourceLocation.tryParse(args.getString(0, this.type.toString() + ":kjs_" + this.getUniqueId()));
         backingBuilder = GTRecipeTypes.get(this.type.toString()).recipeBuilder(this.getOrCreateId());
+    }
+
+    @HideFromJS
+    @Override
+    public RecipeJS id(ResourceLocation _id) {
+        return super.id(_id);
     }
 
     @Override

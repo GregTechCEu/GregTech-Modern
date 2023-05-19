@@ -17,6 +17,7 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtlib.side.fluid.FluidStack;
+import dev.latvian.mods.rhino.util.HideFromJS;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
@@ -967,6 +968,7 @@ public class Material implements Comparable<Material> {
             return this;
         }
 
+        @HideFromJS
         public Material buildAndRegister() {
             materialInfo.componentList = ImmutableList.copyOf(composition);
             var mat = new Material(materialInfo, properties, flags);
