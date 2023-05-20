@@ -118,8 +118,6 @@ public record MaterialIconType(String name) {
         //noinspection ConstantConditions
         if (!iconSet.isRootIconset && Platform.isClient()) { // check minecraft for null for CI environments
             while (!iconSet.isRootIconset) {
-                //URL url = MaterialIconType.class.getResource(String.format("/assets/%s/textures/block/material_sets/%s/%s.png", GTCEu.MOD_ID, iconSet.name, this.name));
-                //if (url != null) break;
                 ResourceLocation location = GTCEu.id(String.format("textures/block/material_sets/%s/%s.png", iconSet.name, this.name));
                 if (doesResourceExist(location)) break;
                 iconSet = iconSet.parentIconset;
@@ -144,8 +142,6 @@ public record MaterialIconType(String name) {
         //noinspection ConstantConditions
         if (!iconSet.isRootIconset && Platform.isClient()) { // check minecraft for null for CI environments
             while (!iconSet.isRootIconset) {
-                //URL url = MaterialIconType.class.getResource(String.format("/assets/%s/models/item/material_sets/%s/%s.json", GTCEu.MOD_ID, iconSet.name, this.name));
-                //if (url != null) break;
                 ResourceLocation location = GTCEu.id(String.format("models/item/material_sets/%s/%s.json", iconSet.name, this.name));
                 if (doesResourceExist(location)) break;
                 iconSet = iconSet.parentIconset;
@@ -162,16 +158,12 @@ public record MaterialIconType(String name) {
      * @param resource the location of the resource, formatted with the root dir and file extension
      * @return if the resource exists
      */
+    @SuppressWarnings("ConstantValue")
     @Environment(EnvType.CLIENT)
     private static boolean doesResourceExist(@Nonnull ResourceLocation resource) {
+        if (Minecraft.getInstance() == null) return false; // can be null in CI environments
         ResourceManager manager = Minecraft.getInstance().getResourceManager();
-        /*if (manager.getResource(resource).isEmpty() && manager.listPacks().noneMatch(pack -> pack.hasResource(PackType.CLIENT_RESOURCES, resource))) {
-            Minecraft.getInstance().getResourcePackRepository().reload();
-            return Minecraft.getInstance().getResourcePackRepository().openAllSelected().stream().anyMatch(pack -> pack.hasResource(PackType.CLIENT_RESOURCES, resource));
-        }
-        return false;*/
-        //noinspection ConstantValue
-        return manager != null && manager.getResource(resource).isPresent();
+        return manager != null && manager.getResource(resource).isPresent(); // Can be null on fabric, no clue how, it just is on startup
     }
     @Override
     public String toString() {

@@ -49,7 +49,7 @@ public abstract class ModelBakeryMixin {
      * register additional models as what forge does
      */
     @Redirect(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/profiling/ProfilerFiller;popPush(Ljava/lang/String;)V", ordinal = 4))
-    private void gtceu$injectModelBakery(ProfilerFiller profiler, String name) {
+    private void gtceu$injectModelBakery(ProfilerFiller profiler, String name) { // Have to use a redirect here cuz it's to constructor and mixin doesn't like that much
         for (Material material : GTRegistries.MATERIALS.values()) {
             MaterialIconSet iconSet = material.getMaterialIconSet();
 
