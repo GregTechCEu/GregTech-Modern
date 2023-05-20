@@ -319,7 +319,7 @@ public class GTMachines {
     public final static MachineDefinition[] ITEM_IMPORT_BUS = registerTieredMachines("item_bus.import",
             (holder, tier) -> new ItemBusPartMachine(holder, tier, IO.IN),
             (tier, builder) -> builder
-                    .langValue("Item Import Bus " + VNF[tier])
+                    .langValue(VNF[tier] + " Import Bus")
                     .rotationState(RotationState.ALL)
                     .abilities(tier == 0 ? new PartAbility[] {PartAbility.IMPORT_ITEMS, PartAbility.STEAM_IMPORT_ITEMS} : new PartAbility[]{PartAbility.IMPORT_ITEMS})
                     .overlayTieredHullRenderer("item_bus.import")
@@ -331,7 +331,7 @@ public class GTMachines {
     public final static MachineDefinition[] ITEM_EXPORT_BUS = registerTieredMachines("item_bus.export",
             (holder, tier) -> new ItemBusPartMachine(holder, tier, IO.OUT),
             (tier, builder) -> builder
-                    .langValue("Item Export Bus " + VNF[tier])
+                    .langValue(VNF[tier] + " Output Bus")
                     .rotationState(RotationState.ALL)
                     .abilities(tier == 0 ? new PartAbility[] {PartAbility.EXPORT_ITEMS, PartAbility.STEAM_EXPORT_ITEMS} : new PartAbility[]{PartAbility.EXPORT_ITEMS})
                     .overlayTieredHullRenderer("item_bus.export")
@@ -343,7 +343,7 @@ public class GTMachines {
     public final static MachineDefinition[] FLUID_IMPORT_HATCH = registerTieredMachines("fluid_hatch.import",
             (holder, tier) -> new FluidHatchPartMachine(holder, tier, IO.IN),
             (tier, builder) -> builder
-                    .langValue("Fluid Import Hatch " + VNF[tier])
+                    .langValue(VNF[tier] + " Input Hatch")
                     .rotationState(RotationState.ALL)
                     .abilities(PartAbility.IMPORT_FLUIDS)
                     .overlayTieredHullRenderer("fluid_hatch.import")
@@ -355,7 +355,7 @@ public class GTMachines {
     public final static MachineDefinition[] FLUID_EXPORT_HATCH = registerTieredMachines("fluid_hatch.export",
             (holder, tier) -> new FluidHatchPartMachine(holder, tier, IO.OUT),
             (tier, builder) -> builder
-                    .langValue("Fluid Export Hatch " + VNF[tier])
+                    .langValue(VNF[tier] + " Output Hatch")
                     .rotationState(RotationState.ALL)
                     .itemColor((itemStack, index) -> index == 2 ? GTValues.VC[tier] : -1)
                     .abilities(PartAbility.EXPORT_FLUIDS)
@@ -449,14 +449,14 @@ public class GTMachines {
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.STEAM_IMPORT_ITEMS)
             .overlaySteamHullRenderer("item_bus.import")
-            .langValue("Item Import Bus (Steam)")
+            .langValue("Import Bus (Steam)")
             .register();
 
     public final static MachineDefinition STEAM_EXPORT_BUS = REGISTRATE.machine("item_bus.export.steam", holder -> new SteamItemBusPartMachine(holder, IO.OUT))
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.STEAM_EXPORT_ITEMS)
             .overlaySteamHullRenderer("item_bus.export")
-            .langValue("Item Export Bus (Steam)")
+            .langValue("Output Bus (Steam)")
             .register();
 
     public final static MachineDefinition STEAM_HATCH = REGISTRATE.machine("steam_hatch", SteamHatchPartMachine::new)
