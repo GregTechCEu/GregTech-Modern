@@ -135,7 +135,7 @@ public class GTBlocks {
                     var oreTag = ore.getKey();
                     var entry = REGISTRATE.block("%s_%s".formatted(FormattingUtil.toLowerCaseUnder(oreTag.name), material.getName()),
                                     properties -> new MaterialBlock(properties, oreTag, material, GTLib.isClient() ? new OreBlockRenderer(ore.getValue(),
-                                            Objects.requireNonNull(oreTag.materialIconType()).getBlockTexturePath(material.getMaterialIconSet()),
+                                            Objects.requireNonNull(oreTag.materialIconType()).getBlockTexturePath(material.getMaterialIconSet(), true),
                                             oreProperty.isEmissive()) : IRenderer.EMPTY))
                             .initialProperties(() -> Blocks.IRON_BLOCK)
                             .transform(unificationBlock(oreTag, material))

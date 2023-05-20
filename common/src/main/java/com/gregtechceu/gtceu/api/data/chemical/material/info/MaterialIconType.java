@@ -107,9 +107,11 @@ public record MaterialIconType(String name) {
     }
 
     @Nonnull
-    public ResourceLocation getBlockTexturePath(@Nonnull MaterialIconSet materialIconSet) {
-        if (BLOCK_TEXTURE_CACHE.contains(this, materialIconSet)) {
-            return BLOCK_TEXTURE_CACHE.get(this, materialIconSet);
+    public ResourceLocation getBlockTexturePath(@Nonnull MaterialIconSet materialIconSet, boolean doReadCache) {
+        if (doReadCache) {
+            if (BLOCK_TEXTURE_CACHE.contains(this, materialIconSet)) {
+                return BLOCK_TEXTURE_CACHE.get(this, materialIconSet);
+            }
         }
 
         MaterialIconSet iconSet = materialIconSet;
@@ -131,9 +133,11 @@ public record MaterialIconType(String name) {
     }
 
     @Nonnull
-    public ResourceLocation getItemModelPath(@Nonnull MaterialIconSet materialIconSet) {
-        if (ITEM_MODEL_CACHE.contains(this, materialIconSet)) {
-            return ITEM_MODEL_CACHE.get(this, materialIconSet);
+    public ResourceLocation getItemModelPath(@Nonnull MaterialIconSet materialIconSet, boolean doReadCache) {
+        if (doReadCache) {
+            if (ITEM_MODEL_CACHE.contains(this, materialIconSet)) {
+                return ITEM_MODEL_CACHE.get(this, materialIconSet);
+            }
         }
 
         MaterialIconSet iconSet = materialIconSet;

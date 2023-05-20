@@ -16,6 +16,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 
 import javax.annotation.Nullable;
+import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.function.Consumer;
 
@@ -28,18 +29,14 @@ public class TagPrefixItemRenderer extends IModelRenderer {
     public static final Table<MaterialIconType, MaterialIconSet, TagPrefixItemRenderer> MODELS = Tables.newCustomTable(new HashMap<>(), HashMap::new);
 
     private ResourceLocation modelLocation;
-    private MaterialIconType type;
-    private MaterialIconSet iconSet;
 
     private TagPrefixItemRenderer(MaterialIconType type, MaterialIconSet iconSet) {
-        super(type.getItemModelPath(iconSet));
-        this.modelLocation = GTCEu.id(String.format("item/material_sets/%s/%s", iconSet.name, type.name()));
-        this.type = type;
-        this.iconSet = iconSet;
+        super(type.getItemModelPath(iconSet, true));
+        this.modelLocation = type.getItemModelPath(iconSet, true);
     }
 
     public void setModelLocation(ResourceLocation newModelLocation) {
-        this.modelLocation = this.type.getItemModelPath(iconSet);
+        this.modelLocation = newModelLocation;
         this.itemModel = null;
     }
 
@@ -88,6 +85,6 @@ public class TagPrefixItemRenderer extends IModelRenderer {
     @Override
     @Environment(EnvType.CLIENT)
     public void onAdditionalModel(Consumer<ResourceLocation> registry) {
-        registry.accept(modelLocation);
+        //registry.accept(modelLocation);
     }
 }
