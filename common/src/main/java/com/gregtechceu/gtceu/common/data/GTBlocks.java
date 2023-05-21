@@ -22,8 +22,6 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.pipelike.cable.Insulation;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
-import com.gregtechceu.gtlib.GTLib;
-import com.gregtechceu.gtlib.client.renderer.IRenderer;
 import com.tterrag.registrate.builders.BlockBuilder;
 import com.tterrag.registrate.providers.ProviderType;
 import com.tterrag.registrate.providers.loot.RegistrateBlockLootTables;
@@ -134,9 +132,9 @@ public class GTBlocks {
                 for (var ore : TagPrefix.ORES.entrySet()) {
                     var oreTag = ore.getKey();
                     var entry = REGISTRATE.block("%s_%s".formatted(FormattingUtil.toLowerCaseUnder(oreTag.name), material.getName()),
-                                    properties -> new MaterialBlock(properties, oreTag, material, GTLib.isClient() ? new OreBlockRenderer(ore.getValue(),
+                                    properties -> new MaterialBlock(properties, oreTag, material, new OreBlockRenderer(ore.getValue(),
                                             Objects.requireNonNull(oreTag.materialIconType()).getBlockTexturePath(material.getMaterialIconSet(), true),
-                                            oreProperty.isEmissive()) : IRenderer.EMPTY))
+                                            oreProperty.isEmissive())))
                             .initialProperties(() -> Blocks.IRON_BLOCK)
                             .transform(unificationBlock(oreTag, material))
                             .addLayer(() -> RenderType::cutoutMipped)

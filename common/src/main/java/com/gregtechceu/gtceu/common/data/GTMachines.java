@@ -956,7 +956,7 @@ public class GTMachines {
     }
 
     public static Component explosion() {
-        if (ConfigHolder.machines.doTerrainExplosion)
+        if (ConfigHolder.INSTANCE.machines.doTerrainExplosion)
             return Component.translatable("gtceu.universal.tooltip.terrain_resist");
         return null;
     }

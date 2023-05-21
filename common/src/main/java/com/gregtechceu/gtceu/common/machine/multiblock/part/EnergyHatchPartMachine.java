@@ -68,7 +68,7 @@ public class EnergyHatchPartMachine extends TieredIOPartMachine implements IExpl
     public void onLoad() {
         super.onLoad();
         // if machine need do check explosion conditions
-        if (ConfigHolder.machines.doTerrainExplosion && shouldWeatherOrTerrainExplosion()) {
+        if (ConfigHolder.INSTANCE.machines.doTerrainExplosion && shouldWeatherOrTerrainExplosion()) {
             energyListener = energyContainer.addChangedListener(this::updateExplosionSubscription);
             updateExplosionSubscription();
         }
@@ -88,7 +88,7 @@ public class EnergyHatchPartMachine extends TieredIOPartMachine implements IExpl
     //////////////////////////////////////
 
     protected void updateExplosionSubscription() {
-        if (ConfigHolder.machines.doTerrainExplosion && shouldWeatherOrTerrainExplosion() && energyContainer.getEnergyStored() > 0) {
+        if (ConfigHolder.INSTANCE.machines.doTerrainExplosion && shouldWeatherOrTerrainExplosion() && energyContainer.getEnergyStored() > 0) {
             explosionSubs = subscribeServerTick(explosionSubs, this::checkExplosion);
         } else if (explosionSubs != null) {
             explosionSubs.unsubscribe();

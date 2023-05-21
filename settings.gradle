@@ -35,6 +35,7 @@ dependencyResolutionManagement {
         def kjsVersion = "1902.6.0-build.142"
         def forgeConfigApiVersion = "4.2.11"
         def nightConfigVersion = "3.6.5"
+        def configurationFabricFile = "4104224"
 
         // Forge
         def forgeVersion = "43.2.0"
@@ -43,6 +44,7 @@ dependencyResolutionManagement {
         def flywheelForgeVersion = "0.6.8.a-14"
         def topForgeVersion = "1.19-6.2.0-6"
         def jadeForgeVersion = "8.8.1"
+        def configurationForgeFile = "4519560"
 
         // Libs
         def quiltMappingsVersion = "21"  // https://lambdaurora.dev/tools/import_quilt.html
@@ -108,6 +110,9 @@ dependencyResolutionManagement {
             library("nightConfigCore", "com.electronwill.night-config", "core").versionRef(nightConfigCore)
             def nightConfigToml = version("nightConfigToml", nightConfigVersion)
             library("nightConfigToml", "com.electronwill.night-config", "toml").versionRef(nightConfigToml)
+
+            def configuration = version("configuration", configurationFabricFile)
+            library("configuration", "curse.maven", "configuration-444699").versionRef(configuration)
         }
 
         forge {
@@ -145,6 +150,9 @@ dependencyResolutionManagement {
 
             def kubejs = version("kubejs", kjsVersion)
             library("kubejs", "dev.latvian.mods", "kubejs-forge").versionRef(kubejs)
+
+            def configuration = version("configuration", configurationForgeFile)
+            library("configuration", "curse.maven", "configuration-444699").versionRef(configuration)
         }
 
         libs {

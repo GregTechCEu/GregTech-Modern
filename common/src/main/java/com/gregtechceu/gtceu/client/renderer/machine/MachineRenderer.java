@@ -74,10 +74,13 @@ public class MachineRenderer extends CTMModelRenderer implements ICoverableRende
         if (stack.getItem() instanceof MetaMachineItem machineItem) {
             IItemRendererProvider.disabled.set(true);
             Minecraft.getInstance().getItemRenderer().render(stack, transformType, leftHand, matrixStack, buffer, combinedLight, combinedOverlay,
-                    (ItemBakedModel) (state, direction, random) -> {
-                        List<BakedQuad> quads = new LinkedList<>();
-                        renderMachine(quads, machineItem.getDefinition(), null, Direction.NORTH, direction, random, direction, BlockModelRotation.X0_Y0);
-                        return quads;
+                    new ItemBakedModel() {
+                        @Override
+                        public List<BakedQuad> getQuads(@org.jetbrains.annotations.Nullable BlockState state, @org.jetbrains.annotations.Nullable Direction direction, RandomSource random) {
+                            List<BakedQuad> quads = new LinkedList<>();
+                            renderMachine(quads, machineItem.getDefinition(), null, Direction.NORTH, direction, random, direction, BlockModelRotation.X0_Y0);
+                            return quads;
+                        }
                     });
             IItemRendererProvider.disabled.set(false);
         }

@@ -25,7 +25,7 @@ public class OverlaySteamMachineRenderer extends SteamHullMachineRenderer implem
     protected IModelRenderer overlayModel;
 
     public OverlaySteamMachineRenderer(ResourceLocation overlayModel) {
-        super(ConfigHolder.machines.steelSteamMultiblocks ? "steel" : "bronze", GTCEu.id("block/machine/hull_machine"));
+        super(ConfigHolder.INSTANCE.machines.steelSteamMultiblocks ? "steel" : "bronze", GTCEu.id("block/machine/hull_machine"));
         this.overlayModel = new IModelRenderer(overlayModel);
     }
 

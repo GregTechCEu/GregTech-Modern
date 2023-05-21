@@ -25,6 +25,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -65,12 +66,15 @@ public class OreBlockRenderer extends BlockStateRenderer {
         super.renderItem(stack, transformType, leftHand, matrixStack, buffer, combinedLight, combinedOverlay, model);
         IItemRendererProvider.disabled.set(true);
         Minecraft.getInstance().getItemRenderer().render(stack, transformType, leftHand, matrixStack, buffer, combinedLight, combinedOverlay,
-                (ItemBakedModel) (state, direction, random) -> {
-                    List<BakedQuad> quads = new LinkedList<>();
-                    if (direction != null) {
-                        quads.add(FaceQuad.bakeFace(direction, ModelFactory.getBlockSprite(overlay), BlockModelRotation.X0_Y0, 1, emissive ? 15 : 0, true, !emissive));
+                new ItemBakedModel() {
+                    @Override
+                    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction direction, RandomSource random) {
+                        List<BakedQuad> quads = new LinkedList<>();
+                        if (direction != null) {
+                            quads.add(FaceQuad.bakeFace(direction, ModelFactory.getBlockSprite(overlay), BlockModelRotation.X0_Y0, 1, emissive ? 15 : 0, true, !emissive));
+                        }
+                        return quads;
                     }
-                    return quads;
                 });
         IItemRendererProvider.disabled.set(false);
     }

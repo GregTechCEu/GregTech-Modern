@@ -131,6 +131,10 @@ dependencies {
 
     // KJS
     modImplementation forge.kubejs
+
+    // Configuration
+    modImplementation(forge.configuration)
+    include(forge.configuration)
 }
 
 processResources {

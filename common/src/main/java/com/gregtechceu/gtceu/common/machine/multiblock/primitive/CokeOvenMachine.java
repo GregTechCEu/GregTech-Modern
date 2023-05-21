@@ -72,7 +72,7 @@ public class CokeOvenMachine extends PrimitiveWorkableMachine implements IUIMach
                 else z -= 0.52F;
                 x += horizontalOffset;
             }
-            if (ConfigHolder.machines.machineSounds && GTValues.RNG.nextDouble() < 0.1) {
+            if (ConfigHolder.INSTANCE.machines.machineSounds && GTValues.RNG.nextDouble() < 0.1) {
                 getLevel().playLocalSound(x, y, z, SoundEvents.FURNACE_FIRE_CRACKLE, SoundSource.BLOCKS, 1.0F, 1.0F, false);
             }
             getLevel().addParticle(ParticleTypes.LARGE_SMOKE, x, y, z, 0, 0, 0);

@@ -36,19 +36,19 @@ public class RecipeAddition {
         nerfWoodCrafting(provider);
         harderBrickRecipes(provider);
         steelSteamMultiblocks(provider);
-        if (ConfigHolder.recipes.hardWoodRecipes) hardWoodRecipes(provider);
-        if (ConfigHolder.recipes.hardIronRecipes) hardIronRecipes(provider);
-        if (ConfigHolder.recipes.hardGlassRecipes) hardGlassRecipes(provider);
-        if (ConfigHolder.recipes.nerfPaperCrafting) nerfPaperCrafting(provider);
-        if (ConfigHolder.recipes.hardAdvancedIronRecipes) hardAdvancedIronRecipes(provider);
-        if (ConfigHolder.recipes.hardDyeRecipes) hardDyeRecipes(provider);
-        if (ConfigHolder.recipes.harderCharcoalRecipe) harderCharcoalRecipes(provider);
-        if (ConfigHolder.recipes.flintAndSteelRequireSteel) flintAndSteelRequireSteel(provider);
-        if (ConfigHolder.recipes.removeVanillaBlockRecipes) removeVanillaBlockRecipes(provider);
+        if (ConfigHolder.INSTANCE.recipes.hardWoodRecipes) hardWoodRecipes(provider);
+        if (ConfigHolder.INSTANCE.recipes.hardIronRecipes) hardIronRecipes(provider);
+        if (ConfigHolder.INSTANCE.recipes.hardGlassRecipes) hardGlassRecipes(provider);
+        if (ConfigHolder.INSTANCE.recipes.nerfPaperCrafting) nerfPaperCrafting(provider);
+        if (ConfigHolder.INSTANCE.recipes.hardAdvancedIronRecipes) hardAdvancedIronRecipes(provider);
+        if (ConfigHolder.INSTANCE.recipes.hardDyeRecipes) hardDyeRecipes(provider);
+        if (ConfigHolder.INSTANCE.recipes.harderCharcoalRecipe) harderCharcoalRecipes(provider);
+        if (ConfigHolder.INSTANCE.recipes.flintAndSteelRequireSteel) flintAndSteelRequireSteel(provider);
+        if (ConfigHolder.INSTANCE.recipes.removeVanillaBlockRecipes) removeVanillaBlockRecipes(provider);
     }
 
     private static void steelSteamMultiblocks(Consumer<FinishedRecipe> provider) {
-        if (ConfigHolder.machines.steelSteamMultiblocks) {
+        if (ConfigHolder.INSTANCE.machines.steelSteamMultiblocks) {
             VanillaRecipeHelper.addShapedRecipe(provider, true, "steam_oven", GTMachines.STEAM_OVEN.asStack(), "CGC", "FMF", "CGC", 'F', GTBlocks.FIREBOX_STEEL.asStack(), 'C', GTBlocks.CASING_STEEL_SOLID.asStack(), 'M', GTMachines.STEAM_FURNACE.right().asStack(), 'G', new UnificationEntry(TagPrefix.gear, GTMaterials.Invar));
             VanillaRecipeHelper.addShapedRecipe(provider, true, "steam_grinder", GTMachines.STEAM_GRINDER.asStack(), "CGC", "CFC", "CGC", 'G', new UnificationEntry(TagPrefix.gear, GTMaterials.Potin), 'F', GTMachines.STEAM_MACERATOR.right().asStack(), 'C', GTBlocks.CASING_STEEL_SOLID.asStack());
             VanillaRecipeHelper.addShapedRecipe(provider, true, "steam_hatch", GTMachines.STEAM_HATCH.asStack(), "BPB", "BTB", "BPB", 'B', new UnificationEntry(TagPrefix.plate, GTMaterials.Steel), 'P', new UnificationEntry(TagPrefix.pipeNormalFluid, GTMaterials.Steel), 'T', GTMachines.STEEL_DRUM.asStack());
@@ -64,13 +64,13 @@ public class RecipeAddition {
     }
 
     private static void disableManualCompression(Consumer<FinishedRecipe> provider) {
-        if (!ConfigHolder.recipes.disableManualCompression) {
+        if (!ConfigHolder.INSTANCE.recipes.disableManualCompression) {
             VanillaRecipeHelper.addShapelessRecipe(provider, "nether_quartz_block_to_nether_quartz", new ItemStack(Items.QUARTZ, 4), Blocks.QUARTZ_BLOCK);
         }
     }
 
     private static void harderBrickRecipes(Consumer<FinishedRecipe> provider) {
-        if (ConfigHolder.recipes.harderBrickRecipes) {
+        if (ConfigHolder.INSTANCE.recipes.harderBrickRecipes) {
             VanillaRecipeHelper.addShapedRecipe(provider, "brick_from_water", new ItemStack(Blocks.BRICKS, 2), "BBB", "BWB", "BBB",
                     'B', new ItemStack(Items.BRICK),
                     'W', new ItemStack(Items.WATER_BUCKET));
@@ -100,7 +100,7 @@ public class RecipeAddition {
     }
 
     private static void nerfWoodCrafting(Consumer<FinishedRecipe> provider) {
-        if (ConfigHolder.recipes.nerfWoodCrafting) {
+        if (ConfigHolder.INSTANCE.recipes.nerfWoodCrafting) {
             VanillaRecipeHelper.addShapedRecipe(provider, "stick_saw", new ItemStack(Items.STICK, 4), "s", "P", "P", 'P', ItemTags.PLANKS);
             VanillaRecipeHelper.addShapedRecipe(provider, "stick_normal", new ItemStack(Items.STICK, 2), "P", "P", 'P', ItemTags.PLANKS);
             VanillaRecipeHelper.addShapedRecipe(provider, "treated_wood_stick_saw", ChemicalHelper.get(rod, TreatedWood, 4), "s", "P", "P", 'P', GTBlocks.TREATED_WOOD_PLANK.asStack());
@@ -357,7 +357,7 @@ public class RecipeAddition {
     }
 
     private static void hardRedstoneRecipes(Consumer<FinishedRecipe> provider) {
-        if (ConfigHolder.recipes.hardRedstoneRecipes) {
+        if (ConfigHolder.INSTANCE.recipes.hardRedstoneRecipes) {
             VanillaRecipeHelper.addShapedRecipe(provider, "dispenser", new ItemStack(Blocks.DISPENSER), "CRC", "STS", "GAG",
                     'C', ItemTags.STONE_CRAFTING_MATERIALS,
                     'R', new UnificationEntry(TagPrefix.ring, GTMaterials.Iron),
@@ -865,7 +865,7 @@ public class RecipeAddition {
     }
 
     private static void hardToolArmorRecipes(Consumer<FinishedRecipe> provider) {
-        if (ConfigHolder.recipes.hardToolArmorRecipes) {
+        if (ConfigHolder.INSTANCE.recipes.hardToolArmorRecipes) {
             createShovelRecipe(provider, "iron_shovel", new ItemStack(Items.IRON_SHOVEL), GTMaterials.Iron);
             createPickaxeRecipe(provider, "iron_pickaxe", new ItemStack(Items.IRON_PICKAXE), GTMaterials.Iron);
             createAxeRecipe(provider, "iron_axe", new ItemStack(Items.IRON_AXE), GTMaterials.Iron);
@@ -972,7 +972,7 @@ public class RecipeAddition {
     }
 
     private static void harderRods(Consumer<FinishedRecipe> provider) {
-        if (ConfigHolder.recipes.harderRods) {
+        if (ConfigHolder.INSTANCE.recipes.harderRods) {
             LATHE_RECIPES.recipeBuilder("stone_rod_from_cobblestone")
                     .inputItems(ItemTags.STONE_CRAFTING_MATERIALS)
                     .outputItems(rod, Stone, 1)
@@ -1002,7 +1002,7 @@ public class RecipeAddition {
     }
 
     private static void hardMiscRecipes(Consumer<FinishedRecipe> provider) {
-        if (ConfigHolder.recipes.hardMiscRecipes) {
+        if (ConfigHolder.INSTANCE.recipes.hardMiscRecipes) {
             VanillaRecipeHelper.addShapedRecipe(provider, "beacon", new ItemStack(Blocks.BEACON), "GLG", "GSG", "OOO",
                     'G', new ItemStack(Blocks.GLASS),
                     'L', new UnificationEntry(TagPrefix.lens, GTMaterials.NetherStar),
