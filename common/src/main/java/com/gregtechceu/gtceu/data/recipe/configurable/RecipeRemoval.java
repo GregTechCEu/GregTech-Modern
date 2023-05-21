@@ -14,21 +14,21 @@ public class RecipeRemoval {
 
     public static void init(Consumer<ResourceLocation> registry) {
         generalRemovals(registry);
-        if (ConfigHolder.recipes.disableManualCompression) disableManualCompression(registry);
-        if (ConfigHolder.recipes.harderBrickRecipes) harderBrickRecipes(registry);
-        if (ConfigHolder.recipes.nerfWoodCrafting) nerfWoodCrafting(registry);
-        if (ConfigHolder.recipes.hardWoodRecipes) hardWoodRecipes(registry);
-        if (ConfigHolder.recipes.hardIronRecipes) hardIronRecipes(registry);
-        if (ConfigHolder.recipes.hardRedstoneRecipes) hardRedstoneRecipes(registry);
-        if (ConfigHolder.recipes.hardToolArmorRecipes) hardToolArmorRecipes(registry);
-        if (ConfigHolder.recipes.hardMiscRecipes) hardMiscRecipes(registry);
-        if (ConfigHolder.recipes.hardGlassRecipes) hardGlassRecipes(registry);
-        if (ConfigHolder.recipes.nerfPaperCrafting) nerfPaperCrafting(registry);
-        if (ConfigHolder.recipes.hardAdvancedIronRecipes) hardAdvancedIronRecipes(registry);
-        if (ConfigHolder.recipes.hardDyeRecipes) hardDyeRecipes(registry);
-        if (ConfigHolder.recipes.harderCharcoalRecipe) harderCharcoalRecipes(registry);
-        if (ConfigHolder.recipes.flintAndSteelRequireSteel) flintAndSteelRequireSteel(registry);
-        if (ConfigHolder.recipes.removeVanillaBlockRecipes) removeVanillaBlockRecipes(registry);
+        if (ConfigHolder.INSTANCE.recipes.disableManualCompression) disableManualCompression(registry);
+        if (ConfigHolder.INSTANCE.recipes.harderBrickRecipes) harderBrickRecipes(registry);
+        if (ConfigHolder.INSTANCE.recipes.nerfWoodCrafting) nerfWoodCrafting(registry);
+        if (ConfigHolder.INSTANCE.recipes.hardWoodRecipes) hardWoodRecipes(registry);
+        if (ConfigHolder.INSTANCE.recipes.hardIronRecipes) hardIronRecipes(registry);
+        if (ConfigHolder.INSTANCE.recipes.hardRedstoneRecipes) hardRedstoneRecipes(registry);
+        if (ConfigHolder.INSTANCE.recipes.hardToolArmorRecipes) hardToolArmorRecipes(registry);
+        if (ConfigHolder.INSTANCE.recipes.hardMiscRecipes) hardMiscRecipes(registry);
+        if (ConfigHolder.INSTANCE.recipes.hardGlassRecipes) hardGlassRecipes(registry);
+        if (ConfigHolder.INSTANCE.recipes.nerfPaperCrafting) nerfPaperCrafting(registry);
+        if (ConfigHolder.INSTANCE.recipes.hardAdvancedIronRecipes) hardAdvancedIronRecipes(registry);
+        if (ConfigHolder.INSTANCE.recipes.hardDyeRecipes) hardDyeRecipes(registry);
+        if (ConfigHolder.INSTANCE.recipes.harderCharcoalRecipe) harderCharcoalRecipes(registry);
+        if (ConfigHolder.INSTANCE.recipes.flintAndSteelRequireSteel) flintAndSteelRequireSteel(registry);
+        if (ConfigHolder.INSTANCE.recipes.removeVanillaBlockRecipes) removeVanillaBlockRecipes(registry);
     }
 
     private static void generalRemovals(Consumer<ResourceLocation> registry) {

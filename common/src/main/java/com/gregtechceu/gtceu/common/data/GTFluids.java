@@ -75,7 +75,7 @@ public class GTFluids {
 //        if (!material.getChemicalFormula().isEmpty()) {
 //            tooltip.add(TextFormatting.YELLOW + material.getChemicalFormula());
 //        }
-//        tooltip.add(LocalizationUtils.format("gregtech.fluid.temperature", property.getFluidTemperature()));
+//        tooltip.add(LocalizationUtils.format("gtceu.fluid.temperature", property.getFluidTemperature()));
 //        tooltip.add(LocalizationUtils.format(property.getFluidType().getUnlocalizedTooltip()));
 //        tooltip.addAll(property.getFluidType().getAdditionalTooltips());
 //        FluidTooltipUtil.registerTooltip(fluid, tooltip);

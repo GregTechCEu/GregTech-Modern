@@ -15,7 +15,7 @@ public class OverclockingLogic {
     public static final OverclockingLogic NON_PERFECT_OVERCLOCK = new OverclockingLogic(false);
 
     public static final double STANDARD_OVERCLOCK_VOLTAGE_MULTIPLIER = 4.0;
-    public static final double STANDARD_OVERCLOCK_DURATION_DIVISOR = ConfigHolder.machines.overclockDivisor;
+    public static final double STANDARD_OVERCLOCK_DURATION_DIVISOR = ConfigHolder.INSTANCE.machines.overclockDivisor;
     public static final double PERFECT_OVERCLOCK_DURATION_DIVISOR = 4.0;
     protected boolean hasPerfectOC;
 

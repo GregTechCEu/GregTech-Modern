@@ -98,7 +98,7 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFe
     }
 
     default boolean shouldWorkingPlaySound() {
-        return ConfigHolder.machines.machineSounds && (!(self() instanceof IMufflableMachine mufflableMachine) || !mufflableMachine.isMuffled());
+        return ConfigHolder.INSTANCE.machines.machineSounds && (!(self() instanceof IMufflableMachine mufflableMachine) || !mufflableMachine.isMuffled());
     }
 
     //////////////////////////////////////

@@ -207,7 +207,7 @@ public class MetaMachine implements IManaged, IToolable, ITickSubscription, IApp
         }
     }
 
-    public void serverTick() {
+    public final void serverTick() {
         if (!waitingToAdd.isEmpty()) {
             serverTicks.addAll(waitingToAdd);
             waitingToAdd.clear();
@@ -295,7 +295,7 @@ public class MetaMachine implements IManaged, IToolable, ITickSubscription, IApp
 
     protected InteractionResult onWrenchClick(Player playerIn, InteractionHand hand, Direction gridSide, BlockHitResult hitResult) {
         if (playerIn.isCrouching()) {
-            if (gridSide == getFrontFacing() || !isFacingValid(gridSide) || !hasFrontFacing()) {
+            if (gridSide == getFrontFacing() || !isFacingValid(gridSide)) {
                 return InteractionResult.FAIL;
             }
             if (!isRemote()) {
@@ -367,7 +367,7 @@ public class MetaMachine implements IManaged, IToolable, ITickSubscription, IApp
     public ResourceTexture sideTips(Player player, GTToolType toolType, Direction side) {
         if (toolType == GTToolType.WRENCH) {
             if (player.isCrouching()) {
-                if (hasFrontFacing() && side != this.getFrontFacing() && isFacingValid(side)) {
+                if (isFacingValid(side)) {
                     return GuiTextures.TOOL_FRONT_FACING_ROTATION;
                 }
             }
@@ -418,6 +418,7 @@ public class MetaMachine implements IManaged, IToolable, ITickSubscription, IApp
     }
 
     public boolean isFacingValid(Direction facing) {
+        if (hasFrontFacing() && facing == getFrontFacing()) return false;
         var blockState = getBlockState();
         if (blockState.getBlock() instanceof MetaMachineBlock metaMachineBlock) {
             return metaMachineBlock.rotationState.test(facing);

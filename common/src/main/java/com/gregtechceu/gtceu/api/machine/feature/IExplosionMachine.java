@@ -55,7 +55,7 @@ public interface IExplosionMachine extends IMachineFeature {
         var level = machine.getLevel();
         level.removeBlock(pos, false);
         level.explode(null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5,
-                explosionPower, ConfigHolder.machines.doesExplosionDamagesTerrain ? Explosion.BlockInteraction.BREAK : Explosion.BlockInteraction.NONE);
+                explosionPower, ConfigHolder.INSTANCE.machines.doesExplosionDamagesTerrain ? Explosion.BlockInteraction.BREAK : Explosion.BlockInteraction.NONE);
     }
 
     default void setOnFire(double additionalFireChance) {
