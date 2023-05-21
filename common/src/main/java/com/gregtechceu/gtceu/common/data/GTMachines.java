@@ -319,7 +319,7 @@ public class GTMachines {
     public final static MachineDefinition[] ITEM_IMPORT_BUS = registerTieredMachines("item_bus.import",
             (holder, tier) -> new ItemBusPartMachine(holder, tier, IO.IN),
             (tier, builder) -> builder
-                    .langValue(VNF[tier] + " Import Bus")
+                    .langValue(VNF[tier] + " Input Bus")
                     .rotationState(RotationState.ALL)
                     .abilities(tier == 0 ? new PartAbility[] {PartAbility.IMPORT_ITEMS, PartAbility.STEAM_IMPORT_ITEMS} : new PartAbility[]{PartAbility.IMPORT_ITEMS})
                     .overlayTieredHullRenderer("item_bus.import")
@@ -449,7 +449,7 @@ public class GTMachines {
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.STEAM_IMPORT_ITEMS)
             .overlaySteamHullRenderer("item_bus.import")
-            .langValue("Import Bus (Steam)")
+            .langValue("Input Bus (Steam)")
             .register();
 
     public final static MachineDefinition STEAM_EXPORT_BUS = REGISTRATE.machine("item_bus.export.steam", holder -> new SteamItemBusPartMachine(holder, IO.OUT))

@@ -26,7 +26,7 @@ import java.util.function.Consumer;
  * @implNote TagPrefixItemRenderer
  */
 public class TagPrefixItemRenderer extends IModelRenderer {
-    public static final Table<MaterialIconType, MaterialIconSet, TagPrefixItemRenderer> MODELS = Tables.newCustomTable(new HashMap<>(), HashMap::new);
+    private static final Table<MaterialIconType, MaterialIconSet, TagPrefixItemRenderer> MODELS = Tables.newCustomTable(new HashMap<>(), HashMap::new);
 
     private ResourceLocation modelLocation;
 
@@ -85,6 +85,6 @@ public class TagPrefixItemRenderer extends IModelRenderer {
     @Override
     @Environment(EnvType.CLIENT)
     public void onAdditionalModel(Consumer<ResourceLocation> registry) {
-        //registry.accept(modelLocation);
+        // no-op, handled in ModelBakeryMixin.java
     }
 }

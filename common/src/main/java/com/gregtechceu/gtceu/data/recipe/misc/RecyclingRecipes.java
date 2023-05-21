@@ -66,7 +66,7 @@ public class RecyclingRecipes {
         int voltageMultiplier = calculateVoltageMultiplier(components);
 
         if (prefix != TagPrefix.dust) {
-            registerMaceratorRecycling(provider, input, components, voltageMultiplier, prefix);
+            registerMaceratorRecycling(provider, input, components, voltageMultiplier);
         }
         if (prefix != null) {
             registerExtractorRecycling(provider, input, components, voltageMultiplier, prefix);
@@ -95,7 +95,7 @@ public class RecyclingRecipes {
         registerArcRecycling(provider, input, components, prefix);
     }
 
-    private static void registerMaceratorRecycling(Consumer<FinishedRecipe> provider, ItemStack input, List<MaterialStack> materials, int multiplier, TagPrefix prefix) {
+    private static void registerMaceratorRecycling(Consumer<FinishedRecipe> provider, ItemStack input, List<MaterialStack> materials, int multiplier) {
         // TODO: look into why the hell there's a endstone -> 9 dust recipe
         //if (materials.stream().anyMatch(materialStack -> prefix.isIgnored(materialStack.material()))) return;
 

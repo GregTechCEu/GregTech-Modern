@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.FluidProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
@@ -61,7 +62,10 @@ public abstract class ModelBakeryMixin {
                     MaterialBlockRenderer.getOrCreate(MaterialIconType.frameGt, iconSet).setBlockTexture(gtceu$generateBlockTexture(iconSet, MaterialIconType.frameGt));
                 }
                 if (material.hasProperty(PropertyKey.FLUID)) {
-                    MaterialBlockRenderer.getOrCreate(MaterialIconType.fluid, iconSet).setBlockTexture(gtceu$generateBlockTexture(iconSet, MaterialIconType.fluid));
+                    FluidProperty prop = material.getProperty(PropertyKey.FLUID);
+                    prop.setStillTexture(gtceu$generateBlockTexture(iconSet, MaterialIconType.fluid));
+                    prop.setFlowTexture(prop.getStillTexture());
+                    MaterialBlockRenderer.getOrCreate(MaterialIconType.fluid, iconSet).setBlockTexture(prop.getStillTexture());
                 }
             }
 

@@ -10,7 +10,6 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.ResourceManager;
 
 import javax.annotation.Nonnull;
@@ -161,10 +160,11 @@ public record MaterialIconType(String name) {
     @SuppressWarnings("ConstantValue")
     @Environment(EnvType.CLIENT)
     private static boolean doesResourceExist(@Nonnull ResourceLocation resource) {
-        if (Minecraft.getInstance() == null) return false; // can be null in CI environments
+        if (Minecraft.getInstance() == null) return true; // can be null in CI environments
         ResourceManager manager = Minecraft.getInstance().getResourceManager();
         return manager != null && manager.getResource(resource).isPresent(); // Can be null on fabric, no clue how, it just is on startup
     }
+
     @Override
     public String toString() {
         return this.name;

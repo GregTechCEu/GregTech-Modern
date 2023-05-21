@@ -12,4 +12,5 @@ public class GTCEuForge {
         GTCEu.init();
         DistExecutor.unsafeRunForDist(() -> ClientProxyImpl::new, () -> CommonProxyImpl::new);
     }
+
 }
