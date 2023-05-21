@@ -419,7 +419,7 @@ public class PartsRecipeHandler {
                     .duration((int) Math.max(material.getMass() * 2, 1))
                     .EUt(16);
 
-            if (ConfigHolder.recipes.harderRods) {
+            if (ConfigHolder.INSTANCE.recipes.harderRods) {
                 builder.outputItems(rod, material);
                 builder.outputItems(dustSmall, material, 2);
             } else {

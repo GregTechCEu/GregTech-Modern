@@ -174,7 +174,7 @@ public class MaterialInfoLoader {
 
         ChemicalHelper.registerMaterialInfo(GTBlocks.CASING_PRIMITIVE_BRICKS.get(), new ItemMaterialInfo(new MaterialStack(GTMaterials.Fireclay, M * 4)));
 
-        if (ConfigHolder.recipes.hardWoodRecipes) {
+        if (ConfigHolder.INSTANCE.recipes.hardWoodRecipes) {
             ChemicalHelper.registerMaterialInfo(Items.ACACIA_DOOR, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 2), new MaterialStack(GTMaterials.Iron, M / 9))); // screw
             ChemicalHelper.registerMaterialInfo(Items.BIRCH_DOOR, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 2), new MaterialStack(GTMaterials.Iron, M / 9))); // screw
             ChemicalHelper.registerMaterialInfo(Items.JUNGLE_DOOR, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 2), new MaterialStack(GTMaterials.Iron, M / 9))); // screw
@@ -207,7 +207,7 @@ public class MaterialInfoLoader {
         ChemicalHelper.registerMaterialInfo(Blocks.WARPED_PLANKS, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M)));
 
 
-        if (ConfigHolder.recipes.hardIronRecipes)
+        if (ConfigHolder.INSTANCE.recipes.hardIronRecipes)
             ChemicalHelper.registerMaterialInfo(Items.IRON_DOOR, new ItemMaterialInfo(
                     new MaterialStack(GTMaterials.Iron, (37 * M) / 9), // dust tiny
                     new MaterialStack(GTMaterials.Steel, M / 9))); // dust tiny
@@ -283,7 +283,7 @@ public class MaterialInfoLoader {
         ChemicalHelper.registerMaterialInfo(Blocks.DETECTOR_RAIL, new ItemMaterialInfo(new MaterialStack(GTMaterials.Iron, M / 2)));
         ChemicalHelper.registerMaterialInfo(Blocks.ACTIVATOR_RAIL, new ItemMaterialInfo(new MaterialStack(GTMaterials.Iron, M / 2)));
 
-        if (ConfigHolder.recipes.hardRedstoneRecipes) {
+        if (ConfigHolder.INSTANCE.recipes.hardRedstoneRecipes) {
             //ChemicalHelper.registerMaterialInfo(new ItemStack(Blocks.WOODEN_PRESSURE_PLATE, 1, W), new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M), new MaterialStack(GTMaterials.Iron, M / 2)));
             ChemicalHelper.registerMaterialInfo(Blocks.STONE_PRESSURE_PLATE, new ItemMaterialInfo(new MaterialStack(GTMaterials.Stone, M), new MaterialStack(GTMaterials.Iron, M * 6 / 8)));
             ChemicalHelper.registerMaterialInfo(Blocks.LIGHT_WEIGHTED_PRESSURE_PLATE, new ItemMaterialInfo(new MaterialStack(GTMaterials.Gold, M), new MaterialStack(GTMaterials.Steel, M)));
@@ -340,7 +340,7 @@ public class MaterialInfoLoader {
         ChemicalHelper.registerMaterialInfo(Blocks.COBBLESTONE_WALL, new ItemMaterialInfo(new MaterialStack(GTMaterials.Stone, M)));
         ChemicalHelper.registerMaterialInfo(Items.END_CRYSTAL, new ItemMaterialInfo(new MaterialStack(GTMaterials.Glass, M * 7), new MaterialStack(GTMaterials.EnderEye, M)));
 
-        if (ConfigHolder.recipes.hardToolArmorRecipes) {
+        if (ConfigHolder.INSTANCE.recipes.hardToolArmorRecipes) {
             ChemicalHelper.registerMaterialInfo(Items.CLOCK, new ItemMaterialInfo
                     (new MaterialStack(GTMaterials.Gold, (13 * M) / 8), // M + ring + 3 * bolt
                             new MaterialStack(GTMaterials.Redstone, M)));
@@ -354,7 +354,7 @@ public class MaterialInfoLoader {
             ChemicalHelper.registerMaterialInfo(Items.COMPASS, new ItemMaterialInfo(new MaterialStack(GTMaterials.Iron, M * 4), new MaterialStack(GTMaterials.Redstone, M)));
         }
 
-        if (ConfigHolder.recipes.hardMiscRecipes) {
+        if (ConfigHolder.INSTANCE.recipes.hardMiscRecipes) {
             ChemicalHelper.registerMaterialInfo(Blocks.BEACON, new ItemMaterialInfo(
                     new MaterialStack(GTMaterials.NetherStar, (7 * M) / 4), // M + lens
                     new MaterialStack(GTMaterials.Obsidian, M * 3),
@@ -379,7 +379,7 @@ public class MaterialInfoLoader {
         ChemicalHelper.registerMaterialInfo(Blocks.CHEST, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 8)));
         ChemicalHelper.registerMaterialInfo(Blocks.TRAPPED_CHEST, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 8), new MaterialStack(GTMaterials.Iron, M / 2))); // ring
 
-        if (ConfigHolder.recipes.hardMiscRecipes) {
+        if (ConfigHolder.INSTANCE.recipes.hardMiscRecipes) {
             ChemicalHelper.registerMaterialInfo(Blocks.NOTE_BLOCK, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 8), new MaterialStack(GTMaterials.RedAlloy, M / 2))); // rod
             ChemicalHelper.registerMaterialInfo(Blocks.JUKEBOX, new ItemMaterialInfo(
                     new MaterialStack(GTMaterials.Diamond, M / 8), // bolt
@@ -393,7 +393,7 @@ public class MaterialInfoLoader {
         ChemicalHelper.registerMaterialInfo(Blocks.CRAFTING_TABLE, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 2)));
         ChemicalHelper.registerMaterialInfo(Blocks.PISTON, new ItemMaterialInfo(new MaterialStack(GTMaterials.Stone, M * 4), new MaterialStack(GTMaterials.Wood, M * 3)));
         ChemicalHelper.registerMaterialInfo(Blocks.STICKY_PISTON, new ItemMaterialInfo(new MaterialStack(GTMaterials.Stone, M * 4), new MaterialStack(GTMaterials.Wood, M * 3)));
-        if (ConfigHolder.recipes.hardRedstoneRecipes) {
+        if (ConfigHolder.INSTANCE.recipes.hardRedstoneRecipes) {
             ChemicalHelper.registerMaterialInfo(Blocks.DISPENSER, new ItemMaterialInfo(new MaterialStack(GTMaterials.Stone, M * 2), new MaterialStack(GTMaterials.RedAlloy, M / 2), new MaterialStack(GTMaterials.Iron, M * 4 + M / 4)));
             ChemicalHelper.registerMaterialInfo(Blocks.DROPPER, new ItemMaterialInfo(new MaterialStack(GTMaterials.Stone, M * 2), new MaterialStack(GTMaterials.RedAlloy, M / 2), new MaterialStack(GTMaterials.Iron, M * 2 + M * 3 / 4)));
         } else {

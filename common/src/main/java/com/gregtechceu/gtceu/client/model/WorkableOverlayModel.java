@@ -143,7 +143,7 @@ public class WorkableOverlayModel {
 
                         texture = predicate.getEmissiveSprite(isActive, isWorkingEnabled);
                         if (texture != null) {
-                            if (ConfigHolder.client.machinesEmissiveTextures) {
+                            if (ConfigHolder.INSTANCE.client.machinesEmissiveTextures) {
                                 var quad = FaceQuad.bakeFace(renderSide, texture, rotation, 0, 15, true, false);
                                 if (quad.getDirection() == side) {
                                     quads.add(quad);

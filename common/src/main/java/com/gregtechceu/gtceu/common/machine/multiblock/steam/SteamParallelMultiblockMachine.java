@@ -138,7 +138,7 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
 
     @Override
     public IGuiTexture getScreenTexture() {
-        return GuiTextures.DISPLAY_STEAM.get(ConfigHolder.machines.steelSteamMultiblocks);
+        return GuiTextures.DISPLAY_STEAM.get(ConfigHolder.INSTANCE.machines.steelSteamMultiblocks);
     }
 
     @Override
@@ -149,8 +149,8 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
                 .setMaxWidthLimit(156)
                 .clickHandler(this::handleDisplayClick));
         return new ModularUI(176, 216, this, entityPlayer)
-                .background(GuiTextures.BACKGROUND_STEAM.get(ConfigHolder.machines.steelSteamMultiblocks))
+                .background(GuiTextures.BACKGROUND_STEAM.get(ConfigHolder.INSTANCE.machines.steelSteamMultiblocks))
                 .widget(screen)
-                .widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(), GuiTextures.SLOT_STEAM.get(ConfigHolder.machines.steelSteamMultiblocks), 7, 134, true));
+                .widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(), GuiTextures.SLOT_STEAM.get(ConfigHolder.INSTANCE.machines.steelSteamMultiblocks), 7, 134, true));
     }
 }
