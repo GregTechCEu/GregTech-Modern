@@ -202,7 +202,7 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine implements
                             getFrontFacing().getStepY() / 2.0,
                             getFrontFacing().getStepZ() / 2.0, 0.1);
 
-                    if (ConfigHolder.machines.machineSounds) {
+                    if (ConfigHolder.INSTANCE.machines.machineSounds) {
                         getLevel().playSound(null, x, y, z, SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 1.0f, 1.0f);
                     }
 

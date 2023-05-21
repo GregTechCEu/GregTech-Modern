@@ -71,7 +71,7 @@ public interface IExhaustVentMachine extends IMachineFeature {
             double posZ = pos.getZ() + 0.5 + ventingDirection.getStepZ() * 0.6;
             createVentingParticles(serverLevel, posX, posY, posZ);
 
-            if (ConfigHolder.machines.machineSounds) {
+            if (ConfigHolder.INSTANCE.machines.machineSounds) {
                 playVentingSound(serverLevel, posX, posY, posZ);
             }
             markVentingComplete();

@@ -31,7 +31,7 @@ public class LangHandler {
         ItemLang.init(provider);
         MachineLang.init(provider);
         ToolLang.init(provider);
-
+        ConfigurationLang.init(provider);
 
         // CreativeModeTabs
         provider.add(GTCreativeModeTabs.MATERIAL_FLUID, toEnglishName(GTCreativeModeTabs.MATERIAL_FLUID.getGroupId()));

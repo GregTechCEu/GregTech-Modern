@@ -54,7 +54,7 @@ public class TieredEnergyMachine extends TieredMachine implements ITieredMachine
     public void onLoad() {
         super.onLoad();
         // if machine need do check explosion conditions
-        if (!isRemote() && ConfigHolder.machines.doTerrainExplosion && shouldWeatherOrTerrainExplosion()) {
+        if (!isRemote() && ConfigHolder.INSTANCE.machines.doTerrainExplosion && shouldWeatherOrTerrainExplosion()) {
             energyListener = energyContainer.addChangedListener(this::updateExplosionSubscription);
             updateExplosionSubscription();
         }
@@ -74,7 +74,7 @@ public class TieredEnergyMachine extends TieredMachine implements ITieredMachine
     //////////////////////////////////////
 
     protected void updateExplosionSubscription() {
-        if (ConfigHolder.machines.doTerrainExplosion && shouldWeatherOrTerrainExplosion() && energyContainer.getEnergyStored() > 0) {
+        if (ConfigHolder.INSTANCE.machines.doTerrainExplosion && shouldWeatherOrTerrainExplosion() && energyContainer.getEnergyStored() > 0) {
             explosionSubs = subscribeServerTick(explosionSubs, this::checkExplosion);
         } else if (explosionSubs != null) {
             explosionSubs.unsubscribe();

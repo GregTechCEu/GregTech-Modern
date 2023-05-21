@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.api.gui.MachineUIFactory;
 import com.gregtechceu.gtceu.common.data.materials.GTFoods;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.GregTechDatagen;
 import com.gregtechceu.gtlib.gui.factory.UIFactory;
 import dev.architectury.injectables.annotations.ExpectPlatform;
@@ -23,6 +24,7 @@ public class CommonProxy {
 
     public static void init() {
         GTCEu.LOGGER.info("GTCEu common proxy init!");
+        ConfigHolder.init();
         UIFactory.register(MachineUIFactory.INSTANCE);
         UIFactory.register(CoverUIFactory.INSTANCE);
         GTPlacerTypes.init();

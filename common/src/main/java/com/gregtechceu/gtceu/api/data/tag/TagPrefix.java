@@ -245,7 +245,7 @@ public class TagPrefix {
             .materialIconType(MaterialIconType.gemChipped)
             .unificationEnabled(true)
             .generateItem(true)
-            .generationCondition(hasGemProperty.and(unused -> ConfigHolder.recipes.generateLowQualityGems));
+            .generationCondition(hasGemProperty.and(unused -> ConfigHolder.INSTANCE.recipes.generateLowQualityGems));
 
     // A regular Gem worth two small Dusts.
     public static final TagPrefix gemFlawed = new TagPrefix("gemFlawed")
@@ -256,7 +256,7 @@ public class TagPrefix {
             .materialIconType(MaterialIconType.gemFlawed)
             .unificationEnabled(true)
             .generateItem(true)
-            .generationCondition(hasGemProperty.and(unused -> ConfigHolder.recipes.generateLowQualityGems));
+            .generationCondition(hasGemProperty.and(unused -> ConfigHolder.INSTANCE.recipes.generateLowQualityGems));
 
     // A regular Gem worth two Dusts.
     public static final TagPrefix gemFlawless = new TagPrefix("gemFlawless")
