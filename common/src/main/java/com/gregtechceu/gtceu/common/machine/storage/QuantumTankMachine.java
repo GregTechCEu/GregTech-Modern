@@ -157,7 +157,7 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
     }
 
     @Override
-    public void setOutputFacingFluids(Direction outputFacing) {
+    public void setOutputFacingFluids(@Nullable Direction outputFacing) {
         this.outputFacingFluids = outputFacing;
         updateAutoOutputSubscription();
     }
@@ -252,16 +252,11 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
             var tool = playerIn.getItemInHand(hand);
             if (tool.getDamageValue() >= tool.getMaxDamage()) return InteractionResult.PASS;
             if (hasFrontFacing() && gridSide == getFrontFacing()) return InteractionResult.PASS;
-            var fluidFacing = getOutputFacingFluids();
-            if (fluidFacing == null) {
+            if (gridSide != getOutputFacingFluids()) {
                 setOutputFacingFluids(gridSide);
-                return InteractionResult.CONSUME;
-            }
-            if (fluidFacing == gridSide) {
+            } else {
                 setOutputFacingFluids(null);
-                return InteractionResult.CONSUME;
             }
-            setOutputFacingFluids(gridSide);
             return InteractionResult.CONSUME;
         }
 

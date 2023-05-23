@@ -21,6 +21,6 @@ public interface IAutoOutputItem {
     @Nullable
     Direction getOutputFacingItems();
 
-    void setOutputFacingItems(Direction outputFacing);
+    void setOutputFacingItems(@Nullable Direction outputFacing);
 
 }

@@ -23,6 +23,5 @@ public interface IAutoOutputFluid {
     @Nullable
     Direction getOutputFacingFluids();
 
-
-    void setOutputFacingFluids(Direction outputFacing);
+    void setOutputFacingFluids(@Nullable Direction outputFacing);
 }
