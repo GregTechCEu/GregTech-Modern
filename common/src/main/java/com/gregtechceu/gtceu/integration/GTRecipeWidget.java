@@ -8,14 +8,14 @@ import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.utils.GTUtil;
-import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
-import com.lowdragmc.lowdraglib.gui.widget.ProgressWidget;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.msic.FluidStorage;
-import com.lowdragmc.lowdraglib.side.fluid.IFluidStorage;
-import com.lowdragmc.lowdraglib.utils.CycleItemStackHandler;
-import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
-import com.lowdragmc.lowdraglib.utils.Position;
+import com.gregtechceu.gtlib.gui.widget.LabelWidget;
+import com.gregtechceu.gtlib.gui.widget.ProgressWidget;
+import com.gregtechceu.gtlib.gui.widget.WidgetGroup;
+import com.gregtechceu.gtlib.misc.FluidStorage;
+import com.gregtechceu.gtlib.side.fluid.IFluidStorage;
+import com.gregtechceu.gtlib.utils.CycleItemStackHandler;
+import com.gregtechceu.gtlib.utils.LocalizationUtils;
+import com.gregtechceu.gtlib.utils.Position;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -89,7 +89,7 @@ public class GTRecipeWidget extends WidgetGroup {
             addWidget(new LabelWidget(3, yOffset += 10,
                     LocalizationUtils.format("gtceu.recipe.total", EUt * recipe.duration)));
             addWidget(new LabelWidget(3, yOffset += 10,
-                    LocalizationUtils.format(!isOutput ? "gtceu.recipe.eu" : "gregtech.recipe.eu_inverted", EUt, GTValues.VN[GTUtil.getTierByVoltage(EUt)])));
+                    LocalizationUtils.format(!isOutput ? "gtceu.recipe.eu" : "gtceu.recipe.eu_inverted", EUt, GTValues.VN[GTUtil.getTierByVoltage(EUt)])));
         }
         for (RecipeCondition condition : recipe.conditions) {
             addWidget(new LabelWidget(3, yOffset += 10, condition.getTooltips().getString()));

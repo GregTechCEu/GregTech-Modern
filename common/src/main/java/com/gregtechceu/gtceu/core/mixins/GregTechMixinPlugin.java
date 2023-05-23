@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.core.mixins;
 
-import com.lowdragmc.lowdraglib.core.mixins.MixinPluginShared;
+import com.gregtechceu.gtlib.core.mixins.MixinPluginShared;
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
@@ -8,11 +8,6 @@ import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 import java.util.List;
 import java.util.Set;
 
-/**
- * @author KilaBash
- * @date 2023/2/11
- * @implNote LDLibMixinPlugin
- */
 public class GregTechMixinPlugin implements IMixinConfigPlugin {
     @Override
     public void onLoad(String mixinPackage) {
@@ -30,6 +25,10 @@ public class GregTechMixinPlugin implements IMixinConfigPlugin {
             return MixinPluginShared.isClassFound("dev.latvian.mods.kubejs.KubeJSPlugin");
         } else if (mixinClassName.contains("com.gregtechceu.gtceu.core.mixins.create")) {
             return MixinPluginShared.isClassFound("com.simibubi.create.compat.Mods");
+        } else if (mixinClassName.contains("com.gregtechceu.gtceu.fabric.core.mixins.kjs")) {
+            return MixinPluginShared.isClassFound("dev.latvian.mods.kubejs.fabric.KubeJSFabric");
+        } else if (mixinClassName.contains("com.gregtechceu.gtceu.forge.core.mixins.kjs")) {
+            return MixinPluginShared.isClassFound("dev.latvian.mods.kubejs.forge.KubeJSForge");
         }
         return true;
     }

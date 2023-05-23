@@ -6,9 +6,9 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.lowdragmc.lowdraglib.syncdata.ISubscription;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import com.gregtechceu.gtlib.syncdata.ISubscription;
+import com.gregtechceu.gtlib.syncdata.annotation.Persisted;
+import com.gregtechceu.gtlib.syncdata.field.ManagedFieldHolder;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.util.Mth;
 
@@ -54,7 +54,7 @@ public class TieredEnergyMachine extends TieredMachine implements ITieredMachine
     public void onLoad() {
         super.onLoad();
         // if machine need do check explosion conditions
-        if (!isRemote() && ConfigHolder.machines.doTerrainExplosion && shouldWeatherOrTerrainExplosion()) {
+        if (!isRemote() && ConfigHolder.INSTANCE.machines.doTerrainExplosion && shouldWeatherOrTerrainExplosion()) {
             energyListener = energyContainer.addChangedListener(this::updateExplosionSubscription);
             updateExplosionSubscription();
         }
@@ -74,7 +74,7 @@ public class TieredEnergyMachine extends TieredMachine implements ITieredMachine
     //////////////////////////////////////
 
     protected void updateExplosionSubscription() {
-        if (ConfigHolder.machines.doTerrainExplosion && shouldWeatherOrTerrainExplosion() && energyContainer.getEnergyStored() > 0) {
+        if (ConfigHolder.INSTANCE.machines.doTerrainExplosion && shouldWeatherOrTerrainExplosion() && energyContainer.getEnergyStored() > 0) {
             explosionSubs = subscribeServerTick(explosionSubs, this::checkExplosion);
         } else if (explosionSubs != null) {
             explosionSubs.unsubscribe();

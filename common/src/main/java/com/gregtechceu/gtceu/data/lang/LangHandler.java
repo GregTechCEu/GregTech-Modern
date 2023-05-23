@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.data.lang;
 
 import com.gregtechceu.gtceu.common.data.GTCreativeModeTabs;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
-import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
+import com.gregtechceu.gtlib.utils.LocalizationUtils;
 import com.tterrag.registrate.providers.RegistrateLangProvider;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.network.chat.Component;
@@ -31,7 +31,7 @@ public class LangHandler {
         ItemLang.init(provider);
         MachineLang.init(provider);
         ToolLang.init(provider);
-
+        ConfigurationLang.init(provider);
 
         // CreativeModeTabs
         provider.add(GTCreativeModeTabs.MATERIAL_FLUID, toEnglishName(GTCreativeModeTabs.MATERIAL_FLUID.getGroupId()));
@@ -45,8 +45,8 @@ public class LangHandler {
 
         provider.add("gtceu.gui.editor.tips.citation", "Number of citations");
         provider.add("gtceu.gui.editor.group.recipe_type", "cap");
-        provider.add("ldlib.gui.editor.register.project.rtui", "RecipeType UI Project");
-        provider.add("ldlib.gui.editor.register.menu.recipe_type_tab", "recipe type");
+        provider.add("gtlib.gui.editor.register.project.rtui", "RecipeType UI Project");
+        provider.add("gtlib.gui.editor.register.menu.recipe_type_tab", "recipe type");
         provider.add("recipe.condition.rpm.tooltip", "RPM: %d");
         provider.add("recipe.condition.thunder.tooltip", "Thunder Level: %d");
         provider.add("recipe.condition.rain.tooltip", "Rain Level: %d");

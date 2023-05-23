@@ -16,12 +16,12 @@ import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
-import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
-import com.lowdragmc.lowdraglib.gui.widget.ComponentPanelWidget;
-import com.lowdragmc.lowdraglib.gui.widget.DraggableScrollableWidgetGroup;
-import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
-import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
+import com.gregtechceu.gtlib.gui.modular.ModularUI;
+import com.gregtechceu.gtlib.gui.texture.IGuiTexture;
+import com.gregtechceu.gtlib.gui.widget.ComponentPanelWidget;
+import com.gregtechceu.gtlib.gui.widget.DraggableScrollableWidgetGroup;
+import com.gregtechceu.gtlib.gui.widget.LabelWidget;
+import com.gregtechceu.gtlib.side.fluid.FluidHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
@@ -138,7 +138,7 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
 
     @Override
     public IGuiTexture getScreenTexture() {
-        return GuiTextures.DISPLAY_STEAM.get(ConfigHolder.machines.steelSteamMultiblocks);
+        return GuiTextures.DISPLAY_STEAM.get(ConfigHolder.INSTANCE.machines.steelSteamMultiblocks);
     }
 
     @Override
@@ -149,8 +149,8 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
                 .setMaxWidthLimit(156)
                 .clickHandler(this::handleDisplayClick));
         return new ModularUI(176, 216, this, entityPlayer)
-                .background(GuiTextures.BACKGROUND_STEAM.get(ConfigHolder.machines.steelSteamMultiblocks))
+                .background(GuiTextures.BACKGROUND_STEAM.get(ConfigHolder.INSTANCE.machines.steelSteamMultiblocks))
                 .widget(screen)
-                .widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(), GuiTextures.SLOT_STEAM.get(ConfigHolder.machines.steelSteamMultiblocks), 7, 134, true));
+                .widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(), GuiTextures.SLOT_STEAM.get(ConfigHolder.INSTANCE.machines.steelSteamMultiblocks), 7, 134, true));
     }
 }

@@ -1,12 +1,12 @@
 package com.gregtechceu.gtceu.client.renderer.block;
 
 import com.gregtechceu.gtceu.client.model.ItemBakedModel;
-import com.lowdragmc.lowdraglib.LDLib;
-import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
-import com.lowdragmc.lowdraglib.client.model.ModelFactory;
-import com.lowdragmc.lowdraglib.client.renderer.IItemRendererProvider;
-import com.lowdragmc.lowdraglib.client.renderer.impl.BlockStateRenderer;
-import com.lowdragmc.lowdraglib.utils.BlockInfo;
+import com.gregtechceu.gtlib.GTLib;
+import com.gregtechceu.gtlib.client.bakedpipeline.FaceQuad;
+import com.gregtechceu.gtlib.client.model.ModelFactory;
+import com.gregtechceu.gtlib.client.renderer.IItemRendererProvider;
+import com.gregtechceu.gtlib.client.renderer.impl.BlockStateRenderer;
+import com.gregtechceu.gtlib.utils.BlockInfo;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -25,6 +25,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -45,7 +46,7 @@ public class OreBlockRenderer extends BlockStateRenderer {
         this.stone = stone;
         this.overlay = overlay;
         this.emissive = emissive;
-        if (LDLib.isClient()) {
+        if (GTLib.isClient()) {
             registerEvent();
         }
     }
@@ -61,12 +62,15 @@ public class OreBlockRenderer extends BlockStateRenderer {
         super.renderItem(stack, transformType, leftHand, matrixStack, buffer, combinedLight, combinedOverlay, model);
         IItemRendererProvider.disabled.set(true);
         Minecraft.getInstance().getItemRenderer().render(stack, transformType, leftHand, matrixStack, buffer, combinedLight, combinedOverlay,
-                (ItemBakedModel) (state, direction, random) -> {
-                    List<BakedQuad> quads = new LinkedList<>();
-                    if (direction != null) {
-                        quads.add(FaceQuad.bakeFace(direction, ModelFactory.getBlockSprite(overlay), BlockModelRotation.X0_Y0, 1, emissive ? 15 : 0, true, !emissive));
+                new ItemBakedModel() {
+                    @Override
+                    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction direction, RandomSource random) {
+                        List<BakedQuad> quads = new LinkedList<>();
+                        if (direction != null) {
+                            quads.add(FaceQuad.bakeFace(direction, ModelFactory.getBlockSprite(overlay), BlockModelRotation.X0_Y0, 1, emissive ? 15 : 0, true, !emissive));
+                        }
+                        return quads;
                     }
-                    return quads;
                 });
         IItemRendererProvider.disabled.set(false);
     }

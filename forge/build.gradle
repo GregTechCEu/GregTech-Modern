@@ -102,8 +102,9 @@ dependencies {
     common(project(path: ":${mod_id}-common", configuration: "namedElements")) { transitive = false }
     shadowCommon(project(path: ":${mod_id}-common", configuration: "transformProductionForge")) { transitive = false }
 
-    // LDLib
-    modImplementation(forge.ldlib.forge) { transitive = false }
+    // GTLib
+    modImplementation(forge.gtlib.forge) { transitive = false }
+    include(forge.gtlib.forge)
 
     // Registrate
     modImplementation(include("com.tterrag.registrate:Registrate:${forge.versions.registrate.get()}"))
@@ -130,6 +131,10 @@ dependencies {
 
     // KJS
     modImplementation forge.kubejs
+
+    // Configuration
+    modImplementation(forge.configuration)
+    include(forge.configuration)
 }
 
 processResources {
@@ -143,7 +148,7 @@ processResources {
             "mod_name", mod_name,
             "mod_description", mod_description,
             "mod_url", mod_url,
-            "ldlib_version", forge.versions.ldlib.get()
+            "gtlib_version", forge.versions.gtlib.get()
     )
     properties.forEach((k, v) -> inputs.property(k, v))
 

@@ -39,7 +39,7 @@ public class WoodMachineRecipes {
             IRecipe outputRecipe = outputPair.getKey();
 
             //wood nerf
-            if (ConfigHolder.recipes.nerfWoodCrafting) {
+            if (ConfigHolder.INSTANCE.recipes.nerfWoodCrafting) {
                 //remove the old recipe
                 ModHandler.removeRecipeByName(outputRecipe.getRegistryName());
 
@@ -88,7 +88,7 @@ public class WoodMachineRecipes {
                 ModHandler.addShapedRecipe(slabStack.getDisplayName() + "_saw", GTUtility.copyAmount(2, slabStack), "sS", 'S', GTUtility.copyAmount(1, plankStack));
             }
 
-            if (ConfigHolder.recipes.harderCharcoalRecipe) {
+            if (ConfigHolder.INSTANCE.recipes.harderCharcoalRecipe) {
                 ItemStack outputStack = FurnaceRecipes.instance().getSmeltingResult(stack);
                 if (outputStack.getItem() == Items.COAL && outputStack.getItemDamage() == 1) {
                     ModHandler.removeFurnaceSmelting(stack);

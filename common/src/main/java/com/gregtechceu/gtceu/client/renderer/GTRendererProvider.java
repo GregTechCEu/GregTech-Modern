@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.client.renderer;
 
-import com.lowdragmc.lowdraglib.client.renderer.ATESRRendererProvider;
+import com.gregtechceu.gtlib.client.renderer.ATESRRendererProvider;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.MethodsReturnNonnullByDefault;

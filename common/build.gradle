@@ -17,7 +17,6 @@ repositories {
     maven { url = "https://api.modrinth.com/maven" } // LazyDFU, Jade
     maven { url = "https://maven.terraformersmc.com/releases/" } // Mod Menu
     maven { url = "https://mvn.devos.one/snapshots/" } // Create Fabric, Porting Lib, Forge Tags, Milk Lib, Registrate Fabric
-    maven { url = "https://cursemaven.com" } // Forge Config API Port
     maven { url = "https://maven.cafeteria.dev/releases" } // Fake Player API
     maven { url = "https://maven.jamieswhiteshirt.com/libs-release" } // Reach Entity Attributes
     maven { url = "https://jitpack.io/" } // Mixin Extras, Fabric ASM
@@ -54,7 +53,7 @@ dependencies {
     // All dependencies except Flywheel and Registrate are NOT safe to use!
     // Flywheel and Registrate must also be used carefully due to differences.
     modCompileOnly fabric.createFabric
-    modImplementation fabric.ldlib.common
+    modImplementation fabric.gtlib.common
 
     // JEI
     modCompileOnly fabric.jei.common.api
@@ -78,6 +77,9 @@ dependencies {
 
     // KJS
     modCompileOnly fabric.kubejs
+
+    // Configuration
+    modCompileOnly fabric.configuration
 }
 
 publishing {

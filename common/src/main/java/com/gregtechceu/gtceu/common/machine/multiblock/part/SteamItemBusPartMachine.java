@@ -6,9 +6,9 @@ import com.gregtechceu.gtceu.api.gui.UITemplate;
 import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
-import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
-import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
+import com.gregtechceu.gtlib.gui.modular.ModularUI;
+import com.gregtechceu.gtlib.gui.widget.LabelWidget;
+import com.gregtechceu.gtlib.gui.widget.SlotWidget;
 import net.minecraft.world.entity.player.Player;
 
 import javax.annotation.Nonnull;
@@ -26,13 +26,13 @@ public class SteamItemBusPartMachine extends ItemBusPartMachine {
         int xOffset = rowSize == 10 ? 9 : 0;
         var modular = new ModularUI(176 + xOffset * 2,
                 18 + 18 * rowSize + 94, this, entityPlayer)
-                .background(GuiTextures.BACKGROUND_STEAM.get(ConfigHolder.machines.steelSteamMultiblocks))
+                .background(GuiTextures.BACKGROUND_STEAM.get(ConfigHolder.INSTANCE.machines.steelSteamMultiblocks))
                 .widget(new LabelWidget(10, 5, getBlockState().getBlock().getDescriptionId()))
                 .widget(new ToggleButtonWidget(2, 18 + 18 * rowSize + 12 - 20, 18, 18,
                         GuiTextures.BUTTON_ITEM_OUTPUT, this::isWorkingEnabled, this::setWorkingEnabled) // todo steamify?
                         .setShouldUseBaseBackground()
                         .setTooltipText("gtceu.gui.item_auto_input.tooltip"))
-                .widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(), GuiTextures.SLOT_STEAM.get(ConfigHolder.machines.steelSteamMultiblocks),
+                .widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(), GuiTextures.SLOT_STEAM.get(ConfigHolder.INSTANCE.machines.steelSteamMultiblocks),
                         7 + xOffset, 18 + 18 * rowSize + 12, true));
 
         for (int y = 0; y < rowSize; y++) {

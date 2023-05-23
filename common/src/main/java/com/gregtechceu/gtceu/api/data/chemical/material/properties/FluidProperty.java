@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.api.data.chemical.material.properties;
 import com.google.common.base.Preconditions;
 import com.gregtechceu.gtceu.api.data.chemical.fluid.FluidType;
 import com.gregtechceu.gtceu.api.data.chemical.fluid.FluidTypes;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
+import com.gregtechceu.gtlib.side.fluid.FluidStack;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.resources.ResourceLocation;

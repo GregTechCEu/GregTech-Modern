@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.cover;
 
-import com.lowdragmc.lowdraglib.gui.modular.IUIHolder;
+import com.gregtechceu.gtlib.gui.modular.IUIHolder;
 
 /**
  * @author KilaBash

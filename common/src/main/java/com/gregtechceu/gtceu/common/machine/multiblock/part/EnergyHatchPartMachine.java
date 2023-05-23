@@ -8,9 +8,9 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.lowdragmc.lowdraglib.syncdata.ISubscription;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import com.gregtechceu.gtlib.syncdata.ISubscription;
+import com.gregtechceu.gtlib.syncdata.annotation.Persisted;
+import com.gregtechceu.gtlib.syncdata.field.ManagedFieldHolder;
 import lombok.Getter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import org.jetbrains.annotations.Nullable;
@@ -68,7 +68,7 @@ public class EnergyHatchPartMachine extends TieredIOPartMachine implements IExpl
     public void onLoad() {
         super.onLoad();
         // if machine need do check explosion conditions
-        if (ConfigHolder.machines.doTerrainExplosion && shouldWeatherOrTerrainExplosion()) {
+        if (ConfigHolder.INSTANCE.machines.doTerrainExplosion && shouldWeatherOrTerrainExplosion()) {
             energyListener = energyContainer.addChangedListener(this::updateExplosionSubscription);
             updateExplosionSubscription();
         }
@@ -88,7 +88,7 @@ public class EnergyHatchPartMachine extends TieredIOPartMachine implements IExpl
     //////////////////////////////////////
 
     protected void updateExplosionSubscription() {
-        if (ConfigHolder.machines.doTerrainExplosion && shouldWeatherOrTerrainExplosion() && energyContainer.getEnergyStored() > 0) {
+        if (ConfigHolder.INSTANCE.machines.doTerrainExplosion && shouldWeatherOrTerrainExplosion() && energyContainer.getEnergyStored() > 0) {
             explosionSubs = subscribeServerTick(explosionSubs, this::checkExplosion);
         } else if (explosionSubs != null) {
             explosionSubs.unsubscribe();

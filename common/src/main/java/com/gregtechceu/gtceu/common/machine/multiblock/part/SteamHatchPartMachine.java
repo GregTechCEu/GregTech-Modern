@@ -8,11 +8,11 @@ import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
-import com.lowdragmc.lowdraglib.gui.widget.ImageWidget;
-import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
-import com.lowdragmc.lowdraglib.gui.widget.TankWidget;
-import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
+import com.gregtechceu.gtlib.gui.modular.ModularUI;
+import com.gregtechceu.gtlib.gui.widget.ImageWidget;
+import com.gregtechceu.gtlib.gui.widget.LabelWidget;
+import com.gregtechceu.gtlib.gui.widget.TankWidget;
+import com.gregtechceu.gtlib.side.fluid.FluidHelper;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.entity.player.Player;
 
@@ -27,7 +27,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class SteamHatchPartMachine extends FluidHatchPartMachine implements IUIMachine {
     public static final long INITIAL_TANK_CAPACITY = 64 * FluidHelper.getBucket();
-    public static final boolean IS_STEEL = ConfigHolder.machines.steelSteamMultiblocks;
+    public static final boolean IS_STEEL = ConfigHolder.INSTANCE.machines.steelSteamMultiblocks;
 
     public SteamHatchPartMachine(IMachineBlockEntity holder, Object... args) {
         super(holder, 0, IO.IN, args);

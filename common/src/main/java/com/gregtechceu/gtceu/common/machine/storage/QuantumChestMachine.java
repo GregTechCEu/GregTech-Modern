@@ -1,32 +1,32 @@
 package com.gregtechceu.gtceu.common.machine.storage;
 
-import com.gregtechceu.gtceu.api.item.tool.GTToolType;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.TickableSubscription;
-import com.gregtechceu.gtceu.api.machine.TieredMachine;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.UITemplate;
 import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
+import com.gregtechceu.gtceu.api.item.tool.GTToolType;
+import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.TickableSubscription;
+import com.gregtechceu.gtceu.api.machine.TieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputItem;
 import com.gregtechceu.gtceu.api.machine.feature.IDropSaveMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
-import com.lowdragmc.lowdraglib.gui.editor.Icons;
-import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
-import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
-import com.lowdragmc.lowdraglib.gui.texture.ResourceBorderTexture;
-import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
-import com.lowdragmc.lowdraglib.gui.widget.*;
-import com.lowdragmc.lowdraglib.msic.ItemStackTransfer;
-import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
-import com.lowdragmc.lowdraglib.syncdata.ISubscription;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DropSaved;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import com.gregtechceu.gtlib.gui.editor.Icons;
+import com.gregtechceu.gtlib.gui.modular.ModularUI;
+import com.gregtechceu.gtlib.gui.texture.GuiTextureGroup;
+import com.gregtechceu.gtlib.gui.texture.ResourceBorderTexture;
+import com.gregtechceu.gtlib.gui.texture.ResourceTexture;
+import com.gregtechceu.gtlib.gui.widget.*;
+import com.gregtechceu.gtlib.misc.ItemStackTransfer;
+import com.gregtechceu.gtlib.side.item.ItemTransferHelper;
+import com.gregtechceu.gtlib.syncdata.ISubscription;
+import com.gregtechceu.gtlib.syncdata.annotation.DescSynced;
+import com.gregtechceu.gtlib.syncdata.annotation.DropSaved;
+import com.gregtechceu.gtlib.syncdata.annotation.Persisted;
+import com.gregtechceu.gtlib.syncdata.field.ManagedFieldHolder;
 import com.mojang.blaze3d.MethodsReturnNonnullByDefault;
 import lombok.Getter;
 import lombok.Setter;
@@ -207,7 +207,7 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
     }
 
     @Override
-    public void setOutputFacingItems(Direction outputFacing) {
+    public void setOutputFacingItems(@Nullable Direction outputFacing) {
         this.outputFacingItems = outputFacing;
         updateAutoOutputSubscription();
     }
@@ -294,17 +294,13 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
             var tool = playerIn.getItemInHand(hand);
             if (tool.getDamageValue() >= tool.getMaxDamage()) return InteractionResult.PASS;
             if (hasFrontFacing() && gridSide == getFrontFacing()) return InteractionResult.PASS;
-            var itemFacing = getOutputFacingItems();
-            if (itemFacing == null) {
+            if (gridSide != getOutputFacingItems()) {
                 setOutputFacingItems(gridSide);
-                return InteractionResult.CONSUME;
-            }
-            if (itemFacing == gridSide) {
+            } else {
                 setOutputFacingItems(null);
-                return InteractionResult.CONSUME;
             }
-            setOutputFacingItems(gridSide);
             return InteractionResult.CONSUME;
+
         }
 
         return super.onWrenchClick(playerIn, hand, gridSide, hitResult);

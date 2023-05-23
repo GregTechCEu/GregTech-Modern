@@ -1,13 +1,12 @@
 package com.gregtechceu.gtceu.client.renderer.cover;
 
-
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.common.cover.PumpCover;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.lowdragmc.lowdraglib.LDLib;
-import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
-import com.lowdragmc.lowdraglib.client.model.ModelFactory;
+import com.gregtechceu.gtlib.GTLib;
+import com.gregtechceu.gtlib.client.bakedpipeline.FaceQuad;
+import com.gregtechceu.gtlib.client.model.ModelFactory;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -33,7 +32,7 @@ public class PumpCoverRenderer implements ICoverRenderer {
     public final static ResourceLocation PUMP_OVERLAY_IN = GTCEu.id("block/cover/overlay_pump_inverted");
 
     protected PumpCoverRenderer() {
-        if (LDLib.isClient()) {
+        if (GTLib.isClient()) {
             registerEvent();
         }
     }

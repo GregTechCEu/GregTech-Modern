@@ -60,7 +60,6 @@ repositories {
     maven { url = "https://api.modrinth.com/maven" } // LazyDFU, Jade
     maven { url = "https://maven.terraformersmc.com/releases/" } // Mod Menu
     maven { url = "https://mvn.devos.one/snapshots/" } // Create Fabric, Porting Lib, Forge Tags, Milk Lib, Registrate Fabric
-    maven { url = "https://cursemaven.com" } // Forge Config API Port
     maven { url = "https://maven.cafeteria.dev/releases" } // Fake Player API
     maven { url = "https://maven.jamieswhiteshirt.com/libs-release" } // Reach Entity Attributes
     maven { url = "https://jitpack.io/" } // Mixin Extras, Fabric ASM
@@ -75,8 +74,9 @@ dependencies {
     common(project(path: ":${mod_id}-common", configuration: "namedElements")) { transitive = false }
     shadowCommon(project(path: ":${mod_id}-common", configuration: "transformProductionFabric")) { transitive = false }
 
-    // LDLib
-    modImplementation(fabric.ldlib.fabric) { transitive = false }
+    // GTLib
+    modImplementation(fabric.gtlib.fabric) { transitive = false }
+    include(fabric.gtlib.fabric)
 
     // Registrate
     modImplementation(include("com.tterrag.registrate_fabric:Registrate:${fabric.versions.registrate.get()}"))
@@ -116,6 +116,10 @@ dependencies {
 
     // KJS
     modImplementation fabric.kubejs
+
+    // Configuration
+    modImplementation(fabric.configuration)
+    include(fabric.configuration)
 }
 
 processResources {
@@ -130,7 +134,7 @@ processResources {
             "mod_name", mod_name,
             "mod_description", mod_description,
             "mod_url", mod_url,
-            "ldlib_version", fabric.versions.ldlib.get() // on fabric, use the entire version, unlike forge
+            "gtlib_version", fabric.versions.gtlib.get() // on fabric, use the entire version, unlike forge
     )
     properties.forEach((k, v) -> inputs.property(k, v))
 

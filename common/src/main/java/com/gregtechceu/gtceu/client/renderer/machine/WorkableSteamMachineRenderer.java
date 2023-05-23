@@ -1,13 +1,13 @@
 package com.gregtechceu.gtceu.client.renderer.machine;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.machine.feature.ISteamVentMachine;
 import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.feature.IExhaustVentMachine;
 import com.gregtechceu.gtceu.client.model.WorkableOverlayModel;
-import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
-import com.lowdragmc.lowdraglib.client.model.ModelFactory;
+import com.gregtechceu.gtlib.client.bakedpipeline.FaceQuad;
+import com.gregtechceu.gtlib.client.model.ModelFactory;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -44,12 +44,8 @@ public class WorkableSteamMachineRenderer extends SteamHullMachineRenderer {
         } else {
             quads.addAll(overlayModel.bakeQuads(side, frontFacing, false, false));
         }
-        if (machine instanceof ISteamVentMachine steamVentMachine) {
-            if (side != null && steamVentMachine.getVentFacing() == side && modelFacing != null) {
-                quads.add(FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(VENT_OVERLAY), modelState));
-            }
-        } else {
-            if (Direction.NORTH == side && modelFacing != null) {
+        if (machine instanceof IExhaustVentMachine exhaustVentMachine) {
+            if (side != null && exhaustVentMachine.getVentingDirection() == side && modelFacing != null) {
                 quads.add(FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(VENT_OVERLAY), modelState));
             }
         }

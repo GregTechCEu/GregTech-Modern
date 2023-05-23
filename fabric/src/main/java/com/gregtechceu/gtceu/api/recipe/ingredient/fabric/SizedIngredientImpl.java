@@ -78,6 +78,14 @@ public class SizedIngredientImpl extends SizedIngredient implements FabricIngred
             this.vanilla = vanilla;
         }
 
+        public CustomSizedIngredient(Ingredient inner, int amount) {
+            this.vanilla = new SizedIngredientImpl(inner, amount);
+        }
+
+        public CustomSizedIngredient(String tag, int amount) {
+            this.vanilla = new SizedIngredientImpl(tag, amount);
+        }
+
         @Override
         public boolean test(ItemStack stack) {
             return vanilla.test(stack);
@@ -98,10 +106,22 @@ public class SizedIngredientImpl extends SizedIngredient implements FabricIngred
             return Serializer.INSTANCE;
         }
 
-        @Override
+        public int getAmount() {
+            return vanilla.amount;
+        }
+
+        public Ingredient getInner() {
+            return vanilla.inner;
+        }
+
+        public String getTag() {
+            return vanilla.tag;
+        }
+
+        /*@Override
         public SizedIngredientImpl toVanilla() {
             return vanilla;
-        }
+        }*/
     }
 
 
@@ -118,21 +138,22 @@ public class SizedIngredientImpl extends SizedIngredient implements FabricIngred
         public CustomSizedIngredient read(JsonObject json) {
             int amount = json.get("count").getAsInt();
             if (json.has("tag")) {
-                return new SizedIngredientImpl(json.get("tag").getAsString(), amount).getCustomIngredient();
+                return new CustomSizedIngredient(json.get("tag").getAsString(), amount);
             } else {
                 Ingredient inner = Ingredient.fromJson(json.get("ingredient"));
-                return new SizedIngredientImpl(inner, amount).getCustomIngredient();
+                return new CustomSizedIngredient(inner, amount);
+                //return new SizedIngredientImpl(inner, amount).getCustomIngredient();
             }
         }
 
         @Override
         public void write(JsonObject json, CustomSizedIngredient ingredient) {
             var vanilla = ingredient.toVanilla();
-            json.addProperty("count", vanilla.amount);
-            if (vanilla.tag != null) {
-                json.addProperty("tag", vanilla.tag);
+            json.addProperty("count", ingredient.getAmount());
+            if (ingredient.getTag() != null) {
+                json.addProperty("tag", ingredient.getTag());
             } else {
-                json.add("ingredient", vanilla.inner.toJson());
+                json.add("ingredient", ingredient.getInner().toJson());
             }
         }
 
@@ -149,13 +170,14 @@ public class SizedIngredientImpl extends SizedIngredient implements FabricIngred
         @Override
         public void write(FriendlyByteBuf buffer, CustomSizedIngredient ingredient) {
             var vanilla = ingredient.toVanilla();
-            buffer.writeVarInt(vanilla.getAmount());
-            if (vanilla.tag != null) {
+            buffer.writeVarInt(ingredient.getAmount());
+            if (ingredient.getTag() != null) {
                 buffer.writeBoolean(true);
-                buffer.writeUtf(vanilla.tag);
+                buffer.writeUtf(ingredient.getTag());
             } else {
                 buffer.writeBoolean(false);
-                vanilla.inner.toNetwork(buffer);
+                //vanilla.inner.toNetwork(buffer);
+                ingredient.getInner().toNetwork(buffer);
             }
         }
     }

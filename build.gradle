@@ -26,10 +26,25 @@ subprojects {
         mavenLocal()
         mavenCentral()
         maven { url = "https://maven.shedaniel.me/" } // Cloth Config, REI
+        maven {
+            url "https://cursemaven.com"
+            content {
+                includeGroup "curse.maven"
+            }
+        } // Curse Forge File
         maven { url = "https://dvs1.progwml6.com/files/maven/" } // JEI
         maven { url = "https://maven.parchmentmc.org" } // Parchment mappings
         maven { url = "https://maven.quiltmc.org/repository/release" } // Quilt Mappings
-        maven { url = "https://maven.firstdarkdev.xyz/snapshots" } // LDLib
+        maven {
+            url = "https://maven.pkg.github.com/GregTechCEu/GregTechLib-1.19"
+            credentials(HttpHeaderCredentials.class) {
+                name = "Authorization"
+                value = "Bearer ghp_" + "HLWnQ1hbSwRNebZSZ8bsFWPrV41FfR4ErfOb"
+            }
+            authentication {
+                create("header", HttpHeaderAuthentication.class)
+            }
+        } // GTLib
         maven { // Flywheel
             url = "https://maven.tterrag.com/"
             content {

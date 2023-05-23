@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.integration.jei.recipe;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.lowdragmc.lowdraglib.jei.ModularUIRecipeCategory;
+import com.gregtechceu.gtlib.jei.ModularUIRecipeCategory;
 import lombok.Getter;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.helpers.IGuiHelper;

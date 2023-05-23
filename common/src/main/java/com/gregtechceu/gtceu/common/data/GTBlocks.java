@@ -22,8 +22,6 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.pipelike.cable.Insulation;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
-import com.lowdragmc.lowdraglib.LDLib;
-import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import com.tterrag.registrate.builders.BlockBuilder;
 import com.tterrag.registrate.providers.ProviderType;
 import com.tterrag.registrate.providers.loot.RegistrateBlockLootTables;
@@ -85,9 +83,8 @@ public class GTBlocks {
     //*****     Material Blocks    *****//
     //////////////////////////////////////
 
-    public final static Table<TagPrefix, Material, BlockEntry<? extends MaterialBlock>> MATERIAL_BLOCKS;
-
-    static {
+    public static Table<TagPrefix, Material, BlockEntry<? extends MaterialBlock>> MATERIAL_BLOCKS;
+    public static void generateMaterialBlocks() {
         REGISTRATE.creativeModeTab(() -> GTCreativeModeTabs.MATERIAL_BLOCK);
         ImmutableTable.Builder<TagPrefix, Material, BlockEntry<? extends MaterialBlock>> builder = ImmutableTable.builder();
         for (Material material : GTRegistries.MATERIALS) {
@@ -135,9 +132,9 @@ public class GTBlocks {
                 for (var ore : TagPrefix.ORES.entrySet()) {
                     var oreTag = ore.getKey();
                     var entry = REGISTRATE.block("%s_%s".formatted(FormattingUtil.toLowerCaseUnder(oreTag.name), material.getName()),
-                                    properties -> new MaterialBlock(properties, oreTag, material, LDLib.isClient() ? new OreBlockRenderer(ore.getValue(),
+                                    properties -> new MaterialBlock(properties, oreTag, material, new OreBlockRenderer(ore.getValue(),
                                             Objects.requireNonNull(oreTag.materialIconType()).getBlockTexturePath(material.getMaterialIconSet()),
-                                            oreProperty.isEmissive()) : IRenderer.EMPTY))
+                                            oreProperty.isEmissive())))
                             .initialProperties(() -> Blocks.IRON_BLOCK)
                             .transform(unificationBlock(oreTag, material))
                             .addLayer(() -> RenderType::cutoutMipped)
@@ -160,9 +157,8 @@ public class GTBlocks {
     //////////////////////////////////////
     //*****     Material Pipes    ******//
     //////////////////////////////////////
-    public final static Table<TagPrefix, Material, BlockEntry<CableBlock>> CABLE_BLOCKS;
-
-    static {
+    public static Table<TagPrefix, Material, BlockEntry<CableBlock>> CABLE_BLOCKS;
+    public static void generateCableBlocks() {
         REGISTRATE.creativeModeTab(() -> GTCreativeModeTabs.MATERIAL_PIPE);
 
         // Cable/Wire Blocks
@@ -553,5 +549,7 @@ public class GTBlocks {
     }
 
     public static void init() {
+        generateMaterialBlocks();
+        generateCableBlocks();
     }
 }

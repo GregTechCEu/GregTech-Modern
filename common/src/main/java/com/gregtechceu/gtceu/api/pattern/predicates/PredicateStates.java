@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.pattern.predicates;
 
-import com.lowdragmc.lowdraglib.utils.BlockInfo;
+import com.gregtechceu.gtlib.utils.BlockInfo;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import org.apache.commons.lang3.ArrayUtils;

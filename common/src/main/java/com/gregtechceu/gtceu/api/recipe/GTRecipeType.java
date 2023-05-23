@@ -10,21 +10,21 @@ import com.gregtechceu.gtceu.api.sound.SoundEntry;
 import com.gregtechceu.gtceu.core.mixins.RecipeManagerInvoker;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
-import com.lowdragmc.lowdraglib.LDLib;
-import com.lowdragmc.lowdraglib.Platform;
-import com.lowdragmc.lowdraglib.gui.editor.configurator.IConfigurableWidget;
-import com.lowdragmc.lowdraglib.gui.editor.data.Resources;
-import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
-import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
-import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
-import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
-import com.lowdragmc.lowdraglib.gui.widget.*;
-import com.lowdragmc.lowdraglib.jei.IngredientIO;
-import com.lowdragmc.lowdraglib.side.fluid.IFluidStorage;
-import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
-import com.lowdragmc.lowdraglib.utils.Position;
-import com.lowdragmc.lowdraglib.utils.Rect;
-import com.lowdragmc.lowdraglib.utils.Size;
+import com.gregtechceu.gtlib.GTLib;
+import com.gregtechceu.gtlib.Platform;
+import com.gregtechceu.gtlib.gui.editor.configurator.IConfigurableWidget;
+import com.gregtechceu.gtlib.gui.editor.data.Resources;
+import com.gregtechceu.gtlib.gui.texture.GuiTextureGroup;
+import com.gregtechceu.gtlib.gui.texture.IGuiTexture;
+import com.gregtechceu.gtlib.gui.texture.ProgressTexture;
+import com.gregtechceu.gtlib.gui.texture.ResourceTexture;
+import com.gregtechceu.gtlib.gui.widget.*;
+import com.gregtechceu.gtlib.jei.IngredientIO;
+import com.gregtechceu.gtlib.side.fluid.IFluidStorage;
+import com.gregtechceu.gtlib.side.item.IItemTransfer;
+import com.gregtechceu.gtlib.utils.Position;
+import com.gregtechceu.gtlib.utils.Rect;
+import com.gregtechceu.gtlib.utils.Size;
 import it.unimi.dsi.fastutil.bytes.Byte2ObjectArrayMap;
 import it.unimi.dsi.fastutil.bytes.Byte2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
@@ -70,9 +70,11 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
     private ProgressTexture progressBarTexture = new ProgressTexture();
     @Setter
     private SteamTexture steamProgressBarTexture = null;
+    @Setter
     private ProgressTexture.FillDirection steamMoveType = ProgressTexture.FillDirection.LEFT_TO_RIGHT;
     private IGuiTexture specialTexture;
     private Rect specialTexturePosition;
+    @Getter
     private final Byte2ObjectMap<IGuiTexture> slotOverlays = new Byte2ObjectArrayMap<>();
     @Setter
     @Getter
@@ -138,6 +140,12 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
 
     public GTRecipeType setSpecialTexture(int x, int y, int width, int height, IGuiTexture area) {
         this.specialTexturePosition = Rect.of(new Position(x, y), new Size(width, height));
+        this.specialTexture = area;
+        return this;
+    }
+
+    public GTRecipeType setSpecialTexture(Rect specialTexturePosition, IGuiTexture area) {
+        this.specialTexturePosition = specialTexturePosition;
         this.specialTexture = area;
         return this;
     }
@@ -268,7 +276,7 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
     public CompoundTag getCustomUI() {
         if (this.customUICache == null) {
             ResourceManager resourceManager = null;
-            if (LDLib.isClient()) {
+            if (GTLib.isClient()) {
                 resourceManager = Minecraft.getInstance().getResourceManager();
             } else if (Platform.getMinecraftServer() != null) {
                 resourceManager = Platform.getMinecraftServer().getResourceManager();

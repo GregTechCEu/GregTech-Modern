@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.common.pipelike.fluidpipe;
 
-import com.lowdragmc.lowdraglib.LDLib;
-import com.lowdragmc.lowdraglib.pipelike.Node;
-import com.lowdragmc.lowdraglib.pipelike.PipeNetWalker;
+import com.gregtechceu.gtlib.GTLib;
+import com.gregtechceu.gtlib.pipelike.Node;
+import com.gregtechceu.gtlib.pipelike.PipeNetWalker;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import org.jetbrains.annotations.NotNull;
@@ -21,7 +21,7 @@ public class FluidPipeNetWalker extends PipeNetWalker<FluidPipeData, FluidPipeNe
             walker.traversePipeNet();
             return walker.routes;
         } catch (Exception e){
-            LDLib.LOGGER.error("error while create net data for FluidPipeNet", e);
+            GTLib.LOGGER.error("error while create net data for FluidPipeNet", e);
         }
         return null;
     }

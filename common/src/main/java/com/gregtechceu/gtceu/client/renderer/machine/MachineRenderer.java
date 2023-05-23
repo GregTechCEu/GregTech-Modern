@@ -11,11 +11,11 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.client.model.ItemBakedModel;
 import com.gregtechceu.gtceu.client.renderer.block.CTMModelRenderer;
 import com.gregtechceu.gtceu.client.renderer.cover.ICoverableRenderer;
-import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
-import com.lowdragmc.lowdraglib.client.model.ModelFactory;
-import com.lowdragmc.lowdraglib.client.model.custommodel.ICTMPredicate;
-import com.lowdragmc.lowdraglib.client.renderer.IItemRendererProvider;
-import com.lowdragmc.lowdraglib.utils.FacadeBlockAndTintGetter;
+import com.gregtechceu.gtlib.client.bakedpipeline.FaceQuad;
+import com.gregtechceu.gtlib.client.model.ModelFactory;
+import com.gregtechceu.gtlib.client.model.custommodel.ICTMPredicate;
+import com.gregtechceu.gtlib.client.renderer.IItemRendererProvider;
+import com.gregtechceu.gtlib.utils.FacadeBlockAndTintGetter;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -74,10 +74,13 @@ public class MachineRenderer extends CTMModelRenderer implements ICoverableRende
         if (stack.getItem() instanceof MetaMachineItem machineItem) {
             IItemRendererProvider.disabled.set(true);
             Minecraft.getInstance().getItemRenderer().render(stack, transformType, leftHand, matrixStack, buffer, combinedLight, combinedOverlay,
-                    (ItemBakedModel) (state, direction, random) -> {
-                        List<BakedQuad> quads = new LinkedList<>();
-                        renderMachine(quads, machineItem.getDefinition(), null, Direction.NORTH, direction, random, direction, BlockModelRotation.X0_Y0);
-                        return quads;
+                    new ItemBakedModel() {
+                        @Override
+                        public List<BakedQuad> getQuads(@org.jetbrains.annotations.Nullable BlockState state, @org.jetbrains.annotations.Nullable Direction direction, RandomSource random) {
+                            List<BakedQuad> quads = new LinkedList<>();
+                            renderMachine(quads, machineItem.getDefinition(), null, Direction.NORTH, direction, random, direction, BlockModelRotation.X0_Y0);
+                            return quads;
+                        }
                     });
             IItemRendererProvider.disabled.set(false);
         }

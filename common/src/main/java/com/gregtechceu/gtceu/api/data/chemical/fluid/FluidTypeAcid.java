@@ -14,7 +14,7 @@ public class FluidTypeAcid extends FluidTypeLiquid {
 
     @Override
     public void addAdditionalTooltips(List<Component> tooltips) {
-        tooltips.add(Component.translatable("gregtech.fluid.state_liquid"));
-        tooltips.add(Component.translatable("gregtech.fluid.type_acid.tooltip"));
+        tooltips.add(Component.translatable("gtceu.fluid.state_liquid"));
+        tooltips.add(Component.translatable("gtceu.fluid.type_acid.tooltip"));
     }
 }

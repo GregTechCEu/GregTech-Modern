@@ -30,8 +30,8 @@
     "jei_mod_plugin": [
       "com.gregtechceu.gtceu.integration.jei.fabric.JEIPluginImpl"
     ],
-    "ldlib_pugin": [
-      "com.gregtechceu.gtceu.integration.ldlib.fabric.LDLibPlugin"
+    "gtlib_pugin": [
+      "com.gregtechceu.gtceu.integration.gtlib.fabric.GTLibPlugin"
     ],
     "fabric-datagen": [
       "com.gregtechceu.gtceu.data.fabric.GregTechDatagen"
@@ -51,6 +51,6 @@
     "minecraft": "${minecraft_version}",
     "fabricloader": ">=${fabric_loader_version}",
     "fabric-api": ">=${fabric_api_version}",
-    "ldlib": "${ldlib_version}"
+    "gtlib": "${gtlib_version}"
   }
 }

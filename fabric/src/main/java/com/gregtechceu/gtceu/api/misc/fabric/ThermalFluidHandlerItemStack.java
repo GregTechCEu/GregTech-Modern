@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.misc.fabric;
 
 import com.gregtechceu.gtceu.api.capability.IThermalFluidHandlerItemStack;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
+import com.gregtechceu.gtlib.side.fluid.FluidStack;
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import org.jetbrains.annotations.NotNull;

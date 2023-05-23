@@ -5,9 +5,9 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.common.cover.ConveyorCover;
-import com.lowdragmc.lowdraglib.LDLib;
-import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
-import com.lowdragmc.lowdraglib.client.model.ModelFactory;
+import com.gregtechceu.gtlib.GTLib;
+import com.gregtechceu.gtlib.client.bakedpipeline.FaceQuad;
+import com.gregtechceu.gtlib.client.model.ModelFactory;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -35,7 +35,7 @@ public class ConveyorCoverRenderer implements ICoverRenderer {
     public final static ResourceLocation CONVEYOR_OVERLAY_IN = GTCEu.id("block/cover/overlay_conveyor_inverted_emissive");
 
     protected ConveyorCoverRenderer() {
-        if (LDLib.isClient()) {
+        if (GTLib.isClient()) {
             registerEvent();
         }
     }

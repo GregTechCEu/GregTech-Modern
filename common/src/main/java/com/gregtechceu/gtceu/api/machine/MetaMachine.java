@@ -2,11 +2,17 @@ package com.gregtechceu.gtceu.api.machine;
 
 import com.gregtechceu.gtceu.api.block.BlockProperties;
 import com.gregtechceu.gtceu.api.block.IAppearance;
+import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.blockentity.ITickSubscription;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
+import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
+import com.gregtechceu.gtceu.api.capability.IToolable;
+import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
+import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.IToolGridHighLight;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputFluid;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputItem;
@@ -14,28 +20,22 @@ import com.gregtechceu.gtceu.api.machine.feature.IMachineFeature;
 import com.gregtechceu.gtceu.api.machine.feature.IMufflableMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
-import com.gregtechceu.gtceu.common.cover.FluidFilterCover;
-import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
-import com.gregtechceu.gtceu.api.capability.IControllable;
-import com.gregtechceu.gtceu.api.capability.IToolable;
-import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.data.RotationState;
-import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.misc.IOFluidTransferList;
 import com.gregtechceu.gtceu.api.misc.IOItemTransferList;
+import com.gregtechceu.gtceu.common.cover.FluidFilterCover;
 import com.gregtechceu.gtceu.common.cover.ItemFilterCover;
-import com.lowdragmc.lowdraglib.LDLib;
-import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
-import com.lowdragmc.lowdraglib.msic.FluidTransferList;
-import com.lowdragmc.lowdraglib.msic.ItemTransferList;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
-import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
-import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
-import com.lowdragmc.lowdraglib.syncdata.IManaged;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import com.gregtechceu.gtlib.GTLib;
+import com.gregtechceu.gtlib.gui.texture.ResourceTexture;
+import com.gregtechceu.gtlib.misc.FluidTransferList;
+import com.gregtechceu.gtlib.misc.ItemTransferList;
+import com.gregtechceu.gtlib.side.fluid.FluidStack;
+import com.gregtechceu.gtlib.side.fluid.IFluidTransfer;
+import com.gregtechceu.gtlib.side.item.IItemTransfer;
+import com.gregtechceu.gtlib.syncdata.IManaged;
+import com.gregtechceu.gtlib.syncdata.annotation.DescSynced;
+import com.gregtechceu.gtlib.syncdata.annotation.Persisted;
+import com.gregtechceu.gtlib.syncdata.field.FieldManagedStorage;
+import com.gregtechceu.gtlib.syncdata.field.ManagedFieldHolder;
 import lombok.Getter;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -135,7 +135,7 @@ public class MetaMachine implements IManaged, IToolable, ITickSubscription, IApp
     }
 
     public boolean isRemote() {
-        return getLevel() == null ? LDLib.isRemote() : getLevel().isClientSide;
+        return getLevel() == null ? GTLib.isRemote() : getLevel().isClientSide;
     }
 
     public void notifyBlockUpdate() {
@@ -295,7 +295,7 @@ public class MetaMachine implements IManaged, IToolable, ITickSubscription, IApp
 
     protected InteractionResult onWrenchClick(Player playerIn, InteractionHand hand, Direction gridSide, BlockHitResult hitResult) {
         if (playerIn.isCrouching()) {
-            if (gridSide == getFrontFacing() || !isFacingValid(gridSide) || !hasFrontFacing()) {
+            if (gridSide == getFrontFacing() || !isFacingValid(gridSide)) {
                 return InteractionResult.FAIL;
             }
             if (!isRemote()) {
@@ -367,7 +367,7 @@ public class MetaMachine implements IManaged, IToolable, ITickSubscription, IApp
     public ResourceTexture sideTips(Player player, GTToolType toolType, Direction side) {
         if (toolType == GTToolType.WRENCH) {
             if (player.isCrouching()) {
-                if (hasFrontFacing() && side != this.getFrontFacing() && isFacingValid(side)) {
+                if (isFacingValid(side)) {
                     return GuiTextures.TOOL_FRONT_FACING_ROTATION;
                 }
             }
@@ -418,6 +418,7 @@ public class MetaMachine implements IManaged, IToolable, ITickSubscription, IApp
     }
 
     public boolean isFacingValid(Direction facing) {
+        if (hasFrontFacing() && facing == getFrontFacing()) return false;
         var blockState = getBlockState();
         if (blockState.getBlock() instanceof MetaMachineBlock metaMachineBlock) {
             return metaMachineBlock.rotationState.test(facing);

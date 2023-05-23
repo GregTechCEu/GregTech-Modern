@@ -11,7 +11,7 @@ import com.gregtechceu.gtceu.common.block.CableBlock;
 import com.gregtechceu.gtceu.common.pipelike.cable.CableData;
 import com.gregtechceu.gtceu.common.pipelike.cable.EnergyNet;
 import com.gregtechceu.gtceu.common.pipelike.cable.Insulation;
-import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
+import com.gregtechceu.gtlib.gui.texture.ResourceTexture;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;

@@ -6,11 +6,11 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.UITemplate;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
-import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
-import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
-import com.lowdragmc.lowdraglib.gui.widget.ProgressWidget;
-import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
+import com.gregtechceu.gtlib.gui.modular.ModularUI;
+import com.gregtechceu.gtlib.gui.texture.GuiTextureGroup;
+import com.gregtechceu.gtlib.gui.widget.LabelWidget;
+import com.gregtechceu.gtlib.gui.widget.ProgressWidget;
+import com.gregtechceu.gtlib.gui.widget.SlotWidget;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -91,7 +91,7 @@ public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine imple
                 else z -= 0.52F;
                 x += horizontalOffset;
             }
-            if (ConfigHolder.machines.machineSounds && GTValues.RNG.nextDouble() < 0.1) {
+            if (ConfigHolder.INSTANCE.machines.machineSounds && GTValues.RNG.nextDouble() < 0.1) {
                 getLevel().playLocalSound(x, y, z, SoundEvents.FURNACE_FIRE_CRACKLE, SoundSource.BLOCKS, 1.0F, 1.0F, false);
             }
             getLevel().addParticle(ParticleTypes.LARGE_SMOKE, x, y, z, 0, 0, 0);

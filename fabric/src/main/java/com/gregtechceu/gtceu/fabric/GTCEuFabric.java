@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.api.recipe.ingredient.fabric.SizedIngredientImpl;
+import com.gregtechceu.gtceu.common.CommonProxy;
 import com.gregtechceu.gtceu.common.ServerCommands;
 import com.gregtechceu.gtceu.common.fabric.CommonProxyImpl;
 import net.fabricmc.api.ModInitializer;

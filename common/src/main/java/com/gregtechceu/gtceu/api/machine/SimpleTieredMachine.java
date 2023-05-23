@@ -14,17 +14,20 @@ import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
-import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
-import com.lowdragmc.lowdraglib.gui.texture.*;
-import com.lowdragmc.lowdraglib.gui.widget.*;
-import com.lowdragmc.lowdraglib.msic.ItemStackTransfer;
-import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
-import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
-import com.lowdragmc.lowdraglib.syncdata.ISubscription;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import com.lowdragmc.lowdraglib.utils.Position;
+import com.gregtechceu.gtlib.gui.modular.ModularUI;
+import com.gregtechceu.gtlib.gui.texture.*;
+import com.gregtechceu.gtlib.gui.widget.CycleButtonWidget;
+import com.gregtechceu.gtlib.gui.widget.ImageWidget;
+import com.gregtechceu.gtlib.gui.widget.LabelWidget;
+import com.gregtechceu.gtlib.gui.widget.SlotWidget;
+import com.gregtechceu.gtlib.misc.ItemStackTransfer;
+import com.gregtechceu.gtlib.side.fluid.FluidTransferHelper;
+import com.gregtechceu.gtlib.side.item.ItemTransferHelper;
+import com.gregtechceu.gtlib.syncdata.ISubscription;
+import com.gregtechceu.gtlib.syncdata.annotation.DescSynced;
+import com.gregtechceu.gtlib.syncdata.annotation.Persisted;
+import com.gregtechceu.gtlib.syncdata.field.ManagedFieldHolder;
+import com.gregtechceu.gtlib.utils.Position;
 import com.mojang.blaze3d.MethodsReturnNonnullByDefault;
 import it.unimi.dsi.fastutil.ints.Int2LongFunction;
 import lombok.Getter;
@@ -180,13 +183,13 @@ public class SimpleTieredMachine extends WorkableTieredMachine implements IAutoO
     }
 
     @Override
-    public void setOutputFacingFluids(Direction outputFacing) {
+    public void setOutputFacingFluids(@Nullable Direction outputFacing) {
         this.outputFacingFluids = outputFacing;
         updateAutoOutputSubscription();
     }
 
     @Override
-    public void setOutputFacingItems(Direction outputFacing) {
+    public void setOutputFacingItems(@Nullable Direction outputFacing) {
         this.outputFacingItems = outputFacing;
         updateAutoOutputSubscription();
     }
@@ -239,6 +242,13 @@ public class SimpleTieredMachine extends WorkableTieredMachine implements IAutoO
         updateAutoOutputSubscription();
     }
 
+    @Override
+    public boolean isFacingValid(Direction facing) {
+        if (facing == getOutputFacingItems() || facing == getOutputFacingFluids()) {
+            return false;
+        }
+        return super.isFacingValid(facing);
+    }
 
     //////////////////////////////////////
     //*******     Interaction    *******//
@@ -249,31 +259,27 @@ public class SimpleTieredMachine extends WorkableTieredMachine implements IAutoO
             var tool = playerIn.getItemInHand(hand);
             if (tool.getDamageValue() >= tool.getMaxDamage()) return InteractionResult.PASS;
             if (hasFrontFacing() && gridSide == getFrontFacing()) return InteractionResult.PASS;
-            var itemFacing = outputFacingItems;
-            var fluidFacing = outputFacingFluids;
-            if (itemFacing == null && fluidFacing == null) {
+
+            // important not to use getters here, which have different logic
+            Direction itemFacing = this.outputFacingItems;
+            Direction fluidFacing = this.outputFacingFluids;
+
+            if (gridSide != itemFacing) {
+                // if it is a new side, move it
                 setOutputFacingItems(gridSide);
-                setOutputFacingFluids(gridSide);
-                return InteractionResult.CONSUME;
-            }
-            if (itemFacing == null && gridSide != fluidFacing) {
-                setOutputFacingItems(gridSide);
-                return InteractionResult.CONSUME;
-            }
-            if (fluidFacing == null && gridSide != itemFacing) {
-                setOutputFacingFluids(gridSide);
-                return InteractionResult.CONSUME;
-            }
-            if (itemFacing == gridSide) {
+            } else {
+                // remove the output facing when wrenching the current one to disable it
                 setOutputFacingItems(null);
-                return InteractionResult.CONSUME;
             }
-            if (fluidFacing == gridSide) {
+
+            if (gridSide != fluidFacing) {
+                // if it is a new side, move it
+                setOutputFacingFluids(gridSide);
+            } else {
+                // remove the output facing when wrenching the current one to disable it
                 setOutputFacingFluids(null);
-                return InteractionResult.CONSUME;
             }
-            setOutputFacingItems(gridSide);
-            setOutputFacingFluids(gridSide);
+
             return InteractionResult.CONSUME;
         }
 

@@ -14,7 +14,7 @@ import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
+import com.gregtechceu.gtlib.side.fluid.FluidStack;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.world.item.ItemStack;
 
@@ -31,7 +31,7 @@ import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
 
 public class MaterialRecipeHandler {
 
-    private static final List<TagPrefix> GEM_ORDER = ConfigHolder.recipes.generateLowQualityGems ? Arrays.asList(
+    private static final List<TagPrefix> GEM_ORDER = ConfigHolder.INSTANCE.recipes.generateLowQualityGems ? Arrays.asList(
             gemChipped, gemFlawed, gem, gemFlawless, gemExquisite) :
             Arrays.asList(gem, gemFlawless, gemExquisite);
 
@@ -401,7 +401,7 @@ public class MaterialRecipeHandler {
         if (material.hasProperty(PropertyKey.INGOT)) {
             ItemStack ingotStack = ChemicalHelper.get(ingot, material);
 
-            if (!ConfigHolder.recipes.disableManualCompression) {
+            if (!ConfigHolder.INSTANCE.recipes.disableManualCompression) {
                 VanillaRecipeHelper.addShapelessRecipe(provider, String.format("nugget_disassembling_%s", material),
                         GTUtil.copyAmount(9, nuggetStack), new UnificationEntry(ingot, material));
                 VanillaRecipeHelper.addShapedRecipe(provider, String.format("nugget_assembling_%s", material),
@@ -432,7 +432,7 @@ public class MaterialRecipeHandler {
         } else if (material.hasProperty(PropertyKey.GEM)) {
             ItemStack gemStack = ChemicalHelper.get(gem, material);
 
-            if (!ConfigHolder.recipes.disableManualCompression) {
+            if (!ConfigHolder.INSTANCE.recipes.disableManualCompression) {
                 VanillaRecipeHelper.addShapelessRecipe(provider, String.format("nugget_disassembling_%s", material),
                         GTUtil.copyAmount(9, nuggetStack), new UnificationEntry(gem, material));
                 VanillaRecipeHelper.addShapedRecipe(provider, String.format("nugget_assembling_%s", material),
@@ -499,7 +499,7 @@ public class MaterialRecipeHandler {
         if (!material.hasFlag(EXCLUDE_BLOCK_CRAFTING_RECIPES)) {
 
             //do not allow handcrafting or uncrafting of blacklisted blocks
-            if (!material.hasFlag(EXCLUDE_BLOCK_CRAFTING_BY_HAND_RECIPES) && !ConfigHolder.recipes.disableManualCompression) {
+            if (!material.hasFlag(EXCLUDE_BLOCK_CRAFTING_BY_HAND_RECIPES) && !ConfigHolder.INSTANCE.recipes.disableManualCompression) {
                 VanillaRecipeHelper.addShapelessRecipe(provider, String.format("block_compress_%s", material), blockStack, result.toArray());
 
                 VanillaRecipeHelper.addShapelessRecipe(provider, String.format("block_decompress_%s", material),

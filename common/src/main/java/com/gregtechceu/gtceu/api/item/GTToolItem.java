@@ -5,9 +5,9 @@ import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.MaterialToolTier;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.client.renderer.item.ToolItemRenderer;
-import com.lowdragmc.lowdraglib.client.renderer.IItemRendererProvider;
-import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
-import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
+import com.gregtechceu.gtlib.client.renderer.IItemRendererProvider;
+import com.gregtechceu.gtlib.client.renderer.IRenderer;
+import com.gregtechceu.gtlib.utils.LocalizationUtils;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import lombok.Getter;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -75,7 +75,10 @@ public class GTToolItem extends DiggerItem implements IItemRendererProvider, IIt
             var result = toolable.onToolClick(getToolType(), itemStack, context);
             if (result == InteractionResult.CONSUME && context.getPlayer() instanceof ServerPlayer serverPlayer) {
                 ToolHelper.playToolSound(toolType, serverPlayer);
-                ToolHelper.damageItem(itemStack, context.getLevel().getRandom(), serverPlayer);
+
+                if (!serverPlayer.isCreative()) {
+                    ToolHelper.damageItem(itemStack, context.getLevel().getRandom(), serverPlayer);
+                }
             }
             return result;
         }

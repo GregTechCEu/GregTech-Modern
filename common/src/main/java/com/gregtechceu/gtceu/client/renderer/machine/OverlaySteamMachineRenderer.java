@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.lowdragmc.lowdraglib.client.renderer.impl.IModelRenderer;
+import com.gregtechceu.gtlib.client.renderer.impl.IModelRenderer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -25,7 +25,7 @@ public class OverlaySteamMachineRenderer extends SteamHullMachineRenderer implem
     protected IModelRenderer overlayModel;
 
     public OverlaySteamMachineRenderer(ResourceLocation overlayModel) {
-        super(ConfigHolder.machines.steelSteamMultiblocks ? "steel" : "bronze", GTCEu.id("block/machine/hull_machine"));
+        super(ConfigHolder.INSTANCE.machines.steelSteamMultiblocks ? "steel" : "bronze", GTCEu.id("block/machine/hull_machine"));
         this.overlayModel = new IModelRenderer(overlayModel);
     }
 
