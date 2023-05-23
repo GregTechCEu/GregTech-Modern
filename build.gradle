@@ -32,7 +32,15 @@ subprojects {
                 includeGroup "curse.maven"
             }
         } // Curse Forge File
-        maven { url = "https://dvs1.progwml6.com/files/maven/" } // JEI
+        maven {
+            name = "Jared's maven"
+            url = "https://maven.blamejared.com/"
+        } // JEI
+        maven {
+            // location of a maven mirror for JEI files, as a fallback
+            name = "ModMaven"
+            url = "https://modmaven.dev"
+        } // JEI mirror, AE2
         maven { url = "https://maven.parchmentmc.org" } // Parchment mappings
         maven { url = "https://maven.quiltmc.org/repository/release" } // Quilt Mappings
         maven {

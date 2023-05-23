@@ -555,9 +555,9 @@ public class GTMachines {
                         .where('F', FLUID_IMPORT_HATCH[GTValues.LV], Direction.WEST)
                         .where('D', FLUID_EXPORT_HATCH[GTValues.LV], Direction.EAST)
                         .where('H', MUFFLER_HATCH[GTValues.LV - 1], Direction.UP);
-                Arrays.stream(CoilBlock.CoilType.values())
-                        .sorted(Comparator.comparingInt(CoilBlock.CoilType::getTier))
-                        .forEach(coil -> shapeInfo.add(builder.where('C', GTBlocks.ALL_COILS.get(coil)).build()));
+                ALL_COILS.entrySet().stream()
+                        .sorted(Comparator.comparingInt(entry -> entry.getKey().getTier()))
+                        .forEach(coil -> shapeInfo.add(builder.where('C', coil.getValue().get()).build()));
                 return shapeInfo;
             })
             .recoveryItems(() -> new ItemLike[]{GTItems.MATERIAL_ITEMS.get(TagPrefix.dustTiny, GTMaterials.Ash).get()})

@@ -21,6 +21,7 @@ import com.gregtechceu.gtceu.api.pattern.Predicates;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.*;
+import com.gregtechceu.gtceu.integration.kjs.builders.CoilBlockBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.ElementBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.GTRecipeTypeBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.MaterialIconSetBuilder;
@@ -61,6 +62,8 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         GTRegistryObjectBuilderTypes.MACHINE.addType("multiblock", MultiblockBuilder.class, MultiblockBuilder::new, false);
         GTRegistryObjectBuilderTypes.MACHINE.addType("kinetic", KineticMachineBuilder.class, KineticMachineBuilder::new, false);
 
+
+        RegistryObjectBuilderTypes.BLOCK.addType("gtceu:coil", CoilBlockBuilder.class, CoilBlockBuilder::new);
     }
 
     @Override

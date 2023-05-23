@@ -306,7 +306,7 @@ public class GTBlocks {
     public static final BlockEntry<Block> STEEL_HULL = createSteamCasing("steel");
     public static final BlockEntry<Block> STEEL_BRICKS_HULL = createSteamCasing("bricked_steel");
 
-    public static final Map<CoilBlock.CoilType, BlockEntry<CoilBlock>> ALL_COILS = new HashMap<>();
+    public static final Map<ICoilType, Supplier<CoilBlock>> ALL_COILS = new HashMap<>();
     public static final BlockEntry<CoilBlock> COIL_CUPRONICKEL = createCoilBlock(CoilBlock.CoilType.CUPRONICKEL);
     public static final BlockEntry<CoilBlock> COIL_KANTHAL = createCoilBlock(CoilBlock.CoilType.KANTHAL);
     public static final BlockEntry<CoilBlock> COIL_NICHROME = createCoilBlock(CoilBlock.CoilType.NICHROME);
@@ -397,7 +397,7 @@ public class GTBlocks {
                 .register();
     }
 
-    private static BlockEntry<CoilBlock> createCoilBlock(CoilBlock.CoilType coilType) {
+    private static BlockEntry<CoilBlock> createCoilBlock(ICoilType coilType) {
         BlockEntry<CoilBlock> coilBlock = REGISTRATE.block("wire_coil_%s".formatted(coilType.getName()), p -> new CoilBlock(p, coilType))
                 .initialProperties(() -> Blocks.IRON_BLOCK)
                 .addLayer(() -> RenderType::cutoutMipped)

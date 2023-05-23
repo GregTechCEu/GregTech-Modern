@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.electric;
 
+import com.gregtechceu.gtceu.api.block.ICoilType;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
@@ -39,7 +40,7 @@ public class CrackerMachine extends WorkableElectricMultiblockMachine {
     public void onStructureFormed() {
         super.onStructureFormed();
         var type = getMultiblockState().getMatchContext().get("CoilType");
-        if (type instanceof CoilBlock.CoilType coilType) {
+        if (type instanceof ICoilType coilType) {
             this.coilTier = coilType.getTier();
         } else {
             this.coilTier = 0;

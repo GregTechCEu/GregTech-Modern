@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.common.block;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.block.ActiveBlock;
+import com.gregtechceu.gtceu.api.block.ICoilType;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.client.renderer.block.TextureOverrideRenderer;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
@@ -20,9 +21,9 @@ import java.util.Map;
  */
 @ParametersAreNonnullByDefault
 public class CoilBlock extends ActiveBlock {
-    public CoilBlock.CoilType coilType;
+    public ICoilType coilType;
 
-    public CoilBlock(Properties properties, CoilBlock.CoilType coilType) {
+    public CoilBlock(Properties properties, ICoilType coilType) {
         super(properties, new TextureOverrideRenderer(new ResourceLocation("block/cube_all"),
                         Map.of("all", coilType.getTexture().toString())),
                 new TextureOverrideRenderer(GTCEu.id("block/cube_2_layer_all"),
@@ -51,7 +52,7 @@ public class CoilBlock extends ActiveBlock {
         }
     }*/// todo
 
-    public enum CoilType implements StringRepresentable {
+    public enum CoilType implements StringRepresentable, ICoilType {
         CUPRONICKEL("cupronickel", 1800, 1, 1, GTMaterials.Cupronickel, GTCEu.id("block/casings/coils/machine_coil_cupronickel")),
         KANTHAL("kanthal", 2700, 2, 1, GTMaterials.Kanthal, GTCEu.id("block/casings/coils/machine_coil_kanthal")),
         NICHROME("nichrome", 3600, 2, 2, GTMaterials.Nichrome, GTCEu.id("block/casings/coils/machine_coil_nichrome")),
