@@ -183,13 +183,13 @@ public class SimpleTieredMachine extends WorkableTieredMachine implements IAutoO
     }
 
     @Override
-    public void setOutputFacingFluids(Direction outputFacing) {
+    public void setOutputFacingFluids(@Nullable Direction outputFacing) {
         this.outputFacingFluids = outputFacing;
         updateAutoOutputSubscription();
     }
 
     @Override
-    public void setOutputFacingItems(Direction outputFacing) {
+    public void setOutputFacingItems(@Nullable Direction outputFacing) {
         this.outputFacingItems = outputFacing;
         updateAutoOutputSubscription();
     }
@@ -259,31 +259,27 @@ public class SimpleTieredMachine extends WorkableTieredMachine implements IAutoO
             var tool = playerIn.getItemInHand(hand);
             if (tool.getDamageValue() >= tool.getMaxDamage()) return InteractionResult.PASS;
             if (hasFrontFacing() && gridSide == getFrontFacing()) return InteractionResult.PASS;
-            var itemFacing = outputFacingItems;
-            var fluidFacing = outputFacingFluids;
-            if (itemFacing == null && fluidFacing == null) {
+
+            // important not to use getters here, which have different logic
+            Direction itemFacing = this.outputFacingItems;
+            Direction fluidFacing = this.outputFacingFluids;
+
+            if (gridSide != itemFacing) {
+                // if it is a new side, move it
                 setOutputFacingItems(gridSide);
-                setOutputFacingFluids(gridSide);
-                return InteractionResult.CONSUME;
-            }
-            if (itemFacing == null && gridSide != fluidFacing) {
-                setOutputFacingItems(gridSide);
-                return InteractionResult.CONSUME;
-            }
-            if (fluidFacing == null && gridSide != itemFacing) {
-                setOutputFacingFluids(gridSide);
-                return InteractionResult.CONSUME;
-            }
-            if (itemFacing == gridSide) {
+            } else {
+                // remove the output facing when wrenching the current one to disable it
                 setOutputFacingItems(null);
-                return InteractionResult.CONSUME;
             }
-            if (fluidFacing == gridSide) {
+
+            if (gridSide != fluidFacing) {
+                // if it is a new side, move it
+                setOutputFacingFluids(gridSide);
+            } else {
+                // remove the output facing when wrenching the current one to disable it
                 setOutputFacingFluids(null);
-                return InteractionResult.CONSUME;
             }
-            setOutputFacingItems(gridSide);
-            setOutputFacingFluids(gridSide);
+
             return InteractionResult.CONSUME;
         }
 
