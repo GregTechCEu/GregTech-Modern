@@ -7,11 +7,15 @@ import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtlib.gui.factory.HeldItemUIFactory;
 import com.gregtechceu.gtlib.gui.modular.ModularUI;
 import com.gregtechceu.gtlib.gui.texture.GuiTextureGroup;
+import com.gregtechceu.gtlib.gui.texture.ResourceTexture;
 import com.gregtechceu.gtlib.gui.texture.TextTexture;
 import com.gregtechceu.gtlib.gui.widget.ButtonWidget;
 import com.gregtechceu.gtlib.gui.widget.LabelWidget;
+import com.gregtechceu.gtlib.gui.widget.SlotWidget;
+import com.gregtechceu.gtlib.misc.ItemStackTransfer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -33,6 +37,11 @@ public class IntCircuitBehaviour implements IItemUIFactory, IAddInformation {
         var stack = GTItems.INTEGRATED_CIRCUIT.asStack();
         setCircuitConfiguration(stack, configuration);
         return stack;
+    }
+
+    public static void setCircuitConfiguration(HeldItemUIFactory.HeldItemHolder holder, int configuration) {
+        setCircuitConfiguration(holder.getHeld(), configuration);
+        holder.markAsDirty();
     }
 
     public static void setCircuitConfiguration(ItemStack itemStack, int configuration) {
@@ -65,11 +74,15 @@ public class IntCircuitBehaviour implements IItemUIFactory, IAddInformation {
         return isCircuit;
     }
 
+    // deprecated, not needed (for now)
+    @Deprecated
     public static void adjustConfiguration(HeldItemUIFactory.HeldItemHolder holder, int amount) {
         adjustConfiguration(holder.getHeld(), amount);
         holder.markAsDirty();
     }
 
+    // deprecated, not needed (for now)
+    @Deprecated
     public static void adjustConfiguration(ItemStack stack, int amount) {
         if (!isIntegratedCircuit(stack)) return;
         int configuration = getCircuitConfiguration(stack);
@@ -78,23 +91,37 @@ public class IntCircuitBehaviour implements IItemUIFactory, IAddInformation {
         setCircuitConfiguration(stack, configuration);
     }
 
+
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
         int configuration = getCircuitConfiguration(stack);
         tooltipComponents.add(Component.translatable("metaitem.int_circuit.configuration", configuration));
     }
 
+    
     @Override
     public ModularUI createUI(HeldItemUIFactory.HeldItemHolder holder, Player entityPlayer) {
-        var modular = new ModularUI(176, 60, holder, entityPlayer)
-                .widget(new LabelWidget(9, 8, "metaitem.circuit.integrated.gui"))
-                .widget(new LabelWidget(82, 30, () -> Integer.toString(getCircuitConfiguration(holder.getHeld()))))
-                .widget(new ButtonWidget(15, 24, 20, 20, new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("-5")), data -> adjustConfiguration(holder, -5)))
-                .widget(new ButtonWidget(50, 24, 20, 20, new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("-1")), data -> adjustConfiguration(holder, -1)))
-                .widget(new ButtonWidget(104, 24, 20, 20, new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("+1")), data -> adjustConfiguration(holder, +1)))
-                .widget(new ButtonWidget(141, 24, 20, 20, new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("+5")), data -> adjustConfiguration(holder, +5)));
-        modular.mainGroup.setBackground(GuiTextures.BACKGROUND);
+        LabelWidget label = new LabelWidget(9, 8, "Programmed Circuit Configuration");
+        label.setDropShadow(false);
+        label.setTextColor(0x404040);
+        var modular = new ModularUI(184, 132, holder, entityPlayer)
+                .widget(label);
+        SlotWidget slotwidget = new SlotWidget(new ItemStackTransfer(stack(getCircuitConfiguration(holder.getHeld()))), 0, 82, 20, false, false);
+        slotwidget.setBackground(GuiTextures.SLOT);
+        modular.widget(slotwidget);
+        int idx = 0;
+        for(int x = 0; x <= 2; x++) {
+            for(int y = 0; y <= 8; y++) {
+                int finalIdx = idx;
+                modular.widget(new ButtonWidget(10 + (18 * y), 48 + (18 * x), 18, 18, new GuiTextureGroup(GuiTextures.SLOT, new ResourceTexture(new ResourceLocation("gtceu:textures/gui/widget/circuit/" + (idx + 1) + ".png"), 0, 0, 1.0f, 1.0f)), data -> { setCircuitConfiguration(holder, finalIdx); slotwidget.setHandlerSlot(new ItemStackTransfer(stack(finalIdx)), 0); }));
+                idx++;
+            }
+        }
+        for(int x = 0; x <= 5; x++) {
+            int finalX = x;
+            modular.widget(new ButtonWidget(10 + (18 * x), 102, 18, 18, new GuiTextureGroup(GuiTextures.SLOT, new ResourceTexture(new ResourceLocation("gtceu:textures/gui/widget/circuit/" + (28 + x) + ".png"), 0.0f, 0.0f, 1.0f, 1.0f)), data -> { setCircuitConfiguration(holder, 27 + finalX); slotwidget.setHandlerSlot(new ItemStackTransfer(stack(27 + finalX)), 0); }));
+        }
+        modular.mainGroup.setBackground(GuiTextures.BORDERED_BACKGROUND);
         return modular;
     }
-
 }
