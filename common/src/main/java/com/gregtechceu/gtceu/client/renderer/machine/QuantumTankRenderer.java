@@ -78,7 +78,7 @@ public class QuantumTankRenderer extends TieredHullMachineRenderer {
             RenderSystem.disableDepthTest();
             poseStack.translate(frontFacing.getStepX() * -1 / 16f, frontFacing.getStepY() * -1 / 16f, frontFacing.getStepZ() * -1 / 16f);
             RenderUtils.moveToFace(poseStack, 0, 0, 0, frontFacing);
-            if (frontFacing.getAxis() == Direction.Axis.Y) {
+            if (frontFacing == Direction.UP) {
                 RenderUtils.rotateToFace(poseStack, frontFacing, Direction.SOUTH);
             } else {
                 RenderUtils.rotateToFace(poseStack, frontFacing, null);
