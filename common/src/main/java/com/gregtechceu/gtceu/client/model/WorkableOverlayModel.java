@@ -3,11 +3,11 @@ package com.gregtechceu.gtceu.client.model;
 import com.google.common.collect.Table;
 import com.google.common.collect.Tables;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtlib.GTLib;
-import com.gregtechceu.gtlib.client.bakedpipeline.FaceQuad;
-import com.gregtechceu.gtlib.client.model.ModelFactory;
-import com.gregtechceu.gtlib.client.renderer.IItemRendererProvider;
-import com.gregtechceu.gtlib.utils.ResourceHelper;
+import com.lowdragmc.lowdraglib.LDLib;
+import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
+import com.lowdragmc.lowdraglib.client.model.ModelFactory;
+import com.lowdragmc.lowdraglib.client.renderer.IItemRendererProvider;
+import com.lowdragmc.lowdraglib.utils.ResourceHelper;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -110,7 +110,7 @@ public class WorkableOverlayModel {
 
     public WorkableOverlayModel(ResourceLocation location) {
         this.location = location;
-        if (GTLib.isClient()) {
+        if (LDLib.isClient()) {
             this.sprites = new EnumMap<>(OverlayFace.class);
             this.caches = Tables.newCustomTable(new EnumMap<>(Direction.class), () -> new EnumMap<>(Direction.class));
         }

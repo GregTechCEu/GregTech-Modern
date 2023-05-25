@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.common.blockentity.forge;
 
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.common.blockentity.FluidPipeBlockEntity;
-import com.gregtechceu.gtlib.side.fluid.forge.FluidTransferHelperImpl;
+import com.lowdragmc.lowdraglib.side.fluid.forge.FluidTransferHelperImpl;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

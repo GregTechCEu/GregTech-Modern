@@ -21,9 +21,9 @@ import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.common.recipe.*;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
-import com.gregtechceu.gtlib.GTLib;
-import com.gregtechceu.gtlib.side.fluid.FluidStack;
-import com.gregtechceu.gtlib.utils.NBTToJsonConverter;
+import com.lowdragmc.lowdraglib.LDLib;
+import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
+import com.lowdragmc.lowdraglib.utils.NBTToJsonConverter;
 import dev.latvian.mods.kubejs.recipe.*;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import net.minecraft.core.Registry;
@@ -224,7 +224,7 @@ public class GTRecipeBuilderJS extends RecipeJS {
     public GTRecipeBuilderJS inputItems(ItemStack... inputs) {
         for (ItemStack itemStack : inputs) {
             if (itemStack.isEmpty()) {
-                GTLib.LOGGER.error("gt recipe {} input items is empty", id);
+                LDLib.LOGGER.error("gt recipe {} input items is empty", id);
                 throw new IllegalArgumentException(id + ": input items is empty");
             }
         }
@@ -295,7 +295,7 @@ public class GTRecipeBuilderJS extends RecipeJS {
     public GTRecipeBuilderJS outputItems(ItemStack... outputs) {
         for (ItemStack itemStack : outputs) {
             if (itemStack.isEmpty()) {
-                GTLib.LOGGER.error("gt recipe {} output items is empty", id);
+                LDLib.LOGGER.error("gt recipe {} output items is empty", id);
                 throw new IllegalArgumentException(id + ": output items is empty");
             }
         }

@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.client.renderer.cover;
 
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
-import com.gregtechceu.gtlib.client.renderer.IRenderer;
+import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.block.model.BakedQuad;

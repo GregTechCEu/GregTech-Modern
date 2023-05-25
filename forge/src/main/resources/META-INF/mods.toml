@@ -28,8 +28,8 @@ ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.${mod_id}]]
-modId="gtlib"
+modId="ldlib"
 mandatory=true
-versionRange="${gtlib_version}"
+versionRange="${ldlib_version}"
 ordering="NONE"
 side="BOTH"

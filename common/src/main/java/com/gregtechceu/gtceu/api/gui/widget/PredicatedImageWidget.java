@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.gui.widget;
 
-import com.gregtechceu.gtlib.gui.texture.IGuiTexture;
-import com.gregtechceu.gtlib.gui.widget.ImageWidget;
+import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
+import com.lowdragmc.lowdraglib.gui.widget.ImageWidget;
 import com.mojang.blaze3d.vertex.PoseStack;
 import lombok.Setter;
 import lombok.experimental.Accessors;

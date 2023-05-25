@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.item.component;
 
-import com.gregtechceu.gtlib.gui.factory.HeldItemUIFactory;
-import com.gregtechceu.gtlib.gui.modular.ModularUI;
+import com.lowdragmc.lowdraglib.gui.factory.HeldItemUIFactory;
+import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;

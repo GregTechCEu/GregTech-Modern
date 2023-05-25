@@ -1,5 +1,5 @@
 {
-    "gtlib": {
+    "ldlib": {
         "connection": "gtceu:block/casings/solid/machine_casing_inert_ptfe_ctm"
     }
 }

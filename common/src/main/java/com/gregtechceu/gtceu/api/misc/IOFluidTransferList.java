@@ -1,9 +1,9 @@
 package com.gregtechceu.gtceu.api.misc;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtlib.misc.FluidTransferList;
-import com.gregtechceu.gtlib.side.fluid.FluidStack;
-import com.gregtechceu.gtlib.side.fluid.IFluidTransfer;
+import com.lowdragmc.lowdraglib.msic.FluidTransferList;
+import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
+import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 

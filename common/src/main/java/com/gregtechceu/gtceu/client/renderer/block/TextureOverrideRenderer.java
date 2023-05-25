@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.client.renderer.block;
 
 import com.gregtechceu.gtceu.core.mixins.BlockModelAccessor;
-import com.gregtechceu.gtlib.GTLib;
-import com.gregtechceu.gtlib.client.model.ModelFactory;
+import com.lowdragmc.lowdraglib.LDLib;
+import com.lowdragmc.lowdraglib.client.model.ModelFactory;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.texture.TextureAtlas;
@@ -23,7 +23,7 @@ public class TextureOverrideRenderer extends CTMModelRenderer {
     public TextureOverrideRenderer(ResourceLocation model, Map<String, Object> override) {
         super(model);
         this.override = override;
-        if (GTLib.isClient()) {
+        if (LDLib.isClient()) {
             registerEvent();
         }
     }

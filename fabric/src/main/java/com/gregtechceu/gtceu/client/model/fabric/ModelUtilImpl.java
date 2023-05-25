@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.client.model.fabric;
 
-import com.gregtechceu.gtlib.client.model.fabric.GTLibRendererModel;
-import com.gregtechceu.gtlib.client.renderer.IBlockRendererProvider;
-import com.gregtechceu.gtlib.client.renderer.IRenderer;
+import com.lowdragmc.lowdraglib.client.model.fabric.LDLRendererModel;
+import com.lowdragmc.lowdraglib.client.renderer.IBlockRendererProvider;
+import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
@@ -20,7 +20,7 @@ import java.util.List;
  */
 public class ModelUtilImpl {
     public static List<BakedQuad> getBakedModelQuads(BakedModel model, BlockAndTintGetter level, BlockPos pos, BlockState state, Direction side, RandomSource rand) {
-        if (model instanceof GTLibRendererModel.RendererBakedModel) {
+        if (model instanceof LDLRendererModel.RendererBakedModel) {
             if (state.getBlock() instanceof IBlockRendererProvider rendererProvider) {
                 IRenderer renderer = rendererProvider.getRenderer(state);
                 if (renderer != null) {

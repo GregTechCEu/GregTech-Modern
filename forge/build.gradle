@@ -102,9 +102,9 @@ dependencies {
     common(project(path: ":${mod_id}-common", configuration: "namedElements")) { transitive = false }
     shadowCommon(project(path: ":${mod_id}-common", configuration: "transformProductionForge")) { transitive = false }
 
-    // GTLib
-    modImplementation(forge.gtlib.forge) { transitive = false }
-    include(forge.gtlib.forge)
+    // LDLib
+    modImplementation(forge.ldlib.forge) { transitive = false }
+    include(forge.ldlib.forge)
 
     // Registrate
     modImplementation(include("com.tterrag.registrate:Registrate:${forge.versions.registrate.get()}"))
@@ -148,7 +148,7 @@ processResources {
             "mod_name", mod_name,
             "mod_description", mod_description,
             "mod_url", mod_url,
-            "gtlib_version", forge.versions.gtlib.get()
+            "ldlib_version", forge.versions.ldlib.get()
     )
     properties.forEach((k, v) -> inputs.property(k, v))
 

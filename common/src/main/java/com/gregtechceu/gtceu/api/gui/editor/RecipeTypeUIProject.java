@@ -2,22 +2,22 @@ package com.gregtechceu.gtceu.api.gui.editor;
 
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtlib.GTLib;
-import com.gregtechceu.gtlib.gui.editor.ColorPattern;
-import com.gregtechceu.gtlib.gui.editor.Icons;
-import com.gregtechceu.gtlib.gui.editor.annotation.RegisterUI;
-import com.gregtechceu.gtlib.gui.editor.data.Project;
-import com.gregtechceu.gtlib.gui.editor.data.UIProject;
-import com.gregtechceu.gtlib.gui.editor.ui.Editor;
-import com.gregtechceu.gtlib.gui.editor.ui.MainPanel;
-import com.gregtechceu.gtlib.gui.editor.ui.tool.WidgetToolBox;
-import com.gregtechceu.gtlib.gui.texture.GuiTextureGroup;
-import com.gregtechceu.gtlib.gui.texture.IGuiTexture;
-import com.gregtechceu.gtlib.gui.texture.ResourceBorderTexture;
-import com.gregtechceu.gtlib.gui.texture.TextTexture;
-import com.gregtechceu.gtlib.gui.util.TreeBuilder;
-import com.gregtechceu.gtlib.gui.widget.TabButton;
-import com.gregtechceu.gtlib.gui.widget.WidgetGroup;
+import com.lowdragmc.lowdraglib.LDLib;
+import com.lowdragmc.lowdraglib.gui.editor.ColorPattern;
+import com.lowdragmc.lowdraglib.gui.editor.Icons;
+import com.lowdragmc.lowdraglib.gui.editor.annotation.RegisterUI;
+import com.lowdragmc.lowdraglib.gui.editor.data.Project;
+import com.lowdragmc.lowdraglib.gui.editor.data.UIProject;
+import com.lowdragmc.lowdraglib.gui.editor.ui.Editor;
+import com.lowdragmc.lowdraglib.gui.editor.ui.MainPanel;
+import com.lowdragmc.lowdraglib.gui.editor.ui.tool.WidgetToolBox;
+import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
+import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
+import com.lowdragmc.lowdraglib.gui.texture.ResourceBorderTexture;
+import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
+import com.lowdragmc.lowdraglib.gui.util.TreeBuilder;
+import com.lowdragmc.lowdraglib.gui.widget.TabButton;
+import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import lombok.Getter;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
@@ -114,7 +114,7 @@ public class RecipeTypeUIProject extends UIProject {
             this.currentPanel.setBackground(IGuiTexture.EMPTY);
         }
         for (WidgetToolBox.Default tab : WidgetToolBox.Default.TABS) {
-            editor.getToolPanel().addNewToolBox("gtlib.gui.editor.group." + tab.groupName, tab.icon, tab.createToolBox());
+            editor.getToolPanel().addNewToolBox("ldlib.gui.editor.group." + tab.groupName, tab.icon, tab.createToolBox());
         }
     }
 
@@ -122,11 +122,11 @@ public class RecipeTypeUIProject extends UIProject {
     public void attachMenu(Editor editor, String name, TreeBuilder.Menu menu) {
         if (name.equals("file")) {
             if (recipeType == null) {
-                menu.remove("gtlib.gui.editor.menu.save");
+                menu.remove("ldlib.gui.editor.menu.save");
             } else {
-                menu.remove("gtlib.gui.editor.menu.save");
-                menu.leaf(Icons.SAVE, "gtlib.gui.editor.menu.save", () -> {
-                    var path = new File(GTLib.location, "assets/%s/ui/recipe_type".formatted(recipeType.registryName.getNamespace()));
+                menu.remove("ldlib.gui.editor.menu.save");
+                menu.leaf(Icons.SAVE, "ldlib.gui.editor.menu.save", () -> {
+                    var path = new File(LDLib.location, "assets/%s/ui/recipe_type".formatted(recipeType.registryName.getNamespace()));
                     path.mkdirs();
                     saveProject(new File(path, recipeType.registryName.getPath() + "." + this.getRegisterUI().name()));
                     recipeType.reloadCustomUI();

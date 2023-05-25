@@ -3,9 +3,9 @@ package com.gregtechceu.gtceu.client.renderer.block;
 import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
 import com.gregtechceu.gtceu.client.model.PipeModel;
 import com.gregtechceu.gtceu.client.renderer.cover.ICoverableRenderer;
-import com.gregtechceu.gtlib.GTLib;
-import com.gregtechceu.gtlib.client.model.ModelFactory;
-import com.gregtechceu.gtlib.client.renderer.IRenderer;
+import com.lowdragmc.lowdraglib.LDLib;
+import com.lowdragmc.lowdraglib.client.model.ModelFactory;
+import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -40,7 +40,7 @@ public class PipeBlockRenderer implements IRenderer, ICoverableRenderer {
 
     public PipeBlockRenderer(PipeModel pipeModel) {
         this.pipeModel = pipeModel;
-        if (GTLib.isClient()) {
+        if (LDLib.isClient()) {
             registerEvent();
         }
     }

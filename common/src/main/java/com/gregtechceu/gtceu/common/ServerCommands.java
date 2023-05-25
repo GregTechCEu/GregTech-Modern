@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.common;
 
-import com.gregtechceu.gtlib.gui.factory.UIEditorFactory;
+import com.lowdragmc.lowdraglib.gui.factory.UIEditorFactory;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;

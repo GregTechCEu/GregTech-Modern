@@ -5,8 +5,8 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtlib.Platform;
-import com.gregtechceu.gtlib.utils.ResourceHelper;
+import com.lowdragmc.lowdraglib.Platform;
+import com.lowdragmc.lowdraglib.utils.ResourceHelper;
 import net.minecraft.resources.ResourceLocation;
 
 import javax.annotation.Nonnull;

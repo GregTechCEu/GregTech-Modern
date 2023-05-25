@@ -10,7 +10,7 @@ import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.forge.SizedIngredientImpl;
 import com.gregtechceu.gtceu.common.data.GTSyncedFieldAccessors;
-import com.gregtechceu.gtlib.GTLib;
+import com.lowdragmc.lowdraglib.LDLib;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -60,7 +60,7 @@ public class CommonProxyImpl {
     @SubscribeEvent
     public void loadComplete(FMLLoadCompleteEvent e) {
         e.enqueueWork(() -> {
-            if (GTLib.isModLoaded(GTValues.MODID_TOP)) {
+            if (LDLib.isModLoaded(GTValues.MODID_TOP)) {
                 GTCEu.LOGGER.info("TheOneProbe found. Enabling integration...");
                 TheOneProbePluginImpl.init();
             }

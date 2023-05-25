@@ -15,7 +15,7 @@ import com.gregtechceu.gtceu.api.pattern.predicates.SimplePredicate;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.common.block.CoilBlock;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
-import com.gregtechceu.gtlib.utils.BlockInfo;
+import com.lowdragmc.lowdraglib.utils.BlockInfo;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.Block;

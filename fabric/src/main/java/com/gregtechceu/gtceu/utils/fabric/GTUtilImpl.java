@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.utils.fabric;
 
-import com.gregtechceu.gtlib.side.fluid.FluidHelper;
+import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.fabricmc.fabric.api.tag.convention.v1.ConventionalBiomeTags;
 import net.minecraft.core.Holder;

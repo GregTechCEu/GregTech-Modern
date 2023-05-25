@@ -1,9 +1,9 @@
 package com.gregtechceu.gtceu.common.item;
 
 import com.gregtechceu.gtceu.api.item.component.IRecipeRemainder;
-import com.gregtechceu.gtlib.misc.ItemStackTransfer;
-import com.gregtechceu.gtlib.side.fluid.FluidHelper;
-import com.gregtechceu.gtlib.side.fluid.FluidTransferHelper;
+import com.lowdragmc.lowdraglib.msic.ItemStackTransfer;
+import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
+import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 

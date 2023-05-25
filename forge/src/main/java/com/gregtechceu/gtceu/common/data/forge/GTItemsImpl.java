@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.common.data.forge;
 
 import com.gregtechceu.gtceu.api.item.ComponentItem;
 import com.gregtechceu.gtceu.api.item.forge.ComponentItemImpl;
-import com.gregtechceu.gtlib.GTLib;
+import com.lowdragmc.lowdraglib.LDLib;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.resources.ResourceLocation;
@@ -23,7 +23,7 @@ public class GTItemsImpl {
 
     public static <T extends Item> NonNullConsumer<T> modelPredicate(ResourceLocation predicate, Function<ItemStack, Float> property) {
         return item -> {
-            if (GTLib.isClient()) {
+            if (LDLib.isClient()) {
                 ItemProperties.register(item, predicate, (itemStack, c, l, i) -> property.apply(itemStack));
             }
         };

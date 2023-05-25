@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.api.machine.trait;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
-import com.gregtechceu.gtlib.syncdata.ISubscription;
+import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 
 /**
  * @author KilaBash

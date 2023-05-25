@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.item.ComponentItem;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
-import com.gregtechceu.gtlib.utils.LocalizationUtils;
+import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
