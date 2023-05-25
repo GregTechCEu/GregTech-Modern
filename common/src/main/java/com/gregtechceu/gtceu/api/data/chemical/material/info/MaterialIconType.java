@@ -6,11 +6,8 @@ import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtlib.Platform;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.minecraft.client.Minecraft;
+import com.gregtechceu.gtlib.utils.ResourceHelper;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.ResourceManager;
 
 import javax.annotation.Nonnull;
 import java.util.HashMap;
@@ -118,7 +115,7 @@ public record MaterialIconType(String name) {
         if (!iconSet.isRootIconset && Platform.isClient()) { // check minecraft for null for CI environments
             while (!iconSet.isRootIconset) {
                 ResourceLocation location = GTCEu.id(String.format("textures/block/material_sets/%s/%s.png", iconSet.name, this.name));
-                if (doesResourceExist(location)) break;
+                if (ResourceHelper.isResourceExist(location)) break;
                 iconSet = iconSet.parentIconset;
             }
         }
@@ -142,7 +139,7 @@ public record MaterialIconType(String name) {
         if (!iconSet.isRootIconset && Platform.isClient()) { // check minecraft for null for CI environments
             while (!iconSet.isRootIconset) {
                 ResourceLocation location = GTCEu.id(String.format("models/item/material_sets/%s/%s.json", iconSet.name, this.name));
-                if (doesResourceExist(location)) break;
+                if (ResourceHelper.isResourceExist(location)) break;
                 iconSet = iconSet.parentIconset;
             }
         }
@@ -151,18 +148,6 @@ public record MaterialIconType(String name) {
         ITEM_MODEL_CACHE.put(this, materialIconSet, location);
 
         return location;
-    }
-
-    /**
-     * @param resource the location of the resource, formatted with the root dir and file extension
-     * @return if the resource exists
-     */
-    @SuppressWarnings("ConstantValue")
-    @Environment(EnvType.CLIENT)
-    private static boolean doesResourceExist(@Nonnull ResourceLocation resource) {
-        if (Minecraft.getInstance() == null) return true; // can be null in CI environments
-        ResourceManager manager = Minecraft.getInstance().getResourceManager();
-        return manager != null && manager.getResource(resource).isPresent(); // Can be null on fabric, no clue how, it just is on startup
     }
 
     @Override
