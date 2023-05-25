@@ -7,6 +7,7 @@ import com.google.common.collect.Table;
 import com.gregtechceu.gtceu.GTCEu;
 import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.utils.ResourceHelper;
+import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 
 import javax.annotation.Nonnull;
@@ -112,10 +113,10 @@ public record MaterialIconType(String name) {
 
         MaterialIconSet iconSet = materialIconSet;
         //noinspection ConstantConditions
-        if (!iconSet.isRootIconset && Platform.isClient()) { // check minecraft for null for CI environments
+        if (!iconSet.isRootIconset && Platform.isClient() && Minecraft.getInstance() != null && Minecraft.getInstance().getResourceManager() != null) { // check minecraft for null for CI environments
             while (!iconSet.isRootIconset) {
                 ResourceLocation location = GTCEu.id(String.format("textures/block/material_sets/%s/%s.png", iconSet.name, this.name));
-                if (ResourceHelper.isResourceExistRaw(location)) break;
+                if (ResourceHelper.isResourceExist(location)) break;
                 iconSet = iconSet.parentIconset;
             }
         }
@@ -136,10 +137,10 @@ public record MaterialIconType(String name) {
 
         MaterialIconSet iconSet = materialIconSet;
         //noinspection ConstantConditions
-        if (!iconSet.isRootIconset && Platform.isClient()) { // check minecraft for null for CI environments
+        if (!iconSet.isRootIconset && Platform.isClient() && Minecraft.getInstance() != null && Minecraft.getInstance().getResourceManager() != null) { // check minecraft for null for CI environments
             while (!iconSet.isRootIconset) {
                 ResourceLocation location = GTCEu.id(String.format("models/item/material_sets/%s/%s.json", iconSet.name, this.name));
-                if (ResourceHelper.isResourceExistRaw(location)) break;
+                if (ResourceHelper.isResourceExist(location)) break;
                 iconSet = iconSet.parentIconset;
             }
         }
