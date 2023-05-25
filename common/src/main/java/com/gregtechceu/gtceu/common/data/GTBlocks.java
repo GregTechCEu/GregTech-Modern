@@ -130,6 +130,7 @@ public class GTBlocks {
             if (material.hasProperty(PropertyKey.ORE)) {
                 var oreProperty = material.getProperty(PropertyKey.ORE);
                 for (var ore : TagPrefix.ORES.entrySet()) {
+                    if (ore.getKey().isIgnored(material)) continue;
                     var oreTag = ore.getKey();
                     var entry = REGISTRATE.block("%s_%s".formatted(FormattingUtil.toLowerCaseUnder(oreTag.name), material.getName()),
                                     properties -> new MaterialBlock(properties, oreTag, material, new OreBlockRenderer(ore.getValue(),
