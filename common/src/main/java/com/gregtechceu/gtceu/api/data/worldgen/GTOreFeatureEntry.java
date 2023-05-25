@@ -101,6 +101,7 @@ public class GTOreFeatureEntry {
             return new PlacedFeature(featureHolder, List.of(
                     count,
                     new FrequencyModifier(frequency),
+                    InSquarePlacement.spread(),
                     range
             ));
         }

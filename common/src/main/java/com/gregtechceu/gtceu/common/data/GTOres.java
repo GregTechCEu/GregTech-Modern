@@ -5,7 +5,9 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.worldgen.GTLayerPattern;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreFeatureEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import net.minecraft.core.Registry;
 import net.minecraft.data.worldgen.features.OreFeatures;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -112,7 +114,7 @@ public class GTOres {
             create("banded_iron_vein", 20, 0.03f, HeightRangePlacement.uniform(VerticalAnchor.absolute(40), VerticalAnchor.absolute(90)))
                     .layeredDatagenExt()
                     .withLayerPattern(() -> GTLayerPattern.builder(NETHER_RULES)
-                            .layer(l -> l.weight(2).state(Blocks.END_STONE::defaultBlockState))
+                            .layer(l -> l.weight(2).state(Blocks.NETHERRACK::defaultBlockState))
                             .layer(l -> l.weight(3).block(ore(oreNetherrack, Goethite)).size(2, 4))
                             .layer(l -> l.weight(2).block(ore(oreNetherrack, YellowLimonite)).size(1, 1))
                             .layer(l -> l.weight(2).block(ore(oreNetherrack, Hematite)).size(1, 1))
@@ -125,7 +127,7 @@ public class GTOres {
             create("beryllium_vein", 15, 0.03f, HeightRangePlacement.uniform(VerticalAnchor.absolute(40), VerticalAnchor.absolute(90)))
                     .layeredDatagenExt()
                     .withLayerPattern(() -> GTLayerPattern.builder(NETHER_RULES)
-                            .layer(l -> l.weight(2).state(Blocks.END_STONE::defaultBlockState))
+                            .layer(l -> l.weight(2).state(Blocks.NETHERRACK::defaultBlockState))
                             .layer(l -> l.weight(3).block(ore(oreNetherrack, Beryllium)).size(2, 4))
                             .layer(l -> l.weight(2).block(ore(oreNetherrack, Emerald)).size(1, 1))
                             .layer(l -> l.weight(1).block(ore(oreNetherrack, Thorium)).size(1, 1))
@@ -137,7 +139,7 @@ public class GTOres {
             create("certus_quartz", 15, 0.04f, HeightRangePlacement.uniform(VerticalAnchor.absolute(40), VerticalAnchor.absolute(90)))
                     .layeredDatagenExt()
                     .withLayerPattern(() -> GTLayerPattern.builder(NETHER_RULES)
-                            .layer(l -> l.weight(2).state(Blocks.END_STONE::defaultBlockState))
+                            .layer(l -> l.weight(2).state(Blocks.NETHERRACK::defaultBlockState))
                             .layer(l -> l.weight(3).block(ore(oreNetherrack, Quartzite)).size(2, 4))
                             .layer(l -> l.weight(2).block(ore(oreNetherrack, CertusQuartz)).size(1, 1))
                             .layer(l -> l.weight(1).block(ore(oreNetherrack, Barite)).size(1, 1))
@@ -149,7 +151,7 @@ public class GTOres {
             create("manganese_vein", 15, 0.02f, HeightRangePlacement.uniform(VerticalAnchor.absolute(40), VerticalAnchor.absolute(90)))
                     .layeredDatagenExt()
                     .withLayerPattern(() -> GTLayerPattern.builder(NETHER_RULES)
-                            .layer(l -> l.weight(2).state(Blocks.END_STONE::defaultBlockState))
+                            .layer(l -> l.weight(2).state(Blocks.NETHERRACK::defaultBlockState))
                             .layer(l -> l.weight(3).block(ore(oreNetherrack, Grossular)).size(2, 4))
                             .layer(l -> l.weight(2).block(ore(oreNetherrack, Pyrolusite)).size(1, 1))
                             .layer(l -> l.weight(1).block(ore(oreNetherrack, Tantalite)).size(1, 1))
@@ -161,7 +163,7 @@ public class GTOres {
             create("molybdenum_vein", 15, 0.005f, HeightRangePlacement.uniform(VerticalAnchor.absolute(40), VerticalAnchor.absolute(90)))
                     .layeredDatagenExt()
                     .withLayerPattern(() -> GTLayerPattern.builder(NETHER_RULES)
-                            .layer(l -> l.weight(2).state(Blocks.END_STONE::defaultBlockState))
+                            .layer(l -> l.weight(2).state(Blocks.NETHERRACK::defaultBlockState))
                             .layer(l -> l.weight(3).block(ore(oreNetherrack, Wulfenite)).size(2, 4))
                             .layer(l -> l.weight(2).block(ore(oreNetherrack, Molybdenite)).size(1, 1))
                             .layer(l -> l.weight(1).block(ore(oreNetherrack, Molybdenum)).size(1, 1))
@@ -174,7 +176,7 @@ public class GTOres {
             create("monazite_vein", 15, 0.03f, HeightRangePlacement.uniform(VerticalAnchor.absolute(40), VerticalAnchor.absolute(90)))
                     .layeredDatagenExt()
                     .withLayerPattern(() -> GTLayerPattern.builder(NETHER_RULES)
-                            .layer(l -> l.weight(2).state(Blocks.END_STONE::defaultBlockState))
+                            .layer(l -> l.weight(2).state(Blocks.NETHERRACK::defaultBlockState))
                             .layer(l -> l.weight(3).block(ore(oreNetherrack, Bastnasite)).size(2, 4))
                             .layer(l -> l.weight(1).block(ore(oreNetherrack, Molybdenum)).size(1, 1))
                             .layer(l -> l.weight(1).block(ore(oreNetherrack, Neodymium)).size(1, 1))
@@ -186,7 +188,7 @@ public class GTOres {
             create("nether_quartz_vein", 20, 0.08f, HeightRangePlacement.uniform(VerticalAnchor.absolute(40), VerticalAnchor.absolute(90)))
                     .layeredDatagenExt()
                     .withLayerPattern(() -> GTLayerPattern.builder(NETHER_RULES)
-                            .layer(l -> l.weight(2).state(Blocks.END_STONE::defaultBlockState))
+                            .layer(l -> l.weight(2).state(Blocks.NETHERRACK::defaultBlockState))
                             .layer(l -> l.weight(3).block(ore(oreNetherrack, NetherQuartz)).size(2, 4))
                             .layer(l -> l.weight(1).block(ore(oreNetherrack, Quartzite)).size(1, 1))
                             .build())
@@ -197,7 +199,7 @@ public class GTOres {
             create("redstone_vein", 20, 006f, HeightRangePlacement.uniform(VerticalAnchor.absolute(40), VerticalAnchor.absolute(90)))
                     .layeredDatagenExt()
                     .withLayerPattern(() -> GTLayerPattern.builder(NETHER_RULES)
-                            .layer(l -> l.weight(2).state(Blocks.END_STONE::defaultBlockState))
+                            .layer(l -> l.weight(2).state(Blocks.NETHERRACK::defaultBlockState))
                             .layer(l -> l.weight(3).block(ore(oreNetherrack, Redstone)).size(2, 4))
                             .layer(l -> l.weight(2).block(ore(oreNetherrack, Ruby)).size(1, 1))
                             .layer(l -> l.weight(1).block(ore(oreNetherrack, Cinnabar)).size(1, 1))
@@ -209,7 +211,7 @@ public class GTOres {
             create("saltpeter_vein", 15, 0.4f, HeightRangePlacement.uniform(VerticalAnchor.absolute(40), VerticalAnchor.absolute(90)))
                     .layeredDatagenExt()
                     .withLayerPattern(() -> GTLayerPattern.builder(NETHER_RULES)
-                            .layer(l -> l.weight(2).state(Blocks.END_STONE::defaultBlockState))
+                            .layer(l -> l.weight(2).state(Blocks.NETHERRACK::defaultBlockState))
                             .layer(l -> l.weight(3).block(ore(oreNetherrack, Saltpeter)).size(2, 4))
                             .layer(l -> l.weight(2).block(ore(oreNetherrack, Diatomite)).size(1, 1))
                             .layer(l -> l.weight(2).block(ore(oreNetherrack, Electrotine)).size(1, 1))
@@ -222,7 +224,7 @@ public class GTOres {
             create("sulfur_vein", 20, 0.1f, HeightRangePlacement.uniform(VerticalAnchor.absolute(40), VerticalAnchor.absolute(90)))
                     .layeredDatagenExt()
                     .withLayerPattern(() -> GTLayerPattern.builder(NETHER_RULES)
-                            .layer(l -> l.weight(2).state(Blocks.END_STONE::defaultBlockState))
+                            .layer(l -> l.weight(2).state(Blocks.NETHERRACK::defaultBlockState))
                             .layer(l -> l.weight(3).block(ore(oreNetherrack, Sulfur)).size(2, 4))
                             .layer(l -> l.weight(2).block(ore(oreNetherrack, Pyrite)).size(1, 1))
                             .layer(l -> l.weight(1).block(ore(oreNetherrack, Sphalerite)).size(1, 1))
@@ -234,7 +236,7 @@ public class GTOres {
             create("tetrahedrite_vein", 20, 0.07f, HeightRangePlacement.uniform(VerticalAnchor.absolute(40), VerticalAnchor.absolute(90)))
                     .layeredDatagenExt()
                     .withLayerPattern(() -> GTLayerPattern.builder(NETHER_RULES)
-                            .layer(l -> l.weight(2).state(Blocks.END_STONE::defaultBlockState))
+                            .layer(l -> l.weight(2).state(Blocks.NETHERRACK::defaultBlockState))
                             .layer(l -> l.weight(3).block(ore(oreNetherrack, Tetrahedrite)).size(2, 4))
                             .layer(l -> l.weight(2).block(ore(oreNetherrack, Copper)).size(1, 1))
                             .layer(l -> l.weight(1).block(ore(oreNetherrack, Stibnite)).size(1, 1))
@@ -246,7 +248,7 @@ public class GTOres {
             create("topaz_vein", 15, 0.07f, HeightRangePlacement.uniform(VerticalAnchor.absolute(40), VerticalAnchor.absolute(90)))
                     .layeredDatagenExt()
                     .withLayerPattern(() -> GTLayerPattern.builder(NETHER_RULES)
-                            .layer(l -> l.weight(2).state(Blocks.END_STONE::defaultBlockState))
+                            .layer(l -> l.weight(2).state(Blocks.NETHERRACK::defaultBlockState))
                             .layer(l -> l.weight(3).block(ore(oreNetherrack, BlueTopaz)).size(2, 4))
                             .layer(l -> l.weight(2).block(ore(oreNetherrack, Topaz)).size(1, 1))
                             .layer(l -> l.weight(2).block(ore(oreNetherrack, Chalcocite)).size(1, 1))
@@ -360,7 +362,7 @@ public class GTOres {
             create("garnet_vein", 15, 0.04f, HeightRangePlacement.uniform(VerticalAnchor.absolute(0), VerticalAnchor.absolute(70)))
                     .layeredDatagenExt()
                     .withLayerPattern(() -> GTLayerPattern.builder(OVERWORLD_RULES)
-                            .layer(l -> l.weight(2).state(Blocks.REDSTONE_BLOCK::defaultBlockState))
+                            .layer(l -> l.weight(2).state(Blocks.SAND::defaultBlockState))
                             .layer(l -> l.weight(3).block(ore(oreRedSand, GarnetRed)).size(2, 4))
                             .layer(l -> l.weight(2).block(ore(oreRedSand, GarnetYellow)).size(1, 1))
                             .layer(l -> l.weight(2).block(ore(oreRedSand, Amethyst)).size(1, 1))
@@ -539,7 +541,11 @@ public class GTOres {
 
     private static Supplier<? extends Block> ore(TagPrefix oreTag, Material material) {
         var block = GTBlocks.MATERIAL_BLOCKS.get(oreTag, material);
-        return block == null ? () -> Blocks.AIR : block;
+        if (block == null) {
+            ResourceLocation oreKey = new ResourceLocation("%s_ore".formatted(material.getName()));
+            return Registry.BLOCK.containsKey(oreKey) ? () -> Registry.BLOCK.get(oreKey) : () -> Blocks.AIR;
+        }
+        return block;
     }
 
     public static void init() {
