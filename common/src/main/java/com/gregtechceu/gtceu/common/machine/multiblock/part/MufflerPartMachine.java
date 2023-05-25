@@ -13,7 +13,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
-import com.lowdragmc.lowdraglib.msic.ItemStackTransfer;
+import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
 import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;

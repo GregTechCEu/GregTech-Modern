@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.lowdragmc.lowdraglib.msic.ItemStackTransfer;
+import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
 import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;

@@ -11,7 +11,7 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.ProgressWidget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.msic.FluidStorage;
+import com.lowdragmc.lowdraglib.misc.FluidStorage;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidStorage;
 import com.lowdragmc.lowdraglib.utils.CycleItemStackHandler;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;

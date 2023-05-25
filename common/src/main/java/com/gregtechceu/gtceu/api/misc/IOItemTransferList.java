@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.misc;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.lowdragmc.lowdraglib.msic.ItemTransferList;
+import com.lowdragmc.lowdraglib.misc.ItemTransferList;
 import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import lombok.Getter;
 import net.minecraft.world.item.ItemStack;

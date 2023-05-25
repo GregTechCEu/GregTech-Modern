@@ -20,7 +20,7 @@ import com.lowdragmc.lowdraglib.gui.widget.ImageWidget;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.PhantomFluidWidget;
 import com.lowdragmc.lowdraglib.gui.widget.TankWidget;
-import com.lowdragmc.lowdraglib.msic.FluidStorage;
+import com.lowdragmc.lowdraglib.misc.FluidStorage;
 import com.lowdragmc.lowdraglib.side.fluid.FluidActionResult;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;

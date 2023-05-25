@@ -20,7 +20,7 @@ import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceBorderTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.gui.widget.*;
-import com.lowdragmc.lowdraglib.msic.ItemStackTransfer;
+import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
 import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;

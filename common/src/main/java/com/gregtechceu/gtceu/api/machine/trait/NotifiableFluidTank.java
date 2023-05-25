@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.lowdragmc.lowdraglib.msic.FluidStorage;
+import com.lowdragmc.lowdraglib.misc.FluidStorage;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;

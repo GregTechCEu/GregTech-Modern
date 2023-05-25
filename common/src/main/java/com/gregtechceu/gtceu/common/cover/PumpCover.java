@@ -19,7 +19,7 @@ import com.lowdragmc.lowdraglib.gui.texture.ResourceBorderTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
 import com.lowdragmc.lowdraglib.gui.widget.*;
-import com.lowdragmc.lowdraglib.msic.ItemStackTransfer;
+import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;

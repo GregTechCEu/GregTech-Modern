@@ -20,7 +20,7 @@ import com.lowdragmc.lowdraglib.gui.widget.CycleButtonWidget;
 import com.lowdragmc.lowdraglib.gui.widget.ImageWidget;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
-import com.lowdragmc.lowdraglib.msic.ItemStackTransfer;
+import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
 import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
 import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;

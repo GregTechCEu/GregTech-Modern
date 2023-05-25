@@ -12,7 +12,7 @@ import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
 import com.lowdragmc.lowdraglib.gui.widget.ButtonWidget;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
-import com.lowdragmc.lowdraglib.msic.ItemStackTransfer;
+import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;

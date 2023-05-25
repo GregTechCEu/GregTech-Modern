@@ -8,7 +8,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.FluidTankProxyTrait;
 import com.gregtechceu.gtceu.api.machine.trait.ItemHandlerProxyTrait;
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.CokeOvenMachine;
-import com.lowdragmc.lowdraglib.msic.ItemTransferList;
+import com.lowdragmc.lowdraglib.misc.ItemTransferList;
 import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
 import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;

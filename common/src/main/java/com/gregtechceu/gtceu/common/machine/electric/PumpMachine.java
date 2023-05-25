@@ -14,7 +14,7 @@ import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.gui.widget.*;
-import com.lowdragmc.lowdraglib.msic.FluidBlockTransfer;
+import com.lowdragmc.lowdraglib.misc.FluidBlockTransfer;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;

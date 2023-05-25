@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
 import com.lowdragmc.lowdraglib.gui.widget.PhantomSlotWidget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.msic.ItemStackTransfer;
+import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
 import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
 import lombok.Getter;
 import lombok.Setter;
