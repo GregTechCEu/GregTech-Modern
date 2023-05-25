@@ -115,7 +115,7 @@ public record MaterialIconType(String name) {
         if (!iconSet.isRootIconset && Platform.isClient()) { // check minecraft for null for CI environments
             while (!iconSet.isRootIconset) {
                 ResourceLocation location = GTCEu.id(String.format("textures/block/material_sets/%s/%s.png", iconSet.name, this.name));
-                if (ResourceHelper.isResourceExist(location)) break;
+                if (ResourceHelper.isResourceExistRaw(location)) break;
                 iconSet = iconSet.parentIconset;
             }
         }
@@ -139,7 +139,7 @@ public record MaterialIconType(String name) {
         if (!iconSet.isRootIconset && Platform.isClient()) { // check minecraft for null for CI environments
             while (!iconSet.isRootIconset) {
                 ResourceLocation location = GTCEu.id(String.format("models/item/material_sets/%s/%s.json", iconSet.name, this.name));
-                if (ResourceHelper.isResourceExist(location)) break;
+                if (ResourceHelper.isResourceExistRaw(location)) break;
                 iconSet = iconSet.parentIconset;
             }
         }
