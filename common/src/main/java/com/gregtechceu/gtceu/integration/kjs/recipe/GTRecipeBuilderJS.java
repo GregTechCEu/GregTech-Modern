@@ -25,6 +25,7 @@ import com.gregtechceu.gtlib.GTLib;
 import com.gregtechceu.gtlib.side.fluid.FluidStack;
 import com.gregtechceu.gtlib.utils.NBTToJsonConverter;
 import dev.latvian.mods.kubejs.recipe.*;
+import dev.latvian.mods.rhino.util.HideFromJS;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -50,13 +51,19 @@ public class GTRecipeBuilderJS extends RecipeJS {
 
     @Override
     public void create(RecipeArguments args) {
-        this.id = ResourceLocation.tryParse(args.getString(1, null));
-        backingBuilder = GTRecipeTypes.get(args.getString(0, null)).recipeBuilder(this.getOrCreateId());
+        this.id = ResourceLocation.tryParse(args.getString(0, this.type.getMod() + ":kjs_" + this.getUniqueId()));
+        backingBuilder = GTRecipeTypes.get(this.type.toString()).recipeBuilder(this.getOrCreateId());
+    }
+
+    @HideFromJS
+    @Override
+    public RecipeJS id(ResourceLocation _id) {
+        return super.id(_id);
     }
 
     @Override
     public void deserialize() {
-        String recipeType = GsonHelper.getAsString(json, "recipe_type");
+        String recipeType = GsonHelper.getAsString(json, "type");
         int duration = json.has("duration") ? GsonHelper.getAsInt(json, "duration") : 100;
         Component component = json.has("text") ? Component.translatable(GsonHelper.getAsString(json, "text")) : null;
         CompoundTag data = new CompoundTag();
@@ -98,7 +105,6 @@ public class GTRecipeBuilderJS extends RecipeJS {
 
     @Override
     public void serialize() {
-        json.addProperty("recipe_type", backingBuilder.recipeType.registryName.toString());
         json.addProperty("duration", Math.abs(backingBuilder.duration));
         if (backingBuilder.data != null && !backingBuilder.data.isEmpty()) {
             json.add("data", NBTToJsonConverter.getObject(backingBuilder.data));
@@ -483,10 +489,20 @@ public class GTRecipeBuilderJS extends RecipeJS {
 
     @Override
     public boolean hasInput(IngredientMatch match) {
-        for (var item : backingBuilder.input.get(ItemRecipeCapability.CAP)) {
-            Ingredient in = ItemRecipeCapability.CAP.of(item);
-            if (match.contains(in)) {
-                return true;
+        if (backingBuilder.input.containsKey(ItemRecipeCapability.CAP)) {
+            for (Content item : backingBuilder.input.get(ItemRecipeCapability.CAP)) {
+                Ingredient in = ItemRecipeCapability.CAP.of(item);
+                if (match.contains(in)) {
+                    return true;
+                }
+            }
+        }
+        if (backingBuilder.tickInput.containsKey(ItemRecipeCapability.CAP)) {
+            for (Content item : backingBuilder.tickInput.get(ItemRecipeCapability.CAP)) {
+                Ingredient in = ItemRecipeCapability.CAP.of(item);
+                if (match.contains(in)) {
+                    return true;
+                }
             }
         }
         return false;
@@ -521,10 +537,20 @@ public class GTRecipeBuilderJS extends RecipeJS {
 
     @Override
     public boolean hasOutput(IngredientMatch match) {
-        for (var item : backingBuilder.output.get(ItemRecipeCapability.CAP)) {
-            Ingredient in = ItemRecipeCapability.CAP.of(item);
-            if (match.contains(in)) {
-                return true;
+        if (backingBuilder.output.containsKey(ItemRecipeCapability.CAP)) {
+            for (Content item : backingBuilder.output.get(ItemRecipeCapability.CAP)) {
+                Ingredient in = ItemRecipeCapability.CAP.of(item);
+                if (match.contains(in)) {
+                    return true;
+                }
+            }
+        }
+        if (backingBuilder.tickOutput.containsKey(ItemRecipeCapability.CAP)) {
+            for (Content item : backingBuilder.tickOutput.get(ItemRecipeCapability.CAP)) {
+                Ingredient in = ItemRecipeCapability.CAP.of(item);
+                if (match.contains(in)) {
+                    return true;
+                }
             }
         }
         return false;

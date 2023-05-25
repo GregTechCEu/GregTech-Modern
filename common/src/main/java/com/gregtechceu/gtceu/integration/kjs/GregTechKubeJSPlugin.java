@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.data.chemical.Element;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
@@ -20,6 +21,7 @@ import com.gregtechceu.gtceu.api.pattern.Predicates;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.*;
+import com.gregtechceu.gtceu.integration.kjs.builders.CoilBlockBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.ElementBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.GTRecipeTypeBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.MaterialIconSetBuilder;
@@ -60,6 +62,8 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         GTRegistryObjectBuilderTypes.MACHINE.addType("multiblock", MultiblockBuilder.class, MultiblockBuilder::new, false);
         GTRegistryObjectBuilderTypes.MACHINE.addType("kinetic", KineticMachineBuilder.class, KineticMachineBuilder::new, false);
 
+
+        RegistryObjectBuilderTypes.BLOCK.addType("gtceu:coil", CoilBlockBuilder.class, CoilBlockBuilder::new);
     }
 
     @Override
@@ -165,6 +169,12 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         typeWrappers.register(MaterialIconSet.class, (ctx, o) -> {
             if (o instanceof MaterialIconSet iconSet) return iconSet;
             if (o instanceof CharSequence chars) return MaterialIconSet.getByName(chars.toString());
+            return null;
+        });
+        typeWrappers.register(MaterialStack.class, (ctx, o) -> {
+            if (o instanceof MaterialStack stack) return stack;
+            if (o instanceof Material material) return new MaterialStack(material, 1);
+            if (o instanceof CharSequence chars) return MaterialStack.fromString(chars);
             return null;
         });
 

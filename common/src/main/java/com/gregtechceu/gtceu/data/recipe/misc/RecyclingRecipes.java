@@ -96,6 +96,8 @@ public class RecyclingRecipes {
     }
 
     private static void registerMaceratorRecycling(Consumer<FinishedRecipe> provider, ItemStack input, List<MaterialStack> materials, int multiplier) {
+        // TODO: look into why the hell there's a endstone -> 9 dust recipe
+        //if (materials.stream().anyMatch(materialStack -> prefix.isIgnored(materialStack.material()))) return;
 
         // Finalize the output list.
         List<ItemStack> outputs = finalizeOutputs(

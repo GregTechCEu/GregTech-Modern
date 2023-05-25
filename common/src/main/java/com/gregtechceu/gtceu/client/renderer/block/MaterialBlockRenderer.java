@@ -31,11 +31,15 @@ public class MaterialBlockRenderer extends CTMModelRenderer {
         return MODELS.get(type, iconSet);
     }
 
-    private final ResourceLocation blockTexture;
+    private ResourceLocation blockTexture;
 
     protected MaterialBlockRenderer(MaterialIconType type, MaterialIconSet iconSet) {
         super(GTCEu.id("block/tinted_cube_all"));
-        this.blockTexture = type.getBlockTexturePath(iconSet);
+        this.blockTexture = type.getBlockTexturePath(iconSet, true);
+    }
+
+    public void setBlockTexture(ResourceLocation newBlockTexture) {
+        this.blockTexture = newBlockTexture;
     }
 
     @Override

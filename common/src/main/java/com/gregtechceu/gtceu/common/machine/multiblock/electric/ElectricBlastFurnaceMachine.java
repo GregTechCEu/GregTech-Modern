@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.electric;
 
+import com.gregtechceu.gtceu.api.block.ICoilType;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
@@ -43,7 +44,7 @@ public class ElectricBlastFurnaceMachine extends WorkableElectricMultiblockMachi
     public void onStructureFormed() {
         super.onStructureFormed();
         var type = getMultiblockState().getMatchContext().get("CoilType");
-        if (type instanceof CoilBlock.CoilType coilType) {
+        if (type instanceof ICoilType coilType) {
             this.blastFurnaceTemperature = coilType.getCoilTemperature();
         } else {
             this.blastFurnaceTemperature = CoilBlock.CoilType.CUPRONICKEL.getCoilTemperature();

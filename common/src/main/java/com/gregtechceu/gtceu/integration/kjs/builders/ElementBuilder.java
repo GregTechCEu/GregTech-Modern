@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.integration.kjs.builders;
 
 import com.gregtechceu.gtceu.api.data.chemical.Element;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
 import com.gregtechceu.gtceu.common.data.GTElements;
 import com.gregtechceu.gtceu.integration.kjs.GregTechKubeJSPlugin;
@@ -25,6 +26,6 @@ public class ElementBuilder extends BuilderBase<Element> {
 
     @Override
     public Element register() {
-        return value = new Element(protons, neutrons, halfLifeSeconds, decayTo, name, symbol, isIsotope);
+        return value = GTElements.createAndRegister(protons, neutrons, halfLifeSeconds, decayTo, name, symbol, isIsotope);
     }
 }
