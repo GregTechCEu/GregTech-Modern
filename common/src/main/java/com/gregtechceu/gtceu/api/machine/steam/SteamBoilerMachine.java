@@ -126,25 +126,25 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine implements
     }
 
     protected void updateAutoOutputSubscription() {
-        Direction[] directions = Direction.stream()
+        if (Direction.stream()
                 .filter(direction -> direction != getFrontFacing() && direction != Direction.DOWN)
-                .filter(direction -> FluidTransferHelper.getFluidTransfer(getLevel(),
-                        getPos().relative(direction), direction.getOpposite()) != null)
-                .toArray(Direction[]::new);
-
-        if (directions.length > 0) {
-            autoOutputSubs = subscribeServerTick(autoOutputSubs, () -> this.autoOutput(directions));
+                .anyMatch(direction -> FluidTransferHelper.getFluidTransfer(getLevel(), getPos().relative(direction), direction.getOpposite()) != null)) {
+            autoOutputSubs = subscribeServerTick(autoOutputSubs, this::autoOutput);
         } else if (autoOutputSubs != null) {
             autoOutputSubs.unsubscribe();
             autoOutputSubs = null;
         }
     }
 
-    protected void autoOutput(@NotNull Direction @NotNull [] directions) {
+    protected void autoOutput() {
         if (getOffsetTimer() % 5 == 0) {
-            steamTank.exportToNearby(directions);
+            steamTank.exportToNearby(Direction.stream()
+                    .filter(direction -> direction != getFrontFacing() && direction != Direction.DOWN)
+                    .filter(direction -> FluidTransferHelper.getFluidTransfer(getLevel(),
+                            getPos().relative(direction), direction.getOpposite()) != null)
+                    .toArray(Direction[]::new));
+            updateAutoOutputSubscription();
         }
-        updateAutoOutputSubscription();
     }
 
     //////////////////////////////////////
