@@ -43,6 +43,8 @@ subprojects {
         } // JEI mirror, AE2
         maven { url = "https://maven.parchmentmc.org" } // Parchment mappings
         maven { url = "https://maven.quiltmc.org/repository/release" } // Quilt Mappings
+        maven { url = "https://maven.firstdarkdev.xyz/snapshots" } // LDLib
+        /*
         maven {
             url = "https://maven.pkg.github.com/GregTechCEu/GregTechLib-1.19"
             credentials(HttpHeaderCredentials.class) {
@@ -53,6 +55,7 @@ subprojects {
                 create("header", HttpHeaderAuthentication.class)
             }
         } // LDLib
+        */
         maven { // Flywheel
             url = "https://maven.tterrag.com/"
             content {
