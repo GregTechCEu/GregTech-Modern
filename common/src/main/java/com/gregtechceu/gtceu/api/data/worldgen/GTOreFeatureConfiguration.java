@@ -1,11 +1,16 @@
 package com.gregtechceu.gtceu.api.data.worldgen;
 
+import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import lombok.Getter;
+import lombok.Setter;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author KilaBash
@@ -14,26 +19,33 @@ import java.util.List;
  */
 public class GTOreFeatureConfiguration implements FeatureConfiguration {
     public static final Codec<GTOreFeatureConfiguration> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            GTOreFeatureEntry.CODEC
-                    .fieldOf("entry")
-                    .forGetter(config -> config.entry),
-            Codec.floatRange(0.0F, 1.0F)
-                    .fieldOf("discard_chance_on_air_exposure")
-                    .forGetter(config -> config.discardChanceOnAirExposure),
-            Codec.list(OreConfiguration.TargetBlockState.CODEC)
-                    .fieldOf("targets")
-                    .forGetter(config -> config.targetStates)
-    ).apply(instance, GTOreFeatureConfiguration::new));
+            Codec.either(GTOreFeatureEntry.CODEC, GTOreFeatureEntry.DIRECT_CODEC)
+                    .xmap(either -> either.map(entry -> entry, entry -> entry), Either::left)
+                    .optionalFieldOf("entry")
+                    .forGetter(config -> Optional.ofNullable(config.entry))
+        ).apply(instance, (optional) -> new GTOreFeatureConfiguration(optional.orElse(null)))
+    );
+
+    @Setter
+    private GTOreFeatureEntry entry;
+    @Getter
+    private final boolean isSpawn;
 
 
-    protected final GTOreFeatureEntry entry;
-    protected final float discardChanceOnAirExposure;
-    protected final List<OreConfiguration.TargetBlockState> targetStates;
+    public GTOreFeatureConfiguration() {
+        this.entry = null;
+        this.isSpawn = false;
+    }
 
-    public GTOreFeatureConfiguration(GTOreFeatureEntry entry, float discardChanceOnAirExposure, List<OreConfiguration.TargetBlockState> targetStates) {
+    public GTOreFeatureConfiguration(GTOreFeatureEntry entry) {
         this.entry = entry;
-        this.discardChanceOnAirExposure = discardChanceOnAirExposure;
-        this.targetStates = targetStates;
+        this.isSpawn = true;
+    }
+
+    public GTOreFeatureEntry getEntry(RandomSource random) {
+        if (this.entry != null) return this.entry;
+        GTOreFeatureEntry[] values = GTOreFeatureEntry.ALL.values().toArray(GTOreFeatureEntry[]::new);
+        return values[random.nextInt(values.length)];
     }
 
 }

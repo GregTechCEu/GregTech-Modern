@@ -15,6 +15,8 @@
     "IHolderReferenceAccessor",
     "ITrunkPlacerTypeAccessor",
     "LevelMixin",
+    "PackConfigMixin",
+    "PlacedFeatureMixin",
     "RecipeManagerAccessor",
     "RecipeManagerInvoker",
     "RecipeManagerMixin",

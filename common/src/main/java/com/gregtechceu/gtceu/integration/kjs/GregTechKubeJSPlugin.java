@@ -84,6 +84,9 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         super.registerRecipeTypes(event);
 
         event.register(GTCEu.id("gt_recipe_serializer"), GTRecipeBuilderJS::new);
+        for (var entry : GTRegistries.RECIPE_TYPES.entries()) {
+            event.register(entry.getKey(), GTRecipeBuilderJS::new);
+        }
     }
 
     @Override

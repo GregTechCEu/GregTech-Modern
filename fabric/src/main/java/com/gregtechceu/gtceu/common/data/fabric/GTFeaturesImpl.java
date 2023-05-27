@@ -37,16 +37,14 @@ public class GTFeaturesImpl {
             ResourceLocation id = entry.getKey();
             var datagenExt = entry.getValue().datagenExt();
             if (datagenExt != null) {
-                Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, id, datagenExt.createConfiguredFeature(BuiltinRegistries.ACCESS));
-                Registry.register(BuiltinRegistries.PLACED_FEATURE, id, datagenExt.createPlacedFeature(BuiltinRegistries.ACCESS));
-                ResourceKey<PlacedFeature> featureKey = ResourceKey.create(Registry.PLACED_FEATURE_REGISTRY, id);
-                BiomeModifications.addFeature(
-                        ctx -> ctx.hasTag(datagenExt.biomeTag),
-                        GenerationStep.Decoration.UNDERGROUND_ORES,
-                        featureKey
-                );
+                Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, id, datagenExt.createConfiguredFeature());
             }
         }
+        BiomeModifications.addFeature(
+                ctx -> true,
+                GenerationStep.Decoration.UNDERGROUND_ORES,
+                ResourceKey.create(Registry.PLACED_FEATURE_REGISTRY, GTCEu.id("ore"))
+        );
 
         // rubber tree
         var id = GTCEu.id("rubber_tree");

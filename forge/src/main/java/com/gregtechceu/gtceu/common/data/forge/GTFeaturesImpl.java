@@ -31,6 +31,8 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author KilaBash
@@ -38,9 +40,9 @@ import java.util.List;
  * @implNote GTFeaturesImpl
  */
 public class GTFeaturesImpl {
-    private static final DeferredRegister<ConfiguredFeature<?, ?>> CONFIGURED_FEATURE_REGISTER = DeferredRegister.create(Registry.CONFIGURED_FEATURE_REGISTRY, GTCEu.MOD_ID);
-    private static final DeferredRegister<PlacedFeature> PLACED_FEATURE_REGISTER = DeferredRegister.create(Registry.PLACED_FEATURE_REGISTRY, GTCEu.MOD_ID);
-    private static final DeferredRegister<BiomeModifier> BIOME_MODIFIER_REGISTER = DeferredRegister.create(ForgeRegistries.Keys.BIOME_MODIFIERS, GTCEu.MOD_ID);
+    public static final DeferredRegister<ConfiguredFeature<?, ?>> CONFIGURED_FEATURE_REGISTER = DeferredRegister.create(Registry.CONFIGURED_FEATURE_REGISTRY, GTCEu.MOD_ID);
+    public static final DeferredRegister<PlacedFeature> PLACED_FEATURE_REGISTER = DeferredRegister.create(Registry.PLACED_FEATURE_REGISTRY, GTCEu.MOD_ID);
+    public static final DeferredRegister<BiomeModifier> BIOME_MODIFIER_REGISTER = DeferredRegister.create(ForgeRegistries.Keys.BIOME_MODIFIERS, GTCEu.MOD_ID);
 
     public static void init(IEventBus modEventBus) {
         CONFIGURED_FEATURE_REGISTER.register(modEventBus);
@@ -53,25 +55,23 @@ public class GTFeaturesImpl {
             ResourceLocation id = entry.getKey();
             var datagenExt = entry.getValue().datagenExt();
             if (datagenExt != null) {
-                CONFIGURED_FEATURE_REGISTER.register(id.getPath(), () -> datagenExt.createConfiguredFeature(BuiltinRegistries.ACCESS));
-                PLACED_FEATURE_REGISTER.register(id.getPath(), () -> datagenExt.createPlacedFeature(BuiltinRegistries.ACCESS));
-                BIOME_MODIFIER_REGISTER.register(id.getPath(), () -> {
-                    Registry<Biome> biomeRegistry = BuiltinRegistries.ACCESS.registryOrThrow(Registry.BIOME_REGISTRY);
-                    Registry<PlacedFeature> featureRegistry = BuiltinRegistries.ACCESS.registryOrThrow(Registry.PLACED_FEATURE_REGISTRY);
-                    HolderSet<Biome> biomes = new HolderSet.Named<>(biomeRegistry, datagenExt.biomeTag);
-                    Holder<PlacedFeature> featureHolder = featureRegistry.getOrCreateHolderOrThrow(ResourceKey.create(Registry.PLACED_FEATURE_REGISTRY, id));
-                    return new ForgeBiomeModifiers.AddFeaturesBiomeModifier(
-                            biomes,
-                            HolderSet.direct(featureHolder),
-                            GenerationStep.Decoration.UNDERGROUND_ORES
-                    );
-                });
-
+                CONFIGURED_FEATURE_REGISTER.register(id.getPath(), datagenExt::createConfiguredFeature);
             }
         }
+        BIOME_MODIFIER_REGISTER.register("ore", () -> {
+            Registry<Biome> biomeRegistry = BuiltinRegistries.ACCESS.registryOrThrow(Registry.BIOME_REGISTRY);
+            Registry<PlacedFeature> featureRegistry = BuiltinRegistries.ACCESS.registryOrThrow(Registry.PLACED_FEATURE_REGISTRY);
+            HolderSet<Biome> biomes = HolderSet.direct(biomeRegistry.entrySet().stream().map(Map.Entry::getKey).map(biomeRegistry::getHolderOrThrow).collect(Collectors.toList()));
+            Holder<PlacedFeature> featureHolder = featureRegistry.getOrCreateHolderOrThrow(ResourceKey.create(Registry.PLACED_FEATURE_REGISTRY, GTCEu.id("ore")));
+            return new ForgeBiomeModifiers.AddFeaturesBiomeModifier(
+                    biomes,
+                    HolderSet.direct(featureHolder),
+                    GenerationStep.Decoration.UNDERGROUND_ORES
+            );
+        });
 
         // rubber tree
-        var id = GTCEu.id("rubber_tree");
+        ResourceLocation id = GTCEu.id("rubber_tree");
 
         CONFIGURED_FEATURE_REGISTER.register(id.getPath(), () -> new ConfiguredFeature<>(Feature.RANDOM_SELECTOR, new RandomFeatureConfiguration(List.of(), GTPlacements.RUBBER_CHECKED)));
         PLACED_FEATURE_REGISTER.register(id.getPath(), () -> {

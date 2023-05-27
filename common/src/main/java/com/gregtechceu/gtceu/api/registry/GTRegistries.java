@@ -12,7 +12,9 @@ import com.gregtechceu.gtceu.api.sound.SoundEntry;
 import com.gregtechceu.gtceu.api.data.chemical.Element;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import dev.architectury.injectables.annotations.ExpectPlatform;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 
 /**
@@ -41,5 +43,10 @@ public final class GTRegistries {
     @ExpectPlatform
     public static <V, T extends V> T register(Registry<V> registry, ResourceLocation name, T value) {
         throw new AssertionError();
+    }
+
+    public static <V, T extends V> Holder<T> registerHolder(Registry<V> registry, ResourceLocation name, T value) {
+        register(registry, name, value);
+        return (Holder<T>) registry.getOrCreateHolder(ResourceKey.create(registry.key(), name)).getOrThrow(true, GTCEu.LOGGER::error);
     }
 }

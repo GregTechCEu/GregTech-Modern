@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.worldgen.GTLayerPattern;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreFeatureEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.mojang.datafixers.util.Either;
 import net.minecraft.core.Registry;
 import net.minecraft.data.worldgen.features.OreFeatures;
 import net.minecraft.resources.ResourceLocation;
@@ -536,7 +537,7 @@ public class GTOres {
                     .parent();
 
     private static GTOreFeatureEntry create(String name, int clusterSize, float frequency, HeightRangePlacement range) {
-        return new GTOreFeatureEntry(GTCEu.id(name), clusterSize, frequency, CountPlacement.of(1), range);
+        return new GTOreFeatureEntry(GTCEu.id(name), clusterSize, frequency, CountPlacement.of(1), range, 0.0F, null);
     }
 
     private static Supplier<? extends Block> ore(TagPrefix oreTag, Material material) {
