@@ -21,25 +21,21 @@ public class GTOreFeatureConfiguration implements FeatureConfiguration {
     public static final Codec<GTOreFeatureConfiguration> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.either(GTOreFeatureEntry.CODEC, GTOreFeatureEntry.DIRECT_CODEC)
                     .xmap(either -> either.map(entry -> entry, entry -> entry), Either::left)
-                    .optionalFieldOf("entry")
-                    .forGetter(config -> Optional.ofNullable(config.entry))
-        ).apply(instance, (optional) -> new GTOreFeatureConfiguration(optional.orElse(null)))
+                    .optionalFieldOf("entry", null)
+                    .forGetter(config -> config.entry)
+        ).apply(instance, GTOreFeatureConfiguration::new)
     );
 
     @Setter
     private GTOreFeatureEntry entry;
-    @Getter
-    private final boolean isSpawn;
 
 
     public GTOreFeatureConfiguration() {
         this.entry = null;
-        this.isSpawn = false;
     }
 
     public GTOreFeatureConfiguration(GTOreFeatureEntry entry) {
         this.entry = entry;
-        this.isSpawn = true;
     }
 
     public GTOreFeatureEntry getEntry(RandomSource random) {

@@ -35,14 +35,6 @@ public class OreDataLoader extends SimpleJsonResourceReloadListener {
     private static final String FOLDER = "ore_veins";
     protected static final Logger LOGGER = LogManager.getLogger();
 
-    protected static final BiFunction<ResourceLocation, ConfiguredFeature<?, ?>, Codec<PlacedFeature>> PLACED_FEATURE_DIRECT_MODIFIED = (id, configuredFeature) -> {
-        var key = ResourceKey.create(Registry.CONFIGURED_FEATURE_REGISTRY, id);
-        Holder.Reference<ConfiguredFeature<?, ?>> holder = (Holder.Reference<ConfiguredFeature<?, ?>>)BuiltinRegistries.CONFIGURED_FEATURE.getOrCreateHolderOrThrow(key);
-        holder.bind(key, configuredFeature);
-        return RecordCodecBuilder.create(instance -> instance.group(ConfiguredFeature.CODEC.fieldOf("feature").forGetter(feature -> holder), PlacementModifier.CODEC.listOf().fieldOf("placement").forGetter(PlacedFeature::placement)).apply(instance, PlacedFeature::new));
-    };
-
-
     public OreDataLoader() {
         super(GSON_INSTANCE, FOLDER);
     }
@@ -72,11 +64,4 @@ public class OreDataLoader extends SimpleJsonResourceReloadListener {
         if (!json.has("id")) json.addProperty("id", id.toString());
         return GTOreFeatureEntry.DIRECT_CODEC.decode(JsonOps.INSTANCE, json).map(Pair::getFirst).getOrThrow(false, LOGGER::error);
     }
-
-    /*
-    @ExpectPlatform
-    public static Map<ResourceLocation, JsonObject> gatherData() {
-        throw new AssertionError();
-    }
-     */
 }

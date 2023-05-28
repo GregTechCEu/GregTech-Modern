@@ -40,6 +40,7 @@ public class GTOreFeatureEntry {
         instance -> instance.group(
                 ResourceLocation.CODEC.fieldOf("id").forGetter(ft -> ft.id),
                 Codec.INT.fieldOf("cluster_size").forGetter(ft -> ft.clusterSize),
+                Codec.floatRange(0.0F, 1.0F).fieldOf("density").forGetter(ft -> ft.density),
                 Codec.FLOAT.fieldOf("frequency").forGetter(ft -> ft.frequency),
                 CountPlacement.CODEC.fieldOf("count").forGetter(ft -> ft.count),
                 HeightRangePlacement.CODEC.fieldOf("height_range").forGetter(ft -> ft.range),
@@ -50,6 +51,7 @@ public class GTOreFeatureEntry {
 
     public final ResourceLocation id;
     public final int clusterSize;
+    public final float density;
     public final float frequency;
     public final CountPlacement count;
     public final HeightRangePlacement range;
@@ -60,9 +62,10 @@ public class GTOreFeatureEntry {
 
     private DatagenExtension datagenExt;
 
-    public GTOreFeatureEntry(ResourceLocation id, int clusterSize, float frequency, CountPlacement count, HeightRangePlacement range, float discardChanceOnAirExposure, @Nullable Either<List<OreConfiguration.TargetBlockState>, List<GTLayerPattern>> targets) {
+    public GTOreFeatureEntry(ResourceLocation id, int clusterSize, float frequency, float density, CountPlacement count, HeightRangePlacement range, float discardChanceOnAirExposure, @Nullable Either<List<OreConfiguration.TargetBlockState>, List<GTLayerPattern>> targets) {
         this.id = id;
         this.clusterSize = clusterSize;
+        this.density = density;
         this.frequency = frequency;
         this.count = count;
         this.range = range;
@@ -131,7 +134,7 @@ public class GTOreFeatureEntry {
                 new FrequencyModifier(this.frequency),
                 InSquarePlacement.spread()
                 this.range
-        ));
+            ));
         }*/
 
         public abstract DatagenExtension build();

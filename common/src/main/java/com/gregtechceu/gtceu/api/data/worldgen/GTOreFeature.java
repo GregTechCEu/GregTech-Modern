@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.data.worldgen;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
@@ -14,7 +15,6 @@ import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
-import org.apache.commons.lang3.mutable.MutableBoolean;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
@@ -42,10 +42,9 @@ public class GTOreFeature extends Feature<GTOreFeatureConfiguration> {
         WorldGenLevel level = context.level();
         GTOreFeatureEntry entry = context.config().getEntry(random);
         context.config().setEntry(null);
-        MutableBoolean returnValue = new MutableBoolean(false);
 
-        GTCEu.LOGGER.info("trying to place vein " + entry.id + " at " + origin);
-        entry.targets.ifLeft(targets -> {
+        if (ConfigHolder.INSTANCE.worldgen.debugWorldgen) GTCEu.LOGGER.debug("trying to place vein " + entry.id + " at " + origin);
+        if (entry.targets.left().isPresent()) {
             float f = random.nextFloat() * (float)Math.PI;
             float f1 = (float)entry.clusterSize / 8.0F;
             int i = Mth.ceil(((float)entry.clusterSize / 16.0F * 2.0F + 1.0F) / 2.0F);
@@ -64,58 +63,60 @@ public class GTOreFeature extends Feature<GTOreFeatureConfiguration> {
             for(int l1 = k; l1 <= k + j1; ++l1) {
                 for(int i2 = i1; i2 <= i1 + j1; ++i2) {
                     if (l <= level.getHeight(Heightmap.Types.OCEAN_FLOOR_WG, l1, i2)) {
-                        if (this.doPlaceNormal(level, random, entry, targets, d0, d1, d2, d3, d4, d5, k, l, i1, j1, k1)) {
-                            returnValue.setTrue();
-                            return;
+                        if (this.doPlaceNormal(level, random, entry, entry.targets.left().get(), d0, d1, d2, d3, d4, d5, k, l, i1, j1, k1)) {
+                            logPlaced(entry, true);
+                            return true;
                         }
                     }
                 }
             }
-        }).ifRight(layers -> {
-            if (this.doPlaceLayer(level, random, entry, origin, layers)) {
-                returnValue.setTrue();
+        } else if (entry.targets.right().isPresent()) {
+            if (this.doPlaceLayer(level, random, entry, origin, entry.targets.right().get())) {
+                logPlaced(entry, true);
+                return true;
             }
-        });
+        }
 
-        GTCEu.LOGGER.info("did place feature: " + returnValue.isTrue());
-        return returnValue.getValue();
+        logPlaced(entry, false);
+        return false;
     }
 
-    protected boolean doPlaceNormal(WorldGenLevel pLevel, RandomSource pRandom, GTOreFeatureEntry entry, List<OreConfiguration.TargetBlockState> targets,
+    protected boolean doPlaceNormal(WorldGenLevel level, RandomSource random, GTOreFeatureEntry entry, List<OreConfiguration.TargetBlockState> targets,
                                     double pMinX, double pMaxX, double pMinZ, double pMaxZ, double pMinY, double pMaxY, int pX, int pY, int pZ,
                                     int pWidth, int pHeight) {
         int i = 0;
-        BitSet bitset = new BitSet(pWidth * pHeight * pWidth);
-        BlockPos.MutableBlockPos blockpos$mutableblockpos = new BlockPos.MutableBlockPos();
-        int j = entry.clusterSize;
-        double[] adouble = new double[j * 4];
+        BitSet placedBlocks = new BitSet(pWidth * pHeight * pWidth);
+        BlockPos.MutableBlockPos posCursor = new BlockPos.MutableBlockPos();
+        int size = entry.clusterSize;
+        float density = entry.density;
+        double[] shape = new double[size * 4];
 
-        for(int k = 0; k < j; ++k) {
-            float f = (float)k / (float)j;
+        for(int k = 0; k < size; ++k) {
+            float f = (float)k / (float)size;
             double d0 = Mth.lerp(f, pMinX, pMaxX);
             double d1 = Mth.lerp(f, pMinY, pMaxY);
             double d2 = Mth.lerp(f, pMinZ, pMaxZ);
-            double d3 = pRandom.nextDouble() * (double)j / 16.0D;
+            double d3 = random.nextDouble() * (double)size / 16.0D;
             double d4 = ((double)(Mth.sin((float)Math.PI * f) + 1.0F) * d3 + 1.0D) / 2.0D;
-            adouble[k * 4] = d0;
-            adouble[k * 4 + 1] = d1;
-            adouble[k * 4 + 2] = d2;
-            adouble[k * 4 + 3] = d4;
+            shape[k * 4] = d0;
+            shape[k * 4 + 1] = d1;
+            shape[k * 4 + 2] = d2;
+            shape[k * 4 + 3] = d4;
         }
 
-        for(int l3 = 0; l3 < j - 1; ++l3) {
-            if (!(adouble[l3 * 4 + 3] <= 0.0D)) {
-                for(int i4 = l3 + 1; i4 < j; ++i4) {
-                    if (!(adouble[i4 * 4 + 3] <= 0.0D)) {
-                        double d8 = adouble[l3 * 4] - adouble[i4 * 4];
-                        double d10 = adouble[l3 * 4 + 1] - adouble[i4 * 4 + 1];
-                        double d12 = adouble[l3 * 4 + 2] - adouble[i4 * 4 + 2];
-                        double d14 = adouble[l3 * 4 + 3] - adouble[i4 * 4 + 3];
+        for(int l3 = 0; l3 < size - 1; ++l3) {
+            if (!(shape[l3 * 4 + 3] <= 0.0D)) {
+                for(int i4 = l3 + 1; i4 < size; ++i4) {
+                    if (!(shape[i4 * 4 + 3] <= 0.0D)) {
+                        double d8 = shape[l3 * 4] - shape[i4 * 4];
+                        double d10 = shape[l3 * 4 + 1] - shape[i4 * 4 + 1];
+                        double d12 = shape[l3 * 4 + 2] - shape[i4 * 4 + 2];
+                        double d14 = shape[l3 * 4 + 3] - shape[i4 * 4 + 3];
                         if (d14 * d14 > d8 * d8 + d10 * d10 + d12 * d12) {
                             if (d14 > 0.0D) {
-                                adouble[i4 * 4 + 3] = -1.0D;
+                                shape[i4 * 4 + 3] = -1.0D;
                             } else {
-                                adouble[l3 * 4 + 3] = -1.0D;
+                                shape[l3 * 4 + 3] = -1.0D;
                             }
                         }
                     }
@@ -123,50 +124,53 @@ public class GTOreFeature extends Feature<GTOreFeatureConfiguration> {
             }
         }
 
-        BulkSectionAccess bulksectionaccess = new BulkSectionAccess(pLevel);
+        BulkSectionAccess access = new BulkSectionAccess(level);
 
         try {
-            for(int j4 = 0; j4 < j; ++j4) {
-                double d9 = adouble[j4 * 4 + 3];
+            for(int j4 = 0; j4 < size; ++j4) {
+                double d9 = shape[j4 * 4 + 3];
                 if (!(d9 < 0.0D)) {
-                    double d11 = adouble[j4 * 4];
-                    double d13 = adouble[j4 * 4 + 1];
-                    double d15 = adouble[j4 * 4 + 2];
-                    int k4 = Math.max(Mth.floor(d11 - d9), pX);
-                    int l = Math.max(Mth.floor(d13 - d9), pY);
-                    int i1 = Math.max(Mth.floor(d15 - d9), pZ);
-                    int j1 = Math.max(Mth.floor(d11 + d9), k4);
-                    int k1 = Math.max(Mth.floor(d13 + d9), l);
-                    int l1 = Math.max(Mth.floor(d15 + d9), i1);
+                    double x = shape[j4 * 4];
+                    double y = shape[j4 * 4 + 1];
+                    double z = shape[j4 * 4 + 2];
+                    int k4 = Math.max(Mth.floor(x - d9), pX);
+                    int l = Math.max(Mth.floor(y - d9), pY);
+                    int i1 = Math.max(Mth.floor(z - d9), pZ);
+                    int j1 = Math.max(Mth.floor(x + d9), k4);
+                    int k1 = Math.max(Mth.floor(y + d9), l);
+                    int l1 = Math.max(Mth.floor(z + d9), i1);
 
-                    for(int i2 = k4; i2 <= j1; ++i2) {
-                        double d5 = ((double)i2 + 0.5D - d11) / d9;
-                        if (d5 * d5 < 1.0D) {
-                            for(int j2 = l; j2 <= k1; ++j2) {
-                                double d6 = ((double)j2 + 0.5D - d13) / d9;
-                                if (d5 * d5 + d6 * d6 < 1.0D) {
-                                    for(int k2 = i1; k2 <= l1; ++k2) {
-                                        double d7 = ((double)k2 + 0.5D - d15) / d9;
-                                        if (d5 * d5 + d6 * d6 + d7 * d7 < 1.0D && !pLevel.isOutsideBuildHeight(j2)) {
-                                            int l2 = i2 - pX + (j2 - pY) * pWidth + (k2 - pZ) * pWidth * pHeight;
-                                            if (!bitset.get(l2)) {
-                                                bitset.set(l2);
-                                                blockpos$mutableblockpos.set(i2, j2, k2);
-                                                if (pLevel.ensureCanWrite(blockpos$mutableblockpos)) {
-                                                    LevelChunkSection levelchunksection = bulksectionaccess.getSection(blockpos$mutableblockpos);
+                    for(int posX = k4; posX <= j1; ++posX) {
+                        double radX = ((double)posX + 0.5D - x) / d9;
+                        if (radX * radX < 1.0D) {
+                            for(int posY = l; posY <= k1; ++posY) {
+                                double radY = ((double)posY + 0.5D - y) / d9;
+                                if (radX * radX + radY * radY < 1.0D) {
+                                    for(int posZ = i1; posZ <= l1; ++posZ) {
+                                        double radZ = ((double)posZ + 0.5D - z) / d9;
+                                        if (radX * radX + radY * radY + radZ * radZ < 1.0D && !level.isOutsideBuildHeight(posY)) {
+                                            int isPlaced = posX - pX + (posY - pY) * pWidth + (posZ - pZ) * pWidth * pHeight;
+                                            if (!placedBlocks.get(isPlaced)) {
+                                                placedBlocks.set(isPlaced);
+                                                posCursor.set(posX, posY, posZ);
+                                                if (level.ensureCanWrite(posCursor)) {
+                                                    LevelChunkSection levelchunksection = access.getSection(posCursor);
                                                     if (levelchunksection != null) {
-                                                        int i3 = SectionPos.sectionRelative(i2);
-                                                        int j3 = SectionPos.sectionRelative(j2);
-                                                        int k3 = SectionPos.sectionRelative(k2);
+                                                        int i3 = SectionPos.sectionRelative(posX);
+                                                        int j3 = SectionPos.sectionRelative(posY);
+                                                        int k3 = SectionPos.sectionRelative(posZ);
                                                         BlockState blockstate = levelchunksection.getBlockState(i3, j3, k3);
 
-                                                        for(OreConfiguration.TargetBlockState oreconfiguration$targetblockstate : targets) {
-                                                            if (canPlaceOre(blockstate, bulksectionaccess::getBlockState, pRandom, entry, oreconfiguration$targetblockstate, blockpos$mutableblockpos)) {
-                                                                levelchunksection.setBlockState(i3, j3, k3, oreconfiguration$targetblockstate.state, false);
-                                                                ++i;
-                                                                break;
+                                                        if (random.nextFloat() > density) {
+                                                            for(OreConfiguration.TargetBlockState oreconfiguration$targetblockstate : targets) {
+                                                                if (canPlaceOre(blockstate, access::getBlockState, random, entry, oreconfiguration$targetblockstate, posCursor)) {
+                                                                    levelchunksection.setBlockState(i3, j3, k3, oreconfiguration$targetblockstate.state, false);
+                                                                    ++i;
+                                                                    break;
+                                                                }
                                                             }
                                                         }
+
                                                     }
                                                 }
                                             }
@@ -180,7 +184,7 @@ public class GTOreFeature extends Feature<GTOreFeatureConfiguration> {
             }
         } catch (Throwable throwable1) {
             try {
-                bulksectionaccess.close();
+                access.close();
             } catch (Throwable throwable) {
                 throwable1.addSuppressed(throwable);
             }
@@ -188,7 +192,7 @@ public class GTOreFeature extends Feature<GTOreFeatureConfiguration> {
             throw throwable1;
         }
 
-        bulksectionaccess.close();
+        access.close();
         return i > 0;
     }
 
@@ -200,6 +204,7 @@ public class GTOreFeature extends Feature<GTOreFeatureConfiguration> {
 
         int placedAmount = 0;
         int size = entry.clusterSize;
+        float density = entry.density;
         int radius = Mth.ceil(entry.clusterSize / 2f);
         int x0 = origin.getX() - radius;
         int y0 = origin.getY() - radius;
@@ -275,14 +280,16 @@ public class GTOreFeature extends Feature<GTOreFeatureConfiguration> {
                         int k3 = SectionPos.sectionRelative(currentZ);
                         BlockState blockstate = levelchunksection.getBlockState(i3, j3, k3);
 
-                        for (OreConfiguration.TargetBlockState oreconfiguration$targetblockstate : state) {
-                            if (!canPlaceOre(blockstate, bulksectionaccess::getBlockState, random, entry, oreconfiguration$targetblockstate, mutablePos))
-                                continue;
-                            if (oreconfiguration$targetblockstate.state.isAir())
-                                continue;
-                            levelchunksection.setBlockState(i3, j3, k3, oreconfiguration$targetblockstate.state, false);
-                            ++placedAmount;
-                            break;
+                        if (random.nextFloat() > density) {
+                            for (OreConfiguration.TargetBlockState oreconfiguration$targetblockstate : state) {
+                                if (!canPlaceOre(blockstate, bulksectionaccess::getBlockState, random, entry, oreconfiguration$targetblockstate, mutablePos))
+                                    continue;
+                                if (oreconfiguration$targetblockstate.state.isAir())
+                                    continue;
+                                levelchunksection.setBlockState(i3, j3, k3, oreconfiguration$targetblockstate.state, false);
+                                ++placedAmount;
+                                break;
+                            }
                         }
 
                     }
@@ -318,4 +325,7 @@ public class GTOreFeature extends Feature<GTOreFeatureConfiguration> {
         return pChance <= 0 || (!(pChance >= 1) && pRandom.nextFloat() >= pChance);
     }
 
+    public void logPlaced(GTOreFeatureEntry entry, boolean didPlace) {
+        if (ConfigHolder.INSTANCE.worldgen.debugWorldgen) GTCEu.LOGGER.debug("Did place vein " + entry.id + ": " + didPlace);
+    }
 }

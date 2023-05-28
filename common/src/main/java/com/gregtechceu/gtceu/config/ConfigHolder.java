@@ -89,6 +89,10 @@ public class ConfigHolder {
         @Configurable
         @Configurable.Comment({"Should all Stone Types drop unique Ore Item Blocks?", "Default: false (meaning only Stone, Netherrack, and Endstone"})
         public boolean allUniqueStoneTypes;
+
+        @Configurable
+        @Configurable.Comment({"Debug ore vein placement? (will print placed veins to server's debug.log)", "Default: false (no placement printout in debug.log)"})
+        public boolean debugWorldgen;
     }
     public static class MachineConfigs {
         @Configurable
