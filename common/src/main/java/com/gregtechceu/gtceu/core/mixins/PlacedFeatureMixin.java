@@ -30,7 +30,7 @@ public abstract class PlacedFeatureMixin {
     @Inject(method = "placeWithContext", at = @At(value = "HEAD"))
     public void gtceu$injectPlaceFeature(PlacementContext context, RandomSource source, BlockPos pos, CallbackInfoReturnable<Boolean> cir) {
         if (feature.value().config() instanceof GTOreFeatureConfiguration configuration) {
-            GTOreFeatureEntry entry = configuration.getEntry(source);
+            GTOreFeatureEntry entry = configuration.getEntry(context.getLevel(), context.getLevel().getBiome(pos), source);
             placement = entry.modifiers;
             configuration.setEntry(entry);
         }

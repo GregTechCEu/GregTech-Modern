@@ -4,10 +4,12 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.core.SectionPos;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.BulkSectionAccess;
 import net.minecraft.world.level.chunk.LevelChunkSection;
@@ -40,11 +42,23 @@ public class GTOreFeature extends Feature<GTOreFeatureConfiguration> {
         RandomSource random = context.random();
         BlockPos origin = context.origin();
         WorldGenLevel level = context.level();
-        GTOreFeatureEntry entry = context.config().getEntry(random);
+        Holder<Biome> biome = context.level().getBiome(origin);
+
+        GTOreFeatureEntry entry = context.config().getEntry(context.level(), biome, random);
+        if (entry == null) return false;
         context.config().setEntry(null);
+        /*HolderSet<Biome> checkingBiomes = entry.datagenExt().biomes.map(left -> left, right -> BuiltinRegistries.BIOME.getTag(right).orElse(BuiltinRegistries.BIOME.getTag(BiomeTags.IS_OVERWORLD).orElseThrow()));
+
+        while (!checkingBiomes.contains(biome)) {
+            entry = context.config().getEntry(context.level(), biome, random);
+            if (entry == null) return false;
+            context.config().setEntry(null);
+            checkingBiomes = entry.datagenExt().biomes.map(left -> left, right -> BuiltinRegistries.BIOME.getTag(right).orElse(BuiltinRegistries.BIOME.getTag(BiomeTags.IS_OVERWORLD).orElseThrow()));
+            if (ConfigHolder.INSTANCE.worldgen.debugWorldgen) GTCEu.LOGGER.debug("failed to place vein " + entry.id + " in biome " + biome + ". Trying with another...");
+        }*/
 
         if (ConfigHolder.INSTANCE.worldgen.debugWorldgen) GTCEu.LOGGER.debug("trying to place vein " + entry.id + " at " + origin);
-        if (entry.targets.left().isPresent()) {
+        if (entry.datagenExt() instanceof GTOreFeatureEntry.StandardDatagenExtension standard) {
             float f = random.nextFloat() * (float)Math.PI;
             float f1 = (float)entry.clusterSize / 8.0F;
             int i = Mth.ceil(((float)entry.clusterSize / 16.0F * 2.0F + 1.0F) / 2.0F);
@@ -63,15 +77,15 @@ public class GTOreFeature extends Feature<GTOreFeatureConfiguration> {
             for(int l1 = k; l1 <= k + j1; ++l1) {
                 for(int i2 = i1; i2 <= i1 + j1; ++i2) {
                     if (l <= level.getHeight(Heightmap.Types.OCEAN_FLOOR_WG, l1, i2)) {
-                        if (this.doPlaceNormal(level, random, entry, entry.targets.left().get(), d0, d1, d2, d3, d4, d5, k, l, i1, j1, k1)) {
+                        if (this.doPlaceNormal(level, random, entry, standard.blocks, d0, d1, d2, d3, d4, d5, k, l, i1, j1, k1)) {
                             logPlaced(entry, true);
                             return true;
                         }
                     }
                 }
             }
-        } else if (entry.targets.right().isPresent()) {
-            if (this.doPlaceLayer(level, random, entry, origin, entry.targets.right().get())) {
+        } else if (entry.datagenExt() instanceof GTOreFeatureEntry.LayeredDatagenExtension layered) {
+            if (this.doPlaceLayer(level, random, entry, origin, layered.layerPatterns)) {
                 logPlaced(entry, true);
                 return true;
             }
@@ -161,7 +175,7 @@ public class GTOreFeature extends Feature<GTOreFeatureConfiguration> {
                                                         int k3 = SectionPos.sectionRelative(posZ);
                                                         BlockState blockstate = levelchunksection.getBlockState(i3, j3, k3);
 
-                                                        if (random.nextFloat() > density) {
+                                                        if (random.nextFloat() <= density) {
                                                             for(OreConfiguration.TargetBlockState oreconfiguration$targetblockstate : targets) {
                                                                 if (canPlaceOre(blockstate, access::getBlockState, random, entry, oreconfiguration$targetblockstate, posCursor)) {
                                                                     levelchunksection.setBlockState(i3, j3, k3, oreconfiguration$targetblockstate.state, false);
@@ -280,7 +294,7 @@ public class GTOreFeature extends Feature<GTOreFeatureConfiguration> {
                         int k3 = SectionPos.sectionRelative(currentZ);
                         BlockState blockstate = levelchunksection.getBlockState(i3, j3, k3);
 
-                        if (random.nextFloat() > density) {
+                        if (random.nextFloat() <= density) {
                             for (OreConfiguration.TargetBlockState oreconfiguration$targetblockstate : state) {
                                 if (!canPlaceOre(blockstate, bulksectionaccess::getBlockState, random, entry, oreconfiguration$targetblockstate, mutablePos))
                                     continue;

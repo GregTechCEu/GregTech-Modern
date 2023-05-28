@@ -2,9 +2,11 @@ package com.gregtechceu.gtceu.common.data;
 
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.data.worldgen.FrequencyModifier;
+import com.gregtechceu.gtceu.api.data.worldgen.generator.FrequencyModifier;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreFeature;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreFeatureConfiguration;
+import com.gregtechceu.gtceu.api.data.worldgen.generator.BiomeFilter;
+import com.gregtechceu.gtceu.api.data.worldgen.generator.DimensionFilter;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.core.Registry;
@@ -29,6 +31,8 @@ public class GTFeatures {
 
     public static void init() {
         Object inst = FrequencyModifier.Frequency_PLACEMENT; // seemingly useless access to init the class in time
+        inst = BiomeFilter.BIOME_FILTER;
+        inst = DimensionFilter.DIMENSION_FILTER;
         register();
     }
 
