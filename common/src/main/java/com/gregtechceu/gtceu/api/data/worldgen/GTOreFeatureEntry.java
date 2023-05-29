@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.data.worldgen;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.BiomeFilter;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.DimensionFilter;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.FrequencyModifier;
+import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinCountFilter;
 import com.gregtechceu.gtceu.common.data.GTFeatures;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
@@ -48,6 +49,7 @@ public class GTOreFeatureEntry {
                     Codec.INT.fieldOf("cluster_size").forGetter(ft -> ft.clusterSize),
                     Codec.floatRange(0.0F, 1.0F).fieldOf("density").forGetter(ft -> ft.density),
                     Codec.INT.fieldOf("weight").forGetter(ft -> ft.weight),
+                    WorldGenLayer.CODEC.fieldOf("layer").forGetter(ft -> ft.layer),
                     RegistryCodecs.homogeneousList(Registry.DIMENSION_TYPE_REGISTRY).fieldOf("dimension_filter").forGetter(ft -> ft.dimensionFilter),
                     CountPlacement.CODEC.fieldOf("count").forGetter(ft -> ft.count),
                     HeightRangePlacement.CODEC.fieldOf("height_range").forGetter(ft -> ft.range),
@@ -65,6 +67,7 @@ public class GTOreFeatureEntry {
     public final int clusterSize;
     public final float density;
     public final int weight;
+    public final WorldGenLayer layer;
     public final HolderSet<DimensionType> dimensionFilter;
     public final CountPlacement count;
     public final HeightRangePlacement range;
@@ -74,11 +77,12 @@ public class GTOreFeatureEntry {
 
     private DatagenExtension datagenExt;
 
-    public GTOreFeatureEntry(ResourceLocation id, int clusterSize, float density, int weight, HolderSet<DimensionType> dimensionFilter, CountPlacement count, HeightRangePlacement range, float discardChanceOnAirExposure, @Nullable DatagenExtension datagenExt) {
+    public GTOreFeatureEntry(ResourceLocation id, int clusterSize, float density, int weight, WorldGenLayer layer, HolderSet<DimensionType> dimensionFilter, CountPlacement count, HeightRangePlacement range, float discardChanceOnAirExposure, @Nullable DatagenExtension datagenExt) {
         this.id = id;
         this.clusterSize = clusterSize;
         this.density = density;
         this.weight = weight;
+        this.layer = layer;
         this.dimensionFilter = dimensionFilter;
         this.count = count;
         this.range = range;
@@ -87,9 +91,10 @@ public class GTOreFeatureEntry {
 
         this.modifiers = List.of(
                 //new DimensionFilter(dimensionFilter),
+                VeinCountFilter.count(),
                 BiomeFilter.biome(),
                 this.count,
-                RarityFilter.onAverageOnceEvery(8),
+                //RarityFilter.onAverageOnceEvery(8),
                 InSquarePlacement.spread(),
                 this.range
         );
@@ -275,7 +280,7 @@ public class GTOreFeatureEntry {
 
         public LayeredDatagenExtension(HolderSet<Biome> biomes, BiomeWeightModifier modifier, List<GTLayerPattern> bakingLayerPatterns) {
             super(biomes, modifier);
-            this.bakingLayerPatterns.addAll(bakingLayerPatterns.stream().map(val -> NonNullSupplier.of(() -> val)).toList());
+            this.layerPatterns = bakingLayerPatterns;
         }
 
         public LayeredDatagenExtension withLayerPattern(NonNullSupplier<GTLayerPattern> pattern) {
@@ -290,6 +295,7 @@ public class GTOreFeatureEntry {
         }
 
         public DatagenExtension build() {
+            if (this.layerPatterns != null && !this.layerPatterns.isEmpty()) return this;
             List<GTLayerPattern> layerPatterns = this.bakingLayerPatterns.stream()
                     .map(NonNullSupplier::get)
                     .toList();

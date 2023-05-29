@@ -24,7 +24,7 @@ import java.util.stream.Stream;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class FrequencyModifier extends PlacementModifier {
-    public static PlacementModifierType<FrequencyModifier> Frequency_PLACEMENT = GTRegistries.register(Registry.PLACEMENT_MODIFIERS, GTCEu.id("frequency"), () -> FrequencyModifier.CODEC);
+    public static final PlacementModifierType<FrequencyModifier> FREQUENCY_MODIFIER = GTRegistries.register(Registry.PLACEMENT_MODIFIERS, GTCEu.id("frequency"), () -> FrequencyModifier.CODEC);
 
     public static final Codec<FrequencyModifier> CODEC = ExtraCodecs.POSITIVE_FLOAT.fieldOf("chance").xmap(FrequencyModifier::new, (modifier) -> modifier.frequency).codec();
 
@@ -50,7 +50,7 @@ public class FrequencyModifier extends PlacementModifier {
 
     @Override
     public PlacementModifierType<?> type() {
-        return Frequency_PLACEMENT;
+        return FREQUENCY_MODIFIER;
     }
 
 }

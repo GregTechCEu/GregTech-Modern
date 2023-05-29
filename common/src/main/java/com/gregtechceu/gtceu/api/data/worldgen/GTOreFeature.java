@@ -327,7 +327,7 @@ public class GTOreFeature extends Feature<GTOreFeatureConfiguration> {
     public boolean canPlaceOre(BlockState pState, Function<BlockPos, BlockState> pAdjacentStateAccessor,
                                RandomSource pRandom, GTOreFeatureEntry entry, OreConfiguration.TargetBlockState pTargetState,
                                BlockPos.MutableBlockPos pMatablePos) {
-        if (!pTargetState.target.test(pState, pRandom))
+        if (!pTargetState.target.test(pState, pRandom) || !entry.layer.getTarget().test(pState, pRandom))
             return false;
         if (shouldSkipAirCheck(pRandom, entry.discardChanceOnAirExposure))
             return true;

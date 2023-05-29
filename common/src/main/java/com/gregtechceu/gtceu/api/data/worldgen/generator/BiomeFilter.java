@@ -18,10 +18,10 @@ import net.minecraft.world.level.levelgen.placement.PlacementFilter;
 import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
 
 public class BiomeFilter extends PlacementFilter {
-    public static PlacementModifierType<BiomeFilter> BIOME_FILTER = GTRegistries.register(Registry.PLACEMENT_MODIFIERS, GTCEu.id("biome"), () -> BiomeFilter.CODEC);
+    public static final PlacementModifierType<BiomeFilter> BIOME_FILTER = GTRegistries.register(Registry.PLACEMENT_MODIFIERS, GTCEu.id("biome"), () -> BiomeFilter.CODEC);
 
-    public static BiomeFilter INSTANCE = new BiomeFilter();
-    public static Codec<BiomeFilter> CODEC = Codec.unit(() -> INSTANCE);
+    public static final BiomeFilter INSTANCE = new BiomeFilter();
+    public static final Codec<BiomeFilter> CODEC = Codec.unit(() -> INSTANCE);
 
 
     @Override

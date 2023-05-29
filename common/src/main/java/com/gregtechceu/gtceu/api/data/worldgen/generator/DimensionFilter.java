@@ -20,7 +20,7 @@ import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
 import java.util.function.Predicate;
 
 public class DimensionFilter extends PlacementFilter {
-    public static PlacementModifierType<DimensionFilter> DIMENSION_FILTER = GTRegistries.register(Registry.PLACEMENT_MODIFIERS, GTCEu.id("dimension"), () -> DimensionFilter.CODEC);
+    public static final PlacementModifierType<DimensionFilter> DIMENSION_FILTER = GTRegistries.register(Registry.PLACEMENT_MODIFIERS, GTCEu.id("dimension"), () -> DimensionFilter.CODEC);
 
     public static final Codec<DimensionFilter> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             RegistryCodecs.homogeneousList(Registry.DIMENSION_TYPE_REGISTRY).fieldOf("dimension_id").forGetter(filter -> filter.dimensionId)

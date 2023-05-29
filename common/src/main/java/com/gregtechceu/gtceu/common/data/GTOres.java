@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.worldgen.GTLayerPattern;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreFeatureEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.data.worldgen.WorldGenLayer;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
 import net.minecraft.data.BuiltinRegistries;
@@ -39,9 +40,10 @@ public class GTOres {
     //////////////////////////////////////
     //********     End Vein    *********//
     //////////////////////////////////////
-    public static RuleTest[] END_RULES = new RuleTest[] { new BlockMatchTest(Blocks.END_STONE) };
+    public static final RuleTest END_ORE_REPLACEABLES = new BlockMatchTest(Blocks.END_STONE);
+    public static RuleTest[] END_RULES = new RuleTest[] { END_ORE_REPLACEABLES };
     public static final GTOreFeatureEntry BAUXITE_VEIN =
-            create("bauxite_vein", 15, 0.25f, 40, end(), HeightRangePlacement.uniform(VerticalAnchor.absolute(10), VerticalAnchor.absolute(80)))
+            create("bauxite_vein", 15, 0.25f, 40, WorldGenLayer.ENDSTONE, end(), HeightRangePlacement.uniform(VerticalAnchor.absolute(10), VerticalAnchor.absolute(80)))
                     .layeredDatagenExt()
                     .withLayerPattern(() -> GTLayerPattern.builder(END_RULES)
                             .layer(l -> l.weight(1).state(Blocks.END_STONE::defaultBlockState))
@@ -53,7 +55,7 @@ public class GTOres {
                     .parent();
 
     public static final GTOreFeatureEntry MAGNETITE_VEIN =
-            create("magnetite_vein", 25, 0.15f, 30, end(), HeightRangePlacement.uniform(VerticalAnchor.absolute(20), VerticalAnchor.absolute(80)))
+            create("magnetite_vein", 25, 0.15f, 30, WorldGenLayer.ENDSTONE, end(), HeightRangePlacement.uniform(VerticalAnchor.absolute(20), VerticalAnchor.absolute(80)))
                     .layeredDatagenExt()
                     .withLayerPattern(() -> GTLayerPattern.builder(END_RULES)
                             .layer(l -> l.weight(2).state(Blocks.END_STONE::defaultBlockState))
@@ -66,7 +68,7 @@ public class GTOres {
                     .parent();
 
     public static final GTOreFeatureEntry NAQUADAH_VEIN =
-            create("naquadah_vein", 25, 0.15f, 30, end(), HeightRangePlacement.uniform(VerticalAnchor.absolute(10), VerticalAnchor.absolute(90)))
+            create("naquadah_vein", 25, 0.15f, 30, WorldGenLayer.ENDSTONE, end(), HeightRangePlacement.uniform(VerticalAnchor.absolute(10), VerticalAnchor.absolute(90)))
                     .layeredDatagenExt()
                     .withLayerPattern(() -> GTLayerPattern.builder(END_RULES)
                             .layer(l -> l.weight(2).state(Blocks.END_STONE::defaultBlockState))
@@ -77,7 +79,7 @@ public class GTOres {
                     .parent();
 
     public static final GTOreFeatureEntry PITCHBLENDE_VEIN =
-            create("pitchblende_vein", 15, 0.25f, 30, end(), HeightRangePlacement.uniform(VerticalAnchor.absolute(30), VerticalAnchor.absolute(60)))
+            create("pitchblende_vein", 15, 0.25f, 30, WorldGenLayer.ENDSTONE, end(), HeightRangePlacement.uniform(VerticalAnchor.absolute(30), VerticalAnchor.absolute(60)))
                     .layeredDatagenExt()
                     .withLayerPattern(() -> GTLayerPattern.builder(END_RULES)
                             .layer(l -> l.weight(2).state(Blocks.END_STONE::defaultBlockState))
@@ -88,7 +90,7 @@ public class GTOres {
                     .parent();
 
     public static final GTOreFeatureEntry SCHEELITE_VEIN =
-            create("scheelite_vein", 20, 0.2f, 20, end(), HeightRangePlacement.uniform(VerticalAnchor.absolute(20), VerticalAnchor.absolute(60)))
+            create("scheelite_vein", 20, 0.2f, 20, WorldGenLayer.ENDSTONE, end(), HeightRangePlacement.uniform(VerticalAnchor.absolute(20), VerticalAnchor.absolute(60)))
                     .layeredDatagenExt()
                     .withLayerPattern(() -> GTLayerPattern.builder(END_RULES)
                             .layer(l -> l.weight(2).state(Blocks.END_STONE::defaultBlockState))
@@ -100,7 +102,7 @@ public class GTOres {
                     .parent();
 
     public static final GTOreFeatureEntry SHELDONITE_VEIN =
-            create("sheldonite_vein", 15, 0.2f, 10, end(), HeightRangePlacement.uniform(VerticalAnchor.absolute(5), VerticalAnchor.absolute(50)))
+            create("sheldonite_vein", 15, 0.2f, 10, WorldGenLayer.ENDSTONE, end(), HeightRangePlacement.uniform(VerticalAnchor.absolute(5), VerticalAnchor.absolute(50)))
                     .layeredDatagenExt()
                     .withLayerPattern(() -> GTLayerPattern.builder(END_RULES)
                             .layer(l -> l.weight(2).state(Blocks.END_STONE::defaultBlockState))
@@ -118,7 +120,7 @@ public class GTOres {
     public static RuleTest[] NETHER_RULES = new RuleTest[] { OreFeatures.NETHER_ORE_REPLACEABLES };
 
     public static final GTOreFeatureEntry BANDED_IRON_VEIN =
-            create("banded_iron_vein", 20, 0.2f, 30, nether(), HeightRangePlacement.uniform(VerticalAnchor.absolute(20), VerticalAnchor.absolute(40)))
+            create("banded_iron_vein", 20, 0.2f, 30, WorldGenLayer.NETHERRACK, nether(), HeightRangePlacement.uniform(VerticalAnchor.absolute(20), VerticalAnchor.absolute(40)))
                     .layeredDatagenExt()
                     .withLayerPattern(() -> GTLayerPattern.builder(NETHER_RULES)
                             .layer(l -> l.weight(2).state(Blocks.NETHERRACK::defaultBlockState))
@@ -131,7 +133,7 @@ public class GTOres {
                     .parent();
 
     public static final GTOreFeatureEntry BERYLLIUM_VEIN =
-            create("beryllium_vein", 15, 0.25f, 30, nether(), HeightRangePlacement.uniform(VerticalAnchor.absolute(5), VerticalAnchor.absolute(30)))
+            create("beryllium_vein", 15, 0.25f, 30, WorldGenLayer.NETHERRACK, nether(), HeightRangePlacement.uniform(VerticalAnchor.absolute(5), VerticalAnchor.absolute(30)))
                     .layeredDatagenExt()
                     .withLayerPattern(() -> GTLayerPattern.builder(NETHER_RULES)
                             .layer(l -> l.weight(2).state(Blocks.NETHERRACK::defaultBlockState))
@@ -143,7 +145,7 @@ public class GTOres {
                     .parent();
 
     public static final GTOreFeatureEntry CERTUS_QUARTZ_VEIN =
-            create("certus_quartz", 15, 0.25f, 40, nether(), HeightRangePlacement.uniform(VerticalAnchor.absolute(80), VerticalAnchor.absolute(120)))
+            create("certus_quartz", 15, 0.25f, 40, WorldGenLayer.NETHERRACK, nether(), HeightRangePlacement.uniform(VerticalAnchor.absolute(80), VerticalAnchor.absolute(120)))
                     .layeredDatagenExt()
                     .withLayerPattern(() -> GTLayerPattern.builder(NETHER_RULES)
                             .layer(l -> l.weight(2).state(Blocks.NETHERRACK::defaultBlockState))
@@ -155,7 +157,7 @@ public class GTOres {
                     .parent();
 
     public static final GTOreFeatureEntry MANGANESE_VEIN =
-            create("manganese_vein", 15, 0.25f, 20, nether(), HeightRangePlacement.uniform(VerticalAnchor.absolute(20), VerticalAnchor.absolute(30)))
+            create("manganese_vein", 15, 0.25f, 20, WorldGenLayer.NETHERRACK, nether(), HeightRangePlacement.uniform(VerticalAnchor.absolute(20), VerticalAnchor.absolute(30)))
                     .layeredDatagenExt()
                     .withLayerPattern(() -> GTLayerPattern.builder(NETHER_RULES)
                             .layer(l -> l.weight(2).state(Blocks.NETHERRACK::defaultBlockState))
@@ -167,7 +169,7 @@ public class GTOres {
                     .parent();
 
     public static final GTOreFeatureEntry MOLYBDENUM_VEIN =
-            create("molybdenum_vein", 15, 0.25f, 5, nether(), HeightRangePlacement.uniform(VerticalAnchor.absolute(20), VerticalAnchor.absolute(50)))
+            create("molybdenum_vein", 15, 0.25f, 5, WorldGenLayer.NETHERRACK, nether(), HeightRangePlacement.uniform(VerticalAnchor.absolute(20), VerticalAnchor.absolute(50)))
                     .layeredDatagenExt()
                     .withLayerPattern(() -> GTLayerPattern.builder(NETHER_RULES)
                             .layer(l -> l.weight(2).state(Blocks.NETHERRACK::defaultBlockState))
@@ -180,7 +182,7 @@ public class GTOres {
                     .parent();
 
     public static final GTOreFeatureEntry MONAZITE_VEIN =
-            create("monazite_vein", 15, 0.25f, 30, nether(), HeightRangePlacement.uniform(VerticalAnchor.absolute(20), VerticalAnchor.absolute(40)))
+            create("monazite_vein", 15, 0.25f, 30, WorldGenLayer.NETHERRACK, nether(), HeightRangePlacement.uniform(VerticalAnchor.absolute(20), VerticalAnchor.absolute(40)))
                     .layeredDatagenExt()
                     .withLayerPattern(() -> GTLayerPattern.builder(NETHER_RULES)
                             .layer(l -> l.weight(2).state(Blocks.NETHERRACK::defaultBlockState))
@@ -192,7 +194,7 @@ public class GTOres {
                     .parent();
 
     public static final GTOreFeatureEntry NETHER_QUARTZ_VEIN =
-            create("nether_quartz_vein", 20, 0.2f, 80, nether(), HeightRangePlacement.uniform(VerticalAnchor.absolute(40), VerticalAnchor.absolute(80)))
+            create("nether_quartz_vein", 20, 0.2f, 80, WorldGenLayer.NETHERRACK, nether(), HeightRangePlacement.uniform(VerticalAnchor.absolute(40), VerticalAnchor.absolute(80)))
                     .layeredDatagenExt()
                     .withLayerPattern(() -> GTLayerPattern.builder(NETHER_RULES)
                             .layer(l -> l.weight(2).state(Blocks.NETHERRACK::defaultBlockState))
@@ -203,7 +205,7 @@ public class GTOres {
                     .parent();
 
     public static final GTOreFeatureEntry REDSTONE_VEIN =
-            create("redstone_vein", 20, 0.2f, 60, nether(), HeightRangePlacement.uniform(VerticalAnchor.absolute(5), VerticalAnchor.absolute(40)))
+            create("redstone_vein", 20, 0.2f, 60, WorldGenLayer.NETHERRACK, nether(), HeightRangePlacement.uniform(VerticalAnchor.absolute(5), VerticalAnchor.absolute(40)))
                     .layeredDatagenExt()
                     .withLayerPattern(() -> GTLayerPattern.builder(NETHER_RULES)
                             .layer(l -> l.weight(2).state(Blocks.NETHERRACK::defaultBlockState))
@@ -215,7 +217,7 @@ public class GTOres {
                     .parent();
 
     public static final GTOreFeatureEntry SALTPETER_VEIN =
-            create("saltpeter_vein", 15, 0.25f, 40, nether(), HeightRangePlacement.uniform(VerticalAnchor.absolute(5), VerticalAnchor.absolute(45)))
+            create("saltpeter_vein", 15, 0.25f, 40, WorldGenLayer.NETHERRACK, nether(), HeightRangePlacement.uniform(VerticalAnchor.absolute(5), VerticalAnchor.absolute(45)))
                     .layeredDatagenExt()
                     .withLayerPattern(() -> GTLayerPattern.builder(NETHER_RULES)
                             .layer(l -> l.weight(2).state(Blocks.NETHERRACK::defaultBlockState))
@@ -228,7 +230,7 @@ public class GTOres {
                     .parent();
 
     public static final GTOreFeatureEntry SULFUR_VEIN =
-            create("sulfur_vein", 20, 0.2f, 100, nether(), HeightRangePlacement.uniform(VerticalAnchor.absolute(10), VerticalAnchor.absolute(30)))
+            create("sulfur_vein", 20, 0.2f, 100, WorldGenLayer.NETHERRACK, nether(), HeightRangePlacement.uniform(VerticalAnchor.absolute(10), VerticalAnchor.absolute(30)))
                     .layeredDatagenExt()
                     .withLayerPattern(() -> GTLayerPattern.builder(NETHER_RULES)
                             .layer(l -> l.weight(2).state(Blocks.NETHERRACK::defaultBlockState))
@@ -240,7 +242,7 @@ public class GTOres {
                     .parent();
 
     public static final GTOreFeatureEntry TETRAHEDRITE_VEIN =
-            create("tetrahedrite_vein", 20, 0.2f, 70, nether(), HeightRangePlacement.uniform(VerticalAnchor.absolute(80), VerticalAnchor.absolute(120)))
+            create("tetrahedrite_vein", 20, 0.2f, 70, WorldGenLayer.NETHERRACK, nether(), HeightRangePlacement.uniform(VerticalAnchor.absolute(80), VerticalAnchor.absolute(120)))
                     .layeredDatagenExt()
                     .withLayerPattern(() -> GTLayerPattern.builder(NETHER_RULES)
                             .layer(l -> l.weight(2).state(Blocks.NETHERRACK::defaultBlockState))
@@ -252,7 +254,7 @@ public class GTOres {
                     .parent();
 
     public static final GTOreFeatureEntry TOPAZ_VEIN =
-            create("topaz_vein", 15, 0.25f, 70, nether(), HeightRangePlacement.uniform(VerticalAnchor.absolute(80), VerticalAnchor.absolute(120)))
+            create("topaz_vein", 15, 0.25f, 70, WorldGenLayer.NETHERRACK, nether(), HeightRangePlacement.uniform(VerticalAnchor.absolute(80), VerticalAnchor.absolute(120)))
                     .layeredDatagenExt()
                     .withLayerPattern(() -> GTLayerPattern.builder(NETHER_RULES)
                             .layer(l -> l.weight(2).state(Blocks.NETHERRACK::defaultBlockState))
@@ -271,7 +273,7 @@ public class GTOres {
     public static RuleTest[] DEEPSLATE_RULES = new RuleTest[] { OreFeatures.DEEPSLATE_ORE_REPLACEABLES };
 
     public static final GTOreFeatureEntry APATITE_VEIN =
-            create("apatite_vein", 15, 0.25f, 40, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(10), VerticalAnchor.absolute(60)))
+            create("apatite_vein", 15, 0.25f, 40, WorldGenLayer.STONE, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(10), VerticalAnchor.absolute(60)))
                     .layeredDatagenExt()
                     .withLayerPattern(() -> GTLayerPattern.builder(OVERWORLD_RULES)
                             .layer(l -> l.weight(2).state(Blocks.STONE::defaultBlockState))
@@ -283,7 +285,7 @@ public class GTOres {
                     .parent();
 
     public static final GTOreFeatureEntry CASSITERITE_VEIN =
-            create("cassiterite_vein", 20, 0.2f, 80, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(10), VerticalAnchor.absolute(60)))
+            create("cassiterite_vein", 20, 0.2f, 80, WorldGenLayer.STONE, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(10), VerticalAnchor.absolute(60)))
                     .layeredDatagenExt()
                     .withLayerPattern(() -> GTLayerPattern.builder(OVERWORLD_RULES)
                             .layer(l -> l.weight(2).state(Blocks.STONE::defaultBlockState))
@@ -294,7 +296,7 @@ public class GTOres {
                     .parent();
 
     public static final GTOreFeatureEntry COAL_VEIN =
-            create("coal_vein", 25, 0.25f, 80, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(10), VerticalAnchor.absolute(80)))
+            create("coal_vein", 25, 0.25f, 80, WorldGenLayer.STONE, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(10), VerticalAnchor.absolute(80)))
                     .layeredDatagenExt()
                     .withLayerPattern(() -> GTLayerPattern.builder(OVERWORLD_RULES)
                             .layer(l -> l.weight(1).state(Blocks.STONE::defaultBlockState))
@@ -304,7 +306,7 @@ public class GTOres {
                     .parent();
 
     public static final GTOreFeatureEntry COPPER_TIN_VEIN =
-            create("copper_tin_vein", 20, 0.2f, 50, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(-10), VerticalAnchor.absolute(160)))
+            create("copper_tin_vein", 20, 0.2f, 50, WorldGenLayer.STONE, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(-10), VerticalAnchor.absolute(160)))
                     .layeredDatagenExt()
                     .withLayerPattern(() -> GTLayerPattern.builder(OVERWORLD_RULES)
                             .layer(l -> l.weight(2).state(Blocks.STONE::defaultBlockState))
@@ -317,7 +319,7 @@ public class GTOres {
                     .parent();
 
     public static final GTOreFeatureEntry COPPER_VEIN =
-            create("copper_vein", 20, 0.2f, 80, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(-15), VerticalAnchor.absolute(60)))
+            create("copper_vein", 20, 0.2f, 80, WorldGenLayer.STONE, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(-15), VerticalAnchor.absolute(60)))
                     .layeredDatagenExt()
                     .withLayerPattern(() -> GTLayerPattern.builder(OVERWORLD_RULES)
                             .layer(l -> l.weight(2).state(Blocks.STONE::defaultBlockState))
@@ -330,7 +332,7 @@ public class GTOres {
                     .parent();
 
     public static final GTOreFeatureEntry DIAMOND_VEIN =
-            create("diamond_vein", 15, 0.25f, 40, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(-65), VerticalAnchor.absolute(20)))
+            create("diamond_vein", 15, 0.25f, 40, WorldGenLayer.STONE, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(-65), VerticalAnchor.absolute(20)))
                     .layeredDatagenExt()
                     .withLayerPattern(() -> GTLayerPattern.builder(OVERWORLD_RULES)
                             .layer(l -> l.weight(2).state(Blocks.STONE::defaultBlockState))
@@ -342,7 +344,7 @@ public class GTOres {
                     .parent();
 
     public static final GTOreFeatureEntry GALENA_VEIN =
-            create("galena_vein", 15, 0.25f, 40, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(-15), VerticalAnchor.absolute(45)))
+            create("galena_vein", 15, 0.25f, 40, WorldGenLayer.STONE, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(-15), VerticalAnchor.absolute(45)))
                     .layeredDatagenExt()
                     .withLayerPattern(() -> GTLayerPattern.builder(OVERWORLD_RULES)
                             .layer(l -> l.weight(2).state(Blocks.STONE::defaultBlockState))
@@ -354,7 +356,7 @@ public class GTOres {
                     .parent();
 
     public static final GTOreFeatureEntry GARNET_TIN_VEIN =
-            create("garnet_tin_vein", 20, 0.2f, 80, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(30), VerticalAnchor.absolute(60)))
+            create("garnet_tin_vein", 20, 0.2f, 80, WorldGenLayer.STONE, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(30), VerticalAnchor.absolute(60)))
                     .layeredDatagenExt()
                     .withLayerPattern(() -> GTLayerPattern.builder(OVERWORLD_RULES)
                             .layer(l -> l.weight(2).state(Blocks.SAND::defaultBlockState))
@@ -367,7 +369,7 @@ public class GTOres {
                     .parent();
 
     public static final GTOreFeatureEntry GARNET_VEIN =
-            create("garnet_vein", 15, 0.25f, 40, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(-10), VerticalAnchor.absolute(30)))
+            create("garnet_vein", 15, 0.25f, 40, WorldGenLayer.STONE, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(-10), VerticalAnchor.absolute(30)))
                     .layeredDatagenExt()
                     .withLayerPattern(() -> GTLayerPattern.builder(OVERWORLD_RULES)
                             .layer(l -> l.weight(2).state(Blocks.SAND::defaultBlockState))
@@ -380,7 +382,7 @@ public class GTOres {
                     .parent();
 
     public static final GTOreFeatureEntry IRON_VEIN =
-            create("iron_vein", 20, 0.2f, 120, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(-10), VerticalAnchor.absolute(40)))
+            create("iron_vein", 20, 0.2f, 120, WorldGenLayer.STONE, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(-10), VerticalAnchor.absolute(40)))
                     .layeredDatagenExt()
                     .withLayerPattern(() -> GTLayerPattern.builder(OVERWORLD_RULES)
                             .layer(l -> l.weight(2).state(Blocks.STONE::defaultBlockState))
@@ -393,7 +395,7 @@ public class GTOres {
                     .parent();
 
     public static final GTOreFeatureEntry LAPIS_VEIN =
-            create("lapis_vein", 15, 0.25f, 40, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(0), VerticalAnchor.absolute(50)))
+            create("lapis_vein", 15, 0.25f, 40, WorldGenLayer.STONE, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(0), VerticalAnchor.absolute(50)))
                     .layeredDatagenExt()
                     .withLayerPattern(() -> GTLayerPattern.builder(OVERWORLD_RULES)
                             .layer(l -> l.weight(2).state(Blocks.STONE::defaultBlockState))
@@ -406,7 +408,7 @@ public class GTOres {
                     .parent();
 
     public static final GTOreFeatureEntry LUBRICANT_VEIN =
-            create("lubricant_vein", 15, 0.25f, 40, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(0), VerticalAnchor.absolute(50)))
+            create("lubricant_vein", 15, 0.25f, 40, WorldGenLayer.STONE, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(0), VerticalAnchor.absolute(50)))
                     .layeredDatagenExt()
                     .withLayerPattern(() -> GTLayerPattern.builder(OVERWORLD_RULES)
                             .layer(l -> l.weight(2).state(Blocks.STONE::defaultBlockState))
@@ -419,7 +421,7 @@ public class GTOres {
                     .parent();
 
     public static final GTOreFeatureEntry MAGNETITE_OVER_VEIN =
-            create("magnetite_over_vein", 25, 0.15f, 80, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(10), VerticalAnchor.absolute(60)))
+            create("magnetite_over_vein", 25, 0.15f, 80, WorldGenLayer.STONE, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(10), VerticalAnchor.absolute(60)))
                     .layeredDatagenExt()
                     .withLayerPattern(() -> GTLayerPattern.builder(OVERWORLD_RULES)
                             .layer(l -> l.weight(2).state(Blocks.STONE::defaultBlockState))
@@ -431,7 +433,7 @@ public class GTOres {
                     .parent();
 
     public static final GTOreFeatureEntry MANGANESE_OVER_VEIN =
-            create("manganese_over_vein", 15, 0.25f, 20, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(0), VerticalAnchor.absolute(30)))
+            create("manganese_over_vein", 15, 0.25f, 20, WorldGenLayer.STONE, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(0), VerticalAnchor.absolute(30)))
                     .layeredDatagenExt()
                     .withLayerPattern(() -> GTLayerPattern.builder(OVERWORLD_RULES)
                             .layer(l -> l.weight(2).state(Blocks.STONE::defaultBlockState))
@@ -444,7 +446,7 @@ public class GTOres {
                     .parent();
 
     public static final GTOreFeatureEntry MICA_VEIN =
-            create("mica_vein", 15, 0.25f, 20, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(0), VerticalAnchor.absolute(40)))
+            create("mica_vein", 15, 0.25f, 20, WorldGenLayer.STONE, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(0), VerticalAnchor.absolute(40)))
                     .layeredDatagenExt()
                     .withLayerPattern(() -> GTLayerPattern.builder(OVERWORLD_RULES)
                             .layer(l -> l.weight(2).state(Blocks.STONE::defaultBlockState))
@@ -457,7 +459,7 @@ public class GTOres {
                     .parent();
 
     public static final GTOreFeatureEntry MINERAL_SAND_VEIN =
-            create("mineral_sand_vein", 20, 0.2f, 80, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(15), VerticalAnchor.absolute(60)))
+            create("mineral_sand_vein", 20, 0.2f, 80, WorldGenLayer.STONE, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(15), VerticalAnchor.absolute(60)))
                     .layeredDatagenExt()
                     .withLayerPattern(() -> GTLayerPattern.builder(OVERWORLD_RULES)
                             .layer(l -> l.weight(2).state(Blocks.SAND::defaultBlockState))
@@ -470,7 +472,7 @@ public class GTOres {
                     .parent();
 
     public static final GTOreFeatureEntry NICKEL_VEIN =
-            create("nickel_vein", 15, 0.25f, 40, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(-10), VerticalAnchor.absolute(40)))
+            create("nickel_vein", 15, 0.25f, 40, WorldGenLayer.STONE, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(-10), VerticalAnchor.absolute(40)))
                     .layeredDatagenExt()
                     .withLayerPattern(() -> GTLayerPattern.builder(OVERWORLD_RULES)
                             .layer(l -> l.weight(2).state(Blocks.STONE::defaultBlockState))
@@ -483,7 +485,7 @@ public class GTOres {
                     .parent();
 
     public static final GTOreFeatureEntry OILSANDS_VEIN =
-            create("oilsands_vein", 15, 0.3f, 20, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(30), VerticalAnchor.absolute(80)))
+            create("oilsands_vein", 15, 0.3f, 20, WorldGenLayer.STONE, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(30), VerticalAnchor.absolute(80)))
                     .layeredDatagenExt()
                     .withLayerPattern(() -> GTLayerPattern.builder(OVERWORLD_RULES)
                             .layer(l -> l.weight(1).state(Blocks.SAND::defaultBlockState))
@@ -493,7 +495,7 @@ public class GTOres {
                     .parent();
 
     public static final GTOreFeatureEntry OLIVINE_VEIN =
-            create("olivine_vein", 15, 0.25f, 20, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(-10), VerticalAnchor.absolute(40)))
+            create("olivine_vein", 15, 0.25f, 20, WorldGenLayer.STONE, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(-10), VerticalAnchor.absolute(40)))
                     .layeredDatagenExt()
                     .withLayerPattern(() -> GTLayerPattern.builder(OVERWORLD_RULES)
                             .layer(l -> l.weight(2).state(Blocks.STONE::defaultBlockState))
@@ -506,7 +508,7 @@ public class GTOres {
                     .parent();
 
     public static final GTOreFeatureEntry REDSTONE_OVER_VEIN =
-            create("redstone_over_vein", 20, 0.2f, 60, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(-15), VerticalAnchor.absolute(40)))
+            create("redstone_over_vein", 20, 0.2f, 60, WorldGenLayer.STONE, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(-15), VerticalAnchor.absolute(40)))
                     .layeredDatagenExt()
                     .withLayerPattern(() -> GTLayerPattern.builder(OVERWORLD_RULES)
                             .layer(l -> l.weight(2).state(Blocks.STONE::defaultBlockState))
@@ -518,7 +520,7 @@ public class GTOres {
                     .parent();
 
     public static final GTOreFeatureEntry SALTS_VEIN =
-            create("salts_vein", 20, 0.2f, 50, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(30), VerticalAnchor.absolute(70)))
+            create("salts_vein", 20, 0.2f, 50, WorldGenLayer.STONE, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(30), VerticalAnchor.absolute(70)))
                     .layeredDatagenExt()
                     .withLayerPattern(() -> GTLayerPattern.builder(OVERWORLD_RULES)
                             .layer(l -> l.weight(2).state(Blocks.STONE::defaultBlockState))
@@ -531,7 +533,7 @@ public class GTOres {
                     .parent();
 
     public static final GTOreFeatureEntry SAPPHIRE_VEIN =
-            create("sapphire_vein", 15, 0.25f, 60, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(-10), VerticalAnchor.absolute(40)))
+            create("sapphire_vein", 15, 0.25f, 60, WorldGenLayer.STONE, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(-10), VerticalAnchor.absolute(40)))
                     .layeredDatagenExt()
                     .withLayerPattern(() -> GTLayerPattern.builder(OVERWORLD_RULES)
                             .layer(l -> l.weight(2).state(Blocks.STONE::defaultBlockState))
@@ -543,8 +545,8 @@ public class GTOres {
                     .biomes(BiomeTags.IS_OVERWORLD)
                     .parent();
 
-    private static GTOreFeatureEntry create(String name, int clusterSize, float density, int weight, HolderSet<DimensionType> dimensionFilter, HeightRangePlacement range) {
-        return new GTOreFeatureEntry(GTCEu.id(name), clusterSize, density, weight, dimensionFilter, CountPlacement.of(1), range, 0.0F, null);
+    private static GTOreFeatureEntry create(String name, int clusterSize, float density, int weight, WorldGenLayer layer, HolderSet<DimensionType> dimensionFilter, HeightRangePlacement range) {
+        return new GTOreFeatureEntry(GTCEu.id(name), clusterSize, density, weight, layer, dimensionFilter, CountPlacement.of(1), range, 0.0F, null);
     }
 
     private static Supplier<? extends Block> ore(TagPrefix oreTag, Material material) {
