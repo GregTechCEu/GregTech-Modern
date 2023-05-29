@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.data.worldgen.generator;
 
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreFeatureEntry;
+import com.gregtechceu.gtceu.api.data.worldgen.IWorldGenLayer;
 import net.minecraft.core.Holder;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
@@ -13,6 +14,7 @@ import java.util.stream.Collectors;
 public class WorldGeneratorUtils {
     private static final Map<WorldGenLevel, WorldOreVeinCache> oreVeinCache = new WeakHashMap<>();
 
+    public static final Map<String, IWorldGenLayer> WORLD_GEN_LAYERS = new HashMap<>();
 
     private static class WorldOreVeinCache {
         private final List<GTOreFeatureEntry> worldVeins;

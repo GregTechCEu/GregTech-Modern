@@ -21,10 +21,7 @@ import com.gregtechceu.gtceu.api.pattern.Predicates;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.*;
-import com.gregtechceu.gtceu.integration.kjs.builders.CoilBlockBuilder;
-import com.gregtechceu.gtceu.integration.kjs.builders.ElementBuilder;
-import com.gregtechceu.gtceu.integration.kjs.builders.GTRecipeTypeBuilder;
-import com.gregtechceu.gtceu.integration.kjs.builders.MaterialIconSetBuilder;
+import com.gregtechceu.gtceu.integration.kjs.builders.*;
 import com.gregtechceu.gtceu.integration.kjs.builders.machine.*;
 import com.gregtechceu.gtceu.integration.kjs.recipe.GTRecipeBuilderJS;
 import dev.latvian.mods.kubejs.KubeJSPlugin;
@@ -37,6 +34,7 @@ import dev.latvian.mods.rhino.Wrapper;
 import dev.latvian.mods.rhino.util.wrap.TypeWrappers;
 import net.minecraft.core.Registry;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.levelgen.structure.templatesystem.*;
 
 /**
  * @author KilaBash
@@ -62,6 +60,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         GTRegistryObjectBuilderTypes.MACHINE.addType("multiblock", MultiblockBuilder.class, MultiblockBuilder::new, false);
         GTRegistryObjectBuilderTypes.MACHINE.addType("kinetic", KineticMachineBuilder.class, KineticMachineBuilder::new, false);
 
+        GTRegistryObjectBuilderTypes.WORLD_GEN_LAYER.addType("basic", WorldGenLayerBuilder.class, WorldGenLayerBuilder::new, true);
 
         RegistryObjectBuilderTypes.BLOCK.addType("gtceu:coil", CoilBlockBuilder.class, CoilBlockBuilder::new);
     }
@@ -116,6 +115,14 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         event.add("PartAbility", PartAbility.class);
         event.add("GuiTextures", GuiTextures.class);
         event.add("GTCEu", GTCEu.class);
+
+        // Worldgen rule tests, for KJSWorldGenLayer
+        event.add("AlwaysTrueTest", AlwaysTrueTest.class);
+        event.add("BlockMatchTest", BlockMatchTest.class);
+        event.add("BlockStateMatchTest", BlockStateMatchTest.class);
+        event.add("TagMatchTest", TagMatchTest.class);
+        event.add("RandomBlockMatchTest", RandomBlockMatchTest.class);
+        event.add("RandomBlockStateMatchTest", RandomBlockStateMatchTest.class);
 
         // ....TODO add global refs. for convenience, ppl do not need to import the java package themselves.
     }
