@@ -97,7 +97,7 @@ public class GTBlocks {
                         .addLayer(() -> RenderType::solid)
                         .setData(ProviderType.BLOCKSTATE, NonNullBiConsumer.noop())
                         .setData(ProviderType.LANG, NonNullBiConsumer.noop())
-                        .tag(BlockTags.MINEABLE_WITH_PICKAXE)
+                        //.tag(BlockTags.MINEABLE_WITH_PICKAXE)
                         .color(() -> () -> MaterialBlock::tintedColor)
                         .item(MaterialBlockItem::new)
                         .model(NonNullBiConsumer.noop())
@@ -116,7 +116,7 @@ public class GTBlocks {
                         .addLayer(() -> RenderType::cutoutMipped)
                         .blockstate(NonNullBiConsumer.noop())
                         .setData(ProviderType.LANG, NonNullBiConsumer.noop())
-                        .tag(BlockTags.MINEABLE_WITH_PICKAXE, GTToolType.WRENCH.harvestTag)
+                        //.tag(BlockTags.MINEABLE_WITH_PICKAXE, GTToolType.WRENCH.harvestTag)
                         .color(() -> () -> MaterialBlock::tintedColor)
                         .item(MaterialBlockItem::new)
                         .model(NonNullBiConsumer.noop())
@@ -133,15 +133,15 @@ public class GTBlocks {
                     if (ore.getKey().isIgnored(material)) continue;
                     var oreTag = ore.getKey();
                     var entry = REGISTRATE.block("%s_%s".formatted(FormattingUtil.toLowerCaseUnder(oreTag.name), material.getName()),
-                                    properties -> new MaterialBlock(properties, oreTag, material, new OreBlockRenderer(ore.getValue(),
+                                    properties -> new MaterialBlock(properties, oreTag, material, new OreBlockRenderer(ore.getValue().getLeft(),
                                             Objects.requireNonNull(oreTag.materialIconType()).getBlockTexturePath(material.getMaterialIconSet(), true),
                                             oreProperty.isEmissive())))
-                            .initialProperties(() -> Blocks.IRON_BLOCK)
+                            .initialProperties(ore.getValue().getMiddle(), ore.getValue().getRight())
                             .transform(unificationBlock(oreTag, material))
                             .addLayer(() -> RenderType::cutoutMipped)
                             .blockstate(NonNullBiConsumer.noop())
                             .setData(ProviderType.LANG, NonNullBiConsumer.noop())
-                            .tag(BlockTags.MINEABLE_WITH_PICKAXE)
+                            //.tag(BlockTags.MINEABLE_WITH_PICKAXE)
                             .color(() -> () -> MaterialBlock::tintedColor)
                             .item(MaterialBlockItem::new)
                             .model(NonNullBiConsumer.noop())
@@ -170,7 +170,7 @@ public class GTBlocks {
                     var entry = REGISTRATE.block(insulation.name + "." + material.getName(), p -> new CableBlock(p, insulation, material))
                             .initialProperties(() -> Blocks.IRON_BLOCK)
                             .properties(p -> p.dynamicShape().noOcclusion())
-                            .tag(BlockTags.MINEABLE_WITH_PICKAXE, GTToolType.WRENCH.harvestTag, GTToolType.WIRE_CUTTER.harvestTag)
+                            //.tag(BlockTags.MINEABLE_WITH_PICKAXE, GTToolType.WRENCH.harvestTag, GTToolType.WIRE_CUTTER.harvestTag)
                             .transform(unificationBlock(insulation.tagPrefix, material))
                             .blockstate(NonNullBiConsumer.noop())
                             .setData(ProviderType.LANG, NonNullBiConsumer.noop())
@@ -188,9 +188,9 @@ public class GTBlocks {
         CABLE_BLOCKS = builder.build();
     }
 
-    public final static Table<TagPrefix, Material, BlockEntry<FluidPipeBlock>> FLUID_PIPE_BLOCKS;
+    public static Table<TagPrefix, Material, BlockEntry<FluidPipeBlock>> FLUID_PIPE_BLOCKS;
 
-    static {
+    public static void generatePipeBlocks() {
         // Fluid Pipe Blocks
         ImmutableTable.Builder<TagPrefix, Material, BlockEntry<FluidPipeBlock>> builder = ImmutableTable.builder();
         for (var fluidPipeType : FluidPipeType.values()) {
@@ -199,7 +199,7 @@ public class GTBlocks {
                     var entry = REGISTRATE.block("fluid_pipe_" + fluidPipeType.name + "." + material.getName(), p -> new FluidPipeBlock(p, fluidPipeType, material))
                             .initialProperties(() -> Blocks.IRON_BLOCK)
                             .properties(p -> p.dynamicShape().noOcclusion())
-                            .tag(getPipeTags(material))
+                            //.tag(getPipeTags(material))
                             .transform(unificationBlock(fluidPipeType.tagPrefix, material))
                             .blockstate(NonNullBiConsumer.noop())
                             .setData(ProviderType.LANG, NonNullBiConsumer.noop())
@@ -552,5 +552,6 @@ public class GTBlocks {
     public static void init() {
         generateMaterialBlocks();
         generateCableBlocks();
+        generatePipeBlocks();
     }
 }
