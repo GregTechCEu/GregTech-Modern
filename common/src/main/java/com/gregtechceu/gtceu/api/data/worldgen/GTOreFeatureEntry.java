@@ -92,7 +92,7 @@ public class GTOreFeatureEntry {
                 VeinCountFilter.count(),
                 BiomeFilter.biome(),
                 this.count,
-                RarityFilter.onAverageOnceEvery(4),
+                RarityFilter.onAverageOnceEvery(8),
                 InSquarePlacement.spread(),
                 this.range
         );

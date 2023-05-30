@@ -44,7 +44,9 @@ public abstract class PlacedFeatureMixin {
     }
 
     @SuppressWarnings({"MixinAnnotationTarget", "UnresolvedMixinReference"}) // They do actually work tho
-    @Redirect(method = "m_226372_(Lnet/minecraft/world/level/levelgen/placement/PlacementModifier;Lnet/minecraft/world/level/levelgen/placement/PlacementContext;Lnet/minecraft/util/RandomSource;Lnet/minecraft/core/BlockPos;)Ljava/util/stream/Stream;", target = @Desc(value = "m_fxgbskhr", owner = PlacedFeature.class, args = {PlacementModifier.class, PlacementContext.class, RandomSource.class, BlockPos.class}, ret = Stream.class), at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/levelgen/placement/PlacementModifier;getPositions(Lnet/minecraft/world/level/levelgen/placement/PlacementContext;Lnet/minecraft/util/RandomSource;Lnet/minecraft/core/BlockPos;)Ljava/util/stream/Stream;", ordinal = 0))
+    @Redirect(method = "m_226372_(Lnet/minecraft/world/level/levelgen/placement/PlacementModifier;Lnet/minecraft/world/level/levelgen/placement/PlacementContext;Lnet/minecraft/util/RandomSource;Lnet/minecraft/core/BlockPos;)Ljava/util/stream/Stream;",
+            target = @Desc(value = "m_fxgbskhr", owner = PlacedFeature.class, args = {PlacementModifier.class, PlacementContext.class, RandomSource.class, BlockPos.class}, ret = Stream.class),
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/levelgen/placement/PlacementModifier;getPositions(Lnet/minecraft/world/level/levelgen/placement/PlacementContext;Lnet/minecraft/util/RandomSource;Lnet/minecraft/core/BlockPos;)Ljava/util/stream/Stream;", ordinal = 0))
     private static Stream<BlockPos> gtceu$redirectGetPlacementPositions(PlacementModifier original, PlacementContext context, RandomSource source, BlockPos pos) {
         Stream<BlockPos> returnValue = original.getPositions(context, source, pos);
         BlockPos[] positions = returnValue.toArray(BlockPos[]::new);
