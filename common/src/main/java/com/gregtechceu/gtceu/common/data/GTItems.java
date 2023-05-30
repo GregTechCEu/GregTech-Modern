@@ -585,7 +585,7 @@ public class GTItems {
         lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
         lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 4 / 20));
    }))).register();
-    public static ItemEntry<ComponentItem> ELECTRIC_PUMP_HV = REGISTRATE.item("electric.pump.hv", ComponentItem::create).lang("V Electric Pump").onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[2]), new TooltipBehavior(lines -> {
+    public static ItemEntry<ComponentItem> ELECTRIC_PUMP_HV = REGISTRATE.item("electric.pump.hv", ComponentItem::create).lang("HV Electric Pump").onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[2]), new TooltipBehavior(lines -> {
         lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
         lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 16 / 20));
    }))).register();

@@ -135,15 +135,15 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
         String unit;
         if (duration.getSeconds() <= 180) {
             chargeTime = duration.getSeconds();
-            unit = LocalizationUtils.format("metaitem.battery.charge_unit.second");
+            unit = LocalizationUtils.format("item.gtceu.battery.charge_unit.second");
         } else if (duration.toMinutes() <= 180) {
             chargeTime = duration.toMinutes();
-            unit = LocalizationUtils.format("metaitem.battery.charge_unit.minute");
+            unit = LocalizationUtils.format("item.gtceu.battery.charge_unit.minute");
         } else {
             chargeTime = duration.toHours();
-            unit = LocalizationUtils.format("metaitem.battery.charge_unit.hour");
+            unit = LocalizationUtils.format("item.gtceu.battery.charge_unit.hour");
         }
-        tooltip.add(Component.translatable("metaitem.battery.charge_time", chargeTime, unit, GTValues.VNF[tier]));
+        tooltip.add(Component.translatable("item.gtceu.battery.charge_time", chargeTime, unit, GTValues.VNF[tier]));
     }
 
     private static boolean isInDischargeMode(ItemStack itemStack) {
