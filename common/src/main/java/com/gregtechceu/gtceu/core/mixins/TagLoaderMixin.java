@@ -45,7 +45,7 @@ public class TagLoaderMixin<T> implements IGTTagLoader<T> {
                         List<TagLoader.EntryWithSource> tags = new ArrayList<>();
                         itemLikes.forEach(item -> tags.add(new TagLoader.EntryWithSource(TagEntry.element(Registry.ITEM.getKey(item.asItem())), GTValues.CUSTOM_TAG_SOURCE)));
                         //GTCEu.LOGGER.info("added items " + itemLikes + " to tag " + materialTag);
-                        value.putIfAbsent(materialTag.location(), new ArrayList<>()).addAll(tags);
+                        value.computeIfAbsent(materialTag.location(), path -> new ArrayList<>()).addAll(tags);
                     }
 
                 }
@@ -56,10 +56,10 @@ public class TagLoaderMixin<T> implements IGTTagLoader<T> {
                     map.forEach((material, block) -> {
                         var entry = new TagLoader.EntryWithSource(TagEntry.element(block.getId()), GTValues.CUSTOM_TAG_SOURCE);
                         if (material.hasProperty(PropertyKey.WOOD)) {
-                            value.putIfAbsent(BlockTags.MINEABLE_WITH_AXE.location(), new ArrayList<>()).add(entry);
+                            value.computeIfAbsent(BlockTags.MINEABLE_WITH_AXE.location(), path -> new ArrayList<>()).add(entry);
                         } else {
                             for (var tag : prefix.miningToolTag()) {
-                                value.putIfAbsent(tag.location(), new ArrayList<>()).add(entry);
+                                value.computeIfAbsent(tag.location(), path -> new ArrayList<>()).add(entry);
                             }
                         }
                     });
