@@ -207,12 +207,6 @@ public class VanillaStandardRecipes {
                 .EUt(16).duration(10)
                 .save(provider);
 
-        FORGE_HAMMER_RECIPES.recipeBuilder("stone_to_cobblestone")
-                .inputItems(new ItemStack(Blocks.STONE))
-                .outputItems(new ItemStack(Blocks.COBBLESTONE))
-                .EUt(16).duration(10)
-                .save(provider);
-
         FORGE_HAMMER_RECIPES.recipeBuilder("cobblestone_to_gravel")
                 .inputItems(ItemTags.STONE_CRAFTING_MATERIALS)
                 .outputItems(new ItemStack(Blocks.GRAVEL))
@@ -326,6 +320,7 @@ public class VanillaStandardRecipes {
                 .inputItems(ItemTags.LOGS)
                 .outputItems(dust, Wood, 6)
                 .chancedOutput(dust, Wood, 8000, 680)
+                .duration(150).EUt(2)
                 .save(provider);
 
         LATHE_RECIPES.recipeBuilder("lathe_planks")

@@ -34,14 +34,14 @@ public class LangHandler {
         ConfigurationLang.init(provider);
 
         // CreativeModeTabs
-        provider.add(GTCreativeModeTabs.MATERIAL_FLUID, toEnglishName(GTCreativeModeTabs.MATERIAL_FLUID.getGroupId()));
-        provider.add(GTCreativeModeTabs.MATERIAL_ITEM, toEnglishName(GTCreativeModeTabs.MATERIAL_ITEM.getGroupId()));
-        provider.add(GTCreativeModeTabs.MATERIAL_BLOCK, toEnglishName(GTCreativeModeTabs.MATERIAL_BLOCK.getGroupId()));
-        provider.add(GTCreativeModeTabs.MATERIAL_PIPE, toEnglishName(GTCreativeModeTabs.MATERIAL_PIPE.getGroupId()));
-        provider.add(GTCreativeModeTabs.DECORATION, toEnglishName(GTCreativeModeTabs.DECORATION.getGroupId()));
-        provider.add(GTCreativeModeTabs.TOOL, toEnglishName(GTCreativeModeTabs.TOOL.getGroupId()));
-        provider.add(GTCreativeModeTabs.MACHINE, toEnglishName(GTCreativeModeTabs.MACHINE.getGroupId()));
-        provider.add(GTCreativeModeTabs.ITEM, toEnglishName(GTCreativeModeTabs.ITEM.getGroupId()));
+        provider.add(GTCreativeModeTabs.MATERIAL_FLUID, "GregTech %ss".formatted(toEnglishName(GTCreativeModeTabs.MATERIAL_FLUID.getGroupId())));
+        provider.add(GTCreativeModeTabs.MATERIAL_ITEM, "GregTech %ss".formatted(toEnglishName(GTCreativeModeTabs.MATERIAL_ITEM.getGroupId())));
+        provider.add(GTCreativeModeTabs.MATERIAL_BLOCK, "GregTech %ss".formatted(toEnglishName(GTCreativeModeTabs.MATERIAL_BLOCK.getGroupId())));
+        provider.add(GTCreativeModeTabs.MATERIAL_PIPE, "GregTech %ss".formatted(toEnglishName(GTCreativeModeTabs.MATERIAL_PIPE.getGroupId())));
+        provider.add(GTCreativeModeTabs.DECORATION, "GregTech %ss".formatted(toEnglishName(GTCreativeModeTabs.DECORATION.getGroupId())));
+        provider.add(GTCreativeModeTabs.TOOL, "GregTech %ss".formatted(toEnglishName(GTCreativeModeTabs.TOOL.getGroupId())));
+        provider.add(GTCreativeModeTabs.MACHINE, "GregTech %ss".formatted(toEnglishName(GTCreativeModeTabs.MACHINE.getGroupId())));
+        provider.add(GTCreativeModeTabs.ITEM, "GregTech %ss".formatted(toEnglishName(GTCreativeModeTabs.ITEM.getGroupId())));
 
         provider.add("gtceu.gui.editor.tips.citation", "Number of citations");
         provider.add("gtceu.gui.editor.group.recipe_type", "cap");

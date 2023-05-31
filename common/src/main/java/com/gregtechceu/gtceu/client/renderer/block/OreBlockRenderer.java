@@ -39,7 +39,7 @@ import java.util.function.Supplier;
  */
 public class OreBlockRenderer extends BlockStateRenderer {
     private final Supplier<BlockState> stone;
-    private final ResourceLocation overlay;
+    private ResourceLocation overlay;
     private final boolean emissive;
 
     public OreBlockRenderer(Supplier<BlockState> stone, ResourceLocation overlay, boolean emissive) {
@@ -49,6 +49,10 @@ public class OreBlockRenderer extends BlockStateRenderer {
         if (GTLib.isClient()) {
             registerEvent();
         }
+    }
+
+    public void setOverlayTexture(ResourceLocation newOverlay) {
+        this.overlay = newOverlay;
     }
 
     @Override

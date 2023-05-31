@@ -6,10 +6,10 @@ import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtlib.Platform;
+import com.gregtechceu.gtlib.utils.ResourceHelper;
 import net.minecraft.resources.ResourceLocation;
 
 import javax.annotation.Nonnull;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -103,17 +103,19 @@ public record MaterialIconType(String name) {
     }
 
     @Nonnull
-    public ResourceLocation getBlockTexturePath(@Nonnull MaterialIconSet materialIconSet) {
-        if (BLOCK_TEXTURE_CACHE.contains(this, materialIconSet)) {
-            return BLOCK_TEXTURE_CACHE.get(this, materialIconSet);
+    public ResourceLocation getBlockTexturePath(@Nonnull MaterialIconSet materialIconSet, boolean doReadCache) {
+        if (doReadCache) {
+            if (BLOCK_TEXTURE_CACHE.contains(this, materialIconSet)) {
+                return BLOCK_TEXTURE_CACHE.get(this, materialIconSet);
+            }
         }
 
         MaterialIconSet iconSet = materialIconSet;
         //noinspection ConstantConditions
         if (!iconSet.isRootIconset && Platform.isClient()) { // check minecraft for null for CI environments
             while (!iconSet.isRootIconset) {
-                URL url = MaterialIconType.class.getResource(String.format("/assets/%s/textures/block/material_sets/%s/%s.png", GTCEu.MOD_ID, iconSet.name, this.name));
-                if (url != null) break;
+                ResourceLocation location = GTCEu.id(String.format("textures/block/material_sets/%s/%s.png", iconSet.name, this.name));
+                if (ResourceHelper.isResourceExist(location)) break;
                 iconSet = iconSet.parentIconset;
             }
         }
@@ -125,17 +127,19 @@ public record MaterialIconType(String name) {
     }
 
     @Nonnull
-    public ResourceLocation getItemModelPath(@Nonnull MaterialIconSet materialIconSet) {
-        if (ITEM_MODEL_CACHE.contains(this, materialIconSet)) {
-            return ITEM_MODEL_CACHE.get(this, materialIconSet);
+    public ResourceLocation getItemModelPath(@Nonnull MaterialIconSet materialIconSet, boolean doReadCache) {
+        if (doReadCache) {
+            if (ITEM_MODEL_CACHE.contains(this, materialIconSet)) {
+                return ITEM_MODEL_CACHE.get(this, materialIconSet);
+            }
         }
 
         MaterialIconSet iconSet = materialIconSet;
         //noinspection ConstantConditions
         if (!iconSet.isRootIconset && Platform.isClient()) { // check minecraft for null for CI environments
             while (!iconSet.isRootIconset) {
-                URL url = MaterialIconType.class.getResource(String.format("/assets/%s/models/item/material_sets/%s/%s.json", GTCEu.MOD_ID, iconSet.name, this.name));
-                if (url != null) break;
+                ResourceLocation location = GTCEu.id(String.format("models/item/material_sets/%s/%s.json", iconSet.name, this.name));
+                if (ResourceHelper.isResourceExist(location)) break;
                 iconSet = iconSet.parentIconset;
             }
         }

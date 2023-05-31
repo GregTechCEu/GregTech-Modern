@@ -191,6 +191,7 @@ public class GTMachines {
             (tier, builder) -> builder
                     .rotationState(RotationState.ALL)
                     .renderer(() -> new TransformerRenderer(tier))
+                    .langValue("%s Transformer".formatted(VOLTAGE_NAMES[tier]))
                     .tooltips(explosion())
                     .tooltips(Component.translatable("gtceu.machine.transformer.description"),
                             Component.translatable("gtceu.machine.transformer.tooltip_tool_usage"),
@@ -320,7 +321,7 @@ public class GTMachines {
     public final static MachineDefinition[] ITEM_IMPORT_BUS = registerTieredMachines("item_bus.import",
             (holder, tier) -> new ItemBusPartMachine(holder, tier, IO.IN),
             (tier, builder) -> builder
-                    .langValue("Item Import Bus " + VNF[tier])
+                    .langValue(VNF[tier] + " Input Bus")
                     .rotationState(RotationState.ALL)
                     .abilities(tier == 0 ? new PartAbility[] {PartAbility.IMPORT_ITEMS, PartAbility.STEAM_IMPORT_ITEMS} : new PartAbility[]{PartAbility.IMPORT_ITEMS})
                     .overlayTieredHullRenderer("item_bus.import")
@@ -332,7 +333,7 @@ public class GTMachines {
     public final static MachineDefinition[] ITEM_EXPORT_BUS = registerTieredMachines("item_bus.export",
             (holder, tier) -> new ItemBusPartMachine(holder, tier, IO.OUT),
             (tier, builder) -> builder
-                    .langValue("Item Export Bus " + VNF[tier])
+                    .langValue(VNF[tier] + " Output Bus")
                     .rotationState(RotationState.ALL)
                     .abilities(tier == 0 ? new PartAbility[] {PartAbility.EXPORT_ITEMS, PartAbility.STEAM_EXPORT_ITEMS} : new PartAbility[]{PartAbility.EXPORT_ITEMS})
                     .overlayTieredHullRenderer("item_bus.export")
@@ -344,7 +345,7 @@ public class GTMachines {
     public final static MachineDefinition[] FLUID_IMPORT_HATCH = registerTieredMachines("fluid_hatch.import",
             (holder, tier) -> new FluidHatchPartMachine(holder, tier, IO.IN),
             (tier, builder) -> builder
-                    .langValue("Fluid Import Hatch " + VNF[tier])
+                    .langValue(VNF[tier] + " Input Hatch")
                     .rotationState(RotationState.ALL)
                     .abilities(PartAbility.IMPORT_FLUIDS)
                     .overlayTieredHullRenderer("fluid_hatch.import")
@@ -356,7 +357,7 @@ public class GTMachines {
     public final static MachineDefinition[] FLUID_EXPORT_HATCH = registerTieredMachines("fluid_hatch.export",
             (holder, tier) -> new FluidHatchPartMachine(holder, tier, IO.OUT),
             (tier, builder) -> builder
-                    .langValue("Fluid Export Hatch " + VNF[tier])
+                    .langValue(VNF[tier] + " Output Hatch")
                     .rotationState(RotationState.ALL)
                     .itemColor((itemStack, index) -> index == 2 ? GTValues.VC[tier] : -1)
                     .abilities(PartAbility.EXPORT_FLUIDS)
@@ -369,7 +370,7 @@ public class GTMachines {
     public final static MachineDefinition[] ENERGY_INPUT_HATCH = registerTieredMachines("energy_hatch.input",
             (holder, tier) -> new EnergyHatchPartMachine(holder, tier, IO.IN, 2),
             (tier, builder) -> builder
-                    .langValue("Energy Import Hatch " + VNF[tier])
+                    .langValue(VNF[tier] + " Energy Hatch")
                     .rotationState(RotationState.ALL)
                     .itemColor((itemStack, index) -> index == 2 ? GTValues.VC[tier] : -1)
                     .abilities(PartAbility.INPUT_ENERGY)
@@ -380,7 +381,7 @@ public class GTMachines {
     public final static MachineDefinition[] ENERGY_OUTPUT_HATCH = registerTieredMachines("energy_hatch.output",
             (holder, tier) -> new EnergyHatchPartMachine(holder, tier, IO.OUT, 2),
             (tier, builder) -> builder
-                    .langValue("Energy Export Hatch " + VNF[tier])
+                    .langValue(VNF[tier] + " Dynamo Hatch")
                     .rotationState(RotationState.ALL)
                     .itemColor((itemStack, index) -> index == 2 ? GTValues.VC[tier] : -1)
                     .abilities(PartAbility.OUTPUT_ENERGY)
@@ -391,7 +392,8 @@ public class GTMachines {
     public final static MachineDefinition[] ENERGY_INPUT_HATCH_4A = registerTieredMachines("energy_hatch.input_4a",
             (holder, tier) -> new EnergyHatchPartMachine(holder, tier, IO.IN, 4),
             (tier, builder) -> builder
-                    .langValue("Energy Import Hatch (4A) " + VNF[tier])
+                    .langValue(VNF[tier] + " 4A Energy Hatch")
+                    .langValue(VNF[tier] + " 4A Energy Hatch")
                     .rotationState(RotationState.ALL)
                     .itemColor((itemStack, index) -> index == 2 ? GTValues.VC[tier] : -1)
                     .abilities(PartAbility.INPUT_ENERGY)
@@ -402,7 +404,7 @@ public class GTMachines {
     public final static MachineDefinition[] ENERGY_OUTPUT_HATCH_4A = registerTieredMachines("energy_hatch.output_4a",
             (holder, tier) -> new EnergyHatchPartMachine(holder, tier, IO.OUT, 4),
             (tier, builder) -> builder
-                    .langValue("Energy Export Hatch (4A) " + VNF[tier])
+                    .langValue(VNF[tier] + " 4A Dynamo Hatch")
                     .rotationState(RotationState.ALL)
                     .itemColor((itemStack, index) -> index == 2 ? GTValues.VC[tier] : -1)
                     .abilities(PartAbility.OUTPUT_ENERGY)
@@ -413,7 +415,7 @@ public class GTMachines {
     public final static MachineDefinition[] ENERGY_INPUT_HATCH_16A = registerTieredMachines("energy_hatch.input_16a",
             (holder, tier) -> new EnergyHatchPartMachine(holder, tier, IO.IN, 16),
             (tier, builder) -> builder
-                    .langValue("Energy Import Hatch (16A) " + VNF[tier])
+                    .langValue(VNF[tier] + " 16A Energy Hatch")
                     .rotationState(RotationState.ALL)
                     .itemColor((itemStack, index) -> index == 2 ? GTValues.VC[tier] : -1)
                     .abilities(PartAbility.INPUT_ENERGY)
@@ -424,7 +426,7 @@ public class GTMachines {
     public final static MachineDefinition[] ENERGY_OUTPUT_HATCH_16A = registerTieredMachines("energy_hatch.output_16a",
             (holder, tier) -> new EnergyHatchPartMachine(holder, tier, IO.OUT, 16),
             (tier, builder) -> builder
-                    .langValue("Energy Export Hatch (16A) " + VNF[tier])
+                    .langValue(VNF[tier] + " 16A Dynamo Hatch")
                     .rotationState(RotationState.ALL)
                     .abilities(PartAbility.OUTPUT_ENERGY)
                     .overlayTieredHullRenderer("energy_hatch.output_16a")
@@ -449,14 +451,14 @@ public class GTMachines {
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.STEAM_IMPORT_ITEMS)
             .overlaySteamHullRenderer("item_bus.import")
-            .langValue("Item Import Bus (Steam)")
+            .langValue("Input Bus (Steam)")
             .register();
 
     public final static MachineDefinition STEAM_EXPORT_BUS = REGISTRATE.machine("item_bus.export.steam", holder -> new SteamItemBusPartMachine(holder, IO.OUT))
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.STEAM_EXPORT_ITEMS)
             .overlaySteamHullRenderer("item_bus.export")
-            .langValue("Item Export Bus (Steam)")
+            .langValue("Output Bus (Steam)")
             .register();
 
     public final static MachineDefinition STEAM_HATCH = REGISTRATE.machine("steam_hatch", SteamHatchPartMachine::new)
@@ -555,9 +557,9 @@ public class GTMachines {
                         .where('F', FLUID_IMPORT_HATCH[GTValues.LV], Direction.WEST)
                         .where('D', FLUID_EXPORT_HATCH[GTValues.LV], Direction.EAST)
                         .where('H', MUFFLER_HATCH[GTValues.LV - 1], Direction.UP);
-                Arrays.stream(CoilBlock.CoilType.values())
-                        .sorted(Comparator.comparingInt(CoilBlock.CoilType::getTier))
-                        .forEach(coil -> shapeInfo.add(builder.where('C', GTBlocks.ALL_COILS.get(coil)).build()));
+                ALL_COILS.entrySet().stream()
+                        .sorted(Comparator.comparingInt(entry -> entry.getKey().getTier()))
+                        .forEach(coil -> shapeInfo.add(builder.where('C', coil.getValue().get()).build()));
                 return shapeInfo;
             })
             .recoveryItems(() -> new ItemLike[]{GTItems.MATERIAL_ITEMS.get(TagPrefix.dustTiny, GTMaterials.Ash).get()})

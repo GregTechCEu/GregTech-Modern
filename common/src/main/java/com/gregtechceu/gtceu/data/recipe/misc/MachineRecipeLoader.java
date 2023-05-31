@@ -762,7 +762,7 @@ public class MachineRecipeLoader {
 
     private static void registerRecyclingRecipes(Consumer<FinishedRecipe> provider) {
 
-        MACERATOR_RECIPES.recipeBuilder("macerate_endstone")
+        MACERATOR_RECIPES.recipeBuilder("macerate_end_stone")
                 .inputItems(new ItemStack(Blocks.END_STONE))
                 .outputItems(dust, Endstone)
                 .chancedOutput(dustTiny, Tungstate, 1200, 280)
@@ -782,6 +782,7 @@ public class MachineRecipeLoader {
         //            .inputItems(stone, Soapstone)
         //            .outputItems(dustImpure, Talc)
         //            .chancedOutput(dustTiny, Chromite, 1000, 280)
+        //            .duration(150).EUt(2)
         //            .save(provider);
 
         //if (!OreDictionary.getOres("stoneRedrock").isEmpty())
@@ -789,6 +790,7 @@ public class MachineRecipeLoader {
         //            .inputItems(stone, Redrock)
         //            .outputItems(dust, Redrock)
         //            .chancedOutput(dust, Redrock, 1000, 380)
+        //            .duration(150).EUt(2)
         //            .save(provider);
 
         MACERATOR_RECIPES.recipeBuilder("macerate_marble")
@@ -852,7 +854,7 @@ public class MachineRecipeLoader {
         //        .inputItems(new ItemStack(Items.FISH, 1, GTValues.W))
         //        .outputItems(dustSmall, Meat, 6)
         //        .outputItems(dustTiny, Bone)
-        //        .duration(102).save(provider);
+        //        .duration(102).EUt(2).save(provider);
 
         MACERATOR_RECIPES.recipeBuilder("macerate_chicken")
                 .inputItems(new ItemStack(Items.CHICKEN))

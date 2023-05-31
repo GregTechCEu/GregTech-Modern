@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.registry.registrate;
 
+import dev.latvian.mods.rhino.util.HideFromJS;
 import lombok.Getter;
 import net.minecraft.resources.ResourceLocation;
 
@@ -14,6 +15,7 @@ public abstract class BuilderBase<T> implements Supplier<T> {
         this.id = id;
     }
 
+    @HideFromJS
     public abstract T register();
 
     @Override
