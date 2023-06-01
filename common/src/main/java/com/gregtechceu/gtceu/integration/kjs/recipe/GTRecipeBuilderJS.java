@@ -52,6 +52,7 @@ public class GTRecipeBuilderJS extends RecipeJS {
     @Override
     public void create(RecipeArguments args) {
         this.id = ResourceLocation.tryParse(args.getString(0, this.type.getMod() + ":kjs_" + this.getUniqueId()));
+        this.id = new ResourceLocation(this.getOrCreateId().getNamespace(), this.type.getId().getPath() + "/" + this.id.getPath());
         backingBuilder = GTRecipeTypes.get(this.type.toString()).recipeBuilder(this.id);
     }
 

@@ -51,15 +51,7 @@ public class TagPrefix {
     private final static Map<String, TagPrefix> PREFIXES = new HashMap<>();
     public static final Map<TagPrefix, Triple<Supplier<BlockState>, net.minecraft.world.level.material.Material, MaterialColor>> ORES = new HashMap<>();
 
-    public static final TagPrefix ore = new TagPrefix("stone")
-            .prefixTagPath(FORGE, "ores/%s/%s")
-            .defaultTagPath(FORGE, "ores/%s")
-            .prefixOnlyTagPath(FORGE, "ores_in_ground/%s")
-            .unformattedTagPath(FORGE, "ores")
-            .prefixTagPath(FABRIC, "%s_%s_ores")
-            .defaultTagPath(FABRIC, "%s_ores")
-            .prefixOnlyTagPath(FABRIC, "%s_ores_in_ground")
-            .unformattedTagPath(FABRIC, "ores")
+    public static final TagPrefix ore = oreTagPrefix("stone")
             .langValue("%s Ore")
             .materialIconType(MaterialIconType.ore)
             .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
@@ -67,15 +59,7 @@ public class TagPrefix {
             .generationCondition(hasOreProperty)
             .registerOre(Blocks.STONE::defaultBlockState);
 
-    public static final TagPrefix oreGranite = new TagPrefix("granite")
-            .prefixTagPath(FORGE, "ores/%s/%s")
-            .defaultTagPath(FORGE, "ores/%s")
-            .prefixOnlyTagPath(FORGE, "ores_in_ground/%s")
-            .unformattedTagPath(FORGE, "ores")
-            .prefixTagPath(FABRIC, "%s_%s_ores")
-            .defaultTagPath(FABRIC, "%s_ores")
-            .prefixOnlyTagPath(FABRIC, "%s_ores_in_ground")
-            .unformattedTagPath(FABRIC, "ores")
+    public static final TagPrefix oreGranite = oreTagPrefix("granite")
             .langValue("Granite %s Ore")
             .materialIconType(MaterialIconType.ore)
             .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
@@ -83,15 +67,7 @@ public class TagPrefix {
             .generationCondition(hasOreProperty)
             .registerOre(Blocks.GRANITE::defaultBlockState, MaterialColor.DIRT);
 
-    public static final TagPrefix oreDiorite = new TagPrefix("diorite")
-            .prefixTagPath(FORGE, "ores/%s/%s")
-            .defaultTagPath(FORGE, "ores/%s")
-            .prefixOnlyTagPath(FORGE, "ores_in_ground/%s")
-            .unformattedTagPath(FORGE, "ores")
-            .prefixTagPath(FABRIC, "%s_%s_ores")
-            .defaultTagPath(FABRIC, "%s_ores")
-            .prefixOnlyTagPath(FABRIC, "%s_ores_in_ground")
-            .unformattedTagPath(FABRIC, "ores")
+    public static final TagPrefix oreDiorite = oreTagPrefix("diorite")
             .langValue("Diorite %s Ore")
             .materialIconType(MaterialIconType.ore)
             .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
@@ -99,15 +75,7 @@ public class TagPrefix {
             .generationCondition(hasOreProperty)
             .registerOre(Blocks.DIORITE::defaultBlockState, MaterialColor.QUARTZ);
 
-    public static final TagPrefix oreAndesite = new TagPrefix("andesite")
-            .prefixTagPath(FORGE, "ores/%s/%s")
-            .defaultTagPath(FORGE, "ores/%s")
-            .prefixOnlyTagPath(FORGE, "ores_in_ground/%s")
-            .unformattedTagPath(FORGE, "ores")
-            .prefixTagPath(FABRIC, "%s_%s_ores")
-            .defaultTagPath(FABRIC, "%s_ores")
-            .prefixOnlyTagPath(FABRIC, "%s_ores_in_ground")
-            .unformattedTagPath(FABRIC, "ores")
+    public static final TagPrefix oreAndesite = oreTagPrefix("andesite")
             .langValue("Andesite %s Ore")
             .materialIconType(MaterialIconType.ore)
             .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
@@ -116,15 +84,7 @@ public class TagPrefix {
             .registerOre(Blocks.ANDESITE::defaultBlockState);
 
     // todo move to doubling, since this is a nether block?
-    public static final TagPrefix oreBasalt = new TagPrefix("basalt")
-            .prefixTagPath(FORGE, "ores/%s/%s")
-            .defaultTagPath(FORGE, "ores/%s")
-            .prefixOnlyTagPath(FORGE, "ores_in_ground/%s")
-            .unformattedTagPath(FORGE, "ores")
-            .prefixTagPath(FABRIC, "%s_%s_ores")
-            .defaultTagPath(FABRIC, "%s_ores")
-            .prefixOnlyTagPath(FABRIC, "%s_ores_in_ground")
-            .unformattedTagPath(FABRIC, "ores")
+    public static final TagPrefix oreBasalt = oreTagPrefix("basalt")
             .langValue("Basalt %s Ore")
             .materialIconType(MaterialIconType.ore)
             .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
@@ -132,15 +92,7 @@ public class TagPrefix {
             .generationCondition(hasOreProperty)
             .registerOre(Blocks.BASALT::defaultBlockState, MaterialColor.COLOR_BLACK);
 
-    public static final TagPrefix oreDeepslate = new TagPrefix("deepslate")
-            .prefixTagPath(FORGE, "ores/%s/%s")
-            .defaultTagPath(FORGE, "ores/%s")
-            .prefixOnlyTagPath(FORGE, "ores_in_ground/%s")
-            .unformattedTagPath(FORGE, "ores")
-            .prefixTagPath(FABRIC, "%s_%s_ores")
-            .defaultTagPath(FABRIC, "%s_ores")
-            .prefixOnlyTagPath(FABRIC, "%s_ores_in_ground")
-            .unformattedTagPath(FABRIC, "ores")
+    public static final TagPrefix oreDeepslate = oreTagPrefix("deepslate")
             .langValue("Deepslate %s Ore")
             .materialIconType(MaterialIconType.ore)
             .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
@@ -148,15 +100,7 @@ public class TagPrefix {
             .generationCondition(hasOreProperty)
             .registerOre(Blocks.DEEPSLATE::defaultBlockState, MaterialColor.DEEPSLATE);
 
-    public static final TagPrefix oreSand = new TagPrefix("sand")
-            .prefixTagPath(FORGE, "ores/%s/%s")
-            .defaultTagPath(FORGE, "ores/%s")
-            .prefixOnlyTagPath(FORGE, "ores_in_ground/%s")
-            .unformattedTagPath(FORGE, "ores")
-            .prefixTagPath(FABRIC, "%s_%s_ores")
-            .defaultTagPath(FABRIC, "%s_ores")
-            .prefixOnlyTagPath(FABRIC, "%s_ores_in_ground")
-            .unformattedTagPath(FABRIC, "ores")
+    public static final TagPrefix oreSand = oreTagPrefix("sand")
             .langValue("Sand %s Ore")
             .materialIconType(MaterialIconType.ore)
             .miningToolTag(BlockTags.MINEABLE_WITH_SHOVEL)
@@ -164,15 +108,7 @@ public class TagPrefix {
             .generationCondition(hasOreProperty)
             .registerOre(Blocks.SAND::defaultBlockState, net.minecraft.world.level.material.Material.SAND);
 
-    public static final TagPrefix oreRedSand = new TagPrefix("redSand")
-            .prefixTagPath(FORGE, "ores/%s/%s")
-            .defaultTagPath(FORGE, "ores/%s")
-            .prefixOnlyTagPath(FORGE, "ores_in_ground/%s")
-            .unformattedTagPath(FORGE, "ores")
-            .prefixTagPath(FABRIC, "%s_%s_ores")
-            .defaultTagPath(FABRIC, "%s_ores")
-            .prefixOnlyTagPath(FABRIC, "%s_ores_in_ground")
-            .unformattedTagPath(FABRIC, "ores")
+    public static final TagPrefix oreRedSand = oreTagPrefix("redSand")
             .langValue("Red Sand %s Ore")
             .materialIconType(MaterialIconType.ore)
             .miningToolTag(BlockTags.MINEABLE_WITH_SHOVEL)
@@ -180,15 +116,7 @@ public class TagPrefix {
             .generationCondition(hasOreProperty)
             .registerOre(Blocks.RED_SAND::defaultBlockState, net.minecraft.world.level.material.Material.SAND, MaterialColor.COLOR_ORANGE);
 
-    public static final TagPrefix oreNetherrack = new TagPrefix("netherrack")
-            .prefixTagPath(FORGE, "ores/%s/%s")
-            .defaultTagPath(FORGE, "ores/%s")
-            .prefixOnlyTagPath(FORGE, "ores_in_ground/%s")
-            .unformattedTagPath(FORGE, "ores")
-            .prefixTagPath(FABRIC, "%s_%s_ores")
-            .defaultTagPath(FABRIC, "%s_ores")
-            .prefixOnlyTagPath(FABRIC, "%s_ores_in_ground")
-            .unformattedTagPath(FABRIC, "ores")
+    public static final TagPrefix oreNetherrack = oreTagPrefix("netherrack")
             .langValue("Nether %s Ore")
             .materialIconType(MaterialIconType.ore)
             .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
@@ -196,15 +124,7 @@ public class TagPrefix {
             .generationCondition(hasOreProperty)
             .registerOre(Blocks.NETHERRACK::defaultBlockState, MaterialColor.NETHER);
 
-    public static final TagPrefix oreEndstone = new TagPrefix("endstone")
-            .prefixTagPath(FORGE, "ores/%s/%s")
-            .defaultTagPath(FORGE, "ores/%s")
-            .prefixOnlyTagPath(FORGE, "ores_in_ground/%s")
-            .unformattedTagPath(FORGE, "ores")
-            .prefixTagPath(FABRIC, "%s_%s_ores")
-            .defaultTagPath(FABRIC, "%s_ores")
-            .prefixOnlyTagPath(FABRIC, "%s_ores_in_ground")
-            .unformattedTagPath(FABRIC, "ores")
+    public static final TagPrefix oreEndstone = oreTagPrefix("endstone")
             .langValue("End %s Ore")
             .materialIconType(MaterialIconType.ore)
             .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
@@ -761,6 +681,18 @@ public class TagPrefix {
         PREFIXES.put(name, this);
     }
 
+    protected static TagPrefix oreTagPrefix(String name) {
+        return new TagPrefix(name)
+                .prefixTagPath(FORGE, "ores/%s/%s")
+                .defaultTagPath(FORGE, "ores/%s")
+                .prefixOnlyTagPath(FORGE, "ores_in_ground/%s")
+                .unformattedTagPath(FORGE, "ores")
+                .prefixTagPath(FABRIC, "%s_%s_ores")
+                .defaultTagPath(FABRIC, "%s_ores")
+                .prefixOnlyTagPath(FABRIC, "%s_ores_in_ground")
+                .unformattedTagPath(FABRIC, "ores");
+    }
+
     public void addSecondaryMaterial(MaterialStack secondaryMaterial) {
         Preconditions.checkNotNull(secondaryMaterial, "secondaryMaterial");
         secondaryMaterials.add(secondaryMaterial);
@@ -780,8 +712,10 @@ public class TagPrefix {
 
     protected TagPrefix registerOre(Supplier<BlockState> stoneType, net.minecraft.world.level.material.Material material, MaterialColor color) {
         ORES.put(this, Triple.of(stoneType, material, color));
+        //ORES_INVERSE.put(state -> state.getBlock() == stoneType.get().getBlock(), this);
         return this;
     }
+
 
     protected TagPrefix defaultTagPath(LoaderType loader, String path) {
         loader.apply(this, TagType.withDefaultFormatter(path));

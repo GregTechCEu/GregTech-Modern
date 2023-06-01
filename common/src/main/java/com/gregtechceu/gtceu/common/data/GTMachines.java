@@ -194,8 +194,8 @@ public class GTMachines {
                     .tooltips(explosion())
                     .tooltips(Component.translatable("gtceu.machine.transformer.description"),
                             Component.translatable("gtceu.machine.transformer.tooltip_tool_usage"),
-                            Component.translatable("gtceu.machine.transformer.tooltip_transform_down", 4, GTValues.V[tier + 1], GTValues.VNF[tier + 1], 1, GTValues.V[tier], GTValues.VNF[tier]),
-                            Component.translatable("gtceu.machine.transformer.tooltip_transform_up", 1, GTValues.V[tier], GTValues.VNF[tier], 4, GTValues.V[tier + 1], GTValues.VNF[tier + 1]))
+                            Component.translatable("gtceu.machine.transformer.tooltip_transform_down", 1, GTValues.V[tier + 1], GTValues.VNF[tier + 1], 4, GTValues.V[tier], GTValues.VNF[tier]),
+                            Component.translatable("gtceu.machine.transformer.tooltip_transform_up", 4, GTValues.V[tier], GTValues.VNF[tier], 1, GTValues.V[tier + 1], GTValues.VNF[tier + 1]))
                     .register(),
             GTValues.ULV, GTValues.LV, GTValues.MV, GTValues.HV, GTValues.EV, GTValues.IV, GTValues.LuV, GTValues.ZPM, GTValues.UV); // UHV not needed, as a UV transformer transforms up to UHV
 
@@ -210,6 +210,7 @@ public class GTMachines {
                     .rotationState(RotationState.NON_Y_AXIS)
                     .hasTESR(true)
                     .renderer(() -> new TieredHullMachineRenderer(tier, GTCEu.id("block/machine/pump_machine")))
+                    .langValue("%s Pump %s".formatted(VLVH[tier], VLVT[tier]))
                     .tooltips(Component.translatable("gtceu.machine.pump.tooltip"),
                             Component.translatable("gtceu.universal.tooltip.voltage_in", GTValues.V[tier], GTValues.VNF[tier]),
                             Component.translatable("gtceu.universal.tooltip.energy_storage_capacity", GTValues.V[tier] * 64),

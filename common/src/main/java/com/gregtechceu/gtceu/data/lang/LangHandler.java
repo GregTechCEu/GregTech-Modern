@@ -596,12 +596,12 @@ public class LangHandler {
         provider.add("behaviour.paintspray.white.tooltip", "Can paint things in White");
         provider.add("behaviour.paintspray.orange.tooltip", "Can paint things in Orange");
         provider.add("behaviour.paintspray.magenta.tooltip", "Can paint things in Magenta");
-        provider.add("behaviour.paintspray.lightBlue.tooltip", "Can paint things in Light Blue");
+        provider.add("behaviour.paintspray.light_blue.tooltip", "Can paint things in Light Blue");
         provider.add("behaviour.paintspray.yellow.tooltip", "Can paint things in Yellow");
         provider.add("behaviour.paintspray.lime.tooltip", "Can paint things in Lime");
         provider.add("behaviour.paintspray.pink.tooltip", "Can paint things in Pink");
         provider.add("behaviour.paintspray.gray.tooltip", "Can paint things in Gray");
-        provider.add("behaviour.paintspray.silver.tooltip", "Can paint things in Light Gray");
+        provider.add("behaviour.paintspray.light_gray.tooltip", "Can paint things in Light Gray");
         provider.add("behaviour.paintspray.cyan.tooltip", "Can paint things in Cyan");
         provider.add("behaviour.paintspray.purple.tooltip", "Can paint things in Purple");
         provider.add("behaviour.paintspray.blue.tooltip", "Can paint things in Blue");

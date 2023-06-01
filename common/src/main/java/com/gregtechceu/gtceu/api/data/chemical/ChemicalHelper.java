@@ -6,6 +6,8 @@ import com.gregtechceu.gtceu.api.data.chemical.material.stack.ItemMaterialInfo;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.common.data.GTBlocks;
+import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
@@ -13,10 +15,13 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static com.gregtechceu.gtceu.api.GTValues.M;
@@ -34,6 +39,8 @@ public class ChemicalHelper {
     public static final Map<ItemLike, UnificationEntry> ITEM_UNIFICATION_ENTRY = new HashMap<>();
     /** Mapping of all items that represent a "prefix, material" pair */
     public static final Map<UnificationEntry, ArrayList<ItemLike>> UNIFICATION_ENTRY_ITEM = new Object2ObjectLinkedOpenHashMap<>();
+    /** Mapping of stone type blockState to "prefix, material" */
+    public static final Map<BlockState, Pair<TagPrefix, Material>> ORES_INVERSE = new HashMap<>();
 
     public static void registerMaterialInfo(ItemLike item, ItemMaterialInfo materialInfo) {
         ITEM_MATERIAL_INFO.put(item, materialInfo);
@@ -53,6 +60,9 @@ public class ChemicalHelper {
 
     public static void registerUnificationItems(TagPrefix tagPrefix, @Nullable Material material, ItemLike... items) {
         registerUnificationItems(new UnificationEntry(tagPrefix, material), items);
+        if (TagPrefix.ORES.containsKey(tagPrefix)) {
+            ORES_INVERSE.put(TagPrefix.ORES.get(tagPrefix).getLeft().get(), Pair.of(tagPrefix, material));
+        }
     }
 
     @Nullable

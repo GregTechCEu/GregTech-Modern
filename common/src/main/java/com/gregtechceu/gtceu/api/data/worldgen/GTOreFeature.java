@@ -1,6 +1,8 @@
 package com.gregtechceu.gtceu.api.data.worldgen;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
+import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -178,7 +180,8 @@ public class GTOreFeature extends Feature<GTOreFeatureConfiguration> {
                                                         if (random.nextFloat() <= density) {
                                                             for(OreConfiguration.TargetBlockState oreconfiguration$targetblockstate : targets) {
                                                                 if (canPlaceOre(blockstate, access::getBlockState, random, entry, oreconfiguration$targetblockstate, posCursor)) {
-                                                                    levelchunksection.setBlockState(i3, j3, k3, oreconfiguration$targetblockstate.state, false);
+                                                                    var pair = ChemicalHelper.ORES_INVERSE.get(access.getBlockState(posCursor));
+                                                                    levelchunksection.setBlockState(i3, j3, k3, GTBlocks.MATERIAL_BLOCKS.get(pair.getFirst(), pair.getSecond()).getDefaultState(), false);
                                                                     ++i;
                                                                     break;
                                                                 }
@@ -234,8 +237,8 @@ public class GTOreFeature extends Feature<GTOreFeatureConfiguration> {
         List<GTLayerPattern.Layer> resolvedLayers = new ArrayList<>();
         List<Float> layerDiameterOffsets = new ArrayList<>();
 
-        BlockPos.MutableBlockPos mutablePos = new BlockPos.MutableBlockPos();
-        BulkSectionAccess bulksectionaccess = new BulkSectionAccess(level);
+        BlockPos.MutableBlockPos posCursor = new BlockPos.MutableBlockPos();
+        BulkSectionAccess access = new BulkSectionAccess(level);
         int layerCoordinate = random.nextInt(4);
         int slantyCoordinate = random.nextInt(3);
         float slope = random.nextFloat() * .75f;
@@ -282,10 +285,10 @@ public class GTOreFeature extends Feature<GTOreFeatureConfiguration> {
                         int currentY = y0 + y;
                         int currentZ = z0 + z;
 
-                        mutablePos.set(currentX, currentY, currentZ);
-                        if (!level.ensureCanWrite(mutablePos))
+                        posCursor.set(currentX, currentY, currentZ);
+                        if (!level.ensureCanWrite(posCursor))
                             continue;
-                        LevelChunkSection levelchunksection = bulksectionaccess.getSection(mutablePos);
+                        LevelChunkSection levelchunksection = access.getSection(posCursor);
                         if (levelchunksection == null)
                             continue;
 
@@ -296,11 +299,12 @@ public class GTOreFeature extends Feature<GTOreFeatureConfiguration> {
 
                         if (random.nextFloat() <= density) {
                             for (OreConfiguration.TargetBlockState oreconfiguration$targetblockstate : state) {
-                                if (!canPlaceOre(blockstate, bulksectionaccess::getBlockState, random, entry, oreconfiguration$targetblockstate, mutablePos))
+                                if (!canPlaceOre(blockstate, access::getBlockState, random, entry, oreconfiguration$targetblockstate, posCursor))
                                     continue;
                                 if (oreconfiguration$targetblockstate.state.isAir())
                                     continue;
-                                levelchunksection.setBlockState(i3, j3, k3, oreconfiguration$targetblockstate.state, false);
+                                var pair = ChemicalHelper.ORES_INVERSE.get(access.getBlockState(posCursor));
+                                levelchunksection.setBlockState(i3, j3, k3, GTBlocks.MATERIAL_BLOCKS.get(pair.getFirst(), pair.getSecond()).getDefaultState(), false);
                                 ++placedAmount;
                                 break;
                             }
@@ -312,7 +316,7 @@ public class GTOreFeature extends Feature<GTOreFeatureConfiguration> {
 
         } catch (Throwable throwable1) {
             try {
-                bulksectionaccess.close();
+                access.close();
             } catch (Throwable throwable) {
                 throwable1.addSuppressed(throwable);
             }
@@ -320,7 +324,7 @@ public class GTOreFeature extends Feature<GTOreFeatureConfiguration> {
             throw throwable1;
         }
 
-        bulksectionaccess.close();
+        access.close();
         return placedAmount > 0;
     }
 
