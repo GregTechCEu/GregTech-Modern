@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.MixinHelpers;
+import com.lowdragmc.lowdraglib.Platform;
 import net.minecraft.data.loot.BlockLoot;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -28,9 +29,13 @@ public abstract class LootTablesMixin {
             at = @At(value = "INVOKE", target = "Ljava/util/Map;remove(Ljava/lang/Object;)Ljava/lang/Object;", shift = At.Shift.BEFORE),
             locals = LocalCapture.CAPTURE_FAILHARD)
     public void gtceu$injectLootTables(Map<ResourceLocation, JsonElement> object, ResourceManager resourceManager, ProfilerFiller profiler, CallbackInfo ci, ImmutableMap.Builder<ResourceLocation, LootTable> lootTables) {
+        if (Platform.isDatagen()) return;
+
         GTBlocks.MATERIAL_BLOCKS.rowMap().forEach((prefix, map) -> {
-            if (TagPrefix.ORES.containsKey(prefix) && ConfigHolder.INSTANCE.worldgen.allUniqueStoneTypes) {
+            if ((prefix != TagPrefix.oreNetherrack && prefix != TagPrefix.oreEndstone) && !ConfigHolder.INSTANCE.worldgen.allUniqueStoneTypes && TagPrefix.ORES.containsKey(prefix)) {
                 map.forEach((material, blockEntry) -> {
+                    ResourceLocation lootTableId = new ResourceLocation(blockEntry.getId().getNamespace(), "blocks/" + blockEntry.getId().getPath());
+                    ((BlockBehaviourAccessor)blockEntry.get()).setDrops(lootTableId);
                     lootTables.put(blockEntry.getId(), BlockLoot.createSingleItemTable(ChemicalHelper.get(TagPrefix.ore, material).getItem()).build());
                 });
             } else {

@@ -2,6 +2,10 @@ package com.gregtechceu.gtceu.common.fabric;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.common.CommonProxy;
+import com.tterrag.registrate.providers.loot.RegistrateBlockLootTables;
+import com.tterrag.registrate.util.entry.BlockEntry;
+import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
+import net.minecraft.world.level.block.Block;
 
 /**
  * @author KilaBash
@@ -17,5 +21,9 @@ public class CommonProxyImpl {
         if (!GTCEu.isKubeJSLoaded()) {
             CommonProxy.init();
         }
+    }
+
+    public static <T extends RegistrateBlockLootTables, E extends Block> void skipBlockLoot(T tables, E block) {
+        tables.excludeFromStrictValidation(block);
     }
 }

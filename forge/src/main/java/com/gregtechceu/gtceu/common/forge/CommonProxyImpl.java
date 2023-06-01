@@ -11,6 +11,10 @@ import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.forge.SizedIngredientImpl;
 import com.gregtechceu.gtceu.common.data.GTSyncedFieldAccessors;
 import com.lowdragmc.lowdraglib.LDLib;
+import com.tterrag.registrate.providers.loot.RegistrateBlockLootTables;
+import com.tterrag.registrate.util.entry.BlockEntry;
+import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
+import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -70,6 +74,10 @@ public class CommonProxyImpl {
     @SubscribeEvent
     public void registerCapabilities(RegisterCapabilitiesEvent event) {
         GTCapability.register(event);
+    }
+
+    public static <T extends RegistrateBlockLootTables, E extends Block> void skipBlockLoot(T tables, E block) {
+
     }
 
 }

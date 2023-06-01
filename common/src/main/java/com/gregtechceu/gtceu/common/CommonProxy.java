@@ -11,7 +11,11 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.GregTechDatagen;
 import com.gregtechceu.gtceu.integration.kjs.GTRegistryObjectBuilderTypes;
 import com.lowdragmc.lowdraglib.gui.factory.UIFactory;
+import com.tterrag.registrate.providers.loot.RegistrateBlockLootTables;
+import com.tterrag.registrate.util.entry.BlockEntry;
+import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import dev.architectury.injectables.annotations.ExpectPlatform;
+import net.minecraft.world.level.block.Block;
 
 public class CommonProxy {
 
@@ -52,5 +56,10 @@ public class CommonProxy {
         }
         GTOres.init();
         GTFeatures.init();
+    }
+
+    @ExpectPlatform
+    public static <T extends RegistrateBlockLootTables, E extends Block> void skipBlockLoot(T tables, E block) {
+        throw new AssertionError();
     }
 }

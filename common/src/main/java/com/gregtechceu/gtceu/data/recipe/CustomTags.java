@@ -1,8 +1,11 @@
 package com.gregtechceu.gtceu.data.recipe;
 
 import com.gregtechceu.gtceu.api.data.tag.TagUtil;
+import net.minecraft.core.Registry;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
 
 public class CustomTags {
 
@@ -40,4 +43,18 @@ public class CustomTags {
 
     // Platform-dependent tags
     public static final TagKey<Item> TAG_WOODEN_CHESTS = TagUtil.createPlatformItemTag("chests/wooden", "chests");
+
+
+    public static final TagKey<Block> NEEDS_WOOD_TOOL = TagUtil.createPlatformUnprefixedTag(Registry.BLOCK, "forge:needs_wood_tool", "fabric:needs_tool_level_0");
+    public static final TagKey<Block> NEEDS_GOLD_TOOL = TagUtil.createPlatformUnprefixedTag(Registry.BLOCK, "forge:needs_gold_tool", "fabric:needs_tool_level_0");
+    public static final TagKey<Block> NEEDS_NETHERITE_TOOL = TagUtil.createPlatformUnprefixedTag(Registry.BLOCK, "forge:needs_netherite_tool", "fabric:needs_tool_level_4");
+
+    @SuppressWarnings("unchecked")
+    public static final TagKey<Block>[] TOOL_TIERS = new TagKey[] {
+            NEEDS_WOOD_TOOL,
+            BlockTags.NEEDS_STONE_TOOL,
+            BlockTags.NEEDS_IRON_TOOL,
+            BlockTags.NEEDS_DIAMOND_TOOL,
+            NEEDS_NETHERITE_TOOL
+    };
 }

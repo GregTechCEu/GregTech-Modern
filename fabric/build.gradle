@@ -29,7 +29,7 @@ loom {
             property("fabric-api.datagen")
             property("fabric-api.datagen.modid", "${mod_id}")
             property("fabric-api.datagen.output-dir", project.file("src/generated/resources").absolutePath)
-            property("fabric-api.datagen.strict-validation")
+            //property("fabric-api.datagen.strict-validation") Disable because we need to force material blocks to not have loot tables
         }
     }
 }
