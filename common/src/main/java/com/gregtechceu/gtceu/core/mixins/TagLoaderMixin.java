@@ -1,8 +1,10 @@
 package com.gregtechceu.gtceu.core.mixins;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
+import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.core.IGTTagLoader;
 import com.gregtechceu.gtceu.core.MixinHelpers;
 import net.minecraft.core.Registry;
@@ -47,6 +49,16 @@ public class TagLoaderMixin<T> implements IGTTagLoader<T> {
                     }
 
                 }
+            });
+
+            GTItems.TOOL_ITEMS.rowMap().forEach((toolTier, map) -> {
+                map.forEach((type, item) -> {
+                    if (item != null) {
+                        var entry = new TagLoader.EntryWithSource(TagEntry.element(item.getId()), GTValues.CUSTOM_TAG_SOURCE);
+                        GTCEu.LOGGER.info("Tool tag registered. Tier: " + toolTier.getLevel() +  ". Item: " + item.getId() + ". ");
+                        value.computeIfAbsent(type.itemTag.location(), path -> new ArrayList<>()).add(entry);
+                    }
+                });
             });
         } else if (gtceu$getRegistry() == Registry.BLOCK) {
             GTBlocks.MATERIAL_BLOCKS.rowMap().forEach((prefix, map) -> {

@@ -134,10 +134,20 @@ public class GTBlocks {
                     if (ore.getKey().isIgnored(material)) continue;
                     var oreTag = ore.getKey();
                     var entry = REGISTRATE.block("%s_%s".formatted(FormattingUtil.toLowerCaseUnder(oreTag.name), material.getName()),
-                                    properties -> new MaterialBlock(properties.noLootTable(), oreTag, material, new OreBlockRenderer(ore.getValue().getLeft(),
+                                    ore.getValue().getMiddle(),
+                                    properties -> new MaterialBlock(properties, oreTag, material, new OreBlockRenderer(ore.getValue().getLeft(),
                                             Objects.requireNonNull(oreTag.materialIconType()).getBlockTexturePath(material.getMaterialIconSet(), true),
                                             oreProperty.isEmissive())))
-                            .initialProperties(ore.getValue().getMiddle(), ore.getValue().getRight())
+                            .initialProperties(() -> Blocks.IRON_BLOCK)
+                            .properties(properties -> {
+                                properties.color(ore.getValue().getRight()).noLootTable();
+                                if (ore.getValue().getMiddle() == net.minecraft.world.level.material.Material.SAND) {
+                                    properties.strength(1.0f, 0.5f);
+                                } else {
+                                    properties.strength(1.5f, 6.0f);
+                                }
+                                return properties;
+                            })
                             .transform(unificationBlock(oreTag, material))
                             .addLayer(() -> RenderType::cutoutMipped)
                             .blockstate(NonNullBiConsumer.noop())

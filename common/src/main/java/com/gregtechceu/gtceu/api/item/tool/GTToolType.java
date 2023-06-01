@@ -64,7 +64,7 @@ public enum GTToolType {
     }
 
     GTToolType(String name, String plural, TagKey<Block> harvestTag, float attackDamageModifier, float attackSpeedModifier, ResourceLocation modelLocation, SoundEntry soundEntry) {
-        this(name, harvestTag, TagUtil.createPlatformItemTag("tools/" + name, plural), attackDamageModifier, attackSpeedModifier, modelLocation, soundEntry);
+        this(name, harvestTag, TagUtil.createPlatformItemTag("tools/" + plural, plural), attackDamageModifier, attackSpeedModifier, modelLocation, soundEntry);
     }
 
     GTToolType(String name, String plural, float attackDamageModifier, float attackSpeedModifier, ResourceLocation modelLocation, SoundEntry soundEntry) {

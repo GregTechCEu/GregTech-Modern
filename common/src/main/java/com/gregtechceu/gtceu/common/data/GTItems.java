@@ -111,8 +111,8 @@ public class GTItems {
                 var property = material.getProperty(PropertyKey.TOOL);
                 var tier = material.getToolTier();
 
-                Set<Tier> lower = tiers.get(tier.getLevel() - 1);
-                Set<Tier> higher = tiers.get(tier.getLevel() + 1);
+                List<Tier> lower = tiers.values().stream().filter(low -> low.getLevel() < tier.getLevel()).toList();
+                List<Tier> higher = tiers.values().stream().filter(high -> high.getLevel() > tier.getLevel()).toList();
                 tiers.put(tier.getLevel(), tier);
                 registerToolTier(tier, GTCEu.id(material.getName()), lower, higher);
 
@@ -123,7 +123,7 @@ public class GTItems {
                                 .setData(ProviderType.LANG, NonNullBiConsumer.noop())
                                 .model(NonNullBiConsumer.noop())
                                 .color(() -> () -> GTToolItem::tintColor)
-                                .tag(toolType.itemTag)
+                                //.tag(toolType.itemTag)
                                 .register());
                     }
                 }

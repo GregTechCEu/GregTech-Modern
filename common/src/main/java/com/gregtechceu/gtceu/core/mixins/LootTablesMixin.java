@@ -35,8 +35,8 @@ public abstract class LootTablesMixin {
             if ((prefix != TagPrefix.oreNetherrack && prefix != TagPrefix.oreEndstone) && !ConfigHolder.INSTANCE.worldgen.allUniqueStoneTypes && TagPrefix.ORES.containsKey(prefix)) {
                 map.forEach((material, blockEntry) -> {
                     ResourceLocation lootTableId = new ResourceLocation(blockEntry.getId().getNamespace(), "blocks/" + blockEntry.getId().getPath());
+                    lootTables.put(lootTableId, BlockLoot.createSingleItemTable(ChemicalHelper.get(TagPrefix.ore, material).getItem()).build());
                     ((BlockBehaviourAccessor)blockEntry.get()).setDrops(lootTableId);
-                    lootTables.put(blockEntry.getId(), BlockLoot.createSingleItemTable(ChemicalHelper.get(TagPrefix.ore, material).getItem()).build());
                 });
             } else {
                 MixinHelpers.addMaterialBlockLootTables(lootTables, prefix, map);
