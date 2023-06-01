@@ -57,9 +57,4 @@ public class CommonProxy {
         GTOres.init();
         GTFeatures.init();
     }
-
-    @ExpectPlatform
-    public static <T extends RegistrateBlockLootTables, E extends Block> void skipBlockLoot(T tables, E block) {
-        throw new AssertionError();
-    }
 }

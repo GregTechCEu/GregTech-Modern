@@ -24,12 +24,15 @@ loom {
 
     runs {
         create("dataCommon") {
-            inherit(getByName("client"))
+            inherit client
             name("Minecraft Data")
             property("fabric-api.datagen")
             property("fabric-api.datagen.modid", "${mod_id}")
             property("fabric-api.datagen.output-dir", project.file("src/generated/resources").absolutePath)
-            //property("fabric-api.datagen.strict-validation") Disable because we need to force material blocks to not have loot tables
+            property("fabric-api.datagen.strict-validation")
+        }
+        client {
+            programArgs("--username", "Player")
         }
     }
 }

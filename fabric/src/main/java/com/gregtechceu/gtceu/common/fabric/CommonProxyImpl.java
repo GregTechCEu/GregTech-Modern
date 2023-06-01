@@ -22,8 +22,4 @@ public class CommonProxyImpl {
             CommonProxy.init();
         }
     }
-
-    public static <T extends RegistrateBlockLootTables, E extends Block> void skipBlockLoot(T tables, E block) {
-        tables.excludeFromStrictValidation(block);
-    }
 }

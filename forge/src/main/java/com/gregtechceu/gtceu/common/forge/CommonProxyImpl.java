@@ -76,8 +76,4 @@ public class CommonProxyImpl {
         GTCapability.register(event);
     }
 
-    public static <T extends RegistrateBlockLootTables, E extends Block> void skipBlockLoot(T tables, E block) {
-
-    }
-
 }
