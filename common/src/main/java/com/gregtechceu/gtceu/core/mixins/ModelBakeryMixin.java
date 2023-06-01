@@ -14,6 +14,7 @@ import com.gregtechceu.gtceu.client.renderer.block.MaterialBlockRenderer;
 import com.gregtechceu.gtceu.client.renderer.block.OreBlockRenderer;
 import com.gregtechceu.gtceu.client.renderer.item.TagPrefixItemRenderer;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
+import com.gregtechceu.gtceu.core.MixinHelpers;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.ModelBakery;
@@ -66,6 +67,7 @@ public abstract class ModelBakeryMixin {
                     prop.setStillTexture(gtceu$generateBlockTexture(iconSet, MaterialIconType.fluid));
                     prop.setFlowTexture(prop.getStillTexture());
                     MaterialBlockRenderer.getOrCreate(MaterialIconType.fluid, iconSet).setBlockTexture(prop.getStillTexture());
+                    MixinHelpers.addFluidTexture(material, prop);
                 }
             }
 
@@ -109,5 +111,4 @@ public abstract class ModelBakeryMixin {
         UNREFERENCED_TEXTURES.add(new net.minecraft.client.resources.model.Material(TextureAtlas.LOCATION_BLOCKS, foundTexture));
         return foundTexture;
     }
-
 }

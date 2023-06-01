@@ -66,7 +66,7 @@ public class GTFluidBuilder<T extends ForgeFlowingFluid, P> extends AbstractBuil
 
     @FunctionalInterface
     public interface FluidTypeFactory {
-        FluidType create(FluidType.Properties properties, ResourceLocation stillTexture, ResourceLocation flowingTexture, int color);
+        FluidType create(ResourceLocation stillId, FluidType.Properties properties, ResourceLocation stillTexture, ResourceLocation flowingTexture, int color);
     }
 
     private final String sourceName, bucketName;
@@ -99,7 +99,7 @@ public class GTFluidBuilder<T extends ForgeFlowingFluid, P> extends AbstractBuil
         this.stillTexture = stillTexture;
         this.flowingTexture = flowingTexture;
         this.fluidFactory = fluidFactory;
-        this.fluidType = NonNullSupplier.lazy(() -> typeFactory.create(makeTypeProperties(), this.stillTexture, this.flowingTexture, this.color));
+        this.fluidType = NonNullSupplier.lazy(() -> typeFactory.create(new ResourceLocation(owner.getModid(), name), makeTypeProperties(), this.stillTexture, this.flowingTexture, this.color));
         this.registerType = true;
         defaultBucket();
 
@@ -330,26 +330,11 @@ public class GTFluidBuilder<T extends ForgeFlowingFluid, P> extends AbstractBuil
         return new FluidEntry<>(getOwner(), delegate);
     }
 
-    public static FluidType defaultFluidType(FluidType.Properties properties, ResourceLocation stillTexture, ResourceLocation flowingTexture, int color) {
+    public static FluidType defaultFluidType(ResourceLocation still, FluidType.Properties properties, ResourceLocation stillTexture, ResourceLocation flowingTexture, int color) {
         return new FluidType(properties) {
             @Override
             public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer) {
-                consumer.accept(new IClientFluidTypeExtensions() {
-                    @Override
-                    public ResourceLocation getStillTexture() {
-                        return stillTexture;
-                    }
-
-                    @Override
-                    public ResourceLocation getFlowingTexture() {
-                        return flowingTexture;
-                    }
-
-                    @Override
-                    public int getTintColor() {
-                        return color;
-                    }
-                });
+                consumer.accept(new GTClientFluidTypeExtensions(still, stillTexture, flowingTexture, color));
             }
         };
     }

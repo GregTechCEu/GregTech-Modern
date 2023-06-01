@@ -1,14 +1,15 @@
 package com.gregtechceu.gtceu.core;
 
 import com.google.common.collect.ImmutableMap;
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.FluidProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.core.mixins.BlockBehaviourAccessor;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.tterrag.registrate.util.entry.BlockEntry;
+import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.data.loot.BlockLoot;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
@@ -49,4 +50,9 @@ public class MixinHelpers {
         });
     }
 
+
+    @ExpectPlatform
+    public static void addFluidTexture(Material material, FluidProperty prop) {
+        throw new AssertionError();
+    }
 }
