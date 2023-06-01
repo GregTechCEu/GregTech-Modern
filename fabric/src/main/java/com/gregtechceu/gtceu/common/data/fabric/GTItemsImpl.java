@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.common.data.fabric;
 
 import com.gregtechceu.gtceu.api.item.ComponentItem;
+import com.gregtechceu.gtceu.api.item.tool.MaterialToolTier;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import net.fabricmc.fabric.api.registry.FuelRegistry;
@@ -8,7 +9,12 @@ import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.Tiers;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 import java.util.function.Function;
 
 /**
@@ -27,5 +33,13 @@ public class GTItemsImpl {
                 ItemProperties.register(item, predicate, (itemStack, c, l, i) -> property.apply(itemStack));
             }
         };
+    }
+
+    public static void registerToolTier(MaterialToolTier tier, ResourceLocation id, Collection<Tier> before, Collection<Tier> after) {
+        // no-op
+    }
+
+    public static List<? extends Tier> getAllToolTiers() {
+        return Arrays.asList(Tiers.values());
     }
 }

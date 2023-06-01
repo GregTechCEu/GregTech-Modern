@@ -1,8 +1,6 @@
 package com.gregtechceu.gtceu.common.data;
 
-import com.google.common.collect.ArrayTable;
-import com.google.common.collect.ImmutableTable;
-import com.google.common.collect.Table;
+import com.google.common.collect.*;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.cover.filter.SimpleFluidFilter;
@@ -103,10 +101,21 @@ public class GTItems {
     public static void generateTools() {
         REGISTRATE.creativeModeTab(() -> TOOL);
 
+        HashMultimap<Integer, Tier> tiers = HashMultimap.create();
+        for (Tier tier : getAllToolTiers()) {
+            tiers.put(tier.getLevel(), tier);
+        }
+
         for (Material material : GTRegistries.MATERIALS.values()) {
             if (material.hasProperty(PropertyKey.TOOL)) {
                 var property = material.getProperty(PropertyKey.TOOL);
                 var tier = material.getToolTier();
+
+                Set<Tier> lower = tiers.get(tier.getLevel() - 1);
+                Set<Tier> higher = tiers.get(tier.getLevel() + 1);
+                tiers.put(tier.getLevel(), tier);
+                registerToolTier(tier, GTCEu.id(material.getName()), lower, higher);
+
                 for (GTToolType toolType : GTToolType.values()) {
                     if (property.hasType(toolType)) {
                         TOOL_ITEMS.put(tier, toolType, REGISTRATE.item("%s_%s".formatted(toolType.name, tier.material.getName().toLowerCase()), p -> GTToolItem.create(toolType, tier, p))
@@ -1131,6 +1140,16 @@ public class GTItems {
 
     @ExpectPlatform
     public static <T extends Item> NonNullConsumer<T> modelPredicate(ResourceLocation predicate, Function<ItemStack, Float> property) {
+        throw new AssertionError();
+    }
+
+    @ExpectPlatform
+    public static void registerToolTier(MaterialToolTier tier, ResourceLocation id, Collection<Tier> before, Collection<Tier> after) {
+        throw new AssertionError();
+    }
+
+    @ExpectPlatform
+    public static List<? extends Tier> getAllToolTiers() {
         throw new AssertionError();
     }
 

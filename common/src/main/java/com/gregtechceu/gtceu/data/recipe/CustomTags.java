@@ -48,6 +48,8 @@ public class CustomTags {
     public static final TagKey<Block> NEEDS_WOOD_TOOL = TagUtil.createPlatformUnprefixedTag(Registry.BLOCK, "forge:needs_wood_tool", "fabric:needs_tool_level_0");
     public static final TagKey<Block> NEEDS_GOLD_TOOL = TagUtil.createPlatformUnprefixedTag(Registry.BLOCK, "forge:needs_gold_tool", "fabric:needs_tool_level_0");
     public static final TagKey<Block> NEEDS_NETHERITE_TOOL = TagUtil.createPlatformUnprefixedTag(Registry.BLOCK, "forge:needs_netherite_tool", "fabric:needs_tool_level_4");
+    public static final TagKey<Block> NEEDS_NAQ_ALLOY_TOOL = TagUtil.createPlatformUnprefixedTag(Registry.BLOCK, "forge:needs_naquadah_alloy_tool", "fabric:needs_tool_level_5");
+    public static final TagKey<Block> NEEDS_NEUTRONIUM_TOOL = TagUtil.createPlatformUnprefixedTag(Registry.BLOCK, "forge:needs_neutronium_tool", "fabric:needs_tool_level_6");
 
     @SuppressWarnings("unchecked")
     public static final TagKey<Block>[] TOOL_TIERS = new TagKey[] {
@@ -55,6 +57,8 @@ public class CustomTags {
             BlockTags.NEEDS_STONE_TOOL,
             BlockTags.NEEDS_IRON_TOOL,
             BlockTags.NEEDS_DIAMOND_TOOL,
-            NEEDS_NETHERITE_TOOL
+            NEEDS_NETHERITE_TOOL,
+            NEEDS_NAQ_ALLOY_TOOL,
+            NEEDS_NEUTRONIUM_TOOL
     };
 }

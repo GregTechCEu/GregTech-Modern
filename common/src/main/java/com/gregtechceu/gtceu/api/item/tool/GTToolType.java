@@ -22,11 +22,12 @@ import java.util.regex.Pattern;
  * @implNote GTToolType
  */
 public enum GTToolType {
-//    SWORD("sword", 3, -2.4F),
-//    PICKAXE("pickaxe", 1, -2.8F),
-//    SHOVEL("shovel", 1.5F, -3.0F),
-//    AXE("axe", 6.0F, -3.2F),
-//    HOE("hoe", 0, -3.0F),
+    SWORD("sword", "swords", 3, -2.4F),
+    PICKAXE("pickaxe", "pickaxes", 1, -2.8F),
+    SHOVEL("shovel", "shovels", 1.5F, -3.0F),
+    AXE("axe", "axes", 6.0F, -3.2F),
+    HOE("hoe", "hoes", 0, -3.0F),
+
     SAW("saw", "saws", 1, 1, GTSoundEntries.SAW_TOOL),
     HARD_HAMMER("hammer", "hammers", 1, 1, GTSoundEntries.FORGE_HAMMER),
     SOFT_MALLET("mallet", "mallets", 1, 1, GTSoundEntries.SOFT_MALLET_TOOL),
