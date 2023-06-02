@@ -87,8 +87,12 @@ public class ConfigHolder {
 
     public static class WorldGenConfigs {
         @Configurable
-        @Configurable.Comment({"Should all Stone Types drop unique Ore Item Blocks?", "Default: false (meaning only Stone, Netherrack, and Endstone"})
+        @Configurable.Comment({"Should all Stone Types drop unique Ore Item Blocks?", "Default: false (meaning only Stone, Netherrack, and Endstone)"})
         public boolean allUniqueStoneTypes;
+
+        @Configurable
+        @Configurable.Comment({"Should Sand-like ores fall?", "This includes gravel, sand, and red sand ores.", "Default: false (no falling ores)"})
+        public boolean sandOresFall;
 
         @Configurable
         @Configurable.Comment({"Debug ore vein placement? (will print placed veins to server's debug.log)", "Default: false (no placement printout in debug.log)"})
