@@ -736,6 +736,7 @@
   "config.gtceu.option.overclockDivisor": "overclockDivisor",
   "config.gtceu.option.recipes": "recipes",
   "config.gtceu.option.removeVanillaBlockRecipes": "removeVanillaBlockRecipes",
+  "config.gtceu.option.requireGTToolsForBlocks": "requireGTToolsForBlocks",
   "config.gtceu.option.sandOresFall": "sandOresFall",
   "config.gtceu.option.steelSteamMultiblocks": "steelSteamMultiblocks",
   "config.gtceu.option.worldgen": "worldgen",

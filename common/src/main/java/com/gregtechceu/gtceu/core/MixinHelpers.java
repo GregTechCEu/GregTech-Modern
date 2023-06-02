@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.FluidProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.mixins.BlockBehaviourAccessor;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.tterrag.registrate.util.entry.BlockEntry;
@@ -36,6 +37,9 @@ public class MixinHelpers {
                 } else {
                     for (var tag : prefix.miningToolTag()) {
                         tagMap.computeIfAbsent(tag.location(), path -> new ArrayList<>()).add(entry);
+                    }
+                    if (!ConfigHolder.INSTANCE.machines.requireGTToolsForBlocks) {
+                        tagMap.computeIfAbsent(BlockTags.MINEABLE_WITH_PICKAXE.location(), path -> new ArrayList<>()).add(entry);
                     }
                 }
             });
