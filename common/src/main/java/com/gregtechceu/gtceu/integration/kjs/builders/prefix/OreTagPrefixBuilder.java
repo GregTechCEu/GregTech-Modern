@@ -28,6 +28,12 @@ public class OreTagPrefixBuilder extends TagPrefixBuilder {
 
     @Override
     public TagPrefix create(String id) {
-        return TagPrefix.oreTagPrefix(id).registerOre(stateSupplier, material, color, sound);
+        return TagPrefix.oreTagPrefix(id);
+    }
+    
+    @Override
+
+    public TagPrefix register() {
+        return value = base.registerOre(stateSupplier, material, color, sound);
     }
 }
