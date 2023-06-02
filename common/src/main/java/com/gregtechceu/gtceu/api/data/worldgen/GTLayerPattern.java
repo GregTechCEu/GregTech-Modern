@@ -1,5 +1,8 @@
 package com.gregtechceu.gtceu.api.data.worldgen;
 
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.util.RandomSource;
@@ -69,7 +72,7 @@ public class GTLayerPattern {
 
 	public static class Layer {
 		public static final Codec<Layer> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-				Codec.list(Codec.list(TargetBlockState.CODEC))
+				Codec.list(Codec.either(TargetBlockState.CODEC.listOf(), GTRegistries.MATERIALS.codec()))
 						.fieldOf("targets")
 						.forGetter(layer -> layer.targets),
 				Codec.intRange(0, Integer.MAX_VALUE)
@@ -83,26 +86,26 @@ public class GTLayerPattern {
 						.forGetter(layer -> layer.weight)
 		).apply(instance, Layer::new));
 
-		public final List<List<TargetBlockState>> targets;
+		public final List<Either<List<TargetBlockState>, Material>> targets;
 		public final int minSize;
 		public final int maxSize;
 		public final int weight;
 
-		public Layer(List<List<TargetBlockState>> targets, int minSize, int maxSize, int weight) {
+		public Layer(List<Either<List<TargetBlockState>, Material>> targets, int minSize, int maxSize, int weight) {
 			this.targets = targets;
 			this.minSize = minSize;
 			this.maxSize = maxSize;
 			this.weight = weight;
 		}
 
-		public List<TargetBlockState> rollBlock(RandomSource random) {
+		public Either<List<TargetBlockState>, Material> rollBlock(RandomSource random) {
 			if (targets.size() == 1)
 				return targets.get(0);
 			return targets.get(random.nextInt(targets.size()));
 		}
 
 		public static class Builder {
-			private final List<List<TargetBlockState>> targets = new ArrayList<>();
+			private final List<Either<List<TargetBlockState>, Material>> 	targets = new ArrayList<>();
 			private int minSize = 1;
 			private int maxSize = 1;
 			private int weight = 1;
@@ -121,7 +124,12 @@ public class GTLayerPattern {
 			}
 
 			public GTLayerPattern.Layer.Builder state(BlockState state) {
-				this.targets.add(Arrays.stream(this.rules).map(rule -> OreConfiguration.target(rule, state)).toList());
+				this.targets.add(Either.left(Arrays.stream(this.rules).map(rule -> OreConfiguration.target(rule, state)).toList()));
+				return this;
+			}
+
+			public GTLayerPattern.Layer.Builder mat(Material material) {
+				this.targets.add(Either.right(material));
 				return this;
 			}
 

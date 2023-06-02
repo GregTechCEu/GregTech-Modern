@@ -27,4 +27,12 @@ public interface IGTAddon {
     default void registerMachines() {
 
     }
+
+    default void registerWorldgenLayers() {
+
+    }
+
+    default void registerVeinGenerators() {
+
+    }
 }

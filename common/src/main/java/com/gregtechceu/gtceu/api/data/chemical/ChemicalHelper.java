@@ -40,7 +40,7 @@ public class ChemicalHelper {
     /** Mapping of all items that represent a "prefix, material" pair */
     public static final Map<UnificationEntry, ArrayList<ItemLike>> UNIFICATION_ENTRY_ITEM = new Object2ObjectLinkedOpenHashMap<>();
     /** Mapping of stone type blockState to "prefix, material" */
-    public static final Map<BlockState, Pair<TagPrefix, Material>> ORES_INVERSE = new HashMap<>();
+    public static final Map<BlockState, TagPrefix> ORES_INVERSE = new HashMap<>();
 
     public static void registerMaterialInfo(ItemLike item, ItemMaterialInfo materialInfo) {
         ITEM_MATERIAL_INFO.put(item, materialInfo);
@@ -61,7 +61,7 @@ public class ChemicalHelper {
     public static void registerUnificationItems(TagPrefix tagPrefix, @Nullable Material material, ItemLike... items) {
         registerUnificationItems(new UnificationEntry(tagPrefix, material), items);
         if (TagPrefix.ORES.containsKey(tagPrefix)) {
-            ORES_INVERSE.put(TagPrefix.ORES.get(tagPrefix).stoneType().get(), Pair.of(tagPrefix, material));
+            ORES_INVERSE.put(TagPrefix.ORES.get(tagPrefix).stoneType().get(), tagPrefix);
         }
     }
 

@@ -1,9 +1,13 @@
 package com.gregtechceu.gtceu.api.data.worldgen;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.block.MaterialBlock;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.mojang.datafixers.util.Either;
+import com.tterrag.registrate.util.entry.BlockEntry;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
@@ -19,6 +23,7 @@ import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
+import org.apache.commons.lang3.mutable.MutableInt;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
@@ -60,7 +65,7 @@ public class GTOreFeature extends Feature<GTOreFeatureConfiguration> {
         }*/
 
         if (ConfigHolder.INSTANCE.worldgen.debugWorldgen) GTCEu.LOGGER.debug("trying to place vein " + entry.id + " at " + origin);
-        if (entry.datagenExt() instanceof GTOreFeatureEntry.StandardDatagenExtension standard) {
+        if (entry.datagenExt() instanceof GTOreFeatureEntry.StandardVeinGenerator standard) {
             float f = random.nextFloat() * (float)Math.PI;
             float f1 = (float)entry.clusterSize / 8.0F;
             int i = Mth.ceil(((float)entry.clusterSize / 16.0F * 2.0F + 1.0F) / 2.0F);
@@ -86,7 +91,7 @@ public class GTOreFeature extends Feature<GTOreFeatureConfiguration> {
                     }
                 }
             }
-        } else if (entry.datagenExt() instanceof GTOreFeatureEntry.LayeredDatagenExtension layered) {
+        } else if (entry.datagenExt() instanceof GTOreFeatureEntry.LayeredVeinGenerator layered) {
             if (this.doPlaceLayer(level, random, entry, origin, layered.layerPatterns)) {
                 logPlaced(entry, true);
                 return true;
@@ -97,10 +102,10 @@ public class GTOreFeature extends Feature<GTOreFeatureConfiguration> {
         return false;
     }
 
-    protected boolean doPlaceNormal(WorldGenLevel level, RandomSource random, GTOreFeatureEntry entry, List<OreConfiguration.TargetBlockState> targets,
+    protected boolean doPlaceNormal(WorldGenLevel level, RandomSource random, GTOreFeatureEntry entry, Either<List<OreConfiguration.TargetBlockState>, Material> targets,
                                     double pMinX, double pMaxX, double pMinZ, double pMaxZ, double pMinY, double pMaxY, int pX, int pY, int pZ,
                                     int pWidth, int pHeight) {
-        int i = 0;
+        MutableInt placedAmount = new MutableInt(1);
         BitSet placedBlocks = new BitSet(pWidth * pHeight * pWidth);
         BlockPos.MutableBlockPos posCursor = new BlockPos.MutableBlockPos();
         int size = entry.clusterSize;
@@ -178,14 +183,25 @@ public class GTOreFeature extends Feature<GTOreFeatureConfiguration> {
                                                         BlockState blockstate = levelchunksection.getBlockState(i3, j3, k3);
 
                                                         if (random.nextFloat() <= density) {
-                                                            for(OreConfiguration.TargetBlockState oreconfiguration$targetblockstate : targets) {
-                                                                if (canPlaceOre(blockstate, access::getBlockState, random, entry, oreconfiguration$targetblockstate, posCursor)) {
-                                                                    var pair = ChemicalHelper.ORES_INVERSE.get(access.getBlockState(posCursor));
-                                                                    levelchunksection.setBlockState(i3, j3, k3, GTBlocks.MATERIAL_BLOCKS.get(pair.getFirst(), pair.getSecond()).getDefaultState(), false);
-                                                                    ++i;
-                                                                    break;
+                                                            targets.ifLeft(blockStates -> {
+                                                                for(OreConfiguration.TargetBlockState targetState : blockStates) {
+                                                                    if (canPlaceOre(blockstate, access::getBlockState, random, entry, targetState, posCursor)) {
+                                                                        levelchunksection.setBlockState(i3, j3, k3, targetState.state, false);
+                                                                        placedAmount.increment();
+                                                                        break;
+                                                                    }
                                                                 }
-                                                            }
+                                                            }).ifRight(material -> {
+                                                                if (!canPlaceOre(blockstate, access::getBlockState, random, entry, material, posCursor))
+                                                                    return;
+                                                                BlockState currentState = access.getBlockState(posCursor);
+                                                                var prefix = ChemicalHelper.ORES_INVERSE.get(currentState);
+                                                                BlockEntry<? extends MaterialBlock> toPlace = GTBlocks.MATERIAL_BLOCKS.get(prefix, material);
+                                                                if (toPlace == null || toPlace.getDefaultState().isAir())
+                                                                    return;
+                                                                levelchunksection.setBlockState(i3, j3, k3, toPlace.getDefaultState(), false);
+                                                                placedAmount.increment();
+                                                            });
                                                         }
 
                                                     }
@@ -210,7 +226,7 @@ public class GTOreFeature extends Feature<GTOreFeatureConfiguration> {
         }
 
         access.close();
-        return i > 0;
+        return placedAmount.getValue() > 0;
     }
 
     protected boolean doPlaceLayer(WorldGenLevel level, RandomSource random, GTOreFeatureEntry entry, BlockPos origin, List<GTLayerPattern> patternPool) {
@@ -219,7 +235,7 @@ public class GTOreFeature extends Feature<GTOreFeatureConfiguration> {
 
         GTLayerPattern layerPattern = patternPool.get(random.nextInt(patternPool.size()));
 
-        int placedAmount = 0;
+        MutableInt placedAmount = new MutableInt(0);
         int size = entry.clusterSize;
         float density = entry.density;
         int radius = Mth.ceil(entry.clusterSize / 2f);
@@ -279,7 +295,7 @@ public class GTOreFeature extends Feature<GTOreFeatureConfiguration> {
                             continue;
 
                         GTLayerPattern.Layer layer = resolvedLayers.get(layerIndex);
-                        List<OreConfiguration.TargetBlockState> state = layer.rollBlock(random);
+                        Either<List<OreConfiguration.TargetBlockState>, Material> state = layer.rollBlock(random);
 
                         int currentX = x0 + x;
                         int currentY = y0 + y;
@@ -298,16 +314,27 @@ public class GTOreFeature extends Feature<GTOreFeatureConfiguration> {
                         BlockState blockstate = levelchunksection.getBlockState(i3, j3, k3);
 
                         if (random.nextFloat() <= density) {
-                            for (OreConfiguration.TargetBlockState oreconfiguration$targetblockstate : state) {
-                                if (!canPlaceOre(blockstate, access::getBlockState, random, entry, oreconfiguration$targetblockstate, posCursor))
-                                    continue;
-                                if (oreconfiguration$targetblockstate.state.isAir())
-                                    continue;
-                                var pair = ChemicalHelper.ORES_INVERSE.get(access.getBlockState(posCursor));
-                                levelchunksection.setBlockState(i3, j3, k3, GTBlocks.MATERIAL_BLOCKS.get(pair.getFirst(), pair.getSecond()).getDefaultState(), false);
-                                ++placedAmount;
-                                break;
-                            }
+                            state.ifLeft(blockStates -> {
+                                for (OreConfiguration.TargetBlockState targetState : blockStates) {
+                                    if (!canPlaceOre(blockstate, access::getBlockState, random, entry, targetState, posCursor))
+                                        continue;
+                                    if (targetState.state.isAir())
+                                        continue;
+                                    levelchunksection.setBlockState(i3, j3, k3, targetState.state, false);
+                                    placedAmount.increment();
+                                    break;
+                                }
+                            }).ifRight(material -> {
+                                if (!canPlaceOre(blockstate, access::getBlockState, random, entry, material, posCursor))
+                                    return;
+                                BlockState currentState = access.getBlockState(posCursor);
+                                var prefix = ChemicalHelper.ORES_INVERSE.get(currentState);
+                                BlockEntry<? extends MaterialBlock> toPlace = GTBlocks.MATERIAL_BLOCKS.get(prefix, material);
+                                if (toPlace == null || toPlace.getDefaultState().isAir())
+                                    return;
+                                levelchunksection.setBlockState(i3, j3, k3, toPlace.getDefaultState(), false);
+                                placedAmount.increment();
+                            });
                         }
 
                     }
@@ -325,13 +352,24 @@ public class GTOreFeature extends Feature<GTOreFeatureConfiguration> {
         }
 
         access.close();
-        return placedAmount > 0;
+        return placedAmount.getValue() > 0;
     }
 
     public boolean canPlaceOre(BlockState pState, Function<BlockPos, BlockState> pAdjacentStateAccessor,
                                RandomSource pRandom, GTOreFeatureEntry entry, OreConfiguration.TargetBlockState pTargetState,
                                BlockPos.MutableBlockPos pMatablePos) {
-        if (!pTargetState.target.test(pState, pRandom) || !entry.layer.getTarget().test(pState, pRandom))
+        if (!pTargetState.target.test(pState, pRandom))
+            return false;
+        if (shouldSkipAirCheck(pRandom, entry.discardChanceOnAirExposure))
+            return true;
+
+        return !isAdjacentToAir(pAdjacentStateAccessor, pMatablePos);
+    }
+
+    public boolean canPlaceOre(BlockState pState, Function<BlockPos, BlockState> pAdjacentStateAccessor,
+                               RandomSource pRandom, GTOreFeatureEntry entry, Material pTargetState,
+                               BlockPos.MutableBlockPos pMatablePos) {
+        if (!entry.layer.getTarget().test(pState, pRandom))
             return false;
         if (shouldSkipAirCheck(pRandom, entry.discardChanceOnAirExposure))
             return true;

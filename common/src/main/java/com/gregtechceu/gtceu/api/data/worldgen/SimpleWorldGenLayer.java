@@ -1,16 +1,15 @@
-package com.gregtechceu.gtceu.integration.kjs.built;
+package com.gregtechceu.gtceu.api.data.worldgen;
 
-import com.gregtechceu.gtceu.api.data.worldgen.IWorldGenLayer;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.WorldGeneratorUtils;
 import lombok.Getter;
 import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;
 
-public class KJSWorldGenLayer implements IWorldGenLayer {
+public class SimpleWorldGenLayer implements IWorldGenLayer {
     private final String name;
     @Getter
     private final RuleTest target;
 
-    public KJSWorldGenLayer(String name, RuleTest target) {
+    public SimpleWorldGenLayer(String name, RuleTest target) {
         this.name = name;
         this.target = target;
         WorldGeneratorUtils.WORLD_GEN_LAYERS.put(name, this);
