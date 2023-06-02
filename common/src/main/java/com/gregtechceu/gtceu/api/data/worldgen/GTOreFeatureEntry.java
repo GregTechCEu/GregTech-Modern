@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.data.worldgen;
 
-import com.google.common.collect.HashBiMap;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.BiomeFilter;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinCountFilter;
@@ -55,7 +54,6 @@ public class GTOreFeatureEntry {
                     RegistryCodecs.homogeneousList(Registry.DIMENSION_TYPE_REGISTRY).fieldOf("dimension_filter").forGetter(ft -> ft.dimensionFilter),
                     CountPlacement.CODEC.fieldOf("count").forGetter(ft -> ft.count),
                     HeightRangePlacement.CODEC.fieldOf("height_range").forGetter(ft -> ft.range),
-                    //DimensionFilter.CODEC.fieldOf("dimension_filter").forGetter(ft -> ft.dimensionFilter),
                     Codec.floatRange(0.0F, 1.0F).fieldOf("discard_chance_on_air_exposure").forGetter(ft -> ft.discardChanceOnAirExposure),
                     RegistryCodecs.homogeneousList(Registry.BIOME_REGISTRY).fieldOf("biomes").forGetter(ext -> ext.biomes.left().get()),
                     BiomeWeightModifier.CODEC.optionalFieldOf("weight_modifier", null).forGetter(ext -> ext.biomeWeightModifier),
@@ -98,7 +96,7 @@ public class GTOreFeatureEntry {
                 VeinCountFilter.count(),
                 BiomeFilter.biome(),
                 this.count,
-                RarityFilter.onAverageOnceEvery(8),
+                RarityFilter.onAverageOnceEvery(6),
                 InSquarePlacement.spread(),
                 this.range
         );
@@ -110,14 +108,14 @@ public class GTOreFeatureEntry {
         return this;
     }
 
-    public StandardVeinGenerator standardDatagenExt() {
+    public StandardVeinGenerator standardVeinGenerator() {
         if (this.veinGenerator == null) {
             this.veinGenerator = new StandardVeinGenerator(this);
         }
         return (StandardVeinGenerator) veinGenerator;
     }
 
-    public LayeredVeinGenerator layeredDatagenExt() {
+    public LayeredVeinGenerator layeredVeinGenerator() {
         if (veinGenerator == null) {
             veinGenerator = new LayeredVeinGenerator(this);
         }
@@ -126,7 +124,7 @@ public class GTOreFeatureEntry {
 
     @Nullable
     public GTOreFeatureEntry.VeinGenerator datagenExt() {
-        return this.veinGenerator != null ? this.veinGenerator : null;
+        return this.veinGenerator;
     }
 
     public String getName() {

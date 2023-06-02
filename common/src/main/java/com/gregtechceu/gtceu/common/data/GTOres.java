@@ -1,8 +1,6 @@
 package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.addon.AddonFinder;
-import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.worldgen.VeinGenerators;
 import com.gregtechceu.gtceu.api.data.worldgen.GTLayerPattern;
@@ -50,7 +48,7 @@ public class GTOres {
     public static final GTOreFeatureEntry BAUXITE_VEIN =
             create("bauxite_vein", 15, 0.25f, 40, WorldGenLayers.ENDSTONE, end(), HeightRangePlacement.uniform(VerticalAnchor.absolute(10), VerticalAnchor.absolute(80)))
                     .biomes(BiomeTags.IS_END)
-                    .layeredDatagenExt()
+                    .layeredVeinGenerator()
                     .withLayerPattern(() -> GTLayerPattern.builder(END_RULES)
                            // .layer(l -> l.weight(1).state(Blocks.END_STONE::defaultBlockState))
                             .layer(l -> l.weight(2).mat(Bauxite).size(14, 28))
@@ -62,7 +60,7 @@ public class GTOres {
     public static final GTOreFeatureEntry MAGNETITE_VEIN =
             create("magnetite_vein", 25, 0.15f, 30, WorldGenLayers.ENDSTONE, end(), HeightRangePlacement.uniform(VerticalAnchor.absolute(20), VerticalAnchor.absolute(80)))
                     .biomes(BiomeTags.IS_END)
-                    .layeredDatagenExt()
+                    .layeredVeinGenerator()
                     .withLayerPattern(() -> GTLayerPattern.builder(END_RULES)
                            // .layer(l -> l.weight(2).state(Blocks.END_STONE::defaultBlockState))
                             .layer(l -> l.weight(3).mat(Magnetite).size(14, 28))
@@ -75,7 +73,7 @@ public class GTOres {
     public static final GTOreFeatureEntry NAQUADAH_VEIN =
             create("naquadah_vein", 25, 0.15f, 30, WorldGenLayers.ENDSTONE, end(), HeightRangePlacement.uniform(VerticalAnchor.absolute(10), VerticalAnchor.absolute(90)))
                     .biomes(BiomeTags.IS_END)
-                    .layeredDatagenExt()
+                    .layeredVeinGenerator()
                     .withLayerPattern(() -> GTLayerPattern.builder(END_RULES)
                            // .layer(l -> l.weight(2).state(Blocks.END_STONE::defaultBlockState))
                             .layer(l -> l.weight(3).mat(Naquadah).size(14, 28))
@@ -86,7 +84,7 @@ public class GTOres {
     public static final GTOreFeatureEntry PITCHBLENDE_VEIN =
             create("pitchblende_vein", 15, 0.25f, 30, WorldGenLayers.ENDSTONE, end(), HeightRangePlacement.uniform(VerticalAnchor.absolute(30), VerticalAnchor.absolute(60)))
                     .biomes(BiomeTags.IS_END)
-                    .layeredDatagenExt()
+                    .layeredVeinGenerator()
                     .withLayerPattern(() -> GTLayerPattern.builder(END_RULES)
                            // .layer(l -> l.weight(2).state(Blocks.END_STONE::defaultBlockState))
                             .layer(l -> l.weight(3).mat(Pitchblende).size(21, 28))
@@ -97,7 +95,7 @@ public class GTOres {
     public static final GTOreFeatureEntry SCHEELITE_VEIN =
             create("scheelite_vein", 20, 0.2f, 20, WorldGenLayers.ENDSTONE, end(), HeightRangePlacement.uniform(VerticalAnchor.absolute(20), VerticalAnchor.absolute(60)))
                     .biomes(BiomeTags.IS_END)
-                    .layeredDatagenExt()
+                    .layeredVeinGenerator()
                     .withLayerPattern(() -> GTLayerPattern.builder(END_RULES)
                            // .layer(l -> l.weight(2).state(Blocks.END_STONE::defaultBlockState))
                             .layer(l -> l.weight(3).mat(Scheelite).size(21, 28))
@@ -109,7 +107,7 @@ public class GTOres {
     public static final GTOreFeatureEntry SHELDONITE_VEIN =
             create("sheldonite_vein", 15, 0.2f, 10, WorldGenLayers.ENDSTONE, end(), HeightRangePlacement.uniform(VerticalAnchor.absolute(5), VerticalAnchor.absolute(50)))
                     .biomes(BiomeTags.IS_END)
-                    .layeredDatagenExt()
+                    .layeredVeinGenerator()
                     .withLayerPattern(() -> GTLayerPattern.builder(END_RULES)
                            // .layer(l -> l.weight(2).state(Blocks.END_STONE::defaultBlockState))
                             .layer(l -> l.weight(3).mat(Bornite).size(21, 28))
@@ -117,6 +115,13 @@ public class GTOres {
                             .layer(l -> l.weight(2).mat(Platinum).size(14, 14))
                             .layer(l -> l.weight(1).mat(Palladium).size(14, 14))
                             .build())
+                    .parent();
+
+    public static final GTOreFeatureEntry PISS_VEIN =
+            create("piss_vein", 15, 0.2f, 10, WorldGenLayers.ENDSTONE, end(), HeightRangePlacement.uniform(VerticalAnchor.absolute(5), VerticalAnchor.absolute(50)))
+                    .biomes(BiomeTags.IS_END)
+                    .standardVeinGenerator()
+                    .withMaterial(Cooperite)
                     .parent();
 
     //////////////////////////////////////
@@ -127,7 +132,7 @@ public class GTOres {
     public static final GTOreFeatureEntry BANDED_IRON_VEIN =
             create("banded_iron_vein", 20, 0.2f, 30, WorldGenLayers.NETHERRACK, nether(), HeightRangePlacement.uniform(VerticalAnchor.absolute(20), VerticalAnchor.absolute(40)))
                     .biomes(BiomeTags.IS_NETHER)
-                    .layeredDatagenExt()
+                    .layeredVeinGenerator()
                     .withLayerPattern(() -> GTLayerPattern.builder(NETHER_RULES)
                             //.layer(l -> l.weight(2).state(Blocks.NETHERRACK::defaultBlockState))
                             .layer(l -> l.weight(3).mat(Goethite).size(21, 28))
@@ -140,7 +145,7 @@ public class GTOres {
     public static final GTOreFeatureEntry BERYLLIUM_VEIN =
             create("beryllium_vein", 15, 0.25f, 30, WorldGenLayers.NETHERRACK, nether(), HeightRangePlacement.uniform(VerticalAnchor.absolute(5), VerticalAnchor.absolute(30)))
                     .biomes(BiomeTags.IS_NETHER)
-                    .layeredDatagenExt()
+                    .layeredVeinGenerator()
                     .withLayerPattern(() -> GTLayerPattern.builder(NETHER_RULES)
                            // .layer(l -> l.weight(2).state(Blocks.NETHERRACK::defaultBlockState))
                             .layer(l -> l.weight(3).mat(Beryllium).size(21, 28))
@@ -152,7 +157,7 @@ public class GTOres {
     public static final GTOreFeatureEntry CERTUS_QUARTZ_VEIN =
             create("certus_quartz", 15, 0.25f, 40, WorldGenLayers.NETHERRACK, nether(), HeightRangePlacement.uniform(VerticalAnchor.absolute(80), VerticalAnchor.absolute(120)))
                     .biomes(BiomeTags.IS_NETHER)
-                    .layeredDatagenExt()
+                    .layeredVeinGenerator()
                     .withLayerPattern(() -> GTLayerPattern.builder(NETHER_RULES)
                            // .layer(l -> l.weight(2).state(Blocks.NETHERRACK::defaultBlockState))
                             .layer(l -> l.weight(3).mat(Quartzite).size(21, 28))
@@ -164,7 +169,7 @@ public class GTOres {
     public static final GTOreFeatureEntry MANGANESE_VEIN =
             create("manganese_vein", 15, 0.25f, 20, WorldGenLayers.NETHERRACK, nether(), HeightRangePlacement.uniform(VerticalAnchor.absolute(20), VerticalAnchor.absolute(30)))
                     .biomes(BiomeTags.IS_NETHER)
-                    .layeredDatagenExt()
+                    .layeredVeinGenerator()
                     .withLayerPattern(() -> GTLayerPattern.builder(NETHER_RULES)
                            // .layer(l -> l.weight(2).state(Blocks.NETHERRACK::defaultBlockState))
                             .layer(l -> l.weight(3).mat(Grossular).size(21, 28))
@@ -176,7 +181,7 @@ public class GTOres {
     public static final GTOreFeatureEntry MOLYBDENUM_VEIN =
             create("molybdenum_vein", 15, 0.25f, 5, WorldGenLayers.NETHERRACK, nether(), HeightRangePlacement.uniform(VerticalAnchor.absolute(20), VerticalAnchor.absolute(50)))
                     .biomes(BiomeTags.IS_NETHER)
-                    .layeredDatagenExt()
+                    .layeredVeinGenerator()
                     .withLayerPattern(() -> GTLayerPattern.builder(NETHER_RULES)
                            // .layer(l -> l.weight(2).state(Blocks.NETHERRACK::defaultBlockState))
                             .layer(l -> l.weight(3).mat(Wulfenite).size(21, 28))
@@ -189,7 +194,7 @@ public class GTOres {
     public static final GTOreFeatureEntry MONAZITE_VEIN =
             create("monazite_vein", 15, 0.25f, 30, WorldGenLayers.NETHERRACK, nether(), HeightRangePlacement.uniform(VerticalAnchor.absolute(20), VerticalAnchor.absolute(40)))
                     .biomes(BiomeTags.IS_NETHER)
-                    .layeredDatagenExt()
+                    .layeredVeinGenerator()
                     .withLayerPattern(() -> GTLayerPattern.builder(NETHER_RULES)
                            // .layer(l -> l.weight(2).state(Blocks.NETHERRACK::defaultBlockState))
                             .layer(l -> l.weight(3).mat(Bastnasite).size(21, 28))
@@ -201,7 +206,7 @@ public class GTOres {
     public static final GTOreFeatureEntry NETHER_QUARTZ_VEIN =
             create("nether_quartz_vein", 20, 0.2f, 80, WorldGenLayers.NETHERRACK, nether(), HeightRangePlacement.uniform(VerticalAnchor.absolute(40), VerticalAnchor.absolute(80)))
                     .biomes(BiomeTags.IS_NETHER)
-                    .layeredDatagenExt()
+                    .layeredVeinGenerator()
                     .withLayerPattern(() -> GTLayerPattern.builder(NETHER_RULES)
                            // .layer(l -> l.weight(2).state(Blocks.NETHERRACK::defaultBlockState))
                             .layer(l -> l.weight(3).mat(NetherQuartz).size(21, 28))
@@ -212,7 +217,7 @@ public class GTOres {
     public static final GTOreFeatureEntry REDSTONE_VEIN =
             create("redstone_vein", 20, 0.2f, 60, WorldGenLayers.NETHERRACK, nether(), HeightRangePlacement.uniform(VerticalAnchor.absolute(5), VerticalAnchor.absolute(40)))
                     .biomes(BiomeTags.IS_NETHER)
-                    .layeredDatagenExt()
+                    .layeredVeinGenerator()
                     .withLayerPattern(() -> GTLayerPattern.builder(NETHER_RULES)
                            // .layer(l -> l.weight(2).state(Blocks.NETHERRACK::defaultBlockState))
                             .layer(l -> l.weight(3).mat(Redstone).size(21, 28))
@@ -224,7 +229,7 @@ public class GTOres {
     public static final GTOreFeatureEntry SALTPETER_VEIN =
             create("saltpeter_vein", 15, 0.25f, 40, WorldGenLayers.NETHERRACK, nether(), HeightRangePlacement.uniform(VerticalAnchor.absolute(5), VerticalAnchor.absolute(45)))
                     .biomes(BiomeTags.IS_NETHER)
-                    .layeredDatagenExt()
+                    .layeredVeinGenerator()
                     .withLayerPattern(() -> GTLayerPattern.builder(NETHER_RULES)
                            // .layer(l -> l.weight(2).state(Blocks.NETHERRACK::defaultBlockState))
                             .layer(l -> l.weight(3).mat(Saltpeter).size(21, 28))
@@ -237,7 +242,7 @@ public class GTOres {
     public static final GTOreFeatureEntry SULFUR_VEIN =
             create("sulfur_vein", 20, 0.2f, 100, WorldGenLayers.NETHERRACK, nether(), HeightRangePlacement.uniform(VerticalAnchor.absolute(10), VerticalAnchor.absolute(30)))
                     .biomes(BiomeTags.IS_NETHER)
-                    .layeredDatagenExt()
+                    .layeredVeinGenerator()
                     .withLayerPattern(() -> GTLayerPattern.builder(NETHER_RULES)
                            // .layer(l -> l.weight(2).state(Blocks.NETHERRACK::defaultBlockState))
                             .layer(l -> l.weight(3).mat(Sulfur).size(21, 28))
@@ -249,7 +254,7 @@ public class GTOres {
     public static final GTOreFeatureEntry TETRAHEDRITE_VEIN =
             create("tetrahedrite_vein", 20, 0.2f, 70, WorldGenLayers.NETHERRACK, nether(), HeightRangePlacement.uniform(VerticalAnchor.absolute(80), VerticalAnchor.absolute(120)))
                     .biomes(BiomeTags.IS_NETHER)
-                    .layeredDatagenExt()
+                    .layeredVeinGenerator()
                     .withLayerPattern(() -> GTLayerPattern.builder(NETHER_RULES)
                            // .layer(l -> l.weight(2).state(Blocks.NETHERRACK::defaultBlockState))
                             .layer(l -> l.weight(3).mat(Tetrahedrite).size(21, 28))
@@ -261,7 +266,7 @@ public class GTOres {
     public static final GTOreFeatureEntry TOPAZ_VEIN =
             create("topaz_vein", 15, 0.25f, 70, WorldGenLayers.NETHERRACK, nether(), HeightRangePlacement.uniform(VerticalAnchor.absolute(80), VerticalAnchor.absolute(120)))
                     .biomes(BiomeTags.IS_NETHER)
-                    .layeredDatagenExt()
+                    .layeredVeinGenerator()
                     .withLayerPattern(() -> GTLayerPattern.builder(NETHER_RULES)
                            // .layer(l -> l.weight(2).state(Blocks.NETHERRACK::defaultBlockState))
                             .layer(l -> l.weight(3).mat(BlueTopaz).size(21, 28))
@@ -280,7 +285,7 @@ public class GTOres {
     public static final GTOreFeatureEntry APATITE_VEIN =
             create("apatite_vein", 15, 0.25f, 40, WorldGenLayers.STONE, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(10), VerticalAnchor.absolute(60)))
                     .biomes(BiomeTags.IS_OVERWORLD)
-                    .layeredDatagenExt()
+                    .layeredVeinGenerator()
                     .withLayerPattern(() -> GTLayerPattern.builder(OVERWORLD_RULES)
                            // .layer(l -> l.weight(2).state(Blocks.STONE::defaultBlockState))
                             .layer(l -> l.weight(3).mat(Apatite).size(21, 28))
@@ -292,7 +297,7 @@ public class GTOres {
     public static final GTOreFeatureEntry CASSITERITE_VEIN =
             create("cassiterite_vein", 20, 0.2f, 80, WorldGenLayers.STONE, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(10), VerticalAnchor.absolute(60)))
                     .biomes(BiomeTags.IS_OVERWORLD)
-                    .layeredDatagenExt()
+                    .layeredVeinGenerator()
                     .withLayerPattern(() -> GTLayerPattern.builder(OVERWORLD_RULES)
                            // .layer(l -> l.weight(2).state(Blocks.STONE::defaultBlockState))
                             .layer(l -> l.weight(4).mat(Tin).size(21, 28))
@@ -303,7 +308,7 @@ public class GTOres {
     public static final GTOreFeatureEntry COAL_VEIN =
             create("coal_vein", 25, 0.25f, 80, WorldGenLayers.STONE, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(10), VerticalAnchor.absolute(80)))
                     .biomes(BiomeTags.IS_OVERWORLD)
-                    .layeredDatagenExt()
+                    .layeredVeinGenerator()
                     .withLayerPattern(() -> GTLayerPattern.builder(OVERWORLD_RULES)
                            // .layer(l -> l.weight(1).state(Blocks.STONE::defaultBlockState))
                             .layer(l -> l.weight(3).mat(Coal).size(21, 28))
@@ -314,7 +319,7 @@ public class GTOres {
     public static final GTOreFeatureEntry COPPER_TIN_VEIN =
             create("copper_tin_vein", 20, 0.2f, 50, WorldGenLayers.STONE, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(-10), VerticalAnchor.absolute(160)))
                     .biomes(BiomeTags.IS_OVERWORLD)
-                    .layeredDatagenExt()
+                    .layeredVeinGenerator()
                     .withLayerPattern(() -> GTLayerPattern.builder(OVERWORLD_RULES)
                            // .layer(l -> l.weight(2).state(Blocks.STONE::defaultBlockState))
                             .layer(l -> l.weight(3).mat(Chalcopyrite).size(21, 28))
@@ -327,7 +332,7 @@ public class GTOres {
     public static final GTOreFeatureEntry COPPER_VEIN =
             create("copper_vein", 20, 0.2f, 80, WorldGenLayers.STONE, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(-15), VerticalAnchor.absolute(60)))
                     .biomes(BiomeTags.IS_OVERWORLD)
-                    .layeredDatagenExt()
+                    .layeredVeinGenerator()
                     .withLayerPattern(() -> GTLayerPattern.builder(OVERWORLD_RULES)
                            // .layer(l -> l.weight(2).state(Blocks.STONE::defaultBlockState))
                             .layer(l -> l.weight(3).mat(Chalcopyrite).size(21, 28))
@@ -340,7 +345,7 @@ public class GTOres {
     public static final GTOreFeatureEntry DIAMOND_VEIN =
             create("diamond_vein", 15, 0.25f, 40, WorldGenLayers.STONE, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(-65), VerticalAnchor.absolute(20)))
                     .biomes(BiomeTags.IS_OVERWORLD)
-                    .layeredDatagenExt()
+                    .layeredVeinGenerator()
                     .withLayerPattern(() -> GTLayerPattern.builder(OVERWORLD_RULES)
                            // .layer(l -> l.weight(2).state(Blocks.STONE::defaultBlockState))
                             .layer(l -> l.weight(3).mat(Graphite).size(21, 28))
@@ -352,7 +357,7 @@ public class GTOres {
     public static final GTOreFeatureEntry GALENA_VEIN =
             create("galena_vein", 15, 0.25f, 40, WorldGenLayers.STONE, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(-15), VerticalAnchor.absolute(45)))
                     .biomes(BiomeTags.IS_OVERWORLD)
-                    .layeredDatagenExt()
+                    .layeredVeinGenerator()
                     .withLayerPattern(() -> GTLayerPattern.builder(OVERWORLD_RULES)
                            // .layer(l -> l.weight(2).state(Blocks.STONE::defaultBlockState))
                             .layer(l -> l.weight(3).mat(Galena).size(21, 28))
@@ -364,7 +369,7 @@ public class GTOres {
     public static final GTOreFeatureEntry GARNET_TIN_VEIN =
             create("garnet_tin_vein", 20, 0.2f, 80, WorldGenLayers.STONE, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(30), VerticalAnchor.absolute(60)))
                     .biomes(BiomeTags.IS_OVERWORLD)
-                    .layeredDatagenExt()
+                    .layeredVeinGenerator()
                     .withLayerPattern(() -> GTLayerPattern.builder(OVERWORLD_RULES)
                             .layer(l -> l.weight(2).state(Blocks.SAND::defaultBlockState))
                             .layer(l -> l.weight(3).mat(CassiteriteSand).size(21, 28))
@@ -377,20 +382,20 @@ public class GTOres {
     public static final GTOreFeatureEntry GARNET_VEIN =
             create("garnet_vein", 15, 0.25f, 40, WorldGenLayers.STONE, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(-10), VerticalAnchor.absolute(30)))
                     .biomes(BiomeTags.IS_OVERWORLD)
-                    .layeredDatagenExt()
+                    .layeredVeinGenerator()
                     .withLayerPattern(() -> GTLayerPattern.builder(OVERWORLD_RULES)
-                            .layer(l -> l.weight(2).state(Blocks.SAND::defaultBlockState))
-                            .layer(l -> l.weight(3).block(ore(oreRedSand, GarnetRed)).size(21, 28))
-                            .layer(l -> l.weight(2).block(ore(oreRedSand, GarnetYellow)).size(14, 14))
-                            .layer(l -> l.weight(2).block(ore(oreRedSand, Amethyst)).size(14, 14))
-                            .layer(l -> l.weight(1).block(ore(oreRedSand, Opal)).size(14, 14))
+                            // .layer(l -> l.weight(2).state(Blocks.SAND::defaultBlockState))
+                            .layer(l -> l.weight(3).mat(GarnetRed).size(21, 28))
+                            .layer(l -> l.weight(2).mat(GarnetYellow).size(14, 14))
+                            .layer(l -> l.weight(2).mat(Amethyst).size(14, 14))
+                            .layer(l -> l.weight(1).mat(Opal).size(14, 14))
                             .build())
                     .parent();
 
     public static final GTOreFeatureEntry IRON_VEIN =
             create("iron_vein", 20, 0.2f, 120, WorldGenLayers.STONE, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(-10), VerticalAnchor.absolute(40)))
                     .biomes(BiomeTags.IS_OVERWORLD)
-                    .layeredDatagenExt()
+                    .layeredVeinGenerator()
                     .withLayerPattern(() -> GTLayerPattern.builder(OVERWORLD_RULES)
                            // .layer(l -> l.weight(2).state(Blocks.STONE::defaultBlockState))
                             .layer(l -> l.weight(3).mat(Goethite).size(21, 28))
@@ -403,7 +408,7 @@ public class GTOres {
     public static final GTOreFeatureEntry LAPIS_VEIN =
             create("lapis_vein", 15, 0.25f, 40, WorldGenLayers.STONE, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(0), VerticalAnchor.absolute(50)))
                     .biomes(BiomeTags.IS_OVERWORLD)
-                    .layeredDatagenExt()
+                    .layeredVeinGenerator()
                     .withLayerPattern(() -> GTLayerPattern.builder(OVERWORLD_RULES)
                            // .layer(l -> l.weight(2).state(Blocks.STONE::defaultBlockState))
                             .layer(l -> l.weight(3).mat(Lazurite).size(21, 28))
@@ -416,7 +421,7 @@ public class GTOres {
     public static final GTOreFeatureEntry LUBRICANT_VEIN =
             create("lubricant_vein", 15, 0.25f, 40, WorldGenLayers.STONE, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(0), VerticalAnchor.absolute(50)))
                     .biomes(BiomeTags.IS_OVERWORLD)
-                    .layeredDatagenExt()
+                    .layeredVeinGenerator()
                     .withLayerPattern(() -> GTLayerPattern.builder(OVERWORLD_RULES)
                            // .layer(l -> l.weight(2).state(Blocks.STONE::defaultBlockState))
                             .layer(l -> l.weight(3).mat(Soapstone).size(21, 28))
@@ -429,7 +434,7 @@ public class GTOres {
     public static final GTOreFeatureEntry MAGNETITE_OVER_VEIN =
             create("magnetite_over_vein", 25, 0.15f, 80, WorldGenLayers.STONE, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(10), VerticalAnchor.absolute(60)))
                     .biomes(BiomeTags.IS_OVERWORLD)
-                    .layeredDatagenExt()
+                    .layeredVeinGenerator()
                     .withLayerPattern(() -> GTLayerPattern.builder(OVERWORLD_RULES)
                            // .layer(l -> l.weight(2).state(Blocks.STONE::defaultBlockState))
                             .layer(l -> l.weight(3).mat(Magnetite).size(21, 28))
@@ -441,7 +446,7 @@ public class GTOres {
     public static final GTOreFeatureEntry MANGANESE_OVER_VEIN =
             create("manganese_over_vein", 15, 0.25f, 20, WorldGenLayers.STONE, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(0), VerticalAnchor.absolute(30)))
                     .biomes(BiomeTags.IS_OVERWORLD)
-                    .layeredDatagenExt()
+                    .layeredVeinGenerator()
                     .withLayerPattern(() -> GTLayerPattern.builder(OVERWORLD_RULES)
                            // .layer(l -> l.weight(2).state(Blocks.STONE::defaultBlockState))
                             .layer(l -> l.weight(3).mat(Grossular).size(21, 28))
@@ -454,7 +459,7 @@ public class GTOres {
     public static final GTOreFeatureEntry MICA_VEIN =
             create("mica_vein", 15, 0.25f, 20, WorldGenLayers.STONE, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(0), VerticalAnchor.absolute(40)))
                     .biomes(BiomeTags.IS_OVERWORLD)
-                    .layeredDatagenExt()
+                    .layeredVeinGenerator()
                     .withLayerPattern(() -> GTLayerPattern.builder(OVERWORLD_RULES)
                            // .layer(l -> l.weight(2).state(Blocks.STONE::defaultBlockState))
                             .layer(l -> l.weight(3).mat(Kyanite).size(21, 28))
@@ -467,7 +472,7 @@ public class GTOres {
     public static final GTOreFeatureEntry MINERAL_SAND_VEIN =
             create("mineral_sand_vein", 20, 0.2f, 80, WorldGenLayers.STONE, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(15), VerticalAnchor.absolute(60)))
                     .biomes(BiomeTags.IS_OVERWORLD)
-                    .layeredDatagenExt()
+                    .layeredVeinGenerator()
                     .withLayerPattern(() -> GTLayerPattern.builder(OVERWORLD_RULES)
                             .layer(l -> l.weight(2).state(Blocks.SAND::defaultBlockState))
                             .layer(l -> l.weight(3).mat(BasalticMineralSand).size(21, 28))
@@ -480,7 +485,7 @@ public class GTOres {
     public static final GTOreFeatureEntry NICKEL_VEIN =
             create("nickel_vein", 15, 0.25f, 40, WorldGenLayers.STONE, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(-10), VerticalAnchor.absolute(40)))
                     .biomes(BiomeTags.IS_OVERWORLD)
-                    .layeredDatagenExt()
+                    .layeredVeinGenerator()
                     .withLayerPattern(() -> GTLayerPattern.builder(OVERWORLD_RULES)
                            // .layer(l -> l.weight(2).state(Blocks.STONE::defaultBlockState))
                             .layer(l -> l.weight(3).mat(Garnierite).size(21, 28))
@@ -493,7 +498,7 @@ public class GTOres {
     public static final GTOreFeatureEntry OILSANDS_VEIN =
             create("oilsands_vein", 15, 0.3f, 20, WorldGenLayers.STONE, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(30), VerticalAnchor.absolute(80)))
                     .biomes(BiomeTags.IS_OVERWORLD)
-                    .layeredDatagenExt()
+                    .layeredVeinGenerator()
                     .withLayerPattern(() -> GTLayerPattern.builder(OVERWORLD_RULES)
                             .layer(l -> l.weight(1).state(Blocks.SAND::defaultBlockState))
                             .layer(l -> l.weight(3).mat(Oilsands).size(21, 28))
@@ -503,7 +508,7 @@ public class GTOres {
     public static final GTOreFeatureEntry OLIVINE_VEIN =
             create("olivine_vein", 15, 0.25f, 20, WorldGenLayers.STONE, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(-10), VerticalAnchor.absolute(40)))
                     .biomes(BiomeTags.IS_OVERWORLD)
-                    .layeredDatagenExt()
+                    .layeredVeinGenerator()
                     .withLayerPattern(() -> GTLayerPattern.builder(OVERWORLD_RULES)
                            // .layer(l -> l.weight(2).state(Blocks.STONE::defaultBlockState))
                             .layer(l -> l.weight(3).mat(Bentonite).size(21, 28))
@@ -516,7 +521,7 @@ public class GTOres {
     public static final GTOreFeatureEntry REDSTONE_OVER_VEIN =
             create("redstone_over_vein", 20, 0.2f, 60, WorldGenLayers.STONE, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(-15), VerticalAnchor.absolute(40)))
                     .biomes(BiomeTags.IS_OVERWORLD)
-                    .layeredDatagenExt()
+                    .layeredVeinGenerator()
                     .withLayerPattern(() -> GTLayerPattern.builder(OVERWORLD_RULES)
                            // .layer(l -> l.weight(2).state(Blocks.STONE::defaultBlockState))
                             .layer(l -> l.weight(3).mat(Redstone).size(21, 28))
@@ -528,7 +533,7 @@ public class GTOres {
     public static final GTOreFeatureEntry SALTS_VEIN =
             create("salts_vein", 20, 0.2f, 50, WorldGenLayers.STONE, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(30), VerticalAnchor.absolute(70)))
                     .biomes(BiomeTags.IS_OVERWORLD)
-                    .layeredDatagenExt()
+                    .layeredVeinGenerator()
                     .withLayerPattern(() -> GTLayerPattern.builder(OVERWORLD_RULES)
                            // .layer(l -> l.weight(2).state(Blocks.STONE::defaultBlockState))
                             .layer(l -> l.weight(3).mat(RockSalt).size(21, 28))
@@ -541,7 +546,7 @@ public class GTOres {
     public static final GTOreFeatureEntry SAPPHIRE_VEIN =
             create("sapphire_vein", 15, 0.25f, 60, WorldGenLayers.STONE, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(-10), VerticalAnchor.absolute(40)))
                     .biomes(BiomeTags.IS_OVERWORLD)
-                    .layeredDatagenExt()
+                    .layeredVeinGenerator()
                     .withLayerPattern(() -> GTLayerPattern.builder(OVERWORLD_RULES)
                            // .layer(l -> l.weight(2).state(Blocks.STONE::defaultBlockState))
                             .layer(l -> l.weight(3).mat(Almandine).size(21, 28))
