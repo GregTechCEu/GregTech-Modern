@@ -9,6 +9,8 @@ import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.particles.BlockParticleOption;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.item.FallingBlockEntity;
@@ -87,6 +89,19 @@ public class MaterialBlock extends AppearanceBlock implements IBlockRendererProv
             return;
         }
         FallingBlockEntity.fall(level, pos, state);
+    }
+
+    @Override
+    public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
+        if (!TagPrefix.ORES.containsKey(this.tagPrefix) || super.material != net.minecraft.world.level.material.Material.SAND || !ConfigHolder.INSTANCE.worldgen.sandOresFall) return;
+
+        BlockPos blockPos;
+        if (random.nextInt(16) == 0 && FallingBlock.isFree(level.getBlockState(blockPos = pos.below()))) {
+            double d = (double)pos.getX() + random.nextDouble();
+            double e = (double)pos.getY() - 0.05;
+            double f = (double)pos.getZ() + random.nextDouble();
+            level.addParticle(new BlockParticleOption(ParticleTypes.FALLING_DUST, state), d, e, f, 0.0, 0.0, 0.0);
+        }
     }
 
     /**

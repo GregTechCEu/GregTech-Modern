@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonElement;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.MixinHelpers;
@@ -12,6 +13,7 @@ import net.minecraft.data.loot.BlockLoot;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.LootTables;
 import org.spongepowered.asm.mixin.Mixin;
@@ -53,5 +55,12 @@ public abstract class LootTablesMixin {
             MixinHelpers.addMaterialBlockLootTables(lootTables, prefix, map);
         });
          */
+        GTRegistries.MACHINES.forEach(machine -> {
+            Block block = machine.getBlock();
+            ResourceLocation id = machine.getId();
+            ResourceLocation lootTableId = new ResourceLocation(id.getNamespace(), "blocks/" + id.getPath());
+            ((BlockBehaviourAccessor)block).setDrops(lootTableId);
+            lootTables.put(lootTableId, BlockLoot.createSingleItemTable(block).build());
+        });
     }
 }

@@ -200,8 +200,9 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> {
                 })
                 .color(() -> () -> IMachineBlock::colorTinted)
                 .initialProperties(() -> Blocks.DISPENSER)
+                .properties(properties -> properties.noLootTable())
                 .addLayer(() -> RenderType::cutoutMipped)
-                .tag(GTToolType.WRENCH.harvestTag)
+                //.tag(GTToolType.WRENCH.harvestTag)
                 .blockstate(NonNullBiConsumer.noop())
                 .properties(blockProp)
                 .onRegister(b -> Arrays.stream(abilities).forEach(a -> a.register(tier, b)));

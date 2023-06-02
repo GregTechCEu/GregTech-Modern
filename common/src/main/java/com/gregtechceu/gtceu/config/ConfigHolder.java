@@ -100,6 +100,9 @@ public class ConfigHolder {
     }
     public static class MachineConfigs {
         @Configurable
+        @Configurable.Comment({"Whether to require a Wrench, Wirecutter, or other GregTech tools to break machines, casings, wires, and more.", "Default: false"})
+        public boolean requireGTToolsForBlocks;
+        @Configurable
         @Configurable.Comment({"Whether machines explode in rainy weather or when placed next to certain terrain, such as fire or lava", "Default: false"})
         public boolean doTerrainExplosion;
         @Configurable

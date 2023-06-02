@@ -139,7 +139,6 @@ public class GTBlocks {
                                     properties -> new MaterialBlock(properties, oreTag, material, new OreBlockRenderer(oreType.stoneType(),
                                             Objects.requireNonNull(oreTag.materialIconType()).getBlockTexturePath(material.getMaterialIconSet(), true),
                                             oreProperty.isEmissive())))
-                            .initialProperties(() -> Blocks.IRON_BLOCK)
                             .properties(properties -> {
                                 properties.color(oreType.color()).noLootTable();
                                 if (oreType.material() == net.minecraft.world.level.material.Material.SAND) {

@@ -117,7 +117,7 @@ public class TagPrefix {
             .registerOre(Blocks.RED_SAND::defaultBlockState, net.minecraft.world.level.material.Material.SAND, MaterialColor.COLOR_ORANGE, SoundType.SAND);
 
     public static final TagPrefix oreGravel = oreTagPrefix("gravel")
-            .langValue("Red Sand %s Ore")
+            .langValue("Gravel %s Ore")
             .materialIconType(MaterialIconType.ore)
             .miningToolTag(BlockTags.MINEABLE_WITH_SHOVEL)
             .unificationEnabled(true)

@@ -360,8 +360,8 @@ public class LangHandler {
         replace(provider, GTMaterials.FullersEarth.getUnlocalizedName(), "Fuller's Earth");
         replace(provider, GTMaterials.Cooperite.getUnlocalizedName(), "Sheldonite"); //greg's humor is now on 1.19...
         replace(provider, GTMaterials.HSSG.getUnlocalizedName(), "HSS-G");
-        replace(provider, "fluid.gtceu.hsss", "Molten HSS-G");
-        replace(provider, "item.gtceu.hsss_bucket", "Molten HSS-G Bucket");
+        replace(provider, "fluid.gtceu.hssg", "HSS-G");
+        replace(provider, "item.gtceu.hssg_bucket", "HSS-G Bucket");
         replace(provider, GTMaterials.HSSE.getUnlocalizedName(), "HSS-E");
         replace(provider, "fluid.gtceu.hsse", "HSS-E");
         replace(provider, "item.gtceu.hsse_bucket", "HSS-E Bucket");

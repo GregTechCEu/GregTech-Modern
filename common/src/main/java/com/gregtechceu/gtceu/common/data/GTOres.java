@@ -307,6 +307,7 @@ public class GTOres {
                     .withLayerPattern(() -> GTLayerPattern.builder(OVERWORLD_RULES)
                            // .layer(l -> l.weight(1).state(Blocks.STONE::defaultBlockState))
                             .layer(l -> l.weight(3).mat(Coal).size(21, 28))
+                            .layer(l -> l.weight(3).mat(Coal).size(21, 28))
                             .build())
                     .parent();
 
