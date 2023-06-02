@@ -39,8 +39,7 @@ import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 public class GTOres {
 
     static {
-        Object obj = VeinGenerators.STANDARD; // Init VeinGenerators for usage
-        AddonFinder.getAddons().forEach(IGTAddon::registerVeinGenerators);
+        VeinGenerators.registerAddonGenerators();
     }
 
     //////////////////////////////////////
