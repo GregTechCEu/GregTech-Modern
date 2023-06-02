@@ -61,7 +61,7 @@ public class ChemicalHelper {
     public static void registerUnificationItems(TagPrefix tagPrefix, @Nullable Material material, ItemLike... items) {
         registerUnificationItems(new UnificationEntry(tagPrefix, material), items);
         if (TagPrefix.ORES.containsKey(tagPrefix)) {
-            ORES_INVERSE.put(TagPrefix.ORES.get(tagPrefix).getLeft().get(), Pair.of(tagPrefix, material));
+            ORES_INVERSE.put(TagPrefix.ORES.get(tagPrefix).stoneType().get(), Pair.of(tagPrefix, material));
         }
     }
 

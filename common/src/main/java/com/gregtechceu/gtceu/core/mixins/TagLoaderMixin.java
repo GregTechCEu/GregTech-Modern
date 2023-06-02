@@ -55,7 +55,7 @@ public class TagLoaderMixin<T> implements IGTTagLoader<T> {
                 map.forEach((type, item) -> {
                     if (item != null) {
                         var entry = new TagLoader.EntryWithSource(TagEntry.element(item.getId()), GTValues.CUSTOM_TAG_SOURCE);
-                        GTCEu.LOGGER.info("Tool tag registered. Tier: " + toolTier.getLevel() +  ". Item: " + item.getId() + ". ");
+                        //GTCEu.LOGGER.info("Tool tag registered. Tier: " + toolTier.getLevel() +  ". Item: " + item.getId() + ". Block type: " + type.harvestTag);
                         value.computeIfAbsent(type.itemTag.location(), path -> new ArrayList<>()).add(entry);
                     }
                 });

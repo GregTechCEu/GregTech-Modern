@@ -32,9 +32,9 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.MaterialColor;
-import org.apache.commons.lang3.tuple.Triple;
 import org.apache.logging.log4j.util.TriConsumer;
 
 import javax.annotation.Nonnull;
@@ -49,7 +49,7 @@ import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.LoaderType.*;
 public class TagPrefix {
 
     private final static Map<String, TagPrefix> PREFIXES = new HashMap<>();
-    public static final Map<TagPrefix, Triple<Supplier<BlockState>, net.minecraft.world.level.material.Material, MaterialColor>> ORES = new HashMap<>();
+    public static final Map<TagPrefix, OreType> ORES = new HashMap<>();
 
     public static final TagPrefix ore = oreTagPrefix("stone")
             .langValue("%s Ore")
@@ -106,7 +106,7 @@ public class TagPrefix {
             .miningToolTag(BlockTags.MINEABLE_WITH_SHOVEL)
             .unificationEnabled(true)
             .generationCondition(hasOreProperty)
-            .registerOre(Blocks.SAND::defaultBlockState, net.minecraft.world.level.material.Material.SAND);
+            .registerOre(Blocks.SAND::defaultBlockState, net.minecraft.world.level.material.Material.SAND, MaterialColor.SAND, SoundType.SAND);
 
     public static final TagPrefix oreRedSand = oreTagPrefix("redSand")
             .langValue("Red Sand %s Ore")
@@ -114,7 +114,15 @@ public class TagPrefix {
             .miningToolTag(BlockTags.MINEABLE_WITH_SHOVEL)
             .unificationEnabled(true)
             .generationCondition(hasOreProperty)
-            .registerOre(Blocks.RED_SAND::defaultBlockState, net.minecraft.world.level.material.Material.SAND, MaterialColor.COLOR_ORANGE);
+            .registerOre(Blocks.RED_SAND::defaultBlockState, net.minecraft.world.level.material.Material.SAND, MaterialColor.COLOR_ORANGE, SoundType.SAND);
+
+    public static final TagPrefix oreGravel = oreTagPrefix("gravel")
+            .langValue("Red Sand %s Ore")
+            .materialIconType(MaterialIconType.ore)
+            .miningToolTag(BlockTags.MINEABLE_WITH_SHOVEL)
+            .unificationEnabled(true)
+            .generationCondition(hasOreProperty)
+            .registerOre(Blocks.GRAVEL::defaultBlockState, net.minecraft.world.level.material.Material.SAND, MaterialColor.STONE, SoundType.GRAVEL);
 
     public static final TagPrefix oreNetherrack = oreTagPrefix("netherrack")
             .langValue("Nether %s Ore")
@@ -703,18 +711,19 @@ public class TagPrefix {
     }
 
     protected TagPrefix registerOre(Supplier<BlockState> stoneType, net.minecraft.world.level.material.Material material) {
-        return registerOre(stoneType, material, material.getColor());
+        return registerOre(stoneType, material, material.getColor(), SoundType.STONE);
     }
 
     protected TagPrefix registerOre(Supplier<BlockState> stoneType, MaterialColor color) {
-        return registerOre(stoneType, net.minecraft.world.level.material.Material.STONE, color);
+        return registerOre(stoneType, net.minecraft.world.level.material.Material.STONE, color, SoundType.STONE);
     }
 
-    protected TagPrefix registerOre(Supplier<BlockState> stoneType, net.minecraft.world.level.material.Material material, MaterialColor color) {
-        ORES.put(this, Triple.of(stoneType, material, color));
-        //ORES_INVERSE.put(state -> state.getBlock() == stoneType.get().getBlock(), this);
+    protected TagPrefix registerOre(Supplier<BlockState> stoneType, net.minecraft.world.level.material.Material material, MaterialColor color, SoundType soundType) {
+        ORES.put(this, new OreType(stoneType, material, color, soundType));
         return this;
     }
+
+    public record OreType(Supplier<BlockState> stoneType, net.minecraft.world.level.material.Material material, MaterialColor color, SoundType sound) {}
 
 
     protected TagPrefix defaultTagPath(LoaderType loader, String path) {

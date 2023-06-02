@@ -133,20 +133,21 @@ public class GTBlocks {
                 for (var ore : TagPrefix.ORES.entrySet()) {
                     if (ore.getKey().isIgnored(material)) continue;
                     var oreTag = ore.getKey();
+                    final TagPrefix.OreType oreType = ore.getValue();
                     var entry = REGISTRATE.block("%s_%s".formatted(FormattingUtil.toLowerCaseUnder(oreTag.name), material.getName()),
-                                    ore.getValue().getMiddle(),
-                                    properties -> new MaterialBlock(properties, oreTag, material, new OreBlockRenderer(ore.getValue().getLeft(),
+                                    oreType.material(),
+                                    properties -> new MaterialBlock(properties, oreTag, material, new OreBlockRenderer(oreType.stoneType(),
                                             Objects.requireNonNull(oreTag.materialIconType()).getBlockTexturePath(material.getMaterialIconSet(), true),
                                             oreProperty.isEmissive())))
                             .initialProperties(() -> Blocks.IRON_BLOCK)
                             .properties(properties -> {
-                                properties.color(ore.getValue().getRight()).noLootTable();
-                                if (ore.getValue().getMiddle() == net.minecraft.world.level.material.Material.SAND) {
+                                properties.color(oreType.color()).noLootTable();
+                                if (oreType.material() == net.minecraft.world.level.material.Material.SAND) {
                                     properties.strength(1.0f, 0.5f);
                                 } else {
                                     properties.strength(1.5f, 6.0f);
                                 }
-                                return properties;
+                                return properties.sound(oreType.sound());
                             })
                             .transform(unificationBlock(oreTag, material))
                             .addLayer(() -> RenderType::cutoutMipped)

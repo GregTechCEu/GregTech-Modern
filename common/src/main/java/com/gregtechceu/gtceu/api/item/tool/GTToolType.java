@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.sound.ExistingSoundEntry;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
 import com.gregtechceu.gtceu.common.data.GTSoundEntries;
 import com.gregtechceu.gtceu.api.data.tag.TagUtil;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -14,19 +15,17 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.regex.Pattern;
-
 /**
  * @author KilaBash
  * @date 2023/2/23
  * @implNote GTToolType
  */
 public enum GTToolType {
-    SWORD("sword", "swords", 3, -2.4F),
-    PICKAXE("pickaxe", "pickaxes", 1, -2.8F),
-    SHOVEL("shovel", "shovels", 1.5F, -3.0F),
-    AXE("axe", "axes", 6.0F, -3.2F),
-    HOE("hoe", "hoes", 0, -3.0F),
+    SWORD("sword", "swords", 3, -2.4F, false),
+    PICKAXE("pickaxe", "pickaxes", 1, -2.8F, true),
+    SHOVEL("shovel", "shovels", 1.5F, -3.0F, true),
+    AXE("axe", "axes", 6.0F, -3.2F, true),
+    HOE("hoe", "hoes", 0, -3.0F, true),
 
     SAW("saw", "saws", 1, 1, GTSoundEntries.SAW_TOOL),
     HARD_HAMMER("hammer", "hammers", 1, 1, GTSoundEntries.FORGE_HAMMER),
@@ -67,16 +66,24 @@ public enum GTToolType {
         this(name, harvestTag, TagUtil.createPlatformItemTag("tools/" + plural, plural), attackDamageModifier, attackSpeedModifier, modelLocation, soundEntry);
     }
 
-    GTToolType(String name, String plural, float attackDamageModifier, float attackSpeedModifier, ResourceLocation modelLocation, SoundEntry soundEntry) {
-        this(name, plural, TagUtil.createBlockTag("mineable/" + name), attackDamageModifier, attackSpeedModifier, modelLocation, soundEntry);
+    GTToolType(String name, String plural, float attackDamageModifier, float attackSpeedModifier, ResourceLocation modelLocation, SoundEntry soundEntry, boolean isVanilla) {
+        this(name, plural, isVanilla ? TagUtil.createBlockTag("mineable/" + name, true) : TagUtil.createPlatformUnprefixedTag(Registry.BLOCK, "forge:mineable/" + name, "fabric:mineable/" + name), attackDamageModifier, attackSpeedModifier, modelLocation, soundEntry);
+    }
+
+    GTToolType(String name, String plural, float attackDamageModifier, float attackSpeedModifier, SoundEntry soundEntry, boolean isVanilla) {
+        this(name, plural, attackDamageModifier, attackSpeedModifier, GTCEu.id(String.format("item/tools/%s", name)), soundEntry, isVanilla);
     }
 
     GTToolType(String name, String plural, float attackDamageModifier, float attackSpeedModifier, SoundEntry soundEntry) {
-        this(name, plural, attackDamageModifier, attackSpeedModifier, GTCEu.id(String.format("item/tools/%s", name)), soundEntry);
+        this(name, plural, attackDamageModifier, attackSpeedModifier, soundEntry, false);
+    }
+
+    GTToolType(String name, String plural, float attackDamageModifier, float attackSpeedModifier, boolean isVanilla) {
+        this(name, plural, attackDamageModifier, attackSpeedModifier, GTCEu.id(String.format("item/tools/%s", name)), null, isVanilla);
     }
 
     GTToolType(String name, String plural, float attackDamageModifier, float attackSpeedModifier) {
-        this(name, plural, attackDamageModifier, attackSpeedModifier, GTCEu.id(String.format("item/tools/%s", name)), null);
+        this(name, plural, attackDamageModifier, attackSpeedModifier, false);
     }
 
     public boolean is(ItemStack itemStack) {
