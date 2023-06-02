@@ -3,7 +3,10 @@ package com.gregtechceu.gtceu.api.data.tag;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Table;
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.addon.AddonFinder;
+import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags;
@@ -18,6 +21,7 @@ import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.integration.kjs.GTRegistryObjectBuilderTypes;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
@@ -48,8 +52,15 @@ import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.LoaderType.*;
 @Accessors(chain = true, fluent = true)
 public class TagPrefix {
 
-    private final static Map<String, TagPrefix> PREFIXES = new HashMap<>();
+    public final static Map<String, TagPrefix> PREFIXES = new HashMap<>();
     public static final Map<TagPrefix, OreType> ORES = new HashMap<>();
+
+    public static void init() {
+        AddonFinder.getAddons().forEach(IGTAddon::registerTagPrefixes);
+        if (GTCEu.isKubeJSLoaded()) {
+            GTRegistryObjectBuilderTypes.registerFor(GTRegistryObjectBuilderTypes.TAG_PREFIX.registryKey);
+        }
+    }
 
     public static final TagPrefix ore = oreTagPrefix("stone")
             .langValue("%s Ore")
@@ -624,7 +635,7 @@ public class TagPrefix {
         public static final Predicate<Material> hasRotorProperty = mat -> mat.hasProperty(PropertyKey.ROTOR);
     }
 
-    protected enum LoaderType {
+    public enum LoaderType {
         FORGE ((prefix, type) -> prefix.forgeTags.add(type)),
         FABRIC ((prefix, type) -> prefix.fabricTags.add(type));
 
@@ -634,7 +645,7 @@ public class TagPrefix {
             this.applyTagType = applyTagType;
         }
 
-        private void apply(TagPrefix prefix, TagType type) {
+        public void apply(TagPrefix prefix, TagType type) {
             applyTagType.accept(prefix, type);
         }
     }
@@ -648,33 +659,33 @@ public class TagPrefix {
     public String langValue;
 
     @Getter
-    @Setter(value = AccessLevel.PROTECTED)
+    @Setter
     private long materialAmount = -1;
 
-    @Setter(value = AccessLevel.PROTECTED)
+    @Setter
     private boolean unificationEnabled;
-    @Setter(value = AccessLevel.PROTECTED)
+    @Setter
     private boolean generateItem;
 
-    @Setter(value = AccessLevel.PROTECTED)
+    @Setter
     private @Nullable
     Predicate<Material> generationCondition;
 
     @Nullable @Getter
-    @Setter(value = AccessLevel.PROTECTED)
+    @Setter
     private MaterialIconType materialIconType;
 
     @Setter(AccessLevel.PROTECTED)
     private Supplier<Table<TagPrefix, Material, ? extends Supplier<? extends ItemLike>>> itemTable;
 
     @Nullable @Getter
-    @Setter(value = AccessLevel.PROTECTED)
+    @Setter
     private BiConsumer<Material, List<Component>> tooltip;
 
     private final Set<Material> ignoredMaterials = new HashSet<>();
 
     @Getter
-    @Setter(value = AccessLevel.PROTECTED)
+    @Setter
     private int maxStackSize = 64;
 
     @Getter
@@ -683,13 +694,15 @@ public class TagPrefix {
     @Getter
     private final Set<TagKey<Block>> miningToolTag = new HashSet<>();
 
-    protected TagPrefix(String name) {
+    /** Public only for KJS TagPrefixBuilder */
+    public TagPrefix(String name) {
         this.name = name;
         this.langValue = "%s " + FormattingUtil.toEnglishName(FormattingUtil.toLowerCaseUnder(name));
         PREFIXES.put(name, this);
     }
 
-    protected static TagPrefix oreTagPrefix(String name) {
+    /** Public only for KJS TagPrefixBuilder */
+    public static TagPrefix oreTagPrefix(String name) {
         return new TagPrefix(name)
                 .prefixTagPath(FORGE, "ores/%s/%s")
                 .defaultTagPath(FORGE, "ores/%s")
@@ -718,7 +731,7 @@ public class TagPrefix {
         return registerOre(stoneType, net.minecraft.world.level.material.Material.STONE, color, SoundType.STONE);
     }
 
-    protected TagPrefix registerOre(Supplier<BlockState> stoneType, net.minecraft.world.level.material.Material material, MaterialColor color, SoundType soundType) {
+    public TagPrefix registerOre(Supplier<BlockState> stoneType, net.minecraft.world.level.material.Material material, MaterialColor color, SoundType soundType) {
         ORES.put(this, new OreType(stoneType, material, color, soundType));
         return this;
     }
@@ -751,7 +764,7 @@ public class TagPrefix {
         return this;
     }
 
-    protected TagPrefix miningToolTag(TagKey<Block> tag) {
+    public TagPrefix miningToolTag(TagKey<Block> tag) {
         this.miningToolTag.add(tag);
         return this;
     }

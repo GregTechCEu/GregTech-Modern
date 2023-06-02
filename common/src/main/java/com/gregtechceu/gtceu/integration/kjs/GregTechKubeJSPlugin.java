@@ -23,6 +23,8 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.integration.kjs.builders.*;
 import com.gregtechceu.gtceu.integration.kjs.builders.machine.*;
+import com.gregtechceu.gtceu.integration.kjs.builders.prefix.BasicTagPrefixBuilder;
+import com.gregtechceu.gtceu.integration.kjs.builders.prefix.OreTagPrefixBuilder;
 import com.gregtechceu.gtceu.integration.kjs.recipe.GTRecipeBuilderJS;
 import dev.latvian.mods.kubejs.KubeJSPlugin;
 import dev.latvian.mods.kubejs.RegistryObjectBuilderTypes;
@@ -61,6 +63,9 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         GTRegistryObjectBuilderTypes.MACHINE.addType("kinetic", KineticMachineBuilder.class, KineticMachineBuilder::new, false);
 
         GTRegistryObjectBuilderTypes.WORLD_GEN_LAYER.addType("basic", WorldGenLayerBuilder.class, WorldGenLayerBuilder::new, true);
+
+        GTRegistryObjectBuilderTypes.TAG_PREFIX.addType("basic", BasicTagPrefixBuilder.class, BasicTagPrefixBuilder::new, true);
+        GTRegistryObjectBuilderTypes.TAG_PREFIX.addType("ore", OreTagPrefixBuilder.class, OreTagPrefixBuilder::new, false);
 
         RegistryObjectBuilderTypes.BLOCK.addType("gtceu:coil", CoilBlockBuilder.class, CoilBlockBuilder::new);
     }

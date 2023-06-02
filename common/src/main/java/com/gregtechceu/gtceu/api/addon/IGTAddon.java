@@ -4,6 +4,10 @@ public interface IGTAddon {
 
     void initializeAddon();
 
+    default void registerTagPrefixes() {
+
+    }
+
     default void registerElements() {
 
     }

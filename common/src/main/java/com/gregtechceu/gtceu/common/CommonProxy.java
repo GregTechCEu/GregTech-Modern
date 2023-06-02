@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.worldgen.WorldGenLayers;
 import com.gregtechceu.gtceu.api.gui.CoverUIFactory;
 import com.gregtechceu.gtceu.api.gui.MachineUIFactory;
@@ -34,6 +35,7 @@ public class CommonProxy {
         GTPlacerTypes.init();
         GTRecipeCapabilities.init();
         GTRecipeConditions.init();
+        TagPrefix.init();
         GTElements.init();
         MaterialIconSet.init();
         GTMaterials.init();
