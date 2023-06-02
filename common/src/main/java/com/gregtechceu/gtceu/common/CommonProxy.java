@@ -1,21 +1,20 @@
 package com.gregtechceu.gtceu.common;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.addon.AddonFinder;
+import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
+import com.gregtechceu.gtceu.api.data.worldgen.WorldGenLayers;
 import com.gregtechceu.gtceu.api.gui.CoverUIFactory;
+import com.gregtechceu.gtceu.api.gui.MachineUIFactory;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.*;
-import com.gregtechceu.gtceu.api.gui.MachineUIFactory;
 import com.gregtechceu.gtceu.common.data.materials.GTFoods;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.GregTechDatagen;
 import com.gregtechceu.gtceu.integration.kjs.GTRegistryObjectBuilderTypes;
 import com.lowdragmc.lowdraglib.gui.factory.UIFactory;
-import com.tterrag.registrate.providers.loot.RegistrateBlockLootTables;
-import com.tterrag.registrate.util.entry.BlockEntry;
-import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import dev.architectury.injectables.annotations.ExpectPlatform;
-import net.minecraft.world.level.block.Block;
 
 public class CommonProxy {
 
@@ -51,9 +50,7 @@ public class CommonProxy {
 
         // fabric exclusive, squeeze this in here to register before stuff is used
         GTRegistries.REGISTRATE.registerRegistrate();
-        if (GTCEu.isKubeJSLoaded()) {
-            GTRegistryObjectBuilderTypes.registerFor(GTRegistryObjectBuilderTypes.WORLD_GEN_LAYER.registryKey);
-        }
+        WorldGenLayers.registerAll();
         GTOres.init();
         GTFeatures.init();
     }

@@ -1,10 +1,10 @@
 package com.gregtechceu.gtceu.integration.kjs.builders;
 
+import com.gregtechceu.gtceu.api.block.SimpleCoilType;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.common.block.CoilBlock;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
-import com.gregtechceu.gtceu.integration.kjs.built.KJSCoilType;
 import dev.latvian.mods.kubejs.block.BlockBuilder;
 import dev.latvian.mods.kubejs.client.ModelGenerator;
 import dev.latvian.mods.kubejs.generator.AssetJsonGenerator;
@@ -63,7 +63,7 @@ public class CoilBlockBuilder extends BlockBuilder {
 
     @Override
     public Block createObject() {
-        KJSCoilType coilType = new KJSCoilType(this.id.getPath(), temperature, level, energyDiscount, tier, material, texture);
+        SimpleCoilType coilType = new SimpleCoilType(this.id.getPath(), temperature, level, energyDiscount, tier, material, texture);
         CoilBlock result = new CoilBlock(this.createProperties(), coilType);
         GTBlocks.ALL_COILS.put(coilType, () -> result);
         return result;

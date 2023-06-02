@@ -25,7 +25,7 @@ import java.util.Map;
 public class OreDataLoader extends SimpleJsonResourceReloadListener {
     public static OreDataLoader INSTANCE;
     public static final Gson GSON_INSTANCE = Deserializers.createFunctionSerializer().create();
-    private static final String FOLDER = "ore_veins";
+    private static final String FOLDER = "gtceu/ore_veins";
     protected static final Logger LOGGER = LogManager.getLogger();
 
     public OreDataLoader() {

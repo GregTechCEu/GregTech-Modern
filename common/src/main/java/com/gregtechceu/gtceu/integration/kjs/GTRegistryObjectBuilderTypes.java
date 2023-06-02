@@ -5,13 +5,13 @@ import com.gregtechceu.gtceu.api.data.chemical.Element;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
 import com.gregtechceu.gtceu.api.data.worldgen.IWorldGenLayer;
+import com.gregtechceu.gtceu.api.data.worldgen.SimpleWorldGenLayer;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.WorldGeneratorUtils;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.GTRegistry;
 import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
-import com.gregtechceu.gtceu.integration.kjs.built.KJSWorldGenLayer;
 import com.gregtechceu.gtceu.integration.kjs.events.GTRegistryEventJS;
 import dev.latvian.mods.kubejs.CommonProperties;
 import dev.latvian.mods.kubejs.util.ConsoleJS;
@@ -38,7 +38,7 @@ public class GTRegistryObjectBuilderTypes<K, V> {
     public static final GTRegistryObjectBuilderTypes<ResourceLocation, GTRecipeType> RECIPE_TYPE = add(GTRegistries.RECIPE_TYPES, GTRecipeType.class);
     public static final GTRegistryObjectBuilderTypes<ResourceLocation, MachineDefinition> MACHINE = add(GTRegistries.MACHINES, MachineDefinition.class);
     public static final GTRegistryObjectBuilderTypes<String, MaterialIconSet> MATERIAL_ICON_SET = add(GTCEu.id("material_icon_set"), MaterialIconSet.ICON_SETS, MachineDefinition.class);
-    public static final GTRegistryObjectBuilderTypes<String, IWorldGenLayer> WORLD_GEN_LAYER = add(GTCEu.id("world_gen_layer"), WorldGeneratorUtils.WORLD_GEN_LAYERS, KJSWorldGenLayer.class);
+    public static final GTRegistryObjectBuilderTypes<String, IWorldGenLayer> WORLD_GEN_LAYER = add(GTCEu.id("world_gen_layer"), WorldGeneratorUtils.WORLD_GEN_LAYERS, SimpleWorldGenLayer.class);
     /*public static final GTRegistryObjectBuilderTypes<String, RecipeCapability<?>> RECIPE_CAPABILITY = add(GTRegistries.RECIPE_CAPABILITIES, RecipeCapability.class);
     public static final GTRegistryObjectBuilderTypes<String, Class<? extends RecipeCondition>> RECIPE_CONDITION = add(GTRegistries.RECIPE_CONDITIONS, RecipeCondition.class);
     public static final GTRegistryObjectBuilderTypes<ResourceLocation, SoundEntry> SOUND = add(GTRegistries.SOUNDS, SoundEntry.class);*/

@@ -4,6 +4,7 @@ import com.google.common.collect.HashBiMap;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.BiomeFilter;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinCountFilter;
+import com.gregtechceu.gtceu.api.data.worldgen.generator.WorldGeneratorUtils;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTFeatures;
 import com.mojang.datafixers.util.Either;
@@ -138,12 +139,11 @@ public class GTOreFeatureEntry {
     }
 
     public static abstract class VeinGenerator {
-        public static final HashBiMap<ResourceLocation, Codec<? extends VeinGenerator>> DATAGEN_EXTENSIONS = HashBiMap.create();
         public static final Codec<Codec<? extends VeinGenerator>> REGISTRY_CODEC = ResourceLocation.CODEC
-                .flatXmap(rl -> Optional.ofNullable(DATAGEN_EXTENSIONS.get(rl))
+                .flatXmap(rl -> Optional.ofNullable(WorldGeneratorUtils.VEIN_GENERATORS.get(rl))
                                 .map(DataResult::success)
                                 .orElseGet(() -> DataResult.error("No VeinGenerator with id " + rl + " registered")),
-                        obj -> Optional.ofNullable(DATAGEN_EXTENSIONS.inverse().get(obj))
+                        obj -> Optional.ofNullable(WorldGeneratorUtils.VEIN_GENERATORS.inverse().get(obj))
                                 .map(DataResult::success)
                                 .orElseGet(() -> DataResult.error("VeinGenerator " + obj + " not registered")));
         public static final Codec<VeinGenerator> DIRECT_CODEC = REGISTRY_CODEC.dispatchStable(VeinGenerator::codec, Function.identity());

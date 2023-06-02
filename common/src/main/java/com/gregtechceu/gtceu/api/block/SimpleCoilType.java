@@ -1,6 +1,5 @@
-package com.gregtechceu.gtceu.integration.kjs.built;
+package com.gregtechceu.gtceu.api.block;
 
-import com.gregtechceu.gtceu.api.block.ICoilType;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import lombok.Getter;
 import net.minecraft.resources.ResourceLocation;
@@ -8,7 +7,7 @@ import net.minecraft.util.StringRepresentable;
 
 import javax.annotation.Nonnull;
 
-public class KJSCoilType implements StringRepresentable, ICoilType {
+public class SimpleCoilType implements ICoilType, StringRepresentable {
 
     @Getter
     private final String name;
@@ -27,7 +26,7 @@ public class KJSCoilType implements StringRepresentable, ICoilType {
     @Getter
     private final ResourceLocation texture;
 
-    public KJSCoilType(String name, int coilTemperature, int level, int energyDiscount, int tier, Material material, ResourceLocation texture) {
+    public SimpleCoilType(String name, int coilTemperature, int level, int energyDiscount, int tier, Material material, ResourceLocation texture) {
         this.name = name;
         this.coilTemperature = coilTemperature;
         this.level = level;
