@@ -34,9 +34,9 @@ public class VeinCountFilter extends PlacementFilter {
             GTOreFeatureEntry entry = configuration.getEntry(context.getLevel(), context.getLevel().getBiome(pos), random);
             if (entry == null) return false;
             Cell startCell = new Cell(context.getLevel().getLevel(), entry.layer, chunkPos);
-            // if (GENERATED.contains(startCell, chunkPos)) return false;
-            for (int x = -1; x <= 1; ++x) {
-                for (int z = -1; z <= 1; ++z) {
+            // Search for a radius of 5 chunks for other veins
+            for (int x = -2; x <= 2; ++x) {
+                for (int z = -2; z <= 2; ++z) {
                     ChunkPos chunkPos2 = new ChunkPos(chunkPos.x + x, chunkPos.z + z);
                     Cell mapCell = new Cell(context.getLevel().getLevel(), entry.layer, chunkPos2);
                     if (GENERATED.containsKey(mapCell)) {

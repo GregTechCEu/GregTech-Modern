@@ -492,7 +492,7 @@ public class GTRecipeBuilderJS extends RecipeJS {
     public boolean hasInput(IngredientMatch match) {
         if (backingBuilder.input.containsKey(ItemRecipeCapability.CAP)) {
             for (Content item : backingBuilder.input.get(ItemRecipeCapability.CAP)) {
-                Ingredient in = ItemRecipeCapability.CAP.of(item);
+                Ingredient in = ItemRecipeCapability.CAP.of(item.content);
                 if (match.contains(in)) {
                     return true;
                 }
@@ -500,7 +500,7 @@ public class GTRecipeBuilderJS extends RecipeJS {
         }
         if (backingBuilder.tickInput.containsKey(ItemRecipeCapability.CAP)) {
             for (Content item : backingBuilder.tickInput.get(ItemRecipeCapability.CAP)) {
-                Ingredient in = ItemRecipeCapability.CAP.of(item);
+                Ingredient in = ItemRecipeCapability.CAP.of(item.content);
                 if (match.contains(in)) {
                     return true;
                 }
@@ -514,11 +514,11 @@ public class GTRecipeBuilderJS extends RecipeJS {
         boolean changed = false;
 
         var itemInputs = backingBuilder.input.get(ItemRecipeCapability.CAP);
-        if (replaceInputScan(match, with, transformer, itemInputs)) {
+        if (itemInputs != null && replaceInputScan(match, with, transformer, itemInputs)) {
             return true;
         }
         itemInputs = backingBuilder.tickInput.get(ItemRecipeCapability.CAP);
-        if (replaceInputScan(match, with, transformer, itemInputs)) {
+        if (itemInputs != null && replaceInputScan(match, with, transformer, itemInputs)) {
             return true;
         }
 
@@ -527,7 +527,7 @@ public class GTRecipeBuilderJS extends RecipeJS {
 
     public boolean replaceInputScan(IngredientMatch match, Ingredient with, ItemInputTransformer transformer, List<Content> stuff) {
         for (Content content : stuff) {
-            Ingredient in = ItemRecipeCapability.CAP.of(content);
+            Ingredient in = ItemRecipeCapability.CAP.of(content.content);
             if (match.contains(in)) {
                 content.content = transformer.transform(this, match, in, with);
                 return true;
@@ -540,7 +540,7 @@ public class GTRecipeBuilderJS extends RecipeJS {
     public boolean hasOutput(IngredientMatch match) {
         if (backingBuilder.output.containsKey(ItemRecipeCapability.CAP)) {
             for (Content item : backingBuilder.output.get(ItemRecipeCapability.CAP)) {
-                Ingredient in = ItemRecipeCapability.CAP.of(item);
+                Ingredient in = ItemRecipeCapability.CAP.of(item.content);
                 if (match.contains(in)) {
                     return true;
                 }
@@ -548,7 +548,7 @@ public class GTRecipeBuilderJS extends RecipeJS {
         }
         if (backingBuilder.tickOutput.containsKey(ItemRecipeCapability.CAP)) {
             for (Content item : backingBuilder.tickOutput.get(ItemRecipeCapability.CAP)) {
-                Ingredient in = ItemRecipeCapability.CAP.of(item);
+                Ingredient in = ItemRecipeCapability.CAP.of(item.content);
                 if (match.contains(in)) {
                     return true;
                 }
@@ -560,11 +560,11 @@ public class GTRecipeBuilderJS extends RecipeJS {
     @Override
     public boolean replaceOutput(IngredientMatch match, ItemStack with, ItemOutputTransformer transformer) {
         var itemOutputs = backingBuilder.output.get(ItemRecipeCapability.CAP);
-        if (replaceOutputScan(match, with, transformer, itemOutputs)) {
+        if (itemOutputs != null && replaceOutputScan(match, with, transformer, itemOutputs)) {
             return true;
         }
         itemOutputs = backingBuilder.tickOutput.get(ItemRecipeCapability.CAP);
-        if (replaceOutputScan(match, with, transformer, itemOutputs)) {
+        if (itemOutputs != null && replaceOutputScan(match, with, transformer, itemOutputs)) {
             return true;
         }
 
@@ -573,7 +573,7 @@ public class GTRecipeBuilderJS extends RecipeJS {
 
     public boolean replaceOutputScan(IngredientMatch match, ItemStack with, ItemOutputTransformer transformer, List<Content> stuff) {
         for (Content content : stuff) {
-            Ingredient in = ItemRecipeCapability.CAP.of(content);
+            Ingredient in = ItemRecipeCapability.CAP.of(content.content);
             if (match.contains(in)) {
                 content.content = transformer.transform(this, match, in.getItems()[0], with);
                 return true;
