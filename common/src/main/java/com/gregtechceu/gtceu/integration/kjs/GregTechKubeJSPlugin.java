@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.data.chemical.Element;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
+import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
@@ -36,7 +37,9 @@ import dev.latvian.mods.rhino.Wrapper;
 import dev.latvian.mods.rhino.util.wrap.TypeWrappers;
 import net.minecraft.core.Registry;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.levelgen.structure.templatesystem.*;
+import net.minecraft.world.level.material.MaterialColor;
 
 /**
  * @author KilaBash
@@ -51,6 +54,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         GTRegistryObjectBuilderTypes.ELEMENT.addType("basic", ElementBuilder.class, ElementBuilder::new, true);
 
         GTRegistryObjectBuilderTypes.MATERIAL_ICON_SET.addType("basic", MaterialIconSetBuilder.class, MaterialIconSetBuilder::new, true);
+        GTRegistryObjectBuilderTypes.MATERIAL_ICON_TYPE.addType("basic", MaterialIconTypeBuilder.class, MaterialIconTypeBuilder::new, true);
 
         GTRegistryObjectBuilderTypes.MATERIAL.addType("basic", Material.Builder.class, Material.Builder::new, true);
 
@@ -106,11 +110,13 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         event.add("GTMaterialBuilder", Material.Builder.class);
         event.add("GTRecipeTypes", GTRecipeTypes.class);
         event.add("TagPrefix", TagPrefix.class);
+        event.add("ItemGenerationCondition", TagPrefix.Conditions.class);
         event.add("UnificationEntry", UnificationEntry.class);
         event.add("RecipeCapability", RecipeCapability.class);
 
         event.add("GTValues", GTValues.class);
         event.add("GTMaterialIconSet", MaterialIconSet.class);
+        event.add("GTMaterialIconType", MaterialIconType.class);
         event.add("GTMaterialFlags", MaterialFlags.class);
         event.add("GTToolType", GTToolType.class);
         event.add("RotationState", RotationState.class);
@@ -128,6 +134,11 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         event.add("TagMatchTest", TagMatchTest.class);
         event.add("RandomBlockMatchTest", RandomBlockMatchTest.class);
         event.add("RandomBlockStateMatchTest", RandomBlockStateMatchTest.class);
+
+        // MaterialColor stuff, for TagPrefix
+        event.add("Material", net.minecraft.world.level.material.Material.class);
+        event.add("MaterialColor", MaterialColor.class);
+        event.add("SoundType", SoundType.class);
 
         // ....TODO add global refs. for convenience, ppl do not need to import the java package themselves.
     }

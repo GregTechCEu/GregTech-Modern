@@ -4,8 +4,8 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
-import com.gregtechceu.gtceu.api.data.tag.TagType;
 import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
+import com.gregtechceu.gtceu.integration.kjs.built.KJSTagPrefix;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 import net.minecraft.network.chat.Component;
@@ -24,7 +24,7 @@ import java.util.function.Predicate;
 @SuppressWarnings("unused")
 @Accessors(chain = true)
 public abstract class TagPrefixBuilder extends BuilderBase<TagPrefix> {
-    public final TagPrefix base;
+    public final KJSTagPrefix base;
 
     @Getter
     private final List<MaterialStack> secondaryMaterials = new ArrayList<>();
@@ -34,7 +34,7 @@ public abstract class TagPrefixBuilder extends BuilderBase<TagPrefix> {
         this.base = create(id.getPath());
     }
 
-    public abstract TagPrefix create(String id);
+    public abstract KJSTagPrefix create(String id);
 
     public TagPrefixBuilder langValue(String langValue) {
         base.langValue(langValue);
@@ -87,32 +87,32 @@ public abstract class TagPrefixBuilder extends BuilderBase<TagPrefix> {
     }
 
     public TagPrefixBuilder defaultTagPath(TagPrefix.LoaderType loader, String path) {
-        loader.apply(base, TagType.withDefaultFormatter(path));
+        base.defaultTagPath(loader, path);
         return this;
     }
 
     public TagPrefixBuilder prefixTagPath(TagPrefix.LoaderType loader, String path) {
-        loader.apply(base, TagType.withPrefixFormatter(path));
+        base.prefixTagPath(loader, path);
         return this;
     }
 
     public TagPrefixBuilder prefixOnlyTagPath(TagPrefix.LoaderType loader, String path) {
-        loader.apply(base, TagType.withPrefixOnlyFormatter(path));
+        base.prefixOnlyTagPath(loader, path);
         return this;
     }
 
     public TagPrefixBuilder unformattedTagPath(TagPrefix.LoaderType loader, String path) {
-        loader.apply(base, TagType.withNoFormatter(path));
+        base.unformattedTagPath(loader, path);
         return this;
     }
 
     public TagPrefixBuilder customTagPath(TagPrefix.LoaderType loader, String path, BiFunction<TagPrefix, Material, TagKey<Item>> formatter) {
-        loader.apply(base, TagType.withCustomFormatter(path, formatter));
+        base.customTagPath(loader, path, formatter);
         return this;
     }
 
     public TagPrefixBuilder miningToolTag(TagKey<Block> tag) {
-        base.miningToolTag().add(tag);
+        base.miningToolTag(tag);
         return this;
     }
 

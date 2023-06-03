@@ -35,10 +35,10 @@ public class CommonProxy {
         GTPlacerTypes.init();
         GTRecipeCapabilities.init();
         GTRecipeConditions.init();
-        TagPrefix.init();
         GTElements.init();
         MaterialIconSet.init();
         GTMaterials.init();
+        TagPrefix.init();
         GTSoundEntries.init();
         GTCovers.init();
         GTFluids.init();

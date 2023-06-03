@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.integration.kjs.builders.prefix;
 
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.integration.kjs.built.KJSTagPrefix;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import net.minecraft.resources.ResourceLocation;
@@ -11,7 +12,7 @@ import net.minecraft.world.level.material.MaterialColor;
 
 import java.util.function.Supplier;
 
-@Accessors(chain = true)
+@Accessors(fluent = true, chain = true)
 public class OreTagPrefixBuilder extends TagPrefixBuilder {
     @Setter
     public transient Supplier<BlockState> stateSupplier;
@@ -27,12 +28,11 @@ public class OreTagPrefixBuilder extends TagPrefixBuilder {
     }
 
     @Override
-    public TagPrefix create(String id) {
-        return TagPrefix.oreTagPrefix(id);
+    public KJSTagPrefix create(String id) {
+        return KJSTagPrefix.oreTagPrefix(id);
     }
     
     @Override
-
     public TagPrefix register() {
         return value = base.registerOre(stateSupplier, material, color, sound);
     }

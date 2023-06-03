@@ -52,7 +52,7 @@ import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.LoaderType.*;
 @Accessors(chain = true, fluent = true)
 public class TagPrefix {
 
-    public final static Map<String, TagPrefix> PREFIXES = new HashMap<>();
+    protected final static Map<String, TagPrefix> PREFIXES = new HashMap<>();
     public static final Map<TagPrefix, OreType> ORES = new HashMap<>();
 
     public static void init() {
@@ -650,6 +650,8 @@ public class TagPrefix {
         }
     }
 
+    public record OreType(Supplier<BlockState> stoneType, net.minecraft.world.level.material.Material material, MaterialColor color, SoundType sound) {}
+
     @Getter
     public final String name;
 
@@ -675,7 +677,7 @@ public class TagPrefix {
     @Setter
     private MaterialIconType materialIconType;
 
-    @Setter(AccessLevel.PROTECTED)
+    @Setter
     private Supplier<Table<TagPrefix, Material, ? extends Supplier<? extends ItemLike>>> itemTable;
 
     @Nullable @Getter
@@ -692,17 +694,15 @@ public class TagPrefix {
     private final List<MaterialStack> secondaryMaterials = new ArrayList<>();
 
     @Getter
-    private final Set<TagKey<Block>> miningToolTag = new HashSet<>();
+    protected final Set<TagKey<Block>> miningToolTag = new HashSet<>();
 
-    /** Public only for KJS TagPrefixBuilder */
     public TagPrefix(String name) {
         this.name = name;
         this.langValue = "%s " + FormattingUtil.toEnglishName(FormattingUtil.toLowerCaseUnder(name));
         PREFIXES.put(name, this);
     }
 
-    /** Public only for KJS TagPrefixBuilder */
-    public static TagPrefix oreTagPrefix(String name) {
+    protected static TagPrefix oreTagPrefix(String name) {
         return new TagPrefix(name)
                 .prefixTagPath(FORGE, "ores/%s/%s")
                 .defaultTagPath(FORGE, "ores/%s")
@@ -736,30 +736,27 @@ public class TagPrefix {
         return this;
     }
 
-    public record OreType(Supplier<BlockState> stoneType, net.minecraft.world.level.material.Material material, MaterialColor color, SoundType sound) {}
-
-
-    protected TagPrefix defaultTagPath(LoaderType loader, String path) {
+    public TagPrefix defaultTagPath(LoaderType loader, String path) {
         loader.apply(this, TagType.withDefaultFormatter(path));
         return this;
     }
 
-    protected TagPrefix prefixTagPath(LoaderType loader, String path) {
+    public TagPrefix prefixTagPath(LoaderType loader, String path) {
         loader.apply(this, TagType.withPrefixFormatter(path));
         return this;
     }
 
-    protected TagPrefix prefixOnlyTagPath(LoaderType loader, String path) {
+    public TagPrefix prefixOnlyTagPath(LoaderType loader, String path) {
         loader.apply(this, TagType.withPrefixOnlyFormatter(path));
         return this;
     }
 
-    protected TagPrefix unformattedTagPath(LoaderType loader, String path) {
+    public TagPrefix unformattedTagPath(LoaderType loader, String path) {
         loader.apply(this, TagType.withNoFormatter(path));
         return this;
     }
 
-    protected TagPrefix customTagPath(LoaderType loader, String path, BiFunction<TagPrefix, Material, TagKey<Item>> formatter) {
+    public TagPrefix customTagPath(LoaderType loader, String path, BiFunction<TagPrefix, Material, TagKey<Item>> formatter) {
         loader.apply(this, TagType.withCustomFormatter(path, formatter));
         return this;
     }
