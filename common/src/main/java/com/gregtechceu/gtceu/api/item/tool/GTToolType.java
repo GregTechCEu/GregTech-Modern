@@ -91,6 +91,6 @@ public enum GTToolType {
     }
 
     public String getUnlocalizedName() {
-        return "tool_type." + name;
+        return "item.gtceu.tool." + name;
     }
 }

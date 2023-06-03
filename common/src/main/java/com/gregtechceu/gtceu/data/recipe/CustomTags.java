@@ -43,7 +43,7 @@ public class CustomTags {
 
     // Platform-dependent tags
     public static final TagKey<Item> TAG_WOODEN_CHESTS = TagUtil.createPlatformItemTag("chests/wooden", "chests");
-
+    public static final TagKey<Item> TAG_BLUE_DYES = TagUtil.createPlatformItemTag("dyes/blue", "blue_dyes");
 
     public static final TagKey<Block> NEEDS_WOOD_TOOL = TagUtil.createPlatformUnprefixedTag(Registry.BLOCK, "forge:needs_wood_tool", "fabric:needs_tool_level_0");
     public static final TagKey<Block> NEEDS_GOLD_TOOL = TagUtil.createPlatformUnprefixedTag(Registry.BLOCK, "forge:needs_gold_tool", "fabric:needs_tool_level_0");

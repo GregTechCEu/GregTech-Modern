@@ -1,5 +1,7 @@
 package com.gregtechceu.gtceu.data.lang;
 
+import com.gregtechceu.gtceu.common.data.GTItems;
+import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 import com.tterrag.registrate.providers.RegistrateLangProvider;
 
 public class ToolLang {

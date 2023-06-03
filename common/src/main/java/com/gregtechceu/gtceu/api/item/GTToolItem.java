@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.item;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.MaterialToolTier;
@@ -11,6 +12,9 @@ import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import lombok.Getter;
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.DiggerItem;
@@ -54,10 +58,19 @@ public class GTToolItem extends DiggerItem implements IItemRendererProvider, IIt
     }
 
     public static int tintColor(ItemStack itemStack, int index) {
-        if (index == 1) {
-            if (itemStack.getItem() instanceof GTToolItem item) {
-                return item.getTier().material.getMaterialARGB();
-            }
+        if (itemStack.getItem() instanceof GTToolItem item) {
+            return switch (index) {
+                case 0 -> {
+                    if (item.toolType == GTToolType.CROWBAR) {
+                        if (itemStack.hasTag() && itemStack.getTag().contains("tint_color", Tag.TAG_INT)) {
+                            yield itemStack.getTag().getInt("tint_color");
+                        }
+                    }
+                    yield -1;
+                }
+                case 1 -> item.getTier().material.getMaterialARGB();
+                default -> -1;
+            };
         }
         return -1;
     }
@@ -86,7 +99,20 @@ public class GTToolItem extends DiggerItem implements IItemRendererProvider, IIt
     }
 
     @Override
-    public String getDescriptionId(ItemStack stack) {
-        return "%s %s".formatted(LocalizationUtils.format(getTier().material.getUnlocalizedName()), LocalizationUtils.format(toolType.getUnlocalizedName()));
+    public String getDescriptionId() {
+        return toolType.getUnlocalizedName();
+    }
+
+    @Override
+    public Component getDescription() {
+        //MutableComponent mat = Component.translatable(getTier().material.getUnlocalizedName());
+        //GTCEu.LOGGER.info(mat.getString());
+        //GTCEu.LOGGER.info(Component.translatable(toolType.getUnlocalizedName(), mat).getString());
+        return Component.translatable(toolType.getUnlocalizedName(), Component.translatable(getTier().material.getUnlocalizedName()));
+    }
+
+    @Override
+    public Component getName(ItemStack stack) {
+        return this.getDescription();
     }
 }

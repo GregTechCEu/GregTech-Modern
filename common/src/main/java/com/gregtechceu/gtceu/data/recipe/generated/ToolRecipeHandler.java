@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.tags.ItemTags;
@@ -122,23 +123,23 @@ public class ToolRecipeHandler {
                     'P', plate,
                     'S', stick);
 
-            //addToolRecipe(provider, material, GTToolType.AXE, false,
-            //        "PIh", "PS ", "fS ",
-            //        'P', plate,
-            //        'I', ingot,
-            //        'S', rod);
+            addToolRecipe(provider, material, GTToolType.AXE, false,
+                    "PIh", "PS ", "fS ",
+                    'P', plate,
+                    'I', ingot,
+                    'S', stick);
 
-            //addToolRecipe(provider, material, GTToolType.HOE, false,
-            //        "PIh", "fS ", " S ",
-            //        'P', plate,
-            //        'I', ingot,
-            //        'S', rod);
+            addToolRecipe(provider, material, GTToolType.HOE, false,
+                    "PIh", "fS ", " S ",
+                    'P', plate,
+                    'I', ingot,
+                    'S', stick);
 
-            //addToolRecipe(provider, material, GTToolType.PICKAXE, false,
-            //        "PII", "fSh", " S ",
-            //        'P', plate,
-            //        'I', ingot,
-            //        'S', rod);
+            addToolRecipe(provider, material, GTToolType.PICKAXE, false,
+                    "PII", "fSh", " S ",
+                    'P', plate,
+                    'I', ingot,
+                    'S', stick);
 
             addToolRecipe(provider, material, GTToolType.SCYTHE, false,
                     "PPI", "fSh", " S ",
@@ -146,15 +147,15 @@ public class ToolRecipeHandler {
                     'I', ingot,
                     'S', stick);
 
-            //addToolRecipe(provider, material, GTToolType.SHOVEL, false,
-            //        "fPh", " S ", " S ",
-            //        'P', plate,
-            //        'S', rod);
+            addToolRecipe(provider, material, GTToolType.SHOVEL, false,
+                    "fPh", " S ", " S ",
+                    'P', plate,
+                    'S', stick);
 
-            //addToolRecipe(provider, material, GTToolType.SWORD, false,
-            //        " P ", "fPh", " S ",
-            //        'P', plate,
-            //        'S', rod);
+            addToolRecipe(provider, material, GTToolType.SWORD, false,
+                    " P ", "fPh", " S ",
+                    'P', plate,
+                    'S', stick);
 
             addToolRecipe(provider, material, GTToolType.HARD_HAMMER, true,
                     "II ", "IIS", "II ",
@@ -202,7 +203,7 @@ public class ToolRecipeHandler {
             addToolRecipe(provider, material, GTToolType.CROWBAR, true,
                     "hDS", "DSD", "SDf",
                     'S', rod,
-                    'D', new UnificationEntry(TagPrefix.gem, GTMaterials.Lapis)); // todo blue dyes
+                    'D', CustomTags.TAG_BLUE_DYES); // todo blue dyes
                     //'D', new UnificationEntry(dye, MarkerMaterials.Color.Blue));
         }
     }
