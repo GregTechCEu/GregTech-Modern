@@ -123,6 +123,9 @@ dependencies {
     // Configuration
     modImplementation(fabric.configuration)
     include(fabric.configuration)
+
+    // Runtime only testing mods
+    modRuntimeOnly(fabric.worldStripper)
 }
 
 processResources {

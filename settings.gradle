@@ -35,6 +35,7 @@ dependencyResolutionManagement {
         def forgeConfigApiVersion = "4.2.11"
         def nightConfigVersion = "3.6.5"
         def configurationFabricFile = "4104224"
+        def worldStripperFabricFile = "3921629"
 
         // Forge
         def forgeVersion = "43.2.0"
@@ -44,6 +45,7 @@ dependencyResolutionManagement {
         def topForgeVersion = "1.19-6.2.0-6"
         def jadeForgeVersion = "8.8.1"
         def configurationForgeFile = "4519560"
+        def worldStripperForgeFile = "3921630"
 
         // Libs
         def quiltMappingsVersion = "21"  // https://lambdaurora.dev/tools/import_quilt.html
@@ -113,6 +115,9 @@ dependencyResolutionManagement {
 
             def configuration = version("configuration", configurationFabricFile)
             library("configuration", "curse.maven", "configuration-444699").versionRef(configuration)
+
+            def worldStripper = version("worldStripper", worldStripperFabricFile)
+            library("worldStripper", "curse.maven", "worldStripper-250603").versionRef(worldStripper)
         }
 
         forge {
@@ -153,6 +158,9 @@ dependencyResolutionManagement {
 
             def configuration = version("configuration", configurationForgeFile)
             library("configuration", "curse.maven", "configuration-444699").versionRef(configuration)
+
+            def worldStripper = version("worldStripper", worldStripperForgeFile)
+            library("worldStripper", "curse.maven", "worldStripper-250603").versionRef(worldStripper)
         }
 
         libs {

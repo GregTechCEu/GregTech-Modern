@@ -95,6 +95,11 @@ public class ConfigHolder {
         public boolean sandOresFall;
 
         @Configurable
+        @Configurable.Range(min = 0, max = 127)
+        @Configurable.Comment({"Radius that ore veins will check for existing ones.", "If one is found, the vein will not spawn.", "Default: 3"})
+        public int oreVeinScanRadius = 3;
+
+        @Configurable
         @Configurable.Comment({"Debug ore vein placement? (will print placed veins to server's debug.log)", "Default: false (no placement printout in debug.log)"})
         public boolean debugWorldgen;
     }

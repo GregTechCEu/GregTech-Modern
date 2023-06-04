@@ -5,9 +5,8 @@ import com.gregtechceu.gtceu.api.data.worldgen.GTOreFeatureConfiguration;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreFeatureEntry;
 import com.gregtechceu.gtceu.api.data.worldgen.IWorldGenLayer;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.mojang.serialization.Codec;
-import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
-import lombok.Getter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.server.level.ServerLevel;
@@ -19,12 +18,14 @@ import net.minecraft.world.level.levelgen.placement.PlacementContext;
 import net.minecraft.world.level.levelgen.placement.PlacementFilter;
 import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
 
+import java.util.concurrent.ConcurrentHashMap;
+
 public class VeinCountFilter extends PlacementFilter {
     public static final PlacementModifierType<VeinCountFilter> VEIN_COUNT_FILTER = GTRegistries.register(Registry.PLACEMENT_MODIFIERS, GTCEu.id("count"), () -> VeinCountFilter.CODEC);
 
     public static final VeinCountFilter INSTANCE = new VeinCountFilter();
     public static final Codec<VeinCountFilter> CODEC = Codec.unit(() -> INSTANCE);
-    private static final Object2ObjectLinkedOpenHashMap<Cell, GTOreFeatureEntry> GENERATED = new Object2ObjectLinkedOpenHashMap<>();
+    private static final ConcurrentHashMap<Cell, GTOreFeatureEntry> GENERATED = new ConcurrentHashMap<>();
 
     @Override
     protected boolean shouldPlace(PlacementContext context, RandomSource random, BlockPos pos) {
@@ -34,9 +35,10 @@ public class VeinCountFilter extends PlacementFilter {
             GTOreFeatureEntry entry = configuration.getEntry(context.getLevel(), context.getLevel().getBiome(pos), random);
             if (entry == null) return false;
             Cell startCell = new Cell(context.getLevel().getLevel(), entry.layer, chunkPos);
-            // Search for a radius of 5 chunks for other veins
-            for (int x = -2; x <= 2; ++x) {
-                for (int z = -2; z <= 2; ++z) {
+            // Search for a radius of (default 3) chunks for other veins, to avoid veins getting too close to eachother (they may originate in weird places)
+            int radius = ConfigHolder.INSTANCE.worldgen.oreVeinScanRadius;
+            for (int x = -radius; x <= radius; ++x) {
+                for (int z = -radius; z <= radius; ++z) {
                     ChunkPos chunkPos2 = new ChunkPos(chunkPos.x + x, chunkPos.z + z);
                     Cell mapCell = new Cell(context.getLevel().getLevel(), entry.layer, chunkPos2);
                     if (GENERATED.containsKey(mapCell)) {
@@ -66,19 +68,7 @@ public class VeinCountFilter extends PlacementFilter {
         return VEIN_COUNT_FILTER;
     }
 
-    public static class Cell {
-        @Getter
-        private final ServerLevel level;
-        @Getter
-        private final IWorldGenLayer layer;
-        @Getter
-        private final ChunkPos pos;
-
-        public Cell(ServerLevel level, IWorldGenLayer layer, ChunkPos pos) {
-            this.level = level;
-            this.layer = layer;
-            this.pos = pos;
-        }
+    public record Cell(ServerLevel level, IWorldGenLayer layer, ChunkPos pos) {
 
         @Override
         public boolean equals(Object o) {

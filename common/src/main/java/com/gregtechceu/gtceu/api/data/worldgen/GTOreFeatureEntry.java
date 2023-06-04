@@ -92,11 +92,9 @@ public class GTOreFeatureEntry {
         this.veinGenerator = veinGenerator;
 
         this.modifiers = List.of(
-                //new DimensionFilter(dimensionFilter),
                 VeinCountFilter.count(),
                 BiomeFilter.biome(),
                 this.count,
-                RarityFilter.onAverageOnceEvery(6),
                 InSquarePlacement.spread(),
                 this.range
         );
