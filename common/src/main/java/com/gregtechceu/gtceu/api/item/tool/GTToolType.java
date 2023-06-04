@@ -79,7 +79,7 @@ public enum GTToolType {
     }
 
     GTToolType(String name, String plural, float attackDamageModifier, float attackSpeedModifier, boolean isVanilla) {
-        this(name, plural, attackDamageModifier, attackSpeedModifier, GTCEu.id(String.format("item/tools/%s", name)), null, isVanilla);
+        this(name, plural, attackDamageModifier, attackSpeedModifier, null, isVanilla);
     }
 
     GTToolType(String name, String plural, float attackDamageModifier, float attackSpeedModifier) {

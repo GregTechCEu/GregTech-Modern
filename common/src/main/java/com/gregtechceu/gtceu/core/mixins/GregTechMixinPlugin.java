@@ -29,6 +29,8 @@ public class GregTechMixinPlugin implements IMixinConfigPlugin {
             return MixinPluginShared.isClassFound("dev.latvian.mods.kubejs.fabric.KubeJSFabric");
         } else if (mixinClassName.contains("com.gregtechceu.gtceu.forge.core.mixins.kjs")) {
             return MixinPluginShared.isClassFound("dev.latvian.mods.kubejs.forge.KubeJSForge");
+        } else if (mixinClassName.contains("com.gregtechceu.gtceu.core.mixins.top")) {
+            return MixinPluginShared.isClassFound("mcjty.theoneprobe.api.ITheOneProbe");
         }
         return true;
     }
