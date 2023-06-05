@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.data.chemical.Element;
+import com.gregtechceu.gtceu.api.data.chemical.fluid.FluidTypes;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
@@ -35,8 +36,6 @@ import dev.latvian.mods.kubejs.script.ScriptType;
 import dev.latvian.mods.kubejs.util.ClassFilter;
 import dev.latvian.mods.rhino.Wrapper;
 import dev.latvian.mods.rhino.util.wrap.TypeWrappers;
-import net.minecraft.core.Registry;
-import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.levelgen.structure.templatesystem.*;
 import net.minecraft.world.level.material.MaterialColor;
@@ -113,6 +112,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         event.add("ItemGenerationCondition", TagPrefix.Conditions.class);
         event.add("UnificationEntry", UnificationEntry.class);
         event.add("RecipeCapability", RecipeCapability.class);
+        event.add("GTFluidTypes", FluidTypes.class);
 
         event.add("GTValues", GTValues.class);
         event.add("GTMaterialIconSet", MaterialIconSet.class);

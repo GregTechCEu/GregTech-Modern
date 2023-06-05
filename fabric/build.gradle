@@ -115,7 +115,7 @@ dependencies {
     modCompileOnly fabric.theoneprobe
 
     // Jade
-    modCompileOnly fabric.jade
+    modImplementation fabric.jade
 
     // KJS
     modImplementation fabric.kubejs
@@ -125,6 +125,9 @@ dependencies {
     include(fabric.configuration)
 
     // Runtime only testing mods
+    modRuntimeOnly("me.shedaniel.cloth:cloth-config-fabric:8.2.88") {
+        exclude(group: "net.fabricmc.fabric-api")
+    }
     modRuntimeOnly(fabric.worldStripper)
 }
 

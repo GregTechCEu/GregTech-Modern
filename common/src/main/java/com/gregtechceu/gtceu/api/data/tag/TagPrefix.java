@@ -583,7 +583,6 @@ public class TagPrefix {
             .langValue("%s Frame Box")
             .materialAmount(GTValues.M * 2)
             .materialIconType(MaterialIconType.frameGt)
-            .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
             .miningToolTag(GTToolType.WRENCH.harvestTag)
             .unificationEnabled(true)
             .generationCondition(material -> material.hasFlag(MaterialFlags.GENERATE_FRAME));
