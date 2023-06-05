@@ -978,7 +978,7 @@ public class GTMachines {
         }
         AddonFinder.getAddons().forEach(IGTAddon::registerMachines);
         if (GTCEu.isKubeJSLoaded()) {
-            GTRegistryObjectBuilderTypes.registerFor(GTRegistries.MACHINES.getRegistryName());
+            GTRegistryObjectBuilderTypes.registerAndModifyFor(GTRegistries.MACHINES.getRegistryName());
         }
     }
 

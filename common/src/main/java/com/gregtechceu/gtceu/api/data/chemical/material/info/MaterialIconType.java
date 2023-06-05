@@ -5,6 +5,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.integration.kjs.GTRegistryObjectBuilderTypes;
 import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.utils.ResourceHelper;
 import net.minecraft.client.Minecraft;
@@ -101,6 +102,12 @@ public record MaterialIconType(String name) {
         this.name = CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, name);
         Preconditions.checkArgument(!ICON_TYPES.containsKey(this.name), "MaterialIconType " + this.name + " already registered!");
         ICON_TYPES.put(this.name, this);
+    }
+
+    public static void init() {
+        if (GTCEu.isKubeJSLoaded()) {
+            GTRegistryObjectBuilderTypes.registerFor(GTRegistryObjectBuilderTypes.MATERIAL_ICON_TYPE.registryKey);
+        }
     }
 
     @Nonnull

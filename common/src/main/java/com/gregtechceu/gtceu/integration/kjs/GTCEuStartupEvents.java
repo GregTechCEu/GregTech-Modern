@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.integration.kjs;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.integration.kjs.events.GTModificationEventJS;
 import com.gregtechceu.gtceu.integration.kjs.events.GTRegistryEventJS;
 import dev.latvian.mods.kubejs.event.EventGroup;
 import dev.latvian.mods.kubejs.event.EventHandler;
@@ -25,5 +26,6 @@ public interface GTCEuStartupEvents {
     }
 
     EventHandler REGISTRY = GROUP.startup("registry", () -> GTRegistryEventJS.class).extra(REGISTRY_EXTRA);
+    EventHandler MODIFICATION = GROUP.startup("modification", () -> GTModificationEventJS.class).extra(REGISTRY_EXTRA);
 
 }

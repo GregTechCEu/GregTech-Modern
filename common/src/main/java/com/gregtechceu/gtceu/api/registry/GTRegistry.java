@@ -95,6 +95,10 @@ public abstract class GTRegistry<K, V> implements Iterable<V> {
         return registry.entrySet();
     }
 
+    public Map<K, V> registry() {
+        return registry;
+    }
+
     @Nullable
     public V get(K key) {
         return registry.get(key);

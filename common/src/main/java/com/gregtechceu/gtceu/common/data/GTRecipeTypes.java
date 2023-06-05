@@ -512,7 +512,7 @@ public class GTRecipeTypes {
         }
         AddonFinder.getAddons().forEach(IGTAddon::registerRecipeTypes);
         if (GTCEu.isKubeJSLoaded()) {
-            GTRegistryObjectBuilderTypes.registerFor(GTRegistries.RECIPE_TYPES.getRegistryName());
+            GTRegistryObjectBuilderTypes.registerAndModifyFor(GTRegistries.RECIPE_TYPES.getRegistryName());
         }
         GTRegistries.register(Registry.RECIPE_SERIALIZER, GTCEu.id("gt_recipe_serializer"), GTRecipeSerializer.SERIALIZER);
         GTRegistries.register(Registry.RECIPE_SERIALIZER, GTCEu.id("facade_cover_serializer"), FacadeCoverRecipe.SERIALIZER);

@@ -45,8 +45,4 @@ public final class GTRegistries {
         throw new AssertionError();
     }
 
-    public static <V, T extends V> Holder<T> registerHolder(Registry<V> registry, ResourceLocation name, T value) {
-        register(registry, name, value);
-        return (Holder<T>) registry.getOrCreateHolder(ResourceKey.create(registry.key(), name)).getOrThrow(true, GTCEu.LOGGER::error);
-    }
 }

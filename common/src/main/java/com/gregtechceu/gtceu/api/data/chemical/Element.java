@@ -1,6 +1,8 @@
 package com.gregtechceu.gtceu.api.data.chemical;
 
 
+import lombok.Setter;
+
 /**
  * This is some kind of Periodic Table, which can be used to determine Properties of the Materials.
  * @param protons         Amount of Protons
@@ -10,7 +12,7 @@ package com.gregtechceu.gtceu.api.data.chemical;
  * @param name            Name of the Element
  * @param symbol          Symbol of the Element
  */
-public record Element(long protons, long neutrons, long halfLifeSeconds, String decayTo, String name, String symbol, boolean isIsotope) {
+public record Element(@Setter long protons, @Setter long neutrons, @Setter long halfLifeSeconds, @Setter String decayTo, @Setter String name, @Setter String symbol, @Setter boolean isIsotope) {
     public long mass() {
         return protons + neutrons;
     }

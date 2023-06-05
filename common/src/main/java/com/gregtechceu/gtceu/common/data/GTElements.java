@@ -153,7 +153,7 @@ public class GTElements {
     public static void init() {
         AddonFinder.getAddons().forEach(IGTAddon::registerElements);
         if (GTCEu.isKubeJSLoaded()) {
-            GTRegistryObjectBuilderTypes.registerFor(GTRegistries.ELEMENTS.getRegistryName());
+            GTRegistryObjectBuilderTypes.registerAndModifyFor(GTRegistries.ELEMENTS.getRegistryName());
         }
     }
 

@@ -14,7 +14,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.GTRegistry;
 import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
-import com.gregtechceu.gtceu.integration.kjs.built.KJSTagPrefix;
+import com.gregtechceu.gtceu.integration.kjs.events.GTModificationEventJS;
 import com.gregtechceu.gtceu.integration.kjs.events.GTRegistryEventJS;
 import dev.latvian.mods.kubejs.CommonProperties;
 import dev.latvian.mods.kubejs.util.ConsoleJS;
@@ -29,8 +29,7 @@ public class GTRegistryObjectBuilderTypes<K, V> {
         BuilderBase<? extends T> createBuilder(ResourceLocation id, Object... args);
 
     }
-    public record BuilderType<T>(String type, Class<? extends BuilderBase<? extends T>> builderClass, BuilderFactory<T> factory) {
-    }
+    public record BuilderType<T>(String type, Class<? extends BuilderBase<? extends T>> builderClass, BuilderFactory<T> factory) { }
 
     public static final Map<ResourceLocation, GTRegistryObjectBuilderTypes<?, ?>> MAP = new LinkedHashMap<>();
     public static final Set<ResourceLocation> EXTRA_IDS = new HashSet<>();
@@ -42,10 +41,10 @@ public class GTRegistryObjectBuilderTypes<K, V> {
     public static final GTRegistryObjectBuilderTypes<String, Material> MATERIAL = add(GTRegistries.MATERIALS, Material.class);
     public static final GTRegistryObjectBuilderTypes<ResourceLocation, GTRecipeType> RECIPE_TYPE = add(GTRegistries.RECIPE_TYPES, GTRecipeType.class);
     public static final GTRegistryObjectBuilderTypes<ResourceLocation, MachineDefinition> MACHINE = add(GTRegistries.MACHINES, MachineDefinition.class);
-    public static final GTRegistryObjectBuilderTypes<String, MaterialIconSet> MATERIAL_ICON_SET = add(GTCEu.id("material_icon_set"), MaterialIconSet.class);
-    public static final GTRegistryObjectBuilderTypes<String, MaterialIconType> MATERIAL_ICON_TYPE = add(GTCEu.id("material_icon_type"), MaterialIconType.class);
-    public static final GTRegistryObjectBuilderTypes<String, IWorldGenLayer> WORLD_GEN_LAYER = add(GTCEu.id("world_gen_layer"), SimpleWorldGenLayer.class);
-    public static final GTRegistryObjectBuilderTypes<String, TagPrefix> TAG_PREFIX = add(GTCEu.id("tag_prefix"), TagPrefix.class);
+    public static final GTRegistryObjectBuilderTypes<String, MaterialIconSet> MATERIAL_ICON_SET = add(GTCEu.id("material_icon_set"), MaterialIconSet.ICON_SETS, MaterialIconSet.class);
+    public static final GTRegistryObjectBuilderTypes<String, MaterialIconType> MATERIAL_ICON_TYPE = add(GTCEu.id("material_icon_type"), MaterialIconType.ICON_TYPES, MaterialIconType.class);
+    public static final GTRegistryObjectBuilderTypes<String, IWorldGenLayer> WORLD_GEN_LAYER = add(GTCEu.id("world_gen_layer"), WorldGeneratorUtils.WORLD_GEN_LAYERS, SimpleWorldGenLayer.class);
+    public static final GTRegistryObjectBuilderTypes<String, TagPrefix> TAG_PREFIX = add(GTCEu.id("tag_prefix"), TagPrefix.PREFIXES, TagPrefix.class);
     /*public static final GTRegistryObjectBuilderTypes<String, RecipeCapability<?>> RECIPE_CAPABILITY = add(GTRegistries.RECIPE_CAPABILITIES, RecipeCapability.class);
     public static final GTRegistryObjectBuilderTypes<String, Class<? extends RecipeCondition>> RECIPE_CONDITION = add(GTRegistries.RECIPE_CONDITIONS, RecipeCondition.class);
     public static final GTRegistryObjectBuilderTypes<ResourceLocation, SoundEntry> SOUND = add(GTRegistries.SOUNDS, SoundEntry.class);*/
@@ -54,21 +53,23 @@ public class GTRegistryObjectBuilderTypes<K, V> {
     public final Class<V> objectBaseClass;
     public final Map<String, BuilderType<V>> types;
     public final Map<ResourceLocation, BuilderBase<? extends V>> objects;
+    public final Map<K, V> registryValues;
     private BuilderType<V> defaultType;
     public BuilderBase<? extends V> current;
 
-    private GTRegistryObjectBuilderTypes(ResourceLocation key, Class<V> baseClass) {
+    private GTRegistryObjectBuilderTypes(ResourceLocation key, Map<K, V> registryValues, Class<V> baseClass) {
         registryKey = key;
         objectBaseClass = baseClass;
         types = new LinkedHashMap<>();
         objects = new LinkedHashMap<>();
+        this.registryValues = registryValues;
         current = null;
     }
 
 
     public static <K, V> GTRegistryObjectBuilderTypes<K, V> add(GTRegistry<K, V> key, Class<?> baseClass) {
         ResourceLocation id = key.getRegistryName();
-        var types = new GTRegistryObjectBuilderTypes<K, V>(id, UtilsJS.cast(baseClass));
+        var types = new GTRegistryObjectBuilderTypes<K, V>(id, key.registry(), UtilsJS.cast(baseClass));
 
         if (MAP.put(id, types) != null) {
             throw new IllegalStateException("Registry with id '" + id + "' already exists!");
@@ -79,8 +80,8 @@ public class GTRegistryObjectBuilderTypes<K, V> {
         return types;
     }
 
-    public static <K, V> GTRegistryObjectBuilderTypes<K, V> add(ResourceLocation id, Class<?> baseClass) {
-        var types = new GTRegistryObjectBuilderTypes<K, V>(id, UtilsJS.cast(baseClass));
+    public static <K, V> GTRegistryObjectBuilderTypes<K, V> add(ResourceLocation id, Map<K, V> registryValues, Class<?> baseClass) {
+        var types = new GTRegistryObjectBuilderTypes<K, V>(id, registryValues, UtilsJS.cast(baseClass));
 
         if (MAP.put(id, types) != null || !EXTRA_IDS.add(id)) {
             throw new IllegalStateException("Registry with id '" + id + "' already exists!");
@@ -131,17 +132,32 @@ public class GTRegistryObjectBuilderTypes<K, V> {
         return defaultType;
     }
 
-    public void postEvent() {
+    public void postRegistryEvent() {
         GTCEuStartupEvents.REGISTRY.post(registryKey, new GTRegistryEventJS<>(this));
+    }
+
+    public static void registerAndModifyFor(ResourceLocation registry) {
+        registerFor(registry);
+        modifyFor(registry);
     }
 
     public static void registerFor(ResourceLocation registry) {
         for (var type : POST_AT.getOrDefault(registry, List.of())) {
-            type.postEvent();
+            type.postRegistryEvent();
 
             for (var builder : type.objects.values()) {
                 builder.register();
             }
+        }
+    }
+
+    public void postModificationEvent() {
+        GTCEuStartupEvents.MODIFICATION.post(registryKey, new GTModificationEventJS<>(this));
+    }
+
+    public static void modifyFor(ResourceLocation registry) {
+        for (var type : POST_AT.getOrDefault(registry, List.of())) {
+            type.postModificationEvent();
         }
     }
 }

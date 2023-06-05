@@ -52,13 +52,13 @@ import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.LoaderType.*;
 @Accessors(chain = true, fluent = true)
 public class TagPrefix {
 
-    protected final static Map<String, TagPrefix> PREFIXES = new HashMap<>();
+    public final static Map<String, TagPrefix> PREFIXES = new HashMap<>();
     public static final Map<TagPrefix, OreType> ORES = new HashMap<>();
 
     public static void init() {
         AddonFinder.getAddons().forEach(IGTAddon::registerTagPrefixes);
         if (GTCEu.isKubeJSLoaded()) {
-            GTRegistryObjectBuilderTypes.registerFor(GTRegistryObjectBuilderTypes.TAG_PREFIX.registryKey);
+            GTRegistryObjectBuilderTypes.registerAndModifyFor(GTRegistryObjectBuilderTypes.TAG_PREFIX.registryKey);
         }
     }
 
