@@ -1,9 +1,8 @@
 package com.gregtechceu.gtceu.common;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.addon.AddonFinder;
-import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
+import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.worldgen.WorldGenLayers;
 import com.gregtechceu.gtceu.api.gui.CoverUIFactory;
@@ -13,7 +12,7 @@ import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.common.data.materials.GTFoods;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.GregTechDatagen;
-import com.gregtechceu.gtceu.integration.kjs.GTRegistryObjectBuilderTypes;
+import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
 import com.lowdragmc.lowdraglib.gui.factory.UIFactory;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 
@@ -37,6 +36,7 @@ public class CommonProxy {
         GTRecipeConditions.init();
         GTElements.init();
         MaterialIconSet.init();
+        MaterialIconType.init();
         GTMaterials.init();
         TagPrefix.init();
         GTSoundEntries.init();

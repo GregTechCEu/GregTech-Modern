@@ -15,7 +15,9 @@ import net.minecraft.data.loot.BlockLoot;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagEntry;
+import net.minecraft.tags.TagKey;
 import net.minecraft.tags.TagLoader;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.loot.LootTable;
 
@@ -26,6 +28,7 @@ import java.util.Map;
 public class MixinHelpers {
 
     public static void addMaterialBlockTags(Map<ResourceLocation, List<TagLoader.EntryWithSource>> tagMap, TagPrefix prefix, Map<Material, ? extends BlockEntry<? extends Block>> map) {
+        // Add tool tags
         if (!prefix.miningToolTag().isEmpty()) {
             map.forEach((material, block) -> {
                 tagMap.computeIfAbsent(CustomTags.TOOL_TIERS[material.getBlockHarvestLevel()].location(), path -> new ArrayList<>())
@@ -44,6 +47,13 @@ public class MixinHelpers {
                 }
             });
         }
+        // Copy item tags to blocks
+        map.forEach((material, block) -> {
+            for (TagKey<Item> itemTag : prefix.getItemTags(material)) {
+                tagMap.computeIfAbsent(itemTag.location(), path -> new ArrayList<>())
+                        .add(new TagLoader.EntryWithSource(TagEntry.element(block.getId()), GTValues.CUSTOM_TAG_SOURCE));
+            }
+        });
     }
 
     public static void addMaterialBlockLootTables(ImmutableMap.Builder<ResourceLocation, LootTable> lootTables, TagPrefix prefix, Map<Material, ? extends BlockEntry<? extends Block>> map) {
