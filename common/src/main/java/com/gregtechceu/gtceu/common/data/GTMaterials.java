@@ -304,7 +304,7 @@ public class GTMaterials {
       
         AddonFinder.getAddons().forEach(IGTAddon::registerMaterials);
         if (GTCEu.isKubeJSLoaded()) {
-            GTRegistryObjectBuilderTypes.registerAndModifyFor(GTRegistries.MATERIALS.getRegistryName());
+            GTRegistryObjectBuilderTypes.registerFor(GTRegistries.MATERIALS.getRegistryName());
         }
     }
 

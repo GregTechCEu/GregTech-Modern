@@ -110,6 +110,10 @@ public record MaterialIconType(String name) {
         }
     }
 
+    public static MaterialIconType getByName(String name) {
+        return ICON_TYPES.get(name);
+    }
+
     @Nonnull
     public ResourceLocation getBlockTexturePath(@Nonnull MaterialIconSet materialIconSet, boolean doReadCache) {
         if (doReadCache) {

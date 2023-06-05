@@ -25,7 +25,6 @@ import com.gregtechceu.gtceu.integration.kjs.GTRegistryObjectBuilderTypes;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -58,8 +57,12 @@ public class TagPrefix {
     public static void init() {
         AddonFinder.getAddons().forEach(IGTAddon::registerTagPrefixes);
         if (GTCEu.isKubeJSLoaded()) {
-            GTRegistryObjectBuilderTypes.registerAndModifyFor(GTRegistryObjectBuilderTypes.TAG_PREFIX.registryKey);
+            GTRegistryObjectBuilderTypes.registerFor(GTRegistryObjectBuilderTypes.TAG_PREFIX.registryKey);
         }
+    }
+
+    public static TagPrefix get(String name) {
+        return PREFIXES.get(name);
     }
 
     public static final TagPrefix ore = oreTagPrefix("stone")

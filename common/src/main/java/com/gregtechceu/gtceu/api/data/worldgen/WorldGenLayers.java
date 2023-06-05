@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.WorldGeneratorUtils;
 import com.gregtechceu.gtceu.common.data.GTOres;
 import com.gregtechceu.gtceu.integration.kjs.GTRegistryObjectBuilderTypes;
-import com.mojang.serialization.Codec;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.data.worldgen.features.OreFeatures;
@@ -33,8 +32,12 @@ public enum WorldGenLayers implements IWorldGenLayer, StringRepresentable {
     public static void registerAll() {
         AddonFinder.getAddons().forEach(IGTAddon::registerWorldgenLayers);
         if (GTCEu.isKubeJSLoaded()) {
-            GTRegistryObjectBuilderTypes.registerAndModifyFor(GTRegistryObjectBuilderTypes.WORLD_GEN_LAYER.registryKey);
+            GTRegistryObjectBuilderTypes.registerFor(GTRegistryObjectBuilderTypes.WORLD_GEN_LAYER.registryKey);
         }
+    }
+
+    public static IWorldGenLayer getByName(String name) {
+        return WorldGeneratorUtils.WORLD_GEN_LAYERS.get(name);
     }
 
     @Override
