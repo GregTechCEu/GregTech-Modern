@@ -357,18 +357,17 @@ public class LangHandler {
         provider.add("cover.advanced_item_detector.max", "Maximum Items:");
         provider.add("cover.advanced_item_detector.min", "Minimum Items:");
 
+        replace(provider, "item.gtceu.bucket", "%s Bucket");
         replace(provider, GTMaterials.FullersEarth.getUnlocalizedName(), "Fuller's Earth");
         replace(provider, GTMaterials.Cooperite.getUnlocalizedName(), "Sheldonite"); //greg's humor is now on 1.19...
         replace(provider, GTMaterials.HSSG.getUnlocalizedName(), "HSS-G");
-        replace(provider, "fluid.gtceu.hssg", "HSS-G");
-        replace(provider, "item.gtceu.hssg_bucket", "HSS-G Bucket");
         replace(provider, GTMaterials.HSSE.getUnlocalizedName(), "HSS-E");
-        replace(provider, "fluid.gtceu.hsse", "HSS-E");
-        replace(provider, "item.gtceu.hsse_bucket", "HSS-E Bucket");
         replace(provider, GTMaterials.HSSS.getUnlocalizedName(), "HSS-S");
-        replace(provider, "fluid.gtceu.hsss", "HSS-S");
-        replace(provider, "item.gtceu.hsss_bucket", "HSS-S Bucket");
         replace(provider, GTMaterials.UUMatter.getUnlocalizedName(), "UU-Matter");
+        replace(provider, GTMaterials.TungstenSteel.getUnlocalizedName(), "Tungstensteel");
+        replace(provider, GTMaterials.OilHeavy.getUnlocalizedName(), "Heavy Oil");
+        replace(provider, GTMaterials.OilLight.getUnlocalizedName(), "Light Oil");
+        replace(provider, GTMaterials.RawOil.getUnlocalizedName(), "Raw Oil");
 
         // TODO all individual material item overrides do not work
         provider.add("item.nether_quartz.oreNetherrack", "Nether Quartz Ore");

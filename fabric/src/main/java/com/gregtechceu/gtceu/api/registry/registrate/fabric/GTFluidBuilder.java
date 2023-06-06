@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.registry.registrate.fabric;
 
 import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.item.fabric.GTBucketItem;
 import com.gregtechceu.gtceu.api.registry.registrate.IGTFluidBuilder;
 import com.tterrag.registrate.AbstractRegistrate;
@@ -28,6 +29,7 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributeHandler;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -76,6 +78,7 @@ public class GTFluidBuilder<T extends SimpleFlowableFluid, P> extends AbstractBu
     public int color = -1;
 
     private final String sourceName, bucketName;
+    private final Material material;
 
     private final ResourceLocation stillTexture, flowingTexture;
     private final NonNullFunction<SimpleFlowableFluid.Properties, T> fluidFactory;
@@ -94,10 +97,11 @@ public class GTFluidBuilder<T extends SimpleFlowableFluid, P> extends AbstractBu
     private NonNullSupplier<? extends SimpleFlowableFluid> source;
     private final List<TagKey<Fluid>> tags = new ArrayList<>();
 
-    public GTFluidBuilder(AbstractRegistrate<?> owner, P parent, String name, BuilderCallback callback, ResourceLocation stillTexture, ResourceLocation flowingTexture, NonNullFunction<SimpleFlowableFluid.Properties, T> fluidFactory) {
+    public GTFluidBuilder(AbstractRegistrate<?> owner, P parent, Material material, String name, BuilderCallback callback, ResourceLocation stillTexture, ResourceLocation flowingTexture, NonNullFunction<SimpleFlowableFluid.Properties, T> fluidFactory) {
         super(owner, parent, "flowing_" + name, callback, Registry.FLUID_REGISTRY);
         this.sourceName = name;
         this.bucketName = name + "_bucket";
+        this.material = material;
         this.stillTexture = stillTexture;
         this.flowingTexture = flowingTexture;
         this.fluidFactory = fluidFactory;
@@ -105,7 +109,8 @@ public class GTFluidBuilder<T extends SimpleFlowableFluid, P> extends AbstractBu
 
             @Override
             public Component getName(FluidVariant fluidVariant) {
-                return Component.translatable("fluid." + Registry.FLUID.getKey(fluidVariant.getFluid()).toLanguageKey());
+                String key = "fluid." + Registry.FLUID.getKey(fluidVariant.getFluid()).toLanguageKey();
+                return I18n.exists(key) ? Component.translatable(key) : material.getLocalizedName();
             }
 
             @Override
@@ -142,7 +147,7 @@ public class GTFluidBuilder<T extends SimpleFlowableFluid, P> extends AbstractBu
     }
 
     public GTFluidBuilder<T, P> defaultLang() {
-        return lang(RegistrateLangProvider.toEnglishName(sourceName));
+        return lang(material.getUnlocalizedName());
     }
 
     public GTFluidBuilder<T, P> lang(String name) {
@@ -206,6 +211,7 @@ public class GTFluidBuilder<T extends SimpleFlowableFluid, P> extends AbstractBu
         this.fluidProperties.andThen(p -> p.block(() -> getOwner().<Block, LiquidBlock>get(getName(), Registry.BLOCK_REGISTRY).get()));
         return getOwner().<B, GTFluidBuilder<T, P>>block(this, sourceName, p -> factory.apply(supplier, p))
                 .properties(p -> BlockBehaviour.Properties.copy(Blocks.WATER).noLootTable())
+                .setData(ProviderType.LANG, NonNullBiConsumer.noop())
                 // fabric: luminance is fluid-sensitive, can't do this easily.
                 // default impl will try to get it from the fluid's block, thus causing a loop.
                 // if you want to do this, override getLuminance in FluidVariantAttributeHandler
@@ -247,9 +253,10 @@ public class GTFluidBuilder<T extends SimpleFlowableFluid, P> extends AbstractBu
             throw new IllegalStateException("Cannot create a bucket before creating a source block");
         }
         this.fluidProperties = p -> p.bucket(() -> getOwner().get(bucketName, Registry.ITEM_REGISTRY).get());
-        return getOwner().item(this, bucketName, p -> new GTBucketItem(this.source, p))
+        return getOwner().item(this, bucketName, p -> new GTBucketItem(this.source, p, this.material))
                 .properties(p -> p.craftRemainder(Items.BUCKET).stacksTo(1))
                 .color(() -> () -> GTBucketItem::color)
+                .setData(ProviderType.LANG, NonNullBiConsumer.noop())
                 .model(NonNullBiConsumer.noop());
     }
 

@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.registry.registrate.forge;
 
 import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.item.forge.GTBucketItem;
 import com.gregtechceu.gtceu.api.registry.registrate.IGTFluidBuilder;
 import com.tterrag.registrate.AbstractRegistrate;
@@ -66,10 +67,11 @@ public class GTFluidBuilder<T extends ForgeFlowingFluid, P> extends AbstractBuil
 
     @FunctionalInterface
     public interface FluidTypeFactory {
-        FluidType create(ResourceLocation stillId, FluidType.Properties properties, ResourceLocation stillTexture, ResourceLocation flowingTexture, int color);
+        FluidType create(Material material, ResourceLocation stillId, FluidType.Properties properties, ResourceLocation stillTexture, ResourceLocation flowingTexture, int color);
     }
 
     private final String sourceName, bucketName;
+    private final Material material;
 
     private final ResourceLocation stillTexture, flowingTexture;
     private final NonNullFunction<ForgeFlowingFluid.Properties, T> fluidFactory;
@@ -92,14 +94,15 @@ public class GTFluidBuilder<T extends ForgeFlowingFluid, P> extends AbstractBuil
     private NonNullSupplier<? extends ForgeFlowingFluid> source;
     private final List<TagKey<Fluid>> tags = new ArrayList<>();
 
-    public GTFluidBuilder(AbstractRegistrate<?> owner, P parent, String name, BuilderCallback callback, ResourceLocation stillTexture, ResourceLocation flowingTexture, GTFluidBuilder.FluidTypeFactory typeFactory, NonNullFunction<ForgeFlowingFluid.Properties, T> fluidFactory) {
+    public GTFluidBuilder(AbstractRegistrate<?> owner, P parent, Material material, String name, BuilderCallback callback, ResourceLocation stillTexture, ResourceLocation flowingTexture, GTFluidBuilder.FluidTypeFactory typeFactory, NonNullFunction<ForgeFlowingFluid.Properties, T> fluidFactory) {
         super(owner, parent, "flowing_" + name, callback, ForgeRegistries.Keys.FLUIDS);
         this.sourceName = name;
         this.bucketName = name + "_bucket";
+        this.material = material;
         this.stillTexture = stillTexture;
         this.flowingTexture = flowingTexture;
         this.fluidFactory = fluidFactory;
-        this.fluidType = NonNullSupplier.lazy(() -> typeFactory.create(new ResourceLocation(owner.getModid(), name), makeTypeProperties(), this.stillTexture, this.flowingTexture, this.color));
+        this.fluidType = NonNullSupplier.lazy(() -> typeFactory.create(material, new ResourceLocation(owner.getModid(), name), makeTypeProperties(), this.stillTexture, this.flowingTexture, this.color));
         this.registerType = true;
         defaultBucket();
 
@@ -115,7 +118,7 @@ public class GTFluidBuilder<T extends ForgeFlowingFluid, P> extends AbstractBuil
     }
 
     public GTFluidBuilder<T, P> defaultLang() {
-        return lang(f -> f.getFluidType().getDescriptionId(), RegistrateLangProvider.toEnglishName(sourceName));
+        return lang(f -> f.getFluidType().getDescriptionId(), material.getUnlocalizedName());
     }
 
     public GTFluidBuilder<T, P> lang(String name) {
@@ -184,6 +187,7 @@ public class GTFluidBuilder<T extends ForgeFlowingFluid, P> extends AbstractBuil
         return getOwner().<B, GTFluidBuilder<T, P>>block(this, sourceName, p -> factory.apply(supplier, p))
                 .properties(p -> BlockBehaviour.Properties.copy(Blocks.WATER).noLootTable())
                 .properties(p -> p.lightLevel(blockState -> fluidType.get().getLightLevel()))
+                .setData(ProviderType.LANG, NonNullBiConsumer.noop())
                 .blockstate((ctx, prov) -> prov.simpleBlock(ctx.getEntry(), prov.models().getBuilder(sourceName)
                         .texture("particle", stillTexture)));
     }
@@ -215,9 +219,10 @@ public class GTFluidBuilder<T extends ForgeFlowingFluid, P> extends AbstractBuil
         }
 
         this.fluidProperties.andThen(p -> p.bucket(() -> getOwner().get(bucketName, ForgeRegistries.Keys.ITEMS).get()));
-        return getOwner().item(this, bucketName, p -> new GTBucketItem(source, p, density < 0))
+        return getOwner().item(this, bucketName, p -> new GTBucketItem(source, p, density < 0, material))
                 .properties(p -> p.craftRemainder(Items.BUCKET).stacksTo(1))
                 .color(() -> () -> GTBucketItem::color)
+                .setData(ProviderType.LANG, NonNullBiConsumer.noop())
                 .model(NonNullBiConsumer.noop());
     }
 
@@ -257,10 +262,11 @@ public class GTFluidBuilder<T extends ForgeFlowingFluid, P> extends AbstractBuil
         // TODO improve this?
         if (block.isPresent()) {
             properties.descriptionId(block.get().getDescriptionId());
-            setData(ProviderType.LANG, NonNullBiConsumer.noop());
         } else {
-            properties.descriptionId(Util.makeDescriptionId("fluid", new ResourceLocation(getOwner().getModid(), sourceName)));
+            // Fallback to material's name
+            properties.descriptionId(material.getUnlocalizedName());
         }
+        setData(ProviderType.LANG, NonNullBiConsumer.noop());
 
         return properties.temperature(temperature).density(density).viscosity(viscosity).lightLevel(luminance);
     }
@@ -330,11 +336,16 @@ public class GTFluidBuilder<T extends ForgeFlowingFluid, P> extends AbstractBuil
         return new FluidEntry<>(getOwner(), delegate);
     }
 
-    public static FluidType defaultFluidType(ResourceLocation still, FluidType.Properties properties, ResourceLocation stillTexture, ResourceLocation flowingTexture, int color) {
+    public static FluidType defaultFluidType(Material material, ResourceLocation still, FluidType.Properties properties, ResourceLocation stillTexture, ResourceLocation flowingTexture, int color) {
         return new FluidType(properties) {
             @Override
             public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer) {
                 consumer.accept(new GTClientFluidTypeExtensions(still, stillTexture, flowingTexture, color));
+            }
+
+            @Override
+            public String getDescriptionId() {
+                return material.getUnlocalizedName();
             }
         };
     }
