@@ -54,7 +54,6 @@ public class OreDataLoader extends SimpleJsonResourceReloadListener {
     }
 
     public static GTOreFeatureEntry fromJson(ResourceLocation id, JsonObject json) {
-        if (!json.has("id")) json.addProperty("id", id.toString());
         return GTOreFeatureEntry.FULL_CODEC.decode(JsonOps.INSTANCE, json).map(Pair::getFirst).getOrThrow(false, LOGGER::error);
     }
 }

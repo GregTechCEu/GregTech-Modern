@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.data.worldgen;
 
+import com.google.common.collect.HashBiMap;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.BiomeFilter;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinCountFilter;
@@ -15,6 +16,7 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryCodecs;
+import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.data.worldgen.features.OreFeatures;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -40,69 +42,73 @@ import java.util.stream.Collectors;
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class GTOreFeatureEntry {
-    public static final Map<ResourceLocation, GTOreFeatureEntry> ALL = new HashMap<>();
+    public static final HashBiMap<ResourceLocation, GTOreFeatureEntry> ALL = HashBiMap.create();
 
 
-    public static final Codec<GTOreFeatureEntry> CODEC = ResourceLocation.CODEC.comapFlatMap(GTOreFeatureEntry::read, (entry) -> entry.id);
+    public static final Codec<GTOreFeatureEntry> CODEC = ResourceLocation.CODEC
+            .flatXmap(rl -> Optional.ofNullable(ALL.get(rl))
+                            .map(DataResult::success)
+                            .orElseGet(() -> DataResult.error("No GTOreFeatureEntry with id " + rl + " registered")),
+                    obj -> Optional.ofNullable(ALL.inverse().get(obj))
+                            .map(DataResult::success)
+                            .orElseGet(() -> DataResult.error("GTOreFeatureEntry " + obj + " not registered")));
     public static final Codec<GTOreFeatureEntry> FULL_CODEC = RecordCodecBuilder.create(
             instance -> instance.group(
-                    ResourceLocation.CODEC.fieldOf("id").forGetter(ft -> ft.id),
                     Codec.INT.fieldOf("cluster_size").forGetter(ft -> ft.clusterSize),
                     Codec.floatRange(0.0F, 1.0F).fieldOf("density").forGetter(ft -> ft.density),
                     Codec.INT.fieldOf("weight").forGetter(ft -> ft.weight),
                     IWorldGenLayer.CODEC.fieldOf("layer").forGetter(ft -> ft.layer),
                     RegistryCodecs.homogeneousList(Registry.DIMENSION_TYPE_REGISTRY).fieldOf("dimension_filter").forGetter(ft -> ft.dimensionFilter),
-                    CountPlacement.CODEC.fieldOf("count").forGetter(ft -> ft.count),
                     HeightRangePlacement.CODEC.fieldOf("height_range").forGetter(ft -> ft.range),
                     Codec.floatRange(0.0F, 1.0F).fieldOf("discard_chance_on_air_exposure").forGetter(ft -> ft.discardChanceOnAirExposure),
-                    RegistryCodecs.homogeneousList(Registry.BIOME_REGISTRY).fieldOf("biomes").forGetter(ext -> ext.biomes.left().get()),
+                    RegistryCodecs.homogeneousList(Registry.BIOME_REGISTRY).fieldOf("biomes").forGetter(ext -> ext.biomes),
                     BiomeWeightModifier.CODEC.optionalFieldOf("weight_modifier", null).forGetter(ext -> ext.biomeWeightModifier),
                     VeinGenerator.DIRECT_CODEC.fieldOf("generator").forGetter(ft -> ft.veinGenerator)
             ).apply(instance, GTOreFeatureEntry::new)
     );
 
-    public final ResourceLocation id;
     public final int clusterSize;
     public final float density;
     public final int weight;
     public final IWorldGenLayer layer;
     public final HolderSet<DimensionType> dimensionFilter;
-    public final CountPlacement count;
     public final HeightRangePlacement range;
     public final float discardChanceOnAirExposure;
-    public Either<HolderSet<Biome>, TagKey<Biome>> biomes;
+    public HolderSet<Biome> biomes;
     public BiomeWeightModifier biomeWeightModifier;
 
     public final List<PlacementModifier> modifiers;
 
     private VeinGenerator veinGenerator;
 
-    public GTOreFeatureEntry(ResourceLocation id, int clusterSize, float density, int weight, IWorldGenLayer layer, HolderSet<DimensionType> dimensionFilter, CountPlacement count, HeightRangePlacement range, float discardChanceOnAirExposure, @Nullable HolderSet<Biome> biomes, @Nullable BiomeWeightModifier biomeWeightModifier, @Nullable GTOreFeatureEntry.VeinGenerator veinGenerator) {
-        this.id = id;
+    public GTOreFeatureEntry(ResourceLocation id, int clusterSize, float density, int weight, IWorldGenLayer layer, HolderSet<DimensionType> dimensionFilter, HeightRangePlacement range, float discardChanceOnAirExposure, @Nullable HolderSet<Biome> biomes, @Nullable BiomeWeightModifier biomeWeightModifier, @Nullable GTOreFeatureEntry.VeinGenerator veinGenerator) {
+        this(clusterSize, density, weight, layer, dimensionFilter, range, discardChanceOnAirExposure, biomes, biomeWeightModifier, veinGenerator);
+        ALL.put(id, this);
+    }
+
+    public GTOreFeatureEntry(int clusterSize, float density, int weight, IWorldGenLayer layer, HolderSet<DimensionType> dimensionFilter, /*CountPlacement count,*/ HeightRangePlacement range, float discardChanceOnAirExposure, @Nullable HolderSet<Biome> biomes, @Nullable BiomeWeightModifier biomeWeightModifier, @Nullable GTOreFeatureEntry.VeinGenerator veinGenerator) {
         this.clusterSize = clusterSize;
         this.density = density;
         this.weight = weight;
         this.layer = layer;
         this.dimensionFilter = dimensionFilter;
-        this.count = count;
         this.range = range;
         this.discardChanceOnAirExposure = discardChanceOnAirExposure;
-        this.biomes = biomes == null ? null : Either.left(biomes);
+        this.biomes = biomes;
         this.biomeWeightModifier = biomeWeightModifier;
         this.veinGenerator = veinGenerator;
 
         this.modifiers = List.of(
                 VeinCountFilter.count(),
                 BiomeFilter.biome(),
-                this.count,
+                //this.count,
                 InSquarePlacement.spread(),
                 this.range
         );
-        ALL.put(id, this);
     }
 
     public GTOreFeatureEntry biomes(TagKey<Biome> biomes) {
-        this.biomes = Either.right(biomes);
+        this.biomes = BuiltinRegistries.BIOME.getOrCreateTag(biomes);
         return this;
     }
 
@@ -123,15 +129,6 @@ public class GTOreFeatureEntry {
     @Nullable
     public GTOreFeatureEntry.VeinGenerator datagenExt() {
         return this.veinGenerator;
-    }
-
-    public String getName() {
-        return this.id.getPath();
-    }
-
-    public static DataResult<GTOreFeatureEntry> read(ResourceLocation id) {
-        GTOreFeatureEntry entry = ALL.get(id);
-        return entry != null ? DataResult.success(entry) : DataResult.error("Not a valid GTOreFeature: " + id);
     }
 
     public static abstract class VeinGenerator {
@@ -254,7 +251,7 @@ public class GTOreFeatureEntry {
 
     public static class LayeredVeinGenerator extends VeinGenerator {
         public static final Codec<LayeredVeinGenerator> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                        GTLayerPattern.CODEC.listOf().fieldOf("layer_patterns").forGetter(ft -> ft.bakingLayerPatterns.stream().map(Supplier::get).collect(Collectors.toList()))
+                        GTLayerPattern.CODEC.listOf().fieldOf("layer_patterns").forGetter(ft -> ft.layerPatterns != null ? ft.layerPatterns : ft.bakingLayerPatterns.stream().map(Supplier::get).collect(Collectors.toList()))
                 ).apply(instance, LayeredVeinGenerator::new)
         );
 
@@ -266,9 +263,9 @@ public class GTOreFeatureEntry {
             super(entry);
         }
 
-        public LayeredVeinGenerator(List<GTLayerPattern> bakingLayerPatterns) {
+        public LayeredVeinGenerator(List<GTLayerPattern> layerPatterns) {
             super();
-            this.layerPatterns = bakingLayerPatterns;
+            this.layerPatterns = layerPatterns;
         }
 
         public LayeredVeinGenerator withLayerPattern(NonNullSupplier<GTLayerPattern> pattern) {

@@ -105,7 +105,7 @@ public class GTLayerPattern {
 		}
 
 		public static class Builder {
-			private final List<Either<List<TargetBlockState>, Material>> 	targets = new ArrayList<>();
+			private final List<Either<List<TargetBlockState>, Material>> targets = new ArrayList<>();
 			private int minSize = 1;
 			private int maxSize = 1;
 			private int weight = 1;

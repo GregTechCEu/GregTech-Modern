@@ -557,7 +557,7 @@ public class GTOres {
                     .parent();
 
     private static GTOreFeatureEntry create(String name, int clusterSize, float density, int weight, WorldGenLayers layer, HolderSet<DimensionType> dimensionFilter, HeightRangePlacement range) {
-        return new GTOreFeatureEntry(GTCEu.id(name), clusterSize, density, weight, layer, dimensionFilter, CountPlacement.of(1), range, 0.0F, null, null, null);
+        return new GTOreFeatureEntry(GTCEu.id(name), clusterSize, density, weight, layer, dimensionFilter, range, 0.0F, null, null, null);
     }
 
     private static Supplier<? extends Block> ore(TagPrefix oreTag, Material material) {

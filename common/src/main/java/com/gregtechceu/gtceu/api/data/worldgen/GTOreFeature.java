@@ -12,6 +12,7 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.SectionPos;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
@@ -64,7 +65,8 @@ public class GTOreFeature extends Feature<GTOreFeatureConfiguration> {
             if (ConfigHolder.INSTANCE.worldgen.debugWorldgen) GTCEu.LOGGER.debug("failed to place vein " + entry.id + " in biome " + biome + ". Trying with another...");
         }*/
 
-        if (ConfigHolder.INSTANCE.worldgen.debugWorldgen) GTCEu.LOGGER.debug("trying to place vein " + entry.id + " at " + origin);
+        ResourceLocation id = GTOreFeatureEntry.ALL.inverse().get(entry);
+        if (ConfigHolder.INSTANCE.worldgen.debugWorldgen) GTCEu.LOGGER.debug("trying to place vein " + id + " at " + origin);
         if (entry.datagenExt() instanceof GTOreFeatureEntry.StandardVeinGenerator standard) {
             float f = random.nextFloat() * (float)Math.PI;
             float f1 = (float)entry.clusterSize / 8.0F;
@@ -85,7 +87,7 @@ public class GTOreFeature extends Feature<GTOreFeatureConfiguration> {
                 for(int i2 = i1; i2 <= i1 + j1; ++i2) {
                     if (l <= level.getHeight(Heightmap.Types.OCEAN_FLOOR_WG, l1, i2)) {
                         if (this.doPlaceNormal(level, random, entry, standard.blocks, d0, d1, d2, d3, d4, d5, k, l, i1, j1, k1)) {
-                            logPlaced(entry, true);
+                            logPlaced(id, true);
                             return true;
                         }
                     }
@@ -93,12 +95,12 @@ public class GTOreFeature extends Feature<GTOreFeatureConfiguration> {
             }
         } else if (entry.datagenExt() instanceof GTOreFeatureEntry.LayeredVeinGenerator layered) {
             if (this.doPlaceLayer(level, random, entry, origin, layered.layerPatterns)) {
-                logPlaced(entry, true);
+                logPlaced(id, true);
                 return true;
             }
         }
 
-        logPlaced(entry, false);
+        logPlaced(id, false);
         return false;
     }
 
@@ -381,7 +383,7 @@ public class GTOreFeature extends Feature<GTOreFeatureConfiguration> {
         return pChance <= 0 || (!(pChance >= 1) && pRandom.nextFloat() >= pChance);
     }
 
-    public void logPlaced(GTOreFeatureEntry entry, boolean didPlace) {
-        if (ConfigHolder.INSTANCE.worldgen.debugWorldgen) GTCEu.LOGGER.debug("Did place vein " + entry.id + ": " + didPlace);
+    public void logPlaced(ResourceLocation entry, boolean didPlace) {
+        if (ConfigHolder.INSTANCE.worldgen.debugWorldgen) GTCEu.LOGGER.debug("Did place vein " + entry + ": " + didPlace);
     }
 }
