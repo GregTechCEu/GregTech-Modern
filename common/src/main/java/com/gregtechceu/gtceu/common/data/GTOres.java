@@ -563,7 +563,14 @@ public class GTOres {
     private static Supplier<? extends Block> ore(TagPrefix oreTag, Material material) {
         var block = GTBlocks.MATERIAL_BLOCKS.get(oreTag, material);
         if (block == null) {
-            ResourceLocation oreKey = new ResourceLocation("%s_ore".formatted(material.getName()));
+            ResourceLocation oreKey;
+            if (oreTag == ore) {
+                oreKey = new ResourceLocation("%s_ore".formatted(material.getName()));
+            } else if (oreTag == oreNetherrack) {
+                oreKey = new ResourceLocation("nether_%s_ore".formatted(material.getName()));
+            } else {
+                oreKey = new ResourceLocation("%s_%s_ore".formatted(oreTag.name, material.getName()));
+            }
             return Registry.BLOCK.containsKey(oreKey) ? () -> Registry.BLOCK.get(oreKey) : () -> Blocks.AIR;
         }
         return block;

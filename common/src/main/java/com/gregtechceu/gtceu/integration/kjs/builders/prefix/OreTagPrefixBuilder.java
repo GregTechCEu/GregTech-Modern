@@ -17,6 +17,8 @@ public class OreTagPrefixBuilder extends TagPrefixBuilder {
     @Setter
     public transient Supplier<BlockState> stateSupplier;
     @Setter
+    public transient boolean isNether = false;
+    @Setter
     public transient Material material = Material.STONE;
     @Setter
     public transient MaterialColor color = MaterialColor.STONE;
@@ -34,6 +36,6 @@ public class OreTagPrefixBuilder extends TagPrefixBuilder {
     
     @Override
     public TagPrefix register() {
-        return value = base.registerOre(stateSupplier, material, color, sound);
+        return value = base.registerOre(stateSupplier, isNether, material, color, sound);
     }
 }

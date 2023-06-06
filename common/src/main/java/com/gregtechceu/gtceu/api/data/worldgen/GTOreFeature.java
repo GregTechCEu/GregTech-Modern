@@ -17,6 +17,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.BulkSectionAccess;
 import net.minecraft.world.level.chunk.LevelChunkSection;
@@ -198,10 +199,11 @@ public class GTOreFeature extends Feature<GTOreFeatureConfiguration> {
                                                                     return;
                                                                 BlockState currentState = access.getBlockState(posCursor);
                                                                 var prefix = ChemicalHelper.ORES_INVERSE.get(currentState);
-                                                                BlockEntry<? extends MaterialBlock> toPlace = GTBlocks.MATERIAL_BLOCKS.get(prefix, material);
-                                                                if (toPlace == null || toPlace.getDefaultState().isAir())
+                                                                if (prefix == null) return;
+                                                                Block toPlace = ChemicalHelper.getBlock(prefix, material);
+                                                                if (toPlace == null || toPlace.defaultBlockState().isAir())
                                                                     return;
-                                                                levelchunksection.setBlockState(i3, j3, k3, toPlace.getDefaultState(), false);
+                                                                levelchunksection.setBlockState(i3, j3, k3, toPlace.defaultBlockState(), false);
                                                                 placedAmount.increment();
                                                             });
                                                         }
@@ -331,10 +333,11 @@ public class GTOreFeature extends Feature<GTOreFeatureConfiguration> {
                                     return;
                                 BlockState currentState = access.getBlockState(posCursor);
                                 var prefix = ChemicalHelper.ORES_INVERSE.get(currentState);
-                                BlockEntry<? extends MaterialBlock> toPlace = GTBlocks.MATERIAL_BLOCKS.get(prefix, material);
-                                if (toPlace == null || toPlace.getDefaultState().isAir())
+                                if (prefix == null) return;
+                                Block toPlace = ChemicalHelper.getBlock(prefix, material);
+                                if (toPlace == null || toPlace.defaultBlockState().isAir())
                                     return;
-                                levelchunksection.setBlockState(i3, j3, k3, toPlace.getDefaultState(), false);
+                                levelchunksection.setBlockState(i3, j3, k3, toPlace.defaultBlockState(), false);
                                 placedAmount.increment();
                             });
                         }
