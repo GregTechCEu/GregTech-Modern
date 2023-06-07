@@ -2,12 +2,9 @@ package com.gregtechceu.gtceu.common.data;
 
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.data.worldgen.generator.FrequencyModifier;
+import com.gregtechceu.gtceu.api.data.worldgen.generator.*;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreFeature;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreFeatureConfiguration;
-import com.gregtechceu.gtceu.api.data.worldgen.generator.BiomeFilter;
-import com.gregtechceu.gtceu.api.data.worldgen.generator.DimensionFilter;
-import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinCountFilter;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.core.Registry;
@@ -35,6 +32,7 @@ public class GTFeatures {
         inst = BiomeFilter.BIOME_FILTER;
         inst = DimensionFilter.DIMENSION_FILTER;
         inst = VeinCountFilter.VEIN_COUNT_FILTER;
+        inst = BiomePlacement.BIOME_PLACEMENT;
         register();
     }
 

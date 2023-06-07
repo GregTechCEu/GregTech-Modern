@@ -27,7 +27,7 @@ public class RubberLogBlock extends RotatedPillarBlock {
     }
 
     public boolean isNatural(BlockState state) {
-        return state.getValue(NATURAL);
+        return state.getOptionalValue(NATURAL).orElse(false);
     }
 
     public BlockState changeNatural(BlockState state, boolean natural) {

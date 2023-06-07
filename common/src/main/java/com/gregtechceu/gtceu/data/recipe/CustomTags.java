@@ -2,9 +2,11 @@ package com.gregtechceu.gtceu.data.recipe;
 
 import com.gregtechceu.gtceu.api.data.tag.TagUtil;
 import net.minecraft.core.Registry;
+import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 
 public class CustomTags {
@@ -61,4 +63,7 @@ public class CustomTags {
             NEEDS_NAQ_ALLOY_TOOL,
             NEEDS_NEUTRONIUM_TOOL
     };
+
+    public static final TagKey<Biome> IS_SWAMP = TagUtil.createPlatformTag(BuiltinRegistries.BIOME, "is_swamp", "is_swamp", false);
+    public static final TagKey<Biome> HAS_RUBBER_TREE = TagUtil.createModTag(BuiltinRegistries.BIOME, "has_rubber_tree");
 }
