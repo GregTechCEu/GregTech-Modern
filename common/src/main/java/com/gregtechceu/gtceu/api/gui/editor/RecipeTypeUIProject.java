@@ -5,8 +5,7 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.editor.ColorPattern;
 import com.lowdragmc.lowdraglib.gui.editor.Icons;
-import com.lowdragmc.lowdraglib.gui.editor.annotation.RegisterUI;
-import com.lowdragmc.lowdraglib.gui.editor.data.Project;
+import com.lowdragmc.lowdraglib.gui.editor.annotation.LDLRegister;
 import com.lowdragmc.lowdraglib.gui.editor.data.UIProject;
 import com.lowdragmc.lowdraglib.gui.editor.ui.Editor;
 import com.lowdragmc.lowdraglib.gui.editor.ui.MainPanel;
@@ -32,7 +31,7 @@ import java.io.IOException;
  * @date 2023/3/29
  * @implNote RecipeTypeUIProject
  */
-@RegisterUI(name = "rtui", group = "project")
+@LDLRegister(name = "rtui", group = "project")
 public class RecipeTypeUIProject extends UIProject {
 
     @Nullable @Getter
@@ -69,7 +68,7 @@ public class RecipeTypeUIProject extends UIProject {
     }
 
     @Override
-    public Project loadProject(File file) {
+    public UIProject loadProject(File file) {
         try {
             var tag = NbtIo.read(file);
             if (tag != null) {
