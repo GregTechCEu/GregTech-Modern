@@ -142,7 +142,7 @@ public class GTBlocks {
                             .initialProperties(() -> oreType.stoneType().get().getBlock())
                             .properties(properties -> {
                                 properties.noLootTable();
-                                if (oreType.color() != null) properties.color(oreType.color())
+                                if (oreType.color() != null) properties.color(oreType.color());
                                 if (oreType.material() == net.minecraft.world.level.material.Material.SAND) {
                                     properties.strength(1.0f, 0.5f);
                                 }
