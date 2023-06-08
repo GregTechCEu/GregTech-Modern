@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.api.gui.editor;
 
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.lowdragmc.lowdraglib.gui.editor.annotation.RegisterUI;
+import com.lowdragmc.lowdraglib.gui.editor.annotation.LDLRegister;
 import com.lowdragmc.lowdraglib.gui.editor.configurator.IConfigurableWidget;
 import com.lowdragmc.lowdraglib.gui.editor.data.Resources;
 import com.lowdragmc.lowdraglib.gui.editor.ui.menu.MenuTab;
@@ -22,7 +22,7 @@ import java.util.Map;
  * @date 2023/3/29
  * @implNote RecipeTypeMenu
  */
-@RegisterUI(name = "recipe_type_tab", group = "menu")
+@LDLRegister(name = "recipe_type_tab", group = "menu")
 public class RecipeTypeTab extends MenuTab {
 
     protected TreeBuilder.Menu createMenu() {
