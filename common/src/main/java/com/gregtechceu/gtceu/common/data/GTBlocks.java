@@ -139,14 +139,15 @@ public class GTBlocks {
                                     properties -> new MaterialBlock(properties, oreTag, material, new OreBlockRenderer(oreType.stoneType(),
                                             Objects.requireNonNull(oreTag.materialIconType()).getBlockTexturePath(material.getMaterialIconSet(), true),
                                             oreProperty.isEmissive())))
+                            .initialProperties(() -> oreType.stoneType().getBlock())
                             .properties(properties -> {
-                                properties.color(oreType.color()).noLootTable();
+                                properties.noLootTable();
+                                if (oreType.color() != null) properties.color(oreType.color())
                                 if (oreType.material() == net.minecraft.world.level.material.Material.SAND) {
                                     properties.strength(1.0f, 0.5f);
-                                } else {
-                                    properties.strength(1.5f, 6.0f);
                                 }
-                                return properties.sound(oreType.sound());
+                                if (oreType.sound() != null) properties.sound(oreType.sound());
+                                return properties;
                             })
                             .transform(unificationBlock(oreTag, material))
                             .addLayer(() -> RenderType::cutoutMipped)
