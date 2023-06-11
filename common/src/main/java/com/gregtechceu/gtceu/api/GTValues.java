@@ -2,9 +2,13 @@ package com.gregtechceu.gtceu.api;
 
 
 import com.gregtechceu.gtceu.data.recipe.CraftingComponent;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.levelgen.LegacyRandomSource;
+import net.minecraft.world.level.levelgen.SingleThreadedRandomSource;
 
 import java.time.LocalDate;
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Supplier;
 
 import static net.minecraft.ChatFormatting.*;
@@ -38,7 +42,7 @@ public class GTValues {
      * Fluid per Material Unit (Prime Factors: 3 * 3 * 2 * 2 * 2 * 2)
      */
     public static final int L = 144;
-    public static final Random RNG = new Random();
+    public static final RandomSource RNG = RandomSource.create();
 
     /**
      * The Item WildCard Tag. Even shorter than the "-1" of the past

@@ -2,8 +2,8 @@ package com.gregtechceu.gtceu.common.blockentity.fabric;
 
 import com.gregtechceu.gtceu.api.capability.fabric.GTCapability;
 import com.gregtechceu.gtceu.common.blockentity.FluidPipeBlockEntity;
-import com.gregtechceu.gtlib.side.fluid.FluidStack;
-import com.gregtechceu.gtlib.side.fluid.IFluidTransfer;
+import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
+import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;

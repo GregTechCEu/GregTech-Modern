@@ -1,16 +1,18 @@
 package com.gregtechceu.gtceu.forge;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.item.forge.ComponentItemImpl;
 import com.gregtechceu.gtceu.api.item.forge.DrumMachineItemImpl;
 import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
-import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.common.ServerCommands;
+import com.gregtechceu.gtceu.data.loader.forge.OreDataLoaderImpl;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -26,7 +28,6 @@ import org.jetbrains.annotations.Nullable;
  */
 @Mod.EventBusSubscriber(modid = GTCEu.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class ForgeCommonEventListener {
-
 
     @SubscribeEvent
     public static void registerItemStackCapabilities(AttachCapabilitiesEvent<ItemStack> event) {
@@ -53,7 +54,7 @@ public class ForgeCommonEventListener {
     }
 
     @SubscribeEvent
-    public static void onLeftClockBlock(PlayerInteractEvent.LeftClickBlock event) {
+    public static void onLeftClickBlock(PlayerInteractEvent.LeftClickBlock event) {
         var blockState = event.getLevel().getBlockState(event.getPos());
         if (blockState.hasBlockEntity() && blockState.getBlock() instanceof MetaMachineBlock block
                 && block.getMachine(event.getLevel(), event.getPos()) instanceof IInteractedMachine machine) {
@@ -68,4 +69,8 @@ public class ForgeCommonEventListener {
         ServerCommands.createServerCommands().forEach(event.getDispatcher()::register);
     }
 
+    @SubscribeEvent
+    public static void registerReloadListeners(AddReloadListenerEvent event) {
+        event.addListener(new OreDataLoaderImpl());
+    }
 }

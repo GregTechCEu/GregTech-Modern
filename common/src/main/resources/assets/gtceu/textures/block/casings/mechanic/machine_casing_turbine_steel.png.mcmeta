@@ -1,5 +1,5 @@
 {
-    "gtlib": {
+    "ldlib": {
         "connection": "gtceu:block/casings/mechanic/machine_casing_turbine_steel_ctm"
     }
 }

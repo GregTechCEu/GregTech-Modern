@@ -1,13 +1,14 @@
 package com.gregtechceu.gtceu.utils;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtlib.GTLib;
-import com.gregtechceu.gtlib.side.fluid.FluidStack;
+import com.lowdragmc.lowdraglib.LDLib;
+import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.mojang.blaze3d.platform.InputConstants;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -20,6 +21,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.*;
 import java.util.List;
+import java.util.Map.Entry;
 
 
 /**
@@ -156,6 +158,31 @@ public class GTUtil {
         return replacement;
     }
 
+    public static <T> int getRandomItem(RandomSource random, List<? extends Entry<Integer, T>> randomList, int size) {
+        if (randomList.isEmpty())
+            return -1;
+        int[] baseOffsets = new int[size];
+        int currentIndex = 0;
+        for (int i = 0; i < size; i++) {
+            Entry<Integer, T> entry = randomList.get(i);
+            if (entry.getKey() <= 0) {
+                throw new IllegalArgumentException("Invalid weight: " + entry.getKey());
+            }
+            currentIndex += entry.getKey();
+            baseOffsets[i] = currentIndex;
+        }
+        int randomValue = random.nextInt(currentIndex);
+        for (int i = 0; i < size; i++) {
+            if (randomValue < baseOffsets[i])
+                return i;
+        }
+        throw new IllegalArgumentException("Invalid weight");
+    }
+
+    public static <T> int getRandomItem(List<? extends Entry<Integer, T>> randomList, int size) {
+        return getRandomItem(GTValues.RNG, randomList, size);
+    }
+
     @SuppressWarnings("unchecked")
     public static <T, R> Class<T> getActualTypeParameter(Class<? extends R> thisClass, int index) {
         Type type = thisClass.getGenericSuperclass();
@@ -163,7 +190,7 @@ public class GTUtil {
     }
 
     public static boolean isShiftDown() {
-        if (GTLib.isClient()) {
+        if (LDLib.isClient()) {
             var id = Minecraft.getInstance().getWindow().getWindow();
             return InputConstants.isKeyDown(id, GLFW.GLFW_KEY_LEFT_SHIFT) || InputConstants.isKeyDown(id, GLFW.GLFW_KEY_LEFT_SHIFT);
         }
@@ -171,7 +198,7 @@ public class GTUtil {
     }
 
     public static boolean isCtrlDown() {
-        if (GTLib.isClient()) {
+        if (LDLib.isClient()) {
             var id = Minecraft.getInstance().getWindow().getWindow();
             return InputConstants.isKeyDown(id, GLFW.GLFW_KEY_LEFT_CONTROL) || InputConstants.isKeyDown(id, GLFW.GLFW_KEY_RIGHT_CONTROL);
         }
@@ -216,4 +243,5 @@ public class GTUtil {
     public static long getPumpBiomeModifier(Holder<Biome> biome) {
         throw new AssertionError();
     }
+
 }

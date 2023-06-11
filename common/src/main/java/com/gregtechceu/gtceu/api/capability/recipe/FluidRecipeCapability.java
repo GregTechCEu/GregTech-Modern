@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.api.capability.recipe;
 
 import com.gregtechceu.gtceu.api.recipe.content.SerializerFluidStack;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
-import com.gregtechceu.gtlib.side.fluid.FluidStack;
+import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 
 /**
  * @author KilaBash

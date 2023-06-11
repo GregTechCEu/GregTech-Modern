@@ -1,10 +1,10 @@
 package com.gregtechceu.gtceu.api.gui.widget;
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtlib.gui.texture.GuiTextureGroup;
-import com.gregtechceu.gtlib.gui.texture.IGuiTexture;
-import com.gregtechceu.gtlib.gui.texture.ResourceTexture;
-import com.gregtechceu.gtlib.gui.widget.SwitchWidget;
+import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
+import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
+import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
+import com.lowdragmc.lowdraglib.gui.widget.SwitchWidget;
 import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
 import lombok.Setter;
 import lombok.experimental.Accessors;

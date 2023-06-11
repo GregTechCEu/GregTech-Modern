@@ -18,9 +18,9 @@ import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
-import com.gregtechceu.gtlib.GTLib;
-import com.gregtechceu.gtlib.side.fluid.FluidStack;
-import com.gregtechceu.gtlib.utils.NBTToJsonConverter;
+import com.lowdragmc.lowdraglib.LDLib;
+import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
+import com.lowdragmc.lowdraglib.utils.NBTToJsonConverter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -179,7 +179,7 @@ public class GTRecipeBuilder {
     public GTRecipeBuilder inputItems(ItemStack... inputs) {
         for (ItemStack itemStack : inputs) {
             if (itemStack.isEmpty()) {
-                GTLib.LOGGER.error("gt recipe {} input items is empty", id);
+                LDLib.LOGGER.error("gt recipe {} input items is empty", id);
                 throw new IllegalArgumentException(id + ": input items is empty");
             }
         }
@@ -254,7 +254,7 @@ public class GTRecipeBuilder {
     public GTRecipeBuilder outputItems(ItemStack... outputs) {
         for (ItemStack itemStack : outputs) {
             if (itemStack.isEmpty()) {
-                GTLib.LOGGER.error("gt recipe {} output items is empty", id);
+                LDLib.LOGGER.error("gt recipe {} output items is empty", id);
                 throw new IllegalArgumentException(id + ": output items is empty");
             }
         }

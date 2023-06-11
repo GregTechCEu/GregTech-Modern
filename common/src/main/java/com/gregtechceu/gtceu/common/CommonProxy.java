@@ -2,14 +2,18 @@ package com.gregtechceu.gtceu.common;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
+import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.data.worldgen.WorldGenLayers;
 import com.gregtechceu.gtceu.api.gui.CoverUIFactory;
+import com.gregtechceu.gtceu.api.gui.MachineUIFactory;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.*;
-import com.gregtechceu.gtceu.api.gui.MachineUIFactory;
 import com.gregtechceu.gtceu.common.data.materials.GTFoods;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.GregTechDatagen;
-import com.gregtechceu.gtlib.gui.factory.UIFactory;
+import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
+import com.lowdragmc.lowdraglib.gui.factory.UIFactory;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 
 public class CommonProxy {
@@ -32,7 +36,9 @@ public class CommonProxy {
         GTRecipeConditions.init();
         GTElements.init();
         MaterialIconSet.init();
+        MaterialIconType.init();
         GTMaterials.init();
+        TagPrefix.init();
         GTSoundEntries.init();
         GTCovers.init();
         GTFluids.init();
@@ -46,6 +52,7 @@ public class CommonProxy {
 
         // fabric exclusive, squeeze this in here to register before stuff is used
         GTRegistries.REGISTRATE.registerRegistrate();
+        WorldGenLayers.registerAll();
         GTOres.init();
         GTFeatures.init();
     }

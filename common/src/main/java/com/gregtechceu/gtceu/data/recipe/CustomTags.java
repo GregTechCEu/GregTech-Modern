@@ -1,8 +1,13 @@
 package com.gregtechceu.gtceu.data.recipe;
 
 import com.gregtechceu.gtceu.api.data.tag.TagUtil;
+import net.minecraft.core.Registry;
+import net.minecraft.data.BuiltinRegistries;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.block.Block;
 
 public class CustomTags {
 
@@ -40,4 +45,25 @@ public class CustomTags {
 
     // Platform-dependent tags
     public static final TagKey<Item> TAG_WOODEN_CHESTS = TagUtil.createPlatformItemTag("chests/wooden", "chests");
+    public static final TagKey<Item> TAG_BLUE_DYES = TagUtil.createPlatformItemTag("dyes/blue", "blue_dyes");
+
+    public static final TagKey<Block> NEEDS_WOOD_TOOL = TagUtil.createPlatformUnprefixedTag(Registry.BLOCK, "forge:needs_wood_tool", "fabric:needs_tool_level_0");
+    public static final TagKey<Block> NEEDS_GOLD_TOOL = TagUtil.createPlatformUnprefixedTag(Registry.BLOCK, "forge:needs_gold_tool", "fabric:needs_tool_level_0");
+    public static final TagKey<Block> NEEDS_NETHERITE_TOOL = TagUtil.createPlatformUnprefixedTag(Registry.BLOCK, "forge:needs_netherite_tool", "fabric:needs_tool_level_4");
+    public static final TagKey<Block> NEEDS_NAQ_ALLOY_TOOL = TagUtil.createPlatformUnprefixedTag(Registry.BLOCK, "forge:needs_naquadah_alloy_tool", "fabric:needs_tool_level_5");
+    public static final TagKey<Block> NEEDS_NEUTRONIUM_TOOL = TagUtil.createPlatformUnprefixedTag(Registry.BLOCK, "forge:needs_neutronium_tool", "fabric:needs_tool_level_6");
+
+    @SuppressWarnings("unchecked")
+    public static final TagKey<Block>[] TOOL_TIERS = new TagKey[] {
+            NEEDS_WOOD_TOOL,
+            BlockTags.NEEDS_STONE_TOOL,
+            BlockTags.NEEDS_IRON_TOOL,
+            BlockTags.NEEDS_DIAMOND_TOOL,
+            NEEDS_NETHERITE_TOOL,
+            NEEDS_NAQ_ALLOY_TOOL,
+            NEEDS_NEUTRONIUM_TOOL
+    };
+
+    public static final TagKey<Biome> IS_SWAMP = TagUtil.createPlatformTag(BuiltinRegistries.BIOME, "is_swamp", "is_swamp", false);
+    public static final TagKey<Biome> HAS_RUBBER_TREE = TagUtil.createModTag(BuiltinRegistries.BIOME, "has_rubber_tree");
 }

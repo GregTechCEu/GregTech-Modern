@@ -5,8 +5,8 @@ import com.gregtechceu.gtceu.api.blockentity.ITickSubscription;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.utils.GTUtil;
-import com.gregtechceu.gtlib.GTLib;
-import com.gregtechceu.gtlib.utils.RayTraceHelper;
+import com.lowdragmc.lowdraglib.LDLib;
+import com.lowdragmc.lowdraglib.utils.RayTraceHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
@@ -94,7 +94,7 @@ public interface ICoverable extends ITickSubscription, IAppearance {
     }
 
     default boolean isRemote() {
-        return getLevel() == null ? GTLib.isRemote() : getLevel().isClientSide;
+        return getLevel() == null ? LDLib.isRemote() : getLevel().isClientSide;
     }
 
     default void addCoverCollisionBoundingBox(List<? super VoxelShape> collisionList) {

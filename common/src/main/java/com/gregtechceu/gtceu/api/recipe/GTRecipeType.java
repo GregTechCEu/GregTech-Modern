@@ -10,21 +10,21 @@ import com.gregtechceu.gtceu.api.sound.SoundEntry;
 import com.gregtechceu.gtceu.core.mixins.RecipeManagerInvoker;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
-import com.gregtechceu.gtlib.GTLib;
-import com.gregtechceu.gtlib.Platform;
-import com.gregtechceu.gtlib.gui.editor.configurator.IConfigurableWidget;
-import com.gregtechceu.gtlib.gui.editor.data.Resources;
-import com.gregtechceu.gtlib.gui.texture.GuiTextureGroup;
-import com.gregtechceu.gtlib.gui.texture.IGuiTexture;
-import com.gregtechceu.gtlib.gui.texture.ProgressTexture;
-import com.gregtechceu.gtlib.gui.texture.ResourceTexture;
-import com.gregtechceu.gtlib.gui.widget.*;
-import com.gregtechceu.gtlib.jei.IngredientIO;
-import com.gregtechceu.gtlib.side.fluid.IFluidStorage;
-import com.gregtechceu.gtlib.side.item.IItemTransfer;
-import com.gregtechceu.gtlib.utils.Position;
-import com.gregtechceu.gtlib.utils.Rect;
-import com.gregtechceu.gtlib.utils.Size;
+import com.lowdragmc.lowdraglib.LDLib;
+import com.lowdragmc.lowdraglib.Platform;
+import com.lowdragmc.lowdraglib.gui.editor.configurator.IConfigurableWidget;
+import com.lowdragmc.lowdraglib.gui.editor.data.Resources;
+import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
+import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
+import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
+import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
+import com.lowdragmc.lowdraglib.gui.widget.*;
+import com.lowdragmc.lowdraglib.jei.IngredientIO;
+import com.lowdragmc.lowdraglib.side.fluid.IFluidStorage;
+import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
+import com.lowdragmc.lowdraglib.utils.Position;
+import com.lowdragmc.lowdraglib.utils.Rect;
+import com.lowdragmc.lowdraglib.utils.Size;
 import it.unimi.dsi.fastutil.bytes.Byte2ObjectArrayMap;
 import it.unimi.dsi.fastutil.bytes.Byte2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
@@ -276,7 +276,7 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
     public CompoundTag getCustomUI() {
         if (this.customUICache == null) {
             ResourceManager resourceManager = null;
-            if (GTLib.isClient()) {
+            if (LDLib.isClient()) {
                 resourceManager = Minecraft.getInstance().getResourceManager();
             } else if (Platform.getMinecraftServer() != null) {
                 resourceManager = Platform.getMinecraftServer().getResourceManager();

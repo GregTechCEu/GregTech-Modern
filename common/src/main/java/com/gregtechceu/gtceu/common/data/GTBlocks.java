@@ -91,13 +91,14 @@ public class GTBlocks {
             // Compressed Block
             if ((material.hasProperty(PropertyKey.INGOT) || material.hasProperty(PropertyKey.GEM) || material.hasFlag(FORCE_GENERATE_BLOCK))
                     && !TagPrefix.block.isIgnored(material)) {
-                var entry = REGISTRATE.block("compressed_block_%s".formatted(material.getName()), properties -> new MaterialBlock(properties, TagPrefix.block, material))
+                var entry = REGISTRATE.block("compressed_block_%s".formatted(material.getName()), properties -> new MaterialBlock(properties.noLootTable(), TagPrefix.block, material))
                         .initialProperties(() -> Blocks.IRON_BLOCK)
                         .transform(unificationBlock(TagPrefix.block, material))
                         .addLayer(() -> RenderType::solid)
                         .setData(ProviderType.BLOCKSTATE, NonNullBiConsumer.noop())
                         .setData(ProviderType.LANG, NonNullBiConsumer.noop())
-                        .tag(BlockTags.MINEABLE_WITH_PICKAXE)
+                        .setData(ProviderType.LOOT, NonNullBiConsumer.noop())
+                        //.tag(BlockTags.MINEABLE_WITH_PICKAXE)
                         .color(() -> () -> MaterialBlock::tintedColor)
                         .item(MaterialBlockItem::new)
                         .model(NonNullBiConsumer.noop())
@@ -109,14 +110,14 @@ public class GTBlocks {
 
             // Frame Block
             if (material.hasProperty(PropertyKey.DUST) && material.hasFlag(GENERATE_FRAME)) {
-                var entry = REGISTRATE.block("frame_block_%s".formatted(material.getName()), properties -> new MaterialBlock(properties, TagPrefix.frameGt, material))
+                var entry = REGISTRATE.block("frame_block_%s".formatted(material.getName()), properties -> new MaterialBlock(properties.noLootTable(), TagPrefix.frameGt, material))
                         .initialProperties(() -> Blocks.IRON_BLOCK)
                         .properties(BlockBehaviour.Properties::noOcclusion)
                         .transform(unificationBlock(TagPrefix.frameGt, material))
                         .addLayer(() -> RenderType::cutoutMipped)
                         .blockstate(NonNullBiConsumer.noop())
                         .setData(ProviderType.LANG, NonNullBiConsumer.noop())
-                        .tag(BlockTags.MINEABLE_WITH_PICKAXE, GTToolType.WRENCH.harvestTag)
+                        .setData(ProviderType.LOOT, NonNullBiConsumer.noop())
                         .color(() -> () -> MaterialBlock::tintedColor)
                         .item(MaterialBlockItem::new)
                         .model(NonNullBiConsumer.noop())
@@ -130,17 +131,29 @@ public class GTBlocks {
             if (material.hasProperty(PropertyKey.ORE)) {
                 var oreProperty = material.getProperty(PropertyKey.ORE);
                 for (var ore : TagPrefix.ORES.entrySet()) {
+                    if (ore.getKey().isIgnored(material)) continue;
                     var oreTag = ore.getKey();
+                    final TagPrefix.OreType oreType = ore.getValue();
                     var entry = REGISTRATE.block("%s_%s".formatted(FormattingUtil.toLowerCaseUnder(oreTag.name), material.getName()),
-                                    properties -> new MaterialBlock(properties, oreTag, material, new OreBlockRenderer(ore.getValue(),
+                                    oreType.material(),
+                                    properties -> new MaterialBlock(properties, oreTag, material, new OreBlockRenderer(oreType.stoneType(),
                                             Objects.requireNonNull(oreTag.materialIconType()).getBlockTexturePath(material.getMaterialIconSet(), true),
                                             oreProperty.isEmissive())))
-                            .initialProperties(() -> Blocks.IRON_BLOCK)
+                            .initialProperties(() -> oreType.stoneType().get().getBlock())
+                            .properties(properties -> {
+                                properties.noLootTable();
+                                if (oreType.color() != null) properties.color(oreType.color());
+                                if (oreType.material() == net.minecraft.world.level.material.Material.SAND) {
+                                    properties.strength(1.0f, 0.5f);
+                                }
+                                if (oreType.sound() != null) properties.sound(oreType.sound());
+                                return properties;
+                            })
                             .transform(unificationBlock(oreTag, material))
                             .addLayer(() -> RenderType::cutoutMipped)
                             .blockstate(NonNullBiConsumer.noop())
                             .setData(ProviderType.LANG, NonNullBiConsumer.noop())
-                            .tag(BlockTags.MINEABLE_WITH_PICKAXE)
+                            .setData(ProviderType.LOOT, NonNullBiConsumer.noop())
                             .color(() -> () -> MaterialBlock::tintedColor)
                             .item(MaterialBlockItem::new)
                             .model(NonNullBiConsumer.noop())
@@ -166,13 +179,13 @@ public class GTBlocks {
         for (Insulation insulation : Insulation.values()) {
             for (Material material : GTRegistries.MATERIALS) {
                 if (material.hasProperty(PropertyKey.WIRE) && !insulation.tagPrefix.isIgnored(material)) {
-                    var entry = REGISTRATE.block(insulation.name + "." + material.getName(), p -> new CableBlock(p, insulation, material))
+                    var entry = REGISTRATE.block(insulation.name + "." + material.getName(), p -> new CableBlock(p.noLootTable(), insulation, material))
                             .initialProperties(() -> Blocks.IRON_BLOCK)
                             .properties(p -> p.dynamicShape().noOcclusion())
-                            .tag(BlockTags.MINEABLE_WITH_PICKAXE, GTToolType.WRENCH.harvestTag, GTToolType.WIRE_CUTTER.harvestTag)
                             .transform(unificationBlock(insulation.tagPrefix, material))
                             .blockstate(NonNullBiConsumer.noop())
                             .setData(ProviderType.LANG, NonNullBiConsumer.noop())
+                            .setData(ProviderType.LOOT, NonNullBiConsumer.noop())
                             .addLayer(() -> RenderType::cutoutMipped)
                             .color(() -> () -> MaterialPipeBlock::tintedColor)
                             .item(MaterialPipeBlockItem::new)
@@ -187,21 +200,21 @@ public class GTBlocks {
         CABLE_BLOCKS = builder.build();
     }
 
-    public final static Table<TagPrefix, Material, BlockEntry<FluidPipeBlock>> FLUID_PIPE_BLOCKS;
+    public static Table<TagPrefix, Material, BlockEntry<FluidPipeBlock>> FLUID_PIPE_BLOCKS;
 
-    static {
+    public static void generatePipeBlocks() {
         // Fluid Pipe Blocks
         ImmutableTable.Builder<TagPrefix, Material, BlockEntry<FluidPipeBlock>> builder = ImmutableTable.builder();
         for (var fluidPipeType : FluidPipeType.values()) {
             for (Material material : GTRegistries.MATERIALS) {
                 if (material.hasProperty(PropertyKey.FLUID_PIPE) && !fluidPipeType.tagPrefix.isIgnored(material)) {
-                    var entry = REGISTRATE.block("fluid_pipe_" + fluidPipeType.name + "." + material.getName(), p -> new FluidPipeBlock(p, fluidPipeType, material))
+                    var entry = REGISTRATE.block("fluid_pipe_" + fluidPipeType.name + "." + material.getName(), p -> new FluidPipeBlock(p.noLootTable(), fluidPipeType, material))
                             .initialProperties(() -> Blocks.IRON_BLOCK)
                             .properties(p -> p.dynamicShape().noOcclusion())
-                            .tag(getPipeTags(material))
                             .transform(unificationBlock(fluidPipeType.tagPrefix, material))
                             .blockstate(NonNullBiConsumer.noop())
                             .setData(ProviderType.LANG, NonNullBiConsumer.noop())
+                            .setData(ProviderType.LOOT, NonNullBiConsumer.noop())
                             .addLayer(() -> RenderType::cutoutMipped)
                             .color(() -> () -> MaterialPipeBlock::tintedColor)
                             .item(MaterialPipeBlockItem::new)
@@ -551,5 +564,6 @@ public class GTBlocks {
     public static void init() {
         generateMaterialBlocks();
         generateCableBlocks();
+        generatePipeBlocks();
     }
 }

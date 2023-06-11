@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.api.pattern;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.pattern.predicates.SimplePredicate;
-import com.gregtechceu.gtlib.utils.BlockInfo;
+import com.lowdragmc.lowdraglib.utils.BlockInfo;
 import net.minecraft.network.chat.Component;
 
 import java.util.ArrayList;

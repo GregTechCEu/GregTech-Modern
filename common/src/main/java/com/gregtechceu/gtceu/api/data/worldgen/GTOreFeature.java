@@ -1,11 +1,23 @@
 package com.gregtechceu.gtceu.api.data.worldgen;
 
+import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.block.MaterialBlock;
+import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.common.data.GTBlocks;
+import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.mojang.datafixers.util.Either;
+import com.tterrag.registrate.util.entry.BlockEntry;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.core.SectionPos;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.BulkSectionAccess;
 import net.minecraft.world.level.chunk.LevelChunkSection;
@@ -13,9 +25,12 @@ import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
+import org.apache.commons.lang3.mutable.MutableInt;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.ArrayList;
 import java.util.BitSet;
+import java.util.List;
 import java.util.function.Function;
 
 /**
@@ -34,69 +49,98 @@ public class GTOreFeature extends Feature<GTOreFeatureConfiguration> {
     @Override
     public boolean place(FeaturePlaceContext<GTOreFeatureConfiguration> context) {
         RandomSource random = context.random();
-        BlockPos blockpos = context.origin();
-        WorldGenLevel worldgenlevel = context.level();
-        var configuration = context.config();
-        float f = random.nextFloat() * (float)Math.PI;
-        float f1 = (float)configuration.entry.clusterSize / 8.0F;
-        int i = Mth.ceil(((float)configuration.entry.clusterSize / 16.0F * 2.0F + 1.0F) / 2.0F);
-        double d0 = blockpos.getX() + Math.sin(f) * f1;
-        double d1 = blockpos.getX() - Math.sin(f) * f1;
-        double d2 = blockpos.getZ() + Math.cos(f) * f1;
-        double d3 = blockpos.getZ() - Math.cos(f) * f1;
-        double d4 = blockpos.getY() + random.nextInt(3) - 2;
-        double d5 = blockpos.getY() + random.nextInt(3) - 2;
-        int k = blockpos.getX() - Mth.ceil(f1) - i;
-        int l = blockpos.getY() - 2 - i;
-        int i1 = blockpos.getZ() - Mth.ceil(f1) - i;
-        int j1 = 2 * (Mth.ceil(f1) + i);
-        int k1 = 2 * (2 + i);
+        BlockPos origin = context.origin();
+        WorldGenLevel level = context.level();
+        Holder<Biome> biome = context.level().getBiome(origin);
 
-        for(int l1 = k; l1 <= k + j1; ++l1) {
-            for(int i2 = i1; i2 <= i1 + j1; ++i2) {
-                if (l <= worldgenlevel.getHeight(Heightmap.Types.OCEAN_FLOOR_WG, l1, i2)) {
-                    return this.doPlace(worldgenlevel, random, configuration, d0, d1, d2, d3, d4, d5, k, l, i1, j1, k1);
+        GTOreFeatureEntry entry = context.config().getEntry(context.level(), biome, random);
+        if (entry == null) return false;
+        context.config().setEntry(null);
+        /*HolderSet<Biome> checkingBiomes = entry.datagenExt().biomes.map(left -> left, right -> BuiltinRegistries.BIOME.getTag(right).orElse(BuiltinRegistries.BIOME.getTag(BiomeTags.IS_OVERWORLD).orElseThrow()));
+
+        while (!checkingBiomes.contains(biome)) {
+            entry = context.config().getEntry(context.level(), biome, random);
+            if (entry == null) return false;
+            context.config().setEntry(null);
+            checkingBiomes = entry.datagenExt().biomes.map(left -> left, right -> BuiltinRegistries.BIOME.getTag(right).orElse(BuiltinRegistries.BIOME.getTag(BiomeTags.IS_OVERWORLD).orElseThrow()));
+            if (ConfigHolder.INSTANCE.worldgen.debugWorldgen) GTCEu.LOGGER.debug("failed to place vein " + entry.id + " in biome " + biome + ". Trying with another...");
+        }*/
+
+        ResourceLocation id = GTOreFeatureEntry.ALL.inverse().get(entry);
+        if (ConfigHolder.INSTANCE.worldgen.debugWorldgen) GTCEu.LOGGER.debug("trying to place vein " + id + " at " + origin);
+        if (entry.datagenExt() instanceof GTOreFeatureEntry.StandardVeinGenerator standard) {
+            float f = random.nextFloat() * (float)Math.PI;
+            float f1 = (float)entry.clusterSize / 8.0F;
+            int i = Mth.ceil(((float)entry.clusterSize / 16.0F * 2.0F + 1.0F) / 2.0F);
+            double d0 = origin.getX() + Math.sin(f) * f1;
+            double d1 = origin.getX() - Math.sin(f) * f1;
+            double d2 = origin.getZ() + Math.cos(f) * f1;
+            double d3 = origin.getZ() - Math.cos(f) * f1;
+            double d4 = origin.getY() + random.nextInt(3) - 2;
+            double d5 = origin.getY() + random.nextInt(3) - 2;
+            int k = origin.getX() - Mth.ceil(f1) - i;
+            int l = origin.getY() - 2 - i;
+            int i1 = origin.getZ() - Mth.ceil(f1) - i;
+            int j1 = 2 * (Mth.ceil(f1) + i);
+            int k1 = 2 * (2 + i);
+
+            for(int l1 = k; l1 <= k + j1; ++l1) {
+                for(int i2 = i1; i2 <= i1 + j1; ++i2) {
+                    if (l <= level.getHeight(Heightmap.Types.OCEAN_FLOOR_WG, l1, i2)) {
+                        if (this.doPlaceNormal(level, random, entry, standard.blocks, d0, d1, d2, d3, d4, d5, k, l, i1, j1, k1)) {
+                            logPlaced(id, true);
+                            return true;
+                        }
+                    }
                 }
             }
+        } else if (entry.datagenExt() instanceof GTOreFeatureEntry.LayeredVeinGenerator layered) {
+            if (this.doPlaceLayer(level, random, entry, origin, layered.layerPatterns)) {
+                logPlaced(id, true);
+                return true;
+            }
         }
+
+        logPlaced(id, false);
         return false;
     }
 
-    protected boolean doPlace(WorldGenLevel pLevel, RandomSource pRandom, GTOreFeatureConfiguration pConfig, double pMinX,
-                              double pMaxX, double pMinZ, double pMaxZ, double pMinY, double pMaxY, int pX, int pY, int pZ, int pWidth,
-                              int pHeight) {
-        int i = 0;
-        BitSet bitset = new BitSet(pWidth * pHeight * pWidth);
-        BlockPos.MutableBlockPos blockpos$mutableblockpos = new BlockPos.MutableBlockPos();
-        int j = pConfig.entry.clusterSize;
-        double[] adouble = new double[j * 4];
+    protected boolean doPlaceNormal(WorldGenLevel level, RandomSource random, GTOreFeatureEntry entry, Either<List<OreConfiguration.TargetBlockState>, Material> targets,
+                                    double pMinX, double pMaxX, double pMinZ, double pMaxZ, double pMinY, double pMaxY, int pX, int pY, int pZ,
+                                    int pWidth, int pHeight) {
+        MutableInt placedAmount = new MutableInt(1);
+        BitSet placedBlocks = new BitSet(pWidth * pHeight * pWidth);
+        BlockPos.MutableBlockPos posCursor = new BlockPos.MutableBlockPos();
+        int size = entry.clusterSize;
+        float density = entry.density;
+        double[] shape = new double[size * 4];
 
-        for(int k = 0; k < j; ++k) {
-            float f = (float)k / (float)j;
+        for(int k = 0; k < size; ++k) {
+            float f = (float)k / (float)size;
             double d0 = Mth.lerp(f, pMinX, pMaxX);
             double d1 = Mth.lerp(f, pMinY, pMaxY);
             double d2 = Mth.lerp(f, pMinZ, pMaxZ);
-            double d3 = pRandom.nextDouble() * (double)j / 16.0D;
+            double d3 = random.nextDouble() * (double)size / 16.0D;
             double d4 = ((double)(Mth.sin((float)Math.PI * f) + 1.0F) * d3 + 1.0D) / 2.0D;
-            adouble[k * 4] = d0;
-            adouble[k * 4 + 1] = d1;
-            adouble[k * 4 + 2] = d2;
-            adouble[k * 4 + 3] = d4;
+            shape[k * 4] = d0;
+            shape[k * 4 + 1] = d1;
+            shape[k * 4 + 2] = d2;
+            shape[k * 4 + 3] = d4;
         }
 
-        for(int l3 = 0; l3 < j - 1; ++l3) {
-            if (!(adouble[l3 * 4 + 3] <= 0.0D)) {
-                for(int i4 = l3 + 1; i4 < j; ++i4) {
-                    if (!(adouble[i4 * 4 + 3] <= 0.0D)) {
-                        double d8 = adouble[l3 * 4] - adouble[i4 * 4];
-                        double d10 = adouble[l3 * 4 + 1] - adouble[i4 * 4 + 1];
-                        double d12 = adouble[l3 * 4 + 2] - adouble[i4 * 4 + 2];
-                        double d14 = adouble[l3 * 4 + 3] - adouble[i4 * 4 + 3];
+        for(int l3 = 0; l3 < size - 1; ++l3) {
+            if (!(shape[l3 * 4 + 3] <= 0.0D)) {
+                for(int i4 = l3 + 1; i4 < size; ++i4) {
+                    if (!(shape[i4 * 4 + 3] <= 0.0D)) {
+                        double d8 = shape[l3 * 4] - shape[i4 * 4];
+                        double d10 = shape[l3 * 4 + 1] - shape[i4 * 4 + 1];
+                        double d12 = shape[l3 * 4 + 2] - shape[i4 * 4 + 2];
+                        double d14 = shape[l3 * 4 + 3] - shape[i4 * 4 + 3];
                         if (d14 * d14 > d8 * d8 + d10 * d10 + d12 * d12) {
                             if (d14 > 0.0D) {
-                                adouble[i4 * 4 + 3] = -1.0D;
+                                shape[i4 * 4 + 3] = -1.0D;
                             } else {
-                                adouble[l3 * 4 + 3] = -1.0D;
+                                shape[l3 * 4 + 3] = -1.0D;
                             }
                         }
                     }
@@ -104,50 +148,66 @@ public class GTOreFeature extends Feature<GTOreFeatureConfiguration> {
             }
         }
 
-        BulkSectionAccess bulksectionaccess = new BulkSectionAccess(pLevel);
+        BulkSectionAccess access = new BulkSectionAccess(level);
 
         try {
-            for(int j4 = 0; j4 < j; ++j4) {
-                double d9 = adouble[j4 * 4 + 3];
+            for(int j4 = 0; j4 < size; ++j4) {
+                double d9 = shape[j4 * 4 + 3];
                 if (!(d9 < 0.0D)) {
-                    double d11 = adouble[j4 * 4];
-                    double d13 = adouble[j4 * 4 + 1];
-                    double d15 = adouble[j4 * 4 + 2];
-                    int k4 = Math.max(Mth.floor(d11 - d9), pX);
-                    int l = Math.max(Mth.floor(d13 - d9), pY);
-                    int i1 = Math.max(Mth.floor(d15 - d9), pZ);
-                    int j1 = Math.max(Mth.floor(d11 + d9), k4);
-                    int k1 = Math.max(Mth.floor(d13 + d9), l);
-                    int l1 = Math.max(Mth.floor(d15 + d9), i1);
+                    double x = shape[j4 * 4];
+                    double y = shape[j4 * 4 + 1];
+                    double z = shape[j4 * 4 + 2];
+                    int k4 = Math.max(Mth.floor(x - d9), pX);
+                    int l = Math.max(Mth.floor(y - d9), pY);
+                    int i1 = Math.max(Mth.floor(z - d9), pZ);
+                    int j1 = Math.max(Mth.floor(x + d9), k4);
+                    int k1 = Math.max(Mth.floor(y + d9), l);
+                    int l1 = Math.max(Mth.floor(z + d9), i1);
 
-                    for(int i2 = k4; i2 <= j1; ++i2) {
-                        double d5 = ((double)i2 + 0.5D - d11) / d9;
-                        if (d5 * d5 < 1.0D) {
-                            for(int j2 = l; j2 <= k1; ++j2) {
-                                double d6 = ((double)j2 + 0.5D - d13) / d9;
-                                if (d5 * d5 + d6 * d6 < 1.0D) {
-                                    for(int k2 = i1; k2 <= l1; ++k2) {
-                                        double d7 = ((double)k2 + 0.5D - d15) / d9;
-                                        if (d5 * d5 + d6 * d6 + d7 * d7 < 1.0D && !pLevel.isOutsideBuildHeight(j2)) {
-                                            int l2 = i2 - pX + (j2 - pY) * pWidth + (k2 - pZ) * pWidth * pHeight;
-                                            if (!bitset.get(l2)) {
-                                                bitset.set(l2);
-                                                blockpos$mutableblockpos.set(i2, j2, k2);
-                                                if (pLevel.ensureCanWrite(blockpos$mutableblockpos)) {
-                                                    LevelChunkSection levelchunksection = bulksectionaccess.getSection(blockpos$mutableblockpos);
+                    for(int posX = k4; posX <= j1; ++posX) {
+                        double radX = ((double)posX + 0.5D - x) / d9;
+                        if (radX * radX < 1.0D) {
+                            for(int posY = l; posY <= k1; ++posY) {
+                                double radY = ((double)posY + 0.5D - y) / d9;
+                                if (radX * radX + radY * radY < 1.0D) {
+                                    for(int posZ = i1; posZ <= l1; ++posZ) {
+                                        double radZ = ((double)posZ + 0.5D - z) / d9;
+                                        if (radX * radX + radY * radY + radZ * radZ < 1.0D && !level.isOutsideBuildHeight(posY)) {
+                                            int isPlaced = posX - pX + (posY - pY) * pWidth + (posZ - pZ) * pWidth * pHeight;
+                                            if (!placedBlocks.get(isPlaced)) {
+                                                placedBlocks.set(isPlaced);
+                                                posCursor.set(posX, posY, posZ);
+                                                if (level.ensureCanWrite(posCursor)) {
+                                                    LevelChunkSection levelchunksection = access.getSection(posCursor);
                                                     if (levelchunksection != null) {
-                                                        int i3 = SectionPos.sectionRelative(i2);
-                                                        int j3 = SectionPos.sectionRelative(j2);
-                                                        int k3 = SectionPos.sectionRelative(k2);
+                                                        int i3 = SectionPos.sectionRelative(posX);
+                                                        int j3 = SectionPos.sectionRelative(posY);
+                                                        int k3 = SectionPos.sectionRelative(posZ);
                                                         BlockState blockstate = levelchunksection.getBlockState(i3, j3, k3);
 
-                                                        for(OreConfiguration.TargetBlockState oreconfiguration$targetblockstate : pConfig.targetStates) {
-                                                            if (canPlaceOre(blockstate, bulksectionaccess::getBlockState, pRandom, pConfig, oreconfiguration$targetblockstate, blockpos$mutableblockpos)) {
-                                                                levelchunksection.setBlockState(i3, j3, k3, oreconfiguration$targetblockstate.state, false);
-                                                                ++i;
-                                                                break;
-                                                            }
+                                                        if (random.nextFloat() <= density) {
+                                                            targets.ifLeft(blockStates -> {
+                                                                for(OreConfiguration.TargetBlockState targetState : blockStates) {
+                                                                    if (canPlaceOre(blockstate, access::getBlockState, random, entry, targetState, posCursor)) {
+                                                                        levelchunksection.setBlockState(i3, j3, k3, targetState.state, false);
+                                                                        placedAmount.increment();
+                                                                        break;
+                                                                    }
+                                                                }
+                                                            }).ifRight(material -> {
+                                                                if (!canPlaceOre(blockstate, access::getBlockState, random, entry, material, posCursor))
+                                                                    return;
+                                                                BlockState currentState = access.getBlockState(posCursor);
+                                                                var prefix = ChemicalHelper.ORES_INVERSE.get(currentState);
+                                                                if (prefix == null) return;
+                                                                Block toPlace = ChemicalHelper.getBlock(prefix, material);
+                                                                if (toPlace == null || toPlace.defaultBlockState().isAir())
+                                                                    return;
+                                                                levelchunksection.setBlockState(i3, j3, k3, toPlace.defaultBlockState(), false);
+                                                                placedAmount.increment();
+                                                            });
                                                         }
+
                                                     }
                                                 }
                                             }
@@ -161,7 +221,7 @@ public class GTOreFeature extends Feature<GTOreFeatureConfiguration> {
             }
         } catch (Throwable throwable1) {
             try {
-                bulksectionaccess.close();
+                access.close();
             } catch (Throwable throwable) {
                 throwable1.addSuppressed(throwable);
             }
@@ -169,16 +229,154 @@ public class GTOreFeature extends Feature<GTOreFeatureConfiguration> {
             throw throwable1;
         }
 
-        bulksectionaccess.close();
-        return i > 0;
+        access.close();
+        return placedAmount.getValue() > 0;
+    }
+
+    protected boolean doPlaceLayer(WorldGenLevel level, RandomSource random, GTOreFeatureEntry entry, BlockPos origin, List<GTLayerPattern> patternPool) {
+        if (patternPool.isEmpty())
+            return false;
+
+        GTLayerPattern layerPattern = patternPool.get(random.nextInt(patternPool.size()));
+
+        MutableInt placedAmount = new MutableInt(0);
+        int size = entry.clusterSize;
+        float density = entry.density;
+        int radius = Mth.ceil(entry.clusterSize / 2f);
+        int x0 = origin.getX() - radius;
+        int y0 = origin.getY() - radius;
+        int z0 = origin.getZ() - radius;
+        int width = size + 1;
+        int length = size + 1;
+        int height = size + 1;
+
+        if (origin.getY() >= level.getHeight(Heightmap.Types.OCEAN_FLOOR_WG, origin.getX(),
+                origin.getZ()))
+            return false;
+
+        List<GTLayerPattern.Layer> resolvedLayers = new ArrayList<>();
+        List<Float> layerDiameterOffsets = new ArrayList<>();
+
+        BlockPos.MutableBlockPos posCursor = new BlockPos.MutableBlockPos();
+        BulkSectionAccess access = new BulkSectionAccess(level);
+        int layerCoordinate = random.nextInt(4);
+        int slantyCoordinate = random.nextInt(3);
+        float slope = random.nextFloat() * .75f;
+
+        try {
+
+            for (int x = 0; x < width; x++) {
+                float dx = x * 2f / width - 1;
+                if (dx * dx > 1)
+                    continue;
+
+                for (int y = 0; y < height; y++) {
+                    float dy = y * 2f / height - 1;
+                    if (dx * dx + dy * dy > 1)
+                        continue;
+                    if (level.isOutsideBuildHeight(y0 + y))
+                        continue;
+
+                    for (int z = 0; z < length; z++) {
+                        float dz = z * 2f / height - 1;
+
+                        int layerIndex = layerCoordinate == 0 ? z : layerCoordinate == 1 ? x : y;
+                        if (slantyCoordinate != layerCoordinate)
+                            layerIndex += Mth.floor(slantyCoordinate == 0 ? z : slantyCoordinate == 1 ? x : y) * slope;
+
+                        while (layerIndex >= resolvedLayers.size()) {
+                            GTLayerPattern.Layer next = layerPattern.rollNext(
+                                    resolvedLayers.isEmpty() ? null : resolvedLayers.get(resolvedLayers.size() - 1),
+                                    random);
+                            float offset = random.nextFloat() * .5f + .5f;
+                            for (int i = 0; i < next.minSize + random.nextInt(1 + next.maxSize - next.minSize); i++) {
+                                resolvedLayers.add(next);
+                                layerDiameterOffsets.add(offset);
+                            }
+                        }
+
+                        if (dx * dx + dy * dy + dz * dz > 1 * layerDiameterOffsets.get(layerIndex))
+                            continue;
+
+                        GTLayerPattern.Layer layer = resolvedLayers.get(layerIndex);
+                        Either<List<OreConfiguration.TargetBlockState>, Material> state = layer.rollBlock(random);
+
+                        int currentX = x0 + x;
+                        int currentY = y0 + y;
+                        int currentZ = z0 + z;
+
+                        posCursor.set(currentX, currentY, currentZ);
+                        if (!level.ensureCanWrite(posCursor))
+                            continue;
+                        LevelChunkSection levelchunksection = access.getSection(posCursor);
+                        if (levelchunksection == null)
+                            continue;
+
+                        int i3 = SectionPos.sectionRelative(currentX);
+                        int j3 = SectionPos.sectionRelative(currentY);
+                        int k3 = SectionPos.sectionRelative(currentZ);
+                        BlockState blockstate = levelchunksection.getBlockState(i3, j3, k3);
+
+                        if (random.nextFloat() <= density) {
+                            state.ifLeft(blockStates -> {
+                                for (OreConfiguration.TargetBlockState targetState : blockStates) {
+                                    if (!canPlaceOre(blockstate, access::getBlockState, random, entry, targetState, posCursor))
+                                        continue;
+                                    if (targetState.state.isAir())
+                                        continue;
+                                    levelchunksection.setBlockState(i3, j3, k3, targetState.state, false);
+                                    placedAmount.increment();
+                                    break;
+                                }
+                            }).ifRight(material -> {
+                                if (!canPlaceOre(blockstate, access::getBlockState, random, entry, material, posCursor))
+                                    return;
+                                BlockState currentState = access.getBlockState(posCursor);
+                                var prefix = ChemicalHelper.ORES_INVERSE.get(currentState);
+                                if (prefix == null) return;
+                                Block toPlace = ChemicalHelper.getBlock(prefix, material);
+                                if (toPlace == null || toPlace.defaultBlockState().isAir())
+                                    return;
+                                levelchunksection.setBlockState(i3, j3, k3, toPlace.defaultBlockState(), false);
+                                placedAmount.increment();
+                            });
+                        }
+
+                    }
+                }
+            }
+
+        } catch (Throwable throwable1) {
+            try {
+                access.close();
+            } catch (Throwable throwable) {
+                throwable1.addSuppressed(throwable);
+            }
+
+            throw throwable1;
+        }
+
+        access.close();
+        return placedAmount.getValue() > 0;
     }
 
     public boolean canPlaceOre(BlockState pState, Function<BlockPos, BlockState> pAdjacentStateAccessor,
-                               RandomSource pRandom, GTOreFeatureConfiguration pConfig, OreConfiguration.TargetBlockState pTargetState,
+                               RandomSource pRandom, GTOreFeatureEntry entry, OreConfiguration.TargetBlockState pTargetState,
                                BlockPos.MutableBlockPos pMatablePos) {
         if (!pTargetState.target.test(pState, pRandom))
             return false;
-        if (shouldSkipAirCheck(pRandom, pConfig.discardChanceOnAirExposure))
+        if (shouldSkipAirCheck(pRandom, entry.discardChanceOnAirExposure))
+            return true;
+
+        return !isAdjacentToAir(pAdjacentStateAccessor, pMatablePos);
+    }
+
+    public boolean canPlaceOre(BlockState pState, Function<BlockPos, BlockState> pAdjacentStateAccessor,
+                               RandomSource pRandom, GTOreFeatureEntry entry, Material pTargetState,
+                               BlockPos.MutableBlockPos pMatablePos) {
+        if (!entry.layer.getTarget().test(pState, pRandom))
+            return false;
+        if (shouldSkipAirCheck(pRandom, entry.discardChanceOnAirExposure))
             return true;
 
         return !isAdjacentToAir(pAdjacentStateAccessor, pMatablePos);
@@ -188,4 +386,7 @@ public class GTOreFeature extends Feature<GTOreFeatureConfiguration> {
         return pChance <= 0 || (!(pChance >= 1) && pRandom.nextFloat() >= pChance);
     }
 
+    public void logPlaced(ResourceLocation entry, boolean didPlace) {
+        if (ConfigHolder.INSTANCE.worldgen.debugWorldgen) GTCEu.LOGGER.debug("Did place vein " + entry + ": " + didPlace);
+    }
 }

@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.client.model;
 
-import com.gregtechceu.gtlib.client.bakedpipeline.FaceQuad;
-import com.gregtechceu.gtlib.client.model.ModelFactory;
-import com.gregtechceu.gtlib.client.renderer.IItemRendererProvider;
+import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
+import com.lowdragmc.lowdraglib.client.model.ModelFactory;
+import com.lowdragmc.lowdraglib.client.renderer.IItemRendererProvider;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;

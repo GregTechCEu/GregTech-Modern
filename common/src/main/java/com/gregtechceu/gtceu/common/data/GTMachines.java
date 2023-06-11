@@ -20,7 +20,6 @@ import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.client.renderer.block.CTMModelRenderer;
 import com.gregtechceu.gtceu.client.renderer.machine.*;
 import com.gregtechceu.gtceu.common.block.BoilerFireboxType;
-import com.gregtechceu.gtceu.common.block.CoilBlock;
 import com.gregtechceu.gtceu.common.machine.electric.BatteryBufferMachine;
 import com.gregtechceu.gtceu.common.machine.electric.PumpMachine;
 import com.gregtechceu.gtceu.common.machine.electric.TransformerMachine;
@@ -52,8 +51,8 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.integration.kjs.GTRegistryObjectBuilderTypes;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
-import com.gregtechceu.gtlib.side.fluid.FluidHelper;
-import com.gregtechceu.gtlib.side.fluid.FluidStack;
+import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
+import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.ints.Int2LongFunction;
 import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
@@ -195,8 +194,8 @@ public class GTMachines {
                     .tooltips(explosion())
                     .tooltips(Component.translatable("gtceu.machine.transformer.description"),
                             Component.translatable("gtceu.machine.transformer.tooltip_tool_usage"),
-                            Component.translatable("gtceu.machine.transformer.tooltip_transform_down", 4, GTValues.V[tier + 1], GTValues.VNF[tier + 1], 1, GTValues.V[tier], GTValues.VNF[tier]),
-                            Component.translatable("gtceu.machine.transformer.tooltip_transform_up", 1, GTValues.V[tier], GTValues.VNF[tier], 4, GTValues.V[tier + 1], GTValues.VNF[tier + 1]))
+                            Component.translatable("gtceu.machine.transformer.tooltip_transform_down", 1, GTValues.V[tier + 1], GTValues.VNF[tier + 1], 4, GTValues.V[tier], GTValues.VNF[tier]),
+                            Component.translatable("gtceu.machine.transformer.tooltip_transform_up", 4, GTValues.V[tier], GTValues.VNF[tier], 1, GTValues.V[tier + 1], GTValues.VNF[tier + 1]))
                     .register(),
             GTValues.ULV, GTValues.LV, GTValues.MV, GTValues.HV, GTValues.EV, GTValues.IV, GTValues.LuV, GTValues.ZPM, GTValues.UV); // UHV not needed, as a UV transformer transforms up to UHV
 
@@ -211,6 +210,7 @@ public class GTMachines {
                     .rotationState(RotationState.NON_Y_AXIS)
                     .hasTESR(true)
                     .renderer(() -> new TieredHullMachineRenderer(tier, GTCEu.id("block/machine/pump_machine")))
+                    .langValue("%s Pump %s".formatted(VLVH[tier], VLVT[tier]))
                     .tooltips(Component.translatable("gtceu.machine.pump.tooltip"),
                             Component.translatable("gtceu.universal.tooltip.voltage_in", GTValues.V[tier], GTValues.VNF[tier]),
                             Component.translatable("gtceu.universal.tooltip.energy_storage_capacity", GTValues.V[tier] * 64),
@@ -477,8 +477,7 @@ public class GTMachines {
     public final static MachineDefinition PUMP_HATCH = REGISTRATE.machine("pump_hatch", PumpHatchPartMachine::new)
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.PUMP_FLUID_HATCH)
-            .modelRenderer(() -> GTCEu.id("block/machine/part/pump_hatch"))
-            //.renderer(() -> new CTMModelRenderer(GTCEu.id("block/machine/part/pump_hatch")))
+            .renderer(PumpHatchPartRenderer::new)
             .register();
 
 

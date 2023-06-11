@@ -21,9 +21,9 @@ import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.common.recipe.*;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
-import com.gregtechceu.gtlib.GTLib;
-import com.gregtechceu.gtlib.side.fluid.FluidStack;
-import com.gregtechceu.gtlib.utils.NBTToJsonConverter;
+import com.lowdragmc.lowdraglib.LDLib;
+import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
+import com.lowdragmc.lowdraglib.utils.NBTToJsonConverter;
 import dev.latvian.mods.kubejs.recipe.*;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import net.minecraft.core.Registry;
@@ -52,7 +52,8 @@ public class GTRecipeBuilderJS extends RecipeJS {
     @Override
     public void create(RecipeArguments args) {
         this.id = ResourceLocation.tryParse(args.getString(0, this.type.getMod() + ":kjs_" + this.getUniqueId()));
-        backingBuilder = GTRecipeTypes.get(this.type.toString()).recipeBuilder(this.getOrCreateId());
+        this.id = new ResourceLocation(this.getOrCreateId().getNamespace(), this.type.getId().getPath() + "/" + this.id.getPath());
+        backingBuilder = GTRecipeTypes.get(this.type.toString()).recipeBuilder(this.id);
     }
 
     @HideFromJS
@@ -224,7 +225,7 @@ public class GTRecipeBuilderJS extends RecipeJS {
     public GTRecipeBuilderJS inputItems(ItemStack... inputs) {
         for (ItemStack itemStack : inputs) {
             if (itemStack.isEmpty()) {
-                GTLib.LOGGER.error("gt recipe {} input items is empty", id);
+                LDLib.LOGGER.error("gt recipe {} input items is empty", id);
                 throw new IllegalArgumentException(id + ": input items is empty");
             }
         }
@@ -295,7 +296,7 @@ public class GTRecipeBuilderJS extends RecipeJS {
     public GTRecipeBuilderJS outputItems(ItemStack... outputs) {
         for (ItemStack itemStack : outputs) {
             if (itemStack.isEmpty()) {
-                GTLib.LOGGER.error("gt recipe {} output items is empty", id);
+                LDLib.LOGGER.error("gt recipe {} output items is empty", id);
                 throw new IllegalArgumentException(id + ": output items is empty");
             }
         }
@@ -491,7 +492,7 @@ public class GTRecipeBuilderJS extends RecipeJS {
     public boolean hasInput(IngredientMatch match) {
         if (backingBuilder.input.containsKey(ItemRecipeCapability.CAP)) {
             for (Content item : backingBuilder.input.get(ItemRecipeCapability.CAP)) {
-                Ingredient in = ItemRecipeCapability.CAP.of(item);
+                Ingredient in = ItemRecipeCapability.CAP.of(item.content);
                 if (match.contains(in)) {
                     return true;
                 }
@@ -499,7 +500,7 @@ public class GTRecipeBuilderJS extends RecipeJS {
         }
         if (backingBuilder.tickInput.containsKey(ItemRecipeCapability.CAP)) {
             for (Content item : backingBuilder.tickInput.get(ItemRecipeCapability.CAP)) {
-                Ingredient in = ItemRecipeCapability.CAP.of(item);
+                Ingredient in = ItemRecipeCapability.CAP.of(item.content);
                 if (match.contains(in)) {
                     return true;
                 }
@@ -513,11 +514,11 @@ public class GTRecipeBuilderJS extends RecipeJS {
         boolean changed = false;
 
         var itemInputs = backingBuilder.input.get(ItemRecipeCapability.CAP);
-        if (replaceInputScan(match, with, transformer, itemInputs)) {
+        if (itemInputs != null && replaceInputScan(match, with, transformer, itemInputs)) {
             return true;
         }
         itemInputs = backingBuilder.tickInput.get(ItemRecipeCapability.CAP);
-        if (replaceInputScan(match, with, transformer, itemInputs)) {
+        if (itemInputs != null && replaceInputScan(match, with, transformer, itemInputs)) {
             return true;
         }
 
@@ -526,7 +527,7 @@ public class GTRecipeBuilderJS extends RecipeJS {
 
     public boolean replaceInputScan(IngredientMatch match, Ingredient with, ItemInputTransformer transformer, List<Content> stuff) {
         for (Content content : stuff) {
-            Ingredient in = ItemRecipeCapability.CAP.of(content);
+            Ingredient in = ItemRecipeCapability.CAP.of(content.content);
             if (match.contains(in)) {
                 content.content = transformer.transform(this, match, in, with);
                 return true;
@@ -539,7 +540,7 @@ public class GTRecipeBuilderJS extends RecipeJS {
     public boolean hasOutput(IngredientMatch match) {
         if (backingBuilder.output.containsKey(ItemRecipeCapability.CAP)) {
             for (Content item : backingBuilder.output.get(ItemRecipeCapability.CAP)) {
-                Ingredient in = ItemRecipeCapability.CAP.of(item);
+                Ingredient in = ItemRecipeCapability.CAP.of(item.content);
                 if (match.contains(in)) {
                     return true;
                 }
@@ -547,7 +548,7 @@ public class GTRecipeBuilderJS extends RecipeJS {
         }
         if (backingBuilder.tickOutput.containsKey(ItemRecipeCapability.CAP)) {
             for (Content item : backingBuilder.tickOutput.get(ItemRecipeCapability.CAP)) {
-                Ingredient in = ItemRecipeCapability.CAP.of(item);
+                Ingredient in = ItemRecipeCapability.CAP.of(item.content);
                 if (match.contains(in)) {
                     return true;
                 }
@@ -559,11 +560,11 @@ public class GTRecipeBuilderJS extends RecipeJS {
     @Override
     public boolean replaceOutput(IngredientMatch match, ItemStack with, ItemOutputTransformer transformer) {
         var itemOutputs = backingBuilder.output.get(ItemRecipeCapability.CAP);
-        if (replaceOutputScan(match, with, transformer, itemOutputs)) {
+        if (itemOutputs != null && replaceOutputScan(match, with, transformer, itemOutputs)) {
             return true;
         }
         itemOutputs = backingBuilder.tickOutput.get(ItemRecipeCapability.CAP);
-        if (replaceOutputScan(match, with, transformer, itemOutputs)) {
+        if (itemOutputs != null && replaceOutputScan(match, with, transformer, itemOutputs)) {
             return true;
         }
 
@@ -572,7 +573,7 @@ public class GTRecipeBuilderJS extends RecipeJS {
 
     public boolean replaceOutputScan(IngredientMatch match, ItemStack with, ItemOutputTransformer transformer, List<Content> stuff) {
         for (Content content : stuff) {
-            Ingredient in = ItemRecipeCapability.CAP.of(content);
+            Ingredient in = ItemRecipeCapability.CAP.of(content.content);
             if (match.contains(in)) {
                 content.content = transformer.transform(this, match, in.getItems()[0], with);
                 return true;

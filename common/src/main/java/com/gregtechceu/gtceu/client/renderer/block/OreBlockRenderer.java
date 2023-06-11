@@ -1,12 +1,12 @@
 package com.gregtechceu.gtceu.client.renderer.block;
 
 import com.gregtechceu.gtceu.client.model.ItemBakedModel;
-import com.gregtechceu.gtlib.GTLib;
-import com.gregtechceu.gtlib.client.bakedpipeline.FaceQuad;
-import com.gregtechceu.gtlib.client.model.ModelFactory;
-import com.gregtechceu.gtlib.client.renderer.IItemRendererProvider;
-import com.gregtechceu.gtlib.client.renderer.impl.BlockStateRenderer;
-import com.gregtechceu.gtlib.utils.BlockInfo;
+import com.lowdragmc.lowdraglib.LDLib;
+import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
+import com.lowdragmc.lowdraglib.client.model.ModelFactory;
+import com.lowdragmc.lowdraglib.client.renderer.IItemRendererProvider;
+import com.lowdragmc.lowdraglib.client.renderer.impl.BlockStateRenderer;
+import com.lowdragmc.lowdraglib.utils.BlockInfo;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -46,7 +46,7 @@ public class OreBlockRenderer extends BlockStateRenderer {
         this.stone = stone;
         this.overlay = overlay;
         this.emissive = emissive;
-        if (GTLib.isClient()) {
+        if (LDLib.isClient()) {
             registerEvent();
         }
     }

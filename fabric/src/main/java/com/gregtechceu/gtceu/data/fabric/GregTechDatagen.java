@@ -24,5 +24,7 @@ public class GregTechDatagen implements DataGeneratorEntrypoint {
         // sound
         var provider = new SoundEntryBuilder.SoundEntryProvider(generator);
         generator.addProvider(true, provider);
+        // biome tags
+        generator.addProvider(true, BiomeTagsProviderImpl::new);
     }
 }

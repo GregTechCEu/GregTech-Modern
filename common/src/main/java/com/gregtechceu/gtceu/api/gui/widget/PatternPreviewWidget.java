@@ -9,15 +9,15 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.api.pattern.TraceabilityPredicate;
 import com.gregtechceu.gtceu.api.pattern.predicates.SimplePredicate;
-import com.gregtechceu.gtlib.GTLib;
-import com.gregtechceu.gtlib.gui.editor.ColorPattern;
-import com.gregtechceu.gtlib.gui.texture.*;
-import com.gregtechceu.gtlib.gui.widget.*;
-import com.gregtechceu.gtlib.jei.IngredientIO;
-import com.gregtechceu.gtlib.utils.BlockInfo;
-import com.gregtechceu.gtlib.utils.CycleItemStackHandler;
-import com.gregtechceu.gtlib.utils.ItemStackKey;
-import com.gregtechceu.gtlib.utils.TrackedDummyWorld;
+import com.lowdragmc.lowdraglib.LDLib;
+import com.lowdragmc.lowdraglib.gui.editor.ColorPattern;
+import com.lowdragmc.lowdraglib.gui.texture.*;
+import com.lowdragmc.lowdraglib.gui.widget.*;
+import com.lowdragmc.lowdraglib.jei.IngredientIO;
+import com.lowdragmc.lowdraglib.utils.BlockInfo;
+import com.lowdragmc.lowdraglib.utils.CycleItemStackHandler;
+import com.lowdragmc.lowdraglib.utils.ItemStackKey;
+import com.lowdragmc.lowdraglib.utils.TrackedDummyWorld;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import it.unimi.dsi.fastutil.longs.LongSet;
@@ -72,7 +72,7 @@ public class PatternPreviewWidget extends WidgetGroup {
                 .setRenderFacing(false)
                 .setRenderFacing(false));
 
-        if (!GTCEu.isIrisLoaded() && !GTLib.isEmiLoaded()) {
+        if (!GTCEu.isIrisLoaded() && !LDLib.isEmiLoaded()) {
             if (!RenderSystem.isOnRenderThread()) {
                 RenderSystem.recordRenderCall(sceneWidget::useCacheBuffer);
             } else {
@@ -144,7 +144,7 @@ public class PatternPreviewWidget extends WidgetGroup {
     public static PatternPreviewWidget getPatternWidget(MultiblockMachineDefinition controllerDefinition) {
         if (LEVEL == null) {
             if (Minecraft.getInstance().level == null) {
-                GTLib.LOGGER.error("Try to init pattern previews before level load");
+                LDLib.LOGGER.error("Try to init pattern previews before level load");
                 throw new IllegalStateException();
             }
             LEVEL = new TrackedDummyWorld();

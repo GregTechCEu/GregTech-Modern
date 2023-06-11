@@ -87,10 +87,26 @@ public class ConfigHolder {
 
     public static class WorldGenConfigs {
         @Configurable
-        @Configurable.Comment({"Should all Stone Types drop unique Ore Item Blocks?", "Default: false (meaning only Stone, Netherrack, and Endstone"})
+        @Configurable.Comment({"Should all Stone Types drop unique Ore Item Blocks?", "Default: false (meaning only Stone, Netherrack, and Endstone)"})
         public boolean allUniqueStoneTypes;
+
+        @Configurable
+        @Configurable.Comment({"Should Sand-like ores fall?", "This includes gravel, sand, and red sand ores.", "Default: false (no falling ores)"})
+        public boolean sandOresFall;
+
+        @Configurable
+        @Configurable.Range(min = 0, max = 127)
+        @Configurable.Comment({"Radius that ore veins will check for existing ones.", "If one is found, the vein will not spawn.", "Default: 3"})
+        public int oreVeinScanRadius = 3;
+
+        @Configurable
+        @Configurable.Comment({"Debug ore vein placement? (will print placed veins to server's debug.log)", "Default: false (no placement printout in debug.log)"})
+        public boolean debugWorldgen;
     }
     public static class MachineConfigs {
+        @Configurable
+        @Configurable.Comment({"Whether to require a Wrench, Wirecutter, or other GregTech tools to break machines, casings, wires, and more.", "Default: false"})
+        public boolean requireGTToolsForBlocks;
         @Configurable
         @Configurable.Comment({"Whether machines explode in rainy weather or when placed next to certain terrain, such as fire or lava", "Default: false"})
         public boolean doTerrainExplosion;

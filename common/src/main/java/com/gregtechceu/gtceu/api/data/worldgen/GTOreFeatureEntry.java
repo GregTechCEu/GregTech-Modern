@@ -1,29 +1,38 @@
 package com.gregtechceu.gtceu.api.data.worldgen;
 
+import com.google.common.collect.HashBiMap;
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.worldgen.generator.BiomeFilter;
+import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinCountFilter;
+import com.gregtechceu.gtceu.api.data.worldgen.generator.WorldGeneratorUtils;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTFeatures;
+import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
-import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.RegistryCodecs;
+import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.data.worldgen.features.OreFeatures;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
 import net.minecraft.world.level.levelgen.placement.*;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 /**
  * @author KilaBash
@@ -33,109 +42,190 @@ import java.util.Map;
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class GTOreFeatureEntry {
-    public static final Map<ResourceLocation, GTOreFeatureEntry> ALL = new HashMap<>();
-    public static final Codec<GTOreFeatureEntry> CODEC;
-    static {
-        CODEC = ResourceLocation.CODEC.comapFlatMap(GTOreFeatureEntry::read, (entry) -> entry.id);
-    }
-    public final ResourceLocation id;
-    public final int clusterSize;
-    public final float frequency;
-    public final CountPlacement count;
-    public final HeightRangePlacement range;
-    private DatagenExtension datagenExt;
+    public static final HashBiMap<ResourceLocation, GTOreFeatureEntry> ALL = HashBiMap.create();
 
-    public GTOreFeatureEntry(ResourceLocation id, int clusterSize, float frequency, CountPlacement count, HeightRangePlacement range) {
-        this.id = id;
-        this.clusterSize = clusterSize;
-        this.frequency = frequency;
-        this.count = count;
-        this.range = range;
+
+    public static final Codec<GTOreFeatureEntry> CODEC = ResourceLocation.CODEC
+            .flatXmap(rl -> Optional.ofNullable(ALL.get(rl))
+                            .map(DataResult::success)
+                            .orElseGet(() -> DataResult.error("No GTOreFeatureEntry with id " + rl + " registered")),
+                    obj -> Optional.ofNullable(ALL.inverse().get(obj))
+                            .map(DataResult::success)
+                            .orElseGet(() -> DataResult.error("GTOreFeatureEntry " + obj + " not registered")));
+    public static final Codec<GTOreFeatureEntry> FULL_CODEC = RecordCodecBuilder.create(
+            instance -> instance.group(
+                    Codec.INT.fieldOf("cluster_size").forGetter(ft -> ft.clusterSize),
+                    Codec.floatRange(0.0F, 1.0F).fieldOf("density").forGetter(ft -> ft.density),
+                    Codec.INT.fieldOf("weight").forGetter(ft -> ft.weight),
+                    IWorldGenLayer.CODEC.fieldOf("layer").forGetter(ft -> ft.layer),
+                    RegistryCodecs.homogeneousList(Registry.DIMENSION_TYPE_REGISTRY).fieldOf("dimension_filter").forGetter(ft -> ft.dimensionFilter),
+                    HeightRangePlacement.CODEC.fieldOf("height_range").forGetter(ft -> ft.range),
+                    Codec.floatRange(0.0F, 1.0F).fieldOf("discard_chance_on_air_exposure").forGetter(ft -> ft.discardChanceOnAirExposure),
+                    RegistryCodecs.homogeneousList(Registry.BIOME_REGISTRY).fieldOf("biomes").forGetter(ext -> ext.biomes),
+                    BiomeWeightModifier.CODEC.optionalFieldOf("weight_modifier", null).forGetter(ext -> ext.biomeWeightModifier),
+                    VeinGenerator.DIRECT_CODEC.fieldOf("generator").forGetter(ft -> ft.veinGenerator)
+            ).apply(instance, GTOreFeatureEntry::new)
+    );
+
+    public final int clusterSize;
+    public final float density;
+    public final int weight;
+    public final IWorldGenLayer layer;
+    public final HolderSet<DimensionType> dimensionFilter;
+    public final HeightRangePlacement range;
+    public final float discardChanceOnAirExposure;
+    public HolderSet<Biome> biomes;
+    public BiomeWeightModifier biomeWeightModifier;
+
+    public final List<PlacementModifier> modifiers;
+
+    private VeinGenerator veinGenerator;
+
+    public GTOreFeatureEntry(ResourceLocation id, int clusterSize, float density, int weight, IWorldGenLayer layer, HolderSet<DimensionType> dimensionFilter, HeightRangePlacement range, float discardChanceOnAirExposure, @Nullable HolderSet<Biome> biomes, @Nullable BiomeWeightModifier biomeWeightModifier, @Nullable GTOreFeatureEntry.VeinGenerator veinGenerator) {
+        this(clusterSize, density, weight, layer, dimensionFilter, range, discardChanceOnAirExposure, biomes, biomeWeightModifier, veinGenerator);
         ALL.put(id, this);
     }
 
-    public StandardDatagenExtension standardDatagenExt() {
-        if (this.datagenExt == null) {
-            this.datagenExt = new GTOreFeatureEntry.StandardDatagenExtension();
-        }
-        return (StandardDatagenExtension) datagenExt;
+    public GTOreFeatureEntry(int clusterSize, float density, int weight, IWorldGenLayer layer, HolderSet<DimensionType> dimensionFilter, /*CountPlacement count,*/ HeightRangePlacement range, float discardChanceOnAirExposure, @Nullable HolderSet<Biome> biomes, @Nullable BiomeWeightModifier biomeWeightModifier, @Nullable GTOreFeatureEntry.VeinGenerator veinGenerator) {
+        this.clusterSize = clusterSize;
+        this.density = density;
+        this.weight = weight;
+        this.layer = layer;
+        this.dimensionFilter = dimensionFilter;
+        this.range = range;
+        this.discardChanceOnAirExposure = discardChanceOnAirExposure;
+        this.biomes = biomes;
+        this.biomeWeightModifier = biomeWeightModifier;
+        this.veinGenerator = veinGenerator;
+
+        this.modifiers = List.of(
+                VeinCountFilter.count(),
+                BiomeFilter.biome(),
+                //this.count,
+                InSquarePlacement.spread(),
+                this.range
+        );
     }
 
-    public LayeredDatagenExtension layeredDatagenExt() {
-        if (datagenExt == null) {
-            datagenExt = new LayeredDatagenExtension();
+    public GTOreFeatureEntry biomes(TagKey<Biome> biomes) {
+        this.biomes = BuiltinRegistries.BIOME.getOrCreateTag(biomes);
+        return this;
+    }
+
+    public StandardVeinGenerator standardVeinGenerator() {
+        if (this.veinGenerator == null) {
+            this.veinGenerator = new StandardVeinGenerator(this);
         }
-        return (LayeredDatagenExtension) datagenExt;
+        return (StandardVeinGenerator) veinGenerator;
+    }
+
+    public LayeredVeinGenerator layeredVeinGenerator() {
+        if (veinGenerator == null) {
+            veinGenerator = new LayeredVeinGenerator(this);
+        }
+        return (LayeredVeinGenerator) veinGenerator;
     }
 
     @Nullable
-    public DatagenExtension datagenExt() {
-        return this.datagenExt != null ? this.datagenExt : null;
+    public GTOreFeatureEntry.VeinGenerator datagenExt() {
+        return this.veinGenerator;
     }
 
-    public String getName() {
-        return this.id.getPath();
-    }
+    public static abstract class VeinGenerator {
+        public static final Codec<Codec<? extends VeinGenerator>> REGISTRY_CODEC = ResourceLocation.CODEC
+                .flatXmap(rl -> Optional.ofNullable(WorldGeneratorUtils.VEIN_GENERATORS.get(rl))
+                                .map(DataResult::success)
+                                .orElseGet(() -> DataResult.error("No VeinGenerator with id " + rl + " registered")),
+                        obj -> Optional.ofNullable(WorldGeneratorUtils.VEIN_GENERATORS.inverse().get(obj))
+                                .map(DataResult::success)
+                                .orElseGet(() -> DataResult.error("VeinGenerator " + obj + " not registered")));
+        public static final Codec<VeinGenerator> DIRECT_CODEC = REGISTRY_CODEC.dispatchStable(VeinGenerator::codec, Function.identity());
 
-    public static DataResult<GTOreFeatureEntry> read(ResourceLocation id) {
-        GTOreFeatureEntry entry = ALL.get(id);
-        return entry != null ? DataResult.success(entry) : DataResult.error("Not a valid GTOreFeature: " + id);
-    }
+        protected GTOreFeatureEntry entry;
 
-    public abstract class DatagenExtension {
-        public TagKey<Biome> biomeTag;
-
-        public DatagenExtension() {
+        public VeinGenerator() {
         }
 
-        public GTOreFeatureEntry.DatagenExtension biomeTag(TagKey<Biome> biomes) {
-            this.biomeTag = biomes;
-            return this;
+        public VeinGenerator(GTOreFeatureEntry entry) {
+            this.entry = entry;
         }
 
-        public abstract ConfiguredFeature<?, ?> createConfiguredFeature(RegistryAccess var1);
+        public ConfiguredFeature<?, ?> createConfiguredFeature() {
+            build();
+            GTOreFeatureConfiguration config = new GTOreFeatureConfiguration(entry);
+            return new ConfiguredFeature<>(GTFeatures.ORE, config);
+        }
 
-        public PlacedFeature createPlacedFeature(RegistryAccess registryAccess) {
+        /*public PlacedFeature createPlacedFeature(RegistryAccess registryAccess) {
             Registry<ConfiguredFeature<?, ?>> featureRegistry = registryAccess.registryOrThrow(Registry.CONFIGURED_FEATURE_REGISTRY);
             Holder<ConfiguredFeature<?, ?>> featureHolder = featureRegistry.getOrCreateHolderOrThrow(ResourceKey.create(Registry.CONFIGURED_FEATURE_REGISTRY, GTOreFeatureEntry.this.id));
             return new PlacedFeature(featureHolder, List.of(
-                    count,
-                    new FrequencyModifier(frequency),
-                    range
+                this.count,
+                new FrequencyModifier(this.frequency),
+                InSquarePlacement.spread()
+                this.range
             ));
-        }
+        }*/
+
+        public abstract VeinGenerator build();
 
         public GTOreFeatureEntry parent() {
-            return GTOreFeatureEntry.this;
+            return entry;
         }
+
+        public abstract Codec<? extends VeinGenerator> codec();
     }
 
-    public class StandardDatagenExtension extends GTOreFeatureEntry.DatagenExtension {
+    public static class StandardVeinGenerator extends VeinGenerator {
+        public static final Codec<StandardVeinGenerator> CODEC_SEPARATE = RecordCodecBuilder.create(instance -> instance.group(
+                Registry.BLOCK.byNameCodec().fieldOf("block").forGetter(ext -> ext.block.get()),
+                Registry.BLOCK.byNameCodec().fieldOf("deep_block").forGetter(ext -> ext.deepBlock.get()),
+                Registry.BLOCK.byNameCodec().fieldOf("nether_block").forGetter(ext -> ext.netherBlock.get())
+        ).apply(instance, StandardVeinGenerator::new));
+        public static final Codec<StandardVeinGenerator> CODEC_LIST = RecordCodecBuilder.create(instance -> instance.group(
+                Codec.either(OreConfiguration.TargetBlockState.CODEC.listOf(), GTRegistries.MATERIALS.codec()).fieldOf("targets").forGetter(ext -> ext.blocks)
+        ).apply(instance, StandardVeinGenerator::new));
+        public static final Codec<StandardVeinGenerator> CODEC = Codec.either(CODEC_SEPARATE, CODEC_LIST).xmap(either -> either.map(Function.identity(), Function.identity()), Either::left);
+
         public NonNullSupplier<? extends Block> block;
         public NonNullSupplier<? extends Block> deepBlock;
         public NonNullSupplier<? extends Block> netherBlock;
 
-        public StandardDatagenExtension() {
-            super();
+        public Either<List<OreConfiguration.TargetBlockState>, Material> blocks;
+
+        public StandardVeinGenerator(GTOreFeatureEntry entry) {
+            super(entry);
         }
 
-        public GTOreFeatureEntry.StandardDatagenExtension withBlock(NonNullSupplier<? extends Block> block) {
+        public StandardVeinGenerator(Block block, Block deepBlock, Block netherBlock) {
+            this.block = NonNullSupplier.of(() -> block);
+            this.deepBlock = NonNullSupplier.of(() -> deepBlock);
+            this.netherBlock = NonNullSupplier.of(() -> netherBlock);
+        }
+
+        public StandardVeinGenerator(Either<List<OreConfiguration.TargetBlockState>, Material> blocks) {
+            this.blocks = blocks;
+        }
+
+        public StandardVeinGenerator withBlock(NonNullSupplier<? extends Block> block) {
             this.block = block;
             this.deepBlock = block;
             return this;
         }
 
-        public GTOreFeatureEntry.StandardDatagenExtension withNetherBlock(NonNullSupplier<? extends Block> block) {
+        public StandardVeinGenerator withNetherBlock(NonNullSupplier<? extends Block> block) {
             this.netherBlock = block;
             return this;
         }
 
-        public GTOreFeatureEntry.StandardDatagenExtension biomeTag(TagKey<Biome> biomes) {
-            super.biomeTag(biomes);
+        public StandardVeinGenerator withMaterial(Material material) {
+            this.blocks = Either.right(material);
             return this;
         }
 
-        public ConfiguredFeature<?, ?> createConfiguredFeature(RegistryAccess registryAccess) {
+        public VeinGenerator build() {
+            if (this.blocks != null) return this;
+            // if (this.blocks.left().isPresent() && !this.blocks.left().get().isEmpty()) return this;
             List<OreConfiguration.TargetBlockState> targetStates = new ArrayList<>();
             if (this.block != null) {
                 targetStates.add(OreConfiguration.target(OreFeatures.STONE_ORE_REPLACEABLES, this.block.get().defaultBlockState()));
@@ -149,33 +239,52 @@ public class GTOreFeatureEntry {
                 targetStates.add(OreConfiguration.target(OreFeatures.NETHER_ORE_REPLACEABLES, this.netherBlock.get().defaultBlockState()));
             }
 
-            GTOreFeatureConfiguration config = new GTOreFeatureConfiguration(GTOreFeatureEntry.this, 0.0F, targetStates);
-            return new ConfiguredFeature<>(GTFeatures.ORE, config);
+            this.blocks = Either.left(targetStates);
+            return this;
+        }
+
+        @Override
+        public Codec<? extends VeinGenerator> codec() {
+            return CODEC;
         }
     }
 
-    public class LayeredDatagenExtension extends DatagenExtension {
-        public final List<NonNullSupplier<GTLayerPattern>> layerPatterns = new ArrayList<>();
+    public static class LayeredVeinGenerator extends VeinGenerator {
+        public static final Codec<LayeredVeinGenerator> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+                        GTLayerPattern.CODEC.listOf().fieldOf("layer_patterns").forGetter(ft -> ft.layerPatterns != null ? ft.layerPatterns : ft.bakingLayerPatterns.stream().map(Supplier::get).collect(Collectors.toList()))
+                ).apply(instance, LayeredVeinGenerator::new)
+        );
 
-        public LayeredDatagenExtension withLayerPattern(NonNullSupplier<GTLayerPattern> pattern) {
-            this.layerPatterns.add(pattern);
+        private final List<NonNullSupplier<GTLayerPattern>> bakingLayerPatterns = new ArrayList<>();
+
+        public List<GTLayerPattern> layerPatterns;
+
+        public LayeredVeinGenerator(GTOreFeatureEntry entry) {
+            super(entry);
+        }
+
+        public LayeredVeinGenerator(List<GTLayerPattern> layerPatterns) {
+            super();
+            this.layerPatterns = layerPatterns;
+        }
+
+        public LayeredVeinGenerator withLayerPattern(NonNullSupplier<GTLayerPattern> pattern) {
+            this.bakingLayerPatterns.add(pattern);
             return this;
         }
 
-        @Override
-        public LayeredDatagenExtension biomeTag(TagKey<Biome> biomes) {
-            super.biomeTag(biomes);
-            return this;
-        }
-
-        @Override
-        public ConfiguredFeature<?, ?> createConfiguredFeature(RegistryAccess registryAccess) {
-            List<GTLayerPattern> layerPatterns = this.layerPatterns.stream()
+        public VeinGenerator build() {
+            if (this.layerPatterns != null && !this.layerPatterns.isEmpty()) return this;
+            List<GTLayerPattern> layerPatterns = this.bakingLayerPatterns.stream()
                     .map(NonNullSupplier::get)
                     .toList();
+            this.layerPatterns = layerPatterns;
+            return this;
+        }
 
-            GTLayerOreFeatureConfiguration config = new GTLayerOreFeatureConfiguration(GTOreFeatureEntry.this, 0, layerPatterns);
-            return new ConfiguredFeature<>(GTFeatures.LAYER_ORE, config);
+        @Override
+        public Codec<? extends VeinGenerator> codec() {
+            return CODEC;
         }
     }
 

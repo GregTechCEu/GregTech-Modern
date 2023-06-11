@@ -14,8 +14,8 @@ import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.client.renderer.GTRendererProvider;
-import com.gregtechceu.gtlib.GTLib;
-import com.gregtechceu.gtlib.client.renderer.IRenderer;
+import com.lowdragmc.lowdraglib.LDLib;
+import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import com.tterrag.registrate.Registrate;
 import com.tterrag.registrate.builders.BlockBuilder;
 import com.tterrag.registrate.builders.ItemBuilder;
@@ -200,8 +200,9 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> {
                 })
                 .color(() -> () -> IMachineBlock::colorTinted)
                 .initialProperties(() -> Blocks.DISPENSER)
+                .properties(properties -> properties.noLootTable())
                 .addLayer(() -> RenderType::cutoutMipped)
-                .tag(GTToolType.WRENCH.harvestTag)
+                //.tag(GTToolType.WRENCH.harvestTag)
                 .blockstate(NonNullBiConsumer.noop())
                 .properties(blockProp)
                 .onRegister(b -> Arrays.stream(abilities).forEach(a -> a.register(tier, b)));
@@ -253,7 +254,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> {
             appearance = block::getDefaultState;
         }
         definition.setAppearance(appearance);
-        definition.setRenderer(GTLib.isClient() ? renderer.get() : IRenderer.EMPTY);
+        definition.setRenderer(LDLib.isClient() ? renderer.get() : IRenderer.EMPTY);
         definition.setShape(shape);
         definition.setDefaultPaintingColor(paintingColor);
         GTRegistries.MACHINES.register(definition.getId(), definition);

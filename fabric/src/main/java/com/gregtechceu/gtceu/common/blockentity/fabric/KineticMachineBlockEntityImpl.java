@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.common.blockentity.KineticMachineBlockEntity;
 import com.jozufozu.flywheel.api.MaterialManager;
 import com.jozufozu.flywheel.backend.instancing.InstancedRenderRegistry;
 import com.jozufozu.flywheel.backend.instancing.blockentity.BlockEntityInstance;
-import com.gregtechceu.gtlib.GTLib;
+import com.lowdragmc.lowdraglib.LDLib;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -33,7 +33,7 @@ public class KineticMachineBlockEntityImpl extends KineticMachineBlockEntity{
                                              @Nullable NonNullSupplier<BiFunction<MaterialManager, KineticMachineBlockEntity, BlockEntityInstance<? super KineticMachineBlockEntity>>> instanceFactory,
                                              boolean renderNormally) {
         MetaMachineBlockEntityImpl.onBlockEntityRegister(blockEntityType);
-        if (instanceFactory != null && GTLib.isClient()) {
+        if (instanceFactory != null && LDLib.isClient()) {
             InstancedRenderRegistry.configure(blockEntityType)
                     .factory(instanceFactory.get())
                     .skipRender(be -> !renderNormally)

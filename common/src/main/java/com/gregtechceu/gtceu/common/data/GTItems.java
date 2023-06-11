@@ -1,8 +1,6 @@
 package com.gregtechceu.gtceu.common.data;
 
-import com.google.common.collect.ArrayTable;
-import com.google.common.collect.ImmutableTable;
-import com.google.common.collect.Table;
+import com.google.common.collect.*;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.cover.filter.SimpleFluidFilter;
@@ -29,9 +27,9 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.tag.TagUtil;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
-import com.gregtechceu.gtlib.side.fluid.FluidHelper;
-import com.gregtechceu.gtlib.side.fluid.FluidTransferHelper;
-import com.gregtechceu.gtlib.utils.LocalizationUtils;
+import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
+import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
+import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 import com.tterrag.registrate.builders.ItemBuilder;
 import com.tterrag.registrate.providers.DataGenContext;
 import com.tterrag.registrate.providers.ProviderType;
@@ -103,10 +101,21 @@ public class GTItems {
     public static void generateTools() {
         REGISTRATE.creativeModeTab(() -> TOOL);
 
+        HashMultimap<Integer, Tier> tiers = HashMultimap.create();
+        for (Tier tier : getAllToolTiers()) {
+            tiers.put(tier.getLevel(), tier);
+        }
+
         for (Material material : GTRegistries.MATERIALS.values()) {
             if (material.hasProperty(PropertyKey.TOOL)) {
                 var property = material.getProperty(PropertyKey.TOOL);
                 var tier = material.getToolTier();
+
+                List<Tier> lower = tiers.values().stream().filter(low -> low.getLevel() < tier.getLevel()).toList();
+                List<Tier> higher = tiers.values().stream().filter(high -> high.getLevel() > tier.getLevel()).toList();
+                tiers.put(tier.getLevel(), tier);
+                registerToolTier(tier, GTCEu.id(material.getName()), lower, higher);
+
                 for (GTToolType toolType : GTToolType.values()) {
                     if (property.hasType(toolType)) {
                         TOOL_ITEMS.put(tier, toolType, REGISTRATE.item("%s_%s".formatted(toolType.name, tier.material.getName().toLowerCase()), p -> GTToolItem.create(toolType, tier, p))
@@ -114,7 +123,7 @@ public class GTItems {
                                 .setData(ProviderType.LANG, NonNullBiConsumer.noop())
                                 .model(NonNullBiConsumer.noop())
                                 .color(() -> () -> GTToolItem::tintColor)
-                                .tag(toolType.itemTag)
+                                //.tag(toolType.itemTag)
                                 .register());
                     }
                 }
@@ -585,7 +594,7 @@ public class GTItems {
         lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
         lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 4 / 20));
    }))).register();
-    public static ItemEntry<ComponentItem> ELECTRIC_PUMP_HV = REGISTRATE.item("electric.pump.hv", ComponentItem::create).lang("V Electric Pump").onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[2]), new TooltipBehavior(lines -> {
+    public static ItemEntry<ComponentItem> ELECTRIC_PUMP_HV = REGISTRATE.item("electric.pump.hv", ComponentItem::create).lang("HV Electric Pump").onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[2]), new TooltipBehavior(lines -> {
         lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
         lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 16 / 20));
    }))).register();
@@ -1131,6 +1140,16 @@ public class GTItems {
 
     @ExpectPlatform
     public static <T extends Item> NonNullConsumer<T> modelPredicate(ResourceLocation predicate, Function<ItemStack, Float> property) {
+        throw new AssertionError();
+    }
+
+    @ExpectPlatform
+    public static void registerToolTier(MaterialToolTier tier, ResourceLocation id, Collection<Tier> before, Collection<Tier> after) {
+        throw new AssertionError();
+    }
+
+    @ExpectPlatform
+    public static List<? extends Tier> getAllToolTiers() {
         throw new AssertionError();
     }
 

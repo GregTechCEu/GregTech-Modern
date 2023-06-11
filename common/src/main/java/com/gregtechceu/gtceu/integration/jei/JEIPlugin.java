@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.integration.jei.multipage.MultiblockInfoCategory;
 import com.gregtechceu.gtceu.integration.jei.recipe.GTRecipeTypeCategory;
-import com.gregtechceu.gtlib.GTLib;
+import com.lowdragmc.lowdraglib.LDLib;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.constants.RecipeTypes;
 import mezz.jei.api.helpers.IJeiHelpers;
@@ -37,7 +37,7 @@ public class JEIPlugin implements IModPlugin {
 
     @Override
     public void registerCategories(@Nonnull IRecipeCategoryRegistration registry) {
-        if (GTLib.isReiLoaded()) return;
+        if (LDLib.isReiLoaded()) return;
         GTCEu.LOGGER.info("JEI register categories");
         IJeiHelpers jeiHelpers = registry.getJeiHelpers();
         registry.addRecipeCategories(new MultiblockInfoCategory(jeiHelpers));
@@ -50,7 +50,7 @@ public class JEIPlugin implements IModPlugin {
 
     @Override
     public void registerRecipeCatalysts(@Nonnull IRecipeCatalystRegistration registration) {
-        if (GTLib.isReiLoaded()) return;
+        if (LDLib.isReiLoaded()) return;
         MultiblockInfoCategory.registerRecipeCatalysts(registration);
         GTRecipeTypeCategory.registerRecipeCatalysts(registration);
         for (MachineDefinition definition : GTMachines.ELECTRIC_FURNACE) {
@@ -60,7 +60,7 @@ public class JEIPlugin implements IModPlugin {
 
     @Override
     public void registerRecipes(@Nonnull IRecipeRegistration registration) {
-        if (GTLib.isReiLoaded()) return;
+        if (LDLib.isReiLoaded()) return;
         GTCEu.LOGGER.info("JEI register");
         MultiblockInfoCategory.registerRecipes(registration);
         GTRecipeTypeCategory.registerRecipes(registration);
@@ -68,7 +68,7 @@ public class JEIPlugin implements IModPlugin {
 
     @Override
     public void registerIngredients(@Nonnull IModIngredientRegistration registry) {
-        if (GTLib.isReiLoaded()) return;
+        if (LDLib.isReiLoaded()) return;
         GTCEu.LOGGER.info("JEI register ingredients");
     }
 }

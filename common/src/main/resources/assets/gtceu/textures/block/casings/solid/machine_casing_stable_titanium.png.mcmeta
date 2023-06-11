@@ -1,5 +1,5 @@
 {
-    "gtlib": {
+    "ldlib": {
         "connection": "gtceu:block/casings/solid/machine_casing_stable_titanium_ctm"
     }
 }

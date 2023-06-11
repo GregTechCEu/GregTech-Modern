@@ -3,8 +3,8 @@ package com.gregtechceu.gtceu;
 import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
-import com.gregtechceu.gtlib.GTLib;
-import com.gregtechceu.gtlib.Platform;
+import com.lowdragmc.lowdraglib.LDLib;
+import com.lowdragmc.lowdraglib.Platform;
 import net.minecraft.resources.ResourceLocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,14 +43,14 @@ public class GTCEu {
     }
 
     public static boolean isKubeJSLoaded() {
-        return GTLib.isModLoaded(MODID_KUBEJS);
+        return LDLib.isModLoaded(MODID_KUBEJS);
     }
 
     public static boolean isCreateLoaded() {
-        return GTLib.isModLoaded(MODID_CREATE);
+        return LDLib.isModLoaded(MODID_CREATE);
     }
 
     public static boolean isIrisLoaded() {
-        return GTLib.isModLoaded(MODID_IRIS);
+        return LDLib.isModLoaded(MODID_IRIS);
     }
 }

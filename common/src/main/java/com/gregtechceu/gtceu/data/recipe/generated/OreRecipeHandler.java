@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -20,6 +21,7 @@ import java.util.function.Consumer;
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.HIGH_SIFTER_OUTPUT;
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.ore;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
 
@@ -27,6 +29,14 @@ public class OreRecipeHandler {
     // Make sure to update OreByProduct jei page with any byproduct changes made here!
 
     public static void init(Consumer<FinishedRecipe> provider) {
+        if (ConfigHolder.INSTANCE.worldgen.allUniqueStoneTypes) {
+            for (TagPrefix ore : ORES.keySet()) {
+                ore.executeHandler(PropertyKey.ORE, (tagPrefix, material, property) -> processOre(tagPrefix, material, property, provider));
+            }
+        } else {
+            ore.executeHandler(PropertyKey.ORE, (tagPrefix, material, property) -> processOre(tagPrefix, material, property, provider));
+        }
+        /*
         ore.executeHandler(PropertyKey.ORE, (tagPrefix, material, property) -> processOre(tagPrefix, material, property, provider));
         oreGranite.executeHandler(PropertyKey.ORE, (tagPrefix, material, property) -> processOre(tagPrefix, material, property, provider));
         oreDiorite.executeHandler(PropertyKey.ORE, (tagPrefix, material, property) -> processOre(tagPrefix, material, property, provider));
@@ -38,6 +48,7 @@ public class OreRecipeHandler {
         oreBasalt.executeHandler(PropertyKey.ORE, (tagPrefix, material, property) -> processOre(tagPrefix, material, property, provider));
         oreNetherrack.executeHandler(PropertyKey.ORE, (tagPrefix, material, property) -> processOre(tagPrefix, material, property, provider));
         oreEndstone.executeHandler(PropertyKey.ORE, (tagPrefix, material, property) -> processOre(tagPrefix, material, property, provider));
+         */
 
         crushed.executeHandler(PropertyKey.ORE, (tagPrefix, material, property) -> processCrushedOre(tagPrefix, material, property, provider));
         crushedPurified.executeHandler(PropertyKey.ORE, (tagPrefix, material, property) -> processCrushedPurified(tagPrefix, material, property, provider));
@@ -75,7 +86,7 @@ public class OreRecipeHandler {
         } else {
             ingotStack = ChemicalHelper.get(dust, smeltingMaterial);
         }
-        int oreMultiplier = orePrefix == oreEndstone || orePrefix == oreNetherrack || orePrefix == oreBasalt ? 2 : 1;
+        int oreMultiplier = TagPrefix.ORES.get(orePrefix).isNether() ? 2 : 1;
         ingotStack.setCount(ingotStack.getCount() * property.getOreMultiplier() * oreMultiplier);
         crushedStack.setCount(crushedStack.getCount() * property.getOreMultiplier());
 

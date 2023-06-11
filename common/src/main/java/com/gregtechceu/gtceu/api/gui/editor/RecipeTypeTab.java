@@ -2,14 +2,14 @@ package com.gregtechceu.gtceu.api.gui.editor;
 
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtlib.gui.editor.annotation.RegisterUI;
-import com.gregtechceu.gtlib.gui.editor.configurator.IConfigurableWidget;
-import com.gregtechceu.gtlib.gui.editor.data.Resources;
-import com.gregtechceu.gtlib.gui.editor.ui.menu.MenuTab;
-import com.gregtechceu.gtlib.gui.texture.IGuiTexture;
-import com.gregtechceu.gtlib.gui.texture.ItemStackTexture;
-import com.gregtechceu.gtlib.gui.util.TreeBuilder;
-import com.gregtechceu.gtlib.gui.widget.Widget;
+import com.lowdragmc.lowdraglib.gui.editor.annotation.LDLRegister;
+import com.lowdragmc.lowdraglib.gui.editor.configurator.IConfigurableWidget;
+import com.lowdragmc.lowdraglib.gui.editor.data.Resources;
+import com.lowdragmc.lowdraglib.gui.editor.ui.menu.MenuTab;
+import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
+import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
+import com.lowdragmc.lowdraglib.gui.util.TreeBuilder;
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import net.minecraft.world.item.Items;
 
 import java.util.ArrayList;
@@ -22,7 +22,7 @@ import java.util.Map;
  * @date 2023/3/29
  * @implNote RecipeTypeMenu
  */
-@RegisterUI(name = "recipe_type_tab", group = "menu")
+@LDLRegister(name = "recipe_type_tab", group = "menu")
 public class RecipeTypeTab extends MenuTab {
 
     protected TreeBuilder.Menu createMenu() {

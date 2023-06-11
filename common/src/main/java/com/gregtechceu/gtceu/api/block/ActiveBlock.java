@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.block;
 
-import com.gregtechceu.gtlib.client.renderer.IBlockRendererProvider;
-import com.gregtechceu.gtlib.client.renderer.IRenderer;
+import com.lowdragmc.lowdraglib.client.renderer.IBlockRendererProvider;
+import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

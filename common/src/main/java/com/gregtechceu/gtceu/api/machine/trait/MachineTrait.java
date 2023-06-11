@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.api.machine.trait;
 
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtlib.syncdata.IManaged;
-import com.gregtechceu.gtlib.syncdata.field.FieldManagedStorage;
+import com.lowdragmc.lowdraglib.syncdata.IManaged;
+import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.core.Direction;

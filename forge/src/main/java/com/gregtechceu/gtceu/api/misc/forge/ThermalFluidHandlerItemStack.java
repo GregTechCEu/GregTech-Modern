@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.misc.forge;
 
 import com.gregtechceu.gtceu.api.capability.IThermalFluidHandlerItemStack;
-import com.gregtechceu.gtlib.side.fluid.forge.FluidHelperImpl;
+import com.lowdragmc.lowdraglib.side.fluid.forge.FluidHelperImpl;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;

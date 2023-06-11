@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.api.misc;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtlib.misc.ItemTransferList;
-import com.gregtechceu.gtlib.side.item.IItemTransfer;
+import com.lowdragmc.lowdraglib.misc.ItemTransferList;
+import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import lombok.Getter;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;

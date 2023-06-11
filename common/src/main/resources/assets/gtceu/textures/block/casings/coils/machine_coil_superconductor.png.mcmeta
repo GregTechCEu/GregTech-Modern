@@ -1,5 +1,5 @@
 {
-    "gtlib": {
+    "ldlib": {
         "connection": "gtceu:block/casings/coils/machine_coil_superconductor_ctm"
     }
 }
