@@ -425,6 +425,102 @@ public class PetrochemRecipes {
                 .inputFluids(HeavyFuel.getFluid(20))
                 .outputFluids(Phenol.getFluid(5))
                 .duration(32).EUt(24).save(provider);
+
+        DISTILLERY_RECIPES.recipeBuilder("distill_oil_to_sulfuric_heavy_fuel")
+                .circuitMeta(1)
+                .inputFluids(Oil.getFluid(50))
+                .outputFluids(SulfuricHeavyFuel.getFluid(15))
+                .duration(40).EUt(24).save(provider);
+
+        DISTILLERY_RECIPES.recipeBuilder("distill_oil_to_sulfuric_light_fuel")
+                .circuitMeta(2)
+                .inputFluids(Oil.getFluid(25))
+                .outputFluids(SulfuricLightFuel.getFluid(20))
+                .duration(20).EUt(24).save(provider);
+
+        DISTILLERY_RECIPES.recipeBuilder("distill_oil_to_sulfuric_naphtha")
+                .circuitMeta(3)
+                .inputFluids(Oil.getFluid(50))
+                .outputFluids(SulfuricNaphtha.getFluid(20))
+                .duration(40).EUt(24).save(provider);
+
+        DISTILLERY_RECIPES.recipeBuilder("distill_oil_to_sulfuric_gas")
+                .circuitMeta(4)
+                .inputFluids(Oil.getFluid(25))
+                .outputFluids(SulfuricGas.getFluid(30))
+                .duration(20).EUt(24).save(provider);
+
+        DISTILLERY_RECIPES.recipeBuilder("distill_heavy_oil_to_sulfuric_heavy_fuel")
+                .circuitMeta(1)
+                .inputFluids(OilHeavy.getFluid(50))
+                .outputFluids(SulfuricHeavyFuel.getFluid(125))
+                .duration(20).EUt(72).save(provider);
+
+        DISTILLERY_RECIPES.recipeBuilder("distill_heavy_oil_to_sulfuric_light_fuel")
+                .circuitMeta(2)
+                .inputFluids(OilHeavy.getFluid(100))
+                .outputFluids(SulfuricLightFuel.getFluid(45))
+                .duration(40).EUt(72).save(provider);
+
+        DISTILLERY_RECIPES.recipeBuilder("distill_heavy_oil_to_sulfuric_naphtha")
+                .circuitMeta(3)
+                .inputFluids(OilHeavy.getFluid(100))
+                .outputFluids(SulfuricNaphtha.getFluid(15))
+                .duration(40).EUt(72).save(provider);
+
+        DISTILLERY_RECIPES.recipeBuilder("distill_heavy_oil_to_sulfuric_gas")
+                .circuitMeta(4)
+                .inputFluids(OilHeavy.getFluid(50))
+                .outputFluids(SulfuricGas.getFluid(30))
+                .duration(20).EUt(72).save(provider);
+
+        DISTILLERY_RECIPES.recipeBuilder("distill_raw_oil_to_sulfuric_heavy_fuel")
+                .circuitMeta(1)
+                .inputFluids(RawOil.getFluid(100))
+                .outputFluids(SulfuricHeavyFuel.getFluid(10))
+                .duration(40).EUt(24).save(provider);
+
+        DISTILLERY_RECIPES.recipeBuilder("distill_raw_oil_to_sulfuric_light_fuel")
+                .circuitMeta(2)
+                .inputFluids(RawOil.getFluid(50))
+                .outputFluids(SulfuricLightFuel.getFluid(25))
+                .duration(20).EUt(24).save(provider);
+
+        DISTILLERY_RECIPES.recipeBuilder("distill_raw_oil_to_sulfuric_naphtha")
+                .circuitMeta(3)
+                .inputFluids(RawOil.getFluid(100))
+                .outputFluids(SulfuricNaphtha.getFluid(150))
+                .duration(40).EUt(24).save(provider);
+
+        DISTILLERY_RECIPES.recipeBuilder("distill_raw_oil_to_sulfuric_gas")
+                .circuitMeta(4)
+                .inputFluids(RawOil.getFluid(50))
+                .outputFluids(SulfuricGas.getFluid(30))
+                .duration(20).EUt(24).save(provider);
+
+        DISTILLERY_RECIPES.recipeBuilder("distill_light_oil_to_sulfuric_heavy_fuel")
+                .circuitMeta(1)
+                .inputFluids(OilLight.getFluid(150))
+                .outputFluids(SulfuricHeavyFuel.getFluid(10))
+                .duration(40).EUt(24).save(provider);
+
+        DISTILLERY_RECIPES.recipeBuilder("distill_light_oil_to_sulfuric_light_fuel")
+                .circuitMeta(2)
+                .inputFluids(OilLight.getFluid(150))
+                .outputFluids(SulfuricLightFuel.getFluid(20))
+                .duration(40).EUt(24).save(provider);
+
+        DISTILLERY_RECIPES.recipeBuilder("distill_light_oil_to_sulfuric_naphtha")
+                .circuitMeta(4)
+                .inputFluids(OilLight.getFluid(150))
+                .outputFluids(SulfuricNaphtha.getFluid(30))
+                .duration(40).EUt(24).save(provider);
+
+        DISTILLERY_RECIPES.recipeBuilder("distill_light_oil_to_sulfuric_gas")
+                .circuitMeta(4)
+                .inputFluids(OilLight.getFluid(30))
+                .outputFluids(SulfuricGas.getFluid(48))
+                .duration(8).EUt(24).save(provider);
     }
 
     private static void lightlyCrack(Consumer<FinishedRecipe> provider, Material raw, Material hydroCracked, Material steamCracked) {
