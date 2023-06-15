@@ -6,18 +6,16 @@ import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Setter;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
-import net.minecraft.world.level.levelgen.placement.PlacementContext;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * @author KilaBash
- * @date 2023/3/20
+ * @author Screret
+ * @date 2023/6/9
  * @implNote GTOreFeatureConfiguration
  */
 public class GTOreFeatureConfiguration implements FeatureConfiguration {

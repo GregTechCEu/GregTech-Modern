@@ -9,16 +9,13 @@ import com.gregtechceu.gtceu.common.data.GTPlacements;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
 import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.data.worldgen.placement.PlacementUtils;
 import net.minecraft.data.worldgen.placement.VegetationPlacements;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.BiomeTags;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.blockpredicates.BlockPredicate;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
@@ -41,7 +38,7 @@ public class GTFeaturesImpl {
         //ores
         for (var entry : GTOreFeatureEntry.ALL.entrySet()) {
             ResourceLocation id = entry.getKey();
-            var datagenExt = entry.getValue().datagenExt();
+            var datagenExt = entry.getValue().veinGenerator();
             if (datagenExt != null) {
                 Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, id, datagenExt.createConfiguredFeature());
             }

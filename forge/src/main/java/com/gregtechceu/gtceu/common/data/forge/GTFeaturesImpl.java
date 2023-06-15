@@ -34,8 +34,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.holdersets.AnyHolderSet;
 
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * @author KilaBash
@@ -56,7 +54,7 @@ public class GTFeaturesImpl {
     public static void register() {
         for (var entry : GTOreFeatureEntry.ALL.entrySet()) {
             ResourceLocation id = entry.getKey();
-            var datagenExt = entry.getValue().datagenExt();
+            var datagenExt = entry.getValue().veinGenerator();
             if (datagenExt != null) {
                 CONFIGURED_FEATURE_REGISTER.register(id.getPath(), datagenExt::createConfiguredFeature);
             }

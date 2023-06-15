@@ -48,7 +48,7 @@ public class OreDataLoader extends SimpleJsonResourceReloadListener {
             }
         }
         for (GTOreFeatureEntry entry : GTOreFeatureEntry.ALL.values()) {
-            entry.datagenExt().build();
+            entry.veinGenerator().build();
         }
     }
 
