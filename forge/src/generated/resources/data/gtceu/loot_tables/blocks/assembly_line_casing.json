@@ -11,7 +11,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "gtceu:casing_titanium_turbine"
+          "name": "gtceu:assembly_line_casing"
         }
       ],
       "rolls": 1.0

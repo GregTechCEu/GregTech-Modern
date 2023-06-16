@@ -11,7 +11,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "gtceu:casing_polytetrafluoroethylene_pipe"
+          "name": "gtceu:clean_machine_casing"
         }
       ],
       "rolls": 1.0

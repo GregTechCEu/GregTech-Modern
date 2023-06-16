@@ -11,7 +11,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "gtceu:casing_tungstensteel_turbine"
+          "name": "gtceu:tungstensteel_turbine_casing"
         }
       ],
       "rolls": 1.0

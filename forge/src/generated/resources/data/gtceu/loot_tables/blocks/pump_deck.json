@@ -11,7 +11,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "gtceu:casing_titanium_stable"
+          "name": "gtceu:pump_deck"
         }
       ],
       "rolls": 1.0

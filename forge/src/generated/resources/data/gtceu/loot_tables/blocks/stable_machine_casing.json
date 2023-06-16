@@ -11,7 +11,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "gtceu:casing_primitive_bricks"
+          "name": "gtceu:stable_machine_casing"
         }
       ],
       "rolls": 1.0

@@ -11,7 +11,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "gtceu:casing_hsse_sturdy"
+          "name": "gtceu:stainless_turbine_casing"
         }
       ],
       "rolls": 1.0

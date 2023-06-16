@@ -11,7 +11,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "gtceu:casing_steel_turbine"
+          "name": "gtceu:steel_pipe_casing"
         }
       ],
       "rolls": 1.0
