@@ -1,6 +1,6 @@
 {
   "values": [
-    "gtceu:battery.uv.naquadria",
-    "gtceu:energy.cluster"
+    "gtceu:uv_naquadria_battery",
+    "gtceu:energy_cluster"
   ]
 }

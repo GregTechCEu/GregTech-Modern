@@ -1,0 +1,206 @@
+{
+  "parent": "minecraft:item/generated",
+  "overrides": [
+    {
+      "model": "gtceu:item/programmed_circuit/0",
+      "predicate": {
+        "gtceu:circuit": 0.0
+      }
+    },
+    {
+      "model": "gtceu:item/programmed_circuit/1",
+      "predicate": {
+        "gtceu:circuit": 0.01
+      }
+    },
+    {
+      "model": "gtceu:item/programmed_circuit/2",
+      "predicate": {
+        "gtceu:circuit": 0.02
+      }
+    },
+    {
+      "model": "gtceu:item/programmed_circuit/3",
+      "predicate": {
+        "gtceu:circuit": 0.03
+      }
+    },
+    {
+      "model": "gtceu:item/programmed_circuit/4",
+      "predicate": {
+        "gtceu:circuit": 0.04
+      }
+    },
+    {
+      "model": "gtceu:item/programmed_circuit/5",
+      "predicate": {
+        "gtceu:circuit": 0.05
+      }
+    },
+    {
+      "model": "gtceu:item/programmed_circuit/6",
+      "predicate": {
+        "gtceu:circuit": 0.06
+      }
+    },
+    {
+      "model": "gtceu:item/programmed_circuit/7",
+      "predicate": {
+        "gtceu:circuit": 0.07
+      }
+    },
+    {
+      "model": "gtceu:item/programmed_circuit/8",
+      "predicate": {
+        "gtceu:circuit": 0.08
+      }
+    },
+    {
+      "model": "gtceu:item/programmed_circuit/9",
+      "predicate": {
+        "gtceu:circuit": 0.09
+      }
+    },
+    {
+      "model": "gtceu:item/programmed_circuit/10",
+      "predicate": {
+        "gtceu:circuit": 0.1
+      }
+    },
+    {
+      "model": "gtceu:item/programmed_circuit/11",
+      "predicate": {
+        "gtceu:circuit": 0.11
+      }
+    },
+    {
+      "model": "gtceu:item/programmed_circuit/12",
+      "predicate": {
+        "gtceu:circuit": 0.12
+      }
+    },
+    {
+      "model": "gtceu:item/programmed_circuit/13",
+      "predicate": {
+        "gtceu:circuit": 0.13
+      }
+    },
+    {
+      "model": "gtceu:item/programmed_circuit/14",
+      "predicate": {
+        "gtceu:circuit": 0.14
+      }
+    },
+    {
+      "model": "gtceu:item/programmed_circuit/15",
+      "predicate": {
+        "gtceu:circuit": 0.15
+      }
+    },
+    {
+      "model": "gtceu:item/programmed_circuit/16",
+      "predicate": {
+        "gtceu:circuit": 0.16
+      }
+    },
+    {
+      "model": "gtceu:item/programmed_circuit/17",
+      "predicate": {
+        "gtceu:circuit": 0.17
+      }
+    },
+    {
+      "model": "gtceu:item/programmed_circuit/18",
+      "predicate": {
+        "gtceu:circuit": 0.18
+      }
+    },
+    {
+      "model": "gtceu:item/programmed_circuit/19",
+      "predicate": {
+        "gtceu:circuit": 0.19
+      }
+    },
+    {
+      "model": "gtceu:item/programmed_circuit/20",
+      "predicate": {
+        "gtceu:circuit": 0.2
+      }
+    },
+    {
+      "model": "gtceu:item/programmed_circuit/21",
+      "predicate": {
+        "gtceu:circuit": 0.21
+      }
+    },
+    {
+      "model": "gtceu:item/programmed_circuit/22",
+      "predicate": {
+        "gtceu:circuit": 0.22
+      }
+    },
+    {
+      "model": "gtceu:item/programmed_circuit/23",
+      "predicate": {
+        "gtceu:circuit": 0.23
+      }
+    },
+    {
+      "model": "gtceu:item/programmed_circuit/24",
+      "predicate": {
+        "gtceu:circuit": 0.24
+      }
+    },
+    {
+      "model": "gtceu:item/programmed_circuit/25",
+      "predicate": {
+        "gtceu:circuit": 0.25
+      }
+    },
+    {
+      "model": "gtceu:item/programmed_circuit/26",
+      "predicate": {
+        "gtceu:circuit": 0.26
+      }
+    },
+    {
+      "model": "gtceu:item/programmed_circuit/27",
+      "predicate": {
+        "gtceu:circuit": 0.27
+      }
+    },
+    {
+      "model": "gtceu:item/programmed_circuit/28",
+      "predicate": {
+        "gtceu:circuit": 0.28
+      }
+    },
+    {
+      "model": "gtceu:item/programmed_circuit/29",
+      "predicate": {
+        "gtceu:circuit": 0.29
+      }
+    },
+    {
+      "model": "gtceu:item/programmed_circuit/30",
+      "predicate": {
+        "gtceu:circuit": 0.3
+      }
+    },
+    {
+      "model": "gtceu:item/programmed_circuit/31",
+      "predicate": {
+        "gtceu:circuit": 0.31
+      }
+    },
+    {
+      "model": "gtceu:item/programmed_circuit/32",
+      "predicate": {
+        "gtceu:circuit": 0.32
+      }
+    }
+  ],
+  "textures": {
+    "layer0": "gtceu:item/programmed_circuit/1"
+  }
+}

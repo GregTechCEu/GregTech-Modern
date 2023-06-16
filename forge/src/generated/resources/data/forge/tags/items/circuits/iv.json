@@ -1,8 +1,8 @@
 {
   "values": [
-    "gtceu:circuit.mainframe",
-    "gtceu:circuit.nano_computer",
-    "gtceu:circuit.quantum_assembly",
-    "gtceu:circuit.crystal_processor"
+    "gtceu:mainframe",
+    "gtceu:nano_computer",
+    "gtceu:quantum_assembly",
+    "gtceu:crystal_processor"
   ]
 }

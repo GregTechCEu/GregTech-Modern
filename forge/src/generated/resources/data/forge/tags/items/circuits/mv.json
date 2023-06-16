@@ -1,7 +1,7 @@
 {
   "values": [
-    "gtceu:circuit.good_electronic",
-    "gtceu:circuit.good_integrated",
-    "gtceu:circuit.processor"
+    "gtceu:good_electronic_circuit",
+    "gtceu:good_integrated_circuit",
+    "gtceu:integrated_processor"
   ]
 }

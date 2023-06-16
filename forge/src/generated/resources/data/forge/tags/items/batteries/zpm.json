@@ -1,6 +1,6 @@
 {
   "values": [
-    "gtceu:battery.zpm.naquadria",
-    "gtceu:energy.module"
+    "gtceu:zpm_naquadria_battery",
+    "gtceu:energy_module"
   ]
 }
