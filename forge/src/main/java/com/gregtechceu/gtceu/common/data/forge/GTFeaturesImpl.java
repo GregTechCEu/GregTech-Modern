@@ -54,7 +54,7 @@ public class GTFeaturesImpl {
     public static void register() {
         for (var entry : GTOreFeatureEntry.ALL.entrySet()) {
             ResourceLocation id = entry.getKey();
-            var datagenExt = entry.getValue().veinGenerator();
+            var datagenExt = entry.getValue().getVeinGenerator();
             if (datagenExt != null) {
                 CONFIGURED_FEATURE_REGISTER.register(id.getPath(), datagenExt::createConfiguredFeature);
             }
