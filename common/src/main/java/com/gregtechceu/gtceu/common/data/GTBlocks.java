@@ -314,10 +314,10 @@ public class GTBlocks {
     public static final BlockEntry<Block> HERMETIC_CASING_UV = createHermeticCasing(GTValues.UV);
     public static final BlockEntry<Block> HERMETIC_CASING_UHV = createHermeticCasing(GTValues.UHV);
 
-    public static final BlockEntry<Block> BRONZE_HULL = createSteamCasing("bronze");
-    public static final BlockEntry<Block> BRONZE_BRICKS_HULL = createSteamCasing("bricked_bronze");
-    public static final BlockEntry<Block> STEEL_HULL = createSteamCasing("steel");
-    public static final BlockEntry<Block> STEEL_BRICKS_HULL = createSteamCasing("bricked_steel");
+    public static final BlockEntry<Block> BRONZE_HULL = createSteamCasing("bronze_machine_casing");
+    public static final BlockEntry<Block> BRONZE_BRICKS_HULL = createSteamCasing("bronze_brick_casing");
+    public static final BlockEntry<Block> STEEL_HULL = createSteamCasing("steel_machine_casing");
+    public static final BlockEntry<Block> STEEL_BRICKS_HULL = createSteamCasing("steel_brick_casing");
 
     public static final Map<ICoilType, Supplier<CoilBlock>> ALL_COILS = new HashMap<>();
     public static final BlockEntry<CoilBlock> COIL_CUPRONICKEL = createCoilBlock(CoilBlock.CoilType.CUPRONICKEL);
@@ -329,9 +329,9 @@ public class GTBlocks {
     public static final BlockEntry<CoilBlock> COIL_TRINIUM = createCoilBlock(CoilBlock.CoilType.TRINIUM);
     public static final BlockEntry<CoilBlock> COIL_TRITANIUM = createCoilBlock(CoilBlock.CoilType.TRITANIUM);
 
-    public static final BlockEntry<ActiveBlock> CASING_ENGINE_INTAKE = createActiveCasing("engine_intake", "block/variant/engine_intake");
-    public static final BlockEntry<ActiveBlock> CASING_EXTREME_ENGINE_INTAKE = createActiveCasing("extreme_engine_intake", "block/variant/extreme_engine_intake");
-    public static final BlockEntry<ActiveBlock> CASING_ASSEMBLY_LINE = createActiveCasing("assembly_line", "block/variant/assembly_line");
+    //public static final BlockEntry<ActiveBlock> CASING_ENGINE_INTAKE = createActiveCasing("engine_intake_active_casing", "block/variant/engine_intake");
+    //public static final BlockEntry<ActiveBlock> CASING_EXTREME_ENGINE_INTAKE = createActiveCasing("extreme_engine_intake_active_casing", "block/variant/extreme_engine_intake");
+    public static final BlockEntry<ActiveBlock> CASING_ASSEMBLY_LINE = createActiveCasing("assembly_line_machine_casing", "block/variant/assembly_line");
 
     public static final Map<BoilerFireboxType, BlockEntry<ActiveBlock>> ALL_FIREBOXES = new HashMap<>();
     public static final BlockEntry<ActiveBlock> FIREBOX_BRONZE = createFireboxCasing(BoilerFireboxType.BRONZE_FIREBOX);
@@ -359,7 +359,7 @@ public class GTBlocks {
 
     private static BlockEntry<Block> createMachineCasingBlock(int tier) {
         String tierName = GTValues.VN[tier].toLowerCase();
-        return REGISTRATE.block("hull_casing_%s".formatted(tierName), p -> (Block) new RendererBlock(p,
+        return REGISTRATE.block("%s_machine_casing".formatted(tierName), p -> (Block) new RendererBlock(p,
                         new TextureOverrideRenderer( GTCEu.id("block/cube_bottom_top_tintindex"),
                                 Map.of("bottom",  GTCEu.id("block/casings/voltage/%s/bottom".formatted(tierName)),
                                         "top",  GTCEu.id("block/casings/voltage/%s/top".formatted(tierName)),
@@ -377,7 +377,7 @@ public class GTBlocks {
 
     private static BlockEntry<Block> createHermeticCasing(int tier) {
         String tierName = GTValues.VN[tier].toLowerCase();
-        return REGISTRATE.block("hermetic_casing_%s".formatted(tierName), p -> (Block) new RendererBlock(p,
+        return REGISTRATE.block("%s_hermetic_casing".formatted(tierName), p -> (Block) new RendererBlock(p,
                         new TextureOverrideRenderer( GTCEu.id("block/hermetic_casing"),
                                 Map.of("bot_bottom",  GTCEu.id("block/casings/voltage/%s/bottom".formatted(tierName)),
                                         "bot_top",  GTCEu.id("block/casings/voltage/%s/top".formatted(tierName)),
@@ -395,7 +395,7 @@ public class GTBlocks {
     }
 
     private static BlockEntry<Block> createSteamCasing(String name) {
-        return REGISTRATE.block("steam_casing_%s".formatted(name), p -> (Block) new RendererBlock(p,
+        return REGISTRATE.block(name, p -> (Block) new RendererBlock(p,
                         new TextureOverrideRenderer(new ResourceLocation("block/cube_bottom_top"),
                                 Map.of("bottom",  GTCEu.id("block/casings/steam/%s/bottom".formatted(name)),
                                         "top",  GTCEu.id("block/casings/steam/%s/top".formatted(name)),
@@ -411,7 +411,7 @@ public class GTBlocks {
     }
 
     private static BlockEntry<CoilBlock> createCoilBlock(ICoilType coilType) {
-        BlockEntry<CoilBlock> coilBlock = REGISTRATE.block("wire_coil_%s".formatted(coilType.getName()), p -> new CoilBlock(p, coilType))
+        BlockEntry<CoilBlock> coilBlock = REGISTRATE.block("%s_coil_block".formatted(coilType.getName()), p -> new CoilBlock(p, coilType))
                 .initialProperties(() -> Blocks.IRON_BLOCK)
                 .addLayer(() -> RenderType::cutoutMipped)
                 .blockstate(NonNullBiConsumer.noop())
@@ -425,7 +425,7 @@ public class GTBlocks {
     }
 
     private static BlockEntry<ActiveBlock> createActiveCasing(String name, String baseModelPath) {
-        String finalName = "active_casing_%s".formatted(name);
+        String finalName = "%s".formatted(name);
         return REGISTRATE.block(finalName, p -> new ActiveBlock(p,
                         new CTMModelRenderer(GTCEu.id(baseModelPath)),
                         new CTMModelRenderer(GTCEu.id("%s_active".formatted(baseModelPath)))))
@@ -440,7 +440,8 @@ public class GTBlocks {
     }
 
     private static BlockEntry<ActiveBlock> createFireboxCasing(BoilerFireboxType type) {
-        BlockEntry<ActiveBlock> block = REGISTRATE.block(type.name(), p -> new ActiveBlock(p,
+        BlockEntry<ActiveBlock> block = REGISTRATE
+                .block(type.name(), p -> new ActiveBlock(p,
                         new TextureOverrideRenderer(new ResourceLocation("block/cube_bottom_top"),
                                 Map.of("bottom", type.bottom(),
                                         "top", type.top(),
@@ -471,7 +472,7 @@ public class GTBlocks {
                 }
             }, properties))
             .initialProperties(() -> Blocks.OAK_SAPLING)
-            .lang("Rubber Tree Sapling")
+            .lang("Rubber Sapling")
             .blockstate((ctx, prov) -> prov.simpleBlock(ctx.getEntry(), prov.models().cross(Registry.BLOCK.getKey(ctx.getEntry()).getPath(), prov.blockTexture(ctx.getEntry()))))
             .addLayer(() -> RenderType::cutoutMipped)
             .tag(BlockTags.SAPLINGS)
@@ -485,15 +486,15 @@ public class GTBlocks {
                             (state) -> state.getValue(RotatedPillarBlock.AXIS) == Direction.Axis.Y ? MaterialColor.TERRACOTTA_GRAY : MaterialColor.COLOR_YELLOW))
             .properties(p -> p.strength(2.0F).sound(SoundType.WOOD))
             .loot((lt, b) -> lt.add(b, LootTable.lootTable()
-                        .withPool(BlockLoot.applyExplosionCondition(b, LootPool.lootPool().setRolls(ConstantValue.exactly(1.0F)))
-                                .add(LootItem.lootTableItem(b)))
-                        .withPool(BlockLoot.applyExplosionCondition(b, LootPool.lootPool().setRolls(ConstantValue.exactly(1.0F)))
-                                .add(LootItem.lootTableItem(GTItems.STICKY_RESIN.get())
-                                        .when(LootItemBlockStatePropertyCondition.hasBlockStateProperties(b)
-                                                .setProperties(StatePropertiesPredicate.Builder.properties()
-                                                        .hasProperty(RubberLogBlock.NATURAL, true)))
-                                        .when(LootItemRandomChanceCondition.randomChance(0.85F))))))
-            .lang("Rubber Wood")
+                    .withPool(BlockLoot.applyExplosionCondition(b, LootPool.lootPool().setRolls(ConstantValue.exactly(1.0F)))
+                            .add(LootItem.lootTableItem(b)))
+                    .withPool(BlockLoot.applyExplosionCondition(b, LootPool.lootPool().setRolls(ConstantValue.exactly(1.0F)))
+                            .add(LootItem.lootTableItem(GTItems.STICKY_RESIN.get())
+                                    .when(LootItemBlockStatePropertyCondition.hasBlockStateProperties(b)
+                                            .setProperties(StatePropertiesPredicate.Builder.properties()
+                                                    .hasProperty(RubberLogBlock.NATURAL, true)))
+                                    .when(LootItemRandomChanceCondition.randomChance(0.85F))))))
+            .lang("Rubber Log")
             .tag(BlockTags.LOGS)
             .blockstate((ctx, provider) -> provider.logBlock(ctx.get()))
             .item()
@@ -519,7 +520,7 @@ public class GTBlocks {
     public static final BlockEntry<LeavesBlock> RUBBER_LEAVES = REGISTRATE
             .block("rubber_leaves", LeavesBlock::new)
             .initialProperties(() -> Blocks.OAK_LEAVES)
-            .lang("Rubber Tree Leaves")
+            .lang("Rubber Leaves")
             .blockstate((ctx, prov) -> prov.simpleBlock(ctx.getEntry(), prov.models().singleTexture(Registry.BLOCK.getKey(ctx.getEntry()).getPath(), prov.mcLoc(BLOCK_FOLDER + "/leaves"), "all", prov.blockTexture(ctx.getEntry()))))
             .loot((table, block) -> table.add(block, RegistrateBlockLootTables.createLeavesDrops(block, GTBlocks.RUBBER_SAPLING.get(), RUBBER_LEAVES_DROPPING_CHANCE)))
             .tag(BlockTags.LEAVES)
@@ -531,9 +532,9 @@ public class GTBlocks {
             .register();
 
     public static final BlockEntry<Block> RUBBER_PLANK = REGISTRATE
-            .block("rubber_plank", Block::new)
+            .block("rubber_planks", Block::new)
             .initialProperties(() -> Blocks.OAK_PLANKS)
-            .lang("Rubber Wood Planks")
+            .lang("Rubber Planks")
             .properties(p -> p.color(MaterialColor.TERRACOTTA_GRAY))
             .tag(BlockTags.PLANKS)
             .item()
@@ -542,7 +543,7 @@ public class GTBlocks {
             .register();
 
     public static final BlockEntry<Block> TREATED_WOOD_PLANK = REGISTRATE
-            .block("treated_wood_plank", Block::new)
+            .block("treated_wood_planks", Block::new)
             .initialProperties(() -> Blocks.OAK_PLANKS)
             .lang("Treated Wood Planks")
             .properties(p -> p.color(MaterialColor.TERRACOTTA_GRAY))
