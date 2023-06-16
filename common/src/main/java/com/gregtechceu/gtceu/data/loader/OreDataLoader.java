@@ -4,7 +4,10 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreFeatureEntry;
+import com.gregtechceu.gtceu.integration.kjs.GTCEuServerEvents;
+import com.gregtechceu.gtceu.integration.kjs.events.GTOreVeinEventJS;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.JsonOps;
 import net.minecraft.core.RegistryAccess;
@@ -39,16 +42,22 @@ public class OreDataLoader extends SimpleJsonResourceReloadListener {
             try {
                 GTOreFeatureEntry ore = fromJson(location, GsonHelper.convertToJsonObject(entry.getValue(), "top element"), ops);
                 if (ore == null) {
-                    LOGGER.info("Skipping loading ore {} as it's serializer returned null", location);
-                    continue;
+                    LOGGER.info("Skipping loading ore vein {} as it's serializer returned null", location);
+                } else if(ore.getVeinGenerator() instanceof GTOreFeatureEntry.NoopVeinGenerator) {
+                    LOGGER.info("Removing ore vein {} as it's generator was marked as no-operation", location);
+                    GTOreFeatureEntry.ALL.remove(location);
+                } else {
+                    GTOreFeatureEntry.ALL.put(location, ore);
                 }
-                GTOreFeatureEntry.ALL.put(location, ore);
             } catch (IllegalArgumentException | JsonParseException jsonParseException) {
-                LOGGER.error("Parsing error loading recipe {}", location, jsonParseException);
+                LOGGER.error("Parsing error loading ore vein {}", location, jsonParseException);
             }
         }
+        if (GTCEu.isKubeJSLoaded()) {
+            GTCEuServerEvents.ORE_VEIN_MODIFICATION.post(new GTOreVeinEventJS());
+        }
         for (GTOreFeatureEntry entry : GTOreFeatureEntry.ALL.values()) {
-            entry.veinGenerator().build();
+            entry.getVeinGenerator().build();
         }
     }
 

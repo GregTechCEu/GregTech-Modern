@@ -13,6 +13,9 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.*;
 import net.minecraft.data.BuiltinRegistries;
@@ -48,6 +51,7 @@ import java.util.stream.Collectors;
  */
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
+@Accessors(chain = true)
 public class GTOreFeatureEntry {
     public static final HashBiMap<ResourceLocation, GTOreFeatureEntry> ALL = HashBiMap.create();
 
@@ -74,18 +78,21 @@ public class GTOreFeatureEntry {
             ).apply(instance, GTOreFeatureEntry::new)
     );
 
-    public final int clusterSize;
-    public final float density;
-    public final int weight;
-    public final IWorldGenLayer layer;
-    public final HolderSet<DimensionType> dimensionFilter;
-    public final HeightRangePlacement range;
-    public final float discardChanceOnAirExposure;
+    public int clusterSize;
+    public float density;
+    public int weight;
+    public IWorldGenLayer layer;
+    public HolderSet<DimensionType> dimensionFilter;
+    @Getter
+    protected HeightRangePlacement range;
+    public float discardChanceOnAirExposure;
     public HolderSet<Biome> biomes;
     public BiomeWeightModifier biomeWeightModifier;
 
-    public final List<PlacementModifier> modifiers;
+    @Getter
+    private List<PlacementModifier> modifiers;
 
+    @Getter @Setter
     private VeinGenerator veinGenerator;
 
     public GTOreFeatureEntry(ResourceLocation id, int clusterSize, float density, int weight, IWorldGenLayer layer, HolderSet<DimensionType> dimensionFilter, HeightRangePlacement range, float discardChanceOnAirExposure, @Nullable HolderSet<Biome> biomes, @Nullable BiomeWeightModifier biomeWeightModifier, @Nullable GTOreFeatureEntry.VeinGenerator veinGenerator) {
@@ -93,7 +100,7 @@ public class GTOreFeatureEntry {
         ALL.put(id, this);
     }
 
-    public GTOreFeatureEntry(int clusterSize, float density, int weight, IWorldGenLayer layer, HolderSet<DimensionType> dimensionFilter, /*CountPlacement count,*/ HeightRangePlacement range, float discardChanceOnAirExposure, @Nullable HolderSet<Biome> biomes, @Nullable BiomeWeightModifier biomeWeightModifier, @Nullable GTOreFeatureEntry.VeinGenerator veinGenerator) {
+    public GTOreFeatureEntry(int clusterSize, float density, int weight, IWorldGenLayer layer, HolderSet<DimensionType> dimensionFilter, HeightRangePlacement range, float discardChanceOnAirExposure, @Nullable HolderSet<Biome> biomes, @Nullable BiomeWeightModifier biomeWeightModifier, @Nullable GTOreFeatureEntry.VeinGenerator veinGenerator) {
         this.clusterSize = clusterSize;
         this.density = density;
         this.weight = weight;
@@ -108,7 +115,6 @@ public class GTOreFeatureEntry {
         this.modifiers = List.of(
                 VeinCountFilter.count(),
                 BiomeFilter.biome(),
-                //this.count,
                 InSquarePlacement.spread(),
                 this.range
         );
@@ -116,6 +122,22 @@ public class GTOreFeatureEntry {
 
     public GTOreFeatureEntry biomes(TagKey<Biome> biomes) {
         this.biomes = BuiltinRegistries.BIOME.getOrCreateTag(biomes);
+        return this;
+    }
+
+    public GTOreFeatureEntry biomes(HolderSet<Biome> biomes) {
+        this.biomes = biomes;
+        return this;
+    }
+
+    public GTOreFeatureEntry range(HeightRangePlacement range) {
+        this.range = range;
+        this.modifiers = List.of(
+                VeinCountFilter.count(),
+                BiomeFilter.biome(),
+                InSquarePlacement.spread(),
+                this.range
+        );
         return this;
     }
 
@@ -131,11 +153,6 @@ public class GTOreFeatureEntry {
             veinGenerator = new LayeredVeinGenerator(this);
         }
         return (LayeredVeinGenerator) veinGenerator;
-    }
-
-    @Nullable
-    public GTOreFeatureEntry.VeinGenerator veinGenerator() {
-        return this.veinGenerator;
     }
 
     public static abstract class VeinGenerator {
@@ -183,6 +200,26 @@ public class GTOreFeatureEntry {
         }
 
         public abstract Codec<? extends VeinGenerator> codec();
+    }
+
+    public static class NoopVeinGenerator extends VeinGenerator {
+        public static final NoopVeinGenerator INSTANCE = new NoopVeinGenerator();
+        public static final Codec<NoopVeinGenerator> CODEC = Codec.unit(() -> INSTANCE);
+
+        @Override
+        public boolean generate(WorldGenLevel level, RandomSource random, GTOreFeatureEntry entry, BlockPos origin) {
+            return true;
+        }
+
+        @Override
+        public VeinGenerator build() {
+            return this;
+        }
+
+        @Override
+        public Codec<? extends VeinGenerator> codec() {
+            return CODEC;
+        }
     }
 
     public static class StandardVeinGenerator extends VeinGenerator {
