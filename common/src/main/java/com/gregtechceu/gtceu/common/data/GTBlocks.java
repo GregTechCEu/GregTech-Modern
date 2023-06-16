@@ -91,7 +91,7 @@ public class GTBlocks {
             // Compressed Block
             if ((material.hasProperty(PropertyKey.INGOT) || material.hasProperty(PropertyKey.GEM) || material.hasFlag(FORCE_GENERATE_BLOCK))
                     && !TagPrefix.block.isIgnored(material)) {
-                var entry = REGISTRATE.block("compressed_block_%s".formatted(material.getName()), properties -> new MaterialBlock(properties.noLootTable(), TagPrefix.block, material))
+                var entry = REGISTRATE.block("%s_block".formatted(material.getName()), properties -> new MaterialBlock(properties.noLootTable(), TagPrefix.block, material))
                         .initialProperties(() -> Blocks.IRON_BLOCK)
                         .transform(unificationBlock(TagPrefix.block, material))
                         .addLayer(() -> RenderType::solid)
@@ -110,7 +110,7 @@ public class GTBlocks {
 
             // Frame Block
             if (material.hasProperty(PropertyKey.DUST) && material.hasFlag(GENERATE_FRAME)) {
-                var entry = REGISTRATE.block("frame_block_%s".formatted(material.getName()), properties -> new MaterialBlock(properties.noLootTable(), TagPrefix.frameGt, material))
+                var entry = REGISTRATE.block("%s_frame".formatted(material.getName()), properties -> new MaterialBlock(properties.noLootTable(), TagPrefix.frameGt, material))
                         .initialProperties(() -> Blocks.IRON_BLOCK)
                         .properties(BlockBehaviour.Properties::noOcclusion)
                         .transform(unificationBlock(TagPrefix.frameGt, material))
@@ -134,7 +134,7 @@ public class GTBlocks {
                     if (ore.getKey().isIgnored(material)) continue;
                     var oreTag = ore.getKey();
                     final TagPrefix.OreType oreType = ore.getValue();
-                    var entry = REGISTRATE.block("%s_%s".formatted(FormattingUtil.toLowerCaseUnder(oreTag.name), material.getName()),
+                    var entry = REGISTRATE.block("%s_%s_ore".formatted(FormattingUtil.toLowerCaseUnder(oreTag.name), material.getName()),
                                     oreType.material(),
                                     properties -> new MaterialBlock(properties, oreTag, material, new OreBlockRenderer(oreType.stoneType(),
                                             Objects.requireNonNull(oreTag.materialIconType()).getBlockTexturePath(material.getMaterialIconSet(), true),

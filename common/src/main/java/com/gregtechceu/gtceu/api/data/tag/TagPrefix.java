@@ -652,7 +652,7 @@ public class TagPrefix {
     public static final TagPrefix frameGt = new TagPrefix("frameGt")
             .defaultTagPath(FORGE, "frames/%s")
             .defaultTagPath(FABRIC, "%s_frames")
-            .langValue("%s Frame Box")
+            .langValue("%s Frame")
             .materialAmount(GTValues.M * 2)
             .materialIconType(MaterialIconType.frameGt)
             .miningToolTag(GTToolType.WRENCH.harvestTag)
