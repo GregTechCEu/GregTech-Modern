@@ -375,6 +375,11 @@ public class GTRecipeBuilder {
         return this;
     }
 
+    public GTRecipeBuilder addData(String key, long data) {
+        this.data.putLong(key, data);
+        return this;
+    }
+
     public GTRecipeBuilder addData(String key, String data) {
         this.data.putString(key, data);
         return this;

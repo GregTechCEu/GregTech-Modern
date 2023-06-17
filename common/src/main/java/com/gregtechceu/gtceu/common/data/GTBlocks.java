@@ -351,6 +351,15 @@ public class GTBlocks {
     //public static final BlockEntry<ActiveBlock> CASING_ENGINE_INTAKE = createActiveCasing("engine_intake_active_casing", "block/variant/engine_intake");
     //public static final BlockEntry<ActiveBlock> CASING_EXTREME_ENGINE_INTAKE = createActiveCasing("extreme_engine_intake_active_casing", "block/variant/extreme_engine_intake");
 
+    //Fusion
+    public static final Map<IFusionCasingType, Supplier<FusionCasingBlock>> ALL_FUSION_CASINGS = new HashMap<>();
+    public static final BlockEntry<FusionCasingBlock> FUSION_CASING_SUPERCONDUCTOR = createFusionCasing(FusionCasingBlock.CasingType.SUPERCONDUCTOR_COIL);
+    public static final BlockEntry<FusionCasingBlock> FUSION_CASING_FUSION_COIL = createFusionCasing(FusionCasingBlock.CasingType.FUSION_COIL);
+    public static final BlockEntry<FusionCasingBlock> FUSION_CASING = createFusionCasing(FusionCasingBlock.CasingType.FUSION_CASING);
+    public static final BlockEntry<FusionCasingBlock> FUSION_CASING_MK2 = createFusionCasing(FusionCasingBlock.CasingType.FUSION_CASING_MK2);
+    public static final BlockEntry<FusionCasingBlock> FUSION_CASING_MK3 = createFusionCasing(FusionCasingBlock.CasingType.FUSION_CASING_MK3);
+    public static final BlockEntry<Block> CASING_FUSION_GLASS = createCasingBlock("fusion_glass", GTCEu.id("block/casings/transparent/fusion_glass"), () -> Blocks.GLASS);
+
     // Fireboxes
     public static final Map<BoilerFireboxType, BlockEntry<ActiveBlock>> ALL_FIREBOXES = new HashMap<>();
     public static final BlockEntry<ActiveBlock> FIREBOX_BRONZE = createFireboxCasing(BoilerFireboxType.BRONZE_FIREBOX);
@@ -464,6 +473,21 @@ public class GTBlocks {
                 .register();
         ALL_COILS.put(coilType, coilBlock);
         return coilBlock;
+    }
+
+    private static BlockEntry<FusionCasingBlock> createFusionCasing(IFusionCasingType casingType) {
+        BlockEntry<FusionCasingBlock> casingBlock = REGISTRATE.block(casingType.getSerializedName(), p -> new FusionCasingBlock(p, casingType))
+                .initialProperties(() -> Blocks.IRON_BLOCK)
+                .properties(properties -> properties.strength(5.0f, 10.0f).sound(SoundType.METAL))
+                .addLayer(() -> RenderType::cutoutMipped)
+                .blockstate(NonNullBiConsumer.noop())
+                .tag(GTToolType.WRENCH.harvestTag)
+                .item(RendererBlockItem::new)
+                .model(NonNullBiConsumer.noop())
+                .build()
+                .register();
+        ALL_FUSION_CASINGS.put(casingType, casingBlock);
+        return casingBlock;
     }
 
     private static BlockEntry<ActiveBlock> createActiveCasing(String name, String baseModelPath) {
