@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "gtceu:item/light_blue_dye"
+    "layer0": "gtceu:item/chemical_cyan_dye"
   }
 }

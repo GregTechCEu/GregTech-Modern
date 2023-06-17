@@ -163,7 +163,7 @@ public class GTItems {
     public static ItemEntry<Item> COMPRESSED_FIRECLAY = REGISTRATE.item("compressed_fireclay", Item::new)
             .lang("Compressed Fireclay")
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Fireclay, GTValues.M)))).register();
-    public static ItemEntry<Item> FIRECLAY_BRICK = REGISTRATE.item("fireclay_brick", Item::new)
+    public static ItemEntry<Item> FIRECLAY_BRICK = REGISTRATE.item("firebrick", Item::new)
             .lang("Firebrick")
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Fireclay, GTValues.M)))).register();
     public static ItemEntry<Item> COKE_OVEN_BRICK = REGISTRATE.item("coke_oven_brick", Item::new)
@@ -1047,7 +1047,7 @@ public class GTItems {
     static {
         for (int i = 0; i < DyeColor.values().length; i++) {
             var dyeColor = DyeColor.values()[i];
-            DYE_ONLY_ITEMS[i] = REGISTRATE.item(dyeColor.getName() + "_dye", Item::new)
+            DYE_ONLY_ITEMS[i] = REGISTRATE.item("chemical_%s_dye".formatted(dyeColor.getName()), Item::new)
                     .lang("Chemical %s Dye".formatted(toEnglishName(dyeColor.getName())))
                     .tag(TagUtil.createPlatformItemTag("dyes/" + dyeColor.getName(), dyeColor.getName() + "_dyes")).register();
         }
@@ -1057,7 +1057,7 @@ public class GTItems {
     static {
         for (int i = 0; i < DyeColor.values().length; i++) {
             var dyeColor = DyeColor.values()[i];
-            SPRAY_CAN_DYES[i] = REGISTRATE.item(dyeColor.getName() + "_dye_spray_can", ComponentItem::create)
+            SPRAY_CAN_DYES[i] = REGISTRATE.item("%s_dye_spray_can".formatted(dyeColor.getName()), ComponentItem::create)
                     .lang("Spray Can (%s)".formatted(toEnglishName(dyeColor.getName())))
                     .properties(p -> p.stacksTo(1))
                     .onRegister(attach(new ColorSprayBehaviour(() -> SPRAY_EMPTY.asStack(), 512, i))).register();

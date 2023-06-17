@@ -14,7 +14,7 @@
     "gtceu:assembly_line_grating",
     "gtceu:assembly_line_casing",
     "gtceu:laminated_glass",
-    "gtceu:assembly_line_machine_casing",
+    "gtceu:assembly_unit",
     "gtceu:bronze_gearbox",
     "gtceu:steel_gearbox",
     "gtceu:stainless_steel_gearbox",
@@ -22,7 +22,7 @@
     "gtceu:tungstensteel_gearbox",
     "gtceu:steel_turbine_casing",
     "gtceu:titanium_turbine_casing",
-    "gtceu:stainless_turbine_casing",
+    "gtceu:stainless_steel_turbine_casing",
     "gtceu:tungstensteel_turbine_casing",
     "gtceu:bronze_pipe_casing",
     "gtceu:steel_pipe_casing",
@@ -60,9 +60,9 @@
     "gtceu:naquadah_coil_block",
     "gtceu:trinium_coil_block",
     "gtceu:tritanium_coil_block",
-    "gtceu:bronze_firebox",
-    "gtceu:steel_firebox",
-    "gtceu:titanium_firebox",
-    "gtceu:tungstensteel_firebox"
+    "gtceu:bronze_firebox_casing",
+    "gtceu:steel_firebox_casing",
+    "gtceu:titanium_firebox_casing",
+    "gtceu:tungstensteel_firebox_casing"
   ]
 }
