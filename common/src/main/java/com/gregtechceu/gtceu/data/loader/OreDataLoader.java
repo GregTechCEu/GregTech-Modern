@@ -54,7 +54,7 @@ public class OreDataLoader extends SimpleJsonResourceReloadListener {
             }
         }
         if (GTCEu.isKubeJSLoaded()) {
-            GTCEuServerEvents.ORE_VEIN_MODIFICATION.post(new GTOreVeinEventJS());
+            RunKJSEventInSeparateClassBecauseForgeIsDumb.fireKJSEvent();
         }
         for (GTOreFeatureEntry entry : GTOreFeatureEntry.ALL.values()) {
             entry.getVeinGenerator().build();
@@ -63,5 +63,14 @@ public class OreDataLoader extends SimpleJsonResourceReloadListener {
 
     public static GTOreFeatureEntry fromJson(ResourceLocation id, JsonObject json, RegistryOps<JsonElement> ops) {
         return GTOreFeatureEntry.FULL_CODEC.decode(ops, json).map(Pair::getFirst).getOrThrow(false, LOGGER::error);
+    }
+
+    /**
+     * Holy shit this is dumb, thanks forge for trying to classload things that are never called!
+     */
+    public static final class RunKJSEventInSeparateClassBecauseForgeIsDumb {
+        public static void fireKJSEvent() {
+            GTCEuServerEvents.ORE_VEIN_MODIFICATION.post(new GTOreVeinEventJS());
+        }
     }
 }
