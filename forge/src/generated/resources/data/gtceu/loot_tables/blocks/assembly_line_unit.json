@@ -11,7 +11,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "gtceu:assembly_unit"
+          "name": "gtceu:assembly_line_unit"
         }
       ],
       "rolls": 1.0
