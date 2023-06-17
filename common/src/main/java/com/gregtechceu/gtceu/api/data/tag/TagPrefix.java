@@ -65,7 +65,7 @@ public class TagPrefix {
         return PREFIXES.get(name);
     }
 
-    public static final TagPrefix ore = oreTagPrefix("stone")
+    public static final TagPrefix ore = oreTagPrefix("")
             .langValue("%s Ore")
             .materialIconType(MaterialIconType.ore)
             .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
@@ -73,7 +73,7 @@ public class TagPrefix {
             .generationCondition(hasOreProperty)
             .registerOre(Blocks.STONE::defaultBlockState);
 
-    public static final TagPrefix oreGranite = oreTagPrefix("granite")
+    public static final TagPrefix oreGranite = oreTagPrefix("granite_")
             .langValue("Granite %s Ore")
             .materialIconType(MaterialIconType.ore)
             .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
@@ -81,7 +81,7 @@ public class TagPrefix {
             .generationCondition(hasOreProperty)
             .registerOre(Blocks.GRANITE::defaultBlockState, MaterialColor.DIRT);
 
-    public static final TagPrefix oreDiorite = oreTagPrefix("diorite")
+    public static final TagPrefix oreDiorite = oreTagPrefix("diorite_")
             .langValue("Diorite %s Ore")
             .materialIconType(MaterialIconType.ore)
             .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
@@ -89,7 +89,7 @@ public class TagPrefix {
             .generationCondition(hasOreProperty)
             .registerOre(Blocks.DIORITE::defaultBlockState, MaterialColor.QUARTZ);
 
-    public static final TagPrefix oreAndesite = oreTagPrefix("andesite")
+    public static final TagPrefix oreAndesite = oreTagPrefix("andesite_")
             .langValue("Andesite %s Ore")
             .materialIconType(MaterialIconType.ore)
             .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
@@ -97,7 +97,7 @@ public class TagPrefix {
             .generationCondition(hasOreProperty)
             .registerOre(Blocks.ANDESITE::defaultBlockState);
 
-    public static final TagPrefix oreDeepslate = oreTagPrefix("deepslate")
+    public static final TagPrefix oreDeepslate = oreTagPrefix("deepslate_")
             .langValue("Deepslate %s Ore")
             .materialIconType(MaterialIconType.ore)
             .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
@@ -105,7 +105,7 @@ public class TagPrefix {
             .generationCondition(hasOreProperty)
             .registerOre(Blocks.DEEPSLATE::defaultBlockState, MaterialColor.DEEPSLATE);
 
-    public static final TagPrefix oreTuff = oreTagPrefix("tuff")
+    public static final TagPrefix oreTuff = oreTagPrefix("tuff_")
             .langValue("Tuff %s Ore")
             .materialIconType(MaterialIconType.ore)
             .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
@@ -113,7 +113,7 @@ public class TagPrefix {
             .generationCondition(hasOreProperty)
             .registerOre(Blocks.TUFF::defaultBlockState, MaterialColor.DEEPSLATE);
 
-    public static final TagPrefix oreSand = oreTagPrefix("sand")
+    public static final TagPrefix oreSand = oreTagPrefix("sand_")
             .langValue("Sand %s Ore")
             .materialIconType(MaterialIconType.ore)
             .miningToolTag(BlockTags.MINEABLE_WITH_SHOVEL)
@@ -121,7 +121,7 @@ public class TagPrefix {
             .generationCondition(hasOreProperty)
             .registerOre(Blocks.SAND::defaultBlockState, false, net.minecraft.world.level.material.Material.SAND, MaterialColor.SAND, SoundType.SAND);
 
-    public static final TagPrefix oreRedSand = oreTagPrefix("redSand")
+    public static final TagPrefix oreRedSand = oreTagPrefix("redSand_")
             .langValue("Red Sand %s Ore")
             .materialIconType(MaterialIconType.ore)
             .miningToolTag(BlockTags.MINEABLE_WITH_SHOVEL)
@@ -129,7 +129,7 @@ public class TagPrefix {
             .generationCondition(hasOreProperty)
             .registerOre(Blocks.RED_SAND::defaultBlockState, false, net.minecraft.world.level.material.Material.SAND, MaterialColor.COLOR_ORANGE, SoundType.SAND);
 
-    public static final TagPrefix oreGravel = oreTagPrefix("gravel")
+    public static final TagPrefix oreGravel = oreTagPrefix("gravel_")
             .langValue("Gravel %s Ore")
             .materialIconType(MaterialIconType.ore)
             .miningToolTag(BlockTags.MINEABLE_WITH_SHOVEL)
@@ -137,7 +137,7 @@ public class TagPrefix {
             .generationCondition(hasOreProperty)
             .registerOre(Blocks.GRAVEL::defaultBlockState, false, net.minecraft.world.level.material.Material.SAND, MaterialColor.STONE, SoundType.GRAVEL);
 
-    public static final TagPrefix oreBasalt = oreTagPrefix("basalt")
+    public static final TagPrefix oreBasalt = oreTagPrefix("basalt_")
             .langValue("Basalt %s Ore")
             .materialIconType(MaterialIconType.ore)
             .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
@@ -145,7 +145,7 @@ public class TagPrefix {
             .generationCondition(hasOreProperty)
             .registerOre(Blocks.BASALT::defaultBlockState, true, MaterialColor.COLOR_BLACK);
 
-    public static final TagPrefix oreNetherrack = oreTagPrefix("netherrack")
+    public static final TagPrefix oreNetherrack = oreTagPrefix("netherrack_")
             .langValue("Nether %s Ore")
             .materialIconType(MaterialIconType.ore)
             .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
@@ -153,7 +153,7 @@ public class TagPrefix {
             .generationCondition(hasOreProperty)
             .registerOre(Blocks.NETHERRACK::defaultBlockState, true, MaterialColor.NETHER);
 
-    public static final TagPrefix oreEndstone = oreTagPrefix("endstone")
+    public static final TagPrefix oreEndstone = oreTagPrefix("endstone_")
             .langValue("End %s Ore")
             .materialIconType(MaterialIconType.ore)
             .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)

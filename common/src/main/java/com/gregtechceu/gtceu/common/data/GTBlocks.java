@@ -134,7 +134,7 @@ public class GTBlocks {
                     if (ore.getKey().isIgnored(material)) continue;
                     var oreTag = ore.getKey();
                     final TagPrefix.OreType oreType = ore.getValue();
-                    var entry = REGISTRATE.block("%s_%s_ore".formatted(FormattingUtil.toLowerCaseUnder(oreTag.name), material.getName()),
+                    var entry = REGISTRATE.block("%s%s_ore".formatted(FormattingUtil.toLowerCaseUnder(oreTag.name), material.getName()),
                                     oreType.material(),
                                     properties -> new MaterialBlock(properties, oreTag, material, new OreBlockRenderer(oreType.stoneType(),
                                             Objects.requireNonNull(oreTag.materialIconType()).getBlockTexturePath(material.getMaterialIconSet(), true),
