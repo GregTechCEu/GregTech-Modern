@@ -104,7 +104,7 @@ public class GTMachines {
     //////////////////////////////////////
     //******     Steam Machine    ******//
     //////////////////////////////////////
-    public final static Pair<MachineDefinition, MachineDefinition> STEAM_SOLID_BOILER = registerSteamMachines("steam_solid_boiler",
+    public final static Pair<MachineDefinition, MachineDefinition> STEAM_SOLID_BOILER = registerSteamMachines("steam_boiler_solid_fuel",
             SteamSolidBoilerMachine::new,
             (pressure, builder) -> builder.rotationState(RotationState.NON_Y_AXIS)
                     .recipeType(GTRecipeTypes.STEAM_BOILER_RECIPES)
@@ -112,7 +112,7 @@ public class GTMachines {
                     .tooltips(Component.translatable("gtceu.universal.tooltip.produces_fluid", (pressure ? 300 : 120) * FluidHelper.getBucket() / 20000))
                     .register());
 
-    public final static Pair<MachineDefinition, MachineDefinition> STEAM_LIQUID_BOILER = registerSteamMachines("steam_liquid_boiler",
+    public final static Pair<MachineDefinition, MachineDefinition> STEAM_LIQUID_BOILER = registerSteamMachines("steam_boiler_liquid_fuel",
             SteamLiquidBoilerMachine::new,
             (pressure, builder) -> builder.rotationState(RotationState.NON_Y_AXIS)
                     .recipeType(GTRecipeTypes.STEAM_BOILER_RECIPES)
@@ -131,7 +131,7 @@ public class GTMachines {
     //////////////////////////////////////
     //***     SimpleTieredMachine    ***//
     //////////////////////////////////////
-    public final static MachineDefinition[] HULL = registerTieredMachines("hull", TieredPartMachine::new, (tier, builder) -> builder
+    public final static MachineDefinition[] HULL = registerTieredMachines("machine_hull", TieredPartMachine::new, (tier, builder) -> builder
             .rotationState(RotationState.ALL)
             .overlayTieredHullRenderer("hull")
             .langValue("%s Machine Hull".formatted(VN[tier]))
@@ -318,7 +318,7 @@ public class GTMachines {
     //////////////////////////////////////
     //**********     Part     **********//
     //////////////////////////////////////
-    public final static MachineDefinition[] ITEM_IMPORT_BUS = registerTieredMachines("item_bus.import",
+    public final static MachineDefinition[] ITEM_IMPORT_BUS = registerTieredMachines("input_bus",
             (holder, tier) -> new ItemBusPartMachine(holder, tier, IO.IN),
             (tier, builder) -> builder
                     .langValue(VNF[tier] + " Input Bus")
@@ -330,7 +330,7 @@ public class GTMachines {
                     .register(),
             ALL_TIERS);
 
-    public final static MachineDefinition[] ITEM_EXPORT_BUS = registerTieredMachines("item_bus.export",
+    public final static MachineDefinition[] ITEM_EXPORT_BUS = registerTieredMachines("output_bus",
             (holder, tier) -> new ItemBusPartMachine(holder, tier, IO.OUT),
             (tier, builder) -> builder
                     .langValue(VNF[tier] + " Output Bus")
@@ -342,7 +342,7 @@ public class GTMachines {
                     .register(),
             ALL_TIERS);
 
-    public final static MachineDefinition[] FLUID_IMPORT_HATCH = registerTieredMachines("fluid_hatch.import",
+    public final static MachineDefinition[] FLUID_IMPORT_HATCH = registerTieredMachines("input_hatch",
             (holder, tier) -> new FluidHatchPartMachine(holder, tier, IO.IN),
             (tier, builder) -> builder
                     .langValue(VNF[tier] + " Input Hatch")
@@ -354,7 +354,7 @@ public class GTMachines {
                     .register(),
             ALL_TIERS);
 
-    public final static MachineDefinition[] FLUID_EXPORT_HATCH = registerTieredMachines("fluid_hatch.export",
+    public final static MachineDefinition[] FLUID_EXPORT_HATCH = registerTieredMachines("output_hatch",
             (holder, tier) -> new FluidHatchPartMachine(holder, tier, IO.OUT),
             (tier, builder) -> builder
                     .langValue(VNF[tier] + " Output Hatch")
@@ -367,7 +367,7 @@ public class GTMachines {
                     .register(),
             ALL_TIERS);
 
-    public final static MachineDefinition[] ENERGY_INPUT_HATCH = registerTieredMachines("energy_hatch.input",
+    public final static MachineDefinition[] ENERGY_INPUT_HATCH = registerTieredMachines("energy_input_hatch",
             (holder, tier) -> new EnergyHatchPartMachine(holder, tier, IO.IN, 2),
             (tier, builder) -> builder
                     .langValue(VNF[tier] + " Energy Hatch")
@@ -378,7 +378,7 @@ public class GTMachines {
                     .register(),
             ALL_TIERS);
 
-    public final static MachineDefinition[] ENERGY_OUTPUT_HATCH = registerTieredMachines("energy_hatch.output",
+    public final static MachineDefinition[] ENERGY_OUTPUT_HATCH = registerTieredMachines("energy_output_hatch",
             (holder, tier) -> new EnergyHatchPartMachine(holder, tier, IO.OUT, 2),
             (tier, builder) -> builder
                     .langValue(VNF[tier] + " Dynamo Hatch")
@@ -389,7 +389,7 @@ public class GTMachines {
                     .register(),
             ALL_TIERS);
 
-    public final static MachineDefinition[] ENERGY_INPUT_HATCH_4A = registerTieredMachines("energy_hatch.input_4a",
+    public final static MachineDefinition[] ENERGY_INPUT_HATCH_4A = registerTieredMachines("energy_input_hatch_4a",
             (holder, tier) -> new EnergyHatchPartMachine(holder, tier, IO.IN, 4),
             (tier, builder) -> builder
                     .langValue(VNF[tier] + " 4A Energy Hatch")
@@ -401,7 +401,7 @@ public class GTMachines {
                     .register(),
             EV, IV, LuV, ZPM, UV, UHV);
 
-    public final static MachineDefinition[] ENERGY_OUTPUT_HATCH_4A = registerTieredMachines("energy_hatch.output_4a",
+    public final static MachineDefinition[] ENERGY_OUTPUT_HATCH_4A = registerTieredMachines("energy_output_hatch_4a",
             (holder, tier) -> new EnergyHatchPartMachine(holder, tier, IO.OUT, 4),
             (tier, builder) -> builder
                     .langValue(VNF[tier] + " 4A Dynamo Hatch")
@@ -412,7 +412,7 @@ public class GTMachines {
                     .register(),
             EV, IV, LuV, ZPM, UV, UHV);
 
-    public final static MachineDefinition[] ENERGY_INPUT_HATCH_16A = registerTieredMachines("energy_hatch.input_16a",
+    public final static MachineDefinition[] ENERGY_INPUT_HATCH_16A = registerTieredMachines("energy_input_hatch_16a",
             (holder, tier) -> new EnergyHatchPartMachine(holder, tier, IO.IN, 16),
             (tier, builder) -> builder
                     .langValue(VNF[tier] + " 16A Energy Hatch")
@@ -423,7 +423,7 @@ public class GTMachines {
                     .register(),
             EV, IV, LuV, ZPM, UV, UHV);
 
-    public final static MachineDefinition[] ENERGY_OUTPUT_HATCH_16A = registerTieredMachines("energy_hatch.output_16a",
+    public final static MachineDefinition[] ENERGY_OUTPUT_HATCH_16A = registerTieredMachines("energy_output_hatch_16a",
             (holder, tier) -> new EnergyHatchPartMachine(holder, tier, IO.OUT, 16),
             (tier, builder) -> builder
                     .langValue(VNF[tier] + " 16A Dynamo Hatch")
@@ -447,21 +447,21 @@ public class GTMachines {
                     .register(),
             ELECTRIC_TIERS);
 
-    public final static MachineDefinition STEAM_IMPORT_BUS = REGISTRATE.machine("item_bus.import.steam", holder -> new SteamItemBusPartMachine(holder, IO.IN))
+    public final static MachineDefinition STEAM_IMPORT_BUS = REGISTRATE.machine("steam_input_bus", holder -> new SteamItemBusPartMachine(holder, IO.IN))
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.STEAM_IMPORT_ITEMS)
             .overlaySteamHullRenderer("item_bus.import")
             .langValue("Input Bus (Steam)")
             .register();
 
-    public final static MachineDefinition STEAM_EXPORT_BUS = REGISTRATE.machine("item_bus.export.steam", holder -> new SteamItemBusPartMachine(holder, IO.OUT))
+    public final static MachineDefinition STEAM_EXPORT_BUS = REGISTRATE.machine("steam_output_bus", holder -> new SteamItemBusPartMachine(holder, IO.OUT))
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.STEAM_EXPORT_ITEMS)
             .overlaySteamHullRenderer("item_bus.export")
             .langValue("Output Bus (Steam)")
             .register();
 
-    public final static MachineDefinition STEAM_HATCH = REGISTRATE.machine("steam_hatch", SteamHatchPartMachine::new)
+    public final static MachineDefinition STEAM_HATCH = REGISTRATE.machine("steam_input_hatch", SteamHatchPartMachine::new)
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.STEAM)
             .overlaySteamHullRenderer("steam_hatch")
@@ -816,10 +816,10 @@ public class GTMachines {
     //////////////////////////////////////
     public static Pair<MachineDefinition, MachineDefinition> registerSteamMachines(String name, BiFunction<IMachineBlockEntity, Boolean, MetaMachine> factory,
                                                                                    BiFunction<Boolean, MachineBuilder<MachineDefinition>, MachineDefinition> builder) {
-        MachineDefinition lowTier = builder.apply(false, REGISTRATE.machine(name + "." + "bronze", holder -> factory.apply(holder, false))
-                .langValue(FormattingUtil.toEnglishName(name))
+        MachineDefinition lowTier = builder.apply(false, REGISTRATE.machine("lp_%s".formatted(name), holder -> factory.apply(holder, false))
+                .langValue("Low Pressure " + FormattingUtil.toEnglishName(name))
                 .tier(0));
-        MachineDefinition highTier = builder.apply(true, REGISTRATE.machine(name + "." + "steel", holder -> factory.apply(holder, true))
+        MachineDefinition highTier = builder.apply(true, REGISTRATE.machine("hp_%s".formatted(name), holder -> factory.apply(holder, true))
                 .langValue("High Pressure " + FormattingUtil.toEnglishName(name))
                 .tier(1));
         return Pair.of(lowTier, highTier);
@@ -832,7 +832,7 @@ public class GTMachines {
         MachineDefinition[] definitions = new MachineDefinition[tiers.length];
         for (int i = 0; i < tiers.length; i++) {
             int tier = tiers[i];
-            var register =  REGISTRATE.machine(name + "." + GTValues.VN[tier].toLowerCase(), holder -> factory.apply(holder, tier))
+            var register =  REGISTRATE.machine(GTValues.VN[tier].toLowerCase() + "_" + name, holder -> factory.apply(holder, tier))
                     .tier(tier);
             definitions[i] = builder.apply(tier, register);
         }
@@ -931,7 +931,7 @@ public class GTMachines {
     public static MachineDefinition registerCrate(Material material, int capacity, String lang) {
         boolean wooden = material.hasProperty(PropertyKey.WOOD);
 
-        return REGISTRATE.machine("crate." + material, holder -> new CrateMachine(holder, material, capacity))
+        return REGISTRATE.machine(material + "_crate", holder -> new CrateMachine(holder, material, capacity))
                 .langValue(lang)
                 .rotationState(RotationState.NONE)
                 .tooltips(Component.translatable("gtceu.universal.tooltip.item_storage_capacity", capacity))
@@ -943,7 +943,7 @@ public class GTMachines {
 
     public static MachineDefinition registerDrum(Material material, int capacity, String lang) {
         boolean wooden = material.hasProperty(PropertyKey.WOOD);
-        var definition = REGISTRATE.machine("drum." + material, MachineDefinition::createDefinition, holder -> new DrumMachine(holder, material, capacity), MetaMachineBlock::new, DrumMachineItem::create, MetaMachineBlockEntity::createBlockEntity)
+        var definition = REGISTRATE.machine(material + "_drum", MachineDefinition::createDefinition, holder -> new DrumMachine(holder, material, capacity), MetaMachineBlock::new, DrumMachineItem::create, MetaMachineBlockEntity::createBlockEntity)
                 .langValue(lang)
                 .rotationState(RotationState.NONE)
                 .renderer(() -> new MachineRenderer(GTCEu.id("block/machine/" + (wooden ? "wooden" : "metal") + "_drum")))

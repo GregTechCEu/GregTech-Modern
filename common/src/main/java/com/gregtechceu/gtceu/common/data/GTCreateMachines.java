@@ -122,9 +122,9 @@ public class GTCreateMachines {
             int tier = tiers[i];
             var register =  REGISTRATE.machine(name + "." + GTValues.VN[tier].toLowerCase(),
                             id -> definitionFactory.apply(tier, id),
-                            holder -> factory.apply(holder, tier), 
-                            KineticMachineBlock::new, 
-                            MetaMachineItem::new, 
+                            holder -> factory.apply(holder, tier),
+                            KineticMachineBlock::new,
+                            MetaMachineItem::new,
                             KineticMachineBlockEntity::create)
                     .tier(tier)
                     .hasTESR(instanceFactory != null)
