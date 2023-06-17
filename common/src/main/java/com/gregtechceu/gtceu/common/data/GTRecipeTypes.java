@@ -465,7 +465,10 @@ public class GTRecipeTypes {
             .setSmallRecipeMap(CHEMICAL_RECIPES);
 
 
-
+    public static final GTRecipeType FUSION_RECIPES = register("fusion_reactor", MULTIBLOCK).setMaxIOSize(0, 0, 2, 1).setEUIO(IO.IN)
+            .setProgressBar(GuiTextures.PROGRESS_BAR_FUSION, LEFT_TO_RIGHT)
+            .setSound(GTSoundEntries.ARC)
+            .addDataInfo(data -> LocalizationUtils.format("gtceu.recipe.eu_to_start", data.getLong("eu_to_start")));
 
 
 

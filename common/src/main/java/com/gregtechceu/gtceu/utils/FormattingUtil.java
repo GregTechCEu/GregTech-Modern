@@ -94,6 +94,26 @@ public class FormattingUtil {
     }
 
     /**
+     * Converts integers to roman numerals.
+     * e.g. 17 => XVII, 2781 => MMDCCLXXXI
+     */
+    public static String toRomanNumeral(int number) {
+        return "I".repeat(number)
+                .replace("IIIII", "V")
+                .replace("IIII", "IV")
+                .replace("VV", "X")
+                .replace("VIV", "IX")
+                .replace("XXXXX", "L")
+                .replace("XXXX", "XL")
+                .replace("LL", "C")
+                .replace("LXL", "XC")
+                .replace("CCCCC", "D")
+                .replace("CCCC", "CD")
+                .replace("DD", "M")
+                .replace("DCD", "CM");
+    }
+
+    /**
      * Does almost the same thing as LOWER_UNDERSCORE.to(UPPER_CAMEL, string), but it also removes underscores before numbers.
      *
      * @param string Any string with ASCII characters.
