@@ -1,7 +1,7 @@
 {
   "values": [
-    "gtceu:quantum_mainframe",
-    "gtceu:crystal_computer",
-    "gtceu:wetware_assembly"
+    "gtceu:quantum_processor_mainframe",
+    "gtceu:crystal_processor_computer",
+    "gtceu:wetware_processor_assembly"
   ]
 }

@@ -1,7 +1,7 @@
 {
   "replace": false,
   "values": [
-    "gtceu:crystal_mainframe",
-    "gtceu:wetware_computer"
+    "gtceu:crystal_processor_mainframe",
+    "gtceu:wetware_processor_computer"
   ]
 }

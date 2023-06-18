@@ -2,7 +2,7 @@
   "replace": false,
   "values": [
     "gtceu:advanced_integrated_circuit",
-    "gtceu:processor_assembly",
+    "gtceu:micro_processor_assembly",
     "gtceu:nano_processor"
   ]
 }

@@ -325,7 +325,7 @@ public class GTItems {
     public static ICustomDescriptionId cellName() {
         return itemStack -> {
             var held = FluidTransferHelper.getFluidContained(itemStack);
-            var prefix = LocalizationUtils.format("empty_fluid_cell");
+            var prefix = LocalizationUtils.format("Empty");
             if (held != null && !held.isEmpty()) {
                 prefix = FluidHelper.getDisplayName(held).getString();
             }
@@ -782,64 +782,64 @@ public class GTItems {
     public static ItemEntry<Item> NAQUADAH_WAFER= REGISTRATE.item("naquadah_wafer", Item::new).lang("Naquadah-doped Wafer").register();
     public static ItemEntry<Item> NEUTRONIUM_WAFER= REGISTRATE.item("neutronium_wafer", Item::new).lang("Neutronium-doped Wafer").register();
 
-    public static ItemEntry<Item> CENTRAL_PROCESSING_UNIT_WAFER= REGISTRATE.item("central_processing_unit_wafer", Item::new).lang("CPU Wafer").register();
-    public static ItemEntry<Item> RANDOM_ACCESS_MEMORY_WAFER= REGISTRATE.item("random_access_memory_wafer", Item::new).lang("RAM Wafer").register();
-    public static ItemEntry<Item> INTEGRATED_LOGIC_CIRCUIT_WAFER= REGISTRATE.item("integrated_logic_circuit_wafer", Item::new).lang("Integrated Logic Circuit Wafer").register();
-    public static ItemEntry<Item> NANO_CENTRAL_PROCESSING_UNIT_WAFER= REGISTRATE.item("nano_central_processing_unit_wafer", Item::new).lang("Nano CPU Wafer").register();
-    public static ItemEntry<Item> QUBIT_CENTRAL_PROCESSING_UNIT_WAFER= REGISTRATE.item("qbit_central_processing_unit_wafer", Item::new).lang("Qubit CPU").register();
-    public static ItemEntry<Item> SIMPLE_SYSTEM_ON_CHIP_WAFER= REGISTRATE.item("simple_system_on_chip_wafer", Item::new).lang("Simple SoC Wafer").register();
-    public static ItemEntry<Item> SYSTEM_ON_CHIP_WAFER= REGISTRATE.item("system_on_chip_wafer", Item::new).lang("SoC Wafer").register();
-    public static ItemEntry<Item> ADVANCED_SYSTEM_ON_CHIP_WAFER= REGISTRATE.item("advanced_system_on_chip_wafer", Item::new).lang("ASoC Wafer").register();
-    public static ItemEntry<Item> HIGHLY_ADVANCED_SOC_WAFER= REGISTRATE.item("highly_advanced_system_on_chip_wafer", Item::new).lang("HASoC Wafer").register();
-    public static ItemEntry<Item> NAND_MEMORY_CHIP_WAFER= REGISTRATE.item("nand_memory_chip_wafer", Item::new).lang("NAND Wafer").register();
-    public static ItemEntry<Item> NOR_MEMORY_CHIP_WAFER= REGISTRATE.item("nor_memory_chip_wafer", Item::new).lang("NOR Wafer").register();
-    public static ItemEntry<Item> ULTRA_LOW_POWER_INTEGRATED_CIRCUIT_WAFER= REGISTRATE.item("ultra_low_power_integrated_circuit_wafer", Item::new).lang("ULPIC Wafer").register();
-    public static ItemEntry<Item> LOW_POWER_INTEGRATED_CIRCUIT_WAFER= REGISTRATE.item("low_power_integrated_circuit_wafer", Item::new).lang("LPIC Wafer").register();
-    public static ItemEntry<Item> POWER_INTEGRATED_CIRCUIT_WAFER= REGISTRATE.item("power_integrated_circuit_wafer", Item::new).lang("PIC Wafer").register();
-    public static ItemEntry<Item> HIGH_POWER_INTEGRATED_CIRCUIT_WAFER= REGISTRATE.item("high_power_integrated_circuit_wafer", Item::new).lang("HPIC Wafer").register();
-    public static ItemEntry<Item> ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT_WAFER= REGISTRATE.item("ultra_high_power_integrated_circuit_wafer", Item::new).lang("UHPIC Wafer").register();
+    public static ItemEntry<Item> CENTRAL_PROCESSING_UNIT_WAFER= REGISTRATE.item("cpu_wafer", Item::new).lang("CPU Wafer").register();
+    public static ItemEntry<Item> RANDOM_ACCESS_MEMORY_WAFER= REGISTRATE.item("ram_wafer", Item::new).lang("RAM Wafer").register();
+    public static ItemEntry<Item> INTEGRATED_LOGIC_CIRCUIT_WAFER= REGISTRATE.item("ilc_wafer", Item::new).lang("ILC Wafer").register();
+    public static ItemEntry<Item> NANO_CENTRAL_PROCESSING_UNIT_WAFER= REGISTRATE.item("nano_cpu_wafer", Item::new).lang("Nano CPU Wafer").register();
+    public static ItemEntry<Item> QUBIT_CENTRAL_PROCESSING_UNIT_WAFER= REGISTRATE.item("qbit_cpu_wafer", Item::new).lang("Qubit CPU Wafer").register();
+    public static ItemEntry<Item> SIMPLE_SYSTEM_ON_CHIP_WAFER= REGISTRATE.item("simple_soc_wafer", Item::new).lang("Simple SoC Wafer").register();
+    public static ItemEntry<Item> SYSTEM_ON_CHIP_WAFER= REGISTRATE.item("soc_wafer", Item::new).lang("SoC Wafer").register();
+    public static ItemEntry<Item> ADVANCED_SYSTEM_ON_CHIP_WAFER= REGISTRATE.item("advanced_soc_wafer", Item::new).lang("ASoC Wafer").register();
+    public static ItemEntry<Item> HIGHLY_ADVANCED_SOC_WAFER= REGISTRATE.item("highly_advanced_soc_wafer", Item::new).lang("HASoC Wafer").register();
+    public static ItemEntry<Item> NAND_MEMORY_CHIP_WAFER= REGISTRATE.item("nand_memory_wafer", Item::new).lang("NAND Memory Wafer").register();
+    public static ItemEntry<Item> NOR_MEMORY_CHIP_WAFER= REGISTRATE.item("nor_memory_wafer", Item::new).lang("NOR Memory Wafer").register();
+    public static ItemEntry<Item> ULTRA_LOW_POWER_INTEGRATED_CIRCUIT_WAFER= REGISTRATE.item("ulpic_wafer", Item::new).lang("ULPIC Wafer").register();
+    public static ItemEntry<Item> LOW_POWER_INTEGRATED_CIRCUIT_WAFER= REGISTRATE.item("lpic_wafer", Item::new).lang("LPIC Wafer").register();
+    public static ItemEntry<Item> POWER_INTEGRATED_CIRCUIT_WAFER= REGISTRATE.item("mpic_wafer", Item::new).lang("MPIC Wafer").register();
+    public static ItemEntry<Item> HIGH_POWER_INTEGRATED_CIRCUIT_WAFER= REGISTRATE.item("hpic_wafer", Item::new).lang("HPIC Wafer").register();
+    public static ItemEntry<Item> ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT_WAFER= REGISTRATE.item("uhpic_wafer", Item::new).lang("UHPIC Wafer").register();
 
     public static ItemEntry<Item> ENGRAVED_CRYSTAL_CHIP = REGISTRATE.item("engraved_crystal_chip", Item::new).lang("Engraved Crystal Chip").register();
     public static ItemEntry<Item> ENGRAVED_LAPOTRON_CHIP = REGISTRATE.item("engraved_lapotron_crystal_chip", Item::new).lang("Engraved Lapotron Crystal Chip").register();
 
-    public static ItemEntry<Item> CENTRAL_PROCESSING_UNIT = REGISTRATE.item( "central_processing_unit", Item::new).lang("CPU").register();
-    public static ItemEntry<Item> RANDOM_ACCESS_MEMORY = REGISTRATE.item( "random_access_memory", Item::new).lang("RAM").register();
-    public static ItemEntry<Item> INTEGRATED_LOGIC_CIRCUIT = REGISTRATE.item( "integrated_circuit", Item::new).lang("Integrated Circuit").register();
-    public static ItemEntry<Item> NANO_CENTRAL_PROCESSING_UNIT = REGISTRATE.item( "nano_central_processing_unit", Item::new).lang("Nano CPU").register();
-    public static ItemEntry<Item> QUBIT_CENTRAL_PROCESSING_UNIT = REGISTRATE.item( "qbit_central_processing_unit", Item::new).lang("Qubit CPU").register();
-    public static ItemEntry<Item> SIMPLE_SYSTEM_ON_CHIP = REGISTRATE.item( "simple_system_on_chip", Item::new).lang("Simple SoC").register();
-    public static ItemEntry<Item> SYSTEM_ON_CHIP = REGISTRATE.item( "system_on_chip", Item::new).lang("SoC").register();
-    public static ItemEntry<Item> ADVANCED_SYSTEM_ON_CHIP = REGISTRATE.item( "advanced_system_on_chip", Item::new).lang("ASoC").register();
-    public static ItemEntry<Item> HIGHLY_ADVANCED_SOC = REGISTRATE.item( "highly_advanced_system_on_chip", Item::new).lang("HASoC").register();
-    public static ItemEntry<Item> NAND_MEMORY_CHIP = REGISTRATE.item( "nand_memory_chip", Item::new).lang("NAND").register();
-    public static ItemEntry<Item> NOR_MEMORY_CHIP = REGISTRATE.item( "nor_memory_chip", Item::new).lang("NOR").register();
-    public static ItemEntry<Item> ULTRA_LOW_POWER_INTEGRATED_CIRCUIT = REGISTRATE.item( "ultra_low_power_integrated_circuit", Item::new).lang("ULPIC").register();
-    public static ItemEntry<Item> LOW_POWER_INTEGRATED_CIRCUIT = REGISTRATE.item( "low_power_integrated_circuit", Item::new).lang("LPIC").register();
-    public static ItemEntry<Item> POWER_INTEGRATED_CIRCUIT = REGISTRATE.item( "power_integrated_circuit", Item::new).lang("PIC").register();
-    public static ItemEntry<Item> HIGH_POWER_INTEGRATED_CIRCUIT = REGISTRATE.item( "high_power_integrated_circuit", Item::new).lang("HPIC").register();
-    public static ItemEntry<Item> ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT = REGISTRATE.item( "ultra_high_power_integrated_circuit", Item::new).lang("UHPIC").register();
+    public static ItemEntry<Item> CENTRAL_PROCESSING_UNIT = REGISTRATE.item( "cpu_chip", Item::new).lang("CPU Chip").register();
+    public static ItemEntry<Item> RANDOM_ACCESS_MEMORY = REGISTRATE.item( "ram_chip", Item::new).lang("RAM Chip").register();
+    public static ItemEntry<Item> INTEGRATED_LOGIC_CIRCUIT = REGISTRATE.item( "ilc_chip", Item::new).lang("IC Chip").register();
+    public static ItemEntry<Item> NANO_CENTRAL_PROCESSING_UNIT = REGISTRATE.item( "nano_cpu_chip", Item::new).lang("Nano CPU Chip").register();
+    public static ItemEntry<Item> QUBIT_CENTRAL_PROCESSING_UNIT = REGISTRATE.item( "qbit_cpu_chip", Item::new).lang("Qubit CPU Chip").register();
+    public static ItemEntry<Item> SIMPLE_SYSTEM_ON_CHIP = REGISTRATE.item( "simple_soc", Item::new).lang("Simple SoC").register();
+    public static ItemEntry<Item> SYSTEM_ON_CHIP = REGISTRATE.item( "soc", Item::new).lang("SoC").register();
+    public static ItemEntry<Item> ADVANCED_SYSTEM_ON_CHIP = REGISTRATE.item( "advanced_soc", Item::new).lang("ASoC").register();
+    public static ItemEntry<Item> HIGHLY_ADVANCED_SOC = REGISTRATE.item( "highly_advanced_soc", Item::new).lang("HASoC").register();
+    public static ItemEntry<Item> NAND_MEMORY_CHIP = REGISTRATE.item( "nand_memory_chip", Item::new).lang("NAND Memory Chip").register();
+    public static ItemEntry<Item> NOR_MEMORY_CHIP = REGISTRATE.item( "nor_memory_chip", Item::new).lang("NOR Memory Chip").register();
+    public static ItemEntry<Item> ULTRA_LOW_POWER_INTEGRATED_CIRCUIT = REGISTRATE.item( "ulpic_chip", Item::new).lang("ULPIC Chip").register();
+    public static ItemEntry<Item> LOW_POWER_INTEGRATED_CIRCUIT = REGISTRATE.item( "lpic_chip", Item::new).lang("LPIC Chip").register();
+    public static ItemEntry<Item> POWER_INTEGRATED_CIRCUIT = REGISTRATE.item( "mpic_chip", Item::new).lang("MPIC Chip").register();
+    public static ItemEntry<Item> HIGH_POWER_INTEGRATED_CIRCUIT = REGISTRATE.item( "hpic_chip", Item::new).lang("HPIC Chip").register();
+    public static ItemEntry<Item> ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT = REGISTRATE.item( "uhpic_chip", Item::new).lang("UHPIC Chip").register();
 
 
     public static ItemEntry<Item> RAW_CRYSTAL_CHIP = REGISTRATE.item("raw_crystal_chip", Item::new).lang("Raw Crystal Chip").register();
     public static ItemEntry<Item> RAW_CRYSTAL_CHIP_PART = REGISTRATE.item("raw_crystal_chip_parts", Item::new).lang("Raw Crystal Chip Parts").register();
-    public static ItemEntry<Item> CRYSTAL_CENTRAL_PROCESSING_UNIT = REGISTRATE.item("crystal_central_processing_unit", Item::new).lang("Crystal CPU").register();
-    public static ItemEntry<Item> CRYSTAL_SYSTEM_ON_CHIP = REGISTRATE.item("crystal_system_on_chip", Item::new).lang("Crystal SoC").register();
+    public static ItemEntry<Item> CRYSTAL_CENTRAL_PROCESSING_UNIT = REGISTRATE.item("crystal_cpu", Item::new).lang("Crystal CPU").register();
+    public static ItemEntry<Item> CRYSTAL_SYSTEM_ON_CHIP = REGISTRATE.item("crystal_soc", Item::new).lang("Crystal SoC").register();
 
-    public static ItemEntry<Item> COATED_BOARD = REGISTRATE.item("coated_circuit_board", Item::new).lang("Coated Circuit Board").register();
+    public static ItemEntry<Item> COATED_BOARD = REGISTRATE.item("resin_circuit_board", Item::new).lang("Resin Circuit Board").register();
     public static ItemEntry<Item> PHENOLIC_BOARD = REGISTRATE.item("phenolic_circuit_board", Item::new).lang("Phenolic Circuit Board").register();
     public static ItemEntry<Item> PLASTIC_BOARD = REGISTRATE.item("plastic_circuit_board", Item::new).lang("Plastic Circuit Board").register();
     public static ItemEntry<Item> EPOXY_BOARD = REGISTRATE.item("epoxy_circuit_board", Item::new).lang("Epoxy Circuit Board").register();
     public static ItemEntry<Item> FIBER_BOARD = REGISTRATE.item("fiber_reinforced_circuit_board", Item::new).lang("Fiber-Reinforced Circuit Board").register();
     public static ItemEntry<Item> MULTILAYER_FIBER_BOARD = REGISTRATE.item("multilayer_fiber_reinforced_circuit_board", Item::new).lang("Multi-layer Fiber-Reinforced Circuit Board").register();
-    public static ItemEntry<Item> WETWARE_BOARD = REGISTRATE.item("wetware_circuit_board", Item::new).lang("Wetware Lifesupport Circuit Board").register();
+    public static ItemEntry<Item> WETWARE_BOARD = REGISTRATE.item("wetware_circuit_board", Item::new).lang("Wetware Circuit Board").register();
 
-    public static ItemEntry<Item> BASIC_CIRCUIT_BOARD = REGISTRATE.item("basic_circuit_board", Item::new).lang("Circuit Board").register();
-    public static ItemEntry<Item> GOOD_CIRCUIT_BOARD = REGISTRATE.item("good_circuit_board", Item::new).lang("Good Circuit Board").register();
-    public static ItemEntry<Item> PLASTIC_CIRCUIT_BOARD = REGISTRATE.item("ethyl_circuit_board", Item::new).lang("Plastic Circuit Board").register();
-    public static ItemEntry<Item> ADVANCED_CIRCUIT_BOARD = REGISTRATE.item("advanced_circuit_board", Item::new).lang("Advanced Circuit Board").register();
-    public static ItemEntry<Item> EXTREME_CIRCUIT_BOARD = REGISTRATE.item("extreme_circuit_board", Item::new).lang("Extreme Circuit Board").register();
-    public static ItemEntry<Item> ELITE_CIRCUIT_BOARD = REGISTRATE.item("elite_circuit_board", Item::new).lang("Elite Circuit Board").register();
-    public static ItemEntry<Item> WETWARE_CIRCUIT_BOARD = REGISTRATE.item("master_circuit_board", Item::new).lang("Master Circuit Board").register();
+    public static ItemEntry<Item> BASIC_CIRCUIT_BOARD = REGISTRATE.item("resin_printed_circuit_board", Item::new).lang("Resin Printed Circuit Board").register();
+    public static ItemEntry<Item> GOOD_CIRCUIT_BOARD = REGISTRATE.item("phenolic_printed_circuit_board", Item::new).lang("Phenolic Printed Circuit Board").register();
+    public static ItemEntry<Item> PLASTIC_CIRCUIT_BOARD = REGISTRATE.item("plastic_printed_circuit_board", Item::new).lang("Plastic Printed Circuit Board").register();
+    public static ItemEntry<Item> ADVANCED_CIRCUIT_BOARD = REGISTRATE.item("epoxy_printed_circuit_board", Item::new).lang("Epoxy Printed Circuit Board").register();
+    public static ItemEntry<Item> EXTREME_CIRCUIT_BOARD = REGISTRATE.item("fiber_reinforced_printed_circuit_board", Item::new).lang("Fiber-Reinforced Printed Circuit Board").register();
+    public static ItemEntry<Item> ELITE_CIRCUIT_BOARD = REGISTRATE.item("multilayer_fiber_reinforced_printed_circuit_board", Item::new).lang("Multi-layer Fiber-Reinforced Printed Circuit Board").register();
+    public static ItemEntry<Item> WETWARE_CIRCUIT_BOARD = REGISTRATE.item("wetware_printed_circuit_board", Item::new).lang("Wetware Printed Circuit Board").register();
 
     public static ItemEntry<Item> VACUUM_TUBE = REGISTRATE.item("vacuum_tube", Item::new).lang("Vacuum Tube").tag(CustomTags.ULV_CIRCUITS).register();
     public static ItemEntry<Item> GLASS_TUBE = REGISTRATE.item("glass_tube", Item::new).lang("Glass Tube").register();
@@ -860,47 +860,47 @@ public class GTItems {
     public static ItemEntry<Item> ADVANCED_SMD_INDUCTOR = REGISTRATE.item("advanced_smd_inductor", Item::new).lang("Advanced SMD Inductor").register();
 
     // T1: Electronic
-    public static ItemEntry<Item> ELECTRONIC_CIRCUIT_LV = REGISTRATE.item("electronic_circuit", Item::new).lang("Electronic Circuit").tag(CustomTags.LV_CIRCUITS).register();
-    public static ItemEntry<Item> ELECTRONIC_CIRCUIT_MV = REGISTRATE.item("good_electronic_circuit", Item::new).lang("Good Electronic Circuit").tag(CustomTags.MV_CIRCUITS).register();
+    public static ItemEntry<Item> ELECTRONIC_CIRCUIT_LV = REGISTRATE.item("basic_electronic_circuit", Item::new).lang("Basic Electronic Circuit").tag(CustomTags.LV_CIRCUITS).register();
+    public static ItemEntry<Item> ELECTRONIC_CIRCUIT_MV = REGISTRATE.item("intermediate_electronic_circuit", Item::new).lang("Intermediate Electronic Circuit").tag(CustomTags.MV_CIRCUITS).register();
 
     // T2: Integrated
-    public static ItemEntry<Item> INTEGRATED_CIRCUIT_LV = REGISTRATE.item("integrated_logic_circuit", Item::new).lang("Integrated Logic Circuit").tag(CustomTags.LV_CIRCUITS).register();
-    public static ItemEntry<Item> INTEGRATED_CIRCUIT_MV = REGISTRATE.item("good_integrated_circuit", Item::new).lang("Good Integrated Circuit").tag(CustomTags.MV_CIRCUITS).register();
+    public static ItemEntry<Item> INTEGRATED_CIRCUIT_LV = REGISTRATE.item("basic_integrated_circuit", Item::new).lang("Basic Integrated Circuit").tag(CustomTags.LV_CIRCUITS).register();
+    public static ItemEntry<Item> INTEGRATED_CIRCUIT_MV = REGISTRATE.item("intermediate_integrated_circuit", Item::new).lang("Intermediate Integrated Circuit").tag(CustomTags.MV_CIRCUITS).register();
     public static ItemEntry<Item> INTEGRATED_CIRCUIT_HV = REGISTRATE.item("advanced_integrated_circuit", Item::new).lang("Advanced Integrated Circuit").tag(CustomTags.HV_CIRCUITS).register();
 
     // ULV/LV easier circuits
     public static ItemEntry<Item> NAND_CHIP_ULV = REGISTRATE.item("nand_chip", Item::new).lang("NAND Chip").tag(CustomTags.ULV_CIRCUITS).register();
-    public static ItemEntry<Item> MICROPROCESSOR_LV = REGISTRATE.item("microprocessor", Item::new).lang("Microprocessor").tag(CustomTags.LV_CIRCUITS).register();
+    public static ItemEntry<Item> MICROPROCESSOR_LV = REGISTRATE.item("microchip_processor", Item::new).lang("Microchip Processor").tag(CustomTags.LV_CIRCUITS).register();
 
     // T3: Processor
-    public static ItemEntry<Item> PROCESSOR_MV = REGISTRATE.item("integrated_processor", Item::new).lang("Integrated Processor").tag(CustomTags.MV_CIRCUITS).register();
-    public static ItemEntry<Item> PROCESSOR_ASSEMBLY_HV = REGISTRATE.item("processor_assembly", Item::new).lang("Processor Assembly").tag(CustomTags.HV_CIRCUITS).register();
-    public static ItemEntry<Item> WORKSTATION_EV = REGISTRATE.item("workstation", Item::new).lang("Workstation").tag(CustomTags.EV_CIRCUITS).register();
-    public static ItemEntry<Item> MAINFRAME_IV = REGISTRATE.item("mainframe", Item::new).lang("Mainframe").tag(CustomTags.IV_CIRCUITS).register();
+    public static ItemEntry<Item> PROCESSOR_MV = REGISTRATE.item("micro_processor", Item::new).lang("Microprocessor").tag(CustomTags.MV_CIRCUITS).register();
+    public static ItemEntry<Item> PROCESSOR_ASSEMBLY_HV = REGISTRATE.item("micro_processor_assembly", Item::new).lang("Microprocessor Assembly").tag(CustomTags.HV_CIRCUITS).register();
+    public static ItemEntry<Item> WORKSTATION_EV = REGISTRATE.item("micro_processor_computer", Item::new).lang("Microprocessor Supercomputer").tag(CustomTags.EV_CIRCUITS).register();
+    public static ItemEntry<Item> MAINFRAME_IV = REGISTRATE.item("micro_processor_mainframe", Item::new).lang("Microprocessor Mainframe").tag(CustomTags.IV_CIRCUITS).register();
 
     // T4: Nano
     public static ItemEntry<Item> NANO_PROCESSOR_HV = REGISTRATE.item("nano_processor", Item::new).lang("Nanoprocessor").tag(CustomTags.HV_CIRCUITS).register();
-    public static ItemEntry<Item> NANO_PROCESSOR_ASSEMBLY_EV = REGISTRATE.item("nano_assembly", Item::new).lang("Nanoprocessor Assembly").tag(CustomTags.EV_CIRCUITS).register();
-    public static ItemEntry<Item> NANO_COMPUTER_IV = REGISTRATE.item("nano_computer", Item::new).lang("Nano Supercomputer").tag(CustomTags.IV_CIRCUITS).register();
-    public static ItemEntry<Item> NANO_MAINFRAME_LUV = REGISTRATE.item("nano_mainframe", Item::new).lang("Nanoprocessor Mainframe").tag(CustomTags.LuV_CIRCUITS).register();
+    public static ItemEntry<Item> NANO_PROCESSOR_ASSEMBLY_EV = REGISTRATE.item("nano_processor_assembly", Item::new).lang("Nanoprocessor Assembly").tag(CustomTags.EV_CIRCUITS).register();
+    public static ItemEntry<Item> NANO_COMPUTER_IV = REGISTRATE.item("nano_processor_computer", Item::new).lang("Nanoprocessor Supercomputer").tag(CustomTags.IV_CIRCUITS).register();
+    public static ItemEntry<Item> NANO_MAINFRAME_LUV = REGISTRATE.item("nano_processor_mainframe", Item::new).lang("Nanoprocessor Mainframe").tag(CustomTags.LuV_CIRCUITS).register();
 
     // T5: Quantum
-    public static ItemEntry<Item> QUANTUM_PROCESSOR_EV = REGISTRATE.item("quantum_processor", Item::new).lang("Quantumprocessor").tag(CustomTags.EV_CIRCUITS).register();
-    public static ItemEntry<Item> QUANTUM_ASSEMBLY_IV = REGISTRATE.item("quantum_assembly", Item::new).lang("Quantumprocessor Assembly").tag(CustomTags.IV_CIRCUITS).register();
-    public static ItemEntry<Item> QUANTUM_COMPUTER_LUV = REGISTRATE.item("quantum_computer", Item::new).lang("Quantum Supercomputer").tag(CustomTags.LuV_CIRCUITS).register();
-    public static ItemEntry<Item> QUANTUM_MAINFRAME_ZPM = REGISTRATE.item("quantum_mainframe", Item::new).lang("Quantumprocessor Mainframe").tag(CustomTags.ZPM_CIRCUITS).register();
+    public static ItemEntry<Item> QUANTUM_PROCESSOR_EV = REGISTRATE.item("quantum_processor", Item::new).lang("Quantum Processor").tag(CustomTags.EV_CIRCUITS).register();
+    public static ItemEntry<Item> QUANTUM_ASSEMBLY_IV = REGISTRATE.item("quantum_processor_assembly", Item::new).lang("Quantum Processor Assembly").tag(CustomTags.IV_CIRCUITS).register();
+    public static ItemEntry<Item> QUANTUM_COMPUTER_LUV = REGISTRATE.item("quantum_processor_computer", Item::new).lang("Quantum Processor Supercomputer").tag(CustomTags.LuV_CIRCUITS).register();
+    public static ItemEntry<Item> QUANTUM_MAINFRAME_ZPM = REGISTRATE.item("quantum_processor_mainframe", Item::new).lang("Quantum Processor Mainframe").tag(CustomTags.ZPM_CIRCUITS).register();
 
     // T6: Crystal
     public static ItemEntry<Item> CRYSTAL_PROCESSOR_IV = REGISTRATE.item("crystal_processor", Item::new).lang("Crystal Processor").tag(CustomTags.IV_CIRCUITS).register();
-    public static ItemEntry<Item> CRYSTAL_ASSEMBLY_LUV = REGISTRATE.item("crystal_assembly", Item::new).lang("Crystal Processor Assembly").tag(CustomTags.LuV_CIRCUITS).register();
-    public static ItemEntry<Item> CRYSTAL_COMPUTER_ZPM = REGISTRATE.item("crystal_computer", Item::new).lang("Crystal Supercomputer").tag(CustomTags.ZPM_CIRCUITS).register();
-    public static ItemEntry<Item> CRYSTAL_MAINFRAME_UV = REGISTRATE.item("crystal_mainframe", Item::new).lang("Crystal Processor Mainframe").tag(CustomTags.UV_CIRCUITS).register();
+    public static ItemEntry<Item> CRYSTAL_ASSEMBLY_LUV = REGISTRATE.item("crystal_processor_assembly", Item::new).lang("Crystal Processor Assembly").tag(CustomTags.LuV_CIRCUITS).register();
+    public static ItemEntry<Item> CRYSTAL_COMPUTER_ZPM = REGISTRATE.item("crystal_processor_computer", Item::new).lang("Crystal Processor Supercomputer").tag(CustomTags.ZPM_CIRCUITS).register();
+    public static ItemEntry<Item> CRYSTAL_MAINFRAME_UV = REGISTRATE.item("crystal_processor_mainframe", Item::new).lang("Crystal Processor Mainframe").tag(CustomTags.UV_CIRCUITS).register();
 
     // T7: Wetware
     public static ItemEntry<Item> WETWARE_PROCESSOR_LUV = REGISTRATE.item("wetware_processor", Item::new).lang("Wetware Processor").tag(CustomTags.LuV_CIRCUITS).register();
-    public static ItemEntry<Item> WETWARE_PROCESSOR_ASSEMBLY_ZPM = REGISTRATE.item("wetware_assembly", Item::new).lang("Wetware Assembly").tag(CustomTags.ZPM_CIRCUITS).register();
-    public static ItemEntry<Item> WETWARE_SUPER_COMPUTER_UV = REGISTRATE.item("wetware_computer", Item::new).lang("Wetware Supercomputer").tag(CustomTags.UV_CIRCUITS).register();
-    public static ItemEntry<Item> WETWARE_MAINFRAME_UHV = REGISTRATE.item("wetware_mainframe", Item::new).lang("Wetware Mainframe").tag(CustomTags.UHV_CIRCUITS).register();
+    public static ItemEntry<Item> WETWARE_PROCESSOR_ASSEMBLY_ZPM = REGISTRATE.item("wetware_processor_assembly", Item::new).lang("Wetware Processor Assembly").tag(CustomTags.ZPM_CIRCUITS).register();
+    public static ItemEntry<Item> WETWARE_SUPER_COMPUTER_UV = REGISTRATE.item("wetware_processor_computer", Item::new).lang("Wetware Processor Supercomputer").tag(CustomTags.UV_CIRCUITS).register();
+    public static ItemEntry<Item> WETWARE_MAINFRAME_UHV = REGISTRATE.item("wetware_processor_mainframe", Item::new).lang("Wetware Processor Mainframe").tag(CustomTags.UHV_CIRCUITS).register();
 
     public static ItemEntry<Item> COMPONENT_GRINDER_DIAMOND = REGISTRATE.item("diamond_grinding_head", Item::new).lang("Diamond Grinding Head").onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 8), new MaterialStack(GTMaterials.Diamond, GTValues.M * 5)))).register();
     public static ItemEntry<Item> COMPONENT_GRINDER_TUNGSTEN = REGISTRATE.item("tungsten_grinding_head", Item::new).lang("Tungsten Grinding Head").onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Tungsten, GTValues.M * 4), new MaterialStack(GTMaterials.VanadiumSteel, GTValues.M * 8), new MaterialStack(GTMaterials.Diamond, GTValues.M)))).register();

@@ -222,6 +222,7 @@ public class TagPrefix {
             .defaultTagPath(FABRIC, "%s_gems")
             .unformattedTagPath(FORGE, "gems")
             .unformattedTagPath(FABRIC, "gems")
+            .langValue("%s")
             .materialAmount(GTValues.M)
             .materialIconType(MaterialIconType.gem)
             .unificationEnabled(true)

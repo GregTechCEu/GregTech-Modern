@@ -1,8 +1,8 @@
 {
   "replace": false,
   "values": [
-    "gtceu:workstation",
-    "gtceu:nano_assembly",
+    "gtceu:micro_processor_computer",
+    "gtceu:nano_processor_assembly",
     "gtceu:quantum_processor"
   ]
 }
