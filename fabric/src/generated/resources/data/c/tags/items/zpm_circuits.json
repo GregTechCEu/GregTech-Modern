@@ -1,8 +1,8 @@
 {
   "replace": false,
   "values": [
-    "gtceu:circuit.quantum_mainframe",
-    "gtceu:circuit.crystal_computer",
-    "gtceu:circuit.wetware_assembly"
+    "gtceu:quantum_mainframe",
+    "gtceu:crystal_computer",
+    "gtceu:wetware_assembly"
   ]
 }

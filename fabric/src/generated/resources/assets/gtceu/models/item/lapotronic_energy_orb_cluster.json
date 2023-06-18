@@ -1,0 +1,56 @@
+{
+  "parent": "minecraft:item/generated",
+  "overrides": [
+    {
+      "model": "gtceu:item/lapotronic_energy_orb_cluster/0",
+      "predicate": {
+        "gtceu:battery": 0.0
+      }
+    },
+    {
+      "model": "gtceu:item/lapotronic_energy_orb_cluster/1",
+      "predicate": {
+        "gtceu:battery": 0.01
+      }
+    },
+    {
+      "model": "gtceu:item/lapotronic_energy_orb_cluster/2",
+      "predicate": {
+        "gtceu:battery": 0.02
+      }
+    },
+    {
+      "model": "gtceu:item/lapotronic_energy_orb_cluster/3",
+      "predicate": {
+        "gtceu:battery": 0.03
+      }
+    },
+    {
+      "model": "gtceu:item/lapotronic_energy_orb_cluster/4",
+      "predicate": {
+        "gtceu:battery": 0.04
+      }
+    },
+    {
+      "model": "gtceu:item/lapotronic_energy_orb_cluster/5",
+      "predicate": {
+        "gtceu:battery": 0.05
+      }
+    },
+    {
+      "model": "gtceu:item/lapotronic_energy_orb_cluster/6",
+      "predicate": {
+        "gtceu:battery": 0.06
+      }
+    },
+    {
+      "model": "gtceu:item/lapotronic_energy_orb_cluster/7",
+      "predicate": {
+        "gtceu:battery": 0.07
+      }
+    }
+  ],
+  "textures": {
+    "layer0": "gtceu:item/lapotronic_energy_orb_cluster/1"
+  }
+}

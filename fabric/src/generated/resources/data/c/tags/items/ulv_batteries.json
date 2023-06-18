@@ -1,6 +1,6 @@
 {
   "replace": false,
   "values": [
-    "gtceu:battery.re.ulv.tantalum"
+    "gtceu:tantalum_capacitor"
   ]
 }
