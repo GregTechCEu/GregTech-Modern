@@ -804,7 +804,7 @@ public class GTItems {
 
     public static ItemEntry<Item> CENTRAL_PROCESSING_UNIT = REGISTRATE.item( "central_processing_unit", Item::new).lang("CPU").register();
     public static ItemEntry<Item> RANDOM_ACCESS_MEMORY = REGISTRATE.item( "random_access_memory", Item::new).lang("RAM").register();
-    public static ItemEntry<Item> INTEGRATED_LOGIC_CIRCUIT = REGISTRATE.item( "integrated_logic_circuit", Item::new).lang("Integrated Circuit").register();
+    public static ItemEntry<Item> INTEGRATED_LOGIC_CIRCUIT = REGISTRATE.item( "integrated_circuit", Item::new).lang("Integrated Circuit").register();
     public static ItemEntry<Item> NANO_CENTRAL_PROCESSING_UNIT = REGISTRATE.item( "nano_central_processing_unit", Item::new).lang("Nano CPU").register();
     public static ItemEntry<Item> QUBIT_CENTRAL_PROCESSING_UNIT = REGISTRATE.item( "qbit_central_processing_unit", Item::new).lang("Qubit CPU").register();
     public static ItemEntry<Item> SIMPLE_SYSTEM_ON_CHIP = REGISTRATE.item( "simple_system_on_chip", Item::new).lang("Simple SoC").register();
