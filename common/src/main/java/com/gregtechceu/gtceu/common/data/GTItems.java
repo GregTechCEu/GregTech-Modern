@@ -861,11 +861,11 @@ public class GTItems {
 
     // T1: Electronic
     public static ItemEntry<Item> ELECTRONIC_CIRCUIT_LV = REGISTRATE.item("basic_electronic_circuit", Item::new).lang("Basic Electronic Circuit").tag(CustomTags.LV_CIRCUITS).register();
-    public static ItemEntry<Item> ELECTRONIC_CIRCUIT_MV = REGISTRATE.item("intermediate_electronic_circuit", Item::new).lang("Intermediate Electronic Circuit").tag(CustomTags.MV_CIRCUITS).register();
+    public static ItemEntry<Item> ELECTRONIC_CIRCUIT_MV = REGISTRATE.item("good_electronic_circuit", Item::new).lang("Good Electronic Circuit").tag(CustomTags.MV_CIRCUITS).register();
 
     // T2: Integrated
     public static ItemEntry<Item> INTEGRATED_CIRCUIT_LV = REGISTRATE.item("basic_integrated_circuit", Item::new).lang("Basic Integrated Circuit").tag(CustomTags.LV_CIRCUITS).register();
-    public static ItemEntry<Item> INTEGRATED_CIRCUIT_MV = REGISTRATE.item("intermediate_integrated_circuit", Item::new).lang("Intermediate Integrated Circuit").tag(CustomTags.MV_CIRCUITS).register();
+    public static ItemEntry<Item> INTEGRATED_CIRCUIT_MV = REGISTRATE.item("good_integrated_circuit", Item::new).lang("Good Integrated Circuit").tag(CustomTags.MV_CIRCUITS).register();
     public static ItemEntry<Item> INTEGRATED_CIRCUIT_HV = REGISTRATE.item("advanced_integrated_circuit", Item::new).lang("Advanced Integrated Circuit").tag(CustomTags.HV_CIRCUITS).register();
 
     // ULV/LV easier circuits
