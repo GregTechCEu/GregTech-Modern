@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "gtceu:item/empty_plate"
+    "layer0": "gtceu:item/empty_mold"
   }
 }

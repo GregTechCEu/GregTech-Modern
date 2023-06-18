@@ -120,7 +120,7 @@ public class GTCreateMachines {
         KineticMachineDefinition[] definitions = new KineticMachineDefinition[tiers.length];
         for (int i = 0; i < tiers.length; i++) {
             int tier = tiers[i];
-            var register =  REGISTRATE.machine(name + "." + GTValues.VN[tier].toLowerCase(),
+            var register =  REGISTRATE.machine(name + "_" + GTValues.VN[tier].toLowerCase(),
                             id -> definitionFactory.apply(tier, id),
                             holder -> factory.apply(holder, tier),
                             KineticMachineBlock::new,

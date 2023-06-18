@@ -484,13 +484,13 @@ public class GTMachines {
     //////////////////////////////////////
     //*******     Multiblock     *******//
     //////////////////////////////////////
-    public final static MultiblockMachineDefinition LARGE_BOILER_BRONZE = registerLargeBoiler("large_bronze_boiler", CASING_BRONZE_BRICKS, CASING_BRONZE_PIPE, FIREBOX_BRONZE,
+    public final static MultiblockMachineDefinition LARGE_BOILER_BRONZE = registerLargeBoiler("bronze_large_boiler", CASING_BRONZE_BRICKS, CASING_BRONZE_PIPE, FIREBOX_BRONZE,
             GTCEu.id("block/casings/solid/machine_casing_bronze_plated_bricks"), BoilerFireboxType.BRONZE_FIREBOX, 800, 1);
-    public final static MultiblockMachineDefinition LARGE_BOILER_STEEL = registerLargeBoiler("large_steel_boiler", CASING_STEEL_SOLID, CASING_STEEL_PIPE, FIREBOX_STEEL,
+    public final static MultiblockMachineDefinition LARGE_BOILER_STEEL = registerLargeBoiler("steel_large_boiler", CASING_STEEL_SOLID, CASING_STEEL_PIPE, FIREBOX_STEEL,
             GTCEu.id("block/casings/solid/machine_casing_solid_steel"), BoilerFireboxType.STEEL_FIREBOX, 1800, 1);
-    public final static MultiblockMachineDefinition LARGE_BOILER_TITANIUM = registerLargeBoiler("large_titanium_boiler", CASING_TITANIUM_STABLE, CASING_TITANIUM_PIPE, FIREBOX_TITANIUM,
+    public final static MultiblockMachineDefinition LARGE_BOILER_TITANIUM = registerLargeBoiler("titanium_large_boiler", CASING_TITANIUM_STABLE, CASING_TITANIUM_PIPE, FIREBOX_TITANIUM,
             GTCEu.id("block/casings/solid/machine_casing_stable_titanium"), BoilerFireboxType.TITANIUM_FIREBOX, 3200, 1);
-    public final static MultiblockMachineDefinition LARGE_BOILER_TUNGSTENSTEEL = registerLargeBoiler("large_tungstensteel_boiler", CASING_TUNGSTENSTEEL_ROBUST, CASING_TUNGSTENSTEEL_PIPE, FIREBOX_TUNGSTENSTEEL,
+    public final static MultiblockMachineDefinition LARGE_BOILER_TUNGSTENSTEEL = registerLargeBoiler("tungstensteel_large_boiler", CASING_TUNGSTENSTEEL_ROBUST, CASING_TUNGSTENSTEEL_PIPE, FIREBOX_TUNGSTENSTEEL,
             GTCEu.id("block/casings/solid/machine_casing_robust_tungstensteel"), BoilerFireboxType.TUNGSTENSTEEL_FIREBOX, 6400, 2);
 
     public final static MultiblockMachineDefinition COKE_OVEN = REGISTRATE.multiblock("coke_oven", CokeOvenMachine::new)
@@ -885,7 +885,7 @@ public class GTMachines {
     }
 
     public static MachineDefinition[] registerBatteryBuffer(int batterySlotSize){
-        return registerTieredMachines("battery_buffer." + batterySlotSize,
+        return registerTieredMachines("battery_buffer_" + batterySlotSize + "x",
                 (holder, tier) -> new BatteryBufferMachine(holder, tier, batterySlotSize),
                 (tier, builder) -> builder
                         .rotationState(RotationState.ALL)

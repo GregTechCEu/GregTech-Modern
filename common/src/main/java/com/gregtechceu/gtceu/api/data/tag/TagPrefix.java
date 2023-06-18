@@ -575,7 +575,7 @@ public class TagPrefix {
             .generationCondition(mat -> mat.hasFlag(MaterialFlags.GENERATE_LENS));
 
     // made of 4 Ingots.
-    public static final TagPrefix toolHeadBuzzSaw = new TagPrefix("buzzSawHead")
+    public static final TagPrefix toolHeadBuzzSaw = new TagPrefix("buzzSawBlade")
             .itemTable(() -> GTItems.MATERIAL_ITEMS)
             .langValue("%s Buzzsaw Blade")
             .materialAmount(GTValues.M * 4)
@@ -599,7 +599,7 @@ public class TagPrefix {
     // made of 4 Ingots.
     public static final TagPrefix toolHeadDrill = new TagPrefix("drillHead")
             .itemTable(() -> GTItems.MATERIAL_ITEMS)
-            .langValue("%s Drill Tip")
+            .langValue("%s Drill Head")
             .materialAmount(GTValues.M * 4)
             .maxStackSize(16)
             .materialIconType(MaterialIconType.toolHeadDrill)
@@ -610,7 +610,7 @@ public class TagPrefix {
     // made of 2 Ingots.
     public static final TagPrefix toolHeadChainsaw = new TagPrefix("chainsawHead")
             .itemTable(() -> GTItems.MATERIAL_ITEMS)
-            .langValue("%s Chainsaw Tip")
+            .langValue("%s Chainsaw Head")
             .materialAmount(GTValues.M * 2)
             .maxStackSize(16)
             .materialIconType(MaterialIconType.toolHeadChainsaw)
