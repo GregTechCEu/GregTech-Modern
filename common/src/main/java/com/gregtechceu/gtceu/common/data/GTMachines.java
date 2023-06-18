@@ -812,7 +812,91 @@ public class GTMachines {
                     GTCEu.id("block/multiblock/steam_oven")))
             .register();
 
-    public static final MultiblockMachineDefinition[] FUSION_REACTOR = registerFusionReactors("fusion_reactor", GTRecipeTypes.FUSION_RECIPES, LuV, ZPM, UV);
+    public static final MultiblockMachineDefinition[] FUSION_REACTOR = registerTieredMultis("fusion_reactor", FusionReactorMachine::new, (tier, builder) -> builder
+                    .rotationState(RotationState.NON_Y_AXIS)
+                    .langValue("Fusion Reactor Computer Mark %s".formatted(toRomanNumeral(tier - LuV)))
+                    .recipeType(GTRecipeTypes.FUSION_RECIPES)
+                    .tooltips(
+                            Component.translatable("gtceu.machine.fusion_reactor.capacity", FusionReactorMachine.calculateEnergyStorageFactor(tier, 16) / 1000000L),
+                            Component.translatable("gtceu.machine.fusion_reactor.overclocking"),
+                            Component.translatable("gtceu.multiblock.fusion_reactor.%s.description".formatted(VN[tier].toLowerCase(Locale.ROOT))))
+                    .partAppearance((controller, part, direction) -> FusionReactorMachine.getCasingState(tier).defaultBlockState())
+                    .pattern((definition) -> {
+                        var casing = blocks(FusionReactorMachine.getCasingState(tier));
+                        return FactoryBlockPattern.start()
+                                .aisle("###############", "######OGO######", "###############")
+                                .aisle("######ICI######", "####GGAAAGG####", "######ICI######")
+                                .aisle("####CC###CC####", "###EAAOGOAAE###", "####CC###CC####")
+                                .aisle("###C#######C###", "##EKEG###GEKE##", "###C#######C###")
+                                .aisle("##C#########C##", "#GAE#######EAG#", "##C#########C##")
+                                .aisle("##C#########C##", "#GAG#######GAG#", "##C#########C##")
+                                .aisle("#I###########I#", "OAO#########OAO", "#I###########I#")
+                                .aisle("#C###########C#", "GAG#########GAG", "#C###########C#")
+                                .aisle("#I###########I#", "OAO#########OAO", "#I###########I#")
+                                .aisle("##C#########C##", "#GAG#######GAG#", "##C#########C##")
+                                .aisle("##C#########C##", "#GAE#######EAG#", "##C#########C##")
+                                .aisle("###C#######C###", "##EKEG###GEKE##", "###C#######C###")
+                                .aisle("####CC###CC####", "###EAAOGOAAE###", "####CC###CC####")
+                                .aisle("######ICI######", "####GGAAAGG####", "######ICI######")
+                                .aisle("###############", "######OSO######", "###############")
+                                .where('S', controller(blocks(definition.get())))
+                                .where('G', blocks(CASING_FUSION_GLASS.get()).or(casing))
+                                .where('E', casing.or(blocks(PartAbility.INPUT_ENERGY.getBlockRange(tier, UV).toArray(Block[]::new))
+                                        .setMinGlobalLimited(1).setPreviewCount(16)))
+                                .where('C', casing)
+                                .where('K', blocks(FusionReactorMachine.getCoilState(tier)))
+                                .where('O', casing.or(abilities(PartAbility.EXPORT_FLUIDS)))
+                                .where('A', air())
+                                .where('I', casing.or(abilities(PartAbility.IMPORT_FLUIDS).setMinGlobalLimited(2)))
+                                .where('#', any())
+                                .build();
+                    })
+                    .shapeInfos((controller) -> {
+                        List<MultiblockShapeInfo> shapeInfos = new ArrayList<>();
+
+                        MultiblockShapeInfo.ShapeInfoBuilder baseBuilder = MultiblockShapeInfo.builder()
+                                .aisle("###############", "######WGW######", "###############")
+                                .aisle("######DCD######", "####GG###GG####", "######UCU######")
+                                .aisle("####CC###CC####", "###w##EGE##s###", "####CC###CC####")
+                                .aisle("###C#######C###", "##nKeG###GeKn##", "###C#######C###")
+                                .aisle("##C#########C##", "#G#s#######w#G#", "##C#########C##")
+                                .aisle("##C#########C##", "#G#G#######G#G#", "##C#########C##")
+                                .aisle("#D###########D#", "N#S#########N#S", "#U###########U#")
+                                .aisle("#C###########C#", "G#G#########G#G", "#C###########C#")
+                                .aisle("#D###########D#", "N#S#########N#S", "#U###########U#")
+                                .aisle("##C#########C##", "#G#G#######G#G#", "##C#########C##")
+                                .aisle("##C#########C##", "#G#s#######w#G#", "##C#########C##")
+                                .aisle("###C#######C###", "##eKnG###GnKe##", "###C#######C###")
+                                .aisle("####CC###CC####", "###w##WGW##s###", "####CC###CC####")
+                                .aisle("######DCD######", "####GG###GG####", "######UCU######")
+                                .aisle("###############", "######EME######", "###############")
+                                .where('M', controller, Direction.SOUTH)
+                                .where('C', FusionReactorMachine.getCasingState(tier))
+                                .where('G', CASING_FUSION_GLASS.get())
+                                .where('K', FusionReactorMachine.getCoilState(tier))
+                                .where('W', GTMachines.FLUID_EXPORT_HATCH[tier], Direction.NORTH)
+                                .where('E', GTMachines.FLUID_EXPORT_HATCH[tier], Direction.SOUTH)
+                                .where('S', GTMachines.FLUID_EXPORT_HATCH[tier], Direction.EAST)
+                                .where('N', GTMachines.FLUID_EXPORT_HATCH[tier], Direction.WEST)
+                                .where('w', GTMachines.ENERGY_INPUT_HATCH[tier], Direction.WEST)
+                                .where('e', GTMachines.ENERGY_INPUT_HATCH[tier], Direction.SOUTH)
+                                .where('s', GTMachines.ENERGY_INPUT_HATCH[tier], Direction.EAST)
+                                .where('n', GTMachines.ENERGY_INPUT_HATCH[tier], Direction.NORTH)
+                                .where('U', GTMachines.FLUID_IMPORT_HATCH[tier], Direction.UP)
+                                .where('D', GTMachines.FLUID_IMPORT_HATCH[tier], Direction.DOWN)
+                                .where('#', Blocks.AIR.defaultBlockState());
+
+                        shapeInfos.add(baseBuilder.shallowCopy()
+                                .where('G', FusionReactorMachine.getCasingState(tier))
+                                .build()
+                        );
+                        shapeInfos.add(baseBuilder.build());
+                        return shapeInfos;
+                    })
+                    .workableCasingRenderer(FusionReactorMachine.getCasingType(tier).getTexture(),
+                            GTCEu.id("block/multiblock/fusion_reactor"), false)
+                    .register(),
+            LuV, ZPM, UV);
 
 
     //////////////////////////////////////
@@ -917,92 +1001,6 @@ public class GTMachines {
             definitions[i] = builder.apply(tier, register);
         }
         return definitions;
-    }
-
-    public static MultiblockMachineDefinition[] registerFusionReactors(String name, GTRecipeType recipeType, int... tiers) {
-        return registerTieredMultis(name, FusionReactorMachine::new, (tier, builder) -> builder
-                        .langValue("Fusion Reactor Computer Mark %s".formatted(toRomanNumeral(tier - LuV)))
-                        .recipeType(recipeType)
-                        .tooltips(
-                                Component.translatable("gtceu.machine.fusion_reactor.capacity", FusionReactorMachine.calculateEnergyStorageFactor(tier, 16) / 1000000L),
-                                Component.translatable("gtceu.machine.fusion_reactor.overclocking"))
-                        .partAppearance((controller, part, direction) -> FusionReactorMachine.getCasingState(tier).defaultBlockState())
-                        .pattern((definition) -> {
-                            var casing = blocks(FusionReactorMachine.getCasingState(tier));
-                            return FactoryBlockPattern.start()
-                                    .aisle("###############", "######OGO######", "###############")
-                                    .aisle("######ICI######", "####GGAAAGG####", "######ICI######")
-                                    .aisle("####CC###CC####", "###EAAOGOAAE###", "####CC###CC####")
-                                    .aisle("###C#######C###", "##EKEG###GEKE##", "###C#######C###")
-                                    .aisle("##C#########C##", "#GAE#######EAG#", "##C#########C##")
-                                    .aisle("##C#########C##", "#GAG#######GAG#", "##C#########C##")
-                                    .aisle("#I###########I#", "OAO#########OAO", "#I###########I#")
-                                    .aisle("#C###########C#", "GAG#########GAG", "#C###########C#")
-                                    .aisle("#I###########I#", "OAO#########OAO", "#I###########I#")
-                                    .aisle("##C#########C##", "#GAG#######GAG#", "##C#########C##")
-                                    .aisle("##C#########C##", "#GAE#######EAG#", "##C#########C##")
-                                    .aisle("###C#######C###", "##EKEG###GEKE##", "###C#######C###")
-                                    .aisle("####CC###CC####", "###EAAOGOAAE###", "####CC###CC####")
-                                    .aisle("######ICI######", "####GGAAAGG####", "######ICI######")
-                                    .aisle("###############", "######OSO######", "###############")
-                                    .where('S', controller(blocks(definition.get())))
-                                    .where('G', blocks(CASING_FUSION_GLASS.get()).or(casing))
-                                    .where('E', casing.or(blocks(PartAbility.INPUT_ENERGY.getBlockRange(tier, UV).toArray(Block[]::new))
-                                            .setMinGlobalLimited(1).setPreviewCount(16)))
-                                    .where('C', casing)
-                                    .where('K', blocks(FusionReactorMachine.getCoilState(tier)))
-                                    .where('O', casing.or(abilities(PartAbility.EXPORT_FLUIDS)))
-                                    .where('A', air())
-                                    .where('I', casing.or(abilities(PartAbility.IMPORT_FLUIDS).setMinGlobalLimited(2)))
-                                    .where('#', any())
-                                    .build();
-                        })
-                        .shapeInfos((controller) -> {
-                            List<MultiblockShapeInfo> shapeInfos = new ArrayList<>();
-
-                            MultiblockShapeInfo.ShapeInfoBuilder baseBuilder = MultiblockShapeInfo.builder()
-                                    .aisle("###############", "######WGW######", "###############")
-                                    .aisle("######DCD######", "####GG###GG####", "######UCU######")
-                                    .aisle("####CC###CC####", "###w##EGE##s###", "####CC###CC####")
-                                    .aisle("###C#######C###", "##nKeG###GeKn##", "###C#######C###")
-                                    .aisle("##C#########C##", "#G#s#######w#G#", "##C#########C##")
-                                    .aisle("##C#########C##", "#G#G#######G#G#", "##C#########C##")
-                                    .aisle("#D###########D#", "N#S#########N#S", "#U###########U#")
-                                    .aisle("#C###########C#", "G#G#########G#G", "#C###########C#")
-                                    .aisle("#D###########D#", "N#S#########N#S", "#U###########U#")
-                                    .aisle("##C#########C##", "#G#G#######G#G#", "##C#########C##")
-                                    .aisle("##C#########C##", "#G#s#######w#G#", "##C#########C##")
-                                    .aisle("###C#######C###", "##eKnG###GnKe##", "###C#######C###")
-                                    .aisle("####CC###CC####", "###w##WGW##s###", "####CC###CC####")
-                                    .aisle("######DCD######", "####GG###GG####", "######UCU######")
-                                    .aisle("###############", "######EME######", "###############")
-                                    .where('M', GTMachines.FUSION_REACTOR[tier - GTValues.LuV], Direction.SOUTH)
-                                    .where('C', FusionReactorMachine.getCasingState(tier))
-                                    .where('G', CASING_FUSION_GLASS.get())
-                                    .where('K', FusionReactorMachine.getCoilState(tier))
-                                    .where('W', GTMachines.FLUID_EXPORT_HATCH[tier], Direction.NORTH)
-                                    .where('E', GTMachines.FLUID_EXPORT_HATCH[tier], Direction.SOUTH)
-                                    .where('S', GTMachines.FLUID_EXPORT_HATCH[tier], Direction.EAST)
-                                    .where('N', GTMachines.FLUID_EXPORT_HATCH[tier], Direction.WEST)
-                                    .where('w', GTMachines.ENERGY_INPUT_HATCH[tier], Direction.WEST)
-                                    .where('e', GTMachines.ENERGY_INPUT_HATCH[tier], Direction.SOUTH)
-                                    .where('s', GTMachines.ENERGY_INPUT_HATCH[tier], Direction.EAST)
-                                    .where('n', GTMachines.ENERGY_INPUT_HATCH[tier], Direction.NORTH)
-                                    .where('U', GTMachines.FLUID_IMPORT_HATCH[tier], Direction.UP)
-                                    .where('D', GTMachines.FLUID_IMPORT_HATCH[tier], Direction.DOWN)
-                                    .where('#', Blocks.AIR.defaultBlockState());
-
-                            shapeInfos.add(baseBuilder.shallowCopy()
-                                    .where('G', FusionReactorMachine.getCasingState(tier))
-                                    .build()
-                            );
-                            shapeInfos.add(baseBuilder.build());
-                            return shapeInfos;
-                        })
-                        .workableCasingRenderer(FusionReactorMachine.getCasingType(tier).getTexture(),
-                                GTCEu.id("block/multiblock/fusion_reactor"), false)
-                        .register(),
-                tiers);
     }
 
     public static MultiblockMachineDefinition registerLargeBoiler(String name, Supplier<? extends Block> casing, Supplier<? extends Block> pipe, Supplier<? extends Block> fireBox, ResourceLocation texture, BoilerFireboxType firebox, int maxTemperature, int heatSpeed) {
