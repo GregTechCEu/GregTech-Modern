@@ -11,7 +11,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "gtceu:titanium_gearbox_pipe_casing"
+          "name": "gtceu:titanium_gearbox"
         }
       ],
       "rolls": 1.0

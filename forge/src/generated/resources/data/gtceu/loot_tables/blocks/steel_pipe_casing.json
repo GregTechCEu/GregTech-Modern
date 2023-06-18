@@ -11,7 +11,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "gtceu:stainless_steel_gearbox_pipe_casing"
+          "name": "gtceu:steel_pipe_casing"
         }
       ],
       "rolls": 1.0

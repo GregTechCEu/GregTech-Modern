@@ -11,7 +11,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "gtceu:assembly_line_grating_pipe_casing"
+          "name": "gtceu:sturdy_machine_casing"
         }
       ],
       "rolls": 1.0

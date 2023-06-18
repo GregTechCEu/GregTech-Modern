@@ -360,11 +360,11 @@ public class GTBlocks {
 
 
 
-    private static BlockEntry<Block> createCasingBlock(String name, ResourceLocation texture) {
-        return createCasingBlock(name, texture, () -> Blocks.IRON_BLOCK);
+    private static BlockEntry<Block> createCasingBlock2(String name, ResourceLocation texture) {
+        return createCasingBlock2(name, texture, () -> Blocks.IRON_BLOCK);
     }
 
-    private static BlockEntry<Block> createCasingBlock(String name, ResourceLocation texture, NonNullSupplier<? extends Block> properties) {
+    private static BlockEntry<Block> createCasingBlock2(String name, ResourceLocation texture, NonNullSupplier<? extends Block> properties) {
         return REGISTRATE.block("%s_pipe_casing".formatted(name.toLowerCase()), p -> (Block) new RendererBlock(p,
                         new TextureOverrideRenderer(new ResourceLocation("block/cube_all"),
                                 Map.of("all", texture))))
@@ -381,11 +381,11 @@ public class GTBlocks {
 
 
     // THIS IS JUST FOR PTFE PIPE CASING
-    private static BlockEntry<Block> createCasingBlock2(String name, ResourceLocation texture) {
+    private static BlockEntry<Block> createCasingBlock(String name, ResourceLocation texture) {
         return createCasingBlock(name, texture, () -> Blocks.IRON_BLOCK);
     }
 
-    private static BlockEntry<Block> createCasingBlock2(String name, ResourceLocation texture, NonNullSupplier<? extends Block> properties) {
+    private static BlockEntry<Block> createCasingBlock(String name, ResourceLocation texture, NonNullSupplier<? extends Block> properties) {
         return REGISTRATE.block(name, p -> (Block) new RendererBlock(p,
                         new TextureOverrideRenderer(new ResourceLocation("block/cube_all"),
                                 Map.of("all", texture))))
