@@ -6,30 +6,27 @@ import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
+import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
-import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
-import com.gregtechceu.gtceu.api.machine.trait.multi.NotifiableMultiTransferItemStackHandler;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.common.block.FusionCasingBlock;
-import com.lowdragmc.lowdraglib.misc.FluidStorage;
-import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import lombok.Getter;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.FluidState;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -38,10 +35,10 @@ import static com.gregtechceu.gtceu.common.data.GTBlocks.*;
 
 public class FusionReactorMachine extends WorkableElectricMultiblockMachine {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(FusionReactorMachine.class, MultiblockControllerMachine.MANAGED_FIELD_HOLDER);
-
+    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(FusionReactorMachine.class, WorkableMultiblockMachine.MANAGED_FIELD_HOLDER);
 
     @Persisted
+    @DescSynced
     public NotifiableEnergyContainer energyContainer;
     private final int tier;
     private EnergyContainerList inputEnergyContainers;
@@ -50,13 +47,12 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine {
     private long heat = 0;
     @Getter
     @DescSynced
-    private Integer color;
+    private Integer color = -1;
 
     public FusionReactorMachine(IMachineBlockEntity holder, int tier) {
         super(holder);
         this.tier = tier;
         this.energyContainer = createEnergyContainer();
-        this.initializeAbilities();
     }
 
     @Override
@@ -68,12 +64,37 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine {
         return new NotifiableEnergyContainer(this, Integer.MAX_VALUE, 0, 0, 0, 0);
     }
 
-    @Override
-    protected RecipeLogic createRecipeLogic(Object... args) {
-        return new FusionRecipeLogic(this);
+    public void updateFormedValid() {
+        if (!this.isFormed()) return;
+
+        // Drain heat when the reactor is not active, is paused via soft mallet, or does not have enough energy and has fully wiped recipe progress
+        // Don't drain heat when there is not enough energy and there is still some recipe progress, as that makes it doubly hard to complete the recipe
+        // (Will have to recover heat and recipe progress)
+        if ((!(isActive() || isWorkingEnabled()) || (getRecipeLogic().isSuspend() && getRecipeLogic().progress == 0)) && heat > 0) {
+            heat = heat <= 10000 ? 0 : (heat - 10000);
+        }
+
+        if (this.inputEnergyContainers != null) {
+            if (this.inputEnergyContainers.getEnergyStored() > 0) {
+                long energyAdded = this.energyContainer.addEnergy(this.inputEnergyContainers.getEnergyStored());
+                if (energyAdded > 0) this.inputEnergyContainers.removeEnergy(energyAdded);
+            }
+        }
+
+        if (recipeLogic.isWorking() && color == -1) {
+            if (recipeLogic.getLastRecipe() != null && recipeLogic.getLastRecipe().getOutputContents(FluidRecipeCapability.CAP).size() > 0) {
+                int newColor = 0xFF000000 | getFluidColor(FluidRecipeCapability.CAP.of(recipeLogic.getLastRecipe().getOutputContents(FluidRecipeCapability.CAP).get(0).getContent()).getFluid().defaultFluidState());
+                if (!Objects.equals(color, newColor)) {
+                    color = newColor;
+                }
+            }
+        } else if (!recipeLogic.isWorking() && isFormed() && color != -1) {
+            color = -1;
+        }
     }
 
     protected void initializeAbilities() {
+        /*
         if (this.getCapabilitiesProxy().contains(IO.IN, ItemRecipeCapability.CAP)) {
             List<IItemTransfer> itemsIn = this.getCapabilitiesProxy().get(IO.IN, ItemRecipeCapability.CAP).stream().filter(IItemTransfer.class::isInstance).map(IItemTransfer.class::cast).toList();
             this.getCapabilitiesProxy().put(IO.IN, ItemRecipeCapability.CAP, List.of(new NotifiableMultiTransferItemStackHandler(this, itemsIn, IO.IN)));
@@ -90,15 +111,33 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine {
             List<FluidStorage> fluidsOut = this.getCapabilitiesProxy().get(IO.OUT, FluidRecipeCapability.CAP).stream().filter(FluidStorage.class::isInstance).map(FluidStorage.class::cast).toList();
             this.getCapabilitiesProxy().put(IO.OUT, FluidRecipeCapability.CAP, List.of(new NotifiableFluidTank(this, fluidsOut, IO.OUT)));
         }
+        */
 
-        List<IEnergyContainer> energyInputs = this.getCapabilitiesProxy().get(IO.IN, EURecipeCapability.CAP).stream().filter(IEnergyContainer.class::isInstance).map(IEnergyContainer.class::cast).toList();
-        this.inputEnergyContainers = new EnergyContainerList(energyInputs);
-        long euCapacity = calculateEnergyStorageFactor(tier, energyInputs.size());
+        List<IEnergyContainer> energyContainers = new ArrayList<>();
+        List<IRecipeHandler<?>> capabilities = this.getCapabilitiesProxy().get(IO.IN, EURecipeCapability.CAP);
+        if (capabilities != null) {
+            for (IRecipeHandler<?> handler : capabilities) {
+                if (handler instanceof IEnergyContainer container) {
+                    energyContainers.add(container);
+                }
+            }
+        } else {
+            capabilities = this.getCapabilitiesProxy().get(IO.BOTH, EURecipeCapability.CAP);
+            if (capabilities != null) {
+                for (IRecipeHandler<?> handler : capabilities) {
+                    if (handler instanceof IEnergyContainer container) {
+                        energyContainers.add(container);
+                    }
+                }
+            }
+        }
+        this.inputEnergyContainers = new EnergyContainerList(energyContainers);
+        long euCapacity = calculateEnergyStorageFactor(tier, energyContainers.size());
         this.energyContainer = new NotifiableEnergyContainer(this, euCapacity, GTValues.V[tier], 0, 0, 0);
     }
 
     public static long calculateEnergyStorageFactor(int tier, int energyInputAmount) {
-        return energyInputAmount * (long) Math.pow(2, tier - 6) * 10000000L;
+        return energyInputAmount * (long) Math.pow(2, tier - LuV) * 10000000L;
     }
 
     public static Block getCasingState(int tier) {
@@ -126,48 +165,22 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine {
     }
 
     @Override
+    public void onLoad() {
+        super.onLoad();
+        this.subscribeServerTick(this::updateFormedValid);
+    }
+
+    @Override
     public void onStructureFormed() {
         long energyStored = this.energyContainer.getEnergyStored();
+        super.onStructureFormed();
         this.initializeAbilities();
         this.energyContainer.setEnergyStored(energyStored);
-        if (this.inputEnergyContainers.getEnergyStored() > 0) {
-            long energyAdded = this.energyContainer.addEnergy(this.inputEnergyContainers.getEnergyStored());
-            if (energyAdded > 0) this.inputEnergyContainers.removeEnergy(energyAdded);
-        }
-        super.onStructureFormed();
-        if (recipeLogic.isWorking() && color == null) {
-            if (recipeLogic.getLastRecipe() != null && recipeLogic.getLastRecipe().getOutputContents(FluidRecipeCapability.CAP).size() > 0) {
-                int newColor = 0xFF000000 | getFluidColor(FluidRecipeCapability.CAP.of(recipeLogic.getLastRecipe().getOutputContents(FluidRecipeCapability.CAP).get(0).getContent()).getFluid().defaultFluidState());
-                if (!Objects.equals(color, newColor)) {
-                    color = newColor;
-                }
-            }
-        } else if (!recipeLogic.isWorking() && isFormed() && color != null) {
-            color = null;
-        }
     }
 
     @ExpectPlatform
     public static int getFluidColor(FluidState fluid) {
         throw new AssertionError();
-    }
-
-    private class FusionRecipeLogic extends RecipeLogic {
-
-        public FusionRecipeLogic(FusionReactorMachine tileEntity) {
-            super(tileEntity);
-        }
-
-        @Override
-        public void handleRecipeWorking() {
-            super.handleRecipeWorking();
-            // Drain heat when the reactor is not active, is paused via soft mallet, or does not have enough energy and has fully wiped recipe progress
-            // Don't drain heat when there is not enough energy and there is still some recipe progress, as that makes it doubly hard to complete the recipe
-            // (Will have to recover heat and recipe progress)
-            if ((!(isActive() || isWorkingEnabled()) || (isSuspend() && progress == 0)) && heat > 0) {
-                heat = heat <= 10000 ? 0 : (heat - 10000);
-            }
-        }
     }
 
     @Override
@@ -187,17 +200,7 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine {
         long heatDiff = recipe.data.getLong("eu_to_start") - heat;
         // if the stored heat is >= required energy, recipe is okay to run
         if (heatDiff <= 0) {
-            return RecipeHelper.applyOverclock(new OverclockingLogic(false) {
-                @Override
-                protected double getOverclockingDurationDivisor() {
-                    return 2.0D;
-                }
-
-                @Override
-                protected double getOverclockingVoltageMultiplier() {
-                    return 2.0D;
-                }
-            }, recipe, getMaxVoltage());
+            return applyOC(recipe);
         }
 
         // if the remaining energy needed is more than stored, do not run
@@ -208,6 +211,29 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine {
         energyContainer.removeEnergy(heatDiff);
         // increase the stored heat
         heat += heatDiff;
-        return recipe;
+        return applyOC(recipe);
+    }
+
+    @Override
+    public void addDisplayText(List<Component> textList) {
+        super.addDisplayText(textList);
+        if (isFormed()) {
+            textList.add(Component.translatable("gtceu.multiblock.fusion_reactor.energy", this.energyContainer.getEnergyStored(), this.energyContainer.getEnergyCapacity()));
+            textList.add(Component.translatable("gtceu.multiblock.fusion_reactor.heat", heat));
+        }
+    }
+
+    public GTRecipe applyOC(GTRecipe recipe) {
+        return RecipeHelper.applyOverclock(new OverclockingLogic(false) {
+            @Override
+            protected double getOverclockingDurationDivisor() {
+                return 2.0D;
+            }
+
+            @Override
+            protected double getOverclockingVoltageMultiplier() {
+                return 2.0D;
+            }
+        }, recipe, getMaxVoltage());
     }
 }
