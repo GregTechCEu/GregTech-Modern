@@ -37,13 +37,13 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(FusionReactorMachine.class, WorkableMultiblockMachine.MANAGED_FIELD_HOLDER);
 
-    @Persisted
-    @DescSynced
+    @Persisted @DescSynced
     public NotifiableEnergyContainer energyContainer;
+    @Persisted(key = "energyStored")
+    public long energySaveHack; // todo remove this, find actual fix (is this even needed? I'm not sure anymore...)
     private final int tier;
     private EnergyContainerList inputEnergyContainers;
-    @Persisted
-    @DescSynced
+    @Persisted @DescSynced
     private long heat = 0;
     @Getter
     @DescSynced
@@ -53,6 +53,11 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine {
         super(holder);
         this.tier = tier;
         this.energyContainer = createEnergyContainer();
+        this.energyContainer.addChangedListener(this::updateSaveHack);
+    }
+
+    public void updateSaveHack() {
+        this.energySaveHack = energyContainer.getEnergyStored();
     }
 
     @Override
@@ -94,25 +99,6 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine {
     }
 
     protected void initializeAbilities() {
-        /*
-        if (this.getCapabilitiesProxy().contains(IO.IN, ItemRecipeCapability.CAP)) {
-            List<IItemTransfer> itemsIn = this.getCapabilitiesProxy().get(IO.IN, ItemRecipeCapability.CAP).stream().filter(IItemTransfer.class::isInstance).map(IItemTransfer.class::cast).toList();
-            this.getCapabilitiesProxy().put(IO.IN, ItemRecipeCapability.CAP, List.of(new NotifiableMultiTransferItemStackHandler(this, itemsIn, IO.IN)));
-        }
-        if (this.getCapabilitiesProxy().contains(IO.IN, FluidRecipeCapability.CAP)) {
-            List<FluidStorage> fluidsIn = this.getCapabilitiesProxy().get(IO.IN, FluidRecipeCapability.CAP).stream().filter(FluidStorage.class::isInstance).map(FluidStorage.class::cast).toList();
-            this.getCapabilitiesProxy().put(IO.IN, FluidRecipeCapability.CAP, List.of(new NotifiableFluidTank(this, fluidsIn, IO.IN)));
-        }
-        if (this.getCapabilitiesProxy().contains(IO.OUT, ItemRecipeCapability.CAP)) {
-            List<IItemTransfer> itemsOut = this.getCapabilitiesProxy().get(IO.OUT, ItemRecipeCapability.CAP).stream().filter(IItemTransfer.class::isInstance).map(IItemTransfer.class::cast).toList();
-            this.getCapabilitiesProxy().put(IO.OUT, ItemRecipeCapability.CAP, List.of(new NotifiableMultiTransferItemStackHandler(this, itemsOut, IO.OUT)));
-        }
-        if (this.getCapabilitiesProxy().contains(IO.OUT, FluidRecipeCapability.CAP)) {
-            List<FluidStorage> fluidsOut = this.getCapabilitiesProxy().get(IO.OUT, FluidRecipeCapability.CAP).stream().filter(FluidStorage.class::isInstance).map(FluidStorage.class::cast).toList();
-            this.getCapabilitiesProxy().put(IO.OUT, FluidRecipeCapability.CAP, List.of(new NotifiableFluidTank(this, fluidsOut, IO.OUT)));
-        }
-        */
-
         List<IEnergyContainer> energyContainers = new ArrayList<>();
         List<IRecipeHandler<?>> capabilities = this.getCapabilitiesProxy().get(IO.IN, EURecipeCapability.CAP);
         if (capabilities != null) {
@@ -133,7 +119,9 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine {
         }
         this.inputEnergyContainers = new EnergyContainerList(energyContainers);
         long euCapacity = calculateEnergyStorageFactor(tier, energyContainers.size());
+        this.traits.remove(this.energyContainer);
         this.energyContainer = new NotifiableEnergyContainer(this, euCapacity, GTValues.V[tier], 0, 0, 0);
+        this.energyContainer.addChangedListener(this::updateSaveHack);
     }
 
     public static long calculateEnergyStorageFactor(int tier, int energyInputAmount) {
@@ -167,6 +155,7 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine {
     @Override
     public void onLoad() {
         super.onLoad();
+        this.energyContainer.setEnergyStored(energySaveHack);
         this.subscribeServerTick(this::updateFormedValid);
     }
 
