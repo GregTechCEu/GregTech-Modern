@@ -8,7 +8,6 @@ import com.gregtechceu.gtceu.api.registry.registrate.IGTFluidBuilder;
 import com.tterrag.registrate.AbstractRegistrate;
 import com.tterrag.registrate.builders.*;
 import com.tterrag.registrate.providers.ProviderType;
-import com.tterrag.registrate.providers.RegistrateLangProvider;
 import com.tterrag.registrate.providers.RegistrateTagsProvider;
 import com.tterrag.registrate.util.OneTimeEventReceiver;
 import com.tterrag.registrate.util.entry.FluidEntry;
@@ -17,9 +16,9 @@ import com.tterrag.registrate.util.nullness.*;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.Util;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Items;
@@ -30,6 +29,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
 import net.minecraftforge.fml.DistExecutor;
@@ -67,11 +67,12 @@ public class GTFluidBuilder<T extends ForgeFlowingFluid, P> extends AbstractBuil
 
     @FunctionalInterface
     public interface FluidTypeFactory {
-        FluidType create(Material material, ResourceLocation stillId, FluidType.Properties properties, ResourceLocation stillTexture, ResourceLocation flowingTexture, int color);
+        FluidType create(String langKey, Material material, ResourceLocation stillId, FluidType.Properties properties, ResourceLocation stillTexture, ResourceLocation flowingTexture, int color);
     }
 
     private final String sourceName, bucketName;
     private final Material material;
+    private final String langKey;
 
     private final ResourceLocation stillTexture, flowingTexture;
     private final NonNullFunction<ForgeFlowingFluid.Properties, T> fluidFactory;
@@ -94,15 +95,16 @@ public class GTFluidBuilder<T extends ForgeFlowingFluid, P> extends AbstractBuil
     private NonNullSupplier<? extends ForgeFlowingFluid> source;
     private final List<TagKey<Fluid>> tags = new ArrayList<>();
 
-    public GTFluidBuilder(AbstractRegistrate<?> owner, P parent, Material material, String name, BuilderCallback callback, ResourceLocation stillTexture, ResourceLocation flowingTexture, GTFluidBuilder.FluidTypeFactory typeFactory, NonNullFunction<ForgeFlowingFluid.Properties, T> fluidFactory) {
+    public GTFluidBuilder(AbstractRegistrate<?> owner, P parent, Material material, String name, String langKey, BuilderCallback callback, ResourceLocation stillTexture, ResourceLocation flowingTexture, GTFluidBuilder.FluidTypeFactory typeFactory, NonNullFunction<ForgeFlowingFluid.Properties, T> fluidFactory) {
         super(owner, parent, "flowing_" + name, callback, ForgeRegistries.Keys.FLUIDS);
         this.sourceName = name;
         this.bucketName = name + "_bucket";
         this.material = material;
+        this.langKey = langKey;
         this.stillTexture = stillTexture;
         this.flowingTexture = flowingTexture;
         this.fluidFactory = fluidFactory;
-        this.fluidType = NonNullSupplier.lazy(() -> typeFactory.create(material, new ResourceLocation(owner.getModid(), name), makeTypeProperties(), this.stillTexture, this.flowingTexture, this.color));
+        this.fluidType = NonNullSupplier.lazy(() -> typeFactory.create(langKey, material, new ResourceLocation(owner.getModid(), name), makeTypeProperties(), this.stillTexture, this.flowingTexture, this.color));
         this.registerType = true;
         defaultBucket();
 
@@ -118,7 +120,7 @@ public class GTFluidBuilder<T extends ForgeFlowingFluid, P> extends AbstractBuil
     }
 
     public GTFluidBuilder<T, P> defaultLang() {
-        return lang(f -> f.getFluidType().getDescriptionId(), material.getUnlocalizedName());
+        return lang(f -> f.getFluidType().getDescriptionId(), langKey);
     }
 
     public GTFluidBuilder<T, P> lang(String name) {
@@ -264,7 +266,7 @@ public class GTFluidBuilder<T extends ForgeFlowingFluid, P> extends AbstractBuil
             properties.descriptionId(block.get().getDescriptionId());
         } else {
             // Fallback to material's name
-            properties.descriptionId(material.getUnlocalizedName());
+            properties.descriptionId(langKey);
         }
         setData(ProviderType.LANG, NonNullBiConsumer.noop());
 
@@ -336,7 +338,7 @@ public class GTFluidBuilder<T extends ForgeFlowingFluid, P> extends AbstractBuil
         return new FluidEntry<>(getOwner(), delegate);
     }
 
-    public static FluidType defaultFluidType(Material material, ResourceLocation still, FluidType.Properties properties, ResourceLocation stillTexture, ResourceLocation flowingTexture, int color) {
+    public static FluidType defaultFluidType(String langKey, Material material, ResourceLocation still, FluidType.Properties properties, ResourceLocation stillTexture, ResourceLocation flowingTexture, int color) {
         return new FluidType(properties) {
             @Override
             public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer) {
@@ -346,6 +348,16 @@ public class GTFluidBuilder<T extends ForgeFlowingFluid, P> extends AbstractBuil
             @Override
             public String getDescriptionId() {
                 return material.getUnlocalizedName();
+            }
+
+            @Override
+            public Component getDescription() {
+                return Component.translatable(langKey, material.getLocalizedName());
+            }
+
+            @Override
+            public Component getDescription(FluidStack stack) {
+                return this.getDescription();
             }
         };
     }
