@@ -1,7 +1,7 @@
 {
   "replace": false,
   "values": [
-    "gtceu:circuit.vacuum_tube",
-    "gtceu:circuit.nand_chip"
+    "gtceu:vacuum_tube",
+    "gtceu:nand_chip"
   ]
 }

@@ -1,6 +1,6 @@
 {
   "values": [
-    "gtceu:component.capacitor",
-    "gtceu:component.smd.capacitor"
+    "gtceu:capacitor",
+    "gtceu:smd_capacitor"
   ]
 }

@@ -39,7 +39,7 @@
               "condition": "minecraft:random_chance"
             }
           ],
-          "name": "gtceu:rubber_drop"
+          "name": "gtceu:sticky_resin"
         }
       ],
       "rolls": 1.0

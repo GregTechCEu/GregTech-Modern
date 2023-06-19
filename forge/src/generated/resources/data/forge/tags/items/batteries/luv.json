@@ -1,6 +1,6 @@
 {
   "values": [
-    "gtceu:battery.luv.vanadium",
-    "gtceu:energy.lapotronic_orb_cluster"
+    "gtceu:luv_vanadium_battery",
+    "gtceu:lapotronic_energy_orb_cluster"
   ]
 }
