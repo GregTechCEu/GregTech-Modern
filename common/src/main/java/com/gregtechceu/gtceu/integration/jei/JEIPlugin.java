@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.integration.jei;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
+import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
@@ -86,23 +87,21 @@ public class JEIPlugin implements IModPlugin {
         GTCEu.LOGGER.info("JEI register click areas");
         Pattern progressWidgetId = Pattern.compile("progress");
         for (GTRecipeType type : GTRegistries.RECIPE_TYPES.values()) {
-            if (!type.hasCustomUI()) {
-                var group = type.createDefaultUITemplate(false);
-                var widget = group.getFirstWidgetById(progressWidgetId);
-                if (widget != null) {
-                    Size widgetSize = widget.getSize();
-                    Position widgetPos = widget.getPosition();
-                    registry.addGuiContainerHandler(ModularUIGuiContainer.class, new IGuiContainerHandler<>() {
-                        @Override
-                        public Collection<IGuiClickableArea> getGuiClickableAreas(ModularUIGuiContainer containerScreen, double mouseX, double mouseY) {
-                            if (containerScreen.modularUI.holder instanceof IUIMachine) {
-                                IGuiClickableArea clickableArea = IGuiClickableArea.createBasic(widgetPos.x, widgetPos.y, widgetSize.width, widgetSize.height, GTRecipeTypeCategory.TYPES.apply(type));
-                                return List.of(clickableArea);
-                            }
-                            return Collections.emptyList();
+            var group = type.createDefaultUITemplate(false);
+            var widget = group.getFirstWidgetById(progressWidgetId);
+            if (widget != null) {
+                Size widgetSize = widget.getSize();
+                Position widgetPos = widget.getPosition();
+                registry.addGuiContainerHandler(ModularUIGuiContainer.class, new IGuiContainerHandler<>() {
+                    @Override
+                    public Collection<IGuiClickableArea> getGuiClickableAreas(ModularUIGuiContainer containerScreen, double mouseX, double mouseY) {
+                        if (containerScreen.modularUI.holder instanceof IUIMachine machine && machine.self() instanceof IRecipeLogicMachine recipeLogicMachine && recipeLogicMachine.getRecipeType() == type) {
+                            IGuiClickableArea clickableArea = IGuiClickableArea.createBasic(widgetPos.x, widgetPos.y + widgetSize.height, widgetSize.width, widgetSize.height, GTRecipeTypeCategory.TYPES.apply(type));
+                            return List.of(clickableArea);
                         }
-                    });
-                }
+                        return Collections.emptyList();
+                    }
+                });
             }
         }
     }
