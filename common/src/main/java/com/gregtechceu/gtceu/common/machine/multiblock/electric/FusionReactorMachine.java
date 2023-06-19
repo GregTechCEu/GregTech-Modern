@@ -75,7 +75,7 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine {
         // Drain heat when the reactor is not active, is paused via soft mallet, or does not have enough energy and has fully wiped recipe progress
         // Don't drain heat when there is not enough energy and there is still some recipe progress, as that makes it doubly hard to complete the recipe
         // (Will have to recover heat and recipe progress)
-        if ((!(isActive() || isWorkingEnabled()) || (getRecipeLogic().isSuspend() && getRecipeLogic().progress == 0)) && heat > 0) {
+        if ((getRecipeLogic().isIdle() || !isWorkingEnabled() || (getRecipeLogic().isHasNotEnoughEnergy() && getRecipeLogic().progress == 0)) && heat > 0) {
             heat = heat <= 10000 ? 0 : (heat - 10000);
         }
 
