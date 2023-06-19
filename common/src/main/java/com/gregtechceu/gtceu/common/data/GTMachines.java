@@ -484,13 +484,13 @@ public class GTMachines {
     //////////////////////////////////////
     //*******     Multiblock     *******//
     //////////////////////////////////////
-    public final static MultiblockMachineDefinition LARGE_BOILER_BRONZE = registerLargeBoiler("Bronze", CASING_BRONZE_BRICKS, CASING_BRONZE_PIPE, FIREBOX_BRONZE,
+    public final static MultiblockMachineDefinition LARGE_BOILER_BRONZE = registerLargeBoiler("bronze", CASING_BRONZE_BRICKS, CASING_BRONZE_PIPE, FIREBOX_BRONZE,
             GTCEu.id("block/casings/solid/machine_casing_bronze_plated_bricks"), BoilerFireboxType.BRONZE_FIREBOX, 800, 1);
-    public final static MultiblockMachineDefinition LARGE_BOILER_STEEL = registerLargeBoiler("Steel", CASING_STEEL_SOLID, CASING_STEEL_PIPE, FIREBOX_STEEL,
+    public final static MultiblockMachineDefinition LARGE_BOILER_STEEL = registerLargeBoiler("steel", CASING_STEEL_SOLID, CASING_STEEL_PIPE, FIREBOX_STEEL,
             GTCEu.id("block/casings/solid/machine_casing_solid_steel"), BoilerFireboxType.STEEL_FIREBOX, 1800, 1);
-    public final static MultiblockMachineDefinition LARGE_BOILER_TITANIUM = registerLargeBoiler("Titanium", CASING_TITANIUM_STABLE, CASING_TITANIUM_PIPE, FIREBOX_TITANIUM,
+    public final static MultiblockMachineDefinition LARGE_BOILER_TITANIUM = registerLargeBoiler("titanium", CASING_TITANIUM_STABLE, CASING_TITANIUM_PIPE, FIREBOX_TITANIUM,
             GTCEu.id("block/casings/solid/machine_casing_stable_titanium"), BoilerFireboxType.TITANIUM_FIREBOX, 3200, 1);
-    public final static MultiblockMachineDefinition LARGE_BOILER_TUNGSTENSTEEL = registerLargeBoiler("Tungstensteel", CASING_TUNGSTENSTEEL_ROBUST, CASING_TUNGSTENSTEEL_PIPE, FIREBOX_TUNGSTENSTEEL,
+    public final static MultiblockMachineDefinition LARGE_BOILER_TUNGSTENSTEEL = registerLargeBoiler("tungstensteel", CASING_TUNGSTENSTEEL_ROBUST, CASING_TUNGSTENSTEEL_PIPE, FIREBOX_TUNGSTENSTEEL,
             GTCEu.id("block/casings/solid/machine_casing_robust_tungstensteel"), BoilerFireboxType.TUNGSTENSTEEL_FIREBOX, 6400, 2);
 
     public final static MultiblockMachineDefinition COKE_OVEN = REGISTRATE.multiblock("coke_oven", CokeOvenMachine::new)
@@ -901,8 +901,8 @@ public class GTMachines {
     }
 
     public static MultiblockMachineDefinition registerLargeBoiler(String name, Supplier<? extends Block> casing, Supplier<? extends Block> pipe, Supplier<? extends Block> fireBox, ResourceLocation texture, BoilerFireboxType firebox, int maxTemperature, int heatSpeed) {
-        return REGISTRATE.multiblock("%s_large_boiler".formatted(name.toLowerCase()), holder -> new LargeBoilerMachine(holder, maxTemperature, heatSpeed))
-                .langValue("Large %s Boiler".formatted(name))
+        return REGISTRATE.multiblock("%s_large_boiler".formatted(name), holder -> new LargeBoilerMachine(holder, maxTemperature, heatSpeed))
+                .langValue("Large %s Boiler".formatted(FormattingUtil.toEnglishName(name)))
                 .rotationState(RotationState.NON_Y_AXIS)
                 .recipeType(GTRecipeTypes.LARGE_BOILER_RECIPES)
                 .appearanceBlock(casing)
