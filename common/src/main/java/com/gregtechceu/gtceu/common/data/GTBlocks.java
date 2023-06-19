@@ -287,7 +287,7 @@ public class GTBlocks {
     public static final BlockEntry<Block> CASING_STEEL_PIPE = createCasingBlock("steel_pipe_casing", GTCEu.id("block/casings/pipe/machine_casing_pipe_steel"));
     public static final BlockEntry<Block> CASING_TITANIUM_PIPE = createCasingBlock("titanium_pipe_casing", GTCEu.id("block/casings/pipe/machine_casing_pipe_titanium"));
     public static final BlockEntry<Block> CASING_TUNGSTENSTEEL_PIPE = createCasingBlock("tungstensteel_pipe_casing", GTCEu.id("block/casings/pipe/machine_casing_pipe_tungstensteel"));
-    public static final BlockEntry<Block> CASING_POLYTETRAFLUOROETHYLENE_PIPE = createCasingBlock2("PTFE", GTCEu.id("block/casings/pipe/machine_casing_pipe_polytetrafluoroethylene"));
+    public static final BlockEntry<Block> CASING_POLYTETRAFLUOROETHYLENE_PIPE = createPipeCasingBlock("PTFE", GTCEu.id("block/casings/pipe/machine_casing_pipe_polytetrafluoroethylene"));
 
     // The Pump Deck
     public static final BlockEntry<Block> CASING_PUMP_DECK = REGISTRATE.block("pump_deck", p -> (Block) new RendererBlock(p,
@@ -360,11 +360,11 @@ public class GTBlocks {
 
 
 
-    private static BlockEntry<Block> createCasingBlock2(String name, ResourceLocation texture) {
-        return createCasingBlock2(name, texture, () -> Blocks.IRON_BLOCK);
+    private static BlockEntry<Block> createPipeCasingBlock(String name, ResourceLocation texture) {
+        return createPipeCasingBlock(name, texture, () -> Blocks.IRON_BLOCK);
     }
 
-    private static BlockEntry<Block> createCasingBlock2(String name, ResourceLocation texture, NonNullSupplier<? extends Block> properties) {
+    private static BlockEntry<Block> createPipeCasingBlock(String name, ResourceLocation texture, NonNullSupplier<? extends Block> properties) {
         return REGISTRATE.block("%s_pipe_casing".formatted(name.toLowerCase()), p -> (Block) new RendererBlock(p,
                         new TextureOverrideRenderer(new ResourceLocation("block/cube_all"),
                                 Map.of("all", texture))))
