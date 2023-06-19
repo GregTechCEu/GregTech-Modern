@@ -17,8 +17,8 @@ import javax.annotation.Nonnull;
  * @implNote GTRegistrateImpl
  */
 public class GTRegistrateImpl {
-    public static IGTFluidBuilder fluid(GTRegistrate parent, Material material, String name, ResourceLocation stillTexture, ResourceLocation flowingTexture) {
-        return parent.entry(name, callback -> new GTFluidBuilder<>(parent, parent, material, name, callback, stillTexture, flowingTexture, GTFluidBuilder::defaultFluidType, ForgeFlowingFluid.Flowing::new).defaultLang().defaultSource().setData(ProviderType.LANG, NonNullBiConsumer.noop()));
+    public static IGTFluidBuilder fluid(GTRegistrate parent, Material material, String name, String langKey, ResourceLocation stillTexture, ResourceLocation flowingTexture) {
+        return parent.entry(name, callback -> new GTFluidBuilder<>(parent, parent, material, name, langKey, callback, stillTexture, flowingTexture, GTFluidBuilder::defaultFluidType, ForgeFlowingFluid.Flowing::new).defaultLang().defaultSource().setData(ProviderType.LANG, NonNullBiConsumer.noop()));
     }
 
     @Nonnull
