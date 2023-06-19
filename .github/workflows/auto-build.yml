@@ -4,8 +4,10 @@ on:
   push:
     branches:
       - 'master'
-    paths:
-      - 'gradle.properties'
+  pull_request:
+    types:
+      - labeled
+      - synchronize
 
 jobs:
   build:

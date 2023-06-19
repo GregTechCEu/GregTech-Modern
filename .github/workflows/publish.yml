@@ -1,0 +1,89 @@
+# Publishes built jars to distribution platforms
+name: Publish
+
+on:
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+' # any semver tag, e.g. v1.2.3
+
+env:
+  # link to the changelog with a format code for the version
+  CHANGELOG_LOCATION: "Changelog is available [here](https://github.com/${{github.repository}}/releases/tag/${{github.ref_name}})"
+  # type of release
+  RELEASE_TYPE: "beta"
+
+jobs:
+  Publish:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write # needed to create GitHub releases
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Check for Duplicate Tags
+        run: |
+          if git rev-parse -q --verify "refs/tags/${{ github.ref }}" >/dev/null; then
+            echo "Tag already exists. A version bump is required."
+            exit 1
+          fi
+
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: Build Project
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: 'build --build-cache --daemon' # use the daemon here so the rest of the process is faster
+          generate-job-summary: false
+          gradle-home-cache-includes: |
+            caches
+            jdks
+            notifications
+            wrapper
+
+      - name: Publish to GitHub
+        uses: softprops/action-gh-release@v1
+        with:
+          files:
+            - "fabric/build/libs/*.jar"
+            - "forge/build/libs/*.jar"
+          generate_release_notes: true
+          fail_on_unmatched_files: true
+
+      - name: Publish to Curseforge
+        uses: gradle/gradle-build-action@v2
+        env:
+          CURSEFORGE_API_KEY: "${{secrets.CURSEFORGE_API_KEY}}"
+          CURSEFORGE_PROJECT_ID: "${{secrets.CURSEFORGE_PROJECT_ID}}"
+          CHANGELOG_LOCATION: "${{env.CHANGELOG_LOCATION}}"
+          RELEASE_TYPE: "${{env.RELEASE_TYPE}}"
+        with:
+          arguments: 'curseforge --daemon'
+          generate-job-summary: false
+          gradle-home-cache-includes: |
+            caches
+            jdks
+            notifications
+            wrapper
+
+      - name: Publish to Modrinth
+        uses: gradle/gradle-build-action@v2
+        env:
+          MODRINTH_API_KEY: "${{secrets.MODRINTH_API_KEY}}"
+          MODRINTH_PROJECT_ID: "${{secrets.MODRINTH_PROJECT_ID}}"
+          CHANGELOG_LOCATION: "${{env.CHANGELOG_LOCATION}}"
+          RELEASE_TYPE: "${{env.RELEASE_TYPE}}"
+        with:
+          arguments: 'modrinth --daemon'
+          generate-job-summary: false
+          gradle-home-cache-includes: |
+            caches
+            jdks
+            notifications
+            wrapper
