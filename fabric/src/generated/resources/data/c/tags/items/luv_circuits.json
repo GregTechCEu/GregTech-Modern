@@ -1,9 +1,9 @@
 {
   "replace": false,
   "values": [
-    "gtceu:circuit.nano_mainframe",
-    "gtceu:circuit.quantum_computer",
-    "gtceu:circuit.crystal_assembly",
-    "gtceu:circuit.wetware_processor"
+    "gtceu:nano_processor_mainframe",
+    "gtceu:quantum_processor_computer",
+    "gtceu:crystal_processor_assembly",
+    "gtceu:wetware_processor"
   ]
 }

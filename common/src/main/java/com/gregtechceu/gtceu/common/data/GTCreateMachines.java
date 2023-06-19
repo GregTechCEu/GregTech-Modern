@@ -74,7 +74,7 @@ public class GTCreateMachines {
 
     @SuppressWarnings("unchecked")
     public static KineticMachineDefinition[] registerElectricGearBox(int maxAmps, int... tiers) {
-        return registerTieredMachines("electric_gear_box." + maxAmps, (tier, id) -> new KineticMachineDefinition(id, true, GTValues.V[tier]).setFrontRotation(true),
+        return registerTieredMachines("electric_gear_box_%sa".formatted(maxAmps), (tier, id) -> new KineticMachineDefinition(id, true, GTValues.V[tier]).setFrontRotation(true),
                 (holder, tier) -> new ElectricGearBoxMachine(holder, tier, maxAmps), (tier, builder) -> builder
                         .langValue("%s %s %s".formatted(VLVH[tier], "Electric Gearbox %dA".formatted(maxAmps), VLVT[tier]))
                         .rotationState(RotationState.ALL)
@@ -119,11 +119,11 @@ public class GTCreateMachines {
         KineticMachineDefinition[] definitions = new KineticMachineDefinition[tiers.length];
         for (int i = 0; i < tiers.length; i++) {
             int tier = tiers[i];
-            var register =  REGISTRATE.machine(name + "." + GTValues.VN[tier].toLowerCase(),
+            var register =  REGISTRATE.machine(GTValues.VN[tier].toLowerCase() + "_" + name,
                             id -> definitionFactory.apply(tier, id),
-                            holder -> factory.apply(holder, tier), 
-                            KineticMachineBlock::new, 
-                            MetaMachineItem::new, 
+                            holder -> factory.apply(holder, tier),
+                            KineticMachineBlock::new,
+                            MetaMachineItem::new,
                             KineticMachineBlockEntity::create)
                     .tier(tier)
                     .hasTESR(instanceFactory != null)
