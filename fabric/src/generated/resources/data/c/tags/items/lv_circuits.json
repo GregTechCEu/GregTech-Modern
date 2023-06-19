@@ -1,8 +1,8 @@
 {
   "replace": false,
   "values": [
-    "gtceu:circuit.electronic",
-    "gtceu:circuit.basic_integrated",
-    "gtceu:circuit.microprocessor"
+    "gtceu:basic_electronic_circuit",
+    "gtceu:basic_integrated_circuit",
+    "gtceu:microchip_processor"
   ]
 }

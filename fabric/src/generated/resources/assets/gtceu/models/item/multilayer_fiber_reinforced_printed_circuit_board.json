@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "gtceu:item/multilayer_fiber_reinforced_printed_circuit_board"
+  }
+}

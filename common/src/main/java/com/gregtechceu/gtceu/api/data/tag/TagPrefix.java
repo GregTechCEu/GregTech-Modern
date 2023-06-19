@@ -65,7 +65,7 @@ public class TagPrefix {
         return PREFIXES.get(name);
     }
 
-    public static final TagPrefix ore = oreTagPrefix("stone")
+    public static final TagPrefix ore = oreTagPrefix("")
             .langValue("%s Ore")
             .materialIconType(MaterialIconType.ore)
             .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
@@ -73,7 +73,7 @@ public class TagPrefix {
             .generationCondition(hasOreProperty)
             .registerOre(Blocks.STONE::defaultBlockState);
 
-    public static final TagPrefix oreGranite = oreTagPrefix("granite")
+    public static final TagPrefix oreGranite = oreTagPrefix("granite_")
             .langValue("Granite %s Ore")
             .materialIconType(MaterialIconType.ore)
             .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
@@ -81,7 +81,7 @@ public class TagPrefix {
             .generationCondition(hasOreProperty)
             .registerOre(Blocks.GRANITE::defaultBlockState, MaterialColor.DIRT);
 
-    public static final TagPrefix oreDiorite = oreTagPrefix("diorite")
+    public static final TagPrefix oreDiorite = oreTagPrefix("diorite_")
             .langValue("Diorite %s Ore")
             .materialIconType(MaterialIconType.ore)
             .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
@@ -89,7 +89,7 @@ public class TagPrefix {
             .generationCondition(hasOreProperty)
             .registerOre(Blocks.DIORITE::defaultBlockState, MaterialColor.QUARTZ);
 
-    public static final TagPrefix oreAndesite = oreTagPrefix("andesite")
+    public static final TagPrefix oreAndesite = oreTagPrefix("andesite_")
             .langValue("Andesite %s Ore")
             .materialIconType(MaterialIconType.ore)
             .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
@@ -97,7 +97,7 @@ public class TagPrefix {
             .generationCondition(hasOreProperty)
             .registerOre(Blocks.ANDESITE::defaultBlockState);
 
-    public static final TagPrefix oreDeepslate = oreTagPrefix("deepslate")
+    public static final TagPrefix oreDeepslate = oreTagPrefix("deepslate_")
             .langValue("Deepslate %s Ore")
             .materialIconType(MaterialIconType.ore)
             .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
@@ -105,7 +105,7 @@ public class TagPrefix {
             .generationCondition(hasOreProperty)
             .registerOre(Blocks.DEEPSLATE::defaultBlockState, MaterialColor.DEEPSLATE);
 
-    public static final TagPrefix oreTuff = oreTagPrefix("tuff")
+    public static final TagPrefix oreTuff = oreTagPrefix("tuff_")
             .langValue("Tuff %s Ore")
             .materialIconType(MaterialIconType.ore)
             .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
@@ -113,7 +113,7 @@ public class TagPrefix {
             .generationCondition(hasOreProperty)
             .registerOre(Blocks.TUFF::defaultBlockState, MaterialColor.DEEPSLATE);
 
-    public static final TagPrefix oreSand = oreTagPrefix("sand")
+    public static final TagPrefix oreSand = oreTagPrefix("sand_")
             .langValue("Sand %s Ore")
             .materialIconType(MaterialIconType.ore)
             .miningToolTag(BlockTags.MINEABLE_WITH_SHOVEL)
@@ -121,7 +121,7 @@ public class TagPrefix {
             .generationCondition(hasOreProperty)
             .registerOre(Blocks.SAND::defaultBlockState, false, net.minecraft.world.level.material.Material.SAND, MaterialColor.SAND, SoundType.SAND);
 
-    public static final TagPrefix oreRedSand = oreTagPrefix("redSand")
+    public static final TagPrefix oreRedSand = oreTagPrefix("redSand_")
             .langValue("Red Sand %s Ore")
             .materialIconType(MaterialIconType.ore)
             .miningToolTag(BlockTags.MINEABLE_WITH_SHOVEL)
@@ -129,7 +129,7 @@ public class TagPrefix {
             .generationCondition(hasOreProperty)
             .registerOre(Blocks.RED_SAND::defaultBlockState, false, net.minecraft.world.level.material.Material.SAND, MaterialColor.COLOR_ORANGE, SoundType.SAND);
 
-    public static final TagPrefix oreGravel = oreTagPrefix("gravel")
+    public static final TagPrefix oreGravel = oreTagPrefix("gravel_")
             .langValue("Gravel %s Ore")
             .materialIconType(MaterialIconType.ore)
             .miningToolTag(BlockTags.MINEABLE_WITH_SHOVEL)
@@ -137,7 +137,7 @@ public class TagPrefix {
             .generationCondition(hasOreProperty)
             .registerOre(Blocks.GRAVEL::defaultBlockState, false, net.minecraft.world.level.material.Material.SAND, MaterialColor.STONE, SoundType.GRAVEL);
 
-    public static final TagPrefix oreBasalt = oreTagPrefix("basalt")
+    public static final TagPrefix oreBasalt = oreTagPrefix("basalt_")
             .langValue("Basalt %s Ore")
             .materialIconType(MaterialIconType.ore)
             .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
@@ -145,7 +145,7 @@ public class TagPrefix {
             .generationCondition(hasOreProperty)
             .registerOre(Blocks.BASALT::defaultBlockState, true, MaterialColor.COLOR_BLACK);
 
-    public static final TagPrefix oreNetherrack = oreTagPrefix("netherrack")
+    public static final TagPrefix oreNetherrack = oreTagPrefix("netherrack_")
             .langValue("Nether %s Ore")
             .materialIconType(MaterialIconType.ore)
             .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
@@ -153,7 +153,7 @@ public class TagPrefix {
             .generationCondition(hasOreProperty)
             .registerOre(Blocks.NETHERRACK::defaultBlockState, true, MaterialColor.NETHER);
 
-    public static final TagPrefix oreEndstone = oreTagPrefix("endstone")
+    public static final TagPrefix oreEndstone = oreTagPrefix("endstone_")
             .langValue("End %s Ore")
             .materialIconType(MaterialIconType.ore)
             .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
@@ -161,7 +161,7 @@ public class TagPrefix {
             .generationCondition(hasOreProperty)
             .registerOre(Blocks.END_STONE::defaultBlockState, true, MaterialColor.SAND);
 
-    public static final TagPrefix crushedRefined = new TagPrefix("crushedRefined")
+    public static final TagPrefix crushedRefined = new TagPrefix("refinedOre")
             .defaultTagPath(FORGE, "refined_ores/%s")
             .defaultTagPath(FABRIC, "%s_refined_ores")
             .langValue("Refined %s Ore")
@@ -170,7 +170,7 @@ public class TagPrefix {
             .generateItem(true)
             .generationCondition(hasOreProperty);
 
-    public static final TagPrefix crushedPurified = new TagPrefix("crushedPurified")
+    public static final TagPrefix crushedPurified = new TagPrefix("purifiedOre")
             .defaultTagPath(FORGE, "purified_ores/%s")
             .defaultTagPath(FABRIC, "%s_purified_ores")
             .langValue("Purified %s Ore")
@@ -179,7 +179,7 @@ public class TagPrefix {
             .generateItem(true)
             .generationCondition(hasOreProperty);
 
-    public static final TagPrefix crushed = new TagPrefix("crushed")
+    public static final TagPrefix crushed = new TagPrefix("crushedOre")
             .defaultTagPath(FORGE, "crushed_ores/%s")
             .defaultTagPath(FABRIC, "%s_crushed_ores")
             .unformattedTagPath(FORGE, "crushed_ores")
@@ -192,7 +192,7 @@ public class TagPrefix {
             .tooltip((mat, tooltips) -> tooltips.add(Component.translatable("metaitem.crushed.tooltip.purify")));
 
     // A hot Ingot, which has to be cooled down by a Vacuum Freezer.
-    public static final TagPrefix ingotHot = new TagPrefix("ingotHot")
+    public static final TagPrefix ingotHot = new TagPrefix("hotIngot")
             .defaultTagPath(FORGE, "ingots/hot/%s")
             .defaultTagPath(FABRIC, "%s_hot_ingots")
             .unformattedTagPath(FORGE, "ingots/hot")
@@ -222,6 +222,7 @@ public class TagPrefix {
             .defaultTagPath(FABRIC, "%s_gems")
             .unformattedTagPath(FORGE, "gems")
             .unformattedTagPath(FABRIC, "gems")
+            .langValue("%s")
             .materialAmount(GTValues.M)
             .materialIconType(MaterialIconType.gem)
             .unificationEnabled(true)
@@ -229,7 +230,7 @@ public class TagPrefix {
             .generationCondition(hasGemProperty);
 
     // A regular Gem worth one small Dust.
-    public static final TagPrefix gemChipped = new TagPrefix("gemChipped")
+    public static final TagPrefix gemChipped = new TagPrefix("chippedGem")
             .defaultTagPath(FORGE, "gems/chipped/%s")
             .defaultTagPath(FABRIC, "%s_chipped_gems")
             .unformattedTagPath(FORGE, "gems/chipped")
@@ -242,7 +243,7 @@ public class TagPrefix {
             .generationCondition(hasGemProperty.and(unused -> ConfigHolder.INSTANCE.recipes.generateLowQualityGems));
 
     // A regular Gem worth two small Dusts.
-    public static final TagPrefix gemFlawed = new TagPrefix("gemFlawed")
+    public static final TagPrefix gemFlawed = new TagPrefix("flawedGem")
             .defaultTagPath(FORGE, "gems/flawed/%s")
             .defaultTagPath(FABRIC, "%s_flawed_gems")
             .unformattedTagPath(FORGE, "gems/flawed")
@@ -255,7 +256,7 @@ public class TagPrefix {
             .generationCondition(hasGemProperty.and(unused -> ConfigHolder.INSTANCE.recipes.generateLowQualityGems));
 
     // A regular Gem worth two Dusts.
-    public static final TagPrefix gemFlawless = new TagPrefix("gemFlawless")
+    public static final TagPrefix gemFlawless = new TagPrefix("flawlessGem")
             .defaultTagPath(FORGE, "gems/flawless/%s")
             .defaultTagPath(FABRIC, "%s_flawless_gems")
             .unformattedTagPath(FORGE, "gems/flawless")
@@ -269,7 +270,7 @@ public class TagPrefix {
             .generationCondition(hasGemProperty);
 
     // A regular Gem worth four Dusts.
-    public static final TagPrefix gemExquisite = new TagPrefix("gemExquisite")
+    public static final TagPrefix gemExquisite = new TagPrefix("exquisiteGem")
             .defaultTagPath(FORGE, "gems/exquisite/%s")
             .defaultTagPath(FABRIC, "%s_exquisite_gems")
             .unformattedTagPath(FORGE, "gems/exquisite")
@@ -283,7 +284,7 @@ public class TagPrefix {
             .generationCondition(hasGemProperty);
 
     // 1/4th of a Dust.
-    public static final TagPrefix dustSmall = new TagPrefix("dustSmall")
+    public static final TagPrefix dustSmall = new TagPrefix("smallDust")
             .defaultTagPath(FORGE, "dusts/small/%s")
             .defaultTagPath(FABRIC, "%s_small_dusts")
             .unformattedTagPath(FORGE, "dusts/small")
@@ -296,7 +297,7 @@ public class TagPrefix {
             .generationCondition(hasDustProperty);
 
     // 1/9th of a Dust.
-    public static final TagPrefix dustTiny = new TagPrefix("dustTiny")
+    public static final TagPrefix dustTiny = new TagPrefix("tinyDust")
             .defaultTagPath(FORGE, "dusts/tiny/%s")
             .defaultTagPath(FABRIC, "%s_tiny_dusts")
             .unformattedTagPath(FORGE, "dusts/tiny")
@@ -309,7 +310,7 @@ public class TagPrefix {
             .generationCondition(hasDustProperty);
 
     // Dust with impurities. 1 Unit of Main Material and 1/9 - 1/4 Unit of secondary Material
-    public static final TagPrefix dustImpure = new TagPrefix("dustImpure")
+    public static final TagPrefix dustImpure = new TagPrefix("impureDust")
             .defaultTagPath(FORGE, "dusts/impure/%s")
             .defaultTagPath(FABRIC, "%s_impure_dusts")
             .unformattedTagPath(FORGE, "dusts/impure")
@@ -323,7 +324,7 @@ public class TagPrefix {
             .tooltip((mat, tooltips) -> tooltips.add(Component.translatable("metaitem.dust.tooltip.purify")));
 
     // Pure Dust worth of one Ingot or Gem.
-    public static final TagPrefix dustPure = new TagPrefix("dustPure")
+    public static final TagPrefix dustPure = new TagPrefix("pureDust")
             .defaultTagPath(FORGE, "dusts/pure/%s")
             .defaultTagPath(FABRIC, "%s_pure_dusts")
             .unformattedTagPath(FORGE, "dusts/pure")
@@ -360,7 +361,7 @@ public class TagPrefix {
             .generationCondition(hasIngotProperty);
 
     // 9 Plates combined in one Item.
-    public static final TagPrefix plateDense = new TagPrefix("plateDense")
+    public static final TagPrefix plateDense = new TagPrefix("densePlate")
             .defaultTagPath(FORGE, "plates/dense/%s")
             .defaultTagPath(FABRIC, "%s_dense_plates")
             .unformattedTagPath(FORGE, "plates/dense")
@@ -374,7 +375,7 @@ public class TagPrefix {
             .generationCondition(mat -> mat.hasFlag(MaterialFlags.GENERATE_DENSE) && !mat.hasFlag(MaterialFlags.NO_SMASHING));
 
     // 2 Plates combined in one Item
-    public static final TagPrefix plateDouble = new TagPrefix("plateDouble")
+    public static final TagPrefix plateDouble = new TagPrefix("doublePlate")
             .defaultTagPath(FORGE, "plates/double/%s")
             .defaultTagPath(FABRIC, "%s_double_plates")
             .unformattedTagPath(FORGE, "plates/double")
@@ -486,7 +487,7 @@ public class TagPrefix {
             .generationCondition(mat -> mat.hasFlag(MaterialFlags.GENERATE_RING));
 
     // consisting out of 1 Fine Wire.
-    public static final TagPrefix springSmall = new TagPrefix("springSmall")
+    public static final TagPrefix springSmall = new TagPrefix("smallSpring")
             .defaultTagPath(FORGE, "springs/small/%s")
             .defaultTagPath(FABRIC, "%s_small_springs")
             .unformattedTagPath(FORGE, "springs/small")
@@ -511,7 +512,7 @@ public class TagPrefix {
             .generationCondition(mat -> mat.hasFlag(MaterialFlags.GENERATE_SPRING) && !mat.hasFlag(MaterialFlags.NO_SMASHING));
 
     // consisting out of 1/8 Ingot or 1/4 Wire.
-    public static final TagPrefix wireFine = new TagPrefix("wireFine")
+    public static final TagPrefix wireFine = new TagPrefix("fireWire")
             .defaultTagPath(FORGE, "wires/fine/%s")
             .defaultTagPath(FABRIC, "%s_fine_wires")
             .unformattedTagPath(FORGE, "wires/fine")
@@ -537,7 +538,7 @@ public class TagPrefix {
             .generationCondition(mat -> mat.hasFlag(MaterialFlags.GENERATE_ROTOR));
 
     // Consisting of 1 Plate.
-    public static final TagPrefix gearSmall = new TagPrefix("gearSmall")
+    public static final TagPrefix gearSmall = new TagPrefix("smallGear")
             .defaultTagPath(FORGE, "gears/small/%s")
             .defaultTagPath(FABRIC, "%s_small_gears")
             .unformattedTagPath(FORGE, "gears/small")
@@ -575,7 +576,7 @@ public class TagPrefix {
             .generationCondition(mat -> mat.hasFlag(MaterialFlags.GENERATE_LENS));
 
     // made of 4 Ingots.
-    public static final TagPrefix toolHeadBuzzSaw = new TagPrefix("toolHeadBuzzSaw")
+    public static final TagPrefix toolHeadBuzzSaw = new TagPrefix("buzzSawBlade")
             .itemTable(() -> GTItems.MATERIAL_ITEMS)
             .langValue("%s Buzzsaw Blade")
             .materialAmount(GTValues.M * 4)
@@ -586,7 +587,7 @@ public class TagPrefix {
             .generationCondition(hasNoCraftingToolProperty.and(mat -> mat.hasFlag(MaterialFlags.GENERATE_PLATE)));
 
     // made of 1 Ingots.
-    public static final TagPrefix toolHeadScrewdriver = new TagPrefix("toolHeadScrewdriver")
+    public static final TagPrefix toolHeadScrewdriver = new TagPrefix("screwdriverTip")
             .itemTable(() -> GTItems.MATERIAL_ITEMS)
             .langValue("%s Screwdriver Tip")
             .materialAmount(GTValues.M)
@@ -597,9 +598,9 @@ public class TagPrefix {
             .generationCondition(hasNoCraftingToolProperty.and(mat -> mat.hasFlag(MaterialFlags.GENERATE_LONG_ROD)));
 
     // made of 4 Ingots.
-    public static final TagPrefix toolHeadDrill = new TagPrefix("toolHeadDrill")
+    public static final TagPrefix toolHeadDrill = new TagPrefix("drillHead")
             .itemTable(() -> GTItems.MATERIAL_ITEMS)
-            .langValue("%s Drill Tip")
+            .langValue("%s Drill Head")
             .materialAmount(GTValues.M * 4)
             .maxStackSize(16)
             .materialIconType(MaterialIconType.toolHeadDrill)
@@ -608,9 +609,9 @@ public class TagPrefix {
             .generationCondition(hasToolProperty.and(mat -> mat.hasFlag(MaterialFlags.GENERATE_PLATE)));
 
     // made of 2 Ingots.
-    public static final TagPrefix toolHeadChainsaw = new TagPrefix("toolHeadChainsaw")
+    public static final TagPrefix toolHeadChainsaw = new TagPrefix("chainsawHead")
             .itemTable(() -> GTItems.MATERIAL_ITEMS)
-            .langValue("%s Chainsaw Tip")
+            .langValue("%s Chainsaw Head")
             .materialAmount(GTValues.M * 2)
             .maxStackSize(16)
             .materialIconType(MaterialIconType.toolHeadChainsaw)
@@ -619,7 +620,7 @@ public class TagPrefix {
             .generationCondition(hasNoCraftingToolProperty.and(mat -> mat.hasFlag(MaterialFlags.GENERATE_PLATE)));
 
     // made of 4 Ingots.
-    public static final TagPrefix toolHeadWrench = new TagPrefix("toolHeadWrench")
+    public static final TagPrefix toolHeadWrench = new TagPrefix("wrenchTip")
             .itemTable(() -> GTItems.MATERIAL_ITEMS)
             .langValue("%s Wrench Tip")
             .materialAmount(GTValues.M * 4)
@@ -652,7 +653,7 @@ public class TagPrefix {
     public static final TagPrefix frameGt = new TagPrefix("frameGt")
             .defaultTagPath(FORGE, "frames/%s")
             .defaultTagPath(FABRIC, "%s_frames")
-            .langValue("%s Frame Box")
+            .langValue("%s Frame")
             .materialAmount(GTValues.M * 2)
             .materialIconType(MaterialIconType.frameGt)
             .miningToolTag(GTToolType.WRENCH.harvestTag)

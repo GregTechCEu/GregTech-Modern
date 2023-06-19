@@ -1,7 +1,7 @@
 {
   "replace": false,
   "values": [
-    "gtceu:component.inductor",
-    "gtceu:component.smd.inductor"
+    "gtceu:inductor",
+    "gtceu:smd_inductor"
   ]
 }
