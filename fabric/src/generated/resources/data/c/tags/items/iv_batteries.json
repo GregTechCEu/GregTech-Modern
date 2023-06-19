@@ -1,7 +1,7 @@
 {
   "replace": false,
   "values": [
-    "gtceu:battery.iv.vanadium",
-    "gtceu:energy.lapotronic_orb"
+    "gtceu:iv_vanadium_battery",
+    "gtceu:lapotronic_energy_orb"
   ]
 }
