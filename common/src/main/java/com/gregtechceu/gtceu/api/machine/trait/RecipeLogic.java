@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
+import com.gregtechceu.gtceu.api.machine.steam.SimpleSteamMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.sound.AutoReleasedSound;
 import com.lowdragmc.lowdraglib.Platform;
@@ -233,6 +234,7 @@ public class RecipeLogic extends MachineTrait implements IManaged, IWorkable {
         if (!recipeDirty && lastRecipe != null && lastRecipe.matchRecipe(this.machine) && lastRecipe.matchTickRecipe(this.machine) && lastRecipe.checkConditions(this)) {
             GTRecipe recipe = lastRecipe;
             lastRecipe = null;
+            if (machine instanceof SimpleSteamMachine steamMachine && steamMachine.isVentingBlocked()) return;
             setupRecipe(recipe);
         } else { // try to find and handle a new recipe
             List<GTRecipe> matches = searchRecipe();
@@ -371,8 +373,12 @@ public class RecipeLogic extends MachineTrait implements IManaged, IWorkable {
         if (lastRecipe != null) {
             lastRecipe.postWorking(this.machine);
             lastRecipe.handleRecipeIO(IO.OUT, this.machine);
+
+            // Special case for steam machines, check if vent is blocked
+            var ventBlocked = machine instanceof SimpleSteamMachine steamMachine && steamMachine.isVentingBlocked();
+
             // try it again
-            if (!recipeDirty && lastRecipe.matchRecipe(this.machine) && lastRecipe.matchTickRecipe(this.machine) && lastRecipe.checkConditions(this)) {
+            if (!recipeDirty && lastRecipe.matchRecipe(this.machine) && lastRecipe.matchTickRecipe(this.machine) && !ventBlocked && lastRecipe.checkConditions(this)) {
                 setupRecipe(lastRecipe);
             } else {
                 setStatus(Status.IDLE);
