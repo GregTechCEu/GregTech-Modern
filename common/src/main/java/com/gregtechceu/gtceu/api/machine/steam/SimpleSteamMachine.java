@@ -16,7 +16,7 @@ import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
-import com.gregtechceu.gtceu.common.recipe.SteamVentCondition;
+import com.gregtechceu.gtceu.common.recipe.VentCondition;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
@@ -158,7 +158,7 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
             }
         }, recipe, GTValues.V[GTValues.LV]);
 
-        modified.conditions.add(SteamVentCondition.INSTANCE);
+        modified.conditions.add(VentCondition.INSTANCE);
         return modified;
     }
 

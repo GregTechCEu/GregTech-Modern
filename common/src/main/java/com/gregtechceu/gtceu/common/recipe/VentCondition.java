@@ -14,8 +14,8 @@ import org.jetbrains.annotations.NotNull;
  * @implNote SteamVentCondition
  */
 @NoArgsConstructor
-public class SteamVentCondition extends RecipeCondition {
-    public final static SteamVentCondition INSTANCE = new SteamVentCondition();
+public class VentCondition extends RecipeCondition {
+    public final static VentCondition INSTANCE = new VentCondition();
     @Override
     public String getType() {
         return "steam_vent";
@@ -36,6 +36,6 @@ public class SteamVentCondition extends RecipeCondition {
 
     @Override
     public RecipeCondition createTemplate() {
-        return new SteamVentCondition();
+        return new VentCondition();
     }
 }
