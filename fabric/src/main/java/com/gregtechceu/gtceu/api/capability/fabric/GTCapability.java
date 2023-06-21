@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.capability.fabric;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.*;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.common.machine.trait.ConverterTrait;
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
 import net.fabricmc.fabric.api.lookup.v1.item.ItemApiLookup;
 import net.minecraft.core.Direction;
@@ -33,4 +34,7 @@ public class GTCapability {
 
     public static final ItemApiLookup<IElectricItem, Direction> CAPABILITY_ELECTRIC_ITEM =
             ItemApiLookup.get(GTCEu.id("sided_recipe_logic"), IElectricItem.class, Direction.class);
+
+    public static final BlockApiLookup<ConverterTrait, Direction> CAPABILITY_CONVERTER =
+            BlockApiLookup.get(GTCEu.id("converter"), ConverterTrait.class, Direction.class);
 }

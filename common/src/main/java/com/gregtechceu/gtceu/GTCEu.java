@@ -14,6 +14,7 @@ public class GTCEu {
     public static final String MODID_KUBEJS = "kubejs";
     public static final String MODID_IRIS = "iris";
     public static final String MODID_CREATE = "create";
+    public static final String MODID_REBORN_ENERGY = "team_reborn_energy";
     public static final String NAME = "GregTechCEu";
     public static final Logger LOGGER = LoggerFactory.getLogger(NAME);
 
@@ -52,5 +53,9 @@ public class GTCEu {
 
     public static boolean isIrisLoaded() {
         return LDLib.isModLoaded(MODID_IRIS);
+    }
+
+    public static boolean isRebornEnergyLoaded() {
+        return Platform.isForge() || LDLib.isModLoaded(GTCEu.MODID_REBORN_ENERGY);
     }
 }

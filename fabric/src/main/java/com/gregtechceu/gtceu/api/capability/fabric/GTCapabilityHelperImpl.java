@@ -1,11 +1,15 @@
 package com.gregtechceu.gtceu.api.capability.fabric;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.*;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
+import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import team.reborn.energy.api.EnergyStorage;
 
 import javax.annotation.Nullable;
 
@@ -34,7 +38,6 @@ public class GTCapabilityHelperImpl {
     @Nullable
     public static IWorkable getWorkable(Level level, BlockPos pos, @Nullable Direction side) {
         return GTCapability.CAPABILITY_WORKABLE.find(level, pos, side);
-
     }
 
     @Nullable
@@ -50,5 +53,14 @@ public class GTCapabilityHelperImpl {
     @Nullable
     public static IElectricItem getElectricItem(ItemStack itemStack) {
         return GTCapability.CAPABILITY_ELECTRIC_ITEM.find(itemStack, null);
+    }
+
+    @Nullable
+    public static IPlatformEnergyStorage getPlatformEnergy(Level level, BlockPos pos, @Nullable Direction side) {
+        if (GTCEu.isRebornEnergyLoaded()) {
+            var energyStorage = EnergyStorage.SIDED.find(level, pos, side);
+            return energyStorage == null ? null : GTEnergyHelperImpl.toPlatformEnergyStorage(energyStorage);
+        }
+        return null;
     }
 }

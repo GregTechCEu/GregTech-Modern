@@ -4,11 +4,13 @@ import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.IWorkable;
+import com.gregtechceu.gtceu.api.capability.forge.GTCapabilityHelperImpl;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
+import com.gregtechceu.gtceu.common.machine.trait.ConverterTrait;
 import com.lowdragmc.lowdraglib.side.fluid.forge.FluidTransferHelperImpl;
 import com.lowdragmc.lowdraglib.side.item.forge.ItemTransferHelperImpl;
 import net.minecraft.core.BlockPos;
@@ -81,15 +83,32 @@ public class MetaMachineBlockEntityImpl extends MetaMachineBlockEntity {
             if (!list.isEmpty()) {
                 return GTCapability.CAPABILITY_ENERGY_CONTAINER.orEmpty(cap, LazyOptional.of(() -> list.size() == 1 ? list.get(0) : new EnergyContainerList(list)));
             }
-        } else if (cap == ForgeCapabilities.ITEM_HANDLER) {
-            var transfer = machine.getItemTransferCap(side);
-            if (transfer != null) {
-                return ForgeCapabilities.ITEM_HANDLER.orEmpty(cap, LazyOptional.of(() -> ItemTransferHelperImpl.toItemHandler(transfer)));
+            for (MachineTrait trait : machine.getTraits()) {
+                if (trait instanceof ConverterTrait converterTrait) {
+                    if (converterTrait.isFeToEu() == (side == machine.getFrontFacing())) continue;
+                    GTCapability.CAPABILITY_ENERGY_CONTAINER.orEmpty(cap, LazyOptional.of(converterTrait::getEnergyEUContainer));
+                }
             }
+        } else if (cap == GTCapability.CAPABILITY_CONVERTER) {
+            for (MachineTrait trait : machine.getTraits()) {
+                if (trait instanceof ConverterTrait converter) {
+                    return GTCapability.CAPABILITY_CONVERTER.orEmpty(cap, LazyOptional.of(() -> converter));
+                }
+            }
+        } else if (cap == ForgeCapabilities.ITEM_HANDLER) {var transfer = machine.getItemTransferCap(side);if (transfer != null) {
+            return ForgeCapabilities.ITEM_HANDLER.orEmpty(cap, LazyOptional.of(() -> ItemTransferHelperImpl.toItemHandler(transfer)));
+        }
         } else if (cap == ForgeCapabilities.FLUID_HANDLER) {
             var transfer = machine.getFluidTransferCap(side);
             if (transfer != null) {
                 return ForgeCapabilities.FLUID_HANDLER.orEmpty(cap, LazyOptional.of(() -> FluidTransferHelperImpl.toFluidHandler(transfer)));
+            }
+        }else if (cap == ForgeCapabilities.ENERGY) {
+            for (MachineTrait trait : machine.getTraits()) {
+                if (trait instanceof ConverterTrait converterTrait) {
+                    if (side != (converterTrait.isFeToEu() ? machine.getFrontFacing() : null)) continue;
+                    return ForgeCapabilities.ENERGY.orEmpty(cap, LazyOptional.of(() -> GTCapabilityHelperImpl.toEnergyStorage(converterTrait.getEnergyNativeContainer())));
+                }
             }
         }
         return null;

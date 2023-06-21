@@ -24,7 +24,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class TieredEnergyMachine extends TieredMachine implements ITieredMachine, IExplosionMachine, IRedstoneSignalMachine {
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(TieredEnergyMachine.class, MetaMachine.MANAGED_FIELD_HOLDER);
     @Persisted
-    public final NotifiableEnergyContainer energyContainer;
+    public NotifiableEnergyContainer energyContainer;
     protected TickableSubscription explosionSubs;
     protected ISubscription energyListener;
 
