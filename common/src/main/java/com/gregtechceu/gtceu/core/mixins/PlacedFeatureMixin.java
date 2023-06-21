@@ -37,7 +37,7 @@ public abstract class PlacedFeatureMixin {
         if (feature.value().config() instanceof GTOreFeatureConfiguration configuration) {
             GTOreFeatureEntry entry = configuration.getEntry(context.getLevel(), context.getLevel().getBiome(pos), source);
             if (entry != null) {
-                placement = entry.modifiers;
+                placement = entry.getModifiers();
                 configuration.setEntry(entry);
             }
         }
