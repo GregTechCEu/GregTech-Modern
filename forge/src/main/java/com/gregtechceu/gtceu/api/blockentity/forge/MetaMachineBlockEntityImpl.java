@@ -86,7 +86,7 @@ public class MetaMachineBlockEntityImpl extends MetaMachineBlockEntity {
             for (MachineTrait trait : machine.getTraits()) {
                 if (trait instanceof ConverterTrait converterTrait) {
                     if (converterTrait.isFeToEu() == (side == machine.getFrontFacing())) continue;
-                    GTCapability.CAPABILITY_ENERGY_CONTAINER.orEmpty(cap, LazyOptional.of(converterTrait::getEnergyEUContainer));
+                    return GTCapability.CAPABILITY_ENERGY_CONTAINER.orEmpty(cap, LazyOptional.of(converterTrait::getEnergyEUContainer));
                 }
             }
         } else if (cap == GTCapability.CAPABILITY_CONVERTER) {

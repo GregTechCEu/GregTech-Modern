@@ -37,7 +37,7 @@ public class ConverterTrait extends MachineTrait {
 
     private final IPlatformEnergyStorage energyNative = new PlatformEnergyContainer();
     private final NotifiableEnergyContainer energyEU;
-    @Persisted
+    @Persisted @DescSynced
     protected long storedEU;
     private final long baseCapacity;
     private long usedAmps;
@@ -172,15 +172,15 @@ public class ConverterTrait extends MachineTrait {
         public long acceptEnergyFromNetwork(Direction side, long voltage, long amperage) {
             if (amperage <= 0 || voltage <= 0 || feToEu || side == machine.getFrontFacing())
                 return 0;
-            if (usedAmps >= amps) return 0;
+            if (usedAmps >= ConverterTrait.this.amps) return 0;
             if (voltage > getInputVoltage() && machine instanceof IExplosionMachine explosionMachine) {
                 explosionMachine.doExplosion(GTUtil.getExplosionPower(voltage));
-                return Math.min(amperage, amps - usedAmps);
+                return Math.min(amperage, ConverterTrait.this.amps - usedAmps);
             }
 
             long space = baseCapacity - storedEU;
             if (space < voltage) return 0;
-            long maxAmps = Math.min(Math.min(amperage, amps - usedAmps), space / voltage);
+            long maxAmps = Math.min(Math.min(amperage, ConverterTrait.this.amps - usedAmps), space / voltage);
             storedEU += voltage * maxAmps;
             usedAmps += maxAmps;
             return maxAmps;
@@ -227,7 +227,7 @@ public class ConverterTrait extends MachineTrait {
 
         @Override
         public long getInputAmperage() {
-            return feToEu ? 0 : amps;
+            return feToEu ? 0 : ConverterTrait.this.amps;
         }
 
         @Override
@@ -237,7 +237,7 @@ public class ConverterTrait extends MachineTrait {
 
         @Override
         public long getOutputAmperage() {
-            return feToEu ? amps : 0;
+            return feToEu ? ConverterTrait.this.amps : 0;
         }
 
         @Override

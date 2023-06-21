@@ -29,7 +29,7 @@ public class ConverterMachine extends TieredEnergyMachine {
     public ConverterMachine(IMachineBlockEntity holder, int tier, int amps, Object... args) {
         super(holder, tier, args);
         this.amps = amps;
-        this.converterTrait = initializeTrait();
+        this.converterTrait = initializeTrait(amps);
         this.energyContainer = createEnergyContainer();
     }
 
@@ -44,7 +44,7 @@ public class ConverterMachine extends TieredEnergyMachine {
         return converterTrait.getEnergyEUContainer();
     }
 
-    protected ConverterTrait initializeTrait() {
+    protected ConverterTrait initializeTrait(int amps) {
         return new ConverterTrait(this, amps, true);
     }
 
