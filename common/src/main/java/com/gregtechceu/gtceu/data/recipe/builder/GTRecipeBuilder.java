@@ -410,8 +410,8 @@ public class GTRecipeBuilder {
     //*******     CONDITIONS    ********//
     //////////////////////////////////////
 
-    public GTRecipeBuilder cleanroom(CleanroomType sterileCleanroom) {
-        return this;
+    public GTRecipeBuilder cleanroom(CleanroomType cleanroomType) {
+        return addCondition(new CleanroomCondition(cleanroomType));
     }
 
     public GTRecipeBuilder dimension(ResourceLocation dimension, boolean reverse) {
