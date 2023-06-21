@@ -15,6 +15,7 @@ public class DataGenerators {
         if (event.includeServer()) {
             var provider = new SoundEntryBuilder.SoundEntryProvider(generator);
             generator.addProvider(true, provider);
+            generator.addProvider(true, new BiomeTagsProviderImpl(generator, event.getExistingFileHelper()));
         }
     }
 }

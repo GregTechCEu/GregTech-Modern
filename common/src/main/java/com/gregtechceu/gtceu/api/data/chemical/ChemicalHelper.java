@@ -13,10 +13,13 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static com.gregtechceu.gtceu.api.GTValues.M;
@@ -34,6 +37,9 @@ public class ChemicalHelper {
     public static final Map<ItemLike, UnificationEntry> ITEM_UNIFICATION_ENTRY = new HashMap<>();
     /** Mapping of all items that represent a "prefix, material" pair */
     public static final Map<UnificationEntry, ArrayList<ItemLike>> UNIFICATION_ENTRY_ITEM = new Object2ObjectLinkedOpenHashMap<>();
+    public static final Map<UnificationEntry, ArrayList<Block>> UNIFICATION_ENTRY_BLOCK = new Object2ObjectLinkedOpenHashMap<>();
+    /** Mapping of stone type blockState to "prefix, material" */
+    public static final Map<BlockState, TagPrefix> ORES_INVERSE = new HashMap<>();
 
     public static void registerMaterialInfo(ItemLike item, ItemMaterialInfo materialInfo) {
         ITEM_MATERIAL_INFO.put(item, materialInfo);
@@ -48,11 +54,18 @@ public class ChemicalHelper {
                 .addAll(Arrays.stream(items).toList());
         for (ItemLike item : items) {
             ITEM_UNIFICATION_ENTRY.put(item, unificationEntry);
+            if (item instanceof Block block) {
+                UNIFICATION_ENTRY_BLOCK.computeIfAbsent(unificationEntry, entry -> new ArrayList<>())
+                        .add(block);
+            }
         }
     }
 
     public static void registerUnificationItems(TagPrefix tagPrefix, @Nullable Material material, ItemLike... items) {
         registerUnificationItems(new UnificationEntry(tagPrefix, material), items);
+        if (TagPrefix.ORES.containsKey(tagPrefix) && !ORES_INVERSE.containsValue(tagPrefix)) {
+            ORES_INVERSE.put(TagPrefix.ORES.get(tagPrefix).stoneType().get(), tagPrefix);
+        }
     }
 
     @Nullable
@@ -179,6 +192,28 @@ public class ChemicalHelper {
 
     public static ItemStack get(TagPrefix orePrefix, Material material) {
         return get(orePrefix, material, 1);
+    }
+
+    public static List<Block> getBlocks(UnificationEntry unificationEntry) {
+        return UNIFICATION_ENTRY_BLOCK.computeIfAbsent(unificationEntry, entry -> {
+            var blocks = new ArrayList<Block>();
+            for (TagKey<Block> tag : Arrays.stream(getTags(unificationEntry.tagPrefix, unificationEntry.material)).map(itemTagKey -> TagKey.create(Registry.BLOCK_REGISTRY, itemTagKey.location())).toList()) {
+                for (Holder<Block> itemHolder : Registry.BLOCK.getTagOrEmpty(tag)) {
+                    blocks.add(itemHolder.value());
+                }
+            }
+            return blocks;
+        });
+    }
+
+    public static Block getBlock(UnificationEntry unificationEntry) {
+        var list = getBlocks(unificationEntry);
+        if (list.isEmpty()) return null;
+        return list.get(0);
+    }
+
+    public static Block getBlock(TagPrefix orePrefix, Material material) {
+        return getBlock(new UnificationEntry(orePrefix, material));
     }
 
     @Nullable

@@ -2,9 +2,9 @@ package com.gregtechceu.gtceu.api.machine.trait;
 
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtlib.side.item.IItemTransfer;
-import com.gregtechceu.gtlib.side.item.ItemTransferHelper;
-import com.gregtechceu.gtlib.syncdata.field.ManagedFieldHolder;
+import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
+import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
+import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;

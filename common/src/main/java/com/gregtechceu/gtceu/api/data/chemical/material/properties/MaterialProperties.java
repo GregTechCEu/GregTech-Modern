@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.api.data.chemical.material.properties;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtlib.Platform;
+import com.lowdragmc.lowdraglib.Platform;
 
 import java.util.*;
 

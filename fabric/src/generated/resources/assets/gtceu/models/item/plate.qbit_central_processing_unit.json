@@ -1,6 +1,0 @@
-{
-  "parent": "minecraft:item/generated",
-  "textures": {
-    "layer0": "gtceu:item/plate.qbit_central_processing_unit"
-  }
-}

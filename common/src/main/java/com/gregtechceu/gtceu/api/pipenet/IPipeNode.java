@@ -3,9 +3,9 @@ package com.gregtechceu.gtceu.api.pipenet;
 import com.gregtechceu.gtceu.api.block.PipeBlock;
 import com.gregtechceu.gtceu.api.blockentity.ITickSubscription;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
-import com.gregtechceu.gtlib.GTLib;
-import com.gregtechceu.gtlib.pipelike.Node;
-import com.gregtechceu.gtlib.pipelike.PipeNet;
+import com.lowdragmc.lowdraglib.LDLib;
+import com.lowdragmc.lowdraglib.pipelike.Node;
+import com.lowdragmc.lowdraglib.pipelike.PipeNet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -71,7 +71,7 @@ public interface IPipeNode<PipeType extends Enum<PipeType> & IPipeType<NodeDataT
             int connections = 0;
             var data = getNodeData();
             if (data == null) {
-                GTLib.LOGGER.warn("data shouldn't be null here, did you add pipe without placement?");
+                LDLib.LOGGER.warn("data shouldn't be null here, did you add pipe without placement?");
                 net.getWorldData().addNode(pos, getPipeType().modifyProperties(getPipeBlock().getFallbackType()), Node.DEFAULT_MARK, Node.ALL_OPENED, true);
                 data = getNodeData();
                 if (data == null) {
@@ -122,7 +122,7 @@ public interface IPipeNode<PipeType extends Enum<PipeType> & IPipeType<NodeDataT
     default boolean isRemote() {
         var level = getPipeLevel();
         if (level == null) {
-            return GTLib.isRemote();
+            return LDLib.isRemote();
         }
         return level.isClientSide;
     }

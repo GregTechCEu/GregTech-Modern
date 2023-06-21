@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.gui.editor;
 
-import com.gregtechceu.gtlib.gui.editor.data.Resources;
-import com.gregtechceu.gtlib.gui.editor.data.resource.Resource;
+import com.lowdragmc.lowdraglib.gui.editor.data.Resources;
+import com.lowdragmc.lowdraglib.gui.editor.data.resource.Resource;
 import net.minecraft.nbt.CompoundTag;
 
 /**

@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.common.pipelike.fluidpipe;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.FluidPipeProperties;
-import com.gregtechceu.gtlib.pipelike.LevelPipeNet;
-import com.gregtechceu.gtlib.pipelike.PipeNet;
+import com.lowdragmc.lowdraglib.pipelike.LevelPipeNet;
+import com.lowdragmc.lowdraglib.pipelike.PipeNet;
 import it.unimi.dsi.fastutil.longs.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;

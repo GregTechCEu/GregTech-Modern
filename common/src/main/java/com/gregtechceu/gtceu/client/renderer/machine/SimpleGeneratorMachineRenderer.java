@@ -2,8 +2,8 @@ package com.gregtechceu.gtceu.client.renderer.machine;
 
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtlib.client.bakedpipeline.FaceQuad;
-import com.gregtechceu.gtlib.client.model.ModelFactory;
+import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
+import com.lowdragmc.lowdraglib.client.model.ModelFactory;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.core.Direction;

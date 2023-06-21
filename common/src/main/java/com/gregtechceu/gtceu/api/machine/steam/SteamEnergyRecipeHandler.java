@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
-import com.gregtechceu.gtlib.side.fluid.FluidStack;
+import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;

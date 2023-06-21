@@ -24,12 +24,15 @@ loom {
 
     runs {
         create("dataCommon") {
-            inherit(getByName("client"))
+            inherit client
             name("Minecraft Data")
             property("fabric-api.datagen")
             property("fabric-api.datagen.modid", "${mod_id}")
             property("fabric-api.datagen.output-dir", project.file("src/generated/resources").absolutePath)
             property("fabric-api.datagen.strict-validation")
+        }
+        client {
+            programArgs("--username", "Player")
         }
     }
 }
@@ -60,7 +63,7 @@ repositories {
     maven { url = "https://api.modrinth.com/maven" } // LazyDFU, Jade
     maven { url = "https://maven.terraformersmc.com/releases/" } // Mod Menu
     maven { url = "https://mvn.devos.one/snapshots/" } // Create Fabric, Porting Lib, Forge Tags, Milk Lib, Registrate Fabric
-    maven { url = "https://maven.cafeteria.dev/releases" } // Fake Player API
+    //maven { url = "https://maven.cafeteria.dev/releases" } // Fake Player API
     maven { url = "https://maven.jamieswhiteshirt.com/libs-release" } // Reach Entity Attributes
     maven { url = "https://jitpack.io/" } // Mixin Extras, Fabric ASM
     maven { url = "https://raw.githubusercontent.com/Fuzss/modresources/main/maven/" }
@@ -74,9 +77,9 @@ dependencies {
     common(project(path: ":${mod_id}-common", configuration: "namedElements")) { transitive = false }
     shadowCommon(project(path: ":${mod_id}-common", configuration: "transformProductionFabric")) { transitive = false }
 
-    // GTLib
-    modImplementation(fabric.gtlib.fabric) { transitive = false }
-    include(fabric.gtlib.fabric)
+    // LDLib
+    modImplementation(fabric.ldlib.fabric) { transitive = false }
+    include(fabric.ldlib.fabric)
 
     // Registrate
     modImplementation(include("com.tterrag.registrate_fabric:Registrate:${fabric.versions.registrate.get()}"))
@@ -112,7 +115,7 @@ dependencies {
     modCompileOnly fabric.theoneprobe
 
     // Jade
-    modCompileOnly fabric.jade
+    modImplementation fabric.jade
 
     // KJS
     modImplementation fabric.kubejs
@@ -120,6 +123,12 @@ dependencies {
     // Configuration
     modImplementation(fabric.configuration)
     include(fabric.configuration)
+
+    // Runtime only testing mods
+    modRuntimeOnly("me.shedaniel.cloth:cloth-config-fabric:8.2.88") {
+        exclude(group: "net.fabricmc.fabric-api")
+    }
+    modRuntimeOnly(fabric.worldStripper)
 }
 
 processResources {
@@ -134,7 +143,7 @@ processResources {
             "mod_name", mod_name,
             "mod_description", mod_description,
             "mod_url", mod_url,
-            "gtlib_version", fabric.versions.gtlib.get() // on fabric, use the entire version, unlike forge
+            "ldlib_version", fabric.versions.ldlib.get() // on fabric, use the entire version, unlike forge
     )
     properties.forEach((k, v) -> inputs.property(k, v))
 

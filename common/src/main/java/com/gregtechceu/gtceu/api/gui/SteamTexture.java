@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.gui;
 
-import com.gregtechceu.gtlib.gui.texture.ResourceTexture;
+import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 
 /**
  * @author KilaBash

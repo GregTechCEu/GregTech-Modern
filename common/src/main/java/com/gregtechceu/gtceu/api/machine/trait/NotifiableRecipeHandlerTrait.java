@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.machine.trait;
 
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtlib.syncdata.ISubscription;
+import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 
 import java.util.ArrayList;
 import java.util.List;

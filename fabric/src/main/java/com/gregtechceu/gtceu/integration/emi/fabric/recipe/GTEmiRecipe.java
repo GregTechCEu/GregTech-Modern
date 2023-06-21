@@ -2,8 +2,8 @@ package com.gregtechceu.gtceu.integration.emi.fabric.recipe;
 
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.integration.GTRecipeWidget;
-import com.gregtechceu.gtlib.emi.ModularEmiRecipe;
-import com.gregtechceu.gtlib.gui.widget.WidgetGroup;
+import com.lowdragmc.lowdraglib.emi.ModularEmiRecipe;
+import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;

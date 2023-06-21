@@ -3,8 +3,8 @@ package com.gregtechceu.gtceu.data.recipe.builder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.gregtechceu.gtceu.api.recipe.ingredient.NBTIngredient;
-import com.gregtechceu.gtlib.GTLib;
-import com.gregtechceu.gtlib.utils.NBTToJsonConverter;
+import com.lowdragmc.lowdraglib.LDLib;
+import com.lowdragmc.lowdraglib.utils.NBTToJsonConverter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import net.minecraft.core.Registry;
@@ -102,7 +102,7 @@ public class ShapelessRecipeBuilder {
         json.add("ingredients", jsonarray);
 
         if (output.isEmpty()) {
-            GTLib.LOGGER.error("shapeless recipe {} output is empty", id);
+            LDLib.LOGGER.error("shapeless recipe {} output is empty", id);
             throw new IllegalArgumentException(id + ": output items is empty");
         } else {
             JsonObject result = new JsonObject();

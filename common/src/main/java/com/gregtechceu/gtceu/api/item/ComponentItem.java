@@ -1,10 +1,10 @@
 package com.gregtechceu.gtceu.api.item;
 
 import com.gregtechceu.gtceu.api.item.component.*;
-import com.gregtechceu.gtlib.client.renderer.IItemRendererProvider;
-import com.gregtechceu.gtlib.client.renderer.IRenderer;
-import com.gregtechceu.gtlib.gui.factory.HeldItemUIFactory;
-import com.gregtechceu.gtlib.gui.modular.ModularUI;
+import com.lowdragmc.lowdraglib.client.renderer.IItemRendererProvider;
+import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
+import com.lowdragmc.lowdraglib.gui.factory.HeldItemUIFactory;
+import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import lombok.Getter;
 import net.minecraft.MethodsReturnNonnullByDefault;

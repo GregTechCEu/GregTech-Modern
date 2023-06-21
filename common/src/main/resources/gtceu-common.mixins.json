@@ -10,11 +10,15 @@
     "MultiPlayerGameModeMixin"
   ],
   "mixins": [
+    "BlockBehaviourAccessor",
     "ChunkMixin",
     "IFoliagePlacerTypeAccessor",
     "IHolderReferenceAccessor",
     "ITrunkPlacerTypeAccessor",
     "LevelMixin",
+    "LootTablesMixin",
+    "PackConfigMixin",
+    "PlacedFeatureMixin",
     "RecipeManagerAccessor",
     "RecipeManagerInvoker",
     "RecipeManagerMixin",
@@ -24,9 +28,11 @@
     "TagManagerMixin",
     "create.RotationPropagatorMixin",
     "kjs.KubeJSMixin",
-    "kjs.RecipeEventJSMixin"
+    "kjs.RecipeEventJSMixin",
+    "top.ConfigMixin"
   ],
   "injectors": {
-    "defaultRequire": 1
+    "defaultRequire": 1,
+    "maxShiftBy": 5
   }
 }

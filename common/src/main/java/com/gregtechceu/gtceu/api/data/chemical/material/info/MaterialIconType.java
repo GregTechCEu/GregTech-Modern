@@ -5,8 +5,10 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtlib.Platform;
-import com.gregtechceu.gtlib.utils.ResourceHelper;
+import com.gregtechceu.gtceu.integration.kjs.GTRegistryObjectBuilderTypes;
+import com.lowdragmc.lowdraglib.Platform;
+import com.lowdragmc.lowdraglib.utils.ResourceHelper;
+import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 
 import javax.annotation.Nonnull;
@@ -102,6 +104,16 @@ public record MaterialIconType(String name) {
         ICON_TYPES.put(this.name, this);
     }
 
+    public static void init() {
+        if (GTCEu.isKubeJSLoaded()) {
+            GTRegistryObjectBuilderTypes.registerFor(GTRegistryObjectBuilderTypes.MATERIAL_ICON_TYPE.registryKey);
+        }
+    }
+
+    public static MaterialIconType getByName(String name) {
+        return ICON_TYPES.get(name);
+    }
+
     @Nonnull
     public ResourceLocation getBlockTexturePath(@Nonnull MaterialIconSet materialIconSet, boolean doReadCache) {
         if (doReadCache) {
@@ -112,7 +124,7 @@ public record MaterialIconType(String name) {
 
         MaterialIconSet iconSet = materialIconSet;
         //noinspection ConstantConditions
-        if (!iconSet.isRootIconset && Platform.isClient()) { // check minecraft for null for CI environments
+        if (!iconSet.isRootIconset && Platform.isClient() && Minecraft.getInstance() != null && Minecraft.getInstance().getResourceManager() != null) { // check minecraft for null for CI environments
             while (!iconSet.isRootIconset) {
                 ResourceLocation location = GTCEu.id(String.format("textures/block/material_sets/%s/%s.png", iconSet.name, this.name));
                 if (ResourceHelper.isResourceExist(location)) break;
@@ -136,7 +148,7 @@ public record MaterialIconType(String name) {
 
         MaterialIconSet iconSet = materialIconSet;
         //noinspection ConstantConditions
-        if (!iconSet.isRootIconset && Platform.isClient()) { // check minecraft for null for CI environments
+        if (!iconSet.isRootIconset && Platform.isClient() && Minecraft.getInstance() != null && Minecraft.getInstance().getResourceManager() != null) { // check minecraft for null for CI environments
             while (!iconSet.isRootIconset) {
                 ResourceLocation location = GTCEu.id(String.format("models/item/material_sets/%s/%s.json", iconSet.name, this.name));
                 if (ResourceHelper.isResourceExist(location)) break;

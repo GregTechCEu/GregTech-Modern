@@ -43,6 +43,8 @@ subprojects {
         } // JEI mirror, AE2
         maven { url = "https://maven.parchmentmc.org" } // Parchment mappings
         maven { url = "https://maven.quiltmc.org/repository/release" } // Quilt Mappings
+        maven { url = "https://maven.firstdarkdev.xyz/snapshots" } // LDLib
+        /*
         maven {
             url = "https://maven.pkg.github.com/GregTechCEu/GregTechLib-1.19"
             credentials(HttpHeaderCredentials.class) {
@@ -52,7 +54,8 @@ subprojects {
             authentication {
                 create("header", HttpHeaderAuthentication.class)
             }
-        } // GTLib
+        } // LDLib
+        */
         maven { // Flywheel
             url = "https://maven.tterrag.com/"
             content {
@@ -83,6 +86,8 @@ subprojects {
         // lombok
         compileOnly 'org.projectlombok:lombok:1.18.24'
         annotationProcessor 'org.projectlombok:lombok:1.18.24'
+
+        implementation 'com.google.code.findbugs:jsr305:3.0.2'
     }
 }
 

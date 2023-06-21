@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.api.item;
 
-import com.gregtechceu.gtlib.client.renderer.IBlockRendererProvider;
-import com.gregtechceu.gtlib.client.renderer.IItemRendererProvider;
-import com.gregtechceu.gtlib.client.renderer.IRenderer;
+import com.lowdragmc.lowdraglib.client.renderer.IBlockRendererProvider;
+import com.lowdragmc.lowdraglib.client.renderer.IItemRendererProvider;
+import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;

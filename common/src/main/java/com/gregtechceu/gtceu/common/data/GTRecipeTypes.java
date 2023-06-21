@@ -14,15 +14,14 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.sound.ExistingSoundEntry;
-import com.gregtechceu.gtceu.common.block.CoilBlock;
 import com.gregtechceu.gtceu.integration.kjs.GTRegistryObjectBuilderTypes;
-import com.gregtechceu.gtlib.gui.widget.SlotWidget;
-import com.gregtechceu.gtlib.gui.widget.TankWidget;
-import com.gregtechceu.gtlib.misc.FluidStorage;
-import com.gregtechceu.gtlib.misc.ItemStackTransfer;
-import com.gregtechceu.gtlib.side.fluid.FluidStack;
-import com.gregtechceu.gtlib.utils.CycleItemStackHandler;
-import com.gregtechceu.gtlib.utils.LocalizationUtils;
+import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
+import com.lowdragmc.lowdraglib.gui.widget.TankWidget;
+import com.lowdragmc.lowdraglib.misc.FluidStorage;
+import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
+import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
+import com.lowdragmc.lowdraglib.utils.CycleItemStackHandler;
+import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 import com.simibubi.create.AllBlocks;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
@@ -34,11 +33,10 @@ import net.minecraft.world.level.material.Fluids;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static com.gregtechceu.gtlib.gui.texture.ProgressTexture.FillDirection.*;
+import static com.lowdragmc.lowdraglib.gui.texture.ProgressTexture.FillDirection.*;
 
 /**
  * @author KilaBash
@@ -189,7 +187,7 @@ public class GTRecipeTypes {
                             .save(provider);
 
                     recipeBuilder
-                            .copy(new ResourceLocation(recipeBuilder.id.toString() + "_distlled_water"))
+                            .copy(new ResourceLocation(recipeBuilder.id.toString() + "_distilled_water"))
                             .inputFluids(GTMaterials.DistilledWater.getFluid((int) Math.max(3, Math.min(750, recipeBuilder.duration * recipeBuilder.EUt() / 426))))
                             .duration((int) (recipeBuilder.duration * 1.5))
                             .save(provider);

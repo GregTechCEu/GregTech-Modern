@@ -1,7 +1,7 @@
 {
   "values": [
-    "gtceu:circuit.workstation",
-    "gtceu:circuit.nano_assembly",
-    "gtceu:circuit.quantum_processor"
+    "gtceu:micro_processor_computer",
+    "gtceu:nano_processor_assembly",
+    "gtceu:quantum_processor"
   ]
 }

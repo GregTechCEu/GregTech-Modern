@@ -6,6 +6,9 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.FluidProperty
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PlasmaProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.mojang.datafixers.util.Pair;
+import com.tterrag.registrate.util.entry.FluidEntry;
+import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 
@@ -25,6 +28,7 @@ import static com.gregtechceu.gtceu.api.registry.GTRegistries.REGISTRATE;
 public class GTFluids {
 
     public static final Map<Fluid, FluidProperty> MATERIAL_FLUIDS = new HashMap<>();
+    public static final Map<FluidProperty, Supplier<Pair<? extends Fluid, ? extends Fluid>>> MATERIAL_FLUID_FLOWING = new HashMap<>();
     public static final Map<Fluid, PlasmaProperty> PLASMA_FLUIDS = new HashMap<>();
 
     public static void init() {
@@ -37,7 +41,7 @@ public class GTFluids {
 
             if (fluidProperty != null && !fluidProperty.hasFluidSupplier()) {
                 var fluidType = fluidProperty.getFluidType();
-                fluidProperty.setFluid(GTRegistries.REGISTRATE.createFluid(material.getName(), fluidProperty.getStillTexture(), fluidProperty.getFlowTexture())
+                FluidEntry<? extends Fluid> fluidEntry = GTRegistries.REGISTRATE.createFluid(material.getName(), material, fluidProperty.getStillTexture(), fluidProperty.getFlowTexture())
                         .temperature(Math.max(material.getBlastTemperature(), fluidProperty.getFluidTemperature()))
                         .density(fluidType.getDensity())
                         .viscosity(fluidType.getViscosity())
@@ -45,13 +49,15 @@ public class GTFluids {
                         .hasBlock(fluidProperty.hasBlock())
                         .color(material.hasFluidColor() ? material.getMaterialARGB() : -1)
                         .onFluidRegister(fluid -> MATERIAL_FLUIDS.put(fluid, fluidProperty))
-                        .registerFluid());
+                        .register();
+                MATERIAL_FLUID_FLOWING.put(fluidProperty, () -> Pair.of(fluidEntry.getSource(), fluidEntry.get()));
+                setPropertyFluid(fluidProperty, fluidEntry);
             }
 
             PlasmaProperty plasmaProperty = material.getProperty(PropertyKey.PLASMA);
             if (plasmaProperty != null && !plasmaProperty.hasPlasmaSupplier()) {
                 var fluidType = FluidTypes.PLASMA;
-                plasmaProperty.setPlasma(GTRegistries.REGISTRATE.createFluid(material.getName() + "_plasma", plasmaProperty.getStillTexture(), plasmaProperty.getFlowTexture())
+                plasmaProperty.setPlasma(GTRegistries.REGISTRATE.createFluid(material.getName() + "_plasma", material, plasmaProperty.getStillTexture(), plasmaProperty.getFlowTexture())
                         .temperature((fluidProperty == null ? 0 : fluidProperty.getFluidTemperature()) + 10000)
                         .density(fluidType.getDensity())
                         .viscosity(fluidType.getViscosity())
@@ -91,4 +97,8 @@ public class GTFluids {
         return material.getPlasma();
     }
 
+    @ExpectPlatform
+    public static void setPropertyFluid(FluidProperty prop, FluidEntry<?> entry) {
+        throw new AssertionError();
+    }
 }

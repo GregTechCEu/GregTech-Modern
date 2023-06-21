@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.gui;
 
-import com.gregtechceu.gtlib.gui.widget.Widget;
-import com.gregtechceu.gtlib.gui.widget.WidgetGroup;
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
+import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;

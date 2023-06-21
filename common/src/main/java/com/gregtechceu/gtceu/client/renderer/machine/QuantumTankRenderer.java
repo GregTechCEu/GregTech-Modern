@@ -4,12 +4,12 @@ package com.gregtechceu.gtceu.client.renderer.machine;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.common.machine.storage.QuantumTankMachine;
-import com.gregtechceu.gtlib.client.utils.RenderBufferUtils;
-import com.gregtechceu.gtlib.client.utils.RenderUtils;
-import com.gregtechceu.gtlib.gui.texture.TextTexture;
-import com.gregtechceu.gtlib.gui.util.TextFormattingUtil;
-import com.gregtechceu.gtlib.side.fluid.FluidHelper;
-import com.gregtechceu.gtlib.side.fluid.FluidStack;
+import com.lowdragmc.lowdraglib.client.utils.RenderBufferUtils;
+import com.lowdragmc.lowdraglib.client.utils.RenderUtils;
+import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
+import com.lowdragmc.lowdraglib.gui.util.TextFormattingUtil;
+import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
+import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -79,7 +79,7 @@ public class QuantumTankRenderer extends TieredHullMachineRenderer {
             poseStack.translate(frontFacing.getStepX() * -1 / 16f, frontFacing.getStepY() * -1 / 16f, frontFacing.getStepZ() * -1 / 16f);
             RenderUtils.moveToFace(poseStack, 0, 0, 0, frontFacing);
             if (frontFacing.getAxis() == Direction.Axis.Y) {
-                RenderUtils.rotateToFace(poseStack, frontFacing, Direction.SOUTH);
+                RenderUtils.rotateToFace(poseStack, frontFacing, frontFacing == Direction.UP ? Direction.SOUTH : Direction.NORTH);
             } else {
                 RenderUtils.rotateToFace(poseStack, frontFacing, null);
             }

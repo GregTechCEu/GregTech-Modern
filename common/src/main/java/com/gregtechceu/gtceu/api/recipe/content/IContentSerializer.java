@@ -2,17 +2,17 @@ package com.gregtechceu.gtceu.api.recipe.content;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.gregtechceu.gtlib.GTLib;
+import com.lowdragmc.lowdraglib.LDLib;
 import net.minecraft.network.FriendlyByteBuf;
 
 public interface IContentSerializer<T> {
 
     default void toNetwork(FriendlyByteBuf buf, T content) {
-        buf.writeUtf(GTLib.GSON.toJson(toJson(content)));
+        buf.writeUtf(LDLib.GSON.toJson(toJson(content)));
     }
 
     default T fromNetwork(FriendlyByteBuf buf) {
-        return fromJson(GTLib.GSON.fromJson(buf.readUtf(), JsonElement.class));
+        return fromJson(LDLib.GSON.fromJson(buf.readUtf(), JsonElement.class));
     }
 
     T fromJson(JsonElement json);

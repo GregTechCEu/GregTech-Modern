@@ -4,6 +4,10 @@ public interface IGTAddon {
 
     void initializeAddon();
 
+    default void registerTagPrefixes() {
+
+    }
+
     default void registerElements() {
 
     }
@@ -25,6 +29,14 @@ public interface IGTAddon {
     }
 
     default void registerMachines() {
+
+    }
+
+    default void registerWorldgenLayers() {
+
+    }
+
+    default void registerVeinGenerators() {
 
     }
 }

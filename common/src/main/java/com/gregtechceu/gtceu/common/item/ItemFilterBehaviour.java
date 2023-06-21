@@ -5,9 +5,9 @@ import com.gregtechceu.gtceu.api.item.component.IItemUIFactory;
 import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.UITemplate;
-import com.gregtechceu.gtlib.gui.factory.HeldItemUIFactory;
-import com.gregtechceu.gtlib.gui.modular.ModularUI;
-import com.gregtechceu.gtlib.gui.widget.LabelWidget;
+import com.lowdragmc.lowdraglib.gui.factory.HeldItemUIFactory;
+import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
+import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 

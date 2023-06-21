@@ -145,6 +145,12 @@ public class ToolProperty implements IMaterialProperty<ToolProperty> {
 
         public static Builder of(float harvestSpeed, float attackDamage, int durability, int harvestLevel) {
             return new Builder(harvestSpeed, attackDamage, durability, harvestLevel, new GTToolType[]{
+                    SWORD,
+                    PICKAXE,
+                    SHOVEL,
+                    AXE,
+                    HOE,
+
                     SAW,
                     HARD_HAMMER,
 //                    SOFT_MALLET,

@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.block.IMachineBlock;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
@@ -56,12 +57,12 @@ public abstract class GTRegistrate extends Registrate {
 
     public abstract void registerRegistrate();
 
-    public IGTFluidBuilder createFluid(String name, ResourceLocation stillTexture, ResourceLocation flowingTexture) {
-        return fluid(this, name, stillTexture, flowingTexture);
+    public IGTFluidBuilder createFluid(String name, Material material, ResourceLocation stillTexture, ResourceLocation flowingTexture) {
+        return fluid(this, material, name, stillTexture, flowingTexture);
     }
 
     @ExpectPlatform
-    public static IGTFluidBuilder fluid(GTRegistrate parent, String name, ResourceLocation stillTexture, ResourceLocation flowingTexture) {
+    public static IGTFluidBuilder fluid(GTRegistrate parent, Material material, String name, ResourceLocation stillTexture, ResourceLocation flowingTexture) {
         throw new AssertionError();
     }
 

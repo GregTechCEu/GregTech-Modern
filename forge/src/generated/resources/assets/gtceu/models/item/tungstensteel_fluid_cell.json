@@ -1,0 +1,20 @@
+{
+  "parent": "minecraft:item/generated",
+  "overrides": [
+    {
+      "model": "gtceu:item/tungstensteel_fluid_cell_empty",
+      "predicate": {
+        "gtceu:fluid_cell": 0.0
+      }
+    },
+    {
+      "model": "gtceu:item/tungstensteel_fluid_cell_filled",
+      "predicate": {
+        "gtceu:fluid_cell": 1.0
+      }
+    }
+  ],
+  "textures": {
+    "layer0": "gtceu:item/tungstensteel_fluid_cell/base"
+  }
+}

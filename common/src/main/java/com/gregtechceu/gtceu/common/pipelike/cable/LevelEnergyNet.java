@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.common.pipelike.cable;
 
-import com.gregtechceu.gtlib.pipelike.LevelPipeNet;
+import com.lowdragmc.lowdraglib.pipelike.LevelPipeNet;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 

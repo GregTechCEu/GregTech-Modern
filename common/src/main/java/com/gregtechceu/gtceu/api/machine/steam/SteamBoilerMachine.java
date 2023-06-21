@@ -12,17 +12,17 @@ import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtlib.gui.modular.ModularUI;
-import com.gregtechceu.gtlib.gui.texture.ProgressTexture;
-import com.gregtechceu.gtlib.gui.widget.ImageWidget;
-import com.gregtechceu.gtlib.gui.widget.LabelWidget;
-import com.gregtechceu.gtlib.gui.widget.ProgressWidget;
-import com.gregtechceu.gtlib.gui.widget.TankWidget;
-import com.gregtechceu.gtlib.side.fluid.FluidHelper;
-import com.gregtechceu.gtlib.side.fluid.FluidTransferHelper;
-import com.gregtechceu.gtlib.syncdata.ISubscription;
-import com.gregtechceu.gtlib.syncdata.annotation.Persisted;
-import com.gregtechceu.gtlib.syncdata.field.ManagedFieldHolder;
+import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
+import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
+import com.lowdragmc.lowdraglib.gui.widget.ImageWidget;
+import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
+import com.lowdragmc.lowdraglib.gui.widget.ProgressWidget;
+import com.lowdragmc.lowdraglib.gui.widget.TankWidget;
+import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
+import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
+import com.lowdragmc.lowdraglib.syncdata.ISubscription;
+import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
+import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import lombok.Getter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -126,25 +126,25 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine implements
     }
 
     protected void updateAutoOutputSubscription() {
-        Direction[] directions = Direction.stream()
+        if (Direction.stream()
                 .filter(direction -> direction != getFrontFacing() && direction != Direction.DOWN)
-                .filter(direction -> FluidTransferHelper.getFluidTransfer(getLevel(),
-                        getPos().relative(direction), direction.getOpposite()) != null)
-                .toArray(Direction[]::new);
-
-        if (directions.length > 0) {
-            autoOutputSubs = subscribeServerTick(autoOutputSubs, () -> this.autoOutput(directions));
+                .anyMatch(direction -> FluidTransferHelper.getFluidTransfer(getLevel(), getPos().relative(direction), direction.getOpposite()) != null)) {
+            autoOutputSubs = subscribeServerTick(autoOutputSubs, this::autoOutput);
         } else if (autoOutputSubs != null) {
             autoOutputSubs.unsubscribe();
             autoOutputSubs = null;
         }
     }
 
-    protected void autoOutput(@NotNull Direction @NotNull [] directions) {
+    protected void autoOutput() {
         if (getOffsetTimer() % 5 == 0) {
-            steamTank.exportToNearby(directions);
+            steamTank.exportToNearby(Direction.stream()
+                    .filter(direction -> direction != getFrontFacing() && direction != Direction.DOWN)
+                    .filter(direction -> FluidTransferHelper.getFluidTransfer(getLevel(),
+                            getPos().relative(direction), direction.getOpposite()) != null)
+                    .toArray(Direction[]::new));
+            updateAutoOutputSubscription();
         }
-        updateAutoOutputSubscription();
     }
 
     //////////////////////////////////////

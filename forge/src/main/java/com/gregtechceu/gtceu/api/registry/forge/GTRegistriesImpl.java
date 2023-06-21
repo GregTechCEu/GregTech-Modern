@@ -9,6 +9,7 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.foliageplacers.FoliagePlacerType;
 import net.minecraft.world.level.levelgen.feature.trunkplacers.TrunkPlacerType;
+import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -22,6 +23,7 @@ import static net.minecraft.core.Registry.RECIPE_TYPE_REGISTRY;
  */
 public class GTRegistriesImpl {
     public static final DeferredRegister<TrunkPlacerType<?>> TRUNK_PLACER_TYPE = DeferredRegister.create(Registry.TRUNK_PLACER_TYPE_REGISTRY, GTCEu.MOD_ID);
+    public static final DeferredRegister<PlacementModifierType<?>> PLACEMENT_MODIFIER = DeferredRegister.create(Registry.PLACEMENT_MODIFIER_REGISTRY, GTCEu.MOD_ID);
 
     public static <V, T extends V> T register(Registry<V> registry, ResourceLocation name, T value) {
         ResourceKey<?> registryKey = registry.key();
@@ -36,6 +38,8 @@ public class GTRegistriesImpl {
             ForgeRegistries.FOLIAGE_PLACER_TYPES.register(name, (FoliagePlacerType<?>)value);
         } else if (registryKey == Registry.TRUNK_PLACER_TYPE_REGISTRY) {
             TRUNK_PLACER_TYPE.register(name.getPath(), () -> (TrunkPlacerType<?>)value);
+        } else if (registryKey == Registry.PLACEMENT_MODIFIER_REGISTRY) {
+            PLACEMENT_MODIFIER.register(name.getPath(), () -> (PlacementModifierType<?>) value);
         } else {
             return Registry.register(registry, name, value);
         }
@@ -45,5 +49,7 @@ public class GTRegistriesImpl {
 
     public static void init(IEventBus eventBus) {
         TRUNK_PLACER_TYPE.register(eventBus);
+        PLACEMENT_MODIFIER.register(eventBus);
     }
+
 }
