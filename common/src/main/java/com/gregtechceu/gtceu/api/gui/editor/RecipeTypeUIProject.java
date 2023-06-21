@@ -31,7 +31,7 @@ import java.io.IOException;
  * @date 2023/3/29
  * @implNote RecipeTypeUIProject
  */
-@LDLRegister(name = "rtui", group = "project")
+@LDLRegister(name = "rtui", group = "editor.ui")
 public class RecipeTypeUIProject extends UIProject {
 
     @Nullable @Getter
