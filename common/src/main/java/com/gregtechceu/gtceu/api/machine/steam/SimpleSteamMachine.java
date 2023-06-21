@@ -158,6 +158,10 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
             }
         }, recipe, GTValues.V[GTValues.LV]);
 
+        if (modified == recipe) {
+            modified = recipe.copy();
+        }
+
         modified.conditions.add(VentCondition.INSTANCE);
         return modified;
     }
