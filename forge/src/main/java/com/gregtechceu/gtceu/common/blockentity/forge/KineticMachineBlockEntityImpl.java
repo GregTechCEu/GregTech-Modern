@@ -27,7 +27,7 @@ import java.util.function.BiFunction;
  * @date 2023/3/31
  * @implNote KineticMachineBlockEntityImpl
  */
-public class KineticMachineBlockEntityImpl extends KineticMachineBlockEntity{
+public class KineticMachineBlockEntityImpl extends KineticMachineBlockEntity {
     protected KineticMachineBlockEntityImpl(BlockEntityType<?> typeIn, BlockPos pos, BlockState state) {
         super(typeIn, pos, state);
     }
@@ -51,6 +51,5 @@ public class KineticMachineBlockEntityImpl extends KineticMachineBlockEntity{
                                     .skipRender((be) -> !renderNormally)
                                     .apply()));
         }
-
     }
 }

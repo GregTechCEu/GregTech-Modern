@@ -7,8 +7,8 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.common.blockentity.KineticMachineBlockEntity;
 import com.gregtechceu.gtceu.common.machine.KineticMachineDefinition;
 import com.gregtechceu.gtceu.common.machine.kinetic.IKineticMachine;
-import com.simibubi.create.content.contraptions.base.IRotate;
-import com.simibubi.create.content.contraptions.base.KineticTileEntity;
+import com.simibubi.create.content.kinetics.base.IRotate;
+import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
@@ -57,7 +57,7 @@ public class KineticMachineBlock extends MetaMachineBlock implements IRotate {
         // we can prevent a major re-propagation here
 
         BlockEntity tileEntity = level.getBlockEntity(pos);
-        if (tileEntity instanceof KineticTileEntity kineticTileEntity) {
+        if (tileEntity instanceof KineticBlockEntity kineticTileEntity) {
             kineticTileEntity.preventSpeedUpdate = 0;
 
             if (oldState.getBlock() != state.getBlock())
@@ -83,9 +83,8 @@ public class KineticMachineBlock extends MetaMachineBlock implements IRotate {
             return;
 
         BlockEntity tileEntity = worldIn.getBlockEntity(pos);
-        if (!(tileEntity instanceof KineticTileEntity))
+        if (!(tileEntity instanceof KineticBlockEntity kte))
             return;
-        KineticTileEntity kte = (KineticTileEntity) tileEntity;
 
         if (kte.preventSpeedUpdate > 0)
             return;

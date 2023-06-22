@@ -31,7 +31,7 @@
       "com.gregtechceu.gtceu.integration.jei.fabric.JEIPluginImpl"
     ],
     "ldlib_pugin": [
-      "com.gregtechceu.gtceu.integration.ldlib.fabric.LDLibPlugin"
+      "com.gregtechceu.gtceu.integration.ldlib.GTLDLibPlugin"
     ],
     "fabric-datagen": [
       "com.gregtechceu.gtceu.data.fabric.GregTechDatagen"
