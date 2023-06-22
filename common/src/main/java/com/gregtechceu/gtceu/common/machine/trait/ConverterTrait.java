@@ -42,7 +42,6 @@ public class ConverterTrait extends MachineTrait {
     private final long baseCapacity;
     private long usedAmps;
     private BlockPos frontPos;
-    private Direction frontDir;
 
     private TickableSubscription outputSubs;
 
@@ -53,6 +52,9 @@ public class ConverterTrait extends MachineTrait {
         this.voltage = GTValues.V[machine.getTier()];
         this.baseCapacity = this.voltage * 16 * amps;
         this.energyEU = new EUContainer(machine, baseCapacity, voltage, feToEu ? 0 : amps, voltage, feToEu ? amps : 0);
+        if (getMachine().isRemote()) {
+            addSyncUpdateListener("feToEu", this::onFeToEuUpdated);
+        }
     }
 
     public NotifiableEnergyContainer getEnergyEUContainer() {
@@ -69,6 +71,12 @@ public class ConverterTrait extends MachineTrait {
 
     public void setFeToEu(boolean feToEu) {
         this.feToEu = feToEu;
+        this.onChanged();
+    }
+
+    private void onFeToEuUpdated(String fieldName, boolean newValue, boolean oldValue) {
+        getMachine().scheduleRenderUpdate();
+        setFeToEu(newValue);
     }
 
     public int getBaseAmps() {
@@ -87,15 +95,14 @@ public class ConverterTrait extends MachineTrait {
     }
 
     public void update() {
-        if (machine.getFrontFacing() != this.frontDir) {
-            this.frontPos = null;
-            this.frontDir = null;
-        }
-
         this.usedAmps = 0;
         if (!machine.getLevel().isClientSide) {
             pushEnergy();
         }
+    }
+
+    public void onFrontFacingSet(Direction newFrontFacing) {
+        this.frontPos = null;
     }
 
     @Override
@@ -138,19 +145,13 @@ public class ConverterTrait extends MachineTrait {
     }
 
     protected IPlatformEnergyStorage getPlatformEnergyAtFront() {
-        if (frontPos == null) {
-            frontPos = machine.getPos().relative(machine.getFrontFacing());
-            frontDir = machine.getFrontFacing();
-        }
+        if (frontPos == null) frontPos = machine.getPos().relative(machine.getFrontFacing());
         Direction opposite = machine.getFrontFacing().getOpposite();
         return GTCapabilityHelper.getPlatformEnergy(machine.getLevel(), frontPos, opposite);
     }
 
     protected IEnergyContainer getEUAtFront() {
-        if (frontPos == null) {
-            frontPos = machine.getPos().relative(machine.getFrontFacing());
-            frontDir = machine.getFrontFacing();
-        }
+        if (frontPos == null) frontPos = machine.getPos().relative(machine.getFrontFacing());
         Direction opposite = machine.getFrontFacing().getOpposite();
         return GTCapabilityHelper.getEnergyContainer(machine.getLevel(), frontPos, opposite);
     }

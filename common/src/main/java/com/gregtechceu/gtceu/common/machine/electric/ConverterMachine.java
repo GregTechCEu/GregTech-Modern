@@ -52,7 +52,7 @@ public class ConverterMachine extends TieredEnergyMachine {
     public InteractionResult onSoftMalletClick(Player playerIn, InteractionHand hand, Direction facing, BlockHitResult hitResult) {
         if (getLevel().isClientSide) {
             scheduleRenderUpdate();
-            return InteractionResult.PASS;
+            return InteractionResult.CONSUME;
         }
         if (converterTrait.isFeToEu()) {
             setFeToEu(false);
@@ -93,6 +93,12 @@ public class ConverterMachine extends TieredEnergyMachine {
 //        super.addToolUsages(stack, world, tooltip, advanced);
 //    }
 
+
+    @Override
+    public void setFrontFacing(Direction facing) {
+        super.setFrontFacing(facing);
+        this.converterTrait.onFrontFacingSet(facing);
+    }
 
     @Override
     public ResourceTexture sideTips(Player player, GTToolType toolType, Direction side) {

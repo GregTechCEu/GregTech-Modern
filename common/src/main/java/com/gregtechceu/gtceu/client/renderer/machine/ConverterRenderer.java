@@ -33,16 +33,16 @@ public class ConverterRenderer extends TieredHullMachineRenderer {
     @Environment(EnvType.CLIENT)
     public void renderMachine(List<BakedQuad> quads, MachineDefinition definition, @Nullable MetaMachine machine, Direction frontFacing, @Nullable Direction side, RandomSource rand, Direction modelFacing, ModelState modelState) {
         super.renderMachine(quads, definition, machine, frontFacing, side, rand, modelFacing, modelState);
-        var otherFaceTexture = ENERGY_OUT;
-        var frontFaceTexture = CONVERTER_NATIVE_IN;
-        if (machine instanceof ConverterMachine transformer) {
-            otherFaceTexture = transformer.isFeToEu() ? ENERGY_IN : otherFaceTexture;
-            frontFaceTexture = transformer.isFeToEu() ? CONVERTER_NATIVE_OUT : frontFaceTexture;
+        var otherFaceTexture = ENERGY_IN;
+        var frontFaceTexture = CONVERTER_NATIVE_OUT;
+        if (machine instanceof ConverterMachine converter) {
+            otherFaceTexture = converter.isFeToEu() ? CONVERTER_NATIVE_IN : otherFaceTexture;
+            frontFaceTexture = converter.isFeToEu() ? ENERGY_OUT : frontFaceTexture;
         }
         if (side == frontFacing && modelFacing != null) {
-            quads.add(FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(frontFaceTexture), modelState, 2));
+            quads.add(FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(frontFaceTexture), modelState));
         } else if (side != null && modelFacing != null) {
-            quads.add(FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(otherFaceTexture), modelState, 3));
+            quads.add(FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(otherFaceTexture), modelState));
         }
     }
 
