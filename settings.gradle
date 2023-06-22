@@ -25,7 +25,7 @@ dependencyResolutionManagement {
         // Fabric
         def fabricLoaderVersion = "0.14.11" // https://fabricmc.net/develop/
         def fabricApiVersion = "0.73.2" // https://fabricmc.net/develop/
-        def createVersion = "0.5.0.g-837"
+        def createVersion = "0.5.1-b-build.1079"
         def lazyDfuVersion = "0.1.3"
         def modMenuVersion = "4.1.2"
         def topFabricVersion = "1.19-6.0.0"
@@ -38,9 +38,9 @@ dependencyResolutionManagement {
         def worldStripperFabricFile = "3921629"
 
         // Forge
-        def forgeVersion = "43.2.0"
+        def forgeVersion = "43.2.3"
         def registrateForgeVersion = "MC1.19-1.1.5"
-        def createForgeVersion = "0.5.0.h-21"
+        def createForgeVersion = "0.5.1.b-30"
         def flywheelForgeVersion = "0.6.8.a-14"
         def topForgeVersion = "1.19-6.2.0-6"
         def jadeForgeVersion = "8.8.1"
@@ -55,7 +55,7 @@ dependencyResolutionManagement {
         def architecturyLoomVersion = "1.0-SNAPSHOT"
         def quiltFlowerVersion = "1.+"
         def macheteVersion = "1.+"
-        def ldLibVersion = "1.0.9.b"
+        def ldLibVersion = "1.0.9.c"
 
         fabric {
             def parchment = version("parchment", parchmentVersion)
@@ -74,7 +74,7 @@ dependencyResolutionManagement {
             def registrate = version("registrate", registrateFabricVersion)
             library("registrate", "com.tterrag.registrate_fabric", "Registrate").versionRef(registrate)
 
-            def createFabric = version("create-fabric", "${createVersion}+${minecraftVersion}")
+            def createFabric = version("create-fabric", "${createVersion}+mc${minecraftVersion}")
             library("createFabric", "com.simibubi.create", "create-fabric-${minecraftVersion}").versionRef(createFabric)
 
             def lazyDfu = version("lazydfu", lazyDfuVersion)

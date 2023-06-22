@@ -6,10 +6,10 @@ import com.jozufozu.flywheel.api.InstanceData;
 import com.jozufozu.flywheel.api.Instancer;
 import com.jozufozu.flywheel.api.Material;
 import com.jozufozu.flywheel.api.MaterialManager;
-import com.simibubi.create.AllBlockPartials;
-import com.simibubi.create.content.contraptions.base.IRotate;
-import com.simibubi.create.content.contraptions.base.KineticTileInstance;
-import com.simibubi.create.content.contraptions.base.flwdata.RotatingData;
+import com.simibubi.create.AllPartialModels;
+import com.simibubi.create.content.kinetics.base.IRotate;
+import com.simibubi.create.content.kinetics.base.KineticBlockEntityInstance;
+import com.simibubi.create.content.kinetics.base.flwdata.RotatingData;
 import com.simibubi.create.foundation.utility.Iterate;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Block;
@@ -21,7 +21,7 @@ import java.util.ArrayList;
  * @date 2023/4/1
  * @implNote SplitShaftInstance
  */
-public class SplitShaftInstance extends KineticTileInstance<KineticMachineBlockEntity> {
+public class SplitShaftInstance extends KineticBlockEntityInstance<KineticMachineBlockEntity> {
 
     protected final ArrayList<RotatingData> keys;
 
@@ -36,7 +36,7 @@ public class SplitShaftInstance extends KineticTileInstance<KineticMachineBlockE
 
         for (Direction dir : Iterate.directionsInAxis(getRotationAxis())) {
 
-            Instancer<RotatingData> half = rotatingMaterial.getModel(AllBlockPartials.SHAFT_HALF, blockState, dir);
+            Instancer<RotatingData> half = rotatingMaterial.getModel(AllPartialModels.SHAFT_HALF, blockState, dir);
 
             float splitSpeed = speed * (tile.getMetaMachine() instanceof IKineticMachine kineticMachine ? kineticMachine.getRotationSpeedModifier(dir) : 1);
 
