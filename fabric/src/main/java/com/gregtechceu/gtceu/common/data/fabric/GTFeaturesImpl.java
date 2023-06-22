@@ -38,7 +38,7 @@ public class GTFeaturesImpl {
         //ores
         for (var entry : GTOreFeatureEntry.ALL.entrySet()) {
             ResourceLocation id = entry.getKey();
-            var datagenExt = entry.getValue().veinGenerator();
+            var datagenExt = entry.getValue().getVeinGenerator();
             if (datagenExt != null) {
                 Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, id, datagenExt.createConfiguredFeature());
             }

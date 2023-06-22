@@ -4,9 +4,13 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.IGTAddon;
+import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.FacadeCoverRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeSerializer;
+import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
+import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.common.recipe.RPMCondition;
 import com.gregtechceu.gtceu.common.recipe.RockBreakerCondition;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
@@ -14,6 +18,8 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.sound.ExistingSoundEntry;
+import com.gregtechceu.gtceu.data.recipe.RecipeHelper;
+import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.integration.kjs.GTRegistryObjectBuilderTypes;
 import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
 import com.lowdragmc.lowdraglib.gui.widget.TankWidget;
@@ -57,6 +63,7 @@ public class GTRecipeTypes {
             .setMaxIOSize(1, 0, 1, 1)
             .setProgressBar(GuiTextures.PROGRESS_BAR_BOILER_FUEL.get(true), DOWN_TO_UP)
             .onRecipeBuild((builder, provider) -> {
+                // remove the * 12 if SteamBoilerMachine:240 is uncommented
                 var duration = (builder.duration / 12 / 80); // copied for large boiler
                 if (duration > 0) {
                     GTRecipeTypes.LARGE_BOILER_RECIPES.copyFrom(builder).duration(duration).save(provider);
@@ -423,9 +430,61 @@ public class GTRecipeTypes {
             })
             .setSound(GTSoundEntries.FURNACE);
 
-    // TODO Add small distillery recipes in .onRecipeBuild()
     public final static GTRecipeType DISTILLATION_RECIPES = register("distillation_tower", MULTIBLOCK).setMaxIOSize(0, 1, 1, 12).setEUIO(IO.IN)
-            .setSound(GTSoundEntries.CHEMICAL);
+            .setSound(GTSoundEntries.CHEMICAL)
+            .onRecipeBuild((recipeBuilder, provider) -> {
+                if (recipeBuilder.output.containsKey(FluidRecipeCapability.CAP)) {
+                    long EUt = EURecipeCapability.CAP.of(recipeBuilder.tickInput.get(EURecipeCapability.CAP).get(0).getContent());
+                    FluidStack input = FluidRecipeCapability.CAP.of(recipeBuilder.input.get(FluidRecipeCapability.CAP).get(0).getContent());
+                    ItemStack[] outputs = recipeBuilder.output.containsKey(ItemRecipeCapability.CAP) ? ItemRecipeCapability.CAP.of(recipeBuilder.output.get(ItemRecipeCapability.CAP).get(0).getContent()).getItems() : null;
+                    ItemStack outputItem = outputs == null || outputs.length == 0 ? ItemStack.EMPTY : outputs[0];
+                    if (input.isEmpty()) return;
+                    List<Content> contents = recipeBuilder.output.get(FluidRecipeCapability.CAP);
+                    for (int i = 0; i < contents.size(); ++i) {
+                        FluidStack output = FluidRecipeCapability.CAP.of(contents.get(i).getContent());
+                        if (output.isEmpty()) continue;
+                        GTRecipeBuilder builder = DISTILLERY_RECIPES.recipeBuilder("distill_" + Registry.FLUID.getKey(input.getFluid()).getPath() + "_to_" + Registry.FLUID.getKey(output.getFluid()).getPath()).EUt(Math.max(1, EUt / 4)).circuitMeta(i + 1);
+
+                        int ratio = RecipeHelper.getRatioForDistillery(input, output, outputItem);
+                        int recipeDuration = (int) (recipeBuilder.duration * OverclockingLogic.STANDARD_OVERCLOCK_DURATION_DIVISOR);
+                        boolean shouldDivide = ratio != 1;
+
+                        boolean fluidsDivisible = RecipeHelper.isFluidStackDivisibleForDistillery(input, ratio) &&
+                                RecipeHelper.isFluidStackDivisibleForDistillery(output, ratio);
+
+                        FluidStack dividedInputFluid = FluidStack.create(input, Math.max(1, input.getAmount() / ratio));
+                        FluidStack dividedOutputFluid = FluidStack.create(output, Math.max(1, output.getAmount() / ratio));
+
+                        if (shouldDivide && fluidsDivisible) {
+                            builder.inputFluids(dividedInputFluid)
+                                    .outputFluids(dividedOutputFluid)
+                                    .duration(Math.max(1, recipeDuration / ratio));
+                        } else if (!shouldDivide) {
+                            if (!outputItem.isEmpty()) {
+                                builder.outputItems(outputItem);
+                            }
+                            builder.conditions.addAll(recipeBuilder.conditions);
+                            builder.inputFluids(input)
+                                    .outputFluids(output)
+                                    .duration(recipeDuration)
+                                    .save(provider);
+                            continue;
+                        }
+
+                        if (!outputItem.isEmpty()) {
+                            boolean itemsDivisible = outputItem.getCount() % ratio == 0 && fluidsDivisible;
+
+                            if (fluidsDivisible && itemsDivisible) {
+                                ItemStack stack = outputItem.copy();
+                                stack.setCount(stack.getCount() / ratio);
+
+                                builder.outputItems(stack);
+                            }
+                        }
+                        builder.save(provider);
+                    }
+                }
+            });
 
     public final static GTRecipeType PYROLYSE_RECIPES = register("pyrolyse_oven", MULTIBLOCK).setMaxIOSize(2, 1, 1, 1).setEUIO(IO.IN)
             .setSound(GTSoundEntries.FIRE);

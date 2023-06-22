@@ -8,6 +8,7 @@ import com.mojang.serialization.Codec;
 import net.minecraft.resources.ResourceLocation;
 
 public class VeinGenerators {
+    public static Codec<GTOreFeatureEntry.NoopVeinGenerator> NO_OP = register(GTCEu.id("no_op"), GTOreFeatureEntry.NoopVeinGenerator.CODEC);
     public static Codec<GTOreFeatureEntry.StandardVeinGenerator> STANDARD = register(GTCEu.id("standard"), GTOreFeatureEntry.StandardVeinGenerator.CODEC);
     public static Codec<GTOreFeatureEntry.LayeredVeinGenerator> LAYER = register(GTCEu.id("layer"), GTOreFeatureEntry.LayeredVeinGenerator.CODEC);
 

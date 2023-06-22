@@ -237,6 +237,7 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine implements
     @Override
     public GTRecipe modifyRecipe(GTRecipe recipe) {
         recipe = recipe.copy();
+        //recipe.duration *= 12; // maybe?
         recipe.duration = isHighPressure ? recipe.duration / 2 : recipe.duration;
         return super.modifyRecipe(recipe);
     }
