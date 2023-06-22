@@ -974,8 +974,8 @@ public class GTMachines {
                         .renderer(() -> new ConverterRenderer(tier))
                         .tooltips(Component.translatable("gtceu.machine.energy_converter.description"),
                                 Component.translatable("gtceu.machine.energy_converter.tooltip_tool_usage"),
-                                Component.translatable("gtceu.machine.energy_converter.tooltip_conversion_native", PlatformEnergyCompat.toNative(V[tier] * amperage, PlatformEnergyCompat.ratio(true)), amperage, V[tier], GTValues.VNF[tier]),
-                                Component.translatable("gtceu.machine.energy_converter.tooltip_conversion_eu", amperage, V[tier], GTValues.VNF[tier], PlatformEnergyCompat.toNative(V[tier] * amperage, PlatformEnergyCompat.ratio(false))))
+                                Component.translatable("gtceu.machine.energy_converter.tooltip_conversion_native", PlatformEnergyCompat.toNativeLong(V[tier] * amperage, PlatformEnergyCompat.ratio(true)), amperage, V[tier], GTValues.VNF[tier]),
+                                Component.translatable("gtceu.machine.energy_converter.tooltip_conversion_eu", amperage, V[tier], GTValues.VNF[tier], PlatformEnergyCompat.toNativeLong(V[tier] * amperage, PlatformEnergyCompat.ratio(false))))
                         .register(),
                 ALL_TIERS);
     }

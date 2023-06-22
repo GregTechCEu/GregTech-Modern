@@ -74,7 +74,7 @@ public class EUToFEProvider extends CapabilityCompatProvider {
                 }
             }
 
-            long maxPacket = PlatformEnergyCompat.toNative(voltage, PlatformEnergyCompat.ratio(false));
+            long maxPacket = PlatformEnergyCompat.toNativeLong(voltage, PlatformEnergyCompat.ratio(false));
             long maximalValue = maxPacket * amperage;
 
             // Try to consume our remainder buffer plus a fresh packet

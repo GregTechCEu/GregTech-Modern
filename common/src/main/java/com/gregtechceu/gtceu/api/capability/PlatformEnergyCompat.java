@@ -51,7 +51,7 @@ public class PlatformEnergyCompat {
      */
     public static long insertEu(IPlatformEnergyStorage storage, long amountEU){
         int euToNativeRatio = ratio(false);
-        long nativeSent = storage.insert(toNative(amountEU, euToNativeRatio), true);
+        long nativeSent = storage.insert(toNativeLong(amountEU, euToNativeRatio), true);
         return toEu(storage.insert(nativeSent - (nativeSent % euToNativeRatio), false), euToNativeRatio);
     }
 
@@ -61,7 +61,7 @@ public class PlatformEnergyCompat {
      */
     public static long extractEu(IPlatformEnergyStorage storage, long amountEU){
         int euToNativeRatio = ratio(false);
-        long extract = storage.extract(toNative(amountEU, euToNativeRatio), true);
+        long extract = storage.extract(toNativeLong(amountEU, euToNativeRatio), true);
         return toEu(storage.extract(extract - (extract % euToNativeRatio), false), euToNativeRatio);
     }
 }

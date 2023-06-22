@@ -58,11 +58,11 @@ public class ConverterMachine extends TieredEnergyMachine {
             setFeToEu(false);
             playerIn.sendSystemMessage(Component.translatable("gtceu.machine.energy_converter.message_conversion_eu",
                     converterTrait.getBaseAmps(), converterTrait.getVoltage(),
-                    PlatformEnergyCompat.toNative(converterTrait.getVoltage() * converterTrait.getBaseAmps(), PlatformEnergyCompat.ratio(false))));
+                    PlatformEnergyCompat.toNativeLong(converterTrait.getVoltage() * converterTrait.getBaseAmps(), PlatformEnergyCompat.ratio(false))));
         } else {
             setFeToEu(true);
             playerIn.sendSystemMessage(Component.translatable("gtceu.machine.energy_converter.message_conversion_native",
-                    PlatformEnergyCompat.toNative(converterTrait.getVoltage() * converterTrait.getBaseAmps(), PlatformEnergyCompat.ratio(true)),
+                    PlatformEnergyCompat.toNativeLong(converterTrait.getVoltage() * converterTrait.getBaseAmps(), PlatformEnergyCompat.ratio(true)),
                     converterTrait.getBaseAmps(), converterTrait.getVoltage()));
         }
         return InteractionResult.CONSUME;
