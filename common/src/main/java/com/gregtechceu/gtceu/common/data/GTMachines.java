@@ -490,6 +490,12 @@ public class GTMachines {
             .renderer(PumpHatchPartRenderer::new)
             .register();
 
+    public static final MachineDefinition MAINTENANCE_HATCH = REGISTRATE.machine("maintenance_hatch", (blockEntity) -> new MaintenanceHatchPartMachine(blockEntity, false))
+            .rotationState(RotationState.ALL)
+            .abilities(PartAbility.MAINTENANCE)
+            .renderer(::new)
+            .register();
+
 
     //////////////////////////////////////
     //*******     Multiblock     *******//

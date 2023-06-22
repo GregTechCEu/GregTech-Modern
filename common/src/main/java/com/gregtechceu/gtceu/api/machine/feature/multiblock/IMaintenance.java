@@ -6,5 +6,17 @@ package com.gregtechceu.gtceu.api.machine.feature.multiblock;
  * @implNote IMaintenance
  */
 public interface IMaintenance extends IMultiPart {
+    byte getMaintenanceProblems();
 
+    int getNumMaintenanceProblems();
+
+    boolean hasMaintenanceProblems();
+
+    void setMaintenanceFixed(int index);
+
+    void causeMaintenanceProblems();
+
+    void storeTaped(boolean isTaped);
+
+    boolean hasMaintenanceMechanics();
 }
