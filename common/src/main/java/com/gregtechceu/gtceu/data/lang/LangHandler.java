@@ -45,8 +45,8 @@ public class LangHandler {
 
         provider.add("gtceu.gui.editor.tips.citation", "Number of citations");
         provider.add("gtceu.gui.editor.group.recipe_type", "cap");
-        provider.add("ldlib.gui.editor.register.project.rtui", "RecipeType UI Project");
-        provider.add("ldlib.gui.editor.register.menu.recipe_type_tab", "recipe type");
+        provider.add("ldlib.gui.editor.register.editor.ui.rtui", "RecipeType UI Project");
+        provider.add("ldlib.gui.editor.register.editor.recipe_type_tab", "Recipe Types");
         provider.add("recipe.condition.rpm.tooltip", "RPM: %d");
         provider.add("recipe.condition.thunder.tooltip", "Thunder Level: %d");
         provider.add("recipe.condition.rain.tooltip", "Rain Level: %d");

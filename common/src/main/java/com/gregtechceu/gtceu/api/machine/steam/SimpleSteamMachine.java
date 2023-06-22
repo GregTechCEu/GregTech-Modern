@@ -16,6 +16,7 @@ import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
+import com.gregtechceu.gtceu.common.recipe.VentCondition;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
@@ -150,12 +151,19 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
             return null;
         }
 
-        return RecipeHelper.applyOverclock(new OverclockingLogic(false) {
+        var modified = RecipeHelper.applyOverclock(new OverclockingLogic(false) {
             @Override
             protected LongIntPair runOverclockingLogic(@NotNull GTRecipe recipe, long recipeEUt, long maxVoltage, int duration, int amountOC) {
                 return LongIntPair.of(isHighPressure ? recipeEUt * 2 : recipeEUt, isHighPressure ? duration : duration * 2);
             }
         }, recipe, GTValues.V[GTValues.LV]);
+
+        if (modified == recipe) {
+            modified = recipe.copy();
+        }
+
+        modified.conditions.add(VentCondition.INSTANCE);
+        return modified;
     }
 
     @Override

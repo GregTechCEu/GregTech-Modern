@@ -4,7 +4,10 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreFeatureEntry;
+import com.gregtechceu.gtceu.integration.kjs.GTCEuServerEvents;
+import com.gregtechceu.gtceu.integration.kjs.events.GTOreVeinEventJS;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.JsonOps;
 import net.minecraft.core.RegistryAccess;
@@ -39,20 +42,35 @@ public class OreDataLoader extends SimpleJsonResourceReloadListener {
             try {
                 GTOreFeatureEntry ore = fromJson(location, GsonHelper.convertToJsonObject(entry.getValue(), "top element"), ops);
                 if (ore == null) {
-                    LOGGER.info("Skipping loading ore {} as it's serializer returned null", location);
-                    continue;
+                    LOGGER.info("Skipping loading ore vein {} as it's serializer returned null", location);
+                } else if(ore.getVeinGenerator() instanceof GTOreFeatureEntry.NoopVeinGenerator) {
+                    LOGGER.info("Removing ore vein {} as it's generator was marked as no-operation", location);
+                    GTOreFeatureEntry.ALL.remove(location);
+                } else {
+                    GTOreFeatureEntry.ALL.put(location, ore);
                 }
-                GTOreFeatureEntry.ALL.put(location, ore);
             } catch (IllegalArgumentException | JsonParseException jsonParseException) {
-                LOGGER.error("Parsing error loading recipe {}", location, jsonParseException);
+                LOGGER.error("Parsing error loading ore vein {}", location, jsonParseException);
             }
         }
+        if (GTCEu.isKubeJSLoaded()) {
+            RunKJSEventInSeparateClassBecauseForgeIsDumb.fireKJSEvent();
+        }
         for (GTOreFeatureEntry entry : GTOreFeatureEntry.ALL.values()) {
-            entry.veinGenerator().build();
+            entry.getVeinGenerator().build();
         }
     }
 
     public static GTOreFeatureEntry fromJson(ResourceLocation id, JsonObject json, RegistryOps<JsonElement> ops) {
         return GTOreFeatureEntry.FULL_CODEC.decode(ops, json).map(Pair::getFirst).getOrThrow(false, LOGGER::error);
+    }
+
+    /**
+     * Holy shit this is dumb, thanks forge for trying to classload things that are never called!
+     */
+    public static final class RunKJSEventInSeparateClassBecauseForgeIsDumb {
+        public static void fireKJSEvent() {
+            GTCEuServerEvents.ORE_VEIN_MODIFICATION.post(new GTOreVeinEventJS());
+        }
     }
 }

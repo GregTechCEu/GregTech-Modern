@@ -22,7 +22,7 @@ import java.util.Map;
  * @date 2023/3/29
  * @implNote RecipeTypeMenu
  */
-@LDLRegister(name = "recipe_type_tab", group = "menu")
+@LDLRegister(name = "recipe_type_tab", group = "editor")
 public class RecipeTypeTab extends MenuTab {
 
     protected TreeBuilder.Menu createMenu() {
