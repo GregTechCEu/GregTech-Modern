@@ -3,8 +3,7 @@ package com.gregtechceu.gtceu.api.capability.fabric;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.*;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
-import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
-import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
+import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
@@ -52,7 +51,7 @@ public class GTCapabilityHelperImpl {
 
     @Nullable
     public static IElectricItem getElectricItem(ItemStack itemStack) {
-        return GTCapability.CAPABILITY_ELECTRIC_ITEM.find(itemStack, null);
+        return GTCapability.CAPABILITY_ELECTRIC_ITEM.find(itemStack, ContainerItemContext.withConstant(itemStack));
     }
 
     @Nullable

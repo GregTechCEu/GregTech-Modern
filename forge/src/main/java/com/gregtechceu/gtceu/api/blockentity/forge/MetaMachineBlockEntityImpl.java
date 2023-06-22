@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.IWorkable;
-import com.gregtechceu.gtceu.api.capability.forge.GTCapabilityHelperImpl;
+import com.gregtechceu.gtceu.api.capability.forge.GTEnergyHelperImpl;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
@@ -95,19 +95,21 @@ public class MetaMachineBlockEntityImpl extends MetaMachineBlockEntity {
                     return GTCapability.CAPABILITY_CONVERTER.orEmpty(cap, LazyOptional.of(() -> converter));
                 }
             }
-        } else if (cap == ForgeCapabilities.ITEM_HANDLER) {var transfer = machine.getItemTransferCap(side);if (transfer != null) {
-            return ForgeCapabilities.ITEM_HANDLER.orEmpty(cap, LazyOptional.of(() -> ItemTransferHelperImpl.toItemHandler(transfer)));
-        }
+        } else if (cap == ForgeCapabilities.ITEM_HANDLER) {
+            var transfer = machine.getItemTransferCap(side);
+            if (transfer != null) {
+                return ForgeCapabilities.ITEM_HANDLER.orEmpty(cap, LazyOptional.of(() -> ItemTransferHelperImpl.toItemHandler(transfer)));
+            }
         } else if (cap == ForgeCapabilities.FLUID_HANDLER) {
             var transfer = machine.getFluidTransferCap(side);
             if (transfer != null) {
                 return ForgeCapabilities.FLUID_HANDLER.orEmpty(cap, LazyOptional.of(() -> FluidTransferHelperImpl.toFluidHandler(transfer)));
             }
-        }else if (cap == ForgeCapabilities.ENERGY) {
+        } else if (cap == ForgeCapabilities.ENERGY) {
             for (MachineTrait trait : machine.getTraits()) {
                 if (trait instanceof ConverterTrait converterTrait) {
                     if (side != (converterTrait.isFeToEu() ? machine.getFrontFacing() : null)) continue;
-                    return ForgeCapabilities.ENERGY.orEmpty(cap, LazyOptional.of(() -> GTCapabilityHelperImpl.toEnergyStorage(converterTrait.getEnergyNativeContainer())));
+                    return ForgeCapabilities.ENERGY.orEmpty(cap, LazyOptional.of(() -> GTEnergyHelperImpl.toEnergyStorage(converterTrait.getEnergyNativeContainer())));
                 }
             }
         }

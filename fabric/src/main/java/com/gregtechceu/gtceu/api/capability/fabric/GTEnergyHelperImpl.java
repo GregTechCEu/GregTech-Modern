@@ -20,10 +20,8 @@ public class GTEnergyHelperImpl {
                 long inserted = 0;
                 try (Transaction transaction = Transaction.openNested(Transaction.getCurrentUnsafe())) {
                     inserted = handler.insert(maxAmount, transaction);
-                    if (simulate && inserted > 0) {
-                        handler.extract(inserted, transaction);
-                    }
-                    transaction.commit();
+                    if (simulate) transaction.abort();
+                    else transaction.commit();
                 }
                 return inserted;
             }
@@ -39,10 +37,8 @@ public class GTEnergyHelperImpl {
                 long extracted = 0;
                 try (Transaction transaction = Transaction.openNested(Transaction.getCurrentUnsafe())) {
                     extracted = handler.extract(maxAmount, transaction);
-                    if (simulate && extracted > 0) {
-                        handler.insert(extracted, transaction);
-                    }
-                    transaction.commit();
+                    if (simulate) transaction.abort();
+                    else transaction.commit();
                 }
                 return extracted;
             }
