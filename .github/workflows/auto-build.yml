@@ -44,4 +44,3 @@ jobs:
           files: |
             fabric/build/libs/!(*-@(dev|sources|javadoc|dev-shadow)).jar
             forge/build/libs/!(*-@(dev|sources|javadoc|dev-shadow)).jar
-          version: v${{ steps.var.version }}-alpha
