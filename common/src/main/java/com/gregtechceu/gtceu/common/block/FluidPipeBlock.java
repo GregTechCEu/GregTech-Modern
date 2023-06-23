@@ -76,20 +76,6 @@ public class FluidPipeBlock extends MaterialPipeBlock<FluidPipeType, FluidPipeDa
     }
 
     @Override
-    public VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext context) {
-        var pipeNode = getPileTile(pLevel, pPos);
-        if (context instanceof EntityCollisionContext entityCtx && entityCtx.getEntity() instanceof Player player && pipeNode != null){
-            var coverable = pipeNode.getCoverContainer();
-            var held = player.getMainHandItem();
-            if (held.is(GTToolType.WIRE_CUTTER.itemTag) || held.is(GTToolType.WRENCH.itemTag) ||
-                    CoverPlaceBehavior.isCoverBehaviorItem(held, coverable::hasAnyCover, coverDef -> ICoverable.canPlaceCover(coverDef, coverable))) {
-                return Shapes.block();
-            }
-        }
-        return super.getShape(pState, pLevel, pPos, context);
-    }
-
-    @Override
     public VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         return getShape(state, level, pos, context);
     }

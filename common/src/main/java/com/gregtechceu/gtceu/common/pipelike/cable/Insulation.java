@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.WireProperties;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import lombok.Getter;
+import net.minecraft.resources.ResourceLocation;
 
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
 
@@ -22,6 +23,8 @@ public enum Insulation implements IMaterialPipeType<CableData> {
     CABLE_QUADRUPLE("quadruple_cable", 0.5f, 4, 1, cableGtQuadruple, 2, true),
     CABLE_OCTAL("octal_cable", 0.75f, 8, 1, cableGtOctal, 3, true),
     CABLE_HEX("hex_cable", 1.0f, 16, 1, cableGtHex, 4, true);
+
+    public static final ResourceLocation TYPE_ID = GTCEu.id("insulation");
 
     public final String name;
     public final float thickness;
@@ -64,6 +67,11 @@ public enum Insulation implements IMaterialPipeType<CableData> {
     @Override
     public boolean isPaintable() {
         return true;
+    }
+
+    @Override
+    public ResourceLocation type() {
+        return TYPE_ID;
     }
 
     public PipeModel createPipeModel(Material material) {

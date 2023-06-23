@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - 'master'
-    paths:
-      - 'gradle.properties'
 
 jobs:
   build:
