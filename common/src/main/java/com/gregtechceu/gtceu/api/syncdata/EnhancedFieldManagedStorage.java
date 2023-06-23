@@ -13,11 +13,20 @@ import java.lang.reflect.Method;
  * @implNote EnhancedFieldManagedStorage
  */
 public class EnhancedFieldManagedStorage extends FieldManagedStorage {
-    final IEnhancedManaged enhancedManaged;
+    private final IEnhancedManaged enhancedManaged;
+    private boolean initialized = false;
 
     public EnhancedFieldManagedStorage(IEnhancedManaged enhancedManaged) {
         super(enhancedManaged);
         this.enhancedManaged = enhancedManaged;
+    }
+
+    @Override
+    public void init() {
+        super.init();
+        if (initialized) return;
+        initialized = true;
+        initEnhancedFeature();
     }
 
     public void initEnhancedFeature() {

@@ -48,9 +48,6 @@ public class MachineCoverContainer implements ICoverable, IEnhancedManaged {
 
     public MachineCoverContainer(MetaMachine machine) {
         this.machine = machine;
-        if (isRemote()) {
-            syncStorage.initEnhancedFeature();
-        }
     }
 
     @SuppressWarnings("unused")

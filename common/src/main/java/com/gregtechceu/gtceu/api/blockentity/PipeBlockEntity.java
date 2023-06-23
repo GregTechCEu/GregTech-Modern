@@ -79,9 +79,6 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
         this.coverContainer = new PipeCoverContainer(this);      
         this.serverTicks = new ArrayList<>();
         this.waitingToAdd = new ArrayList<>();
-        if (isRemote()) {
-            syncStorage.initEnhancedFeature();
-        }
     }
 
     //////////////////////////////////////

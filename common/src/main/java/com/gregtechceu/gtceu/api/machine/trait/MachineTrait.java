@@ -30,9 +30,6 @@ public abstract class MachineTrait implements IEnhancedManaged {
         this.machine = machine;
         this.capabilityValidator = side -> true;
         machine.attachTraits(this);
-        if (machine.isRemote()) {
-            syncStorage.initEnhancedFeature();
-        }
     }
 
     public final boolean hasCapability(@Nullable Direction side) {

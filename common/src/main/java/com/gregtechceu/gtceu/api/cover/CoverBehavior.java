@@ -52,9 +52,6 @@ public abstract class CoverBehavior implements IEnhancedManaged, IToolGridHighLi
         this.coverDefinition = definition;
         this.coverHolder = coverHolder;
         this.attachedSide = attachedSide;
-        if (coverHolder.isRemote()) {
-            syncStorage.initEnhancedFeature();
-        }
     }
 
     //////////////////////////////////////

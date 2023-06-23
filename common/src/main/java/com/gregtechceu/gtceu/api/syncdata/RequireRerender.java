@@ -8,7 +8,9 @@ import java.lang.annotation.Target;
 /**
  * @author KilaBash
  * @date 2023/6/23
- * @implNote RequireRerender. annotated field needs re-rendering while updated.
+ * @implNote RequireRerender.
+ * <br>
+ * When the annotated fields updated (synced from server) will schedule chunk rendering update.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD})

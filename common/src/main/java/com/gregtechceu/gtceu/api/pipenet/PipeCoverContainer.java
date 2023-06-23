@@ -47,9 +47,6 @@ public class PipeCoverContainer implements ICoverable, IEnhancedManaged {
 
     public PipeCoverContainer(IPipeNode<?, ?> pipeTile) {
         this.pipeTile = pipeTile;
-        if (isRemote()) {
-            syncStorage.initEnhancedFeature();
-        }
     }
 
     @SuppressWarnings("unused")
