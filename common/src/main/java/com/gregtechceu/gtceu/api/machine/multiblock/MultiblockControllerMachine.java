@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.pattern.MultiblockWorldSavedData;
+import com.gregtechceu.gtceu.api.syncdata.RequireRerender;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
@@ -40,13 +41,11 @@ public class MultiblockControllerMachine extends MetaMachine implements IMultiCo
     @Getter
     @Persisted
     @DescSynced
+    @RequireRerender
     protected boolean isFormed;
 
     public MultiblockControllerMachine(IMachineBlockEntity holder) {
         super(holder);
-        if (isRemote()) {
-            addSyncUpdateListener("isFormed", this::scheduleRender);
-        }
     }
 
     //////////////////////////////////////

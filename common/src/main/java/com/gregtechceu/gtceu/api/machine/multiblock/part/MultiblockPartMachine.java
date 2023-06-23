@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.trait.IRecipeHandlerTrait;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
+import com.gregtechceu.gtceu.api.syncdata.RequireRerender;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -29,14 +30,12 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(MultiblockPartMachine.class, MetaMachine.MANAGED_FIELD_HOLDER);
 
     @DescSynced
+    @RequireRerender
     protected final Set<BlockPos> controllerPositions;
 
     public MultiblockPartMachine(IMachineBlockEntity holder) {
         super(holder);
         this.controllerPositions = new HashSet<>();
-        if (isRemote()) {
-            addSyncUpdateListener("controllerPositions", this::scheduleRender);
-        }
     }
 
     //////////////////////////////////////

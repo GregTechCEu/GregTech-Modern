@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.api.machine.TieredEnergyMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputFluid;
 import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
+import com.gregtechceu.gtceu.api.syncdata.RequireRerender;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.gui.widget.*;
@@ -51,7 +52,7 @@ public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid
     private boolean initializedQueue = false;
     @DescSynced @Persisted @Getter
     private int pumpHeadY; //TODO RENDER PIPE IN THE FUTURE
-    @Getter @Setter @Persisted @DescSynced
+    @Getter @Setter @Persisted @DescSynced @RequireRerender
     protected boolean autoOutputFluids;
     @Persisted @DropSaved
     protected final NotifiableFluidTank cache;
@@ -59,9 +60,6 @@ public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid
     public PumpMachine(IMachineBlockEntity holder, int tier, Object... args) {
         super(holder, tier);
         this.cache = createCacheFluidHandler(args);
-        if (isRemote()) {
-            addSyncUpdateListener("autoOutputFluids", this::scheduleRender);
-        }
     }
 
     //////////////////////////////////////

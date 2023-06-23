@@ -5,14 +5,16 @@ import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.lowdragmc.lowdraglib.syncdata.IManaged;
+import com.gregtechceu.gtceu.api.syncdata.EnhancedFieldManagedStorage;
+import com.gregtechceu.gtceu.api.syncdata.IEnhancedManaged;
+import com.gregtechceu.gtceu.api.syncdata.UpdateListener;
 import com.lowdragmc.lowdraglib.syncdata.IManagedStorage;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.annotation.ReadOnlyManaged;
-import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.syncdata.managed.IRef;
+import lombok.Getter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -32,29 +34,24 @@ import java.util.List;
  * @date 2023/2/18
  * @implNote MachineCoverContainer
  */
-public class MachineCoverContainer implements ICoverable, IManaged {
+public class MachineCoverContainer implements ICoverable, IEnhancedManaged {
 
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(MachineCoverContainer.class);
-    private final FieldManagedStorage storage = new FieldManagedStorage(this);
+    @Getter
+    private final EnhancedFieldManagedStorage syncStorage = new EnhancedFieldManagedStorage(this);
     private final MetaMachine machine;
     @DescSynced
     @Persisted
+    @UpdateListener(methodName = "onCoverSet")
     @ReadOnlyManaged(onDirtyMethod = "onCoverDirty", serializeMethod = "serializeCoverUid", deserializeMethod = "deserializeCoverUid")
     private CoverBehavior up, down, north, south, west, east;
 
     public MachineCoverContainer(MetaMachine machine) {
         this.machine = machine;
-        if (isRemote()) {
-            addSyncUpdateListener("up", this::onCoverSet);
-            addSyncUpdateListener("down", this::onCoverSet);
-            addSyncUpdateListener("north", this::onCoverSet);
-            addSyncUpdateListener("south", this::onCoverSet);
-            addSyncUpdateListener("west", this::onCoverSet);
-            addSyncUpdateListener("east", this::onCoverSet);
-        }
     }
 
-    private void onCoverSet(String var1, Object newValue, Object oldValue) {
+    @SuppressWarnings("unused")
+    private void onCoverSet(CoverBehavior newValue, CoverBehavior oldValue) {
         if (newValue != oldValue && (newValue == null || oldValue == null)) {
             scheduleRenderUpdate();
         }
@@ -63,11 +60,6 @@ public class MachineCoverContainer implements ICoverable, IManaged {
     @Override
     public ManagedFieldHolder getFieldHolder() {
         return MANAGED_FIELD_HOLDER;
-    }
-
-    @Override
-    public IManagedStorage getSyncStorage() {
-        return storage;
     }
 
     @Override

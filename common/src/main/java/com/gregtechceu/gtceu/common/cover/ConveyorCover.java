@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.UITemplate;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
+import com.gregtechceu.gtceu.api.syncdata.RequireRerender;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceBorderTexture;
@@ -51,7 +52,7 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
     public final int maxItemTransferRate;
     @Persisted @Getter
     protected int transferRate;
-    @Persisted @DescSynced @Getter
+    @Persisted @DescSynced @Getter @RequireRerender
     protected IO io;
     @Persisted @Getter
     protected boolean isWorkingEnabled = true;
@@ -70,9 +71,6 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
         this.itemsLeftToTransferLastSecond = transferRate;
         this.filterItem = ItemStack.EMPTY;
         this.io = IO.OUT;
-        if (coverHolder.isRemote()) {
-            addSyncUpdateListener("io", (s, o, t1) -> coverHolder.scheduleRenderUpdate());
-        }
     }
 
     //////////////////////////////////////
