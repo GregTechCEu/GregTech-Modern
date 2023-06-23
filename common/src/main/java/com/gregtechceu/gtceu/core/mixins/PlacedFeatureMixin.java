@@ -21,7 +21,6 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.List;
-import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 @Mixin(PlacedFeature.class)
@@ -37,7 +36,7 @@ public abstract class PlacedFeatureMixin {
         if (feature.value().config() instanceof GTOreFeatureConfiguration configuration) {
             GTOreFeatureEntry entry = configuration.getEntry(context.getLevel(), context.getLevel().getBiome(pos), source);
             if (entry != null) {
-                placement = entry.modifiers;
+                placement = entry.getModifiers();
                 configuration.setEntry(entry);
             }
         }

@@ -9,10 +9,10 @@ import com.jozufozu.flywheel.api.MaterialManager;
 import com.jozufozu.flywheel.backend.instancing.blockentity.BlockEntityInstance;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.syncdata.managed.MultiManagedStorage;
-import com.simibubi.create.content.contraptions.KineticNetwork;
-import com.simibubi.create.content.contraptions.base.IRotate;
-import com.simibubi.create.content.contraptions.base.KineticEffectHandler;
-import com.simibubi.create.content.contraptions.base.KineticTileEntity;
+import com.simibubi.create.content.kinetics.KineticNetwork;
+import com.simibubi.create.content.kinetics.base.IRotate;
+import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
+import com.simibubi.create.content.kinetics.base.KineticEffectHandler;
 import com.simibubi.create.foundation.utility.Lang;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
 import dev.architectury.injectables.annotations.ExpectPlatform;
@@ -36,7 +36,7 @@ import java.util.function.BiFunction;
  * @date 2023/3/31
  * @implNote CreateKineticSourceBlockEntity
  */
-public class KineticMachineBlockEntity extends KineticTileEntity implements IMachineBlockEntity {
+public class KineticMachineBlockEntity extends KineticBlockEntity implements IMachineBlockEntity {
     public final MultiManagedStorage managedStorage = new MultiManagedStorage();
     @Getter
     public final MetaMachine metaMachine;
@@ -163,7 +163,7 @@ public class KineticMachineBlockEntity extends KineticTileEntity implements IMac
         super.setSource(source);
         if (!getDefinition().isSource()) return;
         BlockEntity tileEntity = this.level.getBlockEntity(source);
-        if (tileEntity instanceof KineticTileEntity sourceTe) {
+        if (tileEntity instanceof KineticBlockEntity sourceTe) {
             if (this.reActivateSource && Math.abs(sourceTe.getSpeed()) >= Math.abs(this.getGeneratedSpeed())) {
                 this.reActivateSource = false;
             }

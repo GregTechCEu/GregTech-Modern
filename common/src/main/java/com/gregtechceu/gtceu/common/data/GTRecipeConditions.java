@@ -18,8 +18,9 @@ public final class GTRecipeConditions {
         GTRegistries.RECIPE_CONDITIONS.register(DimensionCondition.INSTANCE.getType(), DimensionCondition.class);
         GTRegistries.RECIPE_CONDITIONS.register(PositionYCondition.INSTANCE.getType(), PositionYCondition.class);
         GTRegistries.RECIPE_CONDITIONS.register(RainingCondition.INSTANCE.getType(), RainingCondition.class);
-        GTRegistries.RECIPE_CONDITIONS.register(ThunderCondition.INSTANCE.getType(), ThunderCondition.class);
         GTRegistries.RECIPE_CONDITIONS.register(RockBreakerCondition.INSTANCE.getType(), RockBreakerCondition.class);
+        GTRegistries.RECIPE_CONDITIONS.register(ThunderCondition.INSTANCE.getType(), ThunderCondition.class);
+        GTRegistries.RECIPE_CONDITIONS.register(VentCondition.INSTANCE.getType(), VentCondition.class);
         if (GTCEu.isCreateLoaded()) {
             GTRegistries.RECIPE_CONDITIONS.register(RPMCondition.INSTANCE.getType(), RPMCondition.class);
         }

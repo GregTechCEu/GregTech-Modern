@@ -125,6 +125,12 @@ public class ConfigHolder {
         @Configurable
         @Configurable.Comment({"Whether Steam Multiblocks should use Steel instead of Bronze.", "Default: false"})
         public boolean steelSteamMultiblocks;
+        @Configurable
+        @Configurable.Comment({"Whether to enable the cleanroom, required for various recipes.", "Default: true"})
+        public boolean enableCleanroom = true;
+        @Configurable
+        @Configurable.Comment({"Whether multiblocks should ignore all cleanroom requirements.", "This does nothing if enableCleanroom is false.", "Default: false"})
+        public boolean cleanMultiblocks = false;
     }
 
     public static class ClientConfigs {

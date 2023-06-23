@@ -13,6 +13,10 @@ import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.data.worldgen.BiomeWeightModifier;
+import com.gregtechceu.gtceu.api.data.worldgen.GTOreFeatureEntry;
+import com.gregtechceu.gtceu.api.data.worldgen.IWorldGenLayer;
+import com.gregtechceu.gtceu.api.data.worldgen.WorldGenLayers;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
@@ -28,6 +32,7 @@ import com.gregtechceu.gtceu.integration.kjs.builders.machine.*;
 import com.gregtechceu.gtceu.integration.kjs.builders.prefix.BasicTagPrefixBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.prefix.OreTagPrefixBuilder;
 import com.gregtechceu.gtceu.integration.kjs.recipe.GTRecipeBuilderJS;
+import com.mojang.serialization.DataResult;
 import dev.latvian.mods.kubejs.KubeJSPlugin;
 import dev.latvian.mods.kubejs.RegistryObjectBuilderTypes;
 import dev.latvian.mods.kubejs.recipe.RegisterRecipeTypesEvent;
@@ -35,10 +40,14 @@ import dev.latvian.mods.kubejs.script.BindingsEvent;
 import dev.latvian.mods.kubejs.script.ScriptType;
 import dev.latvian.mods.kubejs.util.ClassFilter;
 import dev.latvian.mods.rhino.Wrapper;
+import dev.latvian.mods.rhino.mod.util.NBTUtils;
 import dev.latvian.mods.rhino.util.wrap.TypeWrappers;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.levelgen.structure.templatesystem.*;
+import net.minecraft.world.level.levelgen.placement.HeightRangePlacement;
 import net.minecraft.world.level.material.MaterialColor;
+
+import java.util.Optional;
 
 /**
  * @author KilaBash
@@ -77,6 +86,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
     public void registerEvents() {
         super.registerEvents();
         GTCEuStartupEvents.GROUP.register();
+        GTCEuServerEvents.GROUP.register();
     }
 
     @Override
@@ -127,14 +137,6 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         event.add("GuiTextures", GuiTextures.class);
         event.add("GTCEu", GTCEu.class);
 
-        // Worldgen rule tests, for KJSWorldGenLayer
-        event.add("AlwaysTrueTest", AlwaysTrueTest.class);
-        event.add("BlockMatchTest", BlockMatchTest.class);
-        event.add("BlockStateMatchTest", BlockStateMatchTest.class);
-        event.add("TagMatchTest", TagMatchTest.class);
-        event.add("RandomBlockMatchTest", RandomBlockMatchTest.class);
-        event.add("RandomBlockStateMatchTest", RandomBlockStateMatchTest.class);
-
         // MaterialColor stuff, for TagPrefix
         event.add("Material", net.minecraft.world.level.material.Material.class);
         event.add("MaterialColor", MaterialColor.class);
@@ -154,6 +156,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
             if (o instanceof CharSequence chars) return GTRecipeTypes.get(chars.toString());
             return null;
         });
+
         typeWrappers.register(Element.class, (ctx, o) -> {
             if (o instanceof Element element) return element;
             if (o instanceof CharSequence chars) return GTElements.get(chars.toString());
@@ -169,6 +172,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
             if (o instanceof CharSequence chars) return GTMachines.get(chars.toString());
             return null;
         });
+
         typeWrappers.register(TagPrefix.class, (ctx, o) -> {
             if (o instanceof TagPrefix tagPrefix) return tagPrefix;
             if (o instanceof CharSequence chars) return TagPrefix.getPrefix(chars.toString());
@@ -192,6 +196,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
             if (o instanceof CharSequence chars) return GTRegistries.RECIPE_CAPABILITIES.get(chars.toString());
             return null;
         });
+
         typeWrappers.register(MaterialIconSet.class, (ctx, o) -> {
             if (o instanceof MaterialIconSet iconSet) return iconSet;
             if (o instanceof CharSequence chars) return MaterialIconSet.getByName(chars.toString());
@@ -204,6 +209,29 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
             return null;
         });
 
+        typeWrappers.register(IWorldGenLayer.class, (ctx, o) -> {
+            if (o instanceof IWorldGenLayer layer) return layer;
+            if (o instanceof CharSequence chars) return WorldGenLayers.getByName(chars.toString());
+            return null;
+        });
+        typeWrappers.register(HeightRangePlacement.class, (ctx, o) -> {
+            return Optional.ofNullable(NBTUtils.toTagCompound(o))
+                    .map(tag -> HeightRangePlacement.CODEC.parse(NbtOps.INSTANCE, tag))
+                    .flatMap(DataResult::result)
+                    .orElse(null);
+        });
+        typeWrappers.register(BiomeWeightModifier.class, (ctx, o) -> {
+            return Optional.ofNullable(NBTUtils.toTagCompound(o))
+                    .map(tag -> BiomeWeightModifier.CODEC.parse(NbtOps.INSTANCE, tag))
+                    .flatMap(DataResult::result)
+                    .orElse(null);
+        });
+        typeWrappers.register(GTOreFeatureEntry.VeinGenerator.class, (ctx, o) -> {
+            return Optional.ofNullable(NBTUtils.toTagCompound(o))
+                    .map(tag -> GTOreFeatureEntry.VeinGenerator.DIRECT_CODEC.parse(NbtOps.INSTANCE, tag))
+                    .flatMap(DataResult::result)
+                    .orElse(null);
+        });
     }
 
 }

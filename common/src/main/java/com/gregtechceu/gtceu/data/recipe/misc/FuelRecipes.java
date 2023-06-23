@@ -8,6 +8,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.entity.FurnaceBlockEntity;
 import net.minecraft.world.level.material.Fluids;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.function.Consumer;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
@@ -20,15 +22,17 @@ public class FuelRecipes {
 
         // TODO this all needs to be cleaned up, but this will make it somewhat work for now
         // do these first because for some reason vanilla fuels are not set up yet at this phase?
+        Set<Item> addedItems = new HashSet<>();
         for (var fuelEntry : FurnaceBlockEntity.getFuel().entrySet()) {
+            addedItems.add(fuelEntry.getKey());
             STEAM_BOILER_RECIPES.recipeBuilder(fuelEntry.getKey().getDescriptionId())
                     .inputItems(fuelEntry.getKey())
-                    .duration(fuelEntry.getValue() * 12)
+                    .duration(fuelEntry.getValue() * 12) // remove the * 12 if SteamBoilerMachine:240 is uncommented
                     .save(provider);
         }
         for (Item item : Registry.ITEM) {
             var burnTime = GTUtil.getItemBurnTime(item);
-            if (burnTime > 0) {
+            if (burnTime > 0 && !addedItems.contains(item)) {
                 STEAM_BOILER_RECIPES.recipeBuilder(item.getDescriptionId())
                         .inputItems(item)
                         .duration(burnTime * 12)

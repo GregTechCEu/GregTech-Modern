@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.gui;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
@@ -9,6 +10,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
@@ -19,6 +21,10 @@ import net.minecraft.world.level.Level;
  */
 public class MachineUIFactory extends UIFactory<MetaMachine> {
     public static final MachineUIFactory INSTANCE  = new MachineUIFactory();
+
+    public MachineUIFactory() {
+        super(GTCEu.id("machine"));
+    }
 
     @Override
     protected ModularUI createUITemplate(MetaMachine holder, Player entityPlayer) {

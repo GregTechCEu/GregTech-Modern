@@ -53,7 +53,7 @@ public class GTOreFeature extends Feature<GTOreFeatureConfiguration> {
 
         ResourceLocation id = GTOreFeatureEntry.ALL.inverse().get(entry);
         if (ConfigHolder.INSTANCE.worldgen.debugWorldgen) GTCEu.LOGGER.debug("trying to place vein " + id + " at " + origin);
-        if (entry.veinGenerator() != null && entry.veinGenerator().generate(level, random, entry, origin)) {
+        if (entry.getVeinGenerator() != null && entry.getVeinGenerator().generate(level, random, entry, origin)) {
             logPlaced(id, true);
             return true;
         }
