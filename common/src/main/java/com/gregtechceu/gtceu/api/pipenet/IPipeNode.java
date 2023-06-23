@@ -74,7 +74,7 @@ public interface IPipeNode<PipeType extends Enum<PipeType> & IPipeType<NodeDataT
             var dataDirty = false;
             if (data == null) {
                 LDLib.LOGGER.warn("data shouldn't be null here, did you add pipe without placement?");
-                net.getWorldData().addNode(pos, getPipeType().modifyProperties(getPipeBlock().getFallbackType()), Node.DEFAULT_MARK, 0b000000, true);
+                net.getWorldData().addNode(pos, getPipeType().modifyProperties(getPipeBlock().getFallbackType()), Node.DEFAULT_MARK, Node.ALL_CLOSED, true);
                 data = getNodeData();
                 if (data == null) {
                     throw new IllegalStateException("data shouldn't be null here!");

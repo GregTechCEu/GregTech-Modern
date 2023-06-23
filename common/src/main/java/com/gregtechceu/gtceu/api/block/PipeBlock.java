@@ -106,7 +106,7 @@ public abstract class PipeBlock <PipeType extends Enum<PipeType> & IPipeType<Nod
         if (pipeNode != null && pLevel instanceof ServerLevel serverLevel) {
             var net = getWorldPipeNet(serverLevel);
             if (net.getNetFromPos(pPos) == null) {
-                net.addNode(pPos, pipeType.modifyProperties(createRawData(pState, pStack)), Node.DEFAULT_MARK, 0b000000, true);
+                net.addNode(pPos, pipeType.modifyProperties(createRawData(pState, pStack)), Node.DEFAULT_MARK, Node.ALL_CLOSED, true);
             } else {
                 net.updateData(pPos, pipeType.modifyProperties(createRawData(pState, pStack)));
             }
@@ -152,7 +152,7 @@ public abstract class PipeBlock <PipeType extends Enum<PipeType> & IPipeType<Nod
         if (!oldState.is(state.getBlock()) && level instanceof ServerLevel serverLevel) {
             var net = getWorldPipeNet(serverLevel);
             if (net.getNetFromPos(pos) == null) {
-                net.addNode(pos, pipeType.modifyProperties(createRawData(state, null)), Node.DEFAULT_MARK, 0b000000, true);
+                net.addNode(pos, pipeType.modifyProperties(createRawData(state, null)), Node.DEFAULT_MARK, Node.ALL_CLOSED, true);
             }
         }
     }
