@@ -31,68 +31,17 @@ jobs:
         with:
           arguments: build
 
-      - name: mc-publish-fabric
+      - name: Get Version
+        id: var
+        run: |
+          MESSAGE=$(ls forge/build/libs/* | grep sources.jar -v | grep shadow.jar -v | awk -F 'gtceu-forge-1.19.2-|-build_|.jar' '{print $2}')
+          echo version=$MESSAGE >> $GITHUB_OUTPUT
+
+      - name: release
         uses: Kir-Antipov/mc-publish@v3.3
         with:
-          # Only include this section if you wish to publish
-          # your assets on Modrinth.
-          modrinth-id: B1CBVXHX
-          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
-
-          # Only include this section if you wish to publish
-          # your assets on CurseForge.
-          curseforge-id: 626676
-          curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
-
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           files: |
             fabric/build/libs/!(*-@(dev|sources|javadoc|dev-shadow)).jar
-            fabric/build/libs/*-@(dev|sources|javadoc|dev-shadow).jar
-
-          name: LDLib ${{ steps.var.outputs.fabric_version }}-fabric
-          version: mc${{ steps.var.outputs.fabric_version }}-fabric
-          version-type: release
-          changelog-file: CHANGELOG.*
-
-          loaders: |
-            fabric
-          game-versions: |
-            ${{ github.ref_name }}
-          game-version-filter: none
-          java: |
-            17
-          retry-attempts: 2
-          retry-delay: 10000
-          fail-mode: fail
-
-      - name: mc-publish-forge
-        uses: Kir-Antipov/mc-publish@v3.3
-        with:
-          # Only include this section if you wish to publish
-          # your assets on Modrinth.
-          modrinth-id: B1CBVXHX
-          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
-
-          # Only include this section if you wish to publish
-          # your assets on CurseForge.
-          curseforge-id: 626676
-          curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
-
-          files: |
             forge/build/libs/!(*-@(dev|sources|javadoc|dev-shadow)).jar
-            forge/build/libs/*-@(dev|sources|javadoc|dev-shadow).jar
-
-          name: LDLib ${{ steps.var.outputs.forge_version }}-forge
-          version: mc${{ steps.var.outputs.forge_version }}-forge
-          version-type: release
-          changelog-file: CHANGELOG.*
-
-          loaders: |
-            forge
-          game-versions: |
-            ${{ github.ref_name }}
-          game-version-filter: none
-          java: |
-            17
-          retry-attempts: 2
-          retry-delay: 10000
-          fail-mode: fail
+          version: v${{ steps.var.version }}-alpha
