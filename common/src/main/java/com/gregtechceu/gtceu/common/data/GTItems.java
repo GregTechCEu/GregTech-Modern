@@ -562,7 +562,7 @@ public class GTItems {
             .onRegister(attach(ElectricStats.createRechargeableBattery(20_000_000_000L, GTValues.UV)))
             .tag(CustomTags.UV_BATTERIES).register();
 
-    public static ItemEntry<ComponentItem> ZERO_POINT_MODULE = REGISTRATE.item("zpm", ComponentItem::create)
+    public static ItemEntry<ComponentItem> ZERO_POINT_MODULE = REGISTRATE.item("zero_point_module", ComponentItem::create)
             .lang("Zero Point Module")
             .properties(p -> p.stacksTo(1))
             .model(overrideModel(GTCEu.id("battery"), 8))
