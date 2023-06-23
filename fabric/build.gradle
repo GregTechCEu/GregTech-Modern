@@ -60,8 +60,6 @@ configurations {
 
 repositories {
     // mavens for Fabric-exclusives
-    maven { url = "https://api.modrinth.com/maven" } // LazyDFU, Jade
-    maven { url = "https://maven.terraformersmc.com/releases/" } // Mod Menu
     maven { url = "https://mvn.devos.one/snapshots/" } // Create Fabric, Porting Lib, Forge Tags, Milk Lib, Registrate Fabric
     //maven { url = "https://maven.cafeteria.dev/releases" } // Fake Player API
     maven { url = "https://maven.jamieswhiteshirt.com/libs-release" } // Reach Entity Attributes
@@ -100,7 +98,7 @@ dependencies {
     // JEI
     modCompileOnlyApi(fabric.jei.common.api) { transitive = false }
     modCompileOnlyApi(fabric.jei.fabric.api) { transitive = false }
-    modImplementation(fabric.jei.fabric.impl) { transitive = false }
+    modCompileOnly(fabric.jei.fabric.impl) { transitive = false }
 
     // REI
     modCompileOnly(fabric.rei.plugin) { transitive = false }
@@ -108,8 +106,8 @@ dependencies {
     modCompileOnly(fabric.rei.fabric) { transitive = false }
 
     // EMI
-    modCompileOnly("dev.emi:emi:${fabric.versions.emi.get()}:api")
-    modCompileOnly fabric.emi
+    modCompileOnly("dev.emi:emi-fabric:${fabric.versions.emi.get()}:api")
+    modImplementation fabric.emi
 
     // TOP
     modCompileOnly fabric.theoneprobe

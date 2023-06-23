@@ -10,7 +10,7 @@ pluginManagement {
 
 dependencyResolutionManagement {
     repositories {
-         mavenCentral()
+        mavenCentral()
     }
     versionCatalogs {
         // Minecraft Version
@@ -18,9 +18,9 @@ dependencyResolutionManagement {
 
         // Mod Dependencies Versions
         // Common
-        def jeiVersion = "11.5.0.297"
-        def reiVersion = "9.1.580"
-        def emiVersion = "0.7.3+1.19.2"
+        def jeiVersion = "11.5.2.1007"
+        def reiVersion = "9.1.619"
+        def emiVersion = "1.0.5+1.19.2"
 
         // Fabric
         def fabricLoaderVersion = "0.14.11" // https://fabricmc.net/develop/
@@ -55,7 +55,7 @@ dependencyResolutionManagement {
         def architecturyLoomVersion = "1.0-SNAPSHOT"
         def quiltFlowerVersion = "1.+"
         def macheteVersion = "1.+"
-        def ldLibVersion = "1.0.9.c"
+        def ldLibVersion = "1.0.10"
 
         fabric {
             def parchment = version("parchment", parchmentVersion)
@@ -95,7 +95,7 @@ dependencyResolutionManagement {
             library("rei-fabric", "me.shedaniel", "RoughlyEnoughItems-fabric").versionRef(rei)
 
             def emi = version("emi", emiVersion)
-            library("emi", "dev.emi", "emi").versionRef(emi)
+            library("emi", "dev.emi", "emi-fabric").versionRef(emi)
 
             def theoneprobe = version("theoneprobe", topFabricVersion)
             library("theoneprobe", "mcjty.theoneprobe", "theoneprobe-fabric").versionRef(theoneprobe)
@@ -146,6 +146,9 @@ dependencyResolutionManagement {
             library("rei-plugin", "me.shedaniel", "RoughlyEnoughItems-default-plugin-forge").versionRef(rei)
             library("rei-api", "me.shedaniel", "RoughlyEnoughItems-api-forge").versionRef(rei)
             library("rei-forge", "me.shedaniel", "RoughlyEnoughItems-forge").versionRef(rei)
+
+            def emi = version("emi", emiVersion)
+            library("emi", "dev.emi", "emi-forge").versionRef(emi)
 
             def theoneprobe = version("theoneprobe", topForgeVersion)
             library("theoneprobe", "mcjty.theoneprobe", "theoneprobe").versionRef(theoneprobe)
