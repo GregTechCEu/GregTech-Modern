@@ -1,10 +1,11 @@
-package com.gregtechceu.gtceu.integration.emi.fabric;
+package com.gregtechceu.gtceu.integration.emi;
 
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.common.data.GTMachines;
-import com.gregtechceu.gtceu.integration.emi.fabric.multipage.MultiblockInfoEmiCategory;
-import com.gregtechceu.gtceu.integration.emi.fabric.recipe.GTRecipeTypeEmiCategory;
+import com.gregtechceu.gtceu.integration.emi.multipage.MultiblockInfoEmiCategory;
+import com.gregtechceu.gtceu.integration.emi.recipe.GTRecipeTypeEmiCategory;
+import dev.emi.emi.api.EmiEntrypoint;
 import dev.emi.emi.api.EmiPlugin;
 import dev.emi.emi.api.EmiRegistry;
 import dev.emi.emi.api.recipe.VanillaEmiRecipeCategories;
@@ -17,7 +18,8 @@ import net.minecraft.world.item.crafting.RecipeType;
  * @date 2023/4/4
  * @implNote EMIPlugin
  */
-public class EMIPlugin implements EmiPlugin {
+@EmiEntrypoint
+public class GTEMIPlugin implements EmiPlugin {
     @Override
     public void register(EmiRegistry registry) {
         registry.addCategory(MultiblockInfoEmiCategory.CATEGORY);

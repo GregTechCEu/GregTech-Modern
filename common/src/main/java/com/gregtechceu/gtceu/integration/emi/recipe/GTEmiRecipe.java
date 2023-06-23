@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.integration.emi.fabric.recipe;
+package com.gregtechceu.gtceu.integration.emi.recipe;
 
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.integration.GTRecipeWidget;
