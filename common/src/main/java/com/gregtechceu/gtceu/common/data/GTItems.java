@@ -913,14 +913,14 @@ public class GTItems {
     public static ItemEntry<ComponentItem> ITEM_FILTER = REGISTRATE.item("item_filter", ComponentItem::create)
             .onRegister(attach(new ItemFilterBehaviour(SimpleItemFilter::loadFilter), new CoverPlaceBehavior(GTCovers.ITEM_FILTER)))
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Zinc, GTValues.M * 2), new MaterialStack(GTMaterials.Steel, GTValues.M)))).register();
-    public static ItemEntry<ComponentItem> ORE_DICTIONARY_FILTER = REGISTRATE.item("ore_dictionary_filter", ComponentItem::create)
+    public static ItemEntry<ComponentItem> ORE_DICTIONARY_FILTER = REGISTRATE.item("item_tag_filter", ComponentItem::create)
             .lang("Item Tag Filter")
             .onRegister(attach(new ItemFilterBehaviour(TagItemFilter::loadFilter), new CoverPlaceBehavior(GTCovers.ITEM_FILTER)))
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Zinc, GTValues.M * 2)))).register();
     public static ItemEntry<ComponentItem> FLUID_FILTER = REGISTRATE.item("fluid_filter", ComponentItem::create)
             .onRegister(attach(new FluidFilterBehaviour(SimpleFluidFilter::loadFilter), new CoverPlaceBehavior(GTCovers.FLUID_FILTER)))
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Zinc, GTValues.M * 2)))).register();
-    public static ItemEntry<ComponentItem> TAG_FLUID_FILTER = REGISTRATE.item("tag_fluid_filter", ComponentItem::create)
+    public static ItemEntry<ComponentItem> TAG_FLUID_FILTER = REGISTRATE.item("fluid_tag_filter", ComponentItem::create)
             .lang("Fluid Tag Filter")
             .onRegister(attach(new FluidFilterBehaviour(TagFluidFilter::loadFilter), new CoverPlaceBehavior(GTCovers.FLUID_FILTER)))
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Zinc, GTValues.M * 3 / 2)))).register();
