@@ -406,6 +406,10 @@ public class GTRecipeBuilder {
         return addData("solderMultiplier", multiplier);
     }
 
+    public GTRecipeBuilder disableDistilleryRecipes(boolean flag) {
+        return addData("disable_distillery", flag);
+    }
+
     //////////////////////////////////////
     //*******     CONDITIONS    ********//
     //////////////////////////////////////
