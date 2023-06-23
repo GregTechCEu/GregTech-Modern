@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.machine.multiblock.part;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.syncdata.RequireRerender;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
@@ -28,16 +29,13 @@ public class TieredIOPartMachine extends TieredPartMachine implements IControlla
     /**
      * AUTO IO working?
      */
-    @Getter @Setter @Persisted @DescSynced
+    @Getter @Setter @Persisted @DescSynced @RequireRerender
     protected boolean workingEnabled;
 
     public TieredIOPartMachine(IMachineBlockEntity holder, int tier, IO io) {
         super(holder, tier);
         this.io = io;
         this.workingEnabled = true;
-        if (isRemote()) {
-            addSyncUpdateListener("workingEnabled", this::scheduleRender);
-        }
     }
 
     //////////////////////////////////////
