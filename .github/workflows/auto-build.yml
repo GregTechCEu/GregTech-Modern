@@ -1,4 +1,4 @@
-name: 1.19.2 Auto Build
+name: auto-build
 
 on:
   push:
@@ -8,32 +8,91 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      GITHUB_RUN_NUMBER: ${{ vars.GITHUB_RUN_NUMBER }}
     steps:
-    - uses: actions/checkout@v3
-      with:
-        submodules: true
-          
-    - uses: actions/setup-java@v3
-      with:
-        java-version: '17'
-        distribution: 'adopt'
+      - uses: actions/checkout@v3
+        with:
+          submodules: true
 
-    - name: Validate Gradle wrapper
-      uses: gradle/wrapper-validation-action@v1
-      
-    - name: Grant execute permission for gradlew
-      run: chmod +x gradlew
+      - uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'adopt'
 
-    - name: Build
-      uses: gradle/gradle-build-action@v2
-      with:
-        arguments: build
-        
-    - name: Upload Jar
-      uses: actions/upload-artifact@v3
-      with:         
-        name: GTCEu
-        path: |
-          fabric/build/libs/
-          forge/build/libs/
+      - name: Validate Gradle wrapper
+        uses: gradle/wrapper-validation-action@v1
 
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Build
+        uses: gradle/gradle-build-action@v2.4.2
+        with:
+          arguments: build
+
+      - name: mc-publish-fabric
+        uses: Kir-Antipov/mc-publish@v3.3
+        with:
+          # Only include this section if you wish to publish
+          # your assets on Modrinth.
+          modrinth-id: B1CBVXHX
+          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
+
+          # Only include this section if you wish to publish
+          # your assets on CurseForge.
+          curseforge-id: 626676
+          curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
+
+          files: |
+            fabric/build/libs/!(*-@(dev|sources|javadoc|dev-shadow)).jar
+            fabric/build/libs/*-@(dev|sources|javadoc|dev-shadow).jar
+
+          name: LDLib ${{ steps.var.outputs.fabric_version }}-fabric
+          version: mc${{ steps.var.outputs.fabric_version }}-fabric
+          version-type: release
+          changelog-file: CHANGELOG.*
+
+          loaders: |
+            fabric
+          game-versions: |
+            ${{ github.ref_name }}
+          game-version-filter: none
+          java: |
+            17
+          retry-attempts: 2
+          retry-delay: 10000
+          fail-mode: fail
+
+      - name: mc-publish-forge
+        uses: Kir-Antipov/mc-publish@v3.3
+        with:
+          # Only include this section if you wish to publish
+          # your assets on Modrinth.
+          modrinth-id: B1CBVXHX
+          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
+
+          # Only include this section if you wish to publish
+          # your assets on CurseForge.
+          curseforge-id: 626676
+          curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
+
+          files: |
+            forge/build/libs/!(*-@(dev|sources|javadoc|dev-shadow)).jar
+            forge/build/libs/*-@(dev|sources|javadoc|dev-shadow).jar
+
+          name: LDLib ${{ steps.var.outputs.forge_version }}-forge
+          version: mc${{ steps.var.outputs.forge_version }}-forge
+          version-type: release
+          changelog-file: CHANGELOG.*
+
+          loaders: |
+            forge
+          game-versions: |
+            ${{ github.ref_name }}
+          game-version-filter: none
+          java: |
+            17
+          retry-attempts: 2
+          retry-delay: 10000
+          fail-mode: fail
