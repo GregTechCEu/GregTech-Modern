@@ -87,7 +87,10 @@ allprojects {
 
     archivesBaseName = "${project.name}-${libs.versions.minecraft.get()}"
     group = rootProject.maven_group
-    version = "${mod_version}"
+
+    // Formats the mod version to include the loader, Minecraft version, and build number (if present)
+    String buildNumber = System.getenv("GITHUB_RUN_NUMBER")
+    version = "${mod_version}" + (buildNumber != null ? "-build_${buildNumber}" : "")
 
     repositories {
         // Add repositories to retrieve artifacts from in here.
