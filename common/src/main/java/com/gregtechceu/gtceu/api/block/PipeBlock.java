@@ -1,20 +1,27 @@
 package com.gregtechceu.gtceu.api.block;
 
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
+import com.gregtechceu.gtceu.api.capability.ICoverable;
+import com.gregtechceu.gtceu.api.item.PipeBlockItem;
+import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.pipenet.IAttachData;
 import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
 import com.gregtechceu.gtceu.api.pipenet.IPipeType;
 import com.gregtechceu.gtceu.client.model.PipeModel;
 import com.gregtechceu.gtceu.client.renderer.block.PipeBlockRenderer;
+import com.gregtechceu.gtceu.common.item.CoverPlaceBehavior;
 import com.lowdragmc.lowdraglib.client.renderer.IBlockRendererProvider;
 import com.lowdragmc.lowdraglib.pipelike.LevelPipeNet;
 import com.lowdragmc.lowdraglib.pipelike.Node;
 import com.lowdragmc.lowdraglib.pipelike.PipeNet;
+import com.lowdragmc.lowdraglib.utils.RayTraceHelper;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.BlockGetter;
@@ -27,6 +34,8 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.EntityCollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
@@ -78,10 +87,13 @@ public abstract class PipeBlock <PipeType extends Enum<PipeType> & IPipeType<Nod
 
     protected abstract PipeModel getPipeModel();
 
+    /**
+     * Get pipe nodes with the same pipe type.
+     */
     @Nullable
     @SuppressWarnings("unchecked")
-    protected IPipeNode<PipeType, NodeDataType> getPileTile(BlockGetter level, BlockPos pos) {
-        if (level.getBlockEntity(pos) instanceof IPipeNode<?,?> pipeTile) {
+    public IPipeNode<PipeType, NodeDataType> getPileTile(BlockGetter level, BlockPos pos) {
+        if (level.getBlockEntity(pos) instanceof IPipeNode<?,?> pipeTile && pipeTile.getPipeType().type().equals(pipeType.type())) {
             return (IPipeNode<PipeType, NodeDataType>) pipeTile;
         }
         return null;
@@ -94,10 +106,42 @@ public abstract class PipeBlock <PipeType extends Enum<PipeType> & IPipeType<Nod
         if (pipeNode != null && pLevel instanceof ServerLevel serverLevel) {
             var net = getWorldPipeNet(serverLevel);
             if (net.getNetFromPos(pPos) == null) {
-                net.addNode(pPos, pipeType.modifyProperties(createRawData(pState, pStack)), Node.DEFAULT_MARK, Node.ALL_OPENED, true);
+                net.addNode(pPos, pipeType.modifyProperties(createRawData(pState, pStack)), Node.DEFAULT_MARK, 0b000000, true);
             } else {
                 net.updateData(pPos, pipeType.modifyProperties(createRawData(pState, pStack)));
             }
+
+            // if player is placing a pipe next to an existing pipe
+            if (PipeBlockItem.LAST_CONTEXT != null && !PipeBlockItem.LAST_CONTEXT.replacingClickedOnBlock()) {
+                var attachPos = PipeBlockItem.LAST_CONTEXT.getClickedPos().relative(PipeBlockItem.LAST_CONTEXT.getClickedFace().getOpposite());
+                var attachSide = PipeBlockItem.LAST_CONTEXT.getClickedFace();
+                if (attachPos.relative(attachSide).equals(pPos)) {
+
+                    var attachNode = getPileTile(pLevel, attachPos);
+                    if (attachNode != null) { // if is a pipe node
+                        if (attachNode.isBlocked(attachSide)) {
+                            attachNode.setBlocked(attachSide, false);
+                        }
+                        if (pipeNode.isBlocked(attachSide.getOpposite())) {
+                            pipeNode.setBlocked(attachSide.getOpposite(), false);
+                        }
+                    } else if (pipeNode.isBlocked(attachSide.getOpposite()) && pipeNode.canAttachTo(attachSide.getOpposite())) { // if it can attach to
+                        pipeNode.setBlocked(attachSide.getOpposite(), false);
+                    }
+                }
+            }
+
+            //If you place a pipe next to a pipe with an already open connection, it will connect automatically
+            for (var side : Direction.values()) {
+                if (pipeNode.isBlocked(side)) {
+                    var attachPos = pPos.relative(side);
+                    var attachNode = getPileTile(pLevel, attachPos);
+                    if (attachNode != null && !attachNode.isBlocked(side.getOpposite())) {
+                        pipeNode.setBlocked(side, false);
+                    }
+                }
+            }
+
             pipeNode.updateConnections();
         }
     }
@@ -108,7 +152,7 @@ public abstract class PipeBlock <PipeType extends Enum<PipeType> & IPipeType<Nod
         if (!oldState.is(state.getBlock()) && level instanceof ServerLevel serverLevel) {
             var net = getWorldPipeNet(serverLevel);
             if (net.getNetFromPos(pos) == null) {
-                net.addNode(pos, pipeType.modifyProperties(createRawData(state, null)), Node.DEFAULT_MARK, Node.ALL_OPENED, true);
+                net.addNode(pos, pipeType.modifyProperties(createRawData(state, null)), Node.DEFAULT_MARK, 0b000000, true);
             }
         }
     }
@@ -134,10 +178,19 @@ public abstract class PipeBlock <PipeType extends Enum<PipeType> & IPipeType<Nod
     }
 
     @Override
-    public VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
+    public VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext context) {
         var pipeNode = getPileTile(pLevel, pPos);
         var connections = 0;
         if (pipeNode != null) {
+            if (context instanceof EntityCollisionContext entityCtx && entityCtx.getEntity() instanceof Player player){
+                var coverable = pipeNode.getCoverContainer();
+                var held = player.getMainHandItem();
+                if (held.is(GTToolType.WIRE_CUTTER.itemTag) || held.is(GTToolType.WRENCH.itemTag) ||
+                        CoverPlaceBehavior.isCoverBehaviorItem(held, coverable::hasAnyCover, coverDef -> ICoverable.canPlaceCover(coverDef, coverable)) ||
+                        (held.getItem() instanceof BlockItem blockItem && blockItem.getBlock() instanceof PipeBlock<?,?,?> pipeBlock && pipeBlock.pipeType.type().equals(pipeType.type()))) {
+                    return Shapes.block();
+                }
+            }
             connections = pipeNode.getVisualConnections();
         }
         return getPipeModel().getShapes(connections);

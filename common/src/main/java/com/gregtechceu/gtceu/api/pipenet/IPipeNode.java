@@ -25,12 +25,6 @@ public interface IPipeNode<PipeType extends Enum<PipeType> & IPipeType<NodeDataT
     ICoverable getCoverContainer();
 
     /**
-     * If node is connected to the specific side
-     * @param side face
-     */
-    boolean isConnected(Direction side);
-
-    /**
      * If tube is set to block connection from the specific side
      * @param side face
      */
@@ -61,6 +55,14 @@ public interface IPipeNode<PipeType extends Enum<PipeType> & IPipeType<NodeDataT
     int getVisualConnections();
 
     /**
+     * If node is connected to the specific side
+     * @param side face
+     */
+    default boolean isConnected(Direction side) {
+        return !isBlocked(side);
+    }
+
+    /**
      * should be called when neighbours / inner changed or the first time placing this pipe.
      */
     default void updateConnections() {
@@ -68,11 +70,11 @@ public interface IPipeNode<PipeType extends Enum<PipeType> & IPipeType<NodeDataT
         if (net != null) {
             var pos = getPipePos();
             net.onNeighbourUpdate(pos);
-            int connections = 0;
             var data = getNodeData();
+            var dataDirty = false;
             if (data == null) {
                 LDLib.LOGGER.warn("data shouldn't be null here, did you add pipe without placement?");
-                net.getWorldData().addNode(pos, getPipeType().modifyProperties(getPipeBlock().getFallbackType()), Node.DEFAULT_MARK, Node.ALL_OPENED, true);
+                net.getWorldData().addNode(pos, getPipeType().modifyProperties(getPipeBlock().getFallbackType()), Node.DEFAULT_MARK, 0b000000, true);
                 data = getNodeData();
                 if (data == null) {
                     throw new IllegalStateException("data shouldn't be null here!");
@@ -80,22 +82,19 @@ public interface IPipeNode<PipeType extends Enum<PipeType> & IPipeType<NodeDataT
             }
 
             for (Direction side : Direction.values()) {
-                if (isBlocked(side)) {
-                    continue;
-                }
-                if (net.isNodeConnectedTo(pos, side)) {
-                    connections |= 1 << side.ordinal();
-                } else if (!net.containsNode(pos.relative(side))){
-                    var canAttach = canAttachTo(side);
-                    if (canAttach) {
-                        connections |= 1 << side.ordinal();
-                    }
-                    if (data.setAttached(side, canAttach)) {
-                        net.updateNodeData(pos, data);
+                if (!isBlocked(side)) {
+                    if (!net.containsNode(pos.relative(side))){
+                        var canAttach = canAttachTo(side);
+                        if (data.setAttached(side, canAttach)) {
+                            dataDirty = true;
+                        }
                     }
                 }
             }
-            setConnections(connections);
+
+            if (dataDirty) {
+                net.updateNodeData(pos, data);
+            }
         }
     }
 

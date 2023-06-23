@@ -74,7 +74,10 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, CableData> {
         return this.currentEnergyNet.get();
     }
 
-    public IEnergyContainer getEnergyContainer() {
+    @Nullable
+    public IEnergyContainer getEnergyContainer(@Nullable Direction side) {
+        if (side != null && isBlocked(side)) return null;
+        if (isRemote()) return IEnergyContainer.DEFAULT;
         var ENet = getEnergyNet();
         if (ENet != null) {
             return new EnergyNetHandler(ENet, this);

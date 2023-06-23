@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.api.blockentity;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
@@ -68,11 +67,7 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
     @Setter
     @DescSynced
     @Persisted
-    protected int connections;
-
-    @DescSynced
-    @Persisted
-    protected int openConnections = Node.ALL_OPENED;
+    protected int connections = 0b000000;
 
     private final List<TickableSubscription> serverTicks;
     private final List<TickableSubscription> waitingToAdd;
@@ -84,7 +79,6 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
         this.waitingToAdd = new ArrayList<>();
         if (isRemote()) {
             addSyncUpdateListener("connections", this::scheduleRender);
-            addSyncUpdateListener("openConnections", this::scheduleRender);
         }
     }
 
@@ -175,23 +169,19 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
     //////////////////////////////////////
     //*******     Pipe Status    *******//
     //////////////////////////////////////
-    @Override
-    public boolean isConnected(Direction side) {
-        return (connections >> side.ordinal() & 1) == 1;
-    }
 
     @Override
     public boolean isBlocked(Direction side) {
-        return (openConnections & 1 << side.ordinal()) == 0;
+        return (connections & 1 << side.ordinal()) == 0;
     }
 
     @Override
     public void setBlocked(Direction side, boolean isBlocked) {
         if (level instanceof ServerLevel serverLevel) {
             if (!isBlocked) {
-                openConnections |= 1 << side.ordinal();
+                connections |= 1 << side.ordinal();
             } else {
-                openConnections &= ~(1 << side.ordinal());
+                connections &= ~(1 << side.ordinal());
             }
             getPipeBlock().getWorldPipeNet(serverLevel).updateBlockedConnections(getBlockPos(), side, isBlocked);
             updateConnections();
