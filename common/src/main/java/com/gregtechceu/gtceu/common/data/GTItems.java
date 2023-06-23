@@ -1104,7 +1104,7 @@ public class GTItems {
 
     public static ItemEntry<Item> POWER_THRUSTER = REGISTRATE.item("power_thruster", Item::new).properties(p -> p.rarity(Rarity.UNCOMMON)).register();
     public static ItemEntry<Item> POWER_THRUSTER_ADVANCED = REGISTRATE.item("advanced_power_thruster", Item::new).lang("Advanced Power Thruster").properties(p -> p.rarity(Rarity.RARE)).register();
-    public static ItemEntry<Item> GRAVITATION_ENGINE = REGISTRATE.item("gravitation_engine", Item::new).lang("Gravitation Engine Unit").properties(p -> p.rarity(Rarity.EPIC)).register();
+    public static ItemEntry<Item> GRAVITATION_ENGINE = REGISTRATE.item("gravitation_engine_unit", Item::new).lang("Gravitation Engine Unit").properties(p -> p.rarity(Rarity.EPIC)).register();
 
     public static ItemEntry<Item> SUS_RECORD;
     public static ItemEntry<Item> NAN_CERTIFICATE = REGISTRATE.item("nan_certificate", Item::new).lang("Certificate of Not Being a Noob Anymore").properties(p -> p.rarity(Rarity.EPIC)).register();
