@@ -11,6 +11,7 @@ import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
@@ -18,6 +19,10 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.BlockHitResult;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class ConverterMachine extends TieredEnergyMachine {
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(ConverterMachine.class, TieredEnergyMachine.MANAGED_FIELD_HOLDER);
 
@@ -27,10 +32,13 @@ public class ConverterMachine extends TieredEnergyMachine {
     protected final int amps;
 
     public ConverterMachine(IMachineBlockEntity holder, int tier, int amps, Object... args) {
-        super(holder, tier, args);
+        super(holder, tier, args, amps);
         this.amps = amps;
-        this.converterTrait = initializeTrait(amps);
-        this.energyContainer = createEnergyContainer();
+        if (super.energyContainer instanceof ConverterTrait.EUContainer euContainer) {
+            this.converterTrait = euContainer.getConverterTrait();
+        } else {
+            this.converterTrait = initializeTrait(amps);
+        }
     }
 
     @Override
@@ -40,8 +48,11 @@ public class ConverterMachine extends TieredEnergyMachine {
 
     @Override
     protected NotifiableEnergyContainer createEnergyContainer(Object... args) {
-        if (converterTrait == null) return null;
-        return converterTrait.getEnergyEUContainer();
+        if (args.length > 0 && args[args.length - 1] instanceof Integer ampsValue) {
+            var converterTrait = initializeTrait(ampsValue);
+            return converterTrait.getEnergyEUContainer();
+        }
+        return super.createEnergyContainer(args);
     }
 
     protected ConverterTrait initializeTrait(int amps) {
@@ -84,15 +95,6 @@ public class ConverterMachine extends TieredEnergyMachine {
     public boolean isFacingValid(Direction facing) {
         return true;
     }
-
-//    @Override
-//    public void addToolUsages(ItemStack stack, @Nullable Level world, List<Component> tooltip, boolean advanced) {
-//        tooltip.add(Component.translatable("gtceu.tool_action.screwdriver.access_covers"));
-//        tooltip.add(Component.translatable("gtceu.tool_action.wrench.set_facing"));
-//        tooltip.add(Component.translatable("gtceu.tool_action.soft_mallet.toggle_mode"));
-//        super.addToolUsages(stack, world, tooltip, advanced);
-//    }
-
 
     @Override
     public void setFrontFacing(Direction facing) {

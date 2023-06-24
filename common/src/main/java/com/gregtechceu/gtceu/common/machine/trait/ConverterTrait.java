@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IExplosionMachine;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
+import com.gregtechceu.gtceu.api.syncdata.UpdateListener;
 import com.gregtechceu.gtceu.common.machine.electric.ConverterMachine;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
@@ -32,7 +33,7 @@ public class ConverterTrait extends MachineTrait {
      * If TRUE, the front facing of the machine will OUTPUT EU, other sides INPUT FE.
      * If FALSE, the front facing of the machine will OUTPUT FE, other sides INPUT EU.
      */
-    @Persisted @DescSynced
+    @Persisted @DescSynced @UpdateListener(methodName = "onFeToEuUpdated")
     private boolean feToEu;
 
     private final IPlatformEnergyStorage energyNative = new PlatformEnergyContainer();
@@ -52,9 +53,6 @@ public class ConverterTrait extends MachineTrait {
         this.voltage = GTValues.V[machine.getTier()];
         this.baseCapacity = this.voltage * 16 * amps;
         this.energyEU = new EUContainer(machine, baseCapacity, voltage, feToEu ? 0 : amps, voltage, feToEu ? amps : 0);
-        if (getMachine().isRemote()) {
-            addSyncUpdateListener("feToEu", this::onFeToEuUpdated);
-        }
     }
 
     public NotifiableEnergyContainer getEnergyEUContainer() {
@@ -74,7 +72,8 @@ public class ConverterTrait extends MachineTrait {
         this.onChanged();
     }
 
-    private void onFeToEuUpdated(String fieldName, boolean newValue, boolean oldValue) {
+    @SuppressWarnings("unused")
+    private void onFeToEuUpdated(boolean newValue, boolean oldValue) {
         getMachine().scheduleRenderUpdate();
         setFeToEu(newValue);
     }
@@ -244,6 +243,10 @@ public class ConverterTrait extends MachineTrait {
         @Override
         public long getOutputVoltage() {
             return voltage;
+        }
+
+        public ConverterTrait getConverterTrait() {
+            return ConverterTrait.this;
         }
     }
 
