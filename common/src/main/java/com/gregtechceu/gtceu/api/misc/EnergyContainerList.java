@@ -7,16 +7,16 @@ import java.util.List;
 
 public class EnergyContainerList implements IEnergyContainer {
 
-    private final List<IEnergyContainer> energyContainerList;
+    private final List<? extends IEnergyContainer> energyContainerList;
 
-    public EnergyContainerList(List<IEnergyContainer> energyContainerList) {
+    public EnergyContainerList(List<? extends IEnergyContainer> energyContainerList) {
         this.energyContainerList = energyContainerList;
     }
 
     @Override
     public long acceptEnergyFromNetwork(Direction side, long voltage, long amperage) {
         long amperesUsed = 0L;
-        List<IEnergyContainer> energyContainerList = this.energyContainerList;
+        List<? extends IEnergyContainer> energyContainerList = this.energyContainerList;
         for (IEnergyContainer iEnergyContainer : energyContainerList) {
             amperesUsed += iEnergyContainer.acceptEnergyFromNetwork(null, voltage, amperage);
             if (amperage == amperesUsed) {
@@ -29,7 +29,7 @@ public class EnergyContainerList implements IEnergyContainer {
     @Override
     public long changeEnergy(long energyToAdd) {
         long energyAdded = 0L;
-        List<IEnergyContainer> energyContainerList = this.energyContainerList;
+        List<? extends IEnergyContainer> energyContainerList = this.energyContainerList;
         for (IEnergyContainer iEnergyContainer : energyContainerList) {
             energyAdded += iEnergyContainer.changeEnergy(energyToAdd - energyAdded);
             if (energyAdded == energyToAdd) {

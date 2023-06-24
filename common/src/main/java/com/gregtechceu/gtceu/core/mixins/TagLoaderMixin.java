@@ -91,6 +91,12 @@ public class TagLoaderMixin<T> implements IGTTagLoader<T> {
                             .add(new TagLoader.EntryWithSource(TagEntry.element(id), GTValues.CUSTOM_TAG_SOURCE));
                 }
             });
+
+            GTBlocks.ALL_FUSION_CASINGS.forEach((casingType, block) -> {
+                ResourceLocation blockId = Registry.BLOCK.getKey(block.get());
+                tagMap.computeIfAbsent(CustomTags.TOOL_TIERS[casingType.getHarvestLevel()].location(), path -> new ArrayList<>())
+                        .add(new TagLoader.EntryWithSource(TagEntry.element(blockId), GTValues.CUSTOM_TAG_SOURCE));
+            });
         }
 
     }

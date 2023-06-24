@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IExplosionMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
+import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import lombok.Getter;
@@ -34,7 +35,7 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Long
     @Setter
     private long timeStamp;
     @Getter
-    @Persisted
+    @Persisted @DescSynced
     protected long energyStored;
     @Getter
     private long energyCapacity, inputVoltage, inputAmperage, outputVoltage, outputAmperage;

@@ -41,7 +41,7 @@ public class GTFluids {
 
             if (fluidProperty != null && !fluidProperty.hasFluidSupplier()) {
                 var fluidType = fluidProperty.getFluidType();
-                FluidEntry<? extends Fluid> fluidEntry = GTRegistries.REGISTRATE.createFluid(material.getName(), material, fluidProperty.getStillTexture(), fluidProperty.getFlowTexture())
+                FluidEntry<? extends Fluid> fluidEntry = GTRegistries.REGISTRATE.createFluid(material.getName(), fluidType.getLocalization(), material, fluidProperty.getStillTexture(), fluidProperty.getFlowTexture())
                         .temperature(Math.max(material.getBlastTemperature(), fluidProperty.getFluidTemperature()))
                         .density(fluidType.getDensity())
                         .viscosity(fluidType.getViscosity())
@@ -57,7 +57,7 @@ public class GTFluids {
             PlasmaProperty plasmaProperty = material.getProperty(PropertyKey.PLASMA);
             if (plasmaProperty != null && !plasmaProperty.hasPlasmaSupplier()) {
                 var fluidType = FluidTypes.PLASMA;
-                plasmaProperty.setPlasma(GTRegistries.REGISTRATE.createFluid(material.getName() + "_plasma", material, plasmaProperty.getStillTexture(), plasmaProperty.getFlowTexture())
+                plasmaProperty.setPlasma(GTRegistries.REGISTRATE.createFluid(material.getName() + "_plasma", fluidType.getLocalization(), material, plasmaProperty.getStillTexture(), plasmaProperty.getFlowTexture())
                         .temperature((fluidProperty == null ? 0 : fluidProperty.getFluidTemperature()) + 10000)
                         .density(fluidType.getDensity())
                         .viscosity(fluidType.getViscosity())

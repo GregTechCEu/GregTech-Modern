@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:superconductor_coil",
+    "gtceu:fusion_coil",
+    "gtceu:fusion_casing"
+  ]
+}

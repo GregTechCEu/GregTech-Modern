@@ -16,6 +16,7 @@ import java.util.function.Predicate;
  * @implNote IOItemTransferList
  */
 public class IOItemTransferList extends ItemTransferList {
+
     @Getter
     private final IO io;
 

@@ -69,6 +69,7 @@ public class GTRecipeTypes {
                     GTRecipeTypes.LARGE_BOILER_RECIPES.copyFrom(builder).duration(duration).save(provider);
                 }
             })
+            .setMaxTooltips(1)
             .setSound(GTSoundEntries.FURNACE);
 
     //////////////////////////////////////
@@ -359,7 +360,7 @@ public class GTRecipeTypes {
             .setSlotOverlay(false, false, GuiTextures.INT_CIRCUIT_OVERLAY)
             .setSlotOverlay(true, true, GuiTextures.CENTRIFUGE_OVERLAY)
             .setProgressBar(GuiTextures.PROGRESS_BAR_GAS_COLLECTOR, LEFT_TO_RIGHT)
-            .setMaxConditions(1)
+            .setMaxTooltips(4)
             .setSound(GTSoundEntries.COOLING);
 
     public final static GTRecipeType ROCK_BREAKER_RECIPES = register("rock_breaker", ELECTRIC).setMaxIOSize(1, 4, 0, 0).setEUIO(IO.IN)
@@ -380,6 +381,7 @@ public class GTRecipeTypes {
                             .setBackground(GuiTextures.FLUID_SLOT).setShowAmount(false));
                 }
             })
+            .setMaxTooltips(4)
             .setSound(GTSoundEntries.FIRE);
 
     //////////////////////////////////////
@@ -410,14 +412,17 @@ public class GTRecipeTypes {
     //////////////////////////////////////
     public final static GTRecipeType LARGE_BOILER_RECIPES = register("large_boiler", MULTIBLOCK).setMaxIOSize(1, 0, 1, 1)
             .setProgressBar(GuiTextures.PROGRESS_BAR_BOILER_FUEL.get(true), DOWN_TO_UP)
+            .setMaxTooltips(1)
             .setSound(GTSoundEntries.FURNACE);
 
     public final static GTRecipeType COKE_OVEN_RECIPES = register("coke_oven", MULTIBLOCK).setMaxIOSize(1, 1, 0, 1)
             .setProgressBar(GuiTextures.PROGRESS_BAR_ARROW, LEFT_TO_RIGHT)
+            .setMaxTooltips(1)
             .setSound(GTSoundEntries.FIRE);
 
     public final static GTRecipeType PRIMITIVE_BLAST_FURNACE_RECIPES = register("primitive_blast_furnace", MULTIBLOCK).setMaxIOSize(3, 3, 0, 0)
             .setProgressBar(GuiTextures.PROGRESS_BAR_ARROW, LEFT_TO_RIGHT)
+            .setMaxTooltips(1)
             .setSound(GTSoundEntries.FIRE);
 
     public final static GTRecipeType BLAST_RECIPES = register("electric_blast_furnace", MULTIBLOCK).setMaxIOSize(3, 3, 1, 1).setEUIO(IO.IN)
@@ -525,7 +530,10 @@ public class GTRecipeTypes {
             .setSmallRecipeMap(CHEMICAL_RECIPES);
 
 
-
+    public static final GTRecipeType FUSION_RECIPES = register("fusion_reactor", MULTIBLOCK).setMaxIOSize(0, 0, 2, 1).setEUIO(IO.IN)
+            .setProgressBar(GuiTextures.PROGRESS_BAR_FUSION, LEFT_TO_RIGHT)
+            .setSound(GTSoundEntries.ARC)
+            .addDataInfo(data -> LocalizationUtils.format("gtceu.recipe.eu_to_start", data.getLong("eu_to_start")));
 
 
 
@@ -553,9 +561,9 @@ public class GTRecipeTypes {
                     .setSlotOverlay(true, false, GuiTextures.DUST_OVERLAY)
                     .setProgressBar(GuiTextures.PROGRESS_BAR_MIXER, LEFT_TO_RIGHT)
                     .setSound(GTSoundEntries.MIXER)
-                    .setMaxConditions(1)
+                    .setMaxTooltips(4)
                     .setUiBuilder((recipe, group) -> {
-                        if (recipe.conditions.size() > 0 && recipe.conditions.get(0) instanceof RPMCondition rpmCondition) {
+                        if (recipe.conditions.size() > 0 && recipe.conditions.get(0) instanceof RPMCondition) {
                             var transfer = new ItemStackTransfer(AllBlocks.SHAFT.asStack());
                             group.addWidget(new SlotWidget(transfer, 0, group.getSize().width - 30, group.getSize().height - 30, false, false));
                         }
