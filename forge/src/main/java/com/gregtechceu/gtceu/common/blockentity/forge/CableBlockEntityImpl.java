@@ -33,7 +33,10 @@ public class CableBlockEntityImpl extends CableBlockEntity {
     @Override
     public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
         if (cap == GTCapability.CAPABILITY_ENERGY_CONTAINER) {
-            return GTCapability.CAPABILITY_ENERGY_CONTAINER.orEmpty(cap, LazyOptional.of(() -> getEnergyContainer(side)));
+            var container = getEnergyContainer(side);
+            if (container != null) {
+                return GTCapability.CAPABILITY_ENERGY_CONTAINER.orEmpty(cap, LazyOptional.of(() -> container));
+            }
         } else if (cap == GTCapability.CAPABILITY_COVERABLE) {
             return GTCapability.CAPABILITY_COVERABLE.orEmpty(cap, LazyOptional.of(this::getCoverContainer));
         } else if (cap == GTCapability.CAPABILITY_TOOLABLE) {
