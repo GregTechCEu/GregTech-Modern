@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
+import com.gregtechceu.gtceu.api.capability.PlatformEnergyCompat;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.item.DrumMachineItem;
@@ -21,6 +22,7 @@ import com.gregtechceu.gtceu.client.renderer.block.CTMModelRenderer;
 import com.gregtechceu.gtceu.client.renderer.machine.*;
 import com.gregtechceu.gtceu.common.block.BoilerFireboxType;
 import com.gregtechceu.gtceu.common.machine.electric.BatteryBufferMachine;
+import com.gregtechceu.gtceu.common.machine.electric.ConverterMachine;
 import com.gregtechceu.gtceu.common.machine.electric.PumpMachine;
 import com.gregtechceu.gtceu.common.machine.electric.TransformerMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.CrackerMachine;
@@ -198,6 +200,11 @@ public class GTMachines {
                             Component.translatable("gtceu.machine.transformer.tooltip_transform_up", 4, GTValues.V[tier], GTValues.VNF[tier], 1, GTValues.V[tier + 1], GTValues.VNF[tier + 1]))
                     .register(),
             GTValues.ULV, GTValues.LV, GTValues.MV, GTValues.HV, GTValues.EV, GTValues.IV, GTValues.LuV, GTValues.ZPM, GTValues.UV); // UHV not needed, as a UV transformer transforms up to UHV
+
+    public static final MachineDefinition[] ENERGY_CONVERTER_1A = registerConverter(1);
+    public static final MachineDefinition[] ENERGY_CONVERTER_4A = registerConverter(4);
+    public static final MachineDefinition[] ENERGY_CONVERTER_8A = registerConverter(8);
+    public static final MachineDefinition[] ENERGY_CONVERTER_16A = registerConverter(16);
 
     public final static MachineDefinition[] BATTERY_BUFFER_4 = registerBatteryBuffer(4);
 
@@ -955,6 +962,22 @@ public class GTMachines {
                 .register();
         DRUM_CAPACITY.put(definition, capacity);
         return definition;
+    }
+
+    public static MachineDefinition[] registerConverter(int amperage) {
+        return registerTieredMachines(amperage + "a_energy_converter",
+                (holder, tier) -> new ConverterMachine(holder, tier, amperage),
+                (tier, builder) -> builder
+                        .rotationState(RotationState.ALL)
+                        .langValue("%s %sA Energy Converter".formatted(VN[tier], amperage))
+                        .hasTESR(true)
+                        .renderer(() -> new ConverterRenderer(tier))
+                        .tooltips(Component.translatable("gtceu.machine.energy_converter.description"),
+                                Component.translatable("gtceu.machine.energy_converter.tooltip_tool_usage"),
+                                Component.translatable("gtceu.machine.energy_converter.tooltip_conversion_native", PlatformEnergyCompat.toNativeLong(V[tier] * amperage, PlatformEnergyCompat.ratio(true)), amperage, V[tier], GTValues.VNF[tier]),
+                                Component.translatable("gtceu.machine.energy_converter.tooltip_conversion_eu", amperage, V[tier], GTValues.VNF[tier], PlatformEnergyCompat.toNativeLong(V[tier] * amperage, PlatformEnergyCompat.ratio(false))))
+                        .register(),
+                ALL_TIERS);
     }
 
     public static Component explosion() {

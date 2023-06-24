@@ -50,7 +50,7 @@ public class PipeCoverContainer implements ICoverable, IEnhancedManaged {
     }
 
     @SuppressWarnings("unused")
-    private void onCoverSet(Object newValue, Object oldValue) {
+    private void onCoverSet(CoverBehavior newValue, CoverBehavior oldValue) {
         if (newValue != oldValue && (newValue == null || oldValue == null)) {
             scheduleRenderUpdate();
         }

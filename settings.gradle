@@ -34,6 +34,7 @@ dependencyResolutionManagement {
         def kjsVersion = "1902.6.0-build.142"
         def forgeConfigApiVersion = "4.2.11"
         def nightConfigVersion = "3.6.5"
+        def teamRebornEnergyVersion = "3.0.0"
         def configurationFabricFile = "4104224"
         def worldStripperFabricFile = "3921629"
 
@@ -112,6 +113,9 @@ dependencyResolutionManagement {
             library("nightConfigCore", "com.electronwill.night-config", "core").versionRef(nightConfigCore)
             def nightConfigToml = version("nightConfigToml", nightConfigVersion)
             library("nightConfigToml", "com.electronwill.night-config", "toml").versionRef(nightConfigToml)
+
+            def teamRebornEnergy = version("teamRebornEnergy", teamRebornEnergyVersion)
+            library("teamRebornEnergy", "teamreborn", "energy").versionRef(teamRebornEnergy)
 
             def configuration = version("configuration", configurationFabricFile)
             library("configuration", "curse.maven", "configuration-444699").versionRef(configuration)
