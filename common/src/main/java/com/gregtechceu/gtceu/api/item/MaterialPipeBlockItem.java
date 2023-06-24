@@ -17,7 +17,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class MaterialPipeBlockItem extends BlockItem implements IItemRendererProvider {
+public class MaterialPipeBlockItem extends PipeBlockItem implements IItemRendererProvider {
 
     public MaterialPipeBlockItem(MaterialPipeBlock block, Properties properties) {
         super(block, properties);

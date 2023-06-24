@@ -22,6 +22,8 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.misc.IOFluidTransferList;
 import com.gregtechceu.gtceu.api.misc.IOItemTransferList;
+import com.gregtechceu.gtceu.api.syncdata.EnhancedFieldManagedStorage;
+import com.gregtechceu.gtceu.api.syncdata.IEnhancedManaged;
 import com.gregtechceu.gtceu.common.cover.FluidFilterCover;
 import com.gregtechceu.gtceu.common.cover.ItemFilterCover;
 import com.lowdragmc.lowdraglib.LDLib;
@@ -34,7 +36,6 @@ import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.syncdata.IManaged;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import lombok.Getter;
 import net.fabricmc.api.EnvType;
@@ -78,10 +79,10 @@ import java.util.function.Predicate;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class MetaMachine implements IManaged, IToolable, ITickSubscription, IAppearance, IToolGridHighLight {
+public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscription, IAppearance, IToolGridHighLight {
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(MetaMachine.class);
     @Getter
-    private final FieldManagedStorage syncStorage = new FieldManagedStorage(this);
+    private final EnhancedFieldManagedStorage syncStorage = new EnhancedFieldManagedStorage(this);
     @Getter
     public final IMachineBlockEntity holder;
     @Getter
@@ -108,9 +109,6 @@ public class MetaMachine implements IManaged, IToolable, ITickSubscription, IApp
     //////////////////////////////////////
     //*****     Initialization    ******//
     //////////////////////////////////////
-    protected void scheduleRender(String fieldName, Object newValue, Object oldValue) {
-        scheduleRenderUpdate();
-    }
 
     @Override
     public ManagedFieldHolder getFieldHolder() {

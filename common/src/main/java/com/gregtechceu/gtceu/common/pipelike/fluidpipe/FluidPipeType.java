@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.FluidPipeProp
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.client.model.PipeModel;
 import lombok.Getter;
+import net.minecraft.resources.ResourceLocation;
 
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
 
@@ -20,6 +21,8 @@ public enum FluidPipeType implements IMaterialPipeType<FluidPipeData> {
     HUGE("huge", 0.875f, 24, pipeHugeFluid),
     QUADRUPLE("quadruple", 0.95f, 2, pipeQuadrupleFluid, 4),
     NONUPLE("nonuple", 0.95f, 2, pipeNonupleFluid, 9);
+
+    public static final ResourceLocation TYPE_ID = GTCEu.id("fluid");
 
     public final String name;
     public final float thickness;
@@ -62,6 +65,11 @@ public enum FluidPipeType implements IMaterialPipeType<FluidPipeData> {
     @Override
     public boolean isPaintable() {
         return true;
+    }
+
+    @Override
+    public ResourceLocation type() {
+        return TYPE_ID;
     }
 
     public PipeModel createPipeModel(Material material) {

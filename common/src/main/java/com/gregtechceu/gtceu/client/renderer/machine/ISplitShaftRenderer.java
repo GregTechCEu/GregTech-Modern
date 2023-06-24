@@ -4,9 +4,9 @@ import com.gregtechceu.gtceu.common.blockentity.KineticMachineBlockEntity;
 import com.gregtechceu.gtceu.common.machine.kinetic.IKineticMachine;
 import com.jozufozu.flywheel.backend.Backend;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.simibubi.create.AllBlockPartials;
-import com.simibubi.create.content.contraptions.base.IRotate;
-import com.simibubi.create.content.contraptions.base.KineticTileEntityRenderer;
+import com.simibubi.create.AllPartialModels;
+import com.simibubi.create.content.kinetics.base.IRotate;
+import com.simibubi.create.content.kinetics.base.KineticBlockEntityRenderer;
 import com.simibubi.create.foundation.render.CachedBufferer;
 import com.simibubi.create.foundation.render.SuperByteBuffer;
 import com.simibubi.create.foundation.utility.AnimationTickHolder;
@@ -38,7 +38,7 @@ public interface ISplitShaftRenderer extends IKineticMachineRenderer {
             for (Direction direction : Iterate.directions) {
                 Direction.Axis axis = direction.getAxis();
                 if (boxAxis == axis) {
-                    float offset = KineticTileEntityRenderer.getRotationOffsetForPosition(te, pos, axis);
+                    float offset = KineticBlockEntityRenderer.getRotationOffsetForPosition(te, pos, axis);
                     float angle = time * te.getSpeed() * 3.0F / 10.0F % 360.0F;
                     float modifier = 1.0F;
                     if (te.getMetaMachine() instanceof IKineticMachine kineticMachine) {
@@ -47,8 +47,8 @@ public interface ISplitShaftRenderer extends IKineticMachineRenderer {
                     angle *= modifier;
                     angle += offset;
                     angle = angle / 180.0F * 3.1415927F;
-                    SuperByteBuffer superByteBuffer = CachedBufferer.partialFacing(AllBlockPartials.SHAFT_HALF, te.getBlockState(), direction);
-                    KineticTileEntityRenderer.kineticRotationTransform(superByteBuffer, te, axis, angle, light);
+                    SuperByteBuffer superByteBuffer = CachedBufferer.partialFacing(AllPartialModels.SHAFT_HALF, te.getBlockState(), direction);
+                    KineticBlockEntityRenderer.kineticRotationTransform(superByteBuffer, te, axis, angle, light);
                     superByteBuffer.renderInto(ms, bufferSource.getBuffer(RenderType.solid()));
                 }
             }

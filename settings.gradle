@@ -10,7 +10,7 @@ pluginManagement {
 
 dependencyResolutionManagement {
     repositories {
-         mavenCentral()
+        mavenCentral()
     }
     versionCatalogs {
         // Minecraft Version
@@ -18,14 +18,14 @@ dependencyResolutionManagement {
 
         // Mod Dependencies Versions
         // Common
-        def jeiVersion = "11.5.0.297"
-        def reiVersion = "9.1.580"
-        def emiVersion = "0.7.3+1.19.2"
+        def jeiVersion = "11.5.2.1007"
+        def reiVersion = "9.1.619"
+        def emiVersion = "1.0.5+1.19.2"
 
         // Fabric
         def fabricLoaderVersion = "0.14.11" // https://fabricmc.net/develop/
         def fabricApiVersion = "0.73.2" // https://fabricmc.net/develop/
-        def createVersion = "0.5.0.g-837"
+        def createVersion = "0.5.1-b-build.1079"
         def lazyDfuVersion = "0.1.3"
         def modMenuVersion = "4.1.2"
         def topFabricVersion = "1.19-6.0.0"
@@ -39,9 +39,9 @@ dependencyResolutionManagement {
         def worldStripperFabricFile = "3921629"
 
         // Forge
-        def forgeVersion = "43.2.0"
+        def forgeVersion = "43.2.3"
         def registrateForgeVersion = "MC1.19-1.1.5"
-        def createForgeVersion = "0.5.0.h-21"
+        def createForgeVersion = "0.5.1.b-30"
         def flywheelForgeVersion = "0.6.8.a-14"
         def topForgeVersion = "1.19-6.2.0-6"
         def jadeForgeVersion = "8.8.1"
@@ -56,7 +56,7 @@ dependencyResolutionManagement {
         def architecturyLoomVersion = "1.0-SNAPSHOT"
         def quiltFlowerVersion = "1.+"
         def macheteVersion = "1.+"
-        def ldLibVersion = "1.0.9.b"
+        def ldLibVersion = "1.0.10"
 
         fabric {
             def parchment = version("parchment", parchmentVersion)
@@ -75,7 +75,7 @@ dependencyResolutionManagement {
             def registrate = version("registrate", registrateFabricVersion)
             library("registrate", "com.tterrag.registrate_fabric", "Registrate").versionRef(registrate)
 
-            def createFabric = version("create-fabric", "${createVersion}+${minecraftVersion}")
+            def createFabric = version("create-fabric", "${createVersion}+mc${minecraftVersion}")
             library("createFabric", "com.simibubi.create", "create-fabric-${minecraftVersion}").versionRef(createFabric)
 
             def lazyDfu = version("lazydfu", lazyDfuVersion)
@@ -96,7 +96,7 @@ dependencyResolutionManagement {
             library("rei-fabric", "me.shedaniel", "RoughlyEnoughItems-fabric").versionRef(rei)
 
             def emi = version("emi", emiVersion)
-            library("emi", "dev.emi", "emi").versionRef(emi)
+            library("emi", "dev.emi", "emi-fabric").versionRef(emi)
 
             def theoneprobe = version("theoneprobe", topFabricVersion)
             library("theoneprobe", "mcjty.theoneprobe", "theoneprobe-fabric").versionRef(theoneprobe)
@@ -150,6 +150,9 @@ dependencyResolutionManagement {
             library("rei-plugin", "me.shedaniel", "RoughlyEnoughItems-default-plugin-forge").versionRef(rei)
             library("rei-api", "me.shedaniel", "RoughlyEnoughItems-api-forge").versionRef(rei)
             library("rei-forge", "me.shedaniel", "RoughlyEnoughItems-forge").versionRef(rei)
+
+            def emi = version("emi", emiVersion)
+            library("emi", "dev.emi", "emi-forge").versionRef(emi)
 
             def theoneprobe = version("theoneprobe", topForgeVersion)
             library("theoneprobe", "mcjty.theoneprobe", "theoneprobe").versionRef(theoneprobe)

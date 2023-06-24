@@ -14,6 +14,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputItem;
 import com.gregtechceu.gtceu.api.machine.feature.IDropSaveMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.syncdata.RequireRerender;
 import com.lowdragmc.lowdraglib.gui.editor.Icons;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
@@ -55,11 +56,9 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
 
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(QuantumChestMachine.class, MetaMachine.MANAGED_FIELD_HOLDER);
 
-    @Getter
-    @Persisted
-    @DescSynced
+    @Getter @Persisted @DescSynced @RequireRerender
     protected Direction outputFacingItems;
-    @Getter @Persisted @DescSynced
+    @Getter @Persisted @DescSynced @RequireRerender
     protected boolean autoOutputItems;
     @Getter @Setter @Persisted
     protected boolean allowInputFromOutputSideItems;
@@ -88,10 +87,6 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
         this.maxStoredItems = maxStoredItems;
         this.cache = createCacheItemHandler(args);
         this.lockedItem = new ItemStackTransfer();
-        if (isRemote()) {
-            addSyncUpdateListener("outputFacingItems", this::scheduleRender);
-            addSyncUpdateListener("autoOutputItems", this::scheduleRender);
-        }
     }
 
     //////////////////////////////////////

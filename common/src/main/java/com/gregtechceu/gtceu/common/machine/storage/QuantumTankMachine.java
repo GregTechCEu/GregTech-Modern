@@ -14,6 +14,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputFluid;
 import com.gregtechceu.gtceu.api.machine.feature.IDropSaveMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
+import com.gregtechceu.gtceu.api.syncdata.RequireRerender;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.gui.widget.ImageWidget;
@@ -58,11 +59,9 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
 
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(QuantumTankMachine.class, MetaMachine.MANAGED_FIELD_HOLDER);
 
-    @Getter
-    @Persisted
-    @DescSynced
+    @Getter @Persisted @DescSynced @RequireRerender
     protected Direction outputFacingFluids;
-    @Getter @Persisted @DescSynced
+    @Getter @Persisted @DescSynced @RequireRerender
     protected boolean autoOutputFluids;
     @Getter @Setter @Persisted
     protected boolean allowInputFromOutputSideFluids;
@@ -87,10 +86,6 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
         this.maxStoredFluids = maxStoredFluids;
         this.cache = createCacheFluidHandler(args);
         this.lockedFluid = new FluidStorage(FluidHelper.getBucket());
-        if (isRemote()) {
-            addSyncUpdateListener("outputFacingFluids", this::scheduleRender);
-            addSyncUpdateListener("autoOutputFluids", this::scheduleRender);
-        }
     }
 
     //////////////////////////////////////

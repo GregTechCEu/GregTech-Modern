@@ -1,10 +1,13 @@
 package com.gregtechceu.gtceu.client.renderer;
 
+import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.item.GTToolItem;
+import com.gregtechceu.gtceu.api.item.PipeBlockItem;
 import com.gregtechceu.gtceu.api.item.tool.IToolGridHighLight;
+import com.gregtechceu.gtceu.api.pipenet.IPipeType;
 import com.gregtechceu.gtceu.common.item.CoverPlaceBehavior;
 import com.lowdragmc.lowdraglib.client.utils.RenderUtils;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
@@ -46,6 +49,7 @@ public class BlockHighLightRenderer {
             var toolType = held.getItem() instanceof GTToolItem toolItem ? toolItem.getToolType() : null;
             var blockEntity = level.getBlockEntity(blockPos);
 
+            // draw tool grid highlight
             if (toolType != null && blockEntity instanceof IToolGridHighLight gridHighLight) {
                 Vec3 pos = camera.getPosition();
                 poseStack.pushPose();
@@ -78,6 +82,8 @@ public class BlockHighLightRenderer {
                 poseStack.popPose();
                 return;
             }
+
+            // draw cover grid highlight
             ICoverable coverable = GTCapabilityHelper.getCoverable(level, blockPos, target.getDirection());
             if (coverable != null && CoverPlaceBehavior.isCoverBehaviorItem(held, coverable::hasAnyCover, coverDef -> ICoverable.canPlaceCover(coverDef, coverable))) {
                 Vec3 pos = camera.getPosition();
@@ -91,6 +97,19 @@ public class BlockHighLightRenderer {
                 poseStack.popPose();
             }
 
+            // draw pipe connection grid highlight
+            var pipeType = held.getItem() instanceof PipeBlockItem pipeBlockItem ? pipeBlockItem.getBlock().pipeType : null;
+            if (pipeType instanceof IPipeType<?> type && blockEntity instanceof PipeBlockEntity<?,?> pipeBlockEntity && pipeBlockEntity.getPipeType().type().equals(type.type())) {
+                Vec3 pos = camera.getPosition();
+                poseStack.pushPose();
+                poseStack.translate(-pos.x, -pos.y, -pos.z);
+                var buffer = multiBufferSource.getBuffer(RenderType.lines());
+                RenderSystem.lineWidth(3);
+
+                drawGridOverlays(poseStack, buffer, target, side -> level.isEmptyBlock(blockPos.relative(side)) ? GuiTextures.TOOL_PIPE_CONNECT : null);
+
+                poseStack.popPose();
+            }
         }
     }
 

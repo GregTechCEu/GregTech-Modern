@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.integration.rei.forge;
 
-import com.gregtechceu.gtceu.integration.rei.REIPlugin;
+import com.gregtechceu.gtceu.integration.rei.GTREIPlugin;
 import me.shedaniel.rei.forge.REIPluginClient;
 
 /**
@@ -9,7 +9,5 @@ import me.shedaniel.rei.forge.REIPluginClient;
  * @implNote REIPlugin
  */
 @REIPluginClient
-public class REIPluginImpl extends REIPlugin {
-    public REIPluginImpl() {
-    }
+public class GTREIPluginImpl extends GTREIPlugin {
 }

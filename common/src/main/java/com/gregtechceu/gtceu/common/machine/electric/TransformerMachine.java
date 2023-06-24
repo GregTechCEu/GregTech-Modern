@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
+import com.gregtechceu.gtceu.api.syncdata.UpdateListener;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
@@ -29,7 +30,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class TransformerMachine extends TieredEnergyMachine implements IControllable {
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(TransformerMachine.class, TieredEnergyMachine.MANAGED_FIELD_HOLDER);
-    @Persisted @DescSynced @Getter
+    @Persisted @DescSynced @Getter @UpdateListener(methodName = "onTransformUpdated")
     private boolean isTransformUp;
     @Persisted @Getter @Setter
     private boolean isWorkingEnabled;
@@ -37,9 +38,6 @@ public class TransformerMachine extends TieredEnergyMachine implements IControll
     public TransformerMachine(IMachineBlockEntity holder, int tier, Object... args) {
         super(holder, tier, args);
         this.isWorkingEnabled = true;
-        if (isRemote()) {
-            addSyncUpdateListener("isTransformUp", this::onTransformUpdated);
-        }
     }
 
     //////////////////////////////////////
@@ -50,7 +48,8 @@ public class TransformerMachine extends TieredEnergyMachine implements IControll
         return MANAGED_FIELD_HOLDER;
     }
 
-    private void onTransformUpdated(String fieldName, boolean newValue, boolean oldValue) {
+    @SuppressWarnings("unused")
+    private void onTransformUpdated(boolean newValue, boolean oldValue) {
         scheduleRenderUpdate();
         updateEnergyContainer(newValue);
     }

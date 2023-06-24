@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.api.blockentity;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
@@ -14,15 +13,16 @@ import com.gregtechceu.gtceu.api.item.tool.IToolGridHighLight;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.pipenet.IAttachData;
 import com.gregtechceu.gtceu.api.pipenet.IPipeType;
+import com.gregtechceu.gtceu.api.syncdata.EnhancedFieldManagedStorage;
+import com.gregtechceu.gtceu.api.syncdata.IEnhancedManaged;
+import com.gregtechceu.gtceu.api.syncdata.RequireRerender;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.pipelike.Node;
-import com.lowdragmc.lowdraglib.syncdata.IManaged;
 import com.lowdragmc.lowdraglib.syncdata.IManagedStorage;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.blockentity.IAsyncAutoSyncBlockEntity;
 import com.lowdragmc.lowdraglib.syncdata.blockentity.IAutoPersistBlockEntity;
-import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import lombok.Getter;
 import lombok.Setter;
@@ -53,11 +53,11 @@ import java.util.List;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeType<NodeDataType>, NodeDataType extends IAttachData> extends BlockEntity implements IPipeNode<PipeType, NodeDataType>, IManaged, IAsyncAutoSyncBlockEntity, IAutoPersistBlockEntity, IToolGridHighLight, IToolable {
+public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeType<NodeDataType>, NodeDataType extends IAttachData> extends BlockEntity implements IPipeNode<PipeType, NodeDataType>, IEnhancedManaged, IAsyncAutoSyncBlockEntity, IAutoPersistBlockEntity, IToolGridHighLight, IToolable {
 
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(PipeBlockEntity.class);
     @Getter
-    private final FieldManagedStorage syncStorage = new FieldManagedStorage(this);
+    private final EnhancedFieldManagedStorage syncStorage = new EnhancedFieldManagedStorage(this);
     private final long offset = GTValues.RNG.nextInt(20);
 
     @Getter
@@ -68,11 +68,8 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
     @Setter
     @DescSynced
     @Persisted
-    protected int connections;
-
-    @DescSynced
-    @Persisted
-    protected int openConnections = Node.ALL_OPENED;
+    @RequireRerender
+    protected int connections = Node.ALL_CLOSED;
 
     private final List<TickableSubscription> serverTicks;
     private final List<TickableSubscription> waitingToAdd;
@@ -82,18 +79,13 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
         this.coverContainer = new PipeCoverContainer(this);      
         this.serverTicks = new ArrayList<>();
         this.waitingToAdd = new ArrayList<>();
-        if (isRemote()) {
-            addSyncUpdateListener("connections", this::scheduleRender);
-            addSyncUpdateListener("openConnections", this::scheduleRender);
-        }
     }
 
     //////////////////////////////////////
     //*****     Initialization    ******//
     //////////////////////////////////////
-
-    protected void scheduleRender(String name, Object oldValue, Object newValue) {
-        scheduleRenderUpdate();
+    public void scheduleRenderUpdate() {
+        IPipeNode.super.scheduleRenderUpdate();
     }
 
     @Override
@@ -175,23 +167,19 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
     //////////////////////////////////////
     //*******     Pipe Status    *******//
     //////////////////////////////////////
-    @Override
-    public boolean isConnected(Direction side) {
-        return (connections >> side.ordinal() & 1) == 1;
-    }
 
     @Override
     public boolean isBlocked(Direction side) {
-        return (openConnections & 1 << side.ordinal()) == 0;
+        return (connections & 1 << side.ordinal()) == 0;
     }
 
     @Override
     public void setBlocked(Direction side, boolean isBlocked) {
         if (level instanceof ServerLevel serverLevel) {
             if (!isBlocked) {
-                openConnections |= 1 << side.ordinal();
+                connections |= 1 << side.ordinal();
             } else {
-                openConnections &= ~(1 << side.ordinal());
+                connections &= ~(1 << side.ordinal());
             }
             getPipeBlock().getWorldPipeNet(serverLevel).updateBlockedConnections(getBlockPos(), side, isBlocked);
             updateConnections();
@@ -217,7 +205,7 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
     //////////////////////////////////////
     @Override
     public boolean shouldRenderGrid(Player player, ItemStack held, GTToolType toolType) {
-        if (toolType == GTToolType.WRENCH || toolType == GTToolType.SCREWDRIVER) return true;
+        if (canToolTunePipe(toolType) || toolType == GTToolType.SCREWDRIVER) return true;
         for (CoverBehavior cover : coverContainer.getCovers()) {
             if (cover.shouldRenderGrid(player, held, toolType)) return true;
         }
@@ -230,7 +218,7 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
 
     @Override
     public ResourceTexture sideTips(Player player, GTToolType toolType, Direction side) {
-        if (toolType == GTToolType.WRENCH) {
+        if (canToolTunePipe(toolType)) {
             return getPipeTexture(isBlocked(side));
         }
         var cover = coverContainer.getCoverAtSide(side);
@@ -261,8 +249,15 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
             if (coverBehavior != null) {
                 return coverBehavior.onSoftMalletClick(playerIn, hand, hitResult);
             }
-        } else if (toolType == GTToolType.WRENCH) {
+        } else if (canToolTunePipe(toolType)) {
             setBlocked(gridSide, !isBlocked(gridSide));
+            // try to connect to the next node.
+            if (!isBlocked(gridSide)) {
+                var node = getPipeBlock().getPileTile(getPipeLevel(), getPipePos().relative(gridSide));
+                if (node != null && node.isBlocked(gridSide.getOpposite())) { // if is a pipe node
+                    node.setBlocked(gridSide.getOpposite(), false);
+                }
+            }
             return InteractionResult.CONSUME;
         } else if (toolType == GTToolType.CROWBAR) {
             if (coverBehavior != null) {
@@ -274,5 +269,9 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
         }
 
         return InteractionResult.PASS;
+    }
+
+    protected boolean canToolTunePipe(GTToolType toolType) {
+        return toolType == GTToolType.WRENCH;
     }
 }

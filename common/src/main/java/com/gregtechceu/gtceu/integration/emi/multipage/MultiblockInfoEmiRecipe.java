@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.integration.emi.fabric.multipage;
+package com.gregtechceu.gtceu.integration.emi.multipage;
 
 
 import com.gregtechceu.gtceu.api.gui.widget.PatternPreviewWidget;
