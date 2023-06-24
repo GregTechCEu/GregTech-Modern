@@ -283,10 +283,10 @@ public class MachineLang {
         provider.add("gtceu.machine.diode.tooltip_starts_at", "Starts as §f1A§7, use Soft Mallet to change");
         provider.add("gtceu.machine.energy_converter.description", "Converts Energy between EU and FE");
         provider.add("gtceu.machine.energy_converter.tooltip_tool_usage", "Starts as §fFE Converter§7, use Soft Mallet to change");
-        provider.add("gtceu.machine.energy_converter.tooltip_conversion_fe", "§cForge Conversion: §f%d FE -> %dA %d EU (%s§f)");
-        provider.add("gtceu.machine.energy_converter.message_conversion_fe", "Converting Forge Energy, In: %d FE, Out: %dA %d EU");
-        provider.add("gtceu.machine.energy_converter.tooltip_conversion_eu", "§aEU Conversion: §f%dA %d EU (%s§f) -> %d FE");
-        provider.add("gtceu.machine.energy_converter.message_conversion_eu", "Converting EU, In: %dA %d EU, Out: %d FE");
+        provider.add("gtceu.machine.energy_converter.tooltip_conversion_native", "§cNative Conversion: §f%d FE -> %dA %d EU (%s§f)");
+        provider.add("gtceu.machine.energy_converter.message_conversion_native", "Converting Native Energy, In: %d FE, Out: %dA %d EU");
+        provider.add("gtceu.machine.energy_converter.tooltip_conversion_eu", "§aEU Conversion: §f%dA %d EU (%s§f) -> %d Native");
+        provider.add("gtceu.machine.energy_converter.message_conversion_eu", "Converting EU, In: %dA %d EU, Out: %d Native");
         provider.add("gtceu.machine.pump.tooltip", "The best way to empty Oceans!");
         provider.add("gtceu.machine.pump.tooltip_buckets", "§f%d §7ticks per Bucket");
         provider.add("gtceu.machine.item_collector.gui.collect_range", "Collect in %s blocks");

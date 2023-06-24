@@ -27,7 +27,7 @@ public class CableBlockEntityImpl extends CableBlockEntity {
     }
 
     public static void onBlockEntityRegister(BlockEntityType<CableBlockEntity> type) {
-        GTCapability.CAPABILITY_ENERGY.registerForBlockEntity((blockEntity, direction) -> blockEntity.getEnergyContainer(), type);
+        GTCapability.CAPABILITY_ENERGY.registerForBlockEntity(CableBlockEntity::getEnergyContainer, type);
         GTCapability.CAPABILITY_COVERABLE.registerForBlockEntity((blockEntity, direction) -> blockEntity.getCoverContainer(), type);
         GTCapability.CAPABILITY_TOOLABLE.registerForBlockEntity((blockEntity, direction) -> blockEntity, type);
     }

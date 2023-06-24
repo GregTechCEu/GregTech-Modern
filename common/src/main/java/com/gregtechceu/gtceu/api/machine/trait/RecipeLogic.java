@@ -7,8 +7,9 @@ import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.sound.AutoReleasedSound;
+import com.gregtechceu.gtceu.api.syncdata.IEnhancedManaged;
+import com.gregtechceu.gtceu.api.syncdata.UpdateListener;
 import com.lowdragmc.lowdraglib.Platform;
-import com.lowdragmc.lowdraglib.syncdata.IManaged;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
@@ -21,7 +22,8 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RecipeLogic extends MachineTrait implements IManaged, IWorkable {
+public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWorkable {
+
     public enum Status {
         IDLE, WORKING, WAITING, SUSPEND
     }
@@ -31,7 +33,7 @@ public class RecipeLogic extends MachineTrait implements IManaged, IWorkable {
     public final IRecipeLogicMachine machine;
     public List<GTRecipe> lastFailedMatches;
 
-    @Persisted @DescSynced
+    @Persisted @DescSynced @UpdateListener(methodName = "onStatusSynced")
     private Status status = Status.IDLE;
 
     /**
@@ -58,15 +60,18 @@ public class RecipeLogic extends MachineTrait implements IManaged, IWorkable {
         super(machine.self());
         this.machine = machine;
         this.timeStamp = Long.MIN_VALUE;
-        if (getMachine().isRemote()) {
-            addSyncUpdateListener("status", this::onStatusSynced);
-        }
     }
 
     @Environment(EnvType.CLIENT)
-    protected void onStatusSynced(String fieldName, Status newValue, Status oldValue) {
+    @SuppressWarnings("unused")
+    protected void onStatusSynced(Status newValue, Status oldValue) {
         getMachine().scheduleRenderUpdate();
         updateSound();
+    }
+
+    @Override
+    public void scheduleRenderUpdate() {
+        getMachine().scheduleRenderUpdate();
     }
 
     /**

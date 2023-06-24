@@ -433,6 +433,7 @@ public class GTRecipeTypes {
     public final static GTRecipeType DISTILLATION_RECIPES = register("distillation_tower", MULTIBLOCK).setMaxIOSize(0, 1, 1, 12).setEUIO(IO.IN)
             .setSound(GTSoundEntries.CHEMICAL)
             .onRecipeBuild((recipeBuilder, provider) -> {
+                if (recipeBuilder.data.getBoolean("disable_distillery")) return;
                 if (recipeBuilder.output.containsKey(FluidRecipeCapability.CAP)) {
                     long EUt = EURecipeCapability.CAP.of(recipeBuilder.tickInput.get(EURecipeCapability.CAP).get(0).getContent());
                     FluidStack input = FluidRecipeCapability.CAP.of(recipeBuilder.input.get(FluidRecipeCapability.CAP).get(0).getContent());

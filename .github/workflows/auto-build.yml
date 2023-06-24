@@ -1,41 +1,46 @@
-name: 1.19.2 Auto Build
+name: auto-build
 
 on:
   push:
     branches:
       - 'master'
-    paths:
-      - 'gradle.properties'
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      GITHUB_RUN_NUMBER: ${{ vars.GITHUB_RUN_NUMBER }}
     steps:
-    - uses: actions/checkout@v3
-      with:
-        submodules: true
-          
-    - uses: actions/setup-java@v3
-      with:
-        java-version: '17'
-        distribution: 'adopt'
+      - uses: actions/checkout@v3
+        with:
+          submodules: true
 
-    - name: Validate Gradle wrapper
-      uses: gradle/wrapper-validation-action@v1
-      
-    - name: Grant execute permission for gradlew
-      run: chmod +x gradlew
+      - uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'adopt'
 
-    - name: Build
-      uses: gradle/gradle-build-action@v2
-      with:
-        arguments: build
-        
-    - name: Upload Jar
-      uses: actions/upload-artifact@v3
-      with:         
-        name: GTCEu
-        path: |
-          fabric/build/libs/
-          forge/build/libs/
+      - name: Validate Gradle wrapper
+        uses: gradle/wrapper-validation-action@v1
 
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Build
+        uses: gradle/gradle-build-action@v2.4.2
+        with:
+          arguments: build
+
+      - name: Get Version
+        id: var
+        run: |
+          MESSAGE=$(ls forge/build/libs/* | grep sources.jar -v | grep shadow.jar -v | awk -F 'gtceu-forge-1.19.2-|-build_|.jar' '{print $2}')
+          echo version=$MESSAGE >> $GITHUB_OUTPUT
+
+      - name: release
+        uses: Kir-Antipov/mc-publish@v3.3
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          files: |
+            fabric/build/libs/!(*-@(dev|sources|javadoc|dev-shadow)).jar
+            forge/build/libs/!(*-@(dev|sources|javadoc|dev-shadow)).jar

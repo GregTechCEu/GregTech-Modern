@@ -25,6 +25,8 @@ subprojects {
     repositories {
         mavenLocal()
         mavenCentral()
+        maven { url = "https://api.modrinth.com/maven" } // LazyDFU, Jade
+        maven { url = "https://maven.terraformersmc.com/releases/" } // Mod Menu, EMI
         maven { url = "https://maven.shedaniel.me/" } // Cloth Config, REI
         maven {
             url "https://cursemaven.com"
@@ -44,18 +46,6 @@ subprojects {
         maven { url = "https://maven.parchmentmc.org" } // Parchment mappings
         maven { url = "https://maven.quiltmc.org/repository/release" } // Quilt Mappings
         maven { url = "https://maven.firstdarkdev.xyz/snapshots" } // LDLib
-        /*
-        maven {
-            url = "https://maven.pkg.github.com/GregTechCEu/GregTechLib-1.19"
-            credentials(HttpHeaderCredentials.class) {
-                name = "Authorization"
-                value = "Bearer ghp_" + "HLWnQ1hbSwRNebZSZ8bsFWPrV41FfR4ErfOb"
-            }
-            authentication {
-                create("header", HttpHeaderAuthentication.class)
-            }
-        } // LDLib
-        */
         maven { // Flywheel
             url = "https://maven.tterrag.com/"
             content {
@@ -66,7 +56,6 @@ subprojects {
         maven { // TOP-Fabric
             url "https://maven.wispforest.io"
         }
-
     }
 
     dependencies {
@@ -98,7 +87,10 @@ allprojects {
 
     archivesBaseName = "${project.name}-${libs.versions.minecraft.get()}"
     group = rootProject.maven_group
-    version = "${mod_version}"
+
+    // Formats the mod version to include the loader, Minecraft version, and build number (if present)
+    String buildNumber = System.getenv("GITHUB_RUN_NUMBER")
+    version = "${mod_version}" + (buildNumber != null ? "-build_${buildNumber}" : "")
 
     repositories {
         // Add repositories to retrieve artifacts from in here.

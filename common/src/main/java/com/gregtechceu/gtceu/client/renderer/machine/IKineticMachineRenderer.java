@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.common.blockentity.KineticMachineBlockEntity;
 import com.jozufozu.flywheel.backend.Backend;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.simibubi.create.content.contraptions.base.KineticTileEntityRenderer;
+import com.simibubi.create.content.kinetics.base.KineticBlockEntityRenderer;
 import com.simibubi.create.foundation.render.CachedBufferer;
 import com.simibubi.create.foundation.render.SuperByteBuffer;
 import net.fabricmc.api.EnvType;
@@ -52,7 +52,7 @@ public interface IKineticMachineRenderer extends IRenderer {
             BlockState state = getRenderedBlockState(te);
             RenderType type = getRenderType(te, state);
             if (type != null) {
-                KineticTileEntityRenderer.renderRotatingBuffer(te, getRotatedModel(te, state), ms, bufferSource.getBuffer(type), light);
+                KineticBlockEntityRenderer.renderRotatingBuffer(te, getRotatedModel(te, state), ms, bufferSource.getBuffer(type), light);
             }
     }
 
@@ -63,7 +63,7 @@ public interface IKineticMachineRenderer extends IRenderer {
 
     @Environment(EnvType.CLIENT)
     default SuperByteBuffer getRotatedModel(KineticMachineBlockEntity te, BlockState state) {
-        return CachedBufferer.block(KineticTileEntityRenderer.KINETIC_TILE, state);
+        return CachedBufferer.block(KineticBlockEntityRenderer.KINETIC_BLOCK, state);
     }
 
 

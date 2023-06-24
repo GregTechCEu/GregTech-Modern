@@ -27,6 +27,9 @@ public class ConfigHolder {
     public MachineConfigs machines = new MachineConfigs();
     @Configurable
     public ClientConfigs client = new ClientConfigs();
+    @Configurable
+    @Configurable.Comment("Config options for Mod Compatibility")
+    public CompatibilityConfigs compat = new CompatibilityConfigs();
 
     public static class RecipeConfigs {
         @Configurable
@@ -85,6 +88,46 @@ public class ConfigHolder {
         public boolean removeVanillaBlockRecipes = false; // default false
     }
 
+    public static class CompatibilityConfigs {
+
+        @Configurable
+        @Configurable.Comment("Config options regarding GTEU compatibility with other energy systems")
+        public EnergyCompatConfig energy = new EnergyCompatConfig();
+
+        @Configurable
+        @Configurable.Comment({"Whether to hide facades of all blocks in JEI and creative search menu.", "Default: true"})
+        public boolean hideFacadesInJEI = true;
+
+        @Configurable
+        @Configurable.Comment({"Whether to hide filled cells in JEI and creative search menu.", "Default: true"})
+        public boolean hideFilledCellsInJEI = true;
+
+        @Configurable
+        @Configurable.Comment({"Whether Gregtech should remove smelting recipes from the vanilla furnace for ingots requiring the Electric Blast Furnace.", "Default: true"})
+        public boolean removeSmeltingForEBFMetals = true;
+
+        public static class EnergyCompatConfig {
+
+            @Configurable
+            @Configurable.Comment({"Enable Native GTEU to Platform native Energy (RF and alike) on GT Cables and Wires.", "This does not enable nor disable Converters.", "Default: true"})
+            public boolean nativeEUToPlatformNative = true;
+
+            @Configurable
+            @Configurable.Comment({"Enable GTEU to Platform native (and vice versa) Converters.", "Default: false"})
+            public boolean enablePlatformConverters = false;
+
+            @Configurable
+            @Configurable.Comment({"Platform native Energy to GTEU ratio for converting FE to EU.", "Only affects converters.", "Default: 4 FE/Energy == 1 EU"})
+            @Configurable.Range(min = 1, max = 16)
+            public int platformToEuRatio = 4;
+
+            @Configurable
+            @Configurable.Comment({"GTEU to Platform native Energy ratio for converting EU to FE.", "Affects native conversion and Converters.", "Default: 4 FE/Energy == 1 EU"})
+            @Configurable.Range(min = 1, max = 16)
+            public int euToPlatformRatio = 4;
+        }
+    }
+
     public static class WorldGenConfigs {
         @Configurable
         @Configurable.Comment({"Should all Stone Types drop unique Ore Item Blocks?", "Default: false (meaning only Stone, Netherrack, and Endstone)"})
@@ -103,6 +146,7 @@ public class ConfigHolder {
         @Configurable.Comment({"Debug ore vein placement? (will print placed veins to server's debug.log)", "Default: false (no placement printout in debug.log)"})
         public boolean debugWorldgen;
     }
+
     public static class MachineConfigs {
         @Configurable
         @Configurable.Comment({"Whether to require a Wrench, Wirecutter, or other GregTech tools to break machines, casings, wires, and more.", "Default: false"})

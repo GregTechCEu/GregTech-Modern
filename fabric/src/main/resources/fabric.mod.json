@@ -25,19 +25,19 @@
       "com.gregtechceu.gtceu.integration.top.fabric.TheOneProbePluginImpl"
     ],
     "rei_client": [
-      "com.gregtechceu.gtceu.integration.rei.fabric.REIPluginImpl"
+      "com.gregtechceu.gtceu.integration.rei.GTREIPlugin"
     ],
     "jei_mod_plugin": [
-      "com.gregtechceu.gtceu.integration.jei.fabric.JEIPluginImpl"
+      "com.gregtechceu.gtceu.integration.jei.GTJEIPlugin"
     ],
     "ldlib_pugin": [
-      "com.gregtechceu.gtceu.integration.ldlib.fabric.LDLibPlugin"
+      "com.gregtechceu.gtceu.integration.ldlib.GTLDLibPlugin"
     ],
     "fabric-datagen": [
       "com.gregtechceu.gtceu.data.fabric.GregTechDatagen"
     ],
     "emi": [
-      "com.gregtechceu.gtceu.integration.emi.fabric.EMIPlugin"
+      "com.gregtechceu.gtceu.integration.emi.GTEMIPlugin"
     ],
     "jade": [
       "com.gregtechceu.gtceu.integration.jade.GTJadePlugin"

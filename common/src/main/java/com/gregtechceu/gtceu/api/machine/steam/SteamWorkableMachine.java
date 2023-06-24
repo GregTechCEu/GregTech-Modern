@@ -14,6 +14,7 @@ import com.gregtechceu.gtceu.api.machine.trait.IRecipeHandlerTrait;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.api.syncdata.RequireRerender;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
@@ -51,7 +52,7 @@ public abstract class SteamWorkableMachine extends SteamMachine implements IReci
     public final RecipeLogic recipeLogic;
     @Getter
     public final GTRecipeType recipeType;
-    @Persisted @DescSynced @Getter
+    @Persisted @DescSynced @Getter @RequireRerender
     protected Direction outputFacing;
     @Persisted @DescSynced @Getter @Setter
     protected boolean isMuffled;
@@ -66,9 +67,6 @@ public abstract class SteamWorkableMachine extends SteamMachine implements IReci
         this.capabilitiesProxy = Tables.newCustomTable(new EnumMap<>(IO.class), HashMap::new);
         this.traitSubscriptions = new ArrayList<>();
         this.outputFacing = hasFrontFacing() ? getFrontFacing().getOpposite() : Direction.UP;
-        if (isRemote()) {
-            addSyncUpdateListener("outputFacing", this::scheduleRender);
-        }
     }
 
     //////////////////////////////////////

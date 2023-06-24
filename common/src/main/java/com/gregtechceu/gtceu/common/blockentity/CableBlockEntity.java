@@ -1,15 +1,14 @@
 package com.gregtechceu.gtceu.common.blockentity;
 
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.common.pipelike.cable.EnergyNetHandler;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
-import com.gregtechceu.gtceu.api.capability.ICoverable;
+import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
+import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.common.block.CableBlock;
 import com.gregtechceu.gtceu.common.pipelike.cable.CableData;
 import com.gregtechceu.gtceu.common.pipelike.cable.EnergyNet;
+import com.gregtechceu.gtceu.common.pipelike.cable.EnergyNetHandler;
 import com.gregtechceu.gtceu.common.pipelike.cable.Insulation;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import dev.architectury.injectables.annotations.ExpectPlatform;
@@ -17,14 +16,8 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.BlockHitResult;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -74,7 +67,10 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, CableData> {
         return this.currentEnergyNet.get();
     }
 
-    public IEnergyContainer getEnergyContainer() {
+    @Nullable
+    public IEnergyContainer getEnergyContainer(@Nullable Direction side) {
+        if (side != null && isBlocked(side)) return null;
+        if (isRemote()) return IEnergyContainer.DEFAULT;
         var ENet = getEnergyNet();
         if (ENet != null) {
             return new EnergyNetHandler(ENet, this);
@@ -90,10 +86,6 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, CableData> {
     //////////////////////////////////////
     //*******     Interaction    *******//
     //////////////////////////////////////
-    @Override
-    public boolean shouldRenderGrid(Player player, ItemStack held, GTToolType toolType) {
-        return super.shouldRenderGrid(player, held, toolType) || toolType == GTToolType.WIRE_CUTTER;
-    }
 
     @Override
     public ResourceTexture getPipeTexture(boolean isBlock) {
@@ -101,28 +93,7 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, CableData> {
     }
 
     @Override
-    public ResourceTexture sideTips(Player player, GTToolType toolType, Direction side) {
-        if (toolType == GTToolType.WIRE_CUTTER) {
-            return getPipeTexture(isBlocked(side));
-        }
-        return super.sideTips(player, toolType, side);
-    }
-
-    @Override
-    public InteractionResult onToolClick(@NotNull GTToolType toolType, ItemStack itemStack, UseOnContext context) {
-        // the side hit from the machine grid
-        var playerIn = context.getPlayer();
-        if (playerIn == null) return InteractionResult.PASS;
-
-        var hitResult = new BlockHitResult(context.getClickLocation(), context.getClickedFace(), context.getClickedPos(), false);
-        Direction gridSide = ICoverable.determineGridSideHit(hitResult);
-        if (gridSide == null) gridSide = hitResult.getDirection();
-
-        if (toolType == GTToolType.WIRE_CUTTER) {
-            setBlocked(gridSide, !isBlocked(gridSide));
-            return InteractionResult.CONSUME;
-        }
-
-        return super.onToolClick(toolType, itemStack, context);
+    protected boolean canToolTunePipe(GTToolType toolType) {
+        return super.canToolTunePipe(toolType) || toolType == GTToolType.WIRE_CUTTER;
     }
 }

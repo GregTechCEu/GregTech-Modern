@@ -1223,6 +1223,7 @@ public class LangHandler {
         provider.add("config.jade.plugin_gtceu.workable_provider", "[GTCEu] Workable");
         provider.add("config.jade.plugin_gtceu.electric_container_provider", "[GTCEu] Electric Container");
         provider.add("config.jade.plugin_gtceu.recipe_logic_provider", "[GTCEu] Recipe Logic");
+        provider.add("gtceu.recipe_type.show_recipes", "Show Recipes");
     }
 
     /**
