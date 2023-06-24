@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.blockentity.forge;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
+import com.gregtechceu.gtceu.api.capability.IPlatformEnergyStorage;
 import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.capability.forge.GTEnergyHelperImpl;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
@@ -83,12 +84,6 @@ public class MetaMachineBlockEntityImpl extends MetaMachineBlockEntity {
             if (!list.isEmpty()) {
                 return GTCapability.CAPABILITY_ENERGY_CONTAINER.orEmpty(cap, LazyOptional.of(() -> list.size() == 1 ? list.get(0) : new EnergyContainerList(list)));
             }
-            for (MachineTrait trait : machine.getTraits()) {
-                if (trait instanceof ConverterTrait converterTrait) {
-                    if (converterTrait.isFeToEu() == (side == machine.getFrontFacing())) continue;
-                    return GTCapability.CAPABILITY_ENERGY_CONTAINER.orEmpty(cap, LazyOptional.of(converterTrait::getEnergyEUContainer));
-                }
-            }
         } else if (cap == GTCapability.CAPABILITY_CONVERTER) {
             for (MachineTrait trait : machine.getTraits()) {
                 if (trait instanceof ConverterTrait converter) {
@@ -106,11 +101,13 @@ public class MetaMachineBlockEntityImpl extends MetaMachineBlockEntity {
                 return ForgeCapabilities.FLUID_HANDLER.orEmpty(cap, LazyOptional.of(() -> FluidTransferHelperImpl.toFluidHandler(transfer)));
             }
         } else if (cap == ForgeCapabilities.ENERGY) {
-            for (MachineTrait trait : machine.getTraits()) {
-                if (trait instanceof ConverterTrait converterTrait) {
-                    if (side != (converterTrait.isFeToEu() ? machine.getFrontFacing() : null)) continue;
-                    return ForgeCapabilities.ENERGY.orEmpty(cap, LazyOptional.of(() -> GTEnergyHelperImpl.toEnergyStorage(converterTrait.getEnergyNativeContainer())));
-                }
+            if (machine instanceof IPlatformEnergyStorage platformEnergyStorage) {
+                return ForgeCapabilities.ENERGY.orEmpty(cap, LazyOptional.of(() -> GTEnergyHelperImpl.toEnergyStorage(platformEnergyStorage)));
+            }
+            var list = machine.getTraits().stream().filter(IPlatformEnergyStorage.class::isInstance).filter(t -> t.hasCapability(side)).map(IPlatformEnergyStorage.class::cast).toList();
+            if (!list.isEmpty()) {
+                // TODO wrap list in the future
+                return ForgeCapabilities.ENERGY.orEmpty(cap, LazyOptional.of(() -> GTEnergyHelperImpl.toEnergyStorage(list.get(0))));
             }
         }
         return null;

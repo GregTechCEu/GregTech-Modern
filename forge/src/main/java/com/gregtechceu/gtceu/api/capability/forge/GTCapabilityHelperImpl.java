@@ -95,7 +95,7 @@ public class GTCapabilityHelperImpl {
         if (level.getBlockState(pos).hasBlockEntity()) {
             var blockEntity = level.getBlockEntity(pos);
             if (blockEntity != null) {
-                IEnergyStorage energyStorage = blockEntity.getCapability(ForgeCapabilities.ENERGY).orElse(null);
+                IEnergyStorage energyStorage = blockEntity.getCapability(ForgeCapabilities.ENERGY, side).orElse(null);
                 return energyStorage == null ? null : GTEnergyHelperImpl.toPlatformEnergyStorage(energyStorage);
             }
         }

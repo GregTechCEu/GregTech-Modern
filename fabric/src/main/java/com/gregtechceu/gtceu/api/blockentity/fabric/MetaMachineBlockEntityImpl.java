@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
+import com.gregtechceu.gtceu.api.capability.IPlatformEnergyStorage;
 import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.capability.fabric.GTCapability;
 import com.gregtechceu.gtceu.api.capability.fabric.GTEnergyHelperImpl;
@@ -75,13 +76,7 @@ public class MetaMachineBlockEntityImpl extends MetaMachineBlockEntity {
                 return  energyContainer;
             }
             var list = ((IMachineBlockEntity)blockEntity).getMetaMachine().getTraits().stream().filter(IEnergyContainer.class::isInstance).filter(t -> t.hasCapability(side)).map(IEnergyContainer.class::cast).toList();
-            if (list.isEmpty()) {
-                var list2 = ((IMachineBlockEntity)blockEntity).getMetaMachine().getTraits().stream().filter(ConverterTrait.class::isInstance).filter(t -> t.hasCapability(side)).map(ConverterTrait.class::cast).toList();
-                return list2.isEmpty() ? null : list2.get(0).getEnergyEUContainer();
-            } else {
-                return list.size() == 1 ? list.get(0) : new EnergyContainerList(list);
-
-            }
+            return list.isEmpty() ? null : list.size() == 1 ? list.get(0) : new EnergyContainerList(list);
         }, type);
         GTCapability.CAPABILITY_CONVERTER.registerForBlockEntity((blockEntity, direction) -> {
             for (MachineTrait trait : ((IMachineBlockEntity)blockEntity).getMetaMachine().getTraits()) {
@@ -101,12 +96,12 @@ public class MetaMachineBlockEntityImpl extends MetaMachineBlockEntity {
         }, type);
         if (GTCEu.isRebornEnergyLoaded()) {
             EnergyStorage.SIDED.registerForBlockEntity((blockEntity, side) -> {
-                for (MachineTrait trait : ((IMachineBlockEntity)blockEntity).getMetaMachine().getTraits()) {
-                    if (trait instanceof ConverterTrait converter) {
-                        return GTEnergyHelperImpl.toEnergyStorage(converter.getEnergyNativeContainer());
-                    }
+                if (((IMachineBlockEntity)blockEntity).getMetaMachine() instanceof IPlatformEnergyStorage platformEnergyStorage) {
+                    return GTEnergyHelperImpl.toEnergyStorage(platformEnergyStorage);
                 }
-                return null;
+                var list = ((IMachineBlockEntity)blockEntity).getMetaMachine().getTraits().stream().filter(IPlatformEnergyStorage.class::isInstance).filter(t -> t.hasCapability(side)).map(IPlatformEnergyStorage.class::cast).toList();
+                // TODO wrap list in the future
+                return list.isEmpty() ? null : GTEnergyHelperImpl.toEnergyStorage(list.get(0));
             }, type);
         }
     }
