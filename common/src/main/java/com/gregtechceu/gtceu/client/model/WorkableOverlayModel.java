@@ -1,7 +1,5 @@
 package com.gregtechceu.gtceu.client.model;
 
-import com.google.common.collect.Table;
-import com.google.common.collect.Tables;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
@@ -22,7 +20,6 @@ import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -112,28 +109,23 @@ public class WorkableOverlayModel {
         this.location = location;
         if (LDLib.isClient()) {
             this.sprites = new EnumMap<>(OverlayFace.class);
-            this.caches = Tables.newCustomTable(new EnumMap<>(Direction.class), () -> new EnumMap<>(Direction.class));
+//            this.caches = Tables.newCustomTable(new EnumMap<>(Direction.class), () -> new EnumMap<>(Direction.class));
         }
     }
 
-    @Environment(EnvType.CLIENT)
-    public Table<Direction, Direction, List<BakedQuad>[][]> caches;
-
-    @Environment(EnvType.CLIENT)
-    public static final AABB SLIGHTLY_LARGER_CUBE = new AABB(-0.0002, -0.0002, -0.0002, 1.0002, 1.0002, 1.0002);
-    @Environment(EnvType.CLIENT)
-    public static final AABB EVEN_SLIGHTLY_LARGER_CUBE = new AABB(-0.0003, -0.0003, -0.0003, 1.0003, 1.0003, 1.0003);
+//    @Environment(EnvType.CLIENT)
+//    public Table<Direction, Direction, List<BakedQuad>[][]> caches;
 
     @Environment(EnvType.CLIENT)
     public List<BakedQuad> bakeQuads(@Nullable Direction side, Direction frontFacing, boolean isActive, boolean isWorkingEnabled) {
-        synchronized (caches) {
-            if (side == null) return Collections.emptyList();
-            if (!caches.contains(side, frontFacing)) {
-                caches.put(side, frontFacing, new List[2][2]);
-            }
-            var cache = caches.get(side, frontFacing);
-            assert cache != null;
-            if (cache[isActive ? 0 : 1][isWorkingEnabled ? 0 : 1] == null) {
+//        synchronized (caches) {
+//            if (side == null) return Collections.emptyList();
+//            if (!caches.contains(side, frontFacing)) {
+//                caches.put(side, frontFacing, new List[2][2]);
+//            }
+//            var cache = caches.get(side, frontFacing);
+//            assert cache != null;
+//            if (cache[isActive ? 0 : 1][isWorkingEnabled ? 0 : 1] == null) {
                 var quads = new ArrayList<BakedQuad>();
                 for (Direction renderSide : Direction.values()) {
                     var rotation = ModelFactory.getRotation(frontFacing);
@@ -141,7 +133,7 @@ public class WorkableOverlayModel {
                     if (predicate != null) {
                         var texture = predicate.getSprite(isActive, isWorkingEnabled);
                         if (texture != null) {
-                            var quad = FaceQuad.bakeFace(SLIGHTLY_LARGER_CUBE, renderSide, texture, rotation, -1, 0, true, true);
+                            var quad = FaceQuad.bakeFace(FaceQuad.BLOCK, renderSide, texture, rotation, -1, 0, true, true);
                             if (quad.getDirection() == side) {
                                 quads.add(quad);
                             }
@@ -150,12 +142,12 @@ public class WorkableOverlayModel {
                         texture = predicate.getEmissiveSprite(isActive, isWorkingEnabled);
                         if (texture != null) {
                             if (ConfigHolder.INSTANCE.client.machinesEmissiveTextures) {
-                                var quad = FaceQuad.bakeFace(EVEN_SLIGHTLY_LARGER_CUBE, renderSide, texture, rotation, 0, 15, true, false);
+                                var quad = FaceQuad.bakeFace(FaceQuad.BLOCK, renderSide, texture, rotation, 0, 15, true, false);
                                 if (quad.getDirection() == side) {
                                     quads.add(quad);
                                 }
                             } else {
-                                var quad = FaceQuad.bakeFace(EVEN_SLIGHTLY_LARGER_CUBE, renderSide, texture, rotation, -1, 0, true, true);
+                                var quad = FaceQuad.bakeFace(FaceQuad.BLOCK, renderSide, texture, rotation, -1, 0, true, true);
                                 if (quad.getDirection() == side) {
                                     quads.add(quad);
                                 }
@@ -163,10 +155,11 @@ public class WorkableOverlayModel {
                         }
                     }
                 }
-                cache[isActive ? 0 : 1][isWorkingEnabled ? 0 : 1] = quads;
-            }
-            return cache[isActive ? 0 : 1][isWorkingEnabled ? 0 : 1];
-        }
+                return quads;
+//                cache[isActive ? 0 : 1][isWorkingEnabled ? 0 : 1] = quads;
+//            }
+//            return cache[isActive ? 0 : 1][isWorkingEnabled ? 0 : 1];
+//        }
     }
 
     @NotNull
@@ -190,7 +183,7 @@ public class WorkableOverlayModel {
     @Environment(EnvType.CLIENT)
     public void registerTextureAtlas(Consumer<ResourceLocation> register) {
         sprites.clear();
-        caches.clear();
+//        caches.clear();
         for (OverlayFace overlayFace : OverlayFace.VALUES) {
             final String overlayPath = "/overlay_" + overlayFace.name().toLowerCase();
 
