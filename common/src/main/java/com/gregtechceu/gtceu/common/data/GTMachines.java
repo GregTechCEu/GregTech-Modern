@@ -827,7 +827,7 @@ public class GTMachines {
                             Component.translatable("gtceu.machine.fusion_reactor.capacity", FusionReactorMachine.calculateEnergyStorageFactor(tier, 16) / 1000000L),
                             Component.translatable("gtceu.machine.fusion_reactor.overclocking"),
                             Component.translatable("gtceu.multiblock.fusion_reactor.%s.description".formatted(VN[tier].toLowerCase(Locale.ROOT))))
-                    .partAppearance((controller, part, direction) -> FusionReactorMachine.getCasingState(tier).defaultBlockState())
+                    .appearanceBlock(() -> FusionReactorMachine.getCasingState(tier))
                     .pattern((definition) -> {
                         var casing = blocks(FusionReactorMachine.getCasingState(tier));
                         return FactoryBlockPattern.start()

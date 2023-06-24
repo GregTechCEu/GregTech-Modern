@@ -96,7 +96,7 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
     protected List<Function<CompoundTag, String>> dataInfos = new ArrayList<>();
     @Setter
     @Getter
-    protected int maxConditions;
+    protected int maxTooltips = 3;
     @Setter
     @Nullable
     protected BiConsumer<GTRecipe, WidgetGroup> uiBuilder;
@@ -317,7 +317,7 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
     }
 
     public Size getJEISize() {
-        return new Size(176, (dataInfos.size() + 3 + maxConditions) * 10 + 5 + createDefaultUITemplate(true).getSize().height);
+        return new Size(176, (dataInfos.size() + maxTooltips) * 10 + 5 + createDefaultUITemplate(true).getSize().height);
     }
 
     /**

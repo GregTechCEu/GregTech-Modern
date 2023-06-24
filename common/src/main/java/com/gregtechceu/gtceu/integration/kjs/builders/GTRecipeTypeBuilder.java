@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
-import com.gregtechceu.gtceu.integration.kjs.GregTechKubeJSPlugin;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
@@ -15,7 +14,6 @@ import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.utils.Position;
 import com.lowdragmc.lowdraglib.utils.Rect;
 import com.lowdragmc.lowdraglib.utils.Size;
-import dev.latvian.mods.kubejs.RegistryObjectBuilderTypes;
 import it.unimi.dsi.fastutil.bytes.Byte2ObjectArrayMap;
 import it.unimi.dsi.fastutil.bytes.Byte2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
@@ -24,8 +22,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
@@ -41,7 +37,7 @@ public class GTRecipeTypeBuilder extends BuilderBase<GTRecipeType> {
     private transient final Byte2ObjectMap<IGuiTexture> slotOverlays;
     @Nullable
     protected SoundEntry sound;
-    protected int maxConditions;
+    protected int maxTooltips;
     protected boolean isFuelRecipeType;
 
     private GTRecipeType smallRecipeMap;
@@ -59,7 +55,7 @@ public class GTRecipeTypeBuilder extends BuilderBase<GTRecipeType> {
         steamMoveType = ProgressTexture.FillDirection.LEFT_TO_RIGHT;
         slotOverlays = new Byte2ObjectArrayMap<>();
         this.sound = null;
-        this.maxConditions = 0;
+        this.maxTooltips = 3;
         this.isFuelRecipeType = false;
         this.smallRecipeMap = null;
         this.iconSupplier = null;
@@ -127,8 +123,8 @@ public class GTRecipeTypeBuilder extends BuilderBase<GTRecipeType> {
         return this;
     }
 
-    public GTRecipeTypeBuilder setMaxConditions(int maxConditions) {
-        this.maxConditions = maxConditions;
+    public GTRecipeTypeBuilder setMaxTooltips(int maxTooltips) {
+        this.maxTooltips = maxTooltips;
         return this;
     }
 
@@ -163,7 +159,7 @@ public class GTRecipeTypeBuilder extends BuilderBase<GTRecipeType> {
         type.setSteamProgressBarTexture(steamProgressBarTexture);
         type.setSteamMoveType(steamMoveType);
         type.setSound(sound);
-        type.setMaxConditions(maxConditions);
+        type.setMaxTooltips(maxTooltips);
         type.setFuelRecipeType(isFuelRecipeType);
         type.setSmallRecipeMap(smallRecipeMap);
         type.setIconSupplier(iconSupplier);

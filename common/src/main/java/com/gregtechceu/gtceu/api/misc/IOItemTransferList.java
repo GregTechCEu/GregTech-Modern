@@ -3,9 +3,7 @@ package com.gregtechceu.gtceu.api.misc;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.lowdragmc.lowdraglib.misc.ItemTransferList;
 import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
-import com.lowdragmc.lowdraglib.syncdata.IContentChangeAware;
 import lombok.Getter;
-import lombok.Setter;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -17,10 +15,7 @@ import java.util.function.Predicate;
  * @date 2023/3/14
  * @implNote IOItemTransferList
  */
-public class IOItemTransferList extends ItemTransferList implements IContentChangeAware {
-    @Getter
-    @Setter
-    private Runnable onContentsChanged = () -> {};
+public class IOItemTransferList extends ItemTransferList {
 
     @Getter
     private final IO io;

@@ -18,7 +18,7 @@ public class FusionLoader {
                 .outputFluids(GTMaterials.Helium.getPlasma(125))
                 .duration(16)
                 .EUt(4096)
-                .addData("eu_to_start", 40_000_000)
+                .fusionStartEU(40_000_000)
                 .save(provider);
 
         FUSION_RECIPES.recipeBuilder("carbon_and_helium_3_to_oxygen_plasma")
@@ -27,7 +27,7 @@ public class FusionLoader {
                 .outputFluids(GTMaterials.Oxygen.getPlasma(125))
                 .duration(32)
                 .EUt(4096)
-                .addData("eu_to_start", 180_000_000)
+                .fusionStartEU(180_000_000)
                 .save(provider);
 
         FUSION_RECIPES.recipeBuilder("beryllium_and_deuterium_to_nitrogen_plasma")
@@ -36,7 +36,7 @@ public class FusionLoader {
                 .outputFluids(GTMaterials.Nitrogen.getPlasma(125))
                 .duration(16)
                 .EUt(16384)
-                .addData("eu_to_start", 280_000_000)
+                .fusionStartEU(280_000_000)
                 .save(provider);
 
         FUSION_RECIPES.recipeBuilder("silicon_and_magnesium_to_iron_plasma")
@@ -45,7 +45,7 @@ public class FusionLoader {
                 .outputFluids(GTMaterials.Iron.getPlasma(16))
                 .duration(32)
                 .EUt(VA[IV])
-                .addData("eu_to_start", 360_000_000)
+                .fusionStartEU(360_000_000)
                 .save(provider);
 
         FUSION_RECIPES.recipeBuilder("potassium_and_fluorine_to_nickel_plasma")
@@ -54,7 +54,7 @@ public class FusionLoader {
                 .outputFluids(GTMaterials.Nickel.getPlasma(16))
                 .duration(16)
                 .EUt(VA[LuV])
-                .addData("eu_to_start", 480_000_000)
+                .fusionStartEU(480_000_000)
                 .save(provider);
 
         FUSION_RECIPES.recipeBuilder("carbon_and_magnesium_to_argon_plasma")
@@ -63,7 +63,7 @@ public class FusionLoader {
                 .outputFluids(GTMaterials.Argon.getPlasma(125))
                 .duration(32)
                 .EUt(24576)
-                .addData("eu_to_start", 180_000_000)
+                .fusionStartEU(180_000_000)
                 .save(provider);
 
         FUSION_RECIPES.recipeBuilder("neodymium_and_hydrogen_to_europium_plasma")
@@ -72,7 +72,7 @@ public class FusionLoader {
                 .outputFluids(GTMaterials.Europium.getFluid(16))
                 .duration(64)
                 .EUt(24576)
-                .addData("eu_to_start", 150_000_000)
+                .fusionStartEU(150_000_000)
                 .save(provider);
 
         FUSION_RECIPES.recipeBuilder("lutenium_and_chromium_to_americium_plasma")
@@ -81,7 +81,7 @@ public class FusionLoader {
                 .outputFluids(GTMaterials.Americium.getFluid(32))
                 .duration(64)
                 .EUt(49152)
-                .addData("eu_to_start", 200_000_000)
+                .fusionStartEU(200_000_000)
                 .save(provider);
 
         FUSION_RECIPES.recipeBuilder("americium_and_naquadria_to_neutronium_plasma")
@@ -90,7 +90,7 @@ public class FusionLoader {
                 .outputFluids(GTMaterials.Neutronium.getFluid(32))
                 .duration(200)
                 .EUt(98304)
-                .addData("eu_to_start", 600_000_000)
+                .fusionStartEU(600_000_000)
                 .save(provider);
 
         FUSION_RECIPES.recipeBuilder("silver_and_copper_to_osmium_plasma")
@@ -99,7 +99,7 @@ public class FusionLoader {
                 .outputFluids(GTMaterials.Osmium.getFluid(16))
                 .duration(64)
                 .EUt(24578)
-                .addData("eu_to_start", 150_000_000)
+                .fusionStartEU(150_000_000)
                 .save(provider);
 
         FUSION_RECIPES.recipeBuilder("mercury_and_magnesium_to_uranium_235_plasma")
@@ -108,7 +108,7 @@ public class FusionLoader {
                 .outputFluids(GTMaterials.Uranium235.getFluid(16))
                 .duration(128)
                 .EUt(24576)
-                .addData("eu_to_start", 140_000_000)
+                .fusionStartEU(140_000_000)
                 .save(provider);
 
         FUSION_RECIPES.recipeBuilder("gold_and_aluminium_to_uranium_238_plasma")
@@ -117,7 +117,7 @@ public class FusionLoader {
                 .outputFluids(GTMaterials.Uranium238.getFluid(16))
                 .duration(128)
                 .EUt(24576)
-                .addData("eu_to_start", 140_000_000)
+                .fusionStartEU(140_000_000)
                 .save(provider);
 
         FUSION_RECIPES.recipeBuilder("xenon_and_zinc_to_plutonium_239_plasma")
@@ -126,7 +126,7 @@ public class FusionLoader {
                 .outputFluids(GTMaterials.Plutonium239.getFluid(16))
                 .duration(128)
                 .EUt(49152)
-                .addData("eu_to_start", 120_000_000)
+                .fusionStartEU(120_000_000)
                 .save(provider);
 
         FUSION_RECIPES.recipeBuilder("krypton_and_cerium_to_plutonium_241_plasma")
@@ -135,7 +135,7 @@ public class FusionLoader {
                 .outputFluids(GTMaterials.Plutonium241.getFluid(16))
                 .duration(128)
                 .EUt(49152)
-                .addData("eu_to_start", 240_000_000)
+                .fusionStartEU(240_000_000)
                 .save(provider);
 
         FUSION_RECIPES.recipeBuilder("hydrogen_and_vanadium_to_chromium_plasma")
@@ -144,7 +144,7 @@ public class FusionLoader {
                 .outputFluids(GTMaterials.Chromium.getFluid(16))
                 .duration(64)
                 .EUt(24576)
-                .addData("eu_to_start", 140_000_000)
+                .fusionStartEU(140_000_000)
                 .save(provider);
 
         FUSION_RECIPES.recipeBuilder("gallium_and_radon_to_duranium_plasma")
@@ -153,7 +153,7 @@ public class FusionLoader {
                 .outputFluids(GTMaterials.Duranium.getFluid(16))
                 .duration(64)
                 .EUt(16384)
-                .addData("eu_to_start", 140_000_000)
+                .fusionStartEU(140_000_000)
                 .save(provider);
 
         FUSION_RECIPES.recipeBuilder("titanium_and_duranium_to_tritanium_plasma")
@@ -162,7 +162,7 @@ public class FusionLoader {
                 .outputFluids(GTMaterials.Tritanium.getFluid(16))
                 .duration(64)
                 .EUt(VA[LuV])
-                .addData("eu_to_start", 200_000_000)
+                .fusionStartEU(200_000_000)
                 .save(provider);
 
         FUSION_RECIPES.recipeBuilder("gold_and_mercury_to_radon_plasma")
@@ -171,7 +171,7 @@ public class FusionLoader {
                 .outputFluids(GTMaterials.Radon.getFluid(125))
                 .duration(64)
                 .EUt(VA[LuV])
-                .addData("eu_to_start", 200_000_000)
+                .fusionStartEU(200_000_000)
                 .save(provider);
 
         FUSION_RECIPES.recipeBuilder("silver_and_lithium_to_indium_plasma")
@@ -180,7 +180,7 @@ public class FusionLoader {
                 .outputFluids(GTMaterials.Indium.getFluid(144))
                 .duration(16)
                 .EUt(24576)
-                .addData("eu_to_start", 280_000_000)
+                .fusionStartEU(280_000_000)
                 .save(provider);
 
         FUSION_RECIPES.recipeBuilder("enriched_naquadah_and_radon_to_naquadria_plasma")
@@ -189,7 +189,7 @@ public class FusionLoader {
                 .outputFluids(GTMaterials.Naquadria.getFluid(4))
                 .duration(64)
                 .EUt(49152)
-                .addData("eu_to_start", 400_000_000)
+                .fusionStartEU(400_000_000)
                 .save(provider);
 
         FUSION_RECIPES.recipeBuilder("lantanum_and_silicon_to_lutetium_plasma")
@@ -198,7 +198,7 @@ public class FusionLoader {
                 .outputFluids(GTMaterials.Lutetium.getFluid(16))
                 .duration(16)
                 .EUt(VA[IV])
-                .addData("eu_to_start", 80_000_000)
+                .fusionStartEU(80_000_000)
                 .save(provider);
 
         FUSION_RECIPES.recipeBuilder("arsenic_and_ruthenium_to_darmstadtium_plasma")
@@ -207,7 +207,7 @@ public class FusionLoader {
                 .outputFluids(GTMaterials.Darmstadtium.getFluid(16))
                 .duration(32)
                 .EUt(VA[LuV])
-                .addData("eu_to_start", 200_000_000)
+                .fusionStartEU(200_000_000)
                 .save(provider);
 
     }

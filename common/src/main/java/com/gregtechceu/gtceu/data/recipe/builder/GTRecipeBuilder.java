@@ -415,6 +415,10 @@ public class GTRecipeBuilder {
         return addData("disable_distillery", flag);
     }
 
+    public GTRecipeBuilder fusionStartEU(long eu) {
+        return addData("eu_to_start",  eu);
+    }
+
     //////////////////////////////////////
     //*******     CONDITIONS    ********//
     //////////////////////////////////////
