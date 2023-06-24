@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.api.machine.trait;
 
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.lowdragmc.lowdraglib.syncdata.IManaged;
-import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
+import com.gregtechceu.gtceu.api.syncdata.EnhancedFieldManagedStorage;
+import com.gregtechceu.gtceu.api.syncdata.IEnhancedManaged;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.core.Direction;
@@ -17,9 +17,9 @@ import java.util.function.Predicate;
  * @implNote MachineTrait represents an abstract capability held by machine. Such as item, fluid, energy, etc.
  * All trait should be added while MetaMachine is creating. you cannot modify it on the fly。
  */
-public abstract class MachineTrait implements IManaged {
+public abstract class MachineTrait implements IEnhancedManaged {
     @Getter
-    private final FieldManagedStorage syncStorage = new FieldManagedStorage(this);
+    private final EnhancedFieldManagedStorage syncStorage = new EnhancedFieldManagedStorage(this);
 
     @Getter
     protected final MetaMachine machine;
@@ -49,4 +49,8 @@ public abstract class MachineTrait implements IManaged {
 
     }
 
+    @Override
+    public void scheduleRenderUpdate() {
+        machine.scheduleRenderUpdate();
+    }
 }

@@ -57,12 +57,12 @@ public abstract class GTRegistrate extends Registrate {
 
     public abstract void registerRegistrate();
 
-    public IGTFluidBuilder createFluid(String name, Material material, ResourceLocation stillTexture, ResourceLocation flowingTexture) {
-        return fluid(this, material, name, stillTexture, flowingTexture);
+    public IGTFluidBuilder createFluid(String name, String langKey, Material material, ResourceLocation stillTexture, ResourceLocation flowingTexture) {
+        return fluid(this, material, name, langKey, stillTexture, flowingTexture);
     }
 
     @ExpectPlatform
-    public static IGTFluidBuilder fluid(GTRegistrate parent, Material material, String name, ResourceLocation stillTexture, ResourceLocation flowingTexture) {
+    public static IGTFluidBuilder fluid(GTRegistrate parent, Material material, String name, String langKey, ResourceLocation stillTexture, ResourceLocation flowingTexture) {
         throw new AssertionError();
     }
 

@@ -6,6 +6,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.energy.EnergyStorage;
+import net.minecraftforge.energy.IEnergyStorage;
 
 import javax.annotation.Nullable;
 
@@ -84,5 +87,18 @@ public class GTCapabilityHelperImpl {
     @Nullable
     public static IElectricItem getElectricItem(ItemStack itemStack) {
         return itemStack.getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM).resolve().orElse(null);
+    }
+
+    @SuppressWarnings({"DataFlowIssue", "ConstantValue"})
+    @Nullable
+    public static IPlatformEnergyStorage getPlatformEnergy(Level level, BlockPos pos, @Nullable Direction side) {
+        if (level.getBlockState(pos).hasBlockEntity()) {
+            var blockEntity = level.getBlockEntity(pos);
+            if (blockEntity != null) {
+                IEnergyStorage energyStorage = blockEntity.getCapability(ForgeCapabilities.ENERGY, side).orElse(null);
+                return energyStorage == null ? null : GTEnergyHelperImpl.toPlatformEnergyStorage(energyStorage);
+            }
+        }
+        return null;
     }
 }

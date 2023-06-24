@@ -15,6 +15,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputFluid;
 import com.gregtechceu.gtceu.api.machine.feature.IDropSaveMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
+import com.gregtechceu.gtceu.api.syncdata.RequireRerender;
 import com.gregtechceu.gtceu.common.data.GTFluids;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
@@ -57,7 +58,7 @@ public class DrumMachine extends MetaMachine implements IAutoOutputFluid, IDropS
 
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(DrumMachine.class, MetaMachine.MANAGED_FIELD_HOLDER);
 
-    @Getter @Persisted @DescSynced
+    @Getter @Persisted @DescSynced @RequireRerender
     protected boolean autoOutputFluids;
     @Getter
     private final int maxStoredFluids;
@@ -77,9 +78,6 @@ public class DrumMachine extends MetaMachine implements IAutoOutputFluid, IDropS
         this.material = material;
         this.maxStoredFluids = maxStoredFluids;
         this.cache = createCacheFluidHandler(args);
-        if (isRemote()) {
-            addSyncUpdateListener("autoOutputFluids", this::scheduleRender);
-        }
     }
 
     //////////////////////////////////////

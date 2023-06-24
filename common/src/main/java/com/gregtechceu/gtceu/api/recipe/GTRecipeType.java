@@ -9,6 +9,9 @@ import com.gregtechceu.gtceu.api.gui.WidgetUtils;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
 import com.gregtechceu.gtceu.core.mixins.RecipeManagerInvoker;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
+import com.gregtechceu.gtceu.integration.emi.recipe.GTRecipeTypeEmiCategory;
+import com.gregtechceu.gtceu.integration.jei.recipe.GTRecipeTypeCategory;
+import com.gregtechceu.gtceu.integration.rei.recipe.GTRecipeTypeDisplayCategory;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.Platform;
@@ -20,11 +23,13 @@ import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.gui.widget.*;
 import com.lowdragmc.lowdraglib.jei.IngredientIO;
+import com.lowdragmc.lowdraglib.jei.JEIPlugin;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidStorage;
 import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.utils.Position;
 import com.lowdragmc.lowdraglib.utils.Rect;
 import com.lowdragmc.lowdraglib.utils.Size;
+import dev.emi.emi.api.EmiApi;
 import it.unimi.dsi.fastutil.bytes.Byte2ObjectArrayMap;
 import it.unimi.dsi.fastutil.bytes.Byte2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
@@ -33,6 +38,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import me.shedaniel.rei.api.client.view.ViewSearchBuilder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.nbt.CompoundTag;
@@ -90,7 +96,7 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
     protected List<Function<CompoundTag, String>> dataInfos = new ArrayList<>();
     @Setter
     @Getter
-    protected int maxConditions;
+    protected int maxTooltips = 3;
     @Setter
     @Nullable
     protected BiConsumer<GTRecipe, WidgetGroup> uiBuilder;
@@ -311,7 +317,7 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
     }
 
     public Size getJEISize() {
-        return new Size(176, (dataInfos.size() + 3 + maxConditions) * 10 + 5 + createDefaultUITemplate(true).getSize().height);
+        return new Size(176, (dataInfos.size() + maxTooltips) * 10 + 5 + createDefaultUITemplate(true).getSize().height);
     }
 
     /**
@@ -324,6 +330,7 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
         WidgetGroup group  = createDefaultUITemplate(useCustomUI);
 
         // bind progress
+        List<Widget> progress = new ArrayList<>();
         WidgetUtils.widgetByIdForEach(group, "^progress$", ProgressWidget.class, progressWidget -> {
             progressWidget.setProgressSupplier(progressSupplier);
             if (!useCustomUI) {
@@ -333,7 +340,24 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
                         .setFillDirection(steamMoveType)
                         : progressBarTexture);
             }
+            progress.add(progressWidget);
         });
+        // add recipe button
+        if (!isJEI && (LDLib.isReiLoaded() || LDLib.isJeiLoaded() || LDLib.isEmiLoaded())) {
+            for (Widget widget : progress) {
+                group.addWidget(new ButtonWidget(widget.getPosition().x, widget.getPosition().y, widget.getSize().width, widget.getSize().height, IGuiTexture.EMPTY, cd -> {
+                    if (cd.isRemote) {
+                        if (LDLib.isReiLoaded()) {
+                            ViewSearchBuilder.builder().addCategory(GTRecipeTypeDisplayCategory.CATEGORIES.apply(this)).open();
+                        } else if (LDLib.isJeiLoaded()) {
+                            JEIPlugin.jeiRuntime.getRecipesGui().showTypes(List.of(GTRecipeTypeCategory.TYPES.apply(this)));
+                        } else if (LDLib.isEmiLoaded()) {
+                            EmiApi.displayRecipeCategory(GTRecipeTypeEmiCategory.CATEGORIES.apply(this));
+                        }
+                    }
+                }).setHoverTooltips("gtceu.recipe_type.show_recipes"));
+            }
+        }
         // bind item in
         WidgetUtils.widgetByIdForEach(group, "^%s_[0-9]+$".formatted(ItemRecipeCapability.CAP.slotName(IO.IN)), SlotWidget.class, slot -> {
            var index = WidgetUtils.widgetIdIndex(slot);

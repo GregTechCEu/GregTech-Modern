@@ -6,13 +6,14 @@ import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.lowdragmc.lowdraglib.syncdata.IManaged;
-import com.lowdragmc.lowdraglib.syncdata.IManagedStorage;
+import com.gregtechceu.gtceu.api.syncdata.EnhancedFieldManagedStorage;
+import com.gregtechceu.gtceu.api.syncdata.IEnhancedManaged;
+import com.gregtechceu.gtceu.api.syncdata.UpdateListener;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.annotation.ReadOnlyManaged;
-import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import lombok.Getter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -31,30 +32,25 @@ import java.util.List;
  * @implNote PipeCoverContainer
  */
 
-public class PipeCoverContainer implements ICoverable, IManaged {
+public class PipeCoverContainer implements ICoverable, IEnhancedManaged {
 
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(PipeCoverContainer.class);
-    private final FieldManagedStorage storage = new FieldManagedStorage(this);
+    @Getter
+    private final EnhancedFieldManagedStorage syncStorage = new EnhancedFieldManagedStorage(this);
     private final IPipeNode<?, ?> pipeTile;
 
     @DescSynced
     @Persisted
+    @UpdateListener(methodName = "onCoverSet")
     @ReadOnlyManaged(onDirtyMethod = "onCoverDirty", serializeMethod = "serializeCoverUid", deserializeMethod = "deserializeCoverUid")
     private CoverBehavior up, down, north, south, west, east;
 
     public PipeCoverContainer(IPipeNode<?, ?> pipeTile) {
         this.pipeTile = pipeTile;
-        if (isRemote()) {
-            addSyncUpdateListener("up", this::onCoverSet);
-            addSyncUpdateListener("down", this::onCoverSet);
-            addSyncUpdateListener("north", this::onCoverSet);
-            addSyncUpdateListener("south", this::onCoverSet);
-            addSyncUpdateListener("west", this::onCoverSet);
-            addSyncUpdateListener("east", this::onCoverSet);
-        }
     }
 
-    private void onCoverSet(String var1, Object newValue, Object oldValue) {
+    @SuppressWarnings("unused")
+    private void onCoverSet(CoverBehavior newValue, CoverBehavior oldValue) {
         if (newValue != oldValue && (newValue == null || oldValue == null)) {
             scheduleRenderUpdate();
         }
@@ -63,11 +59,6 @@ public class PipeCoverContainer implements ICoverable, IManaged {
     @Override
     public ManagedFieldHolder getFieldHolder() {
         return MANAGED_FIELD_HOLDER;
-    }
-
-    @Override
-    public IManagedStorage getSyncStorage() {
-        return storage;
     }
 
     @Override

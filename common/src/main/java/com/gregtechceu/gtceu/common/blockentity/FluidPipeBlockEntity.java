@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.common.pipelike.fluidpipe.FluidPipeData;
 import com.gregtechceu.gtceu.common.pipelike.fluidpipe.FluidPipeNet;
 import com.gregtechceu.gtceu.common.pipelike.fluidpipe.FluidPipeType;
 import com.gregtechceu.gtceu.common.pipelike.fluidpipe.FluidTransferHandler;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 import dev.architectury.injectables.annotations.ExpectPlatform;
@@ -17,7 +16,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -74,6 +72,7 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType, FluidPi
 
     @Nullable
     public IFluidTransfer getFluidHandler(@Nullable Direction side) {
+        if (side != null && isBlocked(side)) return null;
         if (isRemote()) { // for rendering? other mods may need it.
             return IFluidTransfer.EMPTY;
         }

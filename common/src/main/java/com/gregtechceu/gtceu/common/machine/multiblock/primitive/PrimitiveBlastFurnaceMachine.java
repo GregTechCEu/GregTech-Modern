@@ -11,6 +11,8 @@ import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.ProgressWidget;
 import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -36,8 +38,9 @@ public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine imple
     }
 
     @Override
+    @Environment(EnvType.CLIENT)
     public void clientTick() {
-        super.onWorking();
+        super.clientTick();
         if (recipeLogic.isWorking()) {
             var pos = this.getPos();
             var facing = this.getFrontFacing().getOpposite();

@@ -73,7 +73,6 @@ configurations {
 
 repositories {
     // mavens for Forge-exclusives
-    maven { url = "https://api.modrinth.com/maven" } // Jade
     maven { url = "https://maven.theillusivec4.top/" } // Curios
     maven { // Create Forge and Registrate Forge
         url = "https://maven.tterrag.com/"
@@ -114,14 +113,18 @@ dependencies {
     modImplementation forge.flywheel
 
     // JEI
-    modCompileOnly forge.jei.common.api
-    modCompileOnly forge.jei.forge.api
-    modCompileOnly forge.jei.forge.impl
+    modCompileOnly(forge.jei.common.api) { transitive = false }
+    modCompileOnly(forge.jei.forge.api) { transitive = false }
+    modCompileOnly(forge.jei.forge.impl) { transitive = false }
 
     // REI
     modCompileOnly forge.rei.plugin
     modCompileOnly forge.rei.api
     modImplementation forge.rei.forge
+
+    // EMI
+    modCompileOnly("dev.emi:emi-forge:${fabric.versions.emi.get()}:api")
+    modCompileOnly forge.emi
 
     // TOP
     modCompileOnly(forge.theoneprobe) { transitive = false }

@@ -6,12 +6,12 @@ import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.IToolGridHighLight;
+import com.gregtechceu.gtceu.api.syncdata.EnhancedFieldManagedStorage;
+import com.gregtechceu.gtceu.api.syncdata.IEnhancedManaged;
 import com.gregtechceu.gtceu.client.renderer.cover.ICoverRenderer;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
-import com.lowdragmc.lowdraglib.syncdata.IManaged;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import lombok.Getter;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -36,12 +36,12 @@ import java.util.List;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public abstract class CoverBehavior implements IManaged, IToolGridHighLight {
+public abstract class CoverBehavior implements IEnhancedManaged, IToolGridHighLight {
 
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(CoverBehavior.class);
 
     @Getter
-    private final FieldManagedStorage syncStorage = new FieldManagedStorage(this);
+    private final EnhancedFieldManagedStorage syncStorage = new EnhancedFieldManagedStorage(this);
     public final CoverDefinition coverDefinition;
     public final ICoverable coverHolder;
     public final Direction attachedSide;
@@ -57,6 +57,11 @@ public abstract class CoverBehavior implements IManaged, IToolGridHighLight {
     //////////////////////////////////////
     //*****     Initialization    ******//
     //////////////////////////////////////
+    @Override
+    public void scheduleRenderUpdate() {
+        coverHolder.scheduleRenderUpdate();
+    }
+
     @Override
     public ManagedFieldHolder getFieldHolder() {
         return MANAGED_FIELD_HOLDER;

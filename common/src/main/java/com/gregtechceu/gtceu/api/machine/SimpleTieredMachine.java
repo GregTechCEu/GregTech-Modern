@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputBoth;
 import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.syncdata.RequireRerender;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
@@ -59,13 +60,13 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class SimpleTieredMachine extends WorkableTieredMachine implements IAutoOutputBoth, IUIMachine {
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(SimpleTieredMachine.class, WorkableTieredMachine.MANAGED_FIELD_HOLDER);
 
-    @Persisted @DescSynced
+    @Persisted @DescSynced @RequireRerender
     protected Direction outputFacingItems;
-    @Persisted @DescSynced
+    @Persisted @DescSynced @RequireRerender
     protected Direction outputFacingFluids;
-    @Getter @Persisted @DescSynced
+    @Getter @Persisted @DescSynced @RequireRerender
     protected boolean autoOutputItems;
-    @Getter @Persisted @DescSynced
+    @Getter @Persisted @DescSynced @RequireRerender
     protected boolean autoOutputFluids;
     @Getter @Setter @Persisted
     protected boolean allowInputFromOutputSideItems;
@@ -86,12 +87,6 @@ public class SimpleTieredMachine extends WorkableTieredMachine implements IAutoO
         this.outputFacingFluids = outputFacingItems;
         this.chargerInventory = createCharterItemHandler(args);
         this.circuitInventory = createCircuitItemHandler(args);
-        if (isRemote()) {
-            addSyncUpdateListener("outputFacingItems", this::scheduleRender);
-            addSyncUpdateListener("outputFacingFluids", this::scheduleRender);
-            addSyncUpdateListener("autoOutputItems", this::scheduleRender);
-            addSyncUpdateListener("autoOutputFluids", this::scheduleRender);
-        }
     }
 
     //////////////////////////////////////
