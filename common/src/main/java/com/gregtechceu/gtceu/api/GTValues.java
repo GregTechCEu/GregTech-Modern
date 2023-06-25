@@ -42,7 +42,7 @@ public class GTValues {
      * Fluid per Material Unit (Prime Factors: 3 * 3 * 2 * 2 * 2 * 2)
      */
     public static final int L = 144;
-    public static final RandomSource RNG = RandomSource.create();
+    public static final RandomSource RNG = RandomSource.createThreadSafe();
 
     /**
      * The Item WildCard Tag. Even shorter than the "-1" of the past

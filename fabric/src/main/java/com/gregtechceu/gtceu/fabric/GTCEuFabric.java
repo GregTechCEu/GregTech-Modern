@@ -2,6 +2,8 @@ package com.gregtechceu.gtceu.fabric;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
+import com.gregtechceu.gtceu.api.capability.fabric.compat.EUToREProvider;
+import com.gregtechceu.gtceu.api.capability.fabric.GTCapability;
 import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.api.recipe.ingredient.fabric.SizedIngredientImpl;
 import com.gregtechceu.gtceu.common.ServerCommands;
@@ -14,6 +16,7 @@ import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredientSerializer;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.world.InteractionResult;
+import team.reborn.energy.api.EnergyStorage;
 
 public class GTCEuFabric implements ModInitializer {
 
@@ -36,6 +39,9 @@ public class GTCEuFabric implements ModInitializer {
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> ServerCommands.createServerCommands().forEach(dispatcher::register));
 
         ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(new OreDataLoaderImpl());
-    }
 
+        if (GTCEu.isRebornEnergyLoaded()) {
+            GTCapability.CAPABILITY_ENERGY.registerFallback(new EUToREProvider(EnergyStorage.SIDED::find));
+        }
+    }
 }

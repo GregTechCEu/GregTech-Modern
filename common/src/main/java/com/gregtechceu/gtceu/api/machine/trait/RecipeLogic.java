@@ -131,8 +131,10 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
                 if (isWaiting() && getMachine().getOffsetTimer() % 5 == 0) {
                     executeDirty(this::handleRecipeWorking);
                 } else {
-                    handleRecipeWorking();
-                    if (progress == duration) {
+                    if (progress < duration) {
+                        handleRecipeWorking();
+                    }
+                    if (progress >= duration) {
                         onRecipeFinish();
                     }
                 }

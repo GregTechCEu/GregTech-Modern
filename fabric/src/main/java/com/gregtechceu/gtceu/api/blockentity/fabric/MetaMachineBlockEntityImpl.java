@@ -1,14 +1,18 @@
 package com.gregtechceu.gtceu.api.blockentity.fabric;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
+import com.gregtechceu.gtceu.api.capability.IPlatformEnergyStorage;
 import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.capability.fabric.GTCapability;
+import com.gregtechceu.gtceu.api.capability.fabric.GTEnergyHelperImpl;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
+import com.gregtechceu.gtceu.common.machine.trait.ConverterTrait;
 import com.lowdragmc.lowdraglib.side.fluid.fabric.FluidTransferHelperImpl;
 import com.lowdragmc.lowdraglib.side.item.fabric.ItemTransferHelperImpl;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
@@ -17,6 +21,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import team.reborn.energy.api.EnergyStorage;
 
 /**
  * @author KilaBash
@@ -73,6 +78,14 @@ public class MetaMachineBlockEntityImpl extends MetaMachineBlockEntity {
             var list = ((IMachineBlockEntity)blockEntity).getMetaMachine().getTraits().stream().filter(IEnergyContainer.class::isInstance).filter(t -> t.hasCapability(side)).map(IEnergyContainer.class::cast).toList();
             return list.isEmpty() ? null : list.size() == 1 ? list.get(0) : new EnergyContainerList(list);
         }, type);
+        GTCapability.CAPABILITY_CONVERTER.registerForBlockEntity((blockEntity, direction) -> {
+            for (MachineTrait trait : ((IMachineBlockEntity)blockEntity).getMetaMachine().getTraits()) {
+                if (trait instanceof ConverterTrait converter) {
+                    return converter;
+                }
+            }
+            return null;
+        }, type);
         ItemStorage.SIDED.registerForBlockEntity((blockEntity, side) -> {
             var transfer = ((IMachineBlockEntity)blockEntity).getMetaMachine().getItemTransferCap(side);
             return transfer == null ? null : ItemTransferHelperImpl.toItemVariantStorage(transfer);
@@ -81,6 +94,16 @@ public class MetaMachineBlockEntityImpl extends MetaMachineBlockEntity {
             var transfer = ((IMachineBlockEntity)blockEntity).getMetaMachine().getFluidTransferCap(side);
             return transfer == null ? null : FluidTransferHelperImpl.toFluidVariantStorage(transfer);
         }, type);
+        if (GTCEu.isRebornEnergyLoaded()) {
+            EnergyStorage.SIDED.registerForBlockEntity((blockEntity, side) -> {
+                if (((IMachineBlockEntity)blockEntity).getMetaMachine() instanceof IPlatformEnergyStorage platformEnergyStorage) {
+                    return GTEnergyHelperImpl.toEnergyStorage(platformEnergyStorage);
+                }
+                var list = ((IMachineBlockEntity)blockEntity).getMetaMachine().getTraits().stream().filter(IPlatformEnergyStorage.class::isInstance).filter(t -> t.hasCapability(side)).map(IPlatformEnergyStorage.class::cast).toList();
+                // TODO wrap list in the future
+                return list.isEmpty() ? null : GTEnergyHelperImpl.toEnergyStorage(list.get(0));
+            }, type);
+        }
     }
 
 }

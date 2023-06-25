@@ -375,6 +375,11 @@ public class GTRecipeBuilder {
         return this;
     }
 
+    public GTRecipeBuilder addData(String key, long data) {
+        this.data.putLong(key, data);
+        return this;
+    }
+
     public GTRecipeBuilder addData(String key, String data) {
         this.data.putString(key, data);
         return this;
@@ -408,6 +413,10 @@ public class GTRecipeBuilder {
 
     public GTRecipeBuilder disableDistilleryRecipes(boolean flag) {
         return addData("disable_distillery", flag);
+    }
+
+    public GTRecipeBuilder fusionStartEU(long eu) {
+        return addData("eu_to_start",  eu);
     }
 
     //////////////////////////////////////

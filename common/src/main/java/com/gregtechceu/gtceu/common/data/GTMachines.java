@@ -6,10 +6,12 @@ import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
+import com.gregtechceu.gtceu.api.capability.PlatformEnergyCompat;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.item.DrumMachineItem;
 import com.gregtechceu.gtceu.api.machine.*;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.steam.SimpleSteamMachine;
@@ -17,14 +19,17 @@ import com.gregtechceu.gtceu.api.pattern.Predicates;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
+import com.gregtechceu.gtceu.api.registry.registrate.MultiblockMachineBuilder;
 import com.gregtechceu.gtceu.client.renderer.block.CTMModelRenderer;
 import com.gregtechceu.gtceu.client.renderer.machine.*;
 import com.gregtechceu.gtceu.common.block.BoilerFireboxType;
 import com.gregtechceu.gtceu.common.machine.electric.BatteryBufferMachine;
+import com.gregtechceu.gtceu.common.machine.electric.ConverterMachine;
 import com.gregtechceu.gtceu.common.machine.electric.PumpMachine;
 import com.gregtechceu.gtceu.common.machine.electric.TransformerMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.CrackerMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.ElectricBlastFurnaceMachine;
+import com.gregtechceu.gtceu.common.machine.multiblock.electric.FusionReactorMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.*;
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.CokeOvenMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.PrimitiveBlastFurnaceMachine;
@@ -198,6 +203,11 @@ public class GTMachines {
                             Component.translatable("gtceu.machine.transformer.tooltip_transform_up", 4, GTValues.V[tier], GTValues.VNF[tier], 1, GTValues.V[tier + 1], GTValues.VNF[tier + 1]))
                     .register(),
             GTValues.ULV, GTValues.LV, GTValues.MV, GTValues.HV, GTValues.EV, GTValues.IV, GTValues.LuV, GTValues.ZPM, GTValues.UV); // UHV not needed, as a UV transformer transforms up to UHV
+
+    public static final MachineDefinition[] ENERGY_CONVERTER_1A = registerConverter(1);
+    public static final MachineDefinition[] ENERGY_CONVERTER_4A = registerConverter(4);
+    public static final MachineDefinition[] ENERGY_CONVERTER_8A = registerConverter(8);
+    public static final MachineDefinition[] ENERGY_CONVERTER_16A = registerConverter(16);
 
     public final static MachineDefinition[] BATTERY_BUFFER_4 = registerBatteryBuffer(4);
 
@@ -809,6 +819,91 @@ public class GTMachines {
                     GTCEu.id("block/multiblock/steam_oven")))
             .register();
 
+    public static final MultiblockMachineDefinition[] FUSION_REACTOR = registerTieredMultis("fusion_reactor", FusionReactorMachine::new, (tier, builder) -> builder
+                    .rotationState(RotationState.NON_Y_AXIS)
+                    .langValue("Fusion Reactor Computer Mark %s".formatted(toRomanNumeral(tier - 5)))
+                    .recipeType(GTRecipeTypes.FUSION_RECIPES)
+                    .tooltips(
+                            Component.translatable("gtceu.machine.fusion_reactor.capacity", FusionReactorMachine.calculateEnergyStorageFactor(tier, 16) / 1000000L),
+                            Component.translatable("gtceu.machine.fusion_reactor.overclocking"),
+                            Component.translatable("gtceu.multiblock.fusion_reactor.%s.description".formatted(VN[tier].toLowerCase(Locale.ROOT))))
+                    .appearanceBlock(() -> FusionReactorMachine.getCasingState(tier))
+                    .pattern((definition) -> {
+                        var casing = blocks(FusionReactorMachine.getCasingState(tier));
+                        return FactoryBlockPattern.start()
+                                .aisle("###############", "######OGO######", "###############")
+                                .aisle("######ICI######", "####GGAAAGG####", "######ICI######")
+                                .aisle("####CC###CC####", "###EAAOGOAAE###", "####CC###CC####")
+                                .aisle("###C#######C###", "##EKEG###GEKE##", "###C#######C###")
+                                .aisle("##C#########C##", "#GAE#######EAG#", "##C#########C##")
+                                .aisle("##C#########C##", "#GAG#######GAG#", "##C#########C##")
+                                .aisle("#I###########I#", "OAO#########OAO", "#I###########I#")
+                                .aisle("#C###########C#", "GAG#########GAG", "#C###########C#")
+                                .aisle("#I###########I#", "OAO#########OAO", "#I###########I#")
+                                .aisle("##C#########C##", "#GAG#######GAG#", "##C#########C##")
+                                .aisle("##C#########C##", "#GAE#######EAG#", "##C#########C##")
+                                .aisle("###C#######C###", "##EKEG###GEKE##", "###C#######C###")
+                                .aisle("####CC###CC####", "###EAAOGOAAE###", "####CC###CC####")
+                                .aisle("######ICI######", "####GGAAAGG####", "######ICI######")
+                                .aisle("###############", "######OSO######", "###############")
+                                .where('S', controller(blocks(definition.get())))
+                                .where('G', blocks(CASING_FUSION_GLASS.get()).or(casing))
+                                .where('E', casing.or(blocks(PartAbility.INPUT_ENERGY.getBlockRange(tier, UV).toArray(Block[]::new))
+                                        .setMinGlobalLimited(1).setPreviewCount(16)))
+                                .where('C', casing)
+                                .where('K', blocks(FusionReactorMachine.getCoilState(tier)))
+                                .where('O', casing.or(abilities(PartAbility.EXPORT_FLUIDS)))
+                                .where('A', air())
+                                .where('I', casing.or(abilities(PartAbility.IMPORT_FLUIDS).setMinGlobalLimited(2)))
+                                .where('#', any())
+                                .build();
+                    })
+                    .shapeInfos((controller) -> {
+                        List<MultiblockShapeInfo> shapeInfos = new ArrayList<>();
+
+                        MultiblockShapeInfo.ShapeInfoBuilder baseBuilder = MultiblockShapeInfo.builder()
+                                .aisle("###############", "######WGW######", "###############")
+                                .aisle("######DCD######", "####GG###GG####", "######UCU######")
+                                .aisle("####CC###CC####", "###w##EGE##s###", "####CC###CC####")
+                                .aisle("###C#######C###", "##nKeG###GeKn##", "###C#######C###")
+                                .aisle("##C#########C##", "#G#s#######w#G#", "##C#########C##")
+                                .aisle("##C#########C##", "#G#G#######G#G#", "##C#########C##")
+                                .aisle("#D###########D#", "N#S#########N#S", "#U###########U#")
+                                .aisle("#C###########C#", "G#G#########G#G", "#C###########C#")
+                                .aisle("#D###########D#", "N#S#########N#S", "#U###########U#")
+                                .aisle("##C#########C##", "#G#G#######G#G#", "##C#########C##")
+                                .aisle("##C#########C##", "#G#s#######w#G#", "##C#########C##")
+                                .aisle("###C#######C###", "##eKnG###GnKe##", "###C#######C###")
+                                .aisle("####CC###CC####", "###w##WGW##s###", "####CC###CC####")
+                                .aisle("######DCD######", "####GG###GG####", "######UCU######")
+                                .aisle("###############", "######EME######", "###############")
+                                .where('M', controller, Direction.SOUTH)
+                                .where('C', FusionReactorMachine.getCasingState(tier))
+                                .where('G', CASING_FUSION_GLASS.get())
+                                .where('K', FusionReactorMachine.getCoilState(tier))
+                                .where('W', GTMachines.FLUID_EXPORT_HATCH[tier], Direction.NORTH)
+                                .where('E', GTMachines.FLUID_EXPORT_HATCH[tier], Direction.SOUTH)
+                                .where('S', GTMachines.FLUID_EXPORT_HATCH[tier], Direction.EAST)
+                                .where('N', GTMachines.FLUID_EXPORT_HATCH[tier], Direction.WEST)
+                                .where('w', GTMachines.ENERGY_INPUT_HATCH[tier], Direction.WEST)
+                                .where('e', GTMachines.ENERGY_INPUT_HATCH[tier], Direction.SOUTH)
+                                .where('s', GTMachines.ENERGY_INPUT_HATCH[tier], Direction.EAST)
+                                .where('n', GTMachines.ENERGY_INPUT_HATCH[tier], Direction.NORTH)
+                                .where('U', GTMachines.FLUID_IMPORT_HATCH[tier], Direction.UP)
+                                .where('D', GTMachines.FLUID_IMPORT_HATCH[tier], Direction.DOWN)
+                                .where('#', Blocks.AIR.defaultBlockState());
+
+                        shapeInfos.add(baseBuilder.shallowCopy()
+                                .where('G', FusionReactorMachine.getCasingState(tier))
+                                .build()
+                        );
+                        shapeInfos.add(baseBuilder.build());
+                        return shapeInfos;
+                    })
+                    .workableCasingRenderer(FusionReactorMachine.getCasingType(tier).getTexture(),
+                            GTCEu.id("block/multiblock/fusion_reactor"), false)
+                    .register(),
+            LuV, ZPM, UV);
 
 
     //////////////////////////////////////
@@ -838,6 +933,7 @@ public class GTMachines {
         }
         return definitions;
     }
+
 
     public static MachineDefinition[] registerSimpleMachines(String name,
                                                              GTRecipeType recipeType,
@@ -900,6 +996,20 @@ public class GTMachines {
                 ALL_TIERS);
     }
 
+    public static MultiblockMachineDefinition[] registerTieredMultis(String name,
+                                                             BiFunction<IMachineBlockEntity, Integer, MultiblockControllerMachine> factory,
+                                                             BiFunction<Integer, MultiblockMachineBuilder, MultiblockMachineDefinition> builder,
+                                                             int... tiers) {
+        MultiblockMachineDefinition[] definitions = new MultiblockMachineDefinition[tiers.length];
+        for (int i = 0; i < tiers.length; i++) {
+            int tier = tiers[i];
+            var register =  REGISTRATE.multiblock(name + "_" + GTValues.VN[tier].toLowerCase(), holder -> factory.apply(holder, tier))
+                    .tier(tier);
+            definitions[i] = builder.apply(tier, register);
+        }
+        return definitions;
+    }
+
     public static MultiblockMachineDefinition registerLargeBoiler(String name, Supplier<? extends Block> casing, Supplier<? extends Block> pipe, Supplier<? extends Block> fireBox, ResourceLocation texture, BoilerFireboxType firebox, int maxTemperature, int heatSpeed) {
         return REGISTRATE.multiblock("%s_large_boiler".formatted(name), holder -> new LargeBoilerMachine(holder, maxTemperature, heatSpeed))
                 .langValue("Large %s Boiler".formatted(FormattingUtil.toEnglishName(name)))
@@ -955,6 +1065,22 @@ public class GTMachines {
                 .register();
         DRUM_CAPACITY.put(definition, capacity);
         return definition;
+    }
+
+    public static MachineDefinition[] registerConverter(int amperage) {
+        return registerTieredMachines(amperage + "a_energy_converter",
+                (holder, tier) -> new ConverterMachine(holder, tier, amperage),
+                (tier, builder) -> builder
+                        .rotationState(RotationState.ALL)
+                        .langValue("%s %sA Energy Converter".formatted(VN[tier], amperage))
+                        .hasTESR(true)
+                        .renderer(() -> new ConverterRenderer(tier))
+                        .tooltips(Component.translatable("gtceu.machine.energy_converter.description"),
+                                Component.translatable("gtceu.machine.energy_converter.tooltip_tool_usage"),
+                                Component.translatable("gtceu.machine.energy_converter.tooltip_conversion_native", PlatformEnergyCompat.toNativeLong(V[tier] * amperage, PlatformEnergyCompat.ratio(true)), amperage, V[tier], GTValues.VNF[tier]),
+                                Component.translatable("gtceu.machine.energy_converter.tooltip_conversion_eu", amperage, V[tier], GTValues.VNF[tier], PlatformEnergyCompat.toNativeLong(V[tier] * amperage, PlatformEnergyCompat.ratio(false))))
+                        .register(),
+                ALL_TIERS);
     }
 
     public static Component explosion() {

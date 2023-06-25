@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.forge;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
+import com.gregtechceu.gtceu.api.capability.forge.compat.EUToFEProvider;
 import com.gregtechceu.gtceu.api.item.forge.ComponentItemImpl;
 import com.gregtechceu.gtceu.api.item.forge.DrumMachineItemImpl;
 import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
@@ -9,6 +10,7 @@ import com.gregtechceu.gtceu.common.ServerCommands;
 import com.gregtechceu.gtceu.data.loader.forge.OreDataLoaderImpl;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
@@ -72,5 +74,10 @@ public class ForgeCommonEventListener {
     @SubscribeEvent
     public static void registerReloadListeners(AddReloadListenerEvent event) {
         event.addListener(new OreDataLoaderImpl());
+    }
+
+    @SubscribeEvent
+    public static void attachCapabilities(AttachCapabilitiesEvent<BlockEntity> event) {
+        event.addCapability(GTCEu.id("fe_capability"), new EUToFEProvider(event.getObject()));
     }
 }

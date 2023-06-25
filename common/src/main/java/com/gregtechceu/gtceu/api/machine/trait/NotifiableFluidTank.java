@@ -53,8 +53,23 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidStack
         }
     }
 
+    public NotifiableFluidTank(MetaMachine machine, List<FluidStorage> storages, IO io, IO capabilityIO) {
+        super(machine);
+        this.timeStamp = Long.MIN_VALUE;
+        this.handlerIO = io;
+        this.storages = storages.toArray(FluidStorage[]::new);
+        this.capabilityIO = capabilityIO;
+        for (FluidStorage storage : this.storages) {
+            storage.setOnContentsChanged(this::onContentChanged);
+        }
+    }
+
     public NotifiableFluidTank(MetaMachine machine, int slots, long capacity, IO io) {
         this(machine, slots, capacity, io, io);
+    }
+
+    public NotifiableFluidTank(MetaMachine machine, List<FluidStorage> storages, IO io) {
+        this(machine, storages, io, io);
     }
 
     private void onContentChanged() {

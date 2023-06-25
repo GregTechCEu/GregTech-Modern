@@ -12,7 +12,6 @@ import com.tterrag.registrate.fabric.FluidHelper;
 import com.tterrag.registrate.fabric.RegistryObject;
 import com.tterrag.registrate.fabric.SimpleFlowableFluid;
 import com.tterrag.registrate.providers.ProviderType;
-import com.tterrag.registrate.providers.RegistrateLangProvider;
 import com.tterrag.registrate.util.entry.FluidEntry;
 import com.tterrag.registrate.util.entry.RegistryEntry;
 import com.tterrag.registrate.util.nullness.*;
@@ -79,6 +78,7 @@ public class GTFluidBuilder<T extends SimpleFlowableFluid, P> extends AbstractBu
 
     private final String sourceName, bucketName;
     private final Material material;
+    private final String langKey;
 
     private final ResourceLocation stillTexture, flowingTexture;
     private final NonNullFunction<SimpleFlowableFluid.Properties, T> fluidFactory;
@@ -97,11 +97,12 @@ public class GTFluidBuilder<T extends SimpleFlowableFluid, P> extends AbstractBu
     private NonNullSupplier<? extends SimpleFlowableFluid> source;
     private final List<TagKey<Fluid>> tags = new ArrayList<>();
 
-    public GTFluidBuilder(AbstractRegistrate<?> owner, P parent, Material material, String name, BuilderCallback callback, ResourceLocation stillTexture, ResourceLocation flowingTexture, NonNullFunction<SimpleFlowableFluid.Properties, T> fluidFactory) {
+    public GTFluidBuilder(AbstractRegistrate<?> owner, P parent, Material material, String name, String langKey, BuilderCallback callback, ResourceLocation stillTexture, ResourceLocation flowingTexture, NonNullFunction<SimpleFlowableFluid.Properties, T> fluidFactory) {
         super(owner, parent, "flowing_" + name, callback, Registry.FLUID_REGISTRY);
         this.sourceName = name;
         this.bucketName = name + "_bucket";
         this.material = material;
+        this.langKey = langKey;
         this.stillTexture = stillTexture;
         this.flowingTexture = flowingTexture;
         this.fluidFactory = fluidFactory;
@@ -110,7 +111,7 @@ public class GTFluidBuilder<T extends SimpleFlowableFluid, P> extends AbstractBu
             @Override
             public Component getName(FluidVariant fluidVariant) {
                 String key = "fluid." + Registry.FLUID.getKey(fluidVariant.getFluid()).toLanguageKey();
-                return I18n.exists(key) ? Component.translatable(key) : material.getLocalizedName();
+                return I18n.exists(key) ? Component.translatable(key) : Component.translatable(langKey, material.getLocalizedName());
             }
 
             @Override
@@ -147,7 +148,7 @@ public class GTFluidBuilder<T extends SimpleFlowableFluid, P> extends AbstractBu
     }
 
     public GTFluidBuilder<T, P> defaultLang() {
-        return lang(material.getUnlocalizedName());
+        return lang(langKey != null ? langKey : material.getUnlocalizedName());
     }
 
     public GTFluidBuilder<T, P> lang(String name) {
