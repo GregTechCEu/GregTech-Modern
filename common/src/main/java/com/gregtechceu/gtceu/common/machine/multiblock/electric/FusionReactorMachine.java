@@ -6,12 +6,13 @@ import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
+import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
+import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
@@ -21,6 +22,7 @@ import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
 import lombok.Getter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
@@ -30,6 +32,7 @@ import org.jetbrains.annotations.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
@@ -44,18 +47,21 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
     @Getter
     private final int tier;
     @Nullable
-    private EnergyContainerList inputEnergyContainers;
-    @Persisted @DescSynced
-    private long heat = 0;
+    protected EnergyContainerList inputEnergyContainers;
+    @Persisted
+    protected long heat = 0;
+    @Persisted
+    protected final NotifiableEnergyContainer energyContainer;
     @Getter
     @DescSynced
     private Integer color = -1;
     @Nullable
-    protected TickableSubscription heatSubs;
+    protected TickableSubscription preHeatSubs;
 
     public FusionReactorMachine(IMachineBlockEntity holder, int tier) {
         super(holder);
         this.tier = tier;
+        this.energyContainer = createEnergyContainer();
     }
 
     //////////////////////////////////////
@@ -66,11 +72,19 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
         return MANAGED_FIELD_HOLDER;
     }
 
+    public NotifiableEnergyContainer createEnergyContainer() {
+        // create an internal energy container for temp storage. its capacity is decided when the structure formed.
+        // it doesn't provide any capability of all sides, but null for the goggles mod to check it storages.
+        var container = new NotifiableEnergyContainer(this, 0, 0, 0, 0, 0);
+        container.setCapabilityValidator(Objects::isNull);
+        return container;
+    }
+
     @Override
     public void onLoad() {
         super.onLoad();
         if (!isRemote()) {
-            updateHeatSubscription();
+            updatePreHeatSubscription();
         }
     }
 
@@ -79,24 +93,21 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
         super.onStructureFormed();
         // capture all energy containers
         List<IEnergyContainer> energyContainers = new ArrayList<>();
-        List<IRecipeHandler<?>> capabilities = this.getCapabilitiesProxy().get(IO.IN, EURecipeCapability.CAP);
-        if (capabilities != null) {
-            for (IRecipeHandler<?> handler : capabilities) {
-                if (handler instanceof IEnergyContainer container) {
+        Map<Long, IO> ioMap = getMultiblockState().getMatchContext().getOrCreate("ioMap", Long2ObjectMaps::emptyMap);
+        for (IMultiPart part : parts) {
+            IO io = ioMap.getOrDefault(part.self().getPos().asLong(), IO.BOTH);
+            if(io == IO.NONE || io == IO.OUT) continue;
+            for (var handler : part.getRecipeHandlers()) {
+                // If IO not compatible
+                if (io != IO.BOTH && handler.getHandlerIO() != IO.BOTH && io != handler.getHandlerIO()) continue;
+                if (handler.getCapability() == EURecipeCapability.CAP && handler instanceof IEnergyContainer container) {
                     energyContainers.add(container);
-                }
-            }
-        } else {
-            capabilities = this.getCapabilitiesProxy().get(IO.BOTH, EURecipeCapability.CAP);
-            if (capabilities != null) {
-                for (IRecipeHandler<?> handler : capabilities) {
-                    if (handler instanceof IEnergyContainer container) {
-                        energyContainers.add(container);
-                    }
+                    traitSubscriptions.add(handler.addChangedListener(this::updatePreHeatSubscription));
                 }
             }
         }
         this.inputEnergyContainers = new EnergyContainerList(energyContainers);
+        energyContainer.resetBasicInfo(calculateEnergyStorageFactor(getTier(), energyContainers.size()), 0, 0, 0, 0);
     }
 
     @Override
@@ -104,18 +115,21 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
         super.onStructureInvalid();
         this.inputEnergyContainers = null;
         heat = 0;
-        updateHeatSubscription();
+        energyContainer.resetBasicInfo(0, 0, 0, 0, 0);
+        energyContainer.setEnergyStored(0);
+        updatePreHeatSubscription();
     }
 
     //////////////////////////////////////
     //*****      Recipe Logic     ******//
     //////////////////////////////////////
-    protected void updateHeatSubscription() {
-        if (heat > 0) {
-            heatSubs = subscribeServerTick(heatSubs, this::updateHeat);
-        } else if (heatSubs != null) {
-            heatSubs.unsubscribe();
-            heatSubs = null;
+    protected void updatePreHeatSubscription() {
+        // do preheat logic for heat cool down and charge internal energy container
+        if (heat > 0 || (inputEnergyContainers != null && inputEnergyContainers.getEnergyStored() > 0 && energyContainer.getEnergyStored() < energyContainer.getEnergyCapacity())) {
+            preHeatSubs = subscribeServerTick(preHeatSubs, this::updateHeat);
+        } else if (preHeatSubs != null) {
+            preHeatSubs.unsubscribe();
+            preHeatSubs = null;
         }
     }
 
@@ -123,8 +137,7 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
     public @Nullable GTRecipe modifyRecipe(GTRecipe recipe) {
         if (RecipeHelper.getRecipeEUtTier(recipe) > getTier() ||
                 !recipe.data.contains("eu_to_start") ||
-                inputEnergyContainers == null ||
-                recipe.data.getLong("eu_to_start") > inputEnergyContainers.getEnergyCapacity()) {
+                recipe.data.getLong("eu_to_start") > energyContainer.getEnergyCapacity()) {
             return null;
         }
 
@@ -135,14 +148,14 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
             return applyOC(recipe);
         }
         // if the remaining energy needed is more than stored, do not run
-        if (inputEnergyContainers.getEnergyStored() < heatDiff)
+        if (energyContainer.getEnergyStored() < heatDiff)
             return null;
 
         // remove the energy needed
-        inputEnergyContainers.removeEnergy(heatDiff);
+        energyContainer.removeEnergy(heatDiff);
         // increase the stored heat
         heat += heatDiff;
-        updateHeatSubscription();
+        updatePreHeatSubscription();
         return applyOC(recipe);
     }
 
@@ -167,7 +180,12 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
         if ((getRecipeLogic().isIdle() || !isWorkingEnabled() || (getRecipeLogic().isHasNotEnoughEnergy() && getRecipeLogic().progress == 0)) && heat > 0) {
             heat = heat <= 10000 ? 0 : (heat - 10000);
         }
-        updateHeatSubscription();
+        // charge the internal energy storage
+        var leftStorage = energyContainer.getEnergyCapacity() - energyContainer.getEnergyStored();
+        if (inputEnergyContainers != null && leftStorage > 0) {
+            energyContainer.addEnergy(inputEnergyContainers.removeEnergy(leftStorage));
+        }
+        updatePreHeatSubscription();
     }
 
     @Override
@@ -194,19 +212,20 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
         color = -1;
     }
 
-    //////////////////////////////////////
-    //********       GUI       *********//
-    //////////////////////////////////////
     @Override
     public long getMaxVoltage() {
         return Math.min(GTValues.V[tier], super.getMaxVoltage());
     }
 
+    //////////////////////////////////////
+    //********       GUI       *********//
+    //////////////////////////////////////
+
     @Override
     public void addDisplayText(List<Component> textList) {
         super.addDisplayText(textList);
-        if (isFormed() && inputEnergyContainers != null) {
-            textList.add(Component.translatable("gtceu.multiblock.fusion_reactor.energy", this.inputEnergyContainers.getEnergyStored(), this.inputEnergyContainers.getEnergyCapacity()));
+        if (isFormed()) {
+            textList.add(Component.translatable("gtceu.multiblock.fusion_reactor.energy", this.energyContainer.getEnergyStored(), this.energyContainer.getEnergyCapacity()));
             textList.add(Component.translatable("gtceu.multiblock.fusion_reactor.heat", heat));
         }
     }
