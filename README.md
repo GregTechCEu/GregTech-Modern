@@ -8,5 +8,6 @@ GregTech based on Architectury for performing on Forge, Fabric, and Quilt, simul
 We haven't released yet, you can try the lasted compiled file from [`Releases`](https://github.com/GregTechCEu/GregTechCEu-1.19/releases).
 
 ## Dev Q&A
-[Wiki](https://github.com/GregTechCEu/GregTechCEu-1.19/wiki/Dev-Q&A) illustrates common questions and answers related to development.
+* [Todo-List](https://github.com/GregTechCEu/GregTechCEu-1.19/issues/125) for potential contributors who are interested in this project
+* [Wiki](https://github.com/GregTechCEu/GregTechCEu-1.19/wiki/Dev-Q&A) illustrates common questions and answers related to development.
 
