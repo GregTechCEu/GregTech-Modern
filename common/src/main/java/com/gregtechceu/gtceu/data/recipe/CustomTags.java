@@ -13,6 +13,7 @@ public class CustomTags {
 
     // Added Vanilla tags
     public static final TagKey<Item> TAG_PISTONS = TagUtil.createItemTag("pistons");
+    public static final TagKey<Item> GLASS_PANES = TagUtil.createItemTag("glass_panes");
 
     // Added Gregtech tags
     public static final TagKey<Item> TRANSISTORS = TagUtil.createItemTag("transistors");

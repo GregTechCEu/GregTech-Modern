@@ -3,6 +3,8 @@ package com.gregtechceu.gtceu.api.item;
 import com.gregtechceu.gtceu.api.block.MaterialPipeBlock;
 import com.lowdragmc.lowdraglib.client.renderer.IItemRendererProvider;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
@@ -38,6 +40,7 @@ public class MaterialPipeBlockItem extends PipeBlockItem implements IItemRendere
 
     @Nullable
     @Override
+    @Environment(EnvType.CLIENT)
     public IRenderer getRenderer(ItemStack stack) {
         return getBlock().getRenderer(getBlock().defaultBlockState());
     }

@@ -3,6 +3,8 @@ package com.gregtechceu.gtceu.api.item;
 import com.gregtechceu.gtceu.api.block.MaterialBlock;
 import com.lowdragmc.lowdraglib.client.renderer.IItemRendererProvider;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
@@ -34,6 +36,7 @@ public class MaterialBlockItem extends BlockItem implements IItemRendererProvide
 
     @Nullable
     @Override
+    @Environment(EnvType.CLIENT)
     public IRenderer getRenderer(ItemStack stack) {
         return getBlock().getRenderer(getBlock().defaultBlockState());
     }
