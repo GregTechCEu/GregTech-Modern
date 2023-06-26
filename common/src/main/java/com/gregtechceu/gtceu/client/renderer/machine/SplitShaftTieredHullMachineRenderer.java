@@ -3,12 +3,11 @@ package com.gregtechceu.gtceu.client.renderer.machine;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
-import com.gregtechceu.gtceu.core.mixins.BlockModelAccessor;
+import com.gregtechceu.gtceu.client.model.SpriteOverrider;
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
@@ -16,6 +15,7 @@ import net.minecraft.util.RandomSource;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author KilaBash
@@ -38,15 +38,9 @@ public class SplitShaftTieredHullMachineRenderer extends TieredHullMachineRender
                 var renderer = block.definition.getRenderer();
                 if (renderer instanceof WorkableCasingMachineRenderer workableCasingMachineRenderer) {
                     var baseTexture = workableCasingMachineRenderer.baseCasing;
-                    var unbakedModel = ModelFactory.getUnBakedModel(modelLocation);
-                    if (unbakedModel instanceof BlockModelAccessor blockModelAccessor) {
-                        blockModelAccessor.getTextureMap().put("bottom", ModelFactory.parseBlockTextureLocationOrReference(baseTexture.toString()));
-                        blockModelAccessor.getTextureMap().put("top", ModelFactory.parseBlockTextureLocationOrReference(baseTexture.toString()));
-                        blockModelAccessor.getTextureMap().put("side", ModelFactory.parseBlockTextureLocationOrReference(baseTexture.toString()));
-                    }
-                    var bakeModel = unbakedModel.bake(
+                    var bakeModel =  ModelFactory.getUnBakedModel(modelLocation).bake(
                             ModelFactory.getModeBakery(),
-                            Material::sprite,
+                            new SpriteOverrider(Map.of("bottom", baseTexture, "top", baseTexture, "side", baseTexture)),
                             ModelFactory.getRotation(frontFacing),
                             modelLocation);
                     if (bakeModel != null) {

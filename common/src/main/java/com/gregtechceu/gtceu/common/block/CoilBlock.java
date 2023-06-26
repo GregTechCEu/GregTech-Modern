@@ -25,10 +25,10 @@ public class CoilBlock extends ActiveBlock {
 
     public CoilBlock(Properties properties, ICoilType coilType) {
         super(properties, new TextureOverrideRenderer(new ResourceLocation("block/cube_all"),
-                        Map.of("all", coilType.getTexture().toString())),
+                        Map.of("all", coilType.getTexture())),
                 new TextureOverrideRenderer(GTCEu.id("block/cube_2_layer_all"),
-                        Map.of("bot_all", coilType.getTexture().toString(),
-                                "top_all", coilType.getTexture() + "_bloom")));
+                        Map.of("bot_all", coilType.getTexture(),
+                                "top_all", new ResourceLocation(coilType.getTexture() + "_bloom"))));
         this.coilType = coilType;
     }
 

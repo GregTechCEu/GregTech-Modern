@@ -9,7 +9,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputFluid;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputItem;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.client.model.ItemBakedModel;
-import com.gregtechceu.gtceu.client.renderer.block.CTMModelRenderer;
+import com.gregtechceu.gtceu.client.renderer.block.TextureOverrideRenderer;
 import com.gregtechceu.gtceu.client.renderer.cover.ICoverableRenderer;
 import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
@@ -46,7 +46,7 @@ import java.util.function.Consumer;
  * @date 2023/2/26
  * @implNote MachineRenderer
  */
-public class MachineRenderer extends CTMModelRenderer implements ICoverableRenderer, IPartRenderer, ICTMPredicate {
+public class MachineRenderer extends TextureOverrideRenderer implements ICoverableRenderer, IPartRenderer, ICTMPredicate {
 
     public static final ResourceLocation PIPE_OVERLAY = GTCEu.id("block/overlay/machine/overlay_pipe");
     public static final ResourceLocation FLUID_OUTPUT_OVERLAY = GTCEu.id("block/overlay/machine/overlay_fluid_output");
@@ -76,6 +76,7 @@ public class MachineRenderer extends CTMModelRenderer implements ICoverableRende
             Minecraft.getInstance().getItemRenderer().render(stack, transformType, leftHand, matrixStack, buffer, combinedLight, combinedOverlay,
                     new ItemBakedModel() {
                         @Override
+                        @Environment(EnvType.CLIENT)
                         public List<BakedQuad> getQuads(@org.jetbrains.annotations.Nullable BlockState state, @org.jetbrains.annotations.Nullable Direction direction, RandomSource random) {
                             List<BakedQuad> quads = new LinkedList<>();
                             renderMachine(quads, machineItem.getDefinition(), null, Direction.NORTH, direction, random, direction, BlockModelRotation.X0_Y0);
