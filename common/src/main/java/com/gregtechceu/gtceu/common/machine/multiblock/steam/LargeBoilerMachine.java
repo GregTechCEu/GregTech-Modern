@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDisplayUIMachine;
+import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMufflerMechanic;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
@@ -38,7 +39,7 @@ import java.util.Objects;
  * @date 2023/3/16
  * @implNote LargeBoilerMachine
  */
-public class LargeBoilerMachine extends WorkableMultiblockMachine implements IExplosionMachine, IDisplayUIMachine {
+public class LargeBoilerMachine extends WorkableMultiblockMachine implements IExplosionMachine, IDisplayUIMachine, IMufflerMechanic {
     private static final long STEAM_PER_WATER = 160;
 
     @Getter
@@ -190,5 +191,10 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
     @Override
     public IGuiTexture getScreenTexture() {
         return GuiTextures.DISPLAY_STEAM.get(maxTemperature > 800);
+    }
+
+    @Override
+    public boolean hasMufflerMechanics() {
+        return true;
     }
 }

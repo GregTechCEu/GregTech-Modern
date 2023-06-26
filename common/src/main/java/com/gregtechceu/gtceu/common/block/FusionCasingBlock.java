@@ -22,7 +22,7 @@ public class FusionCasingBlock extends ActiveBlock {
 
     public enum CasingType implements IFusionCasingType, StringRepresentable {
 
-        SUPERCONDUCTOR_COIL("superconductor_coil", 2),
+        SUPERCONDUCTING_COIL("superconducting_coil", 2),
         FUSION_COIL("fusion_coil", 2),
         FUSION_CASING("fusion_casing", 2),
         FUSION_CASING_MK2("fusion_casing_mk2", 3),

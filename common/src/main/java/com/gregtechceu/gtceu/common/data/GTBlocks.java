@@ -262,6 +262,9 @@ public class GTBlocks {
     public static final BlockEntry<Block> CASING_TUNGSTENSTEEL_ROBUST = createCasingBlock("robust_machine_casing", GTCEu.id("block/casings/solid/machine_casing_robust_tungstensteel"));
     public static final BlockEntry<Block> CASING_PTFE_INERT = createCasingBlock("inert_machine_casing", GTCEu.id("block/casings/solid/machine_casing_inert_ptfe"));
     public static final BlockEntry<Block> CASING_HSSE_STURDY = createCasingBlock("sturdy_machine_casing", GTCEu.id("block/casings/solid/machine_casing_study_hsse"));
+    public static final BlockEntry<Block> CASING_TEMPERED_GLASS = createCasingBlock("tempered_glass", GTCEu.id("block/casings/transparent/tempered_glass"), () -> Blocks.GLASS);
+
+
 
     // Assembly Line
     public static final BlockEntry<Block> CASING_GRATE = createCasingBlock("assembly_line_grating", GTCEu.id("block/casings/pipe/machine_casing_grate"));
@@ -354,12 +357,19 @@ public class GTBlocks {
 
     //Fusion
     public static final Map<IFusionCasingType, Supplier<FusionCasingBlock>> ALL_FUSION_CASINGS = new HashMap<>();
-    public static final BlockEntry<FusionCasingBlock> FUSION_CASING_SUPERCONDUCTOR = createFusionCasing(FusionCasingBlock.CasingType.SUPERCONDUCTOR_COIL);
-    public static final BlockEntry<FusionCasingBlock> FUSION_CASING_FUSION_COIL = createFusionCasing(FusionCasingBlock.CasingType.FUSION_COIL);
+    public static final BlockEntry<FusionCasingBlock> SUPERCONDUCTING_COIL = createFusionCasing(FusionCasingBlock.CasingType.SUPERCONDUCTING_COIL);
+    public static final BlockEntry<FusionCasingBlock> FUSION_COIL = createFusionCasing(FusionCasingBlock.CasingType.FUSION_COIL);
     public static final BlockEntry<FusionCasingBlock> FUSION_CASING = createFusionCasing(FusionCasingBlock.CasingType.FUSION_CASING);
     public static final BlockEntry<FusionCasingBlock> FUSION_CASING_MK2 = createFusionCasing(FusionCasingBlock.CasingType.FUSION_CASING_MK2);
     public static final BlockEntry<FusionCasingBlock> FUSION_CASING_MK3 = createFusionCasing(FusionCasingBlock.CasingType.FUSION_CASING_MK3);
-    public static final BlockEntry<Block> CASING_FUSION_GLASS = createCasingBlock("fusion_glass", GTCEu.id("block/casings/transparent/fusion_glass"), () -> Blocks.GLASS);
+    public static final BlockEntry<Block> FUSION_GLASS = createCasingBlock("fusion_glass", GTCEu.id("block/casings/transparent/fusion_glass"), () -> Blocks.GLASS);
+
+    // Cleanroom
+    public static final BlockEntry<Block> PLASTCRETE = createCleanroomCasing(CleanroomCasingType.PLASCRETE);
+    public static final BlockEntry<Block> FILTER_CASING = createCleanroomCasing(CleanroomCasingType.FILTER_CASING);
+    public static final BlockEntry<Block> FILTER_CASING_STERILE = createCleanroomCasing(CleanroomCasingType.FILTER_CASING_STERILE);
+    public static final BlockEntry<Block> CLEANROOM_GLASS = createCasingBlock("cleanroom_glass", GTCEu.id("block/casings/transparent/cleanroom_glass"), () -> Blocks.GLASS);
+
 
     // Fireboxes
     public static final Map<BoilerFireboxType, BlockEntry<ActiveBlock>> ALL_FIREBOXES = new HashMap<>();
@@ -489,6 +499,21 @@ public class GTBlocks {
                 .register();
         ALL_FUSION_CASINGS.put(casingType, casingBlock);
         return casingBlock;
+    }
+
+    private static BlockEntry<Block> createCleanroomCasing(CleanroomCasingType casingType) {
+        return REGISTRATE.block(casingType.getSerializedName(), p -> (Block) new RendererBlock(p,
+                        new TextureOverrideRenderer(new ResourceLocation("block/cube_all"),
+                            Map.of("all", GTCEu.id("block/casings/cleanroom/" + casingType)))))
+                .initialProperties(() -> Blocks.IRON_BLOCK)
+                .properties(properties -> properties.strength(2.0f, 8.0f).sound(SoundType.METAL).isValidSpawn((blockState, blockGetter, blockPos, entityType) -> false))
+                .addLayer(() -> RenderType::cutoutMipped)
+                .blockstate(NonNullBiConsumer.noop())
+                .tag(GTToolType.WRENCH.harvestTag, CustomTags.TOOL_TIERS[casingType == CleanroomCasingType.PLASCRETE ? 2 : 1])
+                .item(RendererBlockItem::new)
+                .model(NonNullBiConsumer.noop())
+                .build()
+                .register();
     }
 
     private static BlockEntry<ActiveBlock> createActiveCasing(String name, String baseModelPath) {

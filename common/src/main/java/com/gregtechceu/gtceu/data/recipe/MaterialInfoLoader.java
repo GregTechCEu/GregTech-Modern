@@ -155,18 +155,17 @@ public class MaterialInfoLoader {
                 new MaterialStack(GTMaterials.NeodymiumMagnetic, M / 2) // rod
         ));
 
-        // TODO Cleanroom
-        //ChemicalHelper.registerMaterialInfo(MetaBlocks.CLEANROOM_CASING.getItemVariant(BlockCleanroomCasing.CasingType.PLASCRETE), new ItemMaterialInfo(
-        //        new MaterialStack(GTMaterials.Steel, M), // frame / 2
-        //        new MaterialStack(GTMaterials.Polyethylene, M * 3), // 6 sheets / 2
-        //        new MaterialStack(GTMaterials.Concrete, M / 2) // 1 block / 2
-        //));
+        ChemicalHelper.registerMaterialInfo(GTBlocks.PLASTCRETE.get(), new ItemMaterialInfo(
+                new MaterialStack(GTMaterials.Steel, M), // frame / 2
+                new MaterialStack(GTMaterials.Polyethylene, M * 3), // 6 sheets / 2
+                new MaterialStack(GTMaterials.Concrete, M / 2) // 1 block / 2
+        ));
 
-        //ChemicalHelper.registerMaterialInfo(MetaBlocks.TRANSPARENT_CASING.getItemVariant(BlockGlassCasing.CasingType.CLEANROOM_GLASS), new ItemMaterialInfo(
-        //        new MaterialStack(GTMaterials.Steel, M), // frame / 2
-        //        new MaterialStack(GTMaterials.Polyethylene, M * 3), // 6 sheets / 2
-        //        new MaterialStack(GTMaterials.Glass, M / 2) // 1 block / 2
-        //));
+        ChemicalHelper.registerMaterialInfo(GTBlocks.CLEANROOM_GLASS.get(), new ItemMaterialInfo(
+                new MaterialStack(GTMaterials.Steel, M), // frame / 2
+                new MaterialStack(GTMaterials.Polyethylene, M * 3), // 6 sheets / 2
+                new MaterialStack(GTMaterials.Glass, M / 2) // 1 block / 2
+        ));
 
         // TODO Expand for all terracottas
         //ChemicalHelper.registerUnificationEntry(new ItemStack(Blocks.HARDENED_CLAY, 1, W), new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, M * 4)));

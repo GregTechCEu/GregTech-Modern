@@ -85,23 +85,14 @@ public class BlockLang {
         //replace(provider, "tile.steam_casing.wood_wall.name", "Wooden Wall");
 
         // todo fusion
-        //replace(provider, "tile.fusion_casing.superconductor_coil.name", "Superconducting Coil Block");
-        //replace(provider, "tile.fusion_casing.fusion_coil.name", "Fusion Coil Block");
-        //replace(provider, "tile.fusion_casing.fusion_casing.name", "Fusion Machine Casing");
-        //replace(provider, "tile.fusion_casing.fusion_casing_mk2.name", "Fusion Machine Casing MK II");
-        //replace(provider, "tile.fusion_casing.fusion_casing_mk3.name", "Fusion Machine Casing MK III");
+        replace(provider, "block.superconducting_coil", "Superconducting Coil Block");
+        replace(provider, "block.fusion_coil", "Fusion Coil Block");
+        replace(provider, "block.fusion_casing", "Fusion Machine Casing");
+        replace(provider, "block.fusion_casing_mk2", "Fusion Machine Casing MK II");
+        replace(provider, "block.fusion_casing_mk3", "Fusion Machine Casing MK III");
 
-        // todo tiered glass
-        //replace(provider, "tile.transparent_casing.tempered_glass.name", "Tempered Glass");
-        //replace(provider, "tile.transparent_casing.fusion_glass.name", "Fusion Glass");
-        //replace(provider, "tile.transparent_casing.cleanroom_glass.name", "Cleanroom Glass");
-
-        // todo cleanroom
-        //provider.add("tile.cleanroom_casing.plascrete.name", "Plascrete");
-        //provider.add("tile.cleanroom_casing.filter_casing.name", "Filter Casing");
-        //provider.add("tile.cleanroom_casing.filter_casing_sterile.name", "Sterilizing Filter Casing");
-        //provider.add("tile.cleanroom_casing.filter.tooltip", "Creates a §aParticle-Free§7 environment");
-        //provider.add("tile.cleanroom_casing.filter_sterile.tooltip", "Creates a §aSterilized§7 environment");
+        provider.add("block.filter.tooltip", "Creates a §aParticle-Free§7 environment");
+        provider.add("block.filter_sterile.tooltip", "Creates a §aSterilized§7 environment");
 
 
         // TODO warning sign blocks

@@ -15,6 +15,8 @@ public interface IMaintenanceHatch {
      */
     void setTaped(boolean isTaped);
 
+    boolean isTaped();
+
     /**
      * Stores maintenance data to this MetaTileEntity
      * @param maintenanceProblems is the byte value representing the problems

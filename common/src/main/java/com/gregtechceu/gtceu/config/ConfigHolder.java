@@ -149,6 +149,11 @@ public class ConfigHolder {
 
     public static class MachineConfigs {
         @Configurable
+        @Configurable.Comment({"Whether insufficient energy supply should reset Machine recipe progress to zero.",
+                "If true, progress will reset.", "If false, progress will decrease to zero with 2x speed", "Default: false"})
+        public boolean recipeProgressLowEnergy = false;
+
+        @Configurable
         @Configurable.Comment({"Whether to require a Wrench, Wirecutter, or other GregTech tools to break machines, casings, wires, and more.", "Default: false"})
         public boolean requireGTToolsForBlocks;
         @Configurable
@@ -175,6 +180,9 @@ public class ConfigHolder {
         @Configurable
         @Configurable.Comment({"Whether multiblocks should ignore all cleanroom requirements.", "This does nothing if enableCleanroom is false.", "Default: false"})
         public boolean cleanMultiblocks = false;
+        @Configurable
+        @Configurable.Comment({"Whether to enable the Maintenance Hatch, required for Multiblocks.", "Default: true"})
+        public boolean enableMaintenance = true;
     }
 
     public static class ClientConfigs {

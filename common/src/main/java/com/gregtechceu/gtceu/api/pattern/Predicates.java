@@ -6,6 +6,10 @@ import com.gregtechceu.gtceu.api.block.IMachineBlock;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
+import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
+import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenance;
+import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMufflerMechanic;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.pattern.error.PatternStringError;
 import com.gregtechceu.gtceu.api.pattern.predicates.PredicateBlocks;
@@ -15,8 +19,8 @@ import com.gregtechceu.gtceu.api.pattern.predicates.SimplePredicate;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.common.block.CoilBlock;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.lowdragmc.lowdraglib.utils.BlockInfo;
-import com.tterrag.registrate.util.entry.BlockEntry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -82,6 +86,7 @@ public class Predicates {
                                                       boolean checkFluidIn,
                                                       boolean checkFluidOut) {
         TraceabilityPredicate predicate = new TraceabilityPredicate();
+
         if (checkEnergyIn) {
             if (recipeType.getMaxInputs(EURecipeCapability.CAP) > 0) {
                 predicate = predicate.or(abilities(PartAbility.INPUT_ENERGY).setMaxGlobalLimited(3).setPreviewCount(1));
@@ -111,6 +116,22 @@ public class Predicates {
             if (recipeType.getMaxOutputs(FluidRecipeCapability.CAP) > 0) {
                 predicate = predicate.or(abilities(PartAbility.EXPORT_FLUIDS).setPreviewCount(1));
             }
+        }
+        return predicate;
+    }
+
+    public static TraceabilityPredicate autoAbilities(MultiblockControllerMachine machine) {
+        return autoAbilities(machine, true, true);
+    }
+
+    public static TraceabilityPredicate autoAbilities(MultiblockControllerMachine machine, boolean checkMaintenance, boolean checkMuffler) {
+        TraceabilityPredicate predicate = new TraceabilityPredicate();
+        if (checkMaintenance && machine instanceof IMaintenance maintenance && maintenance.hasMaintenanceMechanics()) {
+            predicate = predicate.or(abilities(PartAbility.MAINTENANCE)
+                    .setMinGlobalLimited(ConfigHolder.INSTANCE.machines.enableMaintenance ? 1 : 0).setMaxGlobalLimited(1));
+        }
+        if (checkMuffler && machine instanceof IMufflerMechanic mufflerMechanic && mufflerMechanic.hasMufflerMechanics()) {
+            predicate = predicate.or(abilities(PartAbility.MUFFLER).setMinGlobalLimited(1).setMaxGlobalLimited(1));
         }
         return predicate;
     }

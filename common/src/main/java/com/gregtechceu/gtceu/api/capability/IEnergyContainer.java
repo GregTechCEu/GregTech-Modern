@@ -99,15 +99,15 @@ public interface IEnergyContainer {
      */
     long getInputVoltage();
 
-//    /**
-//     * @return input eu/s
-//     */
-//    default long getInputPerSec() {return 0L;}
-//
-//    /**
-//     * @return output eu/s
-//     */
-//    default long getOutputPerSec() {return 0L;}
+    /**
+     * @return input eu/s
+     */
+    default long getInputPerSec() {return 0L;}
+
+    /**
+     * @return output eu/s
+     */
+    default long getOutputPerSec() {return 0L;}
 
     /**
      * @return true if information like energy capacity should be hidden from TOP.

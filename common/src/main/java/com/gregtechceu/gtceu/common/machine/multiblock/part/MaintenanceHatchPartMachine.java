@@ -16,17 +16,21 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.syncdata.RequireRerender;
+import com.gregtechceu.gtceu.api.syncdata.UpdateListener;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
 import com.lowdragmc.lowdraglib.gui.util.ClickData;
-import com.lowdragmc.lowdraglib.gui.widget.*;
+import com.lowdragmc.lowdraglib.gui.widget.ButtonWidget;
+import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
+import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
+import com.lowdragmc.lowdraglib.gui.widget.TextBoxWidget;
 import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
 import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import com.lowdragmc.lowdraglib.syncdata.managed.IManagedVar;
 import lombok.Getter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -51,7 +55,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -62,13 +65,19 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine implements IM
     private final boolean isConfigurable;
     @Persisted @DescSynced
     private final NotifiableItemStackHandler itemStackHandler;
-    @Persisted @DescSynced @Getter
+    @Getter
+    @Persisted @DescSynced
+    @RequireRerender @UpdateListener(methodName = "onSetTaped")
     private boolean isTaped;
 
     // Used to store state temporarily if the Controller is broken
-    @Persisted @DescSynced @Getter
+    @Getter
+    @Persisted @DescSynced
+    @UpdateListener(methodName = "onUpdateProblems")
     private byte maintenanceProblems = -1;
-    @Persisted @DescSynced @Getter
+    @Getter
+    @Persisted @DescSynced
+    @UpdateListener(methodName = "onUpdateTimeActive")
     private int timeActive = -1;
 
     @Persisted @DescSynced
@@ -89,11 +98,6 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine implements IM
         super(metaTileEntityId, isConfigurable ? 3 : 1);
         this.isConfigurable = isConfigurable;
         this.itemStackHandler = createInventory();
-        if (isRemote()) {
-            addSyncUpdateListener("isTaped", this::onSetTaped);
-            addSyncUpdateListener("maintenanceProblems", this::onUpdateProblems);
-            addSyncUpdateListener("timeActive", this::onUpdateTimeActive);
-        }
     }
 
     protected NotifiableItemStackHandler createInventory() {
@@ -117,9 +121,17 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine implements IM
         }
     }
 
-    private void onSetTaped(String fieldName, boolean newValue, boolean oldValue) {
+    private void onSetTaped(boolean newValue, boolean oldValue) {
         scheduleRenderUpdate();
         this.setTaped(newValue);
+    }
+
+    public void onUpdateProblems(byte newValue, byte oldValue) {
+        this.maintenanceProblems = newValue;
+    }
+
+    public void onUpdateTimeActive(int newValue, int oldValue) {
+        this.timeActive = newValue;
     }
 
     @Nullable
@@ -136,14 +148,6 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine implements IM
     public void storeMaintenanceData(byte maintenanceProblems, int timeActive) {
         this.maintenanceProblems = maintenanceProblems;
         this.timeActive = timeActive;
-    }
-
-    public void onUpdateProblems(String fieldName, byte newValue, byte oldValue) {
-        this.maintenanceProblems = newValue;
-    }
-
-    public void onUpdateTimeActive(String fieldName, int newValue, int oldValue) {
-        this.timeActive = newValue;
     }
 
     /**
@@ -258,24 +262,12 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine implements IM
             if (((problems >> index) & 1) == 0) {
                 proceed = true;
                 switch (index) {
-                    case 0:
-                        toolsToMatch.set(0, GTToolType.WRENCH);
-                        break;
-                    case 1:
-                        toolsToMatch.set(1, GTToolType.SCREWDRIVER);
-                        break;
-                    case 2:
-                        toolsToMatch.set(2, GTToolType.SOFT_MALLET);
-                        break;
-                    case 3:
-                        toolsToMatch.set(3, GTToolType.HARD_HAMMER);
-                        break;
-                    case 4:
-                        toolsToMatch.set(4, GTToolType.WIRE_CUTTER);
-                        break;
-                    case 5:
-                        toolsToMatch.set(5, GTToolType.CROWBAR);
-                        break;
+                    case 0 -> toolsToMatch.set(0, GTToolType.WRENCH);
+                    case 1 -> toolsToMatch.set(1, GTToolType.SCREWDRIVER);
+                    case 2 -> toolsToMatch.set(2, GTToolType.SOFT_MALLET);
+                    case 3 -> toolsToMatch.set(3, GTToolType.HARD_HAMMER);
+                    case 4 -> toolsToMatch.set(4, GTToolType.WIRE_CUTTER);
+                    case 5 -> toolsToMatch.set(5, GTToolType.CROWBAR);
                 }
             }
         }
@@ -328,19 +320,21 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine implements IM
     }
 
     private void fixProblemWithTool(int problemIndex, ItemStack stack, Player player) {
-        ((IMaintenance) getController()).setMaintenanceFixed(problemIndex);
-        if (player instanceof ServerPlayer serverPlayer) {
-            ToolHelper.damageItem(stack, GTValues.RNG, serverPlayer);
+        if (this.getController() instanceof IMaintenance maintenance) {
+            maintenance.setMaintenanceFixed(problemIndex);
+            if (player instanceof ServerPlayer serverPlayer) {
+                ToolHelper.damageItem(stack, GTValues.RNG, serverPlayer);
+            }
+            setTaped(false);
         }
-        setTaped(false);
     }
 
     /**
      * Fixes every maintenance problem of the controller
      */
     public void fixAllMaintenanceProblems() {
-        if (this.getController() instanceof IMaintenance)
-            for (int i = 0; i < 6; i++) ((IMaintenance) this.getController()).setMaintenanceFixed(i);
+        if (this.getController() instanceof IMaintenance maintenance)
+            for (int i = 0; i < 6; i++) maintenance.setMaintenanceFixed(i);
     }
 
     @Override
@@ -380,11 +374,6 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine implements IM
     }
 
     @Override
-    protected InteractionResult onCrowbarClick(Player playerIn, InteractionHand hand, Direction gridSide, BlockHitResult hitResult) {
-        return super.onCrowbarClick(playerIn, hand, gridSide, hitResult);
-    }
-
-    @Override
     public InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         if (getController() instanceof IMaintenance && ((IMaintenance) getController()).hasMaintenanceProblems()) {
             if (consumeDuctTape(player, player.getItemInHand(hand))) {
@@ -399,6 +388,7 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine implements IM
     @Override
     public ModularUI createUI(Player entityPlayer) {
         ModularUI modular = new ModularUI(176, 18 * 3 + 98, this, entityPlayer)
+                .background(GuiTextures.BACKGROUND)
                 .widget(new LabelWidget(10, 5, getBlockState().getBlock().getDescriptionId()))
                 .widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(), GuiTextures.SLOT, 7, 18 * 3 + 16, true));
 
@@ -425,18 +415,13 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine implements IM
         List<String> list = new ArrayList<>();
         Component tooltip;
         if (multiplier.get() == 1.0) {
-            tooltip = Component.translatable("gregtech.maintenance.configurable_" + type + ".unchanged_description");
+            tooltip = Component.translatable("gtceu.maintenance.configurable_" + type + ".unchanged_description");
         } else {
-            tooltip = Component.translatable("gregtech.maintenance.configurable_" + type + ".changed_description", multiplier.get());
+            tooltip = Component.translatable("gtceu.maintenance.configurable_" + type + ".changed_description", multiplier.get());
         }
-        list.add(Component.translatable("gregtech.maintenance.configurable_" + type, multiplier.get())
+        list.add(Component.translatable("gtceu.maintenance.configurable_" + type, multiplier.get())
                 .setStyle(Style.EMPTY.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, tooltip))).getString());
         return list;
-    }
-
-    @Override
-    public void registerAbilities(List<IMaintenanceHatch> abilityList) {
-        abilityList.add(this);
     }
 
     @Override
@@ -444,21 +429,7 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine implements IM
         return false;
     }
 
-    @Override
-    public void addInformation(ItemStack stack, @Nullable Level world, @Nonnull List<Component> tooltip, boolean advanced) {
-        super.addInformation(stack, world, tooltip, advanced);
-        tooltip.add(Component.translatable("gregtech.universal.disabled"));
-    }
-
-    @Override
-    public void addToolUsages(ItemStack stack, @Nullable Level world, List<Component> tooltip, boolean advanced) {
-        tooltip.add(Component.translatable("gregtech.tool_action.screwdriver.access_covers"));
-        tooltip.add(Component.translatable("gregtech.tool_action.wrench.set_facing"));
-        super.addToolUsages(stack, world, tooltip, advanced);
-        tooltip.add(Component.translatable("gregtech.tool_action.tape"));
-    }
-
-    public class TapeItemStackHandler extends NotifiableItemStackHandler {
+    public static class TapeItemStackHandler extends NotifiableItemStackHandler {
 
         public TapeItemStackHandler(MetaMachine machine, int size) {
             super(machine, size, IO.BOTH, IO.NONE);
@@ -467,7 +438,7 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine implements IM
         @Override
         @Nonnull
         public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-            if (!stack.isEmpty() && stack.is(GTItems.DUCT_TAPE.get())) {
+            if (!stack.isEmpty() && GTItems.DUCT_TAPE.is(stack)) {
                 return super.insertItem(slot, stack, simulate);
             }
             return stack;

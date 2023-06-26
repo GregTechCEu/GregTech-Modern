@@ -5,7 +5,7 @@ package com.gregtechceu.gtceu.api.machine.feature.multiblock;
  * @date 2023/3/6
  * @implNote IMaintenance
  */
-public interface IMaintenance extends IMultiPart {
+public interface IMaintenance {
     byte getMaintenanceProblems();
 
     int getNumMaintenanceProblems();

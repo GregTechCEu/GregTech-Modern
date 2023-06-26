@@ -139,18 +139,16 @@ public class MetaTileEntityLoader {
         //VanillaRecipeHelper.addShapedRecipe(provider, true, "rotor_holder_zpm", GTMachines.ROTOR_HOLDER[4].getStackForm(), "SGS", "GHG", "SGS", 'H', GTMachines.HULL[GTValues.ZPM].getStackForm(), 'G', new UnificationEntry(TagPrefix.gear, GTMaterials.Trinium), 'S', new UnificationEntry(TagPrefix.gearSmall, GTMaterials.NaquadahAlloy));
         //VanillaRecipeHelper.addShapedRecipe(provider, true, "rotor_holder_uv", GTMachines.ROTOR_HOLDER[5].getStackForm(), "SGS", "GHG", "SGS", 'H', GTMachines.HULL[GTValues.UV].getStackForm(), 'G', new UnificationEntry(TagPrefix.gear, GTMaterials.Tritanium), 'S', new UnificationEntry(TagPrefix.gearSmall, GTMaterials.Darmstadtium));
 
-        // TODO Maintenance hatches
-        //VanillaRecipeHelper.addShapedRecipe(provider, true, "maintenance_hatch", GTMachines.MAINTENANCE_HATCH.getStackForm(), "dwx", "hHc", "fsr", 'H', GTMachines.HULL[GTValues.LV].getStackForm());
-        //VanillaRecipeHelper.addShapedRecipe(provider, true, "maintenance_hatch_configurable", GTMachines.CONFIGURABLE_MAINTENANCE_HATCH.getStackForm(), "   ", "CMC", "VHV", 'C', CIRCUIT.getIngredient(GTValues.HV), 'M', GTMachines.MAINTENANCE_HATCH.getStackForm(), 'V', CONVEYOR.getIngredient(GTValues.HV), 'H', GTMachines.HULL[GTValues.HV].getStackForm());
-        //VanillaRecipeHelper.addShapedRecipe(provider, true, "maintenance_hatch_automatic", GTMachines.AUTO_MAINTENANCE_HATCH.getStackForm(), "CMC", "RHR", "CMC", 'C', CIRCUIT.getIngredient(GTValues.HV), 'M', GTMachines.MAINTENANCE_HATCH.getStackForm(), 'R', ROBOT_ARM.getIngredient(GTValues.HV), 'H', GTMachines.HULL[GTValues.HV].getStackForm());
-        //VanillaRecipeHelper.addShapedRecipe(provider, true, "maintenance_hatch_cleaning", GTMachines.CLEANING_MAINTENANCE_HATCH.getStackForm(), "CMC", "RHR", "WCW", 'C', CIRCUIT.getIngredient(GTValues.UV), 'M', GTMachines.AUTO_MAINTENANCE_HATCH.getStackForm(), 'R', ROBOT_ARM.getIngredient(GTValues.UV), 'H', GTMachines.HULL[GTValues.UV].getStackForm(), 'W', new UnificationEntry(TagPrefix.cableGtSingle, GTMaterials.YttriumBariumCuprate));
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "maintenance_hatch", GTMachines.MAINTENANCE_HATCH.asStack(), "dwx", "hHc", "fsr", 'H', GTMachines.HULL[GTValues.LV].asStack());
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "maintenance_hatch_configurable", GTMachines.CONFIGURABLE_MAINTENANCE_HATCH.asStack(), "   ", "CMC", "VHV", 'C', CIRCUIT.getIngredient(GTValues.HV), 'M', GTMachines.MAINTENANCE_HATCH.asStack(), 'V', CONVEYOR.getIngredient(GTValues.HV), 'H', GTMachines.HULL[GTValues.HV].asStack());
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "maintenance_hatch_automatic", GTMachines.AUTO_MAINTENANCE_HATCH.asStack(), "CMC", "RHR", "CMC", 'C', CIRCUIT.getIngredient(GTValues.HV), 'M', GTMachines.MAINTENANCE_HATCH.asStack(), 'R', ROBOT_ARM.getIngredient(GTValues.HV), 'H', GTMachines.HULL[GTValues.HV].asStack());
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "maintenance_hatch_cleaning", GTMachines.CLEANING_MAINTENANCE_HATCH.asStack(), "CMC", "RHR", "WCW", 'C', CIRCUIT.getIngredient(GTValues.UV), 'M', GTMachines.AUTO_MAINTENANCE_HATCH.asStack(), 'R', ROBOT_ARM.getIngredient(GTValues.UV), 'H', GTMachines.HULL[GTValues.UV].asStack(), 'W', new UnificationEntry(TagPrefix.cableGtSingle, GTMaterials.YttriumBariumCuprate));
 
         // TODO Processing array
         //VanillaRecipeHelper.addShapedRecipe(provider, true, "machine_access_interface", GTMachines.MACHINE_HATCH.getStackForm(), "CHS", 'C', CustomTags.IV), 'H', GTMachines.HULL[GTValues.IV].getStackForm(), 'S', MetaItems.SENSOR_IV.getStackForm());
 
-        // TODO Cleanroom
-        //VanillaRecipeHelper.addShapedRecipe(provider, true, "passthrough_hatch_item", GTMachines.PASSTHROUGH_HATCH_ITEM.getStackForm(), " C ", "GHG", " S ", 'C', MetaItems.CONVEYOR_MODULE_HV.getStackForm(), 'G', new UnificationEntry(TagPrefix.gearSmall, GTMaterials.Steel), 'H', GTMachines.HULL[GTValues.HV].getStackForm(), 'S', OreDictNames.chestWood);
-        //VanillaRecipeHelper.addShapedRecipe(provider, true, "passthrough_hatch_fluid", GTMachines.PASSTHROUGH_HATCH_FLUID.getStackForm(), " C ", "GHG", " S ", 'C', MetaItems.ELECTRIC_PUMP_HV.getStackForm(), 'G', new UnificationEntry(TagPrefix.pipeSmallFluid, GTMaterials.Steel), 'H', GTMachines.HULL[GTValues.HV].getStackForm(), 'S', MetaBlocks.TRANSPARENT_CASING.getItemVariant(BlockGlassCasing.CasingType.TEMPERED_GLASS));
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "passthrough_hatch_item", GTMachines.ITEM_PASSTHROUGH_HATCH[GTValues.HV].asStack(), " C ", "GHG", " S ", 'C', GTItems.CONVEYOR_MODULE_HV.asStack(), 'G', new UnificationEntry(TagPrefix.gearSmall, GTMaterials.Steel), 'H', GTMachines.HULL[GTValues.HV], 'S', CustomTags.TAG_WOODEN_CHESTS);
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "passthrough_hatch_fluid", GTMachines.FLUID_PASSTHROUGH_HATCH[GTValues.HV].asStack(), " C ", "GHG", " S ", 'C', GTItems.ELECTRIC_PUMP_HV.asStack(), 'G', new UnificationEntry(TagPrefix.pipeSmallFluid, GTMaterials.Steel), 'H', GTMachines.HULL[GTValues.HV], 'S', GTBlocks.CASING_TEMPERED_GLASS);
 
         // TODO Charcoal pile igniter
         //VanillaRecipeHelper.addShapedRecipe(provider, true, "charcoal_pile_igniter", GTMachines.CHARCOAL_PILE_IGNITER.getStackForm(), "ERE", "EHE", "FFF", 'E', new UnificationEntry(TagPrefix.plate, GTMaterials.Bronze), 'R', new UnificationEntry(TagPrefix.rotor, GTMaterials.Iron), 'H', MetaBlocks.STEAM_CASING.getItemVariant(BRONZE_BRICKS_HULL), 'F', new ItemStack(Items.FLINT));
@@ -302,10 +300,9 @@ public class MetaTileEntityLoader {
 
         registerMachineRecipe(provider, GTMachines.MUFFLER_HATCH, "HM", "PR", 'H', HULL, 'M', MOTOR, 'P', PIPE_NORMAL, 'R', ROTOR);
 
-        // TODO Diodes
-        //registerMachineRecipe(provider, ArrayUtils.subarray(provider, GTMachines.DIODES, GTValues.ULV, GTValues.HV), "CDC", "DHD", "PDP", 'H', HULL, 'D', GTItems.DIODE, 'P', PLATE, 'C', CABLE_QUAD);
-        //registerMachineRecipe(provider, ArrayUtils.subarray(provider, GTMachines.DIODES, GTValues.HV, GTValues.LuV), "CDC", "DHD", "PDP", 'H', HULL, 'D', GTItems.SMD_DIODE, 'P', PLATE, 'C', CABLE_QUAD);
-        //registerMachineRecipe(provider, ArrayUtils.subarray(provider, GTMachines.DIODES, GTValues.LuV, GTMachines.DIODES.length), "CDC", "DHD", "PDP", 'H', HULL, 'D', GTItems.ADVANCED_SMD_DIODE, 'P', PLATE, 'C', CABLE_QUAD);
+        registerMachineRecipe(provider, ArrayUtils.subarray(GTMachines.DIODE, GTValues.ULV, GTValues.HV), "CDC", "DHD", "PDP", 'H', HULL, 'D', GTItems.DIODE, 'P', PLATE, 'C', CABLE_QUAD);
+        registerMachineRecipe(provider, ArrayUtils.subarray(GTMachines.DIODE, GTValues.HV, GTValues.LuV), "CDC", "DHD", "PDP", 'H', HULL, 'D', GTItems.SMD_DIODE, 'P', PLATE, 'C', CABLE_QUAD);
+        registerMachineRecipe(provider, ArrayUtils.subarray(GTMachines.DIODE, GTValues.LuV, GTMachines.DIODE.length), "CDC", "DHD", "PDP", 'H', HULL, 'D', GTItems.ADVANCED_SMD_DIODE, 'P', PLATE, 'C', CABLE_QUAD);
 
         registerMachineRecipe(provider, ArrayUtils.subarray(GTMachines.TRANSFORMER, GTValues.ULV, GTValues.MV), " CC", "TH ", " CC", 'C', CABLE, 'T', CABLE_TIER_UP, 'H', HULL);
         registerMachineRecipe(provider, ArrayUtils.subarray(GTMachines.TRANSFORMER, GTValues.MV, GTValues.UHV), "WCC", "TH ", "WCC", 'W', POWER_COMPONENT, 'C', CABLE, 'T', CABLE_TIER_UP, 'H', HULL);
@@ -378,8 +375,7 @@ public class MetaTileEntityLoader {
         //VanillaRecipeHelper.addShapedRecipe(provider, true, "buffer_mv", GTMachines.BUFFER[1].getStackForm(), "HP", "CV", 'H', GTMachines.HULL[GTValues.MV].getStackForm(), 'P', MetaItems.ELECTRIC_PUMP_MV.getStackForm(), 'V', MetaItems.CONVEYOR_MODULE_MV.getStackForm(), 'C', new UnificationEntry(TagPrefix.circuit, MarkerGTMaterials.Tier.LV));
         //VanillaRecipeHelper.addShapedRecipe(provider, true, "buffer_hv", GTMachines.BUFFER[2].getStackForm(), "HP", "CV", 'H', GTMachines.HULL[GTValues.HV].getStackForm(), 'P', MetaItems.ELECTRIC_PUMP_HV.getStackForm(), 'V', MetaItems.CONVEYOR_MODULE_HV.getStackForm(), 'C', new UnificationEntry(TagPrefix.circuit, MarkerGTMaterials.Tier.LV));
 
-        // TODO Cleanroom
-        //VanillaRecipeHelper.addShapedRecipe(provider, true, "cleanroom", GTMachines.CLEANROOM.getStackForm(), "FFF", "RHR", "MCM", 'F', MetaItems.ITEM_FILTER.getStackForm(), 'R', new UnificationEntry(TagPrefix.rotor, GTMaterials.StainlessSteel), 'H', HULL.getIngredient(GTValues.HV), 'M', MetaItems.ELECTRIC_MOTOR_HV.getStackForm(), 'C', CustomTags.HV));
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "cleanroom", GTMachines.CLEANROOM.asStack(), "FFF", "RHR", "MCM", 'F', GTItems.ITEM_FILTER.asStack(), 'R', new UnificationEntry(TagPrefix.rotor, GTMaterials.StainlessSteel), 'H', HULL.getIngredient(GTValues.HV), 'M', GTItems.ELECTRIC_MOTOR_HV.asStack(), 'C', CustomTags.HV_CIRCUITS);
 
         if (ConfigHolder.INSTANCE.compat.energy.enablePlatformConverters && GTCEu.isRebornEnergyLoaded()) {
             registerMachineRecipe(provider, true, GTMachines.ENERGY_CONVERTER_1A, " WW", "RMC", " WW", 'C', CIRCUIT, 'M', HULL, 'W', CABLE, 'R', new UnificationEntry(TagPrefix.cableGtSingle, GTMaterials.RedAlloy));

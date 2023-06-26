@@ -1,6 +1,8 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.electric;
 
 import com.gregtechceu.gtceu.api.block.ICoilType;
+import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMufflerMachine;
+import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMufflerMechanic;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
@@ -28,7 +30,7 @@ import java.util.List;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class ElectricBlastFurnaceMachine extends WorkableElectricMultiblockMachine {
+public class ElectricBlastFurnaceMachine extends WorkableElectricMultiblockMachine implements IMufflerMechanic {
 
     @Getter
     private int blastFurnaceTemperature;
@@ -86,5 +88,9 @@ public class ElectricBlastFurnaceMachine extends WorkableElectricMultiblockMachi
                     Component.translatable(FormattingUtil.formatNumbers(blastFurnaceTemperature) + "K").setStyle(Style.EMPTY.withColor(ChatFormatting.RED))));
         }
         super.addDisplayText(textList);
+    }
+
+    public boolean hasMufflerMechanics() {
+        return true;
     }
 }
