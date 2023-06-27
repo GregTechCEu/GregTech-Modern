@@ -108,6 +108,7 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
         }
         this.inputEnergyContainers = new EnergyContainerList(energyContainers);
         energyContainer.resetBasicInfo(calculateEnergyStorageFactor(getTier(), energyContainers.size()), 0, 0, 0, 0);
+        updatePreHeatSubscription();
     }
 
     @Override
