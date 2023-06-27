@@ -512,7 +512,7 @@ public class TagPrefix {
             .generationCondition(mat -> mat.hasFlag(MaterialFlags.GENERATE_SPRING) && !mat.hasFlag(MaterialFlags.NO_SMASHING));
 
     // consisting out of 1/8 Ingot or 1/4 Wire.
-    public static final TagPrefix wireFine = new TagPrefix("fireWire")
+    public static final TagPrefix wireFine = new TagPrefix("fineWire")
             .defaultTagPath(FORGE, "wires/fine/%s")
             .defaultTagPath(FABRIC, "%s_fine_wires")
             .unformattedTagPath(FORGE, "wires/fine")
