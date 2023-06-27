@@ -99,9 +99,6 @@ public class GTBlocks {
                         .setData(ProviderType.BLOCKSTATE, NonNullBiConsumer.noop())
                         .setData(ProviderType.LANG, NonNullBiConsumer.noop())
                         .setData(ProviderType.LOOT, NonNullBiConsumer.noop())
-                        .tag(BlockTags.MINEABLE_WITH_PICKAXE)
-                        .tag(BlockTags.BEACON_BASE_BLOCKS)
-                        // TODO: Add #forge:storage_blocks tag
                         .color(() -> () -> MaterialBlock::tintedColor)
                         .item(MaterialBlockItem::new)
                         .model(NonNullBiConsumer.noop())
