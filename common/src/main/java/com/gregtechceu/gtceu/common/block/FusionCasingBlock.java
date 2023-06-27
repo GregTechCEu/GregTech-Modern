@@ -14,10 +14,10 @@ public class FusionCasingBlock extends ActiveBlock {
 
     public FusionCasingBlock(Properties properties, IFusionCasingType casingType) {
         super(properties, new TextureOverrideRenderer(new ResourceLocation("block/cube_all"),
-                        Map.of("all", casingType.getTexture().toString())),
+                        Map.of("all", casingType.getTexture())),
                 new TextureOverrideRenderer(GTCEu.id("block/cube_2_layer_all"),
-                        Map.of("bot_all", casingType.getTexture().toString(),
-                                "top_all", casingType.getTexture() + "_bloom")));
+                        Map.of("bot_all", casingType.getTexture(),
+                                "top_all", new ResourceLocation(casingType.getTexture() + "_bloom"))));
     }
 
     public enum CasingType implements IFusionCasingType, StringRepresentable {

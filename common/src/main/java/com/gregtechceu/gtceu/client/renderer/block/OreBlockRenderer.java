@@ -68,6 +68,7 @@ public class OreBlockRenderer extends BlockStateRenderer {
         Minecraft.getInstance().getItemRenderer().render(stack, transformType, leftHand, matrixStack, buffer, combinedLight, combinedOverlay,
                 new ItemBakedModel() {
                     @Override
+                    @Environment(EnvType.CLIENT)
                     public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction direction, RandomSource random) {
                         List<BakedQuad> quads = new LinkedList<>();
                         if (direction != null) {

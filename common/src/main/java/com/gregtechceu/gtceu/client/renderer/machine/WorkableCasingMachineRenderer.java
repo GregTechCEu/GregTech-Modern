@@ -5,20 +5,18 @@ import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.client.model.WorkableOverlayModel;
-import com.gregtechceu.gtceu.core.mixins.BlockModelAccessor;
-import com.lowdragmc.lowdraglib.client.model.ModelFactory;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.ModelState;
-import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 
 /**
@@ -37,18 +35,9 @@ public class WorkableCasingMachineRenderer extends MachineRenderer {
 
     public WorkableCasingMachineRenderer(ResourceLocation baseCasing, ResourceLocation workableModel, boolean tint) {
         super(tint ? GTCEu.id("block/tinted_cube_all") : GTCEu.id("block/cube_all"));
-        this.baseCasing = baseCasing;
         this.overlayModel = new WorkableOverlayModel(workableModel);
-    }
-
-    @Override
-    @Environment(EnvType.CLIENT)
-    protected UnbakedModel getModel() {
-        var model = super.getModel();
-        if (model instanceof BlockModelAccessor blockModelAccessor) {
-            blockModelAccessor.getTextureMap().put("all", ModelFactory.parseBlockTextureLocationOrReference(baseCasing.toString()));
-        }
-        return super.getModel();
+        this.baseCasing = baseCasing;
+        setTextureOverride(Map.of("all", baseCasing));
     }
 
     @Override
@@ -67,7 +56,6 @@ public class WorkableCasingMachineRenderer extends MachineRenderer {
     public void onPrepareTextureAtlas(ResourceLocation atlasName, Consumer<ResourceLocation> register) {
         super.onPrepareTextureAtlas(atlasName, register);
         if (atlasName.equals(TextureAtlas.LOCATION_BLOCKS)) {
-            register.accept(baseCasing);
             overlayModel.registerTextureAtlas(register);
         }
     }
