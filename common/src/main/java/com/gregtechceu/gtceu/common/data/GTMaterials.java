@@ -190,27 +190,6 @@ public class GTMaterials {
         block.setIgnored(Lapotron);
         block.setIgnored(Obsidian, Blocks.OBSIDIAN);
 
-        ore.setIgnored(Redstone, Blocks.REDSTONE_ORE);
-        oreDeepslate.setIgnored(Redstone, Blocks.DEEPSLATE_REDSTONE_ORE);
-        ore.setIgnored(Coal, Blocks.COAL_ORE);
-        oreDeepslate.setIgnored(Coal, Blocks.DEEPSLATE_COAL_ORE);
-        ore.setIgnored(Gold, Blocks.GOLD_ORE);
-        oreDeepslate.setIgnored(Gold, Blocks.DEEPSLATE_GOLD_ORE);
-        oreNetherrack.setIgnored(Gold, Blocks.NETHER_GOLD_ORE);
-        ore.setIgnored(Iron, Blocks.IRON_ORE);
-        oreDeepslate.setIgnored(Iron, Blocks.DEEPSLATE_IRON_ORE);
-        ore.setIgnored(Lapis, Blocks.LAPIS_ORE);
-        oreDeepslate.setIgnored(Lapis, Blocks.DEEPSLATE_LAPIS_ORE);
-        ore.setIgnored(Diamond, Blocks.DIAMOND_ORE);
-        oreDeepslate.setIgnored(Diamond, Blocks.DEEPSLATE_DIAMOND_ORE);
-        ore.setIgnored(Emerald, Blocks.EMERALD_ORE);
-        oreDeepslate.setIgnored(Emerald, Blocks.DEEPSLATE_EMERALD_ORE);
-        ore.setIgnored(Copper, Blocks.COPPER_ORE);
-        oreDeepslate.setIgnored(Copper, Blocks.DEEPSLATE_COPPER_ORE);
-        ore.setIgnored(Copper, Blocks.COPPER_ORE);
-        oreDeepslate.setIgnored(Copper, Blocks.DEEPSLATE_COPPER_ORE);
-        oreNetherrack.setIgnored(NetherQuartz, Blocks.NETHER_QUARTZ_ORE);
-
         crushed.addSecondaryMaterial(new MaterialStack(Stone, dust.materialAmount()));
 
         toolHeadDrill.addSecondaryMaterial(new MaterialStack(Steel, plate.materialAmount() * 4));
@@ -266,26 +245,26 @@ public class GTMaterials {
 
         // register vanilla materials
         registerUnificationItems(ingot, Clay, Items.CLAY_BALL);
-        /*
-        registerUnificationItems(ore, Coal, Blocks.COAL_ORE);
-        registerUnificationItems(oreDeepslate, Coal, Blocks.DEEPSLATE_COAL_ORE);
-        registerUnificationItems(ore, Iron, Blocks.IRON_ORE);
-        registerUnificationItems(oreDeepslate, Iron, Blocks.DEEPSLATE_IRON_ORE);
-        registerUnificationItems(ore, Lapis, Blocks.LAPIS_ORE);
-        registerUnificationItems(oreDeepslate, Lapis, Blocks.DEEPSLATE_LAPIS_ORE);
-        registerUnificationItems(ore, Redstone, Blocks.REDSTONE_ORE);
-        registerUnificationItems(oreDeepslate, Redstone, Blocks.DEEPSLATE_REDSTONE_ORE);
-        registerUnificationItems(ore, Gold, Blocks.GOLD_ORE);
-        registerUnificationItems(oreDeepslate, Gold, Blocks.DEEPSLATE_GOLD_ORE);
-        registerUnificationItems(oreNetherrack, Gold, Blocks.NETHER_GOLD_ORE);
-        registerUnificationItems(ore, Diamond, Blocks.DIAMOND_ORE);
-        registerUnificationItems(oreDeepslate, Diamond, Blocks.DEEPSLATE_DIAMOND_ORE);
-        registerUnificationItems(ore, Emerald, Blocks.EMERALD_ORE);
-        registerUnificationItems(oreDeepslate, Emerald, Blocks.DEEPSLATE_EMERALD_ORE);
-        registerUnificationItems(oreNetherrack, NetherQuartz, Blocks.NETHER_QUARTZ_ORE);
-        registerUnificationItems(ore, Copper, Blocks.COPPER_ORE);
-        registerUnificationItems(oreDeepslate, Copper, Blocks.DEEPSLATE_COPPER_ORE);
-        */
+        ore.setIgnored(Redstone, Blocks.REDSTONE_ORE);
+        oreDeepslate.setIgnored(Redstone, Blocks.DEEPSLATE_REDSTONE_ORE);
+        ore.setIgnored(Coal, Blocks.COAL_ORE);
+        oreDeepslate.setIgnored(Coal, Blocks.DEEPSLATE_COAL_ORE);
+        ore.setIgnored(Gold, Blocks.GOLD_ORE);
+        oreDeepslate.setIgnored(Gold, Blocks.DEEPSLATE_GOLD_ORE);
+        oreNetherrack.setIgnored(Gold, Blocks.NETHER_GOLD_ORE);
+        ore.setIgnored(Iron, Blocks.IRON_ORE);
+        oreDeepslate.setIgnored(Iron, Blocks.DEEPSLATE_IRON_ORE);
+        ore.setIgnored(Lapis, Blocks.LAPIS_ORE);
+        oreDeepslate.setIgnored(Lapis, Blocks.DEEPSLATE_LAPIS_ORE);
+        ore.setIgnored(Diamond, Blocks.DIAMOND_ORE);
+        oreDeepslate.setIgnored(Diamond, Blocks.DEEPSLATE_DIAMOND_ORE);
+        ore.setIgnored(Emerald, Blocks.EMERALD_ORE);
+        oreDeepslate.setIgnored(Emerald, Blocks.DEEPSLATE_EMERALD_ORE);
+        ore.setIgnored(Copper, Blocks.COPPER_ORE);
+        oreDeepslate.setIgnored(Copper, Blocks.DEEPSLATE_COPPER_ORE);
+        ore.setIgnored(Copper, Blocks.COPPER_ORE);
+        oreDeepslate.setIgnored(Copper, Blocks.DEEPSLATE_COPPER_ORE);
+        oreNetherrack.setIgnored(NetherQuartz, Blocks.NETHER_QUARTZ_ORE);
         // todo dyes
         //registerUnificationItems(dye, DyeBlue, ChemicalHelper.get(gem, Lapis).getItem());
         //registerUnificationItems(dye, DyeBlue, ChemicalHelper.get(gem, Lazurite).getItem());

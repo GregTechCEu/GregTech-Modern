@@ -15,6 +15,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.item.tool.MaterialToolTier;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
+import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import dev.latvian.mods.rhino.util.HideFromJS;
@@ -738,19 +739,19 @@ public class Material implements Comparable<Material> {
                             + this.materialInfo.name);
                 }
                 composition.add(new MaterialStack(
-                        (Material) components[i],
-                        (Integer) components[i + 1]
+                        components[i] instanceof CharSequence chars ? GTMaterials.get(chars.toString()) : (Material) components[i],
+                        ((Number) components[i + 1]).longValue()
                 ));
             }
             return this;
         }
 
-        public Builder components(MaterialStack... components) {
+        public Builder componentStacks(MaterialStack... components) {
             composition = Arrays.asList(components);
             return this;
         }
 
-        public Builder components(ImmutableList<MaterialStack> components) {
+        public Builder componentStacks(ImmutableList<MaterialStack> components) {
             composition = components;
             return this;
         }
@@ -959,7 +960,7 @@ public class Material implements Comparable<Material> {
             return this;
         }
 
-        // TODO Clean this up post 2.5 release
+        // TODO make these work
         @Deprecated
         public Builder addDefaultEnchant(Enchantment enchant, int level) {
             if (!properties.hasProperty(PropertyKey.TOOL)) // cannot assign default here

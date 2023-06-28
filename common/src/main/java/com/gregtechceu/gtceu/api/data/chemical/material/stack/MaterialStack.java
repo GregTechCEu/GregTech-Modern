@@ -58,7 +58,7 @@ public record MaterialStack(Material material, long amount) {
 
     @Override
     public int hashCode() {
-        return material.hashCode();
+        return material.hashCode() * 31 + (int) amount * 31;
     }
 
     @Override
