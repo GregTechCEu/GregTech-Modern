@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "gtceu:item/zpm/8"
+    "layer0": "gtceu:item/zero_point_module/6"
   }
 }

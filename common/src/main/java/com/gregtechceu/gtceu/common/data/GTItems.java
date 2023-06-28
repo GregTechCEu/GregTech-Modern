@@ -562,7 +562,7 @@ public class GTItems {
             .onRegister(attach(ElectricStats.createRechargeableBattery(20_000_000_000L, GTValues.UV)))
             .tag(CustomTags.UV_BATTERIES).register();
 
-    public static ItemEntry<ComponentItem> ZERO_POINT_MODULE = REGISTRATE.item("zpm", ComponentItem::create)
+    public static ItemEntry<ComponentItem> ZERO_POINT_MODULE = REGISTRATE.item("zero_point_module", ComponentItem::create)
             .lang("Zero Point Module")
             .properties(p -> p.stacksTo(1))
             .model(overrideModel(GTCEu.id("battery"), 8))
@@ -913,14 +913,14 @@ public class GTItems {
     public static ItemEntry<ComponentItem> ITEM_FILTER = REGISTRATE.item("item_filter", ComponentItem::create)
             .onRegister(attach(new ItemFilterBehaviour(SimpleItemFilter::loadFilter), new CoverPlaceBehavior(GTCovers.ITEM_FILTER)))
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Zinc, GTValues.M * 2), new MaterialStack(GTMaterials.Steel, GTValues.M)))).register();
-    public static ItemEntry<ComponentItem> ORE_DICTIONARY_FILTER = REGISTRATE.item("ore_dictionary_filter", ComponentItem::create)
+    public static ItemEntry<ComponentItem> ORE_DICTIONARY_FILTER = REGISTRATE.item("item_tag_filter", ComponentItem::create)
             .lang("Item Tag Filter")
             .onRegister(attach(new ItemFilterBehaviour(TagItemFilter::loadFilter), new CoverPlaceBehavior(GTCovers.ITEM_FILTER)))
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Zinc, GTValues.M * 2)))).register();
     public static ItemEntry<ComponentItem> FLUID_FILTER = REGISTRATE.item("fluid_filter", ComponentItem::create)
             .onRegister(attach(new FluidFilterBehaviour(SimpleFluidFilter::loadFilter), new CoverPlaceBehavior(GTCovers.FLUID_FILTER)))
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Zinc, GTValues.M * 2)))).register();
-    public static ItemEntry<ComponentItem> TAG_FLUID_FILTER = REGISTRATE.item("tag_fluid_filter", ComponentItem::create)
+    public static ItemEntry<ComponentItem> TAG_FLUID_FILTER = REGISTRATE.item("fluid_tag_filter", ComponentItem::create)
             .lang("Fluid Tag Filter")
             .onRegister(attach(new FluidFilterBehaviour(TagFluidFilter::loadFilter), new CoverPlaceBehavior(GTCovers.FLUID_FILTER)))
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Zinc, GTValues.M * 3 / 2)))).register();
@@ -1104,7 +1104,7 @@ public class GTItems {
 
     public static ItemEntry<Item> POWER_THRUSTER = REGISTRATE.item("power_thruster", Item::new).properties(p -> p.rarity(Rarity.UNCOMMON)).register();
     public static ItemEntry<Item> POWER_THRUSTER_ADVANCED = REGISTRATE.item("advanced_power_thruster", Item::new).lang("Advanced Power Thruster").properties(p -> p.rarity(Rarity.RARE)).register();
-    public static ItemEntry<Item> GRAVITATION_ENGINE = REGISTRATE.item("gravitation_engine", Item::new).lang("Gravitation Engine Unit").properties(p -> p.rarity(Rarity.EPIC)).register();
+    public static ItemEntry<Item> GRAVITATION_ENGINE = REGISTRATE.item("gravitation_engine_unit", Item::new).lang("Gravitation Engine Unit").properties(p -> p.rarity(Rarity.EPIC)).register();
 
     public static ItemEntry<Item> SUS_RECORD;
     public static ItemEntry<Item> NAN_CERTIFICATE = REGISTRATE.item("nan_certificate", Item::new).lang("Certificate of Not Being a Noob Anymore").properties(p -> p.rarity(Rarity.EPIC)).register();
