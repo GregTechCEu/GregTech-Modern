@@ -14,13 +14,15 @@ import static com.gregtechceu.gtceu.api.registry.GTRegistries.REGISTRATE;
  */
 public class GTBlockEntities {
     @SuppressWarnings("unchecked")
-    public static final BlockEntityEntry<CableBlockEntity> CABLE = REGISTRATE.blockEntity("cable", CableBlockEntity::create)
+    public static final BlockEntityEntry<CableBlockEntity> CABLE = REGISTRATE
+            .blockEntity("cable", CableBlockEntity::create)
             .onRegister(CableBlockEntity::onBlockEntityRegister)
             .validBlocks(GTBlocks.CABLE_BLOCKS.values().toArray(BlockEntry[]::new))
             .register();
 
     @SuppressWarnings("unchecked")
-    public static final BlockEntityEntry<FluidPipeBlockEntity> FLUID_PIPE = REGISTRATE.blockEntity("fluid_pipe", FluidPipeBlockEntity::create)
+    public static final BlockEntityEntry<FluidPipeBlockEntity> FLUID_PIPE = REGISTRATE
+            .blockEntity("fluid_pipe", FluidPipeBlockEntity::create)
             .onRegister(FluidPipeBlockEntity::onBlockEntityRegister)
             .validBlocks(GTBlocks.FLUID_PIPE_BLOCKS.values().toArray(BlockEntry[]::new))
             .register();

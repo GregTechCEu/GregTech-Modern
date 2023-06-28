@@ -100,7 +100,6 @@ public class GTBlocks {
                         .setData(ProviderType.BLOCKSTATE, NonNullBiConsumer.noop())
                         .setData(ProviderType.LANG, NonNullBiConsumer.noop())
                         .setData(ProviderType.LOOT, NonNullBiConsumer.noop())
-                        //.tag(BlockTags.MINEABLE_WITH_PICKAXE)
                         .color(() -> () -> MaterialBlock::tintedColor)
                         .item(MaterialBlockItem::new)
                         .model(NonNullBiConsumer.noop())

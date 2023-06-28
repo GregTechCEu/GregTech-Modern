@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "gtceu:item/gravitation_engine"
+    "layer0": "gtceu:item/fluid_tag_filter"
   }
 }
