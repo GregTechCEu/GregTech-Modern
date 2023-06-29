@@ -14,9 +14,11 @@ import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -86,6 +88,7 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidStack
     @Override
     public List<FluidStack> handleRecipeInner(IO io, GTRecipe recipe, List<FluidStack> left, @Nullable String slotName, boolean simulate) {
         if (io != this.handlerIO) return left;
+        var lastStatus = simulate ? Arrays.stream(storages).map(FluidStorage::serializeNBT).toArray(CompoundTag[]::new) : null;
         for (FluidStorage capability : storages) {
             Iterator<FluidStack> iterator = left.iterator();
             if (io == IO.IN) {
@@ -104,7 +107,7 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidStack
                         found = true;
                     }
                     if (!found) continue;
-                    FluidStack drained = capability.drain(fluidStack.copy(), simulate);
+                    FluidStack drained = capability.drain(fluidStack.copy(), false);
 
                     fluidStack.setAmount(fluidStack.getAmount() - drained.getAmount());
                     if (fluidStack.getAmount() <= 0) {
@@ -118,7 +121,7 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidStack
                         iterator.remove();
                         continue;
                     }
-                    long filled = capability.fill(fluidStack.copy(), simulate);
+                    long filled = capability.fill(fluidStack.copy(), false);
                     if (!fluidStack.isEmpty()) {
                         fluidStack.setAmount(fluidStack.getAmount() - filled);
                     }
@@ -127,7 +130,15 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidStack
                     }
                 }
             }
-            if (left.isEmpty()) return null;
+            if (left.isEmpty()) break;
+        }
+        if (lastStatus != null) {
+            for (int i = 0; i < storages.length; i++) {
+                var lastOnChange = storages[i].getOnContentsChanged();
+                storages[i].setOnContentsChanged(() -> {});
+                storages[i].deserializeNBT(lastStatus[i]);
+                storages[i].setOnContentsChanged(lastOnChange);
+            }
         }
         return left.isEmpty() ? null : left;
     }
