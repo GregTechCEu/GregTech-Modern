@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.machine;
 import com.gregtechceu.gtceu.api.block.BlockProperties;
 import com.gregtechceu.gtceu.api.block.IAppearance;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
+import com.gregtechceu.gtceu.api.blockentity.IPaintable;
 import com.gregtechceu.gtceu.api.blockentity.ITickSubscription;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IControllable;
@@ -24,6 +25,7 @@ import com.gregtechceu.gtceu.api.misc.IOFluidTransferList;
 import com.gregtechceu.gtceu.api.misc.IOItemTransferList;
 import com.gregtechceu.gtceu.api.syncdata.EnhancedFieldManagedStorage;
 import com.gregtechceu.gtceu.api.syncdata.IEnhancedManaged;
+import com.gregtechceu.gtceu.api.syncdata.RequireRerender;
 import com.gregtechceu.gtceu.common.cover.FluidFilterCover;
 import com.gregtechceu.gtceu.common.cover.ItemFilterCover;
 import com.lowdragmc.lowdraglib.LDLib;
@@ -38,6 +40,7 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import lombok.Getter;
+import lombok.Setter;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -79,7 +82,7 @@ import java.util.function.Predicate;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscription, IAppearance, IToolGridHighLight {
+public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscription, IAppearance, IToolGridHighLight, IPaintable {
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(MetaMachine.class);
     @Getter
     private final EnhancedFieldManagedStorage syncStorage = new EnhancedFieldManagedStorage(this);
@@ -89,6 +92,9 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
     @DescSynced
     @Persisted(key = "cover")
     protected final MachineCoverContainer coverContainer;
+    @Getter @Setter
+    @Persisted @DescSynced @RequireRerender
+    private int paintingColor = -1;
     @Getter
     protected final List<MachineTrait> traits;
     private final List<TickableSubscription> serverTicks;
@@ -435,10 +441,6 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
 
     }
 
-    public int getPaintingColor() {
-        return getDefinition().getDefaultPaintingColor();
-    }
-
     public int tintColor(int index) {
         if (index == 1) {
             return getPaintingColor();
@@ -513,6 +515,16 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
             return new IOFluidTransferList(list, io, getFluidCapFilter(side));
         }
         return null;
+    }
+
+    @Override
+    public boolean isPainted() {
+        return paintingColor != -1 && paintingColor != getDefaultPaintingColor();
+    }
+
+    @Override
+    public int getDefaultPaintingColor() {
+        return getDefinition().getDefaultPaintingColor();
     }
 
 }

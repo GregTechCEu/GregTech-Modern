@@ -77,6 +77,8 @@ dependencies {
 
     // Configuration
     modCompileOnly fabric.configuration
+
+    modCompileOnly fabric.ae2
 }
 
 publishing {

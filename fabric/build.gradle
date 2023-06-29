@@ -122,14 +122,16 @@ dependencies {
     modImplementation(fabric.configuration)
     include(fabric.configuration)
 
-    // Tech Reborn Energy
-    //modImplementation(fabric.teamRebornEnergy)
+    // Team Reborn Energy
+    modImplementation(fabric.teamRebornEnergy)
 
     // Runtime only testing mods
     modRuntimeOnly("me.shedaniel.cloth:cloth-config-fabric:8.2.88") {
         exclude(group: "net.fabricmc.fabric-api")
     }
     modRuntimeOnly(fabric.worldStripper)
+
+    modImplementation(fabric.ae2) { transitive = false }
 }
 
 processResources {

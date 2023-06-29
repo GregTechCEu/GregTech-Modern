@@ -9,11 +9,11 @@ import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.client.renderer.machine.*;
 import com.gregtechceu.gtceu.api.block.IMachineBlock;
 import com.gregtechceu.gtceu.api.data.RotationState;
-import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.client.renderer.GTRendererProvider;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import com.tterrag.registrate.Registrate;
@@ -91,7 +91,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> {
     @Setter
     private int tier;
     @Setter
-    private int paintingColor = -1;
+    private int paintingColor = ConfigHolder.INSTANCE.client.defaultPaintingColor;
     @Setter
     private BiFunction<ItemStack, Integer, Integer> itemColor;
     private PartAbility[] abilities = new PartAbility[0];

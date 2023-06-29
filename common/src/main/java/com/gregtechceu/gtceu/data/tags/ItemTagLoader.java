@@ -15,7 +15,7 @@ import net.minecraft.world.item.Item;
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 
-public class TagLoader {
+public class ItemTagLoader {
 
     public static void init(RegistrateTagsProvider<Item> provider) {
         create(provider, lens, Color.White, GTItems.MATERIAL_ITEMS.get(lens, Glass).getId());

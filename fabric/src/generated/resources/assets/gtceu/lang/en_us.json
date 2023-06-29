@@ -803,6 +803,7 @@
   "config.gtceu.option.client": "client",
   "config.gtceu.option.compat": "compat",
   "config.gtceu.option.debugWorldgen": "debugWorldgen",
+  "config.gtceu.option.defaultPaintingColor": "defaultPaintingColor",
   "config.gtceu.option.disableManualCompression": "disableManualCompression",
   "config.gtceu.option.doTerrainExplosion": "doTerrainExplosion",
   "config.gtceu.option.doesExplosionDamagesTerrain": "doesExplosionDamagesTerrain",

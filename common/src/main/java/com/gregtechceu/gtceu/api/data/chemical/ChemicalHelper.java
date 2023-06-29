@@ -19,7 +19,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static com.gregtechceu.gtceu.api.GTValues.M;
@@ -214,6 +213,15 @@ public class ChemicalHelper {
 
     public static Block getBlock(TagPrefix orePrefix, Material material) {
         return getBlock(new UnificationEntry(orePrefix, material));
+    }
+
+    @Nullable
+    public static TagKey<Block> getBlockTag(TagPrefix orePrefix, @Nonnull Material material) {
+        var tags = orePrefix.getBlockTags(material);
+        if (tags.length > 0) {
+            return tags[0];
+        }
+        return null;
     }
 
     @Nullable

@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.block;
 
+import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.pipenet.IAttachData;
 import com.gregtechceu.gtceu.api.pipenet.IMaterialPipeType;
 import com.gregtechceu.gtceu.api.pipenet.IPipeType;
@@ -37,9 +38,12 @@ public abstract class MaterialPipeBlock<PipeType extends Enum<PipeType> & IPipeT
         this.renderer = new PipeBlockRenderer(this.model);
     }
 
-    public static int tintedColor(BlockState blockState, @Nullable BlockAndTintGetter blockAndTintGetter, @Nullable BlockPos blockPos, int index) {
-        if (blockState.getBlock() instanceof MaterialPipeBlock block) {
-            return block.tinted(blockState, blockAndTintGetter, blockPos, index);
+    public static int tintedColor(BlockState blockState, @Nullable BlockAndTintGetter level, @Nullable BlockPos blockPos, int index) {
+        if (blockState.getBlock() instanceof MaterialPipeBlock<?,?,?> block) {
+            if (blockPos != null && level != null && level.getBlockEntity(blockPos) instanceof PipeBlockEntity<?,?> pipe && pipe.isPainted()) {
+                return pipe.getPaintingColor();
+            }
+            return block.tinted(blockState, level, blockPos, index);
         }
         return -1;
     }
