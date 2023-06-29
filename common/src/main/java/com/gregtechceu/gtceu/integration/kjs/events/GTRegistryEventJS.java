@@ -21,7 +21,7 @@ public class GTRegistryEventJS<K, V> extends StartupEventJS {
             throw new IllegalArgumentException("Unknown type '" + type + "' for object '" + id + "'!");
         }
 
-        var b = t.factory().createBuilder(UtilsJS.getMCID(ScriptType.STARTUP.manager.get().context, GTCEu.appendIdString(id)));
+        var b = t.factory().createBuilder(UtilsJS.getMCID(ScriptType.STARTUP.manager.get().context, GTCEu.appendId(id)));
 
         if (b == null) {
             throw new IllegalArgumentException("Unknown type '" + type + "' for object '" + id + "'!");
@@ -39,7 +39,7 @@ public class GTRegistryEventJS<K, V> extends StartupEventJS {
             throw new IllegalArgumentException("Registry for type '" + registry.registryKey + "' doesn't have any builders registered!");
         }
 
-        var b = t.factory().createBuilder(UtilsJS.getMCID(ScriptType.STARTUP.manager.get().context, GTCEu.appendIdString(id)));
+        var b = t.factory().createBuilder(UtilsJS.getMCID(ScriptType.STARTUP.manager.get().context, GTCEu.appendId(id)));
 
         if (b == null) {
             throw new IllegalArgumentException("Unknown type '" + t.type() + "' for object '" + id + "'!");

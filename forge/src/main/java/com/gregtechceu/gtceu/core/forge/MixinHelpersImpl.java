@@ -8,6 +8,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 public class MixinHelpersImpl {
 
     public static void addFluidTexture(Material material, FluidProperty prop) {
+        if (prop == null || !prop.hasFluidSupplier()) return;
         GTClientFluidTypeExtensions extensions = GTClientFluidTypeExtensions.FLUID_TYPES.get(ForgeRegistries.FLUIDS.getKey(prop.getFluid()));
         if (extensions != null) {
             extensions.setFlowingTexture(prop.getFlowTexture());

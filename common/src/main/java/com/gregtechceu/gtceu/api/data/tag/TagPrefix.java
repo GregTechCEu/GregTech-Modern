@@ -948,6 +948,10 @@ public class TagPrefix {
         }
     }
 
+    public void removeIgnored(Material material) {
+        ignoredMaterials.remove(material);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
