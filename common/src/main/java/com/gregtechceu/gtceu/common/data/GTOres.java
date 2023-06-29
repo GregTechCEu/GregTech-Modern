@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.data.worldgen.GTLayerPattern;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreFeatureEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.worldgen.WorldGenLayers;
+import com.gregtechceu.gtceu.api.data.worldgen.generator.WorldGeneratorUtils;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
 import net.minecraft.data.BuiltinRegistries;
@@ -43,8 +44,7 @@ public class GTOres {
     //////////////////////////////////////
     //********     End Vein    *********//
     //////////////////////////////////////
-    public static final RuleTest END_ORE_REPLACEABLES = new BlockMatchTest(Blocks.END_STONE);
-    public static RuleTest[] END_RULES = new RuleTest[] { END_ORE_REPLACEABLES };
+    public static RuleTest[] END_RULES = new RuleTest[] { WorldGeneratorUtils.END_ORE_REPLACEABLES };
     public static final GTOreFeatureEntry BAUXITE_VEIN =
             create("bauxite_vein", 25, 0.25f, 40, WorldGenLayers.ENDSTONE, end(), HeightRangePlacement.uniform(VerticalAnchor.absolute(10), VerticalAnchor.absolute(80)))
                     .biomes(BiomeTags.IS_END)

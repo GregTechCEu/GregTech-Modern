@@ -22,7 +22,7 @@ public enum WorldGenLayers implements IWorldGenLayer, StringRepresentable {
     STONE("stone", OreFeatures.STONE_ORE_REPLACEABLES),
     DEEPSLATE("deepslate", OreFeatures.DEEPSLATE_ORE_REPLACEABLES),
     NETHERRACK("netherrack", OreFeatures.NETHER_ORE_REPLACEABLES),
-    ENDSTONE("endstone", GTOres.END_ORE_REPLACEABLES);
+    ENDSTONE("endstone", WorldGeneratorUtils.END_ORE_REPLACEABLES);
 
     private final String name;
     @SuppressWarnings("NonFinalFieldInEnum")
