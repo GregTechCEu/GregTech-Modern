@@ -139,6 +139,7 @@ public class KineticMachineBlockEntity extends KineticBlockEntity implements IMa
 
     public void stopWorking() {
         if (getDefinition().isSource() && getGeneratedSpeed() != 0) {
+            workingSpeed = 0;
             updateGeneratedRotation();
         }
     }
