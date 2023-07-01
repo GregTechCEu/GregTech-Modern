@@ -18,13 +18,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
 
 /**
  * @author KilaBash
@@ -102,42 +98,6 @@ public class PipeCoverContainer implements ICoverable, IEnhancedManaged {
     }
 
     @Override
-    public boolean placeCoverOnSide(Direction side, ItemStack itemStack, CoverDefinition coverDefinition, ServerPlayer player) {
-        CoverBehavior coverBehavior = coverDefinition.createCoverBehavior(this, side);
-        if (!canPlaceCoverOnSide(coverDefinition, side) || !coverBehavior.canAttach()) {
-            return false;
-        }
-        if (getCoverAtSide(side) != null) {
-            removeCover(side);
-        }
-        coverBehavior.onAttached(itemStack, player);
-        coverBehavior.onLoad();
-        setCoverAtSide(coverBehavior, side);
-        notifyBlockUpdate();
-        markDirty();
-        // TODO achievement
-//        AdvancementTriggers.FIRST_COVER_PLACE.trigger((EntityPlayerMP) player);
-        return true;
-    }
-
-    @Override
-    public boolean removeCover(Direction side) {
-        CoverBehavior coverBehavior = getCoverAtSide(side);
-        if (coverBehavior == null) {
-            return false;
-        }
-        List<ItemStack> drops = coverBehavior.getDrops();
-        coverBehavior.onRemoved();
-        setCoverAtSide(null, side);
-        for (ItemStack dropStack : drops) {
-            Block.popResource(getLevel(), getPos(), dropStack);
-        }
-        notifyBlockUpdate();
-        markDirty();
-        return true;
-    }
-
-    @Override
     public boolean canPlaceCoverOnSide(CoverDefinition definition, Direction side) {
         return true;
     }
@@ -152,11 +112,6 @@ public class PipeCoverContainer implements ICoverable, IEnhancedManaged {
 
         // need to divide by 2 because thickness is centered on the block, so the space is half on each side of the pipe
         return Math.min(1.0 / 16.0, (1.0 - thickness) / 2);
-    }
-
-    @Override
-    public int getPaintingColorForRendering() {
-        return -1;
     }
 
     @Override
@@ -192,7 +147,7 @@ public class PipeCoverContainer implements ICoverable, IEnhancedManaged {
         };
     }
 
-    private void setCoverAtSide(@Nullable CoverBehavior coverBehavior, Direction side) {
+    public void setCoverAtSide(@Nullable CoverBehavior coverBehavior, Direction side) {
         switch (side) {
             case UP -> up = coverBehavior;
             case SOUTH -> south = coverBehavior;

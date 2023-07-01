@@ -35,14 +35,12 @@ public class GuiTextures {
 
 
     //BASE TEXTURES
-    public static final ResourceBorderTexture BACKGROUND = new ResourceBorderTexture("gtceu:textures/gui/base/background.png", 176, 166, 3, 3);
-    public static final ResourceBorderTexture BORDERED_BACKGROUND = new ResourceBorderTexture("gtceu:textures/gui/base/bordered_background.png", 195, 136, 4, 4);
-    public static final ResourceBorderTexture BOXED_BACKGROUND = new ResourceBorderTexture("gtceu:textures/gui/base/boxed_background.png", 256, 174, 11, 11);
+    public static final ResourceBorderTexture BACKGROUND = new ResourceBorderTexture("gtceu:textures/gui/base/background.png", 16, 16, 4, 4);
+    public static final ResourceBorderTexture BACKGROUND_INVERSE = new ResourceBorderTexture("gtceu:textures/gui/base/background_inverse.png", 16, 16, 4, 4);
     public static final SteamTexture BACKGROUND_STEAM = SteamTexture.fullImage("gtceu:textures/gui/base/background_%s.png");
     public static final ResourceTexture CLIPBOARD_BACKGROUND = new ResourceTexture("gtceu:textures/gui/base/clipboard_background.png");
     public static final ResourceTexture CLIPBOARD_PAPER_BACKGROUND = new ResourceTexture("gtceu:textures/gui/base/clipboard_paper_background.png");
 
-    public static final ResourceBorderTexture BLANK = new ResourceBorderTexture("gtceu:textures/gui/base/blank.png", 1, 1, 0, 0);
     public static final ResourceTexture DISPLAY = new ResourceTexture("gtceu:textures/gui/base/display.png");
     public static final SteamTexture DISPLAY_STEAM = SteamTexture.fullImage("gtceu:textures/gui/base/display_%s.png");
     public static final ResourceBorderTexture FLUID_SLOT = new ResourceBorderTexture("gtceu:textures/gui/base/fluid_slot.png", 18, 18, 1, 1);
@@ -55,7 +53,7 @@ public class GuiTextures {
 
     //FLUID & ITEM OUTPUT BUTTONS
     public static final ResourceTexture BLOCKS_INPUT = new ResourceTexture("gtceu:textures/gui/widget/button_blocks_input.png");
-    public static final ResourceTexture BUTTON = new ResourceTexture("gtceu:textures/gui/widget/button.png");
+    public static final ResourceBorderTexture BUTTON = new ResourceBorderTexture("gtceu:textures/gui/widget/button.png", 32, 32, 2, 2);
     public static final ResourceTexture BUTTON_ALLOW_IMPORT_EXPORT = new ResourceTexture("gtceu:textures/gui/widget/button_allow_import_export.png");
     public static final ResourceTexture BUTTON_BLACKLIST = new ResourceTexture("gtceu:textures/gui/widget/button_blacklist.png");
     public static final ResourceTexture BUTTON_CHUNK_MODE = new ResourceTexture("gtceu:textures/gui/widget/button_chunk_mode.png");
@@ -69,7 +67,6 @@ public class GuiTextures {
     public static final ResourceTexture BUTTON_VOID_PARTIAL = new ResourceTexture("gtceu:textures/gui/widget/button_void_partial.png");
     public static final ResourceTexture BUTTON_VOID_MULTIBLOCK = new ResourceTexture("gtceu:textures/gui/widget/button_void_multiblock.png");
     public static final ResourceTexture BUTTON_LEFT = new ResourceTexture("gtceu:textures/gui/widget/left.png");
-    public static final ResourceTexture BUTTON_OVERCLOCK = new ResourceTexture("gtceu:textures/gui/widget/button_overclock.png");
     public static final ResourceTexture BUTTON_PUBLIC_PRIVATE = new ResourceTexture("gtceu:textures/gui/widget/button_public_private.png");
     public static final ResourceTexture BUTTON_RIGHT = new ResourceTexture("gtceu:textures/gui/widget/right.png");
     public static final ResourceTexture BUTTON_SILK_TOUCH_MODE = new ResourceTexture("gtceu:textures/gui/widget/button_silk_touch_mode.png");
@@ -267,4 +264,12 @@ public class GuiTextures {
     public static final ResourceTexture BUTTON_INTERFACE = new ResourceTexture("gtceu:textures/block/cover/cover_interface_computer_button.png");
     public static final ResourceTexture COVER_INTERFACE_MACHINE_ON_PROXY = new ResourceTexture("gtceu:textures/block/cover/cover_interface_machine_on_proxy.png");
     public static final ResourceTexture COVER_INTERFACE_MACHINE_OFF_PROXY = new ResourceTexture("gtceu:textures/blocks/cover/cover_interface_machine_off_proxy.png");
+    public static final ResourceTexture SCENE = new ResourceTexture("gtceu:textures/gui/widget/scene.png");
+    public static final ResourceBorderTexture DISPLAY_FRAME = new ResourceBorderTexture("gtceu:textures/gui/base/display_frame.png", 16, 16, 4, 4);
+    public static final ResourceTexture INSUFFICIENT_INPUT = new ResourceTexture("gtceu:textures/gui/base/indicator_no_energy.png");
+    public static final ResourceBorderTexture ENERGY_BAR_BACKGROUND = new ResourceBorderTexture("gtceu:textures/gui/widget/energy_bar_background.png", 28, 60, 4, 4);
+    public static final ResourceTexture ENERGY_BAR_BASE = new ResourceTexture("gtceu:textures/gui/widget/energy_bar_base.png");
+    public static final ResourceBorderTexture ENERGY_BAR_OVERLAY = new ResourceBorderTexture("gtceu:textures/gui/widget/energy_bar_overlay.png", 28, 60, 6, 6);
+    public static final ResourceTexture LIGHT_ON = new ResourceTexture("gtceu:textures/gui/widget/light_on.png");
+    public static final ResourceTexture LIGHT_OFF = new ResourceTexture("gtceu:textures/gui/widget/light_off.png");
 }

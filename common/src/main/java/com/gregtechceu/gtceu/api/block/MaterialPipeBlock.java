@@ -8,7 +8,10 @@ import com.gregtechceu.gtceu.client.renderer.block.PipeBlockRenderer;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.lowdragmc.lowdraglib.pipelike.LevelPipeNet;
 import com.lowdragmc.lowdraglib.pipelike.PipeNet;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockAndTintGetter;
@@ -37,11 +40,14 @@ public abstract class MaterialPipeBlock<PipeType extends Enum<PipeType> & IPipeT
         this.renderer = new PipeBlockRenderer(this.model);
     }
 
-    public static int tintedColor(BlockState blockState, @Nullable BlockAndTintGetter blockAndTintGetter, @Nullable BlockPos blockPos, int index) {
-        if (blockState.getBlock() instanceof MaterialPipeBlock block) {
-            return block.tinted(blockState, blockAndTintGetter, blockPos, index);
-        }
-        return -1;
+    @Environment(EnvType.CLIENT)
+    public static BlockColor tintedColor() {
+        return (blockState, blockAndTintGetter, blockPos, index) -> {
+            if (blockState.getBlock() instanceof MaterialPipeBlock block) {
+                return block.tinted(blockState, blockAndTintGetter, blockPos, index);
+            }
+            return -1;
+        };
     }
 
     public int tinted(BlockState blockState, @Nullable BlockAndTintGetter blockAndTintGetter, @Nullable BlockPos blockPos, int index) {

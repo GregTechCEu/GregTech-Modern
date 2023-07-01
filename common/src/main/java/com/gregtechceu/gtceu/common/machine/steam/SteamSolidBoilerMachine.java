@@ -125,7 +125,7 @@ public class SteamSolidBoilerMachine extends SteamBoilerMachine  implements IMac
                 .widget(new SlotWidget(this.ashHandler.storage,  0, 115, 26, true, false)
                         .setBackgroundTexture(new GuiTextureGroup(GuiTextures.SLOT_STEAM.get(isHighPressure), GuiTextures.DUST_OVERLAY_STEAM.get(isHighPressure))))
                 .widget(new ProgressWidget(recipeLogic::getProgressPercent, 115, 44, 18, 18)
-                        .setProgressBar(GuiTextures.PROGRESS_BAR_BOILER_FUEL.get(isHighPressure).getSubTexture(0, 0, 1, 0.5),
+                        .setProgressTexture(GuiTextures.PROGRESS_BAR_BOILER_FUEL.get(isHighPressure).getSubTexture(0, 0, 1, 0.5),
                                 GuiTextures.PROGRESS_BAR_BOILER_FUEL.get(isHighPressure).getSubTexture(0, 0.5, 1, 0.5))
                         .setFillDirection(ProgressTexture.FillDirection.DOWN_TO_UP));
     }

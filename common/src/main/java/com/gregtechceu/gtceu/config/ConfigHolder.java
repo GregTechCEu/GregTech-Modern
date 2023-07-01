@@ -175,6 +175,9 @@ public class ConfigHolder {
         @Configurable
         @Configurable.Comment({"Whether multiblocks should ignore all cleanroom requirements.", "This does nothing if enableCleanroom is false.", "Default: false"})
         public boolean cleanMultiblocks = false;
+        @Configurable
+        @Configurable.Comment({"Whether the machine's circuit slot need to be inserted a real circuit."})
+        public boolean ghostCircuit = true;
     }
 
     public static class ClientConfigs {
