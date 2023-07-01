@@ -34,10 +34,13 @@ public class TransformerMachine extends TieredEnergyMachine implements IControll
     private boolean isTransformUp;
     @Persisted @Getter @Setter
     private boolean isWorkingEnabled;
+    @Persisted @Getter @Setter
+    private int baseAmp;
 
-    public TransformerMachine(IMachineBlockEntity holder, int tier, Object... args) {
+    public TransformerMachine(IMachineBlockEntity holder, int tier, int baseAmp, Object... args) {
         super(holder, tier, args);
         this.isWorkingEnabled = true;
+        this.baseAmp = baseAmp;
     }
 
     //////////////////////////////////////
