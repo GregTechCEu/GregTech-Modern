@@ -170,6 +170,15 @@
     ],
     "subtitle": "gtceu.subtitle.macerator"
   },
+  "metal_pipe": {
+    "sounds": [
+      {
+        "type": "file",
+        "name": "gtceu:metal_pipe"
+      }
+    ],
+    "subtitle": "gtceu.subtitle.metal_pipe"
+  },
   "miner": {
     "sounds": [
       {
