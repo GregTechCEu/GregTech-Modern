@@ -75,6 +75,7 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
         if (io != this.handlerIO) return left;
         var capability = storage;
         Iterator<Ingredient> iterator = left.iterator();
+        var lastStatus = simulate ? storage.serializeNBT() : null;
         if (io == IO.IN) {
             while (iterator.hasNext()) {
                 Ingredient ingredient = iterator.next();
@@ -86,7 +87,7 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
                         ItemStack[] ingredientStacks = ingredient.getItems();
                         for (ItemStack ingredientStack : ingredientStacks) {
                             if (ingredientStack.is(itemStack.getItem())) {
-                                ItemStack extracted = capability.extractItem(i, ingredientStack.getCount(), simulate);
+                                ItemStack extracted = capability.extractItem(i, ingredientStack.getCount(), false);
                                 ingredientStack.setCount(ingredientStack.getCount() - extracted.getCount());
                                 if (ingredientStack.isEmpty()) {
                                     iterator.remove();
@@ -105,13 +106,19 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
                 ItemStack output = ingredient.getItems()[0];
                 if (!output.isEmpty()) {
                     for (int i = 0; i < capability.getSlots(); i++) {
-                        ItemStack leftStack = capability.insertItem(i, output.copy(), simulate);
+                        ItemStack leftStack = capability.insertItem(i, output.copy(), false);
                         output.setCount(leftStack.getCount());
                         if (output.isEmpty()) break;
                     }
                 }
                 if (output.isEmpty()) iterator.remove();
             }
+        }
+        if (lastStatus != null) {
+            var lastOnChange = storage.getOnContentsChanged();
+            storage.setOnContentsChanged(() -> {});
+            storage.deserializeNBT(lastStatus);
+            storage.setOnContentsChanged(lastOnChange);
         }
         return left.isEmpty() ? null : left;
     }

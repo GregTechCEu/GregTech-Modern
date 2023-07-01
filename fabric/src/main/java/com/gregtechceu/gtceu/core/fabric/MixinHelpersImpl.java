@@ -9,6 +9,7 @@ import net.fabricmc.fabric.api.client.render.fluid.v1.SimpleFluidRenderHandler;
 public class MixinHelpersImpl {
 
     public static void addFluidTexture(Material material, FluidProperty prop) {
+        if (prop == null || !prop.hasFluidSupplier()) return;
         var fluids = GTFluids.MATERIAL_FLUID_FLOWING.get(prop);
         if (fluids != null) {
             FluidRenderHandlerRegistry.INSTANCE.register(fluids.get().getFirst(), fluids.get().getSecond(), new SimpleFluidRenderHandler(prop.getStillTexture(), prop.getFlowTexture(), material.getMaterialRGB()));
