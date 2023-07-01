@@ -1,9 +1,6 @@
 package com.gregtechceu.gtceu.data.tags;
 
-import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.tterrag.registrate.providers.RegistrateTagsProvider;
-import net.minecraft.core.Registry;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 
@@ -39,10 +36,11 @@ public class TagsHandler {
             //    builder.build();
             //}
         });*/
-        TagLoader.init(provider);
+        ItemTagLoader.init(provider);
     }
 
     public static void initBlock(RegistrateTagsProvider<Block> provider) {
         // while probably we dont need to add block tags for materials?
+        BlockTagLoader.init(provider);
     }
 }

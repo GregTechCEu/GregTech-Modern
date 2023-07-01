@@ -28,6 +28,7 @@ import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
@@ -890,6 +891,11 @@ public class TagPrefix {
     @SuppressWarnings("unchecked")
     public TagKey<Item>[] getItemTags(@Nonnull Material mat) {
         return (Platform.isForge() ? forgeTags : fabricTags).stream().map(type -> type.getTag(this, mat)).toArray(TagKey[]::new);
+    }
+
+    @SuppressWarnings("unchecked")
+    public TagKey<Block>[] getBlockTags(@Nonnull Material mat) {
+        return (Platform.isForge() ? forgeTags : fabricTags).stream().map(type -> type.getTag(this, mat)).map(itemTagKey -> TagKey.create(Registry.BLOCK_REGISTRY, itemTagKey.location())).toArray(TagKey[]::new);
     }
 
     public boolean hasItemTable() {

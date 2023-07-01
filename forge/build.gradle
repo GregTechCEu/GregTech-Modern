@@ -141,6 +141,8 @@ dependencies {
 
     // Runtime only testing mods
     modRuntimeOnly(forge.worldStripper)
+
+    modImplementation(forge.ae2) { transitive = false }
 }
 
 processResources {

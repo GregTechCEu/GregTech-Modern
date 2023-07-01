@@ -21,6 +21,7 @@ dependencyResolutionManagement {
         def jeiVersion = "11.5.2.1007"
         def reiVersion = "9.1.619"
         def emiVersion = "1.0.5+1.19.2"
+        def ae2Version = "12.9.5"
 
         // Fabric
         def fabricLoaderVersion = "0.14.11" // https://fabricmc.net/develop/
@@ -34,7 +35,7 @@ dependencyResolutionManagement {
         def kjsVersion = "1902.6.0-build.142"
         def forgeConfigApiVersion = "4.2.11"
         def nightConfigVersion = "3.6.5"
-        def teamRebornEnergyVersion = "3.0.0"
+        def teamRebornEnergyVersion = "2.3.0"
         def configurationFabricFile = "4104224"
         def worldStripperFabricFile = "3921629"
 
@@ -122,6 +123,9 @@ dependencyResolutionManagement {
 
             def worldStripper = version("worldStripper", worldStripperFabricFile)
             library("worldStripper", "curse.maven", "worldStripper-250603").versionRef(worldStripper)
+
+            def ae2 = version("ae2", ae2Version)
+            library("ae2", "appeng", "appliedenergistics2-fabric").versionRef(ae2)
         }
 
         forge {
@@ -168,6 +172,9 @@ dependencyResolutionManagement {
 
             def worldStripper = version("worldStripper", worldStripperForgeFile)
             library("worldStripper", "curse.maven", "worldStripper-250603").versionRef(worldStripper)
+
+            def ae2 = version("ae2", ae2Version)
+            library("ae2", "appeng", "appliedenergistics2-forge").versionRef(ae2)
         }
 
         libs {

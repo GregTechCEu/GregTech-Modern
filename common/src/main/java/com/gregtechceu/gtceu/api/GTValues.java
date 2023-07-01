@@ -82,7 +82,19 @@ public class GTValues {
 
     public static final String
             MODID_TOP = "theoneprobe",
-            MODID_JEI = "jei";
+            MODID_JEI = "jei",
+            MODID_APPENG = "ae2",
+            MODID_KUBEJS = "kubejs",
+            MODID_IRIS = "iris",
+            MODID_CREATE = "create",
+            MODID_REBORN_ENERGY = "team_reborn_energy";
+
+    /**
+     * Spray painting compat modids
+     */
+    public static final String
+            MODID_TINTED = "tinted";
+
     /**
      * The short names for the voltages, used for registration primarily
      */

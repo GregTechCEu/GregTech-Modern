@@ -1,8 +1,10 @@
 package com.gregtechceu.gtceu.data.recipe;
 
+import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.tag.TagUtil;
 import net.minecraft.core.Registry;
 import net.minecraft.data.BuiltinRegistries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -52,6 +54,12 @@ public class CustomTags {
     public static final TagKey<Block> NEEDS_NETHERITE_TOOL = TagUtil.createPlatformUnprefixedTag(Registry.BLOCK, "forge:needs_netherite_tool", "fabric:needs_tool_level_4");
     public static final TagKey<Block> NEEDS_NAQ_ALLOY_TOOL = TagUtil.createPlatformUnprefixedTag(Registry.BLOCK, "forge:needs_naquadah_alloy_tool", "fabric:needs_tool_level_5");
     public static final TagKey<Block> NEEDS_NEUTRONIUM_TOOL = TagUtil.createPlatformUnprefixedTag(Registry.BLOCK, "forge:needs_neutronium_tool", "fabric:needs_tool_level_6");
+
+    public static final TagKey<Block> CONCRETE = TagUtil.createBlockTag("concrete");
+    public static final TagKey<Block> CONCRETE_POWDER = TagUtil.createBlockTag("concrete_powder");
+    public static final TagKey<Block> GLASS_BLOCKS = TagUtil.createPlatformBlockTag("glass", "glass_blocks", false);
+    public static final TagKey<Block> GLASS_PANES = TagUtil.createBlockTag("glass_panes");
+    public static final TagKey<Block> CREATE_SEATS = TagUtil.optionalTag(Registry.BLOCK, new ResourceLocation(GTValues.MODID_CREATE, "seats"));
 
     @SuppressWarnings("unchecked")
     public static final TagKey<Block>[] TOOL_TIERS = new TagKey[] {
