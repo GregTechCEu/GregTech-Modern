@@ -61,7 +61,7 @@ public class TransformerMachine extends TieredEnergyMachine implements IControll
     protected NotifiableEnergyContainer createEnergyContainer(Object... args) {
         NotifiableEnergyContainer energyContainer;
         long tierVoltage = GTValues.V[getTier()];
-        energyContainer = new NotifiableEnergyContainer(this, tierVoltage * 8L, tierVoltage * 4, 1, tierVoltage, 4);
+        energyContainer = new NotifiableEnergyContainer(this, tierVoltage * 8L, tierVoltage * 4, baseAmp, tierVoltage, baseAmp * 4L);
         energyContainer.setSideInputCondition(s -> s == getFrontFacing() && isWorkingEnabled());
         energyContainer.setSideOutputCondition(s -> s != getFrontFacing() && isWorkingEnabled());
         return energyContainer;
@@ -77,12 +77,12 @@ public class TransformerMachine extends TieredEnergyMachine implements IControll
         long tierVoltage = GTValues.V[getTier()];
         if (isTransformUp) {
             //storage = 1 amp high; input = tier / 4; amperage = 4; output = tier; amperage = 1
-            this.energyContainer.resetBasicInfo(tierVoltage * 8L, tierVoltage, 4, tierVoltage * 4, 1);
+            this.energyContainer.resetBasicInfo(tierVoltage * 8L, tierVoltage, baseAmp * 4L, tierVoltage * 4, baseAmp);
             energyContainer.setSideInputCondition(s -> s != getFrontFacing() && isWorkingEnabled());
             energyContainer.setSideOutputCondition(s -> s == getFrontFacing() && isWorkingEnabled());
         } else {
             //storage = 1 amp high; input = tier; amperage = 1; output = tier / 4; amperage = 4
-            this.energyContainer.resetBasicInfo(tierVoltage * 8L, tierVoltage * 4, 1, tierVoltage, 4);
+            this.energyContainer.resetBasicInfo(tierVoltage * 8L, tierVoltage * 4, baseAmp, tierVoltage, baseAmp * 4L);
             energyContainer.setSideInputCondition(s -> s == getFrontFacing() && isWorkingEnabled());
             energyContainer.setSideOutputCondition(s -> s != getFrontFacing() && isWorkingEnabled());
         }
