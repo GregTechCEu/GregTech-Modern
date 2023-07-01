@@ -9,10 +9,8 @@ import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.cover.IUICover;
 import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.UITemplate;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.syncdata.RequireRerender;
-import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceBorderTexture;
 import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
@@ -31,12 +29,12 @@ import net.minecraft.core.Direction;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.List;
 import java.util.function.Predicate;
 
 /**
@@ -112,6 +110,15 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
         if (subscription != null) {
             subscription.unsubscribe();
         }
+    }
+
+    @Override
+    public List<ItemStack> getAdditionalDrops() {
+        var list = super.getAdditionalDrops();
+        if (!filterItem.isEmpty()) {
+            list.add(filterItem);
+        }
+        return list;
     }
 
     //////////////////////////////////////
@@ -220,9 +227,9 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
     //////////////////////////////////////
     //***********     GUI    ***********//
     //////////////////////////////////////
-
     @Override
-    public ModularUI createUI(Player entityPlayer) {
+    public Widget createUIWidget() {
+        final var group = new WidgetGroup(0, 0, 176, 135);
         var filterContainer = new ItemStackTransfer(filterItem);
         filterContainer.setFilter(itemStack -> ItemFilter.FILTERS.containsKey(itemStack.getItem()));
         var filterGroup = new WidgetGroup(0, 70, 176, 60);
@@ -230,50 +237,48 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
             filterHandler = ItemFilter.loadFilter(filterItem);
             filterGroup.addWidget(filterHandler.openConfigurator((176 - 80) / 2, (60 - 55) / 2));
         }
-        return new ModularUI(176, 130 + 82, this, entityPlayer)
-                .background(GuiTextures.BACKGROUND)
-                .widget(new LabelWidget(10, 5, LocalizationUtils.format("cover.conveyor.title", GTValues.VN[tier])))
-                .widget(new ButtonWidget(10, 20, 30, 20,
-                        new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("-1")), cd -> {
-                          if (!cd.isRemote) {
-                              int amount = cd.isCtrlClick ? cd.isShiftClick ? 512 : 64 : cd.isShiftClick ? 8 : 1;
-                              setTransferRate(Mth.clamp(getTransferRate() - amount, 1, maxItemTransferRate));
-                          }
-                        }).setHoverTooltips("gui.widget.incrementButton.default_tooltip"))
-                .widget(new ButtonWidget(136, 20, 30, 20,
-                        new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("+1")), cd -> {
-                    if (!cd.isRemote) {
-                        int amount = cd.isCtrlClick ? cd.isShiftClick ? 512 : 64 : cd.isShiftClick ? 8 : 1;
-                        setTransferRate(Mth.clamp(getTransferRate() + amount, 1, maxItemTransferRate));
+        group.addWidget(new LabelWidget(10, 5, LocalizationUtils.format("cover.conveyor.title", GTValues.VN[tier])));
+        group.addWidget(new ButtonWidget(10, 20, 30, 20,
+                new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("-1")), cd -> {
+            if (!cd.isRemote) {
+                int amount = cd.isCtrlClick ? cd.isShiftClick ? 512 : 64 : cd.isShiftClick ? 8 : 1;
+                setTransferRate(Mth.clamp(getTransferRate() - amount, 1, maxItemTransferRate));
+            }
+        }).setHoverTooltips("gui.widget.incrementButton.default_tooltip"));
+        group.addWidget(new ButtonWidget(136, 20, 30, 20,
+                new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("+1")), cd -> {
+            if (!cd.isRemote) {
+                int amount = cd.isCtrlClick ? cd.isShiftClick ? 512 : 64 : cd.isShiftClick ? 8 : 1;
+                setTransferRate(Mth.clamp(getTransferRate() + amount, 1, maxItemTransferRate));
+            }
+        }).setHoverTooltips("gui.widget.incrementButton.default_tooltip"));
+        group.addWidget(new TextFieldWidget(42, 20, 92, 20, () -> String.valueOf(transferRate), val -> setTransferRate(Mth.clamp(Integer.parseInt(val), 1, maxItemTransferRate))).setNumbersOnly(1, maxItemTransferRate));
+        group.addWidget(new SwitchWidget(10, 45, 75, 20, (clickData, value) -> {
+            if (!clickData.isRemote) {
+                setIo(value ? IO.IN : IO.OUT);
+            }
+        })
+                .setTexture(
+                        new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON, new TextTexture("cover.conveyor.mode.export")),
+                        new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON, new TextTexture("cover.conveyor.mode.import")))
+                .setPressed(io == IO.IN));
+        group.addWidget(new SlotWidget(filterContainer, 0, 90, 45)
+                .setChangeListener(() -> {
+                    if (isRemote()) {
+                        if (!filterContainer.getStackInSlot(0).isEmpty() && !filterItem.isEmpty()) {
+                            return;
+                        }
                     }
-                }).setHoverTooltips("gui.widget.incrementButton.default_tooltip"))
-                .widget(new TextFieldWidget(42, 20, 92, 20, () -> String.valueOf(transferRate), val -> setTransferRate(Mth.clamp(Integer.parseInt(val), 1, maxItemTransferRate))).setNumbersOnly(1, maxItemTransferRate))
-                .widget(new SwitchWidget(10, 45, 75, 20, (clickData, value) -> {
-                    if (!clickData.isRemote) {
-                        setIo(value ? IO.IN : IO.OUT);
+                    this.filterItem = filterContainer.getStackInSlot(0);
+                    this.filterHandler = null;
+                    filterGroup.clearAllWidgets();
+                    if (!filterItem.isEmpty()) {
+                        filterHandler = ItemFilter.loadFilter(filterItem);
+                        filterGroup.addWidget(filterHandler.openConfigurator((176 - 80) / 2, (60 - 55) / 2));
                     }
                 })
-                        .setTexture(
-                                new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON, new TextTexture("cover.conveyor.mode.export")),
-                                new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON, new TextTexture("cover.conveyor.mode.import")))
-                        .setPressed(io == IO.IN))
-                .widget(new SlotWidget(filterContainer, 0, 90, 45)
-                        .setChangeListener(() -> {
-                            if (isRemote()) {
-                                if (!filterContainer.getStackInSlot(0).isEmpty() && !filterItem.isEmpty()) {
-                                    return;
-                                }
-                            }
-                            this.filterItem = filterContainer.getStackInSlot(0);
-                            this.filterHandler = null;
-                            filterGroup.clearAllWidgets();
-                            if (!filterItem.isEmpty()) {
-                                filterHandler = ItemFilter.loadFilter(filterItem);
-                                filterGroup.addWidget(filterHandler.openConfigurator((176 - 80) / 2, (60 - 55) / 2));
-                            }
-                        })
-                        .setBackgroundTexture(new GuiTextureGroup(GuiTextures.SLOT, GuiTextures.FILTER_SLOT_OVERLAY)))
-                .widget(filterGroup)
-                .widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(),  GuiTextures.SLOT, 7, 130, true));
+                .setBackgroundTexture(new GuiTextureGroup(GuiTextures.SLOT, GuiTextures.FILTER_SLOT_OVERLAY)));
+        group.addWidget(filterGroup);
+        return group;
     }
 }

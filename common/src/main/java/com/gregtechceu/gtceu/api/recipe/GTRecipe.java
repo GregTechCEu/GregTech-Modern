@@ -14,6 +14,7 @@ import io.netty.buffer.Unpooled;
 import lombok.Getter;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
@@ -21,6 +22,7 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -137,23 +139,27 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
         return tickOutputs.getOrDefault(capability, Collections.emptyList());
     }
 
-    public boolean matchRecipe(IRecipeCapabilityHolder holder) {
-        if (!holder.hasProxies()) return false;
-        if (!matchRecipe(IO.IN, holder, inputs)) return false;
-        if (!matchRecipe(IO.OUT, holder, outputs)) return false;
-        return true;
+    public ActionResult matchRecipe(IRecipeCapabilityHolder holder) {
+        if (!holder.hasProxies()) return ActionResult.FAIL_NO_REASON;
+        var result = matchRecipe(IO.IN, holder, inputs);
+        if (!result.isSuccessed()) return result;
+        result = matchRecipe(IO.OUT, holder, outputs);
+        if (!result.isSuccessed()) return result;
+        return ActionResult.SUCCESS;
     }
 
-    public boolean matchTickRecipe(IRecipeCapabilityHolder holder) {
+    public ActionResult matchTickRecipe(IRecipeCapabilityHolder holder) {
         if (hasTick()) {
-            if (!holder.hasProxies()) return false;
-            if (!matchRecipe(IO.IN, holder, tickInputs)) return false;
-            if (!matchRecipe(IO.OUT, holder, tickOutputs)) return false;
+            if (!holder.hasProxies()) return ActionResult.FAIL_NO_REASON;
+            var result = matchRecipe(IO.IN, holder, tickInputs);
+            if (!result.isSuccessed()) return result;
+            result = matchRecipe(IO.OUT, holder, tickOutputs);
+            if (!result.isSuccessed()) return result;
         }
-        return true;
+        return ActionResult.SUCCESS;
     }
 
-    public boolean matchRecipe(IO io, IRecipeCapabilityHolder holder, Map<RecipeCapability<?>, List<Content>> contents) {
+    public ActionResult matchRecipe(IO io, IRecipeCapabilityHolder holder, Map<RecipeCapability<?>, List<Content>> contents) {
         Table<IO, RecipeCapability<?>, List<IRecipeHandler<?>>> capabilityProxies = holder.getCapabilitiesProxy();
         for (Map.Entry<RecipeCapability<?>, List<Content>> entry : contents.entrySet()) {
             Set<IRecipeHandler<?>> used = new HashSet<>();
@@ -211,9 +217,17 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
                     if (content == null && contentSlot.isEmpty()) break;
                 }
             }
-            if (content != null || !contentSlot.isEmpty()) return false;
+            if (content != null || !contentSlot.isEmpty()) {
+                if (io == IO.IN) {
+                    return ActionResult.fail(Component.translatable("gtceu.recipe_logic.insufficient_in").append(": ").append(capability.getTraslateComponent()));
+                } else if (io == IO.OUT) {
+                    return ActionResult.fail(Component.translatable("gtceu.recipe_logic.insufficient_out").append(": ").append(capability.getTraslateComponent()));
+                } else {
+                    return ActionResult.FAIL_NO_REASON;
+                }
+            }
         }
-        return true;
+        return ActionResult.SUCCESS;
     }
 
     public boolean handleTickRecipeIO(IO io, IRecipeCapabilityHolder holder) {
@@ -336,21 +350,31 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
         }));
     }
 
-    public boolean checkConditions(@Nonnull RecipeLogic recipeLogic) {
-        if (conditions.isEmpty()) return true;
+    public ActionResult checkConditions(@Nonnull RecipeLogic recipeLogic) {
+        if (conditions.isEmpty()) return ActionResult.SUCCESS;
         Map<String, List<RecipeCondition>> or = new HashMap<>();
         for (RecipeCondition condition : conditions) {
             if (condition.isOr()) {
                 or.computeIfAbsent(condition.getType(), type -> new ArrayList<>()).add(condition);
             } else if (condition.test(this, recipeLogic) == condition.isReverse()) {
-                return false;
+                return ActionResult.fail(Component.translatable("gtceu.recipe_logic.condition_fails").append(": ").append(condition.getTooltips()));
             }
         }
         for (List<RecipeCondition> conditions : or.values()) {
             if (conditions.stream().allMatch(condition -> condition.test(this, recipeLogic) == condition.isReverse())) {
-                return false;
+                return ActionResult.fail(Component.translatable("gtceu.recipe_logic.condition_fails"));
             }
         }
-        return true;
+        return ActionResult.SUCCESS;
+    }
+
+    public static record ActionResult(boolean isSuccessed, @Nullable Component reason) {
+
+        public final static ActionResult SUCCESS = new ActionResult(true, null);
+        public final static ActionResult FAIL_NO_REASON = new ActionResult(true, null);
+
+        public static ActionResult fail(@Nullable Component component) {
+            return new ActionResult(false, component);
+        }
     }
 }

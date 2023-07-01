@@ -183,12 +183,21 @@ public class ConfigHolder {
         @Configurable
         @Configurable.Comment({"Whether to enable the Maintenance Hatch, required for Multiblocks.", "Default: true"})
         public boolean enableMaintenance = true;
+        @Configurable
+        @Configurable.Comment({"Whether the machine's circuit slot need to be inserted a real circuit."})
+        public boolean ghostCircuit = true;
     }
 
     public static class ClientConfigs {
         @Configurable
         @Configurable.Comment({"Whether or not to enable Emissive Textures for GregTech Machines.", "Default: true"})
         public boolean machinesEmissiveTextures = true;
+        @Configurable
+        @Configurable.Comment({"The default color to overlay onto machines.", "16777215 (0xFFFFFF in decimal) is no coloring (like GTCE).",
+                "13819135 (0xD2DCFF in decimal) is the classic blue from GT5 (default)."})
+        @Configurable.Range(min = 0, max = 0xFFFFFF)
+        @Configurable.Gui.ColorValue
+        public int defaultPaintingColor = 0xD2DCFF;
     }
 
 }

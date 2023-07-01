@@ -9,6 +9,8 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.UITemplate;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
+import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
@@ -44,11 +46,10 @@ public class FluidFilterCover extends CoverBehavior implements IUICover {
     }
 
     @Override
-    public ModularUI createUI(Player entityPlayer) {
-        return new ModularUI(176, 157, this, entityPlayer)
-                .background(GuiTextures.BACKGROUND)
-                .widget(new LabelWidget(5, 3, attachItem.getDescriptionId()))
-                .widget(getFluidFilter().openConfigurator((176 - 80) / 2, (60 - 55) / 2 + 15))
-                .widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(),  GuiTextures.SLOT, 7, 75, true));
+    public Widget createUIWidget() {
+        final var group = new WidgetGroup(0, 0, 176, 80);
+        group.addWidget(new LabelWidget(5, 3, attachItem.getDescriptionId()));
+        group.addWidget(getFluidFilter().openConfigurator((176 - 80) / 2, (60 - 55) / 2 + 15));
+        return group;
     }
 }

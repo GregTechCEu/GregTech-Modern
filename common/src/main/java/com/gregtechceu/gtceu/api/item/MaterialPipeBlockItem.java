@@ -6,6 +6,7 @@ import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
@@ -31,11 +32,14 @@ public class MaterialPipeBlockItem extends PipeBlockItem implements IItemRendere
         return (MaterialPipeBlock)super.getBlock();
     }
 
-    public static int tintColor(ItemStack itemStack, int index) {
-        if (itemStack.getItem() instanceof MaterialPipeBlockItem materialBlockItem) {
-            return materialBlockItem.getBlock().tinted(materialBlockItem.getBlock().defaultBlockState(), null, null, index);
-        }
-        return -1;
+    @Environment(EnvType.CLIENT)
+    public static ItemColor tintColor() {
+        return (itemStack, index) -> {
+            if (itemStack.getItem() instanceof MaterialPipeBlockItem materialBlockItem) {
+                return materialBlockItem.getBlock().tinted(materialBlockItem.getBlock().defaultBlockState(), null, null, index);
+            }
+            return -1;
+        };
     }
 
     @Nullable

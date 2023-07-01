@@ -94,6 +94,6 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, CableData> {
 
     @Override
     protected boolean canToolTunePipe(GTToolType toolType) {
-        return super.canToolTunePipe(toolType) || toolType == GTToolType.WIRE_CUTTER;
+        return toolType == GTToolType.WIRE_CUTTER;
     }
 }

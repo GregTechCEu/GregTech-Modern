@@ -10,6 +10,7 @@ import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.BlockParticleOption;
@@ -60,11 +61,14 @@ public class MaterialBlock extends AppearanceBlock implements IBlockRendererProv
         return renderer;
     }
 
-    public static int tintedColor(BlockState blockState, @Nullable BlockAndTintGetter blockAndTintGetter, @Nullable BlockPos blockPos, int index) {
-        if (blockState.getBlock() instanceof MaterialBlock block) {
-            return block.material.getMaterialRGB();
-        }
-        return -1;
+    @Environment(EnvType.CLIENT)
+    public static BlockColor tintedColor() {
+        return (state, reader, pos, tintIndex) -> {
+            if (state.getBlock() instanceof MaterialBlock block) {
+                return block.material.getMaterialRGB();
+            }
+            return -1;
+        };
     }
 
 

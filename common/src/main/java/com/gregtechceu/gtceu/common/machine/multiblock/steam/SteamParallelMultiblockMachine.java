@@ -82,7 +82,7 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
         int mid = (min + max) / 2;
 
         GTRecipe copied = tryCopy(original, ContentModifier.multiplier(mid));
-        if (!copied.matchRecipe(this)) {
+        if (!copied.matchRecipe(this).isSuccessed()) {
             // tried too many
             return tryParallel(original, min, mid - 1);
         } else {

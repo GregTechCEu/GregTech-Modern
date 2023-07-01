@@ -52,6 +52,7 @@ public class TextureOverrideRenderer extends CTMModelRenderer {
     }
 
     @Nullable
+    @Environment(EnvType.CLIENT)
     protected BakedModel getItemBakedModel() {
         if (itemModel == null) {
             var model = getModel();

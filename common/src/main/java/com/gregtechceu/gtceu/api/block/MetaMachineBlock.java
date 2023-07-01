@@ -232,8 +232,13 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
 
     @Override
     public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-        if (getMachine(world, pos) instanceof IInteractedMachine interactedMachine) {
-            return interactedMachine.onUse(state, world, pos, player, hand, hit);
+        var machine = getMachine(world, pos);
+        if (machine instanceof IInteractedMachine interactedMachine) {
+            var result = interactedMachine.onUse(state, world, pos, player, hand, hit);
+            if (result != InteractionResult.PASS) return result;
+        }
+        if (machine instanceof IUIMachine uiMachine) {
+            return uiMachine.tryToOpenUI(player, hand, hit);
         }
         return InteractionResult.PASS;
     }

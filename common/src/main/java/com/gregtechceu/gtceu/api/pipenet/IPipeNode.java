@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.pipenet;
 
 import com.gregtechceu.gtceu.api.block.PipeBlock;
+import com.gregtechceu.gtceu.api.blockentity.IPaintable;
 import com.gregtechceu.gtceu.api.blockentity.ITickSubscription;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.lowdragmc.lowdraglib.LDLib;
@@ -15,7 +16,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 
 import javax.annotation.Nullable;
 
-public interface IPipeNode<PipeType extends Enum<PipeType> & IPipeType<NodeDataType>, NodeDataType extends IAttachData> extends ITickSubscription {
+public interface IPipeNode<PipeType extends Enum<PipeType> & IPipeType<NodeDataType>, NodeDataType extends IAttachData> extends ITickSubscription, IPaintable {
 
     long getOffsetTimer();
 
@@ -183,4 +184,8 @@ public interface IPipeNode<PipeType extends Enum<PipeType> & IPipeType<NodeDataT
         getCoverContainer().onNeighborChanged(block, fromPos, isMoving);
     }
 
+    @Override
+    default int getDefaultPaintingColor() {
+        return 0xFFFFFF;
+    }
 }

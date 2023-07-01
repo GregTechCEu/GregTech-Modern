@@ -7,15 +7,13 @@ import com.gregtechceu.gtceu.common.data.GTItems;
 import com.lowdragmc.lowdraglib.gui.factory.HeldItemUIFactory;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
-import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
-import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
+import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
 import com.lowdragmc.lowdraglib.gui.widget.ButtonWidget;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
 import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -113,15 +111,17 @@ public class IntCircuitBehaviour implements IItemUIFactory, IAddInformation {
         for(int x = 0; x <= 2; x++) {
             for(int y = 0; y <= 8; y++) {
                 int finalIdx = idx;
-                modular.widget(new ButtonWidget(10 + (18 * y), 48 + (18 * x), 18, 18, new GuiTextureGroup(GuiTextures.SLOT, new ResourceTexture(new ResourceLocation("gtceu:textures/gui/widget/circuit/" + (idx + 1) + ".png"), 0, 0, 1.0f, 1.0f)), data -> { setCircuitConfiguration(holder, finalIdx); slotwidget.setHandlerSlot(new ItemStackTransfer(stack(finalIdx)), 0); }));
+                modular.widget(new ButtonWidget(10 + (18 * y), 48 + (18 * x), 18, 18, new GuiTextureGroup(GuiTextures.SLOT, new ItemStackTexture(stack(finalIdx)).scale(16f / 18)),
+                        data -> { setCircuitConfiguration(holder, finalIdx); slotwidget.setHandlerSlot(new ItemStackTransfer(stack(finalIdx)), 0); }));
                 idx++;
             }
         }
         for(int x = 0; x <= 5; x++) {
-            int finalX = x;
-            modular.widget(new ButtonWidget(10 + (18 * x), 102, 18, 18, new GuiTextureGroup(GuiTextures.SLOT, new ResourceTexture(new ResourceLocation("gtceu:textures/gui/widget/circuit/" + (28 + x) + ".png"), 0.0f, 0.0f, 1.0f, 1.0f)), data -> { setCircuitConfiguration(holder, 27 + finalX); slotwidget.setHandlerSlot(new ItemStackTransfer(stack(27 + finalX)), 0); }));
+            int finalIdx = x + 27;
+            modular.widget(new ButtonWidget(10 + (18 * x), 102, 18, 18, new GuiTextureGroup(GuiTextures.SLOT, new ItemStackTexture(stack(finalIdx)).scale(16f / 18)),
+                    data -> { setCircuitConfiguration(holder, finalIdx); slotwidget.setHandlerSlot(new ItemStackTransfer(stack(finalIdx)), 0); }));
         }
-        modular.mainGroup.setBackground(GuiTextures.BORDERED_BACKGROUND);
+        modular.mainGroup.setBackground(GuiTextures.BACKGROUND);
         return modular;
     }
 }

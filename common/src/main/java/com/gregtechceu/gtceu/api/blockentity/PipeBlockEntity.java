@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.blockentity;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.block.MaterialPipeBlock;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
@@ -70,6 +71,10 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
     @Persisted
     @RequireRerender
     protected int connections = Node.ALL_CLOSED;
+
+    @Persisted @DescSynced @RequireRerender
+    @Getter @Setter
+    private int paintingColor = -1;
 
     private final List<TickableSubscription> serverTicks;
     private final List<TickableSubscription> waitingToAdd;
@@ -273,5 +278,15 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
 
     protected boolean canToolTunePipe(GTToolType toolType) {
         return toolType == GTToolType.WRENCH;
+    }
+
+    @Override
+    public boolean isPainted() {
+        return paintingColor != -1 && paintingColor != getDefaultPaintingColor();
+    }
+
+    @Override
+    public int getDefaultPaintingColor() {
+        return this.getPipeBlock() instanceof MaterialPipeBlock<?,?,?> materialPipeBlock ? materialPipeBlock.material.getMaterialRGB() : IPipeNode.super.getDefaultPaintingColor();
     }
 }

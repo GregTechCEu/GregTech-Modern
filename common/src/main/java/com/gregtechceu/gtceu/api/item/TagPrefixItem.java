@@ -7,7 +7,10 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.lowdragmc.lowdraglib.client.renderer.IItemRendererProvider;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -39,13 +42,16 @@ public class TagPrefixItem extends Item implements IItemRendererProvider {
         TagPrefixItemRenderer.getOrCreate(tagPrefix.materialIconType(), material.getMaterialIconSet());
     }
 
-    public static int tintColor(ItemStack itemStack, int index) {
-        if (index == 0) {
-            if (itemStack.getItem() instanceof TagPrefixItem tagPrefixItem) {
-                return tagPrefixItem.material.getMaterialARGB();
+    @Environment(EnvType.CLIENT)
+    public static ItemColor tintColor() {
+        return (itemStack, index) -> {
+            if (index == 0) {
+                if (itemStack.getItem() instanceof TagPrefixItem tagPrefixItem) {
+                    return tagPrefixItem.material.getMaterialARGB();
+                }
             }
-        }
-        return -1;
+            return -1;
+        };
     }
 
     @Override

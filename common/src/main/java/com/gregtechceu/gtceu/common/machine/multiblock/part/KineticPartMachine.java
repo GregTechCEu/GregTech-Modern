@@ -10,6 +10,9 @@ import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import lombok.Getter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.BlockHitResult;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -57,5 +60,13 @@ public class KineticPartMachine extends TieredIOPartMachine implements IKineticM
                 holder.removeSource();
             }
         }
+    }
+
+    //////////////////////////////////////
+    //*********       GUI      *********//
+    //////////////////////////////////////
+    @Override
+    public boolean shouldOpenUI(Player player, InteractionHand hand, BlockHitResult hit) {
+        return false;
     }
 }

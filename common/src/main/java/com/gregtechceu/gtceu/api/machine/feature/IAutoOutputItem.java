@@ -8,7 +8,7 @@ import org.jetbrains.annotations.Nullable;
  * @date 2023/3/2
  * @implNote IAutoOutputItem
  */
-public interface IAutoOutputItem {
+public interface IAutoOutputItem extends IMachineFeature {
 
     boolean isAutoOutputItems();
 
@@ -22,5 +22,9 @@ public interface IAutoOutputItem {
     Direction getOutputFacingItems();
 
     void setOutputFacingItems(@Nullable Direction outputFacing);
+
+    default boolean hasAutoOutputItem() {
+        return true;
+    }
 
 }
