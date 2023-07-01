@@ -7,24 +7,24 @@ import static com.gregtechceu.gtceu.common.data.GTBlocks.*;
 public enum BoilerType {
 
     BRONZE(800, 1200,
-            CASING_BRONZE_BRICKS.getDefaultState(),
+            STEAM_MACHINE_CASING.getDefaultState(),
             FIREBOX_BRONZE.getDefaultState(),
-            CASING_BRONZE_PIPE.getDefaultState()),
+            BRONZE_PIPE_CASING.getDefaultState()),
 
     STEEL(1800, 1800,
-            CASING_STEEL_SOLID.getDefaultState(),
+            SOLID_MACHINE_CASING.getDefaultState(),
             FIREBOX_STEEL.getDefaultState(),
-            CASING_STEEL_PIPE.getDefaultState()),
+            STEEL_PIPE_CASING.getDefaultState()),
 
     TITANIUM(3200, 2400,
-            CASING_TITANIUM_STABLE.getDefaultState(),
+            STABLE_MACHINE_CASING.getDefaultState(),
             FIREBOX_TITANIUM.getDefaultState(),
-            CASING_TITANIUM_PIPE.getDefaultState()),
+            TITANIUM_PIPE_CASING.getDefaultState()),
 
     TUNGSTENSTEEL(6400, 3000,
-            CASING_TUNGSTENSTEEL_ROBUST.getDefaultState(),
+            ROBUST_MACHINE_CASING.getDefaultState(),
             FIREBOX_TUNGSTENSTEEL.getDefaultState(),
-            CASING_TUNGSTENSTEEL_PIPE.getDefaultState());
+            TUNGSTENSTEEL_PIPE_CASING.getDefaultState());
 
     // Workable Data
     private final int steamPerTick;

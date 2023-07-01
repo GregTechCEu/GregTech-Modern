@@ -176,7 +176,7 @@ public class MachineRecipeLoader {
 
         COMPRESSOR_RECIPES.recipeBuilder("coke_bricks")
                 .inputItems(COKE_OVEN_BRICK, 4)
-                .outputItems(GTBlocks.CASING_COKE_BRICKS.asStack())
+                .outputItems(GTBlocks.COKE_OVEN_BRICKS.asStack())
                 .duration(300).EUt(2).save(provider);
     }
 
@@ -532,15 +532,15 @@ public class MachineRecipeLoader {
         ASSEMBLER_RECIPES.recipeBuilder("coil_trinium").EUt(VA[ZPM]).inputItems(wireGtDouble, Trinium, 8).inputItems(foil, NaquadahEnriched, 8).inputFluids(Naquadah.getFluid(GTValues.L)).outputItems(GTBlocks.COIL_TRINIUM.asStack()).duration(800).save(provider);
         ASSEMBLER_RECIPES.recipeBuilder("coil_tritanium").EUt(VA[UV]).inputItems(wireGtDouble, Tritanium, 8).inputItems(foil, Naquadria, 8).inputFluids(Trinium.getFluid(GTValues.L)).outputItems(GTBlocks.COIL_TRITANIUM.asStack()).duration(900).save(provider);
 
-        ASSEMBLER_RECIPES.recipeBuilder("casing_bronze_bricks").EUt(16).inputItems(plate, Bronze, 6).inputItems(new ItemStack(Blocks.BRICKS)).circuitMeta(6).outputItems(GTBlocks.CASING_BRONZE_BRICKS.asStack(2)).duration(50).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("casing_invar_heatproof").EUt(16).inputItems(plate, Invar, 6).inputItems(frameGt, Invar).circuitMeta(6).outputItems(GTBlocks.CASING_INVAR_HEATPROOF.asStack(2)).duration(50).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("casing_steel_solid").EUt(16).inputItems(plate, Steel, 6).inputItems(frameGt, Steel).circuitMeta(6).outputItems(GTBlocks.CASING_STEEL_SOLID.asStack(2)).duration(50).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("casing_aluminium_frostproof").EUt(16).inputItems(plate, Aluminium, 6).inputItems(frameGt, Aluminium).circuitMeta(6).outputItems(GTBlocks.CASING_ALUMINIUM_FROSTPROOF.asStack(2)).duration(50).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("casing_tungsteensteel_robust").EUt(16).inputItems(plate, TungstenSteel, 6).inputItems(frameGt, TungstenSteel).circuitMeta(6).outputItems(GTBlocks.CASING_TUNGSTENSTEEL_ROBUST.asStack(2)).duration(50).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("casing_stainless_clean").EUt(16).inputItems(plate, StainlessSteel, 6).inputItems(frameGt, StainlessSteel).circuitMeta(6).outputItems(GTBlocks.CASING_STAINLESS_CLEAN.asStack(2)).duration(50).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("casing_titanium_stable").EUt(16).inputItems(plate, Titanium, 6).inputItems(frameGt, Titanium).circuitMeta(6).outputItems(GTBlocks.CASING_TITANIUM_STABLE.asStack(2)).duration(50).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("casing_hsse_sturdy").EUt(16).inputItems(plate, HSSE, 6).inputItems(frameGt, Europium).circuitMeta(6).outputItems(GTBlocks.CASING_HSSE_STURDY.asStack(2)).duration(50).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("casing_ptfe_inert").EUt(16).inputItems(GTBlocks.CASING_STEEL_SOLID.asStack()).inputFluids(Polytetrafluoroethylene.getFluid(216)).circuitMeta(6).outputItems(GTBlocks.CASING_PTFE_INERT.asStack()).duration(50).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("casing_bronze_bricks").EUt(16).inputItems(plate, Bronze, 6).inputItems(new ItemStack(Blocks.BRICKS)).circuitMeta(6).outputItems(GTBlocks.STEAM_MACHINE_CASING.asStack(2)).duration(50).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("casing_invar_heatproof").EUt(16).inputItems(plate, Invar, 6).inputItems(frameGt, Invar).circuitMeta(6).outputItems(GTBlocks.HEATPROOF_MACHINE_CASING.asStack(2)).duration(50).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("casing_steel_solid").EUt(16).inputItems(plate, Steel, 6).inputItems(frameGt, Steel).circuitMeta(6).outputItems(GTBlocks.SOLID_MACHINE_CASING.asStack(2)).duration(50).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("casing_aluminium_frostproof").EUt(16).inputItems(plate, Aluminium, 6).inputItems(frameGt, Aluminium).circuitMeta(6).outputItems(GTBlocks.FROSTPROOF_MACHINE_CASING.asStack(2)).duration(50).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("casing_tungsteensteel_robust").EUt(16).inputItems(plate, TungstenSteel, 6).inputItems(frameGt, TungstenSteel).circuitMeta(6).outputItems(GTBlocks.ROBUST_MACHINE_CASING.asStack(2)).duration(50).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("casing_stainless_clean").EUt(16).inputItems(plate, StainlessSteel, 6).inputItems(frameGt, StainlessSteel).circuitMeta(6).outputItems(GTBlocks.CLEAN_MACHINE_CASING.asStack(2)).duration(50).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("casing_titanium_stable").EUt(16).inputItems(plate, Titanium, 6).inputItems(frameGt, Titanium).circuitMeta(6).outputItems(GTBlocks.STABLE_MACHINE_CASING.asStack(2)).duration(50).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("casing_hsse_sturdy").EUt(16).inputItems(plate, HSSE, 6).inputItems(frameGt, Europium).circuitMeta(6).outputItems(GTBlocks.STURDY_MACHINE_CASING.asStack(2)).duration(50).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("casing_ptfe_inert").EUt(16).inputItems(GTBlocks.SOLID_MACHINE_CASING.asStack()).inputFluids(Polytetrafluoroethylene.getFluid(216)).circuitMeta(6).outputItems(GTBlocks.INERT_MACHINE_CASING.asStack()).duration(50).save(provider);
 
         // TODO Fusion reactor
         //ASSEMBLER_RECIPES.recipeBuilder("casing_superconductor_luv").EUt(VA[LuV]).inputItems(wireGtDouble, IndiumTinBariumTitaniumCuprate, 32).inputItems(foil, NiobiumTitanium, 32).inputFluids(Trinium.getFluid(GTValues.L * 24)).outputItems(GTBlocks.CASING.get().getItemVariant(CasingBlock.CasingType.SUPERCONDUCTOR_COIL)).duration(100).save(provider);
@@ -552,10 +552,10 @@ public class MachineRecipeLoader {
         //ASSEMBLER_RECIPES.recipeBuilder().EUt(VA[ZPM]).inputItems(MetaBlocks.MACHINE_CASING.getItemVariant(MachineCasingType.ZPM)).inputItems(MetaBlocks.FUSION_CASING.getItemVariant(BlockFusionCasing.CasingType.FUSION_COIL)).inputItems(VOLTAGE_COIL_ZPM.getStackForm(2)).inputItems(FIELD_GENERATOR_LuV).inputItems(plate, Europium, 6).inputFluids(Polybenzimidazole.getFluid(GTValues.L * 2)).outputItems(MetaBlocks.FUSION_CASING.getItemVariant(BlockFusionCasing.CasingType.FUSION_CASING_MK2, 2)).duration(100).cleanroom(CleanroomType.CLEANROOM).save(provider);
         //ASSEMBLER_RECIPES.recipeBuilder().EUt(VA[UV]).inputItems(MetaBlocks.MACHINE_CASING.getItemVariant(MachineCasingType.UV)).inputItems(MetaBlocks.FUSION_CASING.getItemVariant(BlockFusionCasing.CasingType.FUSION_COIL)).inputItems(VOLTAGE_COIL_UV.getStackForm(2)).inputItems(FIELD_GENERATOR_ZPM).inputItems(plate, Americium, 6).inputFluids(Polybenzimidazole.getFluid(GTValues.L * 4)).outputItems(MetaBlocks.FUSION_CASING.getItemVariant(BlockFusionCasing.CasingType.FUSION_CASING_MK3, 2)).duration(100).cleanroom(CleanroomType.CLEANROOM).save(provider);
 
-        ASSEMBLER_RECIPES.recipeBuilder("casing_steel_turbine").EUt(16).inputItems(plate, Magnalium, 6).inputItems(frameGt, BlueSteel, 1).circuitMeta(6).outputItems(GTBlocks.CASING_STEEL_TURBINE.asStack(2)).duration(50).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("casing_stainless_steel_turbine").EUt(16).inputItems(GTBlocks.CASING_STEEL_TURBINE.asStack()).inputItems(plate, StainlessSteel, 6).circuitMeta(6).outputItems(GTBlocks.CASING_STAINLESS_TURBINE.asStack(2)).duration(50).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("casing_titanium_turbine").EUt(16).inputItems(GTBlocks.CASING_STEEL_TURBINE.asStack()).inputItems(plate, Titanium, 6).circuitMeta(6).outputItems(GTBlocks.CASING_TITANIUM_TURBINE.asStack(2)).duration(50).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("casing_tungstensteel_turbine").EUt(16).inputItems(GTBlocks.CASING_STEEL_TURBINE.asStack()).inputItems(plate, TungstenSteel, 6).circuitMeta(6).outputItems(GTBlocks.CASING_TUNGSTENSTEEL_TURBINE.asStack(2)).duration(50).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("casing_steel_turbine").EUt(16).inputItems(plate, Magnalium, 6).inputItems(frameGt, BlueSteel, 1).circuitMeta(6).outputItems(GTBlocks.STEEL_TURBINE_CASING.asStack(2)).duration(50).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("casing_stainless_steel_turbine").EUt(16).inputItems(GTBlocks.STEEL_TURBINE_CASING.asStack()).inputItems(plate, StainlessSteel, 6).circuitMeta(6).outputItems(GTBlocks.STAINLESS_STEEL_TURBINE_CASING.asStack(2)).duration(50).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("casing_titanium_turbine").EUt(16).inputItems(GTBlocks.STEEL_TURBINE_CASING.asStack()).inputItems(plate, Titanium, 6).circuitMeta(6).outputItems(GTBlocks.TITANIUM_TURBINE_CASING.asStack(2)).duration(50).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("casing_tungstensteel_turbine").EUt(16).inputItems(GTBlocks.STEEL_TURBINE_CASING.asStack()).inputItems(plate, TungstenSteel, 6).circuitMeta(6).outputItems(GTBlocks.TUNGSTENSTEEL_TURBINE_CASING.asStack(2)).duration(50).save(provider);
 
         // TODO CLeanroom
         //ASSEMBLER_RECIPES.recipeBuilder().EUt(48).inputItems(frameGt, Steel).inputItems(plate, Polyethylene, 6).inputFluids(Concrete.getFluid(L)).outputItems(MetaBlocks.CLEANROOM_CASING.getItemVariant(BlockCleanroomCasing.CasingType.PLASCRETE, 2)).duration(200).save(provider);

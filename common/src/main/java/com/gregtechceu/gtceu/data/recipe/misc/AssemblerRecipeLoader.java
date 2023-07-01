@@ -21,7 +21,7 @@ public class AssemblerRecipeLoader {
                 .inputItems(gear, Bronze, 2)
                 .inputItems(frameGt, Bronze)
                 .circuitMeta(4)
-                .outputItems(CASING_BRONZE_GEARBOX.asStack(2))
+                .outputItems(BRONZE_GEARBOX.asStack(2))
                 .duration(50).EUt(16).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("steel_gearbox_casing")
@@ -29,7 +29,7 @@ public class AssemblerRecipeLoader {
                 .inputItems(gear, Steel, 2)
                 .inputItems(frameGt, Steel)
                 .circuitMeta(4)
-                .outputItems(CASING_STEEL_GEARBOX.asStack(2))
+                .outputItems(STEEL_GEARBOX.asStack(2))
                 .duration(50).EUt(16).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("stainless_steel_gearbox_casing")
@@ -37,7 +37,7 @@ public class AssemblerRecipeLoader {
                 .inputItems(gear, StainlessSteel, 2)
                 .inputItems(frameGt, StainlessSteel)
                 .circuitMeta(4)
-                .outputItems(CASING_STAINLESS_STEEL_GEARBOX.asStack(2))
+                .outputItems(STAINLESS_STEEL_GEARBOX.asStack(2))
                 .duration(50).EUt(16).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("titanium_gearbox_casing")
@@ -45,7 +45,7 @@ public class AssemblerRecipeLoader {
                 .inputItems(gear, Titanium, 2)
                 .inputItems(frameGt, Titanium)
                 .circuitMeta(4)
-                .outputItems(CASING_TITANIUM_GEARBOX.asStack(2))
+                .outputItems(TITANIUM_GEARBOX.asStack(2))
                 .duration(50).EUt(16).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("tungstensteel_gearbox_casing")
@@ -53,7 +53,7 @@ public class AssemblerRecipeLoader {
                 .inputItems(gear, TungstenSteel, 2)
                 .inputItems(frameGt, TungstenSteel)
                 .circuitMeta(4)
-                .outputItems(CASING_TUNGSTENSTEEL_GEARBOX.asStack(2))
+                .outputItems(TUNGSTENSTEEL_GEARBOX.asStack(2))
                 .duration(50).EUt(16).save(provider);
 
         // Other
