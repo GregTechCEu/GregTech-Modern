@@ -11,13 +11,11 @@ import com.gregtechceu.gtceu.api.cover.IUICover;
 import com.gregtechceu.gtceu.api.cover.filter.FluidFilter;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.UITemplate;
-import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.syncdata.RequireRerender;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceBorderTexture;
-import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
 import com.lowdragmc.lowdraglib.gui.widget.*;
 import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
@@ -134,6 +132,14 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
         }
     }
 
+    @Override
+    public List<ItemStack> getAdditionalDrops() {
+        var list = super.getAdditionalDrops();
+        if (!filterItem.isEmpty()) {
+            list.add(filterItem);
+        }
+        return list;
+    }
 
     //////////////////////////////////////
     //*****     Transfer Logic     *****//
@@ -211,9 +217,9 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
     //////////////////////////////////////
     //***********     GUI    ***********//
     //////////////////////////////////////
-
     @Override
-    public ModularUI createUI(Player entityPlayer) {
+    public Widget createUIWidget() {
+        final var group = new WidgetGroup(0, 0, 176, 135);
         var filterContainer = new ItemStackTransfer(filterItem);
         filterContainer.setFilter(itemStack -> FluidFilter.FILTERS.containsKey(itemStack.getItem()));
         var filterGroup = new WidgetGroup(0, 70, 176, 60);
@@ -221,59 +227,57 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
             filterHandler = FluidFilter.loadFilter(filterItem);
             filterGroup.addWidget(filterHandler.openConfigurator((176 - 80) / 2, (60 - 55) / 2));
         }
-        return new ModularUI(176, 130 + 82, this, entityPlayer)
-                .background(GuiTextures.BACKGROUND)
-                .widget(new LabelWidget(10, 5, LocalizationUtils.format("cover.pump.title", GTValues.VN[tier])))
-                .widget(new ButtonWidget(10, 20, 30, 20,
-                        new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("-1")), cd -> {
-                          if (!cd.isRemote) {
-                              adjustTransferRate(-(cd.isCtrlClick ? cd.isShiftClick ? 1000 : 100 : cd.isShiftClick ? 10 : 1));
-                          }
-                        }).setHoverTooltips("gui.widget.incrementButton.default_tooltip"))
-                .widget(new ButtonWidget(136, 20, 30, 20,
-                        new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("+1")), cd -> {
-                    if (!cd.isRemote) {
-                        adjustTransferRate(cd.isCtrlClick ? cd.isShiftClick ? 1000 : 100 : cd.isShiftClick ? 10 : 1);
+        group.addWidget(new LabelWidget(10, 5, LocalizationUtils.format("cover.pump.title", GTValues.VN[tier])));
+        group.addWidget(new ButtonWidget(10, 20, 30, 20,
+                new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("-1")), cd -> {
+            if (!cd.isRemote) {
+                adjustTransferRate(-(cd.isCtrlClick ? cd.isShiftClick ? 1000 : 100 : cd.isShiftClick ? 10 : 1));
+            }
+        }).setHoverTooltips("gui.widget.incrementButton.default_tooltip"));
+        group.addWidget(new ButtonWidget(136, 20, 30, 20,
+                new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("+1")), cd -> {
+            if (!cd.isRemote) {
+                adjustTransferRate(cd.isCtrlClick ? cd.isShiftClick ? 1000 : 100 : cd.isShiftClick ? 10 : 1);
+            }
+        }).setHoverTooltips("gui.widget.incrementButton.default_tooltip"));
+        group.addWidget(new TextFieldWidget(42, 20, 92, 20, () -> bucketMode ? Long.toString(transferRate / FluidHelper.getBucket()) : Long.toString(transferRate), val -> {
+            var amount = Long.parseLong(val);
+            if (this.bucketMode) {
+                amount = LongMath.saturatedMultiply(amount, FluidHelper.getBucket());
+            }
+            setTransferRate(amount);
+        }).setNumbersOnly(1L, maxFluidTransferRate));
+        group.addWidget(new SwitchWidget(10, 45, 75, 20, (clickData, value) -> {
+            if (!clickData.isRemote) {
+                setIo(value ? IO.IN : IO.OUT);
+            }
+        }).setTexture(new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON, new TextTexture("cover.pump.mode.export")),
+                        new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON, new TextTexture("cover.pump.mode.import")))
+                .setPressed(io == IO.IN));
+        group.addWidget(new SwitchWidget(85, 45, 75, 20, (clickData, value) -> {
+            if (!clickData.isRemote) {
+                setBucketMode(value);
+            }
+        }).setTexture(new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON, new TextTexture("cover.bucket.mode.milli_bucket")),
+                        new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON, new TextTexture("cover.bucket.mode.bucket")))
+                .setPressed(isBucketMode()));
+        group.addWidget(new SlotWidget(filterContainer, 0, 10, 70)
+                .setChangeListener(() -> {
+                    if (isRemote()) {
+                        if (!filterContainer.getStackInSlot(0).isEmpty() && !filterItem.isEmpty()) {
+                            return;
+                        }
                     }
-                }).setHoverTooltips("gui.widget.incrementButton.default_tooltip"))
-                .widget(new TextFieldWidget(42, 20, 92, 20, () -> bucketMode ? Long.toString(transferRate / FluidHelper.getBucket()) : Long.toString(transferRate), val -> {
-                    var amount = Long.parseLong(val);
-                    if (this.bucketMode) {
-                        amount = LongMath.saturatedMultiply(amount, FluidHelper.getBucket());
+                    this.filterItem = filterContainer.getStackInSlot(0);
+                    this.filterHandler = null;
+                    filterGroup.clearAllWidgets();
+                    if (!filterItem.isEmpty()) {
+                        filterHandler = FluidFilter.loadFilter(filterItem);
+                        filterGroup.addWidget(filterHandler.openConfigurator((176 - 80) / 2, (60 - 55) / 2));
                     }
-                    setTransferRate(amount);
-                }).setNumbersOnly(1L, maxFluidTransferRate))
-                .widget(new SwitchWidget(10, 45, 75, 20, (clickData, value) -> {
-                    if (!clickData.isRemote) {
-                        setIo(value ? IO.IN : IO.OUT);
-                    }
-                }).setTexture(new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON, new TextTexture("cover.pump.mode.export")),
-                                new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON, new TextTexture("cover.pump.mode.import")))
-                        .setPressed(io == IO.IN))
-                .widget(new SwitchWidget(85, 45, 75, 20, (clickData, value) -> {
-                    if (!clickData.isRemote) {
-                        setBucketMode(value);
-                    }
-                }).setTexture(new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON, new TextTexture("cover.bucket.mode.milli_bucket")),
-                                new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON, new TextTexture("cover.bucket.mode.bucket")))
-                        .setPressed(isBucketMode()))
-                .widget(new SlotWidget(filterContainer, 0, 10, 70)
-                        .setChangeListener(() -> {
-                            if (isRemote()) {
-                                if (!filterContainer.getStackInSlot(0).isEmpty() && !filterItem.isEmpty()) {
-                                    return;
-                                }
-                            }
-                            this.filterItem = filterContainer.getStackInSlot(0);
-                            this.filterHandler = null;
-                            filterGroup.clearAllWidgets();
-                            if (!filterItem.isEmpty()) {
-                                filterHandler = FluidFilter.loadFilter(filterItem);
-                                filterGroup.addWidget(filterHandler.openConfigurator((176 - 80) / 2, (60 - 55) / 2));
-                            }
-                        })
-                        .setBackgroundTexture(new GuiTextureGroup(GuiTextures.SLOT, GuiTextures.FILTER_SLOT_OVERLAY)))
-                .widget(filterGroup)
-                .widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(),  GuiTextures.SLOT, 7, 130, true));
+                })
+                .setBackgroundTexture(new GuiTextureGroup(GuiTextures.SLOT, GuiTextures.FILTER_SLOT_OVERLAY)));
+        group.addWidget(filterGroup);
+        return group;
     }
 }

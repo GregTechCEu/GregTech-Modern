@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.content.IContentSerializer;
 import io.netty.buffer.Unpooled;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 
 /**
  * Used to detect whether a machine has a certain capability.
@@ -61,4 +62,7 @@ public class RecipeCapability<T> {
         return "%s_%s_%s".formatted(name, io.name().toLowerCase(), index);
     }
 
+    public Component getTraslateComponent() {
+        return Component.translatable("recipe.capability.%s.name".formatted(name));
+    }
 }

@@ -38,11 +38,14 @@ public class EnhancedFieldManagedStorage extends FieldManagedStorage {
             if (rawField.isAnnotationPresent(UpdateListener.class)) {
                 var methodName = rawField.getAnnotation(UpdateListener.class).methodName();
                 Method method = null;
-                try {
-                    method = enhancedManaged.getClass().getDeclaredMethod(methodName, rawField.getType(), rawField.getType());
-                    method.setAccessible(true);
-                } catch (NoSuchMethodException e) {
-                    GTCEu.LOGGER.error("couldn't find the listener method {} for synced field {}", methodName, rawField.getName());
+                Class<?> clazz = enhancedManaged.getClass();
+                while (clazz != null && method == null) {
+                    try {
+                        method = clazz.getDeclaredMethod(methodName, rawField.getType(), rawField.getType());
+                        method.setAccessible(true);
+                    } catch (NoSuchMethodException ignored) {
+                    }
+                    clazz = clazz.getSuperclass();
                 }
                 if (method != null) {
                     final Method finalMethod = method;
@@ -53,6 +56,8 @@ public class EnhancedFieldManagedStorage extends FieldManagedStorage {
                             throw new RuntimeException(e);
                         }
                     });
+                } else {
+                    GTCEu.LOGGER.error("couldn't find the listener method {} for synced field {}", methodName, rawField.getName());
                 }
             }
         }

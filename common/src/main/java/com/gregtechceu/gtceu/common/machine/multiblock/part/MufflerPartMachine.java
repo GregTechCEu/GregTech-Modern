@@ -109,4 +109,5 @@ public class MufflerPartMachine extends TieredPartMachine implements IMufflerMac
         }
         return modular;
     }
+
 }

@@ -25,7 +25,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class SteamHatchPartMachine extends FluidHatchPartMachine implements IUIMachine {
+public class SteamHatchPartMachine extends FluidHatchPartMachine {
     public static final long INITIAL_TANK_CAPACITY = 64 * FluidHelper.getBucket();
     public static final boolean IS_STEEL = ConfigHolder.INSTANCE.machines.steelSteamMultiblocks;
 

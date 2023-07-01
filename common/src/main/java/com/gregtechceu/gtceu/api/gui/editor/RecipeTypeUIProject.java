@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.gui.editor;
 
+import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.lowdragmc.lowdraglib.LDLib;
@@ -53,7 +54,7 @@ public class RecipeTypeUIProject extends UIProject {
 
     public RecipeTypeUIProject newEmptyProject() {
         return new RecipeTypeUIProject(RecipeTypeResources.defaultResource(),
-                (WidgetGroup) new WidgetGroup(30, 30, 176, 83).setBackground(ResourceBorderTexture.BORDERED_BACKGROUND));
+                (WidgetGroup) new WidgetGroup(30, 30, 176, 83).setBackground(GuiTextures.BACKGROUND));
     }
 
     public void setRecipeType(@Nullable GTRecipeType recipeType) {

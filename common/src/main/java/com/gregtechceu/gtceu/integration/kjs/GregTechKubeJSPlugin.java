@@ -31,6 +31,7 @@ import com.gregtechceu.gtceu.integration.kjs.builders.*;
 import com.gregtechceu.gtceu.integration.kjs.builders.machine.*;
 import com.gregtechceu.gtceu.integration.kjs.builders.prefix.BasicTagPrefixBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.prefix.OreTagPrefixBuilder;
+import com.gregtechceu.gtceu.integration.kjs.helpers.MaterialStackWrapper;
 import com.gregtechceu.gtceu.integration.kjs.recipe.GTRecipeBuilderJS;
 import com.mojang.serialization.DataResult;
 import dev.latvian.mods.kubejs.KubeJSPlugin;
@@ -206,6 +207,13 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
             if (o instanceof MaterialStack stack) return stack;
             if (o instanceof Material material) return new MaterialStack(material, 1);
             if (o instanceof CharSequence chars) return MaterialStack.fromString(chars);
+            return null;
+        });
+        typeWrappers.register(MaterialStackWrapper.class, (ctx, o) -> {
+            if (o instanceof MaterialStackWrapper wrapper) return wrapper;
+            if (o instanceof MaterialStack stack) return new MaterialStackWrapper(stack::material, stack.amount());
+            if (o instanceof Material material) return new MaterialStackWrapper(() -> material, 1);
+            if (o instanceof CharSequence chars) return MaterialStackWrapper.fromString(chars);
             return null;
         });
 

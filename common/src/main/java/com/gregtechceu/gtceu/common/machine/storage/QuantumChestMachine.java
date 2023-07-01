@@ -10,9 +10,7 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.TieredMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputItem;
-import com.gregtechceu.gtceu.api.machine.feature.IDropSaveMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
+import com.gregtechceu.gtceu.api.machine.feature.*;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.syncdata.RequireRerender;
 import com.lowdragmc.lowdraglib.gui.editor.Icons;
@@ -52,7 +50,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class QuantumChestMachine extends TieredMachine implements IAutoOutputItem, IUIMachine, IControllable, IDropSaveMachine {
+public class QuantumChestMachine extends TieredMachine implements IAutoOutputItem, IInteractedMachine, IControllable, IDropSaveMachine, IFancyUIMachine {
 
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(QuantumChestMachine.class, MetaMachine.MANAGED_FIELD_HOLDER);
 
@@ -265,7 +263,7 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
                 return InteractionResult.SUCCESS;
             }
         }
-        return IUIMachine.super.onUse(state, world, pos, player, hand, hit);
+        return IInteractedMachine.super.onUse(state, world, pos, player, hand, hit);
     }
 
     @Override
@@ -280,7 +278,7 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
                 }
             }
         }
-        return IUIMachine.super.onLeftClick(player, world, hand, pos, direction);
+        return IInteractedMachine.super.onLeftClick(player, world, hand, pos, direction);
     }
 
     @Override

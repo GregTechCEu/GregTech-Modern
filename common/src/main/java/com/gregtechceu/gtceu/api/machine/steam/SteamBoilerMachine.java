@@ -275,7 +275,7 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine implements
                 .background(GuiTextures.BACKGROUND_STEAM.get(isHighPressure))
                 .widget(new LabelWidget(6, 6, getBlockState().getBlock().getDescriptionId()))
                 .widget(new ProgressWidget(this::getTemperaturePercent, 96, 26, 10, 54)
-                        .setProgressBar(GuiTextures.PROGRESS_BAR_BOILER_EMPTY.get(isHighPressure),
+                        .setProgressTexture(GuiTextures.PROGRESS_BAR_BOILER_EMPTY.get(isHighPressure),
                                 GuiTextures.PROGRESS_BAR_BOILER_HEAT).setFillDirection(ProgressTexture.FillDirection.DOWN_TO_UP))
                 .widget(new TankWidget(waterTank.storages[0], 83, 26, 10, 54, false, true)
                         .setShowAmount(false)

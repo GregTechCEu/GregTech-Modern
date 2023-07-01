@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.machine.multiblock;
 
+import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.pattern.MultiblockState;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
@@ -8,6 +9,7 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.pattern.MultiblockWorldSavedData;
 import com.gregtechceu.gtceu.api.syncdata.RequireRerender;
+import com.gregtechceu.gtceu.api.syncdata.UpdateListener;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
@@ -37,7 +39,9 @@ public class MultiblockControllerMachine extends MetaMachine implements IMultiCo
     private MultiblockState multiblockState;
     @Getter
     protected final List<IMultiPart> parts = new ArrayList<>();
-
+    @Getter
+    @DescSynced @UpdateListener(methodName = "onPartsUpdated")
+    private BlockPos[] partPositions = new BlockPos[0];
     @Getter
     @Persisted
     @DescSynced
@@ -86,6 +90,20 @@ public class MultiblockControllerMachine extends MetaMachine implements IMultiCo
         return multiblockState;
     }
 
+    @SuppressWarnings("unused")
+    protected void onPartsUpdated(BlockPos[] newValue, BlockPos[] oldValue) {
+        parts.clear();
+        for (var pos : newValue) {
+            if (getMachine(getLevel(), pos) instanceof IMultiPart part) {
+                parts.add(part);
+            }
+        }
+    }
+
+    protected void updatePartPositions() {
+        this.partPositions = this.parts.isEmpty() ? new BlockPos[0] : this.parts.stream().map(part -> part.self().getPos()).toArray(BlockPos[]::new);
+    }
+
     //////////////////////////////////////
     //***    Multiblock LifeCycle    ***//
     //////////////////////////////////////
@@ -117,6 +135,7 @@ public class MultiblockControllerMachine extends MetaMachine implements IMultiCo
         for (var part : parts) {
             part.addedToController(this);
         }
+        updatePartPositions();
     }
 
     @Override
@@ -126,6 +145,7 @@ public class MultiblockControllerMachine extends MetaMachine implements IMultiCo
             part.removedFromController(this);
         }
         parts.clear();
+        updatePartPositions();
     }
 
     /**
@@ -140,6 +160,7 @@ public class MultiblockControllerMachine extends MetaMachine implements IMultiCo
         if (getLevel() instanceof ServerLevel serverLevel) {
             MultiblockWorldSavedData.getOrCreate(serverLevel).addAsyncLogic(this);
         }
+        updatePartPositions();
     }
 
     @Override

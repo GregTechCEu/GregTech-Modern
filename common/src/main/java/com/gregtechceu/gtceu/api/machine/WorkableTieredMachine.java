@@ -35,7 +35,7 @@ import java.util.List;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public abstract class WorkableTieredMachine extends TieredEnergyMachine implements IRecipeLogicMachine, ICleanroomReceiver, IMachineModifyDrops, IMufflableMachine {
+public abstract class WorkableTieredMachine extends TieredEnergyMachine implements IRecipeLogicMachine, ICleanroomReceiver, IMachineModifyDrops, IMufflableMachine, IOverclockMachine {
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(WorkableTieredMachine.class, TieredEnergyMachine.MANAGED_FIELD_HOLDER);
 
     @Getter
@@ -58,6 +58,7 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
     @Getter
     protected final Table<IO, RecipeCapability<?>, List<IRecipeHandler<?>>> capabilitiesProxy;
     @Persisted
+    @Getter
     protected int overclockTier;
     protected final List<ISubscription> traitSubscriptions;
     @Persisted @DescSynced @Getter @Setter
@@ -162,12 +163,30 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
     }
 
     //////////////////////////////////////
-    //******     RECIPE LOGIC    *******//
+    //********     OVERCLOCK   *********//
     //////////////////////////////////////
 
+    @Override
     public int getMaxOverclockTier() {
         return GTUtil.getTierByVoltage(Math.max(energyContainer.getInputVoltage(), energyContainer.getOutputVoltage()));
     }
+
+    @Override
+    public int getMinOverclockTier() {
+        return 0;
+    }
+
+    @Override
+    public void setOverclockTier(int tier) {
+        if (!isRemote() && tier >= getMinOverclockTier() && tier <= getMaxOverclockTier()) {
+            this.overclockTier = tier;
+            this.recipeLogic.markLastRecipeDirty();
+        }
+    }
+
+    //////////////////////////////////////
+    //******     RECIPE LOGIC    *******//
+    //////////////////////////////////////
 
     @Override
     @Nullable

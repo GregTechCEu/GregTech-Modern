@@ -30,11 +30,13 @@ import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import com.tterrag.registrate.util.nullness.NonNullFunction;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.advancements.critereon.StatePropertiesPredicate;
+import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.renderer.BiomeColors;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
@@ -44,14 +46,12 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.FoliageColor;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.grower.AbstractTreeGrower;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.material.MaterialColor;
 import net.minecraft.world.level.storage.loot.LootPool;
@@ -60,7 +60,6 @@ import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.predicates.LootItemBlockStatePropertyCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
-import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
 
@@ -99,10 +98,10 @@ public class GTBlocks {
                         .setData(ProviderType.BLOCKSTATE, NonNullBiConsumer.noop())
                         .setData(ProviderType.LANG, NonNullBiConsumer.noop())
                         .setData(ProviderType.LOOT, NonNullBiConsumer.noop())
-                        .color(() -> () -> MaterialBlock::tintedColor)
+                        .color(() -> MaterialBlock::tintedColor)
                         .item(MaterialBlockItem::new)
                         .model(NonNullBiConsumer.noop())
-                        .color(() -> () -> MaterialBlockItem::tintColor)
+                        .color(() -> MaterialBlockItem::tintColor)
                         .build()
                         .register();
                 builder.put(TagPrefix.block, material, entry);
@@ -118,10 +117,10 @@ public class GTBlocks {
                         .blockstate(NonNullBiConsumer.noop())
                         .setData(ProviderType.LANG, NonNullBiConsumer.noop())
                         .setData(ProviderType.LOOT, NonNullBiConsumer.noop())
-                        .color(() -> () -> MaterialBlock::tintedColor)
+                        .color(() -> MaterialBlock::tintedColor)
                         .item(MaterialBlockItem::new)
                         .model(NonNullBiConsumer.noop())
-                        .color(() -> () -> MaterialBlockItem::tintColor)
+                        .color(() -> MaterialBlockItem::tintColor)
                         .build()
                         .register();
                 builder.put(TagPrefix.frameGt, material, entry);
@@ -154,10 +153,10 @@ public class GTBlocks {
                             .blockstate(NonNullBiConsumer.noop())
                             .setData(ProviderType.LANG, NonNullBiConsumer.noop())
                             .setData(ProviderType.LOOT, NonNullBiConsumer.noop())
-                            .color(() -> () -> MaterialBlock::tintedColor)
+                            .color(() -> MaterialBlock::tintedColor)
                             .item(MaterialBlockItem::new)
                             .model(NonNullBiConsumer.noop())
-                            .color(() -> () -> MaterialBlockItem::tintColor)
+                            .color(() -> MaterialBlockItem::tintColor)
                             .build()
                             .register();
                     builder.put(oreTag, material, entry);
@@ -187,10 +186,10 @@ public class GTBlocks {
                             .setData(ProviderType.LANG, NonNullBiConsumer.noop())
                             .setData(ProviderType.LOOT, NonNullBiConsumer.noop())
                             .addLayer(() -> RenderType::cutoutMipped)
-                            .color(() -> () -> MaterialPipeBlock::tintedColor)
+                            .color(() -> MaterialPipeBlock::tintedColor)
                             .item(MaterialPipeBlockItem::new)
                             .model(NonNullBiConsumer.noop())
-                            .color(() -> () -> MaterialPipeBlockItem::tintColor)
+                            .color(() -> MaterialPipeBlockItem::tintColor)
                             .build()
                             .register();
                     builder.put(insulation.tagPrefix, material, entry);
@@ -216,10 +215,10 @@ public class GTBlocks {
                             .setData(ProviderType.LANG, NonNullBiConsumer.noop())
                             .setData(ProviderType.LOOT, NonNullBiConsumer.noop())
                             .addLayer(() -> RenderType::cutoutMipped)
-                            .color(() -> () -> MaterialPipeBlock::tintedColor)
+                            .color(() -> MaterialPipeBlock::tintedColor)
                             .item(MaterialPipeBlockItem::new)
                             .model(NonNullBiConsumer.noop())
-                            .color(() -> () -> MaterialPipeBlockItem::tintColor)
+                            .color(() -> MaterialPipeBlockItem::tintColor)
                             .build()
                             .register();
                     builder.put(fluidPipeType.tagPrefix, material, entry);
@@ -571,16 +570,20 @@ public class GTBlocks {
     // Fortune Level
     public static final float[] RUBBER_LEAVES_DROPPING_CHANCE = new float[]{0.05F, 0.0625F, 0.083333336F, 0.1F};
 
-    public static int leavesBlockColor(BlockState state, @Nullable BlockAndTintGetter reader, @Nullable BlockPos pos, int tintIndex) {
-        if (reader != null && pos != null) {
-            //return reader.getBlockTint(pos, (biome, x, z) -> biome.getFoliageColor());
-            return BiomeColors.getAverageFoliageColor(reader, pos);
-        }
-        return FoliageColor.getDefaultColor();
+    @Environment(value= EnvType.CLIENT)
+    public static BlockColor leavesBlockColor() {
+        return (state, reader, pos, tintIndex) -> {
+            if (reader != null && pos != null) {
+                //return reader.getBlockTint(pos, (biome, x, z) -> biome.getFoliageColor());
+                return BiomeColors.getAverageFoliageColor(reader, pos);
+            }
+            return FoliageColor.getDefaultColor();
+        };
     }
 
-    public static Supplier<ItemColor> leavesItemColor() {
-        return () -> (stack, tintIndex) -> FoliageColor.getDefaultColor();
+    @Environment(value= EnvType.CLIENT)
+    public static ItemColor leavesItemColor() {
+        return (stack, tintIndex) -> FoliageColor.getDefaultColor();
     }
 
     public static final BlockEntry<LeavesBlock> RUBBER_LEAVES = REGISTRATE
@@ -590,9 +593,9 @@ public class GTBlocks {
             .blockstate((ctx, prov) -> prov.simpleBlock(ctx.getEntry(), prov.models().singleTexture(Registry.BLOCK.getKey(ctx.getEntry()).getPath(), prov.mcLoc(BLOCK_FOLDER + "/leaves"), "all", prov.blockTexture(ctx.getEntry()))))
             .loot((table, block) -> table.add(block, RegistrateBlockLootTables.createLeavesDrops(block, GTBlocks.RUBBER_SAPLING.get(), RUBBER_LEAVES_DROPPING_CHANCE)))
             .tag(BlockTags.LEAVES)
-            .color(() -> () -> GTBlocks::leavesBlockColor)
+            .color(() -> GTBlocks::leavesBlockColor)
             .item()
-            .color(GTBlocks::leavesItemColor)
+            .color(() -> GTBlocks::leavesItemColor)
             .tag(ItemTags.LEAVES)
             .build()
             .register();

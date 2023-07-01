@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.cover;
 
-import com.google.common.collect.Lists;
 import com.gregtechceu.gtceu.api.gui.CoverUIFactory;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
@@ -28,6 +27,7 @@ import net.minecraft.world.phys.BlockHitResult;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -108,8 +108,11 @@ public abstract class CoverBehavior implements IEnhancedManaged, IToolGridHighLi
         return attachItem;
     }
 
-    public List<ItemStack> getDrops() {
-        return Lists.newArrayList(getPickItem());
+    /**
+     * Append additional drops. It doesn't include itself.
+     */
+    public List<ItemStack> getAdditionalDrops() {
+        return new ArrayList<>();
     }
 
     /**
