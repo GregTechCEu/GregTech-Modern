@@ -9,7 +9,10 @@ import com.lowdragmc.lowdraglib.client.renderer.IItemRendererProvider;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import lombok.Getter;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -54,22 +57,25 @@ public class GTToolItem extends DiggerItem implements IItemRendererProvider, IIt
         return super.hasCraftingRemainingItem();
     }
 
-    public static int tintColor(ItemStack itemStack, int index) {
-        if (itemStack.getItem() instanceof GTToolItem item) {
-            return switch (index) {
-                case 0 -> {
-                    if (item.toolType == GTToolType.CROWBAR) {
-                        if (itemStack.hasTag() && itemStack.getTag().contains("tint_color", Tag.TAG_INT)) {
-                            yield itemStack.getTag().getInt("tint_color");
+    @Environment(EnvType.CLIENT)
+    public static ItemColor tintColor() {
+        return (itemStack, index) ->{
+            if (itemStack.getItem() instanceof GTToolItem item) {
+                return switch (index) {
+                    case 0 -> {
+                        if (item.toolType == GTToolType.CROWBAR) {
+                            if (itemStack.hasTag() && itemStack.getTag().contains("tint_color", Tag.TAG_INT)) {
+                                yield itemStack.getTag().getInt("tint_color");
+                            }
                         }
+                        yield -1;
                     }
-                    yield -1;
-                }
-                case 1 -> item.getTier().material.getMaterialARGB();
-                default -> -1;
-            };
-        }
-        return -1;
+                    case 1 -> item.getTier().material.getMaterialARGB();
+                    default -> -1;
+                };
+            }
+            return -1;
+        };
     }
 
     @Nullable

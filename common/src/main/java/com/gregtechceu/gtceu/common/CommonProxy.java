@@ -12,7 +12,6 @@ import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.common.data.materials.GTFoods;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.GregTechDatagen;
-import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
 import com.lowdragmc.lowdraglib.gui.factory.UIFactory;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 

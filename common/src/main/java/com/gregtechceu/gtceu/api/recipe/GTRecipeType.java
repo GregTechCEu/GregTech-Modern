@@ -199,7 +199,7 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
         if (!holder.hasProxies() || !isFuelRecipeType()) return Collections.emptyList();
         List<GTRecipe> matches = new ArrayList<>();
         for (GTRecipe recipe : recipeManager.getAllRecipesFor(this)) {
-            if (recipe.isFuel && recipe.matchRecipe(holder) && recipe.matchTickRecipe(holder)) {
+            if (recipe.isFuel && recipe.matchRecipe(holder).isSuccessed() && recipe.matchTickRecipe(holder).isSuccessed()) {
                 matches.add(recipe);
             }
         }
@@ -210,13 +210,13 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
         if (!holder.hasProxies()) return Collections.emptyList();
         List<GTRecipe> matches = new ArrayList<>();
         for (var recipe : recipeManager.getAllRecipesFor(this)) {
-            if (!recipe.isFuel && recipe.matchRecipe(holder) && recipe.matchTickRecipe(holder)) {
+            if (!recipe.isFuel && recipe.matchRecipe(holder).isSuccessed() && recipe.matchTickRecipe(holder).isSuccessed()) {
                 matches.add(recipe);
             }
         }
         for (List<GTRecipe> recipes : proxyRecipes.values()) {
             for (GTRecipe recipe : recipes) {
-                if (!recipe.isFuel && recipe.matchRecipe(holder) && recipe.matchTickRecipe(holder)) {
+                if (!recipe.isFuel && recipe.matchRecipe(holder).isSuccessed() && recipe.matchTickRecipe(holder).isSuccessed()) {
                     matches.add(recipe);
                 }
             }
@@ -334,7 +334,7 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
         WidgetUtils.widgetByIdForEach(group, "^progress$", ProgressWidget.class, progressWidget -> {
             progressWidget.setProgressSupplier(progressSupplier);
             if (!useCustomUI) {
-                progressWidget.setProgressBar((isSteam && steamProgressBarTexture != null) ? new ProgressTexture(
+                progressWidget.setProgressTexture((isSteam && steamProgressBarTexture != null) ? new ProgressTexture(
                         steamProgressBarTexture.get(isHighPressure).getSubTexture(0, 0, 1, 0.5),
                         steamProgressBarTexture.get(isHighPressure).getSubTexture(0, 0.5, 1, 0.5))
                         .setFillDirection(steamMoveType)
@@ -423,15 +423,15 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
 
         var inputs = addInventorySlotGroup(false);
         var outputs = addInventorySlotGroup(true);
-        var group = new WidgetGroup(0, 0, 176, Math.max(inputs.getSize().height, outputs.getSize().height));
+        var group = new WidgetGroup(0, 0, inputs.getSize().width + outputs.getSize().width + 40, Math.max(inputs.getSize().height, outputs.getSize().height));
         var size = group.getSize();
 
-        inputs.addSelfPosition(size.width / 2 - 20 - inputs.getSize().width, (size.height - inputs.getSize().height) / 2);
-        outputs.addSelfPosition(size.width / 2 + 20, (size.height - outputs.getSize().height) / 2);
+        inputs.addSelfPosition(0, (size.height - inputs.getSize().height) / 2);
+        outputs.addSelfPosition(inputs.getSize().width + 40, (size.height - outputs.getSize().height) / 2);
         group.addWidget(inputs);
         group.addWidget(outputs);
 
-        var progressWidget = new ProgressWidget(ProgressWidget.JEIProgress, size.width / 2 - 10, size.height / 2 - 10, 20, 20, progressBarTexture);
+        var progressWidget = new ProgressWidget(ProgressWidget.JEIProgress, inputs.getSize().width + 10, size.height / 2 - 10, 20, 20, progressBarTexture);
         progressWidget.setId("progress");
         group.addWidget(progressWidget);
 

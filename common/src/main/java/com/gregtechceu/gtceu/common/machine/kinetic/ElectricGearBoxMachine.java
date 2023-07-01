@@ -2,19 +2,18 @@ package com.gregtechceu.gtceu.common.machine.kinetic;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.UITemplate;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TieredEnergyMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
+import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
-import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.texture.ColorBorderTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ColorRectTexture;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
 import com.lowdragmc.lowdraglib.gui.widget.ButtonWidget;
 import com.lowdragmc.lowdraglib.gui.widget.ImageWidget;
-import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
+import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
@@ -22,7 +21,6 @@ import lombok.Getter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.player.Player;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -33,7 +31,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class ElectricGearBoxMachine extends TieredEnergyMachine implements IKineticMachine, IUIMachine {
+public class ElectricGearBoxMachine extends TieredEnergyMachine implements IKineticMachine, IFancyUIMachine {
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(ElectricGearBoxMachine.class, TieredEnergyMachine.MANAGED_FIELD_HOLDER);
     public final int maxAmps;
     @Getter
@@ -138,28 +136,32 @@ public class ElectricGearBoxMachine extends TieredEnergyMachine implements IKine
     }
 
     @Override
-    public ModularUI createUI(Player entityPlayer) {
-        return new ModularUI(176, 148, this, entityPlayer)
-                .background(GuiTextures.BACKGROUND)
-                .widget(new LabelWidget(5, 5, getDefinition().getDescriptionId()))
-                .widget(new ImageWidget(42, 20, 92, 20, new TextTexture("").setSupplier(() -> "Speed: " + getKineticHolder().workingSpeed)))
-                .widget(new ButtonWidget(10, 40, 30, 20,
+    public Widget createUIWidget() {
+        var group = new WidgetGroup(0, 0, 164, 48);
+        group.addWidget(new ImageWidget(36, 4, 92, 20, new TextTexture("").setWidth(92).setType(TextTexture.TextType.ROLL).setSupplier(() -> "Speed: " + getKineticHolder().workingSpeed)))
+                .addWidget(new ButtonWidget(4, 24, 30, 20,
                         new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("-8rpm")), cd -> {
                     if (!cd.isRemote) {
                         int amount = cd.isCtrlClick ? cd.isShiftClick ? 32 : 16 : cd.isShiftClick ? 4 : 1;
                         setCurrentAmps(currentAmps - amount);
                     }
                 }).setHoverTooltips("gui.widget.incrementButton.default_tooltip"))
-                .widget(new ButtonWidget(136, 40, 30, 20,
+                .addWidget(new ButtonWidget(130, 24, 30, 20,
                         new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("+8rpm")), cd -> {
                     if (!cd.isRemote) {
                         int amount = cd.isCtrlClick ? cd.isShiftClick ? 32 : 16 : cd.isShiftClick ? 4 : 1;
                         setCurrentAmps(currentAmps + amount);
                     }
                 }).setHoverTooltips("gui.widget.incrementButton.default_tooltip"))
-                .widget(new ImageWidget(42, 40, 92, 20, new GuiTextureGroup(new ColorRectTexture(0xff000000),
-                        new ColorBorderTexture(1, -1), new TextTexture("").setSupplier(() -> getCurrentRPM() + "rpm"))))
-                .widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(), GuiTextures.SLOT, 7, 66, true));
+                .addWidget(new ImageWidget(36, 24, 92, 20, new GuiTextureGroup(new ColorRectTexture(0xff000000),
+                        new ColorBorderTexture(1, -1), new TextTexture("").setWidth(92).setType(TextTexture.TextType.ROLL).setSupplier(() -> getCurrentRPM() + "rpm"))));
+        group.setBackground(GuiTextures.BACKGROUND_INVERSE);
+        return group;
+    }
+
+    @Override
+    public boolean hasPlayerInventory() {
+        return false;
     }
 
 }

@@ -3,6 +3,9 @@ package com.gregtechceu.gtceu.api.item;
 import com.gregtechceu.gtceu.api.block.MaterialBlock;
 import com.lowdragmc.lowdraglib.client.renderer.IItemRendererProvider;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
@@ -25,11 +28,14 @@ public class MaterialBlockItem extends BlockItem implements IItemRendererProvide
         return (MaterialBlock)super.getBlock();
     }
 
-    public static int tintColor(ItemStack itemStack, int index) {
-        if (itemStack.getItem() instanceof MaterialBlockItem materialBlockItem) {
-            return materialBlockItem.getBlock().material.getMaterialARGB();
-        }
-        return -1;
+    @Environment(EnvType.CLIENT)
+    public static ItemColor tintColor() {
+        return (itemStack, index) -> {
+            if (itemStack.getItem() instanceof MaterialBlockItem materialBlockItem) {
+                return materialBlockItem.getBlock().material.getMaterialARGB();
+            }
+            return -1;
+        };
     }
 
     @Nullable

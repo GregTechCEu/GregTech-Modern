@@ -6,23 +6,22 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.UITemplate;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
-import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
+import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.utils.GTUtil;
-import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
-import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
+import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import com.lowdragmc.lowdraglib.utils.Position;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
-import net.minecraft.world.entity.player.Player;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -36,7 +35,7 @@ import java.util.List;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class BatteryBufferMachine extends TieredEnergyMachine implements IControllable, IUIMachine {
+public class BatteryBufferMachine extends TieredEnergyMachine implements IControllable, IFancyUIMachine {
     public static final long AMPS_PER_BATTERY = 2L;
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(BatteryBufferMachine.class, TieredEnergyMachine.MANAGED_FIELD_HOLDER);
@@ -89,30 +88,40 @@ public class BatteryBufferMachine extends TieredEnergyMachine implements IContro
     //////////////////////////////////////
     //**********     GUI     ***********//
     //////////////////////////////////////
+
     @Override
-    public ModularUI createUI(Player entityPlayer) {
+    public Widget createUIWidget() {
         int rowSize = (int) Math.sqrt(inventorySize);
         int colSize = rowSize;
         if (inventorySize == 8) {
             rowSize = 4;
             colSize = 2;
         }
-        var modular = new ModularUI(176, 18 + 18 * colSize + 94, this, entityPlayer)
-                .background(GuiTextures.BACKGROUND)
-                .widget(new LabelWidget(6, 6, getBlockState().getBlock().getDescriptionId()))
-                .widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(), GuiTextures.SLOT, 7, 18 + 18 * colSize + 12, true));
-
+        var template = new WidgetGroup(0, 0, 18 * rowSize + 8, 18 * colSize + 8);
+        template.setBackground(GuiTextures.BACKGROUND_INVERSE);
         int index = 0;
         for (int y = 0; y < colSize; y++) {
             for (int x = 0; x < rowSize; x++) {
-                modular.widget(new SlotWidget(batteryInventory, index++, 88 - rowSize * 9 + x * 18, 18 + y * 18, true, true)
+                template.addWidget(new SlotWidget(batteryInventory, index++, 4 + x * 18, 4 + y * 18, true, true)
                         .setBackgroundTexture(new GuiTextureGroup(GuiTextures.SLOT, GuiTextures.BATTERY_OVERLAY)));
             }
         }
 
-        return modular;
-    }
+        var energyBar = createEnergyBar();
 
+        var group = new WidgetGroup(0, 0,
+                Math.max(energyBar.getSize().width + template.getSize().width + 4 + 8, 172),
+                Math.max(template.getSize().height + 8, energyBar.getSize().height + 8));
+        var size = group.getSize();
+        energyBar.setSelfPosition(new Position(3, (size.height - energyBar.getSize().height) / 2));
+        template.setSelfPosition(new Position(
+                (size.width - energyBar.getSize().width - 4 - template.getSize().width) / 2 + 2 + energyBar.getSize().width + 2,
+                (size.height - template.getSize().height) / 2));
+        group.addWidget(energyBar);
+        group.addWidget(template);
+
+        return group;
+    }
 
     //////////////////////////////////////
     //******    Battery Logic     ******//

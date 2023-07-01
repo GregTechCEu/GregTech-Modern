@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
+import com.gregtechceu.gtceu.api.gui.fancy.IFancyConfigurator;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.syncdata.EnhancedFieldManagedStorage;
 import com.gregtechceu.gtceu.api.syncdata.IEnhancedManaged;
@@ -103,42 +104,6 @@ public class MachineCoverContainer implements ICoverable, IEnhancedManaged {
     }
 
     @Override
-    public boolean placeCoverOnSide(Direction side, ItemStack itemStack, CoverDefinition coverDefinition, ServerPlayer player) {
-        CoverBehavior coverBehavior = coverDefinition.createCoverBehavior(this, side);
-        if (!canPlaceCoverOnSide(coverDefinition, side) || !coverBehavior.canAttach()) {
-            return false;
-        }
-        if (getCoverAtSide(side) != null) {
-            removeCover(side);
-        }
-        coverBehavior.onAttached(itemStack, player);
-        coverBehavior.onLoad();
-        setCoverAtSide(coverBehavior, side);
-        notifyBlockUpdate();
-        markDirty();
-        // TODO achievement
-//        AdvancementTriggers.FIRST_COVER_PLACE.trigger((EntityPlayerMP) player);
-        return true;
-    }
-
-    @Override
-    public boolean removeCover(Direction side) {
-        CoverBehavior coverBehavior = getCoverAtSide(side);
-        if (coverBehavior == null) {
-            return false;
-        }
-        List<ItemStack> drops = coverBehavior.getDrops();
-        coverBehavior.onRemoved();
-        setCoverAtSide(null, side);
-        for (ItemStack dropStack : drops) {
-            Block.popResource(getLevel(), getPos(), dropStack);
-        }
-        notifyBlockUpdate();
-        markDirty();
-        return true;
-    }
-
-    @Override
     public boolean canPlaceCoverOnSide(CoverDefinition definition, Direction side) {
         ArrayList<VoxelShape> collisionList = new ArrayList<>();
         machine.addCollisionBoundingBox(collisionList);
@@ -156,10 +121,6 @@ public class MachineCoverContainer implements ICoverable, IEnhancedManaged {
         return 0;
     }
 
-    @Override
-    public int getPaintingColorForRendering() {
-        return -1;
-    }
 
     @Override
     public Direction getFrontFacing() {
@@ -194,7 +155,8 @@ public class MachineCoverContainer implements ICoverable, IEnhancedManaged {
         };
     }
 
-    private void setCoverAtSide(@Nullable CoverBehavior coverBehavior, Direction side) {
+    @Override
+    public void setCoverAtSide(@Nullable CoverBehavior coverBehavior, Direction side) {
         switch (side) {
             case UP -> up = coverBehavior;
             case SOUTH -> south = coverBehavior;

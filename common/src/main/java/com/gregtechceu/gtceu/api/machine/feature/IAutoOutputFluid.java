@@ -8,7 +8,7 @@ import org.jetbrains.annotations.Nullable;
  * @date 2023/3/2
  * @implNote IAutoOutputItem
  */
-public interface IAutoOutputFluid {
+public interface IAutoOutputFluid extends IMachineFeature{
 
     boolean isAutoOutputFluids();
 
@@ -24,4 +24,8 @@ public interface IAutoOutputFluid {
     Direction getOutputFacingFluids();
 
     void setOutputFacingFluids(@Nullable Direction outputFacing);
+
+    default boolean hasAutoOutputFluid() {
+        return true;
+    }
 }
