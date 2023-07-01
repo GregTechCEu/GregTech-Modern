@@ -142,6 +142,9 @@ public class GTRegistryObjectBuilderTypes<K, V> {
             type.postEvent();
 
             for (var builder : type.objects.values()) {
+                if (CommonProperties.get().debugInfo) {
+                    ConsoleJS.STARTUP.info("+ " + registry + " | " + builder.id);
+                }
                 builder.register();
             }
         }
