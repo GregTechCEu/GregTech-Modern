@@ -77,7 +77,7 @@ public class CraftingRecipeLoader {
 
         VanillaRecipeHelper.addShapedRecipe(provider, "solar_panel_basic", COVER_SOLAR_PANEL.asStack(), "WGW", "CPC", 'W', SILICON_WAFER.asStack(), 'G', new ItemStack(Blocks.GLASS_PANE), 'C', CustomTags.LV_CIRCUITS, 'P', CARBON_FIBER_PLATE.asStack());
         // TODO glass tiers
-        //VanillaRecipeHelper.addShapedRecipe(provider, "solar_panel_ulv", COVER_SOLAR_PANEL_ULV.asStack(), "WGW", "CAC", "P P", 'W', GLOWSTONE_WAFER.asStack(), 'G', "paneGlass", 'C', new UnificationEntry(circuit, Tier.HV), 'P', ChemicalHelper.get(plate, GalliumArsenide), 'A', ChemicalHelper.get(wireGtQuadruple, Graphene));
+        //VanillaRecipeHelper.addShapedRecipe(provider, "solar_panel_ulv", COVER_SOLAR_PANEL_ULV.asStack(), "WGW", "CAC", "P P", 'W', PHOSPHORUS_WAFER.asStack(), 'G', "paneGlass", 'C', new UnificationEntry(circuit, Tier.HV), 'P', ChemicalHelper.get(plate, GalliumArsenide), 'A', ChemicalHelper.get(wireGtQuadruple, Graphene));
         //VanillaRecipeHelper.addShapedRecipe(provider, "solar_panel_lv", COVER_SOLAR_PANEL_LV.asStack(), "WGW", "CAC", "P P", 'W', NAQUADAH_WAFER.asStack(), 'G', MetaBlocks.TRANSPARENT_CASING.getItemVariant(
         //        BlockGlassCasing.CasingType.TEMPERED_GLASS), 'C', new UnificationEntry(circuit, Tier.LuV), 'P', ChemicalHelper.get(plate, IndiumGalliumPhosphide), 'A', ChemicalHelper.get(wireGtHex, Graphene));
 

@@ -306,7 +306,7 @@ public class FirstDegreeMaterials {
                 .appendFlags(EXT_METAL, GENERATE_SPRING)
                 .components(Iron, 1, Aluminium, 1, Chromium, 1)
                 .cableProperties(GTValues.V[3], 4, 3)
-                .blastTemp(1800, GasTier.LOW, GTValues.VA[GTValues.MV], 1000)
+                .blastTemp(1800, GasTier.LOW, GTValues.VA[GTValues.HV], 900)
                 .fluidTemp(1708)
                 .buildAndRegister();
 

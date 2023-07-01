@@ -690,7 +690,7 @@ public class MachineRecipeLoader {
                 .outputFluids(SulfurDioxide.getFluid(1000))
                 .save(provider);
 
-        BLAST_RECIPES.recipeBuilder("chalcopyrite_metallurgy").duration(120).EUt(VA[MV]).blastFurnaceTemp(1200)
+        BLAST_RECIPES.recipeBuilder("chalcopyrite_metallurgy").duration(120).EUt(VA[MV]).blastFurnaceTemp(2273)
                 .inputItems(dust, Chalcopyrite)
                 .inputItems(dust, SiliconDioxide)
                 .inputFluids(Oxygen.getFluid(3000))
@@ -702,7 +702,7 @@ public class MachineRecipeLoader {
         BLAST_RECIPES.recipeBuilder("blast_silicon_dioxide").duration(240).EUt(VA[MV]).blastFurnaceTemp(1200)
                 .inputItems(dust, SiliconDioxide)
                 .inputItems(dust, Carbon, 2)
-                .outputItems(ingot, Silicon)
+                .outputItems(ingotHot, Silicon)
                 .outputItems(dustTiny, Ash)
                 .outputFluids(CarbonMonoxide.getFluid(2000))
                 .save(provider);

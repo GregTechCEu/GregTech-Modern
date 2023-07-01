@@ -110,6 +110,14 @@ public class PartsRecipeHandler {
                 .circuitMeta(1)
                 .save(provider);
 
+        BENDER_RECIPES.recipeBuilder("bend_" + material.getName() + "_ingot_to_foil")
+                .inputItems(ingot, material)
+                .outputItems(foilPrefix, material, 4)
+                .duration((int) material.getMass())
+                .EUt(24)
+                .circuitMeta(10)
+                .save(provider);
+
         if (material.hasFlag(NO_SMASHING)) {
             EXTRUDER_RECIPES.recipeBuilder("extrude_" + material.getName() + "_ingot_to_foil")
                     .inputItems(ingot, material)
