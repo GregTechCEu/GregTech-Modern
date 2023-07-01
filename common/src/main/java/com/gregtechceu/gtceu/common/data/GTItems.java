@@ -70,36 +70,54 @@ public class GTItems {
     //////////////////////////////////////
     //*****     Material Items    ******//
     //////////////////////////////////////
+
+
+
+
+    // Externally Accessible Values
     public static Table<TagPrefix, Material, ItemEntry<TagPrefixItem>> MATERIAL_ITEMS;
-
-    public static void generateMaterialItems() {
-        REGISTRATE.creativeModeTab(() -> MATERIAL_ITEM);
-        ImmutableTable.Builder<TagPrefix, Material, ItemEntry<TagPrefixItem>> builder = ImmutableTable.builder();
-        for (var tagPrefix : TagPrefix.values()) {
-            if (tagPrefix.doGenerateItem()) {
-                for (Material material : GTRegistries.MATERIALS) {
-                    if (tagPrefix.doGenerateItem(material)) {
-                        builder.put(tagPrefix, material, REGISTRATE
-                                .item(material.getName() + "_" + toLowerCaseUnder(tagPrefix.name), properties -> new TagPrefixItem(properties, tagPrefix, material))
-                                .setData(ProviderType.LANG, NonNullBiConsumer.noop())
-                                .transform(unificationItem(tagPrefix, material))
-                                .properties(p -> p.stacksTo(tagPrefix.maxStackSize()))
-                                .model(NonNullBiConsumer.noop())
-                                .color(() -> TagPrefixItem::tintColor)
-                                .register());
-                    }
-                }
-            }
-        }
-        MATERIAL_ITEMS = builder.build();
-    }
-
-    //////////////////////////////////////
-    //*****     Material Tools    ******//
-    //////////////////////////////////////
     public final static Table<MaterialToolTier, GTToolType, ItemEntry<GTToolItem>> TOOL_ITEMS =
             ArrayTable.create(GTRegistries.MATERIALS.values().stream().filter(mat -> mat.hasProperty(PropertyKey.TOOL)).map(Material::getToolTier).toList(),
                     Arrays.stream(GTToolType.values()).toList());
+
+    // Table Builders
+    private static final ImmutableTable.Builder<TagPrefix, Material, ItemEntry<TagPrefixItem>> MATERIAL_ITEMS_BUILDER = ImmutableTable.builder();
+
+    // Material Item Generation
+    private static boolean allowedItemMaterial(TagPrefix tagPrefix, Material material) {
+        boolean doGenerateItem = tagPrefix.doGenerateItem(material);
+        return doGenerateItem;
+    }
+    private static void generateMaterialItem(TagPrefix tagPrefix, Material material) {
+        var entry = REGISTRATE.item(material.getName() + "_" + toLowerCaseUnder(tagPrefix.name), properties -> new TagPrefixItem(properties, tagPrefix, material))
+                .setData(ProviderType.LANG, NonNullBiConsumer.noop())
+                .transform(unificationItem(tagPrefix, material))
+                .properties(p -> p.stacksTo(tagPrefix.maxStackSize()))
+                .model(NonNullBiConsumer.noop())
+                .color(() -> TagPrefixItem::tintColor)
+                .register();
+        MATERIAL_ITEMS_BUILDER.put(tagPrefix, material, entry);
+    }
+    private static void generateMaterialItems() {
+        REGISTRATE.creativeModeTab(() -> MATERIAL_ITEM);
+        for (var tagPrefix : TagPrefix.values()) {
+            for (Material material : GTRegistries.MATERIALS) {
+                if (allowedItemMaterial(tagPrefix, material)) {
+                    generateMaterialItem(tagPrefix, material);
+                }
+            }
+        }
+        MATERIAL_ITEMS = MATERIAL_ITEMS_BUILDER.build();
+    }
+
+
+
+
+
+
+
+
+
 
     public static void generateTools() {
         REGISTRATE.creativeModeTab(() -> TOOL);
@@ -135,12 +153,15 @@ public class GTItems {
     }
 
 
+
+
+
+
+
     //////////////////////////////////////
     //*******     Misc Items    ********//
     //////////////////////////////////////
-    static {
-        REGISTRATE.creativeModeTab(() -> ITEM);
-    }
+    static { REGISTRATE.creativeModeTab(() -> ITEM); }
     public static ItemEntry<Item> CREDIT_COPPER = REGISTRATE.item("copper_credit", Item::new).lang("Copper Credit").register();
     public static ItemEntry<Item> CREDIT_CUPRONICKEL = REGISTRATE.item("cupronickel_credit", Item::new).lang("Cupronickel Credit").defaultModel().register();
     public static ItemEntry<Item> CREDIT_SILVER = REGISTRATE.item("silver_credit", Item::new).lang("Silver Credit").properties(p -> p.rarity(Rarity.UNCOMMON)).register();
