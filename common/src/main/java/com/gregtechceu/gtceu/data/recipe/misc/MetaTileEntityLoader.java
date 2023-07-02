@@ -306,6 +306,12 @@ public class MetaTileEntityLoader {
 
         registerMachineRecipe(provider, ArrayUtils.subarray(GTMachines.TRANSFORMER, GTValues.ULV, GTValues.MV), " CC", "TH ", " CC", 'C', CABLE, 'T', CABLE_TIER_UP, 'H', HULL);
         registerMachineRecipe(provider, ArrayUtils.subarray(GTMachines.TRANSFORMER, GTValues.MV, GTValues.UHV), "WCC", "TH ", "WCC", 'W', POWER_COMPONENT, 'C', CABLE, 'T', CABLE_TIER_UP, 'H', HULL);
+        registerMachineRecipe(provider, ArrayUtils.subarray(GTMachines.HI_AMP_TRANSFORMER_2A, GTValues.ULV, GTValues.MV), " CC", "TH ", " CC", 'C', CABLE_DOUBLE, 'T', CABLE_TIER_UP_DOUBLE, 'H', HULL);
+        registerMachineRecipe(provider, ArrayUtils.subarray(GTMachines.HI_AMP_TRANSFORMER_2A, GTValues.MV, GTValues.UHV), "WCC", "TH ", "WCC", 'W', POWER_COMPONENT, 'C', CABLE_DOUBLE, 'T', CABLE_TIER_UP_DOUBLE, 'H', HULL);
+        registerMachineRecipe(provider, ArrayUtils.subarray(GTMachines.HI_AMP_TRANSFORMER_4A, GTValues.ULV, GTValues.MV), " CC", "TH ", " CC", 'C', CABLE_QUAD, 'T', CABLE_TIER_UP_QUAD, 'H', HULL);
+        registerMachineRecipe(provider, ArrayUtils.subarray(GTMachines.HI_AMP_TRANSFORMER_4A, GTValues.MV, GTValues.UHV), "WCC", "TH ", "WCC", 'W', POWER_COMPONENT, 'C', CABLE_QUAD, 'T', CABLE_TIER_UP_QUAD, 'H', HULL);
+        registerMachineRecipe(provider, ArrayUtils.subarray(GTMachines.POWER_TRANSFORMER, GTValues.ULV, GTValues.MV), " CC", "TH ", " CC", 'C', CABLE_HEX, 'T', CABLE_TIER_UP_HEX, 'H', HULL);
+        registerMachineRecipe(provider, ArrayUtils.subarray(GTMachines.POWER_TRANSFORMER, GTValues.MV, GTValues.UHV), "WCC", "TH ", "WCC", 'W', POWER_COMPONENT, 'C', CABLE_HEX, 'T', CABLE_TIER_UP_HEX, 'H', HULL);
 
         registerMachineRecipe(provider, GTMachines.BATTERY_BUFFER_4, "WTW", "WMW", 'M', HULL, 'W', WIRE_QUAD, 'T', CustomTags.TAG_WOODEN_CHESTS);
         registerMachineRecipe(provider, GTMachines.BATTERY_BUFFER_8, "WTW", "WMW", 'M', HULL, 'W', WIRE_OCT, 'T', CustomTags.TAG_WOODEN_CHESTS);
