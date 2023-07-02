@@ -193,19 +193,10 @@ public class GTMachines {
     //////////////////////////////////////
     //********     Electric     ********//
     //////////////////////////////////////
-    public final static MachineDefinition[] TRANSFORMER = registerTieredMachines("transformer", (holder, tier) -> new TransformerMachine(holder, tier, 1),
-            (tier, builder) -> builder
-                    .rotationState(RotationState.ALL)
-                    .itemColor((itemStack, index) -> index == 2 ? GTValues.VC[tier + 1] : index == 3 ? GTValues.VC[tier] : index == 1 ? ConfigHolder.INSTANCE.client.defaultPaintingColor : -1)
-                    .renderer(() -> new TransformerRenderer(tier))
-                    .langValue("%s Transformer".formatted(VOLTAGE_NAMES[tier]))
-                    .tooltips(explosion())
-                    .tooltips(Component.translatable("gtceu.machine.transformer.description"),
-                            Component.translatable("gtceu.machine.transformer.tooltip_tool_usage"),
-                            Component.translatable("gtceu.machine.transformer.tooltip_transform_down", 1, GTValues.V[tier + 1], GTValues.VNF[tier + 1], 4, GTValues.V[tier], GTValues.VNF[tier]),
-                            Component.translatable("gtceu.machine.transformer.tooltip_transform_up", 4, GTValues.V[tier], GTValues.VNF[tier], 1, GTValues.V[tier + 1], GTValues.VNF[tier + 1]))
-                    .register(),
-            GTValues.ULV, GTValues.LV, GTValues.MV, GTValues.HV, GTValues.EV, GTValues.IV, GTValues.LuV, GTValues.ZPM, GTValues.UV); // UHV not needed, as a UV transformer transforms up to UHV
+    public final static MachineDefinition[] TRANSFORMER = registerTransformerMachines("", 1);
+    public final static MachineDefinition[] HI_AMP_TRANSFORMER_2A = registerTransformerMachines("", 2);
+    public final static MachineDefinition[] HI_AMP_TRANSFORMER_4A = registerTransformerMachines("", 4);
+    public final static MachineDefinition[] POWER_TRANSFORMER = registerTransformerMachines("", 16);
 
     public static final MachineDefinition[] ENERGY_CONVERTER_1A = registerConverter(1);
     public static final MachineDefinition[] ENERGY_CONVERTER_4A = registerConverter(4);
@@ -1090,6 +1081,23 @@ public class GTMachines {
             definitions[i] = builder.apply(tier, register);
         }
         return definitions;
+    }
+
+    public static MachineDefinition[] registerTransformerMachines(String name,
+                                                                  int baseAmp) {
+        return registerTieredMachines("transformer_%dA".formatted(baseAmp), (holder, tier) -> new TransformerMachine(holder, tier, baseAmp),
+                (tier, builder) -> builder
+                        .rotationState(RotationState.ALL)
+                        .itemColor((itemStack, index) -> index == 2 ? GTValues.VC[tier + 1] : index == 3 ? GTValues.VC[tier] : index == 1 ? ConfigHolder.INSTANCE.client.defaultPaintingColor : -1)
+                        .renderer(() -> new TransformerRenderer(tier))
+                        .langValue("%s %sTransformer".formatted(VOLTAGE_NAMES[tier], name))
+                        .tooltips(explosion())
+                        .tooltips(Component.translatable("gtceu.machine.transformer.description"),
+                                Component.translatable("gtceu.machine.transformer.tooltip_tool_usage"),
+                                Component.translatable("gtceu.machine.transformer.tooltip_transform_down", baseAmp, GTValues.V[tier + 1], GTValues.VNF[tier + 1], 4, GTValues.V[tier], GTValues.VNF[tier]),
+                                Component.translatable("gtceu.machine.transformer.tooltip_transform_up", baseAmp * 4, GTValues.V[tier], GTValues.VNF[tier], 1, GTValues.V[tier + 1], GTValues.VNF[tier + 1]))
+                        .register(),
+                GTValues.ULV, GTValues.LV, GTValues.MV, GTValues.HV, GTValues.EV, GTValues.IV, GTValues.LuV, GTValues.ZPM, GTValues.UV); // UHV not needed, as a UV transformer transforms up to UHV
     }
 
 
