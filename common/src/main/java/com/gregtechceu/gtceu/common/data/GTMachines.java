@@ -1094,8 +1094,8 @@ public class GTMachines {
                         .tooltips(explosion())
                         .tooltips(Component.translatable("gtceu.machine.transformer.description"),
                                 Component.translatable("gtceu.machine.transformer.tooltip_tool_usage"),
-                                Component.translatable("gtceu.machine.transformer.tooltip_transform_down", baseAmp, GTValues.V[tier + 1], GTValues.VNF[tier + 1], 4, GTValues.V[tier], GTValues.VNF[tier]),
-                                Component.translatable("gtceu.machine.transformer.tooltip_transform_up", baseAmp * 4, GTValues.V[tier], GTValues.VNF[tier], 1, GTValues.V[tier + 1], GTValues.VNF[tier + 1]))
+                                Component.translatable("gtceu.machine.transformer.tooltip_transform_down", baseAmp, GTValues.V[tier + 1], GTValues.VNF[tier + 1], baseAmp * 4, GTValues.V[tier], GTValues.VNF[tier]),
+                                Component.translatable("gtceu.machine.transformer.tooltip_transform_up", baseAmp * 4, GTValues.V[tier], GTValues.VNF[tier], baseAmp, GTValues.V[tier + 1], GTValues.VNF[tier + 1]))
                         .register(),
                 GTValues.ULV, GTValues.LV, GTValues.MV, GTValues.HV, GTValues.EV, GTValues.IV, GTValues.LuV, GTValues.ZPM, GTValues.UV); // UHV not needed, as a UV transformer transforms up to UHV
     }
