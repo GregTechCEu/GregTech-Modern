@@ -194,9 +194,9 @@ public class GTMachines {
     //********     Electric     ********//
     //////////////////////////////////////
     public final static MachineDefinition[] TRANSFORMER = registerTransformerMachines("", 1);
-    public final static MachineDefinition[] HI_AMP_TRANSFORMER_2A = registerTransformerMachines("Hi-Amp", 2);
-    public final static MachineDefinition[] HI_AMP_TRANSFORMER_4A = registerTransformerMachines("Hi-Amp", 4);
-    public final static MachineDefinition[] POWER_TRANSFORMER = registerTransformerMachines("Power", 16);
+    public final static MachineDefinition[] HI_AMP_TRANSFORMER_2A = registerTransformerMachines("Hi-Amp ", 2);
+    public final static MachineDefinition[] HI_AMP_TRANSFORMER_4A = registerTransformerMachines("Hi-Amp ", 4);
+    public final static MachineDefinition[] POWER_TRANSFORMER = registerTransformerMachines("Power ", 16);
 
     public static final MachineDefinition[] ENERGY_CONVERTER_1A = registerConverter(1);
     public static final MachineDefinition[] ENERGY_CONVERTER_4A = registerConverter(4);
