@@ -33,8 +33,7 @@ public class MetaTileEntityLoader {
 
     public static void init(Consumer<FinishedRecipe> provider) {
         CraftingComponent.initializeComponents();
-
-        VanillaRecipeHelper.addShapedRecipe(provider, true, "casing_ulv", GTBlocks.MACHINE_CASING_ULV.asStack(), "PPP", "PwP", "PPP", 'P', new UnificationEntry(TagPrefix.plate, GTMaterials.WroughtIron));
+        
         VanillaRecipeHelper.addShapedRecipe(provider, true, "casing_ulv", GTBlocks.MACHINE_CASING_ULV.asStack(), "PPP", "PwP", "PPP", 'P', new UnificationEntry(TagPrefix.plate, GTMaterials.WroughtIron));
         VanillaRecipeHelper.addShapedRecipe(provider, true, "casing_lv", GTBlocks.MACHINE_CASING_LV.asStack(), "PPP", "PwP", "PPP", 'P', new UnificationEntry(TagPrefix.plate, GTMaterials.Steel));
         VanillaRecipeHelper.addShapedRecipe(provider, true, "casing_mv", GTBlocks.MACHINE_CASING_MV.asStack(), "PPP", "PwP", "PPP", 'P', new UnificationEntry(TagPrefix.plate, GTMaterials.Aluminium));
