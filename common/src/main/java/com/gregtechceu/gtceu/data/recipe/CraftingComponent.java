@@ -196,7 +196,7 @@ public class CraftingComponent {
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
-        CABLE = new Component(Stream.of(new Object[][]{
+        CABLE_DOUBLE = new Component(Stream.of(new Object[][]{
 
                 {0, new UnificationEntry(TagPrefix.cableGtDouble, GTMaterials.RedAlloy)},
                 {1, new UnificationEntry(TagPrefix.cableGtDouble, GTMaterials.Tin)},
