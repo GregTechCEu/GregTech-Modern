@@ -780,11 +780,11 @@ public class GTItems {
     }
 
     public static ItemEntry<Item> SILICON_BOULE= REGISTRATE.item("silicon_boule", Item::new).lang("Monocrystalline Silicon Boule").register();
-    public static ItemEntry<Item> GLOWSTONE_BOULE= REGISTRATE.item("glowstone_boule", Item::new).lang("Glowstone-doped Monocrystalline Silicon Boule").register();
+    public static ItemEntry<Item> PHOSPHORUS_BOULE= REGISTRATE.item("phosphorus_boule", Item::new).lang("Phosphorus-doped Monocrystalline Silicon Boule").register();
     public static ItemEntry<Item> NAQUADAH_BOULE= REGISTRATE.item("naquadah_boule", Item::new).lang("Naquadah-doped Monocrystalline Silicon Boule").register();
     public static ItemEntry<Item> NEUTRONIUM_BOULE= REGISTRATE.item("neutronium_boule", Item::new).lang("Neutronium-doped Monocrystalline Silicon Boule").register();
     public static ItemEntry<Item> SILICON_WAFER= REGISTRATE.item("silicon_wafer", Item::new).lang("Silicon Wafer").register();
-    public static ItemEntry<Item> GLOWSTONE_WAFER= REGISTRATE.item("glowstone_wafer", Item::new).lang("Glowstone-doped Wafer").register();
+    public static ItemEntry<Item> PHOSPHORUS_WAFER= REGISTRATE.item("phosphorus_wafer", Item::new).lang("Phosphorus-doped Wafer").register();
     public static ItemEntry<Item> NAQUADAH_WAFER= REGISTRATE.item("naquadah_wafer", Item::new).lang("Naquadah-doped Wafer").register();
     public static ItemEntry<Item> NEUTRONIUM_WAFER= REGISTRATE.item("neutronium_wafer", Item::new).lang("Neutronium-doped Wafer").register();
 
