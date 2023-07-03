@@ -79,28 +79,28 @@ public class ChemicalBathRecipes {
                 .outputItems(dust, LithiumChloride, 4)
                 .duration(210).EUt(960).save(provider);
 
-        CHEMICAL_BATH_RECIPES.recipeBuilder()
+        CHEMICAL_BATH_RECIPES.recipeBuilder("kanthal_cool_down")
                 .inputItems(ingotHot, Kanthal)
                 .inputFluids(Water.getFluid(100))
                 .outputItems(ingot, Kanthal)
-                .duration(400).EUt(VA[MV]).buildAndRegister();
+                .duration(400).EUt(VA[MV]).save(provider);
 
-        CHEMICAL_BATH_RECIPES.recipeBuilder()
+        CHEMICAL_BATH_RECIPES.recipeBuilder("kanthal_cool_down_distilled_water")
                 .inputItems(ingotHot, Kanthal)
                 .inputFluids(DistilledWater.getFluid(100))
                 .outputItems(ingot, Kanthal)
-                .duration(250).EUt(VA[MV]).buildAndRegister();
+                .duration(250).EUt(VA[MV]).save(provider);
 
-        CHEMICAL_BATH_RECIPES.recipeBuilder()
+        CHEMICAL_BATH_RECIPES.recipeBuilder("silion_cool_down")
                 .inputItems(ingotHot, Silicon)
                 .inputFluids(Water.getFluid(100))
                 .outputItems(ingot, Silicon)
-                .duration(400).EUt(VA[MV]).buildAndRegister();
+                .duration(400).EUt(VA[MV]).save(provider);
 
-        CHEMICAL_BATH_RECIPES.recipeBuilder()
+        CHEMICAL_BATH_RECIPES.recipeBuilder("silicon_cool_down_distilled_water")
                 .inputItems(ingotHot, Silicon)
                 .inputFluids(DistilledWater.getFluid(100))
                 .outputItems(ingot, Silicon)
-                .duration(250).EUt(VA[MV]).buildAndRegister();
+                .duration(250).EUt(VA[MV]).save(provider);
     }
 }
