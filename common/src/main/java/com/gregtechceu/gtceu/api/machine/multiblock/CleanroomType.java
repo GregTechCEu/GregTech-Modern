@@ -43,6 +43,15 @@ public class CleanroomType {
         return CLEANROOM_TYPES.get(name);
     }
 
+    @Nonnull
+    public static CleanroomType getByNameOrDefault(@Nullable String name) {
+        var type = getByName(name);
+        if (type == null) {
+            return CLEANROOM;
+        }
+        return type;
+    }
+
     public static Set<CleanroomType> getAllTypes() {
         return new HashSet<>(CLEANROOM_TYPES.values());
     }

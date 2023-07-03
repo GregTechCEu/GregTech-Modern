@@ -59,7 +59,7 @@ public class CustomTags {
     public static final TagKey<Block> CONCRETE = TagUtil.createBlockTag("concrete");
     public static final TagKey<Block> CONCRETE_POWDER = TagUtil.createBlockTag("concrete_powder");
     public static final TagKey<Block> GLASS_BLOCKS = TagUtil.createPlatformBlockTag("glass", "glass_blocks", false);
-    public static final TagKey<Block> GLASS_PANES = TagUtil.createBlockTag("glass_panes");
+    public static final TagKey<Block> GLASS_PANES_BLOCK = TagUtil.createBlockTag("glass_panes");
     public static final TagKey<Block> CREATE_SEATS = TagUtil.optionalTag(Registry.BLOCK, new ResourceLocation(GTValues.MODID_CREATE, "seats"));
 
     @SuppressWarnings("unchecked")

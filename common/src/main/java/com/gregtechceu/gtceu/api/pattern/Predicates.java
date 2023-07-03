@@ -6,10 +6,6 @@ import com.gregtechceu.gtceu.api.block.IMachineBlock;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
-import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenance;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMufflerMechanic;
-import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.pattern.error.PatternStringError;
 import com.gregtechceu.gtceu.api.pattern.predicates.PredicateBlocks;
@@ -120,17 +116,12 @@ public class Predicates {
         return predicate;
     }
 
-    public static TraceabilityPredicate autoAbilities(MultiblockControllerMachine machine) {
-        return autoAbilities(machine, true, true);
-    }
-
-    public static TraceabilityPredicate autoAbilities(MultiblockControllerMachine machine, boolean checkMaintenance, boolean checkMuffler) {
+    public static TraceabilityPredicate autoAbilities(boolean checkMaintenance, boolean checkMuffler) {
         TraceabilityPredicate predicate = new TraceabilityPredicate();
-        if (checkMaintenance && machine instanceof IMaintenance maintenance && maintenance.hasMaintenanceMechanics()) {
-            predicate = predicate.or(abilities(PartAbility.MAINTENANCE)
-                    .setMinGlobalLimited(ConfigHolder.INSTANCE.machines.enableMaintenance ? 1 : 0).setMaxGlobalLimited(1));
+        if (checkMaintenance) {
+            predicate = predicate.or(abilities(PartAbility.MAINTENANCE).setMinGlobalLimited(ConfigHolder.INSTANCE.machines.enableMaintenance ? 1 : 0).setMaxGlobalLimited(1));
         }
-        if (checkMuffler && machine instanceof IMufflerMechanic mufflerMechanic && mufflerMechanic.hasMufflerMechanics()) {
+        if (checkMuffler) {
             predicate = predicate.or(abilities(PartAbility.MUFFLER).setMinGlobalLimited(1).setMaxGlobalLimited(1));
         }
         return predicate;
@@ -157,5 +148,26 @@ public class Predicates {
                 .map(coil -> BlockInfo.fromBlockState(coil.getValue().get().defaultBlockState()))
                 .toArray(BlockInfo[]::new))
                 .addTooltips(Component.translatable("gtceu.multiblock.pattern.error.coils"));
+    }
+
+    public static TraceabilityPredicate cleanroomFilters() {
+        return new TraceabilityPredicate(blockWorldState -> {
+            var blockState = blockWorldState.getBlockState();
+            for (var entry : GTBlocks.ALL_FILTERS.entrySet()) {
+                if (blockState.is(entry.getValue().get())) {
+                    var stats = entry.getKey();
+                    Object currentCoil = blockWorldState.getMatchContext().getOrPut("FilterType", stats);
+                    if (!currentCoil.equals(stats)) {
+                        blockWorldState.setError(new PatternStringError("gtceu.multiblock.pattern.error.filters"));
+                        return false;
+                    }
+                    return true;
+                }
+            }
+            return false;
+        }, () -> GTBlocks.ALL_FILTERS.values().stream()
+                .map(blockSupplier -> BlockInfo.fromBlockState(blockSupplier.get().defaultBlockState()))
+                .toArray(BlockInfo[]::new))
+                .addTooltips(Component.translatable("gtceu.multiblock.pattern.error.filters"));
     }
 }

@@ -1,11 +1,10 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
-import com.gregtechceu.gtceu.api.capability.IMaintenanceHatch;
+import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
-import net.minecraft.util.Tuple;
 
-public class AutoMaintenanceHatchPartMachine extends TieredPartMachine implements IMaintenanceHatch {
+public class AutoMaintenanceHatchPartMachine extends TieredPartMachine implements IMaintenanceMachine {
 
     public AutoMaintenanceHatchPartMachine(IMachineBlockEntity blockEntity) {
         super(blockEntity, 3);
@@ -21,41 +20,33 @@ public class AutoMaintenanceHatchPartMachine extends TieredPartMachine implement
     }
 
     @Override
-    public void storeMaintenanceData(byte ignored1, int ignored2) {
-    }
-
-    @Override
-    public boolean hasMaintenanceData() {
-        return true;
-    }
-
-    @Override
-    public Tuple<Byte, Integer> readMaintenanceData() {
-        return new Tuple<>((byte) 0b111111, 0);
-    }
-
-    @Override
     public boolean isFullAuto() {
         return true;
     }
 
     @Override
-    public double getDurationMultiplier() {
-        return 1.0;
+    public byte startProblems() {
+        return NO_PROBLEMS;
     }
 
     @Override
-    public double getTimeMultiplier() {
-        return 1.0;
+    public byte getMaintenanceProblems() {
+        return NO_PROBLEMS;
     }
 
     @Override
-    public boolean startWithoutProblems() {
-        return true;
+    public void setMaintenanceProblems(byte problems) {
+
     }
 
     @Override
-    public boolean canShared() {
-        return false;
+    public int getTimeActive() {
+        return 0;
     }
+
+    @Override
+    public void setTimeActive(int time) {
+
+    }
+
 }

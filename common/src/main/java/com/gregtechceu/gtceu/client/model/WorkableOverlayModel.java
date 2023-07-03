@@ -1,5 +1,7 @@
 package com.gregtechceu.gtceu.client.model;
 
+import com.google.common.collect.Table;
+import com.google.common.collect.Tables;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
@@ -109,23 +111,23 @@ public class WorkableOverlayModel {
         this.location = location;
         if (LDLib.isClient()) {
             this.sprites = new EnumMap<>(OverlayFace.class);
-//            this.caches = Tables.newCustomTable(new EnumMap<>(Direction.class), () -> new EnumMap<>(Direction.class));
+            this.caches = Tables.newCustomTable(new EnumMap<>(Direction.class), () -> new EnumMap<>(Direction.class));
         }
     }
 
-//    @Environment(EnvType.CLIENT)
-//    public Table<Direction, Direction, List<BakedQuad>[][]> caches;
+    @Environment(EnvType.CLIENT)
+    public Table<Direction, Direction, List<BakedQuad>[][]> caches;
 
     @Environment(EnvType.CLIENT)
     public List<BakedQuad> bakeQuads(@Nullable Direction side, Direction frontFacing, boolean isActive, boolean isWorkingEnabled) {
-//        synchronized (caches) {
-//            if (side == null) return Collections.emptyList();
-//            if (!caches.contains(side, frontFacing)) {
-//                caches.put(side, frontFacing, new List[2][2]);
-//            }
-//            var cache = caches.get(side, frontFacing);
-//            assert cache != null;
-//            if (cache[isActive ? 0 : 1][isWorkingEnabled ? 0 : 1] == null) {
+        synchronized (caches) {
+            if (side == null) return Collections.emptyList();
+            if (!caches.contains(side, frontFacing)) {
+                caches.put(side, frontFacing, new List[2][2]);
+            }
+            var cache = caches.get(side, frontFacing);
+            assert cache != null;
+            if (cache[isActive ? 0 : 1][isWorkingEnabled ? 0 : 1] == null) {
                 var quads = new ArrayList<BakedQuad>();
                 for (Direction renderSide : Direction.values()) {
                     var rotation = ModelFactory.getRotation(frontFacing);
@@ -155,11 +157,11 @@ public class WorkableOverlayModel {
                         }
                     }
                 }
-                return quads;
-//                cache[isActive ? 0 : 1][isWorkingEnabled ? 0 : 1] = quads;
-//            }
-//            return cache[isActive ? 0 : 1][isWorkingEnabled ? 0 : 1];
-//        }
+//                return quads;
+                cache[isActive ? 0 : 1][isWorkingEnabled ? 0 : 1] = quads;
+            }
+            return cache[isActive ? 0 : 1][isWorkingEnabled ? 0 : 1];
+        }
     }
 
     @NotNull

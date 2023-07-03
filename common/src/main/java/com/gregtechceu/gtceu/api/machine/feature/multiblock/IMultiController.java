@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.machine.feature.multiblock;
 
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineFeature;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.pattern.MultiblockState;
 import net.minecraft.core.BlockPos;
@@ -19,6 +20,11 @@ import java.util.List;
  */
 public interface IMultiController extends IMachineFeature {
 
+    @Override
+    default MultiblockControllerMachine self() {
+        return (MultiblockControllerMachine) this;
+    }
+
     /**
      * Check MultiBlock Pattern. Just checking pattern without any other logic.
      * @return whether it can be formed.
@@ -34,7 +40,7 @@ public interface IMultiController extends IMachineFeature {
      * You can override it to create dynamic patterns.
      */
     default BlockPattern getPattern() {
-        return ((MultiblockMachineDefinition)self().getDefinition()).getPatternFactory().get();
+        return self().getDefinition().getPatternFactory().get();
     }
 
     /**
@@ -103,7 +109,7 @@ public interface IMultiController extends IMachineFeature {
     @Nullable
     default BlockState getPartAppearance(IMultiPart part, Direction side, BlockState sourceState, BlockPos sourcePos) {
         if (isFormed()) {
-            return ((MultiblockMachineDefinition)self().getDefinition()).getPartAppearance().apply(this, part, side);
+            return self().getDefinition().getPartAppearance().apply(this, part, side);
         }
         return null;
     }

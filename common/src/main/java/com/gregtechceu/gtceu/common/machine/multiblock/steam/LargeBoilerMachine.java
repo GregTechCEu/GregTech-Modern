@@ -21,6 +21,7 @@ import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import lombok.Getter;
 import net.minecraft.ChatFormatting;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
@@ -29,6 +30,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.level.material.Fluids;
 import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -39,7 +41,9 @@ import java.util.Objects;
  * @date 2023/3/16
  * @implNote LargeBoilerMachine
  */
-public class LargeBoilerMachine extends WorkableMultiblockMachine implements IExplosionMachine, IDisplayUIMachine, IMufflerMechanic {
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
+public class LargeBoilerMachine extends WorkableMultiblockMachine implements IExplosionMachine, IDisplayUIMachine {
     private static final long STEAM_PER_WATER = 160;
 
     @Getter
@@ -151,7 +155,7 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
 
     @Nullable
     @Override
-    public GTRecipe modifyRecipe(GTRecipe recipe) {
+    public GTRecipe getRealRecipe(GTRecipe recipe) {
         if (throttle < 100) {
             var copied = recipe.copy();
             copied.duration = recipe.duration * 100 / throttle;
@@ -193,8 +197,4 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
         return GuiTextures.DISPLAY_STEAM.get(maxTemperature > 800);
     }
 
-    @Override
-    public boolean hasMufflerMechanics() {
-        return true;
-    }
 }

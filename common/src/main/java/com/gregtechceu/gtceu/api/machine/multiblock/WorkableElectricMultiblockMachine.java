@@ -3,9 +3,11 @@ package com.gregtechceu.gtceu.api.machine.multiblock;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.IFancyUIProvider;
+import com.gregtechceu.gtceu.api.gui.fancy.TooltipsPanel;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDisplayUIMachine;
+import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
@@ -65,9 +67,9 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
 //                textList.add(buttonText);
 //            }
 
-            textList.add(Component.translatable("gtceu.multiblock.multiple_recipemaps.header")
-                    .setStyle(Style.EMPTY.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                            Component.translatable("gtceu.multiblock.multiple_recipemaps.tooltip")))));
+//            textList.add(Component.translatable("gtceu.multiblock.multiple_recipemaps.header")
+//                    .setStyle(Style.EMPTY.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+//                            Component.translatable("gtceu.multiblock.multiple_recipemaps.tooltip")))));
 
             textList.add(Component.translatable(recipeType.registryName.toLanguageKey())
                     .setStyle(Style.EMPTY.withColor(ChatFormatting.AQUA)
@@ -96,13 +98,15 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
 
     @Override
     public Widget createUIWidget() {
-        var group = new WidgetGroup(0, 0, 170, 129);
-        group.addWidget(new DraggableScrollableWidgetGroup(4, 4, 162, 121).setBackground(getScreenTexture())
+        var group = new WidgetGroup(0, 0, 170 + 8, 129 + 8);
+        var container = new WidgetGroup(4, 4, 170, 129);
+        container.addWidget(new DraggableScrollableWidgetGroup(4, 4, 162, 121).setBackground(getScreenTexture())
                 .addWidget(new LabelWidget(4, 5, self().getBlockState().getBlock().getDescriptionId()))
                 .addWidget(new ComponentPanelWidget(4, 17, this::addDisplayText)
-                        .setMaxWidthLimit(154)
+                        .setMaxWidthLimit(150)
                         .clickHandler(this::handleDisplayClick)));
-        group.setBackground(GuiTextures.BACKGROUND_INVERSE);
+        container.setBackground(GuiTextures.BACKGROUND_INVERSE);
+        group.addWidget(container);
         return group;
     }
 
@@ -114,6 +118,13 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
     @Override
     public List<IFancyUIProvider> getSubTabs() {
         return getParts().stream().filter(IFancyUIProvider.class::isInstance).map(IFancyUIProvider.class::cast).toList();
+    }
+
+    @Override
+    public void attachTooltips(TooltipsPanel tooltipsPanel) {
+        for (IMultiPart part : getParts()) {
+            part.attachFancyTooltipsToController(this, tooltipsPanel);
+        }
     }
 
     //////////////////////////////////////
@@ -152,7 +163,7 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
 
     @Nullable
     @Override
-    public GTRecipe modifyRecipe(GTRecipe recipe) {
+    public GTRecipe getRealRecipe(GTRecipe recipe) {
         if (RecipeHelper.getRecipeEUtTier(recipe) > getTier()) {
             return null;
         }

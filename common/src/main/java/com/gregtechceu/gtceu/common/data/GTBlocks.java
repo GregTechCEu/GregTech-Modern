@@ -67,7 +67,6 @@ import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.*;
@@ -370,9 +369,10 @@ public class GTBlocks {
     public static final BlockEntry<Block> FUSION_GLASS = createCasingBlock("fusion_glass", GTCEu.id("block/casings/transparent/fusion_glass"), () -> Blocks.GLASS);
 
     // Cleanroom
-    public static final BlockEntry<Block> PLASTCRETE = createCleanroomCasing(CleanroomCasingType.PLASCRETE);
-    public static final BlockEntry<Block> FILTER_CASING = createCleanroomCasing(CleanroomCasingType.FILTER_CASING);
-    public static final BlockEntry<Block> FILTER_CASING_STERILE = createCleanroomCasing(CleanroomCasingType.FILTER_CASING_STERILE);
+    public static final Map<IFilterType, Supplier<Block>> ALL_FILTERS = new HashMap<>();
+    public static final BlockEntry<Block> PLASTCRETE = createCasingBlock("plascrete", GTCEu.id("block/casings/cleanroom/plascrete"));
+    public static final BlockEntry<Block> FILTER_CASING = createCleanroomFilter(CleanroomFilterType.FILTER_CASING);
+    public static final BlockEntry<Block> FILTER_CASING_STERILE = createCleanroomFilter(CleanroomFilterType.FILTER_CASING_STERILE);
     public static final BlockEntry<Block> CLEANROOM_GLASS = createCasingBlock("cleanroom_glass", GTCEu.id("block/casings/transparent/cleanroom_glass"), () -> Blocks.GLASS);
 
 
@@ -506,19 +506,21 @@ public class GTBlocks {
         return casingBlock;
     }
 
-    private static BlockEntry<Block> createCleanroomCasing(CleanroomCasingType casingType) {
-        return REGISTRATE.block(casingType.getSerializedName(), p -> (Block) new RendererBlock(p,
+    private static BlockEntry<Block> createCleanroomFilter(IFilterType filterType) {
+        var filterBlock = REGISTRATE.block(filterType.getSerializedName(), p -> (Block) new RendererBlock(p,
                         Platform.isClient() ? new TextureOverrideRenderer(new ResourceLocation("block/cube_all"),
-                            Map.of("all", GTCEu.id("block/casings/cleanroom/" + casingType))) : null))
+                            Map.of("all", GTCEu.id("block/casings/cleanroom/" + filterType))) : null))
                 .initialProperties(() -> Blocks.IRON_BLOCK)
                 .properties(properties -> properties.strength(2.0f, 8.0f).sound(SoundType.METAL).isValidSpawn((blockState, blockGetter, blockPos, entityType) -> false))
                 .addLayer(() -> RenderType::cutoutMipped)
                 .blockstate(NonNullBiConsumer.noop())
-                .tag(GTToolType.WRENCH.harvestTag, CustomTags.TOOL_TIERS[casingType == CleanroomCasingType.PLASCRETE ? 2 : 1])
+                .tag(GTToolType.WRENCH.harvestTag, CustomTags.TOOL_TIERS[1])
                 .item(RendererBlockItem::new)
                 .model(NonNullBiConsumer.noop())
                 .build()
                 .register();
+        ALL_FILTERS.put(filterType, filterBlock);
+        return filterBlock;
     }
 
     private static BlockEntry<ActiveBlock> createActiveCasing(String name, String baseModelPath) {

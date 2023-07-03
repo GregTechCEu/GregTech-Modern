@@ -40,29 +40,10 @@ public final class DummyCleanroom implements ICleanroomProvider {
         return true;
     }
 
-    @Override
-    public boolean drainEnergy(boolean simulate) {
-        return true;
-    }
-
-    @Override
-    public long getEnergyInputPerSecond() {
-        return 0;
-    }
-
-    @Override
-    public int getEnergyTier() {
-        return 0;
-    }
 
     @Override
     public Set<CleanroomType> getTypes() {
         return allowsAllTypes ? CleanroomType.getAllTypes() : new HashSet<>(allowedTypes);
     }
 
-    @Override
-    public void setCleanAmount(int amount) {}
-
-    @Override
-    public void adjustCleanAmount(int amount) {}
 }

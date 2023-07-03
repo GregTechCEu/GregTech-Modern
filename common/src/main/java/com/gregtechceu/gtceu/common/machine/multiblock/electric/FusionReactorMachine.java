@@ -94,7 +94,7 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
         // capture all energy containers
         List<IEnergyContainer> energyContainers = new ArrayList<>();
         Map<Long, IO> ioMap = getMultiblockState().getMatchContext().getOrCreate("ioMap", Long2ObjectMaps::emptyMap);
-        for (IMultiPart part : parts) {
+        for (IMultiPart part : getParts()) {
             IO io = ioMap.getOrDefault(part.self().getPos().asLong(), IO.BOTH);
             if(io == IO.NONE || io == IO.OUT) continue;
             for (var handler : part.getRecipeHandlers()) {
@@ -135,7 +135,7 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
     }
 
     @Override
-    public @Nullable GTRecipe modifyRecipe(GTRecipe recipe) {
+    public @Nullable GTRecipe getRealRecipe(GTRecipe recipe) {
         if (RecipeHelper.getRecipeEUtTier(recipe) > getTier() ||
                 !recipe.data.contains("eu_to_start") ||
                 recipe.data.getLong("eu_to_start") > energyContainer.getEnergyCapacity()) {

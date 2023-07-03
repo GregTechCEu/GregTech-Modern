@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.common.recipe;
 import com.google.gson.JsonObject;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.ICleanroomProvider;
-import com.gregtechceu.gtceu.api.machine.feature.ICleanroomReceiver;
+import com.gregtechceu.gtceu.api.capability.ICleanroomReceiver;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
@@ -17,16 +17,14 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.GsonHelper;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 @AllArgsConstructor
 @NoArgsConstructor
 public class CleanroomCondition extends RecipeCondition {
     public final static CleanroomCondition INSTANCE = new CleanroomCondition();
 
-    @Nullable
     @Getter
-    private CleanroomType cleanroom = null;
+    private CleanroomType cleanroom = CleanroomType.CLEANROOM;
 
     @Override
     public String getType() {
@@ -63,7 +61,7 @@ public class CleanroomCondition extends RecipeCondition {
     @Override
     public RecipeCondition deserialize(@NotNull JsonObject config) {
         super.deserialize(config);
-        cleanroom = CleanroomType.getByName(GsonHelper.getAsString(config, "cleanroom", null));
+        this. cleanroom = CleanroomType.getByNameOrDefault(GsonHelper.getAsString(config, "cleanroom", "cleanroom"));
         return this;
     }
 
@@ -76,7 +74,7 @@ public class CleanroomCondition extends RecipeCondition {
     @Override
     public RecipeCondition fromNetwork(FriendlyByteBuf buf) {
         super.fromNetwork(buf);
-        this.cleanroom = CleanroomType.getByName(buf.readUtf());
+        this.cleanroom = CleanroomType.getByNameOrDefault(buf.readUtf());
         return this;
     }
 

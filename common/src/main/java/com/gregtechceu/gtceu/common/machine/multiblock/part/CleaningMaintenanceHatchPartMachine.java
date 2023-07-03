@@ -4,16 +4,19 @@ import com.google.common.collect.ImmutableSet;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.ICleanroomProvider;
-import com.gregtechceu.gtceu.api.machine.feature.ICleanroomReceiver;
+import com.gregtechceu.gtceu.api.capability.ICleanroomReceiver;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
 import com.gregtechceu.gtceu.api.machine.multiblock.DummyCleanroom;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import org.jetbrains.annotations.Nullable;
+import net.minecraft.MethodsReturnNonnullByDefault;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Set;
 
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class CleaningMaintenanceHatchPartMachine extends AutoMaintenanceHatchPartMachine {
     protected static final Set<CleanroomType> CLEANED_TYPES = new ObjectOpenHashSet<>();
 
@@ -31,8 +34,16 @@ public class CleaningMaintenanceHatchPartMachine extends AutoMaintenanceHatchPar
     @Override
     public void addedToController(IMultiController controller) {
         super.addedToController(controller);
-        if (controller instanceof ICleanroomReceiver receiver && receiver.getCleanroom() == null) {
+        if (controller instanceof ICleanroomReceiver receiver) {
             receiver.setCleanroom(DUMMY_CLEANROOM);
+        }
+    }
+
+    @Override
+    public void removedFromController(IMultiController controller) {
+        super.removedFromController(controller);
+        if (controller instanceof ICleanroomReceiver receiver && receiver.getCleanroom() == DUMMY_CLEANROOM) {
+            receiver.setCleanroom(null);
         }
     }
 
@@ -59,8 +70,4 @@ public class CleaningMaintenanceHatchPartMachine extends AutoMaintenanceHatchPar
         return ImmutableSet.copyOf(CLEANED_TYPES);
     }
 
-    @Nullable
-    public IMultiController getController() {
-        return getControllers().size() > 0 ? getControllers().get(0) : null;
-    }
 }

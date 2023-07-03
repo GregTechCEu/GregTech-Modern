@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.sound.AutoReleasedSound;
 import com.gregtechceu.gtceu.api.syncdata.IEnhancedManaged;
 import com.gregtechceu.gtceu.api.syncdata.UpdateListener;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
@@ -192,9 +193,12 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
                     progress++;
                 } else {
                     setWaiting(result.reason());
-                    machine.onWaiting();
                     if (progress > 0 && machine.dampingWhenWaiting()) {
-                        progress--;
+                        if (ConfigHolder.INSTANCE.machines.recipeProgressLowEnergy) {
+                            this.progress = 1;
+                        } else {
+                            this.progress = Math.max(1, progress - 2);
+                        }
                     }
                 }
             } else {
@@ -202,7 +206,6 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
             }
         } else {
             setWaiting(result.reason());
-            machine.onWaiting();
         }
         if (last == Status.WORKING && getStatus() != Status.WORKING) {
             lastRecipe.postWorking(machine);
@@ -336,6 +339,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     public void setWaiting(@Nullable Component reason) {
         setStatus(Status.WAITING);
         waitingReason = reason;
+        machine.onWaiting();
     }
 
     /**

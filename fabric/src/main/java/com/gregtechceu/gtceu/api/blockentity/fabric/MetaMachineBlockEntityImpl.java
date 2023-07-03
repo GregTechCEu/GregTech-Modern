@@ -2,17 +2,13 @@ package com.gregtechceu.gtceu.api.blockentity.fabric;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
-import com.gregtechceu.gtceu.api.capability.IControllable;
-import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
-import com.gregtechceu.gtceu.api.capability.IPlatformEnergyStorage;
-import com.gregtechceu.gtceu.api.capability.IWorkable;
+import com.gregtechceu.gtceu.api.capability.*;
 import com.gregtechceu.gtceu.api.capability.fabric.GTCapability;
 import com.gregtechceu.gtceu.api.capability.fabric.GTEnergyHelperImpl;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
-import com.gregtechceu.gtceu.common.machine.trait.ConverterTrait;
 import com.lowdragmc.lowdraglib.side.fluid.fabric.FluidTransferHelperImpl;
 import com.lowdragmc.lowdraglib.side.item.fabric.ItemTransferHelperImpl;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
@@ -78,11 +74,9 @@ public class MetaMachineBlockEntityImpl extends MetaMachineBlockEntity {
             var list = ((IMachineBlockEntity)blockEntity).getMetaMachine().getTraits().stream().filter(IEnergyContainer.class::isInstance).filter(t -> t.hasCapability(side)).map(IEnergyContainer.class::cast).toList();
             return list.isEmpty() ? null : list.size() == 1 ? list.get(0) : new EnergyContainerList(list);
         }, type);
-        GTCapability.CAPABILITY_CONVERTER.registerForBlockEntity((blockEntity, direction) -> {
-            for (MachineTrait trait : ((IMachineBlockEntity)blockEntity).getMetaMachine().getTraits()) {
-                if (trait instanceof ConverterTrait converter) {
-                    return converter;
-                }
+        GTCapability.CAPABILITY_CLEANROOM_RECEIVER.registerForBlockEntity((blockEntity, direction) -> {
+            if (((IMachineBlockEntity)blockEntity).getMetaMachine() instanceof ICleanroomReceiver cleanroomReceiver) {
+                return cleanroomReceiver;
             }
             return null;
         }, type);

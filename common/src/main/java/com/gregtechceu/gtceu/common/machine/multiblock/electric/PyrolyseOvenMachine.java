@@ -25,7 +25,7 @@ import java.util.List;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class PyrolyseOvenMachine extends WorkableElectricMultiblockMachine implements IMufflerMechanic {
+public class PyrolyseOvenMachine extends WorkableElectricMultiblockMachine {
 
     @Getter
     private int coilTier;
@@ -49,7 +49,7 @@ public class PyrolyseOvenMachine extends WorkableElectricMultiblockMachine imple
     }
 
     @Override
-    public @Nullable GTRecipe modifyRecipe(GTRecipe recipe) {
+    public @Nullable GTRecipe getRealRecipe(GTRecipe recipe) {
         if (RecipeHelper.getRecipeEUtTier(recipe) > getTier()) {
             return null;
         }
@@ -84,8 +84,4 @@ public class PyrolyseOvenMachine extends WorkableElectricMultiblockMachine imple
         }
     }
 
-    @Override
-    public boolean hasMufflerMechanics() {
-        return true;
-    }
 }

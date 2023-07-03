@@ -1,17 +1,13 @@
 package com.gregtechceu.gtceu.api.blockentity.forge;
 
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
-import com.gregtechceu.gtceu.api.capability.IControllable;
-import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
-import com.gregtechceu.gtceu.api.capability.IPlatformEnergyStorage;
-import com.gregtechceu.gtceu.api.capability.IWorkable;
+import com.gregtechceu.gtceu.api.capability.*;
 import com.gregtechceu.gtceu.api.capability.forge.GTEnergyHelperImpl;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
-import com.gregtechceu.gtceu.common.machine.trait.ConverterTrait;
 import com.lowdragmc.lowdraglib.side.fluid.forge.FluidTransferHelperImpl;
 import com.lowdragmc.lowdraglib.side.item.forge.ItemTransferHelperImpl;
 import net.minecraft.core.BlockPos;
@@ -84,11 +80,9 @@ public class MetaMachineBlockEntityImpl extends MetaMachineBlockEntity {
             if (!list.isEmpty()) {
                 return GTCapability.CAPABILITY_ENERGY_CONTAINER.orEmpty(cap, LazyOptional.of(() -> list.size() == 1 ? list.get(0) : new EnergyContainerList(list)));
             }
-        } else if (cap == GTCapability.CAPABILITY_CONVERTER) {
-            for (MachineTrait trait : machine.getTraits()) {
-                if (trait instanceof ConverterTrait converter) {
-                    return GTCapability.CAPABILITY_CONVERTER.orEmpty(cap, LazyOptional.of(() -> converter));
-                }
+        } else if (cap == GTCapability.CAPABILITY_CLEANROOM_RECEIVER) {
+            if (machine instanceof ICleanroomReceiver cleanroomReceiver) {
+                return GTCapability.CAPABILITY_CLEANROOM_RECEIVER.orEmpty(cap, LazyOptional.of(() -> cleanroomReceiver));
             }
         } else if (cap == ForgeCapabilities.ITEM_HANDLER) {
             var transfer = machine.getItemTransferCap(side);

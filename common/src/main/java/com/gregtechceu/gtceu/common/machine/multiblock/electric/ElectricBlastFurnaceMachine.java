@@ -30,7 +30,7 @@ import java.util.List;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class ElectricBlastFurnaceMachine extends WorkableElectricMultiblockMachine implements IMufflerMechanic {
+public class ElectricBlastFurnaceMachine extends WorkableElectricMultiblockMachine {
 
     @Getter
     private int blastFurnaceTemperature;
@@ -56,7 +56,7 @@ public class ElectricBlastFurnaceMachine extends WorkableElectricMultiblockMachi
     }
 
     @Override
-    public @Nullable GTRecipe modifyRecipe(GTRecipe recipe) {
+    public @Nullable GTRecipe getRealRecipe(GTRecipe recipe) {
         if (!recipe.data.contains("ebf_temp") || recipe.data.getInt("ebf_temp") > blastFurnaceTemperature) {
             return null;
         }
@@ -90,7 +90,4 @@ public class ElectricBlastFurnaceMachine extends WorkableElectricMultiblockMachi
         super.addDisplayText(textList);
     }
 
-    public boolean hasMufflerMechanics() {
-        return true;
-    }
 }

@@ -13,12 +13,10 @@ import com.gregtechceu.gtceu.api.machine.TieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.*;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.syncdata.RequireRerender;
+import com.lowdragmc.lowdraglib.gui.editor.ColorPattern;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
-import com.lowdragmc.lowdraglib.gui.widget.ImageWidget;
-import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
-import com.lowdragmc.lowdraglib.gui.widget.PhantomFluidWidget;
-import com.lowdragmc.lowdraglib.gui.widget.TankWidget;
+import com.lowdragmc.lowdraglib.gui.widget.*;
 import com.lowdragmc.lowdraglib.misc.FluidStorage;
 import com.lowdragmc.lowdraglib.side.fluid.FluidActionResult;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
@@ -290,32 +288,30 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
     //////////////////////////////////////
     //***********     GUI    ***********//
     //////////////////////////////////////
-    @Override
-    public ModularUI createUI(Player entityPlayer) {
-        return new ModularUI(176, 166, this, entityPlayer)
-                .background(GuiTextures.BACKGROUND)
-                .widget(new ImageWidget(7, 16, 81, 55, GuiTextures.DISPLAY))
-                .widget(new LabelWidget(11, 20, "gtceu.gui.fluid_amount"))
-                .widget(new LabelWidget(11, 30, () -> cache.getFluidInTank(0).getAmount() + "").setTextColor(-1).setDropShadow(true))
-                .widget(new LabelWidget(6, 6, getBlockState().getBlock().getDescriptionId()))
-                .widget(new TankWidget(cache.storages[0], 90, 35, true, true)
+    public Widget createUIWidget() {
+        var group = new WidgetGroup(0, 0, 90, 63);
+        group.addWidget(new ImageWidget(4, 4, 82, 55, GuiTextures.DISPLAY))
+                .addWidget(new LabelWidget(8, 8, "gtceu.gui.fluid_amount"))
+                .addWidget(new LabelWidget(8, 18, () -> cache.getFluidInTank(0).getAmount() + "").setTextColor(-1).setDropShadow(true))
+                .addWidget(new TankWidget(cache.storages[0], 68, 23, true, true)
                         .setBackground(GuiTextures.FLUID_SLOT))
-                .widget(new PhantomFluidWidget(lockedFluid, 70, 53, 18, 18)
+                .addWidget(new PhantomFluidWidget(lockedFluid, 68, 41, 18, 18)
                         .setShowAmount(false)
-                        .setBackground(GuiTextures.FLUID_SLOT))
-                .widget(new ToggleButtonWidget(7, 53, 18, 18,
+                        .setBackground(ColorPattern.T_GRAY.rectTexture()))
+                .addWidget(new ToggleButtonWidget(4, 41, 18, 18,
                         GuiTextures.BUTTON_FLUID_OUTPUT, this::isAutoOutputFluids, this::setAutoOutputFluids)
                         .setShouldUseBaseBackground()
                         .setTooltipText("gtceu.gui.fluid_auto_output.tooltip"))
-                .widget(new ToggleButtonWidget(25, 53, 18, 18,
+                .addWidget(new ToggleButtonWidget(22, 41, 18, 18,
                         GuiTextures.BUTTON_LOCK, this::isLocked, this::setLocked)
                         .setShouldUseBaseBackground()
                         .setTooltipText("gtceu.gui.fluid_lock.tooltip"))
-                .widget(new ToggleButtonWidget(43, 53, 18, 18,
+                .addWidget(new ToggleButtonWidget(40, 41, 18, 18,
                         GuiTextures.BUTTON_VOID, this::isVoiding, this::setVoiding)
                         .setShouldUseBaseBackground()
-                        .setTooltipText("gtceu.gui.fluid_voiding_partial.tooltip"))
-                .widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(), GuiTextures.SLOT, 7, 84, true));
+                        .setTooltipText("gtceu.gui.fluid_voiding_partial.tooltip"));
+        group.setBackground(GuiTextures.BACKGROUND_INVERSE);
+        return group;
     }
 
     //////////////////////////////////////

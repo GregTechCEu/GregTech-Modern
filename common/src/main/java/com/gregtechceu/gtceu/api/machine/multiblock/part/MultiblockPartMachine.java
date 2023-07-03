@@ -26,7 +26,7 @@ import java.util.Set;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class MultiblockPartMachine extends MetaMachine implements IMultiPart, IFancyUIMachine {
+public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(MultiblockPartMachine.class, MetaMachine.MANAGED_FIELD_HOLDER);
 

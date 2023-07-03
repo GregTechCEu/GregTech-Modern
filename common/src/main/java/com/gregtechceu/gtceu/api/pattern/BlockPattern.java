@@ -306,19 +306,21 @@ public class BlockPattern {
         }
         Direction frontFacing = controller.self().getFrontFacing();
         blocks.forEach((pos, block) -> { // adjust facing
-            if (block instanceof BlockState) {
-                resetFacing(pos, (BlockState) block, frontFacing, (p, f) -> {
-                    Object object = blocks.get(p.relative(f));
-                    return object == null || (object instanceof BlockState && ((BlockState) object).getBlock() == Blocks.AIR);
-                }, state -> world.setBlock(pos, state, 3));
-            } else if (block instanceof MetaMachine machine) {
-                resetFacing(pos, machine.getBlockState(), frontFacing, (p, f) -> {
-                    Object object = blocks.get(p.relative(f));
-                    if (object == null || (object instanceof BlockState blockState && blockState.isAir())) {
-                        return machine.isFacingValid(f);
-                    }
-                    return false;
-                }, state -> world.setBlock(pos, state, 3));
+            if (!(block instanceof IMultiController)) {
+                if (block instanceof BlockState) {
+                    resetFacing(pos, (BlockState) block, frontFacing, (p, f) -> {
+                        Object object = blocks.get(p.relative(f));
+                        return object == null || (object instanceof BlockState && ((BlockState) object).getBlock() == Blocks.AIR);
+                    }, state -> world.setBlock(pos, state, 3));
+                } else if (block instanceof MetaMachine machine) {
+                    resetFacing(pos, machine.getBlockState(), frontFacing, (p, f) -> {
+                        Object object = blocks.get(p.relative(f));
+                        if (object == null || (object instanceof BlockState blockState && blockState.isAir())) {
+                            return machine.isFacingValid(f);
+                        }
+                        return false;
+                    }, state -> world.setBlock(pos, state, 3));
+                }
             }
         });
     }

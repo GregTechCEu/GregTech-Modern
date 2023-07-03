@@ -104,7 +104,9 @@ public class MultiblockState {
         if (this.blockState == null) {
             this.blockState = this.world.getBlockState(this.pos);
         }
-
+        if (this.blockState == null) {
+            System.out.printf("error");
+        }
         return this.blockState;
     }
 

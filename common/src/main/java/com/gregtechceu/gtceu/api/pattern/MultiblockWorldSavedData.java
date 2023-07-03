@@ -17,7 +17,7 @@ import java.util.concurrent.*;
 public class MultiblockWorldSavedData extends SavedData {
     private final ServerLevel serverLevel;
     public static MultiblockWorldSavedData getOrCreate(ServerLevel serverLevel) {
-        return serverLevel.getDataStorage().computeIfAbsent(tag -> new MultiblockWorldSavedData(serverLevel, tag), () -> new MultiblockWorldSavedData(serverLevel), GTCEu.MOD_ID);
+        return serverLevel.getDataStorage().computeIfAbsent(tag -> new MultiblockWorldSavedData(serverLevel, tag), () -> new MultiblockWorldSavedData(serverLevel), "gtceu_multiblock");
     }
 
     /**
@@ -109,9 +109,10 @@ public class MultiblockWorldSavedData extends SavedData {
             for (var controller : controllers) {
                 controller.asyncCheckPattern(periodID);
             }
-            IN_SERVICE.set(false);
         } catch (Throwable e) {
             GTCEu.LOGGER.error("asyncThreadLogic error: {}", e.getMessage());
+        } finally {
+            IN_SERVICE.set(false);
         }
         periodID++;
     }

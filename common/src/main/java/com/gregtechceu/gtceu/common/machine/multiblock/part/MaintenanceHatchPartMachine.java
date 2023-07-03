@@ -1,44 +1,36 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.capability.IMaintenanceHatch;
+import com.gregtechceu.gtceu.api.machine.TickableSubscription;
+import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
+import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.UITemplate;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineModifyDrops;
-import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenance;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.syncdata.RequireRerender;
-import com.gregtechceu.gtceu.api.syncdata.UpdateListener;
 import com.gregtechceu.gtceu.common.data.GTItems;
-import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
-import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
-import com.lowdragmc.lowdraglib.gui.util.ClickData;
-import com.lowdragmc.lowdraglib.gui.widget.ButtonWidget;
-import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
-import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
-import com.lowdragmc.lowdraglib.gui.widget.TextBoxWidget;
-import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
+import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
+import com.lowdragmc.lowdraglib.gui.widget.*;
+import com.lowdragmc.lowdraglib.misc.ContainerTransfer;
 import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import dev.architectury.utils.value.FloatSupplier;
 import lombok.Getter;
+import lombok.Setter;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.Tuple;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -48,60 +40,54 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
-public class MaintenanceHatchPartMachine extends TieredPartMachine implements IMachineModifyDrops, IMaintenanceHatch, IUIMachine {
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
+public class MaintenanceHatchPartMachine extends TieredPartMachine implements IMachineModifyDrops, IMaintenanceMachine, IInteractedMachine {
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(MaintenanceHatchPartMachine.class, MultiblockPartMachine.MANAGED_FIELD_HOLDER);
+    private static final float MAX_DURATION_MULTIPLIER = 1.1f;
+    private static final float MIN_DURATION_MULTIPLIER = 0.9f;
+    private static final float DURATION_ACTION_AMOUNT = 0.01f;
 
     @Getter
     private final boolean isConfigurable;
-    @Persisted @DescSynced
+    @Persisted
     private final NotifiableItemStackHandler itemStackHandler;
-    @Getter
-    @Persisted @DescSynced
-    @RequireRerender @UpdateListener(methodName = "onSetTaped")
+    @Getter @Setter @Persisted @DescSynced @RequireRerender
     private boolean isTaped;
+    @Getter @Setter @Persisted
+    protected int timeActive;
+    @Getter @Persisted @DescSynced
+    protected byte maintenanceProblems = startProblems();
+    @Getter @Persisted
+    private float durationMultiplier = 1f;
+    @Nullable
+    protected TickableSubscription maintenanceSubs;
 
-    // Used to store state temporarily if the Controller is broken
-    @Getter
-    @Persisted @DescSynced
-    @UpdateListener(methodName = "onUpdateProblems")
-    private byte maintenanceProblems = -1;
-    @Getter
-    @Persisted @DescSynced
-    @UpdateListener(methodName = "onUpdateTimeActive")
-    private int timeActive = -1;
-
-    @Persisted @DescSynced
-    private BigDecimal durationMultiplier = BigDecimal.ONE;
-
-    // Some stats used for the Configurable Maintenance Hatch
-    private static final BigDecimal MAX_DURATION_MULTIPLIER = BigDecimal.valueOf(1.1);
-    private static final BigDecimal MIN_DURATION_MULTIPLIER = BigDecimal.valueOf(0.9);
-    private static final BigDecimal DURATION_ACTION_AMOUNT = BigDecimal.valueOf(0.01);
-    private static final Function<Double, Double> TIME_ACTION = (d) -> {
-        if (d < 1.0)
-            return -20.0 * d + 21;
-        else
-            return -8.0 * d + 9;
-    };
 
     public MaintenanceHatchPartMachine(IMachineBlockEntity metaTileEntityId, boolean isConfigurable) {
         super(metaTileEntityId, isConfigurable ? 3 : 1);
         this.isConfigurable = isConfigurable;
         this.itemStackHandler = createInventory();
+        this.itemStackHandler.setFilter(itemStack -> GTItems.DUCT_TAPE.is(itemStack));
     }
 
+    //////////////////////////////////////
+    //******    Initialization    ******//
+    //////////////////////////////////////
     protected NotifiableItemStackHandler createInventory() {
-        return new TapeItemStackHandler(this, 1);
+        return new NotifiableItemStackHandler(this, 1, IO.BOTH, IO.IN);
+    }
+
+    @Override
+    public ManagedFieldHolder getFieldHolder() {
+        return MANAGED_FIELD_HOLDER;
     }
 
     @Override
@@ -109,87 +95,46 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine implements IM
         clearInventory(drops, itemStackHandler);
     }
 
-    /**
-     * Sets this Maintenance Hatch as being duct taped
-     * @param isTaped is the state of the hatch being taped or not
-     */
     @Override
-    public void setTaped(boolean isTaped) {
-        this.isTaped = isTaped;
-        if (!getLevel().isClientSide) {
-            markDirty();
-        }
+    public byte startProblems() {
+        return ALL_PROBLEMS;
     }
 
-    private void onSetTaped(boolean newValue, boolean oldValue) {
-        scheduleRenderUpdate();
-        this.setTaped(newValue);
-    }
-
-    public void onUpdateProblems(byte newValue, byte oldValue) {
-        this.maintenanceProblems = newValue;
-    }
-
-    public void onUpdateTimeActive(int newValue, int oldValue) {
-        this.timeActive = newValue;
-    }
-
-    @Nullable
-    public IMultiController getController() {
-        return getControllers().size() > 0 ? getControllers().get(0) : null;
-    }
-
-    /**
-     * Stores maintenance data to this MetaTileEntity
-     * @param maintenanceProblems is the byte value representing the problems
-     * @param timeActive is the int value representing the total time the parent multiblock has been active
-     */
+    //////////////////////////////////////
+    //*********     Logic     **********//
+    //////////////////////////////////////
     @Override
-    public void storeMaintenanceData(byte maintenanceProblems, int timeActive) {
-        this.maintenanceProblems = maintenanceProblems;
-        this.timeActive = timeActive;
-    }
-
-    /**
-     *
-     * @return whether this maintenance hatch has maintenance data
-     */
-    @Override
-    public boolean hasMaintenanceData() {
-        return this.maintenanceProblems != -1;
-    }
-
-    /**
-     * reads this MetaTileEntity's maintenance data
-     * @return Tuple of Byte, Integer corresponding to the maintenance problems, and total time active
-     */
-    @Override
-    public Tuple<Byte, Integer> readMaintenanceData() {
-        Tuple<Byte, Integer> data = new Tuple<>(this.maintenanceProblems, this.timeActive);
-        storeMaintenanceData((byte) -1, -1);
-        return data;
-    }
-
-    @Override
-    public boolean startWithoutProblems() {
-        return isConfigurable;
+    public void setMaintenanceProblems(byte problems) {
+        this.maintenanceProblems = problems;
+        updateMaintenanceSubscription();
     }
 
     @Override
     public void onLoad() {
         super.onLoad();
-        this.subscribeServerTick(this::update);
+        if (!isRemote()) {
+            updateMaintenanceSubscription();
+        }
+    }
+
+    protected void updateMaintenanceSubscription() {
+        if (hasMaintenanceProblems()) {
+            maintenanceSubs = subscribeServerTick(maintenanceSubs, this::update);
+        } else if (maintenanceSubs != null) {
+            maintenanceSubs.unsubscribe();
+            maintenanceSubs = null;
+        }
     }
 
     public void update() {
-        if (!getLevel().isClientSide && getOffsetTimer() % 20 == 0) {
-            if (this.getController() instanceof IMaintenance maintenance) {
-                if (maintenance.hasMaintenanceProblems()) {
-                    if (consumeDuctTape(this.itemStackHandler, 0)) {
-                        fixAllMaintenanceProblems();
-                        setTaped(true);
-                    }
+        if (getOffsetTimer() % 20 == 0) {
+            if (hasMaintenanceProblems()) {
+                if (consumeDuctTape(this.itemStackHandler, 0)) {
+                    fixAllMaintenanceProblems();
+                    setTaped(true);
                 }
+            } else {
+                updateMaintenanceSubscription();
             }
         }
     }
@@ -199,10 +144,7 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine implements IM
      * @param entityPlayer the player performing the fixing
      */
     private void fixMaintenanceProblems(@Nullable Player entityPlayer) {
-        if (!(this.getController() instanceof IMaintenance))
-            return;
-
-        if (!((IMaintenance) this.getController()).hasMaintenanceProblems())
+        if (!hasMaintenanceProblems())
             return;
 
         if (entityPlayer != null) {
@@ -213,14 +155,14 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine implements IM
             }
             // Then for every slot in the player's main inventory, try to duct tape fix
             for (int i = 0; i < entityPlayer.getInventory().items.size(); i++) {
-                if (consumeDuctTape(new ItemStackTransfer(entityPlayer.getInventory().items), i)) {
+                if (consumeDuctTape(new ContainerTransfer(entityPlayer.getInventory()), i)) {
                     fixAllMaintenanceProblems();
                     setTaped(true);
                     return;
                 }
             }
             // Lastly for each problem the multi has, try to fix with tools
-            fixProblemsWithTools(((IMaintenance) this.getController()).getMaintenanceProblems(), entityPlayer);
+            fixProblemsWithTools(getMaintenanceProblems(), entityPlayer);
         }
     }
 
@@ -232,16 +174,19 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine implements IM
      * @param slot is the inventory slot to check for tape
      * @return true if tape was consumed, else false
      */
-    private boolean consumeDuctTape(@Nullable IItemTransfer handler, int slot) {
-        if (handler == null)
-            return false;
-        return consumeDuctTape(null, handler.getStackInSlot(slot));
+    private boolean consumeDuctTape(IItemTransfer handler, int slot) {
+        var stored = handler.getStackInSlot(slot);
+        if (!stored.isEmpty() && stored.is(GTItems.DUCT_TAPE.get())) {
+            return handler.extractItem(slot, 1, false).is(GTItems.DUCT_TAPE.get());
+        }
+        return false;
     }
 
-    private boolean consumeDuctTape(@Nullable Player player, ItemStack itemStack) {
-        if (!itemStack.isEmpty() && itemStack.is(GTItems.DUCT_TAPE.get())) {
-            if (player == null || !player.isCreative()) {
-                itemStack.shrink(1);
+    private boolean consumeDuctTape(Player player, InteractionHand hand) {
+        var held = player.getItemInHand(hand);
+        if (!held.isEmpty() && held.is(GTItems.DUCT_TAPE.get())) {
+            if (!player.isCreative()) {
+                held.shrink(1);
             }
             return true;
         }
@@ -302,14 +247,10 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine implements IM
                 if (entityPlayer instanceof ServerPlayer player) {
                     for (ItemStack stack : entityPlayer.getInventory().items) {
                         if (ToolHelper.is(stack, toolToMatch)) {
-                            for (IMultiController controller : this.getControllers()) {
-                                if (controller instanceof IMaintenance maintenance) {
-                                    maintenance.setMaintenanceFixed(i);
-                                    ToolHelper.damageItem(stack, GTValues.RNG, player);
-                                    if (toolsToMatch.stream().allMatch(Objects::isNull)) {
-                                        return;
-                                    }
-                                }
+                            setMaintenanceFixed(i);
+                            ToolHelper.damageItem(stack, GTValues.RNG, player);
+                            if (toolsToMatch.stream().allMatch(Objects::isNull)) {
+                                return;
                             }
                         }
                     }
@@ -320,21 +261,18 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine implements IM
     }
 
     private void fixProblemWithTool(int problemIndex, ItemStack stack, Player player) {
-        if (this.getController() instanceof IMaintenance maintenance) {
-            maintenance.setMaintenanceFixed(problemIndex);
-            if (player instanceof ServerPlayer serverPlayer) {
-                ToolHelper.damageItem(stack, GTValues.RNG, serverPlayer);
-            }
-            setTaped(false);
+        setMaintenanceFixed(problemIndex);
+        if (player instanceof ServerPlayer serverPlayer) {
+            ToolHelper.damageItem(stack, GTValues.RNG, serverPlayer);
         }
+        setTaped(false);
     }
 
     /**
      * Fixes every maintenance problem of the controller
      */
     public void fixAllMaintenanceProblems() {
-        if (this.getController() instanceof IMaintenance maintenance)
-            for (int i = 0; i < 6; i++) maintenance.setMaintenanceFixed(i);
+        for (int i = 0; i < 6; i++) setMaintenanceFixed(i);
     }
 
     @Override
@@ -343,105 +281,97 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine implements IM
     }
 
     @Override
-    public double getDurationMultiplier() {
-        return durationMultiplier.doubleValue();
-    }
-
-    @Override
-    public double getTimeMultiplier() {
-        return BigDecimal.valueOf(TIME_ACTION.apply(durationMultiplier.doubleValue()))
+    public float getTimeMultiplier() {
+        var result = 1f;
+        if (durationMultiplier < 1.0)
+            result = -20 * durationMultiplier + 21;
+        else
+            result = -8 * durationMultiplier + 9;
+        return BigDecimal.valueOf(result)
                 .setScale(2, RoundingMode.HALF_UP)
-                .doubleValue();
+                .floatValue();
     }
 
-    private void incInternalMultiplier(ClickData data) {
-        if (durationMultiplier.compareTo(MAX_DURATION_MULTIPLIER) == 0) return;
-        durationMultiplier = durationMultiplier.add(DURATION_ACTION_AMOUNT);
-    }
-
-    private void decInternalMultiplier(ClickData data) {
-        if (durationMultiplier.compareTo(MIN_DURATION_MULTIPLIER) == 0) return;
-        durationMultiplier = durationMultiplier.subtract(DURATION_ACTION_AMOUNT);
-    }
-
-    @Override
-    public void onUnload() {
-        if (getController() instanceof IMaintenance controller) {
-            if (!getLevel().isClientSide)
-                controller.storeTaped(isTaped);
+    private void incInternalMultiplier() {
+        if (durationMultiplier >= MAX_DURATION_MULTIPLIER) {
+            durationMultiplier = MAX_DURATION_MULTIPLIER;
+            return;
         }
-        super.onUnload();
+        durationMultiplier += DURATION_ACTION_AMOUNT;
     }
 
+    private void decInternalMultiplier() {
+        if (durationMultiplier <= MIN_DURATION_MULTIPLIER) {
+            durationMultiplier = MIN_DURATION_MULTIPLIER;
+            return;
+        }
+        durationMultiplier -= DURATION_ACTION_AMOUNT;
+    }
+
+    //////////////////////////////////////
+    //*******     INTERACTION    *******//
+    //////////////////////////////////////
     @Override
     public InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-        if (getController() instanceof IMaintenance && ((IMaintenance) getController()).hasMaintenanceProblems()) {
-            if (consumeDuctTape(player, player.getItemInHand(hand))) {
+        if (hasMaintenanceProblems()) {
+            if (consumeDuctTape(player, hand)) {
                 fixAllMaintenanceProblems();
                 setTaped(true);
                 return InteractionResult.CONSUME;
             }
         }
-        return IUIMachine.super.onUse(state, world, pos, player, hand, hit);
+        return InteractionResult.PASS;
     }
 
+    //////////////////////////////////////
+    //********       GUI       *********//
+    //////////////////////////////////////
     @Override
-    public ModularUI createUI(Player entityPlayer) {
-        ModularUI modular = new ModularUI(176, 18 * 3 + 98, this, entityPlayer)
-                .background(GuiTextures.BACKGROUND)
-                .widget(new LabelWidget(10, 5, getBlockState().getBlock().getDescriptionId()))
-                .widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(), GuiTextures.SLOT, 7, 18 * 3 + 16, true));
-
-        /*if (!isConfigurable && GTValues.FOOLS.get()) {
-            modular.widget(new FixWiringTaskWidget(48, 15, 80, 50)
-                    .setOnFinished(this::fixAllMaintenanceProblems)
-                    .setCanInteractPredicate(this::hasController));
-        } else */{
-            modular.widget(new SlotWidget(itemStackHandler, 0, 89 - 10, 18 - 1)
-                            .setBackgroundTexture(GuiTextures.SLOT).setHoverTooltips("gregtech.machine.maintenance_hatch_tape_slot.tooltip").setBackground(GuiTextures.DUCT_TAPE_OVERLAY))
-                    .widget(new ButtonWidget(89 - 10 - 1, 18 * 2 + 3, 20, 20, new TextTexture(""), data -> fixMaintenanceProblems(entityPlayer))
-                            .setButtonTexture(GuiTextures.MAINTENANCE_ICON).setHoverTooltips("gregtech.machine.maintenance_hatch_tool_slot.tooltip"));
-        }
+    public Widget createUIWidget() {
+        WidgetGroup group;
         if (isConfigurable) {
-            modular.widget(new TextBoxWidget(5, 25, 60, getTextWidgetText("duration", this::getDurationMultiplier)))
-                    .widget(new TextBoxWidget(5, 39, 60, getTextWidgetText("time", this::getTimeMultiplier)))
-                    .widget(new ButtonWidget(9, 18 * 3 + 16 - 18, 12, 12, new TextTexture("-"), this::decInternalMultiplier))
-                    .widget(new ButtonWidget(9 + 18 * 2, 18 * 3 + 16 - 18, 12, 12, new TextTexture("+"), this::incInternalMultiplier));
+            group = new WidgetGroup(0, 0, 150, 70);
+            group.addWidget(new DraggableScrollableWidgetGroup(4, 4, 150 - 8, 70 - 8).setBackground(GuiTextures.DISPLAY)
+                    .addWidget(new ComponentPanelWidget(4, 5, list -> {
+                        list.add(getTextWidgetText("duration", this::getDurationMultiplier));
+                        list.add(getTextWidgetText("time", this::getTimeMultiplier));
+                        var buttonText = Component.translatable("gtceu.maintenance.configurable_duration.modify");
+                        buttonText.append(" ");
+                        buttonText.append(ComponentPanelWidget.withButton(Component.literal("[-]"), "sub"));
+                        buttonText.append(" ");
+                        buttonText.append(ComponentPanelWidget.withButton(Component.literal("[+]"), "add"));
+                        list.add(buttonText);
+                    }).setMaxWidthLimit(150 - 8 - 8 - 4).clickHandler((componentData, clickData) -> {
+                        if (!clickData.isRemote) {
+                            if (componentData.equals("sub")) {
+                                decInternalMultiplier();
+                            } else if (componentData.equals("add")) {
+                                incInternalMultiplier();
+                            }
+                        }
+                    })));
+
+        } else {
+            group = new WidgetGroup(0, 0, 8 + 18, 8 + 20 + 18);
         }
-        return modular;
+        group.addWidget(new SlotWidget(itemStackHandler, 0, group.getSize().width - 4 - 18, 4)
+                .setBackgroundTexture(new GuiTextureGroup(GuiTextures.SLOT, GuiTextures.DUCT_TAPE_OVERLAY))
+                .setHoverTooltips("gregtech.machine.maintenance_hatch_tape_slot.tooltip"));
+        group.addWidget(new ButtonWidget(group.getSize().width - 4 - 18, 4 + 20, 18, 18, GuiTextures.MAINTENANCE_BUTTON,
+                data -> fixMaintenanceProblems(group.getGui().entityPlayer))
+                .setHoverTooltips("gregtech.machine.maintenance_hatch_tool_slot.tooltip"));
+        group.setBackground(GuiTextures.BACKGROUND_INVERSE);
+        return group;
     }
 
-    private static List<String> getTextWidgetText(String type, Supplier<Double> multiplier) {
-        List<String> list = new ArrayList<>();
+    private static Component getTextWidgetText(String type, FloatSupplier multiplier) {
         Component tooltip;
-        if (multiplier.get() == 1.0) {
+        if (multiplier.getAsFloat() == 1.0) {
             tooltip = Component.translatable("gtceu.maintenance.configurable_" + type + ".unchanged_description");
         } else {
-            tooltip = Component.translatable("gtceu.maintenance.configurable_" + type + ".changed_description", multiplier.get());
+            tooltip = Component.translatable("gtceu.maintenance.configurable_" + type + ".changed_description", multiplier.getAsFloat());
         }
-        list.add(Component.translatable("gtceu.maintenance.configurable_" + type, multiplier.get())
-                .setStyle(Style.EMPTY.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, tooltip))).getString());
-        return list;
+        return Component.translatable("gtceu.maintenance.configurable_" + type, multiplier.getAsFloat()).setStyle(Style.EMPTY.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, tooltip)));
     }
 
-    @Override
-    public boolean canShared() {
-        return false;
-    }
-
-    public static class TapeItemStackHandler extends NotifiableItemStackHandler {
-
-        public TapeItemStackHandler(MetaMachine machine, int size) {
-            super(machine, size, IO.BOTH, IO.NONE);
-        }
-
-        @Override
-        @Nonnull
-        public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-            if (!stack.isEmpty() && GTItems.DUCT_TAPE.is(stack)) {
-                return super.insertItem(slot, stack, simulate);
-            }
-            return stack;
-        }
-    }
 }
