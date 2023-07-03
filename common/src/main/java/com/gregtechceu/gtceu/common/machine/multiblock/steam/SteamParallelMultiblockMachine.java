@@ -103,6 +103,12 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
     }
 
     @Override
+    public void afterWorking() {
+        super.afterWorking();
+        getRecipeLogic().markLastRecipeDirty();
+    }
+
+    @Override
     public void addDisplayText(List<Component> textList) {
         IDisplayUIMachine.super.addDisplayText(textList);
         if (isFormed()) {

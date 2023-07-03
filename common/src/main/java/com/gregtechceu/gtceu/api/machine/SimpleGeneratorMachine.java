@@ -80,6 +80,12 @@ public class SimpleGeneratorMachine extends WorkableTieredMachine implements IFa
     }
 
     @Override
+    public void afterWorking() {
+        super.afterWorking();
+        getRecipeLogic().markLastRecipeDirty();
+    }
+
+    @Override
     public boolean dampingWhenWaiting() {
         return false;
     }
