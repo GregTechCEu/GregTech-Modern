@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.machine.multiblock;
 
-import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.pattern.MultiblockState;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
@@ -25,6 +24,9 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.LockSupport;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * @author KilaBash
@@ -37,8 +39,7 @@ public class MultiblockControllerMachine extends MetaMachine implements IMultiCo
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(MultiblockControllerMachine.class, MetaMachine.MANAGED_FIELD_HOLDER);
     private MultiblockState multiblockState;
-    @Getter
-    protected final List<IMultiPart> parts = new ArrayList<>();
+    private final List<IMultiPart> parts = new ArrayList<>();
     @Getter
     @DescSynced @UpdateListener(methodName = "onPartsUpdated")
     private BlockPos[] partPositions = new BlockPos[0];
@@ -104,25 +105,43 @@ public class MultiblockControllerMachine extends MetaMachine implements IMultiCo
         this.partPositions = this.parts.isEmpty() ? new BlockPos[0] : this.parts.stream().map(part -> part.self().getPos()).toArray(BlockPos[]::new);
     }
 
+    @Override
+    public List<IMultiPart> getParts() {
+        // for the client side, when the chunk unloaded
+        if (parts.size() != this.partPositions.length) {
+            parts.clear();
+            for (var pos : this.partPositions) {
+                if (getMachine(getLevel(), pos) instanceof IMultiPart part) {
+                    parts.add(part);
+                }
+            }
+        }
+        return this.parts;
+    }
+
     //////////////////////////////////////
     //***    Multiblock LifeCycle    ***//
     //////////////////////////////////////
+    private final Lock patternLock = new ReentrantLock();
+
     @Override
     public void asyncCheckPattern(long periodID) {
-        if ((getMultiblockState().hasError() || !isFormed) && (getHolder().getOffset() + periodID) % 4 == 0) { // per second
-            var pattern = getPattern();
-            if (pattern.checkPatternAt(getMultiblockState(), false)) {
+        if ((getMultiblockState().hasError() || !isFormed) && (getHolder().getOffset() + periodID) % 4 == 0 && patternLock.tryLock()) { // per second
+            if (checkPattern()) {
                 if (getLevel() instanceof ServerLevel serverLevel) {
                     serverLevel.getServer().execute(() -> {
+                        patternLock.lock();
                         if (checkPattern()) { // formed
                             onStructureFormed();
                             var mwsd = MultiblockWorldSavedData.getOrCreate(serverLevel);
                             mwsd.addMapping(getMultiblockState());
                             mwsd.removeAsyncLogic(this);
                         }
+                        patternLock.unlock();
                     });
                 }
             }
+            patternLock.unlock();
         }
     }
 

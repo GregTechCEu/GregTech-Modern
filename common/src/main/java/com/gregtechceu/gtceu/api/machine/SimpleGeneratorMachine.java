@@ -69,9 +69,8 @@ public class SimpleGeneratorMachine extends WorkableTieredMachine implements IFa
         if (EUt > 0) {
             var maxParallel = (int)(Math.min(energyContainer.getOutputVoltage(), GTValues.V[overclockTier]) / EUt);
             while (maxParallel > 0) {
-                var copied = recipe.copy(ContentModifier.multiplier(maxParallel));
+                var copied = recipe.copy(ContentModifier.multiplier(maxParallel), false);
                 if (copied.matchRecipe(this).isSuccessed()) {
-                    copied.duration = copied.duration / maxParallel;
                     return copied;
                 }
                 maxParallel /= 2;

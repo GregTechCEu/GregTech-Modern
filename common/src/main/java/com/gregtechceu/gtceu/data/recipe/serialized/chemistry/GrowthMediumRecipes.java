@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.data.recipe.serialized.chemistry;
 
+import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
@@ -36,7 +37,7 @@ public class GrowthMediumRecipes {
                 .inputItems(BIO_CHAFF, 4)
                 .inputFluids(DistilledWater.getFluid(1000))
                 .outputFluids(Bacteria.getFluid(1000))
-                //.cleanroom(CleanroomType.STERILE_CLEANROOM) todo cleanroom
+                .cleanroom(CleanroomType.STERILE_CLEANROOM)
                 .save(provider);
 
         // Bacterial Sludge
@@ -44,7 +45,7 @@ public class GrowthMediumRecipes {
                 .inputFluids(Biomass.getFluid(1000))
                 .inputFluids(Bacteria.getFluid(1000))
                 .outputFluids(BacterialSludge.getFluid(1000))
-                //.cleanroom(CleanroomType.STERILE_CLEANROOM) todo cleanroom
+                .cleanroom(CleanroomType.STERILE_CLEANROOM)
                 .save(provider);
 
         // Enriched Bacterial Sludge
@@ -52,21 +53,21 @@ public class GrowthMediumRecipes {
                 .inputItems(dust, Uranium238)
                 .inputFluids(BacterialSludge.getFluid(1000))
                 .outputFluids(EnrichedBacterialSludge.getFluid(1000))
-                //.cleanroom(CleanroomType.STERILE_CLEANROOM) todo cleanroom
+                .cleanroom(CleanroomType.STERILE_CLEANROOM)
                 .save(provider);
 
         BREWING_RECIPES.recipeBuilder("enriched_bacterial_sludge_from_u235").EUt(4).duration(128)
                 .inputItems(dustTiny, Uranium235)
                 .inputFluids(BacterialSludge.getFluid(1000))
                 .outputFluids(EnrichedBacterialSludge.getFluid(1000))
-                //.cleanroom(CleanroomType.STERILE_CLEANROOM) todo cleanroom
+                .cleanroom(CleanroomType.STERILE_CLEANROOM)
                 .save(provider);
 
         BREWING_RECIPES.recipeBuilder("enriched_bacterial_sludge_from_naquadria").EUt(4).duration(128)
                 .inputItems(dustTiny, Naquadria)
                 .inputFluids(BacterialSludge.getFluid(1000))
                 .outputFluids(EnrichedBacterialSludge.getFluid(2000))
-                //.cleanroom(CleanroomType.STERILE_CLEANROOM) todo cleanroom
+                .cleanroom(CleanroomType.STERILE_CLEANROOM)
                 .save(provider);
 
         // Mutagen
@@ -74,7 +75,7 @@ public class GrowthMediumRecipes {
                 .inputFluids(EnrichedBacterialSludge.getFluid(1000))
                 .circuitMeta(1)
                 .outputFluids(Mutagen.getFluid(100))
-                //.cleanroom(CleanroomType.STERILE_CLEANROOM) todo cleanroom
+                .cleanroom(CleanroomType.STERILE_CLEANROOM)
                 .save(provider);
 
         // Collagen
@@ -84,7 +85,7 @@ public class GrowthMediumRecipes {
                 .inputFluids(SulfuricAcid.getFluid(500))
                 .outputItems(dust, Collagen)
                 .outputFluids(DilutedSulfuricAcid.getFluid(500))
-                //.cleanroom(CleanroomType.STERILE_CLEANROOM) todo cleanroom
+                .cleanroom(CleanroomType.STERILE_CLEANROOM)
                 .save(provider);
 
         CHEMICAL_RECIPES.recipeBuilder("collagen_from_bone").EUt(VA[HV]).duration(1600)
@@ -93,7 +94,7 @@ public class GrowthMediumRecipes {
                 .inputFluids(SulfuricAcid.getFluid(1000))
                 .outputItems(dust, Collagen, 2)
                 .outputFluids(DilutedSulfuricAcid.getFluid(1000))
-                //.cleanroom(CleanroomType.STERILE_CLEANROOM) todo cleanroom
+                .cleanroom(CleanroomType.STERILE_CLEANROOM)
                 .save(provider);
 
         // Gelatin
@@ -102,14 +103,14 @@ public class GrowthMediumRecipes {
                 .inputFluids(PhosphoricAcid.getFluid(1000))
                 .inputFluids(Water.getFluid(3000))
                 .outputFluids(GelatinMixture.getFluid(4000))
-                //.cleanroom(CleanroomType.STERILE_CLEANROOM) todo cleanroom
+                .cleanroom(CleanroomType.STERILE_CLEANROOM)
                 .save(provider);
 
         CENTRIFUGE_RECIPES.recipeBuilder("gelatin").EUt(VA[HV]).duration(2400)
                 .inputFluids(GelatinMixture.getFluid(6000))
                 .outputItems(dust, Phosphorus)
                 .outputItems(dust, Gelatin, 4)
-                //.cleanroom(CleanroomType.STERILE_CLEANROOM) todo cleanroom
+                .cleanroom(CleanroomType.STERILE_CLEANROOM)
                 .save(provider);
 
         // Agar
@@ -117,7 +118,7 @@ public class GrowthMediumRecipes {
                 .inputItems(dust, Gelatin)
                 .inputFluids(DistilledWater.getFluid(1000))
                 .outputItems(dust, Agar)
-                //.cleanroom(CleanroomType.STERILE_CLEANROOM) todo cleanroom
+                .cleanroom(CleanroomType.STERILE_CLEANROOM)
                 .save(provider);
 
         // Raw Growth Medium
@@ -128,7 +129,7 @@ public class GrowthMediumRecipes {
                 .inputItems(dust, Agar, 4)
                 .inputFluids(Mutagen.getFluid(4000))
                 .outputFluids(RawGrowthMedium.getFluid(4000))
-                //.cleanroom(CleanroomType.STERILE_CLEANROOM) todo cleanroom
+                .cleanroom(CleanroomType.STERILE_CLEANROOM)
                 .save(provider);
 
         // Sterile Growth Medium
@@ -136,7 +137,7 @@ public class GrowthMediumRecipes {
                 .circuitMeta(1)
                 .inputFluids(RawGrowthMedium.getFluid(100))
                 .outputFluids(SterileGrowthMedium.getFluid(100))
-                //.cleanroom(CleanroomType.STERILE_CLEANROOM) todo cleanroom
+                .cleanroom(CleanroomType.STERILE_CLEANROOM)
                 .save(provider);
 
         // Stem Cells
@@ -146,7 +147,7 @@ public class GrowthMediumRecipes {
                 .inputFluids(SterileGrowthMedium.getFluid(500))
                 .outputItems(STEM_CELLS, 32)
                 .outputFluids(BacterialSludge.getFluid(500))
-                //.cleanroom(CleanroomType.STERILE_CLEANROOM) todo cleanroom
+                .cleanroom(CleanroomType.STERILE_CLEANROOM)
                 .save(provider);
     }
 }

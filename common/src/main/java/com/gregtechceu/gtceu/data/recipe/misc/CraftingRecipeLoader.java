@@ -76,20 +76,17 @@ public class CraftingRecipeLoader {
         //VanillaRecipeHelper.addShapedRecipe(provider, "nano_saber", NANO_SABER.asStack(), "PIC", "PIC", "XEX", 'P', new UnificationEntry(plate, Platinum), 'I', new UnificationEntry(plate, Ruridit), 'C', CARBON_FIBER_PLATE.asStack(), 'X', new UnificationEntry(circuit, Tier.EV), 'E', ENERGIUM_CRYSTAL.asStack());
 
         VanillaRecipeHelper.addShapedRecipe(provider, "solar_panel_basic", COVER_SOLAR_PANEL.asStack(), "WGW", "CPC", 'W', SILICON_WAFER.asStack(), 'G', new ItemStack(Blocks.GLASS_PANE), 'C', CustomTags.LV_CIRCUITS, 'P', CARBON_FIBER_PLATE.asStack());
-        // TODO glass tiers
-        //VanillaRecipeHelper.addShapedRecipe(provider, "solar_panel_ulv", COVER_SOLAR_PANEL_ULV.asStack(), "WGW", "CAC", "P P", 'W', PHOSPHORUS_WAFER.asStack(), 'G', "paneGlass", 'C', new UnificationEntry(circuit, Tier.HV), 'P', ChemicalHelper.get(plate, GalliumArsenide), 'A', ChemicalHelper.get(wireGtQuadruple, Graphene));
-        //VanillaRecipeHelper.addShapedRecipe(provider, "solar_panel_lv", COVER_SOLAR_PANEL_LV.asStack(), "WGW", "CAC", "P P", 'W', NAQUADAH_WAFER.asStack(), 'G', MetaBlocks.TRANSPARENT_CASING.getItemVariant(
-        //        BlockGlassCasing.CasingType.TEMPERED_GLASS), 'C', new UnificationEntry(circuit, Tier.LuV), 'P', ChemicalHelper.get(plate, IndiumGalliumPhosphide), 'A', ChemicalHelper.get(wireGtHex, Graphene));
+        VanillaRecipeHelper.addShapedRecipe(provider, "solar_panel_ulv", COVER_SOLAR_PANEL_ULV.asStack(), "WGW", "CAC", "P P", 'W', PHOSPHORUS_WAFER.asStack(), 'G', CustomTags.GLASS_PANES, 'C', CustomTags.HV_CIRCUITS, 'P', ChemicalHelper.get(plate, GalliumArsenide), 'A', ChemicalHelper.get(wireGtQuadruple, Graphene));
+        VanillaRecipeHelper.addShapedRecipe(provider, "solar_panel_lv", COVER_SOLAR_PANEL_LV.asStack(), "WGW", "CAC", "P P", 'W', NAQUADAH_WAFER.asStack(), 'G', GTBlocks.CASING_TEMPERED_GLASS.asStack(), 'C', CustomTags.LuV_CIRCUITS, 'P', ChemicalHelper.get(plate, IndiumGalliumPhosphide), 'A', ChemicalHelper.get(wireGtHex, Graphene));
+
 
         VanillaRecipeHelper.addShapedRecipe(provider, "universal_fluid_cell", FLUID_CELL_UNIVERSAL.asStack(), "C ", "  ", 'C', FLUID_CELL);
         VanillaRecipeHelper.addShapedRecipe(provider, "universal_fluid_cell_revert", FLUID_CELL.asStack(), "C ", "  ", 'C', FLUID_CELL_UNIVERSAL);
 
-        // todo glass tiers
-        //VanillaRecipeHelper.addShapedRecipe(provider, "blacklight", BLACKLIGHT.asStack(), "SPS", "GRG", "CPK", 'S', new UnificationEntry(screw, TungstenCarbide), 'P', new UnificationEntry(plate, TungstenCarbide), 'G', MetaBlocks.TRANSPARENT_CASING.getItemVariant(BlockGlassCasing.CasingType.LAMINATED_GLASS), 'R', new UnificationEntry(spring, Europium), 'C', new UnificationEntry(circuit, Tier.IV), 'K', new UnificationEntry(cableGtSingle, Platinum));
+        VanillaRecipeHelper.addShapedRecipe(provider, "blacklight", BLACKLIGHT.asStack(), "SPS", "GRG", "CPK", 'S', new UnificationEntry(screw, TungstenCarbide), 'P', new UnificationEntry(plate, TungstenCarbide), 'G', GTBlocks.CASING_LAMINATED_GLASS.asStack(), 'R', new UnificationEntry(spring, Europium), 'C', CustomTags.IV_CIRCUITS, 'K', new UnificationEntry(cableGtSingle, Platinum));
 
-        // TODO cleanroom
-        //VanillaRecipeHelper.addShapedRecipe(provider, true, "filter_casing", MetaBlocks.CLEANROOM_CASING.getItemVariant(BlockCleanroomCasing.CasingType.FILTER_CASING, 2), "BBB", "III", "MFR", 'B', new ItemStack(Blocks.IRON_BARS), 'I', ITEM_FILTER.asStack(), 'M', ELECTRIC_MOTOR_MV.asStack(), 'F', new UnificationEntry(frameGt, Steel), 'R', new UnificationEntry(rotor, Steel));
-        //VanillaRecipeHelper.addShapedRecipe(provider, true, "filter_casing_sterile", MetaBlocks.CLEANROOM_CASING.getItemVariant(BlockCleanroomCasing.CasingType.FILTER_CASING_STERILE, 2), "BEB", "ISI", "MFR", 'B', new UnificationEntry(pipeLargeFluid, Polybenzimidazole), 'E', EMITTER_ZPM.asStack(), 'I', ITEM_FILTER.asStack(), 'S', BLACKLIGHT.asStack(), 'M', ELECTRIC_MOTOR_ZPM.asStack(), 'F', new UnificationEntry(frameGt, Tritanium), 'R', new UnificationEntry(rotor, NaquadahAlloy));
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "filter_casing", GTBlocks.FILTER_CASING.asStack(), "BBB", "III", "MFR", 'B', new ItemStack(Blocks.IRON_BARS), 'I', ITEM_FILTER.asStack(), 'M', ELECTRIC_MOTOR_MV.asStack(), 'F', new UnificationEntry(frameGt, Steel), 'R', new UnificationEntry(rotor, Steel));
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "filter_casing_sterile", GTBlocks.FILTER_CASING_STERILE.asStack(), "BEB", "ISI", "MFR", 'B', new UnificationEntry(pipeLargeFluid, Polybenzimidazole), 'E', EMITTER_ZPM.asStack(), 'I', ITEM_FILTER.asStack(), 'S', BLACKLIGHT.asStack(), 'M', ELECTRIC_MOTOR_ZPM.asStack(), 'F', new UnificationEntry(frameGt, Tritanium), 'R', new UnificationEntry(rotor, NaquadahAlloy));
 
         ///////////////////////////////////////////////////
         //               Shapes and Molds                //

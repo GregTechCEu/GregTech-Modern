@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.item.DrumMachineItem;
 import com.gregtechceu.gtceu.api.machine.*;
+import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
@@ -27,9 +28,7 @@ import com.gregtechceu.gtceu.common.machine.electric.BatteryBufferMachine;
 import com.gregtechceu.gtceu.common.machine.electric.ConverterMachine;
 import com.gregtechceu.gtceu.common.machine.electric.PumpMachine;
 import com.gregtechceu.gtceu.common.machine.electric.TransformerMachine;
-import com.gregtechceu.gtceu.common.machine.multiblock.electric.CrackerMachine;
-import com.gregtechceu.gtceu.common.machine.multiblock.electric.ElectricBlastFurnaceMachine;
-import com.gregtechceu.gtceu.common.machine.multiblock.electric.FusionReactorMachine;
+import com.gregtechceu.gtceu.common.machine.multiblock.electric.*;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.*;
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.CokeOvenMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.PrimitiveBlastFurnaceMachine;
@@ -50,12 +49,13 @@ import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
 import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
-import com.gregtechceu.gtceu.common.machine.multiblock.electric.PyrolyseOvenMachine;
 import com.gregtechceu.gtceu.common.machine.steam.SteamLiquidBoilerMachine;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.integration.kjs.GTRegistryObjectBuilderTypes;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
+import com.gregtechceu.gtceu.utils.GTUtil;
+import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import it.unimi.dsi.fastutil.Pair;
@@ -70,7 +70,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.DoorBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.material.Fluids;
 
 import java.util.*;
@@ -493,6 +495,81 @@ public class GTMachines {
             .renderer(PumpHatchPartRenderer::new)
             .register();
 
+    public static final MachineDefinition MAINTENANCE_HATCH = REGISTRATE.machine("maintenance_hatch", (blockEntity) -> new MaintenanceHatchPartMachine(blockEntity, false))
+            .rotationState(RotationState.ALL)
+            .abilities(PartAbility.MAINTENANCE)
+            .tooltips(Component.translatable("gtceu.universal.disabled"))
+            .renderer(() -> new MaintenanceHatchPartRenderer(1, GTCEu.id("block/machine/part/maintenance")))
+            .register();
+
+    public static final MachineDefinition CONFIGURABLE_MAINTENANCE_HATCH = REGISTRATE.machine("configurable_maintenance_hatch", (blockEntity) -> new MaintenanceHatchPartMachine(blockEntity, true))
+            .rotationState(RotationState.ALL)
+            .abilities(PartAbility.MAINTENANCE)
+            .tooltips(Component.translatable("gtceu.universal.disabled"))
+            .renderer(() -> new MaintenanceHatchPartRenderer(3, GTCEu.id("block/machine/part/maintenance.configurable")))
+            .register();
+
+    public static final MachineDefinition CLEANING_MAINTENANCE_HATCH = REGISTRATE.machine("cleaning_maintenance_hatch", CleaningMaintenanceHatchPartMachine::new)
+            .rotationState(RotationState.ALL)
+            .abilities(PartAbility.MAINTENANCE)
+            .tooltips(Component.translatable("gtceu.universal.disabled"),
+                    Component.translatable("gtceu.machine.maintenance_hatch_cleanroom_auto.tooltip.0"),
+                    Component.translatable("gtceu.machine.maintenance_hatch_cleanroom_auto.tooltip.1"))
+            .tooltipBuilder((stack, tooltips) -> {
+                for (CleanroomType type : CleaningMaintenanceHatchPartMachine.getCleanroomTypes()) {
+                    tooltips.add(Component.literal(String.format("  %s%s", ChatFormatting.GREEN, Component.translatable(type.getTranslationKey()).getString())));
+                }
+            })
+            .renderer(() -> new MaintenanceHatchPartRenderer(3, GTCEu.id("block/machine/part/maintenance.cleaning")))
+            .register();
+
+    public static final MachineDefinition AUTO_MAINTENANCE_HATCH = REGISTRATE.machine("auto_maintenance_hatch", AutoMaintenanceHatchPartMachine::new)
+            .rotationState(RotationState.ALL)
+            .abilities(PartAbility.MAINTENANCE)
+            .tooltips(Component.translatable("gtceu.universal.disabled"))
+            .renderer(() -> new MaintenanceHatchPartRenderer(3, GTCEu.id("block/machine/part/maintenance.full_auto")))
+            .register();
+
+
+    public static final MachineDefinition[] ITEM_PASSTHROUGH_HATCH = registerTieredMachines("item_passthrough_hatch",
+            (holder, tier) -> new ItemBusPartMachine(holder, tier, IO.BOTH),
+            (tier, builder) -> builder
+                    .langValue("%s Item Passthrough Hatch".formatted(VNF[tier]))
+                    .rotationState(RotationState.ALL)
+                    .abilities(PartAbility.PASSTHROUGH_HATCH)
+                    .overlayTieredHullRenderer("item_passthrough_hatch")
+                    .tooltips(Component.translatable("gtceu.universal.tooltip.item_storage_capacity", (1 + Math.min(9, tier)) * (1 + Math.min(9, tier))),
+                            Component.translatable("gtceu.universal.enabled"))
+                    .register(),
+            ELECTRIC_TIERS);
+
+    public static final MachineDefinition[] FLUID_PASSTHROUGH_HATCH = registerTieredMachines("fluid_passthrough_hatch",
+            (holder, tier) -> new FluidHatchPartMachine(holder, tier, IO.BOTH),
+            (tier, builder) -> builder
+                    .langValue("%s Fluid Passthrough Hatch".formatted(VNF[tier]))
+                    .rotationState(RotationState.ALL)
+                    .abilities(PartAbility.PASSTHROUGH_HATCH)
+                    .overlayTieredHullRenderer("fluid_passthrough_hatch")
+                    .tooltips(Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity_mult", tier + 1, 16 * FluidHelper.getBucket()),
+                            Component.translatable("gtceu.universal.enabled"))
+                    .register(),
+            ELECTRIC_TIERS);
+
+    public static final MachineDefinition[] DIODE = registerTieredMachines("diode",
+            DiodePartMachine::new,
+            (tier, builder) -> builder
+                    .langValue("%s Diode".formatted(VNF[tier]))
+                    .rotationState(RotationState.ALL)
+                    .abilities(PartAbility.PASSTHROUGH_HATCH)
+                    .overlayTieredHullRenderer("diode")
+                    .tooltips(Component.translatable("gtceu.machine.diode.tooltip_general"),
+                            Component.translatable("gtceu.machine.diode.tooltip_starts_at"),
+                            Component.translatable("gtceu.universal.tooltip.voltage_in_out", GTValues.V[tier], GTValues.VNF[tier]),
+                            Component.translatable("gtceu.universal.tooltip.amperage_in_out_till", DiodePartMachine.MAX_AMPS))
+                    .register(),
+            ELECTRIC_TIERS);
+
+
 
     //////////////////////////////////////
     //*******     Multiblock     *******//
@@ -549,7 +626,8 @@ public class GTMachines {
                     .aisle("XSX", "CCC", "CCC", "XXX")
                     .where('S', Predicates.controller(blocks(definition.getBlock())))
                     .where('X', blocks(CASING_INVAR_HEATPROOF.get()).setMinGlobalLimited(9)
-                            .or(Predicates.autoAbilities(definition.getRecipeType())))
+                            .or(Predicates.autoAbilities(definition.getRecipeType()))
+                            .or(Predicates.autoAbilities(true, false)))
                     .where('M', Predicates.abilities(PartAbility.MUFFLER))
                     .where('C', Predicates.heatingCoils())
                     .where('#', Predicates.air())
@@ -557,7 +635,7 @@ public class GTMachines {
             .shapeInfos(definition -> {
                 List<MultiblockShapeInfo> shapeInfo = new ArrayList<>();
                 var builder = MultiblockShapeInfo.builder()
-                        .aisle("ISO", "CCC", "CCC", "XXX")
+                        .aisle("ISO", "CCC", "CCC", "XMX")
                         .aisle("FXD", "C#C", "C#C", "XHX")
                         .aisle("EEX", "CCC", "CCC", "XXX")
                         .where('X', CASING_INVAR_HEATPROOF.getDefaultState())
@@ -568,7 +646,8 @@ public class GTMachines {
                         .where('O', ITEM_EXPORT_BUS[GTValues.LV], Direction.NORTH)
                         .where('F', FLUID_IMPORT_HATCH[GTValues.LV], Direction.WEST)
                         .where('D', FLUID_EXPORT_HATCH[GTValues.LV], Direction.EAST)
-                        .where('H', MUFFLER_HATCH[GTValues.LV - 1], Direction.UP);
+                        .where('H', MUFFLER_HATCH[GTValues.LV - 1], Direction.UP)
+                        .where('M', MAINTENANCE_HATCH, Direction.NORTH);
                 ALL_COILS.entrySet().stream()
                         .sorted(Comparator.comparingInt(entry -> entry.getKey().getTier()))
                         .forEach(coil -> shapeInfo.add(builder.where('C', coil.getValue().get()).build()));
@@ -588,7 +667,8 @@ public class GTMachines {
             .appearanceBlock(CASING_PTFE_INERT)
             .pattern(definition -> {
                 var casing = blocks(CASING_PTFE_INERT.get()).setMinGlobalLimited(10);
-                var abilities = Predicates.autoAbilities(definition.getRecipeType());
+                var abilities = Predicates.autoAbilities(definition.getRecipeType())
+                        .or(Predicates.autoAbilities(true, false));
                 return FactoryBlockPattern.start()
                         .aisle("XXX", "XCX", "XXX")
                         .aisle("XCX", "CPC", "XCX")
@@ -612,33 +692,34 @@ public class GTMachines {
                         .where('E', ENERGY_INPUT_HATCH[3], Direction.NORTH)
                         .where('O', ITEM_EXPORT_BUS[3], Direction.NORTH)
                         .where('F', FLUID_IMPORT_HATCH[3], Direction.NORTH)
+                        .where('M', MAINTENANCE_HATCH, Direction.NORTH)
                         .where('H', FLUID_EXPORT_HATCH[3], Direction.NORTH);
                 shapeInfo.add(baseBuilder.shallowCopy()
-                        .aisle("IXO", "FSH", "XXX")
+                        .aisle("IXO", "FSH", "XMX")
                         .aisle("XXX", "XPX", "XXX")
                         .aisle("XEX", "XCX", "XXX")
                         .build()
                 );
                 shapeInfo.add(baseBuilder.shallowCopy()
-                        .aisle("IXO", "FSH", "XXX")
+                        .aisle("IXO", "FSH", "XMX")
                         .aisle("XXX", "XPX", "XCX")
                         .aisle("XEX", "XXX", "XXX")
                         .build()
                 );
                 shapeInfo.add(baseBuilder.shallowCopy()
-                        .aisle("IXO", "FSH", "XXX")
+                        .aisle("IXO", "FSH", "XMX")
                         .aisle("XCX", "XPX", "XXX")
                         .aisle("XEX", "XXX", "XXX")
                         .build()
                 );
                 shapeInfo.add(baseBuilder.shallowCopy()
-                        .aisle("IXO", "FSH", "XXX")
+                        .aisle("IXO", "FSH", "XMX")
                         .aisle("XXX", "CPX", "XXX")
                         .aisle("XEX", "XXX", "XXX")
                         .build()
                 );
                 shapeInfo.add(baseBuilder.shallowCopy()
-                        .aisle("IXO", "FSH", "XXX")
+                        .aisle("IXO", "FSH", "XMX")
                         .aisle("XXX", "XPC", "XXX")
                         .aisle("XEX", "XXX", "XXX")
                         .build()
@@ -659,7 +740,8 @@ public class GTMachines {
                     .aisle("XXX", "XSX", "XXX")
                     .where('S', controller(blocks(definition.get())))
                     .where('X', blocks(CASING_STEEL_SOLID.get()).setMinGlobalLimited(14)
-                            .or(Predicates.autoAbilities(definition.getRecipeType())))
+                            .or(Predicates.autoAbilities(definition.getRecipeType()))
+                            .or(Predicates.autoAbilities(true, true)))
                     .where('#', Predicates.air())
                     .build())
             .workableCasingRenderer(GTCEu.id("block/casings/solid/machine_casing_solid_steel"),
@@ -676,7 +758,8 @@ public class GTMachines {
                     .aisle("CCC", "C#C", "CCC")
                     .aisle("XXX", "XSX", "XXX")
                     .where('S', Predicates.controller(blocks(definition.get())))
-                    .where('X', blocks(MACHINE_CASING_ULV.get()).setMinGlobalLimited(6).or(Predicates.autoAbilities(definition.getRecipeType())))
+                    .where('X', blocks(MACHINE_CASING_ULV.get()).setMinGlobalLimited(6).or(Predicates.autoAbilities(definition.getRecipeType()))
+                            .or(Predicates.autoAbilities(true, true)))
                     .where('C', Predicates.heatingCoils())
                     .where('#', Predicates.air())
                     .build())
@@ -694,7 +777,9 @@ public class GTMachines {
                     .aisle("HCHCH", "H###H", "HCHCH")
                     .aisle("HCHCH", "HCOCH", "HCHCH")
                     .where('O', Predicates.controller(blocks(definition.get())))
-                    .where('H', blocks(CASING_STAINLESS_CLEAN.get()).setMinGlobalLimited(12).or(Predicates.autoAbilities(definition.getRecipeType())))
+                    .where('H', blocks(CASING_STAINLESS_CLEAN.get()).setMinGlobalLimited(12)
+                            .or(Predicates.autoAbilities(definition.getRecipeType()))
+                            .or(Predicates.autoAbilities(true, true)))
                     .where('#', Predicates.air())
                     .where('C', Predicates.heatingCoils())
                     .build())
@@ -735,7 +820,8 @@ public class GTMachines {
                     .aisle("XXX", "XSX", "XXX")
                     .where('S', Predicates.controller(blocks(definition.getBlock())))
                     .where('X', blocks(CASING_ALUMINIUM_FROSTPROOF.get()).setMinGlobalLimited(14)
-                            .or(Predicates.autoAbilities(definition.getRecipeType())))
+                            .or(Predicates.autoAbilities(definition.getRecipeType()))
+                            .or(Predicates.autoAbilities(true, true)))
                     .where('#', Predicates.air())
                     .build())
             .workableCasingRenderer(GTCEu.id("block/casings/solid/machine_casing_frost_proof"),
@@ -824,7 +910,7 @@ public class GTMachines {
 
     public static final MultiblockMachineDefinition[] FUSION_REACTOR = registerTieredMultis("fusion_reactor", FusionReactorMachine::new, (tier, builder) -> builder
                     .rotationState(RotationState.NON_Y_AXIS)
-                    .langValue("Fusion Reactor Computer Mark %s".formatted(toRomanNumeral(tier - 5)))
+                    .langValue("Fusion Reactor Computer MK %s".formatted(toRomanNumeral(tier - 5)))
                     .recipeType(GTRecipeTypes.FUSION_RECIPES)
                     .tooltips(
                             Component.translatable("gtceu.machine.fusion_reactor.capacity", FusionReactorMachine.calculateEnergyStorageFactor(tier, 16) / 1000000L),
@@ -850,7 +936,7 @@ public class GTMachines {
                                 .aisle("######ICI######", "####GGAAAGG####", "######ICI######")
                                 .aisle("###############", "######OSO######", "###############")
                                 .where('S', controller(blocks(definition.get())))
-                                .where('G', blocks(CASING_FUSION_GLASS.get()).or(casing))
+                                .where('G', blocks(FUSION_GLASS.get()).or(casing))
                                 .where('E', casing.or(blocks(PartAbility.INPUT_ENERGY.getBlockRange(tier, UV).toArray(Block[]::new))
                                         .setMinGlobalLimited(1).setPreviewCount(16)))
                                 .where('C', casing)
@@ -882,7 +968,7 @@ public class GTMachines {
                                 .aisle("###############", "######EME######", "###############")
                                 .where('M', controller, Direction.SOUTH)
                                 .where('C', FusionReactorMachine.getCasingState(tier))
-                                .where('G', CASING_FUSION_GLASS.get())
+                                .where('G', FUSION_GLASS.get())
                                 .where('K', FusionReactorMachine.getCoilState(tier))
                                 .where('W', GTMachines.FLUID_EXPORT_HATCH[tier], Direction.NORTH)
                                 .where('E', GTMachines.FLUID_EXPORT_HATCH[tier], Direction.SOUTH)
@@ -907,6 +993,80 @@ public class GTMachines {
                             GTCEu.id("block/multiblock/fusion_reactor"), false)
                     .register(),
             LuV, ZPM, UV);
+
+    public static final MultiblockMachineDefinition CLEANROOM = REGISTRATE.multiblock("cleanroom", CleanroomMachine::new)
+            .rotationState(RotationState.NONE)
+            .recipeType(new GTRecipeType(GTCEu.id("cleanroom"), "dummy"))
+            .appearanceBlock(PLASTCRETE)
+            .tooltips(Component.translatable("gtceu.machine.cleanroom.tooltip.0"),
+                    Component.translatable("gtceu.machine.cleanroom.tooltip.1"),
+                    Component.translatable("gtceu.machine.cleanroom.tooltip.2"),
+                    Component.translatable("gtceu.machine.cleanroom.tooltip.3"))
+            .tooltipBuilder((stack, tooltip) -> {
+                if (GTUtil.isCtrlDown()) {
+                    tooltip.add(Component.empty());
+                    tooltip.add(Component.translatable("gtceu.machine.cleanroom.tooltip.4"));
+                    tooltip.add(Component.translatable("gtceu.machine.cleanroom.tooltip.5"));
+                    tooltip.add(Component.translatable("gtceu.machine.cleanroom.tooltip.6"));
+                    tooltip.add(Component.translatable("gtceu.machine.cleanroom.tooltip.7"));
+                    //tooltip.add(Component.translatable("gtceu.machine.cleanroom.tooltip.8"));
+                    if (LDLib.isModLoaded(GTValues.MODID_APPENG)) {
+                        // TODO ae2 compat
+                        //tooltip.add(Component.translatable(AEConfig.instance().isFeatureEnabled(AEFeature.CHANNELS) ? "gtceu.machine.cleanroom.tooltip.ae2.channels" : "gtceu.machine.cleanroom.tooltip.ae2.no_channels"));
+                    }
+                    tooltip.add(Component.empty());
+                } else {
+                    tooltip.add(Component.translatable("gtceu.machine.cleanroom.tooltip.hold_ctrl"));
+                }
+            })
+            .pattern((definition) -> FactoryBlockPattern.start()
+                    .aisle("XXXXX", "XXXXX", "XXXXX", "XXXXX", "XXXXX")
+                    .aisle("XXXXX", "X   X", "X   X", "X   X", "XFFFX")
+                    .aisle("XXXXX", "X   X", "X   X", "X   X", "XFSFX")
+                    .aisle("XXXXX", "X   X", "X   X", "X   X", "XFFFX")
+                    .aisle("XXXXX", "XXXXX", "XXXXX", "XXXXX", "XXXXX")
+                    .where('X', blocks(GTBlocks.PLASTCRETE.get())
+                            .or(blocks(GTBlocks.CLEANROOM_GLASS.get()))
+                            .or(abilities(PartAbility.PASSTHROUGH_HATCH).setMaxGlobalLimited(30, 3))
+                            .or(abilities(PartAbility.INPUT_ENERGY).setMinGlobalLimited(1).setMaxGlobalLimited(3, 2))
+                            .or(blocks(ConfigHolder.INSTANCE.machines.enableMaintenance ? GTMachines.MAINTENANCE_HATCH.getBlock() : PLASTCRETE.get()).setMinGlobalLimited(1).setMaxGlobalLimited(1))
+                            .or(blocks(Blocks.IRON_DOOR).setMaxGlobalLimited(8)))
+                    .where('S', controller(blocks(GTMachines.CLEANROOM.get())))
+                    .where(' ', any())
+                    .where('E', abilities(PartAbility.INPUT_ENERGY))
+                    .where('F', cleanroomFilters())
+                    .where('I', abilities(PartAbility.PASSTHROUGH_HATCH))
+                    .build()
+            )
+            .shapeInfos((controller) -> {
+                ArrayList<MultiblockShapeInfo> shapeInfo = new ArrayList<>();
+                MultiblockShapeInfo.ShapeInfoBuilder builder = MultiblockShapeInfo.builder()
+                        .aisle("XXXXX", "XIDLX", "XXXXX", "XXXXX", "XXXXX")
+                        .aisle("XXXXX", "X   X", "G   G", "X   X", "XFFFX")
+                        .aisle("XXXXX", "X   X", "G   G", "X   X", "XFSFX")
+                        .aisle("XXXXX", "X   X", "G   G", "X   X", "XFFFX")
+                        .aisle("XMXEX", "XXOXX", "XXRXX", "XXXXX", "XXXXX")
+                        .where('X', GTBlocks.PLASTCRETE)
+                        .where('G', GTBlocks.CLEANROOM_GLASS)
+                        .where('S', GTMachines.CLEANROOM.getBlock())
+                        .where(' ', Blocks.AIR)
+                        .where('E', GTMachines.ENERGY_INPUT_HATCH[GTValues.LV], Direction.SOUTH)
+                        .where('I', GTMachines.ITEM_PASSTHROUGH_HATCH[GTValues.LV], Direction.NORTH)
+                        .where('L', GTMachines.FLUID_PASSTHROUGH_HATCH[GTValues.LV], Direction.NORTH)
+                        .where('D', GTMachines.DIODE[GTValues.HV], Direction.NORTH)
+                        .where('O', Blocks.IRON_DOOR.defaultBlockState().setValue(DoorBlock.FACING, Direction.NORTH).setValue(DoorBlock.HALF, DoubleBlockHalf.LOWER))
+                        .where('R', Blocks.IRON_DOOR.defaultBlockState().setValue(DoorBlock.FACING, Direction.NORTH).setValue(DoorBlock.HALF, DoubleBlockHalf.UPPER));
+                if (ConfigHolder.INSTANCE.machines.enableMaintenance) {
+                    builder.where('M', GTMachines.MAINTENANCE_HATCH, Direction.SOUTH);
+                } else {
+                    builder.where('M',GTBlocks.PLASTCRETE.get());
+                }
+                ALL_FILTERS.values().forEach(block -> shapeInfo.add(builder.where('F', block.get()).build()));
+                return shapeInfo;
+            })
+            .workableCasingRenderer(GTCEu.id("block/casings/cleanroom/plascrete"),
+                    GTCEu.id("block/multiblock/cleanroom"), false)
+            .register();
 
 
     //////////////////////////////////////

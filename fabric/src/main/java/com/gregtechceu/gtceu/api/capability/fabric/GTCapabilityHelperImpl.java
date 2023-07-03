@@ -62,4 +62,9 @@ public class GTCapabilityHelperImpl {
         }
         return null;
     }
+
+    @Nullable
+    public static ICleanroomReceiver getCleanroomReceiver(Level level, BlockPos pos, @Nullable Direction side) {
+        return GTCapability.CAPABILITY_CLEANROOM_RECEIVER.find(level, pos, side);
+    }
 }

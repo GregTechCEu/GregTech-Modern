@@ -344,6 +344,7 @@ public class GTRecipeTypes {
             .setSlotOverlay(false, false, GuiTextures.CIRCUIT_OVERLAY)
             .setProgressBar(GuiTextures.PROGRESS_BAR_CIRCUIT_ASSEMBLER, LEFT_TO_RIGHT)
             .setSound(GTSoundEntries.ASSEMBLER)
+            .setMaxTooltips(4)
             .onRecipeBuild((recipeBuilder, provider) -> {
                 if (recipeBuilder.input.getOrDefault(FluidRecipeCapability.CAP, Collections.emptyList()).isEmpty() && recipeBuilder.tickInput.getOrDefault(FluidRecipeCapability.CAP, Collections.emptyList()).isEmpty()) {
                     recipeBuilder.copy(new ResourceLocation(recipeBuilder.id.toString() +  "_soldering_allory"))
@@ -534,7 +535,6 @@ public class GTRecipeTypes {
             .setProgressBar(GuiTextures.PROGRESS_BAR_FUSION, LEFT_TO_RIGHT)
             .setSound(GTSoundEntries.ARC)
             .addDataInfo(data -> LocalizationUtils.format("gtceu.recipe.eu_to_start", data.getLong("eu_to_start")));
-
 
 
 

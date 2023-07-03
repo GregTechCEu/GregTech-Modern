@@ -1,6 +1,8 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.electric;
 
 import com.gregtechceu.gtceu.api.block.ICoilType;
+import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMufflerMachine;
+import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMufflerMechanic;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
@@ -54,7 +56,7 @@ public class ElectricBlastFurnaceMachine extends WorkableElectricMultiblockMachi
     }
 
     @Override
-    public @Nullable GTRecipe modifyRecipe(GTRecipe recipe) {
+    public @Nullable GTRecipe getRealRecipe(GTRecipe recipe) {
         if (!recipe.data.contains("ebf_temp") || recipe.data.getInt("ebf_temp") > blastFurnaceTemperature) {
             return null;
         }
@@ -87,4 +89,5 @@ public class ElectricBlastFurnaceMachine extends WorkableElectricMultiblockMachi
         }
         super.addDisplayText(textList);
     }
+
 }

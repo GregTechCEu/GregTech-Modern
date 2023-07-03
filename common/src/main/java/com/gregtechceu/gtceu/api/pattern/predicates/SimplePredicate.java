@@ -20,6 +20,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
+import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -29,7 +30,7 @@ import java.util.stream.Collectors;
 public class SimplePredicate {
     public static SimplePredicate ANY = new SimplePredicate("any", x -> true, null);
     public static SimplePredicate AIR = new SimplePredicate("air", blockWorldState -> blockWorldState.getWorld().isEmptyBlock(blockWorldState.getPos()), null);
-    
+    @Nullable
     public Supplier<BlockInfo[]> candidates;
     public Predicate<MultiblockState> predicate;
     public List<Component> toolTips;
@@ -53,13 +54,13 @@ public class SimplePredicate {
         this.type = type;
     }
 
-    public SimplePredicate(Predicate<MultiblockState> predicate, Supplier<BlockInfo[]> candidates) {
+    public SimplePredicate(Predicate<MultiblockState> predicate, @Nullable Supplier<BlockInfo[]> candidates) {
         this();
         this.predicate = predicate;
         this.candidates = candidates;
     }
 
-    public SimplePredicate(String type, Predicate<MultiblockState> predicate, Supplier<BlockInfo[]> candidates) {
+    public SimplePredicate(String type, Predicate<MultiblockState> predicate, @Nullable Supplier<BlockInfo[]> candidates) {
         this(type);
         this.predicate = predicate;
         this.candidates = candidates;

@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.common.machine.multiblock.electric;
 
 import com.gregtechceu.gtceu.api.block.ICoilType;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMufflerMechanic;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
@@ -48,7 +49,7 @@ public class PyrolyseOvenMachine extends WorkableElectricMultiblockMachine {
     }
 
     @Override
-    public @Nullable GTRecipe modifyRecipe(GTRecipe recipe) {
+    public @Nullable GTRecipe getRealRecipe(GTRecipe recipe) {
         if (RecipeHelper.getRecipeEUtTier(recipe) > getTier()) {
             return null;
         }
@@ -82,4 +83,5 @@ public class PyrolyseOvenMachine extends WorkableElectricMultiblockMachine {
             textList.add(Component.translatable("gtceu.multiblock.pyrolyse_oven.speed",coilTier == 0 ? 75 : 50 * (coilTier + 1)));
         }
     }
+
 }

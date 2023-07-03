@@ -66,12 +66,18 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
     }
 
     public GTRecipe copy(ContentModifier modifier) {
+        return copy(modifier, true);
+    }
+
+    public GTRecipe copy(ContentModifier modifier, boolean modifyDuration) {
         var copied = copy();
         modifyContents(copied.inputs, modifier);
         modifyContents(copied.outputs, modifier);
         modifyContents(copied.tickInputs, modifier);
         modifyContents(copied.tickOutputs, modifier);
-        copied.duration = modifier.apply(this.duration).intValue();
+        if (modifyDuration) {
+            copied.duration = modifier.apply(this.duration).intValue();
+        }
         return copied;
     }
 

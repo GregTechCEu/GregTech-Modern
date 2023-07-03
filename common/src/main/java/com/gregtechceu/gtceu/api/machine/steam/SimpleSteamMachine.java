@@ -26,7 +26,6 @@ import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import it.unimi.dsi.fastutil.longs.LongIntPair;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -82,7 +81,6 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
         // Fine, we use it to provide eu cap for recipe, simulating an EU machine.
         capabilitiesProxy.put(IO.IN, EURecipeCapability.CAP,
                 List.of(new SteamEnergyRecipeHandler(steamTank, FluidHelper.getBucket() / 1000d)));
-        subscribeServerTick(this::tryDoVenting);
     }
 
     @Override
@@ -95,34 +93,9 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
     //******     Venting Logic    ******//
     //////////////////////////////////////
 
-    public void tryDoVenting() {
-        // check venting every 10 ticks
-        if (getOffsetTimer() % 10 == 0) {
-            checkVenting();
-        }
-    }
-
     @Override
     public float getVentingDamage() {
         return isHighPressure() ? 12F : 6F;
-    }
-
-    /**
-     * Checks the venting state. Performs venting only if required.
-     * <strong>Server-Side Only.</strong>
-     *
-     * @return if the machine does not need venting
-     */
-    protected boolean checkVenting() {
-        if (needsVenting()) {
-            if (getLevel() instanceof ServerLevel serverLevel) {
-                tryDoVenting(serverLevel, getPos());
-            } else {
-                throw new IllegalStateException("Must be Sever-Side to check steam venting");
-            }
-        }
-
-        return !needsVenting();
     }
 
     @Override
@@ -169,10 +142,8 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
     @Override
     public void afterWorking() {
         super.afterWorking();
-        if (!getLevel().isClientSide()) {
-            needsVenting = true;
-            checkVenting();
-        }
+        needsVenting = true;
+        checkVenting();
     }
 
     //////////////////////////////////////

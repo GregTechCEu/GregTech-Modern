@@ -9,6 +9,7 @@ import dev.emi.emi.api.stack.EmiStack;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.Registry;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeType;
 
@@ -43,4 +44,8 @@ public class GTRecipeTypeEmiCategory extends ModularUIEmiRecipeCategory {
         }
     }
 
+    @Override
+    public Component getName() {
+        return Component.translatable(recipeType.registryName.toLanguageKey());
+    }
 }

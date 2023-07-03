@@ -52,6 +52,7 @@ public class GTSoundEntries {
     public static final SoundEntry SUS_RECORD = REGISTRATE.sound("sus").build();
     public static final SoundEntry PORTAL_OPENING = REGISTRATE.sound("portal_opening").build();
     public static final SoundEntry PORTAL_CLOSING = REGISTRATE.sound("portal_closing").build();
+    public static final SoundEntry METAL_PIPE = REGISTRATE.sound("metal_pipe").build();
 
     public static void init() {
         AddonFinder.getAddons().forEach(IGTAddon::registerSounds);

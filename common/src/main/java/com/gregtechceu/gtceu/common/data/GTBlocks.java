@@ -23,6 +23,7 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.pipelike.cable.Insulation;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
+import com.lowdragmc.lowdraglib.Platform;
 import com.tterrag.registrate.builders.BlockBuilder;
 import com.tterrag.registrate.providers.ProviderType;
 import com.tterrag.registrate.providers.loot.RegistrateBlockLootTables;
@@ -135,9 +136,9 @@ public class GTBlocks {
                     final TagPrefix.OreType oreType = ore.getValue();
                     var entry = REGISTRATE.block("%s%s_ore".formatted(FormattingUtil.toLowerCaseUnder(oreTag.name), material.getName()),
                                     oreType.material(),
-                                    properties -> new MaterialBlock(properties, oreTag, material, new OreBlockRenderer(oreType.stoneType(),
+                                    properties -> new MaterialBlock(properties, oreTag, material, Platform.isClient() ? new OreBlockRenderer(oreType.stoneType(),
                                             Objects.requireNonNull(oreTag.materialIconType()).getBlockTexturePath(material.getMaterialIconSet(), true),
-                                            oreProperty.isEmissive())))
+                                            oreProperty.isEmissive()) : null))
                             .initialProperties(() -> oreType.stoneType().get().getBlock())
                             .properties(properties -> {
                                 properties.noLootTable();
@@ -209,7 +210,12 @@ public class GTBlocks {
                 if (material.hasProperty(PropertyKey.FLUID_PIPE) && !fluidPipeType.tagPrefix.isIgnored(material)) {
                     var entry = REGISTRATE.block( "%s_%s_fluid_pipe".formatted(material.getName(), fluidPipeType.name), p -> new FluidPipeBlock(p.noLootTable(), fluidPipeType, material))
                             .initialProperties(() -> Blocks.IRON_BLOCK)
-                            .properties(p -> p.dynamicShape().noOcclusion())
+                            .properties(p -> {
+                                if (doMetalPipe(material)) {
+                                    p.sound(GTSoundTypes.METAL_PIPE);
+                                }
+                                return p.dynamicShape().noOcclusion();
+                            })
                             .transform(unificationBlock(fluidPipeType.tagPrefix, material))
                             .blockstate(NonNullBiConsumer.noop())
                             .setData(ProviderType.LANG, NonNullBiConsumer.noop())
@@ -260,6 +266,9 @@ public class GTBlocks {
     public static final BlockEntry<Block> CASING_TUNGSTENSTEEL_ROBUST = createCasingBlock("robust_machine_casing", GTCEu.id("block/casings/solid/machine_casing_robust_tungstensteel"));
     public static final BlockEntry<Block> CASING_PTFE_INERT = createCasingBlock("inert_machine_casing", GTCEu.id("block/casings/solid/machine_casing_inert_ptfe"));
     public static final BlockEntry<Block> CASING_HSSE_STURDY = createCasingBlock("sturdy_machine_casing", GTCEu.id("block/casings/solid/machine_casing_study_hsse"));
+    public static final BlockEntry<Block> CASING_TEMPERED_GLASS = createCasingBlock("tempered_glass", GTCEu.id("block/casings/transparent/tempered_glass"), () -> Blocks.GLASS);
+
+
 
     // Assembly Line
     public static final BlockEntry<Block> CASING_GRATE = createCasingBlock("assembly_line_grating", GTCEu.id("block/casings/pipe/machine_casing_grate"));
@@ -290,10 +299,10 @@ public class GTBlocks {
 
     // The Pump Deck
     public static final BlockEntry<Block> CASING_PUMP_DECK = REGISTRATE.block("pump_deck", p -> (Block) new RendererBlock(p,
-                    new TextureOverrideRenderer(new ResourceLocation("block/cube_bottom_top"),
+                    Platform.isClient() ? new TextureOverrideRenderer(new ResourceLocation("block/cube_bottom_top"),
                             Map.of("bottom",  GTCEu.id("block/casings/pump_deck/bottom"),
                                     "top",  GTCEu.id("block/casings/pump_deck/top"),
-                                    "side",  GTCEu.id("block/casings/pump_deck/side")))))
+                                    "side",  GTCEu.id("block/casings/pump_deck/side"))) : null))
             .initialProperties(() -> Blocks.IRON_BLOCK)
             .properties(p -> p.sound(SoundType.WOOD).color(MaterialColor.WOOD))
             .addLayer(() -> RenderType::cutoutMipped)
@@ -352,12 +361,20 @@ public class GTBlocks {
 
     //Fusion
     public static final Map<IFusionCasingType, Supplier<FusionCasingBlock>> ALL_FUSION_CASINGS = new HashMap<>();
-    public static final BlockEntry<FusionCasingBlock> FUSION_CASING_SUPERCONDUCTOR = createFusionCasing(FusionCasingBlock.CasingType.SUPERCONDUCTOR_COIL);
-    public static final BlockEntry<FusionCasingBlock> FUSION_CASING_FUSION_COIL = createFusionCasing(FusionCasingBlock.CasingType.FUSION_COIL);
+    public static final BlockEntry<FusionCasingBlock> SUPERCONDUCTING_COIL = createFusionCasing(FusionCasingBlock.CasingType.SUPERCONDUCTING_COIL);
+    public static final BlockEntry<FusionCasingBlock> FUSION_COIL = createFusionCasing(FusionCasingBlock.CasingType.FUSION_COIL);
     public static final BlockEntry<FusionCasingBlock> FUSION_CASING = createFusionCasing(FusionCasingBlock.CasingType.FUSION_CASING);
     public static final BlockEntry<FusionCasingBlock> FUSION_CASING_MK2 = createFusionCasing(FusionCasingBlock.CasingType.FUSION_CASING_MK2);
     public static final BlockEntry<FusionCasingBlock> FUSION_CASING_MK3 = createFusionCasing(FusionCasingBlock.CasingType.FUSION_CASING_MK3);
-    public static final BlockEntry<Block> CASING_FUSION_GLASS = createCasingBlock("fusion_glass", GTCEu.id("block/casings/transparent/fusion_glass"), () -> Blocks.GLASS);
+    public static final BlockEntry<Block> FUSION_GLASS = createCasingBlock("fusion_glass", GTCEu.id("block/casings/transparent/fusion_glass"), () -> Blocks.GLASS);
+
+    // Cleanroom
+    public static final Map<IFilterType, Supplier<Block>> ALL_FILTERS = new HashMap<>();
+    public static final BlockEntry<Block> PLASTCRETE = createCasingBlock("plascrete", GTCEu.id("block/casings/cleanroom/plascrete"));
+    public static final BlockEntry<Block> FILTER_CASING = createCleanroomFilter(CleanroomFilterType.FILTER_CASING);
+    public static final BlockEntry<Block> FILTER_CASING_STERILE = createCleanroomFilter(CleanroomFilterType.FILTER_CASING_STERILE);
+    public static final BlockEntry<Block> CLEANROOM_GLASS = createCasingBlock("cleanroom_glass", GTCEu.id("block/casings/transparent/cleanroom_glass"), () -> Blocks.GLASS);
+
 
     // Fireboxes
     public static final Map<BoilerFireboxType, BlockEntry<ActiveBlock>> ALL_FIREBOXES = new HashMap<>();
@@ -374,8 +391,8 @@ public class GTBlocks {
 
     private static BlockEntry<Block> createPipeCasingBlock(String name, ResourceLocation texture, NonNullSupplier<? extends Block> properties) {
         return REGISTRATE.block("%s_pipe_casing".formatted(name.toLowerCase()), p -> (Block) new RendererBlock(p,
-                        new TextureOverrideRenderer(new ResourceLocation("block/cube_all"),
-                                Map.of("all", texture))))
+                        Platform.isClient() ? new TextureOverrideRenderer(new ResourceLocation("block/cube_all"),
+                                Map.of("all", texture)) : null))
                 .lang("%s Pipe Casing".formatted(name))
                 .initialProperties(properties)
                 .addLayer(() -> RenderType::cutoutMipped)
@@ -395,8 +412,8 @@ public class GTBlocks {
 
     private static BlockEntry<Block> createCasingBlock(String name, ResourceLocation texture, NonNullSupplier<? extends Block> properties) {
         return REGISTRATE.block(name, p -> (Block) new RendererBlock(p,
-                        new TextureOverrideRenderer(new ResourceLocation("block/cube_all"),
-                                Map.of("all", texture))))
+                        Platform.isClient() ? new TextureOverrideRenderer(new ResourceLocation("block/cube_all"),
+                                Map.of("all", texture)) : null))
                 .initialProperties(properties)
                 .addLayer(() -> RenderType::cutoutMipped)
                 .blockstate(NonNullBiConsumer.noop())
@@ -410,10 +427,10 @@ public class GTBlocks {
     private static BlockEntry<Block> createMachineCasingBlock(int tier) {
         String tierName = GTValues.VN[tier].toLowerCase();
         return REGISTRATE.block("%s_machine_casing".formatted(tierName), p -> (Block) new RendererBlock(p,
-                        new TextureOverrideRenderer( GTCEu.id("block/cube_bottom_top_tintindex"),
+                        Platform.isClient() ? new TextureOverrideRenderer( GTCEu.id("block/cube_bottom_top_tintindex"),
                                 Map.of("bottom",  GTCEu.id("block/casings/voltage/%s/bottom".formatted(tierName)),
                                         "top",  GTCEu.id("block/casings/voltage/%s/top".formatted(tierName)),
-                                        "side",  GTCEu.id("block/casings/voltage/%s/side".formatted(tierName))))))
+                                        "side",  GTCEu.id("block/casings/voltage/%s/side".formatted(tierName)))) : null))
                 .lang("%s Machine Casing".formatted(GTValues.VN[tier]))
                 .initialProperties(() -> Blocks.IRON_BLOCK)
                 .addLayer(() -> RenderType::cutoutMipped)
@@ -428,11 +445,11 @@ public class GTBlocks {
     private static BlockEntry<Block> createHermeticCasing(int tier) {
         String tierName = GTValues.VN[tier].toLowerCase();
         return REGISTRATE.block("%s_hermetic_casing".formatted(tierName), p -> (Block) new RendererBlock(p,
-                        new TextureOverrideRenderer( GTCEu.id("block/hermetic_casing"),
+                        Platform.isClient() ? new TextureOverrideRenderer( GTCEu.id("block/hermetic_casing"),
                                 Map.of("bot_bottom",  GTCEu.id("block/casings/voltage/%s/bottom".formatted(tierName)),
                                         "bot_top",  GTCEu.id("block/casings/voltage/%s/top".formatted(tierName)),
                                         "bot_side",  GTCEu.id("block/casings/voltage/%s/side".formatted(tierName)),
-                                        "top_side",  GTCEu.id("block/casings/hermetic_casing/hermetic_casing_overlay")))))
+                                        "top_side",  GTCEu.id("block/casings/hermetic_casing/hermetic_casing_overlay"))) : null))
                 .lang("Hermetic Casing %s".formatted(GTValues.LVT[tier]))
                 .initialProperties(() -> Blocks.IRON_BLOCK)
                 .addLayer(() -> RenderType::cutoutMipped)
@@ -446,10 +463,10 @@ public class GTBlocks {
 
     private static BlockEntry<Block> createSteamCasing(String name, String material) {
         return REGISTRATE.block(name, p -> (Block) new RendererBlock(p,
-                        new TextureOverrideRenderer(new ResourceLocation("block/cube_bottom_top"),
+                        Platform.isClient() ? new TextureOverrideRenderer(new ResourceLocation("block/cube_bottom_top"),
                                 Map.of("bottom",  GTCEu.id("block/casings/steam/%s/bottom".formatted(material)),
                                         "top",  GTCEu.id("block/casings/steam/%s/top".formatted(material)),
-                                        "side",  GTCEu.id("block/casings/steam/%s/side".formatted(material))))))
+                                        "side",  GTCEu.id("block/casings/steam/%s/side".formatted(material)))) : null))
                 .initialProperties(() -> Blocks.IRON_BLOCK)
                 .addLayer(() -> RenderType::cutoutMipped)
                 .blockstate(NonNullBiConsumer.noop())
@@ -489,11 +506,28 @@ public class GTBlocks {
         return casingBlock;
     }
 
+    private static BlockEntry<Block> createCleanroomFilter(IFilterType filterType) {
+        var filterBlock = REGISTRATE.block(filterType.getSerializedName(), p -> (Block) new RendererBlock(p,
+                        Platform.isClient() ? new TextureOverrideRenderer(new ResourceLocation("block/cube_all"),
+                            Map.of("all", GTCEu.id("block/casings/cleanroom/" + filterType))) : null))
+                .initialProperties(() -> Blocks.IRON_BLOCK)
+                .properties(properties -> properties.strength(2.0f, 8.0f).sound(SoundType.METAL).isValidSpawn((blockState, blockGetter, blockPos, entityType) -> false))
+                .addLayer(() -> RenderType::cutoutMipped)
+                .blockstate(NonNullBiConsumer.noop())
+                .tag(GTToolType.WRENCH.harvestTag, CustomTags.TOOL_TIERS[1])
+                .item(RendererBlockItem::new)
+                .model(NonNullBiConsumer.noop())
+                .build()
+                .register();
+        ALL_FILTERS.put(filterType, filterBlock);
+        return filterBlock;
+    }
+
     private static BlockEntry<ActiveBlock> createActiveCasing(String name, String baseModelPath) {
         String finalName = "%s".formatted(name);
         return REGISTRATE.block(finalName, p -> new ActiveBlock(p,
-                        new CTMModelRenderer(GTCEu.id(baseModelPath)),
-                        new CTMModelRenderer(GTCEu.id("%s_active".formatted(baseModelPath)))))
+                        Platform.isClient() ? new CTMModelRenderer(GTCEu.id(baseModelPath)) : null,
+                        Platform.isClient() ? new CTMModelRenderer(GTCEu.id("%s_active".formatted(baseModelPath))) : null))
                 .initialProperties(() -> Blocks.IRON_BLOCK)
                 .addLayer(() -> RenderType::cutoutMipped)
                 .blockstate(NonNullBiConsumer.noop())
@@ -507,14 +541,14 @@ public class GTBlocks {
     private static BlockEntry<ActiveBlock> createFireboxCasing(BoilerFireboxType type) {
         BlockEntry<ActiveBlock> block = REGISTRATE
                 .block("%s_casing".formatted(type.name()), p -> new ActiveBlock(p,
-                        new TextureOverrideRenderer(new ResourceLocation("block/cube_bottom_top"),
+                        Platform.isClient() ? new TextureOverrideRenderer(new ResourceLocation("block/cube_bottom_top"),
                                 Map.of("bottom", type.bottom(),
                                         "top", type.top(),
-                                        "side", type.side())),
-                        new TextureOverrideRenderer(GTCEu.id("block/fire_box_active"),
+                                        "side", type.side())) : null,
+                        Platform.isClient() ? new TextureOverrideRenderer(GTCEu.id("block/fire_box_active"),
                                 Map.of("bottom", type.bottom(),
                                         "top", type.top(),
-                                        "side", type.side()))))
+                                        "side", type.side())) : null))
                 .initialProperties(() -> Blocks.IRON_BLOCK)
                 .addLayer(() -> RenderType::cutoutMipped)
                 .blockstate(NonNullBiConsumer.noop())
@@ -635,5 +669,9 @@ public class GTBlocks {
         generateMaterialBlocks();
         generateCableBlocks();
         generatePipeBlocks();
+    }
+
+    public static boolean doMetalPipe(Material material) {
+        return GTValues.FOOLS.get() && material.hasProperty(PropertyKey.INGOT) && !material.hasProperty(PropertyKey.POLYMER) && !material.hasProperty(PropertyKey.WOOD);
     }
 }

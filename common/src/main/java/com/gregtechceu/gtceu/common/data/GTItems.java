@@ -1047,7 +1047,10 @@ public class GTItems {
 
     public static ItemEntry<Item> WIRELESS;
     public static ItemEntry<Item> CAMERA;
-    public static ItemEntry<Item> TERMINAL;
+    public static ItemEntry<ComponentItem> TERMINAL = REGISTRATE.item("terminal", ComponentItem::create)
+            .lang("Terminal")
+            .properties(p -> p.stacksTo(1))
+            .onRegister(attach(new TerminalBehavior())).register();
 
     public static final ItemEntry<Item>[] DYE_ONLY_ITEMS = new ItemEntry[DyeColor.values().length];
     static {

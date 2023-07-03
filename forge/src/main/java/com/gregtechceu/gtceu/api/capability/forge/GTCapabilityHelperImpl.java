@@ -7,7 +7,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.energy.EnergyStorage;
 import net.minecraftforge.energy.IEnergyStorage;
 
 import javax.annotation.Nullable;
@@ -97,6 +96,17 @@ public class GTCapabilityHelperImpl {
             if (blockEntity != null) {
                 IEnergyStorage energyStorage = blockEntity.getCapability(ForgeCapabilities.ENERGY, side).orElse(null);
                 return energyStorage == null ? null : GTEnergyHelperImpl.toPlatformEnergyStorage(energyStorage);
+            }
+        }
+        return null;
+    }
+
+    @Nullable
+    public static ICleanroomReceiver getCleanroomReceiver(Level level, BlockPos pos, @Nullable Direction side) {
+        if (level.getBlockState(pos).hasBlockEntity()) {
+            var blockEntity = level.getBlockEntity(pos);
+            if (blockEntity != null) {
+                return blockEntity.getCapability(GTCapability.CAPABILITY_CLEANROOM_RECEIVER, side).resolve().orElse(null);
             }
         }
         return null;

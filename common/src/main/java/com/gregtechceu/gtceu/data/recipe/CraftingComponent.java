@@ -311,7 +311,6 @@ public class CraftingComponent {
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
 
-        //TODO, Glass Tiers
         /*
         Glass: Steam-MV
         Tempered: HV, EV
@@ -324,19 +323,13 @@ public class CraftingComponent {
                 {ULV, TagUtil.createBlockTag("glass")},
                 {LV, TagUtil.createBlockTag("glass")},
                 {MV, TagUtil.createBlockTag("glass")},
-//                {HV, MetaBlocks.TRANSPARENT_CASING.getItemVariant(
-//                        BlockGlassCasing.CasingType.TEMPERED_GLASS)},
-//                {EV, MetaBlocks.TRANSPARENT_CASING.getItemVariant(
-//                        BlockGlassCasing.CasingType.TEMPERED_GLASS)},
-//                {IV, MetaBlocks.TRANSPARENT_CASING.getItemVariant(
-//                        BlockGlassCasing.CasingType.LAMINATED_GLASS)},
-//                {LuV, MetaBlocks.TRANSPARENT_CASING.getItemVariant(
-//                        BlockGlassCasing.CasingType.LAMINATED_GLASS)},
-//                {ZPM, MetaBlocks.TRANSPARENT_CASING.getItemVariant(
-//                        BlockGlassCasing.CasingType.FUSION_GLASS)},
-//                {UV, MetaBlocks.TRANSPARENT_CASING.getItemVariant(
-//                        BlockGlassCasing.CasingType.FUSION_GLASS)}
-//
+                {HV, GTBlocks.CASING_TEMPERED_GLASS.asStack()},
+                {EV, GTBlocks.CASING_TEMPERED_GLASS.asStack()},
+                {IV, GTBlocks.CASING_LAMINATED_GLASS.asStack()},
+                {LuV, GTBlocks.CASING_LAMINATED_GLASS.asStack()},
+                {ZPM, GTBlocks.FUSION_GLASS.asStack()},
+                {UV, GTBlocks.FUSION_GLASS.asStack()}
+
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
         PLATE = new Component(Stream.of(new Object[][]{

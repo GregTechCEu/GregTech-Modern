@@ -2,6 +2,8 @@ package com.gregtechceu.gtceu.api.block;
 
 import com.lowdragmc.lowdraglib.client.renderer.IBlockRendererProvider;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -49,6 +51,7 @@ public class ActiveBlock extends AppearanceBlock implements IBlockRendererProvid
 
     @Nullable
     @Override
+    @Environment(EnvType.CLIENT)
     public IRenderer getRenderer(BlockState state) {
         return isActive(state) ? activeRenderer : renderer;
     }
