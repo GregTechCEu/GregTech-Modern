@@ -50,8 +50,14 @@ public class SeparationRecipes {
         CENTRIFUGE_RECIPES.recipeBuilder("oilsands_ore_separation")
                 .inputItems(ore, Oilsands)
                 .chancedOutput(new ItemStack(Blocks.SAND), 5000, 5000)
-                .outputFluids(Oil.getFluid(500))
-                .duration(200).EUt(5).save(provider);
+                .outputFluids(Oil.getFluid(2000))
+                .duration(200).EUt(30).save(provider);
+
+        CENTRIFUGE_RECIPES.recipeBuilder("oilsands_dust_separation")
+                .inputItems(dust, Oilsands)
+                .chancedOutput(new ItemStack(Blocks.SAND), 5000, 5000)
+                .outputFluids(OilHeavy.getFluid(2000))
+                .duration(200).EUt(30).save(provider);
 
         CENTRIFUGE_RECIPES.recipeBuilder("nether_wart_separation").duration(144).EUt(5)
                 .inputItems(Items.NETHER_WART)
@@ -456,6 +462,13 @@ public class SeparationRecipes {
                 .outputItems(dust, Carbon)
                 .outputFluids(Water.getFluid(1000))
                 .duration(64).EUt(VA[LV]).save(provider);
+
+        ELECTROLYZER_RECIPES.recipeBuilder("apatite_electrolysis")
+                .inputItems(dust, Apatite, 9)
+                .outputItems(dust, Calcium, 5)
+                .outputItems(dust, Phosphorus, 3)
+                .outputFluids(Chlorine.getFluid(1000))
+                .duration(288).EUt(60).save(provider);
 
         // Thermal Centrifuge
         // todo whatever this recipe is

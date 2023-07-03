@@ -33,7 +33,7 @@ public class MetaTileEntityLoader {
 
     public static void init(Consumer<FinishedRecipe> provider) {
         CraftingComponent.initializeComponents();
-
+        
         VanillaRecipeHelper.addShapedRecipe(provider, true, "casing_ulv", GTBlocks.MACHINE_CASING_ULV.asStack(), "PPP", "PwP", "PPP", 'P', new UnificationEntry(TagPrefix.plate, GTMaterials.WroughtIron));
         VanillaRecipeHelper.addShapedRecipe(provider, true, "casing_lv", GTBlocks.MACHINE_CASING_LV.asStack(), "PPP", "PwP", "PPP", 'P', new UnificationEntry(TagPrefix.plate, GTMaterials.Steel));
         VanillaRecipeHelper.addShapedRecipe(provider, true, "casing_mv", GTBlocks.MACHINE_CASING_MV.asStack(), "PPP", "PwP", "PPP", 'P', new UnificationEntry(TagPrefix.plate, GTMaterials.Aluminium));
@@ -336,6 +336,7 @@ public class MetaTileEntityLoader {
         VanillaRecipeHelper.addShapedRecipe(provider, true, "steel_drum", GTMachines.STEEL_DRUM.asStack(), " h ", "PRP", "PRP", 'P', new UnificationEntry(TagPrefix.plate, GTMaterials.Steel), 'R', new UnificationEntry(TagPrefix.rodLong, GTMaterials.Steel));
         VanillaRecipeHelper.addShapedRecipe(provider, true, "aluminium_drum", GTMachines.ALUMINIUM_DRUM.asStack(), " h ", "PRP", "PRP", 'P', new UnificationEntry(TagPrefix.plate, GTMaterials.Aluminium), 'R', new UnificationEntry(TagPrefix.rodLong, GTMaterials.Aluminium));
         VanillaRecipeHelper.addShapedRecipe(provider, true, "stainless_steel_drum", GTMachines.STAINLESS_STEEL_DRUM.asStack(), " h ", "PRP", "PRP", 'P', new UnificationEntry(TagPrefix.plate, GTMaterials.StainlessSteel), 'R', new UnificationEntry(TagPrefix.rodLong, GTMaterials.StainlessSteel));
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "gold_drum", GTMachines.GOLD_DRUM.asStack(), " h ", "PRP", "PRP", 'P', new UnificationEntry(TagPrefix.plate, GTMaterials.Gold), 'R', new UnificationEntry(TagPrefix.rodLong, GTMaterials.Gold));
 
         // Hermetic Casings
         VanillaRecipeHelper.addShapedRecipe(provider, true, "hermetic_casing_lv", GTBlocks.HERMETIC_CASING_LV.asStack(), "PPP", "PFP", "PPP", 'P', new UnificationEntry(TagPrefix.plate, GTMaterials.Steel), 'F', new UnificationEntry(TagPrefix.pipeLargeFluid, GTMaterials.Polyethylene));
