@@ -39,6 +39,9 @@ public class GTREIPlugin implements REIClientPlugin {
         for (MachineDefinition definition : GTMachines.ELECTRIC_FURNACE) {
             registry.addWorkstations(SMELTING, EntryStacks.of(definition.asStack()));
         }
+        registry.addWorkstations(SMELTING, EntryStacks.of(GTMachines.STEAM_FURNACE.left().asStack()));
+        registry.addWorkstations(SMELTING, EntryStacks.of(GTMachines.STEAM_FURNACE.right().asStack()));
+        registry.addWorkstations(SMELTING, EntryStacks.of(GTMachines.STEAM_OVEN.asStack()));
     }
 
     @Override

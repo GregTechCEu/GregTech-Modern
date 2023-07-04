@@ -80,6 +80,11 @@ public class SimpleGeneratorMachine extends WorkableTieredMachine implements IFa
     }
 
     @Override
+    public boolean alwaysTryModifyRecipe() {
+        return true;
+    }
+
+    @Override
     public boolean dampingWhenWaiting() {
         return false;
     }

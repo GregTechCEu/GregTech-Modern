@@ -39,28 +39,33 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     public final IRecipeLogicMachine machine;
     public List<GTRecipe> lastFailedMatches;
 
-    @Persisted @DescSynced @UpdateListener(methodName = "onStatusSynced")
+    @Getter @Persisted @DescSynced @UpdateListener(methodName = "onStatusSynced")
     private Status status = Status.IDLE;
 
     @Nullable
     @Persisted @DescSynced
     private Component waitingReason = null;
-
     /**
      * unsafe, it may not be found from {@link RecipeManager}. Do not index it.
      */
     @Nullable @Getter @Persisted
-    public GTRecipe lastRecipe;
+    protected GTRecipe lastRecipe;
+    /**
+     * safe, it is the origin recipe before {@link IRecipeLogicMachine#modifyRecipe(GTRecipe)} which can be found from {@link RecipeManager}.
+     */
+    @Nullable @Getter @Persisted
+    protected GTRecipe lastOriginRecipe;
     @Persisted
     @Getter
-    public int progress;
-    @Persisted
-    public int duration;
-    @Persisted
-    public int fuelTime;
-    @Persisted
-    public int fuelMaxTime;
-    public long timeStamp;
+    protected int progress;
+    @Getter @Persisted
+    protected int duration;
+    @Getter @Persisted
+    protected int fuelTime;
+    @Getter @Persisted
+    protected int fuelMaxTime;
+    @Getter
+    protected long timeStamp;
     protected boolean recipeDirty;
     protected TickableSubscription subscription;
     @Environment(EnvType.CLIENT)
@@ -90,6 +95,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     public void resetRecipeLogic() {
         recipeDirty = false;
         lastRecipe = null;
+        lastOriginRecipe = null;
         progress = 0;
         duration = 0;
         fuelTime = 0;
@@ -257,21 +263,24 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
                 lastRecipe.checkConditions(this).isSuccessed()) {
             GTRecipe recipe = lastRecipe;
             lastRecipe = null;
+            lastOriginRecipe = null;
             setupRecipe(recipe);
         } else { // try to find and handle a new recipe
             List<GTRecipe> matches = searchRecipe();
 
             lastRecipe = null;
+            lastOriginRecipe = null;
             for (GTRecipe match : matches) {
                 // try to modify recipe by machine, such as overclock, tier checking.
-                match = machine.modifyRecipe(match);
-                if (match == null) continue;
+                var modified = machine.modifyRecipe(match);
+                if (modified == null) continue;
 
-                if (match.checkConditions(this).isSuccessed()) {
-                    setupRecipe(match);
+                if (modified.checkConditions(this).isSuccessed()) {
+                    setupRecipe(modified);
                 }
 
                 if (lastRecipe != null && getStatus() == Status.WORKING) {
+                    lastOriginRecipe = match;
                     lastFailedMatches = null;
                     break;
                 }
@@ -280,7 +289,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
                 if (lastFailedMatches == null) {
                     lastFailedMatches = new ArrayList<>();
                 }
-                lastFailedMatches.add(match);
+                lastFailedMatches.add(modified);
             }
         }
         recipeDirty = false;
@@ -350,10 +359,6 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
         this.recipeDirty = true;
     }
 
-    public Status getStatus() {
-        return status;
-    }
-
     public boolean isWorking() {
         return status == Status.WORKING;
     }
@@ -405,6 +410,18 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
         if (lastRecipe != null) {
             lastRecipe.postWorking(this.machine);
             lastRecipe.handleRecipeIO(IO.OUT, this.machine);
+            if (machine.alwaysTryModifyRecipe()) {
+                if (lastOriginRecipe != null) {
+                    var modified = machine.modifyRecipe(lastOriginRecipe);
+                    if (modified == null) {
+                        markLastRecipeDirty();
+                    } else {
+                        lastRecipe = modified;
+                    }
+                } else {
+                    markLastRecipeDirty();
+                }
+            }
             // try it again
             if (!recipeDirty &&
                     lastRecipe.matchRecipe(this.machine).isSuccessed() &&
@@ -416,7 +433,6 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
                 progress = 0;
                 duration = 0;
             }
-
         }
     }
 

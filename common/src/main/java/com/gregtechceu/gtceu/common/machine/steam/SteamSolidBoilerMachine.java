@@ -84,9 +84,9 @@ public class SteamSolidBoilerMachine extends SteamBoilerMachine  implements IMac
     @Override
     public void afterWorking() {
         super.afterWorking();
-        if (recipeLogic.lastRecipe != null) {
-            var inputs = recipeLogic.lastRecipe.inputs.getOrDefault(ItemRecipeCapability.CAP, Collections.emptyList());
-            if (inputs.size() > 0) {
+        if (recipeLogic.getLastRecipe() != null) {
+            var inputs = recipeLogic.getLastRecipe().inputs.getOrDefault(ItemRecipeCapability.CAP, Collections.emptyList());
+            if (!inputs.isEmpty()) {
                 var input = ItemRecipeCapability.CAP.of(inputs.get(0).content).getItems();
                 if (input.length > 0) {
                     var remaining = getBurningFuelRemainder(input[0]);
