@@ -98,6 +98,16 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFe
         return true;
     }
 
+
+    /**
+     * Always try {@link IRecipeLogicMachine#modifyRecipe(GTRecipe)} before setup recipe.
+     * @return ture - will map {@link RecipeLogic#lastOriginRecipe} to the latest recipe for next round when finish.
+     * false - keep using the {@link RecipeLogic#lastRecipe}, which is already modified.
+     */
+    default boolean alwaysTryModifyRecipe() {
+        return false;
+    }
+
     default boolean shouldWorkingPlaySound() {
         return ConfigHolder.INSTANCE.machines.machineSounds && (!(self() instanceof IMufflableMachine mufflableMachine) || !mufflableMachine.isMuffled());
     }

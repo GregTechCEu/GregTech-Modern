@@ -149,7 +149,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine implemen
         // max progress is based on the dimensions of the structure: (x^3)-(x^2)
         // taller cleanrooms take longer than wider ones
         // minimum of 100 is a 5x5x5 cleanroom: 125-25=100 ticks
-        this.getRecipeLogic().duration = (Math.max(100, ((lDist + rDist + 1) * (bDist + fDist + 1) * hDist) - ((lDist + rDist + 1) * (bDist + fDist + 1))));
+        this.getRecipeLogic().setDuration((Math.max(100, ((lDist + rDist + 1) * (bDist + fDist + 1) * hDist) - ((lDist + rDist + 1) * (bDist + fDist + 1)))));
     }
 
     @Override

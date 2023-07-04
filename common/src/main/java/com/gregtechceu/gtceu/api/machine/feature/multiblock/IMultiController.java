@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.machine.feature.multiblock;
 
-import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineFeature;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.pattern.BlockPattern;
@@ -12,6 +11,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.concurrent.locks.Lock;
 
 /**
  * @author KilaBash
@@ -27,6 +27,9 @@ public interface IMultiController extends IMachineFeature {
 
     /**
      * Check MultiBlock Pattern. Just checking pattern without any other logic.
+     * You can override it but it's unsafe for calling. because it will also be called in an async thread.
+     * <br>
+     * you should always use {@link IMultiController#checkPatternWithLock()} and {@link IMultiController#checkPatternWithTryLock()} instead.
      * @return whether it can be formed.
      */
     default boolean checkPattern() {
@@ -34,6 +37,31 @@ public interface IMultiController extends IMachineFeature {
         return pattern != null && pattern.checkPatternAt(getMultiblockState(), false);
     }
 
+    /**
+     * Check pattern with a lock.
+     */
+    default boolean checkPatternWithLock() {
+        var lock = getPatternLock();
+        lock.lock();
+        var result = checkPattern();
+        lock.unlock();
+        return result;
+    }
+
+    /**
+     * Check pattern with a try lock
+     * @return false - checking failed or cant get the lock.
+     */
+    default boolean checkPatternWithTryLock() {
+        var lock = getPatternLock();
+        if (lock.tryLock()) {
+            var result = checkPattern();
+            lock.unlock();
+            return result;
+        } else {
+            return false;
+        }
+    }
 
     /**
      * Get structure pattern.
@@ -102,6 +130,11 @@ public interface IMultiController extends IMachineFeature {
      * Called from part, when part is invalid due to chunk unload or broken.
      */
     void onPartUnload();
+
+    /**
+     * Get lock for pattern checking.
+     */
+    Lock getPatternLock();
 
     /**
      * get parts' Appearance. same as IForgeBlock.getAppearance() / IFabricBlock.getAppearance()

@@ -94,9 +94,6 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
     public void onStructureFormed() {
         super.onStructureFormed();
         // attach parts' traits
-        if (activeBlocks != null) {
-            updateActiveBlocks(false);
-        }
         activeBlocks = getMultiblockState().getMatchContext().getOrDefault("vaBlocks", LongSets.emptySet());
         capabilitiesProxy.clear();
         traitSubscriptions.forEach(ISubscription::unsubscribe);

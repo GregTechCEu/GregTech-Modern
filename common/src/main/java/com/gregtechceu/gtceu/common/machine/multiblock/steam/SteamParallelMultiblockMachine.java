@@ -103,9 +103,8 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
     }
 
     @Override
-    public void afterWorking() {
-        super.afterWorking();
-        getRecipeLogic().markLastRecipeDirty();
+    public boolean alwaysTryModifyRecipe() {
+        return true;
     }
 
     @Override

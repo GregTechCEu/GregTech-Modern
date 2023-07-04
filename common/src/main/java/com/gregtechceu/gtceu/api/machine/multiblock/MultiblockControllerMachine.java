@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.LockSupport;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
@@ -122,26 +121,24 @@ public class MultiblockControllerMachine extends MetaMachine implements IMultiCo
     //////////////////////////////////////
     //***    Multiblock LifeCycle    ***//
     //////////////////////////////////////
+    @Getter
     private final Lock patternLock = new ReentrantLock();
 
     @Override
     public void asyncCheckPattern(long periodID) {
-        if ((getMultiblockState().hasError() || !isFormed) && (getHolder().getOffset() + periodID) % 4 == 0 && patternLock.tryLock()) { // per second
-            if (checkPattern()) {
-                if (getLevel() instanceof ServerLevel serverLevel) {
-                    serverLevel.getServer().execute(() -> {
-                        patternLock.lock();
-                        if (checkPattern()) { // formed
-                            onStructureFormed();
-                            var mwsd = MultiblockWorldSavedData.getOrCreate(serverLevel);
-                            mwsd.addMapping(getMultiblockState());
-                            mwsd.removeAsyncLogic(this);
-                        }
-                        patternLock.unlock();
-                    });
-                }
+        if ((getMultiblockState().hasError() || !isFormed) && (getHolder().getOffset() + periodID) % 4 == 0 && checkPatternWithTryLock()) { // per second
+            if (getLevel() instanceof ServerLevel serverLevel) {
+                serverLevel.getServer().execute(() -> {
+                    patternLock.lock();
+                    if (checkPatternWithLock()) { // formed
+                        onStructureFormed();
+                        var mwsd = MultiblockWorldSavedData.getOrCreate(serverLevel);
+                        mwsd.addMapping(getMultiblockState());
+                        mwsd.removeAsyncLogic(this);
+                    }
+                    patternLock.unlock();
+                });
             }
-            patternLock.unlock();
         }
     }
 
