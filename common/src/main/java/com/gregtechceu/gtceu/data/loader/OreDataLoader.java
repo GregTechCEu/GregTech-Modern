@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.integration.kjs.GTCEuServerEvents;
 import com.gregtechceu.gtceu.integration.kjs.events.GTOreVeinEventJS;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.JsonOps;
+import dev.latvian.mods.kubejs.script.ScriptType;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceLocation;
@@ -70,7 +71,7 @@ public class OreDataLoader extends SimpleJsonResourceReloadListener {
      */
     public static final class RunKJSEventInSeparateClassBecauseForgeIsDumb {
         public static void fireKJSEvent() {
-            GTCEuServerEvents.ORE_VEIN_MODIFICATION.post(new GTOreVeinEventJS());
+            GTCEuServerEvents.ORE_VEIN_MODIFICATION.post(ScriptType.SERVER, new GTOreVeinEventJS());
         }
     }
 }

@@ -1,11 +1,8 @@
 package com.gregtechceu.gtceu.integration.kjs.builders;
 
 import com.gregtechceu.gtceu.api.data.chemical.Element;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
 import com.gregtechceu.gtceu.common.data.GTElements;
-import com.gregtechceu.gtceu.integration.kjs.GregTechKubeJSPlugin;
-import dev.latvian.mods.kubejs.RegistryObjectBuilderTypes;
 import net.minecraft.resources.ResourceLocation;
 
 public class ElementBuilder extends BuilderBase<Element> {

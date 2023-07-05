@@ -1,5 +1,7 @@
 package com.gregtechceu.gtceu.common.data;
 
+import appeng.api.networking.pathing.ChannelMode;
+import appeng.core.AEConfig;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.addon.AddonFinder;
@@ -1194,8 +1196,7 @@ public class GTMachines {
                     tooltip.add(Component.translatable("gtceu.machine.cleanroom.tooltip.7"));
                     //tooltip.add(Component.translatable("gtceu.machine.cleanroom.tooltip.8"));
                     if (LDLib.isModLoaded(GTValues.MODID_APPENG)) {
-                        // TODO ae2 compat
-                        //tooltip.add(Component.translatable(AEConfig.instance().isFeatureEnabled(AEFeature.CHANNELS) ? "gtceu.machine.cleanroom.tooltip.ae2.channels" : "gtceu.machine.cleanroom.tooltip.ae2.no_channels"));
+                        tooltip.add(Component.translatable(AEConfig.instance().getChannelMode() == ChannelMode.INFINITE ? "gtceu.machine.cleanroom.tooltip.ae2.no_channels" : "gtceu.machine.cleanroom.tooltip.ae2.channels"));
                     }
                     tooltip.add(Component.empty());
                 } else {

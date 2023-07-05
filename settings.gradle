@@ -22,6 +22,7 @@ dependencyResolutionManagement {
         def reiVersion = "9.1.619"
         def emiVersion = "1.0.5+1.19.2"
         def ae2Version = "12.9.5"
+        def kjsVersion = "1902.6.1-build.238"
 
         // Fabric
         def fabricLoaderVersion = "0.14.11" // https://fabricmc.net/develop/
@@ -32,7 +33,6 @@ dependencyResolutionManagement {
         def topFabricVersion = "1.19-6.0.0"
         def jadeFabricVersion = "8.7.3"
         def registrateFabricVersion = "1.1.50-MC1.19.2"
-        def kjsVersion = "1902.6.0-build.142"
         def forgeConfigApiVersion = "4.2.11"
         def nightConfigVersion = "3.6.5"
         def teamRebornEnergyVersion = "2.3.0"

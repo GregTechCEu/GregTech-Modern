@@ -27,6 +27,7 @@ public interface IContentSerializer<T> {
         T inner = (T) content.getContent();
         toNetwork(buf, inner);
         buf.writeFloat(content.chance);
+        buf.writeFloat(content.tierChanceBoost);
         buf.writeBoolean(content.slotName != null);
         if (content.slotName != null) {
             buf.writeUtf(content.slotName);
@@ -40,6 +41,7 @@ public interface IContentSerializer<T> {
     default Content fromNetworkContent(FriendlyByteBuf buf) {
         T inner = fromNetwork(buf);
         float chance = buf.readFloat();
+        float tierChanceBoost = buf.readFloat();
         String slotName = null;
         if (buf.readBoolean()) {
             slotName = buf.readUtf();
@@ -48,7 +50,7 @@ public interface IContentSerializer<T> {
         if (buf.readBoolean()) {
             uiName = buf.readUtf();
         }
-        return new Content(inner, chance, slotName, uiName);
+        return new Content(inner, chance, tierChanceBoost, slotName, uiName);
     }
 
     @SuppressWarnings("unchecked")
@@ -56,6 +58,7 @@ public interface IContentSerializer<T> {
         JsonObject json = new JsonObject();
         json.add("content", toJson((T) content.getContent()));
         json.addProperty("chance", content.chance);
+        json.addProperty("tierChanceBoost", content.tierChanceBoost);
         if (content.slotName != null)
             json.addProperty("slotName", content.slotName);
         if (content.uiName != null)
@@ -67,8 +70,9 @@ public interface IContentSerializer<T> {
         JsonObject jsonObject = json.getAsJsonObject();
         T inner = fromJson(jsonObject.get("content"));
         float chance = jsonObject.has("chance") ? jsonObject.get("chance").getAsFloat() : 1;
+        float tierChanceBoost = jsonObject.has("tierChanceBoost") ? jsonObject.get("tierChanceBoost").getAsFloat() : 0;
         String slotName = jsonObject.has("slotName") ? jsonObject.get("slotName").getAsString() : null;
         String uiName = jsonObject.has("uiName") ? jsonObject.get("uiName").getAsString() : null;
-        return new Content(inner, chance, slotName, uiName);
+        return new Content(inner, chance, tierChanceBoost, slotName, uiName);
     }
 }

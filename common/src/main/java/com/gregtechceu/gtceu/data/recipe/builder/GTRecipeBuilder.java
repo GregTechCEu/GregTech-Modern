@@ -69,6 +69,8 @@ public class GTRecipeBuilder {
     @Setter
     public float chance = 1;
     @Setter
+    public float tierChanceBoost = 0;
+    @Setter
     public boolean isFuel = false;
     @Setter
     public BiConsumer<GTRecipeBuilder, Consumer<FinishedRecipe>> onSave;
@@ -115,28 +117,28 @@ public class GTRecipeBuilder {
     public <T> GTRecipeBuilder input(RecipeCapability<T> capability, T... obj) {
         (perTick ? tickInput : input).computeIfAbsent(capability, c -> new ArrayList<>()).addAll(Arrays.stream(obj)
                 .map(capability::of)
-                .map(o -> new Content(o, chance, slotName, uiName)).toList());
+                .map(o -> new Content(o, chance, tierChanceBoost, slotName, uiName)).toList());
         return this;
     }
 
     public <T> GTRecipeBuilder output(RecipeCapability<T> capability, T... obj) {
         (perTick ? tickOutput : output).computeIfAbsent(capability, c -> new ArrayList<>()).addAll(Arrays.stream(obj)
                 .map(capability::of)
-                .map(o -> new Content(o, chance, slotName, uiName)).toList());
+                .map(o -> new Content(o, chance, tierChanceBoost, slotName, uiName)).toList());
         return this;
     }
 
     public <T> GTRecipeBuilder inputs(RecipeCapability<T> capability, Object... obj) {
         (perTick ? tickInput : input).computeIfAbsent(capability, c -> new ArrayList<>()).addAll(Arrays.stream(obj)
                 .map(capability::of)
-                .map(o -> new Content(o, chance, slotName, uiName)).toList());
+                .map(o -> new Content(o, chance, tierChanceBoost, slotName, uiName)).toList());
         return this;
     }
 
     public <T> GTRecipeBuilder outputs(RecipeCapability<T> capability, Object... obj) {
         (perTick ? tickOutput : output).computeIfAbsent(capability, c -> new ArrayList<>()).addAll(Arrays.stream(obj)
                 .map(capability::of)
-                .map(o -> new Content(o, chance, slotName, uiName)).toList());
+                .map(o -> new Content(o, chance, tierChanceBoost, slotName, uiName)).toList());
         return this;
     }
 
@@ -337,12 +339,48 @@ public class GTRecipeBuilder {
         return notConsumable(IntCircuitBehaviour.stack(configuration));
     }
 
-    public GTRecipeBuilder chancedOutput(ItemStack stack, int chance, int tierChanceBoost) {
-        // todo tier chance boost
+    public GTRecipeBuilder chancedInput(ItemStack stack, int chance, int tierChanceBoost) {
+        // todo finish tier chance boost, make it actually used in places
         float lastChance = this.chance;
+        float lastTierChanceBoost = this.tierChanceBoost;
         this.chance = chance / 10000f;
+        this.tierChanceBoost = tierChanceBoost / 10000f;
+        inputItems(stack);
+        this.chance = lastChance;
+        this.tierChanceBoost = lastTierChanceBoost;
+        return this;
+    }
+
+    public GTRecipeBuilder chancedInput(FluidStack stack, int chance, int tierChanceBoost) {
+        float lastChance = this.chance;
+        float lastTierChanceBoost = this.tierChanceBoost;
+        this.chance = chance / 10000f;
+        this.tierChanceBoost = tierChanceBoost / 10000f;
+        inputFluids(stack);
+        this.chance = lastChance;
+        this.tierChanceBoost = lastTierChanceBoost;
+        return this;
+    }
+
+    public GTRecipeBuilder chancedOutput(ItemStack stack, int chance, int tierChanceBoost) {
+        float lastChance = this.chance;
+        float lastTierChanceBoost = this.tierChanceBoost;
+        this.chance = chance / 10000f;
+        this.tierChanceBoost = tierChanceBoost / 10000f;
         outputItems(stack);
         this.chance = lastChance;
+        this.tierChanceBoost = lastTierChanceBoost;
+        return this;
+    }
+
+    public GTRecipeBuilder chancedOutput(FluidStack stack, int chance, int tierChanceBoost) {
+        float lastChance = this.chance;
+        float lastTierChanceBoost = this.tierChanceBoost;
+        this.chance = chance / 10000f;
+        this.tierChanceBoost = tierChanceBoost / 10000f;
+        outputFluids(stack);
+        this.chance = lastChance;
+        this.tierChanceBoost = lastTierChanceBoost;
         return this;
     }
 
