@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.integration.kjs.recipe;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.StressRecipeCapability;
@@ -10,12 +11,12 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
 import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
+import com.gregtechceu.gtceu.api.recipe.ingredient.NBTIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.common.recipe.*;
 import com.gregtechceu.gtceu.integration.kjs.recipe.components.GTRecipeComponents;
 import com.lowdragmc.lowdraglib.LDLib;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import dev.latvian.mods.kubejs.fluid.FluidStackJS;
 import dev.latvian.mods.kubejs.item.InputItem;
 import dev.latvian.mods.kubejs.recipe.RecipeJS;
@@ -24,13 +25,13 @@ import dev.latvian.mods.kubejs.recipe.component.BooleanComponent;
 import dev.latvian.mods.kubejs.recipe.component.TimeComponent;
 import dev.latvian.mods.kubejs.recipe.schema.RecipeSchema;
 import dev.latvian.mods.kubejs.util.UtilsJS;
+import dev.latvian.mods.rhino.util.HideFromJS;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.entity.ai.goal.BreedGoal;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -52,24 +53,34 @@ public interface GTRecipeSchema {
         @Setter
         public float tierChanceBoost = 0;
 
+        @HideFromJS
+        @Override
+        public GTRecipeJS id(ResourceLocation _id) {
+            this.id = new ResourceLocation(_id.getNamespace(), "%s/%s".formatted(this.type.id.getPath(), _id.getPath()));
+            return this;
+        }
+
         public <T> Object wrapObject(T input) {
             if (input instanceof InputItem item) {
-                return SizedIngredient.create(item.ingredient, item.count);
-            } else if (input instanceof FluidStackJS fluid) {
+                if (!(item.ingredient instanceof SizedIngredient)) {
+                    return InputItem.of(SizedIngredient.create(item.ingredient, item.count), item.count);
+                }
+                return input;
+            }/* else if (input instanceof FluidStackJS fluid) {
                 dev.architectury.fluid.FluidStack fluidStack = fluid.getFluidStack();
                 return FluidStack.create(fluidStack.getFluid(), fluidStack.getAmount(), fluidStack.getTag());
-            }
+            }*/
             return input;
         }
 
         public <T> GTRecipeJS input(String capability, T... obj) {
-            Map<String, Object> map = null;
-            if (!perTick && getValue(ALL_INPUTS) == null) {
-                setValue(ALL_INPUTS, new HashMap<String, HashMap<String, Object>>());
-                map = getValue(ALL_INPUTS);
-            } else if (perTick && getValue(ALL_TICK_INPUTS) == null) {
-                setValue(ALL_TICK_INPUTS, new HashMap<String, HashMap<String, Object>>());
+            Map<String, Object> map;
+            if (perTick)  {
+                if (getValue(ALL_TICK_INPUTS) == null) setValue(ALL_TICK_INPUTS, new HashMap<String, HashMap<String, Object>>());
                 map = getValue(ALL_TICK_INPUTS);
+            } else {
+                if (getValue(ALL_INPUTS) == null) setValue(ALL_INPUTS, new HashMap<String, HashMap<String, Object>>());
+                map = getValue(ALL_INPUTS);
             }
             if (map != null) {
                 HashMap<String, Object>[] array = UtilsJS.cast(map.computeIfAbsent(capability, c -> new HashMap[0]));
@@ -77,7 +88,7 @@ public interface GTRecipeSchema {
                     HashMap<String, Object> entry = new HashMap<>();
                     entry.put(GTRecipeComponents.CHANCE.name, chance);
                     entry.put(GTRecipeComponents.TIER_CHANCE_BOOST.name, tierChanceBoost);
-                    entry.put("content", object);
+                    entry.put("content", wrapObject(object));
                     array = ArrayUtils.add(array, entry);
                 }
                 map.put(capability, array);
@@ -86,13 +97,13 @@ public interface GTRecipeSchema {
         }
 
         public <T> GTRecipeJS input(RecipeCapability<T> capability, T... obj) {
-            Map<String, Object> map = null;
-            if (!perTick && getValue(ALL_INPUTS) == null) {
-                setValue(ALL_INPUTS, new HashMap<String, HashMap<String, Object>>());
-                map = getValue(ALL_INPUTS);
-            } else if (perTick && getValue(ALL_TICK_INPUTS) == null) {
-                setValue(ALL_TICK_INPUTS, new HashMap<String, HashMap<String, Object>>());
+            Map<String, Object> map;
+            if (perTick)  {
+                if (getValue(ALL_TICK_INPUTS) == null) setValue(ALL_TICK_INPUTS, new HashMap<String, HashMap<String, Object>>());
                 map = getValue(ALL_TICK_INPUTS);
+            } else {
+                if (getValue(ALL_INPUTS) == null) setValue(ALL_INPUTS, new HashMap<String, HashMap<String, Object>>());
+                map = getValue(ALL_INPUTS);
             }
             if (map != null) {
                 HashMap<String, Object>[] array = UtilsJS.cast(map.computeIfAbsent(capability.name, c -> new HashMap[0]));
@@ -109,13 +120,13 @@ public interface GTRecipeSchema {
         }
 
         public <T> GTRecipeJS output(String capability, T... obj) {
-            Map<String, Object> map = null;
-            if (!perTick && getValue(ALL_OUTPUTS) == null) {
-                setValue(ALL_OUTPUTS, new HashMap<String, HashMap<String, Object>>());
-                map = getValue(ALL_OUTPUTS);
-            } else if (perTick && getValue(ALL_TICK_OUTPUTS) == null) {
-                setValue(ALL_TICK_OUTPUTS, new HashMap<String, HashMap<String, Object>>());
+            Map<String, Object> map;
+            if (perTick)  {
+                if (getValue(ALL_TICK_OUTPUTS) == null) setValue(ALL_TICK_OUTPUTS, new HashMap<String, HashMap<String, Object>>());
                 map = getValue(ALL_TICK_OUTPUTS);
+            } else {
+                if (getValue(ALL_OUTPUTS) == null) setValue(ALL_OUTPUTS, new HashMap<String, HashMap<String, Object>>());
+                map = getValue(ALL_OUTPUTS);
             }
             if (map != null) {
                 HashMap<String, Object>[] array = UtilsJS.cast(map.computeIfAbsent(capability, c -> new HashMap[0]));
@@ -123,7 +134,7 @@ public interface GTRecipeSchema {
                     HashMap<String, Object> entry = new HashMap<>();
                     entry.put(GTRecipeComponents.CHANCE.name, chance);
                     entry.put(GTRecipeComponents.TIER_CHANCE_BOOST.name, tierChanceBoost);
-                    entry.put("content", object);
+                    entry.put("content", wrapObject(object));
                     array = ArrayUtils.add(array, entry);
                 }
                 map.put(capability, array);
@@ -133,13 +144,13 @@ public interface GTRecipeSchema {
         }
 
         public <T> GTRecipeJS output(RecipeCapability<T> capability, T... obj) {
-            Map<String, Object> map = null;
-            if (!perTick && getValue(ALL_OUTPUTS) == null) {
-                setValue(ALL_OUTPUTS, new HashMap<String, HashMap<String, Object>>());
-                map = getValue(ALL_OUTPUTS);
-            } else if (perTick && getValue(ALL_TICK_OUTPUTS) == null) {
-                setValue(ALL_TICK_OUTPUTS, new HashMap<String, HashMap<String, Object>>());
+            Map<String, Object> map;
+            if (perTick)  {
+                if (getValue(ALL_TICK_OUTPUTS) == null) setValue(ALL_TICK_OUTPUTS, new HashMap<String, HashMap<String, Object>>());
                 map = getValue(ALL_TICK_OUTPUTS);
+            } else {
+                if (getValue(ALL_OUTPUTS) == null) setValue(ALL_OUTPUTS, new HashMap<String, HashMap<String, Object>>());
+                map = getValue(ALL_OUTPUTS);
             }
             if (map != null) {
                 HashMap<String, Object>[] array = UtilsJS.cast(map.computeIfAbsent(capability.name, c -> new HashMap[0]));
@@ -157,7 +168,7 @@ public interface GTRecipeSchema {
         }
 
         public GTRecipeJS addCondition(RecipeCondition condition) {
-            ArrayUtils.add(getValue(CONDITIONS), condition);
+            setValue(CONDITIONS, ArrayUtils.add(getValue(CONDITIONS), condition));
             save();
             return this;
         }
@@ -210,11 +221,11 @@ public interface GTRecipeSchema {
         public GTRecipeJS inputItems(ItemStack... inputs) {
             for (ItemStack itemStack : inputs) {
                 if (itemStack.isEmpty()) {
-                    LDLib.LOGGER.error("gt recipe {} input items is empty", id);
+                    GTCEu.LOGGER.error("gt recipe {} input items is empty", id);
                     throw new IllegalArgumentException(id + ": input items is empty");
                 }
             }
-            return input("item", Arrays.stream(inputs).map(InputItem::of).toArray(InputItem[]::new));
+            return input("item", Arrays.stream(inputs).map(stack -> InputItem.of(SizedIngredient.create(stack.hasTag() ? NBTIngredient.createNBTIngredient(stack) : Ingredient.of(stack), stack.getCount()), stack.getCount())).toArray(InputItem[]::new));
         }
 
         public GTRecipeJS inputItems(TagKey<Item> tag, int amount) {
@@ -368,7 +379,7 @@ public interface GTRecipeSchema {
             return this;
         }
 
-        public GTRecipeJS chancedInput(FluidStack stack, int chance, int tierChanceBoost) {
+        public GTRecipeJS chancedInput(FluidStackJS stack, int chance, int tierChanceBoost) {
             float lastChance = this.chance;
             float lastTierChanceBoost = this.tierChanceBoost;
             this.chance = chance / 10000f;
@@ -390,7 +401,7 @@ public interface GTRecipeSchema {
             return this;
         }
 
-        public GTRecipeJS chancedOutput(FluidStack stack, int chance, int tierChanceBoost) {
+        public GTRecipeJS chancedOutput(FluidStackJS stack, int chance, int tierChanceBoost) {
             float lastChance = this.chance;
             float lastTierChanceBoost = this.tierChanceBoost;
             this.chance = chance / 10000f;
@@ -409,11 +420,11 @@ public interface GTRecipeSchema {
             return chancedOutput(ChemicalHelper.get(tag, mat, count), chance, tierChanceBoost);
         }
 
-        public GTRecipeJS inputFluids(FluidStack... inputs) {
+        public GTRecipeJS inputFluids(FluidStackJS... inputs) {
             return input("fluid", inputs);
         }
 
-        public GTRecipeJS outputFluids(FluidStack... outputs) {
+        public GTRecipeJS outputFluids(FluidStackJS... outputs) {
             return output("fluid", outputs);
         }
 

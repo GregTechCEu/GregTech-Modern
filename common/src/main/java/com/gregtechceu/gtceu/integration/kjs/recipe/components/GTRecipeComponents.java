@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.events.KJSRecipeKeyEvent;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
+import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import dev.latvian.mods.kubejs.item.InputItem;
 import dev.latvian.mods.kubejs.item.OutputItem;
@@ -19,6 +20,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
@@ -41,6 +43,17 @@ public class GTRecipeComponents {
             }
 
             return false;
+        }
+
+        @Override
+        public @Nullable JsonElement write(RecipeJS recipe, InputItem value) {
+            JsonElement element = RecipeComponentWithParent.super.write(recipe, value);
+            if (element instanceof JsonObject object) {
+                object.addProperty("type", SizedIngredient.TYPE.toString());
+                object.addProperty("fabric:type", SizedIngredient.TYPE.toString());
+                object.addProperty("count", value.count);
+            }
+            return element;
         }
 
         @Override
