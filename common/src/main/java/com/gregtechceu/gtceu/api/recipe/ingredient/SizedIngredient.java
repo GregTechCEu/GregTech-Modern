@@ -73,6 +73,11 @@ public class SizedIngredient extends Ingredient {
         return inner;
     }
 
+    @ExpectPlatform
+    public static SizedIngredient fromJson(JsonObject json) {
+        throw new AssertionError();
+    }
+
     @Override
     public @NotNull JsonElement toJson() {
         JsonObject json = new JsonObject();

@@ -1,5 +1,7 @@
 package com.gregtechceu.gtceu.integration.kjs.recipe;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
@@ -19,6 +21,7 @@ import com.gregtechceu.gtceu.integration.kjs.recipe.components.GTRecipeComponent
 import com.lowdragmc.lowdraglib.LDLib;
 import dev.latvian.mods.kubejs.fluid.FluidStackJS;
 import dev.latvian.mods.kubejs.item.InputItem;
+import dev.latvian.mods.kubejs.item.OutputItem;
 import dev.latvian.mods.kubejs.recipe.RecipeJS;
 import dev.latvian.mods.kubejs.recipe.RecipeKey;
 import dev.latvian.mods.kubejs.recipe.component.BooleanComponent;
@@ -60,19 +63,6 @@ public interface GTRecipeSchema {
             return this;
         }
 
-        public <T> Object wrapObject(T input) {
-            if (input instanceof InputItem item) {
-                if (!(item.ingredient instanceof SizedIngredient)) {
-                    return InputItem.of(SizedIngredient.create(item.ingredient, item.count), item.count);
-                }
-                return input;
-            }/* else if (input instanceof FluidStackJS fluid) {
-                dev.architectury.fluid.FluidStack fluidStack = fluid.getFluidStack();
-                return FluidStack.create(fluidStack.getFluid(), fluidStack.getAmount(), fluidStack.getTag());
-            }*/
-            return input;
-        }
-
         public <T> GTRecipeJS input(String capability, T... obj) {
             Map<String, Object> map;
             if (perTick)  {
@@ -88,7 +78,7 @@ public interface GTRecipeSchema {
                     HashMap<String, Object> entry = new HashMap<>();
                     entry.put(GTRecipeComponents.CHANCE.name, chance);
                     entry.put(GTRecipeComponents.TIER_CHANCE_BOOST.name, tierChanceBoost);
-                    entry.put("content", wrapObject(object));
+                    entry.put("content", object);
                     array = ArrayUtils.add(array, entry);
                 }
                 map.put(capability, array);
@@ -134,7 +124,7 @@ public interface GTRecipeSchema {
                     HashMap<String, Object> entry = new HashMap<>();
                     entry.put(GTRecipeComponents.CHANCE.name, chance);
                     entry.put(GTRecipeComponents.TIER_CHANCE_BOOST.name, tierChanceBoost);
-                    entry.put("content", wrapObject(object));
+                    entry.put("content", object);
                     array = ArrayUtils.add(array, entry);
                 }
                 map.put(capability, array);
@@ -545,6 +535,46 @@ public interface GTRecipeSchema {
         public GTRecipeJS rpm(float rpm) {
             return rpm(rpm, false);
         }
+
+        /*
+         * KubeJS overrides
+         */
+
+        public InputItem readInputItem(Object from) {
+            if(from instanceof SizedIngredient ingr) {
+                return InputItem.of(ingr.getInner(), ingr.getAmount());
+            } else if(from instanceof JsonObject jsonObject) {
+                if (!jsonObject.has("type") || !jsonObject.get("type").getAsString().equals(SizedIngredient.TYPE.toString())) {
+                    return InputItem.of(from);
+                }
+                var sizedIngredient = SizedIngredient.fromJson(jsonObject);
+                return InputItem.of(sizedIngredient.getInner(), sizedIngredient.getAmount());
+            }
+            return InputItem.of(from);
+        }
+
+        public JsonElement writeInputItem(InputItem value) {
+            return SizedIngredient.create(value.ingredient, value.count).toJson();
+        }
+
+        @Override
+        public OutputItem readOutputItem(Object from) {
+            if(from instanceof SizedIngredient ingredient) {
+                return OutputItem.of(ingredient.getInner().getItems()[0], Double.NaN);
+            } else if(from instanceof JsonObject jsonObject) {
+                if (jsonObject.has("content")) {
+                    jsonObject = jsonObject.getAsJsonObject("content");
+                }
+                var ingredient = SizedIngredient.fromJson(jsonObject);
+                return OutputItem.of(ingredient.getInner().getItems()[0], Double.NaN);
+            }
+            return OutputItem.of(from);
+        }
+
+        @Override
+        public JsonElement writeOutputItem(OutputItem value) {
+            return SizedIngredient.create(value.item).toJson();
+        }
     }
 
     RecipeKey<ResourceLocation> ID = GTRecipeComponents.RESOURCE_LOCATION.key("id");
@@ -553,11 +583,11 @@ public interface GTRecipeSchema {
     RecipeKey<RecipeCondition[]> CONDITIONS = GTRecipeComponents.RECIPE_CONDITION.asArray().key("recipeConditions").defaultOptional().exclude();
     RecipeKey<Boolean> IS_FUEL = BooleanComponent.BOOLEAN.key("isFuel").optional(false).exclude();
 
-    RecipeKey<Map<String, Object>> ALL_INPUTS = GTRecipeComponents.ALL_ANY.key("inputs").defaultOptional().exclude();
-    RecipeKey<Map<String, Object>> ALL_TICK_INPUTS = GTRecipeComponents.ALL_ANY.key("tickInputs").defaultOptional().exclude();
+    RecipeKey<Map<String, Object>> ALL_INPUTS = GTRecipeComponents.ALL_ANY.key("inputs").defaultOptional();
+    RecipeKey<Map<String, Object>> ALL_TICK_INPUTS = GTRecipeComponents.ALL_ANY.key("tickInputs").defaultOptional();
 
-    RecipeKey<Map<String, Object>> ALL_OUTPUTS = GTRecipeComponents.ALL_ANY.key("outputs").defaultOptional().exclude();
-    RecipeKey<Map<String, Object>> ALL_TICK_OUTPUTS = GTRecipeComponents.ALL_ANY.key("tickOutputs").defaultOptional().exclude();
+    RecipeKey<Map<String, Object>> ALL_OUTPUTS = GTRecipeComponents.ALL_ANY.key("outputs").defaultOptional();
+    RecipeKey<Map<String, Object>> ALL_TICK_OUTPUTS = GTRecipeComponents.ALL_ANY.key("tickOutputs").defaultOptional();
 
     RecipeSchema SCHEMA = new RecipeSchema(GTRecipeJS.class, GTRecipeJS::new, DURATION, DATA, CONDITIONS, ALL_INPUTS, ALL_TICK_INPUTS, ALL_OUTPUTS, ALL_TICK_OUTPUTS, IS_FUEL)
             .constructor((recipe, schemaType, keys, from) -> recipe.id(from.getValue(recipe, ID)), ID);

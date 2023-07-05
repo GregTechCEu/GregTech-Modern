@@ -70,6 +70,10 @@ public class SizedIngredientImpl extends SizedIngredient implements FabricIngred
         return new CustomSizedIngredient(this);
     }
 
+    public static SizedIngredient fromJson(JsonObject json) {
+        return Serializer.INSTANCE.read(json).vanilla;
+    }
+
     public static class CustomSizedIngredient implements CustomIngredient {
 
         public final SizedIngredientImpl vanilla;
@@ -117,11 +121,6 @@ public class SizedIngredientImpl extends SizedIngredient implements FabricIngred
         public String getTag() {
             return vanilla.tag;
         }
-
-        /*@Override
-        public SizedIngredientImpl toVanilla() {
-            return vanilla;
-        }*/
     }
 
 
@@ -142,13 +141,11 @@ public class SizedIngredientImpl extends SizedIngredient implements FabricIngred
             } else {
                 Ingredient inner = Ingredient.fromJson(json.get("ingredient"));
                 return new CustomSizedIngredient(inner, amount);
-                //return new SizedIngredientImpl(inner, amount).getCustomIngredient();
             }
         }
 
         @Override
         public void write(JsonObject json, CustomSizedIngredient ingredient) {
-            var vanilla = ingredient.toVanilla();
             json.addProperty("count", ingredient.getAmount());
             if (ingredient.getTag() != null) {
                 json.addProperty("tag", ingredient.getTag());
@@ -169,14 +166,12 @@ public class SizedIngredientImpl extends SizedIngredient implements FabricIngred
 
         @Override
         public void write(FriendlyByteBuf buffer, CustomSizedIngredient ingredient) {
-            var vanilla = ingredient.toVanilla();
             buffer.writeVarInt(ingredient.getAmount());
             if (ingredient.getTag() != null) {
                 buffer.writeBoolean(true);
                 buffer.writeUtf(ingredient.getTag());
             } else {
                 buffer.writeBoolean(false);
-                //vanilla.inner.toNetwork(buffer);
                 ingredient.getInner().toNetwork(buffer);
             }
         }
