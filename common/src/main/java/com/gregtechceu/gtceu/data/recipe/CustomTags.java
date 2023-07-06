@@ -61,6 +61,7 @@ public class CustomTags {
     public static final TagKey<Block> GLASS_BLOCKS = TagUtil.createPlatformBlockTag("glass", "glass_blocks", false);
     public static final TagKey<Block> GLASS_PANES_BLOCK = TagUtil.createBlockTag("glass_panes");
     public static final TagKey<Block> CREATE_SEATS = TagUtil.optionalTag(Registry.BLOCK, new ResourceLocation(GTValues.MODID_CREATE, "seats"));
+    public static final TagKey<Block> ORE_BLOCKS = TagUtil.createBlockTag("ores");
 
     @SuppressWarnings("unchecked")
     public static final TagKey<Block>[] TOOL_TIERS = new TagKey[] {

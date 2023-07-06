@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
+import com.gregtechceu.gtceu.api.capability.IMiner;
 import com.gregtechceu.gtceu.api.capability.PlatformEnergyCompat;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
@@ -25,10 +26,7 @@ import com.gregtechceu.gtceu.api.registry.registrate.MultiblockMachineBuilder;
 import com.gregtechceu.gtceu.client.renderer.block.CTMModelRenderer;
 import com.gregtechceu.gtceu.client.renderer.machine.*;
 import com.gregtechceu.gtceu.common.block.BoilerFireboxType;
-import com.gregtechceu.gtceu.common.machine.electric.BatteryBufferMachine;
-import com.gregtechceu.gtceu.common.machine.electric.ConverterMachine;
-import com.gregtechceu.gtceu.common.machine.electric.PumpMachine;
-import com.gregtechceu.gtceu.common.machine.electric.TransformerMachine;
+import com.gregtechceu.gtceu.common.machine.electric.*;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.*;
 import com.gregtechceu.gtceu.common.machine.multiblock.generator.LargeCombustionEngineMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.generator.LargeTurbineMachine;
@@ -230,6 +228,29 @@ public class GTMachines {
                             Component.translatable("gtceu.universal.tooltip.working_area", PumpMachine.BASE_PUMP_RANGE + PumpMachine.EXTRA_PUMP_RANGE * tier, PumpMachine.BASE_PUMP_RANGE + PumpMachine.EXTRA_PUMP_RANGE * tier))
                     .register(),
             LV, MV, HV, EV);
+
+    public static final MachineDefinition[] MINER = registerTieredMachines("miner", (holder, tier) -> new MinerMachine(holder, tier, 320 / (tier * 2), tier * 8, tier),
+            (tier, builder) -> builder
+                    .rotationState(RotationState.NON_Y_AXIS)
+                    .recipeType(new GTRecipeType(GTCEu.id("miner"), "dummy")
+                            .setSound(GTSoundEntries.MINER))
+                    .hasTESR(true)
+                    .renderer(() -> new MinerRenderer(tier, GTCEu.id("block/machines/miner")))
+                    .tooltipBuilder((stack, tooltip) -> {
+                        int maxArea = IMiner.getWorkingArea(tier * 8);
+                        long energyPerTick = GTValues.V[tier - 1];
+                        int tickSpeed = 320 / (tier * 2);
+                        tooltip.add(Component.translatable("gtceu.machine.miner.tooltip", maxArea, maxArea));
+                        tooltip.add(Component.translatable("gtceu.universal.tooltip.uses_per_tick", energyPerTick)
+                                .append(Component.literal(", ").withStyle(ChatFormatting.GRAY))
+                                .append(Component.translatable("gtceu.machine.miner.per_block", tickSpeed / 20)));
+                        tooltip.add(Component.translatable("gtceu.universal.tooltip.voltage_in", GTValues.V[tier], GTValues.VNF[tier]));
+                        tooltip.add(Component.translatable("gtceu.universal.tooltip.energy_storage_capacity", GTValues.V[tier] * 64L));
+
+                        tooltip.add(Component.translatable("gtceu.universal.tooltip.working_area_max", maxArea, maxArea));
+                    })
+                    .register(),
+            LV, MV, HV);
 
     //////////////////////////////////////
     //*********     Storage    *********//

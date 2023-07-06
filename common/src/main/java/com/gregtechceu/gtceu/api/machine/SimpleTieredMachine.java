@@ -88,7 +88,7 @@ public class SimpleTieredMachine extends WorkableTieredMachine implements IAutoO
         super(holder, tier, tankScalingFunction, args);
         this.outputFacingItems = hasFrontFacing() ? getFrontFacing().getOpposite() : Direction.UP;
         this.outputFacingFluids = outputFacingItems;
-        this.chargerInventory = createCharterItemHandler(args);
+        this.chargerInventory = createChargerItemHandler(args);
         this.circuitInventory = createCircuitItemHandler(args);
     }
 
@@ -100,7 +100,7 @@ public class SimpleTieredMachine extends WorkableTieredMachine implements IAutoO
         return MANAGED_FIELD_HOLDER;
     }
 
-    protected ItemStackTransfer createCharterItemHandler(Object... args) {
+    protected ItemStackTransfer createChargerItemHandler(Object... args) {
         var transfer = new ItemStackTransfer();
         transfer.setFilter(item -> GTCapabilityHelper.getElectricItem(item) != null);
         return transfer;
