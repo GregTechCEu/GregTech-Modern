@@ -19,7 +19,6 @@ import com.gregtechceu.gtceu.client.renderer.block.TextureOverrideRenderer;
 import com.gregtechceu.gtceu.client.renderer.machine.MinerRenderer;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
-import com.lowdragmc.lowdraglib.client.renderer.impl.IModelRenderer;
 import com.lowdragmc.lowdraglib.gui.widget.*;
 import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
@@ -110,7 +109,7 @@ public class MinerMachine extends WorkableTieredMachine implements IMiner, ICont
             }
         }
 
-        var energyBar = createEnergyBar();
+        var energyBar = createEnergyBar().createDefault();
         var batterySlot = createBatterySlot();
         var energyGroup = new WidgetGroup(2, 3, energyBar.getSize().width, energyBar.getSize().height + 20);
         batterySlot.setSelfPosition(new Position((energyBar.getSize().width - 18) / 2, energyBar.getSize().height + 1));

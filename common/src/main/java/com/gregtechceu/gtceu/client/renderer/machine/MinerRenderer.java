@@ -2,28 +2,22 @@ package com.gregtechceu.gtceu.client.renderer.machine;
 
 import com.google.common.collect.ImmutableMap;
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.addon.AddonFinder;
-import com.gregtechceu.gtceu.api.addon.events.MaterialCasingCollectionEvent;
 import com.gregtechceu.gtceu.api.capability.impl.miner.MinerLogic;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
-import com.gregtechceu.gtceu.client.renderer.block.TextureOverrideRenderer;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
-import com.lowdragmc.lowdraglib.client.renderer.impl.IModelRenderer;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.tterrag.registrate.util.entry.BlockEntry;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.Nullable;
 
