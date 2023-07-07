@@ -13,6 +13,8 @@ import static com.gregtechceu.gtceu.api.registry.GTRegistries.REGISTRATE;
  * @implNote GTBlockEntities
  */
 public class GTBlockEntities {
+
+    // Cable Block Entity
     @SuppressWarnings("unchecked")
     public static final BlockEntityEntry<CableBlockEntity> CABLE = REGISTRATE
             .blockEntity("cable", CableBlockEntity::create)
@@ -20,6 +22,7 @@ public class GTBlockEntities {
             .validBlocks(GTBlocks.CABLE_BLOCKS.values().toArray(BlockEntry[]::new))
             .register();
 
+    // Fluid Pipe Block Entity
     @SuppressWarnings("unchecked")
     public static final BlockEntityEntry<FluidPipeBlockEntity> FLUID_PIPE = REGISTRATE
             .blockEntity("fluid_pipe", FluidPipeBlockEntity::create)
@@ -27,7 +30,5 @@ public class GTBlockEntities {
             .validBlocks(GTBlocks.FLUID_PIPE_BLOCKS.values().toArray(BlockEntry[]::new))
             .register();
 
-    public static void init() {
-
-    }
+    public static void init() {}
 }

@@ -1,8 +1,6 @@
 package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.common.worldgen.RubberFoliagePlacer;
-import com.gregtechceu.gtceu.common.worldgen.RubberTrunkPlacer;
 import net.minecraft.core.Holder;
 import net.minecraft.data.worldgen.features.FeatureUtils;
 import net.minecraft.util.valueproviders.ConstantInt;
@@ -14,8 +12,6 @@ import net.minecraft.world.level.levelgen.feature.featuresize.TwoLayersFeatureSi
 import net.minecraft.world.level.levelgen.feature.foliageplacers.MegaJungleFoliagePlacer;
 import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvider;
 import net.minecraft.world.level.levelgen.feature.trunkplacers.ForkingTrunkPlacer;
-
-import java.util.OptionalInt;
 
 /**
  * @author KilaBash
@@ -30,7 +26,4 @@ public class GTConfiguredFeatures {
                     BlockStateProvider.simple(GTBlocks.RUBBER_LEAVES.get()),
                     new MegaJungleFoliagePlacer(ConstantInt.of(1), UniformInt.of(0, 1), 1),
                     new TwoLayersFeatureSize(1, 0, 2)).ignoreVines().build());
-
-//    public static final Holder<ConfiguredFeature<RandomFeatureConfiguration,?>> TREES_ADDITIONS = FeatureUtils.register(GTCEu.MOD_ID + ":trees_additions", Feature.RANDOM_SELECTOR,
-//            new RandomFeatureConfiguration(List.of(), GTPlacements.RUBBER_CHECKED));
 }
