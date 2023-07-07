@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.client.renderer.block.MaterialBlockRenderer;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.client.renderer.IBlockRendererProvider;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import net.fabricmc.api.EnvType;
@@ -43,7 +44,7 @@ public class MaterialBlock extends AppearanceBlock implements IBlockRendererProv
         super(properties);
         this.material = material;
         this.tagPrefix = tagPrefix;
-        this.renderer = MaterialBlockRenderer.getOrCreate(tagPrefix.materialIconType(), material.getMaterialIconSet());
+        this.renderer = Platform.isClient() ? MaterialBlockRenderer.getOrCreate(tagPrefix.materialIconType(), material.getMaterialIconSet()) : null;
     }
 
     public MaterialBlock(Properties properties, TagPrefix tagPrefix, Material material, IRenderer renderer) {
@@ -55,6 +56,7 @@ public class MaterialBlock extends AppearanceBlock implements IBlockRendererProv
 
     @Nullable
     @Override
+    @Environment(EnvType.CLIENT)
     public IRenderer getRenderer(BlockState state) {
         return renderer;
     }

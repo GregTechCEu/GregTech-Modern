@@ -168,7 +168,7 @@ public class TabsWidget extends Widget {
             });
         } else {
             for (int i = subTabs.size() - 1; i >= 0; i--) {
-                drawTab(subTabs.get(i), poseStack, mouseX, mouseY, position.x + size.width - 8 - 24, position.y, 24, 24, hoveredTab);
+                drawTab(subTabs.get(i), poseStack, mouseX, mouseY, position.x + size.width - 8 - 24 * (subTabs.size() - i), position.y, 24, 24, hoveredTab);
             }
         }
     }

@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.common.machine.storage;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.UITemplate;
 import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
@@ -14,7 +13,6 @@ import com.gregtechceu.gtceu.api.machine.feature.*;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.syncdata.RequireRerender;
 import com.lowdragmc.lowdraglib.gui.editor.Icons;
-import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceBorderTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
@@ -333,8 +331,9 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
     //////////////////////////////////////
     //***********     GUI    ***********//
     //////////////////////////////////////
-    @Override
-    public ModularUI createUI(Player entityPlayer) {
+
+    public Widget createUIWidget() {
+        var group = new WidgetGroup(0, 0, 109, 63);
         var importItems = new ItemStackTransfer();
         importItems.setFilter(itemStack -> {
             var item = cache.getStackInSlot(0);
@@ -353,15 +352,12 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
         if (!current.isEmpty()) {
             current.setCount(Math.min(current.getCount(), current.getItem().getMaxStackSize()));
         }
-        return new ModularUI(176, 166, this, entityPlayer)
-                .background(GuiTextures.BACKGROUND)
-                .widget(new ImageWidget(7, 16, 81, 55, GuiTextures.DISPLAY))
-                .widget(new LabelWidget(11, 20, "gtceu.machine.quantum_chest.items_stored"))
-                .widget(new LabelWidget(11, 30, () -> storedAmount + "").setTextColor(-1).setDropShadow(true))
-                .widget(new LabelWidget(6, 6, getBlockState().getBlock().getDescriptionId()))
-                .widget(new SlotWidget(importItems, 0, 90, 17, false, true)
+        group.addWidget(new ImageWidget(4, 4, 81, 55, GuiTextures.DISPLAY))
+                .addWidget(new LabelWidget(8, 8, "gtceu.machine.quantum_chest.items_stored"))
+                .addWidget(new LabelWidget(8, 18, () -> storedAmount + "").setTextColor(-1).setDropShadow(true))
+                .addWidget(new SlotWidget(importItems, 0, 87, 5, false, true)
                         .setBackgroundTexture(new GuiTextureGroup(GuiTextures.SLOT, GuiTextures.IN_SLOT_OVERLAY)))
-                .widget(new SlotWidget(cache, 0, 90, 35, false, false)
+                .addWidget(new SlotWidget(cache, 0, 87, 23, false, false)
                         .setItemHook(itemStack -> {
                             var copied = itemStack.copy();
                             if (!copied.isEmpty()) {
@@ -370,33 +366,33 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
                             return copied;
                         })
                         .setBackgroundTexture(GuiTextures.SLOT))
-                .widget(new ButtonWidget(90, 54, 18, 18,
+                .addWidget(new ButtonWidget(87, 42, 18, 18,
                         new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON, Icons.DOWN.scale(0.7f)),cd -> {
                     if (!cd.isRemote) {
                         var stored = cache.getStackInSlot(0);
                         if (!stored.isEmpty()) {
                             var extracted = cache.extractItem(0, Math.min(stored.getCount(), stored.getItem().getMaxStackSize()), false);
-                            if (!entityPlayer.addItem(extracted)) {
-                                Block.popResource(entityPlayer.level, entityPlayer.getOnPos(), extracted);
+                            if (!group.getGui().entityPlayer.addItem(extracted)) {
+                                Block.popResource(group.getGui().entityPlayer.level, group.getGui().entityPlayer.getOnPos(), extracted);
                             }
                         }
                     }
                 }))
-                .widget(new PhantomSlotWidget(lockedItem, 0, 69, 53))
-                .widget(new ToggleButtonWidget(7, 53, 18, 18,
+                .addWidget(new PhantomSlotWidget(lockedItem, 0, 54, 53))
+                .addWidget(new ToggleButtonWidget(4, 41, 18, 18,
                         GuiTextures.BUTTON_ITEM_OUTPUT, this::isAutoOutputItems, this::setAutoOutputItems)
                         .setShouldUseBaseBackground()
                         .setTooltipText("gtceu.gui.item_auto_output.tooltip"))
-                .widget(new ToggleButtonWidget(25, 53, 18, 18,
+                .addWidget(new ToggleButtonWidget(22, 41, 18, 18,
                         GuiTextures.BUTTON_LOCK, this::isLocked, this::setLocked)
                         .setShouldUseBaseBackground()
                         .setTooltipText("gtceu.gui.item_lock.tooltip"))
-                .widget(new ToggleButtonWidget(43, 53, 18, 18,
+                .addWidget(new ToggleButtonWidget(40, 41, 18, 18,
                         GuiTextures.BUTTON_VOID, this::isVoiding, this::setVoiding)
                         .setShouldUseBaseBackground()
-                        .setTooltipText("gtceu.gui.item_voiding_partial.tooltip"))
-                .widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(), GuiTextures.SLOT, 7, 84, true));
-
+                        .setTooltipText("gtceu.gui.item_voiding_partial.tooltip"));
+        group.setBackground(GuiTextures.BACKGROUND_INVERSE);
+        return group;
     }
 
     //////////////////////////////////////

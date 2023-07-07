@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.block.ICoilType;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.client.renderer.block.TextureOverrideRenderer;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.lowdragmc.lowdraglib.Platform;
 import lombok.Getter;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.StringRepresentable;
@@ -24,11 +25,11 @@ public class CoilBlock extends ActiveBlock {
     public ICoilType coilType;
 
     public CoilBlock(Properties properties, ICoilType coilType) {
-        super(properties, new TextureOverrideRenderer(new ResourceLocation("block/cube_all"),
-                        Map.of("all", coilType.getTexture())),
-                new TextureOverrideRenderer(GTCEu.id("block/cube_2_layer_all"),
+        super(properties, Platform.isClient() ? new TextureOverrideRenderer(new ResourceLocation("block/cube_all"),
+                        Map.of("all", coilType.getTexture())) : null,
+                Platform.isClient() ? new TextureOverrideRenderer(GTCEu.id("block/cube_2_layer_all"),
                         Map.of("bot_all", coilType.getTexture(),
-                                "top_all", new ResourceLocation(coilType.getTexture() + "_bloom"))));
+                                "top_all", new ResourceLocation(coilType.getTexture() + "_bloom"))) : null);
         this.coilType = coilType;
     }
 

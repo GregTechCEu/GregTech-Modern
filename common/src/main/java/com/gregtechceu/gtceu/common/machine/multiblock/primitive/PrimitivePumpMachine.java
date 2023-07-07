@@ -46,7 +46,7 @@ public class PrimitivePumpMachine extends MultiblockControllerMachine {
     }
 
     private void initializeTank() {
-        for (IMultiPart part : parts) {
+        for (IMultiPart part : getParts()) {
             for (var handler : part.getRecipeHandlers()) {
                 if (handler.getHandlerIO() == IO.OUT && handler.getCapability() == FluidRecipeCapability.CAP) {
                     fluidTank = (NotifiableFluidTank) handler;

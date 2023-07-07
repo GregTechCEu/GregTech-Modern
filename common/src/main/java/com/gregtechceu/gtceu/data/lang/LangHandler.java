@@ -88,9 +88,9 @@ public class LangHandler {
         provider.add("gtceu.multiblock.large_boiler.description", "Large Boilers are multiblocks that generate steam from an energy source and water. Said energy source is either any Solid Fuel with a Burn Time, or a Diesel/Semi-Fluid Fuel. Can be throttled back in increments of 5%% to reduce Steam output and Fuel consumption.");
         provider.add("gtceu.multiblock.large_turbine.description", "Large Turbines are multiblocks that generate power from steam, gases, and plasma by having them spin the turbine's rotor. Energy output is based on rotor efficiency and current speed of turbine. Gearbox casings are used in the center of the structure.");
         provider.add("gtceu.multiblock.assembly_line.description", "The Assembly Line is a large multiblock structure consisting of 5 to 16 \"slices\". In theory, it's large Assembling Machine, used for creating advanced crafting components.");
-        provider.add("gtceu.multiblock.fusion_reactor.luv.description", "The Fusion Reactor Mark 1 is a large multiblock structure used for fusing elements into heavier ones. It can only use LuV, ZPM, and UV Energy Hatches. For every Hatch it has, its buffer increases by 10M EU, and has a maximum of 160M.");
-        provider.add("gtceu.multiblock.fusion_reactor.zpm.description", "The Fusion Reactor Mark 2 is a large multiblock structure used for fusing elements into heavier ones. It can only use ZPM and UV Energy Hatches. For every Hatch it has, its buffer increases by 20M EU, and has a maximum of 320M.");
-        provider.add("gtceu.multiblock.fusion_reactor.uv.description", "The Fusion Reactor Mark 3 is a large multiblock structure used for fusing elements into heavier ones. It can only use UV Energy Hatches. For every Hatch it has, its buffer increases by 40M EU, and has a maximum of 640M.");
+        provider.add("gtceu.multiblock.fusion_reactor.luv.description", "The Fusion Reactor MK 1 is a large multiblock structure used for fusing elements into heavier ones. It can only use LuV, ZPM, and UV Energy Hatches. For every Hatch it has, its buffer increases by 10M EU, and has a maximum of 160M.");
+        provider.add("gtceu.multiblock.fusion_reactor.zpm.description", "The Fusion Reactor MK 2 is a large multiblock structure used for fusing elements into heavier ones. It can only use ZPM and UV Energy Hatches. For every Hatch it has, its buffer increases by 20M EU, and has a maximum of 320M.");
+        provider.add("gtceu.multiblock.fusion_reactor.uv.description", "The Fusion Reactor MK 3 is a large multiblock structure used for fusing elements into heavier ones. It can only use UV Energy Hatches. For every Hatch it has, its buffer increases by 40M EU, and has a maximum of 640M.");
         provider.add("gtceu.multiblock.fusion_reactor.energy", "EU: %d / %d");
         provider.add("gtceu.multiblock.fusion_reactor.heat", "Heat: %d");
         provider.add("gtceu.multiblock.large_chemical_reactor.description", "The Large Chemical Reactor performs chemical reactions at 100%% energy efficiency. Overclocks multiply both speed and energy by 4. The multiblock requires exactly 1 Cupronickel Coil Block, which must be placed adjacent to the PTFE Pipe casing located in the center.");
@@ -717,6 +717,7 @@ public class LangHandler {
         provider.add("gtceu.maintenance.configurable_duration", "Duration: %fx");
         provider.add("gtceu.maintenance.configurable_duration.unchanged_description", "Recipes will run at normal speed. Change configuration to update.");
         provider.add("gtceu.maintenance.configurable_duration.changed_description", "Recipes will run with %fx duration, applied before overclocking.");
+        provider.add("gtceu.maintenance.configurable_duration.modify", "Modify Duration:");
         provider.add("gtceu.maintenance.configurable_time", "Time: %fx");
         provider.add("gtceu.maintenance.configurable_time.unchanged_description", "Maintenance problems will occur at normal rate. Change configuration to update.");
         provider.add("gtceu.maintenance.configurable_time.changed_description", "Maintenance problems will occur at %fx the normal rate.");

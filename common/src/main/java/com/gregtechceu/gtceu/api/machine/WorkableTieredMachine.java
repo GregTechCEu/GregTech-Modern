@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.machine;
 import com.google.common.collect.Table;
 import com.google.common.collect.Tables;
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.capability.ICleanroomReceiver;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.machine.feature.*;
 import com.gregtechceu.gtceu.api.machine.trait.*;
@@ -35,7 +36,7 @@ import java.util.List;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public abstract class WorkableTieredMachine extends TieredEnergyMachine implements IRecipeLogicMachine, ICleanroomReceiver, IMachineModifyDrops, IMufflableMachine, IOverclockMachine {
+public abstract class WorkableTieredMachine extends TieredEnergyMachine implements IRecipeLogicMachine, IMachineModifyDrops, IMufflableMachine, IOverclockMachine {
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(WorkableTieredMachine.class, TieredEnergyMachine.MANAGED_FIELD_HOLDER);
 
     @Getter
@@ -45,7 +46,7 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
     public final GTRecipeType recipeType;
     @Getter
     public final Int2LongFunction tankScalingFunction;
-    @Getter @Setter
+    @Nullable @Getter @Setter
     private ICleanroomProvider cleanroom;
     @Persisted
     public final NotifiableItemStackHandler importItems;

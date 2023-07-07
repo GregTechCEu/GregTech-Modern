@@ -15,8 +15,8 @@ import com.gregtechceu.gtceu.api.pattern.predicates.SimplePredicate;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.common.block.CoilBlock;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.lowdragmc.lowdraglib.utils.BlockInfo;
-import com.tterrag.registrate.util.entry.BlockEntry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -82,6 +82,7 @@ public class Predicates {
                                                       boolean checkFluidIn,
                                                       boolean checkFluidOut) {
         TraceabilityPredicate predicate = new TraceabilityPredicate();
+
         if (checkEnergyIn) {
             if (recipeType.getMaxInputs(EURecipeCapability.CAP) > 0) {
                 predicate = predicate.or(abilities(PartAbility.INPUT_ENERGY).setMaxGlobalLimited(3).setPreviewCount(1));
@@ -115,6 +116,17 @@ public class Predicates {
         return predicate;
     }
 
+    public static TraceabilityPredicate autoAbilities(boolean checkMaintenance, boolean checkMuffler) {
+        TraceabilityPredicate predicate = new TraceabilityPredicate();
+        if (checkMaintenance) {
+            predicate = predicate.or(abilities(PartAbility.MAINTENANCE).setMinGlobalLimited(ConfigHolder.INSTANCE.machines.enableMaintenance ? 1 : 0).setMaxGlobalLimited(1));
+        }
+        if (checkMuffler) {
+            predicate = predicate.or(abilities(PartAbility.MUFFLER).setMinGlobalLimited(1).setMaxGlobalLimited(1));
+        }
+        return predicate;
+    }
+
     public static TraceabilityPredicate heatingCoils() {
         return new TraceabilityPredicate(blockWorldState -> {
             var blockState = blockWorldState.getBlockState();
@@ -136,5 +148,26 @@ public class Predicates {
                 .map(coil -> BlockInfo.fromBlockState(coil.getValue().get().defaultBlockState()))
                 .toArray(BlockInfo[]::new))
                 .addTooltips(Component.translatable("gtceu.multiblock.pattern.error.coils"));
+    }
+
+    public static TraceabilityPredicate cleanroomFilters() {
+        return new TraceabilityPredicate(blockWorldState -> {
+            var blockState = blockWorldState.getBlockState();
+            for (var entry : GTBlocks.ALL_FILTERS.entrySet()) {
+                if (blockState.is(entry.getValue().get())) {
+                    var stats = entry.getKey();
+                    Object currentCoil = blockWorldState.getMatchContext().getOrPut("FilterType", stats);
+                    if (!currentCoil.equals(stats)) {
+                        blockWorldState.setError(new PatternStringError("gtceu.multiblock.pattern.error.filters"));
+                        return false;
+                    }
+                    return true;
+                }
+            }
+            return false;
+        }, () -> GTBlocks.ALL_FILTERS.values().stream()
+                .map(blockSupplier -> BlockInfo.fromBlockState(blockSupplier.get().defaultBlockState()))
+                .toArray(BlockInfo[]::new))
+                .addTooltips(Component.translatable("gtceu.multiblock.pattern.error.filters"));
     }
 }

@@ -92,6 +92,7 @@ public class GTRecipeWidget extends WidgetGroup {
                     LocalizationUtils.format(!isOutput ? "gtceu.recipe.eu" : "gtceu.recipe.eu_inverted", EUt, GTValues.VN[GTUtil.getTierByVoltage(EUt)])));
         }
         for (RecipeCondition condition : recipe.conditions) {
+            if (condition.getTooltips() == null) continue;
             addWidget(new LabelWidget(3, yOffset += 10, condition.getTooltips().getString()));
         }
         for (Function<CompoundTag, String> dataInfo : recipe.recipeType.getDataInfos()) {

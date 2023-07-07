@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.lowdragmc.lowdraglib.emi.ModularUIEmiRecipeCategory;
 import dev.emi.emi.api.EmiRegistry;
 import dev.emi.emi.api.stack.EmiStack;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 public class MultiblockInfoEmiCategory extends ModularUIEmiRecipeCategory {
@@ -32,4 +33,8 @@ public class MultiblockInfoEmiCategory extends ModularUIEmiRecipeCategory {
         }
     }
 
+    @Override
+    public Component getName() {
+        return Component.translatable("gtceu.jei.multiblock_info");
+    }
 }

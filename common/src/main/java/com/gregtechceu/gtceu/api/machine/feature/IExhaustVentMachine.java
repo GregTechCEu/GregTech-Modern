@@ -44,6 +44,21 @@ public interface IExhaustVentMachine extends IMachineFeature {
     float getVentingDamage();
 
     /**
+     * Checks the venting state. Performs venting only if required.
+     * <strong>Server-Side Only.</strong>
+     *
+     * @return if the machine does not need venting
+     */
+    default boolean checkVenting() {
+        if (needsVenting()) {
+            if (self().getLevel() instanceof ServerLevel serverLevel) {
+                tryDoVenting(serverLevel, self().getPos());
+            }
+        }
+        return !needsVenting();
+    }
+
+    /**
      * @return if venting is being blocked by something
      */
     default boolean isVentingBlocked() {

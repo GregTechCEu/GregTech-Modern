@@ -36,6 +36,6 @@ public class GTCapability {
     public static final ItemApiLookup<IElectricItem, ContainerItemContext> CAPABILITY_ELECTRIC_ITEM =
             ItemApiLookup.get(GTCEu.id("sided_recipe_logic"), IElectricItem.class, ContainerItemContext.class);
 
-    public static final BlockApiLookup<ConverterTrait, Direction> CAPABILITY_CONVERTER =
-            BlockApiLookup.get(GTCEu.id("converter"), ConverterTrait.class, Direction.class);
+    public static final BlockApiLookup<ICleanroomReceiver, Direction> CAPABILITY_CLEANROOM_RECEIVER =
+            BlockApiLookup.get(GTCEu.id("cleanroom_receiver"), ICleanroomReceiver.class, Direction.class);
 }

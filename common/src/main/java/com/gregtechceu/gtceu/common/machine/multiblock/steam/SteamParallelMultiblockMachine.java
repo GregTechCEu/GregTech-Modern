@@ -23,13 +23,18 @@ import com.lowdragmc.lowdraglib.gui.widget.DraggableScrollableWidgetGroup;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import net.minecraft.ChatFormatting;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.world.entity.player.Player;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine implements IDisplayUIMachine {
 
     private static final int MAX_PARALLELS = 8;
@@ -61,7 +66,7 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
 
     @Nullable
     @Override
-    public GTRecipe modifyRecipe(GTRecipe recipe) {
+    public GTRecipe getRealRecipe(@NotNull GTRecipe recipe) {
         int duration = recipe.duration;
         var eut = RecipeHelper.getInputEUt(recipe);
         var parallelRecipe = tryParallel(recipe, 1, MAX_PARALLELS);
@@ -76,12 +81,13 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
         return recipe;
     }
 
+    @Nullable
     private GTRecipe tryParallel(GTRecipe original, int min, int max) {
         if (min > max) return null;
 
         int mid = (min + max) / 2;
 
-        GTRecipe copied = tryCopy(original, ContentModifier.multiplier(mid));
+        GTRecipe copied = original.copy(ContentModifier.multiplier(mid), false);
         if (!copied.matchRecipe(this).isSuccessed()) {
             // tried too many
             return tryParallel(original, min, mid - 1);
@@ -96,14 +102,9 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
         }
     }
 
-    // modified recipe.copy(), which doesn't worry about tick inputs or duration,
-    // as duration is fixed, and tick inputs are converted to steam cost
-    private static GTRecipe tryCopy(GTRecipe original, ContentModifier modifier) {
-        var copied = original.copy();
-        GTRecipe.modifyContents(copied.inputs, modifier);
-        GTRecipe.modifyContents(copied.outputs, modifier);
-        GTRecipe.modifyContents(copied.tickOutputs, modifier);
-        return copied;
+    @Override
+    public boolean alwaysTryModifyRecipe() {
+        return true;
     }
 
     @Override
@@ -146,7 +147,7 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
         var screen = new DraggableScrollableWidgetGroup(7, 4, 162, 121).setBackground(getScreenTexture());
         screen.addWidget(new LabelWidget(4, 5, self().getBlockState().getBlock().getDescriptionId()));
         screen.addWidget(new ComponentPanelWidget(4, 17, this::addDisplayText)
-                .setMaxWidthLimit(156)
+                .setMaxWidthLimit(150)
                 .clickHandler(this::handleDisplayClick));
         return new ModularUI(176, 216, this, entityPlayer)
                 .background(GuiTextures.BACKGROUND_STEAM.get(ConfigHolder.INSTANCE.machines.steelSteamMultiblocks))

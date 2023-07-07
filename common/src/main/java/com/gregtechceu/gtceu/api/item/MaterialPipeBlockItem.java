@@ -44,6 +44,7 @@ public class MaterialPipeBlockItem extends PipeBlockItem implements IItemRendere
 
     @Nullable
     @Override
+    @Environment(EnvType.CLIENT)
     public IRenderer getRenderer(ItemStack stack) {
         return getBlock().getRenderer(getBlock().defaultBlockState());
     }

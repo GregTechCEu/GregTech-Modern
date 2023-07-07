@@ -4,7 +4,9 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 public class CleanroomType {
 
@@ -37,7 +39,20 @@ public class CleanroomType {
     }
 
     @Nullable
-    public static CleanroomType getByName(@Nonnull String name) {
+    public static CleanroomType getByName(@Nullable String name) {
         return CLEANROOM_TYPES.get(name);
+    }
+
+    @Nonnull
+    public static CleanroomType getByNameOrDefault(@Nullable String name) {
+        var type = getByName(name);
+        if (type == null) {
+            return CLEANROOM;
+        }
+        return type;
+    }
+
+    public static Set<CleanroomType> getAllTypes() {
+        return new HashSet<>(CLEANROOM_TYPES.values());
     }
 }

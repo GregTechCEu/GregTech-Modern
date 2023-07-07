@@ -15,6 +15,7 @@ public class CustomTags {
 
     // Added Vanilla tags
     public static final TagKey<Item> TAG_PISTONS = TagUtil.createItemTag("pistons");
+    public static final TagKey<Item> GLASS_PANES = TagUtil.createItemTag("glass_panes");
 
     // Added Gregtech tags
     public static final TagKey<Item> TRANSISTORS = TagUtil.createItemTag("transistors");
@@ -58,7 +59,7 @@ public class CustomTags {
     public static final TagKey<Block> CONCRETE = TagUtil.createBlockTag("concrete");
     public static final TagKey<Block> CONCRETE_POWDER = TagUtil.createBlockTag("concrete_powder");
     public static final TagKey<Block> GLASS_BLOCKS = TagUtil.createPlatformBlockTag("glass", "glass_blocks", false);
-    public static final TagKey<Block> GLASS_PANES = TagUtil.createBlockTag("glass_panes");
+    public static final TagKey<Block> GLASS_PANES_BLOCK = TagUtil.createBlockTag("glass_panes");
     public static final TagKey<Block> CREATE_SEATS = TagUtil.optionalTag(Registry.BLOCK, new ResourceLocation(GTValues.MODID_CREATE, "seats"));
 
     @SuppressWarnings("unchecked")

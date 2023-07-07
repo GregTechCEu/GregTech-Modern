@@ -62,4 +62,10 @@ public class GTCapabilityHelper {
     public static IPlatformEnergyStorage getPlatformEnergy(Level level, BlockPos pos, @Nullable Direction side) {
         throw new AssertionError();
     }
+
+    @ExpectPlatform
+    @Nullable
+    public static ICleanroomReceiver getCleanroomReceiver(Level level, BlockPos pos, @Nullable Direction side) {
+        throw new AssertionError();
+    }
 }

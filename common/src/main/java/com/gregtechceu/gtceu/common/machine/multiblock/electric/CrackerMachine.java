@@ -48,7 +48,7 @@ public class CrackerMachine extends WorkableElectricMultiblockMachine {
     }
 
     @Override
-    public @Nullable GTRecipe modifyRecipe(GTRecipe recipe) {
+    public @Nullable GTRecipe getRealRecipe(GTRecipe recipe) {
         if (RecipeHelper.getRecipeEUtTier(recipe) > getTier()) {
             return null;
         }

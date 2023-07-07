@@ -11,7 +11,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "gtceu:superconductor_coil"
+          "name": "gtceu:filter_casing"
         }
       ],
       "rolls": 1.0

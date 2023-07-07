@@ -1,6 +1,8 @@
 package com.gregtechceu.gtceu.api.machine.feature.multiblock;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
+import lombok.val;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.item.ItemStack;
 
@@ -41,5 +43,13 @@ public interface IMufflerMachine extends IMultiPart {
                 zPos + GTValues.RNG.nextFloat() * 0.5F,
                 xSpd, ySpd, zSpd);
 
+    }
+
+    @Override
+    default void afterWorking(IWorkableMultiController controller) {
+        val supplier = controller.self().getDefinition().getRecoveryItems();
+        if (supplier != null) {
+            recoverItemsTable(supplier.get());
+        }
     }
 }

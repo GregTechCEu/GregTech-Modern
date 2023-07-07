@@ -92,7 +92,8 @@ public class GuiTextures {
     public static final ResourceTexture SLIDER_BACKGROUND = new ResourceTexture("gtceu:textures/gui/widget/slider_background.png");
     public static final ResourceTexture SLIDER_BACKGROUND_VERTICAL = new ResourceTexture("gtceu:textures/gui/widget/slider_background_vertical.png");
     public static final ResourceTexture SLIDER_ICON = new ResourceTexture("gtceu:textures/gui/widget/slider.png");
-    public static final ResourceTexture MAINTENANCE_ICON = new ResourceTexture("gtceu:textures/gui/widget/button_maintenance.png");
+    public static final ResourceTexture MAINTENANCE_BUTTON = new ResourceTexture("gtceu:textures/gui/widget/button_maintenance.png");
+    public static final ResourceTexture MAINTENANCE_ICON = new ResourceTexture("gtceu:textures/block/overlay/machine/overlay_maintenance.png");
 
     //PRIMITIVE
     public static final ResourceBorderTexture PRIMITIVE_BACKGROUND = new ResourceBorderTexture("gtceu:textures/gui/primitive/primitive_background.png", 176, 166, 3, 3);

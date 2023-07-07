@@ -559,12 +559,11 @@ public class MetaTileEntityMachineRecipeLoader {
 
         // Maintenance Hatch
 
-        // todo maintenance hatch
-        //ASSEMBLER_RECIPES.recipeBuilder()
-        //        .inputItems(HULL[LV])
-        //        .circuitMeta(1)
-        //        .outputItems(MAINTENANCE_HATCH)
-        //        .duration(100).EUt(VA[LV]).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("maintenance_hatch")
+                .inputItems(HULL[LV])
+                .circuitMeta(1)
+                .outputItems(MAINTENANCE_HATCH)
+                .duration(100).EUt(VA[LV]).save(provider);
 
         // Multiblock Miners
         // TODO Multiblock miners, fluid rigs

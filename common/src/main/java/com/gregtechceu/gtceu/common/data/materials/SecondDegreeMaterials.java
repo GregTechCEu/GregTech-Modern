@@ -86,7 +86,7 @@ public class SecondDegreeMaterials {
         Apatite = new Material.Builder("apatite")
                 .gem(1).ore(4, 2)
                 .color(0xC8C8FF).iconSet(DIAMOND)
-                .flags(NO_SMASHING, NO_SMELTING, CRYSTALLIZABLE, GENERATE_BOLT_SCREW)
+                .flags(NO_SMASHING, NO_SMELTING, CRYSTALLIZABLE, GENERATE_BOLT_SCREW, DISABLE_DECOMPOSITION)
                 .components(Calcium, 5, Phosphate, 3, Chlorine, 1)
                 .buildAndRegister();
 
