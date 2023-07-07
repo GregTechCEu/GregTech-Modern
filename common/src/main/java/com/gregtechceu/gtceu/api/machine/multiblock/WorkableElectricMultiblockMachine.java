@@ -35,8 +35,8 @@ import java.util.List;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine implements IFancyUIMachine, IDisplayUIMachine, ITieredMachine, IOverclockMachine {
-    public WorkableElectricMultiblockMachine(IMachineBlockEntity holder) {
-        super(holder);
+    public WorkableElectricMultiblockMachine(IMachineBlockEntity holder, Object... args) {
+        super(holder, args);
     }
 
     //////////////////////////////////////
@@ -44,7 +44,7 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
     //////////////////////////////////////
 
     @Override
-    public void  addDisplayText(List<Component> textList) {
+    public void addDisplayText(List<Component> textList) {
         IDisplayUIMachine.super.addDisplayText(textList);
         if (isFormed()) {
             var maxVoltage = getMaxVoltage();

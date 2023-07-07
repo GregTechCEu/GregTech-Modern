@@ -94,6 +94,7 @@ public class GuiTextures {
     public static final ResourceTexture SLIDER_ICON = new ResourceTexture("gtceu:textures/gui/widget/slider.png");
     public static final ResourceTexture MAINTENANCE_BUTTON = new ResourceTexture("gtceu:textures/gui/widget/button_maintenance.png");
     public static final ResourceTexture MAINTENANCE_ICON = new ResourceTexture("gtceu:textures/block/overlay/machine/overlay_maintenance.png");
+    public static final ResourceTexture BUTTON_MINER_MODES = new ResourceTexture("gtceu:textures/gui/widget/button_miner_modes.png");
 
     //PRIMITIVE
     public static final ResourceBorderTexture PRIMITIVE_BACKGROUND = new ResourceBorderTexture("gtceu:textures/gui/primitive/primitive_background.png", 176, 166, 3, 3);

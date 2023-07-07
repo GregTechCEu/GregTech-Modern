@@ -1,8 +1,7 @@
 package com.gregtechceu.gtceu.utils;
 
-import com.gregtechceu.gtceu.api.capability.IMultipleTankHandler;
-import com.gregtechceu.gtceu.api.capability.IMultipleTankHandler.MultiFluidTankEntry;
 import com.lowdragmc.lowdraglib.misc.FluidStorage;
+import com.lowdragmc.lowdraglib.misc.FluidTransferList;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidStorage;
@@ -10,8 +9,8 @@ import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.stream.IntStream;
 
 /**
  * Simulates consecutive fills to {@link IFluidTransfer} instance.
@@ -20,16 +19,13 @@ public class OverlayedFluidHandler {
 
     private final List<OverlayedTank> overlayedTanks;
 
-    public OverlayedFluidHandler(@Nonnull IMultipleTankHandler tank) {
+    public OverlayedFluidHandler(@Nonnull FluidTransferList tank) {
         this.overlayedTanks = new ArrayList<>();
-        MultiFluidTankEntry[] entries = tank.getFluidTanks().toArray(new MultiFluidTankEntry[0]);
-        Arrays.sort(entries, IMultipleTankHandler.ENTRY_COMPARATOR);
-        for (MultiFluidTankEntry fluidTank : entries) {
-            for (int i = 0; i < fluidTank.getTanks(); ++i) {
-                FluidStorage storage = new FluidStorage(fluidTank.getCapacity());
-                storage.setFluid(fluidTank.getFluid());
-                this.overlayedTanks.add(new OverlayedTank(storage, fluidTank.allowSameFluidFill()));
-            }
+        FluidStack[] entries = IntStream.range(0, tank.getTanks()).mapToObj(tank::getFluidInTank).toArray(FluidStack[]::new);
+        for (int i = 0; i < tank.getTanks(); ++i) {
+            FluidStorage storage = new FluidStorage(tank.getTankCapacity(i));
+            storage.setFluid(entries[i]);
+            this.overlayedTanks.add(new OverlayedTank(storage, tank.isFluidValid(i, entries[i])));
         }
     }
 

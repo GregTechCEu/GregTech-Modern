@@ -36,6 +36,7 @@ import com.gregtechceu.gtceu.common.machine.multiblock.primitive.PrimitiveBlastF
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.PrimitivePumpMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.steam.LargeBoilerMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.steam.SteamParallelMultiblockMachine;
+import com.gregtechceu.gtceu.common.machine.steam.SteamMinerMachine;
 import com.gregtechceu.gtceu.common.machine.steam.SteamSolidBoilerMachine;
 import com.gregtechceu.gtceu.common.machine.storage.CrateMachine;
 import com.gregtechceu.gtceu.common.machine.storage.CreativeEnergyContainerMachine;
@@ -90,6 +91,7 @@ import static com.gregtechceu.gtceu.api.pattern.util.RelativeDirection.*;
 import static com.gregtechceu.gtceu.api.registry.GTRegistries.REGISTRATE;
 import static com.gregtechceu.gtceu.common.data.GTBlocks.*;
 import static com.gregtechceu.gtceu.common.data.GTCreativeModeTabs.*;
+import static com.gregtechceu.gtceu.common.data.GTMaterials.DrillingFluid;
 import static com.gregtechceu.gtceu.utils.FormattingUtil.*;
 
 /**
@@ -140,6 +142,19 @@ public class GTMachines {
     public final static Pair<MachineDefinition, MachineDefinition> STEAM_FURNACE = registerSimpleSteamMachines("furnace", GTRecipeTypes.FURNACE_RECIPES);
     public final static Pair<MachineDefinition, MachineDefinition> STEAM_ALLOY_SMELTER = registerSimpleSteamMachines("alloy_smelter", GTRecipeTypes.ALLOY_SMELTER_RECIPES);
     public final static Pair<MachineDefinition, MachineDefinition> STEAM_ROCK_CRUSHER = registerSimpleSteamMachines("rock_crusher", GTRecipeTypes.ROCK_BREAKER_RECIPES);
+    public final static MachineDefinition STEAM_MINER = REGISTRATE.machine("steam_miner", holder -> new SteamMinerMachine(holder, 320, 4, 0))
+            .rotationState(RotationState.NON_Y_AXIS)
+            .langValue("Steam Miner")
+            .recipeType(GTRecipeTypes.MINER_DUMMY)
+            .tier(0)
+            .tooltips(Component.translatable("gtceu.universal.tooltip.uses_per_tick_steam", 16).append(ChatFormatting.GRAY + ", ")
+                    .append(Component.translatable("gtceu.machine.miner.per_block", 320 / 20)))
+            .tooltipBuilder((item, tooltip) -> {
+                int maxArea = IMiner.getWorkingArea(4);
+                tooltip.add(Component.translatable("gtceu.universal.tooltip.working_area", maxArea, maxArea));
+            })
+            .renderer(() -> new SteamMinerRenderer(false, GTCEu.id("block/machines/steam_miner")))
+            .register();
 
     //////////////////////////////////////
     //***     SimpleTieredMachine    ***//
@@ -232,8 +247,7 @@ public class GTMachines {
     public static final MachineDefinition[] MINER = registerTieredMachines("miner", (holder, tier) -> new MinerMachine(holder, tier, 320 / (tier * 2), tier * 8, tier),
             (tier, builder) -> builder
                     .rotationState(RotationState.NON_Y_AXIS)
-                    .recipeType(new GTRecipeType(GTCEu.id("miner"), "dummy")
-                            .setSound(GTSoundEntries.MINER))
+                    .recipeType(GTRecipeTypes.MINER_DUMMY)
                     .hasTESR(true)
                     .renderer(() -> new MinerRenderer(tier, GTCEu.id("block/machines/miner")))
                     .tooltipBuilder((stack, tooltip) -> {
@@ -800,7 +814,7 @@ public class GTMachines {
                     .where('C', Predicates.heatingCoils())
                     .where('#', Predicates.air())
                     .build())
-            .workableCasingRenderer( GTCEu.id("block/casings/voltage/ulv/side"),
+            .workableCasingRenderer(GTCEu.id("block/casings/voltage/ulv/side"),
                     GTCEu.id("block/multiblock/pyrolyse_oven"), false)
             .tooltips(Component.translatable("gtceu.machine.pyrolyse_oven.tooltip.1"))
             .additionalDisplay((controller, components) -> {
@@ -1113,7 +1127,7 @@ public class GTMachines {
                             .or(abilities(PartAbility.INPUT_ENERGY).setMinGlobalLimited(1).setMaxGlobalLimited(3, 2))
                             .or(blocks(ConfigHolder.INSTANCE.machines.enableMaintenance ? GTMachines.MAINTENANCE_HATCH.getBlock() : PLASTCRETE.get()).setMinGlobalLimited(1).setMaxGlobalLimited(1))
                             .or(blocks(Blocks.IRON_DOOR).setMaxGlobalLimited(8)))
-                    .where('S', controller(blocks(GTMachines.CLEANROOM.get())))
+                    .where('S', controller(blocks(definition.getBlock())))
                     .where(' ', any())
                     .where('E', abilities(PartAbility.INPUT_ENERGY))
                     .where('F', cleanroomFilters())
@@ -1177,6 +1191,42 @@ public class GTMachines {
             CASING_TUNGSTENSTEEL_TURBINE, CASING_TUNGSTENSTEEL_GEARBOX,
             GTCEu.id("block/casings/solid/machine_casing_robust_tungstensteel"),
             GTCEu.id("block/multiblock/generator/large_plasma_turbine"));
+
+    public static final MultiblockMachineDefinition[] LARGE_MINER = registerTieredMultis("large_miner", (holder, tier) -> new LargeMinerMachine(holder, tier, 64 / tier, 2 * tier - 5, tier, LargeMinerMachine.MINER_MATERIALS.get(tier), 8 - (tier - 5)),
+            (tier, builder) -> builder
+                    .rotationState(RotationState.NON_Y_AXIS)
+                    .recipeType(GTRecipeTypes.MINER_DUMMY)
+                    .hasTESR(true)
+                    .tooltips(Component.translatable("gtceu.machine.large_miner.%s.tooltip".formatted(VN[tier].toLowerCase())),
+                            Component.translatable("gtceu.machine.miner.multi.description"))
+                    .tooltipBuilder((stack, tooltip) -> {
+                        int workingAreaChunks = (2 * tier - 5) * 2 / LargeMinerMachine.CHUNK_LENGTH;
+                        tooltip.add(Component.translatable("gtceu.machine.miner.multi.modes"));
+                        tooltip.add(Component.translatable("gtceu.machine.miner.multi.production"));
+                        tooltip.add(Component.translatable("gtceu.machine.miner.fluid_usage", 8 - (tier - 5), DrillingFluid.getLocalizedName()));
+                        tooltip.add(Component.translatable("gtceu.universal.tooltip.working_area_chunks_max", workingAreaChunks, workingAreaChunks));
+                        tooltip.add(Component.translatable("gtceu.universal.tooltip.energy_tier_range", GTValues.VNF[tier], GTValues.VNF[tier + 1]));
+                    })
+                    .pattern((definition) -> {
+                        var casingBlock = GTBlocks.MATERIALS_TO_CASINGS.get(LargeMinerMachine.MINER_MATERIALS.get(tier)).get();
+                        return FactoryBlockPattern.start()
+                                .aisle("XXX", "#F#", "#F#", "#F#", "###", "###", "###")
+                                .aisle("XXX", "FCF", "FCF", "FCF", "#F#", "#F#", "#F#")
+                                .aisle("XSX", "#F#", "#F#", "#F#", "###", "###", "###")
+                                .where('S', controller(blocks(definition.getBlock())))
+                                .where('X', blocks(casingBlock)
+                                        .or(abilities(PartAbility.EXPORT_ITEMS).setMaxGlobalLimited(1).setPreviewCount(1))
+                                        .or(abilities(PartAbility.IMPORT_FLUIDS).setExactLimit(1).setPreviewCount(1))
+                                        .or(abilities(PartAbility.INPUT_ENERGY).setMinGlobalLimited(1).setMaxGlobalLimited(3).setPreviewCount(1)))
+                                .where('C', blocks(casingBlock))
+                                .where('F', frames(LargeMinerMachine.MINER_MATERIALS.get(tier)))
+                                .where('#', any())
+                                .build();
+                    })
+                    .renderer(() -> new LargeMinerRenderer(MinerRenderer.MATERIALS_TO_CASING_MODELS.get(LargeMinerMachine.MINER_MATERIALS.get(tier)),
+                             GTCEu.id("block/multiblock/large_miner")))
+                    .register(),
+            EV, IV, LuV);
 
     //////////////////////////////////////
     //**********     Misc     **********//
@@ -1296,7 +1346,7 @@ public class GTMachines {
         MultiblockMachineDefinition[] definitions = new MultiblockMachineDefinition[tiers.length];
         for (int i = 0; i < tiers.length; i++) {
             int tier = tiers[i];
-            var register =  REGISTRATE.multiblock(name + "_" + GTValues.VN[tier].toLowerCase(), holder -> factory.apply(holder, tier))
+            var register =  REGISTRATE.multiblock(GTValues.VN[tier].toLowerCase() + "_" + name, holder -> factory.apply(holder, tier))
                     .tier(tier);
             definitions[i] = builder.apply(tier, register);
         }

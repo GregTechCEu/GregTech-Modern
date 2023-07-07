@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.utils;
 
 
-import com.gregtechceu.gtceu.api.capability.IMultipleTankHandler;
+import com.lowdragmc.lowdraglib.misc.FluidTransferList;
 import com.lowdragmc.lowdraglib.misc.ItemHandlerHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
@@ -138,7 +138,7 @@ public class GTTransferUtils {
      * @param fluidStacks  the items to insert into {@code fluidHandler}.
      * @return {@code true} if the insertion succeeded, {@code false} otherwise.
      */
-    public static boolean addFluidsToFluidHandler(IMultipleTankHandler fluidHandler,
+    public static boolean addFluidsToFluidHandler(FluidTransferList fluidHandler,
                                                   boolean simulate,
                                                   List<FluidStack> fluidStacks) {
         if (simulate) {

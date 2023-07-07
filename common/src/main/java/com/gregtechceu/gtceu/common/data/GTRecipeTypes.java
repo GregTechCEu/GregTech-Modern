@@ -54,6 +54,7 @@ public class GTRecipeTypes {
     public static final String ELECTRIC = "electric";
     public static final String GENERATOR = "generator";
     public static final String MULTIBLOCK = "multiblock";
+    public static final String DUMMY = "dummy";
     public static final String KINETIC = "kinetic";
 
     //////////////////////////////////////
@@ -536,7 +537,8 @@ public class GTRecipeTypes {
             .setSound(GTSoundEntries.ARC)
             .addDataInfo(data -> LocalizationUtils.format("gtceu.recipe.eu_to_start", data.getLong("eu_to_start")));
 
-
+    public static final GTRecipeType MINER_DUMMY = new GTRecipeType(GTCEu.id("miner"), DUMMY)
+            .setSound(GTSoundEntries.MINER);
 
 
     //////////////////////////////////////

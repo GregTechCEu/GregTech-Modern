@@ -1,10 +1,11 @@
 package com.gregtechceu.gtceu.common.machine.electric;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.IMiner;
-import com.gregtechceu.gtceu.api.capability.impl.MinerLogic;
+import com.gregtechceu.gtceu.api.capability.impl.miner.MinerLogic;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
@@ -16,6 +17,7 @@ import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
+import com.lowdragmc.lowdraglib.client.renderer.impl.IModelRenderer;
 import com.lowdragmc.lowdraglib.gui.widget.*;
 import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
@@ -39,6 +41,7 @@ import java.util.List;
 
 public class MinerMachine extends WorkableTieredMachine implements IMiner, IControllable, IFancyUIMachine {
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(MinerMachine.class, WorkableTieredMachine.MANAGED_FIELD_HOLDER);
+    public static final IModelRenderer PIPE_MODEL = new IModelRenderer(GTCEu.id("block/pipe"));
 
 
     @Getter
@@ -49,7 +52,7 @@ public class MinerMachine extends WorkableTieredMachine implements IMiner, ICont
     private final long energyPerTick;
     private boolean isInventoryFull = false;
     @Nullable
-    protected TickableSubscription subscription;
+    protected TickableSubscription itemExportSubs;
 
     public MinerMachine(IMachineBlockEntity holder, int tier, int speed, int maximumRadius, int fortune, Object... args) {
         super(holder, tier, GTMachines.defaultTankSizeFunction, args, (tier + 1) * (tier + 1), fortune, speed, maximumRadius);
@@ -80,9 +83,14 @@ public class MinerMachine extends WorkableTieredMachine implements IMiner, ICont
     @Override
     protected RecipeLogic createRecipeLogic(Object... args) {
         if (args.length > 2 && args[args.length - 3] instanceof Integer fortune && args[args.length - 2] instanceof Integer speed && args[args.length - 1] instanceof Integer maxRadius) {
-            return new MinerLogic(this, fortune, speed, maxRadius);
+            return new MinerLogic(this, fortune, speed, maxRadius, PIPE_MODEL);
         }
         throw new IllegalArgumentException("MinerMachine need args [inventorySize, fortune, speed, maximumRadius] for initialization");
+    }
+
+    @Override
+    public MinerLogic getRecipeLogic() {
+        return (MinerLogic) super.getRecipeLogic();
     }
 
     @Override
@@ -128,15 +136,14 @@ public class MinerMachine extends WorkableTieredMachine implements IMiner, ICont
     }
 
     private void addDisplayText(@Nonnull List<Component> textList) {
-        MinerLogic minerLogic = (MinerLogic) this.recipeLogic;
-        int workingArea = IMiner.getWorkingArea(minerLogic.getCurrentRadius());
-        textList.add(Component.translatable("gtceu.machine.miner.startx", minerLogic.getX()));
-        textList.add(Component.translatable("gtceu.machine.miner.starty", minerLogic.getY()));
-        textList.add(Component.translatable("gtceu.machine.miner.startz", minerLogic.getZ()));
+        int workingArea = IMiner.getWorkingArea(getRecipeLogic().getCurrentRadius());
+        textList.add(Component.translatable("gtceu.machine.miner.startx", getRecipeLogic().getX()));
+        textList.add(Component.translatable("gtceu.machine.miner.starty", getRecipeLogic().getY()));
+        textList.add(Component.translatable("gtceu.machine.miner.startz", getRecipeLogic().getZ()));
         textList.add(Component.translatable("gtceu.universal.tooltip.working_area", workingArea, workingArea));
-        if (minerLogic.isDone())
+        if (getRecipeLogic().isDone())
             textList.add(Component.translatable("gtceu.multiblock.large_miner.done").setStyle(Style.EMPTY.withColor(ChatFormatting.GREEN)));
-        else if (minerLogic.isWorking())
+        else if (getRecipeLogic().isWorking())
             textList.add(Component.translatable("gtceu.multiblock.large_miner.working").setStyle(Style.EMPTY.withColor(ChatFormatting.GOLD)));
         else if (!this.isWorkingEnabled())
             textList.add(Component.translatable("gtceu.multiblock.work_paused"));
@@ -147,10 +154,9 @@ public class MinerMachine extends WorkableTieredMachine implements IMiner, ICont
     }
 
     private void addDisplayText2(@Nonnull List<Component> textList) {
-        MinerLogic minerLogic = (MinerLogic) this.recipeLogic;
-        textList.add(Component.translatable("gtceu.machine.miner.minex", minerLogic.getMineX()));
-        textList.add(Component.translatable("gtceu.machine.miner.miney", minerLogic.getMineY()));
-        textList.add(Component.translatable("gtceu.machine.miner.minez", minerLogic.getMineZ()));
+        textList.add(Component.translatable("gtceu.machine.miner.minex", getRecipeLogic().getMineX()));
+        textList.add(Component.translatable("gtceu.machine.miner.miney", getRecipeLogic().getMineY()));
+        textList.add(Component.translatable("gtceu.machine.miner.minez", getRecipeLogic().getMineZ()));
     }
 
     @Override
@@ -181,16 +187,16 @@ public class MinerMachine extends WorkableTieredMachine implements IMiner, ICont
     public void onLoad() {
         super.onLoad();
         if (!isRemote()) {
-            subscription = subscribeServerTick(subscription, this::update);
+            itemExportSubs = subscribeServerTick(itemExportSubs, this::update);
         }
     }
 
     @Override
     public void onUnload() {
         super.onUnload();
-        if (subscription != null) {
-            subscription.unsubscribe();
-            subscription = null;
+        if (itemExportSubs != null) {
+            itemExportSubs.unsubscribe();
+            itemExportSubs = null;
         }
     }
 
@@ -198,19 +204,18 @@ public class MinerMachine extends WorkableTieredMachine implements IMiner, ICont
     protected InteractionResult onScrewdriverClick(Player playerIn, InteractionHand hand, Direction gridSide, BlockHitResult hitResult) {
         if (isRemote()) return InteractionResult.SUCCESS;
 
-        MinerLogic minerLogic = (MinerLogic) this.recipeLogic;
         if (!this.isActive()) {
-            int currentRadius = minerLogic.getCurrentRadius();
+            int currentRadius = getRecipeLogic().getCurrentRadius();
             if (currentRadius == 1)
-                minerLogic.setCurrentRadius(minerLogic.getMaximumRadius());
+                getRecipeLogic().setCurrentRadius(getRecipeLogic().getMaximumRadius());
             else if (playerIn.isCrouching())
-                minerLogic.setCurrentRadius(Math.max(1, Math.round(currentRadius / 2.0f)));
+                getRecipeLogic().setCurrentRadius(Math.max(1, Math.round(currentRadius / 2.0f)));
             else
-                minerLogic.setCurrentRadius(Math.max(1, currentRadius - 1));
+                getRecipeLogic().setCurrentRadius(Math.max(1, currentRadius - 1));
 
-            minerLogic.resetArea();
+            getRecipeLogic().resetArea();
 
-            int workingArea = IMiner.getWorkingArea(minerLogic.getCurrentRadius());
+            int workingArea = IMiner.getWorkingArea(getRecipeLogic().getCurrentRadius());
             playerIn.sendSystemMessage(Component.translatable("gtceu.universal.tooltip.working_area", workingArea, workingArea));
         } else {
             playerIn.sendSystemMessage(Component.translatable("gtceu.multiblock.large_miner.errorradius"));
@@ -242,7 +247,7 @@ public class MinerMachine extends WorkableTieredMachine implements IMiner, ICont
     //    @Nonnull
 //    @Override
 //    public List<Component> getDataInfo() {
-//        int workingArea = getWorkingArea(minerLogic.getCurrentRadius());
+//        int workingArea = getWorkingArea(getRecipeLogic().getCurrentRadius());
 //        return Collections.singletonList(Component.translatable("gtceu.machine.miner.working_area", workingArea, workingArea));
 //    }
 }

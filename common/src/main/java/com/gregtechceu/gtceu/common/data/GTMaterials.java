@@ -47,6 +47,7 @@ import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
 public class GTMaterials {
 
     public static Material[] CHEMICAL_DYES;
+    public static Material[] VOLTAGE_COMMON_MATERIALS;
     public static void init() {
 
         MarkerMaterials.register();
@@ -115,6 +116,19 @@ public class GTMaterials {
                 GTMaterials.DyePurple, GTMaterials.DyeBlue,
                 GTMaterials.DyeBrown, GTMaterials.DyeGreen,
                 GTMaterials.DyeRed, GTMaterials.DyeBlack
+        };
+
+        VOLTAGE_COMMON_MATERIALS = new Material[] {
+                GTMaterials.WroughtIron,
+                GTMaterials.Steel,
+                GTMaterials.Aluminium,
+                GTMaterials.StainlessSteel,
+                GTMaterials.Titanium,
+                GTMaterials.TungstenSteel,
+                GTMaterials.RhodiumPlatedPalladium,
+                GTMaterials.NaquadahAlloy,
+                GTMaterials.Darmstadtium,
+                GTMaterials.Neutronium
         };
 
         gemExquisite.setIgnored(Sugar);

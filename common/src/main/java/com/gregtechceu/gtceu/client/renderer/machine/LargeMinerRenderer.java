@@ -1,54 +1,31 @@
 package com.gregtechceu.gtceu.client.renderer.machine;
 
-import com.google.common.collect.ImmutableMap;
-import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.addon.AddonFinder;
-import com.gregtechceu.gtceu.api.addon.events.MaterialCasingCollectionEvent;
 import com.gregtechceu.gtceu.api.capability.impl.miner.MinerLogic;
-import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
-import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.tterrag.registrate.util.entry.BlockEntry;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class MinerRenderer extends WorkableTieredHullMachineRenderer {
-    public static final ResourceLocation PIPE_IN_OVERLAY = GTCEu.id("block/overlay/machine/overlay_pipe_in");
+public class LargeMinerRenderer extends WorkableCasingMachineRenderer {
+    public static final AABB BEHIND_BLOCK = new AABB(0, -0.001, 1, 1, 1, 2);
 
-    public static final ImmutableMap<Material, ResourceLocation> MATERIALS_TO_CASING_MODELS;
 
-    static {
-        ImmutableMap.Builder<Material, ResourceLocation> builder = ImmutableMap.builder();
-        builder.put(GTMaterials.Bronze, GTCEu.id("block/casings/solid/machine_casing_bronze_plated_bricks"));
-        builder.put(GTMaterials.Invar, GTCEu.id("block/casings/solid/machine_casing_heatproof"));
-        builder.put(GTMaterials.Aluminium, GTCEu.id("block/casings/solid/machine_casing_frost_proof"));
-        builder.put(GTMaterials.Steel, GTCEu.id("block/casings/solid/machine_casing_solid_steel"));
-        builder.put(GTMaterials.StainlessSteel, GTCEu.id("block/casings/solid/machine_casing_clean_stainless_steel"));
-        builder.put(GTMaterials.Titanium, GTCEu.id("block/casings/solid/machine_casing_stable_titanium"));
-        builder.put(GTMaterials.TungstenSteel, GTCEu.id("block/casings/solid/machine_casing_robust_tungstensteel"));
-        builder.put(GTMaterials.Polytetrafluoroethylene, GTCEu.id("block/casings/solid/machine_casing_inert_ptfe"));
-        builder.put(GTMaterials.HSSE, GTCEu.id("block/casings/solid/machine_casing_study_hsse"));
-
-        MATERIALS_TO_CASING_MODELS = builder.build();
-    }
-
-    public MinerRenderer(int tier, ResourceLocation modelLocation) {
-        super(tier, modelLocation);
+    public LargeMinerRenderer(ResourceLocation baseCasing, ResourceLocation workableModel) {
+        super(baseCasing, workableModel);
     }
 
     @Override
@@ -59,7 +36,7 @@ public class MinerRenderer extends WorkableTieredHullMachineRenderer {
     @Override
     public void renderMachine(List<BakedQuad> quads, MachineDefinition definition, @Nullable MetaMachine machine, Direction frontFacing, @Nullable Direction side, RandomSource rand, @Nullable Direction modelFacing, ModelState modelState) {
         super.renderMachine(quads, definition, machine, frontFacing, side, rand, modelFacing, modelState);
-        if (side == Direction.DOWN) quads.add(FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(MinerRenderer.PIPE_IN_OVERLAY), modelState));
+        if (side == Direction.DOWN) quads.add(FaceQuad.bakeFace(BEHIND_BLOCK, modelFacing, ModelFactory.getBlockSprite(MinerRenderer.PIPE_IN_OVERLAY), modelState, -1, 15, true, true));
     }
 
     @Override
@@ -67,8 +44,11 @@ public class MinerRenderer extends WorkableTieredHullMachineRenderer {
         super.render(blockEntity, partialTicks, stack, buffer, combinedLight, combinedOverlay);
         if (blockEntity instanceof IMachineBlockEntity machineBlockEntity) {
             if (machineBlockEntity.getMetaMachine() instanceof IRecipeLogicMachine logicMachine && logicMachine.getRecipeLogic() instanceof MinerLogic minerLogic) {
+                stack.pushPose();
+                stack.translate(0, 0, -1);
                 Direction modelFacing = blockEntity.getBlockState().getValue(machineBlockEntity.getDefinition().get().getRotationState().property);
                 minerLogic.renderPipe(stack, buffer, modelFacing, combinedLight, combinedOverlay);
+                stack.popPose();
             }
         }
 

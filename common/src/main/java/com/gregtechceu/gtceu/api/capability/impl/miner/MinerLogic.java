@@ -1,8 +1,9 @@
-package com.gregtechceu.gtceu.api.capability.impl;
+package com.gregtechceu.gtceu.api.capability.impl.miner;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.IMiner;
 import com.gregtechceu.gtceu.api.capability.IWorkable;
+import com.gregtechceu.gtceu.api.capability.impl.DummyRecipeCapabilityHolder;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
@@ -17,13 +18,15 @@ import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.syncdata.RequireRerender;
-import com.gregtechceu.gtceu.client.renderer.machine.MinerRenderer;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
+import com.lowdragmc.lowdraglib.Platform;
+import com.lowdragmc.lowdraglib.client.renderer.impl.IModelRenderer;
+import com.lowdragmc.lowdraglib.misc.ItemTransferList;
 import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
@@ -65,13 +68,15 @@ public class MinerLogic extends RecipeLogic implements IWorkable {
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(MinerLogic.class, RecipeLogic.MANAGED_FIELD_HOLDER);
     public static final ItemStack PICKAXE_TOOL = GTItems.TOOL_ITEMS.get(GTMaterials.Neutronium.getToolTier(), GTToolType.PICKAXE).asStack();
 
-    private final ItemStack pickaxeToolFortune = PICKAXE_TOOL;
-    private final DummyRecipeCapabilityHolder breakRecipeSearchHolder;
-
     private static final short MAX_SPEED = Short.MAX_VALUE;
     private static final byte POWER = 5;
     private static final byte TICK_TOLERANCE = 20;
     private static final double DIVIDEND = MAX_SPEED * Math.pow(TICK_TOLERANCE, POWER);
+
+
+    private final IModelRenderer pipeModel;
+    private final ItemStack pickaxeToolFortune = PICKAXE_TOOL;
+    private final DummyRecipeCapabilityHolder breakRecipeSearchHolder;
 
     protected final IMiner miner;
 
@@ -120,7 +125,7 @@ public class MinerLogic extends RecipeLogic implements IWorkable {
      * @param speed          the speed in ticks per block mined
      * @param maximumRadius  the maximum radius (square shaped) the miner can mine in
      */
-    public MinerLogic(@Nonnull IRecipeLogicMachine machine, int fortune, int speed, int maximumRadius/*, IModelRenderer pipeTexture*/) {
+    public MinerLogic(@Nonnull IRecipeLogicMachine machine, int fortune, int speed, int maximumRadius, IModelRenderer pipeModel) {
         super(machine);
         this.miner = (IMiner) machine;
         this.fortune = fortune;
@@ -129,10 +134,11 @@ public class MinerLogic extends RecipeLogic implements IWorkable {
         this.maximumRadius = maximumRadius;
         this.isDone = false;
         pickaxeToolFortune.enchant(Enchantments.BLOCK_FORTUNE, fortune);
+        this.pipeModel = Platform.isClient() ? pipeModel : null;
 
         this.breakRecipeSearchHolder = new DummyRecipeCapabilityHolder();
         this.breakRecipeSearchHolder.addCapability(IO.IN, ItemRecipeCapability.CAP, List.of(new NotifiableItemStackHandler(machine.self(), 1, IO.IN, IO.BOTH)));
-        this.breakRecipeSearchHolder.addCapability(IO.OUT, ItemRecipeCapability.CAP, List.of(new NotifiableItemStackHandler(machine.self(), 10, IO.BOTH, IO.BOTH)));
+        this.breakRecipeSearchHolder.addCapability(IO.OUT, ItemRecipeCapability.CAP, List.of(new NotifiableItemStackHandler(machine.self(), 10, IO.OUT, IO.BOTH)));
     }
 
     @Override
@@ -324,8 +330,8 @@ public class MinerLogic extends RecipeLogic implements IWorkable {
         // If the block's drops can fit in the inventory, move the previously mined position to the block
         // replace the ore block with cobblestone instead of breaking it to prevent mob spawning
         // remove the ore block's position from the mining queue
-        List<IRecipeHandler<?>> transfers = machine.getCapabilitiesProxy().get(IO.OUT, ItemRecipeCapability.CAP);
-        if (transfers != null && !transfers.isEmpty() && transfers.get(0) instanceof IItemTransfer transfer) {
+        ItemTransferList transfer = machine.self().getItemTransferCap(null);
+        if (transfer != null) {
             if (GTTransferUtils.addItemsToItemHandler(transfer, true, blockDrops)) {
                 GTTransferUtils.addItemsToItemHandler(transfer, false, blockDrops);
                 world.setBlock(blocksToMine.getFirst(), oreReplacementBlock, 3);
@@ -538,7 +544,7 @@ public class MinerLogic extends RecipeLogic implements IWorkable {
         stack.pushPose();
         for (int i = 0; i < getPipeLength(); ++i) {
             stack.translate(0, -1, 0);
-            Minecraft.getInstance().getBlockRenderer().getModelRenderer().renderModel(stack.last(), buffer.getBuffer(RenderType.cutoutMipped()), null, MinerRenderer.PIPE_MODEL.getRotatedModel(modelFacing), 1, 1, 1, combinedLight, combinedOverlay);
+            Minecraft.getInstance().getBlockRenderer().getModelRenderer().renderModel(stack.last(), buffer.getBuffer(RenderType.cutoutMipped()), null, pipeModel.getRotatedModel(modelFacing), 1, 1, 1, combinedLight, combinedOverlay);
         }
         stack.popPose();
     }
@@ -546,71 +552,71 @@ public class MinerLogic extends RecipeLogic implements IWorkable {
     /**
      * @return the current x value
      */
-    public int getX() {
-        return x.get();
+    public AtomicInteger getX() {
+        return x;
     }
 
     /**
      * @return the current y value
      */
-    public int getY() {
-        return y.get();
+    public AtomicInteger getY() {
+        return y;
     }
 
     /**
      * @return the current z value
      */
-    public int getZ() {
-        return z.get();
+    public AtomicInteger getZ() {
+        return z;
     }
 
     /**
      * @return the previously mined x value
      */
-    public int getMineX() {
-        return mineX.get();
+    public AtomicInteger getMineX() {
+        return mineX;
     }
 
     /**
      * @return the previously mined y value
      */
-    public int getMineY() {
-        return mineY.get();
+    public AtomicInteger getMineY() {
+        return mineY;
     }
 
     /**
      * @return the previously mined z value
      */
-    public int getMineZ() {
-        return mineZ.get();
+    public AtomicInteger getMineZ() {
+        return mineZ;
     }
 
     /**
      * @return the starting x value
      */
-    public int getStartX() {
-        return startX.get();
+    public AtomicInteger getStartX() {
+        return startX;
     }
 
     /**
      * @return the starting y value
      */
-    public int getStartY() {
-        return startY.get();
+    public AtomicInteger getStartY() {
+        return startY;
     }
 
     /**
      * @return the starting z value
      */
-    public int getStartZ() {
-        return startZ.get();
+    public AtomicInteger getStartZ() {
+        return startZ;
     }
 
     /**
      * @return the pipe y value
      */
-    public int getPipeY() {
-        return pipeY.get();
+    public AtomicInteger getPipeY() {
+        return pipeY;
     }
 
     /**

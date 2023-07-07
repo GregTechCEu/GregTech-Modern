@@ -1,9 +1,12 @@
 package com.gregtechceu.gtceu.common.data;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableTable;
 import com.google.common.collect.Table;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.addon.AddonFinder;
+import com.gregtechceu.gtceu.api.addon.events.MaterialCasingCollectionEvent;
 import com.gregtechceu.gtceu.api.block.*;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.item.MaterialPipeBlockItem;
@@ -69,6 +72,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Supplier;
 
+import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.*;
 import static com.gregtechceu.gtceu.api.registry.GTRegistries.REGISTRATE;
 import static net.minecraftforge.client.model.generators.ModelProvider.BLOCK_FOLDER;
@@ -267,6 +271,25 @@ public class GTBlocks {
     public static final BlockEntry<Block> CASING_PTFE_INERT = createCasingBlock("inert_machine_casing", GTCEu.id("block/casings/solid/machine_casing_inert_ptfe"));
     public static final BlockEntry<Block> CASING_HSSE_STURDY = createCasingBlock("sturdy_machine_casing", GTCEu.id("block/casings/solid/machine_casing_study_hsse"));
     public static final BlockEntry<Block> CASING_TEMPERED_GLASS = createCasingBlock("tempered_glass", GTCEu.id("block/casings/transparent/tempered_glass"), () -> Blocks.GLASS);
+    public static final ImmutableMap<Material, BlockEntry<Block>> MATERIALS_TO_CASINGS;
+
+    static {
+        ImmutableMap.Builder<Material, BlockEntry<Block>> builder = ImmutableMap.builder();
+        builder.put(GTMaterials.Bronze, CASING_BRONZE_BRICKS);
+        builder.put(GTMaterials.Invar, CASING_INVAR_HEATPROOF);
+        builder.put(GTMaterials.Aluminium, CASING_ALUMINIUM_FROSTPROOF);
+        builder.put(GTMaterials.Steel, CASING_STEEL_SOLID);
+        builder.put(GTMaterials.StainlessSteel, CASING_STAINLESS_CLEAN);
+        builder.put(GTMaterials.Titanium, CASING_TITANIUM_STABLE);
+        builder.put(GTMaterials.TungstenSteel, CASING_TUNGSTENSTEEL_ROBUST);
+        builder.put(GTMaterials.Polytetrafluoroethylene, CASING_PTFE_INERT);
+        builder.put(GTMaterials.HSSE, CASING_HSSE_STURDY);
+
+        MaterialCasingCollectionEvent event = new MaterialCasingCollectionEvent(builder);
+        AddonFinder.getAddons().forEach(addon -> addon.collectMaterialCasings(event));
+
+        MATERIALS_TO_CASINGS = builder.build();
+    }
 
 
 
@@ -318,8 +341,8 @@ public class GTBlocks {
 
 
     // Machine Casings
-    public static final BlockEntry<Block> MACHINE_CASING_ULV = createMachineCasingBlock(GTValues.ULV);
-    public static final BlockEntry<Block> MACHINE_CASING_LV = createMachineCasingBlock(GTValues.LV);
+    public static final BlockEntry<Block> MACHINE_CASING_ULV = createMachineCasingBlock(ULV);
+    public static final BlockEntry<Block> MACHINE_CASING_LV = createMachineCasingBlock(LV);
     public static final BlockEntry<Block> MACHINE_CASING_MV = createMachineCasingBlock(GTValues.MV);
     public static final BlockEntry<Block> MACHINE_CASING_HV = createMachineCasingBlock(GTValues.HV);
     public static final BlockEntry<Block> MACHINE_CASING_EV = createMachineCasingBlock(GTValues.EV);
@@ -330,7 +353,7 @@ public class GTBlocks {
     public static final BlockEntry<Block> MACHINE_CASING_UHV = createMachineCasingBlock(GTValues.UHV);
 
     // Hermetic Casings
-    public static final BlockEntry<Block> HERMETIC_CASING_LV = createHermeticCasing(GTValues.LV);
+    public static final BlockEntry<Block> HERMETIC_CASING_LV = createHermeticCasing(LV);
     public static final BlockEntry<Block> HERMETIC_CASING_MV = createHermeticCasing(GTValues.MV);
     public static final BlockEntry<Block> HERMETIC_CASING_HV = createHermeticCasing(GTValues.HV);
     public static final BlockEntry<Block> HERMETIC_CASING_EV = createHermeticCasing(GTValues.EV);
