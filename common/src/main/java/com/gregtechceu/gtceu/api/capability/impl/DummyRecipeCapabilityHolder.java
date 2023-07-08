@@ -6,17 +6,20 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeCapabilityHolder;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
+import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 
-public class DummyRecipeCapabilityHolder implements IRecipeCapabilityHolder {
+public class DummyRecipeCapabilityHolder extends MetaMachine implements IRecipeCapabilityHolder {
 
     private final Table<IO, RecipeCapability<?>, List<IRecipeHandler<?>>> table;
 
-    public DummyRecipeCapabilityHolder() {
+    public DummyRecipeCapabilityHolder(IMachineBlockEntity holder) {
+        super(holder);
         this.table = Tables.newCustomTable(new EnumMap<>(IO.class), HashMap::new);
     }
 

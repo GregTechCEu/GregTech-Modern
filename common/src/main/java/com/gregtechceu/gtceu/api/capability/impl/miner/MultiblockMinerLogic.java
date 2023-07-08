@@ -17,8 +17,8 @@ import net.minecraft.world.level.chunk.ChunkAccess;
 
 import javax.annotation.Nonnull;
 
-public class LargeMinerLogic extends MinerLogic {
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(LargeMinerLogic.class, MinerLogic.MANAGED_FIELD_HOLDER);
+public class MultiblockMinerLogic extends MinerLogic {
+    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(MultiblockMinerLogic.class, MinerLogic.MANAGED_FIELD_HOLDER);
 
     private static final int CHUNK_LENGTH = 16;
 
@@ -44,7 +44,7 @@ public class LargeMinerLogic extends MinerLogic {
      * @param speed          the speed in ticks per block mined
      * @param maximumRadius  the maximum radius (square shaped) the miner can mine in
      */
-    public LargeMinerLogic(IRecipeLogicMachine machine, int fortune, int speed, int maximumRadius, IModelRenderer pipeTexture, GTRecipeType blockDropRecipeMap) {
+    public MultiblockMinerLogic(IRecipeLogicMachine machine, int fortune, int speed, int maximumRadius, IModelRenderer pipeTexture, GTRecipeType blockDropRecipeMap) {
         super(machine, fortune, speed, maximumRadius, pipeTexture);
         this.blockDropRecipeMap = blockDropRecipeMap;
     }
@@ -78,26 +78,27 @@ public class LargeMinerLogic extends MinerLogic {
         if (!isChunkMode) {
             super.initPos(pos, currentRadius);
         } else {
-            ServerLevel world = (ServerLevel) this.getMachine().getLevel();
-            ChunkAccess origin = world.getChunk(pos);
+            ServerLevel world = (ServerLevel) this.machine.self().getLevel();
+            BlockPos machinePos = this.machine.self().getPos();
+            ChunkAccess origin = world.getChunk(machinePos);
             ChunkPos startPos = (world.getChunk(origin.getPos().x - currentRadius / CHUNK_LENGTH, origin.getPos().z - currentRadius / CHUNK_LENGTH)).getPos();
             getX().set(startPos.getMinBlockX());
-            getY().set(pos.getY() - 1);
+            getY().set(machinePos.getY() - 1);
             getZ().set(startPos.getMinBlockZ());
             getStartX().set(startPos.getMinBlockX());
-            getStartY().set(pos.getY());
+            getStartY().set(machinePos.getY());
             getStartZ().set(startPos.getMinBlockZ());
             getMineX().set(startPos.getMinBlockX());
-            getMineY().set(pos.getY() - 1);
+            getMineY().set(machinePos.getY() - 1);
             getMineZ().set(startPos.getMinBlockZ());
-            getPipeY().set(pos.getY() - 1);
+            getPipeY().set(machinePos.getY() - 1);
         }
     }
 
     public void setChunkMode(boolean isChunkMode) {
         if (!isWorking()) {
             this.isChunkMode = isChunkMode;
-            if (!getMachine().isRemote()) {
+            if (!machine.self().isRemote()) {
                 resetArea();
             }
         }
@@ -107,10 +108,5 @@ public class LargeMinerLogic extends MinerLogic {
         if (!isWorking()) {
             this.isSilkTouchMode = isSilkTouchMode;
         }
-    }
-
-    @Override
-    public BlockPos getMiningPos() {
-        return getMachine().getPos().relative(getMachine().getFrontFacing().getOpposite());
     }
 }

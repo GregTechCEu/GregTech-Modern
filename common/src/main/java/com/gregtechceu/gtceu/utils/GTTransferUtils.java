@@ -1,8 +1,11 @@
 package com.gregtechceu.gtceu.utils;
 
 
+import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
+import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.lowdragmc.lowdraglib.misc.FluidTransferList;
 import com.lowdragmc.lowdraglib.misc.ItemHandlerHelper;
+import com.lowdragmc.lowdraglib.misc.ItemTransferList;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
@@ -45,7 +48,7 @@ public class GTTransferUtils {
                 fluidStack.setAmount(canInsertAmount);
                 fluidStack = sourceHandler.drain(fluidStack, true);
                 if (fluidStack != FluidStack.empty() && fluidStack.getAmount() > 0) {
-                    destHandler.fill(fluidStack, true);
+                    fillFluidAccountNotifiableList(destHandler, fluidStack, true);
 
                     fluidLeftToTransfer -= fluidStack.getAmount();
                     if (fluidLeftToTransfer == 0) {
@@ -59,15 +62,15 @@ public class GTTransferUtils {
 
     public static boolean transferExactFluidStack(@Nonnull IFluidTransfer sourceHandler, @Nonnull IFluidTransfer destHandler, FluidStack fluidStack) {
         long amount = fluidStack.getAmount();
-        FluidStack sourceFluid = sourceHandler.drain(fluidStack, false);
+        FluidStack sourceFluid = sourceHandler.drain(fluidStack, true);
         if (sourceFluid == FluidStack.empty() || sourceFluid.getAmount() != amount) {
             return false;
         }
-        long canInsertAmount = destHandler.fill(sourceFluid, false);
+        long canInsertAmount = destHandler.fill(sourceFluid, true);
         if (canInsertAmount == amount) {
-            sourceFluid = sourceHandler.drain(sourceFluid, true);
+            sourceFluid = sourceHandler.drain(sourceFluid, false);
             if (sourceFluid != FluidStack.empty() && sourceFluid.getAmount() > 0) {
-                destHandler.fill(sourceFluid, true);
+                destHandler.fill(sourceFluid, false);
                 return true;
             }
         }
@@ -153,9 +156,26 @@ public class GTTransferUtils {
         }
 
         for (FluidStack fluidStack : fluidStacks) {
-            fluidHandler.fill(fluidStack, true);
+            fillFluidAccountNotifiableList(fluidHandler, fluidStack, true);
         }
         return true;
+    }
+
+    public static long fillFluidAccountNotifiableList(IFluidTransfer handler, FluidStack stack, boolean simulate) {
+        if (handler instanceof FluidTransferList transferList) {
+            var copied = stack.copy();
+            for (var transfer : transferList.transfers) {
+                var candidate = copied.copy();
+                if (transfer instanceof NotifiableFluidTank notifiable) {
+                    copied.shrink(notifiable.fillInternal(candidate, simulate));
+                } else {
+                    copied.shrink(transfer.fill(candidate, simulate));
+                }
+                if (copied.isEmpty()) break;
+            }
+            return stack.getAmount() - copied.getAmount();
+        }
+        return handler.fill(stack, simulate);
     }
 
     /**
@@ -177,7 +197,7 @@ public class GTTransferUtils {
             if (slotStack.isEmpty()) {
                 emptySlots.add(i);
             } else if (ItemHandlerHelper.canItemStacksStack(stack, slotStack)) {
-                stack = handler.insertItem(i, stack, simulate);
+                stack = insertItemAccountNotifiableList(handler, i, stack, simulate);
                 if (stack.isEmpty()) {
                     return ItemStack.EMPTY;
                 }
@@ -185,12 +205,30 @@ public class GTTransferUtils {
         }
 
         for (int slot : emptySlots) {
-            stack = handler.insertItem(slot, stack, simulate);
+            stack = insertItemAccountNotifiableList(handler, slot, stack, simulate);
             if (stack.isEmpty()) {
                 return ItemStack.EMPTY;
             }
         }
         return stack;
+    }
+
+    public static ItemStack insertItemAccountNotifiableList(IItemTransfer handler, int slot, ItemStack stack, boolean simulate) {
+        if (handler instanceof ItemTransferList transferList) {
+            int index = 0;
+            for (var transfer : transferList.transfers) {
+                if (slot - index < transfer.getSlots()) {
+                    if (transfer instanceof NotifiableItemStackHandler notifiable) {
+                        return notifiable.insertItemInternal(slot - index, stack, simulate);
+                    } else {
+                        return transfer.insertItem(slot - index, stack, simulate);
+                    }
+                }
+                index += transfer.getSlots();
+            }
+            return stack;
+        }
+        return handler.insertItem(slot, stack, simulate);
     }
 
     /**
@@ -204,7 +242,7 @@ public class GTTransferUtils {
         for (int i = 0; i < slots; i++) {
             ItemStack slotStack = handler.getStackInSlot(i);
             if (slotStack.isEmpty()) {
-                stack = handler.insertItem(i, stack, simulate);
+                stack = insertItemAccountNotifiableList(handler, i, stack, simulate);
                 if (stack.isEmpty()) {
                     return ItemStack.EMPTY;
                 }

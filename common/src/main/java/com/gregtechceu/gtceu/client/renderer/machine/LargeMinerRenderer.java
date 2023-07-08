@@ -8,7 +8,6 @@ import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.resources.model.ModelState;
@@ -48,7 +47,6 @@ public class LargeMinerRenderer extends WorkableCasingMachineRenderer {
                 Direction facing = blockEntity.getBlockState().getValue(machineBlockEntity.getDefinition().get().getRotationState().property);
 
                 stack.pushPose();
-                //stack.mulPose(Vector3f.YP.rotationDegrees(facing.get2DDataValue() == -1 ? 0 : facing.get2DDataValue() * 90f));
                 stack.translate(-facing.getStepX(), 0, -facing.getStepZ());
                 Direction modelFacing = blockEntity.getBlockState().getValue(machineBlockEntity.getDefinition().get().getRotationState().property);
                 minerLogic.renderPipe(stack, buffer, modelFacing, combinedLight, combinedOverlay);

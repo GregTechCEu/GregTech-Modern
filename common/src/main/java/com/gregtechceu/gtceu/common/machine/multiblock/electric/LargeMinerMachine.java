@@ -19,8 +19,6 @@ import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMa
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
-import com.gregtechceu.gtceu.api.misc.IOFluidTransferList;
-import com.gregtechceu.gtceu.api.misc.IOItemTransferList;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
 import com.gregtechceu.gtceu.client.renderer.block.TextureOverrideRenderer;
 import com.gregtechceu.gtceu.client.renderer.machine.MinerRenderer;
@@ -78,11 +76,6 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine impleme
     protected FluidTransferList inputFluidInventory;
     @Nullable
     protected ItemTransferList outputInventory;
-
-    @Persisted
-    private boolean silkTouch = false;
-    @Persisted
-    private boolean chunkMode = false;
 
     private boolean isInventoryFull = false;
 
@@ -261,14 +254,14 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine impleme
     @Override
     public Widget createUIWidget() {
         WidgetGroup group = (WidgetGroup) super.createUIWidget();
-        group.addWidget(new ComponentPanelWidget(63, 31, this::addDisplayText2)
+        group.addWidget(new ComponentPanelWidget(63, 77, this::addDisplayText2)
                 .setMaxWidthLimit(68).clickHandler(this::handleDisplayClick));
-        group.addWidget(getFlexButton(173, 124, 18, 18));
+        group.addWidget(getFlexButton(160, 119, 18, 18));
         return group;
     }
 
     // used for UI
-    private IGuiTexture getCurrentMode(int mode) {
+    private IGuiTexture getCurrentModeTexture(int mode) {
         // 0 -> not chunk mode, not silk touch mode
         if (!getRecipeLogic().isChunkMode() && !getRecipeLogic().isSilkTouchMode()) {
             return GuiTextures.BUTTON_MINER_MODES.getSubTexture(0, 0, 1, 0.25f);
@@ -308,7 +301,7 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine impleme
     }
 
     protected @NotNull Widget getFlexButton(int x, int y, int width, int height) {
-        return new CycleButtonWidget(x, y, width, height,4, this::getCurrentMode, this::setCurrentMode);
+        return new CycleButtonWidget(x, y, width, height,4, this::getCurrentModeTexture, this::setCurrentMode);
     }
 
     @Override

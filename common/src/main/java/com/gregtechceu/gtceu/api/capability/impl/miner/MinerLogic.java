@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.capability.impl.DummyRecipeCapabilityHolder;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
@@ -79,6 +78,9 @@ public class MinerLogic extends RecipeLogic implements IWorkable {
 
     protected final IMiner miner;
 
+    @Nullable
+    private ItemTransferList cachedItemTransfer = null;
+
     private final int fortune;
     private final int speed;
     private final int maximumRadius;
@@ -135,14 +137,20 @@ public class MinerLogic extends RecipeLogic implements IWorkable {
         pickaxeToolFortune.enchant(Enchantments.BLOCK_FORTUNE, fortune);
         this.pipeModel = Platform.isClient() ? pipeModel : null;
 
-        this.breakRecipeSearchHolder = new DummyRecipeCapabilityHolder();
-        this.breakRecipeSearchHolder.addCapability(IO.IN, ItemRecipeCapability.CAP, List.of(new NotifiableItemStackHandler(getMachine(), 1, IO.IN, IO.BOTH)));
-        this.breakRecipeSearchHolder.addCapability(IO.OUT, ItemRecipeCapability.CAP, List.of(new NotifiableItemStackHandler(getMachine(), 10, IO.OUT, IO.BOTH)));
+        this.breakRecipeSearchHolder = new DummyRecipeCapabilityHolder(getMachine().getHolder());
+        this.breakRecipeSearchHolder.addCapability(IO.IN, ItemRecipeCapability.CAP, List.of(new NotifiableItemStackHandler(breakRecipeSearchHolder, 1, IO.IN, IO.BOTH)));
+        this.breakRecipeSearchHolder.addCapability(IO.OUT, ItemRecipeCapability.CAP, List.of(new NotifiableItemStackHandler(breakRecipeSearchHolder, 10, IO.OUT, IO.BOTH)));
     }
 
     @Override
     public ManagedFieldHolder getFieldHolder() {
         return MANAGED_FIELD_HOLDER;
+    }
+
+    @Override
+    public void inValid() {
+        super.inValid();
+        cachedItemTransfer = null;
     }
 
     private static BlockState oreReplacementBlock = findMiningReplacementBlock();
@@ -196,7 +204,8 @@ public class MinerLogic extends RecipeLogic implements IWorkable {
         // drill a hole beneath the miner and extend the pipe downwards by one
         ServerLevel world = (ServerLevel) getMachine().getLevel();
         if (mineY.get() < pipeY.get()) {
-            world.destroyBlock(new BlockPos(getMachine().getPos().getX(), pipeY.get(), getMachine().getPos().getZ()), false);
+            BlockPos miningPos = getMiningPos();
+            world.destroyBlock(new BlockPos(miningPos.getX(), pipeY.get(), miningPos.getZ()), false);
             pipeY.decrementAndGet();
             incrementPipeLength();
         }
@@ -258,7 +267,7 @@ public class MinerLogic extends RecipeLogic implements IWorkable {
         if (checkShouldStop()) {
             // if the miner is not finished and has invalid coordinates, get new and valid starting coordinates
             if (!isDone && checkCoordinatesInvalid(x, y, z))
-                initPos(getMachine().getPos(), currentRadius);
+                initPos(getMiningPos(), currentRadius);
 
             // don't do anything else this time
             return false;
@@ -315,7 +324,15 @@ public class MinerLogic extends RecipeLogic implements IWorkable {
         blockDrops.addAll(blockState.getBlock().getDrops(blockState, new LootContext.Builder(world)
                 .withRandom(world.random)
                 .withParameter(LootContextParams.ORIGIN, Vec3.atLowerCornerOf(blockToMine))
-                .withParameter(LootContextParams.TOOL, PICKAXE_TOOL))); // regular ores do not get fortune applied
+                .withParameter(LootContextParams.TOOL, pickaxeToolFortune)));
+    }
+
+    private ItemTransferList getCachedItemTransfer() {
+        if (cachedItemTransfer == null) {
+            cachedItemTransfer = new ItemTransferList(machine.getCapabilitiesProxy().get(IO.OUT, ItemRecipeCapability.CAP).stream().map(IItemTransfer.class::cast).toList());
+        }
+
+        return cachedItemTransfer;
     }
 
     /**
@@ -329,7 +346,7 @@ public class MinerLogic extends RecipeLogic implements IWorkable {
         // If the block's drops can fit in the inventory, move the previously mined position to the block
         // replace the ore block with cobblestone instead of breaking it to prevent mob spawning
         // remove the ore block's position from the mining queue
-        ItemTransferList transfer = getMachine().getItemTransferCap(null);
+        ItemTransferList transfer = getCachedItemTransfer();
         if (transfer != null) {
             if (GTTransferUtils.addItemsToItemHandler(transfer, true, blockDrops)) {
                 GTTransferUtils.addItemsToItemHandler(transfer, false, blockDrops);
@@ -394,7 +411,7 @@ public class MinerLogic extends RecipeLogic implements IWorkable {
      * Recalculates the mining area, refills the block list and restarts the miner, if it was done
      */
     public void resetArea() {
-        initPos(getMachine().getPos(), currentRadius);
+        initPos(getMiningPos(), currentRadius);
         if (this.isDone) this.setWorkingEnabled(false);
         this.isDone = false;
         blocksToMine.clear();
@@ -486,13 +503,13 @@ public class MinerLogic extends RecipeLogic implements IWorkable {
     /**
      * Applies a fortune hammer to block drops based on a tier value, intended for small ores
      *
-     * @param blockState   the block being mined
-     * @param drops        where the drops are stored to
-     * @param fortuneLevel the level of fortune used
-     * @param map          the recipemap from which to get the drops
-     * @param tier         the tier at which the operation is performed, used for calculating the chanced output boost
+     * @param blockState          the block being mined
+     * @param drops               where the drops are stored to
+     * @param dropCountMultiplier multiply all drops by this, if > 0
+     * @param map                 the recipemap from which to get the drops
+     * @param tier                the tier at which the operation is performed, used for calculating the chanced output boost
      */
-    protected static void applyTieredHammerNoRandomDrops(MinerLogic logic, @Nonnull BlockState blockState, List<ItemStack> drops, int fortuneLevel, @Nonnull GTRecipeType map, int tier) {
+    protected static void applyTieredHammerNoRandomDrops(MinerLogic logic, @Nonnull BlockState blockState, List<ItemStack> drops, int dropCountMultiplier, @Nonnull GTRecipeType map, int tier) {
         NotifiableItemStackHandler outputItemHandler = (NotifiableItemStackHandler)logic.breakRecipeSearchHolder.getCapabilitiesProxy().get(IO.OUT, ItemRecipeCapability.CAP).get(0);
         List<Ingredient> ingredients = new ArrayList<>();
         ingredients.add(Ingredient.of(blockState.getBlock()));
@@ -513,8 +530,8 @@ public class MinerLogic extends RecipeLogic implements IWorkable {
                 for (ItemStack outputStack : outputs) {
                     outputStack = outputStack.copy();
                     if (ChemicalHelper.getPrefix(outputStack.getItem()) == TagPrefix.crushed) {
-                        if (fortuneLevel > 0) {
-                            outputStack.grow(outputStack.getCount() * fortuneLevel);
+                        if (dropCountMultiplier > 0) {
+                            outputStack.grow(outputStack.getCount() * dropCountMultiplier);
                         }
                     }
                     drops.add(outputStack);
@@ -658,5 +675,12 @@ public class MinerLogic extends RecipeLogic implements IWorkable {
      */
     public int getSpeed() {
         return this.speed;
+    }
+
+    /**
+     * @return the position to start mining from
+     */
+    public BlockPos getMiningPos() {
+        return getMachine().getPos();
     }
 }
