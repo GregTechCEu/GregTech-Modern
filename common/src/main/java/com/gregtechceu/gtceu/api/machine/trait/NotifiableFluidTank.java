@@ -41,6 +41,8 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidStack
     private long timeStamp;
     @Persisted
     public final FluidStorage[] storages;
+    @Setter
+    protected boolean allowSameFluids; // Can different tanks be filled with the same fluid. It should be determined while creating tanks.
     private Boolean isEmpty;
 
     public NotifiableFluidTank(MetaMachine machine, int slots, long capacity, IO io, IO capabilityIO) {
@@ -216,6 +218,14 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidStack
     @Override
     public long fill(FluidStack resource, boolean simulate) {
         if (canCapInput()) {
+            if (allowSameFluids && !resource.isEmpty()) {
+                for (var storage : storages) {
+                    if (storage.getFluid().isFluidEqual(resource)) {
+                        var leftSpace = storage.getCapacity() - storage.getFluidAmount();
+                        return fillInternal(FluidStack.create(resource.getFluid(), Math.min(leftSpace, resource.getAmount())), simulate);
+                    }
+                }
+            }
             return fillInternal(resource, simulate);
         }
         return 0;
