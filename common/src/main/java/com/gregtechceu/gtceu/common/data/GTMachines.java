@@ -196,6 +196,7 @@ public class GTMachines {
     public final static MachineDefinition[] TRANSFORMER = registerTieredMachines("transformer", TransformerMachine::new,
             (tier, builder) -> builder
                     .rotationState(RotationState.ALL)
+                    .itemColor((itemStack, index) -> index == 2 ? GTValues.VC[tier + 1] : index == 3 ? GTValues.VC[tier + 1] : -1)
                     .renderer(() -> new TransformerRenderer(tier))
                     .langValue("%s Transformer".formatted(VOLTAGE_NAMES[tier]))
                     .tooltips(explosion())
