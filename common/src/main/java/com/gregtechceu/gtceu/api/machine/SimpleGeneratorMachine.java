@@ -2,19 +2,23 @@ package com.gregtechceu.gtceu.api.machine;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.utils.Position;
 import com.mojang.blaze3d.MethodsReturnNonnullByDefault;
 import it.unimi.dsi.fastutil.ints.Int2LongFunction;
+import net.minecraft.Util;
+import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.function.BiFunction;
 
 /**
  * @author KilaBash
@@ -93,10 +97,9 @@ public class SimpleGeneratorMachine extends WorkableTieredMachine implements IFa
     //***********     GUI    ***********//
     //////////////////////////////////////
 
-    @Override
-    public Widget createUIWidget() {
-        var template =  recipeType.createUITemplate(recipeLogic::getProgressPercent, importItems.storage, exportItems.storage, importFluids.storages, exportFluids.storages).setBackground(GuiTextures.BACKGROUND_INVERSE);
-        var energyBar = createEnergyBar();
+    public static BiFunction<ResourceLocation, GTRecipeType, EditableMachineUI> EDITABLE_UI_CREATOR = Util.memoize((path, recipeType)-> new EditableMachineUI("generator", path, () -> {
+        var template =  recipeType.createEditableUITemplate(false, false).createDefault().setBackground(GuiTextures.BACKGROUND_INVERSE);
+        var energyBar = createEnergyBar().createDefault();
         var group = new WidgetGroup(0, 0,
                 Math.max(energyBar.getSize().width + template.getSize().width + 4 + 8, 172),
                 Math.max(template.getSize().height + 8, energyBar.getSize().height + 8));
@@ -108,6 +111,17 @@ public class SimpleGeneratorMachine extends WorkableTieredMachine implements IFa
         group.addWidget(energyBar);
         group.addWidget(template);
         return group;
-    }
+    }, (template, machine) -> {
+        if (machine instanceof SimpleTieredMachine tieredMachine) {
+            tieredMachine.recipeType.createEditableUITemplate(false, false).setupUI(template,
+                    new GTRecipeType.RecipeHolder(tieredMachine.recipeLogic::getProgressPercent,
+                            tieredMachine.importItems.storage,
+                            tieredMachine.exportItems.storage,
+                            tieredMachine.importFluids.storages,
+                            tieredMachine.exportFluids.storages,
+                            false, false));
+            createEnergyBar().setupUI(template, tieredMachine);
+        }
+    }));
 
 }

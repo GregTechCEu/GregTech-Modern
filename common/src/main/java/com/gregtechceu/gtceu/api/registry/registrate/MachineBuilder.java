@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.registry.registrate;
 
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
+import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
@@ -101,6 +102,8 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> {
     @Setter
     private OverclockingLogic overclockingLogic = OverclockingLogic.NON_PERFECT_OVERCLOCK;
     private Supplier<BlockState> appearance;
+    @Setter @Nullable
+    private EditableMachineUI editableUI;
     @Setter
     private String langValue = null;
 
@@ -252,6 +255,9 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> {
         }
         if (appearance == null) {
             appearance = block::getDefaultState;
+        }
+        if (editableUI != null) {
+            definition.setEditableUI(editableUI);
         }
         definition.setAppearance(appearance);
         definition.setRenderer(LDLib.isClient() ? renderer.get() : IRenderer.EMPTY);

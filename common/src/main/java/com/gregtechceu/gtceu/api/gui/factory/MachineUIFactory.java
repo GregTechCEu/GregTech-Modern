@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.api.gui;
+package com.gregtechceu.gtceu.api.gui.factory;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;

@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.machine;
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.gui.editor.EditableUI;
 import com.gregtechceu.gtceu.api.machine.feature.IExplosionMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IRedstoneSignalMachine;
 import com.gregtechceu.gtceu.api.GTValues;
@@ -126,13 +127,17 @@ public class TieredEnergyMachine extends TieredMachine implements ITieredMachine
     /**
      * Create an energy bar widget.
      */
-    protected ProgressWidget createEnergyBar() {
-        var progressBar = new ProgressWidget(() -> energyContainer.getEnergyStored() * 1d / energyContainer.getEnergyCapacity(), 0, 0, 28, 60,
-                new ProgressTexture(IGuiTexture.EMPTY, GuiTextures.ENERGY_BAR_BASE));
-        progressBar.setFillDirection(ProgressTexture.FillDirection.DOWN_TO_UP);
-        progressBar.setBackground(GuiTextures.ENERGY_BAR_BACKGROUND);
-        progressBar.setOverlayTexture(GuiTextures.ENERGY_BAR_OVERLAY);
-        return progressBar;
+    protected static EditableUI<ProgressWidget, TieredEnergyMachine> createEnergyBar() {
+        return new EditableUI<>("energy_container", ProgressWidget.class, () -> {
+            var progressBar = new ProgressWidget(ProgressWidget.JEIProgress, 0, 0, 28, 60,
+                    new ProgressTexture(IGuiTexture.EMPTY, GuiTextures.ENERGY_BAR_BASE));
+            progressBar.setFillDirection(ProgressTexture.FillDirection.DOWN_TO_UP);
+            progressBar.setBackground(GuiTextures.ENERGY_BAR_BACKGROUND);
+            progressBar.setOverlayTexture(GuiTextures.ENERGY_BAR_OVERLAY);
+            return progressBar;
+        }, (progressBar, machine) -> {
+            progressBar.setProgressSupplier(() -> machine.energyContainer.getEnergyStored() * 1d / machine.energyContainer.getEnergyCapacity());
+        });
     }
 
 }

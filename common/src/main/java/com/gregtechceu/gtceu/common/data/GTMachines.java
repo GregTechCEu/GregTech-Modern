@@ -879,8 +879,8 @@ public class GTMachines {
                     .where('S', Predicates.controller(blocks(definition.getBlock())))
                     .where('#', Predicates.air())
                     .where('X', blocks(CASING_BRONZE_BRICKS.get()).setMinGlobalLimited(14)
-                            .or(Predicates.abilities(PartAbility.STEAM_IMPORT_ITEMS))
-                            .or(Predicates.abilities(PartAbility.STEAM_EXPORT_ITEMS))
+                            .or(Predicates.abilities(PartAbility.STEAM_IMPORT_ITEMS).setPreviewCount(1))
+                            .or(Predicates.abilities(PartAbility.STEAM_EXPORT_ITEMS).setPreviewCount(1))
                             .or(Predicates.abilities(PartAbility.STEAM).setExactLimit(1)))
                     .build())
             .workableCasingRenderer(GTCEu.id("block/casings/solid/machine_casing_bronze_plated_bricks"),
@@ -899,8 +899,8 @@ public class GTMachines {
                     .where('#', Predicates.air())
                     .where(' ', Predicates.any())
                     .where('X', blocks(CASING_BRONZE_BRICKS.get()).setMinGlobalLimited(6)
-                            .or(Predicates.abilities(PartAbility.STEAM_IMPORT_ITEMS))
-                            .or(Predicates.abilities(PartAbility.STEAM_EXPORT_ITEMS)))
+                            .or(Predicates.abilities(PartAbility.STEAM_IMPORT_ITEMS).setPreviewCount(1))
+                            .or(Predicates.abilities(PartAbility.STEAM_EXPORT_ITEMS).setPreviewCount(1)))
                     .where('F', blocks(FIREBOX_BRONZE.get())
                             .or(Predicates.abilities(PartAbility.STEAM).setExactLimit(1)))
                     .build())
@@ -1104,6 +1104,7 @@ public class GTMachines {
                                                              int... tiers) {
         return registerTieredMachines(name, (holder, tier) -> new SimpleTieredMachine(holder, tier, tankScalingFunction), (tier, builder) -> builder
                 .langValue("%s %s %s".formatted(VLVH[tier], toEnglishName(name), VLVT[tier]))
+                .editableUI(SimpleTieredMachine.EDITABLE_UI_CREATOR.apply(GTCEu.id(name), recipeType))
                 .rotationState(RotationState.NON_Y_AXIS)
                 .recipeType(recipeType)
                 .workableTieredHullRenderer(GTCEu.id("block/machines/" + name))
@@ -1126,6 +1127,7 @@ public class GTMachines {
                                                               int... tiers) {
         return registerTieredMachines(name, (holder, tier) -> new SimpleGeneratorMachine(holder, tier, tankScalingFunction), (tier, builder) -> builder
                 .langValue("%s %s Generator %s".formatted(VLVH[tier], toEnglishName(name), VLVT[tier]))
+                .editableUI(SimpleGeneratorMachine.EDITABLE_UI_CREATOR.apply(GTCEu.id(name), recipeType))
                 .rotationState(RotationState.NON_Y_AXIS)
                 .recipeType(recipeType)
                 .renderer(() -> new SimpleGeneratorMachineRenderer(tier, GTCEu.id("block/generators/" + name)))
@@ -1187,8 +1189,8 @@ public class GTMachines {
                         .where('S', Predicates.controller(blocks(definition.getBlock())))
                         .where('P', blocks(pipe.get()))
                         .where('X', states(ALL_FIREBOXES.get(firebox).getDefaultState()).setMinGlobalLimited(4)
-                                .or(Predicates.abilities(PartAbility.IMPORT_FLUIDS).setMinGlobalLimited(1))
-                                .or(Predicates.abilities(PartAbility.IMPORT_ITEMS).setMaxGlobalLimited(1))
+                                .or(Predicates.abilities(PartAbility.IMPORT_FLUIDS).setMinGlobalLimited(1).setPreviewCount(1))
+                                .or(Predicates.abilities(PartAbility.IMPORT_ITEMS).setMaxGlobalLimited(1).setPreviewCount(1))
                                 .or(Predicates.abilities(PartAbility.MUFFLER).setExactLimit(1)))
                         .where('C', blocks(casing.get()).setMinGlobalLimited(20)
                                 .or(Predicates.abilities(PartAbility.EXPORT_FLUIDS).setMinGlobalLimited(1).setPreviewCount(1)))

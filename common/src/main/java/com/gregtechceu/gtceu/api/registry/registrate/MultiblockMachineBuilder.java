@@ -1,6 +1,8 @@
 package com.gregtechceu.gtceu.api.registry.registrate;
 
 import com.google.common.base.Suppliers;
+import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
+import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.block.IMachineBlock;
