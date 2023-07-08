@@ -1248,6 +1248,12 @@ public class LangHandler {
         provider.add("gtceu.gui.auto_output.name", "auto");
         provider.add("gtceu.gui.overclock.title", "Overclock Tier");
         provider.add("gtceu.gui.overclock.range", "Available Tiers [%s, %s]");
+
+        provider.add("gtceu.gui.content.chance_0", "§cNot Consumed§r");
+        provider.add("gtceu.gui.content.chance_0_short", "§cNC§r");
+        provider.add("gtceu.gui.content.chance_1", "§eChance: %s§r");
+        provider.add("gtceu.gui.content.per_tick", "§aConsumed/Produced Per Tick§r");
+        provider.add("gtceu.gui.content.tips.per_tick_short", "§a/tick§r");
     }
 
     /**
