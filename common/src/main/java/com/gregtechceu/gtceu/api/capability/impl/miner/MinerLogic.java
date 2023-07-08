@@ -73,7 +73,6 @@ public class MinerLogic extends RecipeLogic implements IWorkable {
     private static final byte TICK_TOLERANCE = 20;
     private static final double DIVIDEND = MAX_SPEED * Math.pow(TICK_TOLERANCE, POWER);
 
-
     private final IModelRenderer pipeModel;
     private final ItemStack pickaxeToolFortune = PICKAXE_TOOL;
     private final DummyRecipeCapabilityHolder breakRecipeSearchHolder;
@@ -137,8 +136,8 @@ public class MinerLogic extends RecipeLogic implements IWorkable {
         this.pipeModel = Platform.isClient() ? pipeModel : null;
 
         this.breakRecipeSearchHolder = new DummyRecipeCapabilityHolder();
-        this.breakRecipeSearchHolder.addCapability(IO.IN, ItemRecipeCapability.CAP, List.of(new NotifiableItemStackHandler(machine.self(), 1, IO.IN, IO.BOTH)));
-        this.breakRecipeSearchHolder.addCapability(IO.OUT, ItemRecipeCapability.CAP, List.of(new NotifiableItemStackHandler(machine.self(), 10, IO.OUT, IO.BOTH)));
+        this.breakRecipeSearchHolder.addCapability(IO.IN, ItemRecipeCapability.CAP, List.of(new NotifiableItemStackHandler(getMachine(), 1, IO.IN, IO.BOTH)));
+        this.breakRecipeSearchHolder.addCapability(IO.OUT, ItemRecipeCapability.CAP, List.of(new NotifiableItemStackHandler(getMachine(), 10, IO.OUT, IO.BOTH)));
     }
 
     @Override
@@ -167,7 +166,7 @@ public class MinerLogic extends RecipeLogic implements IWorkable {
      */
     public void serverTick() {
         // Needs to be server side
-        if (machine.self().isRemote())
+        if (getMachine().isRemote())
             return;
 
         // Inactive miners do nothing
@@ -195,9 +194,9 @@ public class MinerLogic extends RecipeLogic implements IWorkable {
         }
 
         // drill a hole beneath the miner and extend the pipe downwards by one
-        ServerLevel world = (ServerLevel) machine.self().getLevel();
+        ServerLevel world = (ServerLevel) getMachine().getLevel();
         if (mineY.get() < pipeY.get()) {
-            world.destroyBlock(new BlockPos(machine.self().getPos().getX(), pipeY.get(), machine.self().getPos().getZ()), false);
+            world.destroyBlock(new BlockPos(getMachine().getPos().getX(), pipeY.get(), getMachine().getPos().getZ()), false);
             pipeY.decrementAndGet();
             incrementPipeLength();
         }
@@ -206,7 +205,7 @@ public class MinerLogic extends RecipeLogic implements IWorkable {
         checkBlocksToMine();
 
         // if there are blocks to mine and the correct amount of time has passed, do the mining
-        if (machine.self().getOffsetTimer() % this.speed == 0 && !blocksToMine.isEmpty()) {
+        if (getMachine().getOffsetTimer() % this.speed == 0 && !blocksToMine.isEmpty()) {
             NonNullList<ItemStack> blockDrops = NonNullList.create();
             BlockState blockState = world.getBlockState(blocksToMine.getFirst());
 
@@ -259,7 +258,7 @@ public class MinerLogic extends RecipeLogic implements IWorkable {
         if (checkShouldStop()) {
             // if the miner is not finished and has invalid coordinates, get new and valid starting coordinates
             if (!isDone && checkCoordinatesInvalid(x, y, z))
-                initPos(machine.self().getPos(), currentRadius);
+                initPos(getMachine().getPos(), currentRadius);
 
             // don't do anything else this time
             return false;
@@ -330,7 +329,7 @@ public class MinerLogic extends RecipeLogic implements IWorkable {
         // If the block's drops can fit in the inventory, move the previously mined position to the block
         // replace the ore block with cobblestone instead of breaking it to prevent mob spawning
         // remove the ore block's position from the mining queue
-        ItemTransferList transfer = machine.self().getItemTransferCap(null);
+        ItemTransferList transfer = getMachine().getItemTransferCap(null);
         if (transfer != null) {
             if (GTTransferUtils.addItemsToItemHandler(transfer, true, blockDrops)) {
                 GTTransferUtils.addItemsToItemHandler(transfer, false, blockDrops);
@@ -395,7 +394,7 @@ public class MinerLogic extends RecipeLogic implements IWorkable {
      * Recalculates the mining area, refills the block list and restarts the miner, if it was done
      */
     public void resetArea() {
-        initPos(machine.self().getPos(), currentRadius);
+        initPos(getMachine().getPos(), currentRadius);
         if (this.isDone) this.setWorkingEnabled(false);
         this.isDone = false;
         blocksToMine.clear();
@@ -411,11 +410,11 @@ public class MinerLogic extends RecipeLogic implements IWorkable {
         LinkedList<BlockPos> blocks = new LinkedList<>();
 
         // determine how many blocks to retrieve this time
-        double quotient = getQuotient(getMeanTickTime(machine.self().getLevel()));
+        double quotient = getQuotient(getMeanTickTime(getMachine().getLevel()));
         int calcAmount = quotient < 1 ? 1 : (int) (Math.min(quotient, Short.MAX_VALUE));
         int calculated = 0;
 
-        if (this.minBuildHeight == Integer.MAX_VALUE) this.minBuildHeight = this.machine.self().getLevel().getMinBuildHeight();
+        if (this.minBuildHeight == Integer.MAX_VALUE) this.minBuildHeight = this.getMachine().getLevel().getMinBuildHeight();
 
         // keep getting blocks until the target amount is reached
         while (calculated < calcAmount) {
@@ -426,8 +425,8 @@ public class MinerLogic extends RecipeLogic implements IWorkable {
                     // check every block along the x-axis
                     if (x.get() <= startX.get() + currentRadius * 2) {
                         BlockPos blockPos = new BlockPos(x.get(), y.get(), z.get());
-                        BlockState state = machine.self().getLevel().getBlockState(blockPos);
-                        if (state.getBlock().defaultDestroyTime() >= 0 && machine.self().getLevel().getBlockEntity(blockPos) == null && state.is(CustomTags.ORE_BLOCKS)) {
+                        BlockState state = getMachine().getLevel().getBlockState(blockPos);
+                        if (state.getBlock().defaultDestroyTime() >= 0 && getMachine().getLevel().getBlockEntity(blockPos) == null && state.is(CustomTags.ORE_BLOCKS)) {
                             blocks.addLast(blockPos);
                         }
                         // move to the next x position
@@ -533,7 +532,7 @@ public class MinerLogic extends RecipeLogic implements IWorkable {
      */
     private void incrementPipeLength() {
         this.pipeLength++;
-        this.machine.self().markDirty();
+        this.getMachine().markDirty();
     }
 
     /**

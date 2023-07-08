@@ -10,9 +10,11 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
+import com.gregtechceu.gtceu.client.renderer.block.TextureOverrideRenderer;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
+import com.lowdragmc.lowdraglib.client.renderer.impl.IModelRenderer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -29,6 +31,7 @@ import java.util.List;
 
 public class MinerRenderer extends WorkableTieredHullMachineRenderer {
     public static final ResourceLocation PIPE_IN_OVERLAY = GTCEu.id("block/overlay/machine/overlay_pipe_in");
+    public static final ResourceLocation PIPE_MODEL = GTCEu.id("block/pipe");
 
     public static final ImmutableMap<Material, ResourceLocation> MATERIALS_TO_CASING_MODELS;
 

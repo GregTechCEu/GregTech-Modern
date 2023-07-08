@@ -576,6 +576,13 @@ public class TagPrefix {
             .generateItem(true)
             .generationCondition(mat -> mat.hasFlag(MaterialFlags.GENERATE_LENS));
 
+    public static final TagPrefix dye = new TagPrefix("dye")
+            .defaultTagPath(FORGE, "dyes/%s")
+            .defaultTagPath(FABRIC, "%s_dyes")
+            .unformattedTagPath(FORGE, "dyes")
+            .unformattedTagPath(FABRIC, "dyes")
+            .materialAmount(-1);
+
     // made of 4 Ingots.
     public static final TagPrefix toolHeadBuzzSaw = new TagPrefix("buzzSawBlade")
             .itemTable(() -> GTItems.MATERIAL_ITEMS)

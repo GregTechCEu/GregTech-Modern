@@ -18,11 +18,11 @@ public class CustomTags {
     public static final TagKey<Item> GLASS_PANES = TagUtil.createItemTag("glass_panes");
 
     // Added Gregtech tags
-    public static final TagKey<Item> TRANSISTORS = TagUtil.createItemTag("transistors");
-    public static final TagKey<Item> RESISTORS = TagUtil.createItemTag("resistors");
-    public static final TagKey<Item> CAPACITORS = TagUtil.createItemTag("capacitors");
-    public static final TagKey<Item> DIODES = TagUtil.createItemTag("diodes");
-    public static final TagKey<Item> INDUCTORS = TagUtil.createItemTag("inductors");
+    public static final TagKey<Item> TRANSISTORS = TagUtil.createModItemTag("transistors");
+    public static final TagKey<Item> RESISTORS = TagUtil.createModItemTag("resistors");
+    public static final TagKey<Item> CAPACITORS = TagUtil.createModItemTag("capacitors");
+    public static final TagKey<Item> DIODES = TagUtil.createModItemTag("diodes");
+    public static final TagKey<Item> INDUCTORS = TagUtil.createModItemTag("inductors");
 
     public static final TagKey<Item> ULV_CIRCUITS = TagUtil.createPlatformItemTag("circuits/ulv", "ulv_circuits");
     public static final TagKey<Item> LV_CIRCUITS = TagUtil.createPlatformItemTag("circuits/lv", "lv_circuits");
@@ -48,7 +48,6 @@ public class CustomTags {
 
     // Platform-dependent tags
     public static final TagKey<Item> TAG_WOODEN_CHESTS = TagUtil.createPlatformItemTag("chests/wooden", "chests");
-    public static final TagKey<Item> TAG_BLUE_DYES = TagUtil.createPlatformItemTag("dyes/blue", "blue_dyes");
 
     public static final TagKey<Block> NEEDS_WOOD_TOOL = TagUtil.createPlatformUnprefixedTag(Registry.BLOCK, "forge:needs_wood_tool", "fabric:needs_tool_level_0");
     public static final TagKey<Block> NEEDS_GOLD_TOOL = TagUtil.createPlatformUnprefixedTag(Registry.BLOCK, "forge:needs_gold_tool", "fabric:needs_tool_level_0");

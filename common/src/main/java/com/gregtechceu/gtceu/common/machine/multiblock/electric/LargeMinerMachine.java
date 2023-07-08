@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.IMiner;
-import com.gregtechceu.gtceu.api.capability.impl.miner.MultiblockMinerLogic;
+import com.gregtechceu.gtceu.api.capability.impl.miner.LargeMinerLogic;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
@@ -22,6 +22,8 @@ import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.misc.IOFluidTransferList;
 import com.gregtechceu.gtceu.api.misc.IOItemTransferList;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
+import com.gregtechceu.gtceu.client.renderer.block.TextureOverrideRenderer;
+import com.gregtechceu.gtceu.client.renderer.machine.MinerRenderer;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.data.GTSoundEntries;
@@ -32,6 +34,8 @@ import com.lowdragmc.lowdraglib.gui.widget.ComponentPanelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.CycleButtonWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
+import com.lowdragmc.lowdraglib.misc.FluidTransferList;
+import com.lowdragmc.lowdraglib.misc.ItemTransferList;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
@@ -46,10 +50,8 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
@@ -73,9 +75,9 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine impleme
     @Nullable
     protected EnergyContainerList energyContainer;
     @Nullable
-    protected IOFluidTransferList inputFluidInventory;
+    protected FluidTransferList inputFluidInventory;
     @Nullable
-    protected IItemTransfer outputInventory;
+    protected ItemTransferList outputInventory;
 
     @Persisted
     private boolean silkTouch = false;
@@ -96,7 +98,7 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine impleme
     @Override
     protected @NotNull RecipeLogic createRecipeLogic(Object... args) {
         if (args.length > 3 && args[args.length - 4] instanceof Material pipeMat && args[args.length - 3] instanceof Integer fortune && args[args.length - 2] instanceof Integer speed && args[args.length - 1] instanceof Integer maxRadius) {
-            return new MultiblockMinerLogic(this, fortune, speed, maxRadius, getBaseTexture(pipeMat), GTRecipeTypes.MACERATOR_RECIPES);
+            return new LargeMinerLogic(this, fortune, speed, maxRadius * CHUNK_LENGTH / 2, getBaseTexture(pipeMat), GTRecipeTypes.MACERATOR_RECIPES);
         }
         throw new IllegalArgumentException("MinerMachine need args [inventorySize, fortune, speed, maximumRadius] for initialization");
     }
@@ -112,8 +114,8 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine impleme
     }
 
     @Override
-    public MultiblockMinerLogic getRecipeLogic() {
-        return (MultiblockMinerLogic) super.getRecipeLogic();
+    public LargeMinerLogic getRecipeLogic() {
+        return (LargeMinerLogic) super.getRecipeLogic();
     }
 
     @Override
@@ -133,18 +135,19 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine impleme
             for (var handler : part.getRecipeHandlers()) {
                 // If IO not compatible
                 if (io != IO.BOTH && handler.getHandlerIO() != IO.BOTH && io != handler.getHandlerIO()) continue;
-                if (io == IO.IN && handler.getCapability() == EURecipeCapability.CAP && handler instanceof IEnergyContainer container) {
+                var handlerIO = io == IO.BOTH ? handler.getHandlerIO() : io;
+                if (handlerIO == IO.IN && handler.getCapability() == EURecipeCapability.CAP && handler instanceof IEnergyContainer container) {
                     energyContainers.add(container);
-                } else if (io == IO.IN && handler.getCapability() == FluidRecipeCapability.CAP && handler instanceof IFluidTransfer fluidTransfer) {
+                } else if (handlerIO == IO.IN && handler.getCapability() == FluidRecipeCapability.CAP && handler instanceof IFluidTransfer fluidTransfer) {
                     fluidTanks.add(fluidTransfer);
-                } else if (io == IO.OUT && handler.getCapability() == ItemRecipeCapability.CAP && handler instanceof IItemTransfer itemHandler) {
+                } else if (handlerIO == IO.OUT && handler.getCapability() == ItemRecipeCapability.CAP && handler instanceof IItemTransfer itemHandler) {
                     itemHandlers.add(itemHandler);
                 }
             }
         }
         this.energyContainer = new EnergyContainerList(energyContainers);
-        this.inputFluidInventory = new IOFluidTransferList(fluidTanks, IO.IN, fluid -> true);
-        this.outputInventory = new IOItemTransferList(itemHandlers, IO.OUT, stack -> true);
+        this.inputFluidInventory = new FluidTransferList(fluidTanks);
+        this.outputInventory = new ItemTransferList(itemHandlers);
 
         getRecipeLogic().setVoltageTier(GTUtil.getTierByVoltage(this.energyContainer.getInputVoltage()));
         getRecipeLogic().setOverclockAmount(Math.max(1, GTUtil.getTierByVoltage(this.energyContainer.getInputVoltage()) - this.tier));
@@ -203,7 +206,7 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine impleme
             textList.add(Component.translatable("gtceu.machine.miner.starty", getRecipeLogic().getY().get() == Integer.MAX_VALUE ? 0 : getRecipeLogic().getY().get()));
             textList.add(Component.translatable("gtceu.machine.miner.startz", getRecipeLogic().getZ().get() == Integer.MAX_VALUE ? 0 : getRecipeLogic().getZ().get()));
             if (getRecipeLogic().isChunkMode()) {
-                textList.add(Component.translatable("gtceu.universal.tooltip.working_area_chunks_max", workingAreaChunks, workingAreaChunks));
+                textList.add(Component.translatable("gtceu.universal.tooltip.working_area_chunks", workingAreaChunks, workingAreaChunks));
             } else {
                 textList.add(Component.translatable("gtceu.universal.tooltip.working_area", workingArea, workingArea));
             }
@@ -245,10 +248,10 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine impleme
 
     public IModelRenderer getBaseTexture(Material material) {
         if (material.equals(GTMaterials.Titanium))
-            return new IModelRenderer(GTCEu.id("block/casings/solid/machine_casing_stable_titanium"));
+            return new TextureOverrideRenderer(MinerRenderer.PIPE_MODEL, Map.of("all", GTCEu.id("block/casings/solid/machine_casing_stable_titanium")));
         else if (material.equals(GTMaterials.TungstenSteel))
-            return new IModelRenderer(GTCEu.id("block/casings/solid/machine_casing_robust_tungstensteel"));
-        return new IModelRenderer(GTCEu.id("block/casings/solid/machine_casing_solid_steel"));
+            return new TextureOverrideRenderer(MinerRenderer.PIPE_MODEL, Map.of("all", GTCEu.id("block/casings/solid/machine_casing_robust_tungstensteel")));
+        return new TextureOverrideRenderer(MinerRenderer.PIPE_MODEL, Map.of("all", GTCEu.id("block/casings/solid/machine_casing_solid_steel")));
     }
 
     public long getMaxVoltage() {
@@ -258,7 +261,7 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine impleme
     @Override
     public Widget createUIWidget() {
         WidgetGroup group = (WidgetGroup) super.createUIWidget();
-        group.addWidget(new ComponentPanelWidget(63, 54, this::addDisplayText2)
+        group.addWidget(new ComponentPanelWidget(63, 31, this::addDisplayText2)
                 .setMaxWidthLimit(68).clickHandler(this::handleDisplayClick));
         group.addWidget(getFlexButton(173, 124, 18, 18));
         return group;
@@ -322,7 +325,7 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine impleme
                     getRecipeLogic().setCurrentRadius(currentRadius - CHUNK_LENGTH);
                 }
                 int workingAreaChunks = getRecipeLogic().getCurrentRadius() * 2 / CHUNK_LENGTH;
-                playerIn.sendSystemMessage(Component.translatable("gtceu.universal.tooltip.working_area_chunks_max", workingAreaChunks, workingAreaChunks));
+                playerIn.sendSystemMessage(Component.translatable("gtceu.universal.tooltip.working_area_chunks", workingAreaChunks, workingAreaChunks));
             } else {
                 if (currentRadius - CHUNK_LENGTH / 2 <= 0) {
                     getRecipeLogic().setCurrentRadius(getRecipeLogic().getMaximumRadius());
