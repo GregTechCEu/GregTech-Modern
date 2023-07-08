@@ -404,6 +404,7 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
                 var index = WidgetUtils.widgetIdIndex(slot);
                 if (index >= 0 && index < recipeHolder.importItems.getSlots()) {
                     slot.setHandlerSlot(recipeHolder.importItems, index);
+                    slot.setIngredientIO(IngredientIO.INPUT);
                     slot.setCanTakeItems(!isJEI);
                     slot.setCanPutItems(!isJEI);
                 }
@@ -413,6 +414,7 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
                 var index = WidgetUtils.widgetIdIndex(slot);
                 if (index >= 0 && index < recipeHolder.exportItems.getSlots()) {
                     slot.setHandlerSlot(recipeHolder.exportItems, index);
+                    slot.setIngredientIO(IngredientIO.OUTPUT);
                     slot.setCanTakeItems(!isJEI);
                     slot.setCanPutItems(false);
                 }
@@ -422,6 +424,7 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
                 var index = WidgetUtils.widgetIdIndex(tank);
                 if (index >= 0 && index < recipeHolder.importFluids.length) {
                     tank.setFluidTank(recipeHolder.importFluids[index]);
+                    tank.setIngredientIO(IngredientIO.INPUT);
                     tank.setAllowClickFilled(!isJEI);
                     tank.setAllowClickDrained(!isJEI);
                 }
@@ -431,6 +434,7 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
                 var index = WidgetUtils.widgetIdIndex(tank);
                 if (index >= 0 && index < recipeHolder.exportFluids.length) {
                     tank.setFluidTank(recipeHolder.exportFluids[index]);
+                    tank.setIngredientIO(IngredientIO.OUTPUT);
                     tank.setAllowClickFilled(!isJEI);
                     tank.setAllowClickDrained(false);
                 }
@@ -453,7 +457,6 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
             var slot = new SlotWidget();
             slot.initTemplate();
             slot.setSelfPosition(new Position((index % 3) * 18 + 4, (index / 3) * 18 + 4));
-            slot.setIngredientIO(isOutputs ? IngredientIO.OUTPUT : IngredientIO.INPUT);
             slot.setBackground(getOverlaysForSlot(isOutputs, false, slotIndex == itemCount - 1, isSteam, isHighPressure));
             slot.setId(ItemRecipeCapability.CAP.slotName(isOutputs ? IO.OUT : IO.IN, slotIndex));
             group.addWidget(slot);
@@ -464,7 +467,6 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
             tank.initTemplate();
             tank.setFillDirection(ProgressTexture.FillDirection.ALWAYS_FULL);
             tank.setSelfPosition(new Position((index % 3) * 18 + 4, (index / 3) * 18 + 4));
-            tank.setIngredientIO(isOutputs ? IngredientIO.OUTPUT : IngredientIO.INPUT);
             tank.setBackground(getOverlaysForSlot(isOutputs, true, i == fluidCount - 1, isSteam, isHighPressure));
             tank.setId(FluidRecipeCapability.CAP.slotName(isOutputs ? IO.OUT : IO.IN, i));
             group.addWidget(tank);
