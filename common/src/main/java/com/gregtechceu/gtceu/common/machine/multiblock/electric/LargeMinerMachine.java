@@ -25,6 +25,7 @@ import com.gregtechceu.gtceu.client.renderer.machine.MinerRenderer;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.data.GTSoundEntries;
+import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.lowdragmc.lowdraglib.client.renderer.impl.IModelRenderer;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
@@ -37,7 +38,6 @@ import com.lowdragmc.lowdraglib.misc.ItemTransferList;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
 import net.minecraft.ChatFormatting;
@@ -174,7 +174,7 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine impleme
             FluidStack fluidStack = inputFluidInventory.getFluidInTank(0);
             if (fluidStack != FluidStack.empty() && fluidStack.isFluidEqual(DrillingFluid.getFluid(1)) && fluidStack.getAmount() >= drillingFluid.getAmount()) {
                 if (!simulate)
-                    inputFluidInventory.drain(drillingFluid, true);
+                    GTTransferUtils.drainFluidAccountNotifiableList(inputFluidInventory, drillingFluid, false);
                 return true;
             }
         }
@@ -254,7 +254,7 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine impleme
     @Override
     public Widget createUIWidget() {
         WidgetGroup group = (WidgetGroup) super.createUIWidget();
-        group.addWidget(new ComponentPanelWidget(63, 77, this::addDisplayText2)
+        group.addWidget(new ComponentPanelWidget(63, 73, this::addDisplayText2)
                 .setMaxWidthLimit(68).clickHandler(this::handleDisplayClick));
         group.addWidget(getFlexButton(160, 119, 18, 18));
         return group;

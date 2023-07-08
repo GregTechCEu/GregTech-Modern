@@ -162,6 +162,7 @@ public class GTTransferUtils {
     }
 
     public static long fillFluidAccountNotifiableList(IFluidTransfer handler, FluidStack stack, boolean simulate) {
+        if (stack.isEmpty()) return 0;
         if (handler instanceof FluidTransferList transferList) {
             var copied = stack.copy();
             for (var transfer : transferList.transfers) {
@@ -176,6 +177,25 @@ public class GTTransferUtils {
             return stack.getAmount() - copied.getAmount();
         }
         return handler.fill(stack, simulate);
+    }
+
+    public static FluidStack drainFluidAccountNotifiableList(IFluidTransfer handler, FluidStack stack, boolean simulate) {
+        if (stack.isEmpty()) return FluidStack.empty();
+        if (handler instanceof FluidTransferList transferList) {
+            var copied = stack.copy();
+            for (var transfer : transferList.transfers) {
+                var candidate = copied.copy();
+                if (transfer instanceof NotifiableFluidTank notifiable) {
+                    copied.shrink(notifiable.drainInternal(candidate, simulate).getAmount());
+                } else {
+                    copied.shrink(transfer.drain(candidate, simulate).getAmount());
+                }
+                if (copied.isEmpty()) break;
+            }
+            copied.setAmount(stack.getAmount() - copied.getAmount());
+            return copied;
+        }
+        return handler.drain(stack, simulate);
     }
 
     /**
