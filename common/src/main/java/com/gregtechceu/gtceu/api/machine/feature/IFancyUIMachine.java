@@ -40,6 +40,15 @@ public interface IFancyUIMachine extends IUIMachine, IFancyUIProvider {
      */
     @Override
     default Widget createMainPage() {
+        var editableUI = self().getDefinition().getEditableUI();
+        if (editableUI != null) {
+            var template = editableUI.createCustomUI();
+            if (template == null) {
+                template = editableUI.createDefault();
+            }
+            editableUI.setupUI(template, self());
+            return template;
+        }
         return createUIWidget();
     }
 

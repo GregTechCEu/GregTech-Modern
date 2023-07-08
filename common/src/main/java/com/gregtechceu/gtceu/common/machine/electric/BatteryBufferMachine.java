@@ -107,7 +107,8 @@ public class BatteryBufferMachine extends TieredEnergyMachine implements IContro
             }
         }
 
-        var energyBar = createEnergyBar();
+        var editableUI = createEnergyBar();
+        var energyBar = editableUI.createDefault();
 
         var group = new WidgetGroup(0, 0,
                 Math.max(energyBar.getSize().width + template.getSize().width + 4 + 8, 172),
@@ -119,7 +120,7 @@ public class BatteryBufferMachine extends TieredEnergyMachine implements IContro
                 (size.height - template.getSize().height) / 2));
         group.addWidget(energyBar);
         group.addWidget(template);
-
+        editableUI.setupUI(group, this);
         return group;
     }
 

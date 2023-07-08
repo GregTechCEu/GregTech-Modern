@@ -4,12 +4,15 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
+import com.gregtechceu.gtceu.api.gui.editor.EditableUI;
 import com.gregtechceu.gtceu.api.gui.fancy.ConfiguratorPanel;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.fancyconfigurator.CircuitFancyConfigurator;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputBoth;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.syncdata.RequireRerender;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -28,10 +31,12 @@ import com.mojang.blaze3d.MethodsReturnNonnullByDefault;
 import it.unimi.dsi.fastutil.ints.Int2LongFunction;
 import lombok.Getter;
 import lombok.Setter;
+import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
@@ -44,6 +49,8 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
 /**
  * @author KilaBash
@@ -347,11 +354,10 @@ public class SimpleTieredMachine extends WorkableTieredMachine implements IAutoO
         configuratorPanel.attachConfigurators(new CircuitFancyConfigurator(circuitInventory.storage));
     }
 
-    @Override
-    public Widget createUIWidget() {
-        var template =  recipeType.createUITemplate(recipeLogic::getProgressPercent, importItems.storage, exportItems.storage, importFluids.storages, exportFluids.storages).setBackground(GuiTextures.BACKGROUND_INVERSE);
-        var energyBar = createEnergyBar();
-        var batterySlot = createBatterySlot();
+    public static BiFunction<ResourceLocation, GTRecipeType, EditableMachineUI> EDITABLE_UI_CREATOR = Util.memoize((path, recipeType )-> new EditableMachineUI("simple", path, () -> {
+        var template =  recipeType.createEditableUITemplate(false, false).createDefault().setBackground(GuiTextures.BACKGROUND_INVERSE);
+        var energyBar = createEnergyBar().createDefault();
+        var batterySlot = createBatterySlot().createDefault();
         var energyGroup = new WidgetGroup(0, 0, energyBar.getSize().width, energyBar.getSize().height + 20);
         batterySlot.setSelfPosition(new Position((energyBar.getSize().width - 18) / 2, energyBar.getSize().height + 1));
         energyGroup.addWidget(energyBar);
@@ -367,15 +373,34 @@ public class SimpleTieredMachine extends WorkableTieredMachine implements IAutoO
         group.addWidget(energyGroup);
         group.addWidget(template);
         return group;
-    }
+    }, (template, machine) -> {
+        if (machine instanceof SimpleTieredMachine tieredMachine) {
+            tieredMachine.recipeType.createEditableUITemplate(false, false).setupUI(template,
+                    new GTRecipeType.RecipeHolder(tieredMachine.recipeLogic::getProgressPercent,
+                            tieredMachine.importItems.storage,
+                            tieredMachine.exportItems.storage,
+                            tieredMachine.importFluids.storages,
+                            tieredMachine.exportFluids.storages,
+                            false, false));
+            createEnergyBar().setupUI(template, tieredMachine);
+            createBatterySlot().setupUI(template, tieredMachine);
+        }
+    }));
 
     /**
      * Create an energy bar widget.
      */
-    protected Widget createBatterySlot() {
-        return new SlotWidget(chargerInventory, 0, 0, 0, true, true)
-                .setBackground(GuiTextures.SLOT, GuiTextures.CHARGER_OVERLAY)
-                .setHoverTooltips(LangHandler.getMultiLang("gtceu.gui.charger_slot.tooltip", GTValues.VNF[getTier()], GTValues.VNF[getTier()]).toArray(new MutableComponent[0]));
+    protected static EditableUI<SlotWidget, SimpleTieredMachine> createBatterySlot() {
+        return new EditableUI<>("battery_slot", SlotWidget.class, () -> {
+            var slotWidget = new SlotWidget();
+            slotWidget.setBackground(GuiTextures.SLOT, GuiTextures.CHARGER_OVERLAY);
+            return slotWidget;
+        }, (slotWidget, machine) -> {
+            slotWidget.setHandlerSlot(machine.chargerInventory, 0);
+            slotWidget.setCanPutItems(true);
+            slotWidget.setCanTakeItems(true);
+            slotWidget.setHoverTooltips(LangHandler.getMultiLang("gtceu.gui.charger_slot.tooltip", GTValues.VNF[machine.getTier()], GTValues.VNF[machine.getTier()]).toArray(new MutableComponent[0]));
+        });
     }
 
     // Method provided to override
