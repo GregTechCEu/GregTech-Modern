@@ -338,11 +338,10 @@ public class MiscRecipeLoader {
 
         // Tempered Glass in Arc Furnace
         // TODO Glass
-        //ARC_FURNACE_RECIPES.recipeBuilder("tempered_glass").duration(60).EUt(VA[LV])
-        //        .inputItems(block, Glass)
-        //        .outputItems(MetaBlocks.TRANSPARENT_CASING.getItemVariant(
-        //                BlockGlassCasing.CasingType.TEMPERED_GLASS))
-        //        .save(provider);
+        ARC_FURNACE_RECIPES.recipeBuilder("tempered_glass").duration(60).EUt(VA[LV])
+                .inputItems(block, Glass)
+                .outputItems(GTBlocks.CASING_TEMPERED_GLASS.asStack())
+                .save(provider);
 
         // Dyed Lens Decomposition
         for (ItemEntry<Item> item : GLASS_LENSES.values()) {
@@ -436,11 +435,11 @@ public class MiscRecipeLoader {
                 .duration(100).EUt(VA[LV]).save(provider);
 
         // TODO Glass blocks
-        //FORMING_PRESS_RECIPES.recipeBuilder()
-        //        .inputItems(GTBlocks.CASING.get().getItemVariant(BlockGlassCasing.CasingType.TEMPERED_GLASS, 2))
-        //        .inputItems(plate, PolyvinylButyral)
-        //        .outputItems(GTBlocks.CASING.get().getItemVariant(BlockGlassCasing.CasingType.LAMINATED_GLASS))
-        //        .duration(200).EUt(VA[HV]).save(provider);
+        FORMING_PRESS_RECIPES.recipeBuilder("laminated_glass")
+                .inputItems(GTBlocks.CASING_TEMPERED_GLASS.asStack(2))
+                .inputItems(plate, PolyvinylButyral)
+                .outputItems(GTBlocks.CASING_LAMINATED_GLASS.asStack())
+                .duration(200).EUt(VA[HV]).save(provider);
 
         LATHE_RECIPES.recipeBuilder("treated_wood_sticks")
                 .inputItems(GTBlocks.TREATED_WOOD_PLANK.asStack())

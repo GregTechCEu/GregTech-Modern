@@ -651,13 +651,12 @@ public class MachineRecipeLoader {
                 .duration(1600).EUt(VA[HV]).save(provider);
 
         //TODO Tempered Glass
-        //BLAST_RECIPES.recipeBuilder()
-        //        .inputItems(block, Glass)
-        //        .inputFluids(Oxygen.getFluid(100))
-        //        .outputItems(MetaBlocks.TRANSPARENT_CASING.getItemVariant(
-        //                BlockGlassCasing.CasingType.TEMPERED_GLASS))
-        //        .blastFurnaceTemp(1000)
-        //        .duration(200).EUt(VA[MV]).save(provider);
+        BLAST_RECIPES.recipeBuilder("tempered_glass_blasting")
+                .inputItems(block, Glass)
+                .inputFluids(Oxygen.getFluid(100))
+                .outputItems(GTBlocks.CASING_TEMPERED_GLASS.asStack())
+                .blastFurnaceTemp(1000)
+                .duration(200).EUt(VA[MV]).save(provider);
 
         registerBlastFurnaceMetallurgyRecipes(provider);
     }
