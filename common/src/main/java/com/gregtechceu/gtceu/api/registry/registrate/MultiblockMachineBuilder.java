@@ -2,9 +2,9 @@ package com.gregtechceu.gtceu.api.registry.registrate;
 
 import com.google.common.base.Suppliers;
 import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
-import com.gregtechceu.gtceu.api.machine.MachineDefinition;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
-import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
+import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.block.IMachineBlock;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
@@ -22,6 +22,7 @@ import com.tterrag.registrate.builders.BlockBuilder;
 import com.tterrag.registrate.builders.ItemBuilder;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import com.tterrag.registrate.util.nullness.NonNullUnaryOperator;
+import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -62,6 +63,9 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
     private Comparator<IMultiPart> partSorter = (a, b) -> 0;
     @Setter
     private TriFunction<IMultiController, IMultiPart, Direction, BlockState> partAppearance;
+    @Getter
+    @Setter
+    private BiConsumer<IMultiController, List<Component>> additionalDisplay = (m, l) -> {};
 
     protected MultiblockMachineBuilder(Registrate registrate, String name, Function<IMachineBlockEntity, ? extends MultiblockControllerMachine> metaMachine,
                                        BiFunction<BlockBehaviour.Properties, MultiblockMachineDefinition, IMachineBlock> blockFactory,
@@ -153,11 +157,6 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
     }
 
     @Override
-    public MultiblockMachineBuilder overclockingLogic(OverclockingLogic overclockingLogic) {
-        return (MultiblockMachineBuilder) super.overclockingLogic(overclockingLogic);
-    }
-
-    @Override
     public MultiblockMachineBuilder modelRenderer(Supplier<ResourceLocation> model) {
         return (MultiblockMachineBuilder) super.modelRenderer(model);
     }
@@ -236,6 +235,16 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
     }
 
     @Override
+    public MultiblockMachineBuilder recipeModifier(BiFunction<MetaMachine, GTRecipe, GTRecipe> recipeModifier) {
+        return (MultiblockMachineBuilder) super.recipeModifier(recipeModifier);
+    }
+
+    @Override
+    public MultiblockMachineBuilder editableUI(@Nullable EditableMachineUI editableUI) {
+        return (MultiblockMachineBuilder) super.editableUI(editableUI);
+    }
+
+    @Override
     public MultiblockMachineBuilder onBlockEntityRegister(NonNullConsumer<BlockEntityType<BlockEntity>> onBlockEntityRegister) {
         return (MultiblockMachineBuilder) super.onBlockEntityRegister(onBlockEntityRegister);
     }
@@ -256,6 +265,7 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
             partAppearance = (controller, part, side) -> definition.getAppearance().get();
         }
         definition.setPartAppearance(partAppearance);
+        definition.setAdditionalDisplay(additionalDisplay);
         return definition;
     }
 }

@@ -6,16 +6,15 @@ import com.gregtechceu.gtceu.api.gui.fancy.IFancyUIProvider;
 import com.gregtechceu.gtceu.api.gui.fancy.TooltipsPanel;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
+import com.gregtechceu.gtceu.api.machine.feature.IOverclockMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDisplayUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
-import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
-import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.widget.*;
 import net.minecraft.ChatFormatting;
@@ -24,7 +23,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.world.entity.player.Player;
-import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
@@ -36,8 +34,7 @@ import java.util.List;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine implements IFancyUIMachine, IDisplayUIMachine, ITieredMachine {
-
+public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine implements IFancyUIMachine, IDisplayUIMachine, ITieredMachine, IOverclockMachine {
     public WorkableElectricMultiblockMachine(IMachineBlockEntity holder) {
         super(holder);
     }
@@ -94,6 +91,7 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
                 textList.add(Component.translatable("gtceu.multiblock.not_enough_energy").setStyle(Style.EMPTY.withColor(ChatFormatting.RED)));
             }
         }
+        getDefinition().getAdditionalDisplay().accept(this, textList);
     }
 
     @Override
@@ -125,6 +123,35 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
         for (IMultiPart part : getParts()) {
             part.attachFancyTooltipsToController(this, tooltipsPanel);
         }
+    }
+
+
+    //////////////////////////////////////
+    //********     OVERCLOCK   *********//
+    //////////////////////////////////////
+    @Override
+    public int getOverclockTier() {
+        return getTier();
+    }
+
+    @Override
+    public int getMaxOverclockTier() {
+        return getTier();
+    }
+
+    @Override
+    public int getMinOverclockTier() {
+        return getTier();
+    }
+
+    @Override
+    public void setOverclockTier(int tier) {
+
+    }
+
+    @Override
+    public long getOverclockVoltage() {
+        return getMaxVoltage();
     }
 
     //////////////////////////////////////
@@ -159,14 +186,5 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
             }
         }
         return maxVoltage;
-    }
-
-    @Nullable
-    @Override
-    public GTRecipe getRealRecipe(GTRecipe recipe) {
-        if (RecipeHelper.getRecipeEUtTier(recipe) > getTier()) {
-            return null;
-        }
-        return RecipeHelper.applyOverclock(getDefinition().getOverclockingLogic(), recipe, getMaxVoltage());
     }
 }

@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.UITemplate;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDisplayUIMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.steam.SteamEnergyRecipeHandler;
@@ -13,8 +14,8 @@ import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
-import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
@@ -27,9 +28,8 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.world.entity.player.Player;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
@@ -37,7 +37,7 @@ import java.util.List;
 @MethodsReturnNonnullByDefault
 public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine implements IDisplayUIMachine {
 
-    private static final int MAX_PARALLELS = 8;
+    public static final int MAX_PARALLELS = 8;
 
     // if in millibuckets, this is 0.5, Meaning 2mb of steam -> 1 EU
     private static final double CONVERSION_RATE = FluidHelper.getBucket() / 2000.0D;
@@ -64,13 +64,10 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
         }
     }
 
-    @Nullable
-    @Override
-    public GTRecipe getRealRecipe(@NotNull GTRecipe recipe) {
+    public static GTRecipe recipeModifier(MetaMachine machine, @Nonnull GTRecipe recipe) {
         int duration = recipe.duration;
         var eut = RecipeHelper.getInputEUt(recipe);
-        var parallelRecipe = tryParallel(recipe, 1, MAX_PARALLELS);
-        if (parallelRecipe != null) recipe = parallelRecipe;
+        recipe = GTRecipeModifiers.accurateParallel(machine, recipe, MAX_PARALLELS, false);
 
         // we remove tick inputs, as our "cost" is just steam now, just stored as EU/t
         // also set the duration to just 1.5x the original, instead of fully multiplied
@@ -79,27 +76,6 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
         recipe.tickInputs.clear();
         recipe.tickInputs.put(EURecipeCapability.CAP, List.of(new Content(eut, 1.0f, null, null)));
         return recipe;
-    }
-
-    @Nullable
-    private GTRecipe tryParallel(GTRecipe original, int min, int max) {
-        if (min > max) return null;
-
-        int mid = (min + max) / 2;
-
-        GTRecipe copied = original.copy(ContentModifier.multiplier(mid), false);
-        if (!copied.matchRecipe(this).isSuccessed()) {
-            // tried too many
-            return tryParallel(original, min, mid - 1);
-        } else {
-            // at max parallels
-            if (mid == max) {
-                return copied;
-            }
-            // matches, but try to do more
-            GTRecipe tryMore = tryParallel(original, mid + 1, max);
-            return tryMore != null ? tryMore : copied;
-        }
     }
 
     @Override

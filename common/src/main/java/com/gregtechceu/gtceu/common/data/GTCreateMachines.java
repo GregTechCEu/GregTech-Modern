@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.client.instance.SplitShaftInstance;
 import com.gregtechceu.gtceu.client.renderer.machine.KineticWorkableTieredHullMachineRenderer;
@@ -93,6 +94,7 @@ public class GTCreateMachines {
                         .langValue("%s %s %s".formatted(VLVH[tier], toEnglishName(name), VLVT[tier]))
                         .rotationState(RotationState.NON_Y_AXIS)
                         .editableUI(SimpleTieredMachine.EDITABLE_UI_CREATOR.apply(GTCEu.id(name), recipeType))
+                        .recipeModifier(GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
                         .blockProp(BlockBehaviour.Properties::dynamicShape)
                         .blockProp(BlockBehaviour.Properties::noOcclusion)
                         .recipeType(recipeType)

@@ -8,7 +8,7 @@ import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
-import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
+import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.utils.Position;
 import com.mojang.blaze3d.MethodsReturnNonnullByDefault;
@@ -17,6 +17,7 @@ import net.minecraft.Util;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.function.BiFunction;
 
@@ -66,18 +67,13 @@ public class SimpleGeneratorMachine extends WorkableTieredMachine implements IFa
     //******     RECIPE LOGIC    *******//
     //////////////////////////////////////
 
-    @Override
-    public @Nullable GTRecipe modifyRecipe(GTRecipe recipe) {
-        // we never use overclock but parallel logic
-        var EUt = RecipeHelper.getOutputEUt(recipe);
-        if (EUt > 0) {
-            var maxParallel = (int)(Math.min(energyContainer.getOutputVoltage(), GTValues.V[overclockTier]) / EUt);
-            while (maxParallel > 0) {
-                var copied = recipe.copy(ContentModifier.multiplier(maxParallel), false);
-                if (copied.matchRecipe(this).isSuccessed()) {
-                    return copied;
-                }
-                maxParallel /= 2;
+    @Nullable
+    public static GTRecipe recipeModifier(MetaMachine machine, @Nonnull GTRecipe recipe) {
+        if (machine instanceof SimpleGeneratorMachine generator) {
+            var EUt = RecipeHelper.getOutputEUt(recipe);
+            if (EUt > 0) {
+                var maxParallel = (int)(Math.min(generator.energyContainer.getOutputVoltage(), GTValues.V[generator.getOverclockTier()]) / EUt);
+                return GTRecipeModifiers.fastParallel(generator, recipe, maxParallel, false);
             }
         }
         return null;

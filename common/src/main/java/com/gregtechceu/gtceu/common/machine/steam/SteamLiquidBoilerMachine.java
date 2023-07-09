@@ -43,7 +43,7 @@ public class SteamLiquidBoilerMachine extends SteamBoilerMachine {
             if (isRemote())  return true;
             return recipeLogic.getRecipeManager().getAllRecipesFor(getRecipeType()).stream().anyMatch(recipe -> {
                 var list = recipe.inputs.getOrDefault(FluidRecipeCapability.CAP, Collections.emptyList());
-                if (list.size() > 0) {
+                if (!list.isEmpty()) {
                     return FluidRecipeCapability.CAP.of(list.get(0).content).getFluid() == f;
                 }
                 return false;
