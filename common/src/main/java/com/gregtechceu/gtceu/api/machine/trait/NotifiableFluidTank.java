@@ -21,7 +21,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import java.util.function.Predicate;
 
 /**
@@ -218,14 +217,6 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidStack
     @Override
     public long fill(FluidStack resource, boolean simulate) {
         if (canCapInput()) {
-            if (!allowSameFluids && !resource.isEmpty()) {
-                for (var storage : storages) {
-                    if (storage.getFluid().isFluidEqual(resource)) {
-                        var leftSpace = storage.getCapacity() - storage.getFluidAmount();
-                        return fillInternal(FluidStack.create(resource.getFluid(), Math.min(leftSpace, resource.getAmount())), simulate);
-                    }
-                }
-            }
             return fillInternal(resource, simulate);
         }
         return 0;
@@ -234,10 +225,28 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidStack
     public long fillInternal(FluidStack resource, boolean simulate) {
         if (!resource.isEmpty()) {
             var copied = resource.copy();
-            for (var storage : storages) {
-                var candidate = copied.copy();
-                copied.shrink(storage.fill(candidate, simulate));
-                if (copied.isEmpty()) break;
+            FluidStorage existingStorage = null;
+            if (!allowSameFluids) {
+                for (var storage : storages) {
+                    if (!storage.getFluid().isEmpty() && storage.getFluid().isFluidEqual(resource)) {
+                        existingStorage = storage;
+                        break;
+                    }
+                }
+            }
+            if (existingStorage == null) {
+                for (var storage : storages) {
+                    var filled = storage.fill(copied.copy(), simulate);
+                    if (filled > 0) {
+                        copied.shrink(filled);
+                        if (!allowSameFluids) {
+                            break;
+                        }
+                    }
+                    if (copied.isEmpty()) break;
+                }
+            } else {
+                copied.shrink(existingStorage.fill(copied.copy(), simulate));
             }
             return resource.getAmount() - copied.getAmount();
         }
