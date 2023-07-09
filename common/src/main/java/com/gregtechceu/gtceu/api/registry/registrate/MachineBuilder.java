@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.registry.registrate;
 
+import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
@@ -94,7 +95,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> {
     @Setter
     private int paintingColor = ConfigHolder.INSTANCE.client.defaultPaintingColor;
     @Setter
-    private BiFunction<ItemStack, Integer, Integer> itemColor;
+    private BiFunction<ItemStack, Integer, Integer> itemColor = ((itemStack, tintIndex) -> tintIndex == 2 ? GTValues.VC[tier] : tintIndex == 1 ? paintingColor : -1);
     private PartAbility[] abilities = new PartAbility[0];
     private final List<Component> tooltips = new ArrayList<>();
     @Setter
@@ -220,10 +221,8 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> {
         var itemBuilder = registrate.item(name, properties -> itemFactory.apply((IMachineBlock) block.get(), properties))
                 .setData(ProviderType.LANG, NonNullBiConsumer.noop()) // do not gen any lang keys
                 .model(NonNullBiConsumer.noop())
+                .color(() -> () -> itemColor::apply)
                 .properties(itemProp);
-        if (itemColor != null) {
-            itemBuilder.color(() -> () -> itemColor::apply);
-        }
         if (this.itemBuilder != null) {
             this.itemBuilder.accept(itemBuilder);
         }

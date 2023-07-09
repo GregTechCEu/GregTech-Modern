@@ -218,7 +218,7 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidStack
     @Override
     public long fill(FluidStack resource, boolean simulate) {
         if (canCapInput()) {
-            if (allowSameFluids && !resource.isEmpty()) {
+            if (!allowSameFluids && !resource.isEmpty()) {
                 for (var storage : storages) {
                     if (storage.getFluid().isFluidEqual(resource)) {
                         var leftSpace = storage.getCapacity() - storage.getFluidAmount();
