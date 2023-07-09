@@ -45,7 +45,7 @@ public abstract class MaterialPipeBlock<PipeType extends Enum<PipeType> & IPipeT
     public static BlockColor tintedColor() {
         return (blockState, level, blockPos, index) -> {
             if (blockState.getBlock() instanceof MaterialPipeBlock<?,?,?> block) {
-                if (blockPos != null && level != null && level.getBlockEntity(blockPos) instanceof PipeBlockEntity<?,?> pipe) {
+                if (blockPos != null && level != null && level.getBlockEntity(blockPos) instanceof PipeBlockEntity<?,?> pipe && pipe.isPainted()) {
                     return pipe.getRealColor();
                 }
                 return block.tinted(blockState, level, blockPos, index);
