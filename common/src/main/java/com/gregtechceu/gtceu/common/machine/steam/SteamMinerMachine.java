@@ -138,9 +138,9 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IMiner, I
 
     void addDisplayText(List<Component> textList) {
         int workingArea = IMiner.getWorkingArea(getRecipeLogic().getCurrentRadius());
-        textList.add(Component.translatable("gtceu.machine.miner.startx", this.getRecipeLogic().getX().get()));
-        textList.add(Component.translatable("gtceu.machine.miner.starty", this.getRecipeLogic().getY().get()));
-        textList.add(Component.translatable("gtceu.machine.miner.startz", this.getRecipeLogic().getZ().get()));
+        textList.add(Component.translatable("gtceu.machine.miner.startx", this.getRecipeLogic().getX()));
+        textList.add(Component.translatable("gtceu.machine.miner.starty", this.getRecipeLogic().getY()));
+        textList.add(Component.translatable("gtceu.machine.miner.startz", this.getRecipeLogic().getZ()));
         textList.add(Component.translatable("gtceu.universal.tooltip.working_area", workingArea, workingArea));
         if (this.getRecipeLogic().isDone())
             textList.add(Component.translatable("gtceu.multiblock.large_miner.done").setStyle(Style.EMPTY.withColor(ChatFormatting.GREEN)));
@@ -153,9 +153,9 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IMiner, I
     }
 
     void addDisplayText2(List<Component> textList) {
-        textList.add(Component.translatable("gtceu.machine.miner.minex", this.getRecipeLogic().getMineX().get()));
-        textList.add(Component.translatable("gtceu.machine.miner.miney", this.getRecipeLogic().getMineY().get()));
-        textList.add(Component.translatable("gtceu.machine.miner.minez", this.getRecipeLogic().getMineZ().get()));
+        textList.add(Component.translatable("gtceu.machine.miner.minex", this.getRecipeLogic().getMineX()));
+        textList.add(Component.translatable("gtceu.machine.miner.miney", this.getRecipeLogic().getMineY()));
+        textList.add(Component.translatable("gtceu.machine.miner.minez", this.getRecipeLogic().getMineZ()));
     }
 
     public boolean drainEnergy(boolean simulate) {

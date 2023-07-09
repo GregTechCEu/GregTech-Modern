@@ -60,7 +60,6 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class MinerLogic extends RecipeLogic {
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(MinerLogic.class, RecipeLogic.MANAGED_FIELD_HOLDER);
@@ -87,25 +86,25 @@ public class MinerLogic extends RecipeLogic {
     private final LinkedList<BlockPos> blocksToMine = new LinkedList<>();
 
     @Persisted
-    private final AtomicInteger x = new AtomicInteger(Integer.MAX_VALUE);
+    protected int x = Integer.MAX_VALUE;
     @Persisted
-    private final AtomicInteger y = new AtomicInteger(Integer.MAX_VALUE);
+    protected int y = Integer.MAX_VALUE;
     @Persisted
-    private final AtomicInteger z = new AtomicInteger(Integer.MAX_VALUE);
+    protected int z = Integer.MAX_VALUE;
     @Persisted
-    private final AtomicInteger startX = new AtomicInteger(Integer.MAX_VALUE);
+    protected int startX = Integer.MAX_VALUE;
     @Persisted
-    private final AtomicInteger startZ = new AtomicInteger(Integer.MAX_VALUE);
+    protected int startZ = Integer.MAX_VALUE;
     @Persisted
-    private final AtomicInteger startY = new AtomicInteger(Integer.MAX_VALUE);
+    protected int startY = Integer.MAX_VALUE;
     @Persisted
-    private final AtomicInteger pipeY = new AtomicInteger(Integer.MAX_VALUE);
+    protected int pipeY = Integer.MAX_VALUE;
     @Persisted
-    private final AtomicInteger mineX = new AtomicInteger(Integer.MAX_VALUE);
+    protected int mineX = Integer.MAX_VALUE;
     @Persisted
-    private final AtomicInteger mineZ = new AtomicInteger(Integer.MAX_VALUE);
+    protected int mineZ = Integer.MAX_VALUE;
     @Persisted
-    private final AtomicInteger mineY = new AtomicInteger(Integer.MAX_VALUE);
+    protected int mineY = Integer.MAX_VALUE;
 
     private int minBuildHeight = Integer.MAX_VALUE;
 
@@ -203,10 +202,10 @@ public class MinerLogic extends RecipeLogic {
 
         // drill a hole beneath the miner and extend the pipe downwards by one
         ServerLevel world = (ServerLevel) getMachine().getLevel();
-        if (mineY.get() < pipeY.get()) {
+        if (mineY < pipeY) {
             BlockPos miningPos = getMiningPos();
-            world.destroyBlock(new BlockPos(miningPos.getX(), pipeY.get(), miningPos.getZ()), false);
-            pipeY.decrementAndGet();
+            world.destroyBlock(new BlockPos(miningPos.getX(), pipeY, miningPos.getZ()), false);
+            --pipeY;
             incrementPipeLength();
         }
 
@@ -238,9 +237,9 @@ public class MinerLogic extends RecipeLogic {
 
         if (blocksToMine.isEmpty()) {
             // there were no blocks to mine, so the current position is the previous position
-            x.set(mineX.get());
-            y.set(mineY.get());
-            z.set(mineZ.get());
+            x = mineX;
+            y = mineY;
+            z = mineZ;
 
             // attempt to get more blocks to mine, if there are none, the miner is done mining
             blocksToMine.addAll(getBlocksToMine());
@@ -351,9 +350,9 @@ public class MinerLogic extends RecipeLogic {
             if (GTTransferUtils.addItemsToItemHandler(transfer, true, blockDrops)) {
                 GTTransferUtils.addItemsToItemHandler(transfer, false, blockDrops);
                 world.setBlock(blocksToMine.getFirst(), oreReplacementBlock, 3);
-                mineX.set(blocksToMine.getFirst().getX());
-                mineZ.set(blocksToMine.getFirst().getZ());
-                mineY.set(blocksToMine.getFirst().getY());
+                mineX = blocksToMine.getFirst().getX();
+                mineZ = blocksToMine.getFirst().getZ();
+                mineY = blocksToMine.getFirst().getY();
                 blocksToMine.removeFirst();
                 onMineOperation();
 
@@ -375,16 +374,16 @@ public class MinerLogic extends RecipeLogic {
      * @param currentRadius the currently set mining radius
      */
     public void initPos(@Nonnull BlockPos pos, int currentRadius) {
-        x.set(pos.getX() - currentRadius);
-        z.set(pos.getZ() - currentRadius);
-        y.set(pos.getY() - 1);
-        startX.set(pos.getX() - currentRadius);
-        startZ.set(pos.getZ() - currentRadius);
-        startY.set(pos.getY());
-        pipeY.set(pos.getY() - 1);
-        mineX.set(pos.getX() - currentRadius);
-        mineZ.set(pos.getZ() - currentRadius);
-        mineY.set(pos.getY() - 1);
+        x = pos.getX() - currentRadius;
+        z = pos.getZ() - currentRadius;
+        y = pos.getY() - 1;
+        startX = pos.getX() - currentRadius;
+        startZ = pos.getZ() - currentRadius;
+        startY = pos.getY();
+        pipeY = pos.getY() - 1;
+        mineX = pos.getX() - currentRadius;
+        mineZ = pos.getZ() - currentRadius;
+        mineY = pos.getY() - 1;
     }
 
     /**
@@ -395,8 +394,8 @@ public class MinerLogic extends RecipeLogic {
      * @param z the z coordinate
      * @return {@code true} if the coordinates are invalid, else false
      */
-    private static boolean checkCoordinatesInvalid(@Nonnull AtomicInteger x, @Nonnull AtomicInteger y, @Nonnull AtomicInteger z) {
-        return x.get() == Integer.MAX_VALUE && y.get() == Integer.MAX_VALUE && z.get() == Integer.MAX_VALUE;
+    private static boolean checkCoordinatesInvalid(int x, int y, int z) {
+        return x == Integer.MAX_VALUE && y == Integer.MAX_VALUE && z == Integer.MAX_VALUE;
     }
 
     /**
@@ -436,27 +435,27 @@ public class MinerLogic extends RecipeLogic {
         // keep getting blocks until the target amount is reached
         while (calculated < calcAmount) {
             // moving down the y-axis
-            if (y.get() > minBuildHeight) {
+            if (y > minBuildHeight) {
                 // moving across the z-axis
-                if (z.get() <= startZ.get() + currentRadius * 2) {
+                if (z <= startZ + currentRadius * 2) {
                     // check every block along the x-axis
-                    if (x.get() <= startX.get() + currentRadius * 2) {
-                        BlockPos blockPos = new BlockPos(x.get(), y.get(), z.get());
+                    if (x <= startX + currentRadius * 2) {
+                        BlockPos blockPos = new BlockPos(x, y, z);
                         BlockState state = getMachine().getLevel().getBlockState(blockPos);
                         if (state.getBlock().defaultDestroyTime() >= 0 && getMachine().getLevel().getBlockEntity(blockPos) == null && state.is(CustomTags.ORE_BLOCKS)) {
                             blocks.addLast(blockPos);
                         }
                         // move to the next x position
-                        x.incrementAndGet();
+                        ++x;
                     } else {
                         // reset x and move to the next z layer
-                        x.set(startX.get());
-                        z.incrementAndGet();
+                        x = startX;
+                        ++z;
                     }
                 } else {
                     // reset z and move to the next y layer
-                    z.set(startZ.get());
-                    y.decrementAndGet();
+                    z = startZ;
+                    --y;
                 }
             } else
                 return blocks;
@@ -568,70 +567,70 @@ public class MinerLogic extends RecipeLogic {
     /**
      * @return the current x value
      */
-    public AtomicInteger getX() {
+    public int getX() {
         return x;
     }
 
     /**
      * @return the current y value
      */
-    public AtomicInteger getY() {
+    public int getY() {
         return y;
     }
 
     /**
      * @return the current z value
      */
-    public AtomicInteger getZ() {
+    public int getZ() {
         return z;
     }
 
     /**
      * @return the previously mined x value
      */
-    public AtomicInteger getMineX() {
+    public int getMineX() {
         return mineX;
     }
 
     /**
      * @return the previously mined y value
      */
-    public AtomicInteger getMineY() {
+    public int getMineY() {
         return mineY;
     }
 
     /**
      * @return the previously mined z value
      */
-    public AtomicInteger getMineZ() {
+    public int getMineZ() {
         return mineZ;
     }
 
     /**
      * @return the starting x value
      */
-    public AtomicInteger getStartX() {
+    public int getStartX() {
         return startX;
     }
 
     /**
      * @return the starting y value
      */
-    public AtomicInteger getStartY() {
+    public int getStartY() {
         return startY;
     }
 
     /**
      * @return the starting z value
      */
-    public AtomicInteger getStartZ() {
+    public int getStartZ() {
         return startZ;
     }
 
     /**
      * @return the pipe y value
      */
-    public AtomicInteger getPipeY() {
+    public int getPipeY() {
         return pipeY;
     }
 

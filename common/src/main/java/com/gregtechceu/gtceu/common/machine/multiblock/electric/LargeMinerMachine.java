@@ -207,9 +207,9 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine impleme
 
             int workingAreaChunks = getRecipeLogic().getCurrentRadius() * 2 / CHUNK_LENGTH;
             int workingArea = IMiner.getWorkingArea(getRecipeLogic().getCurrentRadius());
-            textList.add(Component.translatable("gtceu.machine.miner.startx", getRecipeLogic().getX().get() == Integer.MAX_VALUE ? 0 : getRecipeLogic().getX().get()));
-            textList.add(Component.translatable("gtceu.machine.miner.starty", getRecipeLogic().getY().get() == Integer.MAX_VALUE ? 0 : getRecipeLogic().getY().get()));
-            textList.add(Component.translatable("gtceu.machine.miner.startz", getRecipeLogic().getZ().get() == Integer.MAX_VALUE ? 0 : getRecipeLogic().getZ().get()));
+            textList.add(Component.translatable("gtceu.machine.miner.startx", getRecipeLogic().getX() == Integer.MAX_VALUE ? 0 : getRecipeLogic().getX()));
+            textList.add(Component.translatable("gtceu.machine.miner.starty", getRecipeLogic().getY() == Integer.MAX_VALUE ? 0 : getRecipeLogic().getY()));
+            textList.add(Component.translatable("gtceu.machine.miner.startz", getRecipeLogic().getZ() == Integer.MAX_VALUE ? 0 : getRecipeLogic().getZ()));
             if (getRecipeLogic().isChunkMode()) {
                 textList.add(Component.translatable("gtceu.universal.tooltip.working_area_chunks", workingAreaChunks, workingAreaChunks));
             } else {
@@ -226,13 +226,9 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine impleme
 
     private void addDisplayText2(List<Component> textList) {
         if (this.isFormed()) {
-            Component mCoords = Component.literal("    ")
-                    .append(Component.translatable("gtceu.machine.miner.minex", getRecipeLogic().getMineX().get()))
-                    .append("\n    ")
-                    .append(Component.translatable("gtceu.machine.miner.miney", getRecipeLogic().getMineY().get()))
-                    .append("\n    ")
-                    .append(Component.translatable("gtceu.machine.miner.minez", getRecipeLogic().getMineZ().get()));
-            textList.add(mCoords);
+            textList.add(Component.translatable("gtceu.machine.miner.minex", getRecipeLogic().getMineX()));
+            textList.add(Component.translatable("gtceu.machine.miner.miney", getRecipeLogic().getMineY()));
+            textList.add(Component.translatable("gtceu.machine.miner.minez", getRecipeLogic().getMineZ()));
         }
     }
 

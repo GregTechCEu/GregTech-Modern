@@ -81,16 +81,16 @@ public class LargeMinerLogic extends MinerLogic {
             ServerLevel world = (ServerLevel) this.getMachine().getLevel();
             ChunkAccess origin = world.getChunk(pos);
             ChunkPos startPos = (world.getChunk(origin.getPos().x - currentRadius / CHUNK_LENGTH, origin.getPos().z - currentRadius / CHUNK_LENGTH)).getPos();
-            getX().set(startPos.getMinBlockX());
-            getY().set(pos.getY() - 1);
-            getZ().set(startPos.getMinBlockZ());
-            getStartX().set(startPos.getMinBlockX());
-            getStartY().set(pos.getY());
-            getStartZ().set(startPos.getMinBlockZ());
-            getMineX().set(startPos.getMinBlockX());
-            getMineY().set(pos.getY() - 1);
-            getMineZ().set(startPos.getMinBlockZ());
-            getPipeY().set(pos.getY() - 1);
+            x = startPos.getMinBlockX();
+            y = pos.getY() - 1;
+            z = startPos.getMinBlockZ();
+            startX = startPos.getMinBlockX();
+            startY = pos.getY();
+            startZ = startPos.getMinBlockZ();
+            mineX = startPos.getMinBlockX();
+            mineY = pos.getY() - 1;
+            mineZ = startPos.getMinBlockZ();
+            pipeY = pos.getY() - 1;
         }
     }
 
