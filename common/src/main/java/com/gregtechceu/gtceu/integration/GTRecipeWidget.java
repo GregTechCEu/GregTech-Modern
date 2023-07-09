@@ -20,7 +20,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -91,7 +90,7 @@ public class GTRecipeWidget extends WidgetGroup {
                     if (content.chance < 1) {
                         tooltips.add(chance == 0 ?
                                 Component.translatable("gtceu.gui.content.chance_0") :
-                                Component.translatable("gtceu.gui.content.chance_1", String.format("%.1f", chance * 100) + "%%"));
+                                Component.translatable("gtceu.gui.content.chance_1", String.format("%.1f", chance * 100) + "%"));
                     }
                     if (index >= recipe.getInputContents(ItemRecipeCapability.CAP).size()) {
                         tooltips.add(Component.translatable("gtceu.gui.content.per_tick"));
@@ -110,7 +109,7 @@ public class GTRecipeWidget extends WidgetGroup {
                     if (content.chance < 1) {
                         tooltips.add(chance == 0 ?
                                 Component.translatable("gtceu.gui.content.chance_0") :
-                                Component.translatable("gtceu.gui.content.chance_1", String.format("%.1f", chance * 100) + "%%"));
+                                Component.translatable("gtceu.gui.content.chance_1", String.format("%.1f", chance * 100) + "%"));
                     }
                     if (index >= recipe.getOutputContents(ItemRecipeCapability.CAP).size()) {
                         tooltips.add(Component.translatable("gtceu.gui.content.per_tick"));
@@ -129,7 +128,7 @@ public class GTRecipeWidget extends WidgetGroup {
                     if (content.chance < 1) {
                         tooltips.add(chance == 0 ?
                                 Component.translatable("gtceu.gui.content.chance_0") :
-                                Component.translatable("gtceu.gui.content.chance_1", String.format("%.1f", chance * 100) + "%%"));
+                                Component.translatable("gtceu.gui.content.chance_1", String.format("%.1f", chance * 100) + "%"));
                     }
                     if (index >= recipe.getInputContents(FluidRecipeCapability.CAP).size()) {
                         tooltips.add(Component.translatable("gtceu.gui.content.per_tick"));
@@ -148,7 +147,7 @@ public class GTRecipeWidget extends WidgetGroup {
                     if (content.chance < 1) {
                         tooltips.add(chance == 0 ?
                                 Component.translatable("gtceu.gui.content.chance_0") :
-                                Component.translatable("gtceu.gui.content.chance_1", String.format("%.1f", chance * 100) + "%%"));
+                                Component.translatable("gtceu.gui.content.chance_1", String.format("%.1f", chance * 100) + "%"));
                     }
                     if (index >= recipe.getOutputContents(FluidRecipeCapability.CAP).size()) {
                         tooltips.add(Component.translatable("gtceu.gui.content.per_tick"));

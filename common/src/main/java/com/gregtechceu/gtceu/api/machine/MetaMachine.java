@@ -442,7 +442,7 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
 
     public int tintColor(int index) {
         if (index == 1) {
-            return getPaintingColor();
+            return isPainted() ? getPaintingColor() : getDefaultPaintingColor();
         }
         return -1;
     }
