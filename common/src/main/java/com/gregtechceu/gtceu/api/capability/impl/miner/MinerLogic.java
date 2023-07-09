@@ -150,6 +150,7 @@ public class MinerLogic extends RecipeLogic {
     public void inValid() {
         super.inValid();
         cachedItemTransfer = null;
+        this.pipeLength = 0;
     }
 
     private static BlockState oreReplacementBlock = findMiningReplacementBlock();

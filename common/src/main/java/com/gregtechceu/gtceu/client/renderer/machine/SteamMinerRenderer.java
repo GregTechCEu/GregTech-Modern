@@ -16,6 +16,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -28,6 +29,21 @@ public class SteamMinerRenderer extends WorkableSteamMachineRenderer {
     @Override
     public boolean hasTESR(BlockEntity blockEntity) {
         return true;
+    }
+
+    @Override
+    public boolean isGlobalRenderer(BlockEntity blockEntity) {
+        return true;
+    }
+
+    @Override
+    public int getViewDistance() {
+        return 128;
+    }
+
+    @Override
+    public boolean shouldRender(BlockEntity blockEntity, Vec3 cameraPos) {
+        return Vec3.atCenterOf(blockEntity.getBlockPos()).multiply(1.0, 0.0, 1.0).closerThan(cameraPos.multiply(1.0, 0.0, 1.0), this.getViewDistance());
     }
 
     @Override

@@ -40,6 +40,8 @@ import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
+import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -67,6 +69,7 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine impleme
             GTValues.LuV, GTMaterials.TungstenSteel);
 
 
+    @Getter
     private final Material material;
     private final int tier;
 
@@ -77,6 +80,7 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine impleme
     @Nullable
     protected ItemTransferList outputInventory;
 
+    @Getter @Setter
     private boolean isInventoryFull = false;
 
     private final int drillingFluidConsumePerTick;
@@ -182,9 +186,17 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine impleme
     }
 
     @Override
-    public void addDisplayText(List<Component> textList) {
-        super.addDisplayText(textList);
+    public Widget createUIWidget() {
+        WidgetGroup group = (WidgetGroup) super.createUIWidget();
+        ComponentPanelWidget widget2 = new ComponentPanelWidget(63, 36, this::addDisplayText2)
+                .setMaxWidthLimit(68).clickHandler(this::handleDisplayClick);
+        group.addWidget(widget2);
+        group.addWidget(new CycleButtonWidget(151, 110, 18, 18,4, this::getCurrentModeTexture, this::setCurrentMode));
+        return group;
+    }
 
+    @Override
+    public void addDisplayText(List<Component> textList) {
         if (this.isFormed()) {
             if (energyContainer != null && energyContainer.getEnergyCapacity() > 0) {
                 int energyContainer = getEnergyTier();
@@ -248,16 +260,7 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine impleme
     }
 
     public long getMaxVoltage() {
-        return GTValues.V[GTUtil.getTierByVoltage(energyContainer.getInputVoltage())];
-    }
-
-    @Override
-    public Widget createUIWidget() {
-        WidgetGroup group = (WidgetGroup) super.createUIWidget();
-        group.addWidget(new ComponentPanelWidget(63, 73, this::addDisplayText2)
-                .setMaxWidthLimit(68).clickHandler(this::handleDisplayClick));
-        group.addWidget(getFlexButton(160, 119, 18, 18));
-        return group;
+        return GTValues.V[getEnergyTier()];
     }
 
     // used for UI
@@ -300,10 +303,6 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine impleme
         }
     }
 
-    protected @NotNull Widget getFlexButton(int x, int y, int width, int height) {
-        return new CycleButtonWidget(x, y, width, height,4, this::getCurrentModeTexture, this::setCurrentMode);
-    }
-
     @Override
     public InteractionResult onScrewdriverClick(Player playerIn, InteractionHand hand, Direction facing, BlockHitResult hitResult) {
         if (isRemote() || !this.isFormed())
@@ -335,36 +334,8 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine impleme
         return InteractionResult.SUCCESS;
     }
 
-    @Override
-    public boolean isInventoryFull() {
-        return this.isInventoryFull;
-    }
-
-    @Override
-    public void setInventoryFull(boolean isFull) {
-        this.isInventoryFull = isFull;
-    }
-
-    public Material getMaterial() {
-        return material;
-    }
-
     public int getTier() {
         return this.tier;
-    }
-
-    public int getDrillingFluidConsumePerTick() {
-        return this.drillingFluidConsumePerTick;
-    }
-
-    @Override
-    public boolean isWorkingEnabled() {
-        return getRecipeLogic().isWorkingEnabled();
-    }
-
-    @Override
-    public void setWorkingEnabled(boolean isActivationAllowed) {
-        getRecipeLogic().setWorkingEnabled(isActivationAllowed);
     }
 
     public int getMaxChunkRadius() {
@@ -375,11 +346,7 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine impleme
         return this.outputInventory;
     }
 
-    public SoundEntry getSound() {
-        return GTSoundEntries.MINER;
-    }
-
-//    @Nonnull
+    //    @Nonnull
 //    @Override
 //    public List<Component> getDataInfo() {
 //        int workingArea = getWorkingArea(getRecipeLogic().getCurrentRadius());

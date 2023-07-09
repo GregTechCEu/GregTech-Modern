@@ -8,6 +8,8 @@ import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
+import com.gregtechceu.gtceu.client.renderer.GTRendererProvider;
+import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import com.lowdragmc.lowdraglib.side.fluid.forge.FluidTransferHelperImpl;
 import com.lowdragmc.lowdraglib.side.item.forge.ItemTransferHelperImpl;
 import net.minecraft.core.BlockPos;
@@ -15,6 +17,9 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
@@ -108,5 +113,27 @@ public class MetaMachineBlockEntityImpl extends MetaMachineBlockEntity {
     }
 
     public static void onBlockEntityRegister(BlockEntityType<BlockEntity> metaMachineBlockEntityBlockEntityType) {
+    }
+
+    /**
+     * Why, Forge, Why?
+     * Why must you make me add a method for no good reason?
+     */
+    @OnlyIn(Dist.CLIENT)
+    @Override
+    public AABB getRenderBoundingBox() {
+        GTRendererProvider instance = GTRendererProvider.getInstance();
+        if (instance != null) {
+            IRenderer renderer = instance.getRenderer(this);
+            if (renderer != null) {
+                if (renderer.getViewDistance() == 64 /*the default*/) {
+                    return new AABB(worldPosition.offset(-1, 0, -1), worldPosition.offset(2, 2, 2));
+                }
+
+                int viewDistHalf = renderer.getViewDistance() / 2;
+                return new AABB(worldPosition).inflate(viewDistHalf);
+            }
+        }
+        return new AABB(worldPosition.offset(-1, 0, -1), worldPosition.offset(2, 2, 2));
     }
 }
