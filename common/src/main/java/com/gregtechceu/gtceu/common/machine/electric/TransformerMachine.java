@@ -61,7 +61,8 @@ public class TransformerMachine extends TieredEnergyMachine implements IControll
     protected NotifiableEnergyContainer createEnergyContainer(Object... args) {
         NotifiableEnergyContainer energyContainer;
         long tierVoltage = GTValues.V[getTier()];
-        energyContainer = new NotifiableEnergyContainer(this, tierVoltage * 8L, tierVoltage * 4, baseAmp, tierVoltage, baseAmp * 4L);
+        // Since this.baseAmp is not yet initialized, we substitute with 1A as default
+        energyContainer = new NotifiableEnergyContainer(this, tierVoltage * 8L, tierVoltage * 4, 1, tierVoltage, 4);
         energyContainer.setSideInputCondition(s -> s == getFrontFacing() && isWorkingEnabled());
         energyContainer.setSideOutputCondition(s -> s != getFrontFacing() && isWorkingEnabled());
         return energyContainer;
