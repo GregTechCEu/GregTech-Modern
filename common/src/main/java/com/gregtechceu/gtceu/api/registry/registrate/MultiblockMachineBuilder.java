@@ -1,7 +1,8 @@
 package com.gregtechceu.gtceu.api.registry.registrate;
 
 import com.google.common.base.Suppliers;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
+import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.block.IMachineBlock;
@@ -21,7 +22,6 @@ import com.tterrag.registrate.builders.BlockBuilder;
 import com.tterrag.registrate.builders.ItemBuilder;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import com.tterrag.registrate.util.nullness.NonNullUnaryOperator;
-import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -53,7 +53,7 @@ import java.util.function.*;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 @Accessors(chain = true, fluent = true)
-public class MultiblockMachineBuilder<MACHINE extends MultiblockControllerMachine> extends MachineBuilder<MultiblockMachineDefinition, MACHINE> {
+public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDefinition> {
     @Setter
     private Function<MultiblockMachineDefinition, BlockPattern> pattern;
     private final List<Function<MultiblockMachineDefinition, List<MultiblockShapeInfo>>> shapeInfos = new ArrayList<>();
@@ -62,186 +62,182 @@ public class MultiblockMachineBuilder<MACHINE extends MultiblockControllerMachin
     private Comparator<IMultiPart> partSorter = (a, b) -> 0;
     @Setter
     private TriFunction<IMultiController, IMultiPart, Direction, BlockState> partAppearance;
-    @Getter
-    @Setter
-    private BiConsumer<IMultiController, List<Component>> additionalDisplay = (m, l) -> {};
 
-    protected MultiblockMachineBuilder(Registrate registrate, String name, Function<IMachineBlockEntity, MACHINE> metaMachine,
+    protected MultiblockMachineBuilder(Registrate registrate, String name, Function<IMachineBlockEntity, ? extends MultiblockControllerMachine> metaMachine,
                                        BiFunction<BlockBehaviour.Properties, MultiblockMachineDefinition, IMachineBlock> blockFactory,
                                        BiFunction<IMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
                                        TriFunction<BlockEntityType<?>, BlockPos, BlockState, IMachineBlockEntity> blockEntityFactory) {
-        super(registrate, name, MultiblockMachineDefinition::createDefinition, metaMachine, blockFactory, itemFactory, blockEntityFactory);
+        super(registrate, name, MultiblockMachineDefinition::createDefinition, metaMachine::apply, blockFactory, itemFactory, blockEntityFactory);
     }
 
-    public static <MACHINE extends MultiblockControllerMachine> MultiblockMachineBuilder<MACHINE> createMulti(Registrate registrate, String name, Function<IMachineBlockEntity, MACHINE> metaMachine,
+    public static MultiblockMachineBuilder createMulti(Registrate registrate, String name, Function<IMachineBlockEntity, ? extends MultiblockControllerMachine> metaMachine,
                                                        BiFunction<BlockBehaviour.Properties, MultiblockMachineDefinition, IMachineBlock> blockFactory,
                                                        BiFunction<IMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
                                                        TriFunction<BlockEntityType<?>, BlockPos, BlockState, IMachineBlockEntity> blockEntityFactory) {
-        return new MultiblockMachineBuilder<>(registrate, name, metaMachine, blockFactory, itemFactory, blockEntityFactory);
+        return new MultiblockMachineBuilder(registrate, name, metaMachine, blockFactory, itemFactory, blockEntityFactory);
     }
 
-    public MultiblockMachineBuilder<MACHINE> shapeInfo(Function<MultiblockMachineDefinition, MultiblockShapeInfo> shape) {
+    public MultiblockMachineBuilder shapeInfo(Function<MultiblockMachineDefinition, MultiblockShapeInfo> shape) {
         this.shapeInfos.add(d -> List.of(shape.apply(d)));
         return this;
     }
 
-    public MultiblockMachineBuilder<MACHINE> shapeInfos(Function<MultiblockMachineDefinition, List<MultiblockShapeInfo>> shapes) {
+    public MultiblockMachineBuilder shapeInfos(Function<MultiblockMachineDefinition, List<MultiblockShapeInfo>> shapes) {
         this.shapeInfos.add(shapes);
         return this;
     }
 
-    public MultiblockMachineBuilder<MACHINE> recoveryItems(Supplier<ItemLike[]> items) {
+    public MultiblockMachineBuilder recoveryItems(Supplier<ItemLike[]> items) {
         this.recoveryItems.add(() -> Arrays.stream(items.get()).map(ItemLike::asItem).map(Item::getDefaultInstance).toArray(ItemStack[]::new));
         return this;
     }
 
-    public MultiblockMachineBuilder<MACHINE> recoveryStacks(Supplier<ItemStack[]> stacks) {
+    public MultiblockMachineBuilder recoveryStacks(Supplier<ItemStack[]> stacks) {
         this.recoveryItems.add(stacks);
         return this;
     }
 
     @Override
-    public MultiblockMachineBuilder<MACHINE> renderer(@Nullable Supplier<IRenderer> renderer) {
-        return (MultiblockMachineBuilder<MACHINE>) super.renderer(renderer);
+    public MultiblockMachineBuilder renderer(@Nullable Supplier<IRenderer> renderer) {
+        return (MultiblockMachineBuilder) super.renderer(renderer);
     }
 
     @Override
-    public MultiblockMachineBuilder<MACHINE> shape(VoxelShape shape) {
-        return (MultiblockMachineBuilder<MACHINE>) super.shape(shape);
+    public MultiblockMachineBuilder shape(VoxelShape shape) {
+        return (MultiblockMachineBuilder) super.shape(shape);
     }
 
     @Override
-    public MultiblockMachineBuilder<MACHINE> rotationState(RotationState rotationState) {
-        return (MultiblockMachineBuilder<MACHINE>) super.rotationState(rotationState);
+    public MultiblockMachineBuilder rotationState(RotationState rotationState) {
+        return (MultiblockMachineBuilder) super.rotationState(rotationState);
     }
 
     @Override
-    public MultiblockMachineBuilder<MACHINE> hasTESR(boolean hasTESR) {
-        return (MultiblockMachineBuilder<MACHINE>) super.hasTESR(hasTESR);
+    public MultiblockMachineBuilder hasTESR(boolean hasTESR) {
+        return (MultiblockMachineBuilder) super.hasTESR(hasTESR);
     }
 
     @Override
-    public MultiblockMachineBuilder<MACHINE> blockProp(NonNullUnaryOperator<BlockBehaviour.Properties> blockProp) {
-        return (MultiblockMachineBuilder<MACHINE>) super.blockProp(blockProp);
+    public MultiblockMachineBuilder blockProp(NonNullUnaryOperator<BlockBehaviour.Properties> blockProp) {
+        return (MultiblockMachineBuilder) super.blockProp(blockProp);
     }
 
     @Override
-    public MultiblockMachineBuilder<MACHINE> itemProp(NonNullUnaryOperator<Item.Properties> itemProp) {
-        return (MultiblockMachineBuilder<MACHINE>) super.itemProp(itemProp);
+    public MultiblockMachineBuilder itemProp(NonNullUnaryOperator<Item.Properties> itemProp) {
+        return (MultiblockMachineBuilder) super.itemProp(itemProp);
     }
 
     @Override
-    public MultiblockMachineBuilder<MACHINE> blockBuilder(Consumer<BlockBuilder<? extends Block, ?>> blockBuilder) {
-        return (MultiblockMachineBuilder<MACHINE>) super.blockBuilder(blockBuilder);
+    public MultiblockMachineBuilder blockBuilder(Consumer<BlockBuilder<? extends Block, ?>> blockBuilder) {
+        return (MultiblockMachineBuilder) super.blockBuilder(blockBuilder);
     }
 
     @Override
-    public MultiblockMachineBuilder<MACHINE> itemBuilder(Consumer<ItemBuilder<? extends MetaMachineItem, ?>> itemBuilder) {
-        return (MultiblockMachineBuilder<MACHINE>) super.itemBuilder(itemBuilder);
+    public MultiblockMachineBuilder itemBuilder(Consumer<ItemBuilder<? extends MetaMachineItem, ?>> itemBuilder) {
+        return (MultiblockMachineBuilder) super.itemBuilder(itemBuilder);
     }
 
     @Override
-    public MultiblockMachineBuilder<MACHINE> recipeType(GTRecipeType recipeType) {
-        return (MultiblockMachineBuilder<MACHINE>) super.recipeType(recipeType);
+    public MultiblockMachineBuilder recipeType(GTRecipeType recipeType) {
+        return (MultiblockMachineBuilder) super.recipeType(recipeType);
     }
 
     @Override
-    public MultiblockMachineBuilder<MACHINE> tier(int tier) {
-        return (MultiblockMachineBuilder<MACHINE>) super.tier(tier);
+    public MultiblockMachineBuilder tier(int tier) {
+        return (MultiblockMachineBuilder) super.tier(tier);
     }
 
     @Override
-    public MultiblockMachineBuilder<MACHINE> itemColor(BiFunction<ItemStack, Integer, Integer> itemColor) {
-        return (MultiblockMachineBuilder<MACHINE>) super.itemColor(itemColor);
+    public MultiblockMachineBuilder itemColor(BiFunction<ItemStack, Integer, Integer> itemColor) {
+        return (MultiblockMachineBuilder) super.itemColor(itemColor);
     }
 
     @Override
-    @Deprecated
-    public MultiblockMachineBuilder<MACHINE> overclockingLogic(OverclockingLogic overclockingLogic) {
-        return (MultiblockMachineBuilder<MACHINE>) super.overclockingLogic(overclockingLogic);
+    public MultiblockMachineBuilder overclockingLogic(OverclockingLogic overclockingLogic) {
+        return (MultiblockMachineBuilder) super.overclockingLogic(overclockingLogic);
     }
 
     @Override
-    public MultiblockMachineBuilder<MACHINE> modelRenderer(Supplier<ResourceLocation> model) {
-        return (MultiblockMachineBuilder<MACHINE>) super.modelRenderer(model);
+    public MultiblockMachineBuilder modelRenderer(Supplier<ResourceLocation> model) {
+        return (MultiblockMachineBuilder) super.modelRenderer(model);
     }
 
     @Override
-    public MultiblockMachineBuilder<MACHINE> defaultModelRenderer() {
-        return (MultiblockMachineBuilder<MACHINE>) super.defaultModelRenderer();
+    public MultiblockMachineBuilder defaultModelRenderer() {
+        return (MultiblockMachineBuilder) super.defaultModelRenderer();
     }
 
     @Override
-    public MultiblockMachineBuilder<MACHINE> overlayTieredHullRenderer(String name) {
-        return (MultiblockMachineBuilder<MACHINE>) super.overlayTieredHullRenderer(name);
+    public MultiblockMachineBuilder overlayTieredHullRenderer(String name) {
+        return (MultiblockMachineBuilder) super.overlayTieredHullRenderer(name);
     }
 
     @Override
-    public MultiblockMachineBuilder<MACHINE> workableTieredHullRenderer(ResourceLocation workableModel) {
-        return (MultiblockMachineBuilder<MACHINE>) super.workableTieredHullRenderer(workableModel);
+    public MultiblockMachineBuilder workableTieredHullRenderer(ResourceLocation workableModel) {
+        return (MultiblockMachineBuilder) super.workableTieredHullRenderer(workableModel);
     }
 
     @Override
-    public MultiblockMachineBuilder<MACHINE> workableCasingRenderer(ResourceLocation baseCasing, ResourceLocation overlayModel) {
-        return (MultiblockMachineBuilder<MACHINE>) super.workableCasingRenderer(baseCasing, overlayModel);
+    public MultiblockMachineBuilder workableCasingRenderer(ResourceLocation baseCasing, ResourceLocation overlayModel) {
+        return (MultiblockMachineBuilder) super.workableCasingRenderer(baseCasing, overlayModel);
     }
 
-    public MultiblockMachineBuilder<MACHINE> workableCasingRenderer(ResourceLocation baseCasing, ResourceLocation overlayModel, boolean tint) {
-        return (MultiblockMachineBuilder<MACHINE>) super.workableCasingRenderer(baseCasing, overlayModel, tint);
+    public MultiblockMachineBuilder workableCasingRenderer(ResourceLocation baseCasing, ResourceLocation overlayModel, boolean tint) {
+        return (MultiblockMachineBuilder) super.workableCasingRenderer(baseCasing, overlayModel, tint);
     }
 
-    public MultiblockMachineBuilder<MACHINE> sidedWorkableCasingRenderer(String basePath, ResourceLocation overlayModel, boolean tint) {
-        return (MultiblockMachineBuilder<MACHINE>) super.sidedWorkableCasingRenderer(basePath, overlayModel, tint);
-    }
-
-    @Override
-    public MultiblockMachineBuilder<MACHINE> tooltipBuilder(BiConsumer<ItemStack, List<Component>> tooltipBuilder) {
-        return (MultiblockMachineBuilder<MACHINE>) super.tooltipBuilder(tooltipBuilder);
+    public MultiblockMachineBuilder sidedWorkableCasingRenderer(String basePath, ResourceLocation overlayModel, boolean tint) {
+        return (MultiblockMachineBuilder) super.sidedWorkableCasingRenderer(basePath, overlayModel, tint);
     }
 
     @Override
-    public MultiblockMachineBuilder<MACHINE> appearance(Supplier<BlockState> state) {
-        return (MultiblockMachineBuilder<MACHINE>) super.appearance(state);
+    public MultiblockMachineBuilder tooltipBuilder(BiConsumer<ItemStack, List<Component>> tooltipBuilder) {
+        return (MultiblockMachineBuilder) super.tooltipBuilder(tooltipBuilder);
     }
 
     @Override
-    public MultiblockMachineBuilder<MACHINE> appearanceBlock(Supplier<? extends Block> block) {
-        return (MultiblockMachineBuilder<MACHINE>) super.appearanceBlock(block);
+    public MultiblockMachineBuilder appearance(Supplier<BlockState> state) {
+        return (MultiblockMachineBuilder) super.appearance(state);
     }
 
     @Override
-    public MultiblockMachineBuilder<MACHINE> langValue(String langValue) {
-        return (MultiblockMachineBuilder<MACHINE>) super.langValue(langValue);
+    public MultiblockMachineBuilder appearanceBlock(Supplier<? extends Block> block) {
+        return (MultiblockMachineBuilder) super.appearanceBlock(block);
     }
 
     @Override
-    public MultiblockMachineBuilder<MACHINE> overlaySteamHullRenderer(String name) {
-        return (MultiblockMachineBuilder<MACHINE>) super.overlaySteamHullRenderer(name);
+    public MultiblockMachineBuilder langValue(String langValue) {
+        return (MultiblockMachineBuilder) super.langValue(langValue);
     }
 
     @Override
-    public MultiblockMachineBuilder<MACHINE> workableSteamHullRenderer(boolean isHighPressure, ResourceLocation workableModel) {
-        return (MultiblockMachineBuilder<MACHINE>) super.workableSteamHullRenderer(isHighPressure, workableModel);
+    public MultiblockMachineBuilder overlaySteamHullRenderer(String name) {
+        return (MultiblockMachineBuilder) super.overlaySteamHullRenderer(name);
     }
 
     @Override
-    public MultiblockMachineBuilder<MACHINE> tooltips(Component... components) {
-        return (MultiblockMachineBuilder<MACHINE>) super.tooltips(components);
+    public MultiblockMachineBuilder workableSteamHullRenderer(boolean isHighPressure, ResourceLocation workableModel) {
+        return (MultiblockMachineBuilder) super.workableSteamHullRenderer(isHighPressure, workableModel);
     }
 
     @Override
-    public MultiblockMachineBuilder<MACHINE> abilities(PartAbility... abilities) {
-        return (MultiblockMachineBuilder<MACHINE>) super.abilities(abilities);
+    public MultiblockMachineBuilder tooltips(Component... components) {
+        return (MultiblockMachineBuilder) super.tooltips(components);
     }
 
     @Override
-    public MultiblockMachineBuilder<MACHINE> paintingColor(int paintingColor) {
-        return (MultiblockMachineBuilder<MACHINE>) super.paintingColor(paintingColor);
+    public MultiblockMachineBuilder abilities(PartAbility... abilities) {
+        return (MultiblockMachineBuilder) super.abilities(abilities);
     }
 
     @Override
-    public MultiblockMachineBuilder<MACHINE> onBlockEntityRegister(NonNullConsumer<BlockEntityType<BlockEntity>> onBlockEntityRegister) {
-        return (MultiblockMachineBuilder<MACHINE>) super.onBlockEntityRegister(onBlockEntityRegister);
+    public MultiblockMachineBuilder paintingColor(int paintingColor) {
+        return (MultiblockMachineBuilder) super.paintingColor(paintingColor);
+    }
+
+    @Override
+    public MultiblockMachineBuilder onBlockEntityRegister(NonNullConsumer<BlockEntityType<BlockEntity>> onBlockEntityRegister) {
+        return (MultiblockMachineBuilder) super.onBlockEntityRegister(onBlockEntityRegister);
     }
 
     @Override
@@ -260,7 +256,6 @@ public class MultiblockMachineBuilder<MACHINE extends MultiblockControllerMachin
             partAppearance = (controller, part, side) -> definition.getAppearance().get();
         }
         definition.setPartAppearance(partAppearance);
-        definition.setAdditionalDisplay(additionalDisplay);
         return definition;
     }
 }

@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.api.block.IMachineBlock;
 import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
 import com.gregtechceu.gtceu.api.gui.editor.EditableUI;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
-import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.lowdragmc.lowdraglib.LDLib;
@@ -40,7 +39,6 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -60,7 +58,7 @@ public class MachineDefinition implements Supplier<IMachineBlock> {
     @Setter
     private Supplier<BlockEntityType<? extends BlockEntity>> blockEntityTypeSupplier;
     @Setter
-    private Function<IMachineBlockEntity, ? extends MetaMachine> machineSupplier;
+    private Function<IMachineBlockEntity, MetaMachine> machineSupplier;
     @Setter
     @Nullable
     private GTRecipeType recipeType;
@@ -71,8 +69,6 @@ public class MachineDefinition implements Supplier<IMachineBlock> {
     private int defaultPaintingColor;
     @Setter @Getter
     private OverclockingLogic overclockingLogic;
-    @Setter @Getter
-    private BiFunction<MetaMachine, GTRecipe, GTRecipe> recipeModifier;
     @Setter
     @Getter
     private IRenderer renderer;

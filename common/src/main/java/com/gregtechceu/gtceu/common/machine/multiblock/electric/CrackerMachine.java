@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.common.machine.multiblock.electric;
 
 import com.gregtechceu.gtceu.api.block.ICoilType;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
-import com.gregtechceu.gtceu.api.machine.multiblock.CoilWorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
@@ -25,7 +24,10 @@ import java.util.List;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class CrackerMachine extends CoilWorkableElectricMultiblockMachine {
+public class CrackerMachine extends WorkableElectricMultiblockMachine {
+
+    @Getter
+    private int coilTier;
 
     public CrackerMachine(IMachineBlockEntity holder) {
         super(holder);
@@ -34,6 +36,17 @@ public class CrackerMachine extends CoilWorkableElectricMultiblockMachine {
     //////////////////////////////////////
     //***    Multiblock LifeCycle    ***//
     //////////////////////////////////////
+    @Override
+    public void onStructureFormed() {
+        super.onStructureFormed();
+        var type = getMultiblockState().getMatchContext().get("CoilType");
+        if (type instanceof ICoilType coilType) {
+            this.coilTier = coilType.getTier();
+        } else {
+            this.coilTier = 0;
+        }
+    }
+
     @Override
     public @Nullable GTRecipe getRealRecipe(GTRecipe recipe) {
         if (RecipeHelper.getRecipeEUtTier(recipe) > getTier()) {
@@ -50,9 +63,9 @@ public class CrackerMachine extends CoilWorkableElectricMultiblockMachine {
     }
 
     protected void performNonOverclockBonuses(LongIntPair resultOverclock) {
-        if (getCoilTier() <= 0)
+        if (coilTier <= 0)
             return;
-        var eu = resultOverclock.firstLong() * (1 - getCoilTier() * 0.1);
+        var eu = resultOverclock.firstLong() * (1 - coilTier * 0.1);
         resultOverclock.first((long) Math.max(1, eu));
     }
 
@@ -63,7 +76,7 @@ public class CrackerMachine extends CoilWorkableElectricMultiblockMachine {
     public void addDisplayText(List<Component> textList) {
         super.addDisplayText(textList);
         if (isFormed()) {
-            textList.add(Component.translatable("gtceu.multiblock.cracking_unit.energy",100 - 10 * getCoilTier()));
+            textList.add(Component.translatable("gtceu.multiblock.cracking_unit.energy",100 - 10 * coilTier));
         }
     }
 }
