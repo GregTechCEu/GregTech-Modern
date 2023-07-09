@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeCapabilityHolder;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IOverclockMachine;
@@ -9,14 +10,14 @@ import com.gregtechceu.gtceu.api.machine.multiblock.CoilWorkableElectricMultiblo
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
+import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
-import it.unimi.dsi.fastutil.longs.LongIntPair;
 import lombok.val;
 import net.minecraft.Util;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import net.minecraft.util.Tuple;
 
 import javax.annotation.Nonnull;
+import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -46,17 +47,17 @@ public class GTRecipeModifiers {
      * @param recipe current recipe
      * @param maxParallel max parallel limited
      * @param modifyDuration should multiply the duration
-     * @return modified recipe
+     * @return modified recipe and parallel amount
      */
-    public static GTRecipe fastParallel(IRecipeCapabilityHolder holder, @Nonnull GTRecipe recipe, int maxParallel, boolean modifyDuration) {
+    public static Tuple<GTRecipe, Integer> fastParallel(IRecipeCapabilityHolder holder, @Nonnull GTRecipe recipe, int maxParallel, boolean modifyDuration) {
         while (maxParallel > 0) {
             var copied = recipe.copy(ContentModifier.multiplier(maxParallel), modifyDuration);
             if (copied.matchRecipe(holder).isSuccessed()) {
-                return copied;
+                return new Tuple<>(copied, maxParallel);
             }
             maxParallel /= 2;
         }
-        return recipe;
+        return new Tuple<>(recipe, 1);
     };
 
     /**
@@ -65,18 +66,17 @@ public class GTRecipeModifiers {
      * @param recipe current recipe
      * @param maxParallel max parallel limited
      * @param modifyDuration should multiply the duration
-     * @return modified recipe
+     * @return modified recipe and parallel amount
      */
-    public static GTRecipe accurateParallel(MetaMachine machine, @Nonnull GTRecipe recipe, int maxParallel, boolean modifyDuration) {
+    public static Tuple<GTRecipe, Integer> accurateParallel(MetaMachine machine, @Nonnull GTRecipe recipe, int maxParallel, boolean modifyDuration) {
         if (machine instanceof IRecipeCapabilityHolder holder) {
             var parallel = tryParallel(holder, recipe, 1, maxParallel, modifyDuration);
-            return parallel == null ? recipe : parallel;
+            return parallel == null ? new Tuple<>(recipe, 1) : parallel;
         }
         return null;
     }
 
-    @Nullable
-    private static GTRecipe tryParallel(IRecipeCapabilityHolder holder, GTRecipe original, int min, int max, boolean modifyDuration) {
+    private static Tuple<GTRecipe, Integer> tryParallel(IRecipeCapabilityHolder holder, GTRecipe original, int min, int max, boolean modifyDuration) {
         if (min > max) return null;
 
         int mid = (min + max) / 2;
@@ -88,11 +88,11 @@ public class GTRecipeModifiers {
         } else {
             // at max parallels
             if (mid == max) {
-                return copied;
+                return new Tuple<>(copied, mid);
             }
             // matches, but try to do more
-            GTRecipe tryMore = tryParallel(holder, original, mid + 1, max, modifyDuration);
-            return tryMore != null ? tryMore : copied;
+            var tryMore = tryParallel(holder, original, mid + 1, max, modifyDuration);
+            return tryMore != null ? tryMore : new Tuple<>(copied, mid);
         }
     }
 
@@ -149,6 +149,22 @@ public class GTRecipeModifiers {
                 pair.second(Math.max(1, pair.secondInt()));
                 return pair;
             }), recipe, coilMachine.getMaxVoltage());
+        }
+        return null;
+    }
+
+    public static GTRecipe multiSmelterOverclock(MetaMachine machine, @Nonnull GTRecipe recipe) {
+        if (machine instanceof CoilWorkableElectricMultiblockMachine coilMachine) {
+            var parallelLimit = 32 * coilMachine.getCoilType().getLevel();
+
+            var result = GTRecipeModifiers.accurateParallel(machine, recipe, parallelLimit, false);
+            recipe = result.getA() == recipe ? result.getA().copy() : result.getA();
+
+            int parallelValue = result.getB();
+            recipe.duration = Math.max(1, 256 * parallelValue / parallelLimit);
+            var eut = parallelValue * Math.max(1L, 16 / coilMachine.getCoilType().getEnergyDiscount());
+            recipe.tickInputs.put(EURecipeCapability.CAP, List.of(new Content(eut, 1.0f, null, null)));
+            return recipe;
         }
         return null;
     }

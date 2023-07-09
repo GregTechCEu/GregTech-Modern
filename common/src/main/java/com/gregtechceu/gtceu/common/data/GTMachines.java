@@ -16,7 +16,6 @@ import com.gregtechceu.gtceu.api.machine.steam.SimpleSteamMachine;
 import com.gregtechceu.gtceu.api.machine.steam.SteamBoilerMachine;
 import com.gregtechceu.gtceu.api.pattern.Predicates;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
-import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.api.registry.registrate.MultiblockMachineBuilder;
@@ -622,13 +621,13 @@ public class GTMachines {
                     .aisle("XXX", "CCC", "CCC", "XXX")
                     .aisle("XXX", "C#C", "C#C", "XMX")
                     .aisle("XSX", "CCC", "CCC", "XXX")
-                    .where('S', Predicates.controller(blocks(definition.getBlock())))
+                    .where('S', controller(blocks(definition.getBlock())))
                     .where('X', blocks(CASING_INVAR_HEATPROOF.get()).setMinGlobalLimited(9)
-                            .or(Predicates.autoAbilities(definition.getRecipeType()))
-                            .or(Predicates.autoAbilities(true, false)))
-                    .where('M', Predicates.abilities(PartAbility.MUFFLER))
-                    .where('C', Predicates.heatingCoils())
-                    .where('#', Predicates.air())
+                            .or(autoAbilities(definition.getRecipeType()))
+                            .or(autoAbilities(true, false)))
+                    .where('M', abilities(PartAbility.MUFFLER))
+                    .where('C', heatingCoils())
+                    .where('#', air())
                     .build())
             .shapeInfos(definition -> {
                 List<MultiblockShapeInfo> shapeInfo = new ArrayList<>();
@@ -776,6 +775,34 @@ public class GTMachines {
             .additionalDisplay((controller, components) -> {
                 if (controller instanceof CoilWorkableElectricMultiblockMachine coilMachine && controller.isFormed()) {
                     components.add(Component.translatable("gtceu.multiblock.pyrolyse_oven.speed", coilMachine.getCoilTier() == 0 ? 75 : 50 * (coilMachine.getCoilTier() + 1)));
+                }
+            })
+            .register();
+
+    public final static MultiblockMachineDefinition MULTI_SMELTER = REGISTRATE.multiblock("multi_smelter", CoilWorkableElectricMultiblockMachine::new)
+            .rotationState(RotationState.NON_Y_AXIS)
+            .recipeType(GTRecipeTypes.FURNACE_RECIPES)
+            .recipeModifier(GTRecipeModifiers::multiSmelterOverclock)
+            .appearanceBlock(CASING_INVAR_HEATPROOF)
+            .pattern(definition -> FactoryBlockPattern.start()
+                    .aisle("XXX", "CCC", "XXX")
+                    .aisle("XXX", "C#C", "XMX")
+                    .aisle("XSX", "CCC", "XXX")
+                    .where('S', controller(blocks(definition.get())))
+                    .where('X', blocks(CASING_INVAR_HEATPROOF.get()).setMinGlobalLimited(9)
+                            .or(autoAbilities(definition.getRecipeType()))
+                            .or(autoAbilities(true, false)))
+                    .where('M', abilities(PartAbility.MUFFLER))
+                    .where('C', heatingCoils())
+                    .where('#', air())
+                    .build())
+            .recoveryItems(() -> new ItemLike[]{GTItems.MATERIAL_ITEMS.get(TagPrefix.dustTiny, GTMaterials.Ash).get()})
+            .workableCasingRenderer(GTCEu.id("block/casings/solid/machine_casing_heatproof"),
+                    GTCEu.id("block/multiblock/multi_furnace"), false)
+            .additionalDisplay((controller, components) -> {
+                if (controller instanceof CoilWorkableElectricMultiblockMachine coilMachine && controller.isFormed()) {
+                    components.add(Component.translatable("gtceu.multiblock.multi_furnace.heating_coil_level", coilMachine.getCoilType().getLevel()));
+                    components.add(Component.translatable("gtceu.multiblock.multi_furnace.heating_coil_discount", coilMachine.getCoilType().getEnergyDiscount()));
                 }
             })
             .register();
