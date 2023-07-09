@@ -1089,7 +1089,7 @@ public class GTMachines {
                 (tier, builder) -> builder
                         .rotationState(RotationState.ALL)
                         .itemColor((itemStack, index) -> index == 2 ? GTValues.VC[tier + 1] : index == 3 ? GTValues.VC[tier] : index == 1 ? ConfigHolder.INSTANCE.client.defaultPaintingColor : -1)
-                        .renderer(() -> new TransformerRenderer(tier))
+                        .renderer(() -> new TransformerRenderer(tier, baseAmp))
                         .langValue("%s %sTransformer".formatted(VOLTAGE_NAMES[tier], name))
                         .tooltips(explosion())
                         .tooltips(Component.translatable("gtceu.machine.transformer.description"),
