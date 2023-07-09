@@ -169,7 +169,7 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
 
     @Nullable
     protected GTRecipe getRealRecipe(GTRecipe recipe) {
-        return recipe;
+        return self().getDefinition().getRecipeModifier().apply(this.self(), recipe);
     }
 
     public void updateActiveBlocks(boolean active) {

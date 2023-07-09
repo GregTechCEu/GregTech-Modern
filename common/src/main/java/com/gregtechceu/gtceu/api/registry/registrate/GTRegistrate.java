@@ -70,31 +70,31 @@ public abstract class GTRegistrate extends Registrate {
         return entry(name, callback -> GTBlockBuilder.create(this, self(), name, callback, factory, initialProperties));
     }
 
-    public <DEFINITION extends MachineDefinition> MachineBuilder<DEFINITION> machine(String name,
+    public <DEFINITION extends MachineDefinition, MACHINE extends MetaMachine> MachineBuilder<DEFINITION, MACHINE> machine(String name,
                                                                                      Function<ResourceLocation, DEFINITION> definitionFactory,
-                                                                                     Function<IMachineBlockEntity, MetaMachine> metaMachine,
+                                                                                     Function<IMachineBlockEntity, MACHINE> metaMachine,
                                                                                      BiFunction<BlockBehaviour.Properties, DEFINITION, IMachineBlock> blockFactory,
                                                                                      BiFunction<IMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
                                                                                      TriFunction<BlockEntityType<?>, BlockPos, BlockState, IMachineBlockEntity> blockEntityFactory) {
         return MachineBuilder.create(this, name, definitionFactory, metaMachine, blockFactory, itemFactory, blockEntityFactory);
     }
 
-    public MachineBuilder<MachineDefinition> machine(String name, Function<IMachineBlockEntity, MetaMachine> metaMachine) {
+    public <MACHINE extends MetaMachine>  MachineBuilder<MachineDefinition, MACHINE> machine(String name, Function<IMachineBlockEntity, MACHINE> metaMachine) {
         return MachineBuilder.create(this, name, MachineDefinition::createDefinition, metaMachine, MetaMachineBlock::new, MetaMachineItem::new, MetaMachineBlockEntity::createBlockEntity);
     }
 
-    public Stream<MachineBuilder<MachineDefinition>> machine(String name, BiFunction<IMachineBlockEntity, Integer, MetaMachine> metaMachine, int... tiers) {
+    public <MACHINE extends MetaMachine> Stream<MachineBuilder<MachineDefinition, MACHINE>> machine(String name, BiFunction<IMachineBlockEntity, Integer, MACHINE> metaMachine, int... tiers) {
         return Arrays.stream(tiers).mapToObj(tier -> MachineBuilder.create(this, name + "." + GTValues.VN[tier].toLowerCase(), MachineDefinition::createDefinition, holder -> metaMachine.apply(holder, tier), MetaMachineBlock::new, MetaMachineItem::new, MetaMachineBlockEntity::createBlockEntity));
     }
 
-    public MultiblockMachineBuilder multiblock(String name, Function<IMachineBlockEntity, ? extends MultiblockControllerMachine> metaMachine,
+    public <MACHINE extends MultiblockControllerMachine> MultiblockMachineBuilder<MACHINE> multiblock(String name, Function<IMachineBlockEntity, MACHINE> metaMachine,
                                                BiFunction<BlockBehaviour.Properties, MultiblockMachineDefinition, IMachineBlock> blockFactory,
                                                BiFunction<IMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
                                                TriFunction<BlockEntityType<?>, BlockPos, BlockState, IMachineBlockEntity> blockEntityFactory) {
         return MultiblockMachineBuilder.createMulti(this, name, metaMachine, blockFactory, itemFactory, blockEntityFactory);
     }
 
-    public MultiblockMachineBuilder multiblock(String name, Function<IMachineBlockEntity, ? extends MultiblockControllerMachine> metaMachine) {
+    public <MACHINE extends MultiblockControllerMachine> MultiblockMachineBuilder<MACHINE> multiblock(String name, Function<IMachineBlockEntity, MACHINE> metaMachine) {
         return MultiblockMachineBuilder.createMulti(this, name, metaMachine, MetaMachineBlock::new, MetaMachineItem::new, MetaMachineBlockEntity::createBlockEntity);
     }
 

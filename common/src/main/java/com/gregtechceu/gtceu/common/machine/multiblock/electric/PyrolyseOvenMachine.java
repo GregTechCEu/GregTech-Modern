@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.common.machine.multiblock.electric;
 import com.gregtechceu.gtceu.api.block.ICoilType;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMufflerMechanic;
+import com.gregtechceu.gtceu.api.machine.multiblock.CoilWorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
@@ -25,10 +26,7 @@ import java.util.List;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class PyrolyseOvenMachine extends WorkableElectricMultiblockMachine {
-
-    @Getter
-    private int coilTier;
+public class PyrolyseOvenMachine extends CoilWorkableElectricMultiblockMachine {
 
     public PyrolyseOvenMachine(IMachineBlockEntity holder) {
         super(holder);
@@ -37,17 +35,6 @@ public class PyrolyseOvenMachine extends WorkableElectricMultiblockMachine {
     //////////////////////////////////////
     //***    Multiblock LifeCycle    ***//
     //////////////////////////////////////
-    @Override
-    public void onStructureFormed() {
-        super.onStructureFormed();
-        var type = getMultiblockState().getMatchContext().get("CoilType");
-        if (type instanceof ICoilType coilType) {
-            this.coilTier = coilType.getTier();
-        } else {
-            this.coilTier = 0;
-        }
-    }
-
     @Override
     public @Nullable GTRecipe getRealRecipe(GTRecipe recipe) {
         if (RecipeHelper.getRecipeEUtTier(recipe) > getTier()) {
@@ -64,9 +51,9 @@ public class PyrolyseOvenMachine extends WorkableElectricMultiblockMachine {
     }
 
     protected void performNonOverclockBonuses(LongIntPair resultOverclock) {
-        if (coilTier < 0)
+        if (getCoilTier() < 0)
             return;
-        if (coilTier == 0) {
+        if (getCoilTier() == 0) {
             resultOverclock.second(resultOverclock.secondInt() * 5 / 4);
         }
         else resultOverclock.second(resultOverclock.secondInt() * 5 / 4);
@@ -80,7 +67,7 @@ public class PyrolyseOvenMachine extends WorkableElectricMultiblockMachine {
     public void addDisplayText(List<Component> textList) {
         super.addDisplayText(textList);
         if (isFormed()) {
-            textList.add(Component.translatable("gtceu.multiblock.pyrolyse_oven.speed",coilTier == 0 ? 75 : 50 * (coilTier + 1)));
+            textList.add(Component.translatable("gtceu.multiblock.pyrolyse_oven.speed",getCoilTier() == 0 ? 75 : 50 * (getCoilTier() + 1)));
         }
     }
 

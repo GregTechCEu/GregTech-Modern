@@ -103,7 +103,7 @@ public class GTCreateMachines {
                 , () -> SplitShaftInstance::new, false, tiers);
     }
 
-    public static MachineBuilder<KineticMachineDefinition> registerMachines(String name, Function<ResourceLocation, KineticMachineDefinition> definitionFactory, Function<IMachineBlockEntity, MetaMachine> factory,
+    public static <MACHINE extends MetaMachine> MachineBuilder<KineticMachineDefinition, MACHINE> registerMachines(String name, Function<ResourceLocation, KineticMachineDefinition> definitionFactory, Function<IMachineBlockEntity, MACHINE> factory,
                                                                             @Nullable NonNullSupplier<BiFunction<MaterialManager, KineticMachineBlockEntity, BlockEntityInstance<? super KineticMachineBlockEntity>>> instanceFactory,
                                                                             boolean renderNormally) {
         return REGISTRATE.machine(name, definitionFactory, factory, KineticMachineBlock::new, MetaMachineItem::new, KineticMachineBlockEntity::create)
@@ -111,10 +111,10 @@ public class GTCreateMachines {
                 .onBlockEntityRegister(type -> KineticMachineBlockEntity.onBlockEntityRegister(type, instanceFactory, renderNormally));
     }
 
-    public static KineticMachineDefinition[] registerTieredMachines(String name,
+    public static <MACHINE extends MetaMachine> KineticMachineDefinition[] registerTieredMachines(String name,
                                                                     BiFunction<Integer, ResourceLocation, KineticMachineDefinition> definitionFactory,
-                                                                    BiFunction<IMachineBlockEntity, Integer, MetaMachine> factory,
-                                                                    BiFunction<Integer, MachineBuilder<KineticMachineDefinition>, KineticMachineDefinition> builder,
+                                                                    BiFunction<IMachineBlockEntity, Integer, MACHINE> factory,
+                                                                    BiFunction<Integer, MachineBuilder<KineticMachineDefinition, MACHINE>, KineticMachineDefinition> builder,
                                                                     @Nullable NonNullSupplier<BiFunction<MaterialManager, KineticMachineBlockEntity, BlockEntityInstance<? super KineticMachineBlockEntity>>> instanceFactory,
                                                                     boolean renderNormally,
                                                                     int... tiers) {
@@ -135,7 +135,7 @@ public class GTCreateMachines {
         return definitions;
     }
 
-    public GTCreateMachines() {
+    public static void init() {
         BlockStressValues.registerProvider(GTCEu.MOD_ID, new BlockStressValues.IStressValueProvider() {
             @Override
             public double getImpact(Block block) {

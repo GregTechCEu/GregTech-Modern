@@ -93,6 +93,8 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
             if (recipeLogic.isHasNotEnoughEnergy()) {
                 textList.add(Component.translatable("gtceu.multiblock.not_enough_energy").setStyle(Style.EMPTY.withColor(ChatFormatting.RED)));
             }
+
+            getDefinition().getAdditionalDisplay().accept(this, textList);
         }
     }
 

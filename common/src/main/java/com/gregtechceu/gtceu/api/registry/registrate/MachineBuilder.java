@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
+import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.client.renderer.machine.*;
 import com.gregtechceu.gtceu.api.block.IMachineBlock;
@@ -60,14 +61,14 @@ import java.util.function.*;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 @Accessors(chain = true, fluent = true)
-public class MachineBuilder<DEFINITION extends MachineDefinition> {
+public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extends MetaMachine> {
 
     protected final Registrate registrate;
     protected final String name;
     protected final BiFunction<BlockBehaviour.Properties, DEFINITION, IMachineBlock> blockFactory;
     protected final BiFunction<IMachineBlock, Item.Properties, MetaMachineItem> itemFactory;
     protected final TriFunction<BlockEntityType<?>, BlockPos, BlockState, IMachineBlockEntity> blockEntityFactory;
-    protected final Function<IMachineBlockEntity, MetaMachine> metaMachine;
+    protected final Function<IMachineBlockEntity, MACHINE> metaMachine;
     protected final Function<ResourceLocation, DEFINITION> definitionFactory;
     @Nullable
     @Setter
@@ -100,8 +101,8 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> {
     private final List<Component> tooltips = new ArrayList<>();
     @Setter
     private BiConsumer<ItemStack, List<Component>> tooltipBuilder;
-    @Setter
     private OverclockingLogic overclockingLogic = OverclockingLogic.NON_PERFECT_OVERCLOCK;
+    private BiFunction<MetaMachine, GTRecipe, GTRecipe> recipeModifier = (machine, recipe) -> recipe;
     private Supplier<BlockState> appearance;
     @Setter @Nullable
     private EditableMachineUI editableUI;
@@ -110,7 +111,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> {
 
     protected MachineBuilder(Registrate registrate, String name,
                              Function<ResourceLocation, DEFINITION> definitionFactory,
-                             Function<IMachineBlockEntity, MetaMachine> metaMachine,
+                             Function<IMachineBlockEntity, MACHINE> metaMachine,
                              BiFunction<BlockBehaviour.Properties, DEFINITION, IMachineBlock> blockFactory,
                              BiFunction<IMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
                              TriFunction<BlockEntityType<?>, BlockPos, BlockState, IMachineBlockEntity> blockEntityFactory) {
@@ -123,70 +124,74 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> {
         this.definitionFactory = definitionFactory;
     }
 
-    public static <DEFINITION extends MachineDefinition> MachineBuilder<DEFINITION> create(Registrate registrate, String name,
+    public static <DEFINITION extends MachineDefinition, MACHINE extends MetaMachine> MachineBuilder<DEFINITION, MACHINE> create(Registrate registrate, String name,
                                                                                            Function<ResourceLocation, DEFINITION> definitionFactory,
-                                                                                           Function<IMachineBlockEntity, MetaMachine> metaMachine,
+                                                                                           Function<IMachineBlockEntity, MACHINE> metaMachine,
                                                                                            BiFunction<BlockBehaviour.Properties, DEFINITION, IMachineBlock> blockFactory,
                                                                                            BiFunction<IMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
                                                                                            TriFunction<BlockEntityType<?>, BlockPos, BlockState, IMachineBlockEntity> blockEntityFactory) {
         return new MachineBuilder<>(registrate, name, definitionFactory, metaMachine, blockFactory, itemFactory, blockEntityFactory);
     }
 
-    public MachineBuilder<DEFINITION> modelRenderer(Supplier<ResourceLocation> model) {
+    public MachineBuilder<DEFINITION, MACHINE> modelRenderer(Supplier<ResourceLocation> model) {
         this.renderer = () -> new MachineRenderer(model.get());
         return this;
     }
 
-    public MachineBuilder<DEFINITION> defaultModelRenderer() {
+    public MachineBuilder<DEFINITION, MACHINE> defaultModelRenderer() {
         return modelRenderer(() -> new ResourceLocation(registrate.getModid(), "block/" + name));
     }
 
-    public MachineBuilder<DEFINITION> overlayTieredHullRenderer(String name) {
+    public MachineBuilder<DEFINITION, MACHINE> overlayTieredHullRenderer(String name) {
         return renderer(() -> new OverlayTieredMachineRenderer(tier, new ResourceLocation(registrate.getModid(), "block/machine/part/" + name)));
     }
 
-    public MachineBuilder<DEFINITION> overlaySteamHullRenderer(String name) {
+    public MachineBuilder<DEFINITION, MACHINE> overlaySteamHullRenderer(String name) {
         return renderer(() -> new OverlaySteamMachineRenderer(new ResourceLocation(registrate.getModid(), "block/machine/part/" + name)));
     }
 
-    public MachineBuilder<DEFINITION> workableTieredHullRenderer(ResourceLocation workableModel) {
+    public MachineBuilder<DEFINITION, MACHINE> workableTieredHullRenderer(ResourceLocation workableModel) {
         return renderer(() -> new WorkableTieredHullMachineRenderer(tier, workableModel));
     }
 
-    public MachineBuilder<DEFINITION> workableSteamHullRenderer(boolean isHighPressure, ResourceLocation workableModel) {
+    public MachineBuilder<DEFINITION, MACHINE> workableSteamHullRenderer(boolean isHighPressure, ResourceLocation workableModel) {
         return renderer(() -> new WorkableSteamMachineRenderer(isHighPressure, workableModel));
     }
 
-    public MachineBuilder<DEFINITION> workableCasingRenderer(ResourceLocation baseCasing, ResourceLocation workableModel) {
+    public MachineBuilder<DEFINITION, MACHINE> workableCasingRenderer(ResourceLocation baseCasing, ResourceLocation workableModel) {
         return renderer(() -> new WorkableCasingMachineRenderer(baseCasing, workableModel));
     }
 
-    public MachineBuilder<DEFINITION> workableCasingRenderer(ResourceLocation baseCasing, ResourceLocation workableModel, boolean tint) {
+    public MachineBuilder<DEFINITION, MACHINE> workableCasingRenderer(ResourceLocation baseCasing, ResourceLocation workableModel, boolean tint) {
         return renderer(() -> new WorkableCasingMachineRenderer(baseCasing, workableModel, tint));
     }
 
-    public MachineBuilder<DEFINITION> sidedWorkableCasingRenderer(String basePath, ResourceLocation overlayModel, boolean tint) {
+    public MachineBuilder<DEFINITION, MACHINE> sidedWorkableCasingRenderer(String basePath, ResourceLocation overlayModel, boolean tint) {
         return renderer(() -> new WorkableSidedCasingMachineRenderer(basePath, overlayModel, tint));
     }
 
-    public MachineBuilder<DEFINITION> appearanceBlock(Supplier<? extends Block> block) {
+    public MachineBuilder<DEFINITION, MACHINE> appearanceBlock(Supplier<? extends Block> block) {
         appearance = () -> block.get().defaultBlockState();
         return this;
     }
 
-    public MachineBuilder<DEFINITION> appearance(Supplier<BlockState> state) {
+    public MachineBuilder<DEFINITION, MACHINE> appearance(Supplier<BlockState> state) {
         appearance = state;
         return this;
     }
 
-    public MachineBuilder<DEFINITION> tooltips(Component... components) {
+    public MachineBuilder<DEFINITION, MACHINE> tooltips(Component... components) {
         tooltips.addAll(Arrays.stream(components).filter(Objects::nonNull).toList());
         return this;
     }
 
-    public MachineBuilder<DEFINITION> abilities(PartAbility... abilities) {
+    public MachineBuilder<DEFINITION, MACHINE> abilities(PartAbility... abilities) {
         this.abilities = abilities;
         return this;
+    }
+
+    @Deprecated
+    public MachineBuilder<DEFINITION, MACHINE> overclockingLogic(OverclockingLogic perfectOverclock) {
     }
 
     protected DEFINITION createDefinition() {
@@ -246,6 +251,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> {
             if (tooltipBuilder != null) tooltipBuilder.accept(itemStack, components);
         });
         definition.setOverclockingLogic(overclockingLogic);
+        definition.setRecipeModifier(recipeModifier);
         if (renderer == null) {
             renderer = () -> new MachineRenderer(new ResourceLocation(registrate.getModid(), "block/machine/" + name));
         }

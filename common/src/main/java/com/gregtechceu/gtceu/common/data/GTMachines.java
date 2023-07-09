@@ -783,6 +783,26 @@ public class GTMachines {
             .tooltips(Component.translatable("gtceu.machine.cracker.tooltip.1"))
             .register();
 
+    public final static MultiblockMachineDefinition MULTI_SMELTER = REGISTRATE.multiblock("multi_smelter", CrackerMachine::new)
+            .rotationState(RotationState.NON_Y_AXIS)
+            .recipeType(GTRecipeTypes.CRACKING_RECIPES)
+            .appearanceBlock(CASING_STAINLESS_CLEAN)
+            .pattern(definition -> FactoryBlockPattern.start()
+                    .aisle("HCHCH", "HCHCH", "HCHCH")
+                    .aisle("HCHCH", "H###H", "HCHCH")
+                    .aisle("HCHCH", "HCOCH", "HCHCH")
+                    .where('O', Predicates.controller(blocks(definition.get())))
+                    .where('H', blocks(CASING_STAINLESS_CLEAN.get()).setMinGlobalLimited(12)
+                            .or(Predicates.autoAbilities(definition.getRecipeType()))
+                            .or(Predicates.autoAbilities(true, true)))
+                    .where('#', Predicates.air())
+                    .where('C', Predicates.heatingCoils())
+                    .build())
+            .workableCasingRenderer(GTCEu.id("block/casings/solid/machine_casing_clean_stainless_steel"),
+                    GTCEu.id("block/multiblock/cracking_unit"), false)
+            .tooltips(Component.translatable("gtceu.machine.cracker.tooltip.1"))
+            .register();
+
     public final static MultiblockMachineDefinition DISTILLATION_TOWER = REGISTRATE.multiblock("distillation_tower", WorkableElectricMultiblockMachine::new)
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeType(GTRecipeTypes.DISTILLATION_RECIPES)
@@ -1067,8 +1087,8 @@ public class GTMachines {
     //////////////////////////////////////
     //**********     Misc     **********//
     //////////////////////////////////////
-    public static Pair<MachineDefinition, MachineDefinition> registerSteamMachines(String name, BiFunction<IMachineBlockEntity, Boolean, MetaMachine> factory,
-                                                                                   BiFunction<Boolean, MachineBuilder<MachineDefinition>, MachineDefinition> builder) {
+    public static <MACHINE extends MetaMachine> Pair<MachineDefinition, MachineDefinition> registerSteamMachines(String name, BiFunction<IMachineBlockEntity, Boolean, MACHINE> factory,
+                                                                                   BiFunction<Boolean, MachineBuilder<MachineDefinition, MACHINE>, MachineDefinition> builder) {
         MachineDefinition lowTier = builder.apply(false, REGISTRATE.machine("lp_%s".formatted(name), holder -> factory.apply(holder, false))
                 .langValue("Low Pressure " + FormattingUtil.toEnglishName(name))
                 .tier(0));
@@ -1078,9 +1098,9 @@ public class GTMachines {
         return Pair.of(lowTier, highTier);
     }
 
-    public static MachineDefinition[] registerTieredMachines(String name,
-                                                             BiFunction<IMachineBlockEntity, Integer, MetaMachine> factory,
-                                                             BiFunction<Integer, MachineBuilder<MachineDefinition>, MachineDefinition> builder,
+    public static <MACHINE extends MetaMachine> MachineDefinition[] registerTieredMachines(String name,
+                                                             BiFunction<IMachineBlockEntity, Integer, MACHINE> factory,
+                                                             BiFunction<Integer, MachineBuilder<MachineDefinition, MACHINE>, MachineDefinition> builder,
                                                              int... tiers) {
         MachineDefinition[] definitions = new MachineDefinition[tiers.length];
         for (int i = 0; i < tiers.length; i++) {
@@ -1093,7 +1113,7 @@ public class GTMachines {
     }
 
 
-    public static MachineDefinition[] registerSimpleMachines(String name,
+    public static  MachineDefinition[] registerSimpleMachines(String name,
                                                              GTRecipeType recipeType,
                                                              Int2LongFunction tankScalingFunction,
                                                              int... tiers) {
@@ -1156,9 +1176,9 @@ public class GTMachines {
                 ALL_TIERS);
     }
 
-    public static MultiblockMachineDefinition[] registerTieredMultis(String name,
-                                                             BiFunction<IMachineBlockEntity, Integer, MultiblockControllerMachine> factory,
-                                                             BiFunction<Integer, MultiblockMachineBuilder, MultiblockMachineDefinition> builder,
+    public static <MACHINE extends MultiblockControllerMachine> MultiblockMachineDefinition[] registerTieredMultis(String name,
+                                                             BiFunction<IMachineBlockEntity, Integer, MACHINE> factory,
+                                                             BiFunction<Integer, MultiblockMachineBuilder<MACHINE>, MultiblockMachineDefinition> builder,
                                                              int... tiers) {
         MultiblockMachineDefinition[] definitions = new MultiblockMachineDefinition[tiers.length];
         for (int i = 0; i < tiers.length; i++) {
@@ -1261,7 +1281,7 @@ public class GTMachines {
 
     public static void init() {
         if (GTCEu.isCreateLoaded()) {
-            new GTCreateMachines();
+            GTCreateMachines.init();
         }
         AddonFinder.getAddons().forEach(IGTAddon::registerMachines);
         if (GTCEu.isKubeJSLoaded()) {
