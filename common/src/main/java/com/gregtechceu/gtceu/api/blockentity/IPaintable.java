@@ -7,11 +7,31 @@ package com.gregtechceu.gtceu.api.blockentity;
  */
 public interface IPaintable {
 
+    /**
+     * Get painting color.
+     * It's not the real color of this block.
+     * @return -1 - non painted.
+     */
     int getPaintingColor();
 
     void setPaintingColor(int color);
 
-    boolean isPainted();
-
+    /**
+     * Default color.
+     */
     int getDefaultPaintingColor();
+
+    /**
+     * If the block is painted.
+     */
+    default boolean isPainted() {
+        return getPaintingColor() != -1 && getPaintingColor() != getDefaultPaintingColor();
+    }
+
+    /**
+     * Get the real color of this block.
+     */
+    default int getRealColor() {
+        return isPainted() ? getPaintingColor() : getDefaultPaintingColor();
+    }
 }

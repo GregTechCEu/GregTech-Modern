@@ -196,7 +196,7 @@ public class GTMachines {
     public final static MachineDefinition[] TRANSFORMER = registerTieredMachines("transformer", TransformerMachine::new,
             (tier, builder) -> builder
                     .rotationState(RotationState.ALL)
-                    .itemColor((itemStack, index) -> index == 2 ? GTValues.VC[tier + 1] : index == 3 ? GTValues.VC[tier + 1] : -1)
+                    .itemColor((itemStack, index) -> index == 2 ? GTValues.VC[tier + 1] : index == 3 ? GTValues.VC[tier] : index == 1 ? ConfigHolder.INSTANCE.client.defaultPaintingColor : -1)
                     .renderer(() -> new TransformerRenderer(tier))
                     .langValue("%s Transformer".formatted(VOLTAGE_NAMES[tier]))
                     .tooltips(explosion())
@@ -375,7 +375,6 @@ public class GTMachines {
             (tier, builder) -> builder
                     .langValue(VNF[tier] + " Output Hatch")
                     .rotationState(RotationState.ALL)
-                    .itemColor((itemStack, index) -> index == 2 ? GTValues.VC[tier] : -1)
                     .abilities(PartAbility.EXPORT_FLUIDS)
                     .overlayTieredHullRenderer("fluid_hatch.export")
                     .tooltips(Component.translatable("gtceu.machine.fluid_hatch.export.tooltip"),
@@ -388,7 +387,6 @@ public class GTMachines {
             (tier, builder) -> builder
                     .langValue(VNF[tier] + " Energy Hatch")
                     .rotationState(RotationState.ALL)
-                    .itemColor((itemStack, index) -> index == 2 ? GTValues.VC[tier] : -1)
                     .abilities(PartAbility.INPUT_ENERGY)
                     .overlayTieredHullRenderer("energy_hatch.input")
                     .register(),
@@ -399,7 +397,6 @@ public class GTMachines {
             (tier, builder) -> builder
                     .langValue(VNF[tier] + " Dynamo Hatch")
                     .rotationState(RotationState.ALL)
-                    .itemColor((itemStack, index) -> index == 2 ? GTValues.VC[tier] : -1)
                     .abilities(PartAbility.OUTPUT_ENERGY)
                     .overlayTieredHullRenderer("energy_hatch.output")
                     .register(),
@@ -411,7 +408,6 @@ public class GTMachines {
                     .langValue(VNF[tier] + " 4A Energy Hatch")
                     .langValue(VNF[tier] + " 4A Energy Hatch")
                     .rotationState(RotationState.ALL)
-                    .itemColor((itemStack, index) -> index == 2 ? GTValues.VC[tier] : -1)
                     .abilities(PartAbility.INPUT_ENERGY)
                     .overlayTieredHullRenderer("energy_hatch.input_4a")
                     .register(),
@@ -422,7 +418,6 @@ public class GTMachines {
             (tier, builder) -> builder
                     .langValue(VNF[tier] + " 4A Dynamo Hatch")
                     .rotationState(RotationState.ALL)
-                    .itemColor((itemStack, index) -> index == 2 ? GTValues.VC[tier] : -1)
                     .abilities(PartAbility.OUTPUT_ENERGY)
                     .overlayTieredHullRenderer("energy_hatch.output_4a")
                     .register(),
@@ -433,7 +428,6 @@ public class GTMachines {
             (tier, builder) -> builder
                     .langValue(VNF[tier] + " 16A Energy Hatch")
                     .rotationState(RotationState.ALL)
-                    .itemColor((itemStack, index) -> index == 2 ? GTValues.VC[tier] : -1)
                     .abilities(PartAbility.INPUT_ENERGY)
                     .overlayTieredHullRenderer("energy_hatch.input_16a")
                     .register(),

@@ -442,7 +442,7 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
 
     public int tintColor(int index) {
         if (index == 1) {
-            return getPaintingColor();
+            return getRealColor();
         }
         return -1;
     }
@@ -537,11 +537,6 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
         if (LocalizationUtils.exist(mainKey)) {
             tooltips.add(0, Component.translatable(mainKey));
         }
-    }
-
-    @Override
-    public boolean isPainted() {
-        return paintingColor != -1 && paintingColor != getDefaultPaintingColor();
     }
 
     @Override
