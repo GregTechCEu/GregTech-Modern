@@ -118,7 +118,7 @@ public class SimpleGeneratorMachine extends WorkableTieredMachine implements IFa
                             generatorMachine.importItems.storage,
                             generatorMachine.exportItems.storage,
                             generatorMachine.importFluids.storages,
-                            tieredMachine.exportFluids.storages,
+                            generatorMachine.exportFluids.storages,
                             false, false));
             createEnergyBar().setupUI(template, generatorMachine);
         }
