@@ -13,7 +13,7 @@
 			"to": [16, 16, 16],
 			"faces": {
 				"north": {"uv": [0, 0, 16, 16], "texture": "#overlay_pipe_in", "cullface": "north"},
-				"south": {"uv": [0, 0, 16, 16], "texture": "#overlay_pipe_out", "cullface": "north"}
+				"south": {"uv": [0, 0, 16, 16], "texture": "#overlay_pipe_out", "cullface": "south"}
 			}
 		},
 		{
@@ -21,7 +21,7 @@
 			"to": [16, 16, 16],
 			"faces": {
 				"north": {"uv": [0, 0, 16, 16], "texture": "#overlay_fluid_hatch_input", "cullface": "north"},
-				"south": {"uv": [0, 0, 16, 16], "texture": "#overlay_fluid_hatch_output", "cullface": "north"}
+				"south": {"uv": [0, 0, 16, 16], "texture": "#overlay_fluid_hatch_output", "cullface": "south"}
 			}
 		}
 	]
