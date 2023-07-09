@@ -112,15 +112,15 @@ public class SimpleGeneratorMachine extends WorkableTieredMachine implements IFa
         group.addWidget(template);
         return group;
     }, (template, machine) -> {
-        if (machine instanceof SimpleTieredMachine tieredMachine) {
-            tieredMachine.recipeType.createEditableUITemplate(false, false).setupUI(template,
-                    new GTRecipeType.RecipeHolder(tieredMachine.recipeLogic::getProgressPercent,
-                            tieredMachine.importItems.storage,
-                            tieredMachine.exportItems.storage,
-                            tieredMachine.importFluids.storages,
+        if (machine instanceof SimpleGeneratorMachine generatorMachine) {
+            generatorMachine.recipeType.createEditableUITemplate(false, false).setupUI(template,
+                    new GTRecipeType.RecipeHolder(generatorMachine.recipeLogic::getProgressPercent,
+                            generatorMachine.importItems.storage,
+                            generatorMachine.exportItems.storage,
+                            generatorMachine.importFluids.storages,
                             tieredMachine.exportFluids.storages,
                             false, false));
-            createEnergyBar().setupUI(template, tieredMachine);
+            createEnergyBar().setupUI(template, generatorMachine);
         }
     }));
 
