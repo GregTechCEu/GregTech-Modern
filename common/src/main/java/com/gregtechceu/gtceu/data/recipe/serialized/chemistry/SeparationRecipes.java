@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.data.recipe.serialized.chemistry;
 
 import com.gregtechceu.gtceu.common.data.GTBlocks;
+import me.alphamode.forgetags.Tags;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -485,14 +486,11 @@ public class SeparationRecipes {
                 .duration(64).EUt(64).save(provider);
 
         // TODO Seed oil, fish oil
-        //List<Tuple<ItemStack, Integer>> seedEntries = GTUtility.getGrassSeedEntries();
-        //for (Tuple<ItemStack, Integer> seedEntry : seedEntries) {
-        //    EXTRACTOR_RECIPES.recipeBuilder()
-        //            .duration(32).EUt(2)
-        //            .inputItems(seedEntry.getFirst())
-        //            .outputFluids(SeedOil.getFluid(10))
-        //            .save(provider;
-        //}
+        EXTRACTOR_RECIPES.recipeBuilder("seed_oil_from_tag_seeds")
+                .duration(32).EUt(2)
+                .inputItems(Tags.Items.SEEDS)
+                .outputFluids(SeedOil.getFluid(10))
+                .save(provider);
 
         EXTRACTOR_RECIPES.recipeBuilder("seed_oil_from_beetroot").duration(32).EUt(2)
                 .inputItems(new ItemStack(Items.BEETROOT_SEEDS))
