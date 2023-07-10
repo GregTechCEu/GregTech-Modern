@@ -27,6 +27,7 @@ import com.tterrag.registrate.providers.ProviderType;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import com.tterrag.registrate.util.nullness.NonNullUnaryOperator;
+import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -104,6 +105,8 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> {
     private BiConsumer<ItemStack, List<Component>> tooltipBuilder;
     @Setter
     private BiFunction<MetaMachine, GTRecipe, GTRecipe> recipeModifier = (machine, recipe) -> recipe;
+    @Setter
+    private boolean alwaysTryModifyRecipe;
     private Supplier<BlockState> appearance;
     @Setter @Nullable
     private EditableMachineUI editableUI;
@@ -191,6 +194,12 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> {
         return this;
     }
 
+    public MachineBuilder<DEFINITION> recipeModifier(BiFunction<MetaMachine, GTRecipe, GTRecipe> recipeModifier, boolean alwaysTryModifyRecipe) {
+        this.recipeModifier = recipeModifier;
+        this.alwaysTryModifyRecipe = alwaysTryModifyRecipe;
+        return this;
+    }
+
     protected DEFINITION createDefinition() {
         return definitionFactory.apply(new ResourceLocation(registrate.getModid(), name));
     }
@@ -248,6 +257,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> {
             if (tooltipBuilder != null) tooltipBuilder.accept(itemStack, components);
         });
         definition.setRecipeModifier(recipeModifier);
+        definition.setAlwaysTryModifyRecipe(alwaysTryModifyRecipe);
         if (renderer == null) {
             renderer = () -> new MachineRenderer(new ResourceLocation(registrate.getModid(), "block/machine/" + name));
         }

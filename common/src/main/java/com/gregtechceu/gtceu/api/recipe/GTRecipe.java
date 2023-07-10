@@ -148,9 +148,9 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
     public ActionResult matchRecipe(IRecipeCapabilityHolder holder) {
         if (!holder.hasProxies()) return ActionResult.FAIL_NO_REASON;
         var result = matchRecipe(IO.IN, holder, inputs);
-        if (!result.isSuccessed()) return result;
+        if (!result.isSuccess()) return result;
         result = matchRecipe(IO.OUT, holder, outputs);
-        if (!result.isSuccessed()) return result;
+        if (!result.isSuccess()) return result;
         return ActionResult.SUCCESS;
     }
 
@@ -158,9 +158,9 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
         if (hasTick()) {
             if (!holder.hasProxies()) return ActionResult.FAIL_NO_REASON;
             var result = matchRecipe(IO.IN, holder, tickInputs);
-            if (!result.isSuccessed()) return result;
+            if (!result.isSuccess()) return result;
             result = matchRecipe(IO.OUT, holder, tickOutputs);
-            if (!result.isSuccessed()) return result;
+            if (!result.isSuccess()) return result;
         }
         return ActionResult.SUCCESS;
     }
@@ -374,7 +374,7 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
         return ActionResult.SUCCESS;
     }
 
-    public static record ActionResult(boolean isSuccessed, @Nullable Component reason) {
+    public static record ActionResult(boolean isSuccess, @Nullable Component reason) {
 
         public final static ActionResult SUCCESS = new ActionResult(true, null);
         public final static ActionResult FAIL_NO_REASON = new ActionResult(true, null);

@@ -52,7 +52,7 @@ public class GTRecipeModifiers {
     public static Tuple<GTRecipe, Integer> fastParallel(IRecipeCapabilityHolder holder, @Nonnull GTRecipe recipe, int maxParallel, boolean modifyDuration) {
         while (maxParallel > 0) {
             var copied = recipe.copy(ContentModifier.multiplier(maxParallel), modifyDuration);
-            if (copied.matchRecipe(holder).isSuccessed()) {
+            if (copied.matchRecipe(holder).isSuccess()) {
                 return new Tuple<>(copied, maxParallel);
             }
             maxParallel /= 2;
@@ -82,7 +82,7 @@ public class GTRecipeModifiers {
         int mid = (min + max) / 2;
 
         GTRecipe copied = original.copy(ContentModifier.multiplier(mid), modifyDuration);
-        if (!copied.matchRecipe(holder).isSuccessed()) {
+        if (!copied.matchRecipe(holder).isSuccess()) {
             // tried too many
             return tryParallel(holder, original, min, mid - 1, modifyDuration);
         } else {
@@ -155,14 +155,16 @@ public class GTRecipeModifiers {
 
     public static GTRecipe multiSmelterOverclock(MetaMachine machine, @Nonnull GTRecipe recipe) {
         if (machine instanceof CoilWorkableElectricMultiblockMachine coilMachine) {
-            var parallelLimit = 32 * coilMachine.getCoilType().getLevel();
+            var energyCost = Math.max(1L, 16 / coilMachine.getCoilType().getEnergyDiscount());
+            var maxParallel = 32 * coilMachine.getCoilType().getLevel();
+            var parallelLimit = Math.min(maxParallel, (int) (coilMachine.getMaxVoltage() / energyCost));
 
             var result = GTRecipeModifiers.accurateParallel(machine, recipe, parallelLimit, false);
             recipe = result.getA() == recipe ? result.getA().copy() : result.getA();
 
             int parallelValue = result.getB();
-            recipe.duration = Math.max(1, 256 * parallelValue / parallelLimit);
-            var eut = parallelValue * Math.max(1L, 16 / coilMachine.getCoilType().getEnergyDiscount());
+            recipe.duration = Math.max(1, 256 * parallelValue / maxParallel);
+            long eut = parallelValue * energyCost;
             recipe.tickInputs.put(EURecipeCapability.CAP, List.of(new Content(eut, 1.0f, null, null)));
             return recipe;
         }

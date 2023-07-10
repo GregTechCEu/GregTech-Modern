@@ -71,6 +71,8 @@ public class MachineDefinition implements Supplier<IMachineBlock> {
     private int defaultPaintingColor;
     @Setter @Getter
     private BiFunction<MetaMachine, GTRecipe, GTRecipe> recipeModifier;
+    @Setter @Getter
+    private boolean alwaysTryModifyRecipe;
     @Setter
     @Getter
     private IRenderer renderer;

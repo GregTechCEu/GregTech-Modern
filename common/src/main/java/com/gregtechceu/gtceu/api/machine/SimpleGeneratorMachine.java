@@ -72,16 +72,11 @@ public class SimpleGeneratorMachine extends WorkableTieredMachine implements IFa
         if (machine instanceof SimpleGeneratorMachine generator) {
             var EUt = RecipeHelper.getOutputEUt(recipe);
             if (EUt > 0) {
-                var maxParallel = (int)(Math.min(generator.energyContainer.getOutputVoltage(), GTValues.V[generator.getOverclockTier()]) / EUt);
+                var maxParallel = (int)(Math.min(generator.getOverclockVoltage(), GTValues.V[generator.getOverclockTier()]) / EUt);
                 return GTRecipeModifiers.fastParallel(generator, recipe, maxParallel, false).getA();
             }
         }
         return null;
-    }
-
-    @Override
-    public boolean alwaysTryModifyRecipe() {
-        return true;
     }
 
     @Override

@@ -31,6 +31,7 @@ import net.minecraft.world.entity.player.Player;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.ArrayList;
 import java.util.List;
 
 @ParametersAreNonnullByDefault
@@ -57,7 +58,10 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
             if (handler instanceof NotifiableFluidTank tank) {
                 if (tank.isFluidValid(0, GTMaterials.Steam.getFluid(1))) {
                     itr.remove();
-                    capabilitiesProxy.put(IO.IN, EURecipeCapability.CAP, List.of(new SteamEnergyRecipeHandler(tank, CONVERSION_RATE)));
+                    if (!capabilitiesProxy.contains(IO.IN, EURecipeCapability.CAP)) {
+                        capabilitiesProxy.put(IO.IN, EURecipeCapability.CAP, new ArrayList<>());
+                    }
+                    capabilitiesProxy.get(IO.IN, EURecipeCapability.CAP).add(new SteamEnergyRecipeHandler(tank, CONVERSION_RATE));
                     return;
                 }
             }
@@ -76,11 +80,6 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
         eut = (long) Math.min(32, Math.ceil(eut * 1.33));
         recipe.tickInputs.put(EURecipeCapability.CAP, List.of(new Content(eut, 1.0f, null, null)));
         return recipe;
-    }
-
-    @Override
-    public boolean alwaysTryModifyRecipe() {
-        return true;
     }
 
     @Override
