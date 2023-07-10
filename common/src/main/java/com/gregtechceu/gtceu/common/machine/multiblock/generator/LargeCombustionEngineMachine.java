@@ -3,6 +3,9 @@ package com.gregtechceu.gtceu.common.machine.multiblock.generator;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.gui.fancy.IFancyTooltip;
+import com.gregtechceu.gtceu.api.gui.fancy.TooltipsPanel;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
@@ -17,10 +20,15 @@ import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import lombok.Getter;
 import lombok.val;
+import net.minecraft.ChatFormatting;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
 /**
@@ -28,6 +36,8 @@ import java.util.List;
  * @date 2023/7/9
  * @implNote LargeCombustionEngineMachine
  */
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMachine implements ITieredMachine {
     private static final FluidStack OXYGEN_STACK = GTMaterials.Oxygen.getFluid(20 * FluidHelper.getBucket() / 1000);
     private static final FluidStack LIQUID_OXYGEN_STACK = GTMaterials.LiquidOxygen.getFluid(80 * FluidHelper.getBucket() / 1000);
@@ -43,7 +53,7 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
         this.tier = tier;
     }
 
-    private boolean checkIntakesObstructed() {
+    private boolean isIntakesObstructed() {
         var facing = this.getFrontFacing();
         boolean permuteXZ = facing.getAxis() == Direction.Axis.Z;
         var centerPos = this.getPos().relative(facing);
@@ -63,6 +73,10 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
 
     private boolean isExtreme() {
         return getTier() > GTValues.EV;
+    }
+
+    public boolean isBoostAllowed() {
+        return getMaxVoltage() >= GTValues.V[getTier() + 1];
     }
 
     //////////////////////////////////////
@@ -90,7 +104,7 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
         if (machine instanceof LargeCombustionEngineMachine engineMachine) {
             var EUt = RecipeHelper.getOutputEUt(recipe);
             // has lubricant
-            if (EUt > 0 && engineMachine.getLubricantRecipe().matchRecipe(engineMachine).isSuccess() && !engineMachine.checkIntakesObstructed()) {
+            if (EUt > 0 && engineMachine.getLubricantRecipe().matchRecipe(engineMachine).isSuccess() && !engineMachine.isIntakesObstructed()) {
                 var maxParallel = (int) (engineMachine.getOverclockVoltage() / EUt); // get maximum parallel
                 var parallelResult = GTRecipeModifiers.fastParallel(engineMachine, recipe, maxParallel, false);
                 if (engineMachine.isOxygenBoosted) { // boost production
@@ -118,7 +132,7 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
             }
         }
         // check boost fluid
-        if ((totalContinuousRunningTime == 1 || totalContinuousRunningTime % 20 == 0) && getMaxVoltage() >= GTValues.V[getTier() + 1]) {
+        if ((totalContinuousRunningTime == 1 || totalContinuousRunningTime % 20 == 0) && isBoostAllowed()) {
             var boosterRecipe = getBoostRecipe();
             this.isOxygenBoosted = boosterRecipe.matchRecipe(this).isSuccess() && boosterRecipe.handleRecipeIO(IO.IN, this);
         }
@@ -127,5 +141,44 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
     @Override
     public boolean dampingWhenWaiting() {
         return false;
+    }
+
+    //////////////////////////////////////
+    //*******        GUI        ********//
+    //////////////////////////////////////
+
+    @Override
+    public void addDisplayText(List<Component> textList) {
+        super.addDisplayText(textList);
+        if (isFormed()) {
+            if (isBoostAllowed()) {
+                if (!isExtreme()) {
+                    if (isOxygenBoosted) {
+                        textList.add(Component.translatable("gtceu.multiblock.large_combustion_engine.oxygen_boosted"));
+                    } else {
+                        textList.add(Component.translatable("gtceu.multiblock.large_combustion_engine.supply_oxygen_to_boost"));
+                    }
+                }
+                else {
+                    if (isOxygenBoosted) {
+                        textList.add(Component.translatable("gtceu.multiblock.large_combustion_engine.liquid_oxygen_boosted"));
+                    } else {
+                        textList.add(Component.translatable("gtceu.multiblock.large_combustion_engine.supply_liquid_oxygen_to_boost"));
+                    }
+                }
+            } else {
+                textList.add(Component.translatable("gtceu.multiblock.large_combustion_engine.boost_disallowed"));
+            }
+        }
+    }
+
+    @Override
+    public void attachTooltips(TooltipsPanel tooltipsPanel) {
+        super.attachTooltips(tooltipsPanel);
+        tooltipsPanel.attachTooltips(new IFancyTooltip.Basic(
+                () -> GuiTextures.INDICATOR_NO_STEAM.get(false),
+                () -> List.of(Component.translatable("gtceu.multiblock.large_combustion_engine.obstructed").setStyle(Style.EMPTY.withColor(ChatFormatting.RED))),
+                this::isIntakesObstructed,
+                () -> null));
     }
 }

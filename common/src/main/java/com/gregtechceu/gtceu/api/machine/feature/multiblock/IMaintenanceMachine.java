@@ -6,14 +6,12 @@ import com.gregtechceu.gtceu.api.gui.fancy.IFancyTooltip;
 import com.gregtechceu.gtceu.api.gui.fancy.TooltipsPanel;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import lombok.val;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public interface IMaintenanceMachine extends IMultiPart {
     int MINIMUM_MAINTENANCE_TIME = 3456000; // 48 real-life hours = 3456000 ticks
@@ -161,43 +159,30 @@ public interface IMaintenanceMachine extends IMultiPart {
     @Override
     default void attachTooltips(TooltipsPanel tooltipsPanel) {
         if (ConfigHolder.INSTANCE.machines.enableMaintenance) {
-            tooltipsPanel.attachTooltips(new IFancyTooltip() {
-                @Override
-                public IGuiTexture getFancyTooltipIcon() {
-                    return GuiTextures.MAINTENANCE_ICON;
-                }
+            tooltipsPanel.attachTooltips(new IFancyTooltip.Basic(() -> GuiTextures.MAINTENANCE_ICON, () -> {
+                val tooltips = new ArrayList<Component>();
+                tooltips.add(Component.translatable("gtceu.multiblock.universal.has_problems_header").setStyle(Style.EMPTY.withColor(ChatFormatting.RED)));
 
-                @Override
-                public List<Component> getFancyTooltip() {
-                    val tooltips = new ArrayList<Component>();
-                    tooltips.add(Component.translatable("gtceu.multiblock.universal.has_problems_header").setStyle(Style.EMPTY.withColor(ChatFormatting.RED)));
+                if ((getMaintenanceProblems() & 1) == 0)
+                    tooltips.add(Component.translatable("gtceu.multiblock.universal.problem.wrench", "\n"));
 
-                    if ((getMaintenanceProblems() & 1) == 0)
-                        tooltips.add(Component.translatable("gtceu.multiblock.universal.problem.wrench", "\n"));
+                if (((getMaintenanceProblems() >> 1) & 1) == 0)
+                    tooltips.add(Component.translatable("gtceu.multiblock.universal.problem.screwdriver", "\n"));
 
-                    if (((getMaintenanceProblems() >> 1) & 1) == 0)
-                        tooltips.add(Component.translatable("gtceu.multiblock.universal.problem.screwdriver", "\n"));
+                if (((getMaintenanceProblems() >> 2) & 1) == 0)
+                    tooltips.add(Component.translatable("gtceu.multiblock.universal.problem.soft_mallet", "\n"));
 
-                    if (((getMaintenanceProblems() >> 2) & 1) == 0)
-                        tooltips.add(Component.translatable("gtceu.multiblock.universal.problem.soft_mallet", "\n"));
+                if (((getMaintenanceProblems() >> 3) & 1) == 0)
+                    tooltips.add(Component.translatable("gtceu.multiblock.universal.problem.hard_hammer", "\n"));
 
-                    if (((getMaintenanceProblems() >> 3) & 1) == 0)
-                        tooltips.add(Component.translatable("gtceu.multiblock.universal.problem.hard_hammer", "\n"));
+                if (((getMaintenanceProblems() >> 4) & 1) == 0)
+                    tooltips.add(Component.translatable("gtceu.multiblock.universal.problem.wire_cutter", "\n"));
 
-                    if (((getMaintenanceProblems() >> 4) & 1) == 0)
-                        tooltips.add(Component.translatable("gtceu.multiblock.universal.problem.wire_cutter", "\n"));
+                if (((getMaintenanceProblems() >> 5) & 1) == 0)
+                    tooltips.add(Component.translatable("gtceu.multiblock.universal.problem.crowbar", "\n"));
 
-                    if (((getMaintenanceProblems() >> 5) & 1) == 0)
-                        tooltips.add(Component.translatable("gtceu.multiblock.universal.problem.crowbar", "\n"));
-
-                    return tooltips;
-                }
-
-                @Override
-                public boolean showFancyTooltip() {
-                    return hasMaintenanceProblems();
-                }
-            });
+                return tooltips;
+            }, this::hasMaintenanceProblems, () -> null));
         }
     }
 }

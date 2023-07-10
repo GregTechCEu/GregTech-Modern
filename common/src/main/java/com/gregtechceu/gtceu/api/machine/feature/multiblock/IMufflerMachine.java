@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.IFancyTooltip;
 import com.gregtechceu.gtceu.api.gui.fancy.TooltipsPanel;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import lombok.val;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.particles.ParticleTypes;
@@ -82,23 +81,10 @@ public interface IMufflerMachine extends IMultiPart {
 
     @Override
     default void attachTooltips(TooltipsPanel tooltipsPanel) {
-        tooltipsPanel.attachTooltips(new IFancyTooltip() {
-            @Override
-            public IGuiTexture getFancyTooltipIcon() {
-                return GuiTextures.INDICATOR_NO_STEAM.get(false);
-            }
-
-            @Override
-            public List<Component> getFancyTooltip() {
-                val tooltips = new ArrayList<Component>();
-                tooltips.add(Component.translatable("gtceu.multiblock.universal.muffler_obstructed").setStyle(Style.EMPTY.withColor(ChatFormatting.RED)));
-                return tooltips;
-            }
-
-            @Override
-            public boolean showFancyTooltip() {
-                return !isFrontFaceFree();
-            }
-        });
+        tooltipsPanel.attachTooltips(new IFancyTooltip.Basic(
+                () -> GuiTextures.INDICATOR_NO_STEAM.get(false),
+                () -> List.of(Component.translatable("gtceu.multiblock.universal.muffler_obstructed").setStyle(Style.EMPTY.withColor(ChatFormatting.RED))),
+                () -> !isFrontFaceFree(),
+                () -> null));
     }
 }

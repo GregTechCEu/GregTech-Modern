@@ -11,10 +11,13 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.item.DrumMachineItem;
 import com.gregtechceu.gtceu.api.machine.*;
+import com.gregtechceu.gtceu.api.machine.feature.multiblock.IRotorHolderMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.*;
 import com.gregtechceu.gtceu.api.machine.steam.SimpleSteamMachine;
 import com.gregtechceu.gtceu.api.machine.steam.SteamBoilerMachine;
 import com.gregtechceu.gtceu.api.pattern.Predicates;
+import com.gregtechceu.gtceu.api.pattern.TraceabilityPredicate;
+import com.gregtechceu.gtceu.api.pattern.predicates.SimplePredicate;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
@@ -28,6 +31,7 @@ import com.gregtechceu.gtceu.common.machine.electric.PumpMachine;
 import com.gregtechceu.gtceu.common.machine.electric.TransformerMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.*;
 import com.gregtechceu.gtceu.common.machine.multiblock.generator.LargeCombustionEngineMachine;
+import com.gregtechceu.gtceu.common.machine.multiblock.generator.LargeTurbineMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.*;
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.CokeOvenMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.PrimitiveBlastFurnaceMachine;
@@ -57,6 +61,7 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
+import com.lowdragmc.lowdraglib.utils.BlockInfo;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.ints.Int2LongFunction;
 import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
@@ -567,6 +572,18 @@ public class GTMachines {
                     .register(),
             ELECTRIC_TIERS);
 
+    public static final MachineDefinition[] ROTOR_HOLDER = registerTieredMachines("rotor_holder",
+            RotorHolderPartMachine::new,
+            (tier, builder) -> builder
+                    .langValue("%s Rotor Holder".formatted(VNF[tier]))
+                    .rotationState(RotationState.ALL)
+                    .abilities(PartAbility.ROTOR_HOLDER)
+                    .renderer(() -> new RotorHolderMachineRenderer(tier))
+                    .tooltips(LangHandler.getFromMultiLang("gtceu.machine.muffler_hatch.tooltip", 0),
+                            LangHandler.getFromMultiLang("gtceu.machine.muffler_hatch.tooltip", 1),
+                            Component.translatable("gtceu.universal.disabled"))
+                    .register(),
+            HV, EV, IV, LuV, ZPM, UV);
 
 
     //////////////////////////////////////
@@ -1121,9 +1138,33 @@ public class GTMachines {
                     GTCEu.id("block/multiblock/cleanroom"), false)
             .register();
 
-    public final static MultiblockMachineDefinition LARGE_COMBUSTION_ENGINE = registerLargeCombustionEngine("large_combustion_engine", EV, CASING_TITANIUM_STABLE, CASING_TITANIUM_GEARBOX, CASING_ENGINE_INTAKE);
+    public final static MultiblockMachineDefinition LARGE_COMBUSTION_ENGINE = registerLargeCombustionEngine("large_combustion_engine", EV,
+            CASING_TITANIUM_STABLE, CASING_TITANIUM_GEARBOX, CASING_ENGINE_INTAKE,
+            GTCEu.id("block/casings/solid/machine_casing_stable_titanium"),
+            GTCEu.id("block/multiblock/generator/large_combustion_engine"));
 
-    public final static MultiblockMachineDefinition EXTREME_COMBUSTION_ENGINE = registerLargeCombustionEngine("extreme_combustion_engine", IV, CASING_TUNGSTENSTEEL_ROBUST, CASING_TUNGSTENSTEEL_GEARBOX, CASING_EXTREME_ENGINE_INTAKE);
+    public final static MultiblockMachineDefinition EXTREME_COMBUSTION_ENGINE = registerLargeCombustionEngine("extreme_combustion_engine", IV,
+            CASING_TUNGSTENSTEEL_ROBUST, CASING_TUNGSTENSTEEL_GEARBOX, CASING_EXTREME_ENGINE_INTAKE,
+            GTCEu.id("block/casings/solid/machine_casing_robust_tungstensteel"),
+            GTCEu.id("block/multiblock/generator/extreme_combustion_engine"));
+
+    public final static MultiblockMachineDefinition LARGE_STEAM_TURBINE = registerLargeTurbine("steam_large_turbine", HV,
+            GTRecipeTypes.STEAM_TURBINE_FUELS,
+            CASING_STEEL_TURBINE, CASING_STEEL_GEARBOX,
+            GTCEu.id("block/casings/solid/machine_casing_solid_steel"),
+            GTCEu.id("block/multiblock/generator/large_steam_turbine"));
+
+    public final static MultiblockMachineDefinition LARGE_GAS_TURBINE = registerLargeTurbine("gas_large_turbine", EV,
+            GTRecipeTypes.GAS_TURBINE_FUELS,
+            CASING_STAINLESS_CLEAN, CASING_STAINLESS_STEEL_GEARBOX,
+            GTCEu.id("block/casings/solid/machine_casing_clean_stainless_steel"),
+            GTCEu.id("block/multiblock/generator/large_gas_turbine"));
+
+    public final static MultiblockMachineDefinition LARGE_PLASMA_TURBINE = registerLargeTurbine("plasma_large_turbine", IV,
+            GTRecipeTypes.PLASMA_GENERATOR_FUELS,
+            CASING_TUNGSTENSTEEL_TURBINE, CASING_TUNGSTENSTEEL_GEARBOX,
+            GTCEu.id("block/casings/solid/machine_casing_robust_tungstensteel"),
+            GTCEu.id("block/multiblock/generator/large_plasma_turbine"));
 
     //////////////////////////////////////
     //**********     Misc     **********//
@@ -1263,7 +1304,7 @@ public class GTMachines {
                 .register();
     }
 
-    public static MultiblockMachineDefinition registerLargeCombustionEngine(String name, int tier, Supplier<? extends Block> casing, Supplier<? extends Block> gear, Supplier<? extends Block> intake) {
+    public static MultiblockMachineDefinition registerLargeCombustionEngine(String name, int tier, Supplier<? extends Block> casing, Supplier<? extends Block> gear, Supplier<? extends Block> intake, ResourceLocation casingTexture, ResourceLocation overlayModel) {
         return REGISTRATE.multiblock(name, holder -> new LargeCombustionEngineMachine(holder, tier))
                 .rotationState(RotationState.NON_Y_AXIS)
                 .recipeType(GTRecipeTypes.COMBUSTION_GENERATOR_FUELS)
@@ -1284,11 +1325,7 @@ public class GTMachines {
                         .where('Y', controller(blocks(definition.getBlock())))
                         .build())
                 .recoveryItems(() -> new ItemLike[]{GTItems.MATERIAL_ITEMS.get(TagPrefix.dustTiny, GTMaterials.Ash).get()})
-                .workableCasingRenderer(
-                        tier > EV ? GTCEu.id("block/casings/solid/machine_casing_robust_tungstensteel") :
-                                GTCEu.id("block/casings/solid/machine_casing_stable_titanium"),
-                        tier > EV ? GTCEu.id("block/multiblock/generator/extreme_combustion_engine") :
-                                GTCEu.id("block/multiblock/generator/large_combustion_engine"), false)
+                .workableCasingRenderer(casingTexture, overlayModel, false)
                 .tooltips(
                         Component.translatable("gtceu.universal.tooltip.base_production_eut", V[tier]),
                         Component.translatable("gtceu.universal.tooltip.uses_per_hour_lubricant", FluidHelper.getBucket()),
@@ -1297,6 +1334,37 @@ public class GTMachines {
                 .register();
     }
 
+    public static MultiblockMachineDefinition registerLargeTurbine(String name, int tier, GTRecipeType recipeType, Supplier<? extends Block> casing, Supplier<? extends Block> gear, ResourceLocation casingTexture, ResourceLocation overlayModel) {
+        return REGISTRATE.multiblock(name, holder -> new LargeTurbineMachine(holder, tier))
+                .rotationState(RotationState.NON_Y_AXIS)
+                .recipeType(recipeType)
+                .recipeModifier(LargeTurbineMachine::recipeModifier, true)
+                .appearanceBlock(casing)
+                .pattern(definition -> FactoryBlockPattern.start()
+                        .aisle("CCCC", "CHHC", "CCCC")
+                        .aisle("CHHC", "RGGR", "CHHC")
+                        .aisle("CCCC", "CSHC", "CCCC")
+                        .where('S', controller(blocks(definition.getBlock())))
+                        .where('G', blocks(gear.get()))
+                        .where('C', blocks(casing.get()))
+                        .where('R', new TraceabilityPredicate(new SimplePredicate(state -> MetaMachine.getMachine(state.getWorld(), state.getPos()) instanceof IRotorHolderMachine rotorHolder &&
+                                state.getWorld().getBlockState(state.getPos().relative(rotorHolder.self().getFrontFacing())).isAir(),
+                                () -> PartAbility.ROTOR_HOLDER.getAllBlocks().stream().map(BlockInfo::fromBlock).toArray(BlockInfo[]::new)))
+                                .addTooltips(Component.translatable("gtceu.multiblock.pattern.clear_amount_3"))
+                                .addTooltips(Component.translatable("gregtech.multiblock.pattern.error.limited.1", VN[tier]))
+                                .setExactLimit(1)
+                                .or(abilities(PartAbility.OUTPUT_ENERGY)).setExactLimit(1))
+                        .where('H', blocks(casing.get())
+                                .or(autoAbilities(definition.getRecipeType(), false, false, true, true, true, true))
+                                .or(autoAbilities(true, true)))
+                        .build())
+                .recoveryItems(() -> new ItemLike[]{GTItems.MATERIAL_ITEMS.get(TagPrefix.dustTiny, GTMaterials.Ash).get()})
+                .workableCasingRenderer(casingTexture, overlayModel, false)
+                .tooltips(
+                        Component.translatable("gtceu.universal.tooltip.base_production_eut", V[tier] * 2),
+                        Component.translatable("gtceu.multiblock.turbine.efficiency_tooltip", VNF[tier]))
+                .register();
+    }
 
     public static MachineDefinition registerCrate(Material material, int capacity, String lang) {
         boolean wooden = material.hasProperty(PropertyKey.WOOD);
