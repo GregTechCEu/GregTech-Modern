@@ -74,8 +74,8 @@ import static com.gregtechceu.gtceu.api.registry.GTRegistries.REGISTRATE;
 import static net.minecraftforge.client.model.generators.ModelProvider.BLOCK_FOLDER;
 
 /**
- * @author KilaBash
- * @date 2023/2/13
+ * @author KilaBash | StanielDev
+ * @date 2023/2/13  | 7/10/2023
  * @implNote GTBlocks
  */
 public class GTBlocks {
@@ -288,43 +288,52 @@ public class GTBlocks {
     static { REGISTRATE.creativeModeTab(() -> GTCreativeModeTabs.DECORATION); }
 
     //////////////////////////////////////
-    //******        Casings        *****//
+    //******    Machine Casings    *****//
     //////////////////////////////////////
 
-    // Machine Casings
-    private static final String defaultMachineCasingDirectory = "block/casings/solid";
-    private static BlockEntry<Block> registerMachineCasing(String id) {
-        return registerMachineCasing(id, GTCEu.id("%s/%s".formatted(defaultMachineCasingDirectory, id)));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    private static BlockEntry<Block> registerMechanicalBlock(String id, ResourceLocation texture) {
+        return registerMechanicalBlock(id, texture, null);
     }
-    private static BlockEntry<Block> registerMachineCasing(String id, ResourceLocation texture) {
-        return REGISTRATE.block(id, p -> (Block) new RendererBlock(p, new TextureOverrideRenderer(new ResourceLocation("block/cube_all"), Map.of("all", texture))))
+    private static BlockEntry<Block> registerMechanicalBlock(String id, ResourceLocation texture, String overrideLang) {
+        var builder = REGISTRATE.block(id, p -> (Block) new RendererBlock(p, new TextureOverrideRenderer(new ResourceLocation("block/cube_all"), Map.of("all", texture))))
                 .initialProperties(() -> Blocks.IRON_BLOCK)
                 .addLayer(() -> RenderType::cutoutMipped)
                 .blockstate(NonNullBiConsumer.noop())
                 .tag(GTToolType.WRENCH.harvestTag, BlockTags.MINEABLE_WITH_PICKAXE)
                 .item(RendererBlockItem::new)
                 .model(NonNullBiConsumer.noop())
-                .build()
-                .register();
+                .build();
+        if (overrideLang != null) { builder.lang(overrideLang); }
+        return builder.register();
     }
-    public static final BlockEntry<Block>
-            STEAM_MACHINE_CASING = registerMachineCasing("steam_machine_casing"),
-            HEATPROOF_MACHINE_CASING = registerMachineCasing("heatproof_machine_casing"),
-            FROSTPROOF_MACHINE_CASING = registerMachineCasing("frostproof_machine_casing"),
-            SOLID_MACHINE_CASING = registerMachineCasing("solid_machine_casing"),
-            CLEAN_MACHINE_CASING = registerMachineCasing("clean_machine_casing"),
-            STABLE_MACHINE_CASING = registerMachineCasing("stable_machine_casing"),
-            ROBUST_MACHINE_CASING = registerMachineCasing("robust_machine_casing"),
-            INERT_MACHINE_CASING = registerMachineCasing("inert_machine_casing"),
-            STURDY_MACHINE_CASING = registerMachineCasing("sturdy_machine_casing");
-
-    // Steam Casings
-    private static final String defaultSteamCasingDirectory = "block/casings/steam";
-    private static BlockEntry<Block> registerSteamCasing(String id) {
-        return registerSteamCasing(id, "%s/%s".formatted(defaultSteamCasingDirectory, id));
+    private static BlockEntry<Block> registerMechanicalBlock(String id, String textures) {
+        return registerMechanicalBlock(id, textures, null);
     }
-    private static BlockEntry<Block> registerSteamCasing(String id, String textures) {
-        return REGISTRATE.block(id, p -> (Block) new RendererBlock(p,
+    private static BlockEntry<Block> registerMechanicalBlock(String id, String textures, String overrideLang) {
+        var builder = REGISTRATE.block(id, p -> (Block) new RendererBlock(p,
                         new TextureOverrideRenderer(new ResourceLocation("block/cube_bottom_top"),
                                 Map.of("bottom",  GTCEu.id("%s_bottom".formatted(textures)),
                                         "top",  GTCEu.id("%s_top".formatted(textures)),
@@ -335,14 +344,78 @@ public class GTBlocks {
                 .tag(GTToolType.WRENCH.harvestTag, BlockTags.MINEABLE_WITH_PICKAXE)
                 .item(RendererBlockItem::new)
                 .model(NonNullBiConsumer.noop())
-                .build()
-                .register();
+                .build();
+        if (overrideLang != null) { builder.lang(overrideLang); }
+        return builder.register();
     }
+
+    // Machine Casings
     public static final BlockEntry<Block>
-            BRONZE_MACHINE_CASING = registerSteamCasing("bronze_machine_casing"),
-            BRONZE_BRICK_CASING = registerSteamCasing("bronze_brick_casing"),
-            STEEL_MACHINE_CASING = registerSteamCasing("steel_machine_casing"),
-            STEEL_BRICK_CASING = registerSteamCasing("steel_brick_casing");
+            STEAM_MACHINE_CASING = registerMechanicalBlock("steam_machine_casing", GTCEu.id("block/casings/solid/steam_machine_casing")),
+            HEATPROOF_MACHINE_CASING = registerMechanicalBlock("heatproof_machine_casing", GTCEu.id("block/casings/solid/heatproof_machine_casing")),
+            FROSTPROOF_MACHINE_CASING = registerMechanicalBlock("frostproof_machine_casing", GTCEu.id("block/casings/solid/frostproof_machine_casing")),
+            SOLID_MACHINE_CASING = registerMechanicalBlock("solid_machine_casing", GTCEu.id("block/casings/solid/solid_machine_casing")),
+            CLEAN_MACHINE_CASING = registerMechanicalBlock("clean_machine_casing", GTCEu.id("block/casings/solid/clean_machine_casing")),
+            STABLE_MACHINE_CASING = registerMechanicalBlock("stable_machine_casing", GTCEu.id("block/casings/solid/stable_machine_casing")),
+            ROBUST_MACHINE_CASING = registerMechanicalBlock("robust_machine_casing", GTCEu.id("block/casings/solid/robust_machine_casing")),
+            INERT_MACHINE_CASING = registerMechanicalBlock("inert_machine_casing", GTCEu.id("block/casings/solid/inert_machine_casing")),
+            STURDY_MACHINE_CASING = registerMechanicalBlock("sturdy_machine_casing", GTCEu.id("block/casings/solid/sturdy_machine_casing"));
+
+    // Gear Boxes
+    public static final BlockEntry<Block>
+            BRONZE_GEARBOX = registerMechanicalBlock("bronze_gearbox", GTCEu.id("block/casings/gearbox/machine_casing_gearbox_bronze")),
+            STEEL_GEARBOX = registerMechanicalBlock("steel_gearbox", GTCEu.id("block/casings/gearbox/machine_casing_gearbox_steel")),
+            STAINLESS_STEEL_GEARBOX = registerMechanicalBlock("stainless_steel_gearbox", GTCEu.id("block/casings/gearbox/machine_casing_gearbox_stainless_steel")),
+            TITANIUM_GEARBOX = registerMechanicalBlock("titanium_gearbox", GTCEu.id("block/casings/gearbox/machine_casing_gearbox_titanium")),
+            TUNGSTENSTEEL_GEARBOX = registerMechanicalBlock("tungstensteel_gearbox", GTCEu.id("block/casings/gearbox/machine_casing_gearbox_tungstensteel"));
+
+    // Turbine Casings
+    public static final BlockEntry<Block>
+            STEEL_TURBINE_CASING = registerMechanicalBlock("steel_turbine_casing", GTCEu.id("block/casings/mechanic/machine_casing_turbine_steel")),
+            TITANIUM_TURBINE_CASING = registerMechanicalBlock("titanium_turbine_casing", GTCEu.id("block/casings/mechanic/machine_casing_turbine_titanium")),
+            STAINLESS_STEEL_TURBINE_CASING = registerMechanicalBlock("stainless_steel_turbine_casing", GTCEu.id("block/casings/mechanic/machine_casing_turbine_stainless_steel")),
+            TUNGSTENSTEEL_TURBINE_CASING = registerMechanicalBlock("tungstensteel_turbine_casing", GTCEu.id("block/casings/mechanic/machine_casing_turbine_tungstensteel"));
+
+    // Pipe Casings
+    public static final BlockEntry<Block>
+            BRONZE_PIPE_CASING = registerMechanicalBlock("bronze_pipe_casing", GTCEu.id("block/casings/pipe/machine_casing_pipe_bronze")),
+            STEEL_PIPE_CASING = registerMechanicalBlock("steel_pipe_casing", GTCEu.id("block/casings/pipe/machine_casing_pipe_steel")),
+            TITANIUM_PIPE_CASING = registerMechanicalBlock("titanium_pipe_casing", GTCEu.id("block/casings/pipe/machine_casing_pipe_titanium")),
+            TUNGSTENSTEEL_PIPE_CASING = registerMechanicalBlock("tungstensteel_pipe_casing", GTCEu.id("block/casings/pipe/machine_casing_pipe_tungstensteel")),
+            PTFE_PIPE_CASING = registerMechanicalBlock("ptfe_pipe_casing", GTCEu.id("block/casings/pipe/machine_casing_pipe_polytetrafluoroethylene"), "PTFE Pipe Casing");
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // Steam Casings
+    public static final BlockEntry<Block>
+            BRONZE_MACHINE_CASING = registerMechanicalBlock("bronze_machine_casing","block/casings/steam/bronze_machine_casing"),
+            BRONZE_BRICK_CASING = registerMechanicalBlock("bronze_brick_casing", "block/casings/steam/bronze_brick_casing"),
+            STEEL_MACHINE_CASING = registerMechanicalBlock("steel_machine_casing", "block/casings/steam/steel_machine_casing"),
+            STEEL_BRICK_CASING = registerMechanicalBlock("steel_brick_casing", "block/casings/steam/steel_brick_casing");
+
+
+
+
+
+
+
 
     // Voltage Casings
     private static final String defaultVoltageCasingDirectory = "block/casings/voltage";
@@ -350,9 +423,9 @@ public class GTBlocks {
         String tierName = GTValues.VN[voltage].toLowerCase();
         return REGISTRATE.block("%s_machine_casing".formatted(tierName), p -> (Block) new RendererBlock(p,
                         new TextureOverrideRenderer( GTCEu.id("block/cube_bottom_top_tintindex"),
-                                Map.of("bottom",  GTCEu.id("%s/%s/bottom".formatted(defaultVoltageCasingDirectory, tierName)),
-                                        "top",  GTCEu.id("%s/%s/top".formatted(defaultVoltageCasingDirectory, tierName)),
-                                        "side",  GTCEu.id("%s/%s/side".formatted(defaultVoltageCasingDirectory, tierName))))))
+                                Map.of("bottom",  GTCEu.id("%s/%s_bottom".formatted(defaultVoltageCasingDirectory, tierName)),
+                                        "top",  GTCEu.id("%s/%s_top".formatted(defaultVoltageCasingDirectory, tierName)),
+                                        "side",  GTCEu.id("%s/%s_side".formatted(defaultVoltageCasingDirectory, tierName))))))
                 .lang("%s Machine Casing".formatted(GTValues.VN[voltage]))
                 .initialProperties(() -> Blocks.IRON_BLOCK)
                 .addLayer(() -> RenderType::cutoutMipped)
@@ -375,24 +448,11 @@ public class GTBlocks {
             MACHINE_CASING_UV = registerVoltageCasing(GTValues.UV),
             MACHINE_CASING_UHV = registerVoltageCasing(GTValues.UHV);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
     // Just Pickaxe Blocks
-    private static BlockEntry<Block> createPickaxeBlock(String id, ResourceLocation texture) {
-        return createPickaxeBlock(id, texture, () -> Blocks.IRON_BLOCK);
+    private static BlockEntry<Block> registerPickaxeBlock(String id, ResourceLocation texture) {
+        return registerPickaxeBlock(id, texture, () -> Blocks.IRON_BLOCK);
     }
-    private static BlockEntry<Block> createPickaxeBlock(String id, ResourceLocation texture, NonNullSupplier<? extends Block> properties) {
+    private static BlockEntry<Block> registerPickaxeBlock(String id, ResourceLocation texture, NonNullSupplier<? extends Block> properties) {
         return REGISTRATE.block(id, p -> (Block) new RendererBlock(p, new TextureOverrideRenderer(new ResourceLocation("block/cube_all"), Map.of("all", texture))))
                 .initialProperties(properties)
                 .addLayer(() -> RenderType::cutoutMipped)
@@ -404,12 +464,12 @@ public class GTBlocks {
                 .register();
     }
     public static final BlockEntry<Block>
-            COKE_OVEN_BRICKS = createPickaxeBlock("coke_oven_bricks", GTCEu.id("block/casings/solid/coke_oven_bricks")),
-            FIREBRICKS = createPickaxeBlock("firebricks", GTCEu.id("block/casings/solid/firebricks")),
-            TEMPERED_GLASS = createPickaxeBlock("tempered_glass", GTCEu.id("block/casings/transparent/tempered_glass"), () -> Blocks.GLASS),
-            LAMINATED_GLASS = createPickaxeBlock("laminated_glass", GTCEu.id("block/casings/transparent/laminated_glass"), () -> Blocks.GLASS);
-    public static final BlockEntry<Block> PLASTCRETE = createPickaxeBlock("plascrete", GTCEu.id("block/casings/cleanroom/plascrete"));
-    public static final BlockEntry<Block> CLEANROOM_GLASS = createPickaxeBlock("cleanroom_glass", GTCEu.id("block/casings/transparent/cleanroom_glass"), () -> Blocks.GLASS);
+            COKE_OVEN_BRICKS = registerPickaxeBlock("coke_oven_bricks", GTCEu.id("block/casings/solid/coke_oven_bricks")),
+            FIREBRICKS = registerPickaxeBlock("firebricks", GTCEu.id("block/casings/solid/firebricks")),
+            TEMPERED_GLASS = registerPickaxeBlock("tempered_glass", GTCEu.id("block/casings/transparent/tempered_glass"), () -> Blocks.GLASS),
+            LAMINATED_GLASS = registerPickaxeBlock("laminated_glass", GTCEu.id("block/casings/transparent/laminated_glass"), () -> Blocks.GLASS),
+            PLASTCRETE = registerPickaxeBlock("plascrete", GTCEu.id("block/casings/cleanroom/plascrete")),
+            CLEANROOM_GLASS = registerPickaxeBlock("cleanroom_glass", GTCEu.id("block/casings/transparent/cleanroom_glass"), () -> Blocks.GLASS);
 
 
 
@@ -421,92 +481,6 @@ public class GTBlocks {
 
 
 
-
-
-    public static final BlockEntry<ActiveBlock> CASING_ENGINE_INTAKE = createActiveCasing("engine_intake_casing", "block/variant/engine_intake");
-    public static final BlockEntry<ActiveBlock> CASING_EXTREME_ENGINE_INTAKE = createActiveCasing("extreme_engine_intake_casing", "block/variant/extreme_engine_intake");
-
-
-
-
-
-
-
-
-
-
-
-    // Cleanroom
-    public static final Map<IFilterType, Supplier<Block>> ALL_FILTERS = new HashMap<>();
-
-    public static final BlockEntry<Block> FILTER_CASING = createCleanroomFilter(CleanroomFilterType.FILTER_CASING);
-    public static final BlockEntry<Block> FILTER_CASING_STERILE = createCleanroomFilter(CleanroomFilterType.FILTER_CASING_STERILE);
-
-
-
-
-
-
-
-
-
-
-    private static BlockEntry<Block> createCasingBlock(String id, ResourceLocation texture) {
-        return createCasingBlock(id, texture, () -> Blocks.IRON_BLOCK);
-    }
-    private static BlockEntry<Block> createCasingBlock(String id, ResourceLocation texture, NonNullSupplier<? extends Block> properties) {
-        return REGISTRATE.block(id, p -> (Block) new RendererBlock(p, new TextureOverrideRenderer(new ResourceLocation("block/cube_all"), Map.of("all", texture))))
-                .initialProperties(properties)
-                .addLayer(() -> RenderType::cutoutMipped)
-                .blockstate(NonNullBiConsumer.noop())
-                .tag(GTToolType.WRENCH.harvestTag, BlockTags.MINEABLE_WITH_PICKAXE)
-                .item(RendererBlockItem::new)
-                .model(NonNullBiConsumer.noop())
-                .build()
-                .register();
-    }
-
-    // Assembly Line Casings
-    public static final BlockEntry<Block> ASSEMBLY_LINE_GRATING = createCasingBlock("assembly_line_grating", GTCEu.id("block/casings/pipe/machine_casing_grate"));
-    public static final BlockEntry<Block> ASSEMBLY_LINE_CASING = createCasingBlock("assembly_line_casing", GTCEu.id("block/casings/mechanic/machine_casing_assembly_control"));
-    public static final BlockEntry<ActiveBlock> ASSEMBLY_LINE_UNIT = createActiveCasing("assembly_line_unit", "block/variant/assembly_line");
-
-    // Gear Boxes
-    public static final BlockEntry<Block> BRONZE_GEARBOX = createCasingBlock("bronze_gearbox", GTCEu.id("block/casings/gearbox/machine_casing_gearbox_bronze"));
-    public static final BlockEntry<Block> STEEL_GEARBOX = createCasingBlock("steel_gearbox", GTCEu.id("block/casings/gearbox/machine_casing_gearbox_steel"));
-    public static final BlockEntry<Block> STAINLESS_STEEL_GEARBOX = createCasingBlock("stainless_steel_gearbox", GTCEu.id("block/casings/gearbox/machine_casing_gearbox_stainless_steel"));
-    public static final BlockEntry<Block> TITANIUM_GEARBOX = createCasingBlock("titanium_gearbox", GTCEu.id("block/casings/gearbox/machine_casing_gearbox_titanium"));
-    public static final BlockEntry<Block> TUNGSTENSTEEL_GEARBOX = createCasingBlock("tungstensteel_gearbox", GTCEu.id("block/casings/gearbox/machine_casing_gearbox_tungstensteel"));
-
-    // Turbine Casings
-    public static final BlockEntry<Block> STEEL_TURBINE_CASING = createCasingBlock("steel_turbine_casing", GTCEu.id("block/casings/mechanic/machine_casing_turbine_steel"));
-    public static final BlockEntry<Block> TITANIUM_TURBINE_CASING = createCasingBlock("titanium_turbine_casing", GTCEu.id("block/casings/mechanic/machine_casing_turbine_titanium"));
-    public static final BlockEntry<Block> STAINLESS_STEEL_TURBINE_CASING = createCasingBlock("stainless_steel_turbine_casing", GTCEu.id("block/casings/mechanic/machine_casing_turbine_stainless_steel"));
-    public static final BlockEntry<Block> TUNGSTENSTEEL_TURBINE_CASING = createCasingBlock("tungstensteel_turbine_casing", GTCEu.id("block/casings/mechanic/machine_casing_turbine_tungstensteel"));
-
-    // Pipe casings
-    private static BlockEntry<Block> createPipeCasingBlock(String name, ResourceLocation texture) {
-        return createPipeCasingBlock(name, texture, () -> Blocks.IRON_BLOCK);
-    }
-    private static BlockEntry<Block> createPipeCasingBlock(String name, ResourceLocation texture, NonNullSupplier<? extends Block> properties) {
-        return REGISTRATE.block("%s_pipe_casing".formatted(name.toLowerCase()), p -> (Block) new RendererBlock(p,
-                        new TextureOverrideRenderer(new ResourceLocation("block/cube_all"),
-                                Map.of("all", texture))))
-                .lang("%s Pipe Casing".formatted(name))
-                .initialProperties(properties)
-                .addLayer(() -> RenderType::cutoutMipped)
-                .blockstate(NonNullBiConsumer.noop())
-                .tag(GTToolType.WRENCH.harvestTag, BlockTags.MINEABLE_WITH_PICKAXE)
-                .item(RendererBlockItem::new)
-                .model(NonNullBiConsumer.noop())
-                .build()
-                .register();
-    }
-    public static final BlockEntry<Block> BRONZE_PIPE_CASING = createCasingBlock("bronze_pipe_casing", GTCEu.id("block/casings/pipe/machine_casing_pipe_bronze"));
-    public static final BlockEntry<Block> STEEL_PIPE_CASING = createCasingBlock("steel_pipe_casing", GTCEu.id("block/casings/pipe/machine_casing_pipe_steel"));
-    public static final BlockEntry<Block> TITANIUM_PIPE_CASING = createCasingBlock("titanium_pipe_casing", GTCEu.id("block/casings/pipe/machine_casing_pipe_titanium"));
-    public static final BlockEntry<Block> TUNGSTENSTEEL_PIPE_CASING = createCasingBlock("tungstensteel_pipe_casing", GTCEu.id("block/casings/pipe/machine_casing_pipe_tungstensteel"));
-    public static final BlockEntry<Block> PTFE_PIPE_CASING = createPipeCasingBlock("PTFE", GTCEu.id("block/casings/pipe/machine_casing_pipe_polytetrafluoroethylene"));
 
     // The Pump Deck
     public static final BlockEntry<Block> PUMP_DECK = REGISTRATE.block("pump_deck", p -> (Block) new RendererBlock(p,
@@ -523,10 +497,6 @@ public class GTBlocks {
             .model(NonNullBiConsumer.noop())
             .build()
             .register();
-
-    // TODO: Multiblock Tanks
-
-
 
 
     // Hermetic Casings
@@ -652,6 +622,33 @@ public class GTBlocks {
                 .build()
                 .register();
     }
+
+    public static final BlockEntry<ActiveBlock> CASING_ENGINE_INTAKE = createActiveCasing("engine_intake_casing", "block/variant/engine_intake");
+    public static final BlockEntry<ActiveBlock> CASING_EXTREME_ENGINE_INTAKE = createActiveCasing("extreme_engine_intake_casing", "block/variant/extreme_engine_intake");
+    public static final Map<IFilterType, Supplier<Block>> ALL_FILTERS = new HashMap<>();
+    public static final BlockEntry<Block> FILTER_CASING = createCleanroomFilter(CleanroomFilterType.FILTER_CASING);
+    public static final BlockEntry<Block> FILTER_CASING_STERILE = createCleanroomFilter(CleanroomFilterType.FILTER_CASING_STERILE);
+
+    private static BlockEntry<Block> createCasingBlock(String id, ResourceLocation texture) {
+        return createCasingBlock(id, texture, () -> Blocks.IRON_BLOCK);
+    }
+    private static BlockEntry<Block> createCasingBlock(String id, ResourceLocation texture, NonNullSupplier<? extends Block> properties) {
+        return REGISTRATE.block(id, p -> (Block) new RendererBlock(p, new TextureOverrideRenderer(new ResourceLocation("block/cube_all"), Map.of("all", texture))))
+                .initialProperties(properties)
+                .addLayer(() -> RenderType::cutoutMipped)
+                .blockstate(NonNullBiConsumer.noop())
+                .tag(GTToolType.WRENCH.harvestTag, BlockTags.MINEABLE_WITH_PICKAXE)
+                .item(RendererBlockItem::new)
+                .model(NonNullBiConsumer.noop())
+                .build()
+                .register();
+    }
+
+    // Assembly Line Casings
+    public static final BlockEntry<Block> ASSEMBLY_LINE_GRATING = createCasingBlock("assembly_line_grating", GTCEu.id("block/casings/pipe/machine_casing_grate"));
+    public static final BlockEntry<Block> ASSEMBLY_LINE_CASING = createCasingBlock("assembly_line_casing", GTCEu.id("block/casings/mechanic/machine_casing_assembly_control"));
+    public static final BlockEntry<ActiveBlock> ASSEMBLY_LINE_UNIT = createActiveCasing("assembly_line_unit", "block/variant/assembly_line");
+
 
 
 
