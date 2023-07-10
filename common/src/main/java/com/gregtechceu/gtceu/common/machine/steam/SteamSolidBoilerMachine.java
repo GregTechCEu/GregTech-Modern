@@ -51,7 +51,7 @@ public class SteamSolidBoilerMachine extends SteamBoilerMachine  implements IMac
             if (isRemote())  return true;
             return recipeLogic.getRecipeManager().getAllRecipesFor(getRecipeType()).stream().anyMatch(recipe -> {
                 var list = recipe.inputs.getOrDefault(ItemRecipeCapability.CAP, Collections.emptyList());
-                if (list.size() > 0) {
+                if (!list.isEmpty()) {
                     return Arrays.stream(ItemRecipeCapability.CAP.of(list.get(0).content).getItems()).map(ItemStack::getItem).anyMatch(i -> i == item);
                 }
                 return false;

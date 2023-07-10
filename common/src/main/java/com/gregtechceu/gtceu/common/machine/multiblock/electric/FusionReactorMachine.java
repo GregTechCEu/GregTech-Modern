@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
@@ -29,6 +30,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.List;
@@ -134,44 +136,33 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
         }
     }
 
-    @Override
-    public @Nullable GTRecipe getRealRecipe(GTRecipe recipe) {
-        if (RecipeHelper.getRecipeEUtTier(recipe) > getTier() ||
-                !recipe.data.contains("eu_to_start") ||
-                recipe.data.getLong("eu_to_start") > energyContainer.getEnergyCapacity()) {
-            return null;
-        }
-
-        long heatDiff = recipe.data.getLong("eu_to_start") - heat;
-
-        // if the stored heat is >= required energy, recipe is okay to run
-        if (heatDiff <= 0) {
-            return applyOC(recipe);
-        }
-        // if the remaining energy needed is more than stored, do not run
-        if (energyContainer.getEnergyStored() < heatDiff)
-            return null;
-
-        // remove the energy needed
-        energyContainer.removeEnergy(heatDiff);
-        // increase the stored heat
-        heat += heatDiff;
-        updatePreHeatSubscription();
-        return applyOC(recipe);
-    }
-
-    public GTRecipe applyOC(GTRecipe recipe) {
-        return RecipeHelper.applyOverclock(new OverclockingLogic(false) {
-            @Override
-            protected double getOverclockingDurationDivisor() {
-                return 2.0D;
+    @Nullable
+    public static GTRecipe recipeModifier(MetaMachine machine, @Nonnull GTRecipe recipe) {
+        if (machine instanceof FusionReactorMachine fusionReactorMachine) {
+            if (RecipeHelper.getRecipeEUtTier(recipe) > fusionReactorMachine.getTier() ||
+                    !recipe.data.contains("eu_to_start") ||
+                    recipe.data.getLong("eu_to_start") > fusionReactorMachine.energyContainer.getEnergyCapacity()) {
+                return null;
             }
 
-            @Override
-            protected double getOverclockingVoltageMultiplier() {
-                return 2.0D;
+            long heatDiff = recipe.data.getLong("eu_to_start") - fusionReactorMachine.heat;
+
+            // if the stored heat is >= required energy, recipe is okay to run
+            if (heatDiff <= 0) {
+                return RecipeHelper.applyOverclock(new OverclockingLogic(2, 2), recipe, fusionReactorMachine.getMaxVoltage());
             }
-        }, recipe, getMaxVoltage());
+            // if the remaining energy needed is more than stored, do not run
+            if (fusionReactorMachine.energyContainer.getEnergyStored() < heatDiff)
+                return null;
+
+            // remove the energy needed
+            fusionReactorMachine.energyContainer.removeEnergy(heatDiff);
+            // increase the stored heat
+            fusionReactorMachine.heat += heatDiff;
+            fusionReactorMachine.updatePreHeatSubscription();
+            return RecipeHelper.applyOverclock(new OverclockingLogic(2, 2), recipe, fusionReactorMachine.getMaxVoltage());
+        }
+        return null;
     }
 
     public void updateHeat() {

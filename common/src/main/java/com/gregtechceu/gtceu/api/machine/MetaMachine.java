@@ -531,6 +531,11 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
         return tooltips;
     }
 
+    @Override
+    public boolean showFancyTooltip() {
+        return !getFancyTooltip().isEmpty();
+    }
+
     public void onAddFancyInformationTooltip(List<Component> tooltips) {
         getDefinition().getTooltipBuilder().accept(getDefinition().asStack(), tooltips);
         String mainKey = String.format("%s.machine.%s.tooltip", getDefinition().getId().getNamespace(), getDefinition().getId().getPath());

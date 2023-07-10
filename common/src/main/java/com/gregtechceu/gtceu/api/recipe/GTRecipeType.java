@@ -200,7 +200,7 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
         if (!holder.hasProxies() || !isFuelRecipeType()) return Collections.emptyList();
         List<GTRecipe> matches = new ArrayList<>();
         for (GTRecipe recipe : recipeManager.getAllRecipesFor(this)) {
-            if (recipe.isFuel && recipe.matchRecipe(holder).isSuccessed() && recipe.matchTickRecipe(holder).isSuccessed()) {
+            if (recipe.isFuel && recipe.matchRecipe(holder).isSuccess() && recipe.matchTickRecipe(holder).isSuccess()) {
                 matches.add(recipe);
             }
         }
@@ -211,13 +211,13 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
         if (!holder.hasProxies()) return Collections.emptyList();
         List<GTRecipe> matches = new ArrayList<>();
         for (var recipe : recipeManager.getAllRecipesFor(this)) {
-            if (!recipe.isFuel && recipe.matchRecipe(holder).isSuccessed() && recipe.matchTickRecipe(holder).isSuccessed()) {
+            if (!recipe.isFuel && recipe.matchRecipe(holder).isSuccess() && recipe.matchTickRecipe(holder).isSuccess()) {
                 matches.add(recipe);
             }
         }
         for (List<GTRecipe> recipes : proxyRecipes.values()) {
             for (GTRecipe recipe : recipes) {
-                if (!recipe.isFuel && recipe.matchRecipe(holder).isSuccessed() && recipe.matchTickRecipe(holder).isSuccessed()) {
+                if (!recipe.isFuel && recipe.matchRecipe(holder).isSuccess() && recipe.matchTickRecipe(holder).isSuccess()) {
                     matches.add(recipe);
                 }
             }

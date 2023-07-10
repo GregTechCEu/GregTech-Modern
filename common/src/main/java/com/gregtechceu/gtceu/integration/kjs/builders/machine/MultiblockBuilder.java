@@ -9,7 +9,6 @@ import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMa
 import com.gregtechceu.gtceu.api.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
-import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.MultiblockMachineBuilder;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
@@ -117,11 +116,6 @@ public class MultiblockBuilder extends MachineBuilder {
 
     public MultiblockBuilder itemColor(BiFunction<ItemStack, Integer, Integer> itemColor) {
         builder.itemColor(itemColor);
-        return this;
-    }
-
-    public MultiblockBuilder overclockingLogic(OverclockingLogic overclockingLogic) {
-        builder.overclockingLogic(overclockingLogic);
         return this;
     }
 

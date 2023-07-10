@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.UITemplate;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IExplosionMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
@@ -42,6 +43,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
@@ -234,12 +236,14 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine implements
     protected abstract long getBaseSteamOutput();
 
     @Nullable
-    @Override
-    public GTRecipe modifyRecipe(GTRecipe recipe) {
-        recipe = recipe.copy();
-        //recipe.duration *= 12; // maybe?
-        recipe.duration = isHighPressure ? recipe.duration / 2 : recipe.duration;
-        return super.modifyRecipe(recipe);
+    public static GTRecipe recipeModifier(MetaMachine machine, @Nonnull GTRecipe recipe) {
+        if (machine instanceof SteamBoilerMachine boilerMachine) {
+            recipe = recipe.copy();
+            //recipe.duration *= 12; // maybe?
+            recipe.duration = boilerMachine.isHighPressure ? recipe.duration / 2 : recipe.duration;
+            return recipe;
+        }
+        return null;
     }
 
     @Override

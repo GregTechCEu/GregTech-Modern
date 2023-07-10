@@ -70,6 +70,10 @@ public class Predicates {
         return blocks(Arrays.stream(abilities).map(PartAbility::getAllBlocks).flatMap(Collection::stream).toArray(Block[]::new));
     }
 
+    public static TraceabilityPredicate ability(PartAbility ability, int... tiers) {
+        return blocks((tiers.length == 0 ? ability.getAllBlocks() : ability.getBlocks(tiers)).toArray(Block[]::new));
+    }
+
     public static TraceabilityPredicate autoAbilities(GTRecipeType recipeType) {
         return autoAbilities(recipeType, true, true, true, true, true, true);
     }
