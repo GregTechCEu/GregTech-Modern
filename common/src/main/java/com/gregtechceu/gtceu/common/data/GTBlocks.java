@@ -361,11 +361,11 @@ public class GTBlocks {
 
     // Gearboxes
     public static final BlockEntry<Block>
-            BRONZE_GEARBOX = registerMechanicalBlock("bronze_gearbox", GTCEu.id("block/casings/gearbox/machine_casing_gearbox_bronze")),
-            STEEL_GEARBOX = registerMechanicalBlock("steel_gearbox", GTCEu.id("block/casings/gearbox/machine_casing_gearbox_steel")),
-            STAINLESS_STEEL_GEARBOX = registerMechanicalBlock("stainless_steel_gearbox", GTCEu.id("block/casings/gearbox/machine_casing_gearbox_stainless_steel")),
-            TITANIUM_GEARBOX = registerMechanicalBlock("titanium_gearbox", GTCEu.id("block/casings/gearbox/machine_casing_gearbox_titanium")),
-            TUNGSTENSTEEL_GEARBOX = registerMechanicalBlock("tungstensteel_gearbox", GTCEu.id("block/casings/gearbox/machine_casing_gearbox_tungstensteel"));
+            BRONZE_GEARBOX = registerMechanicalBlock("bronze_gearbox", GTCEu.id("block/casings/gearbox/bronze_gearbox_casing")),
+            STEEL_GEARBOX = registerMechanicalBlock("steel_gearbox", GTCEu.id("block/casings/gearbox/steel_gearbox_casing")),
+            STAINLESS_STEEL_GEARBOX = registerMechanicalBlock("stainless_steel_gearbox", GTCEu.id("block/casings/gearbox/stainless_steel_gearbox_casing")),
+            TITANIUM_GEARBOX = registerMechanicalBlock("titanium_gearbox", GTCEu.id("block/casings/gearbox/titanium_gearbox_casing")),
+            TUNGSTENSTEEL_GEARBOX = registerMechanicalBlock("tungstensteel_gearbox", GTCEu.id("block/casings/gearbox/tungstensteel_gearbox_casing"));
 
     // Turbine Casings
     public static final BlockEntry<Block>
@@ -387,9 +387,9 @@ public class GTBlocks {
         String tierName = GTValues.VN[tier].toLowerCase();
         return REGISTRATE.block("%s_hermetic_casing".formatted(tierName), p -> (Block) new RendererBlock(p,
                         new TextureOverrideRenderer( GTCEu.id("block/hermetic_casing"),
-                                Map.of("bot_bottom",  GTCEu.id("block/casings/voltage/%s/bottom".formatted(tierName)),
-                                        "bot_top",  GTCEu.id("block/casings/voltage/%s/top".formatted(tierName)),
-                                        "bot_side",  GTCEu.id("block/casings/voltage/%s/side".formatted(tierName)),
+                                Map.of("bot_bottom",  GTCEu.id("block/casings/voltage/%s_bottom".formatted(tierName)),
+                                        "bot_top",  GTCEu.id("block/casings/voltage/%s_top".formatted(tierName)),
+                                        "bot_side",  GTCEu.id("block/casings/voltage/%s_side".formatted(tierName)),
                                         "top_side",  GTCEu.id("block/casings/hermetic_casing/hermetic_casing_overlay")))))
                 .lang("Hermetic Casing %s".formatted(GTValues.LVT[tier]))
                 .initialProperties(() -> Blocks.IRON_BLOCK)
