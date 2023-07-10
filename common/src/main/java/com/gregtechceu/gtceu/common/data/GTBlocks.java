@@ -82,13 +82,13 @@ public class GTBlocks {
 
     // Externally Accessible Values
     public static Table<TagPrefix, Material, BlockEntry<? extends MaterialBlock>> MATERIAL_BLOCKS;
-    public static Table<TagPrefix, Material, BlockEntry<CableBlock>> CABLE_BLOCKS;
     public static Table<TagPrefix, Material, BlockEntry<FluidPipeBlock>> FLUID_PIPE_BLOCKS;
+    public static Table<TagPrefix, Material, BlockEntry<CableBlock>> CABLE_BLOCKS;
 
     // Table Builders
     private static final ImmutableTable.Builder<TagPrefix, Material, BlockEntry<? extends MaterialBlock>> MATERIAL_BLOCKS_BUILDER = ImmutableTable.builder();
-    private static final ImmutableTable.Builder<TagPrefix, Material, BlockEntry<CableBlock>> CABLE_BLOCKS_BUILDER = ImmutableTable.builder();
     private static final ImmutableTable.Builder<TagPrefix, Material, BlockEntry<FluidPipeBlock>> FLUID_PIPE_BLOCKS_BUILDER = ImmutableTable.builder();
+    private static final ImmutableTable.Builder<TagPrefix, Material, BlockEntry<CableBlock>> CABLE_BLOCKS_BUILDER = ImmutableTable.builder();
 
 
     //////////////////////////////////////
@@ -284,9 +284,6 @@ public class GTBlocks {
     }
 
 
-
-
-
     // Establish Default Tab
     static { REGISTRATE.creativeModeTab(() -> GTCreativeModeTabs.DECORATION); }
 
@@ -295,14 +292,13 @@ public class GTBlocks {
     //////////////////////////////////////
 
     // Machine Casings
-    private static BlockEntry<Block> createMachineCasing(String prefix, ResourceLocation _texture) {
-        return createMachineCasing(prefix, _texture, () -> Blocks.IRON_BLOCK);
+    private static final String defaultMachineCasingDirectory = "block/casings/solid";
+    private static BlockEntry<Block> registerMachineCasing(String id) {
+        return registerMachineCasing(id, GTCEu.id("%s/%s".formatted(defaultMachineCasingDirectory, id)));
     }
-    private static BlockEntry<Block> createMachineCasing(String prefix, ResourceLocation _texture, NonNullSupplier<? extends Block> properties) {
-        var id = "%s".formatted(prefix);
-        var texture = GTCEu.id("block/casings/solid/%s".formatted(id));
+    private static BlockEntry<Block> registerMachineCasing(String id, ResourceLocation texture) {
         return REGISTRATE.block(id, p -> (Block) new RendererBlock(p, new TextureOverrideRenderer(new ResourceLocation("block/cube_all"), Map.of("all", texture))))
-                .initialProperties(properties)
+                .initialProperties(() -> Blocks.IRON_BLOCK)
                 .addLayer(() -> RenderType::cutoutMipped)
                 .blockstate(NonNullBiConsumer.noop())
                 .tag(GTToolType.WRENCH.harvestTag, BlockTags.MINEABLE_WITH_PICKAXE)
@@ -312,23 +308,27 @@ public class GTBlocks {
                 .register();
     }
     public static final BlockEntry<Block>
-            STEAM_MACHINE_CASING = createMachineCasing("steam_machine_casing", GTCEu.id("block/casings/solid/steam_machine_casing")),
-            HEATPROOF_MACHINE_CASING = createMachineCasing("heatproof_machine_casing", GTCEu.id("block/casings/solid/heatproof_machine_casing")),
-            FROSTPROOF_MACHINE_CASING = createMachineCasing("frostproof_machine_casing", GTCEu.id("block/casings/solid/frostproof_machine_casing")),
-            SOLID_MACHINE_CASING = createMachineCasing("solid_machine_casing", GTCEu.id("block/casings/solid/solid_machine_casing")),
-            CLEAN_MACHINE_CASING = createMachineCasing("clean_machine_casing", GTCEu.id("block/casings/solid/clean_machine_casing")),
-            STABLE_MACHINE_CASING = createMachineCasing("stable_machine_casing", GTCEu.id("block/casings/solid/stable_machine_casing")),
-            ROBUST_MACHINE_CASING = createMachineCasing("robust_machine_casing", GTCEu.id("block/casings/solid/robust_machine_casing")),
-            INERT_MACHINE_CASING = createMachineCasing("inert_machine_casing", GTCEu.id("block/casings/solid/inert_machine_casing")),
-            STURDY_MACHINE_CASING = createMachineCasing("sturdy_machine_casing", GTCEu.id("block/casings/solid/sturdy_machine_casing"));
+            STEAM_MACHINE_CASING = registerMachineCasing("steam_machine_casing"),
+            HEATPROOF_MACHINE_CASING = registerMachineCasing("heatproof_machine_casing"),
+            FROSTPROOF_MACHINE_CASING = registerMachineCasing("frostproof_machine_casing"),
+            SOLID_MACHINE_CASING = registerMachineCasing("solid_machine_casing"),
+            CLEAN_MACHINE_CASING = registerMachineCasing("clean_machine_casing"),
+            STABLE_MACHINE_CASING = registerMachineCasing("stable_machine_casing"),
+            ROBUST_MACHINE_CASING = registerMachineCasing("robust_machine_casing"),
+            INERT_MACHINE_CASING = registerMachineCasing("inert_machine_casing"),
+            STURDY_MACHINE_CASING = registerMachineCasing("sturdy_machine_casing");
 
     // Steam Casings
-    private static BlockEntry<Block> createSteamCasing(String name, String material) {
-        return REGISTRATE.block(name, p -> (Block) new RendererBlock(p,
+    private static final String defaultSteamCasingDirectory = "block/casings/steam";
+    private static BlockEntry<Block> registerSteamCasing(String id) {
+        return registerSteamCasing(id, "%s/%s".formatted(defaultSteamCasingDirectory, id));
+    }
+    private static BlockEntry<Block> registerSteamCasing(String id, String textures) {
+        return REGISTRATE.block(id, p -> (Block) new RendererBlock(p,
                         new TextureOverrideRenderer(new ResourceLocation("block/cube_bottom_top"),
-                                Map.of("bottom",  GTCEu.id("block/casings/steam/%s/bottom".formatted(material)),
-                                        "top",  GTCEu.id("block/casings/steam/%s/top".formatted(material)),
-                                        "side",  GTCEu.id("block/casings/steam/%s/side".formatted(material))))))
+                                Map.of("bottom",  GTCEu.id("%s_bottom".formatted(textures)),
+                                        "top",  GTCEu.id("%s_top".formatted(textures)),
+                                        "side",  GTCEu.id("%s_side".formatted(textures))))))
                 .initialProperties(() -> Blocks.IRON_BLOCK)
                 .addLayer(() -> RenderType::cutoutMipped)
                 .blockstate(NonNullBiConsumer.noop())
@@ -338,20 +338,22 @@ public class GTBlocks {
                 .build()
                 .register();
     }
-    public static final BlockEntry<Block> BRONZE_HULL = createSteamCasing("bronze_machine_casing", "bronze");
-    public static final BlockEntry<Block> BRONZE_BRICKS_HULL = createSteamCasing("bronze_brick_casing", "bricked_bronze");
-    public static final BlockEntry<Block> STEEL_HULL = createSteamCasing("steel_machine_casing", "steel");
-    public static final BlockEntry<Block> STEEL_BRICKS_HULL = createSteamCasing("steel_brick_casing", "bricked_steel");
+    public static final BlockEntry<Block>
+            BRONZE_MACHINE_CASING = registerSteamCasing("bronze_machine_casing"),
+            BRONZE_BRICK_CASING = registerSteamCasing("bronze_brick_casing"),
+            STEEL_MACHINE_CASING = registerSteamCasing("steel_machine_casing"),
+            STEEL_BRICK_CASING = registerSteamCasing("steel_brick_casing");
 
     // Voltage Casings
-    private static BlockEntry<Block> createVoltageCasing(int tier) {
-        String tierName = GTValues.VN[tier].toLowerCase();
+    private static final String defaultVoltageCasingDirectory = "block/casings/voltage";
+    private static BlockEntry<Block> registerVoltageCasing(int voltage) {
+        String tierName = GTValues.VN[voltage].toLowerCase();
         return REGISTRATE.block("%s_machine_casing".formatted(tierName), p -> (Block) new RendererBlock(p,
                         new TextureOverrideRenderer( GTCEu.id("block/cube_bottom_top_tintindex"),
-                                Map.of("bottom",  GTCEu.id("block/casings/voltage/%s/bottom".formatted(tierName)),
-                                        "top",  GTCEu.id("block/casings/voltage/%s/top".formatted(tierName)),
-                                        "side",  GTCEu.id("block/casings/voltage/%s/side".formatted(tierName))))))
-                .lang("%s Machine Casing".formatted(GTValues.VN[tier]))
+                                Map.of("bottom",  GTCEu.id("%s/%s/bottom".formatted(defaultVoltageCasingDirectory, tierName)),
+                                        "top",  GTCEu.id("%s/%s/top".formatted(defaultVoltageCasingDirectory, tierName)),
+                                        "side",  GTCEu.id("%s/%s/side".formatted(defaultVoltageCasingDirectory, tierName))))))
+                .lang("%s Machine Casing".formatted(GTValues.VN[voltage]))
                 .initialProperties(() -> Blocks.IRON_BLOCK)
                 .addLayer(() -> RenderType::cutoutMipped)
                 .blockstate(NonNullBiConsumer.noop())
@@ -361,16 +363,61 @@ public class GTBlocks {
                 .build()
                 .register();
     }
-    public static final BlockEntry<Block> MACHINE_CASING_ULV = createVoltageCasing(GTValues.ULV);
-    public static final BlockEntry<Block> MACHINE_CASING_LV = createVoltageCasing(GTValues.LV);
-    public static final BlockEntry<Block> MACHINE_CASING_MV = createVoltageCasing(GTValues.MV);
-    public static final BlockEntry<Block> MACHINE_CASING_HV = createVoltageCasing(GTValues.HV);
-    public static final BlockEntry<Block> MACHINE_CASING_EV = createVoltageCasing(GTValues.EV);
-    public static final BlockEntry<Block> MACHINE_CASING_IV = createVoltageCasing(GTValues.IV);
-    public static final BlockEntry<Block> MACHINE_CASING_LuV = createVoltageCasing(GTValues.LuV);
-    public static final BlockEntry<Block> MACHINE_CASING_ZPM = createVoltageCasing(GTValues.ZPM);
-    public static final BlockEntry<Block> MACHINE_CASING_UV = createVoltageCasing(GTValues.UV);
-    public static final BlockEntry<Block> MACHINE_CASING_UHV = createVoltageCasing(GTValues.UHV);
+    public static final BlockEntry<Block>
+            MACHINE_CASING_ULV = registerVoltageCasing(GTValues.ULV),
+            MACHINE_CASING_LV = registerVoltageCasing(GTValues.LV),
+            MACHINE_CASING_MV = registerVoltageCasing(GTValues.MV),
+            MACHINE_CASING_HV = registerVoltageCasing(GTValues.HV),
+            MACHINE_CASING_EV = registerVoltageCasing(GTValues.EV),
+            MACHINE_CASING_IV = registerVoltageCasing(GTValues.IV),
+            MACHINE_CASING_LuV = registerVoltageCasing(GTValues.LuV),
+            MACHINE_CASING_ZPM = registerVoltageCasing(GTValues.ZPM),
+            MACHINE_CASING_UV = registerVoltageCasing(GTValues.UV),
+            MACHINE_CASING_UHV = registerVoltageCasing(GTValues.UHV);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // Just Pickaxe Blocks
+    private static BlockEntry<Block> createPickaxeBlock(String id, ResourceLocation texture) {
+        return createPickaxeBlock(id, texture, () -> Blocks.IRON_BLOCK);
+    }
+    private static BlockEntry<Block> createPickaxeBlock(String id, ResourceLocation texture, NonNullSupplier<? extends Block> properties) {
+        return REGISTRATE.block(id, p -> (Block) new RendererBlock(p, new TextureOverrideRenderer(new ResourceLocation("block/cube_all"), Map.of("all", texture))))
+                .initialProperties(properties)
+                .addLayer(() -> RenderType::cutoutMipped)
+                .blockstate(NonNullBiConsumer.noop())
+                .tag(BlockTags.MINEABLE_WITH_PICKAXE)
+                .item(RendererBlockItem::new)
+                .model(NonNullBiConsumer.noop())
+                .build()
+                .register();
+    }
+    public static final BlockEntry<Block>
+            COKE_OVEN_BRICKS = createPickaxeBlock("coke_oven_bricks", GTCEu.id("block/casings/solid/coke_oven_bricks")),
+            FIREBRICKS = createPickaxeBlock("firebricks", GTCEu.id("block/casings/solid/firebricks")),
+            TEMPERED_GLASS = createPickaxeBlock("tempered_glass", GTCEu.id("block/casings/transparent/tempered_glass"), () -> Blocks.GLASS),
+            LAMINATED_GLASS = createPickaxeBlock("laminated_glass", GTCEu.id("block/casings/transparent/laminated_glass"), () -> Blocks.GLASS);
+    public static final BlockEntry<Block> PLASTCRETE = createPickaxeBlock("plascrete", GTCEu.id("block/casings/cleanroom/plascrete"));
+    public static final BlockEntry<Block> CLEANROOM_GLASS = createPickaxeBlock("cleanroom_glass", GTCEu.id("block/casings/transparent/cleanroom_glass"), () -> Blocks.GLASS);
+
+
+
+
+
+
+
+
 
 
 
@@ -384,17 +431,17 @@ public class GTBlocks {
 
 
 
-    public static final BlockEntry<Block> TEMPERED_GLASS = createCasingBlock("tempered_glass", GTCEu.id("block/casings/transparent/tempered_glass"), () -> Blocks.GLASS);
+
 
 
 
 
     // Cleanroom
     public static final Map<IFilterType, Supplier<Block>> ALL_FILTERS = new HashMap<>();
-    public static final BlockEntry<Block> PLASTCRETE = createCasingBlock("plascrete", GTCEu.id("block/casings/cleanroom/plascrete"));
+
     public static final BlockEntry<Block> FILTER_CASING = createCleanroomFilter(CleanroomFilterType.FILTER_CASING);
     public static final BlockEntry<Block> FILTER_CASING_STERILE = createCleanroomFilter(CleanroomFilterType.FILTER_CASING_STERILE);
-    public static final BlockEntry<Block> CLEANROOM_GLASS = createCasingBlock("cleanroom_glass", GTCEu.id("block/casings/transparent/cleanroom_glass"), () -> Blocks.GLASS);
+
 
 
 
@@ -418,13 +465,10 @@ public class GTBlocks {
                 .build()
                 .register();
     }
-    public static final BlockEntry<Block> COKE_OVEN_BRICKS = createCasingBlock("coke_oven_bricks", GTCEu.id("block/casings/solid/coke_oven_bricks"));
-    public static final BlockEntry<Block> FIREBRICKS = createCasingBlock("firebricks", GTCEu.id("block/casings/solid/firebricks"));
 
     // Assembly Line Casings
     public static final BlockEntry<Block> ASSEMBLY_LINE_GRATING = createCasingBlock("assembly_line_grating", GTCEu.id("block/casings/pipe/machine_casing_grate"));
     public static final BlockEntry<Block> ASSEMBLY_LINE_CASING = createCasingBlock("assembly_line_casing", GTCEu.id("block/casings/mechanic/machine_casing_assembly_control"));
-    public static final BlockEntry<Block> LAMINATED_GLASS = createCasingBlock("laminated_glass", GTCEu.id("block/casings/transparent/laminated_glass"), () -> Blocks.GLASS);
     public static final BlockEntry<ActiveBlock> ASSEMBLY_LINE_UNIT = createActiveCasing("assembly_line_unit", "block/variant/assembly_line");
 
     // Gear Boxes
