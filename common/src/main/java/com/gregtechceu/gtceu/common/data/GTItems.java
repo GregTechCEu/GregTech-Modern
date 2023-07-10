@@ -1073,7 +1073,11 @@ public class GTItems {
         }
     }
 
-    public static ItemEntry<Item> TURBINE_ROTOR;
+    public static ItemEntry<ComponentItem> TURBINE_ROTOR = REGISTRATE.item("turbine_rotor", ComponentItem::create)
+            .properties(p -> p.stacksTo(1))
+            .model((ctx, prov) -> prov.generated(ctx, GTCEu.id("item/tools/turbine")))
+            .color(() -> IMaterialPartItem::getItemStackColor)
+            .onRegister(attach(new TurbineRotorBehaviour())).register();
 
     public static ItemEntry<Item> NEURO_PROCESSOR = REGISTRATE.item("neuro_processing_unit", Item::new).lang("Neuro Processing Unit").register();
     public static ItemEntry<Item> STEM_CELLS = REGISTRATE.item("stem_cells", Item::new).register();

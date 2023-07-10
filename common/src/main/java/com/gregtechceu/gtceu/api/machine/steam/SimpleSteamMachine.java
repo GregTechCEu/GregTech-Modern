@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.UITemplate;
 import com.gregtechceu.gtceu.api.gui.widget.PredicatedImageWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IExhaustVentMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineModifyDrops;
 import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
@@ -31,6 +32,7 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
@@ -118,25 +120,24 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
     //////////////////////////////////////
 
     @Nullable
-    @Override
-    public GTRecipe modifyRecipe(GTRecipe recipe) {
-        if (RecipeHelper.getRecipeEUtTier(recipe) > GTValues.LV || !checkVenting()) {
-            return null;
-        }
-
-        var modified = RecipeHelper.applyOverclock(new OverclockingLogic(false) {
-            @Override
-            protected LongIntPair runOverclockingLogic(@NotNull GTRecipe recipe, long recipeEUt, long maxVoltage, int duration, int amountOC) {
-                return LongIntPair.of(isHighPressure ? recipeEUt * 2 : recipeEUt, isHighPressure ? duration : duration * 2);
+    public static GTRecipe recipeModifier(MetaMachine machine, @Nonnull GTRecipe recipe) {
+        if (machine instanceof SimpleSteamMachine steamMachine) {
+            if (RecipeHelper.getRecipeEUtTier(recipe) > GTValues.LV || !steamMachine.checkVenting()) {
+                return null;
             }
-        }, recipe, GTValues.V[GTValues.LV]);
 
-        if (modified == recipe) {
-            modified = recipe.copy();
+            var modified = RecipeHelper.applyOverclock(new OverclockingLogic((_recipe, recipeEUt, maxVoltage, duration, amountOC) ->
+                            LongIntPair.of(steamMachine.isHighPressure ? recipeEUt * 2 : recipeEUt, steamMachine.isHighPressure ? duration : duration * 2)),
+                    recipe, GTValues.V[GTValues.LV]);
+
+            if (modified == recipe) {
+                modified = recipe.copy();
+            }
+
+            modified.conditions.add(VentCondition.INSTANCE);
+            return modified;
         }
-
-        modified.conditions.add(VentCondition.INSTANCE);
-        return modified;
+        return null;
     }
 
     @Override

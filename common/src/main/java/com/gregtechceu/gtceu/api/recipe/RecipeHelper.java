@@ -95,7 +95,7 @@ public class RecipeHelper {
         // cannot overclock, so return the starting values
         if (numberOfOCs <= 0) return LongIntPair.of(EUt, recipe.duration);
 
-        return logic.runOverclockingLogic(recipe, EUt, maxOverclockVoltage, recipe.duration, numberOfOCs);
+        return logic.getLogic().runOverclockingLogic(recipe, EUt, maxOverclockVoltage, recipe.duration, numberOfOCs);
     }
 
 }

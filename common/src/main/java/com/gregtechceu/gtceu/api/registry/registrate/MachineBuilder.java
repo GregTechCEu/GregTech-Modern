@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
+import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.client.renderer.machine.*;
 import com.gregtechceu.gtceu.api.block.IMachineBlock;
@@ -15,6 +16,7 @@ import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.client.renderer.GTRendererProvider;
+import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
@@ -25,6 +27,7 @@ import com.tterrag.registrate.providers.ProviderType;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import com.tterrag.registrate.util.nullness.NonNullUnaryOperator;
+import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -101,7 +104,9 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> {
     @Setter
     private BiConsumer<ItemStack, List<Component>> tooltipBuilder;
     @Setter
-    private OverclockingLogic overclockingLogic = OverclockingLogic.NON_PERFECT_OVERCLOCK;
+    private BiFunction<MetaMachine, GTRecipe, GTRecipe> recipeModifier = (machine, recipe) -> recipe;
+    @Setter
+    private boolean alwaysTryModifyRecipe;
     private Supplier<BlockState> appearance;
     @Setter @Nullable
     private EditableMachineUI editableUI;
@@ -189,6 +194,12 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> {
         return this;
     }
 
+    public MachineBuilder<DEFINITION> recipeModifier(BiFunction<MetaMachine, GTRecipe, GTRecipe> recipeModifier, boolean alwaysTryModifyRecipe) {
+        this.recipeModifier = recipeModifier;
+        this.alwaysTryModifyRecipe = alwaysTryModifyRecipe;
+        return this;
+    }
+
     protected DEFINITION createDefinition() {
         return definitionFactory.apply(new ResourceLocation(registrate.getModid(), name));
     }
@@ -245,7 +256,8 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> {
             components.addAll(tooltips);
             if (tooltipBuilder != null) tooltipBuilder.accept(itemStack, components);
         });
-        definition.setOverclockingLogic(overclockingLogic);
+        definition.setRecipeModifier(recipeModifier);
+        definition.setAlwaysTryModifyRecipe(alwaysTryModifyRecipe);
         if (renderer == null) {
             renderer = () -> new MachineRenderer(new ResourceLocation(registrate.getModid(), "block/machine/" + name));
         }

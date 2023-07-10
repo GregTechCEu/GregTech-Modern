@@ -10,6 +10,7 @@ import lombok.NonNull;
 import lombok.Setter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
@@ -17,6 +18,7 @@ import org.apache.commons.lang3.function.TriFunction;
 
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
 /**
@@ -41,6 +43,8 @@ public class MultiblockMachineDefinition extends MachineDefinition {
     private Comparator<IMultiPart> partSorter;
     @Getter @Setter
     private TriFunction<IMultiController, IMultiPart, Direction, BlockState> partAppearance;
+    @Getter @Setter
+    private BiConsumer<IMultiController, List<Component>> additionalDisplay;
 
     protected MultiblockMachineDefinition(ResourceLocation id) {
         super(id);

@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
+import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeSerializer;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.common.recipe.*;
@@ -72,10 +73,17 @@ public class GTRecipeBuilder {
     @Setter
     public BiConsumer<GTRecipeBuilder, Consumer<FinishedRecipe>> onSave;
 
-
     public GTRecipeBuilder(ResourceLocation id, GTRecipeType recipeType) {
         this.id = id;
         this.recipeType = recipeType;
+    }
+
+    public static GTRecipeBuilder of(ResourceLocation id, GTRecipeType recipeType) {
+        return new GTRecipeBuilder(id, recipeType);
+    }
+
+    public static GTRecipeBuilder ofRaw() {
+        return new GTRecipeBuilder(GTCEu.id("raw"), null);
     }
 
     public GTRecipeBuilder copy(String id) {
@@ -556,6 +564,10 @@ public class GTRecipeBuilder {
             onSave.accept(this, consumer);
         }
         consumer.accept(build());
+    }
+
+    public GTRecipe buildRawRecipe() {
+        return new GTRecipe(recipeType, id, input, output, tickInput, tickOutput, conditions, data, duration, isFuel);
     }
 
     //////////////////////////////////////

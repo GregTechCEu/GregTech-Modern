@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.steam;
 
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IExplosionMachine;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
@@ -9,7 +10,6 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDisplayUIMachine;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMufflerMechanic;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
@@ -30,6 +30,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.level.material.Fluids;
 import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.List;
@@ -154,14 +155,16 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
     }
 
     @Nullable
-    @Override
-    public GTRecipe getRealRecipe(GTRecipe recipe) {
-        if (throttle < 100) {
-            var copied = recipe.copy();
-            copied.duration = recipe.duration * 100 / throttle;
-            return copied;
+    public static GTRecipe recipeModifier(MetaMachine machine, @Nonnull GTRecipe recipe) {
+        if (machine instanceof LargeBoilerMachine largeBoilerMachine) {
+            if (largeBoilerMachine.throttle < 100) {
+                var copied = recipe.copy();
+                copied.duration = recipe.duration * 100 / largeBoilerMachine.throttle;
+                return copied;
+            }
+            return recipe;
         }
-        return super.modifyRecipe(recipe);
+        return null;
     }
 
     public void addDisplayText(List<Component> textList) {
