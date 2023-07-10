@@ -63,8 +63,23 @@ public class TagPrefixItem extends Item implements IItemRendererProvider {
     }
 
     @Override
+    public String getDescriptionId() {
+        return tagPrefix.getUnlocalizedName(material);
+    }
+
+    @Override
     public String getDescriptionId(ItemStack stack) {
-        return tagPrefix.getLocalNameForItem(material);
+        return tagPrefix.getUnlocalizedName(material);
+    }
+
+    @Override
+    public Component getDescription() {
+        return tagPrefix.getLocalizedName(material);
+    }
+
+    @Override
+    public Component getName(ItemStack stack) {
+        return getDescription();
     }
 
     @Override

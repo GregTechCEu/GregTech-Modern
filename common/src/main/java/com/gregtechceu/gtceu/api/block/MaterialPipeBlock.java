@@ -14,6 +14,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
@@ -84,6 +85,11 @@ public abstract class MaterialPipeBlock<PipeType extends Enum<PipeType> & IPipeT
 
     @Override
     public String getDescriptionId() {
-        return pipeType.getTagPrefix().getLocalNameForItem(material);
+        return pipeType.getTagPrefix().getUnlocalizedName(material);
+    }
+
+    @Override
+    public MutableComponent getName() {
+        return pipeType.getTagPrefix().getLocalizedName(material);
     }
 }

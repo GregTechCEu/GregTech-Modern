@@ -55,13 +55,6 @@ public class CustomTags {
     public static final TagKey<Block> NEEDS_NAQ_ALLOY_TOOL = TagUtil.createPlatformUnprefixedTag(Registry.BLOCK, "forge:needs_naquadah_alloy_tool", "fabric:needs_tool_level_5");
     public static final TagKey<Block> NEEDS_NEUTRONIUM_TOOL = TagUtil.createPlatformUnprefixedTag(Registry.BLOCK, "forge:needs_neutronium_tool", "fabric:needs_tool_level_6");
 
-    public static final TagKey<Block> CONCRETE = TagUtil.createBlockTag("concrete");
-    public static final TagKey<Block> CONCRETE_POWDER = TagUtil.createBlockTag("concrete_powder");
-    public static final TagKey<Block> GLASS_BLOCKS = TagUtil.createPlatformBlockTag("glass", "glass_blocks", false);
-    public static final TagKey<Block> GLASS_PANES_BLOCK = TagUtil.createBlockTag("glass_panes");
-    public static final TagKey<Block> CREATE_SEATS = TagUtil.optionalTag(Registry.BLOCK, new ResourceLocation(GTValues.MODID_CREATE, "seats"));
-    public static final TagKey<Block> ORE_BLOCKS = TagUtil.createBlockTag("ores");
-
     @SuppressWarnings("unchecked")
     public static final TagKey<Block>[] TOOL_TIERS = new TagKey[] {
             NEEDS_WOOD_TOOL,
@@ -73,6 +66,15 @@ public class CustomTags {
             NEEDS_NEUTRONIUM_TOOL
     };
 
-    public static final TagKey<Biome> IS_SWAMP = TagUtil.createPlatformTag(BuiltinRegistries.BIOME, "is_swamp", "is_swamp", false);
+    public static final TagKey<Block> ENDSTONE_ORE_REPLACEABLES = TagUtil.createBlockTag("end_stone_ore_replaceables");
+    public static final TagKey<Block> CONCRETE = TagUtil.createBlockTag("concrete");
+    public static final TagKey<Block> CONCRETE_POWDER = TagUtil.createBlockTag("concrete_powder");
+    public static final TagKey<Block> GLASS_BLOCKS = TagUtil.createPlatformBlockTag("glass", "glass_blocks", false);
+    public static final TagKey<Block> GLASS_PANES_BLOCK = TagUtil.createBlockTag("glass_panes");
+    public static final TagKey<Block> CREATE_SEATS = TagUtil.optionalTag(Registry.BLOCK, new ResourceLocation(GTValues.MODID_CREATE, "seats"));
+    public static final TagKey<Block> ORE_BLOCKS = TagUtil.createBlockTag("ores");
+
+
+    public static final TagKey<Biome> IS_SWAMP = TagUtil.createTag(BuiltinRegistries.BIOME, "is_swamp", false);
     public static final TagKey<Biome> HAS_RUBBER_TREE = TagUtil.createModTag(BuiltinRegistries.BIOME, "has_rubber_tree");
 }

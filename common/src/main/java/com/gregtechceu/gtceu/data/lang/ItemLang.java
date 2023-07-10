@@ -34,6 +34,16 @@ public class ItemLang {
         for (GTToolType toolType : GTToolType.values()) {
             provider.add(toolType.getUnlocalizedName(), toEnglishName(toolType));
         }
+
+        provider.add("tagprefix.polymer.plate", "%s Sheet");
+        provider.add("tagprefix.polymer.foil", "Thin %s Sheet");
+        provider.add("tagprefix.polymer.nugget", "%s Chip");
+        provider.add("tagprefix.polymer.dense_plate", "Dense %s Sheet");
+        provider.add("tagprefix.polymer.double_plate", "Double %s Sheet");
+        provider.add("tagprefix.polymer.tiny_dust", "Tiny Pile of %s Pulp");
+        provider.add("tagprefix.polymer.small_dust", "Small Pile of %s Pulp");
+        provider.add("tagprefix.polymer.dust", "%s Pulp");
+        provider.add("tagprefix.polymer.ingot", "%s Ingot");
     }
 
     private static void initItemNames(RegistrateLangProvider provider) {
