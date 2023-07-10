@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.data.worldgen;
 
 import com.gregtechceu.gtceu.api.data.worldgen.generator.WorldGeneratorUtils;
+import com.mojang.serialization.JsonOps;
 import lombok.Getter;
 import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;
 
@@ -18,6 +19,11 @@ public class SimpleWorldGenLayer implements IWorldGenLayer {
     @Override
     public String getSerializedName() {
         return name;
+    }
+
+    @Override
+    public String toString() {
+        return getSerializedName() + "[" + RuleTest.CODEC.encodeStart(JsonOps.INSTANCE, target).result().orElse(null) + "]";
     }
 
     @Override
