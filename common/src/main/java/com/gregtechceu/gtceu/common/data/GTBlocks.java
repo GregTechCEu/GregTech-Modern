@@ -285,6 +285,8 @@ public class GTBlocks {
 
 
 
+
+
     // Establish Default Tab
     static { REGISTRATE.creativeModeTab(() -> GTCreativeModeTabs.DECORATION); }
 
@@ -297,7 +299,7 @@ public class GTBlocks {
         return createMachineCasing(prefix, _texture, () -> Blocks.IRON_BLOCK);
     }
     private static BlockEntry<Block> createMachineCasing(String prefix, ResourceLocation _texture, NonNullSupplier<? extends Block> properties) {
-        var id = "%s_machine_casing".formatted(prefix);
+        var id = "%s".formatted(prefix);
         var texture = GTCEu.id("block/casings/solid/%s".formatted(id));
         return REGISTRATE.block(id, p -> (Block) new RendererBlock(p, new TextureOverrideRenderer(new ResourceLocation("block/cube_all"), Map.of("all", texture))))
                 .initialProperties(properties)
@@ -374,14 +376,15 @@ public class GTBlocks {
 
 
 
+    public static final BlockEntry<ActiveBlock> CASING_ENGINE_INTAKE = createActiveCasing("engine_intake_casing", "block/variant/engine_intake");
+    public static final BlockEntry<ActiveBlock> CASING_EXTREME_ENGINE_INTAKE = createActiveCasing("extreme_engine_intake_casing", "block/variant/extreme_engine_intake");
 
 
 
 
 
 
-
-
+    public static final BlockEntry<Block> TEMPERED_GLASS = createCasingBlock("tempered_glass", GTCEu.id("block/casings/transparent/tempered_glass"), () -> Blocks.GLASS);
 
 
 

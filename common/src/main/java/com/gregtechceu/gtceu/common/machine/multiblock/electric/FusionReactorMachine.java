@@ -239,9 +239,9 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
 
     public static Block getCoilState(int tier) {
         if (tier == GTValues.LuV)
-            return SUPERCONDUCTING_COIL.get();
+            return FUSION_CASING_SUPERCONDUCTOR.get();
 
-        return FUSION_COIL.get();
+        return FUSION_CASING_FUSION_COIL.get();
     }
 
     public static IFusionCasingType getCasingType(int tier) {

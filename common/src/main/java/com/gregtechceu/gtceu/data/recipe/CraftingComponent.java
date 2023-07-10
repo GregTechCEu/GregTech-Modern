@@ -387,10 +387,10 @@ public class CraftingComponent {
                 {ULV, TagUtil.createBlockTag("glass")},
                 {LV, TagUtil.createBlockTag("glass")},
                 {MV, TagUtil.createBlockTag("glass")},
-                {HV, GTBlocks.CASING_TEMPERED_GLASS.asStack()},
-                {EV, GTBlocks.CASING_TEMPERED_GLASS.asStack()},
-                {IV, GTBlocks.CASING_LAMINATED_GLASS.asStack()},
-                {LuV, GTBlocks.CASING_LAMINATED_GLASS.asStack()},
+                {HV, GTBlocks.TEMPERED_GLASS.asStack()},
+                {EV, GTBlocks.TEMPERED_GLASS.asStack()},
+                {IV, GTBlocks.LAMINATED_GLASS.asStack()},
+                {LuV, GTBlocks.LAMINATED_GLASS.asStack()},
                 {ZPM, GTBlocks.FUSION_GLASS.asStack()},
                 {UV, GTBlocks.FUSION_GLASS.asStack()}
 
