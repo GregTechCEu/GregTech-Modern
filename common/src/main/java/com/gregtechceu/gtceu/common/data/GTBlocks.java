@@ -292,15 +292,32 @@ public class GTBlocks {
     //////////////////////////////////////
 
     // Machine Casings
-    public static final BlockEntry<Block> STEAM_MACHINE_CASING = createCasingBlock("steam_machine_casing", GTCEu.id("block/casings/solid/steam_machine_casing"));
-    public static final BlockEntry<Block> HEATPROOF_MACHINE_CASING = createCasingBlock("heatproof_machine_casing", GTCEu.id("block/casings/solid/heatproof_machine_casing"));
-    public static final BlockEntry<Block> FROSTPROOF_MACHINE_CASING = createCasingBlock("frostproof_machine_casing", GTCEu.id("block/casings/solid/frostproof_machine_casing"));
-    public static final BlockEntry<Block> SOLID_MACHINE_CASING = createCasingBlock("solid_machine_casing", GTCEu.id("block/casings/solid/solid_machine_casing"));
-    public static final BlockEntry<Block> CLEAN_MACHINE_CASING = createCasingBlock("clean_machine_casing", GTCEu.id("block/casings/solid/clean_machine_casing"));
-    public static final BlockEntry<Block> STABLE_MACHINE_CASING = createCasingBlock("stable_machine_casing", GTCEu.id("block/casings/solid/stable_machine_casing"));
-    public static final BlockEntry<Block> ROBUST_MACHINE_CASING = createCasingBlock("robust_machine_casing", GTCEu.id("block/casings/solid/robust_machine_casing"));
-    public static final BlockEntry<Block> INERT_MACHINE_CASING = createCasingBlock("inert_machine_casing", GTCEu.id("block/casings/solid/inert_machine_casing"));
-    public static final BlockEntry<Block> STURDY_MACHINE_CASING = createCasingBlock("sturdy_machine_casing", GTCEu.id("block/casings/solid/sturdy_machine_casing"));
+    private static BlockEntry<Block> createMachineCasing(String prefix, ResourceLocation _texture) {
+        return createMachineCasing(prefix, _texture, () -> Blocks.IRON_BLOCK);
+    }
+    private static BlockEntry<Block> createMachineCasing(String prefix, ResourceLocation _texture, NonNullSupplier<? extends Block> properties) {
+        var id = "%s_machine_casing".formatted(prefix);
+        var texture = GTCEu.id("block/casings/solid/%s".formatted(id));
+        return REGISTRATE.block(id, p -> (Block) new RendererBlock(p, new TextureOverrideRenderer(new ResourceLocation("block/cube_all"), Map.of("all", texture))))
+                .initialProperties(properties)
+                .addLayer(() -> RenderType::cutoutMipped)
+                .blockstate(NonNullBiConsumer.noop())
+                .tag(GTToolType.WRENCH.harvestTag, BlockTags.MINEABLE_WITH_PICKAXE)
+                .item(RendererBlockItem::new)
+                .model(NonNullBiConsumer.noop())
+                .build()
+                .register();
+    }
+    public static final BlockEntry<Block>
+            STEAM_MACHINE_CASING = createMachineCasing("steam_machine_casing", GTCEu.id("block/casings/solid/steam_machine_casing")),
+            HEATPROOF_MACHINE_CASING = createMachineCasing("heatproof_machine_casing", GTCEu.id("block/casings/solid/heatproof_machine_casing")),
+            FROSTPROOF_MACHINE_CASING = createMachineCasing("frostproof_machine_casing", GTCEu.id("block/casings/solid/frostproof_machine_casing")),
+            SOLID_MACHINE_CASING = createMachineCasing("solid_machine_casing", GTCEu.id("block/casings/solid/solid_machine_casing")),
+            CLEAN_MACHINE_CASING = createMachineCasing("clean_machine_casing", GTCEu.id("block/casings/solid/clean_machine_casing")),
+            STABLE_MACHINE_CASING = createMachineCasing("stable_machine_casing", GTCEu.id("block/casings/solid/stable_machine_casing")),
+            ROBUST_MACHINE_CASING = createMachineCasing("robust_machine_casing", GTCEu.id("block/casings/solid/robust_machine_casing")),
+            INERT_MACHINE_CASING = createMachineCasing("inert_machine_casing", GTCEu.id("block/casings/solid/inert_machine_casing")),
+            STURDY_MACHINE_CASING = createMachineCasing("sturdy_machine_casing", GTCEu.id("block/casings/solid/sturdy_machine_casing"));
 
     // Steam Casings
     private static BlockEntry<Block> createSteamCasing(String name, String material) {
@@ -324,7 +341,7 @@ public class GTBlocks {
     public static final BlockEntry<Block> STEEL_BRICKS_HULL = createSteamCasing("steel_brick_casing", "bricked_steel");
 
     // Voltage Casings
-    private static BlockEntry<Block> createMachineCasingBlock(int tier) {
+    private static BlockEntry<Block> createVoltageCasing(int tier) {
         String tierName = GTValues.VN[tier].toLowerCase();
         return REGISTRATE.block("%s_machine_casing".formatted(tierName), p -> (Block) new RendererBlock(p,
                         new TextureOverrideRenderer( GTCEu.id("block/cube_bottom_top_tintindex"),
@@ -341,16 +358,16 @@ public class GTBlocks {
                 .build()
                 .register();
     }
-    public static final BlockEntry<Block> MACHINE_CASING_ULV = createMachineCasingBlock(GTValues.ULV);
-    public static final BlockEntry<Block> MACHINE_CASING_LV = createMachineCasingBlock(GTValues.LV);
-    public static final BlockEntry<Block> MACHINE_CASING_MV = createMachineCasingBlock(GTValues.MV);
-    public static final BlockEntry<Block> MACHINE_CASING_HV = createMachineCasingBlock(GTValues.HV);
-    public static final BlockEntry<Block> MACHINE_CASING_EV = createMachineCasingBlock(GTValues.EV);
-    public static final BlockEntry<Block> MACHINE_CASING_IV = createMachineCasingBlock(GTValues.IV);
-    public static final BlockEntry<Block> MACHINE_CASING_LuV = createMachineCasingBlock(GTValues.LuV);
-    public static final BlockEntry<Block> MACHINE_CASING_ZPM = createMachineCasingBlock(GTValues.ZPM);
-    public static final BlockEntry<Block> MACHINE_CASING_UV = createMachineCasingBlock(GTValues.UV);
-    public static final BlockEntry<Block> MACHINE_CASING_UHV = createMachineCasingBlock(GTValues.UHV);
+    public static final BlockEntry<Block> MACHINE_CASING_ULV = createVoltageCasing(GTValues.ULV);
+    public static final BlockEntry<Block> MACHINE_CASING_LV = createVoltageCasing(GTValues.LV);
+    public static final BlockEntry<Block> MACHINE_CASING_MV = createVoltageCasing(GTValues.MV);
+    public static final BlockEntry<Block> MACHINE_CASING_HV = createVoltageCasing(GTValues.HV);
+    public static final BlockEntry<Block> MACHINE_CASING_EV = createVoltageCasing(GTValues.EV);
+    public static final BlockEntry<Block> MACHINE_CASING_IV = createVoltageCasing(GTValues.IV);
+    public static final BlockEntry<Block> MACHINE_CASING_LuV = createVoltageCasing(GTValues.LuV);
+    public static final BlockEntry<Block> MACHINE_CASING_ZPM = createVoltageCasing(GTValues.ZPM);
+    public static final BlockEntry<Block> MACHINE_CASING_UV = createVoltageCasing(GTValues.UV);
+    public static final BlockEntry<Block> MACHINE_CASING_UHV = createVoltageCasing(GTValues.UHV);
 
 
 
