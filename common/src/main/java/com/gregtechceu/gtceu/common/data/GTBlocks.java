@@ -385,7 +385,12 @@ public class GTBlocks {
 
 
 
-
+    // Cleanroom
+    public static final Map<IFilterType, Supplier<Block>> ALL_FILTERS = new HashMap<>();
+    public static final BlockEntry<Block> PLASTCRETE = createCasingBlock("plascrete", GTCEu.id("block/casings/cleanroom/plascrete"));
+    public static final BlockEntry<Block> FILTER_CASING = createCleanroomFilter(CleanroomFilterType.FILTER_CASING);
+    public static final BlockEntry<Block> FILTER_CASING_STERILE = createCleanroomFilter(CleanroomFilterType.FILTER_CASING_STERILE);
+    public static final BlockEntry<Block> CLEANROOM_GLASS = createCasingBlock("cleanroom_glass", GTCEu.id("block/casings/transparent/cleanroom_glass"), () -> Blocks.GLASS);
 
 
 

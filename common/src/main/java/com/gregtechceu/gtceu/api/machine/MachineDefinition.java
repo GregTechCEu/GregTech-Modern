@@ -1,16 +1,30 @@
 package com.gregtechceu.gtceu.api.machine;
 
 import com.gregtechceu.gtceu.api.block.IMachineBlock;
+import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
+import com.gregtechceu.gtceu.api.gui.editor.EditableUI;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
+import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.lowdragmc.lowdraglib.LDLib;
+import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
+import com.lowdragmc.lowdraglib.gui.editor.configurator.IConfigurableWidget;
+import com.lowdragmc.lowdraglib.gui.editor.data.Resources;
+import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
+import com.lowdragmc.lowdraglib.utils.Position;
 import com.lowdragmc.lowdraglib.utils.ShapeUtils;
 import lombok.Getter;
 import lombok.Setter;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtAccounter;
+import net.minecraft.nbt.NbtIo;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -20,10 +34,13 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 import javax.annotation.Nullable;
+import java.io.DataInputStream;
+import java.io.InputStream;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -53,7 +70,9 @@ public class MachineDefinition implements Supplier<IMachineBlock> {
     @Setter @Getter
     private int defaultPaintingColor;
     @Setter @Getter
-    private OverclockingLogic overclockingLogic;
+    private BiFunction<MetaMachine, GTRecipe, GTRecipe> recipeModifier;
+    @Setter @Getter
+    private boolean alwaysTryModifyRecipe;
     @Setter
     @Getter
     private IRenderer renderer;
@@ -64,6 +83,8 @@ public class MachineDefinition implements Supplier<IMachineBlock> {
     private BiConsumer<ItemStack, List<Component>> tooltipBuilder;
     @Getter @Setter
     private Supplier<BlockState> appearance;
+    @Nullable @Getter @Setter
+    private EditableMachineUI editableUI;
 
     protected MachineDefinition(ResourceLocation id) {
         this.id = id;

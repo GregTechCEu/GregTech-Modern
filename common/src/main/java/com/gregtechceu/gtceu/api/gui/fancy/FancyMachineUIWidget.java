@@ -32,14 +32,14 @@ public class FancyMachineUIWidget extends WidgetGroup {
         super(0, 0, 200, 100 + (fancyUIProvider.hasPlayerInventory() ? 90 : 0));
         this.fancyUIProvider = fancyUIProvider;
         addWidget(this.pageContainer = new WidgetGroup(0, 0, 200, 100));
-        addWidget(this.tabsWidget = new TabsWidget(this::onTabSwitch));
-        addWidget(this.configuratorPanel = new ConfiguratorPanel());
-        addWidget(this.tooltipsPanel = new TooltipsPanel());
         if (fancyUIProvider.hasPlayerInventory()) {
             addWidget(this.playerInventory = new PlayerInventoryWidget());
         } else {
             playerInventory = null;
         }
+        addWidget(this.tabsWidget = new TabsWidget(this::onTabSwitch));
+        addWidget(this.tooltipsPanel = new TooltipsPanel());
+        addWidget(this.configuratorPanel = new ConfiguratorPanel());
     }
 
     @Override
@@ -61,7 +61,7 @@ public class FancyMachineUIWidget extends WidgetGroup {
         this.tooltipsPanel.clear();
 
         // layout
-        var size = new Size(Math.max(172, mainPage.getSize().width + border), Math.max(86, mainPage.getSize().height + border));
+        var size = new Size(Math.max(172, mainPage.getSize().width + border * 2), Math.max(86, mainPage.getSize().height + border * 2));
         setSize(new Size(size.width, size.height + (playerInventory == null ? 0 : playerInventory.getSize().height + 4)));
         if (LDLib.isRemote() && getGui() != null) {
             getGui().setSize(getSize().width, getSize().height);

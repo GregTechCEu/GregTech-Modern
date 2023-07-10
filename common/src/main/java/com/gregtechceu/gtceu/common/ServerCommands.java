@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common;
 
+import com.gregtechceu.gtceu.api.gui.factory.GTUIEditorFactory;
 import com.lowdragmc.lowdraglib.gui.factory.UIEditorFactory;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.minecraft.commands.CommandSourceStack;
@@ -18,7 +19,7 @@ public class ServerCommands {
                 Commands.literal("gtceu")
                         .then(Commands.literal("ui_editor")
                                 .executes(context -> {
-                                    UIEditorFactory.INSTANCE.openUI(UIEditorFactory.INSTANCE, context.getSource().getPlayerOrException());
+                                    GTUIEditorFactory.INSTANCE.openUI(GTUIEditorFactory.INSTANCE, context.getSource().getPlayerOrException());
                                     return 1;
                                 })
                         )

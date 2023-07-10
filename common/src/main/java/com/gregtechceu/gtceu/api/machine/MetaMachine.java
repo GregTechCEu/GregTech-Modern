@@ -442,7 +442,7 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
 
     public int tintColor(int index) {
         if (index == 1) {
-            return getPaintingColor();
+            return getRealColor();
         }
         return -1;
     }
@@ -531,17 +531,17 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
         return tooltips;
     }
 
+    @Override
+    public boolean showFancyTooltip() {
+        return !getFancyTooltip().isEmpty();
+    }
+
     public void onAddFancyInformationTooltip(List<Component> tooltips) {
         getDefinition().getTooltipBuilder().accept(getDefinition().asStack(), tooltips);
         String mainKey = String.format("%s.machine.%s.tooltip", getDefinition().getId().getNamespace(), getDefinition().getId().getPath());
         if (LocalizationUtils.exist(mainKey)) {
             tooltips.add(0, Component.translatable(mainKey));
         }
-    }
-
-    @Override
-    public boolean isPainted() {
-        return paintingColor != -1 && paintingColor != getDefaultPaintingColor();
     }
 
     @Override

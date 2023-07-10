@@ -27,13 +27,18 @@ import java.util.function.Consumer;
 public class TransformerRenderer extends TieredHullMachineRenderer{
     public final static ResourceLocation ENERGY_IN = GTCEu.id("block/overlay/machine/overlay_energy_in");
     public final static ResourceLocation ENERGY_OUT = GTCEu.id("block/overlay/machine/overlay_energy_out");
+    public final static ResourceLocation ENERGY_IN_HI = GTCEu.id("block/overlay/machine/overlay_energy_in_hi");
+    public final static ResourceLocation ENERGY_OUT_HI = GTCEu.id("block/overlay/machine/overlay_energy_out_hi");
     public final static ResourceLocation ENERGY_IN_MULTI = GTCEu.id("block/overlay/machine/overlay_energy_in_multi");
     public final static ResourceLocation ENERGY_OUT_MULTI = GTCEu.id("block/overlay/machine/overlay_energy_out_multi");
     public final static ResourceLocation ENERGY_IN_ULTRA = GTCEu.id("block/overlay/machine/overlay_energy_in_ultra");
     public final static ResourceLocation ENERGY_OUT_ULTRA = GTCEu.id("block/overlay/machine/overlay_energy_out_ultra");
 
-    public TransformerRenderer(int tier) {
+    private final int baseAmp;
+
+    public TransformerRenderer(int tier, int baseAmp) {
         super(tier, GTCEu.id("block/machine/hull_machine"));
+        this.baseAmp = baseAmp;
     }
 
     @Override
@@ -42,10 +47,28 @@ public class TransformerRenderer extends TieredHullMachineRenderer{
         super.renderMachine(quads, definition, machine, frontFacing, side, rand, modelFacing, modelState);
         var otherFaceTexture = ENERGY_OUT;
         var frontFaceTexture = ENERGY_IN_MULTI;
+        var isTransformUp = false;
         if (machine instanceof TransformerMachine transformer) {
-            otherFaceTexture = transformer.isTransformUp() ? ENERGY_IN : otherFaceTexture;
-            frontFaceTexture = transformer.isTransformUp() ? ENERGY_OUT_MULTI : frontFaceTexture;
+            isTransformUp = transformer.isTransformUp();
         }
+
+        switch(baseAmp) {
+            case 1 -> { // 1A <-> 4A
+                otherFaceTexture = isTransformUp ? ENERGY_IN : otherFaceTexture;
+                frontFaceTexture = isTransformUp ? ENERGY_OUT_MULTI : frontFaceTexture;
+            }
+            case 2 -> { // 2A <-> 8A
+                otherFaceTexture = isTransformUp ? ENERGY_IN_MULTI : ENERGY_OUT_MULTI;
+                frontFaceTexture = isTransformUp ? ENERGY_OUT_HI : ENERGY_IN_HI;
+            }
+            // 4A <-> 16A
+            default -> { // 16A <-> 64A or more
+                otherFaceTexture = isTransformUp ? ENERGY_IN_HI : ENERGY_OUT_HI;
+                frontFaceTexture = isTransformUp ? ENERGY_OUT_ULTRA : ENERGY_IN_ULTRA;
+
+            }
+        }
+
         if (side == frontFacing && modelFacing != null) {
             quads.add(FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(frontFaceTexture), modelState, 2));
         } else if (side != null && modelFacing != null) {
@@ -62,6 +85,8 @@ public class TransformerRenderer extends TieredHullMachineRenderer{
             register.accept(ENERGY_OUT);
             register.accept(ENERGY_IN_MULTI);
             register.accept(ENERGY_OUT_MULTI);
+            register.accept(ENERGY_IN_HI);
+            register.accept(ENERGY_OUT_HI);
             register.accept(ENERGY_IN_ULTRA);
             register.accept(ENERGY_OUT_ULTRA);
         }

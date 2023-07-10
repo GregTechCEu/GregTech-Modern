@@ -197,7 +197,7 @@ public class ConfigHolder {
                 "13819135 (0xD2DCFF in decimal) is the classic blue from GT5 (default)."})
         @Configurable.Range(min = 0, max = 0xFFFFFF)
         @Configurable.Gui.ColorValue
-        public int defaultPaintingColor = 0xD2DCFF;
+        public int defaultPaintingColor = 0xFFFFFF;
     }
 
 }

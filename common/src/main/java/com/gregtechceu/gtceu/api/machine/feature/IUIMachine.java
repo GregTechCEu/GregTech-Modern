@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.machine.feature;
 
-import com.gregtechceu.gtceu.api.gui.MachineUIFactory;
+import com.gregtechceu.gtceu.api.gui.factory.MachineUIFactory;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.modular.IUIHolder;
 import net.minecraft.server.level.ServerPlayer;
