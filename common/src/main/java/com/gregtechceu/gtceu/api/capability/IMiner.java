@@ -1,10 +1,11 @@
 package com.gregtechceu.gtceu.api.capability;
 
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.phys.shapes.VoxelShape;
+import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
+import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 
-public interface IMiner {
+public interface IMiner extends IRecipeLogicMachine {
 
+    void setRecipeType(GTRecipeType type);
 
     boolean drainEnergy(boolean simulate);
 

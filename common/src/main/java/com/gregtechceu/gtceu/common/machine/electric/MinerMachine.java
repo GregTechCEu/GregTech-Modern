@@ -15,17 +15,18 @@ import com.gregtechceu.gtceu.api.machine.WorkableTieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.client.renderer.block.TextureOverrideRenderer;
 import com.gregtechceu.gtceu.client.renderer.machine.MinerRenderer;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
-import com.lowdragmc.lowdraglib.client.renderer.impl.IModelRenderer;
 import com.lowdragmc.lowdraglib.gui.widget.*;
 import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.utils.Position;
 import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -46,6 +47,8 @@ public class MinerMachine extends WorkableTieredMachine implements IMiner, ICont
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(MinerMachine.class, WorkableTieredMachine.MANAGED_FIELD_HOLDER);
     public static final TextureOverrideRenderer PIPE_MODEL = new TextureOverrideRenderer(MinerRenderer.PIPE_MODEL, Map.of("all", GTCEu.id("block/casings/solid/machine_casing_solid_steel")));
 
+    @Getter @Setter
+    private GTRecipeType recipeType;
 
     @Getter
     @Persisted
@@ -59,6 +62,7 @@ public class MinerMachine extends WorkableTieredMachine implements IMiner, ICont
 
     public MinerMachine(IMachineBlockEntity holder, int tier, int speed, int maximumRadius, int fortune, Object... args) {
         super(holder, tier, GTMachines.defaultTankSizeFunction, args, (tier + 1) * (tier + 1), fortune, speed, maximumRadius);
+        this.recipeType = getDefinition().getRecipeType();
         this.inventorySize = (tier + 1) * (tier + 1);
         this.energyPerTick = GTValues.V[tier - 1];
         this.chargerInventory = createChargerItemHandler();
@@ -247,7 +251,7 @@ public class MinerMachine extends WorkableTieredMachine implements IMiner, ICont
         return super.shouldWorkingPlaySound();
     }
 
-    //    @Nonnull
+//    @Nonnull
 //    @Override
 //    public List<Component> getDataInfo() {
 //        int workingArea = getWorkingArea(getRecipeLogic().getCurrentRadius());

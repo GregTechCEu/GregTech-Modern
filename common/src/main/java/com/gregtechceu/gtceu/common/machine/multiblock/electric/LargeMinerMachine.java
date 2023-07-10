@@ -19,16 +19,17 @@ import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMa
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
-import com.gregtechceu.gtceu.api.sound.SoundEntry;
+import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.client.renderer.block.TextureOverrideRenderer;
 import com.gregtechceu.gtceu.client.renderer.machine.MinerRenderer;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
-import com.gregtechceu.gtceu.common.data.GTSoundEntries;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.lowdragmc.lowdraglib.client.renderer.impl.IModelRenderer;
+import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
+import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
 import com.lowdragmc.lowdraglib.gui.widget.ComponentPanelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.CycleButtonWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
@@ -49,6 +50,7 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
 
@@ -68,6 +70,8 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine impleme
             GTValues.IV, GTMaterials.Titanium,
             GTValues.LuV, GTMaterials.TungstenSteel);
 
+    @Getter @Setter
+    private GTRecipeType recipeType;
 
     @Getter
     private final Material material;
@@ -87,6 +91,7 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine impleme
 
     public LargeMinerMachine(IMachineBlockEntity holder, int tier, int speed, int maximumChunkDiameter, int fortune, Material material, int drillingFluidConsumePerTick) {
         super(holder, material, fortune, speed, maximumChunkDiameter);
+        this.recipeType = getDefinition().getRecipeType();
         this.material = material;
         this.tier = tier;
         this.drillingFluidConsumePerTick = drillingFluidConsumePerTick;
@@ -191,7 +196,7 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine impleme
         ComponentPanelWidget widget2 = new ComponentPanelWidget(63, 36, this::addDisplayText2)
                 .setMaxWidthLimit(68).clickHandler(this::handleDisplayClick);
         group.addWidget(widget2);
-        group.addWidget(new CycleButtonWidget(151, 110, 18, 18,4, this::getCurrentModeTexture, this::setCurrentMode));
+        group.addWidget(new CycleButtonWidget(151, 110, 18, 18, 4, this::getCurrentModeTexture, this::setCurrentMode));
         return group;
     }
 
@@ -261,20 +266,13 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine impleme
 
     // used for UI
     private IGuiTexture getCurrentModeTexture(int mode) {
-        // 0 -> not chunk mode, not silk touch mode
-        if (!getRecipeLogic().isChunkMode() && !getRecipeLogic().isSilkTouchMode()) {
-            return GuiTextures.BUTTON_MINER_MODES.getSubTexture(0, 0, 1, 0.25f);
-        }
-        // 1 -> is chunk mode, not silk touch mode
-        else if (getRecipeLogic().isChunkMode() && !getRecipeLogic().isSilkTouchMode()) {
-            return GuiTextures.BUTTON_MINER_MODES.getSubTexture(0, 0.25f, 1, 0.25f);
-        }
-        // 2 -> not chunk mode, is silk touch mode
-        else if (!getRecipeLogic().isChunkMode() && getRecipeLogic().isSilkTouchMode()) {
-            return GuiTextures.BUTTON_MINER_MODES.getSubTexture(0, 0.5f, 1, 0.25f);
-        }
-        // 3 -> is chunk mode, is silk touch mode
-        return GuiTextures.BUTTON_MINER_MODES.getSubTexture(0, 0.75f, 1, 0.25f);
+        return switch (mode) {
+            case 0 -> GuiTextures.BUTTON_MINER_MODES.getSubTexture(0, 0, 1, 0.25f);
+            case 1 -> GuiTextures.BUTTON_MINER_MODES.getSubTexture(0, 0.25f, 1, 0.25f);
+            case 2 -> GuiTextures.BUTTON_MINER_MODES.getSubTexture(0, 0.5f, 1, 0.25f);
+            case 3 -> GuiTextures.BUTTON_MINER_MODES.getSubTexture(0, 0.75f, 1, 0.25f);
+            default -> new GuiTextureGroup(GuiTextures.BUTTON_MINER_MODES.getSubTexture(0, 0, 1, 0.25f), new ItemStackTexture(Items.BARRIER)); // "broken" color
+        };
     }
 
     // used for UI
@@ -292,7 +290,7 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine impleme
                 getRecipeLogic().setChunkMode(false);
                 getRecipeLogic().setSilkTouchMode(true);
             }
-            default -> {
+            case 3 -> {
                 getRecipeLogic().setChunkMode(true);
                 getRecipeLogic().setSilkTouchMode(true);
             }

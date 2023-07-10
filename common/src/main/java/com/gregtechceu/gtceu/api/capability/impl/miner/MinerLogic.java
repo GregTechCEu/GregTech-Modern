@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
+import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
@@ -45,21 +46,20 @@ import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class MinerLogic extends RecipeLogic {
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(MinerLogic.class, RecipeLogic.MANAGED_FIELD_HOLDER);
@@ -136,8 +136,24 @@ public class MinerLogic extends RecipeLogic {
         this.pipeModel = Platform.isClient() ? pipeModel : null;
 
         this.breakRecipeSearchHolder = new DummyRecipeCapabilityHolder(getMachine().getHolder());
-        this.breakRecipeSearchHolder.addCapability(IO.IN, ItemRecipeCapability.CAP, List.of(new NotifiableItemStackHandler(breakRecipeSearchHolder, 1, IO.IN, IO.BOTH)));
-        this.breakRecipeSearchHolder.addCapability(IO.OUT, ItemRecipeCapability.CAP, List.of(new NotifiableItemStackHandler(breakRecipeSearchHolder, 10, IO.OUT, IO.BOTH)));
+        this.breakRecipeSearchHolder.addCapability(IO.IN, ItemRecipeCapability.CAP, List.of(new NotifiableItemStackHandler(breakRecipeSearchHolder, 1, IO.IN)));
+        this.breakRecipeSearchHolder.addCapability(IO.OUT, ItemRecipeCapability.CAP, List.of(new NotifiableItemStackHandler(breakRecipeSearchHolder, 10, IO.OUT)));
+        this.breakRecipeSearchHolder.addCapability(IO.IN, EURecipeCapability.CAP, List.of(new NotifiableEnergyContainer(breakRecipeSearchHolder, Long.MAX_VALUE, Long.MAX_VALUE, Long.MAX_VALUE, Long.MAX_VALUE, Long.MAX_VALUE) {
+            @Override
+            public long getEnergyStored() {
+                return Integer.MAX_VALUE;
+            }
+
+            @Override
+            public void setEnergyStored(long energyStored) {
+
+            }
+
+            @Override
+            public long changeEnergy(long energyToAdd) {
+                return 0;
+            }
+        }));
     }
 
     @Override
@@ -326,6 +342,18 @@ public class MinerLogic extends RecipeLogic {
                 .withParameter(LootContextParams.TOOL, pickaxeToolFortune)));
     }
 
+    /**
+     * called to handle mining regular ores and blocks with silk touch
+     *
+     * @param blockDrops  the List of items to fill after the operation
+     * @param world       the {@link ServerLevel} the miner is in
+     * @param blockToMine the {@link BlockPos} of the block being mined
+     * @param blockState  the {@link BlockState} of the block being mined
+     */
+    protected void getSilkTouchDrops(NonNullList<ItemStack> blockDrops, ServerLevel world, BlockPos blockToMine, @Nonnull BlockState blockState) {
+        blockDrops.add(new ItemStack(blockState.getBlock()));
+    }
+
     private ItemTransferList getCachedItemTransfer() {
         if (cachedItemTransfer == null) {
             cachedItemTransfer = new ItemTransferList(machine.getCapabilitiesProxy().get(IO.OUT, ItemRecipeCapability.CAP).stream().map(IItemTransfer.class::cast).toList());
@@ -499,38 +527,67 @@ public class MinerLogic extends RecipeLogic {
         return DIVIDEND / Math.pow(base, POWER);
     }
 
+    protected static final WeakHashMap<BlockState, ItemStack> DROP_CACHE = new WeakHashMap<>();
+
     /**
      * Applies a fortune hammer to block drops based on a tier value, intended for small ores
      *
+     * @param logic               the miner logic
+     * @param world               the level
+     * @param blockToMine         the position of the block being mined
      * @param blockState          the block being mined
      * @param drops               where the drops are stored to
-     * @param dropCountMultiplier multiply all drops by this, if > 0
-     * @param map                 the recipemap from which to get the drops
+     * @param dropCountMultiplier multiply all crushed drops by this, if > 0
+     * @param recipeType          the recipemap from which to get the drops
      * @param tier                the tier at which the operation is performed, used for calculating the chanced output boost
      */
-    protected static void applyTieredHammerNoRandomDrops(MinerLogic logic, @Nonnull BlockState blockState, List<ItemStack> drops, int dropCountMultiplier, @Nonnull GTRecipeType map, int tier) {
+    protected static void applyTieredHammerNoRandomDrops(MinerLogic logic, ServerLevel world, BlockPos blockToMine, @Nonnull BlockState blockState, NonNullList<ItemStack> drops, int dropCountMultiplier, @Nonnull GTRecipeType recipeType, int tier) {
+        ItemStack fortunePick = PICKAXE_TOOL.copy();
+        fortunePick.enchant(Enchantments.BLOCK_FORTUNE, dropCountMultiplier);
+
+        ItemStack oreDrop;
+        LootContext.Builder builder = new LootContext.Builder(world)
+                .withRandom(world.random)
+                .withParameter(LootContextParams.BLOCK_STATE, blockState)
+                .withParameter(LootContextParams.ORIGIN, Vec3.atLowerCornerOf(blockToMine))
+                .withParameter(LootContextParams.TOOL, PICKAXE_TOOL);
+        if (!DROP_CACHE.containsKey(blockState)) {
+            oreDrop = blockState.getDrops(builder).get(0);
+            oreDrop.setCount(1);
+            DROP_CACHE.put(blockState, oreDrop);
+            oreDrop = oreDrop.copy();
+        } else {
+            oreDrop = DROP_CACHE.get(blockState).copy();
+        }
+
+        NotifiableItemStackHandler inputItemHandler = (NotifiableItemStackHandler)logic.breakRecipeSearchHolder.getCapabilitiesProxy().get(IO.IN, ItemRecipeCapability.CAP).get(0);
         NotifiableItemStackHandler outputItemHandler = (NotifiableItemStackHandler)logic.breakRecipeSearchHolder.getCapabilitiesProxy().get(IO.OUT, ItemRecipeCapability.CAP).get(0);
-        List<Ingredient> ingredients = new ArrayList<>();
-        ingredients.add(Ingredient.of(blockState.getBlock()));
-        outputItemHandler.setStackInSlot(0, new ItemStack(blockState.getBlock()));
-        List<GTRecipe> possibleRecipes = map.searchRecipe(logic.machine.getRecipeLogic().getRecipeManager(), logic.breakRecipeSearchHolder);
-        if (possibleRecipes.size() > 0) {
-            GTRecipe recipe = possibleRecipes.get(0);
+        inputItemHandler.setStackInSlot(0, oreDrop);
+
+        GTRecipeType lastRecipeType = logic.miner.getRecipeType();
+        logic.miner.setRecipeType(recipeType);
+        logic.findAndHandleRecipe();
+        logic.miner.setRecipeType(lastRecipeType);
+
+        if (logic.lastRecipe != null) {
+            GTRecipe recipe = logic.lastRecipe;
             if (GTUtil.getTierByVoltage(EURecipeCapability.CAP.of(recipe.getTickInputContents(EURecipeCapability.CAP).get(0).getContent())) > tier) return;
 
-            List<Ingredient> left = outputItemHandler.handleRecipe(IO.OUT, recipe, ingredients, null);
-            if (left == null) {
+            if (recipe.handleRecipeIO(IO.OUT, logic.breakRecipeSearchHolder)) {
                 drops.clear();
 
                 List<ItemStack> outputs = new ArrayList<>();
                 for (int i = 0; i < outputItemHandler.getSlots(); ++i) {
-                    outputs.set(i, outputItemHandler.getStackInSlot(i));
+                    ItemStack stack = outputItemHandler.getStackInSlot(i);
+                    if (stack.isEmpty()) continue;
+                    outputs.add(stack);
                 }
                 for (ItemStack outputStack : outputs) {
+                    if (outputStack.isEmpty()) continue;
                     outputStack = outputStack.copy();
                     if (ChemicalHelper.getPrefix(outputStack.getItem()) == TagPrefix.crushed) {
                         if (dropCountMultiplier > 0) {
-                            outputStack.grow(outputStack.getCount() * dropCountMultiplier);
+                            outputStack = ApplyBonusCount.addUniformBonusCount(Enchantments.BLOCK_FORTUNE).build().apply(outputStack, builder.withParameter(LootContextParams.TOOL, fortunePick).create(LootContextParamSets.BLOCK));
                         }
                     }
                     drops.add(outputStack);
@@ -539,8 +596,42 @@ public class MinerLogic extends RecipeLogic {
             for (int i = 0; i < outputItemHandler.getSlots(); ++i) {
                 outputItemHandler.setStackInSlot(i, ItemStack.EMPTY);
             }
+        } else {
+            if (logic instanceof LargeMinerLogic largeMinerLogic) {
+                largeMinerLogic.getNormalRegularBlockDrops(drops, (ServerLevel) logic.getMachine().getLevel(), blockToMine, blockState);
+                largeMinerLogic.multiplyDrops(drops, dropCountMultiplier);
+            } else {
+                logic.getRegularBlockDrops(drops, (ServerLevel) logic.getMachine().getLevel(), blockToMine, blockState);
+            }
         }
+        inputItemHandler.setStackInSlot(0, ItemStack.EMPTY);
+    }
 
+    protected List<GTRecipe> searchRecipe() {
+        return machine.getRecipeType().searchRecipe(getRecipeManager(), this.breakRecipeSearchHolder);
+    }
+
+    public GTRecipe.ActionResult handleTickRecipe(GTRecipe recipe) {
+        if (recipe.hasTick()) {
+            var result = recipe.matchTickRecipe(this.breakRecipeSearchHolder);
+            if (result.isSuccessed()) {
+                recipe.handleTickRecipeIO(IO.IN, this.breakRecipeSearchHolder);
+                recipe.handleTickRecipeIO(IO.OUT, this.breakRecipeSearchHolder);
+            } else {
+                return result;
+            }
+        }
+        return GTRecipe.ActionResult.SUCCESS;
+    }
+
+    public void setupRecipe(GTRecipe recipe) {
+        if (handleFuelRecipe()) {
+            recipe.preWorking(this.breakRecipeSearchHolder);
+            if (recipe.handleRecipeIO(IO.IN, this.breakRecipeSearchHolder)) {
+                recipeDirty = false;
+                lastRecipe = recipe;
+            }
+        }
     }
 
     /**

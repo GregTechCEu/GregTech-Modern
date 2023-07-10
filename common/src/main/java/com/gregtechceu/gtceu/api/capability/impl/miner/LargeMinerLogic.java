@@ -68,9 +68,19 @@ public class LargeMinerLogic extends MinerLogic {
     @Override
     protected void getRegularBlockDrops(NonNullList<ItemStack> blockDrops, ServerLevel world, BlockPos blockToMine, @Nonnull BlockState blockState) {
         if (!isSilkTouchMode) // 3X the ore compared to the single blocks
-            applyTieredHammerNoRandomDrops(this, blockState, blockDrops, 3, this.blockDropRecipeMap, this.voltageTier);
+            applyTieredHammerNoRandomDrops(this, world, blockToMine, blockState, blockDrops, 3, this.blockDropRecipeMap, this.voltageTier);
         else
-            super.getRegularBlockDrops(blockDrops, world, blockToMine, blockState);
+            this.getSilkTouchDrops(blockDrops, world, blockToMine, blockState);
+    }
+
+    protected void getNormalRegularBlockDrops(NonNullList<ItemStack> blockDrops, ServerLevel world, BlockPos blockToMine, @Nonnull BlockState blockState) {
+        super.getRegularBlockDrops(blockDrops, world, blockToMine, blockState);
+    }
+
+    protected void multiplyDrops(NonNullList<ItemStack> drops, int dropCountMultiplier) {
+        for (ItemStack drop : drops) {
+            drop.setCount(drop.getCount() * dropCountMultiplier);
+        }
     }
 
     @Override

@@ -20,6 +20,7 @@ public class DummyRecipeCapabilityHolder extends MetaMachine implements IRecipeC
 
     public DummyRecipeCapabilityHolder(IMachineBlockEntity holder) {
         super(holder);
+        this.holder.getRootStorage().detach(getSyncStorage());
         this.table = Tables.newCustomTable(new EnumMap<>(IO.class), HashMap::new);
     }
 
