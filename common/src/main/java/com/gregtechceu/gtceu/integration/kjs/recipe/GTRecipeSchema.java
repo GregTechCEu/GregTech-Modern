@@ -3,9 +3,7 @@ package com.gregtechceu.gtceu.integration.kjs.recipe;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
-import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
-import com.gregtechceu.gtceu.api.capability.recipe.StressRecipeCapability;
+import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
@@ -25,9 +23,9 @@ import dev.latvian.mods.kubejs.item.OutputItem;
 import dev.latvian.mods.kubejs.recipe.RecipeJS;
 import dev.latvian.mods.kubejs.recipe.RecipeKey;
 import dev.latvian.mods.kubejs.recipe.component.BooleanComponent;
+import dev.latvian.mods.kubejs.recipe.component.RecipeComponentBuilder;
 import dev.latvian.mods.kubejs.recipe.component.TimeComponent;
 import dev.latvian.mods.kubejs.recipe.schema.RecipeSchema;
-import dev.latvian.mods.kubejs.util.UtilsJS;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -42,7 +40,6 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
@@ -63,95 +60,79 @@ public interface GTRecipeSchema {
             return this;
         }
 
-        public <T> GTRecipeJS input(String capability, T... obj) {
-            Map<String, Object> map;
+        private void setRaw(RecipeComponentBuilder.RCBHolder[] original, RecipeKey<?> key, Object value) {
+            for (int i = 0; i < original.length; i++) {
+                if (original[i].key() == key) {
+                    //var arr = new RecipeComponentBuilder.RCBHolder[original.length];
+                    //System.arraycopy(original, 0, arr, 0, original.length);
+                    original[i] = new RecipeComponentBuilder.RCBHolder(key, value);
+                    break;
+                    //return original;
+                }
+            }
+
+            //return original;
+        }
+
+        public <T> GTRecipeJS input(RecipeCapability<T> capability, Object... obj) {
+            RecipeComponentBuilder.RCBHolder[] map;
+            int allKeysSize = GTRecipeComponents.INVERSE_LOOKUP.keySet().size();
             if (perTick)  {
-                if (getValue(ALL_TICK_INPUTS) == null) setValue(ALL_TICK_INPUTS, new HashMap<String, HashMap<String, Object>>());
+                if (getValue(ALL_TICK_INPUTS) == null) setValue(ALL_TICK_INPUTS, new RecipeComponentBuilder.RCBHolder[allKeysSize]);
                 map = getValue(ALL_TICK_INPUTS);
             } else {
-                if (getValue(ALL_INPUTS) == null) setValue(ALL_INPUTS, new HashMap<String, HashMap<String, Object>>());
+                if (getValue(ALL_INPUTS) == null) setValue(ALL_INPUTS, new RecipeComponentBuilder.RCBHolder[allKeysSize]);
                 map = getValue(ALL_INPUTS);
             }
             if (map != null) {
-                HashMap<String, Object>[] array = UtilsJS.cast(map.computeIfAbsent(capability, c -> new HashMap[0]));
-                for (T object : obj) {
-                    HashMap<String, Object> entry = new HashMap<>();
-                    entry.put(GTRecipeComponents.CHANCE.name, chance);
-                    entry.put(GTRecipeComponents.TIER_CHANCE_BOOST.name, tierChanceBoost);
-                    entry.put("content", object);
-                    array = ArrayUtils.add(array, entry);
+                for (Map.Entry<RecipeKey<RecipeComponentBuilder.RCBHolder[][]>, Integer> e : GTRecipeComponents.INVERSE_LOOKUP.entrySet()) {
+                    map[e.getValue()] = new RecipeComponentBuilder.RCBHolder(e.getKey(), new RecipeComponentBuilder.RCBHolder[0][0]);
                 }
-                map.put(capability, array);
-            }
-            return this;
-        }
+                RecipeKey<RecipeComponentBuilder.RCBHolder[][]> key = GTRecipeComponents.ARRAY_KEY.get(capability);
 
-        public <T> GTRecipeJS input(RecipeCapability<T> capability, T... obj) {
-            Map<String, Object> map;
-            if (perTick)  {
-                if (getValue(ALL_TICK_INPUTS) == null) setValue(ALL_TICK_INPUTS, new HashMap<String, HashMap<String, Object>>());
-                map = getValue(ALL_TICK_INPUTS);
-            } else {
-                if (getValue(ALL_INPUTS) == null) setValue(ALL_INPUTS, new HashMap<String, HashMap<String, Object>>());
-                map = getValue(ALL_INPUTS);
-            }
-            if (map != null) {
-                HashMap<String, Object>[] array = UtilsJS.cast(map.computeIfAbsent(capability.name, c -> new HashMap[0]));
-                for (T object : obj) {
-                    HashMap<String, Object> entry = new HashMap<>();
-                    entry.put(GTRecipeComponents.CHANCE.name, chance);
-                    entry.put(GTRecipeComponents.TIER_CHANCE_BOOST.name, tierChanceBoost);
-                    entry.put("content", capability.of(object));
+                RecipeComponentBuilder.RCBHolder[][] array = RecipeComponentBuilder.get(map, key);
+                for (Object object : obj) {
+                    RecipeComponentBuilder.RCBHolder[] entry = new RecipeComponentBuilder.RCBHolder[] {
+                            new RecipeComponentBuilder.RCBHolder(GTRecipeComponents.CHANCE, chance),
+                            new RecipeComponentBuilder.RCBHolder(GTRecipeComponents.TIER_CHANCE_BOOST, tierChanceBoost),
+                            new RecipeComponentBuilder.RCBHolder(GTRecipeComponents.SINGLE_KEY.get(capability), object),
+                    };
                     array = ArrayUtils.add(array, entry);
                 }
-                map.put(capability.name, array);
-            }
-            return this;
-        }
-
-        public <T> GTRecipeJS output(String capability, T... obj) {
-            Map<String, Object> map;
-            if (perTick)  {
-                if (getValue(ALL_TICK_OUTPUTS) == null) setValue(ALL_TICK_OUTPUTS, new HashMap<String, HashMap<String, Object>>());
-                map = getValue(ALL_TICK_OUTPUTS);
-            } else {
-                if (getValue(ALL_OUTPUTS) == null) setValue(ALL_OUTPUTS, new HashMap<String, HashMap<String, Object>>());
-                map = getValue(ALL_OUTPUTS);
-            }
-            if (map != null) {
-                HashMap<String, Object>[] array = UtilsJS.cast(map.computeIfAbsent(capability, c -> new HashMap[0]));
-                for (T object : obj) {
-                    HashMap<String, Object> entry = new HashMap<>();
-                    entry.put(GTRecipeComponents.CHANCE.name, chance);
-                    entry.put(GTRecipeComponents.TIER_CHANCE_BOOST.name, tierChanceBoost);
-                    entry.put("content", object);
-                    array = ArrayUtils.add(array, entry);
-                }
-                map.put(capability, array);
+                setRaw(map, key, array);
+//                setValue(perTick ? ALL_TICK_INPUTS : ALL_INPUTS, map);
             }
             save();
             return this;
         }
 
-        public <T> GTRecipeJS output(RecipeCapability<T> capability, T... obj) {
-            Map<String, Object> map;
+        public <T> GTRecipeJS output(RecipeCapability<T> capability, Object... obj) {
+            RecipeComponentBuilder.RCBHolder[] map;
+            int allKeysSize = GTRecipeComponents.INVERSE_LOOKUP.keySet().size();
             if (perTick)  {
-                if (getValue(ALL_TICK_OUTPUTS) == null) setValue(ALL_TICK_OUTPUTS, new HashMap<String, HashMap<String, Object>>());
+                if (getValue(ALL_TICK_OUTPUTS) == null) setValue(ALL_TICK_OUTPUTS, new RecipeComponentBuilder.RCBHolder[allKeysSize]);
                 map = getValue(ALL_TICK_OUTPUTS);
             } else {
-                if (getValue(ALL_OUTPUTS) == null) setValue(ALL_OUTPUTS, new HashMap<String, HashMap<String, Object>>());
+                if (getValue(ALL_OUTPUTS) == null) setValue(ALL_OUTPUTS, new RecipeComponentBuilder.RCBHolder[allKeysSize]);
                 map = getValue(ALL_OUTPUTS);
             }
             if (map != null) {
-                HashMap<String, Object>[] array = UtilsJS.cast(map.computeIfAbsent(capability.name, c -> new HashMap[0]));
-                for (T object : obj) {
-                    HashMap<String, Object> entry = new HashMap<>();
-                    entry.put(GTRecipeComponents.CHANCE.name, chance);
-                    entry.put(GTRecipeComponents.TIER_CHANCE_BOOST.name, tierChanceBoost);
-                    entry.put("content", capability.of(object));
+                for (Map.Entry<RecipeKey<RecipeComponentBuilder.RCBHolder[][]>, Integer> e : GTRecipeComponents.INVERSE_LOOKUP.entrySet()) {
+                    map[e.getValue()] = new RecipeComponentBuilder.RCBHolder(e.getKey(), new RecipeComponentBuilder.RCBHolder[0][0]);
+                }
+                RecipeKey<RecipeComponentBuilder.RCBHolder[][]> key = GTRecipeComponents.ARRAY_KEY.get(capability);
+
+                RecipeComponentBuilder.RCBHolder[][] array = RecipeComponentBuilder.get(map, key);
+                for (Object object : obj) {
+                    RecipeComponentBuilder.RCBHolder[] entry = new RecipeComponentBuilder.RCBHolder[] {
+                            new RecipeComponentBuilder.RCBHolder(GTRecipeComponents.CHANCE, chance),
+                            new RecipeComponentBuilder.RCBHolder(GTRecipeComponents.TIER_CHANCE_BOOST, tierChanceBoost),
+                            new RecipeComponentBuilder.RCBHolder(GTRecipeComponents.SINGLE_KEY.get(capability), object),
+                    };
                     array = ArrayUtils.add(array, entry);
                 }
-                map.put(capability.name, array);
+                setRaw(map, key, array);
+//                setValue(perTick ? ALL_TICK_OUTPUTS : ALL_OUTPUTS, map);
             }
             save();
             return this;
@@ -173,15 +154,8 @@ public interface GTRecipeSchema {
             var lastPerTick = perTick;
             perTick = true;
             if (eu > 0) {
-                if (getValue(ALL_TICK_INPUTS) != null) {
-                    getValue(ALL_TICK_INPUTS).remove(EURecipeCapability.CAP.name);
-                }
                 inputEU(eu);
             } else if (eu < 0) {
-                if (getValue(ALL_TICK_OUTPUTS) != null) {
-                    getValue(ALL_TICK_OUTPUTS).remove(EURecipeCapability.CAP.name);
-                }
-                getValue(ALL_TICK_OUTPUTS).remove(EURecipeCapability.CAP.name);
                 outputEU(-eu);
             }
             perTick = lastPerTick;
@@ -194,7 +168,7 @@ public interface GTRecipeSchema {
 
         // for kjs
         public GTRecipeJS itemInputs(InputItem... inputs) {
-            return input("item", inputs);
+            return input(ItemRecipeCapability.CAP, (Object[]) inputs);
         }
 
         public GTRecipeJS itemInput(UnificationEntry input) {
@@ -206,7 +180,7 @@ public interface GTRecipeSchema {
         }
 
         public GTRecipeJS inputItems(InputItem... inputs) {
-            return input("item", inputs);
+            return input(ItemRecipeCapability.CAP, (Object[]) inputs);
         }
 
         public GTRecipeJS inputItems(ItemStack... inputs) {
@@ -216,7 +190,7 @@ public interface GTRecipeSchema {
                     throw new IllegalArgumentException(id + ": input items is empty");
                 }
             }
-            return input("item", Arrays.stream(inputs).map(stack -> InputItem.of(SizedIngredient.create(stack.hasTag() ? NBTIngredient.createNBTIngredient(stack) : Ingredient.of(stack), stack.getCount()), stack.getCount())).toArray(InputItem[]::new));
+            return input(ItemRecipeCapability.CAP, Arrays.stream(inputs).map(stack -> InputItem.of(SizedIngredient.create(stack.hasTag() ? NBTIngredient.createNBTIngredient(stack) : Ingredient.of(stack), stack.getCount()), stack.getCount())).toArray());
         }
 
         public GTRecipeJS inputItems(TagKey<Item> tag, int amount) {
@@ -287,7 +261,7 @@ public interface GTRecipeSchema {
                     throw new IllegalArgumentException(id + ": output items is empty");
                 }
             }
-            return output("item", Arrays.stream(outputs).map(InputItem::of).toArray(InputItem[]::new));
+            return output(ItemRecipeCapability.CAP, Arrays.stream(outputs).map(InputItem::of).toArray());
         }
 
         public GTRecipeJS outputItems(Item input, int amount) {
@@ -412,11 +386,11 @@ public interface GTRecipeSchema {
         }
 
         public GTRecipeJS inputFluids(FluidStackJS... inputs) {
-            return input("fluid", inputs);
+            return input(FluidRecipeCapability.CAP, (Object[]) inputs);
         }
 
         public GTRecipeJS outputFluids(FluidStackJS... outputs) {
-            return output("fluid", outputs);
+            return output(FluidRecipeCapability.CAP, (Object[]) outputs);
         }
 
         public GTRecipeJS inputStress(float stress) {
@@ -584,11 +558,11 @@ public interface GTRecipeSchema {
     RecipeKey<RecipeCondition[]> CONDITIONS = GTRecipeComponents.RECIPE_CONDITION.asArray().key("recipeConditions").defaultOptional().exclude();
     RecipeKey<Boolean> IS_FUEL = BooleanComponent.BOOLEAN.key("isFuel").optional(false).exclude();
 
-    RecipeKey<Map<String, Object>> ALL_INPUTS = GTRecipeComponents.ALL_ANY.key("inputs").defaultOptional();
-    RecipeKey<Map<String, Object>> ALL_TICK_INPUTS = GTRecipeComponents.ALL_ANY.key("tickInputs").defaultOptional();
+    RecipeKey<RecipeComponentBuilder.RCBHolder[]> ALL_INPUTS = GTRecipeComponents.ALL_IN.key("inputs").defaultOptional();
+    RecipeKey<RecipeComponentBuilder.RCBHolder[]> ALL_TICK_INPUTS = GTRecipeComponents.ALL_IN.key("tickInputs").defaultOptional();
 
-    RecipeKey<Map<String, Object>> ALL_OUTPUTS = GTRecipeComponents.ALL_ANY.key("outputs").defaultOptional();
-    RecipeKey<Map<String, Object>> ALL_TICK_OUTPUTS = GTRecipeComponents.ALL_ANY.key("tickOutputs").defaultOptional();
+    RecipeKey<RecipeComponentBuilder.RCBHolder[]> ALL_OUTPUTS = GTRecipeComponents.ALL_OUT.key("outputs").defaultOptional();
+    RecipeKey<RecipeComponentBuilder.RCBHolder[]> ALL_TICK_OUTPUTS = GTRecipeComponents.ALL_OUT.key("tickOutputs").defaultOptional();
 
     RecipeSchema SCHEMA = new RecipeSchema(GTRecipeJS.class, GTRecipeJS::new, DURATION, DATA, CONDITIONS, ALL_INPUTS, ALL_TICK_INPUTS, ALL_OUTPUTS, ALL_TICK_OUTPUTS, IS_FUEL)
             .constructor((recipe, schemaType, keys, from) -> recipe.id(from.getValue(recipe, ID)), ID);

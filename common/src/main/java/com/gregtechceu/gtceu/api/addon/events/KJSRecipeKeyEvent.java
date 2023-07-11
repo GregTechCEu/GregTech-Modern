@@ -1,7 +1,11 @@
 package com.gregtechceu.gtceu.api.addon.events;
 
+import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.integration.kjs.recipe.components.GTRecipeComponents;
-import dev.latvian.mods.kubejs.recipe.RecipeKey;
+import dev.latvian.mods.kubejs.recipe.component.ItemComponents;
+import dev.latvian.mods.kubejs.recipe.component.NumberComponent;
+import dev.latvian.mods.kubejs.recipe.component.RecipeComponent;
+import lombok.Getter;
 
 import java.util.*;
 
@@ -10,25 +14,21 @@ import java.util.*;
  * @date 2023/7/5
  * @implNote An event for adding KJS recipe keys
  */
+@SuppressWarnings("unused")
 public class KJSRecipeKeyEvent {
-    private final Set<RecipeKey<Map<String, Object>>> registeredKeys = new HashSet<>();
+    @Getter
+    private final Map<RecipeCapability<?>, RecipeComponent<?>> registeredKeys = new HashMap<>();
 
     /**
      * Use this to register new components for KJS to use!
-     * <br/>
-     * has to sadly be separate, because you need to use RecipeComponentBuilder to build an object for this
-     * <br/>
-     * see {@link GTRecipeComponents#ITEM} and {@link GTRecipeComponents#ALL_ANY}
+     * @param cap the recipe capability you're adding a KJS binding for.
+     * @param key the component, like {@link ItemComponents#INPUT} or {@link NumberComponent#ANY_LONG}
+     * @see GTRecipeComponents#ITEM_KEY
+     * @see GTRecipeComponents#ALL_IN
      */
-    public void registerKey(RecipeKey<Map<String, Object>> key) {
-        if (registeredKeys.add(key)) {
+    public void registerKey(RecipeCapability<?> cap, RecipeComponent<?> key) {
+        if (registeredKeys.put(cap, key) != null) {
             throw new IllegalStateException("Can't have multiple Recipe keys with same value!");
         }
     }
-
-    @SuppressWarnings("unchecked")
-    public Set<RecipeKey<Map<String, Object>>> getRegisteredKeys() {
-        return Set.of(registeredKeys.toArray(RecipeKey[]::new));
-    }
-
 }
