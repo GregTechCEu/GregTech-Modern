@@ -36,16 +36,16 @@ import java.util.List;
 public class ProspectorScannerBehavior implements IItemUIFactory, IInteractionItem, IAddInformation {
     private final int radius;
     private final long cost;
-    private final ProspectorMode[] modes;
+    private final ProspectorMode<?>[] modes;
 
-    public ProspectorScannerBehavior(int radius, long cost, ProspectorMode... modes) {
+    public ProspectorScannerBehavior(int radius, long cost, ProspectorMode<?>... modes) {
         this.radius = radius + 1;
         this.modes = modes;
         this.cost = cost;
     }
 
     @Nonnull
-    public ProspectorMode getMode(ItemStack stack) {
+    public ProspectorMode<?> getMode(ItemStack stack) {
         if (stack == ItemStack.EMPTY) {
             return modes[0];
         }
@@ -104,7 +104,7 @@ public class ProspectorScannerBehavior implements IItemUIFactory, IInteractionIt
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
         tooltipComponents.add(Component.translatable("metaitem.prospector.tooltip.radius", radius));
         tooltipComponents.add(Component.translatable("metaitem.prospector.tooltip.modes"));
-        for (ProspectorMode mode : modes) {
+        for (ProspectorMode<?> mode : modes) {
             tooltipComponents.add(Component.literal(" -").append(Component.translatable(mode.unlocalizedName)).withStyle(Style.EMPTY.withColor(ChatFormatting.RED)));
         }
     }

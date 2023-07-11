@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.gui.texture;
 
+import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.misc.PacketProspecting;
 import com.gregtechceu.gtceu.api.gui.misc.ProspectorMode;
 import com.lowdragmc.lowdraglib.gui.editor.ColorPattern;
@@ -22,8 +23,8 @@ import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.server.packs.resources.ResourceManager;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.awt.*;
 import java.io.IOException;
+import java.lang.reflect.Array;
 
 import static com.mojang.blaze3d.vertex.DefaultVertexFormat.POSITION_TEX_COLOR;
 
@@ -39,25 +40,32 @@ public class ProspectingTexture extends AbstractTexture {
     private final int imageWidth;
     @Getter
     private final int imageHeight;
-    public final String[][][] data;
-    private int playerXGui;
-    private int playerYGui;
+    public final Object[][][] data;
+    private final int playerXGui;
+    private final int playerYGui;
+    private final float direction;
+    private final int playerChunkX;
+    private final int playerChunkZ;
     private final ProspectorMode mode;
     private final int radius;
 
-    public ProspectingTexture(ProspectorMode mode, int radius, boolean darkMode) {
+    public ProspectingTexture(int playerChunkX, int playerChunkZ, int posX, int posZ, float direction, ProspectorMode mode, int radius, boolean darkMode) {
         this.darkMode = darkMode;
         this.radius = radius;
         this.mode = mode;
-        this.data = new String[(radius * 2 - 1) * mode.cellSize][(radius * 2 - 1) * mode.cellSize][0];
+        this.data = (Object[][][]) Array.newInstance(mode.getItemClass(), (radius * 2 - 1) * mode.cellSize, (radius * 2 - 1) * mode.cellSize, 0);
         this.imageWidth = (radius * 2 - 1) * 16;
         this.imageHeight = (radius * 2 - 1) * 16;
-    }
-
-    public void updateTexture(int playerChunkX, int playerChunkZ, int posX, int posZ, PacketProspecting packet) {
-        playerXGui = posX - (playerChunkX - this.radius + 1) * 16 + (posX > 0 ? 1 : 0);
+        this.playerChunkX = playerChunkX;
+        this.playerChunkZ = playerChunkZ;
+        this.direction = (direction + 180) % 360;
+        this.playerXGui = posX - (playerChunkX - this.radius + 1) * 16 + (posX > 0 ? 1 : 0);
         playerYGui = posZ - (playerChunkZ - this.radius + 1) * 16 + (posX > 0 ? 1 : 0);
 
+
+    }
+
+    public void updateTexture(PacketProspecting packet) {
         int ox;
         if ((packet.chunkX > 0 && playerChunkX > 0) || (packet.chunkX < 0 && playerChunkX < 0)) {
             ox = Math.abs(Math.abs(packet.chunkX) - Math.abs(playerChunkX));
@@ -85,9 +93,7 @@ public class ProspectingTexture extends AbstractTexture {
         }
 
         for (int x = 0; x < mode.cellSize; x++) {
-            for (int z = 0; z < mode.cellSize; z++) {
-                data[x + currentColumn * mode.cellSize][z + currentRow * mode.cellSize] = packet.data[x][z];
-            }
+            System.arraycopy(packet.data[x], 0, data[x + currentColumn * mode.cellSize], currentRow * mode.cellSize, mode.cellSize);
         }
         load();
     }
@@ -101,8 +107,8 @@ public class ProspectingTexture extends AbstractTexture {
                 // draw bg
                 image.setPixelRGBA(i, j, (darkMode ? ColorPattern.GRAY.color : ColorPattern.WHITE.color));
                 //draw items
-                for (String item : items) {
-                    if (!selected.equals(SELECTED_ALL) && !selected.equals(item)) continue;
+                for (var item : items) {
+                    if (!selected.equals(SELECTED_ALL) && !selected.equals(mode.getUniqueID(item))) continue;
                     var color = mode.getItemColor(item);
                     image.setPixelRGBA(i, j,  NativeImage.combine(255, ColorUtils.blueI(color), ColorUtils.greenI(color), ColorUtils.redI(color)));
                     break;
@@ -139,31 +145,19 @@ public class ProspectingTexture extends AbstractTexture {
         bufferbuilder.vertex(matrix4f, x, y, 0).uv(0, 0).color(-1).endVertex();
         tessellator.end();
 
-//        if (this.mode == ProspectorMode.FLUID) { // draw fluids in grid
-//            for (int cx = 0; cx < this.radius * 2 - 1; cx++) {
-//                for (int cz = 0; cz < this.radius * 2 - 1; cz++) {
-//                    if (this.map[cx][cz] != null && !this.map[cx][cz].isEmpty()) {
-//                        var fluidName = this.map[cx][cz].get((byte) 1);
-//                        if (selected.equals(SELECTED_ALL) || selected.equals(fluidName)) {
-//                            var fluid = Registry.FLUID.get(new ResourceLocation(fluidName));
-//                            DrawerHelper.drawFluidForGui(poseStack, FluidStack.create(fluid, 1), 1, x + cx * 16 + 1, y + cz * 16 + 1, 16, 16);
-//                        }
-//                    }
-//                }
-//            }
-//        }
+        GuiTextures.UP.copy().setColor(ColorPattern.RED.color).rotate(direction / 2).draw(poseStack, 0, 0, x + playerXGui - 20, y + playerYGui - 20, 40, 40);
 
         //draw red vertical line
         if (playerXGui % 16 > 7 || playerXGui % 16 == 0) {
-            DrawerHelper.drawSolidRect(poseStack, x + playerXGui - 1, y, 1, imageHeight, Color.RED.getRGB());
+            DrawerHelper.drawSolidRect(poseStack, x + playerXGui - 1, y, 1, imageHeight, ColorPattern.RED.color);
         } else {
-            DrawerHelper.drawSolidRect(poseStack, x + playerXGui, y, 1, imageHeight, Color.RED.getRGB());
+            DrawerHelper.drawSolidRect(poseStack, x + playerXGui, y, 1, imageHeight, ColorPattern.RED.color);
         }
         //draw red horizontal line
         if (playerYGui % 16 > 7 || playerYGui % 16 == 0) {
-            DrawerHelper.drawSolidRect(poseStack, x, y + playerYGui - 1, imageWidth, 1, Color.RED.getRGB());
+            DrawerHelper.drawSolidRect(poseStack, x, y + playerYGui - 1, imageWidth, 1, ColorPattern.RED.color);
         } else {
-            DrawerHelper.drawSolidRect(poseStack, x, y + playerYGui, imageWidth, 1, Color.RED.getRGB());
+            DrawerHelper.drawSolidRect(poseStack, x, y + playerYGui, imageWidth, 1, ColorPattern.RED.color);
         }
     }
 
@@ -179,9 +173,9 @@ public class ProspectingTexture extends AbstractTexture {
         }
     }
 
-    public void setSelected(String selected) {
-        if (!this.selected.equals(selected)) {
-            this.selected = selected;
+    public void setSelected(String uniqueID) {
+        if (!this.selected.equals(uniqueID)) {
+            this.selected = uniqueID;
             load();
         }
     }

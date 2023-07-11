@@ -25,11 +25,12 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.Consumer;
 
-public class ProspectingMapWidget extends WidgetGroup implements SearchComponentWidget.IWidgetSearch<String> {
+public class ProspectingMapWidget extends WidgetGroup implements SearchComponentWidget.IWidgetSearch<Object> {
     private final int chunkRadius;
     private final ProspectorMode mode;
     private final int scanTick;
@@ -38,12 +39,13 @@ public class ProspectingMapWidget extends WidgetGroup implements SearchComponent
     private final DraggableScrollableWidgetGroup itemList;
     @Environment(EnvType.CLIENT)
     private ProspectingTexture texture;
-
+    private int playerChunkX;
+    private int playerChunkZ;
     //runtime
     private int chunkIndex = 0;
     private final Queue<PacketProspecting> packetQueue = new LinkedBlockingQueue<>();
-    private final Set<String> items = new CopyOnWriteArraySet<>();
-    private final Map<String, SelectableWidgetGroup> selectedMap = new HashMap<>();
+    private final Set<Object> items = new CopyOnWriteArraySet<>();
+    private final Map<String, SelectableWidgetGroup> selectedMap = new ConcurrentHashMap<>();
 
     public ProspectingMapWidget(int xPosition, int yPosition, int width, int height, int chunkRadius, @Nonnull ProspectorMode mode, int scanTick) {
         super(xPosition, yPosition, width, height);
@@ -58,10 +60,28 @@ public class ProspectingMapWidget extends WidgetGroup implements SearchComponent
                 .setYScrollBarWidth(2).setYBarStyle(null, ColorPattern.T_WHITE.rectTexture().setRadius(1)));
         group.addWidget(new SearchComponentWidget<>(6, 6, group.getSize().width - 12, 18, this));
         addWidget(group);
-        if (isRemote()) {
-            texture = new ProspectingTexture(mode, chunkRadius, darkMode);
-            addNewItem("[all]", "all resources", IGuiTexture.EMPTY);
-        }
+        addNewItem("[all]", "all resources", IGuiTexture.EMPTY, -1);
+    }
+
+    @Override
+    public void writeInitialData(FriendlyByteBuf buffer) {
+        super.writeInitialData(buffer);
+        buffer.writeVarInt(playerChunkX = gui.entityPlayer.chunkPosition().x);
+        buffer.writeVarInt(playerChunkZ = gui.entityPlayer.chunkPosition().z);
+        buffer.writeVarInt(gui.entityPlayer.getBlockX());
+        buffer.writeVarInt(gui.entityPlayer.getBlockZ());
+    }
+
+    @Override
+    @Environment(EnvType.CLIENT)
+    public void readInitialData(FriendlyByteBuf buffer) {
+        super.readInitialData(buffer);
+        texture = new ProspectingTexture(
+                buffer.readVarInt(),
+                buffer.readVarInt(),
+                buffer.readVarInt(),
+                buffer.readVarInt(),
+                gui.entityPlayer.getVisualRotationYInDegrees(), mode, chunkRadius, darkMode);
     }
 
     public void setDarkMode(boolean mode) {
@@ -73,35 +93,35 @@ public class ProspectingMapWidget extends WidgetGroup implements SearchComponent
         }
     }
 
-    private void addOresToList(String[][][] data) {
-        var newNames = new HashSet<String>();
+    private void addOresToList(Object[][][] data) {
+        var newItems = new HashSet<>();
         for (int x = 0; x < mode.cellSize; x++) {
             for (int z = 0; z < mode.cellSize; z++) {
-                for (var name : data[x][z]) {
-                    if (!items.contains(name) && !newNames.contains(name)) {
-                        newNames.add(name);
-                        addNewItem(name, mode.getDescriptionId(name), mode.getItemIcon(name));
-                    }
+                for (var item : data[x][z]) {
+                    newItems.add(item);
+                    addNewItem(mode.getUniqueID(item), mode.getDescriptionId(item), mode.getItemIcon(item), mode.getItemColor(item));
                 }
             }
         }
-        items.addAll(newNames);
+        items.addAll(newItems);
     }
 
-    private void addNewItem(String name, String renderingName, IGuiTexture icon) {
-        var index = itemList.widgets.size();
-        var selectableWidgetGroup = new SelectableWidgetGroup(0, index * 15, itemList.getSize().width - 4, 15);
-        var size = selectableWidgetGroup.getSize();
-        selectableWidgetGroup.addWidget(new ImageWidget(0, 0, 15, 15, icon));
-        selectableWidgetGroup.addWidget(new ImageWidget(15, 0, size.width - 15, 15, new TextTexture(renderingName).setWidth(size.width - 15).setType(TextTexture.TextType.LEFT_HIDE)));
-        selectableWidgetGroup.setOnSelected(s -> {
-            if (isRemote()) {
-                texture.setSelected(name);
-            }
-        });
-        selectableWidgetGroup.setSelectedTexture(ColorPattern.WHITE.borderTexture(-1));
-        itemList.addWidget(selectableWidgetGroup);
-        selectedMap.put(name, selectableWidgetGroup);
+    private void addNewItem(String uniqueID, String renderingName, IGuiTexture icon, int color) {
+        if (!selectedMap.containsKey(uniqueID)) {
+            var index = itemList.widgets.size();
+            var selectableWidgetGroup = new SelectableWidgetGroup(0, index * 15, itemList.getSize().width - 4, 15);
+            var size = selectableWidgetGroup.getSize();
+            selectableWidgetGroup.addWidget(new ImageWidget(0, 0, 15, 15, icon));
+            selectableWidgetGroup.addWidget(new ImageWidget(15, 0, size.width - 15, 15, new TextTexture(renderingName).setColor(color).setDropShadow(false).setWidth(size.width - 15).setType(TextTexture.TextType.LEFT_HIDE)));
+            selectableWidgetGroup.setOnSelected(s -> {
+                if (isRemote()) {
+                    texture.setSelected(uniqueID);
+                }
+            });
+            selectableWidgetGroup.setSelectedTexture(ColorPattern.WHITE.borderTexture(-1));
+            itemList.addWidget(selectableWidgetGroup);
+            selectedMap.put(uniqueID, selectableWidgetGroup);
+        }
     }
 
     @Override
@@ -109,9 +129,6 @@ public class ProspectingMapWidget extends WidgetGroup implements SearchComponent
         var player = gui.entityPlayer;
         var world = player.level;
         if (gui.getTickCount() % scanTick == 0 && chunkIndex < (chunkRadius * 2 - 1) * (chunkRadius * 2 - 1)) {
-
-            int playerChunkX = player.chunkPosition().x;
-            int playerChunkZ = player.chunkPosition().z;
 
             int row = chunkIndex / (chunkRadius * 2 - 1);
             int column = chunkIndex % (chunkRadius * 2 - 1);
@@ -155,11 +172,7 @@ public class ProspectingMapWidget extends WidgetGroup implements SearchComponent
             int max = 10;
             while (max-- > 0 && !packetQueue.isEmpty()) {
                 var packet = packetQueue.poll();
-                texture.updateTexture(
-                        gui.entityPlayer.chunkPosition().x,
-                        gui.entityPlayer.chunkPosition().z,
-                        gui.entityPlayer.getBlockX(),
-                        gui.entityPlayer.getBlockZ(), packet);
+                texture.updateTexture(packet);
                 addOresToList(packet.data);
             }
         }
@@ -204,43 +217,30 @@ public class ProspectingMapWidget extends WidgetGroup implements SearchComponent
             // draw hover layer
             List<Component> tooltips = new ArrayList<>();
             tooltips.add(Component.translatable(mode.unlocalizedName));
-            final var itemHover = collectItemInfo(cX, cZ);
-            itemHover.forEach((name, count) -> {
-                tooltips.add(Component.translatable(mode.getDescriptionId(name)).append(" --- " + count));
-            });
+            for (int i = 0; i < mode.cellSize; i++) {
+                for (int j = 0; j < mode.cellSize; j++) {
+                    assert texture != null;
+                    if (texture.data[cX * mode.cellSize + i][cZ * mode.cellSize + j] != null) {
+                        var items = texture.data[cX * mode.cellSize + i][cZ * mode.cellSize + j];
+                        mode.appendTooltips(items, tooltips, texture.getSelected());
+                    }
+                }
+            }
             gui.getModularUIGui().setHoverTooltip(tooltips, ItemStack.EMPTY, null, null);
         }
     }
 
-    @NotNull
-    private HashMap<String, Integer> collectItemInfo(int cX, int cZ) {
-        HashMap<String, Integer> itemHover = new HashMap<>();
-        for (int i = 0; i < mode.cellSize; i++) {
-            for (int j = 0; j < mode.cellSize; j++) {
-                assert texture != null;
-                if (texture.data[cX * mode.cellSize + i][cZ * mode.cellSize + j] != null) {
-                    var items = texture.data[cX * mode.cellSize + i][cZ * mode.cellSize + j];
-                    for (String item : items) {
-                        if (ProspectingTexture.SELECTED_ALL.equals(texture.getSelected()) || texture.getSelected().equals(item)) {
-                            itemHover.put(item, itemHover.getOrDefault(item, 0) + 1);
-                        }
-                    }
-                }
-            }
-        }
-        return itemHover;
-    }
-
     @Override
-    public String resultDisplay(String value) {
+    public String resultDisplay(Object value) {
         return mode.getDescriptionId(value);
     }
 
     @Override
-    public void selectResult(String value) {
+    public void selectResult(Object item) {
         if (isRemote()) {
-            texture.setSelected(value);
-            var selected = selectedMap.get(value);
+            var uid = mode.getUniqueID(item);
+            texture.setSelected(uid);
+            var selected = selectedMap.get(uid);
             if (selected != null) {
                 itemList.setSelected(selected);
             }
@@ -248,11 +248,16 @@ public class ProspectingMapWidget extends WidgetGroup implements SearchComponent
     }
 
     @Override
-    public void search(String s, Consumer<String> consumer) {
-        for (String item : this.items) {
-            var localized = LocalizationUtils.format(resultDisplay(item));
-            if (item.toLowerCase().contains(s.toLowerCase()) || localized.contains(s)) {
-                consumer.accept(item);
+    public void search(String s, Consumer<Object> consumer) {
+        var added = new HashSet<String>();
+        for (var item : this.items) {
+            var id = mode.getUniqueID(item);
+            if (!added.contains(id)) {
+                added.add(id);
+                var localized = LocalizationUtils.format(resultDisplay(item));
+                if (item.toString().toLowerCase().contains(s.toLowerCase()) || localized.contains(s)) {
+                    consumer.accept(item);
+                }
             }
         }
     }

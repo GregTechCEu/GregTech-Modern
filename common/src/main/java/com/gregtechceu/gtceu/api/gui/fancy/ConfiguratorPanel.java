@@ -107,6 +107,8 @@ public class ConfiguratorPanel extends WidgetGroup {
             }
         }
         if (expanded != null && expanded.isVisible()) {
+            poseStack.pushPose();
+            poseStack.translate(0, 0, 600);
             RenderSystem.setShaderColor(1, 1, 1, 1);
             RenderSystem.enableBlend();
             if (expanded.inAnimate()) {
@@ -114,6 +116,7 @@ public class ConfiguratorPanel extends WidgetGroup {
             } else {
                 expanded.drawInBackground(poseStack, mouseX, mouseY, partialTicks);
             }
+            poseStack.popPose();
         }
     }
 
@@ -234,9 +237,17 @@ public class ConfiguratorPanel extends WidgetGroup {
             var size = view.getSize();
             this.dragOffsetX = 0;
             this.dragOffsetY = 0;
+            if (isRemote()) {
+                if (getParentPosition().x - size.width + (tabs.size() > 1 ?  - 2 : getTabSize()) < 0) {
+                    this.dragOffsetX -= (view.getParentPosition().x - size.width + (tabs.size() > 1 ?  - 2 : getTabSize()));
+                }
+                if (getParentPosition().y + size.height > gui.getScreenHeight()) {
+                    this.dragOffsetY -= view.getParentPosition().y + size.height - gui.getScreenHeight();
+                }
+            }
             animation(new Animation()
                     .duration(500)
-                    .position(new Position(- size.width + (tabs.size() > 1 ?  - 2 : getTabSize()), 0))
+                    .position(new Position(dragOffsetX - size.width + (tabs.size() > 1 ?  - 2 : getTabSize()), dragOffsetY))
                     .size(size)
                     .ease(Eases.EaseQuadOut)
                     .onFinish(() -> {
