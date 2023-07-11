@@ -7,6 +7,8 @@ import dev.latvian.mods.kubejs.event.StartupEventJS;
 import dev.latvian.mods.kubejs.script.ScriptType;
 import dev.latvian.mods.kubejs.util.UtilsJS;
 
+import java.util.stream.Stream;
+
 public class GTRegistryEventJS<K, V> extends StartupEventJS {
     private final GTRegistryObjectBuilderTypes<K, V> registry;
 
@@ -36,7 +38,7 @@ public class GTRegistryEventJS<K, V> extends StartupEventJS {
         var t = registry.types.get(type);
 
         if (t == null) {
-            throw new IllegalArgumentException("Unknown type '" + type + "' for object '" + id + "'!");
+            return create(id, Stream.of(type, args).flatMap(arg -> arg instanceof Object[] array ? Stream.of(array) : Stream.of(arg)).map(Object.class::cast).toArray());
         }
 
         var b = t.factory().createBuilder(UtilsJS.getMCID(ScriptType.STARTUP.manager.get().context, GTCEu.appendId(id)), args);
