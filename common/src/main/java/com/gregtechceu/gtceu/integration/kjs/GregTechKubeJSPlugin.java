@@ -21,12 +21,16 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
+import com.gregtechceu.gtceu.api.machine.multiblock.CoilWorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
+import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
 import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.api.pattern.Predicates;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
+import com.gregtechceu.gtceu.api.registry.registrate.MultiblockMachineBuilder;
 import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.integration.kjs.builders.*;
 import com.gregtechceu.gtceu.integration.kjs.builders.machine.*;
@@ -70,11 +74,13 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
 
         GTRegistryObjectBuilderTypes.RECIPE_TYPE.addType("basic", GTRecipeTypeBuilder.class, GTRecipeTypeBuilder::new, true);
 
-        GTRegistryObjectBuilderTypes.MACHINE.addType("simple", SimpleMachineBuilder.class, SimpleMachineBuilder::new, true);
-        GTRegistryObjectBuilderTypes.MACHINE.addType("steam", SteamMachineBuilder.class, SteamMachineBuilder::new, false);
-        GTRegistryObjectBuilderTypes.MACHINE.addType("generator", GeneratorBuilder.class, GeneratorBuilder::new, false);
-        GTRegistryObjectBuilderTypes.MACHINE.addType("multiblock", MultiblockBuilder.class, MultiblockBuilder::new, false);
-        GTRegistryObjectBuilderTypes.MACHINE.addType("kinetic", KineticMachineBuilder.class, KineticMachineBuilder::new, false);
+        GTRegistryObjectBuilderTypes.MACHINE.addType("simple", SimpleMachineBuilder.class, (id, args) -> SimpleMachineBuilder.createAll(id.getPath(), args), true);
+        GTRegistryObjectBuilderTypes.MACHINE.addType("custom", CustomTieredMachineBuilder.class, (id, args) -> CustomTieredMachineBuilder.createAll(id.getPath(), args), false);
+        GTRegistryObjectBuilderTypes.MACHINE.addType("steam", SteamMachineBuilder.class, (id, args) -> SteamMachineBuilder.createBoth(id.getPath(), args), false);
+        GTRegistryObjectBuilderTypes.MACHINE.addType("generator", GeneratorBuilder.class, (id, args) -> GeneratorBuilder.createAll(id.getPath(), args), false);
+        GTRegistryObjectBuilderTypes.MACHINE.addType("multiblock", CustomMultiblockBuilder.class, (id, args) -> CustomMultiblockBuilder.createMultiblock(id.getPath(), args), false);
+        GTRegistryObjectBuilderTypes.MACHINE.addType("primitive", CustomMultiblockBuilder.class, (id, args) -> CustomMultiblockBuilder.createPrimitiveMultiblock(id.getPath(), args), false);
+        GTRegistryObjectBuilderTypes.MACHINE.addType("kinetic", KineticMachineBuilder.class, (id, args) -> KineticMachineBuilder.createAll(id.getPath(), args), false);
 
         GTRegistryObjectBuilderTypes.WORLD_GEN_LAYER.addType("basic", WorldGenLayerBuilder.class, WorldGenLayerBuilder::new, true);
 
