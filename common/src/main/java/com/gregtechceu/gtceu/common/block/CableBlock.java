@@ -50,7 +50,7 @@ public class CableBlock extends MaterialPipeBlock<Insulation, CableData, LevelEn
 
     @Override
     public int tinted(BlockState blockState, @Nullable BlockAndTintGetter blockAndTintGetter, @Nullable BlockPos blockPos, int index) {
-        if (pipeType.isCable) {
+        if (pipeType.isCable && index == 0) {
             return 0x404040;
         }
         return material.getMaterialRGB();

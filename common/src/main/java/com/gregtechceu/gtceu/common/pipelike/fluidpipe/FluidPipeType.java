@@ -74,8 +74,8 @@ public enum FluidPipeType implements IMaterialPipeType<FluidPipeData> {
 
     public PipeModel createPipeModel(Material material) {
         if (material.hasProperty(PropertyKey.WOOD)) {
-            return new PipeModel(thickness, GTCEu.id("block/pipe/pipe_side_wood"));
+            return new PipeModel(thickness, GTCEu.id("block/pipe/pipe_side_wood"), GTCEu.id("block/pipe/pipe_%s_in_wood".formatted(name)));
         }
-        return new PipeModel(thickness, GTCEu.id("block/pipe/pipe_side"));
+        return new PipeModel(thickness, GTCEu.id("block/pipe/pipe_side"), GTCEu.id("block/pipe/pipe_%s_in".formatted(name)));
     }
 }

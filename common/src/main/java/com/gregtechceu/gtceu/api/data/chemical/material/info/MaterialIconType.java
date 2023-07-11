@@ -91,6 +91,7 @@ public record MaterialIconType(String name) {
     public static final MaterialIconType ore = new MaterialIconType("ore");
     public static final MaterialIconType oreSmall = new MaterialIconType("oreSmall");
     public static final MaterialIconType frameGt = new MaterialIconType("frameGt");
+    public static final MaterialIconType wire = new MaterialIconType("wire");
 
     // USED FOR GREGIFICATION ADDON
     public static final MaterialIconType seed = new MaterialIconType("seed");

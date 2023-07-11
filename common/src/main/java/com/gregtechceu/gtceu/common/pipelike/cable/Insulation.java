@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.common.pipelike.cable;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.pipenet.IMaterialPipeType;
 import com.gregtechceu.gtceu.client.model.PipeModel;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
@@ -75,7 +76,12 @@ public enum Insulation implements IMaterialPipeType<CableData> {
     }
 
     public PipeModel createPipeModel(Material material) {
-        return new PipeModel(thickness, isCable ? GTCEu.id("block/cable/insulation_5") : GTCEu.id("block/cable/wire"));
+        ResourceLocation wireTexturePath = MaterialIconType.wire.getBlockTexturePath(material.getMaterialIconSet(), true);
+        PipeModel model = new PipeModel(thickness, isCable ? GTCEu.id("block/cable/insulation_5") : wireTexturePath, wireTexturePath);
+        if (isCable) {
+            model.setEndOverlayTexture(GTCEu.id("block/cable/insulation_%s".formatted(insulationLevel)));
+        }
+        return model;
     }
 
 }

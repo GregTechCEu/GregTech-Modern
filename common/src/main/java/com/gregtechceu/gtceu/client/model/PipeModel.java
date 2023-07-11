@@ -4,6 +4,7 @@ import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
 import com.lowdragmc.lowdraglib.client.renderer.IItemRendererProvider;
 import com.mojang.blaze3d.vertex.PoseStack;
+import lombok.Setter;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
@@ -35,13 +36,16 @@ public class PipeModel {
     public final AABB coreCube;
     public final Map<Direction, AABB> sideCubes;
 
-    public ResourceLocation coreTexture;
+    public ResourceLocation sideTexture, endTexture;
+    @Setter
+    public ResourceLocation endOverlayTexture;
 
     @Environment(EnvType.CLIENT)
-    TextureAtlasSprite coreSprite;
+    TextureAtlasSprite sideSprite, endSprite, endOverlaySprite;
 
-    public PipeModel(float thickness, ResourceLocation coreTexture) {
-        this.coreTexture = coreTexture;
+    public PipeModel(float thickness, ResourceLocation sideTexture, ResourceLocation endTexture) {
+        this.sideTexture = sideTexture;
+        this.endTexture = endTexture;
         this.thickness = thickness;
         double min = (1d - thickness) / 2;
         double max = min + thickness;
@@ -76,17 +80,27 @@ public class PipeModel {
 
     @Environment(EnvType.CLIENT)
     public List<BakedQuad> bakeQuads(@Nullable Direction side, int connections) {
-        if (coreSprite == null) {
-            coreSprite = ModelFactory.getBlockSprite(coreTexture);
+        if (sideSprite == null) {
+            sideSprite = ModelFactory.getBlockSprite(sideTexture);
+        }
+        if (endSprite == null) {
+            endSprite = ModelFactory.getBlockSprite(endTexture);
+        }
+        if (endOverlayTexture != null && endOverlaySprite == null) {
+            endOverlaySprite = ModelFactory.getBlockSprite(endOverlayTexture);
         }
 
         if (side != null) {
             if (thickness == 1) { // full block
-                return List.of(FaceQuad.builder(side, coreSprite).cube(coreCube).cubeUV().tintIndex(0).bake());
+                return List.of(FaceQuad.builder(side, sideSprite).cube(coreCube).cubeUV().tintIndex(0).bake());
             }
 
             if (isConnected(connections, side)) { // side connected
-                return List.of(FaceQuad.builder(side, coreSprite).cube(sideCubes.get(side).inflate(-0.001)).cubeUV().tintIndex(0).bake());
+                BakedQuad base = FaceQuad.builder(side, endSprite).cube(sideCubes.get(side).inflate(-0.001)).cubeUV().tintIndex(1).bake();
+                if (endOverlaySprite != null) {
+                    return List.of(base, FaceQuad.builder(side, endOverlaySprite).cube(sideCubes.get(side).inflate(-0.000)).cubeUV().tintIndex(0).bake());
+                }
+                return List.of(base);
             }
 
             return Collections.emptyList();
@@ -97,13 +111,16 @@ public class PipeModel {
             // render core cube
             for (Direction face : Direction.values()) {
                 if (!isConnected(connections, face)) {
-                    quads.add(FaceQuad.builder(face, coreSprite).cube(coreCube).cubeUV().tintIndex(0).bake());
+                    quads.add(FaceQuad.builder(face, sideSprite).cube(coreCube).cubeUV().tintIndex(0).bake());
                 }
                 // render each connected side
                 for (Direction facing : Direction.values()) {
                     if (facing.getAxis() != face.getAxis()) {
                         if (isConnected(connections, facing)) {
-                            quads.add(FaceQuad.builder(face, coreSprite).cube(sideCubes.get(facing)).cubeUV().tintIndex(0).bake());
+                            quads.add(FaceQuad.builder(face, sideSprite).cube(sideCubes.get(facing)).cubeUV().tintIndex(0).bake());
+                            //if (endSpriteOverlay != null) {
+                            //    quads.add(FaceQuad.builder(face, endSpriteOverlay).cube(sideCubes.get(facing).inflate(0.01)).cubeUV().tintIndex(0).bake());
+                            //}
                         }
                     }
                 }
@@ -115,10 +132,10 @@ public class PipeModel {
     @NotNull
     @Environment(EnvType.CLIENT)
     public TextureAtlasSprite getParticleTexture() {
-        if (coreSprite == null) {
-            coreSprite = ModelFactory.getBlockSprite(coreTexture);
+        if (sideSprite == null) {
+            sideSprite = ModelFactory.getBlockSprite(sideTexture);
         }
-        return coreSprite;
+        return sideSprite;
     }
 
     @Environment(EnvType.CLIENT)
@@ -131,7 +148,11 @@ public class PipeModel {
 
     @Environment(EnvType.CLIENT)
     public void registerTextureAtlas(Consumer<ResourceLocation> register) {
-        register.accept(coreTexture);
-        coreSprite = null;
+        register.accept(sideTexture);
+        register.accept(endTexture);
+        if (endOverlayTexture != null) register.accept(endOverlayTexture);
+        sideSprite = null;
+        endSprite = null;
+        endOverlaySprite = null;
     }
 }
