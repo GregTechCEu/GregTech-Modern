@@ -137,65 +137,68 @@ public abstract class ProspectorMode<T> {
         }
     };
 
-    public static ProspectorMode<FluidStack> FLUID = new ProspectorMode<>("metaitem.prospector.mode.fluid", 1) {
+    public record FluidInfo(Fluid fluid, int left, int yield) {
+
+    }
+
+    public static ProspectorMode<FluidInfo> FLUID = new ProspectorMode<>("metaitem.prospector.mode.fluid", 1) {
         @Override
-        public void scan(FluidStack[][][] storage, LevelChunk chunk) {
+        public void scan(FluidInfo[][][] storage, LevelChunk chunk) {
             if (chunk.getLevel() instanceof ServerLevel serverLevel) {
                 var fluidVein = BedrockFluidVeinSaveData.getOrCreate(serverLevel).getFluidVeinWorldEntry(chunk.getPos().x, chunk.getPos().z);
                 if (fluidVein.getDefinition() != null) {
-                    var amount = fluidVein.getFluidYield() * fluidVein.getOperationsRemaining() / BedrockFluidVeinSaveData.MAXIMUM_VEIN_OPERATIONS;
-                    storage[0][0] = new FluidStack[] {
-                            FluidStack.create(fluidVein.getDefinition().getStoredFluid().get(), amount)
+                    var left = 100 * fluidVein.getOperationsRemaining() / BedrockFluidVeinSaveData.MAXIMUM_VEIN_OPERATIONS;
+                    storage[0][0] = new FluidInfo[] {
+                            new FluidInfo(fluidVein.getDefinition().getStoredFluid().get(), left, fluidVein.getFluidYield()),
                     };
                 }
             }
         }
 
         @Override
-        public int getItemColor(FluidStack item) {
-            return FluidHelper.getColor(item);
+        public int getItemColor(FluidInfo item) {
+            return FluidHelper.getColor(FluidStack.create(item.fluid, item.yield));
         }
 
         @Override
-        public IGuiTexture getItemIcon(FluidStack item) {
-            return new ItemStackTexture(item.getFluid().getBucket());
+        public IGuiTexture getItemIcon(FluidInfo item) {
+            return new ItemStackTexture(item.fluid.getBucket());
         }
 
         @Override
-        public String getDescriptionId(FluidStack item) {
-            return item.getDisplayName().getString();
+        public String getDescriptionId(FluidInfo item) {
+            return FluidStack.create(item.fluid, item.yield).getDisplayName().getString();
         }
 
         @Override
-        public String getUniqueID(FluidStack item) {
-            return Registry.FLUID.getKey(item.getFluid()).toString();
+        public String getUniqueID(FluidInfo item) {
+            return Registry.FLUID.getKey(item.fluid).toString();
         }
 
         @Override
-        public void serialize(FluidStack item, FriendlyByteBuf buf) {
-            item.writeToBuf(buf);
+        public void serialize(FluidInfo item, FriendlyByteBuf buf) {
+            buf.writeUtf(Registry.FLUID.getKey(item.fluid).toString());
+            buf.writeVarInt(item.left);
+            buf.writeVarInt(item.yield);
         }
 
         @Override
-        public FluidStack deserialize(FriendlyByteBuf buf) {
-            return FluidStack.readFromBuf(buf);
+        public FluidInfo deserialize(FriendlyByteBuf buf) {
+            return new FluidInfo(Registry.FLUID.get(new ResourceLocation(buf.readUtf())), buf.readVarInt(), buf.readVarInt());
         }
 
         @Override
-        public Class<FluidStack> getItemClass() {
-            return FluidStack.class;
+        public Class<FluidInfo> getItemClass() {
+            return FluidInfo.class;
         }
 
         @Override
-        public void appendTooltips(FluidStack[] items, List<Component> tooltips, String selected) {
-            Map<Fluid, Long> counter = new HashMap<>();
-            for (var item : items) {
-                if (ProspectingTexture.SELECTED_ALL.equals(selected) || selected.equals(getUniqueID(item))) {
-                    counter.put(item.getFluid(), counter.getOrDefault(item.getFluid(), 0L) + item.getAmount());
-                }
+        public void appendTooltips(FluidInfo[] items, List<Component> tooltips, String selected) {
+            for (FluidInfo item : items) {
+                tooltips.add(Component.translatable(getDescriptionId(item)).append(" --- %s (%s%%)".formatted(item.yield, item.left)));
             }
-            counter.forEach((item, count) -> tooltips.add(Component.translatable(getDescriptionId(FluidStack.create(item, count))).append(" --- " + count)));
         }
+
     };
 
     public final String unlocalizedName;

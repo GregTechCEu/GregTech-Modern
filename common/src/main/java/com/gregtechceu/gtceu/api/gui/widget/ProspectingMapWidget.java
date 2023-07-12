@@ -255,7 +255,7 @@ public class ProspectingMapWidget extends WidgetGroup implements SearchComponent
             if (!added.contains(id)) {
                 added.add(id);
                 var localized = LocalizationUtils.format(resultDisplay(item));
-                if (item.toString().toLowerCase().contains(s.toLowerCase()) || localized.contains(s)) {
+                if (item.toString().toLowerCase().contains(s.toLowerCase()) || localized.toLowerCase().contains(s.toLowerCase())) {
                     consumer.accept(item);
                 }
             }

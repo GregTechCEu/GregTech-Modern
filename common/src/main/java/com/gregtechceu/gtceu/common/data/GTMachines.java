@@ -1055,6 +1055,34 @@ public class GTMachines {
                     .register(),
             LuV, ZPM, UV);
 
+    public static final MultiblockMachineDefinition[] FLUID_DRILLING_RIG = registerTieredMultis("fluid_drilling_rig", FluidDrillMachine::new, (tier, builder) -> builder
+                    .rotationState(RotationState.NON_Y_AXIS)
+                    .langValue("%s Fusion Drilling Rig".formatted(VLVH[tier]))
+                    .recipeType(new GTRecipeType(GTCEu.id("drilling_rig"), "dummy"))
+                    .tooltips(
+                            Component.translatable("gtceu.machine.fluid_drilling_rig.description"),
+                            Component.translatable("gtceu.machine.fluid_drilling_rig.depletion", FormattingUtil.formatNumbers(100.0 / FluidDrillMachine.getDepletionChance(tier))),
+                            Component.translatable("gtceu.universal.tooltip.energy_tier_range", GTValues.VNF[tier], GTValues.VNF[tier + 1]),
+                            Component.translatable("gtceu.machine.fluid_drilling_rig.production", FluidDrillMachine.getRigMultiplier(tier), FormattingUtil.formatNumbers(FluidDrillMachine.getRigMultiplier(tier) * 1.5)))
+                    .appearanceBlock(() -> FluidDrillMachine.getCasingState(tier))
+                    .pattern((definition) -> {
+                        return FactoryBlockPattern.start()
+                                .aisle("XXX", "#F#", "#F#", "#F#", "###", "###", "###")
+                                .aisle("XXX", "FCF", "FCF", "FCF", "#F#", "#F#", "#F#")
+                                .aisle("XSX", "#F#", "#F#", "#F#", "###", "###", "###")
+                                .where('S', controller(blocks(definition.get())))
+                                .where('X', blocks(FluidDrillMachine.getCasingState(tier)).setMinGlobalLimited(3)
+                                        .or(abilities(PartAbility.INPUT_ENERGY).setMinGlobalLimited(1).setMaxGlobalLimited(3))
+                                        .or(abilities(PartAbility.EXPORT_FLUIDS).setMaxGlobalLimited(1)))
+                                .where('C', blocks(FluidDrillMachine.getCasingState(tier)))
+                                .where('F', blocks(FluidDrillMachine.getFrameState(tier)))
+                                .where('#', any())
+                                .build();
+                    })
+                    .workableCasingRenderer(FluidDrillMachine.getBaseTexture(tier), GTCEu.id("block/multiblock/fluid_drilling_rig"), false)
+                    .register(),
+            MV, HV, EV);
+
     public static final MultiblockMachineDefinition CLEANROOM = REGISTRATE.multiblock("cleanroom", CleanroomMachine::new)
             .rotationState(RotationState.NONE)
             .recipeType(new GTRecipeType(GTCEu.id("cleanroom"), "dummy"))
