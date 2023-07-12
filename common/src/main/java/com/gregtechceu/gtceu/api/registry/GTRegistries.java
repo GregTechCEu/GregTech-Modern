@@ -4,6 +4,7 @@ package com.gregtechceu.gtceu.api.registry;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
+import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefinition;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
@@ -12,9 +13,7 @@ import com.gregtechceu.gtceu.api.sound.SoundEntry;
 import com.gregtechceu.gtceu.api.data.chemical.Element;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import dev.architectury.injectables.annotations.ExpectPlatform;
-import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 
 /**
@@ -39,6 +38,7 @@ public final class GTRegistries {
     public static final GTRegistry.String<RecipeCapability<?>> RECIPE_CAPABILITIES = new GTRegistry.String<>(GTCEu.id("recipe_capability"));
     public static final GTRegistry.String<Class<? extends RecipeCondition>> RECIPE_CONDITIONS = new GTRegistry.String<>(GTCEu.id("recipe_condition"));
     public static final GTRegistry.RL<SoundEntry> SOUNDS = new GTRegistry.RL<>(GTCEu.id("sound"));
+    public static final GTRegistry.RL<BedrockFluidDefinition> BEDROCK_FLUID_DEFINITIONS = new GTRegistry.RL<>(GTCEu.id("bedrock_fluid"));
 
     @ExpectPlatform
     public static <V, T extends V> T register(Registry<V> registry, ResourceLocation name, T value) {

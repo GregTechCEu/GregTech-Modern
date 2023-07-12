@@ -273,4 +273,5 @@ public class GuiTextures {
     public static final ResourceBorderTexture ENERGY_BAR_OVERLAY = new ResourceBorderTexture("gtceu:textures/gui/widget/energy_bar_overlay.png", 28, 60, 6, 6);
     public static final ResourceTexture LIGHT_ON = new ResourceTexture("gtceu:textures/gui/widget/light_on.png");
     public static final ResourceTexture LIGHT_OFF = new ResourceTexture("gtceu:textures/gui/widget/light_off.png");
+    public static final ResourceTexture UP = new ResourceTexture("gtceu:textures/gui/base/up.png");
 }

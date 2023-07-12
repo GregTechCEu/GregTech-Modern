@@ -127,7 +127,7 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
 
     @Override
     public void toNetwork(FriendlyByteBuf buf, GTRecipe recipe) {
-        buf.writeUtf(recipe.recipeType.toString());
+        buf.writeUtf(recipe.recipeType == null ? "dummy" : recipe.recipeType.toString());
         buf.writeVarInt(recipe.duration);
         buf.writeCollection(recipe.inputs.entrySet(), GTRecipeSerializer::entryWriter);
         buf.writeCollection(recipe.tickInputs.entrySet(), GTRecipeSerializer::entryWriter);
