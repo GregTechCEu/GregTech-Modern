@@ -1,21 +1,19 @@
 package com.gregtechceu.gtceu.api.capability;
 
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
-import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
+import com.gregtechceu.gtceu.common.machine.trait.miner.MinerLogic;
 
 public interface IMiner extends IRecipeLogicMachine {
 
-    void setRecipeType(GTRecipeType type);
+    @Override
+    MinerLogic getRecipeLogic();
 
-    boolean drainEnergy(boolean simulate);
+    boolean drainInput(boolean simulate);
 
-    default boolean drainFluid(boolean simulate) {
-        return true;
+    default int getPipeLength() {
+        return getRecipeLogic().getPipeLength();
     }
-
-    boolean isInventoryFull();
-
-    void setInventoryFull(boolean isFull);
 
     static int getWorkingArea(int maximumRadius) {
         return maximumRadius * 2 + 1;

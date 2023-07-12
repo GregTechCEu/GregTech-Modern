@@ -15,7 +15,6 @@ import com.gregtechceu.gtceu.api.machine.steam.SteamWorkableMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
-import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.client.renderer.block.TextureOverrideRenderer;
 import com.gregtechceu.gtceu.client.renderer.machine.MinerRenderer;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
@@ -28,9 +27,9 @@ import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.ChatFormatting;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
@@ -38,15 +37,13 @@ import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 import java.util.Map;
 
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class SteamMinerMachine extends SteamWorkableMachine implements IMiner, IControllable, IExhaustVentMachine, IUIMachine {
-
-    @Getter
-    @Setter
-    private GTRecipeType recipeType;
-
     @Setter
     @Persisted @DescSynced
     private boolean needsVenting;
@@ -54,16 +51,13 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IMiner, I
     public final NotifiableItemStackHandler importItems;
     @Persisted
     public final NotifiableItemStackHandler exportItems;
-
     private final int inventorySize;
     private final int energyPerTick;
-    private boolean isInventoryFull = false;
     @Nullable
     protected TickableSubscription itemExportSubs;
 
     public SteamMinerMachine(IMachineBlockEntity holder, int speed, int maximumRadius, int fortune) {
         super(holder, false, fortune, speed, maximumRadius);
-        this.recipeType = getDefinition().getRecipeType();
         this.inventorySize = 4;
         this.energyPerTick = 16;
         this.importItems = createImportItemHandler();
@@ -154,7 +148,7 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IMiner, I
             textList.add(Component.translatable("gtceu.multiblock.large_miner.working").setStyle(Style.EMPTY.withColor(ChatFormatting.GOLD)));
         else if (!this.isWorkingEnabled())
             textList.add(Component.translatable("gtceu.multiblock.work_paused"));
-        if (this.isInventoryFull)
+        if (getRecipeLogic().isInventoryFull())
             textList.add(Component.translatable("gtceu.multiblock.large_miner.invfull").setStyle(Style.EMPTY.withColor(ChatFormatting.RED)));
     }
 
@@ -164,7 +158,7 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IMiner, I
         textList.add(Component.translatable("gtceu.machine.miner.minez", this.getRecipeLogic().getMineZ()));
     }
 
-    public boolean drainEnergy(boolean simulate) {
+    public boolean drainInput(boolean simulate) {
         long resultSteam = steamTank.getFluidInTank(0).getAmount() - energyPerTick;
         if (!this.isVentingBlocked() && resultSteam >= 0L && resultSteam <= steamTank.getTankCapacity(0)) {
             if (!simulate)
@@ -199,16 +193,6 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IMiner, I
     @Override
     public float getVentingDamage() {
         return 0;
-    }
-
-    @Override
-    public boolean isInventoryFull() {
-        return isInventoryFull;
-    }
-
-    @Override
-    public void setInventoryFull(boolean isFull) {
-        this.isInventoryFull = isFull;
     }
 
     @Override

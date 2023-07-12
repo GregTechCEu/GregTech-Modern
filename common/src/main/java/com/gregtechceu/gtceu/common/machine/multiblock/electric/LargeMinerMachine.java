@@ -18,11 +18,9 @@ import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMa
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
-import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.client.renderer.block.TextureOverrideRenderer;
 import com.gregtechceu.gtceu.client.renderer.machine.MinerRenderer;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
-import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.machine.trait.miner.LargeMinerLogic;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -42,8 +40,8 @@ import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
 import lombok.Getter;
-import lombok.Setter;
 import net.minecraft.ChatFormatting;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
@@ -55,12 +53,15 @@ import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import static com.gregtechceu.gtceu.common.data.GTMaterials.DrillingFluid;
 
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class LargeMinerMachine extends WorkableElectricMultiblockMachine implements IMiner, IControllable {
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(LargeMinerMachine.class, WorkableMultiblockMachine.MANAGED_FIELD_HOLDER);
 
@@ -69,9 +70,6 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine impleme
             GTValues.EV, GTMaterials.Steel,
             GTValues.IV, GTMaterials.Titanium,
             GTValues.LuV, GTMaterials.TungstenSteel);
-
-    @Getter @Setter
-    private GTRecipeType recipeType;
 
     @Getter
     private final Material material;
@@ -83,15 +81,10 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine impleme
     protected FluidTransferList inputFluidInventory;
     @Nullable
     protected ItemTransferList outputInventory;
-
-    @Getter @Setter
-    private boolean isInventoryFull = false;
-
     private final int drillingFluidConsumePerTick;
 
     public LargeMinerMachine(IMachineBlockEntity holder, int tier, int speed, int maximumChunkDiameter, int fortune, Material material, int drillingFluidConsumePerTick) {
         super(holder, material, fortune, speed, maximumChunkDiameter);
-        this.recipeType = getDefinition().getRecipeType();
         this.material = material;
         this.tier = tier;
         this.drillingFluidConsumePerTick = drillingFluidConsumePerTick;
@@ -100,7 +93,7 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine impleme
     @Override
     protected @NotNull RecipeLogic createRecipeLogic(Object... args) {
         if (args.length > 3 && args[args.length - 4] instanceof Material pipeMat && args[args.length - 3] instanceof Integer fortune && args[args.length - 2] instanceof Integer speed && args[args.length - 1] instanceof Integer maxRadius) {
-            return new LargeMinerLogic(this, fortune, speed, maxRadius * CHUNK_LENGTH / 2, getBaseTexture(pipeMat), GTRecipeTypes.MACERATOR_RECIPES);
+            return new LargeMinerLogic(this, fortune, speed, maxRadius * CHUNK_LENGTH / 2, getPipeModel(pipeMat));
         }
         throw new IllegalArgumentException("MinerMachine need args [inventorySize, fortune, speed, maximumRadius] for initialization");
     }
@@ -162,29 +155,24 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine impleme
     }
 
     @Override
-    public boolean drainEnergy(boolean simulate) {
+    public boolean drainInput(boolean simulate) {
         if (energyContainer != null && energyContainer.getEnergyCapacity() > 0) {
             long energyToDrain = GTValues.VA[getEnergyTier()];
             long resultEnergy = energyContainer.getEnergyStored() - energyToDrain;
             if (resultEnergy >= 0L && resultEnergy <= energyContainer.getEnergyCapacity()) {
                 if (!simulate)
                     energyContainer.changeEnergy(-energyToDrain);
-                return true;
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public boolean drainFluid(boolean simulate) {
-        if (inputFluidInventory != null && inputFluidInventory.transfers.length > 0) {
-
-            FluidStack drillingFluid = DrillingFluid.getFluid((long) this.drillingFluidConsumePerTick * getRecipeLogic().getOverclockAmount());
-            FluidStack fluidStack = inputFluidInventory.getFluidInTank(0);
-            if (fluidStack != FluidStack.empty() && fluidStack.isFluidEqual(DrillingFluid.getFluid(1)) && fluidStack.getAmount() >= drillingFluid.getAmount()) {
-                if (!simulate)
-                    GTTransferUtils.drainFluidAccountNotifiableList(inputFluidInventory, drillingFluid, false);
-                return true;
+                // drain fluid
+                if (inputFluidInventory != null && inputFluidInventory.transfers.length > 0) {
+                    FluidStack drillingFluid = DrillingFluid.getFluid((long) this.drillingFluidConsumePerTick * getRecipeLogic().getOverclockAmount());
+                    FluidStack fluidStack = inputFluidInventory.getFluidInTank(0);
+                    if (fluidStack != FluidStack.empty() && fluidStack.isFluidEqual(DrillingFluid.getFluid(1)) && fluidStack.getAmount() >= drillingFluid.getAmount()) {
+                        if (!simulate)
+                            GTTransferUtils.drainFluidAccountNotifiableList(inputFluidInventory, drillingFluid, false);
+                        return true;
+                    }
+                }
+                return false;
             }
         }
         return false;
@@ -237,22 +225,7 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine impleme
         }
     }
 
-    protected void addWarningText(List<Component> textList) {
-        //super.addWarningText(textList);
-        if (isFormed()) {
-            if (this.isInventoryFull) {
-                textList.add(Component.translatable("gtceu.multiblock.large_miner.invfull").setStyle(Style.EMPTY.withColor(ChatFormatting.RED)));
-            }
-            if (!drainFluid(true)) {
-                textList.add(Component.translatable("gtceu.multiblock.large_miner.needsfluid").setStyle(Style.EMPTY.withColor(ChatFormatting.RED)));
-            }
-            if (!drainEnergy(true)) {
-                textList.add(Component.translatable("gtceu.multiblock.large_miner.needspower").setStyle(Style.EMPTY.withColor(ChatFormatting.RED)));
-            }
-        }
-    }
-
-    public IModelRenderer getBaseTexture(Material material) {
+    public IModelRenderer getPipeModel(Material material) {
         if (material.equals(GTMaterials.Titanium))
             return new TextureOverrideRenderer(MinerRenderer.PIPE_MODEL, Map.of("all", GTCEu.id("block/casings/solid/machine_casing_stable_titanium")));
         else if (material.equals(GTMaterials.TungstenSteel))
@@ -340,10 +313,4 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine impleme
         return this.outputInventory;
     }
 
-    //    @Nonnull
-//    @Override
-//    public List<Component> getDataInfo() {
-//        int workingArea = getWorkingArea(getRecipeLogic().getCurrentRadius());
-//        return Collections.singletonList(Component.translatable("gtceu.machine.miner.working_area", workingArea, workingArea));
-//    }
 }

@@ -14,7 +14,6 @@ import com.gregtechceu.gtceu.api.machine.WorkableTieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
-import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.client.renderer.block.TextureOverrideRenderer;
 import com.gregtechceu.gtceu.client.renderer.machine.MinerRenderer;
 import com.gregtechceu.gtceu.common.data.GTMachines;
@@ -27,7 +26,6 @@ import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.utils.Position;
 import com.mojang.blaze3d.MethodsReturnNonnullByDefault;
 import lombok.Getter;
-import lombok.Setter;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -51,22 +49,17 @@ public class MinerMachine extends WorkableTieredMachine implements IMiner, ICont
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(MinerMachine.class, WorkableTieredMachine.MANAGED_FIELD_HOLDER);
     public static final TextureOverrideRenderer PIPE_MODEL = new TextureOverrideRenderer(MinerRenderer.PIPE_MODEL, Map.of("all", GTCEu.id("block/casings/solid/machine_casing_solid_steel")));
 
-    @Getter @Setter
-    private GTRecipeType recipeType;
-
     @Getter
     @Persisted
     protected final ItemStackTransfer chargerInventory;
 
     private final int inventorySize;
     private final long energyPerTick;
-    private boolean isInventoryFull = false;
     @Nullable
     protected TickableSubscription itemExportSubs;
 
     public MinerMachine(IMachineBlockEntity holder, int tier, int speed, int maximumRadius, int fortune, Object... args) {
         super(holder, tier, GTMachines.defaultTankSizeFunction, args, (tier + 1) * (tier + 1), fortune, speed, maximumRadius);
-        this.recipeType = getDefinition().getRecipeType();
         this.inventorySize = (tier + 1) * (tier + 1);
         this.energyPerTick = GTValues.V[tier - 1];
         this.chargerInventory = createChargerItemHandler();
@@ -158,9 +151,9 @@ public class MinerMachine extends WorkableTieredMachine implements IMiner, ICont
             textList.add(Component.translatable("gtceu.multiblock.large_miner.working").setStyle(Style.EMPTY.withColor(ChatFormatting.GOLD)));
         else if (!this.isWorkingEnabled())
             textList.add(Component.translatable("gtceu.multiblock.work_paused"));
-        if (isInventoryFull)
+        if (getRecipeLogic().isInventoryFull())
             textList.add(Component.translatable("gtceu.multiblock.large_miner.invfull").setStyle(Style.EMPTY.withColor(ChatFormatting.RED)));
-        if (!drainEnergy(true))
+        if (!drainInput(true))
             textList.add(Component.translatable("gtceu.multiblock.large_miner.needspower").setStyle(Style.EMPTY.withColor(ChatFormatting.RED)));
     }
 
@@ -171,7 +164,7 @@ public class MinerMachine extends WorkableTieredMachine implements IMiner, ICont
     }
 
     @Override
-    public boolean drainEnergy(boolean simulate) {
+    public boolean drainInput(boolean simulate) {
         long resultEnergy = energyContainer.getEnergyStored() - energyPerTick;
         if (resultEnergy >= 0L && resultEnergy <= energyContainer.getEnergyCapacity()) {
             if (!simulate)
@@ -238,16 +231,6 @@ public class MinerMachine extends WorkableTieredMachine implements IMiner, ICont
     public void onDrops(List<ItemStack> drops, Player entity) {
         clearInventory(drops, exportItems.storage);
         clearInventory(drops, chargerInventory);
-    }
-
-    @Override
-    public boolean isInventoryFull() {
-        return isInventoryFull;
-    }
-
-    @Override
-    public void setInventoryFull(boolean isFull) {
-        this.isInventoryFull = isFull;
     }
 
     @Override

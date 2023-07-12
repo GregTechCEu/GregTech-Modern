@@ -145,7 +145,7 @@ public class GTMachines {
     public final static MachineDefinition STEAM_MINER = REGISTRATE.machine("steam_miner", holder -> new SteamMinerMachine(holder, 320, 4, 0))
             .rotationState(RotationState.NON_Y_AXIS)
             .langValue("Steam Miner")
-            .recipeType(GTRecipeTypes.MINER_DUMMY)
+            .recipeType(GTRecipeTypes.DUMMY_RECIPES)
             .tier(0)
             .tooltips(Component.translatable("gtceu.universal.tooltip.uses_per_tick_steam", 16).append(ChatFormatting.GRAY + ", ")
                     .append(Component.translatable("gtceu.machine.miner.per_block", 320 / 20)))
@@ -247,7 +247,7 @@ public class GTMachines {
     public static final MachineDefinition[] MINER = registerTieredMachines("miner", (holder, tier) -> new MinerMachine(holder, tier, 320 / (tier * 2), tier * 8, tier),
             (tier, builder) -> builder
                     .rotationState(RotationState.NON_Y_AXIS)
-                    .recipeType(GTRecipeTypes.MINER_DUMMY)
+                    .recipeType(GTRecipeTypes.DUMMY_RECIPES)
                     .hasTESR(true)
                     .renderer(() -> new MinerRenderer(tier, GTCEu.id("block/machines/miner")))
                     .tooltipBuilder((stack, tooltip) -> {
@@ -1093,34 +1093,32 @@ public class GTMachines {
     public static final MultiblockMachineDefinition[] FLUID_DRILLING_RIG = registerTieredMultis("fluid_drilling_rig", FluidDrillMachine::new, (tier, builder) -> builder
                     .rotationState(RotationState.NON_Y_AXIS)
                     .langValue("%s Fusion Drilling Rig".formatted(VLVH[tier]))
-                    .recipeType(new GTRecipeType(GTCEu.id("drilling_rig"), "dummy"))
+                    .recipeType(GTRecipeTypes.DUMMY_RECIPES)
                     .tooltips(
                             Component.translatable("gtceu.machine.fluid_drilling_rig.description"),
                             Component.translatable("gtceu.machine.fluid_drilling_rig.depletion", FormattingUtil.formatNumbers(100.0 / FluidDrillMachine.getDepletionChance(tier))),
                             Component.translatable("gtceu.universal.tooltip.energy_tier_range", GTValues.VNF[tier], GTValues.VNF[tier + 1]),
                             Component.translatable("gtceu.machine.fluid_drilling_rig.production", FluidDrillMachine.getRigMultiplier(tier), FormattingUtil.formatNumbers(FluidDrillMachine.getRigMultiplier(tier) * 1.5)))
                     .appearanceBlock(() -> FluidDrillMachine.getCasingState(tier))
-                    .pattern((definition) -> {
-                        return FactoryBlockPattern.start()
-                                .aisle("XXX", "#F#", "#F#", "#F#", "###", "###", "###")
-                                .aisle("XXX", "FCF", "FCF", "FCF", "#F#", "#F#", "#F#")
-                                .aisle("XSX", "#F#", "#F#", "#F#", "###", "###", "###")
-                                .where('S', controller(blocks(definition.get())))
-                                .where('X', blocks(FluidDrillMachine.getCasingState(tier)).setMinGlobalLimited(3)
-                                        .or(abilities(PartAbility.INPUT_ENERGY).setMinGlobalLimited(1).setMaxGlobalLimited(3))
-                                        .or(abilities(PartAbility.EXPORT_FLUIDS).setMaxGlobalLimited(1)))
-                                .where('C', blocks(FluidDrillMachine.getCasingState(tier)))
-                                .where('F', blocks(FluidDrillMachine.getFrameState(tier)))
-                                .where('#', any())
-                                .build();
-                    })
+                    .pattern((definition) -> FactoryBlockPattern.start()
+                            .aisle("XXX", "#F#", "#F#", "#F#", "###", "###", "###")
+                            .aisle("XXX", "FCF", "FCF", "FCF", "#F#", "#F#", "#F#")
+                            .aisle("XSX", "#F#", "#F#", "#F#", "###", "###", "###")
+                            .where('S', controller(blocks(definition.get())))
+                            .where('X', blocks(FluidDrillMachine.getCasingState(tier)).setMinGlobalLimited(3)
+                                    .or(abilities(PartAbility.INPUT_ENERGY).setMinGlobalLimited(1).setMaxGlobalLimited(3))
+                                    .or(abilities(PartAbility.EXPORT_FLUIDS).setMaxGlobalLimited(1)))
+                            .where('C', blocks(FluidDrillMachine.getCasingState(tier)))
+                            .where('F', blocks(FluidDrillMachine.getFrameState(tier)))
+                            .where('#', any())
+                            .build())
                     .workableCasingRenderer(FluidDrillMachine.getBaseTexture(tier), GTCEu.id("block/multiblock/fluid_drilling_rig"), false)
                     .register(),
             MV, HV, EV);
 
     public static final MultiblockMachineDefinition CLEANROOM = REGISTRATE.multiblock("cleanroom", CleanroomMachine::new)
             .rotationState(RotationState.NONE)
-            .recipeType(new GTRecipeType(GTCEu.id("cleanroom"), "dummy"))
+            .recipeType(GTRecipeTypes.DUMMY_RECIPES)
             .appearanceBlock(PLASTCRETE)
             .tooltips(Component.translatable("gtceu.machine.cleanroom.tooltip.0"),
                     Component.translatable("gtceu.machine.cleanroom.tooltip.1"),
@@ -1223,7 +1221,7 @@ public class GTMachines {
     public static final MultiblockMachineDefinition[] LARGE_MINER = registerTieredMultis("large_miner", (holder, tier) -> new LargeMinerMachine(holder, tier, 64 / tier, 2 * tier - 5, tier, LargeMinerMachine.MINER_MATERIALS.get(tier), 8 - (tier - 5)),
             (tier, builder) -> builder
                     .rotationState(RotationState.NON_Y_AXIS)
-                    .recipeType(GTRecipeTypes.MINER_DUMMY)
+                    .recipeType(GTRecipeTypes.MACERATOR_RECIPES)
                     .hasTESR(true)
                     .tooltips(Component.translatable("gtceu.machine.large_miner.%s.tooltip".formatted(VN[tier].toLowerCase())),
                             Component.translatable("gtceu.machine.miner.multi.description"))

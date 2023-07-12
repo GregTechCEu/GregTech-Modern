@@ -8,6 +8,8 @@ import com.gregtechceu.gtceu.common.machine.trait.miner.MinerLogic;
 import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.resources.model.ModelState;
@@ -26,32 +28,38 @@ public class SteamMinerRenderer extends WorkableSteamMachineRenderer {
     }
 
     @Override
+    @Environment(EnvType.CLIENT)
     public boolean hasTESR(BlockEntity blockEntity) {
         return true;
     }
 
     @Override
+    @Environment(EnvType.CLIENT)
     public boolean isGlobalRenderer(BlockEntity blockEntity) {
         return true;
     }
 
     @Override
+    @Environment(EnvType.CLIENT)
     public int getViewDistance() {
         return 128;
     }
 
     @Override
+    @Environment(EnvType.CLIENT)
     public boolean shouldRender(BlockEntity blockEntity, Vec3 cameraPos) {
         return Vec3.atCenterOf(blockEntity.getBlockPos()).multiply(1.0, 0.0, 1.0).closerThan(cameraPos.multiply(1.0, 0.0, 1.0), this.getViewDistance());
     }
 
     @Override
+    @Environment(EnvType.CLIENT)
     public void renderMachine(List<BakedQuad> quads, MachineDefinition definition, @Nullable MetaMachine machine, Direction frontFacing, @Nullable Direction side, RandomSource rand, @Nullable Direction modelFacing, ModelState modelState) {
         super.renderMachine(quads, definition, machine, frontFacing, side, rand, modelFacing, modelState);
         if (side == Direction.DOWN) quads.add(FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(MinerRenderer.PIPE_IN_OVERLAY), modelState));
     }
 
     @Override
+    @Environment(EnvType.CLIENT)
     public void render(BlockEntity blockEntity, float partialTicks, PoseStack stack, MultiBufferSource buffer, int combinedLight, int combinedOverlay) {
         super.render(blockEntity, partialTicks, stack, buffer, combinedLight, combinedOverlay);
         if (blockEntity instanceof IMachineBlockEntity machineBlockEntity) {
