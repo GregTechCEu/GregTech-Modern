@@ -515,7 +515,7 @@ public class GTMachines {
 
     public final static MachineDefinition COKE_OVEN_HATCH = REGISTRATE.machine("coke_oven_hatch", CokeOvenHatch::new)
             .rotationState(RotationState.ALL)
-            .renderer(() -> new CTMModelRenderer(GTCEu.id("block/machine/part/coke_oven_hatch")))
+            .modelRenderer(() -> GTCEu.id("block/machine/part/coke_oven_hatch"))
             .register();
 
     public final static MachineDefinition PUMP_HATCH = REGISTRATE.machine("pump_hatch", PumpHatchPartMachine::new)
@@ -1090,6 +1090,34 @@ public class GTMachines {
                     .register(),
             LuV, ZPM, UV);
 
+    public static final MultiblockMachineDefinition[] FLUID_DRILLING_RIG = registerTieredMultis("fluid_drilling_rig", FluidDrillMachine::new, (tier, builder) -> builder
+                    .rotationState(RotationState.NON_Y_AXIS)
+                    .langValue("%s Fusion Drilling Rig".formatted(VLVH[tier]))
+                    .recipeType(new GTRecipeType(GTCEu.id("drilling_rig"), "dummy"))
+                    .tooltips(
+                            Component.translatable("gtceu.machine.fluid_drilling_rig.description"),
+                            Component.translatable("gtceu.machine.fluid_drilling_rig.depletion", FormattingUtil.formatNumbers(100.0 / FluidDrillMachine.getDepletionChance(tier))),
+                            Component.translatable("gtceu.universal.tooltip.energy_tier_range", GTValues.VNF[tier], GTValues.VNF[tier + 1]),
+                            Component.translatable("gtceu.machine.fluid_drilling_rig.production", FluidDrillMachine.getRigMultiplier(tier), FormattingUtil.formatNumbers(FluidDrillMachine.getRigMultiplier(tier) * 1.5)))
+                    .appearanceBlock(() -> FluidDrillMachine.getCasingState(tier))
+                    .pattern((definition) -> {
+                        return FactoryBlockPattern.start()
+                                .aisle("XXX", "#F#", "#F#", "#F#", "###", "###", "###")
+                                .aisle("XXX", "FCF", "FCF", "FCF", "#F#", "#F#", "#F#")
+                                .aisle("XSX", "#F#", "#F#", "#F#", "###", "###", "###")
+                                .where('S', controller(blocks(definition.get())))
+                                .where('X', blocks(FluidDrillMachine.getCasingState(tier)).setMinGlobalLimited(3)
+                                        .or(abilities(PartAbility.INPUT_ENERGY).setMinGlobalLimited(1).setMaxGlobalLimited(3))
+                                        .or(abilities(PartAbility.EXPORT_FLUIDS).setMaxGlobalLimited(1)))
+                                .where('C', blocks(FluidDrillMachine.getCasingState(tier)))
+                                .where('F', blocks(FluidDrillMachine.getFrameState(tier)))
+                                .where('#', any())
+                                .build();
+                    })
+                    .workableCasingRenderer(FluidDrillMachine.getBaseTexture(tier), GTCEu.id("block/multiblock/fluid_drilling_rig"), false)
+                    .register(),
+            MV, HV, EV);
+
     public static final MultiblockMachineDefinition CLEANROOM = REGISTRATE.multiblock("cleanroom", CleanroomMachine::new)
             .rotationState(RotationState.NONE)
             .recipeType(new GTRecipeType(GTCEu.id("cleanroom"), "dummy"))
@@ -1256,14 +1284,13 @@ public class GTMachines {
         return definitions;
     }
 
-    public static MachineDefinition[] registerTransformerMachines(String name,
-                                                                  int baseAmp) {
+    public static MachineDefinition[] registerTransformerMachines(String langName, int baseAmp) {
         return registerTieredMachines("transformer_%da".formatted(baseAmp), (holder, tier) -> new TransformerMachine(holder, tier, baseAmp),
                 (tier, builder) -> builder
                         .rotationState(RotationState.ALL)
                         .itemColor((itemStack, index) -> index == 2 ? GTValues.VC[tier + 1] : index == 3 ? GTValues.VC[tier] : index == 1 ? ConfigHolder.INSTANCE.client.defaultPaintingColor : -1)
                         .renderer(() -> new TransformerRenderer(tier, baseAmp))
-                        .langValue("%s %sTransformer".formatted(VOLTAGE_NAMES[tier], name))
+                        .langValue("%s %sTransformer".formatted(VOLTAGE_NAMES[tier], langName))
                         .tooltips(explosion())
                         .tooltips(Component.translatable("gtceu.machine.transformer.description"),
                                 Component.translatable("gtceu.machine.transformer.tooltip_tool_usage"),

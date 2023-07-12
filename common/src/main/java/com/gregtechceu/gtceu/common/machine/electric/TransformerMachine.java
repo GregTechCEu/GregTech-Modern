@@ -34,11 +34,11 @@ public class TransformerMachine extends TieredEnergyMachine implements IControll
     private boolean isTransformUp;
     @Persisted @Getter @Setter
     private boolean isWorkingEnabled;
-    @Persisted @Getter @Setter
-    private int baseAmp;
+    @Getter
+    private final int baseAmp;
 
     public TransformerMachine(IMachineBlockEntity holder, int tier, int baseAmp, Object... args) {
-        super(holder, tier, args);
+        super(holder, tier, baseAmp, args);
         this.isWorkingEnabled = true;
         this.baseAmp = baseAmp;
     }
@@ -59,10 +59,11 @@ public class TransformerMachine extends TieredEnergyMachine implements IControll
 
     @Override
     protected NotifiableEnergyContainer createEnergyContainer(Object... args) {
+        var amp = (args.length > 0 && args[0] instanceof Integer a) ? a : 1;
         NotifiableEnergyContainer energyContainer;
         long tierVoltage = GTValues.V[getTier()];
         // Since this.baseAmp is not yet initialized, we substitute with 1A as default
-        energyContainer = new NotifiableEnergyContainer(this, tierVoltage * 8L, tierVoltage * 4, 1, tierVoltage, 4);
+        energyContainer = new NotifiableEnergyContainer(this, tierVoltage * 8L, tierVoltage * 4, amp, tierVoltage, 4L * amp);
         energyContainer.setSideInputCondition(s -> s == getFrontFacing() && isWorkingEnabled());
         energyContainer.setSideOutputCondition(s -> s != getFrontFacing() && isWorkingEnabled());
         return energyContainer;

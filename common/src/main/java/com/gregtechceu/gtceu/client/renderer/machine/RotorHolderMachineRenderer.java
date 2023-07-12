@@ -39,18 +39,20 @@ public class RotorHolderMachineRenderer extends TieredHullMachineRenderer {
     @Environment(EnvType.CLIENT)
     public void renderMachine(List<BakedQuad> quads, MachineDefinition definition, @Nullable MetaMachine machine, Direction frontFacing, @Nullable Direction side, RandomSource rand, @Nullable Direction modelFacing, ModelState modelState) {
         super.renderMachine(quads, definition, machine, frontFacing, side, rand, modelFacing, modelState);
-        if (side == frontFacing && modelFacing != null && machine instanceof IRotorHolderMachine rotorHolderMachine) {
+        if (side == frontFacing && modelFacing != null) {
             quads.add(FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(ROTOR_HOLDER_OVERLAY), modelState));
-            var aabb = new AABB(-1, -1, -0.01, 2, 2, 1.01);
-            if (!rotorHolderMachine.getControllers().isEmpty()) {
-                quads.add(FaceQuad.bakeFace(aabb, modelFacing, ModelFactory.getBlockSprite(BASE_RING), modelState, -1, 15, true, false));
-                quads.add(FaceQuad.bakeFace(aabb, modelFacing, ModelFactory.getBlockSprite(BASE_BG), modelState, -1, 15, true, false));
-            }
-            if (rotorHolderMachine.hasRotor()) {
-                if (rotorHolderMachine.isRotorSpinning()) {
-                    quads.add(FaceQuad.bakeFace(aabb, modelFacing, ModelFactory.getBlockSprite(SPINNING), modelState, 2, 0, true, true));
-                } else {
-                    quads.add(FaceQuad.bakeFace(aabb, modelFacing, ModelFactory.getBlockSprite(IDLE), modelState, 2, 0, true, true));
+            if (machine instanceof IRotorHolderMachine rotorHolderMachine) {
+                var aabb = new AABB(-1, -1, -0.01, 2, 2, 1.01);
+                if (!rotorHolderMachine.getControllers().isEmpty()) {
+                    quads.add(FaceQuad.bakeFace(aabb, modelFacing, ModelFactory.getBlockSprite(BASE_RING), modelState, -1, 15, true, false));
+                    quads.add(FaceQuad.bakeFace(aabb, modelFacing, ModelFactory.getBlockSprite(BASE_BG), modelState, -1, 15, true, false));
+                }
+                if (rotorHolderMachine.hasRotor()) {
+                    if (rotorHolderMachine.isRotorSpinning()) {
+                        quads.add(FaceQuad.bakeFace(aabb, modelFacing, ModelFactory.getBlockSprite(SPINNING), modelState, 2, 0, true, true));
+                    } else {
+                        quads.add(FaceQuad.bakeFace(aabb, modelFacing, ModelFactory.getBlockSprite(IDLE), modelState, 2, 0, true, true));
+                    }
                 }
             }
         }

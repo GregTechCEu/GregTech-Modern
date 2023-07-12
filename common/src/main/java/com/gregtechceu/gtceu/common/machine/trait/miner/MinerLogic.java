@@ -1,8 +1,7 @@
-package com.gregtechceu.gtceu.api.capability.impl.miner;
+package com.gregtechceu.gtceu.common.machine.trait.miner;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.IMiner;
-import com.gregtechceu.gtceu.api.capability.impl.DummyRecipeCapabilityHolder;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
@@ -19,6 +18,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.syncdata.RequireRerender;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.gregtechceu.gtceu.common.machine.trait.DummyRecipeCapabilityHolder;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
@@ -614,7 +614,7 @@ public class MinerLogic extends RecipeLogic {
     public GTRecipe.ActionResult handleTickRecipe(GTRecipe recipe) {
         if (recipe.hasTick()) {
             var result = recipe.matchTickRecipe(this.breakRecipeSearchHolder);
-            if (result.isSuccessed()) {
+            if (result.isSuccess()) {
                 recipe.handleTickRecipeIO(IO.IN, this.breakRecipeSearchHolder);
                 recipe.handleTickRecipeIO(IO.OUT, this.breakRecipeSearchHolder);
             } else {

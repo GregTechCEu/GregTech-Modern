@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.api.capability.impl.miner;
+package com.gregtechceu.gtceu.common.machine.trait.miner;
 
 import com.gregtechceu.gtceu.api.machine.feature.IExhaustVentMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;

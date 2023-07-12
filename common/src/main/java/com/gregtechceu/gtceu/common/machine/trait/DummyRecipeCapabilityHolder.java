@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.api.capability.impl;
+package com.gregtechceu.gtceu.common.machine.trait;
 
 import com.google.common.collect.Table;
 import com.google.common.collect.Tables;

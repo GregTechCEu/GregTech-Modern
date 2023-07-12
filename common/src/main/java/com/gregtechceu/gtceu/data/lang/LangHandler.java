@@ -533,10 +533,10 @@ public class LangHandler {
         provider.add("tile.gtceu.reinforced_stone.name", "Reinforced Stone");
         provider.add("tile.brittle_charcoal.name", "Brittle Charcoal");
         multilineLang(provider, "tile.brittle_charcoal.tooltip", "Produced by the Charcoal Pile Igniter.\nMine this to get Charcoal.");
-        provider.add("metaitem.prospector.mode.ores", "§aOre Prospection Mode");
-        provider.add("metaitem.prospector.mode.fluid", "§bFluid Prospection Mode");
-        provider.add("metaitem.prospector.tooltip.ores", "Scans Ores in a %s Chunk Radius");
-        provider.add("metaitem.prospector.tooltip.fluids", "Scans Ores and Fluids in a %s Chunk Radius");
+        provider.add("metaitem.prospector.mode.ores", "§aOre Prospection Mode§r");
+        provider.add("metaitem.prospector.mode.fluid", "§bFluid Prospection Mode§r");
+        provider.add("metaitem.prospector.tooltip.radius", "Scans range in a %s Chunk Radius");
+        provider.add("metaitem.prospector.tooltip.modes", "Available Modes:");
         provider.add("behavior.prospector.not_enough_energy", "Not Enough Energy!");
         provider.add("metaitem.tricorder_scanner.tooltip", "Tricorder");
         provider.add("metaitem.debug_scanner.tooltip", "Tricorder");
