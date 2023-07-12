@@ -485,7 +485,6 @@ public class SeparationRecipes {
                 .outputFluids(Helium.getFluid(200))
                 .duration(64).EUt(64).save(provider);
 
-        // TODO Seed oil, fish oil
         EXTRACTOR_RECIPES.recipeBuilder("seed_oil_from_tag_seeds")
                 .duration(32).EUt(2)
                 .inputItems(Tags.Items.SEEDS)
