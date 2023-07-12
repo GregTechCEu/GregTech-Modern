@@ -24,6 +24,7 @@ import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidStorage;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import it.unimi.dsi.fastutil.longs.LongIntMutablePair;
 import it.unimi.dsi.fastutil.longs.LongIntPair;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
@@ -127,7 +128,7 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
             }
 
             var modified = RecipeHelper.applyOverclock(new OverclockingLogic((_recipe, recipeEUt, maxVoltage, duration, amountOC) ->
-                            LongIntPair.of(steamMachine.isHighPressure ? recipeEUt * 2 : recipeEUt, steamMachine.isHighPressure ? duration : duration * 2)),
+                            LongIntMutablePair.of(steamMachine.isHighPressure ? recipeEUt * 2 : recipeEUt, steamMachine.isHighPressure ? duration : duration * 2)),
                     recipe, GTValues.V[GTValues.LV]);
 
             if (modified == recipe) {

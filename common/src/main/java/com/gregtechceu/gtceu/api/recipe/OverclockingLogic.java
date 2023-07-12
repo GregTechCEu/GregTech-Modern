@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.recipe;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.mojang.datafixers.util.Function5;
+import it.unimi.dsi.fastutil.longs.LongIntMutablePair;
 import it.unimi.dsi.fastutil.longs.LongIntPair;
 import lombok.Getter;
 
@@ -88,7 +89,7 @@ public class OverclockingLogic {
             // in case duration overclocking would waste energy
             resultVoltage = potentialVoltage;
         }
-        return LongIntPair.of((long) resultVoltage, (int) resultDuration);
+        return LongIntMutablePair.of((long) resultVoltage, (int) resultDuration);
     }
 
     @Nonnull
