@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidVeinSave
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.FluidVeinWorldEntry;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.FluidDrillMachine;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
@@ -52,8 +53,11 @@ public class FluidDrillLogic extends RecipeLogic {
                 }
             }
             var match = getFluidDrillRecipe();
-            if (match != null && match.matchRecipe(this.machine).isSuccess() && match.matchTickRecipe(this.machine).isSuccess()) {
-                setupRecipe(match);
+            if (match != null) {
+                var copied = match.copy(new ContentModifier(match.duration, 0));
+                if (match.matchRecipe(this.machine).isSuccess() && copied.matchTickRecipe(this.machine).isSuccess()) {
+                    setupRecipe(match);
+                }
             }
         }
     }
@@ -103,13 +107,16 @@ public class FluidDrillLogic extends RecipeLogic {
         depleteVein();
         // try it again
         var match = getFluidDrillRecipe();
-        if (match != null && match.matchRecipe(this.machine).isSuccess() && match.matchTickRecipe(this.machine).isSuccess()) {
-            setupRecipe(match);
-        } else {
-            setStatus(Status.IDLE);
-            progress = 0;
-            duration = 0;
+        if (match != null) {
+            var copied = match.copy(new ContentModifier(match.duration, 0));
+            if (match.matchRecipe(this.machine).isSuccess() && copied.matchTickRecipe(this.machine).isSuccess()) {
+                setupRecipe(match);
+                return;
+            }
         }
+        setStatus(Status.IDLE);
+        progress = 0;
+        duration = 0;
     }
 
     protected void depleteVein() {
