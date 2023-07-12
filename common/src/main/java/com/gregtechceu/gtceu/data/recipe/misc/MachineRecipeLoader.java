@@ -762,6 +762,11 @@ public class MachineRecipeLoader {
         COMPRESSOR_RECIPES.recipeBuilder("plant_ball_from_nether_wart").duration(300).EUt(2).inputItems(new ItemStack(Items.NETHER_WART_BLOCK, 8)).outputItems(PLANT_BALL).save(provider);
         COMPRESSOR_RECIPES.recipeBuilder("plant_ball_from_crimson_stem").duration(300).EUt(2).inputItems(new ItemStack(Items.CRIMSON_STEM, 8)).outputItems(PLANT_BALL).save(provider);
         COMPRESSOR_RECIPES.recipeBuilder("plant_ball_from_warped_stem").duration(300).EUt(2).inputItems(new ItemStack(Items.WARPED_STEM, 8)).outputItems(PLANT_BALL).save(provider);
+        COMPRESSOR_RECIPES.recipeBuilder("plant_ball_from_brain_coral").duration(300).EUt(2).inputItems(new ItemStack(Items.BRAIN_CORAL, 8)).outputItems(PLANT_BALL).save(provider);
+        COMPRESSOR_RECIPES.recipeBuilder("plant_ball_from_bubble_coral").duration(300).EUt(2).inputItems(new ItemStack(Items.BUBBLE_CORAL, 8)).outputItems(PLANT_BALL).save(provider);
+        COMPRESSOR_RECIPES.recipeBuilder("plant_ball_from_fire_coral").duration(300).EUt(2).inputItems(new ItemStack(Items.FIRE_CORAL, 8)).outputItems(PLANT_BALL).save(provider);
+        COMPRESSOR_RECIPES.recipeBuilder("plant_ball_from_tube_coral").duration(300).EUt(2).inputItems(new ItemStack(Items.TUBE_CORAL, 8)).outputItems(PLANT_BALL).save(provider);
+        COMPRESSOR_RECIPES.recipeBuilder("plant_ball_from_horn_coral").duration(300).EUt(2).inputItems(new ItemStack(Items.HORN_CORAL, 8)).outputItems(PLANT_BALL).save(provider);
     }
 
     private static void registerRecyclingRecipes(Consumer<FinishedRecipe> provider) {
