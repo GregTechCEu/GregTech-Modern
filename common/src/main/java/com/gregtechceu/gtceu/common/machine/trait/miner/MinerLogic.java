@@ -48,7 +48,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.LootContext;
@@ -188,84 +187,76 @@ public class MinerLogic extends RecipeLogic {
      * Call this method every tick in update
      */
     public void serverTick() {
-        // Needs to be server side
-        if (getMachine().isRemote())
-            return;
+        if (!isSuspend()) {
+            // check if mining is possible
+            if (!checkCanMine())
+                return;
 
-        // Inactive miners do nothing
-        if (!this.isWorkingEnabled())
-            return;
+            // if the inventory is not full, drain energy etc. from the miner
+            // the storages have already been checked earlier
+            if (!miner.isInventoryFull()) {
+                // always drain storages when working, even if blocksToMine ends up being empty
+                drainStorages(false);
 
-        // check if mining is possible
-        if (!checkCanMine())
-            return;
-
-        // if the inventory is not full, drain energy etc. from the miner
-        // the storages have already been checked earlier
-        if (!miner.isInventoryFull()) {
-            // always drain storages when working, even if blocksToMine ends up being empty
-            drainStorages(false);
-
-            // since energy is being consumed the miner is now active
-            if (!this.isActive())
-                setStatus(Status.WORKING);
-        } else {
-            // the miner cannot drain, therefore it is inactive
-            if (this.isActive()) {
-                setWaiting(Component.translatable("gtceu.recipe_logic.insufficient_out").append(": ").append(ItemRecipeCapability.CAP.getTraslateComponent()));
-            }
-        }
-
-        // drill a hole beneath the miner and extend the pipe downwards by one
-        ServerLevel world = (ServerLevel) getMachine().getLevel();
-        if (mineY < pipeY) {
-            BlockPos miningPos = getMiningPos();
-            world.destroyBlock(new BlockPos(miningPos.getX(), pipeY, miningPos.getZ()), false);
-            --pipeY;
-            incrementPipeLength();
-        }
-
-        // check if the miner needs new blocks to mine and get them if needed
-        checkBlocksToMine();
-
-        // if there are blocks to mine and the correct amount of time has passed, do the mining
-        if (getMachine().getOffsetTimer() % this.speed == 0 && !blocksToMine.isEmpty()) {
-            NonNullList<ItemStack> blockDrops = NonNullList.create();
-            BlockState blockState = world.getBlockState(blocksToMine.getFirst());
-
-            // check to make sure the ore is still there,
-            while (!blockState.is(CustomTags.ORE_BLOCKS)) {
-                blocksToMine.removeFirst();
-                if (blocksToMine.isEmpty()) break;
-                blockState = world.getBlockState(blocksToMine.getFirst());
-            }
-            // When we are here we have an ore to mine! I'm glad we aren't threaded
-            if (!blocksToMine.isEmpty() & blockState.is(CustomTags.ORE_BLOCKS)) {
-                // get the small ore drops, if a small ore
-                getSmallOreBlockDrops(blockDrops, world, blocksToMine.getFirst(), blockState);
-                // get the block's drops.
-                getRegularBlockDrops(blockDrops, world, blocksToMine.getFirst(), blockState);
-                // try to insert them
-                mineAndInsertItems(blockDrops, world);
+                // since energy is being consumed the miner is now active
+                if (!this.isActive())
+                    setStatus(Status.WORKING);
+            } else {
+                // the miner cannot drain, therefore it is inactive
+                if (this.isActive()) {
+                    setWaiting(Component.translatable("gtceu.recipe_logic.insufficient_out").append(": ").append(ItemRecipeCapability.CAP.getTraslateComponent()));
+                }
             }
 
-        }
+            // drill a hole beneath the miner and extend the pipe downwards by one
+            ServerLevel world = (ServerLevel) getMachine().getLevel();
+            if (mineY < pipeY) {
+                BlockPos miningPos = getMiningPos();
+                world.destroyBlock(new BlockPos(miningPos.getX(), pipeY, miningPos.getZ()), false);
+                --pipeY;
+                incrementPipeLength();
+            }
 
-        if (blocksToMine.isEmpty()) {
-            // there were no blocks to mine, so the current position is the previous position
-            x = mineX;
-            y = mineY;
-            z = mineZ;
+            // check if the miner needs new blocks to mine and get them if needed
+            checkBlocksToMine();
 
-            // attempt to get more blocks to mine, if there are none, the miner is done mining
-            blocksToMine.addAll(getBlocksToMine());
+            // if there are blocks to mine and the correct amount of time has passed, do the mining
+            if (getMachine().getOffsetTimer() % this.speed == 0 && !blocksToMine.isEmpty()) {
+                NonNullList<ItemStack> blockDrops = NonNullList.create();
+                BlockState blockState = world.getBlockState(blocksToMine.getFirst());
+
+                // check to make sure the ore is still there,
+                while (!blockState.is(CustomTags.ORE_BLOCKS)) {
+                    blocksToMine.removeFirst();
+                    if (blocksToMine.isEmpty()) break;
+                    blockState = world.getBlockState(blocksToMine.getFirst());
+                }
+                // When we are here we have an ore to mine! I'm glad we aren't threaded
+                if (!blocksToMine.isEmpty() & blockState.is(CustomTags.ORE_BLOCKS)) {
+                    // get the small ore drops, if a small ore
+                    getSmallOreBlockDrops(blockDrops, world, blocksToMine.getFirst(), blockState);
+                    // get the block's drops.
+                    getRegularBlockDrops(blockDrops, world, blocksToMine.getFirst(), blockState);
+                    // try to insert them
+                    mineAndInsertItems(blockDrops, world);
+                }
+
+            }
+
             if (blocksToMine.isEmpty()) {
-                this.isDone = true;
-                this.setStatus(Status.IDLE);
-            }
-        }
+                // there were no blocks to mine, so the current position is the previous position
+                x = mineX;
+                y = mineY;
+                z = mineZ;
 
-        if (isSuspend()) {
+                // attempt to get more blocks to mine, if there are none, the miner is done mining
+                blocksToMine.addAll(getBlocksToMine());
+                if (blocksToMine.isEmpty()) {
+                    this.isDone = true;
+                    this.setStatus(Status.IDLE);
+                }
+            }
+        } else {
             // machine isn't working enabled
             if (subscription != null) {
                 subscription.unsubscribe();
