@@ -23,7 +23,6 @@ import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.api.registry.registrate.MultiblockMachineBuilder;
-import com.gregtechceu.gtceu.client.renderer.block.CTMModelRenderer;
 import com.gregtechceu.gtceu.client.renderer.machine.*;
 import com.gregtechceu.gtceu.common.block.BoilerFireboxType;
 import com.gregtechceu.gtceu.common.machine.electric.*;
@@ -229,6 +228,8 @@ public class GTMachines {
     public final static MachineDefinition[] BATTERY_BUFFER_8 = registerBatteryBuffer(8);
 
     public final static MachineDefinition[] BATTERY_BUFFER_16 = registerBatteryBuffer(16);
+
+    public final static MachineDefinition[] CHARGER_4 = registerCharger(4);
 
     public final static MachineDefinition[] PUMP = registerTieredMachines("pump", PumpMachine::new,
             (tier, builder) -> builder
@@ -1356,6 +1357,21 @@ public class GTMachines {
                                 Component.translatable("gtceu.universal.tooltip.voltage_in_out", GTValues.V[tier], GTValues.VNF[tier]),
                                 Component.translatable("gtceu.universal.tooltip.amperage_in_till", batterySlotSize * BatteryBufferMachine.AMPS_PER_BATTERY),
                                 Component.translatable("gtceu.universal.tooltip.amperage_out_till", batterySlotSize))
+                        .register(),
+                ALL_TIERS);
+    }
+
+    public static MachineDefinition[] registerCharger(int itemSlotSize) {
+        return registerTieredMachines("charger_" + itemSlotSize + "x",
+                (holder, tier) -> new ChargerMachine(holder, tier, itemSlotSize),
+                (tier, builder) -> builder
+                        .rotationState(RotationState.ALL)
+                        .renderer(() -> new ChargerRenderer(tier, itemSlotSize))
+                        .langValue("%s %s%s".formatted(VOLTAGE_NAMES[tier], itemSlotSize, "x Charger"))
+                        .tooltips(explosion())
+                        .tooltips(Component.translatable("gtceu.universal.tooltip.item_storage_capacity", itemSlotSize),
+                                Component.translatable("gtceu.universal.tooltip.voltage_in_out", GTValues.V[tier], GTValues.VNF[tier]),
+                                Component.translatable("gtceu.universal.tooltip.amperage_in_till", itemSlotSize * ChargerMachine.AMPS_PER_ITEM))
                         .register(),
                 ALL_TIERS);
     }

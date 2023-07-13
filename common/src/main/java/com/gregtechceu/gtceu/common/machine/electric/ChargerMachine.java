@@ -35,7 +35,7 @@ import java.util.List;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class ChargerMachine extends TieredEnergyMachine implements IControllable, IFancyUIMachine {
-    public static final long AMPS_PER_BATTERY = 4L;
+    public static final long AMPS_PER_ITEM = 4L;
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(ChargerMachine.class, TieredEnergyMachine.MANAGED_FIELD_HOLDER);
 
@@ -155,7 +155,7 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
     protected class EnergyBatteryTrait extends NotifiableEnergyContainer {
 
         protected EnergyBatteryTrait(int inventorySize) {
-            super(ChargerMachine.this, GTValues.V[tier] * inventorySize * 32L, GTValues.V[tier], inventorySize * AMPS_PER_BATTERY, 0L, 0L);
+            super(ChargerMachine.this, GTValues.V[tier] * inventorySize * 32L, GTValues.V[tier], inventorySize * AMPS_PER_ITEM, 0L, 0L);
             this.setSideInputCondition(side -> isWorkingEnabled());
             this.setSideOutputCondition(side -> false);
         }
@@ -171,7 +171,7 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
                 return 0;
 
             var electricItems = getNonFullElectricItem();
-            var maxAmps = electricItems.size() * AMPS_PER_BATTERY - amps;
+            var maxAmps = electricItems.size() * AMPS_PER_ITEM - amps;
             var usedAmps = Math.min(maxAmps, amperage);
             if (maxAmps <= 0)
                 return 0;
@@ -195,9 +195,9 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
                 var charged = 0L;
                 for (var electricItem : electricItems) {
                     if (electricItem instanceof IElectricItem item) {
-                        charged += item.charge(Math.min(distributed, GTValues.V[item.getTier()] * AMPS_PER_BATTERY), getTier(), true, false);
+                        charged += item.charge(Math.min(distributed, GTValues.V[item.getTier()] * AMPS_PER_ITEM), getTier(), true, false);
                     } else if (electricItem instanceof IPlatformEnergyStorage energyStorage) {
-                        energy += PlatformEnergyCompat.insertEu(energyStorage, Math.min(distributed, GTValues.V[getTier()] * AMPS_PER_BATTERY));
+                        energy += PlatformEnergyCompat.insertEu(energyStorage, Math.min(distributed, GTValues.V[getTier()] * AMPS_PER_ITEM));
                     }
                     if (charged > 0) {
                         changed = true;
