@@ -11,10 +11,6 @@ public interface IMiner extends IRecipeLogicMachine {
 
     boolean drainInput(boolean simulate);
 
-    default int getPipeLength() {
-        return getRecipeLogic().getPipeLength();
-    }
-
     static int getWorkingArea(int maximumRadius) {
         return maximumRadius * 2 + 1;
     }

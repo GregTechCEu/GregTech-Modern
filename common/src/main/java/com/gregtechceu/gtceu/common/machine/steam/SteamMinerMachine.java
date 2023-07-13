@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.common.machine.steam;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.IMiner;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
@@ -10,13 +9,12 @@ import com.gregtechceu.gtceu.api.gui.widget.PredicatedImageWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IExhaustVentMachine;
+import com.gregtechceu.gtceu.api.machine.feature.IMachineModifyDrops;
 import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
 import com.gregtechceu.gtceu.api.machine.steam.SteamWorkableMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
-import com.gregtechceu.gtceu.client.renderer.block.TextureOverrideRenderer;
-import com.gregtechceu.gtceu.client.renderer.machine.MinerRenderer;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.machine.trait.miner.SteamMinerLogic;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
@@ -25,6 +23,8 @@ import com.lowdragmc.lowdraglib.gui.widget.ImageWidget;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
+import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
+import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import lombok.Setter;
@@ -33,19 +33,20 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
+import net.minecraft.server.TickTask;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
-import java.util.Map;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class SteamMinerMachine extends SteamWorkableMachine implements IMiner, IControllable, IExhaustVentMachine, IUIMachine {
-    @Setter
-    @Persisted @DescSynced
+public class SteamMinerMachine extends SteamWorkableMachine implements IMiner, IControllable, IExhaustVentMachine, IUIMachine, IMachineModifyDrops {
+    @Setter @Persisted @DescSynced
     private boolean needsVenting;
     @Persisted
     public final NotifiableItemStackHandler importItems;
@@ -54,7 +55,9 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IMiner, I
     private final int inventorySize;
     private final int energyPerTick;
     @Nullable
-    protected TickableSubscription itemExportSubs;
+    protected TickableSubscription autoOutputSubs;
+    @Nullable
+    protected ISubscription exportItemSubs;
 
     public SteamMinerMachine(IMachineBlockEntity holder, int speed, int maximumRadius, int fortune) {
         super(holder, false, fortune, speed, maximumRadius);
@@ -64,29 +67,15 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IMiner, I
         this.exportItems = createExportItemHandler();
     }
 
+    //////////////////////////////////////
+    //*****     Initialization    ******//
+    //////////////////////////////////////
     @Override
     protected @NotNull RecipeLogic createRecipeLogic(Object... args) {
         if (args.length > 2 && args[args.length - 3] instanceof Integer fortune && args[args.length - 2] instanceof Integer speed && args[args.length - 1] instanceof Integer maxRadius) {
-            return new SteamMinerLogic(this, fortune, speed, maxRadius,  new TextureOverrideRenderer(MinerRenderer.PIPE_MODEL, Map.of("all", GTCEu.id("block/casings/solid/machine_casing_bronze_plated_bricks"))));
+            return new SteamMinerLogic(this, fortune, speed, maxRadius);
         }
         throw new IllegalArgumentException("MinerMachine need args [inventorySize, fortune, speed, maximumRadius] for initialization");
-    }
-
-    @Override
-    public void onLoad() {
-        super.onLoad();
-        if (!isRemote()) {
-            itemExportSubs = subscribeServerTick(itemExportSubs, this::update);
-        }
-    }
-
-    @Override
-    public void onUnload() {
-        super.onUnload();
-        if (itemExportSubs != null) {
-            itemExportSubs.unsubscribe();
-            itemExportSubs = null;
-        }
     }
 
     @Override
@@ -107,6 +96,54 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IMiner, I
         return new NotifiableItemStackHandler(this, inventorySize, IO.OUT);
     }
 
+    @Override
+    public void onDrops(List<ItemStack> drops, Player entity) {
+        clearInventory(drops, exportItems.storage);
+    }
+
+    @Override
+    public void onLoad() {
+        super.onLoad();
+        if (!isRemote()) {
+            if (getLevel() instanceof ServerLevel serverLevel) {
+                serverLevel.getServer().tell(new TickTask(0, this::updateAutoOutputSubscription));
+            }
+            exportItemSubs = exportItems.addChangedListener(this::updateAutoOutputSubscription);
+        }
+    }
+
+    @Override
+    public void onUnload() {
+        super.onUnload();
+        if (exportItemSubs != null) {
+            exportItemSubs.unsubscribe();
+            exportItemSubs = null;
+        }
+    }
+
+    //////////////////////////////////////
+    //**********     LOGIC    **********//
+    //////////////////////////////////////
+    protected void updateAutoOutputSubscription() {
+        var outputFacingItems = getFrontFacing();
+        if (!exportItems.isEmpty() && ItemTransferHelper.getItemTransfer(getLevel(), getPos().relative(outputFacingItems), outputFacingItems.getOpposite()) != null) {
+            autoOutputSubs = subscribeServerTick(autoOutputSubs, this::autoOutput);
+        } else if (autoOutputSubs != null) {
+            autoOutputSubs.unsubscribe();
+            autoOutputSubs = null;
+        }
+    }
+
+    protected void autoOutput() {
+        if (getOffsetTimer() % 5 == 0) {
+            exportItems.exportToNearby(getFrontFacing());
+        }
+        updateAutoOutputSubscription();
+    }
+
+    //////////////////////////////////////
+    //***********     GUI    ***********//
+    //////////////////////////////////////
     @Override
     public ModularUI createUI(Player entityPlayer) {
         int rowSize = (int) Math.sqrt(inventorySize);
@@ -168,13 +205,6 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IMiner, I
         return false;
     }
 
-    public void update() {
-        if (!isRemote()) {
-            if (getOffsetTimer() % 5 == 0)
-                exportItems.exportToNearby(getFrontFacing());
-        }
-    }
-
     @Override
     public @NotNull Direction getVentingDirection() {
         return Direction.UP;
@@ -195,20 +225,4 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IMiner, I
         return 0;
     }
 
-    @Override
-    public boolean isWorkingEnabled() {
-        return getRecipeLogic().isWorkingEnabled();
-    }
-
-    @Override
-    public void setWorkingEnabled(boolean isActivationAllowed) {
-        getRecipeLogic().setWorkingEnabled(isActivationAllowed);
-    }
-
-//    @Nonnull
-//    @Override
-//    public List<Component> getDataInfo() {
-//        int workingArea = getWorkingArea(this.getRecipeLogic().getCurrentRadius());
-//        return Collections.singletonList(Component.translatable("gtceu.universal.tooltip.working_area", workingArea, workingArea));
-//    }
 }

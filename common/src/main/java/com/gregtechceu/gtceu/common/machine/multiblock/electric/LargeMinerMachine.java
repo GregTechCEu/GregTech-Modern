@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.electric;
 
 import com.google.common.collect.ImmutableMap;
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
@@ -9,7 +8,6 @@ import com.gregtechceu.gtceu.api.capability.IMiner;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
@@ -18,13 +16,10 @@ import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMa
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
-import com.gregtechceu.gtceu.client.renderer.block.TextureOverrideRenderer;
-import com.gregtechceu.gtceu.client.renderer.machine.MinerRenderer;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.machine.trait.miner.LargeMinerLogic;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
-import com.lowdragmc.lowdraglib.client.renderer.impl.IModelRenderer;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
@@ -33,10 +28,8 @@ import com.lowdragmc.lowdraglib.gui.widget.CycleButtonWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.misc.FluidTransferList;
-import com.lowdragmc.lowdraglib.misc.ItemTransferList;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
-import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
 import lombok.Getter;
@@ -64,36 +57,29 @@ import static com.gregtechceu.gtceu.common.data.GTMaterials.DrillingFluid;
 @MethodsReturnNonnullByDefault
 public class LargeMinerMachine extends WorkableElectricMultiblockMachine implements IMiner, IControllable {
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(LargeMinerMachine.class, WorkableMultiblockMachine.MANAGED_FIELD_HOLDER);
-
     public static final int CHUNK_LENGTH = 16;
     public static final ImmutableMap<Integer, Material> MINER_MATERIALS = ImmutableMap.of(
             GTValues.EV, GTMaterials.Steel,
             GTValues.IV, GTMaterials.Titanium,
             GTValues.LuV, GTMaterials.TungstenSteel);
-
     @Getter
-    private final Material material;
     private final int tier;
-
     @Nullable
     protected EnergyContainerList energyContainer;
     @Nullable
     protected FluidTransferList inputFluidInventory;
-    @Nullable
-    protected ItemTransferList outputInventory;
     private final int drillingFluidConsumePerTick;
 
-    public LargeMinerMachine(IMachineBlockEntity holder, int tier, int speed, int maximumChunkDiameter, int fortune, Material material, int drillingFluidConsumePerTick) {
-        super(holder, material, fortune, speed, maximumChunkDiameter);
-        this.material = material;
+    public LargeMinerMachine(IMachineBlockEntity holder, int tier, int speed, int maximumChunkDiameter, int fortune, int drillingFluidConsumePerTick) {
+        super(holder, fortune, speed, maximumChunkDiameter);
         this.tier = tier;
         this.drillingFluidConsumePerTick = drillingFluidConsumePerTick;
     }
 
     @Override
     protected @NotNull RecipeLogic createRecipeLogic(Object... args) {
-        if (args.length > 3 && args[args.length - 4] instanceof Material pipeMat && args[args.length - 3] instanceof Integer fortune && args[args.length - 2] instanceof Integer speed && args[args.length - 1] instanceof Integer maxRadius) {
-            return new LargeMinerLogic(this, fortune, speed, maxRadius * CHUNK_LENGTH / 2, getPipeModel(pipeMat));
+        if ( args[args.length - 3] instanceof Integer fortune && args[args.length - 2] instanceof Integer speed && args[args.length - 1] instanceof Integer maxRadius) {
+            return new LargeMinerLogic(this, fortune, speed, maxRadius * CHUNK_LENGTH / 2);
         }
         throw new IllegalArgumentException("MinerMachine need args [inventorySize, fortune, speed, maximumRadius] for initialization");
     }
@@ -122,7 +108,6 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine impleme
     private void initializeAbilities() {
         List<IEnergyContainer> energyContainers = new ArrayList<>();
         List<IFluidTransfer> fluidTanks = new ArrayList<>();
-        List<IItemTransfer> itemHandlers = new ArrayList<>();
         Map<Long, IO> ioMap = getMultiblockState().getMatchContext().getOrCreate("ioMap", Long2ObjectMaps::emptyMap);
         for (IMultiPart part : getParts()) {
             IO io = ioMap.getOrDefault(part.self().getPos().asLong(), IO.BOTH);
@@ -135,14 +120,11 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine impleme
                     energyContainers.add(container);
                 } else if (handlerIO == IO.IN && handler.getCapability() == FluidRecipeCapability.CAP && handler instanceof IFluidTransfer fluidTransfer) {
                     fluidTanks.add(fluidTransfer);
-                } else if (handlerIO == IO.OUT && handler.getCapability() == ItemRecipeCapability.CAP && handler instanceof IItemTransfer itemHandler) {
-                    itemHandlers.add(itemHandler);
                 }
             }
         }
         this.energyContainer = new EnergyContainerList(energyContainers);
         this.inputFluidInventory = new FluidTransferList(fluidTanks);
-        this.outputInventory = new ItemTransferList(itemHandlers);
 
         getRecipeLogic().setVoltageTier(GTUtil.getTierByVoltage(this.energyContainer.getInputVoltage()));
         getRecipeLogic().setOverclockAmount(Math.max(1, GTUtil.getTierByVoltage(this.energyContainer.getInputVoltage()) - this.tier));
@@ -156,26 +138,32 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine impleme
 
     @Override
     public boolean drainInput(boolean simulate) {
-        if (energyContainer != null && energyContainer.getEnergyCapacity() > 0) {
+        // drain energy
+        if (energyContainer != null && energyContainer.getEnergyStored() > 0) {
             long energyToDrain = GTValues.VA[getEnergyTier()];
             long resultEnergy = energyContainer.getEnergyStored() - energyToDrain;
             if (resultEnergy >= 0L && resultEnergy <= energyContainer.getEnergyCapacity()) {
-                if (!simulate)
+                if (!simulate) {
                     energyContainer.changeEnergy(-energyToDrain);
-                // drain fluid
-                if (inputFluidInventory != null && inputFluidInventory.transfers.length > 0) {
-                    FluidStack drillingFluid = DrillingFluid.getFluid((long) this.drillingFluidConsumePerTick * getRecipeLogic().getOverclockAmount());
-                    FluidStack fluidStack = inputFluidInventory.getFluidInTank(0);
-                    if (fluidStack != FluidStack.empty() && fluidStack.isFluidEqual(DrillingFluid.getFluid(1)) && fluidStack.getAmount() >= drillingFluid.getAmount()) {
-                        if (!simulate)
-                            GTTransferUtils.drainFluidAccountNotifiableList(inputFluidInventory, drillingFluid, false);
-                        return true;
-                    }
                 }
+            } else {
                 return false;
             }
         }
-        return false;
+
+        // drain fluid
+        if (inputFluidInventory != null && inputFluidInventory.transfers.length > 0) {
+            FluidStack drillingFluid = DrillingFluid.getFluid((long) this.drillingFluidConsumePerTick * getRecipeLogic().getOverclockAmount());
+            FluidStack fluidStack = inputFluidInventory.getFluidInTank(0);
+            if (fluidStack != FluidStack.empty() && fluidStack.isFluidEqual(DrillingFluid.getFluid(1)) && fluidStack.getAmount() >= drillingFluid.getAmount()) {
+                if (!simulate) {
+                    GTTransferUtils.drainFluidAccountNotifiableList(inputFluidInventory, drillingFluid, false);
+                }
+            } else {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override
@@ -223,14 +211,6 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine impleme
             textList.add(Component.translatable("gtceu.machine.miner.miney", getRecipeLogic().getMineY()));
             textList.add(Component.translatable("gtceu.machine.miner.minez", getRecipeLogic().getMineZ()));
         }
-    }
-
-    public IModelRenderer getPipeModel(Material material) {
-        if (material.equals(GTMaterials.Titanium))
-            return new TextureOverrideRenderer(MinerRenderer.PIPE_MODEL, Map.of("all", GTCEu.id("block/casings/solid/machine_casing_stable_titanium")));
-        else if (material.equals(GTMaterials.TungstenSteel))
-            return new TextureOverrideRenderer(MinerRenderer.PIPE_MODEL, Map.of("all", GTCEu.id("block/casings/solid/machine_casing_robust_tungstensteel")));
-        return new TextureOverrideRenderer(MinerRenderer.PIPE_MODEL, Map.of("all", GTCEu.id("block/casings/solid/machine_casing_solid_steel")));
     }
 
     public long getMaxVoltage() {
@@ -299,18 +279,6 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine impleme
             playerIn.sendSystemMessage(Component.translatable("gtceu.multiblock.large_miner.errorradius"));
         }
         return InteractionResult.SUCCESS;
-    }
-
-    public int getTier() {
-        return this.tier;
-    }
-
-    public int getMaxChunkRadius() {
-        return getRecipeLogic().getMaximumRadius() / CHUNK_LENGTH;
-    }
-
-    public IItemTransfer getExportItems() {
-        return this.outputInventory;
     }
 
 }

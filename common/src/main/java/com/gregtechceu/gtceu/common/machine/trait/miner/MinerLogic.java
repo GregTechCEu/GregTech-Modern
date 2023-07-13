@@ -18,24 +18,16 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
-import com.lowdragmc.lowdraglib.client.renderer.impl.IModelRenderer;
 import com.lowdragmc.lowdraglib.misc.ItemTransferList;
 import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import lombok.Getter;
 import lombok.Setter;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.commands.arguments.blocks.BlockStateParser;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
@@ -59,7 +51,6 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder{
     private static final byte POWER = 5;
     private static final byte TICK_TOLERANCE = 20;
     private static final double DIVIDEND = MAX_SPEED * Math.pow(TICK_TOLERANCE, POWER);
-    private final IModelRenderer pipeModel;
     protected final IMiner miner;
     @Nullable
     private ItemTransferList cachedItemTransfer = null;
@@ -105,7 +96,7 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder{
     @Getter
     private int minBuildHeight = Integer.MAX_VALUE;
     @Getter
-    @Persisted @DescSynced @RequireRerender
+    @Persisted
     private int pipeLength = 0;
     @Getter
     @Setter
@@ -117,8 +108,8 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder{
     @Getter
     private boolean isInventoryFull;
     @Getter
-    private Table<IO, RecipeCapability<?>, List<IRecipeHandler<?>>> capabilitiesProxy;
-    private ItemRecipeHandler inputItemHandler, outputItemHandler;
+    private final Table<IO, RecipeCapability<?>, List<IRecipeHandler<?>>> capabilitiesProxy;
+    private final ItemRecipeHandler inputItemHandler, outputItemHandler;
 
     /**
      * Creates the general logic for all in-world ore block miners
@@ -128,7 +119,7 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder{
      * @param speed          the speed in ticks per block mined
      * @param maximumRadius  the maximum radius (square shaped) the miner can mine in
      */
-    public MinerLogic(@Nonnull IRecipeLogicMachine machine, int fortune, int speed, int maximumRadius, IModelRenderer pipeModel) {
+    public MinerLogic(@Nonnull IRecipeLogicMachine machine, int fortune, int speed, int maximumRadius) {
         super(machine);
         this.miner = (IMiner) machine;
         this.fortune = fortune;
@@ -136,7 +127,6 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder{
         this.currentRadius = maximumRadius;
         this.maximumRadius = maximumRadius;
         this.isDone = false;
-        this.pipeModel = pipeModel;
         this.pickaxeTool = GTItems.TOOL_ITEMS.get(GTMaterials.Neutronium.getToolTier(), GTToolType.PICKAXE).asStack();
         this.pickaxeTool.enchant(Enchantments.BLOCK_FORTUNE, fortune);
         this.capabilitiesProxy = Tables.newCustomTable(new EnumMap<>(IO.class), HashMap::new);
@@ -217,14 +207,14 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder{
                 }
                 // When we are here we have an ore to mine! I'm glad we aren't threaded
                 if (!blocksToMine.isEmpty() & blockState.is(CustomTags.ORE_BLOCKS)) {
-                    // get the small ore drops, if a small ore
-                    getSmallOreBlockDrops(blockDrops, serverLevel, blocksToMine.getFirst(), blockState);
                     LootContext.Builder builder = new LootContext.Builder(serverLevel)
                             .withRandom(serverLevel.random)
                             .withParameter(LootContextParams.BLOCK_STATE, blockState)
                             .withParameter(LootContextParams.ORIGIN, Vec3.atLowerCornerOf(blocksToMine.getFirst()))
                             .withParameter(LootContextParams.TOOL, getPickaxeTool());
 
+                    // get the small ore drops, if a small ore
+                    getSmallOreBlockDrops(blockDrops, blockState, builder);
                     // get the block's drops.
                     if (isSilkTouchMode()) {
                         getSilkTouchDrops(blockDrops, blockState, builder);
@@ -285,12 +275,10 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder{
      * called to handle mining small ores
      *
      * @param blockDrops  the List of items to fill after the operation
-     * @param world       the {@link ServerLevel} the miner is in
-     * @param blockToMine the {@link BlockPos} of the block being mined
      * @param blockState  the {@link BlockState} of the block being mined
      */
     // todo implement small ores
-    protected void getSmallOreBlockDrops(NonNullList<ItemStack> blockDrops, ServerLevel world, BlockPos blockToMine, BlockState blockState) {
+    protected void getSmallOreBlockDrops(NonNullList<ItemStack> blockDrops, BlockState blockState, LootContext.Builder builder) {
         /*small ores
             if orePrefix of block in blockPos is small
                 applyTieredHammerNoRandomDrops...
@@ -314,8 +302,6 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder{
      * called to handle mining regular ores and blocks
      *
      * @param blockDrops  the List of items to fill after the operation
-     * @param world       the {@link ServerLevel} the miner is in
-     * @param blockToMine the {@link BlockPos} of the block being mined
      * @param blockState  the {@link BlockState} of the block being mined
      */
     protected void getRegularBlockDrops(NonNullList<ItemStack> blockDrops, BlockState blockState, LootContext.Builder builder) {
@@ -362,8 +348,6 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder{
      * called to handle mining regular ores and blocks with silk touch
      *
      * @param blockDrops  the List of items to fill after the operation
-     * @param world       the {@link ServerLevel} the miner is in
-     * @param blockToMine the {@link BlockPos} of the block being mined
      * @param blockState  the {@link BlockState} of the block being mined
      */
     protected void getSilkTouchDrops(NonNullList<ItemStack> blockDrops, BlockState blockState, LootContext.Builder builder) {
@@ -544,19 +528,6 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder{
     private void incrementPipeLength() {
         this.pipeLength++;
         this.getMachine().markDirty();
-    }
-
-    /**
-     * renders the pipe beneath the miner
-     */
-    @Environment(EnvType.CLIENT)
-    public void renderPipe(PoseStack stack, MultiBufferSource buffer, @Nullable Direction modelFacing, int combinedLight, int combinedOverlay) {
-        stack.pushPose();
-        for (int i = 0; i < getPipeLength(); ++i) {
-            stack.translate(0, -1, 0);
-            Minecraft.getInstance().getBlockRenderer().getModelRenderer().renderModel(stack.last(), buffer.getBuffer(RenderType.cutoutMipped()), null, pipeModel.getRotatedModel(modelFacing), 1, 1, 1, combinedLight, combinedOverlay);
-        }
-        stack.popPose();
     }
 
     /**

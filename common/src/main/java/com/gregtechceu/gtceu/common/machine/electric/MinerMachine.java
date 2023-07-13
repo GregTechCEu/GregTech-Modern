@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.common.machine.electric;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IControllable;
@@ -14,13 +13,13 @@ import com.gregtechceu.gtceu.api.machine.WorkableTieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
-import com.gregtechceu.gtceu.client.renderer.block.TextureOverrideRenderer;
-import com.gregtechceu.gtceu.client.renderer.machine.MinerRenderer;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.machine.trait.miner.MinerLogic;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.lowdragmc.lowdraglib.gui.widget.*;
 import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
+import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
+import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.utils.Position;
@@ -31,32 +30,33 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
+import net.minecraft.server.TickTask;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.BlockHitResult;
+import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
-import java.util.Map;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class MinerMachine extends WorkableTieredMachine implements IMiner, IControllable, IFancyUIMachine {
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(MinerMachine.class, WorkableTieredMachine.MANAGED_FIELD_HOLDER);
-    public static final TextureOverrideRenderer PIPE_MODEL = new TextureOverrideRenderer(MinerRenderer.PIPE_MODEL, Map.of("all", GTCEu.id("block/casings/solid/machine_casing_solid_steel")));
 
     @Getter
     @Persisted
     protected final ItemStackTransfer chargerInventory;
-
     private final int inventorySize;
     private final long energyPerTick;
     @Nullable
-    protected TickableSubscription itemExportSubs;
+    protected TickableSubscription autoOutputSubs, batterySubs;
+    @Nullable
+    protected ISubscription exportItemSubs, energySubs;
 
     public MinerMachine(IMachineBlockEntity holder, int tier, int speed, int maximumRadius, int fortune, Object... args) {
         super(holder, tier, GTMachines.defaultTankSizeFunction, args, (tier + 1) * (tier + 1), fortune, speed, maximumRadius);
@@ -64,6 +64,10 @@ public class MinerMachine extends WorkableTieredMachine implements IMiner, ICont
         this.energyPerTick = GTValues.V[tier - 1];
         this.chargerInventory = createChargerItemHandler();
     }
+
+    //////////////////////////////////////
+    //*****     Initialization    ******//
+    //////////////////////////////////////
 
     protected ItemStackTransfer createChargerItemHandler(Object... args) {
         var transfer = new ItemStackTransfer();
@@ -87,9 +91,15 @@ public class MinerMachine extends WorkableTieredMachine implements IMiner, ICont
     @Override
     protected RecipeLogic createRecipeLogic(Object... args) {
         if (args.length > 2 && args[args.length - 3] instanceof Integer fortune && args[args.length - 2] instanceof Integer speed && args[args.length - 1] instanceof Integer maxRadius) {
-            return new MinerLogic(this, fortune, speed, maxRadius, PIPE_MODEL);
+            return new MinerLogic(this, fortune, speed, maxRadius);
         }
         throw new IllegalArgumentException("MinerMachine need args [inventorySize, fortune, speed, maximumRadius] for initialization");
+    }
+
+    @Override
+    public void onDrops(List<ItemStack> drops, Player entity) {
+        clearInventory(drops, exportItems.storage);
+        clearInventory(drops, chargerInventory);
     }
 
     @Override
@@ -97,6 +107,72 @@ public class MinerMachine extends WorkableTieredMachine implements IMiner, ICont
         return (MinerLogic) super.getRecipeLogic();
     }
 
+    @Override
+    public void onLoad() {
+        super.onLoad();
+        if (!isRemote()) {
+            if (getLevel() instanceof ServerLevel serverLevel) {
+                serverLevel.getServer().tell(new TickTask(0, this::updateAutoOutputSubscription));
+            }
+            updateBatterySubscription();
+            exportItemSubs = exportItems.addChangedListener(this::updateAutoOutputSubscription);
+            energySubs = energyContainer.addChangedListener(this::updateBatterySubscription);
+            chargerInventory.setOnContentsChanged(this::updateBatterySubscription);
+        }
+    }
+
+    @Override
+    public void onUnload() {
+        super.onUnload();
+        if (exportItemSubs != null) {
+            exportItemSubs.unsubscribe();
+            exportItemSubs = null;
+        }
+
+        if (energySubs != null) {
+            energySubs.unsubscribe();
+            energySubs = null;
+        }
+    }
+
+    //////////////////////////////////////
+    //**********     LOGIC    **********//
+    //////////////////////////////////////
+    protected void updateAutoOutputSubscription() {
+        var outputFacingItems = getFrontFacing();
+        if (!exportItems.isEmpty() && ItemTransferHelper.getItemTransfer(getLevel(), getPos().relative(outputFacingItems), outputFacingItems.getOpposite()) != null) {
+            autoOutputSubs = subscribeServerTick(autoOutputSubs, this::autoOutput);
+        } else if (autoOutputSubs != null) {
+            autoOutputSubs.unsubscribe();
+            autoOutputSubs = null;
+        }
+    }
+
+    protected void updateBatterySubscription() {
+        if (energyContainer.dischargeOrRechargeEnergyContainers(chargerInventory, 0, true)) {
+            batterySubs = subscribeServerTick(batterySubs, this::chargeBattery);
+        } else if (batterySubs != null) {
+            batterySubs.unsubscribe();
+            batterySubs = null;
+        }
+    }
+
+    protected void autoOutput() {
+        if (getOffsetTimer() % 5 == 0) {
+            exportItems.exportToNearby(getFrontFacing());
+        }
+        updateAutoOutputSubscription();
+    }
+
+    protected void chargeBattery() {
+        if (!energyContainer.dischargeOrRechargeEnergyContainers(chargerInventory, 0, false)) {
+            updateBatterySubscription();
+        }
+    }
+
+    //////////////////////////////////////
+    //***********     GUI    ***********//
+    //////////////////////////////////////
     @Override
     public Widget createUIWidget() {
         int rowSize = (int) Math.sqrt(inventorySize);
@@ -176,34 +252,10 @@ public class MinerMachine extends WorkableTieredMachine implements IMiner, ICont
         return false;
     }
 
-    public void update() {
-        if (!isRemote()) {
-            if (energyContainer.dischargeOrRechargeEnergyContainers(chargerInventory, 0, true)) {
-                energyContainer.dischargeOrRechargeEnergyContainers(chargerInventory, 0, false);
-            }
 
-            if (getOffsetTimer() % 5 == 0)
-                exportItems.exportToNearby(getFrontFacing());
-        }
-    }
-
-    @Override
-    public void onLoad() {
-        super.onLoad();
-        if (!isRemote()) {
-            itemExportSubs = subscribeServerTick(itemExportSubs, this::update);
-        }
-    }
-
-    @Override
-    public void onUnload() {
-        super.onUnload();
-        if (itemExportSubs != null) {
-            itemExportSubs.unsubscribe();
-            itemExportSubs = null;
-        }
-    }
-
+    //////////////////////////////////////
+    //*******     Interaction    *******//
+    //////////////////////////////////////
     @Override
     protected InteractionResult onScrewdriverClick(Player playerIn, InteractionHand hand, Direction gridSide, BlockHitResult hitResult) {
         if (isRemote()) return InteractionResult.SUCCESS;
@@ -227,21 +279,4 @@ public class MinerMachine extends WorkableTieredMachine implements IMiner, ICont
         return InteractionResult.SUCCESS;
     }
 
-    @Override
-    public void onDrops(List<ItemStack> drops, Player entity) {
-        clearInventory(drops, exportItems.storage);
-        clearInventory(drops, chargerInventory);
-    }
-
-    @Override
-    public boolean shouldWorkingPlaySound() {
-        return super.shouldWorkingPlaySound();
-    }
-
-//    @Nonnull
-//    @Override
-//    public List<Component> getDataInfo() {
-//        int workingArea = getWorkingArea(getRecipeLogic().getCurrentRadius());
-//        return Collections.singletonList(Component.translatable("gtceu.machine.miner.working_area", workingArea, workingArea));
-//    }
 }
