@@ -30,6 +30,7 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import lombok.Setter;
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
@@ -37,6 +38,7 @@ import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -99,6 +101,12 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IMiner, I
     @Override
     public void onDrops(List<ItemStack> drops, Player entity) {
         clearInventory(drops, exportItems.storage);
+    }
+
+    @Override
+    public void onNeighborChanged(Block block, BlockPos fromPos, boolean isMoving) {
+        super.onNeighborChanged(block, fromPos, isMoving);
+        updateAutoOutputSubscription();
     }
 
     @Override

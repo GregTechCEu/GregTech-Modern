@@ -233,7 +233,6 @@ public class GTMachines {
     public final static MachineDefinition[] PUMP = registerTieredMachines("pump", PumpMachine::new,
             (tier, builder) -> builder
                     .rotationState(RotationState.NON_Y_AXIS)
-                    .hasTESR(true)
                     .renderer(() -> new TieredHullMachineRenderer(tier, GTCEu.id("block/machine/pump_machine")))
                     .langValue("%s Pump %s".formatted(VLVH[tier], VLVT[tier]))
                     .tooltips(Component.translatable("gtceu.machine.pump.tooltip"),
@@ -248,7 +247,6 @@ public class GTMachines {
             (tier, builder) -> builder
                     .rotationState(RotationState.NON_Y_AXIS)
                     .recipeType(GTRecipeTypes.DUMMY_RECIPES)
-                    .hasTESR(true)
                     .renderer(() -> new MinerRenderer(tier, GTCEu.id("block/machines/miner")))
                     .tooltipBuilder((stack, tooltip) -> {
                         int maxArea = IMiner.getWorkingArea(tier * 8);
@@ -1116,6 +1114,39 @@ public class GTMachines {
                     .register(),
             MV, HV, EV);
 
+    public static final MultiblockMachineDefinition[] LARGE_MINER = registerTieredMultis("large_miner", (holder, tier) -> new LargeMinerMachine(holder, tier, 64 / tier, 2 * tier - 5, tier, 8 - (tier - 5)),
+            (tier, builder) -> builder
+                    .rotationState(RotationState.NON_Y_AXIS)
+                    .recipeType(GTRecipeTypes.MACERATOR_RECIPES)
+                    .appearanceBlock(() -> LargeMinerMachine.getCasingState(tier))
+                    .pattern((definition) -> FactoryBlockPattern.start()
+                            .aisle("XXX", "#F#", "#F#", "#F#", "###", "###", "###")
+                            .aisle("XXX", "FCF", "FCF", "FCF", "#F#", "#F#", "#F#")
+                            .aisle("XSX", "#F#", "#F#", "#F#", "###", "###", "###")
+                            .where('S', controller(blocks(definition.getBlock())))
+                            .where('X', blocks(LargeMinerMachine.getCasingState(tier))
+                                    .or(abilities(PartAbility.EXPORT_ITEMS).setMaxGlobalLimited(1).setPreviewCount(1))
+                                    .or(abilities(PartAbility.IMPORT_FLUIDS).setExactLimit(1).setPreviewCount(1))
+                                    .or(abilities(PartAbility.INPUT_ENERGY).setMinGlobalLimited(1).setMaxGlobalLimited(3).setPreviewCount(1)))
+                            .where('C', blocks(LargeMinerMachine.getCasingState(tier)))
+                            .where('F', frames(LargeMinerMachine.getMaterial(tier)))
+                            .where('#', any())
+                            .build())
+                    .renderer(() -> new LargeMinerRenderer(MinerRenderer.MATERIALS_TO_CASING_MODELS.get(LargeMinerMachine.getMaterial(tier)),
+                            GTCEu.id("block/multiblock/large_miner")))
+                    .tooltips(Component.translatable("gtceu.machine.large_miner.%s.tooltip".formatted(VN[tier].toLowerCase())),
+                            Component.translatable("gtceu.machine.miner.multi.description"))
+                    .tooltipBuilder((stack, tooltip) -> {
+                        int workingAreaChunks = (2 * tier - 5) * 2 / LargeMinerMachine.CHUNK_LENGTH;
+                        tooltip.add(Component.translatable("gtceu.machine.miner.multi.modes"));
+                        tooltip.add(Component.translatable("gtceu.machine.miner.multi.production"));
+                        tooltip.add(Component.translatable("gtceu.machine.miner.fluid_usage", 8 - (tier - 5), DrillingFluid.getLocalizedName()));
+                        tooltip.add(Component.translatable("gtceu.universal.tooltip.working_area_chunks", workingAreaChunks, workingAreaChunks));
+                        tooltip.add(Component.translatable("gtceu.universal.tooltip.energy_tier_range", GTValues.VNF[tier], GTValues.VNF[tier + 1]));
+                    })
+                    .register(),
+            EV, IV, LuV);
+
     public static final MultiblockMachineDefinition CLEANROOM = REGISTRATE.multiblock("cleanroom", CleanroomMachine::new)
             .rotationState(RotationState.NONE)
             .recipeType(GTRecipeTypes.DUMMY_RECIPES)
@@ -1217,42 +1248,6 @@ public class GTMachines {
             CASING_TUNGSTENSTEEL_TURBINE, CASING_TUNGSTENSTEEL_GEARBOX,
             GTCEu.id("block/casings/solid/machine_casing_robust_tungstensteel"),
             GTCEu.id("block/multiblock/generator/large_plasma_turbine"));
-
-    public static final MultiblockMachineDefinition[] LARGE_MINER = registerTieredMultis("large_miner", (holder, tier) -> new LargeMinerMachine(holder, tier, 64 / tier, 2 * tier - 5, tier, 8 - (tier - 5)),
-            (tier, builder) -> builder
-                    .rotationState(RotationState.NON_Y_AXIS)
-                    .recipeType(GTRecipeTypes.MACERATOR_RECIPES)
-                    .hasTESR(true)
-                    .tooltips(Component.translatable("gtceu.machine.large_miner.%s.tooltip".formatted(VN[tier].toLowerCase())),
-                            Component.translatable("gtceu.machine.miner.multi.description"))
-                    .tooltipBuilder((stack, tooltip) -> {
-                        int workingAreaChunks = (2 * tier - 5) * 2 / LargeMinerMachine.CHUNK_LENGTH;
-                        tooltip.add(Component.translatable("gtceu.machine.miner.multi.modes"));
-                        tooltip.add(Component.translatable("gtceu.machine.miner.multi.production"));
-                        tooltip.add(Component.translatable("gtceu.machine.miner.fluid_usage", 8 - (tier - 5), DrillingFluid.getLocalizedName()));
-                        tooltip.add(Component.translatable("gtceu.universal.tooltip.working_area_chunks", workingAreaChunks, workingAreaChunks));
-                        tooltip.add(Component.translatable("gtceu.universal.tooltip.energy_tier_range", GTValues.VNF[tier], GTValues.VNF[tier + 1]));
-                    })
-                    .pattern((definition) -> {
-                        var casingBlock = GTBlocks.MATERIALS_TO_CASINGS.get(LargeMinerMachine.MINER_MATERIALS.get(tier)).get();
-                        return FactoryBlockPattern.start()
-                                .aisle("XXX", "#F#", "#F#", "#F#", "###", "###", "###")
-                                .aisle("XXX", "FCF", "FCF", "FCF", "#F#", "#F#", "#F#")
-                                .aisle("XSX", "#F#", "#F#", "#F#", "###", "###", "###")
-                                .where('S', controller(blocks(definition.getBlock())))
-                                .where('X', blocks(casingBlock)
-                                        .or(abilities(PartAbility.EXPORT_ITEMS).setMaxGlobalLimited(1).setPreviewCount(1))
-                                        .or(abilities(PartAbility.IMPORT_FLUIDS).setExactLimit(1).setPreviewCount(1))
-                                        .or(abilities(PartAbility.INPUT_ENERGY).setMinGlobalLimited(1).setMaxGlobalLimited(3).setPreviewCount(1)))
-                                .where('C', blocks(casingBlock))
-                                .where('F', frames(LargeMinerMachine.MINER_MATERIALS.get(tier)))
-                                .where('#', any())
-                                .build();
-                    })
-                    .renderer(() -> new LargeMinerRenderer(MinerRenderer.MATERIALS_TO_CASING_MODELS.get(LargeMinerMachine.MINER_MATERIALS.get(tier)),
-                             GTCEu.id("block/multiblock/large_miner")))
-                    .register(),
-            EV, IV, LuV);
 
     //////////////////////////////////////
     //**********     Misc     **********//
@@ -1504,7 +1499,6 @@ public class GTMachines {
                 (tier, builder) -> builder
                         .rotationState(RotationState.ALL)
                         .langValue("%s %sA Energy Converter".formatted(VN[tier], amperage))
-                        .hasTESR(true)
                         .renderer(() -> new ConverterRenderer(tier))
                         .tooltips(Component.translatable("gtceu.machine.energy_converter.description"),
                                 Component.translatable("gtceu.machine.energy_converter.tooltip_tool_usage"),

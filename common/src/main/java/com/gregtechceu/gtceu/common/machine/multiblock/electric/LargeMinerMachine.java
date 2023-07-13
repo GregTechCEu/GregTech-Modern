@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.electric;
 
-import com.google.common.collect.ImmutableMap;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
@@ -16,6 +15,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMa
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
+import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.machine.trait.miner.LargeMinerLogic;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
@@ -42,6 +42,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
 
@@ -58,10 +59,6 @@ import static com.gregtechceu.gtceu.common.data.GTMaterials.DrillingFluid;
 public class LargeMinerMachine extends WorkableElectricMultiblockMachine implements IMiner, IControllable {
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(LargeMinerMachine.class, WorkableMultiblockMachine.MANAGED_FIELD_HOLDER);
     public static final int CHUNK_LENGTH = 16;
-    public static final ImmutableMap<Integer, Material> MINER_MATERIALS = ImmutableMap.of(
-            GTValues.EV, GTMaterials.Steel,
-            GTValues.IV, GTMaterials.Titanium,
-            GTValues.LuV, GTMaterials.TungstenSteel);
     @Getter
     private final int tier;
     @Nullable
@@ -76,6 +73,9 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine impleme
         this.drillingFluidConsumePerTick = drillingFluidConsumePerTick;
     }
 
+    //////////////////////////////////////
+    //*****     Initialization    ******//
+    //////////////////////////////////////
     @Override
     protected @NotNull RecipeLogic createRecipeLogic(Object... args) {
         if ( args[args.length - 3] instanceof Integer fortune && args[args.length - 2] instanceof Integer speed && args[args.length - 1] instanceof Integer maxRadius) {
@@ -99,6 +99,20 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine impleme
         return (LargeMinerLogic) super.getRecipeLogic();
     }
 
+    public static Material getMaterial(int tier) {
+        if (tier == GTValues.EV) return GTMaterials.Steel;
+        if (tier == GTValues.IV) return GTMaterials.Titanium;
+        if (tier == GTValues.LuV) return GTMaterials.TungstenSteel;
+        return GTMaterials.Steel;
+    }
+
+    public static Block getCasingState(int tier) {
+        return GTBlocks.MATERIALS_TO_CASINGS.get(getMaterial(tier)).get();
+    }
+
+    //////////////////////////////////////
+    //*******       Logic      *********//
+    //////////////////////////////////////
     @Override
     public void onStructureFormed() {
         super.onStructureFormed();
@@ -166,6 +180,9 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine impleme
         return true;
     }
 
+    //////////////////////////////////////
+    //***********     GUI    ***********//
+    //////////////////////////////////////
     @Override
     public Widget createUIWidget() {
         WidgetGroup group = (WidgetGroup) super.createUIWidget();
@@ -250,6 +267,9 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine impleme
         }
     }
 
+    //////////////////////////////////////
+    //*******     Interaction    *******//
+    //////////////////////////////////////
     @Override
     public InteractionResult onScrewdriverClick(Player playerIn, InteractionHand hand, Direction facing, BlockHitResult hitResult) {
         if (isRemote() || !this.isFormed())
