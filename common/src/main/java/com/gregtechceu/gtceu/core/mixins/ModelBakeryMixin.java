@@ -56,6 +56,9 @@ public abstract class ModelBakeryMixin {
             MaterialIconSet iconSet = material.getMaterialIconSet();
 
             {
+                if (material.hasProperty(PropertyKey.ORE) && !material.hasProperty(PropertyKey.GEM)) {
+                    MaterialBlockRenderer.getOrCreate(MaterialIconType.rawOreBlock, iconSet).setBlockTexture(gtceu$generateBlockTexture(iconSet, MaterialIconType.rawOreBlock));
+                }
                 if (material.hasProperty(PropertyKey.INGOT) || material.hasProperty(PropertyKey.GEM) || material.hasFlag(MaterialFlags.FORCE_GENERATE_BLOCK)) {
                     MaterialBlockRenderer.getOrCreate(MaterialIconType.block, iconSet).setBlockTexture(gtceu$generateBlockTexture(iconSet, MaterialIconType.block));
                 }

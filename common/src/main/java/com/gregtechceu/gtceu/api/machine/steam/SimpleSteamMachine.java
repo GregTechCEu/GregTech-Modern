@@ -26,6 +26,7 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import it.unimi.dsi.fastutil.longs.LongIntMutablePair;
 import it.unimi.dsi.fastutil.longs.LongIntPair;
+import lombok.Setter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Player;
@@ -47,6 +48,7 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
     public final NotifiableItemStackHandler importItems;
     @Persisted
     public final NotifiableItemStackHandler exportItems;
+    @Setter
     @Persisted
     private boolean needsVenting;
 
@@ -161,7 +163,7 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
                 .widget(group)
                 .widget(new LabelWidget(5, 5, getBlockState().getBlock().getDescriptionId()))
                 .widget(new PredicatedImageWidget(79, 42, 18, 18, GuiTextures.INDICATOR_NO_STEAM.get(isHighPressure))
-                        .setPredicate(recipeLogic::isHasNotEnoughEnergy))
+                        .setPredicate(recipeLogic::isWaiting))
                 .widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(), GuiTextures.SLOT_STEAM.get(isHighPressure), 7, 84, true));
     }
 }

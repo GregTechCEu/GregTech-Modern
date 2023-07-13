@@ -6,6 +6,7 @@ import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.color.item.ItemColor;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
@@ -45,4 +46,23 @@ public class MaterialBlockItem extends BlockItem implements IItemRendererProvide
         return getBlock().getRenderer(getBlock().defaultBlockState());
     }
 
+    @Override
+    public String getDescriptionId() {
+        return getBlock().getDescriptionId();
+    }
+
+    @Override
+    public String getDescriptionId(ItemStack stack) {
+        return getDescriptionId();
+    }
+
+    @Override
+    public Component getDescription() {
+        return getBlock().getName();
+    }
+
+    @Override
+    public Component getName(ItemStack stack) {
+        return getDescription();
+    }
 }

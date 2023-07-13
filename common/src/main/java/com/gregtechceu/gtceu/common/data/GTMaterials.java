@@ -47,6 +47,7 @@ import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
 public class GTMaterials {
 
     public static Material[] CHEMICAL_DYES;
+    public static Material[] VOLTAGE_COMMON_MATERIALS;
     public static void init() {
 
         MarkerMaterials.register();
@@ -115,6 +116,19 @@ public class GTMaterials {
                 GTMaterials.DyePurple, GTMaterials.DyeBlue,
                 GTMaterials.DyeBrown, GTMaterials.DyeGreen,
                 GTMaterials.DyeRed, GTMaterials.DyeBlack
+        };
+
+        VOLTAGE_COMMON_MATERIALS = new Material[] {
+                GTMaterials.WroughtIron,
+                GTMaterials.Steel,
+                GTMaterials.Aluminium,
+                GTMaterials.StainlessSteel,
+                GTMaterials.Titanium,
+                GTMaterials.TungstenSteel,
+                GTMaterials.RhodiumPlatedPalladium,
+                GTMaterials.NaquadahAlloy,
+                GTMaterials.Darmstadtium,
+                GTMaterials.Neutronium
         };
 
         gemExquisite.setIgnored(Sugar);
@@ -225,23 +239,22 @@ public class GTMaterials {
         dustSmall.setIgnored(Lapotron);
         dustTiny.setIgnored(Lapotron);
 
-        // todo dyes
-        //dye.setIgnored(DyeBlack, Items.BLACK_DYE);
-        //dye.setIgnored(DyeRed, Items.RED_DYE);
-        //dye.setIgnored(DyeGreen, Items.GREEN_DYE);
-        //dye.setIgnored(DyeBrown, Items.BROWN_DYE);
-        //dye.setIgnored(DyeBlue, Items.BLUE_DYE);
-        //dye.setIgnored(DyePurple, Items.PURPLE_DYE);
-        //dye.setIgnored(DyeCyan, Items.CYAN_DYE);
-        //dye.setIgnored(DyeLightGray, Items.LIGHT_GRAY_DYE);
-        //dye.setIgnored(DyeGray, Items.GRAY_DYE);
-        //dye.setIgnored(DyePink, Items.PINK_DYE);
-        //dye.setIgnored(DyeLime, Items.LIME_DYE);
-        //dye.setIgnored(DyeYellow, Items.YELLOW_DYE);
-        //dye.setIgnored(DyeLightBlue, Items.LIGHT_BLUE_DYE);
-        //dye.setIgnored(DyeMagenta, Items.MAGENTA_DYE);
-        //dye.setIgnored(DyeOrange, Items.ORANGE_DYE);
-        //dye.setIgnored(DyeWhite, Items.WHITE_DYE);
+        dye.setIgnored(DyeBlack, Items.BLACK_DYE);
+        dye.setIgnored(DyeRed, Items.RED_DYE);
+        dye.setIgnored(DyeGreen, Items.GREEN_DYE);
+        dye.setIgnored(DyeBrown, Items.BROWN_DYE);
+        dye.setIgnored(DyeBlue, Items.BLUE_DYE);
+        dye.setIgnored(DyePurple, Items.PURPLE_DYE);
+        dye.setIgnored(DyeCyan, Items.CYAN_DYE);
+        dye.setIgnored(DyeLightGray, Items.LIGHT_GRAY_DYE);
+        dye.setIgnored(DyeGray, Items.GRAY_DYE);
+        dye.setIgnored(DyePink, Items.PINK_DYE);
+        dye.setIgnored(DyeLime, Items.LIME_DYE);
+        dye.setIgnored(DyeYellow, Items.YELLOW_DYE);
+        dye.setIgnored(DyeLightBlue, Items.LIGHT_BLUE_DYE);
+        dye.setIgnored(DyeMagenta, Items.MAGENTA_DYE);
+        dye.setIgnored(DyeOrange, Items.ORANGE_DYE);
+        dye.setIgnored(DyeWhite, Items.WHITE_DYE);
 
         // register vanilla materials
         registerUnificationItems(ingot, Clay, Items.CLAY_BALL);
@@ -262,16 +275,14 @@ public class GTMaterials {
         oreDeepslate.setIgnored(Emerald, Blocks.DEEPSLATE_EMERALD_ORE);
         ore.setIgnored(Copper, Blocks.COPPER_ORE);
         oreDeepslate.setIgnored(Copper, Blocks.DEEPSLATE_COPPER_ORE);
-        ore.setIgnored(Copper, Blocks.COPPER_ORE);
-        oreDeepslate.setIgnored(Copper, Blocks.DEEPSLATE_COPPER_ORE);
         oreNetherrack.setIgnored(NetherQuartz, Blocks.NETHER_QUARTZ_ORE);
-        // todo dyes
-        //registerUnificationItems(dye, DyeBlue, ChemicalHelper.get(gem, Lapis).getItem());
-        //registerUnificationItems(dye, DyeBlue, ChemicalHelper.get(gem, Lazurite).getItem());
-        //registerUnificationItems(dye, DyeBlue, ChemicalHelper.get(gem, Sodalite).getItem());
-        //registerUnificationItems(dye, DyeBlue, ChemicalHelper.get(dust, Lapis).getItem());
-        //registerUnificationItems(dye, DyeBlue, ChemicalHelper.get(dust, Lazurite).getItem());
-        //registerUnificationItems(dye, DyeBlue, ChemicalHelper.get(dust, Sodalite).getItem());
+
+        rawOre.setIgnored(Gold, Items.RAW_GOLD);
+        rawOre.setIgnored(Iron, Items.RAW_IRON);
+        rawOre.setIgnored(Copper, Items.RAW_COPPER);
+        rawOreBlock.setIgnored(Gold, Items.RAW_GOLD_BLOCK);
+        rawOreBlock.setIgnored(Iron, Items.RAW_IRON_BLOCK);
+        rawOreBlock.setIgnored(Copper, Items.RAW_COPPER_BLOCK);
 
         // TODO GT stone types, move out of this file
         //ChemicalHelper.registerUnificationEntry(MetaBlocks.STONE_SMOOTH.getItemVariant(BlockStoneSmooth.BlockType.BLACK_GRANITE, 1), TagPrefix.stone, GTMaterials.Deepslate);

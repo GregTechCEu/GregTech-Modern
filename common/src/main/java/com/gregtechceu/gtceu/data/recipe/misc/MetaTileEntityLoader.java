@@ -11,8 +11,6 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.CraftingComponent;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
-import com.simibubi.create.AllBlocks;
-import com.simibubi.create.AllItems;
 import com.tterrag.registrate.util.entry.ItemEntry;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.tags.ItemTags;
@@ -180,7 +178,7 @@ public class MetaTileEntityLoader {
         VanillaRecipeHelper.addShapedRecipe(provider, true, "steam_rock_breaker_bronze", GTMachines.STEAM_ROCK_CRUSHER.left().asStack(), "PXP", "XMX", "DXD", 'M', GTBlocks.BRONZE_HULL.asStack(), 'X', new UnificationEntry(TagPrefix.pipeSmallFluid, GTMaterials.Bronze), 'P', CustomTags.TAG_PISTONS, 'D', new UnificationEntry(TagPrefix.gem, GTMaterials.Diamond));
         VanillaRecipeHelper.addShapedRecipe(provider, true, "steam_rock_breaker_steel", GTMachines.STEAM_ROCK_CRUSHER.right().asStack(), "WSW", "PMP", "WWW", 'M', GTMachines.STEAM_ROCK_CRUSHER.left().asStack(), 'W', new UnificationEntry(TagPrefix.plate, GTMaterials.WroughtIron), 'S', new UnificationEntry(TagPrefix.plate, GTMaterials.Steel), 'P', new UnificationEntry(TagPrefix.pipeSmallFluid, GTMaterials.TinAlloy));
         // TODO steam miner
-        //VanillaRecipeHelper.addShapedRecipe(provider, true, "steam_miner", GTMachines.STEAM_MINER.getStackForm(), "DSD", "SMS", "GSG", 'M', MetaBlocks.STEAM_CASING.getItemVariant(BRONZE_HULL), 'S', new UnificationEntry(TagPrefix.pipeNormalFluid, GTMaterials.Bronze), 'D', new UnificationEntry(TagPrefix.gem, GTMaterials.Diamond), 'G', new UnificationEntry(TagPrefix.gearSmall, GTMaterials.Bronze));
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "steam_miner", GTMachines.STEAM_MINER.asStack(), "DSD", "SMS", "GSG", 'M', GTBlocks.BRONZE_BRICKS_HULL.asStack(), 'S', new UnificationEntry(TagPrefix.pipeNormalFluid, GTMaterials.Bronze), 'D', new UnificationEntry(TagPrefix.gem, GTMaterials.Diamond), 'G', new UnificationEntry(TagPrefix.gearSmall, GTMaterials.Bronze));
 
         // MULTI BLOCK CONTROLLERS
         VanillaRecipeHelper.addShapedRecipe(provider, true, "bronze_primitive_blast_furnace", GTMachines.PRIMITIVE_BLAST_FURNACE.asStack(), "hRS", "PBR", "dRS", 'R', new UnificationEntry(TagPrefix.rod, GTMaterials.Iron), 'S', new UnificationEntry(TagPrefix.screw, GTMaterials.Iron), 'P', new UnificationEntry(TagPrefix.plate, GTMaterials.Iron), 'B', GTBlocks.CASING_PRIMITIVE_BRICKS.asStack());
@@ -291,7 +289,7 @@ public class MetaTileEntityLoader {
         //registerMachineRecipe(provider, GTMachines.ITEM_COLLECTOR, "MRM", "RHR", "CWC", 'M', MOTOR, 'R', ROTOR, 'H', HULL, 'C', CIRCUIT, 'W', CABLE);
         //registerMachineRecipe(provider, GTMachines.BLOCK_BREAKER, "MGM", "CHC", "WSW", 'M', MOTOR, 'H', HULL, 'C', CIRCUIT, 'W', CABLE, 'S', OreDictNames.chestWood, 'G', GRINDER);
         //registerMachineRecipe(provider, GTMachines.WORLD_ACCELERATOR, "IGI", "FHF", "IGI", 'H', HULL, 'F', EMITTER, 'G', SENSOR, 'I', FIELD_GENERATOR);
-        //registerMachineRecipe(provider, GTMachines.MINER, "MMM", "WHW", "CSC", 'M', MOTOR, 'W', CABLE, 'H', HULL, 'C', CIRCUIT, 'S', SENSOR);
+        registerMachineRecipe(provider, GTMachines.MINER, "MMM", "WHW", "CSC", 'M', MOTOR, 'W', CABLE, 'H', HULL, 'C', CIRCUIT, 'S', SENSOR);
 
         registerMachineRecipe(provider, GTMachines.MUFFLER_HATCH, "HM", "PR", 'H', HULL, 'M', MOTOR, 'P', PIPE_NORMAL, 'R', ROTOR);
 
@@ -382,17 +380,6 @@ public class MetaTileEntityLoader {
             registerMachineRecipe(provider, true, GTMachines.ENERGY_CONVERTER_4A, " WW", "RMC", " WW", 'C', CIRCUIT, 'M', HULL, 'W', CABLE_QUAD, 'R', new UnificationEntry(TagPrefix.cableGtQuadruple, GTMaterials.RedAlloy));
             registerMachineRecipe(provider, true, GTMachines.ENERGY_CONVERTER_8A, " WW", "RMC", " WW", 'C', CIRCUIT, 'M', HULL, 'W', CABLE_OCT, 'R', new UnificationEntry(TagPrefix.cableGtOctal, GTMaterials.RedAlloy));
             registerMachineRecipe(provider, true, GTMachines.ENERGY_CONVERTER_16A, " WW", "RMC", " WW", 'C', CIRCUIT, 'M', HULL, 'W', CABLE_HEX, 'R', new UnificationEntry(TagPrefix.cableGtHex, GTMaterials.RedAlloy));
-        }
-
-        // Kinetic Machines
-        if (GTCEu.isCreateLoaded()) {
-            registerMachineRecipe(provider, GTCreateMachines.KINETIC_MIXER, "GRG", "GEG", "CMC", 'M', HULL, 'R', ROTOR, 'C', AllItems.PRECISION_MECHANISM, 'G', GLASS, 'E', AllBlocks.SHAFT);
-            registerMachineRecipe(provider, GTCreateMachines.ELECTRIC_GEAR_BOX_2A, "WMW", "RER", "CHC", 'H', HULL, 'C', CIRCUIT, 'E', AllBlocks.SHAFT.asStack(), 'W', CABLE, 'M', MOTOR, 'R', ROTOR);
-            registerMachineRecipe(provider, GTCreateMachines.ELECTRIC_GEAR_BOX_8A, "WMW", "RER", "CHC", 'H', HULL, 'C', CIRCUIT, 'E', AllBlocks.SHAFT.asStack(), 'W', CABLE_QUAD, 'M', MOTOR, 'R', ROTOR);
-            registerMachineRecipe(provider, GTCreateMachines.ELECTRIC_GEAR_BOX_16A, "WMW", "RER", "CHC", 'H', HULL, 'C', CIRCUIT, 'E', AllBlocks.SHAFT.asStack(), 'W', CABLE_OCT, 'M', MOTOR, 'R', ROTOR);
-            registerMachineRecipe(provider, GTCreateMachines.ELECTRIC_GEAR_BOX_32A, "WMW", "RER", "CHC", 'H', HULL, 'C', CIRCUIT, 'E', AllBlocks.SHAFT.asStack(), 'W', CABLE_HEX, 'M', MOTOR, 'R', ROTOR);
-            registerMachineRecipe(provider, GTCreateMachines.KINETIC_INPUT_BOX, " S ", " H ", "   ", "S", AllBlocks.SHAFT, "H", HULL);
-            registerMachineRecipe(provider, GTCreateMachines.KINETIC_OUTPUT_BOX, "   ", " H ", " S ", "S", AllBlocks.SHAFT, "H", HULL);
         }
     }
 

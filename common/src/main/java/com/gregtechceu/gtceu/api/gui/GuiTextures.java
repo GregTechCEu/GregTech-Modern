@@ -94,6 +94,7 @@ public class GuiTextures {
     public static final ResourceTexture SLIDER_ICON = new ResourceTexture("gtceu:textures/gui/widget/slider.png");
     public static final ResourceTexture MAINTENANCE_BUTTON = new ResourceTexture("gtceu:textures/gui/widget/button_maintenance.png");
     public static final ResourceTexture MAINTENANCE_ICON = new ResourceTexture("gtceu:textures/block/overlay/machine/overlay_maintenance.png");
+    public static final ResourceTexture BUTTON_MINER_MODES = new ResourceTexture("gtceu:textures/gui/widget/button_miner_modes.png");
 
     //PRIMITIVE
     public static final ResourceBorderTexture PRIMITIVE_BACKGROUND = new ResourceBorderTexture("gtceu:textures/gui/primitive/primitive_background.png", 176, 166, 3, 3);
@@ -268,9 +269,8 @@ public class GuiTextures {
     public static final ResourceTexture SCENE = new ResourceTexture("gtceu:textures/gui/widget/scene.png");
     public static final ResourceBorderTexture DISPLAY_FRAME = new ResourceBorderTexture("gtceu:textures/gui/base/display_frame.png", 16, 16, 4, 4);
     public static final ResourceTexture INSUFFICIENT_INPUT = new ResourceTexture("gtceu:textures/gui/base/indicator_no_energy.png");
-    public static final ResourceBorderTexture ENERGY_BAR_BACKGROUND = new ResourceBorderTexture("gtceu:textures/gui/widget/energy_bar_background.png", 28, 60, 4, 4);
-    public static final ResourceTexture ENERGY_BAR_BASE = new ResourceTexture("gtceu:textures/gui/widget/energy_bar_base.png");
-    public static final ResourceBorderTexture ENERGY_BAR_OVERLAY = new ResourceBorderTexture("gtceu:textures/gui/widget/energy_bar_overlay.png", 28, 60, 6, 6);
+    public static final ResourceBorderTexture ENERGY_BAR_BACKGROUND = new ResourceBorderTexture("gtceu:textures/gui/progress_bar/progress_bar_boiler_empty_steel.png", 10, 54, 1, 1);
+    public static final ResourceBorderTexture ENERGY_BAR_BASE = new ResourceBorderTexture("gtceu:textures/gui/progress_bar/progress_bar_boiler_heat.png", 10, 54, 1, 1);
     public static final ResourceTexture LIGHT_ON = new ResourceTexture("gtceu:textures/gui/widget/light_on.png");
     public static final ResourceTexture LIGHT_OFF = new ResourceTexture("gtceu:textures/gui/widget/light_off.png");
     public static final ResourceTexture UP = new ResourceTexture("gtceu:textures/gui/base/up.png");

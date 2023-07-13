@@ -30,6 +30,7 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -66,7 +67,7 @@ public class TagPrefix {
         return PREFIXES.get(name);
     }
 
-    public static final TagPrefix ore = oreTagPrefix("")
+    public static final TagPrefix ore = oreTagPrefix("stone")
             .langValue("%s Ore")
             .materialIconType(MaterialIconType.ore)
             .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
@@ -74,7 +75,7 @@ public class TagPrefix {
             .generationCondition(hasOreProperty)
             .registerOre(Blocks.STONE::defaultBlockState);
 
-    public static final TagPrefix oreGranite = oreTagPrefix("granite_")
+    public static final TagPrefix oreGranite = oreTagPrefix("granite")
             .langValue("Granite %s Ore")
             .materialIconType(MaterialIconType.ore)
             .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
@@ -82,7 +83,7 @@ public class TagPrefix {
             .generationCondition(hasOreProperty)
             .registerOre(Blocks.GRANITE::defaultBlockState, MaterialColor.DIRT);
 
-    public static final TagPrefix oreDiorite = oreTagPrefix("diorite_")
+    public static final TagPrefix oreDiorite = oreTagPrefix("diorite")
             .langValue("Diorite %s Ore")
             .materialIconType(MaterialIconType.ore)
             .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
@@ -90,7 +91,7 @@ public class TagPrefix {
             .generationCondition(hasOreProperty)
             .registerOre(Blocks.DIORITE::defaultBlockState, MaterialColor.QUARTZ);
 
-    public static final TagPrefix oreAndesite = oreTagPrefix("andesite_")
+    public static final TagPrefix oreAndesite = oreTagPrefix("andesite")
             .langValue("Andesite %s Ore")
             .materialIconType(MaterialIconType.ore)
             .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
@@ -98,7 +99,7 @@ public class TagPrefix {
             .generationCondition(hasOreProperty)
             .registerOre(Blocks.ANDESITE::defaultBlockState);
 
-    public static final TagPrefix oreDeepslate = oreTagPrefix("deepslate_")
+    public static final TagPrefix oreDeepslate = oreTagPrefix("deepslate")
             .langValue("Deepslate %s Ore")
             .materialIconType(MaterialIconType.ore)
             .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
@@ -106,7 +107,7 @@ public class TagPrefix {
             .generationCondition(hasOreProperty)
             .registerOre(Blocks.DEEPSLATE::defaultBlockState, MaterialColor.DEEPSLATE);
 
-    public static final TagPrefix oreTuff = oreTagPrefix("tuff_")
+    public static final TagPrefix oreTuff = oreTagPrefix("tuff")
             .langValue("Tuff %s Ore")
             .materialIconType(MaterialIconType.ore)
             .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
@@ -114,7 +115,7 @@ public class TagPrefix {
             .generationCondition(hasOreProperty)
             .registerOre(Blocks.TUFF::defaultBlockState, MaterialColor.DEEPSLATE);
 
-    public static final TagPrefix oreSand = oreTagPrefix("sand_")
+    public static final TagPrefix oreSand = oreTagPrefix("sand")
             .langValue("Sand %s Ore")
             .materialIconType(MaterialIconType.ore)
             .miningToolTag(BlockTags.MINEABLE_WITH_SHOVEL)
@@ -122,7 +123,7 @@ public class TagPrefix {
             .generationCondition(hasOreProperty)
             .registerOre(Blocks.SAND::defaultBlockState, false, net.minecraft.world.level.material.Material.SAND, MaterialColor.SAND, SoundType.SAND);
 
-    public static final TagPrefix oreRedSand = oreTagPrefix("redSand_")
+    public static final TagPrefix oreRedSand = oreTagPrefix("redSand")
             .langValue("Red Sand %s Ore")
             .materialIconType(MaterialIconType.ore)
             .miningToolTag(BlockTags.MINEABLE_WITH_SHOVEL)
@@ -130,7 +131,7 @@ public class TagPrefix {
             .generationCondition(hasOreProperty)
             .registerOre(Blocks.RED_SAND::defaultBlockState, false, net.minecraft.world.level.material.Material.SAND, MaterialColor.COLOR_ORANGE, SoundType.SAND);
 
-    public static final TagPrefix oreGravel = oreTagPrefix("gravel_")
+    public static final TagPrefix oreGravel = oreTagPrefix("gravel")
             .langValue("Gravel %s Ore")
             .materialIconType(MaterialIconType.ore)
             .miningToolTag(BlockTags.MINEABLE_WITH_SHOVEL)
@@ -138,7 +139,7 @@ public class TagPrefix {
             .generationCondition(hasOreProperty)
             .registerOre(Blocks.GRAVEL::defaultBlockState, false, net.minecraft.world.level.material.Material.SAND, MaterialColor.STONE, SoundType.GRAVEL);
 
-    public static final TagPrefix oreBasalt = oreTagPrefix("basalt_")
+    public static final TagPrefix oreBasalt = oreTagPrefix("basalt")
             .langValue("Basalt %s Ore")
             .materialIconType(MaterialIconType.ore)
             .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
@@ -146,7 +147,7 @@ public class TagPrefix {
             .generationCondition(hasOreProperty)
             .registerOre(Blocks.BASALT::defaultBlockState, true, MaterialColor.COLOR_BLACK);
 
-    public static final TagPrefix oreNetherrack = oreTagPrefix("netherrack_")
+    public static final TagPrefix oreNetherrack = oreTagPrefix("netherrack")
             .langValue("Nether %s Ore")
             .materialIconType(MaterialIconType.ore)
             .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
@@ -154,13 +155,31 @@ public class TagPrefix {
             .generationCondition(hasOreProperty)
             .registerOre(Blocks.NETHERRACK::defaultBlockState, true, MaterialColor.NETHER);
 
-    public static final TagPrefix oreEndstone = oreTagPrefix("endstone_")
+    public static final TagPrefix oreEndstone = oreTagPrefix("endstone")
             .langValue("End %s Ore")
             .materialIconType(MaterialIconType.ore)
             .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
             .unificationEnabled(true)
             .generationCondition(hasOreProperty)
             .registerOre(Blocks.END_STONE::defaultBlockState, true, MaterialColor.SAND);
+
+    public static final TagPrefix rawOre = new TagPrefix("raw", true)
+            .defaultTagPath(FORGE, "raw_materials/%s")
+            .defaultTagPath(FABRIC, "raw_%s_ores")
+            .langValue("Raw %s")
+            .materialIconType(MaterialIconType.rawOre)
+            .unificationEnabled(true)
+            .generateItem(true)
+            .generationCondition(hasOreProperty.and(hasGemProperty.negate()));
+
+    public static final TagPrefix rawOreBlock = new TagPrefix("rawOreBlock")
+            .defaultTagPath(FORGE, "storage_blocks/raw_%s")
+            .defaultTagPath(FABRIC, "raw_%s_blocks")
+            .langValue("Block of Raw %s")
+            .materialIconType(MaterialIconType.rawOreBlock)
+            .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
+            .unificationEnabled(true)
+            .generationCondition(hasOreProperty.and(hasGemProperty.negate()));
 
     public static final TagPrefix crushedRefined = new TagPrefix("refinedOre")
             .defaultTagPath(FORGE, "refined_ores/%s")
@@ -576,6 +595,13 @@ public class TagPrefix {
             .generateItem(true)
             .generationCondition(mat -> mat.hasFlag(MaterialFlags.GENERATE_LENS));
 
+    public static final TagPrefix dye = new TagPrefix("dye")
+            .defaultTagPath(FORGE, "dyes/%s")
+            .defaultTagPath(FABRIC, "%s_dyes")
+            .unformattedTagPath(FORGE, "dyes")
+            .unformattedTagPath(FABRIC, "dyes")
+            .materialAmount(-1);
+
     // made of 4 Ingots.
     public static final TagPrefix toolHeadBuzzSaw = new TagPrefix("buzzSawBlade")
             .itemTable(() -> GTItems.MATERIAL_ITEMS)
@@ -645,6 +671,7 @@ public class TagPrefix {
     public static final TagPrefix block = new TagPrefix("block")
             .defaultTagPath(FORGE, "storage_blocks/%s")
             .defaultTagPath(FABRIC, "%s_blocks")
+            .unformattedTagPath(FORGE, "storage_blocks")
             .langValue("Block of %s")
             .materialAmount(GTValues.M * 9)
             .materialIconType(MaterialIconType.block)
@@ -727,6 +754,8 @@ public class TagPrefix {
 
     @Getter
     public final String name;
+    @Getter
+    public final boolean invertedName;
 
     private final List<TagType> forgeTags = new ArrayList<>();
     private final List<TagType> fabricTags = new ArrayList<>();
@@ -742,6 +771,7 @@ public class TagPrefix {
     @Setter
     private boolean generateItem;
 
+    @Getter
     @Setter
     private @Nullable
     Predicate<Material> generationCondition;
@@ -770,7 +800,12 @@ public class TagPrefix {
     protected final Set<TagKey<Block>> miningToolTag = new HashSet<>();
 
     public TagPrefix(String name) {
+        this(name, false);
+    }
+
+    public TagPrefix(String name, boolean invertedName) {
         this.name = name;
+        this.invertedName = invertedName;
         this.langValue = "%s " + FormattingUtil.toEnglishName(FormattingUtil.toLowerCaseUnder(name));
         PREFIXES.put(name, this);
     }
@@ -927,20 +962,25 @@ public class TagPrefix {
         return "tagprefix." + FormattingUtil.toLowerCaseUnderscore(name);
     }
 
-    public String getLocalNameForItem(Material material) {
-        return LocalizationUtils.format(getUnlocalizedName(), LocalizationUtils.format(material.getUnlocalizedName()));
+    public MutableComponent getLocalizedName(Material material) {
+        return Component.translatable(getUnlocalizedName(material), material.getLocalizedName());
     }
 
-    private String findUnlocalizedName(Material material) {
+    public String getUnlocalizedName(Material material) {
+        String formattedPrefix = FormattingUtil.toLowerCaseUnderscore(this.name);
+        String matSpecificKey = String.format("item.%s_%s", this.invertedName ? material.getName() : formattedPrefix, this.invertedName ? formattedPrefix : material.getName());
+        if (LocalizationUtils.exist(matSpecificKey)) {
+            return matSpecificKey;
+        }
         if(material.hasProperty(PropertyKey.POLYMER)) {
-            String localizationKey = String.format("item.material.oreprefix.polymer.%s", this.name);
-            // Not every polymer ore prefix gets a special name
+            String localizationKey = String.format("tagprefix.polymer.%s", formattedPrefix);
+            // Not every polymer tag prefix gets a special name
             if(LocalizationUtils.exist(localizationKey)) {
                 return localizationKey;
             }
         }
 
-        return String.format("item.material.oreprefix.%s", this.name);
+        return getUnlocalizedName();
     }
 
     public boolean isIgnored(Material material) {

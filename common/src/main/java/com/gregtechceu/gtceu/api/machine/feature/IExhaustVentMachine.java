@@ -33,6 +33,8 @@ public interface IExhaustVentMachine extends IMachineFeature {
      */
     boolean needsVenting();
 
+    void setNeedsVenting(boolean needsVenting);
+
     /**
      * Mark the machine as no longer needing venting
      */

@@ -1,9 +1,12 @@
 package com.gregtechceu.gtceu.common.data;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableTable;
 import com.google.common.collect.Table;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.addon.AddonFinder;
+import com.gregtechceu.gtceu.api.addon.events.MaterialCasingCollectionEvent;
 import com.gregtechceu.gtceu.api.block.*;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.item.MaterialPipeBlockItem;
@@ -69,6 +72,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Supplier;
 
+import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.*;
 import static com.gregtechceu.gtceu.api.registry.GTRegistries.REGISTRATE;
 import static net.minecraftforge.client.model.generators.ModelProvider.BLOCK_FOLDER;
@@ -129,12 +133,29 @@ public class GTBlocks {
 
             // Ore Block
             if (material.hasProperty(PropertyKey.ORE)) {
+                if (!TagPrefix.rawOreBlock.isIgnored(material) && TagPrefix.rawOreBlock.generationCondition().test(material)) {
+                    var entry = REGISTRATE.block("raw_%s_block".formatted(material.getName()), properties -> new MaterialBlock(properties.noLootTable(), TagPrefix.rawOreBlock, material))
+                            .initialProperties(() -> Blocks.IRON_BLOCK)
+                            .transform(unificationBlock(TagPrefix.rawOreBlock, material))
+                            .addLayer(() -> RenderType::solid)
+                            .setData(ProviderType.BLOCKSTATE, NonNullBiConsumer.noop())
+                            .setData(ProviderType.LANG, NonNullBiConsumer.noop())
+                            .setData(ProviderType.LOOT, NonNullBiConsumer.noop())
+                            .color(() -> MaterialBlock::tintedColor)
+                            .item(MaterialBlockItem::new)
+                            .model(NonNullBiConsumer.noop())
+                            .color(() -> MaterialBlockItem::tintColor)
+                            .build()
+                            .register();
+                    builder.put(TagPrefix.rawOreBlock, material, entry);
+                }
+
                 var oreProperty = material.getProperty(PropertyKey.ORE);
                 for (var ore : TagPrefix.ORES.entrySet()) {
                     if (ore.getKey().isIgnored(material)) continue;
                     var oreTag = ore.getKey();
                     final TagPrefix.OreType oreType = ore.getValue();
-                    var entry = REGISTRATE.block("%s%s_ore".formatted(FormattingUtil.toLowerCaseUnder(oreTag.name), material.getName()),
+                    var entry = REGISTRATE.block("%s%s_ore".formatted(oreTag != TagPrefix.ore ? FormattingUtil.toLowerCaseUnder(oreTag.name) + "_" : "", material.getName()),
                                     oreType.material(),
                                     properties -> new MaterialBlock(properties, oreTag, material, Platform.isClient() ? new OreBlockRenderer(oreType.stoneType(),
                                             Objects.requireNonNull(oreTag.materialIconType()).getBlockTexturePath(material.getMaterialIconSet(), true),
@@ -267,6 +288,25 @@ public class GTBlocks {
     public static final BlockEntry<Block> CASING_PTFE_INERT = createCasingBlock("inert_machine_casing", GTCEu.id("block/casings/solid/machine_casing_inert_ptfe"));
     public static final BlockEntry<Block> CASING_HSSE_STURDY = createCasingBlock("sturdy_machine_casing", GTCEu.id("block/casings/solid/machine_casing_study_hsse"));
     public static final BlockEntry<Block> CASING_TEMPERED_GLASS = createCasingBlock("tempered_glass", GTCEu.id("block/casings/transparent/tempered_glass"), () -> Blocks.GLASS);
+    public static final ImmutableMap<Material, BlockEntry<Block>> MATERIALS_TO_CASINGS;
+
+    static {
+        ImmutableMap.Builder<Material, BlockEntry<Block>> builder = ImmutableMap.builder();
+        builder.put(GTMaterials.Bronze, CASING_BRONZE_BRICKS);
+        builder.put(GTMaterials.Invar, CASING_INVAR_HEATPROOF);
+        builder.put(GTMaterials.Aluminium, CASING_ALUMINIUM_FROSTPROOF);
+        builder.put(GTMaterials.Steel, CASING_STEEL_SOLID);
+        builder.put(GTMaterials.StainlessSteel, CASING_STAINLESS_CLEAN);
+        builder.put(GTMaterials.Titanium, CASING_TITANIUM_STABLE);
+        builder.put(GTMaterials.TungstenSteel, CASING_TUNGSTENSTEEL_ROBUST);
+        builder.put(GTMaterials.Polytetrafluoroethylene, CASING_PTFE_INERT);
+        builder.put(GTMaterials.HSSE, CASING_HSSE_STURDY);
+
+        MaterialCasingCollectionEvent event = new MaterialCasingCollectionEvent(builder);
+        AddonFinder.getAddons().forEach(addon -> addon.collectMaterialCasings(event));
+
+        MATERIALS_TO_CASINGS = builder.build();
+    }
 
 
 
@@ -295,7 +335,14 @@ public class GTBlocks {
     public static final BlockEntry<Block> CASING_STEEL_PIPE = createCasingBlock("steel_pipe_casing", GTCEu.id("block/casings/pipe/machine_casing_pipe_steel"));
     public static final BlockEntry<Block> CASING_TITANIUM_PIPE = createCasingBlock("titanium_pipe_casing", GTCEu.id("block/casings/pipe/machine_casing_pipe_titanium"));
     public static final BlockEntry<Block> CASING_TUNGSTENSTEEL_PIPE = createCasingBlock("tungstensteel_pipe_casing", GTCEu.id("block/casings/pipe/machine_casing_pipe_tungstensteel"));
-    public static final BlockEntry<Block> CASING_POLYTETRAFLUOROETHYLENE_PIPE = createPipeCasingBlock("PTFE", GTCEu.id("block/casings/pipe/machine_casing_pipe_polytetrafluoroethylene"));
+    public static final BlockEntry<Block> CASING_POLYTETRAFLUOROETHYLENE_PIPE = createPipeCasingBlock("ptfe", GTCEu.id("block/casings/pipe/machine_casing_pipe_polytetrafluoroethylene"));
+    public static final BlockEntry<MinerPipeBlock> MINER_PIPE = REGISTRATE.block("miner_pipe", MinerPipeBlock::new)
+            .initialProperties(() -> Blocks.BEDROCK)
+            .properties(BlockBehaviour.Properties::noOcclusion)
+            .addLayer(() -> RenderType::cutoutMipped)
+            .blockstate((ctx, prov) -> prov.simpleBlock(ctx.getEntry(), prov.models().getExistingFile(GTCEu.id("block/miner_pipe"))))
+            .tag(BlockTags.DRAGON_IMMUNE, BlockTags.WITHER_IMMUNE, BlockTags.INFINIBURN_END, BlockTags.FEATURES_CANNOT_REPLACE, BlockTags.GEODE_INVALID_BLOCKS)
+            .register();
 
     // The Pump Deck
     public static final BlockEntry<Block> CASING_PUMP_DECK = REGISTRATE.block("pump_deck", p -> (Block) new RendererBlock(p,
@@ -318,8 +365,8 @@ public class GTBlocks {
 
 
     // Machine Casings
-    public static final BlockEntry<Block> MACHINE_CASING_ULV = createMachineCasingBlock(GTValues.ULV);
-    public static final BlockEntry<Block> MACHINE_CASING_LV = createMachineCasingBlock(GTValues.LV);
+    public static final BlockEntry<Block> MACHINE_CASING_ULV = createMachineCasingBlock(ULV);
+    public static final BlockEntry<Block> MACHINE_CASING_LV = createMachineCasingBlock(LV);
     public static final BlockEntry<Block> MACHINE_CASING_MV = createMachineCasingBlock(GTValues.MV);
     public static final BlockEntry<Block> MACHINE_CASING_HV = createMachineCasingBlock(GTValues.HV);
     public static final BlockEntry<Block> MACHINE_CASING_EV = createMachineCasingBlock(GTValues.EV);
@@ -330,7 +377,7 @@ public class GTBlocks {
     public static final BlockEntry<Block> MACHINE_CASING_UHV = createMachineCasingBlock(GTValues.UHV);
 
     // Hermetic Casings
-    public static final BlockEntry<Block> HERMETIC_CASING_LV = createHermeticCasing(GTValues.LV);
+    public static final BlockEntry<Block> HERMETIC_CASING_LV = createHermeticCasing(LV);
     public static final BlockEntry<Block> HERMETIC_CASING_MV = createHermeticCasing(GTValues.MV);
     public static final BlockEntry<Block> HERMETIC_CASING_HV = createHermeticCasing(GTValues.HV);
     public static final BlockEntry<Block> HERMETIC_CASING_EV = createHermeticCasing(GTValues.EV);

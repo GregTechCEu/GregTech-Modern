@@ -17,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class CleanroomLogic extends RecipeLogic implements IWorkable {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(CleanroomLogic.class);
+    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(CleanroomLogic.class, RecipeLogic.MANAGED_FIELD_HOLDER);
     public static final int BASE_CLEAN_AMOUNT = 5;
     @Setter @Nullable
     private IMaintenanceMachine maintenanceMachine;

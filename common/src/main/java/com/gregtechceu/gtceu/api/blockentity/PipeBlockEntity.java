@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.blockentity;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.MaterialPipeBlock;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
 import com.gregtechceu.gtceu.api.pipenet.PipeCoverContainer;
@@ -75,6 +76,10 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
     @Persisted @DescSynced @RequireRerender
     @Getter @Setter
     private int paintingColor = -1;
+
+    @Getter @Setter
+    @Persisted @DescSynced @RequireRerender
+    private Material frameMaterial;
 
     private final List<TickableSubscription> serverTicks;
     private final List<TickableSubscription> waitingToAdd;

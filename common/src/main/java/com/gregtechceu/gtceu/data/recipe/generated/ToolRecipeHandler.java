@@ -1,5 +1,7 @@
 package com.gregtechceu.gtceu.data.recipe.generated;
 
+import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterial;
+import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.ToolProperty;
@@ -203,8 +205,7 @@ public class ToolRecipeHandler {
             addToolRecipe(provider, material, GTToolType.CROWBAR, true,
                     "hDS", "DSD", "SDf",
                     'S', rod,
-                    'D', CustomTags.TAG_BLUE_DYES); // todo blue dyes
-                    //'D', new UnificationEntry(dye, MarkerMaterials.Color.Blue));
+                    'D', new UnificationEntry(TagPrefix.dye, MarkerMaterials.Color.Blue));
         }
     }
 /*
@@ -323,30 +324,30 @@ public class ToolRecipeHandler {
                 'I', flint,
                 'S', new ItemStack(Blocks.STONE));
 
-        //addToolRecipe(provider, GTMaterials.Flint, GTToolType.SWORD, false,
-        //        "I", "I", "S",
-        //        'I', flint,
-        //        'S', rod);
+        addToolRecipe(provider, GTMaterials.Flint, GTToolType.SWORD, false,
+                "I", "I", "S",
+                'I', flint,
+                'S', stick);
 
-        //addToolRecipe(provider, GTMaterials.Flint, GTToolType.PICKAXE, false,
-        //        "III", " S ", " S ",
-        //        'I', flint,
-        //        'S', rod);
+        addToolRecipe(provider, GTMaterials.Flint, GTToolType.PICKAXE, false,
+                "III", " S ", " S ",
+                'I', flint,
+                'S', stick);
 
-        //addToolRecipe(provider, GTMaterials.Flint, GTToolType.SHOVEL, false,
-        //        "I", "S", "S",
-        //        'I', flint,
-        //        'S', rod);
+        addToolRecipe(provider, GTMaterials.Flint, GTToolType.SHOVEL, false,
+                "I", "S", "S",
+                'I', flint,
+                'S', stick);
 
-        //addToolRecipe(provider, GTMaterials.Flint, GTToolType.AXE, true,
-        //        "II", "IS", " S",
-        //        'I', flint,
-        //        'S', rod);
+        addToolRecipe(provider, GTMaterials.Flint, GTToolType.AXE, true,
+                "II", "IS", " S",
+                'I', flint,
+                'S', stick);
 
-        //addToolRecipe(provider, GTMaterials.Flint, GTToolType.HOE, true,
-        //        "II", " S", " S",
-        //        'I', flint,
-        //        'S', rod);
+        addToolRecipe(provider, GTMaterials.Flint, GTToolType.HOE, true,
+                "II", " S", " S",
+                'I', flint,
+                'S', stick);
 
         addToolRecipe(provider, GTMaterials.Flint, GTToolType.KNIFE, false,
                 "I", "S",

@@ -35,8 +35,8 @@ import java.util.List;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine implements IFancyUIMachine, IDisplayUIMachine, ITieredMachine, IOverclockMachine {
-    public WorkableElectricMultiblockMachine(IMachineBlockEntity holder) {
-        super(holder);
+    public WorkableElectricMultiblockMachine(IMachineBlockEntity holder, Object... args) {
+        super(holder, args);
     }
 
     //////////////////////////////////////
@@ -44,7 +44,7 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
     //////////////////////////////////////
 
     @Override
-    public void  addDisplayText(List<Component> textList) {
+    public void addDisplayText(List<Component> textList) {
         IDisplayUIMachine.super.addDisplayText(textList);
         if (isFormed()) {
             var maxVoltage = getMaxVoltage();
@@ -87,8 +87,8 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
                 textList.add(Component.translatable("gtceu.multiblock.idling"));
             }
 
-            if (recipeLogic.isHasNotEnoughEnergy()) {
-                textList.add(Component.translatable("gtceu.multiblock.not_enough_energy").setStyle(Style.EMPTY.withColor(ChatFormatting.RED)));
+            if (recipeLogic.isWaiting()) {
+                textList.add(Component.translatable("gtceu.multiblock.waiting").setStyle(Style.EMPTY.withColor(ChatFormatting.RED)));
             }
         }
         getDefinition().getAdditionalDisplay().accept(this, textList);

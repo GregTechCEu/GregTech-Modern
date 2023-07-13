@@ -7,6 +7,7 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
@@ -32,5 +33,8 @@ public class GTRendererProvider extends ATESRRendererProvider<BlockEntity> {
         return INSTANCE;
     }
 
- 
+    @Nullable
+    public static GTRendererProvider getInstance() {
+        return INSTANCE;
+    }
 }

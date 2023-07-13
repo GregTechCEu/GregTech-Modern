@@ -45,7 +45,7 @@ public class GTSoundEntries {
     public static final SoundEntry SAW_TOOL = REGISTRATE.sound("saw").build();
     public static final SoundEntry SCREWDRIVER_TOOL = REGISTRATE.sound("screwdriver").build();
     public static final SoundEntry CHAINSAW_TOOL = REGISTRATE.sound("chainsaw").build();
-    public static final SoundEntry WIRECUTTER_TOOL = REGISTRATE.sound("irecutter").build();
+    public static final SoundEntry WIRECUTTER_TOOL = REGISTRATE.sound("wirecutter").build();
     public static final SoundEntry SPRAY_CAN_TOOL = REGISTRATE.sound("spray_can").build();
     public static final SoundEntry TRICORDER_TOOL = REGISTRATE.sound("tricorder").build();
     public static final SoundEntry MORTAR_TOOL = REGISTRATE.sound("mortar").build();

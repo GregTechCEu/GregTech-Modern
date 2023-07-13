@@ -27,10 +27,9 @@ public class MiscRecipeLoader {
     public static void init(Consumer<FinishedRecipe> provider) {
 
         // Basic Terminal Recipe
-        // TODO Terminal
-        //VanillaRecipeHelper.addShapedRecipe(provider, true, "basic_terminal", TERMINAL,
-        //        "SGS", "PBP", "PWP", 'S', new UnificationEntry(screw, WroughtIron), 'G', OreDictHelper.get("paneGlass"), 'B', new ItemStack(Items.BOOK),
-        //                                'P', new UnificationEntry(plate, WroughtIron), 'W', new UnificationEntry(wireGtSingle, RedAlloy));
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "basic_terminal", TERMINAL.asStack(),
+                "SGS", "PBP", "PWP", 'S', new UnificationEntry(screw, WroughtIron), 'G', CustomTags.GLASS_PANES, 'B', new ItemStack(Items.BOOK),
+                                        'P', new UnificationEntry(plate, WroughtIron), 'W', new UnificationEntry(wireGtSingle, RedAlloy));
 
         // Potin Recipe
         VanillaRecipeHelper.addShapelessRecipe(provider, "potin_dust", ChemicalHelper.get(dust, Potin, 8),
@@ -337,7 +336,6 @@ public class MiscRecipeLoader {
          */
 
         // Tempered Glass in Arc Furnace
-        // TODO Glass
         ARC_FURNACE_RECIPES.recipeBuilder("tempered_glass").duration(60).EUt(VA[LV])
                 .inputItems(block, Glass)
                 .outputItems(GTBlocks.CASING_TEMPERED_GLASS.asStack())
@@ -434,7 +432,6 @@ public class MiscRecipeLoader {
                 .outputFluids(Water.getFluid(1000))
                 .duration(100).EUt(VA[LV]).save(provider);
 
-        // TODO Glass blocks
         FORMING_PRESS_RECIPES.recipeBuilder("laminated_glass")
                 .inputItems(GTBlocks.CASING_TEMPERED_GLASS.asStack(2))
                 .inputItems(plate, PolyvinylButyral)

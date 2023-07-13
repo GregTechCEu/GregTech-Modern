@@ -3,24 +3,31 @@ package com.gregtechceu.gtceu.api.pattern;
 import com.gregtechceu.gtceu.api.block.ActiveBlock;
 import com.gregtechceu.gtceu.api.block.ICoilType;
 import com.gregtechceu.gtceu.api.block.IMachineBlock;
+import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.pattern.error.PatternStringError;
 import com.gregtechceu.gtceu.api.pattern.predicates.PredicateBlocks;
 import com.gregtechceu.gtceu.api.pattern.predicates.PredicateFluids;
 import com.gregtechceu.gtceu.api.pattern.predicates.PredicateStates;
 import com.gregtechceu.gtceu.api.pattern.predicates.SimplePredicate;
+import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.common.block.CoilBlock;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.lowdragmc.lowdraglib.utils.BlockInfo;
+import com.tterrag.registrate.util.entry.RegistryEntry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
+import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -174,4 +181,19 @@ public class Predicates {
                 .toArray(BlockInfo[]::new))
                 .addTooltips(Component.translatable("gtceu.multiblock.pattern.error.filters"));
     }
+
+    /**
+     * Use this predicate for Frames in your Multiblock. Allows for Framed Pipes as well as normal Frame blocks.
+     */
+    public static TraceabilityPredicate frames(Material... frameMaterials) {
+        return blocks(Arrays.stream(frameMaterials).map(m -> GTBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, m)).filter(Objects::nonNull).filter(RegistryEntry::isPresent).map(RegistryEntry::get).toArray(Block[]::new))
+                .or(new TraceabilityPredicate(blockWorldState -> {
+                    BlockEntity tileEntity = blockWorldState.getTileEntity();
+                    if (!(tileEntity instanceof IPipeNode<?,?> pipeNode)) {
+                        return false;
+                    }
+                    return ArrayUtils.contains(frameMaterials, pipeNode.getFrameMaterial());
+                }, () -> Arrays.stream(frameMaterials).map(m -> GTBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, m)).filter(Objects::nonNull).filter(RegistryEntry::isPresent).map(RegistryEntry::get).map(BlockInfo::fromBlock).toArray(BlockInfo[]::new)));
+    }
+
 }

@@ -111,7 +111,7 @@ public class GTToolItem extends DiggerItem implements IItemRendererProvider, IIt
         //MutableComponent mat = Component.translatable(getTier().material.getUnlocalizedName());
         //GTCEu.LOGGER.info(mat.getString());
         //GTCEu.LOGGER.info(Component.translatable(toolType.getUnlocalizedName(), mat).getString());
-        return Component.translatable(toolType.getUnlocalizedName(), Component.translatable(getTier().material.getUnlocalizedName()));
+        return Component.translatable(toolType.getUnlocalizedName(), getTier().material.getLocalizedName());
     }
 
     @Override

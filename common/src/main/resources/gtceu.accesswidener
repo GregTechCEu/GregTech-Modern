@@ -1,3 +1,5 @@
 accessWidener   v2  named
 
 accessible method net/minecraft/data/loot/BlockLoot createSingleItemTable (Lnet/minecraft/world/level/ItemLike;)Lnet/minecraft/world/level/storage/loot/LootTable$Builder;
+accessible method net/minecraft/data/loot/BlockLoot applyExplosionDecay (Lnet/minecraft/world/level/ItemLike;Lnet/minecraft/world/level/storage/loot/functions/FunctionUserBuilder;)Lnet/minecraft/world/level/storage/loot/functions/FunctionUserBuilder;
+accessible method net/minecraft/data/loot/BlockLoot createSilkTouchDispatchTable (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/world/level/storage/loot/entries/LootPoolEntryContainer$Builder;)Lnet/minecraft/world/level/storage/loot/LootTable$Builder;

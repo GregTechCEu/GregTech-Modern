@@ -106,7 +106,7 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
                 textList.add(Component.translatable("gtceu.multiblock.idling"));
             }
 
-            if (recipeLogic.isHasNotEnoughEnergy()) {
+            if (recipeLogic.isWaiting()) {
                 textList.add(Component.translatable("gtceu.multiblock.steam.low_steam").setStyle(Style.EMPTY.withColor(ChatFormatting.RED)));
             }
         }

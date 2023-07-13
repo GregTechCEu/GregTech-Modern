@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.common.block.CoilBlock;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import dev.latvian.mods.kubejs.block.BlockBuilder;
-import dev.latvian.mods.kubejs.client.ModelGenerator;
+import dev.latvian.mods.kubejs.block.BlockItemBuilder;
 import dev.latvian.mods.kubejs.generator.AssetJsonGenerator;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
@@ -52,13 +52,13 @@ public class CoilBlockBuilder extends BlockBuilder {
     }
 
     @Override
-    protected void generateBlockModelJsons(AssetJsonGenerator generator) {
+    public void generateAssetJsons(AssetJsonGenerator generator) {
 
     }
 
     @Override
-    protected void generateItemModelJson(ModelGenerator m) {
-
+    protected BlockItemBuilder getOrCreateItemBuilder() {
+        return itemBuilder == null ? (itemBuilder = new RendererBlockItemBuilder(id)) : itemBuilder;
     }
 
     @Override

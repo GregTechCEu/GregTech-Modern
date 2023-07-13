@@ -80,8 +80,10 @@ public class GTItems {
             if (tagPrefix.doGenerateItem()) {
                 for (Material material : GTRegistries.MATERIALS) {
                     if (tagPrefix.doGenerateItem(material)) {
+                        String first = tagPrefix.invertedName ? toLowerCaseUnder(tagPrefix.name) : material.getName();
+                        String last = tagPrefix.invertedName ? material.getName() : toLowerCaseUnder(tagPrefix.name);
                         builder.put(tagPrefix, material, REGISTRATE
-                                .item(material.getName() + "_" + toLowerCaseUnder(tagPrefix.name), properties -> new TagPrefixItem(properties, tagPrefix, material))
+                                .item(first + "_" + last, properties -> new TagPrefixItem(properties, tagPrefix, material))
                                 .setData(ProviderType.LANG, NonNullBiConsumer.noop())
                                 .transform(unificationItem(tagPrefix, material))
                                 .properties(p -> p.stacksTo(tagPrefix.maxStackSize()))

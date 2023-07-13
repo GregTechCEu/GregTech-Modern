@@ -15,10 +15,10 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.item.FallingBlockEntity;
-import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.FallingBlock;
@@ -123,7 +123,12 @@ public class MaterialBlock extends AppearanceBlock implements IBlockRendererProv
 
     @Override
     public String getDescriptionId() {
-        return tagPrefix.getLocalNameForItem(material);
+        return tagPrefix.getUnlocalizedName(material);
+    }
+
+    @Override
+    public MutableComponent getName() {
+        return tagPrefix.getLocalizedName(material);
     }
 
 }
