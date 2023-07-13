@@ -14,6 +14,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
@@ -111,6 +112,19 @@ public class ToolHelper {
         }
 
         return aoePositions;
+    }
+
+    public static boolean aoeCanBreak(ItemStack stack, Level level, BlockPos origin, BlockPos pos) {
+        if (origin.equals(pos)) return false;
+        if (!stack.isCorrectToolForDrops(level.getBlockState(pos))) return false;
+
+        BlockState state = level.getBlockState(pos);
+        BlockState originState = level.getBlockState(origin);
+
+        //Adapted from GTCEU 1.12.2, used to stop mining blocks like obsidian faster by targeting neighbouring stone. The value 8 is an arbitrary and does not represent anything.
+        if (state.getDestroySpeed(level, pos) < 0 || state.getDestroySpeed(level, pos) - originState.getDestroySpeed(level, pos) > 8) return false;
+
+        return true;
     }
 
 }

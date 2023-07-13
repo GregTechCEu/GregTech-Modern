@@ -77,12 +77,7 @@ public class ServerPlayerGameModeMixin {
             BlockState originBlock = level.getBlockState(pos);
 
             for (BlockPos blockPos : blockPosList) {
-                if (blockPos.equals(pos)) continue;
-                if (!mainHandItem.isCorrectToolForDrops(level.getBlockState(blockPos))) continue;
-                BlockState state = level.getBlockState(blockPos);
-
-                if (state.getDestroySpeed(level, pos) < 0 || state.getDestroySpeed(level, pos) - originBlock.getDestroySpeed(level, pos) > 8) continue;
-
+                if (!ToolHelper.aoeCanBreak(mainHandItem, level, pos, blockPos)) continue;
                 level.destroyBlock(blockPos, true, player);
                 if (mainHandItem.hurt(1, RandomSource.create(), player)) break;
             }
