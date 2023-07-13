@@ -15,6 +15,7 @@ import com.gregtechceu.gtceu.api.item.tool.IToolGridHighLight;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.pipenet.IAttachData;
 import com.gregtechceu.gtceu.api.pipenet.IPipeType;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.syncdata.EnhancedFieldManagedStorage;
 import com.gregtechceu.gtceu.api.syncdata.IEnhancedManaged;
 import com.gregtechceu.gtceu.api.syncdata.RequireRerender;
@@ -77,9 +78,8 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
     @Getter @Setter
     private int paintingColor = -1;
 
-    @Getter @Setter
     @Persisted @DescSynced @RequireRerender
-    private Material frameMaterial;
+    private String frameMaterial;
 
     private final List<TickableSubscription> serverTicks;
     private final List<TickableSubscription> waitingToAdd;
@@ -289,4 +289,11 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
     public int getDefaultPaintingColor() {
         return this.getPipeBlock() instanceof MaterialPipeBlock<?,?,?> materialPipeBlock ? materialPipeBlock.material.getMaterialRGB() : IPipeNode.super.getDefaultPaintingColor();
     }
+
+    @Nullable
+    @Override
+    public Material getFrameMaterial() {
+        return frameMaterial == null ? null : GTRegistries.MATERIALS.get(frameMaterial);
+    }
+
 }
