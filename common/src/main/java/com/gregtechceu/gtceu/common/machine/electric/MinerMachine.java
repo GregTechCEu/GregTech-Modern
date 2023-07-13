@@ -253,10 +253,8 @@ public class MinerMachine extends WorkableTieredMachine implements IMiner, ICont
         if (resultEnergy >= 0L && resultEnergy <= energyContainer.getEnergyCapacity()) {
             if (!simulate)
                 energyContainer.removeEnergy(energyPerTick);
-            if (recipeLogic.isWaiting()) recipeLogic.setStatus(RecipeLogic.Status.WORKING);
             return true;
         }
-        recipeLogic.setWaiting(Component.translatable("gtceu.recipe_logic.insufficient_in").append(": ").append(EURecipeCapability.CAP.getTraslateComponent()));
         return false;
     }
 
