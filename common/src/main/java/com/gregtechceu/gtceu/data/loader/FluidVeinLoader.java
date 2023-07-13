@@ -6,8 +6,10 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreFeatureEntry;
+import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefinition;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.integration.kjs.GTCEuServerEvents;
+import com.gregtechceu.gtceu.integration.kjs.events.GTFluidVeinEventJS;
 import com.gregtechceu.gtceu.integration.kjs.events.GTOreVeinEventJS;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.JsonOps;
@@ -25,13 +27,13 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.Map;
 
-public class OreDataLoader extends SimpleJsonResourceReloadListener {
-    public static OreDataLoader INSTANCE;
+public class FluidVeinLoader extends SimpleJsonResourceReloadListener {
+    public static FluidVeinLoader INSTANCE;
     public static final Gson GSON_INSTANCE = Deserializers.createFunctionSerializer().create();
-    private static final String FOLDER = "gtceu/ore_veins";
+    private static final String FOLDER = "gtceu/fluid_veins";
     protected static final Logger LOGGER = LogManager.getLogger();
 
-    public OreDataLoader() {
+    public FluidVeinLoader() {
         super(GSON_INSTANCE, FOLDER);
     }
 
@@ -42,14 +44,14 @@ public class OreDataLoader extends SimpleJsonResourceReloadListener {
             ResourceLocation location = entry.getKey();
 
             try {
-                GTOreFeatureEntry ore = fromJson(location, GsonHelper.convertToJsonObject(entry.getValue(), "top element"), ops);
+                BedrockFluidDefinition ore = fromJson(location, GsonHelper.convertToJsonObject(entry.getValue(), "top element"), ops);
                 if (ore == null) {
                     LOGGER.info("Skipping loading ore vein {} as it's serializer returned null", location);
-                } else if(ore.getVeinGenerator() instanceof GTOreFeatureEntry.NoopVeinGenerator) {
+                } /*else if(ore.getVeinGenerator() instanceof GTOreFeatureEntry.NoopVeinGenerator) {
                     LOGGER.info("Removing ore vein {} as it's generator was marked as no-operation", location);
-                    GTRegistries.ORE_VEINS.remove(location);
-                } else {
-                    GTRegistries.ORE_VEINS.register(location, ore);
+                    GTRegistries.BEDROCK_FLUID_DEFINITIONS.remove(location);
+                }*/ else {
+                    GTRegistries.BEDROCK_FLUID_DEFINITIONS.register(location, ore);
                 }
             } catch (IllegalArgumentException | JsonParseException jsonParseException) {
                 LOGGER.error("Parsing error loading ore vein {}", location, jsonParseException);
@@ -58,13 +60,10 @@ public class OreDataLoader extends SimpleJsonResourceReloadListener {
         if (GTCEu.isKubeJSLoaded()) {
             RunKJSEventInSeparateClassBecauseForgeIsDumb.fireKJSEvent();
         }
-        for (GTOreFeatureEntry entry : GTRegistries.ORE_VEINS) {
-            entry.getVeinGenerator().build();
-        }
     }
 
-    public static GTOreFeatureEntry fromJson(ResourceLocation id, JsonObject json, RegistryOps<JsonElement> ops) {
-        return GTOreFeatureEntry.FULL_CODEC.decode(ops, json).map(Pair::getFirst).getOrThrow(false, LOGGER::error);
+    public static BedrockFluidDefinition fromJson(ResourceLocation id, JsonObject json, RegistryOps<JsonElement> ops) {
+        return BedrockFluidDefinition.FULL_CODEC.decode(ops, json).map(Pair::getFirst).getOrThrow(false, LOGGER::error);
     }
 
     /**
@@ -72,7 +71,8 @@ public class OreDataLoader extends SimpleJsonResourceReloadListener {
      */
     public static final class RunKJSEventInSeparateClassBecauseForgeIsDumb {
         public static void fireKJSEvent() {
-            GTCEuServerEvents.ORE_VEIN_MODIFICATION.post(ScriptType.SERVER, new GTOreVeinEventJS());
+            GTCEuServerEvents.FLUID_VEIN_MODIFICATION.post(ScriptType.SERVER, new GTFluidVeinEventJS());
         }
     }
 }
+

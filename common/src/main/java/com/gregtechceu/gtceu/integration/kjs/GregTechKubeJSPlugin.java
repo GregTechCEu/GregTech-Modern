@@ -13,24 +13,17 @@ import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
-import com.gregtechceu.gtceu.api.data.worldgen.BiomeWeightModifier;
-import com.gregtechceu.gtceu.api.data.worldgen.GTOreFeatureEntry;
-import com.gregtechceu.gtceu.api.data.worldgen.IWorldGenLayer;
-import com.gregtechceu.gtceu.api.data.worldgen.WorldGenLayers;
+import com.gregtechceu.gtceu.api.data.worldgen.*;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
-import com.gregtechceu.gtceu.api.machine.multiblock.CoilWorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
-import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
 import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.api.pattern.Predicates;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
-import com.gregtechceu.gtceu.api.registry.registrate.MultiblockMachineBuilder;
 import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.integration.kjs.builders.*;
 import com.gregtechceu.gtceu.integration.kjs.builders.machine.*;
@@ -150,6 +143,9 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         event.add("MaterialColor", MaterialColor.class);
         event.add("SoundType", SoundType.class);
 
+        event.add("GTOreVein", GTOreFeatureEntry.class);
+        event.add("GTLayerPattern", GTLayerPattern.class);
+        event.add("GTOres", GTLayerPattern.class);
         // ....TODO add global refs. for convenience, ppl do not need to import the java package themselves.
     }
 

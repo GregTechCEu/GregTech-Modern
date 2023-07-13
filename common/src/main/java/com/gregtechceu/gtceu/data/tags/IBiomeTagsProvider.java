@@ -12,9 +12,12 @@ public interface IBiomeTagsProvider<T extends TagsProvider.TagAppender<Biome>> {
     default void generateTags() {
         tag(CustomTags.IS_SWAMP, Biomes.SWAMP, Biomes.MANGROVE_SWAMP);
         addRubberTreeTag();
+        addSandyTag();
     }
 
     void addRubberTreeTag();
+
+    void addSandyTag();
 
     @SafeVarargs
     private void tag(ResourceKey<Biome> biome, TagKey<Biome>... tags) {

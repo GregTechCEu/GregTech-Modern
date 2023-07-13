@@ -4,6 +4,7 @@ package com.gregtechceu.gtceu.api.registry;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
+import com.gregtechceu.gtceu.api.data.worldgen.GTOreFeatureEntry;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefinition;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
@@ -39,6 +40,7 @@ public final class GTRegistries {
     public static final GTRegistry.String<Class<? extends RecipeCondition>> RECIPE_CONDITIONS = new GTRegistry.String<>(GTCEu.id("recipe_condition"));
     public static final GTRegistry.RL<SoundEntry> SOUNDS = new GTRegistry.RL<>(GTCEu.id("sound"));
     public static final GTRegistry.RL<BedrockFluidDefinition> BEDROCK_FLUID_DEFINITIONS = new GTRegistry.RL<>(GTCEu.id("bedrock_fluid"));
+    public static final GTRegistry.RL<GTOreFeatureEntry> ORE_VEINS = new GTRegistry.RL<>(GTCEu.id("ore_vein"));
 
     @ExpectPlatform
     public static <V, T extends V> T register(Registry<V> registry, ResourceLocation name, T value) {

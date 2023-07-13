@@ -77,5 +77,6 @@ public class CustomTags {
 
 
     public static final TagKey<Biome> IS_SWAMP = TagUtil.createTag(BuiltinRegistries.BIOME, "is_swamp", false);
+    public static final TagKey<Biome> IS_SANDY = TagUtil.createModTag(BuiltinRegistries.BIOME, "is_sandy");
     public static final TagKey<Biome> HAS_RUBBER_TREE = TagUtil.createModTag(BuiltinRegistries.BIOME, "has_rubber_tree");
 }

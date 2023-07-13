@@ -1,18 +1,21 @@
 package com.gregtechceu.gtceu.api.data.worldgen;
 
-import com.google.common.collect.HashBiMap;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.BiomeFilter;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinCountFilter;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.WorldGeneratorUtils;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTFeatures;
+import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.utils.GTUtil;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
+import dev.latvian.mods.rhino.util.HideFromJS;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -34,7 +37,9 @@ import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
-import net.minecraft.world.level.levelgen.placement.*;
+import net.minecraft.world.level.levelgen.placement.HeightRangePlacement;
+import net.minecraft.world.level.levelgen.placement.InSquarePlacement;
+import net.minecraft.world.level.levelgen.placement.PlacementModifier;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.jetbrains.annotations.Nullable;
 
@@ -43,6 +48,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author Screret
@@ -53,14 +59,11 @@ import java.util.stream.Collectors;
 @ParametersAreNonnullByDefault
 @Accessors(chain = true)
 public class GTOreFeatureEntry {
-    public static final HashBiMap<ResourceLocation, GTOreFeatureEntry> ALL = HashBiMap.create();
-
-
     public static final Codec<GTOreFeatureEntry> CODEC = ResourceLocation.CODEC
-            .flatXmap(rl -> Optional.ofNullable(ALL.get(rl))
+            .flatXmap(rl -> Optional.ofNullable(GTRegistries.ORE_VEINS.get(rl))
                             .map(DataResult::success)
                             .orElseGet(() -> DataResult.error("No GTOreFeatureEntry with id " + rl + " registered")),
-                    obj -> Optional.ofNullable(ALL.inverse().get(obj))
+                    obj -> Optional.ofNullable(GTRegistries.ORE_VEINS.getKey(obj))
                             .map(DataResult::success)
                             .orElseGet(() -> DataResult.error("GTOreFeatureEntry " + obj + " not registered")));
     public static final Codec<GTOreFeatureEntry> FULL_CODEC = RecordCodecBuilder.create(
@@ -78,16 +81,24 @@ public class GTOreFeatureEntry {
             ).apply(instance, GTOreFeatureEntry::new)
     );
 
-    public int clusterSize;
-    public float density;
-    public int weight;
-    public IWorldGenLayer layer;
-    public HolderSet<DimensionType> dimensionFilter;
-    @Getter
-    protected HeightRangePlacement range;
-    public float discardChanceOnAirExposure;
-    public HolderSet<Biome> biomes;
-    public BiomeWeightModifier biomeWeightModifier;
+    @Getter @Setter
+    private int clusterSize;
+    @Getter @Setter
+    private float density;
+    @Getter @Setter
+    private int weight;
+    @Getter @Setter
+    private IWorldGenLayer layer;
+    @Getter @Setter
+    private HolderSet<DimensionType> dimensionFilter;
+    @Getter @Setter
+    private HeightRangePlacement range;
+    @Getter @Setter
+    private float discardChanceOnAirExposure;
+    @Getter @Setter
+    private HolderSet<Biome> biomes;
+    @Getter @Setter
+    private BiomeWeightModifier biomeWeightModifier;
 
     @Getter
     private List<PlacementModifier> modifiers;
@@ -95,9 +106,14 @@ public class GTOreFeatureEntry {
     @Getter @Setter
     private VeinGenerator veinGenerator;
 
+    @Getter @Setter
+    private int minimumYield, maximumYield, depletedYield, depletionChance, depletionAmount = 1;
+    @Setter
+    private Material bedrockVeinMaterial;
+
     public GTOreFeatureEntry(ResourceLocation id, int clusterSize, float density, int weight, IWorldGenLayer layer, HolderSet<DimensionType> dimensionFilter, HeightRangePlacement range, float discardChanceOnAirExposure, @Nullable HolderSet<Biome> biomes, @Nullable BiomeWeightModifier biomeWeightModifier, @Nullable GTOreFeatureEntry.VeinGenerator veinGenerator) {
         this(clusterSize, density, weight, layer, dimensionFilter, range, discardChanceOnAirExposure, biomes, biomeWeightModifier, veinGenerator);
-        ALL.put(id, this);
+        GTRegistries.ORE_VEINS.register(id, this);
     }
 
     public GTOreFeatureEntry(int clusterSize, float density, int weight, IWorldGenLayer layer, HolderSet<DimensionType> dimensionFilter, HeightRangePlacement range, float discardChanceOnAirExposure, @Nullable HolderSet<Biome> biomes, @Nullable BiomeWeightModifier biomeWeightModifier, @Nullable GTOreFeatureEntry.VeinGenerator veinGenerator) {
@@ -118,6 +134,11 @@ public class GTOreFeatureEntry {
                 InSquarePlacement.spread(),
                 this.range
         );
+
+        this.maximumYield = (int) (density * 100) * clusterSize;
+        this.minimumYield = this.maximumYield / 7;
+        this.depletedYield = (int) (clusterSize / density / 10);
+        this.depletionChance = (int) (weight * density / 5);
     }
 
     public GTOreFeatureEntry biomes(TagKey<Biome> biomes) {
@@ -141,6 +162,17 @@ public class GTOreFeatureEntry {
         return this;
     }
 
+    @Nullable
+    public Material getBedrockVeinMaterial() {
+        if (ConfigHolder.INSTANCE.machines.doBedrockOres) {
+            if (bedrockVeinMaterial != null) return bedrockVeinMaterial;
+            List<Map.Entry<Integer, Material>> entries = new ArrayList<>(this.getVeinGenerator().getValidMaterialsChances().entrySet());
+            return bedrockVeinMaterial = entries.get(GTUtil.getRandomItem(entries, entries.size())).getValue();
+        } else {
+            return null;
+        }
+    }
+
     public StandardVeinGenerator standardVeinGenerator() {
         if (this.veinGenerator == null) {
             this.veinGenerator = new StandardVeinGenerator(this);
@@ -153,6 +185,10 @@ public class GTOreFeatureEntry {
             veinGenerator = new LayeredVeinGenerator(this);
         }
         return (LayeredVeinGenerator) veinGenerator;
+    }
+
+    public VeinGenerator generator(ResourceLocation id) {
+        return WorldGeneratorUtils.VEIN_GENERATOR_FUNCTIONS.containsKey(id) ? WorldGeneratorUtils.VEIN_GENERATOR_FUNCTIONS.get(id).apply(this) : null;
     }
 
     public static abstract class VeinGenerator {
@@ -180,21 +216,38 @@ public class GTOreFeatureEntry {
             return new ConfiguredFeature<>(GTFeatures.ORE, config);
         }
 
-        /*public PlacedFeature createPlacedFeature(RegistryAccess registryAccess) {
-            Registry<ConfiguredFeature<?, ?>> featureRegistry = registryAccess.registryOrThrow(Registry.CONFIGURED_FEATURE_REGISTRY);
-            Holder<ConfiguredFeature<?, ?>> featureHolder = featureRegistry.getOrCreateHolderOrThrow(ResourceKey.create(Registry.CONFIGURED_FEATURE_REGISTRY, GTOreFeatureEntry.this.id));
-            return new PlacedFeature(featureHolder, List.of(
-                this.count,
-                new FrequencyModifier(this.frequency),
-                InSquarePlacement.spread()
-                this.range
-            ));
-        }*/
+        /**
+         * @return Map of [block|material, chance]
+         */
+        public abstract Map<Either<BlockState, Material>, Integer> getAllEntries();
 
+        public List<BlockState> getAllBlocks() {
+            return getAllEntries().keySet().stream().map(either -> either.map(Function.identity(), material -> ChemicalHelper.getBlock(TagPrefix.ore, material).defaultBlockState())).toList();
+        }
+
+        public List<Material> getAllMaterials() {
+            return getAllEntries().keySet().stream()
+                    .map(either -> either.map(state -> ChemicalHelper.getMaterial(state.getBlock()) != null ? ChemicalHelper.getMaterial(state.getBlock()).material() : null, Function.identity())).filter(Objects::nonNull).toList();
+        }
+
+        public List<Integer> getAllChances() {
+            return getAllEntries().values().stream().toList();
+        }
+
+        public Map<Integer, Material> getValidMaterialsChances() {
+            return getAllEntries().entrySet().stream()
+                    .map(entry -> Map.entry(entry.getKey().map(state -> ChemicalHelper.getMaterial(state.getBlock()) != null ? ChemicalHelper.getMaterial(state.getBlock()).material() : null, Function.identity()), entry.getValue()))
+                    .filter(entry -> entry.getKey() != null)
+                    .collect(Collectors.toMap(Map.Entry::getValue, Map.Entry::getKey));
+        }
+
+        @HideFromJS
         public abstract boolean generate(WorldGenLevel level, RandomSource random, GTOreFeatureEntry entry, BlockPos origin);
 
+        @HideFromJS
         public abstract VeinGenerator build();
 
+        @HideFromJS
         public GTOreFeatureEntry parent() {
             return entry;
         }
@@ -205,6 +258,11 @@ public class GTOreFeatureEntry {
     public static class NoopVeinGenerator extends VeinGenerator {
         public static final NoopVeinGenerator INSTANCE = new NoopVeinGenerator();
         public static final Codec<NoopVeinGenerator> CODEC = Codec.unit(() -> INSTANCE);
+
+        @Override
+        public Map<Either<BlockState, Material>, Integer> getAllEntries() {
+            return Map.of();
+        }
 
         @Override
         public boolean generate(WorldGenLevel level, RandomSource random, GTOreFeatureEntry entry, BlockPos origin) {
@@ -267,6 +325,12 @@ public class GTOreFeatureEntry {
         public StandardVeinGenerator withMaterial(Material material) {
             this.blocks = Either.right(material);
             return this;
+        }
+
+        @Override
+        public Map<Either<BlockState, Material>, Integer> getAllEntries() {
+            if (this.blocks != null) return this.blocks.map(blockStates -> blockStates.stream().map(state -> Either.<BlockState, Material>left(state.state)).collect(Collectors.toMap(Function.identity(), value -> 1)), material -> Map.of(Either.right(material), 1));
+            return Map.of(Either.left(block.get().defaultBlockState()), 1, Either.left(deepBlock.get().defaultBlockState()), 1, Either.left(netherBlock.get().defaultBlockState()), 1);
         }
 
         public VeinGenerator build() {
@@ -460,12 +524,29 @@ public class GTOreFeatureEntry {
 
         private final List<NonNullSupplier<GTLayerPattern>> bakingLayerPatterns = new ArrayList<>();
 
+        @HideFromJS
         public List<GTLayerPattern> layerPatterns;
 
         public LayeredVeinGenerator(GTOreFeatureEntry entry) {
             super(entry);
         }
 
+        @Override
+        public Map<Either<BlockState, Material>, Integer> getAllEntries() {
+            return layerPatterns.stream()
+                    .flatMap(pattern -> pattern.layers.stream())
+                    .map(layer -> Map.entry(layer.targets.stream().flatMap(entry ->
+                            entry.map(blockStates -> blockStates.stream().map(state -> Either.<BlockState, Material>left(state.state)),
+                                    material -> Stream.of(Either.<BlockState, Material>right(material)))).toList(),
+                            layer.weight))
+                    .flatMap(entry -> {
+                        var iterator = entry.getKey().iterator();
+                        return Stream.generate(() -> Map.entry(iterator.next(), entry.getValue())).limit(entry.getKey().size());
+                    })
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        }
+
+        @HideFromJS
         @Override
         public boolean generate(WorldGenLevel level, RandomSource random, GTOreFeatureEntry entry, BlockPos origin) {
             var patternPool = this.layerPatterns;

@@ -189,6 +189,12 @@ public class ConfigHolder {
         @Configurable
         @Configurable.Comment({"Whether the machine's circuit slot need to be inserted a real circuit."})
         public boolean ghostCircuit = true;
+        @Configurable
+        @Configurable.Comment({"Wether to add a \"Bedrock Ore Miner\" (also enables bedrock ore generation)", "Default: false"})
+        public boolean doBedrockOres = false;
+        @Configurable
+        @Configurable.Comment({"What Kind of material should the bedrock ore miner output?", "Default: \"raw\""})
+        public String bedrockOreDropTagPrefix = "raw";
     }
 
     public static class ClientConfigs {

@@ -1122,7 +1122,7 @@ public class GTMachines {
 
     public static final MultiblockMachineDefinition[] FLUID_DRILLING_RIG = registerTieredMultis("fluid_drilling_rig", FluidDrillMachine::new, (tier, builder) -> builder
                     .rotationState(RotationState.NON_Y_AXIS)
-                    .langValue("%s Fusion Drilling Rig".formatted(VLVH[tier]))
+                    .langValue("%s Fluid Drilling Rig".formatted(VLVH[tier]))
                     .recipeType(GTRecipeTypes.DUMMY_RECIPES)
                     .tooltips(
                             Component.translatable("gtceu.machine.fluid_drilling_rig.description"),
@@ -1178,6 +1178,8 @@ public class GTMachines {
                     })
                     .register(),
             EV, IV, LuV);
+
+    public static MultiblockMachineDefinition[] BEDROCK_ORE_MINER;
 
     public static final MultiblockMachineDefinition CLEANROOM = REGISTRATE.multiblock("cleanroom", CleanroomMachine::new)
             .rotationState(RotationState.NONE)
@@ -1573,6 +1575,33 @@ public class GTMachines {
     public static void init() {
         if (GTCEu.isCreateLoaded()) {
             new GTCreateMachines();
+        }
+        if (ConfigHolder.INSTANCE.machines.doBedrockOres) {
+            BEDROCK_ORE_MINER = registerTieredMultis("bedrock_ore_miner", BedrockOreMinerMachine::new, (tier, builder) -> builder
+                            .rotationState(RotationState.NON_Y_AXIS)
+                            .langValue("%s Bedrock Ore Miner".formatted(VLVH[tier]))
+                            .recipeType(new GTRecipeType(GTCEu.id("drilling_rig"), "dummy"))
+                            .tooltips(
+                                    Component.translatable("gtceu.machine.bedrock_ore_miner.description"),
+                                    Component.translatable("gtceu.machine.bedrock_ore_miner.depletion", FormattingUtil.formatNumbers(100.0 / BedrockOreMinerMachine.getDepletionChance(tier))),
+                                    Component.translatable("gtceu.universal.tooltip.energy_tier_range", GTValues.VNF[tier], GTValues.VNF[tier + 1]),
+                                    Component.translatable("gtceu.machine.bedrock_ore_miner.production", BedrockOreMinerMachine.getRigMultiplier(tier), FormattingUtil.formatNumbers(BedrockOreMinerMachine.getRigMultiplier(tier) * 1.5)))
+                            .appearanceBlock(() -> BedrockOreMinerMachine.getCasingState(tier))
+                            .pattern((definition) -> FactoryBlockPattern.start()
+                                    .aisle("XXX", "#F#", "#F#", "#F#", "###", "###", "###")
+                                    .aisle("XXX", "FCF", "FCF", "FCF", "#F#", "#F#", "#F#")
+                                    .aisle("XSX", "#F#", "#F#", "#F#", "###", "###", "###")
+                                    .where('S', controller(blocks(definition.get())))
+                                    .where('X', blocks(BedrockOreMinerMachine.getCasingState(tier)).setMinGlobalLimited(3)
+                                            .or(abilities(PartAbility.INPUT_ENERGY).setMinGlobalLimited(1).setMaxGlobalLimited(3))
+                                            .or(abilities(PartAbility.EXPORT_FLUIDS).setMaxGlobalLimited(1)))
+                                    .where('C', blocks(BedrockOreMinerMachine.getCasingState(tier)))
+                                    .where('F', blocks(BedrockOreMinerMachine.getFrameState(tier)))
+                                    .where('#', any())
+                                    .build())
+                            .workableCasingRenderer(BedrockOreMinerMachine.getBaseTexture(tier), GTCEu.id("block/multiblock/bedrock_ore_miner"), false)
+                            .register(),
+                    MV, HV, EV);
         }
         AddonFinder.getAddons().forEach(IGTAddon::registerMachines);
         if (GTCEu.isKubeJSLoaded()) {

@@ -1,7 +1,10 @@
-package com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid;
+package com.gregtechceu.gtceu.api.data.worldgen.bedrockore;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.worldgen.GTOreFeatureEntry;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.utils.GTUtil;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
@@ -12,46 +15,44 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.saveddata.SavedData;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.HashMap;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * @author KilaBash
  * @date 2023/7/11
- * @implNote BedrockFluidVeinSaveData
+ * @implNote BedrockFluidVeinSavedData
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class BedrockFluidVeinSaveData extends SavedData {
-    public static final int VEIN_CHUNK_SIZE = 8; // veins are 8x8 chunk squares
+public class BedrockOreVeinSavedData extends SavedData {
+    public static final int VEIN_CHUNK_SIZE = 3; // veins are 3x3 chunk squares
     public static final int MAXIMUM_VEIN_OPERATIONS = 100_000;
-    public final HashMap<ChunkPos, FluidVeinWorldEntry> veinFluids = new HashMap<>();
+    public final HashMap<ChunkPos, OreVeinWorldEntry> veinOres = new HashMap<>();
 
     // runtime
     private final HashMap<Holder<Biome>, Integer> biomeWeights = new HashMap<>();
 
     private final ServerLevel serverLevel;
 
-    public static BedrockFluidVeinSaveData getOrCreate(ServerLevel serverLevel) {
-        return serverLevel.getDataStorage().computeIfAbsent(tag -> new BedrockFluidVeinSaveData(serverLevel, tag), () -> new BedrockFluidVeinSaveData(serverLevel), "gtceu_bedrock_fluid");
+    public static BedrockOreVeinSavedData getOrCreate(ServerLevel serverLevel) {
+        return serverLevel.getDataStorage().computeIfAbsent(tag -> new BedrockOreVeinSavedData(serverLevel, tag), () -> new BedrockOreVeinSavedData(serverLevel), "gtceu_bedrock_ore");
     }
 
-    public BedrockFluidVeinSaveData(ServerLevel serverLevel) {
+    public BedrockOreVeinSavedData(ServerLevel serverLevel) {
         this.serverLevel = serverLevel;
     }
 
-    public BedrockFluidVeinSaveData(ServerLevel serverLevel, CompoundTag nbt) {
+    public BedrockOreVeinSavedData(ServerLevel serverLevel, CompoundTag nbt) {
         this(serverLevel);
         var list = nbt.getList("veinInfo", Tag.TAG_COMPOUND);
         for (Tag tag : list) {
             if (tag instanceof CompoundTag compoundTag) {
-                var chunkPos = new ChunkPos(compoundTag.getLong("p"));
-                veinFluids.put(chunkPos, FluidVeinWorldEntry.readFromNBT(compoundTag.getCompound("d")));
+                var chunkPos = new ChunkPos(compoundTag.getLong("pos"));
+                veinOres.put(chunkPos, OreVeinWorldEntry.readFromNBT(compoundTag.getCompound("d")));
             }
         }
     }
@@ -59,7 +60,7 @@ public class BedrockFluidVeinSaveData extends SavedData {
     @Override
     public CompoundTag save(CompoundTag nbt) {
         var oilList = new ListTag();
-        for (var entry : veinFluids.entrySet()) {
+        for (var entry : veinOres.entrySet()) {
             var tag = new CompoundTag();
             tag.putLong("p", entry.getKey().toLong());
             tag.put("d", entry.getValue().writeToNBT());
@@ -76,20 +77,21 @@ public class BedrockFluidVeinSaveData extends SavedData {
      * @param chunkZ Z coordinate of desired chunk
      * @return The FluidVeinWorldInfo corresponding with the given chunk
      */
-    public FluidVeinWorldEntry getFluidVeinWorldEntry(int chunkX, int chunkZ) {
-        if (!veinFluids.containsKey(new ChunkPos(chunkX, chunkZ))) {
-            BedrockFluidDefinition definition = null;
-            int query = RandomSource.create(Objects.hash(90210, chunkX / VEIN_CHUNK_SIZE, chunkZ / VEIN_CHUNK_SIZE)).nextInt();
+    public OreVeinWorldEntry getOreVeinWorldEntry(int chunkX, int chunkZ) {
+        ChunkPos pos = new ChunkPos(chunkX, chunkZ);
+        if (!veinOres.containsKey(pos)) {
+            GTOreFeatureEntry definition = null;
+            int query = RandomSource.create(Objects.hash(96548, chunkX / VEIN_CHUNK_SIZE, chunkZ / VEIN_CHUNK_SIZE)).nextInt();
             var biome = serverLevel.getBiome(new BlockPos(chunkX << 4, 64, chunkZ << 4));
             int totalWeight = getTotalWeight(biome);
             if (totalWeight > 0) {
                 int weight = Math.abs(query % totalWeight);
-                for (var fluidDefinition : GTRegistries.BEDROCK_FLUID_DEFINITIONS) {
-                    int veinWeight = fluidDefinition.getWeight() + fluidDefinition.getBiomeWeightModifier().apply(biome);
-                    if (veinWeight > 0 && fluidDefinition.getDimensionFilter().test(serverLevel.dimension())) {
+                for (var oreDefinition : GTRegistries.ORE_VEINS) {
+                    int veinWeight = oreDefinition.getWeight() + oreDefinition.getBiomeWeightModifier().apply(biome);
+                    if (veinWeight > 0 && oreDefinition.getDimensionFilter().contains(serverLevel.dimensionTypeRegistration())) {
                         weight -= veinWeight;
                         if (weight < 0) {
-                            definition = fluidDefinition;
+                            definition = oreDefinition;
                             break;
                         }
                     }
@@ -107,10 +109,27 @@ public class BedrockFluidVeinSaveData extends SavedData {
                 }
                 maximumYield = Math.min(maximumYield, definition.getMaximumYield());
             }
-            veinFluids.put(new ChunkPos(chunkX, chunkZ), new FluidVeinWorldEntry(definition, maximumYield, MAXIMUM_VEIN_OPERATIONS));
+            veinOres.put(new ChunkPos(chunkX, chunkZ), new OreVeinWorldEntry(definition, maximumYield, MAXIMUM_VEIN_OPERATIONS));
             setDirty();
         }
-        return veinFluids.get(new ChunkPos(chunkX, chunkZ));
+        return veinOres.get(pos);
+    }
+
+    public void createVein(ChunkPos pos, GTOreFeatureEntry definition) {
+        if (!veinOres.containsKey(pos)) {
+            var random = RandomSource.create(31L * 31 * pos.x + pos.z * 31L + Long.hashCode(serverLevel.getSeed()));
+
+            int maximumYield = 0;
+            if (definition != null) {
+                if (definition.getMaximumYield() - definition.getMinimumYield() <= 0) {
+                    maximumYield = definition.getMinimumYield();
+                } else {
+                    maximumYield = random.nextInt(definition.getMaximumYield() - definition.getMinimumYield()) + definition.getMinimumYield();
+                }
+                maximumYield = Math.min(maximumYield, definition.getMaximumYield());
+            }
+            veinOres.put(pos, new OreVeinWorldEntry(definition, maximumYield, MAXIMUM_VEIN_OPERATIONS));
+        }
     }
 
     /**
@@ -122,8 +141,8 @@ public class BedrockFluidVeinSaveData extends SavedData {
     public int getTotalWeight(Holder<Biome> biome) {
         return biomeWeights.computeIfAbsent(biome, b -> {
             int totalWeight = 0;
-            for (var definition : GTRegistries.BEDROCK_FLUID_DEFINITIONS) {
-                if (definition.getDimensionFilter().test(serverLevel.dimension())) {
+            for (var definition : GTRegistries.ORE_VEINS) {
+                if (definition.getDimensionFilter().contains(serverLevel.dimensionTypeRegistration())) {
                     totalWeight += definition.getBiomeWeightModifier().apply(biome);
                     totalWeight += definition.getWeight();
                 }
@@ -139,8 +158,8 @@ public class BedrockFluidVeinSaveData extends SavedData {
      * @param chunkZ Z coordinate of desired chunk
      * @return yield in the vein
      */
-    public int getFluidYield(int chunkX, int chunkZ) {
-        return getFluidVeinWorldEntry(chunkX, chunkZ).getFluidYield();
+    public int getOreYield(int chunkX, int chunkZ) {
+        return getOreVeinWorldEntry(chunkX, chunkZ).getOreYield();
     }
 
     /**
@@ -150,8 +169,8 @@ public class BedrockFluidVeinSaveData extends SavedData {
      * @param chunkZ Z coordinate of desired chunk
      * @return yield of fluid post depletion
      */
-    public int getDepletedFluidYield(int chunkX, int chunkZ) {
-        FluidVeinWorldEntry info = getFluidVeinWorldEntry(chunkX, chunkZ);
+    public int getDepletedOreYield(int chunkX, int chunkZ) {
+        OreVeinWorldEntry info = getOreVeinWorldEntry(chunkX, chunkZ);
         if (info.getDefinition() == null) return 0;
         return info.getDefinition().getDepletedYield();
     }
@@ -164,7 +183,7 @@ public class BedrockFluidVeinSaveData extends SavedData {
      * @return amount of operations in the given chunk
      */
     public int getOperationsRemaining(int chunkX, int chunkZ) {
-        return getFluidVeinWorldEntry(chunkX, chunkZ).getOperationsRemaining();
+        return getOreVeinWorldEntry(chunkX, chunkZ).getOperationsRemaining();
     }
 
     /**
@@ -175,10 +194,10 @@ public class BedrockFluidVeinSaveData extends SavedData {
      * @return Fluid in given chunk
      */
     @Nullable
-    public Fluid getFluidInChunk(int chunkX, int chunkZ) {
-        FluidVeinWorldEntry info = getFluidVeinWorldEntry(chunkX, chunkZ);
+    public Material getOreInChunk(int chunkX, int chunkZ) {
+        OreVeinWorldEntry info = getOreVeinWorldEntry(chunkX, chunkZ);
         if (info.getDefinition() == null) return null;
-        return info.getDefinition().getStoredFluid().get();
+        return info.getDefinition().getBedrockVeinMaterial();
     }
 
     /**
@@ -190,7 +209,7 @@ public class BedrockFluidVeinSaveData extends SavedData {
      * @param ignoreVeinStats whether to ignore the vein's depletion data, if false ignores amount
      */
     public void depleteVein(int chunkX, int chunkZ, int amount, boolean ignoreVeinStats) {
-        FluidVeinWorldEntry info = getFluidVeinWorldEntry(chunkX, chunkZ);
+        OreVeinWorldEntry info = getOreVeinWorldEntry(chunkX, chunkZ);
 
         if (ignoreVeinStats) {
             info.decreaseOperations(amount);
@@ -200,7 +219,7 @@ public class BedrockFluidVeinSaveData extends SavedData {
             return;
         }
 
-        BedrockFluidDefinition definition = info.getDefinition();
+        GTOreFeatureEntry definition = info.getDefinition();
 
         // prevent division by zero, veins that never deplete don't need updating
         if (definition == null || definition.getDepletionChance() == 0)

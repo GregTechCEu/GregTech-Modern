@@ -264,7 +264,7 @@ public class UnknownCompositionMaterials {
         Gasoline = new Material.Builder("gasoline")
                 .fluid().color(0xFAA500).flags(FLAMMABLE, EXPLOSIVE).buildAndRegister();
 
-        HighOctaneGasoline = new Material.Builder("gasoline_premium")
+        HighOctaneGasoline = new Material.Builder("high_octane_gasoline")
                 .fluid().color(0xFFA500).flags(FLAMMABLE, EXPLOSIVE).buildAndRegister();
 
         // free id: 1593

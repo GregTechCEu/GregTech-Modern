@@ -1,5 +1,6 @@
-package com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid;
+package com.gregtechceu.gtceu.api.data.worldgen.bedrockore;
 
+import com.gregtechceu.gtceu.api.data.worldgen.GTOreFeatureEntry;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import lombok.Getter;
 import net.minecraft.nbt.CompoundTag;
@@ -13,26 +14,26 @@ import javax.annotation.Nullable;
  * @date 2023/7/11
  * @implNote FluidVeinWorldEntry
  */
-public class FluidVeinWorldEntry {
+public class OreVeinWorldEntry {
     @Nullable
     @Getter
-    private BedrockFluidDefinition vein;
+    private GTOreFeatureEntry vein;
     @Getter
-    private int fluidYield;
+    private int oreYield;
     @Getter
     private int operationsRemaining;
 
-    public FluidVeinWorldEntry(@Nullable BedrockFluidDefinition vein, int fluidYield, int operationsRemaining) {
+    public OreVeinWorldEntry(@Nullable GTOreFeatureEntry vein, int oreYield, int operationsRemaining) {
         this.vein = vein;
-        this.fluidYield = fluidYield;
+        this.oreYield = oreYield;
         this.operationsRemaining = operationsRemaining;
     }
 
-    private FluidVeinWorldEntry() {
+    private OreVeinWorldEntry() {
 
     }
 
-    public BedrockFluidDefinition getDefinition() {
+    public GTOreFeatureEntry getDefinition() {
         return this.vein;
     }
 
@@ -47,22 +48,22 @@ public class FluidVeinWorldEntry {
 
     public CompoundTag writeToNBT() {
         var tag = new CompoundTag();
-        tag.putInt("fluidYield", fluidYield);
+        tag.putInt("oreYield", oreYield);
         tag.putInt("operationsRemaining", operationsRemaining);
         if (vein != null) {
-            tag.putString("vein", GTRegistries.BEDROCK_FLUID_DEFINITIONS.getKey(vein).toString());
+            tag.putString("vein", GTRegistries.ORE_VEINS.getKey(vein).toString());
         }
         return tag;
     }
 
     @Nonnull
-    public static FluidVeinWorldEntry readFromNBT(@Nonnull CompoundTag tag) {
-        FluidVeinWorldEntry info = new FluidVeinWorldEntry();
-        info.fluidYield = tag.getInt("fluidYield");
+    public static OreVeinWorldEntry readFromNBT(@Nonnull CompoundTag tag) {
+        OreVeinWorldEntry info = new OreVeinWorldEntry();
+        info.oreYield = tag.getInt("oreYield");
         info.operationsRemaining = tag.getInt("operationsRemaining");
 
         if (tag.contains("vein")) {
-            info.vein = GTRegistries.BEDROCK_FLUID_DEFINITIONS.get(new ResourceLocation(tag.getString("vein")));
+            info.vein = GTRegistries.ORE_VEINS.get(new ResourceLocation(tag.getString("vein")));
         }
         return info;
     }

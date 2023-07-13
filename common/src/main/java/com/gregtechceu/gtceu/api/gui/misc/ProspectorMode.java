@@ -1,11 +1,14 @@
 package com.gregtechceu.gtceu.api.gui.misc;
 
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.tag.TagUtil;
-import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidVeinSaveData;
+import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidVeinSavedData;
+import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreVeinSavedData;
 import com.gregtechceu.gtceu.api.gui.texture.ProspectingTexture;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
@@ -145,9 +148,9 @@ public abstract class ProspectorMode<T> {
         @Override
         public void scan(FluidInfo[][][] storage, LevelChunk chunk) {
             if (chunk.getLevel() instanceof ServerLevel serverLevel) {
-                var fluidVein = BedrockFluidVeinSaveData.getOrCreate(serverLevel).getFluidVeinWorldEntry(chunk.getPos().x, chunk.getPos().z);
+                var fluidVein = BedrockFluidVeinSavedData.getOrCreate(serverLevel).getFluidVeinWorldEntry(chunk.getPos().x, chunk.getPos().z);
                 if (fluidVein.getDefinition() != null) {
-                    var left = 100 * fluidVein.getOperationsRemaining() / BedrockFluidVeinSaveData.MAXIMUM_VEIN_OPERATIONS;
+                    var left = 100 * fluidVein.getOperationsRemaining() / BedrockFluidVeinSavedData.MAXIMUM_VEIN_OPERATIONS;
                     storage[0][0] = new FluidInfo[] {
                             new FluidInfo(fluidVein.getDefinition().getStoredFluid().get(), left, fluidVein.getFluidYield()),
                     };
@@ -195,6 +198,70 @@ public abstract class ProspectorMode<T> {
         @Override
         public void appendTooltips(FluidInfo[] items, List<Component> tooltips, String selected) {
             for (FluidInfo item : items) {
+                tooltips.add(Component.translatable(getDescriptionId(item)).append(" --- %s (%s%%)".formatted(item.yield, item.left)));
+            }
+        }
+
+    };
+
+    public record OreInfo(Material material, int left, int yield) {
+
+    }
+
+    public static ProspectorMode<OreInfo> BEDROCK_ORE = new ProspectorMode<>("metaitem.prospector.mode.bedrock_ore", 3) {
+        @Override
+        public void scan(OreInfo[][][] storage, LevelChunk chunk) {
+            if (chunk.getLevel() instanceof ServerLevel serverLevel) {
+                var oreVein = BedrockOreVeinSavedData.getOrCreate(serverLevel).getOreVeinWorldEntry(chunk.getPos().x, chunk.getPos().z);
+                if (oreVein.getDefinition() != null) {
+                    var left = 100 * oreVein.getOperationsRemaining() / BedrockOreVeinSavedData.MAXIMUM_VEIN_OPERATIONS;
+                    storage[0][0] = new OreInfo[] {
+                            new OreInfo(oreVein.getDefinition().getBedrockVeinMaterial(), left, oreVein.getOreYield()),
+                    };
+                }
+            }
+        }
+
+        @Override
+        public int getItemColor(OreInfo item) {
+            return item.material.getMaterialRGB();
+        }
+
+        @Override
+        public IGuiTexture getItemIcon(OreInfo item) {
+            return new ItemStackTexture(ChemicalHelper.get(TagPrefix.dust, item.material));
+        }
+
+        @Override
+        public String getDescriptionId(OreInfo item) {
+            return item.material.getUnlocalizedName();
+        }
+
+        @Override
+        public String getUniqueID(OreInfo item) {
+            return item.material.getName();
+        }
+
+        @Override
+        public void serialize(OreInfo item, FriendlyByteBuf buf) {
+            buf.writeUtf(GTRegistries.MATERIALS.getKey(item.material));
+            buf.writeVarInt(item.left);
+            buf.writeVarInt(item.yield);
+        }
+
+        @Override
+        public OreInfo deserialize(FriendlyByteBuf buf) {
+            return new OreInfo(GTRegistries.MATERIALS.get(buf.readUtf()), buf.readVarInt(), buf.readVarInt());
+        }
+
+        @Override
+        public Class<OreInfo> getItemClass() {
+            return OreInfo.class;
+        }
+
+        @Override
+        public void appendTooltips(OreInfo[] items, List<Component> tooltips, String selected) {
+            for (OreInfo item : items) {
                 tooltips.add(Component.translatable(getDescriptionId(item)).append(" --- %s (%s%%)".formatted(item.yield, item.left)));
             }
         }

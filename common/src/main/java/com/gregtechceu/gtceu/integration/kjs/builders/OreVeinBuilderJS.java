@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.data.worldgen.GTOreFeatureEntry;
 import com.gregtechceu.gtceu.api.data.worldgen.IWorldGenLayer;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.JsonOps;
+import dev.latvian.mods.rhino.util.HideFromJS;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import net.minecraft.core.HolderSet;
@@ -21,6 +22,7 @@ import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.levelgen.placement.HeightRangePlacement;
 
 @SuppressWarnings("unused")
+@Accessors(chain = true, fluent = true)
 public class OreVeinBuilderJS {
     private final ResourceLocation id;
     @Setter
@@ -53,6 +55,7 @@ public class OreVeinBuilderJS {
         return this;
     }
 
+    @HideFromJS
     public GTOreFeatureEntry build() {
         RegistryOps<JsonElement> registryOps = RegistryOps.create(JsonOps.INSTANCE, RegistryAccess.BUILTIN.get());
         HolderSet<DimensionType> dimensions = RegistryCodecs.homogeneousList(Registry.DIMENSION_TYPE_REGISTRY)
