@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.data.worldgen.generator;
 import com.google.common.collect.HashBiMap;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreFeatureEntry;
 import com.gregtechceu.gtceu.api.data.worldgen.IWorldGenLayer;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.Holder;

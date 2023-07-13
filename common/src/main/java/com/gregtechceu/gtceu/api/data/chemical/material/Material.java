@@ -22,6 +22,7 @@ import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import dev.latvian.mods.rhino.util.RemapPrefixForJS;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.enchantment.Enchantment;
@@ -315,7 +316,7 @@ public class Material implements Comparable<Material> {
         return "material." + materialInfo.name;
     }
 
-    public Component getLocalizedName() {
+    public MutableComponent getLocalizedName() {
         return Component.translatable(getUnlocalizedName());
     }
 

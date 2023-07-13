@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.data.worldgen.IWorldGenLayer;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.JsonOps;
 import dev.latvian.mods.rhino.util.HideFromJS;
+import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import net.minecraft.core.HolderSet;
@@ -40,6 +41,8 @@ public class OreVeinBuilderJS {
 
     private final transient JsonArray dimensionFilter = new JsonArray();
     private final transient JsonArray biomeFilter = new JsonArray();
+    @Getter
+    private boolean isBuilt = false;
 
     public OreVeinBuilderJS(ResourceLocation id) {
         this.id = id;
@@ -55,6 +58,10 @@ public class OreVeinBuilderJS {
         return this;
     }
 
+    public GTOreFeatureEntry.VeinGenerator generatorBuilder(ResourceLocation id) {
+        return build().generator(id);
+    }
+
     @HideFromJS
     public GTOreFeatureEntry build() {
         RegistryOps<JsonElement> registryOps = RegistryOps.create(JsonOps.INSTANCE, RegistryAccess.BUILTIN.get());
@@ -62,6 +69,7 @@ public class OreVeinBuilderJS {
             .decode(registryOps, dimensionFilter.size() == 1 ? dimensionFilter.get(0) : dimensionFilter).map(Pair::getFirst).getOrThrow(false, GTCEu.LOGGER::error);
         HolderSet<Biome> biomes = RegistryCodecs.homogeneousList(Registry.BIOME_REGISTRY)
                 .decode(registryOps, biomeFilter.size() == 1 ? biomeFilter.get(0) : biomeFilter).map(Pair::getFirst).getOrThrow(false, GTCEu.LOGGER::error);
+        isBuilt = true;
         return new GTOreFeatureEntry(id, clusterSize, density, weight, layer, dimensions, heightRange, discardChanceOnAirExposure, biomes, biomeWeightModifier, generator);
     }
 

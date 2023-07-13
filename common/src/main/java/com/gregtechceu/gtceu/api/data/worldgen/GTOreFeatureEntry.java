@@ -109,7 +109,7 @@ public class GTOreFeatureEntry {
     @Getter @Setter
     private int minimumYield, maximumYield, depletedYield, depletionChance, depletionAmount = 1;
     @Setter
-    private Material bedrockVeinMaterial;
+    private List<Map.Entry<Integer, Material>> bedrockVeinMaterial;
 
     public GTOreFeatureEntry(ResourceLocation id, int clusterSize, float density, int weight, IWorldGenLayer layer, HolderSet<DimensionType> dimensionFilter, HeightRangePlacement range, float discardChanceOnAirExposure, @Nullable HolderSet<Biome> biomes, @Nullable BiomeWeightModifier biomeWeightModifier, @Nullable GTOreFeatureEntry.VeinGenerator veinGenerator) {
         this(clusterSize, density, weight, layer, dimensionFilter, range, discardChanceOnAirExposure, biomes, biomeWeightModifier, veinGenerator);
@@ -162,14 +162,13 @@ public class GTOreFeatureEntry {
         return this;
     }
 
-    @Nullable
-    public Material getBedrockVeinMaterial() {
+    public List<Map.Entry<Integer, Material>> getBedrockVeinMaterials() {
         if (ConfigHolder.INSTANCE.machines.doBedrockOres) {
             if (bedrockVeinMaterial != null) return bedrockVeinMaterial;
-            List<Map.Entry<Integer, Material>> entries = new ArrayList<>(this.getVeinGenerator().getValidMaterialsChances().entrySet());
-            return bedrockVeinMaterial = entries.get(GTUtil.getRandomItem(entries, entries.size())).getValue();
+            //List<Map.Entry<Integer, Material>> entries = this.getVeinGenerator().getValidMaterialsChances().entrySet().stream().collect(ArrayList::new, (list, b) -> list.add(Map.entry(b.getValue(), b.getKey())), ArrayList::addAll);
+            return bedrockVeinMaterial = this.getVeinGenerator().getValidMaterialsChances();
         } else {
-            return null;
+            return List.of();
         }
     }
 
@@ -187,8 +186,12 @@ public class GTOreFeatureEntry {
         return (LayeredVeinGenerator) veinGenerator;
     }
 
+    @Nullable
     public VeinGenerator generator(ResourceLocation id) {
-        return WorldGeneratorUtils.VEIN_GENERATOR_FUNCTIONS.containsKey(id) ? WorldGeneratorUtils.VEIN_GENERATOR_FUNCTIONS.get(id).apply(this) : null;
+        if (veinGenerator == null) {
+            veinGenerator = WorldGeneratorUtils.VEIN_GENERATOR_FUNCTIONS.containsKey(id) ? WorldGeneratorUtils.VEIN_GENERATOR_FUNCTIONS.get(id).apply(this) : null;
+        }
+        return veinGenerator;
     }
 
     public static abstract class VeinGenerator {
@@ -226,19 +229,22 @@ public class GTOreFeatureEntry {
         }
 
         public List<Material> getAllMaterials() {
-            return getAllEntries().keySet().stream()
-                    .map(either -> either.map(state -> ChemicalHelper.getMaterial(state.getBlock()) != null ? ChemicalHelper.getMaterial(state.getBlock()).material() : null, Function.identity())).filter(Objects::nonNull).toList();
+            return getAllEntries().entrySet().stream()
+                    .sorted(Comparator.comparingInt(Map.Entry::getValue))
+                    .map(Map.Entry::getKey)
+                    .map(either -> either.map(state -> ChemicalHelper.getMaterial(state.getBlock()) != null ? ChemicalHelper.getMaterial(state.getBlock()).material() : null, Function.identity())).filter(Objects::nonNull)
+                    .toList();
         }
 
         public List<Integer> getAllChances() {
             return getAllEntries().values().stream().toList();
         }
 
-        public Map<Integer, Material> getValidMaterialsChances() {
+        public List<Map.Entry<Integer, Material>> getValidMaterialsChances() {
             return getAllEntries().entrySet().stream()
-                    .map(entry -> Map.entry(entry.getKey().map(state -> ChemicalHelper.getMaterial(state.getBlock()) != null ? ChemicalHelper.getMaterial(state.getBlock()).material() : null, Function.identity()), entry.getValue()))
-                    .filter(entry -> entry.getKey() != null)
-                    .collect(Collectors.toMap(Map.Entry::getValue, Map.Entry::getKey));
+                    .filter(entry -> entry.getKey().map(state -> ChemicalHelper.getMaterial(state.getBlock()) != null ? ChemicalHelper.getMaterial(state.getBlock()).material() : null, Function.identity()) != null)
+                    .map(entry -> Map.entry(entry.getValue(), entry.getKey().map(state -> ChemicalHelper.getMaterial(state.getBlock()) != null ? ChemicalHelper.getMaterial(state.getBlock()).material() : null, Function.identity())))
+                    .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
         }
 
         @HideFromJS
@@ -543,6 +549,7 @@ public class GTOreFeatureEntry {
                         var iterator = entry.getKey().iterator();
                         return Stream.generate(() -> Map.entry(iterator.next(), entry.getValue())).limit(entry.getKey().size());
                     })
+                    .distinct()
                     .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
         }
 

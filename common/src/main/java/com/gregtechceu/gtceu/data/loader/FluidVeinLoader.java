@@ -5,12 +5,10 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.data.worldgen.GTOreFeatureEntry;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefinition;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.integration.kjs.GTCEuServerEvents;
 import com.gregtechceu.gtceu.integration.kjs.events.GTFluidVeinEventJS;
-import com.gregtechceu.gtceu.integration.kjs.events.GTOreVeinEventJS;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.JsonOps;
 import dev.latvian.mods.kubejs.script.ScriptType;
@@ -44,14 +42,16 @@ public class FluidVeinLoader extends SimpleJsonResourceReloadListener {
             ResourceLocation location = entry.getKey();
 
             try {
-                BedrockFluidDefinition ore = fromJson(location, GsonHelper.convertToJsonObject(entry.getValue(), "top element"), ops);
-                if (ore == null) {
-                    LOGGER.info("Skipping loading ore vein {} as it's serializer returned null", location);
-                } /*else if(ore.getVeinGenerator() instanceof GTOreFeatureEntry.NoopVeinGenerator) {
-                    LOGGER.info("Removing ore vein {} as it's generator was marked as no-operation", location);
+                BedrockFluidDefinition fluid = fromJson(location, GsonHelper.convertToJsonObject(entry.getValue(), "top element"), ops);
+                if (fluid == null) {
+                    LOGGER.info("Skipping loading fluid vein {} as it's serializer returned null", location);
+                } /*else if(fluid.getVeinGenerator() instanceof GTOreFeatureEntry.NoopVeinGenerator) {
+                    LOGGER.info("Removing fluid vein {} as it's generator was marked as no-operation", location);
                     GTRegistries.BEDROCK_FLUID_DEFINITIONS.remove(location);
-                }*/ else {
-                    GTRegistries.BEDROCK_FLUID_DEFINITIONS.register(location, ore);
+                }*/else if (GTRegistries.BEDROCK_FLUID_DEFINITIONS.containKey(location)) {
+                    GTRegistries.BEDROCK_FLUID_DEFINITIONS.replace(location, fluid);
+                }  else {
+                    GTRegistries.BEDROCK_FLUID_DEFINITIONS.register(location, fluid);
                 }
             } catch (IllegalArgumentException | JsonParseException jsonParseException) {
                 LOGGER.error("Parsing error loading ore vein {}", location, jsonParseException);

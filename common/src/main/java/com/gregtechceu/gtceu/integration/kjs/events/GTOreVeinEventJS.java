@@ -17,7 +17,9 @@ public class GTOreVeinEventJS extends EventJS {
     public void add(ResourceLocation id, Consumer<OreVeinBuilderJS> consumer) {
         OreVeinBuilderJS builder = new OreVeinBuilderJS(id);
         consumer.accept(builder);
-        builder.build();
+        if (!builder.isBuilt()) {
+            builder.build();
+        }
     }
 
     public void remove(ResourceLocation id) {

@@ -326,7 +326,7 @@ public class UnknownCompositionMaterials {
                 .flags(NO_SMASHING, FLAMMABLE)
                 .buildAndRegister();
 
-        CetaneBoostedDiesel = new Material.Builder("nitro_fuel")
+        CetaneBoostedDiesel = new Material.Builder("cetane_boosted_diesel")
                 .fluid().fluidCustomTexture()
                 .color(0xC8FF00)
                 .flags(FLAMMABLE, EXPLOSIVE)

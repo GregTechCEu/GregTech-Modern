@@ -145,7 +145,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
 
         event.add("GTOreVein", GTOreFeatureEntry.class);
         event.add("GTLayerPattern", GTLayerPattern.class);
-        event.add("GTOres", GTLayerPattern.class);
+        event.add("GTOres", GTOres.class);
         // ....TODO add global refs. for convenience, ppl do not need to import the java package themselves.
     }
 
@@ -179,7 +179,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
 
         typeWrappers.register(TagPrefix.class, (ctx, o) -> {
             if (o instanceof TagPrefix tagPrefix) return tagPrefix;
-            if (o instanceof CharSequence chars) return TagPrefix.getPrefix(chars.toString());
+            if (o instanceof CharSequence chars) return TagPrefix.get(chars.toString());
             return null;
         });
         typeWrappers.register(UnificationEntry.class, (ctx, o) -> {
@@ -187,10 +187,10 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
             if (o instanceof CharSequence chars) {
                 var values = chars.toString().split(":");
                 if (values.length == 1) {
-                    return new UnificationEntry(TagPrefix.getPrefix(values[0]));
+                    return new UnificationEntry(TagPrefix.get(values[0]));
                 }
                 if (values.length >= 2) {
-                    return new UnificationEntry(TagPrefix.getPrefix(values[0]), GTMaterials.get(values[1]));
+                    return new UnificationEntry(TagPrefix.get(values[0]), GTMaterials.get(values[1]));
                 }
             }
             return null;
