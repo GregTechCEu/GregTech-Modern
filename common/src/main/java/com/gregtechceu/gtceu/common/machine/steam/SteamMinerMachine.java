@@ -64,7 +64,7 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IMiner, I
     public SteamMinerMachine(IMachineBlockEntity holder, int speed, int maximumRadius, int fortune) {
         super(holder, false, fortune, speed, maximumRadius);
         this.inventorySize = 4;
-        this.energyPerTick = 16;
+        this.energyPerTick = (int) (16 * FluidHelper.getBucket() / 1000);
         this.importItems = createImportItemHandler();
         this.exportItems = createExportItemHandler();
     }
