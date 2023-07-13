@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.CraftingComponent;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.tterrag.registrate.util.entry.ItemEntry;
+import com.tterrag.registrate.util.entry.ItemProviderEntry;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Item;
@@ -421,7 +422,7 @@ public class MetaTileEntityLoader {
                 recipe[i] = new ItemStack(item);
             } else if (recipe[i] instanceof Block block) {
                 recipe[i] = new ItemStack(block);
-            } else if (recipe[i] instanceof ItemEntry<?> itemEntry) {
+            } else if (recipe[i] instanceof ItemProviderEntry<?> itemEntry) {
                 recipe[i] = itemEntry.asStack();
             }
         }
