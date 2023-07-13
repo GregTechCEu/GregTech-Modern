@@ -45,6 +45,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
@@ -86,6 +87,8 @@ public class FisherMachine extends TieredEnergyMachine implements IAutoOutputIte
     public final long fishingTicks;
     public static final int WATER_CHECK_SIZE = 5;
     private static final ItemStack fishingRod = new ItemStack(Items.FISHING_ROD);
+    private final LootTable lootTable;
+    private final LootContext lootContext;
 
     public FisherMachine(IMachineBlockEntity holder, int tier, Object... args) {
         super(holder, tier);
@@ -95,6 +98,20 @@ public class FisherMachine extends TieredEnergyMachine implements IAutoOutputIte
         this.baitHandler = createBaitItemHandler(args);
         this.chargerInventory = createChargerItemHandler();
         setOutputFacingItems(getFrontFacing());
+
+        lootTable = getLevel().getServer().getLootTables().get(BuiltInLootTables.FISHING);
+        FishingHook simulatedHook = new FishingHook(EntityType.FISHING_BOBBER, getLevel()) {
+            public boolean isOpenWaterFishing() {
+                return true;
+            }
+        };
+
+        lootContext = new LootContext.Builder((ServerLevel) getLevel())
+                .withOptionalParameter(LootContextParams.THIS_ENTITY,simulatedHook)
+                .withParameter(LootContextParams.TOOL, fishingRod)
+                .withParameter(LootContextParams.ORIGIN,new Vec3(getPos().getX(),getPos().getY(),getPos().getZ()))
+                .create(LootContextParamSets.FISHING);
+
 
     }
 
@@ -156,18 +173,6 @@ public class FisherMachine extends TieredEnergyMachine implements IAutoOutputIte
         if(waterCount<WATER_CHECK_SIZE*WATER_CHECK_SIZE)
             return;
 
-        LootTable lootTable = getLevel().getServer().getLootTables().get(new ResourceLocation("gameplay/fishing"));
-        FishingHook simulatedHook = new FishingHook(EntityType.FISHING_BOBBER, getLevel()) {
-            public boolean isOpenWaterFishing() {
-                return true;
-            }
-        };
-
-        LootContext lootContext = new LootContext.Builder((ServerLevel) getLevel())
-                .withOptionalParameter(LootContextParams.THIS_ENTITY,simulatedHook)
-                .withParameter(LootContextParams.TOOL, fishingRod)
-                .withParameter(LootContextParams.ORIGIN,new Vec3(getPos().getX(),getPos().getY(),getPos().getZ()))
-                .create(LootContextParamSets.FISHING);
 
         NonNullList<ItemStack> generatedLoot = NonNullList.create();
         generatedLoot.addAll(lootTable.getRandomItems(lootContext));
@@ -187,7 +192,7 @@ public class FisherMachine extends TieredEnergyMachine implements IAutoOutputIte
         {
             if(cache.insertItemInternal(i,stack,true).getCount()==stack.getCount())
                 continue;
-            ItemStack InsertedStack = cache.insertItemInternal(i,stack,false);
+            cache.insertItemInternal(i,stack,false);
             return true;
         }
         return false;
