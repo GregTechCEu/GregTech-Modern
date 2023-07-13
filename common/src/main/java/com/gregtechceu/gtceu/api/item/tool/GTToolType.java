@@ -30,6 +30,7 @@ public enum GTToolType {
     SAW("saw", "saws", 1, 1, GTSoundEntries.SAW_TOOL),
     HARD_HAMMER("hammer", "hammers", 1, 1, GTSoundEntries.FORGE_HAMMER),
     SOFT_MALLET("mallet", "mallets", 1, 1, GTSoundEntries.SOFT_MALLET_TOOL),
+    MINING_HAMMER("mining_hammer", "mining_hammers", TagUtil.createBlockTag("mineable/pickaxe", true), 1.5F, -3.2F, GTCEu.id("item/tools/mining_hammer"), null),
     WRENCH("wrench", "wrenches", 1, 1, GTSoundEntries.WRENCH_TOOL),
     FILE("file", "files", 1, 1, GTSoundEntries.FILE_TOOL),
     CROWBAR("crowbar", "crowbars", 1, 1, new ExistingSoundEntry(SoundEvents.ITEM_BREAK, SoundSource.BLOCKS)),
