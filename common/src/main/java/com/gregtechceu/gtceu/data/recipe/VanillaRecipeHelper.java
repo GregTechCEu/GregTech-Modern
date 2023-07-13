@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.data.recipe.builder.*;
 import com.tterrag.registrate.util.entry.ItemEntry;
+import com.tterrag.registrate.util.entry.ItemProviderEntry;
 import it.unimi.dsi.fastutil.chars.*;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
@@ -129,7 +130,7 @@ public class VanillaRecipeHelper {
                     if (tag != null) {
                         builder.define(sign, tag);
                     } else builder.define(sign, ChemicalHelper.get(entry.tagPrefix, entry.material));
-                } else if (content instanceof ItemEntry<?> entry) {
+                } else if (content instanceof ItemProviderEntry<?> entry) {
                     builder.define(sign, entry.asStack());
                 }
             }

@@ -202,8 +202,8 @@ public class ConfigHolder {
         @Configurable.Comment({"Whether or not to enable Emissive Textures for GregTech Machines.", "Default: true"})
         public boolean machinesEmissiveTextures = true;
         @Configurable
-        @Configurable.Comment({"The default color to overlay onto machines.", "16777215 (0xFFFFFF in decimal) is no coloring (like GTCE).",
-                "13819135 (0xD2DCFF in decimal) is the classic blue from GT5 (default)."})
+        @Configurable.Comment({"The default color to overlay onto machines.", "16777215 (0xFFFFFF in decimal) is no coloring (default).",
+                "13819135 (0xD2DCFF in decimal) is the classic blue from GT5."})
         @Configurable.Range(min = 0, max = 0xFFFFFF)
         @Configurable.Gui.ColorValue
         public int defaultPaintingColor = 0xFFFFFF;
