@@ -45,8 +45,9 @@ public class LangHandler {
 
         provider.add("gtceu.gui.editor.tips.citation", "Number of citations");
         provider.add("gtceu.gui.editor.group.recipe_type", "cap");
-        provider.add("ldlib.gui.editor.register.editor.ui.rtui", "RecipeType UI Project");
-        provider.add("ldlib.gui.editor.register.editor.recipe_type_tab", "Recipe Types");
+        provider.add("ldlib.gui.editor.register.editor.gtceu.rtui", "RecipeType UI Project");
+        provider.add("ldlib.gui.editor.register.editor.gtceu.mui", "Machine UI Project");
+        provider.add("ldlib.gui.editor.register.editor.gtceu.template_tab", "templates");
         //capabilities
         provider.add("recipe.capability.eu.name", "GTCEu Energy");
         provider.add("recipe.capability.fluid.name", "Fluid");
@@ -533,10 +534,10 @@ public class LangHandler {
         provider.add("tile.gtceu.reinforced_stone.name", "Reinforced Stone");
         provider.add("tile.brittle_charcoal.name", "Brittle Charcoal");
         multilineLang(provider, "tile.brittle_charcoal.tooltip", "Produced by the Charcoal Pile Igniter.\nMine this to get Charcoal.");
-        provider.add("metaitem.prospector.mode.ores", "§aOre Prospection Mode");
-        provider.add("metaitem.prospector.mode.fluid", "§bFluid Prospection Mode");
-        provider.add("metaitem.prospector.tooltip.ores", "Scans Ores in a %s Chunk Radius");
-        provider.add("metaitem.prospector.tooltip.fluids", "Scans Ores and Fluids in a %s Chunk Radius");
+        provider.add("metaitem.prospector.mode.ores", "§aOre Prospection Mode§r");
+        provider.add("metaitem.prospector.mode.fluid", "§bFluid Prospection Mode§r");
+        provider.add("metaitem.prospector.tooltip.radius", "Scans range in a %s Chunk Radius");
+        provider.add("metaitem.prospector.tooltip.modes", "Available Modes:");
         provider.add("behavior.prospector.not_enough_energy", "Not Enough Energy!");
         provider.add("metaitem.tricorder_scanner.tooltip", "Tricorder");
         provider.add("metaitem.debug_scanner.tooltip", "Tricorder");
@@ -1247,6 +1248,12 @@ public class LangHandler {
         provider.add("gtceu.gui.auto_output.name", "auto");
         provider.add("gtceu.gui.overclock.title", "Overclock Tier");
         provider.add("gtceu.gui.overclock.range", "Available Tiers [%s, %s]");
+
+        provider.add("gtceu.gui.content.chance_0", "§cNot Consumed§r");
+        provider.add("gtceu.gui.content.chance_0_short", "§cNC§r");
+        provider.add("gtceu.gui.content.chance_1", "§eChance: %s§r");
+        provider.add("gtceu.gui.content.per_tick", "§aConsumed/Produced Per Tick§r");
+        provider.add("gtceu.gui.content.tips.per_tick_short", "§a/tick§r");
     }
 
     /**

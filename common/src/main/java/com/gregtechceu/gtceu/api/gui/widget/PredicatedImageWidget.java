@@ -23,10 +23,6 @@ public class PredicatedImageWidget extends ImageWidget {
     private BooleanSupplier predicate;
     private boolean isVisible = true;
 
-    public PredicatedImageWidget(int xPosition, int yPosition, int width, int height) {
-        super(xPosition, yPosition, width, height);
-    }
-
     public PredicatedImageWidget(int xPosition, int yPosition, int width, int height, IGuiTexture area) {
         super(xPosition, yPosition, width, height, area);
     }

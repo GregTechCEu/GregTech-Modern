@@ -1,50 +1,52 @@
 package com.gregtechceu.gtceu.api.gui.editor;
 
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.editor.ColorPattern;
 import com.lowdragmc.lowdraglib.gui.editor.Icons;
 import com.lowdragmc.lowdraglib.gui.editor.annotation.LDLRegister;
+import com.lowdragmc.lowdraglib.gui.editor.configurator.IConfigurableWidget;
+import com.lowdragmc.lowdraglib.gui.editor.data.Resources;
 import com.lowdragmc.lowdraglib.gui.editor.data.UIProject;
 import com.lowdragmc.lowdraglib.gui.editor.ui.Editor;
-import com.lowdragmc.lowdraglib.gui.editor.ui.MainPanel;
 import com.lowdragmc.lowdraglib.gui.editor.ui.tool.WidgetToolBox;
-import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
-import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
-import com.lowdragmc.lowdraglib.gui.texture.ResourceBorderTexture;
-import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
+import com.lowdragmc.lowdraglib.gui.texture.*;
 import com.lowdragmc.lowdraglib.gui.util.TreeBuilder;
 import com.lowdragmc.lowdraglib.gui.widget.TabButton;
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Items;
 
 import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author KilaBash
  * @date 2023/3/29
  * @implNote RecipeTypeUIProject
  */
-@LDLRegister(name = "rtui", group = "editor.ui")
+@LDLRegister(name = "rtui", group = "editor.gtceu")
 public class RecipeTypeUIProject extends UIProject {
 
-    @Nullable @Getter
+    @Nullable @Getter @Setter
     protected GTRecipeType recipeType;
-    @Nullable @Getter
-    private MainPanel currentPanel;
 
     private RecipeTypeUIProject() {
         this(null, null);
     }
 
-    public RecipeTypeUIProject(RecipeTypeResources resources, WidgetGroup root) {
+    public RecipeTypeUIProject(Resources resources, WidgetGroup root) {
         super(resources, root);
     }
 
@@ -52,20 +54,9 @@ public class RecipeTypeUIProject extends UIProject {
         super(tag);
     }
 
+    @Override
     public RecipeTypeUIProject newEmptyProject() {
-        return new RecipeTypeUIProject(RecipeTypeResources.defaultResource(),
-                (WidgetGroup) new WidgetGroup(30, 30, 176, 83).setBackground(GuiTextures.BACKGROUND));
-    }
-
-    public void setRecipeType(@Nullable GTRecipeType recipeType) {
-        this.recipeType = recipeType;
-        if (this.currentPanel != null) {
-            if (recipeType != null) {
-                this.currentPanel.setBackground(new TextTexture(recipeType.registryName.toLanguageKey()).scale(2.0f));
-            } else {
-                this.currentPanel.setBackground(IGuiTexture.EMPTY);
-            }
-        }
+        return new RecipeTypeUIProject(Resources.defaultResource(), new WidgetGroup(30, 30, 200, 200));
     }
 
     @Override
@@ -97,22 +88,12 @@ public class RecipeTypeUIProject extends UIProject {
     }
 
     @Override
-    public RecipeTypeResources loadResources(CompoundTag tag) {
-        return RecipeTypeResources.fromNBT(tag);
-    }
-
-    @Override
     public void onLoad(Editor editor) {
         editor.getResourcePanel().loadResource(getResources(), false);
         editor.getTabPages().addTab(new TabButton(50, 16, 60, 14).setTexture(
                 new GuiTextureGroup(ColorPattern.T_GREEN.rectTexture().setBottomRadius(10).transform(0, 0.4f), new TextTexture("Main")),
                 new GuiTextureGroup(ColorPattern.T_RED.rectTexture().setBottomRadius(10).transform(0, 0.4f), new TextTexture("Main"))
-        ), currentPanel = new MainPanel(editor, root));
-        if (recipeType != null) {
-            this.currentPanel.setBackground(new TextTexture(recipeType.registryName.toLanguageKey()).scale(2.0f));
-        } else {
-            this.currentPanel.setBackground(IGuiTexture.EMPTY);
-        }
+        ), new UIMainPanel(editor, root, recipeType == null ? null : recipeType.registryName.toLanguageKey()));
         for (WidgetToolBox.Default tab : WidgetToolBox.Default.TABS) {
             editor.getToolPanel().addNewToolBox("ldlib.gui.editor.group." + tab.groupName, tab.icon, tab.createToolBox());
         }
@@ -132,6 +113,35 @@ public class RecipeTypeUIProject extends UIProject {
                     recipeType.reloadCustomUI();
                 });
             }
+        } else if (name.equals("template_tab")) {
+            Map<String, List<GTRecipeType>> categories = new LinkedHashMap<>();
+            for (GTRecipeType recipeType : GTRegistries.RECIPE_TYPES) {
+                categories.computeIfAbsent(recipeType.group, group -> new ArrayList<>()).add(recipeType);
+            }
+            categories.forEach((groupName, recipeTypes) -> menu.branch(groupName, m -> {
+                for (GTRecipeType recipeType : recipeTypes) {
+                    IGuiTexture icon;
+                    if (recipeType.getIconSupplier() != null) {
+                        icon = new ItemStackTexture(recipeType.getIconSupplier().get());
+                    } else {
+                        icon = new ItemStackTexture(Items.BARRIER);
+                    }
+                    m.leaf(icon, recipeType.registryName.toLanguageKey(), () -> {
+                        root.clearAllWidgets();
+                        if (recipeType.hasCustomUI()) {
+                            var nbt = recipeType.getCustomUI();
+                            IConfigurableWidget.deserializeNBT(root, nbt.getCompound("root"), Resources.fromNBT(nbt.getCompound("resources")), false);
+                        } else {
+                            var widget = recipeType.createEditableUITemplate(false, false).createDefault();
+                            root.setSize(widget.getSize());
+                            for (Widget children : widget.widgets) {
+                                root.addWidget(children);
+                            }
+                        }
+                        setRecipeType(recipeType);
+                    });
+                }
+            }));
         }
     }
 }

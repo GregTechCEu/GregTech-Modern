@@ -378,7 +378,7 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
                         }
                     }
                 }))
-                .addWidget(new PhantomSlotWidget(lockedItem, 0, 54, 53))
+                .addWidget(new PhantomSlotWidget(lockedItem, 0, 58, 41))
                 .addWidget(new ToggleButtonWidget(4, 41, 18, 18,
                         GuiTextures.BUTTON_ITEM_OUTPUT, this::isAutoOutputItems, this::setAutoOutputItems)
                         .setShouldUseBaseBackground()

@@ -3,13 +3,10 @@ package com.gregtechceu.gtceu.api.machine;
 import com.google.common.collect.Table;
 import com.google.common.collect.Tables;
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.capability.ICleanroomReceiver;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.machine.feature.*;
 import com.gregtechceu.gtceu.api.machine.trait.*;
-import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
-import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
@@ -185,18 +182,14 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
         }
     }
 
+    @Override
+    public long getOverclockVoltage() {
+        return Math.min(GTValues.V[getOverclockTier()], Math.max(energyContainer.getInputVoltage(), energyContainer.getOutputVoltage()));
+    }
+
     //////////////////////////////////////
     //******     RECIPE LOGIC    *******//
     //////////////////////////////////////
-
-    @Override
-    @Nullable
-    public GTRecipe modifyRecipe(GTRecipe recipe) {
-        if (RecipeHelper.getRecipeEUtTier(recipe) > getTier()) {
-            return null;
-        }
-        return RecipeHelper.applyOverclock(getDefinition().getOverclockingLogic(), recipe, Math.min(GTValues.V[overclockTier], Math.max(energyContainer.getInputVoltage(), energyContainer.getOutputVoltage())));
-    }
 
     @Override
     public boolean keepSubscribing() {

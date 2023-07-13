@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.cover.filter.TagFluidFilter;
 import com.gregtechceu.gtceu.api.cover.filter.TagItemFilter;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials;
+import com.gregtechceu.gtceu.api.gui.misc.ProspectorMode;
 import com.gregtechceu.gtceu.api.item.ComponentItem;
 import com.gregtechceu.gtceu.api.item.component.*;
 import com.gregtechceu.gtceu.common.item.*;
@@ -1035,9 +1036,18 @@ public class GTItems {
     public static ItemEntry<Item> POWER_UNIT_IV;
 
     public static ItemEntry<Item> NANO_SABER;
-    public static ItemEntry<Item> PROSPECTOR_LV;
-    public static ItemEntry<Item> PROSPECTOR_HV;
-    public static ItemEntry<Item> PROSPECTOR_LUV;
+    public static ItemEntry<ComponentItem> PROSPECTOR_LV = REGISTRATE.item("prospector.lv", ComponentItem::create)
+            .lang("Ore Prospector (LV)")
+            .properties(p -> p.stacksTo(1))
+            .onRegister(attach(ElectricStats.createElectricItem(100_000L, GTValues.LV), new ProspectorScannerBehavior(2, GTValues.V[GTValues.LV] / 16L, ProspectorMode.ORE))).register();
+    public static ItemEntry<ComponentItem> PROSPECTOR_HV = REGISTRATE.item("prospector.hv", ComponentItem::create)
+            .lang("Advanced Prospector (HV)")
+            .properties(p -> p.stacksTo(1))
+            .onRegister(attach(ElectricStats.createElectricItem(1_600_000L, GTValues.HV), new ProspectorScannerBehavior(3, GTValues.V[GTValues.HV] / 16L, ProspectorMode.ORE, ProspectorMode.FLUID))).register();
+    public static ItemEntry<ComponentItem> PROSPECTOR_LUV = REGISTRATE.item("prospector.luv", ComponentItem::create)
+            .lang("Super Prospector (LuV)")
+            .properties(p -> p.stacksTo(1))
+            .onRegister(attach(ElectricStats.createElectricItem(1_000_000_000L, GTValues.LuV), new ProspectorScannerBehavior(5, GTValues.V[GTValues.LuV] / 16L, ProspectorMode.ORE, ProspectorMode.FLUID))).register();
 
     public static ItemEntry<Item> TRICORDER_SCANNER;
     public static ItemEntry<Item> DEBUG_SCANNER;
@@ -1073,7 +1083,11 @@ public class GTItems {
         }
     }
 
-    public static ItemEntry<Item> TURBINE_ROTOR;
+    public static ItemEntry<ComponentItem> TURBINE_ROTOR = REGISTRATE.item("turbine_rotor", ComponentItem::create)
+            .properties(p -> p.stacksTo(1))
+            .model((ctx, prov) -> prov.generated(ctx, GTCEu.id("item/tools/turbine")))
+            .color(() -> IMaterialPartItem::getItemStackColor)
+            .onRegister(attach(new TurbineRotorBehaviour())).register();
 
     public static ItemEntry<Item> NEURO_PROCESSOR = REGISTRATE.item("neuro_processing_unit", Item::new).lang("Neuro Processing Unit").register();
     public static ItemEntry<Item> STEM_CELLS = REGISTRATE.item("stem_cells", Item::new).register();

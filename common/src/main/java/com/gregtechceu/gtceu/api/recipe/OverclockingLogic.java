@@ -2,7 +2,10 @@ package com.gregtechceu.gtceu.api.recipe;
 
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
+import com.mojang.datafixers.util.Function5;
+import it.unimi.dsi.fastutil.longs.LongIntMutablePair;
 import it.unimi.dsi.fastutil.longs.LongIntPair;
+import lombok.Getter;
 
 import javax.annotation.Nonnull;
 
@@ -10,17 +13,46 @@ import javax.annotation.Nonnull;
  * A class for holding all the various Overclocking logics
  */
 public class OverclockingLogic {
-
-    public static final OverclockingLogic PERFECT_OVERCLOCK = new OverclockingLogic(true);
-    public static final OverclockingLogic NON_PERFECT_OVERCLOCK = new OverclockingLogic(false);
+    @FunctionalInterface
+    public interface Logic {
+        /**
+         * Calls the desired overclocking logic to be run for the recipe.
+         * Performs the actual overclocking on the provided recipe.
+         * Override this to call custom overclocking mechanics
+         *
+         * @param recipe          current recipe
+         * @param recipeEUt       the EUt of the recipe
+         * @param maxVoltage      the maximum voltage the recipe is allowed to be run at
+         * @param duration        the duration of the recipe
+         * @param amountOC        the maximum amount of overclocks to perform
+         * @return an int array of {OverclockedEUt, OverclockedDuration}
+         */
+        LongIntPair runOverclockingLogic(@Nonnull GTRecipe recipe, long recipeEUt, long maxVoltage, int duration, int amountOC);
+    }
 
     public static final double STANDARD_OVERCLOCK_VOLTAGE_MULTIPLIER = 4.0;
     public static final double STANDARD_OVERCLOCK_DURATION_DIVISOR = ConfigHolder.INSTANCE.machines.overclockDivisor;
     public static final double PERFECT_OVERCLOCK_DURATION_DIVISOR = 4.0;
-    protected boolean hasPerfectOC;
 
-    public OverclockingLogic(boolean hasPerfectOC) {
-        this.hasPerfectOC = hasPerfectOC;
+    public static final OverclockingLogic PERFECT_OVERCLOCK = new OverclockingLogic(PERFECT_OVERCLOCK_DURATION_DIVISOR, STANDARD_OVERCLOCK_VOLTAGE_MULTIPLIER);
+    public static final OverclockingLogic NON_PERFECT_OVERCLOCK = new OverclockingLogic(STANDARD_OVERCLOCK_DURATION_DIVISOR, STANDARD_OVERCLOCK_VOLTAGE_MULTIPLIER);
+
+    @Getter
+    protected Logic logic;
+
+    public OverclockingLogic(Logic logic) {
+        this.logic = logic;
+    }
+
+    public OverclockingLogic(double durationDivisor, double voltageMultiplier) {
+        this.logic = (recipe, recipeEUt, maxVoltage, duration, amountOC) -> standardOverclockingLogic(
+                Math.abs(recipeEUt),
+                maxVoltage,
+                duration,
+                amountOC,
+                durationDivisor,
+                voltageMultiplier
+        );
     }
 
     /**
@@ -57,7 +89,7 @@ public class OverclockingLogic {
             // in case duration overclocking would waste energy
             resultVoltage = potentialVoltage;
         }
-        return LongIntPair.of((long) resultVoltage, (int) resultDuration);
+        return LongIntMutablePair.of((long) resultVoltage, (int) resultDuration);
     }
 
     @Nonnull
@@ -82,29 +114,6 @@ public class OverclockingLogic {
     }
 
     /**
-     * Calls the desired overclocking logic to be run for the recipe.
-     * Performs the actual overclocking on the provided recipe.
-     * Override this to call custom overclocking mechanics
-     *
-     * @param recipe          current recipe
-     * @param recipeEUt       the EUt of the recipe
-     * @param maxVoltage      the maximum voltage the recipe is allowed to be run at
-     * @param duration        the duration of the recipe
-     * @param amountOC        the maximum amount of overclocks to perform
-     * @return an int array of {OverclockedEUt, OverclockedDuration}
-     */
-    protected LongIntPair runOverclockingLogic(@Nonnull GTRecipe recipe, long recipeEUt, long maxVoltage, int duration, int amountOC) {
-        return standardOverclockingLogic(
-                Math.abs(recipeEUt),
-                maxVoltage,
-                duration,
-                amountOC,
-                getOverclockingDurationDivisor(),
-                getOverclockingVoltageMultiplier()
-        );
-    }
-
-    /**
      * Finds the maximum tier that a recipe can overclock to, when provided the maximum voltage a recipe can overclock to.
      *
      * @param voltage The maximum voltage the recipe is allowed to overclock to.
@@ -114,17 +123,4 @@ public class OverclockingLogic {
         return GTUtil.getTierByVoltage(voltage);
     }
 
-    /**
-     * @return the divisor to use for reducing duration upon overclocking
-     */
-    protected double getOverclockingDurationDivisor() {
-        return hasPerfectOC ? PERFECT_OVERCLOCK_DURATION_DIVISOR : STANDARD_OVERCLOCK_DURATION_DIVISOR;
-    }
-
-    /**
-     * @return the multiplier to use for increasing voltage upon overclocking
-     */
-    protected double getOverclockingVoltageMultiplier() {
-        return STANDARD_OVERCLOCK_VOLTAGE_MULTIPLIER;
-    }
 }

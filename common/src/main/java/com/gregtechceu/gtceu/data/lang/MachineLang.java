@@ -274,9 +274,10 @@ public class MachineLang {
         provider.add("gtceu.machine.transformer.message_transform_down", "Transforming Down, In: %d EU %dA, Out: %d EU %dA");
         provider.add("gtceu.machine.transformer.tooltip_transform_up", "§cTransform Up: §f%dA %d EU (%s§f) -> %dA %d EU (%s§f)");
         provider.add("gtceu.machine.transformer.message_transform_up", "Transforming Up, In: %d EU %dA, Out: %d EU %dA");
-        provider.add("gtceu.machine.transformer_adjustable.description", "Transforms Energy between voltage tiers, now with more Amps!");
-        provider.add("gtceu.machine.transformer_adjustable.tooltip_tool_usage", "Starts as §f4A§7, use Screwdriver to change");
-        provider.add("gtceu.machine.transformer_adjustable.message_adjust", "Adjusted Hi-Amp to %d EU %dA, Lo-Amp to %d EU %dA");
+//        provider.add("gtceu.machine.transformer_adjustable.description", "Transforms Energy between voltage tiers, now with more Amps!");
+//        provider.add("gtceu.machine.transformer_adjustable.tooltip_tool_usage", "Starts as §f4A§7, use Screwdriver to change");
+//        provider.add("gtceu.machine.transformer_adjustable.message_adjust", "Adjusted Hi-Amp to %d EU %dA, Lo-Amp to %d EU %dA");
+
         provider.add("gtceu.machine.diode.message", "Max Amperage throughput: %s");
         provider.add("gtceu.machine.diode.tooltip_tool_usage", "Hit with a Soft Mallet to change Amperage flow.");
         provider.add("gtceu.machine.diode.tooltip_general", "Allows Energy Flow in one direction and limits Amperage");

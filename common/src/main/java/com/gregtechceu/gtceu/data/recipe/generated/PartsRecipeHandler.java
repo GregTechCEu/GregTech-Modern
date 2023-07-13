@@ -6,6 +6,8 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.*;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.gregtechceu.gtceu.common.item.TurbineRotorBehaviour;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
@@ -32,8 +34,7 @@ public class PartsRecipeHandler {
         plateDouble.executeHandler(PropertyKey.INGOT, (tagPrefix, material, property) -> processPlateDouble(tagPrefix, material, property, provider));
         plateDense.executeHandler(PropertyKey.INGOT, (tagPrefix, material, property) -> processPlateDense(tagPrefix, material, property, provider));
 
-        // todo turbine rotors
-        //turbineBlade.executeHandler(PropertyKey.INGOT, (tagPrefix, material, property) -> processTurbine(tagPrefix, material, property, provider));
+        turbineBlade.executeHandler(PropertyKey.INGOT, (tagPrefix, material, property) -> processTurbine(tagPrefix, material, property, provider));
         rotor.executeHandler(PropertyKey.INGOT, (tagPrefix, material, property) -> processRotor(tagPrefix, material, property, provider));
         bolt.executeHandler(PropertyKey.DUST, (tagPrefix, material, property) -> processBolt(tagPrefix, material, property, provider));
         screw.executeHandler(PropertyKey.DUST, (tagPrefix, material, property) -> processScrew(tagPrefix, material, property, provider));
@@ -512,16 +513,14 @@ public class PartsRecipeHandler {
         }
     }
 
-    // TODO Turbine rotors
-    /*
     public static void processTurbine(TagPrefix toolPrefix, Material material, IngotProperty property, Consumer<FinishedRecipe> provider) {
         ItemStack rotorStack = GTItems.TURBINE_ROTOR.asStack();
         //noinspection ConstantConditions
-        TurbineRotorBehavior.getInstanceFor(rotorStack).setPartMaterial(rotorStack, material);
+        TurbineRotorBehaviour.getBehaviour(rotorStack).setPartMaterial(rotorStack, material);
 
         ASSEMBLER_RECIPES.recipeBuilder("assemble_" + material.getName() + "_turbine_blade")
                 .inputItems(turbineBlade, material, 8)
-                .inputItems(rodLong, Magnalium)
+                .inputItems(rodLong, GTMaterials.Magnalium)
                 .outputItems(rotorStack)
                 .duration(200)
                 .EUt(400)
@@ -540,7 +539,7 @@ public class PartsRecipeHandler {
                 "PPP", "SPS", "fPd",
                 'P', new UnificationEntry(plateDouble, material),
                 'S', new UnificationEntry(screw, material));
-    }*/
+    }
 
     public static void processRound(TagPrefix roundPrefix, Material material, IngotProperty property, Consumer<FinishedRecipe> provider) {
         if (!material.hasFlag(NO_SMASHING)) {

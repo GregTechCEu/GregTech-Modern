@@ -61,6 +61,7 @@ public class GTJEIPlugin implements IModPlugin {
         registration.addRecipeCatalyst(GTMachines.STEAM_FURNACE.left().asStack(), RecipeTypes.SMELTING);
         registration.addRecipeCatalyst(GTMachines.STEAM_FURNACE.right().asStack(), RecipeTypes.SMELTING);
         registration.addRecipeCatalyst(GTMachines.STEAM_OVEN.asStack(), RecipeTypes.SMELTING);
+        registration.addRecipeCatalyst(GTMachines.MULTI_SMELTER.asStack(), RecipeTypes.SMELTING);
     }
 
     @Override

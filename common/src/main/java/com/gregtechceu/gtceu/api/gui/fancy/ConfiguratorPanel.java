@@ -14,6 +14,7 @@ import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.utils.Position;
 import com.lowdragmc.lowdraglib.utils.Size;
 import com.lowdragmc.lowdraglib.utils.interpolate.Eases;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import lombok.Getter;
 import lombok.Setter;
@@ -23,6 +24,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
@@ -62,7 +64,7 @@ public class ConfiguratorPanel extends WidgetGroup {
             var tab = new Tab(fancyConfigurator);
             tab.setBackground(texture);
             tabs.add(tab);
-            addWidgetAnima(tab, (Transform) new Transform()
+            addWidgetAnima(tab, new Transform()
                     .scale(0)
                     .duration(500)
                     .ease(Eases.EaseQuadOut));
@@ -90,10 +92,67 @@ public class ConfiguratorPanel extends WidgetGroup {
         expanded = null;
     }
 
+    @Override
+    @Environment(EnvType.CLIENT)
+    protected void drawWidgetsBackground(@Nonnull PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
+        for (Widget widget : widgets) {
+            if (widget.isVisible() && widget != expanded) {
+                RenderSystem.setShaderColor(1, 1, 1, 1);
+                RenderSystem.enableBlend();
+                if (widget.inAnimate()) {
+                    widget.getAnimation().drawInBackground(poseStack, mouseX, mouseY, partialTicks);
+                } else {
+                    widget.drawInBackground(poseStack, mouseX, mouseY, partialTicks);
+                }
+            }
+        }
+        if (expanded != null && expanded.isVisible()) {
+            poseStack.pushPose();
+            poseStack.translate(0, 0, 600);
+            RenderSystem.setShaderColor(1, 1, 1, 1);
+            RenderSystem.enableBlend();
+            if (expanded.inAnimate()) {
+                expanded.getAnimation().drawInBackground(poseStack, mouseX, mouseY, partialTicks);
+            } else {
+                expanded.drawInBackground(poseStack, mouseX, mouseY, partialTicks);
+            }
+            poseStack.popPose();
+        }
+    }
+
+    @Override
+    @Environment(EnvType.CLIENT)
+    protected void drawWidgetsForeground(@NotNull PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
+        for (Widget widget : widgets) {
+            if (widget.isVisible() && widget != expanded) {
+                RenderSystem.setShaderColor(1, 1, 1, 1);
+                RenderSystem.enableBlend();
+                if (widget.inAnimate()) {
+                    widget.getAnimation().drawInForeground(poseStack, mouseX, mouseY, partialTicks);
+                } else {
+                    widget.drawInForeground(poseStack, mouseX, mouseY, partialTicks);
+                }
+            }
+        }
+        if (expanded != null && expanded.isVisible()) {
+            RenderSystem.setShaderColor(1, 1, 1, 1);
+            RenderSystem.enableBlend();
+            if (expanded.inAnimate()) {
+                expanded.getAnimation().drawInForeground(poseStack, mouseX, mouseY, partialTicks);
+            } else {
+                expanded.drawInForeground(poseStack, mouseX, mouseY, partialTicks);
+            }
+        }
+    }
+
     public class Tab extends WidgetGroup {
         private final IFancyConfigurator configurator;
         private final ButtonWidget button;
         private final WidgetGroup view;
+        // dragging
+        private double lastDeltaX, lastDeltaY;
+        private int dragOffsetX, dragOffsetY;
+        private boolean isDragging;
 
         public Tab(IFancyConfigurator configurator) {
             super(0, tabs.size() * (getTabSize() + 2), getTabSize(), getTabSize());
@@ -146,7 +205,16 @@ public class ConfiguratorPanel extends WidgetGroup {
         protected void onChildSizeUpdate(Widget child) {
             if (this.view == child) {
                 if (expanded == this) {
-                    expandTab(this);
+                    var size = view.getSize();
+                    animation(new Animation()
+                            .duration(500)
+                            .position(new Position(dragOffsetX + (- size.width + (tabs.size() > 1 ?  - 2 : getTabSize())), dragOffsetY))
+                            .size(size)
+                            .ease(Eases.EaseQuadOut)
+                            .onFinish(() -> {
+                                view.setVisible(true);
+                                view.setActive(true);
+                            }));
                 }
             }
         }
@@ -167,9 +235,19 @@ public class ConfiguratorPanel extends WidgetGroup {
 
         private void expand() {
             var size = view.getSize();
+            this.dragOffsetX = 0;
+            this.dragOffsetY = 0;
+            if (isRemote()) {
+                if (getParentPosition().x - size.width + (tabs.size() > 1 ?  - 2 : getTabSize()) < 0) {
+                    this.dragOffsetX -= (view.getParentPosition().x - size.width + (tabs.size() > 1 ?  - 2 : getTabSize()));
+                }
+                if (getParentPosition().y + size.height > gui.getScreenHeight()) {
+                    this.dragOffsetY -= view.getParentPosition().y + size.height - gui.getScreenHeight();
+                }
+            }
             animation(new Animation()
                     .duration(500)
-                    .position(new Position(- size.width + (tabs.size() > 1 ?  - 2 : getTabSize()), 0))
+                    .position(new Position(dragOffsetX - size.width + (tabs.size() > 1 ?  - 2 : getTabSize()), dragOffsetY))
                     .size(size)
                     .ease(Eases.EaseQuadOut)
                     .onFinish(() -> {
@@ -211,6 +289,45 @@ public class ConfiguratorPanel extends WidgetGroup {
             if (isMouseOver(getPosition().x + getSize().width - 20, getPosition().y + 4, 16, 16, mouseX, mouseY) && gui != null && gui.getModularUIGui() != null) {
                 gui.getModularUIGui().setHoverTooltip(configurator.getTooltips(), ItemStack.EMPTY, null, null);
             }
+        }
+
+        @Override
+        @Environment(EnvType.CLIENT)
+        public boolean mouseClicked(double mouseX, double mouseY, int button) {
+            this.lastDeltaX = 0;
+            this.lastDeltaY = 0;
+            this.isDragging = false;
+            if (expanded == this && isMouseOver(getPosition().x, getPosition().y, getSize().width - getTabSize(), getTabSize(), mouseX, mouseY)) {
+                isDragging = true;
+                return true;
+            }
+            return super.mouseClicked(mouseX, mouseY, button);
+        }
+
+        @Override
+        @Environment(EnvType.CLIENT)
+        public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
+            double dx = dragX + lastDeltaX;
+            double dy = dragY + lastDeltaY;
+            dragX = (int) dx;
+            dragY = (int) dy;
+            lastDeltaX = dx - dragX;
+            lastDeltaY = dy - dragY;
+            if (isDragging) {
+                this.dragOffsetX += (int) dragX;
+                this.dragOffsetY += (int) dragY;
+                this.addSelfPosition((int) dragX, (int) dragY);
+            }
+            return super.mouseDragged(mouseX, mouseY, button, dragX, dragY);
+        }
+
+        @Override
+        @Environment(EnvType.CLIENT)
+        public boolean mouseReleased(double mouseX, double mouseY, int button) {
+            this.lastDeltaX = 0;
+            this.lastDeltaY = 0;
+            this.isDragging = false;
+            return super.mouseReleased(mouseX, mouseY, button);
         }
     }
 }
