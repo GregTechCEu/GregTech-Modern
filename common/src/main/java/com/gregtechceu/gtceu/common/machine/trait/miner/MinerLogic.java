@@ -137,6 +137,14 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder{
     }
 
     @Override
+    public void resetRecipeLogic() {
+        super.resetRecipeLogic();
+        resetArea();
+        this.cachedItemTransfer = null;
+        this.pipeLength = 0;
+    }
+
+    @Override
     public ManagedFieldHolder getFieldHolder() {
         return MANAGED_FIELD_HOLDER;
     }
@@ -144,7 +152,7 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder{
     @Override
     public void inValid() {
         super.inValid();
-        cachedItemTransfer = null;
+        this.cachedItemTransfer = null;
         this.pipeLength = 0;
     }
 
@@ -411,6 +419,7 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder{
         mineX = pos.getX() - currentRadius;
         mineZ = pos.getZ() - currentRadius;
         mineY = pos.getY() - 1;
+        onRemove();
     }
 
     /**
@@ -542,6 +551,7 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder{
     }
 
     public void onRemove() {
+        pipeLength = 0;
         if (getMachine().getLevel() instanceof ServerLevel serverLevel) {
             var pos = getMiningPos().relative(Direction.DOWN);
             while (serverLevel.getBlockState(pos).is(GTBlocks.MINER_PIPE.get())) {

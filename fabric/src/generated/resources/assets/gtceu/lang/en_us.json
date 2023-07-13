@@ -2037,6 +2037,7 @@
   "gtceu.multiblock.universal.problem.wrench": "%s§7Pipe is loose. (§aWrench§7)",
   "gtceu.multiblock.vacuum_freezer.description": "The Vacuum Freezer is a multiblock structure mainly used for freezing Hot Ingots into regular Ingots. However, it can also freeze other substances, such as Water.",
   "gtceu.multiblock.validation_failed": "Invalid amount of inputs/outputs.",
+  "gtceu.multiblock.waiting": "WARNING: Machine is waiting.",
   "gtceu.multiblock.work_paused": "Work Paused.",
   "gtceu.ore_washer": "Ore Washer",
   "gtceu.packer": "Packer",

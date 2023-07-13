@@ -9,9 +9,11 @@ import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TieredEnergyMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputFluid;
+import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.syncdata.RequireRerender;
+import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.gui.widget.*;
@@ -27,6 +29,7 @@ import lombok.Setter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LiquidBlock;
@@ -42,7 +45,7 @@ import java.util.Deque;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid, IUIMachine {
+public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid, IUIMachine, IMachineLife {
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(PumpMachine.class, TieredEnergyMachine.MANAGED_FIELD_HOLDER);
     public static final int BASE_PUMP_RANGE = 32;
     public static final int EXTRA_PUMP_RANGE = 8;
@@ -50,8 +53,8 @@ public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid
     private final Deque<BlockPos> fluidSourceBlocks = new ArrayDeque<>();
     private final Deque<BlockPos> blocksToCheck = new ArrayDeque<>();
     private boolean initializedQueue = false;
-    @DescSynced @Persisted @Getter
-    private int pumpHeadY; //TODO RENDER PIPE IN THE FUTURE
+    @Getter @Persisted
+    private int pumpHeadY;
     @Getter @Setter @Persisted @DescSynced @RequireRerender
     protected boolean autoOutputFluids;
     @Persisted @DropSaved
@@ -147,6 +150,9 @@ public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid
                     var downBlock = getLevel().getBlockState(downPos);
                     if (downBlock.getBlock() instanceof LiquidBlock) {
                         this.pumpHeadY++;
+                        if (getLevel() instanceof ServerLevel serverLevel && serverLevel.getBlockState(selfPos).isAir()) {
+                            serverLevel.setBlockAndUpdate(selfPos, GTBlocks.MINER_PIPE.getDefaultState());
+                        }
                     }
                 }
 
@@ -158,6 +164,17 @@ public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid
                 this.initializedQueue = true;
                 //just add ourselves to check list and see how this will go
                 this.blocksToCheck.add(selfPos);
+            }
+        }
+    }
+
+    @Override
+    public void onMachineRemoved() {
+        if (getLevel() instanceof ServerLevel serverLevel) {
+            var pos = getPos().relative(Direction.DOWN);
+            while (serverLevel.getBlockState(pos).is(GTBlocks.MINER_PIPE.get())) {
+                serverLevel.removeBlock(pos, false);
+                pos = pos.relative(Direction.DOWN);
             }
         }
     }

@@ -13,7 +13,6 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.WorkableTieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
@@ -63,7 +62,6 @@ public class MinerMachine extends WorkableTieredMachine implements IMiner, ICont
     @Getter
     @Persisted
     protected final ItemStackTransfer chargerInventory;
-    private final int inventorySize;
     private final long energyPerTick;
     @Nullable
     protected TickableSubscription autoOutputSubs, batterySubs;
@@ -72,7 +70,6 @@ public class MinerMachine extends WorkableTieredMachine implements IMiner, ICont
 
     public MinerMachine(IMachineBlockEntity holder, int tier, int speed, int maximumRadius, int fortune, Object... args) {
         super(holder, tier, GTMachines.defaultTankSizeFunction, args, (tier + 1) * (tier + 1), fortune, speed, maximumRadius);
-        this.inventorySize = (tier + 1) * (tier + 1);
         this.energyPerTick = GTValues.V[tier - 1];
         this.chargerInventory = createChargerItemHandler();
     }
@@ -293,12 +290,9 @@ public class MinerMachine extends WorkableTieredMachine implements IMiner, ICont
 
     private void addDisplayText(@Nonnull List<Component> textList) {
         int workingArea = IMiner.getWorkingArea(getRecipeLogic().getCurrentRadius());
-        textList.add(Component.translatable("gtceu.machine.miner.startx", getRecipeLogic().getX()));
-        textList.add(Component.translatable("gtceu.machine.miner.starty", getRecipeLogic().getY()));
-        textList.add(Component.translatable("gtceu.machine.miner.startz", getRecipeLogic().getZ()));
-        textList.add(Component.translatable("gtceu.machine.miner.minex", getRecipeLogic().getMineX()));
-        textList.add(Component.translatable("gtceu.machine.miner.miney", getRecipeLogic().getMineY()));
-        textList.add(Component.translatable("gtceu.machine.miner.minez", getRecipeLogic().getMineZ()));
+        textList.add(Component.translatable("gtceu.machine.miner.startx", getRecipeLogic().getX()).append(" ").append(Component.translatable("gtceu.machine.miner.minex", getRecipeLogic().getMineX())));
+        textList.add(Component.translatable("gtceu.machine.miner.starty", getRecipeLogic().getY()).append(" ").append(Component.translatable("gtceu.machine.miner.miney", getRecipeLogic().getMineY())));
+        textList.add(Component.translatable("gtceu.machine.miner.startz", getRecipeLogic().getZ()).append(" ").append(Component.translatable("gtceu.machine.miner.minez", getRecipeLogic().getMineZ())));
         textList.add(Component.translatable("gtceu.universal.tooltip.working_area", workingArea, workingArea));
         if (getRecipeLogic().isDone())
             textList.add(Component.translatable("gtceu.multiblock.large_miner.done").setStyle(Style.EMPTY.withColor(ChatFormatting.GREEN)));

@@ -83,11 +83,6 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine impleme
     }
 
     @Override
-    public void onStructureInvalid() {
-        super.onStructureInvalid();
-    }
-
-    @Override
     public LargeMinerLogic getRecipeLogic() {
         return (LargeMinerLogic) super.getRecipeLogic();
     }
