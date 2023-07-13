@@ -6,14 +6,13 @@ import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
-import com.gregtechceu.gtceu.common.data.GTBlocks;
-import com.gregtechceu.gtceu.common.data.GTItems;
-import com.gregtechceu.gtceu.common.data.GTMachines;
-import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.CraftingComponent;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
+import com.simibubi.create.AllBlocks;
+import com.simibubi.create.AllItems;
 import com.tterrag.registrate.util.entry.ItemEntry;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.tags.ItemTags;
@@ -339,8 +338,6 @@ public class MetaTileEntityLoader {
 
         // Hermetic Casings
         VanillaRecipeHelper.addShapedRecipe(provider, true, "hermetic_casing_lv", GTBlocks.HERMETIC_CASING_LV.asStack(), "PPP", "PFP", "PPP", 'P', new UnificationEntry(TagPrefix.plate, GTMaterials.Steel), 'F', new UnificationEntry(TagPrefix.pipeLargeFluid, GTMaterials.Polyethylene));
-        // TODO Item pipes
-        //VanillaRecipeHelper.addShapedRecipe(provider, true, "hermetic_casing_mv", GTBlocks.HERMETIC_CASING_MV.asStack(), "PPP", "PFP", "PPP", 'P', new UnificationEntry(TagPrefix.plate, GTMaterials.Aluminium), 'F', new UnificationEntry(TagPrefix.pipeLargeItem, GTMaterials.PolyvinylChloride));
         VanillaRecipeHelper.addShapedRecipe(provider, true, "hermetic_casing_hv", GTBlocks.HERMETIC_CASING_HV.asStack(), "PPP", "PFP", "PPP", 'P', new UnificationEntry(TagPrefix.plate, GTMaterials.StainlessSteel), 'F', new UnificationEntry(TagPrefix.pipeLargeFluid, GTMaterials.Polytetrafluoroethylene));
         VanillaRecipeHelper.addShapedRecipe(provider, true, "hermetic_casing_ev", GTBlocks.HERMETIC_CASING_EV.asStack(), "PPP", "PFP", "PPP", 'P', new UnificationEntry(TagPrefix.plate, GTMaterials.Titanium), 'F', new UnificationEntry(TagPrefix.pipeLargeFluid, GTMaterials.StainlessSteel));
         VanillaRecipeHelper.addShapedRecipe(provider, true, "hermetic_casing_iv", GTBlocks.HERMETIC_CASING_IV.asStack(), "PPP", "PFP", "PPP", 'P', new UnificationEntry(TagPrefix.plate, GTMaterials.TungstenSteel), 'F', new UnificationEntry(TagPrefix.pipeLargeFluid, GTMaterials.Titanium));
@@ -385,6 +382,17 @@ public class MetaTileEntityLoader {
             registerMachineRecipe(provider, true, GTMachines.ENERGY_CONVERTER_4A, " WW", "RMC", " WW", 'C', CIRCUIT, 'M', HULL, 'W', CABLE_QUAD, 'R', new UnificationEntry(TagPrefix.cableGtQuadruple, GTMaterials.RedAlloy));
             registerMachineRecipe(provider, true, GTMachines.ENERGY_CONVERTER_8A, " WW", "RMC", " WW", 'C', CIRCUIT, 'M', HULL, 'W', CABLE_OCT, 'R', new UnificationEntry(TagPrefix.cableGtOctal, GTMaterials.RedAlloy));
             registerMachineRecipe(provider, true, GTMachines.ENERGY_CONVERTER_16A, " WW", "RMC", " WW", 'C', CIRCUIT, 'M', HULL, 'W', CABLE_HEX, 'R', new UnificationEntry(TagPrefix.cableGtHex, GTMaterials.RedAlloy));
+        }
+
+        // Kinetic Machines
+        if (GTCEu.isCreateLoaded()) {
+            registerMachineRecipe(provider, GTCreateMachines.KINETIC_MIXER, "GRG", "GEG", "CMC", 'M', HULL, 'R', ROTOR, 'C', AllItems.PRECISION_MECHANISM, 'G', GLASS, 'E', AllBlocks.SHAFT);
+            registerMachineRecipe(provider, GTCreateMachines.ELECTRIC_GEAR_BOX_2A, "WMW", "RER", "CHC", 'H', HULL, 'C', CIRCUIT, 'E', AllBlocks.SHAFT.asStack(), 'W', CABLE, 'M', MOTOR, 'R', ROTOR);
+            registerMachineRecipe(provider, GTCreateMachines.ELECTRIC_GEAR_BOX_8A, "WMW", "RER", "CHC", 'H', HULL, 'C', CIRCUIT, 'E', AllBlocks.SHAFT.asStack(), 'W', CABLE_QUAD, 'M', MOTOR, 'R', ROTOR);
+            registerMachineRecipe(provider, GTCreateMachines.ELECTRIC_GEAR_BOX_16A, "WMW", "RER", "CHC", 'H', HULL, 'C', CIRCUIT, 'E', AllBlocks.SHAFT.asStack(), 'W', CABLE_OCT, 'M', MOTOR, 'R', ROTOR);
+            registerMachineRecipe(provider, GTCreateMachines.ELECTRIC_GEAR_BOX_32A, "WMW", "RER", "CHC", 'H', HULL, 'C', CIRCUIT, 'E', AllBlocks.SHAFT.asStack(), 'W', CABLE_HEX, 'M', MOTOR, 'R', ROTOR);
+            registerMachineRecipe(provider, GTCreateMachines.KINETIC_INPUT_BOX, " S ", " H ", "   ", "S", AllBlocks.SHAFT, "H", HULL);
+            registerMachineRecipe(provider, GTCreateMachines.KINETIC_OUTPUT_BOX, "   ", " H ", " S ", "S", AllBlocks.SHAFT, "H", HULL);
         }
     }
 

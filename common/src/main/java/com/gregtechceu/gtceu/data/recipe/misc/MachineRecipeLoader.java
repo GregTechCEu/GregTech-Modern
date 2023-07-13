@@ -725,13 +725,12 @@ public class MachineRecipeLoader {
                 .duration(1600).EUt(VA[HV]).save(provider);
 
         //TODO Tempered Glass
-        //BLAST_RECIPES.recipeBuilder()
-        //        .inputItems(block, Glass)
-        //        .inputFluids(Oxygen.getFluid(100))
-        //        .outputItems(MetaBlocks.TRANSPARENT_CASING.getItemVariant(
-        //                BlockGlassCasing.CasingType.TEMPERED_GLASS))
-        //        .blastFurnaceTemp(1000)
-        //        .duration(200).EUt(VA[MV]).save(provider);
+        BLAST_RECIPES.recipeBuilder("tempered_glass_blasting")
+                .inputItems(block, Glass)
+                .inputFluids(Oxygen.getFluid(100))
+                .outputItems(GTBlocks.CASING_TEMPERED_GLASS.asStack())
+                .blastFurnaceTemp(1000)
+                .duration(200).EUt(VA[MV]).save(provider);
 
         registerBlastFurnaceMetallurgyRecipes(provider);
     }
@@ -833,7 +832,15 @@ public class MachineRecipeLoader {
         COMPRESSOR_RECIPES.recipeBuilder("plant_ball_from_brown_mushroom").duration(300).EUt(2).inputItems(new ItemStack(Blocks.BROWN_MUSHROOM, 8)).outputItems(PLANT_BALL).save(provider);
         COMPRESSOR_RECIPES.recipeBuilder("plant_ball_from_red_mushroom").duration(300).EUt(2).inputItems(new ItemStack(Blocks.RED_MUSHROOM, 8)).outputItems(PLANT_BALL).save(provider);
         COMPRESSOR_RECIPES.recipeBuilder("plant_ball_from_beetroot").duration(300).EUt(2).inputItems(new ItemStack(Items.BEETROOT, 8)).outputItems(PLANT_BALL).save(provider);
-
+        COMPRESSOR_RECIPES.recipeBuilder("plant_ball_from_moss").duration(300).EUt(2).inputItems(new ItemStack(Items.MOSS_BLOCK, 8)).outputItems(PLANT_BALL).save(provider);
+        COMPRESSOR_RECIPES.recipeBuilder("plant_ball_from_nether_wart").duration(300).EUt(2).inputItems(new ItemStack(Items.NETHER_WART_BLOCK, 8)).outputItems(PLANT_BALL).save(provider);
+        COMPRESSOR_RECIPES.recipeBuilder("plant_ball_from_crimson_stem").duration(300).EUt(2).inputItems(new ItemStack(Items.CRIMSON_STEM, 8)).outputItems(PLANT_BALL).save(provider);
+        COMPRESSOR_RECIPES.recipeBuilder("plant_ball_from_warped_stem").duration(300).EUt(2).inputItems(new ItemStack(Items.WARPED_STEM, 8)).outputItems(PLANT_BALL).save(provider);
+        COMPRESSOR_RECIPES.recipeBuilder("plant_ball_from_brain_coral").duration(300).EUt(2).inputItems(new ItemStack(Items.BRAIN_CORAL, 8)).outputItems(PLANT_BALL).save(provider);
+        COMPRESSOR_RECIPES.recipeBuilder("plant_ball_from_bubble_coral").duration(300).EUt(2).inputItems(new ItemStack(Items.BUBBLE_CORAL, 8)).outputItems(PLANT_BALL).save(provider);
+        COMPRESSOR_RECIPES.recipeBuilder("plant_ball_from_fire_coral").duration(300).EUt(2).inputItems(new ItemStack(Items.FIRE_CORAL, 8)).outputItems(PLANT_BALL).save(provider);
+        COMPRESSOR_RECIPES.recipeBuilder("plant_ball_from_tube_coral").duration(300).EUt(2).inputItems(new ItemStack(Items.TUBE_CORAL, 8)).outputItems(PLANT_BALL).save(provider);
+        COMPRESSOR_RECIPES.recipeBuilder("plant_ball_from_horn_coral").duration(300).EUt(2).inputItems(new ItemStack(Items.HORN_CORAL, 8)).outputItems(PLANT_BALL).save(provider);
     }
 
     private static void registerRecyclingRecipes(Consumer<FinishedRecipe> provider) {

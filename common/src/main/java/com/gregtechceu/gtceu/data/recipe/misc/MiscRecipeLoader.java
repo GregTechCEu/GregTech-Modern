@@ -27,7 +27,6 @@ public class MiscRecipeLoader {
     public static void init(Consumer<FinishedRecipe> provider) {
 
         // Basic Terminal Recipe
-        // TODO Terminal
         VanillaRecipeHelper.addShapedRecipe(provider, true, "basic_terminal", TERMINAL.asStack(),
                 "SGS", "PBP", "PWP", 'S', new UnificationEntry(screw, WroughtIron), 'G', CustomTags.GLASS_PANES, 'B', new ItemStack(Items.BOOK),
                                         'P', new UnificationEntry(plate, WroughtIron), 'W', new UnificationEntry(wireGtSingle, RedAlloy));
