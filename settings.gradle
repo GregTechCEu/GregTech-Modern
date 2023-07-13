@@ -22,7 +22,7 @@ dependencyResolutionManagement {
         def reiVersion = "9.1.619"
         def emiVersion = "1.0.5+1.19.2"
         def ae2Version = "12.9.5"
-        def kjsVersion = "1902.6.1-build.269"
+        def kjsVersion = "1902.6.1-build.272"
 
         // Fabric
         def fabricLoaderVersion = "0.14.11" // https://fabricmc.net/develop/
@@ -55,7 +55,7 @@ dependencyResolutionManagement {
         def shadowVersion = "7.1.2"
         def architecturyPluginVersion = "3.4-SNAPSHOT"
         def architecturyLoomVersion = "1.0-SNAPSHOT"
-        def quiltFlowerVersion = "1.+"
+        def vineFlowerVersion = "1.+"
         def macheteVersion = "1.+"
         def ldLibVersion = "1.0.12"
 
@@ -193,8 +193,8 @@ dependencyResolutionManagement {
             def architecturyLoom = version("architectury-loom", architecturyLoomVersion)
             plugin("architectury-loom", "dev.architectury.loom").versionRef(architecturyLoom)
 
-            def quiltFlower = version("quiltFlower", quiltFlowerVersion)
-            plugin("quiltFlower", "io.github.juuxel.loom-quiltflower").versionRef(quiltFlower)
+            def vineFlower = version("vineFlower", vineFlowerVersion)
+            plugin("vineFlower", "io.github.juuxel.loom-vineflower").versionRef(vineFlower)
 
             def machete = version("machete", macheteVersion)
             plugin("machete", "io.github.p03w.machete").versionRef(machete)

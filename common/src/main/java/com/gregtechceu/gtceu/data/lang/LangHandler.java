@@ -377,7 +377,6 @@ public class LangHandler {
         replace(provider, GTMaterials.OilLight.getUnlocalizedName(), "Light Oil");
         replace(provider, GTMaterials.RawOil.getUnlocalizedName(), "Raw Oil");
 
-        // TODO all individual material item overrides do not work
         provider.add("item.gunpowder_tiny_dust", "Tiny Pile of Gunpowder");
         provider.add("item.gunpowder_small_dust", "Small Pile of Gunpowder");
         provider.add("item.paper_tiny_dust", "Tiny Pile of Chad");
@@ -535,6 +534,7 @@ public class LangHandler {
         multilineLang(provider, "tile.brittle_charcoal.tooltip", "Produced by the Charcoal Pile Igniter.\nMine this to get Charcoal.");
         provider.add("metaitem.prospector.mode.ores", "§aOre Prospection Mode§r");
         provider.add("metaitem.prospector.mode.fluid", "§bFluid Prospection Mode§r");
+        provider.add("metaitem.prospector.mode.bedrock_ore", "§bBedrock Ore Prospection Mode§r");
         provider.add("metaitem.prospector.tooltip.radius", "Scans range in a %s Chunk Radius");
         provider.add("metaitem.prospector.tooltip.modes", "Available Modes:");
         provider.add("behavior.prospector.not_enough_energy", "Not Enough Energy!");

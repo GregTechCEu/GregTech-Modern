@@ -277,6 +277,7 @@ public class GTMachines {
     public static final MachineDefinition[] MINER = registerTieredMachines("miner", (holder, tier) -> new MinerMachine(holder, tier, 320 / (tier * 2), tier * 8, tier),
             (tier, builder) -> builder
                     .rotationState(RotationState.NON_Y_AXIS)
+                    .langValue("%s Miner %s".formatted(VLVH[tier], VLVT[tier]))
                     .recipeType(GTRecipeTypes.DUMMY_RECIPES)
                     .editableUI(MinerMachine.EDITABLE_UI_CREATOR.apply(GTCEu.id("miner"), (tier + 1) * (tier + 1)))
                     .renderer(() -> new MinerRenderer(tier, GTCEu.id("block/machines/miner")))
@@ -1149,6 +1150,7 @@ public class GTMachines {
     public static final MultiblockMachineDefinition[] LARGE_MINER = registerTieredMultis("large_miner", (holder, tier) -> new LargeMinerMachine(holder, tier, 64 / tier, 2 * tier - 5, tier, 8 - (tier - 5)),
             (tier, builder) -> builder
                     .rotationState(RotationState.NON_Y_AXIS)
+                    .langValue("%s Large Miner".formatted(VLVH[tier]))
                     .recipeType(GTRecipeTypes.MACERATOR_RECIPES)
                     .appearanceBlock(() -> LargeMinerMachine.getCasingState(tier))
                     .pattern((definition) -> FactoryBlockPattern.start()

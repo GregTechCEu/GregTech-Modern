@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreFeatureEntry;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.utils.GTUtil;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
@@ -52,21 +51,21 @@ public class BedrockOreVeinSavedData extends SavedData {
         for (Tag tag : list) {
             if (tag instanceof CompoundTag compoundTag) {
                 var chunkPos = new ChunkPos(compoundTag.getLong("pos"));
-                veinOres.put(chunkPos, OreVeinWorldEntry.readFromNBT(compoundTag.getCompound("d")));
+                veinOres.put(chunkPos, OreVeinWorldEntry.readFromNBT(compoundTag.getCompound("data")));
             }
         }
     }
 
     @Override
     public CompoundTag save(CompoundTag nbt) {
-        var oilList = new ListTag();
+        var oreList = new ListTag();
         for (var entry : veinOres.entrySet()) {
             var tag = new CompoundTag();
-            tag.putLong("p", entry.getKey().toLong());
-            tag.put("d", entry.getValue().writeToNBT());
-            oilList.add(tag);
+            tag.putLong("pos", entry.getKey().toLong());
+            tag.put("data", entry.getValue().writeToNBT());
+            oreList.add(tag);
         }
-        nbt.put("veinInfo", oilList);
+        nbt.put("veinInfo", oreList);
         return nbt;
     }
 
@@ -116,20 +115,28 @@ public class BedrockOreVeinSavedData extends SavedData {
     }
 
     public void createVein(ChunkPos pos, GTOreFeatureEntry definition) {
-        if (!veinOres.containsKey(pos)) {
-            var random = RandomSource.create(31L * 31 * pos.x + pos.z * 31L + Long.hashCode(serverLevel.getSeed()));
+        ChunkPos original = pos;
+        for (int x = pos.x - 1, z = pos.z - 1; x < pos.x + 1 && z < pos.z + 1; ++x, ++z) {
+            pos = new ChunkPos(x, z);
+            if (!veinOres.containsKey(pos)) {
+                float distanceFromOriginal = original.getChessboardDistance(pos);
+                distanceFromOriginal /= Math.max(distanceFromOriginal * 2, 1);
 
-            int maximumYield = 0;
-            if (definition != null) {
-                if (definition.getMaximumYield() - definition.getMinimumYield() <= 0) {
-                    maximumYield = definition.getMinimumYield();
-                } else {
-                    maximumYield = random.nextInt(definition.getMaximumYield() - definition.getMinimumYield()) + definition.getMinimumYield();
+                var random = RandomSource.create(31L * 31 * pos.x + pos.z * 31L + Long.hashCode(serverLevel.getSeed()));
+
+                int maximumYield = 0;
+                if (definition != null) {
+                    if ((definition.getMaximumYield() - definition.getMinimumYield()) * distanceFromOriginal <= 0) {
+                        maximumYield = definition.getMinimumYield();
+                    } else {
+                        maximumYield = (int) (random.nextInt(definition.getMaximumYield() - definition.getMinimumYield()) + definition.getMinimumYield() * distanceFromOriginal);
+                    }
+                    maximumYield = Math.min(maximumYield, definition.getMaximumYield());
                 }
-                maximumYield = Math.min(maximumYield, definition.getMaximumYield());
+                veinOres.put(pos, new OreVeinWorldEntry(definition, maximumYield, MAXIMUM_VEIN_OPERATIONS));
             }
-            veinOres.put(pos, new OreVeinWorldEntry(definition, maximumYield, MAXIMUM_VEIN_OPERATIONS));
         }
+
     }
 
     /**
@@ -194,10 +201,10 @@ public class BedrockOreVeinSavedData extends SavedData {
      * @return Fluid in given chunk
      */
     @Nullable
-    public Material getOreInChunk(int chunkX, int chunkZ) {
+    public List<Map.Entry<Integer, Material>> getOreInChunk(int chunkX, int chunkZ) {
         OreVeinWorldEntry info = getOreVeinWorldEntry(chunkX, chunkZ);
         if (info.getDefinition() == null) return null;
-        return info.getDefinition().getBedrockVeinMaterial();
+        return info.getDefinition().getBedrockVeinMaterials();
     }
 
     /**
