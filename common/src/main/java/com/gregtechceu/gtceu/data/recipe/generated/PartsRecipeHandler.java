@@ -183,7 +183,7 @@ public class PartsRecipeHandler {
                     .save(provider);
 
             if (material.hasFlag(NO_SMASHING)) {
-                EXTRUDER_RECIPES.recipeBuilder("extrude_" + material.getName() + "_ingot_to_gear")
+                EXTRUDER_RECIPES.recipeBuilder("extrude_" + material.getName() + "_dust_to_gear")
                         .inputItems(dust, material, 4)
                         .notConsumable(GTItems.SHAPE_EXTRUDER_GEAR)
                         .outputItems(gearPrefix, material)
