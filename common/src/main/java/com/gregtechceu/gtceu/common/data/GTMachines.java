@@ -243,6 +243,21 @@ public class GTMachines {
                     .register(),
             LV, MV, HV, EV);
 
+    public final static MachineDefinition[] FISHER = registerTieredMachines("fisher", FisherMachine::new,
+            (tier, builder) -> builder
+                    .rotationState(RotationState.NON_Y_AXIS)
+                    .hasTESR(true)
+                    .editableUI(FisherMachine.EDITABLE_UI_CREATOR.apply(GTCEu.id("fisher"), (tier + 1) * (tier + 1)))
+                    .renderer(() -> new TieredHullMachineRenderer(tier, GTCEu.id("block/machine/fisher_machine")))
+                    .langValue("%s Fisher %s".formatted(VLVH[tier], VLVT[tier]))
+                    .tooltips(Component.translatable("gtceu.machine.fisher.tooltip"),
+                            Component.translatable("gtceu.machine.fisher.speed", 1000 - tier * 200L),
+                            Component.translatable("gtceu.machine.fisher.requirement", FisherMachine.WATER_CHECK_SIZE,FisherMachine.WATER_CHECK_SIZE),
+                            Component.translatable("gtceu.universal.tooltip.voltage_in", GTValues.V[tier], GTValues.VNF[tier]),
+                            Component.translatable("gtceu.universal.tooltip.energy_storage_capacity", GTValues.V[tier] * 64))
+                    .register(),
+            LV, MV, HV, EV);
+
     public static final MachineDefinition[] MINER = registerTieredMachines("miner", (holder, tier) -> new MinerMachine(holder, tier, 320 / (tier * 2), tier * 8, tier),
             (tier, builder) -> builder
                     .rotationState(RotationState.NON_Y_AXIS)

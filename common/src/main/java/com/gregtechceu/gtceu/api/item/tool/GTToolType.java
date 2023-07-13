@@ -9,6 +9,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -26,7 +27,6 @@ public enum GTToolType {
     SHOVEL("shovel", "shovels", 1.5F, -3.0F, true),
     AXE("axe", "axes", 6.0F, -3.2F, true),
     HOE("hoe", "hoes", 0, -3.0F, true),
-
     SAW("saw", "saws", 1, 1, GTSoundEntries.SAW_TOOL),
     HARD_HAMMER("hammer", "hammers", 1, 1, GTSoundEntries.FORGE_HAMMER),
     SOFT_MALLET("mallet", "mallets", 1, 1, GTSoundEntries.SOFT_MALLET_TOOL),
