@@ -342,11 +342,6 @@ public class SimpleTieredMachine extends WorkableTieredMachine implements IAutoO
     //////////////////////////////////////
     //***********     GUI    ***********//
     //////////////////////////////////////
-    // Method provided to override
-    protected SlotWidget getCircuitSlotTooltip(SlotWidget widget) {
-        widget.setHoverTooltips(LangHandler.getMultiLang("gtceu.gui.configurator_slot.tooltip").toArray(new MutableComponent[0]));
-        return widget;
-    }
 
     @Override
     public void attachConfigurators(ConfiguratorPanel configuratorPanel) {
@@ -354,7 +349,7 @@ public class SimpleTieredMachine extends WorkableTieredMachine implements IAutoO
         configuratorPanel.attachConfigurators(new CircuitFancyConfigurator(circuitInventory.storage));
     }
 
-    public static BiFunction<ResourceLocation, GTRecipeType, EditableMachineUI> EDITABLE_UI_CREATOR = Util.memoize((path, recipeType )-> new EditableMachineUI("simple", path, () -> {
+    public static BiFunction<ResourceLocation, GTRecipeType, EditableMachineUI> EDITABLE_UI_CREATOR = Util.memoize((path, recipeType)-> new EditableMachineUI("simple", path, () -> {
         var template =  recipeType.createEditableUITemplate(false, false).createDefault().setBackground(GuiTextures.BACKGROUND_INVERSE);
         var energyBar = createEnergyBar().createDefault();
         var batterySlot = createBatterySlot().createDefault();

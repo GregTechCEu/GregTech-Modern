@@ -8,7 +8,6 @@ import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
@@ -20,13 +19,8 @@ import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.machine.trait.miner.LargeMinerLogic;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
-import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
-import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
-import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
+import com.lowdragmc.lowdraglib.gui.util.ClickData;
 import com.lowdragmc.lowdraglib.gui.widget.ComponentPanelWidget;
-import com.lowdragmc.lowdraglib.gui.widget.CycleButtonWidget;
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.misc.FluidTransferList;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
@@ -41,7 +35,6 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
@@ -109,6 +102,11 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine impleme
     public static Block getCasingState(int tier) {
         return GTBlocks.MATERIALS_TO_CASINGS.get(getMaterial(tier)).get();
     }
+
+    public long getMaxVoltage() {
+        return GTValues.V[getEnergyTier()];
+    }
+
 
     //////////////////////////////////////
     //*******       Logic      *********//
@@ -184,85 +182,45 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine impleme
     //***********     GUI    ***********//
     //////////////////////////////////////
     @Override
-    public Widget createUIWidget() {
-        WidgetGroup group = (WidgetGroup) super.createUIWidget();
-        ComponentPanelWidget widget2 = new ComponentPanelWidget(63, 36, this::addDisplayText2)
-                .setMaxWidthLimit(68).clickHandler(this::handleDisplayClick);
-        group.addWidget(widget2);
-        group.addWidget(new CycleButtonWidget(151, 110, 18, 18, 4, this::getCurrentModeTexture, this::setCurrentMode));
-        return group;
-    }
-
-    @Override
     public void addDisplayText(List<Component> textList) {
+        super.addDisplayText(textList);
         if (this.isFormed()) {
-            if (energyContainer != null && energyContainer.getEnergyCapacity() > 0) {
-                int energyContainer = getEnergyTier();
-                long maxVoltage = GTValues.V[energyContainer];
-                String voltageName = GTValues.VNF[energyContainer];
-                textList.add(Component.translatable("gtceu.multiblock.max_energy_per_tick", maxVoltage, voltageName));
-            }
-
             int workingAreaChunks = getRecipeLogic().getCurrentRadius() * 2 / CHUNK_LENGTH;
             int workingArea = IMiner.getWorkingArea(getRecipeLogic().getCurrentRadius());
             textList.add(Component.translatable("gtceu.machine.miner.startx", getRecipeLogic().getX() == Integer.MAX_VALUE ? 0 : getRecipeLogic().getX()));
             textList.add(Component.translatable("gtceu.machine.miner.starty", getRecipeLogic().getY() == Integer.MAX_VALUE ? 0 : getRecipeLogic().getY()));
             textList.add(Component.translatable("gtceu.machine.miner.startz", getRecipeLogic().getZ() == Integer.MAX_VALUE ? 0 : getRecipeLogic().getZ()));
+            textList.add(Component.translatable("gtceu.universal.tooltip.silk_touch")
+                    .append(ComponentPanelWidget.withButton(Component.literal("[")
+                            .append(getRecipeLogic().isSilkTouchMode() ?
+                                    Component.translatable("gtceu.creative.activity.on") :
+                                    Component.translatable("gtceu.creative.activity.off"))
+                            .append(Component.literal("]")), "silk_touch")));
+            textList.add(Component.translatable("gtceu.universal.tooltip.chunk_mode")
+                    .append(ComponentPanelWidget.withButton(Component.literal("[")
+                            .append(getRecipeLogic().isChunkMode() ?
+                                    Component.translatable("gtceu.creative.activity.on") :
+                                    Component.translatable("gtceu.creative.activity.off"))
+                            .append(Component.literal("]")), "chunk_mode")));
             if (getRecipeLogic().isChunkMode()) {
                 textList.add(Component.translatable("gtceu.universal.tooltip.working_area_chunks", workingAreaChunks, workingAreaChunks));
             } else {
                 textList.add(Component.translatable("gtceu.universal.tooltip.working_area", workingArea, workingArea));
             }
-            if (getRecipeLogic().isDone())
+            if (getRecipeLogic().isDone()) {
                 textList.add(Component.translatable("gtceu.multiblock.large_miner.done").setStyle(Style.EMPTY.withColor(ChatFormatting.GREEN)));
-            else if (getRecipeLogic().isWorking())
-                textList.add(Component.translatable("gtceu.multiblock.large_miner.working").setStyle(Style.EMPTY.withColor(ChatFormatting.GOLD)));
-            else if (!this.isWorkingEnabled())
-                textList.add(Component.translatable("gtceu.multiblock.work_paused"));
+            }
         }
     }
 
-    private void addDisplayText2(List<Component> textList) {
-        if (this.isFormed()) {
-            textList.add(Component.translatable("gtceu.machine.miner.minex", getRecipeLogic().getMineX()));
-            textList.add(Component.translatable("gtceu.machine.miner.miney", getRecipeLogic().getMineY()));
-            textList.add(Component.translatable("gtceu.machine.miner.minez", getRecipeLogic().getMineZ()));
-        }
-    }
-
-    public long getMaxVoltage() {
-        return GTValues.V[getEnergyTier()];
-    }
-
-    // used for UI
-    private IGuiTexture getCurrentModeTexture(int mode) {
-        return switch (mode) {
-            case 0 -> GuiTextures.BUTTON_MINER_MODES.getSubTexture(0, 0, 1, 0.25f);
-            case 1 -> GuiTextures.BUTTON_MINER_MODES.getSubTexture(0, 0.25f, 1, 0.25f);
-            case 2 -> GuiTextures.BUTTON_MINER_MODES.getSubTexture(0, 0.5f, 1, 0.25f);
-            case 3 -> GuiTextures.BUTTON_MINER_MODES.getSubTexture(0, 0.75f, 1, 0.25f);
-            default -> new GuiTextureGroup(GuiTextures.BUTTON_MINER_MODES.getSubTexture(0, 0, 1, 0.25f), new ItemStackTexture(Items.BARRIER)); // "broken" color
-        };
-    }
-
-    // used for UI
-    private void setCurrentMode(int mode) {
-        switch (mode) {
-            case 0 -> {
-                getRecipeLogic().setChunkMode(false);
-                getRecipeLogic().setSilkTouchMode(false);
+    @Override
+    public void handleDisplayClick(String componentData, ClickData clickData) {
+        if (!clickData.isRemote) {
+            if (componentData.equals("chunk_mode")) {
+                getRecipeLogic().setChunkMode(!getRecipeLogic().isChunkMode());
             }
-            case 1 -> {
-                getRecipeLogic().setChunkMode(true);
-                getRecipeLogic().setSilkTouchMode(false);
-            }
-            case 2 -> {
-                getRecipeLogic().setChunkMode(false);
-                getRecipeLogic().setSilkTouchMode(true);
-            }
-            case 3 -> {
-                getRecipeLogic().setChunkMode(true);
-                getRecipeLogic().setSilkTouchMode(true);
+            if (componentData.equals("silk_touch")) {
+                getRecipeLogic().setSilkTouchMode(!getRecipeLogic().isSilkTouchMode());
             }
         }
     }

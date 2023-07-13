@@ -245,6 +245,7 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder{
             }
         } else {
             // machine isn't working enabled
+            this.setStatus(Status.IDLE);
             if (subscription != null) {
                 subscription.unsubscribe();
                 subscription = null;
