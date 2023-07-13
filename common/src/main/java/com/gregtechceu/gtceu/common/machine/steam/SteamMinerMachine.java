@@ -170,7 +170,7 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IMiner, I
 
         builder.widget(new LabelWidget(5, 5, getBlockState().getBlock().getDescriptionId()));
         builder.widget(new PredicatedImageWidget(79, 42, 18, 18, GuiTextures.INDICATOR_NO_STEAM.get(isHighPressure))
-                .setPredicate(recipeLogic::isHasNotEnoughEnergy));
+                .setPredicate(recipeLogic::isWaiting));
         builder.widget(new ImageWidget(7, 16, 105, 75, GuiTextures.DISPLAY_STEAM.get(false)));
         builder.widget(new ComponentPanelWidget(10, 19, this::addDisplayText)
                 .setMaxWidthLimit(84));

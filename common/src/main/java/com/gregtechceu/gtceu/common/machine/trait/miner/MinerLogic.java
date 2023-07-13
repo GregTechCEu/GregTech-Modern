@@ -11,7 +11,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.ItemRecipeHandler;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
-import com.gregtechceu.gtceu.api.syncdata.RequireRerender;
+import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -20,7 +20,6 @@ import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.lowdragmc.lowdraglib.misc.ItemTransferList;
 import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -28,6 +27,7 @@ import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.commands.arguments.blocks.BlockStateParser;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
@@ -528,7 +528,10 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder{
      */
     private void incrementPipeLength() {
         this.pipeLength++;
-        this.getMachine().markDirty();
+        if (getMachine().getLevel() instanceof ServerLevel serverLevel) {
+            var pos = getMiningPos().relative(Direction.DOWN, this.pipeLength);
+            serverLevel.setBlockAndUpdate(pos, GTBlocks.MINER_PIPE.getDefaultState());
+        }
     }
 
     /**
@@ -536,5 +539,15 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder{
      */
     public BlockPos getMiningPos() {
         return getMachine().getPos();
+    }
+
+    public void onRemove() {
+        if (getMachine().getLevel() instanceof ServerLevel serverLevel) {
+            var pos = getMiningPos().relative(Direction.DOWN);
+            while (serverLevel.getBlockState(pos).is(GTBlocks.MINER_PIPE.get())) {
+                serverLevel.removeBlock(pos, false);
+                pos = pos.relative(Direction.DOWN);
+            }
+        }
     }
 }

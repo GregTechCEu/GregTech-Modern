@@ -407,6 +407,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
         return isWorking() || isWaiting() || (isSuspend() && lastRecipe != null && duration > 0);
     }
 
+    @Deprecated
     public boolean isHasNotEnoughEnergy() {
         return isWaiting();
     }

@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.data;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.data.recipe.MaterialInfoLoader;
 import com.gregtechceu.gtceu.data.recipe.configurable.RecipeAddition;
 import com.gregtechceu.gtceu.data.recipe.configurable.RecipeRemoval;
@@ -59,6 +60,11 @@ public class GTRecipes {
         RecipeAddition.init(consumer);
         // Must run recycling recipes very last
         RecyclingRecipes.init(consumer);
+
+        // Kinetic Machines
+        if (GTCEu.isCreateLoaded()) {
+            CreateRecipeLoader.init(consumer);
+        }
     }
 
     /*

@@ -163,7 +163,7 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
                 .widget(group)
                 .widget(new LabelWidget(5, 5, getBlockState().getBlock().getDescriptionId()))
                 .widget(new PredicatedImageWidget(79, 42, 18, 18, GuiTextures.INDICATOR_NO_STEAM.get(isHighPressure))
-                        .setPredicate(recipeLogic::isHasNotEnoughEnergy))
+                        .setPredicate(recipeLogic::isWaiting))
                 .widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(), GuiTextures.SLOT_STEAM.get(isHighPressure), 7, 84, true));
     }
 }

@@ -1,13 +1,17 @@
 package com.gregtechceu.gtceu.api.capability;
 
+import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
-import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.gregtechceu.gtceu.common.machine.trait.miner.MinerLogic;
 
-public interface IMiner extends IRecipeLogicMachine {
-
+public interface IMiner extends IRecipeLogicMachine, IMachineLife {
     @Override
     MinerLogic getRecipeLogic();
+
+    @Override
+    default void onMachineRemoved() {
+        getRecipeLogic().onRemove();
+    }
 
     boolean drainInput(boolean simulate);
 

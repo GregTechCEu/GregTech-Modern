@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.WorkableTieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
+import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
@@ -230,11 +231,11 @@ public class MinerMachine extends WorkableTieredMachine implements IMiner, ICont
     protected static EditableUI<WidgetGroup, MinerMachine> createTemplate(int inventorySize) {
         return new EditableUI<>("energy_container", WidgetGroup.class, () -> {
             int rowSize = (int) Math.sqrt(inventorySize);
-            int width = rowSize * 18 + 110;
+            int width = rowSize * 18 + 120;
             int height = Math.max(rowSize * 18, 80);
             WidgetGroup group = new WidgetGroup(0, 0, width, height);
 
-            WidgetGroup slots = new WidgetGroup(90, (height - rowSize * 18) / 2, rowSize * 18, rowSize * 18);
+            WidgetGroup slots = new WidgetGroup(120, (height - rowSize * 18) / 2, rowSize * 18, rowSize * 18);
             for (int y = 0; y < rowSize; y++) {
                 for (int x = 0; x < rowSize; x++) {
                     int index = y * rowSize + x;
@@ -248,9 +249,10 @@ public class MinerMachine extends WorkableTieredMachine implements IMiner, ICont
             }
 
             var componentPanel = new ComponentPanelWidget(4, 5, list -> {});
+            componentPanel.setMaxWidthLimit(110);
             componentPanel.setId("component_panel");
 
-            var container = new WidgetGroup(0, 0, 107, height);
+            var container = new WidgetGroup(0, 0, 117, height);
             container.addWidget(new DraggableScrollableWidgetGroup(4, 4, container.getSize().width - 8, container.getSize().height - 8)
                     .setBackground(GuiTextures.DISPLAY)
                     .addWidget(componentPanel));

@@ -87,8 +87,8 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
                 textList.add(Component.translatable("gtceu.multiblock.idling"));
             }
 
-            if (recipeLogic.isHasNotEnoughEnergy()) {
-                textList.add(Component.translatable("gtceu.multiblock.not_enough_energy").setStyle(Style.EMPTY.withColor(ChatFormatting.RED)));
+            if (recipeLogic.isWaiting()) {
+                textList.add(Component.translatable("gtceu.multiblock.waiting").setStyle(Style.EMPTY.withColor(ChatFormatting.RED)));
             }
         }
         getDefinition().getAdditionalDisplay().accept(this, textList);

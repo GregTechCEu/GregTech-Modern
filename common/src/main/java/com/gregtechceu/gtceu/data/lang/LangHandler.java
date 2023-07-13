@@ -894,6 +894,7 @@ public class LangHandler {
         provider.add("gtceu.multiblock.running", "Running perfectly.");
         provider.add("gtceu.multiblock.idling", "Idling.");
         provider.add("gtceu.multiblock.not_enough_energy", "WARNING: Machine needs more energy.");
+        provider.add("gtceu.multiblock.waiting", "WARNING: Machine is waiting.");
         provider.add("gtceu.multiblock.progress", "Progress: %s%%");
         provider.add("gtceu.multiblock.invalid_structure", "Invalid structure.");
         provider.add("gtceu.multiblock.invalid_structure.tooltip", "This block is a controller of the multiblock structure. For building help, see structure template in JEI.");
