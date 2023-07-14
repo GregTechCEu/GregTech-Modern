@@ -294,8 +294,8 @@ public class GTFluidBuilder<T extends SimpleFlowableFluid, P> extends AbstractBu
     protected void registerDefaultRenderer(T flowing) {
         FluidRenderHandlerRegistry.INSTANCE.register(getSource(), flowing, new SimpleFluidRenderHandler(stillTexture, flowingTexture, color));
         ClientSpriteRegistryCallback.event(InventoryMenu.BLOCK_ATLAS).register((atlas, registry) -> {
-            registry.register(stillTexture);
-            registry.register(flowingTexture);
+            if (stillTexture != null) registry.register(stillTexture);
+            if (flowingTexture != null) registry.register(flowingTexture);
         });
     }
 

@@ -5,6 +5,8 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.FluidProperty
 import com.gregtechceu.gtceu.common.data.GTFluids;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 import net.fabricmc.fabric.api.client.render.fluid.v1.SimpleFluidRenderHandler;
+import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
+import net.minecraft.world.inventory.InventoryMenu;
 
 public class MixinHelpersImpl {
 
@@ -13,6 +15,10 @@ public class MixinHelpersImpl {
         var fluids = GTFluids.MATERIAL_FLUID_FLOWING.get(prop);
         if (fluids != null) {
             FluidRenderHandlerRegistry.INSTANCE.register(fluids.get().getFirst(), fluids.get().getSecond(), new SimpleFluidRenderHandler(prop.getStillTexture(), prop.getFlowTexture(), material.getMaterialRGB()));
+            ClientSpriteRegistryCallback.event(InventoryMenu.BLOCK_ATLAS).register((atlas, registry) -> {
+                registry.register(prop.getStillTexture());
+                registry.register(prop.getFlowTexture());
+            });
         }
     }
 }

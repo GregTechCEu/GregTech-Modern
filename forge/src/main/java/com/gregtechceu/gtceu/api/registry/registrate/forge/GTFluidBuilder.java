@@ -67,7 +67,7 @@ public class GTFluidBuilder<T extends ForgeFlowingFluid, P> extends AbstractBuil
 
     @FunctionalInterface
     public interface FluidTypeFactory {
-        FluidType create(String langKey, Material material, ResourceLocation stillId, FluidType.Properties properties, ResourceLocation stillTexture, ResourceLocation flowingTexture, int color);
+        FluidType create(String langKey, Material material, FluidType.Properties properties, ResourceLocation stillTexture, ResourceLocation flowingTexture, int color);
     }
 
     private final String sourceName, bucketName;
@@ -104,7 +104,7 @@ public class GTFluidBuilder<T extends ForgeFlowingFluid, P> extends AbstractBuil
         this.stillTexture = stillTexture;
         this.flowingTexture = flowingTexture;
         this.fluidFactory = fluidFactory;
-        this.fluidType = NonNullSupplier.lazy(() -> typeFactory.create(langKey, material, new ResourceLocation(owner.getModid(), name), makeTypeProperties(), this.stillTexture, this.flowingTexture, this.color));
+        this.fluidType = NonNullSupplier.lazy(() -> typeFactory.create(langKey, material, makeTypeProperties(), this.stillTexture, this.flowingTexture, this.color));
         this.registerType = true;
         defaultBucket();
 
@@ -338,11 +338,11 @@ public class GTFluidBuilder<T extends ForgeFlowingFluid, P> extends AbstractBuil
         return new FluidEntry<>(getOwner(), delegate);
     }
 
-    public static FluidType defaultFluidType(String langKey, Material material, ResourceLocation still, FluidType.Properties properties, ResourceLocation stillTexture, ResourceLocation flowingTexture, int color) {
+    public static FluidType defaultFluidType(String langKey, Material material, FluidType.Properties properties, ResourceLocation stillTexture, ResourceLocation flowingTexture, int color) {
         return new FluidType(properties) {
             @Override
             public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer) {
-                consumer.accept(new GTClientFluidTypeExtensions(still, stillTexture, flowingTexture, color));
+                consumer.accept(new GTClientFluidTypeExtensions(stillTexture, flowingTexture, color));
             }
 
             @Override
