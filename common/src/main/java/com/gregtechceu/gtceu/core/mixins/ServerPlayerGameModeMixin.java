@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.core.mixins;
 import com.gregtechceu.gtceu.api.item.IItemUseFirst;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
+import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import net.minecraft.client.particle.AshParticle;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.DustParticleOptions;
@@ -71,7 +72,7 @@ public class ServerPlayerGameModeMixin {
     private void destroyBlock(BlockPos pos, CallbackInfoReturnable<Boolean> cir) {
         ItemStack mainHandItem = player.getMainHandItem();
 
-        if (GTToolType.MINING_HAMMER.is(mainHandItem) && mainHandItem.isCorrectToolForDrops(level.getBlockState(pos)) && !player.isCrouching()) {
+        if (mainHandItem.is(CustomTags.AOE_TOOLS) && mainHandItem.isCorrectToolForDrops(level.getBlockState(pos)) && !player.isCrouching()) {
             List<BlockPos> blockPosList = ToolHelper.getAOEPositions(player, player.getMainHandItem(), pos, 1);
 
             BlockState originBlock = level.getBlockState(pos);

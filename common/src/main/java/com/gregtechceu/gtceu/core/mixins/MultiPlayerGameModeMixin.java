@@ -1,11 +1,14 @@
 package com.gregtechceu.gtceu.core.mixins;
 
+import com.gregtechceu.gtceu.api.data.tag.TagUtil;
 import com.gregtechceu.gtceu.api.item.IItemUseFirst;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
+import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.MultiPlayerGameMode;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.Item;
@@ -57,7 +60,7 @@ public class MultiPlayerGameModeMixin {
         if (
                 minecraft.player == null ||
                 minecraft.level == null ||
-                !GTToolType.MINING_HAMMER.is(minecraft.player.getMainHandItem()) ||
+                minecraft.player.getMainHandItem().is(CustomTags.AOE_TOOLS) ||
                 minecraft.player.isCrouching() ||
                 !minecraft.player.getMainHandItem().isCorrectToolForDrops(minecraft.level.getBlockState(pos))
         ) return;
