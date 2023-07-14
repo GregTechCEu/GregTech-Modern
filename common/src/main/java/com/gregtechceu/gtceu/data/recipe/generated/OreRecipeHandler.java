@@ -329,7 +329,7 @@ public class OreRecipeHandler {
 
                 if (!flawedStack.isEmpty())
                     builder.chancedOutput(flawedStack, 2500, 300);
-                if (!exquisiteStack.isEmpty())
+                if (!chippedStack.isEmpty())
                     builder.chancedOutput(chippedStack, 3500, 400);
 
                 builder.save(provider);
