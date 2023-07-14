@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TieredEnergyMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
+import com.gregtechceu.gtceu.api.syncdata.RequireRerender;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
@@ -14,6 +15,7 @@ import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
+import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.utils.Position;
@@ -39,6 +41,12 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(ChargerMachine.class, TieredEnergyMachine.MANAGED_FIELD_HOLDER);
 
+    public enum State {
+        IDLE,
+        RUNNING,
+        FINISHED
+    }
+
     @Persisted
     @Getter
     @Setter
@@ -49,11 +57,17 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
     @Persisted
     protected final ItemStackTransfer chargerInventory;
 
+    @Getter
+    @DescSynced
+    @RequireRerender
+    private State state;
+
     public ChargerMachine(IMachineBlockEntity holder, int tier, int inventorySize, Object... args) {
         super(holder, tier, inventorySize);
         this.isWorkingEnabled = true;
         this.inventorySize = inventorySize;
         this.chargerInventory = createChargerInventory(args);
+        this.state = State.IDLE;
     }
 
     //////////////////////////////////////
@@ -73,11 +87,6 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
         var itemTransfer = new ItemStackTransfer(this.inventorySize);
         itemTransfer.setFilter(item -> GTCapabilityHelper.getElectricItem(item) != null || GTCapabilityHelper.getPlatformEnergyItem(item) != null);
         return itemTransfer;
-    }
-
-    @Override
-    public void onLoad() {
-        super.onLoad();
     }
 
     @Override
@@ -128,7 +137,7 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
     }
 
     //////////////////////////////////////
-    //******    Battery Logic     ******//
+    //******    Charger Logic     ******//
     //////////////////////////////////////
 
     private List<Object> getNonFullElectricItem() {
@@ -152,6 +161,12 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
         return electricItems;
     }
 
+    private void changeState(State newState) {
+        if (state != newState) {
+            state = newState;
+        }
+    }
+
     protected class EnergyBatteryTrait extends NotifiableEnergyContainer {
 
         protected EnergyBatteryTrait(int inventorySize) {
@@ -167,14 +182,17 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
                 amps = 0;
                 lastTS = latestTS;
             }
-            if (amperage <= 0 || voltage <= 0)
+            if (amperage <= 0 || voltage <= 0) {
+                changeState(State.IDLE);
                 return 0;
+            }
 
             var electricItems = getNonFullElectricItem();
             var maxAmps = electricItems.size() * AMPS_PER_ITEM - amps;
             var usedAmps = Math.min(maxAmps, amperage);
-            if (maxAmps <= 0)
+            if (maxAmps <= 0) {
                 return 0;
+            }
 
             if (side == null || inputsEnergy(side)) {
                 if (voltage > getInputVoltage()) {
@@ -207,6 +225,7 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
 
                 if (changed) {
                     ChargerMachine.this.markDirty();
+                    changeState(State.RUNNING);
                 }
 
                 //Remove energy used and then transfer overflow energy into the internal buffer
@@ -231,6 +250,11 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
                     }
                 }
             }
+
+            if (energyCapacity == 0) {
+                changeState(State.IDLE);
+            }
+
             return energyCapacity;
         }
 
@@ -249,6 +273,13 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
                     }
                 }
             }
+
+            var capacity = getEnergyCapacity();
+
+            if (capacity != 0 && capacity == energyStored) {
+                changeState(State.FINISHED);
+            }
+
             return energyStored;
         }
 

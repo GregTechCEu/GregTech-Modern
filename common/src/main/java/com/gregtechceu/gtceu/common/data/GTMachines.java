@@ -1365,8 +1365,8 @@ public class GTMachines {
         return registerTieredMachines("charger_" + itemSlotSize + "x",
                 (holder, tier) -> new ChargerMachine(holder, tier, itemSlotSize),
                 (tier, builder) -> builder
-                        .rotationState(RotationState.ALL)
-                        .renderer(() -> new ChargerRenderer(tier, itemSlotSize))
+                        .rotationState(RotationState.NON_Y_AXIS)
+                        .renderer(() -> new ChargerRenderer(tier))
                         .langValue("%s %s%s".formatted(VOLTAGE_NAMES[tier], itemSlotSize, "x Turbo Charger"))
                         .tooltips(explosion())
                         .tooltips(Component.translatable("gtceu.universal.tooltip.item_storage_capacity", itemSlotSize),
