@@ -80,7 +80,7 @@ import static net.minecraftforge.client.model.generators.ModelProvider.BLOCK_FOL
  */
 public class GTBlocks {
 
-    // Externally Accessible Values
+    // Externally-Accessible Tables
     public static Table<TagPrefix, Material, BlockEntry<? extends MaterialBlock>> MATERIAL_BLOCKS;
     public static Table<TagPrefix, Material, BlockEntry<FluidPipeBlock>> FLUID_PIPE_BLOCKS;
     public static Table<TagPrefix, Material, BlockEntry<CableBlock>> CABLE_BLOCKS;
@@ -441,12 +441,6 @@ public class GTBlocks {
     public static final BlockEntry<ActiveBlock> FIREBOX_TITANIUM = createFireboxCasing(BoilerFireboxType.TITANIUM_FIREBOX);
     public static final BlockEntry<ActiveBlock> FIREBOX_TUNGSTENSTEEL = createFireboxCasing(BoilerFireboxType.TUNGSTENSTEEL_FIREBOX);
 
-
-
-
-
-
-
     // Heating Coils
     private static BlockEntry<CoilBlock> createCoilBlock(ICoilType coilType) {
         BlockEntry<CoilBlock> coilBlock = REGISTRATE.block("%s_coil_block".formatted(coilType.getName()), p -> new CoilBlock(p, coilType))
@@ -471,47 +465,6 @@ public class GTBlocks {
     public static final BlockEntry<CoilBlock> COIL_TRINIUM = createCoilBlock(CoilBlock.CoilType.TRINIUM);
     public static final BlockEntry<CoilBlock> COIL_TRITANIUM = createCoilBlock(CoilBlock.CoilType.TRITANIUM);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     // Just Pickaxe Blocks
     private static BlockEntry<Block> registerPickaxeBlock(String id, ResourceLocation texture) {
         return registerPickaxeBlock(id, texture, () -> Blocks.IRON_BLOCK);
@@ -535,17 +488,6 @@ public class GTBlocks {
             PLASTCRETE = registerPickaxeBlock("plascrete", GTCEu.id("block/casings/cleanroom/plascrete")),
             CLEANROOM_GLASS = registerPickaxeBlock("cleanroom_glass", GTCEu.id("block/casings/transparent/cleanroom_glass"), () -> Blocks.GLASS);
 
-
-
-
-
-
-
-
-
-
-
-
     // The Pump Deck
     public static final BlockEntry<Block> PUMP_DECK = REGISTRATE.block("pump_deck", p -> (Block) new RendererBlock(p,
                     new TextureOverrideRenderer(new ResourceLocation("block/cube_bottom_top"),
@@ -561,12 +503,6 @@ public class GTBlocks {
             .model(NonNullBiConsumer.noop())
             .build()
             .register();
-
-
-
-
-
-
 
     //Fusion
     private static BlockEntry<FusionCasingBlock> createFusionCasing(IFusionCasingType casingType) {
@@ -590,9 +526,6 @@ public class GTBlocks {
     public static final BlockEntry<FusionCasingBlock> FUSION_CASING_MK2 = createFusionCasing(FusionCasingBlock.CasingType.FUSION_CASING_MK2);
     public static final BlockEntry<FusionCasingBlock> FUSION_CASING_MK3 = createFusionCasing(FusionCasingBlock.CasingType.FUSION_CASING_MK3);
     public static final BlockEntry<Block> FUSION_GLASS = createCasingBlock("fusion_glass", GTCEu.id("block/casings/transparent/fusion_glass"), () -> Blocks.GLASS);
-
-
-
 
     // Others
     private static BlockEntry<ActiveBlock> createActiveCasing(String name, String baseModelPath) {
