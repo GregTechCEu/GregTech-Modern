@@ -15,6 +15,7 @@ import static com.gregtechceu.gtceu.api.registry.GTRegistries.REGISTRATE;
  * @implNote GTSounds
  */
 public class GTSoundEntries {
+
     // Machine Sounds
     public static final SoundEntry FORGE_HAMMER = REGISTRATE.sound("forge_hammer").build();
     public static final SoundEntry MACERATOR = REGISTRATE.sound("macerator").build();
@@ -37,6 +38,8 @@ public class GTSoundEntries {
     public static final SoundEntry COMBUSTION = REGISTRATE.sound("combustion").build();
     public static final SoundEntry MINER = REGISTRATE.sound("miner").build();
     public static final SoundEntry SCIENCE = REGISTRATE.sound("science").build();
+
+    // Tool Sounds
     public static final SoundEntry WRENCH_TOOL = REGISTRATE.sound("wrench").build();
     public static final SoundEntry SOFT_MALLET_TOOL = REGISTRATE.sound("soft_hammer").build();
     public static final SoundEntry DRILL_TOOL = REGISTRATE.sound("drill").build();
@@ -49,6 +52,8 @@ public class GTSoundEntries {
     public static final SoundEntry SPRAY_CAN_TOOL = REGISTRATE.sound("spray_can").build();
     public static final SoundEntry TRICORDER_TOOL = REGISTRATE.sound("tricorder").build();
     public static final SoundEntry MORTAR_TOOL = REGISTRATE.sound("mortar").build();
+
+    // Other Sounds
     public static final SoundEntry SUS_RECORD = REGISTRATE.sound("sus").build();
     public static final SoundEntry PORTAL_OPENING = REGISTRATE.sound("portal_opening").build();
     public static final SoundEntry PORTAL_CLOSING = REGISTRATE.sound("portal_closing").build();
@@ -64,5 +69,4 @@ public class GTSoundEntries {
     private static void registerSounds() {
         throw new AssertionError();
     }
-
 }

@@ -54,14 +54,14 @@ public class CoilBlock extends ActiveBlock {
     }*/// todo
 
     public enum CoilType implements StringRepresentable, ICoilType {
-        CUPRONICKEL("cupronickel", 1800, 1, 1, GTMaterials.Cupronickel, GTCEu.id("block/casings/coils/machine_coil_cupronickel")),
-        KANTHAL("kanthal", 2700, 2, 1, GTMaterials.Kanthal, GTCEu.id("block/casings/coils/machine_coil_kanthal")),
-        NICHROME("nichrome", 3600, 2, 2, GTMaterials.Nichrome, GTCEu.id("block/casings/coils/machine_coil_nichrome")),
-        TUNGSTENSTEEL("tungstensteel", 4500, 4, 2, GTMaterials.TungstenSteel, GTCEu.id("block/casings/coils/machine_coil_tungstensteel")),
-        HSSG("hssg", 5400, 4, 4, GTMaterials.HSSG, GTCEu.id("block/casings/coils/machine_coil_hssg")),
-        NAQUADAH("naquadah", 7200, 8, 4, GTMaterials.Naquadah, GTCEu.id("block/casings/coils/machine_coil_naquadah")),
-        TRINIUM("trinium", 9001, 8, 8, GTMaterials.Trinium, GTCEu.id("block/casings/coils/machine_coil_trinium")),
-        TRITANIUM("tritanium", 10800, 16, 8, GTMaterials.Tritanium, GTCEu.id("block/casings/coils/machine_coil_tritanium"));
+        CUPRONICKEL("cupronickel", 1800, 1, 1, GTMaterials.Cupronickel, GTCEu.id("block/casings/coils/cupronickel_coil_block")),
+        KANTHAL("kanthal", 2700, 2, 1, GTMaterials.Kanthal, GTCEu.id("block/casings/coils/kanthal_coil_block")),
+        NICHROME("nichrome", 3600, 2, 2, GTMaterials.Nichrome, GTCEu.id("block/casings/coils/nichrome_coil_block")),
+        TUNGSTENSTEEL("tungstensteel", 4500, 4, 2, GTMaterials.TungstenSteel, GTCEu.id("block/casings/coils/tungstensteel_coil_block")),
+        HSSG("hssg", 5400, 4, 4, GTMaterials.HSSG, GTCEu.id("block/casings/coils/hssg_coil_block")),
+        NAQUADAH("naquadah", 7200, 8, 4, GTMaterials.Naquadah, GTCEu.id("block/casings/coils/naquadah_coil_block")),
+        TRINIUM("trinium", 9001, 8, 8, GTMaterials.Trinium, GTCEu.id("block/casings/coils/trinium_coil_block")),
+        TRITANIUM("tritanium", 10800, 16, 8, GTMaterials.Tritanium, GTCEu.id("block/casings/coils/tritanium_coil_block"));
 
         @Getter
         private final String name;

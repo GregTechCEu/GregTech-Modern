@@ -1,0 +1,6 @@
+{
+    "ldlib": {
+        "connection": "gtceu:block/casings/coils/molybdenum_disilicide_coil_block_bloom_ctm",
+        "emissive": true
+    }
+}

@@ -1,0 +1,6 @@
+{
+    "ldlib": {
+        "connection": "gtceu:block/casings/coils/kanthal_coil_block_bloom_ctm",
+        "emissive": true
+    }
+}

@@ -8,22 +8,22 @@ public enum BoilerType {
 
     BRONZE(800, 1200,
             STEAM_MACHINE_CASING.getDefaultState(),
-            FIREBOX_BRONZE.getDefaultState(),
+            BRONZE_FIREBOX.getDefaultState(),
             BRONZE_PIPE_CASING.getDefaultState()),
 
     STEEL(1800, 1800,
             SOLID_MACHINE_CASING.getDefaultState(),
-            FIREBOX_STEEL.getDefaultState(),
+            STEEL_FIREBOX.getDefaultState(),
             STEEL_PIPE_CASING.getDefaultState()),
 
     TITANIUM(3200, 2400,
             STABLE_MACHINE_CASING.getDefaultState(),
-            FIREBOX_TITANIUM.getDefaultState(),
+            TITANIUM_FIREBOX.getDefaultState(),
             TITANIUM_PIPE_CASING.getDefaultState()),
 
     TUNGSTENSTEEL(6400, 3000,
             ROBUST_MACHINE_CASING.getDefaultState(),
-            FIREBOX_TUNGSTENSTEEL.getDefaultState(),
+            TUNGSTENSTEEL_FIREBOX.getDefaultState(),
             TUNGSTENSTEEL_PIPE_CASING.getDefaultState());
 
     // Workable Data

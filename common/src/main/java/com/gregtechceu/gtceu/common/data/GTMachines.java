@@ -580,13 +580,13 @@ public class GTMachines {
     //////////////////////////////////////
     //*******     Multiblock     *******//
     //////////////////////////////////////
-    public final static MultiblockMachineDefinition LARGE_BOILER_BRONZE = registerLargeBoiler("bronze", STEAM_MACHINE_CASING, BRONZE_PIPE_CASING, FIREBOX_BRONZE,
+    public final static MultiblockMachineDefinition LARGE_BOILER_BRONZE = registerLargeBoiler("bronze", STEAM_MACHINE_CASING, BRONZE_PIPE_CASING, BRONZE_FIREBOX,
             GTCEu.id("block/casings/solid/machine_casing_bronze_plated_bricks"), BoilerFireboxType.BRONZE_FIREBOX, 800, 1);
-    public final static MultiblockMachineDefinition LARGE_BOILER_STEEL = registerLargeBoiler("steel", SOLID_MACHINE_CASING, STEEL_PIPE_CASING, FIREBOX_STEEL,
+    public final static MultiblockMachineDefinition LARGE_BOILER_STEEL = registerLargeBoiler("steel", SOLID_MACHINE_CASING, STEEL_PIPE_CASING, STEEL_FIREBOX,
             GTCEu.id("block/casings/solid/machine_casing_solid_steel"), BoilerFireboxType.STEEL_FIREBOX, 1800, 1);
-    public final static MultiblockMachineDefinition LARGE_BOILER_TITANIUM = registerLargeBoiler("titanium", STABLE_MACHINE_CASING, TITANIUM_PIPE_CASING, FIREBOX_TITANIUM,
+    public final static MultiblockMachineDefinition LARGE_BOILER_TITANIUM = registerLargeBoiler("titanium", STABLE_MACHINE_CASING, TITANIUM_PIPE_CASING, TITANIUM_FIREBOX,
             GTCEu.id("block/casings/solid/machine_casing_stable_titanium"), BoilerFireboxType.TITANIUM_FIREBOX, 3200, 1);
-    public final static MultiblockMachineDefinition LARGE_BOILER_TUNGSTENSTEEL = registerLargeBoiler("tungstensteel", ROBUST_MACHINE_CASING, TUNGSTENSTEEL_PIPE_CASING, FIREBOX_TUNGSTENSTEEL,
+    public final static MultiblockMachineDefinition LARGE_BOILER_TUNGSTENSTEEL = registerLargeBoiler("tungstensteel", ROBUST_MACHINE_CASING, TUNGSTENSTEEL_PIPE_CASING, TUNGSTENSTEEL_FIREBOX,
             GTCEu.id("block/casings/solid/machine_casing_robust_tungstensteel"), BoilerFireboxType.TUNGSTENSTEEL_FIREBOX, 6400, 2);
 
     public final static MultiblockMachineDefinition COKE_OVEN = REGISTRATE.multiblock("coke_oven", CokeOvenMachine::new)
@@ -690,7 +690,7 @@ public class GTMachines {
                         .where('S', Predicates.controller(blocks(definition.getBlock())))
                         .where('X', casing.or(abilities))
                         .where('P', blocks(PTFE_PIPE_CASING.get()))
-                        .where('C', blocks(COIL_CUPRONICKEL.get()).setExactLimit(1)
+                        .where('C', blocks(CUPRONICKEL_COIL.get()).setExactLimit(1)
                                 .or(abilities)
                                 .or(casing))
                         .build();
@@ -701,7 +701,7 @@ public class GTMachines {
                         .where('S', definition, Direction.NORTH)
                         .where('X', INERT_MACHINE_CASING.getDefaultState())
                         .where('P', PTFE_PIPE_CASING.getDefaultState())
-                        .where('C', COIL_CUPRONICKEL.getDefaultState())
+                        .where('C', CUPRONICKEL_COIL.getDefaultState())
                         .where('I', ITEM_IMPORT_BUS[3], Direction.NORTH)
                         .where('E', ENERGY_INPUT_HATCH[3], Direction.NORTH)
                         .where('O', ITEM_EXPORT_BUS[3], Direction.NORTH)
@@ -928,7 +928,7 @@ public class GTMachines {
 
     public final static MultiblockMachineDefinition STEAM_GRINDER = REGISTRATE.multiblock("steam_grinder", SteamParallelMultiblockMachine::new)
             .rotationState(RotationState.NON_Y_AXIS)
-            .appearanceBlock(BRONZE_BRICK_CASING)
+            .appearanceBlock(STEAM_MACHINE_CASING)
             .recipeType(GTRecipeTypes.MACERATOR_RECIPES)
             .recipeModifier(SteamParallelMultiblockMachine::recipeModifier, true)
             .pattern(definition -> FactoryBlockPattern.start()
@@ -937,7 +937,7 @@ public class GTMachines {
                     .aisle("XXX", "XSX", "XXX")
                     .where('S', Predicates.controller(blocks(definition.getBlock())))
                     .where('#', Predicates.air())
-                    .where('X', blocks(BRONZE_BRICK_CASING.get()).setMinGlobalLimited(14)
+                    .where('X', blocks(STEAM_MACHINE_CASING.get()).setMinGlobalLimited(14)
                             .or(Predicates.abilities(PartAbility.STEAM_IMPORT_ITEMS).setPreviewCount(1))
                             .or(Predicates.abilities(PartAbility.STEAM_EXPORT_ITEMS).setPreviewCount(1))
                             .or(Predicates.abilities(PartAbility.STEAM).setExactLimit(1)))
@@ -948,7 +948,7 @@ public class GTMachines {
 
     public final static MultiblockMachineDefinition STEAM_OVEN = REGISTRATE.multiblock("steam_oven", SteamParallelMultiblockMachine::new)
             .rotationState(RotationState.NON_Y_AXIS)
-            .appearanceBlock(BRONZE_BRICK_CASING)
+            .appearanceBlock(STEAM_MACHINE_CASING)
             .recipeType(GTRecipeTypes.FURNACE_RECIPES)
             .recipeModifier(SteamParallelMultiblockMachine::recipeModifier, true)
             .pattern(definition -> FactoryBlockPattern.start()
@@ -958,10 +958,10 @@ public class GTMachines {
                     .where('S', Predicates.controller(blocks(definition.getBlock())))
                     .where('#', Predicates.air())
                     .where(' ', Predicates.any())
-                    .where('X', blocks(BRONZE_BRICK_CASING.get()).setMinGlobalLimited(6)
+                    .where('X', blocks(STEAM_MACHINE_CASING.get()).setMinGlobalLimited(6)
                             .or(Predicates.abilities(PartAbility.STEAM_IMPORT_ITEMS).setPreviewCount(1))
                             .or(Predicates.abilities(PartAbility.STEAM_EXPORT_ITEMS).setPreviewCount(1)))
-                    .where('F', blocks(FIREBOX_BRONZE.get())
+                    .where('F', blocks(BRONZE_FIREBOX.get())
                             .or(Predicates.abilities(PartAbility.STEAM).setExactLimit(1)))
                     .build())
             .renderer(() -> new LargeBoilerRenderer(GTCEu.id("block/casings/solid/machine_casing_bronze_plated_bricks"), BoilerFireboxType.BRONZE_FIREBOX,
