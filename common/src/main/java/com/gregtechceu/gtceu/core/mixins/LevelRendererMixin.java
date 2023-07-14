@@ -55,7 +55,7 @@ public abstract class LevelRendererMixin {
 
         ItemStack mainHandItem = minecraft.player.getMainHandItem();
 
-        if (!mainHandItem.is(CustomTags.AOE_TOOLS) || !(minecraft.hitResult instanceof BlockHitResult result)) return;
+        if (!mainHandItem.is(CustomTags.AOE_TOOLS) || !(minecraft.hitResult instanceof BlockHitResult result) || minecraft.player.isCrouching()) return;
 
         BlockPos hitResultPos = result.getBlockPos();
         BlockState hitResultState = minecraft.level.getBlockState(hitResultPos);
@@ -101,7 +101,7 @@ public abstract class LevelRendererMixin {
 
         if (!GTToolType.MINING_HAMMER.is(mainHandItem)) return;
 
-        if (state.isAir() || !minecraft.level.isInWorldBounds(pos) || !mainHandItem.isCorrectToolForDrops(state)) return;
+        if (state.isAir() || !minecraft.level.isInWorldBounds(pos) || !mainHandItem.isCorrectToolForDrops(state) || minecraft.player.isCrouching()) return;
 
         List<BlockPos> blockPositions = ToolHelper.getAOEPositions(minecraft.player, mainHandItem, pos, 1);
         List<VoxelShape> outlineShapes = new ArrayList<>();
