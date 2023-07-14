@@ -27,6 +27,7 @@ import com.gregtechceu.gtceu.common.pipelike.cable.Insulation;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.lowdragmc.lowdraglib.Platform;
+import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import com.tterrag.registrate.builders.BlockBuilder;
 import com.tterrag.registrate.providers.ProviderType;
 import com.tterrag.registrate.providers.loot.RegistrateBlockLootTables;
@@ -70,6 +71,7 @@ import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
@@ -287,7 +289,7 @@ public class GTBlocks {
     public static final BlockEntry<Block> CASING_TUNGSTENSTEEL_ROBUST = createCasingBlock("robust_machine_casing", GTCEu.id("block/casings/solid/machine_casing_robust_tungstensteel"));
     public static final BlockEntry<Block> CASING_PTFE_INERT = createCasingBlock("inert_machine_casing", GTCEu.id("block/casings/solid/machine_casing_inert_ptfe"));
     public static final BlockEntry<Block> CASING_HSSE_STURDY = createCasingBlock("sturdy_machine_casing", GTCEu.id("block/casings/solid/machine_casing_study_hsse"));
-    public static final BlockEntry<Block> CASING_TEMPERED_GLASS = createCasingBlock("tempered_glass", GTCEu.id("block/casings/transparent/tempered_glass"), () -> Blocks.GLASS);
+    public static final BlockEntry<Block> CASING_TEMPERED_GLASS = createGlassCasingBlock("tempered_glass", GTCEu.id("block/casings/transparent/tempered_glass"), () -> RenderType::translucent);
     public static final ImmutableMap<Material, BlockEntry<Block>> MATERIALS_TO_CASINGS;
 
     static {
@@ -313,7 +315,7 @@ public class GTBlocks {
     // Assembly Line
     public static final BlockEntry<Block> CASING_GRATE = createCasingBlock("assembly_line_grating", GTCEu.id("block/casings/pipe/machine_casing_grate"));
     public static final BlockEntry<Block> CASING_ASSEMBLY_CONTROL = createCasingBlock("assembly_line_casing", GTCEu.id("block/casings/mechanic/machine_casing_assembly_control"));
-    public static final BlockEntry<Block> CASING_LAMINATED_GLASS = createCasingBlock("laminated_glass", GTCEu.id("block/casings/transparent/laminated_glass"), () -> Blocks.GLASS);
+    public static final BlockEntry<Block> CASING_LAMINATED_GLASS = createGlassCasingBlock("laminated_glass", GTCEu.id("block/casings/transparent/laminated_glass"), () -> RenderType::cutoutMipped);
     public static final BlockEntry<ActiveBlock> CASING_ASSEMBLY_LINE = createActiveCasing("assembly_line_unit", "block/variant/assembly_line");
 
 
@@ -413,14 +415,14 @@ public class GTBlocks {
     public static final BlockEntry<FusionCasingBlock> FUSION_CASING = createFusionCasing(FusionCasingBlock.CasingType.FUSION_CASING);
     public static final BlockEntry<FusionCasingBlock> FUSION_CASING_MK2 = createFusionCasing(FusionCasingBlock.CasingType.FUSION_CASING_MK2);
     public static final BlockEntry<FusionCasingBlock> FUSION_CASING_MK3 = createFusionCasing(FusionCasingBlock.CasingType.FUSION_CASING_MK3);
-    public static final BlockEntry<Block> FUSION_GLASS = createCasingBlock("fusion_glass", GTCEu.id("block/casings/transparent/fusion_glass"), () -> Blocks.GLASS);
+    public static final BlockEntry<Block> FUSION_GLASS = createGlassCasingBlock("fusion_glass", GTCEu.id("block/casings/transparent/fusion_glass"), () -> RenderType::cutoutMipped);
 
     // Cleanroom
     public static final Map<IFilterType, Supplier<Block>> ALL_FILTERS = new HashMap<>();
     public static final BlockEntry<Block> PLASTCRETE = createCasingBlock("plascrete", GTCEu.id("block/casings/cleanroom/plascrete"));
     public static final BlockEntry<Block> FILTER_CASING = createCleanroomFilter(CleanroomFilterType.FILTER_CASING);
     public static final BlockEntry<Block> FILTER_CASING_STERILE = createCleanroomFilter(CleanroomFilterType.FILTER_CASING_STERILE);
-    public static final BlockEntry<Block> CLEANROOM_GLASS = createCasingBlock("cleanroom_glass", GTCEu.id("block/casings/transparent/cleanroom_glass"), () -> Blocks.GLASS);
+    public static final BlockEntry<Block> CLEANROOM_GLASS = createGlassCasingBlock("cleanroom_glass", GTCEu.id("block/casings/transparent/cleanroom_glass"), () -> RenderType::cutoutMipped);
 
 
     // Fireboxes
@@ -454,15 +456,19 @@ public class GTBlocks {
 
     // THIS IS JUST FOR PTFE PIPE CASING
     private static BlockEntry<Block> createCasingBlock(String name, ResourceLocation texture) {
-        return createCasingBlock(name, texture, () -> Blocks.IRON_BLOCK);
+        return createCasingBlock(name, RendererBlock::new, texture, () -> Blocks.IRON_BLOCK, () -> RenderType::cutoutMipped);
     }
 
-    private static BlockEntry<Block> createCasingBlock(String name, ResourceLocation texture, NonNullSupplier<? extends Block> properties) {
-        return REGISTRATE.block(name, p -> (Block) new RendererBlock(p,
+    private static BlockEntry<Block> createGlassCasingBlock(String name, ResourceLocation texture, Supplier<Supplier<RenderType>> type) {
+        return createCasingBlock(name, RenderGlassBlock::new, texture, () -> Blocks.GLASS, type);
+    }
+
+    private static BlockEntry<Block> createCasingBlock(String name, BiFunction<BlockBehaviour.Properties, IRenderer, ? extends RendererBlock> blockSupplier, ResourceLocation texture, NonNullSupplier<? extends Block> properties, Supplier<Supplier<RenderType>> type) {
+        return REGISTRATE.block(name, p -> (Block) blockSupplier.apply(p,
                         Platform.isClient() ? new TextureOverrideRenderer(new ResourceLocation("block/cube_all"),
-                                Map.of("all", texture)) : null))
+                        Map.of("all", texture)) : null))
                 .initialProperties(properties)
-                .addLayer(() -> RenderType::cutoutMipped)
+                .addLayer(type)
                 .blockstate(NonNullBiConsumer.noop())
                 .tag(GTToolType.WRENCH.harvestTag, BlockTags.MINEABLE_WITH_PICKAXE)
                 .item(RendererBlockItem::new)

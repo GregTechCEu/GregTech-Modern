@@ -288,11 +288,6 @@ public class SeparationRecipes {
                 .chancedOutput(dustTiny, Ilmenite, 5000, 500)
                 .save(provider);
 
-        CENTRIFUGE_RECIPES.recipeBuilder("oilsands_dust_separation").duration(200).EUt(5)
-                .inputItems(dust, Oilsands)
-                .outputFluids(Oil.getFluid(1000))
-                .save(provider);
-
         CENTRIFUGE_RECIPES.recipeBuilder("quartz_sand_separation").duration(60).EUt(VA[LV])
                 .inputItems(dust, QuartzSand, 2)
                 .outputItems(dust, Quartzite)
