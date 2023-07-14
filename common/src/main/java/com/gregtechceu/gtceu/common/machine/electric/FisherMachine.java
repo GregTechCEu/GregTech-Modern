@@ -20,6 +20,7 @@ import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.gui.widget.*;
 import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
 import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
+import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DropSaved;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
@@ -83,6 +84,8 @@ public class FisherMachine extends TieredEnergyMachine implements IAutoOutputIte
     protected final ItemStackTransfer chargerInventory;
     @Nullable
     protected TickableSubscription autoOutputSubs, batterySubs;
+    @Nullable
+    protected ISubscription exportItemSubs, energySubs;
     private final int inventorySize;
     public final long fishingTicks;
     public static final int WATER_CHECK_SIZE = 5;
@@ -140,6 +143,22 @@ public class FisherMachine extends TieredEnergyMachine implements IAutoOutputIte
     public void onLoad() {
         super.onLoad();
         subscribeServerTick(this::update);
+        exportItemSubs = cache.addChangedListener(this::updateAutoOutputSubscription);
+        energySubs = energyContainer.addChangedListener(this::updateBatterySubscription);
+        chargerInventory.setOnContentsChanged(this::updateBatterySubscription);
+    }
+
+    @Override
+    public void onUnload() {
+        super.onUnload();
+        if (energySubs != null) {
+            energySubs.unsubscribe();
+            energySubs = null;
+        }
+        if (exportItemSubs != null) {
+            exportItemSubs.unsubscribe();
+            exportItemSubs = null;
+        }
     }
 
     @Override
@@ -197,6 +216,7 @@ public class FisherMachine extends TieredEnergyMachine implements IAutoOutputIte
         }
         return false;
     }
+
 
     @Override
     public void setAutoOutputItems(boolean allow) {
