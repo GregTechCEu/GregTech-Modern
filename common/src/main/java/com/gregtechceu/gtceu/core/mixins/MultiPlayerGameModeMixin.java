@@ -54,7 +54,13 @@ public class MultiPlayerGameModeMixin {
             cancellable = true
     )
     private void destroyBlock(BlockPos pos, CallbackInfoReturnable<Boolean> cir) {
-        if (minecraft.player == null || !GTToolType.MINING_HAMMER.is(minecraft.player.getMainHandItem()) || minecraft.player.isCrouching()) return;
+        if (
+                minecraft.player == null ||
+                minecraft.level == null ||
+                !GTToolType.MINING_HAMMER.is(minecraft.player.getMainHandItem()) ||
+                minecraft.player.isCrouching() ||
+                !minecraft.player.getMainHandItem().isCorrectToolForDrops(minecraft.level.getBlockState(pos))
+        ) return;
 
         cir.cancel();
         Level level = minecraft.level;
