@@ -11,25 +11,18 @@ import com.gregtechceu.gtceu.api.gui.texture.ProspectingTexture;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.utils.GradientUtil;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
-import com.mojang.datafixers.util.Pair;
-import com.sun.security.jgss.InquireType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.ComponentContents;
-import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.material.Fluid;
@@ -37,7 +30,6 @@ import org.apache.commons.lang3.ArrayUtils;
 
 import javax.annotation.Nonnull;
 import java.util.*;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -53,7 +45,7 @@ public abstract class ProspectorMode<T> {
         @Override
         public void scan(String[][][] storage, LevelChunk chunk) {
             BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
-            var oreTag = CustomTags.ORE_BLOCKS;
+            var oreTag = TagUtil.createBlockTag("ores");
             for (int x = 0; x < 16; x++) {
                 for (int z = 0; z < 16; z++) {
                     for (int y = chunk.getMaxBuildHeight() - 1; y >= chunk.getMinBuildHeight(); y--) {
@@ -113,7 +105,7 @@ public abstract class ProspectorMode<T> {
                     return mat.getUnlocalizedName();
                 }
             }
-            return Registry.BLOCK.get(new ResourceLocation(item)) != Blocks.AIR ? Registry.BLOCK.get(new ResourceLocation(item)).getDescriptionId() : item;
+            return Registry.BLOCK.get(new ResourceLocation(item)).getDescriptionId();
         }
 
         @Override
@@ -144,33 +136,7 @@ public abstract class ProspectorMode<T> {
                     counter.put(item, counter.getOrDefault(item, 0) + 1);
                 }
             }
-            Set<String> keys = tooltips.stream().map(component -> component.plainCopy().getContents() instanceof TranslatableContents translatable ? translatable.getKey() : component.plainCopy().getContents().toString()).map(s -> s.replace('.', '_')).collect(Collectors.toSet());
-            Map<String, Integer> plainToCount = tooltips.stream()
-                    .map(component -> Pair.of(component.plainCopy().getContents() instanceof TranslatableContents translatable ? translatable.getKey() : component.plainCopy().getContents().toString(), component.getSiblings().size() > 0 ? Integer.parseInt(component.getSiblings().get(component.getSiblings().size() - 1).getString().substring(5)) : 0))
-                    .distinct()
-                    .collect(HashMap::new, (map, entry) -> {
-                        String key = entry.getFirst().replace('.', '_');
-                        map.put(key, map.getOrDefault(key, 0) + entry.getSecond());
-                    }, (map1, map2) -> {
-                        for (Map.Entry<String, Integer> entry : map2.entrySet()) {
-                            map1.put(entry.getKey(), map1.getOrDefault(entry.getKey(), 0) + entry.getValue());
-                        }
-                    });
-            counter.forEach((item, count) -> {
-                if (item.contains(":")) {
-                    item = item.replaceFirst("(.*?):(.*?)$", "block.$1.$2");
-                }
-                int lastCount = 0;
-                String key = item.replace('.', '_');
-                if (keys.contains(key)) {
-                    lastCount = plainToCount.get(key);
-                    tooltips.remove(Component.translatable(getDescriptionId(item)).append(" --- " + lastCount));
-                } else {
-                    keys.add(key);
-                    plainToCount.put(key, plainToCount.getOrDefault(key, 0) + count);
-                }
-                tooltips.add(Component.translatable(getDescriptionId(item)).append(" --- " + (count + lastCount)));
-            });
+            counter.forEach((item, count) -> tooltips.add(Component.translatable(getDescriptionId(item)).append(" --- " + count)));
         }
     };
 
