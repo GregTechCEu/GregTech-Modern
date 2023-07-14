@@ -90,8 +90,6 @@ public class FisherMachine extends TieredEnergyMachine implements IAutoOutputIte
     public final long fishingTicks;
     public static final int WATER_CHECK_SIZE = 5;
     private static final ItemStack fishingRod = new ItemStack(Items.FISHING_ROD);
-    private final LootTable lootTable;
-    private final LootContext lootContext;
 
     public FisherMachine(IMachineBlockEntity holder, int tier, Object... args) {
         super(holder, tier);
@@ -102,18 +100,7 @@ public class FisherMachine extends TieredEnergyMachine implements IAutoOutputIte
         this.chargerInventory = createChargerItemHandler();
         setOutputFacingItems(getFrontFacing());
 
-        lootTable = getLevel().getServer().getLootTables().get(BuiltInLootTables.FISHING);
-        FishingHook simulatedHook = new FishingHook(EntityType.FISHING_BOBBER, getLevel()) {
-            public boolean isOpenWaterFishing() {
-                return true;
-            }
-        };
 
-        lootContext = new LootContext.Builder((ServerLevel) getLevel())
-                .withOptionalParameter(LootContextParams.THIS_ENTITY,simulatedHook)
-                .withParameter(LootContextParams.TOOL, fishingRod)
-                .withParameter(LootContextParams.ORIGIN,new Vec3(getPos().getX(),getPos().getY(),getPos().getZ()))
-                .create(LootContextParamSets.FISHING);
 
 
     }
@@ -146,6 +133,7 @@ public class FisherMachine extends TieredEnergyMachine implements IAutoOutputIte
         exportItemSubs = cache.addChangedListener(this::updateAutoOutputSubscription);
         energySubs = energyContainer.addChangedListener(this::updateBatterySubscription);
         chargerInventory.setOnContentsChanged(this::updateBatterySubscription);
+
     }
 
     @Override
@@ -191,6 +179,20 @@ public class FisherMachine extends TieredEnergyMachine implements IAutoOutputIte
         }
         if(waterCount<WATER_CHECK_SIZE*WATER_CHECK_SIZE)
             return;
+
+        LootTable lootTable = getLevel().getServer().getLootTables().get(BuiltInLootTables.FISHING);
+
+        FishingHook simulatedHook = new FishingHook(EntityType.FISHING_BOBBER, getLevel()) {
+            public boolean isOpenWaterFishing() {
+                return true;
+            }
+        };
+
+        LootContext lootContext = new LootContext.Builder((ServerLevel) getLevel())
+                .withOptionalParameter(LootContextParams.THIS_ENTITY,simulatedHook)
+                .withParameter(LootContextParams.TOOL, fishingRod)
+                .withParameter(LootContextParams.ORIGIN,new Vec3(getPos().getX(),getPos().getY(),getPos().getZ()))
+                .create(LootContextParamSets.FISHING);
 
 
         NonNullList<ItemStack> generatedLoot = NonNullList.create();
