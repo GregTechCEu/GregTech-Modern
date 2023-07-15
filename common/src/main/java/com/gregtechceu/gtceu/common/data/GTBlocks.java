@@ -550,7 +550,7 @@ public class GTBlocks {
         ALL_FUSION_CASINGS.put(casingType, casingBlock);
         return casingBlock;
     }
-    public static final BlockEntry<FusionCasingBlock> FUSION_CASING_SUPERCONDUCTOR = createFusionCasing(FusionCasingBlock.CasingType.FUSION_COIL);
+    public static final BlockEntry<FusionCasingBlock> FUSION_CASING_SUPERCONDUCTOR = createFusionCasing(FusionCasingBlock.CasingType.SUPERCONDUCTING_COIL);
     public static final BlockEntry<FusionCasingBlock> FUSION_CASING_FUSION_COIL = createFusionCasing(FusionCasingBlock.CasingType.FUSION_COIL);
     public static final BlockEntry<FusionCasingBlock> FUSION_CASING = createFusionCasing(FusionCasingBlock.CasingType.FUSION_CASING);
     public static final BlockEntry<FusionCasingBlock> FUSION_CASING_MK2 = createFusionCasing(FusionCasingBlock.CasingType.FUSION_CASING_MK2);
@@ -711,7 +711,7 @@ public class GTBlocks {
     }
 
     @Environment(value= EnvType.CLIENT)
-    private static ItemColor leavesItemColor() {
+    public static ItemColor leavesItemColor() {
         return (stack, tintIndex) -> FoliageColor.getDefaultColor();
     }
 

@@ -102,6 +102,7 @@ public class GTItems {
     private static void generateMaterialItems() {
         REGISTRATE.creativeModeTab(() -> MATERIAL_ITEM);
         for (var tagPrefix : TagPrefix.values()) {
+            if (!tagPrefix.doGenerateItem()) { continue; }
             for (Material material : GTRegistries.MATERIALS) {
                 if (allowedItemMaterial(tagPrefix, material)) {
                     generateMaterialItem(tagPrefix, material);
