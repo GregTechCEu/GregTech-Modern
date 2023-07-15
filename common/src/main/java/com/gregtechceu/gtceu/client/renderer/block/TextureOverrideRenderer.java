@@ -19,6 +19,7 @@ import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.Map;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 /**
  * @author KilaBash
@@ -30,10 +31,21 @@ public class TextureOverrideRenderer extends CTMModelRenderer {
 
     @Nonnull
     protected Map<String, ResourceLocation> override;
+    @Nullable
+    protected Supplier<Map<String, ResourceLocation>> overrideSupplier;
 
     public TextureOverrideRenderer(ResourceLocation model, @Nonnull Map<String, ResourceLocation> override) {
         super(model);
         this.override = override;
+        if (LDLib.isClient()) {
+            registerEvent();
+        }
+    }
+
+    public TextureOverrideRenderer(ResourceLocation model, @Nonnull Supplier<Map<String, ResourceLocation>> overrideSupplier) {
+        super(model);
+        this.override = Collections.emptyMap();
+        this.overrideSupplier = overrideSupplier;
         if (LDLib.isClient()) {
             registerEvent();
         }
@@ -83,6 +95,7 @@ public class TextureOverrideRenderer extends CTMModelRenderer {
     public void onPrepareTextureAtlas(ResourceLocation atlasName, Consumer<ResourceLocation> register) {
         super.onPrepareTextureAtlas(atlasName, register);
         if (atlasName.equals(TextureAtlas.LOCATION_BLOCKS)) { // prepare for override.
+            if (overrideSupplier != null) override = overrideSupplier.get();
             for (Object value : override.values()) {
                 register.accept(new ResourceLocation(value.toString()));
             }

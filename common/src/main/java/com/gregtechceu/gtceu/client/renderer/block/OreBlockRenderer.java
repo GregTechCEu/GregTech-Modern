@@ -39,20 +39,17 @@ import java.util.function.Supplier;
  */
 public class OreBlockRenderer extends BlockStateRenderer {
     private final Supplier<BlockState> stone;
+    private Supplier<ResourceLocation> overlaySupplier;
     private ResourceLocation overlay;
     private final boolean emissive;
 
-    public OreBlockRenderer(Supplier<BlockState> stone, ResourceLocation overlay, boolean emissive) {
+    public OreBlockRenderer(Supplier<BlockState> stone, Supplier<ResourceLocation> overlaySupplier, boolean emissive) {
         this.stone = stone;
-        this.overlay = overlay;
+        this.overlaySupplier = overlaySupplier;
         this.emissive = emissive;
         if (LDLib.isClient()) {
             registerEvent();
         }
-    }
-
-    public void setOverlayTexture(ResourceLocation newOverlay) {
-        this.overlay = newOverlay;
     }
 
     @Override
@@ -95,6 +92,9 @@ public class OreBlockRenderer extends BlockStateRenderer {
     public void onPrepareTextureAtlas(ResourceLocation atlasName, Consumer<ResourceLocation> register) {
         super.onPrepareTextureAtlas(atlasName, register);
         if (atlasName.equals(TextureAtlas.LOCATION_BLOCKS)) {
+            if (overlaySupplier != null) {
+                overlay = overlaySupplier.get();
+            }
             register.accept(overlay);
         }
     }

@@ -28,11 +28,7 @@ public class MaterialBlockRenderer extends TextureOverrideRenderer {
     }
 
     protected MaterialBlockRenderer(MaterialIconType type, MaterialIconSet iconSet) {
-        super(GTCEu.id("block/tinted_cube_all"), Map.of("all", type.getBlockTexturePath(iconSet, true)));
-    }
-
-    public void setBlockTexture(ResourceLocation newBlockTexture) {
-        setTextureOverride(Map.of("all", newBlockTexture));
+        super(GTCEu.id("block/tinted_cube_all"), () -> Map.of("all", type.getBlockTexturePath(iconSet, true)));
     }
 
     @Override
