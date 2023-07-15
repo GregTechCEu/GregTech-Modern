@@ -283,7 +283,7 @@ public class GTBlocks {
     }
 
 
-    // Establish Default Tab
+    // Establish Default Blocks Tab
     static { REGISTRATE.creativeModeTab(() -> GTCreativeModeTabs.DECORATION); }
 
     //////////////////////////////////////
