@@ -95,27 +95,6 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine implemen
         return new CleanroomLogic(this);
     }
 
-    protected void initializeAbilities() {
-        List<IEnergyContainer> energyContainers = new ArrayList<>();
-        Map<Long, IO> ioMap = getMultiblockState().getMatchContext().getOrCreate("ioMap", Long2ObjectMaps::emptyMap);
-        for (IMultiPart part : getParts()) {
-            IO io = ioMap.getOrDefault(part.self().getPos().asLong(), IO.BOTH);
-            if(io == IO.NONE || io == IO.OUT) continue;
-            for (var handler : part.getRecipeHandlers()) {
-                // If IO not compatible
-                if (io != IO.BOTH && handler.getHandlerIO() != IO.BOTH && io != handler.getHandlerIO()) continue;
-                if (handler.getCapability() == EURecipeCapability.CAP && handler instanceof IEnergyContainer container) {
-                    energyContainers.add(container);
-                }
-            }
-            if (part instanceof IMaintenanceMachine maintenanceMachine) {
-                getRecipeLogic().setMaintenanceMachine(maintenanceMachine);
-            }
-        }
-        this.inputEnergyContainers = new EnergyContainerList(energyContainers);
-        getRecipeLogic().setEnergyContainer(this.inputEnergyContainers);
-    }
-
     @Override
     @Nonnull
     public CleanroomLogic getRecipeLogic() {
@@ -161,6 +140,33 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine implemen
             this.cleanroomReceivers.forEach(receiver -> receiver.setCleanroom(null));
             this.cleanroomReceivers = null;
         }
+    }
+
+    @Override
+    public boolean shouldAddPartToController(IMultiPart part) {
+        Set<ICleanroomReceiver> receivers = getMultiblockState().getMatchContext().getOrCreate("cleanroomReceiver", Sets::newHashSet);
+        return !receivers.contains(part);
+    }
+
+    protected void initializeAbilities() {
+        List<IEnergyContainer> energyContainers = new ArrayList<>();
+        Map<Long, IO> ioMap = getMultiblockState().getMatchContext().getOrCreate("ioMap", Long2ObjectMaps::emptyMap);
+        for (IMultiPart part : getParts()) {
+            IO io = ioMap.getOrDefault(part.self().getPos().asLong(), IO.BOTH);
+            if(io == IO.NONE || io == IO.OUT) continue;
+            for (var handler : part.getRecipeHandlers()) {
+                // If IO not compatible
+                if (io != IO.BOTH && handler.getHandlerIO() != IO.BOTH && io != handler.getHandlerIO()) continue;
+                if (handler.getCapability() == EURecipeCapability.CAP && handler instanceof IEnergyContainer container) {
+                    energyContainers.add(container);
+                }
+            }
+            if (part instanceof IMaintenanceMachine maintenanceMachine) {
+                getRecipeLogic().setMaintenanceMachine(maintenanceMachine);
+            }
+        }
+        this.inputEnergyContainers = new EnergyContainerList(energyContainers);
+        getRecipeLogic().setEnergyContainer(this.inputEnergyContainers);
     }
 
     /**
