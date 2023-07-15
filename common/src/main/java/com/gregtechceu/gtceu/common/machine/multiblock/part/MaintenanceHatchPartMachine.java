@@ -356,10 +356,10 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine implements IM
         }
         group.addWidget(new SlotWidget(itemStackHandler, 0, group.getSize().width - 4 - 18, 4)
                 .setBackgroundTexture(new GuiTextureGroup(GuiTextures.SLOT, GuiTextures.DUCT_TAPE_OVERLAY))
-                .setHoverTooltips("gregtech.machine.maintenance_hatch_tape_slot.tooltip"));
+                .setHoverTooltips("gtceu.machine.maintenance_hatch_tape_slot.tooltip"));
         group.addWidget(new ButtonWidget(group.getSize().width - 4 - 18, 4 + 20, 18, 18, GuiTextures.MAINTENANCE_BUTTON,
                 data -> fixMaintenanceProblems(group.getGui().entityPlayer))
-                .setHoverTooltips("gregtech.machine.maintenance_hatch_tool_slot.tooltip"));
+                .setHoverTooltips("gtceu.machine.maintenance_hatch_tool_slot.tooltip"));
         group.setBackground(GuiTextures.BACKGROUND_INVERSE);
         return group;
     }

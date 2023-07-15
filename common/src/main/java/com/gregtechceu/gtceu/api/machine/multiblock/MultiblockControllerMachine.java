@@ -24,6 +24,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -146,7 +147,12 @@ public class MultiblockControllerMachine extends MetaMachine implements IMultiCo
     public void onStructureFormed() {
         isFormed = true;
         this.parts.clear();
-        this.parts.addAll(getMultiblockState().getMatchContext().getOrCreate("parts", Collections::emptySet));
+        Set<IMultiPart> set = getMultiblockState().getMatchContext().getOrCreate("parts", Collections::emptySet);
+        for (IMultiPart part : set) {
+            if (shouldAddPartToController(part)) {
+                this.parts.add(part);
+            }
+        }
         this.parts.sort(getDefinition().getPartSorter());
         for (var part : parts) {
             part.addedToController(this);

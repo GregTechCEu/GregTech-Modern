@@ -41,7 +41,7 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
     public static final int MAX_PARALLELS = 8;
 
     // if in millibuckets, this is 0.5, Meaning 2mb of steam -> 1 EU
-    private static final double CONVERSION_RATE = FluidHelper.getBucket() / 2000.0D;
+    private static final double CONVERSION_RATE = FluidHelper.getBucket() * 2 / 1000.0D;
 
     public SteamParallelMultiblockMachine(IMachineBlockEntity holder, Object... args) {
         super(holder, args);
