@@ -7,6 +7,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.color.item.ItemColor;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
@@ -49,4 +50,13 @@ public class MaterialPipeBlockItem extends PipeBlockItem implements IItemRendere
         return getBlock().getRenderer(getBlock().defaultBlockState());
     }
 
+    @Override
+    public Component getDescription() {
+        return this.getBlock().getName();
+    }
+
+    @Override
+    public Component getName(ItemStack stack) {
+        return getDescription();
+    }
 }

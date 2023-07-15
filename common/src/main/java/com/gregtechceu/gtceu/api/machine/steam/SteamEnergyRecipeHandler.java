@@ -13,7 +13,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 /**
  * @author KilaBash
@@ -33,14 +32,14 @@ public class SteamEnergyRecipeHandler implements IRecipeHandler<Long> {
     @Override
     public List<Long> handleRecipeInner(IO io, GTRecipe recipe, List<Long> left, @Nullable String slotName, boolean simulate) {
         long sum = left.stream().reduce(0L, Long::sum);
-        long realSum = (long) Math.ceil(sum / conversionRate);
+        long realSum = (long) Math.ceil(sum * conversionRate);
         if (realSum > 0) {
             var steam = GTMaterials.Steam.getFluid(realSum);
             var list = new ArrayList<FluidStack>();
             list.add(steam);
             var leftSteam = steamTank.handleRecipeInner(io, recipe, list, slotName, simulate);
             if (leftSteam == null || leftSteam.isEmpty()) return null;
-            sum = (long) (leftSteam.get(0).getAmount() * conversionRate);
+            sum = (long) (leftSteam.get(0).getAmount() / conversionRate);
         }
         return sum <= 0 ? null : Collections.singletonList(sum);
     }
