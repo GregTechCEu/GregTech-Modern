@@ -34,16 +34,16 @@ public abstract class RecipeCondition {
 
     public abstract String getType();
 
-    public String getTranlationKey() {
-        return "multiblocked.recipe.condition." + getType();
+    public String getTranslationKey() {
+        return "gtceu.recipe.condition." + getType();
     }
 
     public IGuiTexture getInValidTexture() {
-        return new ResourceTexture("multiblocked:textures/gui/condition_" + getType() + ".png").getSubTexture(0, 0, 1, 0.5f);
+        return new ResourceTexture("gtceu:textures/gui/condition/" + getType() + ".png").getSubTexture(0, 0, 1, 0.5f);
     }
 
     public IGuiTexture getValidTexture() {
-        return new ResourceTexture("multiblocked:textures/gui/condition_" + getType() + ".png").getSubTexture(0, 0.5f, 1, 0.5f);
+        return new ResourceTexture("gtceu:textures/gui/condition/" + getType() + ".png").getSubTexture(0, 0.5f, 1, 0.5f);
     }
 
     public boolean isReverse() {

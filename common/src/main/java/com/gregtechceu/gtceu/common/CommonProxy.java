@@ -55,6 +55,7 @@ public class CommonProxy {
         GTRegistries.REGISTRATE.registerRegistrate();
         WorldGenLayers.registerAll();
         GTOres.init();
+        GTBedrockFluids.init();
         GTFeatures.init();
     }
 }

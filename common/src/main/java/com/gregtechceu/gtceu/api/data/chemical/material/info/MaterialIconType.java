@@ -25,6 +25,8 @@ public record MaterialIconType(String name) {
     public static final MaterialIconType dustImpure = new MaterialIconType("dustImpure");
     public static final MaterialIconType dustPure = new MaterialIconType("dustPure");
 
+    public static final MaterialIconType rawOre = new MaterialIconType("rawOre");
+    public static final MaterialIconType rawOreBlock = new MaterialIconType("rawOreBlock");
     public static final MaterialIconType crushed = new MaterialIconType("crushed");
     public static final MaterialIconType crushedPurified = new MaterialIconType("crushedPurified");
     public static final MaterialIconType crushedRefined = new MaterialIconType("crushedRefined");

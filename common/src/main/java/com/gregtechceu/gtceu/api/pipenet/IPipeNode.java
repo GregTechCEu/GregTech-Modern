@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.block.PipeBlock;
 import com.gregtechceu.gtceu.api.blockentity.IPaintable;
 import com.gregtechceu.gtceu.api.blockentity.ITickSubscription;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.pipelike.Node;
 import com.lowdragmc.lowdraglib.pipelike.PipeNet;
@@ -188,4 +189,7 @@ public interface IPipeNode<PipeType extends Enum<PipeType> & IPipeType<NodeDataT
     default int getDefaultPaintingColor() {
         return 0xFFFFFF;
     }
+
+    @Nullable
+    Material getFrameMaterial();
 }

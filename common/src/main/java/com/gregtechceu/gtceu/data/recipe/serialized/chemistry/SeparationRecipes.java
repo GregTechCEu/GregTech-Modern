@@ -1,7 +1,9 @@
 package com.gregtechceu.gtceu.data.recipe.serialized.chemistry;
 
 import com.gregtechceu.gtceu.common.data.GTBlocks;
+import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
@@ -286,11 +288,6 @@ public class SeparationRecipes {
                 .chancedOutput(dustTiny, Ilmenite, 5000, 500)
                 .save(provider);
 
-        CENTRIFUGE_RECIPES.recipeBuilder("oilsands_dust_separation").duration(200).EUt(5)
-                .inputItems(dust, Oilsands)
-                .outputFluids(Oil.getFluid(1000))
-                .save(provider);
-
         CENTRIFUGE_RECIPES.recipeBuilder("quartz_sand_separation").duration(60).EUt(VA[LV])
                 .inputItems(dust, QuartzSand, 2)
                 .outputItems(dust, Quartzite)
@@ -484,52 +481,46 @@ public class SeparationRecipes {
                 .outputFluids(Helium.getFluid(200))
                 .duration(64).EUt(64).save(provider);
 
-        // TODO Seed oil, fish oil
-        /*
-        List<Tuple<ItemStack, Integer>> seedEntries = GTUtility.getGrassSeedEntries();
-        for (Tuple<ItemStack, Integer> seedEntry : seedEntries) {
-            EXTRACTOR_RECIPES.recipeBuilder()
-                    .duration(32).EUt(2)
-                    .inputItems(seedEntry.getFirst())
-                    .outputFluids(SeedOil.getFluid(10))
-                    .save(provider;
-        }
+        EXTRACTOR_RECIPES.recipeBuilder("seed_oil_from_tag_seeds")
+                .duration(32).EUt(2)
+                .inputItems(CustomTags.SEEDS)
+                .outputFluids(SeedOil.getFluid(10))
+                .save(provider);
 
-        EXTRACTOR_RECIPES.recipeBuilder().duration(32).EUt(2)
+        EXTRACTOR_RECIPES.recipeBuilder("seed_oil_from_beetroot").duration(32).EUt(2)
                 .inputItems(new ItemStack(Items.BEETROOT_SEEDS))
                 .outputFluids(SeedOil.getFluid(10))
-                .save(provider;
+                .save(provider);
 
-        EXTRACTOR_RECIPES.recipeBuilder().duration(32).EUt(2)
-                .inputItems(new ItemStack(Items.MELON_SEEDS, 1, GTValues.W))
+        EXTRACTOR_RECIPES.recipeBuilder("seed_oil_from_melon").duration(32).EUt(2)
+                .inputItems(new ItemStack(Items.MELON_SEEDS, 1))
                 .outputFluids(SeedOil.getFluid(3))
-                .save(provider;
+                .save(provider);
 
-        EXTRACTOR_RECIPES.recipeBuilder().duration(32).EUt(2)
-                .inputItems(new ItemStack(Items.PUMPKIN_SEEDS, 1, GTValues.W))
+        EXTRACTOR_RECIPES.recipeBuilder("seed_oil_from_pumpkin").duration(32).EUt(2)
+                .inputItems(new ItemStack(Items.PUMPKIN_SEEDS, 1))
                 .outputFluids(SeedOil.getFluid(6))
-                .save(provider;
+                .save(provider);
 
-        EXTRACTOR_RECIPES.recipeBuilder().duration(16).EUt(4)
-                .inputItems(new ItemStack(Items.FISH))
+        EXTRACTOR_RECIPES.recipeBuilder("fish_oil_from_cod").duration(16).EUt(4)
+                .inputItems(Items.COD)
                 .outputFluids(FishOil.getFluid(40))
-                .save(provider;
+                .save(provider);
 
-        EXTRACTOR_RECIPES.recipeBuilder().duration(16).EUt(4)
-                .inputItems(new ItemStack(Items.FISH, 1, 1))
+        EXTRACTOR_RECIPES.recipeBuilder("fish_oil_from_salmon").duration(16).EUt(4)
+                .inputItems(Items.SALMON)
                 .outputFluids(FishOil.getFluid(60))
-                .save(provider;
+                .save(provider);
 
-        EXTRACTOR_RECIPES.recipeBuilder().duration(16).EUt(4)
-                .inputItems(new ItemStack(Items.FISH, 1, 2))
+        EXTRACTOR_RECIPES.recipeBuilder("fish_oil_from_tropical_fish").duration(16).EUt(4)
+                .inputItems(Items.TROPICAL_FISH)
                 .outputFluids(FishOil.getFluid(70))
-                .save(provider;
+                .save(provider);
 
-        EXTRACTOR_RECIPES.recipeBuilder().duration(16).EUt(4)
-                .inputItems(new ItemStack(Items.FISH, 1, 3))
+        EXTRACTOR_RECIPES.recipeBuilder("fish_oil_from_pufferfish").duration(16).EUt(4)
+                .inputItems(Items.PUFFERFISH)
                 .outputFluids(FishOil.getFluid(30))
-                .save(provider;
-        */
+                .save(provider);
 
         EXTRACTOR_RECIPES.recipeBuilder("quartzite_extraction").duration(600).EUt(28)
                 .inputItems(dust, Quartzite)

@@ -486,9 +486,9 @@ public class GTOreFeatureEntry {
             int length = size + 1;
             int height = size + 1;
 
-            if (origin.getY() >= level.getHeight(Heightmap.Types.OCEAN_FLOOR_WG, origin.getX(),
-                    origin.getZ()))
+            if (origin.getY() >= level.getMaxBuildHeight())
                 return false;
+
 
             List<GTLayerPattern.Layer> resolvedLayers = new ArrayList<>();
             List<Float> layerDiameterOffsets = new ArrayList<>();
@@ -501,24 +501,24 @@ public class GTOreFeatureEntry {
 
             try {
 
-                for (int x = 0; x < width; x++) {
-                    float dx = x * 2f / width - 1;
+                for (int xC = 0; xC < width; xC++) {
+                    float dx = xC * 2f / width - 1;
                     if (dx * dx > 1)
                         continue;
 
-                    for (int y = 0; y < height; y++) {
-                        float dy = y * 2f / height - 1;
+                    for (int yC = 0; yC < height; yC++) {
+                        float dy = yC * 2f / height - 1;
                         if (dx * dx + dy * dy > 1)
                             continue;
-                        if (level.isOutsideBuildHeight(y0 + y))
+                        if (level.isOutsideBuildHeight(y0 + yC))
                             continue;
 
-                        for (int z = 0; z < length; z++) {
-                            float dz = z * 2f / height - 1;
+                        for (int zC = 0; zC < length; zC++) {
+                            float dz = zC * 2f / height - 1;
 
-                            int layerIndex = layerCoordinate == 0 ? z : layerCoordinate == 1 ? x : y;
+                            int layerIndex = layerCoordinate == 0 ? zC : layerCoordinate == 1 ? xC : yC;
                             if (slantyCoordinate != layerCoordinate)
-                                layerIndex += Mth.floor(slantyCoordinate == 0 ? z : slantyCoordinate == 1 ? x : y) * slope;
+                                layerIndex += Mth.floor(slantyCoordinate == 0 ? zC : slantyCoordinate == 1 ? xC : yC) * slope;
 
                             while (layerIndex >= resolvedLayers.size()) {
                                 GTLayerPattern.Layer next = layerPattern.rollNext(
@@ -537,9 +537,9 @@ public class GTOreFeatureEntry {
                             GTLayerPattern.Layer layer = resolvedLayers.get(layerIndex);
                             Either<List<OreConfiguration.TargetBlockState>, Material> state = layer.rollBlock(random);
 
-                            int currentX = x0 + x;
-                            int currentY = y0 + y;
-                            int currentZ = z0 + z;
+                            int currentX = x0 + xC;
+                            int currentY = y0 + yC;
+                            int currentZ = z0 + zC;
 
                             posCursor.set(currentX, currentY, currentZ);
                             if (!level.ensureCanWrite(posCursor))
@@ -548,10 +548,10 @@ public class GTOreFeatureEntry {
                             if (levelchunksection == null)
                                 continue;
 
-                            int i3 = SectionPos.sectionRelative(currentX);
-                            int j3 = SectionPos.sectionRelative(currentY);
-                            int k3 = SectionPos.sectionRelative(currentZ);
-                            BlockState blockstate = levelchunksection.getBlockState(i3, j3, k3);
+                            int x = SectionPos.sectionRelative(currentX);
+                            int y = SectionPos.sectionRelative(currentY);
+                            int z = SectionPos.sectionRelative(currentZ);
+                            BlockState blockstate = levelchunksection.getBlockState(x, y, z);
 
                             if (random.nextFloat() <= density) {
                                 state.ifLeft(blockStates -> {
@@ -560,7 +560,7 @@ public class GTOreFeatureEntry {
                                             continue;
                                         if (targetState.state.isAir())
                                             continue;
-                                        levelchunksection.setBlockState(i3, j3, k3, targetState.state, false);
+                                        levelchunksection.setBlockState(x, y, z, targetState.state, false);
                                         placedAmount.increment();
                                         break;
                                     }
@@ -573,7 +573,7 @@ public class GTOreFeatureEntry {
                                     Block toPlace = ChemicalHelper.getBlock(prefix, material);
                                     if (toPlace == null || toPlace.defaultBlockState().isAir())
                                         return;
-                                    levelchunksection.setBlockState(i3, j3, k3, toPlace.defaultBlockState(), false);
+                                    levelchunksection.setBlockState(x, y, z, toPlace.defaultBlockState(), false);
                                     placedAmount.increment();
                                 });
                             }

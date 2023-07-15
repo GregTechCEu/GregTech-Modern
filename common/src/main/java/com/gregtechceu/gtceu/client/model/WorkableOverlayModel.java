@@ -197,12 +197,12 @@ public class WorkableOverlayModel {
 
             final String active = String.format("%s_active", overlayPath);
             ResourceLocation activeSprite = new ResourceLocation(location.getNamespace(), location.getPath() + active);
-            if (ResourceHelper.isTextureExist(activeSprite)) register.accept(activeSprite); else activeSprite = null;
+            if (ResourceHelper.isTextureExist(activeSprite)) register.accept(activeSprite); else activeSprite = normalSprite;
 
 
             final String paused = String.format("%s_paused", overlayPath);
             ResourceLocation pausedSprite = new ResourceLocation(location.getNamespace(), location.getPath() + paused);
-            if (ResourceHelper.isTextureExist(pausedSprite)) register.accept(pausedSprite); else pausedSprite = null;
+            if (ResourceHelper.isTextureExist(pausedSprite)) register.accept(pausedSprite); else pausedSprite = normalSprite;
 
 
             // emissive

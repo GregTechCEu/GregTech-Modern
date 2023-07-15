@@ -183,10 +183,12 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
         }
     }
 
-    private boolean checkMatchedRecipeAvailable(GTRecipe match) {
+    protected boolean checkMatchedRecipeAvailable(GTRecipe match) {
         var modified = machine.modifyRecipe(match);
         if (modified != null) {
-            if (modified.checkConditions(this).isSuccess()) {
+            if (modified.checkConditions(this).isSuccess() &&
+                    modified.matchRecipe(machine).isSuccess() &&
+                    modified.matchTickRecipe(machine).isSuccess()) {
                 setupRecipe(modified);
             }
             if (lastRecipe != null && getStatus() == Status.WORKING) {
@@ -405,6 +407,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
         return isWorking() || isWaiting() || (isSuspend() && lastRecipe != null && duration > 0);
     }
 
+    @Deprecated
     public boolean isHasNotEnoughEnergy() {
         return isWaiting();
     }

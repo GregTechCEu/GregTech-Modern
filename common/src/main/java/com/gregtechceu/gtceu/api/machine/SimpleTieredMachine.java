@@ -88,7 +88,7 @@ public class SimpleTieredMachine extends WorkableTieredMachine implements IAutoO
         super(holder, tier, tankScalingFunction, args);
         this.outputFacingItems = hasFrontFacing() ? getFrontFacing().getOpposite() : Direction.UP;
         this.outputFacingFluids = outputFacingItems;
-        this.chargerInventory = createCharterItemHandler(args);
+        this.chargerInventory = createChargerItemHandler(args);
         this.circuitInventory = createCircuitItemHandler(args);
     }
 
@@ -100,7 +100,7 @@ public class SimpleTieredMachine extends WorkableTieredMachine implements IAutoO
         return MANAGED_FIELD_HOLDER;
     }
 
-    protected ItemStackTransfer createCharterItemHandler(Object... args) {
+    protected ItemStackTransfer createChargerItemHandler(Object... args) {
         var transfer = new ItemStackTransfer();
         transfer.setFilter(item -> GTCapabilityHelper.getElectricItem(item) != null);
         return transfer;
@@ -342,11 +342,6 @@ public class SimpleTieredMachine extends WorkableTieredMachine implements IAutoO
     //////////////////////////////////////
     //***********     GUI    ***********//
     //////////////////////////////////////
-    // Method provided to override
-    protected SlotWidget getCircuitSlotTooltip(SlotWidget widget) {
-        widget.setHoverTooltips(LangHandler.getMultiLang("gtceu.gui.configurator_slot.tooltip").toArray(new MutableComponent[0]));
-        return widget;
-    }
 
     @Override
     public void attachConfigurators(ConfiguratorPanel configuratorPanel) {
@@ -354,7 +349,7 @@ public class SimpleTieredMachine extends WorkableTieredMachine implements IAutoO
         configuratorPanel.attachConfigurators(new CircuitFancyConfigurator(circuitInventory.storage));
     }
 
-    public static BiFunction<ResourceLocation, GTRecipeType, EditableMachineUI> EDITABLE_UI_CREATOR = Util.memoize((path, recipeType )-> new EditableMachineUI("simple", path, () -> {
+    public static BiFunction<ResourceLocation, GTRecipeType, EditableMachineUI> EDITABLE_UI_CREATOR = Util.memoize((path, recipeType)-> new EditableMachineUI("simple", path, () -> {
         var template =  recipeType.createEditableUITemplate(false, false).createDefault().setBackground(GuiTextures.BACKGROUND_INVERSE);
         var energyBar = createEnergyBar().createDefault();
         var batterySlot = createBatterySlot().createDefault();

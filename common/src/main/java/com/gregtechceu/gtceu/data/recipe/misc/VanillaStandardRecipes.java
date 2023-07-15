@@ -1000,6 +1000,11 @@ public class VanillaStandardRecipes {
                 .inputItems(dust, Blaze, 4)
                 .outputItems(new ItemStack(Items.BLAZE_ROD))
                 .save(provider);
+
+        FLUID_HEATER_RECIPES.recipeBuilder("mud_to_clay")
+                .inputItems(Items.MUD)
+                .outputItems(Items.CLAY)
+                .duration(40).EUt(VA[LV]).save(provider);
     }
 
     /**
@@ -1016,6 +1021,12 @@ public class VanillaStandardRecipes {
         MIXER_RECIPES.recipeBuilder("coarse_dirt")
                 .inputItems(new ItemStack(Blocks.GRAVEL))
                 .inputItems(new ItemStack(Blocks.DIRT))
+                .outputItems(new ItemStack(Blocks.COARSE_DIRT, 2))
+                .duration(100).EUt(4).save(provider);
+
+        MIXER_RECIPES.recipeBuilder("mud")
+                .inputItems(new ItemStack(Blocks.DIRT))
+                .inputFluids(Water.getFluid(L))
                 .outputItems(new ItemStack(Blocks.COARSE_DIRT, 2))
                 .duration(100).EUt(4).save(provider);
     }

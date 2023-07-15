@@ -628,6 +628,80 @@ public class MachineRecipeLoader {
                 .inputItems(ring, Platinum, 4)
                 .outputItems(FLUID_CELL_LARGE_TUNGSTEN_STEEL)
                 .duration(200).EUt(VA[HV]).save(provider);
+
+        ASSEMBLER_RECIPES.recipeBuilder("fluid_drill_mv")
+                .inputItems(HULL[MV])
+                .inputItems(frameGt, Steel, 4)
+                .inputItems(CustomTags.MV_CIRCUITS, 4)
+                .inputItems(ELECTRIC_MOTOR_MV, 4)
+                .inputItems(ELECTRIC_PUMP_MV, 4)
+                .inputItems(gear, VanadiumSteel, 4)
+                .circuitMeta(2)
+                .outputItems(FLUID_DRILLING_RIG[0])
+                .duration(400).EUt(VA[MV]).save(provider);
+
+        ASSEMBLER_RECIPES.recipeBuilder("fluid_drill_ev")
+                .inputItems(HULL[EV])
+                .inputItems(frameGt, Titanium, 4)
+                .inputItems(CustomTags.EV_CIRCUITS, 4)
+                .inputItems(ELECTRIC_MOTOR_EV, 4)
+                .inputItems(ELECTRIC_PUMP_EV, 4)
+                .inputItems(gear, TungstenCarbide, 4)
+                .circuitMeta(2)
+                .outputItems(FLUID_DRILLING_RIG[1])
+                .duration(400).EUt(VA[EV]).save(provider);
+
+        ASSEMBLER_RECIPES.recipeBuilder("fluid_drill_luv")
+                .inputItems(HULL[LuV])
+                .inputItems(frameGt, TungstenSteel, 4)
+                .inputItems(CustomTags.LuV_CIRCUITS, 4)
+                .inputItems(ELECTRIC_MOTOR_LuV, 4)
+                .inputItems(ELECTRIC_PUMP_LuV, 4)
+                .inputItems(gear, Osmiridium, 4)
+                .circuitMeta(2)
+                .outputItems(FLUID_DRILLING_RIG[2])
+                .duration(400).EUt(VA[LuV]).save(provider);
+
+        ASSEMBLY_LINE_RECIPES.recipeBuilder("fusion_reactor_1")
+                .inputItems(GTBlocks.SUPERCONDUCTING_COIL.asStack())
+                .inputItems(CustomTags.ZPM_CIRCUITS, 4)
+                .inputItems(plateDouble, Plutonium241)
+                .inputItems(plateDouble, Osmiridium)
+                .inputItems(FIELD_GENERATOR_IV, 2)
+                .inputItems(ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT, 64)
+                .inputItems(wireGtSingle, IndiumTinBariumTitaniumCuprate, 32)
+                .inputFluids(SolderingAlloy.getFluid(L * 8))
+                .inputFluids(NiobiumTitanium.getFluid(L * 8))
+                .outputItems(FUSION_REACTOR[0].asStack())
+                .duration(800).EUt(VA[LuV]).save(provider);
+
+        ASSEMBLY_LINE_RECIPES.recipeBuilder("fusion_reactor_2")
+                .inputItems(GTBlocks.FUSION_COIL.asStack())
+                .inputItems(CustomTags.UV_CIRCUITS, 4)
+                .inputItems(plateDouble, Naquadria)
+                .inputItems(plateDouble, Europium)
+                .inputItems(FIELD_GENERATOR_LuV, 2)
+                .inputItems(ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT, 64)
+                .inputItems(ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT, 32)
+                .inputItems(wireGtSingle, UraniumRhodiumDinaquadide, 32)
+                .inputFluids(SolderingAlloy.getFluid(L * 8))
+                .inputFluids(VanadiumGallium.getFluid(L * 8))
+                .outputItems(FUSION_REACTOR[1].asStack())
+                .duration(1000).EUt(61440).save(provider);
+
+        ASSEMBLY_LINE_RECIPES.recipeBuilder("fusion_reactor_3")
+                .inputItems(GTBlocks.FUSION_COIL.asStack())
+                .inputItems(CustomTags.UHV_CIRCUITS, 4)
+                .inputItems(QUANTUM_STAR)
+                .inputItems(plateDouble, Americium)
+                .inputItems(FIELD_GENERATOR_ZPM, 2)
+                .inputItems(ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT, 64)
+                .inputItems(ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT, 64)
+                .inputItems(wireGtSingle, EnrichedNaquadahTriniumEuropiumDuranide, 32)
+                .inputFluids(SolderingAlloy.getFluid(L * 8))
+                .inputFluids(YttriumBariumCuprate.getFluid(L * 8))
+                .outputItems(FUSION_REACTOR[2].asStack())
+                .duration(1000).EUt(VA[ZPM]).save(provider);
     }
 
     private static void registerBlastFurnaceRecipes(Consumer<FinishedRecipe> provider) {
@@ -651,13 +725,12 @@ public class MachineRecipeLoader {
                 .duration(1600).EUt(VA[HV]).save(provider);
 
         //TODO Tempered Glass
-        //BLAST_RECIPES.recipeBuilder()
-        //        .inputItems(block, Glass)
-        //        .inputFluids(Oxygen.getFluid(100))
-        //        .outputItems(MetaBlocks.TRANSPARENT_CASING.getItemVariant(
-        //                BlockGlassCasing.CasingType.TEMPERED_GLASS))
-        //        .blastFurnaceTemp(1000)
-        //        .duration(200).EUt(VA[MV]).save(provider);
+        BLAST_RECIPES.recipeBuilder("tempered_glass_blasting")
+                .inputItems(block, Glass)
+                .inputFluids(Oxygen.getFluid(100))
+                .outputItems(GTBlocks.CASING_TEMPERED_GLASS.asStack())
+                .blastFurnaceTemp(1000)
+                .duration(200).EUt(VA[MV]).save(provider);
 
         registerBlastFurnaceMetallurgyRecipes(provider);
     }
@@ -759,7 +832,15 @@ public class MachineRecipeLoader {
         COMPRESSOR_RECIPES.recipeBuilder("plant_ball_from_brown_mushroom").duration(300).EUt(2).inputItems(new ItemStack(Blocks.BROWN_MUSHROOM, 8)).outputItems(PLANT_BALL).save(provider);
         COMPRESSOR_RECIPES.recipeBuilder("plant_ball_from_red_mushroom").duration(300).EUt(2).inputItems(new ItemStack(Blocks.RED_MUSHROOM, 8)).outputItems(PLANT_BALL).save(provider);
         COMPRESSOR_RECIPES.recipeBuilder("plant_ball_from_beetroot").duration(300).EUt(2).inputItems(new ItemStack(Items.BEETROOT, 8)).outputItems(PLANT_BALL).save(provider);
-
+        COMPRESSOR_RECIPES.recipeBuilder("plant_ball_from_moss").duration(300).EUt(2).inputItems(new ItemStack(Items.MOSS_BLOCK, 8)).outputItems(PLANT_BALL).save(provider);
+        COMPRESSOR_RECIPES.recipeBuilder("plant_ball_from_nether_wart").duration(300).EUt(2).inputItems(new ItemStack(Items.NETHER_WART_BLOCK, 8)).outputItems(PLANT_BALL).save(provider);
+        COMPRESSOR_RECIPES.recipeBuilder("plant_ball_from_crimson_stem").duration(300).EUt(2).inputItems(new ItemStack(Items.CRIMSON_STEM, 8)).outputItems(PLANT_BALL).save(provider);
+        COMPRESSOR_RECIPES.recipeBuilder("plant_ball_from_warped_stem").duration(300).EUt(2).inputItems(new ItemStack(Items.WARPED_STEM, 8)).outputItems(PLANT_BALL).save(provider);
+        COMPRESSOR_RECIPES.recipeBuilder("plant_ball_from_brain_coral").duration(300).EUt(2).inputItems(new ItemStack(Items.BRAIN_CORAL, 8)).outputItems(PLANT_BALL).save(provider);
+        COMPRESSOR_RECIPES.recipeBuilder("plant_ball_from_bubble_coral").duration(300).EUt(2).inputItems(new ItemStack(Items.BUBBLE_CORAL, 8)).outputItems(PLANT_BALL).save(provider);
+        COMPRESSOR_RECIPES.recipeBuilder("plant_ball_from_fire_coral").duration(300).EUt(2).inputItems(new ItemStack(Items.FIRE_CORAL, 8)).outputItems(PLANT_BALL).save(provider);
+        COMPRESSOR_RECIPES.recipeBuilder("plant_ball_from_tube_coral").duration(300).EUt(2).inputItems(new ItemStack(Items.TUBE_CORAL, 8)).outputItems(PLANT_BALL).save(provider);
+        COMPRESSOR_RECIPES.recipeBuilder("plant_ball_from_horn_coral").duration(300).EUt(2).inputItems(new ItemStack(Items.HORN_CORAL, 8)).outputItems(PLANT_BALL).save(provider);
     }
 
     private static void registerRecyclingRecipes(Consumer<FinishedRecipe> provider) {

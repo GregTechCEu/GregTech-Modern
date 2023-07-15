@@ -152,15 +152,6 @@
     ],
     "subtitle": "gtceu.subtitle.furnace"
   },
-  "irecutter": {
-    "sounds": [
-      {
-        "type": "file",
-        "name": "gtceu:irecutter"
-      }
-    ],
-    "subtitle": "gtceu.subtitle.irecutter"
-  },
   "macerator": {
     "sounds": [
       {
@@ -322,6 +313,15 @@
       }
     ],
     "subtitle": "gtceu.subtitle.turbine"
+  },
+  "wirecutter": {
+    "sounds": [
+      {
+        "type": "file",
+        "name": "gtceu:wirecutter"
+      }
+    ],
+    "subtitle": "gtceu.subtitle.wirecutter"
   },
   "wrench": {
     "sounds": [
