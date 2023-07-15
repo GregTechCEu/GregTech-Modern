@@ -22,9 +22,9 @@ public class TieredHullMachineRenderer extends MachineRenderer {
     public TieredHullMachineRenderer(int tier, ResourceLocation modelLocation) {
         super(modelLocation);
         setTextureOverride(Map.of(
-                "bottom", GTCEu.id("block/casings/voltage/%s/bottom".formatted(GTValues.VN[tier].toLowerCase())),
-                "top", GTCEu.id("block/casings/voltage/%s/top".formatted(GTValues.VN[tier].toLowerCase())),
-                "side", GTCEu.id("block/casings/voltage/%s/side".formatted(GTValues.VN[tier].toLowerCase()))
+                "bottom", GTCEu.id("block/casings/voltage/%s_bottom".formatted(GTValues.VN[tier].toLowerCase())),
+                "top", GTCEu.id("block/casings/voltage/%s_top".formatted(GTValues.VN[tier].toLowerCase())),
+                "side", GTCEu.id("block/casings/voltage/%s_side".formatted(GTValues.VN[tier].toLowerCase()))
         ));
     }
 
