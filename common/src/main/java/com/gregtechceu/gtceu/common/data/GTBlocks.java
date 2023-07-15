@@ -315,7 +315,10 @@ public class GTBlocks {
             STABLE_MACHINE_CASING = registerMultiblockMachineCasing("stable_machine_casing", GTCEu.id("block/casings/solid/stable_machine_casing")),
             ROBUST_MACHINE_CASING = registerMultiblockMachineCasing("robust_machine_casing", GTCEu.id("block/casings/solid/robust_machine_casing")),
             INERT_MACHINE_CASING = registerMultiblockMachineCasing("inert_machine_casing", GTCEu.id("block/casings/solid/inert_machine_casing")),
-            STURDY_MACHINE_CASING = registerMultiblockMachineCasing("sturdy_machine_casing", GTCEu.id("block/casings/solid/sturdy_machine_casing"));
+            STURDY_MACHINE_CASING = registerMultiblockMachineCasing("sturdy_machine_casing", GTCEu.id("block/casings/solid/sturdy_machine_casing")),
+            ASSEMBLY_LINE_GRATING = registerMultiblockMachineCasing("assembly_line_grating", GTCEu.id("block/casings/pipe/machine_casing_grate")),
+            ASSEMBLY_LINE_CASING = registerMultiblockMachineCasing("assembly_line_casing", GTCEu.id("block/casings/mechanic/machine_casing_assembly_control"));
+
 
     // Steam Machine Casings
     private static BlockEntry<Block> registerSteamMachineCasing(String id, String textures) {
@@ -476,6 +479,7 @@ public class GTBlocks {
             HERMETIC_CASING_UHV = registerHermeticCasing("uhv_hermetic_casing", "block/casings/voltage/max", "Hermetic Casing IX");
 
     // Firebox Casings
+    public static final Map<BoilerFireboxType, BlockEntry<ActiveBlock>> ALL_FIREBOXES = new HashMap<>();
     private static BlockEntry<ActiveBlock> registerFireboxCasing(BoilerFireboxType type) {
         BlockEntry<ActiveBlock> block = REGISTRATE
                 .block("%s_casing".formatted(type.name()), p -> new ActiveBlock(p,
@@ -498,14 +502,81 @@ public class GTBlocks {
         ALL_FIREBOXES.put(type, block);
         return block;
     }
-    public static final Map<BoilerFireboxType, BlockEntry<ActiveBlock>> ALL_FIREBOXES = new HashMap<>();
     public static final BlockEntry<ActiveBlock>
             BRONZE_FIREBOX = registerFireboxCasing(BoilerFireboxType.BRONZE_FIREBOX),
             STEEL_FIREBOX = registerFireboxCasing(BoilerFireboxType.STEEL_FIREBOX),
             TITANIUM_FIREBOX = registerFireboxCasing(BoilerFireboxType.TITANIUM_FIREBOX),
             TUNGSTENSTEEL_FIREBOX = registerFireboxCasing(BoilerFireboxType.TUNGSTENSTEEL_FIREBOX);
 
+    // Active Casings
+    private static BlockEntry<ActiveBlock> createActiveCasing(String name, String baseModelPath) {
+        String finalName = "%s".formatted(name);
+        return REGISTRATE.block(finalName, p -> new ActiveBlock(p,
+                        new CTMModelRenderer(GTCEu.id(baseModelPath)),
+                        new CTMModelRenderer(GTCEu.id("%s_active".formatted(baseModelPath)))))
+                .initialProperties(() -> Blocks.IRON_BLOCK)
+                .addLayer(() -> RenderType::cutoutMipped)
+                .blockstate(NonNullBiConsumer.noop())
+                .tag(GTToolType.WRENCH.harvestTag, BlockTags.MINEABLE_WITH_PICKAXE)
+                .item(RendererBlockItem::new)
+                .model(NonNullBiConsumer.noop())
+                .build()
+                .register();
+    }
+    public static final BlockEntry<ActiveBlock> CASING_ENGINE_INTAKE = createActiveCasing("engine_intake_casing", "block/variant/engine_intake");
+    public static final BlockEntry<ActiveBlock> CASING_EXTREME_ENGINE_INTAKE = createActiveCasing("extreme_engine_intake_casing", "block/variant/extreme_engine_intake");
+    public static final BlockEntry<ActiveBlock> ASSEMBLY_LINE_UNIT = createActiveCasing("assembly_line_unit", "block/variant/assembly_line");
+
+    // Fusion Casing
+    public static final Map<IFusionCasingType, Supplier<FusionCasingBlock>> ALL_FUSION_CASINGS = new HashMap<>();
+    private static BlockEntry<FusionCasingBlock> createFusionCasing(IFusionCasingType casingType) {
+        BlockEntry<FusionCasingBlock> casingBlock = REGISTRATE.block(casingType.getSerializedName(), p -> new FusionCasingBlock(p, casingType))
+                .initialProperties(() -> Blocks.IRON_BLOCK)
+                .properties(properties -> properties.strength(5.0f, 10.0f).sound(SoundType.METAL))
+                .addLayer(() -> RenderType::cutoutMipped)
+                .blockstate(NonNullBiConsumer.noop())
+                .tag(GTToolType.WRENCH.harvestTag, CustomTags.TOOL_TIERS[casingType.getHarvestLevel()])
+                .item(RendererBlockItem::new)
+                .model(NonNullBiConsumer.noop())
+                .build()
+                .register();
+        ALL_FUSION_CASINGS.put(casingType, casingBlock);
+        return casingBlock;
+    }
+    public static final BlockEntry<FusionCasingBlock> FUSION_CASING_SUPERCONDUCTOR = createFusionCasing(FusionCasingBlock.CasingType.FUSION_COIL);
+    public static final BlockEntry<FusionCasingBlock> FUSION_CASING_FUSION_COIL = createFusionCasing(FusionCasingBlock.CasingType.FUSION_COIL);
+    public static final BlockEntry<FusionCasingBlock> FUSION_CASING = createFusionCasing(FusionCasingBlock.CasingType.FUSION_CASING);
+    public static final BlockEntry<FusionCasingBlock> FUSION_CASING_MK2 = createFusionCasing(FusionCasingBlock.CasingType.FUSION_CASING_MK2);
+    public static final BlockEntry<FusionCasingBlock> FUSION_CASING_MK3 = createFusionCasing(FusionCasingBlock.CasingType.FUSION_CASING_MK3);
+
+    // Cleanroom Casings
+    public static final Map<IFilterType, Supplier<Block>> ALL_FILTERS = new HashMap<>();
+    private static BlockEntry<Block> createCleanroomFilter(IFilterType filterType) {
+        var filterBlock = REGISTRATE.block(filterType.getSerializedName(), p -> (Block) new RendererBlock(p,
+                        Platform.isClient() ? new TextureOverrideRenderer(new ResourceLocation("block/cube_all"),
+                                Map.of("all", GTCEu.id("block/casings/cleanroom/" + filterType))) : null))
+                .initialProperties(() -> Blocks.IRON_BLOCK)
+                .properties(properties -> properties.strength(2.0f, 8.0f).sound(SoundType.METAL).isValidSpawn((blockState, blockGetter, blockPos, entityType) -> false))
+                .addLayer(() -> RenderType::cutoutMipped)
+                .blockstate(NonNullBiConsumer.noop())
+                .tag(GTToolType.WRENCH.harvestTag, CustomTags.TOOL_TIERS[1])
+                .item(RendererBlockItem::new)
+                .model(NonNullBiConsumer.noop())
+                .build()
+                .register();
+        ALL_FILTERS.put(filterType, filterBlock);
+        return filterBlock;
+    }
+    public static final BlockEntry<Block> FILTER_CASING = createCleanroomFilter(CleanroomFilterType.FILTER_CASING);
+    public static final BlockEntry<Block> FILTER_CASING_STERILE = createCleanroomFilter(CleanroomFilterType.FILTER_CASING_STERILE);
+
+
+    //////////////////////////////////////
+    //******     Other Blocks      *****//
+    //////////////////////////////////////
+
     // Heating Coils
+    public static final Map<ICoilType, Supplier<CoilBlock>> ALL_COILS = new HashMap<>();
     private static BlockEntry<CoilBlock> createCoilBlock(ICoilType coilType) {
         BlockEntry<CoilBlock> coilBlock = REGISTRATE.block("%s_coil_block".formatted(coilType.getName()), p -> new CoilBlock(p, coilType))
                 .initialProperties(() -> Blocks.IRON_BLOCK)
@@ -519,7 +590,6 @@ public class GTBlocks {
         ALL_COILS.put(coilType, coilBlock);
         return coilBlock;
     }
-    public static final Map<ICoilType, Supplier<CoilBlock>> ALL_COILS = new HashMap<>();
     public static final BlockEntry<CoilBlock>
             CUPRONICKEL_COIL = createCoilBlock(CoilBlock.CoilType.CUPRONICKEL),
             KANTHAL_COIL = createCoilBlock(CoilBlock.CoilType.KANTHAL),
@@ -529,26 +599,6 @@ public class GTBlocks {
             NAQUADAH_COIL = createCoilBlock(CoilBlock.CoilType.NAQUADAH),
             TRINIUM_COIL = createCoilBlock(CoilBlock.CoilType.TRINIUM),
             TRITANIUM_COIL = createCoilBlock(CoilBlock.CoilType.TRITANIUM);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     // Just Pickaxe Blocks
     private static BlockEntry<Block> registerPickaxeBlock(String id, ResourceLocation texture) {
@@ -571,7 +621,8 @@ public class GTBlocks {
             TEMPERED_GLASS = registerPickaxeBlock("tempered_glass", GTCEu.id("block/casings/transparent/tempered_glass"), () -> Blocks.GLASS),
             LAMINATED_GLASS = registerPickaxeBlock("laminated_glass", GTCEu.id("block/casings/transparent/laminated_glass"), () -> Blocks.GLASS),
             PLASTCRETE = registerPickaxeBlock("plascrete", GTCEu.id("block/casings/cleanroom/plascrete")),
-            CLEANROOM_GLASS = registerPickaxeBlock("cleanroom_glass", GTCEu.id("block/casings/transparent/cleanroom_glass"), () -> Blocks.GLASS);
+            CLEANROOM_GLASS = registerPickaxeBlock("cleanroom_glass", GTCEu.id("block/casings/transparent/cleanroom_glass"), () -> Blocks.GLASS),
+            FUSION_GLASS = registerPickaxeBlock("fusion_glass", GTCEu.id("block/casings/transparent/fusion_glass"), () -> Blocks.GLASS);
 
     // The Pump Deck
     public static final BlockEntry<Block> PUMP_DECK = REGISTRATE.block("pump_deck", p -> (Block) new RendererBlock(p,
@@ -583,94 +634,11 @@ public class GTBlocks {
             .properties(p -> p.sound(SoundType.WOOD).color(MaterialColor.WOOD))
             .addLayer(() -> RenderType::cutoutMipped)
             .blockstate(NonNullBiConsumer.noop())
-            .tag(GTToolType.WRENCH.harvestTag, BlockTags.MINEABLE_WITH_AXE)
+            .tag(BlockTags.MINEABLE_WITH_AXE)
             .item(RendererBlockItem::new)
             .model(NonNullBiConsumer.noop())
             .build()
             .register();
-
-    //Fusion
-    private static BlockEntry<FusionCasingBlock> createFusionCasing(IFusionCasingType casingType) {
-        BlockEntry<FusionCasingBlock> casingBlock = REGISTRATE.block(casingType.getSerializedName(), p -> new FusionCasingBlock(p, casingType))
-                .initialProperties(() -> Blocks.IRON_BLOCK)
-                .properties(properties -> properties.strength(5.0f, 10.0f).sound(SoundType.METAL))
-                .addLayer(() -> RenderType::cutoutMipped)
-                .blockstate(NonNullBiConsumer.noop())
-                .tag(GTToolType.WRENCH.harvestTag, CustomTags.TOOL_TIERS[casingType.getHarvestLevel()])
-                .item(RendererBlockItem::new)
-                .model(NonNullBiConsumer.noop())
-                .build()
-                .register();
-        ALL_FUSION_CASINGS.put(casingType, casingBlock);
-        return casingBlock;
-    }
-    public static final Map<IFusionCasingType, Supplier<FusionCasingBlock>> ALL_FUSION_CASINGS = new HashMap<>();
-    public static final BlockEntry<FusionCasingBlock> FUSION_CASING_SUPERCONDUCTOR = createFusionCasing(FusionCasingBlock.CasingType.FUSION_COIL);
-    public static final BlockEntry<FusionCasingBlock> FUSION_CASING_FUSION_COIL = createFusionCasing(FusionCasingBlock.CasingType.FUSION_COIL);
-    public static final BlockEntry<FusionCasingBlock> FUSION_CASING = createFusionCasing(FusionCasingBlock.CasingType.FUSION_CASING);
-    public static final BlockEntry<FusionCasingBlock> FUSION_CASING_MK2 = createFusionCasing(FusionCasingBlock.CasingType.FUSION_CASING_MK2);
-    public static final BlockEntry<FusionCasingBlock> FUSION_CASING_MK3 = createFusionCasing(FusionCasingBlock.CasingType.FUSION_CASING_MK3);
-    public static final BlockEntry<Block> FUSION_GLASS = createCasingBlock("fusion_glass", GTCEu.id("block/casings/transparent/fusion_glass"), () -> Blocks.GLASS);
-
-    // Others
-    private static BlockEntry<ActiveBlock> createActiveCasing(String name, String baseModelPath) {
-        String finalName = "%s".formatted(name);
-        return REGISTRATE.block(finalName, p -> new ActiveBlock(p,
-                        new CTMModelRenderer(GTCEu.id(baseModelPath)),
-                        new CTMModelRenderer(GTCEu.id("%s_active".formatted(baseModelPath)))))
-                .initialProperties(() -> Blocks.IRON_BLOCK)
-                .addLayer(() -> RenderType::cutoutMipped)
-                .blockstate(NonNullBiConsumer.noop())
-                .tag(GTToolType.WRENCH.harvestTag, BlockTags.MINEABLE_WITH_PICKAXE)
-                .item(RendererBlockItem::new)
-                .model(NonNullBiConsumer.noop())
-                .build()
-                .register();
-    }
-
-    public static final BlockEntry<ActiveBlock> CASING_ENGINE_INTAKE = createActiveCasing("engine_intake_casing", "block/variant/engine_intake");
-    public static final BlockEntry<ActiveBlock> CASING_EXTREME_ENGINE_INTAKE = createActiveCasing("extreme_engine_intake_casing", "block/variant/extreme_engine_intake");
-    public static final Map<IFilterType, Supplier<Block>> ALL_FILTERS = new HashMap<>();
-    public static final BlockEntry<Block> FILTER_CASING = createCleanroomFilter(CleanroomFilterType.FILTER_CASING);
-    public static final BlockEntry<Block> FILTER_CASING_STERILE = createCleanroomFilter(CleanroomFilterType.FILTER_CASING_STERILE);
-
-    private static BlockEntry<Block> createCasingBlock(String id, ResourceLocation texture) {
-        return createCasingBlock(id, texture, () -> Blocks.IRON_BLOCK);
-    }
-    private static BlockEntry<Block> createCasingBlock(String id, ResourceLocation texture, NonNullSupplier<? extends Block> properties) {
-        return REGISTRATE.block(id, p -> (Block) new RendererBlock(p, new TextureOverrideRenderer(new ResourceLocation("block/cube_all"), Map.of("all", texture))))
-                .initialProperties(properties)
-                .addLayer(() -> RenderType::cutoutMipped)
-                .blockstate(NonNullBiConsumer.noop())
-                .tag(GTToolType.WRENCH.harvestTag, BlockTags.MINEABLE_WITH_PICKAXE)
-                .item(RendererBlockItem::new)
-                .model(NonNullBiConsumer.noop())
-                .build()
-                .register();
-    }
-
-    // Assembly Line Casings
-    public static final BlockEntry<Block> ASSEMBLY_LINE_GRATING = createCasingBlock("assembly_line_grating", GTCEu.id("block/casings/pipe/machine_casing_grate"));
-    public static final BlockEntry<Block> ASSEMBLY_LINE_CASING = createCasingBlock("assembly_line_casing", GTCEu.id("block/casings/mechanic/machine_casing_assembly_control"));
-    public static final BlockEntry<ActiveBlock> ASSEMBLY_LINE_UNIT = createActiveCasing("assembly_line_unit", "block/variant/assembly_line");
-
-
-    private static BlockEntry<Block> createCleanroomFilter(IFilterType filterType) {
-        var filterBlock = REGISTRATE.block(filterType.getSerializedName(), p -> (Block) new RendererBlock(p,
-                        Platform.isClient() ? new TextureOverrideRenderer(new ResourceLocation("block/cube_all"),
-                                Map.of("all", GTCEu.id("block/casings/cleanroom/" + filterType))) : null))
-                .initialProperties(() -> Blocks.IRON_BLOCK)
-                .properties(properties -> properties.strength(2.0f, 8.0f).sound(SoundType.METAL).isValidSpawn((blockState, blockGetter, blockPos, entityType) -> false))
-                .addLayer(() -> RenderType::cutoutMipped)
-                .blockstate(NonNullBiConsumer.noop())
-                .tag(GTToolType.WRENCH.harvestTag, CustomTags.TOOL_TIERS[1])
-                .item(RendererBlockItem::new)
-                .model(NonNullBiConsumer.noop())
-                .build()
-                .register();
-        ALL_FILTERS.put(filterType, filterBlock);
-        return filterBlock;
-    }
 
 
     //////////////////////////////////////
@@ -768,6 +736,7 @@ public class GTBlocks {
             .tag(TagUtil.createItemTag("treated_wood")) // matches IE treated wood tag
             .build()
             .register();
+
 
 
     private static <P, T extends Block, S2 extends BlockBuilder<T, P>> NonNullFunction<S2, S2> unificationBlock(@Nonnull TagPrefix tagPrefix, @Nonnull Material mat) {
