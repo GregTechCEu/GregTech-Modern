@@ -21,6 +21,7 @@ public interface IContentSerializer<T> {
 
     T of(Object o);
 
+    T defaultValue();
 
     @SuppressWarnings("unchecked")
     default void toNetworkContent(FriendlyByteBuf buf, Content content) {

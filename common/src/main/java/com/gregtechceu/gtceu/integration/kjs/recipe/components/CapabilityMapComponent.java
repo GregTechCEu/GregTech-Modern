@@ -1,0 +1,70 @@
+package com.gregtechceu.gtceu.integration.kjs.recipe.components;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
+import com.gregtechceu.gtceu.api.recipe.content.Content;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import dev.latvian.mods.kubejs.recipe.RecipeJS;
+import dev.latvian.mods.kubejs.recipe.component.ComponentRole;
+import dev.latvian.mods.kubejs.recipe.component.RecipeComponent;
+import net.minecraft.util.GsonHelper;
+import org.apache.commons.lang3.ArrayUtils;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public record CapabilityMapComponent(boolean isOutput) implements RecipeComponent<CapabilityMap> {
+    @Override
+    public ComponentRole role() {
+        return isOutput ? ComponentRole.OUTPUT : ComponentRole.INPUT;
+    }
+
+    @Override
+    public Class<?> componentClass() {
+        return CapabilityMap.class;
+    }
+
+    @Override
+    public JsonElement write(RecipeJS recipe, CapabilityMap map) {
+        JsonObject json = new JsonObject();
+        map.forEach((key, value) -> {
+            JsonArray array = new JsonArray();
+            for (Content content : value) {
+                array.add(key.serializer.toJsonContent(content));
+            }
+            json.add(key.name, array);
+        });
+        return json;
+    }
+
+    @Override
+    public CapabilityMap read(RecipeJS recipe, Object from) {
+        if (from instanceof CapabilityMap map) return map;
+        CapabilityMap map = new CapabilityMap(this.isOutput);
+        if (from instanceof JsonObject json) {
+            for (String key : json.keySet()) {
+                if (GTRegistries.RECIPE_CAPABILITIES.containKey(key) && GTRegistries.RECIPE_CAPABILITIES.get(key) != null) {
+                    RecipeCapability<?> cap = GTRegistries.RECIPE_CAPABILITIES.get(key);
+                    List<Content> result = new ArrayList<>();
+                    JsonArray value = GsonHelper.getAsJsonArray(json, key, new JsonArray());
+                    for (int i = 0; i < value.size(); ++i) {
+                        result.add(cap.serializer.fromJsonContent(value.get(i)));
+                    }
+                    map.put(cap, result.toArray(Content[]::new));
+                }
+            }
+            return map;
+        }
+        return map;
+    }
+
+    public static void add(CapabilityMap map, RecipeCapability<?> capability, Content value) {
+        map.put(capability, ArrayUtils.add(map.get(capability), value));
+    }
+
+    public static void remove(CapabilityMap map, RecipeCapability<?> capability) {
+        map.remove(capability);
+    }
+}

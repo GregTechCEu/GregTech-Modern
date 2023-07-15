@@ -527,18 +527,10 @@ public class GTRecipeBuilder {
         if (data != null && !data.isEmpty()) {
             json.add("data", NBTToJsonConverter.getObject(data));
         }
-        if (!input.isEmpty()) {
-            json.add("inputs", capabilitiesToJson(input));
-        }
-        if (!output.isEmpty()) {
-            json.add("outputs", capabilitiesToJson(output));
-        }
-        if (!tickInput.isEmpty()) {
-            json.add("tickInputs", capabilitiesToJson(tickInput));
-        }
-        if (!tickOutput.isEmpty()) {
-            json.add("tickOutputs", capabilitiesToJson(tickOutput));
-        }
+        json.add("inputs", capabilitiesToJson(input));
+        json.add("outputs", capabilitiesToJson(output));
+        json.add("tickInputs", capabilitiesToJson(tickInput));
+        json.add("tickOutputs", capabilitiesToJson(tickOutput));
         if (!conditions.isEmpty()) {
             JsonArray array = new JsonArray();
             for (RecipeCondition condition : conditions) {
