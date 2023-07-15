@@ -499,10 +499,11 @@ public class GTBlocks {
         return block;
     }
     public static final Map<BoilerFireboxType, BlockEntry<ActiveBlock>> ALL_FIREBOXES = new HashMap<>();
-    public static final BlockEntry<ActiveBlock> BRONZE_FIREBOX = registerFireboxCasing(BoilerFireboxType.BRONZE_FIREBOX);
-    public static final BlockEntry<ActiveBlock> STEEL_FIREBOX = registerFireboxCasing(BoilerFireboxType.STEEL_FIREBOX);
-    public static final BlockEntry<ActiveBlock> TITANIUM_FIREBOX = registerFireboxCasing(BoilerFireboxType.TITANIUM_FIREBOX);
-    public static final BlockEntry<ActiveBlock> TUNGSTENSTEEL_FIREBOX = registerFireboxCasing(BoilerFireboxType.TUNGSTENSTEEL_FIREBOX);
+    public static final BlockEntry<ActiveBlock>
+            BRONZE_FIREBOX = registerFireboxCasing(BoilerFireboxType.BRONZE_FIREBOX),
+            STEEL_FIREBOX = registerFireboxCasing(BoilerFireboxType.STEEL_FIREBOX),
+            TITANIUM_FIREBOX = registerFireboxCasing(BoilerFireboxType.TITANIUM_FIREBOX),
+            TUNGSTENSTEEL_FIREBOX = registerFireboxCasing(BoilerFireboxType.TUNGSTENSTEEL_FIREBOX);
 
     // Heating Coils
     private static BlockEntry<CoilBlock> createCoilBlock(ICoilType coilType) {
@@ -519,14 +520,15 @@ public class GTBlocks {
         return coilBlock;
     }
     public static final Map<ICoilType, Supplier<CoilBlock>> ALL_COILS = new HashMap<>();
-    public static final BlockEntry<CoilBlock> CUPRONICKEL_COIL = createCoilBlock(CoilBlock.CoilType.CUPRONICKEL);
-    public static final BlockEntry<CoilBlock> KANTHAL_COIL = createCoilBlock(CoilBlock.CoilType.KANTHAL);
-    public static final BlockEntry<CoilBlock> NICHROME_COIL = createCoilBlock(CoilBlock.CoilType.NICHROME);
-    public static final BlockEntry<CoilBlock> TUNGSTENSTEEL_COIL = createCoilBlock(CoilBlock.CoilType.TUNGSTENSTEEL);
-    public static final BlockEntry<CoilBlock> HSSG_COIL = createCoilBlock(CoilBlock.CoilType.HSSG);
-    public static final BlockEntry<CoilBlock> NAQUADAH_COIL = createCoilBlock(CoilBlock.CoilType.NAQUADAH);
-    public static final BlockEntry<CoilBlock> TRINIUM_COIL = createCoilBlock(CoilBlock.CoilType.TRINIUM);
-    public static final BlockEntry<CoilBlock> TRITANIUM_COIL = createCoilBlock(CoilBlock.CoilType.TRITANIUM);
+    public static final BlockEntry<CoilBlock>
+            CUPRONICKEL_COIL = createCoilBlock(CoilBlock.CoilType.CUPRONICKEL),
+            KANTHAL_COIL = createCoilBlock(CoilBlock.CoilType.KANTHAL),
+            NICHROME_COIL = createCoilBlock(CoilBlock.CoilType.NICHROME),
+            TUNGSTENSTEEL_COIL = createCoilBlock(CoilBlock.CoilType.TUNGSTENSTEEL),
+            HSSG_COIL = createCoilBlock(CoilBlock.CoilType.HSSG),
+            NAQUADAH_COIL = createCoilBlock(CoilBlock.CoilType.NAQUADAH),
+            TRINIUM_COIL = createCoilBlock(CoilBlock.CoilType.TRINIUM),
+            TRITANIUM_COIL = createCoilBlock(CoilBlock.CoilType.TRITANIUM);
 
 
 
@@ -653,6 +655,22 @@ public class GTBlocks {
     public static final BlockEntry<ActiveBlock> ASSEMBLY_LINE_UNIT = createActiveCasing("assembly_line_unit", "block/variant/assembly_line");
 
 
+    private static BlockEntry<Block> createCleanroomFilter(IFilterType filterType) {
+        var filterBlock = REGISTRATE.block(filterType.getSerializedName(), p -> (Block) new RendererBlock(p,
+                        Platform.isClient() ? new TextureOverrideRenderer(new ResourceLocation("block/cube_all"),
+                                Map.of("all", GTCEu.id("block/casings/cleanroom/" + filterType))) : null))
+                .initialProperties(() -> Blocks.IRON_BLOCK)
+                .properties(properties -> properties.strength(2.0f, 8.0f).sound(SoundType.METAL).isValidSpawn((blockState, blockGetter, blockPos, entityType) -> false))
+                .addLayer(() -> RenderType::cutoutMipped)
+                .blockstate(NonNullBiConsumer.noop())
+                .tag(GTToolType.WRENCH.harvestTag, CustomTags.TOOL_TIERS[1])
+                .item(RendererBlockItem::new)
+                .model(NonNullBiConsumer.noop())
+                .build()
+                .register();
+        ALL_FILTERS.put(filterType, filterBlock);
+        return filterBlock;
+    }
 
 
     //////////////////////////////////////
@@ -765,22 +783,5 @@ public class GTBlocks {
         registerOreBlocks();
         registerCableBlocks();
         generateFluidPipeBlocks();
-    }
-
-    private static BlockEntry<Block> createCleanroomFilter(IFilterType filterType) {
-        var filterBlock = REGISTRATE.block(filterType.getSerializedName(), p -> (Block) new RendererBlock(p,
-                        Platform.isClient() ? new TextureOverrideRenderer(new ResourceLocation("block/cube_all"),
-                                Map.of("all", GTCEu.id("block/casings/cleanroom/" + filterType))) : null))
-                .initialProperties(() -> Blocks.IRON_BLOCK)
-                .properties(properties -> properties.strength(2.0f, 8.0f).sound(SoundType.METAL).isValidSpawn((blockState, blockGetter, blockPos, entityType) -> false))
-                .addLayer(() -> RenderType::cutoutMipped)
-                .blockstate(NonNullBiConsumer.noop())
-                .tag(GTToolType.WRENCH.harvestTag, CustomTags.TOOL_TIERS[1])
-                .item(RendererBlockItem::new)
-                .model(NonNullBiConsumer.noop())
-                .build()
-                .register();
-        ALL_FILTERS.put(filterType, filterBlock);
-        return filterBlock;
     }
 }
