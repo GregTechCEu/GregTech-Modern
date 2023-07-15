@@ -46,12 +46,12 @@ public class RotorHolderMachineRenderer extends TieredHullMachineRenderer {
                 if (!rotorHolderMachine.getControllers().isEmpty()) {
                     quads.add(FaceQuad.bakeFace(aabb, modelFacing, ModelFactory.getBlockSprite(BASE_RING), modelState, -1, 15, true, false));
                     quads.add(FaceQuad.bakeFace(aabb, modelFacing, ModelFactory.getBlockSprite(BASE_BG), modelState, -1, 15, true, false));
-                }
-                if (rotorHolderMachine.hasRotor()) {
-                    if (rotorHolderMachine.isRotorSpinning()) {
-                        quads.add(FaceQuad.bakeFace(aabb, modelFacing, ModelFactory.getBlockSprite(SPINNING), modelState, 2, 0, true, true));
-                    } else {
-                        quads.add(FaceQuad.bakeFace(aabb, modelFacing, ModelFactory.getBlockSprite(IDLE), modelState, 2, 0, true, true));
+                    if (rotorHolderMachine.hasRotor()) {
+                        if (rotorHolderMachine.isRotorSpinning()) {
+                            quads.add(FaceQuad.bakeFace(aabb, modelFacing, ModelFactory.getBlockSprite(SPINNING), modelState, 2, 0, true, true));
+                        } else {
+                            quads.add(FaceQuad.bakeFace(aabb, modelFacing, ModelFactory.getBlockSprite(IDLE), modelState, 2, 0, true, true));
+                        }
                     }
                 }
             }
