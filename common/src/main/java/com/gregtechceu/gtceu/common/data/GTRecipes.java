@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.data.recipe.MaterialInfoLoader;
 import com.gregtechceu.gtceu.data.recipe.configurable.RecipeAddition;
 import com.gregtechceu.gtceu.data.recipe.configurable.RecipeRemoval;
@@ -65,6 +66,8 @@ public class GTRecipes {
         if (GTCEu.isCreateLoaded()) {
             CreateRecipeLoader.init(consumer);
         }
+
+        AddonFinder.getAddons().forEach(addon -> addon.initializeRecipes(consumer));
     }
 
     /*

@@ -41,4 +41,8 @@ public interface IInteractionItem extends IItemComponent {
     default InteractionResult onItemUseFirst(ItemStack itemStack, UseOnContext context) {
         return InteractionResult.PASS;
     }
+
+    default InteractionResult interactLivingEntity(ItemStack stack, Player player, LivingEntity interactionTarget, InteractionHand usedHand) {
+        return InteractionResult.PASS;
+    }
 }
