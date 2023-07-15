@@ -164,6 +164,19 @@ public class ComponentItem extends Item implements HeldItemUIFactory.IHeldItemUI
     }
 
     @Override
+    public InteractionResult interactLivingEntity(ItemStack stack, Player player, LivingEntity interactionTarget, InteractionHand usedHand) {
+        for (IItemComponent component : components) {
+            if (component instanceof IInteractionItem interactionItem) {
+                var result = interactionItem.interactLivingEntity(stack, player, interactionTarget, usedHand);
+                if (result != InteractionResult.PASS) {
+                    return result;
+                }
+            }
+        }
+        return InteractionResult.PASS;
+    }
+
+    @Override
     public String getDescriptionId(ItemStack stack) {
         for (IItemComponent component : components) {
             if (component instanceof ICustomDescriptionId customDescriptionId) {
