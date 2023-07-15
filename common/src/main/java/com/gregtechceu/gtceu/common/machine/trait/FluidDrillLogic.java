@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.FluidDrillMachine;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
+import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import lombok.Getter;
 import net.minecraft.core.SectionPos;
@@ -78,7 +79,7 @@ public class FluidDrillLogic extends RecipeLogic {
         return null;
     }
 
-    private int getFluidToProduce(FluidVeinWorldEntry entry) {
+    private long getFluidToProduce(FluidVeinWorldEntry entry) {
         var definition = entry.getDefinition();
         if (definition != null) {
             int depletedYield = definition.getDepletedYield();
@@ -92,7 +93,7 @@ public class FluidDrillLogic extends RecipeLogic {
             if (isOverclocked()) {
                 produced = produced * 3 / 2;
             }
-            return produced;
+            return produced * FluidHelper.getBucket() / 1000;
         }
         return 0;
     }

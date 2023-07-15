@@ -85,7 +85,7 @@ public abstract class MaterialPipeBlock<PipeType extends Enum<PipeType> & IPipeT
 
     @Override
     public String getDescriptionId() {
-        return pipeType.getTagPrefix().getUnlocalizedName(material);
+        return getName().getString();
     }
 
     @Override
