@@ -45,6 +45,10 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 public interface GTRecipeSchema {
+    
+    int keySize = GTRecipeComponents.INVERSE_LOOKUP.keySet().size();
+
+    @SuppressWarnings({"unused", "UnusedReturnValue"})
     @Accessors(chain = true, fluent = true)
     class GTRecipeJS extends RecipeJS {
         @Setter
@@ -57,7 +61,7 @@ public interface GTRecipeSchema {
         @HideFromJS
         @Override
         public GTRecipeJS id(ResourceLocation _id) {
-            this.id = new ResourceLocation(_id.getNamespace(), "%s/%s".formatted(this.type.id.getPath(), _id.getPath()));
+            this.id = new ResourceLocation(_id.getNamespace().equals("minecraft") ? this.type.id.getNamespace() : _id.getNamespace(), "%s/%s".formatted(this.type.id.getPath(), _id.getPath()));
             return this;
         }
 
@@ -72,12 +76,11 @@ public interface GTRecipeSchema {
 
         public <T> GTRecipeJS input(RecipeCapability<T> capability, Object... obj) {
             RecipeComponentBuilder.RCBHolder[] map;
-            int allKeysSize = GTRecipeComponents.INVERSE_LOOKUP.entrySet().size();
             if (perTick)  {
-                if (getValue(ALL_TICK_INPUTS) == null) setValue(ALL_TICK_INPUTS, new RecipeComponentBuilder.RCBHolder[allKeysSize]);
+                if (getValue(ALL_TICK_INPUTS) == null) setValue(ALL_TICK_INPUTS, new RecipeComponentBuilder.RCBHolder[keySize]);
                 map = getValue(ALL_TICK_INPUTS);
             } else {
-                if (getValue(ALL_INPUTS) == null) setValue(ALL_INPUTS, new RecipeComponentBuilder.RCBHolder[allKeysSize]);
+                if (getValue(ALL_INPUTS) == null) setValue(ALL_INPUTS, new RecipeComponentBuilder.RCBHolder[keySize]);
                 map = getValue(ALL_INPUTS);
             }
             if (map != null) {
@@ -96,7 +99,6 @@ public interface GTRecipeSchema {
                     array = ArrayUtils.add(array, entry);
                 }
                 setRaw(map, key, array);
-//                setValue(perTick ? ALL_TICK_INPUTS : ALL_INPUTS, map);
             }
             save();
             return this;
@@ -104,12 +106,11 @@ public interface GTRecipeSchema {
 
         public <T> GTRecipeJS output(RecipeCapability<T> capability, Object... obj) {
             RecipeComponentBuilder.RCBHolder[] map;
-            int allKeysSize = GTRecipeComponents.INVERSE_LOOKUP.keySet().size();
             if (perTick)  {
-                if (getValue(ALL_TICK_OUTPUTS) == null) setValue(ALL_TICK_OUTPUTS, new RecipeComponentBuilder.RCBHolder[allKeysSize]);
+                if (getValue(ALL_TICK_OUTPUTS) == null) setValue(ALL_TICK_OUTPUTS, new RecipeComponentBuilder.RCBHolder[keySize]);
                 map = getValue(ALL_TICK_OUTPUTS);
             } else {
-                if (getValue(ALL_OUTPUTS) == null) setValue(ALL_OUTPUTS, new RecipeComponentBuilder.RCBHolder[allKeysSize]);
+                if (getValue(ALL_OUTPUTS) == null) setValue(ALL_OUTPUTS, new RecipeComponentBuilder.RCBHolder[keySize]);
                 map = getValue(ALL_OUTPUTS);
             }
             if (map != null) {
@@ -128,7 +129,6 @@ public interface GTRecipeSchema {
                     array = ArrayUtils.add(array, entry);
                 }
                 setRaw(map, key, array);
-//                setValue(perTick ? ALL_TICK_OUTPUTS : ALL_OUTPUTS, map);
             }
             save();
             return this;
@@ -225,7 +225,7 @@ public interface GTRecipeSchema {
             return inputItems(input.tagPrefix, input.material, count);
         }
 
-        public GTRecipeJS inputItems(TagPrefix orePrefix, @Nullable Material material, int count) {
+        public GTRecipeJS inputItems(TagPrefix orePrefix, Material material, int count) {
             return inputItems(ChemicalHelper.getTag(orePrefix, material), count);
         }
 
@@ -554,12 +554,11 @@ public interface GTRecipeSchema {
     RecipeKey<RecipeCondition[]> CONDITIONS = GTRecipeComponents.RECIPE_CONDITION.asArray().key("recipeConditions").defaultOptional();
     RecipeKey<Boolean> IS_FUEL = BooleanComponent.BOOLEAN.key("isFuel").optional(false);
 
-    int keySize = GTRecipeComponents.INVERSE_LOOKUP.keySet().size();
-    RecipeKey<RecipeComponentBuilder.RCBHolder[]> ALL_INPUTS = GTRecipeComponents.ALL_IN.key("inputs").optional(new RecipeComponentBuilder.RCBHolder[keySize]);
-    RecipeKey<RecipeComponentBuilder.RCBHolder[]> ALL_TICK_INPUTS = GTRecipeComponents.ALL_IN.key("tickInputs").optional(new RecipeComponentBuilder.RCBHolder[keySize]);
+    RecipeKey<RecipeComponentBuilder.RCBHolder[]> ALL_INPUTS = GTRecipeComponents.ALL_IN.key("inputs").defaultOptional();
+    RecipeKey<RecipeComponentBuilder.RCBHolder[]> ALL_TICK_INPUTS = GTRecipeComponents.ALL_IN.key("tickInputs").defaultOptional();
 
-    RecipeKey<RecipeComponentBuilder.RCBHolder[]> ALL_OUTPUTS = GTRecipeComponents.ALL_OUT.key("outputs").optional(new RecipeComponentBuilder.RCBHolder[keySize]);
-    RecipeKey<RecipeComponentBuilder.RCBHolder[]> ALL_TICK_OUTPUTS = GTRecipeComponents.ALL_OUT.key("tickOutputs").optional(new RecipeComponentBuilder.RCBHolder[keySize]);
+    RecipeKey<RecipeComponentBuilder.RCBHolder[]> ALL_OUTPUTS = GTRecipeComponents.ALL_OUT.key("outputs").defaultOptional();
+    RecipeKey<RecipeComponentBuilder.RCBHolder[]> ALL_TICK_OUTPUTS = GTRecipeComponents.ALL_OUT.key("tickOutputs").defaultOptional();
 
     RecipeSchema SCHEMA = new RecipeSchema(GTRecipeJS.class, GTRecipeJS::new, DURATION, DATA, CONDITIONS, ALL_INPUTS, ALL_TICK_INPUTS, ALL_OUTPUTS, ALL_TICK_OUTPUTS, IS_FUEL)
             .constructor((recipe, schemaType, keys, from) -> recipe.id(from.getValue(recipe, ID)), ID)
