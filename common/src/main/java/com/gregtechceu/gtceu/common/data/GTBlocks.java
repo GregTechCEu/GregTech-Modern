@@ -647,6 +647,14 @@ public class GTBlocks {
             .build()
             .register();
 
+    public static final BlockEntry<MinerPipeBlock> MINER_PIPE = REGISTRATE.block("miner_pipe", MinerPipeBlock::new)
+            .initialProperties(() -> Blocks.BEDROCK)
+            .properties(BlockBehaviour.Properties::noOcclusion)
+            .addLayer(() -> RenderType::cutoutMipped)
+            .blockstate((ctx, prov) -> prov.simpleBlock(ctx.getEntry(), prov.models().getExistingFile(GTCEu.id("block/miner_pipe"))))
+            .tag(BlockTags.DRAGON_IMMUNE, BlockTags.WITHER_IMMUNE, BlockTags.INFINIBURN_END, BlockTags.FEATURES_CANNOT_REPLACE, BlockTags.GEODE_INVALID_BLOCKS)
+            .register();
+
 
     //////////////////////////////////////
     //**********     Misc     **********//
@@ -744,7 +752,24 @@ public class GTBlocks {
             .build()
             .register();
 
+    public static final ImmutableMap<Material, BlockEntry<Block>> MATERIALS_TO_CASINGS;
+    static {
+        ImmutableMap.Builder<Material, BlockEntry<Block>> builder = ImmutableMap.builder();
+        builder.put(GTMaterials.Bronze, STEAM_MACHINE_CASING);
+        builder.put(GTMaterials.Invar, HEATPROOF_MACHINE_CASING);
+        builder.put(GTMaterials.Aluminium, FROSTPROOF_MACHINE_CASING);
+        builder.put(GTMaterials.Steel, SOLID_MACHINE_CASING);
+        builder.put(GTMaterials.StainlessSteel, CLEAN_MACHINE_CASING);
+        builder.put(GTMaterials.Titanium, STABLE_MACHINE_CASING);
+        builder.put(GTMaterials.TungstenSteel, ROBUST_MACHINE_CASING);
+        builder.put(GTMaterials.Polytetrafluoroethylene, INERT_MACHINE_CASING);
+        builder.put(GTMaterials.HSSE, STURDY_MACHINE_CASING);
 
+        MaterialCasingCollectionEvent event = new MaterialCasingCollectionEvent(builder);
+        AddonFinder.getAddons().forEach(addon -> addon.collectMaterialCasings(event));
+
+        MATERIALS_TO_CASINGS = builder.build();
+    }
 
     private static <P, T extends Block, S2 extends BlockBuilder<T, P>> NonNullFunction<S2, S2> unificationBlock(@Nonnull TagPrefix tagPrefix, @Nonnull Material mat) {
         return builder -> {

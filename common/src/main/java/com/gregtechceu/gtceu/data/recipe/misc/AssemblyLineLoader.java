@@ -20,7 +20,7 @@ public class AssemblyLineLoader {
         // TODO Fusion reactor
 
         ASSEMBLY_LINE_RECIPES.recipeBuilder("fusion_reactor_mk1")
-                .inputItems(SUPERCONDUCTING_COIL.asStack())
+                .inputItems(FUSION_CASING_SUPERCONDUCTOR.asStack())
                 .inputItems(CustomTags.ZPM_CIRCUITS, 4)
                 .inputItems(plateDouble, Plutonium241)
                 .inputItems(plateDouble, Osmiridium)
@@ -33,7 +33,7 @@ public class AssemblyLineLoader {
                 .duration(800).EUt(VA[LuV]).save(provider);
 
         ASSEMBLY_LINE_RECIPES.recipeBuilder("fusion_reactor_mk2")
-                .inputItems(FUSION_COIL.asStack())
+                .inputItems(FUSION_CASING_FUSION_COIL.asStack())
                 .inputItems(CustomTags.UV_CIRCUITS, 4)
                 .inputItems(plateDouble, Naquadria)
                 .inputItems(plateDouble, Europium)
@@ -47,7 +47,7 @@ public class AssemblyLineLoader {
                 .duration(1000).EUt(61440).save(provider);
 
         ASSEMBLY_LINE_RECIPES.recipeBuilder("fusion_reactor_mk3")
-                .inputItems(FUSION_COIL.asStack())
+                .inputItems(FUSION_CASING_FUSION_COIL.asStack())
                 .inputItems(CustomTags.UHV_CIRCUITS, 4)
                 .inputItems(QUANTUM_STAR)
                 .inputItems(plateDouble, Americium)

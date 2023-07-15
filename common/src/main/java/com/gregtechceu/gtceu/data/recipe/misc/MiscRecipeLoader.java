@@ -338,7 +338,7 @@ public class MiscRecipeLoader {
         // Tempered Glass in Arc Furnace
         ARC_FURNACE_RECIPES.recipeBuilder("tempered_glass").duration(60).EUt(VA[LV])
                 .inputItems(block, Glass)
-                .outputItems(GTBlocks.CASING_TEMPERED_GLASS.asStack())
+                .outputItems(GTBlocks.TEMPERED_GLASS.asStack())
                 .save(provider);
 
         // Dyed Lens Decomposition
@@ -433,9 +433,9 @@ public class MiscRecipeLoader {
                 .duration(100).EUt(VA[LV]).save(provider);
 
         FORMING_PRESS_RECIPES.recipeBuilder("laminated_glass")
-                .inputItems(GTBlocks.CASING_TEMPERED_GLASS.asStack(2))
+                .inputItems(GTBlocks.TEMPERED_GLASS.asStack(2))
                 .inputItems(plate, PolyvinylButyral)
-                .outputItems(GTBlocks.CASING_LAMINATED_GLASS.asStack())
+                .outputItems(GTBlocks.LAMINATED_GLASS.asStack())
                 .duration(200).EUt(VA[HV]).save(provider);
 
         LATHE_RECIPES.recipeBuilder("treated_wood_sticks")

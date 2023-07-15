@@ -663,7 +663,7 @@ public class MachineRecipeLoader {
                 .duration(400).EUt(VA[LuV]).save(provider);
 
         ASSEMBLY_LINE_RECIPES.recipeBuilder("fusion_reactor_1")
-                .inputItems(GTBlocks.SUPERCONDUCTING_COIL.asStack())
+                .inputItems(GTBlocks.FUSION_CASING_SUPERCONDUCTOR.asStack())
                 .inputItems(CustomTags.ZPM_CIRCUITS, 4)
                 .inputItems(plateDouble, Plutonium241)
                 .inputItems(plateDouble, Osmiridium)
@@ -676,7 +676,7 @@ public class MachineRecipeLoader {
                 .duration(800).EUt(VA[LuV]).save(provider);
 
         ASSEMBLY_LINE_RECIPES.recipeBuilder("fusion_reactor_2")
-                .inputItems(GTBlocks.FUSION_COIL.asStack())
+                .inputItems(GTBlocks.FUSION_CASING_FUSION_COIL.asStack())
                 .inputItems(CustomTags.UV_CIRCUITS, 4)
                 .inputItems(plateDouble, Naquadria)
                 .inputItems(plateDouble, Europium)
@@ -690,7 +690,7 @@ public class MachineRecipeLoader {
                 .duration(1000).EUt(61440).save(provider);
 
         ASSEMBLY_LINE_RECIPES.recipeBuilder("fusion_reactor_3")
-                .inputItems(GTBlocks.FUSION_COIL.asStack())
+                .inputItems(GTBlocks.FUSION_CASING_FUSION_COIL.asStack())
                 .inputItems(CustomTags.UHV_CIRCUITS, 4)
                 .inputItems(QUANTUM_STAR)
                 .inputItems(plateDouble, Americium)
@@ -728,7 +728,7 @@ public class MachineRecipeLoader {
         BLAST_RECIPES.recipeBuilder("tempered_glass_blasting")
                 .inputItems(block, Glass)
                 .inputFluids(Oxygen.getFluid(100))
-                .outputItems(GTBlocks.CASING_TEMPERED_GLASS.asStack())
+                .outputItems(GTBlocks.TEMPERED_GLASS.asStack())
                 .blastFurnaceTemp(1000)
                 .duration(200).EUt(VA[MV]).save(provider);
 

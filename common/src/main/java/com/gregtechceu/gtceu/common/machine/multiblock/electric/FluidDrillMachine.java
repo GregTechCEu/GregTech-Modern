@@ -78,12 +78,12 @@ public class FluidDrillMachine extends WorkableElectricMultiblockMachine impleme
 
     public static Block getCasingState(int tier) {
         if (tier == GTValues.MV)
-            return GTBlocks.CASING_STEEL_SOLID.get();
+            return GTBlocks.SOLID_MACHINE_CASING.get();
         if (tier == GTValues.HV)
-            return GTBlocks.CASING_TITANIUM_STABLE.get();
+            return GTBlocks.STABLE_MACHINE_CASING.get();
         if (tier == GTValues.EV)
-            return GTBlocks.CASING_TUNGSTENSTEEL_ROBUST.get();
-        return GTBlocks.CASING_STEEL_SOLID.get();
+            return GTBlocks.ROBUST_MACHINE_CASING.get();
+        return GTBlocks.SOLID_MACHINE_CASING.get();
     }
 
     public static Block getFrameState(int tier) {
