@@ -1,6 +1,9 @@
 package com.gregtechceu.gtceu.api.addon;
 
 import com.gregtechceu.gtceu.api.addon.events.MaterialCasingCollectionEvent;
+import net.minecraft.data.recipes.FinishedRecipe;
+
+import java.util.function.Consumer;
 
 public interface IGTAddon {
 
@@ -39,6 +42,10 @@ public interface IGTAddon {
     }
 
     default void registerVeinGenerators() {
+
+    }
+
+    default void initializeRecipes(Consumer<FinishedRecipe> provider) {
 
     }
 
