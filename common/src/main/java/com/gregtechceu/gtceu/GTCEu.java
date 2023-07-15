@@ -17,7 +17,6 @@ public class GTCEu {
 
     public static void init() {
         LOGGER.info("{} is initializing on platform: {}", NAME, Platform.platformName());
-        AddonFinder.getAddons().forEach(IGTAddon::initializeAddon);
     }
 
     public static ResourceLocation id(String path) {
