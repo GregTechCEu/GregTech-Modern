@@ -86,6 +86,8 @@ public class FisherMachine extends TieredEnergyMachine implements IAutoOutputIte
     protected TickableSubscription autoOutputSubs, batterySubs;
     @Nullable
     protected ISubscription exportItemSubs, energySubs;
+    private final long energyPerTick;
+
     private final int inventorySize;
     public final long fishingTicks;
     public static final int WATER_CHECK_SIZE = 5;
@@ -95,6 +97,7 @@ public class FisherMachine extends TieredEnergyMachine implements IAutoOutputIte
         super(holder, tier);
         this.inventorySize = (tier + 1) * (tier + 1);
         this.fishingTicks = 1000 - tier * 200L;
+        this.energyPerTick = GTValues.V[tier - 1];
         this.cache = createCacheItemHandler(args);
         this.baitHandler = createBaitItemHandler(args);
         this.chargerInventory = createChargerItemHandler();
@@ -164,8 +167,15 @@ public class FisherMachine extends TieredEnergyMachine implements IAutoOutputIte
         this.cache.exportToNearby(getOutputFacingItems());
 
         //do not do anything if requirements are not met
-        if (this.energyContainer.getEnergyStored() < GTValues.V[getTier()] || !this.baitHandler.getStackInSlot(0).is(Items.STRING)|| this.getOffsetTimer() % this.fishingTicks != 0)
+        if (this.energyContainer.getEnergyStored() < GTValues.V[getTier()] || !this.baitHandler.getStackInSlot(0).is(Items.STRING))
             return;
+
+        drainEnergy(false);
+
+        if(this.getOffsetTimer() % this.fishingTicks != 0)
+            return;
+
+
         int waterCount = 0;
         int edgeSize = WATER_CHECK_SIZE;
         for (int x = 0; x < edgeSize; x++) {
@@ -263,6 +273,16 @@ public class FisherMachine extends TieredEnergyMachine implements IAutoOutputIte
     protected void chargeBattery() {
         if (!energyContainer.dischargeOrRechargeEnergyContainers(chargerInventory, 0, false))
             updateBatterySubscription();
+    }
+
+    public boolean drainEnergy(boolean simulate) {
+        long resultEnergy = energyContainer.getEnergyStored() - energyPerTick;
+        if (resultEnergy >= 0L && resultEnergy <= energyContainer.getEnergyCapacity()) {
+            if (!simulate)
+                energyContainer.removeEnergy(energyPerTick);
+            return true;
+        }
+        return false;
     }
 
 
