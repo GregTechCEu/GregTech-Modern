@@ -24,6 +24,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 /**
  * @author KilaBash
@@ -36,14 +37,14 @@ public class PipeModel {
     public final AABB coreCube;
     public final Map<Direction, AABB> sideCubes;
 
-    public ResourceLocation sideTexture, endTexture;
+    public Supplier<ResourceLocation> sideTexture, endTexture;
     @Setter
     public ResourceLocation endOverlayTexture;
 
     @Environment(EnvType.CLIENT)
     TextureAtlasSprite sideSprite, endSprite, endOverlaySprite;
 
-    public PipeModel(float thickness, ResourceLocation sideTexture, ResourceLocation endTexture) {
+    public PipeModel(float thickness, Supplier<ResourceLocation> sideTexture, Supplier<ResourceLocation> endTexture) {
         this.sideTexture = sideTexture;
         this.endTexture = endTexture;
         this.thickness = thickness;
@@ -81,10 +82,10 @@ public class PipeModel {
     @Environment(EnvType.CLIENT)
     public List<BakedQuad> bakeQuads(@Nullable Direction side, int connections) {
         if (sideSprite == null) {
-            sideSprite = ModelFactory.getBlockSprite(sideTexture);
+            sideSprite = ModelFactory.getBlockSprite(sideTexture.get());
         }
         if (endSprite == null) {
-            endSprite = ModelFactory.getBlockSprite(endTexture);
+            endSprite = ModelFactory.getBlockSprite(endTexture.get());
         }
         if (endOverlayTexture != null && endOverlaySprite == null) {
             endOverlaySprite = ModelFactory.getBlockSprite(endOverlayTexture);
@@ -133,7 +134,7 @@ public class PipeModel {
     @Environment(EnvType.CLIENT)
     public TextureAtlasSprite getParticleTexture() {
         if (sideSprite == null) {
-            sideSprite = ModelFactory.getBlockSprite(sideTexture);
+            sideSprite = ModelFactory.getBlockSprite(sideTexture.get());
         }
         return sideSprite;
     }
@@ -148,8 +149,8 @@ public class PipeModel {
 
     @Environment(EnvType.CLIENT)
     public void registerTextureAtlas(Consumer<ResourceLocation> register) {
-        register.accept(sideTexture);
-        register.accept(endTexture);
+        register.accept(sideTexture.get());
+        register.accept(endTexture.get());
         if (endOverlayTexture != null) register.accept(endOverlayTexture);
         sideSprite = null;
         endSprite = null;

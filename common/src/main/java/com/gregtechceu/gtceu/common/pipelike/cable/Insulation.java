@@ -10,6 +10,8 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import lombok.Getter;
 import net.minecraft.resources.ResourceLocation;
 
+import java.util.function.Supplier;
+
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
 
 public enum Insulation implements IMaterialPipeType<CableData> {
@@ -76,8 +78,8 @@ public enum Insulation implements IMaterialPipeType<CableData> {
     }
 
     public PipeModel createPipeModel(Material material) {
-        ResourceLocation wireTexturePath = MaterialIconType.wire.getBlockTexturePath(material.getMaterialIconSet(), true);
-        PipeModel model = new PipeModel(thickness, isCable ? GTCEu.id("block/cable/insulation_5") : wireTexturePath, wireTexturePath);
+        Supplier<ResourceLocation> wireTexturePath = () -> MaterialIconType.wire.getBlockTexturePath(material.getMaterialIconSet(), true);
+        PipeModel model = new PipeModel(thickness, isCable ? () -> GTCEu.id("block/cable/insulation_5") : wireTexturePath, wireTexturePath);
         if (isCable) {
             model.setEndOverlayTexture(GTCEu.id("block/cable/insulation_%s".formatted(insulationLevel)));
         }
