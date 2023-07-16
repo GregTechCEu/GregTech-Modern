@@ -6,15 +6,16 @@ import com.google.gson.JsonObject;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import dev.latvian.mods.kubejs.recipe.InputReplacement;
+import dev.latvian.mods.kubejs.recipe.OutputReplacement;
 import dev.latvian.mods.kubejs.recipe.RecipeJS;
 import dev.latvian.mods.kubejs.recipe.ReplacementMatch;
 import dev.latvian.mods.kubejs.recipe.component.ComponentRole;
 import dev.latvian.mods.kubejs.recipe.component.RecipeComponent;
 import net.minecraft.util.GsonHelper;
-import org.apache.commons.lang3.ArrayUtils;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 public record CapabilityMapComponent(boolean isOutput) implements RecipeComponent<CapabilityMap> {
     @Override
@@ -39,12 +40,23 @@ public record CapabilityMapComponent(boolean isOutput) implements RecipeComponen
     }
 
     @Override
+    public CapabilityMap replaceInput(RecipeJS recipe, CapabilityMap original, ReplacementMatch match, InputReplacement with) {
+        return isInput(recipe, original, match) ? read(recipe, original.replaceInput(recipe, match, with)) : original;
+    }
+
+    @Override
+    public CapabilityMap replaceOutput(RecipeJS recipe, CapabilityMap original, ReplacementMatch match, OutputReplacement with) {
+        return isOutput(recipe, original, match) ? read(recipe, original.replaceOutput(recipe, match, with)) : original;
+    }
+
+    @Override
     public JsonElement write(RecipeJS recipe, CapabilityMap map) {
         JsonObject json = new JsonObject();
         map.forEach((key, value) -> {
             JsonArray array = new JsonArray();
+            var pair = GTRecipeComponents.VALID_CAPS.get(key);
             for (Content content : value) {
-                array.add(key.serializer.toJsonContent(content));
+                array.add((isOutput ? pair.getSecond() : pair.getFirst()).write(recipe, content));
             }
             json.add(key.name, array);
         });
@@ -59,24 +71,16 @@ public record CapabilityMapComponent(boolean isOutput) implements RecipeComponen
             for (String key : json.keySet()) {
                 if (GTRegistries.RECIPE_CAPABILITIES.containKey(key) && GTRegistries.RECIPE_CAPABILITIES.get(key) != null) {
                     RecipeCapability<?> cap = GTRegistries.RECIPE_CAPABILITIES.get(key);
-                    List<Content> result = new ArrayList<>();
+                    var pair = GTRecipeComponents.VALID_CAPS.get(cap);
+                    Set<Content> result = new HashSet<>();
                     JsonArray value = GsonHelper.getAsJsonArray(json, key, new JsonArray());
                     for (int i = 0; i < value.size(); ++i) {
-                        result.add(cap.serializer.fromJsonContent(value.get(i)));
+                        result.add((isOutput ? pair.getSecond() : pair.getFirst()).read(recipe, value.get(i)));
                     }
                     map.put(cap, result.toArray(Content[]::new));
                 }
             }
-            return map;
         }
         return map;
-    }
-
-    public static void add(CapabilityMap map, RecipeCapability<?> capability, Content value) {
-        map.put(capability, ArrayUtils.add(map.get(capability), value));
-    }
-
-    public static void remove(CapabilityMap map, RecipeCapability<?> capability) {
-        map.remove(capability);
     }
 }

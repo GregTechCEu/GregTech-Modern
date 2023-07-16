@@ -26,9 +26,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
 
-import java.util.HashMap;
-import java.util.IdentityHashMap;
-import java.util.Map;
+import java.util.*;
 
 public class GTRecipeComponents {
     public static final RecipeComponent<CompoundTag> TAG = new RecipeComponent<>() {
@@ -139,14 +137,14 @@ public class GTRecipeComponents {
     };
 
 
-    public static final ContentJS<InputItem> ITEM_IN = new ContentJS<>(ItemComponents.INPUT, false);
-    public static final ContentJS<OutputItem> ITEM_OUT = new ContentJS<>(ItemComponents.OUTPUT, true);
-    public static final ContentJS<InputFluid> FLUID_IN = new ContentJS<>(FluidComponents.INPUT, false);
-    public static final ContentJS<OutputFluid> FLUID_OUT = new ContentJS<>(FluidComponents.OUTPUT, true);
-    public static final ContentJS<Long> EU_IN = new ContentJS<>(NumberComponent.ANY_LONG, false);
-    public static final ContentJS<Long> EU_OUT = new ContentJS<>(NumberComponent.ANY_LONG, true);
-    public static final ContentJS<Float> SU_IN = new ContentJS<>(NumberComponent.ANY_FLOAT, false);
-    public static final ContentJS<Float> SU_OUT = new ContentJS<>(NumberComponent.ANY_FLOAT, true);
+    public static final ContentJS<InputItem> ITEM_IN = new ContentJS<>(ItemComponents.INPUT, GTRecipeCapabilities.ITEM, false);
+    public static final ContentJS<OutputItem> ITEM_OUT = new ContentJS<>(ItemComponents.OUTPUT, GTRecipeCapabilities.ITEM, true);
+    public static final ContentJS<InputFluid> FLUID_IN = new ContentJS<>(FluidComponents.INPUT, GTRecipeCapabilities.FLUID, false);
+    public static final ContentJS<OutputFluid> FLUID_OUT = new ContentJS<>(FluidComponents.OUTPUT, GTRecipeCapabilities.FLUID, true);
+    public static final ContentJS<Long> EU_IN = new ContentJS<>(NumberComponent.ANY_LONG, GTRecipeCapabilities.EU, false);
+    public static final ContentJS<Long> EU_OUT = new ContentJS<>(NumberComponent.ANY_LONG, GTRecipeCapabilities.EU, true);
+    public static final ContentJS<Float> SU_IN = new ContentJS<>(NumberComponent.ANY_FLOAT, GTRecipeCapabilities.SU, false);
+    public static final ContentJS<Float> SU_OUT = new ContentJS<>(NumberComponent.ANY_FLOAT, GTRecipeCapabilities.SU, true);
 
 
     public static final CapabilityMapComponent IN = new CapabilityMapComponent(false);
@@ -165,6 +163,9 @@ public class GTRecipeComponents {
         KJSRecipeKeyEvent event = new KJSRecipeKeyEvent();
         AddonFinder.getAddons().forEach(addon -> addon.registerRecipeKeys(event));
         VALID_CAPS.putAll(event.getRegisteredKeys());
+        Set<RecipeCapability<?>> addedCaps = event.getRegisteredKeys().keySet();
+        Set<RecipeCapability<?>> registeredCaps = GTRegistries.RECIPE_CAPABILITIES.values();
+        registeredCaps.removeAll(addedCaps);
     }
 
 }

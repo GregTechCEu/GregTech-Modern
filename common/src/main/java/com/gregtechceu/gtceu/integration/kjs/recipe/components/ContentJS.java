@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.integration.kjs.recipe.components;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import dev.latvian.mods.kubejs.recipe.InputReplacement;
 import dev.latvian.mods.kubejs.recipe.OutputReplacement;
@@ -12,7 +13,7 @@ import dev.latvian.mods.kubejs.recipe.component.RecipeComponent;
 import dev.latvian.mods.kubejs.util.UtilsJS;
 import net.minecraft.util.GsonHelper;
 
-public record ContentJS<T>(RecipeComponent<T> baseComponent, boolean isOutput) implements RecipeComponent<Content> {
+public record ContentJS<T>(RecipeComponent<T> baseComponent, RecipeCapability<?> capability, boolean isOutput) implements RecipeComponent<Content> {
 
     @Override
     public ComponentRole role() {
@@ -43,8 +44,8 @@ public record ContentJS<T>(RecipeComponent<T> baseComponent, boolean isOutput) i
     public Content read(RecipeJS recipe, Object from) {
         if (from instanceof Content) return (Content) from;
         else if (from instanceof JsonObject json) {
-            Object content = baseComponent.read(recipe, GsonHelper.getAsJsonObject(json, "content", new JsonObject()));
-            float chance = GsonHelper.getAsFloat(json, "chance", 0.0f);
+            Object content = baseComponent.read(recipe, json.get("content"));
+            float chance = GsonHelper.getAsFloat(json, "chance", 1.0f);
             float tierChanceBoost = GsonHelper.getAsFloat(json, "tierChanceBoost", 0.0f);
             String slotName = GsonHelper.getAsString(json, "slotName", null);
             String uiName = GsonHelper.getAsString(json, "uiName", null);
@@ -55,21 +56,21 @@ public record ContentJS<T>(RecipeComponent<T> baseComponent, boolean isOutput) i
 
     @Override
     public boolean isInput(RecipeJS recipe, Content value, ReplacementMatch match) {
-        return baseComponent.isInput(recipe, baseComponent.read(recipe, value.content), match);
+        return !isOutput && baseComponent.isInput(recipe, baseComponent.read(recipe, value.content), match);
     }
 
     @Override
     public boolean isOutput(RecipeJS recipe, Content value, ReplacementMatch match) {
-        return baseComponent.isOutput(recipe, baseComponent.read(recipe, value.content), match);
+        return isOutput && baseComponent.isOutput(recipe, baseComponent.read(recipe, value.content), match);
     }
 
     @Override
     public Content replaceInput(RecipeJS recipe, Content original, ReplacementMatch match, InputReplacement with) {
-        return new Content(baseComponent.replaceInput(recipe, baseComponent.read(recipe, original.content), match, with), original.chance, original.tierChanceBoost, original.slotName, original.uiName);
+        return isInput(recipe, original, match) ? new Content(baseComponent.replaceInput(recipe, baseComponent.read(recipe, original.content), match, with), original.chance, original.tierChanceBoost, original.slotName, original.uiName) : original;
     }
 
     @Override
     public Content replaceOutput(RecipeJS recipe, Content original, ReplacementMatch match, OutputReplacement with) {
-        return new Content(baseComponent.replaceOutput(recipe, baseComponent.read(recipe, original.content), match, with), original.chance, original.tierChanceBoost, original.slotName, original.uiName);
+        return isOutput(recipe, original, match) ? new Content(with.replaceOutput(recipe, match, with), original.chance, original.tierChanceBoost, original.slotName, original.uiName) : original;
     }
 }

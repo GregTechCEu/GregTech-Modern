@@ -21,7 +21,6 @@ import com.gregtechceu.gtceu.integration.kjs.recipe.components.CapabilityMapComp
 import com.gregtechceu.gtceu.integration.kjs.recipe.components.ContentJS;
 import com.gregtechceu.gtceu.integration.kjs.recipe.components.GTRecipeComponents;
 import com.lowdragmc.lowdraglib.LDLib;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import dev.latvian.mods.kubejs.fluid.FluidStackJS;
 import dev.latvian.mods.kubejs.item.InputItem;
 import dev.latvian.mods.kubejs.item.OutputItem;
@@ -78,7 +77,7 @@ public interface GTRecipeSchema {
             }
             if (map != null) {
                 for (Object object : obj) {
-                    CapabilityMapComponent.add(map, capability, new Content(capability.serializer.of(object), chance, tierChanceBoost, null, null));
+                    map.add(capability, new Content(object, chance, tierChanceBoost, null, null));
                 }
             }
             save();
@@ -96,7 +95,7 @@ public interface GTRecipeSchema {
             }
             if (map != null) {
                 for (Object object : obj) {
-                    CapabilityMapComponent.add(map, capability, new Content(capability.serializer.of(object), chance, tierChanceBoost, null, null));
+                    map.add(capability, new Content(object, chance, tierChanceBoost, null, null));
                 }
             }
             save();
@@ -144,7 +143,7 @@ public interface GTRecipeSchema {
         }
 
         public GTRecipeJS inputItems(InputItem... inputs) {
-            return input(ItemRecipeCapability.CAP, Arrays.stream(inputs).map(InputItem::kjs$asIngredient).toArray());
+            return input(ItemRecipeCapability.CAP, (Object[]) inputs);
         }
 
         public GTRecipeJS inputItems(ItemStack... inputs) {
@@ -154,7 +153,7 @@ public interface GTRecipeSchema {
                     throw new IllegalArgumentException(id + ": input items is empty");
                 }
             }
-            return input(ItemRecipeCapability.CAP, Arrays.stream(inputs).map(stack -> SizedIngredient.create(stack.hasTag() ? NBTIngredient.createNBTIngredient(stack) : Ingredient.of(stack), stack.getCount())).toArray());
+            return input(ItemRecipeCapability.CAP, Arrays.stream(inputs).map(stack -> InputItem.of(SizedIngredient.create(stack.hasTag() ? NBTIngredient.createNBTIngredient(stack) : Ingredient.of(stack), stack.getCount()), stack.getCount())).toArray());
         }
 
         public GTRecipeJS inputItems(TagKey<Item> tag, int amount) {
@@ -224,7 +223,7 @@ public interface GTRecipeSchema {
                     throw new IllegalArgumentException(id + ": output items is empty");
                 }
             }
-            return output(ItemRecipeCapability.CAP, (Object[]) outputs);
+            return output(ItemRecipeCapability.CAP, Arrays.stream(outputs).map(stack -> OutputItem.of(stack, chance)).toArray());
         }
 
         public GTRecipeJS outputItems(Item input, int amount) {
@@ -307,7 +306,7 @@ public interface GTRecipeSchema {
             return this;
         }
 
-        public GTRecipeJS chancedInput(FluidStack stack, int chance, int tierChanceBoost) {
+        public GTRecipeJS chancedInput(FluidStackJS stack, int chance, int tierChanceBoost) {
             float lastChance = this.chance;
             float lastTierChanceBoost = this.tierChanceBoost;
             this.chance = chance / 10000f;
@@ -329,7 +328,7 @@ public interface GTRecipeSchema {
             return this;
         }
 
-        public GTRecipeJS chancedOutput(FluidStack stack, int chance, int tierChanceBoost) {
+        public GTRecipeJS chancedOutput(FluidStackJS stack, int chance, int tierChanceBoost) {
             float lastChance = this.chance;
             float lastTierChanceBoost = this.tierChanceBoost;
             this.chance = chance / 10000f;
@@ -348,11 +347,11 @@ public interface GTRecipeSchema {
             return chancedOutput(ChemicalHelper.get(tag, mat, count), chance, tierChanceBoost);
         }
 
-        public GTRecipeJS inputFluids(FluidStack... inputs) {
+        public GTRecipeJS inputFluids(FluidStackJS... inputs) {
             return input(FluidRecipeCapability.CAP, (Object[]) inputs);
         }
 
-        public GTRecipeJS outputFluids(FluidStack... outputs) {
+        public GTRecipeJS outputFluids(FluidStackJS... outputs) {
             return output(FluidRecipeCapability.CAP, (Object[]) outputs);
         }
 
@@ -507,8 +506,8 @@ public interface GTRecipeSchema {
                 if (jsonObject.has("content")) {
                     jsonObject = jsonObject.getAsJsonObject("content");
                 }
-                var ingredient = SizedIngredient.fromJson(jsonObject);
-                return OutputItem.of(ingredient.getInner().getItems()[0], chance);
+                var ingredient = Ingredient.fromJson(jsonObject);
+                return OutputItem.of(ingredient.getItems()[0], chance);
             }
             return OutputItem.of(from);
         }
