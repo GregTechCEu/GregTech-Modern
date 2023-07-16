@@ -154,7 +154,6 @@ public class ToolProperty implements IMaterialProperty<ToolProperty> {
                     SAW,
                     HARD_HAMMER,
 //                    SOFT_MALLET,
-                    MINING_HAMMER,
                     WRENCH,
                     FILE,
                     CROWBAR,

@@ -28,7 +28,7 @@ public class ItemTagLoader {
         create(provider, lens, Color.White, GTItems.MATERIAL_ITEMS.get(lens, Glass).getId());
         create(provider, "pistons", rl("piston"), rl("sticky_piston"));
 
-        create(provider, CustomTags.AOE_TOOLS, GTItems.TOOL_ITEMS.column(GTToolType.MINING_HAMMER).values().stream().filter(Objects::nonNull).map(entry -> GTCEu.id(entry.get().getTier().material.getName() + "_mining_hammer")).toList().toArray(new ResourceLocation[0]));
+        create(provider, CustomTags.AOE_TOOLS, GTItems.TOOL_ITEMS.column(GTToolType.HARD_HAMMER).values().stream().filter(Objects::nonNull).map(entry -> GTCEu.id(entry.get().getTier().material.getName() + "_hammer")).toList().toArray(new ResourceLocation[0]));
 
 
         // TODO add to planks mc tag?
