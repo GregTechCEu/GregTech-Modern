@@ -24,6 +24,9 @@ repositories {
             includeGroup "dev.latvian.mods"
         }
     }
+    maven { // TOP
+        url "https://maven.k-4u.nl"
+    }
 }
 
 configurations {
@@ -49,7 +52,7 @@ dependencies {
     // dependencies must also be pulled in to minimize problems, from remapping issues to compile errors.
     // All dependencies except Flywheel and Registrate are NOT safe to use!
     // Flywheel and Registrate must also be used carefully due to differences.
-    modCompileOnly fabric.createFabric
+//    modCompileOnly fabric.createFabric
     modCompileOnly fabric.ldlib.common
 
     // JEI
@@ -67,16 +70,16 @@ dependencies {
     modCompileOnly fabric.emi
 
     // TOP
-    modCompileOnly fabric.theoneprobe
+    modCompileOnly(forge.theoneprobe) { transitive = false }
 
     // Jade
     modCompileOnly fabric.jade
 
     // KJS
-    modCompileOnly fabric.kubejs
+//    modCompileOnly fabric.kubejs
 
     // Configuration
-    modCompileOnly fabric.configuration
+//    modCompileOnly fabric.configuration
 
     modCompileOnly fabric.ae2
 }

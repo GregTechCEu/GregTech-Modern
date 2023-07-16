@@ -14,44 +14,44 @@ dependencyResolutionManagement {
     }
     versionCatalogs {
         // Minecraft Version
-        def minecraftVersion = "1.19.2"
+        def minecraftVersion = "1.20.1"
 
         // Mod Dependencies Versions
         // Common
-        def jeiVersion = "11.5.2.1007"
-        def reiVersion = "9.1.619"
-        def emiVersion = "1.0.5+1.19.2"
-        def ae2Version = "12.9.5"
+        def jeiVersion = "15.2.0.23"
+        def reiVersion = "12.0.625"
+        def emiVersion = "1.0.5+1.20.1"
+        def ae2Version = "15.0.4-beta"
 
         // Fabric
-        def fabricLoaderVersion = "0.14.11" // https://fabricmc.net/develop/
-        def fabricApiVersion = "0.73.2" // https://fabricmc.net/develop/
-        def createVersion = "0.5.1-b-build.1079"
+        def fabricLoaderVersion = "0.14.21" // https://fabricmc.net/develop/
+        def fabricApiVersion = "0.83.0" // https://fabricmc.net/develop/
+//        def createVersion = "0.5.1-b-build.1079"
         def lazyDfuVersion = "0.1.3"
-        def modMenuVersion = "4.1.2"
-        def topFabricVersion = "1.19-6.0.0"
-        def jadeFabricVersion = "8.7.3"
-        def registrateFabricVersion = "1.1.50-MC1.19.2"
-        def kjsVersion = "1902.6.0-build.142"
-        def forgeConfigApiVersion = "4.2.11"
+        def modMenuVersion = "7.1.0"
+//        def topFabricVersion = "1.19-6.0.0"
+        def jadeFabricVersion = "11.2.2"
+        def registrateFabricVersion = "1.3.59-MC1.20"
+//        def kjsVersion = "1902.6.0-build.142"
+        def forgeConfigApiVersion = "8.0.0"
         def nightConfigVersion = "3.6.5"
         def teamRebornEnergyVersion = "2.3.0"
-        def configurationFabricFile = "4104224"
-        def worldStripperFabricFile = "3921629"
+//        def configurationFabricFile = "4104224"
+//        def worldStripperFabricFile = "3921629"
 
         // Forge
-        def forgeVersion = "43.2.3"
-        def registrateForgeVersion = "MC1.19-1.1.5"
-        def createForgeVersion = "0.5.1.b-30"
-        def flywheelForgeVersion = "0.6.8.a-14"
-        def topForgeVersion = "1.19-6.2.0-6"
-        def jadeForgeVersion = "8.8.1"
-        def configurationForgeFile = "4519560"
-        def worldStripperForgeFile = "3921630"
+        def forgeVersion = "47.0.19"
+        def registrateForgeVersion = "MC1.20-1.3.3"
+//        def createForgeVersion = "0.5.1.b-30"
+//        def flywheelForgeVersion = "0.6.8.a-14"
+        def topForgeVersion = "1.20.1-10.0.1-3"
+        def jadeForgeVersion = "11.1.4"
+//        def configurationForgeFile = "4519560"
+//        def worldStripperForgeFile = "3921630"
 
         // Libs
-        def quiltMappingsVersion = "21"  // https://lambdaurora.dev/tools/import_quilt.html
-        def parchmentVersion = "2022.11.27" // https://parchmentmc.org/docs/getting-started
+        def quiltMappingsVersion = "5"  // https://lambdaurora.dev/tools/import_quilt.html
+        def parchmentVersion = "2023.06.25" // https://parchmentmc.org/docs/getting-started
         def shadowVersion = "7.1.2"
         def architecturyPluginVersion = "3.4-SNAPSHOT"
         def architecturyLoomVersion = "1.0-SNAPSHOT"
@@ -60,9 +60,6 @@ dependencyResolutionManagement {
         def ldLibVersion = "1.0.12"
 
         fabric {
-            def parchment = version("parchment", parchmentVersion)
-            library("parchment", "org.parchmentmc.data", "parchment-${minecraftVersion}").versionRef(parchment)
-
             def fabricLoader = version("fabricLoader", fabricLoaderVersion)
             library("fabricLoader", "net.fabricmc", "fabric-loader").versionRef(fabricLoader)
 
@@ -76,8 +73,8 @@ dependencyResolutionManagement {
             def registrate = version("registrate", registrateFabricVersion)
             library("registrate", "com.tterrag.registrate_fabric", "Registrate").versionRef(registrate)
 
-            def createFabric = version("create-fabric", "${createVersion}+mc${minecraftVersion}")
-            library("createFabric", "com.simibubi.create", "create-fabric-${minecraftVersion}").versionRef(createFabric)
+//            def createFabric = version("create-fabric", "${createVersion}+mc${minecraftVersion}")
+//            library("createFabric", "com.simibubi.create", "create-fabric-${minecraftVersion}").versionRef(createFabric)
 
             def lazyDfu = version("lazydfu", lazyDfuVersion)
             library("lazydfu", "maven.modrinth", "lazydfu").versionRef(lazyDfu)
@@ -99,17 +96,17 @@ dependencyResolutionManagement {
             def emi = version("emi", emiVersion)
             library("emi", "dev.emi", "emi-fabric").versionRef(emi)
 
-            def theoneprobe = version("theoneprobe", topFabricVersion)
-            library("theoneprobe", "mcjty.theoneprobe", "theoneprobe-fabric").versionRef(theoneprobe)
+//            def theoneprobe = version("theoneprobe", topFabricVersion)
+//            library("theoneprobe", "mcjty.theoneprobe", "theoneprobe-fabric").versionRef(theoneprobe)
 
             def jade = version("jade", jadeFabricVersion)
             library("jade", "maven.modrinth", "jade").versionRef(jade)
 
-            def kubejs = version("kubejs", kjsVersion)
-            library("kubejs", "dev.latvian.mods", "kubejs-fabric").versionRef(kubejs)
+//            def kubejs = version("kubejs", kjsVersion)
+//            library("kubejs", "dev.latvian.mods", "kubejs-fabric").versionRef(kubejs)
 
             def forgeConfigApi = version("forgeConfigApi", forgeConfigApiVersion)
-            library("forgeConfigApi", "net.minecraftforge", "forgeconfigapiport-fabric").versionRef(forgeConfigApi)
+            library("forgeConfigApi", "fuzs.forgeconfigapiport", "forgeconfigapiport-fabric").versionRef(forgeConfigApi)
             def nightConfigCore = version("nightConfigCore", nightConfigVersion)
             library("nightConfigCore", "com.electronwill.night-config", "core").versionRef(nightConfigCore)
             def nightConfigToml = version("nightConfigToml", nightConfigVersion)
@@ -118,11 +115,11 @@ dependencyResolutionManagement {
             def teamRebornEnergy = version("teamRebornEnergy", teamRebornEnergyVersion)
             library("teamRebornEnergy", "teamreborn", "energy").versionRef(teamRebornEnergy)
 
-            def configuration = version("configuration", configurationFabricFile)
-            library("configuration", "curse.maven", "configuration-444699").versionRef(configuration)
+//            def configuration = version("configuration", configurationFabricFile)
+//            library("configuration", "curse.maven", "configuration-444699").versionRef(configuration)
 
-            def worldStripper = version("worldStripper", worldStripperFabricFile)
-            library("worldStripper", "curse.maven", "worldStripper-250603").versionRef(worldStripper)
+//            def worldStripper = version("worldStripper", worldStripperFabricFile)
+//            library("worldStripper", "curse.maven", "worldStripper-250603").versionRef(worldStripper)
 
             def ae2 = version("ae2", ae2Version)
             library("ae2", "appeng", "appliedenergistics2-fabric").versionRef(ae2)
@@ -139,11 +136,11 @@ dependencyResolutionManagement {
             def registrate = version("registrate", registrateForgeVersion)
             library("registrate", "com.tterrag.registrate", "Registrate").versionRef(registrate)
 
-            def createForge = version("createForge", createForgeVersion)
-            library("createForge", "com.simibubi.create", "create-${minecraftVersion}").versionRef(createForge)
+//            def createForge = version("createForge", createForgeVersion)
+//            library("createForge", "com.simibubi.create", "create-${minecraftVersion}").versionRef(createForge)
 
-            def flywheel = version("flywheel", flywheelForgeVersion)
-            library("flywheel", "com.jozufozu.flywheel", "flywheel-forge-${minecraftVersion}").versionRef(flywheel)
+//            def flywheel = version("flywheel", flywheelForgeVersion)
+//            library("flywheel", "com.jozufozu.flywheel", "flywheel-forge-${minecraftVersion}").versionRef(flywheel)
 
             def jei = version("jei", jeiVersion)
             library("jei-common-api", "mezz.jei", "jei-${minecraftVersion}-common-api").versionRef(jei)
@@ -164,14 +161,14 @@ dependencyResolutionManagement {
             def jade = version("jade", jadeForgeVersion)
             library("jade", "maven.modrinth", "jade").versionRef(jade)
 
-            def kubejs = version("kubejs", kjsVersion)
-            library("kubejs", "dev.latvian.mods", "kubejs-forge").versionRef(kubejs)
+//            def kubejs = version("kubejs", kjsVersion)
+//            library("kubejs", "dev.latvian.mods", "kubejs-forge").versionRef(kubejs)
 
-            def configuration = version("configuration", configurationForgeFile)
-            library("configuration", "curse.maven", "configuration-444699").versionRef(configuration)
+//            def configuration = version("configuration", configurationForgeFile)
+//            library("configuration", "curse.maven", "configuration-444699").versionRef(configuration)
 
-            def worldStripper = version("worldStripper", worldStripperForgeFile)
-            library("worldStripper", "curse.maven", "worldStripper-250603").versionRef(worldStripper)
+//            def worldStripper = version("worldStripper", worldStripperForgeFile)
+//            library("worldStripper", "curse.maven", "worldStripper-250603").versionRef(worldStripper)
 
             def ae2 = version("ae2", ae2Version)
             library("ae2", "appeng", "appliedenergistics2-forge").versionRef(ae2)

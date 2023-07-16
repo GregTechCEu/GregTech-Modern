@@ -109,8 +109,8 @@ dependencies {
     modImplementation(include("com.tterrag.registrate:Registrate:${forge.versions.registrate.get()}"))
 
     // Create and its dependencies
-    modImplementation("com.simibubi.create:create-${libs.versions.minecraft.get()}:${forge.versions.createForge.get()}:slim") { transitive = false }
-    modImplementation forge.flywheel
+//    modImplementation("com.simibubi.create:create-${libs.versions.minecraft.get()}:${forge.versions.createForge.get()}:slim") { transitive = false }
+//    modImplementation forge.flywheel
 
     // JEI
     modCompileOnly(forge.jei.common.api) { transitive = false }
@@ -133,11 +133,11 @@ dependencies {
     modImplementation forge.jade
 
     // KJS
-    modImplementation forge.kubejs
+//    modImplementation forge.kubejs
 
     // Configuration
-    modImplementation(forge.configuration)
-    include(forge.configuration)
+//    modImplementation(forge.configuration)
+//    include(forge.configuration)
 
     // Runtime only testing mods
     //modRuntimeOnly(forge.worldStripper)
@@ -154,8 +154,7 @@ processResources {
             "mod_license", mod_license,
             "mod_name", mod_name,
             "mod_description", mod_description,
-            "mod_url", mod_url,
-            "ldlib_version", forge.versions.ldlib.get()
+            "mod_url", mod_url
     )
     properties.forEach((k, v) -> inputs.property(k, v))
 

@@ -82,14 +82,14 @@ dependencies {
     // Registrate
     modImplementation(include("com.tterrag.registrate_fabric:Registrate:${fabric.versions.registrate.get()}"))
 
-    // Registrate
+    // Forge Config Api
     modImplementation fabric.forgeConfigApi
     // Night Config
     modImplementation fabric.nightConfigCore
     modImplementation fabric.nightConfigToml
 
     // Create - dependencies are added transitively
-    modImplementation fabric.createFabric
+//    modImplementation fabric.createFabric
 
     // Development QOL
     modCompileOnly fabric.lazydfu
@@ -110,26 +110,26 @@ dependencies {
     modImplementation fabric.emi
 
     // TOP
-    modCompileOnly fabric.theoneprobe
+//    modCompileOnly fabric.theoneprobe
 
     // Jade
     modImplementation fabric.jade
 
     // KJS
-    modImplementation fabric.kubejs
+//    modImplementation fabric.kubejs
 
     // Configuration
-    modImplementation(fabric.configuration)
-    include(fabric.configuration)
+//    modImplementation(fabric.configuration)
+//    include(fabric.configuration)
 
     // Team Reborn Energy
     modImplementation(fabric.teamRebornEnergy)
 
     // Runtime only testing mods
-    modRuntimeOnly("me.shedaniel.cloth:cloth-config-fabric:8.2.88") {
-        exclude(group: "net.fabricmc.fabric-api")
-    }
-    modRuntimeOnly(fabric.worldStripper)
+//    modRuntimeOnly("me.shedaniel.cloth:cloth-config-fabric:8.2.88") {
+//        exclude(group: "net.fabricmc.fabric-api")
+//    }
+//    modRuntimeOnly(fabric.worldStripper)
 
     modImplementation(fabric.ae2) { transitive = false }
 }
@@ -145,8 +145,7 @@ processResources {
             "mod_license", mod_license,
             "mod_name", mod_name,
             "mod_description", mod_description,
-            "mod_url", mod_url,
-            "ldlib_version", fabric.versions.ldlib.get() // on fabric, use the entire version, unlike forge
+            "mod_url", mod_url
     )
     properties.forEach((k, v) -> inputs.property(k, v))
 
