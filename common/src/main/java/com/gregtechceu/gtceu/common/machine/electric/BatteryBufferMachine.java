@@ -15,6 +15,7 @@ import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
+import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.utils.Position;
@@ -51,6 +52,7 @@ public class BatteryBufferMachine extends TieredEnergyMachine implements IContro
         this.isWorkingEnabled = true;
         this.inventorySize = inventorySize;
         this.batteryInventory = createBatteryInventory(args);
+        this.batteryInventory.setOnContentsChanged(energyContainer::checkOutputSubscription);
     }
 
     //////////////////////////////////////
@@ -70,11 +72,6 @@ public class BatteryBufferMachine extends TieredEnergyMachine implements IContro
         var itemTransfer = new ItemStackTransfer(this.inventorySize);
         itemTransfer.setFilter(item -> GTCapabilityHelper.getElectricItem(item) != null);
         return itemTransfer;
-    }
-
-    @Override
-    public void onLoad() {
-        super.onLoad();
     }
 
     @Override
@@ -186,7 +183,7 @@ public class BatteryBufferMachine extends TieredEnergyMachine implements IContro
 
             var voltage = getOutputVoltage();
             var batteries = getNonEmptyBatteries();
-            if (batteries.size() > 0) {
+            if (!batteries.isEmpty()) {
                 //Prioritize as many packets as available of energy created
                 long internalAmps = Math.abs(Math.min(0, getInternalStorage() / voltage));
                 long genAmps = Math.max(0, batteries.size() - internalAmps);
