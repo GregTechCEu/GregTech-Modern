@@ -55,6 +55,15 @@ public class GTCapabilityHelperImpl {
     }
 
     @Nullable
+    public static IPlatformEnergyStorage getPlatformEnergyItem(ItemStack itemStack) {
+        if (GTCEu.isRebornEnergyLoaded()) {
+            var energyItem = ContainerItemContext.withConstant(itemStack).find(EnergyStorage.ITEM);
+            return energyItem == null ? null : GTEnergyHelperImpl.toPlatformEnergyStorage(energyItem);
+        }
+        return null;
+    }
+
+    @Nullable
     public static IPlatformEnergyStorage getPlatformEnergy(Level level, BlockPos pos, @Nullable Direction side) {
         if (GTCEu.isRebornEnergyLoaded()) {
             var energyStorage = EnergyStorage.SIDED.find(level, pos, side);

@@ -88,6 +88,12 @@ public class GTCapabilityHelperImpl {
         return itemStack.getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM).resolve().orElse(null);
     }
 
+    @Nullable
+    public static IPlatformEnergyStorage getPlatformEnergyItem(ItemStack itemStack) {
+        IEnergyStorage energyItemStorage = itemStack.getCapability(ForgeCapabilities.ENERGY).resolve().orElse(null);
+        return energyItemStorage == null ? null : GTEnergyHelperImpl.toPlatformEnergyStorage(energyItemStorage);
+    }
+
     @SuppressWarnings({"DataFlowIssue", "ConstantValue"})
     @Nullable
     public static IPlatformEnergyStorage getPlatformEnergy(Level level, BlockPos pos, @Nullable Direction side) {

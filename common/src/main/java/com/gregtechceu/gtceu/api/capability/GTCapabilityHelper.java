@@ -23,6 +23,12 @@ public class GTCapabilityHelper {
 
     @ExpectPlatform
     @Nullable
+    public static IPlatformEnergyStorage getPlatformEnergyItem(ItemStack itemStack) {
+        throw new AssertionError();
+    }
+
+    @ExpectPlatform
+    @Nullable
     public static IEnergyContainer getEnergyContainer(Level level, BlockPos pos, @Nullable Direction side) {
         throw new AssertionError();
     }

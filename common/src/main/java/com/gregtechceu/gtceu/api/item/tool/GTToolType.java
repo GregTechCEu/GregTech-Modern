@@ -26,7 +26,6 @@ public enum GTToolType {
     SHOVEL("shovel", "shovels", 1.5F, -3.0F, true),
     AXE("axe", "axes", 6.0F, -3.2F, true),
     HOE("hoe", "hoes", 0, -3.0F, true),
-
     SAW("saw", "saws", 1, 1, GTSoundEntries.SAW_TOOL),
     HARD_HAMMER("hammer", "hammers", 1, 1, GTSoundEntries.FORGE_HAMMER),
     SOFT_MALLET("mallet", "mallets", 1, 1, GTSoundEntries.SOFT_MALLET_TOOL),

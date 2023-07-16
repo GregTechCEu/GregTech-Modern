@@ -23,7 +23,6 @@ import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.api.registry.registrate.MultiblockMachineBuilder;
-import com.gregtechceu.gtceu.client.renderer.block.CTMModelRenderer;
 import com.gregtechceu.gtceu.client.renderer.machine.*;
 import com.gregtechceu.gtceu.common.block.BoilerFireboxType;
 import com.gregtechceu.gtceu.common.machine.electric.*;
@@ -230,6 +229,8 @@ public class GTMachines {
 
     public final static MachineDefinition[] BATTERY_BUFFER_16 = registerBatteryBuffer(16);
 
+    public final static MachineDefinition[] CHARGER_4 = registerCharger(4);
+
     public final static MachineDefinition[] PUMP = registerTieredMachines("pump", PumpMachine::new,
             (tier, builder) -> builder
                     .rotationState(RotationState.NON_Y_AXIS)
@@ -242,6 +243,34 @@ public class GTMachines {
                             Component.translatable("gtceu.universal.tooltip.working_area", PumpMachine.BASE_PUMP_RANGE + PumpMachine.EXTRA_PUMP_RANGE * tier, PumpMachine.BASE_PUMP_RANGE + PumpMachine.EXTRA_PUMP_RANGE * tier))
                     .register(),
             LV, MV, HV, EV);
+
+    public final static MachineDefinition[] FISHER = registerTieredMachines("fisher", FisherMachine::new,
+            (tier, builder) -> builder
+                    .rotationState(RotationState.NON_Y_AXIS)
+                    .editableUI(FisherMachine.EDITABLE_UI_CREATOR.apply(GTCEu.id("fisher"), (tier + 1) * (tier + 1)))
+                    .renderer(() -> new TieredHullMachineRenderer(tier, GTCEu.id("block/machine/fisher_machine")))
+                    .langValue("%s Fisher %s".formatted(VLVH[tier], VLVT[tier]))
+                    .tooltips(Component.translatable("gtceu.machine.fisher.tooltip"),
+                            Component.translatable("gtceu.machine.fisher.speed", 1000 - tier * 200L),
+                            Component.translatable("gtceu.machine.fisher.requirement", FisherMachine.WATER_CHECK_SIZE,FisherMachine.WATER_CHECK_SIZE),
+                            Component.translatable("gtceu.universal.tooltip.voltage_in", GTValues.V[tier], GTValues.VNF[tier]),
+                            Component.translatable("gtceu.universal.tooltip.energy_storage_capacity", GTValues.V[tier] * 64))
+                    .register(),
+            LV, MV, HV, EV);
+
+    public final static MachineDefinition[] BLOCK_BREAKER = registerTieredMachines("block_breaker", BlockBreakerMachine::new,
+            (tier, builder) -> builder
+                    .rotationState(RotationState.NON_Y_AXIS)
+                    .editableUI(BlockBreakerMachine.EDITABLE_UI_CREATOR.apply(GTCEu.id("block_breaker"), (tier + 1) * (tier + 1)))
+                    .renderer(() -> new TieredHullMachineRenderer(tier, GTCEu.id("block/machine/block_breaker_machine")))
+                    .langValue("%s Block Breaker %s".formatted(VLVH[tier], VLVT[tier]))
+                    .tooltips(Component.translatable("gtceu.machine.block_breaker.tooltip"),
+                            Component.translatable("gtceu.machine.block_breaker.speed_bonus", (int) (BlockBreakerMachine.getEfficiencyMultiplier(tier) * 100)),
+                            Component.translatable("gtceu.universal.tooltip.voltage_in", GTValues.V[tier], GTValues.VNF[tier]),
+                            Component.translatable("gtceu.universal.tooltip.energy_storage_capacity", GTValues.V[tier] * 64))
+                    .register(),
+            LV, MV, HV, EV);
+
 
     public static final MachineDefinition[] MINER = registerTieredMachines("miner", (holder, tier) -> new MinerMachine(holder, tier, 320 / (tier * 2), tier * 8, tier),
             (tier, builder) -> builder
@@ -1356,6 +1385,21 @@ public class GTMachines {
                                 Component.translatable("gtceu.universal.tooltip.voltage_in_out", GTValues.V[tier], GTValues.VNF[tier]),
                                 Component.translatable("gtceu.universal.tooltip.amperage_in_till", batterySlotSize * BatteryBufferMachine.AMPS_PER_BATTERY),
                                 Component.translatable("gtceu.universal.tooltip.amperage_out_till", batterySlotSize))
+                        .register(),
+                ALL_TIERS);
+    }
+
+    public static MachineDefinition[] registerCharger(int itemSlotSize) {
+        return registerTieredMachines("charger_" + itemSlotSize + "x",
+                (holder, tier) -> new ChargerMachine(holder, tier, itemSlotSize),
+                (tier, builder) -> builder
+                        .rotationState(RotationState.NON_Y_AXIS)
+                        .renderer(() -> new ChargerRenderer(tier))
+                        .langValue("%s %s%s".formatted(VOLTAGE_NAMES[tier], itemSlotSize, "x Turbo Charger"))
+                        .tooltips(explosion())
+                        .tooltips(Component.translatable("gtceu.universal.tooltip.item_storage_capacity", itemSlotSize),
+                                Component.translatable("gtceu.universal.tooltip.voltage_in_out", GTValues.V[tier], GTValues.VNF[tier]),
+                                Component.translatable("gtceu.universal.tooltip.amperage_in_till", itemSlotSize * ChargerMachine.AMPS_PER_ITEM))
                         .register(),
                 ALL_TIERS);
     }
