@@ -69,7 +69,9 @@ public class PipeBlockRenderer implements IRenderer, ICoverableRenderer {
     @Override
     @Environment(EnvType.CLIENT)
     public List<BakedQuad> renderModel(BlockAndTintGetter level, BlockPos pos, BlockState state, Direction side, RandomSource rand) {
-        if (level.getBlockEntity(pos) instanceof IPipeNode<?,?> pipeNode) {
+        if (level == null) {
+            return pipeModel.bakeQuads(side, PipeModel.ITEM_CONNECTIONS);
+        } else if (level.getBlockEntity(pos) instanceof IPipeNode<?,?> pipeNode) {
             var quads = new LinkedList<>(pipeModel.bakeQuads(side, pipeNode.getVisualConnections()));
             var modelState = ModelFactory.getRotation(pipeNode.getCoverContainer().getFrontFacing());
             var modelFacing = side == null ? null : ModelFactory.modelFacing(side, pipeNode.getCoverContainer().getFrontFacing());
