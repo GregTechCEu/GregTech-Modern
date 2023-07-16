@@ -34,7 +34,6 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.TickTask;
@@ -346,13 +345,13 @@ public class BlockBreakerMachine extends TieredEnergyMachine implements IAutoOut
         energyGroup.addWidget(energyBar);
         energyGroup.addWidget(batterySlot);
         var group = new WidgetGroup(0, 0,
-                energyGroup.getSize().width + template.getSize().width + 8 + 4,
+                Math.max(energyGroup.getSize().width + template.getSize().width + 4 + 8, 172),
                 Math.max(template.getSize().height + 8, energyGroup.getSize().height + 8));
         var size = group.getSize();
-        energyGroup.setSelfPosition(new Position(4, (size.height - energyGroup.getSize().height) / 2));
+        energyGroup.setSelfPosition(new Position(3, (size.height - energyGroup.getSize().height) / 2));
 
         template.setSelfPosition(new Position(
-                energyGroup.getSize().width + 8,
+                (size.width - energyGroup.getSize().width - 4 - template.getSize().width) / 2 + 2 + energyGroup.getSize().width + 2,
                 (size.height - template.getSize().height) / 2));
 
         group.addWidget(energyGroup);
