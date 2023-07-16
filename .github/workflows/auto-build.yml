@@ -3,7 +3,7 @@ name: auto-build
 on:
   push:
     branches:
-      - 'master'
+      - '1.19.2'
 
 jobs:
   build:
