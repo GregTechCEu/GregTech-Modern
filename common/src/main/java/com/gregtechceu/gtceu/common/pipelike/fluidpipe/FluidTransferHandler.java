@@ -53,7 +53,7 @@ public class FluidTransferHandler implements IFluidTransfer {
 
     @Override
     public long getTankCapacity(int tank) {
-        return tank == 0 ? net.getNodeAt(pipe.getPipePos()).data.properties.getThroughput() - net.getThroughputUsed(pipe.getPipePos()) : 0;
+        return tank == 0 ? net.getNodeAt(pipe.getPipePos()).data.properties.getPlatformThroughput() - net.getThroughputUsed(pipe.getPipePos()) : 0;
     }
 
     @Override
@@ -80,7 +80,7 @@ public class FluidTransferHandler implements IFluidTransfer {
             if (!channels.contains(stack.getFluid()) && !simulateChannels.contains(stack.getFluid())
                     && (channels.size() + simulateChannels.size()) >= properties.getChannels()) return 0;
 
-            var left = properties.getThroughput() - net.getThroughputUsed(pos) - simulateThroughputUsed.getOrDefault(pos, 0);
+            var left = properties.getPlatformThroughput() - net.getThroughputUsed(pos) - simulateThroughputUsed.getOrDefault(pos, 0);
             amount = Math.min(amount, left);
             if (amount == 0) return 0;
         }

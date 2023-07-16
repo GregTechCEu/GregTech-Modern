@@ -97,4 +97,8 @@ public class FluidPipeProperties implements IMaterialProperty<FluidPipePropertie
                 ", channels=" + channels +
                 '}';
     }
+
+    public long getPlatformThroughput() {
+        return getThroughput() * FluidHelper.getBucket() / 1000;
+    }
 }

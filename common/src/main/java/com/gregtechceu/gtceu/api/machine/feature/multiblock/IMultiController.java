@@ -137,6 +137,13 @@ public interface IMultiController extends IMachineFeature {
     Lock getPatternLock();
 
     /**
+     * should add part to the part list.
+     */
+    default boolean shouldAddPartToController(IMultiPart part) {
+        return true;
+    }
+
+    /**
      * get parts' Appearance. same as IForgeBlock.getAppearance() / IFabricBlock.getAppearance()
      */
     @Nullable
