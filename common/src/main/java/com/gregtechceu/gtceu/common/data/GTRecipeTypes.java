@@ -11,7 +11,6 @@ import com.gregtechceu.gtceu.api.recipe.FacadeCoverRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeSerializer;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
-import com.gregtechceu.gtceu.common.recipe.RPMCondition;
 import com.gregtechceu.gtceu.common.recipe.RockBreakerCondition;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
@@ -20,16 +19,13 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.sound.ExistingSoundEntry;
 import com.gregtechceu.gtceu.data.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
-import com.gregtechceu.gtceu.integration.kjs.GTRegistryObjectBuilderTypes;
 import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
 import com.lowdragmc.lowdraglib.gui.widget.TankWidget;
 import com.lowdragmc.lowdraglib.misc.FluidStorage;
-import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.lowdragmc.lowdraglib.utils.CycleItemStackHandler;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
-import com.simibubi.create.AllBlocks;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -372,8 +368,8 @@ public class GTRecipeTypes {
             .setSteamProgressBar(GuiTextures.PROGRESS_BAR_MACERATE_STEAM, LEFT_TO_RIGHT)
             .prepareBuilder(recipeBuilder -> recipeBuilder.addCondition(RockBreakerCondition.INSTANCE))
             .setUiBuilder((recipe, widgetGroup) -> {
-                var fluidA = Registry.FLUID.get(new ResourceLocation(recipe.data.getString("fluidA")));
-                var fluidB = Registry.FLUID.get(new ResourceLocation(recipe.data.getString("fluidB")));
+                var fluidA = BuiltInRegistries.FLUID.get(new ResourceLocation(recipe.data.getString("fluidA")));
+                var fluidB = BuiltInRegistries.FLUID.get(new ResourceLocation(recipe.data.getString("fluidB")));
                 if (fluidA != Fluids.EMPTY) {
                     widgetGroup.addWidget(new TankWidget(new FluidStorage(FluidStack.create(fluidA, 1000)), widgetGroup.getSize().width - 30, widgetGroup.getSize().height - 30, false, false)
                             .setBackground(GuiTextures.FLUID_SLOT).setShowAmount(false));
@@ -451,7 +447,7 @@ public class GTRecipeTypes {
                     for (int i = 0; i < contents.size(); ++i) {
                         FluidStack output = FluidRecipeCapability.CAP.of(contents.get(i).getContent());
                         if (output.isEmpty()) continue;
-                        GTRecipeBuilder builder = DISTILLERY_RECIPES.recipeBuilder("distill_" + Registry.FLUID.getKey(input.getFluid()).getPath() + "_to_" + Registry.FLUID.getKey(output.getFluid()).getPath()).EUt(Math.max(1, EUt / 4)).circuitMeta(i + 1);
+                        GTRecipeBuilder builder = DISTILLERY_RECIPES.recipeBuilder("distill_" + BuiltInRegistries.FLUID.getKey(input.getFluid()).getPath() + "_to_" + BuiltInRegistries.FLUID.getKey(output.getFluid()).getPath()).EUt(Math.max(1, EUt / 4)).circuitMeta(i + 1);
 
                         int ratio = RecipeHelper.getRatioForDistillery(input, output, outputItem);
                         int recipeDuration = (int) (recipeBuilder.duration * OverclockingLogic.STANDARD_OVERCLOCK_DURATION_DIVISOR);
@@ -549,40 +545,42 @@ public class GTRecipeTypes {
 
     public static GTRecipeType register(String name, String group, RecipeType<?>... proxyRecipes) {
         var recipeType = new GTRecipeType(GTCEu.id(name), group, proxyRecipes);
-        GTRegistries.register(Registry.RECIPE_TYPE, recipeType.registryName, recipeType);
-        GTRegistries.register(Registry.RECIPE_SERIALIZER, recipeType.registryName, new GTRecipeSerializer());
+        GTRegistries.register(BuiltInRegistries.RECIPE_TYPE, recipeType.registryName, recipeType);
+        GTRegistries.register(BuiltInRegistries.RECIPE_SERIALIZER, recipeType.registryName, new GTRecipeSerializer());
         GTRegistries.RECIPE_TYPES.register(recipeType.registryName, recipeType);
         return recipeType;
     }
 
     public static void init() {
         if (GTCEu.isCreateLoaded()) {
-            CREATE_MIXER_RECIPES = register("create_mixer", KINETIC).setMaxIOSize(6, 1, 2, 1).setEUIO(IO.IN)
-                    .setSlotOverlay(false, false, GuiTextures.DUST_OVERLAY)
-                    .setSlotOverlay(true, false, GuiTextures.DUST_OVERLAY)
-                    .setProgressBar(GuiTextures.PROGRESS_BAR_MIXER, LEFT_TO_RIGHT)
-                    .setSound(GTSoundEntries.MIXER)
-                    .setMaxTooltips(4)
-                    .setUiBuilder((recipe, group) -> {
-                        if (recipe.conditions.size() > 0 && recipe.conditions.get(0) instanceof RPMCondition) {
-                            var transfer = new ItemStackTransfer(AllBlocks.SHAFT.asStack());
-                            group.addWidget(new SlotWidget(transfer, 0, group.getSize().width - 30, group.getSize().height - 30, false, false));
-                        }
-                    });
-            MIXER_RECIPES.onRecipeBuild((builder, provider) -> {
-                assert CREATE_MIXER_RECIPES != null;
-                CREATE_MIXER_RECIPES.copyFrom(builder)
-                        .duration(Math.max((builder.duration / 2), 1))
-                        .rpm(64)
-                        .save(provider);
-            });
+            //TODO CREATE 1.20+
+//            CREATE_MIXER_RECIPES = register("create_mixer", KINETIC).setMaxIOSize(6, 1, 2, 1).setEUIO(IO.IN)
+//                    .setSlotOverlay(false, false, GuiTextures.DUST_OVERLAY)
+//                    .setSlotOverlay(true, false, GuiTextures.DUST_OVERLAY)
+//                    .setProgressBar(GuiTextures.PROGRESS_BAR_MIXER, LEFT_TO_RIGHT)
+//                    .setSound(GTSoundEntries.MIXER)
+//                    .setMaxTooltips(4)
+//                    .setUiBuilder((recipe, group) -> {
+//                        if (recipe.conditions.size() > 0 && recipe.conditions.get(0) instanceof RPMCondition) {
+//                            var transfer = new ItemStackTransfer(AllBlocks.SHAFT.asStack());
+//                            group.addWidget(new SlotWidget(transfer, 0, group.getSize().width - 30, group.getSize().height - 30, false, false));
+//                        }
+//                    });
+//            MIXER_RECIPES.onRecipeBuild((builder, provider) -> {
+//                assert CREATE_MIXER_RECIPES != null;
+//                CREATE_MIXER_RECIPES.copyFrom(builder)
+//                        .duration(Math.max((builder.duration / 2), 1))
+//                        .rpm(64)
+//                        .save(provider);
+//            });
         }
         AddonFinder.getAddons().forEach(IGTAddon::registerRecipeTypes);
         if (GTCEu.isKubeJSLoaded()) {
-            GTRegistryObjectBuilderTypes.registerFor(GTRegistries.RECIPE_TYPES.getRegistryName());
+            //TODO KJS
+//            GTRegistryObjectBuilderTypes.registerFor(GTRegistries.RECIPE_TYPES.getRegistryName());
         }
-        GTRegistries.register(Registry.RECIPE_SERIALIZER, GTCEu.id("gt_recipe_serializer"), GTRecipeSerializer.SERIALIZER);
-        GTRegistries.register(Registry.RECIPE_SERIALIZER, GTCEu.id("facade_cover_serializer"), FacadeCoverRecipe.SERIALIZER);
+        GTRegistries.register(BuiltInRegistries.RECIPE_SERIALIZER, GTCEu.id("gt_recipe_serializer"), GTRecipeSerializer.SERIALIZER);
+        GTRegistries.register(BuiltInRegistries.RECIPE_SERIALIZER, GTCEu.id("facade_cover_serializer"), FacadeCoverRecipe.SERIALIZER);
     }
 
     public static GTRecipeType get(String name) {

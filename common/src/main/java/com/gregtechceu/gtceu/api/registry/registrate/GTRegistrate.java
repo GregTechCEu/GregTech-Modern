@@ -15,13 +15,19 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.tterrag.registrate.Registrate;
 import com.tterrag.registrate.builders.BlockBuilder;
+import com.tterrag.registrate.builders.Builder;
 import com.tterrag.registrate.builders.ItemBuilder;
+import com.tterrag.registrate.fabric.RegistryObject;
+import com.tterrag.registrate.util.entry.RegistryEntry;
 import com.tterrag.registrate.util.nullness.NonNullFunction;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -32,8 +38,11 @@ import org.apache.commons.lang3.function.TriFunction;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Arrays;
+import java.util.IdentityHashMap;
+import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 /**
@@ -107,4 +116,25 @@ public abstract class GTRegistrate extends Registrate {
         return super.item(name, factory).lang(FormattingUtil.toEnglishName(name.replaceAll("/.", "_")));
     }
 
+    private static final Map<RegistryEntry<?>, RegistryEntry<CreativeModeTab>> TAB_LOOKUP = new IdentityHashMap<>();
+    private Supplier<RegistryEntry<CreativeModeTab>> currentTab;
+
+    public GTRegistrate creativeModeTab(Supplier<RegistryEntry<CreativeModeTab>> currentTab) {
+        this.currentTab = currentTab;
+        return this;
+    }
+
+    public boolean isInCreativeTab(RegistryEntry<?> entry, RegistryEntry<CreativeModeTab> tab) {
+        return TAB_LOOKUP.get(entry) == tab;
+    }
+
+    protected <R, T extends R> RegistryEntry<T> accept(String name, ResourceKey<? extends Registry<R>> type, Builder<R, T, ?, ?> builder, NonNullSupplier<? extends T> creator, NonNullFunction<RegistryObject<T>, ? extends RegistryEntry<T>> entryFactory) {
+        RegistryEntry<T> entry = super.accept(name, type, builder, creator, entryFactory);
+
+        if (this.currentTab != null) {
+            TAB_LOOKUP.put(entry, this.currentTab.get());
+        }
+
+        return entry;
+    }
 }

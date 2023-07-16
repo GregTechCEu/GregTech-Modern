@@ -9,20 +9,21 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.worldgen.WorldGenLayers;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.WorldGeneratorUtils;
 import net.minecraft.core.HolderSet;
-import net.minecraft.core.Registry;
-import net.minecraft.data.BuiltinRegistries;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.features.OreFeatures;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BiomeTags;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.dimension.BuiltinDimensionTypes;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.levelgen.VerticalAnchor;
-import net.minecraft.world.level.levelgen.placement.CountPlacement;
 import net.minecraft.world.level.levelgen.placement.HeightRangePlacement;
-import net.minecraft.world.level.levelgen.structure.templatesystem.BlockMatchTest;
 import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;
+import net.minecraft.world.level.levelgen.structure.templatesystem.TagMatchTest;
 
 import java.util.function.Supplier;
 
@@ -127,7 +128,7 @@ public class GTOres {
     //////////////////////////////////////
     //******     Nether Vein     *******//
     //////////////////////////////////////
-    public static RuleTest[] NETHER_RULES = new RuleTest[] { OreFeatures.NETHER_ORE_REPLACEABLES };
+    public static RuleTest[] NETHER_RULES = new RuleTest[] { new TagMatchTest(BlockTags.NETHER_CARVER_REPLACEABLES) };
 
     public static final GTOreFeatureEntry BANDED_IRON_VEIN =
             create("banded_iron_vein", 30, 0.2f, 30, WorldGenLayers.NETHERRACK, nether(), HeightRangePlacement.uniform(VerticalAnchor.absolute(20), VerticalAnchor.absolute(40)))
@@ -279,8 +280,8 @@ public class GTOres {
     //////////////////////////////////////
     //*****     Overworld Vein     *****//
     //////////////////////////////////////
-    public static RuleTest[] OVERWORLD_RULES = new RuleTest[] { OreFeatures.STONE_ORE_REPLACEABLES };
-    public static RuleTest[] DEEPSLATE_RULES = new RuleTest[] { OreFeatures.DEEPSLATE_ORE_REPLACEABLES };
+    public static RuleTest[] OVERWORLD_RULES = new RuleTest[] { new TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES)};
+    public static RuleTest[] DEEPSLATE_RULES = new RuleTest[] { new TagMatchTest(BlockTags.DEEPSLATE_ORE_REPLACEABLES) };
 
     public static final GTOreFeatureEntry APATITE_VEIN =
             create("apatite_vein", 25, 0.25f, 40, WorldGenLayers.STONE, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(10), VerticalAnchor.absolute(60)))
@@ -571,21 +572,24 @@ public class GTOres {
             } else {
                 oreKey = new ResourceLocation("%s_%s_ore".formatted(oreTag.name, material.getName()));
             }
-            return Registry.BLOCK.containsKey(oreKey) ? () -> Registry.BLOCK.get(oreKey) : () -> Blocks.AIR;
+            return BuiltInRegistries.BLOCK.containsKey(oreKey) ? () -> BuiltInRegistries.BLOCK.get(oreKey) : () -> Blocks.AIR;
         }
         return block;
     }
 
     private static HolderSet<DimensionType> overworld() {
-        return HolderSet.direct(BuiltinRegistries.DIMENSION_TYPE.getHolderOrThrow(BuiltinDimensionTypes.OVERWORLD));
+        var registryAccess = RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY);
+        return HolderSet.direct(registryAccess.lookupOrThrow(Registries.DIMENSION_TYPE).getOrThrow(BuiltinDimensionTypes.OVERWORLD));
     }
 
     private static HolderSet<DimensionType> nether() {
-        return HolderSet.direct(BuiltinRegistries.DIMENSION_TYPE.getHolderOrThrow(BuiltinDimensionTypes.NETHER));
+        var registryAccess = RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY);
+        return HolderSet.direct(registryAccess.lookupOrThrow(Registries.DIMENSION_TYPE).getOrThrow(BuiltinDimensionTypes.NETHER));
     }
 
     private static HolderSet<DimensionType> end() {
-        return HolderSet.direct(BuiltinRegistries.DIMENSION_TYPE.getHolderOrThrow(BuiltinDimensionTypes.END));
+        var registryAccess = RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY);
+        return HolderSet.direct(registryAccess.lookupOrThrow(Registries.DIMENSION_TYPE).getOrThrow(BuiltinDimensionTypes.END));
     }
 
     public static void init() {

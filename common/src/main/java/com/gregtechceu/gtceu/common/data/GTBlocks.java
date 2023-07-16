@@ -43,9 +43,8 @@ import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.renderer.BiomeColors;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Holder;
-import net.minecraft.core.Registry;
-import net.minecraft.data.loot.BlockLoot;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
@@ -58,7 +57,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
-import net.minecraft.world.level.material.MaterialColor;
+import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
@@ -77,7 +76,6 @@ import java.util.function.Supplier;
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.*;
 import static com.gregtechceu.gtceu.api.registry.GTRegistries.REGISTRATE;
-import static net.minecraftforge.client.model.generators.ModelProvider.BLOCK_FOLDER;
 
 /**
  * @author KilaBash
@@ -158,17 +156,14 @@ public class GTBlocks {
                     var oreTag = ore.getKey();
                     final TagPrefix.OreType oreType = ore.getValue();
                     var entry = REGISTRATE.block("%s%s_ore".formatted(oreTag != TagPrefix.ore ? FormattingUtil.toLowerCaseUnder(oreTag.name) + "_" : "", material.getName()),
-                                    oreType.material(),
+//                                    oreType.material(),
                                     properties -> new MaterialBlock(properties, oreTag, material, Platform.isClient() ? new OreBlockRenderer(oreType.stoneType(),
                                             () -> Objects.requireNonNull(oreTag.materialIconType()).getBlockTexturePath(material.getMaterialIconSet(), true),
                                             oreProperty.isEmissive()) : null))
                             .initialProperties(() -> oreType.stoneType().get().getBlock())
                             .properties(properties -> {
                                 properties.noLootTable();
-                                if (oreType.color() != null) properties.color(oreType.color());
-                                if (oreType.material() == net.minecraft.world.level.material.Material.SAND) {
-                                    properties.strength(1.0f, 0.5f);
-                                }
+                                if (oreType.color() != null) properties.mapColor(oreType.color());
                                 if (oreType.sound() != null) properties.sound(oreType.sound());
                                 return properties;
                             })
@@ -353,7 +348,7 @@ public class GTBlocks {
                                     "top",  GTCEu.id("block/casings/pump_deck/top"),
                                     "side",  GTCEu.id("block/casings/pump_deck/side"))) : null))
             .initialProperties(() -> Blocks.IRON_BLOCK)
-            .properties(p -> p.sound(SoundType.WOOD).color(MaterialColor.WOOD))
+            .properties(p -> p.sound(SoundType.WOOD).mapColor(MapColor.WOOD))
             .addLayer(() -> RenderType::cutoutMipped)
             .blockstate(NonNullBiConsumer.noop())
             .tag(GTToolType.WRENCH.harvestTag, BlockTags.MINEABLE_WITH_AXE)
@@ -619,13 +614,13 @@ public class GTBlocks {
     //////////////////////////////////////
 
     public static final BlockEntry<SaplingBlock> RUBBER_SAPLING = REGISTRATE.block("rubber_sapling", properties -> new SaplingBlock(new AbstractTreeGrower() {
-                protected Holder<? extends ConfiguredFeature<?, ?>> getConfiguredFeature(@Nonnull RandomSource random, boolean largeHive) {
+                protected ResourceKey<ConfiguredFeature<?, ?>> getConfiguredFeature(@Nonnull RandomSource random, boolean largeHive) {
                     return GTConfiguredFeatures.RUBBER;
                 }
             }, properties))
             .initialProperties(() -> Blocks.OAK_SAPLING)
             .lang("Rubber Sapling")
-            .blockstate((ctx, prov) -> prov.simpleBlock(ctx.getEntry(), prov.models().cross(Registry.BLOCK.getKey(ctx.getEntry()).getPath(), prov.blockTexture(ctx.getEntry()))))
+            .blockstate((ctx, prov) -> prov.simpleBlock(ctx.getEntry(), prov.models().cross(BuiltInRegistries.BLOCK.getKey(ctx.getEntry()).getPath(), prov.blockTexture(ctx.getEntry()))))
             .addLayer(() -> RenderType::cutoutMipped)
             .tag(BlockTags.SAPLINGS)
             .item()
@@ -633,19 +628,18 @@ public class GTBlocks {
             .build()
             .register();
 
-    public static final BlockEntry<RubberLogBlock> RUBBER_LOG = REGISTRATE.block("rubber_log", RubberLogBlock::new,
-                    () -> BlockBehaviour.Properties.of(net.minecraft.world.level.material.Material.WOOD,
-                            (state) -> state.getValue(RotatedPillarBlock.AXIS) == Direction.Axis.Y ? MaterialColor.TERRACOTTA_GRAY : MaterialColor.COLOR_YELLOW))
+    public static final BlockEntry<RubberLogBlock> RUBBER_LOG = REGISTRATE.block("rubber_log", RubberLogBlock::new)
             .properties(p -> p.strength(2.0F).sound(SoundType.WOOD))
-            .loot((lt, b) -> lt.add(b, LootTable.lootTable()
-                    .withPool(BlockLoot.applyExplosionCondition(b, LootPool.lootPool().setRolls(ConstantValue.exactly(1.0F)))
-                            .add(LootItem.lootTableItem(b)))
-                    .withPool(BlockLoot.applyExplosionCondition(b, LootPool.lootPool().setRolls(ConstantValue.exactly(1.0F)))
-                            .add(LootItem.lootTableItem(GTItems.STICKY_RESIN.get())
-                                    .when(LootItemBlockStatePropertyCondition.hasBlockStateProperties(b)
-                                            .setProperties(StatePropertiesPredicate.Builder.properties()
-                                                    .hasProperty(RubberLogBlock.NATURAL, true)))
-                                    .when(LootItemRandomChanceCondition.randomChance(0.85F))))))
+            // todo fix LOOT
+//            .loot((lt, b) -> lt.add(b, LootTable.lootTable()
+//                    .withPool(RegistrateBlockLootTables.applyExplosionCondition(b, LootPool.lootPool().setRolls(ConstantValue.exactly(1.0F)))
+//                            .add(LootItem.lootTableItem(b)))
+//                    .withPool(RegistrateBlockLootTables.applyExplosionCondition(b, LootPool.lootPool().setRolls(ConstantValue.exactly(1.0F)))
+//                            .add(LootItem.lootTableItem(GTItems.STICKY_RESIN.get())
+//                                    .when(LootItemBlockStatePropertyCondition.hasBlockStateProperties(b)
+//                                            .setProperties(StatePropertiesPredicate.Builder.properties()
+//                                                    .hasProperty(RubberLogBlock.NATURAL, true)))
+//                                    .when(LootItemRandomChanceCondition.randomChance(0.85F))))))
             .lang("Rubber Log")
             .tag(BlockTags.LOGS)
             .blockstate((ctx, provider) -> provider.logBlock(ctx.get()))
@@ -677,8 +671,9 @@ public class GTBlocks {
             .block("rubber_leaves", LeavesBlock::new)
             .initialProperties(() -> Blocks.OAK_LEAVES)
             .lang("Rubber Leaves")
-            .blockstate((ctx, prov) -> prov.simpleBlock(ctx.getEntry(), prov.models().singleTexture(Registry.BLOCK.getKey(ctx.getEntry()).getPath(), prov.mcLoc(BLOCK_FOLDER + "/leaves"), "all", prov.blockTexture(ctx.getEntry()))))
-            .loot((table, block) -> table.add(block, RegistrateBlockLootTables.createLeavesDrops(block, GTBlocks.RUBBER_SAPLING.get(), RUBBER_LEAVES_DROPPING_CHANCE)))
+            .blockstate((ctx, prov) -> prov.simpleBlock(ctx.getEntry(), prov.models().singleTexture(BuiltInRegistries.BLOCK.getKey(ctx.getEntry()).getPath(), prov.mcLoc("block/leaves"), "all", prov.blockTexture(ctx.getEntry()))))
+            // todo fix LOOT
+//            .loot((table, block) -> table.add(block, RegistrateBlockLootTables.createSilkTouchOrShearsDispatchTable(block, GTBlocks.RUBBER_SAPLING.get(), RUBBER_LEAVES_DROPPING_CHANCE)))
             .tag(BlockTags.LEAVES)
             .color(() -> GTBlocks::leavesBlockColor)
             .item()
@@ -691,7 +686,7 @@ public class GTBlocks {
             .block("rubber_planks", Block::new)
             .initialProperties(() -> Blocks.OAK_PLANKS)
             .lang("Rubber Planks")
-            .properties(p -> p.color(MaterialColor.TERRACOTTA_GRAY))
+            .properties(p -> p.mapColor(MapColor.TERRACOTTA_GRAY))
             .tag(BlockTags.PLANKS)
             .item()
             .tag(ItemTags.PLANKS)
@@ -702,7 +697,7 @@ public class GTBlocks {
             .block("treated_wood_planks", Block::new)
             .initialProperties(() -> Blocks.OAK_PLANKS)
             .lang("Treated Wood Planks")
-            .properties(p -> p.color(MaterialColor.TERRACOTTA_GRAY))
+            .properties(p -> p.mapColor(MapColor.TERRACOTTA_GRAY))
             .tag(BlockTags.PLANKS)
             .item()
             // purposefully omit planks item tag as this block is treated differently from wood in recipes

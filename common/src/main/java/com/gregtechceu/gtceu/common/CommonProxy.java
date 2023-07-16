@@ -45,6 +45,7 @@ public class CommonProxy {
         GTSoundEntries.init();
         GTCovers.init();
         GTFluids.init();
+        GTCreativeModeTabs.init();
         GTBlocks.init();
         GTBlockEntities.init();
         GTRecipeTypes.init();

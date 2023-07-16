@@ -23,7 +23,8 @@ public final class GTRecipeConditions {
         GTRegistries.RECIPE_CONDITIONS.register(VentCondition.INSTANCE.getType(), VentCondition.class);
         GTRegistries.RECIPE_CONDITIONS.register(CleanroomCondition.INSTANCE.getType(), CleanroomCondition.class);
         if (GTCEu.isCreateLoaded()) {
-            GTRegistries.RECIPE_CONDITIONS.register(RPMCondition.INSTANCE.getType(), RPMCondition.class);
+            // TODO CREATE 1.20+
+//            GTRegistries.RECIPE_CONDITIONS.register(RPMCondition.INSTANCE.getType(), RPMCondition.class);
         }
     }
 }

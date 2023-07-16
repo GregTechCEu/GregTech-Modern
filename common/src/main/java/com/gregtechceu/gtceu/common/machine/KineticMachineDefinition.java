@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import net.minecraft.resources.ResourceLocation;
-import org.spongepowered.asm.mixin.gen.Accessor;
 
 /**
  * @author KilaBash

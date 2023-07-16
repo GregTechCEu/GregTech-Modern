@@ -2,8 +2,8 @@ package com.gregtechceu.gtceu.data.recipe;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.tag.TagUtil;
-import net.minecraft.core.Registry;
-import net.minecraft.data.BuiltinRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
@@ -50,11 +50,11 @@ public class CustomTags {
     // Platform-dependent tags
     public static final TagKey<Item> TAG_WOODEN_CHESTS = TagUtil.createPlatformItemTag("chests/wooden", "chests");
 
-    public static final TagKey<Block> NEEDS_WOOD_TOOL = TagUtil.createPlatformUnprefixedTag(Registry.BLOCK, "forge:needs_wood_tool", "fabric:needs_tool_level_0");
-    public static final TagKey<Block> NEEDS_GOLD_TOOL = TagUtil.createPlatformUnprefixedTag(Registry.BLOCK, "forge:needs_gold_tool", "fabric:needs_tool_level_0");
-    public static final TagKey<Block> NEEDS_NETHERITE_TOOL = TagUtil.createPlatformUnprefixedTag(Registry.BLOCK, "forge:needs_netherite_tool", "fabric:needs_tool_level_4");
-    public static final TagKey<Block> NEEDS_NAQ_ALLOY_TOOL = TagUtil.createPlatformUnprefixedTag(Registry.BLOCK, "forge:needs_naquadah_alloy_tool", "fabric:needs_tool_level_5");
-    public static final TagKey<Block> NEEDS_NEUTRONIUM_TOOL = TagUtil.createPlatformUnprefixedTag(Registry.BLOCK, "forge:needs_neutronium_tool", "fabric:needs_tool_level_6");
+    public static final TagKey<Block> NEEDS_WOOD_TOOL = TagUtil.createPlatformUnprefixedTag(BuiltInRegistries.BLOCK, "forge:needs_wood_tool", "fabric:needs_tool_level_0");
+    public static final TagKey<Block> NEEDS_GOLD_TOOL = TagUtil.createPlatformUnprefixedTag(BuiltInRegistries.BLOCK, "forge:needs_gold_tool", "fabric:needs_tool_level_0");
+    public static final TagKey<Block> NEEDS_NETHERITE_TOOL = TagUtil.createPlatformUnprefixedTag(BuiltInRegistries.BLOCK, "forge:needs_netherite_tool", "fabric:needs_tool_level_4");
+    public static final TagKey<Block> NEEDS_NAQ_ALLOY_TOOL = TagUtil.createPlatformUnprefixedTag(BuiltInRegistries.BLOCK, "forge:needs_naquadah_alloy_tool", "fabric:needs_tool_level_5");
+    public static final TagKey<Block> NEEDS_NEUTRONIUM_TOOL = TagUtil.createPlatformUnprefixedTag(BuiltInRegistries.BLOCK, "forge:needs_neutronium_tool", "fabric:needs_tool_level_6");
 
     @SuppressWarnings("unchecked")
     public static final TagKey<Block>[] TOOL_TIERS = new TagKey[] {
@@ -72,10 +72,10 @@ public class CustomTags {
     public static final TagKey<Block> CONCRETE_POWDER = TagUtil.createBlockTag("concrete_powder");
     public static final TagKey<Block> GLASS_BLOCKS = TagUtil.createPlatformBlockTag("glass", "glass_blocks", false);
     public static final TagKey<Block> GLASS_PANES_BLOCK = TagUtil.createBlockTag("glass_panes");
-    public static final TagKey<Block> CREATE_SEATS = TagUtil.optionalTag(Registry.BLOCK, new ResourceLocation(GTValues.MODID_CREATE, "seats"));
+    public static final TagKey<Block> CREATE_SEATS = TagUtil.optionalTag(BuiltInRegistries.BLOCK, new ResourceLocation(GTValues.MODID_CREATE, "seats"));
     public static final TagKey<Block> ORE_BLOCKS = TagUtil.createBlockTag("ores");
 
 
-    public static final TagKey<Biome> IS_SWAMP = TagUtil.createTag(BuiltinRegistries.BIOME, "is_swamp", false);
-    public static final TagKey<Biome> HAS_RUBBER_TREE = TagUtil.createModTag(BuiltinRegistries.BIOME, "has_rubber_tree");
+    public static final TagKey<Biome> IS_SWAMP = TagUtil.createModTag(Registries.BIOME, "is_swamp");
+    public static final TagKey<Biome> HAS_RUBBER_TREE = TagUtil.createModTag(Registries.BIOME, "has_rubber_tree");
 }

@@ -1571,7 +1571,8 @@ public class GTMachines {
 
     public static void init() {
         if (GTCEu.isCreateLoaded()) {
-            new GTCreateMachines();
+            // TODO CREATE 1.20+
+//            new GTCreateMachines();
         }
         AddonFinder.getAddons().forEach(IGTAddon::registerMachines);
         if (GTCEu.isKubeJSLoaded()) {

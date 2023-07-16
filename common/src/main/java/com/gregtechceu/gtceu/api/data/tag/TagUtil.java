@@ -3,6 +3,8 @@ package com.gregtechceu.gtceu.api.data.tag;
 import com.gregtechceu.gtceu.GTCEu;
 import com.lowdragmc.lowdraglib.Platform;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -38,28 +40,32 @@ public class TagUtil {
         return optionalTag(registry, GTCEu.id(path));
     }
 
+    public static <T> TagKey<T> createModTag(ResourceKey<? extends Registry<T>> registryKey, String path) {
+        return TagKey.create(registryKey, GTCEu.id(path));
+    }
+
     public static TagKey<Block> createBlockTag(String path) {
-        return createTag(Registry.BLOCK, path, false);
+        return createTag(BuiltInRegistries.BLOCK, path, false);
     }
 
     public static TagKey<Block> createBlockTag(String path, boolean vanilla) {
-        return createTag(Registry.BLOCK, path, vanilla);
+        return createTag(BuiltInRegistries.BLOCK, path, vanilla);
     }
 
     public static TagKey<Block> createModBlockTag(String path) {
-        return createModTag(Registry.BLOCK, path);
+        return createModTag(BuiltInRegistries.BLOCK, path);
     }
 
     public static TagKey<Block> createPlatformBlockTag(String forgePath, String fabricPath, boolean modTag) {
-        return createPlatformTag(Registry.BLOCK, forgePath, fabricPath, modTag);
+        return createPlatformTag(BuiltInRegistries.BLOCK, forgePath, fabricPath, modTag);
     }
 
     public static TagKey<Item> createItemTag(String path) {
-        return createTag(Registry.ITEM, path, false);
+        return createTag(BuiltInRegistries.ITEM, path, false);
     }
 
     public static TagKey<Item> createItemTag(String path, boolean vanilla) {
-        return createTag(Registry.ITEM, path, vanilla);
+        return createTag(BuiltInRegistries.ITEM, path, vanilla);
     }
 
     public static TagKey<Item> createPlatformItemTag(String forgePath, String fabricPath) {
@@ -67,15 +73,15 @@ public class TagUtil {
     }
 
     public static TagKey<Item> createPlatformItemTag(String forgePath, String fabricPath, boolean modTag) {
-        return createPlatformTag(Registry.ITEM, forgePath, fabricPath, modTag);
+        return createPlatformTag(BuiltInRegistries.ITEM, forgePath, fabricPath, modTag);
     }
 
     public static TagKey<Item> createModItemTag(String path) {
-        return createModTag(Registry.ITEM, path);
+        return createModTag(BuiltInRegistries.ITEM, path);
     }
 
     public static TagKey<Fluid> createFluidTag(String path) {
-        return createTag(Registry.FLUID, path, false);
+        return createTag(BuiltInRegistries.FLUID, path, false);
     }
 
 }

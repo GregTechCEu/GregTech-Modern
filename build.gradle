@@ -51,6 +51,8 @@ subprojects {
             content {
                 // need to be specific here due to version overlaps
                 includeGroup("com.jozufozu.flywheel")
+                includeGroup("com.tterrag.registrate")
+                includeGroup("com.simibubi.create")
             }
         }
         maven { // TOP-Fabric
