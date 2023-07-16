@@ -245,7 +245,6 @@ public class GTMachines {
     public final static MachineDefinition[] FISHER = registerTieredMachines("fisher", FisherMachine::new,
             (tier, builder) -> builder
                     .rotationState(RotationState.NON_Y_AXIS)
-                    .hasTESR(true)
                     .editableUI(FisherMachine.EDITABLE_UI_CREATOR.apply(GTCEu.id("fisher"), (tier + 1) * (tier + 1)))
                     .renderer(() -> new TieredHullMachineRenderer(tier, GTCEu.id("block/machine/fisher_machine")))
                     .langValue("%s Fisher %s".formatted(VLVH[tier], VLVT[tier]))
@@ -260,7 +259,6 @@ public class GTMachines {
     public final static MachineDefinition[] BLOCK_BREAKER = registerTieredMachines("block_breaker", BlockBreakerMachine::new,
             (tier, builder) -> builder
                     .rotationState(RotationState.NON_Y_AXIS)
-                    .hasTESR(true)
                     .editableUI(BlockBreakerMachine.EDITABLE_UI_CREATOR.apply(GTCEu.id("block_breaker"), (tier + 1) * (tier + 1)))
                     .renderer(() -> new TieredHullMachineRenderer(tier, GTCEu.id("block/machine/block_breaker_machine")))
                     .langValue("%s Block Breaker %s".formatted(VLVH[tier], VLVT[tier]))
