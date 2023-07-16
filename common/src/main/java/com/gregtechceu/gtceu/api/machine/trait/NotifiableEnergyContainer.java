@@ -90,7 +90,7 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Long
         checkOutputSubscription();
     }
 
-    protected void checkOutputSubscription() {
+    public void checkOutputSubscription() {
         if (getOutputVoltage() > 0 && getOutputAmperage() > 0) {
             if (getEnergyStored() >= getOutputVoltage()) {
                 outputSubs = getMachine().subscribeServerTick(outputSubs, this::serverTick);

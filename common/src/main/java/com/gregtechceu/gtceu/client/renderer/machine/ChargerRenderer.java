@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.client.renderer.machine;
 
-import com.google.common.collect.Table;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
@@ -16,7 +15,6 @@ import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -34,12 +32,8 @@ public class ChargerRenderer extends TieredHullMachineRenderer{
     public final static ResourceLocation CHARGER_FINISHED = GTCEu.id("block/machines/charger/overlay_charger_finished");
     public final static ResourceLocation CHARGER_FINISHED_EMISSIVE = GTCEu.id("block/machines/charger/overlay_charger_finished_emissive");
 
-    @Environment(EnvType.CLIENT)
-    private final EnumMap<ChargerMachine.State, @Nullable List<BakedQuad>> caches;
-
     public ChargerRenderer(int tier) {
         super(tier, GTCEu.id("block/machine/hull_machine"));
-        this.caches = new EnumMap<>(ChargerMachine.State.class);
     }
 
     @Override
@@ -52,37 +46,28 @@ public class ChargerRenderer extends TieredHullMachineRenderer{
         }
 
         if (side == frontFacing && modelFacing != null) {
-            synchronized (caches) {
-                if (caches.get(state) == null) {
-                    var bakedFaces = new ArrayList<BakedQuad>();
-                    switch (state) {
-                        case IDLE -> {
-                            bakedFaces.add(FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(CHARGER_IDLE), modelState, -1, 0, false, true));
-                            caches.put(state, bakedFaces);
-                        }
-                        case RUNNING -> {
-                            if (ConfigHolder.INSTANCE.client.machinesEmissiveTextures) {
-                                bakedFaces.add(FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(CHARGER_RUNNING), modelState, -1, 0, true, true));
-                                bakedFaces.add(FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(CHARGER_RUNNING_EMISSIVE), modelState, 0, 15, true, false));
-                            } else {
-                                bakedFaces.add(FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(CHARGER_RUNNING), modelState, -1, 0, true, true));
-                            }
-                            caches.put(state, bakedFaces);
-                        }
-                        case FINISHED -> {
-                            if (ConfigHolder.INSTANCE.client.machinesEmissiveTextures) {
-                                bakedFaces.add(FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(CHARGER_FINISHED), modelState, -1, 0, true, true));
-                                bakedFaces.add(FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(CHARGER_FINISHED_EMISSIVE), modelState, 0, 15, true, false));
-                            } else {
-                                bakedFaces.add(FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(CHARGER_FINISHED), modelState, -1, 0, true, true));
-                            }
-                            caches.put(state, bakedFaces);
-                        }
+            var bakedFaces = new ArrayList<BakedQuad>();
+            switch (state) {
+                case IDLE -> bakedFaces.add(FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(CHARGER_IDLE), modelState, -1, 0, false, true));
+                case RUNNING -> {
+                    if (ConfigHolder.INSTANCE.client.machinesEmissiveTextures) {
+                        bakedFaces.add(FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(CHARGER_RUNNING), modelState, -1, 0, true, true));
+                        bakedFaces.add(FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(CHARGER_RUNNING_EMISSIVE), modelState, 0, 15, true, false));
+                    } else {
+                        bakedFaces.add(FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(CHARGER_RUNNING), modelState, -1, 0, true, true));
                     }
                 }
-                quads.addAll(caches.getOrDefault(state, Collections.emptyList()));
-
+                case FINISHED -> {
+                    if (ConfigHolder.INSTANCE.client.machinesEmissiveTextures) {
+                        bakedFaces.add(FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(CHARGER_FINISHED), modelState, -1, 0, true, true));
+                        bakedFaces.add(FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(CHARGER_FINISHED_EMISSIVE), modelState, 0, 15, true, false));
+                    } else {
+                        bakedFaces.add(FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(CHARGER_FINISHED), modelState, -1, 0, true, true));
+                    }
+                }
             }
+            quads.addAll(bakedFaces);
+
         }
     }
 

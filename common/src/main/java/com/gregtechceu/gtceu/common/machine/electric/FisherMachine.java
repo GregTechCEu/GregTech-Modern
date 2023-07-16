@@ -405,7 +405,7 @@ public class FisherMachine extends TieredEnergyMachine implements IAutoOutputIte
                 }
             });
             WidgetUtils.widgetByIdForEach(group, "^bait_slot$", SlotWidget.class, slot -> {
-                slot.setHandlerSlot(machine.baitHandler, 0);
+                slot.setHandlerSlot(machine.baitHandler.storage, 0);
                 slot.setCanTakeItems(true);
                 slot.setCanPutItems(true);
             });

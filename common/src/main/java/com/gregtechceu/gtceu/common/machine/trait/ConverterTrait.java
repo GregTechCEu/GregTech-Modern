@@ -51,7 +51,7 @@ public class ConverterTrait extends NotifiableEnergyContainer implements IPlatfo
     //////////////////////////////////////
     //*********      logic     *********//
     //////////////////////////////////////
-    protected void checkOutputSubscription() {
+    public void checkOutputSubscription() {
         outputSubs = getMachine().subscribeServerTick(outputSubs, this::serverTick);
     }
 
