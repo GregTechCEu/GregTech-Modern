@@ -89,10 +89,10 @@ public class MachineRenderer extends TextureOverrideRenderer implements ICoverab
 
     @Override
     @Environment(EnvType.CLIENT)
-    public final List<BakedQuad> renderModel(BlockAndTintGetter level, BlockPos pos, BlockState state, Direction side, RandomSource rand) {
-        if (state.getBlock() instanceof MetaMachineBlock machineBlock) {
+    public final List<BakedQuad> renderModel(@Nullable BlockAndTintGetter level, @Nullable BlockPos pos, @Nullable BlockState state, @Nullable Direction side, RandomSource rand) {
+        if (state != null && state.getBlock() instanceof MetaMachineBlock machineBlock) {
             var frontFacing = machineBlock.getFrontFacing(state);
-            var machine = machineBlock.getMachine(level, pos);
+            var machine = (level == null || pos == null) ? null : machineBlock.getMachine(level, pos);
             if (machine != null) {
                 var definition = machine.getDefinition();
                 var modelState = ModelFactory.getRotation(frontFacing);
