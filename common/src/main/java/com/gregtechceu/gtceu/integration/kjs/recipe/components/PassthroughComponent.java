@@ -29,6 +29,6 @@ public record PassthroughComponent<T>(Function<JsonElement, T> deserializer) imp
 
     @Override
     public void readFromJson(RecipeComponentValue<T> cv, JsonObject json) {
-        deserializer.apply(json);
+        cv.value = deserializer.apply(json);
     }
 }

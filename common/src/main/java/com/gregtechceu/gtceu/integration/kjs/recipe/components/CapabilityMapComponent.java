@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import dev.latvian.mods.kubejs.recipe.RecipeJS;
+import dev.latvian.mods.kubejs.recipe.ReplacementMatch;
 import dev.latvian.mods.kubejs.recipe.component.ComponentRole;
 import dev.latvian.mods.kubejs.recipe.component.RecipeComponent;
 import net.minecraft.util.GsonHelper;
@@ -19,6 +20,17 @@ public record CapabilityMapComponent(boolean isOutput) implements RecipeComponen
     @Override
     public ComponentRole role() {
         return isOutput ? ComponentRole.OUTPUT : ComponentRole.INPUT;
+    }
+
+
+    @Override
+    public boolean isOutput(RecipeJS recipe, CapabilityMap value, ReplacementMatch match) {
+        return isOutput && value.isOutput(recipe, match);
+    }
+
+    @Override
+    public boolean isInput(RecipeJS recipe, CapabilityMap value, ReplacementMatch match) {
+        return !isOutput && value.isInput(recipe, match);
     }
 
     @Override
@@ -42,7 +54,7 @@ public record CapabilityMapComponent(boolean isOutput) implements RecipeComponen
     @Override
     public CapabilityMap read(RecipeJS recipe, Object from) {
         if (from instanceof CapabilityMap map) return map;
-        CapabilityMap map = new CapabilityMap(this.isOutput);
+        CapabilityMap map = new CapabilityMap();
         if (from instanceof JsonObject json) {
             for (String key : json.keySet()) {
                 if (GTRegistries.RECIPE_CAPABILITIES.containKey(key) && GTRegistries.RECIPE_CAPABILITIES.get(key) != null) {

@@ -7,11 +7,17 @@ import dev.latvian.mods.kubejs.recipe.InputReplacement;
 import dev.latvian.mods.kubejs.recipe.OutputReplacement;
 import dev.latvian.mods.kubejs.recipe.RecipeJS;
 import dev.latvian.mods.kubejs.recipe.ReplacementMatch;
+import dev.latvian.mods.kubejs.recipe.component.ComponentRole;
 import dev.latvian.mods.kubejs.recipe.component.RecipeComponent;
 import dev.latvian.mods.kubejs.util.UtilsJS;
 import net.minecraft.util.GsonHelper;
 
 public record ContentJS<T>(RecipeComponent<T> baseComponent, boolean isOutput) implements RecipeComponent<Content> {
+
+    @Override
+    public ComponentRole role() {
+        return isOutput ? ComponentRole.OUTPUT : ComponentRole.INPUT;
+    }
 
     @Override
     public Class<?> componentClass() {
@@ -48,12 +54,22 @@ public record ContentJS<T>(RecipeComponent<T> baseComponent, boolean isOutput) i
     }
 
     @Override
+    public boolean isInput(RecipeJS recipe, Content value, ReplacementMatch match) {
+        return baseComponent.isInput(recipe, baseComponent.read(recipe, value.content), match);
+    }
+
+    @Override
+    public boolean isOutput(RecipeJS recipe, Content value, ReplacementMatch match) {
+        return baseComponent.isOutput(recipe, baseComponent.read(recipe, value.content), match);
+    }
+
+    @Override
     public Content replaceInput(RecipeJS recipe, Content original, ReplacementMatch match, InputReplacement with) {
-        return new Content(baseComponent.replaceInput(recipe, UtilsJS.cast(original.content), match, with), original.chance, original.tierChanceBoost, original.slotName, original.uiName);
+        return new Content(baseComponent.replaceInput(recipe, baseComponent.read(recipe, original.content), match, with), original.chance, original.tierChanceBoost, original.slotName, original.uiName);
     }
 
     @Override
     public Content replaceOutput(RecipeJS recipe, Content original, ReplacementMatch match, OutputReplacement with) {
-        return new Content(baseComponent.replaceOutput(recipe, UtilsJS.cast(original.content), match, with), original.chance, original.tierChanceBoost, original.slotName, original.uiName);
+        return new Content(baseComponent.replaceOutput(recipe, baseComponent.read(recipe, original.content), match, with), original.chance, original.tierChanceBoost, original.slotName, original.uiName);
     }
 }

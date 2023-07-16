@@ -139,13 +139,6 @@ public class GTRecipeComponents {
     };
 
 
-    /**
-     * These 2 are strictly required on all components
-     */
-    public static final RecipeKey<Float> CHANCE = NumberComponent.floatRange(0, 1).key("chance");
-    public static final RecipeKey<Float> TIER_CHANCE_BOOST = NumberComponent.floatRange(0, 1).key("tierChanceBoost");
-
-
     public static final ContentJS<InputItem> ITEM_IN = new ContentJS<>(ItemComponents.INPUT, false);
     public static final ContentJS<OutputItem> ITEM_OUT = new ContentJS<>(ItemComponents.OUTPUT, true);
     public static final ContentJS<InputFluid> FLUID_IN = new ContentJS<>(FluidComponents.INPUT, false);

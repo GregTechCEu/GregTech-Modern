@@ -70,10 +70,10 @@ public interface GTRecipeSchema {
         public <T> GTRecipeJS input(RecipeCapability<T> capability, Object... obj) {
             CapabilityMap map;
             if (perTick)  {
-                if (getValue(ALL_TICK_INPUTS) == null) setValue(ALL_TICK_INPUTS, new CapabilityMap(false));
+                if (getValue(ALL_TICK_INPUTS) == null) setValue(ALL_TICK_INPUTS, new CapabilityMap());
                 map = getValue(ALL_TICK_INPUTS);
             } else {
-                if (getValue(ALL_INPUTS) == null) setValue(ALL_INPUTS, new CapabilityMap(false));
+                if (getValue(ALL_INPUTS) == null) setValue(ALL_INPUTS, new CapabilityMap());
                 map = getValue(ALL_INPUTS);
             }
             if (map != null) {
@@ -88,10 +88,10 @@ public interface GTRecipeSchema {
         public <T> GTRecipeJS output(RecipeCapability<T> capability, Object... obj) {
             CapabilityMap map;
             if (perTick)  {
-                if (getValue(ALL_TICK_OUTPUTS) == null) setValue(ALL_TICK_OUTPUTS, new CapabilityMap(true));
+                if (getValue(ALL_TICK_OUTPUTS) == null) setValue(ALL_TICK_OUTPUTS, new CapabilityMap());
                 map = getValue(ALL_TICK_OUTPUTS);
             } else {
-                if (getValue(ALL_OUTPUTS) == null) setValue(ALL_OUTPUTS, new CapabilityMap(true));
+                if (getValue(ALL_OUTPUTS) == null) setValue(ALL_OUTPUTS, new CapabilityMap());
                 map = getValue(ALL_OUTPUTS);
             }
             if (map != null) {
@@ -500,11 +500,15 @@ public interface GTRecipeSchema {
             if(from instanceof SizedIngredient ingredient) {
                 return OutputItem.of(ingredient.getInner().getItems()[0], Double.NaN);
             } else if(from instanceof JsonObject jsonObject) {
+                float chance = 1.0f;
+                if (jsonObject.has("chance")) {
+                    chance = jsonObject.get("chance").getAsFloat();
+                }
                 if (jsonObject.has("content")) {
                     jsonObject = jsonObject.getAsJsonObject("content");
                 }
                 var ingredient = SizedIngredient.fromJson(jsonObject);
-                return OutputItem.of(ingredient.getInner().getItems()[0], Double.NaN);
+                return OutputItem.of(ingredient.getInner().getItems()[0], chance);
             }
             return OutputItem.of(from);
         }
