@@ -34,14 +34,18 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Material;
+import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -165,6 +169,7 @@ public class BlockBreakerMachine extends TieredEnergyMachine implements IAutoOut
     public void onNeighborChanged(Block block, BlockPos fromPos, boolean isMoving) {
         super.onNeighborChanged(block, fromPos, isMoving);
         updateBreakerUpdateSubscription();
+        updateAutoOutputSubscription();
     }
 
     //////////////////////////////////////
@@ -175,6 +180,7 @@ public class BlockBreakerMachine extends TieredEnergyMachine implements IAutoOut
         if (drainEnergy(true) && !getLevel().getBlockState(getPos().relative(getFrontFacing())).isAir() && getLevel().hasNeighborSignal(getPos())) {
             breakerSubs = subscribeServerTick(breakerSubs, this::breakerUpdate);
         } else if (breakerSubs != null) {
+            blockBreakProgress = 0;
             breakerSubs.unsubscribe();
             breakerSubs = null;
         }
@@ -340,13 +346,13 @@ public class BlockBreakerMachine extends TieredEnergyMachine implements IAutoOut
         energyGroup.addWidget(energyBar);
         energyGroup.addWidget(batterySlot);
         var group = new WidgetGroup(0, 0,
-                Math.max(energyGroup.getSize().width + template.getSize().width + 12, 110),
+                energyGroup.getSize().width + template.getSize().width + 8 + 4,
                 Math.max(template.getSize().height + 8, energyGroup.getSize().height + 8));
         var size = group.getSize();
-        energyGroup.setSelfPosition(new Position(3, (size.height - energyGroup.getSize().height) / 2));
+        energyGroup.setSelfPosition(new Position(4, (size.height - energyGroup.getSize().height) / 2));
 
         template.setSelfPosition(new Position(
-                energyGroup.getSize().width + 4,
+                energyGroup.getSize().width + 8,
                 (size.height - template.getSize().height) / 2));
 
         group.addWidget(energyGroup);
@@ -417,4 +423,30 @@ public class BlockBreakerMachine extends TieredEnergyMachine implements IAutoOut
         return super.sideTips(player, toolType, side);
     }
 
+    //////////////////////////////////////
+    //*******    Interactions   ********//
+    //////////////////////////////////////
+    @Override
+    protected InteractionResult onWrenchClick(Player playerIn, InteractionHand hand, Direction gridSide, BlockHitResult hitResult) {
+        if (!playerIn.isCrouching() && !isRemote()) {
+            var tool = playerIn.getItemInHand(hand);
+            if (tool.getDamageValue() >= tool.getMaxDamage()) return InteractionResult.PASS;
+            if (hasFrontFacing() && gridSide == getFrontFacing()) return InteractionResult.PASS;
+
+            // important not to use getters here, which have different logic
+            Direction itemFacing = this.outputFacingItems;
+
+            if (gridSide != itemFacing) {
+                // if it is a new side, move it
+                setOutputFacingItems(gridSide);
+            } else {
+                // remove the output facing when wrenching the current one to disable it
+                setOutputFacingItems(null);
+            }
+
+            return InteractionResult.CONSUME;
+        }
+
+        return super.onWrenchClick(playerIn, hand, gridSide, hitResult);
+    }
 }
