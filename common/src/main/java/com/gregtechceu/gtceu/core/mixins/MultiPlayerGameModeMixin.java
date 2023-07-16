@@ -60,7 +60,7 @@ public class MultiPlayerGameModeMixin {
         if (
                 minecraft.player == null ||
                 minecraft.level == null ||
-                minecraft.player.getMainHandItem().is(CustomTags.AOE_TOOLS) ||
+                !minecraft.player.getMainHandItem().is(CustomTags.AOE_TOOLS) ||
                 minecraft.player.isCrouching() ||
                 !minecraft.player.getMainHandItem().isCorrectToolForDrops(minecraft.level.getBlockState(pos))
         ) return;
