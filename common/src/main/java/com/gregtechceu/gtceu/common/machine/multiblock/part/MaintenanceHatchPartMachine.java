@@ -22,7 +22,6 @@ import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import dev.architectury.utils.value.FloatSupplier;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -46,6 +45,7 @@ import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Supplier;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -364,14 +364,14 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine implements IM
         return group;
     }
 
-    private static Component getTextWidgetText(String type, FloatSupplier multiplier) {
+    private static Component getTextWidgetText(String type, Supplier<Float> multiplier) {
         Component tooltip;
-        if (multiplier.getAsFloat() == 1.0) {
+        if (multiplier.get() == 1.0) {
             tooltip = Component.translatable("gtceu.maintenance.configurable_" + type + ".unchanged_description");
         } else {
-            tooltip = Component.translatable("gtceu.maintenance.configurable_" + type + ".changed_description", multiplier.getAsFloat());
+            tooltip = Component.translatable("gtceu.maintenance.configurable_" + type + ".changed_description", multiplier.get());
         }
-        return Component.translatable("gtceu.maintenance.configurable_" + type, multiplier.getAsFloat()).setStyle(Style.EMPTY.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, tooltip)));
+        return Component.translatable("gtceu.maintenance.configurable_" + type, multiplier.get()).setStyle(Style.EMPTY.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, tooltip)));
     }
 
 }
