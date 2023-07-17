@@ -7,6 +7,7 @@
   "client": [
     "BlockModelMixin",
     "GuiGraphicsAccessor",
+    "LevelRendererMixin",
     "ModelBakeryMixin",
     "MultiPlayerGameModeMixin"
   ],
