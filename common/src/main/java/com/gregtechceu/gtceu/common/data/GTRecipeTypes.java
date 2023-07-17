@@ -349,7 +349,7 @@ public class GTRecipeTypes {
             .setMaxTooltips(4)
             .onRecipeBuild((recipeBuilder, provider) -> {
                 if (recipeBuilder.input.getOrDefault(FluidRecipeCapability.CAP, Collections.emptyList()).isEmpty() && recipeBuilder.tickInput.getOrDefault(FluidRecipeCapability.CAP, Collections.emptyList()).isEmpty()) {
-                    recipeBuilder.copy(new ResourceLocation(recipeBuilder.id.toString() +  "_soldering_allory"))
+                    recipeBuilder.copy(new ResourceLocation(recipeBuilder.id.toString() +  "_soldering_alloy"))
                             .inputFluids(GTMaterials.SolderingAlloy.getFluid(Math.max(1, (GTValues.L / 2) * recipeBuilder.getSolderMultiplier())))
                             .save(provider);
 

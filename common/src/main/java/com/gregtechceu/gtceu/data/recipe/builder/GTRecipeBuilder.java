@@ -609,7 +609,7 @@ public class GTRecipeBuilder {
     }
 
     public int getSolderMultiplier() {
-        return data.getInt("solderMultiplier");
+        return Math.max(1, data.getInt("solderMultiplier"));
     }
 
 }
