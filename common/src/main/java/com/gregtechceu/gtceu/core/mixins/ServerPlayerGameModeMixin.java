@@ -1,32 +1,19 @@
 package com.gregtechceu.gtceu.core.mixins;
 
 import com.gregtechceu.gtceu.api.item.IItemUseFirst;
-import com.gregtechceu.gtceu.api.item.tool.GTToolType;
-import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
-import com.gregtechceu.gtceu.data.recipe.CustomTags;
-import net.minecraft.client.particle.AshParticle;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.DustParticleOptions;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.ServerPlayerGameMode;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-
-import java.util.List;
 
 /**
  * @author KilaBash
@@ -35,11 +22,6 @@ import java.util.List;
  */
 @Mixin({ServerPlayerGameMode.class})
 public class ServerPlayerGameModeMixin {
-
-    @Final
-    @Shadow protected ServerPlayer player;
-
-    @Shadow protected ServerLevel level;
 
     @Inject(
             method = {"useItemOn"},
@@ -60,29 +42,5 @@ public class ServerPlayerGameModeMixin {
                 cir.setReturnValue(result);
             }
         }
-    }
-
-    @Inject(
-            method = {"destroyBlock"},
-            at = {@At(
-                    value = "INVOKE",
-                    target = "Lnet/minecraft/world/level/block/Block;playerWillDestroy(Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/entity/player/Player;)V"
-            )}
-    )
-    private void destroyBlock(BlockPos pos, CallbackInfoReturnable<Boolean> cir) {
-        ItemStack mainHandItem = player.getMainHandItem();
-
-        if (mainHandItem.is(CustomTags.AOE_TOOLS) && mainHandItem.isCorrectToolForDrops(level.getBlockState(pos)) && !player.isCrouching()) {
-            List<BlockPos> blockPosList = ToolHelper.getAOEPositions(player, player.getMainHandItem(), pos, 1);
-
-            BlockState originBlock = level.getBlockState(pos);
-
-            for (BlockPos blockPos : blockPosList) {
-                if (!ToolHelper.aoeCanBreak(mainHandItem, level, pos, blockPos)) continue;
-                level.destroyBlock(blockPos, true, player);
-                if (mainHandItem.hurt(1, RandomSource.create(), player)) break;
-            }
-        }
-
     }
 }
