@@ -217,15 +217,16 @@ public class ProspectingMapWidget extends WidgetGroup implements SearchComponent
             // draw hover layer
             List<Component> tooltips = new ArrayList<>();
             tooltips.add(Component.translatable(mode.unlocalizedName));
+            List<Object[]> items = new ArrayList<>();
             for (int i = 0; i < mode.cellSize; i++) {
                 for (int j = 0; j < mode.cellSize; j++) {
                     assert texture != null;
                     if (texture.data[cX * mode.cellSize + i][cZ * mode.cellSize + j] != null) {
-                        var items = texture.data[cX * mode.cellSize + i][cZ * mode.cellSize + j];
-                        mode.appendTooltips(items, tooltips, texture.getSelected());
+                        items.add(texture.data[cX * mode.cellSize + i][cZ * mode.cellSize + j]);
                     }
                 }
             }
+            mode.appendTooltips(items, tooltips, texture.getSelected());
             gui.getModularUIGui().setHoverTooltip(tooltips, ItemStack.EMPTY, null, null);
         }
     }

@@ -11,7 +11,6 @@ import com.gregtechceu.gtceu.api.gui.texture.ProspectingTexture;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.utils.GradientUtil;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
@@ -129,11 +128,13 @@ public abstract class ProspectorMode<T> {
         }
 
         @Override
-        public void appendTooltips(String[] items, List<Component> tooltips, String selected) {
+        public void appendTooltips(List<String[]> items, List<Component> tooltips, String selected) {
             Map<String, Integer> counter = new HashMap<>();
-            for (var item : items) {
-                if (ProspectingTexture.SELECTED_ALL.equals(selected) || selected.equals(getUniqueID(item))) {
-                    counter.put(item, counter.getOrDefault(item, 0) + 1);
+            for (var array : items) {
+                for (String item : array) {
+                    if (ProspectingTexture.SELECTED_ALL.equals(selected) || selected.equals(getUniqueID(item))) {
+                        counter.put(item, counter.getOrDefault(item, 0) + 1);
+                    }
                 }
             }
             counter.forEach((item, count) -> tooltips.add(Component.translatable(getDescriptionId(item)).append(" --- " + count)));
@@ -196,9 +197,11 @@ public abstract class ProspectorMode<T> {
         }
 
         @Override
-        public void appendTooltips(FluidInfo[] items, List<Component> tooltips, String selected) {
-            for (FluidInfo item : items) {
-                tooltips.add(Component.translatable(getDescriptionId(item)).append(" --- %s (%s%%)".formatted(item.yield, item.left)));
+        public void appendTooltips(List<FluidInfo[]> items, List<Component> tooltips, String selected) {
+            for (var array : items) {
+                for (FluidInfo item : array) {
+                    tooltips.add(Component.translatable(getDescriptionId(item)).append(" --- %s (%s%%)".formatted(item.yield, item.left)));
+                }
             }
         }
 
@@ -267,11 +270,13 @@ public abstract class ProspectorMode<T> {
         }
 
         @Override
-        public void appendTooltips(OreInfo[] items, List<Component> tooltips, String selected) {
-            int totalWeight = Arrays.stream(items).mapToInt(OreInfo::weight).sum();
-            for (OreInfo item : items) {
-                float chance = (float) item.weight / totalWeight * 100;
-                tooltips.add(Component.translatable(getDescriptionId(item)).append(" (").append(Component.translatable("gtceu.gui.content.chance_1", String.format("%.1f", chance) + "%")).append(") --- %s (%s%%)".formatted(item.yield, item.left)));
+        public void appendTooltips(List<OreInfo[]> items, List<Component> tooltips, String selected) {
+            for (var array : items) {
+                int totalWeight = Arrays.stream(array).mapToInt(OreInfo::weight).sum();
+                for (OreInfo item : array) {
+                    float chance = (float) item.weight / totalWeight * 100;
+                    tooltips.add(Component.translatable(getDescriptionId(item)).append(" (").append(Component.translatable("gtceu.gui.content.chance_1", String.format("%.1f", chance) + "%")).append(") --- %s (%s%%)".formatted(item.yield, item.left)));
+                }
             }
         }
 
@@ -293,5 +298,5 @@ public abstract class ProspectorMode<T> {
     public abstract void serialize(T item, FriendlyByteBuf buf);
     public abstract T deserialize(FriendlyByteBuf buf);
     public abstract Class<T> getItemClass();
-    public abstract void appendTooltips(T[] items, List<Component> tooltips, String selected);
+    public abstract void appendTooltips(List<T[]> items, List<Component> tooltips, String selected);
 }
