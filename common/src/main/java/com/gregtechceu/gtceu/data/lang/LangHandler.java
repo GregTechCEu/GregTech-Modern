@@ -1068,6 +1068,7 @@ public class LangHandler {
         provider.add("gtceu.gui.content.chance_0", "§cNot Consumed§r");
         provider.add("gtceu.gui.content.chance_0_short", "§cNC§r");
         provider.add("gtceu.gui.content.chance_1", "§eChance: %s§r");
+        provider.add("gtceu.gui.content.tier_boost", "§eTier Chance: +%s/tier§r");
         provider.add("gtceu.gui.content.per_tick", "§aConsumed/Produced Per Tick§r");
         provider.add("gtceu.gui.content.tips.per_tick_short", "§a/tick§r");
     }

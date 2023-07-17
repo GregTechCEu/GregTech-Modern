@@ -340,7 +340,6 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder chancedInput(ItemStack stack, int chance, int tierChanceBoost) {
-        // todo finish tier chance boost, make it actually used in places
         float lastChance = this.chance;
         float lastTierChanceBoost = this.tierChanceBoost;
         this.chance = chance / 10000f;

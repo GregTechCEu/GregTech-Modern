@@ -13,7 +13,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 
 public class CoilBlockBuilder extends BlockBuilder {
-    public transient int temperature = 0, level = 0, energyDiscount = 0, tier = 0;
+    public transient int temperature = 0, level = 0, energyDiscount = 1, tier = 0;
     public transient Material material = GTMaterials.Air;
     public transient ResourceLocation texture = MissingTextureAtlasSprite.getLocation();
 
