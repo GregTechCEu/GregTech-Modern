@@ -1287,6 +1287,7 @@
   "gtceu.gui.content.chance_0_short": "§cNC§r",
   "gtceu.gui.content.chance_1": "§eChance: %s§r",
   "gtceu.gui.content.per_tick": "§aConsumed/Produced Per Tick§r",
+  "gtceu.gui.content.tier_boost": "§eTier Chance: +%s/tier§r",
   "gtceu.gui.content.tips.per_tick_short": "§a/tick§r",
   "gtceu.gui.cover_setting.title": "Cover Settings",
   "gtceu.gui.editor.group.recipe_type": "cap",
