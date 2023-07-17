@@ -164,6 +164,11 @@ public class ToolRecipeHandler {
                     'I', ingot,
                     'S', stick);
 
+            addToolRecipe(provider, material, GTToolType.HARD_HAMMER, true,
+                    "PPf", "PPS", "PPh",
+                    'P', plate,
+                    'S', stick);
+
             addToolRecipe(provider, material, GTToolType.FILE, true,
                     " P ", " P " , " S ",
                     'P', plate,
