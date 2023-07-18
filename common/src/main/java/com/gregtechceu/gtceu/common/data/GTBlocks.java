@@ -105,6 +105,7 @@ public class GTBlocks {
                         .setData(ProviderType.BLOCKSTATE, NonNullBiConsumer.noop())
                         .setData(ProviderType.LANG, NonNullBiConsumer.noop())
                         .setData(ProviderType.LOOT, NonNullBiConsumer.noop())
+                        .tag(BlockTags.BEACON_BASE_BLOCKS)
                         .color(() -> MaterialBlock::tintedColor)
                         .item(MaterialBlockItem::new)
                         .model(NonNullBiConsumer.noop())

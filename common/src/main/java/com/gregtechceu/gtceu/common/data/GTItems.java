@@ -47,6 +47,8 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.client.model.generators.ModelFile;
@@ -86,6 +88,7 @@ public class GTItems {
                         builder.put(tagPrefix, material, REGISTRATE
                                 .item(first + "_" + last, properties -> new TagPrefixItem(properties, tagPrefix, material))
                                 .setData(ProviderType.LANG, NonNullBiConsumer.noop())
+                                .tag(getItemTags(tagPrefix, material))
                                 .transform(unificationItem(tagPrefix, material))
                                 .properties(p -> p.stacksTo(tagPrefix.maxStackSize()))
                                 .model(NonNullBiConsumer.noop())
@@ -96,6 +99,23 @@ public class GTItems {
             }
         }
         MATERIAL_ITEMS = builder.build();
+    }
+
+    // This is a limitation of Java's type system.
+    // The return type needs to be an array for using it in the item builder's tag() varargs method.
+    @SuppressWarnings("unchecked")
+    private static TagKey<Item>[] getItemTags(TagPrefix tagPrefix, Material material) {
+        if (material.hasProperty(PropertyKey.INGOT) && tagPrefix == TagPrefix.ingot) {
+            return new TagKey[] { ItemTags.BEACON_PAYMENT_ITEMS };
+        }
+
+        if (material.hasProperty(PropertyKey.GEM) && tagPrefix == TagPrefix.gem) {
+            return new TagKey[] { ItemTags.BEACON_PAYMENT_ITEMS };
+        }
+
+
+
+        return new TagKey[0];
     }
 
     //////////////////////////////////////
