@@ -26,10 +26,3 @@ mandatory = true
 versionRange = "${minecraft_version}"
 ordering = "NONE"
 side = "BOTH"
-
-[[dependencies.${mod_id}]]
-modId="ldlib"
-mandatory=true
-versionRange="[${ldlib_version},)"
-ordering="NONE"
-side="BOTH"

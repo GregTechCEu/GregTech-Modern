@@ -154,8 +154,7 @@ processResources {
             "mod_license", mod_license,
             "mod_name", mod_name,
             "mod_description", mod_description,
-            "mod_url", mod_url,
-            "ldlib_version", forge.versions.ldlib.get()
+            "mod_url", mod_url
     )
     properties.forEach((k, v) -> inputs.property(k, v))
 
