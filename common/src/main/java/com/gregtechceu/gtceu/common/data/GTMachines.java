@@ -1217,7 +1217,7 @@ public class GTMachines {
                             .or(blocks(GTBlocks.CLEANROOM_GLASS.get()))
                             .or(abilities(PartAbility.PASSTHROUGH_HATCH).setMaxGlobalLimited(30, 3))
                             .or(abilities(PartAbility.INPUT_ENERGY).setMinGlobalLimited(1).setMaxGlobalLimited(3, 2))
-                            .or(blocks(ConfigHolder.INSTANCE.machines.enableMaintenance ? GTMachines.MAINTENANCE_HATCH.getBlock() : PLASTCRETE.get()).setMinGlobalLimited(1).setMaxGlobalLimited(1))
+                            .or(blocks(ConfigHolder.INSTANCE.machines.enableMaintenance ? GTMachines.MAINTENANCE_HATCH.getBlock() : PLASTCRETE.get()).setExactLimit(1))
                             .or(blocks(Blocks.IRON_DOOR).setMaxGlobalLimited(8)))
                     .where('S', controller(blocks(definition.getBlock())))
                     .where(' ', any())
