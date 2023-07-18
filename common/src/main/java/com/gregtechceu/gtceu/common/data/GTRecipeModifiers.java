@@ -165,7 +165,7 @@ public class GTRecipeModifiers {
             int parallelValue = result.getB();
             recipe.duration = Math.max(1, 256 * parallelValue / maxParallel);
             long eut = parallelValue * energyCost;
-            recipe.tickInputs.put(EURecipeCapability.CAP, List.of(new Content(eut, 1.0f, null, null)));
+            recipe.tickInputs.put(EURecipeCapability.CAP, List.of(new Content(eut, 1.0f, 0.0f, null, null)));
             return recipe;
         }
         return null;

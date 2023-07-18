@@ -264,7 +264,7 @@ public class UnknownCompositionMaterials {
         Gasoline = new Material.Builder("gasoline")
                 .fluid().color(0xFAA500).flags(FLAMMABLE, EXPLOSIVE).buildAndRegister();
 
-        HighOctaneGasoline = new Material.Builder("gasoline_premium")
+        HighOctaneGasoline = new Material.Builder("high_octane_gasoline")
                 .fluid().color(0xFFA500).flags(FLAMMABLE, EXPLOSIVE).buildAndRegister();
 
         // free id: 1593
@@ -326,7 +326,7 @@ public class UnknownCompositionMaterials {
                 .flags(NO_SMASHING, FLAMMABLE)
                 .buildAndRegister();
 
-        CetaneBoostedDiesel = new Material.Builder("nitro_fuel")
+        CetaneBoostedDiesel = new Material.Builder("cetane_boosted_diesel")
                 .fluid().fluidCustomTexture()
                 .color(0xC8FF00)
                 .flags(FLAMMABLE, EXPLOSIVE)

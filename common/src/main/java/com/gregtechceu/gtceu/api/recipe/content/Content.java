@@ -14,14 +14,16 @@ import javax.annotation.Nullable;
 public class Content {
     public Object content;
     public float chance;
+    public float tierChanceBoost;
     @Nullable
     public String slotName;
     @Nullable
     public String uiName;
 
-    public Content(Object content, float chance, @Nullable String slotName, @Nullable String uiName) {
+    public Content(Object content, float chance, float tierChanceBoost, @Nullable String slotName, @Nullable String uiName) {
         this.content = content;
         this.chance = chance;
+        this.tierChanceBoost = tierChanceBoost;
         this.slotName = slotName;
         this.uiName = uiName;
     }

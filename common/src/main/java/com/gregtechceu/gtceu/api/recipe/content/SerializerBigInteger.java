@@ -46,7 +46,12 @@ public class SerializerBigInteger implements IContentSerializer<BigInteger>{
         } else if (o instanceof CharSequence) {
             return new BigInteger(o.toString());
         }
-        return BigInteger.ONE;
+        return BigInteger.ZERO;
+    }
+
+    @Override
+    public BigInteger defaultValue() {
+        return BigInteger.ZERO;
     }
 
 }

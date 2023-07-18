@@ -112,7 +112,7 @@ public class ProspectingMapWidget extends WidgetGroup implements SearchComponent
             var selectableWidgetGroup = new SelectableWidgetGroup(0, index * 15, itemList.getSize().width - 4, 15);
             var size = selectableWidgetGroup.getSize();
             selectableWidgetGroup.addWidget(new ImageWidget(0, 0, 15, 15, icon));
-            selectableWidgetGroup.addWidget(new ImageWidget(15, 0, size.width - 15, 15, new TextTexture(renderingName).setColor(color).setDropShadow(false).setWidth(size.width - 15).setType(TextTexture.TextType.LEFT_HIDE)));
+            selectableWidgetGroup.addWidget(new ImageWidget(15, 0, size.width - 15, 15, new TextTexture(renderingName).setWidth(size.width - 15).setType(TextTexture.TextType.LEFT_HIDE)));
             selectableWidgetGroup.setOnSelected(s -> {
                 if (isRemote()) {
                     texture.setSelected(uniqueID);
@@ -217,15 +217,16 @@ public class ProspectingMapWidget extends WidgetGroup implements SearchComponent
             // draw hover layer
             List<Component> tooltips = new ArrayList<>();
             tooltips.add(Component.translatable(mode.unlocalizedName));
+            List<Object[]> items = new ArrayList<>();
             for (int i = 0; i < mode.cellSize; i++) {
                 for (int j = 0; j < mode.cellSize; j++) {
                     assert texture != null;
                     if (texture.data[cX * mode.cellSize + i][cZ * mode.cellSize + j] != null) {
-                        var items = texture.data[cX * mode.cellSize + i][cZ * mode.cellSize + j];
-                        mode.appendTooltips(items, tooltips, texture.getSelected());
+                        items.add(texture.data[cX * mode.cellSize + i][cZ * mode.cellSize + j]);
                     }
                 }
             }
+            mode.appendTooltips(items, tooltips, texture.getSelected());
             gui.getModularUIGui().setHoverTooltip(tooltips, ItemStack.EMPTY, null, null);
         }
     }

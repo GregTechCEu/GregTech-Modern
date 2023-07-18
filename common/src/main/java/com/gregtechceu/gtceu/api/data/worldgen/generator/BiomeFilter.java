@@ -30,7 +30,7 @@ public class BiomeFilter extends PlacementFilter {
         if (placedFeature.feature().value().config() instanceof GTOreFeatureConfiguration configuration) {
             GTOreFeatureEntry entry = configuration.getEntry(context.getLevel(), context.getLevel().getBiome(pos), random);
             if (entry == null) return false;
-            HolderSet<Biome> checkingBiomes = entry.biomes;
+            HolderSet<Biome> checkingBiomes = entry.getBiomes();
             Holder<Biome> holder = context.getLevel().getBiome(pos);
             if (checkingBiomes != null && !checkingBiomes.contains(holder)) {
                 // VeinCountFilter.didNotPlace(context.getLevel(), pos, entry);

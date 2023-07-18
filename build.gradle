@@ -1,7 +1,7 @@
 plugins {
     alias libs.plugins.architectury
     alias libs.plugins.architectury.loom apply false
-    alias libs.plugins.quiltFlower apply false // Quiltflower, a better decompiler
+    alias libs.plugins.vineFlower apply false // VineFlower, a better decompiler
     alias libs.plugins.machete // automatic jar compressing on build
 }
 
@@ -13,7 +13,7 @@ architectury {
 
 subprojects {
     apply plugin: "dev.architectury.loom"
-    apply plugin: "io.github.juuxel.loom-quiltflower"
+    apply plugin: "io.github.juuxel.loom-vineflower"
 
     loom {
         silentMojangMappingsLicense()

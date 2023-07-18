@@ -110,7 +110,7 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
                 if (engineMachine.isOxygenBoosted) { // boost production
                     recipe = parallelResult.getA() == recipe ? recipe.copy() : parallelResult.getA();
                     long eut = (long) (EUt * parallelResult.getB() * (engineMachine.isExtreme() ? 2 : 1.5));
-                    recipe.tickOutputs.put(EURecipeCapability.CAP, List.of(new Content(eut, 1.0f, null, null)));
+                    recipe.tickOutputs.put(EURecipeCapability.CAP, List.of(new Content(eut, 1.0f, 0.0f, null, null)));
                 } else {
                     recipe = parallelResult.getA();
                 }

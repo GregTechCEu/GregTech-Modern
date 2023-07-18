@@ -4,8 +4,8 @@ import com.google.gson.JsonObject;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 import lombok.NoArgsConstructor;
-import net.fabricmc.loader.impl.util.Localization;
 import net.minecraft.core.Holder;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -43,7 +43,7 @@ public class BiomeCondition extends RecipeCondition {
 
     @Override
     public Component getTooltips() {
-        return Component.translatable("recipe.condition.biome.tooltip", Localization.format("biome.%s.%s", biome.getNamespace(), biome.getPath()));
+        return Component.translatable("recipe.condition.biome.tooltip", LocalizationUtils.format("biome.%s.%s", biome.getNamespace(), biome.getPath()));
     }
 
     public ResourceLocation getBiome() {

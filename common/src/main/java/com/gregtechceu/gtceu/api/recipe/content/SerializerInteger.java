@@ -40,6 +40,11 @@ public class SerializerInteger implements IContentSerializer<Integer> {
         } else if (o instanceof CharSequence) {
             return NumberUtils.toInt(o.toString(), 1);
         }
-        return 1;
+        return 0;
+    }
+
+    @Override
+    public Integer defaultValue() {
+        return 0;
     }
 }

@@ -117,13 +117,6 @@ public class GTOres {
                             .build())
                     .parent();
 
-    public static final GTOreFeatureEntry PISS_VEIN =
-            create("piss_vein", 25, 0.2f, 10, WorldGenLayers.ENDSTONE, end(), HeightRangePlacement.uniform(VerticalAnchor.absolute(5), VerticalAnchor.absolute(50)))
-                    .biomes(BiomeTags.IS_END)
-                    .standardVeinGenerator()
-                    .withMaterial(Cooperite)
-                    .parent();
-
     //////////////////////////////////////
     //******     Nether Vein     *******//
     //////////////////////////////////////
@@ -576,15 +569,15 @@ public class GTOres {
         return block;
     }
 
-    private static HolderSet<DimensionType> overworld() {
+    public static HolderSet<DimensionType> overworld() {
         return HolderSet.direct(BuiltinRegistries.DIMENSION_TYPE.getHolderOrThrow(BuiltinDimensionTypes.OVERWORLD));
     }
 
-    private static HolderSet<DimensionType> nether() {
+    public static HolderSet<DimensionType> nether() {
         return HolderSet.direct(BuiltinRegistries.DIMENSION_TYPE.getHolderOrThrow(BuiltinDimensionTypes.NETHER));
     }
 
-    private static HolderSet<DimensionType> end() {
+    public static HolderSet<DimensionType> end() {
         return HolderSet.direct(BuiltinRegistries.DIMENSION_TYPE.getHolderOrThrow(BuiltinDimensionTypes.END));
     }
 

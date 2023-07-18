@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.common.machine.trait;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidVeinSaveData;
+import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidVeinSavedData;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.FluidVeinWorldEntry;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
@@ -42,7 +42,7 @@ public class FluidDrillLogic extends RecipeLogic {
     public void findAndHandleRecipe() {
         if (getMachine().getLevel() instanceof ServerLevel serverLevel) {
             lastRecipe = null;
-            var data = BedrockFluidVeinSaveData.getOrCreate(serverLevel);
+            var data = BedrockFluidVeinSavedData.getOrCreate(serverLevel);
             if (veinFluid == null) {
                 this.veinFluid = data.getFluidInChunk(getChunkX(), getChunkZ());
                 if (this.veinFluid == null) {
@@ -66,7 +66,7 @@ public class FluidDrillLogic extends RecipeLogic {
     @Nullable
     private GTRecipe getFluidDrillRecipe() {
         if (getMachine().getLevel() instanceof ServerLevel serverLevel && veinFluid != null) {
-            var data = BedrockFluidVeinSaveData.getOrCreate(serverLevel);
+            var data = BedrockFluidVeinSavedData.getOrCreate(serverLevel);
             var recipe = GTRecipeBuilder.ofRaw()
                     .duration(MAX_PROGRESS)
                     .EUt(GTValues.VA[getMachine().getEnergyTier()])
@@ -86,7 +86,7 @@ public class FluidDrillLogic extends RecipeLogic {
             int regularYield = entry.getFluidYield();
             int remainingOperations = entry.getOperationsRemaining();
 
-            int produced = Math.max(depletedYield, regularYield * remainingOperations / BedrockFluidVeinSaveData.MAXIMUM_VEIN_OPERATIONS);
+            int produced = Math.max(depletedYield, regularYield * remainingOperations / BedrockFluidVeinSavedData.MAXIMUM_VEIN_OPERATIONS);
             produced *= FluidDrillMachine.getRigMultiplier(getMachine().getTier());
 
             // Overclocks produce 50% more fluid
@@ -123,7 +123,7 @@ public class FluidDrillLogic extends RecipeLogic {
     protected void depleteVein() {
         if (getMachine().getLevel() instanceof ServerLevel serverLevel) {
             int chance = FluidDrillMachine.getDepletionChance(getMachine().getTier());
-            var data = BedrockFluidVeinSaveData.getOrCreate(serverLevel);
+            var data = BedrockFluidVeinSavedData.getOrCreate(serverLevel);
             // chance to deplete based on the rig
             if (chance == 1 || GTValues.RNG.nextInt(chance) == 0) {
                 data.depleteVein(getChunkX(), getChunkZ(), 0, false);

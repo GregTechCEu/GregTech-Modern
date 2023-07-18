@@ -144,8 +144,13 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine implemen
 
     @Override
     public boolean shouldAddPartToController(IMultiPart part) {
-        Set<ICleanroomReceiver> receivers = getMultiblockState().getMatchContext().getOrCreate("cleanroomReceiver", Sets::newHashSet);
-        return !receivers.contains(part);
+        var cache = getMultiblockState().getCache();
+        for (Direction side : Direction.values()) {
+            if (!cache.contains(part.self().getPos().relative(side))) {
+                return true;
+            }
+        }
+        return false;
     }
 
     protected void initializeAbilities() {
@@ -378,20 +383,30 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine implemen
             Set<ICleanroomReceiver> receivers = blockWorldState.getMatchContext().getOrCreate("cleanroomReceiver", Sets::newHashSet);
             // all non-GTMachines are allowed inside by default
             BlockEntity blockEntity = blockWorldState.getTileEntity();
+            if (blockEntity instanceof IMachineBlockEntity machineBlockEntity) {
+                var machine = machineBlockEntity.getMetaMachine();
+                if (isMachineBanned(machine)) {
+                    return false;
+                }
+            }
             if (blockEntity != null) {
                 var receiver = GTCapabilityHelper.getCleanroomReceiver(blockWorldState.getWorld(), blockWorldState.getPos(), null);
                 if (receiver != null) {
-                    if (blockEntity instanceof IMachineBlockEntity machineBlockEntity) {
-                        var machine = machineBlockEntity.getMetaMachine();
-                        if (isMachineBanned(machine)) {
-                            return false;
-                        }
-                    }
                     receivers.add(receiver);
                 }
             }
             return true;
-        }, null);
+        }, null) {
+            @Override
+            public boolean isAny() {
+                return true;
+            }
+
+            @Override
+            public boolean addCache() {
+                return true;
+            }
+        };
     }
 
     protected boolean isMachineBanned(MetaMachine metaTileEntity) {

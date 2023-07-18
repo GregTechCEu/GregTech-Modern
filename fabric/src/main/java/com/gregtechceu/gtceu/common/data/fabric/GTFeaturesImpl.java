@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.worldgen.BiomeWeightModifier;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreFeatureEntry;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.BiomePlacement;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTPlacements;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
@@ -36,7 +37,7 @@ import java.util.List;
 public class GTFeaturesImpl {
     public static void register() {
         //ores
-        for (var entry : GTOreFeatureEntry.ALL.entrySet()) {
+        for (var entry : GTRegistries.ORE_VEINS.entries()) {
             ResourceLocation id = entry.getKey();
             var datagenExt = entry.getValue().getVeinGenerator();
             if (datagenExt != null) {

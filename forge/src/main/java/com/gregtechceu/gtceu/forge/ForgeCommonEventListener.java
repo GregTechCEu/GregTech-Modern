@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.item.forge.ComponentItemImpl;
 import com.gregtechceu.gtceu.api.item.forge.DrumMachineItemImpl;
 import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.common.ServerCommands;
+import com.gregtechceu.gtceu.data.loader.forge.FluidVeinLoaderImpl;
 import com.gregtechceu.gtceu.data.loader.forge.OreDataLoaderImpl;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
@@ -74,6 +75,7 @@ public class ForgeCommonEventListener {
     @SubscribeEvent
     public static void registerReloadListeners(AddReloadListenerEvent event) {
         event.addListener(new OreDataLoaderImpl());
+        event.addListener(new FluidVeinLoaderImpl());
     }
 
     @SubscribeEvent

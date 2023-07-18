@@ -95,7 +95,7 @@ public class WireRecipeHandler {
         if (property.isSuperconductor()) return;
 
         int cableAmount = (int) (wirePrefix.getMaterialAmount(material) * 2 / M);
-        TagPrefix cablePrefix = TagPrefix.getPrefix("cable" + wirePrefix.name().substring(4));
+        TagPrefix cablePrefix = TagPrefix.get("cable" + wirePrefix.name().substring(4));
         int voltageTier = GTUtil.getTierByVoltage(property.getVoltage());
         int insulationAmount = INSULATION_AMOUNT.get(cablePrefix);
 
