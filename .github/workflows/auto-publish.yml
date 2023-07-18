@@ -1,0 +1,134 @@
+name: Auto Publish, Releasing
+
+on:
+  workflow_dispatch:
+    inputs:
+      releaseType:
+        description: 'release type'
+        required: true
+        type: choice
+        default: 'alpha'
+        options:
+          - 'release'
+          - 'beta'
+          - 'alpha'
+      publishMaven:
+        description: 'whether publish to the maven'
+        required: true
+        type: boolean
+        default: true
+      publishCurseForgeAndModrinth:
+        description: 'whether publish to the curseforge and modrinth'
+        required: true
+        type: boolean
+        default: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      MAVEN_PASS: ${{ secrets.MAVEN_PASS }}
+      MAVEN_USER: ${{ secrets.MAVEN_USER }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: true
+
+      - uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'adopt'
+
+      - name: Validate Gradle wrapper
+        uses: gradle/wrapper-validation-action@v1
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Build
+        uses: gradle/gradle-build-action@v2.4.2
+        with:
+          arguments: build
+
+      - if: ${{ inputs.publishMaven }}
+        name: Publish to Maven
+        uses: gradle/gradle-build-action@v2.4.2
+        with:
+          arguments: publish
+
+      - if: ${{ inputs.publishCurseForgeAndModrinth }}
+        name: Get Version
+        id: var
+        run: |
+          MESSAGE=$(ls fabric/build/libs/* | grep sources.jar -v | grep shadow.jar -v | awk -F 'gtceu-fabric-|.jar' '{print $2}')
+          echo fabric_version=$MESSAGE >> $GITHUB_OUTPUT
+          MESSAGE=$(ls forge/build/libs/* | grep sources.jar -v | grep shadow.jar -v | awk -F 'gtceu-forge-|.jar' '{print $2}')
+          echo forge_version=$MESSAGE >> $GITHUB_OUTPUT
+
+      - if: ${{ inputs.publishCurseForgeAndModrinth }}
+        name: mc-publish-fabric
+        uses: Kir-Antipov/mc-publish@v3.3
+        with:
+          # Only include this section if you wish to publish
+          # your assets on Modrinth.
+          modrinth-id: 7tG215v7
+          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
+
+          # Only include this section if you wish to publish
+          # your assets on CurseForge.
+          curseforge-id: 890405
+          curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
+
+          files: |
+            fabric/build/libs/!(*-@(dev|sources|javadoc|dev-shadow)).jar
+            fabric/build/libs/*-@(dev|sources|javadoc|dev-shadow).jar
+
+          name: GregTechCEu ${{ steps.var.outputs.fabric_version }}-fabric
+          version: mc${{ steps.var.outputs.fabric_version }}-fabric
+          version-type: ${{ inputs.releaseType }}
+          changelog-file: CHANGELOG.*
+
+          loaders: |
+            fabric
+          game-versions: |
+            ${{ github.ref_name }}
+          game-version-filter: none
+          java: |
+            17
+          retry-attempts: 2
+          retry-delay: 10000
+          fail-mode: fail
+
+      - if: ${{ inputs.publishCurseForgeAndModrinth }}
+        name: mc-publish-forge
+        uses: Kir-Antipov/mc-publish@v3.3
+        with:
+          # Only include this section if you wish to publish
+          # your assets on Modrinth.
+          modrinth-id: 7tG215v7
+          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
+
+          # Only include this section if you wish to publish
+          # your assets on CurseForge.
+          curseforge-id: 890405
+          curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
+
+          files: |
+            forge/build/libs/!(*-@(dev|sources|javadoc|dev-shadow)).jar
+            forge/build/libs/*-@(dev|sources|javadoc|dev-shadow).jar
+
+          name: GregTechCEu ${{ steps.var.outputs.forge_version }}-forge
+          version: mc${{ steps.var.outputs.forge_version }}-forge
+          version-type: ${{ inputs.releaseType }}
+          changelog-file: CHANGELOG.*
+
+          loaders: |
+            forge
+          game-versions: |
+            ${{ github.ref_name }}
+          game-version-filter: none
+          java: |
+            17
+          retry-attempts: 2
+          retry-delay: 10000
+          fail-mode: fail
