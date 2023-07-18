@@ -78,4 +78,9 @@ public class SerializerBlockState implements IContentSerializer<BlockState> {
         }
         return Blocks.AIR.defaultBlockState();
     }
+
+    @Override
+    public BlockState defaultValue() {
+        return Blocks.AIR.defaultBlockState();
+    }
 }

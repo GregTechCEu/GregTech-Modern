@@ -19,6 +19,11 @@ import javax.annotation.Nullable;
  */
 public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFeature, IWorkable, ICleanroomReceiver {
 
+    @Override
+    default int getChanceTier() {
+        return self() instanceof ITieredMachine tieredMachine ? tieredMachine.getTier() : self().getDefinition().getTier();
+    }
+
     /**
      * RecipeType held
      */

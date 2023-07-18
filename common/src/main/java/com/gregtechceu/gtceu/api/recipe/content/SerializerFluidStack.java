@@ -71,4 +71,9 @@ public class SerializerFluidStack implements IContentSerializer<FluidStack> {
         }
         return FluidStack.empty();
     }
+
+    @Override
+    public FluidStack defaultValue() {
+        return FluidStack.empty();
+    }
 }

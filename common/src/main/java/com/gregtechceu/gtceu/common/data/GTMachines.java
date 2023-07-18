@@ -1,5 +1,7 @@
 package com.gregtechceu.gtceu.common.data;
 
+import appeng.api.networking.pathing.ChannelMode;
+import appeng.core.AEConfig;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.addon.AddonFinder;
@@ -274,6 +276,7 @@ public class GTMachines {
     public static final MachineDefinition[] MINER = registerTieredMachines("miner", (holder, tier) -> new MinerMachine(holder, tier, 320 / (tier * 2), tier * 8, tier),
             (tier, builder) -> builder
                     .rotationState(RotationState.NON_Y_AXIS)
+                    .langValue("%s Miner %s".formatted(VLVH[tier], VLVT[tier]))
                     .recipeType(GTRecipeTypes.DUMMY_RECIPES)
                     .editableUI(MinerMachine.EDITABLE_UI_CREATOR.apply(GTCEu.id("miner"), (tier + 1) * (tier + 1)))
                     .renderer(() -> new MinerRenderer(tier, GTCEu.id("block/machines/miner")))
@@ -1119,7 +1122,7 @@ public class GTMachines {
 
     public static final MultiblockMachineDefinition[] FLUID_DRILLING_RIG = registerTieredMultis("fluid_drilling_rig", FluidDrillMachine::new, (tier, builder) -> builder
                     .rotationState(RotationState.NON_Y_AXIS)
-                    .langValue("%s Fusion Drilling Rig".formatted(VLVH[tier]))
+                    .langValue("%s Fluid Drilling Rig".formatted(VLVH[tier]))
                     .recipeType(GTRecipeTypes.DUMMY_RECIPES)
                     .tooltips(
                             Component.translatable("gtceu.machine.fluid_drilling_rig.description"),
@@ -1146,6 +1149,7 @@ public class GTMachines {
     public static final MultiblockMachineDefinition[] LARGE_MINER = registerTieredMultis("large_miner", (holder, tier) -> new LargeMinerMachine(holder, tier, 64 / tier, 2 * tier - 5, tier, 8 - (tier - 5)),
             (tier, builder) -> builder
                     .rotationState(RotationState.NON_Y_AXIS)
+                    .langValue("%s Large Miner".formatted(VLVH[tier]))
                     .recipeType(GTRecipeTypes.MACERATOR_RECIPES)
                     .appearanceBlock(() -> LargeMinerMachine.getCasingState(tier))
                     .pattern((definition) -> FactoryBlockPattern.start()
@@ -1176,6 +1180,8 @@ public class GTMachines {
                     .register(),
             EV, IV, LuV);
 
+    public static MultiblockMachineDefinition[] BEDROCK_ORE_MINER;
+
     public static final MultiblockMachineDefinition CLEANROOM = REGISTRATE.multiblock("cleanroom", CleanroomMachine::new)
             .rotationState(RotationState.NONE)
             .recipeType(GTRecipeTypes.DUMMY_RECIPES)
@@ -1193,8 +1199,7 @@ public class GTMachines {
                     tooltip.add(Component.translatable("gtceu.machine.cleanroom.tooltip.7"));
                     //tooltip.add(Component.translatable("gtceu.machine.cleanroom.tooltip.8"));
                     if (LDLib.isModLoaded(GTValues.MODID_APPENG)) {
-                        // TODO ae2 compat
-                        //tooltip.add(Component.translatable(AEConfig.instance().isFeatureEnabled(AEFeature.CHANNELS) ? "gtceu.machine.cleanroom.tooltip.ae2.channels" : "gtceu.machine.cleanroom.tooltip.ae2.no_channels"));
+                        tooltip.add(Component.translatable(AEConfig.instance().getChannelMode() == ChannelMode.INFINITE ? "gtceu.machine.cleanroom.tooltip.ae2.no_channels" : "gtceu.machine.cleanroom.tooltip.ae2.channels"));
                     }
                     tooltip.add(Component.empty());
                 } else {
@@ -1211,7 +1216,7 @@ public class GTMachines {
                             .or(blocks(GTBlocks.CLEANROOM_GLASS.get()))
                             .or(abilities(PartAbility.PASSTHROUGH_HATCH).setMaxGlobalLimited(30, 3))
                             .or(abilities(PartAbility.INPUT_ENERGY).setMinGlobalLimited(1).setMaxGlobalLimited(3, 2))
-                            .or(blocks(ConfigHolder.INSTANCE.machines.enableMaintenance ? GTMachines.MAINTENANCE_HATCH.getBlock() : PLASTCRETE.get()).setMinGlobalLimited(1).setMaxGlobalLimited(1))
+                            .or(blocks(ConfigHolder.INSTANCE.machines.enableMaintenance ? GTMachines.MAINTENANCE_HATCH.getBlock() : PLASTCRETE.get()).setExactLimit(1))
                             .or(blocks(Blocks.IRON_DOOR).setMaxGlobalLimited(8)))
                     .where('S', controller(blocks(definition.getBlock())))
                     .where(' ', any())
@@ -1571,6 +1576,33 @@ public class GTMachines {
     public static void init() {
         if (GTCEu.isCreateLoaded()) {
             GTCreateMachines.init();
+        }
+        if (ConfigHolder.INSTANCE.machines.doBedrockOres) {
+            BEDROCK_ORE_MINER = registerTieredMultis("bedrock_ore_miner", BedrockOreMinerMachine::new, (tier, builder) -> builder
+                            .rotationState(RotationState.NON_Y_AXIS)
+                            .langValue("%s Bedrock Ore Miner".formatted(VLVH[tier]))
+                            .recipeType(new GTRecipeType(GTCEu.id("drilling_rig"), "dummy"))
+                            .tooltips(
+                                    Component.translatable("gtceu.machine.bedrock_ore_miner.description"),
+                                    Component.translatable("gtceu.machine.bedrock_ore_miner.depletion", FormattingUtil.formatNumbers(100.0 / BedrockOreMinerMachine.getDepletionChance(tier))),
+                                    Component.translatable("gtceu.universal.tooltip.energy_tier_range", GTValues.VNF[tier], GTValues.VNF[tier + 1]),
+                                    Component.translatable("gtceu.machine.bedrock_ore_miner.production", BedrockOreMinerMachine.getRigMultiplier(tier), FormattingUtil.formatNumbers(BedrockOreMinerMachine.getRigMultiplier(tier) * 1.5)))
+                            .appearanceBlock(() -> BedrockOreMinerMachine.getCasingState(tier))
+                            .pattern((definition) -> FactoryBlockPattern.start()
+                                    .aisle("XXX", "#F#", "#F#", "#F#", "###", "###", "###")
+                                    .aisle("XXX", "FCF", "FCF", "FCF", "#F#", "#F#", "#F#")
+                                    .aisle("XSX", "#F#", "#F#", "#F#", "###", "###", "###")
+                                    .where('S', controller(blocks(definition.get())))
+                                    .where('X', blocks(BedrockOreMinerMachine.getCasingState(tier)).setMinGlobalLimited(3)
+                                            .or(abilities(PartAbility.INPUT_ENERGY).setMinGlobalLimited(1).setMaxGlobalLimited(3))
+                                            .or(abilities(PartAbility.EXPORT_FLUIDS).setMaxGlobalLimited(1)))
+                                    .where('C', blocks(BedrockOreMinerMachine.getCasingState(tier)))
+                                    .where('F', blocks(BedrockOreMinerMachine.getFrameState(tier)))
+                                    .where('#', any())
+                                    .build())
+                            .workableCasingRenderer(BedrockOreMinerMachine.getBaseTexture(tier), GTCEu.id("block/multiblock/bedrock_ore_miner"), false)
+                            .register(),
+                    MV, HV, EV);
         }
         AddonFinder.getAddons().forEach(IGTAddon::registerMachines);
         if (GTCEu.isKubeJSLoaded()) {

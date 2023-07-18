@@ -117,13 +117,6 @@ public class GTOres {
                             .build())
                     .parent();
 
-    public static final GTOreFeatureEntry PISS_VEIN =
-            create("piss_vein", 25, 0.2f, 10, WorldGenLayers.ENDSTONE, end(), HeightRangePlacement.uniform(VerticalAnchor.absolute(5), VerticalAnchor.absolute(50)))
-                    .biomes(BiomeTags.IS_END)
-                    .standardVeinGenerator()
-                    .withMaterial(Cooperite)
-                    .parent();
-
     //////////////////////////////////////
     //******     Nether Vein     *******//
     //////////////////////////////////////

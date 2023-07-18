@@ -377,6 +377,10 @@ public class MachineLang {
         provider.add("gtceu.machine.fluid_drilling_rig.production", "§eProduction Multiplier: §f%dx, %fx overclocked");
         provider.add("gtceu.machine.fluid_drilling_rig.depletion", "§bDepletion Rate: §f%s%%");
 
+        provider.add("gtceu.machine.bedrock_ore_miner.description", "Drills ores from veins under bedrock.");
+        provider.add("gtceu.machine.bedrock_ore_miner.production", "§eProduction Multiplier: §f%dx, %fx overclocked");
+        provider.add("gtceu.machine.bedrock_ore_miner.depletion", "§bDepletion Rate: §f%s%%");
+
         multiLang(provider, "gtceu.machine.cleanroom.tooltip",
                 "Place machines inside to run cleanroom recipes.",
                 "Uses §f30 EU/t§7 when dirty, §f4 EU/t§7 when clean.",

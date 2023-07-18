@@ -254,7 +254,7 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
             List content = new ArrayList<>();
             Map<String, List> contentSlot = new HashMap<>();
             for (Content cont : entry.getValue()) {
-                if (cont.chance == 1 || GTValues.RNG.nextFloat() < cont.chance) { // chance input
+                if (cont.chance >= 1 || GTValues.RNG.nextFloat() < (cont.chance + holder.getChanceTier() * cont.tierChanceBoost)) { // chance input
                     if (cont.slotName == null) {
                         content.add(cont.content);
                     } else {

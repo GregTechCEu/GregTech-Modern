@@ -123,8 +123,8 @@ public class AutoOutputConfigurator extends WidgetGroup {
         var lastSide = this.side;
         var result = super.mouseClicked(mouseX, mouseY, button);
         if (isMouseOverElement(mouseX, mouseY) && this.side == lastSide && this.side != null) {
-            var hover= sceneWidget.getHoverPosFace();
-            if (hover != null && hover.pos.equals(machine.getPos()) && hover.facing == this.side) {
+            var hover = sceneWidget.getHoverPosFace();
+            if (hover != null && hover.pos.equals(machine.getPos()) && hover.facing == this.side && machine.canSetIoOnSide(side)) {
                 val cd = new ClickData();
                 writeClientAction(0, buf -> {
                     cd.writeToBuf(buf);

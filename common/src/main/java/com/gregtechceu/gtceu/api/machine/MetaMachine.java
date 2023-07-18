@@ -404,6 +404,10 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
         collisionList.add(Shapes.block());
     }
 
+    public boolean canSetIoOnSide(@Nullable Direction direction) {
+        return !hasFrontFacing() || getFrontFacing() != direction;
+    }
+
     public Direction getFrontFacing() {
         var blockState = getBlockState();
         if (blockState.getBlock() instanceof MetaMachineBlock machineBlock) {

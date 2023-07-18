@@ -19,6 +19,7 @@ import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.enchantment.Enchantment;
@@ -312,7 +313,7 @@ public class Material implements Comparable<Material> {
         return "material." + materialInfo.name;
     }
 
-    public Component getLocalizedName() {
+    public MutableComponent getLocalizedName() {
         return Component.translatable(getUnlocalizedName());
     }
 

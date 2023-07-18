@@ -109,7 +109,7 @@ public class BlockPattern {
                         if (!worldState.update(pos, predicate)) {
                             return false;
                         }
-                        if (!predicate.isAny()) {
+                        if (predicate.addCache()) {
                             worldState.addPosCache(pos);
                             if (savePredicate) {
                                 matchContext.getOrCreate("predicates", HashMap::new).put(pos, predicate);

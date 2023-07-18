@@ -10,6 +10,8 @@ import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.Biomes;
+import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
 import java.util.concurrent.CompletableFuture;
@@ -29,6 +31,11 @@ public class BiomeTagsProviderImpl extends BiomeTagsProvider implements IBiomeTa
     public void addRubberTreeTag() {
         //noinspection unchecked
         tag(CustomTags.HAS_RUBBER_TREE).addTags(CustomTags.IS_SWAMP, BiomeTags.IS_FOREST, BiomeTags.IS_JUNGLE);
+    }
+
+    @Override
+    public void addSandyTag() {
+        tag(CustomTags.IS_SANDY).addTag(Tags.Biomes.IS_SANDY).add(Biomes.DESERT, Biomes.BEACH, Biomes.BADLANDS, Biomes.WOODED_BADLANDS);
     }
 
     @Override

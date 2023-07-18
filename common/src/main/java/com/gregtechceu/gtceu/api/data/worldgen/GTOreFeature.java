@@ -2,12 +2,15 @@ package com.gregtechceu.gtceu.api.data.worldgen;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreVeinSavedData;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.state.BlockState;
@@ -51,10 +54,13 @@ public class GTOreFeature extends Feature<GTOreFeatureConfiguration> {
             if (ConfigHolder.INSTANCE.worldgen.debugWorldgen) GTCEu.LOGGER.debug("failed to place vein " + entry.id + " in biome " + biome + ". Trying with another...");
         }*/
 
-        ResourceLocation id = GTOreFeatureEntry.ALL.inverse().get(entry);
+        ResourceLocation id = GTRegistries.ORE_VEINS.getKey(entry);
         if (ConfigHolder.INSTANCE.worldgen.debugWorldgen) GTCEu.LOGGER.debug("trying to place vein " + id + " at " + origin);
         if (entry.getVeinGenerator() != null && entry.getVeinGenerator().generate(level, random, entry, origin)) {
             logPlaced(id, true);
+            if (ConfigHolder.INSTANCE.machines.doBedrockOres) {
+                BedrockOreVeinSavedData.getOrCreate(level.getLevel()).createVein(new ChunkPos(origin), entry);
+            }
             return true;
         }
 
@@ -67,7 +73,7 @@ public class GTOreFeature extends Feature<GTOreFeatureConfiguration> {
                                BlockPos.MutableBlockPos pMatablePos) {
         if (!pTargetState.target.test(pState, pRandom))
             return false;
-        if (shouldSkipAirCheck(pRandom, entry.discardChanceOnAirExposure))
+        if (shouldSkipAirCheck(pRandom, entry.getDiscardChanceOnAirExposure()))
             return true;
 
         return !isAdjacentToAir(pAdjacentStateAccessor, pMatablePos);
@@ -76,9 +82,9 @@ public class GTOreFeature extends Feature<GTOreFeatureConfiguration> {
     public static boolean canPlaceOre(BlockState pState, Function<BlockPos, BlockState> pAdjacentStateAccessor,
                                RandomSource pRandom, GTOreFeatureEntry entry, Material pTargetState,
                                BlockPos.MutableBlockPos pMatablePos) {
-        if (!entry.layer.getTarget().test(pState, pRandom))
+        if (!entry.getLayer().getTarget().test(pState, pRandom))
             return false;
-        if (shouldSkipAirCheck(pRandom, entry.discardChanceOnAirExposure))
+        if (shouldSkipAirCheck(pRandom, entry.getDiscardChanceOnAirExposure()))
             return true;
 
         return !isAdjacentToAir(pAdjacentStateAccessor, pMatablePos);

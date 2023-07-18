@@ -169,6 +169,7 @@ public class GTRecipeTypes {
             .setSlotOverlay(true, true, GuiTextures.VIAL_OVERLAY_2)
             .setProgressBar(GuiTextures.PROGRESS_BAR_ARROW_MULTIPLE, LEFT_TO_RIGHT)
             .setSound(GTValues.FOOLS.get() ? GTSoundEntries.SCIENCE : GTSoundEntries.CHEMICAL)
+            .setMaxTooltips(4)
             // TODO consider allowing LCR to just read these recipes? instead of generating new (minimize extra jsons)
             .onRecipeBuild((recipeBuilder, provider) -> GTRecipeTypes.LARGE_CHEMICAL_RECIPES.copyFrom(recipeBuilder).save(provider));
 
@@ -347,7 +348,7 @@ public class GTRecipeTypes {
             .setMaxTooltips(4)
             .onRecipeBuild((recipeBuilder, provider) -> {
                 if (recipeBuilder.input.getOrDefault(FluidRecipeCapability.CAP, Collections.emptyList()).isEmpty() && recipeBuilder.tickInput.getOrDefault(FluidRecipeCapability.CAP, Collections.emptyList()).isEmpty()) {
-                    recipeBuilder.copy(new ResourceLocation(recipeBuilder.id.toString() +  "_soldering_allory"))
+                    recipeBuilder.copy(new ResourceLocation(recipeBuilder.id.toString() +  "_soldering_alloy"))
                             .inputFluids(GTMaterials.SolderingAlloy.getFluid(Math.max(1, (GTValues.L / 2) * recipeBuilder.getSolderMultiplier())))
                             .save(provider);
 

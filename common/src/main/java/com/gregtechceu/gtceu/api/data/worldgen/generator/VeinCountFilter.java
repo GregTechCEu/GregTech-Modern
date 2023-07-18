@@ -35,13 +35,13 @@ public class VeinCountFilter extends PlacementFilter {
             ChunkPos chunkPos = new ChunkPos(pos);
             GTOreFeatureEntry entry = configuration.getEntry(context.getLevel(), context.getLevel().getBiome(pos), random);
             if (entry == null) return false;
-            Cell startCell = new Cell(context.getLevel().getLevel(), entry.layer, chunkPos);
+            Cell startCell = new Cell(context.getLevel().getLevel(), entry.getLayer(), chunkPos);
             // Search for a radius of (default 3) chunks for other veins, to avoid veins getting too close to eachother (they may originate in weird places)
             int radius = ConfigHolder.INSTANCE.worldgen.oreVeinScanRadius;
             for (int x = -radius; x <= radius; ++x) {
                 for (int z = -radius; z <= radius; ++z) {
                     ChunkPos chunkPos2 = new ChunkPos(chunkPos.x + x, chunkPos.z + z);
-                    Cell mapCell = new Cell(context.getLevel().getLevel(), entry.layer, chunkPos2);
+                    Cell mapCell = new Cell(context.getLevel().getLevel(), entry.getLayer(), chunkPos2);
                     if (GENERATED.containsKey(mapCell)) {
                         //GTCEu.LOGGER.info("CAN NOT place vein " + entry.id + " at chunk " + chunkPos + ", as there is already a vein nearby.");
                         configuration.setEntry(null);
@@ -57,7 +57,7 @@ public class VeinCountFilter extends PlacementFilter {
     }
 
     public static void didNotPlace(WorldGenLevel level, BlockPos pos, GTOreFeatureEntry entry) {
-        GENERATED.remove(new Cell(level.getLevel().getLevel(), entry.layer, new ChunkPos(pos)));
+        GENERATED.remove(new Cell(level.getLevel().getLevel(), entry.getLayer(), new ChunkPos(pos)));
     }
 
     public static VeinCountFilter count() {

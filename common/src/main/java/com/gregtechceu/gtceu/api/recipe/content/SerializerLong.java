@@ -10,7 +10,7 @@ import org.apache.commons.lang3.math.NumberUtils;
  * @date 2022/06/22
  * @implNote SerializerLong
  */
-public class SerializerLong implements IContentSerializer<Long>{
+public class SerializerLong implements IContentSerializer<Long> {
 
     public static SerializerLong INSTANCE = new SerializerLong();
 
@@ -45,7 +45,12 @@ public class SerializerLong implements IContentSerializer<Long>{
         } else if (o instanceof CharSequence) {
             return NumberUtils.toLong(o.toString(), 1);
         }
-        return 1L;
+        return 0L;
+    }
+
+    @Override
+    public Long defaultValue() {
+        return 0L;
     }
 
 }

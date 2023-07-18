@@ -78,6 +78,7 @@ public class CustomTags {
     public static final TagKey<Block> ORE_BLOCKS = TagUtil.createBlockTag("ores");
 
 
-    public static final TagKey<Biome> IS_SWAMP = TagUtil.createModTag(Registries.BIOME, "is_swamp");
+    public static final TagKey<Biome> IS_SWAMP = TagUtil.createTag(Registries.BIOME, "is_swamp", false);
+    public static final TagKey<Biome> IS_SANDY = TagUtil.createModTag(Registries.BIOME, "is_sandy");
     public static final TagKey<Biome> HAS_RUBBER_TREE = TagUtil.createModTag(Registries.BIOME, "has_rubber_tree");
 }

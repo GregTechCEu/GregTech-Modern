@@ -40,6 +40,11 @@ public class SerializerFloat implements IContentSerializer<Float> {
         } else if (o instanceof CharSequence) {
             return NumberUtils.toFloat(o.toString(), 1);
         }
-        return 1f;
+        return 0f;
+    }
+
+    @Override
+    public Float defaultValue() {
+        return 0f;
     }
 }

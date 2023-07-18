@@ -1,21 +1,22 @@
 package com.gregtechceu.gtceu.data.tags;
 
-import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.biome.Biomes;
 
 public interface IBiomeTagsProvider<T extends TagsProvider.TagAppender<Biome>> {
 
     default void generateTags() {
-        //TODO wth
+        //TODO what the hell?
 //        tag(CustomTags.IS_SWAMP, Biomes.SWAMP, Biomes.MANGROVE_SWAMP);
 //        addRubberTreeTag();
+//        addSandyTag();
     }
 
     void addRubberTreeTag();
+
+    void addSandyTag();
 
     @SafeVarargs
     private void tag(ResourceKey<Biome> biome, TagKey<Biome>... tags) {

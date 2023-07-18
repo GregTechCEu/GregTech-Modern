@@ -22,9 +22,18 @@ public class TagUtil {
         return TagKey.create(registry.key(), id);
     }
 
+    public static <T> TagKey<T> optionalTag(ResourceKey<? extends Registry<T>> registryKey, ResourceLocation id) {
+        return TagKey.create(registryKey, id);
+    }
+
     public static <T> TagKey<T> createTag(Registry<T> registry, String path, boolean vanilla) {
         if (vanilla) return optionalTag(registry, new ResourceLocation("minecraft", path));
         return optionalTag(registry, Platform.isForge() ? new ResourceLocation("forge", path) : new ResourceLocation("c", path));
+    }
+
+    public static <T> TagKey<T> createTag(ResourceKey<? extends Registry<T>> registryKey, String path, boolean vanilla) {
+        if (vanilla) return optionalTag(registryKey, new ResourceLocation("minecraft", path));
+        return optionalTag(registryKey, Platform.isForge() ? new ResourceLocation("forge", path) : new ResourceLocation("c", path));
     }
 
     public static <T> TagKey<T> createPlatformTag(Registry<T> registry, String forgePath, String fabricPath, boolean modTag) {
