@@ -50,7 +50,7 @@ public class FluidVeinWorldEntry {
         tag.putInt("fluidYield", fluidYield);
         tag.putInt("operationsRemaining", operationsRemaining);
         if (vein != null) {
-            tag.putString("vein", vein.getName().toString());
+            tag.putString("vein", GTRegistries.BEDROCK_FLUID_DEFINITIONS.getKey(vein).toString());
         }
         return tag;
     }

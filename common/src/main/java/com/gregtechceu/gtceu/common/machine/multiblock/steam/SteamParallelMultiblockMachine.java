@@ -41,7 +41,7 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
     public static final int MAX_PARALLELS = 8;
 
     // if in millibuckets, this is 0.5, Meaning 2mb of steam -> 1 EU
-    private static final double CONVERSION_RATE = FluidHelper.getBucket() / 2000.0D;
+    private static final double CONVERSION_RATE = FluidHelper.getBucket() * 2 / 1000.0D;
 
     public SteamParallelMultiblockMachine(IMachineBlockEntity holder, Object... args) {
         super(holder, args);
@@ -78,7 +78,7 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
         // also set the duration to just 1.5x the original, instead of fully multiplied
         recipe.duration = (int) (duration * 1.5);
         eut = (long) Math.min(32, Math.ceil(eut * 1.33));
-        recipe.tickInputs.put(EURecipeCapability.CAP, List.of(new Content(eut, 1.0f, null, null)));
+        recipe.tickInputs.put(EURecipeCapability.CAP, List.of(new Content(eut, 1.0f, 0.0f, null, null)));
         return recipe;
     }
 

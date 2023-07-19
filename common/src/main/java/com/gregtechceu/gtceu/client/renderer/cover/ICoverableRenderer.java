@@ -32,7 +32,7 @@ public interface ICoverableRenderer extends IRenderer {
     @Override
     @Environment(EnvType.CLIENT)
     default List<BakedQuad> renderModel(BlockAndTintGetter level, BlockPos pos, BlockState state, Direction side, RandomSource rand) {
-        var blockEntity = level.getBlockEntity(pos);
+        var blockEntity = level == null ? null : level.getBlockEntity(pos);
         if (blockEntity != null) {
             var coverable = GTCapabilityHelper.getCoverable(blockEntity.getLevel(), blockEntity.getBlockPos(), null);
             if (coverable != null) {

@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.data.worldgen.generator;
 import com.google.common.collect.HashBiMap;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreFeatureEntry;
 import com.gregtechceu.gtceu.api.data.worldgen.IWorldGenLayer;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.Holder;
@@ -15,6 +16,7 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.TagMatchTest;
 
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class WorldGeneratorUtils {
@@ -24,6 +26,7 @@ public class WorldGeneratorUtils {
 
     public static final Map<String, IWorldGenLayer> WORLD_GEN_LAYERS = new HashMap<>();
     public static final HashBiMap<ResourceLocation, Codec<? extends GTOreFeatureEntry.VeinGenerator>> VEIN_GENERATORS = HashBiMap.create();
+    public static final HashBiMap<ResourceLocation, Function<GTOreFeatureEntry, ? extends GTOreFeatureEntry.VeinGenerator>> VEIN_GENERATOR_FUNCTIONS = HashBiMap.create();
 
 
     private static class WorldOreVeinCache {
@@ -31,8 +34,8 @@ public class WorldGeneratorUtils {
         private final List<Entry<Integer, GTOreFeatureEntry>> veins = new LinkedList<>();
 
         public WorldOreVeinCache(WorldGenLevel level) {
-            this.worldVeins = GTOreFeatureEntry.ALL.values().stream()
-                    .filter(entry -> entry.dimensionFilter.stream().anyMatch(filter -> filter.is(level.getLevel().dimensionTypeId())))
+            this.worldVeins = GTRegistries.ORE_VEINS.values().stream()
+                    .filter(entry -> entry.getDimensionFilter().stream().anyMatch(filter -> filter.is(level.getLevel().dimensionTypeId())))
                     .collect(Collectors.toList());
         }
 
@@ -44,7 +47,7 @@ public class WorldGeneratorUtils {
                         HolderSet<Biome> checkingBiomes = entry.datagenExt().biomes.map(left -> left, right -> BuiltinRegistries.BIOME.getTag(right).orElse(null));
                         return checkingBiomes != null && checkingBiomes.contains(context);
                     })*/
-                    .map(vein -> new AbstractMap.SimpleEntry<>(vein.weight + (vein.biomeWeightModifier == null ? 0 : vein.biomeWeightModifier.apply(biome)), vein))
+                    .map(vein -> new AbstractMap.SimpleEntry<>(vein.getWeight() + (vein.getBiomeWeightModifier() == null ? 0 : vein.getBiomeWeightModifier().apply(biome)), vein))
                     .filter(entry -> entry.getKey() > 0)
                     .collect(Collectors.toList());
             veins.addAll(result);

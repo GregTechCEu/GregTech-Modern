@@ -40,6 +40,11 @@ public class SerializerDouble implements IContentSerializer<Double> {
         } else if (o instanceof CharSequence) {
             return NumberUtils.toDouble(o.toString(), 1);
         }
-        return 1d;
+        return 0d;
+    }
+
+    @Override
+    public Double defaultValue() {
+        return 0d;
     }
 }

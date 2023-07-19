@@ -13,6 +13,8 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.function.Function;
+
 /**
  * @author Screret
  * @date 2023/6/9
@@ -21,7 +23,7 @@ import org.jetbrains.annotations.Nullable;
 public class GTOreFeatureConfiguration implements FeatureConfiguration {
     public static final Codec<GTOreFeatureConfiguration> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.either(GTOreFeatureEntry.CODEC, GTOreFeatureEntry.FULL_CODEC)
-                    .xmap(either -> either.map(entry -> entry, entry -> entry), Either::left)
+                    .xmap(either -> either.map(Function.identity(), Function.identity()), Either::left)
                     .optionalFieldOf("entry", null)
                     .forGetter(config -> config.entry)
         ).apply(instance, GTOreFeatureConfiguration::new)

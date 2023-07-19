@@ -95,27 +95,6 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine implemen
         return new CleanroomLogic(this);
     }
 
-    protected void initializeAbilities() {
-        List<IEnergyContainer> energyContainers = new ArrayList<>();
-        Map<Long, IO> ioMap = getMultiblockState().getMatchContext().getOrCreate("ioMap", Long2ObjectMaps::emptyMap);
-        for (IMultiPart part : getParts()) {
-            IO io = ioMap.getOrDefault(part.self().getPos().asLong(), IO.BOTH);
-            if(io == IO.NONE || io == IO.OUT) continue;
-            for (var handler : part.getRecipeHandlers()) {
-                // If IO not compatible
-                if (io != IO.BOTH && handler.getHandlerIO() != IO.BOTH && io != handler.getHandlerIO()) continue;
-                if (handler.getCapability() == EURecipeCapability.CAP && handler instanceof IEnergyContainer container) {
-                    energyContainers.add(container);
-                }
-            }
-            if (part instanceof IMaintenanceMachine maintenanceMachine) {
-                getRecipeLogic().setMaintenanceMachine(maintenanceMachine);
-            }
-        }
-        this.inputEnergyContainers = new EnergyContainerList(energyContainers);
-        getRecipeLogic().setEnergyContainer(this.inputEnergyContainers);
-    }
-
     @Override
     @Nonnull
     public CleanroomLogic getRecipeLogic() {
@@ -161,6 +140,38 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine implemen
             this.cleanroomReceivers.forEach(receiver -> receiver.setCleanroom(null));
             this.cleanroomReceivers = null;
         }
+    }
+
+    @Override
+    public boolean shouldAddPartToController(IMultiPart part) {
+        var cache = getMultiblockState().getCache();
+        for (Direction side : Direction.values()) {
+            if (!cache.contains(part.self().getPos().relative(side))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    protected void initializeAbilities() {
+        List<IEnergyContainer> energyContainers = new ArrayList<>();
+        Map<Long, IO> ioMap = getMultiblockState().getMatchContext().getOrCreate("ioMap", Long2ObjectMaps::emptyMap);
+        for (IMultiPart part : getParts()) {
+            IO io = ioMap.getOrDefault(part.self().getPos().asLong(), IO.BOTH);
+            if(io == IO.NONE || io == IO.OUT) continue;
+            for (var handler : part.getRecipeHandlers()) {
+                // If IO not compatible
+                if (io != IO.BOTH && handler.getHandlerIO() != IO.BOTH && io != handler.getHandlerIO()) continue;
+                if (handler.getCapability() == EURecipeCapability.CAP && handler instanceof IEnergyContainer container) {
+                    energyContainers.add(container);
+                }
+            }
+            if (part instanceof IMaintenanceMachine maintenanceMachine) {
+                getRecipeLogic().setMaintenanceMachine(maintenanceMachine);
+            }
+        }
+        this.inputEnergyContainers = new EnergyContainerList(energyContainers);
+        getRecipeLogic().setEnergyContainer(this.inputEnergyContainers);
     }
 
     /**
@@ -372,20 +383,30 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine implemen
             Set<ICleanroomReceiver> receivers = blockWorldState.getMatchContext().getOrCreate("cleanroomReceiver", Sets::newHashSet);
             // all non-GTMachines are allowed inside by default
             BlockEntity blockEntity = blockWorldState.getTileEntity();
+            if (blockEntity instanceof IMachineBlockEntity machineBlockEntity) {
+                var machine = machineBlockEntity.getMetaMachine();
+                if (isMachineBanned(machine)) {
+                    return false;
+                }
+            }
             if (blockEntity != null) {
                 var receiver = GTCapabilityHelper.getCleanroomReceiver(blockWorldState.getWorld(), blockWorldState.getPos(), null);
                 if (receiver != null) {
-                    if (blockEntity instanceof IMachineBlockEntity machineBlockEntity) {
-                        var machine = machineBlockEntity.getMetaMachine();
-                        if (isMachineBanned(machine)) {
-                            return false;
-                        }
-                    }
                     receivers.add(receiver);
                 }
             }
             return true;
-        }, null);
+        }, null) {
+            @Override
+            public boolean isAny() {
+                return true;
+            }
+
+            @Override
+            public boolean addCache() {
+                return true;
+            }
+        };
     }
 
     protected boolean isMachineBanned(MetaMachine metaTileEntity) {

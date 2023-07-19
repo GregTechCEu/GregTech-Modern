@@ -63,15 +63,17 @@ import java.util.function.*;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 @Accessors(chain = true, fluent = true)
-public class MachineBuilder<DEFINITION extends MachineDefinition> {
+public class MachineBuilder<DEFINITION extends MachineDefinition> extends BuilderBase<DEFINITION> {
 
     protected final Registrate registrate;
     protected final String name;
     protected final BiFunction<BlockBehaviour.Properties, DEFINITION, IMachineBlock> blockFactory;
     protected final BiFunction<IMachineBlock, Item.Properties, MetaMachineItem> itemFactory;
     protected final TriFunction<BlockEntityType<?>, BlockPos, BlockState, IMachineBlockEntity> blockEntityFactory;
-    protected final Function<IMachineBlockEntity, MetaMachine> metaMachine;
-    protected final Function<ResourceLocation, DEFINITION> definitionFactory;
+    @Setter
+    protected Function<ResourceLocation, DEFINITION> definitionFactory; // non-final for KJS
+    @Setter
+    protected Function<IMachineBlockEntity, MetaMachine> metaMachine; // non-final for KJS
     @Nullable
     @Setter
     private Supplier<IRenderer> renderer;
@@ -93,7 +95,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> {
     private NonNullConsumer<BlockEntityType<BlockEntity>> onBlockEntityRegister = MetaMachineBlockEntity::onBlockEntityRegister;
     @Setter
     private GTRecipeType recipeType;
-    @Setter
+    @Getter @Setter // getter for KJS
     private int tier;
     @Setter
     private int paintingColor = ConfigHolder.INSTANCE.client.defaultPaintingColor;
@@ -107,6 +109,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> {
     private BiFunction<MetaMachine, GTRecipe, GTRecipe> recipeModifier = (machine, recipe) -> recipe;
     @Setter
     private boolean alwaysTryModifyRecipe;
+    @Setter
     private Supplier<BlockState> appearance;
     @Setter @Nullable
     private EditableMachineUI editableUI;
@@ -119,6 +122,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> {
                              BiFunction<BlockBehaviour.Properties, DEFINITION, IMachineBlock> blockFactory,
                              BiFunction<IMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
                              TriFunction<BlockEntityType<?>, BlockPos, BlockState, IMachineBlockEntity> blockEntityFactory) {
+        super(new ResourceLocation(registrate.getModid(), name));
         this.registrate = registrate;
         this.name = name;
         this.metaMachine = metaMachine;
@@ -176,11 +180,6 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> {
 
     public MachineBuilder<DEFINITION> appearanceBlock(Supplier<? extends Block> block) {
         appearance = () -> block.get().defaultBlockState();
-        return this;
-    }
-
-    public MachineBuilder<DEFINITION> appearance(Supplier<BlockState> state) {
-        appearance = state;
         return this;
     }
 

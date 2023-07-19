@@ -157,7 +157,7 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
     @Override
     public ModularUI createUI(Player entityPlayer) {
         var group = recipeType.createUITemplate(recipeLogic::getProgressPercent, importItems.storage, exportItems.storage, new IFluidStorage[0], new IFluidStorage[0], true, isHighPressure);
-        group.addSelfPosition(0, 20);
+        group.addSelfPosition((176 - group.getSize().width) / 2, 37);
         return new ModularUI(176, 166, this, entityPlayer)
                 .background(GuiTextures.BACKGROUND_STEAM.get(isHighPressure))
                 .widget(group)

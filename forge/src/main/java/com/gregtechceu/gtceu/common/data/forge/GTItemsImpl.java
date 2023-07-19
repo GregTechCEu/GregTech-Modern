@@ -36,7 +36,7 @@ public class GTItemsImpl {
     }
 
     public static void registerToolTier(MaterialToolTier tier, ResourceLocation id, Collection<Tier> before, Collection<Tier> after) {
-        TierSortingRegistry.registerTier(tier, id, Arrays.asList(before.toArray(Tier[]::new)), Arrays.asList(after.toArray(Tier[]::new)));
+        TierSortingRegistry.registerTier(tier, id, Arrays.asList((Object[]) before.toArray(Tier[]::new)), Arrays.asList((Object[]) after.toArray(Tier[]::new)));
     }
 
     public static List<? extends Tier> getAllToolTiers() {

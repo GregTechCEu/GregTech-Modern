@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.CraftingComponent;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.tterrag.registrate.util.entry.ItemEntry;
+import com.tterrag.registrate.util.entry.ItemProviderEntry;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Item;
@@ -285,9 +286,9 @@ public class MetaTileEntityLoader {
         registerMachineRecipe(provider, GTMachines.ROCK_CRUSHER, "PMW", "CHC", "GGG", 'P', PISTON, 'M', MOTOR, 'W', GRINDER, 'C', CABLE, 'H', HULL, 'G', GLASS);
         registerMachineRecipe(provider, GTMachines.PUMP, "WGW", "GMG", "TGT", 'M', HULL, 'W', CIRCUIT, 'G', PUMP, 'T', PIPE_LARGE);
         // TODO Misc machines
-        //registerMachineRecipe(provider, GTMachines.FISHER, "WTW", "PMP", "TGT", 'M', HULL, 'W', CIRCUIT, 'G', PUMP, 'T', MOTOR, 'P', PISTON);
+        registerMachineRecipe(provider, GTMachines.FISHER, "WTW", "PMP", "TGT", 'M', HULL, 'W', CIRCUIT, 'G', PUMP, 'T', MOTOR, 'P', PISTON);
         //registerMachineRecipe(provider, GTMachines.ITEM_COLLECTOR, "MRM", "RHR", "CWC", 'M', MOTOR, 'R', ROTOR, 'H', HULL, 'C', CIRCUIT, 'W', CABLE);
-        //registerMachineRecipe(provider, GTMachines.BLOCK_BREAKER, "MGM", "CHC", "WSW", 'M', MOTOR, 'H', HULL, 'C', CIRCUIT, 'W', CABLE, 'S', OreDictNames.chestWood, 'G', GRINDER);
+        registerMachineRecipe(provider, GTMachines.BLOCK_BREAKER, "MGM", "CHC", "WSW", 'M', MOTOR, 'H', HULL, 'C', CIRCUIT, 'W', CABLE, 'S', CustomTags.TAG_WOODEN_CHESTS, 'G', GRINDER);
         //registerMachineRecipe(provider, GTMachines.WORLD_ACCELERATOR, "IGI", "FHF", "IGI", 'H', HULL, 'F', EMITTER, 'G', SENSOR, 'I', FIELD_GENERATOR);
         registerMachineRecipe(provider, GTMachines.MINER, "MMM", "WHW", "CSC", 'M', MOTOR, 'W', CABLE, 'H', HULL, 'C', CIRCUIT, 'S', SENSOR);
 
@@ -310,8 +311,7 @@ public class MetaTileEntityLoader {
         registerMachineRecipe(provider, GTMachines.BATTERY_BUFFER_8, "WTW", "WMW", 'M', HULL, 'W', WIRE_OCT, 'T', CustomTags.TAG_WOODEN_CHESTS);
         registerMachineRecipe(provider, GTMachines.BATTERY_BUFFER_16, "WTW", "WMW", 'M', HULL, 'W', WIRE_HEX, 'T', CustomTags.TAG_WOODEN_CHESTS);
 
-        // TODO Charger
-        //registerMachineRecipe(provider, GTMachines.CHARGER, "WTW", "WMW", "BCB", 'M', HULL, 'W', WIRE_QUAD, 'T', OreDictNames.chestWood, 'B', CABLE, 'C', CIRCUIT);
+        registerMachineRecipe(provider, GTMachines.CHARGER_4, "WTW", "WMW", "BCB", 'M', HULL, 'W', WIRE_QUAD, 'T', CustomTags.TAG_WOODEN_CHESTS, 'B', CABLE, 'C', CIRCUIT);
 
         registerMachineRecipe(provider, GTMachines.FLUID_IMPORT_HATCH, " G", " M", 'M', HULL, 'G', GLASS);
         registerMachineRecipe(provider, GTMachines.FLUID_EXPORT_HATCH, " M", " G", 'M', HULL, 'G', GLASS);
@@ -422,7 +422,7 @@ public class MetaTileEntityLoader {
                 recipe[i] = new ItemStack(item);
             } else if (recipe[i] instanceof Block block) {
                 recipe[i] = new ItemStack(block);
-            } else if (recipe[i] instanceof ItemEntry<?> itemEntry) {
+            } else if (recipe[i] instanceof ItemProviderEntry<?> itemEntry) {
                 recipe[i] = itemEntry.asStack();
             }
         }

@@ -215,6 +215,10 @@ public class TraceabilityPredicate {
         return this.common.size() == 1 && this.limited.isEmpty() && this.common.get(0) == SimplePredicate.ANY;
     }
 
+    public boolean addCache() {
+        return !isAny();
+    }
+
     public boolean isAir() {
         return this.common.size() == 1 && this.limited.isEmpty() && this.common.get(0) == SimplePredicate.AIR;
     }

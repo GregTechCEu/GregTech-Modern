@@ -87,10 +87,13 @@ public class GTRecipeWidget extends WidgetGroup {
                 slot.setOverlay(content.createOverlay(index >= recipe.getInputContents(ItemRecipeCapability.CAP).size()));
                 slot.setOnAddedTooltips((w, tooltips) -> {
                     var chance = content.chance;
-                    if (content.chance < 1) {
+                    if (chance < 1) {
                         tooltips.add(chance == 0 ?
                                 Component.translatable("gtceu.gui.content.chance_0") :
                                 Component.translatable("gtceu.gui.content.chance_1", String.format("%.1f", chance * 100) + "%"));
+                        if (content.tierChanceBoost > 0) {
+                            tooltips.add(Component.translatable("gtceu.gui.content.tier_boost", String.format("%.1f", content.tierChanceBoost * 100) + "%"));
+                        }
                     }
                     if (index >= recipe.getInputContents(ItemRecipeCapability.CAP).size()) {
                         tooltips.add(Component.translatable("gtceu.gui.content.per_tick"));
@@ -106,10 +109,13 @@ public class GTRecipeWidget extends WidgetGroup {
                 slot.setOverlay(content.createOverlay(index >= recipe.getOutputContents(ItemRecipeCapability.CAP).size()));
                 slot.setOnAddedTooltips((w, tooltips) -> {
                     var chance = content.chance;
-                    if (content.chance < 1) {
+                    if (chance < 1) {
                         tooltips.add(chance == 0 ?
                                 Component.translatable("gtceu.gui.content.chance_0") :
                                 Component.translatable("gtceu.gui.content.chance_1", String.format("%.1f", chance * 100) + "%"));
+                        if (content.tierChanceBoost > 0) {
+                            tooltips.add(Component.translatable("gtceu.gui.content.tier_boost", String.format("%.1f", content.tierChanceBoost * 100) + "%"));
+                        }
                     }
                     if (index >= recipe.getOutputContents(ItemRecipeCapability.CAP).size()) {
                         tooltips.add(Component.translatable("gtceu.gui.content.per_tick"));
@@ -125,10 +131,13 @@ public class GTRecipeWidget extends WidgetGroup {
                 tank.setOverlay(content.createOverlay(index >= recipe.getInputContents(FluidRecipeCapability.CAP).size()));
                 tank.setOnAddedTooltips((w, tooltips) -> {
                     var chance = content.chance;
-                    if (content.chance < 1) {
+                    if (chance < 1) {
                         tooltips.add(chance == 0 ?
                                 Component.translatable("gtceu.gui.content.chance_0") :
                                 Component.translatable("gtceu.gui.content.chance_1", String.format("%.1f", chance * 100) + "%"));
+                        if (content.tierChanceBoost > 0) {
+                            tooltips.add(Component.translatable("gtceu.gui.content.tier_boost", String.format("%.1f", content.tierChanceBoost * 100) + "%"));
+                        }
                     }
                     if (index >= recipe.getInputContents(FluidRecipeCapability.CAP).size()) {
                         tooltips.add(Component.translatable("gtceu.gui.content.per_tick"));
@@ -144,10 +153,13 @@ public class GTRecipeWidget extends WidgetGroup {
                 tank.setOverlay(content.createOverlay(index >= recipe.getOutputContents(FluidRecipeCapability.CAP).size()));
                 tank.setOnAddedTooltips((w, tooltips) -> {
                     var chance = content.chance;
-                    if (content.chance < 1) {
+                    if (chance < 1) {
                         tooltips.add(chance == 0 ?
                                 Component.translatable("gtceu.gui.content.chance_0") :
                                 Component.translatable("gtceu.gui.content.chance_1", String.format("%.1f", chance * 100) + "%"));
+                        if (content.tierChanceBoost > 0) {
+                            tooltips.add(Component.translatable("gtceu.gui.content.tier_boost", String.format("%.1f", content.tierChanceBoost * 100) + "%"));
+                        }
                     }
                     if (index >= recipe.getOutputContents(FluidRecipeCapability.CAP).size()) {
                         tooltips.add(Component.translatable("gtceu.gui.content.per_tick"));

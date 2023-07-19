@@ -6,7 +6,8 @@
   "client": [
   ],
   "mixins": [
-    "AppearanceBlockMixin"
+    "AppearanceBlockMixin",
+    "ServerPlayerGameModeMixin"
   ],
   "injectors": {
     "defaultRequire": 1

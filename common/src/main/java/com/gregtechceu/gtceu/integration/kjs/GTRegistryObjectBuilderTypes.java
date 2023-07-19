@@ -16,7 +16,8 @@ import com.gregtechceu.gtceu.api.registry.GTRegistry;
 import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
 import com.gregtechceu.gtceu.integration.kjs.built.KJSTagPrefix;
 import com.gregtechceu.gtceu.integration.kjs.events.GTRegistryEventJS;
-import dev.latvian.mods.kubejs.CommonProperties;
+import dev.latvian.mods.kubejs.DevProperties;
+import dev.latvian.mods.kubejs.script.ScriptType;
 import dev.latvian.mods.kubejs.util.ConsoleJS;
 import dev.latvian.mods.kubejs.util.UtilsJS;
 import net.minecraft.resources.ResourceLocation;
@@ -111,7 +112,7 @@ public class GTRegistryObjectBuilderTypes<K, V> {
             throw new IllegalArgumentException("Can't add null builder in registry '" + registryKey + "'!");
         }
 
-        if (CommonProperties.get().debugInfo) {
+        if (DevProperties.get().debugInfo) {
             ConsoleJS.STARTUP.info("~ " + registryKey + " | " + builder.id);
         }
 
@@ -134,7 +135,7 @@ public class GTRegistryObjectBuilderTypes<K, V> {
     }
 
     public void postEvent() {
-        GTCEuStartupEvents.REGISTRY.post(registryKey, new GTRegistryEventJS<>(this));
+        GTCEuStartupEvents.REGISTRY.post(ScriptType.STARTUP, registryKey, new GTRegistryEventJS<>(this));
     }
 
     public static void registerFor(ResourceLocation registry) {
@@ -142,7 +143,7 @@ public class GTRegistryObjectBuilderTypes<K, V> {
             type.postEvent();
 
             for (var builder : type.objects.values()) {
-                if (CommonProperties.get().debugInfo) {
+                if (DevProperties.get().debugInfo) {
                     ConsoleJS.STARTUP.info("+ " + registry + " | " + builder.id);
                 }
                 builder.register();

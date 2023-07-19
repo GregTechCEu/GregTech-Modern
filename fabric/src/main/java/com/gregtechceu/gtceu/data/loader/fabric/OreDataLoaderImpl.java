@@ -6,8 +6,8 @@ import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 import net.fabricmc.fabric.api.resource.ResourceReloadListenerKeys;
 import net.minecraft.resources.ResourceLocation;
 
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 public class OreDataLoaderImpl extends OreDataLoader implements IdentifiableResourceReloadListener {
     public static final ResourceLocation ID = GTCEu.id("ore_veins");
@@ -24,6 +24,6 @@ public class OreDataLoaderImpl extends OreDataLoader implements IdentifiableReso
 
     @Override
     public Collection<ResourceLocation> getFabricDependencies() {
-        return Arrays.asList(ResourceReloadListenerKeys.TAGS);
+        return List.of(ResourceReloadListenerKeys.TAGS);
     }
 }

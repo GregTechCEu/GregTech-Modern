@@ -2,13 +2,14 @@ package com.gregtechceu.gtceu.common.machine.trait;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidVeinSaveData;
+import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidVeinSavedData;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.FluidVeinWorldEntry;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.FluidDrillMachine;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
+import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import lombok.Getter;
 import net.minecraft.core.SectionPos;
@@ -41,7 +42,7 @@ public class FluidDrillLogic extends RecipeLogic {
     public void findAndHandleRecipe() {
         if (getMachine().getLevel() instanceof ServerLevel serverLevel) {
             lastRecipe = null;
-            var data = BedrockFluidVeinSaveData.getOrCreate(serverLevel);
+            var data = BedrockFluidVeinSavedData.getOrCreate(serverLevel);
             if (veinFluid == null) {
                 this.veinFluid = data.getFluidInChunk(getChunkX(), getChunkZ());
                 if (this.veinFluid == null) {
@@ -65,7 +66,7 @@ public class FluidDrillLogic extends RecipeLogic {
     @Nullable
     private GTRecipe getFluidDrillRecipe() {
         if (getMachine().getLevel() instanceof ServerLevel serverLevel && veinFluid != null) {
-            var data = BedrockFluidVeinSaveData.getOrCreate(serverLevel);
+            var data = BedrockFluidVeinSavedData.getOrCreate(serverLevel);
             var recipe = GTRecipeBuilder.ofRaw()
                     .duration(MAX_PROGRESS)
                     .EUt(GTValues.VA[getMachine().getEnergyTier()])
@@ -78,21 +79,21 @@ public class FluidDrillLogic extends RecipeLogic {
         return null;
     }
 
-    private int getFluidToProduce(FluidVeinWorldEntry entry) {
+    private long getFluidToProduce(FluidVeinWorldEntry entry) {
         var definition = entry.getDefinition();
         if (definition != null) {
             int depletedYield = definition.getDepletedYield();
             int regularYield = entry.getFluidYield();
             int remainingOperations = entry.getOperationsRemaining();
 
-            int produced = Math.max(depletedYield, regularYield * remainingOperations / BedrockFluidVeinSaveData.MAXIMUM_VEIN_OPERATIONS);
+            int produced = Math.max(depletedYield, regularYield * remainingOperations / BedrockFluidVeinSavedData.MAXIMUM_VEIN_OPERATIONS);
             produced *= FluidDrillMachine.getRigMultiplier(getMachine().getTier());
 
             // Overclocks produce 50% more fluid
             if (isOverclocked()) {
                 produced = produced * 3 / 2;
             }
-            return produced;
+            return produced * FluidHelper.getBucket() / 1000;
         }
         return 0;
     }
@@ -122,7 +123,7 @@ public class FluidDrillLogic extends RecipeLogic {
     protected void depleteVein() {
         if (getMachine().getLevel() instanceof ServerLevel serverLevel) {
             int chance = FluidDrillMachine.getDepletionChance(getMachine().getTier());
-            var data = BedrockFluidVeinSaveData.getOrCreate(serverLevel);
+            var data = BedrockFluidVeinSavedData.getOrCreate(serverLevel);
             // chance to deplete based on the rig
             if (chance == 1 || GTValues.RNG.nextInt(chance) == 0) {
                 data.depleteVein(getChunkX(), getChunkZ(), 0, false);

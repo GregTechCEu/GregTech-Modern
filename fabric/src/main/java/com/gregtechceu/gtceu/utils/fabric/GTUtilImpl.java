@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.utils.fabric;
 
+import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.fabricmc.fabric.api.tag.convention.v1.ConventionalBiomeTags;
@@ -41,7 +42,7 @@ public class GTUtilImpl {
             return FluidHelper.getBucket() / 4;
         } else if (biome.is(ConventionalBiomeTags.CLIMATE_COLD)) {
             return FluidHelper.getBucket() * 175 / 1000;
-        } else if (biome.is(BiomeTags.IS_BEACH)) {
+        } else if (biome.is(CustomTags.IS_SANDY)) {
             return FluidHelper.getBucket() * 170 / 1000;
         }
         return FluidHelper.getBucket() / 10;

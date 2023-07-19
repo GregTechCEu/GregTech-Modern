@@ -47,6 +47,8 @@ public class CustomTags {
     public static final TagKey<Item> UV_BATTERIES = TagUtil.createPlatformItemTag("batteries/uv", "uv_batteries");
     public static final TagKey<Item> UHV_BATTERIES = TagUtil.createPlatformItemTag("batteries/uhv", "uhv_batteries");
 
+    public static final TagKey<Item> AOE_TOOLS = TagUtil.createPlatformItemTag("tools/aoe", "aoe_tools");
+
     // Platform-dependent tags
     public static final TagKey<Item> TAG_WOODEN_CHESTS = TagUtil.createPlatformItemTag("chests/wooden", "chests");
 
@@ -77,5 +79,6 @@ public class CustomTags {
 
 
     public static final TagKey<Biome> IS_SWAMP = TagUtil.createTag(BuiltinRegistries.BIOME, "is_swamp", false);
+    public static final TagKey<Biome> IS_SANDY = TagUtil.createModTag(BuiltinRegistries.BIOME, "is_sandy");
     public static final TagKey<Biome> HAS_RUBBER_TREE = TagUtil.createModTag(BuiltinRegistries.BIOME, "has_rubber_tree");
 }

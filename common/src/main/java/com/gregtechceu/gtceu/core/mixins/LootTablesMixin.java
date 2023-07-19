@@ -17,6 +17,7 @@ import net.minecraft.data.loot.BlockLoot;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.loot.IntRange;
@@ -57,10 +58,13 @@ public abstract class LootTablesMixin {
                         block = ChemicalHelper.getBlock(orePrefix, material);
                     }
 
+                    ItemStack dropItem = ChemicalHelper.get(TagPrefix.rawOre, material);
+                    if (dropItem.isEmpty()) dropItem = ChemicalHelper.get(TagPrefix.gem, material);
+                    if (dropItem.isEmpty()) dropItem = ChemicalHelper.get(TagPrefix.dust, material);
                     int oreMultiplier = TagPrefix.ORES.get(prefix).isNether() ? 2 : 1;
                     LootTable.Builder builder = BlockLoot.createSilkTouchDispatchTable(block,
                             BlockLoot.applyExplosionDecay(block,
-                                    LootItem.lootTableItem(ChemicalHelper.get(TagPrefix.rawOre, material).getItem())
+                                    LootItem.lootTableItem(dropItem.getItem())
                                             .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, Math.max(1, material.getProperty(PropertyKey.ORE).getOreMultiplier() * oreMultiplier))))
                                             .apply(ApplyBonusCount.addOreBonusCount(Enchantments.BLOCK_FORTUNE))));
 

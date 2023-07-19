@@ -1,12 +1,16 @@
 package com.gregtechceu.gtceu.api.gui.misc;
 
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.tag.TagUtil;
-import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidVeinSaveData;
+import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidVeinSavedData;
+import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreVeinSavedData;
 import com.gregtechceu.gtceu.api.gui.texture.ProspectingTexture;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
@@ -24,10 +28,8 @@ import net.minecraft.world.level.material.Fluid;
 import org.apache.commons.lang3.ArrayUtils;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Stream;
 
 /**
  * @author KilaBash
@@ -126,11 +128,13 @@ public abstract class ProspectorMode<T> {
         }
 
         @Override
-        public void appendTooltips(String[] items, List<Component> tooltips, String selected) {
+        public void appendTooltips(List<String[]> items, List<Component> tooltips, String selected) {
             Map<String, Integer> counter = new HashMap<>();
-            for (var item : items) {
-                if (ProspectingTexture.SELECTED_ALL.equals(selected) || selected.equals(getUniqueID(item))) {
-                    counter.put(item, counter.getOrDefault(item, 0) + 1);
+            for (var array : items) {
+                for (String item : array) {
+                    if (ProspectingTexture.SELECTED_ALL.equals(selected) || selected.equals(getUniqueID(item))) {
+                        counter.put(item, counter.getOrDefault(item, 0) + 1);
+                    }
                 }
             }
             counter.forEach((item, count) -> tooltips.add(Component.translatable(getDescriptionId(item)).append(" --- " + count)));
@@ -145,9 +149,9 @@ public abstract class ProspectorMode<T> {
         @Override
         public void scan(FluidInfo[][][] storage, LevelChunk chunk) {
             if (chunk.getLevel() instanceof ServerLevel serverLevel) {
-                var fluidVein = BedrockFluidVeinSaveData.getOrCreate(serverLevel).getFluidVeinWorldEntry(chunk.getPos().x, chunk.getPos().z);
+                var fluidVein = BedrockFluidVeinSavedData.getOrCreate(serverLevel).getFluidVeinWorldEntry(chunk.getPos().x, chunk.getPos().z);
                 if (fluidVein.getDefinition() != null) {
-                    var left = 100 * fluidVein.getOperationsRemaining() / BedrockFluidVeinSaveData.MAXIMUM_VEIN_OPERATIONS;
+                    var left = 100 * fluidVein.getOperationsRemaining() / BedrockFluidVeinSavedData.MAXIMUM_VEIN_OPERATIONS;
                     storage[0][0] = new FluidInfo[] {
                             new FluidInfo(fluidVein.getDefinition().getStoredFluid().get(), left, fluidVein.getFluidYield()),
                     };
@@ -193,9 +197,86 @@ public abstract class ProspectorMode<T> {
         }
 
         @Override
-        public void appendTooltips(FluidInfo[] items, List<Component> tooltips, String selected) {
-            for (FluidInfo item : items) {
-                tooltips.add(Component.translatable(getDescriptionId(item)).append(" --- %s (%s%%)".formatted(item.yield, item.left)));
+        public void appendTooltips(List<FluidInfo[]> items, List<Component> tooltips, String selected) {
+            for (var array : items) {
+                for (FluidInfo item : array) {
+                    tooltips.add(Component.translatable(getDescriptionId(item)).append(" --- %s (%s%%)".formatted(item.yield, item.left)));
+                }
+            }
+        }
+
+    };
+
+    public record OreInfo(Material material, int weight, int left, int yield) {
+
+    }
+
+    public static ProspectorMode<OreInfo> BEDROCK_ORE = new ProspectorMode<>("metaitem.prospector.mode.bedrock_ore", 1) {
+        @Override
+        public void scan(OreInfo[][][] storage, LevelChunk chunk) {
+            if (chunk.getLevel() instanceof ServerLevel serverLevel) {
+                var oreVein = BedrockOreVeinSavedData.getOrCreate(serverLevel).getOreVeinWorldEntry(chunk.getPos().x, chunk.getPos().z);
+                if (oreVein.getDefinition() != null) {
+                    var left = 100 * oreVein.getOperationsRemaining() / BedrockOreVeinSavedData.MAXIMUM_VEIN_OPERATIONS;
+                    for (var entry : oreVein.getDefinition().getBedrockVeinMaterials()) {
+                        storage[0][0] = ArrayUtils.add(storage[0][0], new OreInfo(entry.getValue(), entry.getKey(), left, oreVein.getOreYield()));
+                    }
+                }
+            }
+        }
+
+        @Override
+        public int getItemColor(OreInfo item) {
+            return item.material.getMaterialRGB();
+        }
+
+
+        @Override
+        public IGuiTexture getItemIcon(OreInfo item) {
+            Material material = item.material;
+            ItemStack stack = ChemicalHelper.get(TagPrefix.get(ConfigHolder.INSTANCE.machines.bedrockOreDropTagPrefix), material);
+            if (stack.isEmpty()) stack = ChemicalHelper.get(TagPrefix.crushed, material); // backup 1: crushed; if raw ore doesn't exist
+            if (stack.isEmpty()) stack = ChemicalHelper.get(TagPrefix.gem, material); // backup 2: gem; if crushed ore doesn't exist
+            if (stack.isEmpty()) stack = ChemicalHelper.get(TagPrefix.ore, material); // backup 3: just fallback to normal ore...
+            return new ItemStackTexture(stack).scale(0.8f);
+        }
+
+        @Override
+        public String getDescriptionId(OreInfo item) {
+            return item.material.getUnlocalizedName();
+        }
+
+        @Override
+        public String getUniqueID(OreInfo item) {
+            return item.material.getName();
+        }
+
+        @Override
+        public void serialize(OreInfo item, FriendlyByteBuf buf) {
+            buf.writeUtf(GTRegistries.MATERIALS.getKey(item.material));
+            buf.writeVarInt(item.weight);
+            buf.writeVarInt(item.left);
+            buf.writeVarInt(item.yield);
+        }
+
+        @Override
+        public OreInfo deserialize(FriendlyByteBuf buf) {
+            return new OreInfo(GTRegistries.MATERIALS.get(buf.readUtf()), buf.readVarInt(), buf.readVarInt(), buf.readVarInt());
+        }
+
+        @Override
+        public Class<OreInfo> getItemClass() {
+            return OreInfo.class;
+        }
+
+        @Override
+        public void appendTooltips(List<OreInfo[]> items, List<Component> tooltips, String selected) {
+            for (var array : items) {
+                int totalWeight = Arrays.stream(array).mapToInt(OreInfo::weight).sum();
+                for (OreInfo item : array) {
+                    float chance = (float) item.weight / totalWeight * 100;
+                    tooltips.add(Component.translatable(getDescriptionId(item)).append(" (").append(Component.translatable("gtceu.gui.content.chance_1", String.format("%.1f", chance) + "%")).append(") --- %s (%s%%)".formatted(item.yield, item.left)));
+                }
             }
         }
 
@@ -217,5 +298,5 @@ public abstract class ProspectorMode<T> {
     public abstract void serialize(T item, FriendlyByteBuf buf);
     public abstract T deserialize(FriendlyByteBuf buf);
     public abstract Class<T> getItemClass();
-    public abstract void appendTooltips(T[] items, List<Component> tooltips, String selected);
+    public abstract void appendTooltips(List<T[]> items, List<Component> tooltips, String selected);
 }

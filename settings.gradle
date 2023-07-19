@@ -22,17 +22,17 @@ dependencyResolutionManagement {
         def reiVersion = "9.1.619"
         def emiVersion = "1.0.5+1.19.2"
         def ae2Version = "12.9.5"
+        def kjsVersion = "1902.6.1-build.287"
 
         // Fabric
-        def fabricLoaderVersion = "0.14.11" // https://fabricmc.net/develop/
-        def fabricApiVersion = "0.73.2" // https://fabricmc.net/develop/
+        def fabricLoaderVersion = "0.14.21" // https://fabricmc.net/develop/
+        def fabricApiVersion = "0.76.0" // https://fabricmc.net/develop/
         def createVersion = "0.5.1-b-build.1079"
         def lazyDfuVersion = "0.1.3"
         def modMenuVersion = "4.1.2"
         def topFabricVersion = "1.19-6.0.0"
         def jadeFabricVersion = "8.7.3"
-        def registrateFabricVersion = "1.1.50-MC1.19.2"
-        def kjsVersion = "1902.6.0-build.142"
+        def registrateFabricVersion = "1.1.58-MC1.19.2"
         def forgeConfigApiVersion = "4.2.11"
         def nightConfigVersion = "3.6.5"
         def teamRebornEnergyVersion = "2.3.0"
@@ -40,7 +40,7 @@ dependencyResolutionManagement {
         def worldStripperFabricFile = "3921629"
 
         // Forge
-        def forgeVersion = "43.2.3"
+        def forgeVersion = "43.2.19"
         def registrateForgeVersion = "MC1.19-1.1.5"
         def createForgeVersion = "0.5.1.b-30"
         def flywheelForgeVersion = "0.6.8.a-14"
@@ -55,9 +55,9 @@ dependencyResolutionManagement {
         def shadowVersion = "7.1.2"
         def architecturyPluginVersion = "3.4-SNAPSHOT"
         def architecturyLoomVersion = "1.0-SNAPSHOT"
-        def quiltFlowerVersion = "1.+"
+        def vineFlowerVersion = "1.+"
         def macheteVersion = "1.+"
-        def ldLibVersion = "1.0.10.g"
+        def ldLibVersion = "1.0.13"
 
         fabric {
             def parchment = version("parchment", parchmentVersion)
@@ -193,8 +193,8 @@ dependencyResolutionManagement {
             def architecturyLoom = version("architectury-loom", architecturyLoomVersion)
             plugin("architectury-loom", "dev.architectury.loom").versionRef(architecturyLoom)
 
-            def quiltFlower = version("quiltFlower", quiltFlowerVersion)
-            plugin("quiltFlower", "io.github.juuxel.loom-quiltflower").versionRef(quiltFlower)
+            def vineFlower = version("vineFlower", vineFlowerVersion)
+            plugin("vineFlower", "io.github.juuxel.loom-vineflower").versionRef(vineFlower)
 
             def machete = version("machete", macheteVersion)
             plugin("machete", "io.github.p03w.machete").versionRef(machete)

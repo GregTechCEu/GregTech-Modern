@@ -65,7 +65,7 @@ public class SteamLiquidBoilerMachine extends SteamBoilerMachine {
 
     @Override
     protected long getBaseSteamOutput() {
-        return (isHighPressure ? 600 : 240) * FluidHelper.getBucket() / 1000;
+        return (isHighPressure ? 600 : 240);
     }
 
     @Override
