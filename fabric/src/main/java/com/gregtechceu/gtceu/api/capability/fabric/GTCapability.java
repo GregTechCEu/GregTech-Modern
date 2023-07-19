@@ -38,4 +38,7 @@ public class GTCapability {
 
     public static final BlockApiLookup<ICleanroomReceiver, Direction> CAPABILITY_CLEANROOM_RECEIVER =
             BlockApiLookup.get(GTCEu.id("cleanroom_receiver"), ICleanroomReceiver.class, Direction.class);
+
+    public static final BlockApiLookup<ILaserContainer, Direction> CAPABILITY_LASER_CONTAINER =
+            BlockApiLookup.get(GTCEu.id("laser_container"), ILaserContainer.class, Direction.class);
 }

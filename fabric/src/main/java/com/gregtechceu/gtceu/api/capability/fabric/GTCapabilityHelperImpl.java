@@ -76,4 +76,9 @@ public class GTCapabilityHelperImpl {
     public static ICleanroomReceiver getCleanroomReceiver(Level level, BlockPos pos, @Nullable Direction side) {
         return GTCapability.CAPABILITY_CLEANROOM_RECEIVER.find(level, pos, side);
     }
+
+    @Nullable
+    public static ILaserContainer getLaserContainer(Level level, BlockPos pos, @Nullable Direction side) {
+        return GTCapability.CAPABILITY_LASER_CONTAINER.find(level, pos, side);
+    }
 }
