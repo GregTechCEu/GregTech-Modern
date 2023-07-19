@@ -204,7 +204,7 @@ public interface GTRecipeSchema {
             return inputItems(machine.asStack(count));
         }
 
-        public GTRecipeJS itemOutputs(ItemStack... outputs) {
+        public GTRecipeJS itemOutputs(OutputItem... outputs) {
             return outputItems(outputs);
         }
 
@@ -216,30 +216,22 @@ public interface GTRecipeSchema {
             return outputItems(unificationEntry.tagPrefix, unificationEntry.material, count);
         }
 
-        public GTRecipeJS outputItems(ItemStack... outputs) {
-            for (ItemStack itemStack : outputs) {
+        public GTRecipeJS outputItems(OutputItem... outputs) {
+            for (OutputItem itemStack : outputs) {
                 if (itemStack.isEmpty()) {
                     LDLib.LOGGER.error("gt recipe {} output items is empty", id);
                     throw new IllegalArgumentException(id + ": output items is empty");
                 }
             }
-            return output(ItemRecipeCapability.CAP, Arrays.stream(outputs).map(stack -> OutputItem.of(stack, chance)).toArray());
+            return output(ItemRecipeCapability.CAP, (Object[]) outputs);
         }
 
         public GTRecipeJS outputItems(Item input, int amount) {
-            return outputItems(new ItemStack(input, amount));
+            return outputItems(OutputItem.of(new ItemStack(input, amount)));
         }
 
         public GTRecipeJS outputItems(Item input) {
-            return outputItems(new ItemStack(input));
-        }
-
-        public GTRecipeJS outputItems(Supplier<? extends Item> input) {
-            return outputItems(new ItemStack(input.get()));
-        }
-
-        public GTRecipeJS outputItems(Supplier<? extends Item> input, int amount) {
-            return outputItems(new ItemStack(input.get(), amount));
+            return outputItems(OutputItem.of(new ItemStack(input)));
         }
 
         public GTRecipeJS outputItems(TagPrefix orePrefix, Material material) {
@@ -247,7 +239,7 @@ public interface GTRecipeSchema {
         }
 
         public GTRecipeJS outputItems(TagPrefix orePrefix, Material material, int count) {
-            return outputItems(ChemicalHelper.get(orePrefix, material, count));
+            return outputItems(OutputItem.of(ChemicalHelper.get(orePrefix, material, count)));
         }
 
         public GTRecipeJS outputItems(MachineDefinition machine) {
@@ -255,10 +247,10 @@ public interface GTRecipeSchema {
         }
 
         public GTRecipeJS outputItems(MachineDefinition machine, int count) {
-            return outputItems(machine.asStack(count));
+            return outputItems(OutputItem.of(machine.asStack(count)));
         }
 
-        public GTRecipeJS notConsumable(ItemStack itemStack) {
+        public GTRecipeJS notConsumable(InputItem itemStack) {
             float lastChance = this.chance;
             this.chance = 0;
             inputItems(itemStack);
@@ -291,11 +283,10 @@ public interface GTRecipeSchema {
         }
 
         public GTRecipeJS circuit(int configuration) {
-            return notConsumable(IntCircuitBehaviour.stack(configuration));
+            return notConsumable(InputItem.of(NBTIngredient.createNBTIngredient(IntCircuitBehaviour.stack(configuration)), 1));
         }
 
-        public GTRecipeJS chancedInput(ItemStack stack, int chance, int tierChanceBoost) {
-            // todo finish tier chance boost, make it actually used in places
+        public GTRecipeJS chancedInput(InputItem stack, int chance, int tierChanceBoost) {
             float lastChance = this.chance;
             float lastTierChanceBoost = this.tierChanceBoost;
             this.chance = chance / 10000f;
@@ -306,7 +297,18 @@ public interface GTRecipeSchema {
             return this;
         }
 
-        public GTRecipeJS chancedInput(FluidStackJS stack, int chance, int tierChanceBoost) {
+        public GTRecipeJS chancedOutput(OutputItem stack, int chance, int tierChanceBoost) {
+            float lastChance = this.chance;
+            float lastTierChanceBoost = this.tierChanceBoost;
+            this.chance = stack.hasChance() ? (float) (stack.getChance() > 1 ? stack.getChance() / 10000f : stack.getChance()) : chance / 10000f;
+            this.tierChanceBoost = tierChanceBoost / 10000f;
+            outputItems(stack);
+            this.chance = lastChance;
+            this.tierChanceBoost = lastTierChanceBoost;
+            return this;
+        }
+
+        public GTRecipeJS chancedFluidInput(FluidStackJS stack, int chance, int tierChanceBoost) {
             float lastChance = this.chance;
             float lastTierChanceBoost = this.tierChanceBoost;
             this.chance = chance / 10000f;
@@ -317,18 +319,7 @@ public interface GTRecipeSchema {
             return this;
         }
 
-        public GTRecipeJS chancedOutput(ItemStack stack, int chance, int tierChanceBoost) {
-            float lastChance = this.chance;
-            float lastTierChanceBoost = this.tierChanceBoost;
-            this.chance = chance / 10000f;
-            this.tierChanceBoost = tierChanceBoost / 10000f;
-            outputItems(stack);
-            this.chance = lastChance;
-            this.tierChanceBoost = lastTierChanceBoost;
-            return this;
-        }
-
-        public GTRecipeJS chancedOutput(FluidStackJS stack, int chance, int tierChanceBoost) {
+        public GTRecipeJS chancedFluidOutput(FluidStackJS stack, int chance, int tierChanceBoost) {
             float lastChance = this.chance;
             float lastTierChanceBoost = this.tierChanceBoost;
             this.chance = chance / 10000f;
@@ -340,11 +331,11 @@ public interface GTRecipeSchema {
         }
 
         public GTRecipeJS chancedOutput(TagPrefix tag, Material mat, int chance, int tierChanceBoost) {
-            return chancedOutput(ChemicalHelper.get(tag, mat), chance, tierChanceBoost);
+            return chancedOutput(OutputItem.of(ChemicalHelper.get(tag, mat), chance), chance, tierChanceBoost);
         }
 
         public GTRecipeJS chancedOutput(TagPrefix tag, Material mat, int count, int chance, int tierChanceBoost) {
-            return chancedOutput(ChemicalHelper.get(tag, mat, count), chance, tierChanceBoost);
+            return chancedOutput(OutputItem.of(ChemicalHelper.get(tag, mat, count), chance), chance, tierChanceBoost);
         }
 
         public GTRecipeJS inputFluids(FluidStackJS... inputs) {
