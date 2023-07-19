@@ -10,8 +10,9 @@ import net.minecraft.world.level.biome.Biomes;
 public interface IBiomeTagsProvider<T extends TagsProvider.TagAppender<Biome>> {
 
     default void generateTags() {
-        tag(CustomTags.IS_SWAMP, Biomes.SWAMP, Biomes.MANGROVE_SWAMP);
-        addRubberTreeTag();
+        //TODO wth
+//        tag(CustomTags.IS_SWAMP, Biomes.SWAMP, Biomes.MANGROVE_SWAMP);
+//        addRubberTreeTag();
     }
 
     void addRubberTreeTag();
@@ -25,9 +26,7 @@ public interface IBiomeTagsProvider<T extends TagsProvider.TagAppender<Biome>> {
 
     @SafeVarargs
     private void tag(TagKey<Biome> key, ResourceKey<Biome>... biomes) {
-        for (ResourceKey<Biome> biome : biomes) {
-            this.tag(key).add(biome);
-        }
+        this.tag(key).add(biomes);
     }
 
 

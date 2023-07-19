@@ -44,15 +44,14 @@ public class GregTechDatagen implements DataGeneratorEntrypoint {
         // biome tags
         var registryAccess = RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY);
         var registries = createProvider(registryAccess);
-        pack.addProvider((FabricDataGenerator.Pack.Factory<DataProvider>) SoundEntryBuilder.SoundEntryProvider::new);
         pack.addProvider((FabricDataGenerator.Pack.Factory<DataProvider>) output -> new BiomeTagsProviderImpl(output, registries));
         pack.addProvider((FabricDataGenerator.Pack.Factory<DataProvider>) output -> new GTRegistriesDatapackGenerator(
                 output, registries, new RegistrySetBuilder()
-                .add(Registries.DAMAGE_TYPE, GTDamageTypes::bootstrap)));
+                .add(Registries.DAMAGE_TYPE, GTDamageTypes::bootstrap), "DamageType Data"));
         pack.addProvider((FabricDataGenerator.Pack.Factory<DataProvider>) output -> new GTRegistriesDatapackGenerator(
                 output, registries, new RegistrySetBuilder()
                 .add(Registries.CONFIGURED_FEATURE, GTConfiguredFeatures::bootstrap)
-                .add(Registries.PLACED_FEATURE, GTPlacements::bootstrap)));
+                .add(Registries.PLACED_FEATURE, GTPlacements::bootstrap), "Worldgen Data"));
     }
 
     /**

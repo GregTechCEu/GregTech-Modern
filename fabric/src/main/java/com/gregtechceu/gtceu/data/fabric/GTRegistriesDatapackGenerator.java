@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.data.fabric;
 
 import com.google.gson.JsonElement;
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.common.data.GTDamageTypes;
 import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.JsonOps;
 import net.minecraft.core.HolderLookup;
@@ -11,7 +10,6 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.registries.RegistriesDatapackGenerator;
@@ -28,19 +26,21 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 
 public class GTRegistriesDatapackGenerator extends RegistriesDatapackGenerator {
+	private final String name;
 	private final PackOutput output;
 	private final CompletableFuture<HolderLookup.Provider> registries;
 	private final java.util.function.Predicate<String> namespacePredicate;
 
-	private GTRegistriesDatapackGenerator(PackOutput output, CompletableFuture<Provider> registries) {
+	private GTRegistriesDatapackGenerator(String name, PackOutput output, CompletableFuture<Provider> registries) {
 		super(output, registries);
+		this.name = name;
 		this.namespacePredicate = Set.of(GTCEu.MOD_ID)::contains;
 		this.registries = registries;
 		this.output = output;
 	}
 
-	public GTRegistriesDatapackGenerator(PackOutput output, CompletableFuture<Provider> registries, RegistrySetBuilder builder) {
-		this(output, registries.thenApply(r -> constructRegistries(r, builder)));
+	public GTRegistriesDatapackGenerator(PackOutput output, CompletableFuture<Provider> registries, RegistrySetBuilder builder, String name) {
+		this(name, output, registries.thenApply(r -> constructRegistries(r, builder)));
 	}
 
 	/**
@@ -84,6 +84,6 @@ public class GTRegistriesDatapackGenerator extends RegistriesDatapackGenerator {
 	@Override
 	@NotNull
 	public String getName() {
-		return "GTCEu's Damage Type Data";
+		return name;
 	}
 }

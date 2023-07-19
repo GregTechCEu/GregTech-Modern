@@ -1,6 +1,9 @@
 {
   "replace": false,
   "values": [
-    "minecraft:end_stone"
+    {
+      "id": "minecraft:end_stone",
+      "required": false
+    }
   ]
 }
