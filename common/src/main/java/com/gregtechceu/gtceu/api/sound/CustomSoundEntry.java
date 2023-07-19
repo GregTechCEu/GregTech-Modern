@@ -28,7 +28,7 @@ public class CustomSoundEntry extends SoundEntry {
 
     @Override
     public void prepare() {
-        event = new SoundEvent(id);
+        event = SoundEvent.createVariableRangeEvent(id);
     }
 
     @Override

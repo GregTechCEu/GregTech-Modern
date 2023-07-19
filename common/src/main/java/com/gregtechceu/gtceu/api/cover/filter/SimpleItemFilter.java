@@ -105,7 +105,7 @@ public class SimpleItemFilter implements ItemFilter {
         boolean found = false;
         for (var match : matches) {
             if (ignoreNbt) {
-                found = match.sameItem(itemStack);
+                found = ItemStack.isSameItemSameTags(match, itemStack);
             } else {
                 found = ItemTransferHelper.canItemStacksStack(match, itemStack);
             }

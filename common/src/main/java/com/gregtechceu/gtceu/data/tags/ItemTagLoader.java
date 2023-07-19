@@ -8,7 +8,6 @@ import com.gregtechceu.gtceu.api.data.tag.TagUtil;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.tterrag.registrate.providers.RegistrateTagsProvider;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagBuilder;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 
@@ -41,11 +40,10 @@ public class ItemTagLoader {
     }
 
     private static void create(RegistrateTagsProvider<Item> provider, TagKey<Item> tagKey, ResourceLocation... rls) {
-        TagBuilder builder = provider.getOrCreateRawBuilder(tagKey);
+        var builder = provider.addTag(tagKey);
         for (ResourceLocation rl : rls) {
-            builder.addElement(rl);
+            builder.addOptional(rl);
         }
-        builder.build();
     }
 
     private static ResourceLocation rl(String name) {

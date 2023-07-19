@@ -46,13 +46,11 @@ public class FacadeItemBehaviour implements ISubItemHandler, ICustomDescriptionI
 
     @Override
     public void fillItemCategory(ComponentItem item, CreativeModeTab category, NonNullList<ItemStack> items) {
-        if (category == GTCreativeModeTabs.ITEM) {
-            List<ItemStack> validFacades = ImmutableList.of(new ItemStack(Blocks.STONE), GTBlocks.COIL_CUPRONICKEL.asStack(), new ItemStack(Blocks.GLASS));
-            for (ItemStack facadeStack : validFacades) {
-                ItemStack resultStack = item.getDefaultInstance();
-                setFacadeStack(resultStack, facadeStack);
-                items.add(resultStack);
-            }
+        List<ItemStack> validFacades = ImmutableList.of(new ItemStack(Blocks.STONE), GTBlocks.COIL_CUPRONICKEL.asStack(), new ItemStack(Blocks.GLASS));
+        for (ItemStack facadeStack : validFacades) {
+            ItemStack resultStack = item.getDefaultInstance();
+            setFacadeStack(resultStack, facadeStack);
+            items.add(resultStack);
         }
     }
 

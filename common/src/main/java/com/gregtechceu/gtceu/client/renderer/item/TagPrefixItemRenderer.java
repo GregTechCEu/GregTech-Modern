@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.client.renderer.item;
 
+import com.google.common.base.Suppliers;
 import com.google.common.collect.Table;
 import com.google.common.collect.Tables;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
@@ -26,14 +27,11 @@ import java.util.function.Supplier;
 public class TagPrefixItemRenderer extends IModelRenderer {
     private static final Table<MaterialIconType, MaterialIconSet, TagPrefixItemRenderer> MODELS = Tables.newCustomTable(new HashMap<>(), HashMap::new);
 
-    @Nullable
-    private ResourceLocation modelLocation;
-    @Nullable
-    private Supplier<ResourceLocation> modelLocationSupplier;
+    private final Supplier<ResourceLocation> modelLocationSupplier;
 
     private TagPrefixItemRenderer(MaterialIconType type, MaterialIconSet iconSet) {
         super(null);
-        this.modelLocationSupplier = () -> type.getItemModelPath(iconSet, true);
+        this.modelLocationSupplier = Suppliers.memoize(() -> type.getItemModelPath(iconSet, true));
     }
 
     public static TagPrefixItemRenderer getOrCreate(MaterialIconType type, MaterialIconSet iconSet) {
@@ -46,7 +44,7 @@ public class TagPrefixItemRenderer extends IModelRenderer {
     @Environment(EnvType.CLIENT)
     @Override
     protected UnbakedModel getModel() {
-        return ModelFactory.getUnBakedModel(modelLocation);
+        return ModelFactory.getUnBakedModel(modelLocationSupplier.get());
     }
 
     @Environment(EnvType.CLIENT)
@@ -60,10 +58,10 @@ public class TagPrefixItemRenderer extends IModelRenderer {
                 model = ModelFactory.ITEM_MODEL_GENERATOR.generateBlockModel(Material::sprite, blockModel);
             }
             itemModel = model.bake(
-                    ModelFactory.getModeBakery(),
+                    ModelFactory.getModeBaker(),
                     Material::sprite,
                     BlockModelRotation.X0_Y0,
-                    modelLocation);
+                    modelLocationSupplier.get());
         }
         return itemModel;
     }
@@ -72,18 +70,15 @@ public class TagPrefixItemRenderer extends IModelRenderer {
     @Override
     public BakedModel getRotatedModel(Direction frontFacing) {
         return blockModels.computeIfAbsent(frontFacing, facing -> getModel().bake(
-                ModelFactory.getModeBakery(),
+                ModelFactory.getModeBaker(),
                 Material::sprite,
                 ModelFactory.getRotation(facing),
-                modelLocation));
+                modelLocationSupplier.get()));
     }
 
     @Override
     @Environment(EnvType.CLIENT)
     public void onAdditionalModel(Consumer<ResourceLocation> registry) {
-        if (modelLocationSupplier != null) {
-            modelLocation = modelLocationSupplier.get();
-        }
-        registry.accept(modelLocation);
+        registry.accept(modelLocationSupplier.get());
     }
 }

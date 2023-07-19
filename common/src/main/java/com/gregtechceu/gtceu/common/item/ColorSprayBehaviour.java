@@ -16,7 +16,7 @@ import com.gregtechceu.gtceu.utils.GradientUtil;
 import com.lowdragmc.lowdraglib.Platform;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
@@ -85,29 +85,29 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
         for (DyeColor color : DyeColor.values()) {
             // if there are > 16 colors (vanilla end) & tinted is loaded, use tinted blocks
             if (color.ordinal() > 15 && Platform.isModLoaded(GTValues.MODID_TINTED)) {
-                glassBuilder.put(color, Registry.BLOCK.get(getId(GTValues.MODID_TINTED, color, "stained_glass")));
-                glassPaneBuilder.put(color, Registry.BLOCK.get(getId(GTValues.MODID_TINTED, color, "stained_glass_pane")));
-                terracottaBuilder.put(color, Registry.BLOCK.get(getId(GTValues.MODID_TINTED, color, "terracotta")));
-                woolBuilder.put(color, Registry.BLOCK.get(getId(GTValues.MODID_TINTED, color, "wool")));
-                carpetBuilder.put(color, Registry.BLOCK.get(getId(GTValues.MODID_TINTED, color, "carpet")));
-                concreteBuilder.put(color, Registry.BLOCK.get(getId(GTValues.MODID_TINTED, color, "concrete")));
-                concretePowderBuilder.put(color, Registry.BLOCK.get(getId(GTValues.MODID_TINTED, color, "concrete_powder")));
-                shulkerBoxBuilder.put(color, Registry.BLOCK.get(getId(GTValues.MODID_TINTED, color, "shulker_box")));
-                candleBuilder.put(color, Registry.BLOCK.get(getId(GTValues.MODID_TINTED, color, "candle")));
+                glassBuilder.put(color, BuiltInRegistries.BLOCK.get(getId(GTValues.MODID_TINTED, color, "stained_glass")));
+                glassPaneBuilder.put(color, BuiltInRegistries.BLOCK.get(getId(GTValues.MODID_TINTED, color, "stained_glass_pane")));
+                terracottaBuilder.put(color, BuiltInRegistries.BLOCK.get(getId(GTValues.MODID_TINTED, color, "terracotta")));
+                woolBuilder.put(color, BuiltInRegistries.BLOCK.get(getId(GTValues.MODID_TINTED, color, "wool")));
+                carpetBuilder.put(color, BuiltInRegistries.BLOCK.get(getId(GTValues.MODID_TINTED, color, "carpet")));
+                concreteBuilder.put(color, BuiltInRegistries.BLOCK.get(getId(GTValues.MODID_TINTED, color, "concrete")));
+                concretePowderBuilder.put(color, BuiltInRegistries.BLOCK.get(getId(GTValues.MODID_TINTED, color, "concrete_powder")));
+                shulkerBoxBuilder.put(color, BuiltInRegistries.BLOCK.get(getId(GTValues.MODID_TINTED, color, "shulker_box")));
+                candleBuilder.put(color, BuiltInRegistries.BLOCK.get(getId(GTValues.MODID_TINTED, color, "candle")));
             } else {
-                glassBuilder.put(color, Registry.BLOCK.get(getId(null, color, "stained_glass")));
-                glassPaneBuilder.put(color, Registry.BLOCK.get(getId(null, color, "stained_glass_pane")));
-                terracottaBuilder.put(color, Registry.BLOCK.get(getId(null, color, "terracotta")));
-                woolBuilder.put(color, Registry.BLOCK.get(getId(null, color, "wool")));
-                carpetBuilder.put(color, Registry.BLOCK.get(getId(null, color, "carpet")));
-                concreteBuilder.put(color, Registry.BLOCK.get(getId(null, color, "concrete")));
-                concretePowderBuilder.put(color, Registry.BLOCK.get(getId(null, color, "concrete_powder")));
-                shulkerBoxBuilder.put(color, Registry.BLOCK.get(getId(null, color, "shulker_box")));
-                candleBuilder.put(color, Registry.BLOCK.get(getId(null, color, "candle")));
+                glassBuilder.put(color, BuiltInRegistries.BLOCK.get(getId("", color, "stained_glass")));
+                glassPaneBuilder.put(color, BuiltInRegistries.BLOCK.get(getId("", color, "stained_glass_pane")));
+                terracottaBuilder.put(color, BuiltInRegistries.BLOCK.get(getId("", color, "terracotta")));
+                woolBuilder.put(color, BuiltInRegistries.BLOCK.get(getId("", color, "wool")));
+                carpetBuilder.put(color, BuiltInRegistries.BLOCK.get(getId("", color, "carpet")));
+                concreteBuilder.put(color, BuiltInRegistries.BLOCK.get(getId("", color, "concrete")));
+                concretePowderBuilder.put(color, BuiltInRegistries.BLOCK.get(getId("", color, "concrete_powder")));
+                shulkerBoxBuilder.put(color, BuiltInRegistries.BLOCK.get(getId("", color, "shulker_box")));
+                candleBuilder.put(color, BuiltInRegistries.BLOCK.get(getId("", color, "candle")));
 
-                /* somehow didn't want to work, it seems registry isn't fully loaded yet (forge) so `Registry.BLOCK.getId` returns air for modded blocks
+                /* somehow didn't want to work, it seems registry isn't fully loaded yet (forge) so `BuiltInRegistries.BLOCK.getId` returns air for modded blocks
                 if (GTCEu.isCreateLoaded()) {
-                    seatBuilder.put(color, Registry.BLOCK.get(getId(GTValues.MODID_CREATE, color, "seat")));
+                    seatBuilder.put(color, BuiltInRegistries.BLOCK.get(getId(GTValues.MODID_CREATE, color, "seat")));
                 }
                  */
             }

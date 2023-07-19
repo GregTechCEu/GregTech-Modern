@@ -1,10 +1,10 @@
 package com.gregtechceu.gtceu.api.item;
 
-import com.gregtechceu.gtceu.api.data.damagesource.DamageSources;
 import com.gregtechceu.gtceu.client.renderer.item.TagPrefixItemRenderer;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.common.data.GTDamageTypes;
 import com.lowdragmc.lowdraglib.client.renderer.IItemRendererProvider;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import net.fabricmc.api.EnvType;
@@ -97,9 +97,9 @@ public class TagPrefixItem extends Item implements IItemRendererProvider {
 //                    heatDamage *= ((ArmorMetaItem<?>) armor.getItem()).getItem(armor).getArmorLogic().getHeatResistance();
 //                }
                 if (heatDamage > 0.0) {
-                    livingEntity.hurt(DamageSources.getHeatDamage().bypassArmor(), heatDamage);
+                    livingEntity.hurt(GTDamageTypes.HEAT.source(level), heatDamage);
                 } else if (heatDamage < 0.0) {
-                    livingEntity.hurt(DamageSources.getFrostDamage().bypassArmor(), -heatDamage);
+                    livingEntity.hurt(GTDamageTypes.FROST.source(level), -heatDamage);
                 }
             }
         }

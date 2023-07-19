@@ -5,10 +5,7 @@ import com.lowdragmc.lowdraglib.client.model.ModelFactory;
 import com.mojang.datafixers.util.Either;
 import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.client.resources.model.Material;
-import net.minecraft.client.resources.model.ModelBakery;
-import net.minecraft.client.resources.model.ModelState;
+import net.minecraft.client.resources.model.*;
 import net.minecraft.resources.ResourceLocation;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -29,19 +26,19 @@ public class BlockModelMixin {
     ThreadLocal<SpriteOverrider> spriteOverriderThreadLocal = ThreadLocal.withInitial(() -> null);
 
     // We want to remap our materials
-    @Inject(method = "bake(Lnet/minecraft/client/resources/model/ModelBakery;Lnet/minecraft/client/renderer/block/model/BlockModel;Ljava/util/function/Function;Lnet/minecraft/client/resources/model/ModelState;Lnet/minecraft/resources/ResourceLocation;Z)Lnet/minecraft/client/resources/model/BakedModel;",
+    @Inject(method = "bake(Lnet/minecraft/client/resources/model/ModelBaker;Lnet/minecraft/client/renderer/block/model/BlockModel;Ljava/util/function/Function;Lnet/minecraft/client/resources/model/ModelState;Lnet/minecraft/resources/ResourceLocation;Z)Lnet/minecraft/client/resources/model/BakedModel;",
             at =@At(value = "HEAD")
     )
-    private void beforeBake(ModelBakery bakery, BlockModel model, Function<Material, TextureAtlasSprite> spriteGetter, ModelState transform, ResourceLocation location, boolean guiLight3d, CallbackInfoReturnable<BakedModel> cir) {
+    private void beforeBake(ModelBaker baker, BlockModel model, Function<Material, TextureAtlasSprite> spriteGetter, ModelState state, ResourceLocation location, boolean guiLight3d, CallbackInfoReturnable<BakedModel> cir) {
         if (spriteGetter instanceof SpriteOverrider spriteOverrider) {
             spriteOverriderThreadLocal.set(spriteOverrider);
         }
     }
 
-    @Inject(method = "bake(Lnet/minecraft/client/resources/model/ModelBakery;Lnet/minecraft/client/renderer/block/model/BlockModel;Ljava/util/function/Function;Lnet/minecraft/client/resources/model/ModelState;Lnet/minecraft/resources/ResourceLocation;Z)Lnet/minecraft/client/resources/model/BakedModel;",
+    @Inject(method = "bake(Lnet/minecraft/client/resources/model/ModelBaker;Lnet/minecraft/client/renderer/block/model/BlockModel;Ljava/util/function/Function;Lnet/minecraft/client/resources/model/ModelState;Lnet/minecraft/resources/ResourceLocation;Z)Lnet/minecraft/client/resources/model/BakedModel;",
             at =@At(value = "RETURN")
     )
-    private void afterBake(ModelBakery bakery, BlockModel model, Function<Material, TextureAtlasSprite> spriteGetter, ModelState transform, ResourceLocation location, boolean guiLight3d, CallbackInfoReturnable<BakedModel> cir) {
+    private void afterBake(ModelBaker baker, BlockModel model, Function<Material, TextureAtlasSprite> spriteGetter, ModelState state, ResourceLocation location, boolean guiLight3d, CallbackInfoReturnable<BakedModel> cir) {
         if (spriteGetter instanceof SpriteOverrider) {
             spriteOverriderThreadLocal.remove();
         }

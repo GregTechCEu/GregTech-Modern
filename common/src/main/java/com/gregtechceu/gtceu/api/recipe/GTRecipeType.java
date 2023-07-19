@@ -41,6 +41,8 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import me.shedaniel.rei.api.client.view.ViewSearchBuilder;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtAccounter;
@@ -521,7 +523,7 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
         for (var ingredient : recipe.getIngredients()) {
             builder.inputItems(ingredient);
         }
-        builder.outputItems(recipe.getResultItem());
+        builder.outputItems(recipe.getResultItem(RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY)));
         if (recipe instanceof SmeltingRecipe smeltingRecipe) {
             builder.duration(smeltingRecipe.getCookingTime());
         }

@@ -26,6 +26,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -232,9 +233,9 @@ public class PatternPreviewWidget extends WidgetGroup {
     }
 
     @Override
-    public void drawInBackground(@Nonnull PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+    public void drawInBackground(@Nonnull GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
         RenderSystem.enableBlend();
-        super.drawInBackground(matrixStack, mouseX, mouseY, partialTicks);
+        super.drawInBackground(graphics, mouseX, mouseY, partialTicks);
     }
 
     private MBPattern initializePattern(MultiblockShapeInfo shapeInfo, HashSet<ItemStackKey> blockDrops) {

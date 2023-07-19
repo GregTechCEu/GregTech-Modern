@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.gui.texture;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.misc.PacketProspecting;
 import com.gregtechceu.gtceu.api.gui.misc.ProspectorMode;
+import com.gregtechceu.gtceu.core.mixins.GuiGraphicsAccessor;
 import com.lowdragmc.lowdraglib.gui.editor.ColorPattern;
 import com.lowdragmc.lowdraglib.gui.util.DrawerHelper;
 import com.lowdragmc.lowdraglib.utils.ColorUtils;
@@ -13,14 +14,17 @@ import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
-import com.mojang.math.Matrix4f;
 import lombok.Getter;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.util.FastColor;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.IOException;
@@ -110,7 +114,7 @@ public class ProspectingTexture extends AbstractTexture {
                 for (var item : items) {
                     if (!selected.equals(SELECTED_ALL) && !selected.equals(mode.getUniqueID(item))) continue;
                     var color = mode.getItemColor(item);
-                    image.setPixelRGBA(i, j,  NativeImage.combine(255, ColorUtils.blueI(color), ColorUtils.greenI(color), ColorUtils.redI(color)));
+                    image.setPixelRGBA(i, j, combine(255, ColorUtils.blueI(color), ColorUtils.greenI(color), ColorUtils.redI(color)));
                     break;
                 }
                 // draw grid
@@ -122,6 +126,13 @@ public class ProspectingTexture extends AbstractTexture {
         return image;
     }
 
+    /**
+     * The resulting color of this operation is stored as least to most significant bits.
+     */
+    public static int combine(int alpha, int blue, int green, int red) {
+        return (alpha & 0xFF) << 24 | (blue & 0xFF) << 16 | (green & 0xFF) << 8 | (red & 0xFF) << 0;
+    }
+
     public void load() {
         doLoad(getImage());
     }
@@ -131,13 +142,13 @@ public class ProspectingTexture extends AbstractTexture {
         image.upload(0, 0, 0, 0, 0, image.getWidth(), image.getHeight(), false, false, false, true);
     }
 
-    public void draw(PoseStack poseStack, int x, int y) {
+    public void draw(GuiGraphics graphics, int x, int y) {
         if (this.getId() == -1) return;
         Tesselator tessellator = Tesselator.getInstance();
         BufferBuilder bufferbuilder = tessellator.getBuilder();
         RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
         RenderSystem.setShaderTexture(0, this.getId());
-        Matrix4f matrix4f = poseStack.last().pose();
+        var matrix4f = graphics.pose().last().pose();
         bufferbuilder.begin(VertexFormat.Mode.QUADS, POSITION_TEX_COLOR);
         bufferbuilder.vertex(matrix4f, x, y + imageHeight, 0).uv(0, 1).color(-1).endVertex();
         bufferbuilder.vertex(matrix4f, x + imageWidth, y + imageHeight, 0).uv(1, 1).color(-1).endVertex();
@@ -145,19 +156,19 @@ public class ProspectingTexture extends AbstractTexture {
         bufferbuilder.vertex(matrix4f, x, y, 0).uv(0, 0).color(-1).endVertex();
         tessellator.end();
 
-        GuiTextures.UP.copy().setColor(ColorPattern.RED.color).rotate(direction / 2).draw(poseStack, 0, 0, x + playerXGui - 20, y + playerYGui - 20, 40, 40);
+        GuiTextures.UP.copy().setColor(ColorPattern.RED.color).rotate(direction / 2).draw(graphics, 0, 0, x + playerXGui - 20, y + playerYGui - 20, 40, 40);
 
         //draw red vertical line
         if (playerXGui % 16 > 7 || playerXGui % 16 == 0) {
-            DrawerHelper.drawSolidRect(poseStack, x + playerXGui - 1, y, 1, imageHeight, ColorPattern.RED.color);
+            DrawerHelper.drawSolidRect(graphics, x + playerXGui - 1, y, 1, imageHeight, ColorPattern.RED.color);
         } else {
-            DrawerHelper.drawSolidRect(poseStack, x + playerXGui, y, 1, imageHeight, ColorPattern.RED.color);
+            DrawerHelper.drawSolidRect(graphics, x + playerXGui, y, 1, imageHeight, ColorPattern.RED.color);
         }
         //draw red horizontal line
         if (playerYGui % 16 > 7 || playerYGui % 16 == 0) {
-            DrawerHelper.drawSolidRect(poseStack, x, y + playerYGui - 1, imageWidth, 1, ColorPattern.RED.color);
+            DrawerHelper.drawSolidRect(graphics, x, y + playerYGui - 1, imageWidth, 1, ColorPattern.RED.color);
         } else {
-            DrawerHelper.drawSolidRect(poseStack, x, y + playerYGui, imageWidth, 1, ColorPattern.RED.color);
+            DrawerHelper.drawSolidRect(graphics, x, y + playerYGui, imageWidth, 1, ColorPattern.RED.color);
         }
     }
 

@@ -1,17 +1,16 @@
 package com.gregtechceu.gtceu.api.gui.fancy;
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.lowdragmc.lowdraglib.client.utils.RenderUtils;
 import com.lowdragmc.lowdraglib.gui.editor.Icons;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
-import com.mojang.blaze3d.vertex.PoseStack;
 import lombok.Getter;
 import lombok.Setter;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
@@ -139,48 +138,48 @@ public class TabsWidget extends Widget {
 
     @Override
     @Environment(EnvType.CLIENT)
-    public void drawInBackground(@NotNull PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
-        super.drawInBackground(poseStack, mouseX, mouseY, partialTicks);
+    public void drawInBackground(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+        super.drawInBackground(graphics, mouseX, mouseY, partialTicks);
         var position = getPosition();
         var size = getSize();
         var hoveredTab = getHoveredTab(mouseX, mouseY);
         // main tab
-        drawTab(mainTab, poseStack, mouseX, mouseY, position.x + 8, position.y, 24, 24, hoveredTab);
+        drawTab(mainTab, graphics, mouseX, mouseY, position.x + 8, position.y, 24, 24, hoveredTab);
         // render sub tabs
         if (hasButton()) { // need a scrollable bar
             // render buttons
             if (isHoverLeftButton(mouseX, mouseY)) {
-                leftButtonHoverTexture.draw(poseStack, mouseX, mouseY, position.x + 8 + 24 + 4, position.y, 16, 24);
+                leftButtonHoverTexture.draw(graphics, mouseX, mouseY, position.x + 8 + 24 + 4, position.y, 16, 24);
             } else {
-                leftButtonTexture.draw(poseStack, mouseX, mouseY, position.x + 8 + 24 + 4, position.y, 16, 24);
+                leftButtonTexture.draw(graphics, mouseX, mouseY, position.x + 8 + 24 + 4, position.y, 16, 24);
             }
             if (isHoverRightButton(mouseX, mouseY)) {
-                rightButtonHoverTexture.draw(poseStack, mouseX, mouseY, position.x + size.width - 8 - 16, position.y, 16, 24);
+                rightButtonHoverTexture.draw(graphics, mouseX, mouseY, position.x + size.width - 8 - 16, position.y, 16, 24);
             } else {
-                rightButtonTexture.draw(poseStack, mouseX, mouseY, position.x + size.width - 8 - 16, position.y, 16, 24);
+                rightButtonTexture.draw(graphics, mouseX, mouseY, position.x + size.width - 8 - 16, position.y, 16, 24);
             }
             // render sub tabs
             var sx = position.x + 8 + 24 + 4 + 16;
-            RenderUtils.useScissor(poseStack, sx, position.y - 1, getSubTabsWidth(), 24 + 2, () -> {
-                for (int i = 0; i < subTabs.size(); i++) {
-                    drawTab(subTabs.get(i), poseStack, mouseX, mouseY, sx + i * 24 - offset, position.y, 24, 24, hoveredTab);
-                }
-            });
+            graphics.enableScissor(sx, position.y - 1, sx + getSubTabsWidth(), position.y - 1 + 24 + 2);
+            for (int i = 0; i < subTabs.size(); i++) {
+                drawTab(subTabs.get(i), graphics, mouseX, mouseY, sx + i * 24 - offset, position.y, 24, 24, hoveredTab);
+            }
+            graphics.disableScissor();
         } else {
             for (int i = subTabs.size() - 1; i >= 0; i--) {
-                drawTab(subTabs.get(i), poseStack, mouseX, mouseY, position.x + size.width - 8 - 24 * (subTabs.size() - i), position.y, 24, 24, hoveredTab);
+                drawTab(subTabs.get(i), graphics, mouseX, mouseY, position.x + size.width - 8 - 24 * (subTabs.size() - i), position.y, 24, 24, hoveredTab);
             }
         }
     }
 
     @Override
     @Environment(EnvType.CLIENT)
-    public void drawInForeground(@NotNull PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
+    public void drawInForeground(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
         var hoveredTab = getHoveredTab(mouseX, mouseY);
         if (hoveredTab != null && gui != null && gui.getModularUIGui() != null) {
             gui.getModularUIGui().setHoverTooltip(hoveredTab.getTabTooltips(), ItemStack.EMPTY, null, hoveredTab.getTabTooltipComponent());
         }
-        super.drawInForeground(poseStack, mouseX, mouseY, partialTicks);
+        super.drawInForeground(graphics, mouseX, mouseY, partialTicks);
     }
 
     @Environment(EnvType.CLIENT)
@@ -224,16 +223,16 @@ public class TabsWidget extends Widget {
     }
 
     @Environment(EnvType.CLIENT)
-    public void drawTab(IFancyUIProvider tab, @NotNull PoseStack poseStack, int mouseX, int mouseY, int x, int y, int width, int height, IFancyUIProvider hoveredTab) {
+    public void drawTab(IFancyUIProvider tab, @NotNull GuiGraphics graphics, int mouseX, int mouseY, int x, int y, int width, int height, IFancyUIProvider hoveredTab) {
         // render background
         if (tab == selectedTab) {
-            tabPressedTexture.draw(poseStack, mouseX, mouseY, x, y, width, height);
+            tabPressedTexture.draw(graphics, mouseX, mouseY, x, y, width, height);
         } else if (tab == hoveredTab) {
-            tabHoverTexture.draw(poseStack, mouseX, mouseY, x, y, width, height);
+            tabHoverTexture.draw(graphics, mouseX, mouseY, x, y, width, height);
         } else {
-            tabTexture.draw(poseStack, mouseX, mouseY, x, y, width, height);
+            tabTexture.draw(graphics, mouseX, mouseY, x, y, width, height);
         }
         // render icon
-        tab.getTabIcon().draw(poseStack, mouseX, mouseY, x + (width - 16) / 2f, y + (height - 16) / 2f, 16, 16);
+        tab.getTabIcon().draw(graphics, mouseX, mouseY, x + (width - 16) / 2f, y + (height - 16) / 2f, 16, 16);
     }
 }

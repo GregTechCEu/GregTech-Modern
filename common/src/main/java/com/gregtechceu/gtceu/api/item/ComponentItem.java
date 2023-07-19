@@ -57,12 +57,6 @@ public class ComponentItem extends Item implements HeldItemUIFactory.IHeldItemUI
         }
     }
 
-    @Override
-    public boolean allowedIn(CreativeModeTab category) {
-        return super.allowedIn(category);
-    }
-
-    @Override
     public void fillItemCategory(CreativeModeTab category, NonNullList<ItemStack> items) {
         boolean found = false;
         for (IItemComponent component : components) {
@@ -72,7 +66,7 @@ public class ComponentItem extends Item implements HeldItemUIFactory.IHeldItemUI
             }
         }
         if (found) return;
-        super.fillItemCategory(category, items);
+        items.add(new ItemStack(this));
     }
 
     @Override

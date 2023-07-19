@@ -13,6 +13,7 @@ import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -50,7 +51,7 @@ public abstract class ProspectorMode<T> {
                         var state = chunk.getBlockState(pos);
                         if (state.is(oreTag)) {
                             var itemName = BLOCK_CACHE.computeIfAbsent(state, blockState -> {
-                                var name = Registry.BLOCK.getKey(blockState.getBlock()).toString();
+                                var name = BuiltInRegistries.BLOCK.getKey(blockState.getBlock()).toString();
                                 var entry = ChemicalHelper.getUnificationEntry(blockState.getBlock());
                                 if (entry != null && entry.material != null) {
                                     name = "material_" + entry.material.getName();
@@ -72,7 +73,7 @@ public abstract class ProspectorMode<T> {
                     return mat.getMaterialRGB();
                 }
             }
-            return Registry.BLOCK.get(new ResourceLocation(item)).defaultMaterialColor().col;
+            return BuiltInRegistries.BLOCK.get(new ResourceLocation(item)).defaultMapColor().col;
         }
 
         @Override
@@ -90,7 +91,7 @@ public abstract class ProspectorMode<T> {
                         return new ItemStackTexture(list.toArray(ItemStack[]::new)).scale(0.8f);
                     }
                 }
-                return new ItemStackTexture(new ItemStack(Registry.BLOCK.get(new ResourceLocation(name)))).scale(0.8f);
+                return new ItemStackTexture(new ItemStack(BuiltInRegistries.BLOCK.get(new ResourceLocation(name)))).scale(0.8f);
             });
         }
 
@@ -102,7 +103,7 @@ public abstract class ProspectorMode<T> {
                     return mat.getUnlocalizedName();
                 }
             }
-            return Registry.BLOCK.get(new ResourceLocation(item)).getDescriptionId();
+            return BuiltInRegistries.BLOCK.get(new ResourceLocation(item)).getDescriptionId();
         }
 
         @Override
@@ -172,19 +173,19 @@ public abstract class ProspectorMode<T> {
 
         @Override
         public String getUniqueID(FluidInfo item) {
-            return Registry.FLUID.getKey(item.fluid).toString();
+            return BuiltInRegistries.FLUID.getKey(item.fluid).toString();
         }
 
         @Override
         public void serialize(FluidInfo item, FriendlyByteBuf buf) {
-            buf.writeUtf(Registry.FLUID.getKey(item.fluid).toString());
+            buf.writeUtf(BuiltInRegistries.FLUID.getKey(item.fluid).toString());
             buf.writeVarInt(item.left);
             buf.writeVarInt(item.yield);
         }
 
         @Override
         public FluidInfo deserialize(FriendlyByteBuf buf) {
-            return new FluidInfo(Registry.FLUID.get(new ResourceLocation(buf.readUtf())), buf.readVarInt(), buf.readVarInt());
+            return new FluidInfo(BuiltInRegistries.FLUID.get(new ResourceLocation(buf.readUtf())), buf.readVarInt(), buf.readVarInt());
         }
 
         @Override

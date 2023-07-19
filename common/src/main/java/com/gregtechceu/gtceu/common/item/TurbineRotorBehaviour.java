@@ -27,16 +27,14 @@ public class TurbineRotorBehaviour implements IMaterialPartItem, ISubItemHandler
 
     @Override
     public void fillItemCategory(ComponentItem item, CreativeModeTab category, NonNullList<ItemStack> items) {
-        if (item.allowedIn(category)) {
-            turbineBlade.executeHandler(PropertyKey.INGOT, (tagPrefix, material, property) -> {
-                var rotorStack = new ItemStack(item);
-                var behavior = TurbineRotorBehaviour.getBehaviour(rotorStack);
-                if (behavior != null) {
-                    behavior.setPartMaterial(rotorStack, material);
-                    items.add(rotorStack);
-                }
-            });
-        }
+        turbineBlade.executeHandler(PropertyKey.INGOT, (tagPrefix, material, property) -> {
+            var rotorStack = new ItemStack(item);
+            var behavior = TurbineRotorBehaviour.getBehaviour(rotorStack);
+            if (behavior != null) {
+                behavior.setPartMaterial(rotorStack, material);
+                items.add(rotorStack);
+            }
+        });
     }
 
     @Override

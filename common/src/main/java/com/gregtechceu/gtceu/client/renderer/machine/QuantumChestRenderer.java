@@ -4,24 +4,26 @@ package com.gregtechceu.gtceu.client.renderer.machine;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.common.machine.storage.QuantumChestMachine;
+import com.gregtechceu.gtceu.core.mixins.GuiGraphicsAccessor;
 import com.lowdragmc.lowdraglib.client.utils.RenderUtils;
 import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
 import com.lowdragmc.lowdraglib.gui.util.TextFormattingUtil;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
-import com.mojang.math.Vector3f;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 
 /**
  * @author KilaBash
@@ -42,7 +44,7 @@ public class QuantumChestRenderer extends TieredHullMachineRenderer {
 
     @Override
     @Environment(EnvType.CLIENT)
-    public void renderItem(ItemStack stack, ItemTransforms.TransformType transformType, boolean leftHand, PoseStack poseStack, MultiBufferSource buffer, int combinedLight, int combinedOverlay, BakedModel model) {
+    public void renderItem(ItemStack stack, ItemDisplayContext transformType, boolean leftHand, PoseStack poseStack, MultiBufferSource buffer, int combinedLight, int combinedOverlay, BakedModel model) {
         model = getItemBakedModel();
         if (model != null && stack.hasTag()) {
             poseStack.pushPose();
@@ -77,9 +79,9 @@ public class QuantumChestRenderer extends TieredHullMachineRenderer {
             poseStack.pushPose();
             BakedModel bakedmodel = itemRenderer.getModel(itemStack, Minecraft.getInstance().level, null, Item.getId(itemStack.getItem()) + itemStack.getDamageValue());
             poseStack.translate(0.5D, 0.5d, 0.5D);
-            poseStack.mulPose(Vector3f.YP.rotation(tick * Mth.TWO_PI / 80));
+            poseStack.mulPose(new Quaternionf().rotateAxis(tick * Mth.TWO_PI / 80, 0, 1, 0));
             poseStack.scale(0.6f, 0.6f, 0.6f);
-            itemRenderer.render(itemStack, ItemTransforms.TransformType.FIXED, false, poseStack, buffer, 0xf000f0, OverlayTexture.NO_OVERLAY, bakedmodel);
+            itemRenderer.render(itemStack, ItemDisplayContext.FIXED, false, poseStack, buffer, 0xf000f0, OverlayTexture.NO_OVERLAY, bakedmodel);
             poseStack.popPose();
 
 
@@ -95,7 +97,7 @@ public class QuantumChestRenderer extends TieredHullMachineRenderer {
             var amount = TextFormattingUtil.formatLongToCompactString(storedAmount, 4);
             poseStack.scale(1f / 64, 1f / 64, 0);
             poseStack.translate(-32, -32, 0);
-            new TextTexture(amount).draw(poseStack, 0, 0, 0, 24, 64, 28);
+            new TextTexture(amount).draw(GuiGraphicsAccessor.create(Minecraft.getInstance(), poseStack, MultiBufferSource.immediate(Tesselator.getInstance().getBuilder())), 0, 0, 0, 24, 64, 28);
             RenderSystem.enableDepthTest();
             poseStack.popPose();
         }

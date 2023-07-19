@@ -153,14 +153,12 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
 
     @Override
     public void fillItemCategory(ComponentItem item, CreativeModeTab category, NonNullList<ItemStack> items) {
-        if (item.allowedIn(category)) {
-            items.add(new ItemStack(item));
-            var stack = new ItemStack(item);
-            var electricItem = GTCapabilityHelper.getElectricItem(stack);
-            if (electricItem != null) {
-                electricItem.charge(electricItem.getMaxCharge(), electricItem.getTier(), true, false);
-                items.add(stack);
-            }
+        items.add(new ItemStack(item));
+        var stack = new ItemStack(item);
+        var electricItem = GTCapabilityHelper.getElectricItem(stack);
+        if (electricItem != null) {
+            electricItem.charge(electricItem.getMaxCharge(), electricItem.getTier(), true, false);
+            items.add(stack);
         }
     }
 

@@ -11,6 +11,7 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
+import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
@@ -19,6 +20,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
 /**
@@ -31,15 +33,15 @@ import java.util.function.Supplier;
 public class SoundEntryBuilder {
 
     public static class SoundEntryProvider implements DataProvider {
-        private final DataGenerator generator;
+        private final PackOutput output;
 
-        public SoundEntryProvider(DataGenerator generator) {
-            this.generator = generator;
+        public SoundEntryProvider(PackOutput output) {
+            this.output = output;
         }
 
         @Override
-        public void run(CachedOutput cache) {
-            generate(generator.getOutputFolder(), cache);
+        public CompletableFuture<?> run(CachedOutput cache) {
+            return generate(output.getOutputFolder(PackOutput.Target.RESOURCE_PACK).resolve(GTCEu.MOD_ID), cache);
         }
 
         @Override
@@ -47,19 +49,16 @@ public class SoundEntryBuilder {
             return "GTCEU's Custom Sounds";
         }
 
-        public void generate(Path path, CachedOutput cache) {
+        public CompletableFuture<?> generate(Path path, CachedOutput cache) {
             path = path.resolve("assets/" + GTCEu.MOD_ID);
-
+            JsonObject json = new JsonObject();
             try {
-                JsonObject json = new JsonObject();
                 for (SoundEntry sound : GTRegistries.SOUNDS) {
                     sound.write(json);
                 }
-                DataProvider.saveStable(cache, json, path.resolve("sounds.json"));
-
-            } catch (IOException e) {
-                e.printStackTrace();
+            } catch (Exception ignored) {
             }
+            return DataProvider.saveStable(cache, json, path.resolve("sounds.json"));
         }
 
     }

@@ -17,7 +17,6 @@ import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.syncdata.RequireRerender;
 import com.gregtechceu.gtceu.common.data.GTFluids;
-import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.side.fluid.FluidActionResult;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
@@ -209,9 +208,9 @@ public class DrumMachine extends MetaMachine implements IAutoOutputFluid, IDropS
                         ItemStack remainingStack = FluidTransferHelper.tryFillContainer(currentStack, fluidTank, Integer.MAX_VALUE, null, true).getResult();
                         currentStack.shrink(1);
                         SoundEvent soundevent = FluidHelper.getFillSound(initialFluid);
-                        player.level.playSound(null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, soundevent, SoundSource.BLOCKS, 1.0F, 1.0F);
+                        player.level().playSound(null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, soundevent, SoundSource.BLOCKS, 1.0F, 1.0F);
                         if (!remainingStack.isEmpty() && !player.addItem(remainingStack)) {
-                            Block.popResource(player.getLevel(), player.getOnPos(), remainingStack);
+                            Block.popResource(player.level(), player.getOnPos(), remainingStack);
                         }
                         return InteractionResult.SUCCESS;
                     }
@@ -222,9 +221,9 @@ public class DrumMachine extends MetaMachine implements IAutoOutputFluid, IDropS
                     ItemStack remainingStack = FluidTransferHelper.tryEmptyContainer(currentStack, fluidTank, Integer.MAX_VALUE, null, true).getResult();
                     currentStack.shrink(1);
                     SoundEvent soundevent = FluidHelper.getEmptySound(fluidTank.getFluid());
-                    player.level.playSound(null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, soundevent, SoundSource.BLOCKS, 1.0F, 1.0F);
+                    player.level().playSound(null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, soundevent, SoundSource.BLOCKS, 1.0F, 1.0F);
                     if (!remainingStack.isEmpty() && !player.getInventory().add(remainingStack)) {
-                        Block.popResource(player.getLevel(), player.getOnPos(), remainingStack);
+                        Block.popResource(player.level(), player.getOnPos(), remainingStack);
                     }
                 }
                 return InteractionResult.SUCCESS;

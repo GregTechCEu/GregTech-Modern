@@ -2,7 +2,9 @@ package com.gregtechceu.gtceu.data.forge;
 
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.tags.IBiomeTagsProvider;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.BiomeTagsProvider;
 import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.tags.BiomeTags;
@@ -10,20 +12,17 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
+import java.util.concurrent.CompletableFuture;
+
 public class BiomeTagsProviderImpl extends BiomeTagsProvider implements IBiomeTagsProvider<TagsProvider.TagAppender<Biome>> {
 
-    public BiomeTagsProviderImpl(DataGenerator dataGenerator, ExistingFileHelper existingFileHelper) {
-        super(dataGenerator, "gtceu", existingFileHelper);
+    public BiomeTagsProviderImpl(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> registries) {
+        super(packOutput, registries);
     }
 
     @Override
-    protected void addTags() {
+    protected void addTags(HolderLookup.Provider provider) {
         this.generateTags();
-    }
-
-    @Override
-    public void generateTags() {
-        IBiomeTagsProvider.super.generateTags();
     }
 
     @Override

@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ChunkPos;
@@ -21,7 +22,7 @@ import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class VeinCountFilter extends PlacementFilter {
-    public static final PlacementModifierType<VeinCountFilter> VEIN_COUNT_FILTER = GTRegistries.register(Registry.PLACEMENT_MODIFIERS, GTCEu.id("count"), () -> VeinCountFilter.CODEC);
+    public static final PlacementModifierType<VeinCountFilter> VEIN_COUNT_FILTER = GTRegistries.register(BuiltInRegistries.PLACEMENT_MODIFIER_TYPE, GTCEu.id("count"), () -> VeinCountFilter.CODEC);
 
     public static final VeinCountFilter INSTANCE = new VeinCountFilter();
     public static final Codec<VeinCountFilter> CODEC = Codec.unit(() -> INSTANCE);

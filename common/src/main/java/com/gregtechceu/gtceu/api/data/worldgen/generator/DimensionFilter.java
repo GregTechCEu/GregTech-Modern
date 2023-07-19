@@ -6,24 +6,20 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderSet;
-import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryCodecs;
-import net.minecraft.resources.ResourceKey;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.levelgen.placement.PlacementContext;
 import net.minecraft.world.level.levelgen.placement.PlacementFilter;
 import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
 
-import java.util.function.Predicate;
-
 public class DimensionFilter extends PlacementFilter {
-    public static final PlacementModifierType<DimensionFilter> DIMENSION_FILTER = GTRegistries.register(Registry.PLACEMENT_MODIFIERS, GTCEu.id("dimension"), () -> DimensionFilter.CODEC);
+    public static final PlacementModifierType<DimensionFilter> DIMENSION_FILTER = GTRegistries.register(BuiltInRegistries.PLACEMENT_MODIFIER_TYPE, GTCEu.id("dimension"), () -> DimensionFilter.CODEC);
 
     public static final Codec<DimensionFilter> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            RegistryCodecs.homogeneousList(Registry.DIMENSION_TYPE_REGISTRY).fieldOf("dimension_id").forGetter(filter -> filter.dimensionId)
+            RegistryCodecs.homogeneousList(Registries.DIMENSION_TYPE).fieldOf("dimension_id").forGetter(filter -> filter.dimensionId)
     ).apply(instance, DimensionFilter::new));
 
     public HolderSet<DimensionType> dimensionId;

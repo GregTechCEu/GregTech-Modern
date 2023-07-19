@@ -50,7 +50,7 @@ public class AutoOutputConfigurator extends WidgetGroup {
     @Override
     public void initWidget() {
         super.initWidget();
-        sceneWidget = new SceneWidget(4, 4, 120 - 8, 80 - 8, gui.entityPlayer.getLevel())
+        sceneWidget = new SceneWidget(4, 4, 120 - 8, 80 - 8, gui.entityPlayer.level())
                 .setRenderedCore(List.of(machine.getPos()), null)
                 .setRenderSelect(false)
                 .setOnSelected(this::onSideSelected);

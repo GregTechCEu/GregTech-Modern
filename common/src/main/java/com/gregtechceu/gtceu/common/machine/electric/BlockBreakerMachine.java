@@ -43,7 +43,6 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 
@@ -215,7 +214,7 @@ public class BlockBreakerMachine extends TieredEnergyMachine implements IAutoOut
             var pos = getPos().relative(getFrontFacing());
             var blockState = getLevel().getBlockState(pos);
             float hardness = blockState.getBlock().defaultDestroyTime();
-            boolean skipBlock = blockState.getMaterial() == Material.AIR;
+            boolean skipBlock = blockState.isAir();
             if (hardness >= 0f && !skipBlock) {
                 int ticksPerOneDurability = 5;
                 int totalTicksPerBlock = (int) Math.ceil(ticksPerOneDurability * hardness);

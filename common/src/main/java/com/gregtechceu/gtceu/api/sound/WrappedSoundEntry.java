@@ -34,7 +34,7 @@ public class WrappedSoundEntry extends SoundEntry {
         for (int i = 0; i < wrappedEvents.size(); i++) {
             ConfiguredSoundEvent wrapped = wrappedEvents.get(i);
             ResourceLocation location = getIdOf(i);
-            compiledEvents.add(new WrappedSoundEntry.CompiledSoundEvent(new SoundEvent(location), wrapped.volume(), wrapped.pitch()));
+            compiledEvents.add(new WrappedSoundEntry.CompiledSoundEvent(SoundEvent.createVariableRangeEvent(location), wrapped.volume(), wrapped.pitch()));
         }
     }
 

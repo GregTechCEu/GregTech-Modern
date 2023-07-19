@@ -6,7 +6,7 @@ import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.utils.NBTToJsonConverter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -84,7 +84,7 @@ public class SmokingRecipeBuilder {
     }
 
     protected ResourceLocation defaultId() {
-        return Registry.ITEM.getKey(output.getItem());
+        return BuiltInRegistries.ITEM.getKey(output.getItem());
     }
 
     public void toJson(JsonObject json) {
@@ -101,7 +101,7 @@ public class SmokingRecipeBuilder {
             throw new IllegalArgumentException(id + ": output items is empty");
         } else {
             JsonObject result = new JsonObject();
-            result.addProperty("item", Registry.ITEM.getKey(output.getItem()).toString());
+            result.addProperty("item", BuiltInRegistries.ITEM.getKey(output.getItem()).toString());
             if (output.getCount() > 1) {
                 result.addProperty("count", output.getCount());
             }

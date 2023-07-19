@@ -178,7 +178,7 @@ public class BlockPattern {
     }
 
     public void autoBuild(Player player, MultiblockState worldState) {
-        Level world = player.level;
+        Level world = player.level();
         int minZ = -centerOffset[4];
         worldState.clean();
         IMultiController controller = worldState.getController();
@@ -274,7 +274,7 @@ public class BlockPattern {
                             ItemStack found = null;
                             if (!player.isCreative()) {
                                 for (ItemStack itemStack : player.getInventory().items) {
-                                    if (candidates.stream().anyMatch(candidate -> candidate.sameItem(itemStack)) && !itemStack.isEmpty() && itemStack.getItem() instanceof BlockItem) {
+                                    if (candidates.stream().anyMatch(candidate -> ItemStack.isSameItemSameTags(candidate, itemStack)) && !itemStack.isEmpty() && itemStack.getItem() instanceof BlockItem) {
                                         found = itemStack.copy();
                                         itemStack.setCount(itemStack.getCount() - 1);
                                         break;

@@ -1,18 +1,15 @@
 package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
+import com.gregtechceu.gtceu.api.item.ComponentItem;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.pipelike.cable.Insulation;
-import com.simibubi.create.Create;
 import com.tterrag.registrate.util.entry.RegistryEntry;
+import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.level.block.Block;
+import net.minecraft.world.item.*;
 
 import javax.annotation.Nonnull;
 
@@ -63,7 +60,13 @@ public class GTCreativeModeTabs {
                 Item item = entry.get().asItem();
                 if (item == Items.AIR)
                     continue;
-                output.accept(item);
+                if (item instanceof ComponentItem componentItem) {
+                    var list = NonNullList.of(ItemStack.EMPTY);
+                    componentItem.fillItemCategory(tab.get(), list);
+                    list.forEach(output::accept);
+                } else {
+                    output.accept(item);
+                }
             }
             for (var entry : REGISTRATE.getAll(Registries.ITEM)) {
                 if (!REGISTRATE.isInCreativeTab(entry, tab))
@@ -71,7 +74,13 @@ public class GTCreativeModeTabs {
                 Item item = entry.get();
                 if (item instanceof BlockItem)
                     continue;
-                output.accept(item);
+                if (item instanceof ComponentItem componentItem) {
+                    var list = NonNullList.of(ItemStack.EMPTY);
+                    componentItem.fillItemCategory(tab.get(), list);
+                    list.forEach(output::accept);
+                } else {
+                    output.accept(item);
+                }
             }
         }
     }

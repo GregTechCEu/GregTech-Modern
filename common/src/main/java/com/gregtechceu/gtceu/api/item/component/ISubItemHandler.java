@@ -12,8 +12,6 @@ import net.minecraft.world.item.ItemStack;
  */
 public interface ISubItemHandler extends IItemComponent {
     default void fillItemCategory(ComponentItem item, CreativeModeTab category, NonNullList<ItemStack> items) {
-        if (item.allowedIn(category)) {
-            items.add(new ItemStack(item));
-        }
+        items.add(new ItemStack(item));
     }
 }

@@ -12,6 +12,7 @@ import com.tterrag.registrate.fabric.FluidHelper;
 import com.tterrag.registrate.fabric.RegistryObject;
 import com.tterrag.registrate.fabric.SimpleFlowableFluid;
 import com.tterrag.registrate.providers.ProviderType;
+import com.tterrag.registrate.providers.RegistrateTagsProvider;
 import com.tterrag.registrate.util.entry.FluidEntry;
 import com.tterrag.registrate.util.entry.RegistryEntry;
 import com.tterrag.registrate.util.nullness.*;
@@ -22,18 +23,17 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 import net.fabricmc.fabric.api.client.render.fluid.v1.SimpleFluidRenderHandler;
-import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributeHandler;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.resources.language.I18n;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -98,7 +98,7 @@ public class GTFluidBuilder<T extends SimpleFlowableFluid, P> extends AbstractBu
     private final List<TagKey<Fluid>> tags = new ArrayList<>();
 
     public GTFluidBuilder(AbstractRegistrate<?> owner, P parent, Material material, String name, String langKey, BuilderCallback callback, ResourceLocation stillTexture, ResourceLocation flowingTexture, NonNullFunction<SimpleFlowableFluid.Properties, T> fluidFactory) {
-        super(owner, parent, "flowing_" + name, callback, Registry.FLUID_REGISTRY);
+        super(owner, parent, "flowing_" + name, callback, Registries.FLUID);
         this.sourceName = name;
         this.bucketName = name + "_bucket";
         this.material = material;
@@ -110,7 +110,7 @@ public class GTFluidBuilder<T extends SimpleFlowableFluid, P> extends AbstractBu
 
             @Override
             public Component getName(FluidVariant fluidVariant) {
-                String key = "fluid." + Registry.FLUID.getKey(fluidVariant.getFluid()).toLanguageKey();
+                String key = "fluid." + BuiltInRegistries.FLUID.getKey(fluidVariant.getFluid()).toLanguageKey();
                 return I18n.exists(key) ? Component.translatable(key) : Component.translatable(langKey, material.getLocalizedName());
             }
 
@@ -209,7 +209,7 @@ public class GTFluidBuilder<T extends SimpleFlowableFluid, P> extends AbstractBu
         this.defaultBlock = false;
         NonNullSupplier<T> supplier = asSupplier();
 
-        this.fluidProperties.andThen(p -> p.block(() -> getOwner().<Block, LiquidBlock>get(getName(), Registry.BLOCK_REGISTRY).get()));
+        this.fluidProperties.andThen(p -> p.block(() -> getOwner().<Block, LiquidBlock>get(getName(), Registries.BLOCK).get()));
         return getOwner().<B, GTFluidBuilder<T, P>>block(this, sourceName, p -> factory.apply(supplier, p))
                 .properties(p -> BlockBehaviour.Properties.copy(Blocks.WATER).noLootTable())
                 .setData(ProviderType.LANG, NonNullBiConsumer.noop())
@@ -253,7 +253,7 @@ public class GTFluidBuilder<T extends SimpleFlowableFluid, P> extends AbstractBu
         if (source == null) {
             throw new IllegalStateException("Cannot create a bucket before creating a source block");
         }
-        this.fluidProperties = p -> p.bucket(() -> getOwner().get(bucketName, Registry.ITEM_REGISTRY).get());
+        this.fluidProperties = p -> p.bucket(() -> getOwner().get(bucketName, Registries.ITEM).get());
         return getOwner().item(this, bucketName, p -> new GTBucketItem(this.source, p, this.material))
                 .properties(p -> p.craftRemainder(Items.BUCKET).stacksTo(1))
                 .color(() -> () -> GTBucketItem::color)
@@ -265,8 +265,8 @@ public class GTFluidBuilder<T extends SimpleFlowableFluid, P> extends AbstractBu
     public final GTFluidBuilder<T, P> tag(TagKey<Fluid>... tags) {
         GTFluidBuilder<T, P> ret = this.tag(ProviderType.FLUID_TAGS, tags);
         if (this.tags.isEmpty()) {
-            ret.getOwner().setDataGenerator(ret.sourceName, getRegistryKey(), ProviderType.FLUID_TAGS,
-                    prov -> this.tags.stream().map(prov::tag).forEach(p -> p.add(getSource())));
+            ret.getOwner().<RegistrateTagsProvider<Fluid>, Fluid>setDataGenerator(ret.sourceName, getRegistryKey(), ProviderType.FLUID_TAGS,
+                    prov -> this.tags.stream().map(prov::addTag).forEach(p -> p.add(getSource().builtInRegistryHolder().key())));
         }
         this.tags.addAll(Arrays.asList(tags));
         return ret;
@@ -293,10 +293,6 @@ public class GTFluidBuilder<T extends SimpleFlowableFluid, P> extends AbstractBu
     @Environment(EnvType.CLIENT)
     protected void registerDefaultRenderer(T flowing) {
         FluidRenderHandlerRegistry.INSTANCE.register(getSource(), flowing, new SimpleFluidRenderHandler(stillTexture, flowingTexture, color));
-        ClientSpriteRegistryCallback.event(InventoryMenu.BLOCK_ATLAS).register((atlas, registry) -> {
-            if (stillTexture != null) registry.register(stillTexture);
-            if (flowingTexture != null) registry.register(flowingTexture);
-        });
     }
 
     @Override
@@ -342,7 +338,7 @@ public class GTFluidBuilder<T extends SimpleFlowableFluid, P> extends AbstractBu
 
         NonNullSupplier<? extends SimpleFlowableFluid> source = this.source;
         if (source != null) {
-            getCallback().accept(sourceName, Registry.FLUID_REGISTRY, (GTFluidBuilder) this, source::get);
+            getCallback().accept(sourceName, Registries.FLUID, (GTFluidBuilder) this, source::get);
         } else {
             throw new IllegalStateException("Fluid must have a source version: " + getName());
         }

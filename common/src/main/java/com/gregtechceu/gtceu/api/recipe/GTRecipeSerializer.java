@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.TagParser;
 import net.minecraft.network.FriendlyByteBuf;
@@ -78,7 +79,7 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
             }
         }
         boolean isFuel = GsonHelper.getAsBoolean(json, "isFuel", false);
-        return new GTRecipe((GTRecipeType) Registry.RECIPE_TYPE.get(new ResourceLocation(recipeType)), id, inputs, outputs, tickInputs, tickOutputs, conditions, data, duration, isFuel);
+        return new GTRecipe((GTRecipeType) BuiltInRegistries.RECIPE_TYPE.get(new ResourceLocation(recipeType)), id, inputs, outputs, tickInputs, tickOutputs, conditions, data, duration, isFuel);
     }
 
     public static Tuple<RecipeCapability<?>, List<Content>> entryReader(FriendlyByteBuf buf) {
@@ -122,7 +123,7 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
         List<RecipeCondition> conditions = buf.readCollection(c -> new ArrayList<>(), GTRecipeSerializer::conditionReader);
         CompoundTag data = buf.readNbt();
         boolean isFuel = buf.readBoolean();
-        return new GTRecipe((GTRecipeType) Registry.RECIPE_TYPE.get(new ResourceLocation(recipeType)), id, inputs, outputs, tickInputs, tickOutputs, conditions, data, duration, isFuel);
+        return new GTRecipe((GTRecipeType) BuiltInRegistries.RECIPE_TYPE.get(new ResourceLocation(recipeType)), id, inputs, outputs, tickInputs, tickOutputs, conditions, data, duration, isFuel);
     }
 
     @Override

@@ -48,6 +48,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
@@ -214,7 +215,7 @@ public class FisherMachine extends TieredEnergyMachine implements IAutoOutputIte
             if (waterCount < WATER_CHECK_SIZE * WATER_CHECK_SIZE)
                 return;
 
-            LootTable lootTable = getLevel().getServer().getLootTables().get(BuiltInLootTables.FISHING);
+            LootTable lootTable = getLevel().getServer().getLootData().getLootTable(BuiltInLootTables.FISHING);
 
             FishingHook simulatedHook = new FishingHook(EntityType.FISHING_BOBBER, getLevel()) {
                 public boolean isOpenWaterFishing() {
@@ -222,7 +223,7 @@ public class FisherMachine extends TieredEnergyMachine implements IAutoOutputIte
                 }
             };
 
-            LootContext lootContext = new LootContext.Builder((ServerLevel) getLevel())
+            LootParams lootContext = new LootParams.Builder((ServerLevel) getLevel())
                     .withOptionalParameter(LootContextParams.THIS_ENTITY, simulatedHook)
                     .withParameter(LootContextParams.TOOL, fishingRod)
                     .withParameter(LootContextParams.ORIGIN, new Vec3(getPos().getX(), getPos().getY(), getPos().getZ()))

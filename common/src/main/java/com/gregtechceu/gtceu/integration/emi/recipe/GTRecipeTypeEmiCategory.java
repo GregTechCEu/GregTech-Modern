@@ -8,7 +8,7 @@ import dev.emi.emi.api.EmiRegistry;
 import dev.emi.emi.api.stack.EmiStack;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -25,7 +25,7 @@ public class GTRecipeTypeEmiCategory extends ModularUIEmiRecipeCategory {
     }
 
     public static void registerDisplays(EmiRegistry registry) {
-        for (RecipeType<?> recipeType : Registry.RECIPE_TYPE) {
+        for (RecipeType<?> recipeType : BuiltInRegistries.RECIPE_TYPE) {
             if (recipeType instanceof GTRecipeType gtRecipeType) {
                 Minecraft.getInstance().getConnection().getRecipeManager().getAllRecipesFor(gtRecipeType).stream()
                         .map(recipe -> new GTEmiRecipe(CATEGORIES.apply(gtRecipeType), recipe))

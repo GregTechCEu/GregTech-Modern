@@ -9,13 +9,13 @@ import com.gregtechceu.gtceu.api.item.PipeBlockItem;
 import com.gregtechceu.gtceu.api.item.tool.IToolGridHighLight;
 import com.gregtechceu.gtceu.api.pipenet.IPipeType;
 import com.gregtechceu.gtceu.common.item.CoverPlaceBehavior;
+import com.gregtechceu.gtceu.core.mixins.GuiGraphicsAccessor;
 import com.lowdragmc.lowdraglib.client.utils.RenderUtils;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
-import com.lowdragmc.lowdraglib.utils.Vector3;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Matrix4f;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Camera;
@@ -23,9 +23,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.Direction;
+import net.minecraft.util.Mth;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
+import org.joml.Matrix4f;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 
 import java.util.function.Function;
 
@@ -74,7 +78,7 @@ public class BlockHighLightRenderer {
                         }
                         poseStack.scale(1f / 16, 1f / 16, 0);
                         poseStack.translate(-8, -8, 0);
-                        texture.copy().draw(poseStack, 0, 0, 4, 4, 8, 8);
+                        texture.copy().draw(GuiGraphicsAccessor.create(Minecraft.getInstance(), poseStack, MultiBufferSource.immediate(Tesselator.getInstance().getBuilder())), 0, 0, 4, 4, 8, 8);
                         RenderSystem.disableBlend();
                         RenderSystem.enableDepthTest();
                     }
@@ -118,25 +122,25 @@ public class BlockHighLightRenderer {
     private static float bColour;
 
     private static void drawGridOverlays(PoseStack poseStack, VertexConsumer buffer, BlockHitResult blockHitResult, Function<Direction, ResourceTexture> test) {
-        rColour = gColour = 0.2F + (float) Math.sin((float) (System.currentTimeMillis() % (Math.PI * 800)) / 800) / 2;
+        rColour = gColour = 0.2F + (float) Math.sin((float) (System.currentTimeMillis() % (Mth.PI * 800)) / 800) / 2;
         bColour = 1f;
         var blockPos = blockHitResult.getBlockPos();
         var facing = blockHitResult.getDirection();
         var box = new AABB(blockPos);
         var attachSide = ICoverable.traceCoverSide(blockHitResult);
-        Vector3 topRight = new Vector3(box.maxX, box.maxY, box.maxZ);
-        Vector3 bottomRight = new Vector3(box.maxX, box.minY, box.maxZ);
-        Vector3 bottomLeft = new Vector3(box.minX, box.minY, box.maxZ);
-        Vector3 topLeft = new Vector3(box.minX, box.maxY, box.maxZ);
-        Vector3 shift = new Vector3(0.25, 0, 0);
-        Vector3 shiftVert = new Vector3(0, 0.25, 0);
+        var topRight = new Vector3f((float) box.maxX, (float) box.maxY, (float) box.maxZ);
+        var bottomRight = new Vector3f((float) box.maxX, (float) box.minY, (float) box.maxZ);
+        var bottomLeft = new Vector3f((float) box.minX, (float) box.minY, (float) box.maxZ);
+        var topLeft = new Vector3f((float) box.minX, (float) box.maxY, (float) box.maxZ);
+        var shift = new Vector3f(0.25f, 0, 0);
+        var shiftVert = new Vector3f(0, 0.25f, 0);
 
-        Vector3 cubeCenter = new Vector3(box.getCenter());
+        var cubeCenter = box.getCenter().toVector3f();
 
-        topRight.subtract(cubeCenter);
-        bottomRight.subtract(cubeCenter);
-        bottomLeft.subtract(cubeCenter);
-        topLeft.subtract(cubeCenter);
+        topRight.sub(cubeCenter);
+        bottomRight.sub(cubeCenter);
+        bottomLeft.sub(cubeCenter);
+        topLeft.sub(cubeCenter);
 
         ResourceTexture leftBlocked;
         ResourceTexture topBlocked;
@@ -147,16 +151,16 @@ public class BlockHighLightRenderer {
         boolean hoverLeft, hoverTop, hoverRight, hoverBottom, hoverFront, hoverBack;
         hoverFront = attachSide == facing;
         hoverBack = attachSide == facing.getOpposite();
-        final Vector3 down = new Vector3(0.0, -1.0, 0.0);
+        final Vector3f down = new Vector3f(0, -1, 0);
 
         switch (facing) {
             case WEST -> {
-                topRight.rotate(Math.PI / 2, down);
-                bottomRight.rotate(Math.PI / 2, down);
-                bottomLeft.rotate(Math.PI / 2, down);
-                topLeft.rotate(Math.PI / 2, down);
-                shift.rotate(Math.PI / 2, down);
-                shiftVert.rotate(Math.PI / 2, down);
+                topRight.rotate(new Quaternionf().rotateAxis(Mth.HALF_PI, down));
+                bottomRight.rotate(new Quaternionf().rotateAxis(Mth.HALF_PI, down));
+                bottomLeft.rotate(new Quaternionf().rotateAxis(Mth.HALF_PI, down));
+                topLeft.rotate(new Quaternionf().rotateAxis(Mth.HALF_PI, down));
+                shift.rotate(new Quaternionf().rotateAxis(Mth.HALF_PI, down));
+                shiftVert.rotate(new Quaternionf().rotateAxis(Mth.HALF_PI, down));
 
                 leftBlocked = test.apply(Direction.NORTH);
                 topBlocked = test.apply(Direction.UP);
@@ -168,12 +172,12 @@ public class BlockHighLightRenderer {
                 hoverBottom = attachSide == Direction.DOWN;
             }
             case EAST -> {
-                topRight.rotate(-Math.PI / 2, down);
-                bottomRight.rotate(-Math.PI / 2, down);
-                bottomLeft.rotate(-Math.PI / 2, down);
-                topLeft.rotate(-Math.PI / 2, down);
-                shift.rotate(-Math.PI / 2, down);
-                shiftVert.rotate(-Math.PI / 2, down);
+                topRight.rotate(new Quaternionf().rotateAxis(-Mth.HALF_PI, down));
+                bottomRight.rotate(new Quaternionf().rotateAxis(-Mth.HALF_PI, down));
+                bottomLeft.rotate(new Quaternionf().rotateAxis(-Mth.HALF_PI, down));
+                topLeft.rotate(new Quaternionf().rotateAxis(-Mth.HALF_PI, down));
+                shift.rotate(new Quaternionf().rotateAxis(-Mth.HALF_PI, down));
+                shiftVert.rotate(new Quaternionf().rotateAxis(-Mth.HALF_PI, down));
 
                 leftBlocked = test.apply(Direction.SOUTH);
                 topBlocked = test.apply(Direction.UP);
@@ -185,12 +189,12 @@ public class BlockHighLightRenderer {
                 hoverBottom = attachSide == Direction.DOWN;
             }
             case NORTH -> {
-                topRight.rotate(Math.PI, down);
-                bottomRight.rotate(Math.PI, down);
-                bottomLeft.rotate(Math.PI, down);
-                topLeft.rotate(Math.PI, down);
-                shift.rotate(Math.PI, down);
-                shiftVert.rotate(Math.PI, down);
+                topRight.rotate(new Quaternionf().rotateAxis(Mth.PI, down));
+                bottomRight.rotate(new Quaternionf().rotateAxis(Mth.PI, down));
+                bottomLeft.rotate(new Quaternionf().rotateAxis(Mth.PI, down));
+                topLeft.rotate(new Quaternionf().rotateAxis(Mth.PI, down));
+                shift.rotate(new Quaternionf().rotateAxis(Mth.PI, down));
+                shiftVert.rotate(new Quaternionf().rotateAxis(Mth.PI, down));
 
                 leftBlocked = test.apply(Direction.EAST);
                 topBlocked = test.apply(Direction.UP);
@@ -202,13 +206,13 @@ public class BlockHighLightRenderer {
                 hoverBottom = attachSide == Direction.DOWN;
             }
             case UP -> {
-                Vector3 side = new Vector3(1, 0, 0);
-                topRight.rotate(-Math.PI / 2, side);
-                bottomRight.rotate(-Math.PI / 2, side);
-                bottomLeft.rotate(-Math.PI / 2, side);
-                topLeft.rotate(-Math.PI / 2, side);
-                shift.rotate(-Math.PI / 2, side);
-                shiftVert.rotate(-Math.PI / 2, side);
+                Vector3f side = new Vector3f(1, 0, 0);
+                topRight.rotate(new Quaternionf().rotateAxis(-Mth.HALF_PI, side));
+                bottomRight.rotate(new Quaternionf().rotateAxis(-Mth.HALF_PI, side));
+                bottomLeft.rotate(new Quaternionf().rotateAxis(-Mth.HALF_PI, side));
+                topLeft.rotate(new Quaternionf().rotateAxis(-Mth.HALF_PI, side));
+                shift.rotate(new Quaternionf().rotateAxis(-Mth.HALF_PI, side));
+                shiftVert.rotate(new Quaternionf().rotateAxis(-Mth.HALF_PI, side));
 
                 leftBlocked = test.apply(Direction.EAST);
                 topBlocked = test.apply(Direction.SOUTH);
@@ -220,13 +224,13 @@ public class BlockHighLightRenderer {
                 hoverBottom = attachSide == Direction.NORTH;
             }
             case DOWN -> {
-                Vector3 side = new Vector3(1, 0, 0);
-                topRight.rotate(Math.PI / 2, side);
-                bottomRight.rotate(Math.PI / 2, side);
-                bottomLeft.rotate(Math.PI / 2, side);
-                topLeft.rotate(Math.PI / 2, side);
-                shift.rotate(Math.PI / 2, side);
-                shiftVert.rotate(Math.PI / 2, side);
+                Vector3f side = new Vector3f(1, 0, 0);
+                topRight.rotate(new Quaternionf().rotateAxis(Mth.HALF_PI, side));
+                bottomRight.rotate(new Quaternionf().rotateAxis(Mth.HALF_PI, side));
+                bottomLeft.rotate(new Quaternionf().rotateAxis(Mth.HALF_PI, side));
+                topLeft.rotate(new Quaternionf().rotateAxis(Mth.HALF_PI, side));
+                shift.rotate(new Quaternionf().rotateAxis(Mth.HALF_PI, side));
+                shiftVert.rotate(new Quaternionf().rotateAxis(Mth.HALF_PI, side));
 
                 leftBlocked = test.apply(Direction.WEST);
                 topBlocked = test.apply(Direction.SOUTH);
@@ -256,17 +260,17 @@ public class BlockHighLightRenderer {
 
         var mat = poseStack.last().pose();
         // straight top bottom lines
-        drawLine(mat, buffer, topRight.copy().add(shift.copy().multiply(-1)),
-                bottomRight.copy().add(shift.copy().multiply(-1)));
+        drawLine(mat, buffer, new Vector3f(topRight).add(new Vector3f(shift).mul(-1)),
+                new Vector3f(bottomRight).add(new Vector3f(shift).mul(-1)));
 
-        drawLine(mat, buffer, bottomLeft.copy().add(shift), topLeft.copy().add(shift));
+        drawLine(mat, buffer, new Vector3f(bottomLeft).add(shift), new Vector3f(topLeft).add(shift));
 
         // straight side to side lines
-        drawLine(mat, buffer, topLeft.copy().add(shiftVert.copy().multiply(-1)),
-                topRight.copy().add(shiftVert.copy().multiply(-1)));
+        drawLine(mat, buffer, new Vector3f(topLeft).add(new Vector3f(shiftVert).mul(-1)),
+                new Vector3f(topRight).add(new Vector3f(shiftVert).mul(-1)));
 
-        drawLine(mat, buffer, bottomLeft.copy().add(shiftVert),
-                bottomRight.copy().add(shiftVert));
+        drawLine(mat, buffer, new Vector3f(bottomLeft).add(shiftVert),
+                new Vector3f(bottomRight).add(shiftVert));
 
         poseStack.pushPose();
         RenderSystem.disableDepthTest();
@@ -282,37 +286,38 @@ public class BlockHighLightRenderer {
         poseStack.scale(1f / 16, 1f / 16, 0);
         poseStack.translate(-8, -8, 0);
 
+        var graphics = GuiGraphicsAccessor.create(Minecraft.getInstance(), poseStack, MultiBufferSource.immediate(Tesselator.getInstance().getBuilder()));
         if (leftBlocked != null) {
-             leftBlocked.copy().scale(0.9f).setColor(hoverLeft ? -1 : 0x44ffffff).draw(poseStack, 0, 0, 0, 6, 4, 4);
+             leftBlocked.copy().scale(0.9f).setColor(hoverLeft ? -1 : 0x44ffffff).draw(graphics, 0, 0, 0, 6, 4, 4);
         }
         if (topBlocked != null) {
-             topBlocked.copy().scale(0.9f).setColor(hoverTop ? -1 : 0x44ffffff).draw(poseStack, 0, 0, 6, 0, 4, 4);
+             topBlocked.copy().scale(0.9f).setColor(hoverTop ? -1 : 0x44ffffff).draw(graphics, 0, 0, 6, 0, 4, 4);
         }
         if (rightBlocked != null) {
-             rightBlocked.copy().scale(0.9f).setColor(hoverRight ? -1 : 0x44ffffff).draw(poseStack, 0, 0, 12, 6, 4, 4);
+             rightBlocked.copy().scale(0.9f).setColor(hoverRight ? -1 : 0x44ffffff).draw(graphics, 0, 0, 12, 6, 4, 4);
         }
         if (bottomBlocked != null) {
-             bottomBlocked.copy().scale(0.9f).setColor(hoverBottom ? -1 : 0x44ffffff).draw(poseStack, 0, 0, 6, 12, 4, 4);
+             bottomBlocked.copy().scale(0.9f).setColor(hoverBottom ? -1 : 0x44ffffff).draw(graphics, 0, 0, 6, 12, 4, 4);
         }
         if (frontBlocked != null) {
-             frontBlocked.copy().scale(0.9f).setColor(hoverFront ? -1 : 0x44ffffff).draw(poseStack, 0, 0, 6, 6, 4, 4);
+             frontBlocked.copy().scale(0.9f).setColor(hoverFront ? -1 : 0x44ffffff).draw(graphics, 0, 0, 6, 6, 4, 4);
         }
         if (backBlocked != null) {
-             backBlocked.copy().scale(0.9f).setColor(hoverBack ? -1 : 0x44ffffff).draw(poseStack, 0, 0, 0, 0, 4, 4);
-             backBlocked.copy().scale(0.9f).setColor(hoverBack ? -1 : 0x44ffffff).draw(poseStack, 0, 0, 12, 0, 4, 4);
-             backBlocked.copy().scale(0.9f).setColor(hoverBack ? -1 : 0x44ffffff).draw(poseStack, 0, 0, 0, 12, 4, 4);
-             backBlocked.copy().scale(0.9f).setColor(hoverBack ? -1 : 0x44ffffff).draw(poseStack, 0, 0, 12, 12, 4, 4);
+             backBlocked.copy().scale(0.9f).setColor(hoverBack ? -1 : 0x44ffffff).draw(graphics, 0, 0, 0, 0, 4, 4);
+             backBlocked.copy().scale(0.9f).setColor(hoverBack ? -1 : 0x44ffffff).draw(graphics, 0, 0, 12, 0, 4, 4);
+             backBlocked.copy().scale(0.9f).setColor(hoverBack ? -1 : 0x44ffffff).draw(graphics, 0, 0, 0, 12, 4, 4);
+             backBlocked.copy().scale(0.9f).setColor(hoverBack ? -1 : 0x44ffffff).draw(graphics, 0, 0, 12, 12, 4, 4);
         }
         RenderSystem.disableBlend();
         RenderSystem.enableDepthTest();
         poseStack.popPose();
     }
 
-    private static void drawLine(Matrix4f mat, VertexConsumer buffer, Vector3 from, Vector3 to) {
-        var normal = from.copy().subtract(to);
+    private static void drawLine(Matrix4f mat, VertexConsumer buffer, Vector3f from, Vector3f to) {
+        var normal = new Vector3f(from).sub(to);
         
-        buffer.vertex(mat, (float) from.x, (float) from.y, (float) from.z).color(rColour, gColour, bColour, 1f).normal((float) normal.x, (float) normal.y, (float) normal.z).endVertex();
-        buffer.vertex(mat, (float) to.x, (float) to.y, (float) to.z).color(rColour, gColour, bColour, 1f).normal((float) normal.x, (float) normal.y, (float) normal.z).endVertex();
+        buffer.vertex(mat, from.x, from.y, from.z).color(rColour, gColour, bColour, 1f).normal(normal.x, normal.y, normal.z).endVertex();
+        buffer.vertex(mat, to.x, to.y, to.z).color(rColour, gColour, bColour, 1f).normal(normal.x, normal.y, normal.z).endVertex();
     }
 
 }

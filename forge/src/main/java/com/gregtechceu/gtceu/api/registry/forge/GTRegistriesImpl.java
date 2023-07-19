@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.registry.forge;
 
 import com.gregtechceu.gtceu.GTCEu;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -14,31 +15,29 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import static net.minecraft.core.Registry.RECIPE_TYPE_REGISTRY;
-
 /**
  * @author KilaBash
  * @date 2023/2/20
  * @implNote GTRegistriesImpl
  */
 public class GTRegistriesImpl {
-    public static final DeferredRegister<TrunkPlacerType<?>> TRUNK_PLACER_TYPE = DeferredRegister.create(Registry.TRUNK_PLACER_TYPE_REGISTRY, GTCEu.MOD_ID);
-    public static final DeferredRegister<PlacementModifierType<?>> PLACEMENT_MODIFIER = DeferredRegister.create(Registry.PLACEMENT_MODIFIER_REGISTRY, GTCEu.MOD_ID);
+    public static final DeferredRegister<TrunkPlacerType<?>> TRUNK_PLACER_TYPE = DeferredRegister.create(Registries.TRUNK_PLACER_TYPE, GTCEu.MOD_ID);
+    public static final DeferredRegister<PlacementModifierType<?>> PLACEMENT_MODIFIER = DeferredRegister.create(Registries.PLACEMENT_MODIFIER_TYPE, GTCEu.MOD_ID);
 
     public static <V, T extends V> T register(Registry<V> registry, ResourceLocation name, T value) {
         ResourceKey<?> registryKey = registry.key();
 
-        if (registryKey == RECIPE_TYPE_REGISTRY) {
+        if (registryKey == Registries.RECIPE_TYPE) {
             ForgeRegistries.RECIPE_TYPES.register(name, (RecipeType<?>) value);
-        } else if (registryKey == Registry.RECIPE_SERIALIZER_REGISTRY) {
+        } else if (registryKey == Registries.RECIPE_SERIALIZER) {
             ForgeRegistries.RECIPE_SERIALIZERS.register(name, (RecipeSerializer<?>) value);
-        } else if (registryKey == Registry.FEATURE_REGISTRY) {
+        } else if (registryKey == Registries.FEATURE) {
             ForgeRegistries.FEATURES.register(name, (Feature<?>) value);
-        } else if (registryKey == Registry.FOLIAGE_PLACER_TYPE_REGISTRY) {
+        } else if (registryKey == Registries.FOLIAGE_PLACER_TYPE) {
             ForgeRegistries.FOLIAGE_PLACER_TYPES.register(name, (FoliagePlacerType<?>)value);
-        } else if (registryKey == Registry.TRUNK_PLACER_TYPE_REGISTRY) {
+        } else if (registryKey == Registries.TRUNK_PLACER_TYPE) {
             TRUNK_PLACER_TYPE.register(name.getPath(), () -> (TrunkPlacerType<?>)value);
-        } else if (registryKey == Registry.PLACEMENT_MODIFIER_REGISTRY) {
+        } else if (registryKey == Registries.PLACEMENT_MODIFIER_TYPE) {
             PLACEMENT_MODIFIER.register(name.getPath(), () -> (PlacementModifierType<?>) value);
         } else {
             return Registry.register(registry, name, value);

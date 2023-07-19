@@ -5,7 +5,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -17,7 +16,7 @@ import snownee.jade.api.config.IPluginConfig;
 
 import javax.annotation.Nullable;
 
-public abstract class CapabilityBlockProvider<C> implements IBlockComponentProvider, IServerDataProvider<BlockEntity> {
+public abstract class CapabilityBlockProvider<C> implements IBlockComponentProvider, IServerDataProvider<BlockAccessor> {
 
     @Getter
     public final ResourceLocation uid;
@@ -55,11 +54,11 @@ public abstract class CapabilityBlockProvider<C> implements IBlockComponentProvi
     }
 
     @Override
-    public void appendServerData(CompoundTag data, ServerPlayer player, Level level, BlockEntity be, boolean b) {
+    public void appendServerData(CompoundTag data, BlockAccessor blockAccessor) {
         // use uid as key for capability data
         var capData = data.getCompound(uid.toString());
 
-        var capability = getCapability(level, be.getBlockPos(), null);
+        var capability = getCapability(blockAccessor.getLevel(), blockAccessor.getPosition(), null);
         if (capability != null && allowDisplaying(capability)) {
             var tag = new CompoundTag();
             write(tag, capability);
@@ -67,7 +66,7 @@ public abstract class CapabilityBlockProvider<C> implements IBlockComponentProvi
         }
 
         for (Direction value : Direction.values()) {
-            capability = getCapability(level, be.getBlockPos(), value);
+            capability = getCapability(blockAccessor.getLevel(), blockAccessor.getPosition(), value);
             if (capability != null && allowDisplaying(capability)) {
                 var tag = new CompoundTag();
                 write(tag, capability);

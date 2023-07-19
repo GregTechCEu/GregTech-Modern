@@ -103,7 +103,7 @@ dependencies {
 
     // Create and its dependencies
     modImplementation("com.simibubi.create:create-${libs.versions.minecraft.get()}:${forge.versions.createForge.get()}:all") { transitive = false }
-//    modImplementation forge.flywheel
+    modImplementation forge.flywheel
 
     // JEI
     modCompileOnly(forge.jei.common.api) { transitive = false }

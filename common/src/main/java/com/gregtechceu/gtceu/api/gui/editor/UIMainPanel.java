@@ -6,9 +6,9 @@ import com.lowdragmc.lowdraglib.gui.editor.ui.MainPanel;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.gui.GuiGraphics;
 
 /**
  * @author KilaBash
@@ -27,9 +27,9 @@ public class UIMainPanel extends MainPanel implements IGuiTexture {
 
     @Override
     @Environment(EnvType.CLIENT)
-    public void draw(PoseStack stack, int mouseX, int mouseY, float x, float y, int width, int height) {
+    public void draw(GuiGraphics graphics, int mouseX, int mouseY, float x, float y, int width, int height) {
         if (description != null) {
-            new TextTexture(description).scale(2.0f).draw(stack, mouseX, mouseY, x, y, width - editor.getConfigPanel().getSize().getWidth(), height);
+            new TextTexture(description).scale(2.0f).draw(graphics, mouseX, mouseY, x, y, width - editor.getConfigPanel().getSize().getWidth(), height);
         }
         var border = 4;
         var background = GuiTextures.BACKGROUND;
@@ -37,7 +37,7 @@ public class UIMainPanel extends MainPanel implements IGuiTexture {
         var size = root.getSize();
         var w = Math.max(size.width + border * 2, 172);
         var h = Math.max(size.height + border * 2, 86);
-        background.draw(stack, mouseX, mouseY,
+        background.draw(graphics, mouseX, mouseY,
                 position.x - (w - size.width) / 2f,
                 position.y - (h - size.height) / 2f,
                 w, h);

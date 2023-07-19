@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
 import lombok.NoArgsConstructor;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
@@ -30,8 +30,8 @@ public class RockBreakerCondition extends RecipeCondition {
 
     @Override
     public boolean test(@NotNull GTRecipe recipe, @NotNull RecipeLogic recipeLogic) {
-        var fluidA = Registry.FLUID.get(new ResourceLocation(recipe.data.getString("fluidA")));
-        var fluidB = Registry.FLUID.get(new ResourceLocation(recipe.data.getString("fluidB")));
+        var fluidA = BuiltInRegistries.FLUID.get(new ResourceLocation(recipe.data.getString("fluidA")));
+        var fluidB = BuiltInRegistries.FLUID.get(new ResourceLocation(recipe.data.getString("fluidB")));
         boolean hasFluidA = false, hasFluidB = false;
         var level = recipeLogic.machine.self().getLevel();
         var pos = recipeLogic.machine.self().getPos();

@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.data.recipe.misc;
 
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.entity.FurnaceBlockEntity;
@@ -30,7 +30,7 @@ public class FuelRecipes {
                     .duration(fuelEntry.getValue() * 12) // remove the * 12 if SteamBoilerMachine:240 is uncommented
                     .save(provider);
         }
-        for (Item item : Registry.ITEM) {
+        for (Item item : BuiltInRegistries.ITEM) {
             var burnTime = GTUtil.getItemBurnTime(item);
             if (burnTime > 0 && !addedItems.contains(item)) {
                 STEAM_BOILER_RECIPES.recipeBuilder(item.getDescriptionId())

@@ -13,7 +13,7 @@ import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Items;
@@ -58,7 +58,7 @@ public class GTRecipeTypeCategory extends ModularUIRecipeCategory<GTRecipeWrappe
     }
 
     public static void registerRecipes(IRecipeRegistration registration) {
-        for (net.minecraft.world.item.crafting.RecipeType<?> recipeType : Registry.RECIPE_TYPE) {
+        for (net.minecraft.world.item.crafting.RecipeType<?> recipeType : BuiltInRegistries.RECIPE_TYPE) {
             if (recipeType instanceof GTRecipeType gtRecipeType) {
                 registration.addRecipes(GTRecipeTypeCategory.TYPES.apply(gtRecipeType),
                         Minecraft.getInstance().getConnection().getRecipeManager().getAllRecipesFor(gtRecipeType)

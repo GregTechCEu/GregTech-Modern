@@ -19,7 +19,7 @@ import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Explosion;
+import net.minecraft.world.level.Level;
 import org.apache.commons.lang3.ArrayUtils;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -73,7 +73,7 @@ public class CreativeEnergyContainerMachine extends MetaMachine implements IEner
             energyIOPerSec = 0;
             if (doExplosion) {
                 getLevel().explode(null, getPos().getX() + 0.5, getPos().getY() + 0.5, getPos().getZ() + 0.5,
-                        1, Explosion.BlockInteraction.NONE);
+                        1, Level.ExplosionInteraction.NONE);
                 doExplosion = false;
             }
         }

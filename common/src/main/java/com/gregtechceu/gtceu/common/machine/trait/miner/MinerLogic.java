@@ -30,6 +30,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
@@ -38,6 +39,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
@@ -156,19 +158,13 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder{
         this.pipeLength = 0;
     }
 
-    private static BlockState oreReplacementBlock = findMiningReplacementBlock();
-
-    private static BlockState findMiningReplacementBlock() {
-        if (oreReplacementBlock == null) {
-            try {
-                oreReplacementBlock = BlockStateParser.parseForBlock(Registry.BLOCK, ConfigHolder.INSTANCE.machines.replaceMinedBlocksWith, false).blockState();
-            } catch (CommandSyntaxException ignored) {
-                GTCEu.LOGGER.error("failed to parse replaceMinedBlocksWith, invalid BlockState: {}", ConfigHolder.INSTANCE.machines.replaceMinedBlocksWith);
-                oreReplacementBlock = Blocks.COBBLESTONE.defaultBlockState();
-            }
+    private static BlockState findMiningReplacementBlock(Level level) {
+        try {
+            return BlockStateParser.parseForBlock(level.holderLookup(Registries.BLOCK), ConfigHolder.INSTANCE.machines.replaceMinedBlocksWith, false).blockState();
+        } catch (CommandSyntaxException ignored) {
+            GTCEu.LOGGER.error("failed to parse replaceMinedBlocksWith, invalid BlockState: {}", ConfigHolder.INSTANCE.machines.replaceMinedBlocksWith);
+            return Blocks.COBBLESTONE.defaultBlockState();
         }
-
-        return oreReplacementBlock;
     }
 
     /**
@@ -215,8 +211,7 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder{
                 }
                 // When we are here we have an ore to mine! I'm glad we aren't threaded
                 if (!blocksToMine.isEmpty() & blockState.is(CustomTags.ORE_BLOCKS)) {
-                    LootContext.Builder builder = new LootContext.Builder(serverLevel)
-                            .withRandom(serverLevel.random)
+                    LootParams.Builder builder = new LootParams.Builder(serverLevel)
                             .withParameter(LootContextParams.BLOCK_STATE, blockState)
                             .withParameter(LootContextParams.ORIGIN, Vec3.atLowerCornerOf(blocksToMine.getFirst()))
                             .withParameter(LootContextParams.TOOL, getPickaxeTool());
@@ -287,7 +282,7 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder{
      * @param blockState  the {@link BlockState} of the block being mined
      */
     // todo implement small ores
-    protected void getSmallOreBlockDrops(NonNullList<ItemStack> blockDrops, BlockState blockState, LootContext.Builder builder) {
+    protected void getSmallOreBlockDrops(NonNullList<ItemStack> blockDrops, BlockState blockState, LootParams.Builder builder) {
         /*small ores
             if orePrefix of block in blockPos is small
                 applyTieredHammerNoRandomDrops...
@@ -313,7 +308,7 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder{
      * @param blockDrops  the List of items to fill after the operation
      * @param blockState  the {@link BlockState} of the block being mined
      */
-    protected void getRegularBlockDrops(NonNullList<ItemStack> blockDrops, BlockState blockState, LootContext.Builder builder) {
+    protected void getRegularBlockDrops(NonNullList<ItemStack> blockDrops, BlockState blockState, LootParams.Builder builder) {
         blockDrops.addAll(blockState.getDrops(builder));
     }
 
@@ -321,7 +316,7 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder{
         return 0;
     }
 
-    protected boolean doPostProcessing(NonNullList<ItemStack> blockDrops, BlockState blockState, LootContext.Builder builder) {
+    protected boolean doPostProcessing(NonNullList<ItemStack> blockDrops, BlockState blockState, LootParams.Builder builder) {
         ItemStack oreDrop = blockDrops.get(0);
 
         // create dummy recipe handler
@@ -349,7 +344,7 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder{
         return false;
     }
 
-    protected void dropPostProcessing(NonNullList<ItemStack> blockDrops, List<ItemStack> outputs, BlockState blockState, LootContext.Builder builder) {
+    protected void dropPostProcessing(NonNullList<ItemStack> blockDrops, List<ItemStack> outputs, BlockState blockState, LootParams.Builder builder) {
         blockDrops.addAll(outputs);
     }
 
@@ -359,7 +354,7 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder{
      * @param blockDrops  the List of items to fill after the operation
      * @param blockState  the {@link BlockState} of the block being mined
      */
-    protected void getSilkTouchDrops(NonNullList<ItemStack> blockDrops, BlockState blockState, LootContext.Builder builder) {
+    protected void getSilkTouchDrops(NonNullList<ItemStack> blockDrops, BlockState blockState, LootParams.Builder builder) {
         blockDrops.add(new ItemStack(blockState.getBlock()));
     }
 
@@ -385,7 +380,7 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder{
         if (transfer != null) {
             if (GTTransferUtils.addItemsToItemHandler(transfer, true, blockDrops)) {
                 GTTransferUtils.addItemsToItemHandler(transfer, false, blockDrops);
-                world.setBlock(blocksToMine.getFirst(), oreReplacementBlock, 3);
+                world.setBlock(blocksToMine.getFirst(), findMiningReplacementBlock(world), 3);
                 mineX = blocksToMine.getFirst().getX();
                 mineZ = blocksToMine.getFirst().getZ();
                 mineY = blocksToMine.getFirst().getY();

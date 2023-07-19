@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.common.machine.storage;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.UITemplate;
 import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
@@ -14,7 +13,6 @@ import com.gregtechceu.gtceu.api.machine.feature.*;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.syncdata.RequireRerender;
 import com.lowdragmc.lowdraglib.gui.editor.ColorPattern;
-import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.gui.widget.*;
 import com.lowdragmc.lowdraglib.misc.FluidStorage;
@@ -213,9 +211,9 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
                         ItemStack remainingStack = FluidTransferHelper.tryFillContainer(currentStack, fluidTank, Integer.MAX_VALUE, null, true).getResult();
                         currentStack.shrink(1);
                         SoundEvent soundevent = FluidHelper.getFillSound(initialFluid);
-                        player.level.playSound(null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, soundevent, SoundSource.BLOCKS, 1.0F, 1.0F);
+                        player.level().playSound(null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, soundevent, SoundSource.BLOCKS, 1.0F, 1.0F);
                         if (!remainingStack.isEmpty() && !player.addItem(remainingStack)) {
-                            Block.popResource(player.getLevel(), player.getOnPos(), remainingStack);
+                            Block.popResource(player.level(), player.getOnPos(), remainingStack);
                         }
                         return InteractionResult.SUCCESS;
                     }
@@ -226,9 +224,9 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
                     ItemStack remainingStack = FluidTransferHelper.tryEmptyContainer(currentStack, fluidTank, Integer.MAX_VALUE, null, true).getResult();
                     currentStack.shrink(1);
                     SoundEvent soundevent = FluidHelper.getEmptySound(fluidTank.getFluid());
-                    player.level.playSound(null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, soundevent, SoundSource.BLOCKS, 1.0F, 1.0F);
+                    player.level().playSound(null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, soundevent, SoundSource.BLOCKS, 1.0F, 1.0F);
                     if (!remainingStack.isEmpty() && !player.getInventory().add(remainingStack)) {
-                        Block.popResource(player.getLevel(), player.getOnPos(), remainingStack);
+                        Block.popResource(player.level(), player.getOnPos(), remainingStack);
                     }
                 }
                 return InteractionResult.SUCCESS;

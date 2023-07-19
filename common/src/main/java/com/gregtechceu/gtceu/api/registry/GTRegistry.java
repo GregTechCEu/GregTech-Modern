@@ -171,7 +171,7 @@ public abstract class GTRegistry<K, V> implements Iterable<V> {
 
         @Override
         public Codec<V> codec() {
-            return Codec.STRING.flatXmap(str -> Optional.ofNullable(this.get(str)).map(DataResult::success).orElseGet(() -> DataResult.error("Unknown registry key in " + this.registryName + ": " + str)), obj -> Optional.ofNullable(this.getKey(obj)).map(DataResult::success).orElseGet(() -> DataResult.error("Unknown registry element in " + this.registryName + ": " + obj)));
+            return Codec.STRING.flatXmap(str -> Optional.ofNullable(this.get(str)).map(DataResult::success).orElseGet(() -> DataResult.error(() -> "Unknown registry key in " + this.registryName + ": " + str)), obj -> Optional.ofNullable(this.getKey(obj)).map(DataResult::success).orElseGet(() -> DataResult.error(() -> "Unknown registry element in " + this.registryName + ": " + obj)));
         }
     }
 
@@ -212,7 +212,7 @@ public abstract class GTRegistry<K, V> implements Iterable<V> {
 
         @Override
         public Codec<V> codec() {
-            return ResourceLocation.CODEC.flatXmap(rl -> Optional.ofNullable(this.get(rl)).map(DataResult::success).orElseGet(() -> DataResult.error("Unknown registry key in " + this.registryName + ": " + rl)), obj -> Optional.ofNullable(this.getKey(obj)).map(DataResult::success).orElseGet(() -> DataResult.error("Unknown registry element in " + this.registryName + ": " + obj)));
+            return ResourceLocation.CODEC.flatXmap(rl -> Optional.ofNullable(this.get(rl)).map(DataResult::success).orElseGet(() -> DataResult.error(() -> "Unknown registry key in " + this.registryName + ": " + rl)), obj -> Optional.ofNullable(this.getKey(obj)).map(DataResult::success).orElseGet(() -> DataResult.error(() -> "Unknown registry element in " + this.registryName + ": " + obj)));
         }
     }
 }

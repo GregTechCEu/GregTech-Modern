@@ -16,6 +16,7 @@ import com.lowdragmc.lowdraglib.utils.TrackedDummyWorld;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
@@ -64,13 +65,13 @@ public interface IFancyUIMachine extends IUIMachine, IFancyUIProvider {
             SceneWidget sceneWidget = new SceneWidget(0, 0, 100, 100, world) {
                 @Override
                 @Environment(EnvType.CLIENT)
-                public void drawInBackground(@NotNull PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+                public void drawInBackground(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
                     // AUTO ROTATION
                     if (renderer != null) {
                         this.rotationPitch = (partialTicks + getGui().getTickCount()) * 2;
                         renderer.setCameraLookAt(this.center, 0.1f, Math.toRadians(this.rotationPitch), Math.toRadians(this.rotationYaw));
                     }
-                    super.drawInBackground(matrixStack, mouseX, mouseY, partialTicks);
+                    super.drawInBackground(graphics, mouseX, mouseY, partialTicks);
                 }
             };
             sceneWidget.useOrtho(true)

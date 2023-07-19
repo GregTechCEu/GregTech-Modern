@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -32,7 +33,7 @@ public class SizedIngredient extends Ingredient {
     }
 
     protected SizedIngredient(String tag, int amount) {
-        this(Ingredient.of(TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation(tag.toLowerCase()))), amount);
+        this(Ingredient.of(TagKey.create(Registries.ITEM, new ResourceLocation(tag.toLowerCase()))), amount);
         this.tag = tag;
     }
 

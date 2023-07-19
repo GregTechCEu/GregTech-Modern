@@ -20,6 +20,7 @@ import lombok.Getter;
 import lombok.Setter;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -94,43 +95,43 @@ public class ConfiguratorPanel extends WidgetGroup {
 
     @Override
     @Environment(EnvType.CLIENT)
-    protected void drawWidgetsBackground(@Nonnull PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
+    protected void drawWidgetsBackground(@Nonnull GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
         for (Widget widget : widgets) {
             if (widget.isVisible() && widget != expanded) {
                 RenderSystem.setShaderColor(1, 1, 1, 1);
                 RenderSystem.enableBlend();
                 if (widget.inAnimate()) {
-                    widget.getAnimation().drawInBackground(poseStack, mouseX, mouseY, partialTicks);
+                    widget.getAnimation().drawInBackground(graphics, mouseX, mouseY, partialTicks);
                 } else {
-                    widget.drawInBackground(poseStack, mouseX, mouseY, partialTicks);
+                    widget.drawInBackground(graphics, mouseX, mouseY, partialTicks);
                 }
             }
         }
         if (expanded != null && expanded.isVisible()) {
-            poseStack.pushPose();
-            poseStack.translate(0, 0, 600);
+            graphics.pose().pushPose();
+            graphics.pose().translate(0, 0, 600);
             RenderSystem.setShaderColor(1, 1, 1, 1);
             RenderSystem.enableBlend();
             if (expanded.inAnimate()) {
-                expanded.getAnimation().drawInBackground(poseStack, mouseX, mouseY, partialTicks);
+                expanded.getAnimation().drawInBackground(graphics, mouseX, mouseY, partialTicks);
             } else {
-                expanded.drawInBackground(poseStack, mouseX, mouseY, partialTicks);
+                expanded.drawInBackground(graphics, mouseX, mouseY, partialTicks);
             }
-            poseStack.popPose();
+            graphics.pose().popPose();
         }
     }
 
     @Override
     @Environment(EnvType.CLIENT)
-    protected void drawWidgetsForeground(@NotNull PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
+    protected void drawWidgetsForeground(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
         for (Widget widget : widgets) {
             if (widget.isVisible() && widget != expanded) {
                 RenderSystem.setShaderColor(1, 1, 1, 1);
                 RenderSystem.enableBlend();
                 if (widget.inAnimate()) {
-                    widget.getAnimation().drawInForeground(poseStack, mouseX, mouseY, partialTicks);
+                    widget.getAnimation().drawInForeground(graphics, mouseX, mouseY, partialTicks);
                 } else {
-                    widget.drawInForeground(poseStack, mouseX, mouseY, partialTicks);
+                    widget.drawInForeground(graphics, mouseX, mouseY, partialTicks);
                 }
             }
         }
@@ -138,9 +139,9 @@ public class ConfiguratorPanel extends WidgetGroup {
             RenderSystem.setShaderColor(1, 1, 1, 1);
             RenderSystem.enableBlend();
             if (expanded.inAnimate()) {
-                expanded.getAnimation().drawInForeground(poseStack, mouseX, mouseY, partialTicks);
+                expanded.getAnimation().drawInForeground(graphics, mouseX, mouseY, partialTicks);
             } else {
-                expanded.drawInForeground(poseStack, mouseX, mouseY, partialTicks);
+                expanded.drawInForeground(graphics, mouseX, mouseY, partialTicks);
             }
         }
     }
@@ -268,24 +269,24 @@ public class ConfiguratorPanel extends WidgetGroup {
 
         @Override
         @Environment(EnvType.CLIENT)
-        public void drawInBackground(@NotNull PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
-            drawBackgroundTexture(poseStack, mouseX, mouseY);
+        public void drawInBackground(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+            drawBackgroundTexture(graphics, mouseX, mouseY);
             var position = getPosition();
             var size = getSize();
             if (inAnimate()) {
-                RenderUtils.useScissor(poseStack, position.x + border - 1, position.y + border - 1, size.width - (border - 1) * 2, size.height - (border - 1) * 2, () -> {
-                    drawWidgetsBackground(poseStack, mouseX, mouseY, partialTicks);
-                });
+                graphics.enableScissor(position.x + border - 1, position.y + border - 1, position.x + border - 1 + size.width - (border - 1) * 2, position.y + border - 1 + size.height - (border - 1) * 2);
+                drawWidgetsBackground(graphics, mouseX, mouseY, partialTicks);
+                graphics.disableScissor();
             } else {
-                drawWidgetsBackground(poseStack, mouseX, mouseY, partialTicks);
+                drawWidgetsBackground(graphics, mouseX, mouseY, partialTicks);
             }
-            configurator.getIcon().draw(poseStack, mouseX, mouseY, position.x + size.width - 20, position.y + 4, 16, 16);
+            configurator.getIcon().draw(graphics, mouseX, mouseY, position.x + size.width - 20, position.y + 4, 16, 16);
         }
 
         @Override
         @Environment(EnvType.CLIENT)
-        public void drawInForeground(@NotNull PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
-            super.drawInForeground(poseStack, mouseX, mouseY, partialTicks);
+        public void drawInForeground(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+            super.drawInForeground(graphics, mouseX, mouseY, partialTicks);
             if (isMouseOver(getPosition().x + getSize().width - 20, getPosition().y + 4, 16, 16, mouseX, mouseY) && gui != null && gui.getModularUIGui() != null) {
                 gui.getModularUIGui().setHoverTooltip(configurator.getTooltips(), ItemStack.EMPTY, null, null);
             }

@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.api.recipe.ingredient.NBTIngredient;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.utils.Builder;
 import com.lowdragmc.lowdraglib.utils.NBTToJsonConverter;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -128,7 +128,7 @@ public class ShapedRecipeBuilder extends Builder<Ingredient, ShapedRecipeBuilder
             throw new IllegalArgumentException(id + ": output items is empty");
         } else {
             JsonObject result = new JsonObject();
-            result.addProperty("item", Registry.ITEM.getKey(output.getItem()).toString());
+            result.addProperty("item", BuiltInRegistries.ITEM.getKey(output.getItem()).toString());
             if (output.getCount() > 1) {
                 result.addProperty("count", output.getCount());
             }
@@ -140,7 +140,7 @@ public class ShapedRecipeBuilder extends Builder<Ingredient, ShapedRecipeBuilder
     }
 
     protected ResourceLocation defaultId() {
-        return Registry.ITEM.getKey(output.getItem());
+        return BuiltInRegistries.ITEM.getKey(output.getItem());
     }
 
     public void save(Consumer<FinishedRecipe> consumer) {

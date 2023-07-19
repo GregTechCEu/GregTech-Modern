@@ -32,6 +32,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.BlockHitResult;
@@ -185,11 +186,11 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
     }
 
     @Override
-    public List<ItemStack> getDrops(BlockState pState, LootContext.Builder pBuilder) {
-        LootContext context = pBuilder.withParameter(LootContextParams.BLOCK_STATE, pState).create(LootContextParamSets.BLOCK);
+    public List<ItemStack> getDrops(BlockState state, LootParams.Builder builder) {
+        var context = builder.withParameter(LootContextParams.BLOCK_STATE, state).create(LootContextParamSets.BLOCK);
         Entity entity = context.getParamOrNull(LootContextParams.THIS_ENTITY);
         BlockEntity tileEntity = context.getParamOrNull(LootContextParams.BLOCK_ENTITY);
-        var drops = super.getDrops(pState, pBuilder);
+        var drops = super.getDrops(state, builder);
         if (tileEntity instanceof IMachineBlockEntity holder) {
             var machine = holder.getMetaMachine();
             if (machine instanceof IMachineModifyDrops machineModifyDrops && entity instanceof Player) {

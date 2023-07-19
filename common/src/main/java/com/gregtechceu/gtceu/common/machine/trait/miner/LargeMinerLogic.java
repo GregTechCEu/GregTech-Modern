@@ -16,6 +16,7 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
@@ -107,13 +108,14 @@ public class LargeMinerLogic extends MinerLogic {
     }
 
     @Override
-    protected void dropPostProcessing(NonNullList<ItemStack> blockDrops, List<ItemStack> outputs, BlockState blockState, LootContext.Builder builder) {
+    protected void dropPostProcessing(NonNullList<ItemStack> blockDrops, List<ItemStack> outputs, BlockState blockState, LootParams.Builder builder) {
         for (ItemStack outputStack : outputs) {
             if (ChemicalHelper.getPrefix(outputStack.getItem()) == TagPrefix.crushed) {
                 if (getDropCountMultiplier() > 0) {
                     ItemStack fortunePick = pickaxeTool.copy();
                     fortunePick.enchant(Enchantments.BLOCK_FORTUNE, getDropCountMultiplier());
-                    outputStack = ApplyBonusCount.addUniformBonusCount(Enchantments.BLOCK_FORTUNE).build().apply(outputStack, builder.withParameter(LootContextParams.TOOL, fortunePick).create(LootContextParamSets.BLOCK));
+                    outputStack = ApplyBonusCount.addUniformBonusCount(Enchantments.BLOCK_FORTUNE).build().apply(outputStack,
+                            new LootContext.Builder(builder.withParameter(LootContextParams.TOOL, fortunePick).create(LootContextParamSets.BLOCK)).create(null));
                 }
             }
             blockDrops.add(outputStack);
@@ -121,7 +123,7 @@ public class LargeMinerLogic extends MinerLogic {
     }
 
     @Override
-    protected boolean doPostProcessing(NonNullList<ItemStack> blockDrops, BlockState blockState, LootContext.Builder builder) {
+    protected boolean doPostProcessing(NonNullList<ItemStack> blockDrops, BlockState blockState, LootParams.Builder builder) {
         if (!super.doPostProcessing(blockDrops, blockState, builder) && getDropCountMultiplier() > 0) {
             for (ItemStack drop : blockDrops) {
                 drop.setCount(drop.getCount() * getDropCountMultiplier());

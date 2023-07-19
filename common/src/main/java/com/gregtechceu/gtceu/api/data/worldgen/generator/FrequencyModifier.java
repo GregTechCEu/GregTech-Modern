@@ -6,6 +6,7 @@ import com.mojang.serialization.Codec;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
@@ -24,7 +25,7 @@ import java.util.stream.Stream;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class FrequencyModifier extends PlacementModifier {
-    public static final PlacementModifierType<FrequencyModifier> FREQUENCY_MODIFIER = GTRegistries.register(Registry.PLACEMENT_MODIFIERS, GTCEu.id("frequency"), () -> FrequencyModifier.CODEC);
+    public static final PlacementModifierType<FrequencyModifier> FREQUENCY_MODIFIER = GTRegistries.register(BuiltInRegistries.PLACEMENT_MODIFIER_TYPE, GTCEu.id("frequency"), () -> FrequencyModifier.CODEC);
 
     public static final Codec<FrequencyModifier> CODEC = ExtraCodecs.POSITIVE_FLOAT.fieldOf("chance").xmap(FrequencyModifier::new, (modifier) -> modifier.frequency).codec();
 

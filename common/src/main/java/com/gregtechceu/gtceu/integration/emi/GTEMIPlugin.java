@@ -10,7 +10,7 @@ import dev.emi.emi.api.EmiPlugin;
 import dev.emi.emi.api.EmiRegistry;
 import dev.emi.emi.api.recipe.VanillaEmiRecipeCategories;
 import dev.emi.emi.api.stack.EmiStack;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.crafting.RecipeType;
 
 /**
@@ -23,7 +23,7 @@ public class GTEMIPlugin implements EmiPlugin {
     @Override
     public void register(EmiRegistry registry) {
         registry.addCategory(MultiblockInfoEmiCategory.CATEGORY);
-        for (RecipeType<?> recipeType : Registry.RECIPE_TYPE) {
+        for (RecipeType<?> recipeType : BuiltInRegistries.RECIPE_TYPE) {
             if (recipeType instanceof GTRecipeType gtRecipeType) {
                 registry.addCategory(GTRecipeTypeEmiCategory.CATEGORIES.apply(gtRecipeType));
             }

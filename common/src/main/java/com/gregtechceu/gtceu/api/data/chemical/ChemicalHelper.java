@@ -8,7 +8,8 @@ import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import net.minecraft.core.Holder;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -165,7 +166,7 @@ public class ChemicalHelper {
         return UNIFICATION_ENTRY_ITEM.computeIfAbsent(unificationEntry, entry -> {
             var items = new ArrayList<ItemLike>();
             for (TagKey<Item> tag : getTags(unificationEntry.tagPrefix, unificationEntry.material)) {
-                for (Holder<Item> itemHolder : Registry.ITEM.getTagOrEmpty(tag)) {
+                for (Holder<Item> itemHolder : BuiltInRegistries.ITEM.getTagOrEmpty(tag)) {
                     items.add(itemHolder.value());
                 }
             }
@@ -196,8 +197,8 @@ public class ChemicalHelper {
     public static List<Block> getBlocks(UnificationEntry unificationEntry) {
         return UNIFICATION_ENTRY_BLOCK.computeIfAbsent(unificationEntry, entry -> {
             var blocks = new ArrayList<Block>();
-            for (TagKey<Block> tag : Arrays.stream(getTags(unificationEntry.tagPrefix, unificationEntry.material)).map(itemTagKey -> TagKey.create(Registry.BLOCK_REGISTRY, itemTagKey.location())).toList()) {
-                for (Holder<Block> itemHolder : Registry.BLOCK.getTagOrEmpty(tag)) {
+            for (TagKey<Block> tag : Arrays.stream(getTags(unificationEntry.tagPrefix, unificationEntry.material)).map(itemTagKey -> TagKey.create(Registries.BLOCK, itemTagKey.location())).toList()) {
+                for (Holder<Block> itemHolder : BuiltInRegistries.BLOCK.getTagOrEmpty(tag)) {
                     blocks.add(itemHolder.value());
                 }
             }

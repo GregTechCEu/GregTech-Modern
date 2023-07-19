@@ -16,11 +16,8 @@ import com.gregtechceu.gtceu.api.item.tool.MaterialToolTier;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
-import com.gregtechceu.gtceu.integration.kjs.helpers.MaterialStackWrapper;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
-import dev.latvian.mods.rhino.util.HideFromJS;
-import dev.latvian.mods.rhino.util.RemapPrefixForJS;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
@@ -373,7 +370,6 @@ public class Material implements Comparable<Material> {
     /**
      * @since GTCEu 2.0.0
      */
-    @RemapPrefixForJS("kjs$")
     public static class Builder extends BuilderBase<Material> {
 
         private final MaterialInfo materialInfo;
@@ -384,7 +380,6 @@ public class Material implements Comparable<Material> {
          * The temporary list of components for this Material.
          */
         private List<MaterialStack> composition = new ArrayList<>();
-        private List<MaterialStackWrapper> compositionSupplier;
 
         /*
          * Temporary value to use to determine how to calculate default RGB
@@ -731,7 +726,6 @@ public class Material implements Comparable<Material> {
             return this;
         }
 
-        @HideFromJS
         public Builder components(Object... components) {
             Preconditions.checkArgument(
                     components.length % 2 == 0,
@@ -751,23 +745,11 @@ public class Material implements Comparable<Material> {
             return this;
         }
 
-        /**
-         * Only use in KJS
-         * @param components an array of MaterialStackWrapper to unwrap on registration
-         * @return this builder
-         */
-        public Builder kjs$components(MaterialStackWrapper... components) {
-            compositionSupplier = Arrays.asList(components);
-            return this;
-        }
-
-        @HideFromJS
         public Builder componentStacks(MaterialStack... components) {
             composition = Arrays.asList(components);
             return this;
         }
 
-        @HideFromJS
         public Builder componentStacks(ImmutableList<MaterialStack> components) {
             composition = components;
             return this;
@@ -986,9 +968,8 @@ public class Material implements Comparable<Material> {
             return this;
         }
 
-        @HideFromJS
         public Material buildAndRegister() {
-            materialInfo.componentList = composition.isEmpty() && this.compositionSupplier != null ? ImmutableList.copyOf(compositionSupplier.stream().map(MaterialStackWrapper::toMatStack).toArray(MaterialStack[]::new)) : ImmutableList.copyOf(composition);
+            materialInfo.componentList = ImmutableList.copyOf(composition);
             var mat = new Material(materialInfo, properties, flags);
             materialInfo.verifyInfo(properties, averageRGB);
             mat.registerMaterial();

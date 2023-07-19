@@ -1,15 +1,12 @@
 package com.gregtechceu.gtceu.api.recipe.content;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.UnmodifiableIterator;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.mojang.serialization.JsonOps;
 import net.minecraft.core.Registry;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -17,7 +14,6 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.StateHolder;
 import net.minecraft.world.level.block.state.properties.Property;
 
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
@@ -30,7 +26,7 @@ public class SerializerBlockState implements IContentSerializer<BlockState> {
 
     @Override
     public void toNetwork(FriendlyByteBuf buf, BlockState content) {
-        buf.writeVarInt(Registry.BLOCK.getId(content.getBlock()));
+        buf.writeVarInt(BuiltInRegistries.BLOCK.getId(content.getBlock()));
         ImmutableMap<Property<?>, Comparable<?>> values = content.getValues();
         if (!values.isEmpty()) {
             buf.writeBoolean(true);
@@ -46,7 +42,7 @@ public class SerializerBlockState implements IContentSerializer<BlockState> {
 
     @Override
     public BlockState fromNetwork(FriendlyByteBuf buf) {
-        Block block = Registry.BLOCK.byId(buf.readVarInt());
+        Block block = BuiltInRegistries.BLOCK.byId(buf.readVarInt());
         BlockState blockState = block.defaultBlockState();
         if (buf.readBoolean()) {
             StateDefinition<Block, BlockState> stateDefinition = block.getStateDefinition();

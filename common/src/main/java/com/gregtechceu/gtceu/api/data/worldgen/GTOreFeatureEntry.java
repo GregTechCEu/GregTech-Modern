@@ -18,8 +18,8 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.*;
-import net.minecraft.data.BuiltinRegistries;
-import net.minecraft.data.worldgen.features.OreFeatures;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
@@ -59,20 +59,20 @@ public class GTOreFeatureEntry {
     public static final Codec<GTOreFeatureEntry> CODEC = ResourceLocation.CODEC
             .flatXmap(rl -> Optional.ofNullable(ALL.get(rl))
                             .map(DataResult::success)
-                            .orElseGet(() -> DataResult.error("No GTOreFeatureEntry with id " + rl + " registered")),
+                            .orElseGet(() -> DataResult.error(() -> "No GTOreFeatureEntry with id " + rl + " registered")),
                     obj -> Optional.ofNullable(ALL.inverse().get(obj))
                             .map(DataResult::success)
-                            .orElseGet(() -> DataResult.error("GTOreFeatureEntry " + obj + " not registered")));
+                            .orElseGet(() -> DataResult.error(() -> "GTOreFeatureEntry " + obj + " not registered")));
     public static final Codec<GTOreFeatureEntry> FULL_CODEC = RecordCodecBuilder.create(
             instance -> instance.group(
                     Codec.INT.fieldOf("cluster_size").forGetter(ft -> ft.clusterSize),
                     Codec.floatRange(0.0F, 1.0F).fieldOf("density").forGetter(ft -> ft.density),
                     Codec.INT.fieldOf("weight").forGetter(ft -> ft.weight),
                     IWorldGenLayer.CODEC.fieldOf("layer").forGetter(ft -> ft.layer),
-                    RegistryCodecs.homogeneousList(Registry.DIMENSION_TYPE_REGISTRY).fieldOf("dimension_filter").forGetter(ft -> ft.dimensionFilter),
+                    RegistryCodecs.homogeneousList(Registries.DIMENSION_TYPE).fieldOf("dimension_filter").forGetter(ft -> ft.dimensionFilter),
                     HeightRangePlacement.CODEC.fieldOf("height_range").forGetter(ft -> ft.range),
                     Codec.floatRange(0.0F, 1.0F).fieldOf("discard_chance_on_air_exposure").forGetter(ft -> ft.discardChanceOnAirExposure),
-                    RegistryCodecs.homogeneousList(Registry.BIOME_REGISTRY).fieldOf("biomes").forGetter(ext -> ext.biomes),
+                    RegistryCodecs.homogeneousList(Registries.BIOME).fieldOf("biomes").forGetter(ext -> ext.biomes),
                     BiomeWeightModifier.CODEC.optionalFieldOf("weight_modifier", null).forGetter(ext -> ext.biomeWeightModifier),
                     VeinGenerator.DIRECT_CODEC.fieldOf("generator").forGetter(ft -> ft.veinGenerator)
             ).apply(instance, GTOreFeatureEntry::new)
@@ -121,7 +121,7 @@ public class GTOreFeatureEntry {
     }
 
     public GTOreFeatureEntry biomes(TagKey<Biome> biomes) {
-        this.biomes = BuiltinRegistries.BIOME.getOrCreateTag(biomes);
+        this.biomes = RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY).lookupOrThrow(Registries.BIOME).getOrThrow(biomes);
         return this;
     }
 
@@ -159,10 +159,10 @@ public class GTOreFeatureEntry {
         public static final Codec<Codec<? extends VeinGenerator>> REGISTRY_CODEC = ResourceLocation.CODEC
                 .flatXmap(rl -> Optional.ofNullable(WorldGeneratorUtils.VEIN_GENERATORS.get(rl))
                                 .map(DataResult::success)
-                                .orElseGet(() -> DataResult.error("No VeinGenerator with id " + rl + " registered")),
+                                .orElseGet(() -> DataResult.error(() -> "No VeinGenerator with id " + rl + " registered")),
                         obj -> Optional.ofNullable(WorldGeneratorUtils.VEIN_GENERATORS.inverse().get(obj))
                                 .map(DataResult::success)
-                                .orElseGet(() -> DataResult.error("VeinGenerator " + obj + " not registered")));
+                                .orElseGet(() -> DataResult.error(() -> "VeinGenerator " + obj + " not registered")));
         public static final Codec<VeinGenerator> DIRECT_CODEC = REGISTRY_CODEC.dispatchStable(VeinGenerator::codec, Function.identity());
 
         protected GTOreFeatureEntry entry;
@@ -224,9 +224,9 @@ public class GTOreFeatureEntry {
 
     public static class StandardVeinGenerator extends VeinGenerator {
         public static final Codec<StandardVeinGenerator> CODEC_SEPARATE = RecordCodecBuilder.create(instance -> instance.group(
-                Registry.BLOCK.byNameCodec().fieldOf("block").forGetter(ext -> ext.block.get()),
-                Registry.BLOCK.byNameCodec().fieldOf("deep_block").forGetter(ext -> ext.deepBlock.get()),
-                Registry.BLOCK.byNameCodec().fieldOf("nether_block").forGetter(ext -> ext.netherBlock.get())
+                BuiltInRegistries.BLOCK.byNameCodec().fieldOf("block").forGetter(ext -> ext.block.get()),
+                BuiltInRegistries.BLOCK.byNameCodec().fieldOf("deep_block").forGetter(ext -> ext.deepBlock.get()),
+                BuiltInRegistries.BLOCK.byNameCodec().fieldOf("nether_block").forGetter(ext -> ext.netherBlock.get())
         ).apply(instance, StandardVeinGenerator::new));
         public static final Codec<StandardVeinGenerator> CODEC_LIST = RecordCodecBuilder.create(instance -> instance.group(
                 Codec.either(OreConfiguration.TargetBlockState.CODEC.listOf(), GTRegistries.MATERIALS.codec()).fieldOf("targets").forGetter(ext -> ext.blocks)
@@ -274,15 +274,15 @@ public class GTOreFeatureEntry {
             // if (this.blocks.left().isPresent() && !this.blocks.left().get().isEmpty()) return this;
             List<OreConfiguration.TargetBlockState> targetStates = new ArrayList<>();
             if (this.block != null) {
-                targetStates.add(OreConfiguration.target(OreFeatures.STONE_ORE_REPLACEABLES, this.block.get().defaultBlockState()));
+                targetStates.add(OreConfiguration.target(WorldGenLayers.STONE.getTarget(), this.block.get().defaultBlockState()));
             }
 
             if (this.deepBlock != null) {
-                targetStates.add(OreConfiguration.target(OreFeatures.DEEPSLATE_ORE_REPLACEABLES, this.deepBlock.get().defaultBlockState()));
+                targetStates.add(OreConfiguration.target(WorldGenLayers.DEEPSLATE.getTarget(), this.deepBlock.get().defaultBlockState()));
             }
 
             if (this.netherBlock != null) {
-                targetStates.add(OreConfiguration.target(OreFeatures.NETHER_ORE_REPLACEABLES, this.netherBlock.get().defaultBlockState()));
+                targetStates.add(OreConfiguration.target(WorldGenLayers.NETHERRACK.getTarget(), this.netherBlock.get().defaultBlockState()));
             }
 
             this.blocks = Either.left(targetStates);

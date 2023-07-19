@@ -8,8 +8,7 @@ import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
-import net.minecraft.core.Registry;
-import net.minecraft.data.BuiltinRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
@@ -18,7 +17,7 @@ import net.minecraft.world.level.levelgen.placement.PlacementFilter;
 import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
 
 public class BiomeFilter extends PlacementFilter {
-    public static final PlacementModifierType<BiomeFilter> BIOME_FILTER = GTRegistries.register(Registry.PLACEMENT_MODIFIERS, GTCEu.id("biome"), () -> BiomeFilter.CODEC);
+    public static final PlacementModifierType<BiomeFilter> BIOME_FILTER = GTRegistries.register(BuiltInRegistries.PLACEMENT_MODIFIER_TYPE, GTCEu.id("biome"), () -> BiomeFilter.CODEC);
 
     public static final BiomeFilter INSTANCE = new BiomeFilter();
     public static final Codec<BiomeFilter> CODEC = Codec.unit(() -> INSTANCE);

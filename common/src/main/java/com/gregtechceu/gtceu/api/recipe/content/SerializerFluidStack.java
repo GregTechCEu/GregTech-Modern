@@ -7,6 +7,7 @@ import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.TagParser;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -38,7 +39,7 @@ public class SerializerFluidStack implements IContentSerializer<FluidStack> {
             var jObj = json.getAsJsonObject();
             var fluid = new ResourceLocation(jObj.get("fluid").getAsString());
             var amount = jObj.get("amount").getAsLong();
-            var fluidStack = FluidStack.create(Objects.requireNonNull(Registry.FLUID.get(fluid)), amount);
+            var fluidStack = FluidStack.create(Objects.requireNonNull(BuiltInRegistries.FLUID.get(fluid)), amount);
             if (jObj.has("nbt")) {
                 try {
                     fluidStack.setTag(TagParser.parseTag(jObj.get("nbt").getAsString()));
@@ -56,7 +57,7 @@ public class SerializerFluidStack implements IContentSerializer<FluidStack> {
     @Override
     public JsonElement toJson(FluidStack content) {
         var json = new JsonObject();
-        json.addProperty("fluid", Objects.requireNonNull(Registry.FLUID.getKey(content.getFluid())).toString());
+        json.addProperty("fluid", Objects.requireNonNull(BuiltInRegistries.FLUID.getKey(content.getFluid())).toString());
         json.addProperty("amount", content.getAmount() * FluidHelper.getBucket() / 1000);
         if (content.hasTag())
             json.addProperty("nbt", content.getTag().toString());

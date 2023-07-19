@@ -78,7 +78,7 @@ public abstract class SoundEntry {
 
     public void playFrom(Entity entity, float volume, float pitch) {
         if (!entity.isSilent())
-            play(entity.level, null, entity.blockPosition(), volume, pitch);
+            play(entity.level(), null, entity.blockPosition(), volume, pitch);
     }
 
     public void play(Level world, Player entity, Vec3i pos, float volume, float pitch) {

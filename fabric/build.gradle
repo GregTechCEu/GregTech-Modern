@@ -90,6 +90,9 @@ dependencies {
 
     // Create - dependencies are added transitively
 //    modImplementation fabric.createFabric
+    // TODO wait for fabric create
+    modCompileOnly("com.simibubi.create:create-${libs.versions.minecraft.get()}:${forge.versions.createForge.get()}:all") { transitive = false }
+    modCompileOnly forge.flywheel
 
     // Development QOL
     modCompileOnly fabric.lazydfu

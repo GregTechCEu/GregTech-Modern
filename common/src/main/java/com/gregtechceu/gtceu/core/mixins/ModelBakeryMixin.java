@@ -20,22 +20,22 @@ import java.util.LinkedHashSet;
 @Mixin(value = ModelBakery.class, priority = 999)
 public abstract class ModelBakeryMixin {
 
-    @Redirect(method = "<init>", at = @At(value = "INVOKE", target = "Lcom/google/common/collect/Sets;newLinkedHashSet()Ljava/util/LinkedHashSet;", ordinal = 0))
-    private LinkedHashSet<Pair<String, String>> gtceu$injectModelBakery() { // Have to use a redirect here cuz it's to constructor and mixin doesn't like that much
-        for (Material material : GTRegistries.MATERIALS.values()) {
-            MaterialIconSet iconSet = material.getMaterialIconSet();
-            if (material.hasProperty(PropertyKey.FLUID)) {
-                FluidProperty fluid = material.getProperty(PropertyKey.FLUID);
-                if (fluid.getStillTexture() == null) {
-                    ResourceLocation foundTexture = MaterialIconType.fluid.getBlockTexturePath(iconSet, false);
-                    fluid.setStillTexture(foundTexture);
-                }
-                if (fluid.getFlowTexture() == null) {
-                    fluid.setFlowTexture(fluid.getStillTexture());
-                }
-                MixinHelpers.addFluidTexture(material, fluid);
-            }
-        }
-        return Sets.newLinkedHashSet();
-    }
+//    @Redirect(method = "<init>", at = @At(value = "INVOKE", target = "Lcom/google/common/collect/Sets;newLinkedHashSet()Ljava/util/LinkedHashSet;", ordinal = 0))
+//    private LinkedHashSet<Pair<String, String>> gtceu$injectModelBakery() { // Have to use a redirect here cuz it's to constructor and mixin doesn't like that much
+//        for (Material material : GTRegistries.MATERIALS.values()) {
+//            MaterialIconSet iconSet = material.getMaterialIconSet();
+//            if (material.hasProperty(PropertyKey.FLUID)) {
+//                FluidProperty fluid = material.getProperty(PropertyKey.FLUID);
+//                if (fluid.getStillTexture() == null) {
+//                    ResourceLocation foundTexture = MaterialIconType.fluid.getBlockTexturePath(iconSet, false);
+//                    fluid.setStillTexture(foundTexture);
+//                }
+//                if (fluid.getFlowTexture() == null) {
+//                    fluid.setFlowTexture(fluid.getStillTexture());
+//                }
+//                MixinHelpers.addFluidTexture(material, fluid);
+//            }
+//        }
+//        return Sets.newLinkedHashSet();
+//    }
 }

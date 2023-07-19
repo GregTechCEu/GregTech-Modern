@@ -373,7 +373,7 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
                         if (!stored.isEmpty()) {
                             var extracted = cache.extractItem(0, Math.min(stored.getCount(), stored.getItem().getMaxStackSize()), false);
                             if (!group.getGui().entityPlayer.addItem(extracted)) {
-                                Block.popResource(group.getGui().entityPlayer.level, group.getGui().entityPlayer.getOnPos(), extracted);
+                                Block.popResource(group.getGui().entityPlayer.level(), group.getGui().entityPlayer.getOnPos(), extracted);
                             }
                         }
                     }

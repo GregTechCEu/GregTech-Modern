@@ -8,6 +8,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 
 import javax.annotation.Nullable;
 
@@ -34,38 +35,38 @@ public class Content {
         return new IGuiTexture() {
             @Override
             @Environment(EnvType.CLIENT)
-            public void draw(PoseStack stack, int mouseX, int mouseY, float x, float y, int width, int height) {
-                drawChance(stack, x, y, width, height);
+            public void draw(GuiGraphics graphics, int mouseX, int mouseY, float x, float y, int width, int height) {
+                drawChance(graphics, x, y, width, height);
                 if (perTick) {
-                    drawTick(stack, x, y, width, height);
+                    drawTick(graphics, x, y, width, height);
                 }
             }
         };
     }
 
     @Environment(EnvType.CLIENT)
-    public void drawChance(PoseStack matrixStack, float x, float y, int width, int height) {
+    public void drawChance(GuiGraphics graphics, float x, float y, int width, int height) {
         if (chance == 1) return;
-        matrixStack.pushPose();
-        matrixStack.translate(0, 0, 400);
-        matrixStack.scale(0.5f, 0.5f, 1);
+        graphics.pose().pushPose();
+        graphics.pose().translate(0, 0, 400);
+        graphics.pose().scale(0.5f, 0.5f, 1);
         String s = chance == 0 ? LocalizationUtils.format("gtceu.gui.content.chance_0_short") : String.format("%.1f", chance * 100) + "%";
         int color = chance == 0 ? 0xff0000 : 0xFFFF00;
         Font fontRenderer = Minecraft.getInstance().font;
-        fontRenderer.drawShadow(matrixStack, s, (x + (width / 3f)) * 2 - fontRenderer.width(s) + 23, (y + (height / 3f) + 6) * 2 - height, color);
-        matrixStack.popPose();
+        graphics.drawString(fontRenderer, s, (int) ((x + (width / 3f)) * 2 - fontRenderer.width(s) + 23), (int) ((y + (height / 3f) + 6) * 2 - height), color, true);
+        graphics.pose().popPose();
     }
 
     @Environment(EnvType.CLIENT)
-    public void drawTick(PoseStack matrixStack, float x, float y, int width, int height) {
-        matrixStack.pushPose();
+    public void drawTick(GuiGraphics graphics, float x, float y, int width, int height) {
+        graphics.pose().pushPose();
         RenderSystem.disableDepthTest();
-        matrixStack.translate(0, 0, 400);
-        matrixStack.scale(0.5f, 0.5f, 1);
+        graphics.pose().translate(0, 0, 400);
+        graphics.pose().scale(0.5f, 0.5f, 1);
         String s = LocalizationUtils.format("gtceu.gui.content.tips.per_tick_short");
         int color = 0xFFFF00;
         Font fontRenderer = Minecraft.getInstance().font;
-        fontRenderer.drawShadow(matrixStack, s, (x + (width / 3f)) * 2 - fontRenderer.width(s) + 23, (y + (height / 3f) + 6) * 2 - height + (chance == 1 ? 0 : 10), color);
-        matrixStack.popPose();
+        graphics.drawString(fontRenderer, s, (int) ((x + (width / 3f)) * 2 - fontRenderer.width(s) + 23), (int) ((y + (height / 3f) + 6) * 2 - height + (chance == 1 ? 0 : 10)), color);
+        graphics.pose().popPose();
     }
 }

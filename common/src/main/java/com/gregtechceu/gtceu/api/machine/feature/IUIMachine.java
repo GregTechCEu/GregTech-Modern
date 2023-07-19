@@ -28,7 +28,7 @@ public interface IUIMachine extends IUIHolder, IMachineFeature {
         } else {
             return InteractionResult.PASS;
         }
-        return InteractionResult.sidedSuccess(player.level.isClientSide);
+        return InteractionResult.sidedSuccess(player.level().isClientSide);
     }
 
     @Override

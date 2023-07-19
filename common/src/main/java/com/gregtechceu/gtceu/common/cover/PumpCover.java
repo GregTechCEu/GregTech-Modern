@@ -107,7 +107,7 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
 
     protected void adjustTransferRate(long amount) {
         amount *= this.bucketMode ? FluidHelper.getBucket() : 1;
-        setTransferRate(Mth.clamp(transferRate + amount, 1, maxFluidTransferRate));
+        setTransferRate((long) Mth.clamp(transferRate + amount, 1, maxFluidTransferRate));
     }
 
     public void setIo(IO io) {

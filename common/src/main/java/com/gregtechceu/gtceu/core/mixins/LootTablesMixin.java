@@ -1,7 +1,5 @@
 package com.gregtechceu.gtceu.core.mixins;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.gson.JsonElement;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
@@ -13,16 +11,12 @@ import com.gregtechceu.gtceu.core.MixinHelpers;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.lowdragmc.lowdraglib.Platform;
-import net.minecraft.data.loot.BlockLoot;
+import net.minecraft.data.loot.BlockLootSubProvider;
+import net.minecraft.data.loot.packs.VanillaBlockLoot;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.storage.loot.IntRange;
-import net.minecraft.world.level.storage.loot.LootPool;
-import net.minecraft.world.level.storage.loot.LootTable;
-import net.minecraft.world.level.storage.loot.LootTables;
+import net.minecraft.world.level.storage.loot.*;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount;
 import net.minecraft.world.level.storage.loot.functions.ApplyExplosionDecay;
@@ -33,18 +27,18 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import java.util.Map;
 
-@Mixin(LootTables.class)
+@Mixin(LootDataManager.class)
 public abstract class LootTablesMixin {
 
-    @Inject(method = "apply(Ljava/util/Map;Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/util/profiling/ProfilerFiller;)V",
-            at = @At(value = "INVOKE", target = "Ljava/util/Map;remove(Ljava/lang/Object;)Ljava/lang/Object;", shift = At.Shift.BEFORE),
-            locals = LocalCapture.CAPTURE_FAILHARD)
-    public void gtceu$injectLootTables(Map<ResourceLocation, JsonElement> object, ResourceManager resourceManager, ProfilerFiller profiler, CallbackInfo ci, ImmutableMap.Builder<ResourceLocation, LootTable> lootTables) {
+    @Inject(method = "apply",
+            at = @At(value = "HEAD"))
+    public void gtceu$injectLootTables(Map<LootDataType<?>, Map<ResourceLocation, ?>> allElements, CallbackInfo ci) {
         if (Platform.isDatagen()) return;
+
+        Map<ResourceLocation, LootTable> lootTables = (Map<ResourceLocation, LootTable>) allElements.get(LootDataType.TABLE);
 
         GTBlocks.MATERIAL_BLOCKS.rowMap().forEach((prefix, map) -> {
             if (TagPrefix.ORES.containsKey(prefix)) {
@@ -58,8 +52,8 @@ public abstract class LootTablesMixin {
                     }
 
                     int oreMultiplier = TagPrefix.ORES.get(prefix).isNether() ? 2 : 1;
-                    LootTable.Builder builder = BlockLoot.createSilkTouchDispatchTable(block,
-                            BlockLoot.applyExplosionDecay(block,
+                    LootTable.Builder builder = BlockLootSubProvider.createSilkTouchDispatchTable(block,
+                            new VanillaBlockLoot().applyExplosionDecay(block,
                                     LootItem.lootTableItem(ChemicalHelper.get(TagPrefix.rawOre, material).getItem())
                                             .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, Math.max(1, material.getProperty(PropertyKey.ORE).getOreMultiplier() * oreMultiplier))))
                                             .apply(ApplyBonusCount.addOreBonusCount(Enchantments.BLOCK_FORTUNE))));
@@ -96,7 +90,7 @@ public abstract class LootTablesMixin {
             ResourceLocation id = machine.getId();
             ResourceLocation lootTableId = new ResourceLocation(id.getNamespace(), "blocks/" + id.getPath());
             ((BlockBehaviourAccessor)block).setDrops(lootTableId);
-            lootTables.put(lootTableId, BlockLoot.createSingleItemTable(block).build());
+            lootTables.put(lootTableId, new VanillaBlockLoot().createSingleItemTable(block).build());
         });
     }
 }

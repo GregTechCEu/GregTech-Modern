@@ -16,6 +16,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import lombok.Getter;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
@@ -127,7 +128,7 @@ public class ProspectingMapWidget extends WidgetGroup implements SearchComponent
     @Override
     public void detectAndSendChanges() {
         var player = gui.entityPlayer;
-        var world = player.level;
+        var world = player.level();
         if (gui.getTickCount() % scanTick == 0 && chunkIndex < (chunkRadius * 2 - 1) * (chunkRadius * 2 - 1)) {
 
             int row = chunkIndex / (chunkRadius * 2 - 1);
@@ -186,26 +187,26 @@ public class ProspectingMapWidget extends WidgetGroup implements SearchComponent
 
     @Override
     @Environment(EnvType.CLIENT)
-    public void drawInBackground(@NotNull PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
-        super.drawInBackground(poseStack, mouseX, mouseY, partialTicks);
+    public void drawInBackground(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+        super.drawInBackground(graphics, mouseX, mouseY, partialTicks);
         var position = getPosition();
         var size = getSize();
         //draw background
         var x = position.x + 3;
         var y = position.y + (size.getHeight() - texture.getImageHeight()) / 2 - 1;
-        texture.draw(poseStack, x, y);
+        texture.draw(graphics, x, y);
         int cX = (mouseX - x) / 16;
         int cZ = (mouseY - y) / 16;
         if (cX >= 0 && cZ >= 0 && cX < chunkRadius * 2 - 1 && cZ < chunkRadius * 2 - 1) {
             // draw hover layer
-            DrawerHelper.drawSolidRect(poseStack, cX * 16 + x, cZ * 16 + y, 16, 16,0x4B6C6C6C);
+            DrawerHelper.drawSolidRect(graphics, cX * 16 + x, cZ * 16 + y, 16, 16,0x4B6C6C6C);
         }
     }
 
     @Override
     @Environment(EnvType.CLIENT)
-    public void drawInForeground(@NotNull PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
-        super.drawInForeground(poseStack, mouseX, mouseY, partialTicks);
+    public void drawInForeground(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+        super.drawInForeground(graphics, mouseX, mouseY, partialTicks);
         // draw tooltips
         var position = getPosition();
         var size = getSize();

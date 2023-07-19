@@ -4,16 +4,15 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
-import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryCodecs;
-import net.minecraft.data.BuiltinRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.biome.Biome;
 
 import java.util.function.Function;
 
 public class BiomeWeightModifier implements Function<Holder<Biome>, Integer> {
     public static final Codec<BiomeWeightModifier> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                    RegistryCodecs.homogeneousList(Registry.BIOME_REGISTRY).fieldOf("biomes").forGetter(mod -> mod.biomes),
+                    RegistryCodecs.homogeneousList(Registries.BIOME).fieldOf("biomes").forGetter(mod -> mod.biomes),
                     Codec.INT.fieldOf("added_weight").forGetter(mod -> mod.addedWeight)
             ).apply(instance, BiomeWeightModifier::new)
     );

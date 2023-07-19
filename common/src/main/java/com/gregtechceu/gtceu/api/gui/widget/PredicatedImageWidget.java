@@ -2,11 +2,11 @@ package com.gregtechceu.gtceu.api.gui.widget;
 
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.widget.ImageWidget;
-import com.mojang.blaze3d.vertex.PoseStack;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.FriendlyByteBuf;
 import org.jetbrains.annotations.NotNull;
 
@@ -63,9 +63,9 @@ public class PredicatedImageWidget extends ImageWidget {
 
     @Override
     @Environment(EnvType.CLIENT)
-    public void drawInBackground(@NotNull PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+    public void drawInBackground(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
         if (isVisible) {
-            super.drawInBackground(matrixStack, mouseX, mouseY, partialTicks);
+            super.drawInBackground(graphics, mouseX, mouseY, partialTicks);
         }
     }
 }

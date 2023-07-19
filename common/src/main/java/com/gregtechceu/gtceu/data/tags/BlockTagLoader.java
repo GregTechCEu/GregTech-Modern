@@ -6,9 +6,8 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.tag.TagUtil;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.tterrag.registrate.providers.RegistrateTagsProvider;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagBuilder;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -30,22 +29,17 @@ public class BlockTagLoader {
     }
 
     private static void create(RegistrateTagsProvider<Block> provider, TagKey<Block> tagKey, ResourceLocation... rls) {
-        TagBuilder builder = provider.getOrCreateRawBuilder(tagKey);
+        var builder = provider.addTag(tagKey);
         for (ResourceLocation rl : rls) {
-            builder.addElement(rl);
+            builder.addOptional(rl);
         }
-        builder.build();
     }
 
     private static void create(RegistrateTagsProvider<Block> provider, TagKey<Block> tagKey, Block... rls) {
-        TagBuilder builder = provider.getOrCreateRawBuilder(tagKey);
+        var builder = provider.addTag(tagKey);
         for (Block block : rls) {
-            builder.addElement(Registry.BLOCK.getKey(block));
+            builder.addOptional(BuiltInRegistries.BLOCK.getKey(block));
         }
-        builder.build();
     }
 
-    private static ResourceLocation rl(String name) {
-        return new ResourceLocation(name);
-    }
 }

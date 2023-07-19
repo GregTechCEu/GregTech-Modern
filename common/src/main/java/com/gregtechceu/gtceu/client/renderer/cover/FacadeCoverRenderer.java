@@ -9,7 +9,6 @@ import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
 import com.lowdragmc.lowdraglib.utils.FacadeBlockAndTintGetter;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Quaternion;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
@@ -17,18 +16,20 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.NotNull;
+import org.joml.AxisAngle4d;
+import org.joml.Quaternionf;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -56,7 +57,7 @@ public class FacadeCoverRenderer implements ICoverRenderer {
 
     @Override
     @Environment(EnvType.CLIENT)
-    public void renderItem(ItemStack stack, ItemTransforms.TransformType transformType, boolean leftHand, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight, int combinedOverlay, BakedModel model) {
+    public void renderItem(ItemStack stack, ItemDisplayContext transformType, boolean leftHand, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight, int combinedOverlay, BakedModel model) {
         var mc = Minecraft.getInstance();
         var renderItem = FacadeItemBehaviour.getFacadeStack(stack);
         BlockState blockState = null;
@@ -69,9 +70,10 @@ public class FacadeCoverRenderer implements ICoverRenderer {
                 matrixStack.pushPose();
                 ModelFactory.MODEL_TRANSFORM_BLOCK.getTransform(transformType).apply(leftHand, matrixStack);
                 matrixStack.translate(0, -0.1D, -0.5D);
-                if (transformType == ItemTransforms.TransformType.FIRST_PERSON_LEFT_HAND || transformType == ItemTransforms.TransformType.FIRST_PERSON_RIGHT_HAND) {
+                if (transformType == ItemDisplayContext.FIRST_PERSON_LEFT_HAND || transformType == ItemDisplayContext.FIRST_PERSON_RIGHT_HAND) {
                     matrixStack.translate(0.5, 0.5, 0.5);
-                    matrixStack.mulPose(new Quaternion(0, 90, 0, true));
+
+                    matrixStack.mulPose(new Quaternionf(new AxisAngle4d().set(90, 0, 1, 0)));
                     matrixStack.translate(-0.5, -0.5, -0.5);
                 }
                 var pose = matrixStack.last();

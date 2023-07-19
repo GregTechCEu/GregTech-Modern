@@ -49,7 +49,7 @@ public class ToolHelper {
 
     public static void playToolSound(GTToolType toolType, ServerPlayer player) {
         if (toolType.soundEntry != null) {
-            toolType.soundEntry.playOnServer(player.getLevel(), player.blockPosition());
+            toolType.soundEntry.playOnServer(player.level(), player.blockPosition());
         }
     }
 

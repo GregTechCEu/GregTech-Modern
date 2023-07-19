@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.recipe;
 
+import com.google.gson.JsonObject;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
@@ -8,13 +9,15 @@ import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.item.FacadeItemBehaviour;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.SimpleRecipeSerializer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 
@@ -30,7 +33,21 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class FacadeCoverRecipe implements CraftingRecipe {
 
     public static final FacadeCoverRecipe INSTANCE = new FacadeCoverRecipe();
-    public static final SimpleRecipeSerializer<FacadeCoverRecipe> SERIALIZER = new SimpleRecipeSerializer<>(id -> INSTANCE);
+    public static final RecipeSerializer<FacadeCoverRecipe> SERIALIZER = new RecipeSerializer<>() {
+        @Override
+        public FacadeCoverRecipe fromJson(ResourceLocation recipeId, JsonObject serializedRecipe) {
+            return INSTANCE;
+        }
+
+        @Override
+        public FacadeCoverRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer) {
+            return INSTANCE;
+        }
+
+        @Override
+        public void toNetwork(FriendlyByteBuf buffer, FacadeCoverRecipe recipe) {
+        }
+    };
 
 
     public static ResourceLocation ID = GTCEu.id("crafting/facade_cover");
@@ -56,7 +73,7 @@ public class FacadeCoverRecipe implements CraftingRecipe {
     }
 
     @Override
-    public ItemStack assemble(CraftingContainer container) {
+    public ItemStack assemble(CraftingContainer container, RegistryAccess registryManager) {
         ItemStack itemStack = GTItems.COVER_FACADE.asStack();
         for (int i = 0; i < container.getContainerSize(); i++) {
             var item = container.getItem(i);
@@ -84,7 +101,7 @@ public class FacadeCoverRecipe implements CraftingRecipe {
     }
 
     @Override
-    public ItemStack getResultItem() {
+    public ItemStack getResultItem(RegistryAccess registryManager) {
         var result = GTItems.COVER_FACADE.asStack();
         FacadeItemBehaviour.setFacadeStack(GTItems.COVER_FACADE.asStack(), new ItemStack(Blocks.STONE));
         return result;
@@ -100,4 +117,8 @@ public class FacadeCoverRecipe implements CraftingRecipe {
         return SERIALIZER;
     }
 
+    @Override
+    public CraftingBookCategory category() {
+        return CraftingBookCategory.MISC;
+    }
 }

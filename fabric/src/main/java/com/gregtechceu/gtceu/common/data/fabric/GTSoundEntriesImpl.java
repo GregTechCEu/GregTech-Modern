@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.common.data.fabric;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 
 /**
  * @author KilaBash
@@ -12,7 +13,7 @@ import net.minecraft.core.Registry;
 public class GTSoundEntriesImpl {
     public static void registerSounds() {
         for (SoundEntry entry : GTRegistries.SOUNDS) {
-            entry.register(soundEvent -> Registry.register(Registry.SOUND_EVENT, soundEvent.getLocation(), soundEvent));
+            entry.register(soundEvent -> Registry.register(BuiltInRegistries.SOUND_EVENT, soundEvent.getLocation(), soundEvent));
         }
     }
 }

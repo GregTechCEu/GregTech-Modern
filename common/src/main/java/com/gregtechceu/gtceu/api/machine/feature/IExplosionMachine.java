@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.level.Explosion;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 
 /**
@@ -19,7 +19,6 @@ public interface IExplosionMachine extends IMachineFeature {
      * should be called per tick.
      * @param explosionPower explosion level
      * @param additionalFireChance fire chance
-     * @param energyContainer energy container
      */
     default void checkWeatherOrTerrainExplosion(float explosionPower, double additionalFireChance) {
         if (!shouldWeatherOrTerrainExplosion()) return;
@@ -55,7 +54,7 @@ public interface IExplosionMachine extends IMachineFeature {
         var level = machine.getLevel();
         level.removeBlock(pos, false);
         level.explode(null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5,
-                explosionPower, ConfigHolder.INSTANCE.machines.doesExplosionDamagesTerrain ? Explosion.BlockInteraction.BREAK : Explosion.BlockInteraction.NONE);
+                explosionPower, ConfigHolder.INSTANCE.machines.doesExplosionDamagesTerrain ? Level.ExplosionInteraction.BLOCK : Level.ExplosionInteraction.NONE);
     }
 
     default void setOnFire(double additionalFireChance) {

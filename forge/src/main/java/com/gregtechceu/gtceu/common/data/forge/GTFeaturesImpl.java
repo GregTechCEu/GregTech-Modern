@@ -7,13 +7,10 @@ import com.gregtechceu.gtceu.api.data.worldgen.generator.BiomePlacement;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTPlacements;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Holder;
-import net.minecraft.core.HolderSet;
-import net.minecraft.core.Registry;
-import net.minecraft.data.BuiltinRegistries;
+import net.minecraft.core.*;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.placement.PlacementUtils;
-import net.minecraft.data.worldgen.placement.VegetationPlacements;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.biome.Biome;
@@ -22,10 +19,7 @@ import net.minecraft.world.level.levelgen.blockpredicates.BlockPredicate;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.RandomFeatureConfiguration;
-import net.minecraft.world.level.levelgen.placement.BiomeFilter;
-import net.minecraft.world.level.levelgen.placement.BlockPredicateFilter;
-import net.minecraft.world.level.levelgen.placement.InSquarePlacement;
-import net.minecraft.world.level.levelgen.placement.PlacedFeature;
+import net.minecraft.world.level.levelgen.placement.*;
 import net.minecraftforge.common.world.BiomeModifier;
 import net.minecraftforge.common.world.ForgeBiomeModifiers;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -41,67 +35,71 @@ import java.util.List;
  * @implNote GTFeaturesImpl
  */
 public class GTFeaturesImpl {
-//    public static final DeferredRegister<ConfiguredFeature<?, ?>> CONFIGURED_FEATURE_REGISTER = DeferredRegister.create(Registry.CONFIGURED_FEATURE_REGISTRY, GTCEu.MOD_ID);
-//    public static final DeferredRegister<PlacedFeature> PLACED_FEATURE_REGISTER = DeferredRegister.create(Registry.PLACED_FEATURE_REGISTRY, GTCEu.MOD_ID);
-//    public static final DeferredRegister<BiomeModifier> BIOME_MODIFIER_REGISTER = DeferredRegister.create(ForgeRegistries.Keys.BIOME_MODIFIERS, GTCEu.MOD_ID);
+    public static final DeferredRegister<ConfiguredFeature<?, ?>> CONFIGURED_FEATURE_REGISTER = DeferredRegister.create(Registries.CONFIGURED_FEATURE, GTCEu.MOD_ID);
+    public static final DeferredRegister<PlacedFeature> PLACED_FEATURE_REGISTER = DeferredRegister.create(Registries.PLACED_FEATURE, GTCEu.MOD_ID);
+    public static final DeferredRegister<BiomeModifier> BIOME_MODIFIER_REGISTER = DeferredRegister.create(ForgeRegistries.Keys.BIOME_MODIFIERS, GTCEu.MOD_ID);
 
     public static void init(IEventBus modEventBus) {
-//        CONFIGURED_FEATURE_REGISTER.register(modEventBus);
-//        PLACED_FEATURE_REGISTER.register(modEventBus);
-//        BIOME_MODIFIER_REGISTER.register(modEventBus);
+        CONFIGURED_FEATURE_REGISTER.register(modEventBus);
+        PLACED_FEATURE_REGISTER.register(modEventBus);
+        BIOME_MODIFIER_REGISTER.register(modEventBus);
     }
 
     public static void register() {
-//        for (var entry : GTOreFeatureEntry.ALL.entrySet()) {
-//            ResourceLocation id = entry.getKey();
-//            var datagenExt = entry.getValue().getVeinGenerator();
-//            if (datagenExt != null) {
-//                CONFIGURED_FEATURE_REGISTER.register(id.getPath(), datagenExt::createConfiguredFeature);
-//            }
-//        }
-//        BIOME_MODIFIER_REGISTER.register("ore", () -> {
-//            Registry<Biome> biomeRegistry = BuiltinRegistries.ACCESS.registryOrThrow(Registry.BIOME_REGISTRY);
-//            Registry<PlacedFeature> featureRegistry = BuiltinRegistries.ACCESS.registryOrThrow(Registry.PLACED_FEATURE_REGISTRY);
-//            HolderSet<Biome> biomes = new AnyHolderSet<>(biomeRegistry);
-//            Holder<PlacedFeature> featureHolder = featureRegistry.getOrCreateHolderOrThrow(ResourceKey.create(Registry.PLACED_FEATURE_REGISTRY, GTCEu.id("ore")));
-//            return new ForgeBiomeModifiers.AddFeaturesBiomeModifier(
-//                    biomes,
-//                    HolderSet.direct(featureHolder),
-//                    GenerationStep.Decoration.UNDERGROUND_ORES
-//            );
-//        });
-//
-//        // rubber tree
-//        ResourceLocation id = GTCEu.id("trees_rubber");
-//        ResourceLocation vegetationId = GTCEu.id("rubber_vegetation");
-//
-//        CONFIGURED_FEATURE_REGISTER.register(vegetationId.getPath(), () -> new ConfiguredFeature<>(Feature.RANDOM_SELECTOR, new RandomFeatureConfiguration(List.of(), GTPlacements.RUBBER_CHECKED)));
-//        PLACED_FEATURE_REGISTER.register(id.getPath(), () -> {
-//            Registry<ConfiguredFeature<?, ?>> featureRegistry = BuiltinRegistries.ACCESS.registryOrThrow(Registry.CONFIGURED_FEATURE_REGISTRY);
-//            Registry<Biome> biomeRegistry = BuiltinRegistries.ACCESS.registryOrThrow(Registry.BIOME_REGISTRY);
-//            var holder = featureRegistry.getOrCreateHolderOrThrow(ResourceKey.create(Registry.CONFIGURED_FEATURE_REGISTRY, vegetationId));
-//            return new PlacedFeature(holder, List.of(
-//                    new BiomePlacement(List.of(
-//                            new BiomeWeightModifier(biomeRegistry.getOrCreateTag(CustomTags.IS_SWAMP), 50)
-//                    )),
-//                    PlacementUtils.countExtra(0, 0.005F, 1),
-//                    InSquarePlacement.spread(), VegetationPlacements.TREE_THRESHOLD,
-//                    PlacementUtils.HEIGHTMAP_OCEAN_FLOOR,
-//                    BlockPredicateFilter.forPredicate(BlockPredicate.wouldSurvive(GTBlocks.RUBBER_SAPLING.getDefaultState(), BlockPos.ZERO)),
-//                    BiomeFilter.biome()
-//            ));
-//        });
-//
-//        BIOME_MODIFIER_REGISTER.register(id.getPath(), () -> {
-//            Registry<Biome> biomeRegistry = BuiltinRegistries.ACCESS.registryOrThrow(Registry.BIOME_REGISTRY);
-//            Registry<PlacedFeature> featureRegistry = BuiltinRegistries.ACCESS.registryOrThrow(Registry.PLACED_FEATURE_REGISTRY);
-//            HolderSet<Biome> biomes = new HolderSet.Named<>(biomeRegistry, CustomTags.HAS_RUBBER_TREE);
-//            Holder<PlacedFeature> featureHolder = featureRegistry.getOrCreateHolderOrThrow(ResourceKey.create(Registry.PLACED_FEATURE_REGISTRY, id));
-//            return new ForgeBiomeModifiers.AddFeaturesBiomeModifier(
-//                    biomes,
-//                    HolderSet.direct(featureHolder),
-//                    GenerationStep.Decoration.VEGETAL_DECORATION
-//            );
-//        });
+        var registryAccess = RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY);
+
+        for (var entry : GTOreFeatureEntry.ALL.entrySet()) {
+            ResourceLocation id = entry.getKey();
+            var datagenExt = entry.getValue().getVeinGenerator();
+            if (datagenExt != null) {
+                CONFIGURED_FEATURE_REGISTER.register(id.getPath(), datagenExt::createConfiguredFeature);
+            }
+        }
+        BIOME_MODIFIER_REGISTER.register("ore", () -> {
+            var biomeRegistry = registryAccess.registryOrThrow(Registries.BIOME).asLookup();
+            Registry<PlacedFeature> featureRegistry = registryAccess.registryOrThrow(Registries.PLACED_FEATURE);
+            HolderSet<Biome> biomes = new AnyHolderSet<>(biomeRegistry);
+            Holder<PlacedFeature> featureHolder = featureRegistry.getHolderOrThrow(ResourceKey.create(Registries.PLACED_FEATURE, GTCEu.id("ore")));
+            return new ForgeBiomeModifiers.AddFeaturesBiomeModifier(
+                    biomes,
+                    HolderSet.direct(featureHolder),
+                    GenerationStep.Decoration.UNDERGROUND_ORES
+            );
+        });
+
+        // rubber tree
+        ResourceLocation id = GTCEu.id("trees_rubber");
+        ResourceLocation vegetationId = GTCEu.id("rubber_vegetation");
+
+        CONFIGURED_FEATURE_REGISTER.register(vegetationId.getPath(), () -> new ConfiguredFeature<>(Feature.RANDOM_SELECTOR, new RandomFeatureConfiguration(List.of(),
+                registryAccess.registryOrThrow(Registries.PLACED_FEATURE).getHolderOrThrow(GTPlacements.RUBBER_CHECKED))));
+        PLACED_FEATURE_REGISTER.register(id.getPath(), () -> {
+            Registry<ConfiguredFeature<?, ?>> featureRegistry = registryAccess.registryOrThrow(Registries.CONFIGURED_FEATURE);
+            Registry<Biome> biomeRegistry = registryAccess.registryOrThrow(Registries.BIOME);
+            var holder = featureRegistry.getHolderOrThrow(ResourceKey.create(Registries.CONFIGURED_FEATURE, vegetationId));
+            return new PlacedFeature(holder, List.of(
+                    new BiomePlacement(List.of(
+                            new BiomeWeightModifier(biomeRegistry.getOrCreateTag(CustomTags.IS_SWAMP), 50)
+                    )),
+                    PlacementUtils.countExtra(0, 0.005F, 1),
+                    InSquarePlacement.spread(),
+                    SurfaceWaterDepthFilter.forMaxDepth(0),
+                    PlacementUtils.HEIGHTMAP_OCEAN_FLOOR,
+                    BlockPredicateFilter.forPredicate(BlockPredicate.wouldSurvive(GTBlocks.RUBBER_SAPLING.getDefaultState(), BlockPos.ZERO)),
+                    BiomeFilter.biome()
+            ));
+        });
+
+        BIOME_MODIFIER_REGISTER.register(id.getPath(), () -> {
+            Registry<Biome> biomeRegistry = registryAccess.registryOrThrow(Registries.BIOME);
+            Registry<PlacedFeature> featureRegistry = registryAccess.registryOrThrow(Registries.PLACED_FEATURE);
+            HolderSet<Biome> biomes = HolderSet.emptyNamed(biomeRegistry.holderOwner(), CustomTags.HAS_RUBBER_TREE);
+            Holder<PlacedFeature> featureHolder = featureRegistry.getHolderOrThrow(ResourceKey.create(Registries.PLACED_FEATURE, id));
+            return new ForgeBiomeModifiers.AddFeaturesBiomeModifier(
+                    biomes,
+                    HolderSet.direct(featureHolder),
+                    GenerationStep.Decoration.VEGETAL_DECORATION
+            );
+        });
     }
 }

@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import io.netty.buffer.Unpooled;
 import lombok.Getter;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -111,7 +112,7 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
     }
 
     @Override
-    public @NotNull ItemStack assemble(@NotNull Container pContainer) {
+    public ItemStack assemble(Container inventory, RegistryAccess registryManager) {
         return ItemStack.EMPTY;
     }
 
@@ -121,10 +122,10 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
     }
 
     @Override
-    public @NotNull ItemStack getResultItem() {
+    public ItemStack getResultItem(RegistryAccess registryManager) {
         return ItemStack.EMPTY;
     }
-    
+
     ///////////////////////////////////////////////////////////////
     // **********************internal logic********************* //
     ///////////////////////////////////////////////////////////////

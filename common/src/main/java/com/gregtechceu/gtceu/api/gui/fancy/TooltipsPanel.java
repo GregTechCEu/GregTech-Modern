@@ -6,6 +6,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import lombok.Getter;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -36,15 +37,15 @@ public class TooltipsPanel extends Widget {
 
     @Override
     @Environment(EnvType.CLIENT)
-    public void drawInBackground(@NotNull PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
-        super.drawInBackground(poseStack, mouseX, mouseY, partialTicks);
+    public void drawInBackground(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+        super.drawInBackground(graphics, mouseX, mouseY, partialTicks);
         var position = getPosition();
         var size = getSize();
         int offsetY = 0;
         for (IFancyTooltip tooltip : this.tooltips) {
             if (tooltip.showFancyTooltip()) {
                 // draw icon
-                tooltip.getFancyTooltipIcon().draw(poseStack, mouseX, mouseY, position.x, position.y + offsetY, size.width, size.width);
+                tooltip.getFancyTooltipIcon().draw(graphics, mouseX, mouseY, position.x, position.y + offsetY, size.width, size.width);
                 offsetY += size.getWidth() + 2;
             }
         }
@@ -53,7 +54,7 @@ public class TooltipsPanel extends Widget {
 
     @Override
     @Environment(EnvType.CLIENT)
-    public void drawInForeground(@NotNull PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
+    public void drawInForeground(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
         if (getHoverElement(mouseX, mouseY) == this && gui != null && gui.getModularUIGui() != null) {
             var position = getPosition();
             var size = getSize();

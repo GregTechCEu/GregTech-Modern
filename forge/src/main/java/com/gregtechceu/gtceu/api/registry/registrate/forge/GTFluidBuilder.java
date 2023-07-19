@@ -143,7 +143,7 @@ public class GTFluidBuilder<T extends ForgeFlowingFluid, P> extends AbstractBuil
     @SuppressWarnings("deprecation")
     protected void registerRenderType(T entry) {
         DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
-            OneTimeEventReceiver.addModListener(FMLClientSetupEvent.class, $ -> {
+            OneTimeEventReceiver.addModListener(getOwner(), FMLClientSetupEvent.class, $ -> {
                 if (this.layer != null) {
                     RenderType layer = this.layer.get();
                     ItemBlockRenderTypes.setRenderLayer(entry, layer);
@@ -233,7 +233,7 @@ public class GTFluidBuilder<T extends ForgeFlowingFluid, P> extends AbstractBuil
         GTFluidBuilder<T, P> ret = this.tag(ProviderType.FLUID_TAGS, tags);
         if (this.tags.isEmpty()) {
             ret.getOwner().<RegistrateTagsProvider<Fluid>, Fluid>setDataGenerator(ret.sourceName, getRegistryKey(), ProviderType.FLUID_TAGS,
-                    prov -> this.tags.stream().map(prov::tag).forEach(p -> p.add(getSource())));
+                    prov -> this.tags.stream().map(prov::addTag).forEach(p -> p.add(getSource().builtInRegistryHolder().key())));
         }
         this.tags.addAll(Arrays.asList(tags));
         return ret;
