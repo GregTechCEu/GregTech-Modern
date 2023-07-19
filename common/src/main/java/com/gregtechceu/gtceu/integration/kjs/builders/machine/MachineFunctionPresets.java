@@ -235,6 +235,22 @@ public class MachineFunctionPresets {
                 return this;
             }
 
+            public MachineBuilder<D> tier(int tier, Consumer<MachineBuilder<D>> consumer) {
+                for (var builder : builders) {
+                    if (builder.tier() == tier) {
+                        consumer.accept(builder);
+                    }
+                }
+                return this;
+            }
+
+            public MachineBuilder<D> allTiers(BiConsumer<Integer, MachineBuilder<D>> consumer) {
+                for (var builder : builders) {
+                    consumer.accept(builder.tier(), builder);
+                }
+                return this;
+            }
+
             public MachineBuilder<D> recipeModifier(BiFunction<MetaMachine, GTRecipe, GTRecipe> recipeModifier, boolean alwaysTryModifyRecipe) {
                 recipeModifier(recipeModifier);
                 alwaysTryModifyRecipe(alwaysTryModifyRecipe);
