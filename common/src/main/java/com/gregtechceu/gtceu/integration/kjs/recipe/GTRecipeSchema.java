@@ -17,8 +17,6 @@ import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.common.recipe.*;
 import com.gregtechceu.gtceu.integration.kjs.recipe.components.CapabilityMap;
-import com.gregtechceu.gtceu.integration.kjs.recipe.components.CapabilityMapComponent;
-import com.gregtechceu.gtceu.integration.kjs.recipe.components.ContentJS;
 import com.gregtechceu.gtceu.integration.kjs.recipe.components.GTRecipeComponents;
 import com.lowdragmc.lowdraglib.LDLib;
 import dev.latvian.mods.kubejs.fluid.FluidStackJS;
@@ -27,7 +25,6 @@ import dev.latvian.mods.kubejs.item.OutputItem;
 import dev.latvian.mods.kubejs.recipe.RecipeJS;
 import dev.latvian.mods.kubejs.recipe.RecipeKey;
 import dev.latvian.mods.kubejs.recipe.component.BooleanComponent;
-import dev.latvian.mods.kubejs.recipe.component.RecipeComponentBuilder;
 import dev.latvian.mods.kubejs.recipe.component.TimeComponent;
 import dev.latvian.mods.kubejs.recipe.schema.RecipeSchema;
 import dev.latvian.mods.rhino.util.HideFromJS;
@@ -41,10 +38,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import org.apache.commons.lang3.ArrayUtils;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
-import java.util.Map;
 import java.util.function.Supplier;
 
 public interface GTRecipeSchema {
@@ -254,14 +249,6 @@ public interface GTRecipeSchema {
             float lastChance = this.chance;
             this.chance = 0;
             inputItems(itemStack);
-            this.chance = lastChance;
-            return this;
-        }
-
-        public GTRecipeJS notConsumable(Item item) {
-            float lastChance = this.chance;
-            this.chance = 0;
-            inputItems(item);
             this.chance = lastChance;
             return this;
         }

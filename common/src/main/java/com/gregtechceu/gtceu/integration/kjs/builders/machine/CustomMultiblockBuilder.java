@@ -9,7 +9,6 @@ import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
-import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
@@ -23,7 +22,6 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.api.registry.registrate.MultiblockMachineBuilder;
-import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.PrimitiveFancyUIWorkableMachine;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import com.tterrag.registrate.builders.BlockBuilder;
@@ -33,7 +31,6 @@ import com.tterrag.registrate.util.nullness.NonNullUnaryOperator;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
@@ -47,7 +44,6 @@ import org.apache.commons.lang3.function.TriFunction;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.function.*;
@@ -342,7 +338,7 @@ public class CustomMultiblockBuilder extends MultiblockMachineBuilder {
                 return this;
             }
 
-            public CustomMultiblockBuilder tier(int tier, Consumer<CustomMultiblockBuilder> consumer) {
+            public CustomMultiblockBuilder tier(int tier, BuilderConsumer consumer) {
                 for (var builder : builders) {
                     if (builder.tier() == tier) {
                         consumer.accept(builder);
@@ -351,7 +347,7 @@ public class CustomMultiblockBuilder extends MultiblockMachineBuilder {
                 return this;
             }
 
-            public CustomMultiblockBuilder allTiers(BiConsumer<Integer, CustomMultiblockBuilder> consumer) {
+            public CustomMultiblockBuilder allTiers(TieredBuilderConsumer consumer) {
                 for (var builder : builders) {
                     consumer.accept(builder.tier(), builder);
                 }
@@ -366,5 +362,15 @@ public class CustomMultiblockBuilder extends MultiblockMachineBuilder {
                 return value;
             }
         };
+    }
+
+    @FunctionalInterface
+    public interface BuilderConsumer extends Consumer<CustomMultiblockBuilder> {
+        void accept(CustomMultiblockBuilder builder);
+    }
+
+    @FunctionalInterface
+    public interface TieredBuilderConsumer {
+        void accept(int tier, CustomMultiblockBuilder builder);
     }
 }
