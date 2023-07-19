@@ -8,7 +8,7 @@
     "BlockModelMixin",
     "GuiGraphicsAccessor",
     "LevelRendererMixin",
-    "ModelBakeryMixin",
+    "ModelManagerMixin",
     "MultiPlayerGameModeMixin"
   ],
   "mixins": [

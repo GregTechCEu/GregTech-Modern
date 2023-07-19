@@ -27,7 +27,10 @@ public enum GTToolType {
     AXE("axe", "axes", 6.0F, -3.2F, true),
     HOE("hoe", "hoes", 0, -3.0F, true),
     SAW("saw", "saws", 1, 1, GTSoundEntries.SAW_TOOL),
-    HARD_HAMMER("hammer", "hammers", TagUtil.createBlockTag("mineable/pickaxe", true), 1.5F, -3.2F, GTCEu.id("item/tools/hammer"), GTSoundEntries.FORGE_HAMMER),
+
+    MINING_HAMMER("mining_hammer", "mining_hammers", TagUtil.createBlockTag("mineable/pickaxe", true), 1.5F, -3.2F, GTCEu.id("item/tools/mining_hammer"), null),
+
+    HARD_HAMMER("hammer", "hammers", 1, 1, GTSoundEntries.FORGE_HAMMER),
     SOFT_MALLET("mallet", "mallets", 1, 1, GTSoundEntries.SOFT_MALLET_TOOL),
     WRENCH("wrench", "wrenches", 1, 1, GTSoundEntries.WRENCH_TOOL),
     FILE("file", "files", 1, 1, GTSoundEntries.FILE_TOOL),
