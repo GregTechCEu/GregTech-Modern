@@ -27,6 +27,7 @@ import com.tterrag.registrate.providers.ProviderType;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import com.tterrag.registrate.util.nullness.NonNullUnaryOperator;
+import dev.latvian.mods.rhino.util.HideFromJS;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -203,6 +204,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
         return definitionFactory.apply(new ResourceLocation(registrate.getModid(), name));
     }
 
+    @HideFromJS
     public DEFINITION register() {
         var definition = createDefinition();
 
