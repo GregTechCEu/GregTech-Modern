@@ -203,6 +203,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
         return definitionFactory.apply(new ResourceLocation(registrate.getModid(), name));
     }
 
+    @HideFromJS
     public DEFINITION register() {
         var definition = createDefinition();
 

@@ -342,6 +342,22 @@ public class CustomMultiblockBuilder extends MultiblockMachineBuilder {
                 return this;
             }
 
+            public CustomMultiblockBuilder tier(int tier, Consumer<CustomMultiblockBuilder> consumer) {
+                for (var builder : builders) {
+                    if (builder.tier() == tier) {
+                        consumer.accept(builder);
+                    }
+                }
+                return this;
+            }
+
+            public CustomMultiblockBuilder allTiers(BiConsumer<Integer, CustomMultiblockBuilder> consumer) {
+                for (var builder : builders) {
+                    consumer.accept(builder.tier(), builder);
+                }
+                return this;
+            }
+
             @Override
             public MultiblockMachineDefinition register() {
                 for (var builder : builders) {
