@@ -116,7 +116,6 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         event.add("GTBlocks", GTBlocks.class);
         event.add("GTMachines", GTMachines.class);
         event.add("GTItems", GTItems.class);
-        event.add("GTMaterialBuilder", Material.Builder.class);
         event.add("GTRecipeTypes", GTRecipeTypes.class);
         event.add("TagPrefix", TagPrefix.class);
         event.add("ItemGenerationCondition", TagPrefix.Conditions.class);

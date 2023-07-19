@@ -48,11 +48,6 @@ import java.util.stream.Stream;
 @ParametersAreNonnullByDefault
 @SuppressWarnings({"unused"})
 public class MachineFunctionPresets {
-    @FunctionalInterface
-    public interface MachineConstructorFunction extends BiFunction<IMachineBlockEntity, Integer, MetaMachine> {
-        @Override
-        MetaMachine apply(IMachineBlockEntity machineBlockEntity, Integer integer);
-    }
 
     public static Integer[] mapTierArray(Object[] tiers) {
         return Arrays.stream(tiers)
