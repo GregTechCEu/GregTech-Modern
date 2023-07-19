@@ -129,4 +129,15 @@ public class GTCapabilityHelperImpl {
         }
         return null;
     }
+
+    @Nullable
+    public static ILaserContainer getLaserContainer(Level level, BlockPos pos, @Nullable Direction side) {
+        if (level.getBlockState(pos).hasBlockEntity()) {
+            var blockEntity = level.getBlockEntity(pos);
+            if (blockEntity != null) {
+                return blockEntity.getCapability(GTCapability.CAPABILITY_LASER_CONTAINER, side).resolve().orElse(null);
+            }
+        }
+        return null;
+    }
 }

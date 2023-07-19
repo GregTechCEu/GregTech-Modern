@@ -81,4 +81,10 @@ public class GTCapabilityHelper {
     public static IMaintenanceMachine getMaintenanceMachine(Level level, BlockPos pos, @Nullable Direction side) {
         throw new AssertionError();
     }
+
+    @ExpectPlatform
+    @Nullable
+    public static ILaserContainer getLaserContainer(Level level, BlockPos pos, @Nullable Direction side) {
+        throw new AssertionError();
+    }
 }

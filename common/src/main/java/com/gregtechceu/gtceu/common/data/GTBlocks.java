@@ -9,8 +9,7 @@ import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.events.MaterialCasingCollectionEvent;
 import com.gregtechceu.gtceu.api.block.*;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
-import com.gregtechceu.gtceu.api.item.MaterialPipeBlockItem;
-import com.gregtechceu.gtceu.api.item.RendererBlockItem;
+import com.gregtechceu.gtceu.api.item.*;
 import com.gregtechceu.gtceu.api.data.tag.TagUtil;
 import com.gregtechceu.gtceu.client.renderer.block.CTMModelRenderer;
 import com.gregtechceu.gtceu.client.renderer.block.OreBlockRenderer;
@@ -19,7 +18,6 @@ import com.gregtechceu.gtceu.common.block.*;
 import com.gregtechceu.gtceu.common.pipelike.fluidpipe.FluidPipeType;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
-import com.gregtechceu.gtceu.api.item.MaterialBlockItem;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
@@ -51,6 +49,8 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.FoliageColor;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.grower.AbstractTreeGrower;
@@ -231,13 +231,13 @@ public class GTBlocks {
         for (var fluidPipeType : FluidPipeType.values()) {
             for (Material material : GTRegistries.MATERIALS) {
                 if (material.hasProperty(PropertyKey.FLUID_PIPE) && !fluidPipeType.tagPrefix.isIgnored(material)) {
-                    var entry = REGISTRATE.block( "%s_%s_fluid_pipe".formatted(material.getName(), fluidPipeType.name), p -> new FluidPipeBlock(p.noLootTable(), fluidPipeType, material))
+                    var entry = REGISTRATE.block( "%s_%s_fluid_pipe".formatted(material.getName(), fluidPipeType.name), p -> new FluidPipeBlock(p, fluidPipeType, material))
                             .initialProperties(() -> Blocks.IRON_BLOCK)
                             .properties(p -> {
                                 if (doMetalPipe(material)) {
                                     p.sound(GTSoundTypes.METAL_PIPE);
                                 }
-                                return p.dynamicShape().noOcclusion();
+                                return p.dynamicShape().noOcclusion().noLootTable();
                             })
                             .transform(unificationBlock(fluidPipeType.tagPrefix, material))
                             .blockstate(NonNullBiConsumer.noop())
@@ -265,6 +265,29 @@ public class GTBlocks {
             tags[1] = BlockTags.MINEABLE_WITH_AXE;
         } else tags[1] = BlockTags.MINEABLE_WITH_PICKAXE;
         return tags;
+    }
+
+    public static final BlockEntry<LaserPipeBlock>[] LASER_PIPES = new BlockEntry[DyeColor.values().length];
+
+    public static void generateLaserPipeBlocks() {
+        REGISTRATE.creativeModeTab(() -> GTCreativeModeTabs.MATERIAL_PIPE);
+
+        for (int i = 0; i < DyeColor.values().length; ++i) {
+            var color = DyeColor.values()[i];
+            LASER_PIPES[i] = REGISTRATE.block("%s_laser_pipe".formatted(color.getSerializedName()), p -> new LaserPipeBlock(p, color))
+                    .initialProperties(() -> Blocks.IRON_BLOCK)
+                    .properties(p -> p.dynamicShape().noOcclusion().noLootTable())
+                    .blockstate(NonNullBiConsumer.noop())
+                    .setData(ProviderType.LANG, NonNullBiConsumer.noop())
+                    .setData(ProviderType.LOOT, NonNullBiConsumer.noop())
+                    .addLayer(() -> RenderType::cutoutMipped)
+                    .color(() -> LaserPipeBlock::tintedColor)
+                    .item(LaserPipeBlockItem::new)
+                    .model(NonNullBiConsumer.noop())
+                    .color(() -> LaserPipeBlockItem::tintColor)
+                    .build()
+                    .register();
+        }
     }
 
     static {
@@ -722,6 +745,7 @@ public class GTBlocks {
         generateMaterialBlocks();
         generateCableBlocks();
         generatePipeBlocks();
+        generateLaserPipeBlocks();
     }
 
     public static boolean doMetalPipe(Material material) {
