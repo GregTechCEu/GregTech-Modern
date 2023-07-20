@@ -29,9 +29,8 @@ public class ItemTagLoader {
         create(provider, lens, Color.White, GTItems.MATERIAL_ITEMS.get(lens, Glass).getId());
         create(provider, "pistons", rl("piston"), rl("sticky_piston"));
 
-        create(provider, CustomTags.AOE_TOOLS, GTItems.TOOL_ITEMS.column(GTToolType.HARD_HAMMER).values().stream().filter(Objects::nonNull).map(entry -> GTCEu.id(entry.get().getTier().material.getName() + "_hammer")).toList().toArray(new ResourceLocation[0]));
         create(provider, CustomTags.TREE_FELLING_TOOLS, GTItems.TOOL_ITEMS.column(GTToolType.AXE).values().stream().filter(Objects::nonNull).map(RegistryEntry::getId).toArray(ResourceLocation[]::new));
-
+        create(provider, CustomTags.AOE_TOOLS, GTItems.TOOL_ITEMS.column(GTToolType.HARD_HAMMER).values().stream().filter(Objects::nonNull).map(entry -> entry.getId()).toArray(ResourceLocation[]::new));
 
         // TODO add to planks mc tag?
         //for (Material material : new Material[]{GTMaterials.Wood, GTMaterials.TreatedWood}) {
