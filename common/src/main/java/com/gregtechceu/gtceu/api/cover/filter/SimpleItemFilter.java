@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
 import com.lowdragmc.lowdraglib.gui.widget.PhantomSlotWidget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
+import com.lowdragmc.lowdraglib.jei.IngredientIO;
 import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
 import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
 import lombok.Getter;
@@ -12,10 +13,16 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import net.minecraft.world.level.block.state.properties.Property;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Arrays;
+import java.util.Observable;
+import java.util.concurrent.Flow;
+import java.util.concurrent.SubmissionPublisher;
 import java.util.function.Consumer;
 
 /**
@@ -35,8 +42,14 @@ public class SimpleItemFilter implements ItemFilter {
     @Setter
     protected Consumer<ItemFilter> onUpdated;
 
+    @Getter
+    protected int maxStackSize;
+
+    protected PhantomSlotWidget[] filterSlots = new PhantomSlotWidget[9];
+
     protected SimpleItemFilter() {
         Arrays.fill(matches, ItemStack.EMPTY);
+        maxStackSize = 1;
     }
 
     public static SimpleItemFilter loadFilter(ItemStack itemStack) {
@@ -85,11 +98,12 @@ public class SimpleItemFilter implements ItemFilter {
                 final int index = i * 3 + j;
                 var handler = new ItemStackTransfer(matches[index]);
                 var slot = new PhantomSlotWidget(handler, 0, i * 18, j * 18);
-                slot.setMaxStackSize(1);
+                slot.setMaxStackSize(this.maxStackSize);
                 slot.setChangeListener(() -> {
                     matches[index] = handler.getStackInSlot(0);
                     onUpdated.accept(this);
                 }).setBackground(GuiTextures.SLOT);
+                this.filterSlots[index] = slot; // Used to update max stack size on change
                 group.addWidget(slot);
             }
         }
@@ -114,5 +128,20 @@ public class SimpleItemFilter implements ItemFilter {
             }
         }
         return isBlackList != found;
+    }
+
+    public void setMaxStackSize(int maxStackSize) {
+        this.maxStackSize = maxStackSize;
+
+        for (PhantomSlotWidget filterSlot : filterSlots) {
+            if (null == filterSlot)
+                continue;
+
+            filterSlot.setMaxStackSize(maxStackSize);
+        }
+
+        for (ItemStack match : matches) {
+            match.setCount(Math.min(match.getCount(), maxStackSize));
+        }
     }
 }

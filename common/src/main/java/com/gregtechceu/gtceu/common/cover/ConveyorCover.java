@@ -31,6 +31,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -57,7 +58,7 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
     @Persisted @DescSynced @Getter
     protected ItemStack filterItem;
     @Nullable
-    private ItemFilter filterHandler;
+    protected ItemFilter filterHandler;
     protected int itemsLeftToTransferLastSecond;
     private TickableSubscription subscription;
 
@@ -230,6 +231,7 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
     @Override
     public Widget createUIWidget() {
         final var group = new WidgetGroup(0, 0, 176, 135);
+
         var filterContainer = new ItemStackTransfer(filterItem);
         filterContainer.setFilter(itemStack -> ItemFilter.FILTERS.containsKey(itemStack.getItem()));
         var filterGroup = new WidgetGroup(0, 70, 176, 60);
@@ -237,9 +239,9 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
             filterHandler = ItemFilter.loadFilter(filterItem);
             filterGroup.addWidget(filterHandler.openConfigurator((176 - 80) / 2, (60 - 55) / 2));
         }
-        group.addWidget(new LabelWidget(10, 5, LocalizationUtils.format("cover.conveyor.title", GTValues.VN[tier])));
-        group.addWidget(new ButtonWidget(10, 20, 30, 20,
-                new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("-1")), cd -> {
+
+        group.addWidget(new LabelWidget(10, 5, LocalizationUtils.format(getUITitle(), GTValues.VN[tier])));
+        group.addWidget(new ButtonWidget(10, 20, 30, 20, new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("-1")), cd -> {
             if (!cd.isRemote) {
                 int amount = cd.isCtrlClick ? cd.isShiftClick ? 512 : 64 : cd.isShiftClick ? 8 : 1;
                 setTransferRate(Mth.clamp(getTransferRate() - amount, 1, maxItemTransferRate));
@@ -254,15 +256,16 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
         }).setHoverTooltips("gui.widget.incrementButton.default_tooltip"));
         group.addWidget(new TextFieldWidget(42, 20, 92, 20, () -> String.valueOf(transferRate), val -> setTransferRate(Mth.clamp(Integer.parseInt(val), 1, maxItemTransferRate))).setNumbersOnly(1, maxItemTransferRate));
         group.addWidget(new SwitchWidget(10, 45, 75, 20, (clickData, value) -> {
-            if (!clickData.isRemote) {
-                setIo(value ? IO.IN : IO.OUT);
-            }
-        })
+                    if (!clickData.isRemote) {
+                        setIo(value ? IO.IN : IO.OUT);
+                    }
+                })
                 .setTexture(
                         new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON, new TextTexture("cover.conveyor.mode.export")),
                         new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON, new TextTexture("cover.conveyor.mode.import")))
-                .setPressed(io == IO.IN));
-        group.addWidget(new SlotWidget(filterContainer, 0, 90, 45)
+                .setPressed(io == IO.IN)
+        );
+        group.addWidget(new SlotWidget(filterContainer, 0, 10, 70)
                 .setChangeListener(() -> {
                     if (isRemote()) {
                         if (!filterContainer.getStackInSlot(0).isEmpty() && !filterItem.isEmpty()) {
@@ -279,6 +282,18 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
                 })
                 .setBackgroundTexture(new GuiTextureGroup(GuiTextures.SLOT, GuiTextures.FILTER_SLOT_OVERLAY)));
         group.addWidget(filterGroup);
+
+        buildAdditionalUI(group);
+
         return group;
+    }
+
+    @NotNull
+    protected String getUITitle() {
+        return "cover.conveyor.title";
+    }
+
+    protected void buildAdditionalUI(WidgetGroup group) {
+        // Do nothing in the base implementation. This is intended to be overridden by subclasses.
     }
 }
