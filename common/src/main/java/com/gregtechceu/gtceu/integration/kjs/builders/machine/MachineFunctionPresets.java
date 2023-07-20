@@ -48,11 +48,6 @@ import java.util.stream.Stream;
 @ParametersAreNonnullByDefault
 @SuppressWarnings({"unused"})
 public class MachineFunctionPresets {
-    @FunctionalInterface
-    public interface MachineConstructorFunction extends BiFunction<IMachineBlockEntity, Integer, MetaMachine> {
-        @Override
-        MetaMachine apply(IMachineBlockEntity machineBlockEntity, Integer integer);
-    }
 
     public static Integer[] mapTierArray(Object[] tiers) {
         return Arrays.stream(tiers)
@@ -236,6 +231,22 @@ public class MachineFunctionPresets {
             public MachineBuilder<D> langValue(String langValue) {
                 for (var builder : builders) {
                     builder.langValue(langValue);
+                }
+                return this;
+            }
+
+            public MachineBuilder<D> tier(int tier, Consumer<MachineBuilder<D>> consumer) {
+                for (var builder : builders) {
+                    if (builder.tier() == tier) {
+                        consumer.accept(builder);
+                    }
+                }
+                return this;
+            }
+
+            public MachineBuilder<D> allTiers(BiConsumer<Integer, MachineBuilder<D>> consumer) {
+                for (var builder : builders) {
+                    consumer.accept(builder.tier(), builder);
                 }
                 return this;
             }
