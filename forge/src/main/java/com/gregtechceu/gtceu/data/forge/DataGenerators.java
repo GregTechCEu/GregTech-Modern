@@ -40,13 +40,13 @@ public class DataGenerators {
             var set = Set.of(GTCEu.MOD_ID);
             generator.addProvider(true, new SoundEntryBuilder.SoundEntryProvider(generator.getPackOutput()));
             generator.addProvider(true, bindRegistries(BiomeTagsProviderImpl::new, registries));
-            generator.addProvider(true, bindRegistries((output, provider) -> new DatapackBuiltinEntriesProvider(
+            generator.addProvider(true, bindRegistries((output, provider) -> new GTRegistriesDatapackGenerator(
                     output, registries, new RegistrySetBuilder()
-                    .add(Registries.DAMAGE_TYPE, GTDamageTypes::bootstrap), set), registries));
-            generator.addProvider(true, bindRegistries((output, provider) -> new DatapackBuiltinEntriesProvider(
+                    .add(Registries.DAMAGE_TYPE, GTDamageTypes::bootstrap), set, "DamageType Data"), registries));
+            generator.addProvider(true, bindRegistries((output, provider) -> new GTRegistriesDatapackGenerator(
                     output, registries, new RegistrySetBuilder()
                     .add(Registries.CONFIGURED_FEATURE, GTConfiguredFeatures::bootstrap)
-                    .add(Registries.PLACED_FEATURE, GTPlacements::bootstrap), set), registries));
+                    .add(Registries.PLACED_FEATURE, GTPlacements::bootstrap), set, "Worldgen Data"), registries));
         }
     }
 

@@ -14,9 +14,9 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.tterrag.registrate.Registrate;
-import com.tterrag.registrate.builders.BlockBuilder;
 import com.tterrag.registrate.builders.Builder;
 import com.tterrag.registrate.builders.ItemBuilder;
+import com.tterrag.registrate.builders.NoConfigBuilder;
 import com.tterrag.registrate.fabric.RegistryObject;
 import com.tterrag.registrate.util.entry.RegistryEntry;
 import com.tterrag.registrate.util.nullness.NonNullFunction;
@@ -29,7 +29,6 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
@@ -41,6 +40,7 @@ import java.util.Arrays;
 import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
@@ -73,10 +73,6 @@ public abstract class GTRegistrate extends Registrate {
     @ExpectPlatform
     public static IGTFluidBuilder fluid(GTRegistrate parent, Material material, String name, String langKey, ResourceLocation stillTexture, ResourceLocation flowingTexture) {
         throw new AssertionError();
-    }
-
-    public <T extends Block> BlockBuilder<T, Registrate> block(String name, NonNullFunction<BlockBehaviour.Properties, T> factory, NonNullSupplier<BlockBehaviour.Properties> initialProperties) {
-        return entry(name, callback -> GTBlockBuilder.create(this, self(), name, callback, factory, initialProperties));
     }
 
     public <DEFINITION extends MachineDefinition> MachineBuilder<DEFINITION> machine(String name,
@@ -116,12 +112,15 @@ public abstract class GTRegistrate extends Registrate {
         return super.item(name, factory).lang(FormattingUtil.toEnglishName(name.replaceAll("/.", "_")));
     }
 
+    private RegistryEntry<CreativeModeTab> currentTab;
     private static final Map<RegistryEntry<?>, RegistryEntry<CreativeModeTab>> TAB_LOOKUP = new IdentityHashMap<>();
-    private Supplier<RegistryEntry<CreativeModeTab>> currentTab;
 
-    public GTRegistrate creativeModeTab(Supplier<RegistryEntry<CreativeModeTab>> currentTab) {
+    public void creativeModeTab(Supplier<RegistryEntry<CreativeModeTab>> currentTab) {
+        this.currentTab = currentTab.get();
+    }
+
+    public void creativeModeTab(RegistryEntry<CreativeModeTab> currentTab) {
         this.currentTab = currentTab;
-        return this;
     }
 
     public boolean isInCreativeTab(RegistryEntry<?> entry, RegistryEntry<CreativeModeTab> tab) {
@@ -132,9 +131,17 @@ public abstract class GTRegistrate extends Registrate {
         RegistryEntry<T> entry = super.accept(name, type, builder, creator, entryFactory);
 
         if (this.currentTab != null) {
-            TAB_LOOKUP.put(entry, this.currentTab.get());
+            TAB_LOOKUP.put(entry, this.currentTab);
         }
 
         return entry;
+    }
+
+    public <P> NoConfigBuilder<CreativeModeTab, CreativeModeTab, P> defaultCreativeTab(P parent, String name, Consumer<CreativeModeTab.Builder> config) {
+        return createCreativeModeTab(parent, name, config);
+    }
+
+    protected <P> NoConfigBuilder<CreativeModeTab, CreativeModeTab,P> createCreativeModeTab(P parent, String name, Consumer<CreativeModeTab.Builder> config) {
+        return super.defaultCreativeTab(parent, name, config);
     }
 }

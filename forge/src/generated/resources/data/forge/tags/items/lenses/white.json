@@ -1,5 +1,8 @@
 {
   "values": [
-    "gtceu:glass_lens"
+    {
+      "id": "gtceu:glass_lens",
+      "required": false
+    }
   ]
 }

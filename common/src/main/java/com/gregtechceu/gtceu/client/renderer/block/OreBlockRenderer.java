@@ -14,7 +14,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.BlockModelRotation;
@@ -40,8 +39,7 @@ import java.util.function.Supplier;
  */
 public class OreBlockRenderer extends BlockStateRenderer {
     private final Supplier<BlockState> stone;
-    private Supplier<ResourceLocation> overlaySupplier;
-    private ResourceLocation overlay;
+    private final Supplier<ResourceLocation> overlaySupplier;
     private final boolean emissive;
 
     public OreBlockRenderer(Supplier<BlockState> stone, Supplier<ResourceLocation> overlaySupplier, boolean emissive) {
@@ -70,7 +68,7 @@ public class OreBlockRenderer extends BlockStateRenderer {
                     public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction direction, RandomSource random) {
                         List<BakedQuad> quads = new LinkedList<>();
                         if (direction != null) {
-                            quads.add(FaceQuad.bakeFace(direction, ModelFactory.getBlockSprite(overlay), BlockModelRotation.X0_Y0, 1, emissive ? 15 : 0, true, !emissive));
+                            quads.add(FaceQuad.bakeFace(direction, ModelFactory.getBlockSprite(overlaySupplier.get()), BlockModelRotation.X0_Y0, 1, emissive ? 15 : 0, true, !emissive));
                         }
                         return quads;
                     }
@@ -83,7 +81,7 @@ public class OreBlockRenderer extends BlockStateRenderer {
     public List<BakedQuad> renderModel(BlockAndTintGetter level, BlockPos pos, BlockState state, Direction side, RandomSource rand) {
         List<BakedQuad> quads = new LinkedList<>(super.renderModel(level, pos, state, side, rand));
         if (side != null) {
-            quads.add(FaceQuad.bakeFace(side, ModelFactory.getBlockSprite(overlay), BlockModelRotation.X0_Y0, 1, emissive ? 15 : 0, true, !emissive));
+            quads.add(FaceQuad.bakeFace(side, ModelFactory.getBlockSprite(overlaySupplier.get()), BlockModelRotation.X0_Y0, 1, emissive ? 15 : 0, true, !emissive));
         }
         return quads;
     }
@@ -93,10 +91,7 @@ public class OreBlockRenderer extends BlockStateRenderer {
     public void onPrepareTextureAtlas(ResourceLocation atlasName, Consumer<ResourceLocation> register) {
         super.onPrepareTextureAtlas(atlasName, register);
         if (atlasName.equals(TextureAtlas.LOCATION_BLOCKS)) {
-            if (overlaySupplier != null) {
-                overlay = overlaySupplier.get();
-            }
-            register.accept(overlay);
+            register.accept(overlaySupplier.get());
         }
     }
 
