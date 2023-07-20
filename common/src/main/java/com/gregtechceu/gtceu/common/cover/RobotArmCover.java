@@ -13,7 +13,6 @@ import com.lowdragmc.lowdraglib.gui.widget.CycleButtonWidget;
 import com.lowdragmc.lowdraglib.gui.widget.TextFieldWidget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import lombok.Getter;
@@ -31,12 +30,20 @@ public class RobotArmCover extends ConveyorCover {
             .sorted(Comparator.comparingInt(Enum::ordinal))
             .toArray(TransferMode[]::new);
 
-    @Persisted @Getter
+    @Persisted
+    @Getter
     protected TransferMode transferMode;
+
+    @Persisted
+    @Getter
+    protected int transferStackSize;
+
+    private TextFieldWidget transferStackSizeField;
+    private WidgetGroup stackSizeGroup;
 
     public RobotArmCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide, int tier) {
         super(definition, coverHolder, attachedSide, tier);
-        transferMode = TransferMode.TRANSFER_ANY;
+        setTransferMode(TransferMode.TRANSFER_ANY);
     }
 
     @Override
@@ -161,48 +168,60 @@ public class RobotArmCover extends ConveyorCover {
 
     @Override
     protected void buildAdditionalUI(WidgetGroup group) {
-        WidgetGroup stackSizeGroup = new WidgetGroup(91, 70, 75,20);
+        this.stackSizeGroup = new WidgetGroup(91, 70, 75, 20);
 
         CycleButtonWidget transferModeSelector = new CycleButtonWidget(
                 91, 45, 75, 20, 3,
                 i -> new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON, new TextTexture(TRANSFER_MODES[i].localeName)),
                 i -> {
                     setTransferMode(TRANSFER_MODES[i]);
-
-                    if (isRemote()) {
-                        stackSizeGroup.setVisible(this.transferMode != TransferMode.TRANSFER_ANY);
-                    }
                 }
         );
         transferModeSelector.setIndex(transferMode.ordinal());
         group.addWidget(transferModeSelector);
 
-        stackSizeGroup.addWidget(new ButtonWidget(0, 0, 15, 20, new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("-1")), cd -> {
+        this.stackSizeGroup.addWidget(new ButtonWidget(0, 0, 15, 20, new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("-1")), cd -> {
             if (!cd.isRemote) {
                 int amount = cd.isCtrlClick ? cd.isShiftClick ? 512 : 64 : cd.isShiftClick ? 8 : 1;
-                setTransferRate(Mth.clamp(getTransferRate() - amount, 1, maxItemTransferRate));
+                transferStackSize = Mth.clamp(transferStackSize - amount, 1, maxItemTransferRate);
             }
         }).setHoverTooltips("gui.widget.incrementButton.default_tooltip"));
-        stackSizeGroup.addWidget(new ButtonWidget(60, 0, 15, 20,
+        this.stackSizeGroup.addWidget(new ButtonWidget(60, 0, 15, 20,
                 new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("+1")), cd -> {
             if (!cd.isRemote) {
                 int amount = cd.isCtrlClick ? cd.isShiftClick ? 512 : 64 : cd.isShiftClick ? 8 : 1;
-                setTransferRate(Mth.clamp(getTransferRate() + amount, 1, maxItemTransferRate));
+                transferStackSize = Mth.clamp(transferStackSize + amount, 1, maxItemTransferRate);
             }
         }).setHoverTooltips("gui.widget.incrementButton.default_tooltip"));
-        stackSizeGroup.addWidget(new TextFieldWidget(15, 0, 45, 20, () -> String.valueOf(transferRate), val -> setTransferRate(Mth.clamp(Integer.parseInt(val), 1, maxItemTransferRate))).setNumbersOnly(1, maxItemTransferRate));
-        stackSizeGroup.setVisible(this.transferMode != TransferMode.TRANSFER_ANY);
-        group.addWidget(stackSizeGroup);
+        this.transferStackSizeField = new TextFieldWidget(17, 0, 41, 20,
+                () -> String.valueOf(transferStackSize),
+                val -> transferStackSize = Mth.clamp(Integer.parseInt(val), 1, transferMode.maxStackSize)
+        );
+        this.stackSizeGroup.addWidget(this.transferStackSizeField);
+        this.stackSizeGroup.setVisible(this.transferMode != TransferMode.TRANSFER_ANY);
+        group.addWidget(this.stackSizeGroup);
     }
 
     private void setTransferMode(TransferMode transferMode) {
         this.transferMode = transferMode;
 
-        if (this.isRemote())
+        if (this.isRemote()) {
+            if (this.stackSizeGroup != null)
+                this.stackSizeGroup.setVisible(this.transferMode != TransferMode.TRANSFER_ANY);
+
             return;
+        }
 
         // Everything from here on only needs to happen on the server.
 
+        initializeFilterHandler();
+
+        if (this.transferStackSizeField != null)
+            this.transferStackSizeField.setNumbersOnly(1, transferMode.maxStackSize);
+    }
+
+    @Override
+    protected void initializeFilterHandler() {
         if (this.filterHandler instanceof SimpleItemFilter filter) {
             filter.setMaxStackSize(transferMode.maxStackSize);
         }

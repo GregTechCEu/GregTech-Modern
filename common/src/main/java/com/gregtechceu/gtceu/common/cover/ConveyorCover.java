@@ -238,6 +238,7 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
         if (!filterItem.isEmpty()) {
             filterHandler = ItemFilter.loadFilter(filterItem);
             filterGroup.addWidget(filterHandler.openConfigurator(10, 0));
+            initializeFilterHandler();
         }
 
         group.addWidget(new LabelWidget(10, 5, LocalizationUtils.format(getUITitle(), GTValues.VN[tier])));
@@ -265,7 +266,7 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
                         new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON, new TextTexture("cover.conveyor.mode.import")))
                 .setPressed(io == IO.IN)
         );
-        group.addWidget(new SlotWidget(filterContainer, 0, 146, 110)
+        group.addWidget(new SlotWidget(filterContainer, 0, 148, 107)
                 .setChangeListener(() -> {
                     if (isRemote()) {
                         if (!filterContainer.getStackInSlot(0).isEmpty() && !filterItem.isEmpty()) {
@@ -278,6 +279,7 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
                     if (!filterItem.isEmpty()) {
                         filterHandler = ItemFilter.loadFilter(filterItem);
                         filterGroup.addWidget(filterHandler.openConfigurator(10, 0));
+                        initializeFilterHandler();
                     }
                 })
                 .setBackgroundTexture(new GuiTextureGroup(GuiTextures.SLOT, GuiTextures.FILTER_SLOT_OVERLAY)));
@@ -294,6 +296,10 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
     }
 
     protected void buildAdditionalUI(WidgetGroup group) {
+        // Do nothing in the base implementation. This is intended to be overridden by subclasses.
+    }
+
+    protected void initializeFilterHandler() {
         // Do nothing in the base implementation. This is intended to be overridden by subclasses.
     }
 }

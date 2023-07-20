@@ -107,9 +107,9 @@ public class SimpleItemFilter implements ItemFilter {
                 group.addWidget(slot);
             }
         }
-        group.addWidget(new ToggleButtonWidget(18 * 3 + 2, (18 * 0) + 6, 18, 18,
+        group.addWidget(new ToggleButtonWidget(18 * 3 + 2, (18 * 0) + 9, 18, 18,
                 GuiTextures.BUTTON_BLACKLIST, this::isBlackList, this::setBlackList));
-        group.addWidget(new ToggleButtonWidget(18 * 3 + 2, (18 * 1) + 6, 18, 18,
+        group.addWidget(new ToggleButtonWidget(18 * 3 + 2, (18 * 1) + 9, 18, 18,
                 GuiTextures.BUTTON_FILTER_NBT, this::isIgnoreNbt, this::setIgnoreNbt));
         return group;
     }
