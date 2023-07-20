@@ -8,6 +8,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.*;
@@ -62,18 +63,18 @@ public class TreeFellingHelper {
 
             stack.hurtAndBreak(orderedBlocks.size(), miner, p -> p.broadcastBreakEvent(EquipmentSlot.MAINHAND));
 
-            breakBlocksPerTick((ServerPlayer) miner, orderedBlocks, stack);
-            orderedBlocks = new LinkedList<>();
+            breakBlocksPerTick((ServerPlayer) miner, orderedBlocks, origin.getBlock());
         }
     }
 
-    public void breakBlocksPerTick(ServerPlayer player, List<BlockPos> posList, ItemStack stack) {
+    public void breakBlocksPerTick(ServerPlayer player, List<BlockPos> posList, Block originBlock) {
         for (int i = 0; i < posList.size(); i++) {
-
             int delayTick = i * 2; // 1 block per 2 tick
             BlockPos pos = posList.get(i);
             TaskHandler.enqueueServerTask(player.getLevel(), () -> {
-                player.getLevel().destroyBlock(pos, true);
+                if (player.getLevel().getBlockState(pos).is(originBlock)) {
+                    player.getLevel().destroyBlock(pos, true);
+                }
             }, delayTick);
         }
     }
