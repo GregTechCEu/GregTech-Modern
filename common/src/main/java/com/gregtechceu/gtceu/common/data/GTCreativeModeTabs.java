@@ -78,6 +78,20 @@ public class GTCreativeModeTabs {
         @Override
         public void accept(@Nonnull CreativeModeTab.ItemDisplayParameters itemDisplayParameters, @Nonnull CreativeModeTab.Output output) {
             var tab = REGISTRATE.get(name, Registries.CREATIVE_MODE_TAB);
+            for (var entry : REGISTRATE.getAll(Registries.BLOCK)) {
+                if (!REGISTRATE.isInCreativeTab(entry, tab))
+                    continue;
+                Item item = entry.get().asItem();
+                if (item == Items.AIR)
+                    continue;
+                if (item instanceof ComponentItem componentItem) {
+                    NonNullList<ItemStack> list = NonNullList.create();
+                    componentItem.fillItemCategory(tab.get(), list);
+                    list.forEach(output::accept);
+                } else {
+                    output.accept(item);
+                }
+            }
             for (var entry : REGISTRATE.getAll(Registries.ITEM)) {
                 if (!REGISTRATE.isInCreativeTab(entry, tab))
                     continue;
@@ -85,7 +99,7 @@ public class GTCreativeModeTabs {
                 if (item instanceof BlockItem)
                     continue;
                 if (item instanceof ComponentItem componentItem) {
-                    var list = NonNullList.of(ItemStack.EMPTY);
+                    NonNullList<ItemStack> list = NonNullList.create();
                     componentItem.fillItemCategory(tab.get(), list);
                     list.forEach(output::accept);
                 } else {
