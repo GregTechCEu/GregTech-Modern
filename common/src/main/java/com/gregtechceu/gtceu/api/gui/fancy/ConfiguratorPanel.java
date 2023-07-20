@@ -27,6 +27,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -108,7 +109,7 @@ public class ConfiguratorPanel extends WidgetGroup {
         }
         if (expanded != null && expanded.isVisible()) {
             poseStack.pushPose();
-            poseStack.translate(0, 0, 600);
+            poseStack.translate(0, 0, 300);
             RenderSystem.setShaderColor(1, 1, 1, 1);
             RenderSystem.enableBlend();
             if (expanded.inAnimate()) {
@@ -123,6 +124,10 @@ public class ConfiguratorPanel extends WidgetGroup {
     @Override
     @Environment(EnvType.CLIENT)
     protected void drawWidgetsForeground(@NotNull PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
+        // remove previous tooltip
+        if (isMouseOverElement(mouseX, mouseY)) {
+            gui.getModularUIGui().setHoverTooltip(Collections.emptyList(), ItemStack.EMPTY, null, null);
+        }
         for (Widget widget : widgets) {
             if (widget.isVisible() && widget != expanded) {
                 RenderSystem.setShaderColor(1, 1, 1, 1);
@@ -301,7 +306,7 @@ public class ConfiguratorPanel extends WidgetGroup {
                 isDragging = true;
                 return true;
             }
-            return super.mouseClicked(mouseX, mouseY, button);
+            return super.mouseClicked(mouseX, mouseY, button) || isMouseOverElement(mouseX, mouseY);
         }
 
         @Override
@@ -318,7 +323,7 @@ public class ConfiguratorPanel extends WidgetGroup {
                 this.dragOffsetY += (int) dragY;
                 this.addSelfPosition((int) dragX, (int) dragY);
             }
-            return super.mouseDragged(mouseX, mouseY, button, dragX, dragY);
+            return super.mouseDragged(mouseX, mouseY, button, dragX, dragY) || isMouseOverElement(mouseX, mouseY);
         }
 
         @Override
@@ -327,7 +332,19 @@ public class ConfiguratorPanel extends WidgetGroup {
             this.lastDeltaX = 0;
             this.lastDeltaY = 0;
             this.isDragging = false;
-            return super.mouseReleased(mouseX, mouseY, button);
+            return super.mouseReleased(mouseX, mouseY, button) || isMouseOverElement(mouseX, mouseY);
+        }
+
+        @Override
+        @Environment(EnvType.CLIENT)
+        public boolean mouseWheelMove(double mouseX, double mouseY, double wheelDelta) {
+            return super.mouseWheelMove(mouseX, mouseY, wheelDelta) || isMouseOverElement(mouseX, mouseY);
+        }
+
+        @Override
+        @Environment(EnvType.CLIENT)
+        public boolean mouseMoved(double mouseX, double mouseY) {
+            return super.mouseMoved(mouseX, mouseY) || isMouseOverElement(mouseX, mouseY);
         }
     }
 }
