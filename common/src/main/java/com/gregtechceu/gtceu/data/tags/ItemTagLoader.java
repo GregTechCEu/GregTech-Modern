@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.tterrag.registrate.providers.RegistrateTagsProvider;
+import com.tterrag.registrate.util.entry.RegistryEntry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagBuilder;
 import net.minecraft.tags.TagKey;
@@ -29,6 +30,7 @@ public class ItemTagLoader {
         create(provider, "pistons", rl("piston"), rl("sticky_piston"));
 
         create(provider, CustomTags.AOE_TOOLS, GTItems.TOOL_ITEMS.column(GTToolType.HARD_HAMMER).values().stream().filter(Objects::nonNull).map(entry -> GTCEu.id(entry.get().getTier().material.getName() + "_hammer")).toList().toArray(new ResourceLocation[0]));
+        create(provider, CustomTags.TREE_FELLING_TOOLS, GTItems.TOOL_ITEMS.column(GTToolType.AXE).values().stream().filter(Objects::nonNull).map(RegistryEntry::getId).toArray(ResourceLocation[]::new));
 
 
         // TODO add to planks mc tag?
