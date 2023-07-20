@@ -237,7 +237,7 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
         var filterGroup = new WidgetGroup(0, 70, 176, 60);
         if (!filterItem.isEmpty()) {
             filterHandler = ItemFilter.loadFilter(filterItem);
-            filterGroup.addWidget(filterHandler.openConfigurator((176 - 80) / 2, (60 - 55) / 2));
+            filterGroup.addWidget(filterHandler.openConfigurator(10, 0));
         }
 
         group.addWidget(new LabelWidget(10, 5, LocalizationUtils.format(getUITitle(), GTValues.VN[tier])));
@@ -265,7 +265,7 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
                         new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON, new TextTexture("cover.conveyor.mode.import")))
                 .setPressed(io == IO.IN)
         );
-        group.addWidget(new SlotWidget(filterContainer, 0, 10, 70)
+        group.addWidget(new SlotWidget(filterContainer, 0, 146, 110)
                 .setChangeListener(() -> {
                     if (isRemote()) {
                         if (!filterContainer.getStackInSlot(0).isEmpty() && !filterItem.isEmpty()) {
@@ -277,7 +277,7 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
                     filterGroup.clearAllWidgets();
                     if (!filterItem.isEmpty()) {
                         filterHandler = ItemFilter.loadFilter(filterItem);
-                        filterGroup.addWidget(filterHandler.openConfigurator((176 - 80) / 2, (60 - 55) / 2));
+                        filterGroup.addWidget(filterHandler.openConfigurator(10, 0));
                     }
                 })
                 .setBackgroundTexture(new GuiTextureGroup(GuiTextures.SLOT, GuiTextures.FILTER_SLOT_OVERLAY)));
