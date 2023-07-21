@@ -46,7 +46,7 @@ public class GTFeaturesImpl {
     }
 
     public static void register() {
-        var registryAccess = RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY);
+        var registryAccess = GTRegistries.builtinRegistry();
         for (var entry : GTRegistries.ORE_VEINS.entries()) {
             ResourceLocation id = entry.getKey();
             var datagenExt = entry.getValue().getVeinGenerator();
@@ -78,7 +78,7 @@ public class GTFeaturesImpl {
             var holder = featureRegistry.getHolderOrThrow(ResourceKey.create(Registries.CONFIGURED_FEATURE, vegetationId));
             return new PlacedFeature(holder, List.of(
                     new BiomePlacement(List.of(
-                            new BiomeWeightModifier(biomeRegistry.getOrCreateTag(CustomTags.IS_SWAMP), 50)
+                            new BiomeWeightModifier(() -> biomeRegistry.getOrCreateTag(CustomTags.IS_SWAMP), 50)
                     )),
                     PlacementUtils.countExtra(0, 0.005F, 1),
                     InSquarePlacement.spread(),

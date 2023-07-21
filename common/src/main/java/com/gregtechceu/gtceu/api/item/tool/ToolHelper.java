@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.item.GTToolItem;
 import com.lowdragmc.lowdraglib.utils.RayTraceHelper;
-import com.mojang.math.Vector3d;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.server.level.ServerPlayer;
@@ -68,7 +67,7 @@ public class ToolHelper {
 
     public static List<BlockPos> getAOEPositions(LivingEntity miner, ItemStack stack, BlockPos pos, int radius) {
 
-        Level level = miner.getLevel();
+        Level level = miner.level();
 
         ArrayList<BlockPos> aoePositions = new ArrayList<>();
         ArrayList<BlockPos> potentialPositions = new ArrayList<>();

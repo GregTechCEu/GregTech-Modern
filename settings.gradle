@@ -55,7 +55,7 @@ dependencyResolutionManagement {
         def shadowVersion = "7.1.2"
         def architecturyPluginVersion = "3.4-SNAPSHOT"
         def architecturyLoomVersion = "1.0-SNAPSHOT"
-        def quiltFlowerVersion = "1.+"
+        def vineFlowerVersion = "1.+"
         def macheteVersion = "1.+"
         def ldLibVersion = "1.0.13.b"
 
@@ -190,8 +190,8 @@ dependencyResolutionManagement {
             def architecturyLoom = version("architectury-loom", architecturyLoomVersion)
             plugin("architectury-loom", "dev.architectury.loom").versionRef(architecturyLoom)
 
-            def quiltFlower = version("quiltFlower", quiltFlowerVersion)
-            plugin("quiltFlower", "io.github.juuxel.loom-quiltflower").versionRef(quiltFlower)
+            def vineFlower = version("vineFlower", vineFlowerVersion)
+            plugin("vineFlower", "io.github.juuxel.loom-vineflower").versionRef(vineFlower)
 
             def machete = version("machete", macheteVersion)
             plugin("machete", "io.github.p03w.machete").versionRef(machete)

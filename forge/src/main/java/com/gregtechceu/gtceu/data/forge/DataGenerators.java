@@ -5,6 +5,7 @@ import appeng.init.worldgen.InitBiomes;
 import appeng.init.worldgen.InitDimensionTypes;
 import appeng.init.worldgen.InitStructures;
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.SoundEntryBuilder;
 import com.gregtechceu.gtceu.common.data.GTConfiguredFeatures;
 import com.gregtechceu.gtceu.common.data.GTDamageTypes;

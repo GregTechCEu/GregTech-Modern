@@ -39,7 +39,6 @@ public class ServerPlayerGameModeMixin {
     )
     private void destroyBlock(BlockPos pos, CallbackInfoReturnable<Boolean> cir) {
         ItemStack mainHandItem = player.getMainHandItem();
-
         if (mainHandItem.is(CustomTags.AOE_TOOLS) && mainHandItem.isCorrectToolForDrops(level.getBlockState(pos)) && !player.isCrouching()) {
             List<BlockPos> blockPosList = ToolHelper.getAOEPositions(player, player.getMainHandItem(), pos, 1);
             for (BlockPos blockPos : blockPosList) {

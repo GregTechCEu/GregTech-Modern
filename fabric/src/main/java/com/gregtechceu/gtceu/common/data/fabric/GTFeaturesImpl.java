@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.common.data.fabric;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.worldgen.BiomeWeightModifier;
-import com.gregtechceu.gtceu.api.data.worldgen.GTOreFeatureEntry;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.BiomePlacement;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
@@ -33,7 +32,7 @@ import java.util.List;
  */
 public class GTFeaturesImpl {
     public static void register() {
-        var registryAccess = RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY);
+        var registryAccess = GTRegistries.builtinRegistry();
         var featureRegistry = registryAccess.registryOrThrow(Registries.CONFIGURED_FEATURE);
         var biomeRegistry = registryAccess.registryOrThrow(Registries.BIOME);
         var placedRegistry = registryAccess.registryOrThrow(Registries.PLACED_FEATURE);
@@ -61,7 +60,7 @@ public class GTFeaturesImpl {
 
         var placedFeature = new PlacedFeature(holder, List.of(
                 new BiomePlacement(List.of(
-                        new BiomeWeightModifier(biomeRegistry.getOrCreateTag(CustomTags.IS_SWAMP), 50)
+                        new BiomeWeightModifier(() -> biomeRegistry.getOrCreateTag(CustomTags.IS_SWAMP), 50)
                 )),
                 PlacementUtils.countExtra(0, 0.005F, 1),
                 InSquarePlacement.spread(),

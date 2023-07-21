@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.data.fabric;
 
 import com.google.gson.JsonElement;
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.JsonOps;
 import net.minecraft.core.HolderLookup;

@@ -9,24 +9,25 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.biome.Biome;
 
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class BiomeWeightModifier implements Function<Holder<Biome>, Integer> {
     public static final Codec<BiomeWeightModifier> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                    RegistryCodecs.homogeneousList(Registries.BIOME).fieldOf("biomes").forGetter(mod -> mod.biomes),
+                    RegistryCodecs.homogeneousList(Registries.BIOME).fieldOf("biomes").forGetter(mod -> mod.biomes.get()),
                     Codec.INT.fieldOf("added_weight").forGetter(mod -> mod.addedWeight)
-            ).apply(instance, BiomeWeightModifier::new)
+            ).apply(instance, (biomes, weight) -> new BiomeWeightModifier(() -> biomes, weight))
     );
 
-    public HolderSet<Biome> biomes;
+    public Supplier<HolderSet<Biome>> biomes;
     public int addedWeight;
 
-    public BiomeWeightModifier(HolderSet<Biome> biomes, int addedWeight) {
+    public BiomeWeightModifier(Supplier<HolderSet<Biome>> biomes, int addedWeight) {
         this.biomes = biomes;
         this.addedWeight = addedWeight;
     }
 
     @Override
     public Integer apply(Holder<Biome> biome) {
-        return biomes.contains(biome) ? addedWeight : 0;
+        return biomes.get().contains(biome) ? addedWeight : 0;
     }
 }

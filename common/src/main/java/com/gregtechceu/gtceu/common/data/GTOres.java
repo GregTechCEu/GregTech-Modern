@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.data.worldgen.GTOreFeatureEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.worldgen.WorldGenLayers;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.WorldGeneratorUtils;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -569,19 +570,16 @@ public class GTOres {
         return block;
     }
 
-    private static HolderSet<DimensionType> overworld() {
-        var registryAccess = RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY);
-        return HolderSet.direct(registryAccess.registryOrThrow(Registries.DIMENSION_TYPE).getHolderOrThrow(BuiltinDimensionTypes.OVERWORLD));
+    public static HolderSet<DimensionType> overworld() {
+        return HolderSet.direct(GTRegistries.builtinRegistry().registryOrThrow(Registries.DIMENSION_TYPE).getHolderOrThrow(BuiltinDimensionTypes.OVERWORLD));
     }
 
-    private static HolderSet<DimensionType> nether() {
-        var registryAccess = RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY);
-        return HolderSet.direct(registryAccess.registryOrThrow(Registries.DIMENSION_TYPE).getHolderOrThrow(BuiltinDimensionTypes.NETHER));
+    public static HolderSet<DimensionType> nether() {
+        return HolderSet.direct(GTRegistries.builtinRegistry().registryOrThrow(Registries.DIMENSION_TYPE).getHolderOrThrow(BuiltinDimensionTypes.NETHER));
     }
 
-    private static HolderSet<DimensionType> end() {
-        var registryAccess = RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY);
-        return HolderSet.direct(registryAccess.registryOrThrow(Registries.DIMENSION_TYPE).getHolderOrThrow(BuiltinDimensionTypes.END));
+    public static HolderSet<DimensionType> end() {
+        return HolderSet.direct(GTRegistries.builtinRegistry().registryOrThrow(Registries.DIMENSION_TYPE).getHolderOrThrow(BuiltinDimensionTypes.END));
     }
 
     public static void init() {

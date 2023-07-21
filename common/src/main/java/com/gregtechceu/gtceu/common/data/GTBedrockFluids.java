@@ -3,8 +3,6 @@ package com.gregtechceu.gtceu.common.data;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefinition;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
-import net.minecraft.core.HolderSet;
-import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.world.level.biome.Biomes;
 
@@ -87,7 +85,7 @@ public class GTBedrockFluids {
             .depletionAmount(1)
             .depletionChance(100)
             .depletedYield(30)
-            .dimensions(GTOres.nether())
+//            .dimensions(GTOres::nether)
             .register();
 
     public static BedrockFluidDefinition NETHER_NATURAL_GAS = BedrockFluidDefinition.builder(GTCEu.id("nether_natural_gas_deposit"))
@@ -97,7 +95,7 @@ public class GTBedrockFluids {
             .depletionAmount(1)
             .depletionChance(100)
             .depletedYield(40)
-            .dimensions(GTOres.nether())
+//            .dimensions(GTOres::nether)
             .register();
 
     public static void init() {

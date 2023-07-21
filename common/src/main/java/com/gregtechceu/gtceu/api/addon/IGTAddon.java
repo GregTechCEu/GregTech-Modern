@@ -1,7 +1,5 @@
 package com.gregtechceu.gtceu.api.addon;
 
-import com.gregtechceu.gtceu.api.addon.events.KJSRecipeKeyEvent;
-
 import com.gregtechceu.gtceu.api.addon.events.MaterialCasingCollectionEvent;
 import net.minecraft.data.recipes.FinishedRecipe;
 
@@ -88,7 +86,7 @@ public interface IGTAddon {
 
     }
 
-    default void registerRecipeKeys(KJSRecipeKeyEvent event) {
-
-    }
+//    default void registerRecipeKeys(KJSRecipeKeyEvent event) {
+//
+//    }
 }

@@ -145,7 +145,7 @@ public class GTOreFeatureEntry {
     }
 
     public GTOreFeatureEntry biomes(TagKey<Biome> biomes) {
-        this.biomes = RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY).lookupOrThrow(Registries.BIOME).getOrThrow(biomes);
+        this.biomes = GTRegistries.builtinRegistry().lookupOrThrow(Registries.BIOME).getOrThrow(biomes);
         return this;
     }
 
