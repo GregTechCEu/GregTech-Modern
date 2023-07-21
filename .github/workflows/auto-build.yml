@@ -10,6 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       GITHUB_ACTION_NUMBER: ${{ vars.GITHUB_RUN_NUMBER }}
+      GITHUB_RUN_NUMBER: ${{ vars.GITHUB_RUN_NUMBER }}
     steps:
       - uses: actions/checkout@v3
         with:
