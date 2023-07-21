@@ -3,7 +3,7 @@ name: auto-build
 on:
   push:
     branches:
-      - '1.19.2'
+      - '1.20.1'
 
 jobs:
   build:
@@ -34,7 +34,7 @@ jobs:
       - name: Get Version
         id: var
         run: |
-          MESSAGE=$(ls forge/build/libs/* | grep sources.jar -v | grep shadow.jar -v | awk -F 'gtceu-forge-1.19.2-|-build_|.jar' '{print $2}')
+          MESSAGE=$(ls forge/build/libs/* | grep sources.jar -v | grep shadow.jar -v | awk -F 'gtceu-forge-1.20.1-|-build_|.jar' '{print $2}')
           echo version=$MESSAGE >> $GITHUB_OUTPUT
 
       - name: release
