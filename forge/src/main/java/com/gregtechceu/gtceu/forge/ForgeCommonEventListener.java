@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.data.loader.forge.FluidVeinLoaderImpl;
 import com.gregtechceu.gtceu.data.loader.forge.OreDataLoaderImpl;
 import com.gregtechceu.gtceu.utils.TaskHandler;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -90,13 +91,15 @@ public class ForgeCommonEventListener {
 
     @SubscribeEvent
     public static void levelTick(TickEvent.LevelTickEvent event) {
-        if (event.side.isServer() && event.phase.equals(TickEvent.Phase.END)) {
-            TaskHandler.onTickUpdate(event.level);
+        if (event.level instanceof ServerLevel serverLevel && event.phase.equals(TickEvent.Phase.END)) {
+            TaskHandler.onTickUpdate(serverLevel);
         }
     }
 
     @SubscribeEvent
     public static void worldUnload(LevelEvent.Unload event) {
-        TaskHandler.onWorldUnLoad((Level) event.getLevel());
+        if (event.getLevel() instanceof ServerLevel serverLevel) {
+            TaskHandler.onWorldUnLoad(serverLevel);
+        }
     }
 }

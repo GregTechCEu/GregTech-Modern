@@ -49,7 +49,7 @@ public class TreeFellingHelper {
             }
         }
 
-        if (!visited.isEmpty() && level.getServer() != null) {
+        if (!visited.isEmpty() && miner instanceof ServerPlayer serverPlayer) {
             List<BlockPos> orderedBlocks = visited.stream()
                     .sorted(Comparator.comparingInt(pos -> pos.getY() - originPos.getY()))
                     .collect(Collectors.toCollection(LinkedList::new));
@@ -61,9 +61,9 @@ public class TreeFellingHelper {
             }
 
 
-            stack.hurtAndBreak(orderedBlocks.size(), miner, p -> p.broadcastBreakEvent(EquipmentSlot.MAINHAND));
+            stack.hurtAndBreak(orderedBlocks.size(), serverPlayer, p -> p.broadcastBreakEvent(EquipmentSlot.MAINHAND));
 
-            breakBlocksPerTick((ServerPlayer) miner, orderedBlocks, origin.getBlock());
+            breakBlocksPerTick(serverPlayer, orderedBlocks, origin.getBlock());
         }
     }
 

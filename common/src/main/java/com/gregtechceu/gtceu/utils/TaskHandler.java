@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.utils;
 
 import com.gregtechceu.gtceu.GTCEu;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 
 import java.util.ArrayList;
@@ -14,23 +15,23 @@ public class TaskHandler {
     private static final Map<ResourceKey<Level>, List<RunnableEntry>> waitToAddTasks = new HashMap<>();
 
     // schedule tick event here
-    public static void onTickUpdate(Level level) {
+    public static void onTickUpdate(ServerLevel level) {
         var key = level.dimension();
-        execute(serverTasks.get(key));
         synchronized (waitToAddTasks) {
-            serverTasks.putAll(waitToAddTasks);
-            waitToAddTasks.clear();
+            var list = waitToAddTasks.remove(key);
+            if (list != null && !list.isEmpty()) {
+                serverTasks.computeIfAbsent(key, k -> new ArrayList<>()).addAll(list);
+            }
         }
+        execute(serverTasks.get(key));
     }
 
     // clean up here
-    public static void onWorldUnLoad(Level level) {
+    public static void onWorldUnLoad(ServerLevel level) {
         var key = level.dimension();
-        if (!level.isClientSide&& serverTasks.containsKey(key)) {
-            serverTasks.remove(key);
-            synchronized (waitToAddTasks) {
-                waitToAddTasks.remove(key);
-            }
+        serverTasks.remove(key);
+        synchronized (waitToAddTasks) {
+            waitToAddTasks.remove(key);
         }
     }
 
@@ -52,11 +53,9 @@ public class TaskHandler {
         }
     }
 
-    public static void enqueueServerTask(Level level, Runnable task, int delay) {
-        if (!level.isClientSide) {
-            synchronized (waitToAddTasks) {
-                waitToAddTasks.computeIfAbsent(level.dimension(), key -> new ArrayList<>()).add(new RunnableEntry(task, delay));
-            }
+    public static void enqueueServerTask(ServerLevel level, Runnable task, int delay) {
+        synchronized (waitToAddTasks) {
+            waitToAddTasks.computeIfAbsent(level.dimension(), key -> new ArrayList<>()).add(new RunnableEntry(task, delay));
         }
     }
 
