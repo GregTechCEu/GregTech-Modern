@@ -2,9 +2,14 @@ package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefinition;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
+import net.minecraft.core.HolderSet;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.world.level.biome.Biomes;
+import net.minecraft.world.level.dimension.BuiltinDimensionTypes;
+import net.minecraft.world.level.dimension.DimensionType;
 
 /**
  * @author KilaBash
@@ -85,7 +90,7 @@ public class GTBedrockFluids {
             .depletionAmount(1)
             .depletionChance(100)
             .depletedYield(30)
-//            .dimensions(GTOres::nether)
+            .dimensions(GTBedrockFluids::nether)
             .register();
 
     public static BedrockFluidDefinition NETHER_NATURAL_GAS = BedrockFluidDefinition.builder(GTCEu.id("nether_natural_gas_deposit"))
@@ -95,8 +100,20 @@ public class GTBedrockFluids {
             .depletionAmount(1)
             .depletionChance(100)
             .depletedYield(40)
-//            .dimensions(GTOres::nether)
+            .dimensions(GTBedrockFluids::nether)
             .register();
+
+    public static HolderSet<DimensionType> overworld() {
+        return HolderSet.direct(GTRegistries.builtinRegistry().registryOrThrow(Registries.DIMENSION_TYPE).getHolderOrThrow(BuiltinDimensionTypes.OVERWORLD));
+    }
+
+    public static HolderSet<DimensionType> nether() {
+        return HolderSet.direct(GTRegistries.builtinRegistry().registryOrThrow(Registries.DIMENSION_TYPE).getHolderOrThrow(BuiltinDimensionTypes.NETHER));
+    }
+
+    public static HolderSet<DimensionType> end() {
+        return HolderSet.direct(GTRegistries.builtinRegistry().registryOrThrow(Registries.DIMENSION_TYPE).getHolderOrThrow(BuiltinDimensionTypes.END));
+    }
 
     public static void init() {
 

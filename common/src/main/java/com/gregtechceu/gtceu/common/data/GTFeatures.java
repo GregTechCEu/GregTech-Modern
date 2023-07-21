@@ -2,11 +2,19 @@ package com.gregtechceu.gtceu.common.data;
 
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.data.worldgen.GTOreFeatureConfiguration;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.*;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreFeature;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
+import net.minecraft.world.level.levelgen.placement.InSquarePlacement;
+import net.minecraft.world.level.levelgen.placement.PlacedFeature;
+
+import java.util.List;
 
 /**
  * @author KilaBash

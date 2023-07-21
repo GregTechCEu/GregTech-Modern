@@ -70,14 +70,15 @@ public class GTOreFeatureEntry {
                     Codec.INT.fieldOf("cluster_size").forGetter(ft -> ft.clusterSize),
                     Codec.floatRange(0.0F, 1.0F).fieldOf("density").forGetter(ft -> ft.density),
                     Codec.INT.fieldOf("weight").forGetter(ft -> ft.weight),
-                    IWorldGenLayer.CODEC.fieldOf("layer").forGetter(ft -> ft.layer),
-                    RegistryCodecs.homogeneousList(Registries.DIMENSION_TYPE).fieldOf("dimension_filter").forGetter(ft -> ft.dimensionFilter),
+                    com.gregtechceu.gtceu.api.data.worldgen.IWorldGenLayer.CODEC.fieldOf("layer").forGetter(ft -> ft.layer),
+                    RegistryCodecs.homogeneousList(Registries.DIMENSION_TYPE).fieldOf("dimension_filter").forGetter(ft -> ft.dimensionFilter.get()),
                     HeightRangePlacement.CODEC.fieldOf("height_range").forGetter(ft -> ft.range),
                     Codec.floatRange(0.0F, 1.0F).fieldOf("discard_chance_on_air_exposure").forGetter(ft -> ft.discardChanceOnAirExposure),
-                    RegistryCodecs.homogeneousList(Registries.BIOME).fieldOf("biomes").forGetter(ext -> ext.biomes),
+                    RegistryCodecs.homogeneousList(Registries.BIOME).fieldOf("biomes").forGetter(ext -> ext == null ? null : ext.biomes.get()),
                     BiomeWeightModifier.CODEC.optionalFieldOf("weight_modifier", null).forGetter(ext -> ext.biomeWeightModifier),
                     VeinGenerator.DIRECT_CODEC.fieldOf("generator").forGetter(ft -> ft.veinGenerator)
-            ).apply(instance, GTOreFeatureEntry::new)
+            ).apply(instance, (clusterSize, density, weight, layer, dimensionFilter, range, discardChanceOnAirExposure, biomes, biomeWeightModifier, veinGenerator) ->
+        new GTOreFeatureEntry(clusterSize, density, weight, layer, () -> dimensionFilter, range, discardChanceOnAirExposure, biomes == null ? null : () -> biomes, biomeWeightModifier, veinGenerator))
     );
 
     @Getter @Setter
@@ -89,13 +90,13 @@ public class GTOreFeatureEntry {
     @Getter @Setter
     private IWorldGenLayer layer;
     @Getter @Setter
-    private HolderSet<DimensionType> dimensionFilter;
+    private Supplier<HolderSet<DimensionType>> dimensionFilter;
     @Getter @Setter
     private HeightRangePlacement range;
     @Getter @Setter
     private float discardChanceOnAirExposure;
     @Getter @Setter
-    private HolderSet<Biome> biomes;
+    private Supplier<HolderSet<Biome>> biomes;
     @Getter @Setter
     private BiomeWeightModifier biomeWeightModifier;
 
@@ -110,7 +111,7 @@ public class GTOreFeatureEntry {
     @Setter
     private List<Map.Entry<Integer, Material>> bedrockVeinMaterial;
 
-    public GTOreFeatureEntry(ResourceLocation id, int clusterSize, float density, int weight, IWorldGenLayer layer, HolderSet<DimensionType> dimensionFilter, HeightRangePlacement range, float discardChanceOnAirExposure, @Nullable HolderSet<Biome> biomes, @Nullable BiomeWeightModifier biomeWeightModifier, @Nullable GTOreFeatureEntry.VeinGenerator veinGenerator) {
+    public GTOreFeatureEntry(ResourceLocation id, int clusterSize, float density, int weight, IWorldGenLayer layer, Supplier<HolderSet<DimensionType>> dimensionFilter, HeightRangePlacement range, float discardChanceOnAirExposure, @Nullable Supplier<HolderSet<Biome>> biomes, @Nullable BiomeWeightModifier biomeWeightModifier, @Nullable GTOreFeatureEntry.VeinGenerator veinGenerator) {
         this(clusterSize, density, weight, layer, dimensionFilter, range, discardChanceOnAirExposure, biomes, biomeWeightModifier, veinGenerator);
         if (GTRegistries.ORE_VEINS.containKey(id)) {
             GTRegistries.ORE_VEINS.replace(id, this);
@@ -119,7 +120,7 @@ public class GTOreFeatureEntry {
         }
     }
 
-    public GTOreFeatureEntry(int clusterSize, float density, int weight, IWorldGenLayer layer, HolderSet<DimensionType> dimensionFilter, HeightRangePlacement range, float discardChanceOnAirExposure, @Nullable HolderSet<Biome> biomes, @Nullable BiomeWeightModifier biomeWeightModifier, @Nullable GTOreFeatureEntry.VeinGenerator veinGenerator) {
+    public GTOreFeatureEntry(int clusterSize, float density, int weight, IWorldGenLayer layer, Supplier<HolderSet<DimensionType>> dimensionFilter, HeightRangePlacement range, float discardChanceOnAirExposure, @Nullable Supplier<HolderSet<Biome>> biomes, @Nullable BiomeWeightModifier biomeWeightModifier, @Nullable GTOreFeatureEntry.VeinGenerator veinGenerator) {
         this.clusterSize = clusterSize;
         this.density = density;
         this.weight = weight;
@@ -145,12 +146,12 @@ public class GTOreFeatureEntry {
     }
 
     public GTOreFeatureEntry biomes(TagKey<Biome> biomes) {
-        this.biomes = GTRegistries.builtinRegistry().lookupOrThrow(Registries.BIOME).getOrThrow(biomes);
+        this.biomes = () -> GTRegistries.builtinRegistry().lookupOrThrow(Registries.BIOME).getOrThrow(biomes);
         return this;
     }
 
     public GTOreFeatureEntry biomes(HolderSet<Biome> biomes) {
-        this.biomes = biomes;
+        this.biomes = () -> biomes;
         return this;
     }
 

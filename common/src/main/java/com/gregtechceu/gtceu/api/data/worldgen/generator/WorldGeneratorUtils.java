@@ -35,7 +35,7 @@ public class WorldGeneratorUtils {
 
         public WorldOreVeinCache(WorldGenLevel level) {
             this.worldVeins = GTRegistries.ORE_VEINS.values().stream()
-                    .filter(entry -> entry.getDimensionFilter().stream().anyMatch(filter -> filter.is(level.getLevel().dimensionTypeId())))
+                    .filter(entry -> entry.getDimensionFilter().get().stream().anyMatch(filter -> filter.is(level.getLevel().dimensionTypeId())))
                     .collect(Collectors.toList());
         }
 
