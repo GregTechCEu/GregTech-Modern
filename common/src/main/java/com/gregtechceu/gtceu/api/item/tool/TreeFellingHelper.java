@@ -71,9 +71,9 @@ public class TreeFellingHelper {
         for (int i = 0; i < posList.size(); i++) {
             int delayTick = i * 2; // 1 block per 2 tick
             BlockPos pos = posList.get(i);
-            TaskHandler.enqueueServerTask(player.getLevel(), () -> {
-                if (player.getLevel().getBlockState(pos).is(originBlock)) {
-                    player.getLevel().destroyBlock(pos, true);
+            TaskHandler.enqueueServerTask(player.serverLevel(), () -> {
+                if (player.level().getBlockState(pos).is(originBlock)) {
+                    player.level().destroyBlock(pos, true);
                 }
             }, delayTick);
         }
