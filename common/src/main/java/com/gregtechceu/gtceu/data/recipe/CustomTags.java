@@ -48,6 +48,7 @@ public class CustomTags {
     public static final TagKey<Item> UHV_BATTERIES = TagUtil.createPlatformItemTag("batteries/uhv", "uhv_batteries");
 
     public static final TagKey<Item> AOE_TOOLS = TagUtil.createPlatformItemTag("tools/aoe", "aoe_tools");
+    public static final TagKey<Item> TREE_FELLING_TOOLS = TagUtil.createPlatformItemTag("tools/tree_felling", "tree_felling_tools");
 
     // Platform-dependent tags
     public static final TagKey<Item> TAG_WOODEN_CHESTS = TagUtil.createPlatformItemTag("chests/wooden", "chests");
