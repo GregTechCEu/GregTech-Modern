@@ -455,7 +455,11 @@ public class GTBlocks {
     public static final BlockEntry<ActiveBlock> FIREBOX_TITANIUM = createFireboxCasing(BoilerFireboxType.TITANIUM_FIREBOX);
     public static final BlockEntry<ActiveBlock> FIREBOX_TUNGSTENSTEEL = createFireboxCasing(BoilerFireboxType.TUNGSTENSTEEL_FIREBOX);
 
-
+    //HPCA
+    public static final BlockEntry<Block> COMPUTER_CASING = createCasingBlock("computer_casing", GTCEu.id("block/casings/hpca/computer"));
+    public static final BlockEntry<Block> COMPUTER_HEAT_VENT = createCasingBlock("computer_heat_vent", GTCEu.id("block/casings/hpca/heat_vent"));
+    public static final BlockEntry<Block> HIGH_POWER_CASING = createCasingBlock("high_power_casing", GTCEu.id("block/casings/hpca/high_power_casing"));
+    public static final BlockEntry<Block> ADVANCED_COMPUTER_CASING = createCasingBlock("advanced_computer_casing", GTCEu.id("block/casings/hpca/advanced_computer"));
 
     private static BlockEntry<Block> createPipeCasingBlock(String name, ResourceLocation texture) {
         return createPipeCasingBlock(name, texture, () -> Blocks.IRON_BLOCK);

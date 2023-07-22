@@ -8,8 +8,11 @@ import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
+import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
+import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.machine.trait.hpca.IHPCAComponentHatch;
 import com.gregtechceu.gtceu.api.machine.trait.hpca.IHPCAComputationProvider;
 import com.gregtechceu.gtceu.api.machine.trait.hpca.IHPCACoolantProvider;
@@ -22,17 +25,18 @@ import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTSoundEntries;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.utils.FormattingUtil;
+import com.gregtechceu.gtceu.utils.GTUtil;
 import com.lowdragmc.lowdraglib.misc.FluidTransferList;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
+import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import org.jetbrains.annotations.NotNull;
@@ -48,8 +52,11 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine implements IO
     private IEnergyContainer energyContainer;
     private IFluidTransfer coolantHandler;
     private final HPCAGridHandler hpcaHandler = new HPCAGridHandler();
-    
+
+    @Persisted
     private double temperature = IDLE_TEMPERATURE; // start at idle temperature
+    @Nullable
+    protected TickableSubscription heatSubs;
 
     public HPCAMachine(IMachineBlockEntity holder) {
         super(holder);
@@ -72,8 +79,10 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine implements IO
                 var handlerIO = io == IO.BOTH ? handler.getHandlerIO() : io;
                 if (handlerIO == IO.IN && handler.getCapability() == EURecipeCapability.CAP && handler instanceof IEnergyContainer container) {
                     energyContainers.add(container);
+                    traitSubscriptions.add(handler.addChangedListener(this::updateHeatSubscription));
                 } else if (handlerIO == IO.IN && handler.getCapability() == FluidRecipeCapability.CAP && handler instanceof IFluidTransfer fluidTransfer) {
                     fluidTanks.add(fluidTransfer);
+                    traitSubscriptions.add(handler.addChangedListener(this::updateHeatSubscription));
                 }
             }
             if (part instanceof IHPCAComponentHatch hatch) {
@@ -84,6 +93,8 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine implements IO
         this.energyContainer = new EnergyContainerList(energyContainers);
         this.coolantHandler = new FluidTransferList(fluidTanks);
         this.hpcaHandler.onStructureForm(componentHatches);
+
+        updateHeatSubscription();
     }
 
     @Override
@@ -91,6 +102,25 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine implements IO
         super.onStructureInvalid();
         this.energyContainer = new EnergyContainerList(new ArrayList<>());
         this.hpcaHandler.onStructureInvalidate();
+        updateHeatSubscription();
+    }
+
+    @Override
+    public void onLoad() {
+        super.onLoad();
+        if (!isRemote()) {
+            updateHeatSubscription();
+        }
+    }
+
+    protected void updateHeatSubscription() {
+        // do preheat logic for heat cool down and charge internal energy container
+        if (temperature > 0 || (energyContainer.getEnergyStored() < energyContainer.getEnergyCapacity())) {
+            heatSubs = subscribeServerTick(heatSubs, this::tickHeat);
+        } else if (heatSubs != null) {
+            heatSubs.unsubscribe();
+            heatSubs = null;
+        }
     }
 
     @Override
@@ -112,7 +142,7 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine implements IO
         return !isFormed() || hpcaHandler.hasHPCABridge();
     }
 
-    protected void tickServer() {
+    protected void tickHeat() {
         consumeEnergy();
         if (isActive()) {
             // forcibly use active coolers at full rate if temperature is half-way to damaging temperature
@@ -132,140 +162,24 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine implements IO
             // passively cool (slowly) if not active
             temperature = Math.max(IDLE_TEMPERATURE, temperature - 0.25);
         }
+        updateHeatSubscription();
     }
 
     private void consumeEnergy() {
         int energyToConsume = hpcaHandler.getCurrentEUt();
 
         if (this.energyContainer.getEnergyStored() >= energyToConsume) {
-            if (!hasNotEnoughEnergy) {
+            if (!false) {
                 long consumed = this.energyContainer.removeEnergy(energyToConsume);
                 if (consumed == -energyToConsume) {
-                    setActive(true);
+                    getRecipeLogic().setStatus(RecipeLogic.Status.WORKING);
                 } else {
-                    this.hasNotEnoughEnergy = true;
-                    setActive(false);
+                    getRecipeLogic().setStatus(RecipeLogic.Status.WAITING);
                 }
             }
         } else {
-            this.hasNotEnoughEnergy = true;
-            setActive(false);
+            getRecipeLogic().setStatus(RecipeLogic.Status.WAITING);
         }
-    }
-
-    @Override
-    protected @NotNull BlockPattern createStructurePattern() {
-        return FactoryBlockPattern.start()
-                .aisle("AA", "CC", "CC", "CC", "AA")
-                .aisle("VA", "XV", "XV", "XV", "VA")
-                .aisle("VA", "XV", "XV", "XV", "VA")
-                .aisle("VA", "XV", "XV", "XV", "VA")
-                .aisle("SA", "CC", "CC", "CC", "AA")
-                .where('S', selfPredicate())
-                .where('A', states(getAdvancedState()))
-                .where('V', states(getVentState()))
-                .where('X', abilities(MultiblockAbility.HPCA_COMPONENT))
-                .where('C', states(getCasingState()).setMinGlobalLimited(5)
-                        .or(abilities(MultiblockAbility.MAINTENANCE_HATCH).setExactLimit(1))
-                        .or(abilities(MultiblockAbility.INPUT_ENERGY).setMinGlobalLimited(1))
-                        .or(abilities(MultiblockAbility.IMPORT_FLUIDS).setMaxGlobalLimited(1))
-                        .or(abilities(MultiblockAbility.COMPUTATION_DATA_TRANSMISSION).setExactLimit(1)))
-                .build();
-    }
-
-    private static @NotNull BlockState getCasingState() {
-        return MetaBlocks.COMPUTER_CASING.getState(BlockComputerCasing.CasingType.COMPUTER_CASING);
-    }
-
-    private static @NotNull BlockState getAdvancedState() {
-        return MetaBlocks.COMPUTER_CASING.getState(BlockComputerCasing.CasingType.ADVANCED_COMPUTER_CASING);
-    }
-
-    private static @NotNull BlockState getVentState() {
-        return MetaBlocks.COMPUTER_CASING.getState(BlockComputerCasing.CasingType.COMPUTER_HEAT_VENT);
-    }
-
-    @Override
-    public List<MultiblockShapeInfo> getMatchingShapes() {
-        List<MultiblockShapeInfo> shapeInfo = new ArrayList<>();
-        MultiblockShapeInfo.ShapeInfoBuilder builder = MultiblockShapeInfo.builder()
-                .aisle("AA", "EC", "MC", "HC", "AA")
-                .aisle("VA", "6V", "3V", "0V", "VA")
-                .aisle("VA", "7V", "4V", "1V", "VA")
-                .aisle("VA", "8V", "5V", "2V", "VA")
-                .aisle("SA", "CC", "CC", "OC", "AA")
-                .where('S', GTMachines.HIGH_PERFORMANCE_COMPUTING_ARRAY, Direction.SOUTH)
-                .where('A', getAdvancedState())
-                .where('V', getVentState())
-                .where('C', getCasingState())
-                .where('E', GTMachines.ENERGY_INPUT_HATCH[GTValues.LuV], Direction.NORTH)
-                .where('H', GTMachines.FLUID_IMPORT_HATCH[GTValues.LV], Direction.NORTH)
-                .where('O', GTMachines.COMPUTATION_HATCH_TRANSMITTER, Direction.SOUTH)
-                .where('M', () -> ConfigHolder.INSTANCE.machines.enableMaintenance ? GTMachines.MAINTENANCE_HATCH.get() : getCasingState(), Direction.NORTH);
-
-        // a few example structures
-        shapeInfo.add(builder.shallowCopy()
-                .where('0', GTMachines.HPCA_EMPTY_COMPONENT, Direction.WEST)
-                .where('1', GTMachines.HPCA_HEAT_SINK_COMPONENT, Direction.WEST)
-                .where('2', GTMachines.HPCA_EMPTY_COMPONENT, Direction.WEST)
-                .where('3', GTMachines.HPCA_EMPTY_COMPONENT, Direction.WEST)
-                .where('4', GTMachines.HPCA_COMPUTATION_COMPONENT, Direction.WEST)
-                .where('5', GTMachines.HPCA_EMPTY_COMPONENT, Direction.WEST)
-                .where('6', GTMachines.HPCA_EMPTY_COMPONENT, Direction.WEST)
-                .where('7', GTMachines.HPCA_HEAT_SINK_COMPONENT, Direction.WEST)
-                .where('8', GTMachines.HPCA_EMPTY_COMPONENT, Direction.WEST)
-                .build());
-
-        shapeInfo.add(builder.shallowCopy()
-                .where('0', GTMachines.HPCA_HEAT_SINK_COMPONENT, Direction.WEST)
-                .where('1', GTMachines.HPCA_COMPUTATION_COMPONENT, Direction.WEST)
-                .where('2', GTMachines.HPCA_HEAT_SINK_COMPONENT, Direction.WEST)
-                .where('3', GTMachines.HPCA_ACTIVE_COOLER_COMPONENT, Direction.WEST)
-                .where('4', GTMachines.HPCA_COMPUTATION_COMPONENT, Direction.WEST)
-                .where('5', GTMachines.HPCA_BRIDGE_COMPONENT, Direction.WEST)
-                .where('6', GTMachines.HPCA_HEAT_SINK_COMPONENT, Direction.WEST)
-                .where('7', GTMachines.HPCA_COMPUTATION_COMPONENT, Direction.WEST)
-                .where('8', GTMachines.HPCA_HEAT_SINK_COMPONENT, Direction.WEST)
-                .build());
-
-        shapeInfo.add(builder.shallowCopy()
-                .where('0', GTMachines.HPCA_HEAT_SINK_COMPONENT, Direction.WEST)
-                .where('1', GTMachines.HPCA_COMPUTATION_COMPONENT, Direction.WEST)
-                .where('2', GTMachines.HPCA_HEAT_SINK_COMPONENT, Direction.WEST)
-                .where('3', GTMachines.HPCA_HEAT_SINK_COMPONENT, Direction.WEST)
-                .where('4', GTMachines.HPCA_ADVANCED_COMPUTATION_COMPONENT, Direction.WEST)
-                .where('5', GTMachines.HPCA_HEAT_SINK_COMPONENT, Direction.WEST)
-                .where('6', GTMachines.HPCA_HEAT_SINK_COMPONENT, Direction.WEST)
-                .where('7', GTMachines.HPCA_BRIDGE_COMPONENT, Direction.WEST)
-                .where('8', GTMachines.HPCA_HEAT_SINK_COMPONENT, Direction.WEST)
-                .build());
-
-        shapeInfo.add(builder.shallowCopy()
-                .where('0', GTMachines.HPCA_HEAT_SINK_COMPONENT, Direction.WEST)
-                .where('1', GTMachines.HPCA_ADVANCED_COMPUTATION_COMPONENT, Direction.WEST)
-                .where('2', GTMachines.HPCA_HEAT_SINK_COMPONENT, Direction.WEST)
-                .where('3', GTMachines.HPCA_ACTIVE_COOLER_COMPONENT, Direction.WEST)
-                .where('4', GTMachines.HPCA_BRIDGE_COMPONENT, Direction.WEST)
-                .where('5', GTMachines.HPCA_ACTIVE_COOLER_COMPONENT, Direction.WEST)
-                .where('6', GTMachines.HPCA_HEAT_SINK_COMPONENT, Direction.WEST)
-                .where('7', GTMachines.HPCA_ADVANCED_COMPUTATION_COMPONENT, Direction.WEST)
-                .where('8', GTMachines.HPCA_HEAT_SINK_COMPONENT, Direction.WEST)
-                .build());
-
-        return shapeInfo;
-    }
-
-    @Override
-    public ICubeRenderer getBaseTexture(IMultiblockPart sourcePart) {
-        if (sourcePart == null) {
-            return Textures.ADVANCED_COMPUTER_CASING; // controller
-        }
-        return Textures.COMPUTER_CASING; // multiblock parts
-    }
-
-    @Override
-    protected @NotNull ICubeRenderer getFrontOverlay() {
-        return Textures.HPCA_OVERLAY;
     }
 
     @Override
@@ -275,9 +189,9 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine implements IO
             textList.add(Component.translatable("gtceu.multiblock.hpca.computation",
                     hpcaHandler.cachedCWUt, hpcaHandler.getMaxCWUt()));
             textList.add(Component.translatable("gtceu.multiblock.hpca.energy",
-                    TextFormattingUtil.formatNumbers(hpcaHandler.cachedEUt),
-                    TextFormattingUtil.formatNumbers(hpcaHandler.getMaxEUt()),
-                    GTValues.VNF[GTUtility.getTierByVoltage(hpcaHandler.getMaxEUt())]));
+                    FormattingUtil.formatNumbers(hpcaHandler.cachedEUt),
+                    FormattingUtil.formatNumbers(hpcaHandler.getMaxEUt()),
+                    GTValues.VNF[GTUtil.getTierByVoltage(hpcaHandler.getMaxEUt())]));
 
             int coolantDemand = hpcaHandler.getMaxCoolantDemand();
             if (coolantDemand > 0 && hpcaHandler.getCoolant() != null) {
@@ -287,7 +201,7 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine implements IO
             int coolingDemand = hpcaHandler.getMaxCoolingDemand();
             int coolingProvided = hpcaHandler.getMaxCoolingAmount();
             textList.add(Component.translatable("gtceu.multiblock.hpca.cooling")
-                    .appendText(getDisplayCoolingColor(coolingProvided, coolingDemand) + " " + coolingProvided + " / " + coolingDemand));
+                    .append(getDisplayCoolingColor(coolingProvided, coolingDemand) + " " + coolingProvided + " / " + coolingDemand));
 
             textList.add(Component.translatable("gtceu.multiblock.hpca.temperature")
                     .append(getDisplayTemperatureColor() + " " + Math.round(temperature / 10.0D) + "°C"));
@@ -320,40 +234,35 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine implements IO
         return ChatFormatting.RED;
     }
 
-    protected void addWarningText(List<Component> textList) {
-        if (isFormed()) {
-            if (temperature > 500) {
-                textList.add(Component.translatable("gtceu.multiblock.hpca.warning_temperature")
-                        .withStyle(ChatFormatting.RED));
-                if (hpcaHandler.hasActiveCoolers()) {
-                    textList.add(Component.translatable("gtceu.multiblock.hpca.warning_temperature_active_cool")
-                            .withStyle(ChatFormatting.GRAY));
-                }
-            }
-            hpcaHandler.addWarnings(textList);
-        }
-    }
+//    protected void addWarningText(List<Component> textList) {
+//        if (isFormed()) {
+//            if (temperature > 500) {
+//                textList.add(Component.translatable("gtceu.multiblock.hpca.warning_temperature")
+//                        .withStyle(ChatFormatting.RED));
+//                if (hpcaHandler.hasActiveCoolers()) {
+//                    textList.add(Component.translatable("gtceu.multiblock.hpca.warning_temperature_active_cool")
+//                            .withStyle(ChatFormatting.GRAY));
+//                }
+//            }
+//            hpcaHandler.addWarnings(textList);
+//        }
+//    }
+//
+//    @Override
+//    protected void addErrorText(List<Component> textList) {
+//        super.addErrorText(textList);
+//        if (isStructureFormed()) {
+//            if (temperature > 1000) {
+//                textList.add(Component.translatable("gtceu.multiblock.hpca.error_temperature"));
+//            }
+//            hpcaHandler.addErrors(textList);
+//        }
+//    }
 
-    @Override
-    protected void addErrorText(List<Component> textList) {
-        super.addErrorText(textList);
-        if (isStructureFormed()) {
-            if (temperature > 1000) {
-                textList.add(Component.translatable("gtceu.multiblock.hpca.error_temperature"));
-            }
-            hpcaHandler.addErrors(textList);
-        }
-    }
-
-    public void addInformation(ItemStack stack, @Nullable Level world, @NotNull List<Component> tooltip, boolean advanced) {
-        tooltip.add(Component.translatable("gtceu.machine.high_performance_computing_array.tooltip.1"));
-        tooltip.add(Component.translatable("gtceu.machine.high_performance_computing_array.tooltip.2"));
-        tooltip.add(Component.translatable("gtceu.machine.high_performance_computing_array.tooltip.3"));
-    }
-
-    public SoundEvent getSound() {
-        return GTSoundEntries.COMPUTATION;
-    }
+    // TODO add sound
+//    public SoundEvent getSound() {
+//        return GTSoundEntries.COMPUTATION;
+//    }
 
     // Handles the logic of this structure's specific HPCA component grid
     public static class HPCAGridHandler {

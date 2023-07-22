@@ -80,6 +80,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.material.Fluids;
 
+import javax.xml.crypto.Data;
 import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
@@ -642,6 +643,34 @@ public class GTMachines {
                     .register(),
             HV, EV, IV, LuV, ZPM, UV);
 
+
+
+    public static final MachineDefinition DATA_ACCESS_HATCH = REGISTRATE.machine("data_access_hatch", (holder) -> new DataAccessHatchPartMachine(holder, EV, false))
+            .rotationState(RotationState.NON_Y_AXIS)
+            .abilities(PartAbility.DATA_ACCESS_HATCH)
+            .tooltips(Component.translatable("gtceu.machine.data_access_hatch.tooltip.1"),
+                    Component.translatable("gtceu.machine.data_access_hatch.tooltip.2", DataAccessHatchPartMachine.getInventorySize(EV)))
+            .register();
+    public static final MachineDefinition ADVANCED_DATA_ACCESS_HATCH = REGISTRATE.machine("advanced_data_access_hatch", (holder) -> new DataAccessHatchPartMachine(holder, LuV, false))
+            .rotationState(RotationState.NON_Y_AXIS)
+            .abilities(PartAbility.DATA_ACCESS_HATCH)
+            .tooltips(Component.translatable("gtceu.machine.data_access_hatch.tooltip.1"),
+                    Component.translatable("gtceu.machine.data_access_hatch.tooltip.2", DataAccessHatchPartMachine.getInventorySize(LuV)))
+            .register();
+    public static final DataAccessHatchPartMachine CREATIVE_DATA_HATCH;
+    public static final MetaTileEntityOpticalDataHatch OPTICAL_DATA_HATCH_RECEIVER;
+    public static final MetaTileEntityOpticalDataHatch OPTICAL_DATA_HATCH_TRANSMITTER;
+    public static final MetaTileEntityLaserHatch LASER_INPUT_HATCH;
+    public static final MetaTileEntityLaserHatch LASER_OUTPUT_HATCH;
+    public static final MetaTileEntityComputationHatch COMPUTATION_HATCH_RECEIVER;
+    public static final MetaTileEntityComputationHatch COMPUTATION_HATCH_TRANSMITTER;
+    public static final MetaTileEntityObjectHolder OBJECT_HOLDER;
+    public static final MetaTileEntityHPCAEmpty HPCA_EMPTY_COMPONENT;
+    public static final MetaTileEntityHPCAComputation HPCA_COMPUTATION_COMPONENT;
+    public static final MetaTileEntityHPCAComputation HPCA_ADVANCED_COMPUTATION_COMPONENT;
+    public static final MetaTileEntityHPCACooler HPCA_HEAT_SINK_COMPONENT;
+    public static final MetaTileEntityHPCACooler HPCA_ACTIVE_COOLER_COMPONENT;
+    public static final MetaTileEntityHPCABridge HPCA_BRIDGE_COMPONENT;
 
     //////////////////////////////////////
     //*******     Multiblock     *******//
@@ -1284,7 +1313,99 @@ public class GTMachines {
             GTCEu.id("block/casings/solid/machine_casing_robust_tungstensteel"),
             GTCEu.id("block/multiblock/generator/large_plasma_turbine"));
 
-    //////////////////////////////////////
+    public static final MultiblockMachineDefinition HIGH_PERFORMANCE_COMPUTING_ARRAY = REGISTRATE.multiblock("high_performance_computing_array", HPCAMachine::new)
+            .rotationState(RotationState.NON_Y_AXIS)
+            .recipeType(GTRecipeTypes.DUMMY_RECIPES)
+            .tooltips(Component.translatable("gtceu.machine.high_performance_computing_array.tooltip.1"),
+                    Component.translatable("gtceu.machine.high_performance_computing_array.tooltip.2"),
+                    Component.translatable("gtceu.machine.high_performance_computing_array.tooltip.3"))
+            .pattern((definition) -> FactoryBlockPattern.start()
+                    .aisle("AA", "CC", "CC", "CC", "AA")
+                    .aisle("VA", "XV", "XV", "XV", "VA")
+                    .aisle("VA", "XV", "XV", "XV", "VA")
+                    .aisle("VA", "XV", "XV", "XV", "VA")
+                    .aisle("SA", "CC", "CC", "CC", "AA")
+                    .where('S', controller(blocks(definition.getBlock())))
+                    .where('A', blocks(GTBlocks.COMPUTER_CASING.get()))
+                    .where('V', blocks(GTBlocks.COMPUTER_HEAT_VENT.get()))
+                    .where('X', abilities(PartAbility.HPCA_COMPONENT))
+                    .where('C', blocks(GTBlocks.COMPUTER_CASING.get()).setMinGlobalLimited(5)
+                            .or(abilities(PartAbility.MAINTENANCE).setExactLimit(1))
+                            .or(abilities(PartAbility.INPUT_ENERGY).setMinGlobalLimited(1))
+                            .or(abilities(PartAbility.IMPORT_FLUIDS).setMaxGlobalLimited(1))
+                            .or(abilities(PartAbility.COMPUTATION_DATA_TRANSMISSION).setExactLimit(1)))
+                    .build())
+            .shapeInfos((controller) -> {
+                List<MultiblockShapeInfo> shapeInfo = new ArrayList<>();
+                MultiblockShapeInfo.ShapeInfoBuilder builder = MultiblockShapeInfo.builder()
+                        .aisle("AA", "EC", "MC", "HC", "AA")
+                        .aisle("VA", "6V", "3V", "0V", "VA")
+                        .aisle("VA", "7V", "4V", "1V", "VA")
+                        .aisle("VA", "8V", "5V", "2V", "VA")
+                        .aisle("SA", "CC", "CC", "OC", "AA")
+                        .where('S', GTMachines.HIGH_PERFORMANCE_COMPUTING_ARRAY, Direction.SOUTH)
+                        .where('A', blocks(GTBlocks.ADVANCED_COMPUTER_CASING.get()))
+                        .where('V', blocks(GTBlocks.COMPUTER_HEAT_VENT.get()))
+                        .where('C', blocks(GTBlocks.COMPUTER_CASING.get()))
+                        .where('E', GTMachines.ENERGY_INPUT_HATCH[GTValues.LuV], Direction.NORTH)
+                        .where('H', GTMachines.FLUID_IMPORT_HATCH[GTValues.LV], Direction.NORTH)
+                        .where('O', GTMachines.COMPUTATION_HATCH_TRANSMITTER, Direction.SOUTH)
+                        .where('M', () -> ConfigHolder.INSTANCE.machines.enableMaintenance ? GTMachines.MAINTENANCE_HATCH.get() : getCasingState(), Direction.NORTH);
+
+                // a few example structures
+                shapeInfo.add(builder.shallowCopy()
+                        .where('0', GTMachines.HPCA_EMPTY_COMPONENT, Direction.WEST)
+                        .where('1', GTMachines.HPCA_HEAT_SINK_COMPONENT, Direction.WEST)
+                        .where('2', GTMachines.HPCA_EMPTY_COMPONENT, Direction.WEST)
+                        .where('3', GTMachines.HPCA_EMPTY_COMPONENT, Direction.WEST)
+                        .where('4', GTMachines.HPCA_COMPUTATION_COMPONENT, Direction.WEST)
+                        .where('5', GTMachines.HPCA_EMPTY_COMPONENT, Direction.WEST)
+                        .where('6', GTMachines.HPCA_EMPTY_COMPONENT, Direction.WEST)
+                        .where('7', GTMachines.HPCA_HEAT_SINK_COMPONENT, Direction.WEST)
+                        .where('8', GTMachines.HPCA_EMPTY_COMPONENT, Direction.WEST)
+                        .build());
+
+                shapeInfo.add(builder.shallowCopy()
+                        .where('0', GTMachines.HPCA_HEAT_SINK_COMPONENT, Direction.WEST)
+                        .where('1', GTMachines.HPCA_COMPUTATION_COMPONENT, Direction.WEST)
+                        .where('2', GTMachines.HPCA_HEAT_SINK_COMPONENT, Direction.WEST)
+                        .where('3', GTMachines.HPCA_ACTIVE_COOLER_COMPONENT, Direction.WEST)
+                        .where('4', GTMachines.HPCA_COMPUTATION_COMPONENT, Direction.WEST)
+                        .where('5', GTMachines.HPCA_BRIDGE_COMPONENT, Direction.WEST)
+                        .where('6', GTMachines.HPCA_HEAT_SINK_COMPONENT, Direction.WEST)
+                        .where('7', GTMachines.HPCA_COMPUTATION_COMPONENT, Direction.WEST)
+                        .where('8', GTMachines.HPCA_HEAT_SINK_COMPONENT, Direction.WEST)
+                        .build());
+
+                shapeInfo.add(builder.shallowCopy()
+                        .where('0', GTMachines.HPCA_HEAT_SINK_COMPONENT, Direction.WEST)
+                        .where('1', GTMachines.HPCA_COMPUTATION_COMPONENT, Direction.WEST)
+                        .where('2', GTMachines.HPCA_HEAT_SINK_COMPONENT, Direction.WEST)
+                        .where('3', GTMachines.HPCA_HEAT_SINK_COMPONENT, Direction.WEST)
+                        .where('4', GTMachines.HPCA_ADVANCED_COMPUTATION_COMPONENT, Direction.WEST)
+                        .where('5', GTMachines.HPCA_HEAT_SINK_COMPONENT, Direction.WEST)
+                        .where('6', GTMachines.HPCA_HEAT_SINK_COMPONENT, Direction.WEST)
+                        .where('7', GTMachines.HPCA_BRIDGE_COMPONENT, Direction.WEST)
+                        .where('8', GTMachines.HPCA_HEAT_SINK_COMPONENT, Direction.WEST)
+                        .build());
+
+                shapeInfo.add(builder.shallowCopy()
+                        .where('0', GTMachines.HPCA_HEAT_SINK_COMPONENT, Direction.WEST)
+                        .where('1', GTMachines.HPCA_ADVANCED_COMPUTATION_COMPONENT, Direction.WEST)
+                        .where('2', GTMachines.HPCA_HEAT_SINK_COMPONENT, Direction.WEST)
+                        .where('3', GTMachines.HPCA_ACTIVE_COOLER_COMPONENT, Direction.WEST)
+                        .where('4', GTMachines.HPCA_BRIDGE_COMPONENT, Direction.WEST)
+                        .where('5', GTMachines.HPCA_ACTIVE_COOLER_COMPONENT, Direction.WEST)
+                        .where('6', GTMachines.HPCA_HEAT_SINK_COMPONENT, Direction.WEST)
+                        .where('7', GTMachines.HPCA_ADVANCED_COMPUTATION_COMPONENT, Direction.WEST)
+                        .where('8', GTMachines.HPCA_HEAT_SINK_COMPONENT, Direction.WEST)
+                        .build());
+
+                return shapeInfo;
+            })
+            .register();
+
+     //////////////////////////////
     //**********     Misc     **********//
     //////////////////////////////////////
     public static Pair<MachineDefinition, MachineDefinition> registerSteamMachines(String name, BiFunction<IMachineBlockEntity, Boolean, MetaMachine> factory,
