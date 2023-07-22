@@ -48,7 +48,7 @@ public class DataGenerators {
                     output, registries, new RegistrySetBuilder()
                     .add(Registries.CONFIGURED_FEATURE, GTConfiguredFeatures::bootstrap)
                     .add(Registries.PLACED_FEATURE, GTPlacements::bootstrap)
-                    .add(ForgeRegistries.Keys.BIOME_MODIFIERS, GTBiomeModifiers::bootstrap),
+                    .add(ForgeRegistries.Keys.BIOME_MODIFIERS, ctx -> GTBiomeModifiers.bootstrap(ctx, provider)),
                     set, "Worldgen Data"), registries));
         }
     }

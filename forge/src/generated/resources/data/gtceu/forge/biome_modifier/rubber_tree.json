@@ -1,0 +1,6 @@
+{
+  "type": "forge:add_features",
+  "biomes": "#gtceu:has_rubber_tree",
+  "features": "gtceu:rubber_checked",
+  "step": "vegetal_decoration"
+}

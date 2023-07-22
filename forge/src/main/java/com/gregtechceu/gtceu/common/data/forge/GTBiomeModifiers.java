@@ -5,9 +5,8 @@ import com.gregtechceu.gtceu.common.data.GTPlacements;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderSet;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.resources.ResourceKey;
@@ -19,15 +18,23 @@ import net.minecraftforge.common.world.ForgeBiomeModifiers;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.holdersets.AnyHolderSet;
 
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+
 public class GTBiomeModifiers {
     public static final ResourceKey<BiomeModifier> ORE = ResourceKey.create(ForgeRegistries.Keys.BIOME_MODIFIERS, GTCEu.id("ore"));
     public static final ResourceKey<BiomeModifier> RUBBER = ResourceKey.create(ForgeRegistries.Keys.BIOME_MODIFIERS, GTCEu.id("rubber_tree"));
 
 
-    public static void bootstrap(BootstapContext<BiomeModifier> ctx) {
+    public static void bootstrap(BootstapContext<BiomeModifier> ctx, CompletableFuture<HolderLookup.Provider> provider) {
         HolderGetter<Biome> biomeLookup = ctx.lookup(Registries.BIOME);
         HolderGetter<PlacedFeature> placedFeatureRegistry = ctx.lookup(Registries.PLACED_FEATURE);
-        HolderSet<Biome> biomes = new AnyHolderSet<>(RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY).lookupOrThrow(Registries.BIOME)); // ctx.registryLookup(Registries.BIOME).get()
+        HolderSet<Biome> biomes; // ctx.registryLookup(Registries.BIOME).get()
+        try {
+            biomes = new AnyHolderSet<>(provider.get().lookupOrThrow(Registries.BIOME));
+        } catch (InterruptedException | ExecutionException e) {
+            throw new RuntimeException(e);
+        }
         Holder<PlacedFeature> featureHolder = placedFeatureRegistry.getOrThrow(GTPlacements.ORE);
         ctx.register(ORE, new ForgeBiomeModifiers.AddFeaturesBiomeModifier(
                 biomes,

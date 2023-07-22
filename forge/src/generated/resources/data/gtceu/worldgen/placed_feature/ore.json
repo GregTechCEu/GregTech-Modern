@@ -1,0 +1,11 @@
+{
+  "feature": "gtceu:ore",
+  "placement": [
+    {
+      "type": "gtceu:count"
+    },
+    {
+      "type": "minecraft:in_square"
+    }
+  ]
+}
