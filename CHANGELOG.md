@@ -1,3 +1,4 @@
 # ChangeLog
 
-* Hello Modern GregTech
+* fix kjs compatibility
+* fix gas collector doesnt work
