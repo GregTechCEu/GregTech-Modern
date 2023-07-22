@@ -1,10 +1,7 @@
 package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.common.worldgen.RubberFoliagePlacer;
-import com.gregtechceu.gtceu.common.worldgen.RubberTrunkPlacer;
-import com.simibubi.create.Create;
-import net.minecraft.core.Holder;
+import com.gregtechceu.gtceu.api.data.worldgen.GTOreFeatureConfiguration;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.data.worldgen.features.FeatureUtils;
@@ -19,8 +16,6 @@ import net.minecraft.world.level.levelgen.feature.foliageplacers.MegaJungleFolia
 import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvider;
 import net.minecraft.world.level.levelgen.feature.trunkplacers.ForkingTrunkPlacer;
 
-import java.util.OptionalInt;
-
 /**
  * @author KilaBash
  * @date 2023/3/26
@@ -28,6 +23,7 @@ import java.util.OptionalInt;
  */
 public class GTConfiguredFeatures {
     public static final ResourceKey<ConfiguredFeature<?, ?>> RUBBER = ResourceKey.create(Registries.CONFIGURED_FEATURE, GTCEu.id("rubber_tree"));
+    public static final ResourceKey<ConfiguredFeature<?, ?>> ORE = ResourceKey.create(Registries.CONFIGURED_FEATURE, GTCEu.id("ore"));
 
     public static void bootstrap(BootstapContext<ConfiguredFeature<?, ?>> ctx) {
         FeatureUtils.register(ctx, RUBBER, Feature.TREE, new TreeConfiguration.TreeConfigurationBuilder(
@@ -36,8 +32,6 @@ public class GTConfiguredFeatures {
                 BlockStateProvider.simple(GTBlocks.RUBBER_LEAVES.get()),
                 new MegaJungleFoliagePlacer(ConstantInt.of(1), UniformInt.of(0, 1), 1),
                 new TwoLayersFeatureSize(1, 0, 2)).ignoreVines().build());
+        FeatureUtils.register(ctx, ORE, GTFeatures.ORE, new GTOreFeatureConfiguration());
     }
-
-//    public static final Holder<ConfiguredFeature<RandomFeatureConfiguration,?>> TREES_ADDITIONS = FeatureUtils.register(GTCEu.MOD_ID + ":trees_additions", Feature.RANDOM_SELECTOR,
-//            new RandomFeatureConfiguration(List.of(), GTPlacements.RUBBER_CHECKED));
 }

@@ -59,8 +59,8 @@ public class CommonProxy {
         // fabric exclusive, squeeze this in here to register before stuff is used
         GTRegistries.REGISTRATE.registerRegistrate();
         WorldGenLayers.registerAll();
-//        GTOres.init();
+        GTOres.init();
         GTBedrockFluids.init();
-//        GTFeatures.init();
+        GTFeatures.init();
     }
 }

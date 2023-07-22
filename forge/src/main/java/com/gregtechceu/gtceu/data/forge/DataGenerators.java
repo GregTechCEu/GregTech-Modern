@@ -5,11 +5,11 @@ import appeng.init.worldgen.InitBiomes;
 import appeng.init.worldgen.InitDimensionTypes;
 import appeng.init.worldgen.InitStructures;
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.SoundEntryBuilder;
 import com.gregtechceu.gtceu.common.data.GTConfiguredFeatures;
 import com.gregtechceu.gtceu.common.data.GTDamageTypes;
 import com.gregtechceu.gtceu.common.data.GTPlacements;
+import com.gregtechceu.gtceu.common.data.forge.GTBiomeModifiers;
 import net.minecraft.Util;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistryAccess;
@@ -20,10 +20,10 @@ import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.registries.VanillaRegistries;
-import net.minecraftforge.common.data.DatapackBuiltinEntriesProvider;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
@@ -47,7 +47,9 @@ public class DataGenerators {
             generator.addProvider(true, bindRegistries((output, provider) -> new GTRegistriesDatapackGenerator(
                     output, registries, new RegistrySetBuilder()
                     .add(Registries.CONFIGURED_FEATURE, GTConfiguredFeatures::bootstrap)
-                    .add(Registries.PLACED_FEATURE, GTPlacements::bootstrap), set, "Worldgen Data"), registries));
+                    .add(Registries.PLACED_FEATURE, GTPlacements::bootstrap)
+                    .add(ForgeRegistries.Keys.BIOME_MODIFIERS, GTBiomeModifiers::bootstrap),
+                    set, "Worldgen Data"), registries));
         }
     }
 
