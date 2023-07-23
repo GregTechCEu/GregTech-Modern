@@ -38,6 +38,29 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
     public WorkableElectricMultiblockMachine(IMachineBlockEntity holder, Object... args) {
         super(holder, args);
     }
+    //runtime
+    protected long maxVoltage = -1;
+
+    //////////////////////////////////////
+    //***    Multiblock LifeCycle    ***//
+    //////////////////////////////////////
+    @Override
+    public void onStructureInvalid() {
+        super.onStructureInvalid();
+        maxVoltage = -1;
+    }
+
+    @Override
+    public void onStructureFormed() {
+        maxVoltage = -1;
+        super.onStructureFormed();
+    }
+
+    @Override
+    public void onPartUnload() {
+        super.onPartUnload();
+        maxVoltage = -1;
+    }
 
     //////////////////////////////////////
     //**********     GUI     ***********//
@@ -167,20 +190,22 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
     }
 
     public long getMaxVoltage() {
-        long maxVoltage = 0L;
-        var capabilities = capabilitiesProxy.get(IO.IN, EURecipeCapability.CAP);
-        if (capabilities != null) {
-            for (IRecipeHandler<?> handler : capabilities) {
-                if (handler instanceof IEnergyContainer container) {
-                    maxVoltage += container.getInputVoltage() * container.getInputAmperage();
-                }
-            }
-        } else {
-            capabilities = capabilitiesProxy.get(IO.OUT, EURecipeCapability.CAP);
+        if (maxVoltage < 0)  {
+            maxVoltage = 0L;
+            var capabilities = capabilitiesProxy.get(IO.IN, EURecipeCapability.CAP);
             if (capabilities != null) {
                 for (IRecipeHandler<?> handler : capabilities) {
                     if (handler instanceof IEnergyContainer container) {
-                        maxVoltage += container.getOutputVoltage() * container.getOutputAmperage();
+                        maxVoltage += container.getInputVoltage() * container.getInputAmperage();
+                    }
+                }
+            } else {
+                capabilities = capabilitiesProxy.get(IO.OUT, EURecipeCapability.CAP);
+                if (capabilities != null) {
+                    for (IRecipeHandler<?> handler : capabilities) {
+                        if (handler instanceof IEnergyContainer container) {
+                            maxVoltage += container.getOutputVoltage() * container.getOutputAmperage();
+                        }
                     }
                 }
             }
