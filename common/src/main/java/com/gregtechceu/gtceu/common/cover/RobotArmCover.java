@@ -14,10 +14,13 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import lombok.Getter;
 import net.minecraft.core.Direction;
+import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Iterator;
+import java.util.Map;
 
 public class RobotArmCover extends ConveyorCover {
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(RobotArmCover.class, ConveyorCover.MANAGED_FIELD_HOLDER);
@@ -31,6 +34,7 @@ public class RobotArmCover extends ConveyorCover {
 
     @Persisted @Getter
     protected int transferStackSize;
+    protected int itemsTransferBuffered;
 
     private IntInputWidget stackSizeInput;
 
@@ -46,8 +50,6 @@ public class RobotArmCover extends ConveyorCover {
 
     @Override
     protected int doTransferItems(IItemTransfer sourceInventory, IItemTransfer targetInventory, int maxTransferAmount) {
-        // TODO handle pipenet handlers once item pipes are implemented
-
         return switch (transferMode) {
             case TRANSFER_ANY -> moveInventoryItems(sourceInventory, targetInventory, maxTransferAmount);
             case TRANSFER_EXACT -> doTransferExact(sourceInventory, targetInventory, maxTransferAmount);
@@ -56,24 +58,13 @@ public class RobotArmCover extends ConveyorCover {
     }
 
     protected int doTransferExact(IItemTransfer sourceInventory, IItemTransfer targetInventory, int maxTransferAmount) {
-        /*
-        Map<ItemStack, TypeItemInfo> sourceItemAmount = doCountSourceInventoryItemsByType(itemHandler, myItemHandler);
+        Map<ItemStack, TypeItemInfo> sourceItemAmount = countInventoryItemsByType(sourceInventory);
+
         Iterator<ItemStack> iterator = sourceItemAmount.keySet().iterator();
         while (iterator.hasNext()) {
             TypeItemInfo sourceInfo = sourceItemAmount.get(iterator.next());
             int itemAmount = sourceInfo.totalCount;
-            int itemToMoveAmount = itemFilterContainer.getSlotTransferLimit(sourceInfo.filterSlot);
-
-            // if smart item filter
-            if (itemFilterContainer.getFilterWrapper().getItemFilter() instanceof SmartItemFilter) {
-                if (itemFilterContainer.getTransferStackSize() > 1 && itemToMoveAmount * 2 <= itemAmount) {
-                    // get the max we can extract from the item filter variable
-                    int maxMultiplier = Math.floorDiv(maxTransferAmount, itemToMoveAmount);
-
-                    // multiply up to the total count of all the items
-                    itemToMoveAmount *= Math.min(itemFilterContainer.getTransferStackSize(), maxMultiplier);
-                }
-            }
+            int itemToMoveAmount = getFilterHandler().testItemCount(sourceInfo.itemStack);
 
             if (itemAmount >= itemToMoveAmount) {
                 sourceInfo.totalCount = itemToMoveAmount;
@@ -87,7 +78,7 @@ public class RobotArmCover extends ConveyorCover {
         boolean notEnoughTransferRate = false;
         for (TypeItemInfo itemInfo : sourceItemAmount.values()) {
             if (maxTotalTransferAmount >= itemInfo.totalCount) {
-                boolean result = doTransferItemsExact(itemHandler, myItemHandler, itemInfo);
+                boolean result = moveInventoryItemsExact(sourceInventory, targetInventory, itemInfo);
                 itemsTransferred += result ? itemInfo.totalCount : 0;
                 maxTotalTransferAmount -= result ? itemInfo.totalCount : 0;
             } else {
@@ -102,34 +93,21 @@ public class RobotArmCover extends ConveyorCover {
             itemsTransferBuffered = 0;
         }
         return Math.min(itemsTransferred, maxTransferAmount);
-         */
-        return 0; // TODO
     }
 
     protected int doKeepExact(IItemTransfer sourceInventory, IItemTransfer targetInventory, int maxTransferAmount) {
-        /*
-        Map<Object, GroupItemInfo> currentItemAmount = doCountDestinationInventoryItemsByMatchIndex(itemHandler, myItemHandler);
-        Map<Object, GroupItemInfo> sourceItemAmounts = doCountDestinationInventoryItemsByMatchIndex(myItemHandler, itemHandler);
-        Iterator<Object> iterator = sourceItemAmounts.keySet().iterator();
+        Map<ItemStack, GroupItemInfo> targetItemAmounts = countInventoryItemsByMatchSlot(targetInventory);
+        Map<ItemStack, GroupItemInfo> sourceItemAmounts = countInventoryItemsByMatchSlot(sourceInventory);
+
+        Iterator<ItemStack> iterator = sourceItemAmounts.keySet().iterator();
         while (iterator.hasNext()) {
-            Object filterSlotIndex = iterator.next();
-            GroupItemInfo sourceInfo = sourceItemAmounts.get(filterSlotIndex);
-            int itemToKeepAmount = itemFilterContainer.getSlotTransferLimit(sourceInfo.filterSlot);
-
-            // only run multiplier for smart item
-            if (itemFilterContainer.getFilterWrapper().getItemFilter() instanceof SmartItemFilter) {
-                if (itemFilterContainer.getTransferStackSize() > 1 && itemToKeepAmount * 2 <= sourceInfo.totalCount) {
-                    // get the max we can keep from the item filter variable
-                    int maxMultiplier = Math.floorDiv(sourceInfo.totalCount, itemToKeepAmount);
-
-                    // multiply up to the total count of all the items
-                    itemToKeepAmount *= Math.min(itemFilterContainer.getTransferStackSize(), maxMultiplier);
-                }
-            }
+            ItemStack filteredItem = iterator.next();
+            GroupItemInfo sourceInfo = sourceItemAmounts.get(filteredItem);
+            int itemToKeepAmount = getFilterHandler().testItemCount(sourceInfo.itemStack);
 
             int itemAmount = 0;
-            if (currentItemAmount.containsKey(filterSlotIndex)) {
-                GroupItemInfo destItemInfo = currentItemAmount.get(filterSlotIndex);
+            if (targetItemAmounts.containsKey(filteredItem)) {
+                GroupItemInfo destItemInfo = targetItemAmounts.get(filteredItem);
                 itemAmount = destItemInfo.totalCount;
             }
             if (itemAmount < itemToKeepAmount) {
@@ -138,11 +116,9 @@ public class RobotArmCover extends ConveyorCover {
                 iterator.remove();
             }
         }
-        return doTransferItemsByGroup(itemHandler, myItemHandler, sourceItemAmounts, maxTransferAmount);
-         */
-        return 0; // TODO
-    }
 
+        return moveInventoryItems(sourceInventory, targetInventory, sourceItemAmounts, maxTransferAmount);
+    }
 
     //////////////////////////////////////
     //***********     GUI    ***********//

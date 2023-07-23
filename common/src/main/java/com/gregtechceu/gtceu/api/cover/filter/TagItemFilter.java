@@ -51,4 +51,9 @@ public class TagItemFilter extends TagFilter<ItemStack, ItemFilter> implements I
         cache.put(itemStack.getItem(), false);
         return false;
     }
+
+    @Override
+    public int testItemCount(ItemStack itemStack) {
+        return test(itemStack) ? Integer.MAX_VALUE : 0;
+    }
 }

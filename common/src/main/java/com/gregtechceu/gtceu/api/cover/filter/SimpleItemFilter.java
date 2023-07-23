@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
 import com.lowdragmc.lowdraglib.gui.widget.PhantomSlotWidget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.jei.IngredientIO;
 import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
 import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
 import lombok.Getter;
@@ -13,16 +12,10 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.state.properties.IntegerProperty;
-import net.minecraft.world.level.block.state.properties.Property;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Arrays;
-import java.util.Observable;
-import java.util.concurrent.Flow;
-import java.util.concurrent.SubmissionPublisher;
 import java.util.function.Consumer;
 
 /**
@@ -116,18 +109,32 @@ public class SimpleItemFilter implements ItemFilter {
 
     @Override
     public boolean test(ItemStack itemStack) {
-        boolean found = false;
-        for (var match : matches) {
-            if (ignoreNbt) {
-                found = match.sameItem(itemStack);
-            } else {
-                found = ItemTransferHelper.canItemStacksStack(match, itemStack);
-            }
-            if (found) {
-                break;
+        return testItemCount(itemStack) > 0;
+    }
+
+    @Override
+    public int testItemCount(ItemStack itemStack) {
+        int totalItemCount = getTotalConfiguredItemCount(itemStack);
+
+        if (isBlackList) {
+            return (totalItemCount > 0) ? 0 : Integer.MAX_VALUE;
+        }
+
+        return totalItemCount;
+    }
+
+    public int getTotalConfiguredItemCount(ItemStack itemStack) {
+        int totalCount = 0;
+
+        for (var candidate : matches) {
+            if (ignoreNbt && candidate.sameItem(itemStack)) {
+                totalCount += candidate.getCount();
+            } else if (ItemTransferHelper.canItemStacksStack(candidate, itemStack)) {
+                totalCount += candidate.getCount();
             }
         }
-        return isBlackList != found;
+
+        return totalCount;
     }
 
     public void setMaxStackSize(int maxStackSize) {
