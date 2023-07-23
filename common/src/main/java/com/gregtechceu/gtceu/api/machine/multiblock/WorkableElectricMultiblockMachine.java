@@ -1,6 +1,10 @@
 package com.gregtechceu.gtceu.api.machine.multiblock;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
+import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
+import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.IFancyUIProvider;
 import com.gregtechceu.gtceu.api.gui.fancy.TooltipsPanel;
@@ -10,10 +14,6 @@ import com.gregtechceu.gtceu.api.machine.feature.IOverclockMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDisplayUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.utils.GTUtil;
-import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
-import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
-import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.widget.*;
@@ -39,7 +39,7 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
         super(holder, args);
     }
     //runtime
-    protected long maxVoltage = -1;
+    private long maxHatchVoltage = -1;
 
     //////////////////////////////////////
     //***    Multiblock LifeCycle    ***//
@@ -47,19 +47,19 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
     @Override
     public void onStructureInvalid() {
         super.onStructureInvalid();
-        maxVoltage = -1;
+        maxHatchVoltage = -1;
     }
 
     @Override
     public void onStructureFormed() {
-        maxVoltage = -1;
+        maxHatchVoltage = -1;
         super.onStructureFormed();
     }
 
     @Override
     public void onPartUnload() {
         super.onPartUnload();
-        maxVoltage = -1;
+        maxHatchVoltage = -1;
     }
 
     //////////////////////////////////////
@@ -91,7 +91,7 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
 //                    .setStyle(Style.EMPTY.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
 //                            Component.translatable("gtceu.multiblock.multiple_recipemaps.tooltip")))));
 
-            textList.add(Component.translatable(recipeType.registryName.toLanguageKey())
+            textList.add(Component.translatable(getRecipeType().registryName.toLanguageKey())
                     .setStyle(Style.EMPTY.withColor(ChatFormatting.AQUA)
                             .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
                                     Component.translatable("gtceu.multiblock.multiple_recipemaps.tooltip")))));
@@ -189,14 +189,14 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
         return GTUtil.getFloorTierByVoltage(getMaxVoltage());
     }
 
-    public long getMaxVoltage() {
-        if (maxVoltage < 0)  {
-            maxVoltage = 0L;
+    public long getMaxHatchVoltage() {
+        if (maxHatchVoltage < 0)  {
+            maxHatchVoltage = 0L;
             var capabilities = capabilitiesProxy.get(IO.IN, EURecipeCapability.CAP);
             if (capabilities != null) {
                 for (IRecipeHandler<?> handler : capabilities) {
                     if (handler instanceof IEnergyContainer container) {
-                        maxVoltage += container.getInputVoltage() * container.getInputAmperage();
+                        maxHatchVoltage += container.getInputVoltage() * container.getInputAmperage();
                     }
                 }
             } else {
@@ -204,12 +204,16 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
                 if (capabilities != null) {
                     for (IRecipeHandler<?> handler : capabilities) {
                         if (handler instanceof IEnergyContainer container) {
-                            maxVoltage += container.getOutputVoltage() * container.getOutputAmperage();
+                            maxHatchVoltage += container.getOutputVoltage() * container.getOutputAmperage();
                         }
                     }
                 }
             }
         }
-        return maxVoltage;
+        return maxHatchVoltage;
+    }
+
+    public long getMaxVoltage() {
+        return getMaxHatchVoltage();
     }
 }

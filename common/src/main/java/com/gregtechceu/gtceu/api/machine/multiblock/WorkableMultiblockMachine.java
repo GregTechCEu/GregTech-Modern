@@ -49,7 +49,7 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
     @DescSynced
     public final RecipeLogic recipeLogic;
     @Getter
-    public final GTRecipeType recipeType;
+    private final GTRecipeType recipeType;
     @Getter
     protected final Table<IO, RecipeCapability<?>, List<IRecipeHandler<?>>> capabilitiesProxy;
     protected final List<ISubscription> traitSubscriptions;

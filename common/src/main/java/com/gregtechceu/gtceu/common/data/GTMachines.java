@@ -1287,12 +1287,13 @@ public class GTMachines {
     public final static MultiblockMachineDefinition[] PROCESSING_ARRAY = registerTieredMultis("processing_array", ProcessingArrayMachine::new,
             (tier, builder) ->  builder
                     .rotationState(RotationState.NON_Y_AXIS)
+                    .blockProp(p -> p.noOcclusion().isViewBlocking((state, level, pos) -> false))
                     .appearanceBlock(() -> ProcessingArrayMachine.getCasingState(tier))
                     .recipeType(GTRecipeTypes.DUMMY_RECIPES)
                     .recipeModifier(ProcessingArrayMachine::recipeModifier, true)
                     .pattern(definition -> FactoryBlockPattern.start()
                             .aisle("XXX", "CCC", "XXX")
-                            .aisle("XXX", "C#C", "XMX")
+                            .aisle("XXX", "C#C", "XXX")
                             .aisle("XSX", "CCC", "XXX")
                             .where('S', Predicates.controller(blocks(definition.getBlock())))
                             .where('X', blocks(ProcessingArrayMachine.getCasingState(tier)).setMinGlobalLimited(4)
@@ -1309,7 +1310,7 @@ public class GTMachines {
                     .tooltips(Component.translatable("gtceu.universal.tooltip.parallel", ProcessingArrayMachine.getMachineLimit(tier)))
                     .renderer(() -> new ProcessingArrayMachineRenderer(tier == IV ?
                             GTCEu.id("block/casings/solid/machine_casing_robust_tungstensteel") :
-                            GTCEu.id("block/casings/solid/machine_casing_sturdy_hsse"),
+                            GTCEu.id("block/casings/solid/machine_casing_study_hsse"),
                             GTCEu.id("block/multiblock/processing_array")))
                     .register(),
             IV, LuV);

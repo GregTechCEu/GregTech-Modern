@@ -1,10 +1,8 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.electric;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
-import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
+import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
@@ -17,16 +15,25 @@ import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
+import com.gregtechceu.gtceu.utils.GTUtil;
+import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
+import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
+import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.List;
 
 /**
  * @author KilaBash
@@ -39,7 +46,7 @@ public class ProcessingArrayMachine extends TieredWorkableElectricMultiblockMach
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(ProcessingArrayMachine.class, TieredWorkableElectricMultiblockMachine.MANAGED_FIELD_HOLDER);
 
-    @Persisted
+    @Persisted @DescSynced
     public final NotifiableItemStackHandler machineStorage;
     //runtime
     @Nullable
@@ -62,7 +69,7 @@ public class ProcessingArrayMachine extends TieredWorkableElectricMultiblockMach
         var storage = new NotifiableItemStackHandler(this, 1, IO.NONE, IO.NONE, slots -> new ItemStackTransfer(1) {
             @Override
             public int getSlotLimit(int slot) {
-                return getMachineLimit(getTier());
+                return getMachineLimit(getDefinition().getTier());
             }
         });
         storage.setFilter(this::isMachineStack);
@@ -107,41 +114,27 @@ public class ProcessingArrayMachine extends TieredWorkableElectricMultiblockMach
     }
 
     protected void onMachineChanged() {
+        recipeTypeCache = null;
         if (isFormed) {
             if (getRecipeLogic().getLastRecipe() != null) {
                 getRecipeLogic().markLastRecipeDirty();
             }
             getRecipeLogic().updateTickSubscription();
-            scheduleRenderUpdate();
         }
     }
 
     //////////////////////////////////////
     //*******    Recipe Logic    *******//
     //////////////////////////////////////
+
+    @Override
+    public int getTier() {
+        return GTUtil.getFloorTierByVoltage(getMaxHatchVoltage());
+    }
+
     @Override
     public long getOverclockVoltage() {
-        if (maxVoltage < 0)  {
-            maxVoltage = 0L;
-            var capabilities = capabilitiesProxy.get(IO.IN, EURecipeCapability.CAP);
-            if (capabilities != null) {
-                for (IRecipeHandler<?> handler : capabilities) {
-                    if (handler instanceof IEnergyContainer container) {
-                        maxVoltage += container.getInputVoltage() * container.getInputAmperage();
-                    }
-                }
-            } else {
-                capabilities = capabilitiesProxy.get(IO.OUT, EURecipeCapability.CAP);
-                if (capabilities != null) {
-                    for (IRecipeHandler<?> handler : capabilities) {
-                        if (handler instanceof IEnergyContainer container) {
-                            maxVoltage += container.getOutputVoltage() * container.getOutputAmperage();
-                        }
-                    }
-                }
-            }
-        }
-        return maxVoltage;
+        return getMaxHatchVoltage();
     }
 
     @Nullable
@@ -149,13 +142,36 @@ public class ProcessingArrayMachine extends TieredWorkableElectricMultiblockMach
         if (machine instanceof ProcessingArrayMachine processingArray && processingArray.machineStorage.storage.getStackInSlot(0).getCount() > 0) {
             var limit = processingArray.machineStorage.storage.getStackInSlot(0).getCount();
             // apply parallel first
-            recipe = GTRecipeModifiers.accurateParallel(machine, recipe, Math.min(limit, getMachineLimit(processingArray.getTier())), false).getA();
+            recipe = GTRecipeModifiers.accurateParallel(machine, recipe, Math.min(limit, getMachineLimit(machine.getDefinition().getTier())), false).getA();
             // apply overclock later
             recipe = GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK).apply(machine, recipe);
             return recipe;
         }
 
         return null;
+    }
+
+    //////////////////////////////////////
+    //********        Gui       ********//
+    //////////////////////////////////////
+
+    @Override
+    public void addDisplayText(List<Component> textList) {
+        super.addDisplayText(textList);
+        if (isActive()) {
+            textList.add(Component.translatable("gtceu.machine.machine_hatch.locked").withStyle(Style.EMPTY.withColor(ChatFormatting.RED)));
+        }
+    }
+
+    @Override
+    public Widget createUIWidget() {
+        var widget =  super.createUIWidget();
+        if (widget instanceof WidgetGroup group) {
+            var size = group.getSize();
+            group.addWidget(new SlotWidget(machineStorage.storage, 0, size.width - 30, size.height - 30, true, true)
+                    .setBackground(GuiTextures.SLOT));
+        }
+        return widget;
     }
 
     //////////////////////////////////////

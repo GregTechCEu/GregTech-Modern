@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
 import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
+import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import lombok.Getter;
@@ -38,7 +39,7 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
     public final IO capabilityIO;
     @Getter @Setter
     private long timeStamp;
-    @Persisted
+    @Persisted @DescSynced
     public final ItemStackTransfer storage;
     private Boolean isEmpty;
 

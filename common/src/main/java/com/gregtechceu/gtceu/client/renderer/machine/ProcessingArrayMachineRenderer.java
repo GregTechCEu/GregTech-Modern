@@ -41,7 +41,7 @@ public class ProcessingArrayMachineRenderer extends WorkableCasingMachineRendere
                     var bakedQuad = Quad.from(quad);
                     for (int i = 0; i < 4; i++) {
                         var pos = bakedQuad.getVert(i);
-                        bakedQuad.withVert(i, new Vector3f(pos.x() - frontFacing.getStepX(), pos.y() + 1, pos.z() - frontFacing.getStepX()));
+                        bakedQuad = bakedQuad.withVert(i, new Vector3f(pos.x() - frontFacing.getStepX(), pos.y() + 1, pos.z() - frontFacing.getStepZ()));
                     }
                     quads.add(bakedQuad.rebake());
                 }
