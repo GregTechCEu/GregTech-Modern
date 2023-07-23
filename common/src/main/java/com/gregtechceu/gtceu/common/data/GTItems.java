@@ -394,7 +394,7 @@ public class GTItems {
             .model(cellModel())
             .color(() -> GTItems::cellColor)
             .onRegister(modelPredicate(GTCEu.id("fluid_cell"), (itemStack) -> FluidTransferHelper.getFluidContained(itemStack) == null ? 0f : 1f))
-            .onRegister(attach(cellName(), ThermalFluidStats.create((int)FluidHelper.getBucket() * 1000, 1200, false, true, false, false, true), new ItemFluidContainer()))
+            .onRegister(attach(cellName(), ThermalFluidStats.create((int)FluidHelper.getBucket(), 1200, false, true, false, false, true), new ItemFluidContainer()))
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Glass, GTValues.M * 4)))).register();
 
     // TODO Lighter
