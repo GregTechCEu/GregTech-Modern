@@ -49,6 +49,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.client.model.generators.ModelFile;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
@@ -325,6 +326,10 @@ public class GTItems {
             if (index == 1) {
                 var held = FluidTransferHelper.getFluidContained(itemStack);
                 if (held != null) {
+                    // TODO render cell with a real fluid texture in the future?
+                    if (held.getFluid() == Fluids.LAVA) {
+                        return 0xFFFF4B00;
+                    }
                     return FluidHelper.getColor(held);
                 }
             }
