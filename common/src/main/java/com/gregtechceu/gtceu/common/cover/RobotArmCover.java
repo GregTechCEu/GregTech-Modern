@@ -3,22 +3,17 @@ package com.gregtechceu.gtceu.common.cover;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.cover.filter.SimpleItemFilter;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
 import com.gregtechceu.gtceu.common.cover.data.TransferMode;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceBorderTexture;
-import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
-import com.lowdragmc.lowdraglib.gui.widget.ButtonWidget;
 import com.lowdragmc.lowdraglib.gui.widget.CycleButtonWidget;
-import com.lowdragmc.lowdraglib.gui.widget.TextFieldWidget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import lombok.Getter;
 import net.minecraft.core.Direction;
-import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -31,16 +26,12 @@ public class RobotArmCover extends ConveyorCover {
             .sorted(Comparator.comparingInt(Enum::ordinal))
             .toArray(TransferMode[]::new);
 
-    @Persisted
-    @Getter
+    @Persisted @Getter // TODO fix not syncing to remote on load
     protected TransferMode transferMode;
 
-    @Persisted
-    @Getter
+    @Persisted @Getter
     protected int transferStackSize;
 
-    private TextFieldWidget transferStackSizeField;
-    //private WidgetGroup stackSizeGroup;
     private IntInputWidget stackSizeInput;
 
     public RobotArmCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide, int tier) {
@@ -170,19 +161,17 @@ public class RobotArmCover extends ConveyorCover {
 
     @Override
     protected void buildAdditionalUI(WidgetGroup group) {
-        //this.stackSizeGroup = new WidgetGroup(91, 70, 75, 20);
-
         CycleButtonWidget transferModeSelector = new CycleButtonWidget(
-                91, 45, 75, 20, 3,
-                i -> new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON, new TextTexture(TRANSFER_MODES[i].localeName)),
-                i -> {
-                    setTransferMode(TRANSFER_MODES[i]);
-                }
+                146, 45, 20, 20, 3,
+                i -> new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON, TRANSFER_MODES[i].icon),
+                i -> setTransferMode(TRANSFER_MODES[i])
         );
+
         transferModeSelector.setIndex(transferMode.ordinal());
+
         group.addWidget(transferModeSelector);
 
-        this.stackSizeInput = new IntInputWidget(91, 70, 75, 20,
+        this.stackSizeInput = new IntInputWidget(79, 45, 65, 20,
                 transferStackSize, val -> transferStackSize = val
         );
         configureStackSizeInput();
@@ -201,9 +190,6 @@ public class RobotArmCover extends ConveyorCover {
         // Everything from here on only needs to happen on the server.
 
         initializeFilterHandler();
-
-        if (this.transferStackSizeField != null)
-            this.transferStackSizeField.setNumbersOnly(1, transferMode.maxStackSize);
     }
 
     private void configureStackSizeInput() {

@@ -18,6 +18,14 @@ import net.minecraft.util.Mth;
 
 import java.util.function.Consumer;
 
+/**
+ * A widget containing an integer input field, as well as adjacent buttons for increasing or decreasing the value.
+ *
+ * <p>
+ *     The buttons' change amount can be altered with Ctrl, Shift, or both.<br>
+ *     The input is limited by a minimum and maximum value.
+ * </p>
+ */
 public class IntInputWidget extends WidgetGroup {
 
     @Getter
@@ -58,7 +66,7 @@ public class IntInputWidget extends WidgetGroup {
 
         this.addWidget(new ButtonWidget(0, 0, buttonWidth, 20,
                 new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, getButtonTexture("-", buttonWidth)),
-                this::decrement
+                this::decrease
         ).setHoverTooltips("gui.widget.incrementButton.default_tooltip"));
 
 
@@ -72,7 +80,7 @@ public class IntInputWidget extends WidgetGroup {
 
         this.addWidget(new ButtonWidget(buttonWidth + textFieldWidth + 4, 0, buttonWidth, 20,
                 new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, getButtonTexture("+", buttonWidth)),
-                this::increment
+                this::increase
         ).setHoverTooltips("gui.widget.incrementButton.default_tooltip"));
     }
 
@@ -99,11 +107,11 @@ public class IntInputWidget extends WidgetGroup {
         return texture;
     }
 
-    private void increment(ClickData cd) {
+    private void increase(ClickData cd) {
         this.changeValue(cd, 1);
     }
 
-    private void decrement(ClickData cd) {
+    private void decrease(ClickData cd) {
         this.changeValue(cd, -1);
     }
 

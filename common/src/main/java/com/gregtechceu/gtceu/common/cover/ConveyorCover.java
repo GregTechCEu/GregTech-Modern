@@ -14,7 +14,6 @@ import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.syncdata.RequireRerender;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceBorderTexture;
-import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
 import com.lowdragmc.lowdraglib.gui.widget.*;
 import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
 import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
@@ -29,7 +28,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.NotNull;
@@ -247,14 +245,14 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
         group.addWidget(new IntInputWidget(10, 20, 156, 20, this.transferRate, this::setTransferRate)
                 .setMin(1).setMax(maxItemTransferRate));
 
-        group.addWidget(new SwitchWidget(10, 45, 75, 20, (clickData, value) -> {
+        group.addWidget(new SwitchWidget(10, 45, 20, 20, (clickData, value) -> {
                     if (!clickData.isRemote) {
                         setIo(value ? IO.IN : IO.OUT);
                     }
                 })
                 .setTexture(
-                        new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON, new TextTexture("cover.conveyor.mode.export")),
-                        new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON, new TextTexture("cover.conveyor.mode.import")))
+                        new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON, IO.OUT.icon),
+                        new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON, IO.IN.icon))
                 .setPressed(io == IO.IN)
         );
         group.addWidget(new SlotWidget(filterContainer, 0, 148, 107)
