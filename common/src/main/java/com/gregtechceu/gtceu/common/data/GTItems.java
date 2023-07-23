@@ -328,7 +328,7 @@ public class GTItems {
                 if (held != null) {
                     // TODO render cell with a real fluid texture in the future?
                     if (held.getFluid() == Fluids.LAVA) {
-                        return 0xFFFF4B00;
+                        return 0xFFFF7000;
                     }
                     return FluidHelper.getColor(held);
                 }
