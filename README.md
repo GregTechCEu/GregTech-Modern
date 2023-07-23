@@ -5,7 +5,7 @@
 GregTech based on Architectury for performing on Forge, Fabric, and Quilt, simultaneously.
 
 ## Download
-~~We haven't released yet, you can try the lasted compiled file from~~ [`Releases`](https://github.com/GregTechCEu/GregTechCEu-1.19/releases).
+[`Github Releases`](https://github.com/GregTechCEu/GregTechCEu-1.19/releases).
 [`Curseforge`](https://www.curseforge.com/minecraft/mc-mods/gregtechceu-modern/files)
 [`Modrinth`](https://modrinth.com/mod/gregtechceu-modern)
 
