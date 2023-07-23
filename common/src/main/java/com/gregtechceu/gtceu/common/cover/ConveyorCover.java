@@ -381,7 +381,7 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
         if (!filterItem.isEmpty()) {
             filterHandler = ItemFilter.loadFilter(filterItem);
             filterGroup.addWidget(filterHandler.openConfigurator(10, 0));
-            initializeFilterHandler();
+            configureFilterHandler();
         }
 
         group.addWidget(new LabelWidget(10, 5, LocalizationUtils.format(getUITitle(), GTValues.VN[tier])));
@@ -412,7 +412,7 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
                     if (!filterItem.isEmpty()) {
                         filterHandler = ItemFilter.loadFilter(filterItem);
                         filterGroup.addWidget(filterHandler.openConfigurator(10, 0));
-                        initializeFilterHandler();
+                        configureFilterHandler();
                     }
                 })
                 .setBackgroundTexture(new GuiTextureGroup(GuiTextures.SLOT, GuiTextures.FILTER_SLOT_OVERLAY)));
@@ -432,7 +432,7 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
         // Do nothing in the base implementation. This is intended to be overridden by subclasses.
     }
 
-    protected void initializeFilterHandler() {
+    protected void configureFilterHandler() {
         // Do nothing in the base implementation. This is intended to be overridden by subclasses.
     }
 }

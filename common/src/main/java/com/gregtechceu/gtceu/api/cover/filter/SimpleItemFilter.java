@@ -26,7 +26,6 @@ import java.util.function.Consumer;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class SimpleItemFilter implements ItemFilter {
-    @Getter
     protected boolean isBlackList;
     @Getter
     protected boolean ignoreNbt;
@@ -77,6 +76,21 @@ public class SimpleItemFilter implements ItemFilter {
     public void setBlackList(boolean blackList) {
         isBlackList = blackList;
         onUpdated.accept(this);
+
+        for (PhantomSlotWidget filterSlot : filterSlots) {
+            filterSlot.setMaxStackSize(isBlackList ? 1 : Integer.MAX_VALUE);
+        }
+
+        if (blackList) {
+            for (ItemStack match : matches) {
+                match.setCount(1);
+            }
+        }
+    }
+
+    @Override
+    public boolean isBlackList() {
+        return isBlackList;
     }
 
     public void setIgnoreNbt(boolean ingoreNbt) {
@@ -91,7 +105,7 @@ public class SimpleItemFilter implements ItemFilter {
                 final int index = i * 3 + j;
                 var handler = new ItemStackTransfer(matches[index]);
                 var slot = new PhantomSlotWidget(handler, 0, i * 18, j * 18);
-                slot.setMaxStackSize(this.maxStackSize);
+                slot.setMaxStackSize(isBlackList ? 1 : Integer.MAX_VALUE);
                 slot.setChangeListener(() -> {
                     matches[index] = handler.getStackInSlot(0);
                     onUpdated.accept(this);

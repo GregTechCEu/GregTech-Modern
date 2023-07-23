@@ -32,6 +32,10 @@ public interface ItemFilter extends Filter<ItemStack, ItemFilter> {
      */
     int testItemCount(ItemStack itemStack);
 
+    default boolean isBlackList() {
+        return false;
+    }
+
 
     /**
      * An empty item filter that allows all items.<br>

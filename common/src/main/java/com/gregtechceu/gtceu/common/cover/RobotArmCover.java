@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.common.cover;
 
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
+import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.cover.filter.SimpleItemFilter;
 import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
 import com.gregtechceu.gtceu.common.cover.data.TransferMode;
@@ -10,6 +11,7 @@ import com.lowdragmc.lowdraglib.gui.texture.ResourceBorderTexture;
 import com.lowdragmc.lowdraglib.gui.widget.CycleButtonWidget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
+import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import lombok.Getter;
@@ -29,11 +31,11 @@ public class RobotArmCover extends ConveyorCover {
             .sorted(Comparator.comparingInt(Enum::ordinal))
             .toArray(TransferMode[]::new);
 
-    @Persisted @Getter // TODO fix not syncing to remote on load
+    @Persisted @DescSynced @Getter
     protected TransferMode transferMode;
 
     @Persisted @Getter
-    protected int transferStackSize;
+    protected int globalTransferLimit;
     protected int itemsTransferBuffered;
 
     private IntInputWidget stackSizeInput;
@@ -64,7 +66,7 @@ public class RobotArmCover extends ConveyorCover {
         while (iterator.hasNext()) {
             TypeItemInfo sourceInfo = sourceItemAmount.get(iterator.next());
             int itemAmount = sourceInfo.totalCount;
-            int itemToMoveAmount = getFilterHandler().testItemCount(sourceInfo.itemStack);
+            int itemToMoveAmount = getFilteredItemAmount(sourceInfo.itemStack);
 
             if (itemAmount >= itemToMoveAmount) {
                 sourceInfo.totalCount = itemToMoveAmount;
@@ -103,7 +105,7 @@ public class RobotArmCover extends ConveyorCover {
         while (iterator.hasNext()) {
             ItemStack filteredItem = iterator.next();
             GroupItemInfo sourceInfo = sourceItemAmounts.get(filteredItem);
-            int itemToKeepAmount = getFilterHandler().testItemCount(sourceInfo.itemStack);
+            int itemToKeepAmount = getFilteredItemAmount(sourceInfo.itemStack);
 
             int itemAmount = 0;
             if (targetItemAmounts.containsKey(filteredItem)) {
@@ -119,6 +121,13 @@ public class RobotArmCover extends ConveyorCover {
 
         return moveInventoryItems(sourceInventory, targetInventory, sourceItemAmounts, maxTransferAmount);
     }
+
+    private int getFilteredItemAmount(ItemStack itemStack) {
+        ItemFilter filter = getFilterHandler();
+
+        return filter.isBlackList() ? globalTransferLimit : filter.testItemCount(itemStack);
+    }
+
 
     //////////////////////////////////////
     //***********     GUI    ***********//
@@ -143,7 +152,7 @@ public class RobotArmCover extends ConveyorCover {
         group.addWidget(transferModeSelector);
 
         this.stackSizeInput = new IntInputWidget(79, 45, 65, 20,
-                transferStackSize, val -> transferStackSize = val
+                globalTransferLimit, val -> globalTransferLimit = val
         );
         configureStackSizeInput();
 
@@ -153,14 +162,18 @@ public class RobotArmCover extends ConveyorCover {
     private void setTransferMode(TransferMode transferMode) {
         this.transferMode = transferMode;
 
-        if (this.isRemote()) {
-            configureStackSizeInput();
-            return;
+        configureStackSizeInput();
+
+        if (!this.isRemote()) {
+            configureFilterHandler();
         }
+    }
 
-        // Everything from here on only needs to happen on the server.
-
-        initializeFilterHandler();
+    @Override
+    protected void configureFilterHandler() {
+        if (this.filterHandler instanceof SimpleItemFilter filter) {
+            filter.setMaxStackSize(transferMode.maxStackSize);
+        }
     }
 
     private void configureStackSizeInput() {
@@ -170,12 +183,5 @@ public class RobotArmCover extends ConveyorCover {
         this.stackSizeInput.setVisible(this.transferMode != TransferMode.TRANSFER_ANY);
         this.stackSizeInput.setMin(1);
         this.stackSizeInput.setMax(this.transferMode.maxStackSize);
-    }
-
-    @Override
-    protected void initializeFilterHandler() {
-        if (this.filterHandler instanceof SimpleItemFilter filter) {
-            filter.setMaxStackSize(transferMode.maxStackSize);
-        }
     }
 }
