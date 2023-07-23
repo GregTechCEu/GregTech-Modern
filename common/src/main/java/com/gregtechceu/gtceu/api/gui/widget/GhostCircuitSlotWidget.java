@@ -1,8 +1,14 @@
 package com.gregtechceu.gtceu.api.gui.widget;
 
+import com.gregtechceu.gtceu.api.item.GhostCircuitItem;
+import com.lowdragmc.lowdraglib.gui.util.ClickData;
+import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
+import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
 import gregtech.api.capability.impl.GhostCircuitItemStackHandler;
 import gregtech.api.recipes.ingredients.IntCircuitIngredient;
 import gregtech.client.utils.TooltipHelper;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.item.ItemStack;
@@ -18,17 +24,19 @@ public class GhostCircuitSlotWidget extends SlotWidget {
     private static final int SET_TO_EMPTY = 2;
     private static final int SET_TO_N = 3;
 
-    private final GhostCircuitItemStackHandler circuitInventory;
+    private final GhostCircuitItem circuitInventory;
 
-    public GhostCircuitSlotWidget(GhostCircuitItemStackHandler circuitInventory, int slotIndex, int xPosition, int yPosition) {
-        super(circuitInventory, slotIndex, xPosition, yPosition, false, false, false);
+    public GhostCircuitSlotWidget(GhostCircuitItem circuitInventory, int slotIndex, int xPosition, int yPosition) {
+        super(circuitInventory, slotIndex, xPosition, yPosition, false, false);
         this.circuitInventory = circuitInventory;
     }
 
     @Override
-    public boolean mouseClicked(int mouseX, int mouseY, int button) {
+    @Environment(EnvType.CLIENT)
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (isMouseOverElement(mouseX, mouseY) && gui != null) {
-            if (button == 0 && TooltipHelper.isShiftDown()) {
+            ClickData clickData = new ClickData();
+            if (button == 0 && clickData.isShiftClick) {
                 // open popup on shift-left-click
                 // todo add this one day
             } else if (button == 0) {
@@ -37,7 +45,7 @@ public class GhostCircuitSlotWidget extends SlotWidget {
                 this.circuitInventory.setCircuitValue(newValue);
                 writeClientAction(SET_TO_N, buf -> buf.writeVarInt(newValue));
 
-            } else if (button == 1 && TooltipHelper.isShiftDown()) {
+            } else if (button == 1 && clickData.isShiftClick) {
                 // clear on shift-right-click
                 this.circuitInventory.setCircuitValue(GhostCircuitItemStackHandler.NO_CONFIG);
                 writeClientAction(SET_TO_EMPTY, buf -> {});

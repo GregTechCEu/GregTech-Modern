@@ -1,19 +1,22 @@
-package com.gregtechceu.gtceu.api.capability.recipe;
+package com.gregtechceu.gtceu.api.item;
 
+import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import gregtech.api.capability.INotifiableHandler;
 import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.api.recipes.ingredients.IntCircuitIngredient;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.items.IItemHandlerModifiable;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GhostCircuitCapability implements IItemHandlerModifiable, INotifiableHandler {
+public class GhostCircuitItem implements IItemTransfer {
 
     /**
      * Special circuit value indicating no circuit value is set.
@@ -26,10 +29,10 @@ public class GhostCircuitCapability implements IItemHandlerModifiable, INotifiab
     private ItemStack circuitStack = ItemStack.EMPTY;
 
     /**
-     * Return the circuit value, or {@link GhostCircuitCapability#NO_CONFIG} if
+     * Return the circuit value, or {@link GhostCircuitItem#NO_CONFIG} if
      * no circuit value is set.
      *
-     * @return A valid circuit value if present, otherwise {@link GhostCircuitCapability#NO_CONFIG}
+     * @return A valid circuit value if present, otherwise {@link GhostCircuitItem#NO_CONFIG}
      */
     public int getCircuitValue() {
         return this.circuitValue;
@@ -46,11 +49,11 @@ public class GhostCircuitCapability implements IItemHandlerModifiable, INotifiab
 
     /**
      * Set the circuit value of this inventory to given value and update the item. The item is set to circuit item
-     * with corresponding int value, or an empty itemstack if {@link GhostCircuitCapability#NO_CONFIG} is given.
+     * with corresponding int value, or an empty itemstack if {@link GhostCircuitItem#NO_CONFIG} is given.
      * <p>
      * The value is expected to be either a valid circuit value
      * ({@link IntCircuitIngredient#CIRCUIT_MIN} ~ {@link IntCircuitIngredient#CIRCUIT_MAX}, both inclusive)
-     * or {@link GhostCircuitCapability#NO_CONFIG}; any other value will produce IllegalArgumentException.
+     * or {@link GhostCircuitItem#NO_CONFIG}; any other value will produce IllegalArgumentException.
      *
      * @param config New config value
      * @throws IllegalArgumentException On invalid input
@@ -75,7 +78,7 @@ public class GhostCircuitCapability implements IItemHandlerModifiable, INotifiab
     /**
      * Set the circuit value of this inventory from given item. Circuit value is set to valid circuit value only if
      * the supplied item is int circuit; providing any other item will set the circuit value to {@link
-     * GhostCircuitCapability#NO_CONFIG}.
+     * GhostCircuitItem#NO_CONFIG}.
      *
      * @param stack Item stack to read circuit value from
      */
@@ -115,6 +118,12 @@ public class GhostCircuitCapability implements IItemHandlerModifiable, INotifiab
         return this.circuitStack;
     }
 
+    @NotNull
+    @Override
+    public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
+        return null;
+    }
+
     @Nonnull
     @Override
     public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
@@ -137,6 +146,11 @@ public class GhostCircuitCapability implements IItemHandlerModifiable, INotifiab
     public int getSlotLimit(int slot) {
         validateSlot(slot);
         return 1;
+    }
+
+    @Override
+    public boolean isItemValid(int slot, @NotNull ItemStack stack) {
+        return false;
     }
 
     protected void validateSlot(int slot) {
