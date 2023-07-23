@@ -48,6 +48,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.material.Fluids;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -303,6 +304,10 @@ public class GTItems {
             if (index == 1) {
                 var held = FluidTransferHelper.getFluidContained(itemStack);
                 if (held != null) {
+                    // TODO render cell with a real fluid texture in the future?
+                    if (held.getFluid() == Fluids.LAVA) {
+                        return 0xFFFF7000;
+                    }
                     return FluidHelper.getColor(held);
                 }
             }
@@ -372,7 +377,7 @@ public class GTItems {
             .model(GTModels::cellModel)
             .color(() -> GTItems::cellColor)
             .onRegister(modelPredicate(GTCEu.id("fluid_cell"), (itemStack) -> FluidTransferHelper.getFluidContained(itemStack) == null ? 0f : 1f))
-            .onRegister(attach(cellName(), ThermalFluidStats.create((int)FluidHelper.getBucket() * 1000, 1200, false, true, false, false, true), new ItemFluidContainer()))
+            .onRegister(attach(cellName(), ThermalFluidStats.create((int)FluidHelper.getBucket(), 1200, false, true, false, false, true), new ItemFluidContainer()))
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Glass, GTValues.M * 4)))).register();
 
     // TODO Lighter

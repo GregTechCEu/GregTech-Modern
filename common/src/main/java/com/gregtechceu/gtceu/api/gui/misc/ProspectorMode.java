@@ -13,8 +13,14 @@ import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
+import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
+import com.lowdragmc.lowdraglib.gui.util.DrawerHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -26,11 +32,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Fluids;
 import org.apache.commons.lang3.ArrayUtils;
 
 import javax.annotation.Nonnull;
 import java.util.*;
-import java.util.stream.Stream;
 
 /**
  * @author KilaBash
@@ -162,7 +168,11 @@ public abstract class ProspectorMode<T> {
 
         @Override
         public int getItemColor(FluidInfo item) {
-            return FluidHelper.getColor(FluidStack.create(item.fluid, item.yield));
+            var fluidStack = FluidStack.create(item.fluid, item.yield);
+            if (fluidStack.getFluid() == Fluids.LAVA) {
+                return 0xFFFF7000;
+            }
+            return FluidHelper.getColor(fluidStack);
         }
 
         @Override
@@ -206,6 +216,19 @@ public abstract class ProspectorMode<T> {
             }
         }
 
+        @Override
+        @Environment(EnvType.CLIENT)
+        public void drawSpecialGrid(GuiGraphics graphics, FluidInfo[] items, int x, int y, int width, int height) {
+            if (items.length > 0) {
+                var item = items[0];
+                double progress = item.left * 1.0 / Math.max(Math.max(item.left, 100), 1);
+                float drawnU = (float) ProgressTexture.FillDirection.DOWN_TO_UP.getDrawnU(progress);
+                float drawnV = (float) ProgressTexture.FillDirection.DOWN_TO_UP.getDrawnV(progress);
+                float drawnWidth = (float) ProgressTexture.FillDirection.DOWN_TO_UP.getDrawnWidth(progress);
+                float drawnHeight = (float) ProgressTexture.FillDirection.DOWN_TO_UP.getDrawnHeight(progress);
+                DrawerHelper.drawFluidForGui(graphics, FluidStack.create(item.fluid(), item.left), 100, (int) (x + drawnU * width), (int) (y + drawnV * height), ((int) (width * drawnWidth)), ((int) (height * drawnHeight)));
+            }
+        }
     };
 
     public record OreInfo(Material material, int weight, int left, int yield) {
@@ -300,4 +323,7 @@ public abstract class ProspectorMode<T> {
     public abstract T deserialize(FriendlyByteBuf buf);
     public abstract Class<T> getItemClass();
     public abstract void appendTooltips(List<T[]> items, List<Component> tooltips, String selected);
+    @Environment(EnvType.CLIENT)
+    public void drawSpecialGrid(GuiGraphics graphics, T[] items, int x, int y, int width, int height) {
+    }
 }
