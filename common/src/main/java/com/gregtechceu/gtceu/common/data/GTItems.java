@@ -775,8 +775,9 @@ public class GTItems {
     public static ItemEntry<Item> SENSOR_ZPM= REGISTRATE.item("zpm_sensor", Item::new).lang("ZPM Sensor").register();
     public static ItemEntry<Item> SENSOR_UV= REGISTRATE.item("uv_sensor", Item::new).lang("UV Sensor").register();
 
-    public static ItemEntry<Item> TOOL_DATA_STICK= REGISTRATE.item("data_stick", Item::new).lang("Data Stick").register();
-    public static ItemEntry<Item> TOOL_DATA_ORB= REGISTRATE.item("data_orb", Item::new).lang("Data Orb").register();
+    public static ItemEntry<Item> TOOL_DATA_STICK = REGISTRATE.item("data_stick", Item::new).lang("Data Stick").register();
+    public static ItemEntry<Item> TOOL_DATA_ORB = REGISTRATE.item("data_orb", Item::new).lang("Data Orb").register();
+    public static ItemEntry<Item> TOOL_DATA_MODULE = REGISTRATE.item("data_module", Item::new).lang("Data Module").register();
 
     public static final Map<MarkerMaterial, ItemEntry<Item>> GLASS_LENSES = new HashMap<>();
 
