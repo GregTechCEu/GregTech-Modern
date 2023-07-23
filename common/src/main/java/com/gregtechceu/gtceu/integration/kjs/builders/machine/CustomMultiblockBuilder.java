@@ -247,9 +247,6 @@ public class CustomMultiblockBuilder extends MultiblockMachineBuilder {
 
             @Override
             public CustomMultiblockBuilder tier(int tier) {
-                for (var builder : builders) {
-                    builder.tier(tier);
-                }
                 return this;
             }
 

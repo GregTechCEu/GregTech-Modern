@@ -145,6 +145,16 @@ public class ProspectingTexture extends AbstractTexture {
         bufferbuilder.vertex(matrix4f, x, y, 0).uv(0, 0).color(-1).endVertex();
         tessellator.end();
 
+        //draw special grid (e.g. fluid)
+        for (int cx = 0; cx < radius * 2 - 1; cx++) {
+            for (int cz = 0; cz < radius * 2 - 1; cz++) {
+                if (this.data[cx][cz] != null && this.data[cx][cz].length > 0) {
+                    var items = this.data[cx][cz];
+                    mode.drawSpecialGrid(poseStack, items, x + cx * 16 + 1, y + cz * 16 + 1, 16, 16);
+                }
+            }
+        }
+
         GuiTextures.UP.copy().setColor(ColorPattern.RED.color).rotate(direction / 2).draw(poseStack, 0, 0, x + playerXGui - 20, y + playerYGui - 20, 40, 40);
 
         //draw red vertical line

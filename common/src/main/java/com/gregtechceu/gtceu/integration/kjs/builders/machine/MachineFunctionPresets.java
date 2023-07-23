@@ -150,9 +150,6 @@ public class MachineFunctionPresets {
 
             @Override
             public MachineBuilder<D> tier(int tier) {
-                for (var builder : builders) {
-                    builder.tier(tier);
-                }
                 return this;
             }
 
@@ -231,6 +228,75 @@ public class MachineFunctionPresets {
             public MachineBuilder<D> langValue(String langValue) {
                 for (var builder : builders) {
                     builder.langValue(langValue);
+                }
+                return this;
+            }
+
+            @Override
+            public MachineBuilder<D> modelRenderer(Supplier<ResourceLocation> model) {
+                for (var builder : builders) {
+                    builder.modelRenderer(model);
+                }
+                return this;
+            }
+
+            @Override
+            public MachineBuilder<D> defaultModelRenderer() {
+                return modelRenderer(() -> new ResourceLocation(registrate.getModid(), "block/" + name));
+            }
+
+            @Override
+            public MachineBuilder<D> overlayTieredHullRenderer(String name) {
+                for (var builder : builders) {
+                    builder.overlayTieredHullRenderer(name);
+                }
+                return this;
+            }
+
+            @Override
+            public MachineBuilder<D> overlaySteamHullRenderer(String name) {
+                for (var builder : builders) {
+                    builder.overlaySteamHullRenderer(name);
+                }
+                return this;
+            }
+
+            @Override
+            public MachineBuilder<D> workableTieredHullRenderer(ResourceLocation workableModel) {
+                for (var builder : builders) {
+                    builder.workableTieredHullRenderer(workableModel);
+                }
+                return this;
+            }
+
+            @Override
+            public MachineBuilder<D> workableSteamHullRenderer(boolean isHighPressure, ResourceLocation workableModel) {
+                for (var builder : builders) {
+                    builder.workableSteamHullRenderer(isHighPressure, workableModel);
+                }
+                return this;
+            }
+
+            @Override
+            public MachineBuilder<D> workableCasingRenderer(ResourceLocation baseCasing, ResourceLocation workableModel) {
+                for (var builder : builders) {
+                    builder.workableCasingRenderer(baseCasing, workableModel);
+                }
+                return this;
+            }
+
+            @Override
+            public MachineBuilder<D> workableCasingRenderer(ResourceLocation baseCasing, ResourceLocation workableModel, boolean tint) {
+                for (var builder : builders) {
+                    builder.workableCasingRenderer(baseCasing, workableModel, tint);
+                }
+                return this;
+            }
+
+            @Override
+            public MachineBuilder<D> sidedWorkableCasingRenderer(String basePath, ResourceLocation overlayModel, boolean tint) {
+                for (var builder : builders) {
+                    builder.sidedWorkableCasingRenderer(basePath, overlayModel, tint);
                 }
                 return this;
             }
