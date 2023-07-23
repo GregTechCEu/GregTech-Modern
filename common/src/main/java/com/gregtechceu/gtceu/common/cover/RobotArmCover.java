@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.cover.filter.SimpleItemFilter;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
 import com.gregtechceu.gtceu.common.cover.data.TransferMode;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceBorderTexture;
@@ -39,7 +40,8 @@ public class RobotArmCover extends ConveyorCover {
     protected int transferStackSize;
 
     private TextFieldWidget transferStackSizeField;
-    private WidgetGroup stackSizeGroup;
+    //private WidgetGroup stackSizeGroup;
+    private IntInputWidget stackSizeInput;
 
     public RobotArmCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide, int tier) {
         super(definition, coverHolder, attachedSide, tier);
@@ -168,7 +170,7 @@ public class RobotArmCover extends ConveyorCover {
 
     @Override
     protected void buildAdditionalUI(WidgetGroup group) {
-        this.stackSizeGroup = new WidgetGroup(91, 70, 75, 20);
+        //this.stackSizeGroup = new WidgetGroup(91, 70, 75, 20);
 
         CycleButtonWidget transferModeSelector = new CycleButtonWidget(
                 91, 45, 75, 20, 3,
@@ -180,35 +182,19 @@ public class RobotArmCover extends ConveyorCover {
         transferModeSelector.setIndex(transferMode.ordinal());
         group.addWidget(transferModeSelector);
 
-        this.stackSizeGroup.addWidget(new ButtonWidget(0, 0, 15, 20, new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("-1")), cd -> {
-            if (!cd.isRemote) {
-                int amount = cd.isCtrlClick ? cd.isShiftClick ? 512 : 64 : cd.isShiftClick ? 8 : 1;
-                transferStackSize = Mth.clamp(transferStackSize - amount, 1, maxItemTransferRate);
-            }
-        }).setHoverTooltips("gui.widget.incrementButton.default_tooltip"));
-        this.stackSizeGroup.addWidget(new ButtonWidget(60, 0, 15, 20,
-                new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("+1")), cd -> {
-            if (!cd.isRemote) {
-                int amount = cd.isCtrlClick ? cd.isShiftClick ? 512 : 64 : cd.isShiftClick ? 8 : 1;
-                transferStackSize = Mth.clamp(transferStackSize + amount, 1, maxItemTransferRate);
-            }
-        }).setHoverTooltips("gui.widget.incrementButton.default_tooltip"));
-        this.transferStackSizeField = new TextFieldWidget(17, 0, 41, 20,
-                () -> String.valueOf(transferStackSize),
-                val -> transferStackSize = Mth.clamp(Integer.parseInt(val), 1, transferMode.maxStackSize)
+        this.stackSizeInput = new IntInputWidget(91, 70, 75, 20,
+                transferStackSize, val -> transferStackSize = val
         );
-        this.stackSizeGroup.addWidget(this.transferStackSizeField);
-        this.stackSizeGroup.setVisible(this.transferMode != TransferMode.TRANSFER_ANY);
-        group.addWidget(this.stackSizeGroup);
+        configureStackSizeInput();
+
+        group.addWidget(this.stackSizeInput);
     }
 
     private void setTransferMode(TransferMode transferMode) {
         this.transferMode = transferMode;
 
         if (this.isRemote()) {
-            if (this.stackSizeGroup != null)
-                this.stackSizeGroup.setVisible(this.transferMode != TransferMode.TRANSFER_ANY);
-
+            configureStackSizeInput();
             return;
         }
 
@@ -218,6 +204,15 @@ public class RobotArmCover extends ConveyorCover {
 
         if (this.transferStackSizeField != null)
             this.transferStackSizeField.setNumbersOnly(1, transferMode.maxStackSize);
+    }
+
+    private void configureStackSizeInput() {
+        if (this.stackSizeInput == null)
+            return;
+
+        this.stackSizeInput.setVisible(this.transferMode != TransferMode.TRANSFER_ANY);
+        this.stackSizeInput.setMin(1);
+        this.stackSizeInput.setMax(this.transferMode.maxStackSize);
     }
 
     @Override

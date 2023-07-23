@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.cover.IUICover;
 import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.syncdata.RequireRerender;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
@@ -242,20 +243,10 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
         }
 
         group.addWidget(new LabelWidget(10, 5, LocalizationUtils.format(getUITitle(), GTValues.VN[tier])));
-        group.addWidget(new ButtonWidget(10, 20, 30, 20, new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("-1")), cd -> {
-            if (!cd.isRemote) {
-                int amount = cd.isCtrlClick ? cd.isShiftClick ? 512 : 64 : cd.isShiftClick ? 8 : 1;
-                setTransferRate(Mth.clamp(getTransferRate() - amount, 1, maxItemTransferRate));
-            }
-        }).setHoverTooltips("gui.widget.incrementButton.default_tooltip"));
-        group.addWidget(new ButtonWidget(136, 20, 30, 20,
-                new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("+1")), cd -> {
-            if (!cd.isRemote) {
-                int amount = cd.isCtrlClick ? cd.isShiftClick ? 512 : 64 : cd.isShiftClick ? 8 : 1;
-                setTransferRate(Mth.clamp(getTransferRate() + amount, 1, maxItemTransferRate));
-            }
-        }).setHoverTooltips("gui.widget.incrementButton.default_tooltip"));
-        group.addWidget(new TextFieldWidget(42, 20, 92, 20, () -> String.valueOf(transferRate), val -> setTransferRate(Mth.clamp(Integer.parseInt(val), 1, maxItemTransferRate))).setNumbersOnly(1, maxItemTransferRate));
+
+        group.addWidget(new IntInputWidget(10, 20, 156, 20, this.transferRate, this::setTransferRate)
+                .setMin(1).setMax(maxItemTransferRate));
+
         group.addWidget(new SwitchWidget(10, 45, 75, 20, (clickData, value) -> {
                     if (!clickData.isRemote) {
                         setIo(value ? IO.IN : IO.OUT);
