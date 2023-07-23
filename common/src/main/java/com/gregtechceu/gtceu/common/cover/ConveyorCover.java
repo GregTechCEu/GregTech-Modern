@@ -169,7 +169,11 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
                 var itemHandler = ItemTransferHelper.getItemTransfer(level, pos.relative(attachedSide), attachedSide.getOpposite());
                 var myItemHandler = ItemTransferHelper.getItemTransfer(level, pos, attachedSide);
                 if (itemHandler != null && myItemHandler != null) {
-                    int totalTransferred = doTransferItems(itemHandler, myItemHandler, itemsLeftToTransferLastSecond);
+                    int totalTransferred = switch (io) {
+                        case IN -> doTransferItems(itemHandler, myItemHandler, itemsLeftToTransferLastSecond);
+                        case OUT -> doTransferItems(myItemHandler, itemHandler, itemsLeftToTransferLastSecond);
+                        default -> 0;
+                    };
                     this.itemsLeftToTransferLastSecond -= totalTransferred;
                 }
             }
@@ -180,17 +184,8 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
         }
     }
 
-    protected int doTransferItems(IItemTransfer itemHandler, IItemTransfer myItemHandler, int maxTransferAmount) {
-        return doTransferItemsAny(itemHandler, myItemHandler, maxTransferAmount);
-    }
-
-    protected int doTransferItemsAny(IItemTransfer itemHandler, IItemTransfer myItemHandler, int maxTransferAmount) {
-        if (io == IO.IN) {
-            return moveInventoryItems(itemHandler, myItemHandler, maxTransferAmount);
-        } else if (io == IO.OUT) {
-            return moveInventoryItems(myItemHandler, itemHandler, maxTransferAmount);
-        }
-        return 0;
+    protected int doTransferItems(IItemTransfer sourceInventory, IItemTransfer targetInventory, int maxTransferAmount) {
+        return moveInventoryItems(sourceInventory, targetInventory, maxTransferAmount);
     }
 
     protected int moveInventoryItems(IItemTransfer sourceInventory, IItemTransfer targetInventory, int maxTransferAmount) {

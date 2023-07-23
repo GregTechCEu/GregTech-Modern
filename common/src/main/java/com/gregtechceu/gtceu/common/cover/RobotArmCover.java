@@ -45,22 +45,17 @@ public class RobotArmCover extends ConveyorCover {
     }
 
     @Override
-    protected int doTransferItems(IItemTransfer itemHandler, IItemTransfer myItemHandler, int maxTransferAmount) {
+    protected int doTransferItems(IItemTransfer sourceInventory, IItemTransfer targetInventory, int maxTransferAmount) {
         // TODO handle pipenet handlers once item pipes are implemented
 
-        switch (transferMode) {
-            case TRANSFER_ANY:
-                return doTransferItemsAny(itemHandler, myItemHandler, maxTransferAmount);
-            case TRANSFER_EXACT:
-                return doTransferExact(itemHandler, myItemHandler, maxTransferAmount);
-            case KEEP_EXACT:
-                return doKeepExact(itemHandler, myItemHandler, maxTransferAmount);
-            default:
-                return 0;
-        }
+        return switch (transferMode) {
+            case TRANSFER_ANY -> moveInventoryItems(sourceInventory, targetInventory, maxTransferAmount);
+            case TRANSFER_EXACT -> doTransferExact(sourceInventory, targetInventory, maxTransferAmount);
+            case KEEP_EXACT -> doKeepExact(sourceInventory, targetInventory, maxTransferAmount);
+        };
     }
 
-    protected int doTransferExact(IItemTransfer itemHandler, IItemTransfer myItemHandler, int maxTransferAmount) {
+    protected int doTransferExact(IItemTransfer sourceInventory, IItemTransfer targetInventory, int maxTransferAmount) {
         /*
         Map<ItemStack, TypeItemInfo> sourceItemAmount = doCountSourceInventoryItemsByType(itemHandler, myItemHandler);
         Iterator<ItemStack> iterator = sourceItemAmount.keySet().iterator();
@@ -111,7 +106,7 @@ public class RobotArmCover extends ConveyorCover {
         return 0; // TODO
     }
 
-    protected int doKeepExact(IItemTransfer itemHandler, IItemTransfer myItemHandler, int maxTransferAmount) {
+    protected int doKeepExact(IItemTransfer sourceInventory, IItemTransfer targetInventory, int maxTransferAmount) {
         /*
         Map<Object, GroupItemInfo> currentItemAmount = doCountDestinationInventoryItemsByMatchIndex(itemHandler, myItemHandler);
         Map<Object, GroupItemInfo> sourceItemAmounts = doCountDestinationInventoryItemsByMatchIndex(myItemHandler, itemHandler);
