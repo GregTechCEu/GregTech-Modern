@@ -1138,6 +1138,15 @@ public class GTItems {
     public static ItemEntry<ComponentItem> FERTILIZER = REGISTRATE.item("fertilizer", ComponentItem::create).onRegister(attach(new FertilizerBehavior())).register();
     public static ItemEntry<Item> BLACKLIGHT = REGISTRATE.item("blacklight", Item::new).register();
 
+    public static ItemEntry<Item> ITEM_MAGNET_LV = addItem(471, "item_magnet.lv")
+                .addComponents(ElectricStats.createElectricItem(100_000L, GTValues.LV), new ItemMagnetBehavior(8))
+            .setMaxStackSize(1)
+                .setCreativeTabs(GregTechAPI.TAB_GREGTECH_TOOLS);
+    public static ItemEntry<Item> ITEM_MAGNET_HV = addItem(472, "item_magnet.hv")
+                .addComponents(ElectricStats.createElectricItem(1_600_000L, GTValues.HV), new ItemMagnetBehavior(32))
+            .setMaxStackSize(1)
+                .setCreativeTabs(GregTechAPI.TAB_GREGTECH_TOOLS);
+
     public static void init() {
         generateMaterialItems();
         generateTools();
