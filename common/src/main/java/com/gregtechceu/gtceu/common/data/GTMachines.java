@@ -78,6 +78,8 @@ import net.minecraft.world.level.block.DoorBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 import java.util.*;
 import java.util.function.BiConsumer;
@@ -1282,6 +1284,38 @@ public class GTMachines {
             CASING_TUNGSTENSTEEL_TURBINE, CASING_TUNGSTENSTEEL_GEARBOX,
             GTCEu.id("block/casings/solid/machine_casing_robust_tungstensteel"),
             GTCEu.id("block/multiblock/generator/large_plasma_turbine"));
+
+    public final static MultiblockMachineDefinition[] PROCESSING_ARRAY = ConfigHolder.INSTANCE.machines.doProcessingArray ? registerTieredMultis("processing_array", ProcessingArrayMachine::new,
+            (tier, builder) ->  builder
+                    .rotationState(RotationState.NON_Y_AXIS)
+                    .blockProp(p -> p.noOcclusion().isViewBlocking((state, level, pos) -> false))
+                    .shape(Shapes.box(-0.001, -0.001, -0.001, 1.001, 1.001, 1.001))
+                    .appearanceBlock(() -> ProcessingArrayMachine.getCasingState(tier))
+                    .recipeType(GTRecipeTypes.DUMMY_RECIPES)
+                    .recipeModifier(ProcessingArrayMachine::recipeModifier, true)
+                    .pattern(definition -> FactoryBlockPattern.start()
+                            .aisle("XXX", "CCC", "XXX")
+                            .aisle("XXX", "C#C", "XXX")
+                            .aisle("XSX", "CCC", "XXX")
+                            .where('S', Predicates.controller(blocks(definition.getBlock())))
+                            .where('X', blocks(ProcessingArrayMachine.getCasingState(tier)).setMinGlobalLimited(4)
+                                    .or(Predicates.abilities(PartAbility.IMPORT_ITEMS))
+                                    .or(Predicates.abilities(PartAbility.EXPORT_ITEMS))
+                                    .or(Predicates.abilities(PartAbility.IMPORT_FLUIDS))
+                                    .or(Predicates.abilities(PartAbility.EXPORT_FLUIDS))
+                                    .or(Predicates.abilities(PartAbility.INPUT_ENERGY))
+                                    .or(Predicates.abilities(PartAbility.OUTPUT_ENERGY))
+                                    .or(Predicates.autoAbilities(true, false)))
+                            .where('C', blocks(CLEANROOM_GLASS.get()))
+                            .where('#', Predicates.air())
+                            .build())
+                    .tooltips(Component.translatable("gtceu.universal.tooltip.parallel", ProcessingArrayMachine.getMachineLimit(tier)))
+                    .renderer(() -> new ProcessingArrayMachineRenderer(tier == IV ?
+                            GTCEu.id("block/casings/solid/machine_casing_robust_tungstensteel") :
+                            GTCEu.id("block/casings/solid/machine_casing_study_hsse"),
+                            GTCEu.id("block/multiblock/processing_array")))
+                    .register(),
+            IV, LuV) : null;
 
     //////////////////////////////////////
     //**********     Misc     **********//

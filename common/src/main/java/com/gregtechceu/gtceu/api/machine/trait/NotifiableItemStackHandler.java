@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
 import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
+import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import lombok.Getter;
@@ -22,6 +23,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * @author KilaBash
@@ -37,17 +39,21 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
     public final IO capabilityIO;
     @Getter @Setter
     private long timeStamp;
-    @Persisted
+    @Persisted @DescSynced
     public final ItemStackTransfer storage;
     private Boolean isEmpty;
 
-    public NotifiableItemStackHandler(MetaMachine machine, int slots, IO handlerIO, IO capabilityIO) {
+    public NotifiableItemStackHandler(MetaMachine machine, int slots, IO handlerIO, IO capabilityIO, Function<Integer, ItemStackTransfer> transferFactory) {
         super(machine);
         this.timeStamp = Long.MIN_VALUE;
         this.handlerIO = handlerIO;
-        this.storage = new ItemStackTransfer(slots);
+        this.storage = transferFactory.apply(slots);
         this.capabilityIO = capabilityIO;
         this.storage.setOnContentsChanged(this::onContentChanged);
+    }
+
+    public NotifiableItemStackHandler(MetaMachine machine, int slots, IO handlerIO, IO capabilityIO) {
+        this(machine, slots, handlerIO, capabilityIO, ItemStackTransfer::new);
     }
 
     public NotifiableItemStackHandler(MetaMachine machine, int slots, IO handlerIO) {
