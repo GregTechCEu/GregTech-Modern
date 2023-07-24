@@ -79,6 +79,8 @@ import net.minecraft.world.level.block.DoorBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 import java.util.*;
 import java.util.function.BiConsumer;
@@ -1284,10 +1286,11 @@ public class GTMachines {
             GTCEu.id("block/casings/solid/machine_casing_robust_tungstensteel"),
             GTCEu.id("block/multiblock/generator/large_plasma_turbine"));
 
-    public final static MultiblockMachineDefinition[] PROCESSING_ARRAY = registerTieredMultis("processing_array", ProcessingArrayMachine::new,
+    public final static MultiblockMachineDefinition[] PROCESSING_ARRAY = ConfigHolder.INSTANCE.machines.doProcessingArray ? registerTieredMultis("processing_array", ProcessingArrayMachine::new,
             (tier, builder) ->  builder
                     .rotationState(RotationState.NON_Y_AXIS)
                     .blockProp(p -> p.noOcclusion().isViewBlocking((state, level, pos) -> false))
+                    .shape(Shapes.box(-0.001, -0.001, -0.001, 1.001, 1.001, 1.001))
                     .appearanceBlock(() -> ProcessingArrayMachine.getCasingState(tier))
                     .recipeType(GTRecipeTypes.DUMMY_RECIPES)
                     .recipeModifier(ProcessingArrayMachine::recipeModifier, true)
@@ -1313,7 +1316,7 @@ public class GTMachines {
                             GTCEu.id("block/casings/solid/machine_casing_study_hsse"),
                             GTCEu.id("block/multiblock/processing_array")))
                     .register(),
-            IV, LuV);
+            IV, LuV) : null;
 
     //////////////////////////////////////
     //**********     Misc     **********//

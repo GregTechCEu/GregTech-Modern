@@ -127,13 +127,22 @@ public class ProcessingArrayMachine extends TieredWorkableElectricMultiblockMach
     //*******    Recipe Logic    *******//
     //////////////////////////////////////
 
+    /**
+     * For available recipe tier, decided by the held machine.
+     */
     @Override
     public int getTier() {
-        return GTUtil.getFloorTierByVoltage(getMaxHatchVoltage());
+        var definition = getMachineDefinition();
+        return definition == null ? 0 : definition.getTier();
     }
 
     @Override
-    public long getOverclockVoltage() {
+    public int getMaxOverclockTier() {
+        return Math.min(getDefinition().getTier(), GTUtil.getTierByVoltage(getMaxVoltage()));
+    }
+
+    @Override
+    public long getMaxVoltage() {
         return getMaxHatchVoltage();
     }
 

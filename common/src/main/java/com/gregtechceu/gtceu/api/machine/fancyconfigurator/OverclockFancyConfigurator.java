@@ -16,7 +16,10 @@ import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 
+import javax.annotation.Nullable;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
@@ -26,12 +29,16 @@ import java.util.function.Consumer;
  * @implNote OverclockFancyConfigurator
  */
 public class OverclockFancyConfigurator implements IFancyConfigurator {
-    IOverclockMachine overclockMachine;
+    protected IOverclockMachine overclockMachine;
     // runtime
-    int currentTier;
+    protected int currentTier;
+    @Nullable
+    protected WidgetGroup group;
+    protected Map<Integer, WidgetGroup> lightGroups;
 
     public OverclockFancyConfigurator(IOverclockMachine overclockMachine) {
         this.overclockMachine = overclockMachine;
+        this.lightGroups = new HashMap<>();
     }
 
     @Override
@@ -41,12 +48,59 @@ public class OverclockFancyConfigurator implements IFancyConfigurator {
             this.currentTier = newTier;
             sender.accept(0, buf -> buf.writeVarInt(this.currentTier));
         }
+        int min = overclockMachine.getMinOverclockTier();
+        int max = overclockMachine.getMaxOverclockTier();
+        if (lightGroups.size() != max - min + 1) {
+            updateLightButton(min, max);
+            sender.accept(1, buf -> {
+                buf.writeVarInt(min);
+                buf.writeVarInt(max);
+            });
+        } else {
+            for (int i = min; i <= max; i++) {
+                if (!lightGroups.containsKey(i)) {
+                    updateLightButton(min, max);
+                    sender.accept(1, buf -> {
+                        buf.writeVarInt(min);
+                        buf.writeVarInt(max);
+                    });
+                    return;
+                }
+            }
+        }
+    }
+
+    private void updateLightButton(int min, int max) {
+        if  (group != null) {
+            for (WidgetGroup light : lightGroups.values()) {
+                group.removeWidget(light);
+            }
+            lightGroups.clear();
+            int x = 5;
+            for (int tier = min; tier <= max ; tier++) {
+                int finalTier = tier;
+                var lightGroup = new WidgetGroup(x, 27, 8, 8);
+                lightGroup.addWidget(new ButtonWidget(0, 0, 8, 8, null, cd -> {
+                    if (!cd.isRemote) {
+                        overclockMachine.setOverclockTier(finalTier);
+                    }
+                }));
+                lightGroup.addWidget(new ImageWidget(0, 0, 8, 8, () -> currentTier >= finalTier ? GuiTextures.LIGHT_ON : GuiTextures.LIGHT_OFF));
+                lightGroups.put(tier, lightGroup);
+                group.addWidget(lightGroup);
+                x += 10;
+            }
+        }
     }
 
     @Override
     public void readUpdateInfo(int id, FriendlyByteBuf buf) {
         if (id == 0) {
             this.currentTier = buf.readVarInt();
+        } else if (id == 1) {
+            int min = buf.readVarInt();
+            int max = buf.readVarInt();
+            updateLightButton(min, max);
         }
     }
 
@@ -62,7 +116,7 @@ public class OverclockFancyConfigurator implements IFancyConfigurator {
 
     @Override
     public Widget createConfigurator() {
-        var group = new WidgetGroup(0, 0, 120, 40);
+        group = new WidgetGroup(0, 0, 120, 40);
         group.setBackground(GuiTextures.BACKGROUND_INVERSE);
         group.addWidget(new PredicatedButtonWidget(5, 5, 10, 20, new GuiTextureGroup(GuiTextures.BUTTON, Icons.LEFT.copy().scale(0.7f)), cd -> {
             if (!cd.isRemote) {
@@ -75,19 +129,10 @@ public class OverclockFancyConfigurator implements IFancyConfigurator {
                 overclockMachine.setOverclockTier(currentTier + 1);
             }
         }).setPredicate(() -> currentTier < overclockMachine.getMaxOverclockTier()));
-        int x = 5;
-        for (int tier = overclockMachine.getMinOverclockTier(); tier <= overclockMachine.getMaxOverclockTier() ; tier++) {
-            int finalTier = tier;
-            group.addWidget(new ButtonWidget(x, 27, 8, 8, null, cd -> {
-                if (!cd.isRemote) {
-                    overclockMachine.setOverclockTier(finalTier);
-                }
-            }));
-            group.addWidget(new ImageWidget(x, 27, 8, 8, () -> currentTier >= finalTier ? GuiTextures.LIGHT_ON : GuiTextures.LIGHT_OFF));
-            x += 10;
-        }
         return group;
     }
+
+
 
     @Override
     public List<Component> getTooltips() {
