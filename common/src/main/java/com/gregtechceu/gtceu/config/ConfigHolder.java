@@ -195,6 +195,9 @@ public class ConfigHolder {
         @Configurable
         @Configurable.Comment({"What Kind of material should the bedrock ore miner output?", "Default: \"raw\""})
         public String bedrockOreDropTagPrefix = "raw";
+        @Configurable
+        @Configurable.Comment({"Wether to add a \"Processing Array\"", "Default: true"})
+        public boolean doProcessingArray = true;
     }
 
     public static class ClientConfigs {

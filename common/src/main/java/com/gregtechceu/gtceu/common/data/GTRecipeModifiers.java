@@ -49,13 +49,15 @@ public class GTRecipeModifiers {
      * @param modifyDuration should multiply the duration
      * @return modified recipe and parallel amount
      */
-    public static Tuple<GTRecipe, Integer> fastParallel(IRecipeCapabilityHolder holder, @Nonnull GTRecipe recipe, int maxParallel, boolean modifyDuration) {
-        while (maxParallel > 0) {
-            var copied = recipe.copy(ContentModifier.multiplier(maxParallel), modifyDuration);
-            if (copied.matchRecipe(holder).isSuccess()) {
-                return new Tuple<>(copied, maxParallel);
+    public static Tuple<GTRecipe, Integer> fastParallel(MetaMachine machine, @Nonnull GTRecipe recipe, int maxParallel, boolean modifyDuration) {
+        if (machine instanceof IRecipeCapabilityHolder holder) {
+            while (maxParallel > 0) {
+                var copied = recipe.copy(ContentModifier.multiplier(maxParallel), modifyDuration);
+                if (copied.matchRecipe(holder).isSuccess()) {
+                    return new Tuple<>(copied, maxParallel);
+                }
+                maxParallel /= 2;
             }
-            maxParallel /= 2;
         }
         return new Tuple<>(recipe, 1);
     };
