@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.data.chemical.fluid.FluidTypes;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlag;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
+import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.*;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.item.tool.MaterialToolTier;
@@ -1085,15 +1086,15 @@ public class Material implements Comparable<Material> {
             }
 
             // Verify FluidTexture
-//            if (p.hasProperty(PropertyKey.FLUID)) {
-//                var fluid = p.getProperty(PropertyKey.FLUID);
-//                if (fluid.getStillTexture() == null) {
-//                    fluid.setStillTexture(MaterialIconType.fluid.getBlockTexturePath(iconSet, true));
-//                }
-//                if (fluid.getFlowTexture() == null) {
-//                    fluid.setFlowTexture(fluid.getStillTexture());
-//                }
-//            }
+            if (p.hasProperty(PropertyKey.FLUID)) {
+                var fluid = p.getProperty(PropertyKey.FLUID);
+                if (fluid.getStillTexture() == null) {
+                    fluid.setStillTexture(MaterialIconType.fluid.getBlockTexturePath(iconSet, true));
+                }
+                if (fluid.getFlowTexture() == null) {
+                    fluid.setFlowTexture(fluid.getStillTexture());
+                }
+            }
 
         }
     }
