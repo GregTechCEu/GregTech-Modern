@@ -24,7 +24,9 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec2;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -92,6 +94,10 @@ public class CoverContainerConfigurator extends WidgetGroup {
                 .setBackgroundTexture(new GuiTextureGroup(GuiTextures.SLOT, GuiTextures.FILTER_SLOT_OVERLAY)));
         slotWidget.setVisible(false);
         slotWidget.setActive(false);
+
+
+        var playerRotation = gui.entityPlayer.getRotationVector();
+        sceneWidget.setCameraYawAndPitch(playerRotation.x, playerRotation.y);
     }
 
     private void coverRemoved() {
