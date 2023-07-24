@@ -66,6 +66,7 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
     protected ItemFilter filterHandler;
     protected int itemsLeftToTransferLastSecond;
     private TickableSubscription subscription;
+    private Widget ioModeSwitch;
 
     public ConveyorCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide, int tier) {
         super(definition, coverHolder, attachedSide);
@@ -389,16 +390,19 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
         group.addWidget(new IntInputWidget(10, 20, 156, 20, this.transferRate, this::setTransferRate)
                 .setMin(1).setMax(maxItemTransferRate));
 
-        group.addWidget(new SwitchWidget(10, 45, 20, 20, (clickData, value) -> {
-                    if (!clickData.isRemote) {
-                        setIo(value ? IO.IN : IO.OUT);
-                    }
+        ioModeSwitch = new SwitchWidget(10, 45, 20, 20,
+                (clickData, value) -> {
+                    setIo(value ? IO.IN : IO.OUT);
+                    ioModeSwitch.setHoverTooltips(
+                            LocalizationUtils.format("cover.conveyor.mode", LocalizationUtils.format(io.localeName))
+                    );
                 })
                 .setTexture(
                         new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON, IO.OUT.icon),
                         new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON, IO.IN.icon))
                 .setPressed(io == IO.IN)
-        );
+                .setHoverTooltips(LocalizationUtils.format("cover.conveyor.mode", LocalizationUtils.format(io.localeName)));
+        group.addWidget(ioModeSwitch);
         group.addWidget(new SlotWidget(filterContainer, 0, 148, 107)
                 .setChangeListener(() -> {
                     if (isRemote()) {

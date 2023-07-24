@@ -14,6 +14,7 @@ import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 import lombok.Getter;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
@@ -39,6 +40,7 @@ public class RobotArmCover extends ConveyorCover {
     protected int itemsTransferBuffered;
 
     private IntInputWidget stackSizeInput;
+    private CycleButtonWidget transferModeSelector;
 
     public RobotArmCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide, int tier) {
         super(definition, coverHolder, attachedSide, tier);
@@ -141,17 +143,17 @@ public class RobotArmCover extends ConveyorCover {
 
     @Override
     protected void buildAdditionalUI(WidgetGroup group) {
-        CycleButtonWidget transferModeSelector = new CycleButtonWidget(
+        transferModeSelector = new CycleButtonWidget(
                 146, 45, 20, 20, 3,
                 i -> new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON, TRANSFER_MODES[i].icon),
                 i -> setTransferMode(TRANSFER_MODES[i])
         );
-
         transferModeSelector.setIndex(transferMode.ordinal());
+        transferModeSelector.setHoverTooltips(LocalizationUtils.format(transferMode.localeName));
 
         group.addWidget(transferModeSelector);
 
-        this.stackSizeInput = new IntInputWidget(79, 45, 65, 20,
+        this.stackSizeInput = new IntInputWidget(64, 45, 80, 20,
                 globalTransferLimit, val -> globalTransferLimit = val
         );
         configureStackSizeInput();
@@ -161,6 +163,9 @@ public class RobotArmCover extends ConveyorCover {
 
     private void setTransferMode(TransferMode transferMode) {
         this.transferMode = transferMode;
+
+        if (transferModeSelector != null)
+            transferModeSelector.setHoverTooltips(LocalizationUtils.format(transferMode.localeName));
 
         configureStackSizeInput();
 

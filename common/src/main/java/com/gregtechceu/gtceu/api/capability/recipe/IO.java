@@ -12,8 +12,8 @@ public enum IO {
     BOTH("gtceu.io.both", "both"),
     NONE("gtceu.io.none", "none");
 
+    public final String localeName;
     public final IGuiTexture icon;
-    private final String localeName;
 
     IO(String localeName, String textureName) {
         this.localeName = localeName;
