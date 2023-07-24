@@ -4,15 +4,18 @@ import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials.Color;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
+import com.gregtechceu.gtceu.common.recipe.RockBreakerCondition;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.tterrag.registrate.util.entry.ItemEntry;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.material.Fluids;
 
 import java.util.function.Consumer;
 
@@ -81,6 +84,8 @@ public class MiscRecipeLoader {
                 .outputItems(Blocks.COBBLESTONE.asItem())
                 .duration(16)
                 .EUt(VA[ULV])
+                .addData("fluidA", "minecraft:lava")
+                .addData("fluidB", "minecraft:water")
                 .save(provider);
 
         ROCK_BREAKER_RECIPES.recipeBuilder("stone")
@@ -88,6 +93,8 @@ public class MiscRecipeLoader {
                 .outputItems(Blocks.STONE.asItem())
                 .duration(16)
                 .EUt(VA[ULV])
+                .addData("fluidA", "minecraft:lava")
+                .addData("fluidB", "minecraft:water")
                 .save(provider);
 
         ROCK_BREAKER_RECIPES.recipeBuilder("andesite")
@@ -95,6 +102,8 @@ public class MiscRecipeLoader {
                 .outputItems(Blocks.ANDESITE.asItem())
                 .duration(16)
                 .EUt(60)
+                .addData("fluidA", "minecraft:lava")
+                .addData("fluidB", "minecraft:water")
                 .save(provider);
 
         ROCK_BREAKER_RECIPES.recipeBuilder("granite")
@@ -102,6 +111,8 @@ public class MiscRecipeLoader {
                 .outputItems(Blocks.GRANITE.asItem())
                 .duration(16)
                 .EUt(60)
+                .addData("fluidA", "minecraft:lava")
+                .addData("fluidB", "minecraft:water")
                 .save(provider);
 
         ROCK_BREAKER_RECIPES.recipeBuilder("diorite")
@@ -109,6 +120,8 @@ public class MiscRecipeLoader {
                 .outputItems(Blocks.DIORITE.asItem())
                 .duration(16)
                 .EUt(60)
+                .addData("fluidA", "minecraft:lava")
+                .addData("fluidB", "minecraft:water")
                 .save(provider);
 
         ROCK_BREAKER_RECIPES.recipeBuilder("obsidian")
@@ -116,6 +129,8 @@ public class MiscRecipeLoader {
                 .outputItems(Blocks.OBSIDIAN.asItem())
                 .duration(16)
                 .EUt(240)
+                .addData("fluidA", "minecraft:lava")
+                .addData("fluidB", "minecraft:water")
                 .save(provider);
 
         // TODO stone types

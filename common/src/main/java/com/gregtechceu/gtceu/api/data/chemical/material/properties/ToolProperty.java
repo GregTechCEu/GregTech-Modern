@@ -150,7 +150,7 @@ public class ToolProperty implements IMaterialProperty<ToolProperty> {
                     SHOVEL,
                     AXE,
                     HOE,
-
+                    MINING_HAMMER,
                     SAW,
                     HARD_HAMMER,
 //                    SOFT_MALLET,

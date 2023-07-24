@@ -51,6 +51,7 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.client.model.generators.ModelFile;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
@@ -345,6 +346,10 @@ public class GTItems {
             if (index == 1) {
                 var held = FluidTransferHelper.getFluidContained(itemStack);
                 if (held != null) {
+                    // TODO render cell with a real fluid texture in the future?
+                    if (held.getFluid() == Fluids.LAVA) {
+                        return 0xFFFF7000;
+                    }
                     return FluidHelper.getColor(held);
                 }
             }
@@ -414,7 +419,7 @@ public class GTItems {
             .model(cellModel())
             .color(() -> GTItems::cellColor)
             .onRegister(modelPredicate(GTCEu.id("fluid_cell"), (itemStack) -> FluidTransferHelper.getFluidContained(itemStack) == null ? 0f : 1f))
-            .onRegister(attach(cellName(), ThermalFluidStats.create((int)FluidHelper.getBucket() * 1000, 1200, false, true, false, false, true), new ItemFluidContainer()))
+            .onRegister(attach(cellName(), ThermalFluidStats.create((int)FluidHelper.getBucket(), 1200, false, true, false, false, true), new ItemFluidContainer()))
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Glass, GTValues.M * 4)))).register();
 
     // TODO Lighter
@@ -726,35 +731,35 @@ public class GTItems {
     public static ItemEntry<Item> ELECTRIC_PISTON_ZPM= REGISTRATE.item("zpm_electric_piston", Item::new).lang("ZPM Electric Piston").register();
     public static ItemEntry<Item> ELECTRIC_PISTON_UV= REGISTRATE.item("uv_electric_piston", Item::new).lang("UV Electric Piston").register();
 
-    public static ItemEntry<ComponentItem> ROBOT_ARM_LV = REGISTRATE.item("lv_robot_arm", ComponentItem::create).lang("LV Robot Arm").onRegister(attach(new TooltipBehavior(lines -> {
+    public static ItemEntry<ComponentItem> ROBOT_ARM_LV = REGISTRATE.item("lv_robot_arm", ComponentItem::create).lang("LV Robot Arm").onRegister(attach(new CoverPlaceBehavior(GTCovers.ROBOT_ARMS[0]), new TooltipBehavior(lines -> {
         lines.add(Component.translatable("item.gtceu.robot.arm.tooltip"));
         lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate", 8));
     }))).register();
-    public static ItemEntry<ComponentItem> ROBOT_ARM_MV = REGISTRATE.item("mv_robot_arm", ComponentItem::create).lang("MV Robot Arm").onRegister(attach(new TooltipBehavior(lines -> {
+    public static ItemEntry<ComponentItem> ROBOT_ARM_MV = REGISTRATE.item("mv_robot_arm", ComponentItem::create).lang("MV Robot Arm").onRegister(attach(new CoverPlaceBehavior(GTCovers.ROBOT_ARMS[1]), new TooltipBehavior(lines -> {
         lines.add(Component.translatable("item.gtceu.robot.arm.tooltip"));
         lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate", 32));
     }))).register();
-    public static ItemEntry<ComponentItem> ROBOT_ARM_HV = REGISTRATE.item("hv_robot_arm", ComponentItem::create).lang("HV Robot Arm").onRegister(attach(new TooltipBehavior(lines -> {
+    public static ItemEntry<ComponentItem> ROBOT_ARM_HV = REGISTRATE.item("hv_robot_arm", ComponentItem::create).lang("HV Robot Arm").onRegister(attach(new CoverPlaceBehavior(GTCovers.ROBOT_ARMS[2]), new TooltipBehavior(lines -> {
         lines.add(Component.translatable("item.gtceu.robot.arm.tooltip"));
         lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate", 64));
     }))).register();
-    public static ItemEntry<ComponentItem> ROBOT_ARM_EV = REGISTRATE.item("ev_robot_arm", ComponentItem::create).lang("EV Robot Arm").onRegister(attach(new TooltipBehavior(lines -> {
+    public static ItemEntry<ComponentItem> ROBOT_ARM_EV = REGISTRATE.item("ev_robot_arm", ComponentItem::create).lang("EV Robot Arm").onRegister(attach(new CoverPlaceBehavior(GTCovers.ROBOT_ARMS[3]), new TooltipBehavior(lines -> {
         lines.add(Component.translatable("item.gtceu.robot.arm.tooltip"));
         lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 3));
     }))).register();
-    public static ItemEntry<ComponentItem> ROBOT_ARM_IV = REGISTRATE.item("iv_robot_arm", ComponentItem::create).lang("IV Robot Arm").onRegister(attach(new TooltipBehavior(lines -> {
+    public static ItemEntry<ComponentItem> ROBOT_ARM_IV = REGISTRATE.item("iv_robot_arm", ComponentItem::create).lang("IV Robot Arm").onRegister(attach(new CoverPlaceBehavior(GTCovers.ROBOT_ARMS[4]), new TooltipBehavior(lines -> {
         lines.add(Component.translatable("item.gtceu.robot.arm.tooltip"));
         lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 8));
     }))).register();
-    public static ItemEntry<ComponentItem> ROBOT_ARM_LuV = REGISTRATE.item("luv_robot_arm", ComponentItem::create).lang("LuV Robot Arm").onRegister(attach(new TooltipBehavior(lines -> {
+    public static ItemEntry<ComponentItem> ROBOT_ARM_LuV = REGISTRATE.item("luv_robot_arm", ComponentItem::create).lang("LuV Robot Arm").onRegister(attach(new CoverPlaceBehavior(GTCovers.ROBOT_ARMS[5]), new TooltipBehavior(lines -> {
         lines.add(Component.translatable("item.gtceu.robot.arm.tooltip"));
         lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 16));
     }))).register();
-    public static ItemEntry<ComponentItem> ROBOT_ARM_ZPM = REGISTRATE.item("zpm_robot_arm", ComponentItem::create).lang("ZPM Robot Arm").onRegister(attach(new TooltipBehavior(lines -> {
+    public static ItemEntry<ComponentItem> ROBOT_ARM_ZPM = REGISTRATE.item("zpm_robot_arm", ComponentItem::create).lang("ZPM Robot Arm").onRegister(attach(new CoverPlaceBehavior(GTCovers.ROBOT_ARMS[5]), new TooltipBehavior(lines -> {
         lines.add(Component.translatable("item.gtceu.robot.arm.tooltip"));
         lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 16));
     }))).register();
-    public static ItemEntry<ComponentItem> ROBOT_ARM_UV = REGISTRATE.item("uv_robot_arm", ComponentItem::create).lang("UV Robot Arm").onRegister(attach(new TooltipBehavior(lines -> {
+    public static ItemEntry<ComponentItem> ROBOT_ARM_UV = REGISTRATE.item("uv_robot_arm", ComponentItem::create).lang("UV Robot Arm").onRegister(attach(new CoverPlaceBehavior(GTCovers.ROBOT_ARMS[5]), new TooltipBehavior(lines -> {
         lines.add(Component.translatable("item.gtceu.robot.arm.tooltip"));
         lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 16));
     }))).register();

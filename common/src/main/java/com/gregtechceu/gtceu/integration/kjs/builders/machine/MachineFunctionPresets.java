@@ -48,11 +48,6 @@ import java.util.stream.Stream;
 @ParametersAreNonnullByDefault
 @SuppressWarnings({"unused"})
 public class MachineFunctionPresets {
-    @FunctionalInterface
-    public interface MachineConstructorFunction extends BiFunction<IMachineBlockEntity, Integer, MetaMachine> {
-        @Override
-        MetaMachine apply(IMachineBlockEntity machineBlockEntity, Integer integer);
-    }
 
     public static Integer[] mapTierArray(Object[] tiers) {
         return Arrays.stream(tiers)
@@ -155,9 +150,6 @@ public class MachineFunctionPresets {
 
             @Override
             public MachineBuilder<D> tier(int tier) {
-                for (var builder : builders) {
-                    builder.tier(tier);
-                }
                 return this;
             }
 
@@ -236,6 +228,91 @@ public class MachineFunctionPresets {
             public MachineBuilder<D> langValue(String langValue) {
                 for (var builder : builders) {
                     builder.langValue(langValue);
+                }
+                return this;
+            }
+
+            @Override
+            public MachineBuilder<D> modelRenderer(Supplier<ResourceLocation> model) {
+                for (var builder : builders) {
+                    builder.modelRenderer(model);
+                }
+                return this;
+            }
+
+            @Override
+            public MachineBuilder<D> defaultModelRenderer() {
+                return modelRenderer(() -> new ResourceLocation(registrate.getModid(), "block/" + name));
+            }
+
+            @Override
+            public MachineBuilder<D> overlayTieredHullRenderer(String name) {
+                for (var builder : builders) {
+                    builder.overlayTieredHullRenderer(name);
+                }
+                return this;
+            }
+
+            @Override
+            public MachineBuilder<D> overlaySteamHullRenderer(String name) {
+                for (var builder : builders) {
+                    builder.overlaySteamHullRenderer(name);
+                }
+                return this;
+            }
+
+            @Override
+            public MachineBuilder<D> workableTieredHullRenderer(ResourceLocation workableModel) {
+                for (var builder : builders) {
+                    builder.workableTieredHullRenderer(workableModel);
+                }
+                return this;
+            }
+
+            @Override
+            public MachineBuilder<D> workableSteamHullRenderer(boolean isHighPressure, ResourceLocation workableModel) {
+                for (var builder : builders) {
+                    builder.workableSteamHullRenderer(isHighPressure, workableModel);
+                }
+                return this;
+            }
+
+            @Override
+            public MachineBuilder<D> workableCasingRenderer(ResourceLocation baseCasing, ResourceLocation workableModel) {
+                for (var builder : builders) {
+                    builder.workableCasingRenderer(baseCasing, workableModel);
+                }
+                return this;
+            }
+
+            @Override
+            public MachineBuilder<D> workableCasingRenderer(ResourceLocation baseCasing, ResourceLocation workableModel, boolean tint) {
+                for (var builder : builders) {
+                    builder.workableCasingRenderer(baseCasing, workableModel, tint);
+                }
+                return this;
+            }
+
+            @Override
+            public MachineBuilder<D> sidedWorkableCasingRenderer(String basePath, ResourceLocation overlayModel, boolean tint) {
+                for (var builder : builders) {
+                    builder.sidedWorkableCasingRenderer(basePath, overlayModel, tint);
+                }
+                return this;
+            }
+
+            public MachineBuilder<D> tier(int tier, BuilderConsumer<D> consumer) {
+                for (var builder : builders) {
+                    if (builder.tier() == tier) {
+                        consumer.accept(builder);
+                    }
+                }
+                return this;
+            }
+
+            public MachineBuilder<D> allTiers(TieredBuilderConsumer<D> consumer) {
+                for (var builder : builders) {
+                    consumer.accept(builder.tier(), builder);
                 }
                 return this;
             }
@@ -319,5 +396,15 @@ public class MachineFunctionPresets {
                 return value;
             }
         };
+    }
+
+    @FunctionalInterface
+    public interface BuilderConsumer<D extends MachineDefinition> extends Consumer<MachineBuilder<D>> {
+        void accept(MachineBuilder<D> builder);
+    }
+
+    @FunctionalInterface
+    public interface TieredBuilderConsumer<D extends MachineDefinition> {
+        void accept(int tier, MachineBuilder<D> builder);
     }
 }

@@ -17,11 +17,8 @@ import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
 import it.unimi.dsi.fastutil.ints.Int2LongFunction;
 
-import java.util.Arrays;
 import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
 import java.util.function.Function;
-import java.util.stream.Stream;
 
 import static com.gregtechceu.gtceu.api.GTValues.VLVH;
 import static com.gregtechceu.gtceu.api.GTValues.VLVT;
@@ -67,13 +64,14 @@ public class SimpleMachineBuilder extends MachineBuilder<MachineDefinition> {
         return builders;
     }
 
-    public static <T extends MachineBuilder<? extends MachineDefinition>> void simple(T builder, int tier) {
-        builder.langValue("%s %s %s".formatted(VLVH[tier], toEnglishName(builder.id.getPath()), VLVT[tier]))
+    public static void simple(SimpleMachineBuilder builder, int tier) {
+        builder.tier(tier)
+                .langValue("%s %s %s".formatted(VLVH[tier], toEnglishName(builder.name), VLVT[tier]))
                 //.editableUI(SimpleTieredMachine.EDITABLE_UI_CREATOR.apply(GTCEu.id(builder.id.getPath()), recipeType))
                 .rotationState(RotationState.NON_Y_AXIS)
                 //.recipeType(recipeType)
                 .recipeModifier(GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
-                .workableTieredHullRenderer(GTCEu.id("block/machines/" + builder.id.getPath()))
+                .workableTieredHullRenderer(GTCEu.id("block/machines/" + builder.name))
                 .tooltips(explosion());
         //.tooltips(workableTiered(tier, GTValues.V[tier], GTValues.V[tier] * 64, recipeType, tankScalingFunction.apply(tier), true))
     }
