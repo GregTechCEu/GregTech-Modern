@@ -2,9 +2,11 @@ package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.gui.fancy.ConfiguratorPanel;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineModifyDrops;
+import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDistinctPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
@@ -34,7 +36,7 @@ import java.util.List;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class ItemBusPartMachine extends TieredIOPartMachine implements IMachineModifyDrops {
+public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinctPart, IMachineModifyDrops {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(ItemBusPartMachine.class, TieredIOPartMachine.MANAGED_FIELD_HOLDER);
     @Persisted
@@ -87,6 +89,16 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IMachineM
             inventorySubs.unsubscribe();
             inventorySubs = null;
         }
+    }
+
+    @Override
+    public boolean isDistinct() {
+        return inventory.isDistinct();
+    }
+
+    @Override
+    public void setDistinct(boolean isDistinct) {
+        inventory.setDistinct(isDistinct);
     }
 
     //////////////////////////////////////

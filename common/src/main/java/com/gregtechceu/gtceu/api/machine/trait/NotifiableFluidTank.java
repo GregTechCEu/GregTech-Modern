@@ -30,7 +30,7 @@ import java.util.function.Predicate;
  */
 public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidStack> implements ICapabilityTrait, IFluidTransfer {
 
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(NotifiableFluidTank.class);
+    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(NotifiableFluidTank.class, NotifiableRecipeHandlerTrait.MANAGED_FIELD_HOLDER);
     @Getter
     public final IO handlerIO;
     @Getter

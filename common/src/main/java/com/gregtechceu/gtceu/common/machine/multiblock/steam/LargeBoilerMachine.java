@@ -98,7 +98,7 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
                 inputTanks.addAll(Objects.requireNonNull(getCapabilitiesProxy().get(IO.BOTH, FluidRecipeCapability.CAP)));
             }
             for (IRecipeHandler<?> tank : inputTanks) {
-                drainWater = (List<FluidStack>) tank.handleRecipe(IO.IN, null, drainWater, null);
+                drainWater = (List<FluidStack>) tank.handleRecipe(IO.IN, null, drainWater, null, false);
                 if (drainWater == null) break;
             }
             var drained = (drainWater == null || drainWater.isEmpty()) ? maxDrain : maxDrain - drainWater.get(0).getAmount();
@@ -116,7 +116,7 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
                     outputTanks.addAll(Objects.requireNonNull(getCapabilitiesProxy().get(IO.BOTH, FluidRecipeCapability.CAP)));
                 }
                 for (IRecipeHandler<?> tank : outputTanks) {
-                    fillSteam = (List<FluidStack>) tank.handleRecipe(IO.OUT, null, fillSteam, null);
+                    fillSteam = (List<FluidStack>) tank.handleRecipe(IO.OUT, null, fillSteam, null, false);
                     if (fillSteam == null) break;
                 }
             }
