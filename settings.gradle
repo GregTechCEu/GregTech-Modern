@@ -54,10 +54,10 @@ dependencyResolutionManagement {
         def parchmentVersion = "2023.06.25" // https://parchmentmc.org/docs/getting-started
         def shadowVersion = "7.1.2"
         def architecturyPluginVersion = "3.4-SNAPSHOT"
-        def architecturyLoomVersion = "1.0-SNAPSHOT"
+        def architecturyLoomVersion = "1.3-SNAPSHOT"
         def vineFlowerVersion = "1.+"
         def macheteVersion = "1.+"
-        def ldLibVersion = "1.0.14"
+        def ldLibVersion = "1.0.14.b"
 
         fabric {
             def fabricLoader = version("fabricLoader", fabricLoaderVersion)
