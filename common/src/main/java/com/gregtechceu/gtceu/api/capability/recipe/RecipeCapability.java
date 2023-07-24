@@ -6,6 +6,8 @@ import io.netty.buffer.Unpooled;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 
+import java.util.List;
+
 /**
  * Used to detect whether a machine has a certain capability.
  */
@@ -64,5 +66,10 @@ public class RecipeCapability<T> {
 
     public Component getTraslateComponent() {
         return Component.translatable("recipe.capability.%s.name".formatted(name));
+    }
+
+     //TODO
+    public double calculateAmount(List<T> left) {
+        return 1;
     }
 }

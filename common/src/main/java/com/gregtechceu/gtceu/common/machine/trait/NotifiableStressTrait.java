@@ -25,7 +25,7 @@ import java.util.List;
  */
 public class NotifiableStressTrait extends NotifiableRecipeHandlerTrait<Float> implements ICapabilityTrait {
 
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(NotifiableStressTrait.class);
+    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(NotifiableStressTrait.class, NotifiableRecipeHandlerTrait.MANAGED_FIELD_HOLDER);
 
     @Getter
     @Setter
