@@ -301,7 +301,7 @@ public class MachineFunctionPresets {
                 return this;
             }
 
-            public MachineBuilder<D> tier(int tier, Consumer<MachineBuilder<D>> consumer) {
+            public MachineBuilder<D> tier(int tier, BuilderConsumer<D> consumer) {
                 for (var builder : builders) {
                     if (builder.tier() == tier) {
                         consumer.accept(builder);
@@ -310,7 +310,7 @@ public class MachineFunctionPresets {
                 return this;
             }
 
-            public MachineBuilder<D> allTiers(BiConsumer<Integer, MachineBuilder<D>> consumer) {
+            public MachineBuilder<D> allTiers(TieredBuilderConsumer<D> consumer) {
                 for (var builder : builders) {
                     consumer.accept(builder.tier(), builder);
                 }
@@ -396,5 +396,15 @@ public class MachineFunctionPresets {
                 return value;
             }
         };
+    }
+
+    @FunctionalInterface
+    public interface BuilderConsumer<D extends MachineDefinition> extends Consumer<MachineBuilder<D>> {
+        void accept(MachineBuilder<D> builder);
+    }
+
+    @FunctionalInterface
+    public interface TieredBuilderConsumer<D extends MachineDefinition> {
+        void accept(int tier, MachineBuilder<D> builder);
     }
 }
