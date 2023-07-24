@@ -1,16 +1,14 @@
 package com.gregtechceu.gtceu.data.recipe.generated;
 
-import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterial;
 import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.ToolProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
-import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
-import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.tags.ItemTags;
@@ -111,10 +109,15 @@ public class ToolRecipeHandler {
 
         if (material.hasFlag(GENERATE_PLATE)) {
 
+            addToolRecipe(provider, material, GTToolType.MINING_HAMMER, true,
+                    "PPf", "PPS", "PPh",
+                    'P', plate,
+                    'S', stick);
+
             //addToolRecipe(provider, material, GTToolType.SPADE, false,
             //        "fPh", "PSP", " S ",
             //        'P', plate,
-            //        'S', rod);
+            //        'S', stick);
 
             addToolRecipe(provider, material, GTToolType.SAW, false,
                     "PPS", "fhS",
@@ -196,11 +199,6 @@ public class ToolRecipeHandler {
                             'T', new UnificationEntry(TagPrefix.screw, material),
                             'S', rod);
                 }
-
-                addToolRecipe(provider, material, GTToolType.MINING_HAMMER, true,
-                        "PPf", "PPS", "PPh",
-                        'P', plate,
-                        'S', rod);
             }
 
             addToolRecipe(provider, material, GTToolType.SCREWDRIVER, true,
