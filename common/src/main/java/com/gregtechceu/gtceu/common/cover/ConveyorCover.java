@@ -237,8 +237,7 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
             int slotIndex = itemInfo.slots.get(i);
             ItemStack extractedStack = sourceInventory.extractItem(slotIndex, itemsLeftToExtract, true);
             if (!extractedStack.isEmpty() &&
-                    ItemStack.isSame(resultStack, extractedStack) &&
-                    ItemStack.tagMatches(resultStack, extractedStack)) {
+                    ItemStack.isSameItemSameTags(resultStack, extractedStack)) {
                 totalExtractedCount += extractedStack.getCount();
                 itemsLeftToExtract -= extractedStack.getCount();
             }
@@ -270,8 +269,7 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
             int slotIndex = itemInfo.slots.get(i);
             ItemStack extractedStack = sourceInventory.extractItem(slotIndex, itemsLeftToExtract, false);
             if (!extractedStack.isEmpty() &&
-                    ItemStack.isSame(resultStack, extractedStack) &&
-                    ItemStack.tagMatches(resultStack, extractedStack)) {
+                    ItemStack.isSameItemSameTags(resultStack, extractedStack)) {
                 itemsLeftToExtract -= extractedStack.getCount();
             }
             if (itemsLeftToExtract == 0) {

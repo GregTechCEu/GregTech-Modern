@@ -9,6 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
@@ -28,8 +29,8 @@ import java.util.Map;
 public class StrictShapedRecipe extends ShapedRecipe {
     public static final RecipeSerializer<StrictShapedRecipe> SERIALIZER = new Serializer();
 
-    public StrictShapedRecipe(ResourceLocation id, String group, int width, int height, NonNullList<Ingredient> recipeItems, ItemStack result) {
-        super(id, group, width, height, recipeItems, result);
+    public StrictShapedRecipe(ResourceLocation id, String group, CraftingBookCategory category, int width, int height, NonNullList<Ingredient> recipeItems, ItemStack result) {
+        super(id, group, category, width, height, recipeItems, result);
     }
 
     @Override
@@ -73,13 +74,14 @@ public class StrictShapedRecipe extends ShapedRecipe {
         @Override
         public StrictShapedRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
             String string = GsonHelper.getAsString(json, "group", "");
+            CraftingBookCategory craftingBookCategory = CraftingBookCategory.CODEC.byName(GsonHelper.getAsString(json, "category", null), CraftingBookCategory.MISC);
             Map<String, Ingredient> map = ShapedRecipeInvoker.callKeyFromJson(GsonHelper.getAsJsonObject(json, "key"));
             String[] strings = ShapedRecipeInvoker.callPatternFromJson(GsonHelper.getAsJsonArray(json, "pattern"));
             int i = strings[0].length();
             int j = strings.length;
             NonNullList<Ingredient> nonNullList = ShapedRecipeInvoker.callDissolvePattern(strings, map, i, j);
             ItemStack itemStack = StrictShapedRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(json, "result"));
-            return new StrictShapedRecipe(recipeId, string, i, j, nonNullList, itemStack);
+            return new StrictShapedRecipe(recipeId, string, craftingBookCategory, i, j, nonNullList, itemStack);
         }
 
         @Override
@@ -87,10 +89,11 @@ public class StrictShapedRecipe extends ShapedRecipe {
             int i = buffer.readVarInt();
             int j = buffer.readVarInt();
             String string = buffer.readUtf();
+            CraftingBookCategory craftingBookCategory = buffer.readEnum(CraftingBookCategory.class);
             NonNullList<Ingredient> nonNullList = NonNullList.withSize(i * j, Ingredient.EMPTY);
             nonNullList.replaceAll(ignored -> Ingredient.fromNetwork(buffer));
             ItemStack itemStack = buffer.readItem();
-            return new StrictShapedRecipe(recipeId, string, i, j, nonNullList, itemStack);
+            return new StrictShapedRecipe(recipeId, string, craftingBookCategory, i, j, nonNullList, itemStack);
         }
 
         @Override
@@ -98,10 +101,11 @@ public class StrictShapedRecipe extends ShapedRecipe {
             buffer.writeVarInt(recipe.getWidth());
             buffer.writeVarInt(recipe.getHeight());
             buffer.writeUtf(recipe.getGroup());
+            buffer.writeEnum(recipe.category());
             for (Ingredient ingredient : recipe.getIngredients()) {
                 ingredient.toNetwork(buffer);
             }
-            buffer.writeItem(recipe.getResultItem());
+            buffer.writeItem(recipe.getResultItem(null));
         }
     }
 }
