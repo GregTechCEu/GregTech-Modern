@@ -2,8 +2,6 @@ package com.gregtechceu.gtceu.integration.kjs.builders.machine;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
-import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
@@ -23,7 +21,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 
-import java.util.Arrays;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
@@ -104,6 +101,6 @@ public class KineticMachineBuilder extends MachineBuilder<KineticMachineDefiniti
 
     public static MachineBuilder<KineticMachineDefinition> createAll(String name, Object... args) {
         KineticMachineBuilder[] builders = tieredMachines(name, KineticMachineBuilder::simple, MachineFunctionPresets.mapTierArray(args));
-        return MachineFunctionPresets.builder(name, builders, KineticMachineBuilder.class, (id) -> new KineticMachineDefinition(id, false, 0), MetaMachineBlock::new, MetaMachineBlockEntity::createBlockEntity);
+        return MachineFunctionPresets.builder(name, builders, KineticMachineBuilder.class, (id) -> new KineticMachineDefinition(id, false, 0), KineticMachineBlock::new, KineticMachineBlockEntity::create);
     }
 }
