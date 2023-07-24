@@ -26,7 +26,6 @@ import java.util.function.Consumer;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class SimpleItemFilter implements ItemFilter {
-    @Getter
     protected boolean isBlackList;
     @Getter
     protected boolean ignoreNbt;
@@ -35,8 +34,13 @@ public class SimpleItemFilter implements ItemFilter {
     @Setter
     protected Consumer<ItemFilter> onUpdated;
 
+    @Getter
+    protected int maxStackSize;
+
+
     protected SimpleItemFilter() {
         Arrays.fill(matches, ItemStack.EMPTY);
+        maxStackSize = 1;
     }
 
     public static SimpleItemFilter loadFilter(ItemStack itemStack) {
@@ -70,7 +74,17 @@ public class SimpleItemFilter implements ItemFilter {
 
     public void setBlackList(boolean blackList) {
         isBlackList = blackList;
+        if (blackList) {
+            setMaxStackSize(1);
+        } else {
+            setMaxStackSize(Integer.MAX_VALUE);
+        }
         onUpdated.accept(this);
+    }
+
+    @Override
+    public boolean isBlackList() {
+        return isBlackList;
     }
 
     public void setIgnoreNbt(boolean ingoreNbt) {
@@ -80,12 +94,25 @@ public class SimpleItemFilter implements ItemFilter {
 
     public WidgetGroup openConfigurator(int x, int y) {
         WidgetGroup group = new WidgetGroup(x, y, 18 * 3 + 25, 18 * 3); // 80 55
+        var filterSlots = new PhantomSlotWidget[9];
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
                 final int index = i * 3 + j;
                 var handler = new ItemStackTransfer(matches[index]);
-                var slot = new PhantomSlotWidget(handler, 0, i * 18, j * 18);
-                slot.setMaxStackSize(1);
+                filterSlots[i] = new PhantomSlotWidget(handler, 0, i * 18, j * 18) {
+                    @Override
+                    public void updateScreen() {
+                        super.updateScreen();
+                        setMaxStackSize(maxStackSize);
+                    }
+
+                    @Override
+                    public void detectAndSendChanges() {
+                        super.detectAndSendChanges();
+                        setMaxStackSize(maxStackSize);
+                    }
+                };
+                var slot = filterSlots[i];
                 slot.setChangeListener(() -> {
                     matches[index] = handler.getStackInSlot(0);
                     onUpdated.accept(this);
@@ -93,26 +120,48 @@ public class SimpleItemFilter implements ItemFilter {
                 group.addWidget(slot);
             }
         }
-        group.addWidget(new ToggleButtonWidget(18 * 3 + 5, 0, 20, 20,
+        group.addWidget(new ToggleButtonWidget(18 * 3 + 2, 9, 18, 18,
                 GuiTextures.BUTTON_BLACKLIST, this::isBlackList, this::setBlackList));
-        group.addWidget(new ToggleButtonWidget(18 * 3 + 5, 20, 20, 20,
+        group.addWidget(new ToggleButtonWidget(18 * 3 + 2, (18) + 9, 18, 18,
                 GuiTextures.BUTTON_FILTER_NBT, this::isIgnoreNbt, this::setIgnoreNbt));
         return group;
     }
 
     @Override
     public boolean test(ItemStack itemStack) {
-        boolean found = false;
-        for (var match : matches) {
-            if (ignoreNbt) {
-                found = ItemStack.isSameItemSameTags(match, itemStack);
-            } else {
-                found = ItemTransferHelper.canItemStacksStack(match, itemStack);
-            }
-            if (found) {
-                break;
+        return testItemCount(itemStack) > 0;
+    }
+
+    @Override
+    public int testItemCount(ItemStack itemStack) {
+        int totalItemCount = getTotalConfiguredItemCount(itemStack);
+
+        if (isBlackList) {
+            return (totalItemCount > 0) ? 0 : Integer.MAX_VALUE;
+        }
+
+        return totalItemCount;
+    }
+
+    public int getTotalConfiguredItemCount(ItemStack itemStack) {
+        int totalCount = 0;
+
+        for (var candidate : matches) {
+            if (ignoreNbt && ItemStack.isSameItemSameTags(candidate, itemStack)) {
+                totalCount += candidate.getCount();
+            } else if (ItemTransferHelper.canItemStacksStack(candidate, itemStack)) {
+                totalCount += candidate.getCount();
             }
         }
-        return isBlackList != found;
+
+        return totalCount;
+    }
+
+    public void setMaxStackSize(int maxStackSize) {
+        this.maxStackSize = maxStackSize;
+
+        for (ItemStack match : matches) {
+            match.setCount(Math.min(match.getCount(), maxStackSize));
+        }
     }
 }

@@ -53,6 +53,11 @@ public class LangHandler {
         provider.add("recipe.condition.rock_breaker.tooltip", "Fluid blocks around");
         provider.add("recipe.condition.eu_to_start.tooltip", "EU to start: %d");
 
+        provider.add("gtceu.io.import", "Import");
+        provider.add("gtceu.io.export", "Export");
+        provider.add("gtceu.io.both", "Both");
+        provider.add("gtceu.io.none", "None");
+
         provider.add("enchantment.disjunction", "Disjunction");
         provider.add("gtceu.multiblock.steam_grinder.description", "A Multiblock Macerator at the Steam Age. Requires at least 14 Bronze Casings to form. Cannot use normal Input/Output busses, nor Fluid Hatches other than the Steam Hatch.");
         provider.add("gtceu.multiblock.steam.low_steam", "Not enough Steam to run!");
@@ -291,6 +296,7 @@ public class LangHandler {
         multilineLang(provider, "cover.smart_item_filter.filtering_mode.description", "Select Machine this Smart Filter will use for filtering.\nIt will automatically pick right portions of items for robotic arm.");
         provider.add("cover.conveyor.title", "Conveyor Cover Settings (%s)");
         provider.add("cover.conveyor.transfer_rate", "§7items/sec");
+        provider.add("cover.conveyor.mode", "Mode: %s");
         provider.add("cover.conveyor.mode.export", "Mode: Export");
         provider.add("cover.conveyor.mode.import", "Mode: Import");
         multilineLang(provider, "cover.conveyor.distribution.round_robin_enhanced", "Distribution Mode\n§bEnhanced Round Robin§r\n§7Splits items equally to all inventories");

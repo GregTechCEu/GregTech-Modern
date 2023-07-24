@@ -1289,7 +1289,7 @@ public class GTMachines {
             (tier, builder) ->  builder
                     .rotationState(RotationState.NON_Y_AXIS)
                     .blockProp(p -> p.noOcclusion().isViewBlocking((state, level, pos) -> false))
-                    .shape(Shapes.box(-0.001, -0.001, -0.001, 1.001, 1.001, 1.001))
+                    .shape(Shapes.box(0.001, 0.001, 0.001, 0.999, 0.999, 0.999))
                     .appearanceBlock(() -> ProcessingArrayMachine.getCasingState(tier))
                     .recipeType(GTRecipeTypes.DUMMY_RECIPES)
                     .recipeModifier(ProcessingArrayMachine::recipeModifier, true)
