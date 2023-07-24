@@ -212,7 +212,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
                     progress++;
                     totalContinuousRunningTime++;
                 } else {
-                    setWaiting(result.reason());
+                    setWaiting(result.reason().get());
                     if (progress > 0 && machine.dampingWhenWaiting()) {
                         if (ConfigHolder.INSTANCE.machines.recipeProgressLowEnergy) {
                             this.progress = 1;
@@ -225,7 +225,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
                 setWaiting(Component.translatable("gtceu.recipe_logic.insufficient_fuel"));
             }
         } else {
-            setWaiting(result.reason());
+            setWaiting(result.reason().get());
         }
         if (last == Status.WORKING && getStatus() != Status.WORKING) {
             lastRecipe.postWorking(machine);
