@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.machine.multiblock;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.feature.IOverclockMachine;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
@@ -17,7 +18,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class TieredWorkableElectricMultiblockMachine extends WorkableElectricMultiblockMachine implements ITieredMachine {
+public class TieredWorkableElectricMultiblockMachine extends WorkableElectricMultiblockMachine implements ITieredMachine, IOverclockMachine {
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(TieredWorkableElectricMultiblockMachine.class, WorkableElectricMultiblockMachine.MANAGED_FIELD_HOLDER);
 
     private final int tier;
@@ -25,8 +26,8 @@ public class TieredWorkableElectricMultiblockMachine extends WorkableElectricMul
     @Getter
     protected int overclockTier;
 
-    public TieredWorkableElectricMultiblockMachine(IMachineBlockEntity holder, int tier) {
-        super(holder);
+    public TieredWorkableElectricMultiblockMachine(IMachineBlockEntity holder, int tier, Object... args) {
+        super(holder, args);
         this.tier = tier;
     }
 
