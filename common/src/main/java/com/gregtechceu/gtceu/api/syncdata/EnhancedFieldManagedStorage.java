@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.syncdata;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
 import com.lowdragmc.lowdraglib.syncdata.managed.IRef;
 
@@ -26,7 +27,9 @@ public class EnhancedFieldManagedStorage extends FieldManagedStorage {
         super.init();
         if (initialized) return;
         initialized = true;
-        initEnhancedFeature();
+        if (LDLib.isClient()) {
+            initEnhancedFeature();
+        }
     }
 
     public void initEnhancedFeature() {

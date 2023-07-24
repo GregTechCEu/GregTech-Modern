@@ -24,7 +24,9 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec2;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -85,6 +87,9 @@ public class CoverContainerConfigurator extends WidgetGroup {
                             RenderSystem.blendFunc(GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE);
                         }
                     });
+
+            var playerRotation = gui.entityPlayer.getRotationVector();
+            sceneWidget.setCameraYawAndPitch(playerRotation.x, playerRotation.y - 90);
         }
         addWidget(sceneWidget.setBackground(ColorPattern.BLACK.rectTexture()));
         addWidget(slotWidget = new SlotWidget(transfer, 0, 4, 80 - 4 - 18)

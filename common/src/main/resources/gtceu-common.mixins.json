@@ -24,6 +24,7 @@
     "RecipeManagerMixin",
     "ServerChunkProviderMixin",
     "ServerPlayerGameModeMixin",
+    "ShapedRecipeInvoker",
     "TagLoaderMixin",
     "TagManagerMixin",
     "create.RotationPropagatorMixin",

@@ -76,6 +76,10 @@ public class VanillaRecipeHelper {
         addShapedRecipe(provider, false, regName, result, recipe);
     }
 
+    public static void addStrictShapedRecipe(Consumer<FinishedRecipe> provider, @Nonnull String regName, @Nonnull ItemStack result, @Nonnull Object... recipe) {
+        addStrictShapedRecipe(provider, false, regName, result, recipe);
+    }
+
     /**
      * Adds Shaped Crafting Recipes.
      * <p/>
@@ -101,8 +105,9 @@ public class VanillaRecipeHelper {
      * @param result  the output for the recipe
      * @param recipe  the contents of the recipe
      */
-    public static void addShapedRecipe(Consumer<FinishedRecipe> provider, boolean withUnificationData, @Nonnull String regName, @Nonnull ItemStack result, @Nonnull Object... recipe) {
+    public static void addShapedRecipe(Consumer<FinishedRecipe> provider, boolean withUnificationData, boolean isStrict, @Nonnull String regName, @Nonnull ItemStack result, @Nonnull Object... recipe) {
         var builder = new ShapedRecipeBuilder(GTCEu.id(regName.toLowerCase())).output(result);
+        builder.isStrict(isStrict);
         CharSet set = new CharOpenHashSet();
         for (int i = 0; i < recipe.length; i++) {
             var o = recipe[i];
@@ -143,6 +148,14 @@ public class VanillaRecipeHelper {
         if (withUnificationData) {
             ChemicalHelper.registerMaterialInfo(result.getItem(), getRecyclingIngredients(result.getCount(), recipe));
         }
+    }
+
+    public static void addShapedRecipe(Consumer<FinishedRecipe> provider, boolean withUnificationData, @Nonnull String regName, @Nonnull ItemStack result, @Nonnull Object... recipe) {
+        addShapedRecipe(provider, withUnificationData, false, regName, result, recipe);
+    }
+
+    public static void addStrictShapedRecipe(Consumer<FinishedRecipe> provider, boolean withUnificationData, @Nonnull String regName, @Nonnull ItemStack result, @Nonnull Object... recipe) {
+        addShapedRecipe(provider, withUnificationData, true, regName, result, recipe);
     }
 
     public static void addShapelessRecipe(Consumer<FinishedRecipe> provider, @Nonnull String regName, @Nonnull ItemStack result, @Nonnull Object... recipe) {

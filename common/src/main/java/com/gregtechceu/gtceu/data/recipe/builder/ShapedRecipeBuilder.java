@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.data.recipe.builder;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.gregtechceu.gtceu.api.recipe.StrictShapedRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.NBTIngredient;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.utils.Builder;
@@ -29,6 +30,7 @@ public class ShapedRecipeBuilder extends Builder<Ingredient, ShapedRecipeBuilder
     protected ItemStack output = ItemStack.EMPTY;
     protected ResourceLocation id;
     protected String group;
+    protected boolean isStrict;
 
     public ShapedRecipeBuilder(@Nullable ResourceLocation id) {
         this.id = id;
@@ -77,22 +79,27 @@ public class ShapedRecipeBuilder extends Builder<Ingredient, ShapedRecipeBuilder
         this.output = itemStack.copy();
         this.output.setCount(count);
         this.output.setTag(nbt);
-        return (ShapedRecipeBuilder) this;
+        return this;
     }
 
     public ShapedRecipeBuilder id(ResourceLocation id) {
         this.id = id;
-        return (ShapedRecipeBuilder) this;
+        return this;
     }
 
     public ShapedRecipeBuilder id(String id) {
         this.id = new ResourceLocation(id);
-        return (ShapedRecipeBuilder) this;
+        return this;
     }
 
     public ShapedRecipeBuilder group(String group) {
         this.group = group;
-        return (ShapedRecipeBuilder) this;
+        return this;
+    }
+
+    public ShapedRecipeBuilder isStrict(boolean isStrict) {
+        this.isStrict = isStrict;
+        return this;
     }
 
     @Override
@@ -158,7 +165,7 @@ public class ShapedRecipeBuilder extends Builder<Ingredient, ShapedRecipeBuilder
 
             @Override
             public RecipeSerializer<?> getType() {
-                return RecipeSerializer.SHAPED_RECIPE;
+                return isStrict ? StrictShapedRecipe.SERIALIZER : RecipeSerializer.SHAPED_RECIPE;
             }
 
             @Nullable
