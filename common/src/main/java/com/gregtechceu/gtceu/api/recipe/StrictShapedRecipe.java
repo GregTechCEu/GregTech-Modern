@@ -1,0 +1,107 @@
+package com.gregtechceu.gtceu.api.recipe;
+
+import com.google.gson.JsonObject;
+import com.gregtechceu.gtceu.core.mixins.ShapedRecipeInvoker;
+import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.core.NonNullList;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.ShapedRecipe;
+import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.Map;
+
+/**
+ * @author KilaBash
+ * @date 2023/7/24
+ * @implNote StrictShapedRecipe
+ */
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
+public class StrictShapedRecipe extends ShapedRecipe {
+    public static final RecipeSerializer<StrictShapedRecipe> SERIALIZER = new Serializer();
+
+    public StrictShapedRecipe(ResourceLocation id, String group, int width, int height, NonNullList<Ingredient> recipeItems, ItemStack result) {
+        super(id, group, width, height, recipeItems, result);
+    }
+
+    @Override
+    public boolean matches(CraftingContainer inv, Level level) {
+        for (int i = 0; i <= inv.getWidth() - this.getWidth(); ++i) {
+            for (int j = 0; j <= inv.getHeight() - this.getHeight(); ++j) {
+                if (this.matches(inv, i, j)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+
+    /**
+     * Checks if the region of a crafting inventory is match for the recipe.
+     */
+    private boolean matches(CraftingContainer craftingInventory, int width, int height) {
+        for (int i = 0; i < craftingInventory.getWidth(); ++i) {
+            for (int j = 0; j < craftingInventory.getHeight(); ++j) {
+                int k = i - width;
+                int l = j - height;
+                Ingredient ingredient = Ingredient.EMPTY;
+                if (k >= 0 && l >= 0 && k < this.getWidth() && l < this.getHeight()) {
+                    ingredient = this.getIngredients().get(k + l * this.getWidth());
+                }
+                if (ingredient.test(craftingInventory.getItem(i + j * craftingInventory.getWidth()))) continue;
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public @NotNull RecipeSerializer<?> getSerializer() {
+        return SERIALIZER;
+    }
+
+    public static class Serializer implements RecipeSerializer<StrictShapedRecipe> {
+        @Override
+        public StrictShapedRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
+            String string = GsonHelper.getAsString(json, "group", "");
+            Map<String, Ingredient> map = ShapedRecipeInvoker.callKeyFromJson(GsonHelper.getAsJsonObject(json, "key"));
+            String[] strings = ShapedRecipeInvoker.callPatternFromJson(GsonHelper.getAsJsonArray(json, "pattern"));
+            int i = strings[0].length();
+            int j = strings.length;
+            NonNullList<Ingredient> nonNullList = ShapedRecipeInvoker.callDissolvePattern(strings, map, i, j);
+            ItemStack itemStack = StrictShapedRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(json, "result"));
+            return new StrictShapedRecipe(recipeId, string, i, j, nonNullList, itemStack);
+        }
+
+        @Override
+        public StrictShapedRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer) {
+            int i = buffer.readVarInt();
+            int j = buffer.readVarInt();
+            String string = buffer.readUtf();
+            NonNullList<Ingredient> nonNullList = NonNullList.withSize(i * j, Ingredient.EMPTY);
+            nonNullList.replaceAll(ignored -> Ingredient.fromNetwork(buffer));
+            ItemStack itemStack = buffer.readItem();
+            return new StrictShapedRecipe(recipeId, string, i, j, nonNullList, itemStack);
+        }
+
+        @Override
+        public void toNetwork(FriendlyByteBuf buffer, StrictShapedRecipe recipe) {
+            buffer.writeVarInt(recipe.getWidth());
+            buffer.writeVarInt(recipe.getHeight());
+            buffer.writeUtf(recipe.getGroup());
+            for (Ingredient ingredient : recipe.getIngredients()) {
+                ingredient.toNetwork(buffer);
+            }
+            buffer.writeItem(recipe.getResultItem());
+        }
+    }
+}

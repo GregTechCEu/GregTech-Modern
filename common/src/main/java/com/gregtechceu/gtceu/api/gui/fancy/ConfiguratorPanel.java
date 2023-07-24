@@ -189,6 +189,18 @@ public class ConfiguratorPanel extends WidgetGroup {
         }
 
         @Override
+        public void writeInitialData(FriendlyByteBuf buffer) {
+            super.writeInitialData(buffer);
+            configurator.writeInitialData(buffer);
+        }
+
+        @Override
+        public void readInitialData(FriendlyByteBuf buffer) {
+            super.readInitialData(buffer);
+            configurator.readInitialData(buffer);
+        }
+
+        @Override
         public void detectAndSendChanges() {
             super.detectAndSendChanges();
             configurator.detectAndSendChange((id, sender) -> writeUpdateInfo(0, buf -> {
