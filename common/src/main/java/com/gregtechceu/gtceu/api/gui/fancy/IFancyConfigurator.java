@@ -34,4 +34,11 @@ public interface IFancyConfigurator {
 
     }
 
+    default void writeInitialData(FriendlyByteBuf buffer) {
+
+    }
+
+    default void readInitialData(FriendlyByteBuf buffer) {
+
+    }
 }

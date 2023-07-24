@@ -87,6 +87,9 @@ public class CoverContainerConfigurator extends WidgetGroup {
                             RenderSystem.blendFunc(GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE);
                         }
                     });
+
+            var playerRotation = gui.entityPlayer.getRotationVector();
+            sceneWidget.setCameraYawAndPitch(playerRotation.x, playerRotation.y - 90);
         }
         addWidget(sceneWidget.setBackground(ColorPattern.BLACK.rectTexture()));
         addWidget(slotWidget = new SlotWidget(transfer, 0, 4, 80 - 4 - 18)
@@ -94,10 +97,6 @@ public class CoverContainerConfigurator extends WidgetGroup {
                 .setBackgroundTexture(new GuiTextureGroup(GuiTextures.SLOT, GuiTextures.FILTER_SLOT_OVERLAY)));
         slotWidget.setVisible(false);
         slotWidget.setActive(false);
-
-
-        var playerRotation = gui.entityPlayer.getRotationVector();
-        sceneWidget.setCameraYawAndPitch(playerRotation.x, playerRotation.y);
     }
 
     private void coverRemoved() {
