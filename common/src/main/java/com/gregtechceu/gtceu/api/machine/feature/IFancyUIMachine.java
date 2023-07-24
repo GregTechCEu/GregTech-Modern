@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.machine.feature;
 
+import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.*;
 import com.gregtechceu.gtceu.api.machine.fancyconfigurator.AutoOutputFancyConfigurator;
@@ -94,6 +95,15 @@ public interface IFancyUIMachine extends IUIMachine, IFancyUIProvider {
 
     @Override
     default void attachConfigurators(ConfiguratorPanel configuratorPanel) {
+        if (this instanceof IControllable controllable) {
+            configuratorPanel.attachConfigurators(new IFancyConfiguratorButton.Toggle(
+                    GuiTextures.BUTTON_POWER.getSubTexture(0, 0, 1, 0.5),
+                    GuiTextures.BUTTON_POWER.getSubTexture(0, 0.5, 1, 0.5),
+                    controllable::isWorkingEnabled, (clickData, pressed) -> controllable.setWorkingEnabled(pressed))
+                    .setTooltipsSupplier(pressed -> List.of(
+                            Component.translatable(pressed ? "behaviour.soft_hammer.enabled" : "behaviour.soft_hammer.disabled")
+                    )));
+        }
         configuratorPanel.attachConfigurators(self().getCoverContainer());
         if (this instanceof IAutoOutputItem || this instanceof IAutoOutputFluid) {
             configuratorPanel.attachConfigurators(new AutoOutputFancyConfigurator(self()));

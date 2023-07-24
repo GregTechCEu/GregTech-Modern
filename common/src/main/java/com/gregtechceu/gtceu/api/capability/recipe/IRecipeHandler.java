@@ -45,11 +45,21 @@ public interface IRecipeHandler<K> {
         }
     }
 
+    /**
+     * Slot name, it makes sense if recipe contents specify a slot name.
+     */
     @Nullable
     default Set<String> getSlotNames() {
         return null;
     }
-    
+
+    /**
+     * Whether the content of same capability  can only be handled distinct.
+     */
+    default boolean isDistinct() {
+        return false;
+    }
+
     RecipeCapability<K> getCapability();
 
     @SuppressWarnings("unchecked")
@@ -57,12 +67,8 @@ public interface IRecipeHandler<K> {
         return (K) getCapability().copyInner((K)content);
     }
 
-    default List<K> searchingRecipe(IO io, GTRecipe recipe, List<?> left, @Nullable String slotName) {
-        return handleRecipeInner(io, recipe, left.stream().map(this::copyContent).collect(Collectors.toList()), slotName, true);
-    }
-
-    default List<K> handleRecipe(IO io, GTRecipe recipe, List<?> left, @Nullable String slotName) {
-        return handleRecipeInner(io, recipe, left.stream().map(this::copyContent).collect(Collectors.toList()), slotName, false);
+    default List<K> handleRecipe(IO io, GTRecipe recipe, List<?> left, @Nullable String slotName, boolean simulate) {
+        return handleRecipeInner(io, recipe, left.stream().map(this::copyContent).collect(Collectors.toList()), slotName, simulate);
     }
 
     default void preWorking(IRecipeCapabilityHolder holder, IO io, GTRecipe recipe) {

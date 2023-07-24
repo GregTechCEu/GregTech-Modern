@@ -32,7 +32,7 @@ import java.util.function.Supplier;
  */
 public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ingredient> implements ICapabilityTrait, IItemTransfer {
 
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(NotifiableItemStackHandler.class);
+    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(NotifiableItemStackHandler.class, NotifiableRecipeHandlerTrait.MANAGED_FIELD_HOLDER);
     @Getter
     public final IO handlerIO;
     @Getter

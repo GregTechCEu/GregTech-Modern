@@ -59,6 +59,8 @@ public class GuiTextures {
     public static final ResourceTexture BUTTON_CHUNK_MODE = new ResourceTexture("gtceu:textures/gui/widget/button_chunk_mode.png");
     public static final ResourceTexture BUTTON_CLEAR_GRID = new ResourceTexture("gtceu:textures/gui/widget/button_clear_grid.png");
     public static final ResourceTexture BUTTON_FILTER_DAMAGE = new ResourceTexture("gtceu:textures/gui/widget/button_filter_damage.png");
+    public static final ResourceTexture BUTTON_DISTINCT_BUSES = new ResourceTexture("gtceu:textures/gui/widget/button_distinct_buses.png");
+    public static final ResourceTexture BUTTON_POWER = new ResourceTexture("gtceu:textures/gui/widget/button_power.png");
     public static final ResourceTexture BUTTON_FILTER_NBT = new ResourceTexture("gtceu:textures/gui/widget/button_filter_nbt.png");
     public static final ResourceTexture BUTTON_FLUID_OUTPUT = new ResourceTexture("gtceu:textures/gui/widget/button_fluid_output_overlay.png");
     public static final ResourceTexture BUTTON_ITEM_OUTPUT = new ResourceTexture("gtceu:textures/gui/widget/button_item_output_overlay.png");

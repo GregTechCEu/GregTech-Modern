@@ -153,6 +153,7 @@ public class ConfiguratorPanel extends WidgetGroup {
     public class Tab extends WidgetGroup {
         private final IFancyConfigurator configurator;
         private final ButtonWidget button;
+        @Nullable
         private final WidgetGroup view;
         // dragging
         private double lastDeltaX, lastDeltaY;
@@ -163,29 +164,34 @@ public class ConfiguratorPanel extends WidgetGroup {
             super(0, tabs.size() * (getTabSize() + 2), getTabSize(), getTabSize());
             this.configurator = configurator;
             this.button = new ButtonWidget(0, 0, getTabSize(), getTabSize(), null, this::onClick);
-            var widget = configurator.createConfigurator();
-            widget.setSelfPosition(new Position(border, getTabSize()));
+            if (configurator instanceof IFancyConfiguratorButton) {
+                this.view = null;
+                this.addWidget(button);
+            } else{
+                var widget = configurator.createConfigurator();
+                widget.setSelfPosition(new Position(border, getTabSize()));
 
-            this.view = new WidgetGroup(0, 0, 0, 0) {
-                @Override
-                protected void onChildSizeUpdate(Widget child) {
-                    super.onChildSizeUpdate(child);
-                    if (widget == child) {
-                        this.setSize(new Size(widget.getSize().width + border * 2, widget.getSize().height + getTabSize() + border));
+                this.view = new WidgetGroup(0, 0, 0, 0) {
+                    @Override
+                    protected void onChildSizeUpdate(Widget child) {
+                        super.onChildSizeUpdate(child);
+                        if (widget == child) {
+                            this.setSize(new Size(widget.getSize().width + border * 2, widget.getSize().height + getTabSize() + border));
+                        }
                     }
-                }
-            };
+                };
 
-            this.view.setVisible(false);
-            this.view.setActive(false);
-            this.view.setSize(new Size(widget.getSize().width + border * 2, widget.getSize().height + getTabSize() + border));
-            this.view.addWidget(widget);
-            this.view.addWidget(new ImageWidget(border + 5, border, widget.getSize().width - getTabSize() - 5, getTabSize() - border,
-                    new TextTexture(configurator.getTitle())
-                            .setType(TextTexture.TextType.LEFT_HIDE)
-                            .setWidth(widget.getSize().width - getTabSize())));
-            this.addWidget(button);
-            this.addWidget(view);
+                this.view.setVisible(false);
+                this.view.setActive(false);
+                this.view.setSize(new Size(widget.getSize().width + border * 2, widget.getSize().height + getTabSize() + border));
+                this.view.addWidget(widget);
+                this.view.addWidget(new ImageWidget(border + 5, border, widget.getSize().width - getTabSize() - 5, getTabSize() - border,
+                        new TextTexture(configurator.getTitle())
+                                .setType(TextTexture.TextType.LEFT_HIDE)
+                                .setWidth(widget.getSize().width - getTabSize())));
+                this.addWidget(button);
+                this.addWidget(view);
+            }
         }
 
         @Override
@@ -220,7 +226,7 @@ public class ConfiguratorPanel extends WidgetGroup {
 
         @Override
         protected void onChildSizeUpdate(Widget child) {
-            if (this.view == child) {
+            if (this.view != null && this.view == child) {
                 if (expanded == this) {
                     var size = view.getSize();
                     animation(new Animation()
@@ -237,10 +243,14 @@ public class ConfiguratorPanel extends WidgetGroup {
         }
 
         private void onClick(ClickData clickData) {
-            if (expanded == this) {
-                collapseTab();
+            if (configurator instanceof IFancyConfiguratorButton fancyBUTTON) {
+                fancyBUTTON.onClick(clickData);
             } else {
-                expandTab(this);
+                if (expanded == this) {
+                    collapseTab();
+                } else {
+                    expandTab(this);
+                }
             }
         }
 
@@ -251,6 +261,7 @@ public class ConfiguratorPanel extends WidgetGroup {
         }
 
         private void expand() {
+            if (view == null) return;
             var size = view.getSize();
             this.dragOffsetX = 0;
             this.dragOffsetY = 0;
@@ -274,8 +285,10 @@ public class ConfiguratorPanel extends WidgetGroup {
         }
 
         private void collapseTo(int x, int y) {
-            view.setVisible(false);
-            view.setActive(false);
+            if (view != null) {
+                view.setVisible(false);
+                view.setActive(false);
+            }
             animation(new Animation()
                     .duration(500)
                     .position(new Position(x, y))
