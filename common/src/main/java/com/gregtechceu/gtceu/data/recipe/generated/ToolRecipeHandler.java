@@ -110,10 +110,6 @@ public class ToolRecipeHandler {
         UnificationEntry ingot = new UnificationEntry(material.hasProperty(PropertyKey.GEM) ? TagPrefix.gem : TagPrefix.ingot, material);
 
         if (material.hasFlag(GENERATE_PLATE)) {
-            //addToolRecipe(provider, material, GTToolType.MINING_HAMMER, true,
-            //        "PPf", "PPS", "PPh",
-            //        'P', plate,
-            //        'S', rod);
 
             //addToolRecipe(provider, material, GTToolType.SPADE, false,
             //        "fPh", "PSP", " S ",
@@ -181,6 +177,7 @@ public class ToolRecipeHandler {
 
         if (material.hasFlag(GENERATE_ROD)) {
             UnificationEntry rod = new UnificationEntry(TagPrefix.rod, material);
+
             addToolRecipe(provider, material, GTToolType.PLUNGER, false,
                         "xRR", " SR", "S f",
                         'S', rod,
@@ -199,6 +196,11 @@ public class ToolRecipeHandler {
                             'T', new UnificationEntry(TagPrefix.screw, material),
                             'S', rod);
                 }
+
+                addToolRecipe(provider, material, GTToolType.MINING_HAMMER, true,
+                        "PPf", "PPS", "PPh",
+                        'P', plate,
+                        'S', rod);
             }
 
             addToolRecipe(provider, material, GTToolType.SCREWDRIVER, true,
