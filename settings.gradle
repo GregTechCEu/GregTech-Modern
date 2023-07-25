@@ -56,7 +56,7 @@ dependencyResolutionManagement {
         def architecturyLoomVersion = "1.3-SNAPSHOT"
         def vineFlowerVersion = "1.+"
         def macheteVersion = "1.+"
-        def ldLibVersion = "1.0.14.c"
+        def ldLibVersion = "1.0.14.f"
 
         fabric {
             def fabricLoader = version("fabricLoader", fabricLoaderVersion)
