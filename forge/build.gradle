@@ -129,8 +129,8 @@ dependencies {
 //    modImplementation forge.kubejs
 
     // Configuration
-//    modImplementation(forge.configuration)
-//    include(forge.configuration)
+    modImplementation(forge.configuration)
+    include(forge.configuration)
 
     // Runtime only testing mods
     //modRuntimeOnly(forge.worldStripper)

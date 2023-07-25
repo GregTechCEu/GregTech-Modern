@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.common.data.forge;
 
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
+import com.simibubi.create.AllSoundEvents;
 import net.minecraftforge.registries.ForgeRegistries;
 
 /**

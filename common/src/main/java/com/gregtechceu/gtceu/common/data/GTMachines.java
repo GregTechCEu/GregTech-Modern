@@ -1349,7 +1349,7 @@ public class GTMachines {
         return registerTieredMachines("transformer_%da".formatted(baseAmp), (holder, tier) -> new TransformerMachine(holder, tier, baseAmp),
                 (tier, builder) -> builder
                         .rotationState(RotationState.ALL)
-                        .itemColor((itemStack, index) -> index == 2 ? GTValues.VC[tier + 1] : index == 3 ? GTValues.VC[tier] : index == 1 ? ConfigHolder.INSTANCE.client.defaultPaintingColor : -1)
+                        .itemColor((itemStack, index) -> index == 2 ? GTValues.VC[tier + 1] : index == 3 ? GTValues.VC[tier] : index == 1 ? Long.decode(ConfigHolder.INSTANCE.client.defaultPaintingColor).intValue() : -1)
                         .renderer(() -> new TransformerRenderer(tier, baseAmp))
                         .langValue("%s %sTransformer".formatted(VOLTAGE_NAMES[tier], langName))
                         .tooltips(explosion())
