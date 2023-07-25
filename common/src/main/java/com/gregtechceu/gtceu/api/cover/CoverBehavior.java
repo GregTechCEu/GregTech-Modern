@@ -13,7 +13,6 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import lombok.Getter;
-import lombok.Setter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -48,7 +47,7 @@ public abstract class CoverBehavior implements IEnhancedManaged, IToolGridHighLi
     public final Direction attachedSide;
     @Getter @Persisted @DescSynced
     protected ItemStack attachItem = ItemStack.EMPTY;
-    @Getter @Setter @Persisted
+    @Getter @Persisted
     protected int redstoneSignalOutput = 0;
 
     public CoverBehavior(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {
@@ -126,6 +125,12 @@ public abstract class CoverBehavior implements IEnhancedManaged, IToolGridHighLi
     }
 
     public void onNeighborChanged(Block block, BlockPos fromPos, boolean isMoving) {
+    }
+
+    public void setRedstoneSignalOutput(int redstoneSignalOutput) {
+        this.redstoneSignalOutput = redstoneSignalOutput;
+        coverHolder.notifyBlockUpdate();
+        coverHolder.markDirty();
     }
 
     //////////////////////////////////////

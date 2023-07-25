@@ -5,9 +5,11 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.client.renderer.cover.*;
 import com.gregtechceu.gtceu.common.cover.*;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.common.cover.detector.ActivityDetectorCover;
+import com.gregtechceu.gtceu.common.cover.detector.AdvancedActivityDetectorCover;
 import it.unimi.dsi.fastutil.ints.Int2ObjectFunction;
 
 import java.util.Arrays;
@@ -53,6 +55,23 @@ public class GTCovers {
             "pump", PumpCover::new,
             tier -> PumpCoverRenderer.INSTANCE, GTValues.LV, GTValues.MV, GTValues.HV, GTValues.EV, GTValues.IV, GTValues.LuV
     );
+
+
+    // Detectors
+    public final static CoverDefinition ACTIVITY_DETECTOR = register(
+            "activity_detector", ActivityDetectorCover::new,
+            new SimpleCoverRenderer(GTCEu.id("block/cover/overlay_activity_detector"))
+    );
+    public final static CoverDefinition ACTIVITY_DETECTOR_ADVANCED = register(
+            "activity_detector_advanced", AdvancedActivityDetectorCover::new,
+            new SimpleCoverRenderer(GTCEu.id("block/cover/overlay_activity_detector_advanced"))
+    );
+    public final static CoverDefinition COVER_FLUID_DETECTOR = null; // TODO
+    public final static CoverDefinition COVER_FLUID_DETECTOR_ADVANCED = null; // TODO
+    public final static CoverDefinition COVER_ITEM_DETECTOR = null; // TODO
+    public final static CoverDefinition COVER_ITEM_DETECTOR_ADVANCED = null; // TODO
+    public final static CoverDefinition COVER_ENERGY_DETECTOR = null; // TODO
+    public final static CoverDefinition COVER_ENERGY_DETECTOR_ADVANCED = null; // TODO
 
 
     ///////////////////////////////////////////////
