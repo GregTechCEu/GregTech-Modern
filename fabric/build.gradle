@@ -122,8 +122,8 @@ dependencies {
 //    modImplementation fabric.kubejs
 
     // Configuration
-//    modImplementation(fabric.configuration)
-//    include(fabric.configuration)
+    modImplementation(fabric.configuration)
+    include(fabric.configuration)
 
     // Team Reborn Energy
     modImplementation(fabric.teamRebornEnergy)

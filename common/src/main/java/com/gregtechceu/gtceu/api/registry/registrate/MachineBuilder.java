@@ -98,7 +98,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     @Getter @Setter // getter for KJS
     private int tier;
     @Setter
-    private int paintingColor = ConfigHolder.INSTANCE.client.defaultPaintingColor;
+    private int paintingColor = Long.decode(ConfigHolder.INSTANCE.client.defaultPaintingColor).intValue();
     @Setter
     private BiFunction<ItemStack, Integer, Integer> itemColor = ((itemStack, tintIndex) -> tintIndex == 2 ? GTValues.VC[tier] : tintIndex == 1 ? paintingColor : -1);
     private PartAbility[] abilities = new PartAbility[0];

@@ -84,7 +84,7 @@ dependencies {
 //    modCompileOnly fabric.kubejs
 
     // Configuration
-//    modCompileOnly fabric.configuration
+    modCompileOnly fabric.configuration
 
     modCompileOnly fabric.ae2
 }
