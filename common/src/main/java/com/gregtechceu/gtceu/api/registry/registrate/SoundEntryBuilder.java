@@ -9,7 +9,6 @@ import com.gregtechceu.gtceu.api.sound.ConfiguredSoundEvent;
 import com.gregtechceu.gtceu.api.sound.WrappedSoundEntry;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.data.CachedOutput;
-import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
@@ -17,7 +16,6 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -50,7 +48,6 @@ public class SoundEntryBuilder {
         }
 
         public CompletableFuture<?> generate(Path path, CachedOutput cache) {
-            path = path.resolve("assets/" + GTCEu.MOD_ID);
             JsonObject json = new JsonObject();
             try {
                 for (SoundEntry sound : GTRegistries.SOUNDS) {
