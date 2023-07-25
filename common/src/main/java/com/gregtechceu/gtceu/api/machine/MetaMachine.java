@@ -474,7 +474,8 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
     public int getOutputSignal(@Nullable Direction side) {
         if (side == null) return 0;
 
-        CoverBehavior cover = getCoverContainer().getCoverAtSide(side);
+        // For some reason, Minecraft requests the output signal from the opposite side...
+        CoverBehavior cover = getCoverContainer().getCoverAtSide(side.getOpposite());
         if (cover == null) return 0;
 
         return cover.getRedstoneSignalOutput();
