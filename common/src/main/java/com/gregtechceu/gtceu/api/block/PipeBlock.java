@@ -14,7 +14,6 @@ import com.lowdragmc.lowdraglib.client.renderer.IBlockRendererProvider;
 import com.lowdragmc.lowdraglib.pipelike.LevelPipeNet;
 import com.lowdragmc.lowdraglib.pipelike.Node;
 import com.lowdragmc.lowdraglib.pipelike.PipeNet;
-import com.lowdragmc.lowdraglib.utils.RayTraceHelper;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -33,6 +32,9 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.EntityCollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -40,6 +42,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.List;
 
 /**
  * @author KilaBash
@@ -222,4 +225,15 @@ public abstract class PipeBlock <PipeType extends Enum<PipeType> & IPipeType<Nod
         return super.getBlockAppearance(state, level, pos, side, sourceState, sourcePos);
     }
 
+    @Override
+    public List<ItemStack> getDrops(BlockState state, LootContext.Builder builder) {
+        LootContext context = builder.withParameter(LootContextParams.BLOCK_STATE, state).create(LootContextParamSets.BLOCK);
+        BlockEntity tileEntity = context.getParamOrNull(LootContextParams.BLOCK_ENTITY);
+        if (tileEntity instanceof IPipeNode<?,?> pipeTile) {
+            for (Direction direction : Direction.values()) {
+                pipeTile.getCoverContainer().removeCover(direction);
+            }
+        }
+        return super.getDrops(state, builder);
+    }
 }
