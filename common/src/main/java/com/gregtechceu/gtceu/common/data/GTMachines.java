@@ -659,7 +659,12 @@ public class GTMachines {
             .tooltips(Component.translatable("gtceu.machine.data_access_hatch.tooltip.1"),
                     Component.translatable("gtceu.machine.data_access_hatch.tooltip.2", DataAccessHatchPartMachine.getInventorySize(LuV)))
             .register();
-    public static final DataAccessHatchPartMachine CREATIVE_DATA_HATCH;
+    public static final MachineDefinition CREATIVE_DATA_HATCH = REGISTRATE.machine("creative_data_access_hatch", (holder) -> new DataAccessHatchPartMachine(holder, MAX, true))
+            .rotationState(RotationState.NON_Y_AXIS)
+            .abilities(PartAbility.DATA_ACCESS_HATCH)
+            .tooltips(Component.translatable("gtceu.machine.data_access_hatch.tooltip.1"),
+                    Component.translatable("gtceu.machine.data_access_hatch.tooltip.2", DataAccessHatchPartMachine.getInventorySize(LuV)))
+            .register();
     public static final MetaTileEntityOpticalDataHatch OPTICAL_DATA_HATCH_RECEIVER;
     public static final MetaTileEntityOpticalDataHatch OPTICAL_DATA_HATCH_TRANSMITTER;
     public static final MetaTileEntityLaserHatch LASER_INPUT_HATCH;
@@ -1348,6 +1353,11 @@ public class GTMachines {
                     .register(),
             IV, LuV) : null;
 
+    public static final MultiblockMachineDefinition DATA_BANK = REGISTRATE.multiblock("data_bank", DataBankMachine::new)
+            .rotationState(RotationState.NON_Y_AXIS)
+            .recipeType(GTRecipeTypes.DUMMY_RECIPES)
+
+
     public static final MultiblockMachineDefinition HIGH_PERFORMANCE_COMPUTING_ARRAY = REGISTRATE.multiblock("high_performance_computing_array", HPCAMachine::new)
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeType(GTRecipeTypes.DUMMY_RECIPES)
@@ -1379,9 +1389,9 @@ public class GTMachines {
                         .aisle("VA", "8V", "5V", "2V", "VA")
                         .aisle("SA", "CC", "CC", "OC", "AA")
                         .where('S', GTMachines.HIGH_PERFORMANCE_COMPUTING_ARRAY, Direction.SOUTH)
-                        .where('A', blocks(GTBlocks.ADVANCED_COMPUTER_CASING.get()))
-                        .where('V', blocks(GTBlocks.COMPUTER_HEAT_VENT.get()))
-                        .where('C', blocks(GTBlocks.COMPUTER_CASING.get()))
+                        .where('A', GTBlocks.ADVANCED_COMPUTER_CASING.get())
+                        .where('V', GTBlocks.COMPUTER_HEAT_VENT.get())
+                        .where('C', GTBlocks.COMPUTER_CASING.get())
                         .where('E', GTMachines.ENERGY_INPUT_HATCH[GTValues.LuV], Direction.NORTH)
                         .where('H', GTMachines.FLUID_IMPORT_HATCH[GTValues.LV], Direction.NORTH)
                         .where('O', GTMachines.COMPUTATION_HATCH_TRANSMITTER, Direction.SOUTH)

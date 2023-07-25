@@ -7,12 +7,14 @@ import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
+import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.function.Consumer;
 
 public final class AssemblyLineManager {
 
@@ -96,37 +98,37 @@ public final class AssemblyLineManager {
      *
      * @param builder the builder to retrieve recipe info from
      */
-    public static void createDefaultResearchRecipe(@Nonnull GTRecipeBuilder builder) {
+    public static void createDefaultResearchRecipe(@Nonnull GTRecipeBuilder builder, @Nonnull Consumer<FinishedRecipe> provider) {
         if (!ConfigHolder.INSTANCE.machines.enableResearch) return;
 
-        for (AssemblyLineRecipeBuilder.ResearchRecipeEntry entry : builder.getRecipeEntries()) {
-            createDefaultResearchRecipe(entry.getResearchId(), entry.getResearchStack(), entry.getDataStack(), entry.getDuration(), entry.getEUt(), entry.getCWUt());
+        for (GTRecipeBuilder.ResearchRecipeEntry entry : builder.getResearchEntries()) {
+            createDefaultResearchRecipe(provider, entry.getResearchId(), entry.getResearchStack(), entry.getDataStack(), entry.getDuration(), entry.getEUt(), entry.getCWUt());
         }
     }
 
-    public static void createDefaultResearchRecipe(@Nonnull String researchId, @Nonnull ItemStack researchItem, @Nonnull ItemStack dataItem, int duration, int EUt, int CWUt) {
+    public static void createDefaultResearchRecipe(@Nonnull Consumer<FinishedRecipe> provider, @Nonnull String researchId, @Nonnull ItemStack researchItem, @Nonnull ItemStack dataItem, int duration, int EUt, int CWUt) {
         if (!ConfigHolder.INSTANCE.machines.enableResearch) return;
 
         CompoundTag compound = dataItem.getOrCreateTag();
         writeResearchToNBT(compound, researchId);
 
         if (CWUt > 0) {
-            GTRecipeTypes.RESEARCH_STATION_RECIPES.recipeBuilder()
-                    .inputNBT(dataItem.getItem(), 1, dataItem.getMetadata(), NBTMatcher.ANY, NBTCondition.ANY)
-                    .inputs(researchItem)
-                    .outputs(dataItem)
+            GTRecipeTypes.RESEARCH_STATION_RECIPES.recipeBuilder("research_" + researchId)
+                    .inputItems(dataItem.getItem(), 1)
+                    .inputItems(researchItem)
+                    .outputItems(dataItem)
                     .duration(duration)
                     .EUt(EUt)
                     .CWUt(CWUt)
-                    .buildAndRegister();
+                    .save(provider);
         } else {
-            GTRecipeTypes.SCANNER_RECIPES.recipeBuilder()
-                    .inputNBT(dataItem.getItem(), 1, dataItem.getMetadata(), NBTMatcher.ANY, NBTCondition.ANY)
-                    .inputs(researchItem)
-                    .outputs(dataItem)
+            GTRecipeTypes.SCANNER_RECIPES.recipeBuilder("research_" + researchId)
+                    .inputItems(dataItem.getItem(), 1)
+                    .inputItems(researchItem)
+                    .outputItems(dataItem)
                     .duration(duration)
                     .EUt(EUt)
-                    .buildAndRegister();
+                    .save(provider);
         }
     }
 }

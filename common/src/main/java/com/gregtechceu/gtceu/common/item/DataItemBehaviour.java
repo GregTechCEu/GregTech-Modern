@@ -37,7 +37,7 @@ public class DataItemBehaviour implements IAddInformation, IDataItem {
     public void appendHoverText(@Nonnull ItemStack itemStack, @Nullable Level level, List<Component> lines, TooltipFlag isAdvanced) {
         String researchId = AssemblyLineManager.readResearchId(itemStack);
         if (researchId == null) return;
-        Collection<GTRecipe> recipes = ((IResearchRecipeType) GTRecipeTypes.ASSEMBLY_LINE_RECIPES).getDataStickEntry(researchId);
+        Collection<GTRecipe> recipes = GTRecipeTypes.ASSEMBLY_LINE_RECIPES.getDataStickEntry(researchId);
         if (recipes != null && !recipes.isEmpty()) {
             lines.add(Component.translatable("behavior.data_item.assemblyline.title"));
             Collection<ItemStack> added = new ObjectOpenHashSet<>();

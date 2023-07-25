@@ -18,6 +18,7 @@ import com.gregtechceu.gtceu.api.sound.ExistingSoundEntry;
 import com.gregtechceu.gtceu.data.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.integration.kjs.GTRegistryObjectBuilderTypes;
+import com.gregtechceu.gtceu.utils.AssemblyLineManager;
 import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
 import com.lowdragmc.lowdraglib.gui.widget.TankWidget;
 import com.lowdragmc.lowdraglib.misc.FluidStorage;
@@ -515,7 +516,8 @@ public class GTRecipeTypes {
 
     public final static GTRecipeType ASSEMBLY_LINE_RECIPES = register("assembly_line", MULTIBLOCK).setMaxIOSize(16, 1, 4, 0).setEUIO(IO.IN)
             .setProgressBar(GuiTextures.PROGRESS_BAR_ARROW, LEFT_TO_RIGHT)
-            .setSound(GTSoundEntries.ASSEMBLER);
+            .setSound(GTSoundEntries.ASSEMBLER)
+            .onRecipeBuild(AssemblyLineManager::createDefaultResearchRecipe);
 
     public static final GTRecipeType LARGE_CHEMICAL_RECIPES = register("large_chemical_reactor", MULTIBLOCK).setMaxIOSize(3, 3, 5, 4).setEUIO(IO.IN)
             .prepareBuilder(recipeBuilder -> recipeBuilder.EUt(GTValues.VA[GTValues.LV]))
@@ -534,6 +536,20 @@ public class GTRecipeTypes {
             .setProgressBar(GuiTextures.PROGRESS_BAR_FUSION, LEFT_TO_RIGHT)
             .setSound(GTSoundEntries.ARC)
             .addDataInfo(data -> LocalizationUtils.format("gtceu.recipe.eu_to_start", data.getLong("eu_to_start")));
+
+    public static final GTRecipeType SCANNER_RECIPES = register("scanner", ELECTRIC)
+            .setMaxIOSize(2, 1, 1, 0)
+            .setSlotOverlay(false, false, GuiTextures.DATA_ORB_OVERLAY)
+            .setSlotOverlay(false, false, true, GuiTextures.SCANNER_OVERLAY)
+            .setProgressBar(GuiTextures.PROGRESS_BAR_ARROW, LEFT_TO_RIGHT)
+            .setSound(GTSoundEntries.ELECTROLYZER);
+
+    public static final GTRecipeType RESEARCH_STATION_RECIPES = register("research_station", MULTIBLOCK)
+            .setMaxIOSize(2, 1, 0, 0)
+            .setProgressBar(GuiTextures.PROGRESS_BAR_ARROW, LEFT_TO_RIGHT)
+            .setSlotOverlay(false, false, GuiTextures.SCANNER_OVERLAY)
+            .setSlotOverlay(true, false, GuiTextures.RESEARCH_STATION_OVERLAY)
+            .setSound(GTValues.FOOLS.get() ? GTSoundEntries.SCIENCE : GTSoundEntries.COMPUTATION);
 
     public static final GTRecipeType DUMMY_RECIPES = new GTRecipeType(GTCEu.id("dummy"), DUMMY);
 

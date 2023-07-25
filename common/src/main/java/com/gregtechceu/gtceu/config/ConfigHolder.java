@@ -201,6 +201,17 @@ public class ConfigHolder {
         @Configurable
         @Configurable.Comment({"Wether to add a \"Processing Array\"", "Default: true"})
         public boolean doProcessingArray = true;
+        @Configurable
+        @Configurable.Comment({"Whether to enable Assembly Line research for recipes.", "Default: true"})
+        public boolean enableResearch = true;
+        @Configurable
+        @Configurable.Comment({"Whether the Assembly Line should require the item inputs to be in order.", "Default: true"})
+        public boolean orderedAssembly = true;
+        @Configurable
+        @Configurable.Comment({"Whether the Assembly Line should require the fluid inputs to be in order.",
+                "This does nothing if orderedAssembly is false.",
+                "Default: false"})
+        public boolean orderedFluidAssembly = false;
     }
 
     public static class ClientConfigs {
