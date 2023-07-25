@@ -71,8 +71,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     @Getter
     protected long totalContinuousRunningTime;
     protected TickableSubscription subscription;
-    @Environment(EnvType.CLIENT)
-    protected AutoReleasedSound workingSound;
+    protected Object workingSound;
 
     public RecipeLogic(IRecipeLogicMachine machine) {
         super(machine.self());
@@ -213,7 +212,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
                     progress++;
                     totalContinuousRunningTime++;
                 } else {
-                    setWaiting(result.reason());
+                    setWaiting(result.reason().get());
                     if (progress > 0 && machine.dampingWhenWaiting()) {
                         if (ConfigHolder.INSTANCE.machines.recipeProgressLowEnergy) {
                             this.progress = 1;
@@ -226,7 +225,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
                 setWaiting(Component.translatable("gtceu.recipe_logic.insufficient_fuel"));
             }
         } else {
-            setWaiting(result.reason());
+            setWaiting(result.reason().get());
         }
         if (last == Status.WORKING && getStatus() != Status.WORKING) {
             lastRecipe.postWorking(machine);
@@ -474,11 +473,11 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     public void updateSound() {
         if (isWorking() && machine.shouldWorkingPlaySound()) {
             var sound = machine.getRecipeType().getSound();
-            if (workingSound != null) {
-                if (workingSound.soundEntry == sound && !workingSound.isStopped()) {
+            if (workingSound instanceof AutoReleasedSound soundEntry) {
+                if (soundEntry.soundEntry == sound && !soundEntry.isStopped()) {
                     return;
                 }
-                workingSound.release();
+                soundEntry.release();
                 workingSound = null;
             }
             if (sound != null) {
@@ -489,8 +488,8 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
                                 && getMachine().getLevel().isLoaded(getMachine().getPos())
                                 && MetaMachine.getMachine(getMachine().getLevel(), getMachine().getPos()) == getMachine(), getMachine().getPos(), true, 0, 1, 1);
             }
-        } else if (workingSound != null) {
-            workingSound.release();
+        } else if (workingSound instanceof AutoReleasedSound soundEntry) {
+            soundEntry.release();
             workingSound = null;
         }
     }

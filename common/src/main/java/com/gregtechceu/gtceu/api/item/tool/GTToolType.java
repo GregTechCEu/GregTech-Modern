@@ -26,10 +26,10 @@ public enum GTToolType {
     SHOVEL("shovel", "shovels", 1.5F, -3.0F, true),
     AXE("axe", "axes", 6.0F, -3.2F, true),
     HOE("hoe", "hoes", 0, -3.0F, true),
-    SAW("saw", "saws", 1, 1, GTSoundEntries.SAW_TOOL),
 
     MINING_HAMMER("mining_hammer", "mining_hammers", TagUtil.createBlockTag("mineable/pickaxe", true), 1.5F, -3.2F, GTCEu.id("item/tools/mining_hammer"), null),
 
+    SAW("saw", "saws", 1, 1, GTSoundEntries.SAW_TOOL),
     HARD_HAMMER("hammer", "hammers", 1, 1, GTSoundEntries.FORGE_HAMMER),
     SOFT_MALLET("mallet", "mallets", 1, 1, GTSoundEntries.SOFT_MALLET_TOOL),
     WRENCH("wrench", "wrenches", 1, 1, GTSoundEntries.WRENCH_TOOL),
@@ -44,7 +44,7 @@ public enum GTToolType {
     BUTCHERY_KNIFE("butchery_knife", "butchery_knives", 1, 1),
 //    GRAFTER("grafter", 1, 1, GTCEu.id("item/tools/handle_hammer"), GTCEu.id("item/tools/hammer")),
     PLUNGER("plunger", "plungers", 1, 1, GTSoundEntries.PLUNGER_TOOL);
-    
+
     public final String name;
     public final TagKey<Item> itemTag;
     public final TagKey<Block> harvestTag;

@@ -43,19 +43,21 @@ public class GTRecipeModifiers {
 
     /**
      * Fast parallel, the parallel amount is always the 2 times the divisor of maxParallel。
-     * @param holder recipe holder
+     * @param machine recipe holder
      * @param recipe current recipe
      * @param maxParallel max parallel limited
      * @param modifyDuration should multiply the duration
      * @return modified recipe and parallel amount
      */
-    public static Tuple<GTRecipe, Integer> fastParallel(IRecipeCapabilityHolder holder, @Nonnull GTRecipe recipe, int maxParallel, boolean modifyDuration) {
-        while (maxParallel > 0) {
-            var copied = recipe.copy(ContentModifier.multiplier(maxParallel), modifyDuration);
-            if (copied.matchRecipe(holder).isSuccess()) {
-                return new Tuple<>(copied, maxParallel);
+    public static Tuple<GTRecipe, Integer> fastParallel(MetaMachine machine, @Nonnull GTRecipe recipe, int maxParallel, boolean modifyDuration) {
+        if (machine instanceof IRecipeCapabilityHolder holder) {
+            while (maxParallel > 0) {
+                var copied = recipe.copy(ContentModifier.multiplier(maxParallel), modifyDuration);
+                if (copied.matchRecipe(holder).isSuccess() && copied.matchTickRecipe(holder).isSuccess()) {
+                    return new Tuple<>(copied, maxParallel);
+                }
+                maxParallel /= 2;
             }
-            maxParallel /= 2;
         }
         return new Tuple<>(recipe, 1);
     };
@@ -82,7 +84,7 @@ public class GTRecipeModifiers {
         int mid = (min + max) / 2;
 
         GTRecipe copied = original.copy(ContentModifier.multiplier(mid), modifyDuration);
-        if (!copied.matchRecipe(holder).isSuccess()) {
+        if (!copied.matchRecipe(holder).isSuccess() || !copied.matchTickRecipe(holder).isSuccess()) {
             // tried too many
             return tryParallel(holder, original, min, mid - 1, modifyDuration);
         } else {

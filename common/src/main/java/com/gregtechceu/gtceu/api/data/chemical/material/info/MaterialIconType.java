@@ -129,7 +129,7 @@ public record MaterialIconType(String name) {
         if (!iconSet.isRootIconset && Platform.isClient() && Minecraft.getInstance() != null && Minecraft.getInstance().getResourceManager() != null) { // check minecraft for null for CI environments
             while (!iconSet.isRootIconset) {
                 ResourceLocation location = GTCEu.id(String.format("textures/block/material_sets/%s/%s.png", iconSet.name, this.name));
-                if (ResourceHelper.isResourceExist(location)) break;
+                if (ResourceHelper.isResourceExist(location) || ResourceHelper.isResourceExistRaw(location)) break;
                 iconSet = iconSet.parentIconset;
             }
         }
