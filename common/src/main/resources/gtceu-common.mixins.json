@@ -17,6 +17,7 @@
     "FeatureUtilsMixin",
     "IFoliagePlacerTypeAccessor",
     "IHolderReferenceAccessor",
+    "IngredientAccessor",
     "ITrunkPlacerTypeAccessor",
     "LevelMixin",
     "LootTablesMixin",

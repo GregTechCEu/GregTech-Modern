@@ -88,7 +88,8 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
         for (Map.Entry<RecipeCapability<?>, List<Content>> entry : contents.entrySet()) {
             var cap = entry.getKey();
             for (Content content : entry.getValue()) {
-                content.content = cap.copyContent(content.content, modifier);
+                // if chance is zero keep what it used to be.
+                content.content = content.chance == 0 ? content.content : cap.copyContent(content.content, modifier);
             }
         }
     }

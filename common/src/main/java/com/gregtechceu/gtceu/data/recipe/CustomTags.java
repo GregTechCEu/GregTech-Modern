@@ -67,7 +67,7 @@ public class CustomTags {
             BlockTags.NEEDS_DIAMOND_TOOL,
             NEEDS_NETHERITE_TOOL,
             NEEDS_NAQ_ALLOY_TOOL,
-            NEEDS_NEUTRONIUM_TOOL
+            NEEDS_NEUTRONIUM_TOOL,
     };
 
     public static final TagKey<Block> ENDSTONE_ORE_REPLACEABLES = TagUtil.createBlockTag("end_stone_ore_replaceables");

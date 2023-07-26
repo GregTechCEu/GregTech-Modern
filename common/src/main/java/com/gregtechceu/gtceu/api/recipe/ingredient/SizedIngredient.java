@@ -66,6 +66,12 @@ public class SizedIngredient extends Ingredient {
         throw new AssertionError();
     }
 
+    public static SizedIngredient copy(SizedIngredient ingredient) {
+        var copied = SizedIngredient.create(ingredient.inner, ingredient.amount);
+        copied.tag = ingredient.tag;
+        return copied;
+    }
+
     public int getAmount() {
         return amount;
     }

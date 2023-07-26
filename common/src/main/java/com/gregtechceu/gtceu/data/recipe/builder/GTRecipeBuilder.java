@@ -169,19 +169,6 @@ public class GTRecipeBuilder {
         return output(EURecipeCapability.CAP, eu);
     }
 
-    // for kjs
-    public GTRecipeBuilder itemInputs(Ingredient... inputs) {
-        return input(ItemRecipeCapability.CAP, inputs);
-    }
-
-    public GTRecipeBuilder itemInput(UnificationEntry input) {
-        return inputItems(input);
-    }
-
-    public GTRecipeBuilder itemInput(UnificationEntry input, int count) {
-        return inputItems(input, count);
-    }
-
     public GTRecipeBuilder inputItems(Ingredient... inputs) {
         return input(ItemRecipeCapability.CAP, inputs);
     }
@@ -209,11 +196,11 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder inputItems(Item input) {
-        return inputItems(Ingredient.of(input));
+        return inputItems(SizedIngredient.create(new ItemStack(input)));
     }
 
     public GTRecipeBuilder inputItems(Supplier<? extends Item> input) {
-        return inputItems(Ingredient.of(input.get()));
+        return inputItems(input.get());
     }
 
     public GTRecipeBuilder inputItems(Supplier<? extends Item> input, int amount) {
