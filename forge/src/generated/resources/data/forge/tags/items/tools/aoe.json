@@ -1,27 +1,96 @@
 {
   "values": [
-    "gtceu:aluminium_mining_hammer",
-    "gtceu:iron_mining_hammer",
-    "gtceu:titanium_mining_hammer",
-    "gtceu:neutronium_mining_hammer",
-    "gtceu:duranium_mining_hammer",
-    "gtceu:bronze_mining_hammer",
-    "gtceu:diamond_mining_hammer",
-    "gtceu:invar_mining_hammer",
-    "gtceu:sterling_silver_mining_hammer",
-    "gtceu:rose_gold_mining_hammer",
-    "gtceu:stainless_steel_mining_hammer",
-    "gtceu:steel_mining_hammer",
-    "gtceu:ultimet_mining_hammer",
-    "gtceu:wrought_iron_mining_hammer",
-    "gtceu:tungsten_carbide_mining_hammer",
-    "gtceu:damascus_steel_mining_hammer",
-    "gtceu:tungsten_steel_mining_hammer",
-    "gtceu:cobalt_brass_mining_hammer",
-    "gtceu:vanadium_steel_mining_hammer",
-    "gtceu:naquadah_alloy_mining_hammer",
-    "gtceu:red_steel_mining_hammer",
-    "gtceu:blue_steel_mining_hammer",
-    "gtceu:hsse_mining_hammer"
+    {
+      "id": "gtceu:aluminium_mining_hammer",
+      "required": false
+    },
+    {
+      "id": "gtceu:iron_mining_hammer",
+      "required": false
+    },
+    {
+      "id": "gtceu:titanium_mining_hammer",
+      "required": false
+    },
+    {
+      "id": "gtceu:neutronium_mining_hammer",
+      "required": false
+    },
+    {
+      "id": "gtceu:duranium_mining_hammer",
+      "required": false
+    },
+    {
+      "id": "gtceu:bronze_mining_hammer",
+      "required": false
+    },
+    {
+      "id": "gtceu:diamond_mining_hammer",
+      "required": false
+    },
+    {
+      "id": "gtceu:invar_mining_hammer",
+      "required": false
+    },
+    {
+      "id": "gtceu:sterling_silver_mining_hammer",
+      "required": false
+    },
+    {
+      "id": "gtceu:rose_gold_mining_hammer",
+      "required": false
+    },
+    {
+      "id": "gtceu:stainless_steel_mining_hammer",
+      "required": false
+    },
+    {
+      "id": "gtceu:steel_mining_hammer",
+      "required": false
+    },
+    {
+      "id": "gtceu:ultimet_mining_hammer",
+      "required": false
+    },
+    {
+      "id": "gtceu:wrought_iron_mining_hammer",
+      "required": false
+    },
+    {
+      "id": "gtceu:tungsten_carbide_mining_hammer",
+      "required": false
+    },
+    {
+      "id": "gtceu:damascus_steel_mining_hammer",
+      "required": false
+    },
+    {
+      "id": "gtceu:tungsten_steel_mining_hammer",
+      "required": false
+    },
+    {
+      "id": "gtceu:cobalt_brass_mining_hammer",
+      "required": false
+    },
+    {
+      "id": "gtceu:vanadium_steel_mining_hammer",
+      "required": false
+    },
+    {
+      "id": "gtceu:naquadah_alloy_mining_hammer",
+      "required": false
+    },
+    {
+      "id": "gtceu:red_steel_mining_hammer",
+      "required": false
+    },
+    {
+      "id": "gtceu:blue_steel_mining_hammer",
+      "required": false
+    },
+    {
+      "id": "gtceu:hsse_mining_hammer",
+      "required": false
+    }
   ]
 }
