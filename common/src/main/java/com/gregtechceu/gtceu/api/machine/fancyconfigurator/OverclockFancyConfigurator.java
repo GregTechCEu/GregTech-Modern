@@ -43,7 +43,7 @@ public class OverclockFancyConfigurator implements IFancyConfigurator {
 
     @Override
     public IGuiTexture getIcon() {
-        return currentTier <= GTValues.UV ? GuiTextures.TIER[currentTier].copy().scale(1.5f) : new TextTexture(GTValues.VNF[this.currentTier]).setDropShadow(false);
+        return currentTier <= GTValues.UV ? GuiTextures.TIER[currentTier].copy().scale(1.2f) : new TextTexture(GTValues.VNF[this.currentTier]).setDropShadow(false);
     }
 
     @Override
