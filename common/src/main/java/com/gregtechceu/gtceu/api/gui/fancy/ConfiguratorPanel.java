@@ -150,6 +150,15 @@ public class ConfiguratorPanel extends WidgetGroup {
         }
     }
 
+    @Override
+    @Environment(EnvType.CLIENT)
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (expanded != null && expanded.isVisible() && expanded.isActive() && expanded.mouseClicked(mouseX, mouseY, button)) {
+            return true;
+        }
+        return super.mouseClicked(mouseX, mouseY, button);
+    }
+
     public class Tab extends WidgetGroup {
         private final IFancyConfigurator configurator;
         private final ButtonWidget button;

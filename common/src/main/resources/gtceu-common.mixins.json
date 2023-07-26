@@ -15,6 +15,7 @@
     "ChunkMixin",
     "IFoliagePlacerTypeAccessor",
     "IHolderReferenceAccessor",
+    "IngredientAccessor",
     "ITrunkPlacerTypeAccessor",
     "LevelMixin",
     "LootTablesMixin",

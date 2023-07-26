@@ -1,7 +1,9 @@
 package com.gregtechceu.gtceu.api.gui;
 
+import com.gregtechceu.gtceu.api.GTValues;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceBorderTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
+import lombok.val;
 
 /**
  * @author KilaBash
@@ -276,4 +278,11 @@ public class GuiTextures {
     public static final ResourceTexture LIGHT_ON = new ResourceTexture("gtceu:textures/gui/widget/light_on.png");
     public static final ResourceTexture LIGHT_OFF = new ResourceTexture("gtceu:textures/gui/widget/light_off.png");
     public static final ResourceTexture UP = new ResourceTexture("gtceu:textures/gui/base/up.png");
+    public static final ResourceTexture[] TIER = new ResourceTexture[9];
+    static {
+        val offset = 1f / TIER.length;
+        for (int i = 0; i < TIER.length; i++) {
+            TIER[i] = new ResourceTexture("gtceu:textures/gui/overlay/tier.png").getSubTexture(0, i * offset, 1, offset);
+        }
+    }
 }
