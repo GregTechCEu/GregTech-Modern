@@ -369,13 +369,18 @@ public class LangHandler {
         multilineLang(provider, "cover.advanced_energy_detector.use_percent.disabled", "Mode: Discrete EU\n\n" + advancedEnergyDetectorModeDescription);
 
         provider.add("cover.advanced_fluid_detector.label", "Advanced Fluid Detector");
-        multilineLang(provider, "cover.advanced_fluid_detector.invert_tooltip", "Toggle to invert the redstone logic\nBy default, redstone stops emitting when less than the minimum L of fluid, and starts emitting when greater than the min L of fluid up to the set maximum");
-        provider.add("cover.advanced_fluid_detector.max", "Maximum Fluid:");
-        provider.add("cover.advanced_fluid_detector.min", "Minimum Fluid:");
+        var advancedFluidDetectorInvertDescription = "Toggle to invert the redstone logic\nBy default, redstone stops emitting when less than the minimum L of fluid, and starts emitting when greater than the min L of fluid up to the set maximum";
+        multilineLang(provider, "cover.advanced_fluid_detector.invert.enabled", "Output: Inverted\n\n" + advancedFluidDetectorInvertDescription);
+        multilineLang(provider, "cover.advanced_fluid_detector.invert.disabled", "Output: Normal\n\n" + advancedFluidDetectorInvertDescription);
+        provider.add("cover.advanced_fluid_detector.max", "Max Fluid");
+        provider.add("cover.advanced_fluid_detector.min", "Min Fluid");
+
         provider.add("cover.advanced_item_detector.label", "Advanced Item Detector");
-        multilineLang(provider, "cover.advanced_item_detector.invert_tooltip", "Toggle to invert the redstone logic\nBy default, redstone stops emitting when less than the minimum amount of items, and starts emitting when greater than the min amount of items up to the set maximum");
-        provider.add("cover.advanced_item_detector.max", "Maximum Items:");
-        provider.add("cover.advanced_item_detector.min", "Minimum Items:");
+        var advancedItemDetectorInvertDescription = "Toggle to invert the redstone logic\nBy default, redstone stops emitting when less than the minimum amount of items, and starts emitting when greater than the min amount of items up to the set maximum";
+        multilineLang(provider, "cover.advanced_item_detector.invert.enabled", "Output: Inverted\n\n" + advancedItemDetectorInvertDescription);
+        multilineLang(provider, "cover.advanced_item_detector.invert.disabled", "Output: Normal\n\n" + advancedItemDetectorInvertDescription);
+        provider.add("cover.advanced_item_detector.max", "Max Items");
+        provider.add("cover.advanced_item_detector.min", "Min Items");
 
         replace(provider, "item.gtceu.bucket", "%s Bucket");
         replace(provider, GTMaterials.FullersEarth.getUnlocalizedName(), "Fuller's Earth");

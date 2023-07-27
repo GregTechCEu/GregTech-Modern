@@ -971,9 +971,11 @@ public class GTItems {
             .register();
     public static ItemEntry<ComponentItem> COVER_ITEM_DETECTOR = REGISTRATE.item("item_detector_cover", ComponentItem::create)
             .lang("Item Detector")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.ITEM_DETECTOR)))
             .register();
     public static ItemEntry<ComponentItem> COVER_ITEM_DETECTOR_ADVANCED = REGISTRATE.item("advanced_item_detector_cover", ComponentItem::create)
             .lang("Advanced Item Detector")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.ITEM_DETECTOR_ADVANCED)))
             .register();
     public static ItemEntry<ComponentItem> COVER_ENERGY_DETECTOR = REGISTRATE.item("energy_detector_cover", ComponentItem::create)
             .lang("Energy Detector")

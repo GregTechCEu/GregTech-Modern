@@ -67,8 +67,14 @@ public class GTCovers {
     );
     public final static CoverDefinition FLUID_DETECTOR = null; // TODO
     public final static CoverDefinition FLUID_DETECTOR_ADVANCED = null; // TODO
-    public final static CoverDefinition ITEM_DETECTOR = null; // TODO
-    public final static CoverDefinition ITEM_DETECTOR_ADVANCED = null; // TODO
+    public final static CoverDefinition ITEM_DETECTOR = register(
+            "item_detector", ItemDetectorCover::new,
+            new SimpleCoverRenderer(GTCEu.id("block/cover/overlay_item_detector"))
+    );
+    public final static CoverDefinition ITEM_DETECTOR_ADVANCED = register(
+            "item_detector_advanced", AdvancedItemDetectorCover::new,
+            new SimpleCoverRenderer(GTCEu.id("block/cover/overlay_item_detector_advanced"))
+    );
     public final static CoverDefinition ENERGY_DETECTOR = register(
             "energy_detector", EnergyDetectorCover::new,
             new SimpleCoverRenderer(GTCEu.id("block/cover/overlay_energy_detector"))
