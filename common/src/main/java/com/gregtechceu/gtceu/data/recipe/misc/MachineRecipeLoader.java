@@ -477,7 +477,6 @@ public class MachineRecipeLoader {
         ASSEMBLER_RECIPES.recipeBuilder("cover_maintenance_detector")
                 .inputItems(EMITTER_LV)
                 .inputItems(plate, Steel)
-                .circuitMeta(1)
                 .inputFluids(solder)
                 .outputItems(COVER_MAINTENANCE_DETECTOR)
                 .EUt(16).duration(100)
