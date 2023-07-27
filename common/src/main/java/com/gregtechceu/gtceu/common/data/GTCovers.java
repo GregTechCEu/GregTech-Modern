@@ -65,8 +65,14 @@ public class GTCovers {
             "activity_detector_advanced", AdvancedActivityDetectorCover::new,
             new SimpleCoverRenderer(GTCEu.id("block/cover/overlay_activity_detector_advanced"))
     );
-    public final static CoverDefinition FLUID_DETECTOR = null; // TODO
-    public final static CoverDefinition FLUID_DETECTOR_ADVANCED = null; // TODO
+    public final static CoverDefinition FLUID_DETECTOR = register(
+            "fluid_detector", FluidDetectorCover::new,
+            new SimpleCoverRenderer(GTCEu.id("block/cover/overlay_fluid_detector"))
+    );
+    public final static CoverDefinition FLUID_DETECTOR_ADVANCED = register(
+            "fluid_detector_advanced", AdvancedFluidDetectorCover::new,
+            new SimpleCoverRenderer(GTCEu.id("block/cover/overlay_fluid_detector_advanced"))
+    );
     public final static CoverDefinition ITEM_DETECTOR = register(
             "item_detector", ItemDetectorCover::new,
             new SimpleCoverRenderer(GTCEu.id("block/cover/overlay_item_detector"))

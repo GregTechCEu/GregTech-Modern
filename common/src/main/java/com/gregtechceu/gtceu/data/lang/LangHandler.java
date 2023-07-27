@@ -372,8 +372,8 @@ public class LangHandler {
         var advancedFluidDetectorInvertDescription = "Toggle to invert the redstone logic\nBy default, redstone stops emitting when less than the minimum L of fluid, and starts emitting when greater than the min L of fluid up to the set maximum";
         multilineLang(provider, "cover.advanced_fluid_detector.invert.enabled", "Output: Inverted\n\n" + advancedFluidDetectorInvertDescription);
         multilineLang(provider, "cover.advanced_fluid_detector.invert.disabled", "Output: Normal\n\n" + advancedFluidDetectorInvertDescription);
-        provider.add("cover.advanced_fluid_detector.max", "Max Fluid");
-        provider.add("cover.advanced_fluid_detector.min", "Min Fluid");
+        provider.add("cover.advanced_fluid_detector.max", "Max Fluid (L)");
+        provider.add("cover.advanced_fluid_detector.min", "Min Fluid (L)");
 
         provider.add("cover.advanced_item_detector.label", "Advanced Item Detector");
         var advancedItemDetectorInvertDescription = "Toggle to invert the redstone logic\nBy default, redstone stops emitting when less than the minimum amount of items, and starts emitting when greater than the min amount of items up to the set maximum";
