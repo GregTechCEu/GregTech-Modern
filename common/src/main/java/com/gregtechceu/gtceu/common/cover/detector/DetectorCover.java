@@ -1,9 +1,7 @@
 package com.gregtechceu.gtceu.common.cover.detector;
 
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
-import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
@@ -26,8 +24,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public abstract class DetectorCover extends CoverBehavior implements IControllable {
 
-    protected IWorkable workable;
-
     @Persisted @Getter @Setter
     protected boolean isWorkingEnabled = true;
     protected TickableSubscription subscription;
@@ -40,13 +36,6 @@ public abstract class DetectorCover extends CoverBehavior implements IControllab
 
     public DetectorCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {
         super(definition, coverHolder, attachedSide);
-
-        workable = GTCapabilityHelper.getWorkable(coverHolder.getLevel(), coverHolder.getPos(), attachedSide);
-    }
-
-    @Override
-    public boolean canAttach() {
-        return workable != null;
     }
 
     @Override

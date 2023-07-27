@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.cover.detector;
 
+import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
@@ -21,9 +22,17 @@ public class ActivityDetectorCover extends DetectorCover {
     }
 
     @Override
+    public boolean canAttach() {
+        return GTCapabilityHelper.getWorkable(coverHolder.getLevel(), coverHolder.getPos(), attachedSide) != null;
+    }
+
+    @Override
     protected void update() {
-        if (this.coverHolder.getOffsetTimer() % 20 != 0)
+        if (this.coverHolder.getOffsetTimer() % 20 != 0) {
             return;
+        }
+
+        var workable = GTCapabilityHelper.getWorkable(coverHolder.getLevel(), coverHolder.getPos(), attachedSide);
 
         boolean isCurrentlyWorking = workable.isActive() && workable.isWorkingEnabled();
 
