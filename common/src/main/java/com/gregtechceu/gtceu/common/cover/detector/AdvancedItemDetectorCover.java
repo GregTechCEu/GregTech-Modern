@@ -105,14 +105,14 @@ public class AdvancedItemDetectorCover extends ItemDetectorCover implements IUIC
         WidgetGroup group = new WidgetGroup(0, 0, 176, 170);
             group.addWidget(new LabelWidget(10, 5, "cover.advanced_item_detector.label"));
 
-        group.addWidget(new TextBoxWidget(10, 55, 40,
+        group.addWidget(new TextBoxWidget(10, 55, 65,
                 List.of(LocalizationUtils.format("cover.advanced_item_detector.min"))));
 
-        group.addWidget(new TextBoxWidget(10, 80, 40,
+        group.addWidget(new TextBoxWidget(10, 80, 65,
                 List.of(LocalizationUtils.format("cover.advanced_item_detector.max"))));
 
-        group.addWidget(new IntInputWidget(55, 50, 176 - 55 - 10, 20, this.getMinValue(), this::setMinValue));
-        group.addWidget(new IntInputWidget(55, 75, 176 - 55 - 10, 20, this.getMaxValue(), this::setMaxValue));
+        group.addWidget(new IntInputWidget(80, 50, 176 - 80 - 10, 20, this.getMinValue(), this::setMinValue));
+        group.addWidget(new IntInputWidget(80, 75, 176 - 80 - 10, 20, this.getMaxValue(), this::setMaxValue));
 
 
         // Invert Redstone Output Toggle:
