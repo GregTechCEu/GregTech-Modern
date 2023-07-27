@@ -65,16 +65,19 @@ public abstract class DetectorCover extends CoverBehavior implements IControllab
 
     @Override
     public InteractionResult onScrewdriverClick(Player playerIn, InteractionHand hand, BlockHitResult hitResult) {
-        if (this.coverHolder.isRemote()) {
-            return InteractionResult.SUCCESS;
+        InteractionResult superResult = super.onScrewdriverClick(playerIn, hand, hitResult);
+        if (superResult != InteractionResult.PASS) {
+            return superResult;
         }
 
-        String translationKey = isInverted()
-                ? "gregtech.cover.detector_base.message_inverted_state"
-                : "gregtech.cover.detector_base.message_normal_state";
-        playerIn.sendSystemMessage(Component.translatable(translationKey));
+        if (!this.coverHolder.isRemote()) {
+            String translationKey = isInverted()
+                    ? "cover.detector_base.message_inverted_state"
+                    : "cover.detector_base.message_normal_state";
+            playerIn.sendSystemMessage(Component.translatable(translationKey));
 
-        toggleInvertedWithNotification();
+            toggleInvertedWithNotification();
+        }
 
         return InteractionResult.SUCCESS;
     }
