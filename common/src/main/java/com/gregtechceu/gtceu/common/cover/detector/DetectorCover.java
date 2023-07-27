@@ -23,13 +23,17 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public abstract class DetectorCover extends CoverBehavior implements IControllable {
+    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(DetectorCover.class, CoverBehavior.MANAGED_FIELD_HOLDER);
+
+    @Override
+    public ManagedFieldHolder getFieldHolder() {
+        return MANAGED_FIELD_HOLDER;
+    }
+
 
     @Persisted @Getter @Setter
     protected boolean isWorkingEnabled = true;
     protected TickableSubscription subscription;
-
-    @Getter
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(DetectorCover.class, CoverBehavior.MANAGED_FIELD_HOLDER);
 
     @Persisted @DescSynced @Getter @Setter
     private boolean isInverted;

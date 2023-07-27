@@ -8,9 +8,7 @@ import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.client.renderer.cover.*;
 import com.gregtechceu.gtceu.common.cover.*;
-import com.gregtechceu.gtceu.common.cover.detector.ActivityDetectorCover;
-import com.gregtechceu.gtceu.common.cover.detector.AdvancedActivityDetectorCover;
-import com.gregtechceu.gtceu.common.cover.detector.MaintenanceDetectorCover;
+import com.gregtechceu.gtceu.common.cover.detector.*;
 import it.unimi.dsi.fastutil.ints.Int2ObjectFunction;
 
 import java.util.Arrays;
@@ -71,8 +69,14 @@ public class GTCovers {
     public final static CoverDefinition FLUID_DETECTOR_ADVANCED = null; // TODO
     public final static CoverDefinition ITEM_DETECTOR = null; // TODO
     public final static CoverDefinition ITEM_DETECTOR_ADVANCED = null; // TODO
-    public final static CoverDefinition ENERGY_DETECTOR = null; // TODO
-    public final static CoverDefinition ENERGY_DETECTOR_ADVANCED = null; // TODO
+    public final static CoverDefinition ENERGY_DETECTOR = register(
+            "energy_detector", EnergyDetectorCover::new,
+            new SimpleCoverRenderer(GTCEu.id("block/cover/overlay_energy_detector"))
+    );
+    public final static CoverDefinition ENERGY_DETECTOR_ADVANCED = register(
+            "energy_detector_advanced", AdvancedEnergyDetectorCover::new,
+            new SimpleCoverRenderer(GTCEu.id("block/cover/overlay_energy_detector_advanced"))
+    );
     public final static CoverDefinition MAINTENANCE_DETECTOR = register(
             "maintenance_detector", MaintenanceDetectorCover::new,
             new SimpleCoverRenderer(GTCEu.id("block/cover/overlay_maintenance_detector"))
