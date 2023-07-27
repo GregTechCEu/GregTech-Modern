@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.cover.detector;
 
+import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.utils.RedstoneUtil;
@@ -21,6 +22,7 @@ public class AdvancedActivityDetectorCover extends ActivityDetectorCover {
         if (this.coverHolder.getOffsetTimer() % 20 != 0)
             return;
 
+        var workable = GTCapabilityHelper.getWorkable(coverHolder.getLevel(), coverHolder.getPos(), attachedSide);
         if (workable == null || workable.getMaxProgress() == 0)
             return;
 

@@ -953,6 +953,8 @@ public class GTItems {
     public static ItemEntry<ComponentItem> COVER_MACHINE_CONTROLLER = REGISTRATE.item("machine_controller_cover", ComponentItem::create)
             .lang("Machine Controller")
             .register();
+
+
     public static ItemEntry<ComponentItem> COVER_ACTIVITY_DETECTOR = REGISTRATE.item("activity_detector_cover", ComponentItem::create)
             .lang("Activity Detector")
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.ACTIVITY_DETECTOR)))
@@ -979,6 +981,12 @@ public class GTItems {
     public static ItemEntry<ComponentItem> COVER_ENERGY_DETECTOR_ADVANCED = REGISTRATE.item("advanced_energy_detector_cover", ComponentItem::create)
             .lang("Advanced Energy Detector")
             .register();
+    public static ItemEntry<ComponentItem> COVER_MAINTENANCE_DETECTOR = REGISTRATE.item("maintenance_detector_cover", ComponentItem::create)
+            .lang("Maintenance Detector")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.MAINTENANCE_DETECTOR)))
+            .register();
+
+
     public static ItemEntry<ComponentItem> COVER_SCREEN = REGISTRATE.item("computer_monitor_cover", ComponentItem::create)
             .lang("Computer Monitor")
             .register();

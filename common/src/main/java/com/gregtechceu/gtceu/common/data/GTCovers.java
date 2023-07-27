@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.client.renderer.cover.*;
 import com.gregtechceu.gtceu.common.cover.*;
 import com.gregtechceu.gtceu.common.cover.detector.ActivityDetectorCover;
 import com.gregtechceu.gtceu.common.cover.detector.AdvancedActivityDetectorCover;
+import com.gregtechceu.gtceu.common.cover.detector.MaintenanceDetectorCover;
 import it.unimi.dsi.fastutil.ints.Int2ObjectFunction;
 
 import java.util.Arrays;
@@ -66,12 +67,16 @@ public class GTCovers {
             "activity_detector_advanced", AdvancedActivityDetectorCover::new,
             new SimpleCoverRenderer(GTCEu.id("block/cover/overlay_activity_detector_advanced"))
     );
-    public final static CoverDefinition COVER_FLUID_DETECTOR = null; // TODO
-    public final static CoverDefinition COVER_FLUID_DETECTOR_ADVANCED = null; // TODO
-    public final static CoverDefinition COVER_ITEM_DETECTOR = null; // TODO
-    public final static CoverDefinition COVER_ITEM_DETECTOR_ADVANCED = null; // TODO
-    public final static CoverDefinition COVER_ENERGY_DETECTOR = null; // TODO
-    public final static CoverDefinition COVER_ENERGY_DETECTOR_ADVANCED = null; // TODO
+    public final static CoverDefinition FLUID_DETECTOR = null; // TODO
+    public final static CoverDefinition FLUID_DETECTOR_ADVANCED = null; // TODO
+    public final static CoverDefinition ITEM_DETECTOR = null; // TODO
+    public final static CoverDefinition ITEM_DETECTOR_ADVANCED = null; // TODO
+    public final static CoverDefinition ENERGY_DETECTOR = null; // TODO
+    public final static CoverDefinition ENERGY_DETECTOR_ADVANCED = null; // TODO
+    public final static CoverDefinition MAINTENANCE_DETECTOR = register(
+            "maintenance_detector", MaintenanceDetectorCover::new,
+            new SimpleCoverRenderer(GTCEu.id("block/cover/overlay_maintenance_detector"))
+    );
 
 
     ///////////////////////////////////////////////
