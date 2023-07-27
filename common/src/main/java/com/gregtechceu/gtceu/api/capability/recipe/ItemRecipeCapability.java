@@ -3,9 +3,10 @@ package com.gregtechceu.gtceu.api.capability.recipe;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.content.SerializerIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
-import io.netty.buffer.Unpooled;
-import net.minecraft.network.FriendlyByteBuf;
+import com.gregtechceu.gtceu.core.mixins.IngredientAccessor;
 import net.minecraft.world.item.crafting.Ingredient;
+
+import java.util.Arrays;
 
 /**
  * @author KilaBash
@@ -22,9 +23,13 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
 
     @Override
     public Ingredient copyInner(Ingredient content) {
-        FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
-        serializer.toNetwork(buf, content);
-        return serializer.fromNetwork(buf);
+        if (content instanceof SizedIngredient sizedIngredient) {
+            return SizedIngredient.copy(sizedIngredient);
+        }
+        if (content.getClass() == Ingredient.class) {
+            return IngredientAccessor.create(Arrays.stream(((IngredientAccessor) content).getValues()));
+        }
+        return super.copyInner(content);
     }
 
     @Override

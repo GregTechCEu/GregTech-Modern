@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
+import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
@@ -149,14 +150,17 @@ public class ProcessingArrayMachine extends TieredWorkableElectricMultiblockMach
     @Nullable
     public static GTRecipe recipeModifier(MetaMachine machine, @Nonnull GTRecipe recipe) {
         if (machine instanceof ProcessingArrayMachine processingArray && processingArray.machineStorage.storage.getStackInSlot(0).getCount() > 0) {
+            if (RecipeHelper.getRecipeEUtTier(recipe) > processingArray.getTier()) {
+                return null;
+            }
+
             var limit = processingArray.machineStorage.storage.getStackInSlot(0).getCount();
             // apply parallel first
             recipe = GTRecipeModifiers.accurateParallel(machine, recipe, Math.min(limit, getMachineLimit(machine.getDefinition().getTier())), false).getA();
             // apply overclock later
-            recipe = GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK).apply(machine, recipe);
+            recipe = RecipeHelper.applyOverclock(OverclockingLogic.PERFECT_OVERCLOCK, recipe, processingArray.getOverclockVoltage());
             return recipe;
         }
-
         return null;
     }
 
