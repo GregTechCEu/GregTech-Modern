@@ -87,6 +87,19 @@ public class AdvancedItemDetectorCover extends ItemDetectorCover implements IUIC
         setRedstoneSignalOutput(RedstoneUtil.computeRedstoneBetweenValues(storedItems, maxValue, minValue, isInverted()));
     }
 
+    public void setMinValue(int minValue) {
+        this.minValue = Mth.clamp(minValue, 0, maxValue - 1);
+    }
+
+    public void setMaxValue(int maxValue) {
+        this.maxValue = Math.max(maxValue, 0);
+    }
+
+
+    //////////////////////////////////////
+    //***********     GUI    ***********//
+    //////////////////////////////////////
+
     @Override
     public Widget createUIWidget() {
         WidgetGroup group = new WidgetGroup(0, 0, 176, 170);
@@ -147,13 +160,5 @@ public class AdvancedItemDetectorCover extends ItemDetectorCover implements IUIC
         group.addWidget(filterGroup);
 
         return group;
-    }
-
-    public void setMinValue(int minValue) {
-        this.minValue = Mth.clamp(minValue, 0, maxValue - 1);
-    }
-
-    public void setMaxValue(int maxValue) {
-        this.maxValue = Math.max(maxValue, 0);
     }
 }

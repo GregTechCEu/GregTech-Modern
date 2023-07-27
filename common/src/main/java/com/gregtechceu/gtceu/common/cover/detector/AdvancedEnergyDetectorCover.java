@@ -79,6 +79,14 @@ public class AdvancedEnergyDetectorCover extends EnergyDetectorCover implements 
         setRedstoneSignalOutput(outputAmount);
     }
 
+    public void setUsePercent(boolean usePercent) {
+        var wasPercent = this.usePercent;
+        this.usePercent = usePercent;
+
+        initializeMinMaxInputs(wasPercent);
+    }
+
+
     //////////////////////////////////////
     //***********     GUI    ***********//
     //////////////////////////////////////
@@ -130,13 +138,6 @@ public class AdvancedEnergyDetectorCover extends EnergyDetectorCover implements 
         });
 
         return group;
-    }
-
-    public void setUsePercent(boolean usePercent) {
-        var wasPercent = this.usePercent;
-        this.usePercent = usePercent;
-
-        initializeMinMaxInputs(wasPercent);
     }
 
     private void initializeMinMaxInputs(boolean wasPercent) {

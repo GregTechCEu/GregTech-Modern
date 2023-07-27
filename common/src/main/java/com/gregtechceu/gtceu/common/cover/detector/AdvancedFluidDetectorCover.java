@@ -90,6 +90,19 @@ public class AdvancedFluidDetectorCover extends FluidDetectorCover implements IU
         setRedstoneSignalOutput(RedstoneUtil.computeRedstoneBetweenValues(storedFluid, maxValue, minValue, this.isInverted()));
     }
 
+    public void setMinValue(long minValue) {
+        this.minValue = Mth.clamp(minValue, 0, maxValue - 1);
+    }
+
+    public void setMaxValue(long maxValue) {
+        this.maxValue = Math.max(maxValue, 0);
+    }
+
+
+    //////////////////////////////////////
+    //***********     GUI    ***********//
+    //////////////////////////////////////
+
     @Override
     public Widget createUIWidget() {
         WidgetGroup group = new WidgetGroup(0, 0, 176, 170);
@@ -150,13 +163,5 @@ public class AdvancedFluidDetectorCover extends FluidDetectorCover implements IU
         group.addWidget(filterGroup);
 
         return group;
-    }
-
-    public void setMinValue(long minValue) {
-        this.minValue = Mth.clamp(minValue, 0, maxValue - 1);
-    }
-
-    public void setMaxValue(long maxValue) {
-        this.maxValue = Math.max(maxValue, 0);
     }
 }
