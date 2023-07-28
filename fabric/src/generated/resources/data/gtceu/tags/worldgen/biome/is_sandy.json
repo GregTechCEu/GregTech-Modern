@@ -1,0 +1,22 @@
+{
+  "replace": false,
+  "values": [
+    "#c:climate_dry",
+    {
+      "id": "minecraft:desert",
+      "required": false
+    },
+    {
+      "id": "minecraft:beach",
+      "required": false
+    },
+    {
+      "id": "minecraft:badlands",
+      "required": false
+    },
+    {
+      "id": "minecraft:wooded_badlands",
+      "required": false
+    }
+  ]
+}

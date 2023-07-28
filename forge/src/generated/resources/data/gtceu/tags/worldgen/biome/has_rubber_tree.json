@@ -1,0 +1,13 @@
+{
+  "values": [
+    "#forge:is_swamp",
+    {
+      "id": "#minecraft:is_forest",
+      "required": false
+    },
+    {
+      "id": "#minecraft:is_jungle",
+      "required": false
+    }
+  ]
+}

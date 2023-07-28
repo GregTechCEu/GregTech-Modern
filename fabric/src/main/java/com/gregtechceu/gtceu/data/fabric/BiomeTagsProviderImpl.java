@@ -21,12 +21,17 @@ public class BiomeTagsProviderImpl extends FabricTagProvider<Biome> implements I
     }
 
     @Override
+    public void addSwampTag() {
+        tag(CustomTags.IS_SWAMP).addOptional(Biomes.SWAMP).addOptional(Biomes.MANGROVE_SWAMP);
+    }
+
+    @Override
     public void addRubberTreeTag() {
         tag(CustomTags.HAS_RUBBER_TREE).forceAddTag(CustomTags.IS_SWAMP).forceAddTag(BiomeTags.IS_FOREST).forceAddTag(BiomeTags.IS_JUNGLE);
     }
 
     public void addSandyTag() {
-        tag(CustomTags.IS_SANDY).forceAddTag(ConventionalBiomeTags.CLIMATE_DRY).add(Biomes.DESERT, Biomes.BEACH, Biomes.BADLANDS, Biomes.WOODED_BADLANDS);
+        tag(CustomTags.IS_SANDY).forceAddTag(ConventionalBiomeTags.CLIMATE_DRY).addOptional(Biomes.DESERT).addOptional(Biomes.BEACH).addOptional(Biomes.BADLANDS).addOptional(Biomes.WOODED_BADLANDS);
     }
 
     @Override

@@ -32,15 +32,16 @@ public class GTPlacements {
         HolderGetter<Biome> biomeLookup = ctx.lookup(Registries.BIOME);
 
         PlacementUtils.register(ctx, RUBBER_CHECKED, featureLookup.getOrThrow(GTConfiguredFeatures.RUBBER),
-                PlacementUtils.filteredByBlockSurvival(GTBlocks.RUBBER_SAPLING.get()), new BiomePlacement(List.of(
+                PlacementUtils.filteredByBlockSurvival(GTBlocks.RUBBER_SAPLING.get()),
+                /*new BiomePlacement(List.of(
                         new BiomeWeightModifier(() -> biomeLookup.getOrThrow(CustomTags.IS_SWAMP), 50)
-                )),
+                )),*/
                 PlacementUtils.countExtra(0, 0.005F, 1),
                 InSquarePlacement.spread(),
                 SurfaceWaterDepthFilter.forMaxDepth(0),
                 PlacementUtils.HEIGHTMAP_OCEAN_FLOOR,
-                BlockPredicateFilter.forPredicate(BlockPredicate.wouldSurvive(GTBlocks.RUBBER_SAPLING.getDefaultState(), BlockPos.ZERO)),
-                BiomeFilter.biome()
+                BlockPredicateFilter.forPredicate(BlockPredicate.wouldSurvive(GTBlocks.RUBBER_SAPLING.getDefaultState(), BlockPos.ZERO))
+                //BiomeFilter.biome()
         );
         PlacementUtils.register(ctx, ORE, featureLookup.getOrThrow(GTConfiguredFeatures.ORE), VeinCountFilter.count(), InSquarePlacement.spread());
     }
