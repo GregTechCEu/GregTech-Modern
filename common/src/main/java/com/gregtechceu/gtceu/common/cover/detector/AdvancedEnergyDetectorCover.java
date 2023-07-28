@@ -7,8 +7,8 @@ import com.gregtechceu.gtceu.api.cover.IUICover;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.LongInputWidget;
 import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
+import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.utils.RedstoneUtil;
-import com.gregtechceu.gtceu.utils.TextFormattingUtil;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.TextBoxWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
@@ -117,9 +117,9 @@ public class AdvancedEnergyDetectorCover extends EnergyDetectorCover implements 
             @Override
             public void updateScreen() {
                 super.updateScreen();
-                setHoverTooltips(TextFormattingUtil.getTranslatableMultilineText(
+                setHoverTooltips(List.copyOf(LangHandler.getMultiLang(
                         "cover.advanced_energy_detector.invert." + (isPressed ? "enabled" : "disabled")
-                ));
+                )));
             }
         });
 
@@ -131,9 +131,10 @@ public class AdvancedEnergyDetectorCover extends EnergyDetectorCover implements 
             @Override
             public void updateScreen() {
                 super.updateScreen();
-                setHoverTooltips(TextFormattingUtil.getTranslatableMultilineText(
+
+                setHoverTooltips(List.copyOf(LangHandler.getMultiLang(
                         "cover.advanced_energy_detector.use_percent." + (isPressed ? "enabled" : "disabled")
-                ));
+                )));
             }
         });
 

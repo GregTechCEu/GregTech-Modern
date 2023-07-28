@@ -7,8 +7,8 @@ import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
 import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
+import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.utils.RedstoneUtil;
-import com.gregtechceu.gtceu.utils.TextFormattingUtil;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.widget.*;
 import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
@@ -123,9 +123,9 @@ public class AdvancedItemDetectorCover extends ItemDetectorCover implements IUIC
             @Override
             public void updateScreen() {
                 super.updateScreen();
-                setHoverTooltips(TextFormattingUtil.getTranslatableMultilineText(
+                setHoverTooltips(List.copyOf(LangHandler.getMultiLang(
                         "cover.advanced_item_detector.invert." + (isPressed ? "enabled" : "disabled")
-                ));
+                )));
             }
         });
 
