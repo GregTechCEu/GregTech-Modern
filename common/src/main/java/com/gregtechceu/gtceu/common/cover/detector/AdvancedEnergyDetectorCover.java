@@ -146,19 +146,19 @@ public class AdvancedEnergyDetectorCover extends EnergyDetectorCover implements 
 
         long energyCapacity = getEnergyContainer().getEnergyCapacity();
 
-        minValueInput.setMin(0);
-        maxValueInput.setMin(0);
+        minValueInput.setMin(0L);
+        maxValueInput.setMin(0L);
 
         if (usePercent) {
             // This needs to be before setting the maximum, because otherwise the value would be limited to 100 EU
             // before converting to percent.
             if (!wasPercent) {
-                minValueInput.setValue(Mth.clamp((int) (((double) minValue / energyCapacity) * 100), 0, 100));
-                maxValueInput.setValue(Mth.clamp((int) (((double) maxValue / energyCapacity) * 100), 0, 100));
+                minValueInput.setValue(Mth.clamp((long) (((double) minValue / energyCapacity) * 100), 0, 100));
+                maxValueInput.setValue(Mth.clamp((long) (((double) maxValue / energyCapacity) * 100), 0, 100));
             }
 
-            minValueInput.setMax(100);
-            maxValueInput.setMax(100);
+            minValueInput.setMax(100L);
+            maxValueInput.setMax(100L);
         } else {
             minValueInput.setMax(energyCapacity);
             maxValueInput.setMax(energyCapacity);
