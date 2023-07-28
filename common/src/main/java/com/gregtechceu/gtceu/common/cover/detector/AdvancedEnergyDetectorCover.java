@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.gui.widget.LongInputWidget;
 import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.utils.RedstoneUtil;
+import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.TextBoxWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
@@ -42,7 +43,6 @@ public class AdvancedEnergyDetectorCover extends EnergyDetectorCover implements 
     @Persisted @Getter
     private boolean usePercent;
 
-    private WidgetGroup widgetsToUpdate;
     private LongInputWidget minValueInput;
     private LongInputWidget maxValueInput;
 
@@ -141,7 +141,7 @@ public class AdvancedEnergyDetectorCover extends EnergyDetectorCover implements 
     }
 
     private void initializeMinMaxInputs(boolean wasPercent) {
-        if (minValueInput == null || maxValueInput == null)
+        if (LDLib.isRemote() || minValueInput == null || maxValueInput == null)
             return;
 
         long energyCapacity = getEnergyContainer().getEnergyCapacity();
