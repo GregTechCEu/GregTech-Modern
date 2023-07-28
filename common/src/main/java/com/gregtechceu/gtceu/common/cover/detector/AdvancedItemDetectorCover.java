@@ -41,7 +41,7 @@ public class AdvancedItemDetectorCover extends ItemDetectorCover implements IUIC
     private static final int DEFAULT_MIN = 64;
     private static final int DEFAULT_MAX = 512;
 
-    @Persisted @DescSynced @Getter
+    @Persisted @Getter
     private int minValue, maxValue;
     @Persisted @DescSynced @Getter
     protected ItemStack filterItem;
@@ -103,7 +103,7 @@ public class AdvancedItemDetectorCover extends ItemDetectorCover implements IUIC
     @Override
     public Widget createUIWidget() {
         WidgetGroup group = new WidgetGroup(0, 0, 176, 170);
-            group.addWidget(new LabelWidget(10, 5, "cover.advanced_item_detector.label"));
+        group.addWidget(new LabelWidget(10, 5, "cover.advanced_item_detector.label"));
 
         group.addWidget(new TextBoxWidget(10, 55, 65,
                 List.of(LocalizationUtils.format("cover.advanced_item_detector.min"))));

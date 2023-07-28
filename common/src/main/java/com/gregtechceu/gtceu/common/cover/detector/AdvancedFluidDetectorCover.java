@@ -42,7 +42,7 @@ public class AdvancedFluidDetectorCover extends FluidDetectorCover implements IU
     private static final int DEFAULT_MIN = 64;
     private static final int DEFAULT_MAX = 512;
 
-    @Persisted @DescSynced @Getter
+    @Persisted @Getter
     private long minValue, maxValue;
     @Persisted @DescSynced @Getter
     protected ItemStack filterItem;
