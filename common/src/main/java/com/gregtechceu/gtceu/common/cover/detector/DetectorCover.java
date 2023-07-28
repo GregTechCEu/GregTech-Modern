@@ -31,6 +31,8 @@ public abstract class DetectorCover extends CoverBehavior implements IControllab
     }
 
 
+    @Persisted @Getter @Setter
+    protected boolean isWorkingEnabled = true;
     protected TickableSubscription subscription;
 
     @Persisted @DescSynced @Getter @Setter
