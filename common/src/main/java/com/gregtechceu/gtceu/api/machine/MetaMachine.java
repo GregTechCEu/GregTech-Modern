@@ -81,7 +81,7 @@ import java.util.function.Predicate;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscription, IAppearance, IToolGridHighLight, IFancyTooltip, IPaintable {
+public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscription, IAppearance, IToolGridHighLight, IFancyTooltip, IPaintable, IRedstoneSignalMachine {
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(MetaMachine.class);
     @Getter
     private final EnhancedFieldManagedStorage syncStorage = new EnhancedFieldManagedStorage(this);
@@ -468,6 +468,17 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
             if (appearance != null) return appearance;
         }
         return getDefinition().getAppearance().get();
+    }
+
+    @Override
+    public int getOutputSignal(@Nullable Direction side) {
+        if (side == null) return 0;
+
+        // For some reason, Minecraft requests the output signal from the opposite side...
+        CoverBehavior cover = getCoverContainer().getCoverAtSide(side.getOpposite());
+        if (cover == null) return 0;
+
+        return cover.getRedstoneSignalOutput();
     }
 
     //////////////////////////////////////

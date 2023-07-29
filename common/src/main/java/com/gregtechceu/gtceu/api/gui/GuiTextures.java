@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.gui;
 
-import com.gregtechceu.gtceu.api.GTValues;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceBorderTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import lombok.val;
@@ -86,6 +85,9 @@ public class GuiTextures {
     public static final ResourceTexture SWITCH = new ResourceTexture("gtceu:textures/gui/widget/switch.png");
     public static final ResourceTexture SWITCH_HORIZONTAL = new ResourceTexture("gtceu:textures/gui/widget/switch_horizontal.png");
     public static final ResourceTexture VANILLA_BUTTON = ResourceBorderTexture.BUTTON_COMMON;
+
+    public static final ResourceTexture ENERGY_DETECTOR_COVER_MODE_BUTTON = new ResourceTexture("gtceu:textures/gui/widget/button_detector_cover_energy_mode.png");
+    public static final ResourceTexture INVERT_REDSTONE_BUTTON = new ResourceTexture("gtceu:textures/gui/widget/button_detector_cover_inverted.png");
 
     //INDICATORS & ICONS
     public static final ResourceTexture INDICATOR_NO_ENERGY = new ResourceTexture("gtceu:textures/gui/base/indicator_no_energy.png");

@@ -466,13 +466,21 @@ public class MachineRecipeLoader {
                 .EUt(16).duration(100)
                 .save(provider);
 
-            ASSEMBLER_RECIPES.recipeBuilder("cover_advanced_item_detector")
-                    .inputItems(COVER_ITEM_DETECTOR)
-                    .inputItems(SENSOR_HV)
-                    .inputFluids(solder)
-                    .outputItems(COVER_ITEM_DETECTOR_ADVANCED)
-                    .EUt(16).duration(100)
-                    .save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("cover_advanced_item_detector")
+                .inputItems(COVER_ITEM_DETECTOR)
+                .inputItems(SENSOR_HV)
+                .inputFluids(solder)
+                .outputItems(COVER_ITEM_DETECTOR_ADVANCED)
+                .EUt(16).duration(100)
+                .save(provider);
+
+        ASSEMBLER_RECIPES.recipeBuilder("cover_maintenance_detector")
+                .inputItems(EMITTER_LV)
+                .inputItems(plate, Steel)
+                .inputFluids(solder)
+                .outputItems(COVER_MAINTENANCE_DETECTOR)
+                .EUt(16).duration(100)
+                .save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("cover_screen")
                 .inputItems(plate, Glass)

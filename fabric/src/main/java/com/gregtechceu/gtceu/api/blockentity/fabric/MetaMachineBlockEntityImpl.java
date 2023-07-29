@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.capability.*;
 import com.gregtechceu.gtceu.api.capability.fabric.GTCapability;
 import com.gregtechceu.gtceu.api.capability.fabric.GTEnergyHelperImpl;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
@@ -77,6 +78,12 @@ public class MetaMachineBlockEntityImpl extends MetaMachineBlockEntity {
         GTCapability.CAPABILITY_CLEANROOM_RECEIVER.registerForBlockEntity((blockEntity, direction) -> {
             if (((IMachineBlockEntity)blockEntity).getMetaMachine() instanceof ICleanroomReceiver cleanroomReceiver) {
                 return cleanroomReceiver;
+            }
+            return null;
+        }, type);
+        GTCapability.CAPABILITY_MAINTENANCE_MACHINE.registerForBlockEntity((blockEntity, direction) -> {
+            if (((IMachineBlockEntity)blockEntity).getMetaMachine() instanceof IMaintenanceMachine maintenanceMachine) {
+                return maintenanceMachine;
             }
             return null;
         }, type);
