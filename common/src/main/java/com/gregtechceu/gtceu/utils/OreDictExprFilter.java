@@ -91,7 +91,7 @@ public class OreDictExprFilter {
      */
     public static boolean matchesOreDict(List<MatchRule> rules, ItemStack stack) {
         Set<String> oreDicts = stack.getTags().map(TagKey::location).map(ResourceLocation::getPath).collect(Collectors.toSet());
-        if (oreDicts.size() == 0)
+        if (oreDicts.isEmpty())
             return false;
 
         if (rules == null || rules.isEmpty())
