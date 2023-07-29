@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.*;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.machine.trait.optical.IOpticalComputationProvider;
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -86,5 +87,15 @@ public class GTCapabilityHelperImpl {
     @Nullable
     public static ILaserContainer getLaserContainer(Level level, BlockPos pos, @Nullable Direction side) {
         return GTCapability.CAPABILITY_LASER_CONTAINER.find(level, pos, side);
+    }
+
+    @Nullable
+    public static IDataAccessHatch getDataAccess(Level level, BlockPos pos, @Nullable Direction side) {
+        return GTCapability.CAPABILITY_DATA_ACCESS.find(level, pos, side);
+    }
+
+    @Nullable
+    public static IOpticalComputationProvider getComputationProvider(Level level, BlockPos pos, @Nullable Direction side) {
+        return GTCapability.CAPABILITY_COMPUTATION_PROVIDER.find(level, pos, side);
     }
 }

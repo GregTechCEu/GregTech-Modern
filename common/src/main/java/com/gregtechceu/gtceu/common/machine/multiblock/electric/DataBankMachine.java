@@ -7,37 +7,31 @@ import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
-import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
+import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.machine.trait.optical.IOpticalDataAccessHatch;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
-import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
 import lombok.Getter;
-import lombok.Setter;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.world.item.ItemStack;
 
-import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.*;
 
-public class DataBankMachine extends MultiblockControllerMachine implements IControllable {
+public class DataBankMachine extends WorkableElectricMultiblockMachine implements IControllable {
 
     private IEnergyContainer energyContainer;
 
-    @Getter @Setter
-    @Persisted
-    private boolean isActive = false;
-    @Getter @Setter
-    @Persisted
-    private boolean isWorkingEnabled = true;
     protected boolean hasNotEnoughEnergy;
 
     @Getter
     private int energyUsage = 0;
+
+    @Nullable
+    protected TickableSubscription powerSubs;
 
     public DataBankMachine(IMachineBlockEntity holder) {
         super(holder);
@@ -61,6 +55,7 @@ public class DataBankMachine extends MultiblockControllerMachine implements ICon
                 var handlerIO = io == IO.BOTH ? handler.getHandlerIO() : io;
                 if (handlerIO == IO.IN && handler.getCapability() == EURecipeCapability.CAP && handler instanceof IEnergyContainer container) {
                     energyContainers.add(container);
+                    traitSubscriptions.add(handler.addChangedListener(this::updatePowerSubscription));
                 } else if (handlerIO == IO.IN && handler instanceof IOpticalDataAccessHatch hatch) {
                     opticalReceptors.add(hatch);
                 } else if (handlerIO == IO.OUT && handler instanceof IOpticalDataAccessHatch hatch) {
@@ -72,6 +67,8 @@ public class DataBankMachine extends MultiblockControllerMachine implements ICon
         }
         this.energyContainer = new EnergyContainerList(energyContainers);
         this.energyUsage = calculateEnergyUsage(opticalReceptors, opticalTransmitters, regulars);
+
+        updatePowerSubscription();
     }
 
     protected int calculateEnergyUsage(Set<IOpticalDataAccessHatch> opticalReceptors, Set<IOpticalDataAccessHatch> opticalTransmitters, Set<IDataAccessHatch> regularHatches) {
@@ -89,6 +86,17 @@ public class DataBankMachine extends MultiblockControllerMachine implements ICon
         super.onStructureInvalid();
         this.energyContainer = new EnergyContainerList(new ArrayList<>());
         this.energyUsage = 0;
+        updatePowerSubscription();
+    }
+
+    protected void updatePowerSubscription() {
+        // do preheat logic for heat cool down and charge internal energy container
+        if (energyUsage > 0 || (energyContainer.getEnergyStored() < energyContainer.getEnergyCapacity())) {
+            powerSubs = subscribeServerTick(powerSubs, this::tickPower);
+        } else if (powerSubs != null) {
+            powerSubs.unsubscribe();
+            powerSubs = null;
+        }
     }
 
     protected void tickPower() {
@@ -96,10 +104,11 @@ public class DataBankMachine extends MultiblockControllerMachine implements ICon
         boolean hasMaintenance = ConfigHolder.INSTANCE.machines.enableMaintenance;
         if (hasMaintenance) {
             // 10% more energy per maintenance problem
-            energyToConsume += getTraits().stream().filter(IMaintenanceMachine.class::isInstance).map(IMaintenanceMachine.class::cast).findAny().get().getNumMaintenanceProblems() * energyToConsume / 10;
+            IMaintenanceMachine maintenanceMachine = getTraits().stream().filter(IMaintenanceMachine.class::isInstance).map(IMaintenanceMachine.class::cast).findAny().orElse(null);
+            energyToConsume += maintenanceMachine != null ? maintenanceMachine.getNumMaintenanceProblems() * energyToConsume / 10 : 6 * energyToConsume / 10;
         }
 
-        if (this.hasNotEnoughEnergy && energyContainer.getInputPerSec() > 19L * energyToConsume) {
+        if (this.hasNotEnoughEnergy && (energyContainer.getInputVoltage() * energyContainer.getInputAmperage() * 20) > 19L * energyToConsume) {
             this.hasNotEnoughEnergy = false;
         }
 
@@ -107,48 +116,16 @@ public class DataBankMachine extends MultiblockControllerMachine implements ICon
             if (!hasNotEnoughEnergy) {
                 long consumed = this.energyContainer.removeEnergy(energyToConsume);
                 if (consumed == -energyToConsume) {
-                    setActive(true);
+                    getRecipeLogic().setStatus(RecipeLogic.Status.WORKING);
                 } else {
                     this.hasNotEnoughEnergy = true;
-                    setActive(false);
+                    getRecipeLogic().setStatus(RecipeLogic.Status.WAITING);
                 }
             }
         } else {
             this.hasNotEnoughEnergy = true;
-            setActive(false);
+            getRecipeLogic().setStatus(RecipeLogic.Status.WAITING);
         }
-    }
-
-    @Nonnull
-    @Override
-    protected BlockPattern createStructurePattern() {
-        return FactoryBlockPattern.start()
-                .aisle("XDDDX", "XDDDX", "XDDDX")
-                .aisle("XDDDX", "XAAAX", "XDDDX")
-                .aisle("XCCCX", "XCSCX", "XCCCX")
-                .where('S', selfPredicate())
-                .where('X', states(getOuterState()))
-                .where('D', states(getInnerState()).setMinGlobalLimited(3)
-                        .or(abilities(MultiblockAbility.DATA_ACCESS_HATCH).setPreviewCount(3))
-                        .or(abilities(MultiblockAbility.OPTICAL_DATA_TRANSMISSION)
-                                .setMinGlobalLimited(1, 1))
-                        .or(abilities(MultiblockAbility.OPTICAL_DATA_RECEPTION).setPreviewCount(1)))
-                .where('A', states(getInnerState()))
-                .where('C', states(getFrontState())
-                        .setMinGlobalLimited(4)
-                        .or(autoAbilities())
-                        .or(abilities(MultiblockAbility.INPUT_ENERGY)
-                                .setMinGlobalLimited(1).setMaxGlobalLimited(2).setPreviewCount(1)))
-                .build();
-    }
-
-    @Override
-    public void addInformation(ItemStack stack, @Nullable World world, @Nonnull List<String> tooltip, boolean advanced) {
-        super.addInformation(stack, world, tooltip, advanced);
-        tooltip.add(I18n.format("gregtech.machine.data_bank.tooltip.1"));
-        tooltip.add(I18n.format("gregtech.machine.data_bank.tooltip.2"));
-        tooltip.add(I18n.format("gregtech.machine.data_bank.tooltip.3"));
-        tooltip.add(I18n.format("gregtech.machine.data_bank.tooltip.4", GTValues.VA[GTValues.EV]));
-        tooltip.add(I18n.format("gregtech.machine.data_bank.tooltip.5", GTValues.VA[GTValues.LuV]));
+        updatePowerSubscription();
     }
 }

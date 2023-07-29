@@ -33,6 +33,7 @@ import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.api.registry.registrate.MultiblockMachineBuilder;
+import com.gregtechceu.gtceu.client.TooltipHelper;
 import com.gregtechceu.gtceu.client.renderer.machine.*;
 import com.gregtechceu.gtceu.common.block.BoilerFireboxType;
 import com.gregtechceu.gtceu.common.machine.electric.*;
@@ -40,6 +41,10 @@ import com.gregtechceu.gtceu.common.machine.multiblock.electric.*;
 import com.gregtechceu.gtceu.common.machine.multiblock.generator.LargeCombustionEngineMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.generator.LargeTurbineMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.*;
+import com.gregtechceu.gtceu.common.machine.multiblock.part.hpca.HPCABridgePartMachine;
+import com.gregtechceu.gtceu.common.machine.multiblock.part.hpca.HPCAComputationPartMachine;
+import com.gregtechceu.gtceu.common.machine.multiblock.part.hpca.HPCACoolerPartMachine;
+import com.gregtechceu.gtceu.common.machine.multiblock.part.hpca.HPCAEmptyPartMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.CokeOvenMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.PrimitiveBlastFurnaceMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.PrimitivePumpMachine;
@@ -648,36 +653,81 @@ public class GTMachines {
 
 
     public static final MachineDefinition DATA_ACCESS_HATCH = REGISTRATE.machine("data_access_hatch", (holder) -> new DataAccessHatchPartMachine(holder, EV, false))
-            .rotationState(RotationState.NON_Y_AXIS)
+            .rotationState(RotationState.ALL)
             .abilities(PartAbility.DATA_ACCESS_HATCH)
             .tooltips(Component.translatable("gtceu.machine.data_access_hatch.tooltip.1"),
                     Component.translatable("gtceu.machine.data_access_hatch.tooltip.2", DataAccessHatchPartMachine.getInventorySize(EV)))
             .register();
     public static final MachineDefinition ADVANCED_DATA_ACCESS_HATCH = REGISTRATE.machine("advanced_data_access_hatch", (holder) -> new DataAccessHatchPartMachine(holder, LuV, false))
-            .rotationState(RotationState.NON_Y_AXIS)
+            .rotationState(RotationState.ALL)
             .abilities(PartAbility.DATA_ACCESS_HATCH)
             .tooltips(Component.translatable("gtceu.machine.data_access_hatch.tooltip.1"),
                     Component.translatable("gtceu.machine.data_access_hatch.tooltip.2", DataAccessHatchPartMachine.getInventorySize(LuV)))
             .register();
     public static final MachineDefinition CREATIVE_DATA_HATCH = REGISTRATE.machine("creative_data_access_hatch", (holder) -> new DataAccessHatchPartMachine(holder, MAX, true))
-            .rotationState(RotationState.NON_Y_AXIS)
+            .rotationState(RotationState.ALL)
             .abilities(PartAbility.DATA_ACCESS_HATCH)
             .tooltips(Component.translatable("gtceu.machine.data_access_hatch.tooltip.1"),
                     Component.translatable("gtceu.machine.data_access_hatch.tooltip.2", DataAccessHatchPartMachine.getInventorySize(LuV)))
             .register();
-    public static final MetaTileEntityOpticalDataHatch OPTICAL_DATA_HATCH_RECEIVER;
-    public static final MetaTileEntityOpticalDataHatch OPTICAL_DATA_HATCH_TRANSMITTER;
-    public static final MetaTileEntityLaserHatch LASER_INPUT_HATCH;
-    public static final MetaTileEntityLaserHatch LASER_OUTPUT_HATCH;
-    public static final MetaTileEntityComputationHatch COMPUTATION_HATCH_RECEIVER;
-    public static final MetaTileEntityComputationHatch COMPUTATION_HATCH_TRANSMITTER;
-    public static final MetaTileEntityObjectHolder OBJECT_HOLDER;
-    public static final MetaTileEntityHPCAEmpty HPCA_EMPTY_COMPONENT;
-    public static final MetaTileEntityHPCAComputation HPCA_COMPUTATION_COMPONENT;
-    public static final MetaTileEntityHPCAComputation HPCA_ADVANCED_COMPUTATION_COMPONENT;
-    public static final MetaTileEntityHPCACooler HPCA_HEAT_SINK_COMPONENT;
-    public static final MetaTileEntityHPCACooler HPCA_ACTIVE_COOLER_COMPONENT;
-    public static final MetaTileEntityHPCABridge HPCA_BRIDGE_COMPONENT;
+    public static final MachineDefinition OPTICAL_DATA_HATCH_RECEIVER = REGISTRATE.machine("optical_data_receiver_hatch", (holder) -> new OpticalDataAccessHatchPartMachine(holder, false))
+            .rotationState(RotationState.ALL)
+            .abilities(PartAbility.OPTICAL_DATA_RECEPTION)
+            .register();
+    public static final MachineDefinition OPTICAL_DATA_HATCH_TRANSMITTER = REGISTRATE.machine("optical_data_transmitter_hatch", (holder) -> new OpticalDataAccessHatchPartMachine(holder, true))
+            .rotationState(RotationState.ALL)
+            .abilities(PartAbility.OPTICAL_DATA_TRANSMISSION)
+            .register();
+    public static final MachineDefinition LASER_INPUT_HATCH = REGISTRATE.machine("laser_input_hatch", (holder) -> new LaserHatchPartMachine(holder, IO.IN))
+            .rotationState(RotationState.ALL)
+            .tooltips(Component.translatable("gtceu.machine.laser_hatch.target.tooltip1"),
+                    Component.translatable("gtceu.machine.laser_hatch.target.tooltip2"),
+                    Component.translatable("gtceu.universal.disabled"))
+            .abilities(PartAbility.INPUT_LASER)
+            .register();
+    public static final MachineDefinition LASER_OUTPUT_HATCH = REGISTRATE.machine("laser_output_hatch", (holder) -> new LaserHatchPartMachine(holder, IO.OUT))
+            .rotationState(RotationState.ALL)
+            .tooltips(Component.translatable("gtceu.machine.laser_hatch.source.tooltip1"),
+                    Component.translatable("gtceu.machine.laser_hatch.source.tooltip2"),
+                    Component.translatable("gtceu.universal.disabled"))
+            .abilities(PartAbility.OUTPUT_LASER)
+            .register();
+    public static final MachineDefinition COMPUTATION_HATCH_RECEIVER = REGISTRATE.machine("computation_receiver_hatch", (holder) -> new ComputationHatchPartMachine(holder, IO.IN))
+            .rotationState(RotationState.ALL)
+            .abilities(PartAbility.COMPUTATION_DATA_RECEPTION)
+            .register();
+    public static final MachineDefinition COMPUTATION_HATCH_TRANSMITTER = REGISTRATE.machine("computation_transmitter_hatch", (holder) -> new ComputationHatchPartMachine(holder, IO.OUT))
+            .rotationState(RotationState.ALL)
+            .abilities(PartAbility.COMPUTATION_DATA_TRANSMISSION)
+            .register();
+    public static final MachineDefinition OBJECT_HOLDER = REGISTRATE.machine("object_holder", ObjectHolderPartMachine::new)
+            .rotationState(RotationState.ALL)
+            .abilities(PartAbility.OBJECT_HOLDER)
+            .register();
+    public static final MachineDefinition HPCA_EMPTY_COMPONENT = REGISTRATE.machine("empty_hpca_component", HPCAEmptyPartMachine::new)
+            .rotationState(RotationState.ALL)
+            .abilities(PartAbility.HPCA_COMPONENT)
+            .register();
+    public static final MachineDefinition HPCA_COMPUTATION_COMPONENT = REGISTRATE.machine("hpca_computation_component", (holder) -> new HPCAComputationPartMachine(holder, false))
+            .rotationState(RotationState.ALL)
+            .abilities(PartAbility.HPCA_COMPONENT)
+            .register();
+    public static final MachineDefinition HPCA_ADVANCED_COMPUTATION_COMPONENT = REGISTRATE.machine("advanced_hpca_computation_component", (holder) -> new HPCAComputationPartMachine(holder, true))
+            .rotationState(RotationState.ALL)
+            .abilities(PartAbility.HPCA_COMPONENT)
+            .register();
+    public static final MachineDefinition HPCA_HEAT_SINK_COMPONENT = REGISTRATE.machine("hpca_heat_sink_component", (holder) -> new HPCACoolerPartMachine(holder, false))
+            .rotationState(RotationState.ALL)
+            .abilities(PartAbility.HPCA_COMPONENT)
+            .register();
+    public static final MachineDefinition HPCA_ACTIVE_COOLER_COMPONENT = REGISTRATE.machine("active_hpca_cooler_component", (holder) -> new HPCACoolerPartMachine(holder, true))
+            .rotationState(RotationState.ALL)
+            .abilities(PartAbility.HPCA_COMPONENT)
+            .register();
+    public static final MachineDefinition HPCA_BRIDGE_COMPONENT = REGISTRATE.machine("hpca_bridge_component", HPCABridgePartMachine::new)
+            .rotationState(RotationState.ALL)
+            .abilities(PartAbility.HPCA_COMPONENT)
+            .register();
 
     //////////////////////////////////////
     //*******     Multiblock     *******//
@@ -1356,6 +1406,30 @@ public class GTMachines {
     public static final MultiblockMachineDefinition DATA_BANK = REGISTRATE.multiblock("data_bank", DataBankMachine::new)
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeType(GTRecipeTypes.DUMMY_RECIPES)
+            .tooltips(Component.translatable("gtceu.machine.data_bank.tooltip.1"),
+                    Component.translatable("gtceu.machine.data_bank.tooltip.2"),
+                    Component.translatable("gtceu.machine.data_bank.tooltip.3"),
+                    Component.translatable("gtceu.machine.data_bank.tooltip.4", GTValues.VA[GTValues.EV]),
+                    Component.translatable("gtceu.machine.data_bank.tooltip.5", GTValues.VA[GTValues.LuV]))
+            .pattern((definition) -> FactoryBlockPattern.start()
+                    .aisle("XDDDX", "XDDDX", "XDDDX")
+                    .aisle("XDDDX", "XAAAX", "XDDDX")
+                    .aisle("XCCCX", "XCSCX", "XCCCX")
+                    .where('S', controller(blocks(definition.getBlock())))
+                    .where('X', blocks(GTBlocks.COMPUTER_HEAT_VENT.get()))
+                    .where('D', blocks(GTBlocks.COMPUTER_CASING.get()).setMinGlobalLimited(3)
+                            .or(abilities(PartAbility.DATA_ACCESS_HATCH).setPreviewCount(3))
+                            .or(abilities(PartAbility.OPTICAL_DATA_TRANSMISSION)
+                                    .setMinGlobalLimited(1, 1))
+                            .or(abilities(PartAbility.OPTICAL_DATA_RECEPTION).setPreviewCount(1)))
+                    .where('A', blocks(GTBlocks.COMPUTER_CASING.get()))
+                    .where('C', blocks(GTBlocks.HIGH_POWER_CASING.get())
+                            .setMinGlobalLimited(4)
+                            .or(autoAbilities(true, true))
+                            .or(abilities(PartAbility.INPUT_ENERGY)
+                                    .setMinGlobalLimited(1).setMaxGlobalLimited(2).setPreviewCount(1)))
+                    .build())
+            .register();
 
 
     public static final MultiblockMachineDefinition HIGH_PERFORMANCE_COMPUTING_ARRAY = REGISTRATE.multiblock("high_performance_computing_array", HPCAMachine::new)
@@ -1395,7 +1469,7 @@ public class GTMachines {
                         .where('E', GTMachines.ENERGY_INPUT_HATCH[GTValues.LuV], Direction.NORTH)
                         .where('H', GTMachines.FLUID_IMPORT_HATCH[GTValues.LV], Direction.NORTH)
                         .where('O', GTMachines.COMPUTATION_HATCH_TRANSMITTER, Direction.SOUTH)
-                        .where('M', () -> ConfigHolder.INSTANCE.machines.enableMaintenance ? GTMachines.MAINTENANCE_HATCH.get() : getCasingState(), Direction.NORTH);
+                        .where('M', () -> ConfigHolder.INSTANCE.machines.enableMaintenance ? GTMachines.MAINTENANCE_HATCH.getBlock() : GTBlocks.COMPUTER_CASING.get());
 
                 // a few example structures
                 shapeInfo.add(builder.shallowCopy()
@@ -1448,6 +1522,24 @@ public class GTMachines {
 
                 return shapeInfo;
             })
+            .register();
+
+    public static final MultiblockMachineDefinition ACTIVE_TRANSFORMER = REGISTRATE.multiblock("active_transformer", ActiveTransformerMachine::new)
+            .rotationState(RotationState.NON_Y_AXIS)
+            .recipeType(GTRecipeTypes.DUMMY_RECIPES)
+            .tooltips(Component.translatable("gregtech.machine.active_transformer.tooltip1"),
+                    Component.translatable("gregtech.machine.active_transformer.tooltip2"),
+                    Component.translatable("gregtech.machine.active_transformer.tooltip3")
+                            .append(TooltipHelper.RAINBOW_SLOW.toString())
+                            .append(Component.translatable("gregtech.machine.active_transformer.tooltip3.5")))
+            .pattern((definition) -> FactoryBlockPattern.start()
+                    .aisle("XXX", "XXX", "XXX")
+                    .aisle("XXX", "XCX", "XXX")
+                    .aisle("XXX", "XSX", "XXX")
+                    .where('S', controller(blocks(definition.getBlock())))
+                    .where('X', blocks(GTBlocks.HIGH_POWER_CASING.get()).setMinGlobalLimited(12).or(ActiveTransformerMachine.getHatchPredicates()))
+                    .where('C', blocks(GTBlocks.SUPERCONDUCTING_COIL.get()))
+                    .build())
             .register();
 
     //////////////////////////////////////
@@ -1666,7 +1758,7 @@ public class GTMachines {
                                 state.getWorld().getBlockState(state.getPos().relative(rotorHolder.self().getFrontFacing())).isAir(),
                                 () -> PartAbility.ROTOR_HOLDER.getAllBlocks().stream().map(BlockInfo::fromBlock).toArray(BlockInfo[]::new)))
                                 .addTooltips(Component.translatable("gtceu.multiblock.pattern.clear_amount_3"))
-                                .addTooltips(Component.translatable("gregtech.multiblock.pattern.error.limited.1", VN[tier]))
+                                .addTooltips(Component.translatable("gtceu.multiblock.pattern.error.limited.1", VN[tier]))
                                 .setExactLimit(1)
                                 .or(abilities(PartAbility.OUTPUT_ENERGY)).setExactLimit(1))
                         .where('H', blocks(casing.get())

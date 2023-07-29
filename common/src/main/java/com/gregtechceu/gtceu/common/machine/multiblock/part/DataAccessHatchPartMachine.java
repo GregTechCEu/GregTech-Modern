@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
+import com.gregtechceu.gtceu.common.machine.multiblock.electric.DataBankMachine;
 import com.gregtechceu.gtceu.utils.AssemblyLineManager;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
@@ -63,8 +64,8 @@ public class DataAccessHatchPartMachine extends TieredIOPartMachine implements I
             @Nonnull
             @Override
             public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-                var controller = DataAccessHatchPartMachine.this.getController();
-                boolean isDataBank = controller instanceof MetaTileEntityDataBank;
+                var controller = DataAccessHatchPartMachine.this.getControllers().get(0);
+                boolean isDataBank = controller instanceof DataBankMachine;
                 if (AssemblyLineManager.isStackDataItem(stack, isDataBank) && AssemblyLineManager.hasResearchTag(stack)) {
                     return super.insertItem(slot, stack, simulate);
                 }
@@ -128,7 +129,7 @@ public class DataAccessHatchPartMachine extends TieredIOPartMachine implements I
     private void rebuildData() {
         if (isCreative) return;
         recipes.clear();
-        boolean isDataBank = getControllers() instanceof MetaTileEntityDataBank;
+        boolean isDataBank = getControllers() instanceof DataBankMachine;
         for (int i = 0; i < this.importItems.getSlots(); i++) {
             ItemStack stack = this.importItems.getStackInSlot(i);
             String researchId = AssemblyLineManager.readResearchId(stack);
@@ -151,8 +152,13 @@ public class DataAccessHatchPartMachine extends TieredIOPartMachine implements I
     @Override
     public void addedToController(IMultiController controller) {
         super.addedToController(controller);
-        if (!(controller instanceof MetaTileEntityDataBank)) {
+        if (!(controller instanceof DataBankMachine)) {
             rebuildData();
         }
+    }
+
+    @Override
+    public boolean canShared() {
+        return false;
     }
 }

@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.capability;
 
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.machine.trait.optical.IOpticalComputationProvider;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -85,6 +86,18 @@ public class GTCapabilityHelper {
     @ExpectPlatform
     @Nullable
     public static ILaserContainer getLaserContainer(Level level, BlockPos pos, @Nullable Direction side) {
+        throw new AssertionError();
+    }
+
+    @ExpectPlatform
+    @Nullable
+    public static IDataAccessHatch getDataAccess(Level level, BlockPos pos, @Nullable Direction side) {
+        throw new AssertionError();
+    }
+
+    @ExpectPlatform
+    @Nullable
+    public static IOpticalComputationProvider getComputationProvider(Level level, BlockPos pos, @Nullable Direction side) {
         throw new AssertionError();
     }
 }

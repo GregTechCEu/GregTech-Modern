@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.pipelike.laser;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.ILaserContainer;
 import com.lowdragmc.lowdraglib.pipelike.Node;
@@ -14,12 +15,17 @@ public class LaserNetWalker extends PipeNetWalker<LaserPipeNet.LaserData, LaserP
 
     @Nullable
     public static LaserPipeNet.LaserData createNetData(LaserPipeNet world, BlockPos sourcePipe, Direction faceToSourceHandler) {
-        LaserNetWalker walker = new LaserNetWalker(world, sourcePipe, 1, null, null);
-        walker.sourcePipe = sourcePipe;
-        walker.facingToHandler = faceToSourceHandler;
-        walker.axis = faceToSourceHandler.getAxis();
-        walker.traversePipeNet();
-        return walker.isInvalid() ? null : walker.laserData;
+        try {
+            LaserNetWalker walker = new LaserNetWalker(world, sourcePipe, 1, null, null);
+            walker.sourcePipe = sourcePipe;
+            walker.facingToHandler = faceToSourceHandler;
+            walker.axis = faceToSourceHandler.getAxis();
+            walker.traversePipeNet();
+            return walker.laserData;
+        } catch (Exception e) {
+            GTCEu.LOGGER.error("error while create net data for LaserPipeNet", e);
+        }
+        return null;
     }
 
     private LaserPipeProperties minProperties;

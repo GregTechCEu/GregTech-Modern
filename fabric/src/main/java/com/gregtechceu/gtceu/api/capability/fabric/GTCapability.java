@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.*;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.machine.trait.optical.IOpticalComputationProvider;
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
 import net.fabricmc.fabric.api.lookup.v1.item.ItemApiLookup;
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
@@ -44,4 +45,10 @@ public class GTCapability {
 
     public static final BlockApiLookup<ILaserContainer, Direction> CAPABILITY_LASER_CONTAINER =
             BlockApiLookup.get(GTCEu.id("laser_container"), ILaserContainer.class, Direction.class);
+
+    public static final BlockApiLookup<IDataAccessHatch, Direction> CAPABILITY_DATA_ACCESS =
+            BlockApiLookup.get(GTCEu.id("data_access"), IDataAccessHatch.class, Direction.class);
+
+    public static final BlockApiLookup<IOpticalComputationProvider, Direction> CAPABILITY_COMPUTATION_PROVIDER =
+            BlockApiLookup.get(GTCEu.id("optical_computation_provider"), IOpticalComputationProvider.class, Direction.class);
 }
