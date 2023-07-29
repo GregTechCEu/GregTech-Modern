@@ -102,7 +102,7 @@ public class AdvancedEnergyDetectorCover extends EnergyDetectorCover implements 
                 List.of(LocalizationUtils.format("cover.advanced_energy_detector.max"))));
 
         minValueInput = new LongInputWidget(40, 50, 176 - 40 - 10, 20, this::getMinValue, this::setMinValue);
-        maxValueInput = new LongInputWidget(40, 75, 176 - 40 - 10, 20, this::getMinValue, this::setMaxValue);
+        maxValueInput = new LongInputWidget(40, 75, 176 - 40 - 10, 20, this::getMaxValue, this::setMaxValue);
         initializeMinMaxInputs(usePercent);
         group.addWidget(minValueInput);
         group.addWidget(maxValueInput);

@@ -39,6 +39,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class GTToolItem extends DiggerItem implements IItemRendererProvider, IItemUseFirst {
+    public static boolean isReqairingRecipe = false;
 
     @Getter
     protected final GTToolType toolType;
