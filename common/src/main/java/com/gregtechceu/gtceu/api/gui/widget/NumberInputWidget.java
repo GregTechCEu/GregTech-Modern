@@ -14,9 +14,11 @@ import com.lowdragmc.lowdraglib.utils.Position;
 import com.lowdragmc.lowdraglib.utils.Size;
 import lombok.Getter;
 import net.minecraft.client.Minecraft;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.util.Mth;
 
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 /**
  * A widget containing an integer input field, as well as adjacent buttons for increasing or decreasing the value.
@@ -60,7 +62,7 @@ public abstract class NumberInputWidget<T extends Number> extends WidgetGroup {
     private final T ONE_NEGATIVE = getOne(false);
 
     @Getter
-    private T value;
+    private Supplier<T> valueSupplier;
     @Getter
     private T min = defaultMin();
     @Getter
@@ -71,25 +73,41 @@ public abstract class NumberInputWidget<T extends Number> extends WidgetGroup {
     private TextFieldWidget textField;
 
 
-    public NumberInputWidget(T initialValue, Consumer<T> onChanged) {
-        this(0, 0, 100, 20, initialValue, onChanged);
+    public NumberInputWidget(Supplier<T> valueSupplier, Consumer<T> onChanged) {
+        this(0, 0, 100, 20, valueSupplier, onChanged);
     }
 
-    public NumberInputWidget(Position position, T initialValue, Consumer<T> onChanged) {
-        this(position, new Size(100, 20), initialValue, onChanged);
+    public NumberInputWidget(Position position, Supplier<T> valueSupplier, Consumer<T> onChanged) {
+        this(position, new Size(100, 20), valueSupplier, onChanged);
     }
 
-    public NumberInputWidget(Position position, Size size, T initialValue, Consumer<T> onChanged) {
-        this(position.x, position.y, size.width, size.height, initialValue, onChanged);
+    public NumberInputWidget(Position position, Size size, Supplier<T> valueSupplier, Consumer<T> onChanged) {
+        this(position.x, position.y, size.width, size.height, valueSupplier, onChanged);
     }
 
-    public NumberInputWidget(int x, int y, int width, int height, T initialValue, Consumer<T> onChanged) {
+    public NumberInputWidget(int x, int y, int width, int height, Supplier<T> valueSupplier, Consumer<T> onChanged) {
         super(x, y, width, height);
-
-        this.value = initialValue;
+        this.valueSupplier = valueSupplier;
         this.onChanged = onChanged;
-
         buildUI();
+    }
+
+    @Override
+    public void initWidget() {
+        super.initWidget();
+        textField.setCurrentString(toText(valueSupplier.get()));
+    }
+
+    @Override
+    public void writeInitialData(FriendlyByteBuf buffer) {
+        super.writeInitialData(buffer);
+        buffer.writeUtf(toText(valueSupplier.get()));
+    }
+
+    @Override
+    public void readInitialData(FriendlyByteBuf buffer) {
+        super.readInitialData(buffer);
+        textField.setCurrentString(buffer.readUtf());
     }
 
     private void buildUI() {
@@ -103,7 +121,7 @@ public abstract class NumberInputWidget<T extends Number> extends WidgetGroup {
 
 
         this.textField = new TextFieldWidget(buttonWidth + 2, 0, textFieldWidth, 20,
-                () -> toText(value),
+                () -> toText(valueSupplier.get()),
                 stringValue -> this.setValue(clamp(fromText(stringValue), min, max))
         );
         this.updateTextFieldRange();
@@ -156,7 +174,7 @@ public abstract class NumberInputWidget<T extends Number> extends WidgetGroup {
                     cd.isShiftClick ? CHANGE_VALUES.ctrlShift : CHANGE_VALUES.ctrl :
                     cd.isShiftClick ? CHANGE_VALUES.shift : CHANGE_VALUES.regular;
 
-            this.setValue(clamp(add(value, multiply(amount, multiplier)), min, max));
+            this.setValue(clamp(add(valueSupplier.get(), multiply(amount, multiplier)), min, max));
         }
     }
 
@@ -175,14 +193,13 @@ public abstract class NumberInputWidget<T extends Number> extends WidgetGroup {
     }
 
     public NumberInputWidget<T> setValue(T value) {
-        this.value = value;
         onChanged.accept(value);
-
         return this;
     }
 
     private void updateTextFieldRange() {
         setTextFieldRange(textField, min, max);
-        this.setValue(clamp(this.value, min, max));
+
+        this.setValue(clamp(valueSupplier.get(), min, max));
     }
 }

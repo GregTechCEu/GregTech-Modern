@@ -6,6 +6,7 @@ import com.lowdragmc.lowdraglib.utils.Size;
 import net.minecraft.util.Mth;
 
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 /**
  * A widget containing an integer input field, as well as adjacent buttons for increasing or decreasing the value.
@@ -16,20 +17,20 @@ import java.util.function.Consumer;
  * </p>
  */
 public class LongInputWidget extends NumberInputWidget<Long> {
-    public LongInputWidget(Long initialValue, Consumer<Long> onChanged) {
-        super(initialValue, onChanged);
+    public LongInputWidget(Supplier<Long> valueSupplier, Consumer<Long> onChanged) {
+        super(valueSupplier, onChanged);
     }
 
-    public LongInputWidget(Position position, Long initialValue, Consumer<Long> onChanged) {
-        super(position, initialValue, onChanged);
+    public LongInputWidget(Position position, Supplier<Long> valueSupplier, Consumer<Long> onChanged) {
+        super(position, valueSupplier, onChanged);
     }
 
-    public LongInputWidget(Position position, Size size, Long initialValue, Consumer<Long> onChanged) {
-        super(position, size, initialValue, onChanged);
+    public LongInputWidget(Position position, Size size, Supplier<Long> valueSupplier, Consumer<Long> onChanged) {
+        super(position, size, valueSupplier, onChanged);
     }
 
-    public LongInputWidget(int x, int y, int width, int height, Long initialValue, Consumer<Long> onChanged) {
-        super(x, y, width, height, initialValue, onChanged);
+    public LongInputWidget(int x, int y, int width, int height, Supplier<Long> valueSupplier, Consumer<Long> onChanged) {
+        super(x, y, width, height, valueSupplier, onChanged);
     }
 
     @Override

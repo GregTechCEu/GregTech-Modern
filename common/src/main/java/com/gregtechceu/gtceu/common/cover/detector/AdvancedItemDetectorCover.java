@@ -57,6 +57,15 @@ public class AdvancedItemDetectorCover extends ItemDetectorCover implements IUIC
         this.maxValue = DEFAULT_MAX;
     }
 
+    @Override
+    public List<ItemStack> getAdditionalDrops() {
+        var list = super.getAdditionalDrops();
+        if (!filterItem.isEmpty()) {
+            list.add(filterItem);
+        }
+        return list;
+    }
+
     public ItemFilter getFilterHandler() {
         if (filterHandler == null) {
             if (filterItem.isEmpty()) {
@@ -111,8 +120,8 @@ public class AdvancedItemDetectorCover extends ItemDetectorCover implements IUIC
         group.addWidget(new TextBoxWidget(10, 80, 65,
                 List.of(LocalizationUtils.format("cover.advanced_item_detector.max"))));
 
-        group.addWidget(new IntInputWidget(80, 50, 176 - 80 - 10, 20, this.getMinValue(), this::setMinValue));
-        group.addWidget(new IntInputWidget(80, 75, 176 - 80 - 10, 20, this.getMaxValue(), this::setMaxValue));
+        group.addWidget(new IntInputWidget(80, 50, 176 - 80 - 10, 20, this::getMinValue, this::setMinValue));
+        group.addWidget(new IntInputWidget(80, 75, 176 - 80 - 10, 20, this::getMaxValue, this::setMaxValue));
 
 
         // Invert Redstone Output Toggle:

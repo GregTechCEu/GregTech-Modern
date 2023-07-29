@@ -6,6 +6,7 @@ import com.lowdragmc.lowdraglib.utils.Size;
 import net.minecraft.util.Mth;
 
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 /**
  * A widget containing an integer input field, as well as adjacent buttons for increasing or decreasing the value.
@@ -17,20 +18,20 @@ import java.util.function.Consumer;
  */
 public class IntInputWidget extends NumberInputWidget<Integer> {
 
-    public IntInputWidget(Integer initialValue, Consumer<Integer> onChanged) {
-        super(initialValue, onChanged);
+    public IntInputWidget(Supplier<Integer> valueSupplier, Consumer<Integer> onChanged) {
+        super(valueSupplier, onChanged);
     }
 
-    public IntInputWidget(Position position, Integer initialValue, Consumer<Integer> onChanged) {
-        super(position, initialValue, onChanged);
+    public IntInputWidget(Position position, Supplier<Integer> valueSupplier, Consumer<Integer> onChanged) {
+        super(position, valueSupplier, onChanged);
     }
 
-    public IntInputWidget(Position position, Size size, Integer initialValue, Consumer<Integer> onChanged) {
-        super(position, size, initialValue, onChanged);
+    public IntInputWidget(Position position, Size size, Supplier<Integer> valueSupplier, Consumer<Integer> onChanged) {
+        super(position, size, valueSupplier, onChanged);
     }
 
-    public IntInputWidget(int x, int y, int width, int height, Integer initialValue, Consumer<Integer> onChanged) {
-        super(x, y, width, height, initialValue, onChanged);
+    public IntInputWidget(int x, int y, int width, int height, Supplier<Integer> valueSupplier, Consumer<Integer> onChanged) {
+        super(x, y, width, height, valueSupplier, onChanged);
     }
 
     @Override

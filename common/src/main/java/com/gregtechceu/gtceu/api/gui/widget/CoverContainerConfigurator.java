@@ -23,6 +23,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
@@ -49,6 +50,7 @@ public class CoverContainerConfigurator extends WidgetGroup {
     protected CoverBehavior coverBehavior;
     @Nullable
     protected Widget coverConfigurator;
+    private boolean needUpdate;
 
     public CoverContainerConfigurator(ICoverable coverable) {
         super(0, 0, 120, 80);
@@ -102,7 +104,7 @@ public class CoverContainerConfigurator extends WidgetGroup {
     private void coverRemoved() {
         if (getGui().entityPlayer instanceof ServerPlayer serverPlayer && side != null) {
             var item = transfer.getStackInSlot(0);
-            if (item.isEmpty() && coverable.getCoverAtSide(side) != null) {
+            if (coverable.getCoverAtSide(side) != null) {
                 coverable.removeCover(false, side);
             }
             if (!item.isEmpty() && coverable.getCoverAtSide(side) == null) {
@@ -128,7 +130,7 @@ public class CoverContainerConfigurator extends WidgetGroup {
         }
     }
 
-    public void checkCoverBehaviour() {
+    public boolean checkCoverBehaviour() {
         if (side != null) {
             var coverBehaviour = coverable.getCoverAtSide(side);
             if (coverBehaviour != this.coverBehavior) {
@@ -136,23 +138,38 @@ public class CoverContainerConfigurator extends WidgetGroup {
                 var attachItem = coverBehaviour == null ? ItemStack.EMPTY : coverBehaviour.getAttachItem();
                 transfer.setStackInSlot(0, attachItem);
                 updateCoverConfigurator();
+                return true;
             }
         }
+        return false;
     }
 
     @Override
     public void updateScreen() {
         super.updateScreen();
         if (side != null) {
-            checkCoverBehaviour();
+            if (checkCoverBehaviour()) {
+                writeClientAction(-2, buf -> {});
+            }
         }
     }
 
     @Override
     public void detectAndSendChanges() {
         super.detectAndSendChanges();
-        if (side != null) {
-            checkCoverBehaviour();
+        if (side != null && needUpdate) {
+            if (checkCoverBehaviour()) {
+                needUpdate = false;
+            }
+        }
+    }
+
+    @Override
+    public void handleClientAction(int id, FriendlyByteBuf buffer) {
+        if (id == -2) {
+            needUpdate = true;
+        } else {
+            super.handleClientAction(id, buffer);
         }
     }
 
