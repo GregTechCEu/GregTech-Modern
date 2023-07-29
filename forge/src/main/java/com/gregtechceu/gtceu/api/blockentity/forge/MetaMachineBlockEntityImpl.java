@@ -2,11 +2,12 @@ package com.gregtechceu.gtceu.api.blockentity.forge;
 
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.capability.*;
+import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.capability.forge.GTEnergyHelperImpl;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
-import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.client.renderer.GTRendererProvider;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
@@ -88,6 +89,10 @@ public class MetaMachineBlockEntityImpl extends MetaMachineBlockEntity {
         } else if (cap == GTCapability.CAPABILITY_CLEANROOM_RECEIVER) {
             if (machine instanceof ICleanroomReceiver cleanroomReceiver) {
                 return GTCapability.CAPABILITY_CLEANROOM_RECEIVER.orEmpty(cap, LazyOptional.of(() -> cleanroomReceiver));
+            }
+        } else if (cap == GTCapability.CAPABILITY_MAINTENANCE_MACHINE ) {
+            if (machine instanceof IMaintenanceMachine maintenanceMachine) {
+                return GTCapability.CAPABILITY_MAINTENANCE_MACHINE.orEmpty(cap, LazyOptional.of(() -> maintenanceMachine));
             }
         } else if (cap == ForgeCapabilities.ITEM_HANDLER) {
             var transfer = machine.getItemTransferCap(side);

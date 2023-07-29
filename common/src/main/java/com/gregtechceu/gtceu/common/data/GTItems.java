@@ -1,6 +1,9 @@
 package com.gregtechceu.gtceu.common.data;
 
-import com.google.common.collect.*;
+import com.google.common.collect.ArrayTable;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.ImmutableTable;
+import com.google.common.collect.Table;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.cover.filter.SimpleFluidFilter;
@@ -8,24 +11,24 @@ import com.gregtechceu.gtceu.api.cover.filter.SimpleItemFilter;
 import com.gregtechceu.gtceu.api.cover.filter.TagFluidFilter;
 import com.gregtechceu.gtceu.api.cover.filter.TagItemFilter;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
-import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials;
-import com.gregtechceu.gtceu.api.gui.misc.ProspectorMode;
-import com.gregtechceu.gtceu.api.item.ComponentItem;
-import com.gregtechceu.gtceu.api.item.component.*;
-import com.gregtechceu.gtceu.common.item.*;
-import com.gregtechceu.gtceu.common.data.materials.GTFoods;
 import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterial;
+import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.ItemMaterialInfo;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.data.tag.TagUtil;
+import com.gregtechceu.gtceu.api.gui.misc.ProspectorMode;
+import com.gregtechceu.gtceu.api.item.ComponentItem;
 import com.gregtechceu.gtceu.api.item.GTToolItem;
 import com.gregtechceu.gtceu.api.item.TagPrefixItem;
+import com.gregtechceu.gtceu.api.item.component.*;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.MaterialToolTier;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
-import com.gregtechceu.gtceu.api.data.tag.TagUtil;
+import com.gregtechceu.gtceu.common.data.materials.GTFoods;
+import com.gregtechceu.gtceu.common.item.*;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
@@ -61,6 +64,8 @@ import static com.gregtechceu.gtceu.api.registry.GTRegistries.REGISTRATE;
 import static com.gregtechceu.gtceu.common.data.GTCreativeModeTabs.*;
 import static com.gregtechceu.gtceu.common.data.GTModels.*;
 import static com.gregtechceu.gtceu.utils.FormattingUtil.*;
+import static com.gregtechceu.gtceu.utils.FormattingUtil.toEnglishName;
+import static com.gregtechceu.gtceu.utils.FormattingUtil.toLowerCaseUnder;
 
 /**
  * @author KilaBash
@@ -903,6 +908,11 @@ public class GTItems {
     public static ItemEntry<Item> GRAVI_STAR = REGISTRATE.item("gravi_star", Item::new).lang("Gravi-Star").register();
 
 
+    /////////////////////////////////////////
+    //***********     COVERS    ***********//
+    /////////////////////////////////////////
+
+
     public static ItemEntry<ComponentItem> ITEM_FILTER = REGISTRATE.item("item_filter", ComponentItem::create)
             .onRegister(attach(new ItemFilterBehaviour(SimpleItemFilter::loadFilter), new CoverPlaceBehavior(GTCovers.ITEM_FILTER)))
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Zinc, GTValues.M * 2), new MaterialStack(GTMaterials.Steel, GTValues.M)))).register();
@@ -918,28 +928,87 @@ public class GTItems {
             .onRegister(attach(new FluidFilterBehaviour(TagFluidFilter::loadFilter), new CoverPlaceBehavior(GTCovers.FLUID_FILTER)))
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Zinc, GTValues.M * 3 / 2)))).register();
 
-    public static ItemEntry<Item> COVER_MACHINE_CONTROLLER = REGISTRATE.item("machine_controller_cover", Item::new).lang("Machine Controller").register();
-    public static ItemEntry<Item> COVER_ACTIVITY_DETECTOR = REGISTRATE.item("activity_detector_cover", Item::new).lang("Activity Detector").register();
-    public static ItemEntry<Item> COVER_ACTIVITY_DETECTOR_ADVANCED = REGISTRATE.item("advanced_activity_detector_cover", Item::new).lang("Advanced Activity Detector").register();
-    public static ItemEntry<Item> COVER_FLUID_DETECTOR = REGISTRATE.item("fluid_detector_cover", Item::new).lang("Fluid Detector").register();
-    public static ItemEntry<Item> COVER_FLUID_DETECTOR_ADVANCED = REGISTRATE.item("advanced_fluid_detector_cover", Item::new).lang("Advanced Fluid Detector").register();
-    public static ItemEntry<Item> COVER_ITEM_DETECTOR = REGISTRATE.item("item_detector_cover", Item::new).lang("Item Detector").register();
-    public static ItemEntry<Item> COVER_ITEM_DETECTOR_ADVANCED = REGISTRATE.item("advanced_item_detector_cover", Item::new).lang("Advanced Item Detector").register();
-    public static ItemEntry<Item> COVER_ENERGY_DETECTOR = REGISTRATE.item("energy_detector_cover", Item::new).lang("Energy Detector").register();
-    public static ItemEntry<Item> COVER_ENERGY_DETECTOR_ADVANCED = REGISTRATE.item("advanced_energy_detector_cover", Item::new).lang("Advanced Energy Detector").register();
-    public static ItemEntry<Item> COVER_SCREEN = REGISTRATE.item("computer_monitor_cover", Item::new).lang("Computer Monitor").register();
-    public static ItemEntry<Item> COVER_CRAFTING = REGISTRATE.item("crafting_table_cover", Item::new).lang("Crafting Table Cover").register();
-    public static ItemEntry<Item> COVER_SHUTTER = REGISTRATE.item("shutter_module_cover", Item::new).lang("Shutter Module").register();
-    public static ItemEntry<ComponentItem> COVER_INFINITE_WATER = REGISTRATE.item("infinite_water_cover", ComponentItem::create).lang("Infinite Water Cover").onRegister(attach(new TooltipBehavior(lines -> {
-        lines.add(Component.translatable("gtceu.universal.tooltip.produces_fluid", 16_000 / 20));
-    }), new CoverPlaceBehavior(GTCovers.INFINITE_WATER))).register();
-    public static ItemEntry<Item> COVER_ENDER_FLUID_LINK = REGISTRATE.item("ender_fluid_link_cover", Item::new).lang("Ender Fluid Link").register();
-    public static ItemEntry<Item> COVER_DIGITAL_INTERFACE = REGISTRATE.item("digital_interface_cover", Item::new).lang("Digital Interface").register();
-    public static ItemEntry<Item> COVER_DIGITAL_INTERFACE_WIRELESS = REGISTRATE.item("wireless_digital_interface_cover", Item::new).lang("Wireless Digital Interface").register();
-    public static ItemEntry<Item> COVER_FLUID_VOIDING = REGISTRATE.item("fluid_voiding_cover", Item::new).lang("Fluid Voiding Cover").register();
-    public static ItemEntry<Item> COVER_FLUID_VOIDING_ADVANCED = REGISTRATE.item("advanced_fluid_voiding_cover", Item::new).lang("Advanced Fluid Voiding Cover").register();
-    public static ItemEntry<Item> COVER_ITEM_VOIDING = REGISTRATE.item("item_voiding_cover", Item::new).lang("Item Voiding Cover").register();
-    public static ItemEntry<Item> COVER_ITEM_VOIDING_ADVANCED = REGISTRATE.item("advanced_item_voiding_cover", Item::new).lang("Advanced Item Voiding Cover").register();
+
+    public static ItemEntry<ComponentItem> COVER_MACHINE_CONTROLLER = REGISTRATE.item("machine_controller_cover", ComponentItem::create)
+            .lang("Machine Controller")
+            .register();
+
+
+    public static ItemEntry<ComponentItem> COVER_ACTIVITY_DETECTOR = REGISTRATE.item("activity_detector_cover", ComponentItem::create)
+            .lang("Activity Detector")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.ACTIVITY_DETECTOR)))
+            .register();
+    public static ItemEntry<ComponentItem> COVER_ACTIVITY_DETECTOR_ADVANCED = REGISTRATE.item("advanced_activity_detector_cover", ComponentItem::create)
+            .lang("Advanced Activity Detector")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.ACTIVITY_DETECTOR_ADVANCED)))
+            .register();
+    public static ItemEntry<ComponentItem> COVER_FLUID_DETECTOR = REGISTRATE.item("fluid_detector_cover", ComponentItem::create)
+            .lang("Fluid Detector")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_DETECTOR)))
+            .register();
+    public static ItemEntry<ComponentItem> COVER_FLUID_DETECTOR_ADVANCED = REGISTRATE.item("advanced_fluid_detector_cover", ComponentItem::create)
+            .lang("Advanced Fluid Detector")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_DETECTOR_ADVANCED)))
+            .register();
+    public static ItemEntry<ComponentItem> COVER_ITEM_DETECTOR = REGISTRATE.item("item_detector_cover", ComponentItem::create)
+            .lang("Item Detector")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.ITEM_DETECTOR)))
+            .register();
+    public static ItemEntry<ComponentItem> COVER_ITEM_DETECTOR_ADVANCED = REGISTRATE.item("advanced_item_detector_cover", ComponentItem::create)
+            .lang("Advanced Item Detector")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.ITEM_DETECTOR_ADVANCED)))
+            .register();
+    public static ItemEntry<ComponentItem> COVER_ENERGY_DETECTOR = REGISTRATE.item("energy_detector_cover", ComponentItem::create)
+            .lang("Energy Detector")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.ENERGY_DETECTOR)))
+            .register();
+    public static ItemEntry<ComponentItem> COVER_ENERGY_DETECTOR_ADVANCED = REGISTRATE.item("advanced_energy_detector_cover", ComponentItem::create)
+            .lang("Advanced Energy Detector")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.ENERGY_DETECTOR_ADVANCED)))
+            .register();
+    public static ItemEntry<ComponentItem> COVER_MAINTENANCE_DETECTOR = REGISTRATE.item("maintenance_detector_cover", ComponentItem::create)
+            .lang("Maintenance Detector")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.MAINTENANCE_DETECTOR)))
+            .register();
+
+
+    public static ItemEntry<ComponentItem> COVER_SCREEN = REGISTRATE.item("computer_monitor_cover", ComponentItem::create)
+            .lang("Computer Monitor")
+            .register();
+    public static ItemEntry<ComponentItem> COVER_CRAFTING = REGISTRATE.item("crafting_table_cover", ComponentItem::create)
+            .lang("Crafting Table Cover")
+            .register();
+    public static ItemEntry<ComponentItem> COVER_SHUTTER = REGISTRATE.item("shutter_module_cover", ComponentItem::create)
+            .lang("Shutter Module")
+            .register();
+
+    public static ItemEntry<ComponentItem> COVER_INFINITE_WATER = REGISTRATE.item("infinite_water_cover", ComponentItem::create)
+            .lang("Infinite Water Cover")
+            .onRegister(attach(new TooltipBehavior(lines -> {
+                lines.add(Component.translatable("gtceu.universal.tooltip.produces_fluid", 16_000 / 20));
+            }), new CoverPlaceBehavior(GTCovers.INFINITE_WATER))).register();
+
+    public static ItemEntry<ComponentItem> COVER_ENDER_FLUID_LINK = REGISTRATE.item("ender_fluid_link_cover", ComponentItem::create)
+            .lang("Ender Fluid Link")
+            .register();
+    public static ItemEntry<ComponentItem> COVER_DIGITAL_INTERFACE = REGISTRATE.item("digital_interface_cover", ComponentItem::create)
+            .lang("Digital Interface")
+            .register();
+    public static ItemEntry<ComponentItem> COVER_DIGITAL_INTERFACE_WIRELESS = REGISTRATE.item("wireless_digital_interface_cover", ComponentItem::create)
+            .lang("Wireless Digital Interface")
+            .register();
+    public static ItemEntry<ComponentItem> COVER_FLUID_VOIDING = REGISTRATE.item("fluid_voiding_cover", ComponentItem::create)
+            .lang("Fluid Voiding Cover")
+            .register();
+    public static ItemEntry<ComponentItem> COVER_FLUID_VOIDING_ADVANCED = REGISTRATE.item("advanced_fluid_voiding_cover", ComponentItem::create)
+            .lang("Advanced Fluid Voiding Cover")
+            .register();
+    public static ItemEntry<ComponentItem> COVER_ITEM_VOIDING = REGISTRATE.item("item_voiding_cover", ComponentItem::create)
+            .lang("Item Voiding Cover")
+            .register();
+    public static ItemEntry<ComponentItem> COVER_ITEM_VOIDING_ADVANCED = REGISTRATE.item("advanced_item_voiding_cover", ComponentItem::create)
+            .lang("Advanced Item Voiding Cover")
+            .register();
 
     public static ItemEntry<ComponentItem> COVER_FACADE = REGISTRATE.item("facade_cover", ComponentItem::create)
             .lang("Cover Facade")

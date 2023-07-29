@@ -344,21 +344,33 @@ public class LangHandler {
         multilineLang(provider, "cover.ender_fluid_link.private.tooltip.disabled", "Switch to private tank mode\nPrivate mode uses the player who originally placed the cover");
         provider.add("cover.ender_fluid_link.private.tooltip.enabled", "Switch to public tank mode");
         multilineLang(provider, "cover.ender_fluid_link.incomplete_hex", "Inputted color is incomplete!\nIt will be applied once complete (all 8 hex digits)\nClosing the gui will lose edits!");
+        provider.add("cover.detector_base.message_normal_state", "Monitoring Status: Normal");
+        provider.add("cover.detector_base.message_inverted_state", "Monitoring Status: Inverted");
+
         provider.add("cover.advanced_energy_detector.label", "Advanced Energy Detector");
-        provider.add("cover.advanced_energy_detector.min", "Minimum EU");
-        provider.add("cover.advanced_energy_detector.max", "Maximum EU");
-        multilineLang(provider, "cover.advanced_energy_detector.invert_tooltip", "Toggle to invert the redstone logic\nBy default, redstone is emitted when less than the minimum EU, and stops emitting when greater than the max EU");
-        provider.add("cover.advanced_energy_detector.invert_label", "Inverted:");
-        provider.add("cover.advanced_energy_detector.normal", "Normal");
-        provider.add("cover.advanced_energy_detector.inverted", "Inverted");
+        provider.add("cover.advanced_energy_detector.min", "Min");
+        provider.add("cover.advanced_energy_detector.max", "Max");
+
+        var advancedEnergyDetectorInvertDescription = "Toggle to invert the redstone logic\nBy default, redstone is emitted when less than the minimum EU, and stops emitting when greater than the max EU";
+        multilineLang(provider, "cover.advanced_energy_detector.invert.enabled", "Output: Inverted\n\n" + advancedEnergyDetectorInvertDescription);
+        multilineLang(provider, "cover.advanced_energy_detector.invert.disabled", "Output: Normal\n\n" + advancedEnergyDetectorInvertDescription);
+        var advancedEnergyDetectorModeDescription = "Change between using discrete EU values or percentages for comparing min/max against an attached energy storage.";
+        multilineLang(provider, "cover.advanced_energy_detector.use_percent.enabled", "Mode: Percentage\n\n" + advancedEnergyDetectorModeDescription);
+        multilineLang(provider, "cover.advanced_energy_detector.use_percent.disabled", "Mode: Discrete EU\n\n" + advancedEnergyDetectorModeDescription);
+
         provider.add("cover.advanced_fluid_detector.label", "Advanced Fluid Detector");
-        multilineLang(provider, "cover.advanced_fluid_detector.invert_tooltip", "Toggle to invert the redstone logic\nBy default, redstone stops emitting when less than the minimum L of fluid, and starts emitting when greater than the min L of fluid up to the set maximum");
-        provider.add("cover.advanced_fluid_detector.max", "Maximum Fluid:");
-        provider.add("cover.advanced_fluid_detector.min", "Minimum Fluid:");
+        var advancedFluidDetectorInvertDescription = "Toggle to invert the redstone logic\nBy default, redstone stops emitting when less than the minimum L of fluid, and starts emitting when greater than the min L of fluid up to the set maximum";
+        multilineLang(provider, "cover.advanced_fluid_detector.invert.enabled", "Output: Inverted\n\n" + advancedFluidDetectorInvertDescription);
+        multilineLang(provider, "cover.advanced_fluid_detector.invert.disabled", "Output: Normal\n\n" + advancedFluidDetectorInvertDescription);
+        provider.add("cover.advanced_fluid_detector.max", "Max Fluid (L)");
+        provider.add("cover.advanced_fluid_detector.min", "Min Fluid (L)");
+
         provider.add("cover.advanced_item_detector.label", "Advanced Item Detector");
-        multilineLang(provider, "cover.advanced_item_detector.invert_tooltip", "Toggle to invert the redstone logic\nBy default, redstone stops emitting when less than the minimum amount of items, and starts emitting when greater than the min amount of items up to the set maximum");
-        provider.add("cover.advanced_item_detector.max", "Maximum Items:");
-        provider.add("cover.advanced_item_detector.min", "Minimum Items:");
+        var advancedItemDetectorInvertDescription = "Toggle to invert the redstone logic\nBy default, redstone stops emitting when less than the minimum amount of items, and starts emitting when greater than the min amount of items up to the set maximum";
+        multilineLang(provider, "cover.advanced_item_detector.invert.enabled", "Output: Inverted\n\n" + advancedItemDetectorInvertDescription);
+        multilineLang(provider, "cover.advanced_item_detector.invert.disabled", "Output: Normal\n\n" + advancedItemDetectorInvertDescription);
+        provider.add("cover.advanced_item_detector.max", "Max Items");
+        provider.add("cover.advanced_item_detector.min", "Min Items");
 
         replace(provider, "item.gtceu.bucket", "%s Bucket");
         replace(provider, GTMaterials.FullersEarth.getUnlocalizedName(), "Fuller's Earth");
