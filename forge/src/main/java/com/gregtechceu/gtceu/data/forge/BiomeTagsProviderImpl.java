@@ -28,11 +28,6 @@ public class BiomeTagsProviderImpl extends BiomeTagsProvider implements IBiomeTa
     }
 
     @Override
-    public void addSwampTag() {
-        tag(CustomTags.IS_SWAMP).addOptional(Biomes.SWAMP.location()).addOptional(Biomes.MANGROVE_SWAMP.location());
-    }
-
-    @Override
     public void addRubberTreeTag() {
         //noinspection unchecked
         tag(CustomTags.HAS_RUBBER_TREE).addTags(CustomTags.IS_SWAMP).addOptionalTag(BiomeTags.IS_FOREST.location()).addOptionalTag(BiomeTags.IS_JUNGLE.location());
