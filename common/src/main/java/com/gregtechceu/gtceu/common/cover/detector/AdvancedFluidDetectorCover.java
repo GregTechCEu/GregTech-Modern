@@ -100,7 +100,7 @@ public class AdvancedFluidDetectorCover extends FluidDetectorCover implements IU
     }
 
     public void setMinValue(long minValue) {
-        this.minValue = Mth.clamp(minValue, 0, maxValue - 1);
+        this.minValue = LongInputWidget.clamp(minValue, 0, maxValue - 1);
     }
 
     public void setMaxValue(long maxValue) {

@@ -153,8 +153,10 @@ public class AdvancedEnergyDetectorCover extends EnergyDetectorCover implements 
             // This needs to be before setting the maximum, because otherwise the value would be limited to 100 EU
             // before converting to percent.
             if (!wasPercent) {
-                minValueInput.setValue(Mth.clamp((long) (((double) minValue / energyCapacity) * 100), 0, 100));
-                maxValueInput.setValue(Mth.clamp((long) (((double) maxValue / energyCapacity) * 100), 0, 100));
+                minValueInput.setValue(Math.max((long) (((double) minValue / energyCapacity) * 100), 100));
+
+                minValueInput.setValue(LongInputWidget.clamp((long) (((double) minValue / energyCapacity) * 100), 0, 100));
+                maxValueInput.setValue(LongInputWidget.clamp((long) (((double) maxValue / energyCapacity) * 100), 0, 100));
             }
 
             minValueInput.setMax(100L);
@@ -166,8 +168,8 @@ public class AdvancedEnergyDetectorCover extends EnergyDetectorCover implements 
             // This needs to be after setting the maximum, because otherwise the converted value would be
             // limited to 100.
             if (wasPercent) {
-                minValueInput.setValue(Mth.clamp((int) ((minValue / 100.0) * energyCapacity), 0, energyCapacity));
-                maxValueInput.setValue(Mth.clamp((int) ((maxValue / 100.0) * energyCapacity), 0, energyCapacity));
+                minValueInput.setValue(LongInputWidget.clamp((int) ((minValue / 100.0) * energyCapacity), 0, energyCapacity));
+                maxValueInput.setValue(LongInputWidget.clamp((int) ((maxValue / 100.0) * energyCapacity), 0, energyCapacity));
             }
         }
     }

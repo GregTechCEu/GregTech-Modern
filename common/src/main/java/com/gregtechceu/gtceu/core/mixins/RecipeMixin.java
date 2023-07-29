@@ -5,6 +5,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RepairItemRecipe;
 import org.spongepowered.asm.mixin.Mixin;
@@ -16,8 +17,9 @@ import org.spongepowered.asm.mixin.Mixin;
  */
 @Mixin(RepairItemRecipe.class)
 public abstract class RecipeMixin extends CustomRecipe {
-    public RecipeMixin(ResourceLocation id) {
-        super(id);
+
+    public RecipeMixin(ResourceLocation id, CraftingBookCategory category) {
+        super(id, category);
     }
 
     /**

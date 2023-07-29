@@ -70,7 +70,11 @@ public class LongInputWidget extends NumberInputWidget<Long> {
 
     @Override
     protected Long clamp(Long value, Long min, Long max) {
-        return Mth.clamp(value, min, max);
+        return clamp(value, min, max);
+    }
+
+    public static long clamp(long value, long min, long max) {
+        return Math.max(min, Math.min(max, value));
     }
 
     @Override
