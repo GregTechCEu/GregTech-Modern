@@ -86,6 +86,9 @@ public class ConfigHolder {
         @Configurable
         @Configurable.Comment({"Whether to remove Vanilla Block Recipes from the Crafting Table.", "Default: false"})
         public boolean removeVanillaBlockRecipes = false; // default false
+        @Configurable
+        @Configurable.Comment({"Whether to remove Vanilla TNT Recipe from the Crafting Table.", "Default: true"})
+        public boolean removeVanillaTNTRecipe = true; // default true
     }
 
     public static class CompatibilityConfigs {

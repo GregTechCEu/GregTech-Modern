@@ -5,8 +5,6 @@ import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Blocks;
 
 import java.util.function.Consumer;
 
@@ -32,7 +30,7 @@ public class RecipeRemoval {
     }
 
     private static void generalRemovals(Consumer<ResourceLocation> registry) {
-        registry.accept(new ResourceLocation("minecraft:tnt"));
+        if (ConfigHolder.INSTANCE.recipes.removeVanillaTNTRecipe) registry.accept(new ResourceLocation("minecraft:tnt"));
 
         // todo
         /*
@@ -101,7 +99,7 @@ public class RecipeRemoval {
     }
 
     private static void nerfWoodCrafting(Consumer<ResourceLocation> registry) {
-        registry.accept(new ResourceLocation("minecraft:rod"));
+        registry.accept(new ResourceLocation("minecraft:stick"));
     }
 
     private static void hardWoodRecipes(Consumer<ResourceLocation> registry) {
