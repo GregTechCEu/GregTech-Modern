@@ -18,3 +18,4 @@
 * fix drop machines while process array is broke
 * fix nerfwoodrecipe + fix energy detector cover
 * fix tool duplication
+* fix rubber tree generation

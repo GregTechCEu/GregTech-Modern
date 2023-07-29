@@ -26,7 +26,7 @@ public class BiomeTagsProviderImpl extends FabricTagProvider<Biome> implements I
     }
 
     public void addSandyTag() {
-        tag(CustomTags.IS_SANDY).forceAddTag(ConventionalBiomeTags.CLIMATE_DRY).add(Biomes.DESERT, Biomes.BEACH, Biomes.BADLANDS, Biomes.WOODED_BADLANDS);
+        tag(CustomTags.IS_SANDY).forceAddTag(ConventionalBiomeTags.CLIMATE_DRY).addOptional(Biomes.DESERT).addOptional(Biomes.BEACH).addOptional(Biomes.BADLANDS).addOptional(Biomes.WOODED_BADLANDS);
     }
 
     @Override

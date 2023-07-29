@@ -30,12 +30,12 @@ public class BiomeTagsProviderImpl extends BiomeTagsProvider implements IBiomeTa
     @Override
     public void addRubberTreeTag() {
         //noinspection unchecked
-        tag(CustomTags.HAS_RUBBER_TREE).addTags(CustomTags.IS_SWAMP, BiomeTags.IS_FOREST, BiomeTags.IS_JUNGLE);
+        tag(CustomTags.HAS_RUBBER_TREE).addTags(CustomTags.IS_SWAMP).addOptionalTag(BiomeTags.IS_FOREST.location()).addOptionalTag(BiomeTags.IS_JUNGLE.location());
     }
 
     @Override
     public void addSandyTag() {
-        tag(CustomTags.IS_SANDY).addTag(Tags.Biomes.IS_SANDY).add(Biomes.DESERT, Biomes.BEACH, Biomes.BADLANDS, Biomes.WOODED_BADLANDS);
+        tag(CustomTags.IS_SANDY).addOptionalTag(Tags.Biomes.IS_SANDY.location()).addOptional(Biomes.DESERT.location()).addOptional(Biomes.BEACH.location()).addOptional(Biomes.BADLANDS.location()).addOptional(Biomes.WOODED_BADLANDS.location());
     }
 
     @Override
