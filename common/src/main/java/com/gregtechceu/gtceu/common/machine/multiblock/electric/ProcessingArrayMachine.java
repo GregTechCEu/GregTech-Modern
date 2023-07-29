@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.feature.IMachineModifyDrops;
 import com.gregtechceu.gtceu.api.machine.multiblock.TieredWorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
@@ -28,6 +29,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 
@@ -43,7 +45,7 @@ import java.util.List;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class ProcessingArrayMachine extends TieredWorkableElectricMultiblockMachine {
+public class ProcessingArrayMachine extends TieredWorkableElectricMultiblockMachine implements IMachineModifyDrops {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(ProcessingArrayMachine.class, TieredWorkableElectricMultiblockMachine.MANAGED_FIELD_HOLDER);
 
@@ -122,6 +124,11 @@ public class ProcessingArrayMachine extends TieredWorkableElectricMultiblockMach
             }
             getRecipeLogic().updateTickSubscription();
         }
+    }
+
+    @Override
+    public void onDrops(List<ItemStack> drops, Player entity) {
+        clearInventory(drops, machineStorage.storage);
     }
 
     //////////////////////////////////////

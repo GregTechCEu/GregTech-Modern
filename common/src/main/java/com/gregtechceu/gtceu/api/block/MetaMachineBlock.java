@@ -249,26 +249,17 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
 
     @Override
     public int getSignal(BlockState state, BlockGetter level, BlockPos pos, Direction direction) {
-        if (getMachine(level, pos) instanceof IRedstoneSignalMachine redstoneSignalMachine) {
-            return redstoneSignalMachine.getOutputSignal(direction);
-        }
-        return super.getSignal(state, level, pos, direction);
+        return getMachine(level, pos).getOutputSignal(direction);
     }
 
     @Override
     public int getDirectSignal(BlockState state, BlockGetter level, BlockPos pos, Direction direction) {
-        if (getMachine(level, pos) instanceof IRedstoneSignalMachine redstoneSignalMachine) {
-            return redstoneSignalMachine.getOutputDirectSignal(direction);
-        }
-        return super.getDirectSignal(state, level, pos, direction);
+        return getMachine(level, pos).getOutputDirectSignal(direction);
     }
 
     @Override
     public int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos) {
-        if (getMachine(level, pos) instanceof IRedstoneSignalMachine redstoneSignalMachine) {
-            return redstoneSignalMachine.getAnalogOutputSignal();
-        }
-        return super.getAnalogOutputSignal(state, level, pos);
+        return getMachine(level, pos).getAnalogOutputSignal();
     }
 
     @Override

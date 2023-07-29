@@ -385,7 +385,7 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
 
         group.addWidget(new LabelWidget(10, 5, LocalizationUtils.format(getUITitle(), GTValues.VN[tier])));
 
-        group.addWidget(new IntInputWidget(10, 20, 156, 20, this.transferRate, this::setTransferRate)
+        group.addWidget(new IntInputWidget(10, 20, 156, 20, () -> this.transferRate, this::setTransferRate)
                 .setMin(1).setMax(maxItemTransferRate));
 
         ioModeSwitch = new SwitchWidget(10, 45, 20, 20,

@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.capability.forge;
 
 import com.gregtechceu.gtceu.api.capability.*;
+import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -113,6 +114,17 @@ public class GTCapabilityHelperImpl {
             var blockEntity = level.getBlockEntity(pos);
             if (blockEntity != null) {
                 return blockEntity.getCapability(GTCapability.CAPABILITY_CLEANROOM_RECEIVER, side).resolve().orElse(null);
+            }
+        }
+        return null;
+    }
+
+    @Nullable
+    public static IMaintenanceMachine getMaintenanceMachine(Level level, BlockPos pos, @Nullable Direction side) {
+        if (level.getBlockState(pos).hasBlockEntity()) {
+            var blockEntity = level.getBlockEntity(pos);
+            if (blockEntity != null) {
+                return blockEntity.getCapability(GTCapability.CAPABILITY_MAINTENANCE_MACHINE, side).resolve().orElse(null);
             }
         }
         return null;
