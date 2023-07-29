@@ -8,7 +8,9 @@ import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
+import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.tags.ItemTags;
@@ -405,72 +407,63 @@ public class ToolRecipeHandler {
             }
         }
     }
-/*
+
     private static void registerElectricRecipes(Consumer<FinishedRecipe> provider) {
 
-        for (MetaValueItem batteryItem : batteryItems.get(LV)) {
-            ModHandler.addShapedEnergyTransferRecipe("prospector_lv_" + batteryItem.unlocalizedName, GTItems.PROSPECTOR_LV.getStackForm(),
-                    batteryItem::isItemEqual, true, true,
-                    "EPS", "CDC", "PBP",
-                    'E', GTItems.EMITTER_LV.getStackForm(),
-                    'P', new UnificationEntry(plate, Materials.Steel),
-                    'S', GTItems.SENSOR_LV.getStackForm(),
-                    'D', new UnificationEntry(plate, Materials.Glass),
-                    'C', new UnificationEntry(circuit, MarkerMaterials.Tier.LV),
-                    'B', batteryItem.getStackForm());
+        VanillaRecipeHelper.addShapedRecipe(provider, "prospector_lv", GTItems.PROSPECTOR_LV.asStack(),
+                "EPS", "CDC", "PBP",
+                'E', GTItems.EMITTER_LV.asStack(),
+                'P', new UnificationEntry(TagPrefix.plate, GTMaterials.Steel),
+                'S', GTItems.SENSOR_LV.asStack(),
+                'D', new UnificationEntry(TagPrefix.plate, GTMaterials.Glass),
+                'C', CustomTags.LV_CIRCUITS,
+                'B', CustomTags.LV_BATTERIES);
 
-            ModHandler.addShapedEnergyTransferRecipe("magnet_lv_" + batteryItem.unlocalizedName, GTItems.ITEM_MAGNET_LV.getStackForm(),
-                    batteryItem::isItemEqual, true, true,
-                    "MwM", "MBM", "CPC",
-                    'M', new UnificationEntry(rod, Materials.SteelMagnetic),
-                    'P', new UnificationEntry(plate, Materials.Steel),
-                    'C', new UnificationEntry(cableGtSingle, Materials.Tin),
-                    'B', batteryItem.getStackForm());
-        }
+//        ModHandler.addShapedEnergyTransferRecipe("magnet_lv_" + batteryItem.unlocalizedName, GTItems.ITEM_MAGNET_LV.getStackForm(),
+//                batteryItem::isItemEqual, true, true,
+//                "MwM", "MBM", "CPC",
+//                'M', new UnificationEntry(rod, Materials.SteelMagnetic),
+//                'P', new UnificationEntry(plate, Materials.Steel),
+//                'C', new UnificationEntry(cableGtSingle, Materials.Tin),
+//                'B', batteryItem.getStackForm());
 
-        for (MetaValueItem batteryItem : batteryItems.get(MV)) {
-            ModHandler.addShapedEnergyTransferRecipe("tricorder_" + batteryItem.unlocalizedName, GTItems.TRICORDER_SCANNER.getStackForm(),
-                    batteryItem::isItemEqual, true, true,
-                    "EPS", "CDC", "PBP",
-                    'E', GTItems.EMITTER_MV.getStackForm(),
-                    'P', new UnificationEntry(plate, Materials.Aluminium),
-                    'S', GTItems.SENSOR_MV.getStackForm(),
-                    'D', GTItems.COVER_SCREEN.getStackForm(),
-                    'C', new UnificationEntry(circuit, MarkerMaterials.Tier.HV),
-                    'B', batteryItem.getStackForm());
-        }
+//        for (MetaValueItem batteryItem : batteryItems.get(MV)) {
+//            ModHandler.addShapedEnergyTransferRecipe("tricorder_" + batteryItem.unlocalizedName, GTItems.TRICORDER_SCANNER.getStackForm(),
+//                    batteryItem::isItemEqual, true, true,
+//                    "EPS", "CDC", "PBP",
+//                    'E', GTItems.EMITTER_MV.getStackForm(),
+//                    'P', new UnificationEntry(plate, Materials.Aluminium),
+//                    'S', GTItems.SENSOR_MV.getStackForm(),
+//                    'D', GTItems.COVER_SCREEN.getStackForm(),
+//                    'C', new UnificationEntry(circuit, MarkerMaterials.Tier.HV),
+//                    'B', batteryItem.getStackForm());
+//        }
 
-        for (MetaValueItem batteryItem : batteryItems.get(HV)) {
-            ModHandler.addShapedEnergyTransferRecipe("prospector_hv_" + batteryItem.unlocalizedName, GTItems.PROSPECTOR_HV.getStackForm(),
-                    batteryItem::isItemEqual, true, true,
-                    "EPS", "CDC", "PBP",
-                    'E', GTItems.EMITTER_HV.getStackForm(),
-                    'P', new UnificationEntry(plate, Materials.StainlessSteel),
-                    'S', GTItems.SENSOR_HV.getStackForm(),
-                    'D', GTItems.COVER_SCREEN.getStackForm(),
-                    'C', new UnificationEntry(circuit, MarkerMaterials.Tier.HV),
-                    'B', batteryItem.getStackForm());
+        VanillaRecipeHelper.addShapedRecipe(provider, "prospector_hv", GTItems.PROSPECTOR_HV.asStack(),
+                "EPS", "CDC", "PBP",
+                'E', GTItems.EMITTER_HV.asStack(),
+                'P', new UnificationEntry(TagPrefix.plate, GTMaterials.StainlessSteel),
+                'S', GTItems.SENSOR_HV.asStack(),
+                'D', GTItems.COVER_SCREEN.asStack(),
+                'C', CustomTags.HV_CIRCUITS,
+                'B', CustomTags.HV_BATTERIES);
 
-            ModHandler.addShapedEnergyTransferRecipe("magnet_hv_" + batteryItem.unlocalizedName, GTItems.ITEM_MAGNET_HV.getStackForm(),
-                    batteryItem::isItemEqual, true, true,
-                    "MwM", "MBM", "CPC",
-                    'M', new UnificationEntry(rod, Materials.NeodymiumMagnetic),
-                    'P', new UnificationEntry(plate, Materials.StainlessSteel),
-                    'C', new UnificationEntry(cableGtSingle, Materials.Gold),
-                    'B', batteryItem.getStackForm());
-        }
+//        ModHandler.addShapedEnergyTransferRecipe("magnet_hv_" + batteryItem.unlocalizedName, GTItems.ITEM_MAGNET_HV.getStackForm(),
+//                batteryItem::isItemEqual, true, true,
+//                "MwM", "MBM", "CPC",
+//                'M', new UnificationEntry(rod, Materials.NeodymiumMagnetic),
+//                'P', new UnificationEntry(plate, Materials.StainlessSteel),
+//                'C', new UnificationEntry(cableGtSingle, Materials.Gold),
+//                'B', batteryItem.getStackForm());
 
-        for (ItemEntry<? extends Item> batteryItem : batteryItems.get(LuV)) {
-            ModHandler.addShapedEnergyTransferRecipe("prospector_luv_" + batteryItem.unlocalizedName, GTItems.PROSPECTOR_LUV.getStackForm(),
-                    batteryItem::isItemEqual, true, true,
-                    "EPS", "CDC", "PBP",
-                    'E', GTItems.EMITTER_LuV.asStack(),
-                    'P', new UnificationEntry(plate, GTMaterials.RhodiumPlatedPalladium),
-                    'S', GTItems.SENSOR_LuV.asStack(),
-                    'D', GTItems.COVER_SCREEN.asStack(),
-                    'C', new UnificationEntry(circuit, MarkerMaterials.Tier.LuV),
-                    'B', batteryItem.asStack());
-        }
+        VanillaRecipeHelper.addShapedRecipe(provider, "prospector_luv", GTItems.PROSPECTOR_LUV.asStack(),
+                "EPS", "CDC", "PBP",
+                'E', GTItems.EMITTER_LuV.asStack(),
+                'P', new UnificationEntry(TagPrefix.plate, GTMaterials.RhodiumPlatedPalladium),
+                'S', GTItems.SENSOR_HV.asStack(),
+                'D', GTItems.COVER_SCREEN.asStack(),
+                'C', CustomTags.LuV_CIRCUITS,
+                'B', CustomTags.LuV_BATTERIES);
+    
     }
- */
 }
