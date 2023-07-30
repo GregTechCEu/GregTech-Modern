@@ -149,6 +149,16 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
         holder.scheduleRenderUpdate();
     }
 
+    public void scheduleNeighborShapeUpdate() {
+        Level level = getLevel();
+        BlockPos pos = getPos();
+
+        if (level == null || pos == null)
+            return;
+
+        level.getBlockState(pos).updateNeighbourShapes(level, pos, Block.UPDATE_ALL);
+    }
+
     public long getOffsetTimer() {
         return holder.getOffsetTimer();
     }
@@ -574,5 +584,4 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
     public int getDefaultPaintingColor() {
         return getDefinition().getDefaultPaintingColor();
     }
-
 }

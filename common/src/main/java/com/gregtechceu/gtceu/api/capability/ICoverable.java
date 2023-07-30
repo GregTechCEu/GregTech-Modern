@@ -50,6 +50,8 @@ public interface ICoverable extends ITickSubscription, IAppearance, IFancyConfig
 
     void scheduleRenderUpdate();
 
+    void scheduleNeighborShapeUpdate();
+
     boolean canPlaceCoverOnSide(CoverDefinition definition, Direction side);
 
     double getCoverPlateThickness();
@@ -83,6 +85,7 @@ public interface ICoverable extends ITickSubscription, IAppearance, IFancyConfig
         setCoverAtSide(coverBehavior, side);
         notifyBlockUpdate();
         markDirty();
+        scheduleNeighborShapeUpdate();
         // TODO achievement
 //        AdvancementTriggers.FIRST_COVER_PLACE.trigger((EntityPlayerMP) player);
         return true;
@@ -104,6 +107,7 @@ public interface ICoverable extends ITickSubscription, IAppearance, IFancyConfig
         }
         notifyBlockUpdate();
         markDirty();
+        scheduleNeighborShapeUpdate();
         return true;
     }
 

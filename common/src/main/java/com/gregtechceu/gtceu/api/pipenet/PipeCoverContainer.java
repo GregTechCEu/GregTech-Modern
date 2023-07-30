@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.api.pipenet;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
+import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
@@ -90,6 +90,11 @@ public class PipeCoverContainer implements ICoverable, IEnhancedManaged {
     @Override
     public void scheduleRenderUpdate() {
         pipeTile.scheduleRenderUpdate();
+    }
+
+    @Override
+    public void scheduleNeighborShapeUpdate() {
+        pipeTile.scheduleNeighborShapeUpdate();
     }
 
     @Override
