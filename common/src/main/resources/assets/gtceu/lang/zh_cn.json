@@ -1,5 +1,5 @@
 {
-    " tile.wire_coil.tooltip_energy_cracking":"§a耗能：§f%s%%",
+    "tile.wire_coil.tooltip_energy_cracking":"  §a耗能：§f%s%%",
     "behavior.item_magnet.disabled":"§c磁场已禁用",
     "behavior.item_magnet.enabled":"§a磁场已启用",
     "behavior.prospector.not_enough_energy":"能量不足！",
