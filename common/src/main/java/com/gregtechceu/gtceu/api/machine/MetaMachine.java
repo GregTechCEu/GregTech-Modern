@@ -481,6 +481,17 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
         return cover.getRedstoneSignalOutput();
     }
 
+    @Override
+    public boolean canConnectRedstone(Direction side) {
+        if (side == null) return false;
+
+        // For some reason, Minecraft requests the output signal from the opposite side...
+        CoverBehavior cover = getCoverContainer().getCoverAtSide(side);
+        if (cover == null) return false;
+
+        return cover.canConnectRedstone();
+    }
+
     //////////////////////////////////////
     //******     Capability     ********//
     //////////////////////////////////////

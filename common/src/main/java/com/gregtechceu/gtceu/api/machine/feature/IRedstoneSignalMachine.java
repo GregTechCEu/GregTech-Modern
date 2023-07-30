@@ -23,6 +23,10 @@ public interface IRedstoneSignalMachine extends IMachineFeature {
         return 0;
     }
 
+    default boolean canConnectRedstone(Direction side) {
+        return false;
+    }
+
     /**
      * Call to update output signal.
      * also see {@link IRedstoneSignalMachine#getOutputSignal(Direction)} and {@link IRedstoneSignalMachine#getOutputDirectSignal(Direction)}
@@ -33,6 +37,5 @@ public interface IRedstoneSignalMachine extends IMachineFeature {
             self().notifyBlockUpdate();
         }
     }
-
 
 }

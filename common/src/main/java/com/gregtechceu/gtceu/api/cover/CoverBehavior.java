@@ -133,6 +133,10 @@ public abstract class CoverBehavior implements IEnhancedManaged, IToolGridHighLi
         coverHolder.markDirty();
     }
 
+    public boolean canConnectRedstone() {
+        return false;
+    }
+
     //////////////////////////////////////
     //*******     Interaction    *******//
     //////////////////////////////////////
