@@ -10,7 +10,6 @@ import com.gregtechceu.gtceu.api.data.worldgen.WorldGenLayers;
 import com.gregtechceu.gtceu.api.gui.factory.CoverUIFactory;
 import com.gregtechceu.gtceu.api.gui.factory.GTUIEditorFactory;
 import com.gregtechceu.gtceu.api.gui.factory.MachineUIFactory;
-import com.gregtechceu.gtceu.api.gui.compass.LayoutComponentManager;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.common.data.materials.GTFoods;
@@ -35,7 +34,6 @@ public class CommonProxy {
         UIFactory.register(MachineUIFactory.INSTANCE);
         UIFactory.register(CoverUIFactory.INSTANCE);
         UIFactory.register(GTUIEditorFactory.INSTANCE);
-        LayoutComponentManager.init();
         GTPlacerTypes.init();
         GTRecipeCapabilities.init();
         GTRecipeConditions.init();

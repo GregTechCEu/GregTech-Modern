@@ -1,0 +1,10 @@
+{
+  "button_texture": {
+    "type": "resource",
+    "res": "gtceu:textures/gui/icon/gregtech_logo.png"
+  },
+  "background_texture": {
+    "type": "resource",
+    "res": "gtceu:textures/gui/base/display.png"
+  }
+}

@@ -1,11 +1,10 @@
 package com.gregtechceu.gtceu.common.item;
 
-import com.gregtechceu.gtceu.api.gui.compass.CompassView;
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.item.component.IItemUIFactory;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
-import com.lowdragmc.lowdraglib.LDLib;
-import com.lowdragmc.lowdraglib.gui.editor.ui.UIEditor;
+import com.lowdragmc.lowdraglib.gui.compass.CompassView;
 import com.lowdragmc.lowdraglib.gui.factory.HeldItemUIFactory;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import net.minecraft.core.BlockPos;
@@ -35,8 +34,7 @@ public class TerminalBehavior implements IItemUIFactory {
 
     @Override
     public ModularUI createUI(HeldItemUIFactory.HeldItemHolder holder, Player entityPlayer) {
-        return new ModularUI(holder, entityPlayer)
-                .widget(new CompassView());
+        return new ModularUI(holder, entityPlayer).widget(new CompassView(GTCEu.MOD_ID));
     }
 
 }
