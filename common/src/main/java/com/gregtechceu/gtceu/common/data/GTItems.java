@@ -995,6 +995,7 @@ public class GTItems {
 
     public static ItemEntry<ComponentItem> COVER_SCREEN = REGISTRATE.item("computer_monitor_cover", ComponentItem::create)
             .lang("Computer Monitor")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.COMPUTER_MONITOR)))
             .register();
     public static ItemEntry<ComponentItem> COVER_CRAFTING = REGISTRATE.item("crafting_table_cover", ComponentItem::create)
             .lang("Crafting Table Cover")
