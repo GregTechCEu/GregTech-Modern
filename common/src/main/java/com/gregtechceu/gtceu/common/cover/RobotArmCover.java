@@ -154,7 +154,7 @@ public class RobotArmCover extends ConveyorCover {
         group.addWidget(transferModeSelector);
 
         this.stackSizeInput = new IntInputWidget(64, 45, 80, 20,
-                globalTransferLimit, val -> globalTransferLimit = val
+                () -> globalTransferLimit, val -> globalTransferLimit = val
         );
         configureStackSizeInput();
 

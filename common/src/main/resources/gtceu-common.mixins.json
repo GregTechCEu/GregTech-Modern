@@ -23,6 +23,7 @@
     "RecipeManagerAccessor",
     "RecipeManagerInvoker",
     "RecipeManagerMixin",
+    "RecipeMixin",
     "ServerChunkProviderMixin",
     "ServerPlayerGameModeMixin",
     "ShapedRecipeInvoker",

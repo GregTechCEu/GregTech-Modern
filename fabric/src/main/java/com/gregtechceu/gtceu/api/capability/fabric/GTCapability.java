@@ -2,8 +2,8 @@ package com.gregtechceu.gtceu.api.capability.fabric;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.*;
+import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
-import com.gregtechceu.gtceu.common.machine.trait.ConverterTrait;
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
 import net.fabricmc.fabric.api.lookup.v1.item.ItemApiLookup;
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
@@ -38,4 +38,7 @@ public class GTCapability {
 
     public static final BlockApiLookup<ICleanroomReceiver, Direction> CAPABILITY_CLEANROOM_RECEIVER =
             BlockApiLookup.get(GTCEu.id("cleanroom_receiver"), ICleanroomReceiver.class, Direction.class);
+
+    public static final BlockApiLookup<IMaintenanceMachine, Direction> CAPABILITY_MAINTENANCE_MACHINE =
+            BlockApiLookup.get(GTCEu.id("maintenance_machine"), IMaintenanceMachine.class, Direction.class);
 }

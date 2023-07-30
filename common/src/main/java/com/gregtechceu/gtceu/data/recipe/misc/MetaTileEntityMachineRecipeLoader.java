@@ -407,46 +407,41 @@ public class MetaTileEntityMachineRecipeLoader {
                 .duration(100).EUt(VA[UV]).save(provider);
 
         // 16A Energy Hatches
-        // TODO Adjustable transformers
-/*
-        ASSEMBLER_RECIPES.recipeBuilder()
-                .inputItems(ADJUSTABLE_TRANSFORMER[IV])
-                .inputItems(ENERGY_INPUT_HATCH_4A[1])
+
+        ASSEMBLER_RECIPES.recipeBuilder("energy_hatch_16a_ev")
+                .inputItems(ENERGY_INPUT_HATCH_4A[1], 2)
                 .inputItems(HIGH_POWER_INTEGRATED_CIRCUIT, 2)
                 .inputItems(VOLTAGE_COIL_IV)
                 .inputItems(wireGtOctal, Tungsten, 2)
                 .outputItems(ENERGY_INPUT_HATCH_16A[0])
                 .duration(200).EUt(VA[EV]).save(provider);
 
-        ASSEMBLER_RECIPES.recipeBuilder()
-                .inputItems(ADJUSTABLE_TRANSFORMER[LuV])
-                .inputItems(ENERGY_INPUT_HATCH_4A[2])
+        ASSEMBLER_RECIPES.recipeBuilder("energy_hatch_16a_iv")
+                .inputItems(ENERGY_INPUT_HATCH_4A[2], 2)
                 .inputItems(HIGH_POWER_INTEGRATED_CIRCUIT, 2)
                 .inputItems(VOLTAGE_COIL_LuV)
                 .inputItems(wireGtOctal, NiobiumTitanium, 2)
                 .outputItems(ENERGY_INPUT_HATCH_16A[1])
                 .duration(200).EUt(VA[IV]).save(provider);
 
-        ASSEMBLER_RECIPES.recipeBuilder()
-                .inputItems(ADJUSTABLE_TRANSFORMER[ZPM])
-                .inputItems(ENERGY_INPUT_HATCH_4A[3])
+        ASSEMBLER_RECIPES.recipeBuilder("energy_hatch_16a_luv")
+                .inputItems(ENERGY_INPUT_HATCH_4A[3], 2)
                 .inputItems(ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT, 2)
                 .inputItems(VOLTAGE_COIL_ZPM)
                 .inputItems(wireGtOctal, VanadiumGallium, 2)
                 .outputItems(ENERGY_INPUT_HATCH_16A[2])
                 .duration(200).EUt(VA[LuV]).save(provider);
 
-        ASSEMBLER_RECIPES.recipeBuilder()
-                .inputItems(ADJUSTABLE_TRANSFORMER[UV])
-                .inputItems(ENERGY_INPUT_HATCH_4A[4])
+        ASSEMBLER_RECIPES.recipeBuilder("energy_hatch_16a_zpm")
+                .inputItems(ENERGY_INPUT_HATCH_4A[4], 2)
                 .inputItems(ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT, 2)
                 .inputItems(VOLTAGE_COIL_UV)
                 .inputItems(wireGtOctal, YttriumBariumCuprate, 2)
                 .outputItems(ENERGY_INPUT_HATCH_16A[3])
                 .duration(200).EUt(VA[ZPM]).save(provider);
- */
 
-        ASSEMBLER_RECIPES.recipeBuilder("energy_hatch_16a_uhv")
+
+        ASSEMBLER_RECIPES.recipeBuilder("energy_hatch_16a_uv")
                 .inputItems(ENERGY_INPUT_HATCH_4A[5], 2)
                 .inputItems(ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT, 2)
                 .inputItems(wireGtDouble, RutheniumTriniumAmericiumNeutronate)

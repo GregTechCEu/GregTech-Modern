@@ -13,10 +13,13 @@ import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
+import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import lombok.Getter;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
 /**
@@ -24,7 +27,15 @@ import java.util.List;
  * @date 2023/3/27
  * @implNote CrateMachine
  */
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class CrateMachine extends MetaMachine implements IUIMachine, IMachineModifyDrops {
+    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(CrateMachine.class, MetaMachine.MANAGED_FIELD_HOLDER);
+    @Override
+    public ManagedFieldHolder getFieldHolder() {
+        return MANAGED_FIELD_HOLDER;
+    }
+
     @Getter
     private final Material material;
     @Getter

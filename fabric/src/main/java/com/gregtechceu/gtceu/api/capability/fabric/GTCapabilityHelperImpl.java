@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.capability.fabric;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.*;
+import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.minecraft.core.BlockPos;
@@ -75,5 +76,10 @@ public class GTCapabilityHelperImpl {
     @Nullable
     public static ICleanroomReceiver getCleanroomReceiver(Level level, BlockPos pos, @Nullable Direction side) {
         return GTCapability.CAPABILITY_CLEANROOM_RECEIVER.find(level, pos, side);
+    }
+
+    @Nullable
+    public static IMaintenanceMachine getMaintenanceMachine(Level level, BlockPos pos, @Nullable Direction side) {
+        return GTCapability.CAPABILITY_MAINTENANCE_MACHINE.find(level, pos, side);
     }
 }
