@@ -32,9 +32,9 @@ public class CompassSection {
     @Getter
     private final ResourceLocation sectionID;
     @Setter
-    private Supplier<IGuiTexture> icon;
+    private Supplier<IGuiTexture> icon = () -> IGuiTexture.EMPTY;
     @Setter
-    private Supplier<IGuiTexture> background;
+    private Supplier<IGuiTexture> background = () -> IGuiTexture.EMPTY;
     @Setter
     private int priority = 99;
     @Setter @Getter
