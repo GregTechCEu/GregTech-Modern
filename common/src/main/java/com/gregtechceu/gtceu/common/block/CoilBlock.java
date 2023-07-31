@@ -45,7 +45,7 @@ public class CoilBlock extends ActiveBlock {
         super.appendHoverText(stack, level, tooltip, flag);
         if (GTUtil.isShiftDown()) {
             int coilTier = coilType.getTier();
-            tooltip.add(Component.translatable("gtceu.recipe.temperature", coilType.getCoilTemperature()));
+            tooltip.add(Component.translatable("tile.wire_coil.tooltip_heat", coilType.getCoilTemperature()));
             tooltip.add(Component.translatable("tile.wire_coil.tooltip_smelter"));
             tooltip.add(Component.translatable("tile.wire_coil.tooltip_parallel_smelter", coilType.getLevel() * 32));
             tooltip.add(Component.translatable("tile.wire_coil.tooltip_energy_smelter", Math.max(1, 16 / coilType.getEnergyDiscount())));
