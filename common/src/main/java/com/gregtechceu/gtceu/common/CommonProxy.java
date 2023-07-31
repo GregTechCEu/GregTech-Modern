@@ -51,6 +51,7 @@ public class CommonProxy {
         GTMachines.init();
         GTFoods.init();
         GTItems.init();
+        GTCompassSections.init();
         GregTechDatagen.init();
         AddonFinder.getAddons().forEach(IGTAddon::initializeAddon);
 

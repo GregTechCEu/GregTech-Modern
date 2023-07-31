@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.data.forge;
 
+import com.gregtechceu.gtceu.api.registry.registrate.CompassSection;
 import com.gregtechceu.gtceu.api.registry.registrate.SoundEntryBuilder;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.data.event.GatherDataEvent;
@@ -13,8 +14,11 @@ public class DataGenerators {
     public static void gatherData(GatherDataEvent event) {
         DataGenerator generator = event.getGenerator();
         if (event.includeServer()) {
-            var provider = new SoundEntryBuilder.SoundEntryProvider(generator);
-            generator.addProvider(true, provider);
+            // sound
+            generator.addProvider(true, new SoundEntryBuilder.SoundEntryProvider(generator));
+            // compass
+            generator.addProvider(true, new CompassSection.CompassSectionProvider(generator));
+            // biome
             generator.addProvider(true, new BiomeTagsProviderImpl(generator, event.getExistingFileHelper()));
         }
     }
