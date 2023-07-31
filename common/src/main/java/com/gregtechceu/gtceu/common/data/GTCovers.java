@@ -60,6 +60,11 @@ public class GTCovers {
             new SimpleCoverRenderer(GTCEu.id("block/cover/overlay_display"))
     );
 
+    public final static CoverDefinition MACHINE_CONTROLLER = register(
+            "machine_controller", MachineControllerCover::new,
+            new SimpleCoverRenderer(GTCEu.id("block/cover/overlay_controller"))
+    );
+
 
     // Detectors
     public final static CoverDefinition ACTIVITY_DETECTOR = register(
