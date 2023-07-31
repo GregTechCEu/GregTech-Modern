@@ -33,7 +33,7 @@ public class GTPlacements {
                 new BiomePlacement(List.of(
                         new BiomeWeightModifier(() -> biomeLookup.getOrThrow(CustomTags.IS_SWAMP), 50)
                 )),
-                PlacementUtils.countExtra(0, 0.05F, 1),
+                PlacementUtils.countExtra(0, 0.5F, 1),
                 InSquarePlacement.spread(),
                 SurfaceWaterDepthFilter.forMaxDepth(0),
                 PlacementUtils.HEIGHTMAP_OCEAN_FLOOR,
