@@ -1,5 +1,5 @@
 {
-  " tile.wire_coil.tooltip_energy_cracking": "  §aEnergy Usage: §f%s%%",
+  "tile.wire_coil.tooltip_energy_cracking": "  §aEnergy Usage: §f%s%%",
   "behavior.item_magnet.disabled": "§cMagnetic Field Disabled",
   "behavior.item_magnet.enabled": "§aMagnetic Field Enabled",
   "behavior.prospector.not_enough_energy": "Not Enough Energy!",
