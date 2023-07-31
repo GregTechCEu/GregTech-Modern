@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.data.worldgen.generator.BiomePlacement;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTPlacements;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.minecraft.core.BlockPos;
@@ -63,11 +64,12 @@ public class GTFeaturesImpl {
                 new BiomePlacement(List.of(
                         new BiomeWeightModifier(biomeRegistry.getOrCreateTag(CustomTags.IS_SWAMP), 50)
                 )),
-                PlacementUtils.countExtra(0, 0.005F, 1),
-                InSquarePlacement.spread(), VegetationPlacements.TREE_THRESHOLD,
+                PlacementUtils.countExtra(0, ConfigHolder.INSTANCE.worldgen.rubberTreeSpawnChance, 1),
+                InSquarePlacement.spread(),
+                VegetationPlacements.TREE_THRESHOLD,
                 PlacementUtils.HEIGHTMAP_OCEAN_FLOOR,
-                BlockPredicateFilter.forPredicate(BlockPredicate.wouldSurvive(GTBlocks.RUBBER_SAPLING.getDefaultState(), BlockPos.ZERO)),
-                BiomeFilter.biome()
+                BiomeFilter.biome(),
+                PlacementUtils.filteredByBlockSurvival(GTBlocks.RUBBER_SAPLING.get())
         ));
 
         Registry.register(BuiltinRegistries.PLACED_FEATURE, id, placedFeature);
