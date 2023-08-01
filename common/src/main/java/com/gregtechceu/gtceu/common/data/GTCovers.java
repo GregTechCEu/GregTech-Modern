@@ -55,6 +55,16 @@ public class GTCovers {
             tier -> PumpCoverRenderer.INSTANCE, GTValues.LV, GTValues.MV, GTValues.HV, GTValues.EV, GTValues.IV, GTValues.LuV
     );
 
+    public final static CoverDefinition COMPUTER_MONITOR = register(
+            "computer_monitor", ComputerMonitorCover::new,
+            new SimpleCoverRenderer(GTCEu.id("block/cover/overlay_display"))
+    );
+
+    public final static CoverDefinition MACHINE_CONTROLLER = register(
+            "machine_controller", MachineControllerCover::new,
+            new SimpleCoverRenderer(GTCEu.id("block/cover/overlay_controller"))
+    );
+
 
     // Detectors
     public final static CoverDefinition ACTIVITY_DETECTOR = register(
