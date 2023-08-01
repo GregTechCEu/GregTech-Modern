@@ -10,7 +10,7 @@ import com.gregtechceu.gtceu.api.cover.IUICover;
 import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
-import com.gregtechceu.gtceu.api.machine.TickableSubscription;
+import com.gregtechceu.gtceu.api.machine.ConditionalSubscriptionHandler;
 import com.gregtechceu.gtceu.api.syncdata.RequireRerender;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
@@ -31,8 +31,6 @@ import lombok.Getter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.server.TickTask;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.NotNull;
@@ -65,8 +63,9 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
     @Nullable
     protected ItemFilter filterHandler;
     protected int itemsLeftToTransferLastSecond;
-    private TickableSubscription subscription;
     private Widget ioModeSwitch;
+
+    protected final ConditionalSubscriptionHandler subscriptionHandler;
 
     public ConveyorCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide, int tier) {
         super(definition, coverHolder, attachedSide);
@@ -76,6 +75,13 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
         this.itemsLeftToTransferLastSecond = transferRate;
         this.filterItem = ItemStack.EMPTY;
         this.io = IO.OUT;
+
+        subscriptionHandler = new ConditionalSubscriptionHandler(coverHolder, this::update, this::isSubscriptionActive);
+    }
+
+    private boolean isSubscriptionActive() {
+        return isWorkingEnabled() && getAdjacentItemTransfer() != null;
+    }
 
     protected @Nullable IItemTransfer getOwnItemTransfer() {
         return ItemTransferHelper.getItemTransfer(coverHolder.getLevel(), coverHolder.getPos(), attachedSide);
@@ -113,17 +119,13 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
     @Override
     public void onLoad() {
         super.onLoad();
-        if (coverHolder.getLevel() instanceof ServerLevel serverLevel) {
-            serverLevel.getServer().tell(new TickTask(0, this::updateSubscription));
-        }
+        subscriptionHandler.initialize(coverHolder.getLevel());
     }
 
     @Override
     public void onRemoved() {
         super.onRemoved();
-        if (subscription != null) {
-            subscription.unsubscribe();
-        }
+        subscriptionHandler.unsubscribe();
     }
 
     @Override
@@ -152,25 +154,14 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
 
     @Override
     public void onNeighborChanged(Block block, BlockPos fromPos, boolean isMoving) {
-        updateSubscription();
+        subscriptionHandler.updateSubscription();
     }
 
     @Override
     public void setWorkingEnabled(boolean isWorkingAllowed) {
         if (this.isWorkingEnabled != isWorkingAllowed) {
             this.isWorkingEnabled = isWorkingAllowed;
-            updateSubscription();
-        }
-    }
-
-    protected void updateSubscription() {
-        var level = coverHolder.getLevel();
-        var pos = coverHolder.getPos();
-        if (isWorkingEnabled() && ItemTransferHelper.getItemTransfer(level, pos.relative(attachedSide), attachedSide.getOpposite()) != null) {
-            subscription = coverHolder.subscribeServerTick(subscription, this::update);
-        } else if (subscription != null) {
-            subscription.unsubscribe();
-            subscription = null;
+            subscriptionHandler.updateSubscription();
         }
     }
 
@@ -192,7 +183,7 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
             if (timer % 20 == 0) {
                 this.itemsLeftToTransferLastSecond = transferRate;
             }
-            updateSubscription();
+            subscriptionHandler.updateSubscription();
         }
     }
 

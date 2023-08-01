@@ -10,7 +10,7 @@ import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.cover.IUICover;
 import com.gregtechceu.gtceu.api.cover.filter.FluidFilter;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.machine.TickableSubscription;
+import com.gregtechceu.gtceu.api.machine.ConditionalSubscriptionHandler;
 import com.gregtechceu.gtceu.api.syncdata.RequireRerender;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceBorderTexture;
@@ -29,8 +29,6 @@ import lombok.Getter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.server.TickTask;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
@@ -64,7 +62,8 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
     @Nullable
     private FluidFilter filterHandler;
     protected long fluidLeftToTransferLastSecond;
-    private TickableSubscription subscription;
+
+    protected final ConditionalSubscriptionHandler subscriptionHandler;
 
     public PumpCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide, int tier) {
         super(definition, coverHolder, attachedSide);
@@ -74,8 +73,14 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
         this.fluidLeftToTransferLastSecond = transferRate;
         this.filterItem = ItemStack.EMPTY;
         this.io = IO.OUT;
+
+        subscriptionHandler = new ConditionalSubscriptionHandler(coverHolder, this::update, this::isSubscriptionActive);
     }
-    
+
+    private boolean isSubscriptionActive() {
+        return isWorkingEnabled() && getAdjacentFluidTransfer() != null;
+    }
+
     protected @Nullable IFluidTransfer getOwnFluidTransfer() {
         return FluidTransferHelper.getFluidTransfer(coverHolder.getLevel(), coverHolder.getPos(), attachedSide);
     }
@@ -124,17 +129,13 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
     @Override
     public void onLoad() {
         super.onLoad();
-        if (coverHolder.getLevel() instanceof ServerLevel serverLevel) {
-            serverLevel.getServer().tell(new TickTask(0, this::updateSubscription));
-        }
+        subscriptionHandler.initialize(coverHolder.getLevel());
     }
 
     @Override
     public void onRemoved() {
         super.onRemoved();
-        if (subscription != null) {
-            subscription.unsubscribe();
-        }
+        subscriptionHandler.unsubscribe();
     }
 
     @Override
@@ -163,26 +164,16 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
 
     @Override
     public void onNeighborChanged(Block block, BlockPos fromPos, boolean isMoving) {
-        updateSubscription();
+        subscriptionHandler.updateSubscription();
     }
 
     @Override
     public void setWorkingEnabled(boolean isWorkingAllowed) {
         if (this.isWorkingEnabled != isWorkingAllowed) {
             this.isWorkingEnabled = isWorkingAllowed;
-            updateSubscription();
+            subscriptionHandler.updateSubscription();
         }
     }
-
-    protected void updateSubscription() {
-        if (isWorkingEnabled() && getAdjacentFluidTransfer() != null) {
-            subscription = coverHolder.subscribeServerTick(subscription, this::update);
-        } else if (subscription != null) {
-            subscription.unsubscribe();
-            subscription = null;
-        }
-    }
-
 
     private void update() {
         long timer = coverHolder.getOffsetTimer();
@@ -193,7 +184,7 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
             if (timer % 20 == 0) {
                 this.fluidLeftToTransferLastSecond = transferRate;
             }
-            updateSubscription();
+            subscriptionHandler.updateSubscription();
         }
     }
 
