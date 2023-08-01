@@ -938,6 +938,7 @@ public class GTItems {
 
     public static ItemEntry<ComponentItem> COVER_MACHINE_CONTROLLER = REGISTRATE.item("machine_controller_cover", ComponentItem::create)
             .lang("Machine Controller")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.MACHINE_CONTROLLER)))
             .onRegister(compassNode(GTCompassSections.COVERS, GTCompassNodes.COVER))
             .register();
 
@@ -991,6 +992,7 @@ public class GTItems {
 
     public static ItemEntry<ComponentItem> COVER_SCREEN = REGISTRATE.item("computer_monitor_cover", ComponentItem::create)
             .lang("Computer Monitor")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.COMPUTER_MONITOR)))
             .onRegister(compassNode(GTCompassSections.COVERS, GTCompassNodes.COVER))
             .register();
     public static ItemEntry<ComponentItem> COVER_CRAFTING = REGISTRATE.item("crafting_table_cover", ComponentItem::create)

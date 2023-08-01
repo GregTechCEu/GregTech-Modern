@@ -330,7 +330,8 @@ public class LangHandler {
         provider.add("cover.machine_controller.title", "Machine Controller Settings");
         provider.add("cover.machine_controller.normal", "Normal");
         provider.add("cover.machine_controller.inverted", "Inverted");
-        multilineLang(provider, "cover.machine_controller.inverted.description", "§eNormal§r - in this mode, the cover will require a signal weaker than the set redstone level to run\n§eInverted§r - in this mode, the cover will require a signal stronger than the set redstone level to run");
+        multilineLang(provider, "cover.machine_controller.invert.enabled", "§eInverted§r - in this mode, the cover will require a signal stronger than the set redstone level to run");
+        multilineLang(provider, "cover.machine_controller.invert.disabled", "§eNormal§r - in this mode, the cover will require a signal weaker than the set redstone level to run");
         provider.add("cover.machine_controller.redstone", "Min Redstone Strength: %d");
         provider.add("cover.machine_controller.mode.machine", "Control Machine");
         provider.add("cover.machine_controller.mode.cover_up", "Control Cover (Top)");

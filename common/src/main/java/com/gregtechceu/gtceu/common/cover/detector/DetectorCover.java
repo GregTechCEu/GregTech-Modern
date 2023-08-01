@@ -95,5 +95,10 @@ public abstract class DetectorCover extends CoverBehavior implements IControllab
 
         return InteractionResult.SUCCESS;
     }
+
+    @Override
+    public boolean canConnectRedstone() {
+        return true;
+    }
 }
 

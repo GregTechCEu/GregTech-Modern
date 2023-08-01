@@ -29,6 +29,7 @@
     "ServerChunkProviderMixin",
     "ServerPlayerGameModeMixin",
     "ShapedRecipeInvoker",
+    "SidedRedstoneConnectivityMixin",
     "TagLoaderMixin",
     "TagManagerMixin",
     "create.RotationPropagatorMixin",

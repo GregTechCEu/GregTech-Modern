@@ -247,17 +247,25 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
         return InteractionResult.PASS;
     }
 
+
+    public boolean canConnectRedstone(BlockGetter level, BlockPos pos, Direction side) {
+        return getMachine(level, pos).canConnectRedstone(side);
+    }
+
     @Override
+    @SuppressWarnings("deprecation") // This is fine to override, just not to be called.
     public int getSignal(BlockState state, BlockGetter level, BlockPos pos, Direction direction) {
         return getMachine(level, pos).getOutputSignal(direction);
     }
 
     @Override
+    @SuppressWarnings("deprecation") // This is fine to override, just not to be called.
     public int getDirectSignal(BlockState state, BlockGetter level, BlockPos pos, Direction direction) {
         return getMachine(level, pos).getOutputDirectSignal(direction);
     }
 
     @Override
+    @SuppressWarnings("deprecation") // This is fine to override, just not to be called.
     public int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos) {
         return getMachine(level, pos).getAnalogOutputSignal();
     }
