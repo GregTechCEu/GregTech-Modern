@@ -1409,6 +1409,7 @@ public class GTMachines {
         MachineDefinition highTier = builder.apply(true, REGISTRATE.machine("hp_%s".formatted(name), holder -> factory.apply(holder, true))
                 .langValue("High Pressure " + FormattingUtil.toEnglishName(name))
                 .compassSections(GTCompassSections.STEAM)
+                .compassNode(name)
                 .compassPreNodes(GTCompassNodes.HIGH_PRESSURE)
                 .tier(1));
         return Pair.of(lowTier, highTier);
