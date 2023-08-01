@@ -30,14 +30,11 @@ import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import com.tterrag.registrate.builders.BlockBuilder;
-import com.tterrag.registrate.providers.DataGenContext;
 import com.tterrag.registrate.providers.ProviderType;
-import com.tterrag.registrate.providers.RegistrateItemModelProvider;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import com.tterrag.registrate.util.nullness.NonNullFunction;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
-import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.advancements.critereon.StatePropertiesPredicate;
@@ -51,8 +48,6 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.level.FoliageColor;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.grower.AbstractTreeGrower;
@@ -627,15 +622,11 @@ public class GTBlocks {
             .addLayer(() -> RenderType::cutoutMipped)
             .tag(BlockTags.SAPLINGS)
             .item()
-            .model(GTBlocks::rubberTreeModel)
+            .model(GTModels::rubberTreeSaplingModel)
             .tag(ItemTags.SAPLINGS)
             .build()
             .register();
 
-    @ExpectPlatform
-    private static void rubberTreeModel(DataGenContext<Item, BlockItem> context, RegistrateItemModelProvider provider) {
-        throw new AssertionError();
-    }
 
     public static final BlockEntry<RubberLogBlock> RUBBER_LOG = REGISTRATE.block("rubber_log", RubberLogBlock::new)
             .properties(p -> p.strength(2.0F).sound(SoundType.WOOD))
