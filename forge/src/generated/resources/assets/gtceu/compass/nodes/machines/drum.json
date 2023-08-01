@@ -1,0 +1,22 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:wood_drum"
+  },
+  "items": [
+    "gtceu:wood_drum",
+    "gtceu:bronze_drum",
+    "gtceu:steel_drum",
+    "gtceu:aluminium_drum",
+    "gtceu:stainless_steel_drum",
+    "gtceu:gold_drum",
+    "gtceu:titanium_drum",
+    "gtceu:tungsten_steel_drum"
+  ],
+  "page": "gtceu:machines/drum",
+  "position": [
+    -200,
+    300
+  ],
+  "section": "gtceu:machines"
+}

@@ -1,0 +1,15 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:primitive_pump"
+  },
+  "items": [
+    "gtceu:primitive_pump"
+  ],
+  "page": "gtceu:multiblock/primitive_pump",
+  "position": [
+    -300,
+    100
+  ],
+  "section": "gtceu:multiblock"
+}

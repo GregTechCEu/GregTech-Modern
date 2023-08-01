@@ -1,0 +1,22 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:lv_alloy_smelter"
+  },
+  "items": [
+    "gtceu:lv_alloy_smelter",
+    "gtceu:mv_alloy_smelter",
+    "gtceu:hv_alloy_smelter",
+    "gtceu:ev_alloy_smelter",
+    "gtceu:iv_alloy_smelter",
+    "gtceu:luv_alloy_smelter",
+    "gtceu:zpm_alloy_smelter",
+    "gtceu:uv_alloy_smelter"
+  ],
+  "page": "gtceu:machines/alloy_smelter",
+  "position": [
+    -250,
+    0
+  ],
+  "section": "gtceu:machines"
+}

@@ -1,0 +1,15 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:luv_fusion_reactor"
+  },
+  "items": [
+    "gtceu:luv_fusion_reactor"
+  ],
+  "page": "gtceu:luv/luv_fusion_reactor",
+  "position": [
+    -100,
+    0
+  ],
+  "section": "gtceu:luv"
+}

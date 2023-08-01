@@ -1,0 +1,20 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:lp_steam_alloy_smelter"
+  },
+  "items": [
+    "gtceu:lp_steam_alloy_smelter",
+    "gtceu:hp_steam_alloy_smelter"
+  ],
+  "page": "gtceu:steam/steam_alloy_smelter",
+  "position": [
+    -150,
+    50
+  ],
+  "pre_nodes": [
+    "gtceu:steam/high_pressure",
+    "gtceu:steam/low_pressure"
+  ],
+  "section": "gtceu:steam"
+}

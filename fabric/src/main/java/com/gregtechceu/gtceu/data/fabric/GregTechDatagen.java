@@ -1,10 +1,13 @@
 package com.gregtechceu.gtceu.data.fabric;
 
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.api.registry.registrate.CompassNode;
+import com.gregtechceu.gtceu.api.registry.registrate.CompassSection;
 import com.gregtechceu.gtceu.api.registry.registrate.SoundEntryBuilder;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.server.packs.PackType;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
 /**
@@ -22,8 +25,10 @@ public class GregTechDatagen implements DataGeneratorEntrypoint {
                 rootPath.resolve("fabric").resolve("src").resolve("main").resolve("resources"));
         GTRegistries.REGISTRATE.setupDatagen(generator, helper);
         // sound
-        var provider = new SoundEntryBuilder.SoundEntryProvider(generator);
-        generator.addProvider(true, provider);
+        generator.addProvider(true, new SoundEntryBuilder.SoundEntryProvider(generator));
+        // compass
+        generator.addProvider(true, new CompassSection.CompassSectionProvider(generator, rl -> helper.exists(rl, PackType.CLIENT_RESOURCES)));
+        generator.addProvider(true, new CompassNode.CompassNodeProvider(generator, rl -> helper.exists(rl, PackType.CLIENT_RESOURCES)));
         // biome tags
         generator.addProvider(true, BiomeTagsProviderImpl::new);
     }

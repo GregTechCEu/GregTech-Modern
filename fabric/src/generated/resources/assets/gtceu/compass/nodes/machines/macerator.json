@@ -1,0 +1,22 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:lv_macerator"
+  },
+  "items": [
+    "gtceu:lv_macerator",
+    "gtceu:mv_macerator",
+    "gtceu:hv_macerator",
+    "gtceu:ev_macerator",
+    "gtceu:iv_macerator",
+    "gtceu:luv_macerator",
+    "gtceu:zpm_macerator",
+    "gtceu:uv_macerator"
+  ],
+  "page": "gtceu:machines/macerator",
+  "position": [
+    -250,
+    200
+  ],
+  "section": "gtceu:machines"
+}

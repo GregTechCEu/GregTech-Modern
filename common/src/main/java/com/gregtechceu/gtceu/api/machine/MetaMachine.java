@@ -149,6 +149,16 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
         holder.scheduleRenderUpdate();
     }
 
+    public void scheduleNeighborShapeUpdate() {
+        Level level = getLevel();
+        BlockPos pos = getPos();
+
+        if (level == null || pos == null)
+            return;
+
+        level.getBlockState(pos).updateNeighbourShapes(level, pos, Block.UPDATE_ALL);
+    }
+
     public long getOffsetTimer() {
         return holder.getOffsetTimer();
     }
@@ -481,6 +491,17 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
         return cover.getRedstoneSignalOutput();
     }
 
+    @Override
+    public boolean canConnectRedstone(Direction side) {
+        if (side == null) return false;
+
+        // For some reason, Minecraft requests the output signal from the opposite side...
+        CoverBehavior cover = getCoverContainer().getCoverAtSide(side);
+        if (cover == null) return false;
+
+        return cover.canConnectRedstone();
+    }
+
     //////////////////////////////////////
     //******     Capability     ********//
     //////////////////////////////////////
@@ -563,5 +584,4 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
     public int getDefaultPaintingColor() {
         return getDefinition().getDefaultPaintingColor();
     }
-
 }

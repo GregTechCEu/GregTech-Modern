@@ -148,6 +148,10 @@ public class ConfigHolder {
         @Configurable
         @Configurable.Comment({"Debug ore vein placement? (will print placed veins to server's debug.log)", "Default: false (no placement printout in debug.log)"})
         public boolean debugWorldgen;
+
+        @Configurable
+        @Configurable.Comment({"Rubber Tree spawn chance (% per chunk)", "Default: 0.5"})
+        public float rubberTreeSpawnChance = 0.5f;
     }
 
     public static class MachineConfigs {

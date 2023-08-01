@@ -1,0 +1,22 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:lv_fluid_passthrough_hatch"
+  },
+  "items": [
+    "gtceu:lv_fluid_passthrough_hatch",
+    "gtceu:mv_fluid_passthrough_hatch",
+    "gtceu:hv_fluid_passthrough_hatch",
+    "gtceu:ev_fluid_passthrough_hatch",
+    "gtceu:iv_fluid_passthrough_hatch",
+    "gtceu:luv_fluid_passthrough_hatch",
+    "gtceu:zpm_fluid_passthrough_hatch",
+    "gtceu:uv_fluid_passthrough_hatch"
+  ],
+  "page": "gtceu:parts/fluid_passthrough_hatch",
+  "position": [
+    -200,
+    100
+  ],
+  "section": "gtceu:parts"
+}

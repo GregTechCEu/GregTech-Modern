@@ -1,0 +1,18 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:maintenance_hatch"
+  },
+  "items": [
+    "gtceu:maintenance_hatch",
+    "gtceu:configurable_maintenance_hatch",
+    "gtceu:cleaning_maintenance_hatch",
+    "gtceu:auto_maintenance_hatch"
+  ],
+  "page": "gtceu:parts/maintenance",
+  "position": [
+    -100,
+    50
+  ],
+  "section": "gtceu:parts"
+}

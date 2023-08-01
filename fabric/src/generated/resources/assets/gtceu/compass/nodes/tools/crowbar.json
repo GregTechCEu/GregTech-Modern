@@ -1,0 +1,37 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:aluminium_crowbar"
+  },
+  "items": [
+    "gtceu:aluminium_crowbar",
+    "gtceu:iron_crowbar",
+    "gtceu:titanium_crowbar",
+    "gtceu:neutronium_crowbar",
+    "gtceu:duranium_crowbar",
+    "gtceu:bronze_crowbar",
+    "gtceu:diamond_crowbar",
+    "gtceu:invar_crowbar",
+    "gtceu:sterling_silver_crowbar",
+    "gtceu:rose_gold_crowbar",
+    "gtceu:stainless_steel_crowbar",
+    "gtceu:steel_crowbar",
+    "gtceu:ultimet_crowbar",
+    "gtceu:wrought_iron_crowbar",
+    "gtceu:tungsten_carbide_crowbar",
+    "gtceu:damascus_steel_crowbar",
+    "gtceu:tungsten_steel_crowbar",
+    "gtceu:cobalt_brass_crowbar",
+    "gtceu:vanadium_steel_crowbar",
+    "gtceu:naquadah_alloy_crowbar",
+    "gtceu:red_steel_crowbar",
+    "gtceu:blue_steel_crowbar",
+    "gtceu:hsse_crowbar"
+  ],
+  "page": "gtceu:tools/crowbar",
+  "position": [
+    -250,
+    100
+  ],
+  "section": "gtceu:tools"
+}

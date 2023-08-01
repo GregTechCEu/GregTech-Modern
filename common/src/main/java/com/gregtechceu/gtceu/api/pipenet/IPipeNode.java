@@ -185,6 +185,16 @@ public interface IPipeNode<PipeType extends Enum<PipeType> & IPipeType<NodeDataT
         getCoverContainer().onNeighborChanged(block, fromPos, isMoving);
     }
 
+    default void scheduleNeighborShapeUpdate() {
+        Level level = getPipeLevel();
+        BlockPos pos = getPipePos();
+
+        if (level == null || pos == null)
+            return;
+
+        level.getBlockState(pos).updateNeighbourShapes(level, pos, Block.UPDATE_ALL);
+    }
+
     @Override
     default int getDefaultPaintingColor() {
         return 0xFFFFFF;

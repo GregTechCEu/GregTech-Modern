@@ -1,0 +1,22 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:lv_electric_furnace"
+  },
+  "items": [
+    "gtceu:lv_electric_furnace",
+    "gtceu:mv_electric_furnace",
+    "gtceu:hv_electric_furnace",
+    "gtceu:ev_electric_furnace",
+    "gtceu:iv_electric_furnace",
+    "gtceu:luv_electric_furnace",
+    "gtceu:zpm_electric_furnace",
+    "gtceu:uv_electric_furnace"
+  ],
+  "page": "gtceu:machines/electric_furnace",
+  "position": [
+    -300,
+    0
+  ],
+  "section": "gtceu:machines"
+}

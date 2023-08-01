@@ -1,0 +1,25 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:lv_robot_arm"
+  },
+  "items": [
+    "gtceu:lv_robot_arm",
+    "gtceu:mv_robot_arm",
+    "gtceu:hv_robot_arm",
+    "gtceu:ev_robot_arm",
+    "gtceu:iv_robot_arm",
+    "gtceu:luv_robot_arm",
+    "gtceu:zpm_robot_arm",
+    "gtceu:uv_robot_arm"
+  ],
+  "page": "gtceu:covers/robot_arm",
+  "position": [
+    -200,
+    0
+  ],
+  "pre_nodes": [
+    "gtceu:covers/cover"
+  ],
+  "section": "gtceu:covers"
+}

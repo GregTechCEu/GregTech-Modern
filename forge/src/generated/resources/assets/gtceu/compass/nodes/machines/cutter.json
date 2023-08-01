@@ -1,0 +1,22 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:lv_cutter"
+  },
+  "items": [
+    "gtceu:lv_cutter",
+    "gtceu:mv_cutter",
+    "gtceu:hv_cutter",
+    "gtceu:ev_cutter",
+    "gtceu:iv_cutter",
+    "gtceu:luv_cutter",
+    "gtceu:zpm_cutter",
+    "gtceu:uv_cutter"
+  ],
+  "page": "gtceu:machines/cutter",
+  "position": [
+    -100,
+    50
+  ],
+  "section": "gtceu:machines"
+}
