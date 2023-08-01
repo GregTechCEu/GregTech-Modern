@@ -1,0 +1,15 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:iv_processing_array"
+  },
+  "items": [
+    "gtceu:iv_processing_array"
+  ],
+  "page": "gtceu:iv/iv_processing_array",
+  "position": [
+    -50,
+    0
+  ],
+  "section": "gtceu:iv"
+}

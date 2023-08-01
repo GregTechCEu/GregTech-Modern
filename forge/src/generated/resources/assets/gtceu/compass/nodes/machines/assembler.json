@@ -1,0 +1,22 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:lv_assembler"
+  },
+  "items": [
+    "gtceu:lv_assembler",
+    "gtceu:mv_assembler",
+    "gtceu:hv_assembler",
+    "gtceu:ev_assembler",
+    "gtceu:iv_assembler",
+    "gtceu:luv_assembler",
+    "gtceu:zpm_assembler",
+    "gtceu:uv_assembler"
+  ],
+  "page": "gtceu:machines/assembler",
+  "position": [
+    -150,
+    0
+  ],
+  "section": "gtceu:machines"
+}

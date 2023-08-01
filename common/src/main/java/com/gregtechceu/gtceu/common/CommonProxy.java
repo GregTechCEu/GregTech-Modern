@@ -43,6 +43,8 @@ public class CommonProxy {
         GTMaterials.init();
         TagPrefix.init();
         GTSoundEntries.init();
+        GTCompassSections.init();
+        GTCompassNodes.init();
         GTCovers.init();
         GTFluids.init();
         GTBlocks.init();

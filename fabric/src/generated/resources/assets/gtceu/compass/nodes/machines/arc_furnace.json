@@ -1,0 +1,22 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:lv_arc_furnace"
+  },
+  "items": [
+    "gtceu:lv_arc_furnace",
+    "gtceu:mv_arc_furnace",
+    "gtceu:hv_arc_furnace",
+    "gtceu:ev_arc_furnace",
+    "gtceu:iv_arc_furnace",
+    "gtceu:luv_arc_furnace",
+    "gtceu:zpm_arc_furnace",
+    "gtceu:uv_arc_furnace"
+  ],
+  "page": "gtceu:machines/arc_furnace",
+  "position": [
+    -200,
+    0
+  ],
+  "section": "gtceu:machines"
+}

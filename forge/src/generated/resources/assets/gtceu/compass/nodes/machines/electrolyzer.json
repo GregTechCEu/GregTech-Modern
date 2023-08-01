@@ -1,0 +1,22 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:lv_electrolyzer"
+  },
+  "items": [
+    "gtceu:lv_electrolyzer",
+    "gtceu:mv_electrolyzer",
+    "gtceu:hv_electrolyzer",
+    "gtceu:ev_electrolyzer",
+    "gtceu:iv_electrolyzer",
+    "gtceu:luv_electrolyzer",
+    "gtceu:zpm_electrolyzer",
+    "gtceu:uv_electrolyzer"
+  ],
+  "page": "gtceu:machines/electrolyzer",
+  "position": [
+    -400,
+    100
+  ],
+  "section": "gtceu:machines"
+}

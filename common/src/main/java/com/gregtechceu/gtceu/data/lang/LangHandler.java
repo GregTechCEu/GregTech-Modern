@@ -31,6 +31,7 @@ public class LangHandler {
         MachineLang.init(provider);
         ToolLang.init(provider);
         ConfigurationLang.init(provider);
+        CompassLang.init(provider);
 
         // CreativeModeTabs
         provider.add(GTCreativeModeTabs.MATERIAL_FLUID, "GregTech %ss".formatted(toEnglishName(GTCreativeModeTabs.MATERIAL_FLUID.getGroupId())));

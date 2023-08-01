@@ -1,0 +1,37 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:aluminium_screwdriver"
+  },
+  "items": [
+    "gtceu:aluminium_screwdriver",
+    "gtceu:iron_screwdriver",
+    "gtceu:titanium_screwdriver",
+    "gtceu:neutronium_screwdriver",
+    "gtceu:duranium_screwdriver",
+    "gtceu:bronze_screwdriver",
+    "gtceu:diamond_screwdriver",
+    "gtceu:invar_screwdriver",
+    "gtceu:sterling_silver_screwdriver",
+    "gtceu:rose_gold_screwdriver",
+    "gtceu:stainless_steel_screwdriver",
+    "gtceu:steel_screwdriver",
+    "gtceu:ultimet_screwdriver",
+    "gtceu:wrought_iron_screwdriver",
+    "gtceu:tungsten_carbide_screwdriver",
+    "gtceu:damascus_steel_screwdriver",
+    "gtceu:tungsten_steel_screwdriver",
+    "gtceu:cobalt_brass_screwdriver",
+    "gtceu:vanadium_steel_screwdriver",
+    "gtceu:naquadah_alloy_screwdriver",
+    "gtceu:red_steel_screwdriver",
+    "gtceu:blue_steel_screwdriver",
+    "gtceu:hsse_screwdriver"
+  ],
+  "page": "gtceu:tools/screwdriver",
+  "position": [
+    -200,
+    100
+  ],
+  "section": "gtceu:tools"
+}

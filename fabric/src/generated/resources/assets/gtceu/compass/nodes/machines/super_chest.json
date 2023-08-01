@@ -1,0 +1,23 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:lv_super_chest"
+  },
+  "items": [
+    "gtceu:lv_super_chest",
+    "gtceu:mv_super_chest",
+    "gtceu:hv_super_chest",
+    "gtceu:ev_super_chest",
+    "gtceu:iv_quantum_chest",
+    "gtceu:luv_quantum_chest",
+    "gtceu:zpm_quantum_chest",
+    "gtceu:uv_quantum_chest",
+    "gtceu:uhv_quantum_chest"
+  ],
+  "page": "gtceu:machines/super_chest",
+  "position": [
+    -350,
+    300
+  ],
+  "section": "gtceu:machines"
+}

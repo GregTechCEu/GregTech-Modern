@@ -1,0 +1,50 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:ulv_transformer_1a"
+  },
+  "items": [
+    "gtceu:ulv_transformer_1a",
+    "gtceu:lv_transformer_1a",
+    "gtceu:mv_transformer_1a",
+    "gtceu:hv_transformer_1a",
+    "gtceu:ev_transformer_1a",
+    "gtceu:iv_transformer_1a",
+    "gtceu:luv_transformer_1a",
+    "gtceu:zpm_transformer_1a",
+    "gtceu:uv_transformer_1a",
+    "gtceu:ulv_transformer_2a",
+    "gtceu:lv_transformer_2a",
+    "gtceu:mv_transformer_2a",
+    "gtceu:hv_transformer_2a",
+    "gtceu:ev_transformer_2a",
+    "gtceu:iv_transformer_2a",
+    "gtceu:luv_transformer_2a",
+    "gtceu:zpm_transformer_2a",
+    "gtceu:uv_transformer_2a",
+    "gtceu:ulv_transformer_4a",
+    "gtceu:lv_transformer_4a",
+    "gtceu:mv_transformer_4a",
+    "gtceu:hv_transformer_4a",
+    "gtceu:ev_transformer_4a",
+    "gtceu:iv_transformer_4a",
+    "gtceu:luv_transformer_4a",
+    "gtceu:zpm_transformer_4a",
+    "gtceu:uv_transformer_4a",
+    "gtceu:ulv_transformer_16a",
+    "gtceu:lv_transformer_16a",
+    "gtceu:mv_transformer_16a",
+    "gtceu:hv_transformer_16a",
+    "gtceu:ev_transformer_16a",
+    "gtceu:iv_transformer_16a",
+    "gtceu:luv_transformer_16a",
+    "gtceu:zpm_transformer_16a",
+    "gtceu:uv_transformer_16a"
+  ],
+  "page": "gtceu:machines/transformer",
+  "position": [
+    -350,
+    250
+  ],
+  "section": "gtceu:machines"
+}

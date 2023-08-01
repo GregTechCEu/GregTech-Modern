@@ -1,0 +1,22 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:lv_chemical_bath"
+  },
+  "items": [
+    "gtceu:lv_chemical_bath",
+    "gtceu:mv_chemical_bath",
+    "gtceu:hv_chemical_bath",
+    "gtceu:ev_chemical_bath",
+    "gtceu:iv_chemical_bath",
+    "gtceu:luv_chemical_bath",
+    "gtceu:zpm_chemical_bath",
+    "gtceu:uv_chemical_bath"
+  ],
+  "page": "gtceu:machines/chemical_bath",
+  "position": [
+    -250,
+    50
+  ],
+  "section": "gtceu:machines"
+}

@@ -1,0 +1,9 @@
+{
+  "section": "gtceu:section_1",
+  "button_texture": {
+    "type": "item",
+    "res": "minecraft:dirt"
+  },
+  "position": [200, 100],
+  "page": "gtceu:test_node2"
+}

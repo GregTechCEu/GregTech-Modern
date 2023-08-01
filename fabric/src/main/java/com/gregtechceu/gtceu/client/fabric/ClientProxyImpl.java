@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.client.fabric;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.client.ClientCommands;
+import com.gregtechceu.gtceu.client.ClientProxy;
 import com.gregtechceu.gtceu.client.TooltipHelper;
 import com.gregtechceu.gtceu.client.renderer.BlockHighLightRenderer;
 import com.gregtechceu.gtceu.client.TooltipsHandler;
@@ -28,6 +29,7 @@ import java.util.List;
 public class ClientProxyImpl implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
+        ClientProxy.init();
         WorldRenderEvents.BLOCK_OUTLINE.register((worldRenderContext, blockOutlineContext) -> {
             if (Minecraft.getInstance().hitResult instanceof BlockHitResult hitResult) {
                 BlockHighLightRenderer.renderBlockHighLight(worldRenderContext.matrixStack(), worldRenderContext.camera(), hitResult, worldRenderContext.consumers(), worldRenderContext.tickDelta());
