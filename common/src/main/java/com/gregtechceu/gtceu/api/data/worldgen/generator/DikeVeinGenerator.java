@@ -10,6 +10,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.AllArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ChunkPos;
@@ -29,18 +30,16 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+@Accessors(fluent = true, chain = true)
 @AllArgsConstructor
 public class DikeVeinGenerator extends VeinGenerator {
     public static final Codec<DikeVeinGenerator> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.list(DikeBlockDefinition.CODEC).fieldOf("blocks").forGetter(it -> it.blocks),
-            Codec.INT.fieldOf("width").forGetter(it -> it.width),
             Codec.INT.fieldOf("min_y").forGetter(it -> it.minYLevel),
             Codec.INT.fieldOf("max_y").forGetter(it -> it.maxYLevel)
     ).apply(instance, DikeVeinGenerator::new));
 
     public List<DikeBlockDefinition> blocks;
-    @Setter
-    public int width;
     @Setter
     public int minYLevel;
     @Setter
@@ -64,6 +63,8 @@ public class DikeVeinGenerator extends VeinGenerator {
         WorldgenRandom worldgenRandom = new WorldgenRandom(new LegacyRandomSource(level.getSeed()));
         NormalNoise normalNoise = NormalNoise.create(worldgenRandom, -2, 4.0D); // INT Sparseness - DOUBLE ARRAY Density
         ChunkPos chunkPos = new ChunkPos(origin);
+
+        float density = entry.getDensity();
         int size = entry.getClusterSize();
         int xPos = chunkPos.getMinBlockX() + level.getRandom().nextInt(16);
         int zPos = chunkPos.getMinBlockZ() + level.getRandom().nextInt(16);
@@ -82,7 +83,7 @@ public class DikeVeinGenerator extends VeinGenerator {
                     if (dist > size) {
                         continue;
                     }
-                    if (normalNoise.getValue(dX, dY, dZ) >= 0.5) {
+                    if (normalNoise.getValue(dX, dY, dZ) >= 0.5 && random.nextFloat() <= density) {
                         if (placeBlock(level, random, new BlockPos(basePos.getX() + dX, dY, basePos.getZ() + dZ), entry)) {
                             ++blocksPlaced;
                         }

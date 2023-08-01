@@ -48,8 +48,8 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-@AllArgsConstructor
 @Accessors(chain = true, fluent = true)
+@AllArgsConstructor
 public class GeodeVeinGenerator extends VeinGenerator {
     private static final Direction[] DIRECTIONS = Direction.values();
 
