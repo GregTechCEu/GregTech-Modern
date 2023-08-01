@@ -13,11 +13,13 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
+import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
@@ -60,17 +62,17 @@ public class CompassSection {
     }
 
     public static class CompassSectionProvider implements DataProvider {
-        private final DataGenerator generator;
+        private final PackOutput output;
         private final Predicate<ResourceLocation> existingHelper;
 
-        public CompassSectionProvider(DataGenerator generator, Predicate<ResourceLocation> existingHelper) {
-            this.generator = generator;
+        public CompassSectionProvider(PackOutput output, Predicate<ResourceLocation> existingHelper) {
+            this.output = output;
             this.existingHelper = existingHelper;
         }
 
         @Override
-        public void run(CachedOutput cache) {
-            generate(generator.getOutputFolder(), cache);
+        public CompletableFuture<?> run(CachedOutput cache) {
+            return generate(output.getOutputFolder(PackOutput.Target.RESOURCE_PACK).resolve(GTCEu.MOD_ID), cache);
         }
 
         @Override
@@ -78,24 +80,20 @@ public class CompassSection {
             return "GTCEU's Compass Sections";
         }
 
-        public void generate(Path path, CachedOutput cache) {
-            path = path.resolve("assets/" + GTCEu.MOD_ID);
-
-            try {
-                for (var section : GTRegistries.COMPASS_SECTIONS) {
-                    var resourcePath = "compass/sections/" + section.sectionID.getPath() + ".json";
-                    if (existingHelper.test(GTCEu.id(resourcePath))) {
-                        continue;
-                    }
-                    JsonObject json = new JsonObject();
-                    json.add("button_texture",SimpleIGuiTextureJsonUtils.toJson(section.icon.get()));
-                    json.add("background_texture",SimpleIGuiTextureJsonUtils.toJson(section.background.get()));
-                    json.addProperty("priority", section.priority);
-                    DataProvider.saveStable(cache, json, path.resolve(resourcePath));
+        public CompletableFuture<?> generate(Path path, CachedOutput cache) {
+            CompletableFuture<?> future = CompletableFuture.completedFuture(null);
+            for (var section : GTRegistries.COMPASS_SECTIONS) {
+                var resourcePath = "compass/sections/" + section.sectionID.getPath() + ".json";
+                if (existingHelper.test(GTCEu.id(resourcePath))) {
+                    continue;
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
+                JsonObject json = new JsonObject();
+                json.add("button_texture",SimpleIGuiTextureJsonUtils.toJson(section.icon.get()));
+                json.add("background_texture",SimpleIGuiTextureJsonUtils.toJson(section.background.get()));
+                json.addProperty("priority", section.priority);
+                future.thenComposeAsync(v -> DataProvider.saveStable(cache, json, path.resolve(resourcePath)));
             }
+            return future;
         }
 
     }

@@ -13,18 +13,18 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.CachedOutput;
-import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
+import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
@@ -71,7 +71,7 @@ public class CompassNode {
     }
 
     public static CompassNode getOrCreate(CompassSection section, Supplier<? extends Item> item) {
-        return getOrCreate(section.sectionID(), Registry.ITEM.getKey(item.get()).getPath()).addItem(item);
+        return getOrCreate(section.sectionID(), BuiltInRegistries.ITEM.getKey(item.get()).getPath()).addItem(item);
     }
 
     private CompassNode register() {
@@ -104,17 +104,17 @@ public class CompassNode {
     }
 
     public static class CompassNodeProvider implements DataProvider {
-        private final DataGenerator generator;
+        private final PackOutput output;
         private final Predicate<ResourceLocation> existingHelper;
 
-        public CompassNodeProvider(DataGenerator generator, Predicate<ResourceLocation> existingHelper) {
-            this.generator = generator;
+        public CompassNodeProvider(PackOutput output, Predicate<ResourceLocation> existingHelper) {
+            this.output = output;
             this.existingHelper = existingHelper;
         }
 
         @Override
-        public void run(CachedOutput cache) {
-            generate(generator.getOutputFolder(), cache);
+        public CompletableFuture<?> run(CachedOutput cache) {
+            return generate(output.getOutputFolder(PackOutput.Target.RESOURCE_PACK).resolve(GTCEu.MOD_ID), cache);
         }
 
         @Override
@@ -122,45 +122,43 @@ public class CompassNode {
             return "GTCEU's Compass Nodes";
         }
 
-        public void generate(Path path, CachedOutput cache) {
-            path = path.resolve("assets/" + GTCEu.MOD_ID);
+        public CompletableFuture<?> generate(Path path, CachedOutput cache) {
             Map<ResourceLocation, List<CompassNode>> nodesNOPosition = new HashMap<>();
-            try {
-                for (var node : GTRegistries.COMPASS_NODES) {
-                    if (node.position == null) {
-                        nodesNOPosition.computeIfAbsent(node.sectionID, k -> new ArrayList<>()).add(node);
-                    } else {
-                        genNodeData(path, cache, node);
-                    }
+            CompletableFuture<?> future = CompletableFuture.completedFuture(null);
+            for (var node : GTRegistries.COMPASS_NODES) {
+                if (node.position == null) {
+                    nodesNOPosition.computeIfAbsent(node.sectionID, k -> new ArrayList<>()).add(node);
+                } else {
+                    genNodeData(path, cache, node);
                 }
-                for (List<CompassNode> nodes : nodesNOPosition.values()) {
-                    var size = nodes.size();
-                    var row = (int) Math.ceil(Math.sqrt(size));
-                    for (int i = 0; i < row; i++) {
-                        boolean done = false;
-                        for (int j = 0; j < row; j++) {
-                            int index = i * row + j;
-                            if (index < nodes.size()) {
-                                var node = nodes.get(index);
-                                node.position = new Position(-(row * 50) + 50 * j, 50 * i);
-                                genNodeData(path, cache, node);
-                            } else {
-                                done = true;
-                                break;
-                            }
-                        }
-                        if (done) break;
-                    }
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
             }
+            for (List<CompassNode> nodes : nodesNOPosition.values()) {
+                var size = nodes.size();
+                var row = (int) Math.ceil(Math.sqrt(size));
+                for (int i = 0; i < row; i++) {
+                    boolean done = false;
+                    for (int j = 0; j < row; j++) {
+                        int index = i * row + j;
+                        if (index < nodes.size()) {
+                            var node = nodes.get(index);
+                            node.position = new Position(-(row * 50) + 50 * j, 50 * i);
+                            Path finalPath = path;
+                            future = future.thenComposeAsync(v -> genNodeData(finalPath, cache, node));
+                        } else {
+                            done = true;
+                            break;
+                        }
+                    }
+                    if (done) break;
+                }
+            }
+            return future;
         }
 
-        private void genNodeData(Path path, CachedOutput cache, CompassNode node) throws IOException {
-            if (node.position == null) return;
+        private CompletableFuture<?> genNodeData(Path path, CachedOutput cache, CompassNode node) {
+            if (node.position == null) return CompletableFuture.completedFuture(null);
             var resourcePath = "compass/nodes/" + node.nodeID.getPath() + ".json";
-            if (existingHelper.test(GTCEu.id(resourcePath))) return;
+            if (existingHelper.test(GTCEu.id(resourcePath))) CompletableFuture.completedFuture(null);
 
             JsonObject json = new JsonObject();
             json.addProperty("section", node.sectionID.toString());
@@ -190,12 +188,12 @@ public class CompassNode {
             if (!node.items.isEmpty()) {
                 var items = new JsonArray();
                 for (var item : node.items) {
-                    items.add(Registry.ITEM.getKey(item.get()).toString());
+                    items.add(BuiltInRegistries.ITEM.getKey(item.get()).toString());
                 }
                 json.add("items", items);
             }
 
-            DataProvider.saveStable(cache, json, path.resolve(resourcePath));
+            return DataProvider.saveStable(cache, json, path.resolve(resourcePath));
         }
 
     }

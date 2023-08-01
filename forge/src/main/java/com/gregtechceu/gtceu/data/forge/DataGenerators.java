@@ -43,8 +43,8 @@ public class DataGenerators {
         if (event.includeServer()) {
             var set = Set.of(GTCEu.MOD_ID);
             generator.addProvider(true, new SoundEntryBuilder.SoundEntryProvider(generator.getPackOutput()));
-            generator.addProvider(true, new CompassSection.CompassSectionProvider(generator, rl -> event.getExistingFileHelper().exists(rl, PackType.CLIENT_RESOURCES)));
-            generator.addProvider(true, new CompassNode.CompassNodeProvider(generator, rl -> event.getExistingFileHelper().exists(rl, PackType.CLIENT_RESOURCES)));
+            generator.addProvider(true, new CompassSection.CompassSectionProvider(generator.getPackOutput(), rl -> event.getExistingFileHelper().exists(rl, PackType.CLIENT_RESOURCES)));
+            generator.addProvider(true, new CompassNode.CompassNodeProvider(generator.getPackOutput(), rl -> event.getExistingFileHelper().exists(rl, PackType.CLIENT_RESOURCES)));
             generator.addProvider(true, bindRegistries(BiomeTagsProviderImpl::new, registries));
             generator.addProvider(true, bindRegistries((output, provider) -> new GTRegistriesDatapackGenerator(
                     output, registries, new RegistrySetBuilder()

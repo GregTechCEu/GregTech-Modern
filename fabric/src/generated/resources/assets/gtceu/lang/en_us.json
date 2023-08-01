@@ -1148,7 +1148,6 @@
   "config.gtceu.option.removeVanillaTNTRecipe": "removeVanillaTNTRecipe",
   "config.gtceu.option.replaceMinedBlocksWith": "replaceMinedBlocksWith",
   "config.gtceu.option.requireGTToolsForBlocks": "requireGTToolsForBlocks",
-  "config.gtceu.option.rubberTreeSpawnChance": "rubberTreeSpawnChance",
   "config.gtceu.option.sandOresFall": "sandOresFall",
   "config.gtceu.option.steelSteamMultiblocks": "steelSteamMultiblocks",
   "config.gtceu.option.worldgen": "worldgen",
