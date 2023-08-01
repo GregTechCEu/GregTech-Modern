@@ -1,0 +1,15 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:hv_fluid_drilling_rig"
+  },
+  "items": [
+    "gtceu:hv_fluid_drilling_rig"
+  ],
+  "page": "gtceu:multiblock/hv_fluid_drilling_rig",
+  "position": [
+    -250,
+    150
+  ],
+  "section": "gtceu:multiblock"
+}

@@ -1,0 +1,22 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:lv_forge_hammer"
+  },
+  "items": [
+    "gtceu:lv_forge_hammer",
+    "gtceu:mv_forge_hammer",
+    "gtceu:hv_forge_hammer",
+    "gtceu:ev_forge_hammer",
+    "gtceu:iv_forge_hammer",
+    "gtceu:luv_forge_hammer",
+    "gtceu:zpm_forge_hammer",
+    "gtceu:uv_forge_hammer"
+  ],
+  "page": "gtceu:machines/forge_hammer",
+  "position": [
+    -50,
+    100
+  ],
+  "section": "gtceu:machines"
+}

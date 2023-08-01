@@ -1,0 +1,18 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:shutter_module_cover"
+  },
+  "items": [
+    "gtceu:shutter_module_cover"
+  ],
+  "page": "gtceu:covers/shutter_module_cover",
+  "position": [
+    -250,
+    150
+  ],
+  "pre_nodes": [
+    "gtceu:covers/cover"
+  ],
+  "section": "gtceu:covers"
+}

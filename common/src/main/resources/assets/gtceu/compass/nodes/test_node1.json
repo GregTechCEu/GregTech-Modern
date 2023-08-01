@@ -1,0 +1,16 @@
+{
+  "section": "gtceu:section_1",
+  "button_texture": {
+    "type": "item",
+    "res": "minecraft:black_wool"
+  },
+	"tooltips": [
+	  "line1",
+		"line2"
+	],
+  "position": [50, 50],
+  "pre_nodes": [
+    "gtceu:test_node2"
+  ],
+  "page": "gtceu:test_node1"
+}

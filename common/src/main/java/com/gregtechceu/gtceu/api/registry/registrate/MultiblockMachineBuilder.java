@@ -16,6 +16,8 @@ import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.common.data.GTCompassNodes;
+import com.gregtechceu.gtceu.common.data.GTCompassSections;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import com.tterrag.registrate.Registrate;
 import com.tterrag.registrate.builders.BlockBuilder;
@@ -72,6 +74,7 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
                                        BiFunction<IMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
                                        TriFunction<BlockEntityType<?>, BlockPos, BlockState, IMachineBlockEntity> blockEntityFactory) {
         super(registrate, name, MultiblockMachineDefinition::createDefinition, metaMachine::apply, blockFactory, itemFactory, blockEntityFactory);
+        this.compassSections(GTCompassSections.MULTIBLOCK);
     }
 
     public static MultiblockMachineBuilder createMulti(Registrate registrate, String name, Function<IMachineBlockEntity, ? extends MultiblockControllerMachine> metaMachine,
@@ -252,6 +255,36 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
     @Override
     public MultiblockMachineBuilder editableUI(@Nullable EditableMachineUI editableUI) {
         return (MultiblockMachineBuilder) super.editableUI(editableUI);
+    }
+
+    @Override
+    public MultiblockMachineBuilder compassSections(CompassSection... sections) {
+        return (MultiblockMachineBuilder) super.compassSections(sections);
+    }
+
+    @Override
+    public MultiblockMachineBuilder compassNodeSelf() {
+        return (MultiblockMachineBuilder) super.compassNodeSelf();
+    }
+
+    @Override
+    public MultiblockMachineBuilder compassNode(String compassNode) {
+        return (MultiblockMachineBuilder) super.compassNode(compassNode);
+    }
+
+    @Override
+    public MultiblockMachineBuilder compassPreNodes(CompassSection section, String... compassNodes) {
+        return (MultiblockMachineBuilder) super.compassPreNodes(section, compassNodes);
+    }
+
+    @Override
+    public MultiblockMachineBuilder compassPreNodes(ResourceLocation... compassNodes) {
+        return (MultiblockMachineBuilder) super.compassPreNodes(compassNodes);
+    }
+
+    @Override
+    public MultiblockMachineBuilder compassPreNodes(CompassNode... compassNodes) {
+        return (MultiblockMachineBuilder) super.compassPreNodes(compassNodes);
     }
 
     @Override

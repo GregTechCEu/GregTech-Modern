@@ -1,0 +1,20 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:lp_steam_forge_hammer"
+  },
+  "items": [
+    "gtceu:lp_steam_forge_hammer",
+    "gtceu:hp_steam_forge_hammer"
+  ],
+  "page": "gtceu:steam/steam_forge_hammer",
+  "position": [
+    -250,
+    50
+  ],
+  "pre_nodes": [
+    "gtceu:steam/high_pressure",
+    "gtceu:steam/low_pressure"
+  ],
+  "section": "gtceu:steam"
+}

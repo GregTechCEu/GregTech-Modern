@@ -1,0 +1,15 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:iv_large_miner"
+  },
+  "items": [
+    "gtceu:iv_large_miner"
+  ],
+  "page": "gtceu:multiblock/iv_large_miner",
+  "position": [
+    -100,
+    150
+  ],
+  "section": "gtceu:multiblock"
+}

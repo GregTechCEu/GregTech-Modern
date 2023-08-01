@@ -1,0 +1,18 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:item_filter"
+  },
+  "items": [
+    "gtceu:item_filter"
+  ],
+  "page": "gtceu:covers/item_filter",
+  "position": [
+    -150,
+    0
+  ],
+  "pre_nodes": [
+    "gtceu:covers/cover"
+  ],
+  "section": "gtceu:covers"
+}

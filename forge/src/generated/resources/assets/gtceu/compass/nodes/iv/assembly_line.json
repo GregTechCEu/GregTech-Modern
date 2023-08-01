@@ -1,0 +1,15 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:assembly_line"
+  },
+  "items": [
+    "gtceu:assembly_line"
+  ],
+  "page": "gtceu:iv/assembly_line",
+  "position": [
+    -100,
+    0
+  ],
+  "section": "gtceu:iv"
+}

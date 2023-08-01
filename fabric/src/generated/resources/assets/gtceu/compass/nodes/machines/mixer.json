@@ -1,0 +1,22 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:lv_mixer"
+  },
+  "items": [
+    "gtceu:lv_mixer",
+    "gtceu:mv_mixer",
+    "gtceu:hv_mixer",
+    "gtceu:ev_mixer",
+    "gtceu:iv_mixer",
+    "gtceu:luv_mixer",
+    "gtceu:zpm_mixer",
+    "gtceu:uv_mixer"
+  ],
+  "page": "gtceu:machines/mixer",
+  "position": [
+    -300,
+    150
+  ],
+  "section": "gtceu:machines"
+}
