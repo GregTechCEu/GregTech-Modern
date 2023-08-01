@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.api.data.worldgen.generator;
+package com.gregtechceu.gtceu.api.data.worldgen.modifier;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
@@ -8,16 +8,11 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryCodecs;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.levelgen.placement.PlacementContext;
 import net.minecraft.world.level.levelgen.placement.PlacementFilter;
 import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
-
-import java.util.function.Predicate;
 
 public class DimensionFilter extends PlacementFilter {
     public static final PlacementModifierType<DimensionFilter> DIMENSION_FILTER = GTRegistries.register(Registry.PLACEMENT_MODIFIERS, GTCEu.id("dimension"), () -> DimensionFilter.CODEC);

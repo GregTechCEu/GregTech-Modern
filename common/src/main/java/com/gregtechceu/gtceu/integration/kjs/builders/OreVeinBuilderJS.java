@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.worldgen.BiomeWeightModifier;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreFeatureEntry;
 import com.gregtechceu.gtceu.api.data.worldgen.IWorldGenLayer;
+import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinGenerator;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.JsonOps;
 import dev.latvian.mods.rhino.util.HideFromJS;
@@ -37,7 +38,7 @@ public class OreVeinBuilderJS {
     @Setter
     public transient BiomeWeightModifier biomeWeightModifier;
     @Setter
-    public GTOreFeatureEntry.VeinGenerator generator;
+    public VeinGenerator generator;
 
     private final transient JsonArray dimensionFilter = new JsonArray();
     private final transient JsonArray biomeFilter = new JsonArray();
@@ -58,7 +59,7 @@ public class OreVeinBuilderJS {
         return this;
     }
 
-    public GTOreFeatureEntry.VeinGenerator generatorBuilder(ResourceLocation id) {
+    public VeinGenerator generatorBuilder(ResourceLocation id) {
         return build().generator(id);
     }
 

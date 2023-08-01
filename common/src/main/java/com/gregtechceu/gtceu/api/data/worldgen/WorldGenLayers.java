@@ -3,8 +3,6 @@ package com.gregtechceu.gtceu.api.data.worldgen;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.IGTAddon;
-import com.gregtechceu.gtceu.api.data.worldgen.generator.WorldGeneratorUtils;
-import com.gregtechceu.gtceu.common.data.GTOres;
 import com.gregtechceu.gtceu.integration.kjs.GTRegistryObjectBuilderTypes;
 import lombok.Getter;
 import lombok.Setter;

@@ -25,6 +25,8 @@ import com.gregtechceu.gtceu.integration.kjs.GTRegistryObjectBuilderTypes;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -55,6 +57,8 @@ public class TagPrefix {
 
     public final static Map<String, TagPrefix> PREFIXES = new HashMap<>();
     public static final Map<TagPrefix, OreType> ORES = new HashMap<>();
+
+    public static final Codec<TagPrefix> CODEC = Codec.STRING.flatXmap(str -> Optional.ofNullable(get(str)).map(DataResult::success).orElseGet(() -> DataResult.error("invalid TagPrefix: " + str)), prefix -> DataResult.success(prefix.name));
 
     public static void init() {
         AddonFinder.getAddons().forEach(IGTAddon::registerTagPrefixes);
