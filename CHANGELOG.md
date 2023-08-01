@@ -2,7 +2,7 @@
 
 * add compass system for in-game guide
 * add computer monitor cover and machine controller cover
-* fix rubber tree generation
+* incress rubber tree generating rate
 * fix localization
 * fix oven hatch rendering + auto output
 * fix bolt name
