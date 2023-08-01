@@ -1,12 +1,9 @@
 package com.gregtechceu.gtceu.common.data.fabric;
 
-import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.common.data.GTPlacements;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.levelgen.GenerationStep;
-import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 
 /**
  * @author KilaBash
@@ -19,16 +16,14 @@ public class GTFeaturesImpl {
         BiomeModifications.addFeature(
                 ctx -> true,
                 GenerationStep.Decoration.UNDERGROUND_ORES,
-                ResourceKey.create(Registries.PLACED_FEATURE, GTCEu.id("ore"))
+                GTPlacements.ORE
         );
 
         // rubber tree
-        ResourceKey<PlacedFeature> featureKey = ResourceKey.create(Registries.PLACED_FEATURE, GTCEu.id("rubber_tree"));
-
         BiomeModifications.addFeature(
                 ctx -> ctx.hasTag(CustomTags.HAS_RUBBER_TREE),
                 GenerationStep.Decoration.VEGETAL_DECORATION,
-                featureKey
+                GTPlacements.RUBBER_CHECKED
         );
     }
 }

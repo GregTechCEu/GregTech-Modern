@@ -37,6 +37,7 @@ import com.tterrag.registrate.util.nullness.NonNullFunction;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.advancements.critereon.StatePropertiesPredicate;
 import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.renderer.BiomeColors;
@@ -53,6 +54,12 @@ import net.minecraft.world.level.block.grower.AbstractTreeGrower;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.material.MapColor;
+import net.minecraft.world.level.storage.loot.LootPool;
+import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.world.level.storage.loot.entries.LootItem;
+import net.minecraft.world.level.storage.loot.predicates.LootItemBlockStatePropertyCondition;
+import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition;
+import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 
 import javax.annotation.Nonnull;
 import java.util.HashMap;
@@ -66,7 +73,7 @@ import static com.gregtechceu.gtceu.api.GTValues.ULV;
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.FORCE_GENERATE_BLOCK;
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.GENERATE_FRAME;
 import static com.gregtechceu.gtceu.api.registry.GTRegistries.REGISTRATE;
-import static com.gregtechceu.gtceu.common.data.GTModels.*;
+import static com.gregtechceu.gtceu.common.data.GTModels.createModelBlockState;
 
 /**
  * @author KilaBash
@@ -615,22 +622,23 @@ public class GTBlocks {
             .addLayer(() -> RenderType::cutoutMipped)
             .tag(BlockTags.SAPLINGS)
             .item()
+            .model(GTModels::rubberTreeSaplingModel)
             .tag(ItemTags.SAPLINGS)
             .build()
             .register();
 
+
     public static final BlockEntry<RubberLogBlock> RUBBER_LOG = REGISTRATE.block("rubber_log", RubberLogBlock::new)
             .properties(p -> p.strength(2.0F).sound(SoundType.WOOD))
-            // todo fix LOOT
-//            .loot((lt, b) -> lt.add(b, LootTable.lootTable()
-//                    .withPool(RegistrateBlockLootTables.applyExplosionCondition(b, LootPool.lootPool().setRolls(ConstantValue.exactly(1.0F)))
-//                            .add(LootItem.lootTableItem(b)))
-//                    .withPool(RegistrateBlockLootTables.applyExplosionCondition(b, LootPool.lootPool().setRolls(ConstantValue.exactly(1.0F)))
-//                            .add(LootItem.lootTableItem(GTItems.STICKY_RESIN.get())
-//                                    .when(LootItemBlockStatePropertyCondition.hasBlockStateProperties(b)
-//                                            .setProperties(StatePropertiesPredicate.Builder.properties()
-//                                                    .hasProperty(RubberLogBlock.NATURAL, true)))
-//                                    .when(LootItemRandomChanceCondition.randomChance(0.85F))))))
+            .loot((table, block) -> table.add(block, LootTable.lootTable()
+                    .withPool(table.applyExplosionCondition(block, LootPool.lootPool().setRolls(ConstantValue.exactly(1.0F)))
+                            .add(LootItem.lootTableItem(block)))
+                    .withPool(table.applyExplosionCondition(block, LootPool.lootPool().setRolls(ConstantValue.exactly(1.0F)))
+                            .add(LootItem.lootTableItem(GTItems.STICKY_RESIN.get())
+                                    .when(LootItemBlockStatePropertyCondition.hasBlockStateProperties(block)
+                                            .setProperties(StatePropertiesPredicate.Builder.properties()
+                                                    .hasProperty(RubberLogBlock.NATURAL, true)))
+                                    .when(LootItemRandomChanceCondition.randomChance(0.85F))))))
             .lang("Rubber Log")
             .tag(BlockTags.LOGS)
             .blockstate((ctx, provider) -> provider.logBlock(ctx.get()))
@@ -663,8 +671,7 @@ public class GTBlocks {
             .initialProperties(() -> Blocks.OAK_LEAVES)
             .lang("Rubber Leaves")
             .blockstate((ctx, prov) -> createModelBlockState(ctx, prov, GTCEu.id("block/rubber_leaves")))
-            // todo fix LOOT
-//            .loot((table, block) -> table.add(block, RegistrateBlockLootTables.createSilkTouchOrShearsDispatchTable(block, GTBlocks.RUBBER_SAPLING.get(), RUBBER_LEAVES_DROPPING_CHANCE)))
+            .loot((table, block) -> table.add(block, table.createLeavesDrops(block, GTBlocks.RUBBER_SAPLING.get(), RUBBER_LEAVES_DROPPING_CHANCE)))
             .tag(BlockTags.LEAVES)
             .color(() -> GTBlocks::leavesBlockColor)
             .item()
