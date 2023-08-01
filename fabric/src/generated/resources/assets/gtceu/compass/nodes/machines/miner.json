@@ -1,0 +1,17 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:lv_miner"
+  },
+  "items": [
+    "gtceu:lv_miner",
+    "gtceu:mv_miner",
+    "gtceu:hv_miner"
+  ],
+  "page": "gtceu:machines/miner",
+  "position": [
+    -400,
+    300
+  ],
+  "section": "gtceu:machines"
+}

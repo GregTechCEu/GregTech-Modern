@@ -1,0 +1,18 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:advanced_item_detector_cover"
+  },
+  "items": [
+    "gtceu:advanced_item_detector_cover"
+  ],
+  "page": "gtceu:covers/advanced_item_detector_cover",
+  "position": [
+    -250,
+    100
+  ],
+  "pre_nodes": [
+    "gtceu:covers/cover"
+  ],
+  "section": "gtceu:covers"
+}

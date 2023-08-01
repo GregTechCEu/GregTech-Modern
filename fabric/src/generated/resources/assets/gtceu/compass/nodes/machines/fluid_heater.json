@@ -1,0 +1,22 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:lv_fluid_heater"
+  },
+  "items": [
+    "gtceu:lv_fluid_heater",
+    "gtceu:mv_fluid_heater",
+    "gtceu:hv_fluid_heater",
+    "gtceu:ev_fluid_heater",
+    "gtceu:iv_fluid_heater",
+    "gtceu:luv_fluid_heater",
+    "gtceu:zpm_fluid_heater",
+    "gtceu:uv_fluid_heater"
+  ],
+  "page": "gtceu:machines/fluid_heater",
+  "position": [
+    -150,
+    100
+  ],
+  "section": "gtceu:machines"
+}

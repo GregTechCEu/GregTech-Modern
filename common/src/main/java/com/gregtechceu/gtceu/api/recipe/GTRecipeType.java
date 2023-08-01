@@ -91,6 +91,7 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
     private GTRecipeType smallRecipeMap;
     @Setter
     @Getter
+    @Nullable
     private Supplier<ItemStack> iconSupplier;
     @Nullable
     @Setter

@@ -1,0 +1,37 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:aluminium_wire_cutter"
+  },
+  "items": [
+    "gtceu:aluminium_wire_cutter",
+    "gtceu:iron_wire_cutter",
+    "gtceu:titanium_wire_cutter",
+    "gtceu:neutronium_wire_cutter",
+    "gtceu:duranium_wire_cutter",
+    "gtceu:bronze_wire_cutter",
+    "gtceu:diamond_wire_cutter",
+    "gtceu:invar_wire_cutter",
+    "gtceu:sterling_silver_wire_cutter",
+    "gtceu:rose_gold_wire_cutter",
+    "gtceu:stainless_steel_wire_cutter",
+    "gtceu:steel_wire_cutter",
+    "gtceu:ultimet_wire_cutter",
+    "gtceu:wrought_iron_wire_cutter",
+    "gtceu:tungsten_carbide_wire_cutter",
+    "gtceu:damascus_steel_wire_cutter",
+    "gtceu:tungsten_steel_wire_cutter",
+    "gtceu:cobalt_brass_wire_cutter",
+    "gtceu:vanadium_steel_wire_cutter",
+    "gtceu:naquadah_alloy_wire_cutter",
+    "gtceu:red_steel_wire_cutter",
+    "gtceu:blue_steel_wire_cutter",
+    "gtceu:hsse_wire_cutter"
+  ],
+  "page": "gtceu:tools/wire_cutter",
+  "position": [
+    -150,
+    100
+  ],
+  "section": "gtceu:tools"
+}

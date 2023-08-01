@@ -1,0 +1,37 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:aluminium_plunger"
+  },
+  "items": [
+    "gtceu:aluminium_plunger",
+    "gtceu:iron_plunger",
+    "gtceu:titanium_plunger",
+    "gtceu:neutronium_plunger",
+    "gtceu:duranium_plunger",
+    "gtceu:bronze_plunger",
+    "gtceu:diamond_plunger",
+    "gtceu:invar_plunger",
+    "gtceu:sterling_silver_plunger",
+    "gtceu:rose_gold_plunger",
+    "gtceu:stainless_steel_plunger",
+    "gtceu:steel_plunger",
+    "gtceu:ultimet_plunger",
+    "gtceu:wrought_iron_plunger",
+    "gtceu:tungsten_carbide_plunger",
+    "gtceu:damascus_steel_plunger",
+    "gtceu:tungsten_steel_plunger",
+    "gtceu:cobalt_brass_plunger",
+    "gtceu:vanadium_steel_plunger",
+    "gtceu:naquadah_alloy_plunger",
+    "gtceu:red_steel_plunger",
+    "gtceu:blue_steel_plunger",
+    "gtceu:hsse_plunger"
+  ],
+  "page": "gtceu:tools/plunger",
+  "position": [
+    -200,
+    150
+  ],
+  "section": "gtceu:tools"
+}

@@ -5,6 +5,8 @@ import appeng.init.worldgen.InitBiomes;
 import appeng.init.worldgen.InitDimensionTypes;
 import appeng.init.worldgen.InitStructures;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.api.registry.registrate.CompassNode;
+import com.gregtechceu.gtceu.api.registry.registrate.CompassSection;
 import com.gregtechceu.gtceu.api.registry.registrate.SoundEntryBuilder;
 import com.gregtechceu.gtceu.common.data.GTConfiguredFeatures;
 import com.gregtechceu.gtceu.common.data.GTDamageTypes;
@@ -23,6 +25,7 @@ import net.minecraft.data.DataProvider;
 import net.minecraft.data.registries.VanillaRegistries;
 
 import java.util.concurrent.CompletableFuture;
+import net.minecraft.server.packs.PackType;
 
 /**
  * @author KilaBash
@@ -41,6 +44,9 @@ public class GregTechDatagen implements DataGeneratorEntrypoint {
         GTRegistries.REGISTRATE.setupDatagen(pack, helper);
         // sound
         pack.addProvider((FabricDataGenerator.Pack.Factory<DataProvider>) SoundEntryBuilder.SoundEntryProvider::new);
+        // compass
+        pack.addProvider((FabricDataGenerator.Pack.Factory<CompassSection.CompassSectionProvider>) packOutput -> new CompassSection.CompassSectionProvider(generator, rl -> helper.exists(rl, PackType.CLIENT_RESOURCES)));
+        pack.addProvider((FabricDataGenerator.Pack.Factory<DataProvider>) packOutput -> new CompassNode.CompassNodeProvider(generator, rl -> helper.exists(rl, PackType.CLIENT_RESOURCES)));
         // biome tags
         var registryAccess = RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY);
         var registries = createProvider(registryAccess);

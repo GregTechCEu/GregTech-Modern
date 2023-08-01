@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.registry.registrate;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
@@ -8,7 +9,6 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.client.renderer.machine.*;
 import com.gregtechceu.gtceu.api.block.IMachineBlock;
 import com.gregtechceu.gtceu.api.data.RotationState;
@@ -16,7 +16,7 @@ import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.client.renderer.GTRendererProvider;
-import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
+import com.gregtechceu.gtceu.common.data.GTCompassSections;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
@@ -49,10 +49,7 @@ import org.apache.commons.lang3.function.TriFunction;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.*;
 
 /**
@@ -115,6 +112,13 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     private EditableMachineUI editableUI;
     @Setter
     private String langValue = null;
+    private final Set<CompassSection> compassSections = new HashSet<>();
+    @Nullable
+    private String compassNode = null;
+    @Nullable
+    @Setter
+    private ResourceLocation compassPage = null;
+    private final List<ResourceLocation> preNodes = new ArrayList<>();
 
     protected MachineBuilder(Registrate registrate, String name,
                              Function<ResourceLocation, DEFINITION> definitionFactory,
@@ -190,12 +194,45 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
 
     public MachineBuilder<DEFINITION> abilities(PartAbility... abilities) {
         this.abilities = abilities;
+        compassSections(GTCompassSections.PARTS);
         return this;
     }
 
     public MachineBuilder<DEFINITION> recipeModifier(BiFunction<MetaMachine, GTRecipe, GTRecipe> recipeModifier, boolean alwaysTryModifyRecipe) {
         this.recipeModifier = recipeModifier;
         this.alwaysTryModifyRecipe = alwaysTryModifyRecipe;
+        return this;
+    }
+
+    public MachineBuilder<DEFINITION> compassSections(CompassSection... sections) {
+        this.compassSections.addAll(Arrays.stream(sections).toList());
+        return this;
+    }
+
+    public MachineBuilder<DEFINITION> compassNodeSelf() {
+        this.compassNode = name;
+        return this;
+    }
+
+    public MachineBuilder<DEFINITION> compassNode(String compassNode) {
+        this.compassNode = compassNode;
+        return this;
+    }
+
+    public MachineBuilder<DEFINITION> compassPreNodes(CompassSection section, String... compassNodes) {
+        for (String nodeID : compassNodes) {
+            preNodes.add(GTCEu.id(section.sectionID().getPath() + "/" + nodeID));
+        }
+        return this;
+    }
+
+    public MachineBuilder<DEFINITION> compassPreNodes(ResourceLocation... compassNodes) {
+        preNodes.addAll(Arrays.asList(compassNodes));
+        return this;
+    }
+
+    public MachineBuilder<DEFINITION> compassPreNodes(CompassNode... compassNodes) {
+        preNodes.addAll(Arrays.stream(compassNodes).map(CompassNode::nodeID).toList());
         return this;
     }
 
@@ -236,6 +273,21 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
                 .properties(itemProp);
         if (this.itemBuilder != null) {
             this.itemBuilder.accept(itemBuilder);
+        }
+        if (this.compassNode != null) {
+            if (compassSections.isEmpty()) {
+                compassSections.add(GTCompassSections.MACHINES);
+            }
+            for (CompassSection section : compassSections) {
+                itemBuilder.onRegister(item -> {
+                    var node = CompassNode.getOrCreate(section, compassNode)
+                            .addItem(item::asItem)
+                            .addPreNode(preNodes.toArray(ResourceLocation[]::new));
+                    if (compassPage != null) {
+                        node.page(compassPage);
+                    }
+                });
+            }
         }
         var item = itemBuilder.register();
 

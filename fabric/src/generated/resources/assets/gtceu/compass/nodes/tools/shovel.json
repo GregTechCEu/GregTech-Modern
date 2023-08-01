@@ -1,0 +1,37 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:aluminium_shovel"
+  },
+  "items": [
+    "gtceu:aluminium_shovel",
+    "gtceu:iron_shovel",
+    "gtceu:titanium_shovel",
+    "gtceu:neutronium_shovel",
+    "gtceu:duranium_shovel",
+    "gtceu:bronze_shovel",
+    "gtceu:diamond_shovel",
+    "gtceu:invar_shovel",
+    "gtceu:sterling_silver_shovel",
+    "gtceu:rose_gold_shovel",
+    "gtceu:stainless_steel_shovel",
+    "gtceu:steel_shovel",
+    "gtceu:ultimet_shovel",
+    "gtceu:wrought_iron_shovel",
+    "gtceu:tungsten_carbide_shovel",
+    "gtceu:damascus_steel_shovel",
+    "gtceu:tungsten_steel_shovel",
+    "gtceu:cobalt_brass_shovel",
+    "gtceu:vanadium_steel_shovel",
+    "gtceu:naquadah_alloy_shovel",
+    "gtceu:red_steel_shovel",
+    "gtceu:blue_steel_shovel",
+    "gtceu:hsse_shovel"
+  ],
+  "page": "gtceu:tools/shovel",
+  "position": [
+    -150,
+    0
+  ],
+  "section": "gtceu:tools"
+}

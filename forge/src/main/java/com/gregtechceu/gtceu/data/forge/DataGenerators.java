@@ -5,6 +5,8 @@ import appeng.init.worldgen.InitBiomes;
 import appeng.init.worldgen.InitDimensionTypes;
 import appeng.init.worldgen.InitStructures;
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.registry.registrate.CompassNode;
+import com.gregtechceu.gtceu.api.registry.registrate.CompassSection;
 import com.gregtechceu.gtceu.api.registry.registrate.SoundEntryBuilder;
 import com.gregtechceu.gtceu.common.data.GTConfiguredFeatures;
 import com.gregtechceu.gtceu.common.data.GTDamageTypes;
@@ -20,6 +22,7 @@ import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.registries.VanillaRegistries;
+import net.minecraft.server.packs.PackType;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -40,6 +43,8 @@ public class DataGenerators {
         if (event.includeServer()) {
             var set = Set.of(GTCEu.MOD_ID);
             generator.addProvider(true, new SoundEntryBuilder.SoundEntryProvider(generator.getPackOutput()));
+            generator.addProvider(true, new CompassSection.CompassSectionProvider(generator, rl -> event.getExistingFileHelper().exists(rl, PackType.CLIENT_RESOURCES)));
+            generator.addProvider(true, new CompassNode.CompassNodeProvider(generator, rl -> event.getExistingFileHelper().exists(rl, PackType.CLIENT_RESOURCES)));
             generator.addProvider(true, bindRegistries(BiomeTagsProviderImpl::new, registries));
             generator.addProvider(true, bindRegistries((output, provider) -> new GTRegistriesDatapackGenerator(
                     output, registries, new RegistrySetBuilder()

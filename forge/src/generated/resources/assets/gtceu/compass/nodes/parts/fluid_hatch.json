@@ -1,0 +1,34 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:ulv_input_hatch"
+  },
+  "items": [
+    "gtceu:ulv_input_hatch",
+    "gtceu:lv_input_hatch",
+    "gtceu:mv_input_hatch",
+    "gtceu:hv_input_hatch",
+    "gtceu:ev_input_hatch",
+    "gtceu:iv_input_hatch",
+    "gtceu:luv_input_hatch",
+    "gtceu:zpm_input_hatch",
+    "gtceu:uv_input_hatch",
+    "gtceu:uhv_input_hatch",
+    "gtceu:ulv_output_hatch",
+    "gtceu:lv_output_hatch",
+    "gtceu:mv_output_hatch",
+    "gtceu:hv_output_hatch",
+    "gtceu:ev_output_hatch",
+    "gtceu:iv_output_hatch",
+    "gtceu:luv_output_hatch",
+    "gtceu:zpm_output_hatch",
+    "gtceu:uv_output_hatch",
+    "gtceu:uhv_output_hatch"
+  ],
+  "page": "gtceu:parts/fluid_hatch",
+  "position": [
+    -150,
+    0
+  ],
+  "section": "gtceu:parts"
+}
