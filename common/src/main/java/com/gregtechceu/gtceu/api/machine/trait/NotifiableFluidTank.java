@@ -89,8 +89,8 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidStack
     @Override
     public List<FluidStack> handleRecipeInner(IO io, GTRecipe recipe, List<FluidStack> left, @Nullable String slotName, boolean simulate) {
         if (io != this.handlerIO) return left;
-        var lastStatus = simulate ? Arrays.stream(storages).map(FluidStorage::serializeNBT).toArray(CompoundTag[]::new) : null;
-        for (FluidStorage capability : storages) {
+        var capabilities = simulate ? Arrays.stream(storages).map(FluidStorage::copy).toArray(FluidStorage[]::new) : storages;
+        for (FluidStorage capability : capabilities) {
             Iterator<FluidStack> iterator = left.iterator();
             if (io == IO.IN) {
                 while (iterator.hasNext()) {
@@ -132,14 +132,6 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidStack
                 }
             }
             if (left.isEmpty()) break;
-        }
-        if (lastStatus != null) {
-            for (int i = 0; i < storages.length; i++) {
-                var lastOnChange = storages[i].getOnContentsChanged();
-                storages[i].setOnContentsChanged(() -> {});
-                storages[i].deserializeNBT(lastStatus[i]);
-                storages[i].setOnContentsChanged(lastOnChange);
-            }
         }
         return left.isEmpty() ? null : left;
     }

@@ -21,9 +21,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 /**
  * @author KilaBash
@@ -79,9 +77,8 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
     @Override
     public List<Ingredient> handleRecipeInner(IO io, GTRecipe recipe, List<Ingredient> left, @Nullable String slotName, boolean simulate) {
         if (io != this.handlerIO) return left;
-        var capability = storage;
+        var capability = simulate ? storage.copy() : storage;
         Iterator<Ingredient> iterator = left.iterator();
-        var lastStatus = simulate ? storage.serializeNBT() : null;
         if (io == IO.IN) {
             while (iterator.hasNext()) {
                 Ingredient ingredient = iterator.next();
@@ -119,12 +116,6 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
                 }
                 if (output.isEmpty()) iterator.remove();
             }
-        }
-        if (lastStatus != null) {
-            var lastOnChange = storage.getOnContentsChanged();
-            storage.setOnContentsChanged(() -> {});
-            storage.deserializeNBT(lastStatus);
-            storage.setOnContentsChanged(lastOnChange);
         }
         return left.isEmpty() ? null : left;
     }
