@@ -1,9 +1,0 @@
-{
-  "section": "gtceu:tools",
-  "button_texture": {
-    "type": "item",
-    "res": "gtceu:iron_crowbar"
-  },
-  "position": [0, 0],
-  "page": "gtceu:tools/crowbar"
-}

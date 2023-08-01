@@ -1,0 +1,15 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:pyrolyse_oven"
+  },
+  "items": [
+    "gtceu:pyrolyse_oven"
+  ],
+  "page": "gtceu:mv/pyrolyse_oven",
+  "position": [
+    -100,
+    0
+  ],
+  "section": "gtceu:mv"
+}

@@ -40,6 +40,23 @@ public class GTCompassSections {
             .priority(priority++)
             .register();
 
+    public final static CompassSection MACHINES = CompassSection.create("machines")
+            .icon(() -> new ItemStackTexture(GTMachines.CHEMICAL_REACTOR[0].asStack()))
+            .background(() -> GuiTextures.DISPLAY)
+            .priority(priority++)
+            .register();
+
+    public final static CompassSection PARTS = CompassSection.create("parts")
+            .icon(() -> new ItemStackTexture(GTMachines.MAINTENANCE_HATCH.asStack()))
+            .background(() -> GuiTextures.DISPLAY)
+            .priority(priority++)
+            .register();
+
+    public final static CompassSection MULTIBLOCK = CompassSection.create("multiblock")
+            .icon(() -> new ItemStackTexture(GTMachines.ELECTRIC_BLAST_FURNACE.asStack()))
+            .background(() -> GuiTextures.DISPLAY)
+            .priority(priority++)
+            .register();
     public final static CompassSection STEAM = CompassSection.create("steam")
             .icon(() -> new ItemStackTexture(GTMachines.STEAM_SOLID_BOILER.left().asStack()))
             .background(() -> GuiTextures.DISPLAY)
@@ -47,10 +64,10 @@ public class GTCompassSections {
             .priority(priority++)
             .register();
 
-    public final static CompassSection[] TIER = new CompassSection[GTMachines.HULL.length];
+    public final static CompassSection[] TIER = new CompassSection[10];
 
     static {
-        for (int i = 0; i < GTMachines.HULL.length; i++) {
+        for (int i = 0; i < 10; i++) {
             int finalI = i;
             TIER[i] = CompassSection.create(GTValues.VN[i].toLowerCase())
                     .icon(() -> new ItemStackTexture(GTMachines.HULL[finalI].asStack()))
@@ -60,13 +77,6 @@ public class GTCompassSections {
                     .register();
         }
     }
-
-    public final static CompassSection MULTIBLOCK = CompassSection.create("multiblock")
-            .icon(() -> new ItemStackTexture(GTMachines.ELECTRIC_BLAST_FURNACE.asStack()))
-            .background(() -> GuiTextures.DISPLAY)
-            .priority(priority++)
-            .register();
-
     public static void init() {
 
     }

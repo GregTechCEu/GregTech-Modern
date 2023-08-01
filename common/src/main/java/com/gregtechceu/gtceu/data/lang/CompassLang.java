@@ -11,8 +11,12 @@ import com.tterrag.registrate.providers.RegistrateLangProvider;
  */
 public class CompassLang {
     public static void init(RegistrateLangProvider provider) {
-        for (CompassSection section : GTRegistries.COMPASS_SECTIONS) {
+        for (var section : GTRegistries.COMPASS_SECTIONS) {
             provider.add(section.getUnlocalizedKey(), section.lang());
+        }
+
+        for (var node : GTRegistries.COMPASS_NODES) {
+            provider.add(node.getUnlocalizedKey(), node.lang());
         }
     }
 }

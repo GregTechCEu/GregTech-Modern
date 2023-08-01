@@ -1,0 +1,20 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:lp_steam_furnace"
+  },
+  "items": [
+    "gtceu:lp_steam_furnace",
+    "gtceu:hp_steam_furnace"
+  ],
+  "page": "gtceu:steam/steam_furnace",
+  "position": [
+    -200,
+    50
+  ],
+  "pre_nodes": [
+    "gtceu:steam/high_pressure",
+    "gtceu:steam/low_pressure"
+  ],
+  "section": "gtceu:steam"
+}

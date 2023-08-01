@@ -43,6 +43,8 @@ public class CommonProxy {
         GTMaterials.init();
         TagPrefix.init();
         GTSoundEntries.init();
+        GTCompassSections.init();
+        GTCompassNodes.init();
         GTCovers.init();
         GTFluids.init();
         GTBlocks.init();
@@ -51,7 +53,6 @@ public class CommonProxy {
         GTMachines.init();
         GTFoods.init();
         GTItems.init();
-        GTCompassSections.init();
         GregTechDatagen.init();
         AddonFinder.getAddons().forEach(IGTAddon::initializeAddon);
 

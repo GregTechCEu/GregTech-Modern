@@ -1,0 +1,18 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:computer_monitor_cover"
+  },
+  "items": [
+    "gtceu:computer_monitor_cover"
+  ],
+  "page": "gtceu:covers/computer_monitor_cover",
+  "position": [
+    -50,
+    100
+  ],
+  "pre_nodes": [
+    "gtceu:covers/cover"
+  ],
+  "section": "gtceu:covers"
+}

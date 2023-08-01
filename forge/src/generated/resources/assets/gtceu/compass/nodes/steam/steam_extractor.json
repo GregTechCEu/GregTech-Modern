@@ -1,0 +1,20 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:lp_steam_extractor"
+  },
+  "items": [
+    "gtceu:lp_steam_extractor",
+    "gtceu:hp_steam_extractor"
+  ],
+  "page": "gtceu:steam/steam_extractor",
+  "position": [
+    -150,
+    0
+  ],
+  "pre_nodes": [
+    "gtceu:steam/high_pressure",
+    "gtceu:steam/low_pressure"
+  ],
+  "section": "gtceu:steam"
+}

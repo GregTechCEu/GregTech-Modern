@@ -18,6 +18,7 @@ import net.minecraft.resources.ResourceLocation;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 /**
@@ -60,9 +61,11 @@ public class CompassSection {
 
     public static class CompassSectionProvider implements DataProvider {
         private final DataGenerator generator;
+        private final Predicate<ResourceLocation> existingHelper;
 
-        public CompassSectionProvider(DataGenerator generator) {
+        public CompassSectionProvider(DataGenerator generator, Predicate<ResourceLocation> existingHelper) {
             this.generator = generator;
+            this.existingHelper = existingHelper;
         }
 
         @Override
@@ -76,15 +79,19 @@ public class CompassSection {
         }
 
         public void generate(Path path, CachedOutput cache) {
-            path = path.resolve("assets/" + GTCEu.MOD_ID).resolve("compass/sections");
+            path = path.resolve("assets/" + GTCEu.MOD_ID);
 
             try {
                 for (var section : GTRegistries.COMPASS_SECTIONS) {
+                    var resourcePath = "compass/sections/" + section.sectionID.getPath() + ".json";
+                    if (existingHelper.test(GTCEu.id(resourcePath))) {
+                        continue;
+                    }
                     JsonObject json = new JsonObject();
                     json.add("button_texture",SimpleIGuiTextureJsonUtils.toJson(section.icon.get()));
                     json.add("background_texture",SimpleIGuiTextureJsonUtils.toJson(section.background.get()));
                     json.addProperty("priority", section.priority);
-                    DataProvider.saveStable(cache, json, path.resolve(section.sectionID.getPath() + ".json"));
+                    DataProvider.saveStable(cache, json, path.resolve(resourcePath));
                 }
             } catch (IOException e) {
                 e.printStackTrace();

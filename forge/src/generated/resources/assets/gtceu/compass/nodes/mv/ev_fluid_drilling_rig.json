@@ -1,0 +1,15 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:ev_fluid_drilling_rig"
+  },
+  "items": [
+    "gtceu:ev_fluid_drilling_rig"
+  ],
+  "page": "gtceu:mv/ev_fluid_drilling_rig",
+  "position": [
+    -50,
+    50
+  ],
+  "section": "gtceu:mv"
+}

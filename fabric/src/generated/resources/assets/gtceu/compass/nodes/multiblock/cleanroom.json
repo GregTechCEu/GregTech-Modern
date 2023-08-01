@@ -1,0 +1,15 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:cleanroom"
+  },
+  "items": [
+    "gtceu:cleanroom"
+  ],
+  "page": "gtceu:multiblock/cleanroom",
+  "position": [
+    -300,
+    200
+  ],
+  "section": "gtceu:multiblock"
+}

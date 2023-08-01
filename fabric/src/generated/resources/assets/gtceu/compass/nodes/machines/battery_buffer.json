@@ -1,0 +1,44 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:ulv_battery_buffer_4x"
+  },
+  "items": [
+    "gtceu:ulv_battery_buffer_4x",
+    "gtceu:lv_battery_buffer_4x",
+    "gtceu:mv_battery_buffer_4x",
+    "gtceu:hv_battery_buffer_4x",
+    "gtceu:ev_battery_buffer_4x",
+    "gtceu:iv_battery_buffer_4x",
+    "gtceu:luv_battery_buffer_4x",
+    "gtceu:zpm_battery_buffer_4x",
+    "gtceu:uv_battery_buffer_4x",
+    "gtceu:uhv_battery_buffer_4x",
+    "gtceu:ulv_battery_buffer_8x",
+    "gtceu:lv_battery_buffer_8x",
+    "gtceu:mv_battery_buffer_8x",
+    "gtceu:hv_battery_buffer_8x",
+    "gtceu:ev_battery_buffer_8x",
+    "gtceu:iv_battery_buffer_8x",
+    "gtceu:luv_battery_buffer_8x",
+    "gtceu:zpm_battery_buffer_8x",
+    "gtceu:uv_battery_buffer_8x",
+    "gtceu:uhv_battery_buffer_8x",
+    "gtceu:ulv_battery_buffer_16x",
+    "gtceu:lv_battery_buffer_16x",
+    "gtceu:mv_battery_buffer_16x",
+    "gtceu:hv_battery_buffer_16x",
+    "gtceu:ev_battery_buffer_16x",
+    "gtceu:iv_battery_buffer_16x",
+    "gtceu:luv_battery_buffer_16x",
+    "gtceu:zpm_battery_buffer_16x",
+    "gtceu:uv_battery_buffer_16x",
+    "gtceu:uhv_battery_buffer_16x"
+  ],
+  "page": "gtceu:machines/battery_buffer",
+  "position": [
+    -250,
+    250
+  ],
+  "section": "gtceu:machines"
+}

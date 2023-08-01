@@ -1,0 +1,15 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:cracker"
+  },
+  "items": [
+    "gtceu:cracker"
+  ],
+  "page": "gtceu:ev/cracker",
+  "position": [
+    -150,
+    0
+  ],
+  "section": "gtceu:ev"
+}

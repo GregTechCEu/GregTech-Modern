@@ -1,0 +1,22 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:lv_diode"
+  },
+  "items": [
+    "gtceu:lv_diode",
+    "gtceu:mv_diode",
+    "gtceu:hv_diode",
+    "gtceu:ev_diode",
+    "gtceu:iv_diode",
+    "gtceu:luv_diode",
+    "gtceu:zpm_diode",
+    "gtceu:uv_diode"
+  ],
+  "page": "gtceu:parts/diode",
+  "position": [
+    -150,
+    100
+  ],
+  "section": "gtceu:parts"
+}

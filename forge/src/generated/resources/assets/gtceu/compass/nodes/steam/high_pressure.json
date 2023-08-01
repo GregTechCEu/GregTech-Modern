@@ -1,0 +1,13 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:steel_plate"
+  },
+  "page": "gtceu:steam/high_pressure",
+  "position": [
+    50,
+    100
+  ],
+  "section": "gtceu:steam",
+  "size": 40
+}

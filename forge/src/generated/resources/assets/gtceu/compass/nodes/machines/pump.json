@@ -1,0 +1,18 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:lv_pump"
+  },
+  "items": [
+    "gtceu:lv_pump",
+    "gtceu:mv_pump",
+    "gtceu:hv_pump",
+    "gtceu:ev_pump"
+  ],
+  "page": "gtceu:machines/pump",
+  "position": [
+    -150,
+    250
+  ],
+  "section": "gtceu:machines"
+}
