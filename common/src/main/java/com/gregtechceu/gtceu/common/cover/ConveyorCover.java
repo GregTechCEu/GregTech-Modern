@@ -76,6 +76,13 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
         this.itemsLeftToTransferLastSecond = transferRate;
         this.filterItem = ItemStack.EMPTY;
         this.io = IO.OUT;
+
+    protected @Nullable IItemTransfer getOwnItemTransfer() {
+        return ItemTransferHelper.getItemTransfer(coverHolder.getLevel(), coverHolder.getPos(), attachedSide);
+    }
+
+    protected @Nullable IItemTransfer getAdjacentItemTransfer() {
+        return ItemTransferHelper.getItemTransfer(coverHolder.getLevel(), coverHolder.getPos().relative(attachedSide), attachedSide.getOpposite());
     }
 
     //////////////////////////////////////
@@ -88,7 +95,7 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
 
     @Override
     public boolean canAttach() {
-        return ItemTransferHelper.getItemTransfer(coverHolder.getLevel(), coverHolder.getPos(), attachedSide) != null;
+        return getOwnItemTransfer() != null;
     }
 
     public void setTransferRate(int transferRate) {
@@ -171,14 +178,12 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
         long timer = coverHolder.getOffsetTimer();
         if (timer % 5 == 0) {
             if (itemsLeftToTransferLastSecond > 0) {
-                var level = coverHolder.getLevel();
-                var pos = coverHolder.getPos();
-                var itemHandler = ItemTransferHelper.getItemTransfer(level, pos.relative(attachedSide), attachedSide.getOpposite());
-                var myItemHandler = ItemTransferHelper.getItemTransfer(level, pos, attachedSide);
-                if (itemHandler != null && myItemHandler != null) {
+                var adjacentItemTransfer = getAdjacentItemTransfer();
+                var myItemHandler = getOwnItemTransfer();
+                if (adjacentItemTransfer != null && myItemHandler != null) {
                     int totalTransferred = switch (io) {
-                        case IN -> doTransferItems(itemHandler, myItemHandler, itemsLeftToTransferLastSecond);
-                        case OUT -> doTransferItems(myItemHandler, itemHandler, itemsLeftToTransferLastSecond);
+                        case IN -> doTransferItems(adjacentItemTransfer, myItemHandler, itemsLeftToTransferLastSecond);
+                        case OUT -> doTransferItems(myItemHandler, adjacentItemTransfer, itemsLeftToTransferLastSecond);
                         default -> 0;
                     };
                     this.itemsLeftToTransferLastSecond -= totalTransferred;

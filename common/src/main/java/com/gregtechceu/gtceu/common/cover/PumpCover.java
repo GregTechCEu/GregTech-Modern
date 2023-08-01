@@ -10,10 +10,8 @@ import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.cover.IUICover;
 import com.gregtechceu.gtceu.api.cover.filter.FluidFilter;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.UITemplate;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.syncdata.RequireRerender;
-import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceBorderTexture;
 import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
@@ -34,7 +32,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.Nullable;
@@ -78,6 +75,14 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
         this.filterItem = ItemStack.EMPTY;
         this.io = IO.OUT;
     }
+    
+    protected @Nullable IFluidTransfer getOwnFluidTransfer() {
+        return FluidTransferHelper.getFluidTransfer(coverHolder.getLevel(), coverHolder.getPos(), attachedSide);
+    }
+    
+    protected @Nullable IFluidTransfer getAdjacentFluidTransfer() {
+        return FluidTransferHelper.getFluidTransfer(coverHolder.getLevel(), coverHolder.getPos().relative(attachedSide), attachedSide.getOpposite());
+    }
 
     //////////////////////////////////////
     //*****     Initialization    ******//
@@ -89,7 +94,7 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
 
     @Override
     public boolean canAttach() {
-        return FluidTransferHelper.getFluidTransfer(coverHolder.getLevel(), coverHolder.getPos(), attachedSide) != null;
+        return getOwnFluidTransfer() != null;
     }
 
     public void setTransferRate(long transferRate) {
@@ -170,9 +175,7 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
     }
 
     protected void updateSubscription() {
-        var level = coverHolder.getLevel();
-        var pos = coverHolder.getPos();
-        if (isWorkingEnabled() && FluidTransferHelper.getFluidTransfer(level, pos.relative(attachedSide), attachedSide.getOpposite()) != null) {
+        if (isWorkingEnabled() && getAdjacentFluidTransfer() != null) {
             subscription = coverHolder.subscribeServerTick(subscription, this::update);
         } else if (subscription != null) {
             subscription.unsubscribe();
@@ -195,10 +198,8 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
     }
 
     protected long doTransferFluids(long transferLimit) {
-        var pos = coverHolder.getPos();
-        var level = coverHolder.getLevel();
-        var fluidHandler = FluidTransferHelper.getFluidTransfer(level, pos.relative(attachedSide), attachedSide.getOpposite());
-        var myFluidHandler = FluidTransferHelper.getFluidTransfer(level, pos, attachedSide);
+        var fluidHandler = getAdjacentFluidTransfer();
+        var myFluidHandler = getOwnFluidTransfer();
         if (fluidHandler == null || myFluidHandler == null) {
             return 0;
         }
