@@ -52,7 +52,7 @@ public class GTOreFeatureEntry {
                     RegistryCodecs.homogeneousList(Registry.DIMENSION_TYPE_REGISTRY).fieldOf("dimension_filter").forGetter(ft -> ft.dimensionFilter),
                     HeightRangePlacement.CODEC.fieldOf("height_range").forGetter(ft -> ft.range),
                     Codec.floatRange(0.0F, 1.0F).fieldOf("discard_chance_on_air_exposure").forGetter(ft -> ft.discardChanceOnAirExposure),
-                    RegistryCodecs.homogeneousList(Registry.BIOME_REGISTRY).fieldOf("biomes").forGetter(ext -> ext.biomes),
+                    RegistryCodecs.homogeneousList(Registry.BIOME_REGISTRY).optionalFieldOf("biomes", null).forGetter(ext -> ext.biomes),
                     BiomeWeightModifier.CODEC.optionalFieldOf("weight_modifier", null).forGetter(ext -> ext.biomeWeightModifier),
                     VeinGenerator.DIRECT_CODEC.fieldOf("generator").forGetter(ft -> ft.veinGenerator)
             ).apply(instance, GTOreFeatureEntry::new)

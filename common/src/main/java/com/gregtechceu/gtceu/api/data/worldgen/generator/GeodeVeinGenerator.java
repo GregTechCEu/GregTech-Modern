@@ -164,23 +164,23 @@ public class GeodeVeinGenerator extends VeinGenerator {
                 list2.add(origin.offset(0, 1, 0));
             }
         }
-        ArrayList<BlockPos> list3 = Lists.newArrayList();
+        ArrayList<BlockPos> positions = Lists.newArrayList();
         Predicate<BlockState> placementPredicate = GeodeFeature.isReplaceable(this.geodeBlockSettings.cannotReplace);
-        for (BlockPos origin3 : BlockPos.betweenClosed(origin.offset(minOffset, minOffset, minOffset), origin.offset(maxOffset, maxOffset, maxOffset))) {
-            double noiseValue = normalNoise.getValue(origin3.getX(), origin3.getY(), origin3.getZ()) * this.noiseMultiplier;
+        for (BlockPos pos : BlockPos.betweenClosed(origin.offset(minOffset, minOffset, minOffset), origin.offset(maxOffset, maxOffset, maxOffset))) {
+            double noiseValue = normalNoise.getValue(pos.getX(), pos.getY(), pos.getZ()) * this.noiseMultiplier;
             double s = 0.0;
             double t = 0.0;
             for (var pair : points) {
-                s += Mth.fastInvSqrt(origin3.distSqr(pair.getFirst()) + (double) pair.getSecond()) + noiseValue;
+                s += Mth.fastInvSqrt(pos.distSqr(pair.getFirst()) + (double) pair.getSecond()) + noiseValue;
             }
             for (BlockPos origin4 : list2) {
-                t += Mth.fastInvSqrt(origin3.distSqr(origin4) + (double)geodeCrackSettings.crackPointOffset) + noiseValue;
+                t += Mth.fastInvSqrt(pos.distSqr(origin4) + (double)geodeCrackSettings.crackPointOffset) + noiseValue;
             }
             if (s < outerSize) continue;
             if (doCrack && t >= crackSize && s < fillingSize) {
-                this.safeSetBlock(level, origin3, Blocks.AIR.defaultBlockState(), placementPredicate);
+                this.safeSetBlock(level, pos, Blocks.AIR.defaultBlockState(), placementPredicate);
                 for (Direction direction : DIRECTIONS) {
-                    BlockPos origin5 = origin3.relative(direction);
+                    BlockPos origin5 = pos.relative(direction);
                     FluidState fluidState = level.getFluidState(origin5);
                     if (fluidState.isEmpty()) continue;
                     level.scheduleTick(origin5, fluidState.getType(), 0);
@@ -188,30 +188,30 @@ public class GeodeVeinGenerator extends VeinGenerator {
                 continue;
             }
             if (s >= fillingSize) {
-                this.safeSetBlock(level, origin3, getStateFromEither(geodeBlockSettings.fillingProvider, geodeBlockSettings, random, origin3), placementPredicate);
+                this.safeSetBlock(level, pos, getStateFromEither(geodeBlockSettings.fillingProvider, geodeBlockSettings, random, pos), placementPredicate);
                 continue;
             }
             if (s >= innerSize) {
                 boolean useAltLayer = (double)random.nextFloat() < this.useAlternateLayer0Chance;
                 if (useAltLayer) {
-                    this.safeSetBlock(level, origin3, getStateFromEither(geodeBlockSettings.alternateInnerLayerProvider, geodeBlockSettings, random, origin3), placementPredicate);
+                    this.safeSetBlock(level, pos, getStateFromEither(geodeBlockSettings.alternateInnerLayerProvider, geodeBlockSettings, random, pos), placementPredicate);
                 } else {
-                    this.safeSetBlock(level, origin3, getStateFromEither(geodeBlockSettings.innerLayerProvider, geodeBlockSettings, random, origin3), placementPredicate);
+                    this.safeSetBlock(level, pos, getStateFromEither(geodeBlockSettings.innerLayerProvider, geodeBlockSettings, random, pos), placementPredicate);
                 }
                 if (this.placementsRequireLayer0Alternate && !useAltLayer || !((double)random.nextFloat() < this.usePotentialPlacementsChance)) continue;
-                list3.add(origin3.immutable());
+                positions.add(pos.immutable());
                 continue;
             }
             if (s >= middleSize) {
-                this.safeSetBlock(level, origin3, getStateFromEither(geodeBlockSettings.middleLayerProvider, geodeBlockSettings, random, origin3), placementPredicate);
+                this.safeSetBlock(level, pos, getStateFromEither(geodeBlockSettings.middleLayerProvider, geodeBlockSettings, random, pos), placementPredicate);
                 continue;
             }
             if (!(s >= outerSize)) continue;
-            this.safeSetBlock(level, origin3, getStateFromEither(geodeBlockSettings.outerLayerProvider, geodeBlockSettings, random, origin3), placementPredicate);
+            this.safeSetBlock(level, pos, getStateFromEither(geodeBlockSettings.outerLayerProvider, geodeBlockSettings, random, pos), placementPredicate);
         }
-        List<BlockState> list4 = geodeBlockSettings.innerPlacements;
-        block5: for (BlockPos origin2 : list3) {
-            blockState = Util.getRandom(list4, random);
+        List<BlockState> innerPlacements = geodeBlockSettings.innerPlacements;
+        block5: for (BlockPos origin2 : positions) {
+            blockState = Util.getRandom(innerPlacements, random);
             for (Direction direction2 : DIRECTIONS) {
                 if (blockState.hasProperty(BlockStateProperties.FACING)) {
                     blockState = blockState.setValue(BlockStateProperties.FACING, direction2);

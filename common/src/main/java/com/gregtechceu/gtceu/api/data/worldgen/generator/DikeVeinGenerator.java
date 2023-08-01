@@ -112,7 +112,7 @@ public class DikeVeinGenerator extends VeinGenerator {
                     break;
                 }
             }).ifRight(material -> {
-                if (!GTOreFeature.canPlaceOre(current, level::getBlockState, rand, this.entry, material, pos.mutable()))
+                if (!GTOreFeature.canPlaceOre(current, level::getBlockState, rand, entry, material, pos.mutable()))
                     return;
                 BlockState currentState = level.getBlockState(pos);
                 var prefix = ChemicalHelper.ORES_INVERSE.get(currentState);
@@ -145,8 +145,8 @@ public class DikeVeinGenerator extends VeinGenerator {
     public record DikeBlockDefinition(Either<List<OreConfiguration.TargetBlockState>, Material> block, int minY, int maxY) {
         public static final Codec<DikeBlockDefinition> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 Codec.either(OreConfiguration.TargetBlockState.CODEC.listOf(), GTRegistries.MATERIALS.codec()).fieldOf("block").forGetter(x -> x.block),
-                Codec.INT.fieldOf("min_y").forGetter(x -> x.minY),
-                Codec.INT.fieldOf("max_y").forGetter(x -> x.maxY)
+                Codec.INT.fieldOf("min_y").orElse(320).forGetter(x -> x.minY),
+                Codec.INT.fieldOf("max_y").orElse(-64).forGetter(x -> x.maxY)
         ).apply(instance, DikeBlockDefinition::new));
     }
 }
