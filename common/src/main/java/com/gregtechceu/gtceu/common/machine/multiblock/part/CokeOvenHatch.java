@@ -8,7 +8,6 @@ import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.FluidTankProxyTrait;
 import com.gregtechceu.gtceu.api.machine.trait.ItemHandlerProxyTrait;
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.CokeOvenMachine;
-import com.lowdragmc.lowdraglib.misc.ItemTransferList;
 import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
 import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
@@ -34,17 +33,18 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class CokeOvenHatch extends MultiblockPartMachine {
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(CokeOvenHatch.class, MultiblockPartMachine.MANAGED_FIELD_HOLDER);
 
-    public final ItemHandlerProxyTrait inventory;
+    public final ItemHandlerProxyTrait inputInventory, outputInventory;
     public final FluidTankProxyTrait tank;
     @Nullable
     protected TickableSubscription autoIOSubs;
     @Nullable
-    protected ISubscription inventorySubs, tankSubs;
+    protected ISubscription outputInventorySubs, outputTankSubs;
 
 
     public CokeOvenHatch(IMachineBlockEntity holder, Object... args) {
         super(holder);
-        this.inventory = new ItemHandlerProxyTrait(this, IO.BOTH);
+        this.inputInventory = new ItemHandlerProxyTrait(this, IO.IN);
+        this.outputInventory = new ItemHandlerProxyTrait(this, IO.OUT);
         this.tank = new FluidTankProxyTrait(this, IO.BOTH);
     }
 
@@ -59,15 +59,16 @@ public class CokeOvenHatch extends MultiblockPartMachine {
     @Override
     public void onUnload() {
         super.onUnload();
-        inventory.setProxy(null);
+        inputInventory.setProxy(null);
+        outputInventory.setProxy(null);
         tank.setProxy(null);
-        if (inventorySubs != null) {
-            inventorySubs.unsubscribe();
-            inventorySubs = null;
+        if (outputInventorySubs != null) {
+            outputInventorySubs.unsubscribe();
+            outputInventorySubs = null;
         }
-        if (tankSubs != null) {
-            tankSubs.unsubscribe();
-            tankSubs = null;
+        if (outputTankSubs != null) {
+            outputTankSubs.unsubscribe();
+            outputTankSubs = null;
         }
     }
 
@@ -75,9 +76,10 @@ public class CokeOvenHatch extends MultiblockPartMachine {
     public void addedToController(IMultiController controller) {
         super.addedToController(controller);
         if (controller instanceof CokeOvenMachine cokeOven) {
-            inventorySubs = cokeOven.exportItems.addChangedListener(this::updateAutoIOSubscription);
-            tankSubs = cokeOven.exportFluids.addChangedListener(this::updateAutoIOSubscription);
-            inventory.setProxy(new ItemTransferList(cokeOven.importItems, cokeOven.exportItems));
+            outputInventorySubs = cokeOven.exportItems.addChangedListener(this::updateAutoIOSubscription);
+            outputTankSubs = cokeOven.exportFluids.addChangedListener(this::updateAutoIOSubscription);
+            inputInventory.setProxy(cokeOven.importItems);
+            outputInventory.setProxy(cokeOven.exportItems);
             tank.setProxy(cokeOven.exportFluids);
         }
     }
@@ -85,20 +87,26 @@ public class CokeOvenHatch extends MultiblockPartMachine {
     @Override
     public void removedFromController(IMultiController controller) {
         super.removedFromController(controller);
-        inventory.setProxy(null);
+        inputInventory.setProxy(null);
+        outputInventory.setProxy(null);
         tank.setProxy(null);
-        if (inventorySubs != null) {
-            inventorySubs.unsubscribe();
-            inventorySubs = null;
+        if (outputInventorySubs != null) {
+            outputInventorySubs.unsubscribe();
+            outputInventorySubs = null;
         }
-        if (tankSubs != null) {
-            tankSubs.unsubscribe();
-            tankSubs = null;
+        if (outputTankSubs != null) {
+            outputTankSubs.unsubscribe();
+            outputTankSubs = null;
         }
     }
 
     @Override
     public boolean canShared() {
+        return false;
+    }
+
+    @Override
+    public boolean replacePartModelWhenFormed() {
         return false;
     }
 
@@ -119,7 +127,7 @@ public class CokeOvenHatch extends MultiblockPartMachine {
     }
 
     protected void updateAutoIOSubscription() {
-        if ((!inventory.isEmpty() && ItemTransferHelper.getItemTransfer(getLevel(), getPos().relative(getFrontFacing()), getFrontFacing().getOpposite()) != null) ||
+        if ((!outputInventory.isEmpty() && ItemTransferHelper.getItemTransfer(getLevel(), getPos().relative(getFrontFacing()), getFrontFacing().getOpposite()) != null) ||
                 (!tank.isEmpty() && FluidTransferHelper.getFluidTransfer(getLevel(), getPos().relative(getFrontFacing()), getFrontFacing().getOpposite()) != null)) {
             autoIOSubs = subscribeServerTick(autoIOSubs, this::autoIO);
         } else if (autoIOSubs != null) {
@@ -130,7 +138,7 @@ public class CokeOvenHatch extends MultiblockPartMachine {
 
     protected void autoIO() {
         if (getOffsetTimer() % 5 == 0) {
-            inventory.exportToNearby(getFrontFacing());
+            outputInventory.exportToNearby(getFrontFacing());
             tank.exportToNearby(getFrontFacing());
             updateAutoIOSubscription();
         }

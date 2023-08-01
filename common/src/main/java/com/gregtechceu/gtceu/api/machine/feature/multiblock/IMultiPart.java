@@ -58,6 +58,13 @@ public interface IMultiPart extends IMachineFeature, IFancyUIMachine {
     List<IRecipeHandlerTrait> getRecipeHandlers();
 
     /**
+     * whether its base model can be replaced by controller when it is formed.
+     */
+    default boolean replacePartModelWhenFormed() {
+        return true;
+    }
+
+    /**
      * get part's Appearance. same as IForgeBlock.getAppearance() / IFabricBlock.getAppearance()
      */
     @Nullable
