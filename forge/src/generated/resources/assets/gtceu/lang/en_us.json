@@ -3946,7 +3946,7 @@
   "tile.wire_coil.tooltip_cracking": "§8Cracking Unit:",
   "tile.wire_coil.tooltip_energy_smelter": "  §aEnergy Usage: §f%s EU/t §8per recipe",
   "tile.wire_coil.tooltip_extended_info": "Hold SHIFT to show Coil Bonus Info",
-  "tile.wire_coil.tooltip_heat": "§cBase Heat Capacity: §f%,d K",
+  "tile.wire_coil.tooltip_heat": "§cBase Heat Capacity: §f%d K",
   "tile.wire_coil.tooltip_parallel_smelter": "  §5Max Parallel: §f%s",
   "tile.wire_coil.tooltip_pyro": "§8Pyrolyse Oven:",
   "tile.wire_coil.tooltip_smelter": "§8Multi Smelter:",

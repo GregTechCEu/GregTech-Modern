@@ -3919,7 +3919,7 @@
     "tile.wire_coil.tooltip_cracking":"§8石油裂化机：",
     "tile.wire_coil.tooltip_energy_smelter":"  §a耗能：§8每配方§f%s EU/t",
     "tile.wire_coil.tooltip_extended_info":"按住SHIFT查看更多线圈信息",
-    "tile.wire_coil.tooltip_heat":"§c基础热容：§f%,d K",
+    "tile.wire_coil.tooltip_heat":"§c基础热容：§f%d K",
     "tile.wire_coil.tooltip_parallel_smelter":"  §5最大并行：§f%s",
     "tile.wire_coil.tooltip_pyro":"§8热解炉：",
     "tile.wire_coil.tooltip_smelter":"§8工业熔炉：",

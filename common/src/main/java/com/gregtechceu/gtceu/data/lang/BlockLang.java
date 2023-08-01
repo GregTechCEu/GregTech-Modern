@@ -214,7 +214,7 @@ public class BlockLang {
          */
         provider.add("tile.stone_bricks_square.concrete_dark.name", "Square Dark Concrete Bricks");
         provider.add("tile.wire_coil.tooltip_extended_info", "Hold SHIFT to show Coil Bonus Info");
-        provider.add("tile.wire_coil.tooltip_heat", "§cBase Heat Capacity: §f%,d K");
+        provider.add("tile.wire_coil.tooltip_heat", "§cBase Heat Capacity: §f%d K");
         provider.add("tile.wire_coil.tooltip_smelter", "§8Multi Smelter:");
         provider.add("tile.wire_coil.tooltip_parallel_smelter", "  §5Max Parallel: §f%s");
         provider.add("tile.wire_coil.tooltip_energy_smelter", "  §aEnergy Usage: §f%s EU/t §8per recipe");
