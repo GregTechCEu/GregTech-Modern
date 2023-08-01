@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.api.capability.recipe;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.content.SerializerIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
-import com.gregtechceu.gtceu.core.mixins.IngredientAccessor;
 import net.minecraft.world.item.crafting.Ingredient;
 
 import java.util.Arrays;
@@ -26,10 +25,7 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
         if (content instanceof SizedIngredient sizedIngredient) {
             return SizedIngredient.copy(sizedIngredient);
         }
-        if (content.getClass() == Ingredient.class) {
-            return IngredientAccessor.create(Arrays.stream(((IngredientAccessor) content).getValues()));
-        }
-        return super.copyInner(content);
+        return SizedIngredient.create(content, 1);
     }
 
     @Override

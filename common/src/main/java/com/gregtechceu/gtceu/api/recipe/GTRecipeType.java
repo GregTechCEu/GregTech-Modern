@@ -62,6 +62,7 @@ import java.io.DataInputStream;
 import java.io.InputStream;
 import java.util.*;
 import java.util.function.*;
+import java.util.stream.Collectors;
 
 /**
  * @author KilaBash
@@ -213,18 +214,14 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
 
     public List<GTRecipe> searchRecipe(RecipeManager recipeManager, IRecipeCapabilityHolder holder) {
         if (!holder.hasProxies()) return Collections.emptyList();
-        List<GTRecipe> matches = new ArrayList<>();
-        for (var recipe : recipeManager.getAllRecipesFor(this)) {
-            if (!recipe.isFuel && recipe.matchRecipe(holder).isSuccess() && recipe.matchTickRecipe(holder).isSuccess()) {
-                matches.add(recipe);
-            }
-        }
+        List<GTRecipe> matches = recipeManager.getAllRecipesFor(this).parallelStream()
+                .filter(recipe -> !recipe.isFuel && recipe.matchRecipe(holder).isSuccess() && recipe.matchTickRecipe(holder).isSuccess())
+                .collect(Collectors.toList());
         for (List<GTRecipe> recipes : proxyRecipes.values()) {
-            for (GTRecipe recipe : recipes) {
-                if (!recipe.isFuel && recipe.matchRecipe(holder).isSuccess() && recipe.matchTickRecipe(holder).isSuccess()) {
-                    matches.add(recipe);
-                }
-            }
+            var found = recipes.parallelStream()
+                    .filter(recipe -> !recipe.isFuel && recipe.matchRecipe(holder).isSuccess() && recipe.matchTickRecipe(holder).isSuccess())
+                    .toList();
+            matches.addAll(found);
         }
         return matches;
     }

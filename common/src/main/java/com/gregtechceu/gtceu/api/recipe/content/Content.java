@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.recipe.content;
 
+import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -31,6 +32,10 @@ public class Content {
 
     public Object getContent() {
         return content;
+    }
+
+    public Content copy(RecipeCapability<?> capability) {
+        return new Content(capability.copyContent(content), chance, tierChanceBoost, slotName, uiName);
     }
 
     public IGuiTexture createOverlay(boolean perTick) {

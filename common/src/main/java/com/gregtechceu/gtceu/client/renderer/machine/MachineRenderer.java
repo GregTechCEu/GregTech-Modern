@@ -161,7 +161,7 @@ public class MachineRenderer extends TextureOverrideRenderer implements ICoverab
      */
     @Environment(EnvType.CLIENT)
     public void renderMachine(List<BakedQuad> quads, MachineDefinition definition, @Nullable MetaMachine machine, Direction frontFacing, @Nullable Direction side, RandomSource rand, @Nullable Direction modelFacing, ModelState modelState) {
-        if (!(machine instanceof IMultiPart part) || !renderReplacedPartMachine(quads, part, frontFacing, side, rand, modelFacing, modelState)) {
+        if (!(machine instanceof IMultiPart part) || !part.replacePartModelWhenFormed() || !renderReplacedPartMachine(quads, part, frontFacing, side, rand, modelFacing, modelState)) {
             renderBaseModel(quads, definition, machine, frontFacing, side, rand);
         }
     }

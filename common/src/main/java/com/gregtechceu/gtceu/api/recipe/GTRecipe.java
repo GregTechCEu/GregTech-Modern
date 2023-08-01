@@ -10,11 +10,9 @@ import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
-import io.netty.buffer.Unpooled;
 import lombok.Getter;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Tuple;
@@ -62,10 +60,24 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
         this.isFuel = isFuel;
     }
 
+    public Map<RecipeCapability<?>, List<Content>> copyContents(Map<RecipeCapability<?>, List<Content>> contents) {
+        Map<RecipeCapability<?>, List<Content>> copyContents = new HashMap<>();
+        for (var entry : contents.entrySet()) {
+            var contentList = entry.getValue();
+            var cap = entry.getKey();
+            if (contentList != null && !contentList.isEmpty()) {
+                List<Content> contentsCopy = new ArrayList<>();
+                for (Content content : contentList) {
+                    contentsCopy.add(content.copy(cap));
+                }
+                copyContents.put(entry.getKey(), contentsCopy);
+            }
+        }
+        return copyContents;
+    }
+
     public GTRecipe copy() {
-        FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
-        GTRecipeSerializer.SERIALIZER.toNetwork(buf, this);
-        return GTRecipeSerializer.SERIALIZER.fromNetwork(id, buf);
+        return new GTRecipe(recipeType, id, copyContents(inputs), copyContents(outputs), copyContents(tickInputs), copyContents(tickOutputs), conditions, data, duration, isFuel);
     }
 
     public GTRecipe copy(ContentModifier modifier) {
