@@ -4,33 +4,24 @@ import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.cover.filter.SimpleItemFilter;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
 import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
 import com.gregtechceu.gtceu.common.cover.data.TransferMode;
-import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
-import com.lowdragmc.lowdraglib.gui.widget.CycleButtonWidget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 import lombok.Getter;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Map;
 
 public class RobotArmCover extends ConveyorCover {
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(RobotArmCover.class, ConveyorCover.MANAGED_FIELD_HOLDER);
-
-    public static final TransferMode[] TRANSFER_MODES = Arrays.stream(TransferMode.values())
-            .sorted(Comparator.comparingInt(Enum::ordinal))
-            .toArray(TransferMode[]::new);
 
     @Persisted @DescSynced @Getter
     protected TransferMode transferMode;
@@ -40,7 +31,6 @@ public class RobotArmCover extends ConveyorCover {
     protected int itemsTransferBuffered;
 
     private IntInputWidget stackSizeInput;
-    private CycleButtonWidget transferModeSelector;
 
     public RobotArmCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide, int tier) {
         super(definition, coverHolder, attachedSide, tier);
@@ -145,15 +135,7 @@ public class RobotArmCover extends ConveyorCover {
 
     @Override
     protected void buildAdditionalUI(WidgetGroup group) {
-        transferModeSelector = new CycleButtonWidget(
-                146, 45, 20, 20, TRANSFER_MODES.length,
-                i -> new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, TRANSFER_MODES[i].icon),
-                i -> setTransferMode(TRANSFER_MODES[i])
-        );
-        transferModeSelector.setIndex(transferMode.ordinal());
-        transferModeSelector.setHoverTooltips(LocalizationUtils.format(transferMode.localeName));
-
-        group.addWidget(transferModeSelector);
+        group.addWidget(new EnumSelectorWidget<>(146, 45, 20, 20, TransferMode.values(), transferMode, this::setTransferMode));
 
         this.stackSizeInput = new IntInputWidget(64, 45, 80, 20,
                 () -> globalTransferLimit, val -> globalTransferLimit = val
@@ -165,9 +147,6 @@ public class RobotArmCover extends ConveyorCover {
 
     private void setTransferMode(TransferMode transferMode) {
         this.transferMode = transferMode;
-
-        if (transferModeSelector != null)
-            transferModeSelector.setHoverTooltips(LocalizationUtils.format(transferMode.localeName));
 
         configureStackSizeInput();
 

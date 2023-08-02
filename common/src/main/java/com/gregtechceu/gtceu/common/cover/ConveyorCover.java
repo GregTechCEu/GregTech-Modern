@@ -377,14 +377,14 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
                 (clickData, value) -> {
                     setIo(value ? IO.IN : IO.OUT);
                     ioModeSwitch.setHoverTooltips(
-                            LocalizationUtils.format("cover.conveyor.mode", LocalizationUtils.format(io.localeName))
+                            LocalizationUtils.format("cover.conveyor.mode", LocalizationUtils.format(io.tooltip))
                     );
                 })
                 .setTexture(
                         new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, IO.OUT.icon),
                         new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, IO.IN.icon))
                 .setPressed(io == IO.IN)
-                .setHoverTooltips(LocalizationUtils.format("cover.conveyor.mode", LocalizationUtils.format(io.localeName)));
+                .setHoverTooltips(LocalizationUtils.format("cover.conveyor.mode", LocalizationUtils.format(io.tooltip)));
         group.addWidget(ioModeSwitch);
 
         group.addWidget(filterHandler.createFilterSlotUI(148, 107));

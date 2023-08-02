@@ -1199,6 +1199,23 @@ public class LangHandler {
     }
 
     /**
+     * See {@link #getMultiLang(String)}. If no multiline key is available, get single instead.
+     *
+     * @param key Base key of the multi lang. E.g. "terminal.fluid_prospector.tier".
+     * @returnReturns all translation components from a multi lang's sub-keys.
+     */
+    public static List<MutableComponent> getSingleOrMultiLang(String key) {
+        List<MutableComponent> multiLang = getMultiLang(key);
+
+        if (!multiLang.isEmpty()) {
+            return multiLang;
+        }
+
+
+        return List.of(Component.translatable(key));
+    }
+
+    /**
      * Gets a single translation from a multi lang.
      *
      * @param key   Base key of the multi lang. E.g. "gtceu.gui.overclock.enabled".
