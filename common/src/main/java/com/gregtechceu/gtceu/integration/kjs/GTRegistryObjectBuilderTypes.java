@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.worldgen.IWorldGenLayer;
-import com.gregtechceu.gtceu.api.data.worldgen.SimpleWorldGenLayer;
+import com.gregtechceu.gtceu.api.data.worldgen.vein.SimpleWorldGenLayer;
 import com.gregtechceu.gtceu.api.data.worldgen.WorldGeneratorUtils;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;

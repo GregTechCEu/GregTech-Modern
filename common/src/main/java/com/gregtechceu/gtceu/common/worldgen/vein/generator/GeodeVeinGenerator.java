@@ -1,10 +1,11 @@
-package com.gregtechceu.gtceu.api.data.worldgen.generator;
+package com.gregtechceu.gtceu.common.worldgen.vein.generator;
 
 import com.google.common.collect.Lists;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
-import com.gregtechceu.gtceu.api.data.worldgen.GTOreFeatureEntry;
+import com.gregtechceu.gtceu.api.data.worldgen.vein.GTOreFeatureEntry;
+import com.gregtechceu.gtceu.api.data.worldgen.vein.generator.VeinGenerator;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.mojang.datafixers.util.Either;
 import com.mojang.datafixers.util.Pair;

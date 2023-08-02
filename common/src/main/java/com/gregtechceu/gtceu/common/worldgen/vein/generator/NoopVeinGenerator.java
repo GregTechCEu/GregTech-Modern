@@ -1,7 +1,8 @@
-package com.gregtechceu.gtceu.api.data.worldgen.generator;
+package com.gregtechceu.gtceu.common.worldgen.vein.generator;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.data.worldgen.GTOreFeatureEntry;
+import com.gregtechceu.gtceu.api.data.worldgen.vein.GTOreFeatureEntry;
+import com.gregtechceu.gtceu.api.data.worldgen.vein.generator.VeinGenerator;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;

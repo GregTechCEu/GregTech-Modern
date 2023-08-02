@@ -3,8 +3,8 @@ package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.worldgen.modifier.*;
-import com.gregtechceu.gtceu.api.data.worldgen.GTOreFeature;
-import com.gregtechceu.gtceu.api.data.worldgen.GTOreFeatureConfiguration;
+import com.gregtechceu.gtceu.api.data.worldgen.vein.GTOreFeature;
+import com.gregtechceu.gtceu.api.data.worldgen.vein.GTOreFeatureConfiguration;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.core.Registry;

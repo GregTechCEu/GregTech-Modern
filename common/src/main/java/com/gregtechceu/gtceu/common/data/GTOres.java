@@ -2,9 +2,9 @@ package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.data.worldgen.VeinGenerators;
+import com.gregtechceu.gtceu.api.data.worldgen.vein.VeinGenerators;
 import com.gregtechceu.gtceu.api.data.worldgen.GTLayerPattern;
-import com.gregtechceu.gtceu.api.data.worldgen.GTOreFeatureEntry;
+import com.gregtechceu.gtceu.api.data.worldgen.vein.GTOreFeatureEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.worldgen.WorldGenLayers;
 import com.gregtechceu.gtceu.api.data.worldgen.WorldGeneratorUtils;

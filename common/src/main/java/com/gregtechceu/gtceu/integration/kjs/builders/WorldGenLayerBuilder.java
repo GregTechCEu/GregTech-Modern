@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.integration.kjs.builders;
 
-import com.gregtechceu.gtceu.api.data.worldgen.SimpleWorldGenLayer;
+import com.gregtechceu.gtceu.api.data.worldgen.vein.SimpleWorldGenLayer;
 import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
 import lombok.Setter;
 import lombok.experimental.Accessors;

@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.integration.kjs.events;
 
-import com.gregtechceu.gtceu.api.data.worldgen.GTOreFeatureEntry;
+import com.gregtechceu.gtceu.api.data.worldgen.vein.GTOreFeatureEntry;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.integration.kjs.builders.OreVeinBuilderJS;
 import dev.latvian.mods.kubejs.event.EventJS;

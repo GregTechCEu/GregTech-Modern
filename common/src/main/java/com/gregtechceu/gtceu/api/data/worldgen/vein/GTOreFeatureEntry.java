@@ -1,10 +1,14 @@
-package com.gregtechceu.gtceu.api.data.worldgen;
+package com.gregtechceu.gtceu.api.data.worldgen.vein;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.data.worldgen.generator.*;
+import com.gregtechceu.gtceu.api.data.worldgen.BiomeWeightModifier;
+import com.gregtechceu.gtceu.api.data.worldgen.IWorldGenLayer;
+import com.gregtechceu.gtceu.api.data.worldgen.WorldGeneratorUtils;
+import com.gregtechceu.gtceu.api.data.worldgen.vein.generator.*;
 import com.gregtechceu.gtceu.api.data.worldgen.modifier.BiomeFilter;
 import com.gregtechceu.gtceu.api.data.worldgen.modifier.VeinCountFilter;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.common.worldgen.vein.generator.*;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;

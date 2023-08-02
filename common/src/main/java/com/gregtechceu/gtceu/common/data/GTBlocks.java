@@ -723,10 +723,16 @@ public class GTBlocks {
 
     public static Table<StoneBlockType, StrataType, BlockEntry<Block>> STONE_BLOCKS;
 
+    public static BlockEntry<Block> RED_GRANITE;
+    public static BlockEntry<Block> MARBLE;
+    public static BlockEntry<Block> LIGHT_CONCRETE;
+    public static BlockEntry<Block> DARK_CONCRETE;
+
     public static void generateStoneBlocks() {
         // Stone type blocks
         ImmutableTable.Builder<StoneBlockType, StrataType, BlockEntry<Block>> builder = ImmutableTable.builder();
         for (StrataType strata : StrataType.values()) {
+            if (!strata.generateBlocks) continue;
             for (StoneBlockType type : StoneBlockType.values()) {
                 String blockId = type.blockId.formatted(strata.getSerializedName());
                 if (Registry.BLOCK.containsKey(new ResourceLocation(blockId))) continue;
@@ -749,6 +755,11 @@ public class GTBlocks {
             }
         }
         STONE_BLOCKS = builder.build();
+
+        RED_GRANITE = STONE_BLOCKS.get(StoneBlockType.STONE, StrataType.RED_GRANITE);
+        MARBLE = STONE_BLOCKS.get(StoneBlockType.STONE, StrataType.MARBLE);
+        LIGHT_CONCRETE = STONE_BLOCKS.get(StoneBlockType.STONE, StrataType.CONCRETE_LIGHT);
+        DARK_CONCRETE = STONE_BLOCKS.get(StoneBlockType.STONE, StrataType.CONCRETE_DARK);
     }
 
     public static <P, T extends Block, S2 extends BlockBuilder<T, P>> NonNullFunction<S2, S2> unificationBlock(@Nonnull TagPrefix tagPrefix, @Nonnull Material mat) {

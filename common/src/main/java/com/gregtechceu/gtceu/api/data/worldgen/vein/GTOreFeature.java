@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.api.data.worldgen;
+package com.gregtechceu.gtceu.api.data.worldgen.vein;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreVeinSavedData;

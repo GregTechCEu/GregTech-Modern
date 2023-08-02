@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.data.worldgen.bedrockore;
 
-import com.gregtechceu.gtceu.api.data.worldgen.GTOreFeatureEntry;
+import com.gregtechceu.gtceu.api.data.worldgen.vein.GTOreFeatureEntry;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import lombok.Getter;
 import net.minecraft.nbt.CompoundTag;

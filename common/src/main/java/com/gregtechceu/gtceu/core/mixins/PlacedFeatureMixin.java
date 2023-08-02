@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.core.mixins;
 
-import com.gregtechceu.gtceu.api.data.worldgen.GTOreFeatureConfiguration;
-import com.gregtechceu.gtceu.api.data.worldgen.GTOreFeatureEntry;
+import com.gregtechceu.gtceu.api.data.worldgen.vein.GTOreFeatureConfiguration;
+import com.gregtechceu.gtceu.api.data.worldgen.vein.GTOreFeatureEntry;
 import com.gregtechceu.gtceu.api.data.worldgen.modifier.VeinCountFilter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;

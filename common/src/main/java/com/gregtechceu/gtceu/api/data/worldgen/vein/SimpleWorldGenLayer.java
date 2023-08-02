@@ -1,5 +1,7 @@
-package com.gregtechceu.gtceu.api.data.worldgen;
+package com.gregtechceu.gtceu.api.data.worldgen.vein;
 
+import com.gregtechceu.gtceu.api.data.worldgen.IWorldGenLayer;
+import com.gregtechceu.gtceu.api.data.worldgen.WorldGeneratorUtils;
 import com.mojang.serialization.JsonOps;
 import lombok.Getter;
 import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;

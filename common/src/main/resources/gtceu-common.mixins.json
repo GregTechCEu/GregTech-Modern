@@ -28,6 +28,7 @@
     "ServerPlayerGameModeMixin",
     "ShapedRecipeInvoker",
     "SidedRedstoneConnectivityMixin",
+    "SurfaceRuleDataMixin",
     "TagLoaderMixin",
     "TagManagerMixin",
     "WorldGenRegionMixin",

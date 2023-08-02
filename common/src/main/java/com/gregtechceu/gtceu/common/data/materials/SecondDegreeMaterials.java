@@ -173,7 +173,7 @@ public class SecondDegreeMaterials {
                 .components(SiliconDioxide, 4, Biotite, 1)
                 .buildAndRegister();
 
-        GraniteRed = new Material.Builder("red_granite")
+        RedGranite = new Material.Builder("red_granite")
                 .dust()
                 .color(0xFF0080).iconSet(ROUGH)
                 .flags(NO_SMASHING)

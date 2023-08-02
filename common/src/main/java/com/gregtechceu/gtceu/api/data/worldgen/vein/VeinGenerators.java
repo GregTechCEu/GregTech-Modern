@@ -1,9 +1,11 @@
-package com.gregtechceu.gtceu.api.data.worldgen;
+package com.gregtechceu.gtceu.api.data.worldgen.vein;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.IGTAddon;
-import com.gregtechceu.gtceu.api.data.worldgen.generator.*;
+import com.gregtechceu.gtceu.api.data.worldgen.WorldGeneratorUtils;
+import com.gregtechceu.gtceu.api.data.worldgen.vein.generator.*;
+import com.gregtechceu.gtceu.common.worldgen.vein.generator.*;
 import com.mojang.serialization.Codec;
 import net.minecraft.resources.ResourceLocation;
 

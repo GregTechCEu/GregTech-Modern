@@ -161,6 +161,10 @@ public class ConfigHolder {
         @Configurable
         @Configurable.Comment({"Rubber Tree spawn chance (% per chunk)", "Default: 0.5"})
         public float rubberTreeSpawnChance = 0.5f;
+
+        @Configurable
+        @Configurable.Comment({"Generate strata layers in the world?", "Default: true"})
+        public boolean strataGeneration = true;
     }
 
     public static class MachineConfigs {

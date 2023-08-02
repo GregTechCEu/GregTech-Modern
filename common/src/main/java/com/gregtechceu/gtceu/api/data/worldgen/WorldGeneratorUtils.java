@@ -1,7 +1,9 @@
 package com.gregtechceu.gtceu.api.data.worldgen;
 
 import com.google.common.collect.HashBiMap;
-import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinGenerator;
+import com.gregtechceu.gtceu.api.data.worldgen.strata.IStrataLayer;
+import com.gregtechceu.gtceu.api.data.worldgen.vein.GTOreFeatureEntry;
+import com.gregtechceu.gtceu.api.data.worldgen.vein.generator.VeinGenerator;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.mojang.serialization.Codec;
@@ -24,6 +26,7 @@ public class WorldGeneratorUtils {
     private static final Map<WorldGenLevel, WorldOreVeinCache> oreVeinCache = new WeakHashMap<>();
 
     public static final Map<String, IWorldGenLayer> WORLD_GEN_LAYERS = new HashMap<>();
+    public static final Map<String, IStrataLayer> STRATA_LAYERS = new HashMap<>();
     public static final HashBiMap<ResourceLocation, Codec<? extends VeinGenerator>> VEIN_GENERATORS = HashBiMap.create();
     public static final HashBiMap<ResourceLocation, Function<GTOreFeatureEntry, ? extends VeinGenerator>> VEIN_GENERATOR_FUNCTIONS = HashBiMap.create();
 

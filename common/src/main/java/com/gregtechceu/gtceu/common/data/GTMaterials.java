@@ -9,8 +9,6 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlag;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.common.block.StoneBlockType;
-import com.gregtechceu.gtceu.common.block.StrataType;
 import com.gregtechceu.gtceu.common.data.materials.*;
 import com.gregtechceu.gtceu.integration.kjs.GTRegistryObjectBuilderTypes;
 import net.minecraft.world.item.Items;
@@ -182,7 +180,7 @@ public class GTMaterials {
         block.setIgnored(Glass, Blocks.GLASS);
         block.setIgnored(Marble);
         block.setIgnored(Granite, Blocks.GRANITE);
-        block.setIgnored(GraniteRed);
+        block.setIgnored(RedGranite);
         block.setIgnored(Andesite, Blocks.ANDESITE);
         block.setIgnored(Diorite, Blocks.DIORITE);
         block.setIgnored(Stone, Blocks.STONE);
@@ -906,7 +904,7 @@ public class GTMaterials {
     public static Material GarnetYellow;
     public static Material Marble;
     public static Material Deepslate;
-    public static Material GraniteRed;
+    public static Material RedGranite;
     public static Material VanadiumMagnetite;
     public static Material QuartzSand;
     public static Material Pollucite;

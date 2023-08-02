@@ -1,5 +1,6 @@
-package com.gregtechceu.gtceu.api.data.worldgen;
+package com.gregtechceu.gtceu.api.data.worldgen.vein;
 
+import com.gregtechceu.gtceu.api.data.worldgen.WorldGeneratorUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
