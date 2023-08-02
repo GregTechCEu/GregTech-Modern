@@ -3,15 +3,18 @@ package com.gregtechceu.gtceu.common.cover.detector;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.cover.IUICover;
+import com.gregtechceu.gtceu.api.cover.filter.FilterHandler;
+import com.gregtechceu.gtceu.api.cover.filter.FilterHandlers;
 import com.gregtechceu.gtceu.api.cover.filter.FluidFilter;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.LongInputWidget;
 import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.utils.RedstoneUtil;
-import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
-import com.lowdragmc.lowdraglib.gui.widget.*;
-import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
+import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
+import com.lowdragmc.lowdraglib.gui.widget.TextBoxWidget;
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
+import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
@@ -23,7 +26,6 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
@@ -44,38 +46,26 @@ public class AdvancedFluidDetectorCover extends FluidDetectorCover implements IU
 
     @Persisted @Getter
     private long minValue, maxValue;
-    @Persisted @DescSynced @Getter
-    protected ItemStack filterItem;
 
-    @Nullable
-    protected FluidFilter filterHandler;
+    @Persisted @DescSynced @Getter
+    protected final FilterHandler<FluidStack, FluidFilter> filterHandler;
 
     public AdvancedFluidDetectorCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {
         super(definition, coverHolder, attachedSide);
 
-        this.filterItem = ItemStack.EMPTY;
         this.minValue = DEFAULT_MIN;
         this.maxValue = DEFAULT_MAX;
+
+        filterHandler = FilterHandlers.fluid(this);
     }
 
     @Override
     public List<ItemStack> getAdditionalDrops() {
         var list = super.getAdditionalDrops();
-        if (!filterItem.isEmpty()) {
-            list.add(filterItem);
+        if (!filterHandler.getFilterItem().isEmpty()) {
+            list.add(filterHandler.getFilterItem());
         }
         return list;
-    }
-
-    public FluidFilter getFilterHandler() {
-        if (filterHandler == null) {
-            if (filterItem.isEmpty()) {
-                return FluidFilter.EMPTY;
-            } else {
-                filterHandler = FluidFilter.loadFilter(filterItem);
-            }
-        }
-        return filterHandler;
     }
 
     @Override
@@ -83,6 +73,7 @@ public class AdvancedFluidDetectorCover extends FluidDetectorCover implements IU
         if (this.coverHolder.getOffsetTimer() % 20 != 0)
             return;
 
+        FluidFilter filter = filterHandler.getFilter();
         IFluidTransfer fluidHandler = getFluidTransfer();
         if (fluidHandler == null)
             return;
@@ -92,7 +83,7 @@ public class AdvancedFluidDetectorCover extends FluidDetectorCover implements IU
         for (int tank = 0; tank < fluidHandler.getTanks(); tank++) {
             FluidStack content = fluidHandler.getFluidInTank(tank);
 
-            if (!content.isEmpty() && getFilterHandler().test(content))
+            if (!content.isEmpty() && filter.test(content))
                 storedFluid += content.getAmount();
         }
 
@@ -141,35 +132,8 @@ public class AdvancedFluidDetectorCover extends FluidDetectorCover implements IU
             }
         });
 
-
-        // Fluid Filter UI:
-
-        var filterContainer = new ItemStackTransfer(filterItem);
-        filterContainer.setFilter(itemStack -> FluidFilter.FILTERS.containsKey(itemStack.getItem()));
-        var filterGroup = new WidgetGroup(0, 100, 176, 60);
-        if (!filterItem.isEmpty()) {
-            filterHandler = FluidFilter.loadFilter(filterItem);
-            filterGroup.addWidget(filterHandler.openConfigurator(10, 0));
-        }
-
-        group.addWidget(new SlotWidget(filterContainer, 0, 148, 100)
-                .setChangeListener(() -> {
-                    if (isRemote()) {
-                        if (!filterContainer.getStackInSlot(0).isEmpty() && !filterItem.isEmpty()) {
-                            return;
-                        }
-                    }
-                    this.filterItem = filterContainer.getStackInSlot(0);
-                    this.filterHandler = null;
-                    filterGroup.clearAllWidgets();
-                    if (!filterItem.isEmpty()) {
-                        filterHandler = FluidFilter.loadFilter(filterItem);
-                        filterGroup.addWidget(filterHandler.openConfigurator(10, 0));
-                    }
-                })
-                .setBackgroundTexture(new GuiTextureGroup(GuiTextures.SLOT, GuiTextures.FILTER_SLOT_OVERLAY))
-        );
-        group.addWidget(filterGroup);
+        group.addWidget(filterHandler.createFilterSlotUI(148, 100));
+        group.addWidget(filterHandler.createFilterConfigUI(10, 100, 156, 60));
 
         return group;
     }
