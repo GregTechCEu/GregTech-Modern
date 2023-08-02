@@ -7,6 +7,8 @@ import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.registry.registrate.CompassSection;
 import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
 
+import java.util.Locale;
+
 /**
  * @author KilaBash
  * @date 2023/7/31
@@ -69,7 +71,7 @@ public class GTCompassSections {
     static {
         for (int i = 0; i < 10; i++) {
             int finalI = i;
-            TIER[i] = CompassSection.create(GTValues.VN[i].toLowerCase())
+            TIER[i] = CompassSection.create(GTValues.VN[i].toLowerCase(Locale.ROOT))
                     .icon(() -> new ItemStackTexture(GTMachines.HULL[finalI].asStack()))
                     .background(() -> GuiTextures.DISPLAY)
                     .lang(GTValues.VNF[i] + " Voltage")

@@ -187,7 +187,7 @@ public class WorkableOverlayModel {
         sprites.clear();
 //        caches.clear();
         for (OverlayFace overlayFace : OverlayFace.VALUES) {
-            final String overlayPath = "/overlay_" + overlayFace.name().toLowerCase();
+            final String overlayPath = "/overlay_" + overlayFace.name().toLowerCase(Locale.ROOT);
 
             var normalSprite = new ResourceLocation(location.getNamespace(), location.getPath() + overlayPath);
             if (!ResourceHelper.isTextureExist(normalSprite)) continue;

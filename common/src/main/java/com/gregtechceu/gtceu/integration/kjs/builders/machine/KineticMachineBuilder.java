@@ -21,6 +21,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 
+import java.util.Locale;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
@@ -77,7 +78,7 @@ public class KineticMachineBuilder extends MachineBuilder<KineticMachineDefiniti
         KineticMachineBuilder[] builders = new KineticMachineBuilder[tiers.length];
         for (int i = 0; i < tiers.length; i++) {
             int tier = tiers[i];
-            var register = new KineticMachineBuilder(GTValues.VN[tier].toLowerCase() + "_" + name, false, tier)
+            var register = new KineticMachineBuilder(GTValues.VN[tier].toLowerCase(Locale.ROOT) + "_" + name, false, tier)
                     .tier(tier)
                     .hasTESR(true)
                     .onBlockEntityRegister(type -> KineticMachineBlockEntity.onBlockEntityRegister(type, () -> SplitShaftInstance::new, false));
