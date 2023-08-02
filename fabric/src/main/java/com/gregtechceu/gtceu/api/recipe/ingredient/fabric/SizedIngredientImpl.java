@@ -118,7 +118,7 @@ public class SizedIngredientImpl extends SizedIngredient implements FabricIngred
             return vanilla.inner;
         }
 
-        public String getTag() {
+        public TagKey<Item> getTag() {
             return vanilla.tag;
         }
     }
@@ -148,7 +148,7 @@ public class SizedIngredientImpl extends SizedIngredient implements FabricIngred
         public void write(JsonObject json, CustomSizedIngredient ingredient) {
             json.addProperty("count", ingredient.getAmount());
             if (ingredient.getTag() != null) {
-                json.addProperty("tag", ingredient.getTag());
+                json.addProperty("tag", ingredient.getTag().location().toString());
             } else {
                 json.add("ingredient", ingredient.getInner().toJson());
             }
@@ -169,7 +169,7 @@ public class SizedIngredientImpl extends SizedIngredient implements FabricIngred
             buffer.writeVarInt(ingredient.getAmount());
             if (ingredient.getTag() != null) {
                 buffer.writeBoolean(true);
-                buffer.writeUtf(ingredient.getTag());
+                buffer.writeUtf(ingredient.getTag().location().toString());
             } else {
                 buffer.writeBoolean(false);
                 ingredient.getInner().toNetwork(buffer);

@@ -11,6 +11,7 @@ import dev.latvian.mods.kubejs.script.ScriptType;
 import dev.latvian.mods.kubejs.util.UtilsJS;
 import dev.latvian.mods.rhino.BaseFunction;
 
+import java.util.Locale;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -30,7 +31,7 @@ public class CustomTieredMachineBuilder extends SimpleMachineBuilder {
         CustomTieredMachineBuilder[] builders = new CustomTieredMachineBuilder[tiers.length];
         for (int i = 0; i < tiers.length; i++) {
             int tier = tiers[i];
-            CustomTieredMachineBuilder register = new CustomTieredMachineBuilder(GTValues.VN[tier].toLowerCase() + "_" + name, holder -> machineConstructor.apply(holder, tier)).tier(tier);
+            CustomTieredMachineBuilder register = new CustomTieredMachineBuilder(GTValues.VN[tier].toLowerCase(Locale.ROOT) + "_" + name, holder -> machineConstructor.apply(holder, tier)).tier(tier);
             builders[i] = register;
         }
         return builders;
