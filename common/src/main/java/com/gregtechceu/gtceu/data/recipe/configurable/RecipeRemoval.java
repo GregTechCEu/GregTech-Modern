@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.DyeColor;
 
+import java.util.Locale;
 import java.util.function.Consumer;
 
 public class RecipeRemoval {
@@ -252,8 +253,8 @@ public class RecipeRemoval {
         registry.accept(new ResourceLocation("minecraft:glass_bottle"));
         registry.accept(new ResourceLocation("minecraft:glass_pane"));
         for (DyeColor color : DyeColor.values()) {
-            registry.accept(new ResourceLocation(String.format("minecraft:%s_stained_glass_pane_from_glass_pane", color.name().toLowerCase())));
-            registry.accept(new ResourceLocation(String.format("minecraft:%s_stained_glass_pane", color.name().toLowerCase())));
+            registry.accept(new ResourceLocation(String.format("minecraft:%s_stained_glass_pane_from_glass_pane", color.name().toLowerCase(Locale.ROOT))));
+            registry.accept(new ResourceLocation(String.format("minecraft:%s_stained_glass_pane", color.name().toLowerCase(Locale.ROOT))));
         }
     }
 

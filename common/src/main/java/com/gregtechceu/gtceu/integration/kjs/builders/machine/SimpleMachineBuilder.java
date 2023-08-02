@@ -17,6 +17,7 @@ import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
 import it.unimi.dsi.fastutil.ints.Int2LongFunction;
 
+import java.util.Locale;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
@@ -57,7 +58,7 @@ public class SimpleMachineBuilder extends MachineBuilder<MachineDefinition> {
         SimpleMachineBuilder[] builders = new SimpleMachineBuilder[tiers.length];
         for (int i = 0; i < tiers.length; i++) {
             int tier = tiers[i];
-            SimpleMachineBuilder register = new SimpleMachineBuilder(GTValues.VN[tier].toLowerCase() + "_" + name, holder -> new SimpleTieredMachine(holder, tier, defaultTankSizeFunction)).tier(tier);
+            SimpleMachineBuilder register = new SimpleMachineBuilder(GTValues.VN[tier].toLowerCase(Locale.ROOT) + "_" + name, holder -> new SimpleTieredMachine(holder, tier, defaultTankSizeFunction)).tier(tier);
             builderConsumer.accept(register, tier);
             builders[i] = register;
         }

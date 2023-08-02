@@ -10,6 +10,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.InventoryMenu;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -22,9 +23,9 @@ public class TieredHullMachineRenderer extends MachineRenderer {
     public TieredHullMachineRenderer(int tier, ResourceLocation modelLocation) {
         super(modelLocation);
         setTextureOverride(Map.of(
-                "bottom", GTCEu.id("block/casings/voltage/%s/bottom".formatted(GTValues.VN[tier].toLowerCase())),
-                "top", GTCEu.id("block/casings/voltage/%s/top".formatted(GTValues.VN[tier].toLowerCase())),
-                "side", GTCEu.id("block/casings/voltage/%s/side".formatted(GTValues.VN[tier].toLowerCase()))
+                "bottom", GTCEu.id("block/casings/voltage/%s/bottom".formatted(GTValues.VN[tier].toLowerCase(Locale.ROOT))),
+                "top", GTCEu.id("block/casings/voltage/%s/top".formatted(GTValues.VN[tier].toLowerCase(Locale.ROOT))),
+                "side", GTCEu.id("block/casings/voltage/%s/side".formatted(GTValues.VN[tier].toLowerCase(Locale.ROOT)))
         ));
     }
 

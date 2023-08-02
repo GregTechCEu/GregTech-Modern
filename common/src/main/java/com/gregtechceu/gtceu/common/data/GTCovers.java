@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.common.cover.detector.*;
 import it.unimi.dsi.fastutil.ints.Int2ObjectFunction;
 
 import java.util.Arrays;
+import java.util.Locale;
 
 /**
  * @author KilaBash
@@ -121,14 +122,14 @@ public class GTCovers {
 
     public static CoverDefinition[] registerTiered(String id, CoverDefinition.TieredCoverBehaviourProvider behaviorCreator, Int2ObjectFunction<ICoverRenderer> coverRenderer, int... tiers) {
         return Arrays.stream(tiers).mapToObj(tier -> {
-            var name = id + "." + GTValues.VN[tier].toLowerCase();
+            var name = id + "." + GTValues.VN[tier].toLowerCase(Locale.ROOT);
             return register(name, (def, coverable, side) -> behaviorCreator.create(def, coverable, side, tier), coverRenderer.apply(tier));
         }).toArray(CoverDefinition[]::new);
     }
 
     public static CoverDefinition[] registerTiered(String id, CoverDefinition.TieredCoverBehaviourProvider behaviorCreator, int... tiers) {
         return Arrays.stream(tiers).mapToObj(tier -> {
-            var name = id + "." + GTValues.VN[tier].toLowerCase();
+            var name = id + "." + GTValues.VN[tier].toLowerCase(Locale.ROOT);
             return register(name, (def, coverable, side) -> behaviorCreator.create(def, coverable, side, tier));
         }).toArray(CoverDefinition[]::new);
     }

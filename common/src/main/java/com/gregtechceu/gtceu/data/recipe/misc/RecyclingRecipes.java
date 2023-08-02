@@ -16,7 +16,9 @@ import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.Tuple;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nonnull;
@@ -96,9 +98,6 @@ public class RecyclingRecipes {
     }
 
     private static void registerMaceratorRecycling(Consumer<FinishedRecipe> provider, ItemStack input, List<MaterialStack> materials, int multiplier) {
-        // TODO: look into why the hell there's a endstone -> 9 dust recipe
-        //if (materials.stream().anyMatch(materialStack -> prefix.isIgnored(materialStack.material()))) return;
-
         // Finalize the output list.
         List<ItemStack> outputs = finalizeOutputs(
                 materials,
@@ -106,19 +105,35 @@ public class RecyclingRecipes {
                 ChemicalHelper::getDust
         );
 
+        UnificationEntry entry = ChemicalHelper.getUnificationEntry(input.getItem());
+        TagKey<Item> inputTag = null;
+        if (entry != null) {
+            inputTag = ChemicalHelper.getTag(entry.tagPrefix, entry.material);
+        }
+
         // Exit if no valid Materials exist for this recycling Recipe.
         if (outputs.size() == 0) return;
 
         // Build the final Recipe.
-        GTRecipeTypes.MACERATOR_RECIPES.recipeBuilder("macerate_" + input.getItem())
-                .inputItems(input.copy())
+        GTRecipeBuilder builder = GTRecipeTypes.MACERATOR_RECIPES.recipeBuilder("macerate_" + input.getItem())
                 .outputItems(outputs.toArray(ItemStack[]::new))
                 .duration(calculateDuration(outputs))
-                .EUt(2L * multiplier)
-                .save(provider);
+                .EUt(2L * multiplier);
+        if (inputTag == null) {
+            builder.inputItems(input.copy());
+        } else {
+            builder.inputItems(inputTag);
+        }
+        builder.save(provider);
     }
 
     private static void registerExtractorRecycling(Consumer<FinishedRecipe> provider, ItemStack input, List<MaterialStack> materials, int multiplier, @Nullable TagPrefix prefix) {
+
+        UnificationEntry entry = ChemicalHelper.getUnificationEntry(input.getItem());
+        TagKey<Item> inputTag = null;
+        if (entry != null) {
+            inputTag = ChemicalHelper.getTag(entry.tagPrefix, entry.material);
+        }
 
         // Handle simple materials separately
         if (prefix != null && prefix.secondaryMaterials().isEmpty()) {
@@ -133,12 +148,17 @@ public class RecyclingRecipes {
             if (!m.hasProperty(PropertyKey.FLUID) || (prefix == TagPrefix.dust && m.hasProperty(PropertyKey.BLAST))) {
                 return;
             }
-            GTRecipeTypes.EXTRACTOR_RECIPES.recipeBuilder("extract_" + input.getItem())
-                    .inputItems(input.copy())
+
+            GTRecipeBuilder builder = GTRecipeTypes.EXTRACTOR_RECIPES.recipeBuilder("extract_" + input.getItem())
                     .outputFluids(m.getFluid((int) (ms.amount() * L / M)))
                     .duration((int) Math.max(1, ms.amount() * ms.material().getMass() / M))
-                    .EUt((long) GTValues.VA[GTValues.LV] * multiplier)
-                    .save(provider);
+                    .EUt((long) GTValues.VA[GTValues.LV] * multiplier);
+            if (inputTag == null) {
+                builder.inputItems(input.copy());
+            } else {
+                builder.inputItems(inputTag);
+            }
+            builder.save(provider);
 
             return;
         }
@@ -162,10 +182,15 @@ public class RecyclingRecipes {
 
         // Build the final Recipe.
         GTRecipeBuilder extractorBuilder = GTRecipeTypes.EXTRACTOR_RECIPES.recipeBuilder("extract_" + input.getItem())
-                .inputItems(input.copy())
                 .outputFluids(fluidMs.material().getFluid((int) (fluidMs.amount() * L / M)))
                 .duration((int) duration)
                 .EUt((long) GTValues.VA[GTValues.LV] * multiplier);
+
+        if (inputTag == null) {
+            extractorBuilder.inputItems(input.copy());
+        } else {
+            extractorBuilder.inputItems(inputTag);
+        }
 
         // Null check the Item before adding it to the Builder.
         // - Try to output an Ingot, otherwise output a Dust.
@@ -180,6 +205,12 @@ public class RecyclingRecipes {
     }
 
     private static void registerArcRecycling(Consumer<FinishedRecipe> provider, ItemStack input, List<MaterialStack> materials, @Nullable TagPrefix prefix) {
+        UnificationEntry entry = ChemicalHelper.getUnificationEntry(input.getItem());
+        TagKey<Item> inputTag = null;
+        if (entry != null) {
+            inputTag = ChemicalHelper.getTag(entry.tagPrefix, entry.material);
+        }
+
         // Block dusts from being arc'd instead of EBF'd
         MaterialStack ms = ChemicalHelper.getMaterial(input);
         if (prefix == TagPrefix.dust && ms != null && ms.material().hasProperty(PropertyKey.BLAST)) {
@@ -187,12 +218,16 @@ public class RecyclingRecipes {
         } else if (prefix == TagPrefix.block) {
             if (ms != null && !ms.material().hasProperty(PropertyKey.GEM)) {
                 ItemStack output = ChemicalHelper.get(TagPrefix.ingot, ms.material().getProperty(PropertyKey.INGOT).getArcSmeltInto(), 9);
-                GTRecipeTypes.ARC_FURNACE_RECIPES.recipeBuilder("arc_" + input.getItem())
-                        .inputItems(input.copy())
+                GTRecipeBuilder builder = GTRecipeTypes.ARC_FURNACE_RECIPES.recipeBuilder("arc_" + input.getItem())
                         .outputItems(output)
                         .duration(calculateDuration(Collections.singletonList(output)))
-                        .EUt(GTValues.VA[GTValues.LV])
-                        .save(provider);
+                        .EUt(GTValues.VA[GTValues.LV]);
+                if (inputTag == null) {
+                    builder.inputItems(input.copy());
+                } else {
+                    builder.inputItems(inputTag);
+                }
+                builder.save(provider);
             }
             return;
         }
@@ -216,12 +251,17 @@ public class RecyclingRecipes {
         if (outputs.size() == 0) return;
 
         // Build the final Recipe.
-        GTRecipeTypes.ARC_FURNACE_RECIPES.recipeBuilder("arc_" + input.getItem())
-                .inputItems(input.copy())
+        GTRecipeBuilder builder = GTRecipeTypes.ARC_FURNACE_RECIPES.recipeBuilder("arc_" + input.getItem())
                 .outputItems(outputs.toArray(ItemStack[]::new))
                 .duration(calculateDuration(outputs))
-                .EUt(GTValues.VA[GTValues.LV])
-                .save(provider);
+                .EUt(GTValues.VA[GTValues.LV]);
+        if (inputTag == null) {
+            builder.inputItems(input.copy());
+        } else {
+            builder.inputItems(inputTag);
+        }
+
+        builder.save(provider);
     }
 
     private static MaterialStack getArcSmeltingResult(MaterialStack materialStack) {

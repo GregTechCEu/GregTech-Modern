@@ -78,12 +78,8 @@ public class SizedIngredientImpl extends SizedIngredient {
             if (json.has("tag")) {
                 return new SizedIngredientImpl(json.get("tag").getAsString(), amount);
             } else {
-                try {
-                    Ingredient inner = Ingredient.fromJson(json.get("ingredient"));
-                    return new SizedIngredientImpl(inner, amount);
-                } catch (Exception e) {
-                    throw e;
-                }
+                Ingredient inner = Ingredient.fromJson(json.get("ingredient"));
+                return new SizedIngredientImpl(inner, amount);
             }
         }
 
@@ -92,7 +88,7 @@ public class SizedIngredientImpl extends SizedIngredient {
             buffer.writeVarInt(ingredient.getAmount());
             if (ingredient.tag != null) {
                 buffer.writeBoolean(true);
-                buffer.writeUtf(ingredient.tag);
+                buffer.writeUtf(ingredient.tag.location().toString());
             } else {
                 buffer.writeBoolean(false);
                 ingredient.inner.toNetwork(buffer);

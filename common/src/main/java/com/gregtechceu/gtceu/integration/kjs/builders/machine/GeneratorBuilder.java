@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.client.renderer.machine.SimpleGeneratorMachineRenderer;
 
 import java.util.Arrays;
+import java.util.Locale;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
@@ -43,7 +44,7 @@ public class GeneratorBuilder extends SimpleMachineBuilder {
         GeneratorBuilder[] builders = new GeneratorBuilder[tiers.length];
         for (int i = 0; i < tiers.length; i++) {
             int tier = tiers[i];
-            var register = new GeneratorBuilder(GTValues.VN[tier].toLowerCase() + "_" + name, holder -> new SimpleGeneratorMachine(holder, tier, defaultTankSizeFunction)).tier(tier);
+            var register = new GeneratorBuilder(GTValues.VN[tier].toLowerCase(Locale.ROOT) + "_" + name, holder -> new SimpleGeneratorMachine(holder, tier, defaultTankSizeFunction)).tier(tier);
             builderConsumer.accept(register, tier);
             builders[i] = register;
         }
