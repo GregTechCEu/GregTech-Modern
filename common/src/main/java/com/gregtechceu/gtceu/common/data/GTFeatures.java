@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.common.data;
 
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.data.worldgen.modifier.*;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreFeature;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.*;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;

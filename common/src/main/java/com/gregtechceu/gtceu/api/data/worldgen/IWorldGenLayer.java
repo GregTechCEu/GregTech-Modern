@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.data.worldgen;
 
-import com.gregtechceu.gtceu.api.data.worldgen.generator.WorldGeneratorUtils;
 import com.mojang.serialization.Codec;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.StringRepresentable;

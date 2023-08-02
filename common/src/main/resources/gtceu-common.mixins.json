@@ -32,6 +32,7 @@
     "SidedRedstoneConnectivityMixin",
     "TagLoaderMixin",
     "TagManagerMixin",
+    "WorldGenRegionMixin",
     "create.RotationPropagatorMixin",
     "top.ConfigMixin"
   ],

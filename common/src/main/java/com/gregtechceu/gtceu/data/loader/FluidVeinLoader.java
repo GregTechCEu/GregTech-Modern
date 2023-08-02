@@ -43,7 +43,7 @@ public class FluidVeinLoader extends SimpleJsonResourceReloadListener {
                 BedrockFluidDefinition fluid = fromJson(location, GsonHelper.convertToJsonObject(entry.getValue(), "top element"), ops);
                 if (fluid == null) {
                     LOGGER.info("Skipping loading fluid vein {} as it's serializer returned null", location);
-                } /*else if(fluid.getVeinGenerator() instanceof GTOreFeatureEntry.NoopVeinGenerator) {
+                } /*else if(fluid.getVeinGenerator() instanceof NoopVeinGenerator) {
                     LOGGER.info("Removing fluid vein {} as it's generator was marked as no-operation", location);
                     GTRegistries.BEDROCK_FLUID_DEFINITIONS.remove(location);
                 }*/else if (GTRegistries.BEDROCK_FLUID_DEFINITIONS.containKey(location)) {

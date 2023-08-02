@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.core.mixins;
 
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreFeatureConfiguration;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreFeatureEntry;
+import com.gregtechceu.gtceu.api.data.worldgen.generator.NoopVeinGenerator;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTFeatures;
 import net.minecraft.core.registries.Registries;
@@ -23,7 +24,7 @@ public class FeatureUtilsMixin {
         for (var entry : GTRegistries.ORE_VEINS.entries()) {
             ResourceLocation id = entry.getKey();
             var generator = entry.getValue().getVeinGenerator();
-            if (generator != null && generator != GTOreFeatureEntry.NoopVeinGenerator.INSTANCE) {
+            if (generator != null && generator != NoopVeinGenerator.INSTANCE) {
                 generator.build();
                 GTOreFeatureConfiguration config = new GTOreFeatureConfiguration(entry.getValue());
                 FeatureUtils.register(context, ResourceKey.create(Registries.CONFIGURED_FEATURE, id), GTFeatures.ORE, config);
