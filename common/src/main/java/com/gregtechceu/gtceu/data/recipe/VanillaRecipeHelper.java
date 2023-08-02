@@ -24,6 +24,7 @@ import net.minecraft.world.level.ItemLike;
 
 import javax.annotation.Nonnull;
 import java.util.Comparator;
+import java.util.Locale;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -39,15 +40,15 @@ public class VanillaRecipeHelper {
     }
 
     public static void addSmeltingRecipe(Consumer<FinishedRecipe> provider, @Nonnull String regName, TagKey<Item> input, ItemStack output, float experience) {
-        new SmeltingRecipeBuilder(GTCEu.id(regName.toLowerCase())).input(input).output(output).cookingTime(200).experience(experience).save(provider);
+        new SmeltingRecipeBuilder(GTCEu.id(regName.toLowerCase(Locale.ROOT))).input(input).output(output).cookingTime(200).experience(experience).save(provider);
     }
 
     public static void addBlastingRecipe(Consumer<FinishedRecipe> provider, @Nonnull String regName, TagKey<Item> input, ItemStack output, float experience) {
-        new BlastingRecipeBuilder(GTCEu.id(regName.toLowerCase())).input(input).output(output).cookingTime(100).experience(experience).save(provider);
+        new BlastingRecipeBuilder(GTCEu.id(regName.toLowerCase(Locale.ROOT))).input(input).output(output).cookingTime(100).experience(experience).save(provider);
     }
 
     public static void addSmokingRecipe(Consumer<FinishedRecipe> provider, @Nonnull String regName, TagKey<Item> input, ItemStack output, float experience) {
-        new SmokingRecipeBuilder(GTCEu.id(regName.toLowerCase())).input(input).output(output).cookingTime(100).experience(experience).save(provider);
+        new SmokingRecipeBuilder(GTCEu.id(regName.toLowerCase(Locale.ROOT))).input(input).output(output).cookingTime(100).experience(experience).save(provider);
     }
 
     public static void addSmeltingRecipe(Consumer<FinishedRecipe> provider, @Nonnull String regName, ItemStack input, ItemStack output) {
@@ -55,7 +56,7 @@ public class VanillaRecipeHelper {
     }
 
     public static void addSmeltingRecipe(Consumer<FinishedRecipe> provider, @Nonnull String regName, ItemStack input, ItemStack output, float experience) {
-        new SmeltingRecipeBuilder(GTCEu.id(regName.toLowerCase())).input(input).output(output).cookingTime(200).experience(experience).save(provider);
+        new SmeltingRecipeBuilder(GTCEu.id(regName.toLowerCase(Locale.ROOT))).input(input).output(output).cookingTime(200).experience(experience).save(provider);
     }
 
     private static final Char2ObjectMap<TagKey<Item>> TOOLS = new Char2ObjectArrayMap<>();
@@ -106,7 +107,7 @@ public class VanillaRecipeHelper {
      * @param recipe  the contents of the recipe
      */
     public static void addShapedRecipe(Consumer<FinishedRecipe> provider, boolean withUnificationData, boolean isStrict, @Nonnull String regName, @Nonnull ItemStack result, @Nonnull Object... recipe) {
-        var builder = new ShapedRecipeBuilder(GTCEu.id(regName.toLowerCase())).output(result);
+        var builder = new ShapedRecipeBuilder(GTCEu.id(regName.toLowerCase(Locale.ROOT))).output(result);
         builder.isStrict(isStrict);
         CharSet set = new CharOpenHashSet();
         for (int i = 0; i < recipe.length; i++) {
@@ -159,7 +160,7 @@ public class VanillaRecipeHelper {
     }
 
     public static void addShapelessRecipe(Consumer<FinishedRecipe> provider, @Nonnull String regName, @Nonnull ItemStack result, @Nonnull Object... recipe) {
-        var builder = new ShapelessRecipeBuilder(GTCEu.id(regName.toLowerCase())).output(result);
+        var builder = new ShapelessRecipeBuilder(GTCEu.id(regName.toLowerCase(Locale.ROOT))).output(result);
         for (Object content : recipe) {
             if (content instanceof Ingredient ingredient) {
                 builder.requires(ingredient);

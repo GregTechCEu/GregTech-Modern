@@ -5,7 +5,7 @@ import com.google.gson.JsonObject;
 import com.gregtechceu.gtceu.GTCEu;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import it.unimi.dsi.fastutil.ints.IntList;
-import net.minecraft.core.Registry;
+import lombok.Getter;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -16,13 +16,16 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
+import java.util.Locale;
 import java.util.stream.Stream;
 
 public class SizedIngredient extends Ingredient {
     public static final ResourceLocation TYPE = GTCEu.id("sized");
 
     protected final int amount;
-    protected String tag;
+    @Getter
+    @Nullable
+    protected TagKey<Item> tag;
     protected final Ingredient inner;
     protected ItemStack[] itemStacks = null;
 
@@ -32,14 +35,15 @@ public class SizedIngredient extends Ingredient {
         this.inner = inner;
     }
 
-    protected SizedIngredient(String tag, int amount) {
-        this(Ingredient.of(TagKey.create(Registries.ITEM, new ResourceLocation(tag.toLowerCase()))), amount);
-        this.tag = tag;
+
+    protected SizedIngredient(@NotNull String tag, int amount) {
+        this(Ingredient.of(TagKey.create(Registries.ITEM, new ResourceLocation(tag.toLowerCase(Locale.ROOT)))), amount);
+        this.tag = TagKey.create(Registries.ITEM, new ResourceLocation(tag.toLowerCase(Locale.ROOT)));
     }
 
-    protected SizedIngredient(TagKey<Item> tag, int amount) {
+    protected SizedIngredient(@NotNull TagKey<Item> tag, int amount) {
         this(Ingredient.of(tag), amount);
-        this.tag = tag.location().toString();
+        this.tag = tag;
     }
 
     protected SizedIngredient(ItemStack itemStack) {
@@ -92,7 +96,7 @@ public class SizedIngredient extends Ingredient {
         json.addProperty("fabric:type", TYPE.toString());
         json.addProperty("count", amount);
         if (tag != null) {
-            json.addProperty("tag", tag);
+            json.addProperty("tag", tag.location().toString());
         } else {
             json.add("ingredient", inner.toJson());
         }
@@ -127,9 +131,5 @@ public class SizedIngredient extends Ingredient {
 
     public boolean isTag() {
         return tag != null;
-    }
-
-    public String getTag() {
-        return tag;
     }
 }

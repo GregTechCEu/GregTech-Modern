@@ -7,6 +7,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Used to detect whether a machine has a certain capability.
@@ -57,11 +58,11 @@ public class RecipeCapability<T> {
     }
 
     public String slotName(IO io) {
-        return "%s_%s".formatted(name, io.name().toLowerCase());
+        return "%s_%s".formatted(name, io.name().toLowerCase(Locale.ROOT));
     }
 
     public String slotName(IO io, int index) {
-        return "%s_%s_%s".formatted(name, io.name().toLowerCase(), index);
+        return "%s_%s_%s".formatted(name, io.name().toLowerCase(Locale.ROOT), index);
     }
 
     public Component getTraslateComponent() {

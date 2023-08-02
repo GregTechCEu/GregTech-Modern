@@ -23,6 +23,10 @@ public class ItemTagLoader {
 
     public static void init(RegistrateTagsProvider<Item> provider) {
         create(provider, lens, Color.White, GTItems.MATERIAL_ITEMS.get(lens, Glass).getId());
+        create(provider, lens, Color.LightBlue, GTItems.MATERIAL_ITEMS.get(lens, Diamond).getId());
+        create(provider, lens, Color.Red, GTItems.MATERIAL_ITEMS.get(lens, Ruby).getId());
+        create(provider, lens, Color.Green, GTItems.MATERIAL_ITEMS.get(lens, Emerald).getId());
+
         create(provider, "pistons", rl("piston"), rl("sticky_piston"));
 
         create(provider, CustomTags.TREE_FELLING_TOOLS, GTItems.TOOL_ITEMS.column(GTToolType.AXE).values().stream().filter(Objects::nonNull).map(RegistryEntry::getId).toArray(ResourceLocation[]::new));
