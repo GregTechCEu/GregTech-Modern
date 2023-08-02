@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.api.data.worldgen;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreVeinSavedData;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -80,8 +79,8 @@ public class GTOreFeature extends Feature<GTOreFeatureConfiguration> {
     }
 
     public static boolean canPlaceOre(BlockState pState, Function<BlockPos, BlockState> pAdjacentStateAccessor,
-                               RandomSource pRandom, GTOreFeatureEntry entry, Material pTargetState,
-                               BlockPos.MutableBlockPos pMatablePos) {
+                                      RandomSource pRandom, GTOreFeatureEntry entry,
+                                      BlockPos.MutableBlockPos pMatablePos) {
         if (!entry.getLayer().getTarget().test(pState, pRandom))
             return false;
         if (shouldSkipAirCheck(pRandom, entry.getDiscardChanceOnAirExposure()))
