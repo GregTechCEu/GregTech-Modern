@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.common.cover;
 
-import com.google.common.math.LongMath;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
@@ -11,12 +10,14 @@ import com.gregtechceu.gtceu.api.cover.IUICover;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandler;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandlers;
 import com.gregtechceu.gtceu.api.cover.filter.FluidFilter;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
+import com.gregtechceu.gtceu.api.gui.widget.LongInputWidget;
 import com.gregtechceu.gtceu.api.machine.ConditionalSubscriptionHandler;
 import com.gregtechceu.gtceu.api.syncdata.RequireRerender;
-import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
-import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
-import com.lowdragmc.lowdraglib.gui.widget.*;
+import com.gregtechceu.gtceu.common.cover.data.BucketMode;
+import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
+import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
@@ -29,9 +30,9 @@ import lombok.Getter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -50,10 +51,12 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
     public final long maxFluidTransferRate;
     @Persisted @Getter
     protected long transferRate;
+
     @Persisted @DescSynced @Getter @RequireRerender
-    protected IO io;
-    @Persisted @Getter
-    protected boolean bucketMode;
+    protected IO io = IO.OUT;
+    @Persisted @DescSynced @Getter
+    protected BucketMode bucketMode = BucketMode.MILLI_BUCKET;
+
     @Persisted @Getter
     protected boolean isWorkingEnabled = true;
     protected long fluidLeftToTransferLastSecond;
@@ -68,10 +71,9 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
         this.maxFluidTransferRate = FluidHelper.getBucket() / 8 * (long) Math.pow(4, tier); // .5b 2b 8b
         this.transferRate = maxFluidTransferRate;
         this.fluidLeftToTransferLastSecond = transferRate;
-        this.io = IO.OUT;
 
         subscriptionHandler = new ConditionalSubscriptionHandler(coverHolder, this::update, this::isSubscriptionActive);
-        filterHandler = FilterHandlers.fluid(this);
+        filterHandler = FilterHandlers.fluid(this).onFilterLoaded(f -> configureFilterHandler());
     }
 
     private boolean isSubscriptionActive() {
@@ -81,7 +83,7 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
     protected @Nullable IFluidTransfer getOwnFluidTransfer() {
         return FluidTransferHelper.getFluidTransfer(coverHolder.getLevel(), coverHolder.getPos(), attachedSide);
     }
-    
+
     protected @Nullable IFluidTransfer getAdjacentFluidTransfer() {
         return FluidTransferHelper.getFluidTransfer(coverHolder.getLevel(), coverHolder.getPos().relative(attachedSide), attachedSide.getOpposite());
     }
@@ -105,16 +107,8 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
         }
     }
 
-    public void setBucketMode(boolean bucketMode) {
+    public void setBucketMode(BucketMode bucketMode) {
         this.bucketMode = bucketMode;
-        if (this.bucketMode)
-            setTransferRate(transferRate / FluidHelper.getBucket() * FluidHelper.getBucket());
-    }
-
-
-    protected void adjustTransferRate(long amount) {
-        amount *= this.bucketMode ? FluidHelper.getBucket() : 1;
-        setTransferRate(Mth.clamp(transferRate + amount, 1, maxFluidTransferRate));
     }
 
     public void setIo(IO io) {
@@ -175,21 +169,23 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
     }
 
     protected long doTransferFluids(long transferLimit) {
-        var fluidHandler = getAdjacentFluidTransfer();
-        var myFluidHandler = getOwnFluidTransfer();
-        if (fluidHandler == null || myFluidHandler == null) {
+        var adjustedTransferLimit = transferLimit * bucketMode.multiplier;
+
+        var adjacentFluidTransfer = getAdjacentFluidTransfer();
+        var ownFluidTransfer = getOwnFluidTransfer();
+        if (adjacentFluidTransfer == null || ownFluidTransfer == null) {
             return 0;
         }
-        return doTransferFluidsInternal(myFluidHandler, fluidHandler, transferLimit);
+
+        return switch (io) {
+            case IN -> doTransferFluidsInternal(adjacentFluidTransfer, ownFluidTransfer, adjustedTransferLimit);
+            case OUT -> doTransferFluidsInternal(ownFluidTransfer, adjacentFluidTransfer, adjustedTransferLimit);
+            default -> 0L;
+        };
     }
 
-    protected long doTransferFluidsInternal(IFluidTransfer myFluidHandler, IFluidTransfer fluidHandler, long transferLimit) {
-        if (io == IO.IN) {
-            return FluidTransferHelper.transferFluids(fluidHandler, myFluidHandler, transferLimit, filterHandler.getFilter());
-        } else if (io == IO.OUT) {
-            return FluidTransferHelper.transferFluids(myFluidHandler, fluidHandler, transferLimit, filterHandler.getFilter());
-        }
-        return 0;
+    protected long doTransferFluidsInternal(IFluidTransfer source, IFluidTransfer destination, long transferLimit) {
+        return FluidTransferHelper.transferFluids(source, destination, transferLimit, filterHandler.getFilter());
     }
 
     //////////////////////////////////////
@@ -198,45 +194,32 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
     @Override
     public Widget createUIWidget() {
         final var group = new WidgetGroup(0, 0, 176, 135);
-        group.addWidget(new LabelWidget(10, 5, LocalizationUtils.format("cover.pump.title", GTValues.VN[tier])));
-        group.addWidget(new ButtonWidget(10, 20, 30, 20,
-                new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("-1")), cd -> {
-            if (!cd.isRemote) {
-                adjustTransferRate(-(cd.isCtrlClick ? cd.isShiftClick ? 1000 : 100 : cd.isShiftClick ? 10 : 1));
-            }
-        }).setHoverTooltips("gui.widget.incrementButton.default_tooltip"));
-        group.addWidget(new ButtonWidget(136, 20, 30, 20,
-                new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("+1")), cd -> {
-            if (!cd.isRemote) {
-                adjustTransferRate(cd.isCtrlClick ? cd.isShiftClick ? 1000 : 100 : cd.isShiftClick ? 10 : 1);
-            }
-        }).setHoverTooltips("gui.widget.incrementButton.default_tooltip"));
-        group.addWidget(new TextFieldWidget(42, 20, 92, 20, () -> bucketMode ? Long.toString(transferRate / FluidHelper.getBucket()) : Long.toString(transferRate), val -> {
-            var amount = Long.parseLong(val);
-            if (this.bucketMode) {
-                amount = LongMath.saturatedMultiply(amount, FluidHelper.getBucket());
-            }
-            setTransferRate(amount);
-        }).setNumbersOnly(1L, maxFluidTransferRate));
-        group.addWidget(new SwitchWidget(10, 45, 75, 20, (clickData, value) -> {
-            if (!clickData.isRemote) {
-                setIo(value ? IO.IN : IO.OUT);
-            }
-        }).setTexture(new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("cover.pump.mode.export")),
-                        new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("cover.pump.mode.import")))
-                .setPressed(io == IO.IN));
+        group.addWidget(new LabelWidget(10, 5, LocalizationUtils.format(getUITitle(), GTValues.VN[tier])));
 
-        group.addWidget(new SwitchWidget(85, 45, 75, 20, (clickData, value) -> {
-            if (!clickData.isRemote) {
-                setBucketMode(value);
-            }
-        }).setTexture(new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("cover.bucket.mode.milli_bucket")),
-                        new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("cover.bucket.mode.bucket")))
-                .setPressed(isBucketMode()));
+        group.addWidget(new LongInputWidget(10, 20, 156, 20, this::getTransferRate, this::setTransferRate)
+                .setMin(1L).setMax(maxFluidTransferRate));
 
-        group.addWidget(filterHandler.createFilterSlotUI(10, 70));
-        group.addWidget(filterHandler.createFilterConfigUI(30, 70, 131, 60));
+        group.addWidget(new EnumSelectorWidget<>(10, 45, 20, 20, List.of(IO.IN, IO.OUT), io, this::setIo));
+        group.addWidget(new EnumSelectorWidget<>(35, 45, 20, 20, BucketMode.values(), bucketMode, this::setBucketMode));
+
+        group.addWidget(filterHandler.createFilterSlotUI(148, 107));
+        group.addWidget(filterHandler.createFilterConfigUI(10, 70, 156, 60));
+
+        buildAdditionalUI(group);
 
         return group;
+    }
+
+    @NotNull
+    protected String getUITitle() {
+        return "cover.pump.title";
+    }
+
+    protected void buildAdditionalUI(WidgetGroup group) {
+        // Do nothing in the base implementation. This is intended to be overridden by subclasses.
+    }
+
+    protected void configureFilterHandler() {
+        // Do nothing in the base implementation. This is intended to be overridden by subclasses.
     }
 }
