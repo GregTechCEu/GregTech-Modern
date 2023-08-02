@@ -17,6 +17,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.*;
 import net.minecraft.world.level.levelgen.blending.Blender;
@@ -38,7 +39,7 @@ public class VeinedVeinGenerator extends VeinGenerator {
     public static final Codec<VeinedVeinGenerator> CODEC = RecordCodecBuilder.create((instance) -> instance.group(
             BLOCK_ENTRY_CODEC.fieldOf("ore_block").forGetter(it -> it.oreBlock),
             BLOCK_ENTRY_CODEC.fieldOf("dense_block").forGetter(it -> it.denseBlock),
-            BlockState.CODEC.fieldOf("filler_block").forGetter(it -> it.fillerBlock),
+            BlockState.CODEC.fieldOf("filler_block").orElse(Blocks.AIR.defaultBlockState()).forGetter(it -> it.fillerBlock),
             Codec.INT.fieldOf("min_y").forGetter(it -> it.minYLevel),
             Codec.INT.fieldOf("max_y").forGetter(it -> it.maxYLevel),
             Codec.FLOAT.fieldOf("veininess_threshold").orElse(0.4f).forGetter(it -> it.veininessThreshold),
