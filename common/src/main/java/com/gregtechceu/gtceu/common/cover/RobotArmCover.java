@@ -125,8 +125,10 @@ public class RobotArmCover extends ConveyorCover {
     }
 
     private int getFilteredItemAmount(ItemStack itemStack) {
-        ItemFilter filter = getFilterHandler();
+        if (!filterHandler.isFilterPresent())
+            return globalTransferLimit;
 
+        ItemFilter filter = filterHandler.getFilter();
         return filter.isBlackList() ? globalTransferLimit : filter.testItemCount(itemStack);
     }
 
@@ -176,7 +178,7 @@ public class RobotArmCover extends ConveyorCover {
 
     @Override
     protected void configureFilterHandler() {
-        if (this.filterHandler instanceof SimpleItemFilter filter) {
+        if (filterHandler.getFilter() instanceof SimpleItemFilter filter) {
             filter.setMaxStackSize(transferMode.maxStackSize);
         }
     }
