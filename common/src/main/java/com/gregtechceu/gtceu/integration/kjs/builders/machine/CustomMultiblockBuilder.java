@@ -46,6 +46,7 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 import java.util.function.*;
 
 @MethodsReturnNonnullByDefault
@@ -62,7 +63,7 @@ public class CustomMultiblockBuilder extends MultiblockMachineBuilder {
         CustomMultiblockBuilder[] builders = new CustomMultiblockBuilder[tiers.length];
         for (int i = 0; i < tiers.length; i++) {
             int tier = tiers[i];
-            var builder = new CustomMultiblockBuilder(GTValues.VN[tier].toLowerCase() + "_" + name, holder -> factory.apply(holder, tier))
+            var builder = new CustomMultiblockBuilder(GTValues.VN[tier].toLowerCase(Locale.ROOT) + "_" + name, holder -> factory.apply(holder, tier))
                     .tier(tier);
             builders[i] = builder;
         }

@@ -32,6 +32,7 @@ import org.apache.commons.lang3.function.TriFunction;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Arrays;
+import java.util.Locale;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -84,7 +85,7 @@ public abstract class GTRegistrate extends Registrate {
     }
 
     public Stream<MachineBuilder<MachineDefinition>> machine(String name, BiFunction<IMachineBlockEntity, Integer, MetaMachine> metaMachine, int... tiers) {
-        return Arrays.stream(tiers).mapToObj(tier -> MachineBuilder.create(this, name + "." + GTValues.VN[tier].toLowerCase(), MachineDefinition::createDefinition, holder -> metaMachine.apply(holder, tier), MetaMachineBlock::new, MetaMachineItem::new, MetaMachineBlockEntity::createBlockEntity));
+        return Arrays.stream(tiers).mapToObj(tier -> MachineBuilder.create(this, name + "." + GTValues.VN[tier].toLowerCase(Locale.ROOT), MachineDefinition::createDefinition, holder -> metaMachine.apply(holder, tier), MetaMachineBlock::new, MetaMachineItem::new, MetaMachineBlockEntity::createBlockEntity));
     }
 
     public MultiblockMachineBuilder multiblock(String name, Function<IMachineBlockEntity, ? extends MultiblockControllerMachine> metaMachine,

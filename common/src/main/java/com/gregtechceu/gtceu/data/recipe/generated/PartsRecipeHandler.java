@@ -243,7 +243,7 @@ public class PartsRecipeHandler {
     }
 
     public static void processLens(TagPrefix lensPrefix, Material material, GemProperty property, Consumer<FinishedRecipe> provider) {
-        //ItemStack stack = ChemicalHelper.get(lensPrefix, material);
+        ItemStack stack = ChemicalHelper.get(lensPrefix, material);
 
         LATHE_RECIPES.recipeBuilder("lathe_" + material.getName() + "_plate_to_lens")
                 .inputItems(plate, material)
@@ -258,23 +258,6 @@ public class PartsRecipeHandler {
                     .outputItems(dust, material, 2)
                     .duration(2400).EUt(30).save(provider);
         }
-        // TODO Colored lenses
-/*
-        if (material == Diamond) { // override Diamond Lens to be LightBlue
-            OreDictUnifier.registerOre(stack, craftingLens, MarkerColor.LightBlue);
-        } else if (material == Ruby) { // override Ruby Lens to be Red
-            OreDictUnifier.registerOre(stack, craftingLens, MarkerColor.Red);
-        } else if (material == Emerald) { // override Emerald Lens to be Green
-            OreDictUnifier.registerOre(stack, craftingLens, MarkerColor.Green);
-        } else if (material == Glass) { // the overriding is done in OreDictionaryLoader to prevent log spam
-            OreDictUnifier.registerOre(stack, craftingLens.name() + material.toCamelCaseString());
-        } else { // add more custom lenses here if needed
-
-            // Default behavior for determining lens color, left for addons and CraftTweaker
-            DyeColor dyeColor = GTUtil.determineDyeColor(material.getMaterialRGB());
-            MarkerMaterial colorMaterial = MarkerMaterials.Color.COLORS.get(dyeColor);
-            OreDictUnifier.registerOre(stack, craftingLens, colorMaterial);
-        }*/
     }
 
     public static void processPlate(TagPrefix platePrefix, Material material, DustProperty property, Consumer<FinishedRecipe> provider) {

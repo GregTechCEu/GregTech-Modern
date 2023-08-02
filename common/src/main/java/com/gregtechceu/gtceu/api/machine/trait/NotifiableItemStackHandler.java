@@ -76,7 +76,12 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
 
     @Override
     public List<Ingredient> handleRecipeInner(IO io, GTRecipe recipe, List<Ingredient> left, @Nullable String slotName, boolean simulate) {
-        if (io != this.handlerIO) return left;
+        return handleIngredient(io, left, simulate, this.handlerIO, storage);
+    }
+
+    @Nullable
+    public static List<Ingredient> handleIngredient(IO io, List<Ingredient> left, boolean simulate, IO handlerIO, ItemStackTransfer storage) {
+        if (io != handlerIO) return left;
         var capability = simulate ? storage.copy() : storage;
         Iterator<Ingredient> iterator = left.iterator();
         if (io == IO.IN) {
@@ -104,9 +109,12 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
         } else if (io == IO.OUT) {
             while (iterator.hasNext()) {
                 Ingredient ingredient = iterator.next();
-                // TODO NBTIngredient?
-//                ItemStack output = ingredient instanceof NBTIngredient nbtIngredient ? ((NBTIngredientMixin) nbtIngredient).getStack() : ingredient.getItems()[0];
-                ItemStack output = ingredient.getItems()[0];
+                var items = ingredient.getItems();
+                if (items.length == 0) {
+                    iterator.remove();
+                    continue;
+                }
+                ItemStack output = items[0];
                 if (!output.isEmpty()) {
                     for (int i = 0; i < capability.getSlots(); i++) {
                         ItemStack leftStack = capability.insertItem(i, output.copy(), false);
