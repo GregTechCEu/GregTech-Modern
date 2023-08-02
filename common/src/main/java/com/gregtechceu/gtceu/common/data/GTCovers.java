@@ -9,6 +9,8 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.client.renderer.cover.*;
 import com.gregtechceu.gtceu.common.cover.*;
 import com.gregtechceu.gtceu.common.cover.detector.*;
+import com.gregtechceu.gtceu.common.cover.voiding.AdvancedItemVoidingCover;
+import com.gregtechceu.gtceu.common.cover.voiding.ItemVoidingCover;
 import it.unimi.dsi.fastutil.ints.Int2ObjectFunction;
 
 import java.util.Arrays;
@@ -64,6 +66,17 @@ public class GTCovers {
     public final static CoverDefinition MACHINE_CONTROLLER = register(
             "machine_controller", MachineControllerCover::new,
             new SimpleCoverRenderer(GTCEu.id("block/cover/overlay_controller"))
+    );
+
+
+    // Voiding
+    public final static CoverDefinition ITEM_VOIDING = register(
+            "item_voiding", ItemVoidingCover::new,
+            new SimpleCoverRenderer(GTCEu.id("block/cover/overlay_item_voiding"))
+    );
+    public final static CoverDefinition ITEM_VOIDING_ADVANCED = register(
+            "item_voiding_advanced", AdvancedItemVoidingCover::new,
+            new SimpleCoverRenderer(GTCEu.id("block/cover/overlay_item_voiding_advanced"))
     );
 
 

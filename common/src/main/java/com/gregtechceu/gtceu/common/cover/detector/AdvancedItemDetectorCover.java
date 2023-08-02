@@ -3,15 +3,18 @@ package com.gregtechceu.gtceu.common.cover.detector;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.cover.IUICover;
+import com.gregtechceu.gtceu.api.cover.filter.FilterHandler;
+import com.gregtechceu.gtceu.api.cover.filter.FilterHandlers;
 import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
 import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.utils.RedstoneUtil;
-import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
-import com.lowdragmc.lowdraglib.gui.widget.*;
-import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
+import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
+import com.lowdragmc.lowdraglib.gui.widget.TextBoxWidget;
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
+import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
@@ -22,7 +25,6 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
@@ -43,38 +45,26 @@ public class AdvancedItemDetectorCover extends ItemDetectorCover implements IUIC
 
     @Persisted @Getter
     private int minValue, maxValue;
-    @Persisted @DescSynced @Getter
-    protected ItemStack filterItem;
 
-    @Nullable
-    protected ItemFilter filterHandler;
+    @Persisted @DescSynced @Getter
+    protected final FilterHandler<ItemStack, ItemFilter> filterHandler;
 
     public AdvancedItemDetectorCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {
         super(definition, coverHolder, attachedSide);
 
-        this.filterItem = ItemStack.EMPTY;
         this.minValue = DEFAULT_MIN;
         this.maxValue = DEFAULT_MAX;
+
+        filterHandler = FilterHandlers.item(this);
     }
 
     @Override
     public List<ItemStack> getAdditionalDrops() {
         var list = super.getAdditionalDrops();
-        if (!filterItem.isEmpty()) {
-            list.add(filterItem);
+        if (!filterHandler.getFilterItem().isEmpty()) {
+            list.add(filterHandler.getFilterItem());
         }
         return list;
-    }
-
-    public ItemFilter getFilterHandler() {
-        if (filterHandler == null) {
-            if (filterItem.isEmpty()) {
-                return ItemFilter.EMPTY;
-            } else {
-                filterHandler = ItemFilter.loadFilter(filterItem);
-            }
-        }
-        return filterHandler;
     }
 
     @Override
@@ -82,6 +72,7 @@ public class AdvancedItemDetectorCover extends ItemDetectorCover implements IUIC
         if (this.coverHolder.getOffsetTimer() % 20 != 0)
             return;
 
+        ItemFilter filter = filterHandler.getFilter();
         IItemTransfer itemTransfer = getItemTransfer();
         if (itemTransfer == null)
             return;
@@ -89,7 +80,7 @@ public class AdvancedItemDetectorCover extends ItemDetectorCover implements IUIC
         int storedItems = 0;
 
         for (int i = 0; i < itemTransfer.getSlots(); i++) {
-            if (getFilterHandler().test(itemTransfer.getStackInSlot(i)))
+            if (filter.test(itemTransfer.getStackInSlot(i)))
                 storedItems += itemTransfer.getStackInSlot(i).getCount();
         }
 
@@ -140,33 +131,8 @@ public class AdvancedItemDetectorCover extends ItemDetectorCover implements IUIC
 
 
         // Item Filter UI:
-
-        var filterContainer = new ItemStackTransfer(filterItem);
-        filterContainer.setFilter(itemStack -> ItemFilter.FILTERS.containsKey(itemStack.getItem()));
-        var filterGroup = new WidgetGroup(0, 100, 176, 60);
-        if (!filterItem.isEmpty()) {
-            filterHandler = ItemFilter.loadFilter(filterItem);
-            filterGroup.addWidget(filterHandler.openConfigurator(10, 0));
-        }
-
-        group.addWidget(new SlotWidget(filterContainer, 0, 148, 100)
-                .setChangeListener(() -> {
-                    if (isRemote()) {
-                        if (!filterContainer.getStackInSlot(0).isEmpty() && !filterItem.isEmpty()) {
-                            return;
-                        }
-                    }
-                    this.filterItem = filterContainer.getStackInSlot(0);
-                    this.filterHandler = null;
-                    filterGroup.clearAllWidgets();
-                    if (!filterItem.isEmpty()) {
-                        filterHandler = ItemFilter.loadFilter(filterItem);
-                        filterGroup.addWidget(filterHandler.openConfigurator(10, 0));
-                    }
-                })
-                .setBackgroundTexture(new GuiTextureGroup(GuiTextures.SLOT, GuiTextures.FILTER_SLOT_OVERLAY))
-        );
-        group.addWidget(filterGroup);
+        group.addWidget(filterHandler.createFilterSlotUI(148, 100));
+        group.addWidget(filterHandler.createFilterConfigUI(10, 100, 156, 60));
 
         return group;
     }
