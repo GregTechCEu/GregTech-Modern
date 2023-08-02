@@ -15,7 +15,6 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.ConditionalSubscriptionHandler;
 import com.gregtechceu.gtceu.api.syncdata.RequireRerender;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
-import com.lowdragmc.lowdraglib.gui.texture.ResourceBorderTexture;
 import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
 import com.lowdragmc.lowdraglib.gui.widget.*;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
@@ -223,16 +222,16 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
             if (!clickData.isRemote) {
                 setIo(value ? IO.IN : IO.OUT);
             }
-        }).setTexture(new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON, new TextTexture("cover.pump.mode.export")),
-                        new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON, new TextTexture("cover.pump.mode.import")))
+        }).setTexture(new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("cover.pump.mode.export")),
+                        new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("cover.pump.mode.import")))
                 .setPressed(io == IO.IN));
 
         group.addWidget(new SwitchWidget(85, 45, 75, 20, (clickData, value) -> {
             if (!clickData.isRemote) {
                 setBucketMode(value);
             }
-        }).setTexture(new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON, new TextTexture("cover.bucket.mode.milli_bucket")),
-                        new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON, new TextTexture("cover.bucket.mode.bucket")))
+        }).setTexture(new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("cover.bucket.mode.milli_bucket")),
+                        new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("cover.bucket.mode.bucket")))
                 .setPressed(isBucketMode()));
 
         group.addWidget(filterHandler.createFilterSlotUI(10, 70));

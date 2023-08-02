@@ -10,12 +10,12 @@ import com.gregtechceu.gtceu.api.cover.IUICover;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandler;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandlers;
 import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
+import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
 import com.gregtechceu.gtceu.api.machine.ConditionalSubscriptionHandler;
 import com.gregtechceu.gtceu.api.syncdata.RequireRerender;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
-import com.lowdragmc.lowdraglib.gui.texture.ResourceBorderTexture;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.SwitchWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
@@ -381,8 +381,8 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
                     );
                 })
                 .setTexture(
-                        new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON, IO.OUT.icon),
-                        new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON, IO.IN.icon))
+                        new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, IO.OUT.icon),
+                        new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, IO.IN.icon))
                 .setPressed(io == IO.IN)
                 .setHoverTooltips(LocalizationUtils.format("cover.conveyor.mode", LocalizationUtils.format(io.localeName)));
         group.addWidget(ioModeSwitch);
