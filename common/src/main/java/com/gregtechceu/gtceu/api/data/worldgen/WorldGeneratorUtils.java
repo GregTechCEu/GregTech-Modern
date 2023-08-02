@@ -12,6 +12,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;
 import net.minecraft.world.level.levelgen.structure.templatesystem.TagMatchTest;
 
@@ -27,6 +28,7 @@ public class WorldGeneratorUtils {
 
     public static final Map<String, IWorldGenLayer> WORLD_GEN_LAYERS = new HashMap<>();
     public static final Map<String, IStrataLayer> STRATA_LAYERS = new HashMap<>();
+    public static final Map<BlockState, List<IStrataLayer>> STRATA_LAYER_BLOCK_MAP = new HashMap<>();
     public static final HashBiMap<ResourceLocation, Codec<? extends VeinGenerator>> VEIN_GENERATORS = HashBiMap.create();
     public static final HashBiMap<ResourceLocation, Function<GTOreFeatureEntry, ? extends VeinGenerator>> VEIN_GENERATOR_FUNCTIONS = HashBiMap.create();
 
