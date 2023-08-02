@@ -884,12 +884,12 @@ public class MachineRecipeLoader {
         //            .duration(150).EUt(2)
         //            .save(provider);
 
-        MACERATOR_RECIPES.recipeBuilder("macerate_marble")
-                .inputItems(block, Marble)
-                .outputItems(dust, Marble)
-                .chancedOutput(dust, Marble, 1000, 380)
-                .duration(150).EUt(2)
-                .save(provider);
+//        MACERATOR_RECIPES.recipeBuilder("macerate_marble")
+//                .inputItems(block, Marble)
+//                .outputItems(dust, Marble)
+//                .chancedOutput(dust, Marble, 1000, 380)
+//                .duration(150).EUt(2)
+//                .save(provider);
 
         MACERATOR_RECIPES.recipeBuilder("macerate_basalt")
                 .inputItems(Blocks.BASALT.asItem())
@@ -905,12 +905,12 @@ public class MachineRecipeLoader {
                 .duration(150).EUt(2)
                 .save(provider);
 
-        MACERATOR_RECIPES.recipeBuilder("macerate_red_granite")
-                .inputItems(block, GraniteRed)
-                .outputItems(dust, GraniteRed)
-                .chancedOutput(dustSmall, Uranium238, 100, 40)
-                .duration(150).EUt(2)
-                .save(provider);
+//        MACERATOR_RECIPES.recipeBuilder("macerate_red_granite")
+//                .inputItems(block, GraniteRed)
+//                .outputItems(dust, GraniteRed)
+//                .chancedOutput(dustSmall, Uranium238, 100, 40)
+//                .duration(150).EUt(2)
+//                .save(provider);
 
         MACERATOR_RECIPES.recipeBuilder("macerate_andesite")
                 .inputItems(Blocks.ANDESITE.asItem())
