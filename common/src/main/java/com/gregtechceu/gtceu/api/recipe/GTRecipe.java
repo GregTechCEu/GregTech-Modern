@@ -83,24 +83,10 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
 
     public GTRecipe copy(ContentModifier modifier, boolean modifyDuration) {
         var copied = new GTRecipe(recipeType, id, copyContents(inputs, modifier), copyContents(outputs, modifier), copyContents(tickInputs, modifier), copyContents(tickOutputs, modifier), conditions, data, duration, isFuel);
-        modifyContents(copied.inputs, modifier);
-        modifyContents(copied.outputs, modifier);
-        modifyContents(copied.tickInputs, modifier);
-        modifyContents(copied.tickOutputs, modifier);
         if (modifyDuration) {
             copied.duration = modifier.apply(this.duration).intValue();
         }
         return copied;
-    }
-
-    public static void modifyContents(Map<RecipeCapability<?>, List<Content>> contents, ContentModifier modifier) {
-        for (Map.Entry<RecipeCapability<?>, List<Content>> entry : contents.entrySet()) {
-            var cap = entry.getKey();
-            for (Content content : entry.getValue()) {
-                // if chance is zero keep what it used to be.
-                content.content = content.chance == 0 ? content.content : cap.copyContent(content.content, modifier);
-            }
-        }
     }
 
     @Override
