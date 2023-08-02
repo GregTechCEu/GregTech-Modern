@@ -7,16 +7,19 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.cover.IUICover;
+import com.gregtechceu.gtceu.api.cover.filter.FilterHandler;
+import com.gregtechceu.gtceu.api.cover.filter.FilterHandlers;
 import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
-import com.gregtechceu.gtceu.api.machine.TickableSubscription;
+import com.gregtechceu.gtceu.api.machine.ConditionalSubscriptionHandler;
 import com.gregtechceu.gtceu.api.syncdata.RequireRerender;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
-import com.lowdragmc.lowdraglib.gui.texture.ResourceBorderTexture;
-import com.lowdragmc.lowdraglib.gui.widget.*;
-import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
+import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
+import com.lowdragmc.lowdraglib.gui.widget.SwitchWidget;
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
+import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
@@ -31,8 +34,6 @@ import lombok.Getter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.server.TickTask;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.NotNull;
@@ -60,13 +61,12 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
     protected IO io;
     @Persisted @Getter
     protected boolean isWorkingEnabled = true;
-    @Persisted @DescSynced @Getter
-    protected ItemStack filterItem;
-    @Nullable
-    protected ItemFilter filterHandler;
     protected int itemsLeftToTransferLastSecond;
-    private TickableSubscription subscription;
     private Widget ioModeSwitch;
+
+    @Persisted @DescSynced
+    protected final FilterHandler<ItemStack, ItemFilter> filterHandler;
+    protected final ConditionalSubscriptionHandler subscriptionHandler;
 
     public ConveyorCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide, int tier) {
         super(definition, coverHolder, attachedSide);
@@ -74,8 +74,22 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
         this.maxItemTransferRate = 2 * (int) Math.pow(4, tier); // 8 32 128 512 1024
         this.transferRate = maxItemTransferRate;
         this.itemsLeftToTransferLastSecond = transferRate;
-        this.filterItem = ItemStack.EMPTY;
         this.io = IO.OUT;
+
+        subscriptionHandler = new ConditionalSubscriptionHandler(coverHolder, this::update, this::isSubscriptionActive);
+        filterHandler = FilterHandlers.item(this).onFilterLoaded(f -> configureFilterHandler());
+    }
+
+    private boolean isSubscriptionActive() {
+        return isWorkingEnabled() && getAdjacentItemTransfer() != null;
+    }
+
+    protected @Nullable IItemTransfer getOwnItemTransfer() {
+        return ItemTransferHelper.getItemTransfer(coverHolder.getLevel(), coverHolder.getPos(), attachedSide);
+    }
+
+    protected @Nullable IItemTransfer getAdjacentItemTransfer() {
+        return ItemTransferHelper.getItemTransfer(coverHolder.getLevel(), coverHolder.getPos().relative(attachedSide), attachedSide.getOpposite());
     }
 
     //////////////////////////////////////
@@ -88,7 +102,7 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
 
     @Override
     public boolean canAttach() {
-        return ItemTransferHelper.getItemTransfer(coverHolder.getLevel(), coverHolder.getPos(), attachedSide) != null;
+        return getOwnItemTransfer() != null;
     }
 
     public void setTransferRate(int transferRate) {
@@ -106,24 +120,20 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
     @Override
     public void onLoad() {
         super.onLoad();
-        if (coverHolder.getLevel() instanceof ServerLevel serverLevel) {
-            serverLevel.getServer().tell(new TickTask(0, this::updateSubscription));
-        }
+        subscriptionHandler.initialize(coverHolder.getLevel());
     }
 
     @Override
     public void onRemoved() {
         super.onRemoved();
-        if (subscription != null) {
-            subscription.unsubscribe();
-        }
+        subscriptionHandler.unsubscribe();
     }
 
     @Override
     public List<ItemStack> getAdditionalDrops() {
         var list = super.getAdditionalDrops();
-        if (!filterItem.isEmpty()) {
-            list.add(filterItem);
+        if (!filterHandler.getFilterItem().isEmpty()) {
+            list.add(filterHandler.getFilterItem());
         }
         return list;
     }
@@ -132,38 +142,16 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
     //*****     Transfer Logic     *****//
     //////////////////////////////////////
 
-    public ItemFilter getFilterHandler() {
-        if (filterHandler == null) {
-            if (filterItem.isEmpty()) {
-                return ItemFilter.EMPTY;
-            } else {
-                filterHandler = ItemFilter.loadFilter(filterItem);
-            }
-        }
-        return filterHandler;
-    }
-
     @Override
     public void onNeighborChanged(Block block, BlockPos fromPos, boolean isMoving) {
-        updateSubscription();
+        subscriptionHandler.updateSubscription();
     }
 
     @Override
     public void setWorkingEnabled(boolean isWorkingAllowed) {
         if (this.isWorkingEnabled != isWorkingAllowed) {
             this.isWorkingEnabled = isWorkingAllowed;
-            updateSubscription();
-        }
-    }
-
-    protected void updateSubscription() {
-        var level = coverHolder.getLevel();
-        var pos = coverHolder.getPos();
-        if (isWorkingEnabled() && ItemTransferHelper.getItemTransfer(level, pos.relative(attachedSide), attachedSide.getOpposite()) != null) {
-            subscription = coverHolder.subscribeServerTick(subscription, this::update);
-        } else if (subscription != null) {
-            subscription.unsubscribe();
-            subscription = null;
+            subscriptionHandler.updateSubscription();
         }
     }
 
@@ -171,14 +159,12 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
         long timer = coverHolder.getOffsetTimer();
         if (timer % 5 == 0) {
             if (itemsLeftToTransferLastSecond > 0) {
-                var level = coverHolder.getLevel();
-                var pos = coverHolder.getPos();
-                var itemHandler = ItemTransferHelper.getItemTransfer(level, pos.relative(attachedSide), attachedSide.getOpposite());
-                var myItemHandler = ItemTransferHelper.getItemTransfer(level, pos, attachedSide);
-                if (itemHandler != null && myItemHandler != null) {
+                var adjacentItemTransfer = getAdjacentItemTransfer();
+                var myItemHandler = getOwnItemTransfer();
+                if (adjacentItemTransfer != null && myItemHandler != null) {
                     int totalTransferred = switch (io) {
-                        case IN -> doTransferItems(itemHandler, myItemHandler, itemsLeftToTransferLastSecond);
-                        case OUT -> doTransferItems(myItemHandler, itemHandler, itemsLeftToTransferLastSecond);
+                        case IN -> doTransferItems(adjacentItemTransfer, myItemHandler, itemsLeftToTransferLastSecond);
+                        case OUT -> doTransferItems(myItemHandler, adjacentItemTransfer, itemsLeftToTransferLastSecond);
                         default -> 0;
                     };
                     this.itemsLeftToTransferLastSecond -= totalTransferred;
@@ -187,7 +173,7 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
             if (timer % 20 == 0) {
                 this.itemsLeftToTransferLastSecond = transferRate;
             }
-            updateSubscription();
+            subscriptionHandler.updateSubscription();
         }
     }
 
@@ -196,14 +182,16 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
     }
 
     protected int moveInventoryItems(IItemTransfer sourceInventory, IItemTransfer targetInventory, int maxTransferAmount) {
+        ItemFilter filter = filterHandler.getFilter();
         int itemsLeftToTransfer = maxTransferAmount;
+
         for (int srcIndex = 0; srcIndex < sourceInventory.getSlots(); srcIndex++) {
             ItemStack sourceStack = sourceInventory.extractItem(srcIndex, itemsLeftToTransfer, true);
             if (sourceStack.isEmpty()) {
                 continue;
             }
 
-            if (!getFilterHandler().test(sourceStack)) {
+            if (!filter.test(sourceStack)) {
                 continue;
             }
 
@@ -280,10 +268,12 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
     }
 
     protected int moveInventoryItems(IItemTransfer sourceInventory, IItemTransfer targetInventory, Map<ItemStack, GroupItemInfo> itemInfos, int maxTransferAmount) {
+        ItemFilter filter = filterHandler.getFilter();
         int itemsLeftToTransfer = maxTransferAmount;
+
         for (int i = 0; i < sourceInventory.getSlots(); i++) {
             ItemStack itemStack = sourceInventory.getStackInSlot(i);
-            if (itemStack.isEmpty() || !getFilterHandler().test(itemStack) || !itemInfos.containsKey(itemStack)) {
+            if (itemStack.isEmpty() || !filter.test(itemStack) || !itemInfos.containsKey(itemStack)) {
                 continue;
             }
 
@@ -320,11 +310,12 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
 
     @Nonnull
     protected Map<ItemStack, TypeItemInfo> countInventoryItemsByType(@Nonnull IItemTransfer inventory) {
+        ItemFilter filter = filterHandler.getFilter();
         Map<ItemStack, TypeItemInfo> result = new Object2ObjectOpenCustomHashMap<>(ItemStackHashStrategy.comparingAllButCount());
 
         for (int srcIndex = 0; srcIndex < inventory.getSlots(); srcIndex++) {
             ItemStack itemStack = inventory.getStackInSlot(srcIndex);
-            if (itemStack.isEmpty() || !getFilterHandler().test(itemStack)) {
+            if (itemStack.isEmpty() || !filter.test(itemStack)) {
                 continue;
             }
 
@@ -339,10 +330,12 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
 
     @Nonnull
     protected Map<ItemStack, GroupItemInfo> countInventoryItemsByMatchSlot(@Nonnull IItemTransfer inventory) {
+        ItemFilter filter = filterHandler.getFilter();
         Map<ItemStack, GroupItemInfo> result = new Object2ObjectOpenCustomHashMap<>(ItemStackHashStrategy.comparingAllButCount());
+
         for (int srcIndex = 0; srcIndex < inventory.getSlots(); srcIndex++) {
             ItemStack itemStack = inventory.getStackInSlot(srcIndex);
-            if (itemStack.isEmpty() || !getFilterHandler().test(itemStack)) {
+            if (itemStack.isEmpty() || !filter.test(itemStack)) {
                 continue;
             }
 
@@ -373,16 +366,6 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
     @Override
     public Widget createUIWidget() {
         final var group = new WidgetGroup(0, 0, 176, 135);
-
-        var filterContainer = new ItemStackTransfer(filterItem);
-        filterContainer.setFilter(itemStack -> ItemFilter.FILTERS.containsKey(itemStack.getItem()));
-        var filterGroup = new WidgetGroup(0, 70, 176, 60);
-        if (!filterItem.isEmpty()) {
-            filterHandler = ItemFilter.loadFilter(filterItem);
-            filterGroup.addWidget(filterHandler.openConfigurator(10, 0));
-            configureFilterHandler();
-        }
-
         group.addWidget(new LabelWidget(10, 5, LocalizationUtils.format(getUITitle(), GTValues.VN[tier])));
 
         group.addWidget(new IntInputWidget(10, 20, 156, 20, () -> this.transferRate, this::setTransferRate)
@@ -396,29 +379,14 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
                     );
                 })
                 .setTexture(
-                        new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON, IO.OUT.icon),
-                        new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON, IO.IN.icon))
+                        new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, IO.OUT.icon),
+                        new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, IO.IN.icon))
                 .setPressed(io == IO.IN)
                 .setHoverTooltips(LocalizationUtils.format("cover.conveyor.mode", LocalizationUtils.format(io.localeName)));
         group.addWidget(ioModeSwitch);
-        group.addWidget(new SlotWidget(filterContainer, 0, 148, 107)
-                .setChangeListener(() -> {
-                    if (isRemote()) {
-                        if (!filterContainer.getStackInSlot(0).isEmpty() && !filterItem.isEmpty()) {
-                            return;
-                        }
-                    }
-                    this.filterItem = filterContainer.getStackInSlot(0);
-                    this.filterHandler = null;
-                    filterGroup.clearAllWidgets();
-                    if (!filterItem.isEmpty()) {
-                        filterHandler = ItemFilter.loadFilter(filterItem);
-                        filterGroup.addWidget(filterHandler.openConfigurator(10, 0));
-                        configureFilterHandler();
-                    }
-                })
-                .setBackgroundTexture(new GuiTextureGroup(GuiTextures.SLOT, GuiTextures.FILTER_SLOT_OVERLAY)));
-        group.addWidget(filterGroup);
+
+        group.addWidget(filterHandler.createFilterSlotUI(148, 107));
+        group.addWidget(filterHandler.createFilterConfigUI(10, 70, 156, 60));
 
         buildAdditionalUI(group);
 

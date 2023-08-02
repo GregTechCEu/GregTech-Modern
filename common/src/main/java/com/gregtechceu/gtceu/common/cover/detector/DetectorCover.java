@@ -31,7 +31,7 @@ public abstract class DetectorCover extends CoverBehavior implements IControllab
     }
 
 
-    @Persisted
+    @Persisted @Getter @Setter
     protected boolean isWorkingEnabled = true;
     protected TickableSubscription subscription;
 
@@ -40,16 +40,6 @@ public abstract class DetectorCover extends CoverBehavior implements IControllab
 
     public DetectorCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {
         super(definition, coverHolder, attachedSide);
-    }
-
-    @Override
-    public boolean isWorkingEnabled() {
-        return isWorkingEnabled;
-    }
-
-    @Override
-    public void setWorkingEnabled(boolean workingEnabled) {
-        isWorkingEnabled = workingEnabled;
     }
 
     @Override

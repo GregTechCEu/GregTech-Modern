@@ -84,7 +84,7 @@ public class GuiTextures {
     public static final ResourceTexture LOCK_WHITE = new ResourceTexture("gtceu:textures/gui/widget/lock_white.png");
     public static final ResourceTexture SWITCH = new ResourceTexture("gtceu:textures/gui/widget/switch.png");
     public static final ResourceTexture SWITCH_HORIZONTAL = new ResourceTexture("gtceu:textures/gui/widget/switch_horizontal.png");
-    public static final ResourceTexture VANILLA_BUTTON = ResourceBorderTexture.BUTTON_COMMON;
+    public static final ResourceTexture VANILLA_BUTTON = new ResourceBorderTexture("ldlib:textures/gui/button_common.png", 198, 18, 1, 1);
 
     public static final ResourceTexture ENERGY_DETECTOR_COVER_MODE_BUTTON = new ResourceTexture("gtceu:textures/gui/widget/button_detector_cover_energy_mode.png");
     public static final ResourceTexture INVERT_REDSTONE_BUTTON = new ResourceTexture("gtceu:textures/gui/widget/button_detector_cover_inverted.png");

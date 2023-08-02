@@ -1031,10 +1031,12 @@ public class GTItems {
             .register();
     public static ItemEntry<ComponentItem> COVER_ITEM_VOIDING = REGISTRATE.item("item_voiding_cover", ComponentItem::create)
             .lang("Item Voiding Cover")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.ITEM_VOIDING)))
             .onRegister(compassNode(GTCompassSections.COVERS, GTCompassNodes.COVER))
             .register();
     public static ItemEntry<ComponentItem> COVER_ITEM_VOIDING_ADVANCED = REGISTRATE.item("advanced_item_voiding_cover", ComponentItem::create)
             .lang("Advanced Item Voiding Cover")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.ITEM_VOIDING_ADVANCED)))
             .onRegister(compassNode(GTCompassSections.COVERS, GTCompassNodes.COVER))
             .register();
 

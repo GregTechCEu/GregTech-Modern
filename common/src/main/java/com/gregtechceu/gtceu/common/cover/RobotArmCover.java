@@ -4,10 +4,10 @@ import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.cover.filter.SimpleItemFilter;
+import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
 import com.gregtechceu.gtceu.common.cover.data.TransferMode;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
-import com.lowdragmc.lowdraglib.gui.texture.ResourceBorderTexture;
 import com.lowdragmc.lowdraglib.gui.widget.CycleButtonWidget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
@@ -125,8 +125,10 @@ public class RobotArmCover extends ConveyorCover {
     }
 
     private int getFilteredItemAmount(ItemStack itemStack) {
-        ItemFilter filter = getFilterHandler();
+        if (!filterHandler.isFilterPresent())
+            return globalTransferLimit;
 
+        ItemFilter filter = filterHandler.getFilter();
         return filter.isBlackList() ? globalTransferLimit : filter.testItemCount(itemStack);
     }
 
@@ -144,8 +146,8 @@ public class RobotArmCover extends ConveyorCover {
     @Override
     protected void buildAdditionalUI(WidgetGroup group) {
         transferModeSelector = new CycleButtonWidget(
-                146, 45, 20, 20, 3,
-                i -> new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON, TRANSFER_MODES[i].icon),
+                146, 45, 20, 20, TRANSFER_MODES.length,
+                i -> new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, TRANSFER_MODES[i].icon),
                 i -> setTransferMode(TRANSFER_MODES[i])
         );
         transferModeSelector.setIndex(transferMode.ordinal());
@@ -176,7 +178,7 @@ public class RobotArmCover extends ConveyorCover {
 
     @Override
     protected void configureFilterHandler() {
-        if (this.filterHandler instanceof SimpleItemFilter filter) {
+        if (filterHandler.getFilter() instanceof SimpleItemFilter filter) {
             filter.setMaxStackSize(transferMode.maxStackSize);
         }
     }
