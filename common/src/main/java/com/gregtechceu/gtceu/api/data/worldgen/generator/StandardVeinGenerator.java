@@ -228,7 +228,7 @@ public class StandardVeinGenerator extends VeinGenerator {
                                                                     }
                                                                 }
                                                             }).ifRight(material -> {
-                                                                if (!GTOreFeature.canPlaceOre(blockstate, access::getBlockState, random, entry, material, posCursor))
+                                                                if (!GTOreFeature.canPlaceOre(blockstate, access::getBlockState, random, entry, posCursor))
                                                                     return;
                                                                 BlockState currentState = access.getBlockState(posCursor);
                                                                 var prefix = ChemicalHelper.ORES_INVERSE.get(currentState);

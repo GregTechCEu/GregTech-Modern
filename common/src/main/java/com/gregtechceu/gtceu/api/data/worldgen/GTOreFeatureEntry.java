@@ -181,6 +181,13 @@ public class GTOreFeatureEntry {
         return (DikeVeinGenerator) veinGenerator;
     }
 
+    public VeinedVeinGenerator veinedVeinGenerator() {
+        if (veinGenerator == null) {
+            veinGenerator = new VeinedVeinGenerator(this);
+        }
+        return (VeinedVeinGenerator) veinGenerator;
+    }
+
     @Nullable
     public VeinGenerator generator(ResourceLocation id) {
         if (veinGenerator == null) {

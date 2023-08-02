@@ -112,7 +112,7 @@ public class DikeVeinGenerator extends VeinGenerator {
                     break;
                 }
             }).ifRight(material -> {
-                if (!GTOreFeature.canPlaceOre(current, level::getBlockState, rand, entry, material, pos.mutable()))
+                if (!GTOreFeature.canPlaceOre(current, level::getBlockState, rand, entry, pos.mutable()))
                     return;
                 BlockState currentState = level.getBlockState(pos);
                 var prefix = ChemicalHelper.ORES_INVERSE.get(currentState);
