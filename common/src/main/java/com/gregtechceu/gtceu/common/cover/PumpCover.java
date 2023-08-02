@@ -59,8 +59,9 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
     protected boolean isWorkingEnabled = true;
     protected long fluidLeftToTransferLastSecond;
 
-    protected final ConditionalSubscriptionHandler subscriptionHandler;
+    @Persisted @DescSynced
     protected final FilterHandler<FluidStack, FluidFilter> filterHandler;
+    protected final ConditionalSubscriptionHandler subscriptionHandler;
 
     public PumpCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide, int tier) {
         super(definition, coverHolder, attachedSide);
