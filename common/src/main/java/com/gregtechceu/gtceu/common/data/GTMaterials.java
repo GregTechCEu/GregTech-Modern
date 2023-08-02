@@ -9,6 +9,8 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlag;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.common.block.StoneBlockType;
+import com.gregtechceu.gtceu.common.block.StrataType;
 import com.gregtechceu.gtceu.common.data.materials.*;
 import com.gregtechceu.gtceu.integration.kjs.GTRegistryObjectBuilderTypes;
 import net.minecraft.world.item.Items;

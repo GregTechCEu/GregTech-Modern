@@ -238,7 +238,7 @@ public class GTBlocks {
         for (var fluidPipeType : FluidPipeType.values()) {
             for (Material material : GTRegistries.MATERIALS) {
                 if (material.hasProperty(PropertyKey.FLUID_PIPE) && !fluidPipeType.tagPrefix.isIgnored(material)) {
-                    var entry = REGISTRATE.block( "%s_%s_fluid_pipe".formatted(material.getName(), fluidPipeType.name), p -> new FluidPipeBlock(p.noLootTable(), fluidPipeType, material))
+                    var entry = REGISTRATE.block("%s_%s_fluid_pipe".formatted(material.getName(), fluidPipeType.name), p -> new FluidPipeBlock(p.noLootTable(), fluidPipeType, material))
                             .initialProperties(() -> Blocks.IRON_BLOCK)
                             .properties(p -> {
                                 if (doMetalPipe(material)) {
@@ -721,6 +721,35 @@ public class GTBlocks {
             .build()
             .register();
 
+    public static Table<StoneBlockType, StrataType, BlockEntry<Block>> STONE_BLOCKS;
+
+    public static void generateStoneBlocks() {
+        // Stone type blocks
+        ImmutableTable.Builder<StoneBlockType, StrataType, BlockEntry<Block>> builder = ImmutableTable.builder();
+        for (StrataType strata : StrataType.values()) {
+            for (StoneBlockType type : StoneBlockType.values()) {
+                String blockId = type.blockId.formatted(strata.getSerializedName());
+                if (Registry.BLOCK.containsKey(new ResourceLocation(blockId))) continue;
+                var entry = REGISTRATE.block(blockId, Block::new)
+                        .initialProperties(() -> Blocks.STONE)
+                        .properties(p -> p.strength(type.hardness, type.resistance))
+                        .transform(type == StoneBlockType.STONE ? GTBlocks.unificationBlock(strata.getTagPrefix(), strata.getMaterial()) : builder2 -> builder2)
+                        .loot((tables, block) -> {
+                            if (type == StoneBlockType.STONE) {
+                                tables.add(block, RegistrateBlockLootTables.createSingleItemTableWithSilkTouch(block, STONE_BLOCKS.get(StoneBlockType.COBBLE, strata).get()));
+                            } else {
+                                tables.add(block, RegistrateBlockLootTables.createSingleItemTable(block));
+                            }
+                        })
+                        .blockstate((ctx, prov) -> prov.simpleBlock(ctx.getEntry(), prov.models().singleTexture(blockId, prov.mcLoc(BLOCK_FOLDER + "/block"), "all", GTCEu.id(BLOCK_FOLDER + "/stones/" + strata.getSerializedName() + "/" + type.id))))
+                        .item()
+                        .build()
+                        .register();
+                builder.put(type, strata, entry);
+            }
+        }
+        STONE_BLOCKS = builder.build();
+    }
 
     public static <P, T extends Block, S2 extends BlockBuilder<T, P>> NonNullFunction<S2, S2> unificationBlock(@Nonnull TagPrefix tagPrefix, @Nonnull Material mat) {
         return builder -> {
@@ -741,6 +770,7 @@ public class GTBlocks {
         generateMaterialBlocks();
         generateCableBlocks();
         generatePipeBlocks();
+        generateStoneBlocks();
     }
 
     public static boolean doMetalPipe(Material material) {
