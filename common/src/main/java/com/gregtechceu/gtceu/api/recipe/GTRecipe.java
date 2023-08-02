@@ -3,10 +3,7 @@ package com.gregtechceu.gtceu.api.recipe;
 import com.google.common.collect.Table;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
-import com.gregtechceu.gtceu.api.capability.recipe.IRecipeCapabilityHolder;
-import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
+import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
@@ -60,7 +57,7 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
         this.isFuel = isFuel;
     }
 
-    public Map<RecipeCapability<?>, List<Content>> copyContents(Map<RecipeCapability<?>, List<Content>> contents) {
+    public Map<RecipeCapability<?>, List<Content>> copyContents(Map<RecipeCapability<?>, List<Content>> contents, @Nullable ContentModifier modifier) {
         Map<RecipeCapability<?>, List<Content>> copyContents = new HashMap<>();
         for (var entry : contents.entrySet()) {
             var contentList = entry.getValue();
@@ -68,7 +65,7 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
             if (contentList != null && !contentList.isEmpty()) {
                 List<Content> contentsCopy = new ArrayList<>();
                 for (Content content : contentList) {
-                    contentsCopy.add(content.copy(cap));
+                    contentsCopy.add(content.copy(cap, modifier));
                 }
                 copyContents.put(entry.getKey(), contentsCopy);
             }
@@ -77,7 +74,7 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
     }
 
     public GTRecipe copy() {
-        return new GTRecipe(recipeType, id, copyContents(inputs), copyContents(outputs), copyContents(tickInputs), copyContents(tickOutputs), conditions, data, duration, isFuel);
+        return new GTRecipe(recipeType, id, copyContents(inputs, null), copyContents(outputs, null), copyContents(tickInputs, null), copyContents(tickOutputs, null), conditions, data, duration, isFuel);
     }
 
     public GTRecipe copy(ContentModifier modifier) {
@@ -85,7 +82,7 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
     }
 
     public GTRecipe copy(ContentModifier modifier, boolean modifyDuration) {
-        var copied = copy();
+        var copied = new GTRecipe(recipeType, id, copyContents(inputs, modifier), copyContents(outputs, modifier), copyContents(tickInputs, modifier), copyContents(tickOutputs, modifier), conditions, data, duration, isFuel);
         modifyContents(copied.inputs, modifier);
         modifyContents(copied.outputs, modifier);
         modifyContents(copied.tickInputs, modifier);
@@ -431,5 +428,23 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
         public static ActionResult fail(@Nullable Supplier<Component> component, float expectingRate) {
             return new ActionResult(false, component, expectingRate);
         }
+    }
+
+    public boolean checkRecipeValid() {
+        return checkItemValid(inputs, "input") && checkItemValid(outputs, "output") && checkItemValid(tickInputs, "tickInput") && checkItemValid(tickOutputs, "tickOutput");
+    }
+
+    private boolean checkItemValid(Map<RecipeCapability<?>, List<Content>> contents, String name) {
+        for (Content content : contents.getOrDefault(ItemRecipeCapability.CAP, Collections.emptyList())) {
+            var items = ItemRecipeCapability.CAP.of(content.content).getItems();
+            if (items.length == 0) {
+                GTCEu.LOGGER.error("recipe {} {} item length is 0", id, name);
+                return false;
+            } else if (Arrays.stream(items).anyMatch(ItemStack::isEmpty)) {
+                GTCEu.LOGGER.error("recipe {} {} item is empty", id, name);
+                return false;
+            }
+        }
+        return true;
     }
 }

@@ -30,6 +30,7 @@ public abstract class RecipeManagerMixin {
             at = @At(value = "HEAD"))
     private void injectApplyHead(Map<ResourceLocation, JsonElement> map, ResourceManager resourceManager, ProfilerFiller profiler, CallbackInfo ci) {
         GTCEu.LOGGER.info("Ignore errors about 'duplicated recipes', they're simply overrides. (DO note them if your custom recipe isn't working.)");
+        long startTime = System.currentTimeMillis();
         GTRecipes.recipeRemoval(rl -> {
             if (map.remove(rl) == null) {
                 GTCEu.LOGGER.error("failed to remove recipe {}, could not find matching recipe", rl);
@@ -41,6 +42,7 @@ public abstract class RecipeManagerMixin {
                 GTCEu.LOGGER.error("duplicated recipe: {}", id);
             }
         });
+        GTCEu.LOGGER.info("GregTech Recipe loading took {}ms", System.currentTimeMillis() - startTime);
     }
 
     @Inject(method = "apply(Ljava/util/Map;Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/util/profiling/ProfilerFiller;)V",

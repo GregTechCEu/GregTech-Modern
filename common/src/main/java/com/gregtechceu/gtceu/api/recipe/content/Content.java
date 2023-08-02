@@ -34,8 +34,12 @@ public class Content {
         return content;
     }
 
-    public Content copy(RecipeCapability<?> capability) {
-        return new Content(capability.copyContent(content), chance, tierChanceBoost, slotName, uiName);
+    public Content copy(RecipeCapability<?> capability, @Nullable ContentModifier modifier) {
+        if (modifier == null) {
+            return new Content(capability.copyContent(content), chance, tierChanceBoost, slotName, uiName);
+        } else {
+            return new Content(capability.copyContent(content, modifier), chance, tierChanceBoost, slotName, uiName);
+        }
     }
 
     public IGuiTexture createOverlay(boolean perTick) {
