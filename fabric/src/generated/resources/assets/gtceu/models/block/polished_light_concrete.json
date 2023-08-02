@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "all": "gtceu:block/stones/light_concrete/polished"
+  }
+}
