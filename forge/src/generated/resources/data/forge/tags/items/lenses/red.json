@@ -1,5 +1,8 @@
 {
   "values": [
-    "gtceu:ruby_lens"
+    {
+      "id": "gtceu:ruby_lens",
+      "required": false
+    }
   ]
 }

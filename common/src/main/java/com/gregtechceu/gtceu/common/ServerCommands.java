@@ -31,7 +31,7 @@ public class ServerCommands {
                                 .executes(context -> {
                                     for (Recipe<?> recipe : context.getSource().getServer().getRecipeManager().getRecipes()) {
                                         if (recipe instanceof GTRecipe gtRecipe && !gtRecipe.checkRecipeValid()) {
-                                            context.getSource().sendSuccess(Component.literal("recipe %s is invalid".formatted(gtRecipe.id)), false);
+                                            context.getSource().sendSuccess(() -> Component.literal("recipe %s is invalid".formatted(gtRecipe.id)), false);
                                         }
                                     }
                                     return 1;

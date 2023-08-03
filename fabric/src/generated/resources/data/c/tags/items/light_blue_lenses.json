@@ -1,6 +1,9 @@
 {
   "replace": false,
   "values": [
-    "gtceu:diamond_lens"
+    {
+      "id": "gtceu:diamond_lens",
+      "required": false
+    }
   ]
 }

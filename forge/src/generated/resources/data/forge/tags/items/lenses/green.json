@@ -1,5 +1,8 @@
 {
   "values": [
-    "gtceu:emerald_lens"
+    {
+      "id": "gtceu:emerald_lens",
+      "required": false
+    }
   ]
 }

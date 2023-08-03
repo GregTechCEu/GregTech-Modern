@@ -74,7 +74,7 @@ public class AdvancedItemVoidingCover extends ItemVoidingCover {
 
             for (int slot = 0; slot < itemTransfer.getSlots(); slot++) {
                 ItemStack is = itemTransfer.getStackInSlot(slot);
-                if (!is.isEmpty() && ItemStack.isSame(is, itemInfo.itemStack) && ItemStack.tagMatches(is, itemInfo.itemStack)) {
+                if (!is.isEmpty() && ItemStack.isSameItemSameTags(is, itemInfo.itemStack)) {
                     ItemStack extracted = itemTransfer.extractItem(slot, itemToVoidAmount, false);
 
                     if (!extracted.isEmpty()) {
