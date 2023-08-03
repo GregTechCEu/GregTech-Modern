@@ -61,6 +61,10 @@ public class SizedIngredientImpl extends SizedIngredient {
         return SERIALIZER.parse(json);
     }
 
+    public static SizedIngredient create(Ingredient inner) {
+        return new SizedIngredientImpl(inner, 1);
+    }
+
     public static final IIngredientSerializer<SizedIngredientImpl> SERIALIZER = new IIngredientSerializer<>() {
         @Override
         public @NotNull SizedIngredientImpl parse(FriendlyByteBuf buffer) {
