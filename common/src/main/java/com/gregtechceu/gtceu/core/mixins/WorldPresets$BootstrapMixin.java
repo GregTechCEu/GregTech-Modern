@@ -1,15 +1,13 @@
 package com.gregtechceu.gtceu.core.mixins;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.common.block.StrataType;
+import com.gregtechceu.gtceu.common.block.StoneType;
 import com.gregtechceu.gtceu.common.worldgen.strata.StrataChunkGenerator;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
-import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.biome.MultiNoiseBiomeSource;
 import net.minecraft.world.level.chunk.ChunkGenerator;
-import net.minecraft.world.level.dimension.BuiltinDimensionTypes;
 import net.minecraft.world.level.dimension.LevelStem;
 import net.minecraft.world.level.levelgen.NoiseBasedChunkGenerator;
 import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
@@ -43,12 +41,12 @@ public abstract class WorldPresets$BootstrapMixin {
     protected abstract LevelStem makeOverworld(ChunkGenerator generator);
 
     @Inject(method = "run",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/core/Registry;getOrCreateHolderOrThrow(Lnet/minecraft/resources/ResourceKey;)Lnet/minecraft/core/Holder;", ordinal = 0),
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/levelgen/presets/WorldPresets$Bootstrap;registerCustomOverworldPreset(Lnet/minecraft/resources/ResourceKey;Lnet/minecraft/world/level/dimension/LevelStem;)Lnet/minecraft/core/Holder;", ordinal = 0),
             locals = LocalCapture.CAPTURE_FAILHARD)
-    public void gtceu$addStrataPreset(CallbackInfoReturnable<Holder<WorldPreset>> cir, MultiNoiseBiomeSource multiNoiseBiomeSource) {
+    public void gtceu$addStrataPreset(CallbackInfoReturnable<Holder<WorldPreset>> cir, MultiNoiseBiomeSource multiNoiseBiomeSource, Holder<NoiseGeneratorSettings> holder) {
         this.registerCustomOverworldPreset(ResourceKey.create(Registry.WORLD_PRESET_REGISTRY, GTCEu.id("strata")),
-                this.makeOverworld(new StrataChunkGenerator(List.of(StrataType.RED_GRANITE, StrataType.ANDESITE, StrataType.MARBLE, StrataType.BASALT, StrataType.DEEPSLATE),
-                        new NoiseBasedChunkGenerator(structureSets, noises, multiNoiseBiomeSource, noiseSettings.getOrCreateHolderOrThrow(NoiseGeneratorSettings.OVERWORLD)))
+                this.makeOverworld(new StrataChunkGenerator(List.of(StoneType.RED_GRANITE, StoneType.MARBLE, StoneType.ANDESITE, StoneType.BASALT, StoneType.DEEPSLATE),
+                        new NoiseBasedChunkGenerator(structureSets, noises, multiNoiseBiomeSource, holder))
                 ));
     }
 

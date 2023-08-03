@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.worldgen.strata;
 
+import com.google.common.collect.Sets;
 import com.gregtechceu.gtceu.api.data.worldgen.WorldGeneratorUtils;
 import com.gregtechceu.gtceu.api.data.worldgen.strata.IStrataLayer;
 import com.mojang.serialization.Codec;
@@ -7,7 +8,6 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.QuartPos;
-import net.minecraft.core.Registry;
 import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.server.level.WorldGenRegion;
 import net.minecraft.util.Mth;
@@ -16,27 +16,27 @@ import net.minecraft.world.level.LevelHeightAccessor;
 import net.minecraft.world.level.NoiseColumn;
 import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.biome.BiomeManager;
-import net.minecraft.world.level.biome.BiomeSource;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.chunk.LevelChunkSection;
 import net.minecraft.world.level.chunk.ProtoChunk;
-import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.levelgen.*;
 import net.minecraft.world.level.levelgen.blending.Blender;
-import net.minecraft.world.level.levelgen.structure.StructureSet;
 import net.minecraft.world.level.levelgen.synth.NormalNoise;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
-
+/**
+ * Unused. might fix at some point in the future. makes a lava ocean for some reason.
+ */
 public class StrataChunkGenerator extends ChunkGenerator {
     public static final Codec<StrataChunkGenerator> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.list(IStrataLayer.CODEC).fieldOf("layers").forGetter(it -> it.strataLayers),
@@ -45,8 +45,6 @@ public class StrataChunkGenerator extends ChunkGenerator {
 
     public List<IStrataLayer> strataLayers;
     public ChunkGenerator baseGenerator;
-
-    private BlockState defaultBlock = Blocks.STONE.defaultBlockState();
 
     public StrataChunkGenerator(List<IStrataLayer> layers, ChunkGenerator baseGenerator) {
         super(baseGenerator.structureSets, Optional.empty(), baseGenerator.getBiomeSource());
@@ -81,7 +79,23 @@ public class StrataChunkGenerator extends ChunkGenerator {
 
     @Override
     public CompletableFuture<ChunkAccess> fillFromNoise(Executor executor, Blender blender, RandomState random, StructureManager structureManager, ChunkAccess chunk) {
-        return baseGenerator.fillFromNoise(executor, blender, random, structureManager, chunk).thenApply(chunkAccess -> this.stratify(executor, blender, random, structureManager, chunkAccess));
+        int minY = -64;
+        int cellHeight = QuartPos.toBlock(2);
+        int height = Mth.intFloorDiv(384, cellHeight);
+        HashSet<LevelChunkSection> acquiredSections = Sets.newHashSet();
+        return baseGenerator.fillFromNoise(executor, blender, random, structureManager, chunk).whenCompleteAsync((chunkAccess, throwable) -> {
+            int maxIndex = chunk.getSectionIndex(height * cellHeight - 1 + minY);
+            int minIndex = chunk.getSectionIndex(minY);
+            for (int i = maxIndex; i >= minIndex; --i) {
+                LevelChunkSection levelChunkSection = chunk.getSection(i);
+                levelChunkSection.acquire();
+                acquiredSections.add(levelChunkSection);
+            }
+        }, executor).thenApplyAsync(chunkAccess -> this.stratify(executor, blender, random, structureManager, chunkAccess), executor).whenCompleteAsync((chunkAccess, throwable) -> {
+            for (LevelChunkSection levelChunkSection : acquiredSections) {
+                levelChunkSection.release();
+            }
+        }, executor);
     }
 
     public ChunkAccess stratify(Executor executor, Blender blender, RandomState random, StructureManager structureManager, ChunkAccess chunk) {
@@ -93,7 +107,7 @@ public class StrataChunkGenerator extends ChunkGenerator {
         int cellCountY = Mth.intFloorDiv(384, QuartPos.toBlock(2));
         BlockPos.MutableBlockPos mutableBlockPos = new BlockPos.MutableBlockPos();
 
-        NoiseChunk noiseChunk = createNoiseChunk(chunk, structureManager, blender, random);
+        NoiseChunk noiseChunk = chunk.getOrCreateNoiseChunk(chunkAccess -> this.createNoiseChunk(chunkAccess, structureManager, blender, random));
         ChunkPos chunkPos = chunk.getPos();
         int minBlockX = chunkPos.getMinBlockX();
         int minBlockZ = chunkPos.getMinBlockZ();
@@ -101,33 +115,33 @@ public class StrataChunkGenerator extends ChunkGenerator {
         int cellHeight = noiseChunk.cellHeight();
         int blockWidth = 16 / cellWidth;
 
-        for (int x = 0; x < blockWidth; ++x) {
-            noiseChunk.advanceCellX(x);
-            for (int z = 0; z < blockWidth; ++z) {
+        for (int blockX = 0; blockX < blockWidth; ++blockX) {
+            noiseChunk.advanceCellX(blockX);
+            for (int blockZ = 0; blockZ < blockWidth; ++blockZ) {
                 LevelChunkSection levelChunkSection = chunk.getSection(chunk.getSectionsCount() - 1);
-                for (int q = cellCountY - 1; q >= 0; --q) {
-                    noiseChunk.selectCellYZ(q, z);
-                    for (int r = cellHeight - 1; r >= 0; --r) {
-                        int s = (minCellY + q) * cellHeight + r;
-                        int yPosFinal = s & 0xF;
-                        int u = chunk.getSectionIndex(s);
-                        if (chunk.getSectionIndex(levelChunkSection.bottomBlockY()) != u) {
-                            levelChunkSection = chunk.getSection(u);
+                for (int cellY = cellCountY - 1; cellY >= 0; --cellY) {
+                    noiseChunk.selectCellYZ(cellY, blockZ);
+                    for (int cellY2 = cellHeight - 1; cellY2 >= 0; --cellY2) {
+                        int yPos = (minCellY + cellY) * cellHeight + cellY2;
+                        int sectionY = yPos & 0xF;
+                        int sectionIndex = chunk.getSectionIndex(yPos);
+                        if (chunk.getSectionIndex(levelChunkSection.bottomBlockY()) != sectionIndex) {
+                            levelChunkSection = chunk.getSection(sectionIndex);
                         }
-                        double d = (double) r / (double) cellHeight;
+                        double deltaY = (double) cellY2 / (double) cellHeight;
 
-                        noiseChunk.updateForY(s, d);
-                        for (int v = 0; v < cellWidth; ++v) {
-                            int w = minBlockX + x * cellWidth + v;
-                            int xPosFinal = w & 0xF;
-                            double e = (double) v / (double) cellWidth;
-                            noiseChunk.updateForX(w, e);
-                            for (int aa = 0; aa < cellWidth; ++aa) {
-                                int idk1 = minBlockZ + z * cellWidth + aa;
-                                int zPosFinal = idk1 & 0xF;
-                                double f = (double) aa / (double) cellWidth;
-                                noiseChunk.updateForZ(idk1, f);
-                                BlockState current = levelChunkSection.getBlockState(xPosFinal, yPosFinal, zPosFinal);
+                        noiseChunk.updateForY(yPos, deltaY);
+                        for (int cellX = 0; cellX < cellWidth; ++cellX) {
+                            int xPos = minBlockX + blockX * cellWidth + cellX;
+                            int sectionX = xPos & 0xF;
+                            double deltaX = (double) cellX / (double) cellWidth;
+                            noiseChunk.updateForX(xPos, deltaX);
+                            for (int cellZ = 0; cellZ < cellWidth; ++cellZ) {
+                                int zPos = minBlockZ + blockZ * cellWidth + cellZ;
+                                int sectionZ = zPos & 0xF;
+                                double deltaZ = (double) cellZ / (double) cellWidth;
+                                noiseChunk.updateForZ(zPos, deltaZ);
+                                BlockState current = levelChunkSection.getBlockState(sectionX, sectionY, sectionZ);
 
                                 List<IStrataLayer> candidates = WorldGeneratorUtils.STRATA_LAYER_BLOCK_MAP.getOrDefault(current, new ArrayList<>());
                                 if (candidates.isEmpty()) {
@@ -138,8 +152,8 @@ public class StrataChunkGenerator extends ChunkGenerator {
                                 if (candidates.size() == 1) {
                                     strata = candidates.get(0);
                                 } else {
-                                    final int surfaceY = chunk.getHeight(Heightmap.Types.WORLD_SURFACE_WG, xPosFinal, zPosFinal);
-                                    strata = getStateForPos(noise, candidates, xPosFinal, yPosFinal, zPosFinal, surfaceY);
+                                    final int surfaceY = chunk.getHeight(Heightmap.Types.WORLD_SURFACE_WG, sectionX, sectionZ);
+                                    strata = getStateForPos(noise, candidates, sectionX, yPos, sectionZ, surfaceY);
                                 }
                                 final BlockState toSet = strata.getState().get().get();
 
@@ -148,13 +162,13 @@ public class StrataChunkGenerator extends ChunkGenerator {
                                 if (toSet.isAir() || SharedConstants.debugVoidTerrain(chunk.getPos()))
                                     continue;
                                 if (toSet.getLightEmission() != 0 && chunk instanceof ProtoChunk) {
-                                    mutableBlockPos.set(w, s, idk1);
+                                    mutableBlockPos.set(xPos, yPos, zPos);
                                     ((ProtoChunk) chunk).addLight(mutableBlockPos);
                                 }
-                                levelChunkSection.setBlockState(xPosFinal, yPosFinal, zPosFinal, toSet, false);
-                                heightmap.update(xPosFinal, s, zPosFinal, toSet);
-                                heightmap2.update(xPosFinal, s, zPosFinal, toSet);
-                                mutableBlockPos.set(w, s, idk1);
+                                levelChunkSection.setBlockState(sectionX, sectionY, sectionZ, toSet, false);
+                                heightmap.update(sectionX, yPos, sectionZ, toSet);
+                                heightmap2.update(sectionX, yPos, sectionZ, toSet);
+                                mutableBlockPos.set(xPos, yPos, zPos);
                                 chunk.markPosForPostprocessing(mutableBlockPos);
                             }
                         }
@@ -166,7 +180,7 @@ public class StrataChunkGenerator extends ChunkGenerator {
     }
 
     private NoiseChunk createNoiseChunk(ChunkAccess chunk, StructureManager structureManager, Blender blender, RandomState random) {
-        return NoiseChunk.forChunk(chunk, random, Beardifier.forStructuresInChunk(structureManager, chunk.getPos()), BuiltinRegistries.NOISE_GENERATOR_SETTINGS.get(NoiseGeneratorSettings.LARGE_BIOMES), (x, y, z) -> new Aquifer.FluidStatus(128, Blocks.WATER.defaultBlockState()), blender);
+        return NoiseChunk.forChunk(chunk, random, Beardifier.forStructuresInChunk(structureManager, chunk.getPos()), BuiltinRegistries.NOISE_GENERATOR_SETTINGS.get(NoiseGeneratorSettings.OVERWORLD), (x, y, z) -> new Aquifer.FluidStatus(128, Blocks.WATER.defaultBlockState()), blender);
     }
 
     /**

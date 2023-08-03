@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.data.worldgen.BiomeWeightModifier;
 import com.gregtechceu.gtceu.api.data.worldgen.vein.GTOreFeatureEntry;
 import com.gregtechceu.gtceu.api.data.worldgen.IWorldGenLayer;
 import com.gregtechceu.gtceu.api.data.worldgen.vein.generator.VeinGenerator;
+import com.lowdragmc.lowdraglib.Platform;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.JsonOps;
 import dev.latvian.mods.rhino.util.HideFromJS;
@@ -65,7 +66,7 @@ public class OreVeinBuilderJS {
 
     @HideFromJS
     public GTOreFeatureEntry build() {
-        RegistryOps<JsonElement> registryOps = RegistryOps.create(JsonOps.INSTANCE, RegistryAccess.BUILTIN.get());
+        RegistryOps<JsonElement> registryOps = RegistryOps.create(JsonOps.INSTANCE, Platform.getMinecraftServer().registryAccess());
         HolderSet<DimensionType> dimensions = RegistryCodecs.homogeneousList(Registry.DIMENSION_TYPE_REGISTRY)
             .decode(registryOps, dimensionFilter.size() == 1 ? dimensionFilter.get(0) : dimensionFilter).map(Pair::getFirst).getOrThrow(false, GTCEu.LOGGER::error);
         HolderSet<Biome> biomes = RegistryCodecs.homogeneousList(Registry.BIOME_REGISTRY)

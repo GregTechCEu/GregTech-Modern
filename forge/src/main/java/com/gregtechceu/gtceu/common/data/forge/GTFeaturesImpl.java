@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.common.data.forge;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.worldgen.BiomeWeightModifier;
 import com.gregtechceu.gtceu.api.data.worldgen.modifier.BiomePlacement;
+import com.gregtechceu.gtceu.api.data.worldgen.strata.IStrataLayer;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTPlacements;
@@ -25,6 +26,7 @@ import net.minecraft.world.level.levelgen.feature.configurations.RandomFeatureCo
 import net.minecraft.world.level.levelgen.placement.BiomeFilter;
 import net.minecraft.world.level.levelgen.placement.InSquarePlacement;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
+import net.minecraft.world.level.levelgen.synth.NormalNoise;
 import net.minecraftforge.common.world.BiomeModifier;
 import net.minecraftforge.common.world.ForgeBiomeModifiers;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -51,6 +53,8 @@ public class GTFeaturesImpl {
     }
 
     public static void register() {
+        GTRegistries.register(BuiltinRegistries.NOISE, GTCEu.id("strata"), new NormalNoise.NoiseParameters(-10, 1.0, 0.0, 0.0, 1.0));
+        GTRegistries.register(Registry.RULE, GTCEu.id("strata"), IStrataLayer.StrataNoise.CODEC.codec());
         GTRegistries.register(Registry.CHUNK_GENERATOR, GTCEu.id("strata"), StrataChunkGenerator.CODEC);
 
         for (var entry : GTRegistries.ORE_VEINS.entries()) {

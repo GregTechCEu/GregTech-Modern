@@ -3,9 +3,11 @@ package com.gregtechceu.gtceu.common.data.fabric;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.worldgen.BiomeWeightModifier;
 import com.gregtechceu.gtceu.api.data.worldgen.modifier.BiomePlacement;
+import com.gregtechceu.gtceu.api.data.worldgen.strata.IStrataLayer;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTPlacements;
+import com.gregtechceu.gtceu.common.worldgen.strata.StrataChunkGenerator;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
@@ -23,6 +25,7 @@ import net.minecraft.world.level.levelgen.feature.configurations.RandomFeatureCo
 import net.minecraft.world.level.levelgen.placement.BiomeFilter;
 import net.minecraft.world.level.levelgen.placement.InSquarePlacement;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
+import net.minecraft.world.level.levelgen.synth.NormalNoise;
 
 import java.util.List;
 
@@ -33,6 +36,10 @@ import java.util.List;
  */
 public class GTFeaturesImpl {
     public static void register() {
+        GTRegistries.register(BuiltinRegistries.NOISE, GTCEu.id("strata"), new NormalNoise.NoiseParameters(-10, 1.0, 0.0, 0.0, 1.0));
+        GTRegistries.register(Registry.RULE, GTCEu.id("strata"), IStrataLayer.StrataNoise.CODEC.codec());
+        GTRegistries.register(Registry.CHUNK_GENERATOR, GTCEu.id("strata"), StrataChunkGenerator.CODEC);
+        
         //ores
         for (var entry : GTRegistries.ORE_VEINS.entries()) {
             ResourceLocation id = entry.getKey();
