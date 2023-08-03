@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.api.gui.fancy.ConfiguratorPanel;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.fancyconfigurator.CircuitFancyConfigurator;
-import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineModifyDrops;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDistinctPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
@@ -149,7 +148,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
             if (isWorkingEnabled()) {
                 if (io == IO.OUT) {
                     inventory.exportToNearby(getFrontFacing());
-                } else if (io == IO.IN){
+                } else if (io == IO.IN) {
                     inventory.importFromNearby(getFrontFacing());
                 }
             }
@@ -168,7 +167,9 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
     //////////////////////////////////////
 
     public void attachConfigurators(ConfiguratorPanel configuratorPanel) {
-        configuratorPanel.attachConfigurators(new CircuitFancyConfigurator(circuitInventory.storage));
+        if (this.io == IO.IN) {
+            configuratorPanel.attachConfigurators(new CircuitFancyConfigurator(circuitInventory.storage));
+        }
     }
 
     @Override
@@ -192,12 +193,6 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
         container.setBackground(GuiTextures.BACKGROUND_INVERSE);
         group.addWidget(container);
 
-        if (this.io == IO.IN) {
-            var configurationPanel = new ConfiguratorPanel();
-            this.attachConfigurators(configurationPanel);
-
-            group.addWidget(configurationPanel);
-        }
         return group;
     }
 }
