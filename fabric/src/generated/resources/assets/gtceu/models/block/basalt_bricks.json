@@ -1,6 +1,0 @@
-{
-  "parent": "minecraft:block/block",
-  "textures": {
-    "all": "gtceu:block/stones/basalt/bricks"
-  }
-}
