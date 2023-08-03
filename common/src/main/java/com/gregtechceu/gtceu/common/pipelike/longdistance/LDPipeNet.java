@@ -6,12 +6,16 @@ import com.gregtechceu.gtceu.common.pipelike.fluidpipe.FluidPipeData;
 import com.lowdragmc.lowdraglib.pipelike.LevelPipeNet;
 import com.lowdragmc.lowdraglib.pipelike.Node;
 import com.lowdragmc.lowdraglib.pipelike.PipeNet;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.*;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.ChunkPos;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -232,7 +236,55 @@ public class LDPipeNet extends PipeNet<LDPipeData> {
         return 0;
     }
 
-//    /**
+    @Override
+    public CompoundTag serializeNBT() {
+        var compoundTag = new CompoundTag();
+
+        compoundTag.putInt("in", activeInputIndex);
+        compoundTag.putInt("out", activeOutputIndex);
+
+        var endpointTags = new ListTag();
+
+        for (var endpoint : endpoints) {
+            var endpointTag = new CompoundTag();
+            var nodePos = endpoint.left();
+            endpointTag.putInt("x", nodePos.getX());
+            endpointTag.putInt("y", nodePos.getY());
+            endpointTag.putInt("z", nodePos.getZ());
+            endpointTag.putString("type", endpoint.right().toString());
+            endpointTags.add(endpointTag);
+        }
+
+        compoundTag.put("EndPoints", endpointTags);
+
+        compoundTag.merge(super.serializeNBT());
+
+        return compoundTag;
+    }
+
+    @Override
+    public void deserializeNBT(CompoundTag nbt) {
+        super.deserializeNBT(nbt);
+
+        this.activeInputIndex = nbt.getInt("in");
+        this.activeOutputIndex = nbt.getInt("out");
+
+        ListTag endpointList = nbt.getList("EndPoints", Tag.TAG_COMPOUND);
+
+        for (int i = 0; i < endpointList.size(); i++) {
+            CompoundTag endpointTag = endpointList.getCompound(i);
+            int x = endpointTag.getInt("x");
+            int y = endpointTag.getInt("y");
+            int z = endpointTag.getInt("z");
+            BlockPos blockPos = new BlockPos(x, y, z);
+            LDPipeProperties.NodeType nodeType = LDPipeProperties.NodeType.valueOf(endpointTag.getString("type"));
+
+            this.addEndpoint(blockPos, nodeType);
+        }
+
+    }
+
+    //    /**
 //     * Stores all pipe data for a world/dimension
 //     */
 //    public static class WorldData extends WorldSavedData {
