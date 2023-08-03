@@ -56,7 +56,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
     public ItemBusPartMachine(IMachineBlockEntity holder, int tier, IO io, Object... args) {
         super(holder, tier, io);
         this.inventory = createInventory(args);
-        this.circuitInventory = createCircuitItemHandler(args);
+        this.circuitInventory = createCircuitItemHandler(io);
     }
 
     //////////////////////////////////////
@@ -77,7 +77,12 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
     }
 
     protected NotifiableItemStackHandler createCircuitItemHandler(Object... args) {
-        return new NotifiableItemStackHandler(this, 1, IO.IN).setFilter(IntCircuitBehaviour::isIntegratedCircuit);
+        if (args.length > 0 && args[0] instanceof  IO io && io == IO.IN) {
+            return new NotifiableItemStackHandler(this, 1, IO.IN).setFilter(IntCircuitBehaviour::isIntegratedCircuit);
+        }
+        else {
+            return new NotifiableItemStackHandler(this, 0, IO.NONE);
+        }
     }
 
     @Override
@@ -167,6 +172,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
     //////////////////////////////////////
 
     public void attachConfigurators(ConfiguratorPanel configuratorPanel) {
+        super.attachConfigurators(configuratorPanel);
         if (this.io == IO.IN) {
             configuratorPanel.attachConfigurators(new CircuitFancyConfigurator(circuitInventory.storage));
         }
