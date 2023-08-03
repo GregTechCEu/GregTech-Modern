@@ -8,17 +8,31 @@ import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.widget.CycleButtonWidget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
+
+/**
+ * A widget for selecting a value from an enum or a subset of its values.
+ */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class EnumSelectorWidget<T extends Enum<T> & EnumSelectorWidget.SelectableEnum> extends WidgetGroup {
+    public interface SelectableEnum {
+        String getTooltip();
+
+        IGuiTexture getIcon();
+    }
+
+
     private final CycleButtonWidget buttonWidget;
 
     private final List<T> values;
@@ -26,28 +40,69 @@ public class EnumSelectorWidget<T extends Enum<T> & EnumSelectorWidget.Selectabl
 
     private int selected = 0;
 
+
+    private BiFunction<T, IGuiTexture, IGuiTexture> textureSupplier = (value, texture) ->
+            new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, texture);
+
+    private BiFunction<T, String, List<Component>> tooltipSupplier = (value, key) ->
+            List.copyOf(LangHandler.getSingleOrMultiLang(key));
+
+
     public EnumSelectorWidget(int xPosition, int yPosition, int width, int height, T[] values, T initialValue, Consumer<T> onChanged) {
         this(xPosition, yPosition, width, height, Arrays.asList(values), initialValue, onChanged);
     }
 
     public EnumSelectorWidget(int xPosition, int yPosition, int width, int height, List<T> values, T initialValue, Consumer<T> onChanged) {
+        super(xPosition, yPosition, width, height);
+
         this.values = values;
         this.onChanged = onChanged;
 
-        this.buttonWidget = new CycleButtonWidget(xPosition, yPosition, width, height, values.size(), this::getTexture, this::onSelected);
+        this.buttonWidget = new CycleButtonWidget(0, 0, width, height, values.size(), this::getTexture, this::onSelected);
         this.addWidget(buttonWidget);
 
         setSelected(initialValue);
     }
 
+    @Override
+    public void writeInitialData(FriendlyByteBuf buffer) {
+        super.writeInitialData(buffer);
+        buffer.writeInt(selected);
+    }
+
+    @Override
+    public void readInitialData(FriendlyByteBuf buffer) {
+        super.readInitialData(buffer);
+        onSelected(buffer.readInt());
+    }
+
+    public T getCurrentValue() {
+        return values.get(selected);
+    }
+
     private IGuiTexture getTexture(int selected) {
-        return new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, values.get(selected).getIcon());
+        var selectedValue = values.get(selected);
+        return textureSupplier.apply(selectedValue, selectedValue.getIcon());
     }
 
     private void onSelected(int selected) {
-        setSelected(values.get(selected));
+        T selectedValue = values.get(selected);
+        setSelected(selectedValue);
+    }
 
-        onChanged.accept(values.get(selected));
+    public EnumSelectorWidget<T> setTextureSupplier(BiFunction<T, IGuiTexture, IGuiTexture> textureSupplier) {
+        this.textureSupplier = textureSupplier;
+
+        T selectedValue = getCurrentValue();
+        buttonWidget.setBackground(textureSupplier.apply(selectedValue, selectedValue.getIcon()));
+
+        return this;
+    }
+
+    public EnumSelectorWidget<T> setTooltipSupplier(BiFunction<T, String, List<Component>> tooltipSupplier) {
+        this.tooltipSupplier = tooltipSupplier;
+
+        return this;
     }
 
     public void setSelected(@NotNull T value) {
@@ -68,11 +123,7 @@ public class EnumSelectorWidget<T extends Enum<T> & EnumSelectorWidget.Selectabl
         if (!LDLib.isRemote())
             return;
 
-        buttonWidget.setHoverTooltips(List.copyOf(LangHandler.getSingleOrMultiLang(values.get(selected).getTooltip())));
-    }
-
-    public interface SelectableEnum {
-        String getTooltip();
-        IGuiTexture getIcon();
+        T selectedValue = getCurrentValue();
+        buttonWidget.setHoverTooltips(tooltipSupplier.apply(selectedValue, selectedValue.getTooltip()));
     }
 }

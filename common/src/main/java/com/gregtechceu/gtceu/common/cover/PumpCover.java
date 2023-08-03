@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.api.cover.filter.FilterHandlers;
 import com.gregtechceu.gtceu.api.cover.filter.FluidFilter;
 import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
 import com.gregtechceu.gtceu.api.gui.widget.LongInputWidget;
+import com.gregtechceu.gtceu.api.gui.widget.NumberInputWidget;
 import com.gregtechceu.gtceu.api.machine.ConditionalSubscriptionHandler;
 import com.gregtechceu.gtceu.api.syncdata.RequireRerender;
 import com.gregtechceu.gtceu.common.cover.data.BucketMode;
@@ -30,12 +31,15 @@ import lombok.Getter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -47,11 +51,14 @@ import java.util.List;
 @MethodsReturnNonnullByDefault
 public class PumpCover extends CoverBehavior implements IUICover, IControllable {
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(PumpCover.class, CoverBehavior.MANAGED_FIELD_HOLDER);
-    public final int tier;
-    public final long maxFluidTransferRate;
-    @Persisted @Getter
-    protected long transferRate;
 
+    private static final long MILLIBUCKET_SIZE = FluidHelper.getBucket() / 1000;
+
+    public final int tier;
+    public final long maxMilliBucketsPerTick;
+
+    @Persisted @DescSynced @Getter
+    protected long currentMilliBucketsPerTick;
     @Persisted @DescSynced @Getter @RequireRerender
     protected IO io = IO.OUT;
     @Persisted @DescSynced @Getter
@@ -59,18 +66,26 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
 
     @Persisted @Getter
     protected boolean isWorkingEnabled = true;
-    protected long fluidLeftToTransferLastSecond;
+    protected long milliBucketsLeftToTransferLastSecond;
 
     @Persisted @DescSynced
     protected final FilterHandler<FluidStack, FluidFilter> filterHandler;
     protected final ConditionalSubscriptionHandler subscriptionHandler;
+    private NumberInputWidget<Long> transferRateWidget;
+
+    /*
+     * Transfer rate variables are treated as liters/millibuckets per tick.
+     * The actual conversion to the platform's values happens inside tick handling.
+     */
 
     public PumpCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide, int tier) {
         super(definition, coverHolder, attachedSide);
         this.tier = tier;
-        this.maxFluidTransferRate = FluidHelper.getBucket() / 8 * (long) Math.pow(4, tier + 1); // .5b 2b 8b
-        this.transferRate = maxFluidTransferRate;
-        this.fluidLeftToTransferLastSecond = transferRate;
+
+        this.maxMilliBucketsPerTick = 64 * (long) Math.pow(4, tier - 1); // .5b 2b 8b
+
+        this.currentMilliBucketsPerTick = maxMilliBucketsPerTick;
+        this.milliBucketsLeftToTransferLastSecond = currentMilliBucketsPerTick;
 
         subscriptionHandler = new ConditionalSubscriptionHandler(coverHolder, this::update, this::isSubscriptionActive);
         filterHandler = FilterHandlers.fluid(this).onFilterLoaded(f -> configureFilterHandler());
@@ -101,16 +116,6 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
         return getOwnFluidTransfer() != null;
     }
 
-    public void setTransferRate(long transferRate) {
-        if (transferRate <= maxFluidTransferRate) {
-            this.transferRate = transferRate;
-        }
-    }
-
-    public void setBucketMode(BucketMode bucketMode) {
-        this.bucketMode = bucketMode;
-    }
-
     public void setIo(IO io) {
         if (io == IO.IN || io == IO.OUT) {
             this.io = io;
@@ -138,10 +143,6 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
         return list;
     }
 
-    //////////////////////////////////////
-    //*****     Transfer Logic     *****//
-    //////////////////////////////////////
-
     @Override
     public void onNeighborChanged(Block block, BlockPos fromPos, boolean isMoving) {
         subscriptionHandler.updateSubscription();
@@ -155,22 +156,54 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
         }
     }
 
-    private void update() {
-        long timer = coverHolder.getOffsetTimer();
-        if (timer % 5 == 0) {
-            if (fluidLeftToTransferLastSecond > 0) {
-                this.fluidLeftToTransferLastSecond -= doTransferFluids(fluidLeftToTransferLastSecond);
-            }
-            if (timer % 20 == 0) {
-                this.fluidLeftToTransferLastSecond = transferRate;
-            }
-            subscriptionHandler.updateSubscription();
+    //////////////////////////////////////
+    //*****     Transfer Logic     *****//
+    //////////////////////////////////////
+
+
+    public void setTransferRate(long milliBucketsPerTick) {
+        this.currentMilliBucketsPerTick = Mth.clamp(milliBucketsPerTick, 0, maxMilliBucketsPerTick);
+    }
+
+    public void setBucketMode(BucketMode bucketMode) {
+        var oldMultiplier = this.bucketMode.multiplier;
+        var newMultiplier = bucketMode.multiplier;
+
+        this.bucketMode = bucketMode;
+
+
+        if (transferRateWidget == null) return;
+
+        if (oldMultiplier > newMultiplier) {
+            transferRateWidget.setValue(getCurrentBucketModeTransferRate());
+        }
+
+        transferRateWidget.setMax(maxMilliBucketsPerTick / bucketMode.multiplier);
+
+        if (newMultiplier > oldMultiplier) {
+            transferRateWidget.setValue(getCurrentBucketModeTransferRate());
         }
     }
 
-    protected long doTransferFluids(long transferLimit) {
-        var adjustedTransferLimit = transferLimit * bucketMode.multiplier;
+    private void update() {
+        long timer = coverHolder.getOffsetTimer();
+        if (timer % 5 != 0)
+            return;
 
+        if (milliBucketsLeftToTransferLastSecond > 0) {
+
+            long platformTransferredFluid = doTransferFluids(milliBucketsLeftToTransferLastSecond * MILLIBUCKET_SIZE);
+            this.milliBucketsLeftToTransferLastSecond -= platformTransferredFluid / MILLIBUCKET_SIZE;
+        }
+
+        if (timer % 20 == 0) {
+            this.milliBucketsLeftToTransferLastSecond = currentMilliBucketsPerTick * 20;
+        }
+
+        subscriptionHandler.updateSubscription();
+    }
+
+    protected long doTransferFluids(long platformTransferLimit) {
         var adjacentFluidTransfer = getAdjacentFluidTransfer();
         var ownFluidTransfer = getOwnFluidTransfer();
         if (adjacentFluidTransfer == null || ownFluidTransfer == null) {
@@ -178,29 +211,38 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
         }
 
         return switch (io) {
-            case IN -> doTransferFluidsInternal(adjacentFluidTransfer, ownFluidTransfer, adjustedTransferLimit);
-            case OUT -> doTransferFluidsInternal(ownFluidTransfer, adjacentFluidTransfer, adjustedTransferLimit);
+            case IN -> doTransferFluidsInternal(adjacentFluidTransfer, ownFluidTransfer, platformTransferLimit);
+            case OUT -> doTransferFluidsInternal(ownFluidTransfer, adjacentFluidTransfer, platformTransferLimit);
             default -> 0L;
         };
     }
 
-    protected long doTransferFluidsInternal(IFluidTransfer source, IFluidTransfer destination, long transferLimit) {
-        return FluidTransferHelper.transferFluids(source, destination, transferLimit, filterHandler.getFilter());
+    protected long doTransferFluidsInternal(IFluidTransfer source, IFluidTransfer destination, long platformTransferLimit) {
+        return FluidTransferHelper.transferFluids(source, destination, platformTransferLimit, filterHandler.getFilter());
     }
+
 
     //////////////////////////////////////
     //***********     GUI    ***********//
     //////////////////////////////////////
+
     @Override
     public Widget createUIWidget() {
         final var group = new WidgetGroup(0, 0, 176, 135);
         group.addWidget(new LabelWidget(10, 5, LocalizationUtils.format(getUITitle(), GTValues.VN[tier])));
 
-        group.addWidget(new LongInputWidget(10, 20, 156, 20, this::getTransferRate, this::setTransferRate)
-                .setMin(1L).setMax(maxFluidTransferRate));
+        transferRateWidget = new LongInputWidget(10, 20, 131, 20,
+                this::getCurrentBucketModeTransferRate, this::setCurrentBucketModeTransferRate).setMin(0L);
+        setBucketMode(this.bucketMode); // initial input widget config happens here
+        group.addWidget(transferRateWidget);
+
+        group.addWidget(new EnumSelectorWidget<>(
+                146, 20, 20, 20,
+                Arrays.stream(BucketMode.values()).filter(m -> m.multiplier <= maxMilliBucketsPerTick).toList(),
+                bucketMode, this::setBucketMode
+        ).setTooltipSupplier(this::getBucketModeTooltip));
 
         group.addWidget(new EnumSelectorWidget<>(10, 45, 20, 20, List.of(IO.IN, IO.OUT), io, this::setIo));
-        group.addWidget(new EnumSelectorWidget<>(35, 45, 20, 20, BucketMode.values(), bucketMode, this::setBucketMode));
 
         group.addWidget(filterHandler.createFilterSlotUI(148, 107));
         group.addWidget(filterHandler.createFilterConfigUI(10, 70, 156, 60));
@@ -208,6 +250,20 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
         buildAdditionalUI(group);
 
         return group;
+    }
+
+    private List<Component> getBucketModeTooltip(BucketMode mode, String langKey) {
+        return List.of(
+                Component.translatable(langKey).append(Component.translatable("gtceu.gui.content.units.per_tick"))
+        );
+    }
+
+    private long getCurrentBucketModeTransferRate() {
+        return this.currentMilliBucketsPerTick / this.bucketMode.multiplier;
+    }
+
+    private void setCurrentBucketModeTransferRate(long transferRate) {
+        this.setTransferRate(transferRate * this.bucketMode.multiplier);
     }
 
     @NotNull
