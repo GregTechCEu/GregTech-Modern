@@ -61,6 +61,11 @@ public class SizedIngredient extends Ingredient {
     }
 
     @ExpectPlatform
+    public static SizedIngredient create(Ingredient inner) {
+        throw new AssertionError();
+    }
+
+    @ExpectPlatform
     public static SizedIngredient create(TagKey<Item> tag, int amount) {
         throw new AssertionError();
     }
@@ -70,10 +75,13 @@ public class SizedIngredient extends Ingredient {
         throw new AssertionError();
     }
 
-    public static SizedIngredient copy(SizedIngredient ingredient) {
-        var copied = SizedIngredient.create(ingredient.inner, ingredient.amount);
-        copied.tag = ingredient.tag;
-        return copied;
+    public static SizedIngredient copy(Ingredient ingredient) {
+        if (ingredient instanceof SizedIngredient sizedIngredient) {
+            var copied = SizedIngredient.create(sizedIngredient.inner, sizedIngredient.amount);
+            copied.tag = sizedIngredient.tag;
+            return copied;
+        }
+        return SizedIngredient.create(ingredient);
     }
 
     public int getAmount() {
