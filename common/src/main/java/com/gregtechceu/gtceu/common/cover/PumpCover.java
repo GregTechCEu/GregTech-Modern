@@ -68,7 +68,7 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
     public PumpCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide, int tier) {
         super(definition, coverHolder, attachedSide);
         this.tier = tier;
-        this.maxFluidTransferRate = FluidHelper.getBucket() / 8 * (long) Math.pow(4, tier); // .5b 2b 8b
+        this.maxFluidTransferRate = FluidHelper.getBucket() / 8 * (long) Math.pow(4, tier + 1); // .5b 2b 8b
         this.transferRate = maxFluidTransferRate;
         this.fluidLeftToTransferLastSecond = transferRate;
 

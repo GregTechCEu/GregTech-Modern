@@ -45,17 +45,17 @@ public class GTCovers {
 
     public final static CoverDefinition[] CONVEYORS = registerTiered(
             "conveyor", ConveyorCover::new,
-            tier -> ConveyorCoverRenderer.INSTANCE, GTValues.LV, GTValues.MV, GTValues.HV, GTValues.EV, GTValues.IV, GTValues.LuV
+            tier -> ConveyorCoverRenderer.INSTANCE, GTValues.LV, GTValues.MV, GTValues.HV, GTValues.EV, GTValues.IV, GTValues.LuV, GTValues.ZPM, GTValues.UV
     );
 
     public final static CoverDefinition[] ROBOT_ARMS = registerTiered(
             "robot_arm", RobotArmCover::new,
-            tier -> RobotArmCoverRenderer.INSTANCE, GTValues.LV, GTValues.MV, GTValues.HV, GTValues.EV, GTValues.IV, GTValues.LuV
+            tier -> RobotArmCoverRenderer.INSTANCE, GTValues.LV, GTValues.MV, GTValues.HV, GTValues.EV, GTValues.IV, GTValues.LuV, GTValues.ZPM, GTValues.UV
     );
 
     public final static CoverDefinition[] PUMPS = registerTiered(
             "pump", PumpCover::new,
-            tier -> PumpCoverRenderer.INSTANCE, GTValues.LV, GTValues.MV, GTValues.HV, GTValues.EV, GTValues.IV, GTValues.LuV
+            tier -> PumpCoverRenderer.INSTANCE, GTValues.LV, GTValues.MV, GTValues.HV, GTValues.EV, GTValues.IV, GTValues.LuV, GTValues.ZPM, GTValues.UV
     );
 
     public final static CoverDefinition COMPUTER_MONITOR = register(
