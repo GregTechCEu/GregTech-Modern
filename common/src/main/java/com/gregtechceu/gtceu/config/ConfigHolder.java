@@ -146,6 +146,15 @@ public class ConfigHolder {
         public int oreVeinScanRadius = 3;
 
         @Configurable
+        @Configurable.Range(min = 0, max = 8)
+        @Configurable.Comment({"Maximum worldgen feature size in chunks",
+                "if a vein is larger than this, Minecraft complains in logs.",
+                "If that happens, either increase this or make your veins smaller.",
+                "NOTE: Larger veins can cause noticeable worldgen lag!",
+                "Default: 2"})
+        public int maxFeatureChunkSize = 2;
+
+        @Configurable
         @Configurable.Comment({"Debug ore vein placement? (will print placed veins to server's debug.log)", "Default: false (no placement printout in debug.log)"})
         public boolean debugWorldgen;
     }

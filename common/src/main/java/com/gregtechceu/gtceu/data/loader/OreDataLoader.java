@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreFeatureEntry;
+import com.gregtechceu.gtceu.api.data.worldgen.generator.NoopVeinGenerator;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTFeatures;
 import com.mojang.datafixers.util.Pair;
@@ -45,7 +46,7 @@ public class OreDataLoader extends SimpleJsonResourceReloadListener {
                 GTOreFeatureEntry ore = fromJson(location, GsonHelper.convertToJsonObject(entry.getValue(), "top element"), ops);
                 if (ore == null) {
                     LOGGER.info("Skipping loading ore vein {} as it's serializer returned null", location);
-                } else if (ore.getVeinGenerator() instanceof GTOreFeatureEntry.NoopVeinGenerator) {
+                } else if (ore.getVeinGenerator() instanceof NoopVeinGenerator) {
                     LOGGER.info("Removing ore vein {} as it's generator was marked as no-operation", location);
                     GTRegistries.ORE_VEINS.remove(location);
                 } else if (GTRegistries.ORE_VEINS.containKey(location)) {

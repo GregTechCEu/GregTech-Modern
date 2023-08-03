@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.api.data.worldgen;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.IGTAddon;
-import com.gregtechceu.gtceu.api.data.worldgen.generator.WorldGeneratorUtils;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.tags.BlockTags;
