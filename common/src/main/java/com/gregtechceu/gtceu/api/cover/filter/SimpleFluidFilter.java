@@ -35,6 +35,11 @@ public class SimpleFluidFilter implements FluidFilter {
     @Setter
     protected Consumer<FluidFilter> onUpdated;
 
+    @Getter
+    protected long maxStackSize = 1L;
+
+    private FluidStorage[] fluidStorageSlots;
+
     protected SimpleFluidFilter() {
         Arrays.fill(matches, FluidStack.empty());
     }
@@ -80,17 +85,21 @@ public class SimpleFluidFilter implements FluidFilter {
 
     public WidgetGroup openConfigurator(int x, int y) {
         WidgetGroup group = new WidgetGroup(x, y, 18 * 3 + 25, 18 * 3); // 80 55
+        fluidStorageSlots = new FluidStorage[9];
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
                 final int index = i * 3 + j;
-                var handler = new FluidStorage(1000);
-                handler.setFluid(matches[index]);
-                var tank = new PhantomFluidWidget(handler, i * 18, j * 18);
-                tank.setShowAmount(false);
+
+                fluidStorageSlots[index] = new FluidStorage(maxStackSize);
+                fluidStorageSlots[index].setFluid(matches[index]);
+
+                var tank = new PhantomFluidWidget(fluidStorageSlots[index], i * 18, j * 18);
+                tank.setShowAmount(maxStackSize > 1L);
                 tank.setChangeListener(() -> {
-                    matches[index] = handler.getFluidInTank(0);
+                    matches[index] = fluidStorageSlots[index].getFluidInTank(0);
                     onUpdated.accept(this);
                 }).setBackground(GuiTextures.SLOT);
+
                 group.addWidget(tank);
             }
         }
@@ -103,17 +112,43 @@ public class SimpleFluidFilter implements FluidFilter {
 
     @Override
     public boolean test(FluidStack other) {
-        boolean found = false;
-        for (var match : matches) {
-            if (ignoreNbt) {
-                found = match.getFluid() == other.getFluid();
-            } else {
-                found = match.isFluidEqual(other);
-            }
-            if (found) {
-                break;
+        return testFluidAmount(other) > 0L;
+    }
+
+    @Override
+    public long testFluidAmount(FluidStack fluidStack) {
+        long totalFluidAmount = getTotalConfiguredFluidAmount(fluidStack);
+
+        if (isBlackList) {
+            return (totalFluidAmount > 0L) ? 0L : Long.MAX_VALUE;
+        }
+
+        return totalFluidAmount;
+    }
+
+    public long getTotalConfiguredFluidAmount(FluidStack fluidStack) {
+        long totalAmount = 0L;
+
+        for (var candidate : matches) {
+            if (ignoreNbt && candidate.getFluid() == fluidStack.getFluid()) {
+                totalAmount += candidate.getAmount();
+            } else if (candidate.isFluidEqual(fluidStack)) {
+                totalAmount += candidate.getAmount();
             }
         }
-        return isBlackList != found;
+
+        return totalAmount;
+    }
+
+    public void setMaxStackSize(long maxStackSize) {
+        this.maxStackSize = maxStackSize;
+
+        for (FluidStorage slot : fluidStorageSlots) {
+            slot.setCapacity(maxStackSize);
+        }
+
+        for (FluidStack match : matches) {
+            match.setAmount(Math.min(match.getAmount(), maxStackSize));
+        }
     }
 }

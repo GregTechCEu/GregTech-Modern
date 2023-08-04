@@ -58,6 +58,11 @@ public class GTCovers {
             tier -> PumpCoverRenderer.INSTANCE, GTValues.LV, GTValues.MV, GTValues.HV, GTValues.EV, GTValues.IV, GTValues.LuV, GTValues.ZPM, GTValues.UV
     );
 
+    public final static CoverDefinition[] FLUID_REGULATORS = registerTiered(
+            "fluid_regulator", FluidRegulatorCover::new,
+            tier -> FluidRegulatorCoverRenderer.INSTANCE, GTValues.LV, GTValues.MV, GTValues.HV, GTValues.EV, GTValues.IV, GTValues.LuV, GTValues.ZPM, GTValues.UV
+    );
+
     public final static CoverDefinition COMPUTER_MONITOR = register(
             "computer_monitor", ComputerMonitorCover::new,
             new SimpleCoverRenderer(GTCEu.id("block/cover/overlay_display"))

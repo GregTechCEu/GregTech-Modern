@@ -51,4 +51,9 @@ public class TagFluidFilter extends TagFilter<FluidStack, FluidFilter> implement
         cache.put(fluidStack.getFluid(), false);
         return false;
     }
+
+    @Override
+    public long testFluidAmount(FluidStack fluidStack) {
+        return test(fluidStack) ? Long.MAX_VALUE : 0;
+    }
 }

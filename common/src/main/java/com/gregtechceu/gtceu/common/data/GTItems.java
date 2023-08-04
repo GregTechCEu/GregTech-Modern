@@ -610,7 +610,8 @@ public class GTItems {
 
     public static ItemEntry<ComponentItem> ELECTRIC_PUMP_LV = REGISTRATE.item("lv_electric_pump", ComponentItem::create)
             .lang("LV Electric Pump")
-            .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[0]), new TooltipBehavior(lines -> {
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[0])))
+            .onRegister(attach(new TooltipBehavior(lines -> {
                 lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
                 lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 / 20));
             })))
@@ -619,7 +620,8 @@ public class GTItems {
 
     public static ItemEntry<ComponentItem> ELECTRIC_PUMP_MV = REGISTRATE.item("mv_electric_pump", ComponentItem::create)
             .lang("MV Electric Pump")
-            .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[1]), new TooltipBehavior(lines -> {
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[1])))
+            .onRegister(attach(new TooltipBehavior(lines -> {
                 lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
                 lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 4 / 20));
             })))
@@ -627,7 +629,8 @@ public class GTItems {
             .register();
     public static ItemEntry<ComponentItem> ELECTRIC_PUMP_HV = REGISTRATE.item("hv_electric_pump", ComponentItem::create)
             .lang("HV Electric Pump")
-            .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[2]), new TooltipBehavior(lines -> {
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[2])))
+            .onRegister(attach(new TooltipBehavior(lines -> {
                 lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
                 lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 16 / 20));
             })))
@@ -635,7 +638,8 @@ public class GTItems {
             .register();
     public static ItemEntry<ComponentItem> ELECTRIC_PUMP_EV = REGISTRATE.item("ev_electric_pump", ComponentItem::create)
             .lang("EV Electric Pump")
-            .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[3]), new TooltipBehavior(lines -> {
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[3])))
+            .onRegister(attach(new TooltipBehavior(lines -> {
                 lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
                 lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 / 20));
             })))
@@ -643,7 +647,8 @@ public class GTItems {
             .register();
     public static ItemEntry<ComponentItem> ELECTRIC_PUMP_IV = REGISTRATE.item("iv_electric_pump", ComponentItem::create)
             .lang("IV Electric Pump")
-            .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[4]), new TooltipBehavior(lines -> {
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[4])))
+            .onRegister(attach(new TooltipBehavior(lines -> {
                 lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
                 lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 4 / 20));
             })))
@@ -651,7 +656,8 @@ public class GTItems {
             .register();
     public static ItemEntry<ComponentItem> ELECTRIC_PUMP_LuV = REGISTRATE.item("luv_electric_pump", ComponentItem::create)
             .lang("LuV Electric Pump")
-            .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[5]), new TooltipBehavior(lines -> {
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[5])))
+            .onRegister(attach(new TooltipBehavior(lines -> {
                 lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
                 lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 16 / 20));
             })))
@@ -659,7 +665,8 @@ public class GTItems {
             .register();
     public static ItemEntry<ComponentItem> ELECTRIC_PUMP_ZPM = REGISTRATE.item("zpm_electric_pump", ComponentItem::create)
             .lang("ZPM Electric Pump")
-            .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[6]), new TooltipBehavior(lines -> {
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[6])))
+            .onRegister(attach(new TooltipBehavior(lines -> {
                 lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
                 lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 64 / 20));
             })))
@@ -667,7 +674,8 @@ public class GTItems {
             .register();
     public static ItemEntry<ComponentItem> ELECTRIC_PUMP_UV = REGISTRATE.item("uv_electric_pump", ComponentItem::create)
             .lang("UV Electric Pump")
-            .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[7]), new TooltipBehavior(lines -> {
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[7])))
+            .onRegister(attach(new TooltipBehavior(lines -> {
                 lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
                 lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 64 * 4 / 20));
             })))
@@ -677,6 +685,7 @@ public class GTItems {
 
     public static ItemEntry<ComponentItem> FLUID_REGULATOR_LV = REGISTRATE.item("lv_fluid_regulator", ComponentItem::create)
             .lang("LV Fluid Regulator")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_REGULATORS[0])))
             .onRegister(attach(new TooltipBehavior(lines -> {
                 lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
                 lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 / 20));
@@ -684,6 +693,7 @@ public class GTItems {
             .register();
     public static ItemEntry<ComponentItem> FLUID_REGULATOR_MV = REGISTRATE.item("mv_fluid_regulator", ComponentItem::create)
             .lang("MV Fluid Regulator")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_REGULATORS[1])))
             .onRegister(attach(new TooltipBehavior(lines -> {
                 lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
                 lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 4 / 20));
@@ -691,6 +701,7 @@ public class GTItems {
             .register();
     public static ItemEntry<ComponentItem> FLUID_REGULATOR_HV = REGISTRATE.item("hv_fluid_regulator", ComponentItem::create)
             .lang("HV Fluid Regulator")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_REGULATORS[2])))
             .onRegister(attach(new TooltipBehavior(lines -> {
                 lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
                 lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 16 / 20));
@@ -698,6 +709,7 @@ public class GTItems {
             .register();
     public static ItemEntry<ComponentItem> FLUID_REGULATOR_EV = REGISTRATE.item("ev_fluid_regulator", ComponentItem::create)
             .lang("EV Fluid Regulator")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_REGULATORS[3])))
             .onRegister(attach(new TooltipBehavior(lines -> {
                 lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
                 lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 / 20));
@@ -705,6 +717,7 @@ public class GTItems {
             .register();
     public static ItemEntry<ComponentItem> FLUID_REGULATOR_IV = REGISTRATE.item("iv_fluid_regulator", ComponentItem::create)
             .lang("IV Fluid Regulator")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_REGULATORS[4])))
             .onRegister(attach(new TooltipBehavior(lines -> {
                 lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
                 lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 4 / 20));
@@ -712,6 +725,7 @@ public class GTItems {
             .register();
     public static ItemEntry<ComponentItem> FLUID_REGULATOR_LUV = REGISTRATE.item("luv_fluid_regulator", ComponentItem::create)
             .lang("LuV Fluid Regulator")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_REGULATORS[5])))
             .onRegister(attach(new TooltipBehavior(lines -> {
                 lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
                 lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 16 / 20));
@@ -719,6 +733,7 @@ public class GTItems {
             .register();
     public static ItemEntry<ComponentItem> FLUID_REGULATOR_ZPM = REGISTRATE.item("zpm_fluid_regulator", ComponentItem::create)
             .lang("ZPM Fluid Regulator")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_REGULATORS[6])))
             .onRegister(attach(new TooltipBehavior(lines -> {
                 lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
                 lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 64 / 20));
@@ -726,6 +741,7 @@ public class GTItems {
             .register();
     public static ItemEntry<ComponentItem> FLUID_REGULATOR_UV = REGISTRATE.item("uv_fluid_regulator", ComponentItem::create)
             .lang("UV Fluid Regulator")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_REGULATORS[7])))
             .onRegister(attach(new TooltipBehavior(lines -> {
                 lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
                 lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 64 * 4 / 20));
