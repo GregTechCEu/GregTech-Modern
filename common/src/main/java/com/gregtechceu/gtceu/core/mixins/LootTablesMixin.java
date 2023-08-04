@@ -54,7 +54,7 @@ public abstract class LootTablesMixin {
                     Block block = blockEntry.get();
 
                     if ((prefix != TagPrefix.oreNetherrack && prefix != TagPrefix.oreEndstone) && !ConfigHolder.INSTANCE.worldgen.allUniqueStoneTypes) {
-                        TagPrefix orePrefix = TagPrefix.ORES.get(prefix).isNether() ? TagPrefix.ORES.get(prefix).stoneType().get().is(CustomTags.ENDSTONE_ORE_REPLACEABLES) ? TagPrefix.oreEndstone : TagPrefix.oreNetherrack : TagPrefix.ore;
+                        TagPrefix orePrefix = TagPrefix.ORES.get(prefix).isNether() ? TagPrefix.ORES.get(prefix).stoneType().get().get().is(CustomTags.ENDSTONE_ORE_REPLACEABLES) ? TagPrefix.oreEndstone : TagPrefix.oreNetherrack : TagPrefix.ore;
                         block = ChemicalHelper.getBlock(orePrefix, material);
                     }
 

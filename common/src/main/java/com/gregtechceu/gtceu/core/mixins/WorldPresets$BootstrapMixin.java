@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.core.mixins;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.common.block.StoneType;
+import com.gregtechceu.gtceu.common.block.StoneTypes;
 import com.gregtechceu.gtceu.common.worldgen.strata.StrataChunkGenerator;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
@@ -45,7 +45,7 @@ public abstract class WorldPresets$BootstrapMixin {
             locals = LocalCapture.CAPTURE_FAILHARD)
     public void gtceu$addStrataPreset(CallbackInfoReturnable<Holder<WorldPreset>> cir, MultiNoiseBiomeSource multiNoiseBiomeSource, Holder<NoiseGeneratorSettings> holder) {
         this.registerCustomOverworldPreset(ResourceKey.create(Registry.WORLD_PRESET_REGISTRY, GTCEu.id("strata")),
-                this.makeOverworld(new StrataChunkGenerator(List.of(StoneType.RED_GRANITE, StoneType.MARBLE, StoneType.ANDESITE, StoneType.BASALT, StoneType.DEEPSLATE),
+                this.makeOverworld(new StrataChunkGenerator(List.of(StoneTypes.RED_GRANITE, StoneTypes.MARBLE, StoneTypes.ANDESITE, StoneTypes.BASALT, StoneTypes.DEEPSLATE),
                         new NoiseBasedChunkGenerator(structureSets, noises, multiNoiseBiomeSource, holder))
                 ));
     }

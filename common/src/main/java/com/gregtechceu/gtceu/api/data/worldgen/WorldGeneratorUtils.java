@@ -9,13 +9,17 @@ import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.WorldGenRegion;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.DensityFunction;
+import net.minecraft.world.level.levelgen.blending.Blender;
 import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;
 import net.minecraft.world.level.levelgen.structure.templatesystem.TagMatchTest;
 
+import javax.annotation.Nullable;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.function.Function;
@@ -65,5 +69,35 @@ public class WorldGeneratorUtils {
         WorldOreVeinCache worldOreVeinCache = new WorldOreVeinCache(level);
         oreVeinCache.put(level, worldOreVeinCache);
         return worldOreVeinCache.getEntry(biome);
+    }
+
+    public static DensityFunction.FunctionContext createFunctionContext(@Nullable WorldGenLevel level, int blockX, int blockY, int blockZ) {
+        final Blender blender;
+        if (level instanceof WorldGenRegion region) {
+            blender = Blender.of(region);
+        } else {
+            blender = Blender.empty();
+        }
+        return new DensityFunction.FunctionContext()  {
+            @Override
+            public int blockX() {
+                return blockX;
+            }
+
+            @Override
+            public int blockY() {
+                return blockY;
+            }
+
+            @Override
+            public int blockZ() {
+                return blockZ;
+            }
+
+            @Override
+            public Blender getBlender() {
+                return blender;
+            }
+        };
     }
 }

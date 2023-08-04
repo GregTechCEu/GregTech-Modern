@@ -165,10 +165,10 @@ public class GTBlocks {
                     final TagPrefix.OreType oreType = ore.getValue();
                     var entry = REGISTRATE.block("%s%s_ore".formatted(oreTag != TagPrefix.ore ? FormattingUtil.toLowerCaseUnder(oreTag.name) + "_" : "", material.getName()),
                                     oreType.material(),
-                                    properties -> new MaterialBlock(properties, oreTag, material, Platform.isClient() ? new OreBlockRenderer(oreType.stoneType(),
+                                    properties -> new MaterialBlock(properties, oreTag, material, Platform.isClient() ? new OreBlockRenderer(oreType.stoneType().get(),
                                             () -> Objects.requireNonNull(oreTag.materialIconType()).getBlockTexturePath(material.getMaterialIconSet(), true),
                                             oreProperty.isEmissive()) : null))
-                            .initialProperties(() -> oreType.stoneType().get().getBlock())
+                            .initialProperties(() -> oreType.stoneType().get().get().getBlock())
                             .properties(properties -> {
                                 properties.noLootTable();
                                 if (oreType.color() != null) properties.color(oreType.color());
@@ -721,7 +721,7 @@ public class GTBlocks {
             .build()
             .register();
 
-    public static Table<StoneBlockType, StoneType, BlockEntry<Block>> STONE_BLOCKS;
+    public static Table<StoneBlockType, StoneTypes, BlockEntry<Block>> STONE_BLOCKS;
 
     public static BlockEntry<Block> RED_GRANITE;
     public static BlockEntry<Block> MARBLE;
@@ -730,16 +730,17 @@ public class GTBlocks {
 
     public static void generateStoneBlocks() {
         // Stone type blocks
-        ImmutableTable.Builder<StoneBlockType, StoneType, BlockEntry<Block>> builder = ImmutableTable.builder();
-        for (StoneType strata : StoneType.values()) {
+        ImmutableTable.Builder<StoneBlockType, StoneTypes, BlockEntry<Block>> builder = ImmutableTable.builder();
+        for (StoneTypes strata : StoneTypes.values()) {
             if (!strata.generateBlocks) continue;
             for (StoneBlockType type : StoneBlockType.values()) {
                 String blockId = type.blockId.formatted(strata.getSerializedName());
                 if (Registry.BLOCK.containsKey(new ResourceLocation(blockId))) continue;
                 var entry = REGISTRATE.block(blockId, Block::new)
                         .initialProperties(() -> Blocks.STONE)
-                        .properties(p -> p.strength(type.hardness, type.resistance))
+                        .properties(p -> p.strength(type.hardness, type.resistance).color(strata.mapColor))
                         .transform(type == StoneBlockType.STONE ? GTBlocks.unificationBlock(strata.getTagPrefix(), strata.getMaterial()) : builder2 -> builder2)
+                        .tag(BlockTags.MINEABLE_WITH_PICKAXE, CustomTags.NEEDS_WOOD_TOOL)
                         .loot((tables, block) -> {
                             if (type == StoneBlockType.STONE) {
                                 tables.add(block, RegistrateBlockLootTables.createSingleItemTableWithSilkTouch(block, STONE_BLOCKS.get(StoneBlockType.COBBLE, strata).get()));
@@ -747,19 +748,21 @@ public class GTBlocks {
                                 tables.add(block, RegistrateBlockLootTables.createSingleItemTable(block));
                             }
                         })
-                        .blockstate((ctx, prov) -> prov.simpleBlock(ctx.getEntry(), prov.models().singleTexture(blockId, prov.mcLoc(BLOCK_FOLDER + "/block"), "all", GTCEu.id(BLOCK_FOLDER + "/stones/" + strata.getSerializedName() + "/" + type.id))))
+                        .blockstate((ctx, prov) -> prov.simpleBlock(ctx.getEntry(), prov.models().singleTexture(blockId, prov.mcLoc(BLOCK_FOLDER + "/cube_all"), "all", GTCEu.id(BLOCK_FOLDER + "/stones/" + strata.getSerializedName() + "/" + type.id))))
                         .item()
-                        .build()
-                        .register();
-                builder.put(type, strata, entry);
+                        .build();
+                if (type == StoneBlockType.STONE) {
+                    entry.tag(BlockTags.STONE_ORE_REPLACEABLES, BlockTags.BASE_STONE_OVERWORLD, BlockTags.BASE_STONE_NETHER);
+                }
+                builder.put(type, strata, entry.register());
             }
         }
         STONE_BLOCKS = builder.build();
 
-        RED_GRANITE = STONE_BLOCKS.get(StoneBlockType.STONE, StoneType.RED_GRANITE);
-        MARBLE = STONE_BLOCKS.get(StoneBlockType.STONE, StoneType.MARBLE);
-        LIGHT_CONCRETE = STONE_BLOCKS.get(StoneBlockType.STONE, StoneType.CONCRETE_LIGHT);
-        DARK_CONCRETE = STONE_BLOCKS.get(StoneBlockType.STONE, StoneType.CONCRETE_DARK);
+        RED_GRANITE = STONE_BLOCKS.get(StoneBlockType.STONE, StoneTypes.RED_GRANITE);
+        MARBLE = STONE_BLOCKS.get(StoneBlockType.STONE, StoneTypes.MARBLE);
+        LIGHT_CONCRETE = STONE_BLOCKS.get(StoneBlockType.STONE, StoneTypes.CONCRETE_LIGHT);
+        DARK_CONCRETE = STONE_BLOCKS.get(StoneBlockType.STONE, StoneTypes.CONCRETE_DARK);
     }
 
     public static <P, T extends Block, S2 extends BlockBuilder<T, P>> NonNullFunction<S2, S2> unificationBlock(@Nonnull TagPrefix tagPrefix, @Nonnull Material mat) {
@@ -778,10 +781,10 @@ public class GTBlocks {
     }
 
     public static void init() {
+        generateStoneBlocks();
         generateMaterialBlocks();
         generateCableBlocks();
         generatePipeBlocks();
-        generateStoneBlocks();
     }
 
     public static boolean doMetalPipe(Material material) {

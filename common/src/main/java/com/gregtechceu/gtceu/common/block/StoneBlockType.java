@@ -26,10 +26,6 @@ public enum StoneBlockType {
         this(id, blockId, 1.5f, 6.0f); // vanilla stone stats
     }
 
-    StoneBlockType(@Nonnull String id, float hardness, float resistance) {
-        this(id, id, hardness, resistance);
-    }
-
     StoneBlockType(@Nonnull String id, @Nonnull String blockId, float hardness, float resistance) {
         this.id = id;
         this.blockId = blockId;

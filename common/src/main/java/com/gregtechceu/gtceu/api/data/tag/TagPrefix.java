@@ -77,7 +77,7 @@ public class TagPrefix {
             .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
             .unificationEnabled(true)
             .generationCondition(hasOreProperty)
-            .registerOre(Blocks.STONE::defaultBlockState);
+            .registerOre(() -> Blocks.STONE::defaultBlockState);
 
     public static final TagPrefix oreGranite = oreTagPrefix("granite")
             .langValue("Granite %s Ore")
@@ -85,7 +85,7 @@ public class TagPrefix {
             .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
             .unificationEnabled(true)
             .generationCondition(hasOreProperty)
-            .registerOre(Blocks.GRANITE::defaultBlockState, MaterialColor.DIRT);
+            .registerOre(() -> Blocks.GRANITE::defaultBlockState, MaterialColor.DIRT);
 
     public static final TagPrefix oreDiorite = oreTagPrefix("diorite")
             .langValue("Diorite %s Ore")
@@ -93,7 +93,7 @@ public class TagPrefix {
             .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
             .unificationEnabled(true)
             .generationCondition(hasOreProperty)
-            .registerOre(Blocks.DIORITE::defaultBlockState, MaterialColor.QUARTZ);
+            .registerOre(() -> Blocks.DIORITE::defaultBlockState, MaterialColor.QUARTZ);
 
     public static final TagPrefix oreAndesite = oreTagPrefix("andesite")
             .langValue("Andesite %s Ore")
@@ -101,7 +101,23 @@ public class TagPrefix {
             .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
             .unificationEnabled(true)
             .generationCondition(hasOreProperty)
-            .registerOre(Blocks.ANDESITE::defaultBlockState);
+            .registerOre(() -> Blocks.ANDESITE::defaultBlockState);
+
+    public static final TagPrefix oreRedGranite = oreTagPrefix("redGranite")
+            .langValue("Red Granite %s Ore")
+            .materialIconType(MaterialIconType.ore)
+            .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
+            .unificationEnabled(true)
+            .generationCondition(hasOreProperty)
+            .registerOre(() -> GTBlocks.RED_GRANITE::getDefaultState, false, MaterialColor.COLOR_RED);
+
+    public static final TagPrefix oreMarble = oreTagPrefix("marble")
+            .langValue("Marble %s Ore")
+            .materialIconType(MaterialIconType.ore)
+            .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
+            .unificationEnabled(true)
+            .generationCondition(hasOreProperty)
+            .registerOre(() -> GTBlocks.MARBLE::getDefaultState, false, MaterialColor.QUARTZ);
 
     public static final TagPrefix oreDeepslate = oreTagPrefix("deepslate")
             .langValue("Deepslate %s Ore")
@@ -109,7 +125,7 @@ public class TagPrefix {
             .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
             .unificationEnabled(true)
             .generationCondition(hasOreProperty)
-            .registerOre(Blocks.DEEPSLATE::defaultBlockState, MaterialColor.DEEPSLATE);
+            .registerOre(() -> Blocks.DEEPSLATE::defaultBlockState, MaterialColor.DEEPSLATE);
 
     public static final TagPrefix oreTuff = oreTagPrefix("tuff")
             .langValue("Tuff %s Ore")
@@ -117,7 +133,7 @@ public class TagPrefix {
             .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
             .unificationEnabled(true)
             .generationCondition(hasOreProperty)
-            .registerOre(Blocks.TUFF::defaultBlockState, MaterialColor.DEEPSLATE);
+            .registerOre(() -> Blocks.TUFF::defaultBlockState, MaterialColor.DEEPSLATE);
 
     public static final TagPrefix oreSand = oreTagPrefix("sand")
             .langValue("Sand %s Ore")
@@ -125,7 +141,7 @@ public class TagPrefix {
             .miningToolTag(BlockTags.MINEABLE_WITH_SHOVEL)
             .unificationEnabled(true)
             .generationCondition(hasOreProperty)
-            .registerOre(Blocks.SAND::defaultBlockState, false, net.minecraft.world.level.material.Material.SAND, MaterialColor.SAND, SoundType.SAND);
+            .registerOre(() -> Blocks.SAND::defaultBlockState, false, net.minecraft.world.level.material.Material.SAND, MaterialColor.SAND, SoundType.SAND);
 
     public static final TagPrefix oreRedSand = oreTagPrefix("redSand")
             .langValue("Red Sand %s Ore")
@@ -133,7 +149,7 @@ public class TagPrefix {
             .miningToolTag(BlockTags.MINEABLE_WITH_SHOVEL)
             .unificationEnabled(true)
             .generationCondition(hasOreProperty)
-            .registerOre(Blocks.RED_SAND::defaultBlockState, false, net.minecraft.world.level.material.Material.SAND, MaterialColor.COLOR_ORANGE, SoundType.SAND);
+            .registerOre(() -> Blocks.RED_SAND::defaultBlockState, false, net.minecraft.world.level.material.Material.SAND, MaterialColor.COLOR_ORANGE, SoundType.SAND);
 
     public static final TagPrefix oreGravel = oreTagPrefix("gravel")
             .langValue("Gravel %s Ore")
@@ -141,7 +157,7 @@ public class TagPrefix {
             .miningToolTag(BlockTags.MINEABLE_WITH_SHOVEL)
             .unificationEnabled(true)
             .generationCondition(hasOreProperty)
-            .registerOre(Blocks.GRAVEL::defaultBlockState, false, net.minecraft.world.level.material.Material.SAND, MaterialColor.STONE, SoundType.GRAVEL);
+            .registerOre(() -> Blocks.GRAVEL::defaultBlockState, false, net.minecraft.world.level.material.Material.SAND, MaterialColor.STONE, SoundType.GRAVEL);
 
     public static final TagPrefix oreBasalt = oreTagPrefix("basalt")
             .langValue("Basalt %s Ore")
@@ -149,7 +165,7 @@ public class TagPrefix {
             .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
             .unificationEnabled(true)
             .generationCondition(hasOreProperty)
-            .registerOre(Blocks.BASALT::defaultBlockState, true, MaterialColor.COLOR_BLACK);
+            .registerOre(() -> Blocks.BASALT::defaultBlockState, true, MaterialColor.COLOR_BLACK);
 
     public static final TagPrefix oreNetherrack = oreTagPrefix("netherrack")
             .langValue("Nether %s Ore")
@@ -157,7 +173,7 @@ public class TagPrefix {
             .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
             .unificationEnabled(true)
             .generationCondition(hasOreProperty)
-            .registerOre(Blocks.NETHERRACK::defaultBlockState, true, MaterialColor.NETHER);
+            .registerOre(() -> Blocks.NETHERRACK::defaultBlockState, true, MaterialColor.NETHER);
 
     public static final TagPrefix oreEndstone = oreTagPrefix("endstone")
             .langValue("End %s Ore")
@@ -165,7 +181,7 @@ public class TagPrefix {
             .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
             .unificationEnabled(true)
             .generationCondition(hasOreProperty)
-            .registerOre(Blocks.END_STONE::defaultBlockState, true, MaterialColor.SAND);
+            .registerOre(() -> Blocks.END_STONE::defaultBlockState, true, MaterialColor.SAND);
 
     public static final TagPrefix rawOre = new TagPrefix("raw", true)
             .defaultTagPath(FORGE, "raw_materials/%s")
@@ -754,7 +770,7 @@ public class TagPrefix {
         }
     }
 
-    public record OreType(Supplier<BlockState> stoneType, boolean isNether, net.minecraft.world.level.material.Material material, MaterialColor color, SoundType sound) {}
+    public record OreType(Supplier<Supplier<BlockState>> stoneType, boolean isNether, net.minecraft.world.level.material.Material material, MaterialColor color, SoundType sound) {}
 
     @Getter
     public final String name;
@@ -831,31 +847,31 @@ public class TagPrefix {
         secondaryMaterials.add(secondaryMaterial);
     }
 
-    protected TagPrefix registerOre(Supplier<BlockState> stoneType) {
+    protected TagPrefix registerOre(Supplier<Supplier<BlockState>> stoneType) {
         return registerOre(stoneType, net.minecraft.world.level.material.Material.STONE);
     }
 
-    protected TagPrefix registerOre(Supplier<BlockState> stoneType, boolean isNether) {
+    protected TagPrefix registerOre(Supplier<Supplier<BlockState>> stoneType, boolean isNether) {
         return registerOre(stoneType, isNether, net.minecraft.world.level.material.Material.STONE);
     }
 
-    protected TagPrefix registerOre(Supplier<BlockState> stoneType, net.minecraft.world.level.material.Material material) {
+    protected TagPrefix registerOre(Supplier<Supplier<BlockState>> stoneType, net.minecraft.world.level.material.Material material) {
         return registerOre(stoneType, false, material);
     }
 
-    protected TagPrefix registerOre(Supplier<BlockState> stoneType, boolean isNether, net.minecraft.world.level.material.Material material) {
+    protected TagPrefix registerOre(Supplier<Supplier<BlockState>> stoneType, boolean isNether, net.minecraft.world.level.material.Material material) {
         return registerOre(stoneType, false, material, material.getColor(), SoundType.STONE);
     }
 
-    protected TagPrefix registerOre(Supplier<BlockState> stoneType, MaterialColor color) {
+    protected TagPrefix registerOre(Supplier<Supplier<BlockState>> stoneType, MaterialColor color) {
         return registerOre(stoneType, false, color);
     }
 
-    protected TagPrefix registerOre(Supplier<BlockState> stoneType, boolean isNether, MaterialColor color) {
+    protected TagPrefix registerOre(Supplier<Supplier<BlockState>> stoneType, boolean isNether, MaterialColor color) {
         return registerOre(stoneType, isNether, net.minecraft.world.level.material.Material.STONE, color, SoundType.STONE);
     }
 
-    public TagPrefix registerOre(Supplier<BlockState> stoneType, boolean isNether, net.minecraft.world.level.material.Material material, MaterialColor color, SoundType soundType) {
+    public TagPrefix registerOre(Supplier<Supplier<BlockState>> stoneType, boolean isNether, net.minecraft.world.level.material.Material material, MaterialColor color, SoundType soundType) {
         ORES.put(this, new OreType(stoneType, isNether, material, color, soundType));
         return this;
     }

@@ -36,6 +36,6 @@ public class OreTagPrefixBuilder extends TagPrefixBuilder {
     
     @Override
     public TagPrefix register() {
-        return value = base.registerOre(stateSupplier, isNether, material, color, sound);
+        return value = base.registerOre(() -> stateSupplier, isNether, material, color, sound);
     }
 }

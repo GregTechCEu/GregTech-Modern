@@ -53,10 +53,6 @@ public class GTFeaturesImpl {
     }
 
     public static void register() {
-        GTRegistries.register(BuiltinRegistries.NOISE, GTCEu.id("strata"), new NormalNoise.NoiseParameters(-10, 1.0, 0.0, 0.0, 1.0));
-        GTRegistries.register(Registry.RULE, GTCEu.id("strata"), IStrataLayer.StrataNoise.CODEC.codec());
-        GTRegistries.register(Registry.CHUNK_GENERATOR, GTCEu.id("strata"), StrataChunkGenerator.CODEC);
-
         for (var entry : GTRegistries.ORE_VEINS.entries()) {
             ResourceLocation id = entry.getKey();
             var datagenExt = entry.getValue().getVeinGenerator();

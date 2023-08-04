@@ -3,16 +3,23 @@ package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.worldgen.modifier.*;
+import com.gregtechceu.gtceu.api.data.worldgen.strata.IStrataLayer;
+import com.gregtechceu.gtceu.api.data.worldgen.strata.StrataGenerationType;
 import com.gregtechceu.gtceu.api.data.worldgen.vein.GTOreFeature;
 import com.gregtechceu.gtceu.api.data.worldgen.vein.GTOreFeatureConfiguration;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.core.Registry;
 import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.levelgen.DensityFunction;
+import net.minecraft.world.level.levelgen.DensityFunctions;
+import net.minecraft.world.level.levelgen.NoiseRouterData;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.placement.InSquarePlacement;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
+import net.minecraft.world.level.levelgen.synth.BlendedNoise;
 import net.minecraft.world.level.levelgen.synth.NormalNoise;
 
 import java.util.List;
@@ -29,6 +36,7 @@ public class GTFeatures {
     public static final PlacedFeature PLACED_ORE = GTRegistries.register(BuiltinRegistries.PLACED_FEATURE, GTCEu.id("ore"), new PlacedFeature(BuiltinRegistries.CONFIGURED_FEATURE.getOrCreateHolderOrThrow(ResourceKey.create(Registry.CONFIGURED_FEATURE_REGISTRY, GTCEu.id("ore"))), List.of(InSquarePlacement.spread())));
 
     public static final ResourceKey<NormalNoise.NoiseParameters> STRATA_NOISE = ResourceKey.create(Registry.NOISE_REGISTRY, GTCEu.id("strata"));
+    public static final ResourceKey<DensityFunction> BASE_3D_STRATA_NOISE = ResourceKey.create(Registry.DENSITY_FUNCTION_REGISTRY, GTCEu.id("strata"));
 
     public static void init() {
         Object inst = FrequencyModifier.FREQUENCY_MODIFIER; // seemingly useless access to init the class in time
@@ -36,6 +44,25 @@ public class GTFeatures {
         inst = DimensionFilter.DIMENSION_FILTER;
         inst = VeinCountFilter.VEIN_COUNT_FILTER;
         inst = BiomePlacement.BIOME_PLACEMENT;
+
+        if (ConfigHolder.INSTANCE.worldgen.strataGeneration != StrataGenerationType.NONE) {
+            GTRegistries.register(BuiltinRegistries.NOISE, STRATA_NOISE.location(), new NormalNoise.NoiseParameters(-5, 1.0));
+            GTRegistries.register(Registry.RULE, GTCEu.id("blob_strata"), IStrataLayer.BlobStrataNoise.CODEC.codec());
+            GTRegistries.register(Registry.RULE, GTCEu.id("layer_strata"), IStrataLayer.LayerStrata.CODEC.codec());
+            GTRegistries.register(BuiltinRegistries.DENSITY_FUNCTION, BASE_3D_STRATA_NOISE.location(),
+                    DensityFunctions.cache2d(
+                            new DensityFunctions.ShiftedNoise(
+                                    BuiltinRegistries.DENSITY_FUNCTION.get(NoiseRouterData.SHIFT_X),
+                                    BlendedNoise.createUnseeded(0.75, 3, 180, 16, 1),
+                                    BuiltinRegistries.DENSITY_FUNCTION.get(NoiseRouterData.SHIFT_Z),
+                                    1,
+                                    1,
+                                    new DensityFunction.NoiseHolder(BuiltinRegistries.NOISE.getOrCreateHolderOrThrow(STRATA_NOISE))
+                            )));
+        }
+        //GTRegistries.register(Registry.CHUNK_GENERATOR, GTCEu.id("strata"), StrataChunkGenerator.CODEC);
+
+        //BlendedNoise.createUnseeded(0.75, 3, 180, 16, 1)
         register();
     }
 

@@ -11,7 +11,7 @@ import com.gregtechceu.gtceu.api.gui.factory.CoverUIFactory;
 import com.gregtechceu.gtceu.api.gui.factory.GTUIEditorFactory;
 import com.gregtechceu.gtceu.api.gui.factory.MachineUIFactory;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.common.block.StoneType;
+import com.gregtechceu.gtceu.common.block.StoneTypes;
 import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.common.data.materials.GTFoods;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -60,7 +60,7 @@ public class CommonProxy {
         // fabric exclusive, squeeze this in here to register before stuff is used
         GTRegistries.REGISTRATE.registerRegistrate();
         WorldGenLayers.registerAll();
-        StoneType.init();
+        StoneTypes.init();
         GTOres.init();
         GTBedrockFluids.init();
         GTFeatures.init();

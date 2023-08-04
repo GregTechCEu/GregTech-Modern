@@ -1,5 +1,5 @@
 {
-  "parent": "minecraft:block/block",
+  "parent": "minecraft:block/cube_all",
   "textures": {
     "all": "gtceu:block/stones/red_granite/cobble"
   }

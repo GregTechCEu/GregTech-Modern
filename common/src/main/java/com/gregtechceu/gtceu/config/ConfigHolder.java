@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.config;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.data.worldgen.strata.StrataGenerationType;
 import dev.toma.configuration.Configuration;
 import dev.toma.configuration.config.Config;
 import dev.toma.configuration.config.Configurable;
@@ -163,8 +164,8 @@ public class ConfigHolder {
         public float rubberTreeSpawnChance = 0.5f;
 
         @Configurable
-        @Configurable.Comment({"Generate strata layers in the world?", "Default: true"})
-        public boolean strataGeneration = true;
+        @Configurable.Comment({"Generate strata layers in the world?", "Valid values: \"BLOB\", \"LAYER\", \"NONE\"", "Default: \"BLOB\""})
+        public StrataGenerationType strataGeneration = StrataGenerationType.BLOB;
     }
 
     public static class MachineConfigs {

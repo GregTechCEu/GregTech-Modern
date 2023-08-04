@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.common.worldgen.vein.generator;
 
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.worldgen.WorldGeneratorUtils;
 import com.gregtechceu.gtceu.api.data.worldgen.vein.GTOreFeature;
 import com.gregtechceu.gtceu.api.data.worldgen.vein.GTOreFeatureEntry;
 import com.gregtechceu.gtceu.api.data.worldgen.vein.generator.VeinGenerator;
@@ -101,14 +102,7 @@ public class VeinedVeinGenerator extends VeinGenerator {
     public boolean generate(WorldGenLevel level, RandomSource random, GTOreFeatureEntry entry, BlockPos origin) {
         RandomState randomState = level.getLevel().getChunkSource().randomState();
         NoiseRouter router = randomState.router();
-        Blender blender;
-        if (level instanceof WorldGenRegion region) {
-            blender = Blender.of(region);
-        } else {
-            blender = Blender.empty();
-        }
 
-        final Blender finalizedBlender = blender;
         DensityFunction veinToggle = router.veinToggle();
         DensityFunction veinRidged = router.veinRidged();
         //DensityFunction veinGap = router.veinGap();
@@ -119,30 +113,7 @@ public class VeinedVeinGenerator extends VeinGenerator {
         for (int x = origin.getX(); x < origin.getX() + size; ++x) {
             for (int y = origin.getY(); y < origin.getY() + size; ++y) {
                 for (int z = origin.getZ(); z < origin.getZ() + size; ++z) {
-                    final int finalX = x;
-                    final int finalY = y;
-                    final int finalZ = z;
-                    DensityFunction.FunctionContext functionContext = new DensityFunction.FunctionContext()  {
-                        @Override
-                        public int blockX() {
-                            return finalX;
-                        }
-
-                        @Override
-                        public int blockY() {
-                            return finalY;
-                        }
-
-                        @Override
-                        public int blockZ() {
-                            return finalZ;
-                        }
-
-                        @Override
-                        public Blender getBlender() {
-                            return finalizedBlender;
-                        }
-                    };
+                    DensityFunction.FunctionContext functionContext = WorldGeneratorUtils.createFunctionContext(level, x, y, z);
 
                     double height = veinToggle.compute(functionContext);
                     int blockY = origin.getY();
@@ -165,7 +136,7 @@ public class VeinedVeinGenerator extends VeinGenerator {
                     }
                     double chance = Mth.clampedMap(absHeight, veininessThreshold, maxRichnessThreshold, minRichness, maxRichness);
 
-                    BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos(finalX, finalY, finalZ);
+                    BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos(x, y, z);
                     BlockState current = level.getBlockState(pos);
                     boolean placed = false;
                     if (random.nextFloat() <= entry.getDensity()) {

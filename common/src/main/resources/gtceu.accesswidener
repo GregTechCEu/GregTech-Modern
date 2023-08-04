@@ -9,9 +9,19 @@ accessible field net/minecraft/world/level/chunk/ChunkGenerator structureSets Ln
 accessible method net/minecraft/world/level/levelgen/NoiseChunk cellWidth ()I
 accessible method net/minecraft/world/level/levelgen/NoiseChunk cellHeight ()I
 accessible method net/minecraft/world/level/levelgen/NoiseChunk getInterpolatedState ()Lnet/minecraft/world/level/block/state/BlockState;
+accessible field net/minecraft/world/level/levelgen/NoiseChunk blender Lnet/minecraft/world/level/levelgen/blending/Blender;
 
 # actually used for strata
 accessible class net/minecraft/world/level/levelgen/SurfaceRules$SurfaceRule
 accessible class net/minecraft/world/level/levelgen/SurfaceRules$Context
 accessible field net/minecraft/world/level/levelgen/SurfaceRules$Context randomState Lnet/minecraft/world/level/levelgen/RandomState;
+accessible field net/minecraft/world/level/levelgen/SurfaceRules$Context noiseChunk Lnet/minecraft/world/level/levelgen/NoiseChunk;
 accessible field net/minecraft/world/level/levelgen/SurfaceRules$Context context Lnet/minecraft/world/level/levelgen/WorldGenerationContext;
+accessible field net/minecraft/world/level/levelgen/SurfaceRules$Context chunk Lnet/minecraft/world/level/chunk/ChunkAccess;
+
+# noise
+accessible field net/minecraft/world/level/levelgen/NoiseRouterData SHIFT_X Lnet/minecraft/resources/ResourceKey;
+accessible field net/minecraft/world/level/levelgen/NoiseRouterData SHIFT_Z Lnet/minecraft/resources/ResourceKey;
+accessible class net/minecraft/world/level/levelgen/DensityFunctions$ShiftedNoise
+accessible method net/minecraft/world/level/levelgen/DensityFunctions$ShiftedNoise <init> (Lnet/minecraft/world/level/levelgen/DensityFunction;Lnet/minecraft/world/level/levelgen/DensityFunction;Lnet/minecraft/world/level/levelgen/DensityFunction;DDLnet/minecraft/world/level/levelgen/DensityFunction$NoiseHolder;)V
+accessible method net/minecraft/world/level/levelgen/blending/Blender <init> (Lit/unimi/dsi/fastutil/longs/Long2ObjectOpenHashMap;Lit/unimi/dsi/fastutil/longs/Long2ObjectOpenHashMap;)V
