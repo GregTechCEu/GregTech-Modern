@@ -77,7 +77,7 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
         this.io = IO.OUT;
 
         subscriptionHandler = new ConditionalSubscriptionHandler(coverHolder, this::update, this::isSubscriptionActive);
-        filterHandler = FilterHandlers.item(this).onFilterLoaded(f -> configureFilterHandler());
+        filterHandler = FilterHandlers.item(this).onFilterLoaded(f -> configureFilter());
     }
 
     private boolean isSubscriptionActive() {
@@ -404,7 +404,7 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
         // Do nothing in the base implementation. This is intended to be overridden by subclasses.
     }
 
-    protected void configureFilterHandler() {
+    protected void configureFilter() {
         // Do nothing in the base implementation. This is intended to be overridden by subclasses.
     }
 }

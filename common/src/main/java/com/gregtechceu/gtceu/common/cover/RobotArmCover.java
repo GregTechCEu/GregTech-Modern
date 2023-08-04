@@ -38,7 +38,9 @@ public class RobotArmCover extends ConveyorCover {
 
     public RobotArmCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide, int tier) {
         super(definition, coverHolder, attachedSide, tier);
+
         setTransferMode(TransferMode.TRANSFER_ANY);
+        filterHandler.onFilterUpdated(this::onFilterUpdated);
     }
 
     @Override
@@ -155,12 +157,17 @@ public class RobotArmCover extends ConveyorCover {
         configureStackSizeInput();
 
         if (!this.isRemote()) {
-            configureFilterHandler();
+            configureFilter();
         }
     }
 
+    private void onFilterUpdated(ItemFilter filter) {
+        configureFilter();
+        configureStackSizeInput();
+    }
+
     @Override
-    protected void configureFilterHandler() {
+    protected void configureFilter() {
         if (filterHandler.getFilter() instanceof SimpleItemFilter filter) {
             filter.setMaxStackSize(filter.isBlackList() ? 1 : transferMode.maxStackSize);
         }

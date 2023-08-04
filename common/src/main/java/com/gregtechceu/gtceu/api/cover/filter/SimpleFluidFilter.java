@@ -7,7 +7,6 @@ import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.misc.FluidStorage;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import lombok.Getter;
-import lombok.Setter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -32,8 +31,9 @@ public class SimpleFluidFilter implements FluidFilter {
     protected boolean ignoreNbt;
     @Getter
     protected FluidStack[] matches = new FluidStack[9];
-    @Setter
-    protected Consumer<FluidFilter> onUpdated;
+
+    protected Consumer<FluidFilter> itemWriter = filter -> {};
+    protected Consumer<FluidFilter> onUpdated = filter -> itemWriter.accept(filter);
 
     @Getter
     protected long maxStackSize = 1L;
@@ -48,9 +48,9 @@ public class SimpleFluidFilter implements FluidFilter {
         return loadFilter(itemStack.getOrCreateTag(), filter -> itemStack.setTag(filter.saveFilter()));
     }
 
-    public static SimpleFluidFilter loadFilter(CompoundTag tag, Consumer<FluidFilter> onUpdated) {
+    private static SimpleFluidFilter loadFilter(CompoundTag tag, Consumer<FluidFilter> itemWriter) {
         var handler = new SimpleFluidFilter();
-        handler.setOnUpdated(onUpdated);
+        handler.itemWriter = itemWriter;
         handler.isBlackList = tag.getBoolean("isBlackList");
         handler.ignoreNbt = tag.getBoolean("matchNbt");
         var list = tag.getList("matches", Tag.TAG_COMPOUND);
@@ -58,6 +58,14 @@ public class SimpleFluidFilter implements FluidFilter {
             handler.matches[i] = FluidStack.loadFromTag((CompoundTag) list.get(i));
         }
         return handler;
+    }
+
+    @Override
+    public void setOnUpdated(Consumer<FluidFilter> onUpdated) {
+        this.onUpdated = filter -> {
+            this.itemWriter.accept(filter);
+            onUpdated.accept(filter);
+        };
     }
 
     public CompoundTag saveFilter() {

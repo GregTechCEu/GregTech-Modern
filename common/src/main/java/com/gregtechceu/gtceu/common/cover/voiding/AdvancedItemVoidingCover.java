@@ -92,7 +92,7 @@ public class AdvancedItemVoidingCover extends ItemVoidingCover {
         configureStackSizeInput();
 
         if (!this.isRemote()) {
-            configureFilterHandler();
+            configureFilter();
         }
     }
 
@@ -120,7 +120,7 @@ public class AdvancedItemVoidingCover extends ItemVoidingCover {
     }
 
     @Override
-    protected void configureFilterHandler() {
+    protected void configureFilter() {
         if (filterHandler.getFilter() instanceof SimpleItemFilter filter) {
             filter.setMaxStackSize(this.voidingMode.maxStackSize);
         }

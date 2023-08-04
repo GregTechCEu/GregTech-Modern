@@ -7,7 +7,6 @@ import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
 import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
 import lombok.Getter;
-import lombok.Setter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -26,13 +25,15 @@ import java.util.function.Consumer;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class SimpleItemFilter implements ItemFilter {
+    @Getter
     protected boolean isBlackList;
     @Getter
     protected boolean ignoreNbt;
     @Getter
     protected ItemStack[] matches = new ItemStack[9];
-    @Setter
-    protected Consumer<ItemFilter> onUpdated;
+
+    protected Consumer<ItemFilter> itemWriter = filter -> {};
+    protected Consumer<ItemFilter> onUpdated = filter -> itemWriter.accept(filter);
 
     @Getter
     protected int maxStackSize;
@@ -47,9 +48,9 @@ public class SimpleItemFilter implements ItemFilter {
         return loadFilter(itemStack.getOrCreateTag(), filter -> itemStack.setTag(filter.saveFilter()));
     }
 
-    public static SimpleItemFilter loadFilter(CompoundTag tag, Consumer<ItemFilter> onUpdated) {
+    private static SimpleItemFilter loadFilter(CompoundTag tag, Consumer<ItemFilter> itemWriter) {
         var handler = new SimpleItemFilter();
-        handler.setOnUpdated(onUpdated);
+        handler.itemWriter = itemWriter;
         handler.isBlackList = tag.getBoolean("isBlackList");
         handler.ignoreNbt = tag.getBoolean("matchNbt");
         var list = tag.getList("matches", Tag.TAG_COMPOUND);
@@ -57,6 +58,14 @@ public class SimpleItemFilter implements ItemFilter {
             handler.matches[i] = ItemStack.of((CompoundTag) list.get(i));
         }
         return handler;
+    }
+
+    @Override
+    public void setOnUpdated(Consumer<ItemFilter> onUpdated) {
+        this.onUpdated = filter -> {
+            this.itemWriter.accept(filter);
+            onUpdated.accept(filter);
+        };
     }
 
     public CompoundTag saveFilter() {

@@ -49,7 +49,7 @@ public class ItemVoidingCover extends ConveyorCover implements IUICover, IContro
         super(definition, coverHolder, attachedSide, 0);
 
         this.subscriptionHandler = new ConditionalSubscriptionHandler(coverHolder, this::update, this::isSubscriptionActive);
-        this.filterHandler = FilterHandlers.item(this).onFilterLoaded(f -> configureFilterHandler());
+        this.filterHandler = FilterHandlers.item(this).onFilterLoaded(f -> configureFilter());
     }
 
     private boolean isSubscriptionActive() {
@@ -169,7 +169,7 @@ public class ItemVoidingCover extends ConveyorCover implements IUICover, IContro
         // Do nothing in the base implementation. This is intended to be overridden by subclasses.
     }
 
-    protected void configureFilterHandler() {
+    protected void configureFilter() {
         // Do nothing in the base implementation. This is intended to be overridden by subclasses.
     }
 }

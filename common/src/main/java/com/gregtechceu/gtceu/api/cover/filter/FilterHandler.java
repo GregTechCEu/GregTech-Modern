@@ -36,6 +36,7 @@ public abstract class FilterHandler<T, F extends Filter<T, F>> implements IEnhan
 
     private @NotNull Consumer<F> onFilterLoaded = (filter) -> {};
     private @NotNull Consumer<F> onFilterRemoved = (filter) -> {};
+    private @NotNull Consumer<F> onFilterUpdated = (filter) -> {};
 
     public FilterHandler(IEnhancedManaged container) {
         this.container = container;
@@ -74,8 +75,7 @@ public abstract class FilterHandler<T, F extends Filter<T, F>> implements IEnhan
             if (this.filterItem.isEmpty()) {
                 return getEmptyFilter();
             } else {
-                this.filter = loadFilter(this.filterItem);
-                this.onFilterLoaded.accept(this.filter);
+                loadFilterFromItem();
             }
         }
 
@@ -89,6 +89,11 @@ public abstract class FilterHandler<T, F extends Filter<T, F>> implements IEnhan
 
     public FilterHandler<T, F> onFilterRemoved(Consumer<F> onFilterRemoved) {
         this.onFilterRemoved = onFilterRemoved;
+        return this;
+    }
+
+    public FilterHandler<T, F> onFilterUpdated(Consumer<F> onFilterUpdated) {
+        this.onFilterUpdated = onFilterUpdated;
         return this;
     }
 
@@ -122,11 +127,17 @@ public abstract class FilterHandler<T, F extends Filter<T, F>> implements IEnhan
         }
         this.filter = null;
 
-        if (!this.filterItem.isEmpty()) {
-            this.filter = loadFilter(this.filterItem);
-            this.onFilterLoaded.accept(this.filter);
-        }
+        loadFilterFromItem();
+    }
 
+    private void loadFilterFromItem() {
+        if (this.filterItem.isEmpty())
+            return;
+
+        this.filter = loadFilter(this.filterItem);
+        filter.setOnUpdated(this.onFilterUpdated);
+
+        this.onFilterLoaded.accept(this.filter);
         updateFilterGroupUI();
     }
 
