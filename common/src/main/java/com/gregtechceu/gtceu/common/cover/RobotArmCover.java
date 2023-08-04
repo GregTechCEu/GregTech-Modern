@@ -158,7 +158,7 @@ public class RobotArmCover extends ConveyorCover {
     @Override
     protected void configureFilterHandler() {
         if (filterHandler.getFilter() instanceof SimpleItemFilter filter) {
-            filter.setMaxStackSize(transferMode.maxStackSize);
+            filter.setMaxStackSize(filter.isBlackList() ? 1 : transferMode.maxStackSize);
         }
     }
 
@@ -166,7 +166,7 @@ public class RobotArmCover extends ConveyorCover {
         if (this.stackSizeInput == null)
             return;
 
-        this.stackSizeInput.setVisible(this.transferMode != TransferMode.TRANSFER_ANY);
+        this.stackSizeInput.setVisible(this.transferMode != TransferMode.TRANSFER_ANY && !filterHandler.getFilter().isBlackList());
         this.stackSizeInput.setMin(1);
         this.stackSizeInput.setMax(this.transferMode.maxStackSize);
     }

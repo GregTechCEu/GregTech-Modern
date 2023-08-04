@@ -74,17 +74,7 @@ public class SimpleItemFilter implements ItemFilter {
 
     public void setBlackList(boolean blackList) {
         isBlackList = blackList;
-        if (blackList) {
-            setMaxStackSize(1);
-        } else {
-            setMaxStackSize(Integer.MAX_VALUE);
-        }
         onUpdated.accept(this);
-    }
-
-    @Override
-    public boolean isBlackList() {
-        return isBlackList;
     }
 
     public void setIgnoreNbt(boolean ingoreNbt) {
@@ -94,12 +84,13 @@ public class SimpleItemFilter implements ItemFilter {
 
     public WidgetGroup openConfigurator(int x, int y) {
         WidgetGroup group = new WidgetGroup(x, y, 18 * 3 + 25, 18 * 3); // 80 55
-        var filterSlots = new PhantomSlotWidget[9];
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
                 final int index = i * 3 + j;
+
                 var handler = new ItemStackTransfer(matches[index]);
-                filterSlots[i] = new PhantomSlotWidget(handler, 0, i * 18, j * 18) {
+
+                var slot = new PhantomSlotWidget(handler, 0, i * 18, j * 18) {
                     @Override
                     public void updateScreen() {
                         super.updateScreen();
@@ -112,11 +103,12 @@ public class SimpleItemFilter implements ItemFilter {
                         setMaxStackSize(maxStackSize);
                     }
                 };
-                var slot = filterSlots[i];
+
                 slot.setChangeListener(() -> {
                     matches[index] = handler.getStackInSlot(0);
                     onUpdated.accept(this);
                 }).setBackground(GuiTextures.SLOT);
+
                 group.addWidget(slot);
             }
         }
