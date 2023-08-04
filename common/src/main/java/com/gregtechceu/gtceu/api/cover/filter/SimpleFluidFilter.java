@@ -38,7 +38,7 @@ public class SimpleFluidFilter implements FluidFilter {
     @Getter
     protected long maxStackSize = 1L;
 
-    private FluidStorage[] fluidStorageSlots;
+    private FluidStorage[] fluidStorageSlots = new FluidStorage[9];
 
     protected SimpleFluidFilter() {
         Arrays.fill(matches, FluidStack.empty());
@@ -152,11 +152,13 @@ public class SimpleFluidFilter implements FluidFilter {
         this.maxStackSize = maxStackSize;
 
         for (FluidStorage slot : fluidStorageSlots) {
-            slot.setCapacity(maxStackSize);
+            if (slot != null)
+                slot.setCapacity(maxStackSize);
         }
 
         for (FluidStack match : matches) {
-            match.setAmount(Math.min(match.getAmount(), maxStackSize));
+            if (!match.isEmpty())
+                match.setAmount(Math.min(match.getAmount(), maxStackSize));
         }
     }
 }
