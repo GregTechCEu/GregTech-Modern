@@ -131,13 +131,12 @@ public abstract class FilterHandler<T, F extends Filter<T, F>> implements IEnhan
     }
 
     private void loadFilterFromItem() {
-        if (this.filterItem.isEmpty())
-            return;
+        if (!this.filterItem.isEmpty()) {
+            this.filter = loadFilter(this.filterItem);
+            filter.setOnUpdated(this.onFilterUpdated);
 
-        this.filter = loadFilter(this.filterItem);
-        filter.setOnUpdated(this.onFilterUpdated);
-
-        this.onFilterLoaded.accept(this.filter);
+            this.onFilterLoaded.accept(this.filter);
+        }
         updateFilterGroupUI();
     }
 
