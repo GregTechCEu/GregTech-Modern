@@ -88,7 +88,7 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
         this.milliBucketsLeftToTransferLastSecond = currentMilliBucketsPerTick;
 
         subscriptionHandler = new ConditionalSubscriptionHandler(coverHolder, this::update, this::isSubscriptionActive);
-        filterHandler = FilterHandlers.fluid(this).onFilterLoaded(f -> configureFilterHandler());
+        filterHandler = FilterHandlers.fluid(this).onFilterLoaded(f -> configureFilter());
     }
 
     private boolean isSubscriptionActive() {
@@ -231,7 +231,7 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
         final var group = new WidgetGroup(0, 0, 176, 135);
         group.addWidget(new LabelWidget(10, 5, LocalizationUtils.format(getUITitle(), GTValues.VN[tier])));
 
-        transferRateWidget = new LongInputWidget(10, 20, 131, 20,
+        transferRateWidget = new LongInputWidget(10, 20, 134, 20,
                 this::getCurrentBucketModeTransferRate, this::setCurrentBucketModeTransferRate).setMin(0L);
         setBucketMode(this.bucketMode); // initial input widget config happens here
         group.addWidget(transferRateWidget);
@@ -275,7 +275,7 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
         // Do nothing in the base implementation. This is intended to be overridden by subclasses.
     }
 
-    protected void configureFilterHandler() {
+    protected void configureFilter() {
         // Do nothing in the base implementation. This is intended to be overridden by subclasses.
     }
 }

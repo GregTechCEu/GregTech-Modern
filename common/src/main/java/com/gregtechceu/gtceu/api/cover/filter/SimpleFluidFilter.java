@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.api.cover.filter;
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.gui.widget.ScrollablePhantomFluidWidget;
 import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
-import com.lowdragmc.lowdraglib.gui.widget.PhantomFluidWidget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.misc.FluidStorage;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
@@ -101,8 +101,20 @@ public class SimpleFluidFilter implements FluidFilter {
                 fluidStorageSlots[index] = new FluidStorage(maxStackSize);
                 fluidStorageSlots[index].setFluid(matches[index]);
 
-                var tank = new PhantomFluidWidget(fluidStorageSlots[index], i * 18, j * 18);
-                tank.setShowAmount(maxStackSize > 1L);
+                var tank = new ScrollablePhantomFluidWidget(fluidStorageSlots[index], i * 18, j * 18) {
+                    @Override
+                    public void updateScreen() {
+                        super.updateScreen();
+                        setShowAmount(maxStackSize > 1L);
+                    }
+
+                    @Override
+                    public void detectAndSendChanges() {
+                        super.detectAndSendChanges();
+                        setShowAmount(maxStackSize > 1L);
+                    }
+                };
+
                 tank.setChangeListener(() -> {
                     matches[index] = fluidStorageSlots[index].getFluidInTank(0);
                     onUpdated.accept(this);

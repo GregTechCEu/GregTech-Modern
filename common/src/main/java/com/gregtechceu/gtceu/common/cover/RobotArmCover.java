@@ -177,8 +177,18 @@ public class RobotArmCover extends ConveyorCover {
         if (this.stackSizeInput == null)
             return;
 
-        this.stackSizeInput.setVisible(this.transferMode != TransferMode.TRANSFER_ANY && !filterHandler.getFilter().isBlackList());
+        this.stackSizeInput.setVisible(shouldShowStackSize());
         this.stackSizeInput.setMin(1);
         this.stackSizeInput.setMax(this.transferMode.maxStackSize);
+    }
+
+    private boolean shouldShowStackSize() {
+        if (this.transferMode == TransferMode.TRANSFER_ANY)
+            return false;
+
+        if (!this.filterHandler.isFilterPresent())
+            return true;
+
+        return this.filterHandler.getFilter().isBlackList();
     }
 }

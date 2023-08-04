@@ -29,7 +29,7 @@ public abstract class FilterHandler<T, F extends Filter<T, F>> implements IEnhan
 
     @Persisted @DescSynced @Getter
     private @NotNull ItemStack filterItem = ItemStack.EMPTY;
-    
+
     private @Nullable F filter;
     private @Nullable ItemStackTransfer filterSlot;
     private @Nullable WidgetGroup filterGroup;
