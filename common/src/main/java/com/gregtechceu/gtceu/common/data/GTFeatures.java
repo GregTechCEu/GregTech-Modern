@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.data.worldgen.vein.GTOreFeatureConfiguration;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import dev.architectury.injectables.annotations.ExpectPlatform;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.resources.ResourceKey;
@@ -36,6 +37,7 @@ public class GTFeatures {
     public static final PlacedFeature PLACED_ORE = GTRegistries.register(BuiltinRegistries.PLACED_FEATURE, GTCEu.id("ore"), new PlacedFeature(BuiltinRegistries.CONFIGURED_FEATURE.getOrCreateHolderOrThrow(ResourceKey.create(Registry.CONFIGURED_FEATURE_REGISTRY, GTCEu.id("ore"))), List.of(InSquarePlacement.spread())));
 
     public static final ResourceKey<NormalNoise.NoiseParameters> STRATA_NOISE = ResourceKey.create(Registry.NOISE_REGISTRY, GTCEu.id("strata"));
+    public static final ResourceKey<NormalNoise.NoiseParameters> STRATA_TYPE_NOISE = ResourceKey.create(Registry.NOISE_REGISTRY, GTCEu.id("strata_type"));
     public static final ResourceKey<DensityFunction> BASE_3D_STRATA_NOISE = ResourceKey.create(Registry.DENSITY_FUNCTION_REGISTRY, GTCEu.id("strata"));
 
     public static void init() {
@@ -45,24 +47,26 @@ public class GTFeatures {
         inst = VeinCountFilter.VEIN_COUNT_FILTER;
         inst = BiomePlacement.BIOME_PLACEMENT;
 
-        if (ConfigHolder.INSTANCE.worldgen.strataGeneration != StrataGenerationType.NONE) {
-            GTRegistries.register(BuiltinRegistries.NOISE, STRATA_NOISE.location(), new NormalNoise.NoiseParameters(-5, 1.0));
-            GTRegistries.register(Registry.RULE, GTCEu.id("blob_strata"), IStrataLayer.BlobStrataNoise.CODEC.codec());
-            GTRegistries.register(Registry.RULE, GTCEu.id("layer_strata"), IStrataLayer.LayerStrata.CODEC.codec());
-            GTRegistries.register(BuiltinRegistries.DENSITY_FUNCTION, BASE_3D_STRATA_NOISE.location(),
-                    DensityFunctions.cache2d(
-                            new DensityFunctions.ShiftedNoise(
-                                    BuiltinRegistries.DENSITY_FUNCTION.get(NoiseRouterData.SHIFT_X),
-                                    BlendedNoise.createUnseeded(0.75, 3, 180, 16, 1),
-                                    BuiltinRegistries.DENSITY_FUNCTION.get(NoiseRouterData.SHIFT_Z),
-                                    1,
-                                    1,
-                                    new DensityFunction.NoiseHolder(BuiltinRegistries.NOISE.getOrCreateHolderOrThrow(STRATA_NOISE))
-                            )));
-        }
-        //GTRegistries.register(Registry.CHUNK_GENERATOR, GTCEu.id("strata"), StrataChunkGenerator.CODEC);
+        GTRegistries.register(BuiltinRegistries.NOISE, STRATA_NOISE.location(), new NormalNoise.NoiseParameters(-9, 1.0, 1.0, 0.0, 10.0));
+        GTRegistries.register(BuiltinRegistries.NOISE, STRATA_TYPE_NOISE.location(), new NormalNoise.NoiseParameters(-5, 1.0, 5.0, 10.0, 0.0, 1.0));
+        GTRegistries.register(Registry.RULE, GTCEu.id("blob_strata"), IStrataLayer.BlobStrata.CODEC.codec());
+        GTRegistries.register(Registry.RULE, GTCEu.id("layer_strata"), IStrataLayer.LayerStrata.CODEC.codec());
+        Holder<NormalNoise.NoiseParameters> strataNoiseHolder = BuiltinRegistries.NOISE.getOrCreateHolderOrThrow(STRATA_NOISE);
+        GTRegistries.register(BuiltinRegistries.DENSITY_FUNCTION, BASE_3D_STRATA_NOISE.location(),
+                DensityFunctions.cache2d(
+                        DensityFunctions.mul(
+                                new DensityFunctions.ShiftedNoise(
+                                        BuiltinRegistries.DENSITY_FUNCTION.get(NoiseRouterData.SHIFT_X),
+                                        BlendedNoise.createUnseeded(0.75, 3, 180, 16, 1),
+                                        BuiltinRegistries.DENSITY_FUNCTION.get(NoiseRouterData.SHIFT_Z),
+                                        0.5, 3,
+                                        new DensityFunction.NoiseHolder(strataNoiseHolder)
+                                ),
+                                DensityFunctions.constant(-1)
+                        )
+                )
+        );
 
-        //BlendedNoise.createUnseeded(0.75, 3, 180, 16, 1)
         register();
     }
 

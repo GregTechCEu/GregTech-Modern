@@ -164,7 +164,7 @@ public class ConfigHolder {
         public float rubberTreeSpawnChance = 0.5f;
 
         @Configurable
-        @Configurable.Comment({"Generate strata layers in the world?", "Valid values: \"BLOB\", \"LAYER\", \"NONE\"", "Default: \"BLOB\""})
+        @Configurable.Comment({"Generate strata layers in the world?", "Valid values: BLOB, LAYER, NONE", "Default: BLOB"})
         public StrataGenerationType strataGeneration = StrataGenerationType.BLOB;
     }
 

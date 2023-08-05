@@ -13,7 +13,6 @@ import net.minecraft.server.level.WorldGenRegion;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.DensityFunction;
 import net.minecraft.world.level.levelgen.blending.Blender;
 import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;
@@ -32,7 +31,6 @@ public class WorldGeneratorUtils {
 
     public static final Map<String, IWorldGenLayer> WORLD_GEN_LAYERS = new HashMap<>();
     public static final Map<String, IStrataLayer> STRATA_LAYERS = new HashMap<>();
-    public static final Map<BlockState, List<IStrataLayer>> STRATA_LAYER_BLOCK_MAP = new HashMap<>();
     public static final HashBiMap<ResourceLocation, Codec<? extends VeinGenerator>> VEIN_GENERATORS = HashBiMap.create();
     public static final HashBiMap<ResourceLocation, Function<GTOreFeatureEntry, ? extends VeinGenerator>> VEIN_GENERATOR_FUNCTIONS = HashBiMap.create();
 
@@ -97,6 +95,54 @@ public class WorldGeneratorUtils {
             @Override
             public Blender getBlender() {
                 return blender;
+            }
+        };
+    }
+
+    public static DensityFunction.FunctionContext offsetFunctionContext(DensityFunction.FunctionContext original, int x, int y, int z) {
+        return new DensityFunction.FunctionContext()  {
+            @Override
+            public int blockX() {
+                return x;
+            }
+
+            @Override
+            public int blockY() {
+                return y;
+            }
+
+            @Override
+            public int blockZ() {
+                return z;
+            }
+
+            @Override
+            public Blender getBlender() {
+                return original.getBlender();
+            }
+        };
+    }
+
+    public static DensityFunction.FunctionContext offsetFunctionContext(DensityFunction.FunctionContext original, int offsetMultiplier) {
+        return new DensityFunction.FunctionContext()  {
+            @Override
+            public int blockX() {
+                return original.blockX() * offsetMultiplier;
+            }
+
+            @Override
+            public int blockY() {
+                return original.blockY() * offsetMultiplier;
+            }
+
+            @Override
+            public int blockZ() {
+                return original.blockZ() * offsetMultiplier;
+            }
+
+            @Override
+            public Blender getBlender() {
+                return original.getBlender();
             }
         };
     }

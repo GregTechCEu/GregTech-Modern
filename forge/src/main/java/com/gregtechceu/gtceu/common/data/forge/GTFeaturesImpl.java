@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.api.data.worldgen.strata.IStrataLayer;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTPlacements;
-import com.gregtechceu.gtceu.common.worldgen.strata.StrataChunkGenerator;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import net.minecraft.core.Holder;

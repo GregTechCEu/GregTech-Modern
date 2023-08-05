@@ -751,7 +751,7 @@ public class GTBlocks {
                         .blockstate((ctx, prov) -> prov.simpleBlock(ctx.getEntry(), prov.models().singleTexture(blockId, prov.mcLoc(BLOCK_FOLDER + "/cube_all"), "all", GTCEu.id(BLOCK_FOLDER + "/stones/" + strata.getSerializedName() + "/" + type.id))))
                         .item()
                         .build();
-                if (type == StoneBlockType.STONE) {
+                if (type == StoneBlockType.STONE && strata.isNatural()) {
                     entry.tag(BlockTags.STONE_ORE_REPLACEABLES, BlockTags.BASE_STONE_OVERWORLD, BlockTags.BASE_STONE_NETHER);
                 }
                 builder.put(type, strata, entry.register());
