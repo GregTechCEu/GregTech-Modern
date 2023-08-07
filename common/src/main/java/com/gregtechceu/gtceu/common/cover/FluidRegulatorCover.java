@@ -10,6 +10,8 @@ import com.gregtechceu.gtceu.api.gui.widget.NumberInputWidget;
 import com.gregtechceu.gtceu.common.cover.data.BucketMode;
 import com.gregtechceu.gtceu.common.cover.data.TransferMode;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
+import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
+import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
@@ -28,6 +30,8 @@ public class FluidRegulatorCover extends PumpCover {
     private BucketMode transferBucketMode = BucketMode.MILLI_BUCKET;
     @Persisted @DescSynced @Getter
     protected long globalTransferSize;
+    protected int fluidTransferBuffered;
+
 
     private NumberInputWidget<Long> transferSizeInput;
 
@@ -37,34 +41,61 @@ public class FluidRegulatorCover extends PumpCover {
         filterHandler.onFilterUpdated(this::onFilterUpdated);
     }
 
-    ///////////////////////////
-    //*****     GUI    ******//
-    ///////////////////////////
+    //////////////////////////////////////
+    //*****     Transfer Logic    ******//
+    //////////////////////////////////////
+
 
     @Override
-    protected @NotNull String getUITitle() {
-        return "cover.fluid_regulator.title";
+    protected long doTransferFluidsInternal(IFluidTransfer source, IFluidTransfer destination, long platformTransferLimit) {
+        return switch (transferMode) {
+            case TRANSFER_ANY -> transferAny(source, destination, platformTransferLimit);
+            case TRANSFER_EXACT -> transferExact(source, destination, platformTransferLimit);
+            case KEEP_EXACT -> keepExact(source, destination, platformTransferLimit);
+        };
     }
 
-    @Override
-    protected void buildAdditionalUI(WidgetGroup group) {
-        group.addWidget(new EnumSelectorWidget<>(146, 45, 20, 20, TransferMode.values(), transferMode, this::setTransferMode));
+    private long transferExact(IFluidTransfer source, IFluidTransfer destination, long platformTransferLimit) {
+        long fluidLeftToTransfer = platformTransferLimit;
 
-        this.transferSizeInput = new LongInputWidget(35, 45, 84, 20,
-                this::getCurrentBucketModeTransferSize, this::setCurrentBucketModeTransferSize
-        ).setMin(0L).setMax(Long.MAX_VALUE);
-        configureTransferSizeInput();
-        group.addWidget(this.transferSizeInput);
+        for (int slot = 0; slot < source.getTanks(); slot++) {
+            FluidStack sourceFluid = source.getFluidInTank(slot).copy();
+            long supplyAmount = getFilteredFluidAmount(sourceFluid);
 
-        group.addWidget(new EnumSelectorWidget<>(121, 45, 20, 20, BucketMode.values(), transferBucketMode, this::setTransferBucketMode));
+            if (fluidLeftToTransfer < supplyAmount)
+                break;
+
+            if (sourceFluid.isEmpty() || supplyAmount <= 0L)
+                continue;
+
+            sourceFluid.setAmount(supplyAmount);
+            FluidStack drained = source.drain(sourceFluid, true);
+
+            if (drained.isEmpty() || drained.getAmount() < supplyAmount)
+                continue;
+
+            long insertableAmount = destination.fill(drained.copy(), true);
+            if (insertableAmount <= 0)
+                continue;
+
+            drained.setAmount(insertableAmount);
+            drained = source.drain(drained, false);
+
+            if (!drained.isEmpty()) {
+                destination.fill(drained, false);
+                fluidLeftToTransfer -= drained.getAmount();
+            }
+
+            if (fluidLeftToTransfer <= 0L)
+                break;
+        }
+
+        return platformTransferLimit - fluidLeftToTransfer;
     }
 
-    private long getCurrentBucketModeTransferSize() {
-        return this.globalTransferSize / this.transferBucketMode.multiplier;
-    }
-
-    private void setCurrentBucketModeTransferSize(long transferSize) {
-        this.globalTransferSize = Mth.clamp(transferSize * this.transferBucketMode.multiplier, 0, MAX_STACK_SIZE);
+    private long keepExact(IFluidTransfer source, IFluidTransfer destination, long platformTransferLimit) {
+        // TODO implement this
+        return 0L;
     }
 
     private void setTransferBucketMode(BucketMode transferBucketMode) {
@@ -105,6 +136,44 @@ public class FluidRegulatorCover extends PumpCover {
         if (filterHandler.getFilter() instanceof SimpleFluidFilter filter) {
             filter.setMaxStackSize(transferMode == TransferMode.TRANSFER_ANY ? 1L : MAX_STACK_SIZE);
         }
+    }
+
+    private long getFilteredFluidAmount(FluidStack fluidStack) {
+        if (!filterHandler.isFilterPresent())
+            return globalTransferSize;
+
+        FluidFilter filter = filterHandler.getFilter();
+        return filter.isBlackList() ? globalTransferSize : filter.testFluidAmount(fluidStack);
+    }
+
+    ///////////////////////////
+    //*****     GUI    ******//
+    ///////////////////////////
+
+    @Override
+    protected @NotNull String getUITitle() {
+        return "cover.fluid_regulator.title";
+    }
+
+    @Override
+    protected void buildAdditionalUI(WidgetGroup group) {
+        group.addWidget(new EnumSelectorWidget<>(146, 45, 20, 20, TransferMode.values(), transferMode, this::setTransferMode));
+
+        this.transferSizeInput = new LongInputWidget(35, 45, 84, 20,
+                this::getCurrentBucketModeTransferSize, this::setCurrentBucketModeTransferSize
+        ).setMin(0L).setMax(Long.MAX_VALUE);
+        configureTransferSizeInput();
+        group.addWidget(this.transferSizeInput);
+
+        group.addWidget(new EnumSelectorWidget<>(121, 45, 20, 20, BucketMode.values(), transferBucketMode, this::setTransferBucketMode));
+    }
+
+    private long getCurrentBucketModeTransferSize() {
+        return this.globalTransferSize / this.transferBucketMode.multiplier;
+    }
+
+    private void setCurrentBucketModeTransferSize(long transferSize) {
+        this.globalTransferSize = Mth.clamp(transferSize * this.transferBucketMode.multiplier, 0, MAX_STACK_SIZE);
     }
 
     private void configureTransferSizeInput() {
