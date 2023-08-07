@@ -92,6 +92,10 @@ public class SizedIngredientImpl extends SizedIngredient implements FabricIngred
         return this;
     }
 
+    public static SizedIngredient fromJson(JsonObject json) {
+        return Serializer.INSTANCE.read(json);
+    }
+
     public static class Serializer implements CustomIngredientSerializer<SizedIngredientImpl> {
 
         public static Serializer INSTANCE = new Serializer();
