@@ -95,11 +95,11 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
         return isWorkingEnabled() && getAdjacentFluidTransfer() != null;
     }
 
-    protected @Nullable IFluidTransfer getOwnFluidTransfer() {
+    private @Nullable IFluidTransfer getOwnFluidTransfer() {
         return FluidTransferHelper.getFluidTransfer(coverHolder.getLevel(), coverHolder.getPos(), attachedSide);
     }
 
-    protected @Nullable IFluidTransfer getAdjacentFluidTransfer() {
+    private @Nullable IFluidTransfer getAdjacentFluidTransfer() {
         return FluidTransferHelper.getFluidTransfer(coverHolder.getLevel(), coverHolder.getPos().relative(attachedSide), attachedSide.getOpposite());
     }
 
@@ -191,7 +191,6 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
             return;
 
         if (milliBucketsLeftToTransferLastSecond > 0) {
-
             long platformTransferredFluid = doTransferFluids(milliBucketsLeftToTransferLastSecond * MILLIBUCKET_SIZE);
             this.milliBucketsLeftToTransferLastSecond -= platformTransferredFluid / MILLIBUCKET_SIZE;
         }
@@ -203,21 +202,26 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
         subscriptionHandler.updateSubscription();
     }
 
-    protected long doTransferFluids(long platformTransferLimit) {
+    private long doTransferFluids(long platformTransferLimit) {
         var adjacentFluidTransfer = getAdjacentFluidTransfer();
         var ownFluidTransfer = getOwnFluidTransfer();
-        if (adjacentFluidTransfer == null || ownFluidTransfer == null) {
-            return 0;
-        }
 
-        return switch (io) {
-            case IN -> doTransferFluidsInternal(adjacentFluidTransfer, ownFluidTransfer, platformTransferLimit);
-            case OUT -> doTransferFluidsInternal(ownFluidTransfer, adjacentFluidTransfer, platformTransferLimit);
-            default -> 0L;
-        };
+        if (adjacentFluidTransfer != null && ownFluidTransfer != null) {
+            return switch (io) {
+                case IN -> doTransferFluidsInternal(adjacentFluidTransfer, ownFluidTransfer, platformTransferLimit);
+                case OUT -> doTransferFluidsInternal(ownFluidTransfer, adjacentFluidTransfer, platformTransferLimit);
+                default -> 0L;
+            };
+        }
+        return 0;
+
     }
 
     protected long doTransferFluidsInternal(IFluidTransfer source, IFluidTransfer destination, long platformTransferLimit) {
+        return transferAny(source, destination, platformTransferLimit);
+    }
+
+    protected long transferAny(IFluidTransfer source, IFluidTransfer destination, long platformTransferLimit) {
         return FluidTransferHelper.transferFluids(source, destination, platformTransferLimit, filterHandler.getFilter());
     }
 

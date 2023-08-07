@@ -161,6 +161,7 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
             if (itemsLeftToTransferLastSecond > 0) {
                 var adjacentItemTransfer = getAdjacentItemTransfer();
                 var myItemHandler = getOwnItemTransfer();
+
                 if (adjacentItemTransfer != null && myItemHandler != null) {
                     int totalTransferred = switch (io) {
                         case IN -> doTransferItems(adjacentItemTransfer, myItemHandler, itemsLeftToTransferLastSecond);
