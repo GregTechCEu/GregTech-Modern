@@ -53,16 +53,13 @@ public class GTFeatures {
         GTRegistries.register(Registry.RULE, GTCEu.id("layer_strata"), IStrataLayer.LayerStrata.CODEC.codec());
         Holder<NormalNoise.NoiseParameters> strataNoiseHolder = BuiltinRegistries.NOISE.getOrCreateHolderOrThrow(STRATA_NOISE);
         GTRegistries.register(BuiltinRegistries.DENSITY_FUNCTION, BASE_3D_STRATA_NOISE.location(),
-                DensityFunctions.cache2d(
-                        DensityFunctions.mul(
-                                new DensityFunctions.ShiftedNoise(
-                                        BuiltinRegistries.DENSITY_FUNCTION.get(NoiseRouterData.SHIFT_X),
-                                        BlendedNoise.createUnseeded(0.75, 3, 180, 16, 1),
-                                        BuiltinRegistries.DENSITY_FUNCTION.get(NoiseRouterData.SHIFT_Z),
-                                        0.5, 3,
-                                        new DensityFunction.NoiseHolder(strataNoiseHolder)
-                                ),
-                                DensityFunctions.constant(-1)
+                DensityFunctions.cacheAllInCell(
+                        new DensityFunctions.ShiftedNoise(
+                                BuiltinRegistries.DENSITY_FUNCTION.get(NoiseRouterData.SHIFT_X),
+                                BlendedNoise.createUnseeded(0.75, 3, 180, 16, 1),
+                                BuiltinRegistries.DENSITY_FUNCTION.get(NoiseRouterData.SHIFT_Z),
+                                2, 3,
+                                new DensityFunction.NoiseHolder(strataNoiseHolder)
                         )
                 )
         );

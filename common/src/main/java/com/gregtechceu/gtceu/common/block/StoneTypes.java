@@ -23,7 +23,7 @@ import java.util.function.Supplier;
 @SuppressWarnings("NonFinalFieldInEnum")
 public enum StoneTypes implements IStrataLayer {
 
-    STONE("stone", MaterialColor.STONE, true, () -> Blocks.STONE::defaultBlockState, 0.0, 1.5, GTMaterials.Stone, false) {
+    STONE("stone", MaterialColor.STONE, true, () -> Blocks.STONE::defaultBlockState, -0.5, 1.0, GTMaterials.Stone, false) {
         @Override
         public VerticalAnchor getHeight() {
             return VerticalAnchor.absolute(64);
@@ -47,7 +47,7 @@ public enum StoneTypes implements IStrataLayer {
         }
     },
      */
-    RED_GRANITE("red_granite", MaterialColor.COLOR_RED, true, () -> GTBlocks.RED_GRANITE::getDefaultState, 0.0, 1.5, GTMaterials.RedGranite) {
+    RED_GRANITE("red_granite", MaterialColor.COLOR_RED, true, () -> GTBlocks.RED_GRANITE::getDefaultState, -0.5, 1.0, GTMaterials.RedGranite) {
         @Override
         public VerticalAnchor getHeight() {
             return VerticalAnchor.absolute(0);
@@ -58,7 +58,7 @@ public enum StoneTypes implements IStrataLayer {
             return UniformInt.of(8, 14);
         }
     },
-    MARBLE("marble", MaterialColor.QUARTZ, true, () -> GTBlocks.MARBLE::getDefaultState, 0.0, -1.0, GTMaterials.Marble) {
+    MARBLE("marble", MaterialColor.QUARTZ, true, () -> GTBlocks.MARBLE::getDefaultState, -0.5, 1.0, GTMaterials.Marble) {
         @Override
         public VerticalAnchor getHeight() {
             return VerticalAnchor.absolute(32);
@@ -69,7 +69,7 @@ public enum StoneTypes implements IStrataLayer {
             return UniformInt.of(6, 14);
         }
     },
-    ANDESITE("andesite", MaterialColor.STONE, true, () -> Blocks.ANDESITE::defaultBlockState, 0.0, 0.3, GTMaterials.Andesite, false) {
+    ANDESITE("andesite", MaterialColor.STONE, true, () -> Blocks.ANDESITE::defaultBlockState, -0.5, 1.0, GTMaterials.Andesite, false) {
         @Override
         public VerticalAnchor getHeight() {
             return VerticalAnchor.belowTop(128);
@@ -80,7 +80,7 @@ public enum StoneTypes implements IStrataLayer {
             return UniformInt.of(8, 12);
         }
     },
-    GRANITE("granite", MaterialColor.DIRT, true, () -> Blocks.GRANITE::defaultBlockState, 0.0, 0.0, GTMaterials.Granite, false) {
+    GRANITE("granite", MaterialColor.DIRT, true, () -> Blocks.GRANITE::defaultBlockState, -0.5, 1.0, GTMaterials.Granite, false) {
         @Override
         public VerticalAnchor getHeight() {
             return VerticalAnchor.absolute(64);
@@ -91,7 +91,7 @@ public enum StoneTypes implements IStrataLayer {
             return UniformInt.of(8, 12);
         }
     },
-    DIORITE("diorite", MaterialColor.QUARTZ, true, () -> Blocks.DIORITE::defaultBlockState, 0.0, 0.2, GTMaterials.Diorite, false) {
+    DIORITE("diorite", MaterialColor.QUARTZ, true, () -> Blocks.DIORITE::defaultBlockState, -0.5, 1.0, GTMaterials.Diorite, false) {
         @Override
         public VerticalAnchor getHeight() {
             return VerticalAnchor.absolute(96);
@@ -102,7 +102,8 @@ public enum StoneTypes implements IStrataLayer {
             return UniformInt.of(8, 12);
         }
     },
-    BASALT("basalt", MaterialColor.TERRACOTTA_BLACK, true, () -> Blocks.BASALT::defaultBlockState, 0.0, -0.2, GTMaterials.Basalt, false) {
+    /*
+    BASALT("basalt", MaterialColor.TERRACOTTA_BLACK, true, () -> Blocks.BASALT::defaultBlockState, -0.5, 1.0, GTMaterials.Basalt, false) {
         @Override
         public VerticalAnchor getHeight() {
             return VerticalAnchor.aboveBottom(32);
@@ -113,6 +114,7 @@ public enum StoneTypes implements IStrataLayer {
             return UniformInt.of(6, 12);
         }
     },
+     */
     CONCRETE_LIGHT("light_concrete", MaterialColor.STONE, false, () -> GTBlocks.LIGHT_CONCRETE::getDefaultState, 0.0, 0.0, GTMaterials.Concrete),
     CONCRETE_DARK("dark_concrete", MaterialColor.STONE, false, () -> GTBlocks.DARK_CONCRETE::getDefaultState, 0.0, 0.0, GTMaterials.Concrete),
     ;
