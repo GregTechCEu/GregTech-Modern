@@ -56,6 +56,7 @@ public class BlobStrata implements SurfaceRules.RuleSource
             strata3d = BuiltinRegistries.DENSITY_FUNCTION.getOrThrow(GTFeatures.BASE_3D_STRATA_NOISE);
         }
         strata3d = applyNoiseHolder(strata3d, context);
+        NormalNoise typeNoise = context.randomState.getOrCreateNoise(GTFeatures.STRATA_TYPE_NOISE);
         return (x, y, z) -> {
             BlockPos currentPos = new BlockPos(x, y, z);
             BlockState current = context.chunk.getBlockState(currentPos);
@@ -65,8 +66,6 @@ public class BlobStrata implements SurfaceRules.RuleSource
 
             IStrataLayer stratum;
             if (layer == null) {
-                NormalNoise typeNoise = context.randomState.getOrCreateNoise(GTFeatures.STRATA_TYPE_NOISE);
-
                 stratum = getStateForPos(typeNoise, LAYERS, x, y, z);
             } else {
                 stratum = layer;

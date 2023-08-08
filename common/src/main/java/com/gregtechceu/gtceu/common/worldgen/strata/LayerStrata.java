@@ -1,14 +1,13 @@
 package com.gregtechceu.gtceu.common.worldgen.strata;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.worldgen.WorldGeneratorUtils;
 import com.gregtechceu.gtceu.api.data.worldgen.strata.IStrataLayer;
 import com.gregtechceu.gtceu.common.data.GTFeatures;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.KeyDispatchDataCodec;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.SurfaceRules;
 import net.minecraft.world.level.levelgen.synth.NormalNoise;
@@ -22,10 +21,11 @@ public class LayerStrata implements SurfaceRules.RuleSource {
     public static IStrataLayer[] LAYERS;
     public static final LayerStrata INSTANCE = new LayerStrata();
     public static final KeyDispatchDataCodec<LayerStrata> CODEC = KeyDispatchDataCodec.of(MapCodec.unit(INSTANCE));
-    public static final ResourceLocation STRATA_RAND_ID = GTCEu.id("strata");
 
     @Nullable
     private IStrataLayer currentLayer;
+    @Nullable
+    private RandomSource random;
 
     @Override
     public SurfaceRules.SurfaceRule apply(SurfaceRules.Context context) {
@@ -36,16 +36,19 @@ public class LayerStrata implements SurfaceRules.RuleSource {
                     .filter(strata -> strata.getVerticalSize() != null)
                     .toArray(IStrataLayer[]::new);
         }
+        if (random == null) {
+            random = RandomSource.create(context.randomState.legacyLevelSeed());
+        }
         NormalNoise noise = context.randomState.getOrCreateNoise(GTFeatures.STRATA_NOISE);
         return (x, y, z) -> {
             BlockState current = context.chunk.getBlockState(new BlockPos(x, y, z));
             if (current.isAir()) {
                 return null;
             }
-            if (currentLayer != null && currentLayer.getHeight() != null && currentLayer.getVerticalSize() != null) {
+            if (currentLayer != null) {
                 int chosenY = currentLayer.getHeight().resolveY(context.context);
                 int difference = Math.abs(chosenY - y);
-                int size = currentLayer.getVerticalSize().sample(context.randomState.getOrCreateRandomFactory(STRATA_RAND_ID).at(x, y, z));
+                int size = currentLayer.getVerticalSize().sample(random);
                 if (chosenY >= y && size >= Math.abs(noise.getValue(x, y, z)) * difference) {
                     return currentLayer.getState().get().get();
                 } else {
@@ -54,14 +57,14 @@ public class LayerStrata implements SurfaceRules.RuleSource {
             }
 
             int i = (int)Math.round(noise.getValue(x, y, z) * 8.0);
-            int index = (y + i + LAYERS.length) % LAYERS.length;
+            int index = Math.abs((y + i + LAYERS.length) % LAYERS.length);
             IStrataLayer layer = LAYERS[index];
-            while (layer.getHeight() != null && layer.getHeight().resolveY(context.context) < y) {
-                if (index < LAYERS.length - 1)
-                    layer = LAYERS[++index];
-                else
-                    layer = LAYERS[0];
-            }
+            //while (layer.getHeight().resolveY(context.context) > y) {
+            //    if (index < LAYERS.length - 1)
+            //        layer = LAYERS[++index];
+            //    else
+            //        layer = LAYERS[0];
+            //}
             currentLayer = layer;
             return currentLayer.getState().get().get();
         };
