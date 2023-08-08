@@ -1,8 +1,6 @@
 {
   "values": [
-    {
-      "id": "gtceu:glass_lens",
-      "required": false
-    }
+    "gtceu:glass_lens",
+    "gtceu:nether_star_lens"
   ]
 }
