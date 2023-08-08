@@ -3,12 +3,10 @@ package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.worldgen.modifier.*;
-import com.gregtechceu.gtceu.api.data.worldgen.strata.IStrataLayer;
-import com.gregtechceu.gtceu.api.data.worldgen.strata.StrataGenerationType;
 import com.gregtechceu.gtceu.api.data.worldgen.vein.GTOreFeature;
 import com.gregtechceu.gtceu.api.data.worldgen.vein.GTOreFeatureConfiguration;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.common.worldgen.strata.*;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
@@ -49,8 +47,8 @@ public class GTFeatures {
 
         GTRegistries.register(BuiltinRegistries.NOISE, STRATA_NOISE.location(), new NormalNoise.NoiseParameters(-9, 1.0, 1.0, 0.0, 10.0));
         GTRegistries.register(BuiltinRegistries.NOISE, STRATA_TYPE_NOISE.location(), new NormalNoise.NoiseParameters(-5, 1.0, 5.0, 10.0, 0.0, 1.0));
-        GTRegistries.register(Registry.RULE, GTCEu.id("blob_strata"), IStrataLayer.BlobStrata.CODEC.codec());
-        GTRegistries.register(Registry.RULE, GTCEu.id("layer_strata"), IStrataLayer.LayerStrata.CODEC.codec());
+        GTRegistries.register(Registry.RULE, GTCEu.id("blob_strata"), BlobStrata.CODEC.codec());
+        GTRegistries.register(Registry.RULE, GTCEu.id("layer_strata"), LayerStrata.CODEC.codec());
         Holder<NormalNoise.NoiseParameters> strataNoiseHolder = BuiltinRegistries.NOISE.getOrCreateHolderOrThrow(STRATA_NOISE);
         GTRegistries.register(BuiltinRegistries.DENSITY_FUNCTION, BASE_3D_STRATA_NOISE.location(),
                 DensityFunctions.cacheAllInCell(

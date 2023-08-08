@@ -5,6 +5,8 @@ import com.gregtechceu.gtceu.api.data.worldgen.WorldGeneratorUtils;
 import com.gregtechceu.gtceu.api.data.worldgen.strata.IStrataLayer;
 import com.gregtechceu.gtceu.common.block.StoneTypes;
 import com.gregtechceu.gtceu.common.data.GTFeatures;
+import com.gregtechceu.gtceu.common.worldgen.strata.BlobStrata;
+import com.gregtechceu.gtceu.common.worldgen.strata.LayerStrata;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import net.minecraft.data.worldgen.SurfaceRuleData;
 import net.minecraft.world.level.levelgen.SurfaceRules;
@@ -26,13 +28,8 @@ public class SurfaceRuleDataMixin {
         if (ConfigHolder.INSTANCE == null) ConfigHolder.init();
         if (WorldGeneratorUtils.STRATA_LAYERS.size() == 0) StoneTypes.init();
         switch (ConfigHolder.INSTANCE.worldgen.strataGeneration) {
-            case BLOB -> {
-                builder.add(IStrataLayer.BlobStrata.INSTANCE);
-                //for (IStrataLayer layer : WorldGeneratorUtils.STRATA_LAYERS.values()) {
-                //    builder.add(new IStrataLayer.BlobStrata(layer));
-                //}
-            }
-            case LAYER -> builder.add(IStrataLayer.LayerStrata.INSTANCE);
+            case BLOB -> builder.add(BlobStrata.INSTANCE);
+            case LAYER -> builder.add(LayerStrata.INSTANCE);
         }
     }
 
