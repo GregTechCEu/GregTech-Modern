@@ -9,14 +9,12 @@ import com.gregtechceu.gtceu.api.gui.widget.LongInputWidget;
 import com.gregtechceu.gtceu.api.gui.widget.NumberInputWidget;
 import com.gregtechceu.gtceu.common.cover.data.BucketMode;
 import com.gregtechceu.gtceu.common.cover.data.TransferMode;
-import com.gregtechceu.gtceu.utils.FluidStackHashStrategy;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import it.unimi.dsi.fastutil.objects.Object2LongOpenCustomHashMap;
 import lombok.Getter;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
@@ -137,38 +135,6 @@ public class FluidRegulatorCover extends PumpCover {
         }
 
         return platformTransferLimit - fluidLeftToTransfer;
-    }
-
-    private enum TransferDirection {
-        INSERT,
-        EXTRACT
-    }
-
-    private Map<FluidStack, Long> enumerateDistinctFluids(IFluidTransfer fluidTransfer, TransferDirection direction) {
-        final Map<FluidStack, Long> summedFluids = new Object2LongOpenCustomHashMap<>(FluidStackHashStrategy.comparingAllButAmount());
-
-        for (int tank = 0; tank < fluidTransfer.getTanks(); tank++) {
-            if (!canTransfer(fluidTransfer, direction, tank))
-                continue;
-
-            FluidStack fluidStack = fluidTransfer.getFluidInTank(tank);
-            if (fluidStack.isEmpty())
-                continue;
-
-            summedFluids.putIfAbsent(fluidStack, 0L);
-            summedFluids.computeIfPresent(fluidStack, (stack, totalAmount) -> {
-                return totalAmount + stack.getAmount();
-            });
-        }
-
-        return summedFluids;
-    }
-
-    private static boolean canTransfer(IFluidTransfer fluidTransfer, TransferDirection direction, int tank) {
-        return switch (direction) {
-            case INSERT -> fluidTransfer.supportsFill(tank);
-            case EXTRACT -> fluidTransfer.supportsDrain(tank);
-        };
     }
 
     private void setTransferBucketMode(BucketMode transferBucketMode) {

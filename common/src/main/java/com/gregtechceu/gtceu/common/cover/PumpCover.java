@@ -16,6 +16,7 @@ import com.gregtechceu.gtceu.api.gui.widget.NumberInputWidget;
 import com.gregtechceu.gtceu.api.machine.ConditionalSubscriptionHandler;
 import com.gregtechceu.gtceu.api.syncdata.RequireRerender;
 import com.gregtechceu.gtceu.common.cover.data.BucketMode;
+import com.gregtechceu.gtceu.utils.FluidStackHashStrategy;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
@@ -27,6 +28,7 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
+import it.unimi.dsi.fastutil.objects.Object2LongOpenCustomHashMap;
 import lombok.Getter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -41,6 +43,7 @@ import org.jetbrains.annotations.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author KilaBash
@@ -226,6 +229,39 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
 
     protected long transferAny(IFluidTransfer source, IFluidTransfer destination, long platformTransferLimit) {
         return FluidTransferHelper.transferFluids(source, destination, platformTransferLimit, filterHandler.getFilter());
+    }
+
+
+    protected enum TransferDirection {
+        INSERT,
+        EXTRACT
+    }
+
+    protected Map<FluidStack, Long> enumerateDistinctFluids(IFluidTransfer fluidTransfer, TransferDirection direction) {
+        final Map<FluidStack, Long> summedFluids = new Object2LongOpenCustomHashMap<>(FluidStackHashStrategy.comparingAllButAmount());
+
+        for (int tank = 0; tank < fluidTransfer.getTanks(); tank++) {
+            if (!canTransfer(fluidTransfer, direction, tank))
+                continue;
+
+            FluidStack fluidStack = fluidTransfer.getFluidInTank(tank);
+            if (fluidStack.isEmpty())
+                continue;
+
+            summedFluids.putIfAbsent(fluidStack, 0L);
+            summedFluids.computeIfPresent(fluidStack, (stack, totalAmount) -> {
+                return totalAmount + stack.getAmount();
+            });
+        }
+
+        return summedFluids;
+    }
+
+    private static boolean canTransfer(IFluidTransfer fluidTransfer, TransferDirection direction, int tank) {
+        return switch (direction) {
+            case INSERT -> fluidTransfer.supportsFill(tank);
+            case EXTRACT -> fluidTransfer.supportsDrain(tank);
+        };
     }
 
 
