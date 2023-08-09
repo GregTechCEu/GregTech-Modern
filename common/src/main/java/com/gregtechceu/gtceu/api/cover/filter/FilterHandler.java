@@ -123,9 +123,9 @@ public abstract class FilterHandler<T, F extends Filter<T, F>> implements IEnhan
         this.filterItem = filterContainer.getStackInSlot(0);
 
         if (this.filter != null) {
+            this.filter = null;
             this.onFilterRemoved.accept(this.filter);
         }
-        this.filter = null;
 
         loadFilterFromItem();
     }

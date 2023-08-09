@@ -38,11 +38,10 @@ public class FluidRegulatorCover extends PumpCover {
 
 
     private NumberInputWidget<Long> transferSizeInput;
+    private EnumSelectorWidget<BucketMode> transferBucketModeInput;
 
     public FluidRegulatorCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide, int tier) {
         super(definition, coverHolder, attachedSide, tier);
-
-        filterHandler.onFilterUpdated(this::onFilterUpdated);
     }
 
     //////////////////////////////////////
@@ -193,16 +192,13 @@ public class FluidRegulatorCover extends PumpCover {
         }
     }
 
-    private void onFilterUpdated(FluidFilter filter) {
-        configureFilter();
-        configureTransferSizeInput();
-    }
-
     @Override
     protected void configureFilter() {
         if (filterHandler.getFilter() instanceof SimpleFluidFilter filter) {
             filter.setMaxStackSize(transferMode == TransferMode.TRANSFER_ANY ? 1L : MAX_STACK_SIZE);
         }
+
+        configureTransferSizeInput();
     }
 
     private long getFilteredFluidAmount(FluidStack fluidStack) {
@@ -232,7 +228,8 @@ public class FluidRegulatorCover extends PumpCover {
         configureTransferSizeInput();
         group.addWidget(this.transferSizeInput);
 
-        group.addWidget(new EnumSelectorWidget<>(121, 45, 20, 20, BucketMode.values(), transferBucketMode, this::setTransferBucketMode));
+        this.transferBucketModeInput = new EnumSelectorWidget<>(121, 45, 20, 20, BucketMode.values(), transferBucketMode, this::setTransferBucketMode);
+        group.addWidget(this.transferBucketModeInput);
     }
 
     private long getCurrentBucketModeTransferSize() {
@@ -244,10 +241,11 @@ public class FluidRegulatorCover extends PumpCover {
     }
 
     private void configureTransferSizeInput() {
-        if (this.transferSizeInput == null)
+        if (this.transferSizeInput == null || transferBucketModeInput == null)
             return;
 
         this.transferSizeInput.setVisible(shouldShowTransferSize());
+        this.transferBucketModeInput.setVisible(shouldShowTransferSize());
     }
 
     private boolean shouldShowTransferSize() {

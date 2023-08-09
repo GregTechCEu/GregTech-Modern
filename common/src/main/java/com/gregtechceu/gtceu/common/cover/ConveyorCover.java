@@ -77,7 +77,10 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
         this.io = IO.OUT;
 
         subscriptionHandler = new ConditionalSubscriptionHandler(coverHolder, this::update, this::isSubscriptionActive);
-        filterHandler = FilterHandlers.item(this).onFilterLoaded(f -> configureFilter());
+        filterHandler = FilterHandlers.item(this)
+                .onFilterLoaded(f -> configureFilter())
+                .onFilterUpdated(f -> configureFilter())
+                .onFilterRemoved(f -> configureFilter());
     }
 
     private boolean isSubscriptionActive() {
