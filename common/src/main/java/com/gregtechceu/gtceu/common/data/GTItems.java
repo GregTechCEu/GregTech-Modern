@@ -1190,10 +1190,12 @@ public class GTItems {
             .register();
     public static ItemEntry<ComponentItem> COVER_FLUID_VOIDING = REGISTRATE.item("fluid_voiding_cover", ComponentItem::create)
             .lang("Fluid Voiding Cover")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_VOIDING)))
             .onRegister(compassNode(GTCompassSections.COVERS, GTCompassNodes.COVER))
             .register();
     public static ItemEntry<ComponentItem> COVER_FLUID_VOIDING_ADVANCED = REGISTRATE.item("advanced_fluid_voiding_cover", ComponentItem::create)
             .lang("Advanced Fluid Voiding Cover")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_VOIDING_ADVANCED)))
             .onRegister(compassNode(GTCompassSections.COVERS, GTCompassNodes.COVER))
             .register();
     public static ItemEntry<ComponentItem> COVER_ITEM_VOIDING = REGISTRATE.item("item_voiding_cover", ComponentItem::create)
