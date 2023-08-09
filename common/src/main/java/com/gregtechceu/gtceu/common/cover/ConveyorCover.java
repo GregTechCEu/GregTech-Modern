@@ -83,7 +83,7 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
                 .onFilterRemoved(f -> configureFilter());
     }
 
-    private boolean isSubscriptionActive() {
+    protected boolean isSubscriptionActive() {
         return isWorkingEnabled() && getAdjacentItemTransfer() != null;
     }
 
@@ -158,7 +158,7 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
         }
     }
 
-    private void update() {
+    protected void update() {
         long timer = coverHolder.getOffsetTimer();
         if (timer % 5 == 0) {
             if (itemsLeftToTransferLastSecond > 0) {

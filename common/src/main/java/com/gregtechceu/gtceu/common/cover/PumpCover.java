@@ -98,11 +98,11 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
         return isWorkingEnabled() && getAdjacentFluidTransfer() != null;
     }
 
-    private @Nullable IFluidTransfer getOwnFluidTransfer() {
+    protected @Nullable IFluidTransfer getOwnFluidTransfer() {
         return FluidTransferHelper.getFluidTransfer(coverHolder.getLevel(), coverHolder.getPos(), attachedSide);
     }
 
-    private @Nullable IFluidTransfer getAdjacentFluidTransfer() {
+    protected @Nullable IFluidTransfer getAdjacentFluidTransfer() {
         return FluidTransferHelper.getFluidTransfer(coverHolder.getLevel(), coverHolder.getPos().relative(attachedSide), attachedSide.getOpposite());
     }
 
@@ -188,7 +188,7 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
         }
     }
 
-    private void update() {
+    protected void update() {
         long timer = coverHolder.getOffsetTimer();
         if (timer % 5 != 0)
             return;

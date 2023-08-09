@@ -13,15 +13,19 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import lombok.Getter;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Map;
 
+@MethodsReturnNonnullByDefault
+@ParametersAreNonnullByDefault
 public class AdvancedItemVoidingCover extends ItemVoidingCover {
     @Persisted @DescSynced @Getter
-    private VoidingMode voidingMode;
+    private VoidingMode voidingMode = VoidingMode.VOID_ANY;
 
     @Persisted @Getter
     protected int globalVoidingLimit = 1;
@@ -30,8 +34,6 @@ public class AdvancedItemVoidingCover extends ItemVoidingCover {
 
     public AdvancedItemVoidingCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {
         super(definition, coverHolder, attachedSide);
-
-        voidingMode = VoidingMode.VOID_ANY;
     }
 
 
@@ -41,7 +43,7 @@ public class AdvancedItemVoidingCover extends ItemVoidingCover {
 
     @Override
     protected void doVoidItems() {
-        IItemTransfer itemTransfer = getItemTransfer();
+        IItemTransfer itemTransfer = getOwnItemTransfer();
         if (itemTransfer == null) {
             return;
         }
