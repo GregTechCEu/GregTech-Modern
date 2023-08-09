@@ -52,7 +52,7 @@ import java.util.List;
 public class PumpCover extends CoverBehavior implements IUICover, IControllable {
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(PumpCover.class, CoverBehavior.MANAGED_FIELD_HOLDER);
 
-    private static final long MILLIBUCKET_SIZE = FluidHelper.getBucket() / 1000;
+    protected static final long MILLIBUCKET_SIZE = FluidHelper.getBucket() / 1000;
 
     public final int tier;
     public final long maxMilliBucketsPerTick;
