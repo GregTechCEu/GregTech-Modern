@@ -103,7 +103,7 @@ public class ItemVoidingCover extends ConveyorCover implements IUICover, IContro
 
     @NotNull
     protected String getUITitle() {
-        return "cover.conveyor.title";
+        return "cover.item.voiding.title";
     }
 
     protected void buildAdditionalUI(WidgetGroup group) {
