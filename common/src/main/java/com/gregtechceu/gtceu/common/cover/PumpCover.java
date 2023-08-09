@@ -97,7 +97,7 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
                 .onFilterRemoved(f -> configureFilter());
     }
 
-    private boolean isSubscriptionActive() {
+    protected boolean isSubscriptionActive() {
         return isWorkingEnabled() && getAdjacentFluidTransfer() != null;
     }
 

@@ -21,6 +21,7 @@ import net.minecraft.core.Direction;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.Map;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -59,7 +60,19 @@ public class AdvancedFluidVoidingCover extends FluidVoidingCover {
     }
 
     private void voidOverflow(IFluidTransfer fluidTransfer) {
-        // TODO implement this
+        final Map<FluidStack, Long> fluidAmounts = enumerateDistinctFluids(fluidTransfer, TransferDirection.EXTRACT);
+
+        for (FluidStack fluidStack : fluidAmounts.keySet()) {
+            long presentAmount = fluidAmounts.get(fluidStack);
+            long targetAmount = getFilteredFluidAmount(fluidStack);
+            if (targetAmount <= 0L || targetAmount > presentAmount)
+                continue;
+
+            var toDrain = fluidStack.copy();
+            toDrain.setAmount(presentAmount - targetAmount);
+
+            fluidTransfer.drain(toDrain, false);
+        }
     }
 
     private long getFilteredFluidAmount(FluidStack fluidStack) {

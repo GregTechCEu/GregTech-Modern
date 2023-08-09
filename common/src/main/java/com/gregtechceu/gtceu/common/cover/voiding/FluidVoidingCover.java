@@ -2,13 +2,13 @@ package com.gregtechceu.gtceu.common.cover.voiding;
 
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
-import com.gregtechceu.gtceu.api.cover.filter.FluidFilter;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
 import com.gregtechceu.gtceu.common.cover.PumpCover;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
+import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
@@ -18,6 +18,7 @@ import net.minecraft.core.Direction;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.Map;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -29,7 +30,8 @@ public class FluidVoidingCover extends PumpCover {
         super(definition, coverHolder, attachedSide, 0);
     }
 
-    private boolean isSubscriptionActive() {
+    @Override
+    protected boolean isSubscriptionActive() {
         return isWorkingEnabled() && isEnabled();
     }
 
@@ -55,9 +57,17 @@ public class FluidVoidingCover extends PumpCover {
     }
 
     void voidAny(IFluidTransfer fluidTransfer) {
-        FluidFilter filter = filterHandler.getFilter();
+        final Map<FluidStack, Long> fluidAmounts = enumerateDistinctFluids(fluidTransfer, TransferDirection.EXTRACT);
 
-        // TODO implement this
+        for (FluidStack fluidStack : fluidAmounts.keySet()) {
+            if (!filterHandler.getFilter().test(fluidStack))
+                continue;
+
+            var toDrain = fluidStack.copy();
+            toDrain.setAmount(fluidAmounts.get(fluidStack));
+
+            fluidTransfer.drain(toDrain, false);
+        }
     }
 
     public void setWorkingEnabled(boolean workingEnabled) {
