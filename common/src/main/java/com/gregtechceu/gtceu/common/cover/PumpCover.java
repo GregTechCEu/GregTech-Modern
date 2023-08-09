@@ -85,7 +85,7 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
         this.maxMilliBucketsPerTick = 64 * (long) Math.pow(4, tier - 1); // .5b 2b 8b
 
         this.currentMilliBucketsPerTick = maxMilliBucketsPerTick;
-        this.milliBucketsLeftToTransferLastSecond = currentMilliBucketsPerTick;
+        this.milliBucketsLeftToTransferLastSecond = currentMilliBucketsPerTick * 20;
 
         subscriptionHandler = new ConditionalSubscriptionHandler(coverHolder, this::update, this::isSubscriptionActive);
         filterHandler = FilterHandlers.fluid(this).onFilterLoaded(f -> configureFilter());
