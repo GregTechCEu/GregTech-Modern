@@ -126,15 +126,27 @@ public class AdvancedItemVoidingCover extends ItemVoidingCover {
         if (filterHandler.getFilter() instanceof SimpleItemFilter filter) {
             filter.setMaxStackSize(this.voidingMode.maxStackSize);
         }
+
+        configureStackSizeInput();
     }
 
     private void configureStackSizeInput() {
         if (this.stackSizeInput == null)
             return;
 
-        this.stackSizeInput.setVisible(this.voidingMode != VoidingMode.VOID_ANY);
+        this.stackSizeInput.setVisible(shouldShowStackSize());
         this.stackSizeInput.setMin(1);
         this.stackSizeInput.setMax(this.voidingMode.maxStackSize);
+    }
+
+    private boolean shouldShowStackSize() {
+        if (this.voidingMode == VoidingMode.VOID_ANY)
+            return false;
+
+        if (!this.filterHandler.isFilterPresent())
+            return true;
+
+        return this.filterHandler.getFilter().isBlackList();
     }
 
     //////////////////////////////////////
