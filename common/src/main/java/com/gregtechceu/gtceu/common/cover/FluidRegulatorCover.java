@@ -9,16 +9,20 @@ import com.gregtechceu.gtceu.api.gui.widget.LongInputWidget;
 import com.gregtechceu.gtceu.api.gui.widget.NumberInputWidget;
 import com.gregtechceu.gtceu.common.cover.data.BucketMode;
 import com.gregtechceu.gtceu.common.cover.data.TransferMode;
+import com.gregtechceu.gtceu.utils.FluidStackHashStrategy;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import it.unimi.dsi.fastutil.objects.Object2LongOpenCustomHashMap;
 import lombok.Getter;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Map;
 
 public class FluidRegulatorCover extends PumpCover {
     private static final long MAX_STACK_SIZE = 2_048_000_000; // Capacity of quantum tank IX
@@ -59,6 +63,9 @@ public class FluidRegulatorCover extends PumpCover {
         long fluidLeftToTransfer = platformTransferLimit;
 
         for (int slot = 0; slot < source.getTanks(); slot++) {
+            if (fluidLeftToTransfer <= 0L)
+                break;
+
             FluidStack sourceFluid = source.getFluidInTank(slot).copy();
             long supplyAmount = getFilteredFluidAmount(sourceFluid);
 
@@ -85,17 +92,77 @@ public class FluidRegulatorCover extends PumpCover {
                 destination.fill(drained, false);
                 fluidLeftToTransfer -= drained.getAmount();
             }
-
-            if (fluidLeftToTransfer <= 0L)
-                break;
         }
 
         return platformTransferLimit - fluidLeftToTransfer;
     }
 
     private long keepExact(IFluidTransfer source, IFluidTransfer destination, long platformTransferLimit) {
-        // TODO implement this
-        return 0L;
+        long fluidLeftToTransfer = platformTransferLimit;
+
+        final Map<FluidStack, Long> sourceAmounts = enumerateDistinctFluids(source, TransferDirection.EXTRACT);
+        final Map<FluidStack, Long> destinationAmounts = enumerateDistinctFluids(destination, TransferDirection.INSERT);
+
+        for (FluidStack fluidStack : sourceAmounts.keySet()) {
+            if (fluidLeftToTransfer <= 0L)
+                break;
+
+            long amountToKeep = getFilteredFluidAmount(fluidStack);
+            long amountInDest = destinationAmounts.getOrDefault(fluidStack, 0L);
+            if (amountInDest >= amountToKeep)
+                continue;
+
+            FluidStack fluidToMove = fluidStack.copy();
+            fluidToMove.setAmount(Math.min(fluidLeftToTransfer, amountToKeep - amountInDest));
+            if (fluidToMove.getAmount() <= 0L)
+                continue;
+
+            FluidStack drained = source.drain(fluidToMove, true);
+            long fillableAmount = destination.fill(drained, true);
+            if (fillableAmount <= 0L)
+                continue;
+
+            fluidToMove.setAmount(Math.min(fluidToMove.getAmount(), fillableAmount));
+
+            drained = source.drain(fluidToMove, false);
+            long movedAmount = destination.fill(drained, false);
+
+            fluidLeftToTransfer -= movedAmount;
+        }
+
+        return platformTransferLimit - fluidLeftToTransfer;
+    }
+
+    private enum TransferDirection {
+        INSERT,
+        EXTRACT
+    }
+
+    private Map<FluidStack, Long> enumerateDistinctFluids(IFluidTransfer fluidTransfer, TransferDirection direction) {
+        final Map<FluidStack, Long> summedFluids = new Object2LongOpenCustomHashMap<>(FluidStackHashStrategy.comparingAllButAmount());
+
+        for (int tank = 0; tank < fluidTransfer.getTanks(); tank++) {
+            if (!canTransfer(fluidTransfer, direction, tank))
+                continue;
+
+            FluidStack fluidStack = fluidTransfer.getFluidInTank(tank);
+            if (fluidStack.isEmpty())
+                continue;
+
+            summedFluids.putIfAbsent(fluidStack, 0L);
+            summedFluids.computeIfPresent(fluidStack, (stack, totalAmount) -> {
+                return totalAmount + stack.getAmount();
+            });
+        }
+
+        return summedFluids;
+    }
+
+    private static boolean canTransfer(IFluidTransfer fluidTransfer, TransferDirection direction, int tank) {
+        return switch (direction) {
+            case INSERT -> fluidTransfer.supportsFill(tank);
+            case EXTRACT -> fluidTransfer.supportsDrain(tank);
+        };
     }
 
     private void setTransferBucketMode(BucketMode transferBucketMode) {
@@ -143,7 +210,7 @@ public class FluidRegulatorCover extends PumpCover {
             return globalTransferSize;
 
         FluidFilter filter = filterHandler.getFilter();
-        return filter.isBlackList() ? globalTransferSize : filter.testFluidAmount(fluidStack);
+        return (filter.isBlackList() ? globalTransferSize : filter.testFluidAmount(fluidStack)) * MILLIBUCKET_SIZE;
     }
 
     ///////////////////////////
