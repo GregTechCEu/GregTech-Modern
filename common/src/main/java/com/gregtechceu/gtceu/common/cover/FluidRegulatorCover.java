@@ -34,7 +34,7 @@ public class FluidRegulatorCover extends PumpCover {
     private BucketMode transferBucketMode = BucketMode.MILLI_BUCKET;
     @Persisted @DescSynced @Getter
     protected long globalTransferSize;
-    protected int fluidTransferBuffered;
+    protected long fluidTransferBuffered = 0L;
 
 
     private NumberInputWidget<Long> transferSizeInput;
@@ -68,8 +68,13 @@ public class FluidRegulatorCover extends PumpCover {
             FluidStack sourceFluid = source.getFluidInTank(slot).copy();
             long supplyAmount = getFilteredFluidAmount(sourceFluid);
 
-            if (fluidLeftToTransfer < supplyAmount)
+            // If the remaining transferrable amount in this operation is not enough to transfer the full stack size,
+            // the remaining amount for this operation will be buffered and added to the next operation's maximum.
+            if (fluidLeftToTransfer + fluidTransferBuffered < supplyAmount) {
+                this.fluidTransferBuffered += fluidLeftToTransfer;
+                fluidLeftToTransfer = 0L;
                 break;
+            }
 
             if (sourceFluid.isEmpty() || supplyAmount <= 0L)
                 continue;
@@ -89,8 +94,10 @@ public class FluidRegulatorCover extends PumpCover {
 
             if (!drained.isEmpty()) {
                 destination.fill(drained, false);
-                fluidLeftToTransfer -= drained.getAmount();
+                fluidLeftToTransfer -= (drained.getAmount() - fluidTransferBuffered);
             }
+
+            fluidTransferBuffered = 0L;
         }
 
         return platformTransferLimit - fluidLeftToTransfer;
