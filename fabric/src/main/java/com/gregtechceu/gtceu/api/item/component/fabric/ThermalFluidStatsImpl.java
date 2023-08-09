@@ -6,9 +6,10 @@ import com.gregtechceu.gtceu.api.misc.fabric.FluidCellStorage;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 
 /**
- @author KilaBash
- @date 2023/3/19
- @implNote ThermalFluidStatsImpl */
+ * @author KilaBash
+ * @date 2023/3/19
+ * @implNote ThermalFluidStatsImpl
+ */
 public class ThermalFluidStatsImpl extends ThermalFluidStats {
 
     protected ThermalFluidStatsImpl(int capacity, int maxFluidTemperature, boolean gasProof, boolean acidProof, boolean cryoProof, boolean plasmaProof, boolean allowPartialFill) {
