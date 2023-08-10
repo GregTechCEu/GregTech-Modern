@@ -31,7 +31,7 @@ public class FluidRegulatorCover extends PumpCover {
     @Persisted @DescSynced @Getter
     private BucketMode transferBucketMode = BucketMode.MILLI_BUCKET;
     @Persisted @DescSynced @Getter
-    protected long globalTransferSize;
+    protected long globalTransferSizeMillibuckets;
     protected long fluidTransferBuffered = 0L;
 
 
@@ -64,7 +64,7 @@ public class FluidRegulatorCover extends PumpCover {
                 break;
 
             FluidStack sourceFluid = source.getFluidInTank(slot).copy();
-            long supplyAmount = getFilteredFluidAmount(sourceFluid);
+            long supplyAmount = getFilteredFluidAmount(sourceFluid) * MILLIBUCKET_SIZE;
 
             // If the remaining transferrable amount in this operation is not enough to transfer the full stack size,
             // the remaining amount for this operation will be buffered and added to the next operation's maximum.
@@ -111,7 +111,7 @@ public class FluidRegulatorCover extends PumpCover {
             if (fluidLeftToTransfer <= 0L)
                 break;
 
-            long amountToKeep = getFilteredFluidAmount(fluidStack);
+            long amountToKeep = getFilteredFluidAmount(fluidStack) * MILLIBUCKET_SIZE;
             long amountInDest = destinationAmounts.getOrDefault(fluidStack, 0L);
             if (amountInDest >= amountToKeep)
                 continue;
@@ -176,10 +176,10 @@ public class FluidRegulatorCover extends PumpCover {
 
     private long getFilteredFluidAmount(FluidStack fluidStack) {
         if (!filterHandler.isFilterPresent())
-            return globalTransferSize;
+            return globalTransferSizeMillibuckets;
 
         FluidFilter filter = filterHandler.getFilter();
-        return (filter.isBlackList() ? globalTransferSize : filter.testFluidAmount(fluidStack)) * MILLIBUCKET_SIZE;
+        return (filter.isBlackList() ? globalTransferSizeMillibuckets : filter.testFluidAmount(fluidStack)) * MILLIBUCKET_SIZE;
     }
 
     ///////////////////////////
@@ -206,11 +206,11 @@ public class FluidRegulatorCover extends PumpCover {
     }
 
     private long getCurrentBucketModeTransferSize() {
-        return this.globalTransferSize / this.transferBucketMode.multiplier;
+        return this.globalTransferSizeMillibuckets / this.transferBucketMode.multiplier;
     }
 
     private void setCurrentBucketModeTransferSize(long transferSize) {
-        this.globalTransferSize = Mth.clamp(transferSize * this.transferBucketMode.multiplier, 0, MAX_STACK_SIZE);
+        this.globalTransferSizeMillibuckets = Mth.clamp(transferSize * this.transferBucketMode.multiplier, 0, MAX_STACK_SIZE);
     }
 
     private void configureTransferSizeInput() {

@@ -30,7 +30,7 @@ public class AdvancedFluidVoidingCover extends FluidVoidingCover {
     private VoidingMode voidingMode = VoidingMode.VOID_ANY;
 
     @Persisted @DescSynced @Getter
-    protected long globalStackSizeMillibuckets = 1L;
+    protected long globalTransferSizeMillibuckets = 1L;
     @Persisted @DescSynced @Getter
     private BucketMode transferBucketMode = BucketMode.MILLI_BUCKET;
 
@@ -64,7 +64,7 @@ public class AdvancedFluidVoidingCover extends FluidVoidingCover {
 
         for (FluidStack fluidStack : fluidAmounts.keySet()) {
             long presentAmount = fluidAmounts.get(fluidStack);
-            long targetAmount = getFilteredFluidAmount(fluidStack);
+            long targetAmount = getFilteredFluidAmount(fluidStack) * MILLIBUCKET_SIZE;
             if (targetAmount <= 0L || targetAmount > presentAmount)
                 continue;
 
@@ -77,10 +77,10 @@ public class AdvancedFluidVoidingCover extends FluidVoidingCover {
 
     private long getFilteredFluidAmount(FluidStack fluidStack) {
         if (!filterHandler.isFilterPresent())
-            return globalStackSizeMillibuckets;
+            return globalTransferSizeMillibuckets;
 
         FluidFilter filter = filterHandler.getFilter();
-        return filter.isBlackList() ? globalStackSizeMillibuckets : filter.testFluidAmount(fluidStack);
+        return filter.isBlackList() ? globalTransferSizeMillibuckets : filter.testFluidAmount(fluidStack);
     }
 
     public void setVoidingMode(VoidingMode voidingMode) {
@@ -129,11 +129,11 @@ public class AdvancedFluidVoidingCover extends FluidVoidingCover {
     }
 
     private long getCurrentBucketModeTransferSize() {
-        return this.globalStackSizeMillibuckets / this.transferBucketMode.multiplier;
+        return this.globalTransferSizeMillibuckets / this.transferBucketMode.multiplier;
     }
 
     private void setCurrentBucketModeTransferSize(long transferSize) {
-        this.globalStackSizeMillibuckets = Math.max(transferSize * this.transferBucketMode.multiplier, 0);
+        this.globalTransferSizeMillibuckets = Math.max(transferSize * this.transferBucketMode.multiplier, 0);
     }
 
     @Override
