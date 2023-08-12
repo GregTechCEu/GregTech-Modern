@@ -9,7 +9,6 @@ import net.minecraft.world.item.ItemStack;
  * @date 2023/2/22
  * @implNote FluidHandlerHelperImpl
  */
-@Deprecated
 public class SimpleThermalFluidHandlerItemStack extends FluidHandlerItemStack.SwapEmpty implements IThermalFluidHandlerItemStack {
     public final int maxFluidTemperature;
     private final boolean gasProof;
