@@ -74,8 +74,7 @@ public class ScrollablePhantomFluidWidget extends PhantomFluidWidget {
         if (fluid.isEmpty())
             return;
 
-        fluid.setAmount(Mth.clamp(fluid.getAmount() + delta, 0L, tank.getCapacity()));
-
+        fluid.setAmount(Math.min(Math.max(fluid.getAmount() + delta, 0L), tank.getCapacity()));
         if (fluid.getAmount() <= 0L) {
             tank.setFluid(FluidStack.empty());
         }

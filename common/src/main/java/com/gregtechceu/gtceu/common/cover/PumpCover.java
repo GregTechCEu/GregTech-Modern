@@ -168,7 +168,7 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
 
 
     public void setTransferRate(long milliBucketsPerTick) {
-        this.currentMilliBucketsPerTick = Mth.clamp(milliBucketsPerTick, 0, maxMilliBucketsPerTick);
+        this.currentMilliBucketsPerTick = Math.min(Math.max(milliBucketsPerTick, 0), maxMilliBucketsPerTick);
     }
 
     public void setBucketMode(BucketMode bucketMode) {

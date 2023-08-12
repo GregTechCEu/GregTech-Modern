@@ -17,7 +17,6 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import lombok.Getter;
 import net.minecraft.core.Direction;
-import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
@@ -210,7 +209,7 @@ public class FluidRegulatorCover extends PumpCover {
     }
 
     private void setCurrentBucketModeTransferSize(long transferSize) {
-        this.globalTransferSizeMillibuckets = Mth.clamp(transferSize * this.transferBucketMode.multiplier, 0, MAX_STACK_SIZE);
+        this.globalTransferSizeMillibuckets = Math.min(Math.max(transferSize * this.transferBucketMode.multiplier, 0), MAX_STACK_SIZE);
     }
 
     private void configureTransferSizeInput() {
