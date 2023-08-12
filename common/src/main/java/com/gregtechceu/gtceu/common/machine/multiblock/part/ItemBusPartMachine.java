@@ -78,9 +78,8 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
 
     protected NotifiableItemStackHandler createCircuitItemHandler(Object... args) {
         if (args.length > 0 && args[0] instanceof  IO io && io == IO.IN) {
-            return new NotifiableItemStackHandler(this, 1, IO.IN).setFilter(IntCircuitBehaviour::isIntegratedCircuit);
-        }
-        else {
+            return new NotifiableItemStackHandler(this, 1, IO.IN, IO.NONE).setFilter(IntCircuitBehaviour::isIntegratedCircuit);
+        } else {
             return new NotifiableItemStackHandler(this, 0, IO.NONE);
         }
     }
