@@ -215,7 +215,7 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
     }
 
     private boolean tryPaintSpecialBlock(Player player, Level world, BlockPos pos, Block block) {
-        if (block.defaultBlockState().is(CustomTags.GLASS_BLOCKS)) {
+        if (block.defaultBlockState().is(CustomTags.GLASS_BLOCKS_BLOCK)) {
             if (recolorBlockNoState(GLASS_MAP, this.color, world, pos, Blocks.GLASS)) {
                 return true;
             }

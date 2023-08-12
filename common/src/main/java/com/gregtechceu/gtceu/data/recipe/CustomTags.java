@@ -15,6 +15,7 @@ public class CustomTags {
 
     // Added Vanilla tags
     public static final TagKey<Item> TAG_PISTONS = TagUtil.createItemTag("pistons");
+    public static final TagKey<Item> GLASS_BLOCKS = TagUtil.createPlatformItemTag("glass", "glass_blocks");
     public static final TagKey<Item> GLASS_PANES = TagUtil.createItemTag("glass_panes");
     public static final TagKey<Item> SEEDS = TagUtil.createItemTag("seeds");
 
@@ -73,7 +74,7 @@ public class CustomTags {
     public static final TagKey<Block> ENDSTONE_ORE_REPLACEABLES = TagUtil.createBlockTag("end_stone_ore_replaceables");
     public static final TagKey<Block> CONCRETE = TagUtil.createBlockTag("concrete");
     public static final TagKey<Block> CONCRETE_POWDER = TagUtil.createBlockTag("concrete_powder");
-    public static final TagKey<Block> GLASS_BLOCKS = TagUtil.createPlatformBlockTag("glass", "glass_blocks", false);
+    public static final TagKey<Block> GLASS_BLOCKS_BLOCK = TagUtil.createPlatformBlockTag("glass", "glass_blocks", false);
     public static final TagKey<Block> GLASS_PANES_BLOCK = TagUtil.createBlockTag("glass_panes");
     public static final TagKey<Block> CREATE_SEATS = TagUtil.optionalTag(BuiltInRegistries.BLOCK, new ResourceLocation(GTValues.MODID_CREATE, "seats"));
     public static final TagKey<Block> ORE_BLOCKS = TagUtil.createBlockTag("ores");
