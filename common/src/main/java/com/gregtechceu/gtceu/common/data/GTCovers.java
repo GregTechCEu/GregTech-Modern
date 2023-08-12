@@ -9,7 +9,9 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.client.renderer.cover.*;
 import com.gregtechceu.gtceu.common.cover.*;
 import com.gregtechceu.gtceu.common.cover.detector.*;
+import com.gregtechceu.gtceu.common.cover.voiding.AdvancedFluidVoidingCover;
 import com.gregtechceu.gtceu.common.cover.voiding.AdvancedItemVoidingCover;
+import com.gregtechceu.gtceu.common.cover.voiding.FluidVoidingCover;
 import com.gregtechceu.gtceu.common.cover.voiding.ItemVoidingCover;
 import it.unimi.dsi.fastutil.ints.Int2ObjectFunction;
 
@@ -45,17 +47,22 @@ public class GTCovers {
 
     public final static CoverDefinition[] CONVEYORS = registerTiered(
             "conveyor", ConveyorCover::new,
-            tier -> ConveyorCoverRenderer.INSTANCE, GTValues.LV, GTValues.MV, GTValues.HV, GTValues.EV, GTValues.IV, GTValues.LuV
+            tier -> ConveyorCoverRenderer.INSTANCE, GTValues.LV, GTValues.MV, GTValues.HV, GTValues.EV, GTValues.IV, GTValues.LuV, GTValues.ZPM, GTValues.UV
     );
 
     public final static CoverDefinition[] ROBOT_ARMS = registerTiered(
             "robot_arm", RobotArmCover::new,
-            tier -> RobotArmCoverRenderer.INSTANCE, GTValues.LV, GTValues.MV, GTValues.HV, GTValues.EV, GTValues.IV, GTValues.LuV
+            tier -> RobotArmCoverRenderer.INSTANCE, GTValues.LV, GTValues.MV, GTValues.HV, GTValues.EV, GTValues.IV, GTValues.LuV, GTValues.ZPM, GTValues.UV
     );
 
     public final static CoverDefinition[] PUMPS = registerTiered(
             "pump", PumpCover::new,
-            tier -> PumpCoverRenderer.INSTANCE, GTValues.LV, GTValues.MV, GTValues.HV, GTValues.EV, GTValues.IV, GTValues.LuV
+            tier -> PumpCoverRenderer.INSTANCE, GTValues.LV, GTValues.MV, GTValues.HV, GTValues.EV, GTValues.IV, GTValues.LuV, GTValues.ZPM, GTValues.UV
+    );
+
+    public final static CoverDefinition[] FLUID_REGULATORS = registerTiered(
+            "fluid_regulator", FluidRegulatorCover::new,
+            tier -> FluidRegulatorCoverRenderer.INSTANCE, GTValues.LV, GTValues.MV, GTValues.HV, GTValues.EV, GTValues.IV, GTValues.LuV, GTValues.ZPM, GTValues.UV
     );
 
     public final static CoverDefinition COMPUTER_MONITOR = register(
@@ -77,6 +84,14 @@ public class GTCovers {
     public final static CoverDefinition ITEM_VOIDING_ADVANCED = register(
             "item_voiding_advanced", AdvancedItemVoidingCover::new,
             new SimpleCoverRenderer(GTCEu.id("block/cover/overlay_item_voiding_advanced"))
+    );
+    public final static CoverDefinition FLUID_VOIDING = register(
+            "fluid_voiding", FluidVoidingCover::new,
+            new SimpleCoverRenderer(GTCEu.id("block/cover/overlay_fluid_voiding"))
+    );
+    public final static CoverDefinition FLUID_VOIDING_ADVANCED = register(
+            "fluid_voiding_advanced", AdvancedFluidVoidingCover::new,
+            new SimpleCoverRenderer(GTCEu.id("block/cover/overlay_fluid_voiding_advanced"))
     );
 
 

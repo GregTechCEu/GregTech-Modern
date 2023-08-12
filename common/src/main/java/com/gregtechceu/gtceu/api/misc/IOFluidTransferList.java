@@ -42,4 +42,14 @@ public class IOFluidTransferList extends FluidTransferList {
         if (io != IO.OUT && io != IO.BOTH) return FluidStack.empty();
         return super.drain(maxDrain, simulate);
     }
+
+    @Override
+    public boolean supportsFill(int tank) {
+        return io == IO.IN || io == IO.BOTH;
+    }
+
+    @Override
+    public boolean supportsDrain(int tank) {
+        return io == IO.OUT || io == IO.BOTH;
+    }
 }

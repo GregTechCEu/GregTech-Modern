@@ -144,4 +144,14 @@ public class FluidTransferHandler implements IFluidTransfer {
     public FluidStack drain(long maxDrain, boolean simulate) {
         return FluidStack.empty();
     }
+
+    @Override
+    public boolean supportsFill(int i) {
+        return true;
+    }
+
+    @Override
+    public boolean supportsDrain(int i) {
+        return false;
+    }
 }

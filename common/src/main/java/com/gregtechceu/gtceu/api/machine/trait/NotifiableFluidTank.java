@@ -14,7 +14,6 @@ import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -300,6 +299,16 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidStack
             if (maxDrain <= 0) break;
         }
         return totalDrained == null ? FluidStack.empty() : totalDrained;
+    }
+
+    @Override
+    public boolean supportsFill(int i) {
+        return canCapInput();
+    }
+
+    @Override
+    public boolean supportsDrain(int i) {
+        return canCapOutput();
     }
 
     @Override

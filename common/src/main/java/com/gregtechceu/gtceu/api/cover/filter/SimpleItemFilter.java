@@ -7,7 +7,6 @@ import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
 import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
 import lombok.Getter;
-import lombok.Setter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -26,13 +25,15 @@ import java.util.function.Consumer;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class SimpleItemFilter implements ItemFilter {
+    @Getter
     protected boolean isBlackList;
     @Getter
     protected boolean ignoreNbt;
     @Getter
     protected ItemStack[] matches = new ItemStack[9];
-    @Setter
-    protected Consumer<ItemFilter> onUpdated;
+
+    protected Consumer<ItemFilter> itemWriter = filter -> {};
+    protected Consumer<ItemFilter> onUpdated = filter -> itemWriter.accept(filter);
 
     @Getter
     protected int maxStackSize;
@@ -47,9 +48,9 @@ public class SimpleItemFilter implements ItemFilter {
         return loadFilter(itemStack.getOrCreateTag(), filter -> itemStack.setTag(filter.saveFilter()));
     }
 
-    public static SimpleItemFilter loadFilter(CompoundTag tag, Consumer<ItemFilter> onUpdated) {
+    private static SimpleItemFilter loadFilter(CompoundTag tag, Consumer<ItemFilter> itemWriter) {
         var handler = new SimpleItemFilter();
-        handler.setOnUpdated(onUpdated);
+        handler.itemWriter = itemWriter;
         handler.isBlackList = tag.getBoolean("isBlackList");
         handler.ignoreNbt = tag.getBoolean("matchNbt");
         var list = tag.getList("matches", Tag.TAG_COMPOUND);
@@ -57,6 +58,14 @@ public class SimpleItemFilter implements ItemFilter {
             handler.matches[i] = ItemStack.of((CompoundTag) list.get(i));
         }
         return handler;
+    }
+
+    @Override
+    public void setOnUpdated(Consumer<ItemFilter> onUpdated) {
+        this.onUpdated = filter -> {
+            this.itemWriter.accept(filter);
+            onUpdated.accept(filter);
+        };
     }
 
     public CompoundTag saveFilter() {
@@ -74,17 +83,7 @@ public class SimpleItemFilter implements ItemFilter {
 
     public void setBlackList(boolean blackList) {
         isBlackList = blackList;
-        if (blackList) {
-            setMaxStackSize(1);
-        } else {
-            setMaxStackSize(Integer.MAX_VALUE);
-        }
         onUpdated.accept(this);
-    }
-
-    @Override
-    public boolean isBlackList() {
-        return isBlackList;
     }
 
     public void setIgnoreNbt(boolean ingoreNbt) {
@@ -94,12 +93,13 @@ public class SimpleItemFilter implements ItemFilter {
 
     public WidgetGroup openConfigurator(int x, int y) {
         WidgetGroup group = new WidgetGroup(x, y, 18 * 3 + 25, 18 * 3); // 80 55
-        var filterSlots = new PhantomSlotWidget[9];
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
                 final int index = i * 3 + j;
+
                 var handler = new ItemStackTransfer(matches[index]);
-                filterSlots[i] = new PhantomSlotWidget(handler, 0, i * 18, j * 18) {
+
+                var slot = new PhantomSlotWidget(handler, 0, i * 18, j * 18) {
                     @Override
                     public void updateScreen() {
                         super.updateScreen();
@@ -112,11 +112,12 @@ public class SimpleItemFilter implements ItemFilter {
                         setMaxStackSize(maxStackSize);
                     }
                 };
-                var slot = filterSlots[i];
+
                 slot.setChangeListener(() -> {
                     matches[index] = handler.getStackInSlot(0);
                     onUpdated.accept(this);
                 }).setBackground(GuiTextures.SLOT);
+
                 group.addWidget(slot);
             }
         }
