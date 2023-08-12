@@ -2,6 +2,8 @@ package com.gregtechceu.gtceu.client.renderer.item;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.lowdragmc.lowdraglib.client.renderer.impl.IModelRenderer;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 /**
  * @author KilaBash
@@ -15,5 +17,11 @@ public class GTBucketItemRenderer extends IModelRenderer {
 
     protected GTBucketItemRenderer(boolean isGas) {
         super(GTCEu.id("item/bucket/" + (isGas ? "bucket_gas" : "bucket")));
+    }
+
+    @Override
+    @Environment(EnvType.CLIENT)
+    public boolean isGui3d() {
+        return false;
     }
 }

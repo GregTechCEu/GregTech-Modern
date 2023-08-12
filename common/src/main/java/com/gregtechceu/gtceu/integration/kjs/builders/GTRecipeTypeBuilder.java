@@ -92,6 +92,7 @@ public class GTRecipeTypeBuilder extends BuilderBase<GTRecipeType> {
         return this;
     }
 
+    @Deprecated
     public GTRecipeTypeBuilder setSpecialTexture(int x, int y, int width, int height, IGuiTexture area) {
         this.specialTexturePosition = Rect.of(new Position(x, y), new Size(width, height));
         this.specialTexture = area;
