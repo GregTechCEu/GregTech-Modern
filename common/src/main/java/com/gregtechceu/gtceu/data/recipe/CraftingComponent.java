@@ -383,10 +383,10 @@ public class CraftingComponent {
          */
         GLASS = new Component(Stream.of(new Object[][]{
 
-                {GTValues.FALLBACK, TagUtil.createBlockTag("glass")},
-                {ULV, TagUtil.createBlockTag("glass")},
-                {LV, TagUtil.createBlockTag("glass")},
-                {MV, TagUtil.createBlockTag("glass")},
+                {GTValues.FALLBACK, CustomTags.GLASS_BLOCKS},
+                {ULV, CustomTags.GLASS_BLOCKS},
+                {LV, CustomTags.GLASS_BLOCKS},
+                {MV, CustomTags.GLASS_BLOCKS},
                 {HV, GTBlocks.CASING_TEMPERED_GLASS.asStack()},
                 {EV, GTBlocks.CASING_TEMPERED_GLASS.asStack()},
                 {IV, GTBlocks.CASING_LAMINATED_GLASS.asStack()},
