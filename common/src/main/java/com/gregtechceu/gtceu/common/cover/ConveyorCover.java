@@ -77,10 +77,13 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
         this.io = IO.OUT;
 
         subscriptionHandler = new ConditionalSubscriptionHandler(coverHolder, this::update, this::isSubscriptionActive);
-        filterHandler = FilterHandlers.item(this).onFilterLoaded(f -> configureFilterHandler());
+        filterHandler = FilterHandlers.item(this)
+                .onFilterLoaded(f -> configureFilter())
+                .onFilterUpdated(f -> configureFilter())
+                .onFilterRemoved(f -> configureFilter());
     }
 
-    private boolean isSubscriptionActive() {
+    protected boolean isSubscriptionActive() {
         return isWorkingEnabled() && getAdjacentItemTransfer() != null;
     }
 
@@ -155,12 +158,13 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
         }
     }
 
-    private void update() {
+    protected void update() {
         long timer = coverHolder.getOffsetTimer();
         if (timer % 5 == 0) {
             if (itemsLeftToTransferLastSecond > 0) {
                 var adjacentItemTransfer = getAdjacentItemTransfer();
                 var myItemHandler = getOwnItemTransfer();
+
                 if (adjacentItemTransfer != null && myItemHandler != null) {
                     int totalTransferred = switch (io) {
                         case IN -> doTransferItems(adjacentItemTransfer, myItemHandler, itemsLeftToTransferLastSecond);
@@ -375,14 +379,14 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
                 (clickData, value) -> {
                     setIo(value ? IO.IN : IO.OUT);
                     ioModeSwitch.setHoverTooltips(
-                            LocalizationUtils.format("cover.conveyor.mode", LocalizationUtils.format(io.localeName))
+                            LocalizationUtils.format("cover.conveyor.mode", LocalizationUtils.format(io.tooltip))
                     );
                 })
                 .setTexture(
                         new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, IO.OUT.icon),
                         new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, IO.IN.icon))
                 .setPressed(io == IO.IN)
-                .setHoverTooltips(LocalizationUtils.format("cover.conveyor.mode", LocalizationUtils.format(io.localeName)));
+                .setHoverTooltips(LocalizationUtils.format("cover.conveyor.mode", LocalizationUtils.format(io.tooltip)));
         group.addWidget(ioModeSwitch);
 
         group.addWidget(filterHandler.createFilterSlotUI(148, 107));
@@ -402,7 +406,7 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
         // Do nothing in the base implementation. This is intended to be overridden by subclasses.
     }
 
-    protected void configureFilterHandler() {
+    protected void configureFilter() {
         // Do nothing in the base implementation. This is intended to be overridden by subclasses.
     }
 }

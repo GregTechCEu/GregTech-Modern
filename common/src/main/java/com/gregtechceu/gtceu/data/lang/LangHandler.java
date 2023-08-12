@@ -321,8 +321,8 @@ public class LangHandler {
         provider.add("cover.pump.mode.export", "Mode: Export");
         provider.add("cover.pump.mode.import", "Mode: Import");
         provider.add("cover.pump.fluid_filter.title", "Fluid Filter");
-        provider.add("cover.bucket.mode.bucket", "kL/s");
-        provider.add("cover.bucket.mode.milli_bucket", "L/s");
+        provider.add("cover.bucket.mode.bucket", "kL");
+        provider.add("cover.bucket.mode.milli_bucket", "L");
         provider.add("cover.fluid_regulator.title", "Fluid Regulator Settings (%s)");
         multilineLang(provider, "cover.fluid_regulator.transfer_mode.description", "§eTransfer Any§r - in this mode, cover will transfer as many fluids matching its filter as possible.\n§eSupply Exact§r - in this mode, cover will supply fluids in portions specified in the window underneath this button. If amount of fluids is less than portion size, fluids won't be moved.\n§eKeep Exact§r - in this mode, cover will keep specified amount of fluids in the destination inventory, supplying additional amount of fluids if required.\n§7Tip: shift click will multiply increase/decrease amounts by 10 and ctrl click will multiply by 100.");
         provider.add("cover.fluid_regulator.supply_exact", "Supply Exact: %s");
@@ -1078,8 +1078,13 @@ public class LangHandler {
         provider.add("gtceu.gui.content.chance_0_short", "§cNC§r");
         provider.add("gtceu.gui.content.chance_1", "§eChance: %s§r");
         provider.add("gtceu.gui.content.tier_boost", "§eTier Chance: +%s/tier§r");
+
         provider.add("gtceu.gui.content.per_tick", "§aConsumed/Produced Per Tick§r");
         provider.add("gtceu.gui.content.tips.per_tick_short", "§a/tick§r");
+        provider.add("gtceu.gui.content.tips.per_second_short", "§a/second§r");
+
+        provider.add("gtceu.gui.content.units.per_tick", "/t");
+        provider.add("gtceu.gui.content.units.per_second", "/s");
     }
 
     /**
@@ -1186,6 +1191,23 @@ public class LangHandler {
             next = getSubKey(key, ++i);
         }
         return outputKeys.stream().map(k -> Component.translatable(k, args)).collect(Collectors.toList());
+    }
+
+    /**
+     * See {@link #getMultiLang(String)}. If no multiline key is available, get single instead.
+     *
+     * @param key Base key of the multi lang. E.g. "terminal.fluid_prospector.tier".
+     * @returnReturns all translation components from a multi lang's sub-keys.
+     */
+    public static List<MutableComponent> getSingleOrMultiLang(String key) {
+        List<MutableComponent> multiLang = getMultiLang(key);
+
+        if (!multiLang.isEmpty()) {
+            return multiLang;
+        }
+
+
+        return List.of(Component.translatable(key));
     }
 
     /**

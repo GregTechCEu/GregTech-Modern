@@ -586,107 +586,221 @@ public class GTItems {
     public static ItemEntry<Item> ELECTRIC_MOTOR_ZPM = REGISTRATE.item("zpm_electric_motor", Item::new).lang("ZPM Electric Motor").register();
     public static ItemEntry<Item> ELECTRIC_MOTOR_UV = REGISTRATE.item("uv_electric_motor", Item::new).lang("UV Electric Motor").register();
 
-    public static ItemEntry<ComponentItem> ELECTRIC_PUMP_LV = REGISTRATE.item("lv_electric_pump", ComponentItem::create).lang("LV Electric Pump").onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[0]), new TooltipBehavior(lines -> {
-        lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
-        lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 / 20));
-    }))).onRegister(compassNodeExist(GTCompassSections.COVERS, "pump", GTCompassNodes.COVER)).register();
 
-    public static ItemEntry<ComponentItem> ELECTRIC_PUMP_MV = REGISTRATE.item("mv_electric_pump", ComponentItem::create).lang("MV Electric Pump").onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[1]), new TooltipBehavior(lines -> {
-        lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
-        lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 4 / 20));
-    }))).onRegister(compassNodeExist(GTCompassSections.COVERS, "pump", GTCompassNodes.COVER)).register();
-    public static ItemEntry<ComponentItem> ELECTRIC_PUMP_HV = REGISTRATE.item("hv_electric_pump", ComponentItem::create).lang("HV Electric Pump").onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[2]), new TooltipBehavior(lines -> {
-        lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
-        lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 16 / 20));
-    }))).onRegister(compassNodeExist(GTCompassSections.COVERS, "pump", GTCompassNodes.COVER)).register();
-    public static ItemEntry<ComponentItem> ELECTRIC_PUMP_EV = REGISTRATE.item("ev_electric_pump", ComponentItem::create).lang("EV Electric Pump").onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[3]), new TooltipBehavior(lines -> {
-        lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
-        lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 / 20));
-    }))).onRegister(compassNodeExist(GTCompassSections.COVERS, "pump", GTCompassNodes.COVER)).register();
-    public static ItemEntry<ComponentItem> ELECTRIC_PUMP_IV = REGISTRATE.item("iv_electric_pump", ComponentItem::create).lang("IV Electric Pump").onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[4]), new TooltipBehavior(lines -> {
-        lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
-        lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 4 / 20));
-    }))).onRegister(compassNodeExist(GTCompassSections.COVERS, "pump", GTCompassNodes.COVER)).register();
-    public static ItemEntry<ComponentItem> ELECTRIC_PUMP_LuV = REGISTRATE.item("luv_electric_pump", ComponentItem::create).lang("LuV Electric Pump").onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[5]), new TooltipBehavior(lines -> {
-        lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
-        lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 16 / 20));
-    }))).onRegister(compassNodeExist(GTCompassSections.COVERS, "pump", GTCompassNodes.COVER)).register();
-    public static ItemEntry<ComponentItem> ELECTRIC_PUMP_ZPM = REGISTRATE.item("zpm_electric_pump", ComponentItem::create).lang("ZPM Electric Pump").onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[5]), new TooltipBehavior(lines -> {
-        lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
-        lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 64 / 20));
-    }))).onRegister(compassNodeExist(GTCompassSections.COVERS, "pump", GTCompassNodes.COVER)).register();
-    public static ItemEntry<ComponentItem> ELECTRIC_PUMP_UV = REGISTRATE.item("uv_electric_pump", ComponentItem::create).lang("UV Electric Pump").onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[5]), new TooltipBehavior(lines -> {
-        lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
-        lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 64 * 4 / 20));
-    }))).onRegister(compassNodeExist(GTCompassSections.COVERS, "pump", GTCompassNodes.COVER)).register();
+    public static ItemEntry<ComponentItem> ELECTRIC_PUMP_LV = REGISTRATE.item("lv_electric_pump", ComponentItem::create)
+            .lang("LV Electric Pump")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[0])))
+            .onRegister(attach(new TooltipBehavior(lines -> {
+                lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
+                lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 / 20));
+            })))
+            .onRegister(compassNodeExist(GTCompassSections.COVERS, "pump", GTCompassNodes.COVER))
+            .register();
 
-    public static ItemEntry<ComponentItem> FLUID_REGULATOR_LV = REGISTRATE.item("lv_fluid_regulator", ComponentItem::create).lang("LV Fluid Regulator").onRegister(attach(new TooltipBehavior(lines -> {
-        lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
-        lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 / 20));
-    }))).register();
-    public static ItemEntry<ComponentItem> FLUID_REGULATOR_MV = REGISTRATE.item("mv_fluid_regulator", ComponentItem::create).lang("MV Fluid Regulator").onRegister(attach(new TooltipBehavior(lines -> {
-        lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
-        lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 4 / 20));
-    }))).register();
-    public static ItemEntry<ComponentItem> FLUID_REGULATOR_HV = REGISTRATE.item("hv_fluid_regulator", ComponentItem::create).lang("HV Fluid Regulator").onRegister(attach(new TooltipBehavior(lines -> {
-        lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
-        lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 16 / 20));
-    }))).register();
-    public static ItemEntry<ComponentItem> FLUID_REGULATOR_EV = REGISTRATE.item("ev_fluid_regulator", ComponentItem::create).lang("EV Fluid Regulator").onRegister(attach(new TooltipBehavior(lines -> {
-        lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
-        lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 / 20));
-    }))).register();
-    public static ItemEntry<ComponentItem> FLUID_REGULATOR_IV = REGISTRATE.item("iv_fluid_regulator", ComponentItem::create).lang("IV Fluid Regulator").onRegister(attach(new TooltipBehavior(lines -> {
-        lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
-        lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 4 / 20));
-    }))).register();
-    public static ItemEntry<ComponentItem> FLUID_REGULATOR_LUV = REGISTRATE.item("luv_fluid_regulator", ComponentItem::create).lang("LuV Fluid Regulator").onRegister(attach(new TooltipBehavior(lines -> {
-        lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
-        lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 16 / 20));
-    }))).register();
-    public static ItemEntry<ComponentItem> FLUID_REGULATOR_ZPM = REGISTRATE.item("zpm_fluid_regulator", ComponentItem::create).lang("ZPM Fluid Regulator").onRegister(attach(new TooltipBehavior(lines -> {
-        lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
-        lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 64 / 20));
-    }))).register();
-    public static ItemEntry<ComponentItem> FLUID_REGULATOR_UV = REGISTRATE.item("uv_fluid_regulator", ComponentItem::create).lang("UV Fluid Regulator").onRegister(attach(new TooltipBehavior(lines -> {
-        lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
-        lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 64 * 4/ 20));
-    }))).register();
+    public static ItemEntry<ComponentItem> ELECTRIC_PUMP_MV = REGISTRATE.item("mv_electric_pump", ComponentItem::create)
+            .lang("MV Electric Pump")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[1])))
+            .onRegister(attach(new TooltipBehavior(lines -> {
+                lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
+                lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 4 / 20));
+            })))
+            .onRegister(compassNodeExist(GTCompassSections.COVERS, "pump", GTCompassNodes.COVER))
+            .register();
+    public static ItemEntry<ComponentItem> ELECTRIC_PUMP_HV = REGISTRATE.item("hv_electric_pump", ComponentItem::create)
+            .lang("HV Electric Pump")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[2])))
+            .onRegister(attach(new TooltipBehavior(lines -> {
+                lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
+                lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 16 / 20));
+            })))
+            .onRegister(compassNodeExist(GTCompassSections.COVERS, "pump", GTCompassNodes.COVER))
+            .register();
+    public static ItemEntry<ComponentItem> ELECTRIC_PUMP_EV = REGISTRATE.item("ev_electric_pump", ComponentItem::create)
+            .lang("EV Electric Pump")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[3])))
+            .onRegister(attach(new TooltipBehavior(lines -> {
+                lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
+                lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 / 20));
+            })))
+            .onRegister(compassNodeExist(GTCompassSections.COVERS, "pump", GTCompassNodes.COVER))
+            .register();
+    public static ItemEntry<ComponentItem> ELECTRIC_PUMP_IV = REGISTRATE.item("iv_electric_pump", ComponentItem::create)
+            .lang("IV Electric Pump")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[4])))
+            .onRegister(attach(new TooltipBehavior(lines -> {
+                lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
+                lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 4 / 20));
+            })))
+            .onRegister(compassNodeExist(GTCompassSections.COVERS, "pump", GTCompassNodes.COVER))
+            .register();
+    public static ItemEntry<ComponentItem> ELECTRIC_PUMP_LuV = REGISTRATE.item("luv_electric_pump", ComponentItem::create)
+            .lang("LuV Electric Pump")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[5])))
+            .onRegister(attach(new TooltipBehavior(lines -> {
+                lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
+                lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 16 / 20));
+            })))
+            .onRegister(compassNodeExist(GTCompassSections.COVERS, "pump", GTCompassNodes.COVER))
+            .register();
+    public static ItemEntry<ComponentItem> ELECTRIC_PUMP_ZPM = REGISTRATE.item("zpm_electric_pump", ComponentItem::create)
+            .lang("ZPM Electric Pump")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[6])))
+            .onRegister(attach(new TooltipBehavior(lines -> {
+                lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
+                lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 64 / 20));
+            })))
+            .onRegister(compassNodeExist(GTCompassSections.COVERS, "pump", GTCompassNodes.COVER))
+            .register();
+    public static ItemEntry<ComponentItem> ELECTRIC_PUMP_UV = REGISTRATE.item("uv_electric_pump", ComponentItem::create)
+            .lang("UV Electric Pump")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[7])))
+            .onRegister(attach(new TooltipBehavior(lines -> {
+                lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
+                lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 64 * 4 / 20));
+            })))
+            .onRegister(compassNodeExist(GTCompassSections.COVERS, "pump", GTCompassNodes.COVER))
+            .register();
+
+
+    public static ItemEntry<ComponentItem> FLUID_REGULATOR_LV = REGISTRATE.item("lv_fluid_regulator", ComponentItem::create)
+            .lang("LV Fluid Regulator")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_REGULATORS[0])))
+            .onRegister(attach(new TooltipBehavior(lines -> {
+                lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
+                lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 / 20));
+            })))
+            .register();
+    public static ItemEntry<ComponentItem> FLUID_REGULATOR_MV = REGISTRATE.item("mv_fluid_regulator", ComponentItem::create)
+            .lang("MV Fluid Regulator")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_REGULATORS[1])))
+            .onRegister(attach(new TooltipBehavior(lines -> {
+                lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
+                lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 4 / 20));
+            })))
+            .register();
+    public static ItemEntry<ComponentItem> FLUID_REGULATOR_HV = REGISTRATE.item("hv_fluid_regulator", ComponentItem::create)
+            .lang("HV Fluid Regulator")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_REGULATORS[2])))
+            .onRegister(attach(new TooltipBehavior(lines -> {
+                lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
+                lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 16 / 20));
+            })))
+            .register();
+    public static ItemEntry<ComponentItem> FLUID_REGULATOR_EV = REGISTRATE.item("ev_fluid_regulator", ComponentItem::create)
+            .lang("EV Fluid Regulator")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_REGULATORS[3])))
+            .onRegister(attach(new TooltipBehavior(lines -> {
+                lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
+                lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 / 20));
+            })))
+            .register();
+    public static ItemEntry<ComponentItem> FLUID_REGULATOR_IV = REGISTRATE.item("iv_fluid_regulator", ComponentItem::create)
+            .lang("IV Fluid Regulator")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_REGULATORS[4])))
+            .onRegister(attach(new TooltipBehavior(lines -> {
+                lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
+                lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 4 / 20));
+            })))
+            .register();
+    public static ItemEntry<ComponentItem> FLUID_REGULATOR_LUV = REGISTRATE.item("luv_fluid_regulator", ComponentItem::create)
+            .lang("LuV Fluid Regulator")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_REGULATORS[5])))
+            .onRegister(attach(new TooltipBehavior(lines -> {
+                lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
+                lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 16 / 20));
+            })))
+            .register();
+    public static ItemEntry<ComponentItem> FLUID_REGULATOR_ZPM = REGISTRATE.item("zpm_fluid_regulator", ComponentItem::create)
+            .lang("ZPM Fluid Regulator")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_REGULATORS[6])))
+            .onRegister(attach(new TooltipBehavior(lines -> {
+                lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
+                lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 64 / 20));
+            })))
+            .register();
+    public static ItemEntry<ComponentItem> FLUID_REGULATOR_UV = REGISTRATE.item("uv_fluid_regulator", ComponentItem::create)
+            .lang("UV Fluid Regulator")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_REGULATORS[7])))
+            .onRegister(attach(new TooltipBehavior(lines -> {
+                lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
+                lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 64 * 4 / 20));
+            })))
+            .register();
 
     public static ItemEntry<ComponentItem> DYNAMITE; // TODO
 
-    public static ItemEntry<ComponentItem> CONVEYOR_MODULE_LV = REGISTRATE.item("lv_conveyor_module", ComponentItem::create).lang("LV Conveyor Module").onRegister(attach(new CoverPlaceBehavior(GTCovers.CONVEYORS[0]), new TooltipBehavior(lines -> {
-        lines.add(Component.translatable("item.gtceu.conveyor.module.tooltip"));
-        lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate", 8));
-    }))).onRegister(compassNodeExist(GTCompassSections.COVERS, "conveyor", GTCompassNodes.COVER)).register();
-    public static ItemEntry<ComponentItem> CONVEYOR_MODULE_MV = REGISTRATE.item("mv_conveyor_module", ComponentItem::create).lang("MV Conveyor Module").onRegister(attach(new CoverPlaceBehavior(GTCovers.CONVEYORS[1]), new TooltipBehavior(lines -> {
-        lines.add(Component.translatable("item.gtceu.conveyor.module.tooltip"));
-        lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate", 32));
-    }))).onRegister(compassNodeExist(GTCompassSections.COVERS, "conveyor", GTCompassNodes.COVER)).register();
-    public static ItemEntry<ComponentItem> CONVEYOR_MODULE_HV = REGISTRATE.item("hv_conveyor_module", ComponentItem::create).lang("HV Conveyor Module").onRegister(attach(new CoverPlaceBehavior(GTCovers.CONVEYORS[2]), new TooltipBehavior(lines -> {
-        lines.add(Component.translatable("item.gtceu.conveyor.module.tooltip"));
-        lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate", 128));
-    }))).onRegister(compassNodeExist(GTCompassSections.COVERS, "conveyor", GTCompassNodes.COVER)).register();
-    public static ItemEntry<ComponentItem> CONVEYOR_MODULE_EV = REGISTRATE.item("ev_conveyor_module", ComponentItem::create).lang("EV Conveyor Module").onRegister(attach(new CoverPlaceBehavior(GTCovers.CONVEYORS[3]), new TooltipBehavior(lines -> {
-        lines.add(Component.translatable("item.gtceu.conveyor.module.tooltip"));
-        lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 8));
-    }))).onRegister(compassNodeExist(GTCompassSections.COVERS, "conveyor", GTCompassNodes.COVER)).register();
-    public static ItemEntry<ComponentItem> CONVEYOR_MODULE_IV = REGISTRATE.item("iv_conveyor_module", ComponentItem::create).lang("IV Conveyor Module").onRegister(attach(new CoverPlaceBehavior(GTCovers.CONVEYORS[4]), new TooltipBehavior(lines -> {
-        lines.add(Component.translatable("item.gtceu.conveyor.module.tooltip"));
-        lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 32));
-    }))).onRegister(compassNodeExist(GTCompassSections.COVERS, "conveyor", GTCompassNodes.COVER)).register();
-    public static ItemEntry<ComponentItem> CONVEYOR_MODULE_LuV = REGISTRATE.item("luv_conveyor_module", ComponentItem::create).lang("LuV Conveyor Module").onRegister(attach(new CoverPlaceBehavior(GTCovers.CONVEYORS[5]), new TooltipBehavior(lines -> {
-        lines.add(Component.translatable("item.gtceu.conveyor.module.tooltip"));
-        lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 128));
-    }))).onRegister(compassNodeExist(GTCompassSections.COVERS, "conveyor", GTCompassNodes.COVER)).register();
-    public static ItemEntry<ComponentItem> CONVEYOR_MODULE_ZPM = REGISTRATE.item("zpm_conveyor_module", ComponentItem::create).lang("ZPM Conveyor Module").onRegister(attach(new CoverPlaceBehavior(GTCovers.CONVEYORS[5]), new TooltipBehavior(lines -> {
-        lines.add(Component.translatable("item.gtceu.conveyor.module.tooltip"));
-        lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 128));
-    }))).onRegister(compassNodeExist(GTCompassSections.COVERS, "conveyor", GTCompassNodes.COVER)).register();
-    public static ItemEntry<ComponentItem> CONVEYOR_MODULE_UV = REGISTRATE.item("uv_conveyor_module", ComponentItem::create).lang("UV Conveyor Module").onRegister(attach(new CoverPlaceBehavior(GTCovers.CONVEYORS[5]), new TooltipBehavior(lines -> {
-        lines.add(Component.translatable("item.gtceu.conveyor.module.tooltip"));
-        lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 128));
-    }))).onRegister(compassNodeExist(GTCompassSections.COVERS, "conveyor", GTCompassNodes.COVER)).register();
+    public static ItemEntry<ComponentItem> CONVEYOR_MODULE_LV = REGISTRATE.item("lv_conveyor_module", ComponentItem::create)
+            .lang("LV Conveyor Module")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.CONVEYORS[0])))
+            .onRegister(attach(new TooltipBehavior(lines -> {
+                lines.add(Component.translatable("item.gtceu.conveyor.module.tooltip"));
+                lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate", 8));
+            })))
+            .onRegister(compassNodeExist(GTCompassSections.COVERS, "conveyor", GTCompassNodes.COVER))
+            .register();
+    public static ItemEntry<ComponentItem> CONVEYOR_MODULE_MV = REGISTRATE.item("mv_conveyor_module", ComponentItem::create)
+            .lang("MV Conveyor Module")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.CONVEYORS[1])))
+            .onRegister(attach(new TooltipBehavior(lines -> {
+                lines.add(Component.translatable("item.gtceu.conveyor.module.tooltip"));
+                lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate", 32));
+            })))
+            .onRegister(compassNodeExist(GTCompassSections.COVERS, "conveyor", GTCompassNodes.COVER))
+            .register();
+    public static ItemEntry<ComponentItem> CONVEYOR_MODULE_HV = REGISTRATE.item("hv_conveyor_module", ComponentItem::create)
+            .lang("HV Conveyor Module")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.CONVEYORS[2])))
+            .onRegister(attach(new TooltipBehavior(lines -> {
+                lines.add(Component.translatable("item.gtceu.conveyor.module.tooltip"));
+                lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate", 128));
+            })))
+            .onRegister(compassNodeExist(GTCompassSections.COVERS, "conveyor", GTCompassNodes.COVER))
+            .register();
+    public static ItemEntry<ComponentItem> CONVEYOR_MODULE_EV = REGISTRATE.item("ev_conveyor_module", ComponentItem::create)
+            .lang("EV Conveyor Module")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.CONVEYORS[3])))
+            .onRegister(attach(new TooltipBehavior(lines -> {
+                lines.add(Component.translatable("item.gtceu.conveyor.module.tooltip"));
+                lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 8));
+            })))
+            .onRegister(compassNodeExist(GTCompassSections.COVERS, "conveyor", GTCompassNodes.COVER))
+            .register();
+    public static ItemEntry<ComponentItem> CONVEYOR_MODULE_IV = REGISTRATE.item("iv_conveyor_module", ComponentItem::create)
+            .lang("IV Conveyor Module")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.CONVEYORS[4])))
+            .onRegister(attach(new TooltipBehavior(lines -> {
+                lines.add(Component.translatable("item.gtceu.conveyor.module.tooltip"));
+                lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 32));
+            })))
+            .onRegister(compassNodeExist(GTCompassSections.COVERS, "conveyor", GTCompassNodes.COVER))
+            .register();
+    public static ItemEntry<ComponentItem> CONVEYOR_MODULE_LuV = REGISTRATE.item("luv_conveyor_module", ComponentItem::create)
+            .lang("LuV Conveyor Module")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.CONVEYORS[5])))
+            .onRegister(attach(new TooltipBehavior(lines -> {
+                lines.add(Component.translatable("item.gtceu.conveyor.module.tooltip"));
+                lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 128));
+            })))
+            .onRegister(compassNodeExist(GTCompassSections.COVERS, "conveyor", GTCompassNodes.COVER))
+            .register();
+    public static ItemEntry<ComponentItem> CONVEYOR_MODULE_ZPM = REGISTRATE.item("zpm_conveyor_module", ComponentItem::create)
+            .lang("ZPM Conveyor Module")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.CONVEYORS[6])))
+            .onRegister(attach(new TooltipBehavior(lines -> {
+                lines.add(Component.translatable("item.gtceu.conveyor.module.tooltip"));
+                lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 128));
+            })))
+            .onRegister(compassNodeExist(GTCompassSections.COVERS, "conveyor", GTCompassNodes.COVER))
+            .register();
+    public static ItemEntry<ComponentItem> CONVEYOR_MODULE_UV = REGISTRATE.item("uv_conveyor_module", ComponentItem::create)
+            .lang("UV Conveyor Module")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.CONVEYORS[7])))
+            .onRegister(attach(new TooltipBehavior(lines -> {
+                lines.add(Component.translatable("item.gtceu.conveyor.module.tooltip"));
+                lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 128));
+            })))
+            .onRegister(compassNodeExist(GTCompassSections.COVERS, "conveyor", GTCompassNodes.COVER))
+            .register();
 
     public static ItemEntry<Item> ELECTRIC_PISTON_LV= REGISTRATE.item("lv_electric_piston", Item::new).lang("LV Electric Piston").register();
     public static ItemEntry<Item> ELECTRIC_PISTON_MV= REGISTRATE.item("mv_electric_piston", Item::new).lang("MV Electric Piston").register();
@@ -697,38 +811,70 @@ public class GTItems {
     public static ItemEntry<Item> ELECTRIC_PISTON_ZPM= REGISTRATE.item("zpm_electric_piston", Item::new).lang("ZPM Electric Piston").register();
     public static ItemEntry<Item> ELECTRIC_PISTON_UV= REGISTRATE.item("uv_electric_piston", Item::new).lang("UV Electric Piston").register();
 
-    public static ItemEntry<ComponentItem> ROBOT_ARM_LV = REGISTRATE.item("lv_robot_arm", ComponentItem::create).lang("LV Robot Arm").onRegister(attach(new CoverPlaceBehavior(GTCovers.ROBOT_ARMS[0]), new TooltipBehavior(lines -> {
-        lines.add(Component.translatable("item.gtceu.robot.arm.tooltip"));
-        lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate", 8));
-    }))).onRegister(compassNodeExist(GTCompassSections.COVERS, "robot_arm", GTCompassNodes.COVER)).register();
-    public static ItemEntry<ComponentItem> ROBOT_ARM_MV = REGISTRATE.item("mv_robot_arm", ComponentItem::create).lang("MV Robot Arm").onRegister(attach(new CoverPlaceBehavior(GTCovers.ROBOT_ARMS[1]), new TooltipBehavior(lines -> {
-        lines.add(Component.translatable("item.gtceu.robot.arm.tooltip"));
-        lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate", 32));
-    }))).onRegister(compassNodeExist(GTCompassSections.COVERS, "robot_arm", GTCompassNodes.COVER)).register();
-    public static ItemEntry<ComponentItem> ROBOT_ARM_HV = REGISTRATE.item("hv_robot_arm", ComponentItem::create).lang("HV Robot Arm").onRegister(attach(new CoverPlaceBehavior(GTCovers.ROBOT_ARMS[2]), new TooltipBehavior(lines -> {
-        lines.add(Component.translatable("item.gtceu.robot.arm.tooltip"));
-        lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate", 64));
-    }))).onRegister(compassNodeExist(GTCompassSections.COVERS, "robot_arm", GTCompassNodes.COVER)).register();
-    public static ItemEntry<ComponentItem> ROBOT_ARM_EV = REGISTRATE.item("ev_robot_arm", ComponentItem::create).lang("EV Robot Arm").onRegister(attach(new CoverPlaceBehavior(GTCovers.ROBOT_ARMS[3]), new TooltipBehavior(lines -> {
-        lines.add(Component.translatable("item.gtceu.robot.arm.tooltip"));
-        lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 3));
-    }))).onRegister(compassNodeExist(GTCompassSections.COVERS, "robot_arm", GTCompassNodes.COVER)).register();
-    public static ItemEntry<ComponentItem> ROBOT_ARM_IV = REGISTRATE.item("iv_robot_arm", ComponentItem::create).lang("IV Robot Arm").onRegister(attach(new CoverPlaceBehavior(GTCovers.ROBOT_ARMS[4]), new TooltipBehavior(lines -> {
-        lines.add(Component.translatable("item.gtceu.robot.arm.tooltip"));
-        lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 8));
-    }))).onRegister(compassNodeExist(GTCompassSections.COVERS, "robot_arm", GTCompassNodes.COVER)).register();
-    public static ItemEntry<ComponentItem> ROBOT_ARM_LuV = REGISTRATE.item("luv_robot_arm", ComponentItem::create).lang("LuV Robot Arm").onRegister(attach(new CoverPlaceBehavior(GTCovers.ROBOT_ARMS[5]), new TooltipBehavior(lines -> {
-        lines.add(Component.translatable("item.gtceu.robot.arm.tooltip"));
-        lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 16));
-    }))).onRegister(compassNodeExist(GTCompassSections.COVERS, "robot_arm", GTCompassNodes.COVER)).register();
-    public static ItemEntry<ComponentItem> ROBOT_ARM_ZPM = REGISTRATE.item("zpm_robot_arm", ComponentItem::create).lang("ZPM Robot Arm").onRegister(attach(new CoverPlaceBehavior(GTCovers.ROBOT_ARMS[5]), new TooltipBehavior(lines -> {
-        lines.add(Component.translatable("item.gtceu.robot.arm.tooltip"));
-        lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 16));
-    }))).onRegister(compassNodeExist(GTCompassSections.COVERS, "robot_arm", GTCompassNodes.COVER)).register();
-    public static ItemEntry<ComponentItem> ROBOT_ARM_UV = REGISTRATE.item("uv_robot_arm", ComponentItem::create).lang("UV Robot Arm").onRegister(attach(new CoverPlaceBehavior(GTCovers.ROBOT_ARMS[5]), new TooltipBehavior(lines -> {
-        lines.add(Component.translatable("item.gtceu.robot.arm.tooltip"));
-        lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 16));
-    }))).onRegister(compassNodeExist(GTCompassSections.COVERS, "robot_arm", GTCompassNodes.COVER)).register();
+    public static ItemEntry<ComponentItem> ROBOT_ARM_LV = REGISTRATE.item("lv_robot_arm", ComponentItem::create)
+            .lang("LV Robot Arm")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.ROBOT_ARMS[0]))).onRegister(attach(new TooltipBehavior(lines -> {
+                lines.add(Component.translatable("item.gtceu.robot.arm.tooltip"));
+                lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate", 8));
+            })))
+            .onRegister(compassNodeExist(GTCompassSections.COVERS, "robot_arm", GTCompassNodes.COVER))
+            .register();
+    public static ItemEntry<ComponentItem> ROBOT_ARM_MV = REGISTRATE.item("mv_robot_arm", ComponentItem::create)
+            .lang("MV Robot Arm")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.ROBOT_ARMS[1]))).onRegister(attach(new TooltipBehavior(lines -> {
+                lines.add(Component.translatable("item.gtceu.robot.arm.tooltip"));
+                lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate", 32));
+            })))
+            .onRegister(compassNodeExist(GTCompassSections.COVERS, "robot_arm", GTCompassNodes.COVER))
+            .register();
+    public static ItemEntry<ComponentItem> ROBOT_ARM_HV = REGISTRATE.item("hv_robot_arm", ComponentItem::create)
+            .lang("HV Robot Arm")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.ROBOT_ARMS[2]))).onRegister(attach(new TooltipBehavior(lines -> {
+                lines.add(Component.translatable("item.gtceu.robot.arm.tooltip"));
+                lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate", 64));
+            })))
+            .onRegister(compassNodeExist(GTCompassSections.COVERS, "robot_arm", GTCompassNodes.COVER))
+            .register();
+    public static ItemEntry<ComponentItem> ROBOT_ARM_EV = REGISTRATE.item("ev_robot_arm", ComponentItem::create)
+            .lang("EV Robot Arm")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.ROBOT_ARMS[3]))).onRegister(attach(new TooltipBehavior(lines -> {
+                lines.add(Component.translatable("item.gtceu.robot.arm.tooltip"));
+                lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 3));
+            })))
+            .onRegister(compassNodeExist(GTCompassSections.COVERS, "robot_arm", GTCompassNodes.COVER))
+            .register();
+    public static ItemEntry<ComponentItem> ROBOT_ARM_IV = REGISTRATE.item("iv_robot_arm", ComponentItem::create)
+            .lang("IV Robot Arm")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.ROBOT_ARMS[4]))).onRegister(attach(new TooltipBehavior(lines -> {
+                lines.add(Component.translatable("item.gtceu.robot.arm.tooltip"));
+                lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 8));
+            })))
+            .onRegister(compassNodeExist(GTCompassSections.COVERS, "robot_arm", GTCompassNodes.COVER))
+            .register();
+    public static ItemEntry<ComponentItem> ROBOT_ARM_LuV = REGISTRATE.item("luv_robot_arm", ComponentItem::create)
+            .lang("LuV Robot Arm")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.ROBOT_ARMS[5]))).onRegister(attach(new TooltipBehavior(lines -> {
+                lines.add(Component.translatable("item.gtceu.robot.arm.tooltip"));
+                lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 16));
+            })))
+            .onRegister(compassNodeExist(GTCompassSections.COVERS, "robot_arm", GTCompassNodes.COVER))
+            .register();
+    public static ItemEntry<ComponentItem> ROBOT_ARM_ZPM = REGISTRATE.item("zpm_robot_arm", ComponentItem::create)
+            .lang("ZPM Robot Arm")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.ROBOT_ARMS[6]))).onRegister(attach(new TooltipBehavior(lines -> {
+                lines.add(Component.translatable("item.gtceu.robot.arm.tooltip"));
+                lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 16));
+            })))
+            .onRegister(compassNodeExist(GTCompassSections.COVERS, "robot_arm", GTCompassNodes.COVER))
+            .register();
+    public static ItemEntry<ComponentItem> ROBOT_ARM_UV = REGISTRATE.item("uv_robot_arm", ComponentItem::create)
+            .lang("UV Robot Arm")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.ROBOT_ARMS[7]))).onRegister(attach(new TooltipBehavior(lines -> {
+                lines.add(Component.translatable("item.gtceu.robot.arm.tooltip"));
+                lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 16));
+            })))
+            .onRegister(compassNodeExist(GTCompassSections.COVERS, "robot_arm", GTCompassNodes.COVER))
+            .register();
 
     public static ItemEntry<Item> FIELD_GENERATOR_LV= REGISTRATE.item("lv_field_generator", Item::new).lang("LV Field Generator").register();
     public static ItemEntry<Item> FIELD_GENERATOR_MV= REGISTRATE.item("mv_field_generator", Item::new).lang("MV Field Generator").register();
@@ -1023,10 +1169,12 @@ public class GTItems {
             .register();
     public static ItemEntry<ComponentItem> COVER_FLUID_VOIDING = REGISTRATE.item("fluid_voiding_cover", ComponentItem::create)
             .lang("Fluid Voiding Cover")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_VOIDING)))
             .onRegister(compassNode(GTCompassSections.COVERS, GTCompassNodes.COVER))
             .register();
     public static ItemEntry<ComponentItem> COVER_FLUID_VOIDING_ADVANCED = REGISTRATE.item("advanced_fluid_voiding_cover", ComponentItem::create)
             .lang("Advanced Fluid Voiding Cover")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_VOIDING_ADVANCED)))
             .onRegister(compassNode(GTCompassSections.COVERS, GTCompassNodes.COVER))
             .register();
     public static ItemEntry<ComponentItem> COVER_ITEM_VOIDING = REGISTRATE.item("item_voiding_cover", ComponentItem::create)
