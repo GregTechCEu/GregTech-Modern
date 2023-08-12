@@ -25,9 +25,9 @@ public class TagItemFilter extends TagFilter<ItemStack, ItemFilter> implements I
         return loadFilter(itemStack.getOrCreateTag(), filter -> itemStack.setTag(filter.saveFilter()));
     }
 
-    public static TagItemFilter loadFilter(CompoundTag tag, Consumer<ItemFilter> onUpdated) {
+    private static TagItemFilter loadFilter(CompoundTag tag, Consumer<ItemFilter> itemWriter) {
         var handler = new TagItemFilter();
-        handler.setOnUpdated(onUpdated);
+        handler.itemWriter = itemWriter;
         handler.oreDictFilterExpression = tag.getString("oreDict");
         handler.matchRules.clear();
         handler.cache.clear();

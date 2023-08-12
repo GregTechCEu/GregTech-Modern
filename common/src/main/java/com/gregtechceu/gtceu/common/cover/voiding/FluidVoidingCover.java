@@ -1,34 +1,32 @@
 package com.gregtechceu.gtceu.common.cover.voiding;
 
-import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
-import com.gregtechceu.gtceu.api.cover.IUICover;
-import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
-import com.gregtechceu.gtceu.common.cover.ConveyorCover;
+import com.gregtechceu.gtceu.common.cover.PumpCover;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
+import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
+import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import lombok.Getter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
-import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.Map;
 
-@ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class ItemVoidingCover extends ConveyorCover implements IUICover, IControllable {
+@ParametersAreNonnullByDefault
+public class FluidVoidingCover extends PumpCover {
     @Persisted @Getter
     protected boolean isEnabled = false;
 
-    public ItemVoidingCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {
+    public FluidVoidingCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {
         super(definition, coverHolder, attachedSide, 0);
     }
 
@@ -46,27 +44,29 @@ public class ItemVoidingCover extends ConveyorCover implements IUICover, IContro
         if (coverHolder.getOffsetTimer() % 5 != 0)
             return;
 
-        doVoidItems();
+        doVoidFluids();
         subscriptionHandler.updateSubscription();
     }
 
-    protected void doVoidItems() {
-        IItemTransfer itemTransfer = getOwnItemTransfer();
-        if (itemTransfer == null) {
+    protected void doVoidFluids() {
+        IFluidTransfer fluidTransfer = getOwnFluidTransfer();
+        if (fluidTransfer == null) {
             return;
         }
-        voidAny(itemTransfer);
+        voidAny(fluidTransfer);
     }
 
-    void voidAny(IItemTransfer itemTransfer) {
-        ItemFilter filter = filterHandler.getFilter();
+    void voidAny(IFluidTransfer fluidTransfer) {
+        final Map<FluidStack, Long> fluidAmounts = enumerateDistinctFluids(fluidTransfer, TransferDirection.EXTRACT);
 
-        for (int slot = 0; slot < itemTransfer.getSlots(); slot++) {
-            ItemStack sourceStack = itemTransfer.extractItem(slot, Integer.MAX_VALUE, true);
-            if (sourceStack.isEmpty() || !filter.test(sourceStack)) {
+        for (FluidStack fluidStack : fluidAmounts.keySet()) {
+            if (!filterHandler.getFilter().test(fluidStack))
                 continue;
-            }
-            itemTransfer.extractItem(slot, Integer.MAX_VALUE, false);
+
+            var toDrain = fluidStack.copy();
+            toDrain.setAmount(fluidAmounts.get(fluidStack));
+
+            fluidTransfer.drain(toDrain, false);
         }
     }
 
@@ -103,7 +103,7 @@ public class ItemVoidingCover extends ConveyorCover implements IUICover, IContro
 
     @NotNull
     protected String getUITitle() {
-        return "cover.item.voiding.title";
+        return "cover.fluid.voiding.title";
     }
 
     protected void buildAdditionalUI(WidgetGroup group) {
@@ -118,7 +118,8 @@ public class ItemVoidingCover extends ConveyorCover implements IUICover, IContro
     //*****     LDLib SyncData    ******//
     //////////////////////////////////////
 
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(ItemVoidingCover.class, ConveyorCover.MANAGED_FIELD_HOLDER);
+    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(FluidVoidingCover.class, PumpCover.MANAGED_FIELD_HOLDER);
+
     @Override
     public ManagedFieldHolder getFieldHolder() {
         return MANAGED_FIELD_HOLDER;

@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.machine.trait;
 
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
@@ -111,6 +111,16 @@ public class FluidTankProxyTrait extends MachineTrait implements IFluidTransfer,
 
     public FluidStack drainInternal(long maxDrain, boolean simulate) {
         return proxy == null ? FluidStack.empty() : proxy.drain(maxDrain, simulate);
+    }
+
+    @Override
+    public boolean supportsFill(int i) {
+        return canCapInput();
+    }
+
+    @Override
+    public boolean supportsDrain(int i) {
+        return canCapOutput();
     }
 
     public boolean isEmpty() {
