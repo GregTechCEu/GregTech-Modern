@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.item.forge;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.client.renderer.item.GTBucketItemRenderer;
 import com.lowdragmc.lowdraglib.client.renderer.IItemRendererProvider;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
@@ -10,6 +11,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fluids.capability.wrappers.FluidBucketWrapper;
@@ -67,4 +69,12 @@ public class GTBucketItem extends BucketItem implements IItemRendererProvider {
         return this.getDescription();
     }
 
+    @Override
+    public int getBurnTime(ItemStack itemStack, @Nullable RecipeType<?> recipeType) {
+        var fluid = material.getProperty(PropertyKey.FLUID);
+        if (fluid != null) {
+            return fluid.getBurnTime();
+        }
+        return -1;
+    }
 }

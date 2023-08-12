@@ -1,9 +1,18 @@
 # ChangeLog
 
-* add compass system for in-game guide
-* add computer monitor cover and machine controller cover
-* fix rubber tree generation
-* fix localization
-* fix oven hatch rendering + auto output
-* fix bolt name
-* improve recipe searching significantly by parallel searching + fast ingredient copy + fast recipe copy + fast storage copy
+* add Fluid Voiding Covers
+* add Fluid Regulator
+* add ghost circuit for input bus
+* add creosote bucket burning time
+* fix steam machine recipe logic ticking
+* fix material items burning time
+* fix ZPM and UV tiers for covers (was previously capped at LuV)
+* fix and refactoring for item filters and PumpCover
+* fix missing ingredients of some of machines
+* fix acacia fence + berfwoodCrafting + raw ore blocks recipe
+* fix unable to add ore veins
+* fix emi tooltips error
+* fix steam machine gui texture
+* fix quick swap items in inventory
+* fix incorrect item rendering in create machines
+* fix dropping ghost circuit

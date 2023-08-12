@@ -150,12 +150,14 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
         return this;
     }
 
+    @Deprecated
     public GTRecipeType setSpecialTexture(int x, int y, int width, int height, IGuiTexture area) {
         this.specialTexturePosition = Rect.of(new Position(x, y), new Size(width, height));
         this.specialTexture = area;
         return this;
     }
 
+    @Deprecated
     public GTRecipeType setSpecialTexture(Rect specialTexturePosition, IGuiTexture area) {
         this.specialTexturePosition = specialTexturePosition;
         this.specialTexture = area;

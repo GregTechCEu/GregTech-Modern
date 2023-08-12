@@ -255,6 +255,7 @@ public class GTFluidBuilder<T extends SimpleFlowableFluid, P> extends AbstractBu
         }
         this.fluidProperties = p -> p.bucket(() -> getOwner().get(bucketName, Registries.ITEM).get());
         return getOwner().item(this, bucketName, p -> new GTBucketItem(this.source, p, this.material))
+                .onRegister(GTBucketItem::onRegister)
                 .properties(p -> p.craftRemainder(Items.BUCKET).stacksTo(1))
                 .color(() -> () -> GTBucketItem::color)
                 .setData(ProviderType.LANG, NonNullBiConsumer.noop())

@@ -1,5 +1,7 @@
 package com.gregtechceu.gtceu.api.item;
 
+import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.DustProperty;
 import com.gregtechceu.gtceu.client.renderer.item.TagPrefixItemRenderer;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
@@ -7,6 +9,7 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.data.GTDamageTypes;
 import com.lowdragmc.lowdraglib.client.renderer.IItemRendererProvider;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
+import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -20,6 +23,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
@@ -35,11 +39,20 @@ public class TagPrefixItem extends Item implements IItemRendererProvider {
     public final TagPrefix tagPrefix;
     public final Material material;
 
-    public TagPrefixItem(Properties properties, TagPrefix tagPrefix, Material material) {
+    protected TagPrefixItem(Properties properties, TagPrefix tagPrefix, Material material) {
         super(properties);
         this.tagPrefix = tagPrefix;
         this.material = material;
         TagPrefixItemRenderer.getOrCreate(tagPrefix.materialIconType(), material.getMaterialIconSet());
+    }
+
+    @ExpectPlatform
+    public static TagPrefixItem create(Properties properties, TagPrefix tagPrefix, Material material) {
+        throw new AssertionError();
+    }
+
+    public void onRegister() {
+
     }
 
     @Environment(EnvType.CLIENT)
@@ -105,7 +118,12 @@ public class TagPrefixItem extends Item implements IItemRendererProvider {
         }
     }
 
-    // TODO BURNING TIME
+    public int getItemBurnTime() {
+        DustProperty property = material == null ? null : material.getProperty(PropertyKey.DUST);
+        if (property != null) return (int) (property.getBurnTime() * tagPrefix.getMaterialAmount(material) / GTValues.M);
+        return -1;
+    }
+
     // TODO BEACON PAYMENT
 
     @Nullable

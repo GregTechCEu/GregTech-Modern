@@ -266,7 +266,6 @@ public class GTRecipeTypes {
 
     public final static GTRecipeType FORGE_HAMMER_RECIPES = register("forge_hammer", ELECTRIC).setMaxIOSize(1, 1, 0, 0).setEUIO(IO.IN)
             .setSlotOverlay(false, false, GuiTextures.HAMMER_OVERLAY)
-            .setSpecialTexture(78, 42, 20, 6, GuiTextures.PROGRESS_BAR_HAMMER_BASE)
             .setProgressBar(GuiTextures.PROGRESS_BAR_HAMMER, UP_TO_DOWN)
             .setSteamProgressBar(GuiTextures.PROGRESS_BAR_HAMMER_STEAM, UP_TO_DOWN)
             .setSound(GTSoundEntries.FORGE_HAMMER);
@@ -281,7 +280,6 @@ public class GTRecipeTypes {
             .setSlotOverlay(false, false, GuiTextures.PIPE_OVERLAY_1)
             .setSlotOverlay(true, false, false, GuiTextures.PIPE_OVERLAY_2)
             .setSlotOverlay(true, false, true, GuiTextures.DUST_OVERLAY)
-            .setSpecialTexture(98, 24, 5, 18, GuiTextures.PROGRESS_BAR_LATHE_BASE)
             .setProgressBar(GuiTextures.PROGRESS_BAR_LATHE, LEFT_TO_RIGHT)
             .setSound(GTSoundEntries.CUT);
 

@@ -25,7 +25,7 @@ public class FuelRecipes {
         Set<Item> addedItems = new HashSet<>();
         for (var fuelEntry : FurnaceBlockEntity.getFuel().entrySet()) {
             addedItems.add(fuelEntry.getKey());
-            STEAM_BOILER_RECIPES.recipeBuilder(fuelEntry.getKey().getDescriptionId())
+            STEAM_BOILER_RECIPES.recipeBuilder(Registry.ITEM.getKey(fuelEntry.getKey()))
                     .inputItems(fuelEntry.getKey())
                     .duration(fuelEntry.getValue() * 12) // remove the * 12 if SteamBoilerMachine:240 is uncommented
                     .save(provider);
@@ -33,7 +33,7 @@ public class FuelRecipes {
         for (Item item : BuiltInRegistries.ITEM) {
             var burnTime = GTUtil.getItemBurnTime(item);
             if (burnTime > 0 && !addedItems.contains(item)) {
-                STEAM_BOILER_RECIPES.recipeBuilder(item.getDescriptionId())
+                STEAM_BOILER_RECIPES.recipeBuilder(Registry.ITEM.getKey(item))
                         .inputItems(item)
                         .duration(burnTime * 12)
                         .save(provider);

@@ -81,4 +81,10 @@ public class TagPrefixItemRenderer extends IModelRenderer {
     public void onAdditionalModel(Consumer<ResourceLocation> registry) {
         registry.accept(modelLocationSupplier.get());
     }
+
+    @Override
+    @Environment(EnvType.CLIENT)
+    public boolean isGui3d() {
+        return false;
+    }
 }
