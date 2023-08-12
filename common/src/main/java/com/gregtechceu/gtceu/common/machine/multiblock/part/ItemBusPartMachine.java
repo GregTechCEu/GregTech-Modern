@@ -5,10 +5,13 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.ConfiguratorPanel;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
+import com.gregtechceu.gtceu.api.machine.fancyconfigurator.CircuitFancyConfigurator;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineModifyDrops;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDistinctPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
@@ -16,6 +19,7 @@ import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import lombok.Getter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -45,10 +49,14 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
     protected TickableSubscription autoIOSubs;
     @Nullable
     protected ISubscription inventorySubs;
+    @Getter
+    @Persisted
+    protected final NotifiableItemStackHandler circuitInventory;
 
     public ItemBusPartMachine(IMachineBlockEntity holder, int tier, IO io, Object... args) {
         super(holder, tier, io);
         this.inventory = createInventory(args);
+        this.circuitInventory = createCircuitItemHandler(io);
     }
 
     //////////////////////////////////////
@@ -68,9 +76,22 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
         return new NotifiableItemStackHandler(this, getInventorySize(), io);
     }
 
+    protected NotifiableItemStackHandler createCircuitItemHandler(Object... args) {
+        if (args.length > 0 && args[0] instanceof  IO io && io == IO.IN) {
+            return new NotifiableItemStackHandler(this, 1, IO.IN).setFilter(IntCircuitBehaviour::isIntegratedCircuit);
+        }
+        else {
+            return new NotifiableItemStackHandler(this, 0, IO.NONE);
+        }
+    }
+
     @Override
     public void onDrops(List<ItemStack> drops, Player entity) {
         clearInventory(drops, inventory.storage);
+
+        if (!ConfigHolder.INSTANCE.machines.ghostCircuit) {
+            clearInventory(drops, circuitInventory.storage);
+        }
     }
 
     @Override
@@ -132,7 +153,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
             if (isWorkingEnabled()) {
                 if (io == IO.OUT) {
                     inventory.exportToNearby(getFrontFacing());
-                } else if (io == IO.IN){
+                } else if (io == IO.IN) {
                     inventory.importFromNearby(getFrontFacing());
                 }
             }
@@ -149,6 +170,14 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
     //////////////////////////////////////
     //**********     GUI     ***********//
     //////////////////////////////////////
+
+    public void attachConfigurators(ConfiguratorPanel configuratorPanel) {
+        super.attachConfigurators(configuratorPanel);
+        if (this.io == IO.IN) {
+            configuratorPanel.attachConfigurators(new CircuitFancyConfigurator(circuitInventory.storage));
+        }
+    }
+
     @Override
     public Widget createUIWidget() {
         int rowSize = (int) Math.sqrt(getInventorySize());
@@ -169,6 +198,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
 
         container.setBackground(GuiTextures.BACKGROUND_INVERSE);
         group.addWidget(container);
+
         return group;
     }
 }

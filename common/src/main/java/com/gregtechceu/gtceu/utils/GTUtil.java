@@ -19,8 +19,8 @@ import javax.annotation.Nullable;
 import java.awt.*;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 import java.util.Map.Entry;
 
 
@@ -201,6 +201,14 @@ public class GTUtil {
         if (LDLib.isClient()) {
             var id = Minecraft.getInstance().getWindow().getWindow();
             return InputConstants.isKeyDown(id, GLFW.GLFW_KEY_LEFT_CONTROL) || InputConstants.isKeyDown(id, GLFW.GLFW_KEY_RIGHT_CONTROL);
+        }
+        return false;
+    }
+
+    public static boolean isAltDown() {
+        if (LDLib.isClient()) {
+            var id = Minecraft.getInstance().getWindow().getWindow();
+            return InputConstants.isKeyDown(id, GLFW.GLFW_KEY_LEFT_ALT) || InputConstants.isKeyDown(id, GLFW.GLFW_KEY_RIGHT_ALT);
         }
         return false;
     }

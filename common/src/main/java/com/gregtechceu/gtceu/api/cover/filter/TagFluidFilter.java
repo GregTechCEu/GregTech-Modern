@@ -25,9 +25,9 @@ public class TagFluidFilter extends TagFilter<FluidStack, FluidFilter> implement
         return loadFilter(itemStack.getOrCreateTag(), filter -> itemStack.setTag(filter.saveFilter()));
     }
 
-    public static TagFluidFilter loadFilter(CompoundTag tag, Consumer<FluidFilter> onUpdated) {
+    private static TagFluidFilter loadFilter(CompoundTag tag, Consumer<FluidFilter> itemWriter) {
         var handler = new TagFluidFilter();
-        handler.setOnUpdated(onUpdated);
+        handler.itemWriter = itemWriter;
         handler.oreDictFilterExpression = tag.getString("oreDict");
         handler.matchRules.clear();
         handler.cache.clear();
@@ -50,5 +50,10 @@ public class TagFluidFilter extends TagFilter<FluidStack, FluidFilter> implement
         }
         cache.put(fluidStack.getFluid(), false);
         return false;
+    }
+
+    @Override
+    public long testFluidAmount(FluidStack fluidStack) {
+        return test(fluidStack) ? Long.MAX_VALUE : 0;
     }
 }
