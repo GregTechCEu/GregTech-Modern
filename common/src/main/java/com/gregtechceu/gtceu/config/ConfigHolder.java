@@ -165,6 +165,10 @@ public class ConfigHolder {
         @Configurable
         @Configurable.Comment({"Prevents regular vanilla ores from being generated outside GregTech ore veins", "Default: true"})
         public boolean removeVanillaOreGen = true;
+
+        @Configurable
+        @Configurable.Comment({"Prevents vanilla's large ore veins from being generated", "Default: true"})
+        public boolean removeVanillaLargeOreVeins = true;
     }
 
     public static class MachineConfigs {
