@@ -1182,6 +1182,8 @@
   "config.gtceu.option.recipes": "recipes",
   "config.gtceu.option.removeSmeltingForEBFMetals": "removeSmeltingForEBFMetals",
   "config.gtceu.option.removeVanillaBlockRecipes": "removeVanillaBlockRecipes",
+  "config.gtceu.option.removeVanillaLargeOreVeins": "removeVanillaLargeOreVeins",
+  "config.gtceu.option.removeVanillaOreGen": "removeVanillaOreGen",
   "config.gtceu.option.removeVanillaTNTRecipe": "removeVanillaTNTRecipe",
   "config.gtceu.option.replaceMinedBlocksWith": "replaceMinedBlocksWith",
   "config.gtceu.option.requireGTToolsForBlocks": "requireGTToolsForBlocks",
