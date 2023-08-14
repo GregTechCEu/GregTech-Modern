@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.core.mixins;
 
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
@@ -28,6 +29,9 @@ public class OreConfigurationMixin {
 
     @ModifyVariable(method = "<init>(Ljava/util/List;IF)V", at = @At("HEAD"), index = 1, argsOnly = true)
     private static List<TargetBlockState> gtceu$init(List<TargetBlockState> targetStates) {
+        if (ConfigHolder.INSTANCE == null || !ConfigHolder.INSTANCE.worldgen.removeVanillaOreGen)
+            return targetStates;
+
         return targetStates.stream()
                 .filter(targetState -> !EXCLUDED_BLOCKS.contains(targetState.state.getBlock()))
                 .toList();

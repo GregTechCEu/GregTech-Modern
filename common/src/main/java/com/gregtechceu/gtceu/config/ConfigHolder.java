@@ -161,6 +161,10 @@ public class ConfigHolder {
         @Configurable
         @Configurable.Comment({"Rubber Tree spawn chance (% per chunk)", "Default: 0.5"})
         public float rubberTreeSpawnChance = 0.5f;
+
+        @Configurable
+        @Configurable.Comment({"Prevents regular vanilla ores from being generated outside GregTech ore veins", "Default: true"})
+        public boolean removeVanillaOreGen = true;
     }
 
     public static class MachineConfigs {
