@@ -19,6 +19,7 @@
     "ITrunkPlacerTypeAccessor",
     "LevelMixin",
     "LootTablesMixin",
+    "OreConfigurationMixin",
     "PlacedFeatureMixin",
     "RecipeManagerAccessor",
     "RecipeManagerInvoker",
