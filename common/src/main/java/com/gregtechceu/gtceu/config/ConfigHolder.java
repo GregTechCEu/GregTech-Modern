@@ -157,6 +157,18 @@ public class ConfigHolder {
         @Configurable
         @Configurable.Comment({"Debug ore vein placement? (will print placed veins to server's debug.log)", "Default: false (no placement printout in debug.log)"})
         public boolean debugWorldgen;
+        @Configurable
+        @Configurable.Comment({"Rubber Tree spawn chance (% per chunk)", "Default: 0.5"})
+        public float rubberTreeSpawnChance = 0.5f;
+
+        @Configurable
+        @Configurable.Comment({"Prevents regular vanilla ores from being generated outside GregTech ore veins", "Default: true"})
+        public boolean removeVanillaOreGen = true;
+
+        @Configurable
+        @Configurable.Comment({"Prevents vanilla's large ore veins from being generated", "Default: true"})
+        public boolean removeVanillaLargeOreVeins = true;
+
     }
 
     public static class MachineConfigs {
