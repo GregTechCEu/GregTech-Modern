@@ -108,4 +108,23 @@ public class FluidPipeNet extends PipeNet<FluidPipeData> {
         updateTick();
         throughputUsed.put(pos.asLong(), throughputUsed.getOrDefault(pos.asLong(), 0) + filled);
     }
+
+    public record Snapshot(Long2ObjectMap<Set<Fluid>> channelUsed, Long2LongMap throughputUsed) {
+
+    }
+
+    public Snapshot createSnapeShot() {
+        Long2ObjectMap<Set<Fluid>> channelUsedCopied = new Long2ObjectOpenHashMap<>();
+        channelUsed.forEach((k, v) -> channelUsedCopied.computeIfAbsent(k, key -> new HashSet<>(v)).addAll(v));
+        Long2LongMap throughputUsedCopied = new Long2LongOpenHashMap();
+        throughputUsedCopied.putAll(throughputUsed);
+        return new Snapshot(channelUsedCopied, throughputUsedCopied);
+    }
+
+    public void resetData(Snapshot snapshot) {
+        channelUsed.clear();
+        throughputUsed.clear();
+        snapshot.channelUsed.forEach((k, v) -> channelUsed.computeIfAbsent(k, key -> new HashSet<>(v)).addAll(v));
+        throughputUsed.putAll(snapshot.throughputUsed);
+    }
 }

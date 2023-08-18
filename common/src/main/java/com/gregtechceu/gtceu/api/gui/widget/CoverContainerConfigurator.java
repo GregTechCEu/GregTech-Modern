@@ -137,6 +137,7 @@ public class CoverContainerConfigurator extends WidgetGroup {
                 this.coverBehavior = coverBehaviour;
                 var attachItem = coverBehaviour == null ? ItemStack.EMPTY : coverBehaviour.getAttachItem();
                 transfer.setStackInSlot(0, attachItem);
+                transfer.onContentsChanged(0);
                 updateCoverConfigurator();
                 return true;
             }

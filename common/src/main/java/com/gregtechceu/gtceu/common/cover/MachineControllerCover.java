@@ -261,8 +261,14 @@ public class MachineControllerCover extends CoverBehavior implements IUICover {
                 .map(CoverBehavior::getAttachItem)
                 .map(ItemStack::copy)
                 .ifPresentOrElse(
-                        item -> sideCoverSlot.setStackInSlot(0, item),
-                        () -> sideCoverSlot.setStackInSlot(0, ItemStack.EMPTY)
+                        item -> {
+                            sideCoverSlot.setStackInSlot(0, item);
+                            sideCoverSlot.onContentsChanged(0);
+                        },
+                        () -> {
+                            sideCoverSlot.setStackInSlot(0, ItemStack.EMPTY);
+                            sideCoverSlot.onContentsChanged(0);
+                        }
                 );
     }
 }

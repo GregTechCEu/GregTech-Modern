@@ -139,6 +139,7 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Long
             if (handleElectricItem(electricItem, simulate)) {
                 if (!simulate) {
                     itemHandler.setStackInSlot(slotIndex, stackInSlot);
+                    itemHandler.onContentsChanged();
                 }
                 return true;
             }

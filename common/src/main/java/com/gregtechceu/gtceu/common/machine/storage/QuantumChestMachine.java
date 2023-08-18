@@ -326,6 +326,7 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
         } else if (!locked) {
             lockedItem.setStackInSlot(0, ItemStack.EMPTY);
         }
+        lockedItem.onContentsChanged(0);
     }
 
     //////////////////////////////////////
@@ -345,6 +346,7 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
             var item = importItems.getStackInSlot(0).copy();
             if (!item.isEmpty()) {
                 importItems.setStackInSlot(0, ItemStack.EMPTY);
+                importItems.onContentsChanged(0);
                 cache.insertItem(0, item.copy(), false);
             }
         });
