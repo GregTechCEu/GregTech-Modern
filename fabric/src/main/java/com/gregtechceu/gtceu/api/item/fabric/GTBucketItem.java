@@ -1,11 +1,13 @@
 package com.gregtechceu.gtceu.api.item.fabric;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.client.renderer.item.GTBucketItemRenderer;
 import com.lowdragmc.lowdraglib.client.renderer.IItemRendererProvider;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
+import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
@@ -27,6 +29,13 @@ public class GTBucketItem extends BucketItem implements IItemRendererProvider {
         this.fluid = fluid.get();
         renderer = FluidHelper.isLighterThanAir(FluidStack.create(this.fluid, FluidHelper.getBucket())) ? GTBucketItemRenderer.INSTANCE_GAS : GTBucketItemRenderer.INSTANCE;
         this.material = material;
+    }
+
+    public void onRegister() {
+        var fluid = material.getProperty(PropertyKey.FLUID);
+        if (fluid != null && fluid.getBurnTime() > 0) {
+            FuelRegistry.INSTANCE.add(this, fluid.getBurnTime());
+        }
     }
 
     @Override

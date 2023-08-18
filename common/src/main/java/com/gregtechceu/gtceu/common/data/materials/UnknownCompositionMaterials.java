@@ -37,7 +37,7 @@ public class UnknownCompositionMaterials {
                 .fluid().color(0x445500).fluidTemp(300).buildAndRegister();
 
         Creosote = new Material.Builder("creosote")
-                .fluid().fluidCustomTexture().color(0x804000)
+                .fluid().fluidCustomTexture().fluidBurnTime(6400).color(0x804000)
                 .flags(STICKY).buildAndRegister();
 
         Diesel = new Material.Builder("diesel")

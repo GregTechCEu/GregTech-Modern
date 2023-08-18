@@ -22,6 +22,7 @@ public class FluidProperty implements IMaterialProperty<FluidProperty> {
     private boolean hasBlock;
     private boolean isGas;
     private int fluidTemperature = BASE_TEMP;
+    private int burnTime = -1;
     @Setter
     @Getter
     private ResourceLocation stillTexture, flowTexture;
@@ -82,6 +83,14 @@ public class FluidProperty implements IMaterialProperty<FluidProperty> {
         if (isKelvin) Preconditions.checkArgument(fluidTemperature >= 0, "Invalid temperature");
         else fluidTemperature += 273;
         this.fluidTemperature = fluidTemperature;
+    }
+
+    public void setBurnTime(int burnTime) {
+        this.burnTime = burnTime;
+    }
+
+    public int getBurnTime() {
+        return burnTime;
     }
 
     public int getFluidTemperature() {
