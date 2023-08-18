@@ -26,21 +26,33 @@ public class IOFluidTransferList extends FluidTransferList {
     }
 
     @Override
-    public long fill(FluidStack resource, boolean simulate) {
+    public long fill(int tank, FluidStack resource, boolean simulate, boolean notifyChanges) {
         if (io != IO.IN && io != IO.BOTH) return 0;
-        return super.fill(resource, simulate);
+        return super.fill(tank, resource, simulate, notifyChanges);
     }
 
     @Override
-    public @NotNull FluidStack drain(FluidStack resource, boolean simulate) {
-        if (io != IO.OUT && io != IO.BOTH) return FluidStack.empty();
-        return super.drain(resource, simulate);
+    public long fill(FluidStack resource, boolean simulate, boolean notifyChanged) {
+        if (io != IO.IN && io != IO.BOTH) return 0;
+        return super.fill(resource, simulate, notifyChanged);
     }
 
     @Override
-    public @NotNull FluidStack drain(long maxDrain, boolean simulate) {
+    public @NotNull FluidStack drain(int tank, FluidStack resource, boolean simulate, boolean notifyChanges) {
         if (io != IO.OUT && io != IO.BOTH) return FluidStack.empty();
-        return super.drain(maxDrain, simulate);
+        return super.drain(tank, resource, simulate, notifyChanges);
+    }
+
+    @Override
+    public @NotNull FluidStack drain(FluidStack resource, boolean simulate, boolean notifyChanged) {
+        if (io != IO.OUT && io != IO.BOTH) return FluidStack.empty();
+        return super.drain(resource, simulate, notifyChanged);
+    }
+
+    @Override
+    public @NotNull FluidStack drain(long maxDrain, boolean simulate, boolean notifyChanged) {
+        if (io != IO.OUT && io != IO.BOTH) return FluidStack.empty();
+        return super.drain(maxDrain, simulate, notifyChanged);
     }
 
     @Override

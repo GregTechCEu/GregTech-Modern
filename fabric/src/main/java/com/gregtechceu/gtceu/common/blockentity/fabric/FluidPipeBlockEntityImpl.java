@@ -138,7 +138,7 @@ public class FluidPipeBlockEntityImpl extends FluidPipeBlockEntity {
                     continue;
                 }
 
-                var handler = FluidStorage.SIDED.find(getPipeLevel(), path.getPipePos(), path.getFaceToHandler().getOpposite());
+                var handler = FluidStorage.SIDED.find(getPipeLevel(), path.getHandlerPos(), path.getFaceToHandler().getOpposite());
                 if (handler != null) {
                     var coverable = GTCapabilityHelper.getCoverable(net.getLevel(), path.getPipePos(), null);
                     if (coverable != null) {

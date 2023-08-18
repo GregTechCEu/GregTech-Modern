@@ -47,7 +47,7 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
         this.handlerIO = handlerIO;
         this.storage = transferFactory.apply(slots);
         this.capabilityIO = capabilityIO;
-        this.storage.setOnContentsChanged(this::onContentChanged);
+        this.storage.setOnContentsChanged(this::onContentsChanged);
     }
 
     public NotifiableItemStackHandler(MetaMachine machine, int slots, IO handlerIO, IO capabilityIO) {
@@ -63,7 +63,7 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
         return this;
     }
 
-    protected void onContentChanged() {
+    public void onContentsChanged() {
         isEmpty = null;
         updateTimeStamp(machine.getLevel());
         notifyListeners();

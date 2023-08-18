@@ -42,6 +42,11 @@ public class FluidTankProxyTrait extends MachineTrait implements IFluidTransfer,
     //////////////////////////////////////
 
     @Override
+    public void onContentsChanged() {
+        if (proxy != null) proxy.onContentsChanged();
+    }
+
+    @Override
     public int getTanks() {
         return proxy == null ? 0 : proxy.getTanks();
     }
@@ -77,6 +82,14 @@ public class FluidTankProxyTrait extends MachineTrait implements IFluidTransfer,
         return 0;
     }
 
+    @Override
+    public long fill(FluidStack resource, boolean simulate, boolean notifyChanges) {
+        if (proxy != null && canCapInput()) {
+            return proxy.fill(resource, simulate, notifyChanges);
+        }
+        return 0;
+    }
+
     public long fillInternal(FluidStack resource, boolean simulate) {
         if (proxy != null && !resource.isEmpty()) {
             return proxy.fill(resource, simulate);
@@ -105,6 +118,15 @@ public class FluidTankProxyTrait extends MachineTrait implements IFluidTransfer,
     public FluidStack drain(long maxDrain, boolean simulate, boolean notifyChanges) {
         if (proxy != null && canCapInput()) {
             return proxy.drain(maxDrain, simulate, notifyChanges);
+        }
+        return FluidStack.empty();
+    }
+
+    @NotNull
+    @Override
+    public FluidStack drain(FluidStack resource, boolean simulate, boolean notifyChanges) {
+        if (proxy != null && canCapInput()) {
+            return proxy.drain(resource, simulate, notifyChanges);
         }
         return FluidStack.empty();
     }

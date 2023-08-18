@@ -119,7 +119,7 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
                         int added = Math.min(maxStoredItems - itemsStoredInside, remained.getCount());
                         if (!simulate) {
                             itemsStoredInside += added;
-                            onContentChanged();
+                            onContentsChanged();
                         }
                         remained.shrink(added);
                         if (isVoiding) {
@@ -144,15 +144,15 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
                             itemsStoredInside -= copied.getCount();
                             setStackInSlot(0, copied);
                         }
-                        onContentChanged();
+                        onContentsChanged();
                     }
                 }
                 return extracted;
             }
 
             @Override
-            protected void onContentChanged() {
-                super.onContentChanged();
+            public void onContentsChanged() {
+                super.onContentsChanged();
                 if (!isRemote()) {
                     stored = getStackInSlot(0).copy();
                     storedAmount = stored.getCount();

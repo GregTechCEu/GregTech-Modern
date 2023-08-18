@@ -51,7 +51,7 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidStack
         this.capabilityIO = capabilityIO;
         for (int i = 0; i < this.storages.length; i++) {
             this.storages[i] = new FluidStorage(capacity);
-            this.storages[i].setOnContentsChanged(this::onContentChanged);
+            this.storages[i].setOnContentsChanged(this::onContentsChanged);
         }
     }
 
@@ -62,7 +62,7 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidStack
         this.storages = storages.toArray(FluidStorage[]::new);
         this.capabilityIO = capabilityIO;
         for (FluidStorage storage : this.storages) {
-            storage.setOnContentsChanged(this::onContentChanged);
+            storage.setOnContentsChanged(this::onContentsChanged);
         }
     }
 
@@ -74,7 +74,7 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidStack
         this(machine, storages, io, io);
     }
 
-    private void onContentChanged() {
+    public void onContentsChanged() {
         isEmpty = null;
         updateTimeStamp(machine.getLevel());
         notifyListeners();
@@ -208,7 +208,7 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidStack
     @Override
     public long fill(int tank, FluidStack resource, boolean simulate, boolean notifyChanges) {
         if (tank >= 0 && tank < storages.length && canCapInput()) {
-            storages[tank].fill(resource, simulate, notifyChanges);
+            return storages[tank].fill(resource, simulate, notifyChanges);
         }
         return 0;
     }
@@ -328,9 +328,6 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidStack
         return canCapOutput();
     }
 
-    @Override
-    public final void onContentsChanged() {
-    }
 
     @NotNull
     @Override

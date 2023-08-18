@@ -40,6 +40,12 @@ public class ItemHandlerProxyTrait extends MachineTrait implements IItemTransfer
     //////////////////////////////////////
     //*******     Capability    ********//
     //////////////////////////////////////
+
+    @Override
+    public void onContentsChanged() {
+        if (proxy != null) proxy.onContentsChanged();
+    }
+
     @Override
     public int getSlots() {
         return proxy == null ? 0 : proxy.getSlots();
