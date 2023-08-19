@@ -1,14 +1,11 @@
 package com.gregtechceu.gtceu.common.blockentity;
 
 import com.gregtechceu.gtceu.common.block.FluidPipeBlock;
-import com.gregtechceu.gtceu.common.cover.FluidFilterCover;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.common.pipelike.fluidpipe.FluidPipeData;
 import com.gregtechceu.gtceu.common.pipelike.fluidpipe.FluidPipeNet;
 import com.gregtechceu.gtceu.common.pipelike.fluidpipe.FluidPipeType;
-import com.gregtechceu.gtceu.common.pipelike.fluidpipe.FluidTransferHandler;
 import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
-import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -57,7 +54,7 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType, FluidPi
     }
 
     @Nullable
-    private FluidPipeNet getFluidPipeNet() {
+    public FluidPipeNet getFluidPipeNet() {
         if (level instanceof ServerLevel serverLevel && getBlockState().getBlock() instanceof FluidPipeBlock fluidPipeBlock) {
             FluidPipeNet currentFluidPipeNet = this.currentFluidPipeNet.get();
             if (currentFluidPipeNet != null && currentFluidPipeNet.isValid() && currentFluidPipeNet.containsNode(getBlockPos()))
@@ -68,24 +65,5 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType, FluidPi
             }
         }
         return this.currentFluidPipeNet.get();
-    }
-
-    @Nullable
-    public IFluidTransfer getFluidHandler(@Nullable Direction side) {
-        if (side != null && isBlocked(side)) return null;
-        if (isRemote()) { // for rendering? other mods may need it.
-            return IFluidTransfer.EMPTY;
-        }
-        var net = getFluidPipeNet();
-        if (net != null) {
-            var transfer = new FluidTransferHandler(net, this, side);
-            if (side != null) {
-                if (getCoverContainer().getCoverAtSide(side) instanceof FluidFilterCover cover) {
-                    transfer.setFilter(cover.getFluidFilter());
-                }
-            }
-            return transfer;
-        }
-        return null;
     }
 }

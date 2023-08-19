@@ -57,6 +57,7 @@ public class CircuitFancyConfigurator implements IFancyConfigurator {
                     clickData -> {
                         if (!clickData.isRemote) {
                             circuitSlot.setStackInSlot(0, ItemStack.EMPTY);
+                            circuitSlot.onContentsChanged(0);
                         }
                     }));
         }
@@ -74,6 +75,7 @@ public class CircuitFancyConfigurator implements IFancyConfigurator {
                                 } else if (ConfigHolder.INSTANCE.machines.ghostCircuit) {
                                     circuitSlot.setStackInSlot(0, IntCircuitBehaviour.stack(finalIdx));
                                 }
+                                circuitSlot.onContentsChanged(0);
                             }
                         }));
                 idx++;
@@ -91,6 +93,7 @@ public class CircuitFancyConfigurator implements IFancyConfigurator {
                             } else if (ConfigHolder.INSTANCE.machines.ghostCircuit) {
                                 circuitSlot.setStackInSlot(0, IntCircuitBehaviour.stack(finalIdx));
                             }
+                            circuitSlot.onContentsChanged(0);
                         }
                     }));
         }
