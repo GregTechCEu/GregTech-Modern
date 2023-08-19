@@ -42,6 +42,11 @@ public class FluidTankProxyTrait extends MachineTrait implements IFluidTransfer,
     //////////////////////////////////////
 
     @Override
+    public void onContentsChanged() {
+        if (proxy != null) proxy.onContentsChanged();
+    }
+
+    @Override
     public int getTanks() {
         return proxy == null ? 0 : proxy.getTanks();
     }
@@ -70,9 +75,17 @@ public class FluidTankProxyTrait extends MachineTrait implements IFluidTransfer,
     }
 
     @Override
-    public long fill(FluidStack resource, boolean simulate) {
+    public long fill(int tank, FluidStack resource, boolean simulate, boolean notifyChanges) {
         if (proxy != null && canCapInput()) {
-            return fillInternal(resource, simulate);
+            return proxy.fill(tank, resource, simulate, notifyChanges);
+        }
+        return 0;
+    }
+
+    @Override
+    public long fill(FluidStack resource, boolean simulate, boolean notifyChanges) {
+        if (proxy != null && canCapInput()) {
+            return proxy.fill(resource, simulate, notifyChanges);
         }
         return 0;
     }
@@ -86,9 +99,9 @@ public class FluidTankProxyTrait extends MachineTrait implements IFluidTransfer,
 
     @NotNull
     @Override
-    public FluidStack drain(FluidStack resource, boolean simulate) {
+    public FluidStack drain(int tank, FluidStack resource, boolean simulate, boolean notifyChanges) {
         if (proxy != null && canCapOutput()) {
-            return drainInternal(resource, simulate);
+            return proxy.drain(tank, resource, simulate, notifyChanges);
         }
         return FluidStack.empty();
     }
@@ -102,11 +115,33 @@ public class FluidTankProxyTrait extends MachineTrait implements IFluidTransfer,
 
     @NotNull
     @Override
-    public FluidStack drain(long maxDrain, boolean simulate) {
+    public FluidStack drain(long maxDrain, boolean simulate, boolean notifyChanges) {
         if (proxy != null && canCapInput()) {
-            return drainInternal(maxDrain, simulate);
+            return proxy.drain(maxDrain, simulate, notifyChanges);
         }
         return FluidStack.empty();
+    }
+
+    @NotNull
+    @Override
+    public FluidStack drain(FluidStack resource, boolean simulate, boolean notifyChanges) {
+        if (proxy != null && canCapInput()) {
+            return proxy.drain(resource, simulate, notifyChanges);
+        }
+        return FluidStack.empty();
+    }
+
+    @NotNull
+    @Override
+    public Object createSnapshot() {
+        return proxy == null ? new Object() : proxy.createSnapshot();
+    }
+
+    @Override
+    public void restoreFromSnapshot(Object snapshot) {
+        if (proxy != null) {
+            proxy.restoreFromSnapshot(snapshot);
+        }
     }
 
     public FluidStack drainInternal(long maxDrain, boolean simulate) {

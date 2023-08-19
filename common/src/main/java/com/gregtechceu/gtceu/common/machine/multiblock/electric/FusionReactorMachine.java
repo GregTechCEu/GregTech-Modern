@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.IFusionCasingType;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
-import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
@@ -19,8 +18,6 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.common.block.FusionCasingBlock;
-import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
@@ -54,9 +51,10 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
     protected long heat = 0;
     @Persisted
     protected final NotifiableEnergyContainer energyContainer;
-    @Getter
-    @DescSynced
-    private Integer color = -1;
+    //TODO implement it when we do fancy effect again.
+//    @Getter
+//    @DescSynced
+//    private Integer color = -1;
     @Nullable
     protected TickableSubscription preHeatSubs;
 
@@ -180,28 +178,30 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
         updatePreHeatSubscription();
     }
 
-    @Override
-    public void onWorking() {
-        if (color == -1) {
-            var lastRecipe = recipeLogic.getLastRecipe();
-            if (lastRecipe != null && !lastRecipe.getOutputContents(FluidRecipeCapability.CAP).isEmpty()) {
-                int newColor = 0xFF000000 | FluidHelper.getColor(FluidRecipeCapability.CAP.of(lastRecipe.getOutputContents(FluidRecipeCapability.CAP).get(0).getContent()));
-                if (!Objects.equals(color, newColor)) {
-                    color = newColor;
-                }
-            }
-        }
-    }
+//    @Override
+//    public void onWorking() {
+//        super.onWorking();
+//        if (color == -1) {
+//            var lastRecipe = recipeLogic.getLastRecipe();
+//            if (lastRecipe != null && !lastRecipe.getOutputContents(FluidRecipeCapability.CAP).isEmpty()) {
+//                int newColor = 0xFF000000 | FluidHelper.getColor(FluidRecipeCapability.CAP.of(lastRecipe.getOutputContents(FluidRecipeCapability.CAP).get(0).getContent()));
+//                if (!Objects.equals(color, newColor)) {
+//                    color = newColor;
+//                }
+//            }
+//        }
+//    }
 
-    @Override
-    public void onWaiting() {
-        color = -1;
-    }
+//    @Override
+//    public void onWaiting() {
+//        super.onWaiting();
+//        color = -1;
+//    }
 
     @Override
     public void afterWorking() {
         super.afterWorking();
-        color = -1;
+//        color = -1;
     }
 
     @Override

@@ -51,7 +51,7 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidStack
         this.capabilityIO = capabilityIO;
         for (int i = 0; i < this.storages.length; i++) {
             this.storages[i] = new FluidStorage(capacity);
-            this.storages[i].setOnContentsChanged(this::onContentChanged);
+            this.storages[i].setOnContentsChanged(this::onContentsChanged);
         }
     }
 
@@ -62,7 +62,7 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidStack
         this.storages = storages.toArray(FluidStorage[]::new);
         this.capabilityIO = capabilityIO;
         for (FluidStorage storage : this.storages) {
-            storage.setOnContentsChanged(this::onContentChanged);
+            storage.setOnContentsChanged(this::onContentsChanged);
         }
     }
 
@@ -74,7 +74,7 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidStack
         this(machine, storages, io, io);
     }
 
-    private void onContentChanged() {
+    public void onContentsChanged() {
         isEmpty = null;
         updateTimeStamp(machine.getLevel());
         notifyListeners();
@@ -206,6 +206,14 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidStack
     }
 
     @Override
+    public long fill(int tank, FluidStack resource, boolean simulate, boolean notifyChanges) {
+        if (tank >= 0 && tank < storages.length && canCapInput()) {
+            return storages[tank].fill(resource, simulate, notifyChanges);
+        }
+        return 0;
+    }
+
+    @Override
     public long fill(FluidStack resource, boolean simulate) {
         if (canCapInput()) {
             return fillInternal(resource, simulate);
@@ -242,6 +250,15 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidStack
             return resource.getAmount() - copied.getAmount();
         }
         return 0;
+    }
+
+    @NotNull
+    @Override
+    public FluidStack drain(int tank, FluidStack resource, boolean simulate, boolean notifyChanges) {
+        if (tank >= 0 && tank < storages.length && canCapOutput()) {
+            return storages[tank].drain(resource, simulate, notifyChanges);
+        }
+        return FluidStack.empty();
     }
 
     @NotNull
@@ -311,8 +328,20 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidStack
         return canCapOutput();
     }
 
+
+    @NotNull
     @Override
-    public final void onContentsChanged() {
+    public Object createSnapshot() {
+        return Arrays.stream(storages).map(IFluidTransfer::createSnapshot).toArray(Object[]::new);
+    }
+
+    @Override
+    public void restoreFromSnapshot(Object snapshot) {
+        if (snapshot instanceof Object[] array && array.length == storages.length) {
+            for (int i = 0; i < array.length; i++) {
+                storages[i].restoreFromSnapshot(array[i]);
+            }
+        }
     }
 
 }

@@ -361,6 +361,7 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
             ItemStack stackInSlot = inventory.getStackInSlot(i);
             if (!stackInSlot.isEmpty()) {
                 inventory.setStackInSlot(i, ItemStack.EMPTY);
+                inventory.onContentsChanged();
                 itemBuffer.add(stackInSlot);
             }
         }
