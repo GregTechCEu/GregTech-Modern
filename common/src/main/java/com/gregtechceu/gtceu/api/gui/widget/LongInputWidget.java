@@ -1,9 +1,9 @@
 package com.gregtechceu.gtceu.api.gui.widget;
 
+import com.gregtechceu.gtceu.utils.GTMath;
 import com.lowdragmc.lowdraglib.gui.widget.TextFieldWidget;
 import com.lowdragmc.lowdraglib.utils.Position;
 import com.lowdragmc.lowdraglib.utils.Size;
-import net.minecraft.util.Mth;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -70,11 +70,7 @@ public class LongInputWidget extends NumberInputWidget<Long> {
 
     @Override
     protected Long clamp(Long value, Long min, Long max) {
-        return clamp(value, min, max);
-    }
-
-    public static long clamp(long value, long min, long max) {
-        return Math.max(min, Math.min(max, value));
+        return GTMath.clamp(value, min, max);
     }
 
     @Override

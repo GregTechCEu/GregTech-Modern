@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.LongInputWidget;
 import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
+import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.RedstoneUtil;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
@@ -21,7 +22,6 @@ import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
-import net.minecraft.util.Mth;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
@@ -155,8 +155,8 @@ public class AdvancedEnergyDetectorCover extends EnergyDetectorCover implements 
             if (!wasPercent) {
                 minValueInput.setValue(Math.max((long) (((double) minValue / energyCapacity) * 100), 100));
 
-                minValueInput.setValue(LongInputWidget.clamp((long) (((double) minValue / energyCapacity) * 100), 0, 100));
-                maxValueInput.setValue(LongInputWidget.clamp((long) (((double) maxValue / energyCapacity) * 100), 0, 100));
+                minValueInput.setValue(GTMath.clamp((long) (((double) minValue / energyCapacity) * 100), 0, 100));
+                maxValueInput.setValue(GTMath.clamp((long) (((double) maxValue / energyCapacity) * 100), 0, 100));
             }
 
             minValueInput.setMax(100L);
@@ -168,8 +168,8 @@ public class AdvancedEnergyDetectorCover extends EnergyDetectorCover implements 
             // This needs to be after setting the maximum, because otherwise the converted value would be
             // limited to 100.
             if (wasPercent) {
-                minValueInput.setValue(LongInputWidget.clamp((int) ((minValue / 100.0) * energyCapacity), 0, energyCapacity));
-                maxValueInput.setValue(LongInputWidget.clamp((int) ((maxValue / 100.0) * energyCapacity), 0, energyCapacity));
+                minValueInput.setValue(GTMath.clamp((int) ((minValue / 100.0) * energyCapacity), 0, energyCapacity));
+                maxValueInput.setValue(GTMath.clamp((int) ((maxValue / 100.0) * energyCapacity), 0, energyCapacity));
             }
         }
     }
