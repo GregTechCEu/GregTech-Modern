@@ -1,8 +1,9 @@
 # ChangeLog
 
-* add configs to disable vanilla ores generation
-* fix raw ore recipes
-* fix crash when clicking some items in JEI
-* fix broken block breaking animation
-* fix ldlib transfer api issues
-* fix ldlib compatibility with Continuity
+* fix super chest transfer
+* fix the locking bug of super tank
+* fix crash when the fluid texture is missing
+* fix super chest/tank model offset when they are connected
+* fix bio chaff recipe eut
+* fix ldlib fabric transfer
+* fix jei crash when the slot size updated (1.20)
