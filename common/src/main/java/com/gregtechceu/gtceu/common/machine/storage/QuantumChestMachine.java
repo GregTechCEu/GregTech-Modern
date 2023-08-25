@@ -112,12 +112,12 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
             }
 
             @Override
-            public @NotNull ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
-                var remained = super.insertItem(slot, stack, simulate).copy();
+            public @NotNull ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate, boolean notifyChanges) {
+                var remained = super.insertItem(slot, stack, simulate, notifyChanges).copy();
                 if (!remained.isEmpty()) {
                     if (ItemTransferHelper.canItemStacksStack(getStackInSlot(0), remained)) {
                         int added = Math.min(maxStoredItems - itemsStoredInside, remained.getCount());
-                        if (!simulate) {
+                        if (!simulate && notifyChanges) {
                             itemsStoredInside += added;
                             onContentsChanged();
                         }
@@ -131,12 +131,12 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
             }
 
             @Override
-            public @NotNull ItemStack extractItem(int slot, int amount, boolean simulate) {
-                var extracted = super.extractItem(slot, amount, simulate).copy();
+            public @NotNull ItemStack extractItem(int slot, int amount, boolean simulate, boolean notifyChanges) {
+                var extracted = super.extractItem(slot, amount, simulate, notifyChanges).copy();
                 if (!extracted.isEmpty()) {
                     var additional = Math.min(amount - extracted.getCount(), itemsStoredInside);
                     extracted.grow(additional);
-                    if (!simulate) {
+                    if (!simulate && notifyChanges) {
                         itemsStoredInside -= additional;
                         if (getStackInSlot(0).isEmpty() && itemsStoredInside > 0) {
                             var copied = extracted.copy();
