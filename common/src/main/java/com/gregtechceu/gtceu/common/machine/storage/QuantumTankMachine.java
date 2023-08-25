@@ -101,7 +101,7 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
                 }
                 return filled;
             }
-        }.setFilter(fluidStack -> !isLocked() || lockedFluid.getFluid().isFluidStackEqual(fluidStack));
+        }.setFilter(fluidStack -> !isLocked() || lockedFluid.getFluid().isFluidEqual(fluidStack));
     }
 
     @Override

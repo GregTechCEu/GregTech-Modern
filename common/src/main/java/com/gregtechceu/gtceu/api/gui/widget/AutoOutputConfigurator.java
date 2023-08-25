@@ -71,6 +71,9 @@ public class AutoOutputConfigurator extends WidgetGroup {
                         }
                     });
             sceneWidget.getRenderer().setAfterWorldRender(this::renderBlockOverLay);
+
+            var playerRotation = gui.entityPlayer.getRotationVector();
+            sceneWidget.setCameraYawAndPitch(playerRotation.x, playerRotation.y - 90);
         }
         addWidget(sceneWidget.setBackground(ColorPattern.BLACK.rectTexture()));
         var leftButtonStartX = 4;

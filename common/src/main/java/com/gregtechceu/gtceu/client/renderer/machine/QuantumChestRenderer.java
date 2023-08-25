@@ -102,4 +102,9 @@ public class QuantumChestRenderer extends TieredHullMachineRenderer {
             poseStack.popPose();
         }
     }
+
+    @Environment(EnvType.CLIENT)
+    public float reBakeCustomQuadsOffset() {
+        return 0f;
+    }
 }

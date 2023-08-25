@@ -221,7 +221,7 @@ public abstract class ProspectorMode<T> {
         public void drawSpecialGrid(GuiGraphics graphics, FluidInfo[] items, int x, int y, int width, int height) {
             if (items.length > 0) {
                 var item = items[0];
-                double progress = item.left * 1.0 / Math.max(Math.max(item.left, 100), 1);
+                double progress = item.left * 1.0 / Math.max(Math.min(item.left, 100), 1);
                 float drawnU = (float) ProgressTexture.FillDirection.DOWN_TO_UP.getDrawnU(progress);
                 float drawnV = (float) ProgressTexture.FillDirection.DOWN_TO_UP.getDrawnV(progress);
                 float drawnWidth = (float) ProgressTexture.FillDirection.DOWN_TO_UP.getDrawnWidth(progress);
