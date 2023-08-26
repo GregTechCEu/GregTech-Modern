@@ -7,6 +7,7 @@ import com.google.gson.JsonParseException;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefinition;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.lowdragmc.lowdraglib.Platform;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.JsonOps;
 import net.minecraft.core.RegistryAccess;
@@ -21,6 +22,7 @@ import net.minecraft.world.level.storage.loot.Deserializers;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.annotation.Nullable;
 import java.util.Map;
 
 public class FluidVeinLoader extends SimpleJsonResourceReloadListener {
@@ -29,13 +31,17 @@ public class FluidVeinLoader extends SimpleJsonResourceReloadListener {
     private static final String FOLDER = "gtceu/fluid_veins";
     protected static final Logger LOGGER = LogManager.getLogger();
 
-    public FluidVeinLoader() {
+    @Nullable
+    private final RegistryAccess registryAccess;
+
+    public FluidVeinLoader(@Nullable RegistryAccess registryAccess) {
         super(GSON_INSTANCE, FOLDER);
+        this.registryAccess = registryAccess;
     }
 
     @Override
     protected void apply(Map<ResourceLocation, JsonElement> resourceList, ResourceManager resourceManager, ProfilerFiller profiler) {
-        RegistryOps<JsonElement> ops = RegistryOps.create(JsonOps.INSTANCE, RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY));
+        RegistryOps<JsonElement> ops = RegistryOps.create(JsonOps.INSTANCE, this.registryAccess == null ? Platform.getMinecraftServer().registryAccess() : this.registryAccess);
         for(Map.Entry<ResourceLocation, JsonElement> entry : resourceList.entrySet()) {
             ResourceLocation location = entry.getKey();
 

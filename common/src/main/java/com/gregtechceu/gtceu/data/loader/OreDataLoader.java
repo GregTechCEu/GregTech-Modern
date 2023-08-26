@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.NoopVeinGenerator;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTFeatures;
+import com.lowdragmc.lowdraglib.Platform;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.JsonOps;
 import net.minecraft.core.RegistryAccess;
@@ -23,6 +24,7 @@ import net.minecraft.world.level.storage.loot.Deserializers;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.annotation.Nullable;
 import java.util.Map;
 
 public class OreDataLoader extends SimpleJsonResourceReloadListener {
@@ -31,14 +33,18 @@ public class OreDataLoader extends SimpleJsonResourceReloadListener {
     private static final String FOLDER = "gtceu/ore_veins";
     protected static final Logger LOGGER = LogManager.getLogger();
 
-    public OreDataLoader() {
+    @Nullable
+    private final RegistryAccess registryAccess;
+
+    public OreDataLoader(@Nullable RegistryAccess registryAccess) {
         super(GSON_INSTANCE, FOLDER);
+        this.registryAccess = registryAccess;
     }
 
     @Override
     protected void apply(Map<ResourceLocation, JsonElement> resourceList, ResourceManager resourceManager, ProfilerFiller profiler) {
         GTFeatures.register();
-        RegistryOps<JsonElement> ops = RegistryOps.create(JsonOps.INSTANCE, RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY));
+        RegistryOps<JsonElement> ops = RegistryOps.create(JsonOps.INSTANCE, this.registryAccess == null ? Platform.getMinecraftServer().registryAccess() : this.registryAccess);
         for(Map.Entry<ResourceLocation, JsonElement> entry : resourceList.entrySet()) {
             ResourceLocation location = entry.getKey();
 
