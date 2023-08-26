@@ -119,7 +119,7 @@ dependencies {
     modImplementation fabric.jade
 
     // KJS
-//    modImplementation fabric.kubejs
+    modImplementation fabric.kubejs
 
     // Configuration
     modImplementation(fabric.configuration)

@@ -127,7 +127,7 @@ dependencies {
     modImplementation forge.jade
 
     // KJS
-//    modImplementation forge.kubejs
+    modImplementation forge.kubejs
 
     // Configuration
     modImplementation(forge.configuration)

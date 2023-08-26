@@ -5,6 +5,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.integration.kjs.GTRegistryObjectBuilderTypes;
 import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.utils.ResourceHelper;
 import net.minecraft.client.Minecraft;
@@ -108,7 +109,7 @@ public record MaterialIconType(String name) {
 
     public static void init() {
         if (GTCEu.isKubeJSLoaded()) {
-//            GTRegistryObjectBuilderTypes.registerFor(GTRegistryObjectBuilderTypes.MATERIAL_ICON_TYPE.registryKey);
+            GTRegistryObjectBuilderTypes.registerFor(GTRegistryObjectBuilderTypes.MATERIAL_ICON_TYPE.registryKey);
         }
     }
 
