@@ -143,7 +143,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         event.add("MaterialColor", MaterialColor.class);
         event.add("SoundType", SoundType.class);
 
-        event.add("GTOreVein", GTOreFeatureEntry.class);
+        event.add("GTOreVein", GTOreDefinition.class);
         event.add("GTLayerPattern", GTLayerPattern.class);
         event.add("GTOres", GTOres.class);
         // ....TODO add global refs. for convenience, ppl do not need to import the java package themselves.

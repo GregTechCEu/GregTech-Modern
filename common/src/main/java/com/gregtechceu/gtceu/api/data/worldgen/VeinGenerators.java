@@ -17,7 +17,7 @@ public class VeinGenerators {
     public static final Codec<DikeVeinGenerator> DIKE = register(GTCEu.id("dike"), DikeVeinGenerator.CODEC, DikeVeinGenerator::new);
     public static final Codec<VeinedVeinGenerator> VEINED = register(GTCEu.id("veined"), VeinedVeinGenerator.CODEC, VeinedVeinGenerator::new);
 
-    public static <T extends VeinGenerator> Codec<T> register(ResourceLocation id, Codec<T> codec, Function<GTOreFeatureEntry, ? extends VeinGenerator> function) {
+    public static <T extends VeinGenerator> Codec<T> register(ResourceLocation id, Codec<T> codec, Function<GTOreDefinition, ? extends VeinGenerator> function) {
         WorldGeneratorUtils.VEIN_GENERATORS.put(id, codec);
         WorldGeneratorUtils.VEIN_GENERATOR_FUNCTIONS.put(id, function);
         return codec;

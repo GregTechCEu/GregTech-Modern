@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.api.data.worldgen.bedrockore;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.data.worldgen.GTOreFeatureEntry;
+import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -80,7 +80,7 @@ public class BedrockOreVeinSavedData extends SavedData {
     public OreVeinWorldEntry getOreVeinWorldEntry(int chunkX, int chunkZ) {
         ChunkPos pos = new ChunkPos(chunkX, chunkZ);
         if (!veinOres.containsKey(pos)) {
-            GTOreFeatureEntry definition = null;
+            GTOreDefinition definition = null;
             int query = RandomSource.create(Objects.hash(96548, chunkX / VEIN_CHUNK_SIZE, chunkZ / VEIN_CHUNK_SIZE)).nextInt();
             var biome = serverLevel.getBiome(new BlockPos(chunkX << 4, 64, chunkZ << 4));
             int totalWeight = getTotalWeight(biome);
@@ -115,7 +115,7 @@ public class BedrockOreVeinSavedData extends SavedData {
         return veinOres.get(pos);
     }
 
-    public void createVein(ChunkPos pos, GTOreFeatureEntry definition) {
+    public void createVein(ChunkPos pos, GTOreDefinition definition) {
         if (definition != null) {
             int radius = SectionPos.blockToSectionCoord(definition.getClusterSize() / 2f);
             for (int x = pos.x - radius; x <= pos.x + radius; ++x) {
@@ -232,7 +232,7 @@ public class BedrockOreVeinSavedData extends SavedData {
             return;
         }
 
-        GTOreFeatureEntry definition = info.getDefinition();
+        GTOreDefinition definition = info.getDefinition();
 
         // prevent division by zero, veins that never deplete don't need updating
         if (definition == null || definition.getDepletionChance() == 0)

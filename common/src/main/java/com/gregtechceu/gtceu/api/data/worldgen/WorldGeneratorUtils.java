@@ -25,12 +25,12 @@ public class WorldGeneratorUtils {
 
     public static final Map<String, IWorldGenLayer> WORLD_GEN_LAYERS = new HashMap<>();
     public static final HashBiMap<ResourceLocation, Codec<? extends VeinGenerator>> VEIN_GENERATORS = HashBiMap.create();
-    public static final HashBiMap<ResourceLocation, Function<GTOreFeatureEntry, ? extends VeinGenerator>> VEIN_GENERATOR_FUNCTIONS = HashBiMap.create();
+    public static final HashBiMap<ResourceLocation, Function<GTOreDefinition, ? extends VeinGenerator>> VEIN_GENERATOR_FUNCTIONS = HashBiMap.create();
 
 
     private static class WorldOreVeinCache {
-        private final List<GTOreFeatureEntry> worldVeins;
-        private final List<Entry<Integer, GTOreFeatureEntry>> veins = new LinkedList<>();
+        private final List<GTOreDefinition> worldVeins;
+        private final List<Entry<Integer, GTOreDefinition>> veins = new LinkedList<>();
 
         public WorldOreVeinCache(WorldGenLevel level) {
             this.worldVeins = GTRegistries.ORE_VEINS.values().stream()
@@ -38,10 +38,10 @@ public class WorldGeneratorUtils {
                     .collect(Collectors.toList());
         }
 
-        private List<Entry<Integer, GTOreFeatureEntry>> getEntry(Holder<Biome> biome) {
+        private List<Entry<Integer, GTOreDefinition>> getEntry(Holder<Biome> biome) {
             if (!veins.isEmpty())
                 return veins;
-            List<Entry<Integer, GTOreFeatureEntry>> result = worldVeins.stream()
+            List<Entry<Integer, GTOreDefinition>> result = worldVeins.stream()
                     /*.filter(entry -> {
                         HolderSet<Biome> checkingBiomes = entry.datagenExt().biomes.map(left -> left, right -> BuiltinRegistries.BIOME.getTag(right).orElse(null));
                         return checkingBiomes != null && checkingBiomes.contains(context);
@@ -54,7 +54,7 @@ public class WorldGeneratorUtils {
         }
     }
 
-    public static List<Entry<Integer, GTOreFeatureEntry>> getCachedBiomeVeins(WorldGenLevel level, Holder<Biome> biome, RandomSource random) {
+    public static List<Entry<Integer, GTOreDefinition>> getCachedBiomeVeins(WorldGenLevel level, Holder<Biome> biome, RandomSource random) {
         if (oreVeinCache.containsKey(level))
             return oreVeinCache.get(level).getEntry(biome);
         WorldOreVeinCache worldOreVeinCache = new WorldOreVeinCache(level);

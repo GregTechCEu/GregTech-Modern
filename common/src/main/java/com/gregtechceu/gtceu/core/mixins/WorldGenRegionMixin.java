@@ -17,9 +17,9 @@ public class WorldGenRegionMixin {
 
     @Redirect(method = "ensureCanWrite(Lnet/minecraft/core/BlockPos;)Z", at = @At(value = "FIELD", target = "Lnet/minecraft/server/level/WorldGenRegion;writeRadiusCutoff:I", opcode = Opcodes.GETFIELD))
     public int gtceu$changeWriteRadius(WorldGenRegion instance) {
-        if (writeRadiusCutoff == 0) {
+        if (((WorldGenRegionAccessor)instance).getWriteRadiusCutoff() == 0) {
             return ConfigHolder.INSTANCE.worldgen.maxFeatureChunkSize;
         }
-        return writeRadiusCutoff;
+        return ((WorldGenRegionAccessor)instance).getWriteRadiusCutoff();
     }
 }
