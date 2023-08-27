@@ -510,6 +510,16 @@ public class MachineRecipeLoader {
                 .EUt(VA[HV]).duration(320)
                 .save(provider);
 
+        ASSEMBLER_RECIPES.recipeBuilder("ender_link_card")
+                .inputItems(plate, EnderPearl, 1)
+                .inputItems(SENSOR_HV)
+                .inputItems(EMITTER_HV)
+                .inputItems(NANO_PROCESSOR_HV)
+                .inputFluids(Polyethylene.getFluid(L * 2))
+                .outputItems(ENDER_LINK_CARD)
+                .EUt(VA[HV]).duration(320)
+                .save(provider);
+
         // TODO Storage cover
         //ASSEMBLER_RECIPES.recipeBuilder()
         //        .inputItems(OreDictNames.chestWood.toString())

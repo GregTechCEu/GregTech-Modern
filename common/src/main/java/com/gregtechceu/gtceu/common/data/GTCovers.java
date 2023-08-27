@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.client.renderer.cover.*;
 import com.gregtechceu.gtceu.common.cover.*;
 import com.gregtechceu.gtceu.common.cover.detector.*;
+import com.gregtechceu.gtceu.common.cover.ender_link.EnderFluidLinkCover;
 import com.gregtechceu.gtceu.common.cover.voiding.AdvancedFluidVoidingCover;
 import com.gregtechceu.gtceu.common.cover.voiding.AdvancedItemVoidingCover;
 import com.gregtechceu.gtceu.common.cover.voiding.FluidVoidingCover;
@@ -73,6 +74,11 @@ public class GTCovers {
     public final static CoverDefinition MACHINE_CONTROLLER = register(
             "machine_controller", MachineControllerCover::new,
             new SimpleCoverRenderer(GTCEu.id("block/cover/overlay_controller"))
+    );
+
+    public final static CoverDefinition ENDER_FLUID_LINK = register(
+            "ender_fluid_link", EnderFluidLinkCover::new,
+            new SimpleCoverRenderer(GTCEu.id("block/cover/overlay_ender_fluid_link"))
     );
 
 

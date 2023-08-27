@@ -1178,11 +1178,6 @@ public class GTItems {
             .onRegister(attach(new TooltipBehavior(lines -> {
                 lines.add(Component.translatable("gtceu.universal.tooltip.produces_fluid", 16_000 / 20));
             }), new CoverPlaceBehavior(GTCovers.INFINITE_WATER))).register();
-
-    public static ItemEntry<ComponentItem> COVER_ENDER_FLUID_LINK = REGISTRATE.item("ender_fluid_link_cover", ComponentItem::create)
-            .lang("Ender Fluid Link")
-            .onRegister(compassNode(GTCompassSections.COVERS, GTCompassNodes.COVER))
-            .register();
     public static ItemEntry<ComponentItem> COVER_DIGITAL_INTERFACE = REGISTRATE.item("digital_interface_cover", ComponentItem::create)
             .lang("Digital Interface")
             .register();
@@ -1258,6 +1253,18 @@ public class GTItems {
         lines.addAll(LangHandler.getMultiLang("metaitem.cover.solar.panel.tooltip"));
         lines.add(Component.translatable("gtceu.universal.tooltip.voltage_out", GTValues.V[GTValues.UV], GTValues.VNF[GTValues.UV]));
     }))).register();
+
+    // Ender Link
+    public static ItemEntry<ComponentItem> COVER_ENDER_FLUID_LINK = REGISTRATE.item("ender_fluid_link_cover", ComponentItem::create)
+            .lang("Ender Fluid Link")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.ENDER_FLUID_LINK)))
+            .onRegister(compassNode(GTCompassSections.ENDER_LINK))
+            .register();
+
+    public static ItemEntry<ComponentItem> ENDER_LINK_CARD = REGISTRATE.item("ender_link_card", ComponentItem::create)
+            .lang("Ender Link Card")
+            .onRegister(compassNode(GTCompassSections.ENDER_LINK))
+            .register();
 
     // Plugin
     public static ItemEntry<Item> PLUGIN_TEXT;

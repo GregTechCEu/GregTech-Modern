@@ -76,6 +76,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.shapes.Shapes;
+import org.apache.commons.lang3.NotImplementedException;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -89,6 +90,7 @@ import java.util.stream.Stream;
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.pattern.Predicates.*;
 import static com.gregtechceu.gtceu.api.pattern.util.RelativeDirection.*;
+import static com.gregtechceu.gtceu.api.registry.GTRegistries.RECIPE_TYPES;
 import static com.gregtechceu.gtceu.api.registry.GTRegistries.REGISTRATE;
 import static com.gregtechceu.gtceu.common.data.GTBlocks.*;
 import static com.gregtechceu.gtceu.common.data.GTCreativeModeTabs.MACHINE;
@@ -1394,6 +1396,27 @@ public class GTMachines {
                     .register(),
             IV, LuV) : null;
 
+    public static MultiblockMachineDefinition[] ENDER_LINK_CONTROLLER = registerTieredMultis("ender_link_controller", EnderLinkControllerMachine::new,
+            (tier, builder) -> builder
+                    .langValue(VNF[tier] + " Ender Link Controller")
+                    .rotationState(RotationState.NON_Y_AXIS)
+                    .appearanceBlock(() -> EnderLinkControllerMachine.getCasingState(tier))
+                    .pattern(definition -> FactoryBlockPattern.start()
+                            .aisle(" X ", "XQX", " X ")
+                            .aisle("XQX", "Q#Q", "XQX")
+                            .aisle(" X ", "XSX", " X ")
+                            .where('S', Predicates.controller(blocks(definition.getBlock())))
+                            .where('X', blocks(EnderLinkControllerMachine.getCasingState(tier))
+                                    .or(Predicates.abilities(PartAbility.INPUT_ENERGY)))
+                            .where('Q', blocks(EnderLinkControllerMachine.getCasingState(tier))
+                                    /* TODO add quantum / computing hatches here */)
+                            .where('#', Predicates.air())
+                            .build())
+                    .workableCasingRenderer(EnderLinkControllerMachine.getBaseTexture(tier), GTCEu.id("block/multiblock/ender_link_controller"))
+                    .recipeType(GTRecipeTypes.DUMMY_RECIPES)
+                    .register(),
+            MV, HV, EV, IV, LuV);
+
     //////////////////////////////////////
     //**********     Misc     **********//
     //////////////////////////////////////
@@ -1744,5 +1767,4 @@ public class GTMachines {
     public static MachineDefinition get(String name) {
         return GTRegistries.MACHINES.get(GTCEu.id(name));
     }
-
 }

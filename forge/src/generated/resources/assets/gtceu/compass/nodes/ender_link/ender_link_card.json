@@ -1,0 +1,15 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:ender_link_card"
+  },
+  "items": [
+    "gtceu:ender_link_card"
+  ],
+  "page": "gtceu:ender_link/ender_link_card",
+  "position": [
+    -50,
+    0
+  ],
+  "section": "gtceu:ender_link"
+}

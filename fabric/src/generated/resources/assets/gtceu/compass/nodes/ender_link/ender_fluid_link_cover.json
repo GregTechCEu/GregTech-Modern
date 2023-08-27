@@ -6,13 +6,10 @@
   "items": [
     "gtceu:ender_fluid_link_cover"
   ],
-  "page": "gtceu:covers/ender_fluid_link_cover",
+  "page": "gtceu:ender_link/ender_fluid_link_cover",
   "position": [
-    -150,
-    150
+    -100,
+    0
   ],
-  "pre_nodes": [
-    "gtceu:covers/cover"
-  ],
-  "section": "gtceu:covers"
+  "section": "gtceu:ender_link"
 }
