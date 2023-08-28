@@ -86,6 +86,7 @@ repositories {
             includeGroup "dev.latvian.mods"
         }
     }
+    maven { url 'https://jitpack.io' } // Mixin Extras, Fabric ASM
 }
 
 dependencies {

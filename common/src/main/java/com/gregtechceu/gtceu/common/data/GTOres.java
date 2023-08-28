@@ -292,7 +292,7 @@ public class GTOres {
     //////////////////////////////////////
     //*****          Stone         *****//
     //////////////////////////////////////
-    public static RuleTest[] OVERWORLD_RULES = new RuleTest[] { OreFeatures.STONE_ORE_REPLACEABLES };
+    public static RuleTest[] OVERWORLD_RULES = new RuleTest[] { new TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES) };
 
     public static final GTOreDefinition APATITE_VEIN =
             create("apatite_vein", 25, 0.25f, 40, WorldGenLayers.STONE, GTOres::overworld, HeightRangePlacement.uniform(VerticalAnchor.absolute(10), VerticalAnchor.absolute(80)))
@@ -469,7 +469,7 @@ public class GTOres {
     //////////////////////////////////////
     //*****        Deepslate       *****//
     //////////////////////////////////////
-    public static RuleTest[] DEEPSLATE_RULES = new RuleTest[] { OreFeatures.DEEPSLATE_ORE_REPLACEABLES };
+    public static RuleTest[] DEEPSLATE_RULES = new RuleTest[] { new TagMatchTest(BlockTags.DEEPSLATE_ORE_REPLACEABLES) };
 
     public static final GTOreDefinition COPPER_VEIN =
             create("copper_vein", 30, 1.0f, 80, WorldGenLayers.DEEPSLATE, GTOres::overworld, HeightRangePlacement.uniform(VerticalAnchor.absolute(-40), VerticalAnchor.absolute(10)))
