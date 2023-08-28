@@ -257,6 +257,7 @@ public class GTMaterials {
 
         // register vanilla materials
         registerUnificationItems(ingot, Clay, Items.CLAY_BALL);
+        /* Adding back the GT ores. It'd be too much pain to replace the loot tables.
         ore.setIgnored(Redstone, Blocks.REDSTONE_ORE);
         oreDeepslate.setIgnored(Redstone, Blocks.DEEPSLATE_REDSTONE_ORE);
         ore.setIgnored(Coal, Blocks.COAL_ORE);
@@ -275,6 +276,7 @@ public class GTMaterials {
         ore.setIgnored(Copper, Blocks.COPPER_ORE);
         oreDeepslate.setIgnored(Copper, Blocks.DEEPSLATE_COPPER_ORE);
         oreNetherrack.setIgnored(NetherQuartz, Blocks.NETHER_QUARTZ_ORE);
+         */
 
         rawOre.setIgnored(Gold, Items.RAW_GOLD);
         rawOre.setIgnored(Iron, Items.RAW_IRON);

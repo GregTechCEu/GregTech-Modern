@@ -86,6 +86,7 @@ repositories {
             includeGroup "dev.latvian.mods"
         }
     }
+    maven { url 'https://jitpack.io' } // Mixin Extras, Fabric ASM
 }
 
 dependencies {
@@ -133,7 +134,7 @@ dependencies {
     include(forge.configuration)
 
     // Runtime only testing mods
-    //modRuntimeOnly(forge.worldStripper)
+    modRuntimeOnly(forge.worldStripper)
     modImplementation(forge.ae2) { transitive = false }
 }
 

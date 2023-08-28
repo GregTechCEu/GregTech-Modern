@@ -1,7 +1,8 @@
 package com.gregtechceu.gtceu.api.data.worldgen.bedrockore;
 
-import com.gregtechceu.gtceu.api.data.worldgen.GTOreFeatureEntry;
+import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import lombok.Getter;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -17,13 +18,13 @@ import javax.annotation.Nullable;
 public class OreVeinWorldEntry {
     @Nullable
     @Getter
-    private GTOreFeatureEntry vein;
+    private GTOreDefinition vein;
     @Getter
     private int oreYield;
     @Getter
     private int operationsRemaining;
 
-    public OreVeinWorldEntry(@Nullable GTOreFeatureEntry vein, int oreYield, int operationsRemaining) {
+    public OreVeinWorldEntry(@Nullable GTOreDefinition vein, int oreYield, int operationsRemaining) {
         this.vein = vein;
         this.oreYield = oreYield;
         this.operationsRemaining = operationsRemaining;
@@ -33,7 +34,7 @@ public class OreVeinWorldEntry {
 
     }
 
-    public GTOreFeatureEntry getDefinition() {
+    public GTOreDefinition getDefinition() {
         return this.vein;
     }
 
@@ -43,7 +44,7 @@ public class OreVeinWorldEntry {
     }
 
     public void decreaseOperations(int amount) {
-        operationsRemaining = Math.max(0, operationsRemaining - amount);
+        operationsRemaining = ConfigHolder.INSTANCE.worldgen.infiniteBedrockOresFluids ? operationsRemaining : Math.max(0, operationsRemaining - amount);
     }
 
     public CompoundTag writeToNBT() {

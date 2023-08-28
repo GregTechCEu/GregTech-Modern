@@ -2,8 +2,8 @@ package com.gregtechceu.gtceu.api.data.worldgen.generator;
 
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreFeature;
-import com.gregtechceu.gtceu.api.data.worldgen.GTOreFeatureEntry;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
@@ -52,7 +52,7 @@ public class StandardVeinGenerator extends VeinGenerator {
 
     public Either<List<OreConfiguration.TargetBlockState>, Material> blocks;
 
-    public StandardVeinGenerator(GTOreFeatureEntry entry) {
+    public StandardVeinGenerator(GTOreDefinition entry) {
         super(entry);
     }
 
@@ -114,7 +114,7 @@ public class StandardVeinGenerator extends VeinGenerator {
     }
 
     @Override
-    public boolean generate(WorldGenLevel level, RandomSource random, GTOreFeatureEntry entry, BlockPos origin) {
+    public boolean generate(WorldGenLevel level, RandomSource random, GTOreDefinition entry, BlockPos origin) {
         float f = random.nextFloat() * (float)Math.PI;
         float f1 = (float)entry.getClusterSize() / 8.0F;
         int i = Mth.ceil(((float)entry.getClusterSize() / 16.0F * 2.0F + 1.0F) / 2.0F);
@@ -142,7 +142,7 @@ public class StandardVeinGenerator extends VeinGenerator {
         return false;
     }
 
-    protected boolean doPlaceNormal(WorldGenLevel level, RandomSource random, GTOreFeatureEntry entry, Either<List<OreConfiguration.TargetBlockState>, Material> targets,
+    protected boolean doPlaceNormal(WorldGenLevel level, RandomSource random, GTOreDefinition entry, Either<List<OreConfiguration.TargetBlockState>, Material> targets,
                                     double pMinX, double pMaxX, double pMinZ, double pMaxZ, double pMinY, double pMaxY, int pX, int pY, int pZ,
                                     int pWidth, int pHeight) {
         MutableInt placedAmount = new MutableInt(1);

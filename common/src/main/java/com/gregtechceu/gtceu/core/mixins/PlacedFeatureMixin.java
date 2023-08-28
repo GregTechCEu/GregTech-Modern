@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.core.mixins;
 
+import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreFeatureConfiguration;
-import com.gregtechceu.gtceu.api.data.worldgen.GTOreFeatureEntry;
 import com.gregtechceu.gtceu.api.data.worldgen.modifier.VeinCountFilter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
@@ -34,7 +34,7 @@ public abstract class PlacedFeatureMixin {
     @Inject(method = "placeWithContext", at = @At(value = "HEAD"))
     public void gtceu$injectPlaceFeature(PlacementContext context, RandomSource source, BlockPos pos, CallbackInfoReturnable<Boolean> cir) {
         if (feature.value().config() instanceof GTOreFeatureConfiguration configuration) {
-            GTOreFeatureEntry entry = configuration.getEntry(context.getLevel(), context.getLevel().getBiome(pos), source);
+            GTOreDefinition entry = configuration.getEntry(context.getLevel(), context.getLevel().getBiome(pos), source);
             if (entry != null) {
                 placement = entry.getModifiers();
                 configuration.setEntry(entry);
@@ -55,7 +55,7 @@ public abstract class PlacedFeatureMixin {
         BlockPos[] positions = returnValue.toArray(BlockPos[]::new);
         if (positions.length == 0) {
             if (context.topFeature().isPresent() && context.topFeature().get().feature().value().config() instanceof GTOreFeatureConfiguration configuration) {
-                GTOreFeatureEntry entry = configuration.getEntry(context.getLevel(), context.getLevel().getBiome(pos), source);
+                GTOreDefinition entry = configuration.getEntry(context.getLevel(), context.getLevel().getBiome(pos), source);
                 if (entry != null) {
                     VeinCountFilter.didNotPlace(context.getLevel().getLevel(), pos, entry);
                 }

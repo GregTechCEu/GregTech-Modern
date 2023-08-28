@@ -5,7 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.data.worldgen.GTOreFeatureEntry;
+import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.NoopVeinGenerator;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTFeatures;
@@ -43,7 +43,7 @@ public class OreDataLoader extends SimpleJsonResourceReloadListener {
             ResourceLocation location = entry.getKey();
 
             try {
-                GTOreFeatureEntry ore = fromJson(location, GsonHelper.convertToJsonObject(entry.getValue(), "top element"), ops);
+                GTOreDefinition ore = fromJson(location, GsonHelper.convertToJsonObject(entry.getValue(), "top element"), ops);
                 if (ore == null) {
                     LOGGER.info("Skipping loading ore vein {} as it's serializer returned null", location);
                 } else if (ore.getVeinGenerator() instanceof NoopVeinGenerator) {
@@ -61,7 +61,7 @@ public class OreDataLoader extends SimpleJsonResourceReloadListener {
         if (GTCEu.isKubeJSLoaded()) {
             RunKJSEventInSeparateClassBecauseForgeIsDumb.fireKJSEvent();
         }
-        for (GTOreFeatureEntry entry : GTRegistries.ORE_VEINS) {
+        for (GTOreDefinition entry : GTRegistries.ORE_VEINS) {
             if (entry.getVeinGenerator() != null) {
                 entry.getVeinGenerator().build();
             } else {
@@ -70,8 +70,8 @@ public class OreDataLoader extends SimpleJsonResourceReloadListener {
         }
     }
 
-    public static GTOreFeatureEntry fromJson(ResourceLocation id, JsonObject json, RegistryOps<JsonElement> ops) {
-        return GTOreFeatureEntry.FULL_CODEC.decode(ops, json).map(Pair::getFirst).getOrThrow(false, LOGGER::error);
+    public static GTOreDefinition fromJson(ResourceLocation id, JsonObject json, RegistryOps<JsonElement> ops) {
+        return GTOreDefinition.FULL_CODEC.decode(ops, json).map(Pair::getFirst).getOrThrow(false, LOGGER::error);
     }
 
     /**

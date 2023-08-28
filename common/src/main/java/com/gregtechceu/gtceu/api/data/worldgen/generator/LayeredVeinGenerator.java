@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.worldgen.GTLayerPattern;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreFeature;
-import com.gregtechceu.gtceu.api.data.worldgen.GTOreFeatureEntry;
+import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -38,7 +38,7 @@ public class LayeredVeinGenerator extends VeinGenerator {
 
     public List<GTLayerPattern> layerPatterns;
 
-    public LayeredVeinGenerator(GTOreFeatureEntry entry) {
+    public LayeredVeinGenerator(GTOreDefinition entry) {
         super(entry);
     }
 
@@ -59,7 +59,7 @@ public class LayeredVeinGenerator extends VeinGenerator {
     }
 
     @Override
-    public boolean generate(WorldGenLevel level, RandomSource random, GTOreFeatureEntry entry, BlockPos origin) {
+    public boolean generate(WorldGenLevel level, RandomSource random, GTOreDefinition entry, BlockPos origin) {
         var patternPool = this.layerPatterns;
 
         if (patternPool.isEmpty())

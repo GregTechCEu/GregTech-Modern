@@ -32,12 +32,11 @@ dependencyResolutionManagement {
 //        def topFabricVersion = "1.19-6.0.0"
         def jadeFabricVersion = "11.2.2"
         def registrateFabricVersion = "1.3.59-MC1.20"
-//        def kjsVersion = "1902.6.0-build.142"
+//        def kjsVersion = "2001.6.2-build.9"
         def forgeConfigApiVersion = "8.0.0"
         def nightConfigVersion = "3.6.5"
         def teamRebornEnergyVersion = "2.3.0"
-//        def configurationFabricFile = "4104224"
-//        def worldStripperFabricFile = "3921629"
+        def worldStripperFabricFile = "4578576"
 
         // Forge
         def forgeVersion = "47.1.3"
@@ -46,7 +45,7 @@ dependencyResolutionManagement {
         def flywheelForgeVersion = "0.6.9-5"
         def topForgeVersion = "1.20.1-10.0.1-3"
         def jadeForgeVersion = "11.1.4"
-        def configurationVersion = "2.2.0"
+        def worldStripperForgeFile = "4578579"
 
         // Libs
         def quiltMappingsVersion = "5"  // https://lambdaurora.dev/tools/import_quilt.html
@@ -57,6 +56,7 @@ dependencyResolutionManagement {
         def vineFlowerVersion = "1.+"
         def macheteVersion = "1.+"
         def ldLibVersion = "1.0.19.b"
+        def configurationVersion = "2.2.0"
 
         fabric {
             def fabricLoader = version("fabricLoader", fabricLoaderVersion)
@@ -117,8 +117,8 @@ dependencyResolutionManagement {
             def configuration = version("configuration", configurationVersion)
             library("configuration", "dev.toma.configuration", "configuration-fabric-1.20.1").versionRef(configuration)
 
-//            def worldStripper = version("worldStripper", worldStripperFabricFile)
-//            library("worldStripper", "curse.maven", "worldStripper-250603").versionRef(worldStripper)
+            def worldStripper = version("worldStripper", worldStripperFabricFile)
+            library("worldStripper", "curse.maven", "worldStripper-250603").versionRef(worldStripper)
 
             def ae2 = version("ae2", ae2Version)
             library("ae2", "appeng", "appliedenergistics2-fabric").versionRef(ae2)
@@ -166,8 +166,8 @@ dependencyResolutionManagement {
             def configuration = version("configuration", configurationVersion)
             library("configuration", "dev.toma.configuration", "configuration-forge-1.20.1").versionRef(configuration)
 
-//            def worldStripper = version("worldStripper", worldStripperForgeFile)
-//            library("worldStripper", "curse.maven", "worldStripper-250603").versionRef(worldStripper)
+            def worldStripper = version("worldStripper", worldStripperForgeFile)
+            library("worldStripper", "curse.maven", "worldStripper-250603").versionRef(worldStripper)
 
             def ae2 = version("ae2", ae2Version)
             library("ae2", "appeng", "appliedenergistics2-forge").versionRef(ae2)
