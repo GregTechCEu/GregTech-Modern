@@ -1263,6 +1263,7 @@ public class GTItems {
 
     public static ItemEntry<ComponentItem> ENDER_LINK_CARD = REGISTRATE.item("ender_link_card", ComponentItem::create)
             .lang("Ender Link Card")
+            .onRegister(attach(new EnderLinkCardBehavior()))
             .onRegister(compassNode(GTCompassSections.ENDER_LINK))
             .register();
 

@@ -120,6 +120,9 @@ public class LangHandler {
         provider.add("metaitem.dust.tooltip.purify", "Throw into Cauldron to get clean Dust");
         provider.add("metaitem.crushed.tooltip.purify", "Throw into Cauldron to get Purified Ore");
         provider.add("metaitem.int_circuit.configuration", "Configuration: %d");
+        provider.add("metaitem.ender_link_card.linked", "§bLinked to Controller");
+        provider.add("metaitem.ender_link_card.controller.pos", "§9Position: §7%s");
+        provider.add("metaitem.ender_link_card.controller.id", "§9ID: §7%s");
 
 
         provider.add("item.gtceu.tool.replace_tool_head", "Craft with a new Tool Head to replace it");

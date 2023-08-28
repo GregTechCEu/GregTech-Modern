@@ -2,10 +2,11 @@ package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.syncdata.DirectionalGlobalPosAccessor;
 import com.gregtechceu.gtceu.syncdata.GTRecipeAccessor;
+import com.gregtechceu.gtceu.syncdata.GlobalPosAccessor;
 import com.lowdragmc.lowdraglib.syncdata.IAccessor;
 import com.lowdragmc.lowdraglib.syncdata.payload.FriendlyBufPayload;
 
-import static com.lowdragmc.lowdraglib.syncdata.TypedPayloadRegistries.*;
+import static com.lowdragmc.lowdraglib.syncdata.TypedPayloadRegistries.register;
 
 /**
  * @author KilaBash
@@ -14,10 +15,12 @@ import static com.lowdragmc.lowdraglib.syncdata.TypedPayloadRegistries.*;
  */
 public class GTSyncedFieldAccessors {
     public static final IAccessor GT_RECIPE_ACCESSOR = new GTRecipeAccessor();
+    public static final IAccessor GLOBAL_POS_ACCESSOR = new GlobalPosAccessor();
     public static final IAccessor DIRECTIONAL_GLOBAL_POS_ACCESSOR = new DirectionalGlobalPosAccessor();
 
     public static void init() {
         register(FriendlyBufPayload.class, FriendlyBufPayload::new, GT_RECIPE_ACCESSOR, 1000);
         register(FriendlyBufPayload.class, FriendlyBufPayload::new, DIRECTIONAL_GLOBAL_POS_ACCESSOR, 1000);
+        register(FriendlyBufPayload.class, FriendlyBufPayload::new, GLOBAL_POS_ACCESSOR, 1000);
     }
 }

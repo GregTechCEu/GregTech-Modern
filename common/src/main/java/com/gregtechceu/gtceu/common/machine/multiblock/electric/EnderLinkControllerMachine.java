@@ -3,16 +3,21 @@ package com.gregtechceu.gtceu.common.machine.multiblock.electric;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.DirectionalGlobalPos;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineModifyDrops;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.common.cover.ender_link.EnderFluidLinkCover;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
+import com.gregtechceu.gtceu.common.pipelike.enderlink.EnderLinkCardWriter;
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
+import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import lombok.Getter;
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -32,7 +37,7 @@ import static com.gregtechceu.gtceu.api.GTValues.*;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class EnderLinkControllerMachine extends MultiblockControllerMachine implements IMachineModifyDrops {
+public class EnderLinkControllerMachine extends MultiblockControllerMachine implements IFancyUIMachine, IMachineModifyDrops {
     @Persisted @Getter
     private final UUID uuid;
 
@@ -44,6 +49,9 @@ public class EnderLinkControllerMachine extends MultiblockControllerMachine impl
     private final int tier;
     private final List<EnderFluidLinkCover> loadedLinkedCovers = new ArrayList<>();
 
+    @Persisted
+    private EnderLinkCardWriter cardWriter;
+
     public EnderLinkControllerMachine(IMachineBlockEntity holder, int tier, Object... args) {
         super(holder);
 
@@ -51,6 +59,8 @@ public class EnderLinkControllerMachine extends MultiblockControllerMachine impl
         this.uuid = UUID.randomUUID();
 
         channelFluidTransfers = createChannelFluidTransfers();
+
+        cardWriter = new EnderLinkCardWriter(this);
     }
 
     private IFluidTransfer[] createChannelFluidTransfers() {
@@ -86,6 +96,10 @@ public class EnderLinkControllerMachine extends MultiblockControllerMachine impl
 
     public int getMaxRange() {
         return 32; // TODO adapt to tier
+    }
+
+    public GlobalPos getGlobalPosition() {
+        return GlobalPos.of(getLevel().dimension(), this.getPos());
     }
 
     @Nullable
@@ -131,6 +145,20 @@ public class EnderLinkControllerMachine extends MultiblockControllerMachine impl
     public ManagedFieldHolder getFieldHolder() {
         return MANAGED_FIELD_HOLDER;
     }
+
+    /////////////////////////////////////
+    //************   GUI   ************//
+    /////////////////////////////////////
+
+    @Override
+    public Widget createUIWidget() {
+        WidgetGroup widgetGroup = new WidgetGroup(0, 0, 200, 150);
+
+        widgetGroup.addWidget(cardWriter.createUI(10, 10));
+
+        return widgetGroup;
+    }
+
 
     /////////////////////////////////////
     //*****   VIRTUAL TRANSFERS   *****//
