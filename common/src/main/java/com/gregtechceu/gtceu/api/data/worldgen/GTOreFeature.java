@@ -40,7 +40,7 @@ public class GTOreFeature extends Feature<GTOreFeatureConfiguration> {
         WorldGenLevel level = context.level();
         Holder<Biome> biome = context.level().getBiome(origin);
 
-        GTOreFeatureEntry entry = context.config().getEntry(context.level(), biome, random);
+        GTOreDefinition entry = context.config().getEntry(context.level(), biome, random);
         if (entry == null) return false;
         context.config().setEntry(null);
         /*HolderSet<Biome> checkingBiomes = entry.datagenExt().biomes.map(left -> left, right -> BuiltinRegistries.BIOME.getTag(right).orElse(BuiltinRegistries.BIOME.getTag(BiomeTags.IS_OVERWORLD).orElseThrow()));
@@ -68,8 +68,8 @@ public class GTOreFeature extends Feature<GTOreFeatureConfiguration> {
     }
 
     public static boolean canPlaceOre(BlockState pState, Function<BlockPos, BlockState> pAdjacentStateAccessor,
-                               RandomSource pRandom, GTOreFeatureEntry entry, OreConfiguration.TargetBlockState pTargetState,
-                               BlockPos.MutableBlockPos pMatablePos) {
+                                      RandomSource pRandom, GTOreDefinition entry, OreConfiguration.TargetBlockState pTargetState,
+                                      BlockPos.MutableBlockPos pMatablePos) {
         if (!pTargetState.target.test(pState, pRandom))
             return false;
         if (shouldSkipAirCheck(pRandom, entry.getDiscardChanceOnAirExposure()))
@@ -79,7 +79,7 @@ public class GTOreFeature extends Feature<GTOreFeatureConfiguration> {
     }
 
     public static boolean canPlaceOre(BlockState pState, Function<BlockPos, BlockState> pAdjacentStateAccessor,
-                                      RandomSource pRandom, GTOreFeatureEntry entry,
+                                      RandomSource pRandom, GTOreDefinition entry,
                                       BlockPos.MutableBlockPos pMatablePos) {
         if (!entry.getLayer().getTarget().test(pState, pRandom))
             return false;

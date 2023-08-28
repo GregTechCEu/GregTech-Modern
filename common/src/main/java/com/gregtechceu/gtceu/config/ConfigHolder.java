@@ -146,6 +146,13 @@ public class ConfigHolder {
         public int oreVeinScanRadius = 3;
 
         @Configurable
+        @Configurable.Comment({"Multiplier to bedrock ore generation amount", "Default: 1.0f"})
+        public float bedrockOreMultiplier = 1.0f;
+        @Configurable
+        @Configurable.Comment({"Make bedrock ore/fluid veins infinite?", "Default: false"})
+        public boolean infiniteBedrockOresFluids = false;
+
+        @Configurable
         @Configurable.Range(min = 0, max = 8)
         @Configurable.Comment({"Maximum worldgen feature size in chunks",
                 "if a vein is larger than this, Minecraft complains in logs.",

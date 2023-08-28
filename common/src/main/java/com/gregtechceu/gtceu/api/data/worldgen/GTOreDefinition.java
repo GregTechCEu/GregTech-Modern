@@ -30,20 +30,20 @@ import java.util.*;
 /**
  * @author Screret
  * @date 2023/6/14
- * @implNote GTOreFeatureEntry
+ * @implNote GTOreDefinition
  */
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 @Accessors(chain = true)
-public class GTOreFeatureEntry {
-    public static final Codec<GTOreFeatureEntry> CODEC = ResourceLocation.CODEC
+public class GTOreDefinition {
+    public static final Codec<GTOreDefinition> CODEC = ResourceLocation.CODEC
             .flatXmap(rl -> Optional.ofNullable(GTRegistries.ORE_VEINS.get(rl))
                             .map(DataResult::success)
-                            .orElseGet(() -> DataResult.error("No GTOreFeatureEntry with id " + rl + " registered")),
+                            .orElseGet(() -> DataResult.error("No GTOreDefinition with id " + rl + " registered")),
                     obj -> Optional.ofNullable(GTRegistries.ORE_VEINS.getKey(obj))
                             .map(DataResult::success)
-                            .orElseGet(() -> DataResult.error("GTOreFeatureEntry " + obj + " not registered")));
-    public static final Codec<GTOreFeatureEntry> FULL_CODEC = RecordCodecBuilder.create(
+                            .orElseGet(() -> DataResult.error("GTOreDefinition " + obj + " not registered")));
+    public static final Codec<GTOreDefinition> FULL_CODEC = RecordCodecBuilder.create(
             instance -> instance.group(
                     Codec.INT.fieldOf("cluster_size").forGetter(ft -> ft.clusterSize),
                     Codec.floatRange(0.0F, 1.0F).fieldOf("density").forGetter(ft -> ft.density),
@@ -55,7 +55,7 @@ public class GTOreFeatureEntry {
                     RegistryCodecs.homogeneousList(Registry.BIOME_REGISTRY).optionalFieldOf("biomes", null).forGetter(ext -> ext.biomes),
                     BiomeWeightModifier.CODEC.optionalFieldOf("weight_modifier", null).forGetter(ext -> ext.biomeWeightModifier),
                     VeinGenerator.DIRECT_CODEC.fieldOf("generator").forGetter(ft -> ft.veinGenerator)
-            ).apply(instance, GTOreFeatureEntry::new)
+            ).apply(instance, GTOreDefinition::new)
     );
 
     @Getter @Setter
@@ -88,7 +88,7 @@ public class GTOreFeatureEntry {
     @Setter
     private List<Map.Entry<Integer, Material>> bedrockVeinMaterial;
 
-    public GTOreFeatureEntry(ResourceLocation id, int clusterSize, float density, int weight, IWorldGenLayer layer, HolderSet<DimensionType> dimensionFilter, HeightRangePlacement range, float discardChanceOnAirExposure, @Nullable HolderSet<Biome> biomes, @Nullable BiomeWeightModifier biomeWeightModifier, @Nullable VeinGenerator veinGenerator) {
+    public GTOreDefinition(ResourceLocation id, int clusterSize, float density, int weight, IWorldGenLayer layer, HolderSet<DimensionType> dimensionFilter, HeightRangePlacement range, float discardChanceOnAirExposure, @Nullable HolderSet<Biome> biomes, @Nullable BiomeWeightModifier biomeWeightModifier, @Nullable VeinGenerator veinGenerator) {
         this(clusterSize, density, weight, layer, dimensionFilter, range, discardChanceOnAirExposure, biomes, biomeWeightModifier, veinGenerator);
         if (GTRegistries.ORE_VEINS.containKey(id)) {
             GTRegistries.ORE_VEINS.replace(id, this);
@@ -97,7 +97,7 @@ public class GTOreFeatureEntry {
         }
     }
 
-    public GTOreFeatureEntry(int clusterSize, float density, int weight, IWorldGenLayer layer, HolderSet<DimensionType> dimensionFilter, HeightRangePlacement range, float discardChanceOnAirExposure, @Nullable HolderSet<Biome> biomes, @Nullable BiomeWeightModifier biomeWeightModifier, @Nullable VeinGenerator veinGenerator) {
+    public GTOreDefinition(int clusterSize, float density, int weight, IWorldGenLayer layer, HolderSet<DimensionType> dimensionFilter, HeightRangePlacement range, float discardChanceOnAirExposure, @Nullable HolderSet<Biome> biomes, @Nullable BiomeWeightModifier biomeWeightModifier, @Nullable VeinGenerator veinGenerator) {
         this.clusterSize = clusterSize;
         this.density = density;
         this.weight = weight;
@@ -122,17 +122,17 @@ public class GTOreFeatureEntry {
         this.depletionChance = (int) (weight * density / 5);
     }
 
-    public GTOreFeatureEntry biomes(TagKey<Biome> biomes) {
+    public GTOreDefinition biomes(TagKey<Biome> biomes) {
         this.biomes = BuiltinRegistries.BIOME.getOrCreateTag(biomes);
         return this;
     }
 
-    public GTOreFeatureEntry biomes(HolderSet<Biome> biomes) {
+    public GTOreDefinition biomes(HolderSet<Biome> biomes) {
         this.biomes = biomes;
         return this;
     }
 
-    public GTOreFeatureEntry range(HeightRangePlacement range) {
+    public GTOreDefinition range(HeightRangePlacement range) {
         this.range = range;
         this.modifiers = List.of(
                 VeinCountFilter.count(),
@@ -144,13 +144,14 @@ public class GTOreFeatureEntry {
     }
 
     public List<Map.Entry<Integer, Material>> getBedrockVeinMaterials() {
-        if (ConfigHolder.INSTANCE.machines.doBedrockOres) {
-            if (bedrockVeinMaterial != null) return bedrockVeinMaterial;
-            //List<Map.Entry<Integer, Material>> entries = this.getVeinGenerator().getValidMaterialsChances().entrySet().stream().collect(ArrayList::new, (list, b) -> list.add(Map.entry(b.getValue(), b.getKey())), ArrayList::addAll);
-            return bedrockVeinMaterial = this.getVeinGenerator().getValidMaterialsChances();
-        } else {
-            return List.of();
+        if (bedrockVeinMaterial == null) {
+            if (ConfigHolder.INSTANCE.machines.doBedrockOres) {
+                bedrockVeinMaterial = this.getVeinGenerator().getValidMaterialsChances();
+            } else {
+                bedrockVeinMaterial = List.of();
+            }
         }
+        return bedrockVeinMaterial;
     }
 
     public StandardVeinGenerator standardVeinGenerator() {

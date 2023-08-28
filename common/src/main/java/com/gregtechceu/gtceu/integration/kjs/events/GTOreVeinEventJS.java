@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.integration.kjs.events;
 
-import com.gregtechceu.gtceu.api.data.worldgen.GTOreFeatureEntry;
+import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.integration.kjs.builders.OreVeinBuilderJS;
 import dev.latvian.mods.kubejs.event.EventJS;
@@ -26,7 +26,7 @@ public class GTOreVeinEventJS extends EventJS {
         GTRegistries.ORE_VEINS.remove(id);
     }
 
-    public void modify(ResourceLocation id, Consumer<GTOreFeatureEntry> consumer) {
+    public void modify(ResourceLocation id, Consumer<GTOreDefinition> consumer) {
         consumer.accept(GTRegistries.ORE_VEINS.get(id));
     }
 }

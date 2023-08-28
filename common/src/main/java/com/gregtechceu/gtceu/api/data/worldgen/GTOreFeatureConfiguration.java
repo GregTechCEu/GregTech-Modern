@@ -21,7 +21,7 @@ import java.util.function.Function;
  */
 public class GTOreFeatureConfiguration implements FeatureConfiguration {
     public static final Codec<GTOreFeatureConfiguration> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            Codec.either(GTOreFeatureEntry.CODEC, GTOreFeatureEntry.FULL_CODEC)
+            Codec.either(GTOreDefinition.CODEC, GTOreDefinition.FULL_CODEC)
                     .xmap(either -> either.map(Function.identity(), Function.identity()), Either::left)
                     .optionalFieldOf("entry", null)
                     .forGetter(config -> config.entry)
@@ -29,19 +29,19 @@ public class GTOreFeatureConfiguration implements FeatureConfiguration {
     );
 
     @Setter
-    private GTOreFeatureEntry entry;
+    private GTOreDefinition entry;
 
 
     public GTOreFeatureConfiguration() {
         this.entry = null;
     }
 
-    public GTOreFeatureConfiguration(GTOreFeatureEntry entry) {
+    public GTOreFeatureConfiguration(GTOreDefinition entry) {
         this.entry = entry;
     }
 
     @Nullable
-    public GTOreFeatureEntry getEntry(WorldGenLevel level, Holder<Biome> biome, RandomSource random) {
+    public GTOreDefinition getEntry(WorldGenLevel level, Holder<Biome> biome, RandomSource random) {
         if (this.entry != null) return this.entry;
         var veins = WorldGeneratorUtils.getCachedBiomeVeins(level, biome, random);
         int randomEntryIndex = GTUtil.getRandomItem(random, veins, veins.size());
