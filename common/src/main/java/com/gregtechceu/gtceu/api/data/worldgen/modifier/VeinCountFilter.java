@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.api.data.worldgen.modifier;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreFeatureConfiguration;
-import com.gregtechceu.gtceu.api.data.worldgen.GTOreFeatureEntry;
 import com.gregtechceu.gtceu.api.data.worldgen.IWorldGenLayer;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -26,14 +26,14 @@ public class VeinCountFilter extends PlacementFilter {
 
     public static final VeinCountFilter INSTANCE = new VeinCountFilter();
     public static final Codec<VeinCountFilter> CODEC = Codec.unit(() -> INSTANCE);
-    private static final ConcurrentHashMap<Cell, GTOreFeatureEntry> GENERATED = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<Cell, GTOreDefinition> GENERATED = new ConcurrentHashMap<>();
 
     @Override
     protected boolean shouldPlace(PlacementContext context, RandomSource random, BlockPos pos) {
         PlacedFeature placedFeature = context.topFeature().orElseThrow(() -> new IllegalStateException("Tried to count check an unregistered feature, or a feature that should not restrict the placement amount"));
         if (placedFeature.feature().value().config() instanceof GTOreFeatureConfiguration configuration) {
             ChunkPos chunkPos = new ChunkPos(pos);
-            GTOreFeatureEntry entry = configuration.getEntry(context.getLevel(), context.getLevel().getBiome(pos), random);
+            GTOreDefinition entry = configuration.getEntry(context.getLevel(), context.getLevel().getBiome(pos), random);
             if (entry == null) return false;
             Cell startCell = new Cell(context.getLevel().getLevel(), entry.getLayer(), chunkPos);
             // Search for a radius of (default 3) chunks for other veins, to avoid veins getting too close to eachother (they may originate in weird places)
@@ -56,7 +56,7 @@ public class VeinCountFilter extends PlacementFilter {
         return true;
     }
 
-    public static void didNotPlace(WorldGenLevel level, BlockPos pos, GTOreFeatureEntry entry) {
+    public static void didNotPlace(WorldGenLevel level, BlockPos pos, GTOreDefinition entry) {
         GENERATED.remove(new Cell(level.getLevel().getLevel(), entry.getLayer(), new ChunkPos(pos)));
     }
 

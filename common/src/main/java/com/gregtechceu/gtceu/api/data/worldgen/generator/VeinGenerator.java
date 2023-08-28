@@ -3,8 +3,8 @@ package com.gregtechceu.gtceu.api.data.worldgen.generator;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreFeatureConfiguration;
-import com.gregtechceu.gtceu.api.data.worldgen.GTOreFeatureEntry;
 import com.gregtechceu.gtceu.api.data.worldgen.WorldGeneratorUtils;
 import com.gregtechceu.gtceu.common.data.GTFeatures;
 import com.mojang.datafixers.util.Either;
@@ -30,12 +30,12 @@ public abstract class VeinGenerator {
                             .orElseGet(() -> DataResult.error(() -> "VeinGenerator " + obj + " not registered")));
     public static final Codec<VeinGenerator> DIRECT_CODEC = REGISTRY_CODEC.dispatchStable(VeinGenerator::codec, Function.identity());
 
-    protected GTOreFeatureEntry entry;
+    protected GTOreDefinition entry;
 
     public VeinGenerator() {
     }
 
-    public VeinGenerator(GTOreFeatureEntry entry) {
+    public VeinGenerator(GTOreDefinition entry) {
         this.entry = entry;
     }
 
@@ -73,11 +73,11 @@ public abstract class VeinGenerator {
                 .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
     }
 
-    public abstract boolean generate(WorldGenLevel level, RandomSource random, GTOreFeatureEntry entry, BlockPos origin);
+    public abstract boolean generate(WorldGenLevel level, RandomSource random, GTOreDefinition entry, BlockPos origin);
 
     public abstract VeinGenerator build();
 
-    public GTOreFeatureEntry parent() {
+    public GTOreDefinition parent() {
         return entry;
     }
 

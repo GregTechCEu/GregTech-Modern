@@ -4,7 +4,7 @@ import com.google.common.collect.Lists;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
-import com.gregtechceu.gtceu.api.data.worldgen.GTOreFeatureEntry;
+import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.mojang.datafixers.util.Either;
 import com.mojang.datafixers.util.Pair;
@@ -100,7 +100,7 @@ public class GeodeVeinGenerator extends VeinGenerator {
     @Setter
     public int invalidBlocksThreshold = 0;
 
-    public GeodeVeinGenerator(GTOreFeatureEntry entry) {
+    public GeodeVeinGenerator(GTOreDefinition entry) {
         super(entry);
     }
 
@@ -117,7 +117,7 @@ public class GeodeVeinGenerator extends VeinGenerator {
     }
 
     @Override
-    public boolean generate(WorldGenLevel level, RandomSource random, GTOreFeatureEntry entry, BlockPos origin) {
+    public boolean generate(WorldGenLevel level, RandomSource random, GTOreDefinition entry, BlockPos origin) {
         BlockState blockState;
         int offset;
         int offset2;

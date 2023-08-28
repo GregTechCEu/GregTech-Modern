@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid;
 
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import lombok.Getter;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -42,7 +43,7 @@ public class FluidVeinWorldEntry {
     }
 
     public void decreaseOperations(int amount) {
-        operationsRemaining = Math.max(0, operationsRemaining - amount);
+        operationsRemaining = ConfigHolder.INSTANCE.worldgen.infiniteBedrockOresFluids ? operationsRemaining : Math.max(0, operationsRemaining - amount);
     }
 
     public CompoundTag writeToNBT() {

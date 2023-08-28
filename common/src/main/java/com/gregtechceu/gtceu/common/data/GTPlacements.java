@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.worldgen.BiomeWeightModifier;
 import com.gregtechceu.gtceu.api.data.worldgen.modifier.BiomePlacement;
 import com.gregtechceu.gtceu.api.data.worldgen.modifier.VeinCountFilter;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.registries.Registries;
@@ -33,7 +34,7 @@ public class GTPlacements {
                 new BiomePlacement(List.of(
                         new BiomeWeightModifier(() -> biomeLookup.getOrThrow(CustomTags.IS_SWAMP), 50)
                 )),
-                PlacementUtils.countExtra(0, 0.5F, 1),
+                PlacementUtils.countExtra(0, ConfigHolder.INSTANCE.worldgen.rubberTreeSpawnChance, 1),
                 InSquarePlacement.spread(),
                 SurfaceWaterDepthFilter.forMaxDepth(0),
                 PlacementUtils.HEIGHTMAP_OCEAN_FLOOR,

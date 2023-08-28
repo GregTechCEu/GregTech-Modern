@@ -176,7 +176,7 @@ public class TagPrefix {
             .materialIconType(MaterialIconType.rawOre)
             .unificationEnabled(true)
             .generateItem(true)
-            .generationCondition(hasOreProperty.and(hasGemProperty.negate()));
+            .generationCondition(hasOreProperty);
 
     public static final TagPrefix rawOreBlock = new TagPrefix("rawOreBlock")
             .defaultTagPath(FORGE, "storage_blocks/raw_%s")
@@ -185,7 +185,7 @@ public class TagPrefix {
             .materialIconType(MaterialIconType.rawOreBlock)
             .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
             .unificationEnabled(true)
-            .generationCondition(hasOreProperty.and(hasGemProperty.negate()));
+            .generationCondition(hasOreProperty);
 
     public static final TagPrefix crushedRefined = new TagPrefix("refinedOre")
             .defaultTagPath(FORGE, "refined_ores/%s")

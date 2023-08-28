@@ -17,8 +17,6 @@ public class AssemblyLineLoader {
 
     public static void init(Consumer<FinishedRecipe> provider) {
 
-        // TODO Fusion reactor
-
         ASSEMBLY_LINE_RECIPES.recipeBuilder("fusion_reactor_mk1")
                 .inputItems(SUPERCONDUCTING_COIL.asStack())
                 .inputItems(CustomTags.ZPM_CIRCUITS, 4)

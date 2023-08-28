@@ -2,9 +2,10 @@ package com.gregtechceu.gtceu.api.data.worldgen.generator;
 
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreFeature;
-import com.gregtechceu.gtceu.api.data.worldgen.GTOreFeatureEntry;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.utils.GTUtil;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -26,7 +27,6 @@ import org.apache.commons.lang3.mutable.MutableBoolean;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -45,23 +45,24 @@ public class DikeVeinGenerator extends VeinGenerator {
     @Setter
     public int maxYLevel;
 
-    public DikeVeinGenerator(GTOreFeatureEntry entry) {
+    public DikeVeinGenerator(GTOreDefinition entry) {
         super(entry);
     }
 
     @Override
     public Map<Either<BlockState, Material>, Integer> getAllEntries() {
-        return this.blocks.stream().flatMap(definition ->
+        return this.blocks.stream()
+                .flatMap(definition ->
                         definition.block.map(state ->
-                                state.stream().map(target -> Either.<BlockState, Material>left(target.state)),
-                                material -> Stream.of(Either.<BlockState, Material>right(material))))
-                .collect(Collectors.toMap(Function.identity(), value -> 1));
+                                state.stream().map(target -> Map.entry(Either.<BlockState, Material>left(target.state), definition.weight)),
+                                material -> Stream.of(Map.entry(Either.<BlockState, Material>right(material), definition.weight))))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
     @Override
-    public boolean generate(WorldGenLevel level, RandomSource random, GTOreFeatureEntry entry, BlockPos origin) {
+    public boolean generate(WorldGenLevel level, RandomSource random, GTOreDefinition entry, BlockPos origin) {
         WorldgenRandom worldgenRandom = new WorldgenRandom(new LegacyRandomSource(level.getSeed()));
-        NormalNoise normalNoise = NormalNoise.create(worldgenRandom, -2, 4.0D); // INT Sparseness - DOUBLE ARRAY Density
+        NormalNoise normalNoise = NormalNoise.create(worldgenRandom, -2, 4.0D);
         ChunkPos chunkPos = new ChunkPos(origin);
 
         float density = entry.getDensity();
@@ -80,7 +81,7 @@ public class DikeVeinGenerator extends VeinGenerator {
             for (int dX = -size; dX <= size; dX++) {
                 for (int dZ = -size; dZ <= size; dZ++) {
                     float dist = (dX * dX) + (dZ * dZ);
-                    if (dist > size) {
+                    if (dist > size * 2) {
                         continue;
                     }
                     if (normalNoise.getValue(dX, dY, dZ) >= 0.5 && random.nextFloat() <= density) {
@@ -94,9 +95,9 @@ public class DikeVeinGenerator extends VeinGenerator {
         return blocksPlaced > 0;
     }
 
-    private boolean placeBlock(WorldGenLevel level, RandomSource rand, BlockPos pos, GTOreFeatureEntry entry) {
-        int index = rand.nextInt(blocks.size());
-        DikeBlockDefinition blockDefinition = blocks.get(index);
+    private boolean placeBlock(WorldGenLevel level, RandomSource rand, BlockPos pos, GTOreDefinition entry) {
+        List<? extends Map.Entry<Integer, DikeBlockDefinition>> entries = blocks.stream().map(b -> Map.entry(b.weight, b)).toList();
+        DikeBlockDefinition blockDefinition = blocks.get(GTUtil.getRandomItem(rand, entries, entries.size()));
         BlockState current = level.getBlockState(pos);
         MutableBoolean returnValue = new MutableBoolean(false);
 
@@ -137,16 +138,26 @@ public class DikeVeinGenerator extends VeinGenerator {
         return CODEC;
     }
 
-    public void withBlock(DikeBlockDefinition block) {
+    public DikeVeinGenerator withBlock(DikeBlockDefinition block) {
         if (this.blocks == null) this.blocks = new ArrayList<>();
         this.blocks.add(block);
+        return this;
     }
 
-    public record DikeBlockDefinition(Either<List<OreConfiguration.TargetBlockState>, Material> block, int minY, int maxY) {
+    public record DikeBlockDefinition(Either<List<OreConfiguration.TargetBlockState>, Material> block, int weight, int minY, int maxY) {
         public static final Codec<DikeBlockDefinition> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 Codec.either(OreConfiguration.TargetBlockState.CODEC.listOf(), GTRegistries.MATERIALS.codec()).fieldOf("block").forGetter(x -> x.block),
+                Codec.INT.fieldOf("weight").forGetter(x -> x.weight),
                 Codec.INT.fieldOf("min_y").orElse(320).forGetter(x -> x.minY),
                 Codec.INT.fieldOf("max_y").orElse(-64).forGetter(x -> x.maxY)
         ).apply(instance, DikeBlockDefinition::new));
+
+        public DikeBlockDefinition(Material block, int weight, int minY, int maxY) {
+            this(Either.right(block), weight, minY, maxY);
+        }
+
+        public DikeBlockDefinition(List<OreConfiguration.TargetBlockState> block, int weight, int minY, int maxY) {
+            this(Either.left(block), weight, minY, maxY);
+        }
     }
 }

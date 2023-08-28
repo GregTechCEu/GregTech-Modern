@@ -718,11 +718,10 @@ public class GTMachines {
             .appearanceBlock(CASING_PRIMITIVE_BRICKS)
             .pattern(definition -> FactoryBlockPattern.start()
                     .aisle("XXX", "XXX", "XXX", "XXX")
-                    .aisle("XXX", "X&X", "X#X", "X#X")
+                    .aisle("XXX", "X#X", "X#X", "X#X")
                     .aisle("XXX", "XYX", "XXX", "XXX")
                     .where('X', blocks(CASING_PRIMITIVE_BRICKS.get()))
                     .where('#', Predicates.air())
-                    .where('&', Predicates.fluids(Fluids.LAVA)) // this won't stay in the structure, and will be broken while running
                     .where('Y', Predicates.controller(blocks(definition.getBlock())))
                     .build())
             .workableCasingRenderer(GTCEu.id("block/casings/solid/machine_primitive_bricks"),
