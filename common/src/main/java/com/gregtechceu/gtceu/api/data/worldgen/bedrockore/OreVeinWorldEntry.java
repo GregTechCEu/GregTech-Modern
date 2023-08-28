@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.data.worldgen.bedrockore;
 
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import lombok.Getter;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -43,7 +44,7 @@ public class OreVeinWorldEntry {
     }
 
     public void decreaseOperations(int amount) {
-        operationsRemaining = Math.max(0, operationsRemaining - amount);
+        operationsRemaining = ConfigHolder.INSTANCE.worldgen.infiniteBedrockOresFluids ? Math.max(0, operationsRemaining - amount) : operationsRemaining;
     }
 
     public CompoundTag writeToNBT() {

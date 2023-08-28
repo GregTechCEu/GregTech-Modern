@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
@@ -71,11 +72,11 @@ public class BedrockOreVeinSavedData extends SavedData {
     }
 
     /**
-     * Gets the FluidVeinWorldInfo object associated with the given chunk
+     * Gets the OreVeinWorldEntry object associated with the given chunk
      *
      * @param chunkX X coordinate of desired chunk
      * @param chunkZ Z coordinate of desired chunk
-     * @return The FluidVeinWorldInfo corresponding with the given chunk
+     * @return The OreVeinWorldEntry corresponding with the given chunk
      */
     public OreVeinWorldEntry getOreVeinWorldEntry(int chunkX, int chunkZ) {
         ChunkPos pos = new ChunkPos(chunkX, chunkZ);
@@ -107,7 +108,7 @@ public class BedrockOreVeinSavedData extends SavedData {
                 } else {
                     maximumYield = random.nextInt(definition.getMaximumYield() - definition.getMinimumYield()) + definition.getMinimumYield();
                 }
-                maximumYield = Math.min(maximumYield, definition.getMaximumYield());
+                maximumYield = Math.round(Math.min(maximumYield, definition.getMaximumYield()) * ConfigHolder.INSTANCE.worldgen.bedrockOreMultiplier);
             }
             veinOres.put(new ChunkPos(chunkX, chunkZ), new OreVeinWorldEntry(definition, maximumYield, MAXIMUM_VEIN_OPERATIONS));
             setDirty();

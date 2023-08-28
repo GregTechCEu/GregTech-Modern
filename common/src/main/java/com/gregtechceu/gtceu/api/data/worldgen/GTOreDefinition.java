@@ -144,13 +144,14 @@ public class GTOreDefinition {
     }
 
     public List<Map.Entry<Integer, Material>> getBedrockVeinMaterials() {
-        if (ConfigHolder.INSTANCE.machines.doBedrockOres) {
-            if (bedrockVeinMaterial != null) return bedrockVeinMaterial;
-            //List<Map.Entry<Integer, Material>> entries = this.getVeinGenerator().getValidMaterialsChances().entrySet().stream().collect(ArrayList::new, (list, b) -> list.add(Map.entry(b.getValue(), b.getKey())), ArrayList::addAll);
-            return bedrockVeinMaterial = this.getVeinGenerator().getValidMaterialsChances();
-        } else {
-            return List.of();
+        if (bedrockVeinMaterial == null) {
+            if (ConfigHolder.INSTANCE.machines.doBedrockOres) {
+                bedrockVeinMaterial = this.getVeinGenerator().getValidMaterialsChances();
+            } else {
+                bedrockVeinMaterial = List.of();
+            }
         }
+        return bedrockVeinMaterial;
     }
 
     public StandardVeinGenerator standardVeinGenerator() {
