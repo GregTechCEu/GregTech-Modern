@@ -36,13 +36,13 @@ public class CommonProxyImpl {
         GTRegistriesImpl.init(eventBus);
         GTFeaturesImpl.init(eventBus);
         // init common features
-//        if (GTCEu.isKubeJSLoaded()) {
-//            synchronized (LOCK) {
-//                if (!isKubJSSetup) {
-//                    try { LOCK.wait(); } catch (InterruptedException ignored) {}
-//                }
-//            }
-//        }
+        if (GTCEu.isKubeJSLoaded()) {
+            synchronized (LOCK) {
+                if (!isKubJSSetup) {
+                    try { LOCK.wait(); } catch (InterruptedException ignored) {}
+                }
+            }
+        }
         CommonProxy.init();
     }
 

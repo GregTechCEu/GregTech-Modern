@@ -500,13 +500,13 @@ public class GTOres {
                     .parent();
 
     public static final GTOreDefinition LAPIS_VEIN =
-            create("lapis_vein", 25, 0.25f, 40, WorldGenLayers.DEEPSLATE, GTOres::overworld, HeightRangePlacement.uniform(VerticalAnchor.absolute(-40), VerticalAnchor.absolute(10)))
+            create("lapis_vein", 25, 0.25f, 40, WorldGenLayers.DEEPSLATE, GTOres::overworld, HeightRangePlacement.uniform(VerticalAnchor.absolute(-60), VerticalAnchor.absolute(10)))
                     .biomes(BiomeTags.IS_OVERWORLD)
                     .dikeVeinGenerator()
-                    .withBlock(new DikeBlockDefinition(Lazurite, 3, 0, 70))
-                    .withBlock(new DikeBlockDefinition(Sodalite, 2, 10, 60))
-                    .withBlock(new DikeBlockDefinition(Lapis, 2, 10, 60))
-                    .withBlock(new DikeBlockDefinition(Calcite, 1, 30, 70))
+                    .withBlock(new DikeBlockDefinition(Lazurite, 3, -60, 0))
+                    .withBlock(new DikeBlockDefinition(Sodalite, 2, -50, 10))
+                    .withBlock(new DikeBlockDefinition(Lapis, 2, -50, 10))
+                    .withBlock(new DikeBlockDefinition(Calcite, 1, -40, 0))
                     .parent();
 
     public static final GTOreDefinition MANGANESE_VEIN_OW =
