@@ -30,4 +30,13 @@ public enum IO implements EnumSelectorWidget.SelectableEnum {
         return this == BOTH;
     }
 
+    public IO oppositeDirection() {
+        return switch (this) {
+            case IN -> OUT;
+            case OUT -> IN;
+            case BOTH -> BOTH;
+            case NONE -> NONE;
+        };
+    }
+
 }
