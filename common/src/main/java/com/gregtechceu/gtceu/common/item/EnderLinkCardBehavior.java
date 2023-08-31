@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.common.item;
 
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.common.pipelike.enderlink.EnderLinkControllerData;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
@@ -17,7 +18,6 @@ import org.jetbrains.annotations.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 
 @MethodsReturnNonnullByDefault
@@ -28,20 +28,16 @@ public class EnderLinkCardBehavior implements IAddInformation {
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
         readData(stack).ifPresent(data -> {
-            var posDisplay = data.pos.pos().getX() + " " +
-                    data.pos.pos().getY() + " " +
-                    data.pos.pos().getZ() + " " +
-                    "(" + data.pos.dimension().location().getPath() + ")";
+            BlockPos pos = data.pos().pos();
+            var posDisplay = pos.getX() + " " + pos.getY() + " " + pos.getZ() + " " +
+                    "(" + data.pos().dimension().location().getPath() + ")";
 
             tooltipComponents.add(Component.translatable("metaitem.ender_link_card.linked"));
             tooltipComponents.add(Component.translatable("metaitem.ender_link_card.controller.pos", posDisplay));
-            tooltipComponents.add(Component.translatable("metaitem.ender_link_card.controller.id", data.uuid));
+            tooltipComponents.add(Component.translatable("metaitem.ender_link_card.controller.id", data.uuid()));
         });
     }
 
-
-    public record EnderLinkControllerData(GlobalPos pos, UUID uuid) {
-    }
 
     public static Optional<EnderLinkControllerData> readData(ItemStack item) {
         if (!isEnderLinkCard(item))
@@ -80,11 +76,11 @@ public class EnderLinkCardBehavior implements IAddInformation {
             return;
         }
 
-        tag.putUUID("controller", data.uuid);
-        tag.putString("dimension", data.pos.dimension().location().toString());
-        tag.putInt("x", data.pos.pos().getX());
-        tag.putInt("y", data.pos.pos().getY());
-        tag.putInt("z", data.pos.pos().getZ());
+        tag.putUUID("controller", data.uuid());
+        tag.putString("dimension", data.pos().dimension().location().toString());
+        tag.putInt("x", data.pos().pos().getX());
+        tag.putInt("y", data.pos().pos().getY());
+        tag.putInt("z", data.pos().pos().getZ());
     }
 
     public static boolean isEnderLinkCard(ItemStack item) {

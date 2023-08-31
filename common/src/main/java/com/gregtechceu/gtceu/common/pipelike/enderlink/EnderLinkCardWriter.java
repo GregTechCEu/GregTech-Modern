@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.common.pipelike.enderlink;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.item.EnderLinkCardBehavior;
-import com.gregtechceu.gtceu.common.item.EnderLinkCardBehavior.EnderLinkControllerData;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.EnderLinkControllerMachine;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.widget.ImageWidget;
@@ -27,10 +26,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class EnderLinkCardWriter implements IManaged, IContentChangeAware {
     private final EnderLinkControllerMachine controller;
 
-    @Getter
-    @Setter
-    private Runnable onContentsChanged = () -> {
-    };
+    @Getter @Setter
+    private Runnable onContentsChanged = () -> {};
 
     @Persisted
     private final ItemStackTransfer linkCardInputSlot;
@@ -44,6 +41,11 @@ public class EnderLinkCardWriter implements IManaged, IContentChangeAware {
         linkCardInputSlot.setFilter(GTItems.ENDER_LINK_CARD::isIn);
         linkCardOutputSlot = new ItemStackTransfer(1);
     }
+
+    //////////////////////////////////////
+    //**********   BEHAVIOR   **********//
+    //////////////////////////////////////
+
 
     public WidgetGroup createUI(int x, int y) {
         WidgetGroup widgetGroup = new WidgetGroup(x, y, 18, 43);
