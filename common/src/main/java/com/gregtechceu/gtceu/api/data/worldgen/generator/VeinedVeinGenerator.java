@@ -15,11 +15,11 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
-import net.minecraft.data.BuiltinRegistries;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.server.level.WorldGenRegion;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -105,6 +105,8 @@ public class VeinedVeinGenerator extends VeinGenerator {
 
     @Override
     public boolean generate(WorldGenLevel level, RandomSource random, GTOreDefinition entry, BlockPos origin) {
+        Registry<? extends DensityFunction> densityFunctions = GTRegistries.builtinRegistry().registry(Registries.DENSITY_FUNCTION).get();
+
         List<? extends Map.Entry<Integer, VeinBlockDefinition>> commonEntries = oreBlocks.stream().map(b -> Map.entry(b.weight, b)).toList();
         List<? extends Map.Entry<Integer, VeinBlockDefinition>> rareEntries = rareBlocks == null ? null : rareBlocks.stream().map(b -> Map.entry(b.weight, b)).toList(); // never accessed if rareBlocks is null
 
@@ -117,8 +119,8 @@ public class VeinedVeinGenerator extends VeinGenerator {
         }
 
         final Blender finalizedBlender = blender;
-        DensityFunction veinToggle = mapToNoise(BuiltinRegistries.DENSITY_FUNCTION.get(GTFeatures.NEW_ORE_VEIN_TOGGLE), randomState);
-        DensityFunction veinRidged = mapToNoise(BuiltinRegistries.DENSITY_FUNCTION.get(GTFeatures.NEW_ORE_VEIN_RIDGED), randomState);
+        DensityFunction veinToggle = mapToNoise(densityFunctions.get(GTFeatures.NEW_ORE_VEIN_TOGGLE), randomState);
+        DensityFunction veinRidged = mapToNoise(densityFunctions.get(GTFeatures.NEW_ORE_VEIN_RIDGED), randomState);
 
         int size = entry.getClusterSize();
         int placedCount = 0;

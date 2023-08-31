@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.data.worldgen.generator.*;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
 
 /**
  * @author KilaBash
