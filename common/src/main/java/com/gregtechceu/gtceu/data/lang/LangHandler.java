@@ -387,6 +387,12 @@ public class LangHandler {
         provider.add("cover.advanced_item_detector.max", "Max Items");
         provider.add("cover.advanced_item_detector.min", "Min Items");
 
+        provider.add("cover.ender_link.fluid.label", "Ender Fluid Link");
+        provider.add("cover.ender_link.item.label", "Ender Item Link");
+
+        multiLang(provider, "ender_link.status.not_loaded", "The controller is not in a loaded chunk or doesn't exist anymore.");
+        multiLang(provider, "ender_link.status.not_formed", "The controller has not been formed.\nPlease ensure the multiblock is valid.");
+
         replace(provider, "item.gtceu.bucket", "%s Bucket");
         replace(provider, GTMaterials.FullersEarth.getUnlocalizedName(), "Fuller's Earth");
         replace(provider, GTMaterials.Cooperite.getUnlocalizedName(), "Sheldonite"); //greg's humor is now on 1.19...
