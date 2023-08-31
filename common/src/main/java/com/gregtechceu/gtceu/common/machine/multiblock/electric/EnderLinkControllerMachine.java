@@ -1,20 +1,22 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.electric;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.data.DirectionalGlobalPos;
+import com.gregtechceu.gtceu.api.cover.EnderLinkCover;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineModifyDrops;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
-import com.gregtechceu.gtceu.common.cover.ender_link.EnderFluidLinkCover;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.pipelike.enderlink.EnderLinkCardWriter;
+import com.gregtechceu.gtceu.common.pipelike.enderlink.EnderLinkControllerRegistry;
+import com.gregtechceu.gtceu.common.pipelike.enderlink.EnderLinkNetwork;
+import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
-import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
+import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import it.unimi.dsi.fastutil.objects.ObjectArraySet;
 import lombok.Getter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.GlobalPos;
@@ -23,14 +25,11 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import org.apache.commons.lang3.NotImplementedException;
-import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
-import java.util.stream.IntStream;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
 
@@ -38,16 +37,14 @@ import static com.gregtechceu.gtceu.api.GTValues.*;
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class EnderLinkControllerMachine extends MultiblockControllerMachine implements IFancyUIMachine, IMachineModifyDrops {
-    @Persisted @Getter
-    private final UUID uuid;
-
-    @Persisted
-    private final List<DirectionalGlobalPos> linkedCoverPositions = new ArrayList<>();
-
-    private final IFluidTransfer[] channelFluidTransfers;
+    @Persisted @DescSynced
+    private UUID uuid;
 
     private final int tier;
-    private final List<EnderFluidLinkCover> loadedLinkedCovers = new ArrayList<>();
+    private final Set<EnderLinkCover> loadedLinkedCovers = new ObjectArraySet<>();
+
+    @Getter
+    private EnderLinkNetwork network;
 
     @Persisted
     private EnderLinkCardWriter cardWriter;
@@ -56,38 +53,50 @@ public class EnderLinkControllerMachine extends MultiblockControllerMachine impl
         super(holder);
 
         this.tier = tier;
-        this.uuid = UUID.randomUUID();
+        this.cardWriter = new EnderLinkCardWriter(this);
 
-        channelFluidTransfers = createChannelFluidTransfers();
+        //noinspection DataFlowIssue
+        this.network = new EnderLinkNetwork(() -> getLevel().getServer().getTickCount(), getMaxChannels());
 
-        cardWriter = new EnderLinkCardWriter(this);
+        // The machine on the remote side needs to know its UUID as well, so that it can be registered there.
+        // This field may not yet be synced to the remote instance in onLoad(), so registration happens on sync instead.
+        addSyncUpdateListener("uuid", (changedField, newValue, oldValue) -> {
+            EnderLinkControllerRegistry.unregisterController((UUID) oldValue);
+            EnderLinkControllerRegistry.registerController(this);
+        });
     }
 
-    private IFluidTransfer[] createChannelFluidTransfers() {
-        return IntStream.range(1, getMaxChannels())
-                .mapToObj(ChannelFluidTransfer::new)
-                .toArray(IFluidTransfer[]::new);
+    public UUID getUuid() {
+        if (uuid == null && !LDLib.isRemote()) {
+            this.uuid = UUID.randomUUID();
+        }
+
+        return uuid;
     }
 
     @Override
     public void onDrops(List<ItemStack> drops, Player entity) {
-        // TODO add stored controller linking cards here
+        // TODO add stored controller linking cards to drops
     }
 
     @Override
     public void onLoad() {
         super.onLoad();
-        // TODO attach this instance to all currently loaded linked covers (by stored positions)
+
+        if (!LDLib.isRemote())
+            EnderLinkControllerRegistry.registerController(this);
     }
 
     @Override
     public void onUnload() {
         super.onUnload();
-        // TODO detach this instance from all currently loaded linked covers
+
+        loadedLinkedCovers.forEach(cover -> cover.unlinkController(this));
+        EnderLinkControllerRegistry.unregisterController(this);
     }
 
     //////////////////////////////////////
-    //*****    CONTROLLER LOGIC    *****//
+    //**********   BEHAVIOR   **********//
     //////////////////////////////////////
 
     public int getMaxChannels() {
@@ -102,12 +111,23 @@ public class EnderLinkControllerMachine extends MultiblockControllerMachine impl
         return GlobalPos.of(getLevel().dimension(), this.getPos());
     }
 
-    @Nullable
-    public IFluidTransfer getVirtualFluidTransfer(int channel) {
-        if (channel < 0 || channel >= channelFluidTransfers.length)
-            return null;
+    ///////////////////////////////////////
+    //******   COVER INTERACTION   ******//
+    ///////////////////////////////////////
 
-        return channelFluidTransfers[channel - 1];
+    public void linkCover(EnderLinkCover cover) {
+        loadedLinkedCovers.add(cover);
+        network.registerCover(cover);
+    }
+
+    public void unlinkCover(EnderLinkCover cover) {
+        loadedLinkedCovers.remove(cover);
+        network.unregisterCover(cover);
+    }
+
+    public void updateCover(EnderLinkCover cover) {
+        network.unregisterCover(cover);
+        network.registerCover(cover);
     }
 
     //////////////////////////////////////
@@ -135,17 +155,6 @@ public class EnderLinkControllerMachine extends MultiblockControllerMachine impl
         };
     }
 
-    //////////////////////////////////////
-    //*****     LDLib SyncData    ******//
-    //////////////////////////////////////
-
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(EnderLinkControllerMachine.class, MultiblockControllerMachine.MANAGED_FIELD_HOLDER);
-
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
-
     /////////////////////////////////////
     //************   GUI   ************//
     /////////////////////////////////////
@@ -160,75 +169,14 @@ public class EnderLinkControllerMachine extends MultiblockControllerMachine impl
     }
 
 
-    /////////////////////////////////////
-    //*****   VIRTUAL TRANSFERS   *****//
-    /////////////////////////////////////
+    //////////////////////////////////////
+    //*****     LDLib SyncData    ******//
+    //////////////////////////////////////
 
-    private class ChannelFluidTransfer implements IFluidTransfer {
-        // TODO extract some sort of common MultiFluidTransferProxy and implement this class
+    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(EnderLinkControllerMachine.class, MultiblockControllerMachine.MANAGED_FIELD_HOLDER);
 
-        private final int channel;
-
-        private ChannelFluidTransfer(int channel) {
-            this.channel = channel;
-        }
-
-        @Override
-        public int getTanks() {
-            return 1;
-        }
-
-        @NotNull
-        @Override
-        public FluidStack getFluidInTank(int tank) {
-            return null;
-        }
-
-        @Override
-        public void setFluidInTank(int tank, @NotNull FluidStack fluidStack) {
-
-        }
-
-        @Override
-        public long getTankCapacity(int tank) {
-            return Long.MAX_VALUE;
-        }
-
-        @Override
-        public boolean isFluidValid(int tank, @NotNull FluidStack stack) {
-            return true;
-        }
-
-        @Override
-        public long fill(int tank, FluidStack resource, boolean simulate, boolean notifyChanges) {
-            return 0;
-        }
-
-        @Override
-        public boolean supportsFill(int tank) {
-            return false;
-        }
-
-        @NotNull
-        @Override
-        public FluidStack drain(int tank, FluidStack resource, boolean simulate, boolean notifyChanges) {
-            return null;
-        }
-
-        @Override
-        public boolean supportsDrain(int tank) {
-            return false;
-        }
-
-        @NotNull
-        @Override
-        public Object createSnapshot() {
-            return null;
-        }
-
-        @Override
-        public void restoreFromSnapshot(Object snapshot) {
-
-        }
+    @Override
+    public ManagedFieldHolder getFieldHolder() {
+        return MANAGED_FIELD_HOLDER;
     }
 }
