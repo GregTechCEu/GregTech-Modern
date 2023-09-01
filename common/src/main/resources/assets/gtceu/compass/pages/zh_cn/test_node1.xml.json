@@ -1,0 +1,122 @@
+[
+  {
+    "key": "h1.0",
+    "original": "Title H1 <lang key=\"ldlib.author\"/> made",
+    "translation": "标题H1 <lang key=\"ldlib.author\"/>制作",
+    "stage": 5
+  },
+  {
+    "key": "h2.0",
+    "original": "Title H2",
+    "translation": "标题H2",
+    "stage": 5
+  },
+  {
+    "key": "h3.0",
+    "original": "Title H3",
+    "translation": "标题H3",
+    "stage": 5
+  },
+  {
+    "key": "text.0",
+    "original": "Lorem ipsum auther <lang key=\"ldlib.author\"/> dolor sit amet, consectetur adipisicing elit,\\n\t\tsed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\\n\t\t<br/>\\n\t\tUt enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi\\n\t\tut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit\\n\t\tin voluptate velit esse cillum dolore eu fugiat nulla pariatur.",
+    "translation": "Lorem ipsum auther <lang key=\"ldlib.author\"/> dolor sit amet, consectetur adipisicing elit,\\n\t\tsed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\\n\t\t<br/>\\n\t\tUt enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi\\n\t\tut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit\\n\t\tin voluptate velit esse cillum dolore eu fugiat nulla pariatur.",
+    "stage": 5
+  },
+  {
+    "key": "text.1",
+    "original": "Lorem ipsum dolor sit amet, consectetur adipisicing elit,\\n\t\t<style underlined=\"true\" link=\"gtceu:test_node2\">\\n\t\t\tlink to node2\\n\t\t</style>\\n\t\tsed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\\n\t\t<style color=\"#ffff0000\" hover-info=\"hover tooltips\">\\n\t\t\tUt enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi\\n\t\t\tut aliquip ex ea commodo consequat.\\n\t\t</style>\\n\t\t<br/>\\n\t\tDuis aute irure dolor in reprehenderit\\n\t\tin voluptate velit esse cillum dolore eu fugiat nulla pariatur.",
+    "translation": "Lorem ipsum dolor sit amet, consectetur adipisicing elit,\\n\t\t<style underlined=\"true\" link=\"gtceu:test_node2\">\\n\t\t\tlink to node2\\n\t\t</style>\\n\t\tsed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\\n\t\t<style color=\"#ffff0000\" hover-info=\"hover tooltips\">\\n\t\t\tUt enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi\\n\t\t\tut aliquip ex ea commodo consequat.\\n\t\t</style>\\n\t\t<br/>\\n\t\tDuis aute irure dolor in reprehenderit\\n\t\tin voluptate velit esse cillum dolore eu fugiat nulla pariatur.",
+    "stage": 5
+  },
+  {
+    "key": "text.2",
+    "original": "Lorem ipsum dolor sit amet,\\n\t\t<style bold=\"true\" color=\"#ffff0000\">\\n\t\t\tconsectetur adipisicing elit,\\n\t\t</style>\\n\t\t<style italic=\"true\" color=\"#ff00ff00\">\\n\t\t\tsed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\\n\t\t</style>\\n\t\t<style underlined=\"true\" color=\"#ff0000ff\" hover-info=\"hover tooltips\">\\n\t\t\tUt enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi\\n\t\t</style>\\n\t\t<style strikethrough=\"true\" color=\"#ff00ffff\">\\n\t\t\tut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit\\n\t\t</style>\\n\t\t<style obfuscated=\"true\" color=\"#ffff00ff\">\\n\t\t\tin voluptate velit esse cillum dolore eu fugiat nulla pariatur.\\n\t\t</style>",
+    "translation": "Lorem ipsum dolor sit amet,\\n\t\t<style bold=\"true\" color=\"#ffff0000\">\\n\t\t\tconsectetur adipisicing elit,\\n\t\t</style>\\n\t\t<style italic=\"true\" color=\"#ff00ff00\">\\n\t\t\tsed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\\n\t\t</style>\\n\t\t<style underlined=\"true\" color=\"#ff0000ff\" hover-info=\"hover tooltips\">\\n\t\t\tUt enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi\\n\t\t</style>\\n\t\t<style strikethrough=\"true\" color=\"#ff00ffff\">\\n\t\t\tut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit\\n\t\t</style>\\n\t\t<style obfuscated=\"true\" color=\"#ffff00ff\">\\n\t\t\tin voluptate velit esse cillum dolore eu fugiat nulla pariatur.\\n\t\t</style>",
+    "stage": 5
+  },
+  {
+    "key": "compass.0.frame.0.description.0",
+    "original": "scene action1: place three glass blocks\\n\t\t\t\t<br/>\\n\t\t\t\tscene action2: rotate 90 degrees",
+    "translation": "场景动作1：放置三块玻璃\\n\t\t\t\t<br/>\\n\t\t\t\t场景动作2：旋转90度",
+    "stage": 5
+  },
+  {
+    "key": "compass.0.frame.1.description.0",
+    "original": "<style bold=\"true\" color=\"#ffff0000\">\\n\t\t\t\t\tdelay 20 ticks before perform this frame animation\\n\t\t\t\t</style>\\n\t\t\t\t<br/>\\n\t\t\t\tscene action1: place a dirt block",
+    "translation": "<style bold=\"true\" color=\"#ffff0000\">\\n\t\t\t\t\t在执行此帧动画之前延迟 20 tick\\n\t\t\t\t</style>\\n\t\t\t\t<br/>\\n\t\t\t\t场景动作1：放置泥土",
+    "stage": 5
+  },
+  {
+    "key": "compass.0.frame.2.description.0",
+    "original": "scene action1: place a furnace block",
+    "translation": "场景动作1：放置熔炉方块",
+    "stage": 5
+  },
+  {
+    "key": "compass.0.frame.3.description.0",
+    "original": "scene action1: remove a glass block, meanwhile rotate 180 degrees\\n\t\t\t\t<br/>\\n\t\t\t\tscene action2: remove a glass block\\n\t\t\t\t<style color=\"#ffdddd00\">\\n\t\t\t\t\t(start-before-last)\\n\t\t\t\t</style>\\n\t\t\t\t<br/>\\n\t\t\t\tscene action3: place a unlit campfire",
+    "translation": "场景动作1：移除一块玻璃方块，同时旋转180度\\n\t\t\t\t<br/>\\n\t\t\t\t场景动作2：移除一块玻璃\\n\t\t\t\t<style color=\"#ffdddd00\">\\n\t\t\t\t\t（从最后开始）\\n\t\t\t\t</style>\\n\t\t\t\t<br/>\\n\t\t\t\t场景动作3：放置熄灭的营火",
+    "stage": 5
+  },
+  {
+    "key": "compass.0.frame.4.description.0",
+    "original": "<style bold=\"true\" color=\"#ffff0000\">\\n\t\t\t\t\tforce this frame to perform 100 tick.\\n\t\t\t\t</style>\\n\t\t\t\t<br/>\\n\t\t\t\tscene action1: remove two blocks\\n\t\t\t\t<br/>\\n\t\t\t\tscene action2: remove a glass block\\n\t\t\t\t<style color=\"#ffdddd00\">\\n\t\t\t\t\t(delay 20 tick)\\n\t\t\t\t</style>",
+    "translation": "<style bold=\"true\" color=\"#ffff0000\">\\n\t\t\t\t\t强制此帧执行 100 tick。\\n\t\t\t\t</style>\\n\t\t\t\t<br/>\\n\t\t\t\t场景动作1：移除两个方块\\n\t\t\t\t<br/>\\n\t\t\t\t场景动作2：移除一块玻璃\\n\t\t\t\t<style color=\"#ffdddd00\">\\n\t\t\t\t\t（延迟20 tick）\\n\t\t\t\t</style>",
+    "stage": 5
+  },
+  {
+    "key": "compass.0.frame.5.description.0",
+    "original": "scene action1: light campfire",
+    "translation": "场景动作1：点燃营火",
+    "stage": 5
+  },
+  {
+    "key": "image.0",
+    "original": "GregTechCEu-Modern",
+    "translation": "格雷科技现代版",
+    "stage": 5
+  },
+  {
+    "key": "compass.0.frame.0.scene.1.tooltip.0",
+    "original": "high light block",
+    "translation": "高亮方块",
+    "stage": 5
+  },
+  {
+    "key": "compass.0.frame.1.scene.1.tooltip.0",
+    "original": "show tooltip for pos [1.5 0.5 0.5] with duration [60] tick\\n\t\t\t\t\t<br/>\\n\t\t\t\t\t<lang key=\"ldlib.author\"/>",
+    "translation": "为位置 [1.5 0.5 0.5] 显示工具提示，持续时间 [60] tick\\n\t\t\t\t\t<br/>\\n\t\t\t\t\t<lang key=\"ldlib.author\"/>",
+    "stage": 5
+  },
+  {
+    "key": "compass.0.frame.3.scene.3.tooltip.0",
+    "original": "lit = <style color=\"0xffff0000\">false</style>",
+    "translation": "发光 = <style color=\"0xffff0000\">否</style>",
+    "stage": 5
+  },
+  {
+    "key": "compass.0.frame.5.scene.0.tooltip.0",
+    "original": "lit = <style color=\"0xff00ff00\">true</style>",
+    "translation": "发光 = <style color=\"0xff00ff00\">是</style>",
+    "stage": 5
+  },
+  {
+    "key": "compass.0.frame.0.information.0",
+    "original": "<style bold=\"true\" color=\"#ffff0000\"><lang key=\"ldlib.author\"/></style>\\n\t\t\t\t<br/>\\n\t\t\t\tLorem ipsum dolor sit amet, consectetur adipisicing elit,\\n\t\t\t\tsed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\\n\t\t\t\t<br/>\\n\t\t\t\tUt enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi\\n\t\t\t\tut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit\\n\t\t\t\tin voluptate velit esse cillum dolore eu fugiat nulla pariatur.",
+    "translation": "<style bold=\"true\" color=\"#ffff0000\"><lang key=\"ldlib.author\"/></style>\\n\t\t\t\t<br/>\\n\t\t\t\tLorem ipsum dolor sit amet, consectetur adipisicing elit,\\n\t\t\t\tsed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\\n\t\t\t\t<br/>\\n\t\t\t\tUt enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi\\n\t\t\t\tut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit\\n\t\t\t\tin voluptate velit esse cillum dolore eu fugiat nulla pariatur.",
+    "stage": 5
+  },
+  {
+    "key": "compass.0.frame.2.information.0",
+    "original": "<style bold=\"true\" color=\"#ffff0000\"><lang key=\"ldlib.author\"/></style>\\n\t\t\t\t<br/>\\n\t\t\t\tLorem ipsum dolor sit amet, consectetur adipisicing elit,\\n\t\t\t\tsed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\\n\t\t\t\t<br/>\\n\t\t\t\tUt enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi\\n\t\t\t\tut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit\\n\t\t\t\tin voluptate velit esse cillum dolore eu fugiat nulla pariatur.",
+    "translation": "<style bold=\"true\" color=\"#ffff0000\"><lang key=\"ldlib.author\"/></style>\\n\t\t\t\t<br/>\\n\t\t\t\tLorem ipsum dolor sit amet, consectetur adipisicing elit,\\n\t\t\t\tsed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\\n\t\t\t\t<br/>\\n\t\t\t\tUt enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi\\n\t\t\t\tut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit\\n\t\t\t\tin voluptate velit esse cillum dolore eu fugiat nulla pariatur.",
+    "stage": 5
+  },
+  {
+    "key": "compass.0.frame.4.information.0",
+    "original": "",
+    "translation": "",
+    "stage": -1
+  }
+]
