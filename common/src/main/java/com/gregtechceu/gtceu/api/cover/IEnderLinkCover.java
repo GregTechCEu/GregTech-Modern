@@ -1,10 +1,8 @@
 package com.gregtechceu.gtceu.api.cover;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.pipenet.enderlink.ITransferType;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.EnderLinkControllerMachine;
-import com.gregtechceu.gtceu.common.pipelike.enderlink.EnderLinkChannel;
-import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
-import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import net.minecraft.MethodsReturnNonnullByDefault;
 
 import javax.annotation.Nullable;
@@ -13,22 +11,14 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public interface IEnderLinkCover {
+public interface IEnderLinkCover<T> {
     void unlinkController(EnderLinkControllerMachine controller);
 
     int getChannel();
 
-    EnderLinkChannel.TransferType getTransferType();
+    ITransferType<T> getTransferType();
 
-    @Nullable
-    default IFluidTransfer getFluidTransfer() {
-        return null;
-    }
-
-    @Nullable
-    default IItemTransfer getItemTransfer() {
-        return null;
-    }
+    @Nullable T getTransfer();
 
     IO getIo();
 }

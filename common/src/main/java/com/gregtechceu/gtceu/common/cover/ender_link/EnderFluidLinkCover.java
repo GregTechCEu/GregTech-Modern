@@ -7,7 +7,8 @@ import com.gregtechceu.gtceu.api.cover.filter.FilterHandler;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandlers;
 import com.gregtechceu.gtceu.api.cover.filter.FluidFilter;
 import com.gregtechceu.gtceu.api.misc.FluidAmountHandler;
-import com.gregtechceu.gtceu.common.pipelike.enderlink.EnderLinkChannel;
+import com.gregtechceu.gtceu.api.pipenet.enderlink.ITransferType;
+import com.gregtechceu.gtceu.common.data.GTEnderLinkTransferTypes;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
@@ -26,7 +27,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class EnderFluidLinkCover extends EnderLinkCover {
+public class EnderFluidLinkCover extends EnderLinkCover<IFluidTransfer> {
 
     @Persisted
     private FluidAmountHandler transferRate;
@@ -60,19 +61,18 @@ public class EnderFluidLinkCover extends EnderLinkCover {
     //**********   BEHAVIOR   **********//
     //////////////////////////////////////
 
-
     @Override
-    public EnderLinkChannel.TransferType getTransferType() {
-        return EnderLinkChannel.TransferType.FLUID;
+    public ITransferType<IFluidTransfer> getTransferType() {
+        return GTEnderLinkTransferTypes.FLUID;
     }
 
     @Nullable
     @Override
-    public IFluidTransfer getFluidTransfer() {
+    public IFluidTransfer getTransfer() {
         return getOwnFluidTransfer();
     }
 
-    //////////////////////////////////////
+//////////////////////////////////////
     //***********     GUI    ***********//
     //////////////////////////////////////
 

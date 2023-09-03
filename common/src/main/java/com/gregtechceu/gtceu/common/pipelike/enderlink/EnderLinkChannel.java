@@ -3,10 +3,12 @@ package com.gregtechceu.gtceu.common.pipelike.enderlink;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.cover.IEnderLinkCover;
 import com.gregtechceu.gtceu.api.misc.ProxiedTransferWrapper;
-import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
-import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
+import com.gregtechceu.gtceu.api.pipenet.enderlink.ITransferType;
+import com.gregtechceu.gtceu.common.data.GTEnderLinkTransferTypes;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import lombok.Getter;
 
+import java.util.Map;
 import java.util.function.IntSupplier;
 
 
@@ -21,11 +23,10 @@ public class EnderLinkChannel {
     private final int id;
     private final IntSupplier currentTickSupplier;
 
-    private final ProxiedTransferWrapper<IItemTransfer> itemTransferWrapper = new ProxiedTransferWrapper.Item();
-    private final ProxiedTransferWrapper<IFluidTransfer> fluidTransferWrapper = new ProxiedTransferWrapper.Fluid();
+    private final Map<ITransferType<?>, ProxiedTransferWrapper<?>> transferWrappersByType = new Object2ObjectOpenHashMap<>();
 
     @Getter
-    private TransferType currentTransferType;
+    private ITransferType<?> currentTransferType;
     @Getter
     private int typeLockedUntilTick;
 
@@ -34,56 +35,72 @@ public class EnderLinkChannel {
         this.id = id;
     }
 
-    public void addItemTransfer(IO io, IEnderLinkCover owner, IItemTransfer transfer) {
-        itemTransferWrapper.addTransfer(io, owner, transfer);
+    public <T> void addTransfer(ITransferType<T> transferType, IO io, IEnderLinkCover<T> owner, T transfer) {
+        getOrCreateTransferWrapper(transferType).addTransfer(io, owner, transfer);
     }
 
-    public void removeItemTransfer(IEnderLinkCover owner) {
-        itemTransferWrapper.removeTransfer(owner);
+    public <T> void removeTransfer(ITransferType<T> transferType, IEnderLinkCover<T> owner) {
+        getOrCreateTransferWrapper(transferType).removeTransfer(owner);
     }
 
-    public void addFluidTransfer(IO io, IEnderLinkCover owner, IFluidTransfer transfer) {
-        fluidTransferWrapper.addTransfer(io, owner, transfer);
+    private <T> ProxiedTransferWrapper<T> getOrCreateTransferWrapper(ITransferType<T> type) {
+        // This cast is safe because ITransferType.createTransferWrapper() always returns a wrapper of the correct type.
+        // Because of the limitations imposed by java's generics, the wrappers need to be stored untyped, however.
+        //noinspection unchecked
+        return (ProxiedTransferWrapper<T>) transferWrappersByType.computeIfAbsent(type, ITransferType::createTransferWrapper);
     }
 
-    public void removeFluidTransfer(IEnderLinkCover owner) {
-        fluidTransferWrapper.removeTransfer(owner);
-    }
-
-    public IFluidTransfer getFluidTransferWrapper(IO io) {
-        if (lock(TransferType.FLUID)) {
-            return fluidTransferWrapper.get(io);
-        }
-        return fluidTransferWrapper.none();
-
-    }
-
-    public IItemTransfer getItemTransferWrapper(IO io) {
-        if (lock(TransferType.ITEM)) {
-            return itemTransferWrapper.get(io);
-        }
-        return itemTransferWrapper.none();
-
-    }
-
-    private boolean lock(TransferType transferType) {
+    /**
+     * Checks whether transferring is currently allowed for this transfer type.
+     * To be used in conjunction with {@link #lock(ITransferType)}
+     */
+    private boolean canTransfer(ITransferType<?> transferType) {
         var currentTick = currentTickSupplier.getAsInt();
 
-        if (this.currentTransferType != null && this.currentTransferType != transferType && currentTick <= typeLockedUntilTick) {
+        if (this.currentTransferType == null)
+            return true;
+
+        if (this.currentTransferType == transferType)
+            return true;
+
+        if (this.currentTransferType.isPermanentlyLocked())
             return false;
-        }
 
-        this.currentTransferType = transferType;
-        this.typeLockedUntilTick = (transferType == TransferType.CONTROLLER) ?
-                Integer.MAX_VALUE : currentTick + (20 * 2);
-
-        return true;
+        return currentTick > typeLockedUntilTick;
     }
 
-    public enum TransferType {
-        // TODO possibly make this a registry instead of an enum
-        CONTROLLER,
-        ITEM,
-        FLUID,
+
+    private void lock(ITransferType<?> transferType) {
+        var currentTick = currentTickSupplier.getAsInt();
+
+        this.currentTransferType = transferType;
+        this.typeLockedUntilTick = (transferType == GTEnderLinkTransferTypes.CONTROLLER) ?
+                Integer.MAX_VALUE : currentTick + (20 * 2);
+    }
+
+    public void transferAll() {
+        for (ITransferType<?> transferType : transferWrappersByType.keySet()) {
+            if (!canTransfer(transferType)) {
+                continue;
+            }
+
+            // This cast is safe because getTransfer(type, io) always returns the correct transfer for the TransferType.
+            // Because of java's generic type erasure, we need to work with objects here, however.
+            //noinspection unchecked
+            ITransferType<Object> untypedTransferType = (ITransferType<Object>) transferType;
+            ProxiedTransferWrapper<Object> transferWrapper = getOrCreateTransferWrapper(untypedTransferType);
+
+            // The transfer directions of the transfers need to be inverted here:
+            // The input is extracted from and the output inserted into.
+            Object input = transferWrapper.get(IO.OUT);
+            Object output = transferWrapper.get(IO.IN);
+
+            var transferred = untypedTransferType.transferAll(input, output);
+
+            if (transferred > 0L) {
+                lock(transferType);
+                break;
+            }
+        }
     }
 }

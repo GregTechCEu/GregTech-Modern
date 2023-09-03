@@ -50,6 +50,7 @@ public class CommonProxy {
         GTBlocks.init();
         GTBlockEntities.init();
         GTRecipeTypes.init();
+        GTEnderLinkTransferTypes.init();
         GTMachines.init();
         GTFoods.init();
         GTItems.init();

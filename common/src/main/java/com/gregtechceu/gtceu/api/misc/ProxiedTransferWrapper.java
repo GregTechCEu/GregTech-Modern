@@ -67,8 +67,12 @@ public abstract class ProxiedTransferWrapper<T> {
     }
 
     private void buildProxies() {
-        this.proxyTransferIn = createTransferProxy(IO.IN, transfersIn.values());
-        this.proxyTransferOut = createTransferProxy(IO.OUT, transfersOut.values());
+        this.proxyTransferIn = createTransferProxy(IO.IN,
+                Stream.of(transfersIn, transfersBoth).flatMap(transfers -> transfers.values().stream()).toList()
+        );
+        this.proxyTransferOut = createTransferProxy(IO.OUT,
+                Stream.of(transfersOut, transfersBoth).flatMap(transfers -> transfers.values().stream()).toList()
+        );
         this.proxyTransferBoth = createTransferProxy(IO.BOTH,
                 Stream.of(transfersIn, transfersOut, transfersBoth).flatMap(transfers -> transfers.values().stream()).toList()
         );

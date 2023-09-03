@@ -34,7 +34,7 @@ import java.util.stream.Stream;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public abstract class EnderLinkCover extends CoverBehavior implements IEnderLinkCover, IUICover, IControllable {
+public abstract class EnderLinkCover<T> extends CoverBehavior implements IEnderLinkCover<T>, IUICover, IControllable {
     public final int tier;
 
     @Nullable

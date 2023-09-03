@@ -1,7 +1,9 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.electric;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.cover.IEnderLinkCover;
+import com.gregtechceu.gtceu.api.machine.ConditionalSubscriptionHandler;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineModifyDrops;
@@ -36,18 +38,23 @@ import static com.gregtechceu.gtceu.api.GTValues.*;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class EnderLinkControllerMachine extends MultiblockControllerMachine implements IFancyUIMachine, IMachineModifyDrops {
+public class EnderLinkControllerMachine extends MultiblockControllerMachine implements IFancyUIMachine, IMachineModifyDrops, IControllable {
+    @Persisted @Getter
+    private boolean workingEnabled;
+
     @Persisted @DescSynced
     private UUID uuid;
 
     private final int tier;
-    private final Set<IEnderLinkCover> loadedLinkedCovers = new ObjectArraySet<>();
+    private final Set<IEnderLinkCover<?>> loadedLinkedCovers = new ObjectArraySet<>();
 
     @Getter
-    private EnderLinkNetwork network;
+    private final EnderLinkNetwork network;
 
     @Persisted
-    private EnderLinkCardWriter cardWriter;
+    private final EnderLinkCardWriter cardWriter;
+
+    private final ConditionalSubscriptionHandler subscriptionHandler;
 
     public EnderLinkControllerMachine(IMachineBlockEntity holder, int tier, Object... args) {
         super(holder);
@@ -64,6 +71,8 @@ public class EnderLinkControllerMachine extends MultiblockControllerMachine impl
             EnderLinkControllerRegistry.unregisterController((UUID) oldValue);
             EnderLinkControllerRegistry.registerController(this);
         });
+
+        this.subscriptionHandler = new ConditionalSubscriptionHandler(this, this::update, this::isSubscriptionActive);
     }
 
     public UUID getUuid() {
@@ -99,6 +108,13 @@ public class EnderLinkControllerMachine extends MultiblockControllerMachine impl
     //**********   BEHAVIOR   **********//
     //////////////////////////////////////
 
+    @Override
+    public void setWorkingEnabled(boolean workingEnabled) {
+        this.workingEnabled = workingEnabled;
+
+        subscriptionHandler.updateSubscription();
+    }
+
     public int getMaxChannels() {
         return 8; // TODO adapt to tier, as well as linked controllers
     }
@@ -111,21 +127,32 @@ public class EnderLinkControllerMachine extends MultiblockControllerMachine impl
         return GlobalPos.of(getLevel().dimension(), this.getPos());
     }
 
+    private void update() {
+        if (getOffsetTimer() % 20 == 0) {
+            network.transferAll();
+            subscriptionHandler.updateSubscription();
+        }
+    }
+
+    private boolean isSubscriptionActive() {
+        return isWorkingEnabled();
+    }
+
     ///////////////////////////////////////
     //******   COVER INTERACTION   ******//
     ///////////////////////////////////////
 
-    public void linkCover(IEnderLinkCover cover) {
+    public <T> void linkCover(IEnderLinkCover<T> cover) {
         loadedLinkedCovers.add(cover);
         network.registerCover(cover);
     }
 
-    public void unlinkCover(IEnderLinkCover cover) {
+    public <T> void unlinkCover(IEnderLinkCover<T> cover) {
         loadedLinkedCovers.remove(cover);
         network.unregisterCover(cover);
     }
 
-    public void updateCover(IEnderLinkCover cover) {
+    public <T> void updateCover(IEnderLinkCover<T> cover) {
         network.unregisterCover(cover);
         network.registerCover(cover);
     }

@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.common.pipelike.enderlink;
 
 import com.gregtechceu.gtceu.api.cover.IEnderLinkCover;
+import com.gregtechceu.gtceu.api.pipenet.enderlink.ITransferType;
 import net.minecraft.MethodsReturnNonnullByDefault;
 
 import javax.annotation.Nullable;
@@ -31,36 +32,31 @@ public class EnderLinkNetwork {
         return channels[channelID - 1];
     }
 
-    public List<EnderLinkChannel> getChannelsByCurrentTransferType(EnderLinkChannel.TransferType type) {
+    public <T> List<EnderLinkChannel> getChannelsByCurrentTransferType(ITransferType<T> type) {
         return Arrays.stream(channels).filter(channel -> channel.getCurrentTransferType() == type).toList();
     }
 
-    public void registerCover(IEnderLinkCover cover) {
+    public <T> void registerCover(IEnderLinkCover<T> cover) {
         EnderLinkChannel channel = getChannel(cover.getChannel());
 
         if (channel == null)
             return;
 
-        switch (cover.getTransferType()) {
-            case ITEM -> channel.addItemTransfer(cover.getIo(), cover, cover.getItemTransfer());
-            case FLUID -> channel.addFluidTransfer(cover.getIo(), cover, cover.getFluidTransfer());
-            case CONTROLLER -> {
-            }
-        }
+        channel.addTransfer(cover.getTransferType(), cover.getIo(), cover, cover.getTransfer());
     }
 
-    public void unregisterCover(IEnderLinkCover cover) {
+    public <T> void unregisterCover(IEnderLinkCover<T> cover) {
         EnderLinkChannel channel = getChannel(cover.getChannel());
 
         if (channel == null)
             return;
 
-        switch (cover.getTransferType()) {
-            case ITEM -> channel.removeItemTransfer(cover);
-            case FLUID -> channel.removeFluidTransfer(cover);
-            case CONTROLLER -> {
-            }
-        }
+        channel.removeTransfer(cover.getTransferType(), cover);
     }
 
+    public void transferAll() {
+        for (EnderLinkChannel channel : channels) {
+            channel.transferAll();
+        }
+    }
 }
