@@ -13,7 +13,7 @@ public class StressRecipeCapability extends RecipeCapability<Float> {
     public final static StressRecipeCapability CAP = new StressRecipeCapability();
 
     protected StressRecipeCapability() {
-        super("su", 0xFF77A400, SerializerFloat.INSTANCE);
+        super("su", 0xFF77A400, false, SerializerFloat.INSTANCE);
     }
 
     @Override

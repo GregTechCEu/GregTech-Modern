@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTRecipeCapabilities;
 import com.mojang.datafixers.util.Pair;
+import dev.architectury.injectables.annotations.ExpectPlatform;
 import dev.latvian.mods.kubejs.fluid.InputFluid;
 import dev.latvian.mods.kubejs.fluid.OutputFluid;
 import dev.latvian.mods.kubejs.item.InputItem;
@@ -159,6 +160,7 @@ public class GTRecipeComponents {
         VALID_CAPS.put(GTRecipeCapabilities.FLUID, Pair.of(FLUID_IN, FLUID_OUT));
         VALID_CAPS.put(GTRecipeCapabilities.EU, Pair.of(EU_IN, EU_OUT));
         VALID_CAPS.put(GTRecipeCapabilities.SU, Pair.of(SU_IN, SU_OUT));
+        registerPlatformCaps(VALID_CAPS);
 
         KJSRecipeKeyEvent event = new KJSRecipeKeyEvent();
         AddonFinder.getAddons().forEach(addon -> addon.registerRecipeKeys(event));
@@ -168,4 +170,8 @@ public class GTRecipeComponents {
         registeredCaps.removeAll(addedCaps);
     }
 
+    @ExpectPlatform
+    public static void registerPlatformCaps(Map<RecipeCapability<?>, Pair<ContentJS<?>, ContentJS<?>>> validCaps) {
+        throw new AssertionError();
+    }
 }

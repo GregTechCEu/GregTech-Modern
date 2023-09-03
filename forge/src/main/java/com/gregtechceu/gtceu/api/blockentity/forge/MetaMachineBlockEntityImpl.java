@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.blockentity.forge;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.capability.*;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
@@ -13,6 +14,8 @@ import com.gregtechceu.gtceu.client.renderer.GTRendererProvider;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import com.lowdragmc.lowdraglib.side.fluid.forge.FluidTransferHelperImpl;
 import com.lowdragmc.lowdraglib.side.item.forge.ItemTransferHelperImpl;
+import mekanism.api.chemical.gas.IGasHandler;
+import mekanism.common.capabilities.Capabilities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -112,6 +115,13 @@ public class MetaMachineBlockEntityImpl extends MetaMachineBlockEntity {
             if (!list.isEmpty()) {
                 // TODO wrap list in the future
                 return ForgeCapabilities.ENERGY.orEmpty(cap, LazyOptional.of(() -> GTEnergyHelperImpl.toEnergyStorage(list.get(0))));
+            }
+        } else if (GTCEu.isMekanismLoaded()) {
+            if (cap == Capabilities.GAS_HANDLER) {
+                var list = machine.getTraits().stream().filter(IGasHandler.class::isInstance).filter(t -> t.hasCapability(side)).map(IGasHandler.class::cast).toList();
+                if (!list.isEmpty()) {
+                    return Capabilities.GAS_HANDLER.orEmpty(cap, LazyOptional.of(() -> list.get(0)));
+                }
             }
         }
         return null;

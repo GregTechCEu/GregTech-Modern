@@ -7,7 +7,9 @@
   ],
   "mixins": [
     "AppearanceBlockMixin",
-    "ServerPlayerGameModeMixin"
+    "ServerPlayerGameModeMixin",
+    "mekanism.BasicChemicalTankAccessor",
+    "mekanism.BasicChemicalTankMixin"
   ],
   "injectors": {
     "defaultRequire": 1

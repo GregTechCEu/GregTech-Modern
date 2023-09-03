@@ -46,6 +46,7 @@ dependencyResolutionManagement {
         def flywheelForgeVersion = "0.6.8.a-14"
         def topForgeVersion = "1.19-6.2.0-6"
         def jadeForgeVersion = "8.8.1"
+        def mekForgeVersion = "1.19.2-10.3.9.13"
         def configurationForgeFile = "4519560"
         def worldStripperForgeFile = "3921630"
 
@@ -166,6 +167,9 @@ dependencyResolutionManagement {
 
             def kubejs = version("kubejs", kjsVersion)
             library("kubejs", "dev.latvian.mods", "kubejs-forge").versionRef(kubejs)
+
+            def mekanism = version("mekanism", mekForgeVersion)
+            library("mekanism", "mekanism", "Mekanism").versionRef(mekanism)
 
             def configuration = version("configuration", configurationForgeFile)
             library("configuration", "curse.maven", "configuration-444699").versionRef(configuration)

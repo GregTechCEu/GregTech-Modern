@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.recipe;
 
+import com.google.common.collect.Table;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
@@ -7,6 +8,7 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.SteamTexture;
 import com.gregtechceu.gtceu.api.gui.WidgetUtils;
 import com.gregtechceu.gtceu.api.gui.editor.IEditableUI;
+import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
 import com.gregtechceu.gtceu.core.mixins.RecipeManagerInvoker;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
@@ -30,9 +32,11 @@ import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.utils.Position;
 import com.lowdragmc.lowdraglib.utils.Rect;
 import com.lowdragmc.lowdraglib.utils.Size;
+import dev.architectury.injectables.annotations.ExpectPlatform;
 import dev.emi.emi.api.EmiApi;
 import it.unimi.dsi.fastutil.bytes.Byte2ObjectArrayMap;
 import it.unimi.dsi.fastutil.bytes.Byte2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Object2IntFunction;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
@@ -321,21 +325,21 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
         return new Size(176, (dataInfos.size() + maxTooltips) * 10 + 5 + createEditableUITemplate(false, false).createDefault().getSize().height);
     }
 
-    public record RecipeHolder(DoubleSupplier progressSupplier, IItemTransfer importItems, IItemTransfer exportItems, IFluidStorage[] importFluids, IFluidStorage[] exportFluids, boolean isSteam, boolean isHighPressure) {};
+    public record RecipeHolder(DoubleSupplier progressSupplier, IItemTransfer importItems, IItemTransfer exportItems, IFluidStorage[] importFluids, IFluidStorage[] exportFluids, Table<IO, RecipeCapability<?>, Object> extraStorages, Table<IO, RecipeCapability<?>, List<Content>> extraContents, boolean isSteam, boolean isHighPressure) {};
 
     /**
      * Auto layout UI template for recipes.
      * @param progressSupplier progress. To create a JEI / REI UI, use the para {@link ProgressWidget#JEIProgress}.
      */
-    public WidgetGroup createUITemplate(DoubleSupplier progressSupplier, IItemTransfer importItems, IItemTransfer exportItems, IFluidStorage[] importFluids, IFluidStorage[] exportFluids, boolean isSteam, boolean isHighPressure) {
+    public WidgetGroup createUITemplate(DoubleSupplier progressSupplier, IItemTransfer importItems, IItemTransfer exportItems, IFluidStorage[] importFluids, IFluidStorage[] exportFluids, Table<IO, RecipeCapability<?>, Object> extraStorages, Table<IO, RecipeCapability<?>, List<Content>> extraContents, boolean isSteam, boolean isHighPressure) {
         var template = createEditableUITemplate(isSteam, isHighPressure);
         var group = template.createDefault();
-        template.setupUI(group, new RecipeHolder(progressSupplier, importItems, exportItems, importFluids, exportFluids, isSteam, isHighPressure));
+        template.setupUI(group, new RecipeHolder(progressSupplier, importItems, exportItems, importFluids, exportFluids, extraStorages, extraContents, isSteam, isHighPressure));
         return group;
     }
 
-    public WidgetGroup createUITemplate(DoubleSupplier progressSupplier, IItemTransfer importItems, IItemTransfer exportItems, IFluidStorage[] importFluids, IFluidStorage[] exportFluids) {
-        return createUITemplate(progressSupplier, importItems, exportItems, importFluids, exportFluids, false, false);
+    public WidgetGroup createUITemplate(DoubleSupplier progressSupplier, IItemTransfer importItems, IItemTransfer exportItems, IFluidStorage[] importFluids, IFluidStorage[] exportFluids, Table<IO, RecipeCapability<?>, Object> extraStorages, Table<IO, RecipeCapability<?>, List<Content>> extraContents) {
+        return createUITemplate(progressSupplier, importItems, exportItems, importFluids, exportFluids, extraStorages, extraContents, false, false);
     }
 
     /**
@@ -439,6 +443,7 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
                     tank.setAllowClickDrained(false);
                 }
             });
+            bindPlatformIO(template, recipeHolder, isJEI);
         });
     }
 
@@ -448,9 +453,22 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
 
     protected WidgetGroup addInventorySlotGroup(boolean isOutputs, boolean isSteam, boolean isHighPressure) {
 
-        var itemCount = isOutputs ? getMaxOutputs(ItemRecipeCapability.CAP) : getMaxInputs(ItemRecipeCapability.CAP);
-        var fluidCount = isOutputs ? getMaxOutputs(FluidRecipeCapability.CAP) : getMaxInputs(FluidRecipeCapability.CAP);
-        var sum = itemCount + fluidCount;
+        int itemCount = isOutputs ? getMaxOutputs(ItemRecipeCapability.CAP) : getMaxInputs(ItemRecipeCapability.CAP);
+        int fluidCount = isOutputs ? getMaxOutputs(FluidRecipeCapability.CAP) : getMaxInputs(FluidRecipeCapability.CAP);
+        int sum = 0;
+        if (isOutputs) {
+            for (var value : maxOutputs.object2IntEntrySet()) {
+                if (value.getKey().doRenderSlot) {
+                    sum += value.getIntValue();
+                }
+            }
+        } else {
+            for (var value : maxInputs.object2IntEntrySet()) {
+                if (value.getKey().doRenderSlot) {
+                    sum += value.getIntValue();
+                }
+            }
+        }
         WidgetGroup group = new WidgetGroup(0, 0, Math.min(sum, 3) * 18 + 8, ((sum + 2) / 3) * 18 + 8);
         int index = 0;
         for (int slotIndex = 0; slotIndex < itemCount; slotIndex++) {
@@ -472,6 +490,8 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
             group.addWidget(tank);
             index++;
         }
+        addPlatformSlots(this, group, isOutputs, isSteam, isHighPressure, index, sum);
+
         return group;
     }
 
@@ -501,7 +521,7 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
     }
 
 
-    protected IGuiTexture getOverlaysForSlot(boolean isOutput, boolean isFluid, boolean isLast, boolean isSteam, boolean isHighPressure) {
+    public IGuiTexture getOverlaysForSlot(boolean isOutput, boolean isFluid, boolean isLast, boolean isSteam, boolean isHighPressure) {
         IGuiTexture base = isFluid ? GuiTextures.FLUID_SLOT : (isSteam ? GuiTextures.SLOT_STEAM.get(isHighPressure) : GuiTextures.SLOT);
         byte overlayKey = (byte) ((isOutput ? 2 : 0) + (isFluid ? 1 : 0) + (isLast ? 4 : 0));
         if (slotOverlays.containsKey(overlayKey)) {
@@ -526,6 +546,16 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
             builder.duration(smeltingRecipe.getCookingTime());
         }
         return GTRecipeSerializer.SERIALIZER.fromJson(id, builder.build().serializeRecipe());
+    }
+
+    @ExpectPlatform
+    public static void bindPlatformIO(WidgetGroup template, RecipeHolder recipeHolder, boolean isJEI) {
+        throw new AssertionError();
+    }
+
+    @ExpectPlatform
+    public static void addPlatformSlots(GTRecipeType type, WidgetGroup group, boolean isOutputs, boolean isSteam, boolean isHighPressure, int index, int sum) {
+        throw new AssertionError();
     }
 
 }

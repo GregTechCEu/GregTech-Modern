@@ -1,6 +1,9 @@
 package com.gregtechceu.gtceu.api.machine;
 
+import com.google.common.collect.Tables;
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
@@ -8,6 +11,7 @@ import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
+import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.utils.Position;
@@ -19,6 +23,9 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.List;
 import java.util.function.BiFunction;
 
 /**
@@ -110,6 +117,8 @@ public class SimpleGeneratorMachine extends WorkableTieredMachine implements IFa
                             generatorMachine.exportItems.storage,
                             generatorMachine.importFluids.storages,
                             generatorMachine.exportFluids.storages,
+                            Tables.newCustomTable(new EnumMap<>(IO.class), HashMap<RecipeCapability<?>, Object>::new),
+                            Tables.newCustomTable(new EnumMap<>(IO.class), HashMap<RecipeCapability<?>, List<Content>>::new),
                             false, false));
             createEnergyBar().setupUI(template, generatorMachine);
         }

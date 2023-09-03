@@ -1,9 +1,12 @@
 package com.gregtechceu.gtceu.integration;
 
+import com.google.common.collect.Table;
+import com.google.common.collect.Tables;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
+import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.gui.WidgetUtils;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
@@ -16,14 +19,13 @@ import com.lowdragmc.lowdraglib.side.fluid.IFluidStorage;
 import com.lowdragmc.lowdraglib.utils.CycleItemStackHandler;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 import com.lowdragmc.lowdraglib.utils.Position;
+import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -67,17 +69,23 @@ public class GTRecipeWidget extends WidgetGroup {
         }
 
         IFluidStorage[] outputFluids = new IFluidStorage[recipe.recipeType.getMaxOutputs(FluidRecipeCapability.CAP)];
-        List<Content> outputFluidContents = new ArrayList<>( recipe.getOutputContents(FluidRecipeCapability.CAP));
+        List<Content> outputFluidContents = new ArrayList<>(recipe.getOutputContents(FluidRecipeCapability.CAP));
         outputFluidContents.addAll(recipe.getTickOutputContents(FluidRecipeCapability.CAP));
         for (int i = 0; i < outputFluidContents.size(); i++) {
             outputFluids[i] = new FluidStorage(FluidRecipeCapability.CAP.of(outputFluidContents.get(i).content));
         }
 
+        var extraStorageTable = Tables.newCustomTable(new EnumMap<>(IO.class), HashMap<RecipeCapability<?>, Object>::new);
+        var extraContentTable = Tables.newCustomTable(new EnumMap<>(IO.class), HashMap<RecipeCapability<?>, List<Content>>::new);
+        collectExtraStorage(extraStorageTable, extraContentTable, recipe);
+
         var group = recipe.recipeType.createUITemplate(ProgressWidget.JEIProgress,
                 new CycleItemStackHandler(inputStacks),
                 new CycleItemStackHandler(outputStacks),
                 inputFluids,
-                outputFluids
+                outputFluids,
+                extraStorageTable,
+                extraContentTable
         );
         // bind item in overlay
         WidgetUtils.widgetByIdForEach(group, "^%s_[0-9]+$".formatted(ItemRecipeCapability.CAP.slotName(IO.IN)), SlotWidget.class, slot -> {
@@ -167,6 +175,8 @@ public class GTRecipeWidget extends WidgetGroup {
                 });
             }
         });
+        renderExtras(recipe, group, extraContentTable);
+
         var size = group.getSize();
         group.setSelfPosition(new Position((176 - size.width) / 2, 0));
         addWidget(group);
@@ -194,5 +204,15 @@ public class GTRecipeWidget extends WidgetGroup {
             addWidget(new LabelWidget(3, yOffset += 10, dataInfo.apply(recipe.data)));
         }
         recipe.recipeType.appendJEIUI(recipe, this);
+    }
+
+    @ExpectPlatform
+    public static void collectExtraStorage(Table<IO, RecipeCapability<?>, Object> extraTable, Table<IO, RecipeCapability<?>, List<Content>> extraContents, GTRecipe recipe) {
+        throw new AssertionError();
+    }
+
+    @ExpectPlatform
+    public static void renderExtras(GTRecipe recipe, WidgetGroup group, Table<IO, RecipeCapability<?>, List<Content>> extraContents) {
+        throw new AssertionError();
     }
 }

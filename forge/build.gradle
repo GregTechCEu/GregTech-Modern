@@ -139,6 +139,11 @@ dependencies {
     modImplementation(forge.configuration)
     include(forge.configuration)
 
+    // Mekanism
+    //modCompileOnly("mekanism:Mekanism:${forge.versions.mekanism.get()}:api")
+    modImplementation("mekanism:Mekanism:${forge.versions.mekanism.get()}")
+    modImplementation("dev.latvian.mods:kubejs-mekanism:1902.1.5-build.15") { transitive = false }
+
     // Runtime only testing mods
     modRuntimeOnly(forge.worldStripper)
     modImplementation(forge.ae2) { transitive = false }

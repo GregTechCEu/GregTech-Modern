@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.machine.steam;
 
+import com.google.common.collect.Tables;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
@@ -36,6 +37,8 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.List;
 
 @ParametersAreNonnullByDefault
@@ -156,7 +159,7 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
 
     @Override
     public ModularUI createUI(Player entityPlayer) {
-        var group = recipeType.createUITemplate(recipeLogic::getProgressPercent, importItems.storage, exportItems.storage, new IFluidStorage[0], new IFluidStorage[0], true, isHighPressure);
+        var group = recipeType.createUITemplate(recipeLogic::getProgressPercent, importItems.storage, exportItems.storage, new IFluidStorage[0], new IFluidStorage[0], Tables.newCustomTable(new EnumMap<>(IO.class), HashMap::new), Tables.newCustomTable(new EnumMap<>(IO.class), HashMap::new), true, isHighPressure);
         Position pos = new Position((Math.max(group.getSize().width + 4 + 8, 176) - 4 - group.getSize().width) / 2 + 4, 32);
         group.setSelfPosition(pos);
         return new ModularUI(176, 166, this, entityPlayer)

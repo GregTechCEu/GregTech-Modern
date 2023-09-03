@@ -1,10 +1,12 @@
 package com.gregtechceu.gtceu.common.machine.electric;
 
+import com.google.common.collect.Tables;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.IMiner;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.WidgetUtils;
 import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
@@ -16,6 +18,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.machine.trait.miner.MinerLogic;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
@@ -51,7 +54,10 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.BiFunction;
 
 @ParametersAreNonnullByDefault
@@ -218,6 +224,8 @@ public class MinerMachine extends WorkableTieredMachine implements IMiner, ICont
                             minerMachine.exportItems.storage,
                             minerMachine.importFluids.storages,
                             minerMachine.exportFluids.storages,
+                            Tables.newCustomTable(new EnumMap<>(IO.class), HashMap<RecipeCapability<?>, Object>::new),
+                            Tables.newCustomTable(new EnumMap<>(IO.class), HashMap<RecipeCapability<?>, List<Content>>::new),
                             false, false));
             createTemplate(inventorySize).setupUI(template, minerMachine);
             createEnergyBar().setupUI(template, minerMachine);

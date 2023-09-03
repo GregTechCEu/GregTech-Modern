@@ -58,6 +58,7 @@ import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.lowdragmc.lowdraglib.utils.BlockInfo;
+import dev.architectury.injectables.annotations.ExpectPlatform;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.ints.Int2LongFunction;
 import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
@@ -1735,10 +1736,16 @@ public class GTMachines {
                             .register(),
                     MV, HV, EV);
         }
+        initPlatformIntegrations();
         AddonFinder.getAddons().forEach(IGTAddon::registerMachines);
         if (GTCEu.isKubeJSLoaded()) {
             GTRegistryObjectBuilderTypes.registerFor(GTRegistries.MACHINES.getRegistryName());
         }
+    }
+
+    @ExpectPlatform
+    public static void initPlatformIntegrations() {
+        throw new AssertionError();
     }
 
     public static MachineDefinition get(String name) {

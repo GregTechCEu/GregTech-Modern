@@ -704,20 +704,16 @@ public class LangHandler {
         provider.add("gtceu.bus.collapse_false", "Bus will not collapse Items");
         provider.add("gtceu.bus.collapse.error", "Bus must be attached to multiblock first");
         provider.add("gtceu.machine.fluid_hatch.import.tooltip", "Fluid Input for Multiblocks");
-
-
         provider.add("gtceu.machine.fluid_hatch.export.tooltip", "Fluid Output for Multiblocks");
 
 
+        provider.add("gtceu.machine.gas_hatch.import.tooltip", "Gas Input for Multiblocks");
+        provider.add("gtceu.machine.gas_hatch.export.tooltip", "Gas Output for Multiblocks");
+
+
         provider.add("gtceu.machine.energy_hatch.input.tooltip", "Energy Input for Multiblocks");
-
-
         provider.add("gtceu.machine.energy_hatch.input_hi_amp.tooltip", "Multiple Ampere Energy Input for Multiblocks");
-
-
         provider.add("gtceu.machine.energy_hatch.output.tooltip", "Energy Output for Multiblocks");
-
-
         provider.add("gtceu.machine.energy_hatch.output_hi_amp.tooltip", "Multiple Ampere Energy Output for Multiblocks");
 
 
@@ -770,6 +766,7 @@ public class LangHandler {
         provider.add("gtceu.universal.tooltip.item_transfer_rate", "§bTransfer Rate: §f%d items/s");
         provider.add("gtceu.universal.tooltip.item_transfer_rate_stacks", "§bTransfer Rate: §f%d stacks/s");
         provider.add("gtceu.universal.tooltip.fluid_storage_capacity", "§9Fluid Capacity: §f%d L");
+        provider.add("gtceu.universal.tooltip.gas_storage_capacity", "§9Gas Capacity: §f%d L");
         provider.add("gtceu.universal.tooltip.fluid_storage_capacity_mult", "§9Fluid Capacity: §f%d §7Tanks, §f%d L §7each");
         provider.add("gtceu.universal.tooltip.fluid_stored", "§dFluid Stored: §f%s, %d L");
         provider.add("gtceu.universal.tooltip.fluid_transfer_rate", "§bTransfer Rate: §f%d L/t");

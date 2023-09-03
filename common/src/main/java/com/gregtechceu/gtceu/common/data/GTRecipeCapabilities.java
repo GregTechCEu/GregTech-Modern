@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.common.data;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
+import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -25,5 +26,11 @@ public class GTRecipeCapabilities {
         GTRegistries.RECIPE_CAPABILITIES.register(BLOCK_STATE.name, BLOCK_STATE);
         GTRegistries.RECIPE_CAPABILITIES.register(EU.name, EU);
         GTRegistries.RECIPE_CAPABILITIES.register(SU.name, SU);
+        initPlatform();
+    }
+
+    @ExpectPlatform
+    public static void initPlatform() {
+        throw new AssertionError();
     }
 }

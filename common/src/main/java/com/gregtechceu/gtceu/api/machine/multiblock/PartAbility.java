@@ -33,6 +33,8 @@ public class PartAbility {
     public static final PartAbility MUFFLER = new PartAbility("muffler");
     public static final PartAbility TANK_VALVE = new PartAbility("tank_valve");
     public static final PartAbility PASSTHROUGH_HATCH = new PartAbility("passthrough_hatch");
+    public static final PartAbility EXPORT_GASES = new PartAbility("export_gases");
+    public static final PartAbility IMPORT_GASES = new PartAbility("import_gases");
 
     /**
      * tier -> available blocks
