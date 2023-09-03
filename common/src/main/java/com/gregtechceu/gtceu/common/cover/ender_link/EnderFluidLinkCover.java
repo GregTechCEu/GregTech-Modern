@@ -78,8 +78,8 @@ public class EnderFluidLinkCover extends PumpCover implements EnderLinkCover {
     @Override
     public List<ItemStack> getAdditionalDrops() {
         return Stream.of(
-                super.getAdditionalDrops()
-                // TODO add stored controller linking cards to drops
+                super.getAdditionalDrops(),
+                cardReader.getDroppedItems()
         ).flatMap(List::stream).toList();
     }
 

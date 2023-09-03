@@ -76,7 +76,7 @@ public class EnderLinkControllerMachine extends MultiblockControllerMachine impl
 
     @Override
     public void onDrops(List<ItemStack> drops, Player entity) {
-        // TODO add stored controller linking cards to drops
+        drops.addAll(cardWriter.getDroppedItems());
     }
 
     @Override

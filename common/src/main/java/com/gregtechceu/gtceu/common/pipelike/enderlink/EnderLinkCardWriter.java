@@ -17,8 +17,11 @@ import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.List;
+import java.util.stream.Stream;
 
 
 @MethodsReturnNonnullByDefault
@@ -45,6 +48,13 @@ public class EnderLinkCardWriter implements IManaged, IContentChangeAware {
     //////////////////////////////////////
     //**********   BEHAVIOR   **********//
     //////////////////////////////////////
+
+    public List<ItemStack> getDroppedItems() {
+        return Stream.of(
+                linkCardInputSlot.getStackInSlot(0),
+                linkCardOutputSlot.getStackInSlot(0)
+        ).map(ItemStack::copy).filter(item -> !item.isEmpty()).toList();
+    }
 
 
     public WidgetGroup createUI(int x, int y) {

@@ -68,6 +68,11 @@ public class EnderLinkCardReader implements IManaged, IContentChangeAware {
     //**********   BEHAVIOR   **********//
     //////////////////////////////////////
 
+    public List<ItemStack> getDroppedItems() {
+        ItemStack linkCardStack = linkCardSlot.getStackInSlot(0).copy();
+        return linkCardStack.isEmpty() ? List.of() : List.of(linkCardStack);
+    }
+
     public WidgetGroup createUI(int x, int y) {
         WidgetGroup widgetGroup = new WidgetGroup(x, y, 36, 18);
 
