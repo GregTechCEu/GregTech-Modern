@@ -2,14 +2,20 @@ package com.gregtechceu.gtceu.common.cover.ender_link;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
-import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
-import com.gregtechceu.gtceu.api.cover.IEnderLinkCover;
-import com.gregtechceu.gtceu.common.cover.PumpCover;
-import com.gregtechceu.gtceu.common.machine.multiblock.electric.EnderLinkControllerMachine;
-import com.gregtechceu.gtceu.common.pipelike.enderlink.EnderLinkCardReader;
+import com.gregtechceu.gtceu.api.cover.filter.FilterHandler;
+import com.gregtechceu.gtceu.api.cover.filter.FilterHandlers;
+import com.gregtechceu.gtceu.api.cover.filter.FluidFilter;
+import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
+import com.gregtechceu.gtceu.api.gui.widget.LongInputWidget;
+import com.gregtechceu.gtceu.api.gui.widget.NumberInputWidget;
+import com.gregtechceu.gtceu.common.cover.data.BucketMode;
 import com.gregtechceu.gtceu.common.pipelike.enderlink.EnderLinkChannel;
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
+import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
+import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
+import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
@@ -17,34 +23,39 @@ import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import lombok.Getter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
-import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
-import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Stream;
 
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class EnderFluidLinkCover extends PumpCover implements IEnderLinkCover {
-    @Nullable
-    private EnderLinkControllerMachine controller;
+public class EnderFluidLinkCover extends EnderLinkCover {
+    protected static final long MILLIBUCKET_SIZE = FluidHelper.getBucket() / 1000;
 
     @Persisted @DescSynced @Getter
-    private int channel = 1;
+    protected long currentMilliBucketsPerTick;
+
+    public final long maxMilliBucketsPerTick;
+
+    @Persisted @DescSynced @Getter
+    protected BucketMode bucketMode = BucketMode.MILLI_BUCKET;
+
 
     @Persisted @DescSynced
-    private final EnderLinkCardReader cardReader;
-
+    protected final FilterHandler<FluidStack, FluidFilter> filterHandler;
+    private NumberInputWidget<Long> transferRateWidget;
 
     public EnderFluidLinkCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {
         super(definition, coverHolder, attachedSide, GTValues.HV); // TODO support multiple tiers
 
-        cardReader = new EnderLinkCardReader(c -> setController(c.orElse(null)));
+        this.maxMilliBucketsPerTick = 64 * (long) Math.pow(4, tier - 1); // .5b 2b 8b
+        this.filterHandler = FilterHandlers.fluid(this);
     }
 
     //////////////////////////////////////
@@ -52,101 +63,18 @@ public class EnderFluidLinkCover extends PumpCover implements IEnderLinkCover {
     //////////////////////////////////////
 
     @Override
-    public void onLoad() {
-        super.onLoad();
-        linkToController();
+    public boolean canAttach() {
+        return getOwnFluidTransfer() != null;
     }
 
-    @Override
-    public void onUnload() {
-        super.onUnload();
-        unlinkFromController();
-    }
-
-    @Override
-    public void onAttached(ItemStack itemStack, ServerPlayer player) {
-        super.onAttached(itemStack, player);
-        linkToController();
-    }
-
-    @Override
-    public void onRemoved() {
-        super.onRemoved();
-        unlinkFromController();
-    }
-
-    @Override
-    public List<ItemStack> getAdditionalDrops() {
-        return Stream.of(
-                super.getAdditionalDrops(),
-                cardReader.getDroppedItems()
-        ).flatMap(List::stream).toList();
-    }
-
-    @Override
-    protected boolean isSubscriptionActive() {
-        // Normally, the adjacent transfer would be considered here, but for an ender link cover, there is no way
-        // to start the subscription again after the adjacent transfer would have been null (normally that would be
-        // done on neighboring block updates)
-        return isWorkingEnabled();
-    }
-
-    @Override
-    protected @Nullable IFluidTransfer getAdjacentFluidTransfer() {
-        if (controller == null)
-            return null;
-
-        EnderLinkChannel channel = controller.getNetwork().getChannel(this.channel);
-        return (channel != null) ? channel.getFluidTransferWrapper(this.io.oppositeDirection()) : null;
-    }
-
-    @Override
-    public void setIo(IO io) {
-        super.setIo(io);
-
-        if (controller != null)
-            controller.updateCover(this);
+    protected @Nullable IFluidTransfer getOwnFluidTransfer() {
+        return FluidTransferHelper.getFluidTransfer(coverHolder.getLevel(), coverHolder.getPos(), attachedSide);
     }
 
     //////////////////////////////////////
     //**********   BEHAVIOR   **********//
     //////////////////////////////////////
 
-    private void setController(@Nullable EnderLinkControllerMachine controller) {
-        unlinkFromController();
-        this.controller = controller;
-        linkToController();
-
-        subscriptionHandler.updateSubscription();
-    }
-
-    private void linkToController() {
-        if (this.controller != null)
-            this.controller.linkCover(this);
-    }
-
-    private void unlinkFromController() {
-        if (this.controller != null)
-            this.controller.unlinkCover(this);
-
-        this.controller = null;
-    }
-
-    public void setChannel(int channel) {
-        int maxChannels = controller != null ? controller.getMaxChannels() : 1;
-        this.channel = Mth.clamp(channel, 1, maxChannels);
-
-        if (controller != null) {
-            controller.updateCover(this);
-        }
-    }
-
-
-    @Override
-    public void unlinkController(EnderLinkControllerMachine controller) {
-        if (this.controller == controller)
-            this.controller = null;
-    }
 
     @Override
     public EnderLinkChannel.TransferType getTransferType() {
@@ -159,6 +87,30 @@ public class EnderFluidLinkCover extends PumpCover implements IEnderLinkCover {
         return getOwnFluidTransfer();
     }
 
+    public void setTransferRate(long milliBucketsPerTick) {
+        this.currentMilliBucketsPerTick = Mth.clamp(milliBucketsPerTick, 0, maxMilliBucketsPerTick);
+    }
+
+    public void setBucketMode(BucketMode bucketMode) {
+        var oldMultiplier = this.bucketMode.multiplier;
+        var newMultiplier = bucketMode.multiplier;
+
+        this.bucketMode = bucketMode;
+
+
+        if (transferRateWidget == null) return;
+
+        if (oldMultiplier > newMultiplier) {
+            transferRateWidget.setValue(getCurrentBucketModeTransferRate());
+        }
+
+        transferRateWidget.setMax(maxMilliBucketsPerTick / bucketMode.multiplier);
+
+        if (newMultiplier > oldMultiplier) {
+            transferRateWidget.setValue(getCurrentBucketModeTransferRate());
+        }
+    }
+
     //////////////////////////////////////
     //***********     GUI    ***********//
     //////////////////////////////////////
@@ -169,15 +121,54 @@ public class EnderFluidLinkCover extends PumpCover implements IEnderLinkCover {
     }
 
     @Override
-    protected void buildAdditionalUI(WidgetGroup group) {
-        group.addWidget(cardReader.createUI(131, 46));
+    protected Widget createTransferRateUI(int x, int y, int width, int height) {
+        // TODO extract this to a separate reusable widget, replace this and PumpCover's implementation with it
+
+        var group = new WidgetGroup(x, y, width, height);
+
+        transferRateWidget = new LongInputWidget(0, 0, 134, 20,
+                this::getCurrentBucketModeTransferRate, this::setCurrentBucketModeTransferRate).setMin(0L);
+        setBucketMode(this.bucketMode); // initial input widget config happens here
+        group.addWidget(transferRateWidget);
+
+        group.addWidget(new EnumSelectorWidget<>(
+                136, 0, 20, 20,
+                Arrays.stream(BucketMode.values()).filter(m -> m.multiplier <= maxMilliBucketsPerTick).toList(),
+                bucketMode, this::setBucketMode
+        ).setTooltipSupplier(this::getBucketModeTooltip));
+
+        return group;
+    }
+
+    @Override
+    protected Widget createFilterUI(int x, int y, int width, int height) {
+        WidgetGroup group = new WidgetGroup(x, y, width, height);
+
+        group.addWidget(filterHandler.createFilterSlotUI(138, 37));
+        group.addWidget(filterHandler.createFilterConfigUI(0, 0, 156, 60));
+
+        return group;
+    }
+
+    private List<Component> getBucketModeTooltip(BucketMode mode, String langKey) {
+        return List.of(
+                Component.translatable(langKey).append(Component.translatable("gtceu.gui.content.units.per_tick"))
+        );
+    }
+
+    private long getCurrentBucketModeTransferRate() {
+        return this.currentMilliBucketsPerTick / this.bucketMode.multiplier;
+    }
+
+    private void setCurrentBucketModeTransferRate(long transferRate) {
+        this.setTransferRate(transferRate * this.bucketMode.multiplier);
     }
 
     //////////////////////////////////////
     //*****     LDLib SyncData    ******//
     //////////////////////////////////////
 
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(EnderFluidLinkCover.class, PumpCover.MANAGED_FIELD_HOLDER);
+    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(EnderFluidLinkCover.class, EnderLinkCover.MANAGED_FIELD_HOLDER);
 
     @Override
     public ManagedFieldHolder getFieldHolder() {
