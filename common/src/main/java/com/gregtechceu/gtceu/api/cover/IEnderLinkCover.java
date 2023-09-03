@@ -13,7 +13,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public interface EnderLinkCover {
+public interface IEnderLinkCover {
     void unlinkController(EnderLinkControllerMachine controller);
 
     int getChannel();

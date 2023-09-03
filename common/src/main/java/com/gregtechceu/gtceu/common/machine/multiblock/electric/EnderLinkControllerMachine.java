@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.electric;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.cover.EnderLinkCover;
+import com.gregtechceu.gtceu.api.cover.IEnderLinkCover;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineModifyDrops;
@@ -41,7 +41,7 @@ public class EnderLinkControllerMachine extends MultiblockControllerMachine impl
     private UUID uuid;
 
     private final int tier;
-    private final Set<EnderLinkCover> loadedLinkedCovers = new ObjectArraySet<>();
+    private final Set<IEnderLinkCover> loadedLinkedCovers = new ObjectArraySet<>();
 
     @Getter
     private EnderLinkNetwork network;
@@ -115,17 +115,17 @@ public class EnderLinkControllerMachine extends MultiblockControllerMachine impl
     //******   COVER INTERACTION   ******//
     ///////////////////////////////////////
 
-    public void linkCover(EnderLinkCover cover) {
+    public void linkCover(IEnderLinkCover cover) {
         loadedLinkedCovers.add(cover);
         network.registerCover(cover);
     }
 
-    public void unlinkCover(EnderLinkCover cover) {
+    public void unlinkCover(IEnderLinkCover cover) {
         loadedLinkedCovers.remove(cover);
         network.unregisterCover(cover);
     }
 
-    public void updateCover(EnderLinkCover cover) {
+    public void updateCover(IEnderLinkCover cover) {
         network.unregisterCover(cover);
         network.registerCover(cover);
     }

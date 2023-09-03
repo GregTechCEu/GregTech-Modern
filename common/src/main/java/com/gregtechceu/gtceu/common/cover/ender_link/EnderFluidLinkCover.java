@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
-import com.gregtechceu.gtceu.api.cover.EnderLinkCover;
+import com.gregtechceu.gtceu.api.cover.IEnderLinkCover;
 import com.gregtechceu.gtceu.common.cover.PumpCover;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.EnderLinkControllerMachine;
 import com.gregtechceu.gtceu.common.pipelike.enderlink.EnderLinkCardReader;
@@ -30,7 +30,7 @@ import java.util.stream.Stream;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class EnderFluidLinkCover extends PumpCover implements EnderLinkCover {
+public class EnderFluidLinkCover extends PumpCover implements IEnderLinkCover {
     @Nullable
     private EnderLinkControllerMachine controller;
 

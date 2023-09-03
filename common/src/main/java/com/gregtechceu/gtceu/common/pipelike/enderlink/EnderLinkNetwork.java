@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.common.pipelike.enderlink;
 
-import com.gregtechceu.gtceu.api.cover.EnderLinkCover;
+import com.gregtechceu.gtceu.api.cover.IEnderLinkCover;
 import net.minecraft.MethodsReturnNonnullByDefault;
 
 import javax.annotation.Nullable;
@@ -35,7 +35,7 @@ public class EnderLinkNetwork {
         return Arrays.stream(channels).filter(channel -> channel.getCurrentTransferType() == type).toList();
     }
 
-    public void registerCover(EnderLinkCover cover) {
+    public void registerCover(IEnderLinkCover cover) {
         EnderLinkChannel channel = getChannel(cover.getChannel());
 
         if (channel == null)
@@ -49,7 +49,7 @@ public class EnderLinkNetwork {
         }
     }
 
-    public void unregisterCover(EnderLinkCover cover) {
+    public void unregisterCover(IEnderLinkCover cover) {
         EnderLinkChannel channel = getChannel(cover.getChannel());
 
         if (channel == null)

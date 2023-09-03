@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.common.pipelike.enderlink;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.cover.EnderLinkCover;
+import com.gregtechceu.gtceu.api.cover.IEnderLinkCover;
 import com.gregtechceu.gtceu.api.misc.ProxiedTransferWrapper;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
@@ -34,19 +34,19 @@ public class EnderLinkChannel {
         this.id = id;
     }
 
-    public void addItemTransfer(IO io, EnderLinkCover owner, IItemTransfer transfer) {
+    public void addItemTransfer(IO io, IEnderLinkCover owner, IItemTransfer transfer) {
         itemTransferWrapper.addTransfer(io, owner, transfer);
     }
 
-    public void removeItemTransfer(EnderLinkCover owner) {
+    public void removeItemTransfer(IEnderLinkCover owner) {
         itemTransferWrapper.removeTransfer(owner);
     }
 
-    public void addFluidTransfer(IO io, EnderLinkCover owner, IFluidTransfer transfer) {
+    public void addFluidTransfer(IO io, IEnderLinkCover owner, IFluidTransfer transfer) {
         fluidTransferWrapper.addTransfer(io, owner, transfer);
     }
 
-    public void removeFluidTransfer(EnderLinkCover owner) {
+    public void removeFluidTransfer(IEnderLinkCover owner) {
         fluidTransferWrapper.removeTransfer(owner);
     }
 
