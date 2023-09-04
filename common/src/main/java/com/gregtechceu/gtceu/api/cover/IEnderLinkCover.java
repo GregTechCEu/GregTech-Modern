@@ -16,9 +16,12 @@ public interface IEnderLinkCover<T> {
 
     int getChannel();
 
+    IO getIo();
+
     ITransferType<T> getTransferType();
 
-    @Nullable T getTransfer();
+    @Nullable
+    T getTransfer();
 
-    IO getIo();
+    void resetTransferRateLimit();
 }

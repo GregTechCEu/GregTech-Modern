@@ -135,6 +135,8 @@ public class EnderLinkControllerMachine extends MultiblockControllerMachine impl
 
         network.transferAll();
         subscriptionHandler.updateSubscription();
+
+        loadedLinkedCovers.forEach(IEnderLinkCover::resetTransferRateLimit);
     }
 
     private boolean isSubscriptionActive() {

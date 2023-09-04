@@ -76,7 +76,6 @@ public abstract class EnderLinkCover<T> extends CoverBehavior implements IEnderL
 
     protected abstract Widget createFilterUI(int x, int y, int width, int height);
 
-
     public void setIo(IO io) {
         if (io == IO.NONE)
             return;
