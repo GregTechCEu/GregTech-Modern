@@ -21,7 +21,6 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.item.FallingBlockEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.FallingBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
@@ -77,7 +76,7 @@ public class MaterialBlock extends AppearanceBlock implements IBlockRendererProv
     @SuppressWarnings("deprecation")
     @Override
     public void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean isMoving) {
-        if (TagPrefix.ORES.containsKey(this.tagPrefix) && (tagPrefix == TagPrefix.oreSand || tagPrefix == TagPrefix.oreRedSand) && ConfigHolder.INSTANCE.worldgen.sandOresFall) {
+        if (TagPrefix.ORES.containsKey(this.tagPrefix) && TagPrefix.ORES.get(tagPrefix).isSand() && ConfigHolder.INSTANCE.worldgen.sandOresFall) {
             level.scheduleTick(pos, this, this.getDelayAfterPlace());
         }
     }
@@ -85,7 +84,7 @@ public class MaterialBlock extends AppearanceBlock implements IBlockRendererProv
     @SuppressWarnings("deprecation")
     @Override
     public BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor level, BlockPos currentPos, BlockPos neighborPos) {
-        if (TagPrefix.ORES.containsKey(this.tagPrefix) && (tagPrefix == TagPrefix.oreSand || tagPrefix == TagPrefix.oreRedSand) && ConfigHolder.INSTANCE.worldgen.sandOresFall) {
+        if (TagPrefix.ORES.containsKey(this.tagPrefix) && TagPrefix.ORES.get(tagPrefix).isSand() && ConfigHolder.INSTANCE.worldgen.sandOresFall) {
             level.scheduleTick(currentPos, this, this.getDelayAfterPlace());
         }
         return super.updateShape(state, direction, neighborState, level, currentPos, neighborPos);

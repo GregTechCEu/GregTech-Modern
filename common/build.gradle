@@ -81,7 +81,7 @@ dependencies {
     modCompileOnly fabric.jade
 
     // KJS
-//    modCompileOnly fabric.kubejs
+    modCompileOnly fabric.kubejs
 
     // Configuration
     modCompileOnly fabric.configuration
