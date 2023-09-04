@@ -20,6 +20,7 @@ import net.minecraft.util.Mth;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Consumer;
 
 
 @MethodsReturnNonnullByDefault
@@ -40,6 +41,8 @@ public class FluidAmountHandler implements IEnhancedManaged {
 
     private NumberInputWidget<Long> transferRateWidget;
 
+    private Consumer<Long> onAmountChanged = amount -> {};
+
     public FluidAmountHandler(long initialMilliBuckets, long maxMilliBuckets, Runnable renderUpdateHandler) {
         this.maxMilliBuckets = maxMilliBuckets;
         this.currentMilliBuckets = initialMilliBuckets;
@@ -52,6 +55,12 @@ public class FluidAmountHandler implements IEnhancedManaged {
     /////////////////////////////////////
 
 
+    public FluidAmountHandler setOnAmountChanged(Consumer<Long> onAmountChanged) {
+        this.onAmountChanged = onAmountChanged;
+
+        return this;
+    }
+
     public void setMaxMilliBuckets(long maxMilliBuckets) {
         this.maxMilliBuckets = maxMilliBuckets;
 
@@ -59,7 +68,12 @@ public class FluidAmountHandler implements IEnhancedManaged {
     }
 
     public void setMilliBuckets(long milliBuckets) {
+        var previousMilliBuckets = this.currentMilliBuckets;
         this.currentMilliBuckets = Mth.clamp(milliBuckets, 0, maxMilliBuckets);
+
+        if (previousMilliBuckets != this.currentMilliBuckets) {
+            onAmountChanged.accept(this.currentMilliBuckets);
+        }
     }
 
     public long getMilliBuckets() {
