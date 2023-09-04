@@ -1,9 +1,5 @@
 package com.gregtechceu.gtceu.data.fabric;
 
-import appeng.core.definitions.AEDamageTypes;
-import appeng.init.worldgen.InitBiomes;
-import appeng.init.worldgen.InitDimensionTypes;
-import appeng.init.worldgen.InitStructures;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.CompassNode;
 import com.gregtechceu.gtceu.api.registry.registrate.CompassSection;
@@ -11,10 +7,11 @@ import com.gregtechceu.gtceu.api.registry.registrate.SoundEntryBuilder;
 import com.gregtechceu.gtceu.common.data.GTConfiguredFeatures;
 import com.gregtechceu.gtceu.common.data.GTDamageTypes;
 import com.gregtechceu.gtceu.common.data.GTPlacements;
+import com.gregtechceu.gtceu.common.data.GTWorldgen;
+import io.github.fabricators_of_create.porting_lib.data.ExistingFileHelper;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.loader.api.FabricLoader;
-import io.github.fabricators_of_create.porting_lib.data.ExistingFileHelper;
 import net.minecraft.Util;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistryAccess;
@@ -23,9 +20,11 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.registries.VanillaRegistries;
+import net.minecraft.data.worldgen.NoiseData;
+import net.minecraft.data.worldgen.biome.BiomeData;
+import net.minecraft.server.packs.PackType;
 
 import java.util.concurrent.CompletableFuture;
-import net.minecraft.server.packs.PackType;
 
 /**
  * @author KilaBash
@@ -57,7 +56,8 @@ public class GregTechDatagen implements DataGeneratorEntrypoint {
         pack.addProvider((FabricDataGenerator.Pack.Factory<DataProvider>) output -> new GTRegistriesDatapackGenerator(
                 output, registries, new RegistrySetBuilder()
                 .add(Registries.CONFIGURED_FEATURE, GTConfiguredFeatures::bootstrap)
-                .add(Registries.PLACED_FEATURE, GTPlacements::bootstrap), "Worldgen Data"));
+                .add(Registries.PLACED_FEATURE, GTPlacements::bootstrap)
+                .add(Registries.DENSITY_FUNCTION, GTWorldgen::bootstrapDensityFunctions), "Worldgen Data"));
     }
 
     /**
@@ -69,11 +69,8 @@ public class GregTechDatagen implements DataGeneratorEntrypoint {
 
         return vanillaLookup.thenApply(provider -> {
             var builder = new RegistrySetBuilder()
-                    .add(Registries.DIMENSION_TYPE, InitDimensionTypes::init)
-                    .add(Registries.STRUCTURE, InitStructures::initDatagenStructures)
-                    .add(Registries.STRUCTURE_SET, InitStructures::initDatagenStructureSets)
-                    .add(Registries.BIOME, InitBiomes::init)
-                    .add(Registries.DAMAGE_TYPE, AEDamageTypes::init);
+                    .add(Registries.NOISE, NoiseData::bootstrap)
+                    .add(Registries.BIOME, BiomeData::bootstrap);
 
             return builder.buildPatch(registryAccess, provider);
         });

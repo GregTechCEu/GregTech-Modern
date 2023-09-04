@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreFeature;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.common.data.GTFeatures;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
@@ -14,10 +15,11 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.server.level.WorldGenRegion;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -42,7 +44,7 @@ public class VeinedVeinGenerator extends VeinGenerator {
     public static final Codec<Either<List<OreConfiguration.TargetBlockState>, Material>> BLOCK_ENTRY_CODEC = Codec.either(OreConfiguration.TargetBlockState.CODEC.listOf(), GTRegistries.MATERIALS.codec());
 
     public static final Codec<VeinedVeinGenerator> CODEC = RecordCodecBuilder.create((instance) -> instance.group(
-            VeinBlockDefinition.CODEC.listOf().fieldOf("ore_block").forGetter(it -> it.oreBlocks),
+            VeinBlockDefinition.CODEC.listOf().fieldOf("ore_blocks").forGetter(it -> it.oreBlocks),
             VeinBlockDefinition.CODEC.listOf().fieldOf("rare_blocks").forGetter(it -> it.rareBlocks),
             BlockState.CODEC.fieldOf("filler_block").orElse(Blocks.AIR.defaultBlockState()).forGetter(it -> it.fillerBlock),
             Codec.INT.fieldOf("min_y").forGetter(it -> it.minYLevel),
@@ -103,11 +105,12 @@ public class VeinedVeinGenerator extends VeinGenerator {
 
     @Override
     public boolean generate(WorldGenLevel level, RandomSource random, GTOreDefinition entry, BlockPos origin) {
+        Registry<? extends DensityFunction> densityFunctions = GTRegistries.builtinRegistry().registry(Registries.DENSITY_FUNCTION).get();
+
         List<? extends Map.Entry<Integer, VeinBlockDefinition>> commonEntries = oreBlocks.stream().map(b -> Map.entry(b.weight, b)).toList();
         List<? extends Map.Entry<Integer, VeinBlockDefinition>> rareEntries = rareBlocks == null ? null : rareBlocks.stream().map(b -> Map.entry(b.weight, b)).toList(); // never accessed if rareBlocks is null
 
-        RandomState randomState = level.getServer().getLevel(Level.OVERWORLD).getChunkSource().randomState(); // Assume that OW exists, and hope no mod removes it. This has to be like this because other dimensions don't have vein noise.
-        NoiseRouter router = randomState.router();
+        RandomState randomState = level.getLevel().getChunkSource().randomState();
         Blender blender;
         if (level instanceof WorldGenRegion region) {
             blender = Blender.of(region);
@@ -116,8 +119,8 @@ public class VeinedVeinGenerator extends VeinGenerator {
         }
 
         final Blender finalizedBlender = blender;
-        DensityFunction veinToggle = router.veinToggle();
-        DensityFunction veinRidged = router.veinRidged();
+        DensityFunction veinToggle = mapToNoise(densityFunctions.get(GTFeatures.NEW_ORE_VEIN_TOGGLE), randomState);
+        DensityFunction veinRidged = mapToNoise(densityFunctions.get(GTFeatures.NEW_ORE_VEIN_RIDGED), randomState);
 
         int size = entry.getClusterSize();
         int placedCount = 0;
@@ -267,5 +270,21 @@ public class VeinedVeinGenerator extends VeinGenerator {
         public VeinBlockDefinition(List<OreConfiguration.TargetBlockState> block, int weight) {
             this(Either.left(block), weight);
         }
+    }
+
+    private static DensityFunction mapToNoise(DensityFunction function, RandomState randomState) {
+        return function.mapAll(new DensityFunction.Visitor() {
+            @Override
+            public DensityFunction apply(DensityFunction densityFunction) {
+                return densityFunction;
+            }
+
+            @Override
+            public DensityFunction.NoiseHolder visitNoise(DensityFunction.NoiseHolder noiseHolder) {
+                var holder = noiseHolder.noiseData();
+                var noise = randomState.getOrCreateNoise(holder.unwrapKey().orElseThrow());
+                return new DensityFunction.NoiseHolder(holder, noise);
+            }
+        });
     }
 }
