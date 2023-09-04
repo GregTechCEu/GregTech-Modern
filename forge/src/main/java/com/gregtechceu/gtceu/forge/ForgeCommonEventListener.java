@@ -80,8 +80,8 @@ public class ForgeCommonEventListener {
 
     @SubscribeEvent
     public static void registerReloadListeners(AddReloadListenerEvent event) {
-        event.addListener(new OreDataLoaderImpl());
-        event.addListener(new FluidVeinLoaderImpl());
+        event.addListener(new OreDataLoaderImpl(event.getRegistryAccess()));
+        event.addListener(new FluidVeinLoaderImpl(event.getRegistryAccess()));
     }
 
     @SubscribeEvent

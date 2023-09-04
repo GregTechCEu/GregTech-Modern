@@ -21,6 +21,7 @@ import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.integration.kjs.GTRegistryObjectBuilderTypes;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
@@ -65,7 +66,7 @@ public class TagPrefix {
     public static void init() {
         AddonFinder.getAddons().forEach(IGTAddon::registerTagPrefixes);
         if (GTCEu.isKubeJSLoaded()) {
-//            GTRegistryObjectBuilderTypes.registerFor(GTRegistryObjectBuilderTypes.TAG_PREFIX.registryKey);
+            GTRegistryObjectBuilderTypes.registerFor(GTRegistryObjectBuilderTypes.TAG_PREFIX.registryKey);
         }
     }
 
@@ -127,7 +128,7 @@ public class TagPrefix {
             .miningToolTag(BlockTags.MINEABLE_WITH_SHOVEL)
             .unificationEnabled(true)
             .generationCondition(hasOreProperty)
-            .registerOre(Blocks.SAND::defaultBlockState, false, MapColor.SAND, SoundType.SAND);
+            .registerOre(Blocks.SAND::defaultBlockState, false, MapColor.SAND, SoundType.SAND, true);
 
     public static final TagPrefix oreRedSand = oreTagPrefix("redSand")
             .langValue("Red Sand %s Ore")
@@ -135,7 +136,7 @@ public class TagPrefix {
             .miningToolTag(BlockTags.MINEABLE_WITH_SHOVEL)
             .unificationEnabled(true)
             .generationCondition(hasOreProperty)
-            .registerOre(Blocks.RED_SAND::defaultBlockState, false, MapColor.COLOR_ORANGE, SoundType.SAND);
+            .registerOre(Blocks.RED_SAND::defaultBlockState, false, MapColor.COLOR_ORANGE, SoundType.SAND, true);
 
     public static final TagPrefix oreGravel = oreTagPrefix("gravel")
             .langValue("Gravel %s Ore")
@@ -143,7 +144,7 @@ public class TagPrefix {
             .miningToolTag(BlockTags.MINEABLE_WITH_SHOVEL)
             .unificationEnabled(true)
             .generationCondition(hasOreProperty)
-            .registerOre(Blocks.GRAVEL::defaultBlockState, false, MapColor.STONE, SoundType.GRAVEL);
+            .registerOre(Blocks.GRAVEL::defaultBlockState, false, MapColor.STONE, SoundType.GRAVEL, true);
 
     public static final TagPrefix oreBasalt = oreTagPrefix("basalt")
             .langValue("Basalt %s Ore")
@@ -756,7 +757,7 @@ public class TagPrefix {
         }
     }
 
-    public record OreType(Supplier<BlockState> stoneType, boolean isNether, MapColor color, SoundType sound) {}
+    public record OreType(Supplier<BlockState> stoneType, boolean isNether, boolean isSand, MapColor color, SoundType sound) {}
 
     @Getter
     public final String name;
@@ -842,11 +843,15 @@ public class TagPrefix {
     }
 
     protected TagPrefix registerOre(Supplier<BlockState> stoneType, boolean isNether, MapColor color) {
-        return registerOre(stoneType, isNether, color, SoundType.STONE);
+        return registerOre(stoneType, isNether, color, SoundType.STONE, false);
     }
 
-    public TagPrefix registerOre(Supplier<BlockState> stoneType, boolean isNether,MapColor color, SoundType soundType) {
-        ORES.put(this, new OreType(stoneType, isNether, color, soundType));
+    protected TagPrefix registerOre(Supplier<BlockState> stoneType, boolean isNether, MapColor color, boolean isSand) {
+        return registerOre(stoneType, isNether, color, SoundType.STONE, isSand);
+    }
+
+    public TagPrefix registerOre(Supplier<BlockState> stoneType, boolean isNether, MapColor color, SoundType soundType, boolean isSand) {
+        ORES.put(this, new OreType(stoneType, isNether, isSand, color, soundType));
         return this;
     }
 
