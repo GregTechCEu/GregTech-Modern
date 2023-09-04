@@ -36,7 +36,10 @@ public class EnderLinkControllerRegistry {
         return registeredControllers.get().containsKey(uuid);
     }
 
-    public static Optional<EnderLinkControllerMachine> getController(UUID uuid) {
+    public static Optional<EnderLinkControllerMachine> getController(@Nullable UUID uuid) {
+        if (uuid == null)
+            return Optional.empty();
+
         return Optional.ofNullable(registeredControllers.get().get(uuid));
     }
 }
