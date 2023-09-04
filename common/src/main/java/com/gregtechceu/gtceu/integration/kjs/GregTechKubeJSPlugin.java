@@ -25,6 +25,7 @@ import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.api.pattern.Predicates;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.common.CommonProxy;
 import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.integration.kjs.builders.*;
 import com.gregtechceu.gtceu.integration.kjs.builders.machine.*;
@@ -54,6 +55,12 @@ import java.util.Optional;
  * @implNote GregTechKubeJSPlugin
  */
 public class GregTechKubeJSPlugin extends KubeJSPlugin {
+
+    @Override
+    public void initStartup() {
+        super.initStartup();
+        CommonProxy.onKubeJSSetup();
+    }
 
     @Override
     public void init() {
