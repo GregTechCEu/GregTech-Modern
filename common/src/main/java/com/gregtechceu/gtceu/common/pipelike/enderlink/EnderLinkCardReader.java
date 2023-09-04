@@ -55,9 +55,6 @@ public class EnderLinkCardReader implements IManaged, IContentChangeAware {
             }
         };
         linkCardSlot.setFilter(EnderLinkCardReader::isValidLinkCard);
-
-        // TODO automatically load the controller's UUID as soon as it is loaded from @Persisted
-        updateControllerData();
     }
 
     private static boolean isValidLinkCard(ItemStack stack) {
@@ -67,6 +64,11 @@ public class EnderLinkCardReader implements IManaged, IContentChangeAware {
     //////////////////////////////////////
     //**********   BEHAVIOR   **********//
     //////////////////////////////////////
+
+
+    public void searchController() {
+        updateControllerData();
+    }
 
     public List<ItemStack> getDroppedItems() {
         ItemStack linkCardStack = linkCardSlot.getStackInSlot(0).copy();

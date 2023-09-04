@@ -40,7 +40,7 @@ import static com.gregtechceu.gtceu.api.GTValues.*;
 @ParametersAreNonnullByDefault
 public class EnderLinkControllerMachine extends MultiblockControllerMachine implements IFancyUIMachine, IMachineModifyDrops, IControllable {
     @Persisted @Getter
-    private boolean workingEnabled;
+    private boolean workingEnabled = true;
 
     @Persisted @DescSynced
     private UUID uuid;
@@ -94,6 +94,8 @@ public class EnderLinkControllerMachine extends MultiblockControllerMachine impl
 
         if (!LDLib.isRemote())
             EnderLinkControllerRegistry.registerController(this);
+
+        subscriptionHandler.initialize(getLevel());
     }
 
     @Override
@@ -128,10 +130,11 @@ public class EnderLinkControllerMachine extends MultiblockControllerMachine impl
     }
 
     private void update() {
-        if (getOffsetTimer() % 20 == 0) {
-            network.transferAll();
-            subscriptionHandler.updateSubscription();
-        }
+        if (getOffsetTimer() % 20 != 0)
+            return;
+
+        network.transferAll();
+        subscriptionHandler.updateSubscription();
     }
 
     private boolean isSubscriptionActive() {

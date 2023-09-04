@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.cover.IEnderLinkCover;
 import com.gregtechceu.gtceu.api.cover.IUICover;
 import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
+import com.gregtechceu.gtceu.api.machine.ConditionalSubscriptionHandler;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.EnderLinkControllerMachine;
 import com.gregtechceu.gtceu.common.pipelike.enderlink.EnderLinkCardReader;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
@@ -52,11 +53,17 @@ public abstract class EnderLinkCover<T> extends CoverBehavior implements IEnderL
     @Persisted @Getter @Setter
     protected boolean isWorkingEnabled = true;
 
+    private final ConditionalSubscriptionHandler controllerSearchSubscription;
+
     public EnderLinkCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide, int tier) {
         super(definition, coverHolder, attachedSide);
 
         this.tier = tier;
-        cardReader = new EnderLinkCardReader(c -> setController(c.orElse(null)));
+        this.cardReader = new EnderLinkCardReader(c -> setController(c.orElse(null)));
+
+        this.controllerSearchSubscription = new ConditionalSubscriptionHandler(
+                coverHolder, this::searchController, this::isControllerSearchActive
+        );
     }
 
     /////////////////////////////////////
@@ -84,6 +91,17 @@ public abstract class EnderLinkCover<T> extends CoverBehavior implements IEnderL
         unlinkFromController();
         this.controller = controller;
         linkToController();
+
+        controllerSearchSubscription.updateSubscription();
+    }
+
+    private void searchController() {
+        cardReader.searchController();
+        controllerSearchSubscription.updateSubscription();
+    }
+
+    private boolean isControllerSearchActive() {
+        return this.controller == null;
     }
 
     protected void linkToController() {
@@ -129,19 +147,19 @@ public abstract class EnderLinkCover<T> extends CoverBehavior implements IEnderL
     @Override
     public void onLoad() {
         super.onLoad();
-        linkToController();
+        controllerSearchSubscription.initialize(coverHolder.getLevel());
+    }
+
+    @Override
+    public void onAttached(ItemStack itemStack, ServerPlayer player) {
+        super.onAttached(itemStack, player);
+        controllerSearchSubscription.initialize(coverHolder.getLevel());
     }
 
     @Override
     public void onUnload() {
         super.onUnload();
         unlinkFromController();
-    }
-
-    @Override
-    public void onAttached(ItemStack itemStack, ServerPlayer player) {
-        super.onAttached(itemStack, player);
-        linkToController();
     }
 
     @Override
