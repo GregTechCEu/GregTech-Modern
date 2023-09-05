@@ -7,3 +7,4 @@
 * fix bio chaff recipe eut
 * fix ldlib fabric transfer
 * fix jei crash when the slot size updated (1.20)
+* fix wire overlay icon error
