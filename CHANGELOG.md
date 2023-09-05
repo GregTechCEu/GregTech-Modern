@@ -8,3 +8,4 @@
 * fix ldlib fabric transfer
 * fix jei crash when the slot size updated (1.20)
 * fix wire overlay icon error
+* fix distinct buses button is replaced by circuit select button in input bus
