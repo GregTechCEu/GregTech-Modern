@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.worldgen.BiomeWeightModifier;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefinition;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.lowdragmc.lowdraglib.Platform;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.JsonOps;
@@ -61,7 +62,7 @@ public class FluidVeinBuilderJS {
     }
 
     public FluidVeinBuilderJS biomes(int weight, String biomes) {
-        Registry<Biome> registry = Platform.getMinecraftServer().registryAccess().registry(Registries.BIOME).get();
+        Registry<Biome> registry = GTRegistries.builtinRegistry().registry(Registries.BIOME).get();
         this.biomes.add(
                 new BiomeWeightModifier(() -> biomes.startsWith("#") ?
                         registry.getOrCreateTag(TagKey.create(Registries.BIOME, new ResourceLocation(biomes.substring(1)))) :
@@ -71,7 +72,7 @@ public class FluidVeinBuilderJS {
     }
 
     public FluidVeinBuilderJS biomes(int weight, String... biomes) {
-        Registry<Biome> registry = Platform.getMinecraftServer().registryAccess().registry(Registries.BIOME).get();
+        Registry<Biome> registry = GTRegistries.builtinRegistry().registry(Registries.BIOME).get();
         List<HolderSet<Biome>> biomeKeys = new LinkedList<>();
         for (String biome : biomes) {
             biomeKeys.add(biome.startsWith("#") ?
@@ -85,7 +86,7 @@ public class FluidVeinBuilderJS {
 
     @HideFromJS
     public BedrockFluidDefinition build() {
-        RegistryOps<JsonElement> registryOps = RegistryOps.create(JsonOps.INSTANCE, Platform.getMinecraftServer().registryAccess());
+        RegistryOps<JsonElement> registryOps = RegistryOps.create(JsonOps.INSTANCE, GTRegistries.builtinRegistry());
         Supplier<HolderSet<DimensionType>> dimensions = () -> RegistryCodecs.homogeneousList(Registries.DIMENSION_TYPE)
                 .decode(registryOps, this.dimensions.size() == 1 ? this.dimensions.get(0) : this.dimensions).map(Pair::getFirst).getOrThrow(false, GTCEu.LOGGER::error);
         return new BedrockFluidDefinition(id, weight, minimumYield, maximumYield, depletionAmount, depletionChance, depletedYield, fluid, biomes, dimensions);

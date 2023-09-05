@@ -19,6 +19,7 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.GsonHelper;
@@ -28,7 +29,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nullable;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 
 public class OreDataLoader extends SimpleJsonResourceReloadListener {
     public static OreDataLoader INSTANCE;
@@ -36,18 +40,31 @@ public class OreDataLoader extends SimpleJsonResourceReloadListener {
     private static final String FOLDER = "gtceu/ore_veins";
     protected static final Logger LOGGER = LogManager.getLogger();
 
-    @Nullable
-    private final RegistryAccess registryAccess;
-
-    public OreDataLoader(@Nullable RegistryAccess registryAccess) {
+    public OreDataLoader() {
         super(GSON_INSTANCE, FOLDER);
-        this.registryAccess = registryAccess;
+    }
+
+    @Override
+    public CompletableFuture<Void> reload(PreparableReloadListener.PreparationBarrier preparationBarrier, ResourceManager resourceManager, ProfilerFiller preparationsProfiler, ProfilerFiller reloadProfiler, Executor backgroundExecutor, Executor gameExecutor) {
+        return CompletableFuture.supplyAsync(() -> this.prepare(resourceManager, preparationsProfiler), backgroundExecutor)
+                .thenCompose(preparationBarrier::wait)
+                .thenApply((object) -> {
+                    this.loadKJS();
+                    return object;
+                })
+                .thenAcceptAsync(data -> this.apply(data, resourceManager, reloadProfiler), gameExecutor);
+    }
+
+    protected void loadKJS() {
+        GTFeatures.register();
+        if (GTCEu.isKubeJSLoaded()) {
+            RunKJSEventInSeparateClassBecauseForgeIsDumb.fireKJSEvent();
+        }
     }
 
     @Override
     protected void apply(Map<ResourceLocation, JsonElement> resourceList, ResourceManager resourceManager, ProfilerFiller profiler) {
-        GTFeatures.register();
-        RegistryOps<JsonElement> ops = RegistryOps.create(JsonOps.INSTANCE, this.registryAccess == null ? Platform.getMinecraftServer().registryAccess() : this.registryAccess);
+        RegistryOps<JsonElement> ops = RegistryOps.create(JsonOps.INSTANCE, GTRegistries.builtinRegistry());
         for(Map.Entry<ResourceLocation, JsonElement> entry : resourceList.entrySet()) {
             ResourceLocation location = entry.getKey();
 
@@ -67,14 +84,13 @@ public class OreDataLoader extends SimpleJsonResourceReloadListener {
                 LOGGER.error("Parsing error loading ore vein {}", location, jsonParseException);
             }
         }
-        if (GTCEu.isKubeJSLoaded()) {
-            RunKJSEventInSeparateClassBecauseForgeIsDumb.fireKJSEvent();
-        }
-        for (GTOreDefinition entry : GTRegistries.ORE_VEINS) {
+        Iterator<Map.Entry<ResourceLocation, GTOreDefinition>> iterator = GTRegistries.ORE_VEINS.entries().iterator();
+        while (iterator.hasNext()) {
+            var entry = iterator.next().getValue();
             if (entry.getVeinGenerator() != null) {
                 entry.getVeinGenerator().build();
             } else {
-                GTRegistries.ORE_VEINS.remove(GTRegistries.ORE_VEINS.getKey(entry));
+                iterator.remove();
             }
         }
     }

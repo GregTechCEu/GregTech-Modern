@@ -5,8 +5,8 @@ import net.minecraft.core.RegistryAccess;
 
 public class FluidVeinLoaderImpl extends FluidVeinLoader {
 
-    public FluidVeinLoaderImpl(RegistryAccess registryAccess) {
-        super(registryAccess);
+    public FluidVeinLoaderImpl() {
+        super();
         FluidVeinLoader.INSTANCE = this;
     }
 }

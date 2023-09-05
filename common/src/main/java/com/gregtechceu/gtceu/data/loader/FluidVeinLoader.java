@@ -34,17 +34,16 @@ public class FluidVeinLoader extends SimpleJsonResourceReloadListener {
     private static final String FOLDER = "gtceu/fluid_veins";
     protected static final Logger LOGGER = LogManager.getLogger();
 
-    @Nullable
-    private final RegistryAccess registryAccess;
-
-    public FluidVeinLoader(@Nullable RegistryAccess registryAccess) {
+    public FluidVeinLoader() {
         super(GSON_INSTANCE, FOLDER);
-        this.registryAccess = registryAccess;
     }
 
     @Override
     protected void apply(Map<ResourceLocation, JsonElement> resourceList, ResourceManager resourceManager, ProfilerFiller profiler) {
-        RegistryOps<JsonElement> ops = RegistryOps.create(JsonOps.INSTANCE, this.registryAccess == null ? Platform.getMinecraftServer().registryAccess() : this.registryAccess);
+        if (GTCEu.isKubeJSLoaded()) {
+            RunKJSEventInSeparateClassBecauseForgeIsDumb.fireKJSEvent();
+        }
+        RegistryOps<JsonElement> ops = RegistryOps.create(JsonOps.INSTANCE, GTRegistries.builtinRegistry());
         for(Map.Entry<ResourceLocation, JsonElement> entry : resourceList.entrySet()) {
             ResourceLocation location = entry.getKey();
 
@@ -63,9 +62,6 @@ public class FluidVeinLoader extends SimpleJsonResourceReloadListener {
             } catch (IllegalArgumentException | JsonParseException jsonParseException) {
                 LOGGER.error("Parsing error loading ore vein {}", location, jsonParseException);
             }
-        }
-        if (GTCEu.isKubeJSLoaded()) {
-            RunKJSEventInSeparateClassBecauseForgeIsDumb.fireKJSEvent();
         }
     }
 
