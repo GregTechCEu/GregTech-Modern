@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.data;
 
+import com.google.common.collect.ImmutableList;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.addon.AddonFinder;
@@ -7,6 +8,8 @@ import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.recipe.*;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.common.recipe.RPMCondition;
@@ -39,6 +42,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.BLAST_ALLOY_CRAFTABLE;
 import static com.lowdragmc.lowdraglib.gui.texture.ProgressTexture.FillDirection.*;
 
 /**
@@ -536,6 +540,26 @@ public class GTRecipeTypes {
 
     public static final GTRecipeType DUMMY_RECIPES = new GTRecipeType(GTCEu.id("dummy"), DUMMY);
 
+    //GCMB
+    public final static GTRecipeType LARGE_MIXER_RECIPES = register("large_mixer", ELECTRIC).setMaxIOSize(9, 1, 6, 1).setEUIO(IO.IN)
+            .setSlotOverlay(false, false, GuiTextures.DUST_OVERLAY)
+            .setProgressBar(GuiTextures.PROGRESS_BAR_MIXER, LEFT_TO_RIGHT)
+            .setSound(GTSoundEntries.MIXER);
+
+    public final static GTRecipeType LARGE_ENGRAVER_RECIPES = register("large_engraver", ELECTRIC).setMaxIOSize(2, 1, 1, 1).setEUIO(IO.IN)
+            .setSlotOverlay(false, false, GuiTextures.LENS_OVERLAY)
+            .setProgressBar(GuiTextures.PROGRESS_BAR_ARROW, LEFT_TO_RIGHT)
+            .setSound(GTSoundEntries.ELECTROLYZER);
+
+    public final static GTRecipeType LARGE_CENTRIFUGE_RECIPES = register("large_centrifuge", ELECTRIC).setMaxIOSize(2, 6, 2, 6).setEUIO(IO.IN)
+            .setSlotOverlay(false, false, GuiTextures.EXTRACTOR_OVERLAY)
+            .setProgressBar(GuiTextures.PROGRESS_BAR_EXTRACT, LEFT_TO_RIGHT)
+            .setSound(GTSoundEntries.CENTRIFUGE);
+
+    public final static GTRecipeType BLAST_ALLOY_RECIPES = register("blast_alloy_smelter", ELECTRIC).setMaxIOSize(0, 0, 6, 2).setEUIO(IO.IN)
+            .setProgressBar(GuiTextures.PROGRESS_BAR_ARROW, LEFT_TO_RIGHT)
+            .setSound(GTSoundEntries.ARC);
+
 
     //////////////////////////////////////
     //******     Integration     *******//
@@ -581,6 +605,23 @@ public class GTRecipeTypes {
         GTRegistries.register(Registry.RECIPE_SERIALIZER, GTCEu.id("gt_recipe_serializer"), GTRecipeSerializer.SERIALIZER);
         GTRegistries.register(Registry.RECIPE_SERIALIZER, GTCEu.id("facade_cover_serializer"), FacadeCoverRecipe.SERIALIZER);
         GTRegistries.register(Registry.RECIPE_SERIALIZER, GTCEu.id("strict_shaped_recipe_serializer"), StrictShapedRecipe.SERIALIZER);
+
+        //GCMB
+
+        MIXER_RECIPES.onRecipeBuild((builder, provider) -> {
+            assert LARGE_MIXER_RECIPES != null;
+            LARGE_MIXER_RECIPES.copyFrom(builder).save(provider);
+        });
+
+        LASER_ENGRAVER_RECIPES.onRecipeBuild((builder, provider) -> {
+            assert LARGE_ENGRAVER_RECIPES != null;
+            LARGE_ENGRAVER_RECIPES.copyFrom(builder).save(provider);
+        });
+
+        CENTRIFUGE_RECIPES.onRecipeBuild((builder, provider) -> {
+            assert LARGE_CENTRIFUGE_RECIPES != null;
+            LARGE_CENTRIFUGE_RECIPES.copyFrom(builder).save(provider);
+        });
     }
 
     public static GTRecipeType get(String name) {

@@ -107,6 +107,9 @@ public class GTMaterials {
          * - Reserved for CraftTweaker: 32000-32767
          */
 
+        //Gregicality Multiblocks
+        GCMBMaterials.register();
+
         CHEMICAL_DYES = new Material[]{
                 GTMaterials.DyeWhite, GTMaterials.DyeOrange,
                 GTMaterials.DyeMagenta, GTMaterials.DyeLightBlue,
@@ -969,4 +972,21 @@ public class GTMaterials {
     public static Material BasalticMineralSand;
     public static Material HSSE;
     public static Material HSSS;
+
+    /**
+     * GCMB Materials
+     */
+    public static Material TantalumCarbide;
+    public static Material HSLASteel;
+    public static Material MolybdenumDisilicide;
+    public static Material Zeron100;
+    public static Material WatertightSteel;
+    public static Material IncoloyMA956;
+    public static Material MaragingSteel300;
+    public static Material HastelloyX;
+    public static Material Stellite100;
+    public static Material TitaniumCarbide;
+    public static Material TitaniumTungstenCarbide;
+
+
 }

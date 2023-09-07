@@ -1,0 +1,15 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:large_ore_wahing_plant"
+  },
+  "items": [
+    "gtceu:large_ore_wahing_plant"
+  ],
+  "page": "gtceu:multiblock/large_ore_wahing_plant",
+  "position": [
+    -250,
+    200
+  ],
+  "section": "gtceu:multiblock"
+}
