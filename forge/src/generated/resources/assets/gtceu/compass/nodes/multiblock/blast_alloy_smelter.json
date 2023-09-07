@@ -1,0 +1,15 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:blast_alloy_smelter"
+  },
+  "items": [
+    "gtceu:blast_alloy_smelter"
+  ],
+  "page": "gtceu:multiblock/blast_alloy_smelter",
+  "position": [
+    -50,
+    250
+  ],
+  "section": "gtceu:multiblock"
+}

@@ -1,0 +1,15 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:large_centrifuge"
+  },
+  "items": [
+    "gtceu:large_centrifuge"
+  ],
+  "page": "gtceu:multiblock/large_centrifuge",
+  "position": [
+    -200,
+    200
+  ],
+  "section": "gtceu:multiblock"
+}

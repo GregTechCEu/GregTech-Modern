@@ -1,0 +1,15 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:large_thermal_centrifuge"
+  },
+  "items": [
+    "gtceu:large_thermal_centrifuge"
+  ],
+  "page": "gtceu:multiblock/large_thermal_centrifuge",
+  "position": [
+    -150,
+    200
+  ],
+  "section": "gtceu:multiblock"
+}

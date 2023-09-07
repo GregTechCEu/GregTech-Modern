@@ -174,6 +174,11 @@ public class MaterialFlags {
             .requireProps(PropertyKey.DUST)
             .build();
 
+    //GCMB
+    public static final MaterialFlag BLAST_ALLOY_CRAFTABLE = new MaterialFlag.Builder("blast_alloy_craftable")
+            .requireProps(PropertyKey.FLUID)
+            .build();
+
     /////////////////
     //    FLUID    //
     /////////////////

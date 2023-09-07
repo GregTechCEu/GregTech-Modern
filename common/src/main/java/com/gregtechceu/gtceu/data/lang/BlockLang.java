@@ -81,6 +81,15 @@ public class BlockLang {
         replace(provider, "block.gtceu.titanium_firebox", "Titanium Firebox Casing");
         replace(provider, "block.gtceu.tungstensteel_firebox", "Tungstensteel Firebox Casing");
 
+        //GCMB Casings
+        replace(provider, "block.gtceu.nonconducting_machine_casing", "Nonconducting Machine Casing");
+        replace(provider, "block.gtceu.vibration_safe_machine_casing", "Vibrationsafe Machine Casing");
+        replace(provider, "block.gtceu.watertight_machine_casing", "Watertight Machine Casing");
+        replace(provider, "block.gtceu.secure_maceration_machine_casing", "Secure Maceration Machine Casing");
+        replace(provider, "block.gtceu.high_temperature_smelting_machine_casing", "High Temperature Smelting Machine Casing");
+        replace(provider, "block.gtceu.laser_safe_engraving_machine_casing", "Lasersafe Engraving Machine Casing");
+        replace(provider, "block.gtceu.large_scale_assembling_machine_casing", "Large-Scale Assembling Machine Casing");
+
         // todo multiblock tanks
         //replace(provider, "tile.steam_casing.wood_wall.name", "Wooden Wall");
 
