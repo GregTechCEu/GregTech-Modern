@@ -1014,7 +1014,7 @@ public class GTMaterials {
     public static Material HSSS;
 
     /**
-     * GCMB Materials
+     * GCyM Materials
      */
     public static Material TantalumCarbide;
     public static Material HSLASteel;

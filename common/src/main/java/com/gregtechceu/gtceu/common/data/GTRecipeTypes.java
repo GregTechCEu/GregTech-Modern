@@ -540,7 +540,7 @@ public class GTRecipeTypes {
 
     public static final GTRecipeType DUMMY_RECIPES = new GTRecipeType(GTCEu.id("dummy"), DUMMY);
 
-    //GCMB
+    //GCyM
     public final static GTRecipeType LARGE_MIXER_RECIPES = register("large_mixer", ELECTRIC).setMaxIOSize(9, 1, 6, 1).setEUIO(IO.IN)
             .setSlotOverlay(false, false, GuiTextures.DUST_OVERLAY)
             .setProgressBar(GuiTextures.PROGRESS_BAR_MIXER, LEFT_TO_RIGHT)
@@ -613,6 +613,23 @@ public class GTRecipeTypes {
         GTRegistries.register(Registry.RECIPE_SERIALIZER, GTCEu.id("gt_recipe_serializer"), GTRecipeSerializer.SERIALIZER);
         GTRegistries.register(Registry.RECIPE_SERIALIZER, GTCEu.id("facade_cover_serializer"), FacadeCoverRecipe.SERIALIZER);
         GTRegistries.register(Registry.RECIPE_SERIALIZER, GTCEu.id("strict_shaped_recipe_serializer"), StrictShapedRecipe.SERIALIZER);
+
+        //GCMB
+
+        MIXER_RECIPES.onRecipeBuild((builder, provider) -> {
+            assert LARGE_MIXER_RECIPES != null;
+            LARGE_MIXER_RECIPES.copyFrom(builder).save(provider);
+        });
+
+        LASER_ENGRAVER_RECIPES.onRecipeBuild((builder, provider) -> {
+            assert LARGE_ENGRAVER_RECIPES != null;
+            LARGE_ENGRAVER_RECIPES.copyFrom(builder).save(provider);
+        });
+
+        CENTRIFUGE_RECIPES.onRecipeBuild((builder, provider) -> {
+            assert LARGE_CENTRIFUGE_RECIPES != null;
+            LARGE_CENTRIFUGE_RECIPES.copyFrom(builder).save(provider);
+        });
     }
 
     public static GTRecipeType get(String name) {

@@ -48,6 +48,132 @@ public class MachineRecipeLoader {
         registerStoneBricksRecipes(provider);
         registerNBTRemoval(provider);
         registerHatchConversion(provider);
+        //GCMB
+        registerGCMBRecipes(provider);
+    }
+
+    private static void registerGCMBRecipes(Consumer<FinishedRecipe> provider) {
+        MIXER_RECIPES.recipeBuilder("tantalum_carbide")
+                .inputItems(dust, Tantalum)
+                .inputItems(dust, Carbon)
+                .outputItems(dust, TantalumCarbide, 2)
+                .duration(150).EUt(VA[IV])
+                .save(provider);
+
+        MIXER_RECIPES.recipeBuilder("hsla_steel")
+                .inputItems(dust, Invar, 2)
+                .inputItems(dust, Vanadium)
+                .inputItems(dust, Titanium)
+                .inputItems(dust, Molybdenum)
+                .outputItems(dust, HSLASteel, 5)
+                .duration(140).EUt(VA[HV])
+                .save(provider);
+
+        MIXER_RECIPES.recipeBuilder("incoloy_ma_956")
+                .inputItems(dust, VanadiumSteel, 4)
+                .inputItems(dust, Manganese, 2)
+                .inputItems(dust, Aluminium, 5)
+                .inputItems(dust, Yttrium, 2)
+                .outputItems(dust, IncoloyMA956, 13)
+                .duration(200).EUt(VA[IV])
+                .save(provider);
+
+        MIXER_RECIPES.recipeBuilder("watertight_steel")
+                .inputItems(dust, Iron, 7)
+                .inputItems(dust, Aluminium, 4)
+                .inputItems(dust, Nickel, 2)
+                .inputItems(dust, Chromium)
+                .inputItems(dust, Sulfur)
+                .outputItems(dust, HSLASteel, 15)
+                .duration(220).EUt(VA[IV])
+                .save(provider);
+
+        MIXER_RECIPES.recipeBuilder("molybdenum_disilicide")
+                .inputItems(dust, Molybdenum)
+                .inputItems(dust, Silicon, 2)
+                .outputItems(dust, MolybdenumDisilicide, 3)
+                .duration(180).EUt(VA[EV])
+                .save(provider);
+
+        MIXER_RECIPES.recipeBuilder("hastelloy_x")
+                .inputItems(dust, Nickel, 8)
+                .inputItems(dust, Iron, 3)
+                .inputItems(dust, Tungsten, 4)
+                .inputItems(dust, Molybdenum, 2)
+                .inputItems(dust, Chromium)
+                .inputItems(dust, Niobium)
+                .outputItems(dust, HastelloyX, 19)
+                .duration(210).EUt(VA[IV])
+                .save(provider);
+
+        MIXER_RECIPES.recipeBuilder("maraging_steel_300")
+                .inputItems(dust, Iron, 16)
+                .inputItems(dust, Titanium)
+                .inputItems(dust, Aluminium)
+                .inputItems(dust, Nickel, 4)
+                .inputItems(dust, Cobalt, 2)
+                .outputItems(dust, MaragingSteel300, 24)
+                .duration(230).EUt(VA[IV])
+                .save(provider);
+
+        MIXER_RECIPES.recipeBuilder("stellite_100")
+                .inputItems(dust, Iron, 4)
+                .inputItems(dust, Chromium, 3)
+                .inputItems(dust, Tungsten, 2)
+                .inputItems(dust, Molybdenum)
+                .outputItems(dust, Stellite100, 10)
+                .duration(200).EUt(VA[IV])
+                .save(provider);
+
+        MIXER_RECIPES.recipeBuilder("titanium_carbide")
+                .inputItems(dust, Titanium)
+                .inputItems(dust, Carbon)
+                .outputItems(dust, TitaniumCarbide, 2)
+                .duration(160).EUt(VA[EV])
+                .save(provider);
+
+        MIXER_RECIPES.recipeBuilder("titanium_tungsten_carbide")
+                .inputItems(dust, TungstenCarbide)
+                .inputItems(dust, TitaniumCarbide, 2)
+                .outputItems(dust, TitaniumTungstenCarbide, 3)
+                .duration(180).EUt(VA[IV])
+                .save(provider);
+
+        BLAST_ALLOY_RECIPES.recipeBuilder("test")
+                .inputFluids(Copper.getFluid(3*144),Tin.getFluid(144)).outputFluids(Bronze.getFluid(4*144))
+                .duration(69).EUt(420).save(provider);
+
+        for(Material material : GTRegistries.MATERIALS){
+            LogManager.getLogger().fatal(material.getName());
+            LOGGER.warn(material.getName());
+            System.out.println(material.getName());
+            if(!material.hasFlag(BLAST_ALLOY_CRAFTABLE)){
+                System.out.println("no flag");
+                return;
+            }
+            ImmutableList<MaterialStack> components = material.getMaterialComponents();
+            if(components.size() > 6){
+                System.out.println("too many components");
+                return;
+            }
+            int ct = 0;
+            GTRecipeBuilder recipe = BLAST_ALLOY_RECIPES.recipeBuilder(material.getName()+"_blast_alloy_smelting");
+            for(MaterialStack component : components){
+                recipe.inputFluids(component.material().getFluid(component.amount() * FluidHelper.getBucket()));
+                ct += component.amount();
+            }
+            recipe.outputFluids(material.getFluid(ct * FluidHelper.getBucket()));
+            long eut = switch (material.getBlockHarvestLevel()) {
+                case 1 -> V[MV];
+                case 2 -> V[HV];
+                case 3 -> V[EV];
+                case 4 -> V[IV];
+                case 5 -> V[LuV];
+                case 6 -> V[ZPM];
+                default -> V[LV];
+            };
+            recipe.inputEU(eut).duration(material.getBlastTemperature()).save(provider);
+        }
     }
 
     private static void registerBendingCompressingRecipes(Consumer<FinishedRecipe> provider) {
@@ -551,6 +677,15 @@ public class MachineRecipeLoader {
         ASSEMBLER_RECIPES.recipeBuilder("casing_titanium_stable").EUt(16).inputItems(plate, Titanium, 6).inputItems(frameGt, Titanium).circuitMeta(6).outputItems(GTBlocks.CASING_TITANIUM_STABLE.asStack(2)).duration(50).save(provider);
         ASSEMBLER_RECIPES.recipeBuilder("casing_hsse_sturdy").EUt(16).inputItems(plate, HSSE, 6).inputItems(frameGt, Europium).circuitMeta(6).outputItems(GTBlocks.CASING_HSSE_STURDY.asStack(2)).duration(50).save(provider);
         ASSEMBLER_RECIPES.recipeBuilder("casing_ptfe_inert").EUt(16).inputItems(GTBlocks.CASING_STEEL_SOLID.asStack()).inputFluids(Polytetrafluoroethylene.getFluid(216)).circuitMeta(6).outputItems(GTBlocks.CASING_PTFE_INERT.asStack()).duration(50).save(provider);
+
+        //GCMB
+        ASSEMBLER_RECIPES.recipeBuilder("casing_hsla_nonconducting").EUt(16).inputItems(plate, HSLASteel, 6).inputItems(frameGt, HSLASteel).circuitMeta(6).outputItems(GTBlocks.CASING_NONCONDUCTING.asStack(2)).duration(50).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("casing_incoloy_vibration_safe").EUt(16).inputItems(plate, IncoloyMA956, 6).inputItems(frameGt, IncoloyMA956).circuitMeta(6).outputItems(GTBlocks.CASING_VIBRATION_SAFE.asStack(2)).duration(50).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("casing_watertight").EUt(16).inputItems(plate, WatertightSteel, 6).inputItems(frameGt, WatertightSteel).circuitMeta(6).outputItems(GTBlocks.CASING_WATERTIGHT.asStack(2)).duration(50).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("casing_secure_maceration").EUt(16).inputItems(plate, Zeron100, 6).inputItems(frameGt, Titanium).circuitMeta(6).outputItems(GTBlocks.CASING_SECURE_MACERATION.asStack(2)).duration(50).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("casing_high_temperature_smelting").EUt(16).inputItems(plate, TitaniumCarbide, 4).inputItems(plate, HSLASteel, 2).inputItems(frameGt, TungstenCarbide).circuitMeta(6).outputItems(GTBlocks.CASING_HIGH_TEMPERATURE_SMELTING.asStack(2)).duration(50).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("casing_laser_safe_engraving").EUt(16).inputItems(plate, TitaniumTungstenCarbide, 6).inputItems(frameGt, Titanium).circuitMeta(6).outputItems(GTBlocks.CASING_LASER_SAFE_ENGRAVING.asStack(2)).duration(50).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("casing_large_scale_assembling").EUt(16).inputItems(plate, Stellite100, 6).inputItems(frameGt, Tungsten).circuitMeta(6).outputItems(GTBlocks.CASING_LARGE_SCALE_ASSEMBLING.asStack(2)).duration(50).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("superconducting_coil_luv").EUt(VA[LuV]).inputItems(wireGtDouble, IndiumTinBariumTitaniumCuprate, 32).inputItems(foil, NiobiumTitanium, 32).inputFluids(Trinium.getFluid(GTValues.L * 24)).outputItems(GTBlocks.SUPERCONDUCTING_COIL.asStack()).duration(100).save(provider);
         ASSEMBLER_RECIPES.recipeBuilder("superconducting_coil_zpm").EUt(VA[ZPM]).inputItems(wireGtDouble, UraniumRhodiumDinaquadide, 16).inputItems(foil, NiobiumTitanium, 16).inputFluids(Trinium.getFluid(GTValues.L * 16)).outputItems(GTBlocks.SUPERCONDUCTING_COIL.asStack()).duration(100).save(provider);
