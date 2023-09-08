@@ -42,7 +42,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.BLAST_ALLOY_CRAFTABLE;
 import static com.lowdragmc.lowdraglib.gui.texture.ProgressTexture.FillDirection.*;
 
 /**
@@ -556,15 +555,14 @@ public class GTRecipeTypes {
             .setProgressBar(GuiTextures.PROGRESS_BAR_EXTRACT, LEFT_TO_RIGHT)
             .setSound(GTSoundEntries.CENTRIFUGE);
 
-    public final static GTRecipeType BLAST_ALLOY_RECIPES = register("blast_alloy_smelter", ELECTRIC).setMaxIOSize(0, 0, 6, 2).setEUIO(IO.IN)
+    public final static GTRecipeType BLAST_ALLOY_RECIPES = register("blast_alloy_smelter", ELECTRIC).setMaxIOSize(9, 0, 3, 1).setEUIO(IO.IN)
             .setProgressBar(GuiTextures.PROGRESS_BAR_ARROW, LEFT_TO_RIGHT)
-            .addDataInfo(data -> LocalizationUtils.format("gtceu.recipe.temperature", data.getInt("ebf_temp")))
-            .setUiBuilder((recipe, widgetGroup) -> {
-                int temp = recipe.data.getInt("ebf_temp");
-                List<List<ItemStack>> items = new ArrayList<>();
-                items.add(GTBlocks.ALL_COILS.entrySet().stream().filter(coil -> coil.getKey().getCoilTemperature() >= temp).map(coil -> new ItemStack(coil.getValue().get())).toList());
-                widgetGroup.addWidget(new SlotWidget(new CycleItemStackHandler(items), 0, widgetGroup.getSize().width - 25, widgetGroup.getSize().height - 25, false, false));
-            })
+            .setSlotOverlay(false, false, false, GuiTextures.FURNACE_OVERLAY_1)
+            .setSlotOverlay(false, false, true, GuiTextures.FURNACE_OVERLAY_1)
+            .setSlotOverlay(false, true, false, GuiTextures.FURNACE_OVERLAY_2)
+            .setSlotOverlay(false, true, true, GuiTextures.FURNACE_OVERLAY_2)
+            .setSlotOverlay(true, true, false, GuiTextures.FURNACE_OVERLAY_2)
+            .setSlotOverlay(true, true, true, GuiTextures.FURNACE_OVERLAY_2)
             .setSound(GTSoundEntries.ARC);
 
 
