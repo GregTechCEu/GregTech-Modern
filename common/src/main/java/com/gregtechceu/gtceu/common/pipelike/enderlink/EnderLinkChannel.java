@@ -2,8 +2,8 @@ package com.gregtechceu.gtceu.common.pipelike.enderlink;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.cover.IEnderLinkCover;
-import com.gregtechceu.gtceu.api.misc.ProxiedTransferWrapper;
 import com.gregtechceu.gtceu.api.pipenet.enderlink.ITransferType;
+import com.gregtechceu.gtceu.api.transfer.proxies.ProxiedTransferWrapper;
 import com.gregtechceu.gtceu.common.data.GTEnderLinkTransferTypes;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import lombok.Getter;

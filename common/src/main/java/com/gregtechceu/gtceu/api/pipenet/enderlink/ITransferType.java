@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.pipenet.enderlink;
 
-import com.gregtechceu.gtceu.api.misc.ProxiedTransferWrapper;
+import com.gregtechceu.gtceu.api.transfer.proxies.ProxiedTransferWrapper;
 import net.minecraft.MethodsReturnNonnullByDefault;
 
 import javax.annotation.ParametersAreNonnullByDefault;

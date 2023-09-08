@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.api.misc;
+package com.gregtechceu.gtceu.api.transfer.proxies;
 
 import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import lombok.Getter;

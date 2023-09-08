@@ -1,6 +1,8 @@
-package com.gregtechceu.gtceu.api.misc;
+package com.gregtechceu.gtceu.api.transfer.proxies;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.misc.IOFluidTransferList;
+import com.gregtechceu.gtceu.api.misc.IOItemTransferList;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;

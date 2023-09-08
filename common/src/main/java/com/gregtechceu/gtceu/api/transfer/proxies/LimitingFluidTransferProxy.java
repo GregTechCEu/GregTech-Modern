@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.api.misc;
+package com.gregtechceu.gtceu.api.transfer.proxies;
 
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
