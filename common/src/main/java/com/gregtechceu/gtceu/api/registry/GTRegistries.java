@@ -15,8 +15,10 @@ import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
 import com.gregtechceu.gtceu.api.data.chemical.Element;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.lowdragmc.lowdraglib.Platform;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 
 /**
@@ -51,4 +53,7 @@ public final class GTRegistries {
         throw new AssertionError();
     }
 
+    public static RegistryAccess builtinRegistry() {
+        return Platform.getFrozenRegistry();
+    }
 }
