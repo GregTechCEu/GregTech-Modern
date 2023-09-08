@@ -22,7 +22,7 @@ public class GCyMMaterials {
 
         HSLASteel = new Material.Builder("hsla_steel")
                 .ingot(3).fluid()
-                .color(0x294972).iconSet(METALLIC)
+                .color(0x686868).iconSet(METALLIC)
                 .appendFlags(STD_METAL, GENERATE_PLATE, GENERATE_ROD, GENERATE_FRAME)
                 .components(Invar, 2, Vanadium, 1, Titanium, 1, Molybdenum, 1)
                 .blastTemp(1711, GasTier.LOW, GTValues.VA[GTValues.HV], 1000)
@@ -30,8 +30,8 @@ public class GCyMMaterials {
 
         MolybdenumDisilicide = new Material.Builder("molybdenum_disilicide")
                 .ingot(2).fluid()
-                .color(0x294972).iconSet(METALLIC)
-                .appendFlags(STD_METAL, GENERATE_SPRING)
+                .color(0x564A84).iconSet(METALLIC)
+                .appendFlags(STD_METAL, GENERATE_SPRING, GENERATE_RING, GENERATE_PLATE, GENERATE_LONG_ROD)
                 .components(Molybdenum, 1, Silicon, 2)
                 .blastTemp(2300, GasTier.MID, GTValues.VA[GTValues.EV], 800)
                 .buildAndRegister();
@@ -46,7 +46,7 @@ public class GCyMMaterials {
 
         WatertightSteel = new Material.Builder("watertight_steel")
                 .ingot(4)
-                .color(0x294972).iconSet(METALLIC)
+                .color(0x2B4B56).iconSet(METALLIC)
                 .appendFlags(STD_METAL, GENERATE_PLATE, GENERATE_ROD, GENERATE_FRAME)
                 .components(Iron, 7, Aluminium, 4, Nickel, 2, Chromium, 1, Sulfur, 1)
                 .blastTemp(3850, GasTier.MID, GTValues.VA[GTValues.EV], 800)
@@ -62,7 +62,7 @@ public class GCyMMaterials {
 
         MaragingSteel300 = new Material.Builder("maraging_steel_300")
                 .ingot(4).fluid()
-                .color(0x2B4B56).iconSet(METALLIC)
+                .color(0x505B6E).iconSet(METALLIC)
                 .appendFlags(STD_METAL, GENERATE_ROD, GENERATE_FRAME)
                 .components(Iron, 16, Titanium, 1, Aluminium, 1, Nickel, 4, Cobalt, 2)
                 .blastTemp(4000, GasTier.HIGH, GTValues.VA[GTValues.EV], 1000)
@@ -70,7 +70,7 @@ public class GCyMMaterials {
 
         HastelloyX = new Material.Builder("hastelloy_x")
                 .ingot(5).fluid()
-                .color(0x294972).iconSet(METALLIC)
+                .color(0x5784B8).iconSet(METALLIC)
                 .appendFlags(STD_METAL, GENERATE_PLATE,  GENERATE_FRAME)
                 .components(Nickel, 8, Iron, 3, Tungsten, 4, Molybdenum, 2, Chromium, 1, Niobium, 1)
                 .blastTemp(4200, GasTier.HIGH, GTValues.VA[GTValues.EV], 900)
@@ -78,7 +78,7 @@ public class GCyMMaterials {
 
         Stellite100 = new Material.Builder("stellite_100")
                 .ingot(4).fluid()
-                .color(0x294972).iconSet(METALLIC)
+                .color(0xCFCFEE).iconSet(METALLIC)
                 .appendFlags(STD_METAL, GENERATE_PLATE)
                 .components(Iron, 4, Chromium, 3, Tungsten, 2, Molybdenum, 1)
                 .blastTemp(3790, GasTier.HIGH, GTValues.VA[GTValues.EV], 1000)
@@ -86,7 +86,7 @@ public class GCyMMaterials {
 
         TitaniumCarbide = new Material.Builder("titanium_carbide")
                 .ingot(3).fluid()
-                .color(0x294972).iconSet(METALLIC)
+                .color(0x90092F).iconSet(METALLIC)
                 .appendFlags(STD_METAL, GENERATE_PLATE)
                 .components(Titanium, 1, Carbon, 1)
                 .blastTemp(3430, GasTier.MID, GTValues.VA[GTValues.EV], 1000)
@@ -94,9 +94,17 @@ public class GCyMMaterials {
 
         TitaniumTungstenCarbide = new Material.Builder("titanium_tungsten_carbide")
                 .ingot(6).fluid()
-                .color(0x294972).iconSet(METALLIC)
+                .color(0x680B0B).iconSet(METALLIC)
                 .appendFlags(STD_METAL, GENERATE_PLATE)
                 .components(TitaniumCarbide, 2, TungstenCarbide, 1)
+                .blastTemp(3800, GasTier.HIGH, GTValues.VA[GTValues.EV], 1000)
+                .buildAndRegister();
+
+        HastelloyC276 = new Material.Builder("hastelloy_c_276")
+                .ingot(6).fluid()
+                .color(0xAB2F2F).iconSet(METALLIC)
+                .appendFlags(STD_METAL, GENERATE_PLATE, GENERATE_FRAME)
+                .components(Nickel, 12, Molybdenum, 8, Chromium, 7, Tungsten, 1, Cobalt, 1, Copper, 1)
                 .blastTemp(3800, GasTier.HIGH, GTValues.VA[GTValues.EV], 1000)
                 .buildAndRegister();
     }

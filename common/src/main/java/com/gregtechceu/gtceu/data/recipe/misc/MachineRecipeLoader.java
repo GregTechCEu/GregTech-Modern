@@ -23,6 +23,7 @@ import java.util.function.Consumer;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
+import static com.gregtechceu.gtceu.common.data.GCyMBlocks.*;
 import static com.gregtechceu.gtceu.common.data.GTItems.*;
 import static com.gregtechceu.gtceu.common.data.GTMachines.*;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
@@ -550,15 +551,6 @@ public class MachineRecipeLoader {
         ASSEMBLER_RECIPES.recipeBuilder("casing_titanium_stable").EUt(16).inputItems(plate, Titanium, 6).inputItems(frameGt, Titanium).circuitMeta(6).outputItems(GTBlocks.CASING_TITANIUM_STABLE.asStack(2)).duration(50).save(provider);
         ASSEMBLER_RECIPES.recipeBuilder("casing_hsse_sturdy").EUt(16).inputItems(plate, HSSE, 6).inputItems(frameGt, Europium).circuitMeta(6).outputItems(GTBlocks.CASING_HSSE_STURDY.asStack(2)).duration(50).save(provider);
         ASSEMBLER_RECIPES.recipeBuilder("casing_ptfe_inert").EUt(16).inputItems(GTBlocks.CASING_STEEL_SOLID.asStack()).inputFluids(Polytetrafluoroethylene.getFluid(216)).circuitMeta(6).outputItems(GTBlocks.CASING_PTFE_INERT.asStack()).duration(50).save(provider);
-
-        //GCMB
-        ASSEMBLER_RECIPES.recipeBuilder("casing_hsla_nonconducting").EUt(16).inputItems(plate, HSLASteel, 6).inputItems(frameGt, HSLASteel).circuitMeta(6).outputItems(GTBlocks.CASING_NONCONDUCTING.asStack(2)).duration(50).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("casing_incoloy_vibration_safe").EUt(16).inputItems(plate, IncoloyMA956, 6).inputItems(frameGt, IncoloyMA956).circuitMeta(6).outputItems(GTBlocks.CASING_VIBRATION_SAFE.asStack(2)).duration(50).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("casing_watertight").EUt(16).inputItems(plate, WatertightSteel, 6).inputItems(frameGt, WatertightSteel).circuitMeta(6).outputItems(GTBlocks.CASING_WATERTIGHT.asStack(2)).duration(50).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("casing_secure_maceration").EUt(16).inputItems(plate, Zeron100, 6).inputItems(frameGt, Titanium).circuitMeta(6).outputItems(GTBlocks.CASING_SECURE_MACERATION.asStack(2)).duration(50).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("casing_high_temperature_smelting").EUt(16).inputItems(plate, TitaniumCarbide, 4).inputItems(plate, HSLASteel, 2).inputItems(frameGt, TungstenCarbide).circuitMeta(6).outputItems(GTBlocks.CASING_HIGH_TEMPERATURE_SMELTING.asStack(2)).duration(50).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("casing_laser_safe_engraving").EUt(16).inputItems(plate, TitaniumTungstenCarbide, 6).inputItems(frameGt, Titanium).circuitMeta(6).outputItems(GTBlocks.CASING_LASER_SAFE_ENGRAVING.asStack(2)).duration(50).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("casing_large_scale_assembling").EUt(16).inputItems(plate, Stellite100, 6).inputItems(frameGt, Tungsten).circuitMeta(6).outputItems(GTBlocks.CASING_LARGE_SCALE_ASSEMBLING.asStack(2)).duration(50).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("superconducting_coil_luv").EUt(VA[LuV]).inputItems(wireGtDouble, IndiumTinBariumTitaniumCuprate, 32).inputItems(foil, NiobiumTitanium, 32).inputFluids(Trinium.getFluid(GTValues.L * 24)).outputItems(GTBlocks.SUPERCONDUCTING_COIL.asStack()).duration(100).save(provider);
         ASSEMBLER_RECIPES.recipeBuilder("superconducting_coil_zpm").EUt(VA[ZPM]).inputItems(wireGtDouble, UraniumRhodiumDinaquadide, 16).inputItems(foil, NiobiumTitanium, 16).inputFluids(Trinium.getFluid(GTValues.L * 16)).outputItems(GTBlocks.SUPERCONDUCTING_COIL.asStack()).duration(100).save(provider);

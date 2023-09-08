@@ -82,6 +82,7 @@ import java.util.function.Supplier;
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.*;
 import static com.gregtechceu.gtceu.api.registry.GTRegistries.REGISTRATE;
+import static com.gregtechceu.gtceu.common.data.GCyMBlocks.*;
 import static net.minecraftforge.client.model.generators.ModelProvider.BLOCK_FOLDER;
 
 /**
@@ -301,15 +302,6 @@ public class GTBlocks {
     public static final BlockEntry<Block> CASING_PTFE_INERT = createCasingBlock("inert_machine_casing", GTCEu.id("block/casings/solid/machine_casing_inert_ptfe"));
     public static final BlockEntry<Block> CASING_HSSE_STURDY = createCasingBlock("sturdy_machine_casing", GTCEu.id("block/casings/solid/machine_casing_study_hsse"));
     public static final BlockEntry<Block> CASING_TEMPERED_GLASS = createGlassCasingBlock("tempered_glass", GTCEu.id("block/casings/transparent/tempered_glass"), () -> RenderType::translucent);
-    //GCMB
-    public static final BlockEntry<Block> CASING_NONCONDUCTING = createCasingBlock("nonconducting_machine_casing", GTCEu.id("block/casings/gcmb/machine_casing_nonconducting"));
-    public static final BlockEntry<Block> CASING_VIBRATION_SAFE = createCasingBlock("vibration_safe_machine_casing", GTCEu.id("block/casings/gcmb/machine_casing_vibration_safe"));
-    public static final BlockEntry<Block> CASING_WATERTIGHT = createCasingBlock("watertight_machine_casing", GTCEu.id("block/casings/gcmb/machine_casing_watertight"));
-    public static final BlockEntry<Block> CASING_SECURE_MACERATION = createCasingBlock("secure_maceration_machine_casing", GTCEu.id("block/casings/gcmb/machine_casing_secure_maceration"));
-    public static final BlockEntry<Block> CASING_HIGH_TEMPERATURE_SMELTING = createCasingBlock("high_temperature_smelting_machine_casing", GTCEu.id("block/casings/gcmb/machine_casing_high_temperature_smelting"));
-    public static final BlockEntry<Block> CASING_LASER_SAFE_ENGRAVING = createCasingBlock("laser_safe_engraving_machine_casing", GTCEu.id("block/casings/gcmb/machine_casing_laser_safe_engraving"));
-    public static final BlockEntry<Block> CASING_LARGE_SCALE_ASSEMBLING = createCasingBlock("large_scale_assembling_machine_casing", GTCEu.id("block/casings/gcmb/machine_casing_large_scale_assembling"));
-
 
     public static final ImmutableMap<Material, BlockEntry<Block>> MATERIALS_TO_CASINGS;
 
@@ -324,7 +316,7 @@ public class GTBlocks {
         builder.put(GTMaterials.TungstenSteel, CASING_TUNGSTENSTEEL_ROBUST);
         builder.put(GTMaterials.Polytetrafluoroethylene, CASING_PTFE_INERT);
         builder.put(GTMaterials.HSSE, CASING_HSSE_STURDY);
-        //GCMB
+        //GCyM
         builder.put(GTMaterials.HSLASteel, CASING_NONCONDUCTING);
         builder.put(GTMaterials.IncoloyMA956, CASING_VIBRATION_SAFE);
         builder.put(GTMaterials.WatertightSteel, CASING_WATERTIGHT);
@@ -332,6 +324,7 @@ public class GTBlocks {
         builder.put(GTMaterials.TungstenCarbide, CASING_HIGH_TEMPERATURE_SMELTING);
         builder.put(GTMaterials.TitaniumTungstenCarbide, CASING_LASER_SAFE_ENGRAVING);
         builder.put(GTMaterials.Stellite100, CASING_LARGE_SCALE_ASSEMBLING);
+        builder.put(GTMaterials.HastelloyC276, CASING_SHOCK_PROOF);
 
         MaterialCasingCollectionEvent event = new MaterialCasingCollectionEvent(builder);
         AddonFinder.getAddons().forEach(addon -> addon.collectMaterialCasings(event));
@@ -484,7 +477,7 @@ public class GTBlocks {
 
 
     // THIS IS JUST FOR PTFE PIPE CASING
-    private static BlockEntry<Block> createCasingBlock(String name, ResourceLocation texture) {
+    public static BlockEntry<Block> createCasingBlock(String name, ResourceLocation texture) {
         return createCasingBlock(name, RendererBlock::new, texture, () -> Blocks.IRON_BLOCK, () -> RenderType::cutoutMipped);
     }
 
@@ -492,7 +485,7 @@ public class GTBlocks {
         return createCasingBlock(name, RendererGlassBlock::new, texture, () -> Blocks.GLASS, type);
     }
 
-    private static BlockEntry<Block> createCasingBlock(String name, BiFunction<BlockBehaviour.Properties, IRenderer, ? extends RendererBlock> blockSupplier, ResourceLocation texture, NonNullSupplier<? extends Block> properties, Supplier<Supplier<RenderType>> type) {
+    public static BlockEntry<Block> createCasingBlock(String name, BiFunction<BlockBehaviour.Properties, IRenderer, ? extends RendererBlock> blockSupplier, ResourceLocation texture, NonNullSupplier<? extends Block> properties, Supplier<Supplier<RenderType>> type) {
         return REGISTRATE.block(name, p -> (Block) blockSupplier.apply(p,
                         Platform.isClient() ? new TextureOverrideRenderer(new ResourceLocation("block/cube_all"),
                         Map.of("all", texture)) : null))
@@ -685,42 +678,6 @@ public class GTBlocks {
             .build()
             .register();
 
-    //GCMB
-    public static final BlockEntry<Block> MOLYBDENUM_DISILICIDE_COIL_BLOCK = REGISTRATE
-            .block("molybdenum_disilicide_coil_block", Block::new)
-            .lang("Molybdenum Disilicide Coil Block")
-            .item()
-            .build()
-            .register();
-
-    public static final BlockEntry<Block> ELECTROLYTIC_CELL = REGISTRATE
-            .block("electrolytic_cell", Block::new)
-            .lang("Electrolytic Cell")
-            .item()
-            .build()
-            .register();
-
-    public static final BlockEntry<Block> CRUSHING_WHEELS = REGISTRATE
-            .block("crushing_wheels", Block::new)
-            .lang("Crushing Wheels")
-            .item()
-            .build()
-            .register();
-
-    public static final BlockEntry<Block> HEAT_VENT = REGISTRATE
-            .block("heat_vent", Block::new)
-            .lang("Heat Vent")
-            .item()
-            .build()
-            .register();
-
-    public static final BlockEntry<Block> SLICING_BLADES = REGISTRATE
-            .block("slicing_blades", Block::new)
-            .lang("Slicing Blades")
-            .item()
-            .build()
-            .register();
-
     // Fortune Level
     public static final float[] RUBBER_LEAVES_DROPPING_CHANCE = new float[]{0.05F, 0.0625F, 0.083333336F, 0.1F};
 
@@ -799,6 +756,7 @@ public class GTBlocks {
         generateMaterialBlocks();
         generateCableBlocks();
         generatePipeBlocks();
+        GCyMBlocks.init();
     }
 
     public static boolean doMetalPipe(Material material) {
