@@ -28,7 +28,7 @@ public record ContentJS<T>(RecipeComponent<T> baseComponent, RecipeCapability<?>
     @Override
     public JsonElement write(RecipeJS recipe, Content value) {
         JsonObject object = new JsonObject();
-        object.add("content", baseComponent.write(recipe, UtilsJS.cast(value.content)));
+        object.add("content", baseComponent.write(recipe, baseComponent.read(recipe, value.content)));
         object.addProperty("chance", value.chance);
         object.addProperty("tierChanceBoost", value.tierChanceBoost);
         if (value.slotName != null) {

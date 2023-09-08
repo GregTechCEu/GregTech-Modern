@@ -16,6 +16,7 @@ import dev.latvian.mods.kubejs.script.ScriptType;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.GsonHelper;
@@ -24,7 +25,11 @@ import net.minecraft.world.level.storage.loot.Deserializers;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.annotation.Nullable;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 
 public class OreDataLoader extends SimpleJsonResourceReloadListener {
     public static OreDataLoader INSTANCE;
@@ -38,7 +43,7 @@ public class OreDataLoader extends SimpleJsonResourceReloadListener {
 
     @Override
     protected void apply(Map<ResourceLocation, JsonElement> resourceList, ResourceManager resourceManager, ProfilerFiller profiler) {
-        RegistryOps<JsonElement> ops = RegistryOps.create(JsonOps.INSTANCE, RegistryAccess.BUILTIN.get());
+        RegistryOps<JsonElement> ops = RegistryOps.create(JsonOps.INSTANCE, GTRegistries.builtinRegistry());
         for(Map.Entry<ResourceLocation, JsonElement> entry : resourceList.entrySet()) {
             ResourceLocation location = entry.getKey();
 
@@ -58,14 +63,13 @@ public class OreDataLoader extends SimpleJsonResourceReloadListener {
                 LOGGER.error("Parsing error loading ore vein {}", location, jsonParseException);
             }
         }
-        if (GTCEu.isKubeJSLoaded()) {
-            RunKJSEventInSeparateClassBecauseForgeIsDumb.fireKJSEvent();
-        }
-        for (GTOreDefinition entry : GTRegistries.ORE_VEINS) {
+        Iterator<Map.Entry<ResourceLocation, GTOreDefinition>> iterator = GTRegistries.ORE_VEINS.entries().iterator();
+        while (iterator.hasNext()) {
+            var entry = iterator.next().getValue();
             if (entry.getVeinGenerator() != null) {
                 entry.getVeinGenerator().build();
             } else {
-                GTRegistries.ORE_VEINS.remove(GTRegistries.ORE_VEINS.getKey(entry));
+                iterator.remove();
             }
         }
     }

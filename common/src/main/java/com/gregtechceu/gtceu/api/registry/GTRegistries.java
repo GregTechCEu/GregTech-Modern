@@ -16,8 +16,10 @@ import com.gregtechceu.gtceu.api.registry.registrate.CompassNode;
 import com.gregtechceu.gtceu.api.registry.registrate.CompassSection;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
+import com.lowdragmc.lowdraglib.Platform;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 
 /**
@@ -54,4 +56,7 @@ public final class GTRegistries {
         throw new AssertionError();
     }
 
+    public static RegistryAccess builtinRegistry() {
+        return Platform.getFrozenRegistry();
+    }
 }
