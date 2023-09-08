@@ -36,10 +36,6 @@ public abstract class ModelBakeryMixin {
                 }
                 MixinHelpers.addFluidTexture(material, fluid);
             }
-            if (material.hasProperty(PropertyKey.ALLOY_BLAST)) {
-                AlloyBlastProperty property = material.getProperty(PropertyKey.ALLOY_BLAST);
-                MixinHelpers.addFluidTexture(material, property);
-            }
         }
         return Sets.newLinkedHashSet();
     }
