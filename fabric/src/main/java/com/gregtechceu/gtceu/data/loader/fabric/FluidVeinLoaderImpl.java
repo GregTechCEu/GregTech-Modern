@@ -14,7 +14,7 @@ public class FluidVeinLoaderImpl extends FluidVeinLoader implements Identifiable
     public static final ResourceLocation ID = GTCEu.id("fluid_veins");
 
     public FluidVeinLoaderImpl() {
-        super(null);
+        super();
         FluidVeinLoader.INSTANCE = this;
     }
     @Override

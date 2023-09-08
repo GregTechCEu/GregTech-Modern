@@ -13,7 +13,7 @@ public class OreDataLoaderImpl extends OreDataLoader implements IdentifiableReso
     public static final ResourceLocation ID = GTCEu.id("ore_veins");
 
     public OreDataLoaderImpl() {
-        super(null);
+        super();
         OreDataLoader.INSTANCE = this;
     }
 

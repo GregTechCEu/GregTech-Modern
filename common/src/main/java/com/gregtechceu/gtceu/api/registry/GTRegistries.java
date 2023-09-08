@@ -56,9 +56,6 @@ public final class GTRegistries {
     }
 
     public static RegistryAccess builtinRegistry() {
-        if (Platform.getMinecraftServer() != null) {
-            return Platform.getMinecraftServer().registryAccess();
-        }
-        throw new IllegalStateException();
+        return Platform.getFrozenRegistry();
     }
 }
