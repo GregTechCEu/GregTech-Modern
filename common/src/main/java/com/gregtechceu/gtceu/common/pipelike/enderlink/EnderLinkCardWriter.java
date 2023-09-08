@@ -74,7 +74,7 @@ public class EnderLinkCardWriter implements IManaged, IContentChangeAware {
     }
 
     private void handleInteraction() {
-        var controllerData = new EnderLinkControllerData(controller.getGlobalPosition(), controller.getUuid());
+        var controllerData = new EnderLinkControllerData(controller.getControllerGlobalPos(), controller.getUuid());
 
         var previousCount = linkCardInputSlot.getStackInSlot(0).getCount();
         var simExtracted = linkCardInputSlot.extractItem(0, linkCardInputSlot.getStackInSlot(0).getCount(), true);

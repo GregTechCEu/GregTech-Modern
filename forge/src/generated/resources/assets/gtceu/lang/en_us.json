@@ -1414,6 +1414,7 @@
   "enchantment.hard_hammer": "Hammering",
   "ender_link.status.not_formed.0": "The controller has not been formed.\nPlease ensure the multiblock is valid.",
   "ender_link.status.not_loaded.0": "The controller is not in a loaded chunk or doesn't exist anymore.",
+  "ender_link.status.out_of_range.0": "This cover is outside the controller's range.",
   "fluid.empty": "Empty",
   "fluid.spawnlocation.name": "Fluid Vein Information",
   "fluid.tile.lava": "Lava",

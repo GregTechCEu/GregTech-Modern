@@ -19,6 +19,7 @@ import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nullable;
@@ -27,12 +28,14 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class EnderLinkCardReader implements IManaged, IContentChangeAware {
 
+    private final Supplier<GlobalPos> readerPosition;
     @Getter @Setter
     private Runnable onContentsChanged = () -> {};
 
@@ -45,7 +48,8 @@ public class EnderLinkCardReader implements IManaged, IContentChangeAware {
     @DescSynced
     private UUID controllerUUID = null;
 
-    public EnderLinkCardReader(Consumer<Optional<EnderLinkControllerMachine>> onControllerChanged) {
+    public EnderLinkCardReader(Supplier<GlobalPos> readerPosition, Consumer<Optional<EnderLinkControllerMachine>> onControllerChanged) {
+        this.readerPosition = readerPosition;
         this.controllerChangeCallback = onControllerChanged;
 
         linkCardSlot = new ItemStackTransfer(1) {
@@ -99,6 +103,9 @@ public class EnderLinkCardReader implements IManaged, IContentChangeAware {
 
         if (!controller.isFormed())
             return StatusWidget.StatusType.WARNING.toStatus(List.copyOf(LangHandler.getSingleOrMultiLang("ender_link.status.not_formed")));
+
+        if (!controller.isInRange(readerPosition.get()))
+            return StatusWidget.StatusType.ERROR.toStatus(List.copyOf(LangHandler.getSingleOrMultiLang("ender_link.status.out_of_range")));
 
         return StatusWidget.StatusType.OK.toStatus();
     }

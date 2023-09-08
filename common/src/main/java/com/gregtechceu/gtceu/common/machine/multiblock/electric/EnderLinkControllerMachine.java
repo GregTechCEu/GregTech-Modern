@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.pipelike.enderlink.EnderLinkCardWriter;
 import com.gregtechceu.gtceu.common.pipelike.enderlink.EnderLinkControllerRegistry;
 import com.gregtechceu.gtceu.common.pipelike.enderlink.EnderLinkNetwork;
+import com.gregtechceu.gtceu.utils.GTUtil;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
@@ -125,8 +126,12 @@ public class EnderLinkControllerMachine extends MultiblockControllerMachine impl
         return 32; // TODO adapt to tier
     }
 
-    public GlobalPos getGlobalPosition() {
+    public GlobalPos getControllerGlobalPos() {
         return GlobalPos.of(getLevel().dimension(), this.getPos());
+    }
+
+    public GlobalPos getCenterGlobalPos() {
+        return GlobalPos.of(getLevel().dimension(), getPos().relative(getFrontFacing().getOpposite()));
     }
 
     private void update() {
@@ -147,7 +152,16 @@ public class EnderLinkControllerMachine extends MultiblockControllerMachine impl
     //******   COVER INTERACTION   ******//
     ///////////////////////////////////////
 
+    public boolean isInRange(GlobalPos coverPosition) {
+        var controllerDistance = GTUtil.calcGlobalPosDistanceSqr(this.getCenterGlobalPos(), coverPosition);
+
+        return controllerDistance >= 0 && controllerDistance <= getMaxRange();
+    }
+
     public <T> void linkCover(IEnderLinkCover<T> cover) {
+        if (!isInRange(cover.getGlobalPos()))
+            return;
+
         loadedLinkedCovers.add(cover);
         network.registerCover(cover);
     }

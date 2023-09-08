@@ -392,6 +392,7 @@ public class LangHandler {
 
         multiLang(provider, "ender_link.status.not_loaded", "The controller is not in a loaded chunk or doesn't exist anymore.");
         multiLang(provider, "ender_link.status.not_formed", "The controller has not been formed.\nPlease ensure the multiblock is valid.");
+        multiLang(provider, "ender_link.status.out_of_range", "This cover is outside the controller's range.");
 
         replace(provider, "item.gtceu.bucket", "%s Bucket");
         replace(provider, GTMaterials.FullersEarth.getUnlocalizedName(), "Fuller's Earth");

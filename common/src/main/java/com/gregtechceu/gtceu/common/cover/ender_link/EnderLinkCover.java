@@ -23,6 +23,7 @@ import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
@@ -59,7 +60,7 @@ public abstract class EnderLinkCover<T> extends CoverBehavior implements IEnderL
         super(definition, coverHolder, attachedSide);
 
         this.tier = tier;
-        this.cardReader = new EnderLinkCardReader(c -> setController(c.orElse(null)));
+        this.cardReader = new EnderLinkCardReader(this::getGlobalPos, c -> setController(c.orElse(null)));
 
         this.controllerSearchSubscription = new ConditionalSubscriptionHandler(
                 coverHolder, this::searchController, this::isControllerSearchActive
@@ -75,6 +76,11 @@ public abstract class EnderLinkCover<T> extends CoverBehavior implements IEnderL
     protected abstract Widget createTransferRateUI(int x, int y, int width, int height);
 
     protected abstract Widget createFilterUI(int x, int y, int width, int height);
+
+    @Override
+    public GlobalPos getGlobalPos() {
+        return GlobalPos.of(coverHolder.getLevel().dimension(), coverHolder.getPos());
+    }
 
     public void setIo(IO io) {
         if (io == IO.NONE)

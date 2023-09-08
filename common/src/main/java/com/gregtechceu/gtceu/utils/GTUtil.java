@@ -7,6 +7,7 @@ import com.mojang.blaze3d.platform.InputConstants;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.Direction;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.core.Holder;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.DyeColor;
@@ -247,9 +248,20 @@ public class GTUtil {
         return distances.get(min);
     }
 
+    /**
+     * Calculates the distance between 2 {@link GlobalPos} positions.
+     *
+     * @return -1 if the positions are in different dimensions, the distance otherwise.
+     */
+    public static double calcGlobalPosDistanceSqr(GlobalPos a, GlobalPos b) {
+        if (!a.dimension().equals(b.dimension()))
+            return -1;
+
+        return Math.sqrt(a.pos().distSqr(b.pos()));
+    }
+
     @ExpectPlatform
     public static long getPumpBiomeModifier(Holder<Biome> biome) {
         throw new AssertionError();
     }
-
 }
