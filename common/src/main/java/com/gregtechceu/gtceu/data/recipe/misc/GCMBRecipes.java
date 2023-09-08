@@ -1,24 +1,26 @@
 package com.gregtechceu.gtceu.data.recipe.misc;
 
-import com.google.common.collect.ImmutableList;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.AlloyBlastProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
-import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.common.data.GTBlocks;
+import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import net.minecraft.data.recipes.FinishedRecipe;
-import org.apache.logging.log4j.LogManager;
+import net.minecraft.tags.ItemTags;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.function.Consumer;
 
-import static com.gregtechceu.gtceu.GTCEu.LOGGER;
 import static com.gregtechceu.gtceu.api.GTValues.*;
-import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.BLAST_ALLOY_CRAFTABLE;
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
-import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
+import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.BLAST_ALLOY_RECIPES;
+import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.MIXER_RECIPES;
 
 public class GCMBRecipes {
 
@@ -26,49 +28,17 @@ public class GCMBRecipes {
     }
 
     public static void init(Consumer<FinishedRecipe> provider) {
-        //registerManualRecipes(provider);
+        registerManualRecipes(provider);
         registerMachineRecipes(provider);
+    }
+
+    private static void registerManualRecipes(Consumer<FinishedRecipe> provider) {
+        VanillaRecipeHelper.addShapedRecipe(provider, "crushing_wheels", GTBlocks.CRUSHING_WHEELS.asStack(2), "TTT", "UCU","UMU", 'T', ChemicalHelper.get(gearSmall,TungstenCarbide), 'U', ChemicalHelper.get(gear, Ultimet), 'C', GTBlocks.CASING_SECURE_MACERATION.asStack(), 'M', GTItems.ELECTRIC_MOTOR_IV.asStack());
     }
 
     private static void registerMachineRecipes(Consumer<FinishedRecipe> provider) {
         registerMixerRecipes(provider);
         registerBlastAlloyRecipes(provider);
-
-        BLAST_ALLOY_RECIPES.recipeBuilder("test")
-                .inputFluids(Copper.getFluid(3*144),Tin.getFluid(144)).outputFluids(Bronze.getFluid(4*144))
-                .duration(69).EUt(420).save(provider);
-
-        for(Material material : GTRegistries.MATERIALS){
-            LogManager.getLogger().fatal(material.getName());
-            LOGGER.warn(material.getName());
-            System.out.println(material.getName());
-            if(!material.hasFlag(BLAST_ALLOY_CRAFTABLE)){
-                System.out.println("no flag");
-                return;
-            }
-            ImmutableList<MaterialStack> components = material.getMaterialComponents();
-            if(components.size() > 6){
-                System.out.println("too many components");
-                return;
-            }
-            int ct = 0;
-            GTRecipeBuilder recipe = BLAST_ALLOY_RECIPES.recipeBuilder(material.getName()+"_blast_alloy_smelting");
-            for(MaterialStack component : components){
-                recipe.inputFluids(component.material().getFluid(component.amount() * FluidHelper.getBucket()));
-                ct += component.amount();
-            }
-            recipe.outputFluids(material.getFluid(ct * FluidHelper.getBucket()));
-            long eut = switch (material.getBlockHarvestLevel()) {
-                case 1 -> V[MV];
-                case 2 -> V[HV];
-                case 3 -> V[EV];
-                case 4 -> V[IV];
-                case 5 -> V[LuV];
-                case 6 -> V[ZPM];
-                default -> V[LV];
-            };
-            recipe.inputEU(eut).duration(material.getBlastTemperature()).save(provider);
-        }
     }
 
     private static void registerMixerRecipes(Consumer<FinishedRecipe> provider){
@@ -159,101 +129,21 @@ public class GCMBRecipes {
                 .save(provider);
     }
 
-    private static final MaterialStack[][] blastAlloyList = {
-        {new MaterialStack(Copper, 3), new MaterialStack(Tin, 1), new MaterialStack(Bronze, 4L)},
-        {new MaterialStack(Copper, 3L), new MaterialStack(Zinc, 1), new MaterialStack(Brass, 4L)},
-        {new MaterialStack(Copper, 1), new MaterialStack(Nickel, 1), new MaterialStack(Cupronickel, 2L)},
-        {new MaterialStack(Copper, 1), new MaterialStack(Redstone, 4L), new MaterialStack(RedAlloy, 1)},
-        {new MaterialStack(AnnealedCopper, 3L), new MaterialStack(Tin, 1), new MaterialStack(Bronze, 4L)},
-        {new MaterialStack(AnnealedCopper, 3L), new MaterialStack(Zinc, 1), new MaterialStack(Brass, 4L)},
-        {new MaterialStack(AnnealedCopper, 1), new MaterialStack(Nickel, 1), new MaterialStack(Cupronickel, 2L)},
-        {new MaterialStack(AnnealedCopper, 1), new MaterialStack(Redstone, 4L), new MaterialStack(RedAlloy, 1)},
-        {new MaterialStack(Iron, 1), new MaterialStack(Tin, 1), new MaterialStack(TinAlloy, 2L)},
-        {new MaterialStack(WroughtIron, 1), new MaterialStack(Tin, 1), new MaterialStack(TinAlloy, 2L)},
-        {new MaterialStack(Iron, 2L), new MaterialStack(Nickel, 1), new MaterialStack(Invar, 3L)},
-        {new MaterialStack(WroughtIron, 2L), new MaterialStack(Nickel, 1), new MaterialStack(Invar, 3L)},
-        {new MaterialStack(Lead, 4L), new MaterialStack(Antimony, 1), new MaterialStack(BatteryAlloy, 5L)},
-        {new MaterialStack(Gold, 1), new MaterialStack(Silver, 1), new MaterialStack(Electrum, 2L)},
-        {new MaterialStack(Magnesium, 1), new MaterialStack(Aluminium, 2L), new MaterialStack(Magnalium, 3L)},
-        {new MaterialStack(Silver, 1), new MaterialStack(Electrotine, 4), new MaterialStack(BlueAlloy, 1)}
-    };
-
     private static void registerBlastAlloyRecipes(Consumer<FinishedRecipe> provider) {
-        for (MaterialStack[] stack : blastAlloyList) {
-            String recipeNape = stack[0].material().getName() + "_%s_and_" + stack[1].material().getName() + "_%s_into_" + stack[2].material().getName();
-            if (stack[0].material().hasProperty(PropertyKey.INGOT)) {
-                BLAST_ALLOY_RECIPES.recipeBuilder(String.format(recipeNape, "ingot", "dust"))
-                        .duration((int) stack[2].amount() * 25).EUt((long) Math.pow(2,stack[2].amount()))
-                        .inputItems(ingot, stack[0].material(), (int) stack[0].amount())
-                        .inputItems(dust, stack[1].material(), (int) stack[1].amount())
-                        .outputFluids(stack[2].material().getFluid(stack[2].amount() * 144L))
-                        .blastFurnaceTemp(calculateTemp(stack))
-                        .save(provider);
-                BLAST_ALLOY_RECIPES.recipeBuilder(String.format(recipeNape, "ingot", "fluid"))
-                        .duration((int) stack[2].amount() * 25).EUt((long) Math.pow(2,stack[2].amount()))
-                        .inputFluids(stack[1].material().getFluid((int) stack[1].amount()))
-                        .inputItems(ingot, stack[0].material(), (int) stack[0].amount())
-                        .outputFluids(stack[2].material().getFluid(stack[2].amount() * 144L))
-                        .blastFurnaceTemp(calculateTemp(stack))
-                        .save(provider);
-            }
-            if (stack[1].material().hasProperty(PropertyKey.INGOT)) {
-                BLAST_ALLOY_RECIPES.recipeBuilder(String.format(recipeNape, "dust", "ingot"))
-                        .duration((int) stack[2].amount() * 25).EUt((long) Math.pow(2,stack[2].amount()))
-                        .inputItems(dust, stack[0].material(), (int) stack[0].amount())
-                        .inputFluids(stack[1].material().getFluid((int) stack[1].amount()))
-                        .outputFluids(stack[2].material().getFluid(stack[2].amount() * 144L))
-                        .blastFurnaceTemp(calculateTemp(stack))
-                        .save(provider);
-                BLAST_ALLOY_RECIPES.recipeBuilder(String.format(recipeNape, "fluid", "ingot"))
-                        .duration((int) stack[2].amount() * 25).EUt((long) Math.pow(2,stack[2].amount()))
-                        .inputItems(ingot, stack[1].material(), (int) stack[1].amount())
-                        .inputFluids(stack[0].material().getFluid(stack[0].amount()))
-                        .outputFluids(stack[2].material().getFluid(stack[2].amount() * 144L))
-                        .blastFurnaceTemp(calculateTemp(stack))
-                        .save(provider);
-            }
-            if (stack[0].material().hasProperty(PropertyKey.INGOT) && stack[1].material().hasProperty(PropertyKey.INGOT)) {
-                BLAST_ALLOY_RECIPES.recipeBuilder(String.format(recipeNape, "ingot", "ingot"))
-                        .duration((int) stack[2].amount() * 25).EUt((long) Math.pow(2,stack[2].amount()))
-                        .inputItems(ingot, stack[0].material(), (int) stack[0].amount())
-                        .inputItems(ingot, stack[1].material(), (int) stack[1].amount())
-                        .outputFluids(stack[2].material().getFluid(stack[2].amount() * 144L))
-                        .blastFurnaceTemp(calculateTemp(stack))
-                        .save(provider);
-            }
-            BLAST_ALLOY_RECIPES.recipeBuilder(String.format(recipeNape, "dust", "dust"))
-                    .duration((int) stack[2].amount() * 50).EUt(16)
-                    .inputItems(dust, stack[0].material(), (int) stack[0].amount())
-                    .inputItems(dust, stack[1].material(), (int) stack[1].amount())
-                    .outputFluids(stack[2].material().getFluid(stack[2].amount() * 144L))
-                    .blastFurnaceTemp(calculateTemp(stack))
-                    .save(provider);
-            BLAST_ALLOY_RECIPES.recipeBuilder(String.format(recipeNape, "dust", "fluid"))
-                    .duration((int) stack[2].amount() * 50).EUt(16)
-                    .inputItems(dust, stack[0].material(), (int) stack[0].amount())
-                    .inputFluids(stack[1].material().getFluid(stack[1].amount()))
-                    .outputFluids(stack[2].material().getFluid(stack[2].amount() * 144L))
-                    .blastFurnaceTemp(calculateTemp(stack))
-                    .save(provider);
-            BLAST_ALLOY_RECIPES.recipeBuilder(String.format(recipeNape, "fluid", "dust"))
-                    .duration((int) stack[2].amount() * 50).EUt(16)
-                    .inputItems(dust, stack[1].material(), (int) stack[1].amount())
-                    .inputFluids(stack[0].material().getFluid(stack[0].amount()))
-                    .outputFluids(stack[2].material().getFluid(stack[2].amount() * 144L))
-                    .blastFurnaceTemp(calculateTemp(stack))
-                    .save(provider);
-            BLAST_ALLOY_RECIPES.recipeBuilder(String.format(recipeNape, "fluid", "fluid"))
-                    .duration((int) stack[2].amount() * 25).EUt((long) Math.pow(2,stack[2].amount()))
-                    .inputFluids(stack[0].material().getFluid(stack[0].amount()))
-                    .inputFluids(stack[1].material().getFluid(stack[1].amount()))
-                    .outputFluids(stack[2].material().getFluid(stack[2].amount() * 144L))
-                    .blastFurnaceTemp(calculateTemp(stack))
-                    .save(provider);
-        }
+        ingot.executeHandler(PropertyKey.ALLOY_BLAST, (tagPrefix, material, property) -> generateAlloyBlastRecipes(tagPrefix, material, property, provider));
     }
 
-    private static int calculateTemp(MaterialStack[] stack) {
-        return Math.max(Math.max(5000,stack[2].material().getBlastTemperature()),Math.max(stack[0].material().getBlastTemperature(),stack[1].material().getBlastTemperature()));
+    /**
+     * Generates alloy blast recipes for a material
+     *
+     * @param material the material to generate for
+     * @param property the blast property of the material
+     */
+    public static void generateAlloyBlastRecipes(@Nullable TagPrefix unused, @Nonnull Material material,
+                                                 @Nonnull AlloyBlastProperty property,
+                                                 @Nonnull Consumer<FinishedRecipe> provider) {
+        if (material.hasProperty(PropertyKey.BLAST)) {
+            property.getRecipeProducer().produce(material, material.getProperty(PropertyKey.BLAST), provider);
+        }
     }
 }
