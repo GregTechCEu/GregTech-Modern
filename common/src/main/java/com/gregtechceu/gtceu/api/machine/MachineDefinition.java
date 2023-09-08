@@ -130,6 +130,11 @@ public class MachineDefinition implements Supplier<IMachineBlock> {
         return id.getPath();
     }
 
+    @Nullable
+    public GTRecipeType[] getRecipeType() {
+        return recipeType;
+    }
+
     @Override
     public String toString() {
         return "[Definition: %s]".formatted(id);
