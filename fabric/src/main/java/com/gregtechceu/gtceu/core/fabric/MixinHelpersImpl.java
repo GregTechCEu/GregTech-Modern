@@ -22,4 +22,13 @@ public class MixinHelpersImpl {
             });
         }
     }
+
+    public static void addFluidTexture(Material material, AlloyBlastProperty prop) {
+        if (prop == null || prop.getFluid() == null) return;
+        FluidRenderHandlerRegistry.INSTANCE.register(material.getHotFluid(), new SimpleFluidRenderHandler(GTFluids.AUTO_GENERATED_MOLTEN_TEXTURE, GTFluids.AUTO_GENERATED_MOLTEN_TEXTURE, material.getMaterialRGB()));
+        ClientSpriteRegistryCallback.event(InventoryMenu.BLOCK_ATLAS).register((atlas, registry) -> {
+            registry.register(GTFluids.AUTO_GENERATED_MOLTEN_TEXTURE);
+            registry.register(GTFluids.AUTO_GENERATED_MOLTEN_TEXTURE);
+        });
+    }
 }

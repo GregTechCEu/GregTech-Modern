@@ -18,4 +18,14 @@ public class MixinHelpersImpl {
             gtExtensions.setTintColor(material.getMaterialARGB());
         }
     }
+
+    public static void addFluidTexture(Material material, AlloyBlastProperty prop) {
+        if (prop == null || prop.getFluid() == null) return;
+        IClientFluidTypeExtensions extensions = IClientFluidTypeExtensions.of(prop.getFluid());
+        if (extensions instanceof GTClientFluidTypeExtensions gtExtensions) {
+            gtExtensions.setFlowingTexture(GTFluids.AUTO_GENERATED_MOLTEN_TEXTURE);
+            gtExtensions.setStillTexture(GTFluids.AUTO_GENERATED_MOLTEN_TEXTURE);
+            gtExtensions.setTintColor(material.getMaterialARGB());
+        }
+    }
 }

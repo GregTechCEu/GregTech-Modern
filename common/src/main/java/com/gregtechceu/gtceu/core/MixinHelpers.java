@@ -70,4 +70,9 @@ public class MixinHelpers {
     public static void addFluidTexture(Material material, FluidProperty prop) {
         throw new AssertionError();
     }
+
+    @ExpectPlatform
+    public static void addFluidTexture(Material material, AlloyBlastProperty prop) {
+        throw new AssertionError();
+    }
 }
