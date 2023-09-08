@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.cover.filter.FilterHandlers;
 import com.gregtechceu.gtceu.api.cover.filter.FluidFilter;
 import com.gregtechceu.gtceu.api.misc.FluidAmountHandler;
 import com.gregtechceu.gtceu.api.pipenet.enderlink.ITransferType;
+import com.gregtechceu.gtceu.api.transfer.proxies.FilteringFluidTransferProxy;
 import com.gregtechceu.gtceu.api.transfer.proxies.LimitingFluidTransferProxy;
 import com.gregtechceu.gtceu.common.data.GTEnderLinkTransferTypes;
 import com.lowdragmc.lowdraglib.LDLib;
@@ -42,7 +43,9 @@ public class EnderFluidLinkCover extends EnderLinkCover<IFluidTransfer> {
     protected final FilterHandler<FluidStack, FluidFilter> filterHandler;
 
     @Nullable
-    private LimitingFluidTransferProxy transferProxy = null;
+    private LimitingFluidTransferProxy limitingTransferProxy = null;
+    @Nullable
+    private FilteringFluidTransferProxy filteringTransferProxy = null;
 
     public EnderFluidLinkCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {
         super(definition, coverHolder, attachedSide, GTValues.HV); // TODO support multiple tiers
@@ -51,7 +54,8 @@ public class EnderFluidLinkCover extends EnderLinkCover<IFluidTransfer> {
 
         this.transferRate = new FluidAmountHandler(maxMilliBucketsPerTick, maxMilliBucketsPerTick, this::scheduleRenderUpdate)
                 .setOnAmountChanged(amount -> resetTransferRateLimit());
-        this.filterHandler = FilterHandlers.fluid(this);
+        this.filterHandler = FilterHandlers.fluid(this)
+                .onFilterLoaded(this::updateFilter).onFilterUpdated(this::updateFilter).onFilterRemoved(this::updateFilter);
     }
 
     //////////////////////////////////////
@@ -64,18 +68,28 @@ public class EnderFluidLinkCover extends EnderLinkCover<IFluidTransfer> {
     }
 
     private IFluidTransfer getOrCreateTransferProxy() {
-        if (transferProxy == null) {
-            transferProxy = new LimitingFluidTransferProxy(
+        if (limitingTransferProxy == null || filteringTransferProxy == null) {
+            limitingTransferProxy = new LimitingFluidTransferProxy(
                     FluidTransferHelper.getFluidTransfer(coverHolder.getLevel(), coverHolder.getPos(), attachedSide),
                     0L // this will be changed after transferRate has been loaded: see scheduleTransferRateUpdate()
             );
+
+            filteringTransferProxy = new FilteringFluidTransferProxy(limitingTransferProxy, filterHandler.getFilter());
         }
 
-        return transferProxy;
+        return filteringTransferProxy;
     }
 
     protected @Nullable IFluidTransfer getOwnFluidTransfer() {
         return getOrCreateTransferProxy();
+    }
+
+
+    private void updateFilter(FluidFilter filter) {
+        if (filteringTransferProxy == null)
+            return;
+
+        filteringTransferProxy.setFilter(filter);
     }
 
     //////////////////////////////////////
@@ -123,10 +137,10 @@ public class EnderFluidLinkCover extends EnderLinkCover<IFluidTransfer> {
 
     @Override
     public void resetTransferRateLimit() {
-        if (transferProxy == null)
+        if (limitingTransferProxy == null)
             return;
 
-        transferProxy.setRemainingTransfer(transferRate.getMilliBuckets() * 20);
+        limitingTransferProxy.setRemainingTransfer(transferRate.getMilliBuckets() * 20);
     }
 
     //////////////////////////////////////
