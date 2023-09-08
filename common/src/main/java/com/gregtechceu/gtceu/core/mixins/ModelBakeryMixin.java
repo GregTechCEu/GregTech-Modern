@@ -4,6 +4,7 @@ import com.google.common.collect.Sets;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.AlloyBlastProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.FluidProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
@@ -34,6 +35,10 @@ public abstract class ModelBakeryMixin {
                     fluid.setFlowTexture(fluid.getStillTexture());
                 }
                 MixinHelpers.addFluidTexture(material, fluid);
+            }
+            if (material.hasProperty(PropertyKey.ALLOY_BLAST)) {
+                AlloyBlastProperty property = material.getProperty(PropertyKey.ALLOY_BLAST);
+                MixinHelpers.addFluidTexture(material, property);
             }
         }
         return Sets.newLinkedHashSet();
