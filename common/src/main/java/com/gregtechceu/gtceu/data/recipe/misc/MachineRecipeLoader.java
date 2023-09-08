@@ -1,20 +1,15 @@
 package com.gregtechceu.gtceu.data.recipe.misc;
 
-import com.google.common.collect.ImmutableList;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMachines;
-import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
-import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
-import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.tterrag.registrate.util.entry.ItemEntry;
 import net.minecraft.data.recipes.FinishedRecipe;
@@ -23,15 +18,10 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
-import org.apache.logging.log4j.LogManager;
 
-import java.io.Console;
 import java.util.function.Consumer;
-import java.util.logging.Logger;
 
-import static com.gregtechceu.gtceu.GTCEu.LOGGER;
 import static com.gregtechceu.gtceu.api.GTValues.*;
-import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.BLAST_ALLOY_CRAFTABLE;
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
 import static com.gregtechceu.gtceu.common.data.GTItems.*;
 import static com.gregtechceu.gtceu.common.data.GTMachines.*;
@@ -57,132 +47,6 @@ public class MachineRecipeLoader {
         registerStoneBricksRecipes(provider);
         registerNBTRemoval(provider);
         registerHatchConversion(provider);
-        //GCMB
-        registerGCMBRecipes(provider);
-    }
-
-    private static void registerGCMBRecipes(Consumer<FinishedRecipe> provider) {
-        MIXER_RECIPES.recipeBuilder("tantalum_carbide")
-                .inputItems(dust, Tantalum)
-                .inputItems(dust, Carbon)
-                .outputItems(dust, TantalumCarbide, 2)
-                .duration(150).EUt(VA[IV])
-                .save(provider);
-
-        MIXER_RECIPES.recipeBuilder("hsla_steel")
-                .inputItems(dust, Invar, 2)
-                .inputItems(dust, Vanadium)
-                .inputItems(dust, Titanium)
-                .inputItems(dust, Molybdenum)
-                .outputItems(dust, HSLASteel, 5)
-                .duration(140).EUt(VA[HV])
-                .save(provider);
-
-        MIXER_RECIPES.recipeBuilder("incoloy_ma_956")
-                .inputItems(dust, VanadiumSteel, 4)
-                .inputItems(dust, Manganese, 2)
-                .inputItems(dust, Aluminium, 5)
-                .inputItems(dust, Yttrium, 2)
-                .outputItems(dust, IncoloyMA956, 13)
-                .duration(200).EUt(VA[IV])
-                .save(provider);
-
-        MIXER_RECIPES.recipeBuilder("watertight_steel")
-                .inputItems(dust, Iron, 7)
-                .inputItems(dust, Aluminium, 4)
-                .inputItems(dust, Nickel, 2)
-                .inputItems(dust, Chromium)
-                .inputItems(dust, Sulfur)
-                .outputItems(dust, HSLASteel, 15)
-                .duration(220).EUt(VA[IV])
-                .save(provider);
-
-        MIXER_RECIPES.recipeBuilder("molybdenum_disilicide")
-                .inputItems(dust, Molybdenum)
-                .inputItems(dust, Silicon, 2)
-                .outputItems(dust, MolybdenumDisilicide, 3)
-                .duration(180).EUt(VA[EV])
-                .save(provider);
-
-        MIXER_RECIPES.recipeBuilder("hastelloy_x")
-                .inputItems(dust, Nickel, 8)
-                .inputItems(dust, Iron, 3)
-                .inputItems(dust, Tungsten, 4)
-                .inputItems(dust, Molybdenum, 2)
-                .inputItems(dust, Chromium)
-                .inputItems(dust, Niobium)
-                .outputItems(dust, HastelloyX, 19)
-                .duration(210).EUt(VA[IV])
-                .save(provider);
-
-        MIXER_RECIPES.recipeBuilder("maraging_steel_300")
-                .inputItems(dust, Iron, 16)
-                .inputItems(dust, Titanium)
-                .inputItems(dust, Aluminium)
-                .inputItems(dust, Nickel, 4)
-                .inputItems(dust, Cobalt, 2)
-                .outputItems(dust, MaragingSteel300, 24)
-                .duration(230).EUt(VA[IV])
-                .save(provider);
-
-        MIXER_RECIPES.recipeBuilder("stellite_100")
-                .inputItems(dust, Iron, 4)
-                .inputItems(dust, Chromium, 3)
-                .inputItems(dust, Tungsten, 2)
-                .inputItems(dust, Molybdenum)
-                .outputItems(dust, Stellite100, 10)
-                .duration(200).EUt(VA[IV])
-                .save(provider);
-
-        MIXER_RECIPES.recipeBuilder("titanium_carbide")
-                .inputItems(dust, Titanium)
-                .inputItems(dust, Carbon)
-                .outputItems(dust, TitaniumCarbide, 2)
-                .duration(160).EUt(VA[EV])
-                .save(provider);
-
-        MIXER_RECIPES.recipeBuilder("titanium_tungsten_carbide")
-                .inputItems(dust, TungstenCarbide)
-                .inputItems(dust, TitaniumCarbide, 2)
-                .outputItems(dust, TitaniumTungstenCarbide, 3)
-                .duration(180).EUt(VA[IV])
-                .save(provider);
-
-        BLAST_ALLOY_RECIPES.recipeBuilder("test")
-                .inputFluids(Copper.getFluid(3*144),Tin.getFluid(144)).outputFluids(Bronze.getFluid(4*144))
-                .duration(69).EUt(420).save(provider);
-
-        for(Material material : GTRegistries.MATERIALS){
-            LogManager.getLogger().fatal(material.getName());
-            LOGGER.warn(material.getName());
-            System.out.println(material.getName());
-            if(!material.hasFlag(BLAST_ALLOY_CRAFTABLE)){
-                System.out.println("no flag");
-                return;
-            }
-            ImmutableList<MaterialStack> components = material.getMaterialComponents();
-            if(components.size() > 6){
-                System.out.println("too many components");
-                return;
-            }
-            int ct = 0;
-            GTRecipeBuilder recipe = BLAST_ALLOY_RECIPES.recipeBuilder(material.getName()+"_blast_alloy_smelting");
-            for(MaterialStack component : components){
-                recipe.inputFluids(component.material().getFluid(component.amount() * FluidHelper.getBucket()));
-                ct += component.amount();
-            }
-            recipe.outputFluids(material.getFluid(ct * FluidHelper.getBucket()));
-            long eut = switch (material.getBlockHarvestLevel()) {
-                case 1 -> V[MV];
-                case 2 -> V[HV];
-                case 3 -> V[EV];
-                case 4 -> V[IV];
-                case 5 -> V[LuV];
-                case 6 -> V[ZPM];
-                default -> V[LV];
-            };
-            recipe.inputEU(eut).duration(material.getBlastTemperature()).save(provider);
-        }
     }
 
     private static void registerBendingCompressingRecipes(Consumer<FinishedRecipe> provider) {
