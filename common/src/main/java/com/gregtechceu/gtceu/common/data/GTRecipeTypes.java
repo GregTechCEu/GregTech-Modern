@@ -556,8 +556,14 @@ public class GTRecipeTypes {
             .setProgressBar(GuiTextures.PROGRESS_BAR_EXTRACT, LEFT_TO_RIGHT)
             .setSound(GTSoundEntries.CENTRIFUGE);
 
-    public final static GTRecipeType BLAST_ALLOY_RECIPES = register("blast_alloy_smelter", ELECTRIC).setMaxIOSize(0, 0, 6, 2).setEUIO(IO.IN)
+    public final static GTRecipeType BLAST_ALLOY_RECIPES = register("blast_alloy_smelter", ELECTRIC).setMaxIOSize(9, 0, 3, 1).setEUIO(IO.IN)
             .setProgressBar(GuiTextures.PROGRESS_BAR_ARROW, LEFT_TO_RIGHT)
+            .setSlotOverlay(false, false, false, GuiTextures.FURNACE_OVERLAY_1)
+            .setSlotOverlay(false, false, true, GuiTextures.FURNACE_OVERLAY_1)
+            .setSlotOverlay(false, true, false, GuiTextures.FURNACE_OVERLAY_2)
+            .setSlotOverlay(false, true, true, GuiTextures.FURNACE_OVERLAY_2)
+            .setSlotOverlay(true, true, false, GuiTextures.FURNACE_OVERLAY_2)
+            .setSlotOverlay(true, true, true, GuiTextures.FURNACE_OVERLAY_2)
             .addDataInfo(data -> LocalizationUtils.format("gtceu.recipe.temperature", data.getInt("ebf_temp")))
             .setUiBuilder((recipe, widgetGroup) -> {
                 int temp = recipe.data.getInt("ebf_temp");
