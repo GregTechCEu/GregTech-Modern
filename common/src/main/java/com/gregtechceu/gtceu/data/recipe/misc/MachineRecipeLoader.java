@@ -4,8 +4,10 @@ import com.google.common.collect.ImmutableList;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.AlloyBlastProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
@@ -25,13 +27,15 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import org.apache.logging.log4j.LogManager;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.Console;
 import java.util.function.Consumer;
 import java.util.logging.Logger;
 
 import static com.gregtechceu.gtceu.GTCEu.LOGGER;
 import static com.gregtechceu.gtceu.api.GTValues.*;
-import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.BLAST_ALLOY_CRAFTABLE;
+import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.DISABLE_ALLOY_BLAST;
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
 import static com.gregtechceu.gtceu.common.data.GTItems.*;
 import static com.gregtechceu.gtceu.common.data.GTMachines.*;
@@ -152,36 +156,20 @@ public class MachineRecipeLoader {
                 .inputFluids(Copper.getFluid(3*144),Tin.getFluid(144)).outputFluids(Bronze.getFluid(4*144))
                 .duration(69).EUt(420).save(provider);
 
-        for(Material material : GTRegistries.MATERIALS){
-            LogManager.getLogger().fatal(material.getName());
-            LOGGER.warn(material.getName());
-            System.out.println(material.getName());
-            if(!material.hasFlag(BLAST_ALLOY_CRAFTABLE)){
-                System.out.println("no flag");
-                return;
-            }
-            ImmutableList<MaterialStack> components = material.getMaterialComponents();
-            if(components.size() > 6){
-                System.out.println("too many components");
-                return;
-            }
-            int ct = 0;
-            GTRecipeBuilder recipe = BLAST_ALLOY_RECIPES.recipeBuilder(material.getName()+"_blast_alloy_smelting");
-            for(MaterialStack component : components){
-                recipe.inputFluids(component.material().getFluid(component.amount() * FluidHelper.getBucket()));
-                ct += component.amount();
-            }
-            recipe.outputFluids(material.getFluid(ct * FluidHelper.getBucket()));
-            long eut = switch (material.getBlockHarvestLevel()) {
-                case 1 -> V[MV];
-                case 2 -> V[HV];
-                case 3 -> V[EV];
-                case 4 -> V[IV];
-                case 5 -> V[LuV];
-                case 6 -> V[ZPM];
-                default -> V[LV];
-            };
-            recipe.inputEU(eut).duration(material.getBlastTemperature()).save(provider);
+        ingot.executeHandler(PropertyKey.ALLOY_BLAST, (tagPrefix, material, property) -> generateAlloyBlastRecipes(tagPrefix, material, property, provider));
+    }
+
+    /**
+     * Generates alloy blast recipes for a material
+     *
+     * @param material the material to generate for
+     * @param property the blast property of the material
+     */
+    public static void generateAlloyBlastRecipes(@Nullable TagPrefix unused, @Nonnull Material material,
+                                                 @Nonnull AlloyBlastProperty property,
+                                                 @Nonnull Consumer<FinishedRecipe> provider) {
+        if (material.hasProperty(PropertyKey.BLAST)) {
+            property.getRecipeProducer().produce(material, material.getProperty(PropertyKey.BLAST), provider);
         }
     }
 

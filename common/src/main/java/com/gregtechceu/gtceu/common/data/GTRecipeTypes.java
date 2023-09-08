@@ -42,7 +42,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.BLAST_ALLOY_CRAFTABLE;
 import static com.lowdragmc.lowdraglib.gui.texture.ProgressTexture.FillDirection.*;
 
 /**
@@ -556,8 +555,14 @@ public class GTRecipeTypes {
             .setProgressBar(GuiTextures.PROGRESS_BAR_EXTRACT, LEFT_TO_RIGHT)
             .setSound(GTSoundEntries.CENTRIFUGE);
 
-    public final static GTRecipeType BLAST_ALLOY_RECIPES = register("blast_alloy_smelter", ELECTRIC).setMaxIOSize(0, 0, 6, 2).setEUIO(IO.IN)
+    public final static GTRecipeType BLAST_ALLOY_RECIPES = register("blast_alloy_smelter", ELECTRIC).setMaxIOSize(9, 0, 3, 1).setEUIO(IO.IN)
             .setProgressBar(GuiTextures.PROGRESS_BAR_ARROW, LEFT_TO_RIGHT)
+            .setSlotOverlay(false, false, false, GuiTextures.FURNACE_OVERLAY_1)
+            .setSlotOverlay(false, false, true, GuiTextures.FURNACE_OVERLAY_1)
+            .setSlotOverlay(false, true, false, GuiTextures.FURNACE_OVERLAY_2)
+            .setSlotOverlay(false, true, true, GuiTextures.FURNACE_OVERLAY_2)
+            .setSlotOverlay(true, true, false, GuiTextures.FURNACE_OVERLAY_2)
+            .setSlotOverlay(true, true, true, GuiTextures.FURNACE_OVERLAY_2)
             .setSound(GTSoundEntries.ARC);
 
 

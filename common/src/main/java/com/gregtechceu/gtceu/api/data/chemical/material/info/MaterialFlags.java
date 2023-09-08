@@ -174,9 +174,21 @@ public class MaterialFlags {
             .requireProps(PropertyKey.DUST)
             .build();
 
-    //GCMB
-    public static final MaterialFlag BLAST_ALLOY_CRAFTABLE = new MaterialFlag.Builder("blast_alloy_craftable")
-            .requireProps(PropertyKey.FLUID)
+
+    // GCyM
+    /**
+     * Use to disable alloy blast recipes from generating
+     */
+    public static final MaterialFlag DISABLE_ALLOY_BLAST = new MaterialFlag.Builder("disable_alloy_blast")
+            .requireProps(PropertyKey.BLAST, PropertyKey.FLUID)
+            .build();
+
+    /**
+     * Use to disable everything related to alloy blasting
+     */
+    public static final MaterialFlag DISABLE_ALLOY_PROPERTY = new MaterialFlag.Builder("disable_alloy_property")
+            .requireProps(PropertyKey.BLAST, PropertyKey.FLUID)
+            .requireFlags(DISABLE_ALLOY_BLAST)
             .build();
 
     /////////////////
