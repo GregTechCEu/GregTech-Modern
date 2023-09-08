@@ -49,7 +49,7 @@ public final class GTRegistries {
     public static final GTRegistry.RL<BedrockFluidDefinition> BEDROCK_FLUID_DEFINITIONS = new GTRegistry.RL<>(GTCEu.id("bedrock_fluid"));
     public static final GTRegistry.RL<GTOreDefinition> ORE_VEINS = new GTRegistry.RL<>(GTCEu.id("ore_vein"));
 
-    public static final GTRegistry.RL<ITransferType> ENDER_LINK_TRANSFER_TYPES = new GTRegistry.RL<>(GTCEu.id("ender_link_transfer_type"));
+    public static final GTRegistry.RL<ITransferType<?>> ENDER_LINK_TRANSFER_TYPES = new GTRegistry.RL<>(GTCEu.id("ender_link_transfer_type"));
 
     @ExpectPlatform
     public static <V, T extends V> T register(Registry<V> registry, ResourceLocation name, T value) {
