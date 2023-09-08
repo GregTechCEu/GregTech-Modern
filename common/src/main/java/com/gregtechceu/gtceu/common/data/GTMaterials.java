@@ -1027,6 +1027,7 @@ public class GTMaterials {
     public static Material Stellite100;
     public static Material TitaniumCarbide;
     public static Material TitaniumTungstenCarbide;
+    public static Material HastelloyC276;
 
 
 }
