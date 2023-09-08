@@ -239,7 +239,7 @@ public class CustomMultiblockBuilder extends MultiblockMachineBuilder {
             }
 
             @Override
-            public CustomMultiblockBuilder recipeType(GTRecipeType recipeType) {
+            public CustomMultiblockBuilder recipeType(GTRecipeType... recipeType) {
                 for (var builder : builders) {
                     builder.recipeType(recipeType);
                 }

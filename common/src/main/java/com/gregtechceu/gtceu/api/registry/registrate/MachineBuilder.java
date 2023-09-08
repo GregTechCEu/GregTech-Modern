@@ -46,6 +46,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.function.TriFunction;
 
 import javax.annotation.Nullable;
@@ -92,7 +93,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     @Setter
     private NonNullConsumer<BlockEntityType<BlockEntity>> onBlockEntityRegister = MetaMachineBlockEntity::onBlockEntityRegister;
     @Setter
-    private GTRecipeType recipeType;
+    private GTRecipeType[] recipeType;
     @Getter @Setter // getter for KJS
     private int tier;
     @Setter
@@ -135,6 +136,15 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
         this.itemFactory = itemFactory;
         this.blockEntityFactory = blockEntityFactory;
         this.definitionFactory = definitionFactory;
+    }
+
+    public MachineBuilder<DEFINITION> recipeType(GTRecipeType... types) {
+        GTRecipeType[] aux = this.recipeType;
+        for (GTRecipeType type : types){
+            ArrayUtils.add(aux, type);
+        }
+        this.recipeType = aux;
+        return this;
     }
 
     public static <DEFINITION extends MachineDefinition> MachineBuilder<DEFINITION> create(Registrate registrate, String name,
@@ -314,8 +324,10 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
         if (renderer == null) {
             renderer = () -> new MachineRenderer(new ResourceLocation(registrate.getModid(), "block/machine/" + name));
         }
-        if (recipeType != null && recipeType.getIconSupplier() == null) {
-            recipeType.setIconSupplier(definition::asStack);
+        for (GTRecipeType type : recipeType){
+            if (type != null && type.getIconSupplier() == null) {
+                type.setIconSupplier(definition::asStack);
+            }
         }
         if (appearance == null) {
             appearance = block::getDefaultState;

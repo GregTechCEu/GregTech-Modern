@@ -63,7 +63,9 @@ public class MachineDefinition implements Supplier<IMachineBlock> {
     private Function<IMachineBlockEntity, MetaMachine> machineSupplier;
     @Setter
     @Nullable
-    private GTRecipeType recipeType;
+    private GTRecipeType[] recipeType;
+    @Nullable
+    private GTRecipeType activeRecipeType = recipeType[0];
     @Getter
     @Setter
     private int tier;
@@ -133,7 +135,7 @@ public class MachineDefinition implements Supplier<IMachineBlock> {
     }
 
     @Nullable
-    public GTRecipeType getRecipeType() {
+    public GTRecipeType[] getRecipeType() {
         return recipeType;
     }
 

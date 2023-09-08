@@ -81,8 +81,8 @@ public class Predicates {
         return blocks((tiers.length == 0 ? ability.getAllBlocks() : ability.getBlocks(tiers)).toArray(Block[]::new));
     }
 
-    public static TraceabilityPredicate autoAbilities(GTRecipeType recipeType) {
-        return autoAbilities(recipeType, true, true, true, true, true, true);
+    public static TraceabilityPredicate autoAbilities(GTRecipeType[] recipeType) {
+        return autoAbilities(recipeType[0], true, true, true, true, true, true);
     }
 
     public static TraceabilityPredicate autoAbilities(GTRecipeType recipeType,
@@ -125,6 +125,16 @@ public class Predicates {
             }
         }
         return predicate;
+    }
+
+    public static TraceabilityPredicate autoAbilities(GTRecipeType[] recipeType,
+                                                      boolean checkEnergyIn,
+                                                      boolean checkEnergyOut,
+                                                      boolean checkItemIn,
+                                                      boolean checkItemOut,
+                                                      boolean checkFluidIn,
+                                                      boolean checkFluidOut) {
+        return autoAbilities(recipeType[0],checkEnergyIn, checkEnergyOut, checkItemIn, checkItemOut, checkFluidIn, checkFluidOut);
     }
 
     public static TraceabilityPredicate autoAbilities(boolean checkMaintenance, boolean checkMuffler) {

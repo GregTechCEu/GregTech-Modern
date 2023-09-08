@@ -74,7 +74,6 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.DoorBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
-import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.shapes.Shapes;
 
 import java.util.ArrayList;
@@ -93,6 +92,8 @@ import static com.gregtechceu.gtceu.api.registry.GTRegistries.REGISTRATE;
 import static com.gregtechceu.gtceu.common.data.GTBlocks.*;
 import static com.gregtechceu.gtceu.common.data.GTCreativeModeTabs.MACHINE;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.DrillingFluid;
+import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.DUMMY_RECIPES;
+import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.STEAM_BOILER_RECIPES;
 import static com.gregtechceu.gtceu.utils.FormattingUtil.toEnglishName;
 import static com.gregtechceu.gtceu.utils.FormattingUtil.toRomanNumeral;
 
@@ -122,7 +123,7 @@ public class GTMachines {
     public final static Pair<MachineDefinition, MachineDefinition> STEAM_SOLID_BOILER = registerSteamMachines("steam_solid_boiler",
             SteamSolidBoilerMachine::new,
             (pressure, builder) -> builder.rotationState(RotationState.NON_Y_AXIS)
-                    .recipeType(GTRecipeTypes.STEAM_BOILER_RECIPES)
+                    .recipeType(STEAM_BOILER_RECIPES)
                     .recipeModifier(SteamBoilerMachine::recipeModifier)
                     .workableSteamHullRenderer(pressure, GTCEu.id("block/generators/boiler/coal"))
                     .tooltips(Component.translatable("gtceu.universal.tooltip.produces_fluid", (pressure ? 300 : 120) * FluidHelper.getBucket() / 20000))
@@ -131,7 +132,7 @@ public class GTMachines {
     public final static Pair<MachineDefinition, MachineDefinition> STEAM_LIQUID_BOILER = registerSteamMachines("steam_liquid_boiler",
             SteamLiquidBoilerMachine::new,
             (pressure, builder) -> builder.rotationState(RotationState.NON_Y_AXIS)
-                    .recipeType(GTRecipeTypes.STEAM_BOILER_RECIPES)
+                    .recipeType(STEAM_BOILER_RECIPES)
                     .recipeModifier(SteamBoilerMachine::recipeModifier)
                     .workableSteamHullRenderer(pressure, GTCEu.id("block/generators/boiler/lava"))
                     .tooltips(Component.translatable("gtceu.universal.tooltip.produces_fluid", (pressure ? 600 : 240) * FluidHelper.getBucket() / 20000))
@@ -147,7 +148,7 @@ public class GTMachines {
     public final static MachineDefinition STEAM_MINER = REGISTRATE.machine("steam_miner", holder -> new SteamMinerMachine(holder, 320, 4, 0))
             .rotationState(RotationState.NON_Y_AXIS)
             .langValue("Steam Miner")
-            .recipeType(GTRecipeTypes.DUMMY_RECIPES)
+            .recipeType(DUMMY_RECIPES)
             .tier(0)
             .tooltips(Component.translatable("gtceu.universal.tooltip.uses_per_tick_steam", 16).append(ChatFormatting.GRAY + ", ")
                     .append(Component.translatable("gtceu.machine.miner.per_block", 320 / 20)))
@@ -284,7 +285,7 @@ public class GTMachines {
             (tier, builder) -> builder
                     .rotationState(RotationState.NON_Y_AXIS)
                     .langValue("%s Miner %s".formatted(VLVH[tier], VLVT[tier]))
-                    .recipeType(GTRecipeTypes.DUMMY_RECIPES)
+                    .recipeType(DUMMY_RECIPES)
                     .editableUI(MinerMachine.EDITABLE_UI_CREATOR.apply(GTCEu.id("miner"), (tier + 1) * (tier + 1)))
                     .renderer(() -> new MinerRenderer(tier, GTCEu.id("block/machines/miner")))
                     .tooltipBuilder((stack, tooltip) -> {
@@ -1012,7 +1013,7 @@ public class GTMachines {
 
     public final static MultiblockMachineDefinition ASSEMBLY_LINE = REGISTRATE.multiblock("assembly_line", WorkableElectricMultiblockMachine::new)
             .rotationState(RotationState.NON_Y_AXIS)
-            .recipeType(GTRecipeTypes.ASSEMBLY_LINE_RECIPES)
+            .recipeType(GTRecipeTypes.ASSEMBLY_LINE_RECIPES, GTRecipeTypes.ASSEMBLER_RECIPES)
             .recipeModifier(GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
             .appearanceBlock(CASING_STEEL_SOLID)
             .pattern(definition -> FactoryBlockPattern.start(BACK, UP, RIGHT)
@@ -1193,7 +1194,7 @@ public class GTMachines {
     public static final MultiblockMachineDefinition[] FLUID_DRILLING_RIG = registerTieredMultis("fluid_drilling_rig", FluidDrillMachine::new, (tier, builder) -> builder
                     .rotationState(RotationState.NON_Y_AXIS)
                     .langValue("%s Fluid Drilling Rig %s".formatted(VLVH[tier], VLVT[tier]))
-                    .recipeType(GTRecipeTypes.DUMMY_RECIPES)
+                    .recipeType(DUMMY_RECIPES)
                     .tooltips(
                             Component.translatable("gtceu.machine.fluid_drilling_rig.description"),
                             Component.translatable("gtceu.machine.fluid_drilling_rig.depletion", FormattingUtil.formatNumbers(100.0 / FluidDrillMachine.getDepletionChance(tier))),
@@ -1258,7 +1259,7 @@ public class GTMachines {
 
     public static final MultiblockMachineDefinition CLEANROOM = REGISTRATE.multiblock("cleanroom", CleanroomMachine::new)
             .rotationState(RotationState.NONE)
-            .recipeType(GTRecipeTypes.DUMMY_RECIPES)
+            .recipeType(DUMMY_RECIPES)
             .appearanceBlock(PLASTCRETE)
             .tooltips(Component.translatable("gtceu.machine.cleanroom.tooltip.0"),
                     Component.translatable("gtceu.machine.cleanroom.tooltip.1"),
@@ -1366,7 +1367,7 @@ public class GTMachines {
                     .blockProp(p -> p.noOcclusion().isViewBlocking((state, level, pos) -> false))
                     .shape(Shapes.box(0.001, 0.001, 0.001, 0.999, 0.999, 0.999))
                     .appearanceBlock(() -> ProcessingArrayMachine.getCasingState(tier))
-                    .recipeType(GTRecipeTypes.DUMMY_RECIPES)
+                    .recipeType(DUMMY_RECIPES)
                     .recipeModifier(ProcessingArrayMachine::recipeModifier, true)
                     .pattern(definition -> FactoryBlockPattern.start()
                             .aisle("XXX", "CCC", "XXX")

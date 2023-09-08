@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.sound.AutoReleasedSound;
 import com.gregtechceu.gtceu.api.syncdata.IEnhancedManaged;
 import com.gregtechceu.gtceu.api.syncdata.UpdateListener;
@@ -129,7 +130,12 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     }
 
     public boolean needFuel() {
-        return machine.getRecipeType().isFuelRecipeType();
+        for (GTRecipeType type : machine.getRecipeType()) {
+            if (type.isFuelRecipeType()){
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -265,7 +271,11 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     }
 
     protected List<GTRecipe> searchRecipe() {
-        return machine.getRecipeType().searchRecipe(getRecipeManager(), this.machine);
+        List<GTRecipe> recipes = new ArrayList<>();
+        for (GTRecipeType type : machine.getRecipeType()){
+            recipes.addAll(type.searchRecipe(getRecipeManager(), this.machine));
+        }
+        return recipes;
     }
 
     public void findAndHandleRecipe() {
@@ -299,12 +309,14 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
 
     public boolean handleFuelRecipe() {
         if (!needFuel() || fuelTime > 0) return true;
-        for (GTRecipe recipe : machine.getRecipeType().searchFuelRecipe(getRecipeManager(), machine)) {
-            if (recipe.checkConditions(this).isSuccess() && recipe.handleRecipeIO(IO.IN, this.machine)) {
-                fuelMaxTime = recipe.duration;
-                fuelTime = fuelMaxTime;
+        for(GTRecipeType type : machine.getRecipeType()){
+            for (GTRecipe recipe : type.searchFuelRecipe(getRecipeManager(), machine)) {
+                if (recipe.checkConditions(this).isSuccess() && recipe.handleRecipeIO(IO.IN, this.machine)) {
+                    fuelMaxTime = recipe.duration;
+                    fuelTime = fuelMaxTime;
+                }
+                if (fuelTime > 0) return true;
             }
-            if (fuelTime > 0) return true;
         }
         return false;
     }
@@ -472,7 +484,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     @Environment(EnvType.CLIENT)
     public void updateSound() {
         if (isWorking() && machine.shouldWorkingPlaySound()) {
-            var sound = machine.getRecipeType().getSound();
+            var sound = machine.getActiveRecipeType().getSound();
             if (workingSound instanceof AutoReleasedSound soundEntry) {
                 if (soundEntry.soundEntry == sound && !soundEntry.isStopped()) {
                     return;
