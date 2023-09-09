@@ -113,9 +113,7 @@
     "gtceu:basalt_diatomite_ore",
     "gtceu:basalt_granitic_mineral_sand_ore",
     "gtceu:basalt_garnet_sand_ore",
-    "gtceu:basalt_basaltic_mineral_sand_ore",
-    "gtceu:basalt_fluorite_ore",
-    "gtceu:basalt_dolomite_ore"
+    "gtceu:basalt_basaltic_mineral_sand_ore"
   ],
   "page": "gtceu:generation/basalt",
   "position": [

@@ -233,18 +233,21 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
             return null;
         });
         typeWrappers.register(HeightRangePlacement.class, (ctx, o) -> {
+            if (o instanceof HeightRangePlacement placement) return placement;
             return Optional.ofNullable(NBTUtils.toTagCompound(o))
                     .map(tag -> HeightRangePlacement.CODEC.parse(NbtOps.INSTANCE, tag))
                     .flatMap(DataResult::result)
                     .orElse(null);
         });
         typeWrappers.register(BiomeWeightModifier.class, (ctx, o) -> {
+            if (o instanceof BiomeWeightModifier modifier) return modifier;
             return Optional.ofNullable(NBTUtils.toTagCompound(o))
                     .map(tag -> BiomeWeightModifier.CODEC.parse(NbtOps.INSTANCE, tag))
                     .flatMap(DataResult::result)
                     .orElse(null);
         });
         typeWrappers.register(VeinGenerator.class, (ctx, o) -> {
+            if (o instanceof VeinGenerator generator) return generator;
             return Optional.ofNullable(NBTUtils.toTagCompound(o))
                     .map(tag -> VeinGenerator.DIRECT_CODEC.parse(NbtOps.INSTANCE, tag))
                     .flatMap(DataResult::result)
