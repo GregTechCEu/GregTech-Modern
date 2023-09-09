@@ -72,9 +72,11 @@ public class GTRecipeTypeCategory extends ModularUIRecipeCategory<GTRecipeWrappe
     public static void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
         for (GTRecipeType gtRecipeType : GTRegistries.RECIPE_TYPES) {
             for (MachineDefinition machine : GTRegistries.MACHINES) {
-                for (GTRecipeType type : machine.getRecipeType()){
-                    if (type == gtRecipeType) {
-                        registration.addRecipeCatalyst(machine.asStack(), GTRecipeTypeCategory.TYPES.apply(gtRecipeType));
+                if (machine.getRecipeType() != null) {
+                    for (GTRecipeType type : machine.getRecipeType()){
+                        if (type == gtRecipeType) {
+                            registration.addRecipeCatalyst(machine.asStack(), GTRecipeTypeCategory.TYPES.apply(gtRecipeType));
+                        }
                     }
                 }
             }
