@@ -27,7 +27,7 @@ public class AssemblyLineLoader {
                 .inputItems(wireGtSingle, IndiumTinBariumTitaniumCuprate, 32)
                 .inputFluids(SolderingAlloy.getFluid(L * 8))
                 .inputFluids(NiobiumTitanium.getFluid(L * 8))
-                .outputItems(FUSION_REACTOR[0].asStack())
+                .outputItems(FUSION_REACTOR[LuV].asStack())
                 .duration(800).EUt(VA[LuV]).save(provider);
 
         ASSEMBLY_LINE_RECIPES.recipeBuilder("fusion_reactor_mk2")
@@ -41,7 +41,7 @@ public class AssemblyLineLoader {
                 .inputItems(wireGtSingle, UraniumRhodiumDinaquadide, 32)
                 .inputFluids(SolderingAlloy.getFluid(L * 8))
                 .inputFluids(VanadiumGallium.getFluid(L * 8))
-                .outputItems(FUSION_REACTOR[1].asStack())
+                .outputItems(FUSION_REACTOR[ZPM].asStack())
                 .duration(1000).EUt(61440).save(provider);
 
         ASSEMBLY_LINE_RECIPES.recipeBuilder("fusion_reactor_mk3")
@@ -55,7 +55,7 @@ public class AssemblyLineLoader {
                 .inputItems(wireGtSingle, EnrichedNaquadahTriniumEuropiumDuranide, 32)
                 .inputFluids(SolderingAlloy.getFluid(L * 8))
                 .inputFluids(YttriumBariumCuprate.getFluid(L * 8))
-                .outputItems(FUSION_REACTOR[2].asStack())
+                .outputItems(FUSION_REACTOR[UV].asStack())
                 .duration(1000).EUt(VA[ZPM]).save(provider);
 
     }

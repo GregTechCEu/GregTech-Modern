@@ -28,6 +28,9 @@ import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.integration.kjs.builders.*;
+import com.gregtechceu.gtceu.integration.kjs.builders.block.CoilBlockBuilder;
+import com.gregtechceu.gtceu.integration.kjs.builders.block.RendererBlockBuilder;
+import com.gregtechceu.gtceu.integration.kjs.builders.block.RendererGlassBlockBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.machine.*;
 import com.gregtechceu.gtceu.integration.kjs.builders.prefix.BasicTagPrefixBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.prefix.OreTagPrefixBuilder;
@@ -83,6 +86,8 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         GTRegistryObjectBuilderTypes.TAG_PREFIX.addType("ore", OreTagPrefixBuilder.class, OreTagPrefixBuilder::new, false);
 
         RegistryInfo.BLOCK.addType("gtceu:coil", CoilBlockBuilder.class, CoilBlockBuilder::new);
+        RegistryInfo.BLOCK.addType("gtceu:renderer", RendererBlockBuilder.class, RendererBlockBuilder::new);
+        RegistryInfo.BLOCK.addType("gtceu:renderer_glass", RendererGlassBlockBuilder.class, RendererGlassBlockBuilder::new);
     }
 
     @Override

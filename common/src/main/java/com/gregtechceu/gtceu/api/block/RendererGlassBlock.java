@@ -12,10 +12,10 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 /**
  * @author KilaBash
  * @date 2023/7/13
- * @implNote RenderGlassBlock
+ * @implNote RendererGlassBlock
  */
-public class RenderGlassBlock extends RendererBlock{
-    public RenderGlassBlock(Properties properties, IRenderer renderer) {
+public class RendererGlassBlock extends RendererBlock {
+    public RendererGlassBlock(Properties properties, IRenderer renderer) {
         super(properties, renderer);
     }
 
