@@ -211,7 +211,9 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
                         ItemStack remainingStack = FluidTransferHelper.tryFillContainer(currentStack, fluidTank, Integer.MAX_VALUE, null, true).getResult();
                         currentStack.shrink(1);
                         SoundEvent soundevent = FluidHelper.getFillSound(initialFluid);
-                        player.level().playSound(null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, soundevent, SoundSource.BLOCKS, 1.0F, 1.0F);
+                        if (soundevent != null) {
+                            player.level().playSound(null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, soundevent, SoundSource.BLOCKS, 1.0F, 1.0F);
+                        }
                         if (!remainingStack.isEmpty() && !player.addItem(remainingStack)) {
                             Block.popResource(player.level(), player.getOnPos(), remainingStack);
                         }
@@ -224,7 +226,9 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
                     ItemStack remainingStack = FluidTransferHelper.tryEmptyContainer(currentStack, fluidTank, Integer.MAX_VALUE, null, true).getResult();
                     currentStack.shrink(1);
                     SoundEvent soundevent = FluidHelper.getEmptySound(fluidTank.getFluid());
-                    player.level().playSound(null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, soundevent, SoundSource.BLOCKS, 1.0F, 1.0F);
+                    if (soundevent != null) {
+                        player.level().playSound(null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, soundevent, SoundSource.BLOCKS, 1.0F, 1.0F);
+                    }
                     if (!remainingStack.isEmpty() && !player.getInventory().add(remainingStack)) {
                         Block.popResource(player.level(), player.getOnPos(), remainingStack);
                     }

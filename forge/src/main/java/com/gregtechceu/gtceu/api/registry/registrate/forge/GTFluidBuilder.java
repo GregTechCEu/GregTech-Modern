@@ -20,6 +20,7 @@ import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
@@ -29,6 +30,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.minecraftforge.common.SoundActions;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
@@ -270,7 +272,8 @@ public class GTFluidBuilder<T extends ForgeFlowingFluid, P> extends AbstractBuil
         }
         setData(ProviderType.LANG, NonNullBiConsumer.noop());
 
-        return properties.temperature(temperature).density(density).viscosity(viscosity).lightLevel(luminance);
+        return properties.sound(SoundActions.BUCKET_FILL, SoundEvents.BUCKET_FILL)
+                .sound(SoundActions.BUCKET_EMPTY, SoundEvents.BUCKET_EMPTY).temperature(temperature).density(density).viscosity(viscosity).lightLevel(luminance);
     }
 
     @Override
