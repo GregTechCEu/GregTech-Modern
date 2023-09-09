@@ -110,7 +110,7 @@ public class BlockHighLightRenderer {
                 var buffer = multiBufferSource.getBuffer(RenderType.lines());
                 RenderSystem.lineWidth(3);
 
-                drawGridOverlays(poseStack, buffer, target, side -> level.isEmptyBlock(blockPos.relative(side)) ? GuiTextures.TOOL_PIPE_CONNECT : null);
+                drawGridOverlays(poseStack, buffer, target, side -> level.isEmptyBlock(blockPos.relative(side)) ? pipeBlockEntity.getPipeTexture(true) : null);
 
                 poseStack.popPose();
             }

@@ -24,6 +24,7 @@ import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
 import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.api.pattern.Predicates;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.CommonProxy;
 import com.gregtechceu.gtceu.common.data.*;
@@ -150,6 +151,8 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         event.add("GTOreVein", GTOreDefinition.class);
         event.add("GTLayerPattern", GTLayerPattern.class);
         event.add("GTOres", GTOres.class);
+        event.add("GTRecipeModifiers", GTRecipeModifiers.class);
+        event.add("OverclockingLogic", OverclockingLogic.class);
         // ....TODO add global refs. for convenience, ppl do not need to import the java package themselves.
     }
 

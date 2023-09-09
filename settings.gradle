@@ -26,7 +26,7 @@ dependencyResolutionManagement {
         // Fabric
         def fabricLoaderVersion = "0.14.21" // https://fabricmc.net/develop/
         def fabricApiVersion = "0.83.0" // https://fabricmc.net/develop/
-//        def createVersion = "0.5.1-b-build.1079"
+        def createVersion = "0.5.1-d-build.1161"
         def lazyDfuVersion = "0.1.3"
         def modMenuVersion = "7.1.0"
 //        def topFabricVersion = "1.19-6.0.0"
@@ -55,8 +55,8 @@ dependencyResolutionManagement {
         def architecturyLoomVersion = "1.3-SNAPSHOT"
         def vineFlowerVersion = "1.+"
         def macheteVersion = "1.+"
-        def ldLibVersion = "1.0.19.c"
         def configurationVersion = "2.2.0"
+        def ldLibVersion = "1.0.19.d"
 
         fabric {
             def fabricLoader = version("fabricLoader", fabricLoaderVersion)
@@ -72,8 +72,8 @@ dependencyResolutionManagement {
             def registrate = version("registrate", registrateFabricVersion)
             library("registrate", "com.tterrag.registrate_fabric", "Registrate").versionRef(registrate)
 
-//            def createFabric = version("create-fabric", "${createVersion}+mc${minecraftVersion}")
-//            library("createFabric", "com.simibubi.create", "create-fabric-${minecraftVersion}").versionRef(createFabric)
+            def createFabric = version("create-fabric", "${createVersion}+mc${minecraftVersion}")
+            library("createFabric", "com.simibubi.create", "create-fabric-${minecraftVersion}").versionRef(createFabric)
 
             def lazyDfu = version("lazydfu", lazyDfuVersion)
             library("lazydfu", "maven.modrinth", "lazydfu").versionRef(lazyDfu)
