@@ -113,9 +113,7 @@
     "gtceu:tuff_diatomite_ore",
     "gtceu:tuff_granitic_mineral_sand_ore",
     "gtceu:tuff_garnet_sand_ore",
-    "gtceu:tuff_basaltic_mineral_sand_ore",
-    "gtceu:tuff_fluorite_ore",
-    "gtceu:tuff_dolomite_ore"
+    "gtceu:tuff_basaltic_mineral_sand_ore"
   ],
   "page": "gtceu:generation/tuff",
   "position": [

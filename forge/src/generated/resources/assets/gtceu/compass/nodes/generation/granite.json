@@ -113,9 +113,7 @@
     "gtceu:granite_diatomite_ore",
     "gtceu:granite_granitic_mineral_sand_ore",
     "gtceu:granite_garnet_sand_ore",
-    "gtceu:granite_basaltic_mineral_sand_ore",
-    "gtceu:granite_fluorite_ore",
-    "gtceu:granite_dolomite_ore"
+    "gtceu:granite_basaltic_mineral_sand_ore"
   ],
   "page": "gtceu:generation/granite",
   "position": [
