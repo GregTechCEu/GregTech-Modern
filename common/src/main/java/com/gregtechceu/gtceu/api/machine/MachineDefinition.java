@@ -61,11 +61,9 @@ public class MachineDefinition implements Supplier<IMachineBlock> {
     private Supplier<BlockEntityType<? extends BlockEntity>> blockEntityTypeSupplier;
     @Setter
     private Function<IMachineBlockEntity, MetaMachine> machineSupplier;
-    @Setter
+    @Getter @Setter
     @Nullable
     private GTRecipeType[] recipeType;
-    @Nullable
-    private GTRecipeType activeRecipeType = recipeType[0];
     @Getter
     @Setter
     private int tier;
@@ -132,11 +130,6 @@ public class MachineDefinition implements Supplier<IMachineBlock> {
 
     public String getName() {
         return id.getPath();
-    }
-
-    @Nullable
-    public GTRecipeType[] getRecipeType() {
-        return recipeType;
     }
 
     @Override

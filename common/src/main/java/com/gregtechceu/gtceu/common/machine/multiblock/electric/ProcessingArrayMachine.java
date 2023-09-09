@@ -81,7 +81,7 @@ public class ProcessingArrayMachine extends TieredWorkableElectricMultiblockMach
 
     protected boolean isMachineStack(ItemStack itemStack) {
         if (itemStack.getItem() instanceof MetaMachineItem metaMachineItem) {
-            var recipeType =  metaMachineItem.getDefinition().getRecipeType();
+            var recipeType = metaMachineItem.getDefinition().getRecipeType();
             if(recipeType == null){
                 return false;
             }

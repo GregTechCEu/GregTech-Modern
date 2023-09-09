@@ -92,7 +92,6 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     private Consumer<ItemBuilder<? extends MetaMachineItem, ?>> itemBuilder;
     @Setter
     private NonNullConsumer<BlockEntityType<BlockEntity>> onBlockEntityRegister = MetaMachineBlockEntity::onBlockEntityRegister;
-    @Setter
     private GTRecipeType[] recipeType;
     @Getter @Setter // getter for KJS
     private int tier;
@@ -139,11 +138,9 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     }
 
     public MachineBuilder<DEFINITION> recipeType(GTRecipeType... types) {
-        GTRecipeType[] aux = this.recipeType;
         for (GTRecipeType type : types){
-            ArrayUtils.add(aux, type);
+            this.recipeType = ArrayUtils.add(this.recipeType, type);
         }
-        this.recipeType = aux;
         return this;
     }
 
@@ -324,9 +321,11 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
         if (renderer == null) {
             renderer = () -> new MachineRenderer(new ResourceLocation(registrate.getModid(), "block/machine/" + name));
         }
-        for (GTRecipeType type : recipeType){
-            if (type != null && type.getIconSupplier() == null) {
-                type.setIconSupplier(definition::asStack);
+        if (recipeType != null) {
+            for (GTRecipeType type : recipeType){
+                if (type != null && type.getIconSupplier() == null) {
+                    type.setIconSupplier(definition::asStack);
+                }
             }
         }
         if (appearance == null) {
