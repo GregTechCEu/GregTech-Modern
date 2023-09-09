@@ -134,7 +134,7 @@ dependencies {
     include(forge.configuration)
 
     // Runtime only testing mods
-    modRuntimeOnly(forge.worldStripper)
+    modCompileOnly(forge.worldStripper)
     modImplementation(forge.ae2) { transitive = false }
 }
 
