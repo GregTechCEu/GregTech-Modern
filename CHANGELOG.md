@@ -13,3 +13,4 @@
 * fix Drum's fluid can be duplicated
 * fix emi rendering + interaction
 * fix fluid bucket interaction (1.20)
+* fix battery buffer dropping
