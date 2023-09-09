@@ -18,7 +18,6 @@ public class GTCEu {
 
     public static void init() {
         LOGGER.info("{} is initializing on platform: {}", NAME, Platform.platformName());
-        ConfigHolder.init();
     }
 
     public static ResourceLocation id(String path) {

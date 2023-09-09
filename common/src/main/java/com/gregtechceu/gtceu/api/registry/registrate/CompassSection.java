@@ -19,6 +19,7 @@ import net.minecraft.resources.ResourceLocation;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -81,19 +82,17 @@ public class CompassSection {
         }
 
         public CompletableFuture<?> generate(Path path, CachedOutput cache) {
-            CompletableFuture<?> future = CompletableFuture.completedFuture(null);
-            for (var section : GTRegistries.COMPASS_SECTIONS) {
+            return CompletableFuture.allOf(GTRegistries.COMPASS_SECTIONS.values().stream().map(section -> {
                 var resourcePath = "compass/sections/" + section.sectionID.getPath() + ".json";
                 if (existingHelper.test(GTCEu.id(resourcePath))) {
-                    continue;
+                    return null;
                 }
                 JsonObject json = new JsonObject();
                 json.add("button_texture",SimpleIGuiTextureJsonUtils.toJson(section.icon.get()));
                 json.add("background_texture",SimpleIGuiTextureJsonUtils.toJson(section.background.get()));
                 json.addProperty("priority", section.priority);
-                future.thenComposeAsync(v -> DataProvider.saveStable(cache, json, path.resolve(resourcePath)));
-            }
-            return future;
+                return DataProvider.saveStable(cache, json, path.resolve(resourcePath));
+            }).filter(Objects::nonNull).toArray(CompletableFuture[]::new));
         }
 
     }
