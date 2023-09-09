@@ -110,7 +110,9 @@
     "gtceu:raw_diatomite_block",
     "gtceu:raw_granitic_mineral_sand_block",
     "gtceu:raw_garnet_sand_block",
-    "gtceu:raw_basaltic_mineral_sand_block"
+    "gtceu:raw_basaltic_mineral_sand_block",
+    "gtceu:raw_fluorite_block",
+    "gtceu:raw_dolomite_block"
   ],
   "page": "gtceu:generation/raw_ore",
   "position": [

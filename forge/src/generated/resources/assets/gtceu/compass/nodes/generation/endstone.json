@@ -113,7 +113,9 @@
     "gtceu:endstone_diatomite_ore",
     "gtceu:endstone_granitic_mineral_sand_ore",
     "gtceu:endstone_garnet_sand_ore",
-    "gtceu:endstone_basaltic_mineral_sand_ore"
+    "gtceu:endstone_basaltic_mineral_sand_ore",
+    "gtceu:endstone_fluorite_ore",
+    "gtceu:endstone_dolomite_ore"
   ],
   "page": "gtceu:generation/endstone",
   "position": [

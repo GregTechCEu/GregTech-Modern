@@ -109,6 +109,11 @@ public class StandardVeinGenerator extends VeinGenerator {
     }
 
     @Override
+    public VeinGenerator copy() {
+        return new StandardVeinGenerator(this.blocks);
+    }
+
+    @Override
     public Codec<? extends VeinGenerator> codec() {
         return CODEC;
     }

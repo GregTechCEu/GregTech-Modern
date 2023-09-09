@@ -113,7 +113,9 @@
     "gtceu:andesite_diatomite_ore",
     "gtceu:andesite_granitic_mineral_sand_ore",
     "gtceu:andesite_garnet_sand_ore",
-    "gtceu:andesite_basaltic_mineral_sand_ore"
+    "gtceu:andesite_basaltic_mineral_sand_ore",
+    "gtceu:andesite_fluorite_ore",
+    "gtceu:andesite_dolomite_ore"
   ],
   "page": "gtceu:generation/andesite",
   "position": [

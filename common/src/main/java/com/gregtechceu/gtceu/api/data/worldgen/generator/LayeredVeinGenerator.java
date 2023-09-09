@@ -208,6 +208,11 @@ public class LayeredVeinGenerator extends VeinGenerator {
     }
 
     @Override
+    public VeinGenerator copy() {
+        return new LayeredVeinGenerator(this.layerPatterns);
+    }
+
+    @Override
     public Codec<? extends VeinGenerator> codec() {
         return CODEC;
     }

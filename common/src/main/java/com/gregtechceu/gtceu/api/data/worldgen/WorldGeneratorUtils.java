@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.biome.Biome;
@@ -21,7 +22,7 @@ import java.util.stream.Collectors;
 public class WorldGeneratorUtils {
     public static final RuleTest END_ORE_REPLACEABLES = new TagMatchTest(CustomTags.ENDSTONE_ORE_REPLACEABLES);
 
-    private static final Map<WorldGenLevel, WorldOreVeinCache> oreVeinCache = new WeakHashMap<>();
+    private static final Map<ServerLevel, WorldOreVeinCache> oreVeinCache = new WeakHashMap<>();
 
     public static final Map<String, IWorldGenLayer> WORLD_GEN_LAYERS = new HashMap<>();
     public static final HashBiMap<ResourceLocation, Codec<? extends VeinGenerator>> VEIN_GENERATORS = HashBiMap.create();
@@ -32,9 +33,9 @@ public class WorldGeneratorUtils {
         private final List<GTOreDefinition> worldVeins;
         private final List<Entry<Integer, GTOreDefinition>> veins = new LinkedList<>();
 
-        public WorldOreVeinCache(WorldGenLevel level) {
+        public WorldOreVeinCache(ServerLevel level) {
             this.worldVeins = GTRegistries.ORE_VEINS.values().stream()
-                    .filter(entry -> entry.getDimensionFilter().get().stream().anyMatch(filter -> filter.is(level.getLevel().dimensionTypeId())))
+                    .filter(entry -> entry.getDimensionFilter().get().stream().anyMatch(filter -> filter.is(level.dimensionTypeId())))
                     .collect(Collectors.toList());
         }
 
@@ -54,7 +55,7 @@ public class WorldGeneratorUtils {
         }
     }
 
-    public static List<Entry<Integer, GTOreDefinition>> getCachedBiomeVeins(WorldGenLevel level, Holder<Biome> biome, RandomSource random) {
+    public static List<Entry<Integer, GTOreDefinition>> getCachedBiomeVeins(ServerLevel level, Holder<Biome> biome, RandomSource random) {
         if (oreVeinCache.containsKey(level))
             return oreVeinCache.get(level).getEntry(biome);
         WorldOreVeinCache worldOreVeinCache = new WorldOreVeinCache(level);
