@@ -42,7 +42,7 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
     @Getter
     public final GTRecipeType[] recipeType;
     @Getter
-    public final GTRecipeType activeRecipeType;
+    public GTRecipeType activeRecipeType;
     @Getter
     public final Int2LongFunction tankScalingFunction;
     @Nullable @Getter @Setter

@@ -1084,6 +1084,8 @@ public class LangHandler {
         provider.add("gtceu.gui.overclock.title", "Overclock Tier");
         provider.add("gtceu.gui.overclock.range", "Available Tiers [%s, %s]");
 
+        provider.add("gtceu.gui.machinemode.title", "Active Machine Mode");
+
         provider.add("gtceu.gui.content.chance_0", "§cNot Consumed§r");
         provider.add("gtceu.gui.content.chance_0_short", "§cNC§r");
         provider.add("gtceu.gui.content.chance_1", "§eChance: %s§r");

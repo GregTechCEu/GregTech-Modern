@@ -93,6 +93,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     @Setter
     private NonNullConsumer<BlockEntityType<BlockEntity>> onBlockEntityRegister = MetaMachineBlockEntity::onBlockEntityRegister;
     private GTRecipeType[] recipeType;
+    private GTRecipeType activeRecipeType;
     @Getter @Setter // getter for KJS
     private int tier;
     @Setter
@@ -141,6 +142,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
         for (GTRecipeType type : types){
             this.recipeType = ArrayUtils.add(this.recipeType, type);
         }
+        this.activeRecipeType = this.recipeType[0];
         return this;
     }
 
