@@ -758,12 +758,12 @@ public class GTMachines {
                         .where('X', CASING_INVAR_HEATPROOF.getDefaultState())
                         .where('S', definition, Direction.NORTH)
                         .where('#', Blocks.AIR.defaultBlockState())
-                        .where('E', ENERGY_INPUT_HATCH[GTValues.LV - 1], Direction.SOUTH)
+                        .where('E', ENERGY_INPUT_HATCH[GTValues.LV], Direction.SOUTH)
                         .where('I', ITEM_IMPORT_BUS[GTValues.LV], Direction.NORTH)
                         .where('O', ITEM_EXPORT_BUS[GTValues.LV], Direction.NORTH)
                         .where('F', FLUID_IMPORT_HATCH[GTValues.LV], Direction.WEST)
                         .where('D', FLUID_EXPORT_HATCH[GTValues.LV], Direction.EAST)
-                        .where('H', MUFFLER_HATCH[GTValues.LV - 1], Direction.UP)
+                        .where('H', MUFFLER_HATCH[GTValues.LV], Direction.UP)
                         .where('M', MAINTENANCE_HATCH, Direction.NORTH);
                 ALL_COILS.entrySet().stream()
                         .sorted(Comparator.comparingInt(entry -> entry.getKey().getTier()))
@@ -1048,7 +1048,7 @@ public class GTMachines {
                     .where('S', Predicates.controller(blocks(definition.getBlock())))
                     .where('X', blocks(CASING_PUMP_DECK.get()))
                     .where('F', blocks(MATERIAL_BLOCKS.get(TagPrefix.frameGt, GTMaterials.TreatedWood).get()))
-                    .where('H', Predicates.abilities(PartAbility.PUMP_FLUID_HATCH).or(blocks(FLUID_EXPORT_HATCH[0].get(), FLUID_EXPORT_HATCH[1].get())))
+                    .where('H', Predicates.abilities(PartAbility.PUMP_FLUID_HATCH).or(blocks(FLUID_EXPORT_HATCH[LV].get(), FLUID_EXPORT_HATCH[MV].get())))
                     .where('#', Predicates.any())
                     .build())
             .sidedWorkableCasingRenderer("block/casings/pump_deck", GTCEu.id("block/multiblock/primitive_pump"), false)
@@ -1419,12 +1419,12 @@ public class GTMachines {
                                                              BiFunction<IMachineBlockEntity, Integer, MetaMachine> factory,
                                                              BiFunction<Integer, MachineBuilder<MachineDefinition>, MachineDefinition> builder,
                                                              int... tiers) {
-        MachineDefinition[] definitions = new MachineDefinition[tiers.length];
+        MachineDefinition[] definitions = new MachineDefinition[GTValues.TIER_COUNT];
         for (int i = 0; i < tiers.length; i++) {
             int tier = tiers[i];
             var register =  REGISTRATE.machine(GTValues.VN[tier].toLowerCase(Locale.ROOT) + "_" + name, holder -> factory.apply(holder, tier))
                     .tier(tier);
-            definitions[i] = builder.apply(tier, register);
+            definitions[tier] = builder.apply(tier, register);
         }
         return definitions;
     }
@@ -1535,12 +1535,12 @@ public class GTMachines {
                                                              BiFunction<IMachineBlockEntity, Integer, MultiblockControllerMachine> factory,
                                                              BiFunction<Integer, MultiblockMachineBuilder, MultiblockMachineDefinition> builder,
                                                              int... tiers) {
-        MultiblockMachineDefinition[] definitions = new MultiblockMachineDefinition[tiers.length];
+        MultiblockMachineDefinition[] definitions = new MultiblockMachineDefinition[GTValues.TIER_COUNT];
         for (int i = 0; i < tiers.length; i++) {
             int tier = tiers[i];
             var register =  REGISTRATE.multiblock(GTValues.VN[tier].toLowerCase(Locale.ROOT) + "_" + name, holder -> factory.apply(holder, tier))
                     .tier(tier);
-            definitions[i] = builder.apply(tier, register);
+            definitions[tier] = builder.apply(tier, register);
         }
         return definitions;
     }

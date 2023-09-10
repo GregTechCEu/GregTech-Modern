@@ -138,6 +138,9 @@ public class DrumMachine extends MetaMachine implements IAutoOutputFluid, IDropS
     @Override
     public void loadFromItem(CompoundTag tag) {
         IDropSaveMachine.super.loadFromItem(tag);
+        if (!tag.contains("Fluid")) {
+            stored = FluidStack.empty();
+        }
         // "stored" may not be same as cache (due to item's fluid cap). we should update it.
         cache.storages[0].setFluid(stored.copy());
     }

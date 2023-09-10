@@ -24,9 +24,13 @@ import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
 import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.api.pattern.Predicates;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.integration.kjs.builders.*;
+import com.gregtechceu.gtceu.integration.kjs.builders.block.CoilBlockBuilder;
+import com.gregtechceu.gtceu.integration.kjs.builders.block.RendererBlockBuilder;
+import com.gregtechceu.gtceu.integration.kjs.builders.block.RendererGlassBlockBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.machine.*;
 import com.gregtechceu.gtceu.integration.kjs.builders.prefix.BasicTagPrefixBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.prefix.OreTagPrefixBuilder;
@@ -82,6 +86,8 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         GTRegistryObjectBuilderTypes.TAG_PREFIX.addType("ore", OreTagPrefixBuilder.class, OreTagPrefixBuilder::new, false);
 
         RegistryInfo.BLOCK.addType("gtceu:coil", CoilBlockBuilder.class, CoilBlockBuilder::new);
+        RegistryInfo.BLOCK.addType("gtceu:renderer", RendererBlockBuilder.class, RendererBlockBuilder::new);
+        RegistryInfo.BLOCK.addType("gtceu:renderer_glass", RendererGlassBlockBuilder.class, RendererGlassBlockBuilder::new);
     }
 
     @Override
@@ -146,6 +152,8 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         event.add("GTOreVein", GTOreDefinition.class);
         event.add("GTLayerPattern", GTLayerPattern.class);
         event.add("GTOres", GTOres.class);
+        event.add("GTRecipeModifiers", GTRecipeModifiers.class);
+        event.add("OverclockingLogic", OverclockingLogic.class);
         // ....TODO add global refs. for convenience, ppl do not need to import the java package themselves.
     }
 
@@ -226,18 +234,21 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
             return null;
         });
         typeWrappers.register(HeightRangePlacement.class, (ctx, o) -> {
+            if (o instanceof HeightRangePlacement placement) return placement;
             return Optional.ofNullable(NBTUtils.toTagCompound(o))
                     .map(tag -> HeightRangePlacement.CODEC.parse(NbtOps.INSTANCE, tag))
                     .flatMap(DataResult::result)
                     .orElse(null);
         });
         typeWrappers.register(BiomeWeightModifier.class, (ctx, o) -> {
+            if (o instanceof BiomeWeightModifier modifier) return modifier;
             return Optional.ofNullable(NBTUtils.toTagCompound(o))
                     .map(tag -> BiomeWeightModifier.CODEC.parse(NbtOps.INSTANCE, tag))
                     .flatMap(DataResult::result)
                     .orElse(null);
         });
         typeWrappers.register(VeinGenerator.class, (ctx, o) -> {
+            if (o instanceof VeinGenerator generator) return generator;
             return Optional.ofNullable(NBTUtils.toTagCompound(o))
                     .map(tag -> VeinGenerator.DIRECT_CODEC.parse(NbtOps.INSTANCE, tag))
                     .flatMap(DataResult::result)

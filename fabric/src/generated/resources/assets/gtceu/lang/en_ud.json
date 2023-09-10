@@ -1,5 +1,4 @@
 {
-  " tile.wire_coil.tooltip_energy_cracking": "%s%%ɟ§ :ǝbɐs∩ ʎbɹǝuƎɐ§  ",
   "behavior.item_magnet.disabled": "pǝןqɐsıᗡ pןǝıℲ ɔıʇǝubɐWɔ§",
   "behavior.item_magnet.enabled": "pǝןqɐuƎ pןǝıℲ ɔıʇǝubɐWɐ§",
   "behavior.prospector.not_enough_energy": "¡ʎbɹǝuƎ ɥbnouƎ ʇoN",
@@ -4172,6 +4171,7 @@
   "tile.gtceu.seal.name": "ʞɔoןᗺ pǝןɐǝS",
   "tile.stone_bricks_square.concrete_dark.name": "sʞɔıɹᗺ ǝʇǝɹɔuoƆ ʞɹɐᗡ ǝɹɐnbS",
   "tile.wire_coil.tooltip_cracking": ":ʇıu∩ buıʞɔɐɹƆ8§",
+  "tile.wire_coil.tooltip_energy_cracking": "%s%%ɟ§ :ǝbɐs∩ ʎbɹǝuƎɐ§  ",
   "tile.wire_coil.tooltip_energy_smelter": "ǝdıɔǝɹ ɹǝd8§ ʇ/∩Ǝ %sɟ§ :ǝbɐs∩ ʎbɹǝuƎɐ§  ",
   "tile.wire_coil.tooltip_extended_info": "oɟuI snuoᗺ ןıoƆ ʍoɥs oʇ ⟘ℲIHS pןoH",
   "tile.wire_coil.tooltip_heat": "ʞ %dɟ§ :ʎʇıɔɐdɐƆ ʇɐǝH ǝsɐᗺɔ§",

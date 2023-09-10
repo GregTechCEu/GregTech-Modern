@@ -134,6 +134,11 @@ public class DikeVeinGenerator extends VeinGenerator {
     }
 
     @Override
+    public VeinGenerator copy() {
+        return new DikeVeinGenerator(blocks, minYLevel, maxYLevel);
+    }
+
+    @Override
     public Codec<? extends VeinGenerator> codec() {
         return CODEC;
     }
