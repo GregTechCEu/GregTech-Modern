@@ -149,16 +149,6 @@ public class Predicates {
         return predicate;
     }
 
-    public static TraceabilityPredicate autoAbilities(GTRecipeType[] recipeType,
-                                                      boolean checkEnergyIn,
-                                                      boolean checkEnergyOut,
-                                                      boolean checkItemIn,
-                                                      boolean checkItemOut,
-                                                      boolean checkFluidIn,
-                                                      boolean checkFluidOut) {
-        return autoAbilities(recipeType[0],checkEnergyIn, checkEnergyOut, checkItemIn, checkItemOut, checkFluidIn, checkFluidOut);
-    }
-
     public static TraceabilityPredicate autoAbilities(boolean checkMaintenance, boolean checkMuffler) {
         TraceabilityPredicate predicate = new TraceabilityPredicate();
         if (checkMaintenance) {
