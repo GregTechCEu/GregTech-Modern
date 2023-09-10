@@ -67,18 +67,17 @@ public class MachineModeFancyConfigurator implements IFancyConfigurator {
 
     @Override
     public Widget createConfigurator() {
-        final List<String> recipeTypeNames = new ArrayList<>();
+        List<String> recipeTypeNames = Arrays.stream(recipeTypes).map(GTRecipeType::toString).toList();
         for(GTRecipeType type : this.recipeTypes){
             recipeTypeNames.add(type.toString());
         }
         return new WidgetGroup(0, 0, 120, 40) {
-            final Map<Integer, WidgetGroup> lightGroups = new HashMap<>();
             @Override
             public void initWidget() {
                 super.initWidget();
                 setBackground(GuiTextures.BACKGROUND_INVERSE);
-                addWidget(new ImageWidget(20, 5, 120 - 5 - 10 - 5 - 20, 20, () -> new GuiTextureGroup(GuiTextures.DISPLAY_FRAME, new TextTexture(activeRecipeType.toString()))));
-                addWidget(new SelectorWidget(20, 15, 120, 20, recipeTypeNames, -1).setOnChanged(
+                //addWidget(new ImageWidget(5, 20, 120 - 5 - 10 - 5 - 20, 20, () -> new GuiTextureGroup(GuiTextures.DISPLAY_FRAME, new TextTexture(activeRecipeType.toString()))));
+                addWidget(new SelectorWidget(20, 20, 120, 20, recipeTypeNames, -1).setOnChanged(
                         rt -> activeRecipeType = recipeTypes[recipeTypeNames.indexOf(rt)]
                 ));
             }
@@ -97,22 +96,13 @@ public class MachineModeFancyConfigurator implements IFancyConfigurator {
 
             @Override
             public void readUpdateInfo(int id, FriendlyByteBuf buffer) {
-                if (id == 0) {
-                    int min = buffer.readVarInt();
-                    int max = buffer.readVarInt();
-                } else {
-                    super.readUpdateInfo(id, buffer);
-                }
+                super.readUpdateInfo(id, buffer);
             }
         };
     }
 
     @Override
     public List<Component> getTooltips() {
-        List<Component> types = new ArrayList<>();
-        for (GTRecipeType type : recipeTypes){
-            types.add(Component.literal(type.toString()));
-        }
-        return types;
+        return List.copyOf(Arrays.stream(recipeTypes).map(type -> Component.literal(type.toString())).toList());
     }
 }
