@@ -221,6 +221,6 @@ public class BlockLang {
         provider.add("tile.wire_coil.tooltip_pyro", "§8Pyrolyse Oven:");
         provider.add("tile.wire_coil.tooltip_speed_pyro", "  §bProcessing Speed: §f%s%%");
         provider.add("tile.wire_coil.tooltip_cracking", "§8Cracking Unit:");
-        provider.add(" tile.wire_coil.tooltip_energy_cracking", "  §aEnergy Usage: §f%s%%");
+        provider.add("tile.wire_coil.tooltip_energy_cracking", "  §aEnergy Usage: §f%s%%");
     }
 }
