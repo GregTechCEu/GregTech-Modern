@@ -28,6 +28,7 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -96,7 +97,7 @@ public interface ICoverable extends ITickSubscription, IAppearance, IFancyConfig
         if (coverBehavior == null) {
             return false;
         }
-        List<ItemStack> drops = coverBehavior.getAdditionalDrops();
+        List<ItemStack> drops = new ArrayList<>(coverBehavior.getAdditionalDrops());
         if (dropItself) {
             drops.add(coverBehavior.getPickItem());
         }

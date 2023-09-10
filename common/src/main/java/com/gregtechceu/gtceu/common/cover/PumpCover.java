@@ -11,11 +11,9 @@ import com.gregtechceu.gtceu.api.cover.filter.FilterHandler;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandlers;
 import com.gregtechceu.gtceu.api.cover.filter.FluidFilter;
 import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
-import com.gregtechceu.gtceu.api.gui.widget.LongInputWidget;
-import com.gregtechceu.gtceu.api.gui.widget.NumberInputWidget;
 import com.gregtechceu.gtceu.api.machine.ConditionalSubscriptionHandler;
+import com.gregtechceu.gtceu.api.misc.FluidAmountHandler;
 import com.gregtechceu.gtceu.api.syncdata.RequireRerender;
-import com.gregtechceu.gtceu.common.cover.data.BucketMode;
 import com.gregtechceu.gtceu.utils.FluidStackHashStrategy;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
@@ -33,15 +31,12 @@ import lombok.Getter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.Component;
-import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -58,14 +53,8 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
     protected static final long MILLIBUCKET_SIZE = FluidHelper.getBucket() / 1000;
 
     public final int tier;
-    public final long maxMilliBucketsPerTick;
-
-    @Persisted @DescSynced @Getter
-    protected long currentMilliBucketsPerTick;
     @Persisted @DescSynced @Getter @RequireRerender
     protected IO io = IO.OUT;
-    @Persisted @DescSynced @Getter
-    protected BucketMode bucketMode = BucketMode.MILLI_BUCKET;
 
     @Persisted @Getter
     protected boolean isWorkingEnabled = true;
@@ -74,21 +63,17 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
     @Persisted @DescSynced
     protected final FilterHandler<FluidStack, FluidFilter> filterHandler;
     protected final ConditionalSubscriptionHandler subscriptionHandler;
-    private NumberInputWidget<Long> transferRateWidget;
 
-    /*
-     * Transfer rate variables are treated as liters/millibuckets per tick.
-     * The actual conversion to the platform's values happens inside tick handling.
-     */
+    @Persisted
+    protected final FluidAmountHandler transferRate;
 
     public PumpCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide, int tier) {
         super(definition, coverHolder, attachedSide);
         this.tier = tier;
 
-        this.maxMilliBucketsPerTick = 64 * (long) Math.pow(4, tier - 1); // .5b 2b 8b
-
-        this.currentMilliBucketsPerTick = maxMilliBucketsPerTick;
-        this.milliBucketsLeftToTransferLastSecond = currentMilliBucketsPerTick * 20;
+        var maxMilliBucketsPerTick = 64 * (long) Math.pow(4, tier - 1); // .5b 2b 8b
+        this.transferRate = new FluidAmountHandler(maxMilliBucketsPerTick, maxMilliBucketsPerTick, this::scheduleRenderUpdate);
+        this.milliBucketsLeftToTransferLastSecond = transferRate.getMilliBuckets() * 20;
 
         subscriptionHandler = new ConditionalSubscriptionHandler(coverHolder, this::update, this::isSubscriptionActive);
         filterHandler = FilterHandlers.fluid(this)
@@ -166,31 +151,6 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
     //*****     Transfer Logic     *****//
     //////////////////////////////////////
 
-
-    public void setTransferRate(long milliBucketsPerTick) {
-        this.currentMilliBucketsPerTick = Mth.clamp(milliBucketsPerTick, 0, maxMilliBucketsPerTick);
-    }
-
-    public void setBucketMode(BucketMode bucketMode) {
-        var oldMultiplier = this.bucketMode.multiplier;
-        var newMultiplier = bucketMode.multiplier;
-
-        this.bucketMode = bucketMode;
-
-
-        if (transferRateWidget == null) return;
-
-        if (oldMultiplier > newMultiplier) {
-            transferRateWidget.setValue(getCurrentBucketModeTransferRate());
-        }
-
-        transferRateWidget.setMax(maxMilliBucketsPerTick / bucketMode.multiplier);
-
-        if (newMultiplier > oldMultiplier) {
-            transferRateWidget.setValue(getCurrentBucketModeTransferRate());
-        }
-    }
-
     protected void update() {
         long timer = coverHolder.getOffsetTimer();
         if (timer % 5 != 0)
@@ -202,7 +162,7 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
         }
 
         if (timer % 20 == 0) {
-            this.milliBucketsLeftToTransferLastSecond = currentMilliBucketsPerTick * 20;
+            this.milliBucketsLeftToTransferLastSecond = transferRate.getMilliBuckets() * 20;
         }
 
         subscriptionHandler.updateSubscription();
@@ -274,16 +234,8 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
         final var group = new WidgetGroup(0, 0, 176, 135);
         group.addWidget(new LabelWidget(10, 5, LocalizationUtils.format(getUITitle(), GTValues.VN[tier])));
 
-        transferRateWidget = new LongInputWidget(10, 20, 134, 20,
-                this::getCurrentBucketModeTransferRate, this::setCurrentBucketModeTransferRate).setMin(0L);
-        setBucketMode(this.bucketMode); // initial input widget config happens here
-        group.addWidget(transferRateWidget);
 
-        group.addWidget(new EnumSelectorWidget<>(
-                146, 20, 20, 20,
-                Arrays.stream(BucketMode.values()).filter(m -> m.multiplier <= maxMilliBucketsPerTick).toList(),
-                bucketMode, this::setBucketMode
-        ).setTooltipSupplier(this::getBucketModeTooltip));
+        group.addWidget(transferRate.createUI(10, 20, 156, 20));
 
         group.addWidget(new EnumSelectorWidget<>(10, 45, 20, 20, List.of(IO.IN, IO.OUT), io, this::setIo));
 
@@ -293,20 +245,6 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
         buildAdditionalUI(group);
 
         return group;
-    }
-
-    private List<Component> getBucketModeTooltip(BucketMode mode, String langKey) {
-        return List.of(
-                Component.translatable(langKey).append(Component.translatable("gtceu.gui.content.units.per_tick"))
-        );
-    }
-
-    private long getCurrentBucketModeTransferRate() {
-        return this.currentMilliBucketsPerTick / this.bucketMode.multiplier;
-    }
-
-    private void setCurrentBucketModeTransferRate(long transferRate) {
-        this.setTransferRate(transferRate * this.bucketMode.multiplier);
     }
 
     @NotNull

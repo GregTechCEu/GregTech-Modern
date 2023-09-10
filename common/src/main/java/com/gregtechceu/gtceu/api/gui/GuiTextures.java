@@ -94,6 +94,8 @@ public class GuiTextures {
     public static final SteamTexture INDICATOR_NO_STEAM = SteamTexture.fullImage("gtceu:textures/gui/base/indicator_no_steam_%s.png");
     public static final ResourceTexture TANK_ICON = new ResourceTexture("gtceu:textures/gui/base/tank_icon.png");
 
+    public static final ResourceTexture ARROW_HEAD_DOWN = new ResourceTexture("gtceu:textures/gui/icon/arrow_head_down.png");
+
     //WIDGET UI RELATED
     public static final ResourceTexture SLIDER_BACKGROUND = new ResourceTexture("gtceu:textures/gui/widget/slider_background.png");
     public static final ResourceTexture SLIDER_BACKGROUND_VERTICAL = new ResourceTexture("gtceu:textures/gui/widget/slider_background_vertical.png");
@@ -144,6 +146,7 @@ public class GuiTextures {
     public static final ResourceTexture DARK_CANISTER_OVERLAY = new ResourceTexture("gtceu:textures/gui/overlay/dark_canister_overlay.png");
     public static final ResourceTexture DUST_OVERLAY = new ResourceTexture("gtceu:textures/gui/overlay/dust_overlay.png");
     public static final SteamTexture DUST_OVERLAY_STEAM = SteamTexture.fullImage("gtceu:textures/gui/overlay/dust_overlay_%s.png");
+    public static final ResourceTexture ENDER_LINK_CARD_SLOT_OVERLAY = new ResourceTexture("gtceu:textures/gui/overlay/ender_link_card_slot_overlay.png");
     public static final ResourceTexture EXTRACTOR_OVERLAY = new ResourceTexture("gtceu:textures/gui/overlay/extractor_overlay.png");
     public static final SteamTexture EXTRACTOR_OVERLAY_STEAM = SteamTexture.fullImage("gtceu:textures/gui/overlay/extractor_overlay_%s.png");
     public static final ResourceTexture FILTER_SLOT_OVERLAY = new ResourceTexture("gtceu:textures/gui/overlay/filter_slot_overlay.png");

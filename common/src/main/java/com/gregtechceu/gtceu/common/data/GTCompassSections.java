@@ -79,6 +79,15 @@ public class GTCompassSections {
                     .register();
         }
     }
+
+
+    public final static CompassSection ENDER_LINK = CompassSection.create("ender_link")
+            .icon(() -> new ItemStackTexture(GTMachines.ENDER_LINK_CONTROLLER[0].asStack()))
+            .background(() -> GuiTextures.DISPLAY)
+            .lang("Ender Link")
+            .priority(priority++)
+            .register();
+
     public static void init() {
 
     }

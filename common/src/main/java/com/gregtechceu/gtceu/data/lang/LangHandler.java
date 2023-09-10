@@ -120,6 +120,9 @@ public class LangHandler {
         provider.add("metaitem.dust.tooltip.purify", "Throw into Cauldron to get clean Dust");
         provider.add("metaitem.crushed.tooltip.purify", "Throw into Cauldron to get Purified Ore");
         provider.add("metaitem.int_circuit.configuration", "Configuration: %d");
+        provider.add("metaitem.ender_link_card.linked", "§bLinked to Controller");
+        provider.add("metaitem.ender_link_card.controller.pos", "§9Position: §7%s");
+        provider.add("metaitem.ender_link_card.controller.id", "§9ID: §7%s");
 
 
         provider.add("item.gtceu.tool.replace_tool_head", "Craft with a new Tool Head to replace it");
@@ -383,6 +386,13 @@ public class LangHandler {
         multilineLang(provider, "cover.advanced_item_detector.invert.disabled", "Output: Normal\n\n" + advancedItemDetectorInvertDescription);
         provider.add("cover.advanced_item_detector.max", "Max Items");
         provider.add("cover.advanced_item_detector.min", "Min Items");
+
+        provider.add("cover.ender_link.fluid.label", "Ender Fluid Link");
+        provider.add("cover.ender_link.item.label", "Ender Item Link");
+
+        multiLang(provider, "ender_link.status.not_loaded", "The controller is not in a loaded chunk or doesn't exist anymore.");
+        multiLang(provider, "ender_link.status.not_formed", "The controller has not been formed.\nPlease ensure the multiblock is valid.");
+        multiLang(provider, "ender_link.status.out_of_range", "This cover is outside the controller's range.");
 
         replace(provider, "item.gtceu.bucket", "%s Bucket");
         replace(provider, GTMaterials.FullersEarth.getUnlocalizedName(), "Fuller's Earth");
