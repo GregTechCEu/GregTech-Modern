@@ -16,8 +16,6 @@ import lombok.experimental.Accessors;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
@@ -245,6 +243,11 @@ public class GeodeVeinGenerator extends VeinGenerator {
     @Override
     public VeinGenerator build() {
         return this;
+    }
+
+    @Override
+    public VeinGenerator copy() {
+        return new GeodeVeinGenerator(this.geodeBlockSettings, this.geodeLayerSettings, this.geodeCrackSettings, this.usePotentialPlacementsChance, this.useAlternateLayer0Chance, this.placementsRequireLayer0Alternate, this.outerWallDistance, this.distributionPoints, this.pointOffset, this.minGenOffset, this.maxGenOffset, this.noiseMultiplier, this.invalidBlocksThreshold);
     }
 
     @Override

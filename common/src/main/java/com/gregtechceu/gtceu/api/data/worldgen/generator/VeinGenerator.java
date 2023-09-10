@@ -77,6 +77,8 @@ public abstract class VeinGenerator {
 
     public abstract VeinGenerator build();
 
+    public abstract VeinGenerator copy();
+
     public GTOreDefinition parent() {
         return entry;
     }

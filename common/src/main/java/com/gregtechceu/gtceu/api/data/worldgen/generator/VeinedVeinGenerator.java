@@ -241,6 +241,11 @@ public class VeinedVeinGenerator extends VeinGenerator {
     }
 
     @Override
+    public VeinGenerator copy() {
+        return new VeinedVeinGenerator(this.oreBlocks, this.rareBlocks, this.fillerBlock, this.minYLevel, this.maxYLevel, this.veininessThreshold, this.edgeRoundoffBegin, this.maxEdgeRoundoff, this.minRichness, this.maxRichness, this.maxRichnessThreshold, this.rareBlockChance);
+    }
+
+    @Override
     public Codec<? extends VeinGenerator> codec() {
         return CODEC;
     }
