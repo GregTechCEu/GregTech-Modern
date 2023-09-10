@@ -22,8 +22,12 @@ public class SideLocal<T> {
     }
 
     public SideLocal(Supplier<T> initializer) {
-        serverValue = initializer.get();
-        remoteValue = initializer.get();
+        this(initializer.get(), initializer.get());
+    }
+
+    public SideLocal(T initialServerValue, T initialRemoteValue) {
+        this.serverValue = initialServerValue;
+        this.remoteValue = initialRemoteValue;
     }
 
     public T get() {
