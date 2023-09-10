@@ -246,6 +246,11 @@ public class GeodeVeinGenerator extends VeinGenerator {
     }
 
     @Override
+    public VeinGenerator copy() {
+        return new GeodeVeinGenerator(this.geodeBlockSettings, this.geodeLayerSettings, this.geodeCrackSettings, this.usePotentialPlacementsChance, this.useAlternateLayer0Chance, this.placementsRequireLayer0Alternate, this.outerWallDistance, this.distributionPoints, this.pointOffset, this.minGenOffset, this.maxGenOffset, this.noiseMultiplier, this.invalidBlocksThreshold);
+    }
+
+    @Override
     public Codec<? extends VeinGenerator> codec() {
         return CODEC;
     }
