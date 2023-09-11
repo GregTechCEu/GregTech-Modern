@@ -88,7 +88,7 @@ public class BedrockOreVeinSavedData extends SavedData {
             if (totalWeight > 0) {
                 int weight = Math.abs(query % totalWeight);
                 for (var oreDefinition : GTRegistries.ORE_VEINS) {
-                    int veinWeight = oreDefinition.getWeight() + oreDefinition.getBiomeWeightModifier().apply(biome);
+                    int veinWeight = oreDefinition.getWeight() + (oreDefinition.getBiomeWeightModifier() != null ? oreDefinition.getBiomeWeightModifier().apply(biome) : 0);
                     if (veinWeight > 0 && oreDefinition.getDimensionFilter().get().contains(serverLevel.dimensionTypeRegistration())) {
                         weight -= veinWeight;
                         if (weight < 0) {
