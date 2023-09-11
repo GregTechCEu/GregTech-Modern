@@ -74,8 +74,7 @@ import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
-import static com.gregtechceu.gtceu.api.GTValues.LV;
-import static com.gregtechceu.gtceu.api.GTValues.ULV;
+import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.FORCE_GENERATE_BLOCK;
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.GENERATE_FRAME;
 import static com.gregtechceu.gtceu.api.registry.GTRegistries.REGISTRATE;

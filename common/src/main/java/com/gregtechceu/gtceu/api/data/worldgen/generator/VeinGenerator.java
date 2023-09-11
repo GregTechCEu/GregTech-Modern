@@ -19,6 +19,7 @@ import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 
 import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public abstract class VeinGenerator {
     public static final Codec<Codec<? extends VeinGenerator>> REGISTRY_CODEC = ResourceLocation.CODEC
@@ -46,16 +47,16 @@ public abstract class VeinGenerator {
     }
 
     /**
-     * @return Map of [block|material, chance]
+     * @return List of [block|material, chance]
      */
-    public abstract Map<Either<BlockState, Material>, Integer> getAllEntries();
+    public abstract List<Map.Entry<Either<BlockState, Material>, Integer>> getAllEntries();
 
     public List<BlockState> getAllBlocks() {
-        return getAllEntries().keySet().stream().map(either -> either.map(Function.identity(), material -> ChemicalHelper.getBlock(TagPrefix.ore, material).defaultBlockState())).toList();
+        return getAllEntries().stream().map(entry -> entry.getKey().map(Function.identity(), material -> ChemicalHelper.getBlock(TagPrefix.ore, material).defaultBlockState())).toList();
     }
 
     public List<Material> getAllMaterials() {
-        return getAllEntries().entrySet().stream()
+        return getAllEntries().stream()
                 .sorted(Comparator.comparingInt(Map.Entry::getValue))
                 .map(Map.Entry::getKey)
                 .map(either -> either.map(state -> ChemicalHelper.getMaterial(state.getBlock()) != null ? ChemicalHelper.getMaterial(state.getBlock()).material() : null, Function.identity())).filter(Objects::nonNull)
@@ -63,14 +64,14 @@ public abstract class VeinGenerator {
     }
 
     public List<Integer> getAllChances() {
-        return getAllEntries().values().stream().toList();
+        return getAllEntries().stream().map(Map.Entry::getValue).toList();
     }
 
     public List<Map.Entry<Integer, Material>> getValidMaterialsChances() {
-        return getAllEntries().entrySet().stream()
+        return getAllEntries().stream()
                 .filter(entry -> entry.getKey().map(state -> ChemicalHelper.getMaterial(state.getBlock()) != null ? ChemicalHelper.getMaterial(state.getBlock()).material() : null, Function.identity()) != null)
                 .map(entry -> Map.entry(entry.getValue(), entry.getKey().map(state -> ChemicalHelper.getMaterial(state.getBlock()) != null ? ChemicalHelper.getMaterial(state.getBlock()).material() : null, Function.identity())))
-                .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
+                .collect(Collectors.toList());
     }
 
     public abstract boolean generate(WorldGenLevel level, RandomSource random, GTOreDefinition entry, BlockPos origin);

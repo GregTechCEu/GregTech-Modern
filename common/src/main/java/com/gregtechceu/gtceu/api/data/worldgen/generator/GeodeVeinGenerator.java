@@ -103,14 +103,14 @@ public class GeodeVeinGenerator extends VeinGenerator {
     }
 
     @Override
-    public Map<Either<BlockState, Material>, Integer> getAllEntries() {
+    public List<Map.Entry<Either<BlockState, Material>, Integer>> getAllEntries() {
         RandomSource source = new LegacyRandomSource(0);
-        return Map.of(
-                geodeBlockSettings.fillingProvider.mapBoth(provider -> provider.getState(source, BlockPos.ZERO), Function.identity()), 1,
-                geodeBlockSettings.innerLayerProvider.mapBoth(provider -> provider.getState(source, BlockPos.ZERO), Function.identity()), 1,
-                geodeBlockSettings.alternateInnerLayerProvider.mapBoth(provider -> provider.getState(source, BlockPos.ZERO), Function.identity()), 1,
-                geodeBlockSettings.middleLayerProvider.mapBoth(provider -> provider.getState(source, BlockPos.ZERO), Function.identity()), 1,
-                geodeBlockSettings.outerLayerProvider.mapBoth(provider -> provider.getState(source, BlockPos.ZERO), Function.identity()), 1
+        return List.of(
+                Map.entry(geodeBlockSettings.fillingProvider.mapBoth(provider -> provider.getState(source, BlockPos.ZERO), Function.identity()), 1),
+                Map.entry(geodeBlockSettings.innerLayerProvider.mapBoth(provider -> provider.getState(source, BlockPos.ZERO), Function.identity()), 1),
+                Map.entry(geodeBlockSettings.alternateInnerLayerProvider.mapBoth(provider -> provider.getState(source, BlockPos.ZERO), Function.identity()), 1),
+                Map.entry(geodeBlockSettings.middleLayerProvider.mapBoth(provider -> provider.getState(source, BlockPos.ZERO), Function.identity()), 1),
+                Map.entry(geodeBlockSettings.outerLayerProvider.mapBoth(provider -> provider.getState(source, BlockPos.ZERO), Function.identity()), 1)
         );
     }
 
