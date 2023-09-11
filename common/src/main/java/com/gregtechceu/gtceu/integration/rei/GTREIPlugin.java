@@ -37,7 +37,9 @@ public class GTREIPlugin implements REIClientPlugin {
         MultiblockInfoDisplayCategory.registerWorkStations(registry);
         GTRecipeTypeDisplayCategory.registerWorkStations(registry);
         for (MachineDefinition definition : GTMachines.ELECTRIC_FURNACE) {
-            registry.addWorkstations(SMELTING, EntryStacks.of(definition.asStack()));
+            if (definition != null) {
+                registry.addWorkstations(SMELTING, EntryStacks.of(definition.asStack()));
+            }
         }
         registry.addWorkstations(SMELTING, EntryStacks.of(GTMachines.STEAM_FURNACE.left().asStack()));
         registry.addWorkstations(SMELTING, EntryStacks.of(GTMachines.STEAM_FURNACE.right().asStack()));
