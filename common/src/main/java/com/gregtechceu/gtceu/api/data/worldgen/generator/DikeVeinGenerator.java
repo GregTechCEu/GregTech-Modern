@@ -50,13 +50,13 @@ public class DikeVeinGenerator extends VeinGenerator {
     }
 
     @Override
-    public Map<Either<BlockState, Material>, Integer> getAllEntries() {
+    public List<Map.Entry<Either<BlockState, Material>, Integer>> getAllEntries() {
         return this.blocks.stream()
                 .flatMap(definition ->
                         definition.block.map(state ->
                                 state.stream().map(target -> Map.entry(Either.<BlockState, Material>left(target.state), definition.weight)),
                                 material -> Stream.of(Map.entry(Either.<BlockState, Material>right(material), definition.weight))))
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+                .collect(Collectors.toList());
     }
 
     @Override

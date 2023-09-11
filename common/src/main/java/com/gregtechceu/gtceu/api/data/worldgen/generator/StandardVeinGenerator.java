@@ -10,11 +10,8 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Registry;
 import net.minecraft.core.SectionPos;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.data.worldgen.features.OreFeatures;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
@@ -83,9 +80,9 @@ public class StandardVeinGenerator extends VeinGenerator {
     }
 
     @Override
-    public Map<Either<BlockState, Material>, Integer> getAllEntries() {
-        if (this.blocks != null) return this.blocks.map(blockStates -> blockStates.stream().map(state -> Either.<BlockState, Material>left(state.state)).collect(Collectors.toMap(Function.identity(), value -> 1)), material -> Map.of(Either.right(material), 1));
-        return Map.of(Either.left(block.get().defaultBlockState()), 1, Either.left(deepBlock.get().defaultBlockState()), 1, Either.left(netherBlock.get().defaultBlockState()), 1);
+    public List<Map.Entry<Either<BlockState, Material>, Integer>> getAllEntries() {
+        if (this.blocks != null) return this.blocks.map(blockStates -> blockStates.stream().map(state -> Either.<BlockState, Material>left(state.state)).map(entry -> Map.entry(entry, 1)).collect(Collectors.toList()), material -> List.of(Map.entry(Either.right(material), 1)));
+        return List.of(Map.entry(Either.left(block.get().defaultBlockState()), 1), Map.entry(Either.left(deepBlock.get().defaultBlockState()), 1), Map.entry(Either.left(netherBlock.get().defaultBlockState()), 1));
     }
 
     public VeinGenerator build() {

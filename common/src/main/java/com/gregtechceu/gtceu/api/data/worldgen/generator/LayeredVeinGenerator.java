@@ -43,7 +43,7 @@ public class LayeredVeinGenerator extends VeinGenerator {
     }
 
     @Override
-    public Map<Either<BlockState, Material>, Integer> getAllEntries() {
+    public List<Map.Entry<Either<BlockState, Material>, Integer>> getAllEntries() {
         return layerPatterns.stream()
                 .flatMap(pattern -> pattern.layers.stream())
                 .map(layer -> Map.entry(layer.targets.stream().flatMap(entry ->
@@ -55,7 +55,7 @@ public class LayeredVeinGenerator extends VeinGenerator {
                     return Stream.generate(() -> Map.entry(iterator.next(), entry.getValue())).limit(entry.getKey().size());
                 })
                 .distinct()
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+                .collect(Collectors.toList());
     }
 
     @Override
