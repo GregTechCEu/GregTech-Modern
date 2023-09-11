@@ -157,7 +157,7 @@ public class BedrockOreVeinSavedData extends SavedData {
             int totalWeight = 0;
             for (var definition : GTRegistries.ORE_VEINS) {
                 if (definition.getDimensionFilter().get().contains(serverLevel.dimensionTypeRegistration())) {
-                    totalWeight += definition.getBiomeWeightModifier().apply(biome);
+                    totalWeight += definition.getBiomeWeightModifier() != null ? definition.getBiomeWeightModifier().apply(biome) : 0;
                     totalWeight += definition.getWeight();
                 }
             }
