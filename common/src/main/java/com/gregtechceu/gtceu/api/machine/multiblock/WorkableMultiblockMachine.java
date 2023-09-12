@@ -49,7 +49,7 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
     @DescSynced
     public final RecipeLogic recipeLogic;
     @Getter
-    private final GTRecipeType[] recipeType;
+    private final GTRecipeType[] recipeTypes;
     @Getter @Setter @Persisted
     private int activeRecipeType;
     @Getter
@@ -65,7 +65,7 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
 
     public WorkableMultiblockMachine(IMachineBlockEntity holder, Object... args) {
         super(holder);
-        this.recipeType = getDefinition().getRecipeType();
+        this.recipeTypes = getDefinition().getRecipeTypes();
         this.activeRecipeType = 0;
         this.recipeLogic = createRecipeLogic(args);
         this.capabilitiesProxy = Tables.newCustomTable(new EnumMap<>(IO.class), HashMap::new);

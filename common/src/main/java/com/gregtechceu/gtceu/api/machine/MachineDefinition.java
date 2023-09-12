@@ -61,11 +61,9 @@ public class MachineDefinition implements Supplier<IMachineBlock> {
     private Supplier<BlockEntityType<? extends BlockEntity>> blockEntityTypeSupplier;
     @Setter
     private Function<IMachineBlockEntity, MetaMachine> machineSupplier;
+    @Getter @Setter @Nullable
+    private GTRecipeType[] recipeTypes;
     @Getter @Setter
-    @Nullable
-    private GTRecipeType[] recipeType;
-    @Getter
-    @Setter
     private int tier;
     @Setter @Getter
     private int defaultPaintingColor;

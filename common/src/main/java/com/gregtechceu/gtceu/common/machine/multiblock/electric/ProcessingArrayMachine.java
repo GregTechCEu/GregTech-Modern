@@ -81,11 +81,11 @@ public class ProcessingArrayMachine extends TieredWorkableElectricMultiblockMach
 
     protected boolean isMachineStack(ItemStack itemStack) {
         if (itemStack.getItem() instanceof MetaMachineItem metaMachineItem) {
-            var recipeType = metaMachineItem.getDefinition().getRecipeType();
-            if(recipeType == null){
+            var recipeTypes = metaMachineItem.getDefinition().getRecipeTypes();
+            if(recipeTypes == null){
                 return false;
             }
-            for(GTRecipeType type : recipeType){
+            for(GTRecipeType type : recipeTypes){
                 if(type != GTRecipeTypes.DUMMY_RECIPES){
                     return true;
                 }
@@ -104,10 +104,10 @@ public class ProcessingArrayMachine extends TieredWorkableElectricMultiblockMach
 
     @Override
     @Nonnull
-    public GTRecipeType[] getRecipeType() {
+    public GTRecipeType[] getRecipeTypes() {
         if (recipeTypeCache == null) {
             var definition = getMachineDefinition();
-            recipeTypeCache = definition == null ? null : definition.getRecipeType();
+            recipeTypeCache = definition == null ? null : definition.getRecipeTypes();
         }
         if (recipeTypeCache == null) {
             recipeTypeCache = new GTRecipeType[]{GTRecipeTypes.DUMMY_RECIPES};

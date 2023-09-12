@@ -20,6 +20,7 @@ import com.gregtechceu.gtceu.common.data.GTCompassSections;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
+import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.tterrag.registrate.Registrate;
 import com.tterrag.registrate.builders.BlockBuilder;
 import com.tterrag.registrate.builders.ItemBuilder;
@@ -92,8 +93,9 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     private Consumer<ItemBuilder<? extends MetaMachineItem, ?>> itemBuilder;
     @Setter
     private NonNullConsumer<BlockEntityType<BlockEntity>> onBlockEntityRegister = MetaMachineBlockEntity::onBlockEntityRegister;
-    private GTRecipeType[] recipeType;
-    private GTRecipeType activeRecipeType;
+    private GTRecipeType[] recipeTypes;
+    @Persisted
+    private int activeRecipeType;
     @Getter @Setter // getter for KJS
     private int tier;
     @Setter
@@ -138,11 +140,17 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
         this.definitionFactory = definitionFactory;
     }
 
-    public MachineBuilder<DEFINITION> recipeType(GTRecipeType... types) {
+    public MachineBuilder<DEFINITION> recipeType(GTRecipeType type) {
+        this.recipeTypes = new GTRecipeType[]{type};
+        this.activeRecipeType = 0;
+        return this;
+    }
+
+    public MachineBuilder<DEFINITION> recipeTypes(GTRecipeType... types) {
         for (GTRecipeType type : types){
-            this.recipeType = ArrayUtils.add(this.recipeType, type);
+            this.recipeTypes = ArrayUtils.add(this.recipeTypes, type);
         }
-        this.activeRecipeType = this.recipeType[0];
+        this.activeRecipeType = 0;
         return this;
     }
 
@@ -308,7 +316,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
             blockEntityBuilder = blockEntityBuilder.renderer(() -> GTRendererProvider::getOrCreate);
         }
         var blockEntity = blockEntityBuilder.register();
-        definition.setRecipeType(recipeType);
+        definition.setRecipeTypes(recipeTypes);
         definition.setBlockSupplier(block);
         definition.setItemSupplier(item);
         definition.setTier(tier);
@@ -323,8 +331,8 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
         if (renderer == null) {
             renderer = () -> new MachineRenderer(new ResourceLocation(registrate.getModid(), "block/machine/" + name));
         }
-        if (recipeType != null) {
-            for (GTRecipeType type : recipeType){
+        if (recipeTypes != null) {
+            for (GTRecipeType type : recipeTypes){
                 if (type != null && type.getIconSupplier() == null) {
                     type.setIconSupplier(definition::asStack);
                 }

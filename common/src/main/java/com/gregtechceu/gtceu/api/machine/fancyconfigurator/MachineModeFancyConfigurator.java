@@ -3,8 +3,6 @@ package com.gregtechceu.gtceu.api.machine.fancyconfigurator;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.IFancyConfigurator;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
-import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
@@ -43,7 +41,7 @@ public class MachineModeFancyConfigurator implements IFancyConfigurator {
 
     @Override
     public void writeInitialData(FriendlyByteBuf buffer) {
-        buffer.writeVarInt(Arrays.asList(machine.getRecipeType()).indexOf(machine.getActiveRecipeType()));
+        buffer.writeVarInt(Arrays.asList(machine.getRecipeTypes()).indexOf((machine.getRecipeTypes()[machine.getActiveRecipeType()])));
     }
 
     @Override
@@ -53,7 +51,7 @@ public class MachineModeFancyConfigurator implements IFancyConfigurator {
 
     @Override
     public void detectAndSendChange(BiConsumer<Integer, Consumer<FriendlyByteBuf>> sender) {
-        sender.accept(0, buf -> buf.writeVarInt(Arrays.asList(machine.getRecipeType()).indexOf(machine.getActiveRecipeType())));
+        sender.accept(0, buf -> buf.writeVarInt(Arrays.asList(machine.getRecipeTypes()).indexOf(machine.getRecipeTypes()[machine.getActiveRecipeType()])));
     }
 
     @Override
@@ -65,8 +63,8 @@ public class MachineModeFancyConfigurator implements IFancyConfigurator {
 
     @Override
     public Widget createConfigurator() {
-        List<String> recipeTypeNames = Arrays.stream(machine.getRecipeType()).map(rt -> FormattingUtil.toEnglishName(rt.registryName.getPath())).toList();
-        return new WidgetGroup(0, 0, 140, 40) {
+        List<String> recipeTypeNames = Arrays.stream(machine.getRecipeTypes()).map(rt -> FormattingUtil.toEnglishName(rt.registryName.getPath())).toList();
+        return new WidgetGroup(0, 0, 140, 20*machine.getRecipeTypes().length) {
             @Override
             public void initWidget() {
                 super.initWidget();
@@ -75,13 +73,13 @@ public class MachineModeFancyConfigurator implements IFancyConfigurator {
                         rt -> {
                             machine.setActiveRecipeType(recipeTypeNames.indexOf(rt));
                             machine.getRecipeLogic().resetRecipeLogic();
-                        }).setSupplier(() -> recipeTypeNames.get(recipeTypeNames.indexOf(FormattingUtil.toEnglishName(machine.getRecipeType()[machine.getActiveRecipeType()].registryName.getPath()))))
+                        }).setSupplier(() -> recipeTypeNames.get(recipeTypeNames.indexOf(FormattingUtil.toEnglishName(machine.getRecipeTypes()[machine.getActiveRecipeType()].registryName.getPath()))))
                 );
             }
 
             @Override
             public void writeInitialData(FriendlyByteBuf buffer) {
-                buffer.writeVarInt(Arrays.asList(machine.getRecipeType()).indexOf(machine.getActiveRecipeType()));
+                buffer.writeVarInt(Arrays.asList(machine.getRecipeTypes()).indexOf(machine.getRecipeTypes()[machine.getActiveRecipeType()]));
                 super.writeInitialData(buffer);
             }
 

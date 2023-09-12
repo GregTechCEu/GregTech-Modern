@@ -212,7 +212,7 @@ public class MinerMachine extends WorkableTieredMachine implements IMiner, ICont
         return group;
     }, (template, machine) -> {
         if (machine instanceof MinerMachine minerMachine) {
-            minerMachine.recipeType[minerMachine.activeRecipeType].createEditableUITemplate(false, false).setupUI(template,
+            minerMachine.recipeTypes[minerMachine.activeRecipeType].createEditableUITemplate(false, false).setupUI(template,
                     new GTRecipeType.RecipeHolder(minerMachine.recipeLogic::getProgressPercent,
                             minerMachine.importItems.storage,
                             minerMachine.exportItems.storage,

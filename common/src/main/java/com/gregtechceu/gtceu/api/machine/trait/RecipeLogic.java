@@ -130,7 +130,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     }
 
     public boolean needFuel() {
-        if (machine.getRecipeType()[machine.getActiveRecipeType()].isFuelRecipeType()){
+        if (machine.getRecipeTypes()[machine.getActiveRecipeType()].isFuelRecipeType()){
             return true;
         }
         return false;
@@ -269,7 +269,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     }
 
     protected List<GTRecipe> searchRecipe() {
-        return machine.getRecipeType()[machine.getActiveRecipeType()].searchRecipe(getRecipeManager(), this.machine);
+        return machine.getRecipeTypes()[machine.getActiveRecipeType()].searchRecipe(getRecipeManager(), this.machine);
     }
 
     public void findAndHandleRecipe() {
@@ -303,7 +303,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
 
     public boolean handleFuelRecipe() {
         if (!needFuel() || fuelTime > 0) return true;
-        for (GTRecipe recipe : machine.getRecipeType()[machine.getActiveRecipeType()].searchFuelRecipe(getRecipeManager(), machine)) {
+        for (GTRecipe recipe : machine.getRecipeTypes()[machine.getActiveRecipeType()].searchFuelRecipe(getRecipeManager(), machine)) {
             if (recipe.checkConditions(this).isSuccess() && recipe.handleRecipeIO(IO.IN, this.machine)) {
                 fuelMaxTime = recipe.duration;
                 fuelTime = fuelMaxTime;
@@ -476,7 +476,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     @Environment(EnvType.CLIENT)
     public void updateSound() {
         if (isWorking() && machine.shouldWorkingPlaySound()) {
-            var sound = machine.getRecipeType()[machine.getActiveRecipeType()].getSound();
+            var sound = machine.getRecipeTypes()[machine.getActiveRecipeType()].getSound();
             if (workingSound instanceof AutoReleasedSound soundEntry) {
                 if (soundEntry.soundEntry == sound && !soundEntry.isStopped()) {
                     return;
