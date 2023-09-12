@@ -130,8 +130,8 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder{
         this.pickaxeTool = GTItems.TOOL_ITEMS.get(GTMaterials.Neutronium.getToolTier(), GTToolType.PICKAXE).asStack();
         this.pickaxeTool.enchant(Enchantments.BLOCK_FORTUNE, fortune);
         this.capabilitiesProxy = Tables.newCustomTable(new EnumMap<>(IO.class), HashMap::new);
-        this.inputItemHandler = new ItemRecipeHandler(IO.IN, machine.getActiveRecipeType().getMaxInputs(ItemRecipeCapability.CAP));
-        this.outputItemHandler = new ItemRecipeHandler(IO.OUT, machine.getActiveRecipeType().getMaxOutputs(ItemRecipeCapability.CAP));
+        this.inputItemHandler = new ItemRecipeHandler(IO.IN, machine.getRecipeType()[machine.getActiveRecipeType()].getMaxInputs(ItemRecipeCapability.CAP));
+        this.outputItemHandler = new ItemRecipeHandler(IO.OUT, machine.getRecipeType()[machine.getActiveRecipeType()].getMaxOutputs(ItemRecipeCapability.CAP));
         this.capabilitiesProxy.put(IO.IN, inputItemHandler.getCapability(), List.of(inputItemHandler));
         this.capabilitiesProxy.put(IO.OUT, inputItemHandler.getCapability(), List.of(outputItemHandler));
     }
@@ -330,7 +330,7 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder{
         outputItemHandler.storage.setStackInSlot(0, ItemStack.EMPTY);
         outputItemHandler.storage.onContentsChanged(0);
 
-        var matches = machine.getActiveRecipeType().searchRecipe(getRecipeManager(), this);
+        var matches = machine.getRecipeType()[machine.getActiveRecipeType()].searchRecipe(getRecipeManager(), this);
 
         for (var match : matches) {
             var eut = RecipeHelper.getInputEUt(match);

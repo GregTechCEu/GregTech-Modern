@@ -41,8 +41,8 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
     public final RecipeLogic recipeLogic;
     @Getter
     public final GTRecipeType[] recipeType;
-    @Getter @Setter
-    public GTRecipeType activeRecipeType;
+    @Getter @Setter @Persisted
+    public int activeRecipeType;
     @Getter
     public final Int2LongFunction tankScalingFunction;
     @Nullable @Getter @Setter
@@ -68,7 +68,7 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
         super(holder, tier, args);
         this.overclockTier = getMaxOverclockTier();
         this.recipeType = getDefinition().getRecipeType();
-        this.activeRecipeType = recipeType[0];
+        this.activeRecipeType = 0;
         this.tankScalingFunction = tankScalingFunction;
         this.capabilitiesProxy = Tables.newCustomTable(new EnumMap<>(IO.class), HashMap::new);
         this.traitSubscriptions = new ArrayList<>();
@@ -107,19 +107,19 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
     }
 
     protected NotifiableItemStackHandler createImportItemHandler(Object... args) {
-        return new NotifiableItemStackHandler(this, getActiveRecipeType().getMaxInputs(ItemRecipeCapability.CAP), IO.IN);
+        return new NotifiableItemStackHandler(this, getRecipeType()[getActiveRecipeType()].getMaxInputs(ItemRecipeCapability.CAP), IO.IN);
     }
 
     protected NotifiableItemStackHandler createExportItemHandler(Object... args) {
-        return new NotifiableItemStackHandler(this, getActiveRecipeType().getMaxOutputs(ItemRecipeCapability.CAP), IO.OUT);
+        return new NotifiableItemStackHandler(this, getRecipeType()[getActiveRecipeType()].getMaxOutputs(ItemRecipeCapability.CAP), IO.OUT);
     }
 
     protected NotifiableFluidTank createImportFluidHandler(Object... args) {
-        return new NotifiableFluidTank(this, getActiveRecipeType().getMaxInputs(FluidRecipeCapability.CAP), this.tankScalingFunction.apply(this.getTier()), IO.IN);
+        return new NotifiableFluidTank(this, getRecipeType()[getActiveRecipeType()].getMaxInputs(FluidRecipeCapability.CAP), this.tankScalingFunction.apply(this.getTier()), IO.IN);
     }
 
     protected NotifiableFluidTank createExportFluidHandler(Object... args) {
-        return new NotifiableFluidTank(this, getActiveRecipeType().getMaxOutputs(FluidRecipeCapability.CAP), this.tankScalingFunction.apply(this.getTier()), IO.OUT);
+        return new NotifiableFluidTank(this, getRecipeType()[getActiveRecipeType()].getMaxOutputs(FluidRecipeCapability.CAP), this.tankScalingFunction.apply(this.getTier()), IO.OUT);
     }
 
     protected RecipeLogic createRecipeLogic(Object... args) {

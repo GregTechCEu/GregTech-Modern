@@ -48,7 +48,7 @@ public class MachineModeFancyConfigurator implements IFancyConfigurator {
 
     @Override
     public void readInitialData(FriendlyByteBuf buffer) {
-        machine.setActiveRecipeType(machine.getRecipeType()[buffer.readVarInt()]);
+        machine.setActiveRecipeType(buffer.readVarInt());
     }
 
     @Override
@@ -59,26 +59,24 @@ public class MachineModeFancyConfigurator implements IFancyConfigurator {
     @Override
     public void readUpdateInfo(int id, FriendlyByteBuf buffer) {
         if (id == 0) {
-            machine.setActiveRecipeType(machine.getRecipeType()[buffer.readVarInt()]);
+            machine.setActiveRecipeType(buffer.readVarInt());
         }
     }
 
     @Override
     public Widget createConfigurator() {
-        List<String> recipeTypeNames = Arrays.stream(this.machine.getRecipeType()).map(rt -> FormattingUtil.toEnglishName(rt.registryName.getPath())).toList();
+        List<String> recipeTypeNames = Arrays.stream(machine.getRecipeType()).map(rt -> FormattingUtil.toEnglishName(rt.registryName.getPath())).toList();
         return new WidgetGroup(0, 0, 140, 40) {
             @Override
             public void initWidget() {
                 super.initWidget();
                 setBackground(GuiTextures.BACKGROUND_INVERSE);
-                SelectorWidget widget;
-                addWidget(widget = new SelectorWidget(0, 0, 140, 20, recipeTypeNames, -1).setOnChanged(
+                addWidget(new SelectorWidget(0, 0, 140, 20, recipeTypeNames, -1).setOnChanged(
                         rt -> {
-                            machine.setActiveRecipeType(machine.getRecipeType()[recipeTypeNames.indexOf(rt)]);
+                            machine.setActiveRecipeType(recipeTypeNames.indexOf(rt));
                             machine.getRecipeLogic().resetRecipeLogic();
-                        })
+                        }).setSupplier(() -> recipeTypeNames.get(recipeTypeNames.indexOf(FormattingUtil.toEnglishName(machine.getRecipeType()[machine.getActiveRecipeType()].registryName.getPath()))))
                 );
-                widget.setValue(recipeTypeNames.get(0));
             }
 
             @Override
@@ -89,7 +87,7 @@ public class MachineModeFancyConfigurator implements IFancyConfigurator {
 
             @Override
             public void readInitialData(FriendlyByteBuf buffer) {
-                machine.setActiveRecipeType(machine.getRecipeType()[buffer.readVarInt()]);
+                machine.setActiveRecipeType(buffer.readVarInt());
                 super.readInitialData(buffer);
             }
 

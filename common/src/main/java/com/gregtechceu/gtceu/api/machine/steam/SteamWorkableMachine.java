@@ -57,7 +57,7 @@ public abstract class SteamWorkableMachine extends SteamMachine implements IReci
     @Getter
     public final GTRecipeType[] recipeType;
     @Getter @Setter
-    public GTRecipeType activeRecipeType;
+    public int activeRecipeType;
     @Persisted @DescSynced @Getter @RequireRerender
     protected Direction outputFacing;
     @Persisted @DescSynced @Getter @Setter
@@ -66,14 +66,14 @@ public abstract class SteamWorkableMachine extends SteamMachine implements IReci
     protected final Table<IO, RecipeCapability<?>, List<IRecipeHandler<?>>> capabilitiesProxy;
     protected final List<ISubscription> traitSubscriptions;
 
-    public void setActiveRecipeType(GTRecipeType type){
+    public void setActiveRecipeType(int type){
         this.activeRecipeType = type;
     }
 
     public SteamWorkableMachine(IMachineBlockEntity holder, boolean isHighPressure, Object... args) {
         super(holder, isHighPressure, args);
         this.recipeType = getDefinition().getRecipeType();
-        this.activeRecipeType = recipeType[0];
+        this.activeRecipeType = 0;
         this.recipeLogic = createRecipeLogic(args);
         this.capabilitiesProxy = Tables.newCustomTable(new EnumMap<>(IO.class), HashMap::new);
         this.traitSubscriptions = new ArrayList<>();

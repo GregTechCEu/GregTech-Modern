@@ -104,7 +104,7 @@ public class SimpleGeneratorMachine extends WorkableTieredMachine implements IFa
         return group;
     }, (template, machine) -> {
         if (machine instanceof SimpleGeneratorMachine generatorMachine) {
-            generatorMachine.activeRecipeType.createEditableUITemplate(false, false).setupUI(template,
+            generatorMachine.recipeType[generatorMachine.activeRecipeType].createEditableUITemplate(false, false).setupUI(template,
                     new GTRecipeType.RecipeHolder(generatorMachine.recipeLogic::getProgressPercent,
                             generatorMachine.importItems.storage,
                             generatorMachine.exportItems.storage,

@@ -27,6 +27,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.world.entity.player.Player;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
@@ -95,7 +96,7 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
 //                    .setStyle(Style.EMPTY.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
 //                            Component.translatable("gtceu.multiblock.multiple_recipemaps.tooltip")))));
 
-            textList.add(Component.translatable(getActiveRecipeType().registryName.toLanguageKey())
+            textList.add(Component.translatable(getRecipeType()[getActiveRecipeType()].registryName.toLanguageKey())
                     .setStyle(Style.EMPTY.withColor(ChatFormatting.AQUA)
                             .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
                                     Component.translatable("gtceu.gui.machinemode.title")))));
