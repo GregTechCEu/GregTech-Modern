@@ -69,7 +69,7 @@ public class MachineModeFancyConfigurator implements IFancyConfigurator {
             public void initWidget() {
                 super.initWidget();
                 setBackground(GuiTextures.BACKGROUND_INVERSE);
-                addWidget(new SelectorWidget(0, 0, 140, 20 * recipeTypeNames.size(), recipeTypeNames, -1).setOnChanged(
+                addWidget(new SelectorWidget(2, 2, 136, 15, recipeTypeNames, -1).setOnChanged(
                         rt -> {
                             machine.setActiveRecipeType(recipeTypeNames.indexOf(rt));
                             machine.getRecipeLogic().resetRecipeLogic();
