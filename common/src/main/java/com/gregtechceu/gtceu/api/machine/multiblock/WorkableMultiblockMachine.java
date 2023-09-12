@@ -29,6 +29,7 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.*;
 
@@ -59,9 +60,6 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
     protected boolean isMuffled;
     @Nullable @Getter
     protected LongSet activeBlocks;
-    public void setActiveRecipeType(int type){
-        this.activeRecipeType = type;
-    }
 
     public WorkableMultiblockMachine(IMachineBlockEntity holder, Object... args) {
         super(holder);
@@ -239,4 +237,8 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
         }
     }
 
+    @Nonnull
+    public GTRecipeType getRecipeType() {
+        return recipeTypes[activeRecipeType];
+    }
 }

@@ -66,10 +66,6 @@ public abstract class SteamWorkableMachine extends SteamMachine implements IReci
     protected final Table<IO, RecipeCapability<?>, List<IRecipeHandler<?>>> capabilitiesProxy;
     protected final List<ISubscription> traitSubscriptions;
 
-    public void setActiveRecipeType(int type){
-        this.activeRecipeType = type;
-    }
-
     public SteamWorkableMachine(IMachineBlockEntity holder, boolean isHighPressure, Object... args) {
         super(holder, isHighPressure, args);
         this.recipeTypes = getDefinition().getRecipeTypes();
@@ -137,6 +133,12 @@ public abstract class SteamWorkableMachine extends SteamMachine implements IReci
     @Override
     public boolean keepSubscribing() {
         return false;
+    }
+
+    @NotNull
+    @Override
+    public GTRecipeType getRecipeType() {
+        return recipeTypes[activeRecipeType];
     }
 
     //////////////////////////////////////

@@ -41,7 +41,7 @@ public class MachineModeFancyConfigurator implements IFancyConfigurator {
 
     @Override
     public void writeInitialData(FriendlyByteBuf buffer) {
-        buffer.writeVarInt(Arrays.asList(machine.getRecipeTypes()).indexOf((machine.getRecipeTypes()[machine.getActiveRecipeType()])));
+        buffer.writeVarInt(machine.getActiveRecipeType());
     }
 
     @Override
@@ -51,7 +51,7 @@ public class MachineModeFancyConfigurator implements IFancyConfigurator {
 
     @Override
     public void detectAndSendChange(BiConsumer<Integer, Consumer<FriendlyByteBuf>> sender) {
-        sender.accept(0, buf -> buf.writeVarInt(Arrays.asList(machine.getRecipeTypes()).indexOf(machine.getRecipeTypes()[machine.getActiveRecipeType()])));
+        sender.accept(0, buf -> buf.writeVarInt(machine.getActiveRecipeType()));
     }
 
     @Override
@@ -63,23 +63,26 @@ public class MachineModeFancyConfigurator implements IFancyConfigurator {
 
     @Override
     public Widget createConfigurator() {
-        List<String> recipeTypeNames = Arrays.stream(machine.getRecipeTypes()).map(rt -> FormattingUtil.toEnglishName(rt.registryName.getPath())).toList();
-        return new WidgetGroup(0, 0, 140, 20*machine.getRecipeTypes().length) {
+        List<String> recipeTypeNames = Arrays.stream(machine.getRecipeTypes()).map(rt -> Component.translatable(rt.registryName.toLanguageKey()).getString()).toList();
+        return new WidgetGroup(0, 0, 140, 20 * recipeTypeNames.size()) {
             @Override
             public void initWidget() {
                 super.initWidget();
                 setBackground(GuiTextures.BACKGROUND_INVERSE);
-                addWidget(new SelectorWidget(0, 0, 140, 20, recipeTypeNames, -1).setOnChanged(
+                addWidget(new SelectorWidget(2, 2, 136, 15, recipeTypeNames, -1).setOnChanged(
                         rt -> {
                             machine.setActiveRecipeType(recipeTypeNames.indexOf(rt));
                             machine.getRecipeLogic().resetRecipeLogic();
-                        }).setSupplier(() -> recipeTypeNames.get(recipeTypeNames.indexOf(FormattingUtil.toEnglishName(machine.getRecipeTypes()[machine.getActiveRecipeType()].registryName.getPath()))))
+                        }).setSupplier(() -> {
+                            var index = recipeTypeNames.indexOf(Component.translatable(machine.getRecipeType().registryName.toLanguageKey()).getString());
+                            return recipeTypeNames.get(Math.max(index, 0));
+                        })
                 );
             }
 
             @Override
             public void writeInitialData(FriendlyByteBuf buffer) {
-                buffer.writeVarInt(Arrays.asList(machine.getRecipeTypes()).indexOf(machine.getRecipeTypes()[machine.getActiveRecipeType()]));
+                buffer.writeVarInt(machine.getActiveRecipeType());
                 super.writeInitialData(buffer);
             }
 

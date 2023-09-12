@@ -7,8 +7,6 @@ import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import lombok.Setter;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -32,8 +30,9 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFe
     @Nonnull
     GTRecipeType[] getRecipeTypes();
     @Nonnull
-    int getActiveRecipeType();
+    GTRecipeType getRecipeType();
 
+    int getActiveRecipeType();
     void setActiveRecipeType(int type);
 
     /**

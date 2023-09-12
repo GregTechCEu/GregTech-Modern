@@ -8,7 +8,6 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.sound.AutoReleasedSound;
 import com.gregtechceu.gtceu.api.syncdata.IEnhancedManaged;
 import com.gregtechceu.gtceu.api.syncdata.UpdateListener;
@@ -130,7 +129,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     }
 
     public boolean needFuel() {
-        if (machine.getRecipeTypes()[machine.getActiveRecipeType()].isFuelRecipeType()){
+        if (machine.getRecipeType().isFuelRecipeType()){
             return true;
         }
         return false;
@@ -269,7 +268,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     }
 
     protected List<GTRecipe> searchRecipe() {
-        return machine.getRecipeTypes()[machine.getActiveRecipeType()].searchRecipe(getRecipeManager(), this.machine);
+        return machine.getRecipeType().searchRecipe(getRecipeManager(), this.machine);
     }
 
     public void findAndHandleRecipe() {
@@ -303,7 +302,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
 
     public boolean handleFuelRecipe() {
         if (!needFuel() || fuelTime > 0) return true;
-        for (GTRecipe recipe : machine.getRecipeTypes()[machine.getActiveRecipeType()].searchFuelRecipe(getRecipeManager(), machine)) {
+        for (GTRecipe recipe : machine.getRecipeType().searchFuelRecipe(getRecipeManager(), machine)) {
             if (recipe.checkConditions(this).isSuccess() && recipe.handleRecipeIO(IO.IN, this.machine)) {
                 fuelMaxTime = recipe.duration;
                 fuelTime = fuelMaxTime;
@@ -476,7 +475,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     @Environment(EnvType.CLIENT)
     public void updateSound() {
         if (isWorking() && machine.shouldWorkingPlaySound()) {
-            var sound = machine.getRecipeTypes()[machine.getActiveRecipeType()].getSound();
+            var sound = machine.getRecipeType().getSound();
             if (workingSound instanceof AutoReleasedSound soundEntry) {
                 if (soundEntry.soundEntry == sound && !soundEntry.isStopped()) {
                     return;
