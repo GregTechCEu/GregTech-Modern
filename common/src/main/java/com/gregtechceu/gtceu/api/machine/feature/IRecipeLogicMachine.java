@@ -29,10 +29,10 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFe
      */
     @Nonnull
     GTRecipeType[] getRecipeTypes();
-    int getActiveRecipeType();
     @Nonnull
     GTRecipeType getRecipeType();
 
+    int getActiveRecipeType();
     void setActiveRecipeType(int type);
 
     /**

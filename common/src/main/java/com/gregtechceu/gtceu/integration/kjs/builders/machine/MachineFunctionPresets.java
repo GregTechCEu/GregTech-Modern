@@ -141,9 +141,9 @@ public class MachineFunctionPresets {
             }
 
             @Override
-            public MachineBuilder<D> recipeType(GTRecipeType... recipeType) {
+            public MachineBuilder<D> recipeTypes(GTRecipeType... recipeTypes) {
                 for (var builder : builders) {
-                    builder.recipeType(recipeType);
+                    builder.recipeTypes(recipeTypes);
                 }
                 return this;
             }
