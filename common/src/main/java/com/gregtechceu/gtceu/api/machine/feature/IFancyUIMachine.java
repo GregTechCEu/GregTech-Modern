@@ -105,8 +105,8 @@ public interface IFancyUIMachine extends IUIMachine, IFancyUIProvider {
                             Component.translatable(pressed ? "behaviour.soft_hammer.enabled" : "behaviour.soft_hammer.disabled")
                     )));
         }
-        if (this instanceof WorkableTieredMachine wTMachine) {
-            configuratorPanel.attachConfigurators(new MachineModeFancyConfigurator(wTMachine));
+        if (this instanceof IRecipeLogicMachine rLMachine) {
+            configuratorPanel.attachConfigurators(new MachineModeFancyConfigurator(rLMachine));
         }
         configuratorPanel.attachConfigurators(self().getCoverContainer());
         if (this instanceof IAutoOutputItem || this instanceof IAutoOutputFluid) {

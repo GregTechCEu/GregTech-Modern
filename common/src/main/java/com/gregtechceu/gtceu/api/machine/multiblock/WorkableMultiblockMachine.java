@@ -50,8 +50,8 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
     public final RecipeLogic recipeLogic;
     @Getter
     private final GTRecipeType[] recipeType;
-    @Getter
-    private final GTRecipeType activeRecipeType;
+    @Getter @Setter
+    private GTRecipeType activeRecipeType;
     @Getter
     protected final Table<IO, RecipeCapability<?>, List<IRecipeHandler<?>>> capabilitiesProxy;
     protected final List<ISubscription> traitSubscriptions;
@@ -59,6 +59,9 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
     protected boolean isMuffled;
     @Nullable @Getter
     protected LongSet activeBlocks;
+    public void setActiveRecipeType(GTRecipeType type){
+        this.activeRecipeType = type;
+    }
 
     public WorkableMultiblockMachine(IMachineBlockEntity holder, Object... args) {
         super(holder);

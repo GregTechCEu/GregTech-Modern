@@ -2,29 +2,32 @@ package com.gregtechceu.gtceu.api.machine.fancyconfigurator;
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.IFancyConfigurator;
-import com.gregtechceu.gtceu.api.machine.WorkableTieredMachine;
+import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
+import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
-import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
+import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
-import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
-import com.lowdragmc.lowdraglib.gui.widget.*;
+import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
+import com.lowdragmc.lowdraglib.gui.widget.SelectorWidget;
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
+import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 /**
- * @author Rundas
+ * @author Rundas/Screret
  * @implNote MachineModeFancyConfigurator
  */
 public class MachineModeFancyConfigurator implements IFancyConfigurator {
-    protected WorkableTieredMachine machine;
-    protected GTRecipeType[] recipeTypes;
-    protected GTRecipeType activeRecipeType;
+    protected IRecipeLogicMachine machine;
 
-    public MachineModeFancyConfigurator(WorkableTieredMachine machine) {
+    public MachineModeFancyConfigurator(IRecipeLogicMachine machine) {
         this.machine = machine;
     }
 
@@ -35,51 +38,47 @@ public class MachineModeFancyConfigurator implements IFancyConfigurator {
 
     @Override
     public IGuiTexture getIcon() {
-        return GuiTextures.BUTTON_POWER.getSubTexture(0, 0, 1, 0.5);
+        return new ResourceTexture("gtceu:textures/item/lv_robot_arm.png");
     }
 
     @Override
     public void writeInitialData(FriendlyByteBuf buffer) {
-        this.activeRecipeType = machine.getActiveRecipeType();
-        buffer.writeVarInt(Arrays.asList(this.recipeTypes).indexOf(this.activeRecipeType));
+        buffer.writeVarInt(Arrays.asList(machine.getRecipeType()).indexOf(machine.getActiveRecipeType()));
     }
 
     @Override
     public void readInitialData(FriendlyByteBuf buffer) {
-        this.activeRecipeType = this.recipeTypes[buffer.readVarInt()];
+        machine.setActiveRecipeType(machine.getRecipeType()[buffer.readVarInt()]);
     }
 
     @Override
     public void detectAndSendChange(BiConsumer<Integer, Consumer<FriendlyByteBuf>> sender) {
-        var newActiveRecipeType = machine.getActiveRecipeType();
-        if (newActiveRecipeType != activeRecipeType) {
-            this.activeRecipeType = newActiveRecipeType;
-            sender.accept(0, buf -> buf.writeVarInt(Arrays.asList(this.recipeTypes).indexOf(this.activeRecipeType)));
-        }
+        sender.accept(0, buf -> buf.writeVarInt(Arrays.asList(machine.getRecipeType()).indexOf(machine.getActiveRecipeType())));
     }
 
     @Override
     public void readUpdateInfo(int id, FriendlyByteBuf buffer) {
         if (id == 0) {
-            this.activeRecipeType = this.recipeTypes[buffer.readVarInt()];
+            machine.setActiveRecipeType(machine.getRecipeType()[buffer.readVarInt()]);
         }
     }
 
     @Override
     public Widget createConfigurator() {
-        List<String> recipeTypeNames = Arrays.stream(recipeTypes).map(GTRecipeType::toString).toList();
-        for(GTRecipeType type : this.recipeTypes){
-            recipeTypeNames.add(type.toString());
-        }
-        return new WidgetGroup(0, 0, 120, 40) {
+        List<String> recipeTypeNames = Arrays.stream(this.machine.getRecipeType()).map(rt -> FormattingUtil.toEnglishName(rt.registryName.getPath())).toList();
+        return new WidgetGroup(0, 0, 140, 40) {
             @Override
             public void initWidget() {
                 super.initWidget();
                 setBackground(GuiTextures.BACKGROUND_INVERSE);
-                //addWidget(new ImageWidget(5, 20, 120 - 5 - 10 - 5 - 20, 20, () -> new GuiTextureGroup(GuiTextures.DISPLAY_FRAME, new TextTexture(activeRecipeType.toString()))));
-                addWidget(new SelectorWidget(20, 20, 120, 20, recipeTypeNames, -1).setOnChanged(
-                        rt -> activeRecipeType = recipeTypes[recipeTypeNames.indexOf(rt)]
-                ));
+                SelectorWidget widget;
+                addWidget(widget = new SelectorWidget(0, 0, 140, 20, recipeTypeNames, -1).setOnChanged(
+                        rt -> {
+                            machine.setActiveRecipeType(machine.getRecipeType()[recipeTypeNames.indexOf(rt)]);
+                            machine.getRecipeLogic().resetRecipeLogic();
+                        })
+                );
+                widget.setValue(recipeTypeNames.get(0));
             }
 
             @Override
@@ -90,7 +89,7 @@ public class MachineModeFancyConfigurator implements IFancyConfigurator {
 
             @Override
             public void readInitialData(FriendlyByteBuf buffer) {
-                activeRecipeType = recipeTypes[buffer.readVarInt()];
+                machine.setActiveRecipeType(machine.getRecipeType()[buffer.readVarInt()]);
                 super.readInitialData(buffer);
             }
 
@@ -103,6 +102,8 @@ public class MachineModeFancyConfigurator implements IFancyConfigurator {
 
     @Override
     public List<Component> getTooltips() {
-        return List.copyOf(Arrays.stream(recipeTypes).map(type -> Component.literal(type.toString())).toList());
+        List<Component> tooltip = new ArrayList<>();
+        tooltip.add(Component.literal("Change active Machine Mode"));
+        return tooltip;
     }
 }

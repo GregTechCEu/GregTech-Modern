@@ -56,8 +56,8 @@ public abstract class SteamWorkableMachine extends SteamMachine implements IReci
     public final RecipeLogic recipeLogic;
     @Getter
     public final GTRecipeType[] recipeType;
-    @Getter
-    public final GTRecipeType activeRecipeType;
+    @Getter @Setter
+    public GTRecipeType activeRecipeType;
     @Persisted @DescSynced @Getter @RequireRerender
     protected Direction outputFacing;
     @Persisted @DescSynced @Getter @Setter
@@ -65,6 +65,10 @@ public abstract class SteamWorkableMachine extends SteamMachine implements IReci
     @Getter
     protected final Table<IO, RecipeCapability<?>, List<IRecipeHandler<?>>> capabilitiesProxy;
     protected final List<ISubscription> traitSubscriptions;
+
+    public void setActiveRecipeType(GTRecipeType type){
+        this.activeRecipeType = type;
+    }
 
     public SteamWorkableMachine(IMachineBlockEntity holder, boolean isHighPressure, Object... args) {
         super(holder, isHighPressure, args);
