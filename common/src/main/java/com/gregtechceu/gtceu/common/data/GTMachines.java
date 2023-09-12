@@ -1713,7 +1713,7 @@ public class GTMachines {
             BEDROCK_ORE_MINER = registerTieredMultis("bedrock_ore_miner", BedrockOreMinerMachine::new, (tier, builder) -> builder
                             .rotationState(RotationState.NON_Y_AXIS)
                             .langValue("%s Bedrock Ore Miner %s".formatted(VLVH[tier], VLVT[tier]))
-                            .recipeType(new GTRecipeType(GTCEu.id("drilling_rig"), "dummy"))
+                            .recipeType(new GTRecipeType(GTCEu.id("bedrock_ore_miner"), "dummy"))
                             .tooltips(
                                     Component.translatable("gtceu.machine.bedrock_ore_miner.description"),
                                     Component.translatable("gtceu.machine.bedrock_ore_miner.depletion", FormattingUtil.formatNumbers(100.0 / BedrockOreMinerMachine.getDepletionChance(tier))),
@@ -1727,7 +1727,7 @@ public class GTMachines {
                                     .where('S', controller(blocks(definition.get())))
                                     .where('X', blocks(BedrockOreMinerMachine.getCasingState(tier)).setMinGlobalLimited(3)
                                             .or(abilities(PartAbility.INPUT_ENERGY).setMinGlobalLimited(1).setMaxGlobalLimited(3))
-                                            .or(abilities(PartAbility.EXPORT_FLUIDS).setMaxGlobalLimited(1)))
+                                            .or(abilities(PartAbility.EXPORT_ITEMS).setMaxGlobalLimited(1)))
                                     .where('C', blocks(BedrockOreMinerMachine.getCasingState(tier)))
                                     .where('F', blocks(BedrockOreMinerMachine.getFrameState(tier)))
                                     .where('#', any())
