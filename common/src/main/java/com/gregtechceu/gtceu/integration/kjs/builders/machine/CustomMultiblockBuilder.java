@@ -22,6 +22,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.api.registry.registrate.MultiblockMachineBuilder;
+import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.PrimitiveFancyUIWorkableMachine;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import com.tterrag.registrate.builders.BlockBuilder;
@@ -241,9 +242,16 @@ public class CustomMultiblockBuilder extends MultiblockMachineBuilder {
             @Override
             public CustomMultiblockBuilder recipeTypes(GTRecipeType... recipeTypes) {
                 for (var builder : builders) {
-                    builder.recipeTypes(recipeTypes);
+                    for(GTRecipeType type : recipeTypes){
+                        builder.recipeType(type);
+                    }
                 }
                 return this;
+            }
+
+            @Override
+            public CustomMultiblockBuilder recipeType(GTRecipeType recipeType) {
+                return recipeTypes(recipeType);
             }
 
             @Override
