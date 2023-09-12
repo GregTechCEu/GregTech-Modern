@@ -269,7 +269,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     }
 
     protected List<GTRecipe> searchRecipe() {
-        return machine.getActiveRecipeType().searchRecipe(getRecipeManager(), this.machine);
+        return machine.getRecipeType()[machine.getActiveRecipeType()].searchRecipe(getRecipeManager(), this.machine);
     }
 
     public void findAndHandleRecipe() {
@@ -303,7 +303,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
 
     public boolean handleFuelRecipe() {
         if (!needFuel() || fuelTime > 0) return true;
-        for (GTRecipe recipe : machine.getActiveRecipeType().searchFuelRecipe(getRecipeManager(), machine)) {
+        for (GTRecipe recipe : machine.getRecipeType()[machine.getActiveRecipeType()].searchFuelRecipe(getRecipeManager(), machine)) {
             if (recipe.checkConditions(this).isSuccess() && recipe.handleRecipeIO(IO.IN, this.machine)) {
                 fuelMaxTime = recipe.duration;
                 fuelTime = fuelMaxTime;
