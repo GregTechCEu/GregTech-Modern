@@ -43,7 +43,7 @@ public class GTOreFeatureConfiguration implements FeatureConfiguration {
     @Nullable
     public GTOreDefinition getEntry(WorldGenLevel level, Holder<Biome> biome, RandomSource random) {
         if (this.entry != null) return this.entry;
-        var veins = WorldGeneratorUtils.getCachedBiomeVeins(level, biome, random);
+        var veins = WorldGeneratorUtils.getCachedBiomeVeins(level.getLevel(), biome, random);
         int randomEntryIndex = GTUtil.getRandomItem(random, veins, veins.size());
         return randomEntryIndex == -1 ? null : veins.get(randomEntryIndex).getValue();
     }

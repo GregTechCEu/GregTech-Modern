@@ -37,8 +37,12 @@ public class GTRecipeTypeEmiCategory extends ModularUIEmiRecipeCategory {
     public static void registerWorkStations(EmiRegistry registry) {
         for (GTRecipeType gtRecipeType : GTRegistries.RECIPE_TYPES) {
             for (MachineDefinition machine : GTRegistries.MACHINES) {
-                if (machine.getRecipeType() == gtRecipeType) {
-                    registry.addWorkstation(GTRecipeTypeEmiCategory.CATEGORIES.apply(gtRecipeType), EmiStack.of(machine.asStack()));
+                if (machine.getRecipeTypes() != null) {
+                    for (GTRecipeType type : machine.getRecipeTypes()){
+                        if (type == gtRecipeType) {
+                            registry.addWorkstation(GTRecipeTypeEmiCategory.CATEGORIES.apply(gtRecipeType), EmiStack.of(machine.asStack()));
+                        }
+                    }
                 }
             }
         }

@@ -80,6 +80,8 @@ public abstract class VeinGenerator {
     @HideFromJS
     public abstract VeinGenerator build();
 
+    public abstract VeinGenerator copy();
+
     @HideFromJS
     public GTOreDefinition parent() {
         return entry;

@@ -9,12 +9,10 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.IFancyUIProvider;
 import com.gregtechceu.gtceu.api.gui.fancy.TooltipsPanel;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
-import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IOverclockMachine;
+import com.gregtechceu.gtceu.api.machine.feature.*;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDisplayUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.utils.GTUtil;
-import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.widget.*;
 import net.minecraft.ChatFormatting;
@@ -94,7 +92,7 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
             textList.add(Component.translatable(getRecipeType().registryName.toLanguageKey())
                     .setStyle(Style.EMPTY.withColor(ChatFormatting.AQUA)
                             .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                                    Component.translatable("gtceu.multiblock.multiple_recipemaps.tooltip")))));
+                                    Component.translatable("gtceu.gui.machinemode.title")))));
 
             if (!isWorkingEnabled()) {
                 textList.add(Component.translatable("gtceu.multiblock.work_paused"));

@@ -369,7 +369,7 @@ public class SimpleTieredMachine extends WorkableTieredMachine implements IAutoO
         return group;
     }, (template, machine) -> {
         if (machine instanceof SimpleTieredMachine tieredMachine) {
-            tieredMachine.recipeType.createEditableUITemplate(false, false).setupUI(template,
+            tieredMachine.getRecipeType().createEditableUITemplate(false, false).setupUI(template,
                     new GTRecipeType.RecipeHolder(tieredMachine.recipeLogic::getProgressPercent,
                             tieredMachine.importItems.storage,
                             tieredMachine.exportItems.storage,

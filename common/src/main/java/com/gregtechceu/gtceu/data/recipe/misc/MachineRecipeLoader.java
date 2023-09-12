@@ -660,7 +660,7 @@ public class MachineRecipeLoader {
                 .inputItems(ELECTRIC_PUMP_MV, 4)
                 .inputItems(gear, VanadiumSteel, 4)
                 .circuitMeta(2)
-                .outputItems(FLUID_DRILLING_RIG[0])
+                .outputItems(FLUID_DRILLING_RIG[MV])
                 .duration(400).EUt(VA[MV]).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("fluid_drill_ev")
@@ -671,7 +671,7 @@ public class MachineRecipeLoader {
                 .inputItems(ELECTRIC_PUMP_EV, 4)
                 .inputItems(gear, TungstenCarbide, 4)
                 .circuitMeta(2)
-                .outputItems(FLUID_DRILLING_RIG[1])
+                .outputItems(FLUID_DRILLING_RIG[HV])
                 .duration(400).EUt(VA[EV]).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("fluid_drill_luv")
@@ -682,7 +682,7 @@ public class MachineRecipeLoader {
                 .inputItems(ELECTRIC_PUMP_LuV, 4)
                 .inputItems(gear, Osmiridium, 4)
                 .circuitMeta(2)
-                .outputItems(FLUID_DRILLING_RIG[2])
+                .outputItems(FLUID_DRILLING_RIG[EV])
                 .duration(400).EUt(VA[LuV]).save(provider);
     }
 

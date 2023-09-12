@@ -22,6 +22,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.api.registry.registrate.MultiblockMachineBuilder;
+import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.PrimitiveFancyUIWorkableMachine;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import com.tterrag.registrate.builders.BlockBuilder;
@@ -60,12 +61,12 @@ public class CustomMultiblockBuilder extends MultiblockMachineBuilder {
     public static CustomMultiblockBuilder[] tieredMultis(String name,
                                                          BiFunction<IMachineBlockEntity, Integer, MultiblockControllerMachine> factory,
                                                          Integer... tiers) {
-        CustomMultiblockBuilder[] builders = new CustomMultiblockBuilder[tiers.length];
+        CustomMultiblockBuilder[] builders = new CustomMultiblockBuilder[GTValues.TIER_COUNT];
         for (int i = 0; i < tiers.length; i++) {
             int tier = tiers[i];
             var builder = new CustomMultiblockBuilder(GTValues.VN[tier].toLowerCase(Locale.ROOT) + "_" + name, holder -> factory.apply(holder, tier))
                     .tier(tier);
-            builders[i] = builder;
+            builders[tier] = builder;
         }
         return builders;
     }
@@ -239,11 +240,18 @@ public class CustomMultiblockBuilder extends MultiblockMachineBuilder {
             }
 
             @Override
-            public CustomMultiblockBuilder recipeType(GTRecipeType recipeType) {
+            public CustomMultiblockBuilder recipeTypes(GTRecipeType... recipeTypes) {
                 for (var builder : builders) {
-                    builder.recipeType(recipeType);
+                    for(GTRecipeType type : recipeTypes){
+                        builder.recipeType(type);
+                    }
                 }
                 return this;
+            }
+
+            @Override
+            public CustomMultiblockBuilder recipeType(GTRecipeType recipeType) {
+                return recipeTypes(recipeType);
             }
 
             @Override

@@ -31,6 +31,11 @@ public class NoopVeinGenerator extends VeinGenerator {
     }
 
     @Override
+    public VeinGenerator copy() {
+        return INSTANCE;
+    }
+
+    @Override
     public Codec<? extends VeinGenerator> codec() {
         return CODEC;
     }
