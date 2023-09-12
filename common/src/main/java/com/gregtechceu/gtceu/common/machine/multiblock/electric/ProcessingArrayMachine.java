@@ -104,7 +104,7 @@ public class ProcessingArrayMachine extends TieredWorkableElectricMultiblockMach
 
     @Override
     @Nonnull
-    public GTRecipeType[] getRecipeType() {
+    public GTRecipeType[] getRecipeTypes() {
         if (recipeTypeCache == null) {
             var definition = getMachineDefinition();
             recipeTypeCache = definition == null ? null : definition.getRecipeType();

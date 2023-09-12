@@ -3,9 +3,6 @@ package com.gregtechceu.gtceu.api.machine.fancyconfigurator;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.IFancyConfigurator;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
-import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
-import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.gui.widget.SelectorWidget;
@@ -43,7 +40,7 @@ public class MachineModeFancyConfigurator implements IFancyConfigurator {
 
     @Override
     public void writeInitialData(FriendlyByteBuf buffer) {
-        buffer.writeVarInt(Arrays.asList(machine.getRecipeType()).indexOf(machine.getActiveRecipeType()));
+        buffer.writeVarInt(machine.getActiveRecipeType());
     }
 
     @Override
@@ -53,7 +50,7 @@ public class MachineModeFancyConfigurator implements IFancyConfigurator {
 
     @Override
     public void detectAndSendChange(BiConsumer<Integer, Consumer<FriendlyByteBuf>> sender) {
-        sender.accept(0, buf -> buf.writeVarInt(Arrays.asList(machine.getRecipeType()).indexOf(machine.getActiveRecipeType())));
+        sender.accept(0, buf -> buf.writeVarInt(machine.getActiveRecipeType()));
     }
 
     @Override
@@ -65,23 +62,26 @@ public class MachineModeFancyConfigurator implements IFancyConfigurator {
 
     @Override
     public Widget createConfigurator() {
-        List<String> recipeTypeNames = Arrays.stream(machine.getRecipeType()).map(rt -> FormattingUtil.toEnglishName(rt.registryName.getPath())).toList();
-        return new WidgetGroup(0, 0, 140, 40) {
+        List<String> recipeTypeNames = Arrays.stream(machine.getRecipeTypes()).map(rt -> Component.translatable(rt.registryName.toLanguageKey()).getString()).toList();
+        return new WidgetGroup(0, 0, 140, 15 * recipeTypeNames.size()) {
             @Override
             public void initWidget() {
                 super.initWidget();
                 setBackground(GuiTextures.BACKGROUND_INVERSE);
-                addWidget(new SelectorWidget(0, 0, 140, 20, recipeTypeNames, -1).setOnChanged(
+                addWidget(new SelectorWidget(0, 0, 140, 15 * recipeTypeNames.size(), recipeTypeNames, -1).setOnChanged(
                         rt -> {
                             machine.setActiveRecipeType(recipeTypeNames.indexOf(rt));
                             machine.getRecipeLogic().resetRecipeLogic();
-                        }).setSupplier(() -> recipeTypeNames.get(recipeTypeNames.indexOf(FormattingUtil.toEnglishName(machine.getRecipeType()[machine.getActiveRecipeType()].registryName.getPath()))))
+                        }).setSupplier(() -> {
+                            var index = recipeTypeNames.indexOf(Component.translatable(machine.getRecipeType().registryName.toLanguageKey()).getString());
+                            return recipeTypeNames.get(Math.max(index, 0));
+                        })
                 );
             }
 
             @Override
             public void writeInitialData(FriendlyByteBuf buffer) {
-                buffer.writeVarInt(Arrays.asList(machine.getRecipeType()).indexOf(machine.getActiveRecipeType()));
+                buffer.writeVarInt(Arrays.asList(machine.getRecipeTypes()).indexOf(machine.getActiveRecipeType()));
                 super.writeInitialData(buffer);
             }
 
