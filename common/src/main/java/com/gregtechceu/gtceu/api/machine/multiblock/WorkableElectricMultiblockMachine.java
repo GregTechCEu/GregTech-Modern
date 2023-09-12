@@ -94,7 +94,7 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
 //                    .setStyle(Style.EMPTY.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
 //                            Component.translatable("gtceu.multiblock.multiple_recipemaps.tooltip")))));
 
-            textList.add(Component.translatable(getRecipeType()[getActiveRecipeType()].registryName.toLanguageKey())
+            textList.add(Component.translatable(getRecipeTypes()[getActiveRecipeType()].registryName.toLanguageKey())
                     .setStyle(Style.EMPTY.withColor(ChatFormatting.AQUA)
                             .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
                                     Component.translatable("gtceu.gui.machinemode.title")))));
