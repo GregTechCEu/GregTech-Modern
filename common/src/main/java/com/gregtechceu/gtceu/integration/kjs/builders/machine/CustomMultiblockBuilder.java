@@ -62,8 +62,7 @@ public class CustomMultiblockBuilder extends MultiblockMachineBuilder {
                                                          BiFunction<IMachineBlockEntity, Integer, MultiblockControllerMachine> factory,
                                                          Integer... tiers) {
         CustomMultiblockBuilder[] builders = new CustomMultiblockBuilder[GTValues.TIER_COUNT];
-        for (int i = 0; i < tiers.length; i++) {
-            int tier = tiers[i];
+        for (int tier : tiers) {
             var builder = new CustomMultiblockBuilder(GTValues.VN[tier].toLowerCase(Locale.ROOT) + "_" + name, holder -> factory.apply(holder, tier))
                     .tier(tier);
             builders[tier] = builder;
