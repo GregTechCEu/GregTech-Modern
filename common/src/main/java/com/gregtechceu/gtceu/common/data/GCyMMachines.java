@@ -1,33 +1,22 @@
 package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
-import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
 import com.gregtechceu.gtceu.api.pattern.Predicates;
-import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
-import com.gregtechceu.gtceu.api.registry.registrate.MultiblockMachineBuilder;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.level.block.Blocks;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.function.BiFunction;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.pattern.Predicates.*;
 import static com.gregtechceu.gtceu.api.registry.GTRegistries.REGISTRATE;
 import static com.gregtechceu.gtceu.common.data.GCyMBlocks.*;
+import static com.gregtechceu.gtceu.common.data.GCyMBlocks.CRUSHING_WHEELS;
 import static com.gregtechceu.gtceu.common.data.GTBlocks.*;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.NaquadahAlloy;
 
@@ -52,7 +41,7 @@ public class GCyMMachines {
                     .aisle("XXXXX", "XXXXX","XXSXX", "XXXXX")
                     .where('S', controller(blocks(definition.get())))
                     .where('X', blocks(CASING_SECURE_MACERATION.get()).setMinGlobalLimited(14)
-                            .or(Predicates.autoAbilities(definition.getRecipeType()))
+                            .or(Predicates.autoAbilities(definition.getRecipeTypes()))
                             .or(Predicates.autoAbilities(true, true)))
                     .where('G', Predicates.blocks(CRUSHING_WHEELS.get()))
                     .where('#', Predicates.air())
@@ -63,26 +52,22 @@ public class GCyMMachines {
             .compassNodeSelf()
             .register();
 
-    public final static MultiblockMachineDefinition LARGE_ORE_WASHING_PLANT = REGISTRATE.multiblock("large_ore_wahing_plant", WorkableElectricMultiblockMachine::new)
-            .langValue("Large Ore Washing Plant")
+    public final static MultiblockMachineDefinition LARGE_CHEMICAL_BATH = REGISTRATE.multiblock("large_chemical_bath", WorkableElectricMultiblockMachine::new)
+            .langValue("Large Chemical Bath")
             .rotationState(RotationState.NON_Y_AXIS)
-            .recipeType(GTRecipeTypes.ORE_WASHER_RECIPES)
+            .recipeTypes(GTRecipeTypes.ORE_WASHER_RECIPES, GTRecipeTypes.CHEMICAL_BATH_RECIPES)
             .recipeModifier(GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
             .appearanceBlock(CASING_WATERTIGHT)
-            .pattern(definition -> FactoryBlockPattern.start()
-                    .aisle("XXXXX","XXXXX","XXXXX")
-                    .aisle("XXXXX","XPPPX","XWWWX")
-                    .aisle("XXXXX","XWWWX","XWWWX")
-                    .aisle("XXXXX","XWWWX","XWWWX")
-                    .aisle("XXXXX","XWWWX","XWWWX")
-                    .aisle("XXXXX","XPPPX","XWWWX")
-                    .aisle("XXXXX","XXSXX","XXXXX")
+            .pattern(definition -> FactoryBlockPattern.start(RelativeDirection.RIGHT, RelativeDirection.FRONT, RelativeDirection.UP)
+                    .aisle("XXXXX", "XXXXX", "XXXXX", "XXXXX", "XXXXX", "XXXXX", "XXXXX")
+                    .aisle("XXSXX", "XCTCX", "XAAAX", "XAAAX", "XAAAX", "XCCCX", "XXXXX")
+                    .aisle("XXXXX", "XAAAX", "XAAAX", "XAAAX", "XAAAX", "XAAAX", "XXXXX")
                     .where('S', controller(blocks(definition.get())))
-                    .where('X', blocks(CASING_WATERTIGHT.get()).setMinGlobalLimited(14)
-                            .or(Predicates.autoAbilities(definition.getRecipeType()))
-                            .or(Predicates.autoAbilities(true, true)))
-                    .where('W', Predicates.blocks(Blocks.WATER))
-                    .where('P', Predicates.blocks(CASING_TITANIUM_PIPE.get()))
+                    .where('X', blocks(CASING_WATERTIGHT.get()).setMinGlobalLimited(55)
+                            .or(Predicates.autoAbilities(definition.getRecipeTypes())))
+                    .where('A', Predicates.air())
+                    .where('C', Predicates.blocks(CASING_TITANIUM_PIPE.get()))
+                    .where('T', Predicates.blocks(CASING_TITANIUM_PIPE.get()))
                     .build())
             .workableCasingRenderer(GTCEu.id("block/casings/gcmb/machine_casing_watertight"),
                     GTCEu.id("block/multiblock/gcmb/large_ore_washing_plant"), false)
@@ -93,7 +78,7 @@ public class GCyMMachines {
     public final static MultiblockMachineDefinition LARGE_CENTRIFUGE = REGISTRATE.multiblock("large_centrifuge", WorkableElectricMultiblockMachine::new)
             .langValue("Large Centrifugal Unit")
             .rotationState(RotationState.NON_Y_AXIS)
-            .recipeType(GTRecipeTypes.LARGE_CENTRIFUGE_RECIPES)
+            .recipeTypes(GTRecipeTypes.CENTRIFUGE_RECIPES, GTRecipeTypes.THERMAL_CENTRIFUGE_RECIPES)
             .recipeModifier(GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
             .appearanceBlock(CASING_VIBRATION_SAFE)
             .pattern(definition -> FactoryBlockPattern.start()
@@ -104,7 +89,7 @@ public class GCyMMachines {
                     .aisle("#XXX#","XXSXX","#XXX#")
                     .where('S', controller(blocks(definition.get())))
                     .where('X', blocks(CASING_VIBRATION_SAFE.get()).setMinGlobalLimited(14)
-                            .or(Predicates.autoAbilities(definition.getRecipeType()))
+                            .or(Predicates.autoAbilities(definition.getRecipeTypes()))
                             .or(Predicates.autoAbilities(true, true)))
                     .where('P', Predicates.blocks(CASING_STEEL_PIPE.get()))
                     .where('#', Predicates.air())
@@ -115,35 +100,10 @@ public class GCyMMachines {
             .compassNodeSelf()
             .register();
 
-    public final static MultiblockMachineDefinition LARGE_THERMAL_CENTRIFUGE = REGISTRATE.multiblock("large_thermal_centrifuge", WorkableElectricMultiblockMachine::new)
-            .langValue("Large Thermal Centrifuge")
-            .rotationState(RotationState.NON_Y_AXIS)
-            .recipeType(GTRecipeTypes.THERMAL_CENTRIFUGE_RECIPES)
-            .recipeModifier(GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
-            .appearanceBlock(CASING_VIBRATION_SAFE)
-            .pattern(definition -> FactoryBlockPattern.start()
-                    .aisle("#XXX#","XXXXX","#XXX#")
-                    .aisle("XXXXX","X#P#X","XXXXX")
-                    .aisle("XXXXX","XP#PX","XXXXX")
-                    .aisle("XXXXX","X#P#X","XXXXX")
-                    .aisle("#XXX#","XXSXX","#XXX#")
-                    .where('S', controller(blocks(definition.get())))
-                    .where('X', blocks(CASING_VIBRATION_SAFE.get()).setMinGlobalLimited(14)
-                            .or(Predicates.autoAbilities(definition.getRecipeType()))
-                            .or(Predicates.autoAbilities(true, true)))
-                    .where('P', Predicates.blocks(CASING_TITANIUM_PIPE.get()))
-                    .where('#', Predicates.air())
-                    .build())
-            .workableCasingRenderer(GTCEu.id("block/casings/gcmb/machine_casing_vibration_safe"),
-                    GTCEu.id("block/multiblock/gcmb/large_thermal_centrifuge"), false)
-            .compassSections(GTCompassSections.TIER[IV])
-            .compassNodeSelf()
-            .register();
-
     public final static MultiblockMachineDefinition LARGE_MIXER = REGISTRATE.multiblock("large_mixer", WorkableElectricMultiblockMachine::new)
             .langValue("Large Mixing Vessel")
             .rotationState(RotationState.NON_Y_AXIS)
-            .recipeType(GTRecipeTypes.LARGE_MIXER_RECIPES)
+            .recipeType(GTRecipeTypes.MIXER_RECIPES)
             .recipeModifier(GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
             .appearanceBlock(CASING_VIBRATION_SAFE)
             .pattern(definition -> FactoryBlockPattern.start()
@@ -154,7 +114,7 @@ public class GCyMMachines {
                     .aisle("#XXX#","#XSX#","#XXX#","#XXX#","#XXX#","##F##")
                     .where('S', controller(blocks(definition.get())))
                     .where('X', blocks(CASING_VIBRATION_SAFE.get()).setMinGlobalLimited(14)
-                            .or(autoAbilities(definition.getRecipeType()))
+                            .or(autoAbilities(definition.getRecipeTypes()))
                             .or(autoAbilities(true, true)))
                     .where('F', blocks(ChemicalHelper.getBlock(TagPrefix.frameGt, GTMaterials.HastelloyX)))
                     .where('G', blocks(CASING_STAINLESS_STEEL_GEARBOX.get()))
@@ -180,7 +140,7 @@ public class GCyMMachines {
                     .aisle("XXXXX","XXSXX","XXXXX")
                     .where('S', controller(blocks(definition.get())))
                     .where('X', blocks(CASING_NONCONDUCTING.get()).setMinGlobalLimited(14)
-                            .or(Predicates.autoAbilities(definition.getRecipeType()))
+                            .or(Predicates.autoAbilities(definition.getRecipeTypes()))
                             .or(Predicates.autoAbilities(true, true)))
                     .where('C', blocks(ELECTROLYTIC_CELL.get()))
                     .build())
@@ -205,7 +165,7 @@ public class GCyMMachines {
                     .aisle("XXX","XSX","XXX")
                     .where('S', controller(blocks(definition.get())))
                     .where('X', blocks(CASING_TUNGSTENSTEEL_ROBUST.get()).setMinGlobalLimited(14)
-                            .or(Predicates.autoAbilities(definition.getRecipeType()))
+                            .or(Predicates.autoAbilities(definition.getRecipeTypes()))
                             .or(Predicates.autoAbilities(true, true)))
                     .where('#', Predicates.air())
                     .build())
@@ -227,7 +187,7 @@ public class GCyMMachines {
                     .aisle("XXXXXXXXX","XGGGXXSXX","XXXXX###X")
                     .where('S', controller(blocks(definition.get())))
                     .where('X', blocks(CASING_LARGE_SCALE_ASSEMBLING.get()).setMinGlobalLimited(14)
-                            .or(Predicates.autoAbilities(definition.getRecipeType()))
+                            .or(Predicates.autoAbilities(definition.getRecipeTypes()))
                             .or(Predicates.autoAbilities(true, true)))
                     .where('G', Predicates.blocks(CASING_TEMPERED_GLASS.get()))
                     .where('C', Predicates.blocks(CASING_ASSEMBLY_LINE.get()))
@@ -251,7 +211,7 @@ public class GCyMMachines {
                     .aisle("XXXXXXXXX","XGGGXXSXX","XXXXX###X")
                     .where('S', controller(blocks(definition.get())))
                     .where('X', blocks(CASING_LARGE_SCALE_ASSEMBLING.get()).setMinGlobalLimited(14)
-                            .or(Predicates.autoAbilities(definition.getRecipeType()))
+                            .or(Predicates.autoAbilities(definition.getRecipeTypes()))
                             .or(Predicates.autoAbilities(true, true)))
                     .where('G', Predicates.blocks(CASING_TEMPERED_GLASS.get()))
                     .where('C', Predicates.blocks(CASING_ASSEMBLY_LINE.get()))
@@ -277,7 +237,7 @@ public class GCyMMachines {
                     .aisle("#XXX#","#XSX#","#XXX#","#XXX#")
                     .where('S', controller(blocks(definition.get())))
                     .where('X', blocks(CASING_HIGH_TEMPERATURE_SMELTING.get()).setMinGlobalLimited(14)
-                            .or(Predicates.autoAbilities(definition.getRecipeType()))
+                            .or(Predicates.autoAbilities(definition.getRecipeTypes()))
                             .or(Predicates.autoAbilities(true, true)))
                     .where('C', Predicates.blocks(MOLYBDENUM_DISILICIDE_COIL_BLOCK.get()))
                     .where('#', Predicates.air())
@@ -291,7 +251,7 @@ public class GCyMMachines {
     public final static MultiblockMachineDefinition LARGE_ENGRAVING_LASER = REGISTRATE.multiblock("large_engraving_laser", WorkableElectricMultiblockMachine::new)
             .langValue("Large Engraving Laser")
             .rotationState(RotationState.NON_Y_AXIS)
-            .recipeType(GTRecipeTypes.LARGE_ENGRAVER_RECIPES)
+            .recipeType(GTRecipeTypes.LASER_ENGRAVER_RECIPES)
             .recipeModifier(GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
             .appearanceBlock(CASING_LASER_SAFE_ENGRAVING)
             .pattern(definition -> FactoryBlockPattern.start()
@@ -303,7 +263,7 @@ public class GCyMMachines {
                     .where('S', controller(blocks(definition.get())))
                     .where('C', blocks(CASING_TUNGSTENSTEEL_PIPE.get()))
                     .where('X', blocks(CASING_LASER_SAFE_ENGRAVING.get()).setMinGlobalLimited(14)
-                            .or(Predicates.autoAbilities(definition.getRecipeType()))
+                            .or(Predicates.autoAbilities(definition.getRecipeTypes()))
                             .or(Predicates.autoAbilities(true, true)))
                     .where('G', blocks(CASING_TEMPERED_GLASS.get()))
                     .where('K', blocks(CASING_GRATE.get()))
@@ -329,7 +289,7 @@ public class GCyMMachines {
                     .aisle("#X#X#","#X#X#","#XSX#","XXXXX","#XXX#")
                     .where('S', controller(blocks(definition.get())))
                     .where('X', blocks(CASING_VIBRATION_SAFE.get()).setMinGlobalLimited(14)
-                            .or(Predicates.autoAbilities(definition.getRecipeType()))
+                            .or(Predicates.autoAbilities(definition.getRecipeTypes()))
                             .or(Predicates.autoAbilities(true, true)))
                     .where('K', blocks(CASING_GRATE.get()))
                     .where('#', Predicates.air())
@@ -340,10 +300,10 @@ public class GCyMMachines {
             .compassNodeSelf()
             .register();
 
-    public final static MultiblockMachineDefinition BLAST_ALLOY_SMELTER = REGISTRATE.multiblock("blast_alloy_smelter", WorkableElectricMultiblockMachine::new)
-            .langValue("Blast Alloy Smelter")
+    public final static MultiblockMachineDefinition BLAST_ALLOY_SMELTER = REGISTRATE.multiblock("alloy_blast_smelter", WorkableElectricMultiblockMachine::new)
+            .langValue("Alloy Blast Smelter")
             .rotationState(RotationState.NON_Y_AXIS)
-            .recipeType(GTRecipeTypes.BLAST_ALLOY_RECIPES)
+            .recipeType(GCyMRecipeTypes.ALLOY_BLAST_RECIPES)
             .recipeModifier(GTRecipeModifiers::multiSmelterOverclock)
             .appearanceBlock(CASING_HIGH_TEMPERATURE_SMELTING)
             .pattern(definition -> FactoryBlockPattern.start()
@@ -354,7 +314,7 @@ public class GCyMMachines {
                     .aisle("#XSX#", "#CCC#", "#GGG#", "#CCC#", "#XXX#")
                     .where('S', controller(blocks(definition.get())))
                     .where('X', blocks(CASING_HIGH_TEMPERATURE_SMELTING.get()).setMinGlobalLimited(14)
-                            .or(autoAbilities(definition.getRecipeType()))
+                            .or(autoAbilities(definition.getRecipeTypes()))
                             .or(autoAbilities(true, true)))
                     .where('C', heatingCoils())
                     .where('M', abilities(PartAbility.MUFFLER))
@@ -389,7 +349,7 @@ public class GCyMMachines {
                     .aisle("##XXXXXXXXX##", "##XXXXSXXXX##", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############")
                     .where('S', controller(blocks(definition.get())))
                     .where('X', blocks(CASING_HIGH_TEMPERATURE_SMELTING.get()).setMinGlobalLimited(14)
-                            .or(autoAbilities(definition.getRecipeType()))
+                            .or(autoAbilities(definition.getRecipeTypes()))
                             .or(autoAbilities(true, true)))
                     .where('C', heatingCoils())
                     .where('M', abilities(PartAbility.MUFFLER))
@@ -424,7 +384,7 @@ public class GCyMMachines {
                     .aisle("#XXXXX#####", "#XXSXX#####", "#XGGGX#####", "#XGGGX#####", "#XGGGX#####", "#XXXXX#####", "###########")
                     .where('S', controller(blocks(definition.get())))
                     .where('X', blocks(CASING_ALUMINIUM_FROSTPROOF.get()).setMinGlobalLimited(140)
-                            .or(autoAbilities(definition.getRecipeType()))
+                            .or(autoAbilities(definition.getRecipeTypes()))
                             .or(autoAbilities(true, false)))
                     .where('G', blocks(CASING_TEMPERED_GLASS.get()))
                     .where('K', blocks(CASING_STAINLESS_CLEAN.get()))

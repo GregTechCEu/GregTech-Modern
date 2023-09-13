@@ -64,8 +64,7 @@ public class GCyMBlocks {
             .lang("Electrolytic Cell")
             .initialProperties(() -> Blocks.IRON_BLOCK)
             .tag(GTToolType.WRENCH.harvestTag, BlockTags.MINEABLE_WITH_PICKAXE)
-            .item()
-            .build()
+            .simpleItem()
             .register();
 
     public static final BlockEntry<Block> CRUSHING_WHEELS = REGISTRATE
@@ -73,8 +72,7 @@ public class GCyMBlocks {
             .lang("Crushing Wheels")
             .initialProperties(() -> Blocks.IRON_BLOCK)
             .tag(GTToolType.WRENCH.harvestTag, BlockTags.MINEABLE_WITH_PICKAXE)
-            .item()
-            .build()
+            .simpleItem()
             .register();
 
     public static final BlockEntry<Block> HEAT_VENT = REGISTRATE
@@ -82,7 +80,6 @@ public class GCyMBlocks {
             .lang("Heat Vent")
             .initialProperties(() -> Blocks.IRON_BLOCK)
             .tag(GTToolType.WRENCH.harvestTag, BlockTags.MINEABLE_WITH_PICKAXE)
-            .item()
-            .build()
+            .simpleItem()
             .register();
 }

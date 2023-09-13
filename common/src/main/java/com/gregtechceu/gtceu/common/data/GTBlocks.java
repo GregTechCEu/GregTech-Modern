@@ -302,14 +302,6 @@ public class GTBlocks {
     public static final BlockEntry<Block> CASING_PTFE_INERT = createCasingBlock("inert_machine_casing", GTCEu.id("block/casings/solid/machine_casing_inert_ptfe"));
     public static final BlockEntry<Block> CASING_HSSE_STURDY = createCasingBlock("sturdy_machine_casing", GTCEu.id("block/casings/solid/machine_casing_study_hsse"));
     public static final BlockEntry<Block> CASING_TEMPERED_GLASS = createGlassCasingBlock("tempered_glass", GTCEu.id("block/casings/transparent/tempered_glass"), () -> RenderType::translucent);
-    //GCyM
-    public static final BlockEntry<Block> CASING_NONCONDUCTING = createCasingBlock("nonconducting_machine_casing", GTCEu.id("block/casings/gcmb/machine_casing_nonconducting"));
-    public static final BlockEntry<Block> CASING_VIBRATION_SAFE = createCasingBlock("vibration_safe_machine_casing", GTCEu.id("block/casings/gcmb/machine_casing_vibration_safe"));
-    public static final BlockEntry<Block> CASING_WATERTIGHT = createCasingBlock("watertight_machine_casing", GTCEu.id("block/casings/gcmb/machine_casing_watertight"));
-    public static final BlockEntry<Block> CASING_SECURE_MACERATION = createCasingBlock("secure_maceration_machine_casing", GTCEu.id("block/casings/gcmb/machine_casing_secure_maceration"));
-    public static final BlockEntry<Block> CASING_HIGH_TEMPERATURE_SMELTING = createCasingBlock("high_temperature_smelting_machine_casing", GTCEu.id("block/casings/gcmb/machine_casing_high_temperature_smelting"));
-    public static final BlockEntry<Block> CASING_LASER_SAFE_ENGRAVING = createCasingBlock("laser_safe_engraving_machine_casing", GTCEu.id("block/casings/gcmb/machine_casing_laser_safe_engraving"));
-    public static final BlockEntry<Block> CASING_LARGE_SCALE_ASSEMBLING = createCasingBlock("large_scale_assembling_machine_casing", GTCEu.id("block/casings/gcmb/machine_casing_large_scale_assembling"));
 
 
     public static final ImmutableMap<Material, BlockEntry<Block>> MATERIALS_TO_CASINGS;
@@ -684,42 +676,6 @@ public class GTBlocks {
             .item()
             .tag(ItemTags.LOGS)
             .onRegister(compassNode(GTCompassSections.GENERATIONS))
-            .build()
-            .register();
-
-    //GCMB
-    public static final BlockEntry<Block> MOLYBDENUM_DISILICIDE_COIL_BLOCK = REGISTRATE
-            .block("molybdenum_disilicide_coil_block", Block::new)
-            .lang("Molybdenum Disilicide Coil Block")
-            .item()
-            .build()
-            .register();
-
-    public static final BlockEntry<Block> ELECTROLYTIC_CELL = REGISTRATE
-            .block("electrolytic_cell", Block::new)
-            .lang("Electrolytic Cell")
-            .item()
-            .build()
-            .register();
-
-    public static final BlockEntry<Block> CRUSHING_WHEELS = REGISTRATE
-            .block("crushing_wheels", Block::new)
-            .lang("Crushing Wheels")
-            .item()
-            .build()
-            .register();
-
-    public static final BlockEntry<Block> HEAT_VENT = REGISTRATE
-            .block("heat_vent", Block::new)
-            .lang("Heat Vent")
-            .item()
-            .build()
-            .register();
-
-    public static final BlockEntry<Block> SLICING_BLADES = REGISTRATE
-            .block("slicing_blades", Block::new)
-            .lang("Slicing Blades")
-            .item()
             .build()
             .register();
 

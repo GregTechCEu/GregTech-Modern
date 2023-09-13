@@ -539,39 +539,6 @@ public class GTRecipeTypes {
 
     public static final GTRecipeType DUMMY_RECIPES = new GTRecipeType(GTCEu.id("dummy"), DUMMY);
 
-    //GCyM
-    public final static GTRecipeType LARGE_MIXER_RECIPES = register("large_mixer", ELECTRIC).setMaxIOSize(9, 1, 6, 1).setEUIO(IO.IN)
-            .setSlotOverlay(false, false, GuiTextures.DUST_OVERLAY)
-            .setProgressBar(GuiTextures.PROGRESS_BAR_MIXER, LEFT_TO_RIGHT)
-            .setSound(GTSoundEntries.MIXER);
-
-    public final static GTRecipeType LARGE_ENGRAVER_RECIPES = register("large_engraver", ELECTRIC).setMaxIOSize(2, 1, 1, 1).setEUIO(IO.IN)
-            .setSlotOverlay(false, false, GuiTextures.LENS_OVERLAY)
-            .setProgressBar(GuiTextures.PROGRESS_BAR_ARROW, LEFT_TO_RIGHT)
-            .setSound(GTSoundEntries.ELECTROLYZER);
-
-    public final static GTRecipeType LARGE_CENTRIFUGE_RECIPES = register("large_centrifuge", ELECTRIC).setMaxIOSize(2, 6, 2, 6).setEUIO(IO.IN)
-            .setSlotOverlay(false, false, GuiTextures.EXTRACTOR_OVERLAY)
-            .setProgressBar(GuiTextures.PROGRESS_BAR_EXTRACT, LEFT_TO_RIGHT)
-            .setSound(GTSoundEntries.CENTRIFUGE);
-
-    public final static GTRecipeType BLAST_ALLOY_RECIPES = register("blast_alloy_smelter", ELECTRIC).setMaxIOSize(9, 0, 3, 1).setEUIO(IO.IN)
-            .setProgressBar(GuiTextures.PROGRESS_BAR_ARROW, LEFT_TO_RIGHT)
-            .setSlotOverlay(false, false, false, GuiTextures.FURNACE_OVERLAY_1)
-            .setSlotOverlay(false, false, true, GuiTextures.FURNACE_OVERLAY_1)
-            .setSlotOverlay(false, true, false, GuiTextures.FURNACE_OVERLAY_2)
-            .setSlotOverlay(false, true, true, GuiTextures.FURNACE_OVERLAY_2)
-            .setSlotOverlay(true, true, false, GuiTextures.FURNACE_OVERLAY_2)
-            .setSlotOverlay(true, true, true, GuiTextures.FURNACE_OVERLAY_2)
-            .addDataInfo(data -> LocalizationUtils.format("gtceu.recipe.temperature", data.getInt("ebf_temp")))
-            .setUiBuilder((recipe, widgetGroup) -> {
-                int temp = recipe.data.getInt("ebf_temp");
-                List<List<ItemStack>> items = new ArrayList<>();
-                items.add(GTBlocks.ALL_COILS.entrySet().stream().filter(coil -> coil.getKey().getCoilTemperature() >= temp).map(coil -> new ItemStack(coil.getValue().get())).toList());
-                widgetGroup.addWidget(new SlotWidget(new CycleItemStackHandler(items), 0, widgetGroup.getSize().width - 25, widgetGroup.getSize().height - 25, false, false));
-            })
-            .setSound(GTSoundEntries.ARC);
-
 
     //////////////////////////////////////
     //******     Integration     *******//
@@ -618,23 +585,6 @@ public class GTRecipeTypes {
         GTRegistries.register(Registry.RECIPE_SERIALIZER, GTCEu.id("gt_recipe_serializer"), GTRecipeSerializer.SERIALIZER);
         GTRegistries.register(Registry.RECIPE_SERIALIZER, GTCEu.id("facade_cover_serializer"), FacadeCoverRecipe.SERIALIZER);
         GTRegistries.register(Registry.RECIPE_SERIALIZER, GTCEu.id("strict_shaped_recipe_serializer"), StrictShapedRecipe.SERIALIZER);
-
-        //GCMB
-
-        MIXER_RECIPES.onRecipeBuild((builder, provider) -> {
-            assert LARGE_MIXER_RECIPES != null;
-            LARGE_MIXER_RECIPES.copyFrom(builder).save(provider);
-        });
-
-        LASER_ENGRAVER_RECIPES.onRecipeBuild((builder, provider) -> {
-            assert LARGE_ENGRAVER_RECIPES != null;
-            LARGE_ENGRAVER_RECIPES.copyFrom(builder).save(provider);
-        });
-
-        CENTRIFUGE_RECIPES.onRecipeBuild((builder, provider) -> {
-            assert LARGE_CENTRIFUGE_RECIPES != null;
-            LARGE_CENTRIFUGE_RECIPES.copyFrom(builder).save(provider);
-        });
     }
 
     public static GTRecipeType get(String name) {
