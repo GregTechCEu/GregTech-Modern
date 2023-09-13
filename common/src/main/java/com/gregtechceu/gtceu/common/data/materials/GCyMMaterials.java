@@ -63,7 +63,7 @@ public class GCyMMaterials {
         MaragingSteel300 = new Material.Builder("maraging_steel_300")
                 .ingot(4).fluid()
                 .color(0x505B6E).iconSet(METALLIC)
-                .appendFlags(STD_METAL, GENERATE_ROD, GENERATE_FRAME, GENERATE_PLATE)
+                .appendFlags(STD_METAL, GENERATE_ROD, GENERATE_FRAME)
                 .components(Iron, 16, Titanium, 1, Aluminium, 1, Nickel, 4, Cobalt, 2)
                 .blastTemp(4000, GasTier.HIGH, GTValues.VA[GTValues.EV], 1000)
                 .buildAndRegister();

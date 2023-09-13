@@ -1,39 +1,24 @@
 package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
-import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
 import com.gregtechceu.gtceu.api.pattern.Predicates;
-import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
-import com.gregtechceu.gtceu.api.registry.registrate.MultiblockMachineBuilder;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.level.block.Blocks;
-
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Locale;
-import java.util.function.BiFunction;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
-import static com.gregtechceu.gtceu.api.machine.multiblock.PartAbility.*;
 import static com.gregtechceu.gtceu.api.pattern.Predicates.*;
-import static com.gregtechceu.gtceu.api.pattern.util.RelativeDirection.*;
 import static com.gregtechceu.gtceu.api.registry.GTRegistries.REGISTRATE;
 import static com.gregtechceu.gtceu.common.data.GCyMBlocks.*;
+import static com.gregtechceu.gtceu.common.data.GCyMBlocks.CRUSHING_WHEELS;
 import static com.gregtechceu.gtceu.common.data.GTBlocks.*;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.NaquadahAlloy;
-import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
 
 /**
  * @author Rundas
@@ -42,10 +27,10 @@ import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
 public class GCyMMachines {
     public static void init() {}
 
-    public final static MultiblockMachineDefinition LARGE_MACERATOR = REGISTRATE.multiblock("large_maceration_tower", WorkableElectricMultiblockMachine::new)
+    public final static MultiblockMachineDefinition LARGE_MACERATION_TOWER = REGISTRATE.multiblock("large_maceration_tower", WorkableElectricMultiblockMachine::new)
             .langValue("Large Maceration Tower")
             .rotationState(RotationState.NON_Y_AXIS)
-            .recipeType(MACERATOR_RECIPES)
+            .recipeType(GTRecipeTypes.MACERATOR_RECIPES)
             .recipeModifier(GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
             .appearanceBlock(CASING_SECURE_MACERATION)
             .pattern(definition -> FactoryBlockPattern.start()
@@ -61,35 +46,31 @@ public class GCyMMachines {
                     .where('G', Predicates.blocks(CRUSHING_WHEELS.get()))
                     .where('#', Predicates.air())
                     .build())
-            .workableCasingRenderer(GTCEu.id("block/casings/gcym/machine_casing_secure_maceration"),
-                    GTCEu.id("block/multiblock/gcym/large_maceration_tower"), false)
+            .workableCasingRenderer(GTCEu.id("block/casings/gcmb/machine_casing_secure_maceration"),
+                    GTCEu.id("block/multiblock/gcmb/large_maceration_tower"), false)
             .compassSections(GTCompassSections.TIER[IV])
             .compassNodeSelf()
             .register();
 
-    public final static MultiblockMachineDefinition LARGE_ORE_WASHER = REGISTRATE.multiblock("large_ore_wahing_plant", WorkableElectricMultiblockMachine::new)
-            .langValue("Large Ore Washing Plant")
+    public final static MultiblockMachineDefinition LARGE_CHEMICAL_BATH = REGISTRATE.multiblock("large_chemical_bath", WorkableElectricMultiblockMachine::new)
+            .langValue("Large Chemical Bath")
             .rotationState(RotationState.NON_Y_AXIS)
-            .recipeTypes(ORE_WASHER_RECIPES, CHEMICAL_BATH_RECIPES)
+            .recipeTypes(GTRecipeTypes.ORE_WASHER_RECIPES, GTRecipeTypes.CHEMICAL_BATH_RECIPES)
             .recipeModifier(GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
             .appearanceBlock(CASING_WATERTIGHT)
-            .pattern(definition -> FactoryBlockPattern.start()
-                    .aisle("XXXXX","XXXXX","XXXXX")
-                    .aisle("XXXXX","XPPPX","XWWWX")
-                    .aisle("XXXXX","XWWWX","XWWWX")
-                    .aisle("XXXXX","XWWWX","XWWWX")
-                    .aisle("XXXXX","XWWWX","XWWWX")
-                    .aisle("XXXXX","XPPPX","XWWWX")
-                    .aisle("XXXXX","XXSXX","XXXXX")
+            .pattern(definition -> FactoryBlockPattern.start(RelativeDirection.RIGHT, RelativeDirection.FRONT, RelativeDirection.UP)
+                    .aisle("XXXXX", "XXXXX", "XXXXX", "XXXXX", "XXXXX", "XXXXX", "XXXXX")
+                    .aisle("XXSXX", "XCTCX", "XAAAX", "XAAAX", "XAAAX", "XCCCX", "XXXXX")
+                    .aisle("XXXXX", "XAAAX", "XAAAX", "XAAAX", "XAAAX", "XAAAX", "XXXXX")
                     .where('S', controller(blocks(definition.get())))
-                    .where('X', blocks(CASING_WATERTIGHT.get()).setMinGlobalLimited(14)
-                            .or(Predicates.autoAbilities(definition.getRecipeTypes()))
-                            .or(Predicates.autoAbilities(true, true)))
-                    .where('W', Predicates.blocks(Blocks.WATER))
-                    .where('P', Predicates.blocks(CASING_TITANIUM_PIPE.get()))
+                    .where('X', blocks(CASING_WATERTIGHT.get()).setMinGlobalLimited(55)
+                            .or(Predicates.autoAbilities(definition.getRecipeTypes())))
+                    .where('A', Predicates.air())
+                    .where('C', Predicates.blocks(CASING_TITANIUM_PIPE.get()))
+                    .where('T', Predicates.blocks(CASING_TITANIUM_PIPE.get()))
                     .build())
-            .workableCasingRenderer(GTCEu.id("block/casings/gcym/machine_casing_watertight"),
-                    GTCEu.id("block/multiblock/gcym/large_ore_washing_plant"), false)
+            .workableCasingRenderer(GTCEu.id("block/casings/gcmb/machine_casing_watertight"),
+                    GTCEu.id("block/multiblock/gcmb/large_ore_washing_plant"), false)
             .compassSections(GTCompassSections.TIER[IV])
             .compassNodeSelf()
             .register();
@@ -97,7 +78,7 @@ public class GCyMMachines {
     public final static MultiblockMachineDefinition LARGE_CENTRIFUGE = REGISTRATE.multiblock("large_centrifuge", WorkableElectricMultiblockMachine::new)
             .langValue("Large Centrifugal Unit")
             .rotationState(RotationState.NON_Y_AXIS)
-            .recipeTypes(LARGE_CENTRIFUGE_RECIPES, THERMAL_CENTRIFUGE_RECIPES)
+            .recipeTypes(GTRecipeTypes.CENTRIFUGE_RECIPES, GTRecipeTypes.THERMAL_CENTRIFUGE_RECIPES)
             .recipeModifier(GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
             .appearanceBlock(CASING_VIBRATION_SAFE)
             .pattern(definition -> FactoryBlockPattern.start()
@@ -113,8 +94,8 @@ public class GCyMMachines {
                     .where('P', Predicates.blocks(CASING_STEEL_PIPE.get()))
                     .where('#', Predicates.air())
                     .build())
-            .workableCasingRenderer(GTCEu.id("block/casings/gcym/machine_casing_vibration_safe"),
-                    GTCEu.id("block/multiblock/gcym/large_centrifuge"), false)
+            .workableCasingRenderer(GTCEu.id("block/casings/gcmb/machine_casing_vibration_safe"),
+                    GTCEu.id("block/multiblock/gcmb/large_centrifuge"), false)
             .compassSections(GTCompassSections.TIER[IV])
             .compassNodeSelf()
             .register();
@@ -122,7 +103,7 @@ public class GCyMMachines {
     public final static MultiblockMachineDefinition LARGE_MIXER = REGISTRATE.multiblock("large_mixer", WorkableElectricMultiblockMachine::new)
             .langValue("Large Mixing Vessel")
             .rotationState(RotationState.NON_Y_AXIS)
-            .recipeType(LARGE_MIXER_RECIPES)
+            .recipeType(GTRecipeTypes.MIXER_RECIPES)
             .recipeModifier(GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
             .appearanceBlock(CASING_VIBRATION_SAFE)
             .pattern(definition -> FactoryBlockPattern.start()
@@ -140,8 +121,8 @@ public class GCyMMachines {
                     .where('P', blocks(CASING_TITANIUM_PIPE.get()))
                     .where('#', Predicates.air())
                     .build())
-            .workableCasingRenderer(GTCEu.id("block/casings/gcym/machine_casing_vibration_safe"),
-                    GTCEu.id("block/multiblock/gcym/large_mixer"), false)
+            .workableCasingRenderer(GTCEu.id("block/casings/gcmb/machine_casing_vibration_safe"),
+                    GTCEu.id("block/multiblock/gcmb/large_mixer"), false)
             .compassSections(GTCompassSections.TIER[IV])
             .compassNodeSelf()
             .register();
@@ -149,7 +130,7 @@ public class GCyMMachines {
     public final static MultiblockMachineDefinition LARGE_ELECTROLYZER = REGISTRATE.multiblock("large_electrolyzer", WorkableElectricMultiblockMachine::new)
             .langValue("Large Electrolysis Chamber")
             .rotationState(RotationState.NON_Y_AXIS)
-            .recipeTypes(ELECTROLYZER_RECIPES, ELECTROMAGNETIC_SEPARATOR_RECIPES, POLARIZER_RECIPES)
+            .recipeType(GTRecipeTypes.ELECTROLYZER_RECIPES)
             .recipeModifier(GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
             .appearanceBlock(CASING_NONCONDUCTING)
             .pattern(definition -> FactoryBlockPattern.start()
@@ -163,8 +144,8 @@ public class GCyMMachines {
                             .or(Predicates.autoAbilities(true, true)))
                     .where('C', blocks(ELECTROLYTIC_CELL.get()))
                     .build())
-            .workableCasingRenderer(GTCEu.id("block/casings/gcym/machine_casing_nonconducting"),
-                    GTCEu.id("block/multiblock/gcym/large_electrolyzer"), false)
+            .workableCasingRenderer(GTCEu.id("block/casings/gcmb/machine_casing_nonconducting"),
+                    GTCEu.id("block/multiblock/gcmb/large_electrolyzer"), false)
             .compassSections(GTCompassSections.TIER[IV])
             .compassNodeSelf()
             .register();
@@ -172,7 +153,7 @@ public class GCyMMachines {
     public final static MultiblockMachineDefinition LARGE_PACKER = REGISTRATE.multiblock("large_packer", WorkableElectricMultiblockMachine::new)
             .langValue("Large Packaging Machine")
             .rotationState(RotationState.NON_Y_AXIS)
-            .recipeType(PACKER_RECIPES)
+            .recipeType(GTRecipeTypes.PACKER_RECIPES)
             .recipeModifier(GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
             .appearanceBlock(CASING_TUNGSTENSTEEL_ROBUST)
             .pattern(definition -> FactoryBlockPattern.start()
@@ -189,7 +170,7 @@ public class GCyMMachines {
                     .where('#', Predicates.air())
                     .build())
             .workableCasingRenderer(GTCEu.id("block/casings/solid/machine_casing_robust_tungstensteel"),
-                    GTCEu.id("block/multiblock/gcym/large_packer"), false)
+                    GTCEu.id("block/multiblock/gcmb/large_packer"), false)
             .compassSections(GTCompassSections.TIER[HV])
             .compassNodeSelf()
             .register();
@@ -197,7 +178,7 @@ public class GCyMMachines {
     public final static MultiblockMachineDefinition LARGE_ASSEMBLER = REGISTRATE.multiblock("large_assembler", WorkableElectricMultiblockMachine::new)
             .langValue("Large Assembling Factory")
             .rotationState(RotationState.NON_Y_AXIS)
-            .recipeTypes(ASSEMBLER_RECIPES, CIRCUIT_ASSEMBLER_RECIPES)
+            .recipeType(GTRecipeTypes.ASSEMBLER_RECIPES)
             .recipeModifier(GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
             .appearanceBlock(CASING_LARGE_SCALE_ASSEMBLING)
             .pattern(definition -> FactoryBlockPattern.start()
@@ -212,16 +193,40 @@ public class GCyMMachines {
                     .where('C', Predicates.blocks(CASING_ASSEMBLY_LINE.get()))
                     .where('#', Predicates.air())
                     .build())
-            .workableCasingRenderer(GTCEu.id("block/casings/gcym/machine_casing_large_scale_assembling"),
-                    GTCEu.id("block/multiblock/gcym/large_assembler"), false)
+            .workableCasingRenderer(GTCEu.id("block/casings/gcmb/machine_casing_large_scale_assembling"),
+                    GTCEu.id("block/multiblock/gcmb/large_assembler"), false)
             .compassSections(GTCompassSections.TIER[IV])
             .compassNodeSelf()
             .register();
 
-    public final static MultiblockMachineDefinition LARGE_ARC_FURNACE = REGISTRATE.multiblock("large_arc_smelter", WorkableElectricMultiblockMachine::new)
+    public final static MultiblockMachineDefinition LARGE_CIRCUIT_ASSEMBLER = REGISTRATE.multiblock("large_circuit_assembler", WorkableElectricMultiblockMachine::new)
+            .langValue("Large Circuit Assembling Facility")
+            .rotationState(RotationState.NON_Y_AXIS)
+            .recipeType(GTRecipeTypes.CIRCUIT_ASSEMBLER_RECIPES)
+            .recipeModifier(GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
+            .appearanceBlock(CASING_LARGE_SCALE_ASSEMBLING)
+            .pattern(definition -> FactoryBlockPattern.start()
+                    .aisle("XXXXXXXXX","XXXXXXXXX","XXXXXXXXX")
+                    .aisle("XXXXXXXXX","XGGGCCCCX","XXXXXXXXX")
+                    .aisle("XXXXXXXXX","XGGGXXSXX","XXXXX###X")
+                    .where('S', controller(blocks(definition.get())))
+                    .where('X', blocks(CASING_LARGE_SCALE_ASSEMBLING.get()).setMinGlobalLimited(14)
+                            .or(Predicates.autoAbilities(definition.getRecipeTypes()))
+                            .or(Predicates.autoAbilities(true, true)))
+                    .where('G', Predicates.blocks(CASING_TEMPERED_GLASS.get()))
+                    .where('C', Predicates.blocks(CASING_ASSEMBLY_LINE.get()))
+                    .where('#', Predicates.air())
+                    .build())
+            .workableCasingRenderer(GTCEu.id("block/casings/gcmb/machine_casing_large_scale_assembling"),
+                    GTCEu.id("block/multiblock/gcmb/large_circuit_assembler"), false)
+            .compassSections(GTCompassSections.TIER[IV])
+            .compassNodeSelf()
+            .register();
+
+    public final static MultiblockMachineDefinition LARGE_ARC_SMELTER = REGISTRATE.multiblock("large_arc_smelter", WorkableElectricMultiblockMachine::new)
             .langValue("Large Arc Smelter")
             .rotationState(RotationState.NON_Y_AXIS)
-            .recipeType(ARC_FURNACE_RECIPES)
+            .recipeType(GTRecipeTypes.ARC_FURNACE_RECIPES)
             .recipeModifier(GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
             .appearanceBlock(CASING_HIGH_TEMPERATURE_SMELTING)
             .pattern(definition -> FactoryBlockPattern.start()
@@ -237,8 +242,8 @@ public class GCyMMachines {
                     .where('C', Predicates.blocks(MOLYBDENUM_DISILICIDE_COIL_BLOCK.get()))
                     .where('#', Predicates.air())
                     .build())
-            .workableCasingRenderer(GTCEu.id("block/casings/gcym/machine_casing_high_temperature_smelting"),
-                    GTCEu.id("block/multiblock/gcym/large_arc_smelter"), false)
+            .workableCasingRenderer(GTCEu.id("block/casings/gcmb/machine_casing_high_temperature_smelting"),
+                    GTCEu.id("block/multiblock/gcmb/large_arc_smelter"), false)
             .compassSections(GTCompassSections.TIER[IV])
             .compassNodeSelf()
             .register();
@@ -246,7 +251,7 @@ public class GCyMMachines {
     public final static MultiblockMachineDefinition LARGE_ENGRAVING_LASER = REGISTRATE.multiblock("large_engraving_laser", WorkableElectricMultiblockMachine::new)
             .langValue("Large Engraving Laser")
             .rotationState(RotationState.NON_Y_AXIS)
-            .recipeType(GTRecipeTypes.LARGE_ENGRAVER_RECIPES)
+            .recipeType(GTRecipeTypes.LASER_ENGRAVER_RECIPES)
             .recipeModifier(GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
             .appearanceBlock(CASING_LASER_SAFE_ENGRAVING)
             .pattern(definition -> FactoryBlockPattern.start()
@@ -264,13 +269,13 @@ public class GCyMMachines {
                     .where('K', blocks(CASING_GRATE.get()))
                     .where('#', Predicates.air())
                     .build())
-            .workableCasingRenderer(GTCEu.id("block/casings/gcym/machine_casing_laser_safe_engraving"),
-                    GTCEu.id("block/multiblock/gcym/large_engraving_laser"), false)
+            .workableCasingRenderer(GTCEu.id("block/casings/gcmb/machine_casing_laser_safe_engraving"),
+                    GTCEu.id("block/multiblock/gcmb/large_engraving_laser"), false)
             .compassSections(GTCompassSections.TIER[IV])
             .compassNodeSelf()
             .register();
 
-    public final static MultiblockMachineDefinition LARGE_SIFTER = REGISTRATE.multiblock("large_sifting_funnel", WorkableElectricMultiblockMachine::new)
+    public final static MultiblockMachineDefinition LARGE_SIFTING_FUNNEL = REGISTRATE.multiblock("large_sifting_funnel", WorkableElectricMultiblockMachine::new)
             .langValue("Large Sifting Funnel")
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeType(GTRecipeTypes.SIFTER_RECIPES)
@@ -289,16 +294,16 @@ public class GCyMMachines {
                     .where('K', blocks(CASING_GRATE.get()))
                     .where('#', Predicates.air())
                     .build())
-            .workableCasingRenderer(GTCEu.id("block/casings/gcym/machine_casing_vibration_safe"),
-                    GTCEu.id("block/multiblock/gcym/large_sifting_funnel"), false)
+            .workableCasingRenderer(GTCEu.id("block/casings/gcmb/machine_casing_vibration_safe"),
+                    GTCEu.id("block/multiblock/gcmb/large_sifting_funnel"), false)
             .compassSections(GTCompassSections.TIER[IV])
             .compassNodeSelf()
             .register();
 
-    public final static MultiblockMachineDefinition BLAST_ALLOY_SMELTER = REGISTRATE.multiblock("blast_alloy_smelter", WorkableElectricMultiblockMachine::new)
-            .langValue("Blast Alloy Smelter")
+    public final static MultiblockMachineDefinition BLAST_ALLOY_SMELTER = REGISTRATE.multiblock("alloy_blast_smelter", WorkableElectricMultiblockMachine::new)
+            .langValue("Alloy Blast Smelter")
             .rotationState(RotationState.NON_Y_AXIS)
-            .recipeType(GTRecipeTypes.BLAST_ALLOY_RECIPES)
+            .recipeType(GCyMRecipeTypes.ALLOY_BLAST_RECIPES)
             .recipeModifier(GTRecipeModifiers::multiSmelterOverclock)
             .appearanceBlock(CASING_HIGH_TEMPERATURE_SMELTING)
             .pattern(definition -> FactoryBlockPattern.start()
@@ -316,8 +321,8 @@ public class GCyMMachines {
                     .where('G', blocks(HEAT_VENT.get()))
                     .where('#', air())
                     .build())
-            .workableCasingRenderer(GTCEu.id("block/casings/gcym/machine_casing_high_temperature_smelting"),
-                    GTCEu.id("block/multiblock/gcym/blast_alloy_smelter"), false)
+            .workableCasingRenderer(GTCEu.id("block/casings/gcmb/machine_casing_high_temperature_smelting"),
+                    GTCEu.id("block/multiblock/gcmb/blast_alloy_smelter"), false)
             .compassSections(GTCompassSections.TIER[IV])
             .compassNodeSelf()
             .register();
@@ -355,11 +360,11 @@ public class GCyMMachines {
                     .where('P', blocks(CASING_TUNGSTENSTEEL_PIPE.get()))
                     .where('I', blocks(CASING_EXTREME_ENGINE_INTAKE.get()))
                     .where('V', blocks(HEAT_VENT.get()))
-                    .where('M', abilities(MUFFLER))
+                    .where('M', abilities(PartAbility.MUFFLER))
                     .where('#', air())
                     .build())
-            .workableCasingRenderer(GTCEu.id("block/casings/gcym/machine_casing_high_temperature_smelting"),
-                    GTCEu.id("block/multiblock/gcym/mega_blast_furnace"), false)
+            .workableCasingRenderer(GTCEu.id("block/casings/gcmb/machine_casing_high_temperature_smelting"),
+                    GTCEu.id("block/multiblock/gcmb/mega_blast_furnace"), false)
             .compassSections(GTCompassSections.TIER[LuV])
             .compassNodeSelf()
             .register();
@@ -388,181 +393,8 @@ public class GCyMMachines {
                     .where('#', air())
                     .build())
             .workableCasingRenderer(GTCEu.id("block/casings/solid/machine_casing_frost_proof"),
-                    GTCEu.id("block/multiblock/gcym/mega_vacuum_freezer"), false)
+                    GTCEu.id("block/multiblock/gcmb/mega_vacuum_freezer"), false)
             .compassSections(GTCompassSections.TIER[LuV])
-            .compassNodeSelf()
-            .register();
-
-    public final static MultiblockMachineDefinition LARGE_DISTILLERY = REGISTRATE.multiblock("large_distillery", WorkableElectricMultiblockMachine::new)
-            .langValue("Large Fractionating Distillery")
-            .rotationState(RotationState.NON_Y_AXIS)
-            .recipeTypes(DISTILLERY_RECIPES, DISTILLATION_RECIPES)
-            .recipeModifier(GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
-            .appearanceBlock(CASING_WATERTIGHT)
-            .pattern(definition -> FactoryBlockPattern.start(RIGHT, BACK, UP)
-                    .aisle("#XXX#", "#XXX#", "##X##","#####")
-                    .aisle("XXXXX", "X###X", "#X#X#","#XXX#")
-                    .aisle("XXXXX", "X#P#X", "X#P#X","#XMX#").setRepeatable(1, 11)
-                    .aisle("XXXXX", "X###X", "#X#X#","#XXX#")
-                    .aisle("#XXX#", "#XSX#", "##E##","#####")
-                    .where('S', controller(blocks(definition.getBlock())))
-                    .where('X', blocks(CASING_WATERTIGHT.get()).setMinGlobalLimited(40)
-                            .or(abilities(EXPORT_ITEMS).setMaxGlobalLimited(1))
-                            .or(abilities(INPUT_ENERGY).setMinGlobalLimited(1))
-                            .or(abilities(IMPORT_FLUIDS).setExactLimit(1)))
-                    .where('E', abilities(EXPORT_FLUIDS))
-                    .where('P', blocks(CASING_STEEL_PIPE.get()))
-                    .where('M', abilities(MUFFLER))
-                    .where('#', air())
-                    .build())
-            .partSorter(Comparator.comparingInt(a -> a.self().getPos().getY()))
-            .workableCasingRenderer(GTCEu.id("block/casings/gcym/machine_casing_watertight"),
-                    GTCEu.id("block/multiblock/gcym/large_distillery"), false)
-            .compassSections(GTCompassSections.TIER[IV])
-            .compassNodeSelf()
-            .register();
-
-    public final static MultiblockMachineDefinition LARGE_FLUIDWORKS = REGISTRATE.multiblock("large_fluidworks", WorkableElectricMultiblockMachine::new)
-            .langValue("Large Fluidworks")
-            .rotationState(RotationState.NON_Y_AXIS)
-            .recipeTypes(AUTOCLAVE_RECIPES, FLUID_SOLIDFICATION_RECIPES)
-            .recipeModifier(GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
-            .appearanceBlock(CASING_WATERTIGHT)
-            .pattern(definition -> FactoryBlockPattern.start(RIGHT, BACK, UP)
-                    .aisle("XXX", "XXX", "CCC")
-                    .aisle("XXX", "XPX", "XX")
-                    .aisle("XXX", "XPX", "XXX")
-                    .aisle("XXX", "XPX", "XXX")
-                    .aisle("XXX", "XSX", "XXX")
-                    .where('S', controller(blocks(definition.getBlock())))
-                    .where('X', blocks(CASING_WATERTIGHT.get()).setMinGlobalLimited(30)
-                            .or(autoAbilities(definition.getRecipeTypes())).or(autoAbilities(true,false)))
-                    .where('P', blocks(CASING_STEEL_PIPE.get()))
-                    .build())
-            .workableCasingRenderer(GTCEu.id("block/casings/gcym/machine_casing_watertight"),
-                    GTCEu.id("block/multiblock/gcym/large_fluidworks"), false)
-            .compassSections(GTCompassSections.TIER[IV])
-            .compassNodeSelf()
-            .register();
-
-    public final static MultiblockMachineDefinition LARGE_MATERIALWORKS = REGISTRATE.multiblock("large_materialworks", WorkableElectricMultiblockMachine::new)
-            .langValue("Large Materialworks")
-            .rotationState(RotationState.NON_Y_AXIS)
-            .recipeTypes(BENDER_RECIPES, COMPRESSOR_RECIPES, FORMING_PRESS_RECIPES, FORGE_HAMMER_RECIPES, WIREMILL_RECIPES, EXTRUDER_RECIPES)
-            .recipeModifier(GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
-            .appearanceBlock(CASING_STRESS_PROOF)
-            .pattern(definition -> FactoryBlockPattern.start(RIGHT, BACK, UP)
-                    .aisle("XXXXXXX", "XXXXXXX", "XXXXXXX")
-                    .aisle("XXXXXXX", "X#XGGGX", "XXXXXXX")
-                    .aisle("XXXXXXX", "XSXTTTX", "XXXXXXX")
-                    .where('S', controller(blocks(definition.getBlock())))
-                    .where('X', blocks(CASING_STRESS_PROOF.get()).setMinGlobalLimited(40)
-                            .or(autoAbilities(definition.getRecipeTypes())).or(autoAbilities(true,false)))
-                    .where('G', blocks(CASING_STEEL_GEARBOX.get()))
-                    .where('T', blocks(CASING_TEMPERED_GLASS.get()))
-                    .where('#', air())
-                    .build())
-            .workableCasingRenderer(GTCEu.id("block/casings/gcym/machine_casing_stress_proof"),
-                    GTCEu.id("block/multiblock/gcym/large_materialworks"), false)
-            .compassSections(GTCompassSections.TIER[IV])
-            .compassNodeSelf()
-            .register();
-
-    public final static MultiblockMachineDefinition LARGE_CUTTER = REGISTRATE.multiblock("large_cutter", WorkableElectricMultiblockMachine::new)
-            .langValue("Large Cutting Saw")
-            .rotationState(RotationState.NON_Y_AXIS)
-            .recipeTypes(CUTTER_RECIPES, LATHE_RECIPES)
-            .recipeModifier(GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
-            .appearanceBlock(CASING_SHOCK_PROOF)
-            .pattern(definition -> FactoryBlockPattern.start(RIGHT, BACK, UP)
-                    .aisle("XXXXXXX", "XXXXXXX", "XXXXXXX","##XXXXX")
-                    .aisle("XXXXXXX", "X#XBBBX", "XXX###X","##XXXXX")
-                    .aisle("XXXXXXX", "X#XBBBX", "XXX###X","##XXXXX")
-                    .aisle("XXXXXXX", "XSXTTTX", "XXXTTTX","##XXXXX")
-                    .where('S', controller(blocks(definition.getBlock())))
-                    .where('X', blocks(CASING_SHOCK_PROOF.get()).setMinGlobalLimited(40)
-                            .or(autoAbilities(definition.getRecipeTypes())).or(autoAbilities(true,false)))
-                    .where('B', blocks(SLICING_BLADES.get()))
-                    .where('T', blocks(CASING_TEMPERED_GLASS.get()))
-                    .where('#', air())
-                    .build())
-            .workableCasingRenderer(GTCEu.id("block/casings/gcym/machine_casing_shock_proof"),
-                    GTCEu.id("block/multiblock/gcym/large_cutter"), false)
-            .compassSections(GTCompassSections.TIER[IV])
-            .compassNodeSelf()
-            .register();
-
-    public final static MultiblockMachineDefinition LARGE_EXTRACTOR = REGISTRATE.multiblock("large_extractor", WorkableElectricMultiblockMachine::new)
-            .langValue("Large Extracting Machine")
-            .rotationState(RotationState.NON_Y_AXIS)
-            .recipeTypes(EXTRACTOR_RECIPES, CANNER_RECIPES)
-            .recipeModifier(GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
-            .appearanceBlock(CASING_WATERTIGHT)
-            .pattern(definition -> FactoryBlockPattern.start(RIGHT, BACK, UP)
-                    .aisle("XXXXX", "XXXXX","XXXXX")
-                    .aisle("XXXXX", "XP#PX","XXXXX")
-                    .aisle("XXXXX", "XXSXX","XXXXX")
-                    .where('S', controller(blocks(definition.getBlock())))
-                    .where('X', blocks(CASING_WATERTIGHT.get()).setMinGlobalLimited(25)
-                            .or(autoAbilities(definition.getRecipeTypes())).or(autoAbilities(true,false)))
-                    .where('P', blocks(CASING_STEEL_PIPE.get()))
-                    .where('#', air())
-                    .build())
-            .workableCasingRenderer(GTCEu.id("block/casings/gcym/machine_casing_watertight"),
-                    GTCEu.id("block/multiblock/gcym/large_extractor"), false)
-            .compassSections(GTCompassSections.TIER[IV])
-            .compassNodeSelf()
-            .register();
-
-    public final static MultiblockMachineDefinition LARGE_EXTRUDER = REGISTRATE.multiblock("large_extruder", WorkableElectricMultiblockMachine::new)
-            .langValue("Large Extrusion Press")
-            .rotationState(RotationState.NON_Y_AXIS)
-            .recipeTypes(EXTRUDER_RECIPES, WIREMILL_RECIPES)
-            .recipeModifier(GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
-            .appearanceBlock(CASING_STRESS_PROOF)
-            .pattern(definition -> FactoryBlockPattern.start(RIGHT, BACK, UP)
-                    .aisle("##XXX", "##XXX", "##XXX")
-                    .aisle("##XXX", "##XPX", "##XTX")
-                    .aisle("##XXX", "##XPX", "##XTX")
-                    .aisle("XXXXX", "XXXPX", "XXXTX")
-                    .aisle("XXXXX", "X#XPX", "XXXTX")
-                    .aisle("XXXXX", "XSXXX", "XXXXX")
-                    .where('S', controller(blocks(definition.getBlock())))
-                    .where('X', blocks(CASING_STRESS_PROOF.get()).setMinGlobalLimited(40)
-                            .or(autoAbilities(definition.getRecipeTypes())).or(autoAbilities(true,false)))
-                    .where('P', blocks(CASING_TITANIUM_PIPE.get()))
-                    .where('T', blocks(CASING_TEMPERED_GLASS.get()))
-                    .where('#', air())
-                    .build())
-            .workableCasingRenderer(GTCEu.id("block/casings/gcym/machine_casing_stress_proof"),
-                    GTCEu.id("block/multiblock/gcym/large_extruder"), false)
-            .compassSections(GTCompassSections.TIER[IV])
-            .compassNodeSelf()
-            .register();
-
-    public final static MultiblockMachineDefinition LARGE_BREWER = REGISTRATE.multiblock("large_brewer", WorkableElectricMultiblockMachine::new)
-            .langValue("Large Brewing Vat")
-            .rotationState(RotationState.NON_Y_AXIS)
-            .recipeTypes(BREWING_RECIPES, FERMENTING_RECIPES, FLUID_HEATER_RECIPES)
-            .recipeModifier(GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
-            .appearanceBlock(CASING_CORROSION_PROOF)
-            .pattern(definition -> FactoryBlockPattern.start(RIGHT, BACK, UP)
-                    .aisle("#XXX#", "#XXX#", "#XXX#", "#XXX#", "#####")
-                    .aisle("XXXXX", "XCCCX", "X###X", "XX#XX", "##X##")
-                    .aisle("XXXXX", "XCPCX", "X#P#X", "X#P#X", "#XMX#")
-                    .aisle("XXXXX", "XCCCX", "X###X", "XX#XX", "##X##")
-                    .aisle("#XXX#", "#XSX#", "#XXX#", "#XXX#", "#####")
-                    .where('S', controller(blocks(definition.getBlock())))
-                    .where('X', blocks(CASING_CORROSION_PROOF.get()).setMinGlobalLimited(40)
-                            .or(autoAbilities(definition.getRecipeTypes())).or(autoAbilities(true,true)))
-                    .where('P', blocks(CASING_STEEL_PIPE.get()))
-                    .where('C', blocks(MOLYBDENUM_DISILICIDE_COIL_BLOCK.get()))
-                    .where('M', abilities(MUFFLER))
-                    .where('#', air())
-                    .build())
-            .workableCasingRenderer(GTCEu.id("block/casings/gcym/machine_casing_corrosion_proof"),
-                    GTCEu.id("block/multiblock/gcym/large_brewer"), false)
-            .compassSections(GTCompassSections.TIER[IV])
             .compassNodeSelf()
             .register();
 }
