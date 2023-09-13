@@ -53,7 +53,7 @@ public class ProcessingArrayMachine extends TieredWorkableElectricMultiblockMach
     public final NotifiableItemStackHandler machineStorage;
     //runtime
     @Nullable
-    private GTRecipeType recipeTypeCache;
+    private GTRecipeType[] recipeTypeCache;
 
     public ProcessingArrayMachine(IMachineBlockEntity holder, int tier, Object... args) {
         super(holder, tier, args);
@@ -81,8 +81,15 @@ public class ProcessingArrayMachine extends TieredWorkableElectricMultiblockMach
 
     protected boolean isMachineStack(ItemStack itemStack) {
         if (itemStack.getItem() instanceof MetaMachineItem metaMachineItem) {
-            var recipeType =  metaMachineItem.getDefinition().getRecipeType();
-            return recipeType != null && recipeType != GTRecipeTypes.DUMMY_RECIPES;
+            var recipeTypes = metaMachineItem.getDefinition().getRecipeTypes();
+            if(recipeTypes == null){
+                return false;
+            }
+            for(GTRecipeType type : recipeTypes){
+                if(type != GTRecipeTypes.DUMMY_RECIPES){
+                    return true;
+                }
+            }
         }
         return false;
     }
@@ -97,13 +104,13 @@ public class ProcessingArrayMachine extends TieredWorkableElectricMultiblockMach
 
     @Override
     @Nonnull
-    public GTRecipeType getRecipeType() {
+    public GTRecipeType[] getRecipeTypes() {
         if (recipeTypeCache == null) {
             var definition = getMachineDefinition();
-            recipeTypeCache = definition == null ? null : definition.getRecipeType();
+            recipeTypeCache = definition == null ? null : definition.getRecipeTypes();
         }
         if (recipeTypeCache == null) {
-            recipeTypeCache = GTRecipeTypes.DUMMY_RECIPES;
+            recipeTypeCache = new GTRecipeType[]{GTRecipeTypes.DUMMY_RECIPES};
         }
         return recipeTypeCache;
     }
