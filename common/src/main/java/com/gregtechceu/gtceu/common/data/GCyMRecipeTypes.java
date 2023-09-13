@@ -47,33 +47,26 @@ import static com.lowdragmc.lowdraglib.gui.texture.ProgressTexture.FillDirection
  * @implNote Gregicality Multiblocks Recipe Types
  */
 public class GCyMRecipeTypes {
-    public static final String STEAM = "steam";
     public static final String ELECTRIC = "electric";
     public static final String GENERATOR = "generator";
     public static final String MULTIBLOCK = "multiblock";
-    public static final String DUMMY = "dummy";
-    public static final String KINETIC = "kinetic";
 
-    //////////////////////////////////////
-    //*******     Multiblock     *******//
-    //////////////////////////////////////
-
-    public final static GTRecipeType LARGE_MIXER_RECIPES = register("large_mixer", ELECTRIC).setMaxIOSize(9, 1, 6, 1).setEUIO(IO.IN)
+    public final static GTRecipeType LARGE_MIXER_RECIPES = register("large_mixer_recipes", ELECTRIC).setMaxIOSize(9, 1, 6, 1).setEUIO(IO.IN)
             .setSlotOverlay(false, false, GuiTextures.DUST_OVERLAY)
             .setProgressBar(GuiTextures.PROGRESS_BAR_MIXER, LEFT_TO_RIGHT)
             .setSound(GTSoundEntries.MIXER);
 
-    public final static GTRecipeType LARGE_ENGRAVER_RECIPES = register("large_engraver", ELECTRIC).setMaxIOSize(2, 1, 1, 1).setEUIO(IO.IN)
+    public final static GTRecipeType LARGE_ENGRAVER_RECIPES = register("large_engraver_recipes", ELECTRIC).setMaxIOSize(2, 1, 1, 1).setEUIO(IO.IN)
             .setSlotOverlay(false, false, GuiTextures.LENS_OVERLAY)
             .setProgressBar(GuiTextures.PROGRESS_BAR_ARROW, LEFT_TO_RIGHT)
             .setSound(GTSoundEntries.ELECTROLYZER);
 
-    public final static GTRecipeType LARGE_CENTRIFUGE_RECIPES = register("large_centrifuge", ELECTRIC).setMaxIOSize(2, 6, 2, 6).setEUIO(IO.IN)
+    public final static GTRecipeType LARGE_CENTRIFUGE_RECIPES = register("large_centrifuge_recipes", ELECTRIC).setMaxIOSize(2, 6, 2, 6).setEUIO(IO.IN)
             .setSlotOverlay(false, false, GuiTextures.EXTRACTOR_OVERLAY)
             .setProgressBar(GuiTextures.PROGRESS_BAR_EXTRACT, LEFT_TO_RIGHT)
             .setSound(GTSoundEntries.CENTRIFUGE);
 
-    public final static GTRecipeType BLAST_ALLOY_RECIPES = register("blast_alloy_smelter", ELECTRIC).setMaxIOSize(9, 0, 3, 1).setEUIO(IO.IN)
+    public final static GTRecipeType BLAST_ALLOY_RECIPES = register("blast_alloy_smelter_recipes", ELECTRIC).setMaxIOSize(9, 0, 3, 1).setEUIO(IO.IN)
             .setProgressBar(GuiTextures.PROGRESS_BAR_ARROW, LEFT_TO_RIGHT)
             .setSlotOverlay(false, false, false, GuiTextures.FURNACE_OVERLAY_1)
             .setSlotOverlay(false, false, true, GuiTextures.FURNACE_OVERLAY_1)

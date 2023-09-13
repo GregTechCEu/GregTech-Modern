@@ -1,12 +1,12 @@
 {
   "button_texture": {
     "type": "item",
-    "res": "gtceu:large_circuit_assembler"
+    "res": "gtceu:large_distillery"
   },
   "items": [
-    "gtceu:large_circuit_assembler"
+    "gtceu:large_distillery"
   ],
-  "page": "gtceu:iv/large_circuit_assembler",
+  "page": "gtceu:iv/large_distillery",
   "position": [
     -100,
     100

@@ -25,14 +25,16 @@ public class GCyMBlocks {
 
     public static void init() {}
 
-    public static final BlockEntry<Block> CASING_NONCONDUCTING = createCasingBlock("nonconducting_machine_casing", GTCEu.id("block/casings/gcmb/machine_casing_nonconducting"));
-    public static final BlockEntry<Block> CASING_VIBRATION_SAFE = createCasingBlock("vibration_safe_machine_casing", GTCEu.id("block/casings/gcmb/machine_casing_vibration_safe"));
-    public static final BlockEntry<Block> CASING_WATERTIGHT = createCasingBlock("watertight_machine_casing", GTCEu.id("block/casings/gcmb/machine_casing_watertight"));
-    public static final BlockEntry<Block> CASING_SECURE_MACERATION = createCasingBlock("secure_maceration_machine_casing", GTCEu.id("block/casings/gcmb/machine_casing_secure_maceration"));
-    public static final BlockEntry<Block> CASING_HIGH_TEMPERATURE_SMELTING = createCasingBlock("high_temperature_smelting_machine_casing", GTCEu.id("block/casings/gcmb/machine_casing_high_temperature_smelting"));
-    public static final BlockEntry<Block> CASING_LASER_SAFE_ENGRAVING = createCasingBlock("laser_safe_engraving_machine_casing", GTCEu.id("block/casings/gcmb/machine_casing_laser_safe_engraving"));
-    public static final BlockEntry<Block> CASING_LARGE_SCALE_ASSEMBLING = createCasingBlock("large_scale_assembling_machine_casing", GTCEu.id("block/casings/gcmb/machine_casing_large_scale_assembling"));
-    public static final BlockEntry<Block> CASING_SHOCK_PROOF = createCasingBlock("shock_proof_machine_casing", GTCEu.id("block/casings/gcmb/machine_casing_shock_proof"));
+    public static final BlockEntry<Block> CASING_NONCONDUCTING = createCasingBlock("nonconducting_machine_casing", GTCEu.id("block/casings/gcym/machine_casing_nonconducting"));
+    public static final BlockEntry<Block> CASING_VIBRATION_SAFE = createCasingBlock("vibration_safe_machine_casing", GTCEu.id("block/casings/gcym/machine_casing_vibration_safe"));
+    public static final BlockEntry<Block> CASING_WATERTIGHT = createCasingBlock("watertight_machine_casing", GTCEu.id("block/casings/gcym/machine_casing_watertight"));
+    public static final BlockEntry<Block> CASING_SECURE_MACERATION = createCasingBlock("secure_maceration_machine_casing", GTCEu.id("block/casings/gcym/machine_casing_secure_maceration"));
+    public static final BlockEntry<Block> CASING_HIGH_TEMPERATURE_SMELTING = createCasingBlock("high_temperature_smelting_machine_casing", GTCEu.id("block/casings/gcym/machine_casing_high_temperature_smelting"));
+    public static final BlockEntry<Block> CASING_LASER_SAFE_ENGRAVING = createCasingBlock("laser_safe_engraving_machine_casing", GTCEu.id("block/casings/gcym/machine_casing_laser_safe_engraving"));
+    public static final BlockEntry<Block> CASING_LARGE_SCALE_ASSEMBLING = createCasingBlock("large_scale_assembling_machine_casing", GTCEu.id("block/casings/gcym/machine_casing_large_scale_assembling"));
+    public static final BlockEntry<Block> CASING_SHOCK_PROOF = createCasingBlock("shock_proof_machine_casing", GTCEu.id("block/casings/gcym/machine_casing_shock_proof"));
+    public static final BlockEntry<Block> CASING_STRESS_PROOF = createCasingBlock("stress_proof_machine_casing", GTCEu.id("block/casings/gcym/machine_casing_stress_proof"));
+    public static final BlockEntry<Block> CASING_CORROSION_PROOF = createCasingBlock("corrosion_proof_machine_casing", GTCEu.id("block/casings/gcym/machine_casing_corrosion_proof"));
 
     public static final BlockEntry<Block> SLICING_BLADES = REGISTRATE.block("slicing_blades", p -> (Block) new RendererBlock(p,
                     Platform.isClient() ? new TextureOverrideRenderer(new ResourceLocation("block/cube_bottom_top"),

@@ -325,6 +325,8 @@ public class GTBlocks {
         builder.put(GTMaterials.TitaniumTungstenCarbide, CASING_LASER_SAFE_ENGRAVING);
         builder.put(GTMaterials.Stellite100, CASING_LARGE_SCALE_ASSEMBLING);
         builder.put(GTMaterials.HastelloyC276, CASING_SHOCK_PROOF);
+        builder.put(GTMaterials.MaragingSteel300, CASING_STRESS_PROOF);
+        builder.put(GTMaterials.CobaltBrass, CASING_CORROSION_PROOF);
 
         MaterialCasingCollectionEvent event = new MaterialCasingCollectionEvent(builder);
         AddonFinder.getAddons().forEach(addon -> addon.collectMaterialCasings(event));
@@ -482,7 +484,7 @@ public class GTBlocks {
     }
 
     public static BlockEntry<Block> createGlassCasingBlock(String name, ResourceLocation texture, Supplier<Supplier<RenderType>> type) {
-        return createCasingBlock(name, RenderGlassBlock::new, texture, () -> Blocks.GLASS, type);
+        return createCasingBlock(name, RendererGlassBlock::new, texture, () -> Blocks.GLASS, type);
     }
 
     public static BlockEntry<Block> createCasingBlock(String name, BiFunction<BlockBehaviour.Properties, IRenderer, ? extends RendererBlock> blockSupplier, ResourceLocation texture, NonNullSupplier<? extends Block> properties, Supplier<Supplier<RenderType>> type) {

@@ -1,0 +1,15 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:large_materialworks"
+  },
+  "items": [
+    "gtceu:large_materialworks"
+  ],
+  "page": "gtceu:iv/large_materialworks",
+  "position": [
+    -250,
+    150
+  ],
+  "section": "gtceu:iv"
+}

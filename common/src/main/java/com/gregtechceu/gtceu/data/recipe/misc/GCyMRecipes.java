@@ -23,9 +23,13 @@ import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
 import static com.gregtechceu.gtceu.common.data.GCyMBlocks.*;
 import static com.gregtechceu.gtceu.common.data.GCyMMachines.*;
+import static com.gregtechceu.gtceu.common.data.GTBlocks.CASING_TEMPERED_GLASS;
+import static com.gregtechceu.gtceu.common.data.GTItems.*;
+import static com.gregtechceu.gtceu.common.data.GTMachines.*;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.ASSEMBLER_RECIPES;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.MIXER_RECIPES;
+import static com.gregtechceu.gtceu.data.recipe.CustomTags.*;
 
 public class GCyMRecipes {
 
@@ -42,27 +46,32 @@ public class GCyMRecipes {
     }
 
     private static void registerMultiblockControllerRecipes(Consumer<FinishedRecipe> provider) {
-        VanillaRecipeHelper.addShapedRecipe(provider, true, "large_macerator", LARGE_MACERATION_TOWER.asStack(), "PCP", "BXB", "MKM", 'C', CustomTags.IV_CIRCUITS, 'P', ChemicalHelper.get(TagPrefix.plate, GTMaterials.TungstenCarbide), 'B', GTItems.ELECTRIC_PISTON_IV.asStack(), 'M', GTItems.ELECTRIC_MOTOR_IV.asStack(), 'X', GTMachines.MACERATOR[GTValues.IV - 1].asStack(), 'K', new UnificationEntry(TagPrefix.cableGtSingle, GTMaterials.Platinum));
-        VanillaRecipeHelper.addShapedRecipe(provider, true, "large_arc_smelter", LARGE_ARC_SMELTER.asStack(), "KDK", "CXC", "PPP", 'C', CustomTags.IV_CIRCUITS, 'P', ChemicalHelper.get(TagPrefix.plate, GTMaterials.TantalumCarbide), 'X', GTMachines.ARC_FURNACE[GTValues.IV - 1].asStack(), 'D',ChemicalHelper.get(TagPrefix.dust, GTMaterials.Graphite) ,'K', new UnificationEntry(TagPrefix.cableGtSingle, GTMaterials.Platinum));
-        VanillaRecipeHelper.addShapedRecipe(provider, true, "large_ore_washer", LARGE_ORE_WASHING_PLANT.asStack(), "PGP", "CXC", "MKM", 'C', CustomTags.IV_CIRCUITS, 'G',GTBlocks.CASING_TEMPERED_GLASS.asStack() ,'P', GTItems.ELECTRIC_PUMP_IV.asStack(), 'M', GTItems.CONVEYOR_MODULE_IV.asStack(), 'X', GTMachines.ORE_WASHER[GTValues.IV - 1].asStack(), 'K', new UnificationEntry(TagPrefix.cableGtSingle, GTMaterials.Platinum));
-        VanillaRecipeHelper.addShapedRecipe(provider, true, "large_sifter", LARGE_SIFTING_FUNNEL.asStack(), "PCP", "EXE", "PKP", 'C', CustomTags.IV_CIRCUITS, 'P', ChemicalHelper.get(TagPrefix.plate, GTMaterials.HSLASteel), 'E', GTItems.ELECTRIC_PISTON_IV.asStack(), 'X', GTMachines.SIFTER[GTValues.IV - 1].asStack(), 'K', new UnificationEntry(TagPrefix.cableGtSingle, GTMaterials.Platinum));
-        VanillaRecipeHelper.addShapedRecipe(provider, true, "large_engraver", LARGE_ENGRAVING_LASER.asStack(), "ICI", "EXE", "PKP", 'C', CustomTags.IV_CIRCUITS, 'P', ChemicalHelper.get(TagPrefix.plateDouble, GTMaterials.TantalumCarbide),'I',GTItems.EMITTER_IV.asStack() ,'E', GTItems.ELECTRIC_PISTON_IV.asStack(), 'X', GTMachines.LASER_ENGRAVER[GTValues.IV - 1].asStack(), 'K', new UnificationEntry(TagPrefix.cableGtSingle, GTMaterials.Platinum));
-        VanillaRecipeHelper.addShapedRecipe(provider, true, "large_packer", LARGE_PACKER.asStack(), "RCR", "PXP", "KPK", 'C', CustomTags.EV_CIRCUITS, 'P', ChemicalHelper.get(TagPrefix.plate, GTMaterials.HSLASteel),'R',GTItems.ROBOT_ARM_HV.asStack() ,'K', GTItems.CONVEYOR_MODULE_HV.asStack(), 'X', GTMachines.PACKER[GTValues.HV - 1].asStack());
-        VanillaRecipeHelper.addShapedRecipe(provider, true, "large_mixer", LARGE_MIXER.asStack(), "FCF", "RXR", "MKM", 'C', CustomTags.IV_CIRCUITS, 'F', ChemicalHelper.get(TagPrefix.pipeNormalFluid, GTMaterials.Polybenzimidazole),'R',ChemicalHelper.get(TagPrefix.rotor, GTMaterials.Osmiridium) ,'M', GTItems.ELECTRIC_MOTOR_IV.asStack(), 'X', GTMachines.MIXER[GTValues.IV - 1].asStack(), 'K', new UnificationEntry(TagPrefix.cableGtSingle, GTMaterials.Platinum));
-        VanillaRecipeHelper.addShapedRecipe(provider, true, "large_centrifuge", LARGE_CENTRIFUGE.asStack(), "SFS", "CXC", "MKM", 'C', CustomTags.IV_CIRCUITS, 'F', ChemicalHelper.get(TagPrefix.pipeHugeFluid, GTMaterials.StainlessSteel),'S',ChemicalHelper.get(TagPrefix.spring, GTMaterials.MolybdenumDisilicide) ,'M', GTItems.ELECTRIC_MOTOR_IV.asStack(), 'X', GTMachines.CENTRIFUGE[GTValues.IV - 1].asStack(), 'K', new UnificationEntry(TagPrefix.cableGtSingle, GTMaterials.Platinum));
-        VanillaRecipeHelper.addShapedRecipe(provider, true, "large_thermal_centrifuge", LARGE_THERMAL_CENTRIFUGE.asStack(), "SFS", "CXC", "MKM", 'C', CustomTags.IV_CIRCUITS, 'F', ChemicalHelper.get(TagPrefix.pipeHugeFluid, GTMaterials.StainlessSteel),'S',ChemicalHelper.get(TagPrefix.spring, GTMaterials.MolybdenumDisilicide) ,'M', GTItems.ELECTRIC_MOTOR_IV.asStack(), 'X', GTMachines.THERMAL_CENTRIFUGE[GTValues.IV - 1].asStack(), 'K', new UnificationEntry(TagPrefix.cableGtSingle, GTMaterials.Platinum));
-        VanillaRecipeHelper.addShapedRecipe(provider, true, "large_assembler", LARGE_ASSEMBLER.asStack(), "RKR", "CXC", "MKM", 'C', CustomTags.IV_CIRCUITS, 'R', GTItems.ROBOT_ARM_IV.asStack() ,'M', GTItems.CONVEYOR_MODULE_IV.asStack(), 'X', GTMachines.ASSEMBLER[GTValues.IV - 1].asStack(), 'K', new UnificationEntry(TagPrefix.cableGtSingle, GTMaterials.Platinum));
-        VanillaRecipeHelper.addShapedRecipe(provider, true, "large_circuit_assembler", LARGE_CIRCUIT_ASSEMBLER.asStack(), "RKR", "CXC", "MKM", 'C', CustomTags.IV_CIRCUITS, 'R', GTItems.ROBOT_ARM_IV.asStack() ,'M', GTItems.CONVEYOR_MODULE_IV.asStack(), 'X', GTMachines.CIRCUIT_ASSEMBLER[GTValues.IV - 1].asStack(), 'K', new UnificationEntry(TagPrefix.cableGtSingle, GTMaterials.Platinum));
-        VanillaRecipeHelper.addShapedRecipe(provider, true, "large_electrolyzer", LARGE_ELECTROLYZER.asStack(), "PCP", "WXW", "PKP", 'C', CustomTags.IV_CIRCUITS, 'P', ChemicalHelper.get(TagPrefix.plate, GTMaterials.BlackSteel) ,'W', ChemicalHelper.get(TagPrefix.wireGtQuadruple, GTMaterials.Osmium), 'X', GTMachines.ELECTROLYZER[GTValues.IV - 1].asStack(), 'K', new UnificationEntry(TagPrefix.cableGtSingle, GTMaterials.Platinum));
-        VanillaRecipeHelper.addShapedRecipe(provider, true, "blast_alloy_smelter", BLAST_ALLOY_SMELTER.asStack(), "TCT", "WXW", "TCT", 'C', CustomTags.EV_CIRCUITS, 'T', ChemicalHelper.get(TagPrefix.plate, TantalumCarbide) ,'W', ChemicalHelper.get(TagPrefix.wireGtQuadruple, GTMaterials.Osmium), 'X', GTMachines.ALLOY_SMELTER[GTValues.EV - 1].asStack(), 'K', new UnificationEntry(TagPrefix.cableGtSingle, Aluminium));
-        VanillaRecipeHelper.addShapedRecipe(provider, true, "mega_blast_furnace", MEGA_BLAST_FURNACE.asStack(),"PCP", "FSF", "DWD", 'C', CustomTags.ZPM_CIRCUITS,'S', GTMachines.ELECTRIC_BLAST_FURNACE.asStack(), 'F', GTItems.FIELD_GENERATOR_ZPM.asStack(), 'P', new UnificationEntry(spring, Naquadah), 'D', new UnificationEntry(plateDense, NaquadahAlloy), 'W', new UnificationEntry(wireGtQuadruple, RutheniumTriniumAmericiumNeutronate));
-        VanillaRecipeHelper.addShapedRecipe(provider, true, "mega_vacuum_freezer", MEGA_VACUUM_FREEZER.asStack(),  "PCP", "FSF", "DWD", 'C', CustomTags.ZPM_CIRCUITS, 'S', GTMachines.VACUUM_FREEZER.asStack(), 'F', GTItems.FIELD_GENERATOR_ZPM.asStack(), 'P', new UnificationEntry(pipeNormalFluid, NiobiumTitanium), 'D', new UnificationEntry(plateDense, RhodiumPlatedPalladium), 'W', new UnificationEntry(wireGtQuadruple, RutheniumTriniumAmericiumNeutronate));
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "large_macerator", LARGE_MACERATOR.asStack(), "PCP", "BXB", "MKM", 'C', IV_CIRCUITS, 'P', ChemicalHelper.get(plate, TungstenCarbide), 'B', ELECTRIC_PISTON_IV.asStack(), 'M', ELECTRIC_MOTOR_IV.asStack(), 'X', MACERATOR[IV - 1].asStack(), 'K', new UnificationEntry(cableGtSingle, Platinum));
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "large_arc_smelter", LARGE_ARC_FURNACE.asStack(), "KDK", "CXC", "PPP", 'C', IV_CIRCUITS, 'P', ChemicalHelper.get(plate, TantalumCarbide), 'X', ARC_FURNACE[IV - 1].asStack(), 'D',ChemicalHelper.get(dust, Graphite) ,'K', new UnificationEntry(cableGtSingle, Platinum));
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "large_ore_washer", LARGE_ORE_WASHER.asStack(), "PGP", "CXC", "MKM", 'C', IV_CIRCUITS, 'G',CASING_TEMPERED_GLASS.asStack() ,'P', ELECTRIC_PUMP_IV.asStack(), 'M', CONVEYOR_MODULE_IV.asStack(), 'X', ORE_WASHER[IV - 1].asStack(), 'K', new UnificationEntry(TagPrefix.cableGtSingle, Platinum));
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "large_sifter", LARGE_SIFTER.asStack(), "PCP", "EXE", "PKP", 'C', IV_CIRCUITS, 'P', ChemicalHelper.get(plate, HSLASteel), 'E', ELECTRIC_PISTON_IV.asStack(), 'X', SIFTER[IV - 1].asStack(), 'K', new UnificationEntry(cableGtSingle, Platinum));
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "large_engraver", LARGE_ENGRAVING_LASER.asStack(), "ICI", "EXE", "PKP", 'C', IV_CIRCUITS, 'P', ChemicalHelper.get(plateDouble, TantalumCarbide),'I',EMITTER_IV.asStack() ,'E', ELECTRIC_PISTON_IV.asStack(), 'X', LASER_ENGRAVER[IV - 1].asStack(), 'K', new UnificationEntry(cableGtSingle, Platinum));
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "large_packer", LARGE_PACKER.asStack(), "RCR", "PXP", "KPK", 'C', EV_CIRCUITS, 'P', ChemicalHelper.get(plate, HSLASteel),'R',ROBOT_ARM_HV.asStack() ,'K', CONVEYOR_MODULE_HV.asStack(), 'X', PACKER[HV - 1].asStack());
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "large_mixer", LARGE_MIXER.asStack(), "FCF", "RXR", "MKM", 'C', IV_CIRCUITS, 'F', ChemicalHelper.get(pipeNormalFluid, Polybenzimidazole),'R',ChemicalHelper.get(rotor, Osmiridium) ,'M', ELECTRIC_MOTOR_IV.asStack(), 'X', MIXER[IV - 1].asStack(), 'K', new UnificationEntry(TagPrefix.cableGtSingle, Platinum));
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "large_centrifuge", LARGE_CENTRIFUGE.asStack(), "SFS", "CXC", "MKM", 'C', IV_CIRCUITS, 'F', ChemicalHelper.get(pipeHugeFluid, StainlessSteel),'S',ChemicalHelper.get(spring, MolybdenumDisilicide) ,'M', ELECTRIC_MOTOR_IV.asStack(), 'X', CENTRIFUGE[IV - 1].asStack(), 'K', new UnificationEntry(TagPrefix.cableGtSingle, Platinum));
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "large_assembler", LARGE_ASSEMBLER.asStack(), "RKR", "CXC", "MKM", 'C', IV_CIRCUITS, 'R', ROBOT_ARM_IV.asStack() ,'M', CONVEYOR_MODULE_IV.asStack(), 'X', ASSEMBLER[IV - 1].asStack(), 'K', new UnificationEntry(cableGtSingle, Platinum));
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "large_electrolyzer", LARGE_ELECTROLYZER.asStack(), "PCP", "WXW", "PKP", 'C', IV_CIRCUITS, 'P', ChemicalHelper.get(plate, BlackSteel) ,'W', ChemicalHelper.get(wireGtQuadruple, Osmium), 'X', ELECTROLYZER[GTValues.IV - 1].asStack(), 'K', new UnificationEntry(TagPrefix.cableGtSingle, Platinum));
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "blast_alloy_smelter", BLAST_ALLOY_SMELTER.asStack(), "TCT", "WXW", "TCT", 'C', EV_CIRCUITS, 'T', ChemicalHelper.get(plate, TantalumCarbide) ,'W', ChemicalHelper.get(wireGtQuadruple, Osmium), 'X', ALLOY_SMELTER[EV - 1].asStack(), 'K', new UnificationEntry(TagPrefix.cableGtSingle, Aluminium));
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "mega_blast_furnace", MEGA_BLAST_FURNACE.asStack(),"PCP", "FSF", "DWD", 'C', ZPM_CIRCUITS,'S', ELECTRIC_BLAST_FURNACE.asStack(), 'F', FIELD_GENERATOR_ZPM.asStack(), 'P', new UnificationEntry(spring, Naquadah), 'D', new UnificationEntry(plateDense, NaquadahAlloy), 'W', new UnificationEntry(wireGtQuadruple, RutheniumTriniumAmericiumNeutronate));
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "mega_vacuum_freezer", MEGA_VACUUM_FREEZER.asStack(),  "PCP", "FSF", "DWD", 'C', ZPM_CIRCUITS, 'S', VACUUM_FREEZER.asStack(), 'F', FIELD_GENERATOR_ZPM.asStack(), 'P', new UnificationEntry(pipeNormalFluid, NiobiumTitanium), 'D', new UnificationEntry(plateDense, RhodiumPlatedPalladium), 'W', new UnificationEntry(wireGtQuadruple, RutheniumTriniumAmericiumNeutronate));
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "large_distillery", LARGE_DISTILLERY.asStack(),  "PCP", "MSM", "PCP", 'C', IV_CIRCUITS, 'S', DISTILLATION_TOWER.asStack(), 'P', new UnificationEntry(pipeLargeFluid, Iridium));
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "large_fluidworks", LARGE_FLUIDWORKS.asStack(),  "DAD", "CSC", "PKP", 'C', IV_CIRCUITS, 'A', AUTOCLAVE[IV - 1].asStack(), 'P', ChemicalHelper.get(plateDouble, HSLASteel), 'K', ChemicalHelper.get(cableGtSingle, Platinum), 'S', FLUID_SOLIDIFIER[IV - 1].asStack(), 'P', ELECTRIC_PUMP_IV.asStack());
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "large_materialworks", LARGE_MATERIALWORKS.asStack(),  "PKP", "BZC", "FKH", 'Z', IV_CIRCUITS, 'W', WIREMILL[IV - 1].asStack(), 'P', ELECTRIC_PISTON_IV.asStack(), 'B', BENDER[IV - 1].asStack(), 'C', COMPRESSOR[IV - 1].asStack(), 'F', FORMING_PRESS[IV - 1].asStack(), 'H', FORGE_HAMMER[IV - 1].asStack(), 'K', ChemicalHelper.get(cableGtSingle, Platinum));
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "large_cutter", LARGE_CUTTER.asStack(),  "SCS", "LZK", "MPM", 'Z', IV_CIRCUITS, 'L', LATHE[IV - 1].asStack(), 'P', ChemicalHelper.get(cableGtSingle, Platinum), 'K', CUTTER[IV - 1].asStack(), 'M', ELECTRIC_MOTOR_IV.asStack(), 'S', ChemicalHelper.get(toolHeadBuzzSaw, TungstenCarbide), 'C', CONVEYOR_MODULE_IV.asStack());
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "large_extractor", LARGE_EXTRACTOR.asStack(),  "PTP", "EZC", "BKB", 'Z', IV_CIRCUITS, 'E', EXTRACTOR[IV - 1].asStack(), 'B', ELECTRIC_PISTON_IV.asStack(), 'P', ELECTRIC_PUMP_IV.asStack(), 'C', CANNER[IV - 1].asStack(), 'K', ChemicalHelper.get(cableGtSingle, Platinum));
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "large_extruder", LARGE_EXTRUDER.asStack(),  "PBP", "WBE", "SKS", 'Z', IV_CIRCUITS, 'E', EXTRUDER[IV - 1].asStack(), 'B', ELECTRIC_PISTON_IV.asStack(), 'P', ChemicalHelper.get(pipeLargeFluid, NiobiumTitanium), 'W', WIREMILL[IV - 1].asStack(), 'S', ChemicalHelper.get(spring, MolybdenumDisilicide));
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "large_brewer", LARGE_BREWER.asStack(),  "SZS", "BFH", "PKP", 'Z', IV_CIRCUITS, 'B', BREWERY[IV - 1].asStack(), 'P', ELECTRIC_PUMP_IV.asStack(), 'H', FLUID_HEATER[IV - 1].asStack(), 'F', FERMENTER[IV - 1].asStack(), 'S', ChemicalHelper.get(spring, MolybdenumDisilicide), 'K', ChemicalHelper.get(cableGtSingle, Platinum));
     }
 
     private static void registerPartsRecipes(Consumer<FinishedRecipe> provider) {
-        VanillaRecipeHelper.addShapedRecipe(provider, "crushing_wheels", CRUSHING_WHEELS.asStack(2), "TTT", "UCU","UMU", 'T', ChemicalHelper.get(gearSmall,TungstenCarbide), 'U', ChemicalHelper.get(gear, Ultimet), 'C', CASING_SECURE_MACERATION.asStack(), 'M', GTItems.ELECTRIC_MOTOR_IV.asStack());
-        VanillaRecipeHelper.addShapedRecipe(provider, "slicing_blades", SLICING_BLADES.asStack(2), "PPP", "UCU","UMU", 'P', ChemicalHelper.get(plate,TungstenCarbide), 'U', ChemicalHelper.get(gear, Ultimet), 'C', CASING_SHOCK_PROOF.asStack(), 'M', GTItems.ELECTRIC_MOTOR_IV.asStack());
-        VanillaRecipeHelper.addShapedRecipe(provider, "electrolytic_cell", ELECTROLYTIC_CELL.asStack(2), "WWW", "WCW","ZKZ", 'W', ChemicalHelper.get(wireGtDouble,Platinum), 'Z', CustomTags.IV_CIRCUITS, 'C', CASING_NONCONDUCTING.asStack(), 'K', ChemicalHelper.get(cableGtSingle,Tungsten));
+        VanillaRecipeHelper.addShapedRecipe(provider, "crushing_wheels", CRUSHING_WHEELS.asStack(2), "TTT", "UCU","UMU", 'T', ChemicalHelper.get(gearSmall,TungstenCarbide), 'U', ChemicalHelper.get(gear, Ultimet), 'C', CASING_SECURE_MACERATION.asStack(), 'M', ELECTRIC_MOTOR_IV.asStack());
+        VanillaRecipeHelper.addShapedRecipe(provider, "slicing_blades", SLICING_BLADES.asStack(2), "PPP", "UCU","UMU", 'P', ChemicalHelper.get(plate,TungstenCarbide), 'U', ChemicalHelper.get(gear, Ultimet), 'C', CASING_SHOCK_PROOF.asStack(), 'M', ELECTRIC_MOTOR_IV.asStack());
+        VanillaRecipeHelper.addShapedRecipe(provider, "electrolytic_cell", ELECTROLYTIC_CELL.asStack(2), "WWW", "WCW","ZKZ", 'W', ChemicalHelper.get(wireGtDouble,Platinum), 'Z', IV_CIRCUITS, 'C', CASING_NONCONDUCTING.asStack(), 'K', ChemicalHelper.get(cableGtSingle,Tungsten));
         VanillaRecipeHelper.addShapedRecipe(provider, "heat_vent", HEAT_VENT.asStack(2), "PDP", "RLR","PDP", 'P', ChemicalHelper.get(plate,TantalumCarbide), 'D', ChemicalHelper.get(plateDouble,MolybdenumDisilicide), 'R', ChemicalHelper.get(rotor,Titanium), 'L', ChemicalHelper.get(rodLong,MolybdenumDisilicide));
     }
 
@@ -95,7 +104,7 @@ public class GCyMRecipes {
                 .inputItems(ChemicalHelper.get(wireGtDouble,Platinum,4))
                 .inputItems(ChemicalHelper.get(cableGtSingle,Tungsten,1))
                 .inputItems(CASING_NONCONDUCTING.asStack())
-                .inputItems(CustomTags.IV_CIRCUITS)
+                .inputItems(IV_CIRCUITS)
                 .outputItems(ELECTROLYTIC_CELL.asStack(2))
                 .duration(50).EUt(16)
                 .save(provider);
@@ -117,13 +126,13 @@ public class GCyMRecipes {
                 .duration(50).EUt(16)
                 .save(provider);
 
-        ASSEMBLER_RECIPES.recipeBuilder("casing_hsla_nonconducting")
+        ASSEMBLER_RECIPES.recipeBuilder("casing_nonconducting")
                 .inputItems(plate, HSLASteel, 6).inputItems(frameGt, HSLASteel).circuitMeta(6)
                 .outputItems(CASING_NONCONDUCTING.asStack(2))
                 .duration(50).EUt(16)
                 .save(provider);
 
-        ASSEMBLER_RECIPES.recipeBuilder("casing_incoloy_vibration_safe")
+        ASSEMBLER_RECIPES.recipeBuilder("casing_vibration_safe")
                 .inputItems(plate, IncoloyMA956, 6).inputItems(frameGt, IncoloyMA956).circuitMeta(6)
                 .outputItems(CASING_VIBRATION_SAFE.asStack(2))
                 .EUt(16).duration(50)
@@ -162,6 +171,18 @@ public class GCyMRecipes {
         ASSEMBLER_RECIPES.recipeBuilder("casing_shock_proof")
                 .inputItems(plate, HastelloyC276, 6).inputItems(frameGt, HastelloyC276).circuitMeta(6)
                 .outputItems(CASING_SHOCK_PROOF.asStack(2))
+                .duration(50).EUt(16)
+                .save(provider);
+
+        ASSEMBLER_RECIPES.recipeBuilder("casing_stress_proof")
+                .inputItems(plate, MaragingSteel300, 6).inputItems(frameGt, StainlessSteel).circuitMeta(6)
+                .outputItems(CASING_SHOCK_PROOF.asStack(2))
+                .duration(50).EUt(16)
+                .save(provider);
+
+        ASSEMBLER_RECIPES.recipeBuilder("casing_corrosion_proof")
+                .inputItems(plate, CobaltBrass, 6).inputItems(frameGt, HSLASteel).circuitMeta(6)
+                .outputItems(CASING_CORROSION_PROOF.asStack(2))
                 .duration(50).EUt(16)
                 .save(provider);
     }
