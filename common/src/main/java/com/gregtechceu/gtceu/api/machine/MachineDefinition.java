@@ -61,11 +61,9 @@ public class MachineDefinition implements Supplier<IMachineBlock> {
     private Supplier<BlockEntityType<? extends BlockEntity>> blockEntityTypeSupplier;
     @Setter
     private Function<IMachineBlockEntity, MetaMachine> machineSupplier;
-    @Setter
-    @Nullable
-    private GTRecipeType recipeType;
-    @Getter
-    @Setter
+    @Getter @Setter @Nullable
+    private GTRecipeType[] recipeTypes;
+    @Getter @Setter
     private int tier;
     @Setter @Getter
     private int defaultPaintingColor;
@@ -130,11 +128,6 @@ public class MachineDefinition implements Supplier<IMachineBlock> {
 
     public String getName() {
         return id.getPath();
-    }
-
-    @Nullable
-    public GTRecipeType getRecipeType() {
-        return recipeType;
     }
 
     @Override

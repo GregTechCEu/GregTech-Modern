@@ -29,6 +29,7 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.*;
 
@@ -49,7 +50,9 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
     @DescSynced
     public final RecipeLogic recipeLogic;
     @Getter
-    private final GTRecipeType recipeType;
+    private final GTRecipeType[] recipeTypes;
+    @Getter @Setter @Persisted
+    private int activeRecipeType;
     @Getter
     protected final Table<IO, RecipeCapability<?>, List<IRecipeHandler<?>>> capabilitiesProxy;
     protected final List<ISubscription> traitSubscriptions;
@@ -60,7 +63,8 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
 
     public WorkableMultiblockMachine(IMachineBlockEntity holder, Object... args) {
         super(holder);
-        this.recipeType = getDefinition().getRecipeType();
+        this.recipeTypes = getDefinition().getRecipeTypes();
+        this.activeRecipeType = 0;
         this.recipeLogic = createRecipeLogic(args);
         this.capabilitiesProxy = Tables.newCustomTable(new EnumMap<>(IO.class), HashMap::new);
         this.traitSubscriptions = new ArrayList<>();
@@ -233,4 +237,8 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
         }
     }
 
+    @Nonnull
+    public GTRecipeType getRecipeType() {
+        return recipeTypes[activeRecipeType];
+    }
 }

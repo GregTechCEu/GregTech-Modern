@@ -1573,6 +1573,7 @@
   "gtceu.gui.item_lock.tooltip.enabled": "Item Locking Enabled",
   "gtceu.gui.item_voiding_partial.tooltip.disabled": "Item Voiding Disabled",
   "gtceu.gui.item_voiding_partial.tooltip.enabled": "Item Voiding Enabled",
+  "gtceu.gui.machinemode.title": "Active Machine Mode",
   "gtceu.gui.multiblock_fluid_voiding.0": "Voiding Mode",
   "gtceu.gui.multiblock_fluid_voiding.1": "§7Voiding §9Fluids",
   "gtceu.gui.multiblock_item_fluid_voiding.0": "Voiding Mode",
