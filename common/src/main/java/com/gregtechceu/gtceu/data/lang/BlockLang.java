@@ -81,14 +81,11 @@ public class BlockLang {
         replace(provider, "block.gtceu.titanium_firebox", "Titanium Firebox Casing");
         replace(provider, "block.gtceu.tungstensteel_firebox", "Tungstensteel Firebox Casing");
 
-        //GCMB Casings
-        replace(provider, "block.gtceu.nonconducting_machine_casing", "Nonconducting Machine Casing");
-        replace(provider, "block.gtceu.vibration_safe_machine_casing", "Vibrationsafe Machine Casing");
-        replace(provider, "block.gtceu.watertight_machine_casing", "Watertight Machine Casing");
-        replace(provider, "block.gtceu.secure_maceration_machine_casing", "Secure Maceration Machine Casing");
-        replace(provider, "block.gtceu.high_temperature_smelting_machine_casing", "High Temperature Smelting Machine Casing");
-        replace(provider, "block.gtceu.laser_safe_engraving_machine_casing", "Lasersafe Engraving Machine Casing");
-        replace(provider, "block.gtceu.large_scale_assembling_machine_casing", "Large-Scale Assembling Machine Casing");
+        //GCyM Casings
+        replace(provider, "block.gtceu.laser_safe_engraving_casing", "Laser-Safe Engraving Casing");
+        replace(provider, "block.gtceu.large_scale_assembler_casing", "Large-Scale Assembler Casing");
+        replace(provider, "block.gtceu.reaction_safe_mixing_casing", "Reaction-Safe Mixing Casing");
+        replace(provider, "block.gtceu.vibration_safe_casing", "Vibration-Safe Casing");
 
         // todo multiblock tanks
         //replace(provider, "tile.steam_casing.wood_wall.name", "Wooden Wall");

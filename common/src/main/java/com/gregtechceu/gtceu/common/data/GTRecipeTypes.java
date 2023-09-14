@@ -538,7 +538,7 @@ public class GTRecipeTypes {
 
     public static final GTRecipeType DUMMY_RECIPES = new GTRecipeType(GTCEu.id("dummy"), DUMMY);
 
-    //GCMB
+    //gcym
     public final static GTRecipeType LARGE_MIXER_RECIPES = register("large_mixer", ELECTRIC).setMaxIOSize(9, 1, 6, 1).setEUIO(IO.IN)
             .setSlotOverlay(false, false, GuiTextures.DUST_OVERLAY)
             .setProgressBar(GuiTextures.PROGRESS_BAR_MIXER, LEFT_TO_RIGHT)

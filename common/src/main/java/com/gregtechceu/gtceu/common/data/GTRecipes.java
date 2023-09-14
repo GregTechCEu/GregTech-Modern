@@ -57,7 +57,7 @@ public class GTRecipes {
         ComponentRecipes.init(consumer);
         MetaTileEntityLoader.init(consumer);
 
-        //GCMB
+        //GCyM
         GCyMRecipes.init(consumer);
 
         // Config-dependent recipes

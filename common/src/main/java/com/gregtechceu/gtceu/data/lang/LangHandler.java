@@ -1098,6 +1098,8 @@ public class LangHandler {
 
         provider.add("gtceu.gui.content.units.per_tick", "/t");
         provider.add("gtceu.gui.content.units.per_second", "/s");
+
+        provider.add("gtceu.machine.parallel_hatch.display", "Adjust the maximum parallel of the multiblock");
     }
 
     /**

@@ -229,6 +229,10 @@ public class ConfigHolder {
         @Configurable
         @Configurable.Comment({"Wether to add a \"Processing Array\"", "Default: true"})
         public boolean doProcessingArray = true;
+        @Configurable
+        @Configurable.Comment({"Makes nearly every GCYM Multiblock require blocks which set their maximum voltages.",
+                "Default: false"})
+        public boolean enableTieredCasings = false;
     }
 
     public static class ClientConfigs {
