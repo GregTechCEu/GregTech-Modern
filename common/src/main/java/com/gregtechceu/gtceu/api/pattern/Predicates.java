@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.api.pattern;
 import com.gregtechceu.gtceu.api.block.ActiveBlock;
 import com.gregtechceu.gtceu.api.block.ICoilType;
 import com.gregtechceu.gtceu.api.block.IMachineBlock;
-import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
@@ -81,11 +80,7 @@ public class Predicates {
         return blocks((tiers.length == 0 ? ability.getAllBlocks() : ability.getBlocks(tiers)).toArray(Block[]::new));
     }
 
-    public static TraceabilityPredicate autoAbilities(GTRecipeType recipeType) {
-        return autoAbilities(new GTRecipeType[]{recipeType}, true, true, true, true, true, true);
-    }
-
-    public static TraceabilityPredicate autoAbilities(GTRecipeType[] recipeType) {
+    public static TraceabilityPredicate autoAbilities(GTRecipeType... recipeType) {
         return autoAbilities(recipeType, true, true, true, true, true, true);
     }
 
@@ -149,13 +144,16 @@ public class Predicates {
         return predicate;
     }
 
-    public static TraceabilityPredicate autoAbilities(boolean checkMaintenance, boolean checkMuffler) {
+    public static TraceabilityPredicate autoAbilities(boolean checkMaintenance, boolean checkMuffler, boolean checkParallel) {
         TraceabilityPredicate predicate = new TraceabilityPredicate();
         if (checkMaintenance) {
             predicate = predicate.or(abilities(PartAbility.MAINTENANCE).setMinGlobalLimited(ConfigHolder.INSTANCE.machines.enableMaintenance ? 1 : 0).setMaxGlobalLimited(1));
         }
         if (checkMuffler) {
             predicate = predicate.or(abilities(PartAbility.MUFFLER).setMinGlobalLimited(1).setMaxGlobalLimited(1));
+        }
+        if (checkParallel) {
+            predicate = predicate.or(abilities(PartAbility.PARALLEL_HATCH).setMaxGlobalLimited(1).setPreviewCount(1));
         }
         return predicate;
     }

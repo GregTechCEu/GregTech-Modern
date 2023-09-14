@@ -5,7 +5,7 @@
   },
   "button_texture": {
     "type": "item",
-    "res": "gtceu:mv_chemical_reactor"
+    "res": "gtceu:lv_chemical_reactor"
   },
   "priority": 4
 }
