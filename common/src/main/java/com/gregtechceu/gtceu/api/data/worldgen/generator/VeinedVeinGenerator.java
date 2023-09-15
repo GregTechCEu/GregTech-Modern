@@ -186,6 +186,8 @@ public class VeinedVeinGenerator extends VeinGenerator {
                     int sectionX = SectionPos.sectionRelative(pos.getX());
                     int sectionY = SectionPos.sectionRelative(pos.getY());
                     int sectionZ = SectionPos.sectionRelative(pos.getZ());
+                    if (!level.ensureCanWrite(pos))
+                        continue;
                     BlockState current = section.getBlockState(sectionX, sectionY, sectionZ);
                     boolean placed = false;
                     if (random.nextFloat() <= entry.getDensity()) {

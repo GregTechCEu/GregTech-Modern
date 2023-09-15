@@ -182,6 +182,8 @@ public class GeodeVeinGenerator extends VeinGenerator {
                 t += Mth.fastInvSqrt(pos.distSqr(origin4) + (double)geodeCrackSettings.crackPointOffset) + noiseValue;
             }
             if (s < outerSize) continue;
+            if (!level.ensureCanWrite(pos))
+                continue;
             LevelChunkSection section = access.getSection(pos);
             if (section == null)
                 continue;
@@ -230,6 +232,8 @@ public class GeodeVeinGenerator extends VeinGenerator {
                     blockState = blockState.setValue(BlockStateProperties.WATERLOGGED, blockState2.getFluidState().isSource());
                 }
                 if (!BuddingAmethystBlock.canClusterGrowAtState(blockState2)) continue;
+                if (!level.ensureCanWrite(origin6))
+                    continue;
                 LevelChunkSection section = access.getSection(origin6);
                 if (section == null)
                     continue;

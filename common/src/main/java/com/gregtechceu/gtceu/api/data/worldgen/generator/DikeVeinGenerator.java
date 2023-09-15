@@ -89,6 +89,8 @@ public class DikeVeinGenerator extends VeinGenerator {
                         continue;
                     }
                     BlockPos pos = new BlockPos(basePos.getX() + dX, dY, basePos.getZ() + dZ);
+                    if (!level.ensureCanWrite(pos))
+                        continue;
                     LevelChunkSection section = access.getSection(pos);
                     if (section == null)
                         continue;
