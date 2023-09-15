@@ -105,6 +105,47 @@ public class LangHandler {
         multilineLang(provider, "gtceu.multiblock.primitive_water_pump.extra2", "Hatch Multipliers:\n  Pump Hatch: 1x\n  ULV Output Hatch: 2x\n  LV Output Hatch: 4x\n\nWhile raining in the Pump's Biome, the total water production will be increased by 50%%.");
         provider.add("gtceu.multiblock.processing_array.description", "The Processing Array combines up to 16 single block machine(s) in a single multiblock, effectively easing automation.");
         provider.add("gtceu.multiblock.advanced_processing_array.description", "The Processing Array combines up to 64 single block machine(s) in a single multiblock, effectively easing automation.");
+        provider.add("gtceu.multiblock.parallelizable.tooltip", "Can parallelize with Parallel Control Hatches.");
+        provider.add("gtceu.parallelhatch_mk5", "Allows to run up to 4 recipes in parallel.");
+        provider.add("gtceu.parallelhatch_mk6", "Allows to run up to 16 recipes in parallel.");
+        provider.add("gtceu.parallelhatch_mk7", "Allows to run up to 64 recipes in parallel.");
+        provider.add("gtceu.parallelhatch_mk8", "Allows to run up to 256 recipes in parallel.");
+        provider.add("gtceu.recipemap.macerator", "Macerator");
+        provider.add("gtceu.recipemap.ore_washer", "Ore Washer");
+        provider.add("gtceu.recipemap.centrifuge", "Centrifuge");
+        provider.add("gtceu.recipemap.thermal_centrifuge", "Thermal Centrifuge");
+        provider.add("gtceu.recipemap.chemical_bath", "Chemical Bath");
+        provider.add("gtceu.recipemap.wiremill", "Wiremill");
+        provider.add("gtceu.recipemap.compressor", "Compressor");
+        provider.add("gtceu.recipemap.extractor", "Extractor");
+        provider.add("gtceu.recipemap.extruder", "Extruder");
+        provider.add("gtceu.recipemap.blast_furnace", "Electric Blast Furnace");
+        provider.add("gtceu.recipemap.freezer", "Vacuum Freezer");
+        provider.add("gtceu.recipemap.brewer", "Brewery");
+        provider.add("gtceu.recipemap.fermenter", "Fermenter");
+        provider.add("gtceu.recipemap.distillery", "Distillery");
+        provider.add("gtceu.recipemap.distillation_tower", "Distillation Tower");
+        provider.add("gtceu.recipemap.mixer", "Mixer");
+        provider.add("gtceu.recipemap.electrolyzer", "Electrolyzer");
+        provider.add("gtceu.recipemap.separator", "Electrolytic Separator");
+        provider.add("gtceu.recipemap.polarizer", "Electromagnetic Polarizer");
+        provider.add("gtceu.recipemap.packer", "Packer");
+        provider.add("gtceu.recipemap.assembler", "Assembler");
+        provider.add("gtceu.recipemap.circuit_assembler", "Circuit Assembler");
+        provider.add("gtceu.recipemap.arc", "Arc Furnace");
+        provider.add("gtceu.recipemap.engraver", "Laser Engraver");
+        provider.add("gtceu.recipemap.sifter", "Sifter");
+        provider.add("gtceu.recipemap.blast_alloy", "Blast Alloy Smelter");
+        provider.add("gtceu.recipemap.autoclave", "Autoclave");
+        provider.add("gtceu.recipemap.bender", "Bender");
+        provider.add("gtceu.recipemap.hammer", "Forge Hammer");
+        provider.add("gtceu.recipemap.press", "Forming Press");
+        provider.add("gtceu.recipemap.heater", "Fluid Heater");
+        provider.add("gtceu.recipemap.cutter", "Cutter");
+        provider.add("gtceu.recipemap.lathe", "Lathe");
+        provider.add("gtceu.recipemap.canner", "Canner");
+        provider.add("gtceu.recipemap.solidifier", "Fluid Solidifier");
+
         provider.add("item.invalid.name", "Invalid item");
         provider.add("fluid.empty", "Empty");
         provider.add("gtceu.tooltip.hold_shift", "Hold SHIFT for more info");
@@ -395,6 +436,7 @@ public class LangHandler {
         replace(provider, GTMaterials.OilHeavy.getUnlocalizedName(), "Heavy Oil");
         replace(provider, GTMaterials.OilLight.getUnlocalizedName(), "Light Oil");
         replace(provider, GTMaterials.RawOil.getUnlocalizedName(), "Raw Oil");
+        replace(provider, GTMaterials.HSLASteel.getUnlocalizedName(), "HSLA-Steel");
 
         provider.add("item.gunpowder_tiny_dust", "Tiny Pile of Gunpowder");
         provider.add("item.gunpowder_small_dust", "Small Pile of Gunpowder");
@@ -692,13 +734,16 @@ public class LangHandler {
         provider.add("gtceu.machine.fluid_drilling_rig.ev.tooltip", "Well Drainer");
         provider.add("gtceu.machine.cleanroom.tooltip", "Keeping those pesky particles out");
         provider.add("gtceu.machine.charcoal_pile.tooltip", "Underground fuel bakery");
-        provider.add("gtceu.machine.item_bus.import.tooltip", "Item Input for Multiblocks");
+        provider.add("gtceu.machine.available_recipe_map_1.tooltip", "Available Recipe Maps: %s");
+        provider.add("gtceu.machine.available_recipe_map_2.tooltip", "Available Recipe Maps: %s, %s");
+        provider.add("gtceu.machine.available_recipe_map_3.tooltip", "Available Recipe Maps: %s, %s, %s");
+        provider.add("gtceu.machine.available_recipe_map_4.tooltip", "Available Recipe Maps: %s, %s, %s, %s");
+
         provider.add("gtceu.universal.disabled", "Multiblock Sharing §4Disabled");
         provider.add("gtceu.universal.enabled", "Multiblock Sharing §aEnabled");
 
-
+        provider.add("gtceu.machine.item_bus.import.tooltip", "Item Input for Multiblocks");
         provider.add("gtceu.machine.item_bus.export.tooltip", "Item Output for Multiblocks");
-
 
         provider.add("gtceu.bus.collapse_true", "Bus will collapse Items");
         provider.add("gtceu.bus.collapse_false", "Bus will not collapse Items");

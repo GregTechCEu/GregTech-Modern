@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.common.machine.multiblock.part;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.IParallelHatch;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
@@ -38,28 +39,10 @@ public class ParallelHatchPartMachine extends TieredPartMachine implements IFanc
 
     @Override
     public Widget createUIWidget() {
-        WidgetGroup parallelAmountGroup = new WidgetGroup();
-        parallelAmountGroup.addWidget(new ImageWidget(62, 36, 53, 20, GuiTextures.DISPLAY)
-                .setHoverTooltips("gtceu.machine.parallel_hatch.display"));
-
-        parallelAmountGroup.addWidget(new ButtonWidget(118, 36, 30, 20, (cd) -> {
-            int amount = cd.isCtrlClick ? cd.isShiftClick ? 64 : 16 : cd.isShiftClick ? 4 : 1;
-            setCurrentParallel(amount);
-        }).setHoverTooltips("gui.widget.incrementButton.default_tooltip"));
-
-        parallelAmountGroup.addWidget(new ButtonWidget(29, 36, 30, 20, (cd) -> {
-            int amount = cd.isCtrlClick ? cd.isShiftClick ? -64 : -16 : cd.isShiftClick ? -4 : -1;
-            setCurrentParallel(amount);
-        }).setHoverTooltips("gui.widget.incrementButton.default_tooltip"));
-
-        parallelAmountGroup.addWidget(new TextFieldWidget(63, 42, 51, 20, this::getParallelAmountToString, val -> {
-            if (val != null && !val.isEmpty()) {
-                setCurrentParallel(Integer.parseInt(val));
-            }
-        })
-                .setNumbersOnly(1, this.maxParallel)
-                .setMaxStringLength(3)
-                .setValidator(getTextFieldValidator(() -> this.maxParallel)));
+        WidgetGroup parallelAmountGroup = new WidgetGroup(0, 0, 100, 20);
+        parallelAmountGroup.addWidget(new IntInputWidget(this::getCurrentParallel, this::setCurrentParallel)
+                .setMin(MIN_PARALLEL)
+                .setMax(maxParallel));
 
         return parallelAmountGroup;
     }
