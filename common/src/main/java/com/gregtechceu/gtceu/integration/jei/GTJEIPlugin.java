@@ -56,7 +56,9 @@ public class GTJEIPlugin implements IModPlugin {
         MultiblockInfoCategory.registerRecipeCatalysts(registration);
         GTRecipeTypeCategory.registerRecipeCatalysts(registration);
         for (MachineDefinition definition : GTMachines.ELECTRIC_FURNACE) {
-            registration.addRecipeCatalyst(definition.asStack(), RecipeTypes.SMELTING);
+            if (definition != null) {
+                registration.addRecipeCatalyst(definition.asStack(), RecipeTypes.SMELTING);
+            }
         }
         registration.addRecipeCatalyst(GTMachines.STEAM_FURNACE.left().asStack(), RecipeTypes.SMELTING);
         registration.addRecipeCatalyst(GTMachines.STEAM_FURNACE.right().asStack(), RecipeTypes.SMELTING);

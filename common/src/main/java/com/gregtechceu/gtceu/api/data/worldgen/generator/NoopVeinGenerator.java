@@ -9,6 +9,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.state.BlockState;
 
+import java.util.List;
 import java.util.Map;
 
 public class NoopVeinGenerator extends VeinGenerator {
@@ -16,8 +17,8 @@ public class NoopVeinGenerator extends VeinGenerator {
     public static final Codec<NoopVeinGenerator> CODEC = Codec.unit(() -> INSTANCE);
 
     @Override
-    public Map<Either<BlockState, Material>, Integer> getAllEntries() {
-        return Map.of();
+    public List<Map.Entry<Either<BlockState, Material>, Integer>> getAllEntries() {
+        return List.of();
     }
 
     @Override

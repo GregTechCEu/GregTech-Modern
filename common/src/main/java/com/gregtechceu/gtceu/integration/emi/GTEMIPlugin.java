@@ -35,7 +35,9 @@ public class GTEMIPlugin implements EmiPlugin {
         MultiblockInfoEmiCategory.registerWorkStations(registry);
         GTRecipeTypeEmiCategory.registerWorkStations(registry);
         for (MachineDefinition definition : GTMachines.ELECTRIC_FURNACE) {
-            registry.addWorkstation(VanillaEmiRecipeCategories.SMELTING, EmiStack.of(definition.asStack()));
+            if (definition != null) {
+                registry.addWorkstation(VanillaEmiRecipeCategories.SMELTING, EmiStack.of(definition.asStack()));
+            }
         }
         registry.addWorkstation(VanillaEmiRecipeCategories.SMELTING, EmiStack.of(GTMachines.STEAM_FURNACE.left().asStack()));
         registry.addWorkstation(VanillaEmiRecipeCategories.SMELTING, EmiStack.of(GTMachines.STEAM_FURNACE.right().asStack()));
