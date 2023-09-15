@@ -110,7 +110,6 @@ public class LangHandler {
         provider.add("gtceu.parallel_hatch_mk6", "Allows to run up to 16 recipes in parallel.");
         provider.add("gtceu.parallel_hatch_mk7", "Allows to run up to 64 recipes in parallel.");
         provider.add("gtceu.parallel_hatch_mk8", "Allows to run up to 256 recipes in parallel.");
-        provider.add("gtceu.recipemap.blast_alloy", "Blast Alloy Smelter");
 
         provider.add("item.invalid.name", "Invalid item");
         provider.add("fluid.empty", "Empty");
