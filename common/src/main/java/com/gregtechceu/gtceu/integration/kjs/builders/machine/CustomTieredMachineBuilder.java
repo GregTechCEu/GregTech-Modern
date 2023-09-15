@@ -29,8 +29,7 @@ public class CustomTieredMachineBuilder extends SimpleMachineBuilder {
                                                        BiFunction<IMachineBlockEntity, Integer, MetaMachine> machineConstructor,
                                                        Integer... tiers) {
         CustomTieredMachineBuilder[] builders = new CustomTieredMachineBuilder[GTValues.TIER_COUNT];
-        for (int i = 0; i < tiers.length; i++) {
-            int tier = tiers[i];
+        for (int tier : tiers) {
             CustomTieredMachineBuilder register = new CustomTieredMachineBuilder(GTValues.VN[tier].toLowerCase(Locale.ROOT) + "_" + name, holder -> machineConstructor.apply(holder, tier)).tier(tier);
             builders[tier] = register;
         }

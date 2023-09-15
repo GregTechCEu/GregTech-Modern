@@ -744,7 +744,7 @@ public class GTMachines {
                     .where('S', controller(blocks(definition.getBlock())))
                     .where('X', blocks(CASING_INVAR_HEATPROOF.get()).setMinGlobalLimited(9)
                             .or(autoAbilities(definition.getRecipeTypes()))
-                            .or(autoAbilities(true, false)))
+                            .or(autoAbilities(true, false, false)))
                     .where('M', abilities(PartAbility.MUFFLER))
                     .where('C', heatingCoils())
                     .where('#', air())
@@ -794,7 +794,7 @@ public class GTMachines {
             .pattern(definition -> {
                 var casing = blocks(CASING_PTFE_INERT.get()).setMinGlobalLimited(10);
                 var abilities = Predicates.autoAbilities(definition.getRecipeTypes())
-                        .or(Predicates.autoAbilities(true, false));
+                        .or(Predicates.autoAbilities(true, false, false));
                 return FactoryBlockPattern.start()
                         .aisle("XXX", "XCX", "XXX")
                         .aisle("XCX", "CPC", "XCX")
@@ -870,7 +870,7 @@ public class GTMachines {
                     .where('S', controller(blocks(definition.get())))
                     .where('X', blocks(CASING_STEEL_SOLID.get()).setMinGlobalLimited(14)
                             .or(Predicates.autoAbilities(definition.getRecipeTypes()))
-                            .or(Predicates.autoAbilities(true, true)))
+                            .or(Predicates.autoAbilities(true, true, false)))
                     .where('#', Predicates.air())
                     .build())
             .workableCasingRenderer(GTCEu.id("block/casings/solid/machine_casing_solid_steel"),
@@ -891,7 +891,7 @@ public class GTMachines {
                     .aisle("XXX", "XSX", "XXX")
                     .where('S', Predicates.controller(blocks(definition.get())))
                     .where('X', blocks(MACHINE_CASING_ULV.get()).setMinGlobalLimited(6).or(Predicates.autoAbilities(definition.getRecipeTypes()))
-                            .or(Predicates.autoAbilities(true, true)))
+                            .or(Predicates.autoAbilities(true, true, false)))
                     .where('C', Predicates.heatingCoils())
                     .where('#', Predicates.air())
                     .build())
@@ -919,7 +919,7 @@ public class GTMachines {
                     .where('S', controller(blocks(definition.get())))
                     .where('X', blocks(CASING_INVAR_HEATPROOF.get()).setMinGlobalLimited(9)
                             .or(autoAbilities(definition.getRecipeTypes()))
-                            .or(autoAbilities(true, false)))
+                            .or(autoAbilities(true, false, false)))
                     .where('M', abilities(PartAbility.MUFFLER))
                     .where('C', heatingCoils())
                     .where('#', air())
@@ -949,7 +949,7 @@ public class GTMachines {
                     .where('O', Predicates.controller(blocks(definition.get())))
                     .where('H', blocks(CASING_STAINLESS_CLEAN.get()).setMinGlobalLimited(12)
                             .or(Predicates.autoAbilities(definition.getRecipeTypes()))
-                            .or(Predicates.autoAbilities(true, true)))
+                            .or(Predicates.autoAbilities(true, true, false)))
                     .where('#', Predicates.air())
                     .where('C', Predicates.heatingCoils())
                     .build())
@@ -1002,7 +1002,7 @@ public class GTMachines {
                     .where('S', Predicates.controller(blocks(definition.getBlock())))
                     .where('X', blocks(CASING_ALUMINIUM_FROSTPROOF.get()).setMinGlobalLimited(14)
                             .or(Predicates.autoAbilities(definition.getRecipeTypes()))
-                            .or(Predicates.autoAbilities(true, true)))
+                            .or(Predicates.autoAbilities(true, true, false)))
                     .where('#', Predicates.air())
                     .build())
             .workableCasingRenderer(GTCEu.id("block/casings/solid/machine_casing_frost_proof"),
@@ -1381,7 +1381,7 @@ public class GTMachines {
                                     .or(Predicates.abilities(PartAbility.EXPORT_FLUIDS))
                                     .or(Predicates.abilities(PartAbility.INPUT_ENERGY))
                                     .or(Predicates.abilities(PartAbility.OUTPUT_ENERGY))
-                                    .or(Predicates.autoAbilities(true, false)))
+                                    .or(Predicates.autoAbilities(true, false, false)))
                             .where('C', blocks(CLEANROOM_GLASS.get()))
                             .where('#', Predicates.air())
                             .build())
@@ -1394,6 +1394,7 @@ public class GTMachines {
                     .compassNodeSelf()
                     .register(),
             IV, LuV) : null;
+
 
     //////////////////////////////////////
     //**********     Misc     **********//
@@ -1420,9 +1421,8 @@ public class GTMachines {
                                                              BiFunction<Integer, MachineBuilder<MachineDefinition>, MachineDefinition> builder,
                                                              int... tiers) {
         MachineDefinition[] definitions = new MachineDefinition[GTValues.TIER_COUNT];
-        for (int i = 0; i < tiers.length; i++) {
-            int tier = tiers[i];
-            var register =  REGISTRATE.machine(GTValues.VN[tier].toLowerCase(Locale.ROOT) + "_" + name, holder -> factory.apply(holder, tier))
+        for (int tier : tiers) {
+            var register = REGISTRATE.machine(GTValues.VN[tier].toLowerCase(Locale.ROOT) + "_" + name, holder -> factory.apply(holder, tier))
                     .tier(tier);
             definitions[tier] = builder.apply(tier, register);
         }
@@ -1536,9 +1536,8 @@ public class GTMachines {
                                                              BiFunction<Integer, MultiblockMachineBuilder, MultiblockMachineDefinition> builder,
                                                              int... tiers) {
         MultiblockMachineDefinition[] definitions = new MultiblockMachineDefinition[GTValues.TIER_COUNT];
-        for (int i = 0; i < tiers.length; i++) {
-            int tier = tiers[i];
-            var register =  REGISTRATE.multiblock(GTValues.VN[tier].toLowerCase(Locale.ROOT) + "_" + name, holder -> factory.apply(holder, tier))
+        for (int tier : tiers) {
+            var register = REGISTRATE.multiblock(GTValues.VN[tier].toLowerCase(Locale.ROOT) + "_" + name, holder -> factory.apply(holder, tier))
                     .tier(tier);
             definitions[tier] = builder.apply(tier, register);
         }
@@ -1592,7 +1591,7 @@ public class GTMachines {
                         .where('G', blocks(gear.get()))
                         .where('C', blocks(casing.get()).setMinGlobalLimited(3)
                                 .or(autoAbilities(definition.getRecipeTypes(), false, false, true, true, true, true))
-                                .or(autoAbilities(true, true)))
+                                .or(autoAbilities(true, true, false)))
                         .where('D', ability(PartAbility.OUTPUT_ENERGY, Stream.of(ULV, LV, MV, HV ,EV ,IV, LuV, ZPM, UV, UHV).filter(t -> t >= tier).mapToInt(Integer::intValue).toArray()).addTooltips(Component.translatable("gtceu.multiblock.pattern.error.limited.1", GTValues.VN[tier])))
                         .where('A', blocks(intake.get()).addTooltips(Component.translatable("gtceu.multiblock.pattern.clear_amount_1")))
                         .where('Y', controller(blocks(definition.getBlock())))
@@ -1631,7 +1630,7 @@ public class GTMachines {
                                 .or(abilities(PartAbility.OUTPUT_ENERGY)).setExactLimit(1))
                         .where('H', blocks(casing.get())
                                 .or(autoAbilities(definition.getRecipeTypes(), false, false, true, true, true, true))
-                                .or(autoAbilities(true, true)))
+                                .or(autoAbilities(true, true, false)))
                         .build())
                 .recoveryItems(() -> new ItemLike[]{GTItems.MATERIAL_ITEMS.get(TagPrefix.dustTiny, GTMaterials.Ash).get()})
                 .workableCasingRenderer(casingTexture, overlayModel, false)
@@ -1706,6 +1705,7 @@ public class GTMachines {
     }
 
     public static void init() {
+        GCyMMachines.init();
         if (GTCEu.isCreateLoaded()) {
             GTCreateMachines.init();
         }

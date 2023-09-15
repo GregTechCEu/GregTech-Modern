@@ -1,0 +1,15 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:large_mixer"
+  },
+  "items": [
+    "gtceu:large_mixer"
+  ],
+  "page": "gtceu:multiblock/large_mixer",
+  "position": [
+    -150,
+    200
+  ],
+  "section": "gtceu:multiblock"
+}

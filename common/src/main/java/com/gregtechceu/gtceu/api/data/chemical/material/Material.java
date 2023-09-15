@@ -200,6 +200,16 @@ public class Material implements Comparable<Material> {
         return FluidStack.create(getFluid(), amount);
     }
 
+    public Fluid getHotFluid() {
+        AlloyBlastProperty prop = properties.getProperty(PropertyKey.ALLOY_BLAST);
+        return prop == null ? null : prop.getFluid();
+    }
+
+    public FluidStack getHotFluid(long amount) {
+        AlloyBlastProperty prop = properties.getProperty(PropertyKey.ALLOY_BLAST);
+        return prop == null ? null : FluidStack.create(prop.getFluid(), amount);
+    }
+
     public Item getBucket() {
         Fluid fluid = getFluid();
         return fluid.getBucket();

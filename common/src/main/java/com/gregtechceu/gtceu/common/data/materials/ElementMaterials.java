@@ -773,7 +773,7 @@ public class ElementMaterials {
         Tungsten = new Material.Builder("tungsten")
                 .ingot(3).fluid()
                 .color(0x323232).iconSet(METALLIC)
-                .appendFlags(EXT2_METAL, GENERATE_SPRING, GENERATE_SPRING_SMALL, GENERATE_FOIL, GENERATE_GEAR)
+                .appendFlags(EXT2_METAL, GENERATE_SPRING, GENERATE_SPRING_SMALL, GENERATE_FOIL, GENERATE_GEAR, GENERATE_FRAME)
                 .element(GTElements.W)
                 .rotorStats(7.0f, 3.0f, 2560)
                 .cableProperties(GTValues.V[5], 2, 2)

@@ -7,14 +7,20 @@ import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterial;
 import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlag;
+import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.AlloyBlastProperty;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.BlastProperty;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.materials.*;
+import com.gregtechceu.gtceu.data.recipe.misc.alloyblast.CustomAlloyBlastRecipeProducer;
 import com.gregtechceu.gtceu.integration.kjs.GTRegistryObjectBuilderTypes;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -106,6 +112,9 @@ public class GTMaterials {
          * - FREE RANGE 24000-31999
          * - Reserved for CraftTweaker: 32000-32767
          */
+
+        //Gregicality Multiblocks
+        GCyMMaterials.register();
 
         CHEMICAL_DYES = new Material[]{
                 GTMaterials.DyeWhite, GTMaterials.DyeOrange,
@@ -298,6 +307,18 @@ public class GTMaterials {
         if (GTCEu.isKubeJSLoaded()) {
             GTRegistryObjectBuilderTypes.registerFor(GTRegistries.MATERIALS.getRegistryName());
         }
+
+        for (Material material : GTRegistries.MATERIALS) {
+            if (!material.hasFlag(MaterialFlags.DISABLE_ALLOY_PROPERTY)) {
+                addAlloyBlastProperty(material);
+            }
+        }
+        // Alloy Blast Overriding
+        AlloyBlastProperty property = NiobiumNitride.getProperty(PropertyKey.ALLOY_BLAST);
+        property.setRecipeProducer(new CustomAlloyBlastRecipeProducer(1, 11, -1));
+
+        property = IndiumTinBariumTitaniumCuprate.getProperty(PropertyKey.ALLOY_BLAST);
+        property.setRecipeProducer(new CustomAlloyBlastRecipeProducer(-1, -1, 16));
     }
 
     public static Material get(String name) {
@@ -314,6 +335,28 @@ public class GTMaterials {
         gemFlawed.setIgnored(material);
         gemFlawless.setIgnored(material);
         gemExquisite.setIgnored(material);
+    }
+
+    public static void addAlloyBlastProperty(@Nonnull Material material) {
+        final List<MaterialStack> components = material.getMaterialComponents();
+        // ignore materials which are not alloys
+        if (components.size() < 2) return;
+
+        BlastProperty blastProperty = material.getProperty(PropertyKey.BLAST);
+        if (blastProperty == null) return;
+
+        if (!material.hasProperty(PropertyKey.FLUID)) return;
+
+        // if there are more than 2 fluid-only components in the material, do not generate a hot fluid
+        if (components.stream().filter(GTMaterials::isMaterialStackFluidOnly).limit(3).count() > 2) {
+            return;
+        }
+
+        material.setProperty(PropertyKey.ALLOY_BLAST, new AlloyBlastProperty(material.getBlastTemperature()));
+    }
+
+    private static boolean isMaterialStackFluidOnly(@Nonnull MaterialStack ms) {
+        return !ms.material().hasProperty(PropertyKey.DUST) && ms.material().hasProperty(PropertyKey.FLUID);
     }
 
     public static final List<MaterialFlag> STD_METAL = new ArrayList<>();
@@ -969,4 +1012,22 @@ public class GTMaterials {
     public static Material BasalticMineralSand;
     public static Material HSSE;
     public static Material HSSS;
+
+    /**
+     * GCyM Materials
+     */
+    public static Material TantalumCarbide;
+    public static Material HSLASteel;
+    public static Material MolybdenumDisilicide;
+    public static Material Zeron100;
+    public static Material WatertightSteel;
+    public static Material IncoloyMA956;
+    public static Material MaragingSteel300;
+    public static Material HastelloyX;
+    public static Material Stellite100;
+    public static Material TitaniumCarbide;
+    public static Material TitaniumTungstenCarbide;
+    public static Material HastelloyC276;
+
+
 }

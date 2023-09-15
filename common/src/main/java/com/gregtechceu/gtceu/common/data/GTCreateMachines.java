@@ -121,10 +121,9 @@ public class GTCreateMachines {
                                                                     @Nullable NonNullSupplier<BiFunction<MaterialManager, KineticMachineBlockEntity, BlockEntityInstance<? super KineticMachineBlockEntity>>> instanceFactory,
                                                                     boolean renderNormally,
                                                                     int... tiers) {
-        KineticMachineDefinition[] definitions = new KineticMachineDefinition[tiers.length];
-        for (int i = 0; i < tiers.length; i++) {
-            int tier = tiers[i];
-            var register =  REGISTRATE.machine(GTValues.VN[tier].toLowerCase(Locale.ROOT) + "_" + name,
+        KineticMachineDefinition[] definitions = new KineticMachineDefinition[GTValues.TIER_COUNT];
+        for (int tier : tiers) {
+            var register = REGISTRATE.machine(GTValues.VN[tier].toLowerCase(Locale.ROOT) + "_" + name,
                             id -> definitionFactory.apply(tier, id),
                             holder -> factory.apply(holder, tier),
                             KineticMachineBlock::new,
@@ -133,7 +132,7 @@ public class GTCreateMachines {
                     .tier(tier)
                     .hasTESR(instanceFactory != null)
                     .onBlockEntityRegister(type -> KineticMachineBlockEntity.onBlockEntityRegister(type, instanceFactory, renderNormally));
-            definitions[i] = builder.apply(tier, register);
+            definitions[tier] = builder.apply(tier, register);
         }
         return definitions;
     }

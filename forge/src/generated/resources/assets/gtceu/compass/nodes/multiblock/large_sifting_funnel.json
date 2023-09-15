@@ -1,0 +1,15 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:large_sifting_funnel"
+  },
+  "items": [
+    "gtceu:large_sifting_funnel"
+  ],
+  "page": "gtceu:multiblock/large_sifting_funnel",
+  "position": [
+    -150,
+    250
+  ],
+  "section": "gtceu:multiblock"
+}

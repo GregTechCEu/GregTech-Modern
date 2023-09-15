@@ -62,8 +62,7 @@ public class CustomMultiblockBuilder extends MultiblockMachineBuilder {
                                                          BiFunction<IMachineBlockEntity, Integer, MultiblockControllerMachine> factory,
                                                          Integer... tiers) {
         CustomMultiblockBuilder[] builders = new CustomMultiblockBuilder[GTValues.TIER_COUNT];
-        for (int i = 0; i < tiers.length; i++) {
-            int tier = tiers[i];
+        for (int tier : tiers) {
             var builder = new CustomMultiblockBuilder(GTValues.VN[tier].toLowerCase(Locale.ROOT) + "_" + name, holder -> factory.apply(holder, tier))
                     .tier(tier);
             builders[tier] = builder;
@@ -111,6 +110,7 @@ public class CustomMultiblockBuilder extends MultiblockMachineBuilder {
             @Override
             public MultiblockMachineBuilder pattern(Function<MultiblockMachineDefinition, BlockPattern> pattern) {
                 for (var builder : builders) {
+                    if (builder == null) continue;
                     builder.pattern(pattern);
                 }
                 return this;
@@ -119,6 +119,7 @@ public class CustomMultiblockBuilder extends MultiblockMachineBuilder {
             @Override
             public MultiblockMachineBuilder partSorter(Comparator<IMultiPart> partSorter) {
                 for (var builder : builders) {
+                    if (builder == null) continue;
                     builder.partSorter(partSorter);
                 }
                 return this;
@@ -127,6 +128,7 @@ public class CustomMultiblockBuilder extends MultiblockMachineBuilder {
             @Override
             public MultiblockMachineBuilder partAppearance(TriFunction<IMultiController, IMultiPart, Direction, BlockState> partAppearance) {
                 for (var builder : builders) {
+                    if (builder == null) continue;
                     builder.partAppearance(partAppearance);
                 }
                 return this;
@@ -135,6 +137,7 @@ public class CustomMultiblockBuilder extends MultiblockMachineBuilder {
             @Override
             public MultiblockMachineBuilder additionalDisplay(BiConsumer<IMultiController, List<Component>> additionalDisplay) {
                 for (var builder : builders) {
+                    if (builder == null) continue;
                     builder.additionalDisplay(additionalDisplay);
                 }
                 return this;
@@ -142,6 +145,7 @@ public class CustomMultiblockBuilder extends MultiblockMachineBuilder {
 
             public MultiblockMachineBuilder shapeInfo(Function<MultiblockMachineDefinition, MultiblockShapeInfo> shape) {
                 for (var builder : builders) {
+                    if (builder == null) continue;
                     builder.shapeInfo(shape);
                 }
                 return this;
@@ -149,6 +153,7 @@ public class CustomMultiblockBuilder extends MultiblockMachineBuilder {
 
             public MultiblockMachineBuilder shapeInfos(Function<MultiblockMachineDefinition, List<MultiblockShapeInfo>> shapes) {
                 for (var builder : builders) {
+                    if (builder == null) continue;
                     builder.shapeInfos(shapes);
                 }
                 return this;
@@ -156,6 +161,7 @@ public class CustomMultiblockBuilder extends MultiblockMachineBuilder {
 
             public MultiblockMachineBuilder recoveryItems(Supplier<ItemLike[]> items) {
                 for (var builder : builders) {
+                    if (builder == null) continue;
                     builder.recoveryItems(items);
                 }
                 return this;
@@ -163,6 +169,7 @@ public class CustomMultiblockBuilder extends MultiblockMachineBuilder {
 
             public MultiblockMachineBuilder recoveryStacks(Supplier<ItemStack[]> stacks) {
                 for (var builder : builders) {
+                    if (builder == null) continue;
                     builder.recoveryStacks(stacks);
                 }
                 return this;
@@ -170,6 +177,7 @@ public class CustomMultiblockBuilder extends MultiblockMachineBuilder {
 
             public CustomMultiblockBuilder renderer(@Nullable Supplier<IRenderer> renderer) {
                 for (var builder : builders) {
+                    if (builder == null) continue;
                     builder.renderer(renderer);
                 }
                 return this;
@@ -178,6 +186,7 @@ public class CustomMultiblockBuilder extends MultiblockMachineBuilder {
             @Override
             public CustomMultiblockBuilder shape(VoxelShape shape) {
                 for (var builder : builders) {
+                    if (builder == null) continue;
                     builder.shape(shape);
                 }
                 return this;
@@ -186,6 +195,7 @@ public class CustomMultiblockBuilder extends MultiblockMachineBuilder {
             @Override
             public CustomMultiblockBuilder rotationState(RotationState rotationState) {
                 for (var builder : builders) {
+                    if (builder == null) continue;
                     builder.rotationState(rotationState);
                 }
                 return this;
@@ -194,6 +204,7 @@ public class CustomMultiblockBuilder extends MultiblockMachineBuilder {
             @Override
             public CustomMultiblockBuilder hasTESR(boolean hasTESR) {
                 for (var builder : builders) {
+                    if (builder == null) continue;
                     builder.hasTESR(hasTESR);
                 }
                 return this;
@@ -202,6 +213,7 @@ public class CustomMultiblockBuilder extends MultiblockMachineBuilder {
             @Override
             public CustomMultiblockBuilder blockProp(NonNullUnaryOperator<BlockBehaviour.Properties> blockProp) {
                 for (var builder : builders) {
+                    if (builder == null) continue;
                     builder.blockProp(blockProp);
                 }
                 return this;
@@ -210,6 +222,7 @@ public class CustomMultiblockBuilder extends MultiblockMachineBuilder {
             @Override
             public CustomMultiblockBuilder itemProp(NonNullUnaryOperator<Item.Properties> itemProp) {
                 for (var builder : builders) {
+                    if (builder == null) continue;
                     builder.itemProp(itemProp);
                 }
                 return this;
@@ -218,6 +231,7 @@ public class CustomMultiblockBuilder extends MultiblockMachineBuilder {
             @Override
             public CustomMultiblockBuilder blockBuilder(Consumer<BlockBuilder<? extends Block, ?>> blockBuilder) {
                 for (var builder : builders) {
+                    if (builder == null) continue;
                     builder.blockBuilder(blockBuilder);
                 }
                 return this;
@@ -226,6 +240,7 @@ public class CustomMultiblockBuilder extends MultiblockMachineBuilder {
             @Override
             public CustomMultiblockBuilder itemBuilder(Consumer<ItemBuilder<? extends MetaMachineItem, ?>> itemBuilder) {
                 for (var builder : builders) {
+                    if (builder == null) continue;
                     builder.itemBuilder(itemBuilder);
                 }
                 return this;
@@ -234,6 +249,7 @@ public class CustomMultiblockBuilder extends MultiblockMachineBuilder {
             @Override
             public CustomMultiblockBuilder onBlockEntityRegister(NonNullConsumer<BlockEntityType<BlockEntity>> onBlockEntityRegister) {
                 for (var builder : builders) {
+                    if (builder == null) continue;
                     builder.onBlockEntityRegister(onBlockEntityRegister);
                 }
                 return this;
@@ -242,6 +258,7 @@ public class CustomMultiblockBuilder extends MultiblockMachineBuilder {
             @Override
             public CustomMultiblockBuilder recipeTypes(GTRecipeType... recipeTypes) {
                 for (var builder : builders) {
+                    if (builder == null) continue;
                     for(GTRecipeType type : recipeTypes){
                         builder.recipeType(type);
                     }
@@ -262,6 +279,7 @@ public class CustomMultiblockBuilder extends MultiblockMachineBuilder {
             @Override
             public CustomMultiblockBuilder paintingColor(int paintingColor) {
                 for (var builder : builders) {
+                    if (builder == null) continue;
                     builder.paintingColor(paintingColor);
                 }
                 return this;
@@ -270,6 +288,7 @@ public class CustomMultiblockBuilder extends MultiblockMachineBuilder {
             @Override
             public CustomMultiblockBuilder itemColor(BiFunction<ItemStack, Integer, Integer> itemColor) {
                 for (var builder : builders) {
+                    if (builder == null) continue;
                     builder.itemColor(itemColor);
                 }
                 return this;
@@ -278,6 +297,7 @@ public class CustomMultiblockBuilder extends MultiblockMachineBuilder {
             @Override
             public CustomMultiblockBuilder abilities(PartAbility... abilities) {
                 for (var builder : builders) {
+                    if (builder == null) continue;
                     builder.abilities(abilities);
                 }
                 return this;
@@ -285,6 +305,7 @@ public class CustomMultiblockBuilder extends MultiblockMachineBuilder {
 
             public CustomMultiblockBuilder tooltips(Component... tooltips) {
                 for (var builder : builders) {
+                    if (builder == null) continue;
                     builder.tooltips(tooltips);
                 }
                 return this;
@@ -293,6 +314,7 @@ public class CustomMultiblockBuilder extends MultiblockMachineBuilder {
             @Override
             public CustomMultiblockBuilder tooltipBuilder(BiConsumer<ItemStack, List<Component>> tooltipBuilder) {
                 for (var builder : builders) {
+                    if (builder == null) continue;
                     builder.tooltipBuilder(tooltipBuilder);
                 }
                 return this;
@@ -301,6 +323,7 @@ public class CustomMultiblockBuilder extends MultiblockMachineBuilder {
             @Override
             public CustomMultiblockBuilder recipeModifier(BiFunction<MetaMachine, GTRecipe, GTRecipe> recipeModifier) {
                 for (var builder : builders) {
+                    if (builder == null) continue;
                     builder.recipeModifier(recipeModifier);
                 }
                 return this;
@@ -309,6 +332,7 @@ public class CustomMultiblockBuilder extends MultiblockMachineBuilder {
             @Override
             public CustomMultiblockBuilder alwaysTryModifyRecipe(boolean alwaysTryModifyRecipe) {
                 for (var builder : builders) {
+                    if (builder == null) continue;
                     builder.alwaysTryModifyRecipe(alwaysTryModifyRecipe);
                 }
                 return this;
@@ -317,6 +341,7 @@ public class CustomMultiblockBuilder extends MultiblockMachineBuilder {
             @Override
             public CustomMultiblockBuilder appearance(Supplier<BlockState> appearance) {
                 for (var builder : builders) {
+                    if (builder == null) continue;
                     builder.appearance(appearance);
                 }
                 return this;
@@ -325,6 +350,7 @@ public class CustomMultiblockBuilder extends MultiblockMachineBuilder {
             @Override
             public CustomMultiblockBuilder editableUI(@Nullable EditableMachineUI editableUI) {
                 for (var builder : builders) {
+                    if (builder == null) continue;
                     builder.editableUI(editableUI);
                 }
                 return this;
@@ -333,6 +359,7 @@ public class CustomMultiblockBuilder extends MultiblockMachineBuilder {
             @Override
             public CustomMultiblockBuilder langValue(String langValue) {
                 for (var builder : builders) {
+                    if (builder == null) continue;
                     builder.langValue(langValue);
                 }
                 return this;
@@ -346,6 +373,7 @@ public class CustomMultiblockBuilder extends MultiblockMachineBuilder {
 
             public CustomMultiblockBuilder tier(int tier, BuilderConsumer consumer) {
                 for (var builder : builders) {
+                    if (builder == null) continue;
                     if (builder.tier() == tier) {
                         consumer.accept(builder);
                     }
@@ -355,6 +383,7 @@ public class CustomMultiblockBuilder extends MultiblockMachineBuilder {
 
             public CustomMultiblockBuilder allTiers(TieredBuilderConsumer consumer) {
                 for (var builder : builders) {
+                    if (builder == null) continue;
                     consumer.accept(builder.tier(), builder);
                 }
                 return this;
@@ -363,6 +392,7 @@ public class CustomMultiblockBuilder extends MultiblockMachineBuilder {
             @Override
             public MultiblockMachineDefinition register() {
                 for (var builder : builders) {
+                    if (builder == null) continue;
                     value = builder.register();
                 }
                 return value;

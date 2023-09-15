@@ -75,15 +75,14 @@ public class KineticMachineBuilder extends MachineBuilder<KineticMachineDefiniti
     private static KineticMachineBuilder[] tieredMachines(String name,
                                                           BiConsumer<MachineBuilder<KineticMachineDefinition>, Integer> builderConsumer,
                                                           Integer... tiers) {
-        KineticMachineBuilder[] builders = new KineticMachineBuilder[tiers.length];
-        for (int i = 0; i < tiers.length; i++) {
-            int tier = tiers[i];
+        KineticMachineBuilder[] builders = new KineticMachineBuilder[GTValues.TIER_COUNT];
+        for (int tier : tiers) {
             var register = new KineticMachineBuilder(GTValues.VN[tier].toLowerCase(Locale.ROOT) + "_" + name, false, tier)
                     .tier(tier)
                     .hasTESR(true)
                     .onBlockEntityRegister(type -> KineticMachineBlockEntity.onBlockEntityRegister(type, () -> SplitShaftInstance::new, false));
             builderConsumer.accept(register, tier);
-            builders[i] = register;
+            builders[tier] = register;
         }
         return builders;
     }

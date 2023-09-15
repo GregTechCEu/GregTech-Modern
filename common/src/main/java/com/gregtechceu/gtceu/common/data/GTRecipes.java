@@ -57,6 +57,9 @@ public class GTRecipes {
         ComponentRecipes.init(consumer);
         MetaTileEntityLoader.init(consumer);
 
+        //GCyM
+        GCyMRecipes.init(consumer);
+
         // Config-dependent recipes
         RecipeAddition.init(consumer);
         // Must run recycling recipes very last
