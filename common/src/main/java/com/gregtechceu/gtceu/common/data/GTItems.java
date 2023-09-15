@@ -413,27 +413,23 @@ public class GTItems {
 
     public static ItemEntry<ComponentItem> BATTERY_ULV_TANTALUM = REGISTRATE.item("tantalum_capacitor", ComponentItem::create)
             .lang("Tantalum Capacitor")
-            .properties(p -> p.stacksTo(1))
             .onRegister(attach(ElectricStats.createRechargeableBattery(1000, GTValues.ULV)))
             .tag(CustomTags.ULV_BATTERIES).register();
 
     public static ItemEntry<ComponentItem> BATTERY_LV_SODIUM = REGISTRATE.item("lv_sodium_battery", ComponentItem::create)
             .lang("Small Sodium Battery")
-            .properties(p -> p.stacksTo(1))
             .model(overrideModel(GTCEu.id("battery"), 8))
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
             .onRegister(attach(ElectricStats.createRechargeableBattery(80000, GTValues.LV)))
             .tag(CustomTags.LV_BATTERIES).register();
     public static ItemEntry<ComponentItem> BATTERY_MV_SODIUM = REGISTRATE.item("mv_sodium_battery", ComponentItem::create)
             .lang("Medium Sodium Battery")
-            .properties(p -> p.stacksTo(1))
             .model(overrideModel(GTCEu.id("battery"), 8))
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
             .onRegister(attach(ElectricStats.createRechargeableBattery(360000, GTValues.MV)))
             .tag(CustomTags.MV_BATTERIES).register();
     public static ItemEntry<ComponentItem> BATTERY_HV_SODIUM = REGISTRATE.item("hv_sodium_battery", ComponentItem::create)
             .lang("Large Sodium Battery")
-            .properties(p -> p.stacksTo(1))
             .model(overrideModel(GTCEu.id("battery"), 8))
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
             .onRegister(attach(ElectricStats.createRechargeableBattery(1200000, GTValues.HV)))
@@ -441,21 +437,18 @@ public class GTItems {
 
     public static ItemEntry<ComponentItem> BATTERY_LV_LITHIUM = REGISTRATE.item("lv_lithium_battery", ComponentItem::create)
             .lang("Small Lithium Battery")
-            .properties(p -> p.stacksTo(1))
             .model(overrideModel(GTCEu.id("battery"), 8))
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
             .onRegister(attach(ElectricStats.createRechargeableBattery(120000, GTValues.LV)))
             .tag(CustomTags.LV_BATTERIES).register();
     public static ItemEntry<ComponentItem> BATTERY_MV_LITHIUM = REGISTRATE.item("mv_lithium_battery", ComponentItem::create)
             .lang("Medium Lithium Battery")
-            .properties(p -> p.stacksTo(1))
             .model(overrideModel(GTCEu.id("battery"), 8))
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
             .onRegister(attach(ElectricStats.createRechargeableBattery(420000, GTValues.MV)))
             .tag(CustomTags.MV_BATTERIES).register();
     public static ItemEntry<ComponentItem> BATTERY_HV_LITHIUM = REGISTRATE.item("hv_lithium_battery", ComponentItem::create)
             .lang("Large Lithium Battery")
-            .properties(p -> p.stacksTo(1))
             .model(overrideModel(GTCEu.id("battery"), 8))
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
             .onRegister(attach(ElectricStats.createRechargeableBattery(1800000, GTValues.HV)))
@@ -463,21 +456,18 @@ public class GTItems {
 
     public static ItemEntry<ComponentItem> BATTERY_LV_CADMIUM = REGISTRATE.item("lv_cadmium_battery", ComponentItem::create)
             .lang("Small Cadmium Battery")
-            .properties(p -> p.stacksTo(1))
             .model(overrideModel(GTCEu.id("battery"), 8))
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
             .onRegister(attach(ElectricStats.createRechargeableBattery(100000, GTValues.LV)))
             .tag(CustomTags.LV_BATTERIES).register();
     public static ItemEntry<ComponentItem> BATTERY_MV_CADMIUM = REGISTRATE.item("mv_cadmium_battery", ComponentItem::create)
             .lang("Medium Cadmium Battery")
-            .properties(p -> p.stacksTo(1))
             .model(overrideModel(GTCEu.id("battery"), 8))
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
             .onRegister(attach(ElectricStats.createRechargeableBattery(400000, GTValues.MV)))
             .tag(CustomTags.MV_BATTERIES).register();
     public static ItemEntry<ComponentItem> BATTERY_HV_CADMIUM = REGISTRATE.item("hv_cadmium_battery", ComponentItem::create)
             .lang("Large Cadmium Battery")
-            .properties(p -> p.stacksTo(1))
             .model(overrideModel(GTCEu.id("battery"), 8))
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
             .onRegister(attach(ElectricStats.createRechargeableBattery(1600000, GTValues.HV)))
@@ -485,13 +475,11 @@ public class GTItems {
 
     public static ItemEntry<ComponentItem> ENERGIUM_CRYSTAL = REGISTRATE.item("energy_crystal", ComponentItem::create)
             .lang("Energium Crystal")
-            .properties(p -> p.stacksTo(1))
             .model(overrideModel(GTCEu.id("battery"), 8))
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
             .onRegister(attach(ElectricStats.createRechargeableBattery(6_400_000L, GTValues.HV)))
             .tag(CustomTags.HV_BATTERIES).register();
     public static ItemEntry<ComponentItem> LAPOTRON_CRYSTAL = REGISTRATE.item("lapotron_crystal", ComponentItem::create)
-            .properties(p -> p.stacksTo(1))
             .model(overrideModel(GTCEu.id("battery"), 8))
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
             .onRegister(attach(ElectricStats.createRechargeableBattery(25_000_000L, GTValues.EV)))
@@ -499,21 +487,18 @@ public class GTItems {
 
     public static ItemEntry<ComponentItem> BATTERY_EV_VANADIUM = REGISTRATE.item("ev_vanadium_battery", ComponentItem::create)
             .lang("Small Vanadium Battery")
-            .properties(p -> p.stacksTo(1))
             .model(overrideModel(GTCEu.id("battery"), 8))
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
             .onRegister(attach(ElectricStats.createRechargeableBattery(10_240_000L, GTValues.EV)))
             .tag(CustomTags.EV_BATTERIES).register();
     public static ItemEntry<ComponentItem> BATTERY_IV_VANADIUM = REGISTRATE.item("iv_vanadium_battery", ComponentItem::create)
             .lang("Medium Vanadium Battery")
-            .properties(p -> p.stacksTo(1))
             .model(overrideModel(GTCEu.id("battery"), 8))
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
             .onRegister(attach(ElectricStats.createRechargeableBattery(40_960_000L, GTValues.IV)))
             .tag(CustomTags.IV_BATTERIES).register();
     public static ItemEntry<ComponentItem> BATTERY_LUV_VANADIUM = REGISTRATE.item("luv_vanadium_battery", ComponentItem::create)
             .lang("Large Vanadium Battery")
-            .properties(p -> p.stacksTo(1))
             .model(overrideModel(GTCEu.id("battery"), 8))
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
             .onRegister(attach(ElectricStats.createRechargeableBattery(163_840_000L, GTValues.LuV)))
@@ -521,14 +506,12 @@ public class GTItems {
 
     public static ItemEntry<ComponentItem> BATTERY_ZPM_NAQUADRIA = REGISTRATE.item("zpm_naquadria_battery", ComponentItem::create)
             .lang("Medium Naquadria Battery")
-            .properties(p -> p.stacksTo(1))
             .model(overrideModel(GTCEu.id("battery"), 8))
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
             .onRegister(attach(ElectricStats.createRechargeableBattery(655_360_000L, GTValues.ZPM)))
             .tag(CustomTags.ZPM_BATTERIES).register();
     public static ItemEntry<ComponentItem> BATTERY_UV_NAQUADRIA = REGISTRATE.item("uv_naquadria_battery", ComponentItem::create)
             .lang("Large Naquadria Battery")
-            .properties(p -> p.stacksTo(1))
             .model(overrideModel(GTCEu.id("battery"), 8))
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
             .onRegister(attach(ElectricStats.createRechargeableBattery(2_621_440_000L, GTValues.UV)))
@@ -536,14 +519,12 @@ public class GTItems {
 
     public static ItemEntry<ComponentItem> ENERGY_LAPOTRONIC_ORB = REGISTRATE.item("lapotronic_energy_orb", ComponentItem::create)
             .lang("Lapotronic Energy Orb")
-            .properties(p -> p.stacksTo(1))
             .model(overrideModel(GTCEu.id("battery"), 8))
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
             .onRegister(attach(ElectricStats.createRechargeableBattery(250_000_000L, GTValues.IV)))
             .tag(CustomTags.IV_BATTERIES).register();
     public static ItemEntry<ComponentItem> ENERGY_LAPOTRONIC_ORB_CLUSTER = REGISTRATE.item("lapotronic_energy_orb_cluster", ComponentItem::create)
             .lang("Lapotronic Energy Orb Cluster")
-            .properties(p -> p.stacksTo(1))
             .model(overrideModel(GTCEu.id("battery"), 8))
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
             .onRegister(attach(ElectricStats.createRechargeableBattery(1_000_000_000L, GTValues.LuV)))
@@ -551,14 +532,12 @@ public class GTItems {
 
     public static ItemEntry<ComponentItem> ENERGY_MODULE = REGISTRATE.item("energy_module", ComponentItem::create)
             .lang("Energy Module")
-            .properties(p -> p.stacksTo(1))
             .model(overrideModel(GTCEu.id("battery"), 8))
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
             .onRegister(attach(ElectricStats.createRechargeableBattery(4_000_000_000L, GTValues.ZPM)))
             .tag(CustomTags.ZPM_BATTERIES).register();
     public static ItemEntry<ComponentItem> ENERGY_CLUSTER = REGISTRATE.item("energy_cluster", ComponentItem::create)
             .lang("Energy Cluster")
-            .properties(p -> p.stacksTo(1))
             .model(overrideModel(GTCEu.id("battery"), 8))
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
             .onRegister(attach(ElectricStats.createRechargeableBattery(20_000_000_000L, GTValues.UV)))
@@ -566,13 +545,11 @@ public class GTItems {
 
     public static ItemEntry<ComponentItem> ZERO_POINT_MODULE = REGISTRATE.item("zero_point_module", ComponentItem::create)
             .lang("Zero Point Module")
-            .properties(p -> p.stacksTo(1))
             .model(overrideModel(GTCEu.id("battery"), 8))
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
             .onRegister(attach(ElectricStats.createBattery(2000000000000L, GTValues.ZPM, true))).register();
     public static ItemEntry<ComponentItem> ULTIMATE_BATTERY = REGISTRATE.item("max_battery", ComponentItem::create)
             .lang("Ultimate Battery")
-            .properties(p -> p.stacksTo(1))
             .model(overrideModel(GTCEu.id("battery"), 8))
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
             .onRegister(attach(ElectricStats.createRechargeableBattery(Long.MAX_VALUE, GTValues.UHV)))
