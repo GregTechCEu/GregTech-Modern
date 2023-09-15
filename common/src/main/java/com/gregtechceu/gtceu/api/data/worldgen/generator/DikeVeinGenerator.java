@@ -13,11 +13,14 @@ import lombok.AllArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.SectionPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.chunk.BulkSectionAccess;
+import net.minecraft.world.level.chunk.LevelChunkSection;
 import net.minecraft.world.level.levelgen.LegacyRandomSource;
 import net.minecraft.world.level.levelgen.WorldgenRandom;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
@@ -64,6 +67,7 @@ public class DikeVeinGenerator extends VeinGenerator {
         WorldgenRandom worldgenRandom = new WorldgenRandom(new LegacyRandomSource(level.getSeed()));
         NormalNoise normalNoise = NormalNoise.create(worldgenRandom, -2, 4.0D);
         ChunkPos chunkPos = new ChunkPos(origin);
+        BulkSectionAccess access = new BulkSectionAccess(level);
 
         float density = entry.getDensity();
         int size = entry.getClusterSize();
@@ -84,22 +88,34 @@ public class DikeVeinGenerator extends VeinGenerator {
                     if (dist > size * 2) {
                         continue;
                     }
+                    BlockPos pos = new BlockPos(basePos.getX() + dX, dY, basePos.getZ() + dZ);
+                    if (!level.ensureCanWrite(pos))
+                        continue;
+                    LevelChunkSection section = access.getSection(pos);
+                    if (section == null)
+                        continue;
                     if (normalNoise.getValue(dX, dY, dZ) >= 0.5 && random.nextFloat() <= density) {
-                        if (placeBlock(level, random, new BlockPos(basePos.getX() + dX, dY, basePos.getZ() + dZ), entry)) {
+                        if (placeBlock(access, section, random, pos, entry)) {
                             ++blocksPlaced;
                         }
                     }
                 }
             }
         }
+
+        access.close();
         return blocksPlaced > 0;
     }
 
-    private boolean placeBlock(WorldGenLevel level, RandomSource rand, BlockPos pos, GTOreDefinition entry) {
+    private boolean placeBlock(BulkSectionAccess level, LevelChunkSection section, RandomSource rand, BlockPos pos, GTOreDefinition entry) {
         List<? extends Map.Entry<Integer, DikeBlockDefinition>> entries = blocks.stream().map(b -> Map.entry(b.weight, b)).toList();
         DikeBlockDefinition blockDefinition = blocks.get(GTUtil.getRandomItem(rand, entries, entries.size()));
         BlockState current = level.getBlockState(pos);
         MutableBoolean returnValue = new MutableBoolean(false);
+
+        int x = SectionPos.sectionRelative(pos.getX());
+        int y = SectionPos.sectionRelative(pos.getY());
+        int z = SectionPos.sectionRelative(pos.getZ());
 
         if (pos.getY() >= blockDefinition.minY() && pos.getY() <= blockDefinition.maxY()) {
             blockDefinition.block.ifLeft(blockStates -> {
@@ -108,7 +124,7 @@ public class DikeVeinGenerator extends VeinGenerator {
                         continue;
                     if (targetState.state.isAir())
                         continue;
-                    level.setBlock(pos, targetState.state, 2);
+                    section.setBlockState(x, y, z, targetState.state, false);
                     returnValue.setTrue();
                     break;
                 }
@@ -121,7 +137,7 @@ public class DikeVeinGenerator extends VeinGenerator {
                 Block toPlace = ChemicalHelper.getBlock(prefix, material);
                 if (toPlace == null || toPlace.defaultBlockState().isAir())
                     return;
-                level.setBlock(pos, toPlace.defaultBlockState(), 2);
+                section.setBlockState(x, y, z, toPlace.defaultBlockState(), false);
                 returnValue.setTrue();
             });
         }
