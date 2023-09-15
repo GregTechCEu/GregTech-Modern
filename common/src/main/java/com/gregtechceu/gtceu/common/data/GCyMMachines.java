@@ -383,7 +383,7 @@ public class GCyMMachines {
     public final static MultiblockMachineDefinition BLAST_ALLOY_SMELTER = REGISTRATE.multiblock("alloy_blast_smelter", CoilWorkableElectricMultiblockMachine::new)
             .langValue("Alloy Blast Smelter")
             .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"))
-            .tooltips(Component.translatable("gtceu.machine.available_recipe_map_1.tooltip", Component.translatable("gtceu.blast_alloy_smelter")))
+            .tooltips(Component.translatable("gtceu.machine.available_recipe_map_1.tooltip", Component.translatable("gtceu.alloy_blast_smelter")))
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeType(ALLOY_BLAST_RECIPES)
             .recipeModifier(GTRecipeModifiers::ebfOverclock)
