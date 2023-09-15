@@ -3,8 +3,8 @@ package com.gregtechceu.gtceu.api.data.worldgen.generator;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.worldgen.GTLayerPattern;
-import com.gregtechceu.gtceu.api.data.worldgen.GTOreFeature;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
+import com.gregtechceu.gtceu.api.data.worldgen.GTOreFeature;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -86,13 +86,12 @@ public class LayeredVeinGenerator extends VeinGenerator {
         List<Float> layerDiameterOffsets = new ArrayList<>();
 
         BlockPos.MutableBlockPos posCursor = new BlockPos.MutableBlockPos();
-        BulkSectionAccess access = new BulkSectionAccess(level);
+
         int layerCoordinate = random.nextInt(4);
         int slantyCoordinate = random.nextInt(3);
         float slope = random.nextFloat() * .75f;
 
-        try {
-
+        try (BulkSectionAccess access = new BulkSectionAccess(level)) {
             for (int xC = 0; xC < width; xC++) {
                 float dx = xC * 2f / width - 1;
                 if (dx * dx > 1)
@@ -169,22 +168,11 @@ public class LayeredVeinGenerator extends VeinGenerator {
                                 placedAmount.increment();
                             });
                         }
-
                     }
                 }
             }
-
-        } catch (Throwable throwable1) {
-            try {
-                access.close();
-            } catch (Throwable throwable) {
-                throwable1.addSuppressed(throwable);
-            }
-
-            throw throwable1;
         }
 
-        access.close();
         return placedAmount.getValue() > 0;
     }
 

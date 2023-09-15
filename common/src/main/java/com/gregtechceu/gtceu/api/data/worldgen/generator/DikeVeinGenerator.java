@@ -66,8 +66,8 @@ public class DikeVeinGenerator extends VeinGenerator {
     public boolean generate(WorldGenLevel level, RandomSource random, GTOreDefinition entry, BlockPos origin) {
         WorldgenRandom worldgenRandom = new WorldgenRandom(new LegacyRandomSource(level.getSeed()));
         NormalNoise normalNoise = NormalNoise.create(worldgenRandom, -2, 4.0D);
+
         ChunkPos chunkPos = new ChunkPos(origin);
-        BulkSectionAccess access = new BulkSectionAccess(level);
 
         float density = entry.getDensity();
         int size = entry.getClusterSize();
@@ -81,29 +81,30 @@ public class DikeVeinGenerator extends VeinGenerator {
 
         int blocksPlaced = 0;
 
-        for (int dY = yBottom; dY <= yTop; dY++) {
-            for (int dX = -size; dX <= size; dX++) {
-                for (int dZ = -size; dZ <= size; dZ++) {
-                    float dist = (dX * dX) + (dZ * dZ);
-                    if (dist > size * 2) {
-                        continue;
-                    }
-                    BlockPos pos = new BlockPos(basePos.getX() + dX, dY, basePos.getZ() + dZ);
-                    if (!level.ensureCanWrite(pos))
-                        continue;
-                    LevelChunkSection section = access.getSection(pos);
-                    if (section == null)
-                        continue;
-                    if (normalNoise.getValue(dX, dY, dZ) >= 0.5 && random.nextFloat() <= density) {
-                        if (placeBlock(access, section, random, pos, entry)) {
-                            ++blocksPlaced;
+        try (BulkSectionAccess access = new BulkSectionAccess(level)) {
+            for (int dY = yBottom; dY <= yTop; dY++) {
+                for (int dX = -size; dX <= size; dX++) {
+                    for (int dZ = -size; dZ <= size; dZ++) {
+                        float dist = (dX * dX) + (dZ * dZ);
+                        if (dist > size * 2) {
+                            continue;
+                        }
+                        BlockPos pos = new BlockPos(basePos.getX() + dX, dY, basePos.getZ() + dZ);
+                        if (!level.ensureCanWrite(pos))
+                            continue;
+                        LevelChunkSection section = access.getSection(pos);
+                        if (section == null)
+                            continue;
+                        if (normalNoise.getValue(dX, dY, dZ) >= 0.5 && random.nextFloat() <= density) {
+                            if (placeBlock(access, section, random, pos, entry)) {
+                                ++blocksPlaced;
+                            }
                         }
                     }
                 }
             }
         }
 
-        access.close();
         return blocksPlaced > 0;
     }
 

@@ -187,9 +187,7 @@ public class StandardVeinGenerator extends VeinGenerator {
             }
         }
 
-        BulkSectionAccess access = new BulkSectionAccess(level);
-
-        try {
+        try (BulkSectionAccess access = new BulkSectionAccess(level)) {
             for(int j4 = 0; j4 < size; ++j4) {
                 double d9 = shape[j4 * 4 + 3];
                 if (!(d9 < 0.0D)) {
@@ -258,17 +256,8 @@ public class StandardVeinGenerator extends VeinGenerator {
                     }
                 }
             }
-        } catch (Throwable throwable1) {
-            try {
-                access.close();
-            } catch (Throwable throwable) {
-                throwable1.addSuppressed(throwable);
-            }
-
-            throw throwable1;
         }
 
-        access.close();
         return placedAmount.getValue() > 0;
     }
 }
