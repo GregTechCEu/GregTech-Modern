@@ -24,6 +24,8 @@ import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.chunk.BulkSectionAccess;
+import net.minecraft.world.level.chunk.LevelChunkSection;
 import net.minecraft.world.level.levelgen.*;
 import net.minecraft.world.level.levelgen.blending.Blender;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
@@ -108,6 +110,7 @@ public class VeinedVeinGenerator extends VeinGenerator {
         List<? extends Map.Entry<Integer, VeinBlockDefinition>> commonEntries = oreBlocks.stream().map(b -> Map.entry(b.weight, b)).toList();
         List<? extends Map.Entry<Integer, VeinBlockDefinition>> rareEntries = rareBlocks == null ? null : rareBlocks.stream().map(b -> Map.entry(b.weight, b)).toList(); // never accessed if rareBlocks is null
 
+        BulkSectionAccess access = new BulkSectionAccess(level);
         RandomState randomState = level.getLevel().getChunkSource().randomState();
         Blender blender;
         if (level instanceof WorldGenRegion region) {
@@ -177,14 +180,17 @@ public class VeinedVeinGenerator extends VeinGenerator {
                     double chance = Mth.clampedMap(absToggleNoise, veininessThreshold, maxRichnessThreshold, minRichness, maxRichness);
 
                     BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos(finalX, finalY, finalZ);
-                    BlockState current = level.getBlockState(pos);
+                    LevelChunkSection section = access.getSection(pos);
+                    if (section == null)
+                        continue;
+                    BlockState current = section.getBlockState(pos.getX(), pos.getY(), pos.getZ());
                     boolean placed = false;
                     if (random.nextFloat() <= entry.getDensity()) {
                         if (random.nextFloat() < chance) {
-                            if (rareBlocks != null && rareBlocks.size() > 0 && random.nextFloat() < rareBlockChance) {
-                                placed = placeOre(rareBlocks.get(GTUtil.getRandomItem(random, rareEntries, rareEntries.size())).block, current, level, random, pos, entry);
+                            if (rareBlocks != null && !rareBlocks.isEmpty() && random.nextFloat() < rareBlockChance) {
+                                placed = placeOre(rareBlocks.get(GTUtil.getRandomItem(random, rareEntries, rareEntries.size())).block, current, access, section, random, pos, entry);
                             } else {
-                                placed = placeOre(oreBlocks.get(GTUtil.getRandomItem(random, commonEntries, commonEntries.size())).block, current, level, random, pos, entry);
+                                placed = placeOre(oreBlocks.get(GTUtil.getRandomItem(random, commonEntries, commonEntries.size())).block, current, access, section, random, pos, entry);
                             }
                         } else {
                             if (fillerBlock == null || fillerBlock.isAir())
@@ -203,10 +209,12 @@ public class VeinedVeinGenerator extends VeinGenerator {
             }
 
         }
+
+        access.close();
         return placedCount > 0;
     }
 
-    protected static boolean placeOre(Either<List<OreConfiguration.TargetBlockState>, Material> block, BlockState current, WorldGenLevel level, RandomSource random, BlockPos.MutableBlockPos pos, GTOreDefinition entry) {
+    protected static boolean placeOre(Either<List<OreConfiguration.TargetBlockState>, Material> block, BlockState current, BulkSectionAccess level, LevelChunkSection section, RandomSource random, BlockPos.MutableBlockPos pos, GTOreDefinition entry) {
         MutableBoolean returnValue = new MutableBoolean(false);
         block.ifLeft(blockStates -> {
             for (OreConfiguration.TargetBlockState targetState : blockStates) {
@@ -214,7 +222,7 @@ public class VeinedVeinGenerator extends VeinGenerator {
                     continue;
                 if (targetState.state.isAir())
                     continue;
-                level.setBlock(pos, targetState.state, 2);
+                section.setBlockState(pos.getX(), pos.getY(), pos.getZ(), targetState.state, false);
                 returnValue.setTrue();
                 break;
             }
@@ -227,7 +235,7 @@ public class VeinedVeinGenerator extends VeinGenerator {
             Block toPlace = ChemicalHelper.getBlock(prefix, material);
             if (toPlace == null || toPlace.defaultBlockState().isAir())
                 return;
-            level.setBlock(pos, toPlace.defaultBlockState(), 2);
+            section.setBlockState(pos.getX(), pos.getY(), pos.getZ(), toPlace.defaultBlockState(), false);
             returnValue.setTrue();
         });
         return returnValue.isTrue();
