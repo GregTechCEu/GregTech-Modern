@@ -538,32 +538,6 @@ public class GTRecipeTypes {
 
     public static final GTRecipeType DUMMY_RECIPES = new GTRecipeType(GTCEu.id("dummy"), DUMMY);
 
-    //gcym
-    public final static GTRecipeType LARGE_MIXER_RECIPES = register("large_mixer", ELECTRIC).setMaxIOSize(9, 1, 6, 1).setEUIO(IO.IN)
-            .setSlotOverlay(false, false, GuiTextures.DUST_OVERLAY)
-            .setProgressBar(GuiTextures.PROGRESS_BAR_MIXER, LEFT_TO_RIGHT)
-            .setSound(GTSoundEntries.MIXER);
-
-    public final static GTRecipeType LARGE_ENGRAVER_RECIPES = register("large_engraver", ELECTRIC).setMaxIOSize(2, 1, 1, 1).setEUIO(IO.IN)
-            .setSlotOverlay(false, false, GuiTextures.LENS_OVERLAY)
-            .setProgressBar(GuiTextures.PROGRESS_BAR_ARROW, LEFT_TO_RIGHT)
-            .setSound(GTSoundEntries.ELECTROLYZER);
-
-    public final static GTRecipeType LARGE_CENTRIFUGE_RECIPES = register("large_centrifuge", ELECTRIC).setMaxIOSize(2, 6, 2, 6).setEUIO(IO.IN)
-            .setSlotOverlay(false, false, GuiTextures.EXTRACTOR_OVERLAY)
-            .setProgressBar(GuiTextures.PROGRESS_BAR_EXTRACT, LEFT_TO_RIGHT)
-            .setSound(GTSoundEntries.CENTRIFUGE);
-
-    public final static GTRecipeType BLAST_ALLOY_RECIPES = register("blast_alloy_smelter", ELECTRIC).setMaxIOSize(9, 0, 3, 1).setEUIO(IO.IN)
-            .setProgressBar(GuiTextures.PROGRESS_BAR_ARROW, LEFT_TO_RIGHT)
-            .setSlotOverlay(false, false, false, GuiTextures.FURNACE_OVERLAY_1)
-            .setSlotOverlay(false, false, true, GuiTextures.FURNACE_OVERLAY_1)
-            .setSlotOverlay(false, true, false, GuiTextures.FURNACE_OVERLAY_2)
-            .setSlotOverlay(false, true, true, GuiTextures.FURNACE_OVERLAY_2)
-            .setSlotOverlay(true, true, false, GuiTextures.FURNACE_OVERLAY_2)
-            .setSlotOverlay(true, true, true, GuiTextures.FURNACE_OVERLAY_2)
-            .setSound(GTSoundEntries.ARC);
-
 
     //////////////////////////////////////
     //******     Integration     *******//
