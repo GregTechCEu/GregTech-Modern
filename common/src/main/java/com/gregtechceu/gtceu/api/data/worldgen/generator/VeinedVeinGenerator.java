@@ -183,7 +183,10 @@ public class VeinedVeinGenerator extends VeinGenerator {
                     LevelChunkSection section = access.getSection(pos);
                     if (section == null)
                         continue;
-                    BlockState current = section.getBlockState(pos.getX(), pos.getY(), pos.getZ());
+                    int sectionX = SectionPos.sectionRelative(pos.getX());
+                    int sectionY = SectionPos.sectionRelative(pos.getY());
+                    int sectionZ = SectionPos.sectionRelative(pos.getZ());
+                    BlockState current = section.getBlockState(sectionX, sectionY, sectionZ);
                     boolean placed = false;
                     if (random.nextFloat() <= entry.getDensity()) {
                         if (random.nextFloat() < chance) {
@@ -197,7 +200,7 @@ public class VeinedVeinGenerator extends VeinGenerator {
                                 continue;
                             if (!GTOreFeature.canPlaceOre(current, level::getBlockState, random, entry, pos))
                                 continue;
-                            section.setBlockState(SectionPos.sectionRelative(pos.getX()), SectionPos.sectionRelative(pos.getY()), SectionPos.sectionRelative(pos.getZ()), fillerBlock, false);
+                            section.setBlockState(sectionX, sectionY, sectionZ, fillerBlock, false);
                             if (level.getBlockState(pos) != current) placed = true;
                         }
                     }
