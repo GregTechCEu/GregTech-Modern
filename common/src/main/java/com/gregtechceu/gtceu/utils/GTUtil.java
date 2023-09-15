@@ -1,6 +1,9 @@
 package com.gregtechceu.gtceu.utils;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.mojang.blaze3d.platform.InputConstants;
@@ -13,8 +16,10 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.material.Fluid;
 import org.lwjgl.glfw.GLFW;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.awt.*;
 import java.lang.reflect.ParameterizedType;
@@ -250,6 +255,19 @@ public class GTUtil {
     @ExpectPlatform
     public static long getPumpBiomeModifier(Holder<Biome> biome) {
         throw new AssertionError();
+    }
+
+    /**
+     * @param material the material to use
+     * @return the correct "molten" fluid for a material
+     */
+    @Nullable
+    public static Fluid getMoltenFluid(@Nonnull Material material) {
+        if (material.hasProperty(PropertyKey.ALLOY_BLAST))
+            return material.getProperty(PropertyKey.ALLOY_BLAST).getFluid();
+        if (!TagPrefix.ingotHot.doGenerateItem(material) && material.hasProperty(PropertyKey.FLUID))
+            return material.getProperty(PropertyKey.FLUID).getFluid();
+        return null;
     }
 
 }

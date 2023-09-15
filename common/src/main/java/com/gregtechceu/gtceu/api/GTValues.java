@@ -80,6 +80,8 @@ public class GTValues {
     public static final int OpV = 13;
     public static final int MAX = 14;
 
+    public static final int TIER_COUNT = 15;
+
     public static final String
             MODID_TOP = "theoneprobe",
             MODID_JEI = "jei",

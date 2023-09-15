@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.data;
 
+import com.google.common.collect.ImmutableList;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.addon.AddonFinder;
@@ -7,6 +8,8 @@ import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.recipe.*;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.common.recipe.RPMCondition;
@@ -168,7 +171,6 @@ public class GTRecipeTypes {
             .setProgressBar(GuiTextures.PROGRESS_BAR_ARROW_MULTIPLE, LEFT_TO_RIGHT)
             .setSound(GTValues.FOOLS.get() ? GTSoundEntries.SCIENCE : GTSoundEntries.CHEMICAL)
             .setMaxTooltips(4)
-            // TODO consider allowing LCR to just read these recipes? instead of generating new (minimize extra jsons)
             .onRecipeBuild((recipeBuilder, provider) -> GTRecipeTypes.LARGE_CHEMICAL_RECIPES.copyFrom(recipeBuilder).save(provider));
 
     public final static GTRecipeType COMPRESSOR_RECIPES = register("compressor", ELECTRIC).setMaxIOSize(1, 1, 0, 0).setEUIO(IO.IN)
@@ -553,6 +555,7 @@ public class GTRecipeTypes {
     }
 
     public static void init() {
+        GCyMRecipeTypes.init();
         if (GTCEu.isCreateLoaded()) {
             CREATE_MIXER_RECIPES = register("create_mixer", KINETIC).setMaxIOSize(6, 1, 2, 1).setEUIO(IO.IN)
                     .setSlotOverlay(false, false, GuiTextures.DUST_OVERLAY)

@@ -1,5 +1,7 @@
 package com.gregtechceu.gtceu.common.data;
 
+import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.item.ComponentItem;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
@@ -54,7 +56,7 @@ public class GTCreativeModeTabs {
             .register();
     public static RegistryEntry<CreativeModeTab> MACHINE = REGISTRATE.defaultCreativeTab("machine",
             builder -> builder.displayItems(new RegistrateDisplayItemsGenerator("machine"))
-                    .icon(() -> GTMachines.ELECTROLYZER[0].asStack())
+                    .icon(() -> GTMachines.ELECTROLYZER[GTValues.LV].asStack())
                     .build())
             .register();
     public static RegistryEntry<CreativeModeTab> ITEM = REGISTRATE.defaultCreativeTab("item",

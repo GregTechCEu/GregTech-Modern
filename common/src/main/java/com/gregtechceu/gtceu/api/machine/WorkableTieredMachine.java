@@ -20,6 +20,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.EnumMap;
@@ -40,7 +41,9 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
     @Persisted @DescSynced
     public final RecipeLogic recipeLogic;
     @Getter
-    public final GTRecipeType recipeType;
+    public final GTRecipeType[] recipeTypes;
+    @Getter @Setter @Persisted
+    public int activeRecipeType;
     @Getter
     public final Int2LongFunction tankScalingFunction;
     @Nullable @Getter @Setter
@@ -65,7 +68,8 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
     public WorkableTieredMachine(IMachineBlockEntity holder, int tier, Int2LongFunction tankScalingFunction, Object... args) {
         super(holder, tier, args);
         this.overclockTier = getMaxOverclockTier();
-        this.recipeType = getDefinition().getRecipeType();
+        this.recipeTypes = getDefinition().getRecipeTypes();
+        this.activeRecipeType = 0;
         this.tankScalingFunction = tankScalingFunction;
         this.capabilitiesProxy = Tables.newCustomTable(new EnumMap<>(IO.class), HashMap::new);
         this.traitSubscriptions = new ArrayList<>();
@@ -194,5 +198,10 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
     @Override
     public boolean keepSubscribing() {
         return false;
+    }
+
+    @Nonnull
+    public GTRecipeType getRecipeType() {
+        return recipeTypes[activeRecipeType];
     }
 }

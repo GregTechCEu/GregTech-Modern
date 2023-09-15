@@ -71,6 +71,7 @@ public class MachineFunctionPresets {
         return new MachineBuilder<D>(GTRegistries.REGISTRATE, name, definitionFactory, holder -> null, blockFactory, MetaMachineItem::new, blockEntityFactory) {
             public MachineBuilder<D> renderer(@Nullable Supplier<IRenderer> renderer) {
                 for (var builder : builders) {
+                    if (builder == null) continue;
                     builder.renderer(renderer);
                 }
                 return this;
@@ -79,6 +80,7 @@ public class MachineFunctionPresets {
             @Override
             public MachineBuilder<D> shape(VoxelShape shape) {
                 for (var builder : builders) {
+                    if (builder == null) continue;
                     builder.shape(shape);
                 }
                 return this;
@@ -87,6 +89,7 @@ public class MachineFunctionPresets {
             @Override
             public MachineBuilder<D> rotationState(RotationState rotationState) {
                 for (var builder : builders) {
+                    if (builder == null) continue;
                     builder.rotationState(rotationState);
                 }
                 return this;
@@ -95,6 +98,7 @@ public class MachineFunctionPresets {
             @Override
             public MachineBuilder<D> hasTESR(boolean hasTESR) {
                 for (var builder : builders) {
+                    if (builder == null) continue;
                     builder.hasTESR(hasTESR);
                 }
                 return this;
@@ -103,6 +107,7 @@ public class MachineFunctionPresets {
             @Override
             public MachineBuilder<D> blockProp(NonNullUnaryOperator<BlockBehaviour.Properties> blockProp) {
                 for (var builder : builders) {
+                    if (builder == null) continue;
                     builder.blockProp(blockProp);
                 }
                 return this;
@@ -111,6 +116,7 @@ public class MachineFunctionPresets {
             @Override
             public MachineBuilder<D> itemProp(NonNullUnaryOperator<Item.Properties> itemProp) {
                 for (var builder : builders) {
+                    if (builder == null) continue;
                     builder.itemProp(itemProp);
                 }
                 return this;
@@ -119,6 +125,7 @@ public class MachineFunctionPresets {
             @Override
             public MachineBuilder<D> blockBuilder(Consumer<BlockBuilder<? extends Block, ?>> blockBuilder) {
                 for (var builder : builders) {
+                    if (builder == null) continue;
                     builder.blockBuilder(blockBuilder);
                 }
                 return this;
@@ -127,6 +134,7 @@ public class MachineFunctionPresets {
             @Override
             public MachineBuilder<D> itemBuilder(Consumer<ItemBuilder<? extends MetaMachineItem, ?>> itemBuilder) {
                 for (var builder : builders) {
+                    if (builder == null) continue;
                     builder.itemBuilder(itemBuilder);
                 }
                 return this;
@@ -135,15 +143,26 @@ public class MachineFunctionPresets {
             @Override
             public MachineBuilder<D> onBlockEntityRegister(NonNullConsumer<BlockEntityType<BlockEntity>> onBlockEntityRegister) {
                 for (var builder : builders) {
+                    if (builder == null) continue;
                     builder.onBlockEntityRegister(onBlockEntityRegister);
                 }
                 return this;
             }
 
             @Override
-            public MachineBuilder<D> recipeType(GTRecipeType recipeType) {
+            public MachineBuilder<D> recipeType(GTRecipeType type) {
                 for (var builder : builders) {
-                    builder.recipeType(recipeType);
+                    if (builder == null) continue;
+                    return builder.recipeType(type);
+                }
+                return this;
+            }
+
+            @Override
+            public MachineBuilder<D> recipeTypes(GTRecipeType... recipeTypes) {
+                for (var builder : builders) {
+                    if (builder == null) continue;
+                    builder.recipeTypes(recipeTypes);
                 }
                 return this;
             }
@@ -156,6 +175,7 @@ public class MachineFunctionPresets {
             @Override
             public MachineBuilder<D> paintingColor(int paintingColor) {
                 for (var builder : builders) {
+                    if (builder == null) continue;
                     builder.paintingColor(paintingColor);
                 }
                 return this;
@@ -164,6 +184,7 @@ public class MachineFunctionPresets {
             @Override
             public MachineBuilder<D> itemColor(BiFunction<ItemStack, Integer, Integer> itemColor) {
                 for (var builder : builders) {
+                    if (builder == null) continue;
                     builder.itemColor(itemColor);
                 }
                 return this;
@@ -172,6 +193,7 @@ public class MachineFunctionPresets {
             @Override
             public MachineBuilder<D> abilities(PartAbility... abilities) {
                 for (var builder : builders) {
+                    if (builder == null) continue;
                     builder.abilities(abilities);
                 }
                 return this;
@@ -179,6 +201,7 @@ public class MachineFunctionPresets {
 
             public MachineBuilder<D> tooltips(Component... tooltips) {
                 for (var builder : builders) {
+                    if (builder == null) continue;
                     builder.tooltips(tooltips);
                 }
                 return this;
@@ -187,6 +210,7 @@ public class MachineFunctionPresets {
             @Override
             public MachineBuilder<D> tooltipBuilder(BiConsumer<ItemStack, List<Component>> tooltipBuilder) {
                 for (var builder : builders) {
+                    if (builder == null) continue;
                     builder.tooltipBuilder(tooltipBuilder);
                 }
                 return this;
@@ -195,6 +219,7 @@ public class MachineFunctionPresets {
             @Override
             public MachineBuilder<D> recipeModifier(BiFunction<MetaMachine, GTRecipe, GTRecipe> recipeModifier) {
                 for (var builder : builders) {
+                    if (builder == null) continue;
                     builder.recipeModifier(recipeModifier);
                 }
                 return this;
@@ -203,6 +228,7 @@ public class MachineFunctionPresets {
             @Override
             public MachineBuilder<D> alwaysTryModifyRecipe(boolean alwaysTryModifyRecipe) {
                 for (var builder : builders) {
+                    if (builder == null) continue;
                     builder.alwaysTryModifyRecipe(alwaysTryModifyRecipe);
                 }
                 return this;
@@ -211,6 +237,7 @@ public class MachineFunctionPresets {
             @Override
             public MachineBuilder<D> appearance(Supplier<BlockState> appearance) {
                 for (var builder : builders) {
+                    if (builder == null) continue;
                     builder.appearance(appearance);
                 }
                 return this;
@@ -219,6 +246,7 @@ public class MachineFunctionPresets {
             @Override
             public MachineBuilder<D> editableUI(@Nullable EditableMachineUI editableUI) {
                 for (var builder : builders) {
+                    if (builder == null) continue;
                     builder.editableUI(editableUI);
                 }
                 return this;
@@ -227,6 +255,7 @@ public class MachineFunctionPresets {
             @Override
             public MachineBuilder<D> langValue(String langValue) {
                 for (var builder : builders) {
+                    if (builder == null) continue;
                     builder.langValue(langValue);
                 }
                 return this;
@@ -235,6 +264,7 @@ public class MachineFunctionPresets {
             @Override
             public MachineBuilder<D> modelRenderer(Supplier<ResourceLocation> model) {
                 for (var builder : builders) {
+                    if (builder == null) continue;
                     builder.modelRenderer(model);
                 }
                 return this;
@@ -248,6 +278,7 @@ public class MachineFunctionPresets {
             @Override
             public MachineBuilder<D> overlayTieredHullRenderer(String name) {
                 for (var builder : builders) {
+                    if (builder == null) continue;
                     builder.overlayTieredHullRenderer(name);
                 }
                 return this;
@@ -256,6 +287,7 @@ public class MachineFunctionPresets {
             @Override
             public MachineBuilder<D> overlaySteamHullRenderer(String name) {
                 for (var builder : builders) {
+                    if (builder == null) continue;
                     builder.overlaySteamHullRenderer(name);
                 }
                 return this;
@@ -264,6 +296,7 @@ public class MachineFunctionPresets {
             @Override
             public MachineBuilder<D> workableTieredHullRenderer(ResourceLocation workableModel) {
                 for (var builder : builders) {
+                    if (builder == null) continue;
                     builder.workableTieredHullRenderer(workableModel);
                 }
                 return this;
@@ -272,6 +305,7 @@ public class MachineFunctionPresets {
             @Override
             public MachineBuilder<D> workableSteamHullRenderer(boolean isHighPressure, ResourceLocation workableModel) {
                 for (var builder : builders) {
+                    if (builder == null) continue;
                     builder.workableSteamHullRenderer(isHighPressure, workableModel);
                 }
                 return this;
@@ -280,6 +314,7 @@ public class MachineFunctionPresets {
             @Override
             public MachineBuilder<D> workableCasingRenderer(ResourceLocation baseCasing, ResourceLocation workableModel) {
                 for (var builder : builders) {
+                    if (builder == null) continue;
                     builder.workableCasingRenderer(baseCasing, workableModel);
                 }
                 return this;
@@ -288,6 +323,7 @@ public class MachineFunctionPresets {
             @Override
             public MachineBuilder<D> workableCasingRenderer(ResourceLocation baseCasing, ResourceLocation workableModel, boolean tint) {
                 for (var builder : builders) {
+                    if (builder == null) continue;
                     builder.workableCasingRenderer(baseCasing, workableModel, tint);
                 }
                 return this;
@@ -296,6 +332,7 @@ public class MachineFunctionPresets {
             @Override
             public MachineBuilder<D> sidedWorkableCasingRenderer(String basePath, ResourceLocation overlayModel, boolean tint) {
                 for (var builder : builders) {
+                    if (builder == null) continue;
                     builder.sidedWorkableCasingRenderer(basePath, overlayModel, tint);
                 }
                 return this;
@@ -303,6 +340,7 @@ public class MachineFunctionPresets {
 
             public MachineBuilder<D> tier(int tier, BuilderConsumer<D> consumer) {
                 for (var builder : builders) {
+                    if (builder == null) continue;
                     if (builder.tier() == tier) {
                         consumer.accept(builder);
                     }
@@ -312,6 +350,7 @@ public class MachineFunctionPresets {
 
             public MachineBuilder<D> allTiers(TieredBuilderConsumer<D> consumer) {
                 for (var builder : builders) {
+                    if (builder == null) continue;
                     consumer.accept(builder.tier(), builder);
                 }
                 return this;
@@ -330,6 +369,7 @@ public class MachineFunctionPresets {
                     Method method = builderClass.getDeclaredMethod("tankScalingFunction", Function.class);
 
                     for (var builder : builders) {
+                    if (builder == null) continue;
                         method.invoke(builder, tankScalingFunction);
                     }
                 } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException ignored) {
@@ -353,6 +393,7 @@ public class MachineFunctionPresets {
 
             public MachineBuilder<D> workableTooltip(GTRecipeType recipeType) {
                 for (var builder : builders) {
+                    if (builder == null) continue;
                     int tier = builder.tier();
                     Function<Integer, Long> tankScalingFunction = getTankScalingFunction(builder);
                     builder.tooltips(GTMachines.workableTiered(tier, GTValues.V[tier], GTValues.V[tier] * 64, recipeType, tankScalingFunction != null ? tankScalingFunction.apply(tier) : GTMachines.defaultTankSizeFunction.apply(tier), true));
@@ -382,6 +423,7 @@ public class MachineFunctionPresets {
             public MachineBuilder<D> isSource(boolean isSource) {
                 if (KineticMachineBuilder.class.isAssignableFrom(builderClass)) {
                     for (var builder : builders) {
+                    if (builder == null) continue;
                         ((KineticMachineBuilder) builder).isSource(isSource);
                     }
                 }
@@ -391,6 +433,7 @@ public class MachineFunctionPresets {
             @Override
             public D register() {
                 for (var builder : builders) {
+                    if (builder == null) continue;
                     value = builder.register();
                 }
                 return value;

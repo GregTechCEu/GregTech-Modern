@@ -74,7 +74,6 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.DoorBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
-import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.shapes.Shapes;
 
 import java.util.ArrayList;
@@ -93,6 +92,8 @@ import static com.gregtechceu.gtceu.api.registry.GTRegistries.REGISTRATE;
 import static com.gregtechceu.gtceu.common.data.GTBlocks.*;
 import static com.gregtechceu.gtceu.common.data.GTCreativeModeTabs.MACHINE;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.DrillingFluid;
+import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.DUMMY_RECIPES;
+import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.STEAM_BOILER_RECIPES;
 import static com.gregtechceu.gtceu.utils.FormattingUtil.toEnglishName;
 import static com.gregtechceu.gtceu.utils.FormattingUtil.toRomanNumeral;
 
@@ -122,7 +123,7 @@ public class GTMachines {
     public final static Pair<MachineDefinition, MachineDefinition> STEAM_SOLID_BOILER = registerSteamMachines("steam_solid_boiler",
             SteamSolidBoilerMachine::new,
             (pressure, builder) -> builder.rotationState(RotationState.NON_Y_AXIS)
-                    .recipeType(GTRecipeTypes.STEAM_BOILER_RECIPES)
+                    .recipeType(STEAM_BOILER_RECIPES)
                     .recipeModifier(SteamBoilerMachine::recipeModifier)
                     .workableSteamHullRenderer(pressure, GTCEu.id("block/generators/boiler/coal"))
                     .tooltips(Component.translatable("gtceu.universal.tooltip.produces_fluid", (pressure ? 300 : 120) * FluidHelper.getBucket() / 20000))
@@ -131,7 +132,7 @@ public class GTMachines {
     public final static Pair<MachineDefinition, MachineDefinition> STEAM_LIQUID_BOILER = registerSteamMachines("steam_liquid_boiler",
             SteamLiquidBoilerMachine::new,
             (pressure, builder) -> builder.rotationState(RotationState.NON_Y_AXIS)
-                    .recipeType(GTRecipeTypes.STEAM_BOILER_RECIPES)
+                    .recipeType(STEAM_BOILER_RECIPES)
                     .recipeModifier(SteamBoilerMachine::recipeModifier)
                     .workableSteamHullRenderer(pressure, GTCEu.id("block/generators/boiler/lava"))
                     .tooltips(Component.translatable("gtceu.universal.tooltip.produces_fluid", (pressure ? 600 : 240) * FluidHelper.getBucket() / 20000))
@@ -147,7 +148,7 @@ public class GTMachines {
     public final static MachineDefinition STEAM_MINER = REGISTRATE.machine("steam_miner", holder -> new SteamMinerMachine(holder, 320, 4, 0))
             .rotationState(RotationState.NON_Y_AXIS)
             .langValue("Steam Miner")
-            .recipeType(GTRecipeTypes.DUMMY_RECIPES)
+            .recipeType(DUMMY_RECIPES)
             .tier(0)
             .tooltips(Component.translatable("gtceu.universal.tooltip.uses_per_tick_steam", 16).append(ChatFormatting.GRAY + ", ")
                     .append(Component.translatable("gtceu.machine.miner.per_block", 320 / 20)))
@@ -284,7 +285,7 @@ public class GTMachines {
             (tier, builder) -> builder
                     .rotationState(RotationState.NON_Y_AXIS)
                     .langValue("%s Miner %s".formatted(VLVH[tier], VLVT[tier]))
-                    .recipeType(GTRecipeTypes.DUMMY_RECIPES)
+                    .recipeType(DUMMY_RECIPES)
                     .editableUI(MinerMachine.EDITABLE_UI_CREATOR.apply(GTCEu.id("miner"), (tier + 1) * (tier + 1)))
                     .renderer(() -> new MinerRenderer(tier, GTCEu.id("block/machines/miner")))
                     .tooltipBuilder((stack, tooltip) -> {
@@ -742,8 +743,8 @@ public class GTMachines {
                     .aisle("XSX", "CCC", "CCC", "XXX")
                     .where('S', controller(blocks(definition.getBlock())))
                     .where('X', blocks(CASING_INVAR_HEATPROOF.get()).setMinGlobalLimited(9)
-                            .or(autoAbilities(definition.getRecipeType()))
-                            .or(autoAbilities(true, false)))
+                            .or(autoAbilities(definition.getRecipeTypes()))
+                            .or(autoAbilities(true, false, false)))
                     .where('M', abilities(PartAbility.MUFFLER))
                     .where('C', heatingCoils())
                     .where('#', air())
@@ -757,12 +758,12 @@ public class GTMachines {
                         .where('X', CASING_INVAR_HEATPROOF.getDefaultState())
                         .where('S', definition, Direction.NORTH)
                         .where('#', Blocks.AIR.defaultBlockState())
-                        .where('E', ENERGY_INPUT_HATCH[GTValues.LV - 1], Direction.SOUTH)
+                        .where('E', ENERGY_INPUT_HATCH[GTValues.LV], Direction.SOUTH)
                         .where('I', ITEM_IMPORT_BUS[GTValues.LV], Direction.NORTH)
                         .where('O', ITEM_EXPORT_BUS[GTValues.LV], Direction.NORTH)
                         .where('F', FLUID_IMPORT_HATCH[GTValues.LV], Direction.WEST)
                         .where('D', FLUID_EXPORT_HATCH[GTValues.LV], Direction.EAST)
-                        .where('H', MUFFLER_HATCH[GTValues.LV - 1], Direction.UP)
+                        .where('H', MUFFLER_HATCH[GTValues.LV], Direction.UP)
                         .where('M', MAINTENANCE_HATCH, Direction.NORTH);
                 ALL_COILS.entrySet().stream()
                         .sorted(Comparator.comparingInt(entry -> entry.getKey().getTier()))
@@ -792,8 +793,8 @@ public class GTMachines {
             .appearanceBlock(CASING_PTFE_INERT)
             .pattern(definition -> {
                 var casing = blocks(CASING_PTFE_INERT.get()).setMinGlobalLimited(10);
-                var abilities = Predicates.autoAbilities(definition.getRecipeType())
-                        .or(Predicates.autoAbilities(true, false));
+                var abilities = Predicates.autoAbilities(definition.getRecipeTypes())
+                        .or(Predicates.autoAbilities(true, false, false));
                 return FactoryBlockPattern.start()
                         .aisle("XXX", "XCX", "XXX")
                         .aisle("XCX", "CPC", "XCX")
@@ -868,8 +869,8 @@ public class GTMachines {
                     .aisle("XXX", "XSX", "XXX")
                     .where('S', controller(blocks(definition.get())))
                     .where('X', blocks(CASING_STEEL_SOLID.get()).setMinGlobalLimited(14)
-                            .or(Predicates.autoAbilities(definition.getRecipeType()))
-                            .or(Predicates.autoAbilities(true, true)))
+                            .or(Predicates.autoAbilities(definition.getRecipeTypes()))
+                            .or(Predicates.autoAbilities(true, true, false)))
                     .where('#', Predicates.air())
                     .build())
             .workableCasingRenderer(GTCEu.id("block/casings/solid/machine_casing_solid_steel"),
@@ -889,8 +890,8 @@ public class GTMachines {
                     .aisle("CCC", "C#C", "CCC")
                     .aisle("XXX", "XSX", "XXX")
                     .where('S', Predicates.controller(blocks(definition.get())))
-                    .where('X', blocks(MACHINE_CASING_ULV.get()).setMinGlobalLimited(6).or(Predicates.autoAbilities(definition.getRecipeType()))
-                            .or(Predicates.autoAbilities(true, true)))
+                    .where('X', blocks(MACHINE_CASING_ULV.get()).setMinGlobalLimited(6).or(Predicates.autoAbilities(definition.getRecipeTypes()))
+                            .or(Predicates.autoAbilities(true, true, false)))
                     .where('C', Predicates.heatingCoils())
                     .where('#', Predicates.air())
                     .build())
@@ -908,7 +909,7 @@ public class GTMachines {
 
     public final static MultiblockMachineDefinition MULTI_SMELTER = REGISTRATE.multiblock("multi_smelter", CoilWorkableElectricMultiblockMachine::new)
             .rotationState(RotationState.NON_Y_AXIS)
-            .recipeType(GTRecipeTypes.FURNACE_RECIPES)
+            .recipeTypes(GTRecipeTypes.FURNACE_RECIPES, GTRecipeTypes.ALLOY_SMELTER_RECIPES, GTRecipeTypes.ARC_FURNACE_RECIPES, GTRecipeTypes.CENTRIFUGE_RECIPES)
             .recipeModifier(GTRecipeModifiers::multiSmelterOverclock)
             .appearanceBlock(CASING_INVAR_HEATPROOF)
             .pattern(definition -> FactoryBlockPattern.start()
@@ -917,8 +918,8 @@ public class GTMachines {
                     .aisle("XSX", "CCC", "XXX")
                     .where('S', controller(blocks(definition.get())))
                     .where('X', blocks(CASING_INVAR_HEATPROOF.get()).setMinGlobalLimited(9)
-                            .or(autoAbilities(definition.getRecipeType()))
-                            .or(autoAbilities(true, false)))
+                            .or(autoAbilities(definition.getRecipeTypes()))
+                            .or(autoAbilities(true, false, false)))
                     .where('M', abilities(PartAbility.MUFFLER))
                     .where('C', heatingCoils())
                     .where('#', air())
@@ -947,8 +948,8 @@ public class GTMachines {
                     .aisle("HCHCH", "HCOCH", "HCHCH")
                     .where('O', Predicates.controller(blocks(definition.get())))
                     .where('H', blocks(CASING_STAINLESS_CLEAN.get()).setMinGlobalLimited(12)
-                            .or(Predicates.autoAbilities(definition.getRecipeType()))
-                            .or(Predicates.autoAbilities(true, true)))
+                            .or(Predicates.autoAbilities(definition.getRecipeTypes()))
+                            .or(Predicates.autoAbilities(true, true, false)))
                     .where('#', Predicates.air())
                     .where('C', Predicates.heatingCoils())
                     .build())
@@ -1000,8 +1001,8 @@ public class GTMachines {
                     .aisle("XXX", "XSX", "XXX")
                     .where('S', Predicates.controller(blocks(definition.getBlock())))
                     .where('X', blocks(CASING_ALUMINIUM_FROSTPROOF.get()).setMinGlobalLimited(14)
-                            .or(Predicates.autoAbilities(definition.getRecipeType()))
-                            .or(Predicates.autoAbilities(true, true)))
+                            .or(Predicates.autoAbilities(definition.getRecipeTypes()))
+                            .or(Predicates.autoAbilities(true, true, false)))
                     .where('#', Predicates.air())
                     .build())
             .workableCasingRenderer(GTCEu.id("block/casings/solid/machine_casing_frost_proof"),
@@ -1047,7 +1048,7 @@ public class GTMachines {
                     .where('S', Predicates.controller(blocks(definition.getBlock())))
                     .where('X', blocks(CASING_PUMP_DECK.get()))
                     .where('F', blocks(MATERIAL_BLOCKS.get(TagPrefix.frameGt, GTMaterials.TreatedWood).get()))
-                    .where('H', Predicates.abilities(PartAbility.PUMP_FLUID_HATCH).or(blocks(FLUID_EXPORT_HATCH[0].get(), FLUID_EXPORT_HATCH[1].get())))
+                    .where('H', Predicates.abilities(PartAbility.PUMP_FLUID_HATCH).or(blocks(FLUID_EXPORT_HATCH[LV].get(), FLUID_EXPORT_HATCH[MV].get())))
                     .where('#', Predicates.any())
                     .build())
             .sidedWorkableCasingRenderer("block/casings/pump_deck", GTCEu.id("block/multiblock/primitive_pump"), false)
@@ -1193,7 +1194,7 @@ public class GTMachines {
     public static final MultiblockMachineDefinition[] FLUID_DRILLING_RIG = registerTieredMultis("fluid_drilling_rig", FluidDrillMachine::new, (tier, builder) -> builder
                     .rotationState(RotationState.NON_Y_AXIS)
                     .langValue("%s Fluid Drilling Rig %s".formatted(VLVH[tier], VLVT[tier]))
-                    .recipeType(GTRecipeTypes.DUMMY_RECIPES)
+                    .recipeType(DUMMY_RECIPES)
                     .tooltips(
                             Component.translatable("gtceu.machine.fluid_drilling_rig.description"),
                             Component.translatable("gtceu.machine.fluid_drilling_rig.depletion", FormattingUtil.formatNumbers(100.0 / FluidDrillMachine.getDepletionChance(tier))),
@@ -1258,7 +1259,7 @@ public class GTMachines {
 
     public static final MultiblockMachineDefinition CLEANROOM = REGISTRATE.multiblock("cleanroom", CleanroomMachine::new)
             .rotationState(RotationState.NONE)
-            .recipeType(GTRecipeTypes.DUMMY_RECIPES)
+            .recipeType(DUMMY_RECIPES)
             .appearanceBlock(PLASTCRETE)
             .tooltips(Component.translatable("gtceu.machine.cleanroom.tooltip.0"),
                     Component.translatable("gtceu.machine.cleanroom.tooltip.1"),
@@ -1366,7 +1367,7 @@ public class GTMachines {
                     .blockProp(p -> p.noOcclusion().isViewBlocking((state, level, pos) -> false))
                     .shape(Shapes.box(0.001, 0.001, 0.001, 0.999, 0.999, 0.999))
                     .appearanceBlock(() -> ProcessingArrayMachine.getCasingState(tier))
-                    .recipeType(GTRecipeTypes.DUMMY_RECIPES)
+                    .recipeType(DUMMY_RECIPES)
                     .recipeModifier(ProcessingArrayMachine::recipeModifier, true)
                     .pattern(definition -> FactoryBlockPattern.start()
                             .aisle("XXX", "CCC", "XXX")
@@ -1380,7 +1381,7 @@ public class GTMachines {
                                     .or(Predicates.abilities(PartAbility.EXPORT_FLUIDS))
                                     .or(Predicates.abilities(PartAbility.INPUT_ENERGY))
                                     .or(Predicates.abilities(PartAbility.OUTPUT_ENERGY))
-                                    .or(Predicates.autoAbilities(true, false)))
+                                    .or(Predicates.autoAbilities(true, false, false)))
                             .where('C', blocks(CLEANROOM_GLASS.get()))
                             .where('#', Predicates.air())
                             .build())
@@ -1393,6 +1394,7 @@ public class GTMachines {
                     .compassNodeSelf()
                     .register(),
             IV, LuV) : null;
+
 
     //////////////////////////////////////
     //**********     Misc     **********//
@@ -1418,12 +1420,11 @@ public class GTMachines {
                                                              BiFunction<IMachineBlockEntity, Integer, MetaMachine> factory,
                                                              BiFunction<Integer, MachineBuilder<MachineDefinition>, MachineDefinition> builder,
                                                              int... tiers) {
-        MachineDefinition[] definitions = new MachineDefinition[tiers.length];
-        for (int i = 0; i < tiers.length; i++) {
-            int tier = tiers[i];
-            var register =  REGISTRATE.machine(GTValues.VN[tier].toLowerCase(Locale.ROOT) + "_" + name, holder -> factory.apply(holder, tier))
+        MachineDefinition[] definitions = new MachineDefinition[GTValues.TIER_COUNT];
+        for (int tier : tiers) {
+            var register = REGISTRATE.machine(GTValues.VN[tier].toLowerCase(Locale.ROOT) + "_" + name, holder -> factory.apply(holder, tier))
                     .tier(tier);
-            definitions[i] = builder.apply(tier, register);
+            definitions[tier] = builder.apply(tier, register);
         }
         return definitions;
     }
@@ -1534,12 +1535,11 @@ public class GTMachines {
                                                              BiFunction<IMachineBlockEntity, Integer, MultiblockControllerMachine> factory,
                                                              BiFunction<Integer, MultiblockMachineBuilder, MultiblockMachineDefinition> builder,
                                                              int... tiers) {
-        MultiblockMachineDefinition[] definitions = new MultiblockMachineDefinition[tiers.length];
-        for (int i = 0; i < tiers.length; i++) {
-            int tier = tiers[i];
-            var register =  REGISTRATE.multiblock(GTValues.VN[tier].toLowerCase(Locale.ROOT) + "_" + name, holder -> factory.apply(holder, tier))
+        MultiblockMachineDefinition[] definitions = new MultiblockMachineDefinition[GTValues.TIER_COUNT];
+        for (int tier : tiers) {
+            var register = REGISTRATE.multiblock(GTValues.VN[tier].toLowerCase(Locale.ROOT) + "_" + name, holder -> factory.apply(holder, tier))
                     .tier(tier);
-            definitions[i] = builder.apply(tier, register);
+            definitions[tier] = builder.apply(tier, register);
         }
         return definitions;
     }
@@ -1590,8 +1590,8 @@ public class GTMachines {
                         .where('X', blocks(casing.get()))
                         .where('G', blocks(gear.get()))
                         .where('C', blocks(casing.get()).setMinGlobalLimited(3)
-                                .or(autoAbilities(definition.getRecipeType(), false, false, true, true, true, true))
-                                .or(autoAbilities(true, true)))
+                                .or(autoAbilities(definition.getRecipeTypes(), false, false, true, true, true, true))
+                                .or(autoAbilities(true, true, false)))
                         .where('D', ability(PartAbility.OUTPUT_ENERGY, Stream.of(ULV, LV, MV, HV ,EV ,IV, LuV, ZPM, UV, UHV).filter(t -> t >= tier).mapToInt(Integer::intValue).toArray()).addTooltips(Component.translatable("gtceu.multiblock.pattern.error.limited.1", GTValues.VN[tier])))
                         .where('A', blocks(intake.get()).addTooltips(Component.translatable("gtceu.multiblock.pattern.clear_amount_1")))
                         .where('Y', controller(blocks(definition.getBlock())))
@@ -1629,8 +1629,8 @@ public class GTMachines {
                                 .setExactLimit(1)
                                 .or(abilities(PartAbility.OUTPUT_ENERGY)).setExactLimit(1))
                         .where('H', blocks(casing.get())
-                                .or(autoAbilities(definition.getRecipeType(), false, false, true, true, true, true))
-                                .or(autoAbilities(true, true)))
+                                .or(autoAbilities(definition.getRecipeTypes(), false, false, true, true, true, true))
+                                .or(autoAbilities(true, true, false)))
                         .build())
                 .recoveryItems(() -> new ItemLike[]{GTItems.MATERIAL_ITEMS.get(TagPrefix.dustTiny, GTMaterials.Ash).get()})
                 .workableCasingRenderer(casingTexture, overlayModel, false)
@@ -1705,6 +1705,7 @@ public class GTMachines {
     }
 
     public static void init() {
+        GCyMMachines.init();
         if (GTCEu.isCreateLoaded()) {
             GTCreateMachines.init();
         }
@@ -1712,7 +1713,7 @@ public class GTMachines {
             BEDROCK_ORE_MINER = registerTieredMultis("bedrock_ore_miner", BedrockOreMinerMachine::new, (tier, builder) -> builder
                             .rotationState(RotationState.NON_Y_AXIS)
                             .langValue("%s Bedrock Ore Miner %s".formatted(VLVH[tier], VLVT[tier]))
-                            .recipeType(new GTRecipeType(GTCEu.id("drilling_rig"), "dummy"))
+                            .recipeType(new GTRecipeType(GTCEu.id("bedrock_ore_miner"), "dummy"))
                             .tooltips(
                                     Component.translatable("gtceu.machine.bedrock_ore_miner.description"),
                                     Component.translatable("gtceu.machine.bedrock_ore_miner.depletion", FormattingUtil.formatNumbers(100.0 / BedrockOreMinerMachine.getDepletionChance(tier))),
@@ -1726,7 +1727,7 @@ public class GTMachines {
                                     .where('S', controller(blocks(definition.get())))
                                     .where('X', blocks(BedrockOreMinerMachine.getCasingState(tier)).setMinGlobalLimited(3)
                                             .or(abilities(PartAbility.INPUT_ENERGY).setMinGlobalLimited(1).setMaxGlobalLimited(3))
-                                            .or(abilities(PartAbility.EXPORT_FLUIDS).setMaxGlobalLimited(1)))
+                                            .or(abilities(PartAbility.EXPORT_ITEMS).setMaxGlobalLimited(1)))
                                     .where('C', blocks(BedrockOreMinerMachine.getCasingState(tier)))
                                     .where('F', blocks(BedrockOreMinerMachine.getFrameState(tier)))
                                     .where('#', any())

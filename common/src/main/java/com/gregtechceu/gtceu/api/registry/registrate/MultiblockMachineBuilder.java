@@ -145,8 +145,13 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
     }
 
     @Override
-    public MultiblockMachineBuilder recipeType(GTRecipeType recipeType) {
-        return (MultiblockMachineBuilder) super.recipeType(recipeType);
+    public MultiblockMachineBuilder recipeTypes(GTRecipeType... recipeTypes) {
+        return (MultiblockMachineBuilder) super.recipeTypes(recipeTypes);
+    }
+
+    @Override
+    public MultiblockMachineBuilder recipeType(GTRecipeType recipeTypes) {
+        return (MultiblockMachineBuilder) super.recipeType(recipeTypes);
     }
 
     @Override

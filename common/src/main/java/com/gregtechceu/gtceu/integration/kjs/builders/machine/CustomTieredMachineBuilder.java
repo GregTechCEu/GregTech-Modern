@@ -28,11 +28,10 @@ public class CustomTieredMachineBuilder extends SimpleMachineBuilder {
     private static CustomTieredMachineBuilder[] customTiered(String name,
                                                        BiFunction<IMachineBlockEntity, Integer, MetaMachine> machineConstructor,
                                                        Integer... tiers) {
-        CustomTieredMachineBuilder[] builders = new CustomTieredMachineBuilder[tiers.length];
-        for (int i = 0; i < tiers.length; i++) {
-            int tier = tiers[i];
+        CustomTieredMachineBuilder[] builders = new CustomTieredMachineBuilder[GTValues.TIER_COUNT];
+        for (int tier : tiers) {
             CustomTieredMachineBuilder register = new CustomTieredMachineBuilder(GTValues.VN[tier].toLowerCase(Locale.ROOT) + "_" + name, holder -> machineConstructor.apply(holder, tier)).tier(tier);
-            builders[i] = register;
+            builders[tier] = register;
         }
         return builders;
     }

@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.api.pattern;
 import com.gregtechceu.gtceu.api.block.ActiveBlock;
 import com.gregtechceu.gtceu.api.block.ICoilType;
 import com.gregtechceu.gtceu.api.block.IMachineBlock;
-import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
@@ -81,11 +80,11 @@ public class Predicates {
         return blocks((tiers.length == 0 ? ability.getAllBlocks() : ability.getBlocks(tiers)).toArray(Block[]::new));
     }
 
-    public static TraceabilityPredicate autoAbilities(GTRecipeType recipeType) {
+    public static TraceabilityPredicate autoAbilities(GTRecipeType... recipeType) {
         return autoAbilities(recipeType, true, true, true, true, true, true);
     }
 
-    public static TraceabilityPredicate autoAbilities(GTRecipeType recipeType,
+    public static TraceabilityPredicate autoAbilities(GTRecipeType[] recipeType,
                                                       boolean checkEnergyIn,
                                                       boolean checkEnergyOut,
                                                       boolean checkItemIn,
@@ -95,45 +94,66 @@ public class Predicates {
         TraceabilityPredicate predicate = new TraceabilityPredicate();
 
         if (checkEnergyIn) {
-            if (recipeType.getMaxInputs(EURecipeCapability.CAP) > 0) {
-                predicate = predicate.or(abilities(PartAbility.INPUT_ENERGY).setMaxGlobalLimited(3).setPreviewCount(1));
+            for (var type : recipeType) {
+                if (type.getMaxInputs(EURecipeCapability.CAP) > 0) {
+                    predicate = predicate.or(abilities(PartAbility.INPUT_ENERGY).setMaxGlobalLimited(3).setPreviewCount(1));
+                    break;
+                }
             }
         }
         if (checkEnergyOut) {
-            if (recipeType.getMaxOutputs(EURecipeCapability.CAP) > 0) {
-                predicate = predicate.or(abilities(PartAbility.OUTPUT_ENERGY).setMaxGlobalLimited(3).setPreviewCount(1));
+            for (var type : recipeType) {
+                if (type.getMaxOutputs(EURecipeCapability.CAP) > 0) {
+                    predicate = predicate.or(abilities(PartAbility.OUTPUT_ENERGY).setMaxGlobalLimited(3).setPreviewCount(1));
+                    break;
+                }
             }
         }
         if (checkItemIn) {
-            if (recipeType.getMaxInputs(ItemRecipeCapability.CAP) > 0) {
-                predicate = predicate.or(abilities(PartAbility.IMPORT_ITEMS).setPreviewCount(1));
+            for (var type : recipeType) {
+                if (type.getMaxInputs(ItemRecipeCapability.CAP) > 0) {
+                    predicate = predicate.or(abilities(PartAbility.IMPORT_ITEMS).setPreviewCount(1));
+                    break;
+                }
             }
         }
         if (checkItemOut) {
-            if (recipeType.getMaxOutputs(ItemRecipeCapability.CAP) > 0) {
-                predicate = predicate.or(abilities(PartAbility.EXPORT_ITEMS).setPreviewCount(1));
+            for (var type : recipeType) {
+                if (type.getMaxOutputs(ItemRecipeCapability.CAP) > 0) {
+                    predicate = predicate.or(abilities(PartAbility.EXPORT_ITEMS).setPreviewCount(1));
+                    break;
+                }
             }
         }
         if (checkFluidIn) {
-            if (recipeType.getMaxInputs(FluidRecipeCapability.CAP) > 0) {
-                predicate = predicate.or(abilities(PartAbility.IMPORT_FLUIDS).setPreviewCount(1));
+            for (var type : recipeType) {
+                if (type.getMaxInputs(FluidRecipeCapability.CAP) > 0) {
+                    predicate = predicate.or(abilities(PartAbility.IMPORT_FLUIDS).setPreviewCount(1));
+                    break;
+                }
             }
         }
         if (checkFluidOut) {
-            if (recipeType.getMaxOutputs(FluidRecipeCapability.CAP) > 0) {
-                predicate = predicate.or(abilities(PartAbility.EXPORT_FLUIDS).setPreviewCount(1));
+            for (var type : recipeType) {
+                if (type.getMaxOutputs(FluidRecipeCapability.CAP) > 0) {
+                    predicate = predicate.or(abilities(PartAbility.EXPORT_FLUIDS).setPreviewCount(1));
+                    break;
+                }
             }
         }
         return predicate;
     }
 
-    public static TraceabilityPredicate autoAbilities(boolean checkMaintenance, boolean checkMuffler) {
+    public static TraceabilityPredicate autoAbilities(boolean checkMaintenance, boolean checkMuffler, boolean checkParallel) {
         TraceabilityPredicate predicate = new TraceabilityPredicate();
         if (checkMaintenance) {
             predicate = predicate.or(abilities(PartAbility.MAINTENANCE).setMinGlobalLimited(ConfigHolder.INSTANCE.machines.enableMaintenance ? 1 : 0).setMaxGlobalLimited(1));
         }
         if (checkMuffler) {
             predicate = predicate.or(abilities(PartAbility.MUFFLER).setMinGlobalLimited(1).setMaxGlobalLimited(1));
+        }
+        if (checkParallel) {
+            predicate = predicate.or(abilities(PartAbility.PARALLEL_HATCH).setMaxGlobalLimited(1).setPreviewCount(1));
         }
         return predicate;
     }

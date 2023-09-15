@@ -339,7 +339,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine implemen
         }
 
         TraceabilityPredicate wallPredicate = states(getCasingState(), getGlassState());
-        TraceabilityPredicate basePredicate = Predicates.autoAbilities(true, false)
+        TraceabilityPredicate basePredicate = Predicates.autoAbilities(true, false, false)
                 .or(abilities(PartAbility.INPUT_ENERGY).setMinGlobalLimited(1).setMaxGlobalLimited(3));
 
         // layer the slices one behind the next

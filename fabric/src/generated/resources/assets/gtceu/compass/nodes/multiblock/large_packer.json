@@ -1,0 +1,15 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:large_packer"
+  },
+  "items": [
+    "gtceu:large_packer"
+  ],
+  "page": "gtceu:multiblock/large_packer",
+  "position": [
+    -50,
+    200
+  ],
+  "section": "gtceu:multiblock"
+}

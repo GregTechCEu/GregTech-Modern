@@ -43,7 +43,7 @@ public class GTCompassSections {
             .register();
 
     public final static CompassSection MACHINES = CompassSection.create("machines")
-            .icon(() -> new ItemStackTexture(GTMachines.CHEMICAL_REACTOR[0].asStack()))
+            .icon(() -> new ItemStackTexture(GTMachines.CHEMICAL_REACTOR[GTValues.LV].asStack()))
             .background(() -> GuiTextures.DISPLAY)
             .priority(priority++)
             .register();

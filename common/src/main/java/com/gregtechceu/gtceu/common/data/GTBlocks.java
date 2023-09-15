@@ -78,6 +78,7 @@ import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.FORCE_GENERATE_BLOCK;
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.GENERATE_FRAME;
 import static com.gregtechceu.gtceu.api.registry.GTRegistries.REGISTRATE;
+import static com.gregtechceu.gtceu.common.data.GCyMBlocks.*;
 import static com.gregtechceu.gtceu.common.data.GTModels.createModelBlockState;
 
 /**
@@ -294,6 +295,8 @@ public class GTBlocks {
     public static final BlockEntry<Block> CASING_PTFE_INERT = createCasingBlock("inert_machine_casing", GTCEu.id("block/casings/solid/machine_casing_inert_ptfe"));
     public static final BlockEntry<Block> CASING_HSSE_STURDY = createCasingBlock("sturdy_machine_casing", GTCEu.id("block/casings/solid/machine_casing_study_hsse"));
     public static final BlockEntry<Block> CASING_TEMPERED_GLASS = createGlassCasingBlock("tempered_glass", GTCEu.id("block/casings/transparent/tempered_glass"), () -> RenderType::translucent);
+
+
     public static final ImmutableMap<Material, BlockEntry<Block>> MATERIALS_TO_CASINGS;
 
     static {
@@ -307,6 +310,15 @@ public class GTBlocks {
         builder.put(GTMaterials.TungstenSteel, CASING_TUNGSTENSTEEL_ROBUST);
         builder.put(GTMaterials.Polytetrafluoroethylene, CASING_PTFE_INERT);
         builder.put(GTMaterials.HSSE, CASING_HSSE_STURDY);
+        //GCyM
+        builder.put(GTMaterials.HSLASteel, CASING_NONCONDUCTING);
+        builder.put(GTMaterials.IncoloyMA956, CASING_VIBRATION_SAFE);
+        builder.put(GTMaterials.WatertightSteel, CASING_WATERTIGHT);
+        builder.put(GTMaterials.Zeron100, CASING_SECURE_MACERATION);
+        builder.put(GTMaterials.TungstenCarbide, CASING_HIGH_TEMPERATURE_SMELTING);
+        builder.put(GTMaterials.TitaniumTungstenCarbide, CASING_LASER_SAFE_ENGRAVING);
+        builder.put(GTMaterials.Stellite100, CASING_LARGE_SCALE_ASSEMBLING);
+        builder.put(GTMaterials.HastelloyC276, CASING_SHOCK_PROOF);
 
         MaterialCasingCollectionEvent event = new MaterialCasingCollectionEvent(builder);
         AddonFinder.getAddons().forEach(addon -> addon.collectMaterialCasings(event));
@@ -373,25 +385,25 @@ public class GTBlocks {
     // Machine Casings
     public static final BlockEntry<Block> MACHINE_CASING_ULV = createMachineCasingBlock(ULV);
     public static final BlockEntry<Block> MACHINE_CASING_LV = createMachineCasingBlock(LV);
-    public static final BlockEntry<Block> MACHINE_CASING_MV = createMachineCasingBlock(GTValues.MV);
-    public static final BlockEntry<Block> MACHINE_CASING_HV = createMachineCasingBlock(GTValues.HV);
-    public static final BlockEntry<Block> MACHINE_CASING_EV = createMachineCasingBlock(GTValues.EV);
-    public static final BlockEntry<Block> MACHINE_CASING_IV = createMachineCasingBlock(GTValues.IV);
-    public static final BlockEntry<Block> MACHINE_CASING_LuV = createMachineCasingBlock(GTValues.LuV);
-    public static final BlockEntry<Block> MACHINE_CASING_ZPM = createMachineCasingBlock(GTValues.ZPM);
-    public static final BlockEntry<Block> MACHINE_CASING_UV = createMachineCasingBlock(GTValues.UV);
-    public static final BlockEntry<Block> MACHINE_CASING_UHV = createMachineCasingBlock(GTValues.UHV);
+    public static final BlockEntry<Block> MACHINE_CASING_MV = createMachineCasingBlock(MV);
+    public static final BlockEntry<Block> MACHINE_CASING_HV = createMachineCasingBlock(HV);
+    public static final BlockEntry<Block> MACHINE_CASING_EV = createMachineCasingBlock(EV);
+    public static final BlockEntry<Block> MACHINE_CASING_IV = createMachineCasingBlock(IV);
+    public static final BlockEntry<Block> MACHINE_CASING_LuV = createMachineCasingBlock(LuV);
+    public static final BlockEntry<Block> MACHINE_CASING_ZPM = createMachineCasingBlock(ZPM);
+    public static final BlockEntry<Block> MACHINE_CASING_UV = createMachineCasingBlock(UV);
+    public static final BlockEntry<Block> MACHINE_CASING_UHV = createMachineCasingBlock(UHV);
 
     // Hermetic Casings
     public static final BlockEntry<Block> HERMETIC_CASING_LV = createHermeticCasing(LV);
-    public static final BlockEntry<Block> HERMETIC_CASING_MV = createHermeticCasing(GTValues.MV);
-    public static final BlockEntry<Block> HERMETIC_CASING_HV = createHermeticCasing(GTValues.HV);
-    public static final BlockEntry<Block> HERMETIC_CASING_EV = createHermeticCasing(GTValues.EV);
-    public static final BlockEntry<Block> HERMETIC_CASING_IV = createHermeticCasing(GTValues.IV);
-    public static final BlockEntry<Block> HERMETIC_CASING_LuV = createHermeticCasing(GTValues.LuV);
-    public static final BlockEntry<Block> HERMETIC_CASING_ZPM = createHermeticCasing(GTValues.ZPM);
-    public static final BlockEntry<Block> HERMETIC_CASING_UV = createHermeticCasing(GTValues.UV);
-    public static final BlockEntry<Block> HERMETIC_CASING_UHV = createHermeticCasing(GTValues.UHV);
+    public static final BlockEntry<Block> HERMETIC_CASING_MV = createHermeticCasing(MV);
+    public static final BlockEntry<Block> HERMETIC_CASING_HV = createHermeticCasing(HV);
+    public static final BlockEntry<Block> HERMETIC_CASING_EV = createHermeticCasing(EV);
+    public static final BlockEntry<Block> HERMETIC_CASING_IV = createHermeticCasing(IV);
+    public static final BlockEntry<Block> HERMETIC_CASING_LuV = createHermeticCasing(LuV);
+    public static final BlockEntry<Block> HERMETIC_CASING_ZPM = createHermeticCasing(ZPM);
+    public static final BlockEntry<Block> HERMETIC_CASING_UV = createHermeticCasing(UV);
+    public static final BlockEntry<Block> HERMETIC_CASING_UHV = createHermeticCasing(UHV);
 
     public static final BlockEntry<Block> BRONZE_HULL = createSteamCasing("bronze_machine_casing", "bronze");
     public static final BlockEntry<Block> BRONZE_BRICKS_HULL = createSteamCasing("bronze_brick_casing", "bricked_bronze");
@@ -459,15 +471,15 @@ public class GTBlocks {
 
 
     // THIS IS JUST FOR PTFE PIPE CASING
-    private static BlockEntry<Block> createCasingBlock(String name, ResourceLocation texture) {
+    public static BlockEntry<Block> createCasingBlock(String name, ResourceLocation texture) {
         return createCasingBlock(name, RendererBlock::new, texture, () -> Blocks.IRON_BLOCK, () -> RenderType::cutoutMipped);
     }
 
     private static BlockEntry<Block> createGlassCasingBlock(String name, ResourceLocation texture, Supplier<Supplier<RenderType>> type) {
-        return createCasingBlock(name, RenderGlassBlock::new, texture, () -> Blocks.GLASS, type);
+        return createCasingBlock(name, RendererGlassBlock::new, texture, () -> Blocks.GLASS, type);
     }
 
-    private static BlockEntry<Block> createCasingBlock(String name, BiFunction<BlockBehaviour.Properties, IRenderer, ? extends RendererBlock> blockSupplier, ResourceLocation texture, NonNullSupplier<? extends Block> properties, Supplier<Supplier<RenderType>> type) {
+    public static BlockEntry<Block> createCasingBlock(String name, BiFunction<BlockBehaviour.Properties, IRenderer, ? extends RendererBlock> blockSupplier, ResourceLocation texture, NonNullSupplier<? extends Block> properties, Supplier<Supplier<RenderType>> type) {
         return REGISTRATE.block(name, p -> (Block) blockSupplier.apply(p,
                         Platform.isClient() ? new TextureOverrideRenderer(new ResourceLocation("block/cube_all"),
                         Map.of("all", texture)) : null))
@@ -738,6 +750,7 @@ public class GTBlocks {
         generateMaterialBlocks();
         generateCableBlocks();
         generatePipeBlocks();
+        GCyMBlocks.init();
     }
 
     public static boolean doMetalPipe(Material material) {
