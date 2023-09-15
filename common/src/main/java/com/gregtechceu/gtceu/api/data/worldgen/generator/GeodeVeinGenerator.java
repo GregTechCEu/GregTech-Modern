@@ -17,6 +17,7 @@ import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.core.SectionPos;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.ExtraCodecs;
@@ -31,6 +32,8 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.BuddingAmethystBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.chunk.BulkSectionAccess;
+import net.minecraft.world.level.chunk.LevelChunkSection;
 import net.minecraft.world.level.levelgen.GeodeCrackSettings;
 import net.minecraft.world.level.levelgen.GeodeLayerSettings;
 import net.minecraft.world.level.levelgen.LegacyRandomSource;
@@ -116,6 +119,8 @@ public class GeodeVeinGenerator extends VeinGenerator {
 
     @Override
     public boolean generate(WorldGenLevel level, RandomSource random, GTOreDefinition entry, BlockPos origin) {
+        BulkSectionAccess access = new BulkSectionAccess(level);
+
         BlockState blockState;
         int offset;
         int offset2;
@@ -137,7 +142,7 @@ public class GeodeVeinGenerator extends VeinGenerator {
         for (offset2 = 0; offset2 < distributionSample; ++offset2) {
             offset = this.outerWallDistance.sample(random);
             BlockPos origin2 = origin.offset(offset, this.outerWallDistance.sample(random), this.outerWallDistance.sample(random));
-            blockState = level.getBlockState(origin2);
+            blockState = access.getBlockState(origin2);
             if ((blockState.isAir() || blockState.is(BlockTags.GEODE_INVALID_BLOCKS)) && ++invalidBlocksCount > this.invalidBlocksThreshold) {
                 return false;
             }
@@ -177,8 +182,13 @@ public class GeodeVeinGenerator extends VeinGenerator {
                 t += Mth.fastInvSqrt(pos.distSqr(origin4) + (double)geodeCrackSettings.crackPointOffset) + noiseValue;
             }
             if (s < outerSize) continue;
+            if (!level.ensureCanWrite(pos))
+                continue;
+            LevelChunkSection section = access.getSection(pos);
+            if (section == null)
+                continue;
             if (doCrack && t >= crackSize && s < fillingSize) {
-                this.safeSetBlock(level, pos, Blocks.AIR.defaultBlockState(), placementPredicate);
+                this.safeSetBlock(access, section, pos, Blocks.AIR.defaultBlockState(), placementPredicate);
                 for (Direction direction : DIRECTIONS) {
                     BlockPos origin5 = pos.relative(direction);
                     FluidState fluidState = level.getFluidState(origin5);
@@ -188,26 +198,26 @@ public class GeodeVeinGenerator extends VeinGenerator {
                 continue;
             }
             if (s >= fillingSize) {
-                this.safeSetBlock(level, pos, getStateFromEither(geodeBlockSettings.fillingProvider, geodeBlockSettings, random, pos), placementPredicate);
+                this.safeSetBlock(access, section, pos, getStateFromEither(geodeBlockSettings.fillingProvider, geodeBlockSettings, random, pos), placementPredicate);
                 continue;
             }
             if (s >= innerSize) {
                 boolean useAltLayer = (double)random.nextFloat() < this.useAlternateLayer0Chance;
                 if (useAltLayer) {
-                    this.safeSetBlock(level, pos, getStateFromEither(geodeBlockSettings.alternateInnerLayerProvider, geodeBlockSettings, random, pos), placementPredicate);
+                    this.safeSetBlock(access, section, pos, getStateFromEither(geodeBlockSettings.alternateInnerLayerProvider, geodeBlockSettings, random, pos), placementPredicate);
                 } else {
-                    this.safeSetBlock(level, pos, getStateFromEither(geodeBlockSettings.innerLayerProvider, geodeBlockSettings, random, pos), placementPredicate);
+                    this.safeSetBlock(access, section, pos, getStateFromEither(geodeBlockSettings.innerLayerProvider, geodeBlockSettings, random, pos), placementPredicate);
                 }
                 if (this.placementsRequireLayer0Alternate && !useAltLayer || !((double)random.nextFloat() < this.usePotentialPlacementsChance)) continue;
                 positions.add(pos.immutable());
                 continue;
             }
             if (s >= middleSize) {
-                this.safeSetBlock(level, pos, getStateFromEither(geodeBlockSettings.middleLayerProvider, geodeBlockSettings, random, pos), placementPredicate);
+                this.safeSetBlock(access, section, pos, getStateFromEither(geodeBlockSettings.middleLayerProvider, geodeBlockSettings, random, pos), placementPredicate);
                 continue;
             }
             if (!(s >= outerSize)) continue;
-            this.safeSetBlock(level, pos, getStateFromEither(geodeBlockSettings.outerLayerProvider, geodeBlockSettings, random, pos), placementPredicate);
+            this.safeSetBlock(access, section, pos, getStateFromEither(geodeBlockSettings.outerLayerProvider, geodeBlockSettings, random, pos), placementPredicate);
         }
         List<BlockState> innerPlacements = geodeBlockSettings.innerPlacements;
         block5: for (BlockPos origin2 : positions) {
@@ -217,22 +227,32 @@ public class GeodeVeinGenerator extends VeinGenerator {
                     blockState = blockState.setValue(BlockStateProperties.FACING, direction2);
                 }
                 BlockPos origin6 = origin2.relative(direction2);
-                BlockState blockState2 = level.getBlockState(origin6);
+                BlockState blockState2 = access.getBlockState(origin6);
                 if (blockState.hasProperty(BlockStateProperties.WATERLOGGED)) {
                     blockState = blockState.setValue(BlockStateProperties.WATERLOGGED, blockState2.getFluidState().isSource());
                 }
                 if (!BuddingAmethystBlock.canClusterGrowAtState(blockState2)) continue;
-                this.safeSetBlock(level, origin6, blockState, placementPredicate);
+                if (!level.ensureCanWrite(origin6))
+                    continue;
+                LevelChunkSection section = access.getSection(origin6);
+                if (section == null)
+                    continue;
+                this.safeSetBlock(access, section, origin6, blockState, placementPredicate);
                 continue block5;
             }
         }
+
+        access.close();
         return true;
     }
 
 
-    protected void safeSetBlock(WorldGenLevel level, BlockPos pos, BlockState state, Predicate<BlockState> oldState) {
+    protected void safeSetBlock(BulkSectionAccess level, LevelChunkSection section, BlockPos pos, BlockState state, Predicate<BlockState> oldState) {
         if (oldState.test(level.getBlockState(pos))) {
-            level.setBlock(pos, state, 2);
+            int x = SectionPos.sectionRelative(pos.getX());
+            int y = SectionPos.sectionRelative(pos.getY());
+            int z = SectionPos.sectionRelative(pos.getZ());
+            section.setBlockState(x, y, z, state, false);
         }
     }
 
