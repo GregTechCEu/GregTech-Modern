@@ -17,6 +17,7 @@ import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
+import net.minecraft.core.SectionPos;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.ExtraCodecs;
@@ -244,7 +245,10 @@ public class GeodeVeinGenerator extends VeinGenerator {
 
     protected void safeSetBlock(BulkSectionAccess level, LevelChunkSection section, BlockPos pos, BlockState state, Predicate<BlockState> oldState) {
         if (oldState.test(level.getBlockState(pos))) {
-            section.setBlockState(pos.getX(), pos.getY(), pos.getZ(), state, false);
+            int x = SectionPos.sectionRelative(pos.getX());
+            int y = SectionPos.sectionRelative(pos.getY());
+            int z = SectionPos.sectionRelative(pos.getZ());
+            section.setBlockState(x, y, z, state, false);
         }
     }
 

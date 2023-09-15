@@ -13,6 +13,7 @@ import lombok.AllArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.SectionPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.WorldGenLevel;
@@ -110,6 +111,10 @@ public class DikeVeinGenerator extends VeinGenerator {
         BlockState current = level.getBlockState(pos);
         MutableBoolean returnValue = new MutableBoolean(false);
 
+        int x = SectionPos.sectionRelative(pos.getX());
+        int y = SectionPos.sectionRelative(pos.getY());
+        int z = SectionPos.sectionRelative(pos.getZ());
+
         if (pos.getY() >= blockDefinition.minY() && pos.getY() <= blockDefinition.maxY()) {
             blockDefinition.block.ifLeft(blockStates -> {
                 for (OreConfiguration.TargetBlockState targetState : blockStates) {
@@ -117,7 +122,7 @@ public class DikeVeinGenerator extends VeinGenerator {
                         continue;
                     if (targetState.state.isAir())
                         continue;
-                    section.setBlockState(pos.getX(), pos.getY(), pos.getZ(), targetState.state, false);
+                    section.setBlockState(x, y, z, targetState.state, false);
                     returnValue.setTrue();
                     break;
                 }
@@ -130,7 +135,7 @@ public class DikeVeinGenerator extends VeinGenerator {
                 Block toPlace = ChemicalHelper.getBlock(prefix, material);
                 if (toPlace == null || toPlace.defaultBlockState().isAir())
                     return;
-                section.setBlockState(pos.getX(), pos.getY(), pos.getZ(), toPlace.defaultBlockState(), false);
+                section.setBlockState(x, y, z, toPlace.defaultBlockState(), false);
                 returnValue.setTrue();
             });
         }

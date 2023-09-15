@@ -15,11 +15,11 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.SectionPos;
 import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.server.level.WorldGenRegion;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -197,7 +197,7 @@ public class VeinedVeinGenerator extends VeinGenerator {
                                 continue;
                             if (!GTOreFeature.canPlaceOre(current, level::getBlockState, random, entry, pos))
                                 continue;
-                            level.setBlock(pos, fillerBlock, 2);
+                            section.setBlockState(SectionPos.sectionRelative(pos.getX()), SectionPos.sectionRelative(pos.getY()), SectionPos.sectionRelative(pos.getZ()), fillerBlock, false);
                             if (level.getBlockState(pos) != current) placed = true;
                         }
                     }
@@ -216,13 +216,18 @@ public class VeinedVeinGenerator extends VeinGenerator {
 
     protected static boolean placeOre(Either<List<OreConfiguration.TargetBlockState>, Material> block, BlockState current, BulkSectionAccess level, LevelChunkSection section, RandomSource random, BlockPos.MutableBlockPos pos, GTOreDefinition entry) {
         MutableBoolean returnValue = new MutableBoolean(false);
+
+        int x = SectionPos.sectionRelative(pos.getX());
+        int y = SectionPos.sectionRelative(pos.getY());
+        int z = SectionPos.sectionRelative(pos.getZ());
+
         block.ifLeft(blockStates -> {
             for (OreConfiguration.TargetBlockState targetState : blockStates) {
                 if (!GTOreFeature.canPlaceOre(current, level::getBlockState, random, entry, targetState, pos))
                     continue;
                 if (targetState.state.isAir())
                     continue;
-                section.setBlockState(pos.getX(), pos.getY(), pos.getZ(), targetState.state, false);
+                section.setBlockState(x, y, z, targetState.state, false);
                 returnValue.setTrue();
                 break;
             }
@@ -235,7 +240,7 @@ public class VeinedVeinGenerator extends VeinGenerator {
             Block toPlace = ChemicalHelper.getBlock(prefix, material);
             if (toPlace == null || toPlace.defaultBlockState().isAir())
                 return;
-            section.setBlockState(pos.getX(), pos.getY(), pos.getZ(), toPlace.defaultBlockState(), false);
+            section.setBlockState(x, y, z, toPlace.defaultBlockState(), false);
             returnValue.setTrue();
         });
         return returnValue.isTrue();
