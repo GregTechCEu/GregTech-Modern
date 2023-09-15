@@ -1,8 +1,10 @@
 package com.gregtechceu.gtceu.core.forge;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.AlloyBlastProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.FluidProperty;
 import com.gregtechceu.gtceu.api.registry.registrate.forge.GTClientFluidTypeExtensions;
+import com.gregtechceu.gtceu.common.data.GTFluids;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 
 public class MixinHelpersImpl {

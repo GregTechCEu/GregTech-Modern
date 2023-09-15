@@ -744,9 +744,9 @@ public class FirstDegreeMaterials {
                 .buildAndRegister();
 
         Graphene = new Material.Builder("graphene")
-                .dust()
+                .dust().ingot()
                 .color(0x808080).iconSet(SHINY)
-                .flags(DISABLE_DECOMPOSITION)
+                .flags(DISABLE_DECOMPOSITION, GENERATE_FOIL)
                 .components(Carbon, 1)
                 .cableProperties(GTValues.V[5], 1, 1)
                 .buildAndRegister();
@@ -1071,7 +1071,7 @@ public class FirstDegreeMaterials {
         TungstenCarbide = new Material.Builder("tungsten_carbide")
                 .ingot(4).fluid()
                 .color(0x330066).iconSet(METALLIC)
-                .appendFlags(EXT2_METAL, GENERATE_FOIL, GENERATE_GEAR, DECOMPOSITION_BY_CENTRIFUGING)
+                .appendFlags(EXT2_METAL, GENERATE_FOIL, GENERATE_GEAR, GENERATE_SMALL_GEAR, GENERATE_FRAME, DECOMPOSITION_BY_CENTRIFUGING)
                 .components(Tungsten, 1, Carbon, 1)
                 .toolStats(ToolProperty.Builder.of(60.0F, 2.0F, 1024, 4)
                         .enchantability(21).build())

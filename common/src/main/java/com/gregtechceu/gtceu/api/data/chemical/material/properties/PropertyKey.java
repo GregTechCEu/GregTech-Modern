@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.data.chemical.material.properties;
 public class PropertyKey<T extends IMaterialProperty<T>> {
 
     public static final PropertyKey<BlastProperty> BLAST = new PropertyKey<>("blast", BlastProperty.class);
+    public static final PropertyKey<AlloyBlastProperty> ALLOY_BLAST = new PropertyKey<>("blast_alloy", AlloyBlastProperty.class);
     public static final PropertyKey<DustProperty> DUST = new PropertyKey<>("dust", DustProperty.class);
     public static final PropertyKey<FluidPipeProperties> FLUID_PIPE = new PropertyKey<>("fluid_pipe", FluidPipeProperties.class);
     public static final PropertyKey<FluidProperty> FLUID = new PropertyKey<>("fluid", FluidProperty.class);
@@ -16,6 +17,7 @@ public class PropertyKey<T extends IMaterialProperty<T>> {
     public static final PropertyKey<RotorProperty> ROTOR = new PropertyKey<>("rotor", RotorProperty.class);
     public static final PropertyKey<WireProperties> WIRE = new PropertyKey<>("wire", WireProperties.class);
     public static final PropertyKey<WoodProperty> WOOD = new PropertyKey<>("wood", WoodProperty.class);
+
 
     // Empty property used to allow property-less Materials without removing base type enforcement
     public static final PropertyKey<EmptyProperty> EMPTY = new PropertyKey<>("empty", EmptyProperty.class);

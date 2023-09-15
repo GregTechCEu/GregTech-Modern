@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.api.block.IFilterType;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.ICleanroomReceiver;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
-import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.common.machine.trait.CleanroomLogic;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
@@ -340,7 +339,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine implemen
         }
 
         TraceabilityPredicate wallPredicate = states(getCasingState(), getGlassState());
-        TraceabilityPredicate basePredicate = Predicates.autoAbilities(true, false)
+        TraceabilityPredicate basePredicate = Predicates.autoAbilities(true, false, false)
                 .or(abilities(PartAbility.INPUT_ENERGY).setMinGlobalLimited(1).setMaxGlobalLimited(3));
 
         // layer the slices one behind the next

@@ -1,0 +1,15 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:large_arc_smelter"
+  },
+  "items": [
+    "gtceu:large_arc_smelter"
+  ],
+  "page": "gtceu:iv/large_arc_smelter",
+  "position": [
+    -100,
+    100
+  ],
+  "section": "gtceu:iv"
+}

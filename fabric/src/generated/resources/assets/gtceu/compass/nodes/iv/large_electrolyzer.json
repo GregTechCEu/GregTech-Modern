@@ -1,0 +1,15 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:large_electrolyzer"
+  },
+  "items": [
+    "gtceu:large_electrolyzer"
+  ],
+  "page": "gtceu:iv/large_electrolyzer",
+  "position": [
+    -50,
+    50
+  ],
+  "section": "gtceu:iv"
+}

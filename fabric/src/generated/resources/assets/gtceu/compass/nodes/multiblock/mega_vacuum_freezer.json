@@ -1,0 +1,15 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:mega_vacuum_freezer"
+  },
+  "items": [
+    "gtceu:mega_vacuum_freezer"
+  ],
+  "page": "gtceu:multiblock/mega_vacuum_freezer",
+  "position": [
+    -350,
+    300
+  ],
+  "section": "gtceu:multiblock"
+}

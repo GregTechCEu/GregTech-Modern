@@ -1,0 +1,15 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:large_maceration_tower"
+  },
+  "items": [
+    "gtceu:large_maceration_tower"
+  ],
+  "page": "gtceu:multiblock/large_maceration_tower",
+  "position": [
+    -300,
+    200
+  ],
+  "section": "gtceu:multiblock"
+}

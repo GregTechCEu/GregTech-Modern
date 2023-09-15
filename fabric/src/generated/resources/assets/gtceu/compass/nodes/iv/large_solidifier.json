@@ -1,0 +1,15 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:large_solidifier"
+  },
+  "items": [
+    "gtceu:large_solidifier"
+  ],
+  "page": "gtceu:iv/large_solidifier",
+  "position": [
+    -150,
+    200
+  ],
+  "section": "gtceu:iv"
+}
