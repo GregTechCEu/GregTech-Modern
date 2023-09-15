@@ -14,7 +14,7 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.material.MaterialColor;
+import net.minecraft.world.level.material.MapColor;
 
 import java.util.Map;
 
@@ -46,7 +46,7 @@ public class GCyMBlocks {
                                     "side",  GTCEu.id("block/casings/slicing_blades/side"))) : null))
             .lang("Slicing Blades")
             .initialProperties(() -> Blocks.IRON_BLOCK)
-            .properties(p -> p.sound(SoundType.METAL).color(MaterialColor.METAL))
+            .properties(p -> p.sound(SoundType.METAL).mapColor(MapColor.METAL))
             .addLayer(() -> RenderType::cutoutMipped)
             .blockstate(NonNullBiConsumer.noop())
             .tag(GTToolType.WRENCH.harvestTag, BlockTags.MINEABLE_WITH_PICKAXE)

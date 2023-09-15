@@ -78,6 +78,7 @@ import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.FORCE_GENERATE_BLOCK;
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.GENERATE_FRAME;
 import static com.gregtechceu.gtceu.api.registry.GTRegistries.REGISTRATE;
+import static com.gregtechceu.gtceu.common.data.GCyMBlocks.*;
 import static com.gregtechceu.gtceu.common.data.GTModels.createModelBlockState;
 
 /**
