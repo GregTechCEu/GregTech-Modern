@@ -23,7 +23,7 @@ public class GCyMMaterials {
         HSLASteel = new Material.Builder("hsla_steel")
                 .ingot(3).fluid()
                 .color(0x686868).iconSet(METALLIC)
-                .appendFlags(STD_METAL, GENERATE_PLATE, GENERATE_ROD, GENERATE_FRAME)
+                .appendFlags(STD_METAL, GENERATE_PLATE, GENERATE_ROD, GENERATE_FRAME, GENERATE_SPRING)
                 .components(Invar, 2, Vanadium, 1, Titanium, 1, Molybdenum, 1)
                 .blastTemp(1711, GasTier.LOW, GTValues.VA[GTValues.HV], 1000)
                 .buildAndRegister();
