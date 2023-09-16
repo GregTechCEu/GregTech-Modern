@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.data.worldgen;
 
-import com.gregtechceu.gtceu.utils.vec3i.ChunkPos3iUtils;
+import com.gregtechceu.gtceu.utils.vec3i.Chunk3DPosUtils;
 import com.gregtechceu.gtceu.utils.vec3i.Vec3iRangeIterator;
 import com.gregtechceu.gtceu.utils.vec3i.Vec3iUtils;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -34,8 +34,8 @@ public class ChunkedPosIterator implements Iterator<ChunkedPosIterator.Pos> {
         this.max = max;
 
         this.chunkIterator = new Vec3iRangeIterator(
-                ChunkPos3iUtils.getChunkAtBlock(min),
-                ChunkPos3iUtils.getChunkAtBlock(max)
+                Chunk3DPosUtils.getChunkAtBlock(min),
+                Chunk3DPosUtils.getChunkAtBlock(max)
         );
     }
 
@@ -65,8 +65,8 @@ public class ChunkedPosIterator implements Iterator<ChunkedPosIterator.Pos> {
             access.close();
 
         final var chunk = chunkIterator.next();
-        final var minBlock = Vec3iUtils.max(ChunkPos3iUtils.getChunkMinBlock(chunk), min);
-        final var maxBlock = Vec3iUtils.min(ChunkPos3iUtils.getChunkMaxBlock(chunk), max);
+        final var minBlock = Vec3iUtils.max(Chunk3DPosUtils.getChunkMinBlock(chunk), min);
+        final var maxBlock = Vec3iUtils.min(Chunk3DPosUtils.getChunkMaxBlock(chunk), max);
 
         this.blocksIterator = new Vec3iRangeIterator(minBlock, maxBlock);
         this.access = new BulkSectionAccess(level);

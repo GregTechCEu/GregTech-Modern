@@ -8,7 +8,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class ChunkPos3iUtils {
+public class Chunk3DPosUtils {
     public static final int CHUNK_SIZE = 16;
     public static final int CHUNK_MAX = CHUNK_SIZE - 1;
 
