@@ -134,8 +134,8 @@ public class VeinedVeinGenerator extends VeinGenerator {
         int randOffsetY = random.nextInt(16);
         int randOffsetZ = random.nextInt(16);
 
-        var posMin = origin.offset(-1 * size, -1 * size, -1 * size);
-        var posMax = origin.offset(size, size, size);
+        var posMin = origin.offset(-size, -size, -size);
+        var posMax = origin.offset(+size, +size, +size);
         final var chunkedPosIterator = new ChunkedPosIterator(level, posMin, posMax);
 
         for (ChunkedPosIterator.Pos chunkedPos : chunkedPosIterator) {
