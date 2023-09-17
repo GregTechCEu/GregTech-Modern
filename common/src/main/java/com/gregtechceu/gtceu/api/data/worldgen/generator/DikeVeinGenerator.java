@@ -14,6 +14,7 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
+import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.WorldGenLevel;
@@ -71,6 +72,10 @@ public class DikeVeinGenerator extends VeinGenerator {
 
         float density = entry.getDensity();
         int size = entry.getClusterSize();
+
+        // Limit to a radius of 22 to avoid generating outside the allowed 3x3 chunk area for features
+        int radius = Math.min(Mth.ceil(size / 2f), 22);
+
         int xPos = chunkPos.getMinBlockX() + level.getRandom().nextInt(16);
         int zPos = chunkPos.getMinBlockZ() + level.getRandom().nextInt(16);
 
@@ -82,10 +87,10 @@ public class DikeVeinGenerator extends VeinGenerator {
         int blocksPlaced = 0;
 
         for (int dY = yBottom; dY <= yTop; dY++) {
-            for (int dX = -size; dX <= size; dX++) {
-                for (int dZ = -size; dZ <= size; dZ++) {
+            for (int dX = -radius; dX <= radius; dX++) {
+                for (int dZ = -radius; dZ <= radius; dZ++) {
                     float dist = (dX * dX) + (dZ * dZ);
-                    if (dist > size * 2) {
+                    if (dist > radius * 2) {
                         continue;
                     }
                     BlockPos pos = new BlockPos(basePos.getX() + dX, dY, basePos.getZ() + dZ);
