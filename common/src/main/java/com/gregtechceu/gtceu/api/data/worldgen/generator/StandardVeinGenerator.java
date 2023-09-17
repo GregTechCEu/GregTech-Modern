@@ -150,7 +150,7 @@ public class StandardVeinGenerator extends VeinGenerator {
                 if (y > level.getHeight(Heightmap.Types.OCEAN_FLOOR_WG, heightmapX, heightmapZ))
                     continue;
 
-                if (this.doPlaceNormal(level, random, entry, this.blocks, minX, maxX, minZ, maxZ, minY, maxY, x, y, z, width, height)) {
+                if (this.doPlaceNormal(level, random, entry, origin, this.blocks, minX, maxX, minZ, maxZ, minY, maxY, x, y, z, width, height)) {
                     return true;
                 }
             }
@@ -158,9 +158,10 @@ public class StandardVeinGenerator extends VeinGenerator {
         return false;
     }
 
-    protected boolean doPlaceNormal(WorldGenLevel level, RandomSource random, GTOreDefinition entry, Either<List<OreConfiguration.TargetBlockState>, Material> targets,
-                                    double pMinX, double pMaxX, double pMinZ, double pMaxZ, double pMinY, double pMaxY, int pX, int pY, int pZ,
-                                    int pWidth, int pHeight) {
+    protected boolean doPlaceNormal(WorldGenLevel level, RandomSource random, GTOreDefinition entry, BlockPos origin,
+                                    Either<List<OreConfiguration.TargetBlockState>, Material> targets,
+                                    double pMinX, double pMaxX, double pMinZ, double pMaxZ, double pMinY, double pMaxY,
+                                    int pX, int pY, int pZ, int pWidth, int pHeight) {
         MutableInt placedAmount = new MutableInt(1);
         BitSet placedBlocks = new BitSet(pWidth * pHeight * pWidth);
         BlockPos.MutableBlockPos posCursor = new BlockPos.MutableBlockPos();
@@ -215,7 +216,7 @@ public class StandardVeinGenerator extends VeinGenerator {
                 int shapeIdxOffset = centerOffset * 4;
 
                 generateShape(
-                        level, random, entry, targets, pX, pY, pZ, pWidth, pHeight,
+                        level, random, entry, origin, targets, pX, pY, pZ, pWidth, pHeight,
                         shape, shapeIdxOffset, placedBlocks, posCursor, access, density, placedAmount
                 );
             }
@@ -224,7 +225,7 @@ public class StandardVeinGenerator extends VeinGenerator {
         return placedAmount.getValue() > 0;
     }
 
-    private static void generateShape(WorldGenLevel level, RandomSource random, GTOreDefinition entry,
+    private static void generateShape(WorldGenLevel level, RandomSource random, GTOreDefinition entry, BlockPos origin,
                                       Either<List<OreConfiguration.TargetBlockState>, Material> targets,
                                       int pX, int pY, int pZ, int pWidth, int pHeight, double[] shape, int shapeIdxOffset,
                                       BitSet placedBlocks, BlockPos.MutableBlockPos posCursor, BulkSectionAccess access,
@@ -244,6 +245,12 @@ public class StandardVeinGenerator extends VeinGenerator {
         int maxY = Math.max(Mth.floor(y + randomShapeOffset), minY);
         int maxZ = Math.max(Mth.floor(z + randomShapeOffset), minZ);
 
+        // Guard against generating outside the allowed 3x3 chunk area for features:
+        int minXBounds = origin.getX() - 22;
+        int maxXBounds = origin.getX() + 22;
+        int minZBounds = origin.getX() - 22;
+        int maxZBounds = origin.getX() + 22;
+
         for (int posX = minX; posX <= maxX; ++posX) {
             double radX = ((double) posX + 0.5D - x) / randomShapeOffset;
             if (!((radX * radX) < 1.0D))
@@ -261,6 +268,9 @@ public class StandardVeinGenerator extends VeinGenerator {
 
                     int isPlaced = posX - pX + (posY - pY) * pWidth + (posZ - pZ) * pWidth * pHeight;
                     if (placedBlocks.get(isPlaced))
+                        continue;
+
+                    if (posX < minXBounds || posX > maxXBounds || posZ < minZBounds || posZ > maxZBounds)
                         continue;
 
                     placedBlocks.set(isPlaced);
