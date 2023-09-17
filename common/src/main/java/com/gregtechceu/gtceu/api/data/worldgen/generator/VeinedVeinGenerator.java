@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.api.data.worldgen.generator;
 
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.data.worldgen.ChunkedPosIterator;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreFeature;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
@@ -115,6 +114,7 @@ public class VeinedVeinGenerator extends VeinGenerator {
         List<? extends Map.Entry<Integer, VeinBlockDefinition>> commonEntries = oreBlocks.stream().map(b -> Map.entry(b.weight, b)).toList();
         List<? extends Map.Entry<Integer, VeinBlockDefinition>> rareEntries = rareBlocks == null ? null : rareBlocks.stream().map(b -> Map.entry(b.weight, b)).toList(); // never accessed if rareBlocks is null
 
+        BulkSectionAccess access = new BulkSectionAccess(level);
         RandomState randomState = level.getLevel().getChunkSource().randomState();
         Blender blender;
         if (level instanceof WorldGenRegion region) {
@@ -128,21 +128,22 @@ public class VeinedVeinGenerator extends VeinGenerator {
         DensityFunction veinRidged = mapToNoise(densityFunctions.get(GTFeatures.NEW_ORE_VEIN_RIDGED), randomState);
 
         int size = entry.getClusterSize();
-        int placedCount = 0;
+
+        // TODO replace this hotfix with generating veins per chunk, to avoid deadlocks for generation larger than 3x3:
+        // origin is always centered, limit radius to 1.5 chunks (-1 block because no perfect center block exists)
+        int radius = Math.min(Mth.ceil(size / 2f), 23);        int placedCount = 0;
 
         int randOffsetX = random.nextInt(16);
         int randOffsetY = random.nextInt(16);
         int randOffsetZ = random.nextInt(16);
 
-        var posMin = origin.offset(-size, -size, -size);
-        var posMax = origin.offset(+size, +size, +size);
-        final var chunkedPosIterator = new ChunkedPosIterator(level, posMin, posMax);
+        var posMin = origin.offset(-radius, -radius, -radius);
+        var posMax = origin.offset(+radius, +radius, +radius);
 
-        for (ChunkedPosIterator.Pos chunkedPos : chunkedPosIterator) {
-            final BulkSectionAccess access = chunkedPos.access();
-            final int x = chunkedPos.pos().getX();
-            final int y = chunkedPos.pos().getY();
-            final int z = chunkedPos.pos().getZ();
+        for (BlockPos chunkedPos : BlockPos.betweenClosed(posMin, posMax)) {
+            final int x = chunkedPos.getX();
+            final int y = chunkedPos.getY();
+            final int z = chunkedPos.getZ();
 
             DensityFunction.FunctionContext functionContext = new DensityFunction.FunctionContext() {
                 @Override
@@ -220,6 +221,7 @@ public class VeinedVeinGenerator extends VeinGenerator {
             }
         }
 
+        access.close();
         return placedCount > 0;
     }
 
