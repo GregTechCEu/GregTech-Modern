@@ -55,4 +55,8 @@ public class GTCEu {
     public static boolean isRebornEnergyLoaded() {
         return Platform.isForge() || LDLib.isModLoaded(GTValues.MODID_REBORN_ENERGY);
     }
+
+    public static boolean isAlmostUnifiedLoaded() {
+        return LDLib.isModLoaded(GTValues.MODID_ALMOSTUNIFIED);
+    }
 }

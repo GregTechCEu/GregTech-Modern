@@ -89,7 +89,8 @@ public class GTValues {
             MODID_KUBEJS = "kubejs",
             MODID_IRIS = "iris",
             MODID_CREATE = "create",
-            MODID_REBORN_ENERGY = "team_reborn_energy";
+            MODID_REBORN_ENERGY = "team_reborn_energy",
+            MODID_ALMOSTUNIFIED = "almostunified";
 
     /**
      * Spray painting compat modids

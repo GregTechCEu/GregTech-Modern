@@ -77,13 +77,17 @@ dependencies {
     // Jade
     modCompileOnly fabric.jade
 
+    // AE2
+    modImplementation(fabric.ae2) { transitive = false }
+
+    //AlmostUnified
+    modImplementation(fabric.almostUnified.common)
+
     // KJS
     modCompileOnly fabric.kubejs
 
     // Configuration
     modCompileOnly fabric.configuration
-
-    modCompileOnly fabric.ae2
 }
 
 publishing {
