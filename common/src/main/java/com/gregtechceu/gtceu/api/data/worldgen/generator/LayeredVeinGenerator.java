@@ -109,7 +109,7 @@ public class LayeredVeinGenerator extends VeinGenerator {
                         continue;
 
                     for (int zOffset = 0; zOffset < length; zOffset++) {
-                        float sizeFractionZ = zOffset * 2f / height - 1;
+                        float sizeFractionZ = zOffset * 2f / length - 1;
 
                         int layerIndex = layerCoordinate == 0 ? zOffset : layerCoordinate == 1 ? xOffset : yOffset;
                         if (slantyCoordinate != layerCoordinate)
