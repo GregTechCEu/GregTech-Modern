@@ -131,7 +131,9 @@ public class VeinedVeinGenerator extends VeinGenerator {
 
         // TODO replace this hotfix with generating veins per chunk, to avoid deadlocks for generation larger than 3x3:
         // origin is always centered, limit radius to 1.5 chunks (-1 block because no perfect center block exists)
-        int radius = Math.min(Mth.ceil(size / 2f), 23);        int placedCount = 0;
+        int radius = Math.min(Mth.ceil(size / 2f), 23);
+
+        int placedCount = 0;
 
         int randOffsetX = random.nextInt(16);
         int randOffsetY = random.nextInt(16);
