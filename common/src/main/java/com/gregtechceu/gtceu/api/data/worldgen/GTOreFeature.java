@@ -36,7 +36,7 @@ public class GTOreFeature extends Feature<GTOreFeatureConfiguration> {
     @Override
     public boolean place(FeaturePlaceContext<GTOreFeatureConfiguration> context) {
         RandomSource random = context.random();
-        BlockPos origin = context.origin();
+        BlockPos origin = new ChunkPos(context.origin()).getMiddleBlockPosition(context.origin().getY());
         WorldGenLevel level = context.level();
         Holder<Biome> biome = context.level().getBiome(origin);
 

@@ -38,9 +38,11 @@ public class StandardVeinGenerator extends VeinGenerator {
             BuiltInRegistries.BLOCK.byNameCodec().fieldOf("deep_block").forGetter(ext -> ext.deepBlock.get()),
             BuiltInRegistries.BLOCK.byNameCodec().fieldOf("nether_block").forGetter(ext -> ext.netherBlock.get())
     ).apply(instance, StandardVeinGenerator::new));
+
     public static final Codec<StandardVeinGenerator> CODEC_LIST = RecordCodecBuilder.create(instance -> instance.group(
             Codec.either(OreConfiguration.TargetBlockState.CODEC.listOf(), GTRegistries.MATERIALS.codec()).fieldOf("targets").forGetter(ext -> ext.blocks)
     ).apply(instance, StandardVeinGenerator::new));
+
     public static final Codec<StandardVeinGenerator> CODEC = Codec.either(CODEC_SEPARATE, CODEC_LIST).xmap(either -> either.map(Function.identity(), Function.identity()), Either::left);
 
     public NonNullSupplier<? extends Block> block;
@@ -81,8 +83,19 @@ public class StandardVeinGenerator extends VeinGenerator {
 
     @Override
     public List<Map.Entry<Either<BlockState, Material>, Integer>> getAllEntries() {
-        if (this.blocks != null) return this.blocks.map(blockStates -> blockStates.stream().map(state -> Either.<BlockState, Material>left(state.state)).map(entry -> Map.entry(entry, 1)).collect(Collectors.toList()), material -> List.of(Map.entry(Either.right(material), 1)));
-        return List.of(Map.entry(Either.left(block.get().defaultBlockState()), 1), Map.entry(Either.left(deepBlock.get().defaultBlockState()), 1), Map.entry(Either.left(netherBlock.get().defaultBlockState()), 1));
+        if (this.blocks != null) {
+            return this.blocks.map(blockStates -> blockStates.stream()
+                    .map(state -> Either.<BlockState, Material>left(state.state))
+                    .map(entry -> Map.entry(entry, 1))
+                    .collect(Collectors.toList()), material -> List.of(Map.entry(Either.right(material), 1))
+            );
+        } else {
+            return List.of(
+                    Map.entry(Either.left(block.get().defaultBlockState()), 1),
+                    Map.entry(Either.left(deepBlock.get().defaultBlockState()), 1),
+                    Map.entry(Either.left(netherBlock.get().defaultBlockState()), 1)
+            );
+        }
     }
 
     public VeinGenerator build() {
@@ -117,36 +130,38 @@ public class StandardVeinGenerator extends VeinGenerator {
 
     @Override
     public boolean generate(WorldGenLevel level, RandomSource random, GTOreDefinition entry, BlockPos origin) {
-        float f = random.nextFloat() * (float)Math.PI;
-        float f1 = (float)entry.getClusterSize() / 8.0F;
-        int i = Mth.ceil(((float)entry.getClusterSize() / 16.0F * 2.0F + 1.0F) / 2.0F);
-        double d0 = origin.getX() + Math.sin(f) * f1;
-        double d1 = origin.getX() - Math.sin(f) * f1;
-        double d2 = origin.getZ() + Math.cos(f) * f1;
-        double d3 = origin.getZ() - Math.cos(f) * f1;
-        double d4 = origin.getY() + random.nextInt(3) - 2;
-        double d5 = origin.getY() + random.nextInt(3) - 2;
-        int k = origin.getX() - Mth.ceil(f1) - i;
-        int l = origin.getY() - 2 - i;
-        int i1 = origin.getZ() - Mth.ceil(f1) - i;
-        int j1 = 2 * (Mth.ceil(f1) + i);
-        int k1 = 2 * (2 + i);
+        float f = random.nextFloat() * (float) Math.PI;
+        float f1 = (float) entry.getClusterSize() / 8.0F;
+        int i = Mth.ceil(((float) entry.getClusterSize() / 16.0F * 2.0F + 1.0F) / 2.0F);
+        double minX = origin.getX() + Math.sin(f) * f1;
+        double maxX = origin.getX() - Math.sin(f) * f1;
+        double minZ = origin.getZ() + Math.cos(f) * f1;
+        double maxZ = origin.getZ() - Math.cos(f) * f1;
+        double minY = origin.getY() + random.nextInt(3) - 2;
+        double maxY = origin.getY() + random.nextInt(3) - 2;
+        int x = origin.getX() - Mth.ceil(f1) - i;
+        int y = origin.getY() - 2 - i;
+        int z = origin.getZ() - Mth.ceil(f1) - i;
+        int width = 2 * (Mth.ceil(f1) + i);
+        int height = 2 * (2 + i);
 
-        for(int l1 = k; l1 <= k + j1; ++l1) {
-            for(int i2 = i1; i2 <= i1 + j1; ++i2) {
-                if (l <= level.getHeight(Heightmap.Types.OCEAN_FLOOR_WG, l1, i2)) {
-                    if (this.doPlaceNormal(level, random, entry, this.blocks, d0, d1, d2, d3, d4, d5, k, l, i1, j1, k1)) {
-                        return true;
-                    }
+        for (int heightmapX = x; heightmapX <= x + width; ++heightmapX) {
+            for (int heightmapZ = z; heightmapZ <= z + width; ++heightmapZ) {
+                if (y > level.getHeight(Heightmap.Types.OCEAN_FLOOR_WG, heightmapX, heightmapZ))
+                    continue;
+
+                if (this.doPlaceNormal(level, random, entry, origin, this.blocks, minX, maxX, minZ, maxZ, minY, maxY, x, y, z, width, height)) {
+                    return true;
                 }
             }
         }
         return false;
     }
 
-    protected boolean doPlaceNormal(WorldGenLevel level, RandomSource random, GTOreDefinition entry, Either<List<OreConfiguration.TargetBlockState>, Material> targets,
-                                    double pMinX, double pMaxX, double pMinZ, double pMaxZ, double pMinY, double pMaxY, int pX, int pY, int pZ,
-                                    int pWidth, int pHeight) {
+    protected boolean doPlaceNormal(WorldGenLevel level, RandomSource random, GTOreDefinition entry, BlockPos origin,
+                                    Either<List<OreConfiguration.TargetBlockState>, Material> targets,
+                                    double pMinX, double pMaxX, double pMinZ, double pMaxZ, double pMinY, double pMaxY,
+                                    int pX, int pY, int pZ, int pWidth, int pHeight) {
         MutableInt placedAmount = new MutableInt(1);
         BitSet placedBlocks = new BitSet(pWidth * pHeight * pWidth);
         BlockPos.MutableBlockPos posCursor = new BlockPos.MutableBlockPos();
@@ -154,121 +169,157 @@ public class StandardVeinGenerator extends VeinGenerator {
         float density = entry.getDensity();
         double[] shape = new double[size * 4];
 
-        for(int k = 0; k < size; ++k) {
-            float f = (float)k / (float)size;
-            double d0 = Mth.lerp(f, pMinX, pMaxX);
-            double d1 = Mth.lerp(f, pMinY, pMaxY);
-            double d2 = Mth.lerp(f, pMinZ, pMaxZ);
-            double d3 = random.nextDouble() * (double)size / 16.0D;
-            double d4 = ((double)(Mth.sin((float)Math.PI * f) + 1.0F) * d3 + 1.0D) / 2.0D;
-            shape[k * 4] = d0;
-            shape[k * 4 + 1] = d1;
-            shape[k * 4 + 2] = d2;
-            shape[k * 4 + 3] = d4;
+        for (int centerOffset = 0; centerOffset < size; ++centerOffset) {
+            float centerOffsetFraction = (float) centerOffset / (float) size;
+            double x = Mth.lerp(centerOffsetFraction, pMinX, pMaxX);
+            double y = Mth.lerp(centerOffsetFraction, pMinY, pMaxY);
+            double z = Mth.lerp(centerOffsetFraction, pMinZ, pMaxZ);
+
+            double randomOffsetModifier = random.nextDouble() * (double) size / 16.0D;
+            double randomShapeOffset = ((double) (Mth.sin((float) Math.PI * centerOffsetFraction) + 1.0F) * randomOffsetModifier + 1.0D) / 2.0D;
+
+            int shapeIdxOffset = centerOffset * 4;
+            shape[shapeIdxOffset] = x;
+            shape[shapeIdxOffset + 1] = y;
+            shape[shapeIdxOffset + 2] = z;
+            shape[shapeIdxOffset + 3] = randomShapeOffset;
         }
 
-        for(int l3 = 0; l3 < size - 1; ++l3) {
-            if (!(shape[l3 * 4 + 3] <= 0.0D)) {
-                for(int i4 = l3 + 1; i4 < size; ++i4) {
-                    if (!(shape[i4 * 4 + 3] <= 0.0D)) {
-                        double d8 = shape[l3 * 4] - shape[i4 * 4];
-                        double d10 = shape[l3 * 4 + 1] - shape[i4 * 4 + 1];
-                        double d12 = shape[l3 * 4 + 2] - shape[i4 * 4 + 2];
-                        double d14 = shape[l3 * 4 + 3] - shape[i4 * 4 + 3];
-                        if (d14 * d14 > d8 * d8 + d10 * d10 + d12 * d12) {
-                            if (d14 > 0.0D) {
-                                shape[i4 * 4 + 3] = -1.0D;
-                            } else {
-                                shape[l3 * 4 + 3] = -1.0D;
-                            }
-                        }
-                    }
+        for (int centerOffset = 0; centerOffset < size - 1; ++centerOffset) {
+            int shapeIdxOffset1 = centerOffset * 4;
+            if (shape[shapeIdxOffset1 + 3] <= 0.0D)
+                continue;
+
+            for (int i4 = centerOffset + 1; i4 < size; ++i4) {
+                int shapeIdxOffset2 = i4 * 4;
+                if (shape[shapeIdxOffset2 + 3] <= 0.0D)
+                    continue;
+
+                double x = shape[shapeIdxOffset1] - shape[shapeIdxOffset2];
+                double y = shape[shapeIdxOffset1 + 1] - shape[shapeIdxOffset2 + 1];
+                double z = shape[shapeIdxOffset1 + 2] - shape[shapeIdxOffset2 + 2];
+                double randomShapeOffset = shape[shapeIdxOffset1 + 3] - shape[shapeIdxOffset2 + 3];
+
+                if (!(randomShapeOffset * randomShapeOffset > (x * x) + (y * y) + (z * z)))
+                    continue;
+
+                if (randomShapeOffset > 0.0D) {
+                    shape[shapeIdxOffset2 + 3] = -1.0D;
+                } else {
+                    shape[shapeIdxOffset1 + 3] = -1.0D;
                 }
             }
         }
 
-        BulkSectionAccess access = new BulkSectionAccess(level);
+        try (BulkSectionAccess access = new BulkSectionAccess(level)) {
+            for (int centerOffset = 0; centerOffset < size; ++centerOffset) {
+                int shapeIdxOffset = centerOffset * 4;
 
-        try {
-            for(int j4 = 0; j4 < size; ++j4) {
-                double d9 = shape[j4 * 4 + 3];
-                if (!(d9 < 0.0D)) {
-                    double x = shape[j4 * 4];
-                    double y = shape[j4 * 4 + 1];
-                    double z = shape[j4 * 4 + 2];
-                    int k4 = Math.max(Mth.floor(x - d9), pX);
-                    int l = Math.max(Mth.floor(y - d9), pY);
-                    int i1 = Math.max(Mth.floor(z - d9), pZ);
-                    int j1 = Math.max(Mth.floor(x + d9), k4);
-                    int k1 = Math.max(Mth.floor(y + d9), l);
-                    int l1 = Math.max(Mth.floor(z + d9), i1);
-
-                    for(int posX = k4; posX <= j1; ++posX) {
-                        double radX = ((double)posX + 0.5D - x) / d9;
-                        if (radX * radX < 1.0D) {
-                            for(int posY = l; posY <= k1; ++posY) {
-                                double radY = ((double)posY + 0.5D - y) / d9;
-                                if (radX * radX + radY * radY < 1.0D) {
-                                    for(int posZ = i1; posZ <= l1; ++posZ) {
-                                        double radZ = ((double)posZ + 0.5D - z) / d9;
-                                        if (radX * radX + radY * radY + radZ * radZ < 1.0D && !level.isOutsideBuildHeight(posY)) {
-                                            int isPlaced = posX - pX + (posY - pY) * pWidth + (posZ - pZ) * pWidth * pHeight;
-                                            if (!placedBlocks.get(isPlaced)) {
-                                                placedBlocks.set(isPlaced);
-                                                posCursor.set(posX, posY, posZ);
-                                                if (level.ensureCanWrite(posCursor)) {
-                                                    LevelChunkSection levelchunksection = access.getSection(posCursor);
-                                                    if (levelchunksection != null) {
-                                                        int i3 = SectionPos.sectionRelative(posX);
-                                                        int j3 = SectionPos.sectionRelative(posY);
-                                                        int k3 = SectionPos.sectionRelative(posZ);
-                                                        BlockState blockstate = levelchunksection.getBlockState(i3, j3, k3);
-
-                                                        if (random.nextFloat() <= density) {
-                                                            targets.ifLeft(blockStates -> {
-                                                                for(OreConfiguration.TargetBlockState targetState : blockStates) {
-                                                                    if (GTOreFeature.canPlaceOre(blockstate, access::getBlockState, random, entry, targetState, posCursor)) {
-                                                                        levelchunksection.setBlockState(i3, j3, k3, targetState.state, false);
-                                                                        placedAmount.increment();
-                                                                        break;
-                                                                    }
-                                                                }
-                                                            }).ifRight(material -> {
-                                                                if (!GTOreFeature.canPlaceOre(blockstate, access::getBlockState, random, entry, posCursor))
-                                                                    return;
-                                                                BlockState currentState = access.getBlockState(posCursor);
-                                                                var prefix = ChemicalHelper.ORES_INVERSE.get(currentState);
-                                                                if (prefix == null) return;
-                                                                Block toPlace = ChemicalHelper.getBlock(prefix, material);
-                                                                if (toPlace == null || toPlace.defaultBlockState().isAir())
-                                                                    return;
-                                                                levelchunksection.setBlockState(i3, j3, k3, toPlace.defaultBlockState(), false);
-                                                                placedAmount.increment();
-                                                            });
-                                                        }
-
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
+                generateShape(
+                        level, random, entry, origin, targets, pX, pY, pZ, pWidth, pHeight,
+                        shape, shapeIdxOffset, placedBlocks, posCursor, access, density, placedAmount
+                );
             }
-        } catch (Throwable throwable1) {
-            try {
-                access.close();
-            } catch (Throwable throwable) {
-                throwable1.addSuppressed(throwable);
-            }
-
-            throw throwable1;
         }
 
-        access.close();
         return placedAmount.getValue() > 0;
+    }
+
+    private static void generateShape(WorldGenLevel level, RandomSource random, GTOreDefinition entry, BlockPos origin,
+                                      Either<List<OreConfiguration.TargetBlockState>, Material> targets,
+                                      int pX, int pY, int pZ, int pWidth, int pHeight, double[] shape, int shapeIdxOffset,
+                                      BitSet placedBlocks, BlockPos.MutableBlockPos posCursor, BulkSectionAccess access,
+                                      float density, MutableInt placedAmount) {
+        double randomShapeOffset = shape[shapeIdxOffset + 3];
+        if (randomShapeOffset < 0.0D)
+            return;
+
+        double x = shape[shapeIdxOffset];
+        double y = shape[shapeIdxOffset + 1];
+        double z = shape[shapeIdxOffset + 2];
+
+        int minX = Math.max(Mth.floor(x - randomShapeOffset), pX);
+        int minY = Math.max(Mth.floor(y - randomShapeOffset), pY);
+        int minZ = Math.max(Mth.floor(z - randomShapeOffset), pZ);
+        int maxX = Math.max(Mth.floor(x + randomShapeOffset), minX);
+        int maxY = Math.max(Mth.floor(y + randomShapeOffset), minY);
+        int maxZ = Math.max(Mth.floor(z + randomShapeOffset), minZ);
+
+        // Guard against generating outside the allowed 3x3 chunk area for features:
+        int minXBounds = origin.getX() - 22;
+        int maxXBounds = origin.getX() + 22;
+        int minZBounds = origin.getZ() - 22;
+        int maxZBounds = origin.getZ() + 22;
+
+        for (int posX = minX; posX <= maxX; ++posX) {
+            double radX = ((double) posX + 0.5D - x) / randomShapeOffset;
+            if (!((radX * radX) < 1.0D))
+                continue;
+
+            for (int posY = minY; posY <= maxY; ++posY) {
+                double radY = ((double) posY + 0.5D - y) / randomShapeOffset;
+                if (!((radX * radX) + (radY * radY) < 1.0D))
+                    continue;
+
+                for (int posZ = minZ; posZ <= maxZ; ++posZ) {
+                    double radZ = ((double) posZ + 0.5D - z) / randomShapeOffset;
+                    if (!((radX * radX) + (radY * radY) + (radZ * radZ) < 1.0D) || level.isOutsideBuildHeight(posY))
+                        continue;
+
+                    int isPlaced = posX - pX + (posY - pY) * pWidth + (posZ - pZ) * pWidth * pHeight;
+                    if (placedBlocks.get(isPlaced))
+                        continue;
+
+                    if (posX < minXBounds || posX > maxXBounds || posZ < minZBounds || posZ > maxZBounds)
+                        continue;
+
+                    placedBlocks.set(isPlaced);
+                    placeBlock(level, random, entry, targets, posCursor, access, density, placedAmount, posX, posY, posZ);
+
+                }
+            }
+        }
+    }
+
+    private static void placeBlock(WorldGenLevel level, RandomSource random, GTOreDefinition entry,
+                                   Either<List<OreConfiguration.TargetBlockState>, Material> targets,
+                                   BlockPos.MutableBlockPos posCursor, BulkSectionAccess access,
+                                   float density, MutableInt placedAmount, int posX, int posY, int posZ) {
+        posCursor.set(posX, posY, posZ);
+        if (!level.ensureCanWrite(posCursor))
+            return;
+
+        LevelChunkSection levelchunksection = access.getSection(posCursor);
+        if (levelchunksection == null)
+            return;
+
+        int sectionX = SectionPos.sectionRelative(posX);
+        int sectionY = SectionPos.sectionRelative(posY);
+        int sectionZ = SectionPos.sectionRelative(posZ);
+        BlockState blockstate = levelchunksection.getBlockState(sectionX, sectionY, sectionZ);
+
+        if (!(random.nextFloat() <= density))
+            return;
+
+        targets.ifLeft(blockStates -> {
+            for (OreConfiguration.TargetBlockState targetState : blockStates) {
+                if (GTOreFeature.canPlaceOre(blockstate, access::getBlockState, random, entry, targetState, posCursor)) {
+                    levelchunksection.setBlockState(sectionX, sectionY, sectionZ, targetState.state, false);
+                    placedAmount.increment();
+                    break;
+                }
+            }
+        }).ifRight(material -> {
+            if (!GTOreFeature.canPlaceOre(blockstate, access::getBlockState, random, entry, posCursor))
+                return;
+            BlockState currentState = access.getBlockState(posCursor);
+            var prefix = ChemicalHelper.ORES_INVERSE.get(currentState);
+            if (prefix == null) return;
+            Block toPlace = ChemicalHelper.getBlock(prefix, material);
+            if (toPlace == null || toPlace.defaultBlockState().isAir())
+                return;
+            levelchunksection.setBlockState(sectionX, sectionY, sectionZ, toPlace.defaultBlockState(), false);
+            placedAmount.increment();
+        });
     }
 }
