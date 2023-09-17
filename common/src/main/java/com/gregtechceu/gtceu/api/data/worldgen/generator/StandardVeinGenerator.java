@@ -38,9 +38,11 @@ public class StandardVeinGenerator extends VeinGenerator {
             BuiltInRegistries.BLOCK.byNameCodec().fieldOf("deep_block").forGetter(ext -> ext.deepBlock.get()),
             BuiltInRegistries.BLOCK.byNameCodec().fieldOf("nether_block").forGetter(ext -> ext.netherBlock.get())
     ).apply(instance, StandardVeinGenerator::new));
+
     public static final Codec<StandardVeinGenerator> CODEC_LIST = RecordCodecBuilder.create(instance -> instance.group(
             Codec.either(OreConfiguration.TargetBlockState.CODEC.listOf(), GTRegistries.MATERIALS.codec()).fieldOf("targets").forGetter(ext -> ext.blocks)
     ).apply(instance, StandardVeinGenerator::new));
+
     public static final Codec<StandardVeinGenerator> CODEC = Codec.either(CODEC_SEPARATE, CODEC_LIST).xmap(either -> either.map(Function.identity(), Function.identity()), Either::left);
 
     public NonNullSupplier<? extends Block> block;
@@ -81,9 +83,19 @@ public class StandardVeinGenerator extends VeinGenerator {
 
     @Override
     public List<Map.Entry<Either<BlockState, Material>, Integer>> getAllEntries() {
-        if (this.blocks != null)
-            return this.blocks.map(blockStates -> blockStates.stream().map(state -> Either.<BlockState, Material>left(state.state)).map(entry -> Map.entry(entry, 1)).collect(Collectors.toList()), material -> List.of(Map.entry(Either.right(material), 1)));
-        return List.of(Map.entry(Either.left(block.get().defaultBlockState()), 1), Map.entry(Either.left(deepBlock.get().defaultBlockState()), 1), Map.entry(Either.left(netherBlock.get().defaultBlockState()), 1));
+        if (this.blocks != null) {
+            return this.blocks.map(blockStates -> blockStates.stream()
+                    .map(state -> Either.<BlockState, Material>left(state.state))
+                    .map(entry -> Map.entry(entry, 1))
+                    .collect(Collectors.toList()), material -> List.of(Map.entry(Either.right(material), 1))
+            );
+        } else {
+            return List.of(
+                    Map.entry(Either.left(block.get().defaultBlockState()), 1),
+                    Map.entry(Either.left(deepBlock.get().defaultBlockState()), 1),
+                    Map.entry(Either.left(netherBlock.get().defaultBlockState()), 1)
+            );
+        }
     }
 
     public VeinGenerator build() {
@@ -224,10 +236,10 @@ public class StandardVeinGenerator extends VeinGenerator {
     }
 
     private static void generateShape(WorldGenLevel level, RandomSource random, GTOreDefinition entry,
-                                         Either<List<OreConfiguration.TargetBlockState>, Material> targets,
-                                         int pX, int pY, int pZ, int pWidth, int pHeight, double[] shape, int shapeIdxOffset,
-                                         BitSet placedBlocks, BlockPos.MutableBlockPos posCursor, BulkSectionAccess access,
-                                         float density, MutableInt placedAmount) {
+                                      Either<List<OreConfiguration.TargetBlockState>, Material> targets,
+                                      int pX, int pY, int pZ, int pWidth, int pHeight, double[] shape, int shapeIdxOffset,
+                                      BitSet placedBlocks, BlockPos.MutableBlockPos posCursor, BulkSectionAccess access,
+                                      float density, MutableInt placedAmount) {
         double randomShapeOffset = shape[shapeIdxOffset + 3];
         if (randomShapeOffset < 0.0D)
             return;
