@@ -152,11 +152,11 @@ public interface GTRecipeSchema {
         }
 
         public GTRecipeJS inputItems(TagKey<Item> tag, int amount) {
-            return inputItems(InputItem.of(SizedIngredient.create(Ingredient.of(tag), amount), amount));
+            return inputItems(InputItem.of(SizedIngredient.create(ChemicalHelper.getValidItemsForTag(tag), amount), amount));
         }
 
         public GTRecipeJS inputItems(TagKey<Item> tag) {
-            return inputItems(InputItem.of(Ingredient.of(tag), 1));
+            return inputItems(InputItem.of(ChemicalHelper.getValidItemsForTag(tag), 1));
         }
 
         public GTRecipeJS inputItems(Item input, int amount) {

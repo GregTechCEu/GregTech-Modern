@@ -184,11 +184,12 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder inputItems(TagKey<Item> tag, int amount) {
-        return inputItems(SizedIngredient.create(tag, amount));
+        Ingredient validItems = ChemicalHelper.getValidItemsForTag(tag);
+        return inputItems(SizedIngredient.create(validItems, amount));
     }
 
     public GTRecipeBuilder inputItems(TagKey<Item> tag) {
-        return inputItems(SizedIngredient.create(tag, 1));
+        return inputItems(tag, 1);
     }
 
     public GTRecipeBuilder inputItems(Item input, int amount) {
@@ -220,11 +221,11 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder inputItems(TagPrefix orePrefix, Material material, int count) {
-        TagKey<Item> tag = ChemicalHelper.getTag(orePrefix, material);
-        if (tag == null) {
-            return inputItems(ChemicalHelper.get(orePrefix, material, count));
-        }
-        return inputItems(tag, count);
+        SizedIngredient ingredient = ChemicalHelper.getItems(orePrefix, material, count);
+//        if (ingredient == null) {
+//            return inputItems(ChemicalHelper.get(orePrefix, material, count));
+//        }
+        return inputItems(ingredient);
     }
 
     public GTRecipeBuilder inputItems(MachineDefinition machine) {
