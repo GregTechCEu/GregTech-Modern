@@ -134,10 +134,11 @@ public class StandardVeinGenerator extends VeinGenerator {
 
         for(int l1 = k; l1 <= k + j1; ++l1) {
             for(int i2 = i1; i2 <= i1 + j1; ++i2) {
-                if (l <= level.getHeight(Heightmap.Types.OCEAN_FLOOR_WG, l1, i2)) {
-                    if (this.doPlaceNormal(level, random, entry, this.blocks, d0, d1, d2, d3, d4, d5, k, l, i1, j1, k1)) {
-                        return true;
-                    }
+                if (l > level.getHeight(Heightmap.Types.OCEAN_FLOOR_WG, l1, i2))
+                    continue;
+
+                if (this.doPlaceNormal(level, random, entry, this.blocks, d0, d1, d2, d3, d4, d5, k, l, i1, j1, k1)) {
+                    return true;
                 }
             }
         }
@@ -168,21 +169,25 @@ public class StandardVeinGenerator extends VeinGenerator {
         }
 
         for(int l3 = 0; l3 < size - 1; ++l3) {
-            if (!(shape[l3 * 4 + 3] <= 0.0D)) {
-                for(int i4 = l3 + 1; i4 < size; ++i4) {
-                    if (!(shape[i4 * 4 + 3] <= 0.0D)) {
-                        double d8 = shape[l3 * 4] - shape[i4 * 4];
-                        double d10 = shape[l3 * 4 + 1] - shape[i4 * 4 + 1];
-                        double d12 = shape[l3 * 4 + 2] - shape[i4 * 4 + 2];
-                        double d14 = shape[l3 * 4 + 3] - shape[i4 * 4 + 3];
-                        if (d14 * d14 > d8 * d8 + d10 * d10 + d12 * d12) {
-                            if (d14 > 0.0D) {
-                                shape[i4 * 4 + 3] = -1.0D;
-                            } else {
-                                shape[l3 * 4 + 3] = -1.0D;
-                            }
-                        }
-                    }
+            if (shape[l3 * 4 + 3] <= 0.0D)
+                continue;
+
+            for(int i4 = l3 + 1; i4 < size; ++i4) {
+                if (shape[i4 * 4 + 3] <= 0.0D)
+                    continue;
+
+                double d8 = shape[l3 * 4] - shape[i4 * 4];
+                double d10 = shape[l3 * 4 + 1] - shape[i4 * 4 + 1];
+                double d12 = shape[l3 * 4 + 2] - shape[i4 * 4 + 2];
+                double d14 = shape[l3 * 4 + 3] - shape[i4 * 4 + 3];
+
+                if (!(d14 * d14 > d8 * d8 + d10 * d10 + d12 * d12))
+                    continue;
+
+                if (d14 > 0.0D) {
+                    shape[i4 * 4 + 3] = -1.0D;
+                } else {
+                    shape[l3 * 4 + 3] = -1.0D;
                 }
             }
         }
@@ -192,68 +197,76 @@ public class StandardVeinGenerator extends VeinGenerator {
         try {
             for(int j4 = 0; j4 < size; ++j4) {
                 double d9 = shape[j4 * 4 + 3];
-                if (!(d9 < 0.0D)) {
-                    double x = shape[j4 * 4];
-                    double y = shape[j4 * 4 + 1];
-                    double z = shape[j4 * 4 + 2];
-                    int k4 = Math.max(Mth.floor(x - d9), pX);
-                    int l = Math.max(Mth.floor(y - d9), pY);
-                    int i1 = Math.max(Mth.floor(z - d9), pZ);
-                    int j1 = Math.max(Mth.floor(x + d9), k4);
-                    int k1 = Math.max(Mth.floor(y + d9), l);
-                    int l1 = Math.max(Mth.floor(z + d9), i1);
+                if (d9 < 0.0D)
+                    continue;
 
-                    for(int posX = k4; posX <= j1; ++posX) {
-                        double radX = ((double)posX + 0.5D - x) / d9;
-                        if (radX * radX < 1.0D) {
-                            for(int posY = l; posY <= k1; ++posY) {
-                                double radY = ((double)posY + 0.5D - y) / d9;
-                                if (radX * radX + radY * radY < 1.0D) {
-                                    for(int posZ = i1; posZ <= l1; ++posZ) {
-                                        double radZ = ((double)posZ + 0.5D - z) / d9;
-                                        if (radX * radX + radY * radY + radZ * radZ < 1.0D && !level.isOutsideBuildHeight(posY)) {
-                                            int isPlaced = posX - pX + (posY - pY) * pWidth + (posZ - pZ) * pWidth * pHeight;
-                                            if (!placedBlocks.get(isPlaced)) {
-                                                placedBlocks.set(isPlaced);
-                                                posCursor.set(posX, posY, posZ);
-                                                if (level.ensureCanWrite(posCursor)) {
-                                                    LevelChunkSection levelchunksection = access.getSection(posCursor);
-                                                    if (levelchunksection != null) {
-                                                        int i3 = SectionPos.sectionRelative(posX);
-                                                        int j3 = SectionPos.sectionRelative(posY);
-                                                        int k3 = SectionPos.sectionRelative(posZ);
-                                                        BlockState blockstate = levelchunksection.getBlockState(i3, j3, k3);
+                double x = shape[j4 * 4];
+                double y = shape[j4 * 4 + 1];
+                double z = shape[j4 * 4 + 2];
+                int k4 = Math.max(Mth.floor(x - d9), pX);
+                int l = Math.max(Mth.floor(y - d9), pY);
+                int i1 = Math.max(Mth.floor(z - d9), pZ);
+                int j1 = Math.max(Mth.floor(x + d9), k4);
+                int k1 = Math.max(Mth.floor(y + d9), l);
+                int l1 = Math.max(Mth.floor(z + d9), i1);
 
-                                                        if (random.nextFloat() <= density) {
-                                                            targets.ifLeft(blockStates -> {
-                                                                for(OreConfiguration.TargetBlockState targetState : blockStates) {
-                                                                    if (GTOreFeature.canPlaceOre(blockstate, access::getBlockState, random, entry, targetState, posCursor)) {
-                                                                        levelchunksection.setBlockState(i3, j3, k3, targetState.state, false);
-                                                                        placedAmount.increment();
-                                                                        break;
-                                                                    }
-                                                                }
-                                                            }).ifRight(material -> {
-                                                                if (!GTOreFeature.canPlaceOre(blockstate, access::getBlockState, random, entry, posCursor))
-                                                                    return;
-                                                                BlockState currentState = access.getBlockState(posCursor);
-                                                                var prefix = ChemicalHelper.ORES_INVERSE.get(currentState);
-                                                                if (prefix == null) return;
-                                                                Block toPlace = ChemicalHelper.getBlock(prefix, material);
-                                                                if (toPlace == null || toPlace.defaultBlockState().isAir())
-                                                                    return;
-                                                                levelchunksection.setBlockState(i3, j3, k3, toPlace.defaultBlockState(), false);
-                                                                placedAmount.increment();
-                                                            });
-                                                        }
+                for(int posX = k4; posX <= j1; ++posX) {
+                    double radX = ((double)posX + 0.5D - x) / d9;
+                    if (!(radX * radX < 1.0D))
+                        continue;
 
-                                                    }
-                                                }
-                                            }
-                                        }
+                    for(int posY = l; posY <= k1; ++posY) {
+                        double radY = ((double)posY + 0.5D - y) / d9;
+                        if (!(radX * radX + radY * radY < 1.0D))
+                            continue;
+
+                        for(int posZ = i1; posZ <= l1; ++posZ) {
+                            double radZ = ((double)posZ + 0.5D - z) / d9;
+                            if (!(radX * radX + radY * radY + radZ * radZ < 1.0D) || level.isOutsideBuildHeight(posY))
+                                continue;
+
+                            int isPlaced = posX - pX + (posY - pY) * pWidth + (posZ - pZ) * pWidth * pHeight;
+                            if (placedBlocks.get(isPlaced))
+                                continue;
+
+                            placedBlocks.set(isPlaced);
+                            posCursor.set(posX, posY, posZ);
+                            if (!level.ensureCanWrite(posCursor))
+                                continue;
+
+                            LevelChunkSection levelchunksection = access.getSection(posCursor);
+                            if (levelchunksection == null)
+                                continue;
+
+                            int i3 = SectionPos.sectionRelative(posX);
+                            int j3 = SectionPos.sectionRelative(posY);
+                            int k3 = SectionPos.sectionRelative(posZ);
+                            BlockState blockstate = levelchunksection.getBlockState(i3, j3, k3);
+
+                            if (!(random.nextFloat() <= density))
+                                continue;
+
+                            targets.ifLeft(blockStates -> {
+                                for(OreConfiguration.TargetBlockState targetState : blockStates) {
+                                    if (GTOreFeature.canPlaceOre(blockstate, access::getBlockState, random, entry, targetState, posCursor)) {
+                                        levelchunksection.setBlockState(i3, j3, k3, targetState.state, false);
+                                        placedAmount.increment();
+                                        break;
                                     }
                                 }
-                            }
+                            }).ifRight(material -> {
+                                if (!GTOreFeature.canPlaceOre(blockstate, access::getBlockState, random, entry, posCursor))
+                                    return;
+                                BlockState currentState = access.getBlockState(posCursor);
+                                var prefix = ChemicalHelper.ORES_INVERSE.get(currentState);
+                                if (prefix == null) return;
+                                Block toPlace = ChemicalHelper.getBlock(prefix, material);
+                                if (toPlace == null || toPlace.defaultBlockState().isAir())
+                                    return;
+                                levelchunksection.setBlockState(i3, j3, k3, toPlace.defaultBlockState(), false);
+                                placedAmount.increment();
+                            });
+
                         }
                     }
                 }
