@@ -248,8 +248,8 @@ public class StandardVeinGenerator extends VeinGenerator {
         // Guard against generating outside the allowed 3x3 chunk area for features:
         int minXBounds = origin.getX() - 22;
         int maxXBounds = origin.getX() + 22;
-        int minZBounds = origin.getX() - 22;
-        int maxZBounds = origin.getX() + 22;
+        int minZBounds = origin.getZ() - 22;
+        int maxZBounds = origin.getZ() + 22;
 
         for (int posX = minX; posX <= maxX; ++posX) {
             double radX = ((double) posX + 0.5D - x) / randomShapeOffset;
