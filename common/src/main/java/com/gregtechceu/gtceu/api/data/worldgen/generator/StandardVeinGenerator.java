@@ -210,9 +210,7 @@ public class StandardVeinGenerator extends VeinGenerator {
             }
         }
 
-        BulkSectionAccess access = new BulkSectionAccess(level);
-
-        try {
+        try (BulkSectionAccess access = new BulkSectionAccess(level)) {
             for (int centerOffset = 0; centerOffset < size; ++centerOffset) {
                 int shapeIdxOffset = centerOffset * 4;
 
@@ -221,17 +219,8 @@ public class StandardVeinGenerator extends VeinGenerator {
                         shape, shapeIdxOffset, placedBlocks, posCursor, access, density, placedAmount
                 );
             }
-        } catch (Throwable throwable1) {
-            try {
-                access.close();
-            } catch (Throwable throwable) {
-                throwable1.addSuppressed(throwable);
-            }
-
-            throw throwable1;
         }
 
-        access.close();
         return placedAmount.getValue() > 0;
     }
 
@@ -282,7 +271,10 @@ public class StandardVeinGenerator extends VeinGenerator {
         }
     }
 
-    private static void placeBlock(WorldGenLevel level, RandomSource random, GTOreDefinition entry, Either<List<OreConfiguration.TargetBlockState>, Material> targets, BlockPos.MutableBlockPos posCursor, BulkSectionAccess access, float density, MutableInt placedAmount, int posX, int posY, int posZ) {
+    private static void placeBlock(WorldGenLevel level, RandomSource random, GTOreDefinition entry,
+                                   Either<List<OreConfiguration.TargetBlockState>, Material> targets,
+                                   BlockPos.MutableBlockPos posCursor, BulkSectionAccess access,
+                                   float density, MutableInt placedAmount, int posX, int posY, int posZ) {
         posCursor.set(posX, posY, posZ);
         if (!level.ensureCanWrite(posCursor))
             return;
