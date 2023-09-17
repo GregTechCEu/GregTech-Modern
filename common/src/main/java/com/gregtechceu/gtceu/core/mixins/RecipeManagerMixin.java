@@ -21,7 +21,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.List;
 import java.util.Map;
 
-@Mixin(RecipeManager.class)
+@Mixin(value = RecipeManager.class, priority = 1100 /*1075*/) // bump priority up to make this run after AU but before KJS
 public abstract class RecipeManagerMixin {
 
     @Shadow private Map<RecipeType<?>, Map<ResourceLocation, Recipe<?>>> recipes;
