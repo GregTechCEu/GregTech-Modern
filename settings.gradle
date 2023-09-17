@@ -22,6 +22,8 @@ dependencyResolutionManagement {
         def reiVersion = "12.0.625"
         def emiVersion = "1.0.5+1.20.1"
         def ae2Version = "15.0.4-beta"
+        def kjsVersion = "2001.6.3-build.37"
+        def auVersion = "1.20.1-0.6.0"
 
         // Fabric
         def fabricLoaderVersion = "0.14.21" // https://fabricmc.net/develop/
@@ -32,7 +34,6 @@ dependencyResolutionManagement {
 //        def topFabricVersion = "1.19-6.0.0"
         def jadeFabricVersion = "11.2.2"
         def registrateFabricVersion = "1.3.59-MC1.20"
-        def kjsVersion = "2001.6.3-build.37"
         def forgeConfigApiVersion = "8.0.0"
         def nightConfigVersion = "3.6.5"
         def teamRebornEnergyVersion = "2.3.0"
@@ -122,6 +123,10 @@ dependencyResolutionManagement {
 
             def ae2 = version("ae2", ae2Version)
             library("ae2", "appeng", "appliedenergistics2-fabric").versionRef(ae2)
+
+            def au = version("au", auVersion)
+            library("almostUnified-common", "com.almostreliable.mods", "almostunified-common").versionRef(au)
+            library("almostUnified-fabric", "com.almostreliable.mods", "almostunified-fabric").versionRef(au)
         }
 
         forge {
@@ -171,6 +176,9 @@ dependencyResolutionManagement {
 
             def ae2 = version("ae2", ae2Version)
             library("ae2", "appeng", "appliedenergistics2-forge").versionRef(ae2)
+
+            def au = version("au", auVersion)
+            library("almostUnified-forge", "com.almostreliable.mods", "almostunified-forge").versionRef(au)
         }
 
         libs {

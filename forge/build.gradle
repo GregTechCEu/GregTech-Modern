@@ -126,6 +126,12 @@ dependencies {
     // Jade
     modImplementation forge.jade
 
+    // AE2
+    modImplementation(forge.ae2) { transitive = false }
+
+    //AlmostUnified
+    modImplementation(forge.almostUnified.forge)
+
     // KJS
     modImplementation forge.kubejs
 
@@ -134,8 +140,7 @@ dependencies {
     include(forge.configuration)
 
     // Runtime only testing mods
-    modCompileOnly(forge.worldStripper)
-    modImplementation(forge.ae2) { transitive = false }
+    modRuntimeOnly(forge.worldStripper)
 }
 
 processResources {

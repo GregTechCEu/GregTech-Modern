@@ -115,6 +115,12 @@ dependencies {
     // Jade
     modImplementation fabric.jade
 
+    // AE2
+    modImplementation(fabric.ae2) { transitive = false }
+
+    //AlmostUnified
+    modImplementation(fabric.almostUnified.fabric)
+
     // KJS
     modImplementation fabric.kubejs
 
@@ -130,8 +136,6 @@ dependencies {
 //        exclude(group: "net.fabricmc.fabric-api")
 //    }
 //    modRuntimeOnly(fabric.worldStripper)
-
-    modImplementation(fabric.ae2) { transitive = false }
 }
 
 processResources {
