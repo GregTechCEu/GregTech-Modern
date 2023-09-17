@@ -5,8 +5,9 @@ import com.gregtechceu.gtceu.utils.vec3i.Vec3iRangeIterator;
 import com.gregtechceu.gtceu.utils.vec3i.Vec3iUtils;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Vec3i;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.chunk.BulkSectionAccess;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Iterator;
@@ -14,7 +15,7 @@ import java.util.Iterator;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class ChunkedPosIterator implements Iterator<ChunkedPosIterator.Pos> {
+public class ChunkedPosIterator implements Iterator<ChunkedPosIterator.Pos>, Iterable<ChunkedPosIterator.Pos> {
     public record Pos(BulkSectionAccess access, Vec3i pos) {
     }
 
@@ -23,12 +24,12 @@ public class ChunkedPosIterator implements Iterator<ChunkedPosIterator.Pos> {
     private final Vec3i max;
 
     private final Vec3iRangeIterator chunkIterator;
-    private final Level level;
+    private final WorldGenLevel level;
 
     private Vec3iRangeIterator blocksIterator = null;
     private BulkSectionAccess access = null;
 
-    public ChunkedPosIterator(Level level, Vec3i min, Vec3i max) {
+    public ChunkedPosIterator(WorldGenLevel level, Vec3i min, Vec3i max) {
         this.level = level;
         this.min = min;
         this.max = max;
@@ -37,6 +38,12 @@ public class ChunkedPosIterator implements Iterator<ChunkedPosIterator.Pos> {
                 Chunk3DPosUtils.getChunkAtBlock(min),
                 Chunk3DPosUtils.getChunkAtBlock(max)
         );
+    }
+
+    @NotNull
+    @Override
+    public Iterator<Pos> iterator() {
+        return this;
     }
 
     @Override

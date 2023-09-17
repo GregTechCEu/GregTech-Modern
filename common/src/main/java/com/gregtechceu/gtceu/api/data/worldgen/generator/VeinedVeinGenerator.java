@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.data.worldgen.generator;
 
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.worldgen.ChunkedPosIterator;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreFeature;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
@@ -27,7 +28,8 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.BulkSectionAccess;
 import net.minecraft.world.level.chunk.LevelChunkSection;
-import net.minecraft.world.level.levelgen.*;
+import net.minecraft.world.level.levelgen.DensityFunction;
+import net.minecraft.world.level.levelgen.RandomState;
 import net.minecraft.world.level.levelgen.blending.Blender;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
 import org.apache.commons.lang3.mutable.MutableBoolean;
@@ -113,7 +115,6 @@ public class VeinedVeinGenerator extends VeinGenerator {
         List<? extends Map.Entry<Integer, VeinBlockDefinition>> commonEntries = oreBlocks.stream().map(b -> Map.entry(b.weight, b)).toList();
         List<? extends Map.Entry<Integer, VeinBlockDefinition>> rareEntries = rareBlocks == null ? null : rareBlocks.stream().map(b -> Map.entry(b.weight, b)).toList(); // never accessed if rareBlocks is null
 
-        BulkSectionAccess access = new BulkSectionAccess(level);
         RandomState randomState = level.getLevel().getChunkSource().randomState();
         Blender blender;
         if (level instanceof WorldGenRegion region) {
@@ -133,92 +134,92 @@ public class VeinedVeinGenerator extends VeinGenerator {
         int randOffsetY = random.nextInt(16);
         int randOffsetZ = random.nextInt(16);
 
-        for (int x = origin.getX() - size; x < origin.getX() + size; ++x) {
-            for (int y = origin.getY() - size; y < origin.getY() + size; ++y) {
-                for (int z = origin.getZ() - size; z < origin.getZ() + size; ++z) {
-                    final int finalX = x;
-                    final int finalY = y;
-                    final int finalZ = z;
-                    DensityFunction.FunctionContext functionContext = new DensityFunction.FunctionContext() {
-                        @Override
-                        public int blockX() {
-                            return finalX + randOffsetX;
-                        }
+        var posMin = origin.offset(-1 * size, -1 * size, -1 * size);
+        var posMax = origin.offset(size, size, size);
+        final var chunkedPosIterator = new ChunkedPosIterator(level, posMin, posMax);
 
-                        @Override
-                        public int blockY() {
-                            return finalY + randOffsetY;
-                        }
+        for (ChunkedPosIterator.Pos chunkedPos : chunkedPosIterator) {
+            final BulkSectionAccess access = chunkedPos.access();
+            final int x = chunkedPos.pos().getX();
+            final int y = chunkedPos.pos().getY();
+            final int z = chunkedPos.pos().getZ();
 
-                        @Override
-                        public int blockZ() {
-                            return finalZ + randOffsetZ;
-                        }
+            DensityFunction.FunctionContext functionContext = new DensityFunction.FunctionContext() {
+                @Override
+                public int blockX() {
+                    return x + randOffsetX;
+                }
 
-                        @Override
-                        public Blender getBlender() {
-                            return finalizedBlender;
-                        }
-                    };
+                @Override
+                public int blockY() {
+                    return y + randOffsetY;
+                }
 
-                    double toggleNoise = veinToggle.compute(functionContext);
-                    int blockY = origin.getY();
-                    double absToggleNoise = Math.abs(toggleNoise);
-                    int minY = blockY - this.minYLevel;
-                    int maxY = this.maxYLevel - blockY;
-                    if (minY < 0 || maxY < 0) {
-                        continue;
-                    }
-                    int lowY = Math.min(maxY, minY);
-                    double edgeRoundoff = Mth.clampedMap(lowY, 0.0, edgeRoundoffBegin, -maxEdgeRoundoff, 0.0);
-                    if (absToggleNoise + edgeRoundoff < veininessThreshold) {
-                        continue;
-                    }
-                    if (random.nextFloat() > entry.getDensity()) {
-                        continue;
-                    }
-                    if (veinRidged.compute(functionContext) >= 0.0) {
-                        continue;
-                    }
-                    double chance = Mth.clampedMap(absToggleNoise, veininessThreshold, maxRichnessThreshold, minRichness, maxRichness);
+                @Override
+                public int blockZ() {
+                    return z + randOffsetZ;
+                }
 
-                    BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos(finalX, finalY, finalZ);
-                    LevelChunkSection section = access.getSection(pos);
-                    if (section == null)
-                        continue;
-                    int sectionX = SectionPos.sectionRelative(pos.getX());
-                    int sectionY = SectionPos.sectionRelative(pos.getY());
-                    int sectionZ = SectionPos.sectionRelative(pos.getZ());
-                    if (!level.ensureCanWrite(pos))
-                        continue;
-                    BlockState current = section.getBlockState(sectionX, sectionY, sectionZ);
-                    boolean placed = false;
-                    if (random.nextFloat() <= entry.getDensity()) {
-                        if (random.nextFloat() < chance) {
-                            if (rareBlocks != null && !rareBlocks.isEmpty() && random.nextFloat() < rareBlockChance) {
-                                placed = placeOre(rareBlocks.get(GTUtil.getRandomItem(random, rareEntries, rareEntries.size())).block, current, access, section, random, pos, entry);
-                            } else {
-                                placed = placeOre(oreBlocks.get(GTUtil.getRandomItem(random, commonEntries, commonEntries.size())).block, current, access, section, random, pos, entry);
-                            }
-                        } else {
-                            if (fillerBlock == null || fillerBlock.isAir())
-                                continue;
-                            if (!GTOreFeature.canPlaceOre(current, level::getBlockState, random, entry, pos))
-                                continue;
-                            section.setBlockState(sectionX, sectionY, sectionZ, fillerBlock, false);
-                            if (level.getBlockState(pos) != current) placed = true;
-                        }
-                    }
+                @Override
+                public Blender getBlender() {
+                    return finalizedBlender;
+                }
+            };
 
-                    if (placed)  {
-                        ++placedCount;
+            double toggleNoise = veinToggle.compute(functionContext);
+            int blockY = origin.getY();
+            double absToggleNoise = Math.abs(toggleNoise);
+            int minY = blockY - this.minYLevel;
+            int maxY = this.maxYLevel - blockY;
+            if (minY < 0 || maxY < 0) {
+                continue;
+            }
+            int lowY = Math.min(maxY, minY);
+            double edgeRoundoff = Mth.clampedMap(lowY, 0.0, edgeRoundoffBegin, -maxEdgeRoundoff, 0.0);
+            if (absToggleNoise + edgeRoundoff < veininessThreshold) {
+                continue;
+            }
+            if (random.nextFloat() > entry.getDensity()) {
+                continue;
+            }
+            if (veinRidged.compute(functionContext) >= 0.0) {
+                continue;
+            }
+            double chance = Mth.clampedMap(absToggleNoise, veininessThreshold, maxRichnessThreshold, minRichness, maxRichness);
+
+            BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos(x, y, z);
+            LevelChunkSection section = access.getSection(pos);
+            if (section == null)
+                continue;
+            int sectionX = SectionPos.sectionRelative(pos.getX());
+            int sectionY = SectionPos.sectionRelative(pos.getY());
+            int sectionZ = SectionPos.sectionRelative(pos.getZ());
+            if (!level.ensureCanWrite(pos))
+                continue;
+            BlockState current = section.getBlockState(sectionX, sectionY, sectionZ);
+            boolean placed = false;
+            if (random.nextFloat() <= entry.getDensity()) {
+                if (random.nextFloat() < chance) {
+                    if (rareBlocks != null && !rareBlocks.isEmpty() && random.nextFloat() < rareBlockChance) {
+                        placed = placeOre(rareBlocks.get(GTUtil.getRandomItem(random, rareEntries, rareEntries.size())).block, current, access, section, random, pos, entry);
+                    } else {
+                        placed = placeOre(oreBlocks.get(GTUtil.getRandomItem(random, commonEntries, commonEntries.size())).block, current, access, section, random, pos, entry);
                     }
+                } else {
+                    if (fillerBlock == null || fillerBlock.isAir())
+                        continue;
+                    if (!GTOreFeature.canPlaceOre(current, level::getBlockState, random, entry, pos))
+                        continue;
+                    section.setBlockState(sectionX, sectionY, sectionZ, fillerBlock, false);
+                    if (level.getBlockState(pos) != current) placed = true;
                 }
             }
 
+            if (placed)  {
+                ++placedCount;
+            }
         }
 
-        access.close();
         return placedCount > 0;
     }
 
