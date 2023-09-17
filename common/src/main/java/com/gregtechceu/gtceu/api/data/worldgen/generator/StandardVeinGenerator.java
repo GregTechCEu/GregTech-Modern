@@ -121,24 +121,24 @@ public class StandardVeinGenerator extends VeinGenerator {
         float f = random.nextFloat() * (float) Math.PI;
         float f1 = (float) entry.getClusterSize() / 8.0F;
         int i = Mth.ceil(((float) entry.getClusterSize() / 16.0F * 2.0F + 1.0F) / 2.0F);
-        double d0 = origin.getX() + Math.sin(f) * f1;
-        double d1 = origin.getX() - Math.sin(f) * f1;
-        double d2 = origin.getZ() + Math.cos(f) * f1;
-        double d3 = origin.getZ() - Math.cos(f) * f1;
-        double d4 = origin.getY() + random.nextInt(3) - 2;
-        double d5 = origin.getY() + random.nextInt(3) - 2;
-        int k = origin.getX() - Mth.ceil(f1) - i;
-        int l = origin.getY() - 2 - i;
-        int i1 = origin.getZ() - Mth.ceil(f1) - i;
-        int j1 = 2 * (Mth.ceil(f1) + i);
-        int k1 = 2 * (2 + i);
+        double minX = origin.getX() + Math.sin(f) * f1;
+        double maxX = origin.getX() - Math.sin(f) * f1;
+        double minZ = origin.getZ() + Math.cos(f) * f1;
+        double maxZ = origin.getZ() - Math.cos(f) * f1;
+        double minY = origin.getY() + random.nextInt(3) - 2;
+        double maxY = origin.getY() + random.nextInt(3) - 2;
+        int x = origin.getX() - Mth.ceil(f1) - i;
+        int y = origin.getY() - 2 - i;
+        int z = origin.getZ() - Mth.ceil(f1) - i;
+        int width = 2 * (Mth.ceil(f1) + i);
+        int height = 2 * (2 + i);
 
-        for (int l1 = k; l1 <= k + j1; ++l1) {
-            for (int i2 = i1; i2 <= i1 + j1; ++i2) {
-                if (l > level.getHeight(Heightmap.Types.OCEAN_FLOOR_WG, l1, i2))
+        for (int heightmapX = x; heightmapX <= x + width; ++heightmapX) {
+            for (int heightmapZ = z; heightmapZ <= z + width; ++heightmapZ) {
+                if (y > level.getHeight(Heightmap.Types.OCEAN_FLOOR_WG, heightmapX, heightmapZ))
                     continue;
 
-                if (this.doPlaceNormal(level, random, entry, this.blocks, d0, d1, d2, d3, d4, d5, k, l, i1, j1, k1)) {
+                if (this.doPlaceNormal(level, random, entry, this.blocks, minX, maxX, minZ, maxZ, minY, maxY, x, y, z, width, height)) {
                     return true;
                 }
             }
@@ -204,8 +204,10 @@ public class StandardVeinGenerator extends VeinGenerator {
             for (int centerOffset = 0; centerOffset < size; ++centerOffset) {
                 int shapeIdxOffset = centerOffset * 4;
 
-                if (generateShape(level, random, entry, targets, pX, pY, pZ, pWidth, pHeight, shape, shapeIdxOffset, placedBlocks, posCursor, access, density, placedAmount))
-                    continue;
+                generateShape(
+                        level, random, entry, targets, pX, pY, pZ, pWidth, pHeight,
+                        shape, shapeIdxOffset, placedBlocks, posCursor, access, density, placedAmount
+                );
             }
         } catch (Throwable throwable1) {
             try {
@@ -221,14 +223,14 @@ public class StandardVeinGenerator extends VeinGenerator {
         return placedAmount.getValue() > 0;
     }
 
-    private static boolean generateShape(WorldGenLevel level, RandomSource random, GTOreDefinition entry,
+    private static void generateShape(WorldGenLevel level, RandomSource random, GTOreDefinition entry,
                                          Either<List<OreConfiguration.TargetBlockState>, Material> targets,
                                          int pX, int pY, int pZ, int pWidth, int pHeight, double[] shape, int shapeIdxOffset,
                                          BitSet placedBlocks, BlockPos.MutableBlockPos posCursor, BulkSectionAccess access,
                                          float density, MutableInt placedAmount) {
         double randomShapeOffset = shape[shapeIdxOffset + 3];
         if (randomShapeOffset < 0.0D)
-            return true;
+            return;
 
         double x = shape[shapeIdxOffset];
         double y = shape[shapeIdxOffset + 1];
@@ -266,7 +268,6 @@ public class StandardVeinGenerator extends VeinGenerator {
                 }
             }
         }
-        return false;
     }
 
     private static void placeBlock(WorldGenLevel level, RandomSource random, GTOreDefinition entry, Either<List<OreConfiguration.TargetBlockState>, Material> targets, BlockPos.MutableBlockPos posCursor, BulkSectionAccess access, float density, MutableInt placedAmount, int posX, int posY, int posZ) {
