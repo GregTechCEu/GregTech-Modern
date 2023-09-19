@@ -2,7 +2,10 @@ package com.gregtechceu.gtceu.common.data;
 
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.data.worldgen.modifier.*;
+import com.gregtechceu.gtceu.api.data.worldgen.modifier.BiomeFilter;
+import com.gregtechceu.gtceu.api.data.worldgen.modifier.BiomePlacement;
+import com.gregtechceu.gtceu.api.data.worldgen.modifier.DimensionFilter;
+import com.gregtechceu.gtceu.api.data.worldgen.modifier.FrequencyModifier;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.resources.ResourceLocation;
 
@@ -19,7 +22,6 @@ public class GTFeatures {
         Object inst = FrequencyModifier.FREQUENCY_MODIFIER; // seemingly useless access to init the class in time
         inst = BiomeFilter.BIOME_FILTER;
         inst = DimensionFilter.DIMENSION_FILTER;
-        inst = VeinCountFilter.VEIN_COUNT_FILTER;
         inst = BiomePlacement.BIOME_PLACEMENT;
     }
 

@@ -2,8 +2,6 @@ package com.gregtechceu.gtceu.api.data.worldgen;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.*;
-import com.gregtechceu.gtceu.api.data.worldgen.modifier.BiomeFilter;
-import com.gregtechceu.gtceu.api.data.worldgen.modifier.VeinCountFilter;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.mojang.serialization.Codec;
@@ -21,7 +19,6 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.levelgen.placement.HeightRangePlacement;
-import net.minecraft.world.level.levelgen.placement.InSquarePlacement;
 import net.minecraft.world.level.levelgen.placement.PlacementModifier;
 import org.jetbrains.annotations.Nullable;
 
@@ -114,12 +111,6 @@ public class GTOreDefinition {
         this.biomeWeightModifier = biomeWeightModifier;
         this.veinGenerator = veinGenerator;
 
-        this.modifiers = List.of(
-                VeinCountFilter.count(),
-                InSquarePlacement.spread(),
-                this.range
-        );
-
         this.maximumYield = (int) (density * 100) * clusterSize;
         this.minimumYield = this.maximumYield / 7;
         this.depletedYield = (int) (clusterSize / density / 10);
@@ -138,12 +129,6 @@ public class GTOreDefinition {
 
     public GTOreDefinition range(HeightRangePlacement range) {
         this.range = range;
-        this.modifiers = List.of(
-                VeinCountFilter.count(),
-                BiomeFilter.biome(),
-                InSquarePlacement.spread(),
-                this.range
-        );
         return this;
     }
 

@@ -23,7 +23,6 @@
     "LootTablesMixin",
     "OreConfigurationMixin",
     "OreVeinifierMixin",
-    "PlacedFeatureMixin",
     "RecipeManagerAccessor",
     "RecipeManagerInvoker",
     "RecipeManagerMixin",
