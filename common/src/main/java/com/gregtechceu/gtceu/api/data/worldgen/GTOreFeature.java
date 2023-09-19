@@ -16,8 +16,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
+import net.minecraft.world.level.levelgen.placement.PlacementContext;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.Optional;
 import java.util.function.Function;
 
 /**
@@ -36,25 +38,23 @@ public class GTOreFeature extends Feature<GTOreFeatureConfiguration> {
     @Override
     public boolean place(FeaturePlaceContext<GTOreFeatureConfiguration> context) {
         RandomSource random = context.random();
-        BlockPos origin = new ChunkPos(context.origin()).getMiddleBlockPosition(context.origin().getY());
         WorldGenLevel level = context.level();
-        Holder<Biome> biome = context.level().getBiome(origin);
+        Holder<Biome> biome = context.level().getBiome(context.origin());
 
         GTOreDefinition entry = context.config().getEntry(context.level(), biome, random);
         if (entry == null) return false;
-        context.config().setEntry(null);
-        /*HolderSet<Biome> checkingBiomes = entry.datagenExt().biomes.map(left -> left, right -> BuiltinRegistries.BIOME.getTag(right).orElse(BuiltinRegistries.BIOME.getTag(BiomeTags.IS_OVERWORLD).orElseThrow()));
 
-        while (!checkingBiomes.contains(biome)) {
-            entry = context.config().getEntry(context.level(), biome, random);
-            if (entry == null) return false;
-            context.config().setEntry(null);
-            checkingBiomes = entry.datagenExt().biomes.map(left -> left, right -> BuiltinRegistries.BIOME.getTag(right).orElse(BuiltinRegistries.BIOME.getTag(BiomeTags.IS_OVERWORLD).orElseThrow()));
-            if (ConfigHolder.INSTANCE.worldgen.debugWorldgen) GTCEu.LOGGER.debug("failed to place vein " + entry.id + " in biome " + biome + ". Trying with another...");
-        }*/
+        BlockPos chunkCenter = new ChunkPos(context.origin()).getMiddleBlockPosition(0);
+        BlockPos origin = entry.getRange().getPositions(
+                new PlacementContext(level, context.chunkGenerator(), Optional.empty()),
+                random, chunkCenter
+        ).findFirst().orElse(chunkCenter);
+
+        context.config().setEntry(null);
 
         ResourceLocation id = GTRegistries.ORE_VEINS.getKey(entry);
-        if (ConfigHolder.INSTANCE.worldgen.debugWorldgen) GTCEu.LOGGER.debug("trying to place vein " + id + " at " + origin);
+        if (ConfigHolder.INSTANCE.worldgen.debugWorldgen)
+            GTCEu.LOGGER.debug("trying to place vein " + id + " at " + origin);
         if (entry.getVeinGenerator() != null && entry.getVeinGenerator().generate(level, random, entry, origin)) {
             logPlaced(id, true);
             if (ConfigHolder.INSTANCE.machines.doBedrockOres) {
@@ -94,6 +94,7 @@ public class GTOreFeature extends Feature<GTOreFeatureConfiguration> {
     }
 
     public void logPlaced(ResourceLocation entry, boolean didPlace) {
-        if (ConfigHolder.INSTANCE.worldgen.debugWorldgen) GTCEu.LOGGER.debug("Did place vein " + entry + ": " + didPlace);
+        if (ConfigHolder.INSTANCE.worldgen.debugWorldgen)
+            GTCEu.LOGGER.debug("Did place vein " + entry + ": " + didPlace);
     }
 }
