@@ -13,8 +13,8 @@
   ],
   "mixins": [
     "BlockBehaviourAccessor",
+    "ChunkGeneratorMixin",
     "ChunkMixin",
-    "FeatureUtilsMixin",
     "IFoliagePlacerTypeAccessor",
     "IHolderReferenceAccessor",
     "IngredientAccessor",

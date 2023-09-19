@@ -3,11 +3,7 @@ package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.worldgen.modifier.*;
-import com.gregtechceu.gtceu.api.data.worldgen.GTOreFeature;
-import com.gregtechceu.gtceu.api.data.worldgen.generator.*;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import dev.architectury.injectables.annotations.ExpectPlatform;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 
 /**
@@ -16,8 +12,6 @@ import net.minecraft.resources.ResourceLocation;
  * @implNote GTFeatures
  */
 public class GTFeatures {
-    public static final GTOreFeature ORE = GTRegistries.register(BuiltInRegistries.FEATURE, GTCEu.id("ore"), new GTOreFeature());
-
     public static final ResourceLocation NEW_ORE_VEIN_TOGGLE = GTCEu.id("vein_toggle");
     public static final ResourceLocation NEW_ORE_VEIN_RIDGED = GTCEu.id("vein_ridged");
 

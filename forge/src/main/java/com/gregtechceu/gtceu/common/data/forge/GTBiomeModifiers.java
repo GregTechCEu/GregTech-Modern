@@ -20,7 +20,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import java.util.concurrent.CompletableFuture;
 
 public class GTBiomeModifiers {
-    public static final ResourceKey<BiomeModifier> ORE = ResourceKey.create(ForgeRegistries.Keys.BIOME_MODIFIERS, GTCEu.id("ore"));
+    // public static final ResourceKey<BiomeModifier> ORE = ResourceKey.create(ForgeRegistries.Keys.BIOME_MODIFIERS, GTCEu.id("ore"));
     public static final ResourceKey<BiomeModifier> RUBBER = ResourceKey.create(ForgeRegistries.Keys.BIOME_MODIFIERS, GTCEu.id("rubber_tree"));
 
 
