@@ -20,6 +20,7 @@ import net.minecraft.tags.TagLoader;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,7 +61,7 @@ public class MixinHelpers {
         map.forEach((material, blockEntry) -> {
             ResourceLocation lootTableId = new ResourceLocation(blockEntry.getId().getNamespace(), "blocks/" + blockEntry.getId().getPath());
             ((BlockBehaviourAccessor)blockEntry.get()).setDrops(lootTableId);
-            lootTables.put(lootTableId, new VanillaBlockLoot().createSingleItemTable(blockEntry.get()).build());
+            lootTables.put(lootTableId, new VanillaBlockLoot().createSingleItemTable(blockEntry.get()).setParamSet(LootContextParamSets.BLOCK).build());
         });
     }
 

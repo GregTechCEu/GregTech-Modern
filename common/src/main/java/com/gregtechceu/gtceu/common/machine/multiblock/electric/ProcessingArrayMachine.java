@@ -32,6 +32,7 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -113,6 +114,12 @@ public class ProcessingArrayMachine extends TieredWorkableElectricMultiblockMach
             recipeTypeCache = new GTRecipeType[]{GTRecipeTypes.DUMMY_RECIPES};
         }
         return recipeTypeCache;
+    }
+
+    @NotNull
+    @Override
+    public GTRecipeType getRecipeType() {
+        return getRecipeTypes()[getActiveRecipeType()];
     }
 
     @Override

@@ -30,6 +30,8 @@ public class ConfigHolder {
     @Configurable
     @Configurable.Comment("Config options for Mod Compatibility")
     public CompatibilityConfigs compat = new CompatibilityConfigs();
+    @Configurable
+    public DeveloperConfigs dev = new DeveloperConfigs();
 
     public static class RecipeConfigs {
         @Configurable
@@ -162,9 +164,6 @@ public class ConfigHolder {
         public int maxFeatureChunkSize = 2;
 
         @Configurable
-        @Configurable.Comment({"Debug ore vein placement? (will print placed veins to server's debug.log)", "Default: false (no placement printout in debug.log)"})
-        public boolean debugWorldgen;
-        @Configurable
         @Configurable.Comment({"Rubber Tree spawn chance (% per chunk)", "Default: 0.5"})
         public float rubberTreeSpawnChance = 0.5f;
 
@@ -247,4 +246,12 @@ public class ConfigHolder {
         public String defaultPaintingColor = "#FFFFFF";
     }
 
+    public static class DeveloperConfigs {
+        @Configurable
+        @Configurable.Comment({"Debug ore vein placement? (will print placed veins to server's debug.log)", "Default: false (no placement printout in debug.log)"})
+        public boolean debugWorldgen;
+        @Configurable
+        @Configurable.Comment({"Dump all registered GT recipes?", "Default: false"})
+        public boolean dumpRecipes;
+    }
 }
