@@ -54,7 +54,7 @@ public class GTOreFeature extends Feature<GTOreFeatureConfiguration> {
         }*/
 
         ResourceLocation id = GTRegistries.ORE_VEINS.getKey(entry);
-        if (ConfigHolder.INSTANCE.worldgen.debugWorldgen) GTCEu.LOGGER.debug("trying to place vein " + id + " at " + origin);
+        if (ConfigHolder.INSTANCE.dev.debugWorldgen) GTCEu.LOGGER.debug("trying to place vein " + id + " at " + origin);
         if (entry.getVeinGenerator() != null && entry.getVeinGenerator().generate(level, random, entry, origin)) {
             logPlaced(id, true);
             if (ConfigHolder.INSTANCE.machines.doBedrockOres) {
@@ -94,6 +94,6 @@ public class GTOreFeature extends Feature<GTOreFeatureConfiguration> {
     }
 
     public void logPlaced(ResourceLocation entry, boolean didPlace) {
-        if (ConfigHolder.INSTANCE.worldgen.debugWorldgen) GTCEu.LOGGER.debug("Did place vein " + entry + ": " + didPlace);
+        if (ConfigHolder.INSTANCE.dev.debugWorldgen) GTCEu.LOGGER.debug("Did place vein " + entry + ": " + didPlace);
     }
 }

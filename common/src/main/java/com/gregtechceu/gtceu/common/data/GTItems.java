@@ -50,10 +50,14 @@ import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.color.item.ItemColor;
+import net.minecraft.core.cauldron.CauldronInteraction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.stats.Stats;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.LayeredCauldronBlock;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.client.model.generators.ModelFile;
 import org.apache.commons.lang3.StringUtils;
@@ -79,6 +83,15 @@ public class GTItems {
     //////////////////////////////////////
     //*****     Material Items    ******//
     //////////////////////////////////////
+
+    public static final Map<TagPrefix, TagPrefix> purifyMap = new HashMap<>();
+
+    static {
+        purifyMap.put(TagPrefix.crushed, TagPrefix.crushedPurified);
+        purifyMap.put(TagPrefix.dustImpure, TagPrefix.dust);
+        purifyMap.put(TagPrefix.dustPure, TagPrefix.dust);
+    }
+
     public static Table<TagPrefix, Material, ItemEntry<TagPrefixItem>> MATERIAL_ITEMS;
 
     public static void generateMaterialItems() {
@@ -98,6 +111,7 @@ public class GTItems {
                                 .properties(p -> p.stacksTo(tagPrefix.maxStackSize()))
                                 .model(NonNullBiConsumer.noop())
                                 .color(() -> TagPrefixItem::tintColor)
+                                .onRegister(GTItems::cauldronInteraction)
                                 .register());
                     }
                 }
@@ -1391,6 +1405,37 @@ public class GTItems {
             builder.onRegister(item -> ChemicalHelper.registerUnificationItems(tagPrefix, mat, item));
             return builder;
         };
+    }
+
+    public static <T extends Item> void cauldronInteraction(T item) {
+        if (item instanceof TagPrefixItem tagPrefixItem && purifyMap.containsKey(tagPrefixItem.tagPrefix)) {
+            CauldronInteraction.WATER.put(item, (state, world, pos, player, hand, stack) -> {
+                if (!world.isClientSide) {
+                    Item stackItem = stack.getItem();
+                    if (stackItem instanceof TagPrefixItem prefixItem) {
+                        if (!purifyMap.containsKey(prefixItem.tagPrefix))
+                            return InteractionResult.PASS;
+                        if (!state.hasProperty(LayeredCauldronBlock.LEVEL)) {
+                            return InteractionResult.PASS;
+                        }
+
+                        int level = state.getValue(LayeredCauldronBlock.LEVEL);
+                        if (level == 0)
+                            return InteractionResult.PASS;
+
+                        player.setItemInHand(hand, ChemicalHelper.get(purifyMap.get(prefixItem.tagPrefix), prefixItem.material, stack.getCount()));
+                        player.awardStat(Stats.USE_CAULDRON);
+                        player.awardStat(Stats.ITEM_USED.get(stackItem));
+                        LayeredCauldronBlock.lowerFillLevel(state, world, pos);
+
+                    }
+                }
+
+
+                return InteractionResult.sidedSuccess(world.isClientSide);
+            });
+
+        }
     }
 
     @ExpectPlatform

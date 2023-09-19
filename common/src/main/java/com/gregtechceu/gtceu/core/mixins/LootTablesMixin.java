@@ -29,6 +29,7 @@ import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount;
 import net.minecraft.world.level.storage.loot.functions.ApplyExplosionDecay;
 import net.minecraft.world.level.storage.loot.functions.LimitCount;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -77,7 +78,7 @@ public abstract class LootTablesMixin {
                                         .apply(LimitCount.limitCount(IntRange.range(0, 2)))
                                         .apply(ApplyExplosionDecay.explosionDecay())));
                     }
-                    lootTables.put(lootTableId, builder.build());
+                    lootTables.put(lootTableId, builder.setParamSet(LootContextParamSets.BLOCK).build());
                     ((BlockBehaviourAccessor)blockEntry.get()).setDrops(lootTableId);
                 });
             } else {
@@ -100,7 +101,7 @@ public abstract class LootTablesMixin {
             ResourceLocation id = machine.getId();
             ResourceLocation lootTableId = new ResourceLocation(id.getNamespace(), "blocks/" + id.getPath());
             ((BlockBehaviourAccessor)block).setDrops(lootTableId);
-            lootTables.put(lootTableId, BlockLoot.createSingleItemTable(block).build());
+            lootTables.put(lootTableId, BlockLoot.createSingleItemTable(block).setParamSet(LootContextParamSets.BLOCK).build());
         });
     }
 }
