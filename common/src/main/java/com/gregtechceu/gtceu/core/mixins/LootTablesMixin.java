@@ -66,7 +66,7 @@ public abstract class LootTablesMixin {
                     LootTable.Builder builder = BlockLoot.createSilkTouchDispatchTable(block,
                             BlockLoot.applyExplosionDecay(block,
                                     LootItem.lootTableItem(dropItem.getItem())
-                                            .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, Math.max(1, material.getProperty(PropertyKey.ORE).getOreMultiplier() * oreMultiplier))))
+                                            //.apply(SetItemCountFunction.setCount(UniformGenerator.between(1, Math.max(1, material.getProperty(PropertyKey.ORE).getOreMultiplier() * oreMultiplier)))) //disable fortune for balance reasons.
                                             .apply(ApplyBonusCount.addOreBonusCount(Enchantments.BLOCK_FORTUNE))));
 
                     Material outputDustMat = GTRegistries.MATERIALS.get(FormattingUtil.toLowerCaseUnder(prefix.name));

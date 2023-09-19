@@ -140,8 +140,8 @@ public class GTItems {
                 var property = material.getProperty(PropertyKey.TOOL);
                 var tier = material.getToolTier();
 
-                List<Tier> lower = tiers.values().stream().filter(low -> low.getLevel() < tier.getLevel()).toList();
-                List<Tier> higher = tiers.values().stream().filter(high -> high.getLevel() > tier.getLevel()).toList();
+                List<Tier> lower = tiers.values().stream().filter(low -> low.getLevel() == tier.getLevel() - 1).toList();
+                List<Tier> higher = tiers.values().stream().filter(high -> high.getLevel() == tier.getLevel() + 1).toList();
                 tiers.put(tier.getLevel(), tier);
                 registerToolTier(tier, GTCEu.id(material.getName()), lower, higher);
 
