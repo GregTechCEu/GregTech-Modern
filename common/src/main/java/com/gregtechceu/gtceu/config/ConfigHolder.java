@@ -161,9 +161,9 @@ public class ConfigHolder {
         @Configurable.Comment({
                 "Radius (in blocks) that ore veins will check for existing ones.",
                 "This is the \"radius\" of a square area around each vein, in addition to the vein's chunk itself.",
-                "Default: 3"
+                "Default: 48 (the grid size)"
         })
-        public int oreVeinScanRadius = 3;
+        public int oreVeinScanRadius = 48;
 
         @Configurable
         @Configurable.Range(min = 1, max = 127)

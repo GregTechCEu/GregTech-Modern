@@ -8,7 +8,6 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
@@ -37,7 +36,7 @@ public class VeinCountFilter extends PlacementFilter {
             if (entry == null) return false;
             Cell startCell = new Cell(context.getLevel().getLevel(), entry.getLayer(), chunkPos);
             // Search for a radius of (default 3) chunks for other veins, to avoid veins getting too close to eachother (they may originate in weird places)
-            int radius = ConfigHolder.INSTANCE.worldgen.oreVeinScanRadius;
+            int radius = ConfigHolder.INSTANCE.worldgen.oreVeinScanRadius / 16;
             for (int x = -radius; x <= radius; ++x) {
                 for (int z = -radius; z <= radius; ++z) {
                     ChunkPos chunkPos2 = new ChunkPos(chunkPos.x + x, chunkPos.z + z);
