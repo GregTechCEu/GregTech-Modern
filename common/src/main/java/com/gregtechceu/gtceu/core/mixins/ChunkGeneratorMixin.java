@@ -23,7 +23,7 @@ public class ChunkGeneratorMixin {
 
     @Inject(method = "applyBiomeDecoration", at = @At("TAIL"))
     private void gtceu$applyBiomeDecoration(WorldGenLevel level, ChunkAccess chunk, StructureManager structureManager, CallbackInfo ci) {
-        int gridSize = ConfigHolder.INSTANCE.worldgen.oreVeinScanRadius;
+        int gridSize = ConfigHolder.INSTANCE.worldgen.oreVeinGridSize;
         ChunkPos chunkPos = chunk.getPos();
 
         var featureConfiguration = new GTOreFeatureConfiguration(null);
