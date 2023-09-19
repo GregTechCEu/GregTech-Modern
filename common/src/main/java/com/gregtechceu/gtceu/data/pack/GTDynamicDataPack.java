@@ -14,6 +14,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackResources;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.metadata.MetadataSectionSerializer;
+import net.minecraft.server.packs.resources.IoSupplier;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
@@ -83,46 +84,36 @@ public class GTDynamicDataPack implements PackResources {
         }
     }
 
+    @Nullable
     @Override
-    public InputStream getResource(PackType type, ResourceLocation location) throws IOException {
-        if (type == PackType.SERVER_DATA) {
-            if (DATA.containsKey(location))
-                return new ByteArrayInputStream(DATA.get(location).toString().getBytes(StandardCharsets.UTF_8));
-            else throw new FileNotFoundException("Can't find " + location + " " + getName());
-        } else {
-            return new ByteArrayInputStream(new byte[0]);
-        }
-    }
-
-    @Override
-    public InputStream getRootResource(String fileName) {
+    public IoSupplier<InputStream> getRootResource(String... elements) {
         throw new UnsupportedOperationException("Dynamic Resource Pack cannot have root resources");
     }
 
     @Override
-    public boolean hasResource(PackType type, ResourceLocation location) {
-        if (type == PackType.CLIENT_RESOURCES) {
-            return false;
+    public IoSupplier<InputStream> getResource(PackType type, ResourceLocation location) {
+        if (type == PackType.SERVER_DATA) {
+            if (DATA.containsKey(location))
+                return () -> new ByteArrayInputStream(DATA.get(location).toString().getBytes(StandardCharsets.UTF_8));
+            else return null;
         } else {
-            return DATA.containsKey(location);
+            return () -> new ByteArrayInputStream(new byte[0]);
         }
     }
 
     @Override
-    public Collection<ResourceLocation> getResources(PackType type, String namespace, String path, Predicate<ResourceLocation> filter) {
-        if (type == PackType.SERVER_DATA)
-            return DATA.keySet().stream().filter(loc -> loc.getPath().startsWith(path) && filter.test(loc)).collect(Collectors.toList());
-        return Collections.emptyList();//LANG.keySet().stream().filter(loc -> loc.getPath().startsWith(path) && filter.test(loc.getPath())).collect(Collectors.toList());
+    public void listResources(PackType packType, String namespace, String path, ResourceOutput resourceOutput) {
+        if (packType == PackType.SERVER_DATA)
+            DATA.keySet().stream().filter(Objects::nonNull).filter(loc -> loc.getPath().startsWith(path)).forEach((id) -> {
+                if (this.getResource(packType, new ResourceLocation(namespace, path)) != null) {
+                    resourceOutput.accept(id, this.getResource(packType, new ResourceLocation(namespace, path)));
+                }
+            });
     }
 
     @Override
     public Set<String> getNamespaces(PackType type) {
         return type == PackType.SERVER_DATA ? SERVER_DOMAINS : Set.of();
-    }
-
-    @Override
-    public String getName() {
-        return name;
     }
 
     @Nullable
@@ -138,14 +129,19 @@ public class GTDynamicDataPack implements PackResources {
             JsonArray block = new JsonArray();
             GTRecipes.recipeRemoval((id) -> { // Collect removed recipes in here, in the pack filter section.
                 JsonObject entry = new JsonObject();
-                entry.addProperty("namespace", id.getNamespace());
-                entry.addProperty("path", id.getPath());
+                entry.addProperty("namespace", id.getNamespace().replaceAll("[\\W]", "\\\\$0"));
+                entry.addProperty("path", "recipes/" + id.getPath().replaceAll("[\\W]", "\\\\$0"));
                 block.add(entry);
             });
             filter.add("block", block);
             return metaReader.fromJson(filter);
         }
-        return metaReader.fromJson(new JsonObject());
+        return null;
+    }
+
+    @Override
+    public String packId() {
+        return this.name;
     }
 
     @Override

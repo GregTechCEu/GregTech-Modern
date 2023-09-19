@@ -14,7 +14,7 @@
   "mixins": [
     "BlockBehaviourAccessor",
     "ChunkMixin",
-    "ServerPacksSourceMixin",
+    "FolderRepositorySourceMixin",
     "FeatureUtilsMixin",
     "IFoliagePlacerTypeAccessor",
     "IHolderReferenceAccessor",
