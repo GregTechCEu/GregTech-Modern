@@ -13,6 +13,7 @@
   "mixins": [
     "BlockBehaviourAccessor",
     "ChunkMixin",
+    "ServerPacksSourceMixin",
     "IFoliagePlacerTypeAccessor",
     "IHolderReferenceAccessor",
     "IngredientAccessor",
