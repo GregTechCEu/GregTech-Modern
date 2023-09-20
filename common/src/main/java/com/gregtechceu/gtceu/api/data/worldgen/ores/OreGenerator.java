@@ -18,6 +18,7 @@ import net.minecraft.world.level.levelgen.XoroshiroRandomSource;
 import net.minecraft.world.level.levelgen.placement.PlacementContext;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.Map;
 import java.util.Optional;
 
 @ParametersAreNonnullByDefault
@@ -56,7 +57,7 @@ public class OreGenerator {
             }
 
             // TODO implement generated vein / don't place in vein generators
-            return Optional.of(new GeneratedVein());
+            return Optional.of(new GeneratedVein(chunkPos, Map.of()));
         }
 
         logPlaced(id, false);
