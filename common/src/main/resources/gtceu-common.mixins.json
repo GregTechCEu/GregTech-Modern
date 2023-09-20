@@ -15,6 +15,7 @@
     "BlockBehaviourAccessor",
     "ChunkGeneratorMixin",
     "ChunkMixin",
+    "FolderRepositorySourceMixin",
     "IFoliagePlacerTypeAccessor",
     "IHolderReferenceAccessor",
     "IngredientAccessor",

@@ -38,7 +38,7 @@ public class OreGenerator {
         GTOreDefinition entry = config.entry();
         ResourceLocation id = GTRegistries.ORE_VEINS.getKey(entry);
 
-        if (ConfigHolder.INSTANCE.worldgen.debugWorldgen) {
+        if (ConfigHolder.INSTANCE.dev.debugWorldgen) {
             GTCEu.LOGGER.debug("trying to place vein " + id + " at " + config.origin());
         }
 
@@ -91,7 +91,7 @@ public class OreGenerator {
 
 
     private void logPlaced(ResourceLocation entry, boolean didPlace) {
-        if (ConfigHolder.INSTANCE.worldgen.debugWorldgen)
+        if (ConfigHolder.INSTANCE.dev.debugWorldgen)
             GTCEu.LOGGER.debug("Did place vein " + entry + ": " + didPlace);
     }
 }

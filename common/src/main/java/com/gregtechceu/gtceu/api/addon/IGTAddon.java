@@ -14,6 +14,12 @@ public interface IGTAddon {
     void initializeAddon();
 
     /**
+     * this addon's Mod id.
+     * @return the Mod ID this addon uses for content.
+     */
+    String addonModId();
+
+    /**
      * Call init on your custom TagPrefix class(es) here
      */
     default void registerTagPrefixes() {

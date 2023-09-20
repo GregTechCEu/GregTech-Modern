@@ -16,8 +16,10 @@ import com.gregtechceu.gtceu.api.item.tool.MaterialToolTier;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.gregtechceu.gtceu.integration.kjs.helpers.MaterialStackWrapper;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
+import dev.latvian.mods.rhino.util.RemapPrefixForJS;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -381,6 +383,7 @@ public class Material implements Comparable<Material> {
     /**
      * @since GTCEu 2.0.0
      */
+    @RemapPrefixForJS("kjs$")
     public static class Builder extends BuilderBase<Material> {
 
         private final MaterialInfo materialInfo;
@@ -391,6 +394,7 @@ public class Material implements Comparable<Material> {
          * The temporary list of components for this Material.
          */
         private List<MaterialStack> composition = new ArrayList<>();
+        private List<MaterialStackWrapper> compositionSupplier;
 
         /*
          * Temporary value to use to determine how to calculate default RGB
@@ -766,6 +770,11 @@ public class Material implements Comparable<Material> {
             return this;
         }
 
+        public Builder kjs$components(MaterialStackWrapper... components) {
+            compositionSupplier = Arrays.asList(components);
+            return this;
+        }
+
         /**
          * Add {@link MaterialFlags} to this Material.<br>
          * Dependent Flags (for example, {@link MaterialFlags#GENERATE_LONG_ROD} requiring
@@ -986,7 +995,7 @@ public class Material implements Comparable<Material> {
         }
 
         public Material buildAndRegister() {
-            materialInfo.componentList = ImmutableList.copyOf(composition);
+            materialInfo.componentList = composition.isEmpty() && this.compositionSupplier != null ? ImmutableList.copyOf(compositionSupplier.stream().map(MaterialStackWrapper::toMatStack).toArray(MaterialStack[]::new)) : ImmutableList.copyOf(composition);
             var mat = new Material(materialInfo, properties, flags);
             materialInfo.verifyInfo(properties, averageRGB);
             mat.registerMaterial();

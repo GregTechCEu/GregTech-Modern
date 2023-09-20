@@ -1,6 +1,6 @@
 # ChangeLog
 
-* always align ore veins to the center of a chunk
-* restrict ore vein generation to the 3x3 chunks allowed for feature placement
-* fix GCYM multiblock shapes
-* actually fix gem lenses hopefully
+* fix recipes not loading if a KJS recipe event exists
+* set blocks' loot tables to block paramset to improve compatibility
+* fix PA recipe issue
+* make impure dusts/crushed ores/etc washable in cauldron
