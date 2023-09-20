@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.data.worldgen.ores;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArraySet;
 import lombok.Getter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -29,7 +30,7 @@ public class GeneratedVein {
                 Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (a, b) -> a, Object2ObjectOpenHashMap::new)
         ));
 
-        this.unconsumedChunks = this.generatedOres.keySet();
+        this.unconsumedChunks = new ObjectArraySet<>(this.generatedOres.keySet());
     }
 
     public Map<BlockPos, OreBlockPlacer> consumeChunk(ChunkPos chunk) {

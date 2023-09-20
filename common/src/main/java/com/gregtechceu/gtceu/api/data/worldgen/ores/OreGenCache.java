@@ -26,11 +26,8 @@ public class OreGenCache {
 
     private final Cache<ChunkPos, Optional<GeneratedVein>> generatedVeinsByOrigin = CacheBuilder.newBuilder()
             .expireAfterAccess(5, TimeUnit.MINUTES)
+            .maximumSize(512)
             .softValues()
-            .concurrencyLevel(1)
-            .removalListener(rem -> {
-                GTCEu.LOGGER.info("~ ~ ~ ~ invalidated: " + rem.getKey());
-            })
             .build();
 
     public List<GeneratedVein> consumeChunk(WorldGenLevel level, ChunkGenerator generator, ChunkAccess chunk) {
@@ -44,29 +41,16 @@ public class OreGenCache {
     }
 
     private List<GeneratedVein> getOrCreateSurroundingVeins(WorldGenLevel level, ChunkGenerator generator, ChunkAccess chunk) {
-        GTCEu.LOGGER.info("getOrCreateSurroundingVeins: " + chunk.getPos());
-
         return getSurroundingChunks(chunk.getPos()).map(chunkPos -> {
             try {
                 return generatedVeinsByOrigin
                         .get(chunkPos, () -> oreGenerator.generate(level, generator, chunkPos))
-                        .map(vein -> {
-                            GTCEu.LOGGER.info("    ++  Generated vein: " + vein);
-                            return vein;
-                        })
-                        .orElseGet(() -> {
-                            GTCEu.LOGGER.info("    -   No vein: " + chunkPos);
-                            return null;
-                        });
+                        .orElse(null);
             } catch (ExecutionException e) {
                 GTCEu.LOGGER.error("Cannot create vein in chunk " + chunkPos, e);
                 return null;
             }
-        }).filter(Objects::nonNull).filter(x -> {
-            GTCEu.LOGGER.info("    <<< Cached ore vein: " + x);
-
-            return true;
-        }).toList();
+        }).filter(Objects::nonNull).toList();
     }
 
     private Stream<ChunkPos> getSurroundingChunks(ChunkPos center) {
