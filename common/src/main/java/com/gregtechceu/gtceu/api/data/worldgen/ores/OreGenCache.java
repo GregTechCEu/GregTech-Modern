@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.data.worldgen.ores;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.common.data.GTOres;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.WorldGenLevel;
@@ -54,8 +55,7 @@ public class OreGenCache {
     }
 
     private Stream<ChunkPos> getSurroundingChunks(ChunkPos center) {
-        // TODO set search radius to max configured ore vein size
-        var maxVeinSearchDistance = 3;
+        int maxVeinSearchDistance = (int) Math.ceil((GTOres.getLargestVeinSize() / 16.0) / 2.0);
 
         final int minX = center.x - maxVeinSearchDistance;
         final int minZ = center.z - maxVeinSearchDistance;
