@@ -24,8 +24,8 @@ import java.util.function.Supplier;
 
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.ore;
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.oreNetherrack;
-import static com.gregtechceu.gtceu.api.data.worldgen.ores.generator.DikeVeinGenerator.DikeBlockDefinition;
-import static com.gregtechceu.gtceu.api.data.worldgen.ores.generator.VeinedVeinGenerator.VeinBlockDefinition;
+import static com.gregtechceu.gtceu.api.data.worldgen.generator.DikeVeinGenerator.DikeBlockDefinition;
+import static com.gregtechceu.gtceu.api.data.worldgen.generator.VeinedVeinGenerator.VeinBlockDefinition;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 
 /**
