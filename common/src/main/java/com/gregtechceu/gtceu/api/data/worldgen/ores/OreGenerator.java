@@ -34,21 +34,23 @@ public class OreGenerator {
     public Optional<GeneratedVein> generate(WorldGenLevel level, ChunkGenerator chunkGenerator, ChunkAccess chunk) {
         ChunkPos chunkPos = chunk.getPos();
 
-        var config = getVeinOrigin(level, chunkGenerator, chunkPos).orElse(null);
+        var config = createConfig(level, chunkGenerator, chunkPos).orElse(null);
         if (config == null)
             return Optional.empty();
 
         GTOreDefinition entry = config.entry();
         ResourceLocation id = GTRegistries.ORE_VEINS.getKey(entry);
 
-        if (ConfigHolder.INSTANCE.worldgen.debugWorldgen)
+        if (ConfigHolder.INSTANCE.worldgen.debugWorldgen) {
             GTCEu.LOGGER.debug("trying to place vein " + id + " at " + config.origin());
+        }
 
         var veinGenerator = entry.getVeinGenerator();
         if (veinGenerator == null)
             return Optional.empty();
 
         boolean generated = veinGenerator.generate(level, config.random(), entry, config.origin());
+
         if (generated) {
             logPlaced(id, true);
 
@@ -64,7 +66,8 @@ public class OreGenerator {
         return Optional.empty();
     }
 
-    private Optional<VeinConfiguration> getVeinOrigin(WorldGenLevel level, ChunkGenerator generator, ChunkPos chunkPos) {
+
+    private Optional<VeinConfiguration> createConfig(WorldGenLevel level, ChunkGenerator generator, ChunkPos chunkPos) {
         int gridSize = ConfigHolder.INSTANCE.worldgen.oreVeinGridSize;
 
         if (chunkPos.x % gridSize != 0 || chunkPos.z % gridSize != 0)
@@ -89,6 +92,7 @@ public class OreGenerator {
 
         return Optional.of(new VeinConfiguration(config, entry, random, origin));
     }
+
 
     private void logPlaced(ResourceLocation entry, boolean didPlace) {
         if (ConfigHolder.INSTANCE.worldgen.debugWorldgen)
