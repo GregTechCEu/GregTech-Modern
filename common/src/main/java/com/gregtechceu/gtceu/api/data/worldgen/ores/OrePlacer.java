@@ -11,11 +11,11 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class OrePlacer {
-    private final OreGenerator oreGenerator = new OreGenerator();
+    private final OreGenCache oreGenCache = new OreGenCache();
 
     public void placeOres(WorldGenLevel level, ChunkGenerator chunkGenerator, ChunkAccess chunk) {
-        var generatedVein = oreGenerator.generate(level, chunkGenerator, chunk);
+        var generatedVeins = oreGenCache.getGeneratedVeins(level, chunkGenerator, chunk);
 
-        // TODO decouple generation and placement
+        // TODO decouple generation and placement, then place all generated veins here:
     }
 }
