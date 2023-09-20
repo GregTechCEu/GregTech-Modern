@@ -22,14 +22,14 @@ public class OrePlacer {
         var generatedVeins = oreGenCache.consumeChunk(level, chunkGenerator, chunk);
 
         try (BulkSectionAccess access = new BulkSectionAccess(level)) {
-            var placersByChunk = generatedVeins.stream()
+            var placersBySection = generatedVeins.stream()
                     .flatMap(vein -> vein.consumeChunk(chunk.getPos()).entrySet().stream())
                     .collect(Collectors.groupingBy(
                             entry -> SectionPos.of(entry.getKey()),
                             Collectors.mapping(Map.Entry::getValue, Collectors.toList())
                     ));
 
-            placersByChunk.forEach((sectionPos, placers) -> {
+            placersBySection.forEach((sectionPos, placers) -> {
                 LevelChunkSection section = access.getSection(sectionPos.origin());
 
                 placers.forEach(placer -> placer.placeBlock(access, section));

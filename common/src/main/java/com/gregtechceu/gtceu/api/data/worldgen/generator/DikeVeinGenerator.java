@@ -29,7 +29,6 @@ import net.minecraft.world.level.levelgen.WorldgenRandom;
 import net.minecraft.world.level.levelgen.XoroshiroRandomSource;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration.TargetBlockState;
 import net.minecraft.world.level.levelgen.synth.NormalNoise;
-import org.apache.commons.lang3.mutable.MutableObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -115,7 +114,6 @@ public class DikeVeinGenerator extends VeinGenerator {
         List<? extends Map.Entry<Integer, DikeBlockDefinition>> entries = blocks.stream().map(b -> Map.entry(b.weight, b)).toList();
         DikeBlockDefinition blockDefinition = blocks.get(GTUtil.getRandomItem(rand, entries, entries.size()));
         BlockState current = level.getBlockState(pos);
-        MutableObject<Either<TargetBlockState, Material>> returnValue = new MutableObject<>(null);
 
         int x = SectionPos.sectionRelative(pos.getX());
         int y = SectionPos.sectionRelative(pos.getY());
