@@ -9,22 +9,28 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.lowdragmc.lowdraglib.Platform;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
+import net.minecraft.SharedConstants;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackResources;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.metadata.MetadataSectionSerializer;
+import net.minecraft.server.packs.metadata.pack.PackMetadataSection;
 import net.minecraft.server.packs.resources.IoSupplier;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.*;
+import javax.annotation.ParametersAreNonnullByDefault;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
+@ParametersAreNonnullByDefault
 public class GTDynamicDataPack implements PackResources {
 
     protected static final ObjectSet<String> SERVER_DOMAINS = new ObjectOpenHashSet<>();
@@ -65,7 +71,7 @@ public class GTDynamicDataPack implements PackResources {
         }
     }
 
-    private static void writeJson(ResourceLocation id, String subdir, Path parent, JsonObject json){
+    private static void writeJson(ResourceLocation id, String subdir, Path parent, JsonObject json) {
         try {
             Path file = parent.resolve(id.getNamespace()).resolve(subdir).resolve(id.getPath() + ".json");
             Files.createDirectories(file.getParent());
@@ -87,7 +93,7 @@ public class GTDynamicDataPack implements PackResources {
     @Nullable
     @Override
     public IoSupplier<InputStream> getRootResource(String... elements) {
-        throw new UnsupportedOperationException("Dynamic Resource Pack cannot have root resources");
+        return null;
     }
 
     @Override
@@ -97,7 +103,7 @@ public class GTDynamicDataPack implements PackResources {
                 return () -> new ByteArrayInputStream(DATA.get(location).toString().getBytes(StandardCharsets.UTF_8));
             else return null;
         } else {
-            return () -> new ByteArrayInputStream(new byte[0]);
+            return null;
         }
     }
 
@@ -105,8 +111,9 @@ public class GTDynamicDataPack implements PackResources {
     public void listResources(PackType packType, String namespace, String path, ResourceOutput resourceOutput) {
         if (packType == PackType.SERVER_DATA)
             DATA.keySet().stream().filter(Objects::nonNull).filter(loc -> loc.getPath().startsWith(path)).forEach((id) -> {
-                if (this.getResource(packType, new ResourceLocation(namespace, path)) != null) {
-                    resourceOutput.accept(id, this.getResource(packType, new ResourceLocation(namespace, path)));
+                IoSupplier<InputStream> resource = this.getResource(packType, id);
+                if (resource != null) {
+                    resourceOutput.accept(id, resource);
                 }
             });
     }
@@ -119,11 +126,8 @@ public class GTDynamicDataPack implements PackResources {
     @Nullable
     @Override
     public <T> T getMetadataSection(MetadataSectionSerializer<T> metaReader) {
-        if(metaReader.getMetadataSectionName().equals("pack")) {
-            JsonObject object = new JsonObject();
-            object.addProperty("pack_format", 9);
-            object.addProperty("description", "runtime data pack");
-            return metaReader.fromJson(object);
+        if(metaReader == PackMetadataSection.TYPE) {
+            return (T) new PackMetadataSection(Component.literal("GTCEu dynamic data"), SharedConstants.getCurrentVersion().getPackVersion(PackType.SERVER_DATA));
         } else if (metaReader.getMetadataSectionName().equals("filter")) {
             JsonObject filter = new JsonObject();
             JsonArray block = new JsonArray();
