@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.api.data.worldgen.generator;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
-import com.gregtechceu.gtceu.api.data.worldgen.GTOreFeature;
+import com.gregtechceu.gtceu.api.data.worldgen.ores.OreVeinUtil;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.mojang.datafixers.util.Either;
@@ -125,7 +125,7 @@ public class DikeVeinGenerator extends VeinGenerator {
         if (pos.getY() >= blockDefinition.minY() && pos.getY() <= blockDefinition.maxY()) {
             blockDefinition.block.ifLeft(blockStates -> {
                 for (OreConfiguration.TargetBlockState targetState : blockStates) {
-                    if (!GTOreFeature.canPlaceOre(current, level::getBlockState, rand, entry, targetState, pos.mutable()))
+                    if (!OreVeinUtil.canPlaceOre(current, level::getBlockState, rand, entry, targetState, pos.mutable()))
                         continue;
                     if (targetState.state.isAir())
                         continue;
@@ -134,7 +134,7 @@ public class DikeVeinGenerator extends VeinGenerator {
                     break;
                 }
             }).ifRight(material -> {
-                if (!GTOreFeature.canPlaceOre(current, level::getBlockState, rand, entry, pos.mutable()))
+                if (!OreVeinUtil.canPlaceOre(current, level::getBlockState, rand, entry, pos.mutable()))
                     return;
                 BlockState currentState = level.getBlockState(pos);
                 var prefix = ChemicalHelper.ORES_INVERSE.get(currentState);

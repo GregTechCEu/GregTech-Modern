@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.worldgen.GTLayerPattern;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
-import com.gregtechceu.gtceu.api.data.worldgen.GTOreFeature;
+import com.gregtechceu.gtceu.api.data.worldgen.ores.OreVeinUtil;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -151,7 +151,7 @@ public class LayeredVeinGenerator extends VeinGenerator {
                         if (random.nextFloat() <= density) {
                             state.ifLeft(blockStates -> {
                                 for (OreConfiguration.TargetBlockState targetState : blockStates) {
-                                    if (!GTOreFeature.canPlaceOre(blockstate, access::getBlockState, random, entry, targetState, posCursor))
+                                    if (!OreVeinUtil.canPlaceOre(blockstate, access::getBlockState, random, entry, targetState, posCursor))
                                         continue;
                                     if (targetState.state.isAir())
                                         continue;
@@ -160,7 +160,7 @@ public class LayeredVeinGenerator extends VeinGenerator {
                                     break;
                                 }
                             }).ifRight(material -> {
-                                if (!GTOreFeature.canPlaceOre(blockstate, access::getBlockState, random, entry, posCursor))
+                                if (!OreVeinUtil.canPlaceOre(blockstate, access::getBlockState, random, entry, posCursor))
                                     return;
                                 BlockState currentState = access.getBlockState(posCursor);
                                 var prefix = ChemicalHelper.ORES_INVERSE.get(currentState);

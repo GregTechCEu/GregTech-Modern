@@ -12,15 +12,12 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
-import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
 import net.minecraft.world.level.levelgen.placement.PlacementContext;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Optional;
-import java.util.function.Function;
 
 /**
  * @author Screret
@@ -65,32 +62,6 @@ public class GTOreFeature extends Feature<GTOreFeatureConfiguration> {
 
         logPlaced(id, false);
         return false;
-    }
-
-    public static boolean canPlaceOre(BlockState pState, Function<BlockPos, BlockState> pAdjacentStateAccessor,
-                                      RandomSource pRandom, GTOreDefinition entry, OreConfiguration.TargetBlockState pTargetState,
-                                      BlockPos.MutableBlockPos pMatablePos) {
-        if (!pTargetState.target.test(pState, pRandom))
-            return false;
-        if (shouldSkipAirCheck(pRandom, entry.getDiscardChanceOnAirExposure()))
-            return true;
-
-        return !isAdjacentToAir(pAdjacentStateAccessor, pMatablePos);
-    }
-
-    public static boolean canPlaceOre(BlockState pState, Function<BlockPos, BlockState> pAdjacentStateAccessor,
-                                      RandomSource pRandom, GTOreDefinition entry,
-                                      BlockPos.MutableBlockPos pMatablePos) {
-        if (!entry.getLayer().getTarget().test(pState, pRandom))
-            return false;
-        if (shouldSkipAirCheck(pRandom, entry.getDiscardChanceOnAirExposure()))
-            return true;
-
-        return !isAdjacentToAir(pAdjacentStateAccessor, pMatablePos);
-    }
-
-    protected static boolean shouldSkipAirCheck(RandomSource pRandom, float pChance) {
-        return pChance <= 0 || (!(pChance >= 1) && pRandom.nextFloat() >= pChance);
     }
 
     public void logPlaced(ResourceLocation entry, boolean didPlace) {

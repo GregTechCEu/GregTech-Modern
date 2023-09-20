@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.api.data.worldgen.generator;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
-import com.gregtechceu.gtceu.api.data.worldgen.GTOreFeature;
+import com.gregtechceu.gtceu.api.data.worldgen.ores.OreVeinUtil;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTFeatures;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -210,7 +210,7 @@ public class VeinedVeinGenerator extends VeinGenerator {
                 } else {
                     if (fillerBlock == null || fillerBlock.isAir())
                         continue;
-                    if (!GTOreFeature.canPlaceOre(current, level::getBlockState, random, entry, pos))
+                    if (!OreVeinUtil.canPlaceOre(current, level::getBlockState, random, entry, pos))
                         continue;
                     section.setBlockState(sectionX, sectionY, sectionZ, fillerBlock, false);
                     if (level.getBlockState(pos) != current) placed = true;
@@ -235,7 +235,7 @@ public class VeinedVeinGenerator extends VeinGenerator {
 
         block.ifLeft(blockStates -> {
             for (OreConfiguration.TargetBlockState targetState : blockStates) {
-                if (!GTOreFeature.canPlaceOre(current, level::getBlockState, random, entry, targetState, pos))
+                if (!OreVeinUtil.canPlaceOre(current, level::getBlockState, random, entry, targetState, pos))
                     continue;
                 if (targetState.state.isAir())
                     continue;
@@ -244,7 +244,7 @@ public class VeinedVeinGenerator extends VeinGenerator {
                 break;
             }
         }).ifRight(material -> {
-            if (!GTOreFeature.canPlaceOre(current, level::getBlockState, random, entry, pos))
+            if (!OreVeinUtil.canPlaceOre(current, level::getBlockState, random, entry, pos))
                 return;
             BlockState currentState = level.getBlockState(pos);
             var prefix = ChemicalHelper.ORES_INVERSE.get(currentState);
