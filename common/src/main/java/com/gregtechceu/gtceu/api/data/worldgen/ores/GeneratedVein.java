@@ -45,4 +45,9 @@ public class GeneratedVein {
     public boolean isFullyConsumed() {
         return unconsumedChunks.isEmpty();
     }
+
+    @Override
+    public String toString() {
+        return "GeneratedVein[origin=" + origin + ", chunks={" + generatedOres.keySet().stream().map(ChunkPos::toString).collect(Collectors.joining(", ")) + "}]";
+    }
 }

@@ -12,7 +12,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.WorldGenLevel;
-import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.XoroshiroRandomSource;
 import net.minecraft.world.level.levelgen.placement.PlacementContext;
@@ -31,9 +30,7 @@ public class OreGenerator {
     }
 
 
-    public Optional<GeneratedVein> generate(WorldGenLevel level, ChunkGenerator chunkGenerator, ChunkAccess chunk) {
-        ChunkPos chunkPos = chunk.getPos();
-
+    public Optional<GeneratedVein> generate(WorldGenLevel level, ChunkGenerator chunkGenerator, ChunkPos chunkPos) {
         var config = createConfig(level, chunkGenerator, chunkPos).orElse(null);
         if (config == null)
             return Optional.empty();
