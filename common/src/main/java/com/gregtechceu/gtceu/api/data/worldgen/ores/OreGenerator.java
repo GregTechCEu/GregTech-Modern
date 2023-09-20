@@ -25,9 +25,9 @@ import java.util.Optional;
 @MethodsReturnNonnullByDefault
 public class OreGenerator {
     public record VeinConfiguration(GTOreFeatureConfiguration featureConfiguration,
-                                     GTOreDefinition entry,
-                                     RandomSource random,
-                                     BlockPos origin) {
+                                    GTOreDefinition entry,
+                                    RandomSource random,
+                                    BlockPos origin) {
     }
 
 
@@ -49,21 +49,20 @@ public class OreGenerator {
         if (veinGenerator == null)
             return Optional.empty();
 
-        boolean generated = veinGenerator.generate(level, config.random(), entry, config.origin());
+        Map<BlockPos, OreBlockPlacer> generated = veinGenerator.generate(level, config.random(), entry, config.origin());
 
-        if (generated) {
-            logPlaced(id, true);
-
-            if (ConfigHolder.INSTANCE.machines.doBedrockOres) {
-                BedrockOreVeinSavedData.getOrCreate(level.getLevel()).createVein(new ChunkPos(config.origin()), entry);
-            }
-
-            // TODO implement generated vein / don't place in vein generators
-            return Optional.of(new GeneratedVein(chunkPos, Map.of()));
+        if (generated.isEmpty()) {
+            logPlaced(id, false);
+            return Optional.empty();
         }
 
-        logPlaced(id, false);
-        return Optional.empty();
+        logPlaced(id, true);
+
+        if (ConfigHolder.INSTANCE.machines.doBedrockOres) {
+            BedrockOreVeinSavedData.getOrCreate(level.getLevel()).createVein(new ChunkPos(config.origin()), entry);
+        }
+
+        return Optional.of(new GeneratedVein(chunkPos, generated));
     }
 
 

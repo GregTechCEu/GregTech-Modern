@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.WorldGeneratorUtils;
+import com.gregtechceu.gtceu.api.data.worldgen.ores.OreBlockPlacer;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
@@ -65,7 +66,9 @@ public abstract class VeinGenerator {
                 .collect(Collectors.toList());
     }
 
-    public abstract boolean generate(WorldGenLevel level, RandomSource random, GTOreDefinition entry, BlockPos origin);
+    public abstract Map<BlockPos, OreBlockPlacer> generate(
+            WorldGenLevel level, RandomSource random, GTOreDefinition entry, BlockPos origin
+    );
 
     public abstract VeinGenerator build();
 
