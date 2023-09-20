@@ -1,14 +1,11 @@
 package com.gregtechceu.gtceu.api.data.chemical;
 
-import com.almostreliable.unified.api.AlmostUnifiedLookup;
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.ItemMaterialInfo;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
-import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -16,7 +13,6 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -170,13 +166,8 @@ public class ChemicalHelper {
         return UNIFICATION_ENTRY_ITEM.computeIfAbsent(unificationEntry, entry -> {
             var items = new ArrayList<ItemLike>();
             for (TagKey<Item> tag : getTags(entry.tagPrefix, entry.material)) {
-                Item unified = AlmostUnifiedAdapter.getPreferredItemForTag(tag);
-                if (unified != null) {
-                    items.add(unified);
-                } else {
-                    for (Holder<Item> itemHolder : BuiltInRegistries.ITEM.getTagOrEmpty(tag)) {
-                        items.add(itemHolder.value());
-                    }
+                for (Holder<Item> itemHolder : BuiltInRegistries.ITEM.getTagOrEmpty(tag)) {
+                    items.add(itemHolder.value());
                 }
             }
             TagPrefix prefix = entry.tagPrefix;
@@ -185,18 +176,6 @@ public class ChemicalHelper {
             }
             return items;
         });
-    }
-
-    /**
-     * return an ingredient of all valid items, for AlmostUnified compatibility.
-     */
-    public static SizedIngredient getItems(UnificationEntry unificationEntry, int size) {
-        ItemStack[] items = getItems(unificationEntry).stream().map(item -> new ItemStack(item, size)).toArray(ItemStack[]::new);
-        return SizedIngredient.create(Ingredient.of(items), size);
-    }
-
-    public static SizedIngredient getItems(TagPrefix prefix, Material material, int size) {
-        return getItems(new UnificationEntry(prefix, material), size);
     }
 
     public static ItemStack get(UnificationEntry unificationEntry, int size) {
@@ -263,26 +242,5 @@ public class ChemicalHelper {
         return ITEM_MATERIAL_INFO.entrySet().stream()
                 .map(entry -> new AbstractMap.SimpleEntry<>(new ItemStack(entry.getKey().asItem()), entry.getValue()))
                 .collect(Collectors.toList());
-    }
-
-    public static Ingredient getValidItemsForTag(TagKey<Item> tag) {
-        var item = AlmostUnifiedAdapter.getPreferredItemForTag(tag);
-        if (item != null) {
-            return Ingredient.of(item);
-        } else {
-            return Ingredient.of(tag);
-        }
-    }
-
-    private static class AlmostUnifiedAdapter {
-
-        @Nullable
-        public static Item getPreferredItemForTag(TagKey<Item> tag) {
-            if (GTCEu.isAlmostUnifiedLoaded()) {
-                return AlmostUnifiedLookup.INSTANCE.getPreferredItemForTag(tag);
-            } else {
-                return null;
-            }
-        }
     }
 }

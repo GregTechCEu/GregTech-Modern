@@ -61,14 +61,14 @@ public class MaterialRecipeHandler {
             ItemStack smallDarkAshStack = ChemicalHelper.get(dustSmall, DarkAsh);
 
             if (mat.hasFlag(CRYSTALLIZABLE)) {
-                AUTOCLAVE_RECIPES.recipeBuilder("autoclave_" + id + "water")
+                AUTOCLAVE_RECIPES.recipeBuilder("autoclave_" + id + "_water")
                         .inputItems(dustStack)
                         .inputFluids(Water.getFluid(250))
                         .chancedOutput(gemStack, 7000, 1000)
                         .duration(1200).EUt(24)
                         .save(provider);
 
-                AUTOCLAVE_RECIPES.recipeBuilder("autoclave_" + id + "distilled")
+                AUTOCLAVE_RECIPES.recipeBuilder("autoclave_" + id + "_distilled")
                         .inputItems(dustStack)
                         .inputFluids(DistilledWater.getFluid(50))
                         .outputItems(gemStack)
@@ -77,14 +77,14 @@ public class MaterialRecipeHandler {
             }
 
             if (!mat.hasFlag(EXPLOSIVE) && !mat.hasFlag(FLAMMABLE)) {
-                IMPLOSION_RECIPES.recipeBuilder("implode" + id + "tnt")
+                IMPLOSION_RECIPES.recipeBuilder("implode_" + id + "_tnt")
                         .inputItems(GTUtil.copyAmount(4, dustStack))
                         .outputItems(GTUtil.copyAmount(3, gemStack), smallDarkAshStack)
                         .explosivesAmount(2)
                         .save(provider);
 
                 // TODO Dynamite
-                //IMPLOSION_RECIPES.recipeBuilder("implode_" + id + "dynamite")
+                //IMPLOSION_RECIPES.recipeBuilder("implode_" + id + "_dynamite")
                 //        .inputItems(GTUtil.copyAmount(4, dustStack))
                 //        .outputItems(GTUtil.copyAmount(3, gemStack), smallDarkAshStack)
                 //        .explosivesType(GTItems.DYNAMITE.asStack())
@@ -94,7 +94,7 @@ public class MaterialRecipeHandler {
             if (oreProperty != null) {
                 Material smeltingResult = oreProperty.getDirectSmeltResult();
                 if (smeltingResult != null) {
-                    VanillaRecipeHelper.addSmeltingRecipe(provider, id + "ingot",
+                    VanillaRecipeHelper.addSmeltingRecipe(provider, id + "_ingot",
                             ChemicalHelper.getTag(dustPrefix, mat), ChemicalHelper.get(ingot, smeltingResult));
                 }
             }
@@ -116,7 +116,7 @@ public class MaterialRecipeHandler {
                     // smelting magnetic dusts is handled elsewhere
                     if (!mat.hasFlag(IS_MAGNETIC)) {
                         // do not register inputs by ore dict here. Let other mods register their own dust -> ingots
-                        VanillaRecipeHelper.addSmeltingRecipe(provider, id + "demagnetize_from_dust",
+                        VanillaRecipeHelper.addSmeltingRecipe(provider, id + "_demagnetize_from_dust",
                                 ChemicalHelper.getTag(dustPrefix, mat), ingotStack);
                     }
                 } else {
@@ -144,7 +144,7 @@ public class MaterialRecipeHandler {
                 if (smeltingResult != null) {
                     ItemStack ingotStack = ChemicalHelper.get(ingot, smeltingResult);
                     if (!ingotStack.isEmpty()) {
-                        VanillaRecipeHelper.addSmeltingRecipe(provider, id + "dust_to_ingot",
+                        VanillaRecipeHelper.addSmeltingRecipe(provider, id + "_dust_to_ingot",
                                 ChemicalHelper.getTag(dustPrefix, mat), ingotStack);
                     }
                 }
@@ -218,13 +218,13 @@ public class MaterialRecipeHandler {
         VanillaRecipeHelper.addShapedRecipe(provider, String.format("small_dust_assembling_%s", material),
                 dustStack, "XX", "XX", 'X', new UnificationEntry(orePrefix, material));
 
-        PACKER_RECIPES.recipeBuilder("package_" + material.getName() + "small_dust")
+        PACKER_RECIPES.recipeBuilder("package_" + material.getName() + "_small_dust")
                 .inputItems(orePrefix, material, 4)
                 .circuitMeta(1)
                 .outputItems(dustStack)
                 .save(provider);
 
-        PACKER_RECIPES.recipeBuilder("unpackage_" + material.getName() + "small_dust")
+        PACKER_RECIPES.recipeBuilder("unpackage_" + material.getName() + "_small_dust")
                 .inputItems(dust, material)
                 .circuitMeta(2)
                 .outputItems(GTUtil.copyAmount(4, smallDustStack))
@@ -240,13 +240,13 @@ public class MaterialRecipeHandler {
         VanillaRecipeHelper.addShapedRecipe(provider, String.format("tiny_dust_assembling_%s", material),
                 dustStack, "XXX", "XXX", "XXX", 'X', new UnificationEntry(orePrefix, material));
 
-        PACKER_RECIPES.recipeBuilder("package_" + material.getName() + "tiny_dust")
+        PACKER_RECIPES.recipeBuilder("package_" + material.getName() + "_tiny_dust")
                 .inputItems(orePrefix, material, 9)
                 .circuitMeta(1)
                 .outputItems(dustStack)
                 .save(provider);
 
-        PACKER_RECIPES.recipeBuilder("unpackage_" + material.getName() + "tiny_dust")
+        PACKER_RECIPES.recipeBuilder("unpackage_" + material.getName() + "_tiny_dust")
                 .inputItems(dust, material)
                 .circuitMeta(1)
                 .outputItems(GTUtil.copyAmount(9, tinyDustStack))

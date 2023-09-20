@@ -152,11 +152,11 @@ public interface GTRecipeSchema {
         }
 
         public GTRecipeJS inputItems(TagKey<Item> tag, int amount) {
-            return inputItems(InputItem.of(SizedIngredient.create(ChemicalHelper.getValidItemsForTag(tag), amount), amount));
+            return inputItems(InputItem.of(SizedIngredient.create(tag, amount)));
         }
 
         public GTRecipeJS inputItems(TagKey<Item> tag) {
-            return inputItems(InputItem.of(ChemicalHelper.getValidItemsForTag(tag), 1));
+            return inputItems(tag, 1);
         }
 
         public GTRecipeJS inputItems(Item input, int amount) {
@@ -358,6 +358,13 @@ public interface GTRecipeSchema {
             return this;
         }
 
+        public GTRecipeJS addData(String key, long data) {
+            if (getValue(DATA) == null) setValue(DATA, new CompoundTag());
+            getValue(DATA).putLong(key, data);
+            save();
+            return this;
+        }
+
         public GTRecipeJS addData(String key, String data) {
             if (getValue(DATA) == null) setValue(DATA, new CompoundTag());
             getValue(DATA).putString(key, data);
@@ -393,6 +400,14 @@ public interface GTRecipeSchema {
 
         public GTRecipeJS solderMultiplier(int multiplier) {
             return addData("solderMultiplier", multiplier);
+        }
+
+        public GTRecipeJS disableDistilleryRecipes(boolean flag) {
+            return addData("disable_distillery", flag);
+        }
+
+        public GTRecipeJS fusionStartEU(long eu) {
+            return addData("eu_to_start", eu);
         }
 
         //////////////////////////////////////

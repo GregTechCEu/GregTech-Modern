@@ -1,0 +1,167 @@
+package com.gregtechceu.gtceu.data.pack;
+
+import com.google.common.collect.Sets;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.common.data.GTRecipes;
+import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.lowdragmc.lowdraglib.Platform;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import it.unimi.dsi.fastutil.objects.ObjectSet;
+import net.minecraft.SharedConstants;
+import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.PackResources;
+import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.metadata.MetadataSectionSerializer;
+import net.minecraft.server.packs.metadata.pack.PackMetadataSection;
+import net.minecraft.server.packs.resources.IoSupplier;
+import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.ParametersAreNonnullByDefault;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.*;
+
+@ParametersAreNonnullByDefault
+public class GTDynamicDataPack implements PackResources {
+
+    protected static final ObjectSet<String> SERVER_DOMAINS = new ObjectOpenHashSet<>();
+    protected static final Map<ResourceLocation, JsonObject> DATA = new HashMap<>();
+
+    private final String name;
+
+    static {
+        SERVER_DOMAINS.addAll(Sets.newHashSet(GTCEu.MOD_ID, "minecraft", "forge", "c"));
+    }
+
+    public GTDynamicDataPack(String name, Collection<String> domains) {
+        this.name = name;
+        SERVER_DOMAINS.addAll(domains);
+    }
+
+    public static void clearServer() {
+        DATA.clear();
+    }
+
+    public static void addRecipe(FinishedRecipe recipe) {
+        JsonObject recipeJson = recipe.serializeRecipe();
+        Path parent = Platform.getGamePath().resolve("gtceu/dumped/data");
+        ResourceLocation recipeId = recipe.getId();
+        if (ConfigHolder.INSTANCE.dev.dumpRecipes) {
+            writeJson(recipeId, "recipes", parent, recipeJson);
+        }
+        if (DATA.containsKey(recipeId)) {
+            GTCEu.LOGGER.error("duplicated recipe: {}", recipeId);
+        }
+        DATA.put(getRecipeLocation(recipeId), recipeJson);
+        if (recipe.serializeAdvancement() != null) {
+            JsonObject advancement = recipe.serializeAdvancement();
+            if (ConfigHolder.INSTANCE.dev.dumpRecipes) {
+                writeJson(recipe.getAdvancementId(), "advancements", parent, advancement);
+            }
+            DATA.put(getAdvancementLocation(Objects.requireNonNull(recipe.getAdvancementId())), advancement);
+        }
+    }
+
+    private static void writeJson(ResourceLocation id, String subdir, Path parent, JsonObject json) {
+        try {
+            Path file = parent.resolve(id.getNamespace()).resolve(subdir).resolve(id.getPath() + ".json");
+            Files.createDirectories(file.getParent());
+            try(OutputStream output = Files.newOutputStream(file)) {
+                output.write(json.toString().getBytes());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void addAdvancement(ResourceLocation loc, JsonObject obj) {
+        ResourceLocation l = getAdvancementLocation(loc);
+        synchronized (DATA) {
+            DATA.put(l, obj);
+        }
+    }
+
+    @Nullable
+    @Override
+    public IoSupplier<InputStream> getRootResource(String... elements) {
+        return null;
+    }
+
+    @Override
+    public IoSupplier<InputStream> getResource(PackType type, ResourceLocation location) {
+        if (type == PackType.SERVER_DATA) {
+            if (DATA.containsKey(location))
+                return () -> new ByteArrayInputStream(DATA.get(location).toString().getBytes(StandardCharsets.UTF_8));
+            else return null;
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public void listResources(PackType packType, String namespace, String path, ResourceOutput resourceOutput) {
+        if (packType == PackType.SERVER_DATA)
+            DATA.keySet().stream().filter(Objects::nonNull).filter(loc -> loc.getPath().startsWith(path)).forEach((id) -> {
+                IoSupplier<InputStream> resource = this.getResource(packType, id);
+                if (resource != null) {
+                    resourceOutput.accept(id, resource);
+                }
+            });
+    }
+
+    @Override
+    public Set<String> getNamespaces(PackType type) {
+        return type == PackType.SERVER_DATA ? SERVER_DOMAINS : Set.of();
+    }
+
+    @Nullable
+    @Override
+    public <T> T getMetadataSection(MetadataSectionSerializer<T> metaReader) {
+        if(metaReader == PackMetadataSection.TYPE) {
+            return (T) new PackMetadataSection(Component.literal("GTCEu dynamic data"), SharedConstants.getCurrentVersion().getPackVersion(PackType.SERVER_DATA));
+        } else if (metaReader.getMetadataSectionName().equals("filter")) {
+            JsonObject filter = new JsonObject();
+            JsonArray block = new JsonArray();
+            GTRecipes.recipeRemoval((id) -> { // Collect removed recipes in here, in the pack filter section.
+                JsonObject entry = new JsonObject();
+                entry.addProperty("namespace", id.getNamespace().replaceAll("[\\W]", "\\\\$0"));
+                entry.addProperty("path", "recipes/" + id.getPath().replaceAll("[\\W]", "\\\\$0"));
+                block.add(entry);
+            });
+            filter.add("block", block);
+            return metaReader.fromJson(filter);
+        }
+        return null;
+    }
+
+    @Override
+    public String packId() {
+        return this.name;
+    }
+
+    @Override
+    public void close() {
+        //NOOP
+    }
+
+    public static ResourceLocation getRecipeLocation(ResourceLocation recipeId) {
+        return new ResourceLocation(recipeId.getNamespace(), String.join("", "recipes/", recipeId.getPath(), ".json"));
+    }
+
+    public static ResourceLocation getAdvancementLocation(ResourceLocation advancementId) {
+        return new ResourceLocation(advancementId.getNamespace(), String.join("", "advancements/", advancementId.getPath(), ".json"));
+    }
+
+    public static ResourceLocation getTagLocation(String identifier, ResourceLocation tagId) {
+        return new ResourceLocation(tagId.getNamespace(), String.join("", "tags/", identifier, "/", tagId.getPath(), ".json"));
+    }
+}
