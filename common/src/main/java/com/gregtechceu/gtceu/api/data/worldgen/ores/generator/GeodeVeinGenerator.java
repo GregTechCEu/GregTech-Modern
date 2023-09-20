@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.api.data.worldgen.generator;
+package com.gregtechceu.gtceu.api.data.worldgen.ores.generator;
 
 import com.google.common.collect.Lists;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
@@ -16,8 +16,8 @@ import lombok.experimental.Accessors;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.core.SectionPos;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.ExtraCodecs;
