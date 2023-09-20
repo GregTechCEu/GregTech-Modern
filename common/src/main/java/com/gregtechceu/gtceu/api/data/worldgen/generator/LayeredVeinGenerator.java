@@ -73,8 +73,7 @@ public class LayeredVeinGenerator extends VeinGenerator {
         int size = entry.getClusterSize();
         float density = entry.getDensity();
 
-        // Limit to a radius of 22 to avoid generating outside the allowed 3x3 chunk area for features
-        int radius = Math.min(Mth.ceil(size / 2f), 22);
+        int radius = Mth.ceil(size / 2f);
 
         int xMin = origin.getX() - radius;
         int yMin = origin.getY() - radius;

@@ -245,12 +245,6 @@ public class StandardVeinGenerator extends VeinGenerator {
         int maxY = Math.max(Mth.floor(y + randomShapeOffset), minY);
         int maxZ = Math.max(Mth.floor(z + randomShapeOffset), minZ);
 
-        // Guard against generating outside the allowed 3x3 chunk area for features:
-        int minXBounds = origin.getX() - 22;
-        int maxXBounds = origin.getX() + 22;
-        int minZBounds = origin.getZ() - 22;
-        int maxZBounds = origin.getZ() + 22;
-
         for (int posX = minX; posX <= maxX; ++posX) {
             double radX = ((double) posX + 0.5D - x) / randomShapeOffset;
             if (!((radX * radX) < 1.0D))
@@ -268,9 +262,6 @@ public class StandardVeinGenerator extends VeinGenerator {
 
                     int isPlaced = posX - pX + (posY - pY) * pWidth + (posZ - pZ) * pWidth * pHeight;
                     if (placedBlocks.get(isPlaced))
-                        continue;
-
-                    if (posX < minXBounds || posX > maxXBounds || posZ < minZBounds || posZ > maxZBounds)
                         continue;
 
                     placedBlocks.set(isPlaced);
