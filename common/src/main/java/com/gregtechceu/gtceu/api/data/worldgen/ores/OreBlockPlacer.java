@@ -9,6 +9,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
+@FunctionalInterface
 public interface OreBlockPlacer {
     void placeBlock(BulkSectionAccess access, LevelChunkSection section);
 }
