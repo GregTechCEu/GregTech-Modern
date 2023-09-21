@@ -3,12 +3,14 @@ package com.gregtechceu.gtceu.api.data.worldgen.generator;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
-import com.gregtechceu.gtceu.api.data.worldgen.GTOreFeature;
+import com.gregtechceu.gtceu.api.data.worldgen.ores.OreBlockPlacer;
+import com.gregtechceu.gtceu.api.data.worldgen.ores.OreVeinUtil;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -21,6 +23,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.BulkSectionAccess;
 import net.minecraft.world.level.chunk.LevelChunkSection;
 import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.level.levelgen.XoroshiroRandomSource;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
 import net.minecraft.world.level.levelgen.structure.templatesystem.TagMatchTest;
 import org.apache.commons.lang3.mutable.MutableInt;
@@ -129,7 +132,9 @@ public class StandardVeinGenerator extends VeinGenerator {
     }
 
     @Override
-    public boolean generate(WorldGenLevel level, RandomSource random, GTOreDefinition entry, BlockPos origin) {
+    public Map<BlockPos, OreBlockPlacer> generate(WorldGenLevel level, RandomSource random, GTOreDefinition entry, BlockPos origin) {
+        Map<BlockPos, OreBlockPlacer> generatedBlocks = new Object2ObjectOpenHashMap<>();
+
         float f = random.nextFloat() * (float) Math.PI;
         float f1 = (float) entry.getClusterSize() / 8.0F;
         int i = Mth.ceil(((float) entry.getClusterSize() / 16.0F * 2.0F + 1.0F) / 2.0F);
@@ -150,15 +155,18 @@ public class StandardVeinGenerator extends VeinGenerator {
                 if (y > level.getHeight(Heightmap.Types.OCEAN_FLOOR_WG, heightmapX, heightmapZ))
                     continue;
 
-                if (this.doPlaceNormal(level, random, entry, origin, this.blocks, minX, maxX, minZ, maxZ, minY, maxY, x, y, z, width, height)) {
-                    return true;
-                }
+                this.doPlaceNormal(generatedBlocks, random, entry, origin, this.blocks, minX, maxX, minZ, maxZ, minY, maxY, x, y, z, width, height);
+
+                // Stop after first successful placement attempt
+                if (!generatedBlocks.isEmpty())
+                    return generatedBlocks;
             }
         }
-        return false;
+
+        return generatedBlocks;
     }
 
-    protected boolean doPlaceNormal(WorldGenLevel level, RandomSource random, GTOreDefinition entry, BlockPos origin,
+    protected void doPlaceNormal(Map<BlockPos, OreBlockPlacer> generatedBlocks, RandomSource random, GTOreDefinition entry, BlockPos origin,
                                     Either<List<OreConfiguration.TargetBlockState>, Material> targets,
                                     double pMinX, double pMaxX, double pMinZ, double pMaxZ, double pMinY, double pMaxY,
                                     int pX, int pY, int pZ, int pWidth, int pHeight) {
@@ -211,24 +219,20 @@ public class StandardVeinGenerator extends VeinGenerator {
             }
         }
 
-        try (BulkSectionAccess access = new BulkSectionAccess(level)) {
-            for (int centerOffset = 0; centerOffset < size; ++centerOffset) {
-                int shapeIdxOffset = centerOffset * 4;
+        for (int centerOffset = 0; centerOffset < size; ++centerOffset) {
+            int shapeIdxOffset = centerOffset * 4;
 
-                generateShape(
-                        level, random, entry, origin, targets, pX, pY, pZ, pWidth, pHeight,
-                        shape, shapeIdxOffset, placedBlocks, posCursor, access, density, placedAmount
-                );
-            }
+            generateShape(
+                    generatedBlocks, random, entry, origin, targets, pX, pY, pZ, pWidth, pHeight,
+                    shape, shapeIdxOffset, placedBlocks, posCursor, density, placedAmount
+            );
         }
-
-        return placedAmount.getValue() > 0;
     }
 
-    private static void generateShape(WorldGenLevel level, RandomSource random, GTOreDefinition entry, BlockPos origin,
+    private static void generateShape(Map<BlockPos, OreBlockPlacer> generatedBlocks, RandomSource random, GTOreDefinition entry, BlockPos origin,
                                       Either<List<OreConfiguration.TargetBlockState>, Material> targets,
                                       int pX, int pY, int pZ, int pWidth, int pHeight, double[] shape, int shapeIdxOffset,
-                                      BitSet placedBlocks, BlockPos.MutableBlockPos posCursor, BulkSectionAccess access,
+                                      BitSet placedBlocks, BlockPos.MutableBlockPos posCursor,
                                       float density, MutableInt placedAmount) {
         double randomShapeOffset = shape[shapeIdxOffset + 3];
         if (randomShapeOffset < 0.0D)
@@ -245,12 +249,6 @@ public class StandardVeinGenerator extends VeinGenerator {
         int maxY = Math.max(Mth.floor(y + randomShapeOffset), minY);
         int maxZ = Math.max(Mth.floor(z + randomShapeOffset), minZ);
 
-        // Guard against generating outside the allowed 3x3 chunk area for features:
-        int minXBounds = origin.getX() - 22;
-        int maxXBounds = origin.getX() + 22;
-        int minZBounds = origin.getZ() - 22;
-        int maxZBounds = origin.getZ() + 22;
-
         for (int posX = minX; posX <= maxX; ++posX) {
             double radX = ((double) posX + 0.5D - x) / randomShapeOffset;
             if (!((radX * radX) < 1.0D))
@@ -263,39 +261,39 @@ public class StandardVeinGenerator extends VeinGenerator {
 
                 for (int posZ = minZ; posZ <= maxZ; ++posZ) {
                     double radZ = ((double) posZ + 0.5D - z) / randomShapeOffset;
-                    if (!((radX * radX) + (radY * radY) + (radZ * radZ) < 1.0D) || level.isOutsideBuildHeight(posY))
+                    if (!((radX * radX) + (radY * radY) + (radZ * radZ) < 1.0D))
                         continue;
 
                     int isPlaced = posX - pX + (posY - pY) * pWidth + (posZ - pZ) * pWidth * pHeight;
                     if (placedBlocks.get(isPlaced))
                         continue;
 
-                    if (posX < minXBounds || posX > maxXBounds || posZ < minZBounds || posZ > maxZBounds)
-                        continue;
-
                     placedBlocks.set(isPlaced);
-                    placeBlock(level, random, entry, targets, posCursor, access, density, placedAmount, posX, posY, posZ);
+                    BlockPos pos = posCursor.immutable();
 
+                    final var randomSeed = random.nextLong(); // Fully deterministic regardless of chunk order
+                    generatedBlocks.put(pos, (access, section) ->
+                            placeBlock(access, randomSeed, entry, targets, pos, density, placedAmount)
+                    );
                 }
             }
         }
     }
 
-    private static void placeBlock(WorldGenLevel level, RandomSource random, GTOreDefinition entry,
+    private static void placeBlock(BulkSectionAccess access, long randomSeed, GTOreDefinition entry,
                                    Either<List<OreConfiguration.TargetBlockState>, Material> targets,
-                                   BlockPos.MutableBlockPos posCursor, BulkSectionAccess access,
-                                   float density, MutableInt placedAmount, int posX, int posY, int posZ) {
-        posCursor.set(posX, posY, posZ);
-        if (!level.ensureCanWrite(posCursor))
-            return;
+                                   BlockPos pos,
+                                   float density, MutableInt placedAmount) {
+        RandomSource random = new XoroshiroRandomSource(randomSeed);
+        BlockPos.MutableBlockPos posCursor = pos.mutable();
 
         LevelChunkSection levelchunksection = access.getSection(posCursor);
         if (levelchunksection == null)
             return;
 
-        int sectionX = SectionPos.sectionRelative(posX);
-        int sectionY = SectionPos.sectionRelative(posY);
-        int sectionZ = SectionPos.sectionRelative(posZ);
+        int sectionX = SectionPos.sectionRelative(pos.getX());
+        int sectionY = SectionPos.sectionRelative(pos.getY());
+        int sectionZ = SectionPos.sectionRelative(pos.getZ());
         BlockState blockstate = levelchunksection.getBlockState(sectionX, sectionY, sectionZ);
 
         if (!(random.nextFloat() <= density))
@@ -303,14 +301,14 @@ public class StandardVeinGenerator extends VeinGenerator {
 
         targets.ifLeft(blockStates -> {
             for (OreConfiguration.TargetBlockState targetState : blockStates) {
-                if (GTOreFeature.canPlaceOre(blockstate, access::getBlockState, random, entry, targetState, posCursor)) {
+                if (OreVeinUtil.canPlaceOre(blockstate, access::getBlockState, random, entry, targetState, posCursor)) {
                     levelchunksection.setBlockState(sectionX, sectionY, sectionZ, targetState.state, false);
                     placedAmount.increment();
                     break;
                 }
             }
         }).ifRight(material -> {
-            if (!GTOreFeature.canPlaceOre(blockstate, access::getBlockState, random, entry, posCursor))
+            if (!OreVeinUtil.canPlaceOre(blockstate, access::getBlockState, random, entry, posCursor))
                 return;
             BlockState currentState = access.getBlockState(posCursor);
             var prefix = ChemicalHelper.ORES_INVERSE.get(currentState);

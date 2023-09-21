@@ -3,13 +3,15 @@ package com.gregtechceu.gtceu.api.data.worldgen.generator;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
-import com.gregtechceu.gtceu.api.data.worldgen.GTOreFeature;
+import com.gregtechceu.gtceu.api.data.worldgen.ores.OreBlockPlacer;
+import com.gregtechceu.gtceu.api.data.worldgen.ores.OreVeinUtil;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTFeatures;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import lombok.AllArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -29,9 +31,10 @@ import net.minecraft.world.level.chunk.BulkSectionAccess;
 import net.minecraft.world.level.chunk.LevelChunkSection;
 import net.minecraft.world.level.levelgen.DensityFunction;
 import net.minecraft.world.level.levelgen.RandomState;
+import net.minecraft.world.level.levelgen.XoroshiroRandomSource;
 import net.minecraft.world.level.levelgen.blending.Blender;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
-import org.apache.commons.lang3.mutable.MutableBoolean;
+import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
@@ -108,13 +111,14 @@ public class VeinedVeinGenerator extends VeinGenerator {
     }
 
     @Override
-    public boolean generate(WorldGenLevel level, RandomSource random, GTOreDefinition entry, BlockPos origin) {
+    public Map<BlockPos, OreBlockPlacer> generate(WorldGenLevel level, RandomSource random, GTOreDefinition entry, BlockPos origin) {
+        Map<BlockPos, OreBlockPlacer> generatedBlocks = new Object2ObjectOpenHashMap<>();
+
         Registry<? extends DensityFunction> densityFunctions = GTRegistries.builtinRegistry().registry(Registries.DENSITY_FUNCTION).get();
 
         List<? extends Map.Entry<Integer, VeinBlockDefinition>> commonEntries = oreBlocks.stream().map(b -> Map.entry(b.weight, b)).toList();
         List<? extends Map.Entry<Integer, VeinBlockDefinition>> rareEntries = rareBlocks == null ? null : rareBlocks.stream().map(b -> Map.entry(b.weight, b)).toList(); // never accessed if rareBlocks is null
 
-        BulkSectionAccess access = new BulkSectionAccess(level);
         RandomState randomState = level.getLevel().getChunkSource().randomState();
         Blender blender;
         if (level instanceof WorldGenRegion region) {
@@ -129,8 +133,7 @@ public class VeinedVeinGenerator extends VeinGenerator {
 
         int size = entry.getClusterSize();
 
-        // Limit to a radius of 22 to avoid generating outside the allowed 3x3 chunk area for features
-        int radius = Math.min(Mth.ceil(size / 2f), 22);
+        int radius = Mth.ceil(size / 2f);
 
         int placedCount = 0;
 
@@ -190,61 +193,57 @@ public class VeinedVeinGenerator extends VeinGenerator {
             double chance = Mth.clampedMap(absToggleNoise, veininessThreshold, maxRichnessThreshold, minRichness, maxRichness);
 
             BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos(x, y, z);
-            LevelChunkSection section = access.getSection(pos);
-            if (section == null)
-                continue;
-            int sectionX = SectionPos.sectionRelative(pos.getX());
-            int sectionY = SectionPos.sectionRelative(pos.getY());
-            int sectionZ = SectionPos.sectionRelative(pos.getZ());
-            if (!level.ensureCanWrite(pos))
-                continue;
-            BlockState current = section.getBlockState(sectionX, sectionY, sectionZ);
-            boolean placed = false;
-            if (random.nextFloat() <= entry.getDensity()) {
-                if (random.nextFloat() < chance) {
-                    if (rareBlocks != null && !rareBlocks.isEmpty() && random.nextFloat() < rareBlockChance) {
-                        placed = placeOre(rareBlocks.get(GTUtil.getRandomItem(random, rareEntries, rareEntries.size())).block, current, access, section, random, pos, entry);
-                    } else {
-                        placed = placeOre(oreBlocks.get(GTUtil.getRandomItem(random, commonEntries, commonEntries.size())).block, current, access, section, random, pos, entry);
-                    }
-                } else {
-                    if (fillerBlock == null || fillerBlock.isAir())
-                        continue;
-                    if (!GTOreFeature.canPlaceOre(current, level::getBlockState, random, entry, pos))
-                        continue;
-                    section.setBlockState(sectionX, sectionY, sectionZ, fillerBlock, false);
-                    if (level.getBlockState(pos) != current) placed = true;
-                }
-            }
 
-            if (placed)  {
-                ++placedCount;
-            }
+            final var randomSeed = random.nextLong(); // Fully deterministic regardless of chunk order
+            generatedBlocks.put(pos, (access, section) ->
+                    placeBlock(access, section, randomSeed, entry, chance, rareEntries, pos, commonEntries)
+            );
         }
 
-        access.close();
-        return placedCount > 0;
+        return generatedBlocks;
     }
 
-    protected static boolean placeOre(Either<List<OreConfiguration.TargetBlockState>, Material> block, BlockState current, BulkSectionAccess level, LevelChunkSection section, RandomSource random, BlockPos.MutableBlockPos pos, GTOreDefinition entry) {
-        MutableBoolean returnValue = new MutableBoolean(false);
+    @Nullable
+    private void placeBlock(BulkSectionAccess access, LevelChunkSection section, long randomSeed, GTOreDefinition entry, double chance, List<? extends Map.Entry<Integer, VeinBlockDefinition>> rareEntries, BlockPos.MutableBlockPos pos, List<? extends Map.Entry<Integer, VeinBlockDefinition>> commonEntries) {
+        RandomSource random = new XoroshiroRandomSource(randomSeed);
+        int sectionX = SectionPos.sectionRelative(pos.getX());
+        int sectionY = SectionPos.sectionRelative(pos.getY());
+        int sectionZ = SectionPos.sectionRelative(pos.getZ());
 
+        BlockState current = section.getBlockState(sectionX, sectionY, sectionZ);
+        if (random.nextFloat() <= entry.getDensity()) {
+            if (random.nextFloat() < chance) {
+                if (rareBlocks != null && !rareBlocks.isEmpty() && random.nextFloat() < rareBlockChance) {
+                    placeOre(rareBlocks.get(GTUtil.getRandomItem(random, rareEntries, rareEntries.size())).block, current, access, section, random, pos, entry);
+                } else {
+                    placeOre(oreBlocks.get(GTUtil.getRandomItem(random, commonEntries, commonEntries.size())).block, current, access, section, random, pos, entry);
+                }
+            } else {
+                if (fillerBlock == null || fillerBlock.isAir())
+                    return;
+                if (!OreVeinUtil.canPlaceOre(current, access::getBlockState, random, entry, pos))
+                    return;
+                section.setBlockState(sectionX, sectionY, sectionZ, fillerBlock, false);
+            }
+        }
+    }
+
+    protected static void placeOre(Either<List<OreConfiguration.TargetBlockState>, Material> block, BlockState current, BulkSectionAccess level, LevelChunkSection section, RandomSource random, BlockPos.MutableBlockPos pos, GTOreDefinition entry) {
         int x = SectionPos.sectionRelative(pos.getX());
         int y = SectionPos.sectionRelative(pos.getY());
         int z = SectionPos.sectionRelative(pos.getZ());
 
         block.ifLeft(blockStates -> {
             for (OreConfiguration.TargetBlockState targetState : blockStates) {
-                if (!GTOreFeature.canPlaceOre(current, level::getBlockState, random, entry, targetState, pos))
+                if (!OreVeinUtil.canPlaceOre(current, level::getBlockState, random, entry, targetState, pos))
                     continue;
                 if (targetState.state.isAir())
                     continue;
                 section.setBlockState(x, y, z, targetState.state, false);
-                returnValue.setTrue();
                 break;
             }
         }).ifRight(material -> {
-            if (!GTOreFeature.canPlaceOre(current, level::getBlockState, random, entry, pos))
+            if (!OreVeinUtil.canPlaceOre(current, level::getBlockState, random, entry, pos))
                 return;
             BlockState currentState = level.getBlockState(pos);
             var prefix = ChemicalHelper.ORES_INVERSE.get(currentState);
@@ -253,9 +252,7 @@ public class VeinedVeinGenerator extends VeinGenerator {
             if (toPlace == null || toPlace.defaultBlockState().isAir())
                 return;
             section.setBlockState(x, y, z, toPlace.defaultBlockState(), false);
-            returnValue.setTrue();
         });
-        return returnValue.isTrue();
     }
 
     @Override

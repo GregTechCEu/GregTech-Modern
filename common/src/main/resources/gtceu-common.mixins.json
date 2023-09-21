@@ -13,9 +13,9 @@
   ],
   "mixins": [
     "BlockBehaviourAccessor",
+    "ChunkGeneratorMixin",
     "ChunkMixin",
     "FolderRepositorySourceMixin",
-    "FeatureUtilsMixin",
     "IFoliagePlacerTypeAccessor",
     "IHolderReferenceAccessor",
     "IngredientAccessor",
@@ -24,7 +24,6 @@
     "LootTablesMixin",
     "OreConfigurationMixin",
     "OreVeinifierMixin",
-    "PlacedFeatureMixin",
     "RecipeManagerAccessor",
     "RecipeManagerInvoker",
     "RecipeManagerMixin",
@@ -35,7 +34,6 @@
     "SidedRedstoneConnectivityMixin",
     "TagLoaderMixin",
     "TagManagerMixin",
-    "WorldGenRegionMixin",
     "create.RotationPropagatorMixin",
     "kjs.RecipeEventJSMixin",
     "top.ConfigMixin"

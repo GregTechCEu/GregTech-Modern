@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
+import com.gregtechceu.gtceu.api.data.worldgen.ores.OreBlockPlacer;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.mojang.datafixers.util.Either;
 import com.mojang.datafixers.util.Pair;
@@ -16,8 +17,8 @@ import lombok.experimental.Accessors;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.core.SectionPos;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.ExtraCodecs;
@@ -118,7 +119,9 @@ public class GeodeVeinGenerator extends VeinGenerator {
     }
 
     @Override
-    public boolean generate(WorldGenLevel level, RandomSource random, GTOreDefinition entry, BlockPos origin) {
+    public Map<BlockPos, OreBlockPlacer> generate(WorldGenLevel level, RandomSource random, GTOreDefinition entry, BlockPos origin) {
+        // TODO refactor geode sizes for the new ore generation system. For now, geode veins are still generated in place.
+
         BulkSectionAccess access = new BulkSectionAccess(level);
 
         BlockState blockState;
@@ -144,7 +147,7 @@ public class GeodeVeinGenerator extends VeinGenerator {
             BlockPos origin2 = origin.offset(offset, this.outerWallDistance.sample(random), this.outerWallDistance.sample(random));
             blockState = access.getBlockState(origin2);
             if ((blockState.isAir() || blockState.is(BlockTags.GEODE_INVALID_BLOCKS)) && ++invalidBlocksCount > this.invalidBlocksThreshold) {
-                return false;
+                return Map.of();
             }
             points.add(Pair.of(origin2, this.pointOffset.sample(random)));
         }
@@ -243,7 +246,7 @@ public class GeodeVeinGenerator extends VeinGenerator {
         }
 
         access.close();
-        return true;
+        return Map.of();
     }
 
 

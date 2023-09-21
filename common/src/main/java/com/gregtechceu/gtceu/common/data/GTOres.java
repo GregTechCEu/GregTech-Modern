@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.worldgen.*;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import lombok.Getter;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -35,6 +36,12 @@ import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
  */
 @SuppressWarnings("unused")
 public class GTOres {
+    /**
+     * The size of the largest registered vein.
+     * This becomes available after all veins have been loaded.
+     */
+    @Getter
+    private static int largestVeinSize = 0;
 
     static {
         VeinGenerators.registerAddonGenerators();
@@ -604,4 +611,10 @@ public class GTOres {
     public static void init() {
     }
 
+    public static void updateLargestVeinSize() {
+        GTOres.largestVeinSize = GTRegistries.ORE_VEINS.values().stream()
+                .map(GTOreDefinition::getClusterSize)
+                .max(Integer::compareTo)
+                .orElse(0);
+    }
 }
