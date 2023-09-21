@@ -29,7 +29,7 @@ public class OreConfigurationMixin {
 
     @ModifyVariable(method = "<init>(Ljava/util/List;IF)V", at = @At("HEAD"), index = 1, argsOnly = true)
     private static List<TargetBlockState> gtceu$init(List<TargetBlockState> targetStates) {
-        if (ConfigHolder.INSTANCE == null || !ConfigHolder.INSTANCE.worldgen.removeVanillaOreGen)
+        if (ConfigHolder.INSTANCE == null || !ConfigHolder.INSTANCE.worldgen.oreVeins.removeVanillaOreGen)
             return targetStates;
 
         return targetStates.stream()
