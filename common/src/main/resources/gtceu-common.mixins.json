@@ -34,7 +34,6 @@
     "SidedRedstoneConnectivityMixin",
     "TagLoaderMixin",
     "TagManagerMixin",
-    "WorldGenRegionMixin",
     "create.RotationPropagatorMixin",
     "kjs.RecipeEventJSMixin",
     "top.ConfigMixin"

@@ -167,15 +167,6 @@ public class ConfigHolder {
         public boolean infiniteBedrockOresFluids = false;
 
         @Configurable
-        @Configurable.Range(min = 0, max = 8)
-        @Configurable.Comment({"Maximum worldgen feature size in chunks",
-                "if a vein is larger than this, Minecraft complains in logs.",
-                "If that happens, either increase this or make your veins smaller.",
-                "NOTE: Larger veins can cause noticeable worldgen lag!",
-                "Default: 2"})
-        public int maxFeatureChunkSize = 2;
-
-        @Configurable
         @Configurable.Comment({"Rubber Tree spawn chance (% per chunk)", "Default: 0.5"})
         public float rubberTreeSpawnChance = 0.5f;
 
