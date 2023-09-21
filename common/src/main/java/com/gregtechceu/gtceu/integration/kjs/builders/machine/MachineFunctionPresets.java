@@ -153,7 +153,7 @@ public class MachineFunctionPresets {
             public MachineBuilder<D> recipeType(GTRecipeType type) {
                 for (var builder : builders) {
                     if (builder == null) continue;
-                    return builder.recipeType(type);
+                    builder.recipeType(type);
                 }
                 return this;
             }
