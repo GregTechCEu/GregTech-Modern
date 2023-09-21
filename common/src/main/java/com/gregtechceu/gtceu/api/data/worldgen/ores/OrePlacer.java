@@ -32,6 +32,9 @@ public class OrePlacer {
             placersBySection.forEach((sectionPos, placers) -> {
                 LevelChunkSection section = access.getSection(sectionPos.origin());
 
+                if (section == null)
+                    return;
+
                 placers.forEach(placer -> placer.placeBlock(access, section));
             });
         }
