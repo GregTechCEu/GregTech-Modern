@@ -1,7 +1,9 @@
 package com.gregtechceu.gtceu.core.mixins;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.IGTAddon;
+import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.common.data.GTRecipes;
 import com.gregtechceu.gtceu.data.pack.GTDynamicDataPack;
 import net.minecraft.server.packs.repository.Pack;
@@ -24,8 +26,15 @@ public class ServerPacksSourceMixin {
     @SuppressWarnings("resource")
     @Inject(method = "loadPacks", at = @At("HEAD"))
     public void register(Consumer<Pack> adder, Pack.PackConstructor infoFactory, CallbackInfo ci) {
+        // Clear old data
         GTDynamicDataPack.clearServer();
+
+        // Register recipes & unification data again
+        long startTime = System.currentTimeMillis();
+        ChemicalHelper.reinitializeUnification();
         GTRecipes.recipeAddition(GTDynamicDataPack::addRecipe);
+        GTCEu.LOGGER.info("GregTech Recipe loading took {}ms", System.currentTimeMillis() - startTime);
+
         GTDynamicDataPack dataPack = new GTDynamicDataPack("gtceu:dynamic_data", AddonFinder.getAddons().stream().map(IGTAddon::addonModId).collect(Collectors.toSet()));
         adder.accept(Pack.create(
                 dataPack.getName(),

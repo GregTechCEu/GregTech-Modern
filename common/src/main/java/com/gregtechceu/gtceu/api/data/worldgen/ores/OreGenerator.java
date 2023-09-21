@@ -63,11 +63,12 @@ public class OreGenerator {
             var entry = config.getEntry(level, level.getBiome(veinCenter), random);
             var id = GTRegistries.ORE_VEINS.getKey(entry);
 
+            if (entry == null) return null;
             BlockPos origin = computeVeinOrigin(level, generator, random, veinCenter, entry).orElseThrow(() ->
                     new IllegalStateException("Cannot determine y coordinate for the vein at " + veinCenter)
             );
 
-            return  new VeinConfiguration(id, entry, random, origin);
+            return new VeinConfiguration(id, entry, random, origin);
         });
     }
 

@@ -20,6 +20,10 @@ import net.minecraft.world.level.levelgen.VerticalAnchor;
 import net.minecraft.world.level.levelgen.placement.HeightRangePlacement;
 import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.Supplier;
 
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.ore;
@@ -41,6 +45,7 @@ public class GTOres {
      */
     @Getter
     private static int largestVeinSize = 0;
+    private static final Map<ResourceLocation, GTOreDefinition> toReRegister = new HashMap<>();
 
     static {
         VeinGenerators.registerAddonGenerators();
@@ -76,7 +81,7 @@ public class GTOres {
                     .parent();
 
     public static final GTOreDefinition NAQUADAH_VEIN =
-            create("naquadah_vein", 44, 1.0f, 30, WorldGenLayers.ENDSTONE, end(), HeightRangePlacement.uniform(VerticalAnchor.absolute(10), VerticalAnchor.absolute(90)))
+            create("naquadah_vein", 40, 1.0f, 30, WorldGenLayers.ENDSTONE, end(), HeightRangePlacement.uniform(VerticalAnchor.absolute(10), VerticalAnchor.absolute(90)))
                     .biomes(BiomeTags.IS_END)
                     .veinedVeinGenerator()
                     .oreBlock(new VeinBlockDefinition(Naquadah, 3))
@@ -92,7 +97,7 @@ public class GTOres {
                     .parent();
 
     public static final GTOreDefinition PITCHBLENDE_VEIN =
-            create("pitchblende_vein_end", 40, 1.0f, 30, WorldGenLayers.ENDSTONE, end(), HeightRangePlacement.uniform(VerticalAnchor.absolute(30), VerticalAnchor.absolute(60)))
+            create("pitchblende_vein_end", 30, 1.0f, 30, WorldGenLayers.ENDSTONE, end(), HeightRangePlacement.uniform(VerticalAnchor.absolute(30), VerticalAnchor.absolute(60)))
                     .biomes(BiomeTags.IS_END)
                     .veinedVeinGenerator()
                     .oreBlock(new VeinBlockDefinition(Pitchblende, 3))
@@ -108,7 +113,7 @@ public class GTOres {
                     .parent();
 
     public static final GTOreDefinition SCHEELITE_VEIN =
-            create("scheelite_vein", 60, 0.2f, 20, WorldGenLayers.ENDSTONE, end(), HeightRangePlacement.uniform(VerticalAnchor.absolute(20), VerticalAnchor.absolute(60)))
+            create("scheelite_vein", 30, 0.2f, 20, WorldGenLayers.ENDSTONE, end(), HeightRangePlacement.uniform(VerticalAnchor.absolute(20), VerticalAnchor.absolute(60)))
                     .biomes(BiomeTags.IS_END)
                     .dikeVeinGenerator()
                     .withBlock(new DikeBlockDefinition(Scheelite, 3, 20, 60))
@@ -136,7 +141,7 @@ public class GTOres {
     public static RuleTest[] NETHER_RULES = new RuleTest[] { OreFeatures.NETHER_ORE_REPLACEABLES };
 
     public static final GTOreDefinition BANDED_IRON_VEIN =
-            create("banded_iron_vein", 44, 1.0f, 30, WorldGenLayers.NETHERRACK, nether(), HeightRangePlacement.uniform(VerticalAnchor.absolute(20), VerticalAnchor.absolute(40)))
+            create("banded_iron_vein", 40, 1.0f, 30, WorldGenLayers.NETHERRACK, nether(), HeightRangePlacement.uniform(VerticalAnchor.absolute(20), VerticalAnchor.absolute(40)))
                     .biomes(BiomeTags.IS_NETHER)
                     .veinedVeinGenerator()
                     .oreBlock(new VeinBlockDefinition(Goethite, 3))
@@ -154,7 +159,7 @@ public class GTOres {
                     .parent();
 
     public static final GTOreDefinition BERYLLIUM_VEIN =
-            create("beryllium_vein", 50, 0.25f, 30, WorldGenLayers.NETHERRACK, nether(), HeightRangePlacement.uniform(VerticalAnchor.absolute(5), VerticalAnchor.absolute(30)))
+            create("beryllium_vein", 30, 0.25f, 30, WorldGenLayers.NETHERRACK, nether(), HeightRangePlacement.uniform(VerticalAnchor.absolute(5), VerticalAnchor.absolute(30)))
                     .biomes(BiomeTags.IS_NETHER)
                     .dikeVeinGenerator()
                     .withBlock(new DikeBlockDefinition(Beryllium, 3, 5, 30))
@@ -176,7 +181,7 @@ public class GTOres {
                     .parent();
 
     public static final GTOreDefinition MANGANESE_VEIN =
-            create("manganese_vein", 50, 0.25f, 20, WorldGenLayers.NETHERRACK, nether(), HeightRangePlacement.uniform(VerticalAnchor.absolute(20), VerticalAnchor.absolute(30)))
+            create("manganese_vein", 30, 0.25f, 20, WorldGenLayers.NETHERRACK, nether(), HeightRangePlacement.uniform(VerticalAnchor.absolute(20), VerticalAnchor.absolute(30)))
                     .biomes(BiomeTags.IS_NETHER)
                     .dikeVeinGenerator()
                     .withBlock(new DikeBlockDefinition(Grossular, 3, 20, 30))
@@ -235,7 +240,7 @@ public class GTOres {
                     .parent();
 
     public static final GTOreDefinition SALTPETER_VEIN =
-            create("saltpeter_vein", 25, 0.25f, 40, WorldGenLayers.NETHERRACK, nether(), HeightRangePlacement.uniform(VerticalAnchor.absolute(5), VerticalAnchor.absolute(45)))
+            create("saltpeter_vein", 30, 0.25f, 40, WorldGenLayers.NETHERRACK, nether(), HeightRangePlacement.uniform(VerticalAnchor.absolute(5), VerticalAnchor.absolute(45)))
                     .biomes(BiomeTags.IS_NETHER)
                     .layeredVeinGenerator()
                     .withLayerPattern(() -> GTLayerPattern.builder(NETHER_RULES)
@@ -260,7 +265,7 @@ public class GTOres {
                     .parent();
 
     public static final GTOreDefinition TETRAHEDRITE_VEIN =
-            create("tetrahedrite_vein", 44, 1.0f, 70, WorldGenLayers.NETHERRACK, nether(), HeightRangePlacement.uniform(VerticalAnchor.absolute(80), VerticalAnchor.absolute(120)))
+            create("tetrahedrite_vein", 40, 1.0f, 70, WorldGenLayers.NETHERRACK, nether(), HeightRangePlacement.uniform(VerticalAnchor.absolute(80), VerticalAnchor.absolute(120)))
                     .biomes(BiomeTags.IS_NETHER)
                     .veinedVeinGenerator()
                     .oreBlock(new VeinBlockDefinition(Tetrahedrite, 4))
@@ -299,7 +304,7 @@ public class GTOres {
     public static RuleTest[] OVERWORLD_RULES = new RuleTest[] { OreFeatures.STONE_ORE_REPLACEABLES };
 
     public static final GTOreDefinition APATITE_VEIN =
-            create("apatite_vein", 25, 0.25f, 40, WorldGenLayers.STONE, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(10), VerticalAnchor.absolute(80)))
+            create("apatite_vein", 30, 0.25f, 40, WorldGenLayers.STONE, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(10), VerticalAnchor.absolute(80)))
                     .biomes(BiomeTags.IS_OVERWORLD)
                     .layeredVeinGenerator()
                     .withLayerPattern(() -> GTLayerPattern.builder(OVERWORLD_RULES)
@@ -311,7 +316,7 @@ public class GTOres {
                     .parent();
 
     public static final GTOreDefinition CASSITERITE_VEIN =
-            create("cassiterite_vein", 44, 1.0f, 80, WorldGenLayers.STONE, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(10), VerticalAnchor.absolute(80)))
+            create("cassiterite_vein", 40, 1.0f, 80, WorldGenLayers.STONE, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(10), VerticalAnchor.absolute(80)))
                     .biomes(BiomeTags.IS_OVERWORLD)
                     .veinedVeinGenerator()
                     .oreBlock(new VeinBlockDefinition(Tin, 4))
@@ -337,7 +342,7 @@ public class GTOres {
                     .parent();
 
     public static final GTOreDefinition COPPER_TIN_VEIN =
-            create("copper_tin_vein", 44, 1.0f, 50, WorldGenLayers.STONE, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(-10), VerticalAnchor.absolute(160)))
+            create("copper_tin_vein", 40, 1.0f, 50, WorldGenLayers.STONE, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(-10), VerticalAnchor.absolute(160)))
                     .biomes(BiomeTags.IS_OVERWORLD)
                     .veinedVeinGenerator()
                     .oreBlock(new VeinBlockDefinition(Chalcopyrite, 5))
@@ -355,7 +360,7 @@ public class GTOres {
                     .parent();
 
     public static final GTOreDefinition GALENA_VEIN =
-            create("galena_vein", 25, 0.25f, 40, WorldGenLayers.STONE, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(-15), VerticalAnchor.absolute(45)))
+            create("galena_vein", 30, 0.25f, 40, WorldGenLayers.STONE, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(-15), VerticalAnchor.absolute(45)))
                     .biomes(BiomeTags.IS_OVERWORLD)
                     .layeredVeinGenerator()
                     .withLayerPattern(() -> GTLayerPattern.builder(OVERWORLD_RULES)
@@ -380,7 +385,7 @@ public class GTOres {
                     .parent();
 
     public static final GTOreDefinition GARNET_VEIN =
-            create("garnet_vein", 44, 0.25f, 40, WorldGenLayers.STONE, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(-10), VerticalAnchor.absolute(50)))
+            create("garnet_vein", 30, 0.25f, 40, WorldGenLayers.STONE, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(-10), VerticalAnchor.absolute(50)))
                     .biomes(BiomeTags.IS_OVERWORLD)
                     .dikeVeinGenerator()
                     .withBlock(new DikeBlockDefinition(GarnetRed, 3, -10, 50))
@@ -392,7 +397,7 @@ public class GTOres {
                     .parent();
 
     public static final GTOreDefinition IRON_VEIN =
-            create("iron_vein", 44, 1.0f, 120, WorldGenLayers.STONE, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(-10), VerticalAnchor.absolute(60)))
+            create("iron_vein", 40, 1.0f, 120, WorldGenLayers.STONE, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(-10), VerticalAnchor.absolute(60)))
                     .biomes(BiomeTags.IS_OVERWORLD)
                     .veinedVeinGenerator()
                     .oreBlock(new VeinBlockDefinition(Goethite, 5))
@@ -445,7 +450,7 @@ public class GTOres {
                     .parent();
 
     public static final GTOreDefinition NICKEL_VEIN =
-            create("nickel_vein", 25, 0.25f, 40, WorldGenLayers.STONE, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(-10), VerticalAnchor.absolute(60)))
+            create("nickel_vein", 30, 0.25f, 40, WorldGenLayers.STONE, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(-10), VerticalAnchor.absolute(60)))
                     .biomes(BiomeTags.IS_OVERWORLD)
                     .layeredVeinGenerator()
                     .withLayerPattern(() -> GTLayerPattern.builder(OVERWORLD_RULES)
@@ -476,7 +481,7 @@ public class GTOres {
     public static RuleTest[] DEEPSLATE_RULES = new RuleTest[] { OreFeatures.DEEPSLATE_ORE_REPLACEABLES };
 
     public static final GTOreDefinition COPPER_VEIN =
-            create("copper_vein", 44, 1.0f, 80, WorldGenLayers.DEEPSLATE, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(-40), VerticalAnchor.absolute(10)))
+            create("copper_vein", 40, 1.0f, 80, WorldGenLayers.DEEPSLATE, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(-40), VerticalAnchor.absolute(10)))
                     .biomes(BiomeTags.IS_OVERWORLD)
                     .veinedVeinGenerator()
                     .oreBlock(new VeinBlockDefinition(Chalcopyrite, 5))
@@ -493,7 +498,7 @@ public class GTOres {
                     .parent();
 
     public static final GTOreDefinition DIAMOND_VEIN =
-            create("diamond_vein", 25, 0.25f, 40, WorldGenLayers.DEEPSLATE, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(-65), VerticalAnchor.absolute(-30)))
+            create("diamond_vein", 30, 0.25f, 40, WorldGenLayers.DEEPSLATE, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(-65), VerticalAnchor.absolute(-30)))
                     .biomes(BiomeTags.IS_OVERWORLD)
                     .layeredVeinGenerator()
                     .withLayerPattern(() -> GTLayerPattern.builder(OVERWORLD_RULES)
@@ -504,13 +509,15 @@ public class GTOres {
                     .parent();
 
     public static final GTOreDefinition LAPIS_VEIN =
-            create("lapis_vein", 50, 0.25f, 40, WorldGenLayers.DEEPSLATE, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(-60), VerticalAnchor.absolute(10)))
+            create("lapis_vein", 40, 0.25f, 40, WorldGenLayers.DEEPSLATE, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(-60), VerticalAnchor.absolute(10)))
                     .biomes(BiomeTags.IS_OVERWORLD)
                     .dikeVeinGenerator()
                     .withBlock(new DikeBlockDefinition(Lazurite, 3, -60, 10))
                     .withBlock(new DikeBlockDefinition(Sodalite, 2, -50, 0))
                     .withBlock(new DikeBlockDefinition(Lapis, 2, -50, 0))
                     .withBlock(new DikeBlockDefinition(Calcite, 1, -40, 10))
+                    .minYLevel(-60)
+                    .maxYLevel(10)
                     .parent();
 
     public static final GTOreDefinition MANGANESE_VEIN_OW =
@@ -526,7 +533,7 @@ public class GTOres {
                     .parent();
 
     public static final GTOreDefinition MICA_VEIN =
-            create("mica_vein", 25, 0.25f, 20, WorldGenLayers.DEEPSLATE, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(-40), VerticalAnchor.absolute(-10)))
+            create("mica_vein", 30, 0.25f, 20, WorldGenLayers.DEEPSLATE, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(-40), VerticalAnchor.absolute(-10)))
                     .biomes(BiomeTags.IS_OVERWORLD)
                     .layeredVeinGenerator()
                     .withLayerPattern(() -> GTLayerPattern.builder(OVERWORLD_RULES)
@@ -539,7 +546,7 @@ public class GTOres {
                     .parent();
 
     public static final GTOreDefinition OLIVINE_VEIN =
-            create("olivine_vein", 25, 0.25f, 20, WorldGenLayers.DEEPSLATE, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(-20), VerticalAnchor.absolute(10)))
+            create("olivine_vein", 30, 0.25f, 20, WorldGenLayers.DEEPSLATE, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(-20), VerticalAnchor.absolute(10)))
                     .biomes(BiomeTags.IS_OVERWORLD)
                     .layeredVeinGenerator()
                     .withLayerPattern(() -> GTLayerPattern.builder(OVERWORLD_RULES)
@@ -575,10 +582,11 @@ public class GTOres {
                             .build())
                     .parent();
 
-
-
     private static GTOreDefinition create(String name, int clusterSize, float density, int weight, WorldGenLayers layer, HolderSet<DimensionType> dimensionFilter, HeightRangePlacement range) {
-        return new GTOreDefinition(GTCEu.id(name), clusterSize, density, weight, layer, dimensionFilter, range, 0.0F, null, null, null);
+        ResourceLocation id = GTCEu.id(name);
+        GTOreDefinition def = new GTOreDefinition(id, clusterSize, density, weight, layer, dimensionFilter, range, 0.0F, null, null, null);
+        toReRegister.put(id, def);
+        return def;
     }
 
     private static Supplier<? extends Block> ore(TagPrefix oreTag, Material material) {
@@ -610,6 +618,7 @@ public class GTOres {
     }
 
     public static void init() {
+        toReRegister.forEach(GTRegistries.ORE_VEINS::registerOrOverride);
     }
 
     public static void updateLargestVeinSize() {
