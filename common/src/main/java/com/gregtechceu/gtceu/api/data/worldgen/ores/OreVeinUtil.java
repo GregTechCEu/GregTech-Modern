@@ -50,8 +50,8 @@ public class OreVeinUtil {
     }
 
     public static Optional<BlockPos> getVeinCenter(ChunkPos chunkPos, RandomSource random) {
-        int gridSize = ConfigHolder.INSTANCE.worldgen.oreVeinGridSize;
-        int randomOffset = ConfigHolder.INSTANCE.worldgen.oreVeinRandomOffset;
+        int gridSize = ConfigHolder.INSTANCE.worldgen.oreVeins.oreVeinGridSize;
+        int randomOffset = ConfigHolder.INSTANCE.worldgen.oreVeins.oreVeinRandomOffset;
 
         if (chunkPos.x % gridSize != 0 || chunkPos.z % gridSize != 0)
             return Optional.empty();
@@ -67,7 +67,7 @@ public class OreVeinUtil {
 
     static int getMaxVeinSearchDistance() {
         double halfVeinSize = GTOres.getLargestVeinSize() / 2.0;
-        int randomOffset = ConfigHolder.INSTANCE.worldgen.oreVeinRandomOffset;
+        int randomOffset = ConfigHolder.INSTANCE.worldgen.oreVeins.oreVeinRandomOffset;
 
         return (int) Math.ceil((halfVeinSize + randomOffset) / 16.0);
     }

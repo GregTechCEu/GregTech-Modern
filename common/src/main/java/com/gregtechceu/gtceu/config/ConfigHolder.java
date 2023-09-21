@@ -135,6 +135,10 @@ public class ConfigHolder {
 
     public static class WorldGenConfigs {
         @Configurable
+        @Configurable.Comment({"Rubber Tree spawn chance (% per chunk)", "Default: 0.5"})
+        public float rubberTreeSpawnChance = 0.5f;
+
+        @Configurable
         @Configurable.Comment({"Should all Stone Types drop unique Ore Item Blocks?", "Default: false (meaning only Stone, Netherrack, and Endstone)"})
         public boolean allUniqueStoneTypes;
 
@@ -143,49 +147,51 @@ public class ConfigHolder {
         public boolean sandOresFall;
 
         @Configurable
-        @Configurable.Range(min = 1, max = 32)
-        @Configurable.Comment({
-                "The grid size (in chunks) for ore vein generation",
-                "Default: 3"
-        })
-        public int oreVeinGridSize = 3;
+        public OreVeinConfigs oreVeins = new OreVeinConfigs();
 
-        @Configurable
-        @Configurable.Range(min = 0, max = 32 * 16)
-        @Configurable.Comment({
-                "The maximum random offset (in blocks) from the grid for generating an ore vein.",
-                "Default: 12"
-        })
-        public int oreVeinRandomOffset = 12;
+        public static class OreVeinConfigs {
+            @Configurable
+            @Configurable.Range(min = 1, max = 32)
+            @Configurable.Comment({
+                    "The grid size (in chunks) for ore vein generation",
+                    "Default: 3"
+            })
+            public int oreVeinGridSize = 3;
+
+            @Configurable
+            @Configurable.Range(min = 0, max = 32 * 16)
+            @Configurable.Comment({
+                    "The maximum random offset (in blocks) from the grid for generating an ore vein.",
+                    "Default: 12"
+            })
+            public int oreVeinRandomOffset = 12;
+
+            @Configurable
+            @Configurable.Comment({"Prevents regular vanilla ores from being generated outside GregTech ore veins", "Default: true"})
+            public boolean removeVanillaOreGen = true;
+
+            @Configurable
+            @Configurable.Comment({"Prevents vanilla's large ore veins from being generated", "Default: true"})
+            public boolean removeVanillaLargeOreVeins = true;
 
 
-        @Configurable
-        @Configurable.Comment({"Multiplier to bedrock ore generation amount", "Default: 1.0f"})
-        public float bedrockOreMultiplier = 1.0f;
-        @Configurable
-        @Configurable.Comment({"Make bedrock ore/fluid veins infinite?", "Default: false"})
-        public boolean infiniteBedrockOresFluids = false;
+            @Configurable
+            @Configurable.Comment({"Multiplier to bedrock ore generation amount", "Default: 1.0f"})
+            public float bedrockOreMultiplier = 1.0f;
+            @Configurable
+            @Configurable.Comment({"Make bedrock ore/fluid veins infinite?", "Default: false"})
+            public boolean infiniteBedrockOresFluids = false;
 
-        @Configurable
-        @Configurable.Comment({"Rubber Tree spawn chance (% per chunk)", "Default: 0.5"})
-        public float rubberTreeSpawnChance = 0.5f;
+            @Configurable
+            @Configurable.Comment({
+                    "Sets the maximum number of chunks that may be cached for ore vein generation.",
+                    "Higher values may improve world generation performance, but at the cost of more RAM usage.",
+                    "If you substantially increase the ore vein grid size, random vein offset, or have very large (custom) veins, you may need to increase this value as well.",
+                    "Default: 512 (requires restarting the server / re-opening the world)"
+            })
+            public int oreGenerationChunkCacheSize = 512;
 
-        @Configurable
-        @Configurable.Comment({"Prevents regular vanilla ores from being generated outside GregTech ore veins", "Default: true"})
-        public boolean removeVanillaOreGen = true;
-
-        @Configurable
-        @Configurable.Comment({"Prevents vanilla's large ore veins from being generated", "Default: true"})
-        public boolean removeVanillaLargeOreVeins = true;
-
-        @Configurable
-        @Configurable.Comment({
-                "Sets the maximum number of chunks that may be cached for ore vein generation.",
-                "Higher values may improve world generation performance, but at the cost of more RAM usage.",
-                "If you substantially increase the ore vein grid size, random vein offset, or have very large (custom) veins, you may need to increase this value as well.",
-                "Default: 512 (requires restarting the server / re-opening the world)"
-        })
-        public int chunkCacheSize = 512;
+        }
     }
 
     public static class MachineConfigs {

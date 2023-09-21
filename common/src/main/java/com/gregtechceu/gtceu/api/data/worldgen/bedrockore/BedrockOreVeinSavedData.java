@@ -20,7 +20,10 @@ import net.minecraft.world.level.saveddata.SavedData;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author KilaBash
@@ -108,7 +111,7 @@ public class BedrockOreVeinSavedData extends SavedData {
                 } else {
                     maximumYield = random.nextInt(definition.getMaximumYield() - definition.getMinimumYield()) + definition.getMinimumYield();
                 }
-                maximumYield = Math.round(Math.min(maximumYield, definition.getMaximumYield()) * ConfigHolder.INSTANCE.worldgen.bedrockOreMultiplier);
+                maximumYield = Math.round(Math.min(maximumYield, definition.getMaximumYield()) * ConfigHolder.INSTANCE.worldgen.oreVeins.bedrockOreMultiplier);
             }
             veinOres.put(new ChunkPos(chunkX, chunkZ), new OreVeinWorldEntry(definition, maximumYield, MAXIMUM_VEIN_OPERATIONS));
             setDirty();

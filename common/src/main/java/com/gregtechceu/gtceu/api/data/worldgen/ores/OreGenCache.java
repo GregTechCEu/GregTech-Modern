@@ -25,7 +25,7 @@ public class OreGenCache {
     private final OreGenerator oreGenerator = new OreGenerator();
 
     private final Cache<ChunkPos, Optional<GeneratedVein>> generatedVeinsByOrigin = CacheBuilder.newBuilder()
-            .maximumSize(ConfigHolder.INSTANCE.worldgen.chunkCacheSize)
+            .maximumSize(ConfigHolder.INSTANCE.worldgen.oreVeins.oreGenerationChunkCacheSize)
             .softValues()
             .build();
 
