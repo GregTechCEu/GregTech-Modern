@@ -82,7 +82,9 @@ public class OreGenerator {
         BlockPos origin = entry.getRange().getPositions(
                 new PlacementContext(level, generator, Optional.empty()),
                 random, chunkCenter
-        ).findFirst().orElse(chunkCenter);
+        ).findFirst().orElseThrow(() ->
+                new IllegalStateException("Cannot determine y coordinate for the vein at " + chunkCenter)
+        );
 
         config.setEntry(null);
 
