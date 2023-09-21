@@ -140,11 +140,11 @@ public class ConfigHolder {
 
         @Configurable
         @Configurable.Comment({"Should all Stone Types drop unique Ore Item Blocks?", "Default: false (meaning only Stone, Netherrack, and Endstone)"})
-        public boolean allUniqueStoneTypes;
+        public boolean allUniqueStoneTypes = false;
 
         @Configurable
         @Configurable.Comment({"Should Sand-like ores fall?", "This includes gravel, sand, and red sand ores.", "Default: false (no falling ores)"})
-        public boolean sandOresFall;
+        public boolean sandOresFall = false;
 
         @Configurable
         public OreVeinConfigs oreVeins = new OreVeinConfigs();
@@ -202,14 +202,14 @@ public class ConfigHolder {
 
         @Configurable
         @Configurable.Comment({"Whether to require a Wrench, Wirecutter, or other GregTech tools to break machines, casings, wires, and more.", "Default: false"})
-        public boolean requireGTToolsForBlocks;
+        public boolean requireGTToolsForBlocks = false;
         @Configurable
         @Configurable.Comment({"Whether machines explode in rainy weather or when placed next to certain terrain, such as fire or lava", "Default: false"})
-        public boolean doTerrainExplosion;
+        public boolean doTerrainExplosion = false;
         @Configurable
         @Configurable.Comment({"Whether machines or boilers damage the terrain when they explode.",
                 "Note machines and boilers always explode when overloaded with power or met with special conditions, regardless of this config.", "Default: true"})
-        public boolean doesExplosionDamagesTerrain;
+        public boolean doesExplosionDamagesTerrain = false;
         @Configurable
         @Configurable.Comment({"Divisor for Recipe Duration per Overclock.", "Default: 2.0"})
         @Configurable.DecimalRange(min = 2.0, max = 3.0)
@@ -220,7 +220,7 @@ public class ConfigHolder {
         public boolean machineSounds = true;
         @Configurable
         @Configurable.Comment({"Whether Steam Multiblocks should use Steel instead of Bronze.", "Default: false"})
-        public boolean steelSteamMultiblocks;
+        public boolean steelSteamMultiblocks = false;
         @Configurable
         @Configurable.Comment({"Whether to enable the cleanroom, required for various recipes.", "Default: true"})
         public boolean enableCleanroom = true;
@@ -266,9 +266,9 @@ public class ConfigHolder {
     public static class DeveloperConfigs {
         @Configurable
         @Configurable.Comment({"Debug ore vein placement? (will print placed veins to server's debug.log)", "Default: false (no placement printout in debug.log)"})
-        public boolean debugWorldgen;
+        public boolean debugWorldgen = false;
         @Configurable
         @Configurable.Comment({"Dump all registered GT recipes?", "Default: false"})
-        public boolean dumpRecipes;
+        public boolean dumpRecipes = false;
     }
 }
