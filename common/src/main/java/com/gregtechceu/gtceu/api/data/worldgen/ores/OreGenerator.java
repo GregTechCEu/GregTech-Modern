@@ -56,7 +56,7 @@ public class OreGenerator {
     }
 
     private Optional<VeinConfiguration> createConfig(WorldGenLevel level, ChunkGenerator generator, ChunkPos chunkPos) {
-        var random = new XoroshiroRandomSource(level.getSeed(), chunkPos.toLong());
+        var random = new XoroshiroRandomSource(level.getSeed() ^ chunkPos.toLong());
         var config = new GTOreFeatureConfiguration();
 
         return OreVeinUtil.getVeinCenter(chunkPos, random).map(veinCenter -> {
