@@ -585,7 +585,7 @@ public class GTOres {
 
     private static GTOreDefinition create(String name, int clusterSize, float density, int weight, WorldGenLayers layer, Supplier<HolderSet<DimensionType>> dimensionFilter, HeightRangePlacement range) {
         ResourceLocation id = GTCEu.id(name);
-        GTOreDefinition def = new GTOreDefinition(id, clusterSize, density, weight, layer, dimensionFilter, range, 0.0F, null, null, null);;
+        GTOreDefinition def = new GTOreDefinition(id, clusterSize, density, weight, layer, dimensionFilter, range, 0.0F, null, null, null);
         toReRegister.put(id, def);
         return def;
     }
