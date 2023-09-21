@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid;
 
 import com.gregtechceu.gtceu.api.data.worldgen.BiomeWeightModifier;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.common.data.GTBedrockFluids;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
@@ -11,7 +12,6 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.RegistryCodecs;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -168,7 +168,7 @@ public class BedrockFluidDefinition {
 
         public BedrockFluidDefinition register() {
             var definition = new BedrockFluidDefinition(weight, minimumYield, maximumYield, depletionAmount, depletionChance, depletedYield, fluid, biomes, dimensions);
-            GTRegistries.BEDROCK_FLUID_DEFINITIONS.register(name, definition);
+            GTBedrockFluids.toReRegister.put(name, definition);
             return definition;
         }
     }

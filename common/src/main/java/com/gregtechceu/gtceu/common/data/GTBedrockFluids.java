@@ -1,15 +1,20 @@
 package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefinition;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.dimension.BuiltinDimensionTypes;
 import net.minecraft.world.level.dimension.DimensionType;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author KilaBash
@@ -17,6 +22,9 @@ import net.minecraft.world.level.dimension.DimensionType;
  * @implNote GTBedrockFluids
  */
 public class GTBedrockFluids {
+    public static final Map<ResourceLocation, BedrockFluidDefinition> toReRegister = new HashMap<>();
+
+
     //////////////////////////////////////
     //********     OVERWORLD    ********//
     //////////////////////////////////////
@@ -116,6 +124,6 @@ public class GTBedrockFluids {
     }
 
     public static void init() {
-
+        toReRegister.forEach(GTRegistries.BEDROCK_FLUID_DEFINITIONS::registerOrOverride);
     }
 }

@@ -77,6 +77,13 @@ public abstract class GTRegistry<K, V> implements Iterable<V> {
         return registry.put(key, value);
     }
 
+    public V registerOrOverride(K key, V value) {
+        if (isFrozen) {
+            throw new IllegalStateException("[register] registry %s has been frozen");
+        }
+        return registry.put(key, value);
+    }
+
     @NotNull
     @Override
     public Iterator<V> iterator() {

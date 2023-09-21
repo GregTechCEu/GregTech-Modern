@@ -393,6 +393,8 @@ public class LangHandler {
         replace(provider, GTMaterials.RawOil.getUnlocalizedName(), "Raw Oil");
         replace(provider, GTMaterials.HSLASteel.getUnlocalizedName(), "HSLA-Steel");
 
+        provider.add("item.netherrack_nether_quartz", "Nether Quartz Ore");
+
         provider.add("item.gunpowder_tiny_dust", "Tiny Pile of Gunpowder");
         provider.add("item.gunpowder_small_dust", "Small Pile of Gunpowder");
         provider.add("item.paper_tiny_dust", "Tiny Pile of Chad");

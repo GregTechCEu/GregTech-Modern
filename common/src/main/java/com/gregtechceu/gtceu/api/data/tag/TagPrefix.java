@@ -794,7 +794,7 @@ public class TagPrefix {
     @Setter
     private BiConsumer<Material, List<Component>> tooltip;
 
-    private final Set<Material> ignoredMaterials = new HashSet<>();
+    private final Map<Material, ItemLike[]> ignoredMaterials = new HashMap<>();
 
     @Getter
     @Setter
@@ -924,11 +924,21 @@ public class TagPrefix {
 
     @SuppressWarnings("unchecked")
     public TagKey<Item>[] getItemTags(@Nonnull Material mat) {
+        return (Platform.isForge() ? forgeTags : fabricTags).stream().filter(type -> !type.isParentTag()).map(type -> type.getTag(this, mat)).toArray(TagKey[]::new);
+    }
+
+    @SuppressWarnings("unchecked")
+    public TagKey<Item>[] getAllItemTags(@Nonnull Material mat) {
         return (Platform.isForge() ? forgeTags : fabricTags).stream().map(type -> type.getTag(this, mat)).toArray(TagKey[]::new);
     }
 
     @SuppressWarnings("unchecked")
     public TagKey<Block>[] getBlockTags(@Nonnull Material mat) {
+        return (Platform.isForge() ? forgeTags : fabricTags).stream().filter(type -> !type.isParentTag()).map(type -> type.getTag(this, mat)).map(itemTagKey -> TagKey.create(Registries.BLOCK, itemTagKey.location())).toArray(TagKey[]::new);
+    }
+
+    @SuppressWarnings("unchecked")
+    public TagKey<Block>[] getAllBlockTags(@Nonnull Material mat) {
         return (Platform.isForge() ? forgeTags : fabricTags).stream().map(type -> type.getTag(this, mat)).map(itemTagKey -> TagKey.create(Registries.BLOCK, itemTagKey.location())).toArray(TagKey[]::new);
     }
 
@@ -983,11 +993,11 @@ public class TagPrefix {
     }
 
     public boolean isIgnored(Material material) {
-        return ignoredMaterials.contains(material);
+        return ignoredMaterials.containsKey(material);
     }
 
     public void setIgnored(Material material, ItemLike... items) {
-        ignoredMaterials.add(material);
+        ignoredMaterials.put(material, items);
         if (items.length > 0) {
             ChemicalHelper.registerUnificationItems(this, material, items);
         }
@@ -995,6 +1005,10 @@ public class TagPrefix {
 
     public void removeIgnored(Material material) {
         ignoredMaterials.remove(material);
+    }
+
+    public Map<Material, ItemLike[]> getIgnored() {
+        return new HashMap<>(ignoredMaterials);
     }
 
     @Override

@@ -266,7 +266,6 @@ public class GTMaterials {
         dye.setIgnored(DyeWhite, Items.WHITE_DYE);
 
         // register vanilla materials
-        registerUnificationItems(ingot, Clay, Items.CLAY_BALL);
         /* Adding back the GT ores. It'd be too much pain to replace the loot tables.
         ore.setIgnored(Redstone, Blocks.REDSTONE_ORE);
         oreDeepslate.setIgnored(Redstone, Blocks.DEEPSLATE_REDSTONE_ORE);

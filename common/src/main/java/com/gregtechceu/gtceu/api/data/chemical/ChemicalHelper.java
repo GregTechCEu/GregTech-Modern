@@ -6,6 +6,10 @@ import com.gregtechceu.gtceu.api.data.chemical.material.stack.ItemMaterialInfo;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.common.data.GTBlocks;
+import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.data.tags.TagsHandler;
+import com.tterrag.registrate.util.entry.BlockEntry;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -57,6 +61,9 @@ public class ChemicalHelper {
             if (item instanceof Block block) {
                 UNIFICATION_ENTRY_BLOCK.computeIfAbsent(unificationEntry, entry -> new ArrayList<>())
                         .add(block);
+            } else if (item instanceof BlockEntry<?> blockEntry) {
+                UNIFICATION_ENTRY_BLOCK.computeIfAbsent(unificationEntry, entry -> new ArrayList<>())
+                        .add(blockEntry.get());
             }
         }
     }
@@ -242,5 +249,27 @@ public class ChemicalHelper {
         return ITEM_MATERIAL_INFO.entrySet().stream()
                 .map(entry -> new AbstractMap.SimpleEntry<>(new ItemStack(entry.getKey().asItem()), entry.getValue()))
                 .collect(Collectors.toList());
+    }
+
+    public static void reinitializeUnification() {
+        // Clear old data
+        ChemicalHelper.UNIFICATION_ENTRY_ITEM.clear();
+        ChemicalHelper.UNIFICATION_ENTRY_BLOCK.clear();
+        ChemicalHelper.ITEM_UNIFICATION_ENTRY.clear();
+
+        // Load new data
+        TagsHandler.initExtraUnificationEntries();
+        for (TagPrefix prefix : TagPrefix.values()) {
+            prefix.getIgnored().forEach((mat, items) -> {
+                if (items.length > 0) {
+                    ChemicalHelper.registerUnificationItems(prefix, mat, items);
+                }
+            });
+        }
+        GTItems.MATERIAL_ITEMS.rowMap().forEach((prefix, map) -> map.forEach((material, item) -> ChemicalHelper.registerUnificationItems(prefix, material, item.get())));
+        GTBlocks.MATERIAL_BLOCKS.rowMap().forEach((prefix, map) -> map.forEach((material, block) -> ChemicalHelper.registerUnificationItems(prefix, material, block.get())));
+        GTBlocks.CABLE_BLOCKS.rowMap().forEach((prefix, map) -> map.forEach((material, block) -> ChemicalHelper.registerUnificationItems(prefix, material, block.get())));
+        GTBlocks.FLUID_PIPE_BLOCKS.rowMap().forEach((prefix, map) -> map.forEach((material, block) -> ChemicalHelper.registerUnificationItems(prefix, material, block.get())));
+        // add new stuff here as more maps are added, IDK a better way
     }
 }
