@@ -37,6 +37,8 @@ public class FluidVeinLoader extends SimpleJsonResourceReloadListener {
 
     @Override
     protected void apply(Map<ResourceLocation, JsonElement> resourceList, ResourceManager resourceManager, ProfilerFiller profiler) {
+        GTRegistries.BEDROCK_FLUID_DEFINITIONS.registry().clear();
+        GTBedrockFluids.init();
         if (GTCEu.isKubeJSLoaded()) {
             RunKJSEventInSeparateClassBecauseForgeIsDumb.fireKJSEvent();
         }

@@ -37,7 +37,6 @@ public class GTFeatures {
 
     public static void init() {
         Object inst = FrequencyModifier.FREQUENCY_MODIFIER; // seemingly useless access to init the class in time
-        inst = BiomeFilter.BIOME_FILTER;
         inst = DimensionFilter.DIMENSION_FILTER;
         inst = VeinCountFilter.VEIN_COUNT_FILTER;
         inst = BiomePlacement.BIOME_PLACEMENT;
@@ -55,10 +54,10 @@ public class GTFeatures {
                         DensityFunctions.constant(-0.08f),
                         DensityFunctions.max(
                                 DensityFunctions.interpolated(
-                                        DensityFunctions.noise(oreVeinA, 6.0f, 6.0f)
+                                        DensityFunctions.noise(oreVeinA, 4.0f, 4.0f)
                                 ).abs(),
                                 DensityFunctions.interpolated(
-                                        DensityFunctions.noise(oreVeinB, 6.0f, 6.0f)
+                                        DensityFunctions.noise(oreVeinB, 4.0f, 4.0f)
                                 ).abs()
                         )
                 )

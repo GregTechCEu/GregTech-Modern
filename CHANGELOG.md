@@ -1,6 +1,6 @@
 # ChangeLog
 
-* always align ore veins to the center of a chunk
-* restrict ore vein generation to the 3x3 chunks allowed for feature placement
-* fix GCYM multiblock shapes
-* actually fix gem lenses hopefully
+* fix issue in tag loading causing some recipes to behave unexpectedly
+* fix unification info being kept between reloads
+* fix worldgen, veins now generate as they should have been
+* fix tool tiers being broken
