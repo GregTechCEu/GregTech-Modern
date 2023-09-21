@@ -156,6 +156,10 @@ public class StandardVeinGenerator extends VeinGenerator {
                     continue;
 
                 this.doPlaceNormal(generatedBlocks, random, entry, origin, this.blocks, minX, maxX, minZ, maxZ, minY, maxY, x, y, z, width, height);
+
+                // Stop after first successful placement attempt
+                if (!generatedBlocks.isEmpty())
+                    return generatedBlocks;
             }
         }
 
