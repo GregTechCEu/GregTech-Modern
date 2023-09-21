@@ -2,9 +2,10 @@ package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.data.worldgen.*;
-import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.data.worldgen.*;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import lombok.Getter;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
 import net.minecraft.data.BuiltinRegistries;
@@ -21,10 +22,11 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;
 
 import java.util.function.Supplier;
 
-import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
-import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.ore;
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.oreNetherrack;
 import static com.gregtechceu.gtceu.api.data.worldgen.generator.DikeVeinGenerator.DikeBlockDefinition;
 import static com.gregtechceu.gtceu.api.data.worldgen.generator.VeinedVeinGenerator.VeinBlockDefinition;
+import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 
 /**
  * @author KilaBash
@@ -33,6 +35,12 @@ import static com.gregtechceu.gtceu.api.data.worldgen.generator.VeinedVeinGenera
  */
 @SuppressWarnings("unused")
 public class GTOres {
+    /**
+     * The size of the largest registered vein.
+     * This becomes available after all veins have been loaded.
+     */
+    @Getter
+    private static int largestVeinSize = 0;
 
     static {
         VeinGenerators.registerAddonGenerators();
@@ -604,4 +612,10 @@ public class GTOres {
     public static void init() {
     }
 
+    public static void updateLargestVeinSize() {
+        GTOres.largestVeinSize = GTRegistries.ORE_VEINS.values().stream()
+                .map(GTOreDefinition::getClusterSize)
+                .max(Integer::compareTo)
+                .orElse(0);
+    }
 }

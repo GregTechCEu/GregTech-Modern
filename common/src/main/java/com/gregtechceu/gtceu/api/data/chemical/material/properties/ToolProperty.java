@@ -1,9 +1,8 @@
 package com.gregtechceu.gtceu.api.data.chemical.material.properties;
 
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.MaterialToolTier;
-import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.common.data.GTMaterials;
 import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import lombok.Getter;
@@ -216,7 +215,7 @@ public class ToolProperty implements IMaterialProperty<ToolProperty> {
         }
 
         public Builder durabilityMultiplier(int multiplier) {
-            toolProperty.durability = multiplier;
+            toolProperty.durabilityMultiplier = multiplier;
             return this;
         }
 
