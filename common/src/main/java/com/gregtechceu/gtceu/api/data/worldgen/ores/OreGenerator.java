@@ -88,12 +88,6 @@ public class OreGenerator {
         ).findFirst();
     }
 
-    @Nullable
-    public GTOreDefinition getEntry(WorldGenLevel level, Holder<Biome> biome, RandomSource random) {
-        var veins = WorldGeneratorUtils.getCachedBiomeVeins(level.getLevel(), biome, random);
-        int randomEntryIndex = GTUtil.getRandomItem(random, veins, veins.size());
-        return randomEntryIndex == -1 ? null : veins.get(randomEntryIndex).getValue();
-    }
 
     /////////////////////////////////////
     //*********    LOGGING    *********//
