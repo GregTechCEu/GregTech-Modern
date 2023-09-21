@@ -40,7 +40,9 @@ public class OreDataLoader extends SimpleJsonResourceReloadListener {
 
     @Override
     protected void apply(Map<ResourceLocation, JsonElement> resourceList, ResourceManager resourceManager, ProfilerFiller profiler) {
+        GTRegistries.ORE_VEINS.registry().clear();
         GTFeatures.register();
+        GTOres.init();
         if (GTCEu.isKubeJSLoaded()) {
             RunKJSEventInSeparateClassBecauseForgeIsDumb.fireKJSEvent();
         }

@@ -43,13 +43,11 @@ public class TagLoaderMixin<T> implements IGTTagLoader<T> {
         var tagMap = cir.getReturnValue();
         if (gtceu$getRegistry() == null) return;
         if (gtceu$getRegistry() == BuiltInRegistries.ITEM) {
-            TagsHandler.initExtraUnificationEntries();
-
             ChemicalHelper.UNIFICATION_ENTRY_ITEM.forEach((entry, itemLikes) -> {
                 if (itemLikes.isEmpty()) return;
                 var material = entry.material;
                 if (material != null) {
-                    var materialTags = entry.tagPrefix.getItemTags(material);
+                    var materialTags = entry.tagPrefix.getAllItemTags(material);
                     for (TagKey<Item> materialTag : materialTags) {
                         List<TagLoader.EntryWithSource> tags = new ArrayList<>();
                         itemLikes.forEach(item -> tags.add(new TagLoader.EntryWithSource(TagEntry.element(BuiltInRegistries.ITEM.getKey(item.asItem())), GTValues.CUSTOM_TAG_SOURCE)));

@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.common.data;
 
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.data.worldgen.modifier.BiomeFilter;
 import com.gregtechceu.gtceu.api.data.worldgen.modifier.BiomePlacement;
 import com.gregtechceu.gtceu.api.data.worldgen.modifier.DimensionFilter;
 import com.gregtechceu.gtceu.api.data.worldgen.modifier.FrequencyModifier;
@@ -20,7 +19,6 @@ public class GTFeatures {
 
     public static void init() {
         Object inst = FrequencyModifier.FREQUENCY_MODIFIER; // seemingly useless access to init the class in time
-        inst = BiomeFilter.BIOME_FILTER;
         inst = DimensionFilter.DIMENSION_FILTER;
         inst = BiomePlacement.BIOME_PLACEMENT;
     }

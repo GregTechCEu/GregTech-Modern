@@ -8,8 +8,7 @@ import net.minecraft.world.level.block.Block;
 
 import  com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials.Color;
 import static com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper.registerUnificationItems;
-import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.dye;
-import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.lens;
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 
 /**
@@ -53,6 +52,8 @@ public class TagsHandler {
     }
 
     public static void initExtraUnificationEntries() {
+        registerUnificationItems(ingot, Clay, Items.CLAY_BALL);
+
         registerUnificationItems(lens, Color.White, GTItems.MATERIAL_ITEMS.get(lens, Glass).get(), GTItems.MATERIAL_ITEMS.get(lens, NetherStar).get());
         registerUnificationItems(lens, Color.LightBlue, GTItems.MATERIAL_ITEMS.get(lens, Diamond).get());
         registerUnificationItems(lens, Color.Red, GTItems.MATERIAL_ITEMS.get(lens, Ruby).get());

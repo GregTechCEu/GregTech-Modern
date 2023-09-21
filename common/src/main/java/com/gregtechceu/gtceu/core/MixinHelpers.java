@@ -50,8 +50,8 @@ public class MixinHelpers {
         }
         // Copy item tags to blocks
         map.forEach((material, block) -> {
-            for (TagKey<Item> itemTag : prefix.getItemTags(material)) {
-                tagMap.computeIfAbsent(itemTag.location(), path -> new ArrayList<>())
+            for (TagKey<Block> blockTag : prefix.getAllBlockTags(material)) {
+                tagMap.computeIfAbsent(blockTag.location(), path -> new ArrayList<>())
                         .add(new TagLoader.EntryWithSource(TagEntry.element(block.getId()), GTValues.CUSTOM_TAG_SOURCE));
             }
         });
