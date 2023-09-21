@@ -2,9 +2,10 @@ package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.data.worldgen.*;
-import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.data.worldgen.*;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import lombok.Getter;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
 import net.minecraft.data.BuiltinRegistries;
@@ -25,10 +26,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
 
-import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
-import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.ore;
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.oreNetherrack;
 import static com.gregtechceu.gtceu.api.data.worldgen.generator.DikeVeinGenerator.DikeBlockDefinition;
 import static com.gregtechceu.gtceu.api.data.worldgen.generator.VeinedVeinGenerator.VeinBlockDefinition;
+import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 
 /**
  * @author KilaBash
@@ -580,7 +582,7 @@ public class GTOres {
                             .build())
                     .parent();
 
-    private static GTOreDefinition create(String name, int clusterSize, float density, int weight, WorldGenLayers layer, Supplier<HolderSet<DimensionType>> dimensionFilter, HeightRangePlacement range) {
+    private static GTOreDefinition create(String name, int clusterSize, float density, int weight, WorldGenLayers layer, HolderSet<DimensionType> dimensionFilter, HeightRangePlacement range) {
         ResourceLocation id = GTCEu.id(name);
         GTOreDefinition def = new GTOreDefinition(id, clusterSize, density, weight, layer, dimensionFilter, range, 0.0F, null, null, null);;
         toReRegister.put(id, def);
@@ -619,4 +621,10 @@ public class GTOres {
         toReRegister.forEach(GTRegistries.ORE_VEINS::registerOrOverride);
     }
 
+    public static void updateLargestVeinSize() {
+        GTOres.largestVeinSize = GTRegistries.ORE_VEINS.values().stream()
+                .map(GTOreDefinition::getClusterSize)
+                .max(Integer::compareTo)
+                .orElse(0);
+    }
 }

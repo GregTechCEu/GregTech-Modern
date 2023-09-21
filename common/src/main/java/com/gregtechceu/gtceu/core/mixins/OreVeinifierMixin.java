@@ -17,7 +17,7 @@ public class OreVeinifierMixin {
             at = @At("HEAD"), cancellable = true
     )
     private static void gtceu$create(DensityFunction function1, DensityFunction function2, DensityFunction function3, PositionalRandomFactory random, CallbackInfoReturnable<NoiseChunk.BlockStateFiller> cir) {
-        if (ConfigHolder.INSTANCE != null && ConfigHolder.INSTANCE.worldgen.removeVanillaLargeOreVeins)
+        if (ConfigHolder.INSTANCE != null && ConfigHolder.INSTANCE.worldgen.oreVeins.removeVanillaLargeOreVeins)
             cir.setReturnValue(functionContext -> null);
     }
 }

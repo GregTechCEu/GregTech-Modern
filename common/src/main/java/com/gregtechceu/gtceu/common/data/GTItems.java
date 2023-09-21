@@ -50,10 +50,15 @@ import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.color.item.ItemColor;
+import net.minecraft.core.cauldron.CauldronInteraction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.stats.Stats;
+import net.minecraft.util.Tuple;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.LayeredCauldronBlock;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.client.model.generators.ModelFile;
 import org.apache.commons.lang3.StringUtils;
@@ -79,6 +84,15 @@ public class GTItems {
     //////////////////////////////////////
     //*****     Material Items    ******//
     //////////////////////////////////////
+
+    public static final Map<TagPrefix, TagPrefix> purifyMap = new HashMap<>();
+
+    static {
+        purifyMap.put(TagPrefix.crushed, TagPrefix.crushedPurified);
+        purifyMap.put(TagPrefix.dustImpure, TagPrefix.dust);
+        purifyMap.put(TagPrefix.dustPure, TagPrefix.dust);
+    }
+
     public static Table<TagPrefix, Material, ItemEntry<TagPrefixItem>> MATERIAL_ITEMS;
 
     public static void generateMaterialItems() {
@@ -98,6 +112,7 @@ public class GTItems {
                                 .properties(p -> p.stacksTo(tagPrefix.maxStackSize()))
                                 .model(NonNullBiConsumer.noop())
                                 .color(() -> TagPrefixItem::tintColor)
+                                .onRegister(GTItems::cauldronInteraction)
                                 .register());
                     }
                 }
@@ -116,9 +131,16 @@ public class GTItems {
     public static void generateTools() {
         REGISTRATE.creativeModeTab(() -> TOOL);
 
-        HashMultimap<Integer, Tier> tiers = HashMultimap.create();
-        for (Tier tier : getAllToolTiers()) {
-            tiers.put(tier.getLevel(), tier);
+        HashMultimap<Integer, Tuple<ResourceLocation, Tier>> tiers = HashMultimap.create();
+        for (Tier tier : Tiers.values()) {
+            tiers.put(tier.getLevel(), new Tuple<>(getTierName(tier), tier));
+        }
+
+        for (Material material : GTRegistries.MATERIALS) {
+            if (material.hasProperty(PropertyKey.TOOL)) {
+                var tier = material.getToolTier();
+                tiers.put(tier.getLevel(), new Tuple<>(GTCEu.id(material.getName()), tier));
+            }
         }
 
         for (Material material : GTRegistries.MATERIALS.values()) {
@@ -126,9 +148,8 @@ public class GTItems {
                 var property = material.getProperty(PropertyKey.TOOL);
                 var tier = material.getToolTier();
 
-                List<Tier> lower = tiers.values().stream().filter(low -> low.getLevel() < tier.getLevel()).toList();
-                List<Tier> higher = tiers.values().stream().filter(high -> high.getLevel() > tier.getLevel()).toList();
-                tiers.put(tier.getLevel(), tier);
+                List<ResourceLocation> lower = tiers.values().stream().filter(low -> low.getB().getLevel() == tier.getLevel() - 1).map(Tuple::getA).toList();
+                List<ResourceLocation> higher = tiers.values().stream().filter(high -> high.getB().getLevel() == tier.getLevel() + 1).map(Tuple::getA).toList();
                 registerToolTier(tier, GTCEu.id(material.getName()), lower, higher);
 
                 for (GTToolType toolType : GTToolType.values()) {
@@ -1393,6 +1414,37 @@ public class GTItems {
         };
     }
 
+    public static <T extends Item> void cauldronInteraction(T item) {
+        if (item instanceof TagPrefixItem tagPrefixItem && purifyMap.containsKey(tagPrefixItem.tagPrefix)) {
+            CauldronInteraction.WATER.put(item, (state, world, pos, player, hand, stack) -> {
+                if (!world.isClientSide) {
+                    Item stackItem = stack.getItem();
+                    if (stackItem instanceof TagPrefixItem prefixItem) {
+                        if (!purifyMap.containsKey(prefixItem.tagPrefix))
+                            return InteractionResult.PASS;
+                        if (!state.hasProperty(LayeredCauldronBlock.LEVEL)) {
+                            return InteractionResult.PASS;
+                        }
+
+                        int level = state.getValue(LayeredCauldronBlock.LEVEL);
+                        if (level == 0)
+                            return InteractionResult.PASS;
+
+                        player.setItemInHand(hand, ChemicalHelper.get(purifyMap.get(prefixItem.tagPrefix), prefixItem.material, stack.getCount()));
+                        player.awardStat(Stats.USE_CAULDRON);
+                        player.awardStat(Stats.ITEM_USED.get(stackItem));
+                        LayeredCauldronBlock.lowerFillLevel(state, world, pos);
+
+                    }
+                }
+
+
+                return InteractionResult.sidedSuccess(world.isClientSide);
+            });
+
+        }
+    }
+
     @ExpectPlatform
     public static <T extends ComponentItem> NonNullConsumer<T> burnTime(int burnTime) {
         throw new AssertionError();
@@ -1408,12 +1460,12 @@ public class GTItems {
     }
 
     @ExpectPlatform
-    public static void registerToolTier(MaterialToolTier tier, ResourceLocation id, Collection<Tier> before, Collection<Tier> after) {
+    public static void registerToolTier(MaterialToolTier tier, ResourceLocation id, Collection<ResourceLocation> before, Collection<ResourceLocation> after) {
         throw new AssertionError();
     }
 
     @ExpectPlatform
-    public static List<? extends Tier> getAllToolTiers() {
+    public static ResourceLocation getTierName(Tier tier) {
         throw new AssertionError();
     }
 

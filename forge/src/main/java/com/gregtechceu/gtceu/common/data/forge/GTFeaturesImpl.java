@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.common.data.forge;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.worldgen.BiomeWeightModifier;
 import com.gregtechceu.gtceu.api.data.worldgen.modifier.BiomePlacement;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTPlacements;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -29,7 +28,6 @@ import net.minecraftforge.common.world.ForgeBiomeModifiers;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.holdersets.AnyHolderSet;
 
 import java.util.List;
 
@@ -50,25 +48,6 @@ public class GTFeaturesImpl {
     }
 
     public static void register() {
-        for (var entry : GTRegistries.ORE_VEINS.entries()) {
-            ResourceLocation id = entry.getKey();
-            var datagenExt = entry.getValue().getVeinGenerator();
-            if (datagenExt != null) {
-                CONFIGURED_FEATURE_REGISTER.register(id.getPath(), datagenExt::createConfiguredFeature);
-            }
-        }
-        BIOME_MODIFIER_REGISTER.register("ore", () -> {
-            Registry<Biome> biomeRegistry = BuiltinRegistries.ACCESS.registryOrThrow(Registry.BIOME_REGISTRY);
-            Registry<PlacedFeature> featureRegistry = BuiltinRegistries.ACCESS.registryOrThrow(Registry.PLACED_FEATURE_REGISTRY);
-            HolderSet<Biome> biomes = new AnyHolderSet<>(biomeRegistry);
-            Holder<PlacedFeature> featureHolder = featureRegistry.getOrCreateHolderOrThrow(ResourceKey.create(Registry.PLACED_FEATURE_REGISTRY, GTCEu.id("ore")));
-            return new ForgeBiomeModifiers.AddFeaturesBiomeModifier(
-                    biomes,
-                    HolderSet.direct(featureHolder),
-                    GenerationStep.Decoration.UNDERGROUND_ORES
-            );
-        });
-
         // rubber tree
         ResourceLocation id = GTCEu.id("trees_rubber");
         ResourceLocation vegetationId = GTCEu.id("rubber_vegetation");

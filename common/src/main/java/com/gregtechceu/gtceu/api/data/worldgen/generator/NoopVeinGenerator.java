@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.data.worldgen.generator;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
+import com.gregtechceu.gtceu.api.data.worldgen.ores.OreBlockPlacer;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
@@ -22,8 +23,8 @@ public class NoopVeinGenerator extends VeinGenerator {
     }
 
     @Override
-    public boolean generate(WorldGenLevel level, RandomSource random, GTOreDefinition entry, BlockPos origin) {
-        return true;
+    public Map<BlockPos, OreBlockPlacer> generate(WorldGenLevel level, RandomSource random, GTOreDefinition entry, BlockPos origin) {
+        return Map.of();
     }
 
     @Override

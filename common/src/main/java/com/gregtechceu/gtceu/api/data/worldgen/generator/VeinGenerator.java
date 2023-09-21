@@ -4,9 +4,8 @@ import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
-import com.gregtechceu.gtceu.api.data.worldgen.GTOreFeatureConfiguration;
 import com.gregtechceu.gtceu.api.data.worldgen.WorldGeneratorUtils;
-import com.gregtechceu.gtceu.common.data.GTFeatures;
+import com.gregtechceu.gtceu.api.data.worldgen.ores.OreBlockPlacer;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
@@ -16,7 +15,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 
 import java.util.*;
 import java.util.function.Function;
@@ -39,12 +37,6 @@ public abstract class VeinGenerator {
 
     public VeinGenerator(GTOreDefinition entry) {
         this.entry = entry;
-    }
-
-    public ConfiguredFeature<?, ?> createConfiguredFeature() {
-        build();
-        GTOreFeatureConfiguration config = new GTOreFeatureConfiguration(entry);
-        return new ConfiguredFeature<>(GTFeatures.ORE, config);
     }
 
     /**
@@ -76,7 +68,9 @@ public abstract class VeinGenerator {
     }
 
     @HideFromJS
-    public abstract boolean generate(WorldGenLevel level, RandomSource random, GTOreDefinition entry, BlockPos origin);
+    public abstract Map<BlockPos, OreBlockPlacer> generate(
+            WorldGenLevel level, RandomSource random, GTOreDefinition entry, BlockPos origin
+    );
 
     @HideFromJS
     public abstract VeinGenerator build();

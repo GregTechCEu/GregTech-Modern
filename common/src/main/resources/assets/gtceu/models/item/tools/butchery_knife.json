@@ -1,5 +1,5 @@
 {
-  "parent": "item/generated",
+  "parent": "item/handheld",
   "textures": {
     "layer0": "gtceu:item/tools/butchery_knife_base",
     "layer1": "gtceu:item/tools/butchery_knife"

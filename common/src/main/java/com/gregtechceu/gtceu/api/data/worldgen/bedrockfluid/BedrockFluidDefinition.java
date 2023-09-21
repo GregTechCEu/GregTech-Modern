@@ -165,7 +165,7 @@ public class BedrockFluidDefinition {
 
         public BedrockFluidDefinition register() {
             var definition = new BedrockFluidDefinition(weight, minimumYield, maximumYield, depletionAmount, depletionChance, depletedYield, fluid, biomes, dimensions);
-            GTBedrockFluids.toReRegisfter.put(name, definition);
+            GTBedrockFluids.toReRegister.put(name, definition);
             return definition;
         }
     }

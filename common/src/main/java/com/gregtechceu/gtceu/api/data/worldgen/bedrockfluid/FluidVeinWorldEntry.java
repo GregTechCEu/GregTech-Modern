@@ -43,7 +43,7 @@ public class FluidVeinWorldEntry {
     }
 
     public void decreaseOperations(int amount) {
-        operationsRemaining = ConfigHolder.INSTANCE.worldgen.infiniteBedrockOresFluids ? operationsRemaining : Math.max(0, operationsRemaining - amount);
+        operationsRemaining = ConfigHolder.INSTANCE.worldgen.oreVeins.infiniteBedrockOresFluids ? operationsRemaining : Math.max(0, operationsRemaining - amount);
     }
 
     public CompoundTag writeToNBT() {

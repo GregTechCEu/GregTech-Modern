@@ -8,15 +8,14 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.NoopVeinGenerator;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.common.data.GTOres;
 import com.gregtechceu.gtceu.integration.kjs.GTCEuServerEvents;
 import com.gregtechceu.gtceu.integration.kjs.events.GTOreVeinEventJS;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.JsonOps;
 import dev.latvian.mods.kubejs.script.ScriptType;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.GsonHelper;
@@ -25,11 +24,8 @@ import net.minecraft.world.level.storage.loot.Deserializers;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.annotation.Nullable;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
 
 public class OreDataLoader extends SimpleJsonResourceReloadListener {
     public static OreDataLoader INSTANCE;
@@ -44,7 +40,6 @@ public class OreDataLoader extends SimpleJsonResourceReloadListener {
     @Override
     protected void apply(Map<ResourceLocation, JsonElement> resourceList, ResourceManager resourceManager, ProfilerFiller profiler) {
         GTRegistries.ORE_VEINS.registry().clear();
-        GTFeatures.register();
         GTOres.init();
         if (GTCEu.isKubeJSLoaded()) {
             RunKJSEventInSeparateClassBecauseForgeIsDumb.fireKJSEvent();
@@ -78,6 +73,8 @@ public class OreDataLoader extends SimpleJsonResourceReloadListener {
                 iterator.remove();
             }
         }
+
+        GTOres.updateLargestVeinSize();
     }
 
     public static GTOreDefinition fromJson(ResourceLocation id, JsonObject json, RegistryOps<JsonElement> ops) {
