@@ -187,6 +187,14 @@ public class ConfigHolder {
         @Configurable.Comment({"Prevents vanilla's large ore veins from being generated", "Default: true"})
         public boolean removeVanillaLargeOreVeins = true;
 
+        @Configurable
+        @Configurable.Comment({
+                "Sets the maximum number of chunks that may be cached for ore vein generation.",
+                "Higher values may improve world generation performance, but at the cost of more RAM usage.",
+                "If you substantially increase the ore vein grid size, random vein offset, or have very large (custom) veins, you may need to increase this value as well.",
+                "Default: 512 (requires restarting the server / re-opening the world)"
+        })
+        public int chunkCacheSize = 512;
     }
 
     public static class MachineConfigs {

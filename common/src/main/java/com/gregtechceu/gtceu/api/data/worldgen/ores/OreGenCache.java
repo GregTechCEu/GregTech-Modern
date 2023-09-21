@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.data.worldgen.ores;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.WorldGenLevel;
@@ -15,7 +16,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
 
@@ -25,8 +25,7 @@ public class OreGenCache {
     private final OreGenerator oreGenerator = new OreGenerator();
 
     private final Cache<ChunkPos, Optional<GeneratedVein>> generatedVeinsByOrigin = CacheBuilder.newBuilder()
-            .expireAfterAccess(5, TimeUnit.MINUTES)
-            .maximumSize(512)
+            .maximumSize(ConfigHolder.INSTANCE.worldgen.chunkCacheSize)
             .softValues()
             .build();
 
