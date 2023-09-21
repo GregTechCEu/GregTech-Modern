@@ -1,14 +1,17 @@
 package com.gregtechceu.gtceu.api.data.worldgen.ores;
 
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.Optional;
 import java.util.function.Function;
 
 
@@ -43,5 +46,14 @@ public class OreVeinUtil {
 
     protected static boolean shouldSkipAirCheck(RandomSource pRandom, float pChance) {
         return pChance <= 0 || (!(pChance >= 1) && pRandom.nextFloat() >= pChance);
+    }
+
+    public static Optional<BlockPos> getVeinCenter(ChunkPos chunkPos, RandomSource random) {
+        int gridSize = ConfigHolder.INSTANCE.worldgen.oreVeinGridSize;
+
+        if (chunkPos.x % gridSize != 0 || chunkPos.z % gridSize != 0)
+            return Optional.empty();
+
+        return Optional.of(chunkPos.getMiddleBlockPosition(0));
     }
 }
