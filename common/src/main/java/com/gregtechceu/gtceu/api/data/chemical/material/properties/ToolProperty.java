@@ -216,7 +216,7 @@ public class ToolProperty implements IMaterialProperty<ToolProperty> {
         }
 
         public Builder durabilityMultiplier(int multiplier) {
-            toolProperty.durability = multiplier;
+            toolProperty.durabilityMultiplier = multiplier;
             return this;
         }
 

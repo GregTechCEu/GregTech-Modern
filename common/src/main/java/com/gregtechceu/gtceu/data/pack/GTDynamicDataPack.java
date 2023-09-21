@@ -133,8 +133,8 @@ public class GTDynamicDataPack implements PackResources {
             JsonArray block = new JsonArray();
             GTRecipes.recipeRemoval((id) -> { // Collect removed recipes in here, in the pack filter section.
                 JsonObject entry = new JsonObject();
-                entry.addProperty("namespace", id.getNamespace().replaceAll("[\\W]", "\\\\$0"));
-                entry.addProperty("path", "recipes/" + id.getPath().replaceAll("[\\W]", "\\\\$0"));
+                entry.addProperty("namespace", "^" + id.getNamespace().replaceAll("[\\W]", "\\\\$0") + "$");
+                entry.addProperty("path", "^recipes/" + id.getPath().replaceAll("[\\W]", "\\\\$0") + "$");
                 block.add(entry);
             });
             filter.add("block", block);

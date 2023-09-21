@@ -53,6 +53,7 @@ import net.minecraft.core.cauldron.CauldronInteraction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.stats.Stats;
+import net.minecraft.util.Tuple;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.ItemLike;
@@ -130,9 +131,16 @@ public class GTItems {
     public static void generateTools() {
         REGISTRATE.creativeModeTab(() -> TOOL);
 
-        HashMultimap<Integer, Tier> tiers = HashMultimap.create();
-        for (Tier tier : getAllToolTiers()) {
-            tiers.put(tier.getLevel(), tier);
+        HashMultimap<Integer, Tuple<ResourceLocation, Tier>> tiers = HashMultimap.create();
+        for (Tier tier : Tiers.values()) {
+            tiers.put(tier.getLevel(), new Tuple<>(getTierName(tier), tier));
+        }
+
+        for (Material material : GTRegistries.MATERIALS) {
+            if (material.hasProperty(PropertyKey.TOOL)) {
+                var tier = material.getToolTier();
+                tiers.put(tier.getLevel(), new Tuple<>(GTCEu.id(material.getName()), tier));
+            }
         }
 
         for (Material material : GTRegistries.MATERIALS.values()) {
@@ -140,9 +148,8 @@ public class GTItems {
                 var property = material.getProperty(PropertyKey.TOOL);
                 var tier = material.getToolTier();
 
-                List<Tier> lower = tiers.values().stream().filter(low -> low.getLevel() == tier.getLevel() - 1).toList();
-                List<Tier> higher = tiers.values().stream().filter(high -> high.getLevel() == tier.getLevel() + 1).toList();
-                tiers.put(tier.getLevel(), tier);
+                List<ResourceLocation> lower = tiers.values().stream().filter(low -> low.getB().getLevel() == tier.getLevel() - 1).map(Tuple::getA).toList();
+                List<ResourceLocation> higher = tiers.values().stream().filter(high -> high.getB().getLevel() == tier.getLevel() + 1).map(Tuple::getA).toList();
                 registerToolTier(tier, GTCEu.id(material.getName()), lower, higher);
 
                 for (GTToolType toolType : GTToolType.values()) {
@@ -1432,12 +1439,12 @@ public class GTItems {
     }
 
     @ExpectPlatform
-    public static void registerToolTier(MaterialToolTier tier, ResourceLocation id, Collection<Tier> before, Collection<Tier> after) {
+    public static void registerToolTier(MaterialToolTier tier, ResourceLocation id, Collection<ResourceLocation> before, Collection<ResourceLocation> after) {
         throw new AssertionError();
     }
 
     @ExpectPlatform
-    public static List<? extends Tier> getAllToolTiers() {
+    public static ResourceLocation getTierName(Tier tier) {
         throw new AssertionError();
     }
 
