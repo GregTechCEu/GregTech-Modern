@@ -154,9 +154,9 @@ public class ConfigHolder {
         @Configurable.Range(min = 0, max = 32 * 16)
         @Configurable.Comment({
                 "The maximum random offset (in blocks) from the grid for generating an ore vein.",
-                "Default: 24 (half the grid size)"
+                "Default: 12"
         })
-        public int oreVeinRandomOffset = 24;
+        public int oreVeinRandomOffset = 12;
 
 
         @Configurable

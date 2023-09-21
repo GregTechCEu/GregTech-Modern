@@ -32,10 +32,10 @@ public class GTWorldgen {
                         DensityFunctions.constant(-0.08f),
                         DensityFunctions.max(
                                 DensityFunctions.interpolated(
-                                        DensityFunctions.noise(oreVeinA, 2.0f, 2.0f)
+                                        DensityFunctions.noise(oreVeinA, 4.0f, 4.0f)
                                 ).abs(),
                                 DensityFunctions.interpolated(
-                                        DensityFunctions.noise(oreVeinB, 2.0f, 2.0f)
+                                        DensityFunctions.noise(oreVeinB, 4.0f, 4.0f)
                                 ).abs()
                         )
                 )
