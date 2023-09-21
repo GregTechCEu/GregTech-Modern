@@ -158,25 +158,6 @@ public class ConfigHolder {
         })
         public int oreVeinRandomOffset = 24;
 
-        @Configurable
-        @Configurable.Range(min = 0, max = 32 * 16)
-        @Configurable.Comment({
-                "Radius (in blocks) that ore veins will check for existing ones.",
-                "This is the \"radius\" of a square area around each vein, in addition to the vein's chunk itself.",
-                "Default: 48 (the grid size)"
-        })
-        public int oreVeinScanRadius = 48;
-
-        @Configurable
-        @Configurable.Range(min = 1, max = 127)
-        @Configurable.Comment({
-                "The maximum number of overlapping veins allowed within the scan radius.",
-                "This only searches for the CENTER of a vein, not its actual generated ores.",
-                "(see oreVeinScanRadius)",
-                "Default: 1"
-        })
-        public int maxOverlappingVeins = 1;
-
 
         @Configurable
         @Configurable.Comment({"Multiplier to bedrock ore generation amount", "Default: 1.0f"})

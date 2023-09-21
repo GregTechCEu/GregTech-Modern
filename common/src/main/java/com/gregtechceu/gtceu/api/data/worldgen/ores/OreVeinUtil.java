@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.data.worldgen.ores;
 
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
+import com.gregtechceu.gtceu.common.data.GTOres;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -50,10 +51,24 @@ public class OreVeinUtil {
 
     public static Optional<BlockPos> getVeinCenter(ChunkPos chunkPos, RandomSource random) {
         int gridSize = ConfigHolder.INSTANCE.worldgen.oreVeinGridSize;
+        int randomOffset = ConfigHolder.INSTANCE.worldgen.oreVeinRandomOffset;
 
         if (chunkPos.x % gridSize != 0 || chunkPos.z % gridSize != 0)
             return Optional.empty();
 
-        return Optional.of(chunkPos.getMiddleBlockPosition(0));
+        var chunkCenter = chunkPos.getMiddleBlockPosition(0);
+
+        return Optional.of(chunkCenter.offset(
+                random.nextInt(-randomOffset, +randomOffset),
+                0,
+                random.nextInt(-randomOffset, +randomOffset)
+        ));
+    }
+
+    static int getMaxVeinSearchDistance() {
+        double halfVeinSize = GTOres.getLargestVeinSize() / 2.0;
+        int randomOffset = ConfigHolder.INSTANCE.worldgen.oreVeinRandomOffset;
+
+        return (int) Math.ceil((halfVeinSize + randomOffset) / 16.0);
     }
 }
