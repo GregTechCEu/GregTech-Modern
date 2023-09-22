@@ -2,20 +2,24 @@ package com.gregtechceu.gtceu.api.data.worldgen.ores;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
-import com.gregtechceu.gtceu.api.data.worldgen.GTOreFeatureConfiguration;
+import com.gregtechceu.gtceu.api.data.worldgen.WorldGeneratorUtils;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreVeinSavedData;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.utils.GTUtil;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.XoroshiroRandomSource;
 import net.minecraft.world.level.levelgen.placement.PlacementContext;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Map;
@@ -35,7 +39,7 @@ public class OreGenerator {
 
     private Optional<GeneratedVein> generate(VeinConfiguration config, WorldGenLevel level, ChunkPos chunkPos) {
         Map<BlockPos, OreBlockPlacer> generated = config.entry().getVeinGenerator()
-                .generate(level, config.random(), config.entry(), config.origin());
+                .generateWithIndicator(level, config.random(), config.entry(), config.origin());
 
         if (generated.isEmpty()) {
             logEmptyVein(config);
@@ -57,10 +61,9 @@ public class OreGenerator {
 
     private Optional<VeinConfiguration> createConfig(WorldGenLevel level, ChunkGenerator generator, ChunkPos chunkPos) {
         var random = new XoroshiroRandomSource(level.getSeed() ^ chunkPos.toLong());
-        var config = new GTOreFeatureConfiguration();
 
         return OreVeinUtil.getVeinCenter(chunkPos, random).map(veinCenter -> {
-            var entry = config.getEntry(level, level.getBiome(veinCenter), random);
+            var entry = getEntry(level, level.getBiome(veinCenter), random);
             var id = GTRegistries.ORE_VEINS.getKey(entry);
 
             if (entry == null) return null;
@@ -83,6 +86,13 @@ public class OreGenerator {
         ).findFirst();
     }
 
+
+    @Nullable
+    public GTOreDefinition getEntry(WorldGenLevel level, Holder<Biome> biome, RandomSource random) {
+        var veins = WorldGeneratorUtils.getCachedBiomeVeins(level.getLevel(), biome, random);
+        int randomEntryIndex = GTUtil.getRandomItem(random, veins, veins.size());
+        return randomEntryIndex == -1 ? null : veins.get(randomEntryIndex).getValue();
+    }
 
     /////////////////////////////////////
     //*********    LOGGING    *********//

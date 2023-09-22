@@ -50,6 +50,8 @@ public class GTOreDefinition {
                     Codec.floatRange(0.0F, 1.0F).fieldOf("density").forGetter(ft -> ft.density),
                     Codec.INT.fieldOf("weight").forGetter(ft -> ft.weight),
                     IWorldGenLayer.CODEC.fieldOf("layer").forGetter(ft -> ft.layer),
+                    IndicatorType.CODEC.optionalFieldOf("indicator_type", IndicatorType.SURFACE).forGetter(ft -> ft.indicatorType),
+                    Codec.INT.optionalFieldOf("indicator_count", 4).forGetter(ft -> ft.indicatorCount),
                     RegistryCodecs.homogeneousList(Registry.DIMENSION_TYPE_REGISTRY).fieldOf("dimension_filter").forGetter(ft -> ft.dimensionFilter),
                     HeightRangePlacement.CODEC.fieldOf("height_range").forGetter(ft -> ft.range),
                     Codec.floatRange(0.0F, 1.0F).fieldOf("discard_chance_on_air_exposure").forGetter(ft -> ft.discardChanceOnAirExposure),
@@ -68,6 +70,10 @@ public class GTOreDefinition {
     @Getter @Setter
     private IWorldGenLayer layer;
     @Getter @Setter
+    private IndicatorType indicatorType;
+    @Getter @Setter
+    private int indicatorCount;
+    @Getter @Setter
     private HolderSet<DimensionType> dimensionFilter;
     @Getter @Setter
     private HeightRangePlacement range;
@@ -78,9 +84,6 @@ public class GTOreDefinition {
     @Getter @Setter
     private BiomeWeightModifier biomeWeightModifier;
 
-    @Getter
-    private List<PlacementModifier> modifiers;
-
     @Getter @Setter
     private VeinGenerator veinGenerator;
 
@@ -89,8 +92,8 @@ public class GTOreDefinition {
     @Setter
     private List<Map.Entry<Integer, Material>> bedrockVeinMaterial;
 
-    public GTOreDefinition(ResourceLocation id, int clusterSize, float density, int weight, IWorldGenLayer layer, HolderSet<DimensionType> dimensionFilter, HeightRangePlacement range, float discardChanceOnAirExposure, @Nullable HolderSet<Biome> biomes, @Nullable BiomeWeightModifier biomeWeightModifier, @Nullable VeinGenerator veinGenerator) {
-        this(clusterSize, density, weight, layer, dimensionFilter, range, discardChanceOnAirExposure, biomes, biomeWeightModifier, veinGenerator);
+    public GTOreDefinition(ResourceLocation id, int clusterSize, float density, int weight, IWorldGenLayer layer, IndicatorType indicatorType, int indicatorCount, HolderSet<DimensionType> dimensionFilter, HeightRangePlacement range, float discardChanceOnAirExposure, @Nullable HolderSet<Biome> biomes, @Nullable BiomeWeightModifier biomeWeightModifier, @Nullable VeinGenerator veinGenerator) {
+        this(clusterSize, density, weight, layer, indicatorType, indicatorCount, dimensionFilter, range, discardChanceOnAirExposure, biomes, biomeWeightModifier, veinGenerator);
         if (GTRegistries.ORE_VEINS.containKey(id)) {
             GTRegistries.ORE_VEINS.replace(id, this);
         } else {
@@ -98,11 +101,13 @@ public class GTOreDefinition {
         }
     }
 
-    public GTOreDefinition(int clusterSize, float density, int weight, IWorldGenLayer layer, HolderSet<DimensionType> dimensionFilter, HeightRangePlacement range, float discardChanceOnAirExposure, @Nullable HolderSet<Biome> biomes, @Nullable BiomeWeightModifier biomeWeightModifier, @Nullable VeinGenerator veinGenerator) {
+    public GTOreDefinition(int clusterSize, float density, int weight, IWorldGenLayer layer, IndicatorType indicatorType, int indicatorCount, HolderSet<DimensionType> dimensionFilter, HeightRangePlacement range, float discardChanceOnAirExposure, @Nullable HolderSet<Biome> biomes, @Nullable BiomeWeightModifier biomeWeightModifier, @Nullable VeinGenerator veinGenerator) {
         this.clusterSize = clusterSize;
         this.density = density;
         this.weight = weight;
         this.layer = layer;
+        this.indicatorType = indicatorType;
+        this.indicatorCount = indicatorCount;
         this.dimensionFilter = dimensionFilter;
         this.range = range;
         this.discardChanceOnAirExposure = discardChanceOnAirExposure;
@@ -133,11 +138,7 @@ public class GTOreDefinition {
 
     public List<Map.Entry<Integer, Material>> getBedrockVeinMaterials() {
         if (bedrockVeinMaterial == null) {
-            if (ConfigHolder.INSTANCE.machines.doBedrockOres) {
-                bedrockVeinMaterial = this.getVeinGenerator().getValidMaterialsChances();
-            } else {
-                bedrockVeinMaterial = List.of();
-            }
+            bedrockVeinMaterial = this.getVeinGenerator().getValidMaterialsChances();
         }
         return bedrockVeinMaterial;
     }

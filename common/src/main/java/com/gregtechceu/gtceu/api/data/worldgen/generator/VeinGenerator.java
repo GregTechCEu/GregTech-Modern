@@ -6,11 +6,14 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.WorldGeneratorUtils;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.OreBlockPlacer;
+import com.gregtechceu.gtceu.common.data.GTBlocks;
+import com.gregtechceu.gtceu.utils.GTUtil;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.SectionPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
@@ -68,9 +71,25 @@ public abstract class VeinGenerator {
     }
 
     @HideFromJS
-    public abstract Map<BlockPos, OreBlockPlacer> generate(
-            WorldGenLevel level, RandomSource random, GTOreDefinition entry, BlockPos origin
-    );
+    public Map<BlockPos, OreBlockPlacer> generateWithIndicator(WorldGenLevel level, RandomSource random, GTOreDefinition entry, BlockPos origin) {
+        var toPlace = this.generate(level, random, entry, origin);
+        for (int i = 0; i < entry.getIndicatorCount(); ++i) {
+            int offsetX = random.nextInt(-4, 4);
+            int offsetY = random.nextInt(-4, 4);
+            int offsetZ = random.nextInt(-4, 4);
+            var materials = entry.getBedrockVeinMaterials();
+            int index = GTUtil.getRandomItem(random, materials, materials.size());
+            if (index == -1) continue;
+            Material material = materials.get(index).getValue();
+            BlockPos current = origin.offset(offsetX, offsetY, offsetZ);
+            OreBlockPlacer possible = entry.getIndicatorType().getPossiblePositions(level, random, current, 8, GTBlocks.SURFACE_ROCK_BLOCKS.get(material).getDefaultState());
+            toPlace.putIfAbsent(current, possible);
+        }
+        return toPlace;
+    }
+
+    @HideFromJS
+    public abstract Map<BlockPos, OreBlockPlacer> generate(WorldGenLevel level, RandomSource random, GTOreDefinition entry, BlockPos origin);
 
     @HideFromJS
     public abstract VeinGenerator build();

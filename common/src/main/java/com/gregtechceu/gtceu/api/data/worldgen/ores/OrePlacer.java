@@ -26,7 +26,7 @@ public class OrePlacer {
                     .flatMap(vein -> vein.consumeChunk(chunk.getPos()).entrySet().stream())
                     .collect(Collectors.groupingBy(
                             entry -> SectionPos.of(entry.getKey()),
-                            Collectors.mapping(Map.Entry::getValue, Collectors.toList())
+                            Collectors.mapping(Map.Entry::getValue, Collectors.toSet())
                     ));
 
             placersBySection.forEach((sectionPos, placers) -> {
