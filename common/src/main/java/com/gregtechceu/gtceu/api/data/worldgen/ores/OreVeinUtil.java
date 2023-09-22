@@ -49,6 +49,15 @@ public class OreVeinUtil {
         return pChance <= 0 || (!(pChance >= 1) && pRandom.nextFloat() >= pChance);
     }
 
+    /**
+     * Resolves a vein's center for the supplied chunk position.
+     * 
+     * <p>Note that depending on the config value for the random vein offset, its actual
+     * center may be outside the supplied chunk.
+     * 
+     * @return The origin of the vein to be generated.<br>
+     *         {@code Optional.empty()} if no vein should exist for the specified chunk.
+     */
     public static Optional<BlockPos> getVeinCenter(ChunkPos chunkPos, RandomSource random) {
         int gridSize = ConfigHolder.INSTANCE.worldgen.oreVeins.oreVeinGridSize;
         int randomOffset = ConfigHolder.INSTANCE.worldgen.oreVeins.oreVeinRandomOffset;
@@ -65,6 +74,10 @@ public class OreVeinUtil {
         ));
     }
 
+    /**
+     * @return The radius (in chunks) to search for adjacent veins.<br>
+     *         Depends on the largest registered vein size, as well as the configured random vein offset.
+     */
     static int getMaxVeinSearchDistance() {
         double halfVeinSize = GTOres.getLargestVeinSize() / 2.0;
         int randomOffset = ConfigHolder.INSTANCE.worldgen.oreVeins.oreVeinRandomOffset;

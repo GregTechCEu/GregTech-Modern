@@ -13,6 +13,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 
+/**
+ * Holds a vein's {@link OreBlockPlacer}s for each of its blocks, grouped by chunk.
+ */
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class GeneratedVein {
@@ -22,6 +25,11 @@ public class GeneratedVein {
     private final Map<ChunkPos, Map<BlockPos, OreBlockPlacer>> generatedOres;
     private final Set<ChunkPos> unconsumedChunks;
 
+    /**
+     * @param origin         The vein's origin chunk (NOT its actual center, which may be outside the origin chunk)
+     * @param oresByPosition The ore placers for each block position.<br>
+     *                       Doesn't need to be ordered, grouping by chunks is done internally.
+     */
     public GeneratedVein(ChunkPos origin, Map<BlockPos, OreBlockPlacer> oresByPosition) {
         this.origin = origin;
         this.generatedOres = oresByPosition.entrySet().stream().collect(Collectors.groupingBy(
@@ -33,6 +41,12 @@ public class GeneratedVein {
         this.unconsumedChunks = new ObjectArraySet<>(this.generatedOres.keySet());
     }
 
+    /**
+     * Retrieve the ore placers for all blocks inside the specified chunk.
+     * 
+     * <p>This marks the chunk as consumed, allowing the vein to be deleted from the ore generation cache,
+     * as soon as all of its chunks have been consumed.
+     */
     public Map<BlockPos, OreBlockPlacer> consumeChunk(ChunkPos chunk) {
         var ores = this.generatedOres.get(chunk);
 
@@ -43,6 +57,9 @@ public class GeneratedVein {
         return ores;
     }
 
+    /**
+     * @return Whether all of the vein's chunks (containing any generated blocks) have been consumed.
+     */
     public boolean isFullyConsumed() {
         return unconsumedChunks.isEmpty();
     }

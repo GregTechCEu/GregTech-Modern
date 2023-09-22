@@ -26,12 +26,27 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Map;
 import java.util.Optional;
 
+
+/**
+ * Responsible for (pre)generating ore veins.<br>
+ * This does not actually place any of the ore's blocks, and delegates to the applicable vein generator.
+ */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class OreGenerator {
     private record VeinConfiguration(ResourceLocation id, GTOreDefinition entry, RandomSource random, BlockPos origin) {
     }
 
+    /**
+     * Generates the vein for the specified chunk position.<br>
+     * If the chunk is not located on one of the ore vein grid's intersections, no vein will be generated.
+     * 
+     * <p>Note that depending on the configured random offset, the actual center of the generated vein may be located
+     * outside the specified origin chunk.
+     * 
+     * @return The generated vein for the specified chunk position.<br>
+     *         {@code Optional.empty()} if no vein exists at this chunk.
+     */
     public Optional<GeneratedVein> generate(WorldGenLevel level, ChunkGenerator chunkGenerator, ChunkPos chunkPos) {
         return createConfig(level, chunkGenerator, chunkPos)
                 .map(OreGenerator::logVeinGeneration)
