@@ -66,6 +66,12 @@ public abstract class VeinGenerator {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Generate a map of all ore placers (by block position), for each block in this ore vein.
+     * 
+     * <p>Note that, if in any way possible, this is NOT supposed to directly place any of the vein's blocks, as their
+     * respective ore placers are invoked at a later time, when the chunk containing them is actually generated.
+     */
     public abstract Map<BlockPos, OreBlockPlacer> generate(
             WorldGenLevel level, RandomSource random, GTOreDefinition entry, BlockPos origin
     );
