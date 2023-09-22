@@ -193,7 +193,7 @@ public class GCyMMachines {
     public final static MultiblockMachineDefinition LARGE_ELECTROMAGNET = REGISTRATE.multiblock("large_electromagnet", WorkableElectricMultiblockMachine::new)
             .langValue("Large Electromagnet")
             .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"))
-            .tooltips(Component.translatable("gtceu.machine.available_recipe_map_2.tooltip", Component.translatable("gtceu.electrolytic_separator"), Component.translatable("gtceu.polarizer")))
+            .tooltips(Component.translatable("gtceu.machine.available_recipe_map_2.tooltip", Component.translatable("gtceu.separator"), Component.translatable("gtceu.polarizer")))
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeTypes(ELECTROMAGNETIC_SEPARATOR_RECIPES, POLARIZER_RECIPES)
             .recipeModifier(GTRecipeModifiers.PARALLEL_HATCH.apply(OverclockingLogic.PERFECT_OVERCLOCK, GTRecipeModifiers.ELECTRIC_OVERCLOCK))
