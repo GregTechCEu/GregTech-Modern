@@ -19,6 +19,11 @@ import java.util.concurrent.ExecutionException;
 import java.util.stream.Stream;
 
 
+/**
+ * Used for caching ore veins between generated chunks.
+ * 
+ * <p>Uses the {@link OreGenerator} to generate new veins in case no vein is cached for a queried chunk.
+ */
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class OreGenCache {
@@ -29,6 +34,12 @@ public class OreGenCache {
             .softValues()
             .build();
 
+
+    /**
+     * Get (or create) all veins to be generated, surrounding the supplied chunk.
+     * 
+     * <p>The search radius depends on the largest registered vein size, as well as the relevant config options.
+     */
     public List<GeneratedVein> consumeChunk(WorldGenLevel level, ChunkGenerator generator, ChunkAccess chunk) {
         var generatedVeins = getOrCreateSurroundingVeins(level, generator, chunk);
 

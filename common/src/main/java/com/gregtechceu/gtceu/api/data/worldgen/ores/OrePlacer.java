@@ -13,11 +13,22 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 
+/**
+ * Responsible for placing ores of surrounding veins for the current chunk.
+ * 
+ * <p>Surrounding veins are resolved from the {@link OreGenCache} and placed using each block position's {@link OreBlockPlacer}.
+ */
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class OrePlacer {
     private final OreGenCache oreGenCache = new OreGenCache();
 
+    /**
+     * Place the contents of all surrounding ore veins in the current chunk.
+     * 
+     * <p>Consumes the current chunk for all of the relevant veins, allowing the cache to unload the vein,
+     * once all of its chunks have been generated.
+     */
     public void placeOres(WorldGenLevel level, ChunkGenerator chunkGenerator, ChunkAccess chunk) {
         var generatedVeins = oreGenCache.consumeChunk(level, chunkGenerator, chunk);
 
