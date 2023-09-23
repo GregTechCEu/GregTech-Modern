@@ -156,6 +156,8 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine impleme
             } else {
                 return false;
             }
+        } else {
+            return false;
         }
 
         // drain fluid
