@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.capability.forge;
 import com.gregtechceu.gtceu.api.capability.*;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.machine.trait.optical.IOpticalComputationProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
@@ -136,6 +137,28 @@ public class GTCapabilityHelperImpl {
             var blockEntity = level.getBlockEntity(pos);
             if (blockEntity != null) {
                 return blockEntity.getCapability(GTCapability.CAPABILITY_LASER_CONTAINER, side).resolve().orElse(null);
+            }
+        }
+        return null;
+    }
+
+    @Nullable
+    public static IDataAccessHatch getDataAccess(Level level, BlockPos pos, @Nullable Direction side) {
+        if (level.getBlockState(pos).hasBlockEntity()) {
+            var blockEntity = level.getBlockEntity(pos);
+            if (blockEntity != null) {
+                return blockEntity.getCapability(GTCapability.CAPABILITY_DATA_ACCESS, side).resolve().orElse(null);
+            }
+        }
+        return null;
+    }
+
+    @Nullable
+    public static IOpticalComputationProvider getComputationProvider(Level level, BlockPos pos, @Nullable Direction side) {
+        if (level.getBlockState(pos).hasBlockEntity()) {
+            var blockEntity = level.getBlockEntity(pos);
+            if (blockEntity != null) {
+                return blockEntity.getCapability(GTCapability.CAPABILITY_COMPUTATION_PROVIDER, side).resolve().orElse(null);
             }
         }
         return null;

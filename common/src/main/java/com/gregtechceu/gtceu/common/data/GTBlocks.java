@@ -343,6 +343,29 @@ public class GTBlocks {
         }
     }
 
+    public static final BlockEntry<OpticalPipeBlock>[] OPTICAL_PIPES = new BlockEntry[DyeColor.values().length];
+
+    public static void generateOpticalPipeBlocks() {
+        REGISTRATE.creativeModeTab(() -> GTCreativeModeTabs.MATERIAL_PIPE);
+
+        for (int i = 0; i < DyeColor.values().length; ++i) {
+            var color = DyeColor.values()[i];
+            OPTICAL_PIPES[i] = REGISTRATE.block("%s_optical_pipe".formatted(color.getSerializedName()), p -> new OpticalPipeBlock(p, color))
+                    .initialProperties(() -> Blocks.IRON_BLOCK)
+                    .properties(p -> p.dynamicShape().noOcclusion().noLootTable())
+                    .blockstate(NonNullBiConsumer.noop())
+                    .setData(ProviderType.LANG, NonNullBiConsumer.noop())
+                    .setData(ProviderType.LOOT, NonNullBiConsumer.noop())
+                    .addLayer(() -> RenderType::cutoutMipped)
+                    //.color(() -> LaserPipeBlock::tintedColor)
+                    .item(PipeBlockItem::new)
+                    .model(NonNullBiConsumer.noop())
+                    //.color(() -> LaserPipeBlockItem::tintColor)
+                    .build()
+                    .register();
+        }
+    }
+
     static {
         REGISTRATE.creativeModeTab(() -> GTCreativeModeTabs.DECORATION);
     }
@@ -826,6 +849,7 @@ public class GTBlocks {
         generateCableBlocks();
         generatePipeBlocks();
         generateLaserPipeBlocks();
+        generateOpticalPipeBlocks();
         GCyMBlocks.init();
     }
 
