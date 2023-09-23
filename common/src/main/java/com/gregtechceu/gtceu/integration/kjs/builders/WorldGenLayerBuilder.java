@@ -25,8 +25,7 @@ public class WorldGenLayerBuilder extends BuilderBase<SimpleWorldGenLayer> {
 
     @Override
     public SimpleWorldGenLayer register() {
-        // TODO add applicable dimensions here instead of passing an empty set
-        this.value = new SimpleWorldGenLayer(this.id.getPath(), target, Set.of());
+        this.value = new SimpleWorldGenLayer(this.id.getPath(), target, Set.copyOf(dimensions));
         return value;
     }
 
