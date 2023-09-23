@@ -233,7 +233,7 @@ public class ElementMaterials {
                 .color(0x20FFFF).iconSet(METALLIC)
                 .appendFlags(STD_METAL, GENERATE_LONG_ROD, GENERATE_FINE_WIRE, GENERATE_SPRING, GENERATE_FOIL, GENERATE_FRAME)
                 .element(GTElements.Eu)
-                .cableProperties(GTValues.V[GTValues.UV], 2, 32)  // TODO do we really need UHV+
+                .cableProperties(GTValues.V[GTValues.UHV], 2, 32)
                 .fluidPipeProperties(7750, 300, true)
                 .blastTemp(6000, GasTier.MID, GTValues.VA[GTValues.IV], 180)
                 .fluidTemp(1099)

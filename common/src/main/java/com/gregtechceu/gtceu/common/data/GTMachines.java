@@ -337,7 +337,6 @@ public class GTMachines {
                     .register(),
             LOW_TIERS);
 
-    // TODO do we really need UHV+?
     public final static MachineDefinition[] QUANTUM_CHEST = registerTieredMachines("quantum_chest",
             (holder, tier) -> new QuantumChestMachine(holder, tier, tier == GTValues.UHV ? Integer.MAX_VALUE : 4000000 * (int) Math.pow(2, tier)),
             (tier, builder) -> builder
@@ -375,7 +374,6 @@ public class GTMachines {
                     .register(),
             LOW_TIERS);
 
-    // TODO do we really need UHV+?
     public final static MachineDefinition[] QUANTUM_TANK = registerTieredMachines("quantum_tank",
             (holder, tier) -> new QuantumTankMachine(holder, tier, tier == GTValues.UHV ? Integer.MAX_VALUE : 4000 * FluidHelper.getBucket() * (int) Math.pow(2, tier)),
             (tier, builder) -> builder
