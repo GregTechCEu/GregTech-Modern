@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper.registerUnificationItems;
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.*;
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
 
@@ -58,63 +57,20 @@ public class GTMaterials {
 
         MarkerMaterials.register();
 
-        /*
-         * Ranges 1-249
-         */
         ElementMaterials.register();
-
-        /*
-         * Ranges 250-999
-         */
         FirstDegreeMaterials.register();
-
-        /*
-         * Ranges 1000-1499
-         */
         OrganicChemistryMaterials.register();
-
-        /*
-         * Ranges 1500-1999
-         */
         UnknownCompositionMaterials.register();
-
-        /*
-         * Ranges 2000-2499
-         */
         SecondDegreeMaterials.register();
-
-        /*
-         * Ranges 2500-2999
-         */
         HigherDegreeMaterials.register();
+
+        //Gregicality Multiblocks
+        GCyMMaterials.register();
 
         /*
          * Register info for cyclical references
          */
         MaterialFlagAddition.register();
-
-        /*
-         * FOR ADDON DEVELOPERS:
-         *
-         * GTCEu will not take more than 3000 IDs. Anything past ID 2999
-         * is considered FAIR GAME, take whatever you like.
-         *
-         * If you would like to reserve IDs, feel free to reach out to the
-         * development team and claim a range of IDs! We will mark any
-         * claimed ranges below this comment. Max value is 32767.
-         *
-         * - Gregicality: 3000-19999
-         * - Gregification: 20000-20999
-         * - HtmlTech: 21000-21499
-         * - GregTech Food Option: 21500-21999
-         * - PCM's Ore Addon: 22000-23599
-         * - MechTech: 23600-23999
-         * - FREE RANGE 24000-31999
-         * - Reserved for CraftTweaker: 32000-32767
-         */
-
-        //Gregicality Multiblocks
-        GCyMMaterials.register();
 
         CHEMICAL_DYES = new Material[]{
                 GTMaterials.DyeWhite, GTMaterials.DyeOrange,
@@ -149,6 +105,7 @@ public class GTMaterials {
         gem.setIgnored(NetherQuartz, Items.QUARTZ);
         gem.setIgnored(Coal, Items.COAL);
         gem.setIgnored(Amethyst, Items.AMETHYST_SHARD);
+        gem.setIgnored(Echo, Items.ECHO_SHARD);
         excludeAllGems(Charcoal, Items.CHARCOAL);
         excludeAllGems(Flint, Items.FLINT);
         excludeAllGems(EnderPearl, Items.ENDER_PEARL);
@@ -171,6 +128,7 @@ public class GTMaterials {
         ingot.setIgnored(Iron, Items.IRON_INGOT);
         ingot.setIgnored(Gold, Items.GOLD_INGOT);
         ingot.setIgnored(Copper, Items.COPPER_INGOT);
+        ingot.setIgnored(Netherite, Items.NETHERITE_INGOT);
 
         nugget.setIgnored(Gold, Items.GOLD_NUGGET);
         nugget.setIgnored(Iron, Items.IRON_NUGGET);
@@ -184,6 +142,7 @@ public class GTMaterials {
         block.setIgnored(Emerald, Blocks.EMERALD_BLOCK);
         block.setIgnored(Redstone, Blocks.REDSTONE_BLOCK);
         block.setIgnored(Diamond, Blocks.DIAMOND_BLOCK);
+        block.setIgnored(Netherite, Blocks.NETHERITE_BLOCK);
         block.setIgnored(Coal, Blocks.COAL_BLOCK);
         block.setIgnored(Amethyst, Blocks.AMETHYST_BLOCK);
         block.setIgnored(Glass, Blocks.GLASS);
@@ -713,6 +672,7 @@ public class GTMaterials {
     public static Material AntimonyTrifluoride;
     public static Material EnrichedNaquadahSulfate;
     public static Material NaquadriaSulfate;
+    public static Material Netherite;
     public static Material Pyrochlore;
 
     /**
@@ -925,6 +885,8 @@ public class GTMaterials {
     public static Material AcidicNaquadriaSolution;
     public static Material NaquadriaWaste;
     public static Material Lapotron;
+    public static Material Echo;
+    public static Material QuantumEcho;
     public static Material UUMatter;
 
     /**

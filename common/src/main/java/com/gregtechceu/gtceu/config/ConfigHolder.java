@@ -208,7 +208,7 @@ public class ConfigHolder {
         public boolean doTerrainExplosion = false;
         @Configurable
         @Configurable.Comment({"Whether machines or boilers damage the terrain when they explode.",
-                "Note machines and boilers always explode when overloaded with power or met with special conditions, regardless of this config.", "Default: true"})
+                "Note machines and boilers always explode when overloaded with power or met with special conditions, regardless of this Configurable.", "Default: true"})
         public boolean doesExplosionDamagesTerrain = false;
         @Configurable
         @Configurable.Comment({"Divisor for Recipe Duration per Overclock.", "Default: 2.0"})
@@ -261,6 +261,23 @@ public class ConfigHolder {
         @Configurable.Range(min = 0, max = 0xFFFFFF)
         @Configurable.Gui.ColorValue
         public int defaultPaintingColor = 0xFFFFFF;
+        @Configurable
+        public ArmorHud armorHud = new ArmorHud();
+
+        public static class ArmorHud {
+            @Configurable
+            @Configurable.Comment({"Sets HUD location", "1 - left-upper corner", "2 - right-upper corner", "3 - left-bottom corner", "4 - right-bottom corner", "Default: 1"})
+            @Configurable.Range(min = 1, max = 4)
+            public int hudLocation = 1;
+            @Configurable
+            @Configurable.Comment({"Horizontal offset of HUD.", "Default: 0"})
+            @Configurable.Range(min = 0, max = 100)
+            public int hudOffsetX = 0;
+            @Configurable
+            @Configurable.Comment({"Vertical offset of HUD.", "Default: 0"})
+            @Configurable.Range(min = 0, max = 100)
+            public int hudOffsetY = 0;
+        }
     }
 
     public static class DeveloperConfigs {
