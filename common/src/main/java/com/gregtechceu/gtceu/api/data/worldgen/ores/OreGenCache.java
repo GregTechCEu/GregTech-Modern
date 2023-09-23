@@ -14,7 +14,6 @@ import org.apache.commons.lang3.mutable.MutableInt;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Stream;
 
@@ -29,8 +28,8 @@ import java.util.stream.Stream;
 public class OreGenCache {
     private final OreGenerator oreGenerator = new OreGenerator();
 
-    private final Cache<ChunkPos, Optional<GeneratedVein>> generatedVeinsByOrigin = CacheBuilder.newBuilder()
-            .maximumSize(ConfigHolder.INSTANCE.worldgen.oreVeins.oreGenerationChunkCacheSize)
+    private final Cache<ChunkPos, List<GeneratedVein>> generatedVeinsByOrigin = CacheBuilder.newBuilder()
+            .maximumSize(ConfigHolder.INSTANCE != null ? ConfigHolder.INSTANCE.worldgen.oreVeins.oreGenerationChunkCacheSize : 512)
             .softValues()
             .build();
 
@@ -51,14 +50,14 @@ public class OreGenCache {
     }
 
     private List<GeneratedVein> getOrCreateSurroundingVeins(WorldGenLevel level, ChunkGenerator generator, ChunkAccess chunk) {
-        return getSurroundingChunks(chunk.getPos()).map(chunkPos -> {
+        return getSurroundingChunks(chunk.getPos()).flatMap(chunkPos -> {
             try {
                 return generatedVeinsByOrigin
                         .get(chunkPos, () -> oreGenerator.generate(level, generator, chunkPos))
-                        .orElse(null);
+                        .stream();
             } catch (ExecutionException e) {
                 GTCEu.LOGGER.error("Cannot create vein in chunk " + chunkPos, e);
-                return null;
+                return Stream.empty();
             }
         }).filter(Objects::nonNull).toList();
     }

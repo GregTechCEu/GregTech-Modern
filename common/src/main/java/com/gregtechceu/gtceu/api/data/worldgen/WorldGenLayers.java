@@ -6,11 +6,15 @@ import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.integration.kjs.GTRegistryObjectBuilderTypes;
 import lombok.Getter;
 import lombok.Setter;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;
 import net.minecraft.world.level.levelgen.structure.templatesystem.TagMatchTest;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Set;
 
 /**
  * @author Screret
@@ -18,19 +22,37 @@ import org.jetbrains.annotations.NotNull;
  * @implNote WorldGenLayers
  */
 public enum WorldGenLayers implements IWorldGenLayer, StringRepresentable {
-    STONE("stone", new TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES)),
-    DEEPSLATE("deepslate", new TagMatchTest(BlockTags.DEEPSLATE_ORE_REPLACEABLES)),
-    NETHERRACK("netherrack", new TagMatchTest(BlockTags.NETHER_CARVER_REPLACEABLES)),
-    ENDSTONE("endstone", WorldGeneratorUtils.END_ORE_REPLACEABLES);
+    STONE(
+            "stone", new TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES),
+            Set.of(Level.OVERWORLD.location())
+    ),
+    DEEPSLATE(
+            "deepslate", new TagMatchTest(BlockTags.DEEPSLATE_ORE_REPLACEABLES),
+            Set.of(Level.OVERWORLD.location())
+    ),
+    NETHERRACK(
+            "netherrack", new TagMatchTest(BlockTags.NETHER_CARVER_REPLACEABLES),
+            Set.of(Level.NETHER.location())
+    ),
+    ENDSTONE(
+            "endstone", WorldGeneratorUtils.END_ORE_REPLACEABLES,
+            Set.of(Level.END.location())
+    );
 
     private final String name;
+
+    @SuppressWarnings("NonFinalFieldInEnum")
+    @Getter @Setter
+    private Set<ResourceLocation> levels;
+
     @SuppressWarnings("NonFinalFieldInEnum")
     @Getter @Setter
     private RuleTest target;
 
-    WorldGenLayers(String name, RuleTest target) {
+    WorldGenLayers(String name, RuleTest target, Set<ResourceLocation> levels) {
         this.name = name;
         this.target = target;
+        this.levels = levels;
         WorldGeneratorUtils.WORLD_GEN_LAYERS.put(name, this);
     }
 
@@ -41,6 +63,8 @@ public enum WorldGenLayers implements IWorldGenLayer, StringRepresentable {
         }
     }
 
+
+
     public static IWorldGenLayer getByName(String name) {
         return WorldGeneratorUtils.WORLD_GEN_LAYERS.get(name);
     }
@@ -49,5 +73,10 @@ public enum WorldGenLayers implements IWorldGenLayer, StringRepresentable {
     @NotNull
     public String getSerializedName() {
         return name;
+    }
+
+    @Override
+    public boolean isApplicableForLevel(ResourceLocation level) {
+        return levels.contains(level);
     }
 }
