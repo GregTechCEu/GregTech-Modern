@@ -18,6 +18,7 @@ import net.minecraft.world.level.levelgen.placement.PlacementContext;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -42,10 +43,11 @@ public class OreGenerator {
      * @return The generated vein for the specified chunk position.<br>
      *         {@code Optional.empty()} if no vein exists at this chunk.
      */
-    public Optional<GeneratedVein> generate(WorldGenLevel level, ChunkGenerator chunkGenerator, ChunkPos chunkPos) {
+    public List<GeneratedVein> generate(WorldGenLevel level, ChunkGenerator chunkGenerator, ChunkPos chunkPos) {
         return createConfig(level, chunkGenerator, chunkPos)
                 .map(OreGenerator::logVeinGeneration)
-                .flatMap(config -> generate(config, level, chunkPos));
+                .flatMap(config -> generate(config, level, chunkPos))
+                .stream().toList(); // TODO allow generating multiple
     }
 
     private Optional<GeneratedVein> generate(VeinConfiguration config, WorldGenLevel level, ChunkPos chunkPos) {
@@ -58,7 +60,7 @@ public class OreGenerator {
         }
 
         generateBedrockOreVein(config, level);
-        return Optional.of(new GeneratedVein(chunkPos, generated));
+        return Optional.of(new GeneratedVein(chunkPos, config.entry().getLayer(), generated));
     }
 
     private static void generateBedrockOreVein(VeinConfiguration config, WorldGenLevel level) {
