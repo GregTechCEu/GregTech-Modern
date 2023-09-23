@@ -584,7 +584,11 @@ public class GTOres {
 
     private static GTOreDefinition create(String name, int clusterSize, float density, int weight, WorldGenLayers layer, HolderSet<DimensionType> dimensionFilter, HeightRangePlacement range) {
         ResourceLocation id = GTCEu.id(name);
-        GTOreDefinition def = new GTOreDefinition(id, clusterSize, density, weight, layer, dimensionFilter, range, 0.0F, null, null, null);
+        IndicatorType type = switch (layer) {
+            case STONE, ENDSTONE -> IndicatorType.SURFACE;
+            case DEEPSLATE, NETHERRACK -> IndicatorType.LARGEST_EMPTY;
+        };
+        GTOreDefinition def = new GTOreDefinition(id, clusterSize, density, weight, layer, type, 4, dimensionFilter, range, 0.0F, null, null, null);
         toReRegister.put(id, def);
         return def;
     }

@@ -145,7 +145,7 @@ public class GTBlocks {
             if (material.hasProperty(PropertyKey.ORE)) {
                 if (!TagPrefix.rawOreBlock.isIgnored(material) && TagPrefix.rawOreBlock.generationCondition().test(material)) {
                     var entry = REGISTRATE.block("raw_%s_block".formatted(material.getName()), properties -> new MaterialBlock(properties.noLootTable(), TagPrefix.rawOreBlock, material))
-                            .initialProperties(() -> Blocks.IRON_BLOCK)
+                            .initialProperties(() -> Blocks.RAW_IRON_BLOCK)
                             .transform(unificationBlock(TagPrefix.rawOreBlock, material))
                             .addLayer(() -> RenderType::solid)
                             .setData(ProviderType.BLOCKSTATE, NonNullBiConsumer.noop())
@@ -202,6 +202,26 @@ public class GTBlocks {
         MATERIAL_BLOCKS = builder.build();
     }
 
+    public static Map<Material, BlockEntry<SurfaceRockBlock>> SURFACE_ROCK_BLOCKS;
+    public static void generateSurfaceRocks() {
+        ImmutableMap.Builder<Material, BlockEntry<SurfaceRockBlock>> builder = ImmutableMap.builder();
+        for (Material material : GTRegistries.MATERIALS) {
+            if (material.hasProperty(PropertyKey.ORE)) {
+                var entry = REGISTRATE.block("%s_indicator".formatted(material.getName()), p -> new SurfaceRockBlock(p, material))
+                        .initialProperties(() -> Blocks.GRAVEL)
+                        .properties(p -> p.noLootTable().strength(0.25f))
+                        .blockstate(NonNullBiConsumer.noop())
+                        .setData(ProviderType.LANG, NonNullBiConsumer.noop())
+                        .setData(ProviderType.LOOT, NonNullBiConsumer.noop())
+                        .addLayer(() -> RenderType::cutoutMipped)
+                        .color(() -> SurfaceRockBlock::tintedColor)
+                        .register();
+                builder.put(material, entry);
+            }
+        }
+        SURFACE_ROCK_BLOCKS = builder.build();
+    }
+
     //////////////////////////////////////
     //*****     Material Pipes    ******//
     //////////////////////////////////////
@@ -214,9 +234,9 @@ public class GTBlocks {
         for (Insulation insulation : Insulation.values()) {
             for (Material material : GTRegistries.MATERIALS) {
                 if (material.hasProperty(PropertyKey.WIRE) && !insulation.tagPrefix.isIgnored(material)) {
-                    var entry = REGISTRATE.block("%s_%s".formatted(material.getName(), insulation.name), p -> new CableBlock(p.noLootTable(), insulation, material))
+                    var entry = REGISTRATE.block("%s_%s".formatted(material.getName(), insulation.name), p -> new CableBlock(p, insulation, material))
                             .initialProperties(() -> Blocks.IRON_BLOCK)
-                            .properties(p -> p.dynamicShape().noOcclusion())
+                            .properties(p -> p.dynamicShape().noOcclusion().noLootTable())
                             .transform(unificationBlock(insulation.tagPrefix, material))
                             .blockstate(NonNullBiConsumer.noop())
                             .setData(ProviderType.LANG, NonNullBiConsumer.noop())
@@ -243,13 +263,13 @@ public class GTBlocks {
         for (var fluidPipeType : FluidPipeType.values()) {
             for (Material material : GTRegistries.MATERIALS) {
                 if (material.hasProperty(PropertyKey.FLUID_PIPE) && !fluidPipeType.tagPrefix.isIgnored(material)) {
-                    var entry = REGISTRATE.block( "%s_%s_fluid_pipe".formatted(material.getName(), fluidPipeType.name), p -> new FluidPipeBlock(p.noLootTable(), fluidPipeType, material))
+                    var entry = REGISTRATE.block("%s_%s_fluid_pipe".formatted(material.getName(), fluidPipeType.name), p -> new FluidPipeBlock(p, fluidPipeType, material))
                             .initialProperties(() -> Blocks.IRON_BLOCK)
                             .properties(p -> {
                                 if (doMetalPipe(material)) {
                                     p.sound(GTSoundTypes.METAL_PIPE);
                                 }
-                                return p.dynamicShape().noOcclusion();
+                                return p.dynamicShape().noOcclusion().noLootTable();
                             })
                             .transform(unificationBlock(fluidPipeType.tagPrefix, material))
                             .blockstate(NonNullBiConsumer.noop())
@@ -267,16 +287,6 @@ public class GTBlocks {
             }
         }
         FLUID_PIPE_BLOCKS = builder.build();
-    }
-
-    @SuppressWarnings("unchecked")
-    private static TagKey<Block>[] getPipeTags(Material material) {
-        TagKey<Block>[] tags = new TagKey[2];
-        tags[0] = GTToolType.WRENCH.harvestTag;
-        if (material.hasProperty(PropertyKey.WOOD)) {
-            tags[1] = BlockTags.MINEABLE_WITH_AXE;
-        } else tags[1] = BlockTags.MINEABLE_WITH_PICKAXE;
-        return tags;
     }
 
     static {
@@ -755,6 +765,7 @@ public class GTBlocks {
 
     public static void init() {
         generateMaterialBlocks();
+        generateSurfaceRocks();
         generateCableBlocks();
         generatePipeBlocks();
         GCyMBlocks.init();

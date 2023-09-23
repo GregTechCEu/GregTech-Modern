@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.worldgen.BiomeWeightModifier;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.IWorldGenLayer;
+import com.gregtechceu.gtceu.api.data.worldgen.IndicatorType;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinGenerator;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.lowdragmc.lowdraglib.Platform;
@@ -34,6 +35,10 @@ public class OreVeinBuilderJS {
     public transient float density, discardChanceOnAirExposure;
     @Setter
     public transient IWorldGenLayer layer;
+    @Setter
+    public transient IndicatorType indicatorType = IndicatorType.SURFACE;
+    @Setter
+    public transient int indicatorCount = 4;
     @Setter
     public transient HeightRangePlacement heightRange;
     @Setter
@@ -72,7 +77,7 @@ public class OreVeinBuilderJS {
         HolderSet<Biome> biomes = RegistryCodecs.homogeneousList(Registry.BIOME_REGISTRY)
                 .decode(registryOps, biomeFilter.size() == 1 ? biomeFilter.get(0) : biomeFilter).map(Pair::getFirst).getOrThrow(false, GTCEu.LOGGER::error);
         isBuilt = true;
-        return new GTOreDefinition(id, clusterSize, density, weight, layer, dimensions, heightRange, discardChanceOnAirExposure, biomes, biomeWeightModifier, generator);
+        return new GTOreDefinition(id, clusterSize, density, weight, layer, indicatorType, indicatorCount, dimensions, heightRange, discardChanceOnAirExposure, biomes, biomeWeightModifier, generator);
     }
 
 }
