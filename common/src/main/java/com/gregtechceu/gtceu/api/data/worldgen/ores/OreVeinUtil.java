@@ -67,6 +67,9 @@ public class OreVeinUtil {
 
         var chunkCenter = chunkPos.getMiddleBlockPosition(0);
 
+        if (randomOffset == 0)
+            return Optional.of(chunkCenter);
+
         return Optional.of(chunkCenter.offset(
                 random.nextInt(-randomOffset, +randomOffset),
                 0,
