@@ -2,16 +2,21 @@ package com.gregtechceu.gtceu.api.data.worldgen;
 
 import com.mojang.serialization.JsonOps;
 import lombok.Getter;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;
+
+import java.util.Set;
 
 public class SimpleWorldGenLayer implements IWorldGenLayer {
     private final String name;
     @Getter
     private final RuleTest target;
+    private final Set<ResourceLocation> levels;
 
-    public SimpleWorldGenLayer(String name, RuleTest target) {
+    public SimpleWorldGenLayer(String name, RuleTest target, Set<ResourceLocation> levels) {
         this.name = name;
         this.target = target;
+        this.levels = levels;
         WorldGeneratorUtils.WORLD_GEN_LAYERS.put(name, this);
     }
 
@@ -36,5 +41,10 @@ public class SimpleWorldGenLayer implements IWorldGenLayer {
         if (!(o instanceof IWorldGenLayer that)) return false;
 
         return getSerializedName().equals(that.getSerializedName());
+    }
+
+    @Override
+    public boolean isApplicableForLevel(ResourceLocation level) {
+        return levels.contains(level);
     }
 }
