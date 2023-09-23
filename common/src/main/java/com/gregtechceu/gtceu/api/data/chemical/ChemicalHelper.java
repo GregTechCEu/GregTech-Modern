@@ -265,7 +265,7 @@ public class ChemicalHelper {
                 }
             });
         }
-        GTItems.MATERIAL_ITEMS.rowMap().forEach((prefix, map) -> map.forEach((material, item) -> ChemicalHelper.registerUnificationItems(prefix, material, item.get())));
+        GTItems.toUnify.forEach(ChemicalHelper::registerUnificationItems);
         GTBlocks.MATERIAL_BLOCKS.rowMap().forEach((prefix, map) -> map.forEach((material, block) -> ChemicalHelper.registerUnificationItems(prefix, material, block.get())));
         GTBlocks.CABLE_BLOCKS.rowMap().forEach((prefix, map) -> map.forEach((material, block) -> ChemicalHelper.registerUnificationItems(prefix, material, block.get())));
         GTBlocks.FLUID_PIPE_BLOCKS.rowMap().forEach((prefix, map) -> map.forEach((material, block) -> ChemicalHelper.registerUnificationItems(prefix, material, block.get())));
