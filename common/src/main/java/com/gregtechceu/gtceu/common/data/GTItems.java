@@ -17,6 +17,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.ItemMaterialInfo;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.tag.TagUtil;
 import com.gregtechceu.gtceu.api.gui.misc.ProspectorMode;
@@ -85,6 +86,7 @@ public class GTItems {
     //*****     Material Items    ******//
     //////////////////////////////////////
 
+    public static final Map<UnificationEntry, ItemLike> toUnify = new HashMap<>();
     public static final Map<TagPrefix, TagPrefix> purifyMap = new HashMap<>();
 
     static {
@@ -1388,7 +1390,11 @@ public class GTItems {
 
     public static <P, T extends Item, S2 extends ItemBuilder<T, P>> NonNullFunction<S2, S2> unificationItem(@Nonnull TagPrefix tagPrefix, @Nonnull Material mat) {
         return builder -> {
-            builder.onRegister(item -> ChemicalHelper.registerUnificationItems(tagPrefix, mat, item));
+            builder.onRegister(item -> {
+                UnificationEntry entry = new UnificationEntry(tagPrefix, mat);
+                toUnify.put(entry, item);
+                ChemicalHelper.registerUnificationItems(entry, item);
+            });
             return builder;
         };
     }
