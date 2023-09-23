@@ -39,7 +39,11 @@ public enum WorldGenLayers implements IWorldGenLayer, StringRepresentable {
     );
 
     private final String name;
-    private final Set<ResourceLocation> levels;
+
+    @SuppressWarnings("NonFinalFieldInEnum")
+    @Getter @Setter
+    private Set<ResourceLocation> levels;
+
     @SuppressWarnings("NonFinalFieldInEnum")
     @Getter @Setter
     private RuleTest target;
