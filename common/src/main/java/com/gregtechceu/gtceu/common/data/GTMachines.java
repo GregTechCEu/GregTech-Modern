@@ -662,32 +662,25 @@ public class GTMachines {
             .compassNode("maintenance")
             .register();
 
+    public static final MachineDefinition ITEM_PASSTHROUGH_HATCH = REGISTRATE.machine("item_passthrough_hatch", (holder) -> new ItemBusPartMachine(holder, HV, IO.BOTH))
+            .langValue("Item Passthrough Hatch")
+            .rotationState(RotationState.ALL)
+            .abilities(PartAbility.PASSTHROUGH_HATCH)
+            .overlayTieredHullRenderer("item_passthrough_hatch")
+            .tooltips(Component.translatable("gtceu.universal.tooltip.item_storage_capacity", 16),
+                    Component.translatable("gtceu.universal.enabled"))
+            .compassNode("item_passthrough_hatch")
+            .register();
 
-    public static final MachineDefinition[] ITEM_PASSTHROUGH_HATCH = registerTieredMachines("item_passthrough_hatch",
-            (holder, tier) -> new ItemBusPartMachine(holder, tier, IO.BOTH),
-            (tier, builder) -> builder
-                    .langValue("%s Item Passthrough Hatch".formatted(VNF[tier]))
-                    .rotationState(RotationState.ALL)
-                    .abilities(PartAbility.PASSTHROUGH_HATCH)
-                    .overlayTieredHullRenderer("item_passthrough_hatch")
-                    .tooltips(Component.translatable("gtceu.universal.tooltip.item_storage_capacity", (1 + Math.min(9, tier)) * (1 + Math.min(9, tier))),
-                            Component.translatable("gtceu.universal.enabled"))
-                    .compassNode("item_passthrough_hatch")
-                    .register(),
-            ELECTRIC_TIERS);
-
-    public static final MachineDefinition[] FLUID_PASSTHROUGH_HATCH = registerTieredMachines("fluid_passthrough_hatch",
-            (holder, tier) -> new FluidHatchPartMachine(holder, tier, IO.BOTH),
-            (tier, builder) -> builder
-                    .langValue("%s Fluid Passthrough Hatch".formatted(VNF[tier]))
-                    .rotationState(RotationState.ALL)
-                    .abilities(PartAbility.PASSTHROUGH_HATCH)
-                    .overlayTieredHullRenderer("fluid_passthrough_hatch")
-                    .tooltips(Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity_mult", tier + 1, 16 * FluidHelper.getBucket()),
-                            Component.translatable("gtceu.universal.enabled"))
-                    .compassNode("fluid_passthrough_hatch")
-                    .register(),
-            ELECTRIC_TIERS);
+    public static final MachineDefinition FLUID_PASSTHROUGH_HATCH = REGISTRATE.machine("fluid_passthrough_hatch", (holder) -> new FluidHatchPartMachine(holder, HV, IO.BOTH))
+            .langValue("Fluid Passthrough Hatch")
+            .rotationState(RotationState.ALL)
+            .abilities(PartAbility.PASSTHROUGH_HATCH)
+            .overlayTieredHullRenderer("fluid_passthrough_hatch")
+            .tooltips(Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity_mult", 4, 16 * FluidHelper.getBucket()),
+                    Component.translatable("gtceu.universal.enabled"))
+            .compassNode("fluid_passthrough_hatch")
+            .register();
 
     public static final MachineDefinition[] DIODE = registerTieredMachines("diode",
             DiodePartMachine::new,
@@ -1445,8 +1438,8 @@ public class GTMachines {
                         .where('S', GTMachines.CLEANROOM.getBlock())
                         .where(' ', Blocks.AIR)
                         .where('E', GTMachines.ENERGY_INPUT_HATCH[GTValues.LV], Direction.SOUTH)
-                        .where('I', GTMachines.ITEM_PASSTHROUGH_HATCH[GTValues.LV], Direction.NORTH)
-                        .where('L', GTMachines.FLUID_PASSTHROUGH_HATCH[GTValues.LV], Direction.NORTH)
+                        .where('I', GTMachines.ITEM_PASSTHROUGH_HATCH, Direction.NORTH)
+                        .where('L', GTMachines.FLUID_PASSTHROUGH_HATCH, Direction.NORTH)
                         .where('D', GTMachines.DIODE[GTValues.HV], Direction.NORTH)
                         .where('H', GTMachines.HULL[GTValues.HV], Direction.NORTH)
                         .where('O', Blocks.IRON_DOOR.defaultBlockState().setValue(DoorBlock.FACING, Direction.NORTH).setValue(DoorBlock.HALF, DoubleBlockHalf.LOWER))
