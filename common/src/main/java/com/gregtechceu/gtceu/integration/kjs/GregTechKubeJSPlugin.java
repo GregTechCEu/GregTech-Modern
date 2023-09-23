@@ -154,6 +154,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         event.add("GTOres", GTOres.class);
         event.add("GTRecipeModifiers", GTRecipeModifiers.class);
         event.add("OverclockingLogic", OverclockingLogic.class);
+        event.add("GTWorldGenLayers", WorldGenLayers.class);
         // ....TODO add global refs. for convenience, ppl do not need to import the java package themselves.
     }
 

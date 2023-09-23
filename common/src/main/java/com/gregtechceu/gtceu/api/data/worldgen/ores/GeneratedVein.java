@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.data.worldgen.ores;
 
+import com.gregtechceu.gtceu.api.data.worldgen.IWorldGenLayer;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArraySet;
 import lombok.Getter;
@@ -22,6 +23,9 @@ public class GeneratedVein {
     @Getter
     private final ChunkPos origin;
 
+    @Getter
+    private final IWorldGenLayer layer;
+
     private final Map<ChunkPos, Map<BlockPos, OreBlockPlacer>> generatedOres;
     private final Set<ChunkPos> unconsumedChunks;
 
@@ -30,8 +34,9 @@ public class GeneratedVein {
      * @param oresByPosition The ore placers for each block position.<br>
      *                       Doesn't need to be ordered, grouping by chunks is done internally.
      */
-    public GeneratedVein(ChunkPos origin, Map<BlockPos, OreBlockPlacer> oresByPosition) {
+    public GeneratedVein(ChunkPos origin, IWorldGenLayer layer, Map<BlockPos, OreBlockPlacer> oresByPosition) {
         this.origin = origin;
+        this.layer = layer;
         this.generatedOres = oresByPosition.entrySet().stream().collect(Collectors.groupingBy(
                 entry -> new ChunkPos(entry.getKey()),
                 Object2ObjectOpenHashMap::new,
