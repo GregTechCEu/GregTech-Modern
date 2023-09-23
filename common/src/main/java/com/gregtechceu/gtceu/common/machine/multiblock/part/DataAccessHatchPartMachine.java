@@ -9,29 +9,23 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.client.TooltipHelper;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
+import com.gregtechceu.gtceu.utils.AssemblyLineManager;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
 import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.level.Level;
 import org.apache.commons.lang3.ArrayUtils;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 import java.util.Set;
 
 public class DataAccessHatchPartMachine extends TieredIOPartMachine implements IDataAccessHatch {
-
     private final Set<GTRecipe> recipes;
     private final boolean isCreative;
 
@@ -43,10 +37,10 @@ public class DataAccessHatchPartMachine extends TieredIOPartMachine implements I
     }
 
     protected IItemTransfer createImportItemHandler() {
-        return new NotifiableItemStackHandler(getInventorySize(getTier()), getController(), false) {
+        return new NotifiableItemStackHandler(this, getInventorySize(getTier()), IO.IN) {
             @Override
-            public void onContentsChanged(int slot) {
-                super.onContentsChanged(slot);
+            public void onChanged() {
+                super.onChanged();
                 rebuildData();
             }
 
