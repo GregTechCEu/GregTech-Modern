@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.capability.ILaserContainer;
 import com.gregtechceu.gtceu.api.capability.impl.ActiveTransformerWrapper;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.capability.recipe.LaserRecipeCapability;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
@@ -65,13 +66,6 @@ public class ActiveTransformerMachine extends WorkableElectricMultiblockMachine 
         for (IMultiPart part : getParts()) {
             IO io = ioMap.getOrDefault(part.self().getPos().asLong(), IO.BOTH);
             if(io == IO.NONE) continue;
-            if (part instanceof ILaserContainer laserContainer) {
-                if (io == IO.IN) {
-                    inputLaser.add(laserContainer);
-                } else if (io == IO.OUT) {
-                    outputLaser.add(laserContainer);
-                }
-            }
             for (var handler : part.getRecipeHandlers()) {
                 // If IO not compatible
                 if (io != IO.BOTH && handler.getHandlerIO() != IO.BOTH && io != handler.getHandlerIO()) continue;
@@ -82,6 +76,12 @@ public class ActiveTransformerMachine extends WorkableElectricMultiblockMachine 
                         outputEnergy.add(container);
                     }
                     traitSubscriptions.add(handler.addChangedListener(this::updateConverterSubscription));
+                } else if (handler.getCapability() == LaserRecipeCapability.CAP && handler instanceof ILaserContainer container) {
+                    if (io == IO.IN) {
+                        inputLaser.add(container);
+                    } else if (io == IO.OUT) {
+                        outputLaser.add(container);
+                    }
                 }
             }
         }
@@ -135,8 +135,15 @@ public class ActiveTransformerMachine extends WorkableElectricMultiblockMachine 
     public ILaserContainer getWrapper() {
         if (wrapper != null) {
             return wrapper;
-        } else if (isFormed && getAbilities(MultiblockAbility.INPUT_LASER).size() == 1) {
-            return getAbilities(MultiblockAbility.INPUT_LASER).get(0);
+        } else if (isFormed) {
+            var lasers = this.getCapabilitiesProxy().get(IO.IN, LaserRecipeCapability.CAP);
+            if (lasers != null && lasers.size() == 1) {
+                return lasers.stream().filter(ILaserContainer.class::isInstance).map(ILaserContainer.class::cast).findFirst().get();
+            }
+            lasers = this.getCapabilitiesProxy().get(IO.BOTH, LaserRecipeCapability.CAP);
+            if (lasers != null && lasers.size() == 1) {
+                return lasers.stream().filter(ILaserContainer.class::isInstance).map(ILaserContainer.class::cast).findFirst().get();
+            }
         }
         return null;
     }

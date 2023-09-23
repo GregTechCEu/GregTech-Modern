@@ -30,8 +30,9 @@ public class NotifiableLaserContainer extends NotifiableRecipeHandlerTrait<Long>
     @Persisted @DescSynced
     protected long energyStored;
 
-    public NotifiableLaserContainer(MetaMachine machine) {
+    public NotifiableLaserContainer(MetaMachine machine, IO io) {
         super(machine);
+        this.handlerIO = io;
     }
 
     @Override

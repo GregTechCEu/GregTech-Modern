@@ -36,6 +36,7 @@ public class GTSoundEntries {
     public static final SoundEntry TURBINE = REGISTRATE.sound("turbine").build();
     public static final SoundEntry COMBUSTION = REGISTRATE.sound("combustion").build();
     public static final SoundEntry MINER = REGISTRATE.sound("miner").build();
+    public static final SoundEntry COMPUTATION = REGISTRATE.sound("computation").build();
     public static final SoundEntry SCIENCE = REGISTRATE.sound("science").build();
     public static final SoundEntry WRENCH_TOOL = REGISTRATE.sound("wrench").build();
     public static final SoundEntry SOFT_MALLET_TOOL = REGISTRATE.sound("soft_hammer").build();

@@ -67,7 +67,6 @@ public class LaserPipeNet extends PipeNet<LaserPipeNet.LaserData> {
         return null;
     }
 
-    // jabel moment
     public static class LaserData implements IAttachData {
 
         @Getter @Nonnull
@@ -82,7 +81,11 @@ public class LaserPipeNet extends PipeNet<LaserPipeNet.LaserData> {
 
         @Override
         public boolean canAttachTo(Direction side) {
-            return faceToHandler == side;
+            return faceToHandler.getAxis() == side.getAxis();
+        }
+
+        public boolean canAttachTo(Direction.Axis side) {
+            return faceToHandler.getAxis() == side;
         }
 
         @Override

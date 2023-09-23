@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.IGTAddon;
+import com.gregtechceu.gtceu.api.block.IMachineBlock;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.capability.IMiner;
@@ -23,6 +24,8 @@ import com.gregtechceu.gtceu.api.machine.multiblock.*;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
 import com.gregtechceu.gtceu.api.machine.steam.SimpleSteamMachine;
 import com.gregtechceu.gtceu.api.machine.steam.SteamBoilerMachine;
+import com.gregtechceu.gtceu.api.machine.trait.hpca.IHPCAComputationProvider;
+import com.gregtechceu.gtceu.api.machine.trait.hpca.IHPCACoolantProvider;
 import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
 import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.api.pattern.Predicates;
@@ -775,22 +778,40 @@ public class GTMachines {
             .register();
     public static final MachineDefinition HPCA_COMPUTATION_COMPONENT = REGISTRATE.machine("hpca_computation_component", (holder) -> new HPCAComputationPartMachine(holder, false))
             .rotationState(RotationState.ALL)
+            .tooltips(Component.translatable("gtceu.machine.hpca.component_general.upkeep_eut", GTValues.VA[EV]),
+                    Component.translatable("gtceu.machine.hpca.component_general.max_eut", GTValues.VA[LuV]),
+                    Component.translatable("gtceu.machine.hpca.component_type.computation_cwut", 4),
+                    Component.translatable("gtceu.machine.hpca.component_type.computation_cooling", 2),
+                    Component.translatable("gtceu.machine.hpca.component_type.damaged").withStyle(TooltipHelper.BLINKING_ORANGE.getCurrent()))
             .abilities(PartAbility.HPCA_COMPONENT)
             .register();
     public static final MachineDefinition HPCA_ADVANCED_COMPUTATION_COMPONENT = REGISTRATE.machine("advanced_hpca_computation_component", (holder) -> new HPCAComputationPartMachine(holder, true))
             .rotationState(RotationState.ALL)
+            .tooltips(Component.translatable("gtceu.machine.hpca.component_general.upkeep_eut", GTValues.VA[IV]),
+                    Component.translatable("gtceu.machine.hpca.component_general.max_eut", GTValues.VA[ZPM]),
+                    Component.translatable("gtceu.machine.hpca.component_type.computation_cwut", 16),
+                    Component.translatable("gtceu.machine.hpca.component_type.computation_cooling", 4),
+                    Component.translatable("gtceu.machine.hpca.component_type.damaged").withStyle(TooltipHelper.BLINKING_ORANGE.getCurrent()))
             .abilities(PartAbility.HPCA_COMPONENT)
             .register();
     public static final MachineDefinition HPCA_HEAT_SINK_COMPONENT = REGISTRATE.machine("hpca_heat_sink_component", (holder) -> new HPCACoolerPartMachine(holder, false))
             .rotationState(RotationState.ALL)
+            .tooltips(Component.translatable("gtceu.machine.hpca.component_type.cooler_passive"),
+                    Component.translatable("gtceu.machine.hpca.component_type.cooler_cooling", 1))
             .abilities(PartAbility.HPCA_COMPONENT)
             .register();
     public static final MachineDefinition HPCA_ACTIVE_COOLER_COMPONENT = REGISTRATE.machine("active_hpca_cooler_component", (holder) -> new HPCACoolerPartMachine(holder, true))
             .rotationState(RotationState.ALL)
+            .tooltips(Component.translatable("gtceu.machine.hpca.component_general.max_eut", GTValues.VA[IV]),
+                    Component.translatable("gtceu.machine.hpca.component_type.cooler_active"),
+                    Component.translatable("gtceu.machine.hpca.component_type.cooler_active_coolant", 8, GTMaterials.PCBCoolant.getLocalizedName()),
+                    Component.translatable("gtceu.machine.hpca.component_type.cooler_cooling", 2))
             .abilities(PartAbility.HPCA_COMPONENT)
             .register();
     public static final MachineDefinition HPCA_BRIDGE_COMPONENT = REGISTRATE.machine("hpca_bridge_component", HPCABridgePartMachine::new)
             .rotationState(RotationState.ALL)
+            .tooltips(Component.translatable("gtceu.machine.hpca.component_type.bridge"),
+                    Component.translatable("gtceu.machine.hpca.component_general.max_eut", GTValues.VA[IV]))
             .abilities(PartAbility.HPCA_COMPONENT)
             .register();
 
@@ -1402,6 +1423,7 @@ public class GTMachines {
                             .or(abilities(PartAbility.PASSTHROUGH_HATCH).setMaxGlobalLimited(30, 3))
                             .or(abilities(PartAbility.INPUT_ENERGY).setMinGlobalLimited(1).setMaxGlobalLimited(3, 2))
                             .or(blocks(ConfigHolder.INSTANCE.machines.enableMaintenance ? GTMachines.MAINTENANCE_HATCH.getBlock() : PLASTCRETE.get()).setExactLimit(1))
+                            .or(blocks(Arrays.stream(GTMachines.HULL).map(MachineDefinition::get).toArray(IMachineBlock[]::new)).setMaxGlobalLimited(3))
                             .or(blocks(Blocks.IRON_DOOR).setMaxGlobalLimited(8)))
                     .where('S', controller(blocks(definition.getBlock())))
                     .where(' ', any())
@@ -1413,7 +1435,7 @@ public class GTMachines {
             .shapeInfos((controller) -> {
                 ArrayList<MultiblockShapeInfo> shapeInfo = new ArrayList<>();
                 MultiblockShapeInfo.ShapeInfoBuilder builder = MultiblockShapeInfo.builder()
-                        .aisle("XXXXX", "XIDLX", "XXXXX", "XXXXX", "XXXXX")
+                        .aisle("XXXXX", "XIHLX", "XXDXX", "XXXXX", "XXXXX")
                         .aisle("XXXXX", "X   X", "G   G", "X   X", "XFFFX")
                         .aisle("XXXXX", "X   X", "G   G", "X   X", "XFSFX")
                         .aisle("XXXXX", "X   X", "G   G", "X   X", "XFFFX")
@@ -1426,6 +1448,7 @@ public class GTMachines {
                         .where('I', GTMachines.ITEM_PASSTHROUGH_HATCH[GTValues.LV], Direction.NORTH)
                         .where('L', GTMachines.FLUID_PASSTHROUGH_HATCH[GTValues.LV], Direction.NORTH)
                         .where('D', GTMachines.DIODE[GTValues.HV], Direction.NORTH)
+                        .where('H', GTMachines.HULL[GTValues.HV], Direction.NORTH)
                         .where('O', Blocks.IRON_DOOR.defaultBlockState().setValue(DoorBlock.FACING, Direction.NORTH).setValue(DoorBlock.HALF, DoubleBlockHalf.LOWER))
                         .where('R', Blocks.IRON_DOOR.defaultBlockState().setValue(DoorBlock.FACING, Direction.NORTH).setValue(DoorBlock.HALF, DoubleBlockHalf.UPPER));
                 if (ConfigHolder.INSTANCE.machines.enableMaintenance) {
@@ -1632,8 +1655,8 @@ public class GTMachines {
             .tooltips(Component.translatable("gregtech.machine.active_transformer.tooltip1"),
                     Component.translatable("gregtech.machine.active_transformer.tooltip2"),
                     Component.translatable("gregtech.machine.active_transformer.tooltip3")
-                            .append(TooltipHelper.RAINBOW_SLOW.toString())
-                            .append(Component.translatable("gregtech.machine.active_transformer.tooltip3.5")))
+                            .append(Component.translatable("gregtech.machine.active_transformer.tooltip3.5")
+                                    .withStyle(TooltipHelper.RAINBOW_SLOW.getCurrent())))
             .pattern((definition) -> FactoryBlockPattern.start()
                     .aisle("XXX", "XXX", "XXX")
                     .aisle("XXX", "XCX", "XXX")

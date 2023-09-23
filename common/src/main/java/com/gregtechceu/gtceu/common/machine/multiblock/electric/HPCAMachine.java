@@ -18,6 +18,7 @@ import com.gregtechceu.gtceu.api.machine.trait.hpca.IHPCACoolantProvider;
 import com.gregtechceu.gtceu.api.machine.trait.optical.IOpticalComputationProvider;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.gregtechceu.gtceu.common.data.GTSoundEntries;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.lowdragmc.lowdraglib.misc.FluidTransferList;
@@ -28,6 +29,7 @@ import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.level.material.Fluid;
 import org.jetbrains.annotations.NotNull;
 
@@ -249,10 +251,9 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine implements IO
 //        }
 //    }
 
-    // TODO add sound
-//    public SoundEvent getSound() {
-//        return GTSoundEntries.COMPUTATION;
-//    }
+    public SoundEvent getSound() {
+        return GTSoundEntries.COMPUTATION.getMainEvent();
+    }
 
     // Handles the logic of this structure's specific HPCA component grid
     public static class HPCAGridHandler {

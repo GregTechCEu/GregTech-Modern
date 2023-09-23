@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.block;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.block.PipeBlock;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
@@ -11,6 +12,7 @@ import com.gregtechceu.gtceu.client.model.PipeModel;
 import com.gregtechceu.gtceu.client.renderer.block.PipeBlockRenderer;
 import com.gregtechceu.gtceu.common.blockentity.OpticalPipeBlockEntity;
 import com.gregtechceu.gtceu.common.data.GTBlockEntities;
+import com.gregtechceu.gtceu.common.pipelike.laser.LaserPipeType;
 import com.gregtechceu.gtceu.common.pipelike.optical.OpticalPipeData;
 import com.gregtechceu.gtceu.common.pipelike.optical.OpticalPipeProperties;
 import com.gregtechceu.gtceu.common.pipelike.optical.OpticalPipeType;
@@ -33,11 +35,13 @@ import javax.annotation.Nullable;
 
 public class OpticalPipeBlock extends PipeBlock<OpticalPipeType, OpticalPipeData, WorldOpticalPipeNet> {
 
-    private final OpticalPipeData properties;
+    public final PipeModel model;
+    public final PipeBlockRenderer renderer;
 
     public OpticalPipeBlock(BlockBehaviour.Properties properties, DyeColor color) {
         super(properties, OpticalPipeType.NORMAL);
-        this.properties = new OpticalPipeData();
+        this.model = new PipeModel(OpticalPipeType.NORMAL.getThickness(), () -> GTCEu.id("block/pipe/pipe_optical_side"), () -> GTCEu.id("block/pipe/pipe_optical_side"));
+        this.renderer = new PipeBlockRenderer(this.model);
     }
 
     @Override
@@ -51,7 +55,7 @@ public class OpticalPipeBlock extends PipeBlock<OpticalPipeType, OpticalPipeData
     }
 
     @Override
-    public OpticalPipeData createRawData(BlockState pState, @org.jetbrains.annotations.Nullable ItemStack pStack) {
+    public OpticalPipeData createRawData(BlockState pState, @Nullable ItemStack pStack) {
         return new OpticalPipeData();
     }
 
@@ -62,12 +66,12 @@ public class OpticalPipeBlock extends PipeBlock<OpticalPipeType, OpticalPipeData
 
     @Override
     public @org.jetbrains.annotations.Nullable PipeBlockRenderer getRenderer(BlockState state) {
-        return null;
+        return this.renderer;
     }
 
     @Override
     protected PipeModel getPipeModel() {
-        return null;
+        return this.model;
     }
 
     protected boolean isPipeTool(@Nonnull ItemStack stack) {

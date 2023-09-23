@@ -7,6 +7,8 @@ import com.gregtechceu.gtceu.api.block.IFilterType;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.ICleanroomReceiver;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
+import com.gregtechceu.gtceu.common.machine.multiblock.generator.LargeCombustionEngineMachine;
+import com.gregtechceu.gtceu.common.machine.multiblock.generator.LargeTurbineMachine;
 import com.gregtechceu.gtceu.common.machine.trait.CleanroomLogic;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
@@ -414,11 +416,13 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine implemen
         if (metaTileEntity instanceof ICleanroomProvider) return true;
         if (metaTileEntity instanceof IMufflerMachine) return true;
         if (metaTileEntity instanceof SimpleGeneratorMachine) return true;
+        if (metaTileEntity instanceof LargeCombustionEngineMachine) return true;
+        if (metaTileEntity instanceof LargeTurbineMachine) return true;
+        if (metaTileEntity instanceof LargeMinerMachine) return true;
+        if (metaTileEntity instanceof FluidDrillMachine) return true;
+        if (metaTileEntity instanceof BedrockOreMinerMachine) return true;
         // todo: enable checks when these are added?
-//        if (metaTileEntity instanceof FuelMultiblockController) return true;
-//        if (metaTileEntity instanceof MetaTileEntityLargeMiner) return true;
-//        if (metaTileEntity instanceof MetaTileEntityFluidDrill) return true;
-//        if (metaTileEntity instanceof MetaTileEntityCentralMonitor) return true;
+        //if (metaTileEntity instanceof MetaTileEntityCentralMonitor) return true;
         if (metaTileEntity instanceof CokeOvenMachine) return true;
         if (metaTileEntity instanceof PrimitiveBlastFurnaceMachine) return true;
         return metaTileEntity instanceof PrimitivePumpMachine;

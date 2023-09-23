@@ -191,6 +191,8 @@ public class GuiTextures {
     public static final ResourceTexture DATA_ORB_OVERLAY = new ResourceTexture("gtceu:textures/gui/overlay/data_orb_overlay.png");
     public static final ResourceTexture SCANNER_OVERLAY = new ResourceTexture("gtceu:textures/gui/overlay/scanner_overlay.png");
     public static final ResourceTexture DUCT_TAPE_OVERLAY = new ResourceTexture("gtceu:textures/gui/overlay/duct_tape_overlay.png");
+    public static final ResourceTexture RESEARCH_STATION_OVERLAY = new ResourceTexture("gtceu:textures/gui/overlay/research_station_overlay.png");
+
 
     //PROGRESS BARS
     public static final ResourceTexture PROGRESS_BAR_ARC_FURNACE = new ResourceTexture("gtceu:textures/gui/progress_bar/progress_bar_arc_furnace.png");
@@ -239,6 +241,9 @@ public class GuiTextures {
     public static final ResourceTexture PROGRESS_BAR_UNLOCK = new ResourceTexture("gtceu:textures/gui/progress_bar/progress_bar_unlock.png");
     public static final ResourceTexture PROGRESS_BAR_UNPACKER = new ResourceTexture("gtceu:textures/gui/progress_bar/progress_bar_unpacker.png");
     public static final ResourceTexture PROGRESS_BAR_WIREMILL = new ResourceTexture("gtceu:textures/gui/progress_bar/progress_bar_wiremill.png");
+    public static final ResourceTexture PROGRESS_BAR_RESEARCH_STATION_1 = new ResourceTexture("gtceu:textures/gui/progress_bar/progress_bar_research_station_1.png");
+    public static final ResourceTexture PROGRESS_BAR_RESEARCH_STATION_2 = new ResourceTexture("gtceu:textures/gui/progress_bar/progress_bar_research_station_2.png");
+    public static final ResourceTexture PROGRESS_BAR_RESEARCH_STATION_BASE = new ResourceTexture("gtceu:textures/gui/progress_bar/progress_bar_research_station_base.png");
 
     //JEI
     public static final ResourceTexture INFO_ICON = new ResourceTexture("gtceu:textures/gui/widget/information.png");

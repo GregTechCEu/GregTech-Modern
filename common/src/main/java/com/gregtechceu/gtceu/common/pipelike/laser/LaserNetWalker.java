@@ -58,19 +58,15 @@ public class LaserNetWalker extends PipeNetWalker<LaserPipeNet.LaserData, LaserP
         } else {
             minProperties = new LaserPipeProperties(pipeProperties);
         }
-        return true;
+        return pipeTile.data.canAttachTo(minProperties.axis);
     }
 
     @Override
     protected void checkNeighbour(Node<LaserPipeNet.LaserData> pipeNode, BlockPos pipePos, Direction faceToNeighbour) {
-        if (pipePos.equals(sourcePipe) && faceToNeighbour == facingToHandler) {
-            return;
-        }
-
-        if (laserData == null) {
+        if (pipeNode.data.canAttachTo(faceToNeighbour) && laserData == null) {
             ILaserContainer handler = GTCapabilityHelper.getLaserContainer(getLevel(), pipePos, faceToNeighbour.getOpposite());
             if (handler != null) {
-                laserData = new LaserPipeNet.LaserData(faceToNeighbour, new LaserPipeProperties());
+                laserData = new LaserPipeNet.LaserData(faceToNeighbour, new LaserPipeProperties(faceToNeighbour.getAxis()));
             }
         }
     }

@@ -8,7 +8,7 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
-import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
+import com.gregtechceu.gtceu.api.machine.trait.NotifiableLaserContainer;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.ActiveTransformerMachine;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import lombok.Setter;
@@ -28,7 +28,7 @@ public class LaserHatchPartMachine extends TieredIOPartMachine {
 
     public LaserHatchPartMachine(IMachineBlockEntity holder, IO io) {
         super(holder, GTValues.LuV, io);
-        this.wrapper = new LaserHatchWrapper(this, null);
+        this.wrapper = new LaserHatchWrapper(this, io, null);
     }
 
 
@@ -41,7 +41,7 @@ public class LaserHatchPartMachine extends TieredIOPartMachine {
     @Override
     public void removedFromController(IMultiController controller) {
         super.removedFromController(controller);
-        this.wrapper = new LaserHatchWrapper(this, null);
+        this.wrapper = new LaserHatchWrapper(this, this.io, null);
     }
 
     private void calculateLaserContainer(IMultiController controllerBase) {
@@ -65,7 +65,7 @@ public class LaserHatchPartMachine extends TieredIOPartMachine {
         return false;
     }
 
-    private static class LaserHatchWrapper extends MachineTrait implements ILaserContainer {
+    private static class LaserHatchWrapper extends NotifiableLaserContainer {
         protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(LaserHatchWrapper.class);
 
         @Nullable
@@ -77,8 +77,8 @@ public class LaserHatchPartMachine extends TieredIOPartMachine {
          *
          * @param metaTileEntity the MTE to reference, and add the trait to
          */
-        public LaserHatchWrapper(@NotNull MetaMachine metaTileEntity, @Nullable Supplier<ILaserContainer> bufferSupplier) {
-            super(metaTileEntity);
+        public LaserHatchWrapper(@NotNull MetaMachine metaTileEntity, @NotNull IO io, @Nullable Supplier<ILaserContainer> bufferSupplier) {
+            super(metaTileEntity, io);
             this.bufferSupplier = bufferSupplier;
         }
 

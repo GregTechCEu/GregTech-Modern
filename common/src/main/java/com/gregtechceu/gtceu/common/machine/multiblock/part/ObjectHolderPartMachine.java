@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.IObjectHolder;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.gui.UITemplate;
 import com.gregtechceu.gtceu.api.item.ComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IDataItem;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
@@ -59,8 +60,7 @@ public class ObjectHolderPartMachine extends TieredIOPartMachine implements IUIM
                         .setCanPutItems(this.isSlotBlocked())
                         .setCanTakeItems(this.isSlotBlocked())
                         .setBackground(GuiTextures.SLOT, GuiTextures.DATA_ORB_OVERLAY))
-                .bindPlayerInventory(entityPlayer.inventory)
-                .build(getHolder(), entityPlayer);
+                .widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(), GuiTextures.SLOT, 7, 84, true));
     }
 
     private boolean isSlotBlocked() {
@@ -121,14 +121,14 @@ public class ObjectHolderPartMachine extends TieredIOPartMachine implements IUIM
     @Override
     public void addedToController(IMultiController controller) {
         super.addedToController(controller);
-        heldItems.addNotifiableMetaTileEntity(controller);
-        heldItems.addToNotifiedList(this, heldItems, false);
+        //heldItems.addNotifiableMetaTileEntity(controller);
+        //heldItems.addToNotifiedList(this, heldItems, false);
     }
 
     @Override
     public void removedFromController(IMultiController controller) {
         super.removedFromController(controller);
-        heldItems.removeNotifiableMetaTileEntity(controllerBase);
+        //heldItems.removeNotifiableMetaTileEntity(controllerBase);
     }
 
     @Override

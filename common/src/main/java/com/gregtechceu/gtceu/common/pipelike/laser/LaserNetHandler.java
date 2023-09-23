@@ -52,7 +52,7 @@ public class LaserNetHandler implements ILaserContainer {
             return null;
         }
 
-        ILaserContainer handler = GTCapabilityHelper.getLaserContainer(world, pipe.getPipePos(), data.getFaceToHandler().getOpposite());
+        ILaserContainer handler = GTCapabilityHelper.getLaserContainer(world, pipe.getPipePos(), data.getFaceToHandler());
         if (seen.contains(handler)) {
             return null;
         }

@@ -19,10 +19,13 @@ import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import org.jetbrains.annotations.Nullable;
 
@@ -38,6 +41,19 @@ public class LaserPipeBlock extends PipeBlock<LaserPipeType, LaserPipeNet.LaserD
         this.color = color;
         this.model = new PipeModel(LaserPipeType.NORMAL.getThickness(), () -> GTCEu.id("block/pipe/pipe_laser_side"), () -> GTCEu.id("block/pipe/pipe_laser_in"));
         this.renderer = new PipeBlockRenderer(this.model);
+        this.registerDefaultState(this.stateDefinition.any().setValue(BlockStateProperties.FACING, Direction.NORTH));
+    }
+
+    @Nullable
+    @Override
+    public BlockState getStateForPlacement(BlockPlaceContext context) {
+        return this.defaultBlockState().setValue(BlockStateProperties.FACING, context.getNearestLookingDirection().getOpposite());
+    }
+
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        super.createBlockStateDefinition(builder);
+        builder.add(BlockStateProperties.FACING);
     }
 
     @Environment(EnvType.CLIENT)
@@ -69,12 +85,13 @@ public class LaserPipeBlock extends PipeBlock<LaserPipeType, LaserPipeNet.LaserD
 
     @Override
     public LaserPipeNet.LaserData createRawData(BlockState pState, @Nullable ItemStack pStack) {
-        return new LaserPipeNet.LaserData(pState.getValue(BlockStateProperties.FACING), new LaserPipeProperties());
+        Direction direction = pState.getValue(BlockStateProperties.FACING);
+        return new LaserPipeNet.LaserData(direction, new LaserPipeProperties(direction.getAxis()));
     }
 
     @Override
     public LaserPipeNet.LaserData getFallbackType() {
-        return new LaserPipeNet.LaserData(Direction.DOWN, new LaserPipeProperties());
+        return new LaserPipeNet.LaserData(Direction.NORTH, new LaserPipeProperties(Direction.Axis.Z));
     }
 
     @Override

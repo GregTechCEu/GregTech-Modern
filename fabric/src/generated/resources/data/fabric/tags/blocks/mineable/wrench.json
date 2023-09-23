@@ -96,6 +96,10 @@
     "gtceu:bronze_firebox_casing",
     "gtceu:steel_firebox_casing",
     "gtceu:titanium_firebox_casing",
-    "gtceu:tungstensteel_firebox_casing"
+    "gtceu:tungstensteel_firebox_casing",
+    "gtceu:computer_casing",
+    "gtceu:computer_heat_vent",
+    "gtceu:high_power_casing",
+    "gtceu:advanced_computer_casing"
   ]
 }
