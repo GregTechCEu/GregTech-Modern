@@ -42,7 +42,7 @@ import java.util.List;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class ComponentItem extends Item implements HeldItemUIFactory.IHeldItemUIHolder, IItemRendererProvider {
+public class ComponentItem extends Item implements HeldItemUIFactory.IHeldItemUIHolder, IItemRendererProvider, IComponentItem {
 
     protected int burnTime = -1;
 

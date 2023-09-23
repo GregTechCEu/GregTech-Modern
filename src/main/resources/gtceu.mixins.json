@@ -38,6 +38,7 @@
     "RepairItemRecipeMixin",
     "ServerChunkProviderMixin",
     "ShapedRecipeAccessor",
+    "ServerGamePacketListenerImplAccessor",
     "SidedRedstoneConnectivityMixin",
     "StrictNBTIngredientAccessor",
     "TagLoaderMixin",

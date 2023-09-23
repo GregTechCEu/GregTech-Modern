@@ -375,6 +375,23 @@ public class ConfigHolder {
         @Configurable.Comment({"Duration of UI animations in ms", "Default: 300"})
         @Configurable.Range(min = 1)
         public int animationTime = 300;
+        @Configurable
+        public ArmorHud armorHud = new ArmorHud();
+
+        public static class ArmorHud {
+            @Configurable
+            @Configurable.Comment({"Sets HUD location", "1 - left-upper corner", "2 - right-upper corner", "3 - left-bottom corner", "4 - right-bottom corner", "Default: 1"})
+            @Configurable.Range(min = 1, max = 4)
+            public int hudLocation = 1;
+            @Configurable
+            @Configurable.Comment({"Horizontal offset of HUD.", "Default: 0"})
+            @Configurable.Range(min = 0, max = 100)
+            public int hudOffsetX = 0;
+            @Configurable
+            @Configurable.Comment({"Vertical offset of HUD.", "Default: 0"})
+            @Configurable.Range(min = 0, max = 100)
+            public int hudOffsetY = 0;
+        }
     }
 
     public static class DeveloperConfigs {

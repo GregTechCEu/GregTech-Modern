@@ -541,6 +541,18 @@ public class UnknownCompositionMaterials {
                 .flags(NO_UNIFICATION)
                 .buildAndRegister();
 
+        Echo = new Material.Builder(GTCEu.id("echo"))
+            .gem()
+            .color(0x034150).iconSet(GEM_HORIZONTAL)
+            .flags(GENERATE_PLATE, NO_SMASHING, NO_WORKING, NO_SMELTING, CRYSTALLIZABLE)
+            .buildAndRegister();
+
+        QuantumEcho = new Material.Builder(GTCEu.id("quantum_echo"))
+            .gem()
+            .color(0x034141).iconSet(GEM_HORIZONTAL)
+            .flags(GENERATE_PLATE, NO_WORKING, NO_SMELTING, CRYSTALLIZABLE)
+            .buildAndRegister();
+
         TreatedWood = new Material.Builder(GTCEu.id("treated_wood"))
                 .wood()
                 .color(0x644218).secondaryColor(0x4e0b00).iconSet(WOOD)
