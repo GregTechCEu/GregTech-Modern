@@ -59,12 +59,18 @@ public class LaserPipeNet extends PipeNet<LaserPipeNet.LaserData> {
 
     @Override
     protected void writeNodeData(LaserData nodeData, CompoundTag tagCompound) {
-
+        tagCompound.putByte("direction", (byte) nodeData.faceToHandler.ordinal());
     }
 
     @Override
     protected LaserData readNodeData(CompoundTag tagCompound) {
-        return null;
+        Direction direction = Direction.values()[tagCompound.getByte("direction")];
+        return new LaserData(direction, new LaserPipeProperties(direction.getAxis()));
+    }
+
+    @Override
+    protected boolean areNodesCustomContactable(LaserData first, LaserData second, PipeNet<LaserData> secondNodePipeNet) {
+        return first.faceToHandler.getAxis() == second.faceToHandler.getAxis();
     }
 
     public static class LaserData implements IAttachData {

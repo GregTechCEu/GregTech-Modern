@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.common.blockentity;
 
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
+import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.ILaserContainer;
 import com.gregtechceu.gtceu.common.pipelike.laser.LaserNetHandler;
 import com.gregtechceu.gtceu.common.pipelike.laser.LaserPipeNet;
@@ -15,6 +16,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
 import javax.annotation.Nonnull;
 import java.lang.ref.WeakReference;
@@ -108,6 +110,12 @@ public class LaserPipeBlockEntity extends PipeBlockEntity<LaserPipeType, LaserPi
 
     @Override
     public boolean canAttachTo(Direction side) {
+        if (level != null) {
+            if (level.getBlockEntity(getBlockPos().relative(side)) instanceof LaserPipeBlockEntity) {
+                return false;
+            }
+            return side.getAxis() == this.getBlockState().getValue(BlockStateProperties.FACING).getAxis() && GTCapabilityHelper.getLaserContainer(level, getBlockPos().relative(side), side.getOpposite()) != null;
+        }
         return false;
     }
 

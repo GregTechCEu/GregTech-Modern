@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.common.blockentity;
 
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
+import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IDataAccessHatch;
 import com.gregtechceu.gtceu.api.machine.trait.optical.IOpticalComputationProvider;
 import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
@@ -126,6 +127,12 @@ public class OpticalPipeBlockEntity extends PipeBlockEntity<OpticalPipeType, Opt
 
     @Override
     public boolean canAttachTo(Direction side) {
+        if (level != null) {
+            if (level.getBlockEntity(getBlockPos().relative(side)) instanceof OpticalPipeBlockEntity) {
+                return false;
+            }
+            return GTCapabilityHelper.getComputationProvider(level, getBlockPos().relative(side), side.getOpposite()) != null;
+        }
         return false;
     }
 

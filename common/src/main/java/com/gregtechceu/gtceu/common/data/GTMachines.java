@@ -1580,7 +1580,7 @@ public class GTMachines {
                         .aisle("VA", "7V", "4V", "1V", "VA")
                         .aisle("VA", "8V", "5V", "2V", "VA")
                         .aisle("SA", "CC", "CC", "OC", "AA")
-                        .where('S', GTMachines.HIGH_PERFORMANCE_COMPUTING_ARRAY, Direction.SOUTH)
+                        .where('S', controller, Direction.SOUTH)
                         .where('A', GTBlocks.ADVANCED_COMPUTER_CASING.get())
                         .where('V', GTBlocks.COMPUTER_HEAT_VENT.get())
                         .where('C', GTBlocks.COMPUTER_CASING.get())
