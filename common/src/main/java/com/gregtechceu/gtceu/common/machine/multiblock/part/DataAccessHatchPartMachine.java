@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.UITemplate;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
@@ -15,10 +16,12 @@ import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
 import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
+import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
+import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import lombok.Getter;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import org.apache.commons.lang3.ArrayUtils;
 
 import javax.annotation.Nonnull;
 import java.util.Collection;
@@ -26,17 +29,30 @@ import java.util.Collections;
 import java.util.Set;
 
 public class DataAccessHatchPartMachine extends TieredIOPartMachine implements IDataAccessHatch {
+    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(DataAccessHatchPartMachine.class, TieredIOPartMachine.MANAGED_FIELD_HOLDER);
+
     private final Set<GTRecipe> recipes;
+    @Getter
     private final boolean isCreative;
+    @Persisted
+    public final NotifiableItemStackHandler importItems, exportItems;
 
     public DataAccessHatchPartMachine(IMachineBlockEntity holder, int tier, boolean isCreative) {
         super(holder, tier, IO.IN);
         this.isCreative = isCreative;
         this.recipes = isCreative ? Collections.emptySet() : new ObjectOpenHashSet<>();
+        this.importItems = createImportItemHandler();
+        this.exportItems = createExportItemHandler();
         rebuildData();
     }
 
-    protected IItemTransfer createImportItemHandler() {
+    @Override
+    public ManagedFieldHolder getFieldHolder() {
+        return MANAGED_FIELD_HOLDER;
+    }
+
+    protected NotifiableItemStackHandler createImportItemHandler() {
+        if (isCreative) return new NotifiableItemStackHandler(this, getInventorySize(getTier()), IO.IN);
         return new NotifiableItemStackHandler(this, getInventorySize(getTier()), IO.IN) {
             @Override
             public void onChanged() {
@@ -47,7 +63,7 @@ public class DataAccessHatchPartMachine extends TieredIOPartMachine implements I
             @Nonnull
             @Override
             public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-                var controller = MetaTileEntityDataAccessHatch.this.getController();
+                var controller = DataAccessHatchPartMachine.this.getController();
                 boolean isDataBank = controller instanceof MetaTileEntityDataBank;
                 if (AssemblyLineManager.isStackDataItem(stack, isDataBank) && AssemblyLineManager.hasResearchTag(stack)) {
                     return super.insertItem(slot, stack, simulate);
@@ -57,29 +73,33 @@ public class DataAccessHatchPartMachine extends TieredIOPartMachine implements I
         };
     }
 
-    public void renderMetaTileEntity(CCRenderState renderState, Matrix4 translation, IVertexOperation[] pipeline) {
-        if (getController() instanceof MetaTileEntityAssemblyLine && getController().isStructureFormed()) {
-            IVertexOperation colourMultiplier = new ColourMultiplier(GTUtility.convertRGBtoOpaqueRGBA_CL(getPaintingColorForRendering()));
-            for (EnumFacing facing : EnumFacing.VALUES) {
-                // render grate texture on all sides but from if formed
-                if (facing == getFrontFacing()) {
-                    getBaseTexture().renderSided(facing, renderState, translation, ArrayUtils.add(pipeline, colourMultiplier));
-                } else {
-                    Textures.GRATE_CASING.renderSided(facing, renderState, translation, ArrayUtils.add(pipeline, colourMultiplier));
-                }
-            }
-        } else {
-            super.renderMetaTileEntity(renderState, translation, pipeline);
-        }
-
-        if (shouldRenderOverlay()) {
-            if (isCreative) {
-                Textures.CREATIVE_DATA_ACCESS_HATCH.renderSided(getFrontFacing(), renderState, translation, pipeline);
-            } else {
-                Textures.DATA_ACCESS_HATCH.renderSided(getFrontFacing(), renderState, translation, pipeline);
-            }
-        }
+    protected NotifiableItemStackHandler createExportItemHandler() {
+        return new NotifiableItemStackHandler(this, getInventorySize(getTier()), IO.OUT);
     }
+
+//    public void renderMetaTileEntity(CCRenderState renderState, Matrix4 translation, IVertexOperation[] pipeline) {
+//        if (getController() instanceof MetaTileEntityAssemblyLine && getController().isStructureFormed()) {
+//            IVertexOperation colourMultiplier = new ColourMultiplier(GTUtility.convertRGBtoOpaqueRGBA_CL(getPaintingColorForRendering()));
+//            for (EnumFacing facing : EnumFacing.VALUES) {
+//                // render grate texture on all sides but from if formed
+//                if (facing == getFrontFacing()) {
+//                    getBaseTexture().renderSided(facing, renderState, translation, ArrayUtils.add(pipeline, colourMultiplier));
+//                } else {
+//                    Textures.GRATE_CASING.renderSided(facing, renderState, translation, ArrayUtils.add(pipeline, colourMultiplier));
+//                }
+//            }
+//        } else {
+//            super.renderMetaTileEntity(renderState, translation, pipeline);
+//        }
+//
+//        if (shouldRenderOverlay()) {
+//            if (isCreative) {
+//                Textures.CREATIVE_DATA_ACCESS_HATCH.renderSided(getFrontFacing(), renderState, translation, pipeline);
+//            } else {
+//                Textures.DATA_ACCESS_HATCH.renderSided(getFrontFacing(), renderState, translation, pipeline);
+//            }
+//        }
+//    }
 
     @Override
     public ModularUI createUI(Player entityPlayer) {
@@ -99,11 +119,6 @@ public class DataAccessHatchPartMachine extends TieredIOPartMachine implements I
         }
         builder.widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(), GuiTextures.SLOT, 7, 18 + 18 * rowSize + 12, true));
         return builder;
-    }
-
-    @Override
-    protected boolean openGUIOnRightClick() {
-        return !this.isCreative;
     }
 
     public static int getInventorySize(int tier) {
@@ -134,14 +149,9 @@ public class DataAccessHatchPartMachine extends TieredIOPartMachine implements I
     }
 
     @Override
-    public boolean isCreative() {
-        return this.isCreative;
-    }
-
-    @Override
-    public void addToMultiBlock(MultiblockControllerBase controllerBase) {
-        super.addToMultiBlock(controllerBase);
-        if (!(controllerBase instanceof MetaTileEntityDataBank)) {
+    public void addedToController(IMultiController controller) {
+        super.addedToController(controller);
+        if (!(controller instanceof MetaTileEntityDataBank)) {
             rebuildData();
         }
     }

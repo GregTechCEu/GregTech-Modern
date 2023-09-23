@@ -37,9 +37,7 @@ import com.lowdragmc.lowdraglib.utils.Size;
 import dev.emi.emi.api.EmiApi;
 import it.unimi.dsi.fastutil.bytes.Byte2ObjectArrayMap;
 import it.unimi.dsi.fastutil.bytes.Byte2ObjectMap;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
+import it.unimi.dsi.fastutil.objects.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -59,6 +57,7 @@ import net.minecraft.world.item.crafting.SmeltingRecipe;
 import net.minecraft.world.level.ItemLike;
 import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.Nonnull;
 import java.io.DataInputStream;
 import java.io.InputStream;
 import java.util.*;
@@ -113,6 +112,9 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
     @Getter
     protected final Map<RecipeType<?>, List<GTRecipe>> proxyRecipes;
     private CompoundTag customUICache;
+
+    /** Contains the recipes for each research key */
+    private final Map<String, Collection<GTRecipe>> researchEntries = new Object2ObjectOpenHashMap<>();
 
     public GTRecipeType(ResourceLocation registryName, String group, RecipeType<?>... proxyRecipes) {
         this.registryName = registryName;
@@ -278,6 +280,28 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
     public GTRecipeType onRecipeBuild(BiConsumer<GTRecipeBuilder, Consumer<FinishedRecipe>> onBuild) {
         recipeBuilder.onSave(onBuild);
         return this;
+    }
+
+    public void addDataStickEntry(@Nonnull String researchId, @Nonnull GTRecipe recipe) {
+        Collection<GTRecipe> collection = researchEntries.computeIfAbsent(researchId, (k) -> new ObjectOpenHashSet<>());
+        collection.add(recipe);
+    }
+
+    @Nullable
+    public Collection<GTRecipe> getDataStickEntry(@Nonnull String researchId) {
+        return researchEntries.get(researchId);
+    }
+
+    public boolean removeDataStickEntry(@Nonnull String researchId, @Nonnull GTRecipe recipe) {
+        Collection<GTRecipe> collection = researchEntries.get(researchId);
+        if (collection == null) return false;
+        if (collection.remove(recipe)) {
+            if (collection.isEmpty()) {
+                return researchEntries.remove(researchId) != null;
+            }
+            return true;
+        }
+        return false;
     }
 
     //////////////////////////////////////
