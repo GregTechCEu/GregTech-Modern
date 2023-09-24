@@ -718,26 +718,31 @@ public class GTMachines {
             .abilities(PartAbility.DATA_ACCESS_HATCH)
             .tooltips(Component.translatable("gtceu.machine.data_access_hatch.tooltip.1"),
                     Component.translatable("gtceu.machine.data_access_hatch.tooltip.2", DataAccessHatchPartMachine.getInventorySize(EV)))
+            .overlayTieredHullRenderer("data_access_hatch")
             .register();
     public static final MachineDefinition ADVANCED_DATA_ACCESS_HATCH = REGISTRATE.machine("advanced_data_access_hatch", (holder) -> new DataAccessHatchPartMachine(holder, LuV, false))
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.DATA_ACCESS_HATCH)
             .tooltips(Component.translatable("gtceu.machine.data_access_hatch.tooltip.1"),
                     Component.translatable("gtceu.machine.data_access_hatch.tooltip.2", DataAccessHatchPartMachine.getInventorySize(LuV)))
+            .overlayTieredHullRenderer("data_access_hatch")
             .register();
     public static final MachineDefinition CREATIVE_DATA_HATCH = REGISTRATE.machine("creative_data_access_hatch", (holder) -> new DataAccessHatchPartMachine(holder, MAX, true))
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.DATA_ACCESS_HATCH)
             .tooltips(Component.translatable("gtceu.machine.data_access_hatch.tooltip.1"),
                     Component.translatable("gtceu.machine.data_access_hatch.tooltip.2", DataAccessHatchPartMachine.getInventorySize(LuV)))
+            .overlayTieredHullRenderer("creative_data_access_hatch")
             .register();
     public static final MachineDefinition OPTICAL_DATA_HATCH_RECEIVER = REGISTRATE.machine("optical_data_receiver_hatch", (holder) -> new OpticalDataAccessHatchPartMachine(holder, false))
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.OPTICAL_DATA_RECEPTION)
+            .overlayTieredHullRenderer("optical_data_hatch")
             .register();
     public static final MachineDefinition OPTICAL_DATA_HATCH_TRANSMITTER = REGISTRATE.machine("optical_data_transmitter_hatch", (holder) -> new OpticalDataAccessHatchPartMachine(holder, true))
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.OPTICAL_DATA_TRANSMISSION)
+                .overlayTieredHullRenderer("optical_data_hatch")
             .register();
     public static final MachineDefinition LASER_INPUT_HATCH = REGISTRATE.machine("laser_input_hatch", (holder) -> new LaserHatchPartMachine(holder, IO.IN))
             .rotationState(RotationState.ALL)
@@ -745,6 +750,7 @@ public class GTMachines {
                     Component.translatable("gtceu.machine.laser_hatch.target.tooltip2"),
                     Component.translatable("gtceu.universal.disabled"))
             .abilities(PartAbility.INPUT_LASER)
+            .overlayTieredHullRenderer("laser_hatch.source")
             .register();
     public static final MachineDefinition LASER_OUTPUT_HATCH = REGISTRATE.machine("laser_output_hatch", (holder) -> new LaserHatchPartMachine(holder, IO.OUT))
             .rotationState(RotationState.ALL)
@@ -752,22 +758,29 @@ public class GTMachines {
                     Component.translatable("gtceu.machine.laser_hatch.source.tooltip2"),
                     Component.translatable("gtceu.universal.disabled"))
             .abilities(PartAbility.OUTPUT_LASER)
+            .overlayTieredHullRenderer("laser_hatch.target")
             .register();
     public static final MachineDefinition COMPUTATION_HATCH_RECEIVER = REGISTRATE.machine("computation_receiver_hatch", (holder) -> new ComputationHatchPartMachine(holder, IO.IN))
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.COMPUTATION_DATA_RECEPTION)
+            // TODO add actual texture
+            .overlayTieredHullRenderer("optical_data_hatch")
             .register();
     public static final MachineDefinition COMPUTATION_HATCH_TRANSMITTER = REGISTRATE.machine("computation_transmitter_hatch", (holder) -> new ComputationHatchPartMachine(holder, IO.OUT))
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.COMPUTATION_DATA_TRANSMISSION)
+            // TODO add actual texture
+            .overlayTieredHullRenderer("optical_data_hatch")
             .register();
     public static final MachineDefinition OBJECT_HOLDER = REGISTRATE.machine("object_holder", ObjectHolderPartMachine::new)
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.OBJECT_HOLDER)
+            .workableTieredHullRenderer(GTCEu.id("block/machines/object_holder"))
             .register();
     public static final MachineDefinition HPCA_EMPTY_COMPONENT = REGISTRATE.machine("empty_hpca_component", HPCAEmptyPartMachine::new)
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.HPCA_COMPONENT)
+            .overlayTieredHullRenderer("hpca_component_empty")
             .register();
     public static final MachineDefinition HPCA_COMPUTATION_COMPONENT = REGISTRATE.machine("hpca_computation_component", (holder) -> new HPCAComputationPartMachine(holder, false))
             .rotationState(RotationState.ALL)
@@ -777,6 +790,7 @@ public class GTMachines {
                     Component.translatable("gtceu.machine.hpca.component_type.computation_cooling", 2),
                     Component.translatable("gtceu.machine.hpca.component_type.damaged").withStyle(TooltipHelper.BLINKING_ORANGE.getCurrent()))
             .abilities(PartAbility.HPCA_COMPONENT)
+            .renderer(() -> new HPCAPartRenderer(GTCEu.id("overlay/machine/hpca/computation"), GTCEu.id("overlay/machine/hpca/damaged"), GTCEu.id("overlay/machine/hpca/computation_active"), GTCEu.id("overlay/machine/hpca/damaged_active")))
             .register();
     public static final MachineDefinition HPCA_ADVANCED_COMPUTATION_COMPONENT = REGISTRATE.machine("advanced_hpca_computation_component", (holder) -> new HPCAComputationPartMachine(holder, true))
             .rotationState(RotationState.ALL)
@@ -786,12 +800,14 @@ public class GTMachines {
                     Component.translatable("gtceu.machine.hpca.component_type.computation_cooling", 4),
                     Component.translatable("gtceu.machine.hpca.component_type.damaged").withStyle(TooltipHelper.BLINKING_ORANGE.getCurrent()))
             .abilities(PartAbility.HPCA_COMPONENT)
+            .renderer(() -> new HPCAPartRenderer(GTCEu.id("overlay/machine/hpca/computation_advanced"), GTCEu.id("overlay/machine/hpca/damaged_advanced"), GTCEu.id("overlay/machine/hpca/computation_advanced_active"), GTCEu.id("overlay/machine/hpca/damaged_advanced_active")))
             .register();
     public static final MachineDefinition HPCA_HEAT_SINK_COMPONENT = REGISTRATE.machine("hpca_heat_sink_component", (holder) -> new HPCACoolerPartMachine(holder, false))
             .rotationState(RotationState.ALL)
             .tooltips(Component.translatable("gtceu.machine.hpca.component_type.cooler_passive"),
                     Component.translatable("gtceu.machine.hpca.component_type.cooler_cooling", 1))
             .abilities(PartAbility.HPCA_COMPONENT)
+            .renderer(() -> new HPCAPartRenderer(GTCEu.id("overlay/machine/hpca/heat_sink"), null, null, null))
             .register();
     public static final MachineDefinition HPCA_ACTIVE_COOLER_COMPONENT = REGISTRATE.machine("active_hpca_cooler_component", (holder) -> new HPCACoolerPartMachine(holder, true))
             .rotationState(RotationState.ALL)
@@ -800,12 +816,14 @@ public class GTMachines {
                     Component.translatable("gtceu.machine.hpca.component_type.cooler_active_coolant", 8, GTMaterials.PCBCoolant.getLocalizedName()),
                     Component.translatable("gtceu.machine.hpca.component_type.cooler_cooling", 2))
             .abilities(PartAbility.HPCA_COMPONENT)
+            .renderer(() -> new HPCAPartRenderer(GTCEu.id("overlay/machine/hpca/active_cooler"), null, GTCEu.id("overlay/machine/hpca/active_cooler_active"), null))
             .register();
     public static final MachineDefinition HPCA_BRIDGE_COMPONENT = REGISTRATE.machine("hpca_bridge_component", HPCABridgePartMachine::new)
             .rotationState(RotationState.ALL)
             .tooltips(Component.translatable("gtceu.machine.hpca.component_type.bridge"),
                     Component.translatable("gtceu.machine.hpca.component_general.max_eut", GTValues.VA[IV]))
             .abilities(PartAbility.HPCA_COMPONENT)
+            .renderer(() -> new HPCAPartRenderer(GTCEu.id("overlay/machine/hpca/bridge"), null, GTCEu.id("overlay/machine/hpca/bridge_active"), null))
             .register();
 
     //////////////////////////////////////
@@ -1543,10 +1561,12 @@ public class GTMachines {
                     .where('A', blocks(GTBlocks.COMPUTER_CASING.get()))
                     .where('C', blocks(GTBlocks.HIGH_POWER_CASING.get())
                             .setMinGlobalLimited(4)
-                            .or(autoAbilities(true, true))
+                            .or(autoAbilities(true, true, false))
                             .or(abilities(PartAbility.INPUT_ENERGY)
                                     .setMinGlobalLimited(1).setMaxGlobalLimited(2).setPreviewCount(1)))
                     .build())
+            .workableCasingRenderer(GTCEu.id("block/casings/hpca/computer"),
+                    GTCEu.id("block/multiblock/data_bank"), false)
             .register();
 
 
@@ -1640,6 +1660,8 @@ public class GTMachines {
 
                 return shapeInfo;
             })
+            .workableCasingRenderer(GTCEu.id("block/casings/hpca/advanced_computer"),
+                    GTCEu.id("block/multiblock/high_performance_computing_array"), false)
             .register();
 
     public static final MultiblockMachineDefinition ACTIVE_TRANSFORMER = REGISTRATE.multiblock("active_transformer", ActiveTransformerMachine::new)
@@ -1658,6 +1680,8 @@ public class GTMachines {
                     .where('X', blocks(GTBlocks.HIGH_POWER_CASING.get()).setMinGlobalLimited(12).or(ActiveTransformerMachine.getHatchPredicates()))
                     .where('C', blocks(GTBlocks.SUPERCONDUCTING_COIL.get()))
                     .build())
+            .workableCasingRenderer(GTCEu.id("block/casings/hpca/high_power_casing"),
+                    GTCEu.id("block/multiblock/active_transformer"), false)
             .register();
 
     //////////////////////////////////////

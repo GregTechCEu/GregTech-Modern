@@ -1,0 +1,16 @@
+{
+	"credit": "Made with Blockbench",
+	"parent": "block/block",
+	"textures": {
+		"overlay_hatch": "gtceu:block/overlay/machine/overlay_laser_target"
+	},
+	"elements": [
+		{
+			"from": [0, 0, 0],
+			"to": [16, 16, 0],
+			"faces": {
+				"north": {"uv": [0, 0, 16, 16], "texture": "#overlay_hatch", "cullface": "north", "tintindex": 2 }
+			}
+		}
+	]
+}

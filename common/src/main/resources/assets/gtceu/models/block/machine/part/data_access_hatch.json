@@ -1,0 +1,27 @@
+{
+  "parent": "block/block",
+  "textures": {
+    "overlay_grate": "gtceu:block/casings/pipe/machine_casing_grate",
+    "overlay_hatch": "gtceu:block/overlay/machine/overlay_data_hatch"
+  },
+  "elements": [
+    {
+      "from": [0, 0, 0],
+      "to": [16, 16, 16],
+      "faces": {
+        "south": {"uv": [0, 0, 16, 16], "texture": "#overlay_grate", "cullface": "south", "tintindex": 1},
+        "east": {"uv": [0, 0, 16, 16], "texture": "#overlay_grate", "cullface": "east", "tintindex": 1},
+        "west": {"uv": [0, 0, 16, 16], "texture": "#overlay_grate", "cullface": "west", "tintindex": 1},
+        "up": {"uv": [0, 0, 16, 16], "texture": "#overlay_grate", "cullface": "up", "tintindex": 1},
+        "down": {"uv": [0, 0, 16, 16], "texture": "#overlay_grate", "cullface": "down", "tintindex": 1}
+      }
+    },
+    {
+      "from": [0, 0, 0],
+      "to": [16, 16, 0],
+      "faces": {
+        "north": {"uv": [0, 0, 16, 16], "texture": "#overlay_hatch", "cullface": "north", "tintindex": 2 }
+      }
+    }
+  ]
+}

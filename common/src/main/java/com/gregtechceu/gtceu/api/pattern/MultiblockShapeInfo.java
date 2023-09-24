@@ -13,7 +13,7 @@ import java.util.function.Supplier;
 
 public class MultiblockShapeInfo {
 
-    private final BlockInfo[][][] blocks; //[x][y][z]
+    private final BlockInfo[][][] blocks; //[z][y][x]
 
     public MultiblockShapeInfo(BlockInfo[][][] blocks) {
         this.blocks = blocks;
