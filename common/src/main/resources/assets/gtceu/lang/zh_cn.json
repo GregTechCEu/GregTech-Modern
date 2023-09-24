@@ -2781,7 +2781,7 @@
     "item.gtceu.ev_field_generator":"EV力场发生器",
     "item.gtceu.ev_fluid_regulator":"EV流体校准器",
     "item.gtceu.ev_robot_arm":"EV机械臂",
-    "item.gtceu.ev_sensor":"MV传感器",
+    "item.gtceu.ev_sensor":"EV传感器",
     "item.gtceu.ev_solar_panel":"超高压太阳能板（EV）",
     "item.gtceu.ev_vanadium_battery":"小型钒电池",
     "item.gtceu.ev_voltage_coil":"超高压线圈",

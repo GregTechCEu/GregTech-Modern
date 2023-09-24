@@ -1339,7 +1339,7 @@ public class FirstDegreeMaterials {
                 .color(0x7D9673).iconSet(METALLIC)
                 .flags(DECOMPOSITION_BY_CENTRIFUGING, GENERATE_FINE_WIRE)
                 .components(NaquadahEnriched, 4, Trinium, 3, Europium, 2, Duranium, 1)
-                .cableProperties(GTValues.V[GTValues.UV], 16, 0, true, 3) // TODO do we really need UHV+
+                .cableProperties(GTValues.V[GTValues.UV], 16, 0, true, 3)
                 .blastTemp(9900, GasTier.HIGH, GTValues.VA[GTValues.LuV], 1000)
                 .fluidTemp(5930)
                 .buildAndRegister();
@@ -1349,7 +1349,7 @@ public class FirstDegreeMaterials {
                 .color(0xFFFFFF).iconSet(BRIGHT)
                 .flags(DECOMPOSITION_BY_ELECTROLYZING)
                 .components(Ruthenium, 1, Trinium, 2, Americium, 1, Neutronium, 2, Oxygen, 8)
-                .cableProperties(GTValues.V[GTValues.UV], 24, 0, true, 3)
+                .cableProperties(GTValues.V[GTValues.UHV], 24, 0, true, 3)
                 .blastTemp(10800, GasTier.HIGHER)
                 .fluidTemp(23691)
                 .buildAndRegister();
