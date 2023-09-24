@@ -1,15 +1,22 @@
 package com.gregtechceu.gtceu.utils;
 
-import org.apache.commons.lang3.tuple.Pair;
 
-import java.awt.*;
+import net.minecraft.util.Tuple;
 
 public class GradientUtil {
 
     private GradientUtil() {
     }
 
-    public static Pair<Color, Color> getGradient(Color rgb, int luminanceDifference) {
+    public static float[] getRGB(int color) {
+        float r = ((color >> 16) & 0xFF) / 255f;
+        float g = ((color >> 8) & 0xFF) / 255f;
+        //noinspection PointlessBitwiseExpression
+        float b = ((color >> 0) & 0xFF) / 255f;
+        return new float[]{r, g, b};
+    }
+
+    public static Tuple<float[], float[]> getGradient(int rgb, int luminanceDifference) {
         float[] hsl = RGBtoHSL(rgb);
         float[] upshade = new float[3];
         float[] downshade = new float[3];
@@ -19,21 +26,17 @@ public class GradientUtil {
         if (upshade[2] > 100.0F) upshade[2] = 100.0F;
         downshade[2] = downshade[2] - luminanceDifference;
         if (downshade[2] < 0.0F) downshade[2] = 0.0F;
-        Color upshadeRgb = toRGB(upshade);
-        Color downshadeRgb = toRGB(downshade);
-        return Pair.of(downshadeRgb, upshadeRgb);
+        float[] upshadeRgb = toRGB(upshade);
+        float[] downshadeRgb = toRGB(downshade);
+        return new Tuple<>(downshadeRgb, upshadeRgb);
     }
 
-    public static Pair<Color, Color> getGradient(int rgb, int luminanceDifference) {
-        return getGradient(new Color(rgb), luminanceDifference);
-    }
-
-    public static float[] RGBtoHSL(Color rgbColor) {
+    public static float[] RGBtoHSL(int rgbColor) {
         // Get RGB values in the range 0 - 1
-        float[] rgb = rgbColor.getRGBColorComponents(null);
-        float r = rgb[0];
-        float g = rgb[1];
-        float b = rgb[2];
+        float r = ((rgbColor >> 16) & 0xFF) / 255f;
+        float g = ((rgbColor >> 8) & 0xFF) / 255f;
+        //noinspection PointlessBitwiseExpression
+        float b = ((rgbColor >> 0) & 0xFF) / 255f;
 
         // Minimum and Maximum RGB values are used in the HSL calculations
         float min = Math.min(r, Math.min(g, b));
@@ -67,11 +70,11 @@ public class GradientUtil {
         return new float[] {h, s * 100, l * 100};
     }
 
-    public static Color toRGB(float[] hsv) {
+    public static float[] toRGB(float[] hsv) {
         return toRGB(hsv[0], hsv[1], hsv[2]);
     }
 
-    public static Color toRGB(float h, float s, float l) {
+    public static float[] toRGB(float h, float s, float l) {
         // Formula needs all values between 0 - 1
         h = h % 360.0F;
         h /= 360.0F;
@@ -95,7 +98,7 @@ public class GradientUtil {
         g = Math.min(g, 1.0F);
         b = Math.min(b, 1.0F);
 
-        return new Color(r, g, b);
+        return new float[]{r, g, b};
     }
 
     private static float hueToRGB(float p, float q, float h) {

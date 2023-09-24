@@ -21,7 +21,6 @@ import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.awt.*;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.List;
@@ -35,13 +34,6 @@ import java.util.Map.Entry;
  * @implNote GTUtil
  */
 public class GTUtil {
-    private static final NavigableMap<Long, Byte> tierByVoltage = new TreeMap<>();
-
-    static {
-        for (int i = 0; i < GTValues.V.length; i++) {
-            tierByVoltage.put(GTValues.V[i], (byte) i);
-        }
-    }
 
     @Nullable
     public static Direction determineWrenchingSide(Direction facing, float x, float y, float z) {
@@ -101,22 +93,63 @@ public class GTUtil {
     }
 
     /**
-     * @return lowest tier that can handle passed voltage
+     * @param array Array sorted with natural order
+     * @param value Value to search for
+     * @return Index of the nearest value lesser or equal than {@code value},
+     * or {@code -1} if there's no entry matching the condition
+     */
+    public static int nearestLesserOrEqual(@Nonnull long[] array, long value) {
+        int low = 0, high = array.length - 1;
+        while (true) {
+            int median = (low + high) / 2;
+            if (array[median] <= value) {
+                if (low == high) return low;
+                low = median + 1;
+            } else {
+                if (low == high) return low - 1;
+                high = median - 1;
+            }
+        }
+    }
+
+    /**
+     * @param array Array sorted with natural order
+     * @param value Value to search for
+     * @return Index of the nearest value lesser than {@code value},
+     * or {@code -1} if there's no entry matching the condition
+     */
+    public static int nearestLesser(@Nonnull long[] array, long value) {
+        int low = 0, high = array.length - 1;
+        while (true) {
+            int median = (low + high) / 2;
+            if (array[median] < value) {
+                if (low == high) return low;
+                low = median + 1;
+            } else {
+                if (low == high) return low - 1;
+                high = median - 1;
+            }
+        }
+    }
+
+    /**
+     * @return Lowest tier of the voltage that can handle {@code voltage}; that is,
+     * a voltage with value greater than equal than {@code voltage}. If there's no
+     * tier that can handle it, {@code MAX} is returned.
      */
     public static byte getTierByVoltage(long voltage) {
-        // TODO do we really need UHV+
-        if (voltage > GTValues.V[GTValues.UV]) return GTValues.UV;
-        return tierByVoltage.ceilingEntry(voltage).getValue();
+        // Yes, yes we do need UHV+.
+        return (byte) Math.min(GTValues.MAX, nearestLesser(GTValues.V, voltage) + 1);
     }
 
     /**
      * Ex: This method turns both 1024 and 512 into HV.
      *
-     * @return the highest tier below or equal to the voltage value given
+     * @return the highest voltage tier with value below or equal to {@code voltage}, or
+     * {@code ULV} if there's no tier below
      */
     public static byte getFloorTierByVoltage(long voltage) {
-        if (voltage < GTValues.V[GTValues.ULV]) return GTValues.ULV;
-        return tierByVoltage.floorEntry(voltage).getValue();
+        return (byte) Math.max(GTValues.ULV, nearestLesserOrEqual(GTValues.V, voltage));
     }
 
     public static ItemStack copy(ItemStack... stacks) {
@@ -235,15 +268,15 @@ public class GTUtil {
      * Determines dye color nearest to specified RGB color
      */
     public static DyeColor determineDyeColor(int rgbColor) {
-        Color c = new Color(rgbColor);
+        float[] c = GradientUtil.getRGB(rgbColor);
 
         Map<Double, DyeColor> distances = new HashMap<>();
         for (DyeColor dyeColor : DyeColor.values()) {
-            Color c2 = new Color(dyeColor.getTextColor());
+            float[] c2 = GradientUtil.getRGB(dyeColor.getTextColor());
 
-            double distance = (c.getRed() - c2.getRed()) * (c.getRed() - c2.getRed())
-                    + (c.getGreen() - c2.getGreen()) * (c.getGreen() - c2.getGreen())
-                    + (c.getBlue() - c2.getBlue()) * (c.getBlue() - c2.getBlue());
+            double distance = (c[0] - c2[0]) * (c[0] - c2[0])
+                    + (c[1] - c2[1]) * (c[1] - c2[1])
+                    + (c[2] - c2[2]) * (c[2] - c2[2]);
 
             distances.put(distance, dyeColor);
         }

@@ -919,7 +919,7 @@ public class GTItems {
     public static ItemEntry<Item> SENSOR_LV= REGISTRATE.item("lv_sensor", Item::new).lang("LV Sensor").register();
     public static ItemEntry<Item> SENSOR_MV= REGISTRATE.item("mv_sensor", Item::new).lang("MV Sensor").register();
     public static ItemEntry<Item> SENSOR_HV= REGISTRATE.item("hv_sensor", Item::new).lang("HV Sensor").register();
-    public static ItemEntry<Item> SENSOR_EV= REGISTRATE.item("ev_sensor", Item::new).lang("MV Sensor").register();
+    public static ItemEntry<Item> SENSOR_EV= REGISTRATE.item("ev_sensor", Item::new).lang("EV Sensor").register();
     public static ItemEntry<Item> SENSOR_IV= REGISTRATE.item("iv_sensor", Item::new).lang("IV Sensor").register();
     public static ItemEntry<Item> SENSOR_LuV= REGISTRATE.item("luv_sensor", Item::new).lang("LuV Sensor").register();
     public static ItemEntry<Item> SENSOR_ZPM= REGISTRATE.item("zpm_sensor", Item::new).lang("ZPM Sensor").register();
