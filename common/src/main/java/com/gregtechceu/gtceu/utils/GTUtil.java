@@ -21,7 +21,6 @@ import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.awt.*;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.List;
@@ -269,15 +268,15 @@ public class GTUtil {
      * Determines dye color nearest to specified RGB color
      */
     public static DyeColor determineDyeColor(int rgbColor) {
-        Color c = new Color(rgbColor);
+        float[] c = GradientUtil.getRGB(rgbColor);
 
         Map<Double, DyeColor> distances = new HashMap<>();
         for (DyeColor dyeColor : DyeColor.values()) {
-            Color c2 = new Color(dyeColor.getTextColor());
+            float[] c2 = GradientUtil.getRGB(dyeColor.getTextColor());
 
-            double distance = (c.getRed() - c2.getRed()) * (c.getRed() - c2.getRed())
-                    + (c.getGreen() - c2.getGreen()) * (c.getGreen() - c2.getGreen())
-                    + (c.getBlue() - c2.getBlue()) * (c.getBlue() - c2.getBlue());
+            double distance = (c[0] - c2[0]) * (c[0] - c2[0])
+                    + (c[1] - c2[1]) * (c[1] - c2[1])
+                    + (c[2] - c2[2]) * (c[2] - c2[2]);
 
             distances.put(distance, dyeColor);
         }
