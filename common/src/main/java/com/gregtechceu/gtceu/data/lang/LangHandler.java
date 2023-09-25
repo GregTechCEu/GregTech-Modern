@@ -103,10 +103,10 @@ public class LangHandler {
 
         provider.add("item.invalid.name", "Invalid item");
         provider.add("fluid.empty", "Empty");
-        provider.add("gtceu.tooltip.hold_shift", "Hold SHIFT for more info");
-        provider.add("gtceu.tooltip.hold_ctrl", "Hold CTRL for more info");
-        provider.add("gtceu.tooltip.fluid_pipe_hold_shift", "Hold SHIFT to show Fluid Containment Info");
-        provider.add("gtceu.tooltip.tool_fluid_hold_shift", "Hold SHIFT to show Fluid Containment and Tool Info");
+        provider.add("gtceu.tooltip.hold_shift", "§7Hold SHIFT for more info");
+        provider.add("gtceu.tooltip.hold_ctrl", "§7Hold CTRL for more info");
+        provider.add("gtceu.tooltip.fluid_pipe_hold_shift", "§7Hold SHIFT to show Fluid Containment Info");
+        provider.add("gtceu.tooltip.tool_fluid_hold_shift", "§7Hold SHIFT to show Fluid Containment and Tool Info");
         provider.add("metaitem.generic.fluid_container.tooltip", "%d/%dL %s");
         provider.add("metaitem.generic.electric_item.tooltip", "%d/%d EU - Tier %s");
         provider.add("metaitem.generic.electric_item.stored", "%d/%d EU(%s)");
