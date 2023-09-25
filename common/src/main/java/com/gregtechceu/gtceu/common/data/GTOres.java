@@ -8,20 +8,18 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import lombok.Getter;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
-import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.data.worldgen.features.OreFeatures;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BiomeTags;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.dimension.BuiltinDimensionTypes;
-import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.levelgen.VerticalAnchor;
 import net.minecraft.world.level.levelgen.placement.HeightRangePlacement;
 import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
@@ -582,7 +580,7 @@ public class GTOres {
                             .build())
                     .parent();
 
-    private static GTOreDefinition create(String name, int clusterSize, float density, int weight, WorldGenLayers layer, HolderSet<DimensionType> dimensionFilter, HeightRangePlacement range) {
+    private static GTOreDefinition create(String name, int clusterSize, float density, int weight, WorldGenLayers layer, Set<ResourceKey<Level>> dimensionFilter, HeightRangePlacement range) {
         ResourceLocation id = GTCEu.id(name);
         GTOreDefinition def = new GTOreDefinition(id, clusterSize, density, weight, layer, dimensionFilter, range, 0.0F, null, null, null);
         toReRegister.put(id, def);
@@ -605,16 +603,16 @@ public class GTOres {
         return block;
     }
 
-    public static HolderSet<DimensionType> overworld() {
-        return HolderSet.direct(BuiltinRegistries.DIMENSION_TYPE.getHolderOrThrow(BuiltinDimensionTypes.OVERWORLD));
+    public static Set<ResourceKey<Level>> overworld() {
+        return Set.of(Level.OVERWORLD);
     }
 
-    public static HolderSet<DimensionType> nether() {
-        return HolderSet.direct(BuiltinRegistries.DIMENSION_TYPE.getHolderOrThrow(BuiltinDimensionTypes.NETHER));
+    public static Set<ResourceKey<Level>> nether() {
+        return Set.of(Level.NETHER);
     }
 
-    public static HolderSet<DimensionType> end() {
-        return HolderSet.direct(BuiltinRegistries.DIMENSION_TYPE.getHolderOrThrow(BuiltinDimensionTypes.END));
+    public static Set<ResourceKey<Level>> end() {
+        return Set.of(Level.END);
     }
 
     public static void init() {

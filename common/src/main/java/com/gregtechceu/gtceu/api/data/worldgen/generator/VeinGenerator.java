@@ -74,9 +74,7 @@ public abstract class VeinGenerator {
      * respective ore placers are invoked at a later time, when the chunk containing them is actually generated.
      */
     @HideFromJS
-    public abstract Map<BlockPos, OreBlockPlacer> generate(
-            WorldGenLevel level, RandomSource random, GTOreDefinition entry, BlockPos origin
-    );
+    public abstract Map<BlockPos, OreBlockPlacer> generate(WorldGenLevel level, RandomSource random, GTOreDefinition entry, BlockPos origin);
 
     @HideFromJS
     public abstract VeinGenerator build();

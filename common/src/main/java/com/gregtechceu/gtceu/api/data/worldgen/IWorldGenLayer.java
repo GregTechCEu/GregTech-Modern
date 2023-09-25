@@ -16,4 +16,10 @@ public interface IWorldGenLayer extends StringRepresentable {
 
     boolean isApplicableForLevel(ResourceLocation level);
     RuleTest getTarget();
+
+
+    @FunctionalInterface
+    interface RuleTestSupplier {
+        RuleTest get();
+    }
 }

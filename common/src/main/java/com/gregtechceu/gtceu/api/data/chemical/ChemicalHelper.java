@@ -23,6 +23,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static com.gregtechceu.gtceu.api.GTValues.M;
@@ -42,7 +43,7 @@ public class ChemicalHelper {
     public static final Map<UnificationEntry, ArrayList<ItemLike>> UNIFICATION_ENTRY_ITEM = new Object2ObjectLinkedOpenHashMap<>();
     public static final Map<UnificationEntry, ArrayList<Block>> UNIFICATION_ENTRY_BLOCK = new Object2ObjectLinkedOpenHashMap<>();
     /** Mapping of stone type blockState to "prefix, material" */
-    public static final Map<BlockState, TagPrefix> ORES_INVERSE = new HashMap<>();
+    public static final Map<Supplier<BlockState>, TagPrefix> ORES_INVERSE = new HashMap<>();
 
     public static void registerMaterialInfo(ItemLike item, ItemMaterialInfo materialInfo) {
         ITEM_MATERIAL_INFO.put(item, materialInfo);
@@ -65,13 +66,13 @@ public class ChemicalHelper {
                         .add(blockEntry.get());
             }
         }
+        if (TagPrefix.ORES.containsKey(unificationEntry.tagPrefix) && !ORES_INVERSE.containsValue(unificationEntry.tagPrefix)) {
+            ORES_INVERSE.put(TagPrefix.ORES.get(unificationEntry.tagPrefix).stoneType(), unificationEntry.tagPrefix);
+        }
     }
 
     public static void registerUnificationItems(TagPrefix tagPrefix, @Nullable Material material, ItemLike... items) {
         registerUnificationItems(new UnificationEntry(tagPrefix, material), items);
-        if (TagPrefix.ORES.containsKey(tagPrefix) && !ORES_INVERSE.containsValue(tagPrefix)) {
-            ORES_INVERSE.put(TagPrefix.ORES.get(tagPrefix).stoneType().get(), tagPrefix);
-        }
     }
 
     @Nullable
@@ -248,6 +249,10 @@ public class ChemicalHelper {
         return ITEM_MATERIAL_INFO.entrySet().stream()
                 .map(entry -> new AbstractMap.SimpleEntry<>(new ItemStack(entry.getKey().asItem()), entry.getValue()))
                 .collect(Collectors.toList());
+    }
+
+    public static Optional<TagPrefix> getOrePrefix(BlockState state) {
+        return ORES_INVERSE.entrySet().stream().filter(entry -> entry.getKey().get().equals(state)).map(Map.Entry::getValue).findFirst();
     }
 
     public static void reinitializeUnification() {
