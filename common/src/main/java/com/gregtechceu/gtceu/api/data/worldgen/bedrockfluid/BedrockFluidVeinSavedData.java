@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.data.worldgen.WorldGeneratorUtils;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -79,14 +80,14 @@ public class BedrockFluidVeinSavedData extends SavedData {
     public FluidVeinWorldEntry getFluidVeinWorldEntry(int chunkX, int chunkZ) {
         if (!veinFluids.containsKey(new ChunkPos(chunkX, chunkZ))) {
             BedrockFluidDefinition definition = null;
-            int query = RandomSource.create(Objects.hash(90210, chunkX / VEIN_CHUNK_SIZE, chunkZ / VEIN_CHUNK_SIZE)).nextInt();
+            int query = RandomSource.create(Objects.hash(serverLevel.getSeed(), chunkX / VEIN_CHUNK_SIZE, chunkZ / VEIN_CHUNK_SIZE)).nextInt();
             var biome = serverLevel.getBiome(new BlockPos(chunkX << 4, 64, chunkZ << 4));
             int totalWeight = getTotalWeight(biome);
             if (totalWeight > 0) {
                 int weight = Math.abs(query % totalWeight);
                 for (var fluidDefinition : GTRegistries.BEDROCK_FLUID_DEFINITIONS) {
                     int veinWeight = fluidDefinition.getWeight() + fluidDefinition.getBiomeWeightModifier().apply(biome);
-                    if (veinWeight > 0 && (fluidDefinition.getDimensionFilter() == null || fluidDefinition.getDimensionFilter().get().contains(serverLevel.dimensionTypeRegistration()))) {
+                    if (veinWeight > 0 && (fluidDefinition.getDimensionFilter() == null || fluidDefinition.getDimensionFilter().stream().anyMatch(dim -> WorldGeneratorUtils.isSameDimension(dim, serverLevel.dimension())))) {
                         weight -= veinWeight;
                         if (weight < 0) {
                             definition = fluidDefinition;
@@ -123,7 +124,7 @@ public class BedrockFluidVeinSavedData extends SavedData {
         return biomeWeights.computeIfAbsent(biome, b -> {
             int totalWeight = 0;
             for (var definition : GTRegistries.BEDROCK_FLUID_DEFINITIONS) {
-                if (definition.getDimensionFilter() == null || definition.getDimensionFilter().get().contains(serverLevel.dimensionTypeRegistration())) {
+                if (definition.getDimensionFilter() == null || definition.getDimensionFilter().stream().anyMatch(dim -> WorldGeneratorUtils.isSameDimension(dim, serverLevel.dimension()))) {
                     totalWeight += definition.getBiomeWeightModifier().apply(biome);
                     totalWeight += definition.getWeight();
                 }

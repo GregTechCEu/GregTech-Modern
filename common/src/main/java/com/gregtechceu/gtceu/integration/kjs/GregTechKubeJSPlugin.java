@@ -39,6 +39,7 @@ import com.gregtechceu.gtceu.integration.kjs.helpers.MaterialStackWrapper;
 import com.gregtechceu.gtceu.integration.kjs.recipe.GTRecipeSchema;
 import com.mojang.serialization.DataResult;
 import dev.latvian.mods.kubejs.KubeJSPlugin;
+import dev.latvian.mods.kubejs.block.state.BlockStatePredicate;
 import dev.latvian.mods.kubejs.recipe.schema.RegisterRecipeSchemasEvent;
 import dev.latvian.mods.kubejs.registry.RegistryInfo;
 import dev.latvian.mods.kubejs.script.BindingsEvent;
@@ -258,6 +259,11 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
                     .map(tag -> VeinGenerator.DIRECT_CODEC.parse(NbtOps.INSTANCE, tag))
                     .flatMap(DataResult::result)
                     .orElse(null);
+        });
+        // jank because Rhino doesn't agree that it's an interface
+        typeWrappers.register(IWorldGenLayer.RuleTestSupplier.class, (ctx, o) -> {
+            if (o instanceof IWorldGenLayer.RuleTestSupplier supplier) return supplier;
+            return () -> BlockStatePredicate.ruleTestOf(o);
         });
     }
 

@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.data.worldgen.bedrockore;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
+import com.gregtechceu.gtceu.api.data.worldgen.WorldGeneratorUtils;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -85,14 +86,14 @@ public class BedrockOreVeinSavedData extends SavedData {
         ChunkPos pos = new ChunkPos(chunkX, chunkZ);
         if (!veinOres.containsKey(pos)) {
             GTOreDefinition definition = null;
-            int query = RandomSource.create(Objects.hash(96548, chunkX / VEIN_CHUNK_SIZE, chunkZ / VEIN_CHUNK_SIZE)).nextInt();
+            int query = RandomSource.create(Objects.hash(serverLevel.getSeed(), chunkX / VEIN_CHUNK_SIZE, chunkZ / VEIN_CHUNK_SIZE)).nextInt();
             var biome = serverLevel.getBiome(new BlockPos(chunkX << 4, 64, chunkZ << 4));
             int totalWeight = getTotalWeight(biome);
             if (totalWeight > 0) {
                 int weight = Math.abs(query % totalWeight);
                 for (var oreDefinition : GTRegistries.ORE_VEINS) {
                     int veinWeight = oreDefinition.getWeight() + (oreDefinition.getBiomeWeightModifier() != null ? oreDefinition.getBiomeWeightModifier().apply(biome) : 0);
-                    if (veinWeight > 0 && oreDefinition.getDimensionFilter().get().contains(serverLevel.dimensionTypeRegistration())) {
+                    if (veinWeight > 0 && oreDefinition.getDimensionFilter().stream().anyMatch(dim -> WorldGeneratorUtils.isSameDimension(dim, serverLevel.dimension()))) {
                         weight -= veinWeight;
                         if (weight < 0) {
                             definition = oreDefinition;
@@ -159,7 +160,7 @@ public class BedrockOreVeinSavedData extends SavedData {
         return biomeWeights.computeIfAbsent(biome, b -> {
             int totalWeight = 0;
             for (var definition : GTRegistries.ORE_VEINS) {
-                if (definition.getDimensionFilter().get().contains(serverLevel.dimensionTypeRegistration())) {
+                if (definition.getDimensionFilter().stream().anyMatch(dim -> WorldGeneratorUtils.isSameDimension(dim, serverLevel.dimension()))) {
                     totalWeight += definition.getBiomeWeightModifier() != null ? definition.getBiomeWeightModifier().apply(biome) : 0;
                     totalWeight += definition.getWeight();
                 }

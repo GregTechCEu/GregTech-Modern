@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.data.worldgen.ores.OreBlockPlacer;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
+import dev.latvian.mods.rhino.util.HideFromJS;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
@@ -72,14 +73,15 @@ public abstract class VeinGenerator {
      * <p>Note that, if in any way possible, this is NOT supposed to directly place any of the vein's blocks, as their
      * respective ore placers are invoked at a later time, when the chunk containing them is actually generated.
      */
-    public abstract Map<BlockPos, OreBlockPlacer> generate(
-            WorldGenLevel level, RandomSource random, GTOreDefinition entry, BlockPos origin
-    );
+    @HideFromJS
+    public abstract Map<BlockPos, OreBlockPlacer> generate(WorldGenLevel level, RandomSource random, GTOreDefinition entry, BlockPos origin);
 
+    @HideFromJS
     public abstract VeinGenerator build();
 
     public abstract VeinGenerator copy();
 
+    @HideFromJS
     public GTOreDefinition parent() {
         return entry;
     }

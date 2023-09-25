@@ -14,18 +14,17 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.RegistryCodecs;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.levelgen.placement.HeightRangePlacement;
 import net.minecraft.world.level.levelgen.placement.PlacementModifier;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Supplier;
 
 /**
@@ -50,14 +49,14 @@ public class GTOreDefinition {
                     Codec.floatRange(0.0F, 1.0F).fieldOf("density").forGetter(ft -> ft.density),
                     Codec.INT.fieldOf("weight").forGetter(ft -> ft.weight),
                     IWorldGenLayer.CODEC.fieldOf("layer").forGetter(ft -> ft.layer),
-                    RegistryCodecs.homogeneousList(Registries.DIMENSION_TYPE).fieldOf("dimension_filter").forGetter(ft -> ft.dimensionFilter.get()),
+                    ResourceKey.codec(Registries.DIMENSION).listOf().fieldOf("dimension_filter").forGetter(ft -> new ArrayList<>(ft.dimensionFilter)),
                     HeightRangePlacement.CODEC.fieldOf("height_range").forGetter(ft -> ft.range),
                     Codec.floatRange(0.0F, 1.0F).fieldOf("discard_chance_on_air_exposure").forGetter(ft -> ft.discardChanceOnAirExposure),
-                    RegistryCodecs.homogeneousList(Registries.BIOME).optionalFieldOf("biomes", null).forGetter(ext -> ext == null ? null : ext.biomes.get()),
+                    RegistryCodecs.homogeneousList(Registries.BIOME).optionalFieldOf("biomes", null).forGetter(ext -> ext.biomes == null ? null : ext.biomes.get()),
                     BiomeWeightModifier.CODEC.optionalFieldOf("weight_modifier", null).forGetter(ext -> ext.biomeWeightModifier),
                     VeinGenerator.DIRECT_CODEC.fieldOf("generator").forGetter(ft -> ft.veinGenerator)
             ).apply(instance, (clusterSize, density, weight, layer, dimensionFilter, range, discardChanceOnAirExposure, biomes, biomeWeightModifier, veinGenerator) ->
-        new GTOreDefinition(clusterSize, density, weight, layer, () -> dimensionFilter, range, discardChanceOnAirExposure, biomes == null ? null : () -> biomes, biomeWeightModifier, veinGenerator))
+                    new GTOreDefinition(clusterSize, density, weight, layer, new HashSet<>(dimensionFilter), range, discardChanceOnAirExposure, biomes == null ? null : () -> biomes, biomeWeightModifier, veinGenerator))
     );
 
     @Getter @Setter
@@ -69,7 +68,7 @@ public class GTOreDefinition {
     @Getter @Setter
     private IWorldGenLayer layer;
     @Getter @Setter
-    private Supplier<HolderSet<DimensionType>> dimensionFilter;
+    private Set<ResourceKey<Level>> dimensionFilter;
     @Getter @Setter
     private HeightRangePlacement range;
     @Getter @Setter
@@ -90,7 +89,7 @@ public class GTOreDefinition {
     @Setter
     private List<Map.Entry<Integer, Material>> bedrockVeinMaterial;
 
-    public GTOreDefinition(ResourceLocation id, int clusterSize, float density, int weight, IWorldGenLayer layer, Supplier<HolderSet<DimensionType>> dimensionFilter, HeightRangePlacement range, float discardChanceOnAirExposure, @Nullable Supplier<HolderSet<Biome>> biomes, @Nullable BiomeWeightModifier biomeWeightModifier, @Nullable VeinGenerator veinGenerator) {
+    public GTOreDefinition(ResourceLocation id, int clusterSize, float density, int weight, IWorldGenLayer layer, Set<ResourceKey<Level>> dimensionFilter, HeightRangePlacement range, float discardChanceOnAirExposure, @Nullable Supplier<HolderSet<Biome>> biomes, @Nullable BiomeWeightModifier biomeWeightModifier, @Nullable VeinGenerator veinGenerator) {
         this(clusterSize, density, weight, layer, dimensionFilter, range, discardChanceOnAirExposure, biomes, biomeWeightModifier, veinGenerator);
         if (GTRegistries.ORE_VEINS.containKey(id)) {
             GTRegistries.ORE_VEINS.replace(id, this);
@@ -99,7 +98,7 @@ public class GTOreDefinition {
         }
     }
 
-    public GTOreDefinition(int clusterSize, float density, int weight, IWorldGenLayer layer, Supplier<HolderSet<DimensionType>> dimensionFilter, HeightRangePlacement range, float discardChanceOnAirExposure, @Nullable Supplier<HolderSet<Biome>> biomes, @Nullable BiomeWeightModifier biomeWeightModifier, @Nullable VeinGenerator veinGenerator) {
+    public GTOreDefinition(int clusterSize, float density, int weight, IWorldGenLayer layer, Set<ResourceKey<Level>> dimensionFilter, HeightRangePlacement range, float discardChanceOnAirExposure, @Nullable Supplier<HolderSet<Biome>> biomes, @Nullable BiomeWeightModifier biomeWeightModifier, @Nullable VeinGenerator veinGenerator) {
         this.clusterSize = clusterSize;
         this.density = density;
         this.weight = weight;
@@ -122,8 +121,8 @@ public class GTOreDefinition {
         return this;
     }
 
-    public GTOreDefinition biomes(HolderSet<Biome> biomes) {
-        this.biomes = () -> biomes;
+    public GTOreDefinition biomes(Supplier<HolderSet<Biome>> biomes) {
+        this.biomes = biomes;
         return this;
     }
 
