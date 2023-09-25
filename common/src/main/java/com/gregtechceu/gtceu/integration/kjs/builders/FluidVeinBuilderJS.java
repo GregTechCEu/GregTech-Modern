@@ -18,12 +18,15 @@ import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.material.Fluid;
 
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Supplier;
 
 @Accessors(chain = true, fluent = true)
@@ -43,7 +46,7 @@ public class FluidVeinBuilderJS {
     private Supplier<Fluid> fluid; // the fluid which the vein contains
     private final List<BiomeWeightModifier> biomes = new LinkedList<>();
 
-    private final transient JsonArray dimensions = new JsonArray();
+    private final transient Set<ResourceKey<Level>> dimensions = new HashSet<>();
 
     public FluidVeinBuilderJS(ResourceLocation id) {
         this.id = id;
@@ -56,7 +59,7 @@ public class FluidVeinBuilderJS {
 
     public FluidVeinBuilderJS addSpawnDimension(ResourceLocation... dimensions) {
         for (ResourceLocation dimension : dimensions) {
-            this.dimensions.add(dimension.toString());
+            this.dimensions.add(ResourceKey.create(Registry.DIMENSION_REGISTRY, dimension));
         }
         return this;
     }
@@ -85,9 +88,6 @@ public class FluidVeinBuilderJS {
 
     @HideFromJS
     public BedrockFluidDefinition build() {
-        RegistryOps<JsonElement> registryOps = RegistryOps.create(JsonOps.INSTANCE, GTRegistries.builtinRegistry());
-        HolderSet<DimensionType> dimensions = RegistryCodecs.homogeneousList(Registry.DIMENSION_TYPE_REGISTRY)
-                .decode(registryOps, this.dimensions.size() == 1 ? this.dimensions.get(0) : this.dimensions).map(Pair::getFirst).getOrThrow(false, GTCEu.LOGGER::error);
         return new BedrockFluidDefinition(id, weight, minimumYield, maximumYield, depletionAmount, depletionChance, depletedYield, fluid, biomes, dimensions);
     }
 }

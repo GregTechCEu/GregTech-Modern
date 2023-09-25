@@ -6,14 +6,14 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;
 
 import java.util.Set;
+import java.util.function.Supplier;
 
 public class SimpleWorldGenLayer implements IWorldGenLayer {
     private final String name;
-    @Getter
-    private final RuleTest target;
+    private final IWorldGenLayer.RuleTestSupplier target;
     private final Set<ResourceLocation> levels;
 
-    public SimpleWorldGenLayer(String name, RuleTest target, Set<ResourceLocation> levels) {
+    public SimpleWorldGenLayer(String name, IWorldGenLayer.RuleTestSupplier target, Set<ResourceLocation> levels) {
         this.name = name;
         this.target = target;
         this.levels = levels;
@@ -27,7 +27,7 @@ public class SimpleWorldGenLayer implements IWorldGenLayer {
 
     @Override
     public String toString() {
-        return getSerializedName() + "[" + RuleTest.CODEC.encodeStart(JsonOps.INSTANCE, target).result().orElse(null) + "]";
+        return getSerializedName() + "[" + RuleTest.CODEC.encodeStart(JsonOps.INSTANCE, target.get()).result().orElse(null) + "]";
     }
 
     @Override
@@ -41,6 +41,10 @@ public class SimpleWorldGenLayer implements IWorldGenLayer {
         if (!(o instanceof IWorldGenLayer that)) return false;
 
         return getSerializedName().equals(that.getSerializedName());
+    }
+
+    public RuleTest getTarget() {
+        return target.get();
     }
 
     @Override

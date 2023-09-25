@@ -8,7 +8,6 @@ import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.IWorldGenLayer;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinGenerator;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.lowdragmc.lowdraglib.Platform;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.JsonOps;
 import dev.latvian.mods.rhino.util.HideFromJS;
@@ -19,10 +18,15 @@ import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryCodecs;
 import net.minecraft.resources.RegistryOps;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.levelgen.placement.HeightRangePlacement;
+
+import java.util.HashSet;
+import java.util.Set;
+import java.util.function.Supplier;
 
 @SuppressWarnings("unused")
 @Accessors(chain = true, fluent = true)
@@ -40,8 +44,8 @@ public class OreVeinBuilderJS {
     public transient BiomeWeightModifier biomeWeightModifier;
     @Setter
     public VeinGenerator generator;
+    private final transient Set<ResourceKey<Level>> dimensions = new HashSet<>();
 
-    private final transient JsonArray dimensionFilter = new JsonArray();
     private final transient JsonArray biomeFilter = new JsonArray();
     @Getter
     private boolean isBuilt = false;
@@ -50,8 +54,8 @@ public class OreVeinBuilderJS {
         this.id = id;
     }
 
-    public OreVeinBuilderJS addSpawnDimension(String dimension) {
-        dimensionFilter.add(dimension);
+    public OreVeinBuilderJS addSpawnDimension(ResourceLocation dimension) {
+        dimensions.add(ResourceKey.create(Registry.DIMENSION_REGISTRY, dimension));
         return this;
     }
 
@@ -67,9 +71,7 @@ public class OreVeinBuilderJS {
     @HideFromJS
     public GTOreDefinition build() {
         RegistryOps<JsonElement> registryOps = RegistryOps.create(JsonOps.INSTANCE, GTRegistries.builtinRegistry());
-        HolderSet<DimensionType> dimensions = RegistryCodecs.homogeneousList(Registry.DIMENSION_TYPE_REGISTRY)
-            .decode(registryOps, dimensionFilter.size() == 1 ? dimensionFilter.get(0) : dimensionFilter).map(Pair::getFirst).getOrThrow(false, GTCEu.LOGGER::error);
-        HolderSet<Biome> biomes = RegistryCodecs.homogeneousList(Registry.BIOME_REGISTRY)
+        Supplier<HolderSet<Biome>> biomes = () -> RegistryCodecs.homogeneousList(Registry.BIOME_REGISTRY)
                 .decode(registryOps, biomeFilter.size() == 1 ? biomeFilter.get(0) : biomeFilter).map(Pair::getFirst).getOrThrow(false, GTCEu.LOGGER::error);
         isBuilt = true;
         return new GTOreDefinition(id, clusterSize, density, weight, layer, dimensions, heightRange, discardChanceOnAirExposure, biomes, biomeWeightModifier, generator);
