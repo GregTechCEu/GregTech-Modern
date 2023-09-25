@@ -1,5 +1,6 @@
 # ChangeLog
 
+* add tooltip infos for fluid pipes
 * fix oregen in non-vanilla dimensions not working at all
 * fix UHV+ energy not functioning as intended
 * fix unification of glass lenses and such
