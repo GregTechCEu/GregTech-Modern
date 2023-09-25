@@ -152,9 +152,6 @@ public class StandardVeinGenerator extends VeinGenerator {
 
         for (int heightmapX = x; heightmapX <= x + width; ++heightmapX) {
             for (int heightmapZ = z; heightmapZ <= z + width; ++heightmapZ) {
-                if (y > level.getHeight(Heightmap.Types.OCEAN_FLOOR_WG, heightmapX, heightmapZ))
-                    continue;
-
                 this.doPlaceNormal(generatedBlocks, random, entry, origin, this.blocks, minX, maxX, minZ, maxZ, minY, maxY, x, y, z, width, height);
 
                 // Stop after first successful placement attempt
@@ -253,16 +250,19 @@ public class StandardVeinGenerator extends VeinGenerator {
             double radX = ((double) posX + 0.5D - x) / randomShapeOffset;
             if (!((radX * radX) < 1.0D))
                 continue;
+            posCursor.setX(posX);
 
             for (int posY = minY; posY <= maxY; ++posY) {
                 double radY = ((double) posY + 0.5D - y) / randomShapeOffset;
                 if (!((radX * radX) + (radY * radY) < 1.0D))
                     continue;
+                posCursor.setY(posY);
 
                 for (int posZ = minZ; posZ <= maxZ; ++posZ) {
                     double radZ = ((double) posZ + 0.5D - z) / randomShapeOffset;
                     if (!((radX * radX) + (radY * radY) + (radZ * radZ) < 1.0D))
                         continue;
+                    posCursor.setZ(posZ);
 
                     int isPlaced = posX - pX + (posY - pY) * pWidth + (posZ - pZ) * pWidth * pHeight;
                     if (placedBlocks.get(isPlaced))
@@ -311,9 +311,9 @@ public class StandardVeinGenerator extends VeinGenerator {
             if (!OreVeinUtil.canPlaceOre(blockstate, access::getBlockState, random, entry, posCursor))
                 return;
             BlockState currentState = access.getBlockState(posCursor);
-            var prefix = ChemicalHelper.ORES_INVERSE.get(currentState);
-            if (prefix == null) return;
-            Block toPlace = ChemicalHelper.getBlock(prefix, material);
+            var prefix = ChemicalHelper.getOrePrefix(currentState);
+            if (prefix.isEmpty()) return;
+            Block toPlace = ChemicalHelper.getBlock(prefix.get(), material);
             if (toPlace == null || toPlace.defaultBlockState().isAir())
                 return;
             levelchunksection.setBlockState(sectionX, sectionY, sectionZ, toPlace.defaultBlockState(), false);

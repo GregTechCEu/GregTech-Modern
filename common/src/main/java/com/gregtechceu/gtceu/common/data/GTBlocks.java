@@ -168,7 +168,12 @@ public class GTBlocks {
                                     properties -> new MaterialBlock(properties, oreTag, material, Platform.isClient() ? new OreBlockRenderer(oreType.stoneType(),
                                             Suppliers.memoize(() -> Objects.requireNonNull(oreTag.materialIconType()).getBlockTexturePath(material.getMaterialIconSet(), true)),
                                             oreProperty.isEmissive()) : null))
-                            .initialProperties(() -> oreType.stoneType().get().getBlock())
+                            .initialProperties(() -> {
+                                if (oreType.stoneType().get().isAir()) { // if the block is not registered (yet), fallback to stone
+                                    return Blocks.STONE;
+                                }
+                                return oreType.stoneType().get().getBlock();
+                            })
                             .properties(properties -> {
                                 properties.noLootTable();
                                 if (oreType.color() != null) properties.mapColor(oreType.color());

@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.api.data.worldgen.ores;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
-import com.gregtechceu.gtceu.api.data.worldgen.GTOreFeatureConfiguration;
+import com.gregtechceu.gtceu.api.data.worldgen.IWorldGenLayer;
 import com.gregtechceu.gtceu.api.data.worldgen.WorldGeneratorUtils;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreVeinSavedData;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
@@ -23,8 +23,11 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 
 /**
@@ -40,17 +43,18 @@ public class OreGenerator {
     /**
      * Generates the vein for the specified chunk position.<br>
      * If the chunk is not located on one of the ore vein grid's intersections, no vein will be generated.
-     * 
+     *
      * <p>Note that depending on the configured random offset, the actual center of the generated vein may be located
      * outside the specified origin chunk.
-     * 
+     *
      * @return The generated vein for the specified chunk position.<br>
-     *         {@code Optional.empty()} if no vein exists at this chunk.
+     * {@code Optional.empty()} if no vein exists at this chunk.
      */
-    public Optional<GeneratedVein> generate(WorldGenLevel level, ChunkGenerator chunkGenerator, ChunkPos chunkPos) {
-        return createConfig(level, chunkGenerator, chunkPos)
+    public List<GeneratedVein> generate(WorldGenLevel level, ChunkGenerator chunkGenerator, ChunkPos chunkPos) {
+        return createConfigs(level, chunkGenerator, chunkPos).stream()
                 .map(OreGenerator::logVeinGeneration)
-                .flatMap(config -> generate(config, level, chunkPos));
+                .flatMap(config -> generate(config, level, chunkPos).stream())
+                .toList();
     }
 
     private Optional<GeneratedVein> generate(VeinConfiguration config, WorldGenLevel level, ChunkPos chunkPos) {
@@ -63,7 +67,7 @@ public class OreGenerator {
         }
 
         generateBedrockOreVein(config, level);
-        return Optional.of(new GeneratedVein(chunkPos, generated));
+        return Optional.of(new GeneratedVein(chunkPos, config.entry().getLayer(), generated));
     }
 
     private static void generateBedrockOreVein(VeinConfiguration config, WorldGenLevel level) {
@@ -75,31 +79,51 @@ public class OreGenerator {
         }
     }
 
-    private Optional<VeinConfiguration> createConfig(WorldGenLevel level, ChunkGenerator generator, ChunkPos chunkPos) {
+    private List<VeinConfiguration> createConfigs(WorldGenLevel level, ChunkGenerator generator, ChunkPos chunkPos) {
         var random = new XoroshiroRandomSource(level.getSeed() ^ chunkPos.toLong());
-        var config = new GTOreFeatureConfiguration();
 
-        return OreVeinUtil.getVeinCenter(chunkPos, random).map(veinCenter -> {
-            var entry = config.getEntry(level, level.getBiome(veinCenter), random);
-            var id = GTRegistries.ORE_VEINS.getKey(entry);
+        return OreVeinUtil.getVeinCenter(chunkPos, random).stream().flatMap(veinCenter ->
+                getEntries(level, veinCenter, random).map(entry -> {
+                    var id = GTRegistries.ORE_VEINS.getKey(entry);
 
-            if (entry == null) return null;
-            BlockPos origin = computeVeinOrigin(level, generator, random, veinCenter, entry).orElseThrow(() ->
-                    new IllegalStateException("Cannot determine y coordinate for the vein at " + veinCenter)
-            );
+                    if (entry == null) return null;
+                    BlockPos origin = computeVeinOrigin(level, generator, random, veinCenter, entry).orElseThrow(() ->
+                            new IllegalStateException("Cannot determine y coordinate for the vein at " + veinCenter)
+                    );
 
-            return new VeinConfiguration(id, entry, random, origin);
-        });
+                    return new VeinConfiguration(id, entry, random, origin);
+                })
+        ).toList();
+    }
+
+    private Stream<GTOreDefinition> getEntries(WorldGenLevel level, BlockPos veinCenter, XoroshiroRandomSource random) {
+        return WorldGeneratorUtils.WORLD_GEN_LAYERS.values().stream()
+                .filter(layer -> layer.isApplicableForLevel(level.getLevel().dimension().location()))
+                .map(layer -> getEntry(level, level.getBiome(veinCenter), random, layer))
+                .filter(Objects::nonNull);
+    }
+
+    @Nullable
+    private GTOreDefinition getEntry(WorldGenLevel level, Holder<Biome> biome, RandomSource random, IWorldGenLayer layer) {
+        var veins = WorldGeneratorUtils.getCachedBiomeVeins(level.getLevel(), biome, random).stream()
+                .filter(vein -> vein.getValue().getLayer().equals(layer))
+                .toList();
+        int randomEntryIndex = GTUtil.getRandomItem(random, veins, veins.size());
+        return randomEntryIndex == -1 ? null : veins.get(randomEntryIndex).getValue();
     }
 
     @NotNull
     private static Optional<BlockPos> computeVeinOrigin(WorldGenLevel level, ChunkGenerator generator,
-                                                        XoroshiroRandomSource random,
-                                                        BlockPos veinCenter, GTOreDefinition entry
+                                                        RandomSource random, BlockPos veinCenter, GTOreDefinition entry
     ) {
+        int layerSeed = WorldGeneratorUtils.getWorldGenLayerKey(entry.getLayer())
+                .map(String::hashCode)
+                .orElse(0);
+        var layeredRandom = new XoroshiroRandomSource(random.nextLong() ^ ((long) layerSeed));
+
         return entry.getRange().getPositions(
                 new PlacementContext(level, generator, Optional.empty()),
-                random, veinCenter
+                layeredRandom, veinCenter
         ).findFirst();
     }
 

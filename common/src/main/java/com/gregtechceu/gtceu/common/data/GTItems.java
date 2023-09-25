@@ -17,6 +17,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.ItemMaterialInfo;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.tag.TagUtil;
 import com.gregtechceu.gtceu.api.gui.misc.ProspectorMode;
@@ -85,6 +86,7 @@ public class GTItems {
     //*****     Material Items    ******//
     //////////////////////////////////////
 
+    public static final Map<UnificationEntry, ItemLike> toUnify = new HashMap<>();
     public static final Map<TagPrefix, TagPrefix> purifyMap = new HashMap<>();
 
     static {
@@ -896,7 +898,7 @@ public class GTItems {
     public static ItemEntry<Item> SENSOR_LV= REGISTRATE.item("lv_sensor", Item::new).lang("LV Sensor").register();
     public static ItemEntry<Item> SENSOR_MV= REGISTRATE.item("mv_sensor", Item::new).lang("MV Sensor").register();
     public static ItemEntry<Item> SENSOR_HV= REGISTRATE.item("hv_sensor", Item::new).lang("HV Sensor").register();
-    public static ItemEntry<Item> SENSOR_EV= REGISTRATE.item("ev_sensor", Item::new).lang("MV Sensor").register();
+    public static ItemEntry<Item> SENSOR_EV= REGISTRATE.item("ev_sensor", Item::new).lang("EV Sensor").register();
     public static ItemEntry<Item> SENSOR_IV= REGISTRATE.item("iv_sensor", Item::new).lang("IV Sensor").register();
     public static ItemEntry<Item> SENSOR_LuV= REGISTRATE.item("luv_sensor", Item::new).lang("LuV Sensor").register();
     public static ItemEntry<Item> SENSOR_ZPM= REGISTRATE.item("zpm_sensor", Item::new).lang("ZPM Sensor").register();
@@ -1388,7 +1390,11 @@ public class GTItems {
 
     public static <P, T extends Item, S2 extends ItemBuilder<T, P>> NonNullFunction<S2, S2> unificationItem(@Nonnull TagPrefix tagPrefix, @Nonnull Material mat) {
         return builder -> {
-            builder.onRegister(item -> ChemicalHelper.registerUnificationItems(tagPrefix, mat, item));
+            builder.onRegister(item -> {
+                UnificationEntry entry = new UnificationEntry(tagPrefix, mat);
+                toUnify.put(entry, item);
+                ChemicalHelper.registerUnificationItems(entry, item);
+            });
             return builder;
         };
     }

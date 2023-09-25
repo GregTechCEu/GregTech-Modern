@@ -172,9 +172,9 @@ public class LayeredVeinGenerator extends VeinGenerator {
                 if (!OreVeinUtil.canPlaceOre(blockstate, access::getBlockState, random, entry, posCursor))
                     return;
                 BlockState currentState = access.getBlockState(posCursor);
-                var prefix = ChemicalHelper.ORES_INVERSE.get(currentState);
-                if (prefix == null) return;
-                Block toPlace = ChemicalHelper.getBlock(prefix, material);
+                var prefix = ChemicalHelper.getOrePrefix(currentState);
+                if (prefix.isEmpty()) return;
+                Block toPlace = ChemicalHelper.getBlock(prefix.get(), material);
                 if (toPlace == null || toPlace.defaultBlockState().isAir())
                     return;
                 section.setBlockState(x, y, z, toPlace.defaultBlockState(), false);

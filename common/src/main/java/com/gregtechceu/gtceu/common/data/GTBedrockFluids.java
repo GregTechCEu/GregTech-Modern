@@ -89,7 +89,7 @@ public class GTBedrockFluids {
             .register();
 
     //////////////////////////////////////
-    //********     OVERWORLD    ********//
+    //********      NETHER      ********//
     //////////////////////////////////////
     public static BedrockFluidDefinition LAVA = BedrockFluidDefinition.builder(GTCEu.id("lava_deposit"))
             .fluid(GTMaterials.Lava::getFluid)
@@ -98,7 +98,7 @@ public class GTBedrockFluids {
             .depletionAmount(1)
             .depletionChance(100)
             .depletedYield(30)
-            .dimensions(GTBedrockFluids::nether)
+            .dimensions(GTOres.nether())
             .register();
 
     public static BedrockFluidDefinition NETHER_NATURAL_GAS = BedrockFluidDefinition.builder(GTCEu.id("nether_natural_gas_deposit"))
@@ -108,20 +108,8 @@ public class GTBedrockFluids {
             .depletionAmount(1)
             .depletionChance(100)
             .depletedYield(40)
-            .dimensions(GTBedrockFluids::nether)
+            .dimensions(GTOres.nether())
             .register();
-
-    public static HolderSet<DimensionType> overworld() {
-        return HolderSet.direct(GTRegistries.builtinRegistry().registryOrThrow(Registries.DIMENSION_TYPE).getHolderOrThrow(BuiltinDimensionTypes.OVERWORLD));
-    }
-
-    public static HolderSet<DimensionType> nether() {
-        return HolderSet.direct(GTRegistries.builtinRegistry().registryOrThrow(Registries.DIMENSION_TYPE).getHolderOrThrow(BuiltinDimensionTypes.NETHER));
-    }
-
-    public static HolderSet<DimensionType> end() {
-        return HolderSet.direct(GTRegistries.builtinRegistry().registryOrThrow(Registries.DIMENSION_TYPE).getHolderOrThrow(BuiltinDimensionTypes.END));
-    }
 
     public static void init() {
         toReRegister.forEach(GTRegistries.BEDROCK_FLUID_DEFINITIONS::registerOrOverride);
