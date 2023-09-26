@@ -27,6 +27,7 @@
     "RecipeManagerMixin",
     "RecipeMixin",
     "ServerChunkProviderMixin",
+    "ServerGamePacketListenerImplAccessor",
     "ServerPacksSourceMixin",
     "ServerPlayerGameModeMixin",
     "ShapedRecipeInvoker",

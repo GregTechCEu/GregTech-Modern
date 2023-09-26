@@ -5,6 +5,7 @@ import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ItemLike;
 import org.apache.commons.lang3.NotImplementedException;
 
 import java.util.HashMap;
@@ -19,7 +20,7 @@ import java.util.function.Function;
  */
 public interface FluidFilter extends Filter<FluidStack, FluidFilter> {
 
-    Map<Item, Function<ItemStack, FluidFilter>> FILTERS = new HashMap<>();
+    Map<ItemLike, Function<ItemStack, FluidFilter>> FILTERS = new HashMap<>();
 
     static FluidFilter loadFilter(ItemStack itemStack) {
         return FILTERS.get(itemStack.getItem()).apply(itemStack);

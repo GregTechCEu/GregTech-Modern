@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.item.component;
 
 import com.gregtechceu.gtceu.api.item.ComponentItem;
+import com.gregtechceu.gtceu.api.item.IComponentItem;
 
 /**
  * @author KilaBash
@@ -12,7 +13,7 @@ import com.gregtechceu.gtceu.api.item.ComponentItem;
  *
  */
 public interface IItemComponent {
-    default void onAttached(ComponentItem item) {
+    default void onAttached(IComponentItem item) {
 
     }
 }

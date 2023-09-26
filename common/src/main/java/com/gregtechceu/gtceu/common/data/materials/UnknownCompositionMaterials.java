@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.common.data.materials;
 
 import com.gregtechceu.gtceu.api.data.chemical.fluid.FluidTypes;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.ToolProperty;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 
@@ -295,7 +296,7 @@ public class UnknownCompositionMaterials {
         Stone = new Material.Builder("stone")
                 .dust(2)
                 .color(0xCDCDCD).iconSet(ROUGH)
-                .flags(MORTAR_GRINDABLE, GENERATE_GEAR, NO_SMASHING, NO_SMELTING)
+                .flags(MORTAR_GRINDABLE, GENERATE_GEAR, NO_SMASHING, NO_SMELTING, EXCLUDE_BLOCK_CRAFTING_BY_HAND_RECIPES)
                 .buildAndRegister();
 
         Lava = new Material.Builder("lava")
@@ -382,6 +383,13 @@ public class UnknownCompositionMaterials {
                 .fluidPipeProperties(340, 5, false)
                 .toolStats(ToolProperty.Builder.of(1.0F, 1.0F, 128, 1, GTToolType.SOFT_MALLET).build())
                 .flags(GENERATE_PLATE, GENERATE_ROD, GENERATE_BOLT_SCREW, GENERATE_LONG_ROD, FLAMMABLE, GENERATE_GEAR, GENERATE_FRAME)
+                .buildAndRegister();
+
+        TreatedWood = new Material.Builder("treated_wood")
+                .wood()
+                .color(0x502800).iconSet(WOOD)
+                .fluidPipeProperties(340, 10, false)
+                .flags(GENERATE_PLATE, FLAMMABLE, GENERATE_ROD, GENERATE_FRAME)
                 .buildAndRegister();
 
         Paper = new Material.Builder("paper")
@@ -485,11 +493,16 @@ public class UnknownCompositionMaterials {
                 .flags(NO_UNIFICATION)
                 .buildAndRegister();
 
-        TreatedWood = new Material.Builder("treated_wood")
-                .wood()
-                .color(0x502800).iconSet(WOOD)
-                .fluidPipeProperties(340, 10, false)
-                .flags(GENERATE_PLATE, FLAMMABLE, GENERATE_ROD, GENERATE_FRAME)
+        Echo = new Material.Builder("echo")
+                .gem()
+                .color(0x034150).iconSet(GEM_HORIZONTAL)
+                .flags(GENERATE_PLATE, NO_SMASHING, NO_WORKING, NO_SMELTING, CRYSTALLIZABLE)
+                .buildAndRegister();
+
+        QuantumEcho = new Material.Builder("quantum_echo")
+                .gem()
+                .color(0x034141).iconSet(GEM_HORIZONTAL)
+                .flags(GENERATE_PLATE, NO_WORKING, NO_SMELTING, CRYSTALLIZABLE)
                 .buildAndRegister();
 
         UUMatter = new Material.Builder("uu_matter")
