@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.data.recipe.misc;
 
+import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -291,35 +292,35 @@ public class FuelRecipes {
 
         //plasma turbine
         PLASMA_GENERATOR_FUELS.recipeBuilder("helium")
-                .inputFluids(Helium.getPlasma(1))
+                .inputFluids(Helium.getFluid(FluidStorageKeys.PLASMA, 1))
                 .outputFluids(Helium.getFluid(1))
                 .duration(40)
                 .EUt(-V[EV])
                 .save(provider);
 
         PLASMA_GENERATOR_FUELS.recipeBuilder("oxygen")
-                .inputFluids(Oxygen.getPlasma(1))
+                .inputFluids(Oxygen.getFluid(FluidStorageKeys.PLASMA,1))
                 .outputFluids(Oxygen.getFluid(1))
                 .duration(48)
                 .EUt(-V[EV])
                 .save(provider);
 
         PLASMA_GENERATOR_FUELS.recipeBuilder("nitrogen")
-                .inputFluids(Nitrogen.getPlasma(1))
+                .inputFluids(Nitrogen.getFluid(FluidStorageKeys.PLASMA,1))
                 .outputFluids(Nitrogen.getFluid(1))
                 .duration(64)
                 .EUt(-V[EV])
                 .save(provider);
 
         PLASMA_GENERATOR_FUELS.recipeBuilder("iron")
-                .inputFluids(Iron.getPlasma(1))
+                .inputFluids(Iron.getFluid(FluidStorageKeys.PLASMA,1))
                 .outputFluids(Iron.getFluid(1))
                 .duration(96)
                 .EUt(-V[EV])
                 .save(provider);
 
         PLASMA_GENERATOR_FUELS.recipeBuilder("nickel")
-                .inputFluids(Nickel.getPlasma(1))
+                .inputFluids(Nickel.getFluid(FluidStorageKeys.PLASMA,1))
                 .outputFluids(Nickel.getFluid(1))
                 .duration(192)
                 .EUt(-V[EV])

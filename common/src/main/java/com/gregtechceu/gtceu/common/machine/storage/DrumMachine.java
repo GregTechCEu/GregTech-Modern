@@ -1,10 +1,7 @@
 package com.gregtechceu.gtceu.common.machine.storage;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.data.chemical.fluid.FluidTypes;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.FluidPipeProperties;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.FluidProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
@@ -16,7 +13,6 @@ import com.gregtechceu.gtceu.api.machine.feature.IDropSaveMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.syncdata.RequireRerender;
-import com.gregtechceu.gtceu.common.data.GTFluids;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.side.fluid.FluidActionResult;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
@@ -44,7 +40,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 
@@ -89,19 +84,7 @@ public class DrumMachine extends MetaMachine implements IAutoOutputFluid, IDropS
 
     protected NotifiableFluidTank createCacheFluidHandler(Object... args) {
         return new NotifiableFluidTank(this, 1, maxStoredFluids, IO.BOTH)
-                .setFilter(stack -> {
-                    if (stack == null || stack.getFluid() == null) return false;
-
-                    Fluid fluid = stack.getFluid();
-                    FluidPipeProperties pipeProperties = material.getProperty(PropertyKey.FLUID_PIPE);
-                    if (GTFluids.PLASMA_FLUIDS.get(fluid) != null && !pipeProperties.isPlasmaProof()) return false;
-                    FluidProperty fluidMaterial = GTFluids.MATERIAL_FLUIDS.get(fluid);
-                    if (fluidMaterial == null) return true; // not a GT fluid, just skip
-                    if (fluidMaterial.getFluidTemperature() > pipeProperties.getMaxFluidTemperature()) return false;
-                    if (fluidMaterial.getFluidTemperature() < 120 && !pipeProperties.isCryoProof()) return false;
-                    if (fluidMaterial.isGas() && !pipeProperties.isGasProof()) return false;
-                    return fluidMaterial.getFluidType() != FluidTypes.ACID || pipeProperties.isAcidProof();
-                });
+                .setFilter(material.getProperty(PropertyKey.FLUID_PIPE));
     }
 
     @Override
@@ -162,7 +145,7 @@ public class DrumMachine extends MetaMachine implements IAutoOutputFluid, IDropS
 
     // always is facing down, and can never accept fluids from output side
     @Override public void setAllowInputFromOutputSideFluids(boolean allow) {}
-    @Override public void setOutputFacingFluids(Direction outputFacing) {
+    @Override public void setOutputFacingFluids(@Nullable Direction outputFacing) {
         updateAutoOutputSubscription();
     }
 
@@ -197,6 +180,7 @@ public class DrumMachine extends MetaMachine implements IAutoOutputFluid, IDropS
         }
     }
 
+    @SuppressWarnings("resource")
     @Override
     public InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         var currentStack = player.getMainHandItem();

@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.item.fabric;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
+import com.gregtechceu.gtceu.api.fluids.GTFluid;
 import com.gregtechceu.gtceu.client.renderer.item.GTBucketItemRenderer;
 import com.lowdragmc.lowdraglib.client.renderer.IItemRendererProvider;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
@@ -32,9 +33,12 @@ public class GTBucketItem extends BucketItem implements IItemRendererProvider {
     }
 
     public void onRegister() {
-        var fluid = material.getProperty(PropertyKey.FLUID);
-        if (fluid != null && fluid.getBurnTime() > 0) {
-            FuelRegistry.INSTANCE.add(this, fluid.getBurnTime());
+        var property = material.getProperty(PropertyKey.FLUID);
+        if (property != null) {
+            var fluid = material.getFluid();
+            if (fluid instanceof GTFluid gtFluid && gtFluid.getBurnTime() > 0) {
+                FuelRegistry.INSTANCE.add(this, gtFluid.getBurnTime());
+            }
         }
     }
 

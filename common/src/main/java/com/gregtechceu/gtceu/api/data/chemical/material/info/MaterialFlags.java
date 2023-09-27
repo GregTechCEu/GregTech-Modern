@@ -75,6 +75,11 @@ public class MaterialFlags {
      */
     public static final MaterialFlag STICKY = new MaterialFlag.Builder("sticky").build();
 
+    /**
+     * Add to material if it is some kind of phosphorescent
+     */
+    public static final MaterialFlag PHOSPHORESCENT = new MaterialFlag.Builder("phosphorescent").build();
+
     //////////////////
     //     DUST     //
     //////////////////

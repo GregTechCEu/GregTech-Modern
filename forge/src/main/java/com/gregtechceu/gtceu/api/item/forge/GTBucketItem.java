@@ -2,6 +2,9 @@ package com.gregtechceu.gtceu.api.item.forge;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
+import com.gregtechceu.gtceu.api.fluids.GTFluid;
+import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
+import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.client.renderer.item.GTBucketItemRenderer;
 import com.lowdragmc.lowdraglib.client.renderer.IItemRendererProvider;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
@@ -71,9 +74,12 @@ public class GTBucketItem extends BucketItem implements IItemRendererProvider {
 
     @Override
     public int getBurnTime(ItemStack itemStack, @Nullable RecipeType<?> recipeType) {
-        var fluid = material.getProperty(PropertyKey.FLUID);
-        if (fluid != null) {
-            return fluid.getBurnTime();
+        var property = material.getProperty(PropertyKey.FLUID);
+        if (property != null) {
+            var fluid = material.getFluid();
+            if (fluid instanceof GTFluid gtFluid) {
+                return gtFluid.getBurnTime();
+            }
         }
         return -1;
     }

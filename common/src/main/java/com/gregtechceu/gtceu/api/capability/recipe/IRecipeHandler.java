@@ -64,7 +64,7 @@ public interface IRecipeHandler<K> {
 
     @SuppressWarnings("unchecked")
     default K copyContent(Object content) {
-        return (K) getCapability().copyInner((K)content);
+        return getCapability().copyInner((K)content);
     }
 
     default List<K> handleRecipe(IO io, GTRecipe recipe, List<?> left, @Nullable String slotName, boolean simulate) {

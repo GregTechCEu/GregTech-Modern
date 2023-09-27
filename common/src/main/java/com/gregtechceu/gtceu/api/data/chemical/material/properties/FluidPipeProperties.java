@@ -1,15 +1,21 @@
 package com.gregtechceu.gtceu.api.data.chemical.material.properties;
 
-import com.gregtechceu.gtceu.api.data.chemical.fluid.FluidTypes;
-import com.gregtechceu.gtceu.common.data.GTFluids;
-import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.gregtechceu.gtceu.api.capability.IPropertyFluidFilter;
+import com.gregtechceu.gtceu.api.fluids.FluidState;
+import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttribute;
+import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttributes;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
+import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
+import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.UnmodifiableView;
+
+import java.util.Collection;
 import java.util.Objects;
 
-public class FluidPipeProperties implements IMaterialProperty<FluidPipeProperties> {
+public class FluidPipeProperties implements IMaterialProperty<FluidPipeProperties>, IPropertyFluidFilter {
     @Getter @Setter
     private long throughput;
     @Getter @Setter
@@ -19,17 +25,18 @@ public class FluidPipeProperties implements IMaterialProperty<FluidPipePropertie
     @Getter @Setter
     private boolean gasProof;
     @Getter @Setter
-    private boolean acidProof;
-    @Getter @Setter
     private boolean cryoProof;
     @Getter @Setter
     private boolean plasmaProof;
+
+    private final Object2BooleanMap<FluidAttribute> containmentPredicate = new Object2BooleanOpenHashMap<>();
+
 
     public FluidPipeProperties(int maxFluidTemperature, long throughput, boolean gasProof, boolean acidProof, boolean cryoProof, boolean plasmaProof, int channels) {
         this.maxFluidTemperature = maxFluidTemperature;
         this.throughput = throughput;
         this.gasProof = gasProof;
-        this.acidProof = acidProof;
+        if (acidProof) setCanContain(FluidAttributes.ACID, true);
         this.cryoProof = cryoProof;
         this.plasmaProof = plasmaProof;
         this.channels = channels;
@@ -40,23 +47,6 @@ public class FluidPipeProperties implements IMaterialProperty<FluidPipePropertie
      */
     public FluidPipeProperties(int maxFluidTemperature, long throughput, boolean gasProof, boolean acidProof, boolean cryoProof, boolean plasmaProof) {
         this(maxFluidTemperature, throughput, gasProof, acidProof, cryoProof, plasmaProof, 1);
-    }
-
-    public boolean acceptFluid(FluidStack fluidStack) {
-        var fluid = fluidStack.getFluid();
-        var fluidProperty = GTFluids.MATERIAL_FLUIDS.get(fluid);
-        var plasmaProperty = GTFluids.PLASMA_FLUIDS.get(fluid);
-        var fluidType = fluidProperty != null ? fluidProperty.getFluidType() : plasmaProperty != null ? FluidTypes.PLASMA : null;
-        var temp = FluidHelper.getTemperature(fluidStack);
-
-        if (temp <= 120 && !isCryoProof()) return false;
-        if (temp > getMaxFluidTemperature()) return false;
-
-        if (fluidType == FluidTypes.GAS) return isGasProof();
-        if (fluidType == FluidTypes.PLASMA) return isPlasmaProof();
-        if (fluidType == FluidTypes.ACID) return isAcidProof();
-
-        return true;
     }
 
     @Override
@@ -91,7 +81,7 @@ public class FluidPipeProperties implements IMaterialProperty<FluidPipePropertie
                 "maxFluidTemperature=" + maxFluidTemperature +
                 ", throughput=" + throughput +
                 ", gasProof=" + gasProof +
-                ", acidProof=" + acidProof +
+                ", acidProof=" + isAcidProof() +
                 ", cryoProof=" + cryoProof +
                 ", plasmaProof=" + plasmaProof +
                 ", channels=" + channels +
@@ -100,5 +90,34 @@ public class FluidPipeProperties implements IMaterialProperty<FluidPipePropertie
 
     public long getPlatformThroughput() {
         return getThroughput() * FluidHelper.getBucket() / 1000;
+    }
+
+    @Override
+    public boolean canContain(@NotNull FluidState state) {
+        return switch (state) {
+            case LIQUID -> true;
+            case GAS -> gasProof;
+            case PLASMA -> plasmaProof;
+            case MOLTEN -> true;
+        };
+    }
+
+    public boolean isAcidProof() {
+        return canContain(FluidAttributes.ACID);
+    }
+
+    @Override
+    public boolean canContain(@NotNull FluidAttribute attribute) {
+        return containmentPredicate.getBoolean(attribute);
+    }
+
+    @Override
+    public void setCanContain(@NotNull FluidAttribute attribute, boolean canContain) {
+        containmentPredicate.put(attribute, canContain);
+    }
+
+    @Override
+    public @NotNull @UnmodifiableView Collection<@NotNull FluidAttribute> getContainedAttributes() {
+        return containmentPredicate.keySet();
     }
 }
