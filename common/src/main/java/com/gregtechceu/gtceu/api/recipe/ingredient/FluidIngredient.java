@@ -7,6 +7,7 @@ import lombok.Getter;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -63,6 +64,7 @@ public class FluidIngredient implements Predicate<FluidStack> {
         }
         for (FluidStack fluidStack : this.getStacks()) {
             if (!fluidStack.isFluidEqual(stack) || stack.getAmount() > fluidStack.getAmount()) continue;
+            if (fluidStack.getTag() != null && !fluidStack.getTag().equals(stack.getTag())) continue;
             return true;
         }
         return false;
@@ -110,6 +112,10 @@ public class FluidIngredient implements Predicate<FluidStack> {
      */
     public static FluidIngredient of(TagKey<Fluid> tag, long amount) {
         return FluidIngredient.fromValues(Stream.of(new FluidIngredient.TagValue(tag, amount)));
+    }
+
+    public static FluidIngredient of(TagKey<Fluid> tag, long amount, CompoundTag nbt) {
+        return FluidIngredient.fromValues(Stream.of(new FluidIngredient.TagValue(tag, amount, nbt)));
     }
 
     public static FluidIngredient fromNetwork(FriendlyByteBuf buffer) {
@@ -160,6 +166,7 @@ public class FluidIngredient implements Predicate<FluidStack> {
     public static interface Value {
         public Collection<FluidStack> getStacks();
         public long getAmount();
+        public CompoundTag getNbt();
 
         public JsonObject serialize();
         public Value copy();
@@ -170,10 +177,19 @@ public class FluidIngredient implements Predicate<FluidStack> {
         private final TagKey<Fluid> tag;
         @Getter
         private final long amount;
+        @Getter
+        private final CompoundTag nbt;
 
         public TagValue(TagKey<Fluid> tag, long amount) {
             this.tag = tag;
             this.amount = amount;
+            this.nbt = null;
+        }
+
+        public TagValue(TagKey<Fluid> tag, long amount, CompoundTag nbt) {
+            this.tag = tag;
+            this.amount = amount;
+            this.nbt = nbt;
         }
 
         @Override
@@ -190,6 +206,9 @@ public class FluidIngredient implements Predicate<FluidStack> {
             JsonObject jsonObject = new JsonObject();
             jsonObject.addProperty("tag", this.tag.location().toString());
             jsonObject.addProperty("amount", this.amount);
+            if (this.nbt != null) {
+                jsonObject.addProperty("nbt", this.nbt.getAsString());
+            }
             return jsonObject;
         }
 
@@ -218,10 +237,18 @@ public class FluidIngredient implements Predicate<FluidStack> {
         }
 
         @Override
+        public CompoundTag getNbt() {
+            return stack.getTag();
+        }
+
+        @Override
         public JsonObject serialize() {
             JsonObject jsonObject = new JsonObject();
             jsonObject.addProperty("fluid", BuiltInRegistries.FLUID.getKey(this.stack.getFluid()).toString());
             jsonObject.addProperty("amount", this.getAmount());
+            if (this.getNbt() != null) {
+                jsonObject.addProperty("nbt", this.getNbt().getAsString());
+            }
             return jsonObject;
         }
 
