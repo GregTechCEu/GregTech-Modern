@@ -226,7 +226,7 @@ public class GCyMRecipes {
                 .inputItems(dust, Nickel, 2)
                 .inputItems(dust, Chromium)
                 .inputItems(dust, Sulfur)
-                .outputItems(dust, HSLASteel, 15)
+                .outputItems(dust, WatertightSteel, 15)
                 .duration(220).EUt(VA[IV])
                 .save(provider);
 
