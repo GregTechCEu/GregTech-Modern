@@ -1088,17 +1088,6 @@ public class Material implements Comparable<Material> {
                 }
             }
 
-            // Verify FluidTexture
-            if (p.hasProperty(PropertyKey.FLUID)) {
-                var fluid = p.getProperty(PropertyKey.FLUID);
-                if (fluid.getStillTexture() == null) {
-                    fluid.setStillTexture(fluid.getPrimaryKey() != null ? fluid.getPrimaryKey().getIconType().getBlockTexturePath(iconSet, true) : MaterialIconType.liquid.getBlockTexturePath(iconSet, true));
-                }
-                if (fluid.getFlowTexture() == null) {
-                    fluid.setFlowTexture(fluid.getStillTexture());
-                }
-            }
-
         }
     }
 }

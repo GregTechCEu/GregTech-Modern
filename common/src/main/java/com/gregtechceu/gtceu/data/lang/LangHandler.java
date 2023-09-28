@@ -824,7 +824,10 @@ public class LangHandler {
         provider.add("gtceu.tool_action.hammer", "§8Use Hard Hammer to muffle Sounds");
         provider.add("gtceu.tool_action.crowbar", "§8Use Crowbar to remove Covers");
         provider.add("gtceu.tool_action.tape", "§8Use Tape to fix Maintenance Problems");
+        provider.add("gtceu.fluid.liquid_generic", "Liquid %s");
         provider.add("gtceu.fluid.generic", "%s");
+        provider.add("gtceu.fluid.gas_generic", "%s Gas");
+        provider.add("gtceu.fluid.gas_vapor", "%s Vapor");
         provider.add("gtceu.fluid.plasma", "%s Plasma");
         provider.add("gtceu.fluid.molten", "Molten %s");
         provider.add("gtceu.fluid.empty", "Empty");

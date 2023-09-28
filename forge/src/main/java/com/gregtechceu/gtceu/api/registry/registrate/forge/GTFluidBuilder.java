@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.registry.registrate.forge;
 
-import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.fluids.FluidState;
@@ -13,7 +12,6 @@ import com.tterrag.registrate.builders.*;
 import com.tterrag.registrate.providers.ProviderType;
 import com.tterrag.registrate.providers.RegistrateTagsProvider;
 import com.tterrag.registrate.util.OneTimeEventReceiver;
-import com.tterrag.registrate.util.entry.FluidEntry;
 import com.tterrag.registrate.util.entry.RegistryEntry;
 import com.tterrag.registrate.util.nullness.*;
 import lombok.Setter;
@@ -41,7 +39,6 @@ import net.minecraftforge.fluids.ForgeFlowingFluid;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -59,7 +56,7 @@ import java.util.function.Supplier;
 @Accessors(chain = true, fluent = true)
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class GTFluidBuilder<T extends ForgeFlowingFluid, P> extends AbstractBuilder<Fluid, T, P, GTFluidBuilder<T, P>> implements IGTFluidBuilder {
+public class GTFluidBuilder<P> extends AbstractBuilder<Fluid, GTFluidImpl.Flowing, P, GTFluidBuilder<P>> implements IGTFluidBuilder {
     @Setter
     public int temperature = 300;
     @Setter
@@ -85,7 +82,6 @@ public class GTFluidBuilder<T extends ForgeFlowingFluid, P> extends AbstractBuil
     private final String langKey;
 
     private final ResourceLocation stillTexture, flowingTexture;
-    private final NonNullFunction<ForgeFlowingFluid.Properties, T> fluidFactory;
 
     @Nullable
     private final NonNullSupplier<FluidType> fluidType;
@@ -94,8 +90,6 @@ public class GTFluidBuilder<T extends ForgeFlowingFluid, P> extends AbstractBuil
     private Boolean defaultSource, defaultBlock, defaultBucket;
 
     private NonNullConsumer<FluidType.Properties> typeProperties = $ -> {};
-
-    private NonNullConsumer<ForgeFlowingFluid.Properties> fluidProperties;
 
     private @Nullable Supplier<RenderType> layer = null;
 
@@ -109,7 +103,7 @@ public class GTFluidBuilder<T extends ForgeFlowingFluid, P> extends AbstractBuil
     private NonNullSupplier<? extends BucketItem> bucket;
     private final List<TagKey<Fluid>> tags = new ArrayList<>();
 
-    public GTFluidBuilder(AbstractRegistrate<?> owner, P parent, Material material, String name, String langKey, BuilderCallback callback, ResourceLocation stillTexture, ResourceLocation flowingTexture, GTFluidBuilder.FluidTypeFactory typeFactory, NonNullFunction<ForgeFlowingFluid.Properties, T> fluidFactory) {
+    public GTFluidBuilder(AbstractRegistrate<?> owner, P parent, Material material, String name, String langKey, BuilderCallback callback, ResourceLocation stillTexture, ResourceLocation flowingTexture, GTFluidBuilder.FluidTypeFactory typeFactory) {
         super(owner, parent, "flowing_" + name, callback, ForgeRegistries.Keys.FLUIDS);
         this.sourceName = name;
         this.bucketName = name + "_bucket";
@@ -117,32 +111,21 @@ public class GTFluidBuilder<T extends ForgeFlowingFluid, P> extends AbstractBuil
         this.langKey = langKey;
         this.stillTexture = stillTexture;
         this.flowingTexture = flowingTexture;
-        this.fluidFactory = fluidFactory;
         this.fluidType = NonNullSupplier.lazy(() -> typeFactory.create(langKey, material, makeTypeProperties(), this.stillTexture, this.flowingTexture, this.color));
         this.registerType = true;
         defaultBucket();
-
-//        String bucketName = this.bucketName;
-        this.fluidProperties = p -> {
-            if (defaultBucket != null && defaultBucket){
-                p = p.bucket(() -> owner.get(bucketName, ForgeRegistries.Keys.ITEMS).get());
-            }
-            if (defaultBlock != null && defaultBlock) {
-                p.block(() -> owner.<Block, LiquidBlock>get(name, ForgeRegistries.Keys.BLOCKS).get());
-            }
-        };
     }
 
-    public GTFluidBuilder<T, P> defaultLang() {
+    public GTFluidBuilder<P> defaultLang() {
         return lang(f -> f.getFluidType().getDescriptionId(), langKey);
     }
 
-    public GTFluidBuilder<T, P> lang(String name) {
+    public GTFluidBuilder<P> lang(String name) {
         return lang(f -> f.getFluidType().getDescriptionId(), name);
     }
 
     @SuppressWarnings("deprecation")
-    public GTFluidBuilder<T, P> renderType(Supplier<RenderType> layer) {
+    public GTFluidBuilder<P> renderType(Supplier<RenderType> layer) {
         DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
             Preconditions.checkArgument(RenderType.chunkBufferLayers().contains(layer.get()), "Invalid render type: " + layer);
         });
@@ -155,7 +138,7 @@ public class GTFluidBuilder<T extends ForgeFlowingFluid, P> extends AbstractBuil
     }
 
     @SuppressWarnings("deprecation")
-    protected void registerRenderType(T entry) {
+    protected void registerRenderType(GTFluidImpl.Flowing entry) {
         DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
             OneTimeEventReceiver.addModListener(getOwner(), FMLClientSetupEvent.class, $ -> {
                 if (this.layer != null) {
@@ -167,7 +150,7 @@ public class GTFluidBuilder<T extends ForgeFlowingFluid, P> extends AbstractBuil
         });
     }
 
-    public GTFluidBuilder<T, P> defaultSource() {
+    public GTFluidBuilder<P> defaultSource() {
         if (this.defaultSource != null) {
             throw new IllegalStateException("Cannot set a default source after a custom source has been created");
         }
@@ -175,13 +158,13 @@ public class GTFluidBuilder<T extends ForgeFlowingFluid, P> extends AbstractBuil
         return this;
     }
 
-    public GTFluidBuilder<T, P> source(NonNullSupplier<? extends GTFluid> factory) {
+    public GTFluidBuilder<P> source(NonNullSupplier<? extends GTFluid> factory) {
         this.defaultSource = false;
         this.source = NonNullSupplier.lazy(factory::get);
         return this;
     }
 
-    public GTFluidBuilder<T, P> defaultBlock() {
+    public GTFluidBuilder<P> defaultBlock() {
         if (this.defaultBlock != null) {
             throw new IllegalStateException("Cannot set a default block after a custom block has been created");
         }
@@ -189,18 +172,17 @@ public class GTFluidBuilder<T extends ForgeFlowingFluid, P> extends AbstractBuil
         return this;
     }
 
-    public BlockBuilder<LiquidBlock, GTFluidBuilder<T, P>> block() {
+    public BlockBuilder<LiquidBlock, GTFluidBuilder<P>> block() {
         return block(LiquidBlock::new);
     }
 
-    public <B extends LiquidBlock> BlockBuilder<B, GTFluidBuilder<T, P>> block(NonNullBiFunction<NonNullSupplier<? extends T>, BlockBehaviour.Properties, ? extends B> factory) {
+    public <B extends LiquidBlock> BlockBuilder<B, GTFluidBuilder<P>> block(NonNullBiFunction<NonNullSupplier<GTFluidImpl.Flowing>, BlockBehaviour.Properties, ? extends B> factory) {
         if (this.defaultBlock == Boolean.FALSE) {
             throw new IllegalStateException("Only one call to block/noBlock per builder allowed");
         }
-        NonNullSupplier<T> supplier = asSupplier();
+        NonNullSupplier<GTFluidImpl.Flowing> supplier = asSupplier();
 
-        this.fluidProperties.andThen(p -> p.block(() -> getOwner().<Block, LiquidBlock>get(getName(), ForgeRegistries.Keys.BLOCKS).get()));
-        return getOwner().<B, GTFluidBuilder<T, P>>block(this, sourceName, p -> factory.apply(supplier, p))
+        return getOwner().<B, GTFluidBuilder<P>>block(this, sourceName, p -> factory.apply(supplier, p))
                 .properties(p -> BlockBehaviour.Properties.copy(Blocks.WATER).noLootTable())
                 .properties(p -> p.lightLevel(blockState -> fluidType.get().getLightLevel()))
                 .setData(ProviderType.LANG, NonNullBiConsumer.noop())
@@ -209,8 +191,7 @@ public class GTFluidBuilder<T extends ForgeFlowingFluid, P> extends AbstractBuil
                 .onRegister(block -> this.block = () -> block);
     }
 
-    @Beta
-    public GTFluidBuilder<T, P> noBlock() {
+    public GTFluidBuilder<P> noBlock() {
         if (this.defaultBlock == Boolean.FALSE) {
             throw new IllegalStateException("Only one call to block/noBlock per builder allowed");
         }
@@ -218,7 +199,15 @@ public class GTFluidBuilder<T extends ForgeFlowingFluid, P> extends AbstractBuil
         return this;
     }
 
-    public GTFluidBuilder<T, P> defaultBucket() {
+    public GTFluidBuilder<P> noBucket() {
+        if (this.defaultBucket == Boolean.FALSE) {
+            throw new IllegalStateException("Only one call to bucket/noBucket per builder allowed");
+        }
+        this.defaultBucket = false;
+        return this;
+    }
+
+    public GTFluidBuilder<P> defaultBucket() {
         if (this.defaultBucket != null) {
             throw new IllegalStateException("Cannot set a default bucket after a custom bucket has been created");
         }
@@ -226,17 +215,12 @@ public class GTFluidBuilder<T extends ForgeFlowingFluid, P> extends AbstractBuil
         return this;
     }
 
-    public ItemBuilder<GTBucketItem, GTFluidBuilder<T, P>> bucket() {
+    public ItemBuilder<GTBucketItem, GTFluidBuilder<P>> bucket() {
         if (this.defaultBucket == Boolean.FALSE) {
             throw new IllegalStateException("Only one call to bucket/noBucket per builder allowed");
         }
-        NonNullSupplier<? extends GTFluid> source = this.source;
-        if (source == null) {
-            throw new IllegalStateException("Cannot create a bucket before creating a source block");
-        }
 
-        this.fluidProperties.andThen(p -> p.bucket(() -> getOwner().get(bucketName, ForgeRegistries.Keys.ITEMS).get()));
-        return getOwner().item(this, bucketName, p -> new GTBucketItem(source, p, density < 0, material))
+        return getOwner().item(this, bucketName, p -> new GTBucketItem(this.source, p, density < 0, material))
                 .properties(p -> p.craftRemainder(Items.BUCKET).stacksTo(1))
                 .color(() -> () -> GTBucketItem::color)
                 .setData(ProviderType.LANG, NonNullBiConsumer.noop())
@@ -245,8 +229,8 @@ public class GTFluidBuilder<T extends ForgeFlowingFluid, P> extends AbstractBuil
     }
 
     @SafeVarargs
-    public final GTFluidBuilder<T, P> tag(TagKey<Fluid>... tags) {
-        GTFluidBuilder<T, P> ret = this.tag(ProviderType.FLUID_TAGS, tags);
+    public final GTFluidBuilder<P> tag(TagKey<Fluid>... tags) {
+        GTFluidBuilder<P> ret = this.tag(ProviderType.FLUID_TAGS, tags);
         if (this.tags.isEmpty()) {
             ret.getOwner().<RegistrateTagsProvider<Fluid>, Fluid>setDataGenerator(ret.sourceName, getRegistryKey(), ProviderType.FLUID_TAGS,
                     prov -> this.tags.stream().map(prov::addTag).forEach(p -> p.add(getSource().builtInRegistryHolder().key())));
@@ -259,13 +243,6 @@ public class GTFluidBuilder<T extends ForgeFlowingFluid, P> extends AbstractBuil
         NonNullSupplier<? extends GTFluid> source = this.source;
         Preconditions.checkNotNull(source, "Fluid has no source block: " + sourceName);
         return source.get();
-    }
-
-    private ForgeFlowingFluid.Properties makeProperties() {
-        NonNullSupplier<? extends GTFluid> source = this.source;
-        ForgeFlowingFluid.Properties ret = new ForgeFlowingFluid.Properties(fluidType, source == null ? null : source::get, asSupplier());
-        fluidProperties.accept(ret);
-        return ret;
     }
 
     private FluidType.Properties makeTypeProperties() {
@@ -291,12 +268,12 @@ public class GTFluidBuilder<T extends ForgeFlowingFluid, P> extends AbstractBuil
     }
 
     @Override
-    protected T createEntry() {
-        return fluidFactory.apply(makeProperties());
+    protected GTFluidImpl.Flowing createEntry() {
+        return new GTFluidImpl.Flowing(this.state, () -> this.source.get(), ()  -> this.get().get(), (() -> this.block != null ? this.block.get() : null), (() -> this.bucket != null ? this.bucket.get() : null), this.burnTime, this.fluidType);
     }
 
     @Override
-    public GTFluidBuilder<T, P> hasBlock(boolean hasBlock) {
+    public GTFluidBuilder<P> hasBlock(boolean hasBlock) {
         if (hasBlock && defaultBlock == null) {
             defaultBlock();
         }
@@ -308,7 +285,12 @@ public class GTFluidBuilder<T extends ForgeFlowingFluid, P> extends AbstractBuil
 
     @Override
     public IGTFluidBuilder hasBucket(boolean hasBucket) {
-        this.defaultBucket = hasBucket;
+        if (hasBucket && defaultBucket == null) {
+            defaultBucket();
+        }
+        if (!hasBucket && defaultBucket != null) {
+            noBucket();
+        }
         return this;
     }
 
@@ -319,7 +301,7 @@ public class GTFluidBuilder<T extends ForgeFlowingFluid, P> extends AbstractBuil
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
-    public FluidEntry<T> register() {
+    public RegistryEntry<GTFluidImpl.Flowing> register() {
         // Check the fluid has a type.
         if (this.fluidType != null) {
             // Register the type.
@@ -331,7 +313,7 @@ public class GTFluidBuilder<T extends ForgeFlowingFluid, P> extends AbstractBuil
         }
 
         if (defaultSource == Boolean.TRUE) {
-            source(() -> new GTFluidImpl(new ResourceLocation(this.getOwner().getModid(), this.sourceName), this.state, () -> this.get().get(), this.block != null ? () -> this.block.get() : null, this.bucket != null ? () -> this.bucket.get() : null, this.burnTime, this.fluidType));
+            source(() -> new GTFluidImpl.Source(this.state, () -> this.source.get(), () -> this.get().get(), (() -> this.block != null ? this.block.get() : null), (() -> this.bucket != null ? this.bucket.get() : null), this.burnTime, this.fluidType));
         }
         if (defaultBlock == Boolean.TRUE) {
             block().register();
@@ -347,18 +329,13 @@ public class GTFluidBuilder<T extends ForgeFlowingFluid, P> extends AbstractBuil
             throw new IllegalStateException("Fluid must have a source version: " + getName());
         }
 
-        return (FluidEntry<T>) super.register();
+        return super.register();
     }
 
     @Override
     public Supplier<? extends Fluid> registerFluid() {
         register();
         return this.source;
-    }
-
-    @Override
-    protected RegistryEntry<T> createEntryWrapper(RegistryObject<T> delegate) {
-        return new FluidEntry<>(getOwner(), delegate);
     }
 
     public static FluidType defaultFluidType(String langKey, Material material, FluidType.Properties properties, ResourceLocation stillTexture, ResourceLocation flowingTexture, int color) {
