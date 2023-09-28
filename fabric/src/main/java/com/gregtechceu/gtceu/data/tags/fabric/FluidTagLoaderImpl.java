@@ -21,7 +21,7 @@ public class FluidTagLoaderImpl {
     private static void create(RegistrateTagsProvider<Fluid> provider, TagKey<Fluid> tagKey, ResourceLocation... rls) {
         var builder = provider.addTag(tagKey);
         for (ResourceLocation rl : rls) {
-            builder.addOptional(rl);
+            builder.add(rl);
         }
     }
 }
