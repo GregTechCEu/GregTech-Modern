@@ -16,6 +16,7 @@ import com.gregtechceu.gtceu.integration.jei.recipe.GTRecipeTypeCategory;
 import com.gregtechceu.gtceu.integration.rei.recipe.GTRecipeTypeDisplayCategory;
 import com.gregtechceu.gtceu.utils.CycleFluidStorage;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
+import com.gregtechceu.gtceu.utils.OverlayingFluidStorage;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.gui.editor.configurator.IConfigurableWidget;
@@ -429,7 +430,7 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
             WidgetUtils.widgetByIdForEach(template, "^%s_[0-9]+$".formatted(FluidRecipeCapability.CAP.slotName(IO.IN)), TankWidget.class, tank -> {
                 var index = WidgetUtils.widgetIdIndex(tank);
                 if (index >= 0 && index < recipeHolder.importFluids.getTanks()) {
-                    tank.setFluidTank(recipeHolder.importFluids instanceof CycleFluidStorage storage ? storage.createTank(index) : new FluidStorage(recipeHolder.importFluids.getFluidInTank(index)));
+                    tank.setFluidTank(new OverlayingFluidStorage(recipeHolder.importFluids, index));
                     tank.setIngredientIO(IngredientIO.INPUT);
                     tank.setAllowClickFilled(!isJEI);
                     tank.setAllowClickDrained(!isJEI);
@@ -439,7 +440,7 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
             WidgetUtils.widgetByIdForEach(template, "^%s_[0-9]+$".formatted(FluidRecipeCapability.CAP.slotName(IO.OUT)), TankWidget.class, tank -> {
                 var index = WidgetUtils.widgetIdIndex(tank);
                 if (index >= 0 && index < recipeHolder.exportFluids.getTanks()) {
-                    tank.setFluidTank(recipeHolder.exportFluids instanceof CycleFluidStorage storage ? storage.createTank(index) : new FluidStorage(recipeHolder.exportFluids.getFluidInTank(index)));
+                    tank.setFluidTank(new OverlayingFluidStorage(recipeHolder.exportFluids, index));
                     tank.setIngredientIO(IngredientIO.OUTPUT);
                     tank.setAllowClickFilled(!isJEI);
                     tank.setAllowClickDrained(false);

@@ -82,9 +82,6 @@ public class FluidIngredient implements Predicate<FluidStack> {
         if (this.isEmpty()) {
             return stack.isEmpty();
         }
-        if (this.amount > stack.getAmount()) {
-            return false;
-        }
         if (this.nbt != null && !this.nbt.equals(stack.getTag())) {
             return false;
         }
@@ -100,7 +97,7 @@ public class FluidIngredient implements Predicate<FluidStack> {
     }
 
     public FluidStack[] getStacks() {
-        if (this.stacks == null || changed) {
+        if (changed || this.stacks == null) {
             this.stacks = Arrays.stream(this.values).flatMap(entry -> entry.getStacks().stream()).distinct().map(fluid -> FluidStack.create(fluid, this.amount, this.nbt)).toArray(FluidStack[]::new);
             this.changed = false;
         }
@@ -109,6 +106,11 @@ public class FluidIngredient implements Predicate<FluidStack> {
 
     public void setAmount(long amount) {
         this.amount = amount;
+        this.changed = true;
+    }
+
+    public void setNbt(CompoundTag nbt) {
+        this.nbt = nbt;
         this.changed = true;
     }
 

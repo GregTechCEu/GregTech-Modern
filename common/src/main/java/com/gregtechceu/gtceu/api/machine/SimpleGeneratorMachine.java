@@ -109,8 +109,8 @@ public class SimpleGeneratorMachine extends WorkableTieredMachine implements IFa
                     new GTRecipeType.RecipeHolder(generatorMachine.recipeLogic::getProgressPercent,
                             generatorMachine.importItems.storage,
                             generatorMachine.exportItems.storage,
-                            new FluidTransferList(generatorMachine.importFluids.storages),
-                            new FluidTransferList(generatorMachine.exportFluids.storages),
+                            generatorMachine.importFluids,
+                            generatorMachine.exportFluids,
                             false, false));
             createEnergyBar().setupUI(template, generatorMachine);
         }

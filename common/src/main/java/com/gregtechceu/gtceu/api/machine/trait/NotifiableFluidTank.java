@@ -101,15 +101,17 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
                         continue;
                     }
                     boolean found = false;
+                    FluidStack foundStack = null;
                     for (int i = 0; i < capability.getTanks(); i++) {
                         FluidStack stored = capability.getFluidInTank(i);
                         if (!fluidStack.test(stored)) {
                             continue;
                         }
                         found = true;
+                        foundStack = stored;
                     }
                     if (!found) continue;
-                    FluidStack drained = capability.drain(fluidStack.copy().getAmount(), false);
+                    FluidStack drained = capability.drain(foundStack.copy(fluidStack.getAmount()), false);
 
                     fluidStack.setAmount(fluidStack.getAmount() - drained.getAmount());
                     if (fluidStack.getAmount() <= 0) {

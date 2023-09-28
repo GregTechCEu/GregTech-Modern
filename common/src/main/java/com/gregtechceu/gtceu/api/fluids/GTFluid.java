@@ -23,7 +23,6 @@ import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Unmodifiable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Collection;
@@ -33,7 +32,9 @@ import java.util.function.Supplier;
 @ParametersAreNonnullByDefault
 public abstract class GTFluid extends FlowingFluid implements IAttributedFluid {
 
+    @Getter
     private final Collection<FluidAttribute> attributes = new ObjectLinkedOpenHashSet<>();
+    @Getter
     private final FluidState state;
     private final Supplier<? extends Item> bucketItem;
     private final Supplier<? extends Fluid> stillFluid;
@@ -50,16 +51,6 @@ public abstract class GTFluid extends FlowingFluid implements IAttributedFluid {
         this.block = block;
         this.bucketItem = bucket;
         this.burnTime = burnTime;
-    }
-
-    @Override
-    public @NotNull FluidState getState() {
-        return state;
-    }
-
-    @Override
-    public @NotNull @Unmodifiable Collection<FluidAttribute> getAttributes() {
-        return attributes;
     }
 
     @Override

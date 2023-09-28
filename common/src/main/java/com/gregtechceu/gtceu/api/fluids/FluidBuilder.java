@@ -277,7 +277,8 @@ public class FluidBuilder {
                 .viscosity(this.viscosity)
                 .hasBlock(this.hasFluidBlock)
                 .hasBucket(this.hasBucket)
-                .burnTime(this.burnTime);
+                .burnTime(this.burnTime)
+                .state(this.state);
 
         if (isColorEnabled) {
             builder.color(this.color);

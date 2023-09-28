@@ -374,8 +374,8 @@ public class SimpleTieredMachine extends WorkableTieredMachine implements IAutoO
                     new GTRecipeType.RecipeHolder(tieredMachine.recipeLogic::getProgressPercent,
                             tieredMachine.importItems.storage,
                             tieredMachine.exportItems.storage,
-                            new FluidTransferList(tieredMachine.importFluids.storages),
-                            new FluidTransferList(tieredMachine.exportFluids.storages),
+                            tieredMachine.importFluids,
+                            tieredMachine.exportFluids,
                             false, false));
             createEnergyBar().setupUI(template, tieredMachine);
             createBatterySlot().setupUI(template, tieredMachine);

@@ -61,6 +61,9 @@ public final class FluidStorage {
         }
 
         for (var entry : toRegister.entrySet()) {
+            if (map.containsKey(entry.getKey())) {
+                continue;
+            }
             storeWithLogging(entry.getKey(), entry.getValue().build(GTCEu.MOD_ID, material, entry.getKey()), material);
         }
         toRegister = null;
