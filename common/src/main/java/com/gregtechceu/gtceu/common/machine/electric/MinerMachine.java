@@ -23,6 +23,7 @@ import com.lowdragmc.lowdraglib.gui.widget.ComponentPanelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.DraggableScrollableWidgetGroup;
 import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
+import com.lowdragmc.lowdraglib.misc.FluidTransferList;
 import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
 import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
@@ -216,8 +217,8 @@ public class MinerMachine extends WorkableTieredMachine implements IMiner, ICont
                     new GTRecipeType.RecipeHolder(minerMachine.recipeLogic::getProgressPercent,
                             minerMachine.importItems.storage,
                             minerMachine.exportItems.storage,
-                            minerMachine.importFluids.storages,
-                            minerMachine.exportFluids.storages,
+                            new FluidTransferList(minerMachine.importFluids.storages),
+                            new FluidTransferList(minerMachine.exportFluids.storages),
                             false, false));
             createTemplate(inventorySize).setupUI(template, minerMachine);
             createEnergyBar().setupUI(template, minerMachine);

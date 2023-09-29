@@ -108,7 +108,7 @@ public class FluidPipeBlockEntityImpl extends FluidPipeBlockEntity {
             for (Pair<BlockPos, FluidPipeData> node : routePath.getPath()) {
                 var properties = node.getB().properties();
                 var pos = node.getA();
-                if (!properties.acceptFluid(stack)) {
+                if (!properties.test(stack)) {
                     return 0;
                 }
                 var channels = net.getChannelUsed(pos);

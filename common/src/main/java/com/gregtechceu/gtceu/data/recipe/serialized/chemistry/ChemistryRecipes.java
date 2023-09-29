@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.data.recipe.serialized.chemistry;
 
+import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Items;
@@ -69,12 +70,12 @@ public class ChemistryRecipes {
 
         VACUUM_RECIPES.recipeBuilder("liquid_oxygen")
                 .inputFluids(Oxygen.getFluid(1000))
-                .outputFluids(LiquidOxygen.getFluid(1000))
+                .outputFluids(Oxygen.getFluid(FluidStorageKeys.LIQUID, 1000))
                 .duration(240).EUt(VA[EV]).save(provider);
 
         VACUUM_RECIPES.recipeBuilder("liquid_helium")
                 .inputFluids(Helium.getFluid(1000))
-                .outputFluids(LiquidHelium.getFluid(1000))
+                .outputFluids(Helium.getFluid(FluidStorageKeys.LIQUID, 1000))
                 .duration(240).EUt(VA[EV]).save(provider);
 
         BLAST_RECIPES.recipeBuilder("nickel_zinc_ferrite")

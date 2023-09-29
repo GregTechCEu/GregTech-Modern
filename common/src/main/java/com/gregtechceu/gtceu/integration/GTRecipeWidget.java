@@ -9,9 +9,12 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
+import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+import com.gregtechceu.gtceu.utils.CycleFluidStorage;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.lowdragmc.lowdraglib.gui.widget.*;
 import com.lowdragmc.lowdraglib.misc.FluidStorage;
+import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidStorage;
 import com.lowdragmc.lowdraglib.utils.CycleItemStackHandler;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
@@ -59,25 +62,33 @@ public class GTRecipeWidget extends WidgetGroup {
                 .collect(Collectors.toList());
         while (outputStacks.size() < recipe.recipeType.getMaxOutputs(ItemRecipeCapability.CAP)) outputStacks.add(null);
 
-        IFluidStorage[] inputFluids = new IFluidStorage[recipe.recipeType.getMaxInputs(FluidRecipeCapability.CAP)];
-        List<Content> inputFluidContents = new ArrayList<>(recipe.getInputContents(FluidRecipeCapability.CAP));
+        List<Content> inputFluidContents = new ArrayList<>();
+        inputFluidContents.addAll(recipe.getInputContents(FluidRecipeCapability.CAP));
         inputFluidContents.addAll(recipe.getTickInputContents(FluidRecipeCapability.CAP));
-        for (int i = 0; i < inputFluidContents.size(); i++) {
-            inputFluids[i] = new FluidStorage(FluidRecipeCapability.CAP.of(inputFluidContents.get(i).content));
-        }
+        List<List<FluidStack>> inputFluids = inputFluidContents.stream().map(content -> content.content)
+                .map(FluidRecipeCapability.CAP::of)
+                .map(FluidIngredient::getStacks)
+                .map(Arrays::stream)
+                .map(Stream::toList)
+                .collect(Collectors.toList());
+        while (inputFluids.size() < recipe.recipeType.getMaxInputs(FluidRecipeCapability.CAP)) inputFluids.add(null);
 
-        IFluidStorage[] outputFluids = new IFluidStorage[recipe.recipeType.getMaxOutputs(FluidRecipeCapability.CAP)];
-        List<Content> outputFluidContents = new ArrayList<>( recipe.getOutputContents(FluidRecipeCapability.CAP));
+        List<Content> outputFluidContents = new ArrayList<>();
+        outputFluidContents.addAll(recipe.getOutputContents(FluidRecipeCapability.CAP));
         outputFluidContents.addAll(recipe.getTickOutputContents(FluidRecipeCapability.CAP));
-        for (int i = 0; i < outputFluidContents.size(); i++) {
-            outputFluids[i] = new FluidStorage(FluidRecipeCapability.CAP.of(outputFluidContents.get(i).content));
-        }
+        List<List<FluidStack>> outputFluids = outputFluidContents.stream().map(content -> content.content)
+                .map(FluidRecipeCapability.CAP::of)
+                .map(FluidIngredient::getStacks)
+                .map(Arrays::stream)
+                .map(Stream::toList)
+                .collect(Collectors.toList());
+        while (outputFluids.size() < recipe.recipeType.getMaxOutputs(FluidRecipeCapability.CAP)) outputFluids.add(null);
 
         var group = recipe.recipeType.createUITemplate(ProgressWidget.JEIProgress,
                 new CycleItemStackHandler(inputStacks),
                 new CycleItemStackHandler(outputStacks),
-                inputFluids,
-                outputFluids
+                new CycleFluidStorage(inputFluids),
+                new CycleFluidStorage(outputFluids)
         );
         // bind item in overlay
         WidgetUtils.widgetByIdForEach(group, "^%s_[0-9]+$".formatted(ItemRecipeCapability.CAP.slotName(IO.IN)), SlotWidget.class, slot -> {

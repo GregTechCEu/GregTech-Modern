@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.mojang.blaze3d.platform.InputConstants;
@@ -285,6 +286,16 @@ public class GTUtil {
         return distances.get(min);
     }
 
+    public static int convertRGBtoARGB(int colorValue) {
+        return convertRGBtoARGB(colorValue, 0xFF);
+    }
+
+    public static int convertRGBtoARGB(int colorValue, int opacity) {
+        // preserve existing opacity if present
+        if (((colorValue >> 24) & 0xFF) != 0) return colorValue;
+        return opacity << 24 | colorValue;
+    }
+
     @ExpectPlatform
     public static long getPumpBiomeModifier(Holder<Biome> biome) {
         throw new AssertionError();
@@ -297,9 +308,9 @@ public class GTUtil {
     @Nullable
     public static Fluid getMoltenFluid(@Nonnull Material material) {
         if (material.hasProperty(PropertyKey.ALLOY_BLAST))
-            return material.getProperty(PropertyKey.ALLOY_BLAST).getFluid();
+            return material.getProperty(PropertyKey.FLUID).getStorage().get(FluidStorageKeys.MOLTEN);
         if (!TagPrefix.ingotHot.doGenerateItem(material) && material.hasProperty(PropertyKey.FLUID))
-            return material.getProperty(PropertyKey.FLUID).getFluid();
+            return material.getProperty(PropertyKey.FLUID).getStorage().get(FluidStorageKeys.LIQUID);
         return null;
     }
 

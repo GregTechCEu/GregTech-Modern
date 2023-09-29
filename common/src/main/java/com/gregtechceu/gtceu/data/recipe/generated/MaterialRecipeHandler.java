@@ -7,6 +7,8 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.*;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
+import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CraftingComponent;
@@ -169,7 +171,7 @@ public class MaterialRecipeHandler {
                 .EUt(EUt);
 
         if (gasTier != null) {
-            FluidStack gas = CraftingComponent.EBF_GASES.get(gasTier).copy();
+            FluidIngredient gas = CraftingComponent.EBF_GASES.get(gasTier).copy();
 
             blastBuilder.copy("blast_" + material.getName())
                     .circuitMeta(1)
@@ -200,7 +202,7 @@ public class MaterialRecipeHandler {
             } else {
                 VACUUM_RECIPES.recipeBuilder("cool_hot_" + material.getName() + "_ingot")
                         .inputItems(ingotHot, material)
-                        .inputFluids(LiquidHelium.getFluid(500))
+                        .inputFluids(Helium.getFluid(FluidStorageKeys.LIQUID, 500))
                         .outputItems(ingot, material)
                         .outputFluids(Helium.getFluid(250))
                         .duration((int) material.getMass() * 3)
