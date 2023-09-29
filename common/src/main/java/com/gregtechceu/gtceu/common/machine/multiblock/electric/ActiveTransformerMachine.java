@@ -67,19 +67,20 @@ public class ActiveTransformerMachine extends WorkableElectricMultiblockMachine 
             IO io = ioMap.getOrDefault(part.self().getPos().asLong(), IO.BOTH);
             if(io == IO.NONE) continue;
             for (var handler : part.getRecipeHandlers()) {
+                var handlerIO = handler.getHandlerIO();
                 // If IO not compatible
-                if (io != IO.BOTH && handler.getHandlerIO() != IO.BOTH && io != handler.getHandlerIO()) continue;
+                if (io != IO.BOTH && handlerIO != IO.BOTH && io != handlerIO) continue;
                 if (handler.getCapability() == EURecipeCapability.CAP && handler instanceof IEnergyContainer container) {
-                    if (io == IO.IN) {
+                    if (handlerIO == IO.IN) {
                         inputEnergy.add(container);
-                    } else if (io == IO.OUT) {
+                    } else if (handlerIO == IO.OUT) {
                         outputEnergy.add(container);
                     }
                     traitSubscriptions.add(handler.addChangedListener(this::updateConverterSubscription));
                 } else if (handler.getCapability() == LaserRecipeCapability.CAP && handler instanceof ILaserContainer container) {
-                    if (io == IO.IN) {
+                    if (handlerIO == IO.IN) {
                         inputLaser.add(container);
-                    } else if (io == IO.OUT) {
+                    } else if (handlerIO == IO.OUT) {
                         outputLaser.add(container);
                     }
                 }
