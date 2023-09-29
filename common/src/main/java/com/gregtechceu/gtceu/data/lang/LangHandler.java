@@ -712,6 +712,82 @@ public class LangHandler {
                 "Only pipeline endpoints need to be §fchunk-loaded§7.");
         provider.add("gtceu.machine.endpoint.tooltip.min_length", "§bMinimum Endpoint Distance: §f%d Blocks");
 
+        // HPCA
+        multiLang(provider, "gtceu.machine.data_bank.tooltip",
+                "Your Personal NAS",
+                "Bulk Data Storage. Transfer with Optical Cables.",
+                "Data Banks can be chained together.",
+                "Uses §f%s EU/t§7 per Data Hatch normally.",
+                "Uses §f%s EU/t§7 per Data Hatch when chained."
+        );
+
+        multiLang(provider, "gtceu.machine.power_substation.tooltip",
+                "The heart of a centralized power grid",
+                "§fCapacitors§7 do not need to be all the same tier.",
+                "Allows up to §f%d Capacitor Layers§7.",
+                "Loses energy equal to §f1%%§7 of total capacity every §f24 hours§7.",
+                "Capped at §f%,d EU/t§7 passive loss per Capacitor Block."
+        );
+
+        multiLang(provider, "gtceu.machine.active_transformer.tooltip",
+                "Transformers: Lasers in Disguise",
+                "Can combine any number of Energy §fInputs§7 into any number of Energy §fOutputs§7.",
+                "Can transmit power at incredible distance with",
+                "Lasers§7."
+        );
+
+        multiLang(provider, "gtceu.machine.research_station.tooltip",
+                "More than just a Multiblock Scanner",
+                "Used to scan onto §fData Orbs§7 or §fData Modules§7.",
+                "Requires §fComputation§7 to work."
+        );
+
+        multiLang(provider, "gtceu.machine.network_switch.tooltip",
+                "Ethernet Hub",
+                "Used to route and distribute §fComputation§7.",
+                "Can combine any number of Computation §fReceivers§7 into any number of Computation §fTransmitters§7."
+        );
+
+        multiLang(provider, "gtceu.machine.high_performance_computing_array.tooltip",
+                "Just your average Supercomputer",
+                "Used to generate §fComputation§7 (and heat).",
+                "Requires HPCA components to generate §fCWU/t§7 (Compute Work Units)."
+        );
+
+
+        multiLang(provider, "gtceu.machine.data_access_hatch.tooltip",
+                "Data Access for Multiblocks",
+                "Adds §a%s§7 slots for Data Items"
+        );
+
+        multiLang(provider, "gtceu.machine.laser_hatch.source.tooltip",
+                "Transmitting power at distance",
+                "§cLaser Cables must be in a straight line!§7"
+        );
+
+        multiLang(provider, "gtceu.machine.laser_hatch.target.tooltip",
+                "Receiving power from distance",
+                "§cLaser Cables must be in a straight line!§7"
+        );
+
+        provider.add("gtceu.machine.data_access_hatch.optical.receiver.tooltip", "Research Data Input for Multiblocks");
+        provider.add("gtceu.machine.data_access_hatch.optical.transmitter.tooltip", "Research Data Output for Multiblocks");
+        provider.add("gtceu.machine.computation_hatch.transmitter.tooltip", "Computation Data Output for Multiblocks");
+        provider.add("gtceu.machine.computation_hatch.receiver.tooltip", "Computation Data Input for Multiblocks");
+        provider.add("gtceu.machine.research_station.object_holder.tooltip", "Advanced Holding Mechanism for Research Station");
+
+        provider.add("gtceu.machine.hpca.component_general.upkeep_eut", "§eUpkeep Energy: §f%,d EU/t");
+        provider.add("gtceu.machine.hpca.component_general.max_eut", "§6Max Energy: §f%,d EU/t");
+        provider.add("gtceu.machine.hpca.component_type.cooler_passive", "§bCooler Type: §fPassive");
+        provider.add("gtceu.machine.hpca.component_type.cooler_active", "§bCooler Type: §fActive");
+        provider.add("gtceu.machine.hpca.component_type.cooler_cooling", "§aProvides: §f%,d Cooling");
+        provider.add("gtceu.machine.hpca.component_type.cooler_active_coolant", "§cRequires up to: §f%,d L/t %s");
+        provider.add("gtceu.machine.hpca.component_type.computation_cwut", "§9Computation: §f%,d CWU/t");
+        provider.add("gtceu.machine.hpca.component_type.computation_cooling", "§cRequires up to: §f%,d Cooling");
+        provider.add("gtceu.machine.hpca.component_type.bridge", "Allows §fHPCA§7 to connect to §fNetwork Switches§7");
+        provider.add("gtceu.machine.hpca.component_type.damaged", "Can be damaged by HPCA overheating!");
+
+
         provider.add("gtceu.universal.disabled", "Multiblock Sharing §4Disabled");
         provider.add("gtceu.universal.enabled", "Multiblock Sharing §aEnabled");
 

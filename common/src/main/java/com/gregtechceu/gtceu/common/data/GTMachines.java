@@ -24,8 +24,6 @@ import com.gregtechceu.gtceu.api.machine.multiblock.*;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
 import com.gregtechceu.gtceu.api.machine.steam.SimpleSteamMachine;
 import com.gregtechceu.gtceu.api.machine.steam.SteamBoilerMachine;
-import com.gregtechceu.gtceu.api.machine.trait.hpca.IHPCAComputationProvider;
-import com.gregtechceu.gtceu.api.machine.trait.hpca.IHPCACoolantProvider;
 import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
 import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.api.pattern.Predicates;
@@ -716,22 +714,22 @@ public class GTMachines {
     public static final MachineDefinition DATA_ACCESS_HATCH = REGISTRATE.machine("data_access_hatch", (holder) -> new DataAccessHatchPartMachine(holder, EV, false))
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.DATA_ACCESS_HATCH)
-            .tooltips(Component.translatable("gtceu.machine.data_access_hatch.tooltip.1"),
-                    Component.translatable("gtceu.machine.data_access_hatch.tooltip.2", DataAccessHatchPartMachine.getInventorySize(EV)))
+            .tooltips(Component.translatable("gtceu.machine.data_access_hatch.tooltip.0"),
+                    Component.translatable("gtceu.machine.data_access_hatch.tooltip.1", DataAccessHatchPartMachine.getInventorySize(EV)))
             .overlayTieredHullRenderer("data_access_hatch")
             .register();
     public static final MachineDefinition ADVANCED_DATA_ACCESS_HATCH = REGISTRATE.machine("advanced_data_access_hatch", (holder) -> new DataAccessHatchPartMachine(holder, LuV, false))
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.DATA_ACCESS_HATCH)
-            .tooltips(Component.translatable("gtceu.machine.data_access_hatch.tooltip.1"),
-                    Component.translatable("gtceu.machine.data_access_hatch.tooltip.2", DataAccessHatchPartMachine.getInventorySize(LuV)))
+            .tooltips(Component.translatable("gtceu.machine.data_access_hatch.tooltip.0"),
+                    Component.translatable("gtceu.machine.data_access_hatch.tooltip.1", DataAccessHatchPartMachine.getInventorySize(LuV)))
             .overlayTieredHullRenderer("data_access_hatch")
             .register();
     public static final MachineDefinition CREATIVE_DATA_HATCH = REGISTRATE.machine("creative_data_access_hatch", (holder) -> new DataAccessHatchPartMachine(holder, MAX, true))
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.DATA_ACCESS_HATCH)
-            .tooltips(Component.translatable("gtceu.machine.data_access_hatch.tooltip.1"),
-                    Component.translatable("gtceu.machine.data_access_hatch.tooltip.2", DataAccessHatchPartMachine.getInventorySize(LuV)))
+            .tooltips(Component.translatable("gtceu.machine.data_access_hatch.tooltip.0"),
+                    Component.translatable("gtceu.machine.data_access_hatch.tooltip.1", DataAccessHatchPartMachine.getInventorySize(LuV)))
             .overlayTieredHullRenderer("creative_data_access_hatch")
             .register();
     public static final MachineDefinition OPTICAL_DATA_HATCH_RECEIVER = REGISTRATE.machine("optical_data_receiver_hatch", (holder) -> new OpticalDataAccessHatchPartMachine(holder, false))
@@ -746,16 +744,16 @@ public class GTMachines {
             .register();
     public static final MachineDefinition LASER_INPUT_HATCH = REGISTRATE.machine("laser_input_hatch", (holder) -> new LaserHatchPartMachine(holder, IO.IN))
             .rotationState(RotationState.ALL)
-            .tooltips(Component.translatable("gtceu.machine.laser_hatch.target.tooltip1"),
-                    Component.translatable("gtceu.machine.laser_hatch.target.tooltip2"),
+            .tooltips(Component.translatable("gtceu.machine.laser_hatch.target.tooltip.0"),
+                    Component.translatable("gtceu.machine.laser_hatch.target.tooltip.1"),
                     Component.translatable("gtceu.universal.disabled"))
             .abilities(PartAbility.INPUT_LASER)
             .overlayTieredHullRenderer("laser_hatch.source")
             .register();
     public static final MachineDefinition LASER_OUTPUT_HATCH = REGISTRATE.machine("laser_output_hatch", (holder) -> new LaserHatchPartMachine(holder, IO.OUT))
             .rotationState(RotationState.ALL)
-            .tooltips(Component.translatable("gtceu.machine.laser_hatch.source.tooltip1"),
-                    Component.translatable("gtceu.machine.laser_hatch.source.tooltip2"),
+            .tooltips(Component.translatable("gtceu.machine.laser_hatch.source.tooltip.0"),
+                    Component.translatable("gtceu.machine.laser_hatch.source.tooltip.1"),
                     Component.translatable("gtceu.universal.disabled"))
             .abilities(PartAbility.OUTPUT_LASER)
             .overlayTieredHullRenderer("laser_hatch.target")
@@ -1542,11 +1540,11 @@ public class GTMachines {
     public static final MultiblockMachineDefinition DATA_BANK = REGISTRATE.multiblock("data_bank", DataBankMachine::new)
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeType(GTRecipeTypes.DUMMY_RECIPES)
-            .tooltips(Component.translatable("gtceu.machine.data_bank.tooltip.1"),
+            .tooltips(Component.translatable("gtceu.machine.data_bank.tooltip.0"),
+                    Component.translatable("gtceu.machine.data_bank.tooltip.1"),
                     Component.translatable("gtceu.machine.data_bank.tooltip.2"),
-                    Component.translatable("gtceu.machine.data_bank.tooltip.3"),
-                    Component.translatable("gtceu.machine.data_bank.tooltip.4", GTValues.VA[GTValues.EV]),
-                    Component.translatable("gtceu.machine.data_bank.tooltip.5", GTValues.VA[GTValues.LuV]))
+                    Component.translatable("gtceu.machine.data_bank.tooltip.3", GTValues.VA[GTValues.EV]),
+                    Component.translatable("gtceu.machine.data_bank.tooltip.4", GTValues.VA[GTValues.LuV]))
             .pattern((definition) -> FactoryBlockPattern.start()
                     .aisle("XDDDX", "XDDDX", "XDDDX")
                     .aisle("XDDDX", "XAAAX", "XDDDX")
@@ -1573,9 +1571,9 @@ public class GTMachines {
     public static final MultiblockMachineDefinition HIGH_PERFORMANCE_COMPUTING_ARRAY = REGISTRATE.multiblock("high_performance_computing_array", HPCAMachine::new)
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeType(GTRecipeTypes.DUMMY_RECIPES)
-            .tooltips(Component.translatable("gtceu.machine.high_performance_computing_array.tooltip.1"),
-                    Component.translatable("gtceu.machine.high_performance_computing_array.tooltip.2"),
-                    Component.translatable("gtceu.machine.high_performance_computing_array.tooltip.3"))
+            .tooltips(Component.translatable("gtceu.machine.high_performance_computing_array.tooltip.0"),
+                    Component.translatable("gtceu.machine.high_performance_computing_array.tooltip.1"),
+                    Component.translatable("gtceu.machine.high_performance_computing_array.tooltip.2"))
             .pattern((definition) -> FactoryBlockPattern.start()
                     .aisle("AA", "CC", "CC", "CC", "AA")
                     .aisle("VA", "XV", "XV", "XV", "VA")
@@ -1667,21 +1665,22 @@ public class GTMachines {
     public static final MultiblockMachineDefinition ACTIVE_TRANSFORMER = REGISTRATE.multiblock("active_transformer", ActiveTransformerMachine::new)
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeType(GTRecipeTypes.DUMMY_RECIPES)
-            .tooltips(Component.translatable("gregtech.machine.active_transformer.tooltip1"),
-                    Component.translatable("gregtech.machine.active_transformer.tooltip2"),
-                    Component.translatable("gregtech.machine.active_transformer.tooltip3")
-                            .append(Component.translatable("gregtech.machine.active_transformer.tooltip3.5")
+            .tooltips(Component.translatable("gtceu.machine.active_transformer.tooltip.0"),
+                    Component.translatable("gtceu.machine.active_transformer.tooltip.1"),
+                    Component.translatable("gtceu.machine.active_transformer.tooltip.2")
+                            .append(Component.translatable("gtceu.machine.active_transformer.tooltip.3")
                                     .withStyle(TooltipHelper.RAINBOW_SLOW.getCurrent())))
             .pattern((definition) -> FactoryBlockPattern.start()
                     .aisle("XXX", "XXX", "XXX")
                     .aisle("XXX", "XCX", "XXX")
                     .aisle("XXX", "XSX", "XXX")
                     .where('S', controller(blocks(definition.getBlock())))
-                    .where('X', blocks(GTBlocks.HIGH_POWER_CASING.get()).setMinGlobalLimited(12).or(ActiveTransformerMachine.getHatchPredicates()))
+                    .where('X', blocks(GTBlocks.HIGH_POWER_CASING.get()).setMinGlobalLimited(12)
+                            .or(ActiveTransformerMachine.getHatchPredicates()))
                     .where('C', blocks(GTBlocks.SUPERCONDUCTING_COIL.get()))
                     .build())
             .workableCasingRenderer(GTCEu.id("block/casings/hpca/high_power_casing"),
-                    GTCEu.id("block/multiblock/active_transformer"), false)
+                    GTCEu.id("block/multiblock/data_bank"), false)
             .register();
 
     //////////////////////////////////////
