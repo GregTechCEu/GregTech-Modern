@@ -7,8 +7,8 @@ import com.gregtechceu.gtceu.api.capability.impl.ActiveTransformerWrapper;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.LaserRecipeCapability;
+import com.gregtechceu.gtceu.api.machine.ConditionalSubscriptionHandler;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
-import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
@@ -30,28 +30,42 @@ public class ActiveTransformerMachine extends WorkableElectricMultiblockMachine 
 
     private IEnergyContainer energyOutputContainer;
     private ActiveTransformerWrapper wrapper;
-    private ILaserContainer laserInContainer;
     @Nullable
-    protected TickableSubscription convertSubs;
+    private ILaserContainer laserInContainer;
+    protected ConditionalSubscriptionHandler converterSubscription;
 
     public ActiveTransformerMachine(IMachineBlockEntity holder) {
         super(holder);
         this.energyOutputContainer = new EnergyContainerList(new ArrayList<>());
         this.wrapper = null;
         this.laserInContainer = null;
+        this.converterSubscription = new ConditionalSubscriptionHandler(this, this::convertEnergyTick, this::isSubscriptionActive);
     }
-    
+
     public void convertEnergyTick() {
         getRecipeLogic().setStatus(RecipeLogic.Status.WORKING);
         if (wrapper == null || this.energyOutputContainer.getEnergyCapacity() == 0) {
-            updateConverterSubscription();
+            converterSubscription.updateSubscription();
             return;
         }
 
         if (isWorkingEnabled()) {
             wrapper.removeEnergy(energyOutputContainer.addEnergy(wrapper.getEnergyStored()));
         }
-        updateConverterSubscription();
+        converterSubscription.updateSubscription();
+    }
+
+    protected boolean isSubscriptionActive() {
+        if (laserInContainer != null && laserInContainer.getEnergyStored() > 0)
+            return true;
+
+        if (energyOutputContainer == null)
+            return false;
+
+        if (energyOutputContainer.getEnergyStored() <= 0)
+            return false;
+
+        return energyOutputContainer.getEnergyStored() < energyOutputContainer.getEnergyCapacity();
     }
 
     @Override
@@ -65,7 +79,7 @@ public class ActiveTransformerMachine extends WorkableElectricMultiblockMachine 
         Map<Long, IO> ioMap = getMultiblockState().getMatchContext().getOrCreate("ioMap", Long2ObjectMaps::emptyMap);
         for (IMultiPart part : getParts()) {
             IO io = ioMap.getOrDefault(part.self().getPos().asLong(), IO.BOTH);
-            if(io == IO.NONE) continue;
+            if (io == IO.NONE) continue;
             for (var handler : part.getRecipeHandlers()) {
                 var handlerIO = handler.getHandlerIO();
                 // If IO not compatible
@@ -76,7 +90,7 @@ public class ActiveTransformerMachine extends WorkableElectricMultiblockMachine 
                     } else if (handlerIO == IO.OUT) {
                         outputEnergy.add(container);
                     }
-                    traitSubscriptions.add(handler.addChangedListener(this::updateConverterSubscription));
+                    traitSubscriptions.add(handler.addChangedListener(converterSubscription::updateSubscription));
                 } else if (handler.getCapability() == LaserRecipeCapability.CAP && handler instanceof ILaserContainer container) {
                     if (handlerIO == IO.IN) {
                         inputLaser.add(container);
@@ -93,7 +107,7 @@ public class ActiveTransformerMachine extends WorkableElectricMultiblockMachine 
             return;
         }
 
-        if (outputEnergy.size() == 0 && inputEnergy.size() == 0) {
+        if (outputEnergy.isEmpty() && inputEnergy.isEmpty()) {
             return;
         }
 
@@ -103,15 +117,6 @@ public class ActiveTransformerMachine extends WorkableElectricMultiblockMachine 
         }
 
         wrapper = new ActiveTransformerWrapper(new EnergyContainerList(inputEnergy), laserInContainer);
-    }
-
-    protected void updateConverterSubscription() {
-        if (laserInContainer.getEnergyStored() > 0 || (energyOutputContainer != null && energyOutputContainer.getEnergyStored() > 0 && energyOutputContainer.getEnergyStored() < energyOutputContainer.getEnergyCapacity())) {
-            convertSubs = subscribeServerTick(convertSubs, this::convertEnergyTick);
-        } else if (convertSubs != null) {
-            convertSubs.unsubscribe();
-            convertSubs = null;
-        }
     }
 
     @Override
