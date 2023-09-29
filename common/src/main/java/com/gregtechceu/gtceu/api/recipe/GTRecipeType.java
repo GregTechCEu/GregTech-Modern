@@ -14,7 +14,9 @@ import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.integration.emi.recipe.GTRecipeTypeEmiCategory;
 import com.gregtechceu.gtceu.integration.jei.recipe.GTRecipeTypeCategory;
 import com.gregtechceu.gtceu.integration.rei.recipe.GTRecipeTypeDisplayCategory;
+import com.gregtechceu.gtceu.utils.CycleFluidStorage;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
+import com.gregtechceu.gtceu.utils.OverlayingFluidStorage;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.gui.editor.configurator.IConfigurableWidget;
@@ -26,7 +28,9 @@ import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.gui.widget.*;
 import com.lowdragmc.lowdraglib.jei.IngredientIO;
 import com.lowdragmc.lowdraglib.jei.JEIPlugin;
+import com.lowdragmc.lowdraglib.misc.FluidStorage;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidStorage;
+import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.utils.Position;
 import com.lowdragmc.lowdraglib.utils.Rect;
@@ -324,20 +328,20 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
         return new Size(176, (dataInfos.size() + maxTooltips) * 10 + 5 + createEditableUITemplate(false, false).createDefault().getSize().height);
     }
 
-    public record RecipeHolder(DoubleSupplier progressSupplier, IItemTransfer importItems, IItemTransfer exportItems, IFluidStorage[] importFluids, IFluidStorage[] exportFluids, boolean isSteam, boolean isHighPressure) {};
+    public record RecipeHolder(DoubleSupplier progressSupplier, IItemTransfer importItems, IItemTransfer exportItems, IFluidTransfer importFluids, IFluidTransfer exportFluids, boolean isSteam, boolean isHighPressure) {};
 
     /**
      * Auto layout UI template for recipes.
      * @param progressSupplier progress. To create a JEI / REI UI, use the para {@link ProgressWidget#JEIProgress}.
      */
-    public WidgetGroup createUITemplate(DoubleSupplier progressSupplier, IItemTransfer importItems, IItemTransfer exportItems, IFluidStorage[] importFluids, IFluidStorage[] exportFluids, boolean isSteam, boolean isHighPressure) {
+    public WidgetGroup createUITemplate(DoubleSupplier progressSupplier, IItemTransfer importItems, IItemTransfer exportItems, IFluidTransfer importFluids, IFluidTransfer exportFluids, boolean isSteam, boolean isHighPressure) {
         var template = createEditableUITemplate(isSteam, isHighPressure);
         var group = template.createDefault();
         template.setupUI(group, new RecipeHolder(progressSupplier, importItems, exportItems, importFluids, exportFluids, isSteam, isHighPressure));
         return group;
     }
 
-    public WidgetGroup createUITemplate(DoubleSupplier progressSupplier, IItemTransfer importItems, IItemTransfer exportItems, IFluidStorage[] importFluids, IFluidStorage[] exportFluids) {
+    public WidgetGroup createUITemplate(DoubleSupplier progressSupplier, IItemTransfer importItems, IItemTransfer exportItems, IFluidTransfer importFluids, IFluidTransfer exportFluids) {
         return createUITemplate(progressSupplier, importItems, exportItems, importFluids, exportFluids, false, false);
     }
 
@@ -425,8 +429,8 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
             // bind fluid in
             WidgetUtils.widgetByIdForEach(template, "^%s_[0-9]+$".formatted(FluidRecipeCapability.CAP.slotName(IO.IN)), TankWidget.class, tank -> {
                 var index = WidgetUtils.widgetIdIndex(tank);
-                if (index >= 0 && index < recipeHolder.importFluids.length) {
-                    tank.setFluidTank(recipeHolder.importFluids[index]);
+                if (index >= 0 && index < recipeHolder.importFluids.getTanks()) {
+                    tank.setFluidTank(new OverlayingFluidStorage(recipeHolder.importFluids, index));
                     tank.setIngredientIO(IngredientIO.INPUT);
                     tank.setAllowClickFilled(!isJEI);
                     tank.setAllowClickDrained(!isJEI);
@@ -435,8 +439,8 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
             // bind fluid out
             WidgetUtils.widgetByIdForEach(template, "^%s_[0-9]+$".formatted(FluidRecipeCapability.CAP.slotName(IO.OUT)), TankWidget.class, tank -> {
                 var index = WidgetUtils.widgetIdIndex(tank);
-                if (index >= 0 && index < recipeHolder.exportFluids.length) {
-                    tank.setFluidTank(recipeHolder.exportFluids[index]);
+                if (index >= 0 && index < recipeHolder.exportFluids.getTanks()) {
+                    tank.setFluidTank(new OverlayingFluidStorage(recipeHolder.exportFluids, index));
                     tank.setIngredientIO(IngredientIO.OUTPUT);
                     tank.setAllowClickFilled(!isJEI);
                     tank.setAllowClickDrained(false);

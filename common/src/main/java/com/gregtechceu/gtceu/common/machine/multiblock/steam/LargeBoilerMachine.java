@@ -1,24 +1,23 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.steam;
 
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IExplosionMachine;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
+import com.gregtechceu.gtceu.api.machine.feature.IExplosionMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDisplayUIMachine;
-import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.util.ClickData;
 import com.lowdragmc.lowdraglib.gui.widget.ComponentPanelWidget;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import lombok.Getter;
@@ -98,7 +97,7 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
         if (currentTemperature >= 100 && getOffsetTimer() % 5 == 0) {
             // drain water
             var maxDrain = currentTemperature * throttle * 5 * FluidHelper.getBucket() / (STEAM_PER_WATER * 100000);
-            var drainWater = List.of(FluidStack.create(Fluids.WATER, maxDrain));
+            var drainWater = List.of(FluidIngredient.of(maxDrain, Fluids.WATER));
             List<IRecipeHandler<?>> inputTanks = new ArrayList<>();
             if (getCapabilitiesProxy().contains(IO.IN, FluidRecipeCapability.CAP)) {
                 inputTanks.addAll(Objects.requireNonNull(getCapabilitiesProxy().get(IO.IN, FluidRecipeCapability.CAP)));
@@ -107,7 +106,7 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
                 inputTanks.addAll(Objects.requireNonNull(getCapabilitiesProxy().get(IO.BOTH, FluidRecipeCapability.CAP)));
             }
             for (IRecipeHandler<?> tank : inputTanks) {
-                drainWater = (List<FluidStack>) tank.handleRecipe(IO.IN, null, drainWater, null, false);
+                drainWater = (List<FluidIngredient>) tank.handleRecipe(IO.IN, null, drainWater, null, false);
                 if (drainWater == null) break;
             }
             var drained = (drainWater == null || drainWater.isEmpty()) ? maxDrain : maxDrain - drainWater.get(0).getAmount();
@@ -116,7 +115,7 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
 
             if (hasDrainedWater) {
                 // fill steam
-                var fillSteam = List.of(GTMaterials.Steam.getFluid((drained * STEAM_PER_WATER)));
+                var fillSteam = List.of(FluidIngredient.of(CustomTags.STEAM, drained * STEAM_PER_WATER));
                 List<IRecipeHandler<?>> outputTanks = new ArrayList<>();
                 if (getCapabilitiesProxy().contains(IO.OUT, FluidRecipeCapability.CAP)) {
                     outputTanks.addAll(Objects.requireNonNull(getCapabilitiesProxy().get(IO.OUT, FluidRecipeCapability.CAP)));
@@ -125,7 +124,7 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
                     outputTanks.addAll(Objects.requireNonNull(getCapabilitiesProxy().get(IO.BOTH, FluidRecipeCapability.CAP)));
                 }
                 for (IRecipeHandler<?> tank : outputTanks) {
-                    fillSteam = (List<FluidStack>) tank.handleRecipe(IO.OUT, null, fillSteam, null, false);
+                    fillSteam = (List<FluidIngredient>) tank.handleRecipe(IO.OUT, null, fillSteam, null, false);
                     if (fillSteam == null) break;
                 }
             }

@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.registry.registrate.fabric;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.fluids.fabric.GTFluidImpl;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.api.registry.registrate.IGTFluidBuilder;
 import com.tterrag.registrate.builders.NoConfigBuilder;
@@ -36,7 +37,7 @@ public class GTRegistrateImpl extends GTRegistrate {
     }
 
     public static IGTFluidBuilder fluid(GTRegistrate parent, Material material, String name, String langKey, ResourceLocation stillTexture, ResourceLocation flowingTexture) {
-        return parent.entry(name, callback -> new GTFluidBuilder<>(parent, parent, material, name, langKey, callback, stillTexture, flowingTexture, SimpleFlowableFluid.Flowing::new).defaultLang().defaultSource().setData(ProviderType.LANG, NonNullBiConsumer.noop()));
+        return parent.entry(name, callback -> new GTFluidBuilder<>(parent, parent, material, name, langKey, callback, stillTexture, flowingTexture).defaultLang().defaultSource().setData(ProviderType.LANG, NonNullBiConsumer.noop()));
     }
 
     @Nonnull

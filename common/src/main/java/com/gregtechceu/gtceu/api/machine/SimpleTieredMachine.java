@@ -19,6 +19,7 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.lowdragmc.lowdraglib.gui.texture.*;
 import com.lowdragmc.lowdraglib.gui.widget.*;
+import com.lowdragmc.lowdraglib.misc.FluidTransferList;
 import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
 import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
 import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
@@ -373,8 +374,8 @@ public class SimpleTieredMachine extends WorkableTieredMachine implements IAutoO
                     new GTRecipeType.RecipeHolder(tieredMachine.recipeLogic::getProgressPercent,
                             tieredMachine.importItems.storage,
                             tieredMachine.exportItems.storage,
-                            tieredMachine.importFluids.storages,
-                            tieredMachine.exportFluids.storages,
+                            tieredMachine.importFluids,
+                            tieredMachine.exportFluids,
                             false, false));
             createEnergyBar().setupUI(template, tieredMachine);
             createBatterySlot().setupUI(template, tieredMachine);

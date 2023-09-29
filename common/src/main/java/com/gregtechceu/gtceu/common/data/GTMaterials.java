@@ -12,6 +12,9 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.AlloyBlastPro
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.BlastProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
+import com.gregtechceu.gtceu.api.fluids.FluidBuilder;
+import com.gregtechceu.gtceu.api.fluids.FluidState;
+import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.materials.*;
 import com.gregtechceu.gtceu.data.recipe.misc.alloyblast.CustomAlloyBlastRecipeProducer;
@@ -25,7 +28,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper.registerUnificationItems;
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.*;
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
 
@@ -352,6 +354,7 @@ public class GTMaterials {
         }
 
         material.setProperty(PropertyKey.ALLOY_BLAST, new AlloyBlastProperty(material.getBlastTemperature()));
+        material.getProperty(PropertyKey.FLUID).getStorage().enqueueRegistration(FluidStorageKeys.MOLTEN, new FluidBuilder().state(FluidState.MOLTEN));
     }
 
     private static boolean isMaterialStackFluidOnly(@Nonnull MaterialStack ms) {
@@ -535,7 +538,6 @@ public class GTMaterials {
     public static Material Chromite;
     public static Material Cinnabar;
     public static Material Water;
-    public static Material LiquidOxygen;
     public static Material Coal;
     public static Material Cobaltite;
     public static Material Cooperite;
@@ -555,7 +557,6 @@ public class GTMaterials {
     public static Material Invar;
     public static Material Kanthal;
     public static Material Lazurite;
-    public static Material LiquidHelium;
     public static Material Magnalium;
     public static Material Magnesite;
     public static Material Magnetite;

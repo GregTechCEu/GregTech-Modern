@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.recipe.*;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
+import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.common.recipe.RPMCondition;
 import com.gregtechceu.gtceu.common.recipe.RockBreakerCondition;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
@@ -36,11 +37,15 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.material.Fluids;
+import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import static com.lowdragmc.lowdraglib.gui.texture.ProgressTexture.FillDirection.*;
 
@@ -442,15 +447,15 @@ public class GTRecipeTypes {
                 if (recipeBuilder.data.getBoolean("disable_distillery")) return;
                 if (recipeBuilder.output.containsKey(FluidRecipeCapability.CAP)) {
                     long EUt = EURecipeCapability.CAP.of(recipeBuilder.tickInput.get(EURecipeCapability.CAP).get(0).getContent());
-                    FluidStack input = FluidRecipeCapability.CAP.of(recipeBuilder.input.get(FluidRecipeCapability.CAP).get(0).getContent());
+                    FluidIngredient input = FluidRecipeCapability.CAP.of(recipeBuilder.input.get(FluidRecipeCapability.CAP).get(0).getContent());
                     ItemStack[] outputs = recipeBuilder.output.containsKey(ItemRecipeCapability.CAP) ? ItemRecipeCapability.CAP.of(recipeBuilder.output.get(ItemRecipeCapability.CAP).get(0).getContent()).getItems() : null;
                     ItemStack outputItem = outputs == null || outputs.length == 0 ? ItemStack.EMPTY : outputs[0];
-                    if (input.isEmpty()) return;
+                    if (input.isEmpty() || input.getStacks().length == 0) return;
                     List<Content> contents = recipeBuilder.output.get(FluidRecipeCapability.CAP);
                     for (int i = 0; i < contents.size(); ++i) {
-                        FluidStack output = FluidRecipeCapability.CAP.of(contents.get(i).getContent());
-                        if (output.isEmpty()) continue;
-                        GTRecipeBuilder builder = DISTILLERY_RECIPES.recipeBuilder("distill_" + BuiltInRegistries.FLUID.getKey(input.getFluid()).getPath() + "_to_" + BuiltInRegistries.FLUID.getKey(output.getFluid()).getPath()).EUt(Math.max(1, EUt / 4)).circuitMeta(i + 1);
+                        FluidIngredient output = FluidRecipeCapability.CAP.of(contents.get(i).getContent());
+                        if (output.isEmpty() || output.getStacks().length == 0) continue;
+                        GTRecipeBuilder builder = DISTILLERY_RECIPES.recipeBuilder("distill_" + BuiltInRegistries.FLUID.getKey(input.getStacks()[0].getFluid()).getPath() + "_to_" + BuiltInRegistries.FLUID.getKey(output.getStacks()[0].getFluid()).getPath()).EUt(Math.max(1, EUt / 4)).circuitMeta(i + 1);
 
                         int ratio = RecipeHelper.getRatioForDistillery(input, output, outputItem);
                         int recipeDuration = (int) (recipeBuilder.duration * OverclockingLogic.STANDARD_OVERCLOCK_DURATION_DIVISOR);
@@ -459,8 +464,10 @@ public class GTRecipeTypes {
                         boolean fluidsDivisible = RecipeHelper.isFluidStackDivisibleForDistillery(input, ratio) &&
                                 RecipeHelper.isFluidStackDivisibleForDistillery(output, ratio);
 
-                        FluidStack dividedInputFluid = FluidStack.create(input, Math.max(1, input.getAmount() / ratio));
-                        FluidStack dividedOutputFluid = FluidStack.create(output, Math.max(1, output.getAmount() / ratio));
+                        FluidIngredient dividedInputFluid = input.copy();
+                        dividedInputFluid.setAmount(Math.max(1, dividedInputFluid.getAmount() / ratio));
+                        FluidIngredient dividedOutputFluid = output.copy();
+                        dividedOutputFluid.setAmount(Math.max(1, dividedOutputFluid.getAmount() / ratio));
 
                         if (shouldDivide && fluidsDivisible) {
                             builder.inputFluids(dividedInputFluid)

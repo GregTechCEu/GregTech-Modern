@@ -86,7 +86,7 @@ public class RecyclingRecipes {
             }
 
             // Skip Ingot -> Ingot Arc Recipes
-            if (ChemicalHelper.getPrefix(input.getItem()) == TagPrefix.ingot && m.getProperty(PropertyKey.INGOT).getArcSmeltInto() == m) {
+            if (ChemicalHelper.getPrefix(input.getItem()) == TagPrefix.ingot && m.getProperty(PropertyKey.INGOT).getArcSmeltingInto() == m) {
                 return;
             }
 
@@ -222,7 +222,7 @@ public class RecyclingRecipes {
             return;
         } else if (prefix == TagPrefix.block) {
             if (ms != null && !ms.material().hasProperty(PropertyKey.GEM)) {
-                ItemStack output = ChemicalHelper.get(TagPrefix.ingot, ms.material().getProperty(PropertyKey.INGOT).getArcSmeltInto(), 9);
+                ItemStack output = ChemicalHelper.get(TagPrefix.ingot, ms.material().getProperty(PropertyKey.INGOT).getArcSmeltingInto(), 9);
                 ResourceLocation itemPath = BuiltInRegistries.ITEM.getKey(input.getItem());
                 GTRecipeBuilder builder = GTRecipeTypes.ARC_FURNACE_RECIPES.recipeBuilder("arc_" + itemPath.getPath())
                         .outputItems(output)
@@ -297,7 +297,7 @@ public class RecyclingRecipes {
         // Else if the Material is an Ingot, return  the Arc Smelting
         // result if it exists, otherwise return the Material itself.
         if (material.hasProperty(PropertyKey.INGOT)) {
-            Material arcSmelt = material.getProperty(PropertyKey.INGOT).getArcSmeltInto();
+            Material arcSmelt = material.getProperty(PropertyKey.INGOT).getArcSmeltingInto();
             if (arcSmelt != null) {
                 return new MaterialStack(arcSmelt, amount);
             }

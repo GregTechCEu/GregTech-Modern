@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
+import com.lowdragmc.lowdraglib.misc.FluidTransferList;
 import com.lowdragmc.lowdraglib.utils.Position;
 import com.mojang.blaze3d.MethodsReturnNonnullByDefault;
 import it.unimi.dsi.fastutil.ints.Int2LongFunction;
@@ -108,8 +109,8 @@ public class SimpleGeneratorMachine extends WorkableTieredMachine implements IFa
                     new GTRecipeType.RecipeHolder(generatorMachine.recipeLogic::getProgressPercent,
                             generatorMachine.importItems.storage,
                             generatorMachine.exportItems.storage,
-                            generatorMachine.importFluids.storages,
-                            generatorMachine.exportFluids.storages,
+                            generatorMachine.importFluids,
+                            generatorMachine.exportFluids,
                             false, false));
             createEnergyBar().setupUI(template, generatorMachine);
         }

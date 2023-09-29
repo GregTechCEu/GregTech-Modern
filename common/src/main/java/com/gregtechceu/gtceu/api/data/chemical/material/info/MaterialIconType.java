@@ -86,8 +86,11 @@ public record MaterialIconType(String name) {
     public static final MaterialIconType turbineBlade = new MaterialIconType("turbineBlade");
 
     // BLOCK TEXTURES
+    public static final MaterialIconType liquid = new MaterialIconType("liquid");
+    public static final MaterialIconType gas = new MaterialIconType("gas");
+    public static final MaterialIconType plasma = new MaterialIconType("plasma");
+    public static final MaterialIconType molten = new MaterialIconType("molten");
     public static final MaterialIconType block = new MaterialIconType("block");
-    public static final MaterialIconType fluid = new MaterialIconType("fluid");
     public static final MaterialIconType ore = new MaterialIconType("ore");
     public static final MaterialIconType oreSmall = new MaterialIconType("oreSmall");
     public static final MaterialIconType frameGt = new MaterialIconType("frameGt");

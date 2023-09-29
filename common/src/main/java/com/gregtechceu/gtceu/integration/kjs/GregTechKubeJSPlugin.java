@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.data.chemical.Element;
-import com.gregtechceu.gtceu.api.data.chemical.fluid.FluidTypes;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
@@ -15,6 +14,8 @@ import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.worldgen.*;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinGenerator;
+import com.gregtechceu.gtceu.api.fluids.FluidBuilder;
+import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttributes;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
@@ -37,6 +38,7 @@ import com.gregtechceu.gtceu.integration.kjs.builders.prefix.BasicTagPrefixBuild
 import com.gregtechceu.gtceu.integration.kjs.builders.prefix.OreTagPrefixBuilder;
 import com.gregtechceu.gtceu.integration.kjs.helpers.MaterialStackWrapper;
 import com.gregtechceu.gtceu.integration.kjs.recipe.GTRecipeSchema;
+import com.gregtechceu.gtceu.integration.kjs.recipe.components.GTRecipeComponents;
 import com.mojang.serialization.DataResult;
 import dev.latvian.mods.kubejs.KubeJSPlugin;
 import dev.latvian.mods.kubejs.block.state.BlockStatePredicate;
@@ -135,7 +137,8 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         event.add("ItemGenerationCondition", TagPrefix.Conditions.class);
         event.add("UnificationEntry", UnificationEntry.class);
         event.add("RecipeCapability", RecipeCapability.class);
-        event.add("GTFluidTypes", FluidTypes.class);
+        event.add("GTFluidAttributes", FluidAttributes.class);
+        event.add("GTFluidBuilder", FluidBuilder.class);
         event.add("CleanroomType", CleanroomType.class);
 
         event.add("GTValues", GTValues.class);
@@ -265,6 +268,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
             if (o instanceof IWorldGenLayer.RuleTestSupplier supplier) return supplier;
             return () -> BlockStatePredicate.ruleTestOf(o);
         });
+        typeWrappers.registerSimple(GTRecipeComponents.FluidIngredientJS.class, GTRecipeComponents.FluidIngredientJS::of);
     }
 
 }
