@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.recipe.ingredient;
 
 import com.google.common.collect.Lists;
 import com.google.gson.*;
+import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import lombok.Getter;
@@ -55,7 +56,7 @@ public class FluidIngredient implements Predicate<FluidStack> {
 
     public JsonElement toJson() {
         JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("amount", this.amount);
+        jsonObject.addProperty("amount", this.amount * FluidHelper.getBucket() / 1000);
         if (this.nbt != null) {
             jsonObject.addProperty("nbt", this.nbt.getAsString());
         }
