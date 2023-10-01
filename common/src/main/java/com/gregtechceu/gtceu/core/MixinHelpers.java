@@ -8,12 +8,14 @@ import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.fluids.store.FluidStorage;
 import com.gregtechceu.gtceu.common.data.GTRecipes;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.mixins.BlockBehaviourAccessor;
 import com.gregtechceu.gtceu.data.pack.GTDynamicDataPack;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.tterrag.registrate.util.entry.BlockEntry;
+import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.data.loot.packs.VanillaBlockLoot;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackResources;
@@ -68,6 +70,11 @@ public class MixinHelpers {
             ((BlockBehaviourAccessor)blockEntry.get()).setDrops(lootTableId);
             lootTables.put(lootTableId, new VanillaBlockLoot().createSingleItemTable(blockEntry.get()).setParamSet(LootContextParamSets.BLOCK).build());
         });
+    }
+
+    @ExpectPlatform
+    public static void addFluidTexture(Material material, FluidStorage.FluidEntry value) {
+        throw new AssertionError();
     }
 
     public static List<PackResources> addDynamicData(Collection<PackResources> packs) {

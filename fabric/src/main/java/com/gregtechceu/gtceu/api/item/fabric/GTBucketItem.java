@@ -26,11 +26,14 @@ public class GTBucketItem extends BucketItem implements IItemRendererProvider {
     Fluid fluid;
     IRenderer renderer;
     final Material material;
-    public GTBucketItem(Supplier<? extends Fluid> fluid, Properties properties, Material material) {
+    final String langKey;
+
+    public GTBucketItem(Supplier<? extends Fluid> fluid, Properties properties, Material material, String langKey) {
         super(fluid.get(), properties);
         this.fluid = fluid.get();
         renderer = FluidHelper.isLighterThanAir(FluidStack.create(this.fluid, FluidHelper.getBucket())) ? GTBucketItemRenderer.INSTANCE_GAS : GTBucketItemRenderer.INSTANCE;
         this.material = material;
+        this.langKey = langKey;
     }
 
     public void onRegister() {
@@ -64,7 +67,8 @@ public class GTBucketItem extends BucketItem implements IItemRendererProvider {
 
     @Override
     public Component getDescription() {
-        return Component.translatable("item.gtceu.bucket", material.getLocalizedName());
+        Component materialName = material.getLocalizedName();
+        return Component.translatable("item.gtceu.bucket", Component.translatable(this.langKey, materialName));
     }
 
     @Override

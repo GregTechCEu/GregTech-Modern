@@ -220,7 +220,7 @@ public class GTFluidBuilder<P> extends AbstractBuilder<Fluid, GTFluidImpl.Flowin
             throw new IllegalStateException("Only one call to bucket/noBucket per builder allowed");
         }
 
-        return getOwner().item(this, bucketName, p -> new GTBucketItem(this.source, p, density < 0, material))
+        return getOwner().item(this, bucketName, p -> new GTBucketItem(this.source, p, this.density < 0, this.material, this.langKey))
                 .properties(p -> p.craftRemainder(Items.BUCKET).stacksTo(1))
                 .color(() -> () -> GTBucketItem::color)
                 .setData(ProviderType.LANG, NonNullBiConsumer.noop())
