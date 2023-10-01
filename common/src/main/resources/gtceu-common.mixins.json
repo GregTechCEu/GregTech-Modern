@@ -28,7 +28,6 @@
     "RecipeManagerMixin",
     "RecipeMixin",
     "ServerChunkProviderMixin",
-    "ServerPacksSourceMixin",
     "ServerPlayerGameModeMixin",
     "ShapedRecipeInvoker",
     "SidedRedstoneConnectivityMixin",

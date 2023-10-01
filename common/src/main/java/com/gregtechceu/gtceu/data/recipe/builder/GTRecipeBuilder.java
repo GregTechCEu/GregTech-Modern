@@ -28,7 +28,7 @@ import com.lowdragmc.lowdraglib.utils.NBTToJsonConverter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Registry;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -388,7 +388,7 @@ public class GTRecipeBuilder {
             if (!Platform.isForge() && fluid.getFluid() == Fluids.WATER) { // Special case for fabric, because there all fluids have to be tagged as water to function as water when placed.
                 return FluidIngredient.of(fluid);
             } else {
-                return FluidIngredient.of(TagUtil.createFluidTag(BuiltInRegistries.FLUID.getKey(fluid.getFluid()).getPath()), fluid.getAmount());
+                return FluidIngredient.of(TagUtil.createFluidTag(Registry.FLUID.getKey(fluid.getFluid()).getPath()), fluid.getAmount());
             }
         }).toArray(FluidIngredient[]::new));
     }

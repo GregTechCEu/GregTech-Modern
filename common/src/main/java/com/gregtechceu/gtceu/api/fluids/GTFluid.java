@@ -106,7 +106,7 @@ public abstract class GTFluid extends FlowingFluid implements IAttributedFluid {
     }
 
     @Override
-    protected boolean canConvertToSource(Level world) {
+    protected boolean canConvertToSource() {
         return false;
     }
 

@@ -7,8 +7,7 @@ import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import lombok.Getter;
 import net.minecraft.core.Holder;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.TagParser;
 import net.minecraft.network.FriendlyByteBuf;
@@ -179,12 +178,12 @@ public class FluidIngredient implements Predicate<FluidStack> {
             throw new JsonParseException("A fluid ingredient entry is either a tag or a fluid, not both");
         }
         if (json.has("fluid")) {
-            Fluid fluid = BuiltInRegistries.FLUID.get(new ResourceLocation(GsonHelper.getAsString(json, "fluid")));
+            Fluid fluid = Registry.FLUID.get(new ResourceLocation(GsonHelper.getAsString(json, "fluid")));
             return new FluidIngredient.FluidValue(fluid);
         }
         if (json.has("tag")) {
             ResourceLocation resourceLocation = new ResourceLocation(GsonHelper.getAsString(json, "tag"));
-            TagKey<Fluid> tagKey = TagKey.create(Registries.FLUID, resourceLocation);
+            TagKey<Fluid> tagKey = TagKey.create(Registry.FLUID_REGISTRY, resourceLocation);
             return new FluidIngredient.TagValue(tagKey);
         }
         throw new JsonParseException("A fluid ingredient entry needs either a tag or a fluid");
@@ -223,7 +222,7 @@ public class FluidIngredient implements Predicate<FluidStack> {
         @Override
         public Collection<Fluid> getStacks() {
             ArrayList<Fluid> list = Lists.newArrayList();
-            for (Holder<Fluid> holder : BuiltInRegistries.FLUID.getTagOrEmpty(this.tag)) {
+            for (Holder<Fluid> holder : Registry.FLUID.getTagOrEmpty(this.tag)) {
                 list.add(holder.value());
             }
             return list;
@@ -258,7 +257,7 @@ public class FluidIngredient implements Predicate<FluidStack> {
         @Override
         public JsonObject serialize() {
             JsonObject jsonObject = new JsonObject();
-            jsonObject.addProperty("fluid", BuiltInRegistries.FLUID.getKey(this.fluid).toString());
+            jsonObject.addProperty("fluid", Registry.FLUID.getKey(this.fluid).toString());
             return jsonObject;
         }
 
