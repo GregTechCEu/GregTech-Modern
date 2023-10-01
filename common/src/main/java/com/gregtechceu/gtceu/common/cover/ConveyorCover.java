@@ -65,6 +65,7 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
     private Widget ioModeSwitch;
 
     @Persisted @DescSynced
+    @Getter
     protected final FilterHandler<ItemStack, ItemFilter> filterHandler;
     protected final ConditionalSubscriptionHandler subscriptionHandler;
 

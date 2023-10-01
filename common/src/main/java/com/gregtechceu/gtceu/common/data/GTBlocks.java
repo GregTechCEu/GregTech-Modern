@@ -28,6 +28,7 @@ import com.gregtechceu.gtceu.client.renderer.block.TextureOverrideRenderer;
 import com.gregtechceu.gtceu.common.block.*;
 import com.gregtechceu.gtceu.common.pipelike.cable.Insulation;
 import com.gregtechceu.gtceu.common.pipelike.fluidpipe.FluidPipeType;
+import com.gregtechceu.gtceu.common.pipelike.item.ItemPipeType;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.lowdragmc.lowdraglib.Platform;
@@ -234,14 +235,15 @@ public class GTBlocks {
     }
 
     public static Table<TagPrefix, Material, BlockEntry<FluidPipeBlock>> FLUID_PIPE_BLOCKS;
+    public static Table<TagPrefix, Material, BlockEntry<ItemPipeBlock>> ITEM_PIPE_BLOCKS;
 
     public static void generatePipeBlocks() {
         // Fluid Pipe Blocks
-        ImmutableTable.Builder<TagPrefix, Material, BlockEntry<FluidPipeBlock>> builder = ImmutableTable.builder();
+        ImmutableTable.Builder<TagPrefix, Material, BlockEntry<FluidPipeBlock>> fluidsBuilder = ImmutableTable.builder();
         for (var fluidPipeType : FluidPipeType.values()) {
             for (Material material : GTRegistries.MATERIALS) {
                 if (material.hasProperty(PropertyKey.FLUID_PIPE) && !fluidPipeType.tagPrefix.isIgnored(material)) {
-                    var entry = REGISTRATE.block( "%s_%s_fluid_pipe".formatted(material.getName(), fluidPipeType.name), p -> new FluidPipeBlock(p.noLootTable(), fluidPipeType, material))
+                    var entry = REGISTRATE.block("%s_%s_fluid_pipe".formatted(material.getName(), fluidPipeType.name), p -> new FluidPipeBlock(p.noLootTable(), fluidPipeType, material))
                             .initialProperties(() -> Blocks.IRON_BLOCK)
                             .properties(p -> {
                                 if (doMetalPipe(material)) {
@@ -260,11 +262,40 @@ public class GTBlocks {
                             .color(() -> MaterialPipeBlockItem::tintColor)
                             .build()
                             .register();
-                    builder.put(fluidPipeType.tagPrefix, material, entry);
+                    fluidsBuilder.put(fluidPipeType.tagPrefix, material, entry);
                 }
             }
         }
-        FLUID_PIPE_BLOCKS = builder.build();
+        FLUID_PIPE_BLOCKS = fluidsBuilder.build();
+
+        ImmutableTable.Builder<TagPrefix, Material, BlockEntry<ItemPipeBlock>> itemsBuilder = ImmutableTable.builder();
+        for (var itemPipeType : ItemPipeType.values()) {
+            for (Material material : GTRegistries.MATERIALS) {
+                if (material.hasProperty(PropertyKey.ITEM_PIPE) && !itemPipeType.getTagPrefix().isIgnored(material)) {
+                    var entry = REGISTRATE.block("%s_%s_item_pipe".formatted(material.getName(), itemPipeType.name), p -> new ItemPipeBlock(p.noLootTable(), itemPipeType, material))
+                            .initialProperties(() -> Blocks.IRON_BLOCK)
+                            .properties(p -> {
+                                if (doMetalPipe(material)) {
+                                    p.sound(GTSoundTypes.METAL_PIPE);
+                                }
+                                return p.dynamicShape().noOcclusion();
+                            })
+                            .transform(unificationBlock(itemPipeType.getTagPrefix(), material))
+                            .blockstate(NonNullBiConsumer.noop())
+                            .setData(ProviderType.LANG, NonNullBiConsumer.noop())
+                            .setData(ProviderType.LOOT, NonNullBiConsumer.noop())
+                            .addLayer(() -> RenderType::cutoutMipped)
+                            .color(() -> MaterialPipeBlock::tintedColor)
+                            .item(MaterialPipeBlockItem::new)
+                            .model(NonNullBiConsumer.noop())
+                            .color(() -> MaterialPipeBlockItem::tintColor)
+                            .build()
+                            .register();
+                    itemsBuilder.put(itemPipeType.getTagPrefix(), material, entry);
+                }
+            }
+        }
+        ITEM_PIPE_BLOCKS = itemsBuilder.build();
     }
 
     @SuppressWarnings("unchecked")
