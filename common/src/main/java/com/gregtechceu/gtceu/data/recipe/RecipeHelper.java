@@ -1,12 +1,13 @@
 package com.gregtechceu.gtceu.data.recipe;
 
+import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 public class RecipeHelper {
 
-    public static int getRatioForDistillery(FluidStack fluidInput, FluidStack fluidOutput, @Nullable ItemStack output) {
+    public static int getRatioForDistillery(FluidIngredient fluidInput, FluidIngredient fluidOutput, @Nullable ItemStack output) {
         int[] divisors = new int[]{2, 5, 10, 25, 50};
         int ratio = -1;
 
@@ -27,7 +28,7 @@ public class RecipeHelper {
         return Math.max(1, ratio);
     }
 
-    public static boolean isFluidStackDivisibleForDistillery(FluidStack fluidStack, int divisor) {
+    public static boolean isFluidStackDivisibleForDistillery(FluidIngredient fluidStack, int divisor) {
         return fluidStack.getAmount() % divisor == 0 && fluidStack.getAmount() / divisor >= 25;
     }
 }

@@ -39,7 +39,7 @@ public class GTJEIPlugin implements IModPlugin {
 
     @Override
     public void registerCategories(@Nonnull IRecipeCategoryRegistration registry) {
-        if (LDLib.isReiLoaded()) return;
+        if (LDLib.isReiLoaded() || LDLib.isEmiLoaded()) return;
         GTCEu.LOGGER.info("JEI register categories");
         IJeiHelpers jeiHelpers = registry.getJeiHelpers();
         registry.addRecipeCategories(new MultiblockInfoCategory(jeiHelpers));
@@ -52,7 +52,7 @@ public class GTJEIPlugin implements IModPlugin {
 
     @Override
     public void registerRecipeCatalysts(@Nonnull IRecipeCatalystRegistration registration) {
-        if (LDLib.isReiLoaded()) return;
+        if (LDLib.isReiLoaded() || LDLib.isEmiLoaded()) return;
         MultiblockInfoCategory.registerRecipeCatalysts(registration);
         GTRecipeTypeCategory.registerRecipeCatalysts(registration);
         for (MachineDefinition definition : GTMachines.ELECTRIC_FURNACE) {
@@ -68,7 +68,7 @@ public class GTJEIPlugin implements IModPlugin {
 
     @Override
     public void registerRecipes(@Nonnull IRecipeRegistration registration) {
-        if (LDLib.isReiLoaded()) return;
+        if (LDLib.isReiLoaded() || LDLib.isEmiLoaded()) return;
         GTCEu.LOGGER.info("JEI register");
         MultiblockInfoCategory.registerRecipes(registration);
         GTRecipeTypeCategory.registerRecipes(registration);
@@ -76,7 +76,7 @@ public class GTJEIPlugin implements IModPlugin {
 
     @Override
     public void registerIngredients(@Nonnull IModIngredientRegistration registry) {
-        if (LDLib.isReiLoaded()) return;
+        if (LDLib.isReiLoaded() || LDLib.isEmiLoaded()) return;
         GTCEu.LOGGER.info("JEI register ingredients");
     }
 }

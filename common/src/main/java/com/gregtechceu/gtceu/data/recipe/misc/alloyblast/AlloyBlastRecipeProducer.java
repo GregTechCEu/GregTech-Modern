@@ -7,6 +7,9 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.BlastProperty
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
+import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
+import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.common.data.GCyMRecipeTypes;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
@@ -127,9 +130,10 @@ public class AlloyBlastRecipeProducer {
         // build the gas recipe if it exists
         if (property.getGasTier() != null) {
             GTRecipeBuilder builderGas = builder.copy(builder.id.getPath() + "_gas");
-            FluidStack gas = CraftingComponent.EBF_GASES.get(property.getGasTier());
+            FluidIngredient gas = CraftingComponent.EBF_GASES.get(property.getGasTier()).copy();
+            gas.setAmount(gas.getAmount() * outputAmount);
             builderGas.circuitMeta(getGasCircuitNum(componentAmount))
-                    .inputFluids(FluidStack.create(gas, gas.getAmount() * outputAmount))
+                    .inputFluids(gas)
                     .duration((int) (duration * 0.67))
                     .save(provider);
         }
@@ -175,7 +179,7 @@ public class AlloyBlastRecipeProducer {
 
         // helium for when >= 5000K temperature
         if (temperature >= 5000) {
-            freezerBuilder.inputFluids(GTMaterials.LiquidHelium.getFluid(500))
+            freezerBuilder.inputFluids(GTMaterials.Helium.getFluid(FluidStorageKeys.LIQUID, 500))
                     .outputFluids(GTMaterials.Helium.getFluid(250));
         }
         freezerBuilder.save(provider);

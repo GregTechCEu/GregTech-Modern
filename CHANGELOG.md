@@ -1,12 +1,10 @@
 # ChangeLog
 
-* add tooltip infos for fluid pipes
-* fix oregen in non-vanilla dimensions not working at all
-* fix UHV+ energy not functioning as intended
-* fix unification of glass lenses and such
-* fix the name of the EV sensor
-* fix large variants of machines not allowing any blocks except air in some places where they should've
-* fix large miner running with exactly 0 EU in inputs
-* fix ores only generating in a single layer per chunk
-* fix "standard"-shaped veins only generating 1 block
-* make ore veins' dimensions be based on dimension id instead of dimension type id
+* fix custom veins not working in non-vanilla dimensions
+* fix large miners not macerating ores properly
+* fix the turbines' generation being off by factor of turbine efficiency
+* fix recipes not working when a world is loaded for the first time
+* fix mipmapping issue
+* fix the watertight steel mixer recipe
+* fix fabric fluid textures
+* add fluid ingredients for fluid input/output unification

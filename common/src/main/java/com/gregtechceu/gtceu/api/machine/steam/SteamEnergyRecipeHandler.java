@@ -6,7 +6,8 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import org.jetbrains.annotations.Nullable;
 
@@ -34,8 +35,8 @@ public class SteamEnergyRecipeHandler implements IRecipeHandler<Long> {
         long sum = left.stream().reduce(0L, Long::sum);
         long realSum = (long) Math.ceil(sum * conversionRate);
         if (realSum > 0) {
-            var steam = GTMaterials.Steam.getFluid(realSum);
-            var list = new ArrayList<FluidStack>();
+            var steam = FluidIngredient.of(CustomTags.STEAM, realSum);
+            var list = new ArrayList<FluidIngredient>();
             list.add(steam);
             var leftSteam = steamTank.handleRecipeInner(io, recipe, list, slotName, simulate);
             if (leftSteam == null || leftSteam.isEmpty()) return null;
