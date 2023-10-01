@@ -75,9 +75,9 @@ public class MixinHelpers {
     @ExpectPlatform
     public static void addFluidTexture(Material material, FluidStorage.FluidEntry value) {
         throw new AssertionError();
-	}
+    }
 
-	public static List<PackResources> addDynamicData(Collection<PackResources> packs) {
+    public static List<PackResources> addDynamicData(Collection<PackResources> packs) {
         List<PackResources> packResources = new ArrayList<>(packs);
         // Clear old data
         GTDynamicDataPack.clearServer();
