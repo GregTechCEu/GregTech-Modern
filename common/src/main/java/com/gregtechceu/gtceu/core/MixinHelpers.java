@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.fluids.store.FluidStorage;
 import com.gregtechceu.gtceu.common.data.GTRecipes;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.mixins.BlockBehaviourAccessor;
@@ -70,6 +71,11 @@ public class MixinHelpers {
             ((BlockBehaviourAccessor)blockEntry.get()).setDrops(lootTableId);
             lootTables.put(lootTableId, BlockLoot.createSingleItemTable(blockEntry.get()).setParamSet(LootContextParamSets.BLOCK).build());
         });
+    }
+
+    @ExpectPlatform
+    public static void addFluidTexture(Material material, FluidStorage.FluidEntry value) {
+        throw new AssertionError();
     }
 
     public static List<PackResources> addDynamicData(Collection<PackResources> packs) {

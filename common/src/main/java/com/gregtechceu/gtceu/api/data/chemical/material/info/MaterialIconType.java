@@ -12,6 +12,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -120,7 +121,7 @@ public record MaterialIconType(String name) {
         return ICON_TYPES.get(name);
     }
 
-    @Nonnull
+    @Nullable // Safe: only null on registration on fabric, and no "required" textures are resolved at that point.
     public ResourceLocation getBlockTexturePath(@Nonnull MaterialIconSet materialIconSet, boolean doReadCache) {
         if (doReadCache) {
             if (BLOCK_TEXTURE_CACHE.contains(this, materialIconSet)) {
@@ -130,10 +131,12 @@ public record MaterialIconType(String name) {
 
         MaterialIconSet iconSet = materialIconSet;
         //noinspection ConstantConditions
-        if (!iconSet.isRootIconset && Platform.isClient() && Minecraft.getInstance() != null && Minecraft.getInstance().getResourceManager() != null) { // check minecraft for null for CI environments
+        if (!Platform.isClient() || Minecraft.getInstance() == null || Minecraft.getInstance().getResourceManager() == null) return null; // check minecraft for null for CI environments
+        if (!iconSet.isRootIconset) {
             while (!iconSet.isRootIconset) {
                 ResourceLocation location = GTCEu.id(String.format("textures/block/material_sets/%s/%s.png", iconSet.name, this.name));
-                if (ResourceHelper.isResourceExist(location) || ResourceHelper.isResourceExistRaw(location)) break;
+                if (ResourceHelper.isResourceExist(location) || ResourceHelper.isResourceExistRaw(location))
+                    break;
                 iconSet = iconSet.parentIconset;
             }
         }

@@ -4,6 +4,10 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.fluids.FluidBuilder;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.material.Fluid;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
@@ -14,7 +18,15 @@ import java.util.function.Supplier;
 
 public final class FluidStorage {
 
-    private final Map<FluidStorageKey, Supplier<? extends Fluid>> map = new Object2ObjectOpenHashMap<>();
+    @AllArgsConstructor
+    public static class FluidEntry {
+        @Getter
+        private Supplier<? extends Fluid> fluid;
+        @Getter @Setter
+        private ResourceLocation stillTexture, flowTexture;
+    }
+
+    private final Map<FluidStorageKey, FluidEntry> map = new Object2ObjectOpenHashMap<>();
     private Map<FluidStorageKey, FluidBuilder> toRegister = new Object2ObjectOpenHashMap<>();
 
     private boolean registered = false;
@@ -64,7 +76,7 @@ public final class FluidStorage {
             if (map.containsKey(entry.getKey())) {
                 continue;
             }
-            storeWithLogging(entry.getKey(), entry.getValue().build(GTCEu.MOD_ID, material, entry.getKey()), material);
+            storeWithLogging(entry.getKey(), new FluidEntry(entry.getValue().build(GTCEu.MOD_ID, material, entry.getKey()), entry.getValue().getStill(), entry.getValue().getFlowing()), material);
         }
         toRegister = null;
         registered = true;
@@ -75,13 +87,17 @@ public final class FluidStorage {
      * @return the fluid associated with the key
      */
     public @Nullable Fluid get(@NotNull FluidStorageKey key) {
-        return map.containsKey(key) ? map.get(key).get() : null;
+        return map.containsKey(key) ? map.get(key).getFluid().get() : null;
+    }
+
+    public @Nullable FluidEntry getEntry(@NotNull FluidStorageKey key) {
+        return map.getOrDefault(key, null);
     }
 
     /**
      * @see #store(FluidStorageKey, Fluid)
      */
-    private void storeWithLogging(@NotNull FluidStorageKey key, @NotNull Supplier<? extends Fluid> fluid, @NotNull Material material) {
+    private void storeWithLogging(@NotNull FluidStorageKey key, @NotNull FluidEntry fluid, @NotNull Material material) {
         if (map.containsKey(key)) {
             GTCEu.LOGGER.error("{} already has an associated fluid for material {}", this, material);
             return;
@@ -98,6 +114,6 @@ public final class FluidStorage {
         if (map.containsKey(key)) {
             throw new IllegalArgumentException(key + " already has an associated fluid");
         }
-        map.put(key, () -> fluid);
+        map.put(key, new FluidEntry(() -> fluid, null, null));
     }
 }

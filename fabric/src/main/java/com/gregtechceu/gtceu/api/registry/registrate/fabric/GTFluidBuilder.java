@@ -258,7 +258,7 @@ public class GTFluidBuilder<P> extends AbstractBuilder<Fluid, GTFluidImpl.Flowin
             throw new IllegalStateException("Only one call to bucket/noBucket per builder allowed");
         }
         this.defaultBucket = false;
-        return getOwner().item(this, bucketName, p -> new GTBucketItem(this.source, p, this.material))
+        return getOwner().item(this, bucketName, p -> new GTBucketItem(this.source, p, this.material, this.langKey))
                 .onRegister(GTBucketItem::onRegister)
                 .properties(p -> p.craftRemainder(Items.BUCKET).stacksTo(1))
                 .color(() -> () -> GTBucketItem::color)
@@ -338,7 +338,7 @@ public class GTFluidBuilder<P> extends AbstractBuilder<Fluid, GTFluidImpl.Flowin
             });
         }
 
-        EnvExecutor.runWhenOn(EnvType.CLIENT, () -> () -> onRegister(this::registerDefaultRenderer));
+        //EnvExecutor.runWhenOn(EnvType.CLIENT, () -> () -> onRegister(this::registerDefaultRenderer));
 
         if (defaultSource == Boolean.TRUE) {
             source(() -> new GTFluidImpl.Source(this.state, () -> this.source.get(), () -> this.get().get(), (() -> this.block != null ? this.block.get() : null), (() -> this.bucket != null ? this.bucket.get() : null), this.burnTime));

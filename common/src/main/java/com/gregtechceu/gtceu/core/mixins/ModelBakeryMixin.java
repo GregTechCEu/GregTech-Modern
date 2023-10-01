@@ -3,10 +3,9 @@ package com.gregtechceu.gtceu.core.mixins;
 import com.google.common.collect.Sets;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
-import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.AlloyBlastProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.FluidProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
+import com.gregtechceu.gtceu.api.fluids.store.FluidStorage;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.core.MixinHelpers;
@@ -16,7 +15,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.profiling.ProfilerFiller;
-import net.minecraft.world.level.material.Fluid;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
@@ -32,20 +30,21 @@ public abstract class ModelBakeryMixin {
             MaterialIconSet iconSet = material.getMaterialIconSet();
             if (material.hasProperty(PropertyKey.FLUID)) {
                 FluidProperty fluid = material.getProperty(PropertyKey.FLUID);
+
                 for (FluidStorageKey key : FluidStorageKey.allKeys()) {
-                    Fluid fluid1 = fluid.getStorage().get(key);
-                    if (fluid1 != null) {
-                        if (fluid.getStillTexture() == null) {
+                    FluidStorage.FluidEntry fluidEntry = fluid.getStorage().getEntry(key);
+                    if (fluidEntry != null) {
+                        if (fluidEntry.getStillTexture() == null) {
                             ResourceLocation foundTexture = key.getIconType().getBlockTexturePath(iconSet, false);
-                            fluid.setStillTexture(foundTexture);
+                            fluidEntry.setStillTexture(foundTexture);
                         }
-                        if (fluid.getFlowTexture() == null) {
-                            fluid.setFlowTexture(fluid.getStillTexture());
+                        if (fluidEntry.getFlowTexture() == null) {
+                            fluidEntry.setFlowTexture(fluidEntry.getStillTexture());
                         }
+                        MixinHelpers.addFluidTexture(material, fluidEntry);
                     }
                 }
 
-                //MixinHelpers.addFluidTexture(material, fluid);
             }
         }
         return Sets.newLinkedHashSet();

@@ -3,8 +3,6 @@ package com.gregtechceu.gtceu.api.item.forge;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.fluids.GTFluid;
-import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
-import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.client.renderer.item.GTBucketItemRenderer;
 import com.lowdragmc.lowdraglib.client.renderer.IItemRendererProvider;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
@@ -32,11 +30,13 @@ public class GTBucketItem extends BucketItem implements IItemRendererProvider {
 
     IRenderer renderer;
     final Material material;
+    final String langKey;
 
-    public GTBucketItem(Supplier<? extends Fluid> fluid, Properties properties, boolean isGas, Material material) {
+    public GTBucketItem(Supplier<? extends Fluid> fluid, Properties properties, boolean isGas, Material material, String langKey) {
         super(fluid, properties);
         this.renderer = isGas ? GTBucketItemRenderer.INSTANCE_GAS : GTBucketItemRenderer.INSTANCE;
         this.material = material;
+        this.langKey = langKey;
     }
 
     @Override
@@ -64,7 +64,8 @@ public class GTBucketItem extends BucketItem implements IItemRendererProvider {
 
     @Override
     public Component getDescription() {
-        return Component.translatable("item.gtceu.bucket", material.getLocalizedName());
+        Component materialName = material.getLocalizedName();
+        return Component.translatable("item.gtceu.bucket", Component.translatable(this.langKey, materialName));
     }
 
     @Override
