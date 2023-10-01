@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import net.minecraft.resources.ResourceLocation;
 
 import javax.annotation.Nullable;
 
@@ -16,8 +15,6 @@ public class FluidProperty implements IMaterialProperty<FluidProperty> {
     private final FluidStorage storage = new FluidStorage();
     @Getter @Setter
     private @Nullable FluidStorageKey primaryKey = null;
-    @Getter @Setter
-    private ResourceLocation stillTexture, flowTexture;
 
     @Override
     public void verifyProperty(MaterialProperties properties) {

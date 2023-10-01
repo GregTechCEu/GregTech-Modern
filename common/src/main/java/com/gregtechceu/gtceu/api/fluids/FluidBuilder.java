@@ -11,7 +11,7 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.IGTFluidBuilder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.lowdragmc.lowdraglib.Platform;
-import com.tterrag.registrate.util.entry.FluidEntry;
+import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.material.Fluid;
@@ -48,7 +48,9 @@ public class FluidBuilder {
     @Setter
     private int burnTime = -1;
 
+    @Getter
     private ResourceLocation still = null;
+    @Getter
     private ResourceLocation flowing = null;
     private boolean hasCustomStill = false;
     private boolean hasCustomFlowing = false;
@@ -270,7 +272,7 @@ public class FluidBuilder {
         determineDensity();
         determineLuminosity(material);
         determineViscosity(material);
-        IGTFluidBuilder builder = GTRegistries.REGISTRATE.createFluid(name, key.getTranslationKeyFor(material), material, this.still, this.flowing)
+        IGTFluidBuilder builder = GTRegistries.REGISTRATE.createFluid(name, this.translationKey != null ? this.translationKey : key.getTranslationKeyFor(material), material, this.still, this.flowing)
                 .temperature(this.temperature)
                 .density(this.density)
                 .luminance(this.luminosity)
