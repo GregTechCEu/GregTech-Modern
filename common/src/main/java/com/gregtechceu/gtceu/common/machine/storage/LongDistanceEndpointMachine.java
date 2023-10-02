@@ -6,16 +6,22 @@ import com.gregtechceu.gtceu.api.pipenet.longdistance.ILDEndpoint;
 import com.gregtechceu.gtceu.api.pipenet.longdistance.LongDistanceNetwork;
 import com.gregtechceu.gtceu.api.pipenet.longdistance.LongDistancePipeType;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
+import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.phys.BlockHitResult;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public abstract class LongDistanceEndpointMachine extends MetaMachine implements ILDEndpoint {
+    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(LongDistanceEndpointMachine.class, MetaMachine.MANAGED_FIELD_HOLDER);
 
     private final LongDistancePipeType pipeType;
     @Persisted
@@ -64,6 +70,7 @@ public abstract class LongDistanceEndpointMachine extends MetaMachine implements
     @Override
     public void onUnload() {
         super.onUnload();
+        if (this.getLevel().isClientSide) return;
         if (link != null) {
             // invalidate linked endpoint
             link.invalidateLink();
@@ -133,6 +140,11 @@ public abstract class LongDistanceEndpointMachine extends MetaMachine implements
     }
 
     @Override
+    protected InteractionResult onWrenchClick(Player playerIn, InteractionHand hand, Direction gridSide, BlockHitResult hitResult) {
+        return super.onWrenchClick(playerIn, hand, gridSide, hitResult);
+    }
+
+    @Override
     public void invalidateLink() {
         this.link = null;
     }
@@ -147,19 +159,8 @@ public abstract class LongDistanceEndpointMachine extends MetaMachine implements
         return pipeType;
     }
 
-
-    /*
     @Override
-    public void addInformation(ItemStack stack, @Nullable World player, @Nonnull List<String> tooltip, boolean advanced) {
-        tooltip.add(I18n.format("gregtech.machine.endpoint.tooltip.1"));
-        tooltip.add(I18n.format("gregtech.machine.endpoint.tooltip.2"));
-        tooltip.add(I18n.format("gregtech.machine.endpoint.tooltip.3"));
-        if (pipeType.getMinLength() > 0) {
-            tooltip.add(I18n.format("gregtech.machine.endpoint.tooltip.min_length", pipeType.getMinLength()));
-        }
-        if (ConfigHolder.machines.doTerrainExplosion && getIsWeatherOrTerrainResistant()) {
-            tooltip.add(I18n.format("gregtech.universal.tooltip.terrain_resist"));
-        }
+    public ManagedFieldHolder getFieldHolder() {
+        return MANAGED_FIELD_HOLDER;
     }
-     */
 }

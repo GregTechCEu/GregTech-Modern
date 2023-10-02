@@ -312,7 +312,7 @@ public class LongDistanceNetwork {
         private final ObjectOpenHashSet<LongDistanceNetwork> networkList = new ObjectOpenHashSet<>();
         private WeakReference<LevelAccessor> worldRef = new WeakReference<>(null);
 
-        public WorldData(String name) {
+        public WorldData() {
             super();
         }
 
@@ -324,7 +324,7 @@ public class LongDistanceNetwork {
             if (!(world instanceof ServerLevel serverLevel)) return null;
             WorldData netWorldData = serverLevel.getDataStorage().get(WorldData::load, "gtceu_long_dist_pipe");
             if (netWorldData == null) {
-                netWorldData = new WorldData("gtceu_long_dist_pipe");
+                netWorldData = new WorldData();
                 WORLD_DATA_MAP.put(world, netWorldData);
                 serverLevel.getDataStorage().set("gtceu_long_dist_pipe", netWorldData);
             }
@@ -383,7 +383,7 @@ public class LongDistanceNetwork {
         }
 
         public static WorldData load(@NotNull CompoundTag nbtTagCompound) {
-            WorldData data = new WorldData("gtceu_long_dist_pipe");
+            WorldData data = new WorldData();
             data.networks.clear();
             data.networkList.clear();
             ListTag list = nbtTagCompound.getList("nets", Tag.TAG_COMPOUND);

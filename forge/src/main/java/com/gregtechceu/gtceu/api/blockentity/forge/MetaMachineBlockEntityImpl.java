@@ -100,7 +100,9 @@ public class MetaMachineBlockEntityImpl extends MetaMachineBlockEntity {
             }
         } else if (cap == ForgeCapabilities.ITEM_HANDLER) {
             if (machine instanceof LDItemEndpointMachine fluidEndpointMachine) {
+                if (machine.getLevel().isClientSide) return LazyOptional.empty();
                 ILDEndpoint endpoint = fluidEndpointMachine.getLink();
+                if (endpoint == null) return LazyOptional.empty();
                 Direction outputFacing = fluidEndpointMachine.getOutputFacing();
                 return ForgeCapabilities.ITEM_HANDLER.orEmpty(cap, LazyOptional.of(() ->
                         ItemTransferHelperImpl.toItemHandler(new LDItemEndpointMachine.ItemHandlerWrapper(ItemTransferHelperImpl.getItemTransfer(machine.getLevel(), endpoint.getPos().relative(outputFacing), outputFacing.getOpposite())))
@@ -112,7 +114,9 @@ public class MetaMachineBlockEntityImpl extends MetaMachineBlockEntity {
             }
         } else if (cap == ForgeCapabilities.FLUID_HANDLER) {
             if (machine instanceof LDFluidEndpointMachine fluidEndpointMachine) {
+                if (machine.getLevel().isClientSide) return LazyOptional.empty();
                 ILDEndpoint endpoint = fluidEndpointMachine.getLink();
+                if (endpoint == null) return LazyOptional.empty();
                 Direction outputFacing = fluidEndpointMachine.getOutputFacing();
                 return ForgeCapabilities.FLUID_HANDLER.orEmpty(cap, LazyOptional.of(() ->
                         FluidTransferHelperImpl.toFluidHandler(new LDFluidEndpointMachine.FluidHandlerWrapper(FluidTransferHelper.getFluidTransfer(machine.getLevel(), endpoint.getPos().relative(outputFacing), outputFacing.getOpposite())))

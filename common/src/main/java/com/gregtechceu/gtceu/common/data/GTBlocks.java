@@ -303,11 +303,13 @@ public class GTBlocks {
 
     public static final BlockEntry<LongDistancePipeBlock> LD_ITEM_PIPE = REGISTRATE.block("long_distance_item_pipeline", properties -> new LongDistancePipeBlock(properties, LDItemPipeType.INSTANCE))
             .initialProperties(() -> Blocks.IRON_BLOCK)
+            .blockstate(GTModels::longDistanceItemPipeModel)
             .simpleItem()
             .register();
 
     public static final BlockEntry<LongDistancePipeBlock> LD_FLUID_PIPE = REGISTRATE.block("long_distance_fluid_pipeline", properties -> new LongDistancePipeBlock(properties, LDFluidPipeType.INSTANCE))
             .initialProperties(() -> Blocks.IRON_BLOCK)
+            .blockstate(GTModels::longDistanceFluidPipeModel)
             .simpleItem()
             .register();
 

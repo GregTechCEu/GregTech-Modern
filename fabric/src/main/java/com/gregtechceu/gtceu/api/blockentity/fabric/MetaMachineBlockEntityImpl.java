@@ -94,7 +94,9 @@ public class MetaMachineBlockEntityImpl extends MetaMachineBlockEntity {
         }, type);
         ItemStorage.SIDED.registerForBlockEntity((blockEntity, side) -> {
             if (((IMachineBlockEntity)blockEntity).getMetaMachine() instanceof LDItemEndpointMachine fluidEndpointMachine) {
+                if (fluidEndpointMachine.getLevel().isClientSide) return null;
                 ILDEndpoint endpoint = fluidEndpointMachine.getLink();
+                if (endpoint == null) return null;
                 Direction outputFacing = fluidEndpointMachine.getOutputFacing();
                 return ItemTransferHelperImpl.toItemVariantStorage(new LDItemEndpointMachine.ItemHandlerWrapper(ItemTransferHelperImpl.getItemTransfer(blockEntity.getLevel(), endpoint.getPos().relative(outputFacing), outputFacing.getOpposite())));
             }
@@ -103,7 +105,9 @@ public class MetaMachineBlockEntityImpl extends MetaMachineBlockEntity {
         }, type);
         FluidStorage.SIDED.registerForBlockEntity((blockEntity, side) -> {
             if (((IMachineBlockEntity)blockEntity).getMetaMachine() instanceof LDFluidEndpointMachine fluidEndpointMachine) {
+                if (fluidEndpointMachine.getLevel().isClientSide) return null;
                 ILDEndpoint endpoint = fluidEndpointMachine.getLink();
+                if (endpoint == null) return null;
                 Direction outputFacing = fluidEndpointMachine.getOutputFacing();
                 return FluidTransferHelperImpl.toFluidVariantStorage(new LDFluidEndpointMachine.FluidHandlerWrapper(FluidTransferHelper.getFluidTransfer(blockEntity.getLevel(), endpoint.getPos().relative(outputFacing), outputFacing.getOpposite())));
             }

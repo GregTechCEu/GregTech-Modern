@@ -9,12 +9,8 @@ import com.gregtechceu.gtceu.common.data.GTBlockEntities;
 import com.gregtechceu.gtceu.common.pipelike.item.ItemPipeData;
 import com.gregtechceu.gtceu.common.pipelike.item.ItemPipeType;
 import com.gregtechceu.gtceu.common.pipelike.item.LevelItemPipeNet;
-import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.Nullable;
 
 public class ItemPipeBlock extends MaterialPipeBlock<ItemPipeType, ItemPipeData, LevelItemPipeNet> {
     public ItemPipeBlock(Properties properties, ItemPipeType itemPipeType, Material material) {

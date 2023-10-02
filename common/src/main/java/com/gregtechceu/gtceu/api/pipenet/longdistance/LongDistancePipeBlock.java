@@ -71,10 +71,4 @@ public class LongDistancePipeBlock extends Block {
             network.onRemovePipe(pos);
         }
     }
-
-    @Override
-    public void appendHoverText(ItemStack stack, @Nullable BlockGetter level, List<Component> tooltip, TooltipFlag flag) {
-        super.appendHoverText(stack, level, tooltip, flag);
-        tooltip.add(Component.translatable("gtceu.block.tooltip.no_mob_spawning"));
-    }
 }
