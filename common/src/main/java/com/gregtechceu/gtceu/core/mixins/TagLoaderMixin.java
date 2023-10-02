@@ -82,11 +82,9 @@ public class TagLoaderMixin<T> implements IGTTagLoader<T> {
             GTBlocks.FLUID_PIPE_BLOCKS.rowMap().forEach((prefix, map) -> {
                 MixinHelpers.addMaterialBlockTags(tagMap, prefix, map);
             });
-            /*
             GTBlocks.ITEM_PIPE_BLOCKS.rowMap().forEach((prefix, map) -> {
                 MixinHelpers.addMaterialBlockTags(tagMap, prefix, map);
             });
-            */
             GTRegistries.MACHINES.forEach(machine -> {
                 ResourceLocation id = machine.getId();
                 tagMap.computeIfAbsent(GTToolType.WRENCH.harvestTag.location(), path -> new ArrayList<>())

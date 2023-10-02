@@ -22,11 +22,6 @@ public class ItemPipeBlock extends MaterialPipeBlock<ItemPipeType, ItemPipeData,
     }
 
     @Override
-    public int tinted(BlockState blockState, @Nullable BlockAndTintGetter blockAndTintGetter, @Nullable BlockPos blockPos, int index) {
-        return material.getMaterialRGB();
-    }
-
-    @Override
     protected ItemPipeData createMaterialData() {
         return new ItemPipeData(material.getProperty(PropertyKey.ITEM_PIPE), (byte) 0);
     }

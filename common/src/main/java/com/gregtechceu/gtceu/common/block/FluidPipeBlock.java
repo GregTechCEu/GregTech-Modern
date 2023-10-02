@@ -42,11 +42,6 @@ public class FluidPipeBlock extends MaterialPipeBlock<FluidPipeType, FluidPipeDa
     }
 
     @Override
-    public int tinted(BlockState blockState, @Nullable BlockAndTintGetter blockAndTintGetter, @Nullable BlockPos blockPos, int index) {
-        return material.getMaterialRGB();
-    }
-
-    @Override
     protected FluidPipeData createMaterialData() {
         return new FluidPipeData(material.getProperty(PropertyKey.FLUID_PIPE), (byte) 0);
     }

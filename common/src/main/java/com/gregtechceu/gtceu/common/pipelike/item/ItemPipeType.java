@@ -10,10 +10,7 @@ import com.gregtechceu.gtceu.client.model.PipeModel;
 import lombok.Getter;
 import net.minecraft.resources.ResourceLocation;
 
-import javax.annotation.Nonnull;
-
 public enum ItemPipeType implements IMaterialPipeType<ItemPipeData> {
-    //TINY_OPAQUE("tiny", 0.25f, OrePrefix.pipeTinyItem, 0.25f, 2f),
     SMALL("small", 0.375f, TagPrefix.pipeSmallItem, 0.5f, 1.5f),
     NORMAL("normal", 0.5f, TagPrefix.pipeNormalItem, 1f, 1f),
     LARGE("large", 0.75f, TagPrefix.pipeLargeItem, 2f, 0.75f),
@@ -74,9 +71,15 @@ public enum ItemPipeType implements IMaterialPipeType<ItemPipeData> {
     }
 
     public PipeModel createPipeModel(Material material) {
+        PipeModel model;
         if (material.hasProperty(PropertyKey.WOOD)) {
-            return new PipeModel(thickness, () -> GTCEu.id("block/pipe/pipe_side_wood"), () -> GTCEu.id("block/pipe/pipe_%s_in_wood".formatted(this.isRestrictive() ? values()[this.ordinal() - 3].name : name)));
+            model = new PipeModel(thickness, () -> GTCEu.id("block/pipe/pipe_side_wood"), () -> GTCEu.id("block/pipe/pipe_%s_in_wood".formatted(this.isRestrictive() ? values()[this.ordinal() - 4].name : name)));
+        } else {
+            model = new PipeModel(thickness, () -> GTCEu.id("block/pipe/pipe_side"), () -> GTCEu.id("block/pipe/pipe_%s_in".formatted(this.isRestrictive() ? values()[this.ordinal() - 4].name : name)));
         }
-        return new PipeModel(thickness, () -> GTCEu.id("block/pipe/pipe_side"), () -> GTCEu.id("block/pipe/pipe_%s_in".formatted(this.isRestrictive() ? values()[this.ordinal() - 3].name : name)));
+        if (isRestrictive()) {
+            model.setSideOverlayTexture(GTCEu.id("block/pipe/pipe_restrictive"));
+        }
+        return model;
     }
 }
