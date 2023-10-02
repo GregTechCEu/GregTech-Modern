@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.ItemPipeProperties;
 import com.gregtechceu.gtceu.common.blockentity.ItemPipeBlockEntity;
 import com.gregtechceu.gtceu.common.cover.ItemFilterCover;
+import com.gregtechceu.gtceu.common.cover.data.ItemFilterMode;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.pipelike.Node;
 import com.lowdragmc.lowdraglib.pipelike.PipeNetWalker;
@@ -105,14 +106,14 @@ public class ItemNetWalker extends PipeNetWalker<ItemPipeData, ItemPipeNet> {
         /*if (thisCover instanceof CoverShutter) {
             filters.add(stack -> !thisCover.isValid() || !((CoverShutter) thisCover).isWorkingEnabled());
         } else*/
-        if (thisCover instanceof ItemFilterCover/*&& ((ItemFilterCover) thisCover).getFilterMode() != ItemFilterMode.FILTER_INSERT*/) {
-            filters.add(((ItemFilterCover) thisCover).getItemFilter()::test);
+        if (thisCover instanceof ItemFilterCover filterCover && filterCover.getFilterMode() != ItemFilterMode.FILTER_INSERT) {
+            filters.add(filterCover.getItemFilter()::test);
         }
         /*if (neighbourCover instanceof CoverShutter) {
             filters.add(stack -> !neighbourCover.isValid() || !((CoverShutter) neighbourCover).isWorkingEnabled());
         } else */
-        if (neighbourCover instanceof ItemFilterCover/* && ((ItemFilterCover) neighbourCover).getFilterMode() != ItemFilterMode.FILTER_EXTRACT*/) {
-            filters.add(((ItemFilterCover) neighbourCover).getItemFilter()::test);
+        if (neighbourCover instanceof ItemFilterCover filterCover && filterCover.getFilterMode() != ItemFilterMode.FILTER_EXTRACT) {
+            filters.add(filterCover.getItemFilter()::test);
         }
         if (!filters.isEmpty()) {
             nextFilters.addAll(filters);

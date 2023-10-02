@@ -11,9 +11,13 @@ import com.gregtechceu.gtceu.api.cover.filter.FilterHandler;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandlers;
 import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
 import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
 import com.gregtechceu.gtceu.api.machine.ConditionalSubscriptionHandler;
 import com.gregtechceu.gtceu.api.syncdata.RequireRerender;
+import com.gregtechceu.gtceu.common.blockentity.ItemPipeBlockEntity;
+import com.gregtechceu.gtceu.common.cover.data.DistributionMode;
+import com.gregtechceu.gtceu.common.cover.data.ManualImportExportMode;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
@@ -59,6 +63,10 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
     protected int transferRate;
     @Persisted @DescSynced @Getter @RequireRerender
     protected IO io;
+    @Persisted @DescSynced @Getter
+    protected DistributionMode distributionMode;
+    @Persisted @DescSynced @Getter
+    protected ManualImportExportMode manualImportExportMode = ManualImportExportMode.DISABLED;
     @Persisted @Getter
     protected boolean isWorkingEnabled = true;
     protected int itemsLeftToTransferLastSecond;
@@ -76,6 +84,7 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
         this.transferRate = maxItemTransferRate;
         this.itemsLeftToTransferLastSecond = transferRate;
         this.io = IO.OUT;
+        this.distributionMode = DistributionMode.INSERT_FIRST;
 
         subscriptionHandler = new ConditionalSubscriptionHandler(coverHolder, this::update, this::isSubscriptionActive);
         filterHandler = FilterHandlers.item(this)
@@ -119,6 +128,17 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
         if (io == IO.IN || io == IO.OUT) {
             this.io = io;
         }
+        coverHolder.markDirty();
+    }
+
+    public void setDistributionMode(DistributionMode distributionMode) {
+        this.distributionMode = distributionMode;
+        coverHolder.markDirty();
+    }
+
+    protected void setManualImportExportMode(ManualImportExportMode manualImportExportMode) {
+        this.manualImportExportMode = manualImportExportMode;
+        coverHolder.markDirty();
     }
 
     @Override
@@ -227,7 +247,7 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
         int itemsLeftToExtract = itemInfo.totalCount;
 
         for (int i = 0; i < itemInfo.slots.size(); i++) {
-            int slotIndex = itemInfo.slots.get(i);
+            int slotIndex = itemInfo.slots.getInt(i);
             ItemStack extractedStack = sourceInventory.extractItem(slotIndex, itemsLeftToExtract, true);
             if (!extractedStack.isEmpty() &&
                     ItemStack.isSameItemSameTags(resultStack, extractedStack)) {
@@ -259,7 +279,7 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
         //perform real extraction of the items from the source inventory now
         itemsLeftToExtract = itemInfo.totalCount;
         for (int i = 0; i < itemInfo.slots.size(); i++) {
-            int slotIndex = itemInfo.slots.get(i);
+            int slotIndex = itemInfo.slots.getInt(i);
             ItemStack extractedStack = sourceInventory.extractItem(slotIndex, itemsLeftToExtract, false);
             if (!extractedStack.isEmpty() &&
                     ItemStack.isSameItemSameTags(resultStack, extractedStack)) {
@@ -389,6 +409,18 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
                 .setPressed(io == IO.IN)
                 .setHoverTooltips(LocalizationUtils.format("cover.conveyor.mode", LocalizationUtils.format(io.tooltip)));
         group.addWidget(ioModeSwitch);
+        group.addWidget(new EnumSelectorWidget<>(7, 166, 116, 20,
+                ManualImportExportMode.VALUES, ManualImportExportMode.DISABLED,
+                this::setManualImportExportMode)
+                .setHoverTooltips("cover.universal.manual_import_export.mode.description"));
+
+        if (coverHolder.getLevel().getBlockEntity(coverHolder.getPos()) instanceof ItemPipeBlockEntity ||
+                coverHolder.getLevel().getBlockEntity(coverHolder.getPos().relative(attachedSide)) instanceof ItemPipeBlockEntity) {
+            final EnumSelectorWidget<DistributionMode> distributionModeButton = new EnumSelectorWidget<>(149, 166, 20, 20,
+                    DistributionMode.VALUES, DistributionMode.INSERT_FIRST,
+                    this::setDistributionMode);
+            group.addWidget(distributionModeButton);
+        }
 
         group.addWidget(filterHandler.createFilterSlotUI(148, 107));
         group.addWidget(filterHandler.createFilterConfigUI(10, 70, 156, 60));
