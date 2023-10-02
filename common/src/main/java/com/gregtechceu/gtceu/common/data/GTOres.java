@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.worldgen.*;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import lombok.Getter;
-import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
 import net.minecraft.data.worldgen.features.OreFeatures;
 import net.minecraft.resources.ResourceKey;
@@ -474,6 +473,19 @@ public class GTOres {
                             .layer(l -> l.weight(2).mat(Salt).size(1, 1))
                             .layer(l -> l.weight(1).mat(Lepidolite).size(1, 1))
                             .layer(l -> l.weight(1).mat(Spodumene).size(1, 1))
+                            .build())
+                    .parent();
+
+
+    public static final GTOreDefinition OILSANDS_VEIN =
+            create("oilsands_vein", 25, 0.3f, 40, WorldGenLayers.STONE, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(30), VerticalAnchor.absolute(80)))
+                    .biomes(BiomeTags.IS_OVERWORLD)
+                    .layeredVeinGenerator()
+                    .withLayerPattern(() -> GTLayerPattern.builder(OVERWORLD_RULES)
+                            .layer(l -> l.weight(3).mat(Oilsands).size(2, 4))
+                            .layer(l -> l.weight(2).mat(Oilsands).size(1, 1))
+                            .layer(l -> l.weight(1).mat(Oilsands).size(1, 1))
+                            .layer(l -> l.weight(1).mat(Oilsands).size(1, 1))
                             .build())
                     .parent();
 
