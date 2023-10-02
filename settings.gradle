@@ -58,6 +58,7 @@ dependencyResolutionManagement {
         def macheteVersion = "1.+"
         def configurationVersion = "2.2.0"
         def ldLibVersion = "1.0.19.d"
+        def mixinextrasVersion = "0.2.0-rc.5"
 
         fabric {
             def fabricLoader = version("fabricLoader", fabricLoaderVersion)
@@ -167,6 +168,9 @@ dependencyResolutionManagement {
 
             def kubejs = version("kubejs", kjsVersion)
             library("kubejs", "dev.latvian.mods", "kubejs-forge").versionRef(kubejs)
+
+            def mixinextras = version("mixinextras", mixinextrasVersion)
+            library("mixinextras", "io.github.llamalad7", "mixinextras-forge").versionRef(mixinextras)
 
             def configuration = version("configuration", configurationVersion)
             library("configuration", "dev.toma.configuration", "configuration-forge-1.20.1").versionRef(configuration)

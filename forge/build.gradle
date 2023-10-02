@@ -134,10 +134,7 @@ dependencies {
 
     // KJS
     modImplementation forge.kubejs
-
-    // MixinExtras
-    implementation(annotationProcessor("io.github.llamalad7:mixinextras-common:0.2.0-rc.5"))
-    implementation(include("io.github.llamalad7:mixinextras-forge:0.2.0-rc.5"))
+    implementation forge.mixinextras
 
     // Configuration
     modImplementation(forge.configuration)
