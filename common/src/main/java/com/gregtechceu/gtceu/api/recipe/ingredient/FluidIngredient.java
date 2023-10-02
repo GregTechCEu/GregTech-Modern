@@ -52,6 +52,8 @@ public class FluidIngredient implements Predicate<FluidStack> {
 
     public void toNetwork(FriendlyByteBuf buffer) {
         buffer.writeCollection(Arrays.asList(this.getStacks()), (buf, stack) -> stack.writeToBuf(buf));
+        buffer.writeVarLong(amount);
+        buffer.writeNbt(nbt);
     }
 
     public JsonElement toJson() {
