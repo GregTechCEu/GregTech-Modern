@@ -35,10 +35,8 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
-import net.minecraft.world.phys.shapes.CollisionContext;
-import net.minecraft.world.phys.shapes.EntityCollisionContext;
-import net.minecraft.world.phys.shapes.Shapes;
-import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraft.world.phys.shapes.*;
+import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -185,16 +183,20 @@ public abstract class PipeBlock <PipeType extends Enum<PipeType> & IPipeType<Nod
         var pipeNode = getPileTile(pLevel, pPos);
         var connections = 0;
         if (pipeNode != null) {
-            if (context instanceof EntityCollisionContext entityCtx && entityCtx.getEntity() instanceof Player player){
+            connections = pipeNode.getVisualConnections();
+            VoxelShape shape = getPipeModel().getShapes(connections);
+            shape = Shapes.or(shape, pipeNode.getCoverContainer().addCoverCollisionBoundingBox());
+
+            if (context instanceof EntityCollisionContext entityCtx && entityCtx.getEntity() instanceof Player player) {
                 var coverable = pipeNode.getCoverContainer();
                 var held = player.getMainHandItem();
                 if (held.is(GTToolType.WIRE_CUTTER.itemTag) || held.is(GTToolType.WRENCH.itemTag) ||
                         CoverPlaceBehavior.isCoverBehaviorItem(held, coverable::hasAnyCover, coverDef -> ICoverable.canPlaceCover(coverDef, coverable)) ||
                         (held.getItem() instanceof BlockItem blockItem && blockItem.getBlock() instanceof PipeBlock<?,?,?> pipeBlock && pipeBlock.pipeType.type().equals(pipeType.type()))) {
-                    return Shapes.block();
+                    return Shapes.or(Shapes.block(), shape);
                 }
             }
-            connections = pipeNode.getVisualConnections();
+            return shape;
         }
         return getPipeModel().getShapes(connections);
     }
