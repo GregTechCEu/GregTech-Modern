@@ -415,10 +415,9 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
 
         if (coverHolder.getLevel().getBlockEntity(coverHolder.getPos()) instanceof ItemPipeBlockEntity ||
                 coverHolder.getLevel().getBlockEntity(coverHolder.getPos().relative(attachedSide)) instanceof ItemPipeBlockEntity) {
-            final EnumSelectorWidget<DistributionMode> distributionModeButton = new EnumSelectorWidget<>(149, 166, 20, 20,
+            group.addWidget(new EnumSelectorWidget<>(149, 166, 20, 20,
                     DistributionMode.VALUES, DistributionMode.INSERT_FIRST,
-                    this::setDistributionMode);
-            group.addWidget(distributionModeButton);
+                    this::setDistributionMode));
         }
 
         group.addWidget(filterHandler.createFilterSlotUI(148, 107));
