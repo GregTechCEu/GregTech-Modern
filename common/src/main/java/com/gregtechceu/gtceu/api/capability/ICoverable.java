@@ -28,6 +28,7 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -152,16 +153,18 @@ public interface ICoverable extends ITickSubscription, IAppearance, IFancyConfig
         return getLevel() == null ? LDLib.isRemote() : getLevel().isClientSide;
     }
 
-    default void addCoverCollisionBoundingBox(List<? super VoxelShape> collisionList) {
+    default VoxelShape[] addCoverCollisionBoundingBox() {
         double plateThickness = getCoverPlateThickness();
+        List<VoxelShape> shapes = new ArrayList<>();
         if (plateThickness > 0.0) {
             for (Direction side : Direction.values()) {
                 if (getCoverAtSide(side) != null) {
                     var coverBox = getCoverPlateBox(side, plateThickness);
-                    collisionList.add(coverBox);
+                    shapes.add(coverBox);
                 }
             }
         }
+        return shapes.toArray(VoxelShape[]::new);
     }
 
     static boolean doesCoverCollide(Direction side, List<VoxelShape> collisionBox, double plateThickness) {
