@@ -72,8 +72,7 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
     protected int itemsLeftToTransferLastSecond;
     private Widget ioModeSwitch;
 
-    @Persisted @DescSynced
-    @Getter
+    @Persisted @DescSynced @Getter
     protected final FilterHandler<ItemStack, ItemFilter> filterHandler;
     protected final ConditionalSubscriptionHandler subscriptionHandler;
 
