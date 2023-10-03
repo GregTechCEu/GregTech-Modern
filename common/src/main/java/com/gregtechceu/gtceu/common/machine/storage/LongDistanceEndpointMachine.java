@@ -20,8 +20,7 @@ public abstract class LongDistanceEndpointMachine extends MetaMachine implements
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(LongDistanceEndpointMachine.class, MetaMachine.MANAGED_FIELD_HOLDER);
 
     private final LongDistancePipeType pipeType;
-    @Persisted
-    @Getter @Setter
+    @Persisted @Getter @Setter
     private Type type = Type.NONE;
     private ILDEndpoint link;
     private boolean placed = false;
