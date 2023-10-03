@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.pipenet.longdistance;
 
-import com.lowdragmc.lowdraglib.pipelike.LevelPipeNet;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
@@ -16,7 +15,6 @@ import net.minecraft.nbt.LongTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.saveddata.SavedData;
 import org.jetbrains.annotations.NotNull;
@@ -304,8 +302,6 @@ public class LongDistanceNetwork {
      */
     public static class WorldData extends SavedData {
 
-        private static final Object2ObjectOpenHashMap<LevelAccessor, WorldData> WORLD_DATA_MAP = new Object2ObjectOpenHashMap<>();
-
         // A chunk pos to block pos to network map map
         private final Long2ObjectMap<Object2ObjectMap<BlockPos, LongDistanceNetwork>> networks = new Long2ObjectOpenHashMap<>();
         // All existing networks in this world
@@ -316,20 +312,17 @@ public class LongDistanceNetwork {
             super();
         }
 
-        public static WorldData get(LevelAccessor world) {
-            WorldData worldData = WORLD_DATA_MAP.get(world);
-            if (worldData != null) {
-                return worldData;
+        public static WorldData create(ServerLevel level) {
+            WorldData data = new WorldData();
+            data.setWorldAndInit(level);
+            return data;
+        }
+
+        public static WorldData get(LevelAccessor level) {
+            if (level instanceof ServerLevel serverLevel) {
+                return serverLevel.getDataStorage().computeIfAbsent(WorldData::load, () -> WorldData.create(serverLevel), "gtceu_long_dist_pipe");
             }
-            if (!(world instanceof ServerLevel serverLevel)) return null;
-            WorldData netWorldData = serverLevel.getDataStorage().get(WorldData::load, "gtceu_long_dist_pipe");
-            if (netWorldData == null) {
-                netWorldData = new WorldData();
-                WORLD_DATA_MAP.put(world, netWorldData);
-                serverLevel.getDataStorage().set("gtceu_long_dist_pipe", netWorldData);
-            }
-            netWorldData.setWorldAndInit(world);
-            return netWorldData;
+            return null;
         }
 
         private static long getChunkPos(BlockPos pos) {
@@ -354,6 +347,7 @@ public class LongDistanceNetwork {
                 }
             }
             this.worldRef = new WeakReference<>(world);
+            this.setDirty();
         }
 
         public LongDistanceNetwork getNetwork(BlockPos pos) {
@@ -369,6 +363,7 @@ public class LongDistanceNetwork {
             }
             chunkNetworks.put(pos, network);
             this.networkList.add(network);
+            this.setDirty();
         }
 
         private void removeNetwork(BlockPos pos) {
@@ -380,6 +375,7 @@ public class LongDistanceNetwork {
                     this.networks.remove(chunkPos);
                 }
             }
+            this.setDirty();
         }
 
         public static WorldData load(@NotNull CompoundTag nbtTagCompound) {

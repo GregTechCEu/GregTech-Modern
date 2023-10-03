@@ -5,7 +5,6 @@
     "bottom": "gtceu:block/casings/voltage/lv/bottom",
     "top": "gtceu:block/casings/voltage/lv/top",
     "side": "gtceu:block/casings/voltage/lv/side",
-    "overlay_front": "gtceu:block/machines/ld_fluid_pipe/overlay_front",
     "overlay_bottom": "gtceu:block/pipe/ld_fluid_pipe/overlay_bottom",
     "overlay_left": "gtceu:block/pipe/ld_fluid_pipe/overlay_left",
     "overlay_right": "gtceu:block/pipe/ld_fluid_pipe/overlay_right",

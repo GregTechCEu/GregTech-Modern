@@ -15,7 +15,9 @@ import com.gregtechceu.gtceu.common.pipelike.fluidpipe.longdistance.LDFluidEndpo
 import com.gregtechceu.gtceu.common.pipelike.item.longdistance.LDItemEndpointMachine;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
+import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 import com.lowdragmc.lowdraglib.side.fluid.forge.FluidTransferHelperImpl;
+import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.side.item.forge.ItemTransferHelperImpl;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -100,13 +102,16 @@ public class MetaMachineBlockEntityImpl extends MetaMachineBlockEntity {
             }
         } else if (cap == ForgeCapabilities.ITEM_HANDLER) {
             if (machine instanceof LDItemEndpointMachine fluidEndpointMachine) {
-                if (machine.getLevel().isClientSide) return LazyOptional.empty();
+                if (machine.getLevel().isClientSide) return null;
                 ILDEndpoint endpoint = fluidEndpointMachine.getLink();
-                if (endpoint == null) return LazyOptional.empty();
+                if (endpoint == null) return null;
                 Direction outputFacing = fluidEndpointMachine.getOutputFacing();
-                return ForgeCapabilities.ITEM_HANDLER.orEmpty(cap, LazyOptional.of(() ->
-                        ItemTransferHelperImpl.toItemHandler(new LDItemEndpointMachine.ItemHandlerWrapper(ItemTransferHelperImpl.getItemTransfer(machine.getLevel(), endpoint.getPos().relative(outputFacing), outputFacing.getOpposite())))
-                ));
+                IItemTransfer transfer = ItemTransferHelperImpl.getItemTransfer(machine.getLevel(), endpoint.getPos().relative(outputFacing), outputFacing.getOpposite());
+                if (transfer != null) {
+                    return ForgeCapabilities.ITEM_HANDLER.orEmpty(cap, LazyOptional.of(() ->
+                            ItemTransferHelperImpl.toItemHandler(new LDItemEndpointMachine.ItemHandlerWrapper(transfer))
+                    ));
+                }
             }
             var transfer = machine.getItemTransferCap(side);
             if (transfer != null) {
@@ -114,13 +119,16 @@ public class MetaMachineBlockEntityImpl extends MetaMachineBlockEntity {
             }
         } else if (cap == ForgeCapabilities.FLUID_HANDLER) {
             if (machine instanceof LDFluidEndpointMachine fluidEndpointMachine) {
-                if (machine.getLevel().isClientSide) return LazyOptional.empty();
+                if (machine.getLevel().isClientSide) return null;
                 ILDEndpoint endpoint = fluidEndpointMachine.getLink();
-                if (endpoint == null) return LazyOptional.empty();
+                if (endpoint == null) return null;
                 Direction outputFacing = fluidEndpointMachine.getOutputFacing();
-                return ForgeCapabilities.FLUID_HANDLER.orEmpty(cap, LazyOptional.of(() ->
-                        FluidTransferHelperImpl.toFluidHandler(new LDFluidEndpointMachine.FluidHandlerWrapper(FluidTransferHelper.getFluidTransfer(machine.getLevel(), endpoint.getPos().relative(outputFacing), outputFacing.getOpposite())))
-                ));
+                IFluidTransfer transfer = FluidTransferHelper.getFluidTransfer(machine.getLevel(), endpoint.getPos().relative(outputFacing), outputFacing.getOpposite());
+                if (transfer != null) {
+                    return ForgeCapabilities.FLUID_HANDLER.orEmpty(cap, LazyOptional.of(() ->
+                            FluidTransferHelperImpl.toFluidHandler(new LDFluidEndpointMachine.FluidHandlerWrapper(transfer))
+                    ));
+                }
             }
             var transfer = machine.getFluidTransferCap(side);
             if (transfer != null) {

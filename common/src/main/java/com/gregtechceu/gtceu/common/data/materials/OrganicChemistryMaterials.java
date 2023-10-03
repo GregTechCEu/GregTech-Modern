@@ -154,7 +154,7 @@ public class OrganicChemistryMaterials {
 
         Methane = new Material.Builder("methane")
                 .fluid(FluidStorageKeys.GAS, new FluidBuilder()
-                .translation("gregtech.fluid.gas_generic"))
+                .translation("gtceu.fluid.gas_generic"))
                 .color(0xFF0078).iconSet(FLUID)
                 .components(Carbon, 1, Hydrogen, 4)
                 .buildAndRegister();

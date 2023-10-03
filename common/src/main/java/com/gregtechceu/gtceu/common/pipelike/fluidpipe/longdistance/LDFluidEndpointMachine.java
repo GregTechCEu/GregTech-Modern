@@ -43,17 +43,17 @@ public class LDFluidEndpointMachine extends LongDistanceEndpointMachine {
 
         @Override
         public boolean isFluidValid(int tank, @NotNull FluidStack stack) {
-            return false;
+            return delegate.isFluidValid(tank, stack);
         }
 
         @Override
         public long fill(int tank, FluidStack resource, boolean simulate, boolean notifyChanges) {
-            return 0;
+            return delegate.fill(resource, simulate, notifyChanges);
         }
 
         @Override
         public boolean supportsFill(int tank) {
-            return false;
+            return delegate.supportsFill(tank);
         }
 
         @NotNull

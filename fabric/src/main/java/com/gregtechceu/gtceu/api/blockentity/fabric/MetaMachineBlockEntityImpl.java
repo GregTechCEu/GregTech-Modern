@@ -14,7 +14,9 @@ import com.gregtechceu.gtceu.api.pipenet.longdistance.ILDEndpoint;
 import com.gregtechceu.gtceu.common.pipelike.fluidpipe.longdistance.LDFluidEndpointMachine;
 import com.gregtechceu.gtceu.common.pipelike.item.longdistance.LDItemEndpointMachine;
 import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
+import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 import com.lowdragmc.lowdraglib.side.fluid.fabric.FluidTransferHelperImpl;
+import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.side.item.fabric.ItemTransferHelperImpl;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
@@ -98,7 +100,10 @@ public class MetaMachineBlockEntityImpl extends MetaMachineBlockEntity {
                 ILDEndpoint endpoint = fluidEndpointMachine.getLink();
                 if (endpoint == null) return null;
                 Direction outputFacing = fluidEndpointMachine.getOutputFacing();
-                return ItemTransferHelperImpl.toItemVariantStorage(new LDItemEndpointMachine.ItemHandlerWrapper(ItemTransferHelperImpl.getItemTransfer(blockEntity.getLevel(), endpoint.getPos().relative(outputFacing), outputFacing.getOpposite())));
+                IItemTransfer transfer = ItemTransferHelperImpl.getItemTransfer(blockEntity.getLevel(), endpoint.getPos().relative(outputFacing), outputFacing.getOpposite());
+                if (transfer != null) {
+                    return ItemTransferHelperImpl.toItemVariantStorage(new LDItemEndpointMachine.ItemHandlerWrapper(transfer));
+                }
             }
             var transfer = ((IMachineBlockEntity)blockEntity).getMetaMachine().getItemTransferCap(side);
             return transfer == null ? null : ItemTransferHelperImpl.toItemVariantStorage(transfer);
@@ -109,7 +114,10 @@ public class MetaMachineBlockEntityImpl extends MetaMachineBlockEntity {
                 ILDEndpoint endpoint = fluidEndpointMachine.getLink();
                 if (endpoint == null) return null;
                 Direction outputFacing = fluidEndpointMachine.getOutputFacing();
-                return FluidTransferHelperImpl.toFluidVariantStorage(new LDFluidEndpointMachine.FluidHandlerWrapper(FluidTransferHelper.getFluidTransfer(blockEntity.getLevel(), endpoint.getPos().relative(outputFacing), outputFacing.getOpposite())));
+                IFluidTransfer transfer = FluidTransferHelper.getFluidTransfer(blockEntity.getLevel(), endpoint.getPos().relative(outputFacing), outputFacing.getOpposite());
+                if (transfer != null) {
+                    return FluidTransferHelperImpl.toFluidVariantStorage(new LDFluidEndpointMachine.FluidHandlerWrapper(transfer));
+                }
             }
             var transfer = ((IMachineBlockEntity)blockEntity).getMetaMachine().getFluidTransferCap(side);
             return transfer == null ? null : FluidTransferHelperImpl.toFluidVariantStorage(transfer);
