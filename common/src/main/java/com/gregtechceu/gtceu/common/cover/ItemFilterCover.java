@@ -32,8 +32,7 @@ public class ItemFilterCover extends CoverBehavior implements IUICover {
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(ItemFilterCover.class, CoverBehavior.MANAGED_FIELD_HOLDER);
 
     protected ItemFilter itemFilter;
-    @Persisted @DescSynced
-    @Getter
+    @Persisted @DescSynced @Getter
     protected ItemFilterMode filterMode = ItemFilterMode.FILTER_INSERT;
 
     public ItemFilterCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {
