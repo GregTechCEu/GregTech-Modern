@@ -69,7 +69,7 @@ public abstract class LongDistancePipeType {
     public abstract boolean isValidEndpoint(ILDEndpoint endpoint);
 
     /**
-     * @return The minimum required distance (not pipe count between endpoints) between to endpoints to work.
+     * @return The minimum required distance (not pipe count) between two endpoints to work.
      */
     public int getMinLength() {
         return 0;
