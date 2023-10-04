@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.item.tool.MaterialToolTier;
 import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.world.item.enchantment.Enchantment;
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -19,6 +20,7 @@ public class ToolProperty implements IMaterialProperty<ToolProperty> {
      * Default: 1.0F
      */
     @Getter
+    @Setter
     private float harvestSpeed;
 
     /**
@@ -27,6 +29,7 @@ public class ToolProperty implements IMaterialProperty<ToolProperty> {
      * Default: 1.0F
      */
     @Getter
+    @Setter
     private float attackDamage;
 
     /**
@@ -35,6 +38,7 @@ public class ToolProperty implements IMaterialProperty<ToolProperty> {
      * Default: 0.0F
      */
     @Getter
+    @Setter
     private float attackSpeed;
 
     /**
@@ -43,6 +47,7 @@ public class ToolProperty implements IMaterialProperty<ToolProperty> {
      * Default: 100
      */
     @Getter
+    @Setter
     private int durability;
 
     /**
@@ -51,6 +56,7 @@ public class ToolProperty implements IMaterialProperty<ToolProperty> {
      * Default: 2 (Iron).
      */
     @Getter
+    @Setter
     private int harvestLevel;
 
     /**
@@ -59,18 +65,21 @@ public class ToolProperty implements IMaterialProperty<ToolProperty> {
      * Default: 10
      */
     @Getter
+    @Setter
     private int enchantability = 10;
 
     /**
      * If crafting tools should not be made from this material
      */
     @Getter
+    @Setter
     private boolean ignoreCraftingTools;
 
     /**
      * If tools made of this material should be unbreakable and ignore durability checks.
      */
     @Getter
+    @Setter
     private boolean isUnbreakable;
 
     /**
@@ -78,6 +87,7 @@ public class ToolProperty implements IMaterialProperty<ToolProperty> {
      * directly into the player's inventory instead of dropping on the ground.
      */
     @Getter
+    @Setter
     private boolean isMagnetic;
 
     /**
@@ -85,6 +95,7 @@ public class ToolProperty implements IMaterialProperty<ToolProperty> {
      * Mostly for modpack makers
      */
     @Getter
+    @Setter
     private int durabilityMultiplier = 1;
 
     private MaterialToolTier toolTier;
