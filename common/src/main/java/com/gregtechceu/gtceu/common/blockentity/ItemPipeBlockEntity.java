@@ -35,6 +35,7 @@ public class ItemPipeBlockEntity extends PipeBlockEntity<ItemPipeType, ItemPipeD
 
     TickableSubscription serverTick;
 
+    @Getter
     private int transferredItems = 0;
     private long timer = 0;
 
@@ -78,24 +79,22 @@ public class ItemPipeBlockEntity extends PipeBlockEntity<ItemPipeType, ItemPipeD
 
     @Override
     public boolean canAttachTo(Direction side) {
-        if (level != null) {
-            if (level.getBlockEntity(getBlockPos().relative(side)) instanceof ItemPipeBlockEntity) {
-                return false;
-            }
-            return ItemTransferHelper.getItemTransfer(level, getBlockPos().relative(side), side.getOpposite()) != null;
+        if (level == null) return false;
+        if (level.getBlockEntity(getBlockPos().relative(side)) instanceof ItemPipeBlockEntity) {
+            return false;
         }
-        return false;
+        return ItemTransferHelper.getItemTransfer(level, getBlockPos().relative(side), side.getOpposite()) != null;
     }
 
     @Nullable
     public ItemPipeNet getItemPipeNet() {
-        if (level instanceof ServerLevel serverLevel && getBlockState().getBlock() instanceof ItemPipeBlock fluidPipeBlock) {
-            ItemPipeNet currentFluidPipeNet = this.currentItemPipeNet.get();
-            if (currentFluidPipeNet != null && currentFluidPipeNet.isValid() && currentFluidPipeNet.containsNode(getBlockPos()))
-                return currentFluidPipeNet; //return current net if it is still valid
-            currentFluidPipeNet = fluidPipeBlock.getWorldPipeNet(serverLevel).getNetFromPos(getBlockPos());
-            if (currentFluidPipeNet != null) {
-                this.currentItemPipeNet = new WeakReference<>(currentFluidPipeNet);
+        if (level instanceof ServerLevel serverLevel && getBlockState().getBlock() instanceof ItemPipeBlock itemPipeBlock) {
+            ItemPipeNet currentItemPipeNet = this.currentItemPipeNet.get();
+            if (currentItemPipeNet != null && currentItemPipeNet.isValid() && currentItemPipeNet.containsNode(getBlockPos()))
+                return currentItemPipeNet; //return current net if it is still valid
+            currentItemPipeNet = itemPipeBlock.getWorldPipeNet(serverLevel).getNetFromPos(getBlockPos());
+            if (currentItemPipeNet != null) {
+                this.currentItemPipeNet = new WeakReference<>(currentItemPipeNet);
             }
         }
         return this.currentItemPipeNet.get();
@@ -109,10 +108,6 @@ public class ItemPipeBlockEntity extends PipeBlockEntity<ItemPipeType, ItemPipeD
 
     public void transferItems(int amount) {
         transferredItems += amount;
-    }
-
-    public int getTransferredItems() {
-        return transferredItems;
     }
 
     public void resetTransferred() {

@@ -15,6 +15,7 @@ import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
 import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
 import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
+import lombok.Getter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
@@ -27,6 +28,7 @@ import java.util.*;
 
 public class ItemNetHandler implements IItemTransfer {
 
+    @Getter
     private ItemPipeNet net;
     private ItemPipeBlockEntity pipe;
     private final Level world;
@@ -44,10 +46,6 @@ public class ItemNetHandler implements IItemTransfer {
 
     public void updateNetwork(ItemPipeNet net) {
         this.net = net;
-    }
-
-    public ItemPipeNet getNet() {
-        return net;
     }
 
     private void copyTransferred() {

@@ -695,9 +695,11 @@ public class LangHandler {
         provider.add("gtceu.machine.available_recipe_map_2.tooltip", "Available Recipe Maps: %s, %s");
         provider.add("gtceu.machine.available_recipe_map_3.tooltip", "Available Recipe Maps: %s, %s, %s");
         provider.add("gtceu.machine.available_recipe_map_4.tooltip", "Available Recipe Maps: %s, %s, %s, %s");
-        provider.add("gtceu.machine.endpoint.tooltip.1", "Connect with §fLong Distance Pipe§7 blocks to create a pipeline.");
-        provider.add("gtceu.machine.endpoint.tooltip.2", "Pipelines must have exactly §f1 Input§7 and §f1 Output§7 endpoint.");
-        provider.add("gtceu.machine.endpoint.tooltip.3", "Only pipeline endpoints need to be §fchunk-loaded§7.");
+
+        multiLang(provider, "gtceu.machine.endpoint.tooltip",
+                "Connect with §fLong Distance Pipe§7 blocks to create a pipeline.",
+                "Pipelines must have exactly §f1 Input§7 and §f1 Output§7 endpoint.",
+                "Only pipeline endpoints need to be §fchunk-loaded§7.");
         provider.add("gtceu.machine.endpoint.tooltip.min_length", "§bMinimum Endpoint Distance: §f%d Blocks");
 
         provider.add("gtceu.universal.disabled", "Multiblock Sharing §4Disabled");

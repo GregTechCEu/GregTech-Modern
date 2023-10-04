@@ -48,20 +48,20 @@ public class NetworkBuilder implements Runnable {
             if (first) {
                 first = false;
                 checkNetwork(start);
-            } else {
-                LongDistanceNetwork ldn = worldData.getNetwork(start);
-                if (ldn != null) {
-                    // this starting point was caught during a previous iteration, so we don't need to create another network here
-                    continue;
-                }
-                // create a new network, since the current was already calculated
-                this.network = this.network.getPipeType().createNetwork(this.worldData);
-                this.currentPoints.clear();
-                this.walked.clear();
-                this.pipes.clear();
-                this.endpoints.clear();
-                checkNetwork(start);
+                continue;
             }
+            LongDistanceNetwork ldn = worldData.getNetwork(start);
+            if (ldn != null) {
+                // this starting point was caught during a previous iteration, so we don't need to create another network here
+                continue;
+            }
+            // create a new network, since the current was already calculated
+            this.network = this.network.getPipeType().createNetwork(this.worldData);
+            this.currentPoints.clear();
+            this.walked.clear();
+            this.pipes.clear();
+            this.endpoints.clear();
+            checkNetwork(start);
         }
     }
 

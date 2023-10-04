@@ -256,7 +256,7 @@ public class GTMachines {
                     Component.translatable("gtceu.machine.endpoint.tooltip.2"),
                     Component.translatable("gtceu.machine.endpoint.tooltip.3"))
             .tooltipBuilder((stack, tooltip) -> {
-                if (ConfigHolder.INSTANCE.machines.ldItemPipeMinDistance > 0) {
+                if (ConfigHolder.INSTANCE.machines.ldFluidPipeMinDistance > 0) {
                     tooltip.add(Component.translatable("gtceu.machine.endpoint.tooltip.min_length", ConfigHolder.INSTANCE.machines.ldItemPipeMinDistance));
                 }
             })
