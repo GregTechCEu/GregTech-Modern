@@ -144,7 +144,7 @@ public class GCyMMachines {
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeType(MIXER_RECIPES)
             .recipeModifier(GTRecipeModifiers.PARALLEL_HATCH.apply(OverclockingLogic.PERFECT_OVERCLOCK, GTRecipeModifiers.ELECTRIC_OVERCLOCK))
-            .appearanceBlock(CASING_VIBRATION_SAFE)
+            .appearanceBlock(CASING_REACTION_SAFE)
             .pattern(definition -> FactoryBlockPattern.start()
                     .aisle("#XXX#","#XXX#","#XXX#","#XXX#","#XXX#","##F##")
                     .aisle("XXXXX","XAPAX","XAAAX","XAPAX","XAAAX","##F##")
@@ -152,7 +152,7 @@ public class GCyMMachines {
                     .aisle("XXXXX","XAPAX","XAAAX","XAPAX","XAAAX","##F##")
                     .aisle("#XXX#","#XSX#","#XXX#","#XXX#","#XXX#","##F##")
                     .where('S', controller(blocks(definition.get())))
-                    .where('X', blocks(CASING_VIBRATION_SAFE.get()).setMinGlobalLimited(14)
+                    .where('X', blocks(CASING_REACTION_SAFE.get()).setMinGlobalLimited(14)
                             .or(autoAbilities(definition.getRecipeTypes()))
                             .or(Predicates.autoAbilities(true, false, true)))
                     .where('F', blocks(ChemicalHelper.getBlock(TagPrefix.frameGt, GTMaterials.HastelloyX)))
@@ -161,7 +161,7 @@ public class GCyMMachines {
                     .where('A', Predicates.air())
                     .where('#', Predicates.any())
                     .build())
-            .workableCasingRenderer(GTCEu.id("block/casings/gcym/vibration_safe_casing"),
+            .workableCasingRenderer(GTCEu.id("block/casings/gcym/reaction_safe_mixing_casing"),
                     GTCEu.id("block/multiblock/gcym/large_mixer"), false)
             .compassSections(GTCompassSections.TIER[IV])
             .compassNodeSelf()
