@@ -10,11 +10,18 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
+import com.gregtechceu.gtceu.api.pipenet.longdistance.ILDEndpoint;
+import com.gregtechceu.gtceu.common.pipelike.fluidpipe.longdistance.LDFluidEndpointMachine;
+import com.gregtechceu.gtceu.common.pipelike.item.longdistance.LDItemEndpointMachine;
+import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
+import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 import com.lowdragmc.lowdraglib.side.fluid.fabric.FluidTransferHelperImpl;
+import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.side.item.fabric.ItemTransferHelperImpl;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -88,10 +95,30 @@ public class MetaMachineBlockEntityImpl extends MetaMachineBlockEntity {
             return null;
         }, type);
         ItemStorage.SIDED.registerForBlockEntity((blockEntity, side) -> {
+            if (((IMachineBlockEntity)blockEntity).getMetaMachine() instanceof LDItemEndpointMachine fluidEndpointMachine) {
+                if (fluidEndpointMachine.getLevel().isClientSide) return null;
+                ILDEndpoint endpoint = fluidEndpointMachine.getLink();
+                if (endpoint == null) return null;
+                Direction outputFacing = fluidEndpointMachine.getOutputFacing();
+                IItemTransfer transfer = ItemTransferHelperImpl.getItemTransfer(blockEntity.getLevel(), endpoint.getPos().relative(outputFacing), outputFacing.getOpposite());
+                if (transfer != null) {
+                    return ItemTransferHelperImpl.toItemVariantStorage(new LDItemEndpointMachine.ItemHandlerWrapper(transfer));
+                }
+            }
             var transfer = ((IMachineBlockEntity)blockEntity).getMetaMachine().getItemTransferCap(side);
             return transfer == null ? null : ItemTransferHelperImpl.toItemVariantStorage(transfer);
         }, type);
         FluidStorage.SIDED.registerForBlockEntity((blockEntity, side) -> {
+            if (((IMachineBlockEntity)blockEntity).getMetaMachine() instanceof LDFluidEndpointMachine fluidEndpointMachine) {
+                if (fluidEndpointMachine.getLevel().isClientSide) return null;
+                ILDEndpoint endpoint = fluidEndpointMachine.getLink();
+                if (endpoint == null) return null;
+                Direction outputFacing = fluidEndpointMachine.getOutputFacing();
+                IFluidTransfer transfer = FluidTransferHelper.getFluidTransfer(blockEntity.getLevel(), endpoint.getPos().relative(outputFacing), outputFacing.getOpposite());
+                if (transfer != null) {
+                    return FluidTransferHelperImpl.toFluidVariantStorage(new LDFluidEndpointMachine.FluidHandlerWrapper(transfer));
+                }
+            }
             var transfer = ((IMachineBlockEntity)blockEntity).getMetaMachine().getFluidTransferCap(side);
             return transfer == null ? null : FluidTransferHelperImpl.toFluidVariantStorage(transfer);
         }, type);

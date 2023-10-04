@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.pipelike.fluidpipe;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.pipelike.Node;
 import com.lowdragmc.lowdraglib.pipelike.PipeNetWalker;
@@ -21,7 +22,7 @@ public class FluidPipeNetWalker extends PipeNetWalker<FluidPipeData, FluidPipeNe
             walker.traversePipeNet();
             return walker.routes;
         } catch (Exception e){
-            LDLib.LOGGER.error("error while create net data for FluidPipeNet", e);
+            GTCEu.LOGGER.error("error while create net data for FluidPipeNet", e);
         }
         return null;
     }

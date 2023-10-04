@@ -229,11 +229,11 @@ public class GTMaterials {
         pipeHugeFluid.setIgnored(TreatedWood);
         pipeQuadrupleFluid.setIgnored(TreatedWood);
         pipeNonupleFluid.setIgnored(TreatedWood);
-        // TODO Item pipes
-        //pipeSmallRestrictive.addSecondaryMaterial(new MaterialStack(Iron, ring.materialAmount() * 2));
-        //pipeNormalRestrictive.addSecondaryMaterial(new MaterialStack(Iron, ring.materialAmount() * 2));
-        //pipeLargeRestrictive.addSecondaryMaterial(new MaterialStack(Iron, ring.materialAmount() * 2));
-        //pipeHugeRestrictive.addSecondaryMaterial(new MaterialStack(Iron, ring.materialAmount() * 2));
+
+        pipeSmallRestrictive.addSecondaryMaterial(new MaterialStack(Iron, ring.materialAmount() * 2));
+        pipeNormalRestrictive.addSecondaryMaterial(new MaterialStack(Iron, ring.materialAmount() * 2));
+        pipeLargeRestrictive.addSecondaryMaterial(new MaterialStack(Iron, ring.materialAmount() * 2));
+        pipeHugeRestrictive.addSecondaryMaterial(new MaterialStack(Iron, ring.materialAmount() * 2));
 
         cableGtSingle.addSecondaryMaterial(new MaterialStack(Rubber, plate.materialAmount()));
         cableGtDouble.addSecondaryMaterial(new MaterialStack(Rubber, plate.materialAmount()));

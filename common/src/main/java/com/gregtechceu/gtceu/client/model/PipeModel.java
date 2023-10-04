@@ -39,10 +39,10 @@ public class PipeModel {
 
     public Supplier<ResourceLocation> sideTexture, endTexture;
     @Setter
-    public ResourceLocation endOverlayTexture;
+    public ResourceLocation sideOverlayTexture, endOverlayTexture;
 
     @Environment(EnvType.CLIENT)
-    TextureAtlasSprite sideSprite, endSprite, endOverlaySprite;
+    TextureAtlasSprite sideSprite, endSprite, sideOverlaySprite, endOverlaySprite;
 
     public PipeModel(float thickness, Supplier<ResourceLocation> sideTexture, Supplier<ResourceLocation> endTexture) {
         this.sideTexture = sideTexture;
@@ -87,6 +87,9 @@ public class PipeModel {
         if (endSprite == null) {
             endSprite = ModelFactory.getBlockSprite(endTexture.get());
         }
+        if (sideOverlayTexture != null && sideOverlaySprite == null) {
+            sideOverlaySprite = ModelFactory.getBlockSprite(sideOverlayTexture);
+        }
         if (endOverlayTexture != null && endOverlaySprite == null) {
             endOverlaySprite = ModelFactory.getBlockSprite(endOverlayTexture);
         }
@@ -97,11 +100,19 @@ public class PipeModel {
             }
 
             if (isConnected(connections, side)) { // side connected
-                BakedQuad base = FaceQuad.builder(side, endSprite).cube(sideCubes.get(side).inflate(-0.001)).cubeUV().tintIndex(1).bake();
+                List<BakedQuad> quads = new ArrayList<>();
+                quads.add(FaceQuad.builder(side, endSprite).cube(sideCubes.get(side).inflate(-0.001)).cubeUV().tintIndex(1).bake());
                 if (endOverlaySprite != null) {
-                    return List.of(base, FaceQuad.builder(side, endOverlaySprite).cube(sideCubes.get(side).inflate(-0.000)).cubeUV().tintIndex(0).bake());
+                    quads.add(FaceQuad.builder(side, endOverlaySprite).cube(sideCubes.get(side).inflate(-0.000)).cubeUV().tintIndex(0).bake());
                 }
-                return List.of(base);
+                if (sideOverlaySprite != null) {
+                    for (Direction face : Direction.values()) {
+                        if (face != side && face != side.getOpposite()) {
+                            quads.add(FaceQuad.builder(face, sideOverlaySprite).cube(sideCubes.get(side).inflate(-0.000)).cubeUV().tintIndex(2).bake());
+                        }
+                    }
+                }
+                return quads;
             }
 
             return Collections.emptyList();
@@ -119,9 +130,12 @@ public class PipeModel {
                     if (facing.getAxis() != face.getAxis()) {
                         if (isConnected(connections, facing)) {
                             quads.add(FaceQuad.builder(face, sideSprite).cube(sideCubes.get(facing)).cubeUV().tintIndex(0).bake());
-                            //if (endSpriteOverlay != null) {
-                            //    quads.add(FaceQuad.builder(face, endSpriteOverlay).cube(sideCubes.get(facing).inflate(0.01)).cubeUV().tintIndex(0).bake());
+                            //if (endOverlaySprite != null) {
+                            //    quads.add(FaceQuad.builder(face, endOverlaySprite).cube(sideCubes.get(facing).inflate(0.01)).cubeUV().tintIndex(0).bake());
                             //}
+                            if (sideOverlaySprite != null) {
+                                quads.add(FaceQuad.builder(face, sideOverlaySprite).cube(sideCubes.get(facing).inflate(0.001)).cubeUV().tintIndex(2).bake());
+                            }
                         }
                     }
                 }
@@ -151,6 +165,7 @@ public class PipeModel {
     public void registerTextureAtlas(Consumer<ResourceLocation> register) {
         register.accept(sideTexture.get());
         register.accept(endTexture.get());
+        if (sideOverlayTexture != null) register.accept(sideOverlayTexture);
         if (endOverlayTexture != null) register.accept(endOverlayTexture);
         sideSprite = null;
         endSprite = null;

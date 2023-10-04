@@ -38,6 +38,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.material.Fluids;
 import org.jetbrains.annotations.Nullable;
 
@@ -271,12 +272,12 @@ public class GTRecipeBuilder {
         return outputItems(new ItemStack(input));
     }
 
-    public GTRecipeBuilder outputItems(Supplier<? extends Item> input) {
-        return outputItems(new ItemStack(input.get()));
+    public GTRecipeBuilder outputItems(Supplier<? extends ItemLike> input) {
+        return outputItems(new ItemStack(input.get().asItem()));
     }
 
-    public GTRecipeBuilder outputItems(Supplier<? extends Item> input, int amount) {
-        return outputItems(new ItemStack(input.get(), amount));
+    public GTRecipeBuilder outputItems(Supplier<? extends ItemLike> input, int amount) {
+        return outputItems(new ItemStack(input.get().asItem(), amount));
     }
 
     public GTRecipeBuilder outputItems(TagPrefix orePrefix, Material material) {
