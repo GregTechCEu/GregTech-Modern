@@ -96,8 +96,7 @@ public class PipeModel {
 
         if (side != null) {
             if (thickness == 1) { // full block
-                BakedQuad base = FaceQuad.builder(side, sideSprite).cube(coreCube.inflate(-0.001)).cubeUV().tintIndex(1).bake();
-                return List.of(base);
+                return List.of(FaceQuad.builder(side, sideSprite).cube(coreCube).cubeUV().tintIndex(0).bake());
             }
 
             if (isConnected(connections, side)) { // side connected
@@ -109,7 +108,7 @@ public class PipeModel {
                 if (sideOverlaySprite != null) {
                     for (Direction face : Direction.values()) {
                         if (face != side && face != side.getOpposite()) {
-                            quads.add(FaceQuad.builder(face, sideOverlaySprite).cube(sideCubes.get(side).inflate(-0.000)).cubeUV().tintIndex(0).bake());
+                            quads.add(FaceQuad.builder(face, sideOverlaySprite).cube(sideCubes.get(side).inflate(-0.000)).cubeUV().tintIndex(2).bake());
                         }
                     }
                 }
@@ -124,18 +123,18 @@ public class PipeModel {
             // render core cube
             for (Direction face : Direction.values()) {
                 if (!isConnected(connections, face)) {
-                    quads.add(FaceQuad.builder(face, sideSprite).cube(coreCube).cubeUV().tintIndex(1).bake());
+                    quads.add(FaceQuad.builder(face, sideSprite).cube(coreCube).cubeUV().tintIndex(0).bake());
                 }
                 // render each connected side
                 for (Direction facing : Direction.values()) {
                     if (facing.getAxis() != face.getAxis()) {
                         if (isConnected(connections, facing)) {
-                            quads.add(FaceQuad.builder(face, sideSprite).cube(sideCubes.get(facing)).cubeUV().tintIndex(1).bake());
-                            if (endOverlaySprite != null) {
-                                quads.add(FaceQuad.builder(face, endOverlaySprite).cube(sideCubes.get(facing).inflate(0.01)).cubeUV().tintIndex(0).bake());
-                            }
+                            quads.add(FaceQuad.builder(face, sideSprite).cube(sideCubes.get(facing)).cubeUV().tintIndex(0).bake());
+                            //if (endOverlaySprite != null) {
+                            //    quads.add(FaceQuad.builder(face, endOverlaySprite).cube(sideCubes.get(facing).inflate(0.01)).cubeUV().tintIndex(0).bake());
+                            //}
                             if (sideOverlaySprite != null) {
-                                quads.add(FaceQuad.builder(face, sideOverlaySprite).cube(sideCubes.get(facing).inflate(0.001)).cubeUV().tintIndex(0).bake());
+                                quads.add(FaceQuad.builder(face, sideOverlaySprite).cube(sideCubes.get(facing).inflate(0.001)).cubeUV().tintIndex(2).bake());
                             }
                         }
                     }
