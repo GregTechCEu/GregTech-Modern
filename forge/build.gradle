@@ -134,6 +134,7 @@ dependencies {
 
     // KJS
     modImplementation forge.kubejs
+    implementation forge.mixinextras
 
     // Configuration
     modImplementation(forge.configuration)
