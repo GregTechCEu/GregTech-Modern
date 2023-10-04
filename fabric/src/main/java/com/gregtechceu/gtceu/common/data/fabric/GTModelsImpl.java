@@ -66,4 +66,12 @@ public class GTModelsImpl {
     public static void rubberTreeSaplingModel(DataGenContext<Item, BlockItem> context, RegistrateItemModelProvider provider) {
         provider.generated(context, provider.modLoc("block/" + provider.name(context)));
     }
+
+    public static void longDistanceItemPipeModel(DataGenContext<Block, ? extends Block> ctx, RegistrateBlockstateProvider prov) {
+        prov.simpleBlock(ctx.getEntry(), prov.models().cubeAll("long_distance_item_pipeline", prov.modLoc("block/pipe/ld_item_pipe/block")));
+    }
+
+    public static void longDistanceFluidPipeModel(DataGenContext<Block, ? extends Block> ctx, RegistrateBlockstateProvider prov) {
+        prov.simpleBlock(ctx.getEntry(), prov.models().cubeAll("long_distance_fluid_pipeline", prov.modLoc("block/pipe/ld_fluid_pipe/block")));
+    }
 }

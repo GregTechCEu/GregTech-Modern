@@ -56,7 +56,7 @@ public abstract class MaterialPipeBlock<PipeType extends Enum<PipeType> & IPipeT
     }
 
     public int tinted(BlockState blockState, @Nullable BlockAndTintGetter blockAndTintGetter, @Nullable BlockPos blockPos, int index) {
-        return material.getMaterialRGB();
+        return index == 1 ? material.getMaterialRGB() : -1;
     }
 
     @Override

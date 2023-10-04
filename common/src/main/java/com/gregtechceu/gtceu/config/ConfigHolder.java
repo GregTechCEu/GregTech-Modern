@@ -249,6 +249,12 @@ public class ConfigHolder {
         @Configurable.Comment({"Makes nearly every GCYM Multiblock require blocks which set their maximum voltages.",
                 "Default: false"})
         public boolean enableTieredCasings = false;
+        @Configurable
+        @Configurable.Comment({"Minimum distance between Long Distance Item Pipe Endpoints", "Default: 50"})
+        public int ldItemPipeMinDistance = 50;
+        @Configurable
+        @Configurable.Comment({"Minimum distance betweeb Long Distance Fluid Pipe Endpoints", "Default: 50"})
+        public int ldFluidPipeMinDistance = 50;
     }
 
     public static class ClientConfigs {

@@ -12,6 +12,8 @@ import java.util.function.Consumer;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
+import static com.gregtechceu.gtceu.common.data.GTBlocks.LD_FLUID_PIPE;
+import static com.gregtechceu.gtceu.common.data.GTBlocks.LD_ITEM_PIPE;
 import static com.gregtechceu.gtceu.common.data.GTItems.*;
 import static com.gregtechceu.gtceu.common.data.GTMachines.*;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
@@ -636,6 +638,45 @@ public class MetaTileEntityMachineRecipeLoader {
                 .circuitMeta(2)
                 .outputItems(FLUID_DRILLING_RIG[EV])
                 .duration(400).EUt(VA[LuV]).save(provider);
+
+        // Long Distance Pipes
+        ASSEMBLER_RECIPES.recipeBuilder("long_distance_item_endpoint")
+                .inputItems(pipeLargeItem, Tin, 2)
+                .inputItems(plate, Steel, 8)
+                .inputItems(gear, Steel, 2)
+                .circuitMeta(1)
+                .inputFluids(SolderingAlloy.getFluid(L / 2))
+                .outputItems(LONG_DIST_ITEM_ENDPOINT, 2)
+                .duration(400).EUt(16)
+                .save(provider);
+
+        ASSEMBLER_RECIPES.recipeBuilder("long_distance_fluid_endpoint")
+                .inputItems(pipeLargeFluid, Bronze, 2)
+                .inputItems(plate, Steel, 8)
+                .inputItems(gear, Steel, 2)
+                .circuitMeta(1)
+                .inputFluids(SolderingAlloy.getFluid(L / 2))
+                .outputItems(LONG_DIST_FLUID_ENDPOINT, 2)
+                .duration(400).EUt(16)
+                .save(provider);
+
+        ASSEMBLER_RECIPES.recipeBuilder("long_distance_item_pipe")
+                .inputItems(pipeLargeItem, Tin, 2)
+                .inputItems(plate, Steel, 8)
+                .circuitMeta(2)
+                .inputFluids(SolderingAlloy.getFluid(L / 2))
+                .outputItems(LD_ITEM_PIPE, 64)
+                .duration(600).EUt(24)
+                .save(provider);
+
+        ASSEMBLER_RECIPES.recipeBuilder("long_distance_fluid_pipe")
+                .inputItems(pipeLargeFluid, Bronze, 2)
+                .inputItems(plate, Steel, 8)
+                .circuitMeta(2)
+                .inputFluids(SolderingAlloy.getFluid(L / 2))
+                .outputItems(LD_FLUID_PIPE, 64)
+                .duration(600).EUt(24)
+                .save(provider);
 
     }
 }

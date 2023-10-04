@@ -113,6 +113,7 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
         setChanged();
     }
 
+
     @Override
     public long getOffsetTimer() {
         return level == null ? offset : (level.getGameTime() + offset);

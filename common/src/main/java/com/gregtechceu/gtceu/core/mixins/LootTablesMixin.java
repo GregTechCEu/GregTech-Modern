@@ -86,11 +86,9 @@ public abstract class LootTablesMixin {
         GTBlocks.FLUID_PIPE_BLOCKS.rowMap().forEach((prefix, map) -> {
             MixinHelpers.addMaterialBlockLootTables(lootTables, prefix, map);
         });
-        /* todo item pipes
         GTBlocks.ITEM_PIPE_BLOCKS.rowMap().forEach((prefix, map) -> {
             MixinHelpers.addMaterialBlockLootTables(lootTables, prefix, map);
         });
-         */
         GTRegistries.MACHINES.forEach(machine -> {
             Block block = machine.getBlock();
             ResourceLocation id = machine.getId();

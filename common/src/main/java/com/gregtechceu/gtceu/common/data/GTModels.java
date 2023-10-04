@@ -45,4 +45,14 @@ public class GTModels {
     public static void rubberTreeSaplingModel(DataGenContext<Item, BlockItem> context, RegistrateItemModelProvider provider) {
         throw new AssertionError();
     }
+
+    @ExpectPlatform
+    public static void longDistanceItemPipeModel(DataGenContext<Block, ? extends Block> ctx, RegistrateBlockstateProvider prov) {
+        throw new AssertionError();
+    }
+
+    @ExpectPlatform
+    public static void longDistanceFluidPipeModel(DataGenContext<Block, ? extends Block> ctx, RegistrateBlockstateProvider prov) {
+        throw new AssertionError();
+    }
 }

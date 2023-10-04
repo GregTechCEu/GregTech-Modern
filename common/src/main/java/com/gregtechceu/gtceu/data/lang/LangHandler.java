@@ -696,6 +696,12 @@ public class LangHandler {
         provider.add("gtceu.machine.available_recipe_map_3.tooltip", "Available Recipe Maps: %s, %s, %s");
         provider.add("gtceu.machine.available_recipe_map_4.tooltip", "Available Recipe Maps: %s, %s, %s, %s");
 
+        multiLang(provider, "gtceu.machine.endpoint.tooltip",
+                "Connect with §fLong Distance Pipe§7 blocks to create a pipeline.",
+                "Pipelines must have exactly §f1 Input§7 and §f1 Output§7 endpoint.",
+                "Only pipeline endpoints need to be §fchunk-loaded§7.");
+        provider.add("gtceu.machine.endpoint.tooltip.min_length", "§bMinimum Endpoint Distance: §f%d Blocks");
+
         provider.add("gtceu.universal.disabled", "Multiblock Sharing §4Disabled");
         provider.add("gtceu.universal.enabled", "Multiblock Sharing §aEnabled");
 
@@ -705,26 +711,16 @@ public class LangHandler {
         provider.add("gtceu.bus.collapse_true", "Bus will collapse Items");
         provider.add("gtceu.bus.collapse_false", "Bus will not collapse Items");
         provider.add("gtceu.bus.collapse.error", "Bus must be attached to multiblock first");
+
         provider.add("gtceu.machine.fluid_hatch.import.tooltip", "Fluid Input for Multiblocks");
-
-
         provider.add("gtceu.machine.fluid_hatch.export.tooltip", "Fluid Output for Multiblocks");
 
-
         provider.add("gtceu.machine.energy_hatch.input.tooltip", "Energy Input for Multiblocks");
-
-
         provider.add("gtceu.machine.energy_hatch.input_hi_amp.tooltip", "Multiple Ampere Energy Input for Multiblocks");
-
-
         provider.add("gtceu.machine.energy_hatch.output.tooltip", "Energy Output for Multiblocks");
-
-
         provider.add("gtceu.machine.energy_hatch.output_hi_amp.tooltip", "Multiple Ampere Energy Output for Multiblocks");
 
-
         multiLang(provider, "gtceu.machine.rotor_holder.tooltip", "Rotor Holder for Multiblocks", "Holds Rotor in place so it will not fly away");
-
 
         provider.add("gtceu.machine.maintenance_hatch.tooltip", "For maintaining Multiblocks");
 
