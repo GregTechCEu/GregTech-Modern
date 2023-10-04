@@ -79,10 +79,15 @@ public class ItemPipeNet extends PipeNet<ItemPipeData> {
     //////////////////////////////////////
 
     public static class Inventory {
+        @Getter
         private final BlockPos pipePos;
+        @Getter
         private final Direction faceToHandler;
+        @Getter
         private final int distance;
+        @Getter
         private final ItemPipeProperties properties;
+        @Getter
         private final List<Predicate<ItemStack>> filters;
 
         public Inventory(BlockPos pipePos, Direction facing, int distance, ItemPipeProperties properties, List<Predicate<ItemStack>> filters) {
@@ -91,26 +96,6 @@ public class ItemPipeNet extends PipeNet<ItemPipeData> {
             this.distance = distance;
             this.properties = properties;
             this.filters = filters;
-        }
-
-        public BlockPos getPipePos() {
-            return pipePos;
-        }
-
-        public Direction getFaceToHandler() {
-            return faceToHandler;
-        }
-
-        public int getDistance() {
-            return distance;
-        }
-
-        public ItemPipeProperties getProperties() {
-            return properties;
-        }
-
-        public List<Predicate<ItemStack>> getFilters() {
-            return filters;
         }
 
         public boolean matchesFilters(ItemStack stack) {
