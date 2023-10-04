@@ -179,6 +179,11 @@ public abstract class PipeBlock <PipeType extends Enum<PipeType> & IPipeType<Nod
     }
 
     @Override
+    public boolean isCollisionShapeFullBlock(BlockState state, BlockGetter level, BlockPos pos) {
+        return false;
+    }
+
+    @Override
     public VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext context) {
         var pipeNode = getPileTile(pLevel, pPos);
         var connections = 0;
