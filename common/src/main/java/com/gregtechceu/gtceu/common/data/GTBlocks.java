@@ -9,26 +9,22 @@ import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.events.MaterialCasingCollectionEvent;
 import com.gregtechceu.gtceu.api.block.*;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.data.tag.TagUtil;
+import com.gregtechceu.gtceu.api.item.MaterialBlockItem;
 import com.gregtechceu.gtceu.api.item.MaterialPipeBlockItem;
 import com.gregtechceu.gtceu.api.item.RendererBlockItem;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.pipenet.longdistance.LongDistancePipeBlock;
-import com.gregtechceu.gtceu.api.pipenet.longdistance.LongDistancePipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.api.data.tag.TagUtil;
 import com.gregtechceu.gtceu.api.registry.registrate.CompassNode;
 import com.gregtechceu.gtceu.api.registry.registrate.CompassSection;
 import com.gregtechceu.gtceu.client.renderer.block.CTMModelRenderer;
 import com.gregtechceu.gtceu.client.renderer.block.OreBlockRenderer;
 import com.gregtechceu.gtceu.client.renderer.block.TextureOverrideRenderer;
 import com.gregtechceu.gtceu.common.block.*;
-import com.gregtechceu.gtceu.common.pipelike.fluidpipe.FluidPipeType;
-import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
-import com.gregtechceu.gtceu.api.item.MaterialBlockItem;
-import com.gregtechceu.gtceu.api.item.tool.GTToolType;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.pipelike.cable.Insulation;
 import com.gregtechceu.gtceu.common.pipelike.fluidpipe.FluidPipeType;
 import com.gregtechceu.gtceu.common.pipelike.fluidpipe.longdistance.LDFluidPipeType;
@@ -60,14 +56,11 @@ import net.minecraft.data.loot.BlockLoot;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.FoliageColor;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.grower.AbstractTreeGrower;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.material.MaterialColor;
@@ -87,7 +80,8 @@ import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
-import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.*;
+import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.FORCE_GENERATE_BLOCK;
+import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.GENERATE_FRAME;
 import static com.gregtechceu.gtceu.api.registry.GTRegistries.REGISTRATE;
 import static com.gregtechceu.gtceu.common.data.GCyMBlocks.*;
 import static net.minecraftforge.client.model.generators.ModelProvider.BLOCK_FOLDER;
@@ -152,7 +146,7 @@ public class GTBlocks {
             if (material.hasProperty(PropertyKey.ORE)) {
                 if (!TagPrefix.rawOreBlock.isIgnored(material) && TagPrefix.rawOreBlock.generationCondition().test(material)) {
                     var entry = REGISTRATE.block("raw_%s_block".formatted(material.getName()), properties -> new MaterialBlock(properties.noLootTable(), TagPrefix.rawOreBlock, material))
-                            .initialProperties(() -> Blocks.IRON_BLOCK)
+                            .initialProperties(() -> Blocks.RAW_IRON_BLOCK)
                             .transform(unificationBlock(TagPrefix.rawOreBlock, material))
                             .addLayer(() -> RenderType::solid)
                             .setData(ProviderType.BLOCKSTATE, NonNullBiConsumer.noop())
@@ -211,6 +205,26 @@ public class GTBlocks {
             }
         }
         MATERIAL_BLOCKS = builder.build();
+    }
+
+    public static Map<Material, BlockEntry<SurfaceRockBlock>> SURFACE_ROCK_BLOCKS;
+    public static void generateSurfaceRocks() {
+        ImmutableMap.Builder<Material, BlockEntry<SurfaceRockBlock>> builder = ImmutableMap.builder();
+        for (Material material : GTRegistries.MATERIALS) {
+            if (material.hasProperty(PropertyKey.ORE)) {
+                var entry = REGISTRATE.block("%s_indicator".formatted(material.getName()), p -> new SurfaceRockBlock(p, material))
+                        .initialProperties(() -> Blocks.GRAVEL)
+                        .properties(p -> p.noLootTable().strength(0.25f))
+                        .blockstate(NonNullBiConsumer.noop())
+                        .setData(ProviderType.LANG, NonNullBiConsumer.noop())
+                        .setData(ProviderType.LOOT, NonNullBiConsumer.noop())
+                        .addLayer(() -> RenderType::cutoutMipped)
+                        .color(() -> SurfaceRockBlock::tintedColor)
+                        .register();
+                builder.put(material, entry);
+            }
+        }
+        SURFACE_ROCK_BLOCKS = builder.build();
     }
 
     //////////////////////////////////////
@@ -798,6 +812,7 @@ public class GTBlocks {
 
     public static void init() {
         generateMaterialBlocks();
+        generateSurfaceRocks();
         generateCableBlocks();
         generatePipeBlocks();
         GCyMBlocks.init();
