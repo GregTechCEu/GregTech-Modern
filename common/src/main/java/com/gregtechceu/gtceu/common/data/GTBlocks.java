@@ -18,6 +18,7 @@ import com.gregtechceu.gtceu.api.item.LaserPipeBlockItem;
 import com.gregtechceu.gtceu.api.item.MaterialBlockItem;
 import com.gregtechceu.gtceu.api.item.MaterialPipeBlockItem;
 import com.gregtechceu.gtceu.api.item.RendererBlockItem;
+import com.gregtechceu.gtceu.api.item.SurfaceRockItem;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.multiblock.IBatteryData;
 import com.gregtechceu.gtceu.api.pipenet.longdistance.LongDistancePipeBlock;
@@ -217,6 +218,11 @@ public class GTBlocks {
                         .setData(ProviderType.LOOT, NonNullBiConsumer.noop())
                         .addLayer(() -> RenderType::cutoutMipped)
                         .color(() -> SurfaceRockBlock::tintedColor)
+                        .item(SurfaceRockItem::new)
+                        .onRegister(SurfaceRockItem::onRegister)
+                        .model(NonNullBiConsumer.noop())
+                        .color(() -> SurfaceRockItem::tintColor)
+                        .build()
                         .register();
                 builder.put(material, entry);
             }
