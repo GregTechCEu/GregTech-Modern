@@ -122,7 +122,10 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
 
     @Override
     public void onChanged() {
-        markDirty();
+        var level = getLevel();
+        if (level != null && !level.isClientSide && level.getServer() != null) {
+            level.getServer().execute(this::markDirty);
+        }
     }
 
     public Level getLevel() {

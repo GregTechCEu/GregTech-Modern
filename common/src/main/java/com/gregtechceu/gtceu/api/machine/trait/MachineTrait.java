@@ -38,7 +38,7 @@ public abstract class MachineTrait implements IEnhancedManaged {
 
     @Override
     public void onChanged() {
-        machine.markDirty();
+        machine.onChanged();
     }
 
     public void onMachineLoad() {
