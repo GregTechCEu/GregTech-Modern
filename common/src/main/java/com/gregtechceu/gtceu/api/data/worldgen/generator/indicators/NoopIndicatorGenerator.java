@@ -20,4 +20,9 @@ public class NoopIndicatorGenerator extends IndicatorGenerator {
     public void generate(WorldGenLevel level, RandomSource random, GeneratedVeinPosition veinPosition, ChunkPos currentChunk) {
         // Nothing to do here
     }
+
+    @Override
+    public Codec<? extends IndicatorGenerator> codec() {
+        return CODEC;
+    }
 }
