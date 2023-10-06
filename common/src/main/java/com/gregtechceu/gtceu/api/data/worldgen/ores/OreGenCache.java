@@ -28,6 +28,11 @@ import java.util.stream.Stream;
 public class OreGenCache {
     private final OreGenerator oreGenerator = new OreGenerator();
 
+    private final Cache<ChunkPos, List<GeneratedVeinPosition>> veinPositionsByOrigin = CacheBuilder.newBuilder()
+            .maximumSize(ConfigHolder.INSTANCE != null ? ConfigHolder.INSTANCE.worldgen.oreVeins.veinPositionChunkCacheSize : 2048)
+            .softValues()
+            .build();
+
     private final Cache<ChunkPos, List<GeneratedVein>> generatedVeinsByOrigin = CacheBuilder.newBuilder()
             .maximumSize(ConfigHolder.INSTANCE != null ? ConfigHolder.INSTANCE.worldgen.oreVeins.oreGenerationChunkCacheSize : 512)
             .softValues()
