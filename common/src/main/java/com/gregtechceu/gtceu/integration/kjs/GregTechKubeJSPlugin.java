@@ -13,7 +13,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.worldgen.*;
-import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinGenerator;
+import com.gregtechceu.gtceu.api.data.worldgen.generator.veins.VeinGenerator;
 import com.gregtechceu.gtceu.api.fluids.FluidBuilder;
 import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttributes;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;

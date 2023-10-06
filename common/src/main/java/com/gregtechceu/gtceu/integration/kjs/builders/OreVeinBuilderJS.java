@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.worldgen.BiomeWeightModifier;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.IWorldGenLayer;
-import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinGenerator;
+import com.gregtechceu.gtceu.api.data.worldgen.generator.veins.VeinGenerator;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.JsonOps;
