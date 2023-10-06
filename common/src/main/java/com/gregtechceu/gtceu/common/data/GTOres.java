@@ -6,15 +6,12 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.worldgen.*;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import lombok.Getter;
-import net.minecraft.core.Registry;
-import net.minecraft.data.worldgen.features.OreFeatures;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BiomeTags;
-import net.minecraft.world.level.Level;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.VerticalAnchor;
@@ -29,8 +26,8 @@ import java.util.function.Supplier;
 
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.ore;
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.oreNetherrack;
-import static com.gregtechceu.gtceu.api.data.worldgen.generator.DikeVeinGenerator.DikeBlockDefinition;
-import static com.gregtechceu.gtceu.api.data.worldgen.generator.VeinedVeinGenerator.VeinBlockDefinition;
+import static com.gregtechceu.gtceu.api.data.worldgen.generator.veins.DikeVeinGenerator.DikeBlockDefinition;
+import static com.gregtechceu.gtceu.api.data.worldgen.generator.veins.VeinedVeinGenerator.VeinBlockDefinition;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 
 /**

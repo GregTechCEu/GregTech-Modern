@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.data.worldgen;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.data.worldgen.generator.*;
+import com.gregtechceu.gtceu.api.data.worldgen.generator.veins.*;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.mojang.serialization.Codec;
