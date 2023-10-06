@@ -450,12 +450,12 @@ public class GTRecipeTypes {
                     FluidIngredient input = FluidRecipeCapability.CAP.of(recipeBuilder.input.get(FluidRecipeCapability.CAP).get(0).getContent());
                     ItemStack[] outputs = recipeBuilder.output.containsKey(ItemRecipeCapability.CAP) ? ItemRecipeCapability.CAP.of(recipeBuilder.output.get(ItemRecipeCapability.CAP).get(0).getContent()).getItems() : null;
                     ItemStack outputItem = outputs == null || outputs.length == 0 ? ItemStack.EMPTY : outputs[0];
-                    if (input.isEmpty() || input.getStacks().length == 0) return;
+                    if (input.isEmpty()) return;
                     List<Content> contents = recipeBuilder.output.get(FluidRecipeCapability.CAP);
                     for (int i = 0; i < contents.size(); ++i) {
                         FluidIngredient output = FluidRecipeCapability.CAP.of(contents.get(i).getContent());
                         if (output.isEmpty() || output.getStacks().length == 0) continue;
-                        GTRecipeBuilder builder = DISTILLERY_RECIPES.recipeBuilder("distill_" + BuiltInRegistries.FLUID.getKey(input.getStacks()[0].getFluid()).getPath() + "_to_" + BuiltInRegistries.FLUID.getKey(output.getStacks()[0].getFluid()).getPath()).EUt(Math.max(1, EUt / 4)).circuitMeta(i + 1);
+                        GTRecipeBuilder builder = DISTILLERY_RECIPES.recipeBuilder(recipeBuilder.id.getPath() + "_to_" + BuiltInRegistries.FLUID.getKey(output.getStacks()[0].getFluid()).getPath()).EUt(Math.max(1, EUt / 4)).circuitMeta(i + 1);
 
                         int ratio = RecipeHelper.getRatioForDistillery(input, output, outputItem);
                         int recipeDuration = (int) (recipeBuilder.duration * OverclockingLogic.STANDARD_OVERCLOCK_DURATION_DIVISOR);
