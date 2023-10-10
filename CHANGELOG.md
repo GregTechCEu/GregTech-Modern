@@ -1,9 +1,8 @@
 # ChangeLog
 
-* add item pipes
-* add long distance pipelines
-* fix crash when joining servers
-* fix pipe covers not having collision
-* add oilsands veins
-* fix machines sometimes losing NBT
-* fix large mixer using the wrong casing
+* add tooltip to item pipes
+* fix small distillery recipes missing
+* fix multi smelter being able to run centrifuge recipes
+* fix machines not being silenced/muffled when right-clicking with a hammer
+* fix machine controller using the redstone signal from adjacent block's wrong side
+* fix onChanged() not being thread-safe
