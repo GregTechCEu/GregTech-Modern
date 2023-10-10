@@ -162,7 +162,7 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
 
     @Override
     public void clientTick() {
-        if (isRemote() && previouslyMuffled != isMuffled) {
+        if (previouslyMuffled != isMuffled) {
             previouslyMuffled = isMuffled;
 
             if (recipeLogic != null)

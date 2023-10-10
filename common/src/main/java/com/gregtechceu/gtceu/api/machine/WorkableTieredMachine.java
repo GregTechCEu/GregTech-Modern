@@ -197,7 +197,7 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
 
     @Override
     public void clientTick() {
-        if (isRemote() && previouslyMuffled != isMuffled) {
+        if (previouslyMuffled != isMuffled) {
             previouslyMuffled = isMuffled;
 
             if (recipeLogic != null)
