@@ -294,7 +294,9 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
 
     protected InteractionResult onHardHammerClick(Player playerIn, InteractionHand hand, Direction gridSide, BlockHitResult hitResult) {
         if (this instanceof IMufflableMachine mufflableMachine) {
-            mufflableMachine.setMuffled(!mufflableMachine.isMuffled());
+            if (!isRemote()) {
+                mufflableMachine.setMuffled(!mufflableMachine.isMuffled());
+            }
 
             return InteractionResult.CONSUME;
         }
