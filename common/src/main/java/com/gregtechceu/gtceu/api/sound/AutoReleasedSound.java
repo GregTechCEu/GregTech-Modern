@@ -34,7 +34,7 @@ public class AutoReleasedSound extends AbstractTickableSoundInstance {
 
     @Override
     public void tick() {
-        if (!predicate.getAsBoolean()) {
+        if (!isStopped() && !predicate.getAsBoolean()) {
             release();
         }
     }

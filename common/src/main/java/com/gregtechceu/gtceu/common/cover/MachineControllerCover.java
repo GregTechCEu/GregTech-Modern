@@ -177,7 +177,7 @@ public class MachineControllerCover extends CoverBehavior implements IUICover {
         Level level = coverHolder.getLevel();
         BlockPos sourcePos = coverHolder.getPos().relative(attachedSide);
 
-        return level.getBlockState(sourcePos).getSignal(level, sourcePos, attachedSide.getOpposite());
+        return level.getBlockState(sourcePos).getSignal(level, sourcePos, attachedSide);
     }
 
 

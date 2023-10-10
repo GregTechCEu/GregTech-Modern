@@ -58,12 +58,12 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
     public final NotifiableFluidTank exportFluids;
     @Getter
     protected final Table<IO, RecipeCapability<?>, List<IRecipeHandler<?>>> capabilitiesProxy;
-    @Persisted
-    @Getter
+    @Persisted @Getter
     protected int overclockTier;
     protected final List<ISubscription> traitSubscriptions;
     @Persisted @DescSynced @Getter @Setter
     protected boolean isMuffled;
+    protected boolean previouslyMuffled = true;
 
     public WorkableTieredMachine(IMachineBlockEntity holder, int tier, Int2LongFunction tankScalingFunction, Object... args) {
         super(holder, tier, args);
@@ -194,6 +194,16 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
     //////////////////////////////////////
     //******     RECIPE LOGIC    *******//
     //////////////////////////////////////
+
+    @Override
+    public void clientTick() {
+        if (previouslyMuffled != isMuffled) {
+            previouslyMuffled = isMuffled;
+
+            if (recipeLogic != null)
+                recipeLogic.updateSound();
+        }
+    }
 
     @Override
     public boolean keepSubscribing() {
