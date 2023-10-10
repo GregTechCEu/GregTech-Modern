@@ -110,9 +110,11 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
 
     @Override
     public void onChanged() {
-        setChanged();
+        var level = getLevel();
+        if (level != null && !level.isClientSide && level.getServer() != null) {
+            level.getServer().execute(this::setChanged);
+        }
     }
-
 
     @Override
     public long getOffsetTimer() {
