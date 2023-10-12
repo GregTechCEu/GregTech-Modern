@@ -86,7 +86,7 @@ public class FluidPipeNet extends PipeNet<FluidPipeData> {
 
     private static class UsedThroughput {
         public long tick = 0L;
-        public long[] channelAmounts = new long[9];
+        public long[] channelAmounts = new long[FluidPipeProperties.MAX_PIPE_CHANNELS];
 
         public UsedThroughput() {
             resetAmounts();
