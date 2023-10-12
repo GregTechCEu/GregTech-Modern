@@ -3,12 +3,15 @@ package com.gregtechceu.gtceu.common.pipelike.fluidpipe;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.FluidPipeProperties;
 import com.lowdragmc.lowdraglib.pipelike.LevelPipeNet;
 import com.lowdragmc.lowdraglib.pipelike.PipeNet;
-import it.unimi.dsi.fastutil.longs.*;
+import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
+import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.material.Fluid;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 /**
  * @author KilaBash
@@ -77,14 +80,47 @@ public class FluidPipeNet extends PipeNet<FluidPipeData> {
     //////////////////////////////////////
 
     private final Long2ObjectMap<Set<Fluid>> channelUsed = new Long2ObjectOpenHashMap<>();
-    private final Long2LongMap throughputUsed = new Long2LongOpenHashMap();
+    private final Long2ObjectMap<UsedThroughput[]> throughputUsed = new Long2ObjectOpenHashMap<>();
     private long lastUpdate;
+
+
+    private static class UsedThroughput {
+        public long tick = 0L;
+        public long[] channelAmounts = new long[9];
+
+        public UsedThroughput() {
+            resetAmounts();
+        }
+
+        public void resetAmounts() {
+            Arrays.fill(channelAmounts, 0L);
+        }
+    }
+
+    @NotNull
+    private UsedThroughput[] getLastSecondThroughputs(long blockPos) {
+        return throughputUsed.computeIfAbsent(blockPos, bp ->
+                Stream.generate(UsedThroughput::new).limit(20).toArray(UsedThroughput[]::new)
+        );
+    }
+
+    private UsedThroughput getCurrentUsedThroughput(long blockPos) {
+        var currentTick = getLevel().getGameTime();
+        var lastSecondThroughputs = getLastSecondThroughputs(blockPos);
+        var currentThroughput = lastSecondThroughputs[(int) (currentTick % 20)];
+
+        if (currentThroughput.tick != currentTick) {
+            currentThroughput.tick = currentTick;
+            currentThroughput.resetAmounts();
+        }
+
+        return currentThroughput;
+    }
 
     private void updateTick() {
         var latestTime = getWorldData().getWorld().getGameTime();
         if (lastUpdate != latestTime) {
             channelUsed.clear();
-            throughputUsed.clear();
         }
         lastUpdate = latestTime;
     }
@@ -94,9 +130,21 @@ public class FluidPipeNet extends PipeNet<FluidPipeData> {
         return channelUsed.getOrDefault(pos.asLong(), Collections.emptySet());
     }
 
-    public long getThroughputUsed(BlockPos pos) {
-        updateTick();
-        return throughputUsed.getOrDefault(pos.asLong(), 0);
+    public long getLastSecondTotalThroughput(BlockPos blockPos, int channel) {
+        var minTick = getLevel().getGameTime() - 19;
+        long totalAmount = 0L;
+
+        UsedThroughput[] lastSecondThroughputs = getLastSecondThroughputs(blockPos.asLong());
+
+        for (int i = 0; i < 20; i++) {
+            UsedThroughput usedThroughput = lastSecondThroughputs[i];
+            if (usedThroughput.tick < minTick)
+                continue;
+
+            totalAmount += usedThroughput.channelAmounts[channel];
+        }
+
+        return totalAmount;
     }
 
     public void useChannel(BlockPos pos, Fluid fluid) {
@@ -104,19 +152,19 @@ public class FluidPipeNet extends PipeNet<FluidPipeData> {
         channelUsed.computeIfAbsent(pos.asLong(), p -> new HashSet<>()).add(fluid);
     }
 
-    public void useThroughput(BlockPos pos, long filled) {
+    public void useThroughput(BlockPos pos, int channel, long filled) {
         updateTick();
-        throughputUsed.put(pos.asLong(), throughputUsed.getOrDefault(pos.asLong(), 0) + filled);
+        getCurrentUsedThroughput(pos.asLong()).channelAmounts[channel] += filled;
     }
 
-    public record Snapshot(Long2ObjectMap<Set<Fluid>> channelUsed, Long2LongMap throughputUsed) {
+    public record Snapshot(Long2ObjectMap<Set<Fluid>> channelUsed, Long2ObjectMap<UsedThroughput[]> throughputUsed) {
 
     }
 
     public Snapshot createSnapeShot() {
         Long2ObjectMap<Set<Fluid>> channelUsedCopied = new Long2ObjectOpenHashMap<>();
         channelUsed.forEach((k, v) -> channelUsedCopied.computeIfAbsent(k, key -> new HashSet<>(v)).addAll(v));
-        Long2LongMap throughputUsedCopied = new Long2LongOpenHashMap();
+        Long2ObjectOpenHashMap<UsedThroughput[]> throughputUsedCopied = new Long2ObjectOpenHashMap<>();
         throughputUsedCopied.putAll(throughputUsed);
         return new Snapshot(channelUsedCopied, throughputUsedCopied);
     }

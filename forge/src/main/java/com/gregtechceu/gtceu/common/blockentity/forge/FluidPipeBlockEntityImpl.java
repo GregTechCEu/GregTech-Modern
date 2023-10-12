@@ -114,7 +114,11 @@ public class FluidPipeBlockEntityImpl extends FluidPipeBlockEntity {
 
         @Override
         public int getTankCapacity(int tank) {
-            return tank == 0 ? (int) (net.getNodeAt(pipe.getPipePos()).data.properties().getPlatformThroughput() - net.getThroughputUsed(pipe.getPipePos())) : 0;
+            if (tank != 0)
+                return 0;
+
+            long pipeThroughput = net.getNodeAt(pipe.getPipePos()).data.properties().getPlatformThroughput();
+            return (int) ((20 * pipeThroughput) - net.getLastSecondTotalThroughput(pipe.getPipePos(), 0));
         }
 
         @Override
@@ -151,7 +155,8 @@ public class FluidPipeBlockEntityImpl extends FluidPipeBlockEntity {
                 if (!channels.contains(stack.getFluid()) && !simulateChannels.contains(stack.getFluid())
                         && (channels.size() + simulateChannels.size()) >= properties.getChannels()) return 0;
 
-                var left = properties.getPlatformThroughput() - net.getThroughputUsed(pos) - simulateThroughputUsed.getOrDefault(pos, 0);
+                long platformThroughputPerSecond = 20 * properties.getPlatformThroughput();
+                var left = platformThroughputPerSecond - net.getLastSecondTotalThroughput(pos, 0) - simulateThroughputUsed.getOrDefault(pos, 0);
                 amount = (int) Math.min(amount, left);
                 if (amount == 0) return 0;
             }
@@ -192,7 +197,7 @@ public class FluidPipeBlockEntityImpl extends FluidPipeBlockEntity {
                                     simulateThroughputUsed.put(pos, simulateThroughputUsed.getOrDefault(pos, 0) + filled);
                                     simulateChannelUsed.computeIfAbsent(pos, p -> new HashSet<>()).add(resource.getFluid());
                                 } else {
-                                    net.useThroughput(pos, filled);
+                                    net.useThroughput(pos, 0, filled);
                                     net.useChannel(pos, resource.getFluid());
                                 }
                             }

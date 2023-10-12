@@ -57,7 +57,7 @@ public class FluidPipeBlockEntityImpl extends FluidPipeBlockEntity {
 
     @Nullable
     private static Storage<FluidVariant> getFluidStorage(FluidPipeBlockEntity blockEntity, Direction direction) {
-        return ((FluidPipeBlockEntityImpl)blockEntity).getFluidStorage(direction);
+        return ((FluidPipeBlockEntityImpl) blockEntity).getFluidStorage(direction);
     }
 
     @Nullable
@@ -100,6 +100,7 @@ public class FluidPipeBlockEntityImpl extends FluidPipeBlockEntity {
 
         /**
          * check path. how much fluid can be transferred.
+         *
          * @return amount
          */
         private long checkPathAvailable(FluidStack stack, PipeNetRoutePath routePath, Map<BlockPos, Set<Fluid>> simulateChannelUsed, Object2LongMap<BlockPos> simulateThroughputUsed) {
@@ -117,7 +118,8 @@ public class FluidPipeBlockEntityImpl extends FluidPipeBlockEntity {
                 if (!channels.contains(stack.getFluid()) && !simulateChannels.contains(stack.getFluid())
                         && (channels.size() + simulateChannels.size()) >= properties.getChannels()) return 0;
 
-                var left = properties.getPlatformThroughput() - net.getThroughputUsed(pos) - simulateThroughputUsed.getOrDefault(pos, 0);
+                long platformThroughputPerSecond = 20 * properties.getPlatformThroughput();
+                var left = platformThroughputPerSecond - net.getLastSecondTotalThroughput(pos, 0) - simulateThroughputUsed.getOrDefault(pos, 0);
                 amount = Math.min(amount, left);
                 if (amount == 0) return 0;
             }
@@ -126,7 +128,8 @@ public class FluidPipeBlockEntityImpl extends FluidPipeBlockEntity {
 
         @Override
         public long insert(FluidVariant resource, long maxAmount, TransactionContext transaction) {
-            if (resource.isBlank() || !filter.test(FluidStack.create(resource.getFluid(), maxAmount, resource.getNbt()))) return 0;
+            if (resource.isBlank() || !filter.test(FluidStack.create(resource.getFluid(), maxAmount, resource.getNbt())))
+                return 0;
             var left = FluidStack.create(resource.getFluid(), maxAmount, resource.getNbt());
             if (!isOuterCallbackAdded) {
                 transaction.addOuterCloseCallback(this);
@@ -154,7 +157,7 @@ public class FluidPipeBlockEntityImpl extends FluidPipeBlockEntity {
                     if (filled > 0) { // occupy capacity + channel
                         for (Pair<BlockPos, FluidPipeData> node : path.getPath()) {
                             var pos = node.getA();
-                            net.useThroughput(pos, filled);
+                            net.useThroughput(pos, 0, filled);
                             net.useChannel(pos, resource.getFluid());
                         }
 
