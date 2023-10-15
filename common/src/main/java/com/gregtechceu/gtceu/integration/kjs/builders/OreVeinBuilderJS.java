@@ -71,7 +71,7 @@ public class OreVeinBuilderJS {
     @HideFromJS
     public GTOreDefinition build() {
         RegistryOps<JsonElement> registryOps = RegistryOps.create(JsonOps.INSTANCE, GTRegistries.builtinRegistry());
-        Supplier<HolderSet<Biome>> biomes = () -> RegistryCodecs.homogeneousList(Registries.BIOME)
+        Supplier<HolderSet<Biome>> biomes = biomeFilter.isEmpty() ? null : () -> RegistryCodecs.homogeneousList(Registries.BIOME)
                 .decode(registryOps, biomeFilter.size() == 1 ? biomeFilter.get(0) : biomeFilter).map(Pair::getFirst).getOrThrow(false, GTCEu.LOGGER::error);
         isBuilt = true;
         return new GTOreDefinition(id, clusterSize, density, weight, layer, dimensions, heightRange, discardChanceOnAirExposure, biomes, biomeWeightModifier, generator);
