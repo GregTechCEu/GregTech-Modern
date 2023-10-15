@@ -47,7 +47,7 @@ public class CableBlock extends MaterialPipeBlock<Insulation, CableData, LevelEn
         if (pipeType.isCable && index == 0) {
             return 0x404040;
         }
-        return index == 1 ? material.getMaterialRGB() : -1;
+        return index == 0 || index == 1 ? material.getMaterialRGB() : -1;
     }
 
     @Override
