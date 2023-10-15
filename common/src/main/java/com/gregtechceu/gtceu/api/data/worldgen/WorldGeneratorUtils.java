@@ -49,10 +49,7 @@ public class WorldGeneratorUtils {
             if (!veins.isEmpty())
                 return veins;
             List<Entry<Integer, GTOreDefinition>> result = worldVeins.stream()
-                    /*.filter(entry -> {
-                        HolderSet<Biome> checkingBiomes = entry.datagenExt().biomes.map(left -> left, right -> BuiltinRegistries.BIOME.getTag(right).orElse(null));
-                        return checkingBiomes != null && checkingBiomes.contains(context);
-                    })*/
+                    .filter(entry -> entry.getBiomes() == null || entry.getBiomes().get().contains(biome))
                     .map(vein -> new AbstractMap.SimpleEntry<>(vein.getWeight() + (vein.getBiomeWeightModifier() == null ? 0 : vein.getBiomeWeightModifier().apply(biome)), vein))
                     .filter(entry -> entry.getKey() > 0)
                     .collect(Collectors.toList());
