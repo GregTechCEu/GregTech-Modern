@@ -123,8 +123,6 @@ public class RecipeRemoval {
         registry.accept(new ResourceLocation("minecraft:crimson_door"));
         registry.accept(new ResourceLocation("minecraft:warped_door"));
         registry.accept(new ResourceLocation("minecraft:mangrove_door"));
-        registry.accept(new ResourceLocation("minecraft:bamboo_door"));
-        registry.accept(new ResourceLocation("minecraft:cherry_door"));
         registry.accept(new ResourceLocation("minecraft:oak_trapdoor"));
         registry.accept(new ResourceLocation("minecraft:birch_trapdoor"));
         registry.accept(new ResourceLocation("minecraft:spruce_trapdoor"));
@@ -134,8 +132,6 @@ public class RecipeRemoval {
         registry.accept(new ResourceLocation("minecraft:crimson_trapdoor"));
         registry.accept(new ResourceLocation("minecraft:warped_trapdoor"));
         registry.accept(new ResourceLocation("minecraft:mangrove_trapdoor"));
-        registry.accept(new ResourceLocation("minecraft:bamboo_trapdoor"));
-        registry.accept(new ResourceLocation("minecraft:cherry_trapdoor"));
         registry.accept(new ResourceLocation("minecraft:bowl"));
         registry.accept(new ResourceLocation("minecraft:chest"));
         registry.accept(new ResourceLocation("minecraft:oak_boat"));
@@ -145,8 +141,6 @@ public class RecipeRemoval {
         registry.accept(new ResourceLocation("minecraft:acacia_boat"));
         registry.accept(new ResourceLocation("minecraft:dark_oak_boat"));
         registry.accept(new ResourceLocation("minecraft:mangrove_boat"));
-        registry.accept(new ResourceLocation("minecraft:bamboo_boat"));
-        registry.accept(new ResourceLocation("minecraft:cherry_boat"));
         registry.accept(new ResourceLocation("minecraft:oak_fence"));
         registry.accept(new ResourceLocation("minecraft:spruce_fence"));
         registry.accept(new ResourceLocation("minecraft:birch_fence"));
@@ -156,8 +150,6 @@ public class RecipeRemoval {
         registry.accept(new ResourceLocation("minecraft:crimson_fence"));
         registry.accept(new ResourceLocation("minecraft:warped_fence"));
         registry.accept(new ResourceLocation("minecraft:mangrove_fence"));
-        registry.accept(new ResourceLocation("minecraft:bamboo_fence"));
-        registry.accept(new ResourceLocation("minecraft:cherry_fence"));
         registry.accept(new ResourceLocation("minecraft:oak_fence_gate"));
         registry.accept(new ResourceLocation("minecraft:spruce_fence_gate"));
         registry.accept(new ResourceLocation("minecraft:birch_fence_gate"));
@@ -167,8 +159,6 @@ public class RecipeRemoval {
         registry.accept(new ResourceLocation("minecraft:crimson_fence_gate"));
         registry.accept(new ResourceLocation("minecraft:warped_fence_gate"));
         registry.accept(new ResourceLocation("minecraft:mangrove_fence_gate"));
-        registry.accept(new ResourceLocation("minecraft:bamboo_fence_gate"));
-        registry.accept(new ResourceLocation("minecraft:cherry_fence_gate"));
     }
 
     private static void hardIronRecipes(Consumer<ResourceLocation> registry) {
