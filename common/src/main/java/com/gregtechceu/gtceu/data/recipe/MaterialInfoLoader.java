@@ -167,9 +167,40 @@ public class MaterialInfoLoader {
                 new MaterialStack(GTMaterials.Glass, M / 2) // 1 block / 2
         ));
 
-        // TODO Expand for all terracottas
-        //ChemicalHelper.registerUnificationEntry(new ItemStack(Blocks.HARDENED_CLAY, 1, W), new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, M * 4)));
-        //ChemicalHelper.registerUnificationEntry(new ItemStack(Blocks.STAINED_HARDENED_CLAY, 1, W), new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, M * 4)));
+        ChemicalHelper.registerMaterialInfo(Blocks.TERRACOTTA, new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, M * 4)));
+        ChemicalHelper.registerMaterialInfo(Blocks.WHITE_TERRACOTTA, new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, M * 4)));
+        ChemicalHelper.registerMaterialInfo(Blocks.ORANGE_TERRACOTTA, new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, M * 4)));
+        ChemicalHelper.registerMaterialInfo(Blocks.MAGENTA_TERRACOTTA, new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, M * 4)));
+        ChemicalHelper.registerMaterialInfo(Blocks.LIGHT_BLUE_TERRACOTTA, new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, M * 4)));
+        ChemicalHelper.registerMaterialInfo(Blocks.YELLOW_TERRACOTTA, new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, M * 4)));
+        ChemicalHelper.registerMaterialInfo(Blocks.LIME_TERRACOTTA, new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, M * 4)));
+        ChemicalHelper.registerMaterialInfo(Blocks.PINK_TERRACOTTA, new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, M * 4)));
+        ChemicalHelper.registerMaterialInfo(Blocks.GRAY_TERRACOTTA, new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, M * 4)));
+        ChemicalHelper.registerMaterialInfo(Blocks.LIGHT_GRAY_TERRACOTTA, new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, M * 4)));
+        ChemicalHelper.registerMaterialInfo(Blocks.CYAN_TERRACOTTA, new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, M * 4)));
+        ChemicalHelper.registerMaterialInfo(Blocks.PURPLE_TERRACOTTA, new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, M * 4)));
+        ChemicalHelper.registerMaterialInfo(Blocks.BLUE_TERRACOTTA, new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, M * 4)));
+        ChemicalHelper.registerMaterialInfo(Blocks.BROWN_TERRACOTTA, new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, M * 4)));
+        ChemicalHelper.registerMaterialInfo(Blocks.GREEN_TERRACOTTA, new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, M * 4)));
+        ChemicalHelper.registerMaterialInfo(Blocks.RED_TERRACOTTA, new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, M * 4)));
+        ChemicalHelper.registerMaterialInfo(Blocks.BLACK_TERRACOTTA, new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, M * 4)));
+
+        ChemicalHelper.registerMaterialInfo(Blocks.WHITE_GLAZED_TERRACOTTA, new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, M * 4)));
+        ChemicalHelper.registerMaterialInfo(Blocks.ORANGE_GLAZED_TERRACOTTA, new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, M * 4)));
+        ChemicalHelper.registerMaterialInfo(Blocks.MAGENTA_GLAZED_TERRACOTTA, new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, M * 4)));
+        ChemicalHelper.registerMaterialInfo(Blocks.LIGHT_BLUE_GLAZED_TERRACOTTA, new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, M * 4)));
+        ChemicalHelper.registerMaterialInfo(Blocks.YELLOW_GLAZED_TERRACOTTA, new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, M * 4)));
+        ChemicalHelper.registerMaterialInfo(Blocks.LIME_GLAZED_TERRACOTTA, new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, M * 4)));
+        ChemicalHelper.registerMaterialInfo(Blocks.PINK_GLAZED_TERRACOTTA, new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, M * 4)));
+        ChemicalHelper.registerMaterialInfo(Blocks.GRAY_GLAZED_TERRACOTTA, new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, M * 4)));
+        ChemicalHelper.registerMaterialInfo(Blocks.LIGHT_GRAY_GLAZED_TERRACOTTA, new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, M * 4)));
+        ChemicalHelper.registerMaterialInfo(Blocks.CYAN_GLAZED_TERRACOTTA, new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, M * 4)));
+        ChemicalHelper.registerMaterialInfo(Blocks.PURPLE_GLAZED_TERRACOTTA, new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, M * 4)));
+        ChemicalHelper.registerMaterialInfo(Blocks.BLUE_GLAZED_TERRACOTTA, new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, M * 4)));
+        ChemicalHelper.registerMaterialInfo(Blocks.BROWN_GLAZED_TERRACOTTA, new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, M * 4)));
+        ChemicalHelper.registerMaterialInfo(Blocks.GREEN_GLAZED_TERRACOTTA, new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, M * 4)));
+        ChemicalHelper.registerMaterialInfo(Blocks.RED_GLAZED_TERRACOTTA, new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, M * 4)));
+        ChemicalHelper.registerMaterialInfo(Blocks.BLACK_GLAZED_TERRACOTTA, new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, M * 4)));
 
         ChemicalHelper.registerMaterialInfo(GTBlocks.CASING_PRIMITIVE_BRICKS.get(), new ItemMaterialInfo(new MaterialStack(GTMaterials.Fireclay, M * 4)));
 
@@ -183,6 +214,8 @@ public class MaterialInfoLoader {
             ChemicalHelper.registerMaterialInfo(Items.MANGROVE_DOOR, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 2), new MaterialStack(GTMaterials.Iron, M / 9))); // screw
             ChemicalHelper.registerMaterialInfo(Items.CRIMSON_DOOR, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 2), new MaterialStack(GTMaterials.Iron, M / 9))); // screw
             ChemicalHelper.registerMaterialInfo(Items.WARPED_DOOR, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 2), new MaterialStack(GTMaterials.Iron, M / 9))); // screw
+            ChemicalHelper.registerMaterialInfo(Items.BAMBOO_DOOR, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 2), new MaterialStack(GTMaterials.Iron, M / 9))); // screw
+            ChemicalHelper.registerMaterialInfo(Items.CHERRY_DOOR, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 2), new MaterialStack(GTMaterials.Iron, M / 9))); // screw
         } else {
             ChemicalHelper.registerMaterialInfo(Items.ACACIA_DOOR, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 2)));
             ChemicalHelper.registerMaterialInfo(Items.BIRCH_DOOR, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 2)));
@@ -193,6 +226,8 @@ public class MaterialInfoLoader {
             ChemicalHelper.registerMaterialInfo(Items.MANGROVE_DOOR, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 2)));
             ChemicalHelper.registerMaterialInfo(Items.CRIMSON_DOOR, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 2)));
             ChemicalHelper.registerMaterialInfo(Items.WARPED_DOOR, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 2)));
+            ChemicalHelper.registerMaterialInfo(Items.BAMBOO_DOOR, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 2)));
+            ChemicalHelper.registerMaterialInfo(Items.CHERRY_DOOR, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 2)));
         }
 
         ChemicalHelper.registerMaterialInfo(Blocks.ACACIA_PLANKS, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M)));
@@ -204,6 +239,8 @@ public class MaterialInfoLoader {
         ChemicalHelper.registerMaterialInfo(Blocks.MANGROVE_PLANKS, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M)));
         ChemicalHelper.registerMaterialInfo(Blocks.CRIMSON_PLANKS, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M)));
         ChemicalHelper.registerMaterialInfo(Blocks.WARPED_PLANKS, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M)));
+        ChemicalHelper.registerMaterialInfo(Blocks.BAMBOO_PLANKS, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M)));
+        ChemicalHelper.registerMaterialInfo(Blocks.CHERRY_PLANKS, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M)));
 
 
         if (ConfigHolder.INSTANCE.recipes.hardIronRecipes)
@@ -213,67 +250,98 @@ public class MaterialInfoLoader {
         else
             ChemicalHelper.registerMaterialInfo(Items.IRON_DOOR, new ItemMaterialInfo(new MaterialStack(GTMaterials.Iron, M * 2)));
 
-        // TODO new tag prefixes
-        /*
-        ChemicalHelper.registerMaterialInfo(new ItemStack(Blocks.OAK_FENCE, 1), new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M))); // dust
-        ChemicalHelper.registerMaterialInfo(new ItemStack(Blocks.BIRCH_FENCE, 1), new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M))); // dust
-        ChemicalHelper.registerMaterialInfo(new ItemStack(Blocks.SPRUCE_FENCE, 1), new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M))); // dust
-        ChemicalHelper.registerMaterialInfo(new ItemStack(Blocks.JUNGLE_FENCE, 1), new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M))); // dust
-        ChemicalHelper.registerMaterialInfo(new ItemStack(Blocks.DARK_OAK_FENCE, 1), new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M))); // dust
-        ChemicalHelper.registerMaterialInfo(new ItemStack(Blocks.ACACIA_FENCE, 1), new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M))); // dust
-        ChemicalHelper.registerMaterialInfo(new ItemStack(Blocks.MANGROVE_FENCE, 1), new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M))); // dust
-        ChemicalHelper.registerMaterialInfo(new ItemStack(Blocks.CRIMSON_FENCE, 1), new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M))); // dust
-        ChemicalHelper.registerMaterialInfo(new ItemStack(Blocks.WARPED_FENCE, 1), new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M))); // dust
+        ChemicalHelper.registerMaterialInfo(Blocks.OAK_FENCE, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M))); // dust
+        ChemicalHelper.registerMaterialInfo(Blocks.BIRCH_FENCE, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M))); // dust
+        ChemicalHelper.registerMaterialInfo(Blocks.SPRUCE_FENCE, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M))); // dust
+        ChemicalHelper.registerMaterialInfo(Blocks.JUNGLE_FENCE, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M))); // dust
+        ChemicalHelper.registerMaterialInfo(Blocks.DARK_OAK_FENCE, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M))); // dust
+        ChemicalHelper.registerMaterialInfo(Blocks.ACACIA_FENCE, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M))); // dust
+        ChemicalHelper.registerMaterialInfo(Blocks.MANGROVE_FENCE, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M))); // dust
+        ChemicalHelper.registerMaterialInfo(Blocks.CRIMSON_FENCE, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M))); // dust
+        ChemicalHelper.registerMaterialInfo(Blocks.WARPED_FENCE, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M))); // dust
+        ChemicalHelper.registerMaterialInfo(Blocks.BAMBOO_FENCE, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M))); // dust
+        ChemicalHelper.registerMaterialInfo(Blocks.CHERRY_FENCE, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M))); // dust
 
-        ChemicalHelper.registerMaterialInfo(new ItemStack(Blocks.OAK_FENCE_GATE, 1), new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 3))); // dust
-        ChemicalHelper.registerMaterialInfo(new ItemStack(Blocks.BIRCH_FENCE_GATE, 1), new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 3))); // dust
-        ChemicalHelper.registerMaterialInfo(new ItemStack(Blocks.SPRUCE_FENCE_GATE, 1), new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 3))); // dust
-        ChemicalHelper.registerMaterialInfo(new ItemStack(Blocks.JUNGLE_FENCE_GATE, 1), new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 3))); // dust
-        ChemicalHelper.registerMaterialInfo(new ItemStack(Blocks.DARK_OAK_FENCE_GATE, 1), new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 3))); // dust
-        ChemicalHelper.registerMaterialInfo(new ItemStack(Blocks.ACACIA_FENCE_GATE, 1), new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 3))); // dust
-        ChemicalHelper.registerMaterialInfo(new ItemStack(Blocks.MANGROVE_FENCE_GATE, 1), new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 3))); // dust
-        ChemicalHelper.registerMaterialInfo(new ItemStack(Blocks.CRIMSON_FENCE_GATE, 1), new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 3))); // dust
-        ChemicalHelper.registerMaterialInfo(new ItemStack(Blocks.WARPED_FENCE_GATE, 1), new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 3))); // dust
+        ChemicalHelper.registerMaterialInfo(Blocks.OAK_FENCE_GATE, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 3))); // dust
+        ChemicalHelper.registerMaterialInfo(Blocks.BIRCH_FENCE_GATE, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 3))); // dust
+        ChemicalHelper.registerMaterialInfo(Blocks.SPRUCE_FENCE_GATE, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 3))); // dust
+        ChemicalHelper.registerMaterialInfo(Blocks.JUNGLE_FENCE_GATE, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 3))); // dust
+        ChemicalHelper.registerMaterialInfo(Blocks.DARK_OAK_FENCE_GATE, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 3))); // dust
+        ChemicalHelper.registerMaterialInfo(Blocks.ACACIA_FENCE_GATE, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 3))); // dust
+        ChemicalHelper.registerMaterialInfo(Blocks.MANGROVE_FENCE_GATE, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 3))); // dust
+        ChemicalHelper.registerMaterialInfo(Blocks.CRIMSON_FENCE_GATE, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 3))); // dust
+        ChemicalHelper.registerMaterialInfo(Blocks.WARPED_FENCE_GATE, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 3))); // dust
+        ChemicalHelper.registerMaterialInfo(Blocks.BAMBOO_FENCE_GATE, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 3))); // dust
+        ChemicalHelper.registerMaterialInfo(Blocks.CHERRY_FENCE_GATE, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 3))); // dust
 
-        ChemicalHelper.registerMaterialInfo(new ItemStack(Blocks.OAK_STAIRS, 1), new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, (3 * M) / 2))); // dust small
-        ChemicalHelper.registerMaterialInfo(new ItemStack(Blocks.BIRCH_STAIRS, 1), new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, (3 * M) / 2))); // dust small
-        ChemicalHelper.registerMaterialInfo(new ItemStack(Blocks.SPRUCE_STAIRS, 1), new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, (3 * M) / 2))); // dust small
-        ChemicalHelper.registerMaterialInfo(new ItemStack(Blocks.JUNGLE_STAIRS, 1), new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, (3 * M) / 2))); // dust small
-        ChemicalHelper.registerMaterialInfo(new ItemStack(Blocks.DARK_OAK_STAIRS, 1), new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, (3 * M) / 2))); // dust small
-        ChemicalHelper.registerMaterialInfo(new ItemStack(Blocks.ACACIA_STAIRS, 1), new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, (3 * M) / 2))); // dust small
-        ChemicalHelper.registerMaterialInfo(new ItemStack(Blocks.MANGROVE_STAIRS, 1), new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, (3 * M) / 2))); // dust small
-        ChemicalHelper.registerMaterialInfo(new ItemStack(Blocks.CRIMSON_STAIRS, 1), new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, (3 * M) / 2))); // dust small
-        ChemicalHelper.registerMaterialInfo(new ItemStack(Blocks.WARPED_STAIRS, 1), new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, (3 * M) / 2))); // dust small
+        ChemicalHelper.registerMaterialInfo(Blocks.OAK_STAIRS, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, (3 * M) / 2))); // dust small
+        ChemicalHelper.registerMaterialInfo(Blocks.BIRCH_STAIRS, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, (3 * M) / 2))); // dust small
+        ChemicalHelper.registerMaterialInfo(Blocks.SPRUCE_STAIRS, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, (3 * M) / 2))); // dust small
+        ChemicalHelper.registerMaterialInfo(Blocks.JUNGLE_STAIRS, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, (3 * M) / 2))); // dust small
+        ChemicalHelper.registerMaterialInfo(Blocks.DARK_OAK_STAIRS, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, (3 * M) / 2))); // dust small
+        ChemicalHelper.registerMaterialInfo(Blocks.ACACIA_STAIRS, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, (3 * M) / 2))); // dust small
+        ChemicalHelper.registerMaterialInfo(Blocks.MANGROVE_STAIRS, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, (3 * M) / 2))); // dust small
+        ChemicalHelper.registerMaterialInfo(Blocks.CRIMSON_STAIRS, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, (3 * M) / 2))); // dust small
+        ChemicalHelper.registerMaterialInfo(Blocks.WARPED_STAIRS, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, (3 * M) / 2))); // dust small
+        ChemicalHelper.registerMaterialInfo(Blocks.BAMBOO_STAIRS, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, (3 * M) / 2))); // dust small
+        ChemicalHelper.registerMaterialInfo(Blocks.BAMBOO_MOSAIC_STAIRS, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, (3 * M) / 2))); // dust small
+        ChemicalHelper.registerMaterialInfo(Blocks.CHERRY_STAIRS, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, (3 * M) / 2))); // dust small
 
-        ChemicalHelper.registerMaterialInfo(new ItemStack(Items.OAK_BOAT, 1), new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 5)));
-        ChemicalHelper.registerMaterialInfo(new ItemStack(Items.BIRCH_BOAT, 1), new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 5)));
-        ChemicalHelper.registerMaterialInfo(new ItemStack(Items.SPRUCE_BOAT, 1), new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 5)));
-        ChemicalHelper.registerMaterialInfo(new ItemStack(Items.JUNGLE_BOAT, 1), new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 5)));
-        ChemicalHelper.registerMaterialInfo(new ItemStack(Items.DARK_OAK_BOAT, 1), new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 5)));
-        ChemicalHelper.registerMaterialInfo(new ItemStack(Items.ACACIA_BOAT, 1), new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 5)));
-        ChemicalHelper.registerMaterialInfo(new ItemStack(Items.MANGROVE_BOAT, 1), new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 5)));
+        ChemicalHelper.registerMaterialInfo(Items.OAK_BOAT, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 5)));
+        ChemicalHelper.registerMaterialInfo(Items.BIRCH_BOAT, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 5)));
+        ChemicalHelper.registerMaterialInfo(Items.SPRUCE_BOAT, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 5)));
+        ChemicalHelper.registerMaterialInfo(Items.JUNGLE_BOAT, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 5)));
+        ChemicalHelper.registerMaterialInfo(Items.DARK_OAK_BOAT, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 5)));
+        ChemicalHelper.registerMaterialInfo(Items.ACACIA_BOAT, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 5)));
+        ChemicalHelper.registerMaterialInfo(Items.MANGROVE_BOAT, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 5)));
+        ChemicalHelper.registerMaterialInfo(Items.BAMBOO_RAFT, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 5)));
+        ChemicalHelper.registerMaterialInfo(Items.CHERRY_BOAT, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 5)));
 
-        ChemicalHelper.registerMaterialInfo(new ItemStack(Blocks.STONE_STAIRS, 1), new ItemMaterialInfo(new MaterialStack(GTMaterials.Stone, (3 * M) / 2))); // dust small
-        ChemicalHelper.registerMaterialInfo(new ItemStack(Blocks.SANDSTONE_STAIRS, 1), new ItemMaterialInfo(new MaterialStack(GTMaterials.Stone, (3 * M) / 2))); // dust small
-        ChemicalHelper.registerMaterialInfo(new ItemStack(Blocks.RED_SANDSTONE_STAIRS, 1), new ItemMaterialInfo(new MaterialStack(GTMaterials.Stone, (3 * M) / 2))); // dust small
-        ChemicalHelper.registerMaterialInfo(new ItemStack(Blocks.STONE_BRICK_STAIRS, 1), new ItemMaterialInfo(new MaterialStack(GTMaterials.Stone, (3 * M) / 2))); // dust small
-        ChemicalHelper.registerMaterialInfo(new ItemStack(Blocks.QUARTZ_STAIRS, 1), new ItemMaterialInfo(new MaterialStack(GTMaterials.NetherQuartz, M * 6))); // dust
-        ChemicalHelper.registerMaterialInfo(new ItemStack(Blocks.BRICK_STAIRS, 1), new ItemMaterialInfo(new MaterialStack(GTMaterials.Brick, M * 6))); // dust
-        ChemicalHelper.registerMaterialInfo(new ItemStack(Blocks.NETHER_BRICK_STAIRS, 1), new ItemMaterialInfo(new MaterialStack(GTMaterials.Netherrack, M * 6))); // dust
+        ChemicalHelper.registerMaterialInfo(Blocks.STONE_STAIRS, new ItemMaterialInfo(new MaterialStack(GTMaterials.Stone, (3 * M) / 2))); // dust small
+        ChemicalHelper.registerMaterialInfo(Blocks.SANDSTONE_STAIRS, new ItemMaterialInfo(new MaterialStack(GTMaterials.Stone, (3 * M) / 2))); // dust small
+        ChemicalHelper.registerMaterialInfo(Blocks.RED_SANDSTONE_STAIRS, new ItemMaterialInfo(new MaterialStack(GTMaterials.Stone, (3 * M) / 2))); // dust small
+        ChemicalHelper.registerMaterialInfo(Blocks.STONE_BRICK_STAIRS, new ItemMaterialInfo(new MaterialStack(GTMaterials.Stone, (3 * M) / 2))); // dust small
+        ChemicalHelper.registerMaterialInfo(Blocks.QUARTZ_STAIRS, new ItemMaterialInfo(new MaterialStack(GTMaterials.NetherQuartz, M * 6))); // dust
+        ChemicalHelper.registerMaterialInfo(Blocks.BRICK_STAIRS, new ItemMaterialInfo(new MaterialStack(GTMaterials.Brick, M * 6))); // dust
+        ChemicalHelper.registerMaterialInfo(Blocks.NETHER_BRICK_STAIRS, new ItemMaterialInfo(new MaterialStack(GTMaterials.Netherrack, M * 6))); // dust
 
-        ChemicalHelper.registerMaterialInfo(new ItemStack(Blocks.STONE_SLAB, 1, 0), new ItemMaterialInfo(new MaterialStack(GTMaterials.Stone, M / 2)));
-        ChemicalHelper.registerMaterialInfo(new ItemStack(Blocks.STONE_SLAB, 1, 1), new ItemMaterialInfo(new MaterialStack(GTMaterials.Stone, M / 2)));
-        ChemicalHelper.registerMaterialInfo(new ItemStack(Blocks.STONE_SLAB, 1, 2), new ItemMaterialInfo(new MaterialStack(GTMaterials.Stone, M / 2)));
-        ChemicalHelper.registerMaterialInfo(new ItemStack(Blocks.STONE_SLAB, 1, 3), new ItemMaterialInfo(new MaterialStack(GTMaterials.Stone, M / 2)));
-        ChemicalHelper.registerMaterialInfo(new ItemStack(Blocks.STONE_SLAB, 1, 4), new ItemMaterialInfo(new MaterialStack(GTMaterials.Brick, M * 2)));
-        ChemicalHelper.registerMaterialInfo(new ItemStack(Blocks.STONE_SLAB, 1, 5), new ItemMaterialInfo(new MaterialStack(GTMaterials.Stone, M / 2)));
-        ChemicalHelper.registerMaterialInfo(new ItemStack(Blocks.STONE_SLAB, 1, 6), new ItemMaterialInfo(new MaterialStack(GTMaterials.Netherrack, M * 2)));
-        ChemicalHelper.registerMaterialInfo(new ItemStack(Blocks.STONE_SLAB, 1, 7), new ItemMaterialInfo(new MaterialStack(GTMaterials.NetherQuartz, M * 2)));
-        ChemicalHelper.registerMaterialInfo(new ItemStack(Blocks.WOODEN_SLAB, 1, W), new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M / 2)));
-*/
+        ChemicalHelper.registerMaterialInfo(Blocks.STONE_SLAB, new ItemMaterialInfo(new MaterialStack(GTMaterials.Stone, M / 2)));
+        ChemicalHelper.registerMaterialInfo(Blocks.SANDSTONE_SLAB, new ItemMaterialInfo(new MaterialStack(GTMaterials.Stone, M / 2)));
+        ChemicalHelper.registerMaterialInfo(Blocks.RED_SANDSTONE_SLAB, new ItemMaterialInfo(new MaterialStack(GTMaterials.Stone, M / 2)));
+        ChemicalHelper.registerMaterialInfo(Blocks.COBBLESTONE_SLAB, new ItemMaterialInfo(new MaterialStack(GTMaterials.Stone, M / 2)));
+        ChemicalHelper.registerMaterialInfo(Blocks.BRICK_SLAB, new ItemMaterialInfo(new MaterialStack(GTMaterials.Brick, M * 2)));
+        ChemicalHelper.registerMaterialInfo(Blocks.STONE_BRICK_SLAB, new ItemMaterialInfo(new MaterialStack(GTMaterials.Stone, M / 2)));
+        ChemicalHelper.registerMaterialInfo(Blocks.NETHER_BRICK_SLAB, new ItemMaterialInfo(new MaterialStack(GTMaterials.Netherrack, M * 2)));
+        ChemicalHelper.registerMaterialInfo(Blocks.QUARTZ_SLAB, new ItemMaterialInfo(new MaterialStack(GTMaterials.NetherQuartz, M * 2)));
+        ChemicalHelper.registerMaterialInfo(Blocks.SMOOTH_QUARTZ_SLAB, new ItemMaterialInfo(new MaterialStack(GTMaterials.NetherQuartz, M * 2)));
+
+        ChemicalHelper.registerMaterialInfo(Blocks.OAK_SLAB, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M / 2)));
+        ChemicalHelper.registerMaterialInfo(Blocks.BIRCH_SLAB, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M / 2)));
+        ChemicalHelper.registerMaterialInfo(Blocks.SPRUCE_SLAB, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M / 2)));
+        ChemicalHelper.registerMaterialInfo(Blocks.JUNGLE_SLAB, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M / 2)));
+        ChemicalHelper.registerMaterialInfo(Blocks.DARK_OAK_SLAB, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M / 2)));
+        ChemicalHelper.registerMaterialInfo(Blocks.ACACIA_SLAB, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M / 2)));
+        ChemicalHelper.registerMaterialInfo(Blocks.MANGROVE_SLAB, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M / 2)));
+        ChemicalHelper.registerMaterialInfo(Blocks.CRIMSON_SLAB, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M / 2)));
+        ChemicalHelper.registerMaterialInfo(Blocks.WARPED_SLAB, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M / 2)));
+        ChemicalHelper.registerMaterialInfo(Blocks.BAMBOO_SLAB, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M / 2)));
+        ChemicalHelper.registerMaterialInfo(Blocks.BAMBOO_MOSAIC_SLAB, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M / 2)));
+        ChemicalHelper.registerMaterialInfo(Blocks.CHERRY_SLAB, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M / 2)));
+
         ChemicalHelper.registerMaterialInfo(Blocks.LEVER, new ItemMaterialInfo(new MaterialStack(GTMaterials.Stone, M / 9), new MaterialStack(GTMaterials.Wood, 1814400L)));
-        // todo
-        //ChemicalHelper.registerMaterialInfo(new ItemStack(Blocks.WOODEN_BUTTON, 1, W), new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M / 9)));
+
+        ChemicalHelper.registerMaterialInfo(Blocks.OAK_BUTTON, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M / 9)));
+        ChemicalHelper.registerMaterialInfo(Blocks.BIRCH_BUTTON, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M / 9)));
+        ChemicalHelper.registerMaterialInfo(Blocks.SPRUCE_BUTTON, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M / 9)));
+        ChemicalHelper.registerMaterialInfo(Blocks.JUNGLE_BUTTON, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M / 9)));
+        ChemicalHelper.registerMaterialInfo(Blocks.DARK_OAK_BUTTON, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M / 9)));
+        ChemicalHelper.registerMaterialInfo(Blocks.ACACIA_BUTTON, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M / 9)));
+        ChemicalHelper.registerMaterialInfo(Blocks.MANGROVE_BUTTON, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M / 9)));
+        ChemicalHelper.registerMaterialInfo(Blocks.CRIMSON_BUTTON, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M / 9)));
+        ChemicalHelper.registerMaterialInfo(Blocks.WARPED_BUTTON, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M / 9)));
+        ChemicalHelper.registerMaterialInfo(Blocks.BAMBOO_BUTTON, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M / 9)));
+        ChemicalHelper.registerMaterialInfo(Blocks.CHERRY_BUTTON, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M / 9)));
+
         ChemicalHelper.registerMaterialInfo(Blocks.STONE_BUTTON, new ItemMaterialInfo(new MaterialStack(GTMaterials.Stone, M / 9)));
         ChemicalHelper.registerMaterialInfo(Blocks.REDSTONE_TORCH, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M / 2), new MaterialStack(GTMaterials.Redstone, M)));
 

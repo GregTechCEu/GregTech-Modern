@@ -5,8 +5,8 @@ import appeng.blockentity.networking.CableBusBlockEntity;
 import com.google.common.collect.ImmutableMap;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
-import com.gregtechceu.gtceu.api.item.component.IDurabilityBar;
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
+import com.gregtechceu.gtceu.api.item.component.IDurabilityBar;
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
@@ -94,15 +94,15 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
                 shulkerBoxBuilder.put(color, Registry.BLOCK.get(getId(GTValues.MODID_TINTED, color, "shulker_box")));
                 candleBuilder.put(color, Registry.BLOCK.get(getId(GTValues.MODID_TINTED, color, "candle")));
             } else {
-                glassBuilder.put(color, Registry.BLOCK.get(getId(null, color, "stained_glass")));
-                glassPaneBuilder.put(color, Registry.BLOCK.get(getId(null, color, "stained_glass_pane")));
-                terracottaBuilder.put(color, Registry.BLOCK.get(getId(null, color, "terracotta")));
-                woolBuilder.put(color, Registry.BLOCK.get(getId(null, color, "wool")));
-                carpetBuilder.put(color, Registry.BLOCK.get(getId(null, color, "carpet")));
-                concreteBuilder.put(color, Registry.BLOCK.get(getId(null, color, "concrete")));
-                concretePowderBuilder.put(color, Registry.BLOCK.get(getId(null, color, "concrete_powder")));
-                shulkerBoxBuilder.put(color, Registry.BLOCK.get(getId(null, color, "shulker_box")));
-                candleBuilder.put(color, Registry.BLOCK.get(getId(null, color, "candle")));
+                glassBuilder.put(color, Registry.BLOCK.get(getId("minecraft", color, "stained_glass")));
+                glassPaneBuilder.put(color, Registry.BLOCK.get(getId("minecraft", color, "stained_glass_pane")));
+                terracottaBuilder.put(color, Registry.BLOCK.get(getId("minecraft", color, "terracotta")));
+                woolBuilder.put(color, Registry.BLOCK.get(getId("minecraft", color, "wool")));
+                carpetBuilder.put(color, Registry.BLOCK.get(getId("minecraft", color, "carpet")));
+                concreteBuilder.put(color, Registry.BLOCK.get(getId("minecraft", color, "concrete")));
+                concretePowderBuilder.put(color, Registry.BLOCK.get(getId("minecraft", color, "concrete_powder")));
+                shulkerBoxBuilder.put(color, Registry.BLOCK.get(getId("minecraft", color, "shulker_box")));
+                candleBuilder.put(color, Registry.BLOCK.get(getId("minecraft", color, "candle")));
 
                 /* somehow didn't want to work, it seems registry isn't fully loaded yet (forge) so `Registry.BLOCK.getId` returns air for modded blocks
                 if (GTCEu.isCreateLoaded()) {

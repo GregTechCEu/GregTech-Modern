@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.machine.fancyconfigurator.CircuitFancyConfigura
 import com.gregtechceu.gtceu.api.machine.feature.IMachineModifyDrops;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDistinctPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
+import com.gregtechceu.gtceu.api.machine.trait.ItemHandlerProxyRecipeTrait;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -32,6 +33,7 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author KilaBash
@@ -52,11 +54,14 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
     @Getter
     @Persisted
     protected final NotifiableItemStackHandler circuitInventory;
+    @Getter
+    protected final ItemHandlerProxyRecipeTrait combinedInventory;
 
     public ItemBusPartMachine(IMachineBlockEntity holder, int tier, IO io, Object... args) {
         super(holder, tier, io);
         this.inventory = createInventory(args);
         this.circuitInventory = createCircuitItemHandler(io);
+        this.combinedInventory = createCombinedItemHandler(io);
     }
 
     //////////////////////////////////////
@@ -77,10 +82,18 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
     }
 
     protected NotifiableItemStackHandler createCircuitItemHandler(Object... args) {
-        if (args.length > 0 && args[0] instanceof  IO io && io == IO.IN) {
+        if (args.length > 0 && args[0] instanceof IO io && io == IO.IN) {
             return new NotifiableItemStackHandler(this, 1, IO.IN, IO.NONE).setFilter(IntCircuitBehaviour::isIntegratedCircuit);
         } else {
             return new NotifiableItemStackHandler(this, 0, IO.NONE);
+        }
+    }
+
+    protected ItemHandlerProxyRecipeTrait createCombinedItemHandler(Object... args) {
+        if (args.length > 0 && args[0] instanceof IO io && io == IO.IN) {
+            return new ItemHandlerProxyRecipeTrait(this, Set.of(inventory, circuitInventory), IO.IN, IO.NONE);
+        } else {
+            return new ItemHandlerProxyRecipeTrait(this, Set.of(inventory, circuitInventory), IO.NONE, IO.NONE);
         }
     }
 
@@ -113,12 +126,14 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
 
     @Override
     public boolean isDistinct() {
-        return inventory.isDistinct();
+        return inventory.isDistinct() && circuitInventory.isDistinct();
     }
 
     @Override
     public void setDistinct(boolean isDistinct) {
         inventory.setDistinct(isDistinct);
+        circuitInventory.setDistinct(isDistinct);
+        combinedInventory.setDistinct(isDistinct);
     }
 
     //////////////////////////////////////
