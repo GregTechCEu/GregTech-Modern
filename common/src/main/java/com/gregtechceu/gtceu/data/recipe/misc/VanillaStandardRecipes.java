@@ -285,7 +285,7 @@ public class VanillaStandardRecipes {
 
         MACERATOR_RECIPES.recipeBuilder("macerate_melon_block")
                 .inputItems(new ItemStack(Blocks.MELON))
-                .outputItems(new ItemStack(Items.MELON, 8))
+                .outputItems(new ItemStack(Items.MELON_SLICE, 8))
                 .chancedOutput(new ItemStack(Items.MELON_SEEDS), 8000, 500)
                 .duration(400).EUt(2)
                 .save(provider);
