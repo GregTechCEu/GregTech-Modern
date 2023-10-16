@@ -539,11 +539,11 @@ public class GCyMMachines {
             .pattern(definition -> {
                 TraceabilityPredicate casingPredicate = blocks(CASING_WATERTIGHT.get()).setMinGlobalLimited(40);
 
-                return FactoryBlockPattern.start(RIGHT, FRONT, DOWN)
-                        .aisle("#####", "#ZZZ#", "#ZCZ#", "#ZZZ#", "#####")
-                        .aisle("##X##", "#XAX#", "XAPAX", "#XAX#", "##X##").setRepeatable(1, 12)
-                        .aisle("#YSY#", "YAAAY", "YAAAY", "YAAAY", "#YYY#")
+                return FactoryBlockPattern.start(RIGHT, BACK, UP)
                         .aisle("#YYY#", "YYYYY", "YYYYY", "YYYYY", "#YYY#")
+                        .aisle("#YSY#", "YAAAY", "YAAAY", "YAAAY", "#YYY#")
+                        .aisle("##X##", "#XAX#", "XAPAX", "#XAX#", "##X##").setRepeatable(1, 12)
+                        .aisle("#####", "#ZZZ#", "#ZCZ#", "#ZZZ#", "#####")
                         .where('S', controller(blocks(definition.get())))
                         .where('Y', casingPredicate.or(abilities(IMPORT_ITEMS))
                                 .or(abilities(INPUT_ENERGY).setMinGlobalLimited(1))
