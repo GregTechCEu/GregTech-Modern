@@ -16,6 +16,11 @@ import java.util.Collection;
 import java.util.Objects;
 
 public class FluidPipeProperties implements IMaterialProperty<FluidPipeProperties>, IPropertyFluidFilter {
+    /**
+     * The maximum number of channels any fluid pipe can have
+     */
+    public static final int MAX_PIPE_CHANNELS = 9;
+
     @Getter @Setter
     private long throughput;
     @Getter @Setter

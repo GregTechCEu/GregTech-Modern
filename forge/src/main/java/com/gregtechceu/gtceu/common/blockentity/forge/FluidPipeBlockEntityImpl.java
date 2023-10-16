@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.common.blockentity.forge;
 
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.FluidPipeProperties;
 import com.gregtechceu.gtceu.common.blockentity.FluidPipeBlockEntity;
 import com.gregtechceu.gtceu.common.cover.FluidFilterCover;
 import com.gregtechceu.gtceu.common.pipelike.fluidpipe.FluidPipeData;
@@ -103,18 +104,31 @@ public class FluidPipeBlockEntityImpl extends FluidPipeBlockEntity {
 
         @Override
         public int getTanks() {
-            return 1;
+            FluidPipeProperties properties = net.getNodeAt(pipe.getPipePos()).data.properties();
+            return properties.getChannels();
         }
 
         @NotNull
         @Override
         public FluidStack getFluidInTank(int tank) {
-            return FluidStack.EMPTY;
+            Fluid fluid = net.getFluid(pipe.getPipePos(), tank);
+
+            if (fluid == null)
+                return FluidStack.EMPTY;
+
+            return new FluidStack(fluid, (int) net.getLastSecondTotalThroughput(pipe.getPipePos(), tank));
         }
 
         @Override
         public int getTankCapacity(int tank) {
-            return tank == 0 ? (int) (net.getNodeAt(pipe.getPipePos()).data.properties().getPlatformThroughput() - net.getThroughputUsed(pipe.getPipePos())) : 0;
+            FluidPipeProperties properties = net.getNodeAt(pipe.getPipePos()).data.properties();
+
+            if (tank < 0 || tank > properties.getChannels())
+                return 0;
+
+            long pipeThroughput = properties.getPlatformThroughput();
+            return (int) (20 * pipeThroughput);
+            // return (int) ((20 * pipeThroughput) - net.getLastSecondTotalThroughput(pipe.getPipePos(), 0));
         }
 
         @Override
@@ -145,15 +159,22 @@ public class FluidPipeBlockEntityImpl extends FluidPipeBlockEntity {
                 if (!properties.test(FluidHelperImpl.toFluidStack(stack))) {
                     return 0;
                 }
-                var channels = net.getChannelUsed(pos);
+
+                var maxChannel = properties.getChannels() - 1;
+
+                var channel = net.getChannel(pos, stack.getFluid());
                 var simulateChannels = simulateChannelUsed.getOrDefault(pos, Collections.emptySet());
+                if ((channel == -1 || channel > maxChannel) && !simulateChannels.contains(stack.getFluid())) {
+                    channel = net.useChannel(pos, stack.getFluid());
+                    if (channel == -1 || channel > maxChannel) {
+                        return 0;
+                    }
+                }
 
-                if (!channels.contains(stack.getFluid()) && !simulateChannels.contains(stack.getFluid())
-                        && (channels.size() + simulateChannels.size()) >= properties.getChannels()) return 0;
-
-                var left = properties.getPlatformThroughput() - net.getThroughputUsed(pos) - simulateThroughputUsed.getOrDefault(pos, 0);
+                long platformThroughputPerSecond = 20 * properties.getPlatformThroughput();
+                var left = platformThroughputPerSecond - net.getLastSecondTotalThroughput(pos, channel) - simulateThroughputUsed.getOrDefault(pos, 0);
                 amount = (int) Math.min(amount, left);
-                if (amount == 0) return 0;
+                if (amount <= 0) return 0;
             }
             return amount;
         }
@@ -192,8 +213,9 @@ public class FluidPipeBlockEntityImpl extends FluidPipeBlockEntity {
                                     simulateThroughputUsed.put(pos, simulateThroughputUsed.getOrDefault(pos, 0) + filled);
                                     simulateChannelUsed.computeIfAbsent(pos, p -> new HashSet<>()).add(resource.getFluid());
                                 } else {
-                                    net.useThroughput(pos, filled);
-                                    net.useChannel(pos, resource.getFluid());
+                                    int channel = net.getChannel(pos, resource.getFluid());
+                                    if (channel != -1)
+                                        net.useThroughput(pos, channel, filled);
                                 }
                             }
 
