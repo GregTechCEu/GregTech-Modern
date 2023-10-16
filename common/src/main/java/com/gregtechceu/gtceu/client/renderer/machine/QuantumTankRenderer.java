@@ -90,7 +90,7 @@ public class QuantumTankRenderer extends TieredHullMachineRenderer {
             } else {
                 RenderUtils.rotateToFace(poseStack, frontFacing, null);
             }
-            var amount = TextFormattingUtil.formatLongToCompactString(stored.getAmount(), 4);
+            var amount = TextFormattingUtil.formatLongToCompactString(stored.getAmount() / (FluidHelper.getBucket() / 1000), 4);
             poseStack.scale(1f / 64, 1f / 64, 0);
             poseStack.translate(-32, -32, 0);
             new TextTexture(amount).draw(GuiGraphicsAccessor.create(Minecraft.getInstance(), poseStack, MultiBufferSource.immediate(Tesselator.getInstance().getBuilder())), 0, 0, 0, 24, 64, 28);
