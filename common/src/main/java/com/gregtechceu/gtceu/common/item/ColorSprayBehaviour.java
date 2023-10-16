@@ -94,15 +94,15 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
                 shulkerBoxBuilder.put(color, BuiltInRegistries.BLOCK.get(getId(GTValues.MODID_TINTED, color, "shulker_box")));
                 candleBuilder.put(color, BuiltInRegistries.BLOCK.get(getId(GTValues.MODID_TINTED, color, "candle")));
             } else {
-                glassBuilder.put(color, BuiltInRegistries.BLOCK.get(getId("", color, "stained_glass")));
-                glassPaneBuilder.put(color, BuiltInRegistries.BLOCK.get(getId("", color, "stained_glass_pane")));
-                terracottaBuilder.put(color, BuiltInRegistries.BLOCK.get(getId("", color, "terracotta")));
-                woolBuilder.put(color, BuiltInRegistries.BLOCK.get(getId("", color, "wool")));
-                carpetBuilder.put(color, BuiltInRegistries.BLOCK.get(getId("", color, "carpet")));
-                concreteBuilder.put(color, BuiltInRegistries.BLOCK.get(getId("", color, "concrete")));
-                concretePowderBuilder.put(color, BuiltInRegistries.BLOCK.get(getId("", color, "concrete_powder")));
-                shulkerBoxBuilder.put(color, BuiltInRegistries.BLOCK.get(getId("", color, "shulker_box")));
-                candleBuilder.put(color, BuiltInRegistries.BLOCK.get(getId("", color, "candle")));
+                glassBuilder.put(color, BuiltInRegistries.BLOCK.get(getId("minecraft", color, "stained_glass")));
+                glassPaneBuilder.put(color, BuiltInRegistries.BLOCK.get(getId("minecraft", color, "stained_glass_pane")));
+                terracottaBuilder.put(color, BuiltInRegistries.BLOCK.get(getId("minecraft", color, "terracotta")));
+                woolBuilder.put(color, BuiltInRegistries.BLOCK.get(getId("minecraft", color, "wool")));
+                carpetBuilder.put(color, BuiltInRegistries.BLOCK.get(getId("minecraft", color, "carpet")));
+                concreteBuilder.put(color, BuiltInRegistries.BLOCK.get(getId("minecraft", color, "concrete")));
+                concretePowderBuilder.put(color, BuiltInRegistries.BLOCK.get(getId("minecraft", color, "concrete_powder")));
+                shulkerBoxBuilder.put(color, BuiltInRegistries.BLOCK.get(getId("minecraft", color, "shulker_box")));
+                candleBuilder.put(color, BuiltInRegistries.BLOCK.get(getId("minecraft", color, "candle")));
 
                 /* somehow didn't want to work, it seems registry isn't fully loaded yet (forge) so `BuiltInRegistries.BLOCK.getId` returns air for modded blocks
                 if (GTCEu.isCreateLoaded()) {
