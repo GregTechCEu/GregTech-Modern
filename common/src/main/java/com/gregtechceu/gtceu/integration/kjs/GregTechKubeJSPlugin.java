@@ -130,10 +130,13 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         super.registerBindings(event);
         event.add("GTRegistries", GTRegistries.class);
         event.add("GTMaterials", GTMaterials.class);
+        event.add("GCyMMaterials", GCyMMaterials.class);
         event.add("GTElements", GTElements.class);
         event.add("GTSoundEntries", GTSoundEntries.class);
         event.add("GTBlocks", GTBlocks.class);
+        event.add("GCyMBlocks", GCyMBlocks.class);
         event.add("GTMachines", GTMachines.class);
+        event.add("GCyMMachines", GCyMMachines.class);
         event.add("GTItems", GTItems.class);
         event.add("GTRecipeTypes", GTRecipeTypes.class);
         event.add("TagPrefix", TagPrefix.class);
