@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.common.data.GTWorldgen;
 import io.github.fabricators_of_create.porting_lib.data.ExistingFileHelper;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
+import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.Util;
 import net.minecraft.core.HolderLookup;
@@ -44,7 +45,7 @@ public class GregTechDatagen implements DataGeneratorEntrypoint {
         var pack = generator.createPack();
         GTRegistries.REGISTRATE.setupDatagen(pack, helper);
         // sound
-        pack.addProvider((FabricDataGenerator.Pack.Factory<DataProvider>) SoundEntryBuilder.SoundEntryProvider::new);
+        pack.addProvider((FabricDataOutput output) -> new SoundEntryBuilder.SoundEntryProvider(output, GTCEu.MOD_ID));
         // compass
         pack.addProvider((FabricDataGenerator.Pack.Factory<CompassSection.CompassSectionProvider>) packOutput -> new CompassSection.CompassSectionProvider(packOutput, rl -> helper.exists(rl, PackType.CLIENT_RESOURCES)));
         pack.addProvider((FabricDataGenerator.Pack.Factory<DataProvider>) packOutput -> new CompassNode.CompassNodeProvider(packOutput, rl -> helper.exists(rl, PackType.CLIENT_RESOURCES)));
