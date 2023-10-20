@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.addon;
 import com.gregtechceu.gtceu.api.addon.events.KJSRecipeKeyEvent;
 import com.gregtechceu.gtceu.api.addon.events.MaterialCasingCollectionEvent;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.function.Consumer;
 
@@ -56,14 +57,18 @@ public interface IGTAddon {
 
     /**
      * Call init on your custom RecipeType class(es) here
+     * @deprecated Initialize these in your main/commonproxy class instead. Turns out this might load the class too late for registration on fabric.
      */
+    @Deprecated(forRemoval = true)
     default void registerRecipeTypes() {
 
     }
 
     /**
      * Call init on your custom Machine class(es) here
+     * @deprecated Initialize these in your main/commonproxy class instead. Turns out this might load the class too late for registration on fabric.
      */
+    @Deprecated(forRemoval = true)
     default void registerMachines() {
 
     }
@@ -82,7 +87,11 @@ public interface IGTAddon {
 
     }
 
-    default void initializeRecipes(Consumer<FinishedRecipe> provider) {
+    default void addRecipes(Consumer<FinishedRecipe> provider) {
+
+    }
+
+    default void removeRecipes(Consumer<ResourceLocation> consumer) {
 
     }
 
