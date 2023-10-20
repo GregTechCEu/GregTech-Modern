@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.data.fabric;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.CompassNode;
 import com.gregtechceu.gtceu.api.registry.registrate.CompassSection;
@@ -24,6 +25,7 @@ import net.minecraft.data.worldgen.NoiseData;
 import net.minecraft.data.worldgen.biome.BiomeData;
 import net.minecraft.server.packs.PackType;
 
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -47,17 +49,18 @@ public class GregTechDatagen implements DataGeneratorEntrypoint {
         pack.addProvider((FabricDataGenerator.Pack.Factory<CompassSection.CompassSectionProvider>) packOutput -> new CompassSection.CompassSectionProvider(packOutput, rl -> helper.exists(rl, PackType.CLIENT_RESOURCES)));
         pack.addProvider((FabricDataGenerator.Pack.Factory<DataProvider>) packOutput -> new CompassNode.CompassNodeProvider(packOutput, rl -> helper.exists(rl, PackType.CLIENT_RESOURCES)));
         // biome tags
+        var set = Set.of(GTCEu.MOD_ID);
         var registryAccess = RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY);
         var registries = createProvider(registryAccess);
         pack.addProvider((FabricDataGenerator.Pack.Factory<DataProvider>) output -> new BiomeTagsProviderImpl(output, registries));
         pack.addProvider((FabricDataGenerator.Pack.Factory<DataProvider>) output -> new GTRegistriesDatapackGenerator(
                 output, registries, new RegistrySetBuilder()
-                .add(Registries.DAMAGE_TYPE, GTDamageTypes::bootstrap), "DamageType Data"));
+                .add(Registries.DAMAGE_TYPE, GTDamageTypes::bootstrap), set, "DamageType Data"));
         pack.addProvider((FabricDataGenerator.Pack.Factory<DataProvider>) output -> new GTRegistriesDatapackGenerator(
                 output, registries, new RegistrySetBuilder()
                 .add(Registries.CONFIGURED_FEATURE, GTConfiguredFeatures::bootstrap)
                 .add(Registries.PLACED_FEATURE, GTPlacements::bootstrap)
-                .add(Registries.DENSITY_FUNCTION, GTWorldgen::bootstrapDensityFunctions), "Worldgen Data"));
+                .add(Registries.DENSITY_FUNCTION, GTWorldgen::bootstrapDensityFunctions), set, "Worldgen Data"));
     }
 
     /**
