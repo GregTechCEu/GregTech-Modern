@@ -1768,7 +1768,6 @@ public class GTMachines {
                             .register(),
                     MV, HV, EV);
         }
-        AddonFinder.getAddons().forEach(IGTAddon::registerMachines); // TODO remove in 1.0.14
         if (GTCEu.isKubeJSLoaded()) {
             GTRegistryObjectBuilderTypes.registerFor(GTRegistries.MACHINES.getRegistryName());
         }

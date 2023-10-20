@@ -584,7 +584,6 @@ public class GTRecipeTypes {
                         .save(provider);
             });
         }
-        AddonFinder.getAddons().forEach(IGTAddon::registerRecipeTypes); // TODO remove in 1.0.14
         if (GTCEu.isKubeJSLoaded()) {
             GTRegistryObjectBuilderTypes.registerFor(GTRegistries.RECIPE_TYPES.getRegistryName());
         }
