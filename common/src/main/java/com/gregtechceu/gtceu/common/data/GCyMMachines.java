@@ -346,7 +346,7 @@ public class GCyMMachines {
                     .aisle("XXSXX","XXGXX","XXGXX","XXXXX")
                     .where('S', controller(blocks(definition.get())))
                     .where('C', blocks(CASING_TUNGSTENSTEEL_PIPE.get()))
-                    .where('X', blocks(CASING_LASER_SAFE_ENGRAVING.get()).setMinGlobalLimited(50)
+                    .where('X', blocks(CASING_LASER_SAFE_ENGRAVING.get()).setMinGlobalLimited(45)
                             .or(Predicates.autoAbilities(definition.getRecipeTypes()))
                             .or(Predicates.autoAbilities(true, false, true)))
                     .where('G', blocks(CASING_TEMPERED_GLASS.get()))
