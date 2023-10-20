@@ -10,7 +10,7 @@ import java.util.function.Consumer;
 public interface IGTAddon {
 
     /**
-     * You can freely initialize blocks/items/etc. here, this runs after GTCEu has setup it's content
+     * This runs after GTCEu has setup it's content.
      */
     void initializeAddon();
 
@@ -52,24 +52,6 @@ public interface IGTAddon {
      * Call init on your custom Cover class(es) here
      */
     default void registerCovers() {
-
-    }
-
-    /**
-     * Call init on your custom RecipeType class(es) here
-     * @deprecated Initialize these in your main/commonproxy class instead. Turns out this might load the class too late for registration on fabric.
-     */
-    @Deprecated(forRemoval = true)
-    default void registerRecipeTypes() {
-
-    }
-
-    /**
-     * Call init on your custom Machine class(es) here
-     * @deprecated Initialize these in your main/commonproxy class instead. Turns out this might load the class too late for registration on fabric.
-     */
-    @Deprecated(forRemoval = true)
-    default void registerMachines() {
 
     }
 
