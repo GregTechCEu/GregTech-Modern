@@ -62,5 +62,6 @@ public class CommonProxy {
         GTRegistries.REGISTRATE.registerRegistrate();
         WorldGenLayers.registerAll();
         GTFeatures.init();
+        GTFeatures.register();
     }
 }
