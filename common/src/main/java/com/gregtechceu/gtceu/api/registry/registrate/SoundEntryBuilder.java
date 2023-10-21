@@ -32,9 +32,11 @@ public class SoundEntryBuilder {
 
     public static class SoundEntryProvider implements DataProvider {
         private final DataGenerator generator;
+        private final String modId;
 
-        public SoundEntryProvider(DataGenerator generator) {
+        public SoundEntryProvider(DataGenerator generator, String modId) {
             this.generator = generator;
+            this.modId = modId;
         }
 
         @Override
@@ -44,7 +46,7 @@ public class SoundEntryBuilder {
 
         @Override
         public String getName() {
-            return "GTCEU's Custom Sounds";
+            return modId + "'s Custom Sounds";
         }
 
         public void generate(Path path, CachedOutput cache) {
@@ -53,7 +55,7 @@ public class SoundEntryBuilder {
             try {
                 JsonObject json = new JsonObject();
                 for (SoundEntry sound : GTRegistries.SOUNDS) {
-                    sound.write(json);
+                    if (sound.getId().getNamespace().equals(modId)) sound.write(json);
                 }
                 DataProvider.saveStable(cache, json, path.resolve("sounds.json"));
 
