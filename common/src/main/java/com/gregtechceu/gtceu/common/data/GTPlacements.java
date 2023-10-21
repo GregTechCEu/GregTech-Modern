@@ -38,7 +38,7 @@ public class GTPlacements {
                 PlacementUtils.countExtra(0, ConfigHolder.INSTANCE.worldgen.rubberTreeSpawnChance, 1),
                 InSquarePlacement.spread(),
                 SurfaceWaterDepthFilter.forMaxDepth(0),
-                PlacementUtils.HEIGHTMAP_OCEAN_FLOOR,
+                PlacementUtils.HEIGHTMAP_TOP_SOLID,
                 BiomeFilter.biome(),
                 PlacementUtils.filteredByBlockSurvival(GTBlocks.RUBBER_SAPLING.get())
         );

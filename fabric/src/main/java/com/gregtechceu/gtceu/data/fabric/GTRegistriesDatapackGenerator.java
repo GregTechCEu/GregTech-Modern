@@ -32,16 +32,16 @@ public class GTRegistriesDatapackGenerator extends RegistriesDatapackGenerator {
 	private final CompletableFuture<HolderLookup.Provider> registries;
 	private final java.util.function.Predicate<String> namespacePredicate;
 
-	private GTRegistriesDatapackGenerator(String name, PackOutput output, CompletableFuture<Provider> registries) {
+	private GTRegistriesDatapackGenerator(String name, PackOutput output, CompletableFuture<Provider> registries, Set<String> modIds) {
 		super(output, registries);
 		this.name = name;
-		this.namespacePredicate = Set.of(GTCEu.MOD_ID)::contains;
+		this.namespacePredicate = modIds::contains;
 		this.registries = registries;
 		this.output = output;
 	}
 
-	public GTRegistriesDatapackGenerator(PackOutput output, CompletableFuture<Provider> registries, RegistrySetBuilder builder, String name) {
-		this(name, output, registries.thenApply(r -> constructRegistries(r, builder)));
+	public GTRegistriesDatapackGenerator(PackOutput output, CompletableFuture<Provider> registries, RegistrySetBuilder builder, Set<String> modIds, String name) {
+		this(name, output, registries.thenApply(r -> constructRegistries(r, builder)), modIds);
 	}
 
 	/**
