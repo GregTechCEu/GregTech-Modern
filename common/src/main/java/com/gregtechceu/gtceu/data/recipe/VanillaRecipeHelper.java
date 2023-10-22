@@ -44,6 +44,10 @@ public class VanillaRecipeHelper {
         addSmeltingRecipe(provider, regName, input, output, 0.0f);
     }
 
+    public static void addSmeltingRecipe(Consumer<FinishedRecipe> provider, @Nonnull String regName, TagKey<Item> input, ItemStack output, float experience) {
+        addSmeltingRecipe(provider, GTCEu.id(regName.toLowerCase(Locale.ROOT)), input, output, experience);
+    }
+
     public static void addSmeltingRecipe(Consumer<FinishedRecipe> provider, @Nonnull ResourceLocation regName, TagKey<Item> input, ItemStack output, float experience) {
         new SmeltingRecipeBuilder(regName).input(input).output(output).cookingTime(200).experience(experience).save(provider);
     }
@@ -174,6 +178,11 @@ public class VanillaRecipeHelper {
         if (withUnificationData) {
             ChemicalHelper.registerMaterialInfo(result.getItem(), getRecyclingIngredients(result.getCount(), recipe));
         }
+    }
+
+
+    public static void addShapedRecipe(Consumer<FinishedRecipe> provider, boolean withUnificationData, @Nonnull String regName, @Nonnull ItemStack result, @Nonnull Object... recipe) {
+        addShapedRecipe(provider, withUnificationData, GTCEu.id(regName.toLowerCase(Locale.ROOT)), result, recipe);
     }
 
     public static void addShapedRecipe(Consumer<FinishedRecipe> provider, boolean withUnificationData, @Nonnull ResourceLocation regName, @Nonnull ItemStack result, @Nonnull Object... recipe) {
