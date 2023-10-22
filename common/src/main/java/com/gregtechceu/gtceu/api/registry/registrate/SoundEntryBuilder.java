@@ -41,7 +41,7 @@ public class SoundEntryBuilder {
 
         @Override
         public CompletableFuture<?> run(CachedOutput cache) {
-            return generate(output.getOutputFolder(PackOutput.Target.RESOURCE_PACK).resolve(GTCEu.MOD_ID), cache);
+            return generate(output.getOutputFolder(PackOutput.Target.RESOURCE_PACK).resolve(modId), cache);
         }
 
         @Override
