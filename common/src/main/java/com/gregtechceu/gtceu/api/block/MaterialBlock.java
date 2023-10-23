@@ -101,7 +101,7 @@ public class MaterialBlock extends AppearanceBlock implements IBlockRendererProv
 
     @Override
     public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
-        if (!TagPrefix.ORES.containsKey(this.tagPrefix) || (tagPrefix == TagPrefix.oreSand || tagPrefix == TagPrefix.oreRedSand) || !ConfigHolder.INSTANCE.worldgen.sandOresFall) return;
+        if (!TagPrefix.ORES.containsKey(this.tagPrefix) || !TagPrefix.ORES.get(tagPrefix).isSand() || !ConfigHolder.INSTANCE.worldgen.sandOresFall) return;
         if (random.nextInt(16) == 0 && FallingBlock.isFree(level.getBlockState(pos.below()))) {
             double d = (double)pos.getX() + random.nextDouble();
             double e = (double)pos.getY() - 0.05;
