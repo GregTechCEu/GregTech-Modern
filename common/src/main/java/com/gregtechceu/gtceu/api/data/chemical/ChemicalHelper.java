@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.stack.ItemMaterialInfo;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.data.tags.TagsHandler;
@@ -167,7 +168,18 @@ public class ChemicalHelper {
 
     @Nullable
     public static UnificationEntry getUnificationEntry(ItemLike item) {
-        return ITEM_UNIFICATION_ENTRY.get(item);
+        return ITEM_UNIFICATION_ENTRY.computeIfAbsent(item, itemLike -> {
+            Holder<Item> holder = BuiltInRegistries.ITEM.wrapAsHolder(itemLike.asItem());
+
+            for (TagPrefix prefix : TagPrefix.values()) {
+                for (Material material : GTRegistries.MATERIALS) {
+                    if (Arrays.stream(prefix.getItemTags(material)).anyMatch(holder::is)) {
+                        return new UnificationEntry(prefix, material);
+                    }
+                }
+            }
+            return null;
+        });
     }
 
     public static List<ItemLike> getItems(UnificationEntry unificationEntry) {
