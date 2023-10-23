@@ -45,7 +45,7 @@ public class GCyMMaterials {
                 .buildAndRegister();
 
         WatertightSteel = new Material.Builder("watertight_steel")
-                .ingot(4)
+                .ingot(4).fluid()
                 .color(0x2B4B56).iconSet(METALLIC)
                 .appendFlags(STD_METAL, GENERATE_PLATE, GENERATE_ROD, GENERATE_FRAME)
                 .components(Iron, 7, Aluminium, 4, Nickel, 2, Chromium, 1, Sulfur, 1)
