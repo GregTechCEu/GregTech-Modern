@@ -37,7 +37,8 @@
     "WorldLoaderPackConfigMixin",
     "create.RotationPropagatorMixin",
     "kjs.RecipeEventJSMixin",
-    "top.ConfigMixin"
+    "top.ConfigMixin",
+    "rhino.InterpreterMixin"
   ],
   "injectors": {
     "defaultRequire": 1,
