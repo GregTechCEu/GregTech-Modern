@@ -1,6 +1,5 @@
 # ChangeLog
 
-* fix parallel hatches not working correctly with nonconsumed inputs
 * fix tools only accepting digger enchantments
 * fix stone, netherrack, hay being craftable to 9 dust in a crafting table
 * fix machines sometimes crashing when auto-output is toggled rapidly, resulting in it being enabled but no output side being set
