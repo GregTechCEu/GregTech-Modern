@@ -221,7 +221,8 @@ public class ChemicalHelper {
     public static UnificationEntry getOrComputeUnificationEntry(ItemLike item) {
         return ITEM_UNIFICATION_ENTRY.computeIfAbsent(item, itemLike -> {
             Holder<Item> holder = BuiltInRegistries.ITEM.wrapAsHolder(itemLike.asItem());
-            return holder.tags().map(ChemicalHelper::getUnificationEntry).filter(Objects::nonNull).filter(entry -> !(entry instanceof UnificationEntry.EmptyMapMarkerEntry)).findFirst().orElse(null);
+            return holder.tags().map(ChemicalHelper::getUnificationEntry).filter(Objects::nonNull)
+                    .filter(entry -> !(entry instanceof UnificationEntry.EmptyMapMarkerEntry)).findFirst().orElse(null);
         });
     }
 
