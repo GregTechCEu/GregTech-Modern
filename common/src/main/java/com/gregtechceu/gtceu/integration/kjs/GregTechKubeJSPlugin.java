@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.data.RotationState;
+import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.Element;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags;
@@ -148,6 +149,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         event.add("GTFluidState", FluidState.class);
         event.add("PropertyKey", PropertyKey.class);
         event.add("CleanroomType", CleanroomType.class);
+        event.add("ChemicalHelper", ChemicalHelper.class);
 
         event.add("GTValues", GTValues.class);
         event.add("GTMaterialIconSet", MaterialIconSet.class);

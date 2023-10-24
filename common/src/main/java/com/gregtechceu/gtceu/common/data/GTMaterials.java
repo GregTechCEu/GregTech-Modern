@@ -189,15 +189,7 @@ public class GTMaterials {
         block.setIgnored(Coal, Blocks.COAL_BLOCK);
         block.setIgnored(Amethyst, Blocks.AMETHYST_BLOCK);
         block.setIgnored(Glass, Blocks.GLASS);
-        block.setIgnored(Marble);
-        block.setIgnored(Granite, Blocks.GRANITE);
-        block.setIgnored(GraniteRed);
-        block.setIgnored(Andesite, Blocks.ANDESITE);
-        block.setIgnored(Diorite, Blocks.DIORITE);
-        block.setIgnored(Stone, Blocks.STONE);
         block.setIgnored(Glowstone, Blocks.GLOWSTONE);
-        block.setIgnored(Endstone, Blocks.END_STONE);
-        block.setIgnored(Wheat, Blocks.HAY_BLOCK);
         block.setIgnored(Oilsands);
         block.setIgnored(Wood);
         block.setIgnored(TreatedWood);
@@ -207,13 +199,24 @@ public class GTMaterials {
         block.setIgnored(Bone, Blocks.BONE_BLOCK);
         block.setIgnored(NetherQuartz, Blocks.QUARTZ_BLOCK);
         block.setIgnored(Ice, Blocks.ICE);
-        block.setIgnored(Netherrack, Blocks.NETHERRACK);
         block.setIgnored(Concrete, Blocks.WHITE_CONCRETE, Blocks.ORANGE_CONCRETE, Blocks.MAGENTA_CONCRETE, Blocks.LIGHT_BLUE_CONCRETE, Blocks.YELLOW_CONCRETE, Blocks.LIME_CONCRETE,
                 Blocks.PINK_CONCRETE, Blocks.GRAY_CONCRETE, Blocks.LIGHT_GRAY_CONCRETE, Blocks.CYAN_CONCRETE, Blocks.PURPLE_CONCRETE, Blocks.BLUE_CONCRETE,
                 Blocks.BROWN_CONCRETE, Blocks.GREEN_CONCRETE, Blocks.RED_CONCRETE, Blocks.BLACK_CONCRETE);
         block.setIgnored(Blaze);
         block.setIgnored(Lapotron);
-        block.setIgnored(Obsidian, Blocks.OBSIDIAN);
+
+        stone.setIgnored(Marble);
+        stone.setIgnored(Granite, Blocks.GRANITE);
+        stone.setIgnored(Granite, Blocks.POLISHED_GRANITE);
+        stone.setIgnored(GraniteRed);
+        stone.setIgnored(Andesite, Blocks.ANDESITE);
+        stone.setIgnored(Andesite, Blocks.POLISHED_ANDESITE);
+        stone.setIgnored(Diorite, Blocks.DIORITE);
+        stone.setIgnored(Diorite, Blocks.POLISHED_DIORITE);
+        stone.setIgnored(Stone, Blocks.STONE);
+        stone.setIgnored(Netherrack, Blocks.NETHERRACK);
+        stone.setIgnored(Obsidian, Blocks.OBSIDIAN);
+        stone.setIgnored(Endstone, Blocks.END_STONE);
 
         crushed.addSecondaryMaterial(new MaterialStack(Stone, dust.materialAmount()));
 

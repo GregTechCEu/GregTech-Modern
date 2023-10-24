@@ -9,7 +9,8 @@
     "GuiGraphicsAccessor",
     "LevelRendererMixin",
     "ModelManagerMixin",
-    "MultiPlayerGameModeMixin"
+    "MultiPlayerGameModeMixin",
+    "rei.FluidEntryRendererMixin"
   ],
   "mixins": [
     "BlockBehaviourAccessor",
@@ -22,6 +23,7 @@
     "LevelMixin",
     "LootTablesMixin",
     "MinecraftServerMixin",
+    "MixinEnchantmentCategory",
     "OreConfigurationMixin",
     "OreVeinifierMixin",
     "RecipeManagerAccessor",
@@ -37,8 +39,8 @@
     "WorldLoaderPackConfigMixin",
     "create.RotationPropagatorMixin",
     "kjs.RecipeEventJSMixin",
-    "top.ConfigMixin",
-    "rhino.InterpreterMixin"
+    "rhino.InterpreterMixin",
+    "top.ConfigMixin"
   ],
   "injectors": {
     "defaultRequire": 1,
