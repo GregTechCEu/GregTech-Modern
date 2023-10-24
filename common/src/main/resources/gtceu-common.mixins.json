@@ -9,7 +9,8 @@
     "GuiGraphicsAccessor",
     "LevelRendererMixin",
     "ModelManagerMixin",
-    "MultiPlayerGameModeMixin"
+    "MultiPlayerGameModeMixin",
+    "rei.FluidEntryRendererMixin"
   ],
   "mixins": [
     "BlockBehaviourAccessor",
@@ -37,6 +38,7 @@
     "TagManagerMixin",
     "WorldLoaderPackConfigMixin",
     "create.RotationPropagatorMixin",
+    "emi.FluidEmiStackMixin",
     "kjs.RecipeEventJSMixin",
     "rhino.InterpreterMixin",
     "top.ConfigMixin"

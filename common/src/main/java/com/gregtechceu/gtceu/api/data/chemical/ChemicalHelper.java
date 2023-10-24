@@ -1,11 +1,14 @@
 package com.gregtechceu.gtceu.api.data.chemical;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.FluidProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.ItemMaterialInfo;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.data.tag.TagUtil;
+import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTItems;
@@ -21,6 +24,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluid;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -41,6 +45,8 @@ public class ChemicalHelper {
     public static final Map<ItemLike, ItemMaterialInfo> ITEM_MATERIAL_INFO = new Object2ObjectLinkedOpenHashMap<>();
     /** Mapping of an item to a "prefix, material" pair */
     public static final Map<ItemLike, UnificationEntry> ITEM_UNIFICATION_ENTRY = new HashMap<>();
+    /** Mapping of a fluid to a material */
+    public static final Map<Fluid, Material> FLUID_MATERIAL = new HashMap<>();
     /** Mapping of all items that represent a "prefix, material" pair */
     public static final Map<UnificationEntry, ArrayList<ItemLike>> UNIFICATION_ENTRY_ITEM = new Object2ObjectLinkedOpenHashMap<>();
     public static final Map<UnificationEntry, ArrayList<Block>> UNIFICATION_ENTRY_BLOCK = new Object2ObjectLinkedOpenHashMap<>();
@@ -105,6 +111,25 @@ public class ChemicalHelper {
         }
         ItemMaterialInfo info = ITEM_MATERIAL_INFO.get(itemLike);
         return info == null ? null : info.getMaterial().copy();
+    }
+
+    @Nullable
+    public static Material getMaterial(Fluid fluid) {
+        return FLUID_MATERIAL.computeIfAbsent(fluid, f -> {
+            for (Material material : GTRegistries.MATERIALS) {
+                if (material.hasProperty(PropertyKey.FLUID)) {
+                    FluidProperty property = material.getProperty(PropertyKey.FLUID);
+                    for (FluidStorageKey key : FluidStorageKey.allKeys()) {
+                        Fluid stored = property.getStorage().get(key);
+                        TagKey<Fluid> tag = TagUtil.createFluidTag(BuiltInRegistries.FLUID.getKey(stored).getPath());
+                        if (f == stored || f.builtInRegistryHolder().is(tag)) {
+                            return material;
+                        }
+                    }
+                }
+            }
+            return null;
+        });
     }
 
     @Nullable
@@ -273,6 +298,7 @@ public class ChemicalHelper {
         ChemicalHelper.UNIFICATION_ENTRY_ITEM.clear();
         ChemicalHelper.UNIFICATION_ENTRY_BLOCK.clear();
         ChemicalHelper.ITEM_UNIFICATION_ENTRY.clear();
+        ChemicalHelper.FLUID_MATERIAL.clear();
 
         // Load new data
         TagsHandler.initExtraUnificationEntries();

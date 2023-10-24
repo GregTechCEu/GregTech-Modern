@@ -107,6 +107,8 @@ public class TagLoaderMixin<T> implements IGTTagLoader<T> {
                     for (FluidStorageKey key : FluidStorageKey.allKeys()) {
                         Fluid fluid = property.getStorage().get(key);
                         if (fluid != null) {
+                            ChemicalHelper.FLUID_MATERIAL.put(fluid, material);
+
                             ResourceLocation fluidId = BuiltInRegistries.FLUID.getKey(fluid);
                             tagMap.computeIfAbsent(TagUtil.createFluidTag(fluidId.getPath()).location(), path -> new ArrayList<>())
                                     .add(new TagLoader.EntryWithSource(TagEntry.element(fluidId), GTValues.CUSTOM_TAG_SOURCE));

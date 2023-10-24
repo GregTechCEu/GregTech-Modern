@@ -12,6 +12,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.material.Fluid;
 
 import java.util.List;
 
@@ -55,6 +56,14 @@ public class TooltipsHandler {
                     tooltips.addAll(1, multiLang);
                 }
             }
+        }
+    }
+
+    public static void appendFluidTooltips(Fluid fluid, List<Component> tooltips, TooltipFlag flag) {
+        var material = ChemicalHelper.getMaterial(fluid);
+        if (material != null) {
+            if (material.getChemicalFormula() != null && !material.getChemicalFormula().isEmpty())
+                tooltips.add(1, Component.literal(material.getChemicalFormula()).withStyle(ChatFormatting.YELLOW));
         }
     }
 }
