@@ -155,7 +155,7 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
         var level = getMachine().getLevel();
         var pos = getMachine().getPos();
         for (Direction facing : facings) {
-            if (facing == null) continue;
+            if (facing == null) continue; // TODO find actual fix
             ItemTransferHelper.exportToTarget(this, Integer.MAX_VALUE, f -> true, level, pos.relative(facing), facing.getOpposite());
         }
     }
