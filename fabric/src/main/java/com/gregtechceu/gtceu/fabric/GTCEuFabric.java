@@ -53,7 +53,5 @@ public class GTCEuFabric implements ModInitializer {
         if (GTCEu.isRebornEnergyLoaded()) {
             GTCapability.CAPABILITY_ENERGY.registerFallback(new EUToREProvider(EnergyStorage.SIDED::find));
         }
-
-        ItemTooltipCallback.EVENT.register(TooltipsHandler::appendTooltips);
     }
 }

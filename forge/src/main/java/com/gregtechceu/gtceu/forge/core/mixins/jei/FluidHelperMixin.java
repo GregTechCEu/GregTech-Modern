@@ -15,7 +15,7 @@ import java.util.List;
 @Mixin(FluidHelper.class)
 public class FluidHelperMixin {
 
-    @Inject(method = "getTooltip", at = @At("TAIL"))
+    @Inject(method = "getTooltip*", at = @At("TAIL"), remap = false)
     private void gtceu$injectFluidTooltips(FluidStack ingredient, TooltipFlag tooltipFlag, CallbackInfoReturnable<List<Component>> cir) {
         var tooltip = cir.getReturnValue();
         TooltipsHandler.appendFluidTooltips(ingredient.getFluid(), tooltip, tooltipFlag);

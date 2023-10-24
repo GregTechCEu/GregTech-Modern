@@ -19,7 +19,7 @@ import java.util.List;
 @Mixin(FluidEntryDefinition.FluidEntryRenderer.class)
 public class FluidEntryRendererMixin {
 
-    @Inject(method = "getTooltip", at = @At(value = "TAIL", shift = At.Shift.BEFORE), locals = LocalCapture.CAPTURE_FAILHARD)
+    @Inject(method = "getTooltip", at = @At(value = "TAIL", shift = At.Shift.BEFORE), remap = false, locals = LocalCapture.CAPTURE_FAILHARD)
     private void gtceu$addMaterialTooltip(EntryStack<FluidStack> entry, TooltipContext context, CallbackInfoReturnable<@Nullable Tooltip> cir,
                                           List<Component> tooltip, long amount) {
         TooltipsHandler.appendFluidTooltips(entry.getValue().getFluid(), tooltip, context.getFlag());

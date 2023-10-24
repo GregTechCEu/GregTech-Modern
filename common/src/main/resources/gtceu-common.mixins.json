@@ -38,7 +38,6 @@
     "TagManagerMixin",
     "WorldLoaderPackConfigMixin",
     "create.RotationPropagatorMixin",
-    "emi.FluidEmiStackMixin",
     "kjs.RecipeEventJSMixin",
     "rhino.InterpreterMixin",
     "top.ConfigMixin"

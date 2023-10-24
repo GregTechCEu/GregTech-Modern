@@ -60,7 +60,7 @@ public abstract class ProspectorMode<T> {
                         if (state.is(oreTag)) {
                             var itemName = BLOCK_CACHE.computeIfAbsent(state, blockState -> {
                                 var name = BuiltInRegistries.BLOCK.getKey(blockState.getBlock()).toString();
-                                var entry = ChemicalHelper.getUnificationEntry(blockState.getBlock());
+                                var entry = ChemicalHelper.getOrComputeUnificationEntry(blockState.getBlock());
                                 if (entry != null && entry.material != null) {
                                     name = "material_" + entry.material.getName();
                                 }

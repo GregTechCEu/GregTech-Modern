@@ -27,8 +27,6 @@ public class GregTechMixinPlugin implements IMixinConfigPlugin {
             return MixinPluginShared.isClassFound("com.simibubi.create.compat.Mods");
         } else if (mixinClassName.contains("com.gregtechceu.gtceu.core.mixins.rei")) {
             return MixinPluginShared.isClassFound("me.shedaniel.rei.api.common.plugins.REIPlugin");
-        } else if (mixinClassName.contains("com.gregtechceu.gtceu.core.mixins.emi")) {
-            return MixinPluginShared.isClassFound("dev.emi.emi.api.EmiPlugin");
         } else if (mixinClassName.contains("com.gregtechceu.gtceu.fabric.core.mixins.kjs")) {
             return MixinPluginShared.isClassFound("dev.latvian.mods.kubejs.fabric.KubeJSFabric");
         } else if (mixinClassName.contains("com.gregtechceu.gtceu.forge.core.mixins.kjs")) {
@@ -37,6 +35,8 @@ public class GregTechMixinPlugin implements IMixinConfigPlugin {
             return MixinPluginShared.isClassFound("mcjty.theoneprobe.api.ITheOneProbe");
         } else if (mixinClassName.contains("com.gregtechceu.gtceu.forge.core.mixins.jei")) {
             return MixinPluginShared.isClassFound("mezz.jei.api.IModPlugin");
+        }else if (mixinClassName.contains("com.gregtechceu.gtceu.forge.core.mixins.emi")) {
+            return MixinPluginShared.isClassFound("dev.emi.emi.api.EmiPlugin");
         }
         return true;
     }
