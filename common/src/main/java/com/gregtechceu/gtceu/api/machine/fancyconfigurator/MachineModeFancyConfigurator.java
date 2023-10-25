@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.api.machine.fancyconfigurator;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.IFancyConfigurator;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
-import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.gui.widget.SelectorWidget;
@@ -71,7 +70,7 @@ public class MachineModeFancyConfigurator implements IFancyConfigurator {
                 setBackground(GuiTextures.BACKGROUND_INVERSE);
                 addWidget(new SelectorWidget(2, 2, 136, 15, recipeTypeNames, -1).setOnChanged(
                         rt -> {
-                            machine.setActiveRecipeType(recipeTypeNames.indexOf(rt));
+                            machine.setActiveRecipeType(Math.max(recipeTypeNames.indexOf(rt), 0));
                             machine.getRecipeLogic().resetRecipeLogic();
                         }).setSupplier(() -> {
                             var index = recipeTypeNames.indexOf(Component.translatable(machine.getRecipeType().registryName.toLanguageKey()).getString());

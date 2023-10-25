@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.data.forge;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.registry.registrate.CompassNode;
 import com.gregtechceu.gtceu.api.registry.registrate.CompassSection;
 import com.gregtechceu.gtceu.api.registry.registrate.SoundEntryBuilder;
@@ -17,7 +18,7 @@ public class DataGenerators {
         DataGenerator generator = event.getGenerator();
         if (event.includeServer()) {
             // sound
-            generator.addProvider(true, new SoundEntryBuilder.SoundEntryProvider(generator));
+            generator.addProvider(true, new SoundEntryBuilder.SoundEntryProvider(generator, GTCEu.MOD_ID));
             // compass
             generator.addProvider(true, new CompassSection.CompassSectionProvider(generator, rl -> event.getExistingFileHelper().exists(rl, PackType.CLIENT_RESOURCES)));
             generator.addProvider(true, new CompassNode.CompassNodeProvider(generator, rl -> event.getExistingFileHelper().exists(rl, PackType.CLIENT_RESOURCES)));

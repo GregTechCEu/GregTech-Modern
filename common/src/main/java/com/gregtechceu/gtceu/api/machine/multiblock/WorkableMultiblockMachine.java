@@ -45,9 +45,7 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(WorkableMultiblockMachine.class, MultiblockControllerMachine.MANAGED_FIELD_HOLDER);
     @Nullable @Getter @Setter
     private ICleanroomProvider cleanroom;
-    @Getter
-    @Persisted
-    @DescSynced
+    @Getter @Persisted @DescSynced
     public final RecipeLogic recipeLogic;
     @Getter
     private final GTRecipeType[] recipeTypes;
@@ -58,6 +56,7 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
     protected final List<ISubscription> traitSubscriptions;
     @Getter @Setter @Persisted @DescSynced
     protected boolean isMuffled;
+    protected boolean previouslyMuffled = true;
     @Nullable @Getter
     protected LongSet activeBlocks;
 
@@ -160,6 +159,16 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
     //////////////////////////////////////
     //******     RECIPE LOGIC    *******//
     //////////////////////////////////////
+
+    @Override
+    public void clientTick() {
+        if (previouslyMuffled != isMuffled) {
+            previouslyMuffled = isMuffled;
+
+            if (recipeLogic != null)
+                recipeLogic.updateSound();
+        }
+    }
 
     @Nullable
     @Override

@@ -47,12 +47,9 @@ import java.util.List;
 @MethodsReturnNonnullByDefault
 public abstract class SteamWorkableMachine extends SteamMachine implements IRecipeLogicMachine, IMufflableMachine {
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(SteamWorkableMachine.class, SteamMachine.MANAGED_FIELD_HOLDER);
-    @Nullable
-    @Getter @Setter
+    @Nullable @Getter @Setter
     private ICleanroomProvider cleanroom;
-    @Getter
-    @Persisted
-    @DescSynced
+    @Getter @Persisted @DescSynced
     public final RecipeLogic recipeLogic;
     @Getter
     public final GTRecipeType[] recipeTypes;
@@ -62,6 +59,7 @@ public abstract class SteamWorkableMachine extends SteamMachine implements IReci
     protected Direction outputFacing;
     @Persisted @DescSynced @Getter @Setter
     protected boolean isMuffled;
+    protected boolean previouslyMuffled = true;
     @Getter
     protected final Table<IO, RecipeCapability<?>, List<IRecipeHandler<?>>> capabilitiesProxy;
     protected final List<ISubscription> traitSubscriptions;
@@ -139,6 +137,16 @@ public abstract class SteamWorkableMachine extends SteamMachine implements IReci
     @Override
     public GTRecipeType getRecipeType() {
         return recipeTypes[activeRecipeType];
+    }
+
+    @Override
+    public void clientTick() {
+        if (previouslyMuffled != isMuffled) {
+            previouslyMuffled = isMuffled;
+
+            if (recipeLogic != null)
+                recipeLogic.updateSound();
+        }
     }
 
     //////////////////////////////////////

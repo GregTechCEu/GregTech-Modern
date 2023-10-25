@@ -941,7 +941,7 @@ public class GTMachines {
 
     public final static MultiblockMachineDefinition MULTI_SMELTER = REGISTRATE.multiblock("multi_smelter", CoilWorkableElectricMultiblockMachine::new)
             .rotationState(RotationState.NON_Y_AXIS)
-            .recipeTypes(GTRecipeTypes.FURNACE_RECIPES, GTRecipeTypes.ALLOY_SMELTER_RECIPES, GTRecipeTypes.ARC_FURNACE_RECIPES, GTRecipeTypes.CENTRIFUGE_RECIPES)
+            .recipeTypes(GTRecipeTypes.FURNACE_RECIPES, GTRecipeTypes.ALLOY_SMELTER_RECIPES, GTRecipeTypes.ARC_FURNACE_RECIPES)
             .recipeModifier(GTRecipeModifiers::multiSmelterOverclock)
             .appearanceBlock(CASING_INVAR_HEATPROOF)
             .pattern(definition -> FactoryBlockPattern.start()
@@ -1768,7 +1768,6 @@ public class GTMachines {
                             .register(),
                     MV, HV, EV);
         }
-        AddonFinder.getAddons().forEach(IGTAddon::registerMachines);
         if (GTCEu.isKubeJSLoaded()) {
             GTRegistryObjectBuilderTypes.registerFor(GTRegistries.MACHINES.getRegistryName());
         }

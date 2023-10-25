@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import com.gregtechceu.gtceu.GTCEu;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import it.unimi.dsi.fastutil.ints.IntList;
+import lombok.Getter;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -19,7 +20,9 @@ import java.util.stream.Stream;
 public class SizedIngredient extends Ingredient {
     public static final ResourceLocation TYPE = GTCEu.id("sized");
 
+    @Getter
     protected final int amount;
+    @Getter
     protected final Ingredient inner;
     protected ItemStack[] itemStacks = null;
 
@@ -62,14 +65,6 @@ public class SizedIngredient extends Ingredient {
             return SizedIngredient.create(sizedIngredient.inner, sizedIngredient.amount);
         }
         return SizedIngredient.create(ingredient);
-    }
-
-    public int getAmount() {
-        return amount;
-    }
-
-    public Ingredient getInner() {
-        return inner;
     }
 
     @ExpectPlatform
