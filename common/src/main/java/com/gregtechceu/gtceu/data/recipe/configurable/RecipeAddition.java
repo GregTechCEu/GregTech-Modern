@@ -20,7 +20,6 @@ import java.util.function.Consumer;
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
 import static com.gregtechceu.gtceu.common.data.GTItems.*;
-import static com.gregtechceu.gtceu.common.data.GTItems.COMPRESSED_CLAY;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.ASSEMBLER_RECIPES;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.LATHE_RECIPES;
@@ -238,7 +237,7 @@ public class RecipeAddition {
                 .outputItems(new ItemStack(Items.MANGROVE_DOOR))
                 .duration(400).EUt(4).save(provider);
 
-        VanillaRecipeHelper.addShapedRecipe(provider, "crimson_door", new ItemStack(Items.DARK_OAK_DOOR), "PTd", "PRS", "PPs",
+        VanillaRecipeHelper.addShapedRecipe(provider, "crimson_door", new ItemStack(Items.CRIMSON_DOOR), "PTd", "PRS", "PPs",
                 'P', new ItemStack(Blocks.CRIMSON_PLANKS),
                 'T', new ItemStack(Blocks.CRIMSON_TRAPDOOR),
                 'R', new UnificationEntry(TagPrefix.ring, GTMaterials.Iron),
@@ -252,7 +251,7 @@ public class RecipeAddition {
                 .outputItems(new ItemStack(Items.CRIMSON_DOOR))
                 .duration(400).EUt(4).save(provider);
 
-        VanillaRecipeHelper.addShapedRecipe(provider, "warped_door", new ItemStack(Items.DARK_OAK_DOOR), "PTd", "PRS", "PPs",
+        VanillaRecipeHelper.addShapedRecipe(provider, "warped_door", new ItemStack(Items.WARPED_DOOR), "PTd", "PRS", "PPs",
                 'P', new ItemStack(Blocks.WARPED_PLANKS),
                 'T', new ItemStack(Blocks.WARPED_TRAPDOOR),
                 'R', new UnificationEntry(TagPrefix.ring, GTMaterials.Iron),

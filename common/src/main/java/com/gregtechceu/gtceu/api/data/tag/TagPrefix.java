@@ -47,10 +47,14 @@ import org.apache.logging.log4j.util.TriConsumer;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
-import java.util.function.*;
+import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.Conditions.*;
-import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.LoaderType.*;
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.LoaderType.FABRIC;
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.LoaderType.FORGE;
 
 @Accessors(chain = true, fluent = true)
 public class TagPrefix {
@@ -71,7 +75,7 @@ public class TagPrefix {
         return PREFIXES.get(name);
     }
 
-    public static final TagPrefix ore = oreTagPrefix("stone")
+    public static final TagPrefix ore = oreTagPrefix("ore")
             .langValue("%s Ore")
             .materialIconType(MaterialIconType.ore)
             .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
@@ -188,6 +192,8 @@ public class TagPrefix {
     public static final TagPrefix crushedRefined = new TagPrefix("refinedOre")
             .defaultTagPath(FORGE, "refined_ores/%s")
             .defaultTagPath(FABRIC, "%s_refined_ores")
+            .defaultTagPath(FORGE, "refined_ores")
+            .defaultTagPath(FABRIC, "refined_ores")
             .langValue("Refined %s Ore")
             .materialIconType(MaterialIconType.crushedRefined)
             .unificationEnabled(true)
@@ -197,6 +203,8 @@ public class TagPrefix {
     public static final TagPrefix crushedPurified = new TagPrefix("purifiedOre")
             .defaultTagPath(FORGE, "purified_ores/%s")
             .defaultTagPath(FABRIC, "%s_purified_ores")
+            .defaultTagPath(FORGE, "purified_ores")
+            .defaultTagPath(FABRIC, "purified_ores")
             .langValue("Purified %s Ore")
             .materialIconType(MaterialIconType.crushedPurified)
             .unificationEnabled(true)
@@ -679,6 +687,14 @@ public class TagPrefix {
             .langValue("Block of %s")
             .materialAmount(GTValues.M * 9)
             .materialIconType(MaterialIconType.block)
+            .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
+            .unificationEnabled(true);
+
+    // Prefix to determine which kind of Rock this is.
+    public static final TagPrefix stone = new TagPrefix("stone")
+            .defaultTagPath(FORGE, "%s")
+            .defaultTagPath(FABRIC, "%s")
+            .langValue("%s")
             .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
             .unificationEnabled(true);
 

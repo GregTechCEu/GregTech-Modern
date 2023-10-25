@@ -72,7 +72,12 @@ public class BatteryBufferMachine extends TieredEnergyMachine implements IContro
     }
 
     protected ItemStackTransfer createBatteryInventory(Object... args) {
-        var itemTransfer = new ItemStackTransfer(this.inventorySize);
+        var itemTransfer = new ItemStackTransfer(this.inventorySize) {
+            @Override
+            public int getSlotLimit(int slot) {
+                return 1;
+            }
+        };
         itemTransfer.setFilter(item -> GTCapabilityHelper.getElectricItem(item) != null);
         return itemTransfer;
     }

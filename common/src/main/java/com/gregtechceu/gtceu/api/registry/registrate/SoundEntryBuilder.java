@@ -2,10 +2,10 @@ package com.gregtechceu.gtceu.api.registry.registrate;
 
 import com.google.gson.JsonObject;
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.sound.CustomSoundEntry;
-import com.gregtechceu.gtceu.api.sound.SoundEntry;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.sound.ConfiguredSoundEvent;
+import com.gregtechceu.gtceu.api.sound.CustomSoundEntry;
+import com.gregtechceu.gtceu.api.sound.SoundEntry;
 import com.gregtechceu.gtceu.api.sound.WrappedSoundEntry;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.data.CachedOutput;
@@ -18,7 +18,8 @@ import net.minecraft.sounds.SoundSource;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Supplier;
 
 /**
@@ -32,19 +33,21 @@ public class SoundEntryBuilder {
 
     public static class SoundEntryProvider implements DataProvider {
         private final DataGenerator generator;
+        private final String modId;
 
-        public SoundEntryProvider(DataGenerator generator) {
+        public SoundEntryProvider(DataGenerator generator, String modId) {
             this.generator = generator;
+            this.modId = modId;
         }
 
         @Override
         public void run(CachedOutput cache) {
-            generate(generator.getOutputFolder(), cache);
+            generate(generator.getOutputFolder().resolve(modId), cache);
         }
 
         @Override
         public String getName() {
-            return "GTCEU's Custom Sounds";
+            return modId + "'s Custom Sounds";
         }
 
         public void generate(Path path, CachedOutput cache) {
@@ -53,7 +56,7 @@ public class SoundEntryBuilder {
             try {
                 JsonObject json = new JsonObject();
                 for (SoundEntry sound : GTRegistries.SOUNDS) {
-                    sound.write(json);
+                    if (sound.getId().getNamespace().equals(modId)) sound.write(json);
                 }
                 DataProvider.saveStable(cache, json, path.resolve("sounds.json"));
 
