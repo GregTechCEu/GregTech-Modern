@@ -8,7 +8,8 @@
     "BlockModelMixin",
     "LevelRendererMixin",
     "ModelBakeryMixin",
-    "MultiPlayerGameModeMixin"
+    "MultiPlayerGameModeMixin",
+    "rei.FluidEntryRendererMixin"
   ],
   "mixins": [
     "BlockBehaviourAccessor",
@@ -21,6 +22,7 @@
     "LevelMixin",
     "LootTablesMixin",
     "MinecraftServerMixin",
+    "MixinEnchantmentCategory",
     "OreConfigurationMixin",
     "OreVeinifierMixin",
     "RecipeManagerAccessor",
@@ -37,8 +39,8 @@
     "create.RotationPropagatorMixin",
     "kjs.KubeJSMixin",
     "kjs.RecipeEventJSMixin",
-    "top.ConfigMixin",
-    "rhino.InterpreterMixin"
+    "rhino.InterpreterMixin",
+    "top.ConfigMixin"
   ],
   "injectors": {
     "defaultRequire": 1,

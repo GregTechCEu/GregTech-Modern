@@ -2,8 +2,8 @@ package com.gregtechceu.gtceu.fabric;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
-import com.gregtechceu.gtceu.api.capability.fabric.compat.EUToREProvider;
 import com.gregtechceu.gtceu.api.capability.fabric.GTCapability;
+import com.gregtechceu.gtceu.api.capability.fabric.compat.EUToREProvider;
 import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.api.recipe.ingredient.fabric.SizedIngredientImpl;
 import com.gregtechceu.gtceu.common.ServerCommands;
