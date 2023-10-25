@@ -2,10 +2,10 @@ package com.gregtechceu.gtceu.api.registry.registrate;
 
 import com.google.gson.JsonObject;
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.sound.CustomSoundEntry;
-import com.gregtechceu.gtceu.api.sound.SoundEntry;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.sound.ConfiguredSoundEvent;
+import com.gregtechceu.gtceu.api.sound.CustomSoundEntry;
+import com.gregtechceu.gtceu.api.sound.SoundEntry;
 import com.gregtechceu.gtceu.api.sound.WrappedSoundEntry;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.data.CachedOutput;
@@ -18,7 +18,8 @@ import net.minecraft.sounds.SoundSource;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Supplier;
 
 /**
@@ -41,7 +42,7 @@ public class SoundEntryBuilder {
 
         @Override
         public void run(CachedOutput cache) {
-            generate(generator.getOutputFolder(), cache);
+            generate(generator.getOutputFolder().resolve(modId), cache);
         }
 
         @Override
