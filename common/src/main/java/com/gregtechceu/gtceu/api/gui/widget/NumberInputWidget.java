@@ -70,7 +70,7 @@ public abstract class NumberInputWidget<T extends Number> extends WidgetGroup {
 
     private final Consumer<T> onChanged;
 
-    private TextFieldWidget textField;
+    protected TextFieldWidget textField;
 
 
     public NumberInputWidget(Supplier<T> valueSupplier, Consumer<T> onChanged) {
@@ -110,7 +110,7 @@ public abstract class NumberInputWidget<T extends Number> extends WidgetGroup {
         textField.setCurrentString(buffer.readUtf());
     }
 
-    private void buildUI() {
+    protected void buildUI() {
         int buttonWidth = Mth.clamp(this.getSize().width / 5, 15, 40);
         int textFieldWidth = this.getSize().width - (2 * buttonWidth) - 4;
 
@@ -197,7 +197,7 @@ public abstract class NumberInputWidget<T extends Number> extends WidgetGroup {
         return this;
     }
 
-    private void updateTextFieldRange() {
+    protected void updateTextFieldRange() {
         setTextFieldRange(textField, min, max);
 
         this.setValue(clamp(valueSupplier.get(), min, max));

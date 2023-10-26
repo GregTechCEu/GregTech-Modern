@@ -1,0 +1,117 @@
+package com.gregtechceu.gtceu.integration.ae2.machines;
+
+import appeng.api.networking.*;
+import appeng.api.networking.security.IActionSource;
+import appeng.me.helpers.BlockEntityNodeListener;
+import appeng.me.helpers.IGridConnectedBlockEntity;
+import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.syncdata.RequireRerender;
+import com.gregtechceu.gtceu.common.machine.multiblock.part.ItemBusPartMachine;
+import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.integration.ae2.util.SerializableManagedGridNode;
+import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
+import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
+import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import dev.architectury.injectables.annotations.ExpectPlatform;
+import lombok.Getter;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.server.TickTask;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.Level;
+
+import javax.annotation.Nullable;
+
+public abstract class MEBusPartMachine extends ItemBusPartMachine implements IInWorldGridNodeHost, IGridConnectedBlockEntity {
+    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(MEBusPartMachine.class, ItemBusPartMachine.MANAGED_FIELD_HOLDER);
+
+    public final static int ME_UPDATE_INTERVAL = ConfigHolder.INSTANCE.compat.ae2.updateIntervals;
+
+    @Getter
+    private final IManagedGridNode mainNode = createMainNode()
+            .setFlags(GridFlags.REQUIRE_CHANNEL)
+            .setVisualRepresentation(getDefinition().getItem())
+            .setInWorldNode(true)
+            .setTagName("proxy");
+    protected final IActionSource actionSource = IActionSource.ofMachine(mainNode::getNode);
+    @DescSynced
+    protected boolean isOnline;
+    protected int meUpdateTick;
+    private IGrid aeProxy;
+
+    public MEBusPartMachine(IMachineBlockEntity holder, IO io, Object... args) {
+        super(holder, GTValues.UHV, io, args);
+        this.meUpdateTick = 0;
+    }
+
+    protected boolean shouldSyncME() {
+        return this.meUpdateTick % ME_UPDATE_INTERVAL == 0;
+    }
+
+    protected void updateInventorySubscription() {
+        if (isWorkingEnabled() && ((io == IO.OUT && !getInventory().isEmpty()) || io == IO.IN)
+                && GridHelper.getNodeHost(getLevel(), getPos().relative(getFrontFacing())) != null) {
+            autoIOSubs = subscribeServerTick(autoIOSubs, this::autoIO);
+        } else if (autoIOSubs != null) {
+            autoIOSubs.unsubscribe();
+            autoIOSubs = null;
+        }
+    }
+
+    /**
+     * Update me network connection status.
+     * @return the updated status.
+     */
+    public boolean updateMEStatus() {
+        if (this.aeProxy == null) {
+            this.aeProxy = this.mainNode.getGrid();
+        }
+        if (this.aeProxy != null) {
+            this.isOnline = this.mainNode.isOnline() && this.mainNode.isPowered();
+        } else {
+            this.isOnline = false;
+        }
+        return this.isOnline;
+    }
+
+    protected IManagedGridNode createMainNode() {
+        return new SerializableManagedGridNode(this, BlockEntityNodeListener.INSTANCE);
+    }
+
+    @Override
+    public void saveChanges() {
+        this.onChanged();
+    }
+
+    @Override
+    public void onLoad() {
+        super.onLoad();
+        if (getLevel() instanceof ServerLevel serverLevel) {
+            serverLevel.getServer().tell(new TickTask(0, this::createManagedNode));
+            inventorySubs = getInventory().addChangedListener(this::updateInventorySubscription);
+        }
+    }
+
+    @Override
+    public void onUnload() {
+        super.onUnload();
+        mainNode.destroy();
+    }
+
+    @Override
+    public void onChanged() {
+        super.onChanged();
+        updateInventorySubscription();
+    }
+
+    protected void createManagedNode() {
+        this.mainNode.create(this.getLevel(), this.getPos());
+    }
+
+    @Override
+    public ManagedFieldHolder getFieldHolder() {
+        return MANAGED_FIELD_HOLDER;
+    }
+}

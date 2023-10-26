@@ -1,0 +1,278 @@
+package com.gregtechceu.gtceu.integration.ae2.machines;
+
+import appeng.api.config.Actionable;
+import appeng.api.networking.GridFlags;
+import appeng.api.networking.IGrid;
+import appeng.api.networking.IInWorldGridNodeHost;
+import appeng.api.networking.IManagedGridNode;
+import appeng.api.networking.security.IActionSource;
+import appeng.api.stacks.AEItemKey;
+import appeng.api.stacks.GenericStack;
+import appeng.api.storage.MEStorage;
+import appeng.me.helpers.BlockEntityNodeListener;
+import appeng.me.helpers.IGridConnectedBlockEntity;
+import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.gui.UITemplate;
+import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.syncdata.RequireRerender;
+import com.gregtechceu.gtceu.common.machine.multiblock.part.ItemBusPartMachine;
+import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.integration.ae2.gui.widget.AEItemConfigWidget;
+import com.gregtechceu.gtceu.integration.ae2.util.ExportOnlyAESlot;
+import com.gregtechceu.gtceu.integration.ae2.util.SerializableManagedGridNode;
+import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
+import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
+import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
+import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
+import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
+import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import com.mojang.datafixers.util.Pair;
+import lombok.Getter;
+import net.minecraft.server.TickTask;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nonnull;
+
+public class MEInputBusPartMachine extends MEBusPartMachine implements IInWorldGridNodeHost, IGridConnectedBlockEntity {
+    private final static int CONFIG_SIZE = 16;
+    private ExportOnlyAEItemList aeItemHandler;
+    private IGrid aeProxy;
+
+    public MEInputBusPartMachine(IMachineBlockEntity holder, Object... args) {
+        super(holder, IO.IN, args);
+        this.meUpdateTick = 0;
+    }
+
+    @Override
+    protected NotifiableItemStackHandler createInventory(Object... args) {
+        this.aeItemHandler = new ExportOnlyAEItemList(this, CONFIG_SIZE);
+        return super.createInventory(args);
+    }
+
+    @Override
+    public void autoIO() {
+        if (getLevel().isClientSide) return;
+        this.meUpdateTick++;
+
+        if (this.workingEnabled && this.shouldSyncME()) {
+            if (this.updateMEStatus()) {
+                MEStorage aeNetwork = this.getMainNode().getGrid().getStorageService().getInventory();
+                for (ExportOnlyAEItem aeSlot : this.aeItemHandler.inventory) {
+                    // Try to clear the wrong item
+                    GenericStack exceedItem = aeSlot.exceedStack();
+                    if (exceedItem != null) {
+                        long total = exceedItem.amount();
+                        long inserted = aeNetwork.insert(exceedItem.what(), exceedItem.amount(), Actionable.MODULATE, this.actionSource);
+                        if (inserted > 0) {
+                            aeSlot.extractItem(0, (int) (total - inserted), false);
+                            continue;
+                        } else {
+                            aeSlot.extractItem(0, (int) total, false);
+                        }
+                    }
+                    // Fill it
+                    GenericStack reqItem = aeSlot.requestStack();
+                    if (reqItem != null) {
+                        long extracted = aeNetwork.extract(reqItem.what(), reqItem.amount(), Actionable.MODULATE, this.actionSource);
+                        if (extracted != 0) {
+                            aeSlot.addStack(new GenericStack(reqItem.what(), extracted));
+                        }
+                    }
+                }
+                this.updateInventorySubscription();
+            }
+        }
+    }
+
+    @Override
+    public ModularUI createUI(Player entityPlayer) {
+        ModularUI modularUI = new ModularUI(176, 18 + 18 * 4 + 94, this, entityPlayer)
+                .background(GuiTextures.BACKGROUND)
+                .widget(new LabelWidget(10, 5, getDefinition().getName()));
+        // ME Network status
+        modularUI.widget(new LabelWidget(10, 15, () -> this.isOnline ?
+                "gtceu.gui.me_network.online" :
+                "gtceu.gui.me_network.offline"));
+
+        // Config slots
+        modularUI.widget(new AEItemConfigWidget(16, 25, this.aeItemHandler.inventory));
+
+        modularUI.widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(), GuiTextures.SLOT, 7, 18 + 18 * 4 + 12, true));
+        return modularUI;
+    }
+
+    private static class ExportOnlyAEItemList extends NotifiableItemStackHandler {
+        public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(ExportOnlyAEItemList.class, NotifiableItemStackHandler.MANAGED_FIELD_HOLDER);
+
+        @Persisted
+        ExportOnlyAEItem[] inventory;
+
+        public ExportOnlyAEItemList(MetaMachine holder, int slots) {
+            super(holder, slots, IO.IN);
+            this.inventory = new ExportOnlyAEItem[CONFIG_SIZE];
+            for (int i = 0; i < CONFIG_SIZE; i ++) {
+                this.inventory[i] = new ExportOnlyAEItem(null, null);
+            }
+            for (ExportOnlyAEItem slot : this.inventory) {
+                slot.trigger = this::onContentsChanged;
+            }
+        }
+
+        @Override
+        public void onContentsChanged() {
+            super.onContentsChanged();
+            this.machine.onChanged();
+        }
+
+        @Override
+        public void setStackInSlot(int slot, @Nonnull ItemStack stack) {
+            // NO-OP
+        }
+
+        @Override
+        public int getSlots() {
+            return MEInputBusPartMachine.CONFIG_SIZE;
+        }
+
+        @Nonnull
+        @Override
+        public ItemStack getStackInSlot(int slot) {
+            if (slot >= 0 && slot < CONFIG_SIZE) {
+                return this.inventory[slot].getStackInSlot(0);
+            }
+            return ItemStack.EMPTY;
+        }
+
+        @Nonnull
+        @Override
+        public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
+            return stack;
+        }
+
+        @Nonnull
+        @Override
+        public ItemStack extractItem(int slot, int amount, boolean simulate) {
+            if (slot >= 0 && slot < CONFIG_SIZE) {
+                return this.inventory[slot].extractItem(0, amount, simulate);
+            }
+            return ItemStack.EMPTY;
+        }
+
+        @Override
+        public int getSlotLimit(int slot) {
+            return Integer.MAX_VALUE;
+        }
+
+        @Override
+        public ManagedFieldHolder getFieldHolder() {
+            return MANAGED_FIELD_HOLDER;
+        }
+    }
+
+    public static class ExportOnlyAEItem extends ExportOnlyAESlot implements IItemTransfer {
+        private Runnable trigger;
+
+        public ExportOnlyAEItem(GenericStack config, GenericStack stock) {
+            super(config, stock);
+        }
+
+        public ExportOnlyAEItem() {
+            super();
+        }
+
+        @Override
+        public ExportOnlyAEItem copy() {
+            return new ExportOnlyAEItem(
+                    this.config == null ? null : copy(this.config),
+                    this.stock == null ? null : copy(this.stock)
+            );
+        }
+
+        @Override
+        public void setStackInSlot(int slot, @Nonnull ItemStack stack) {
+            // NO-OP
+        }
+
+        @NotNull
+        @Override
+        public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate, boolean notifyChanges) {
+            return stack;
+        }
+
+        @Override
+        public int getSlots() {
+            return 1;
+        }
+
+        @Nonnull
+        @Override
+        public ItemStack getStackInSlot(int slot) {
+            if (slot == 0 && this.stock != null) {
+                return this.stock.what() instanceof AEItemKey itemKey ? itemKey.toStack((int) this.stock.amount()) : ItemStack.EMPTY;
+            }
+            return ItemStack.EMPTY;
+        }
+
+        @Nonnull
+        @Override
+        public ItemStack extractItem(int slot, int amount, boolean simulate, boolean notifyChanges) {
+            if (slot == 0 && this.stock != null) {
+                int extracted = (int) Math.min(this.stock.amount(), amount);
+                ItemStack result = this.stock.what() instanceof AEItemKey itemKey ? itemKey.toStack((int) this.stock.amount()) : ItemStack.EMPTY.copy();
+                result.setCount(extracted);
+                if (!simulate) {
+                    this.stock = this.copy(this.stock, this.stock.amount() - extracted);
+                    if (this.stock.amount() == 0) {
+                        this.stock = null;
+                    }
+                }
+                if (notifyChanges && this.trigger != null) {
+                    this.trigger.run();
+                }
+                return result;
+            }
+            return ItemStack.EMPTY;
+        }
+
+        @Override
+        public void addStack(GenericStack stack) {
+            if (this.stock == null) {
+                this.stock = stack;
+            } else {
+                GenericStack.sum(this.stock, stack);
+            }
+            this.trigger.run();
+        }
+
+        @Override
+        public int getSlotLimit(int slot) {
+            return Integer.MAX_VALUE;
+        }
+
+        @Override
+        public boolean isItemValid(int slot, @NotNull ItemStack stack) {
+            return false;
+        }
+
+        @NotNull
+        @Override
+        public Object createSnapshot() {
+            return Pair.of(this.config, this.stock);
+        }
+
+        @Override
+        public void restoreFromSnapshot(Object snapshot) {
+            if (snapshot instanceof Pair<?,?> pair) {
+                this.config = (GenericStack) pair.getFirst();
+                this.stock = (GenericStack) pair.getSecond();
+            }
+        }
+    }
+}

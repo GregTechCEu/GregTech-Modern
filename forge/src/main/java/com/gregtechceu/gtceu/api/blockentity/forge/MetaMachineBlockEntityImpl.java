@@ -1,5 +1,8 @@
 package com.gregtechceu.gtceu.api.blockentity.forge;
 
+import appeng.api.networking.IInWorldGridNodeHost;
+import appeng.capabilities.Capabilities;
+import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.capability.*;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
@@ -14,6 +17,7 @@ import com.gregtechceu.gtceu.api.pipenet.longdistance.ILDEndpoint;
 import com.gregtechceu.gtceu.client.renderer.GTRendererProvider;
 import com.gregtechceu.gtceu.common.pipelike.fluidpipe.longdistance.LDFluidEndpointMachine;
 import com.gregtechceu.gtceu.common.pipelike.item.longdistance.LDItemEndpointMachine;
+import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
@@ -153,6 +157,18 @@ public class MetaMachineBlockEntityImpl extends MetaMachineBlockEntity {
                 return GTCapability.CAPABILITY_ENERGY_CONTAINER.orEmpty(cap, LazyOptional.of(() -> list.size() == 1 ? list.get(0) : new LaserContainerList(list)));
             }
 
+        }
+        if (LDLib.isModLoaded(GTValues.MODID_APPENG)) {
+            if (cap == Capabilities.IN_WORLD_GRID_NODE_HOST) {
+                if (machine instanceof IInWorldGridNodeHost nodeHost) {
+                    return Capabilities.IN_WORLD_GRID_NODE_HOST.orEmpty(cap, LazyOptional.of(() -> nodeHost));
+                }
+                var list = machine.getTraits().stream().filter(IInWorldGridNodeHost.class::isInstance).filter(t -> t.hasCapability(side)).map(IInWorldGridNodeHost.class::cast).toList();
+                if (!list.isEmpty()) {
+                    // TODO wrap list in the future (or not.)
+                    return Capabilities.IN_WORLD_GRID_NODE_HOST.orEmpty(cap, LazyOptional.of(() -> list.get(0)));
+                }
+            }
         }
         return null;
     }

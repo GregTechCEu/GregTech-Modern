@@ -1,6 +1,8 @@
 package com.gregtechceu.gtceu.api.blockentity.fabric;
 
+import appeng.api.networking.IInWorldGridNodeHost;
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.capability.*;
 import com.gregtechceu.gtceu.api.capability.fabric.GTCapability;
@@ -14,6 +16,7 @@ import com.gregtechceu.gtceu.api.misc.LaserContainerList;
 import com.gregtechceu.gtceu.api.pipenet.longdistance.ILDEndpoint;
 import com.gregtechceu.gtceu.common.pipelike.fluidpipe.longdistance.LDFluidEndpointMachine;
 import com.gregtechceu.gtceu.common.pipelike.item.longdistance.LDItemEndpointMachine;
+import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 import com.lowdragmc.lowdraglib.side.fluid.fabric.FluidTransferHelperImpl;
@@ -138,6 +141,17 @@ public class MetaMachineBlockEntityImpl extends MetaMachineBlockEntity {
                 var list = ((IMachineBlockEntity)blockEntity).getMetaMachine().getTraits().stream().filter(IPlatformEnergyStorage.class::isInstance).filter(t -> t.hasCapability(side)).map(IPlatformEnergyStorage.class::cast).toList();
                 // TODO wrap list in the future
                 return list.isEmpty() ? null : GTEnergyHelperImpl.toEnergyStorage(list.get(0));
+            }, type);
+        }
+        if (LDLib.isModLoaded(GTValues.MODID_APPENG)) {
+            IInWorldGridNodeHost.LOOKUP.registerForBlockEntity((blockEntity, side) -> {
+                if (((IMachineBlockEntity)blockEntity).getMetaMachine() instanceof IInWorldGridNodeHost gridNodeHost) {
+                    return gridNodeHost;
+                }
+
+                var list = ((IMachineBlockEntity)blockEntity).getMetaMachine().getTraits().stream().filter(IInWorldGridNodeHost.class::isInstance).map(IInWorldGridNodeHost.class::cast).toList();
+                // TODO wrap list in the future (or not.)
+                return list.isEmpty() ? null : list.get(0);
             }, type);
         }
     }
