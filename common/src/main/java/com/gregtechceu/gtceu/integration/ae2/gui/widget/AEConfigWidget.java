@@ -136,7 +136,7 @@ public abstract class AEConfigWidget extends WidgetGroup {
             return true;
         }
         if (s1 != null && s2 != null) {
-            return s1.amount() == s2.amount() && s1.equals(s2);
+            return s1.amount() == s2.amount() && s1.what().matches(s2);
         }
         return false;
     }

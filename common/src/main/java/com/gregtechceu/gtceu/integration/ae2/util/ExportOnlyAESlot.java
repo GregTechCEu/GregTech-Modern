@@ -1,7 +1,10 @@
 package com.gregtechceu.gtceu.integration.ae2.util;
 
 import appeng.api.stacks.GenericStack;
+import com.lowdragmc.lowdraglib.syncdata.IContentChangeAware;
 import com.lowdragmc.lowdraglib.syncdata.ITagSerializable;
+import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.nbt.CompoundTag;
 
 import javax.annotation.Nullable;
@@ -11,9 +14,13 @@ import javax.annotation.Nullable;
  * @Description A export only slot to hold {@link appeng.api.stacks.GenericStack}
  * @date 2023/4/22-13:42
  */
-public abstract class ExportOnlyAESlot implements IConfigurableSlot, ITagSerializable<CompoundTag> {
+public abstract class ExportOnlyAESlot implements IConfigurableSlot, ITagSerializable<CompoundTag>, IContentChangeAware {
     protected final static String CONFIG_TAG = "config";
     protected final static String STOCK_TAG = "stock";
+
+    @Getter @Setter
+    protected Runnable onContentsChanged = () -> {};
+
     protected GenericStack config;
     protected GenericStack stock;
 
@@ -31,7 +38,7 @@ public abstract class ExportOnlyAESlot implements IConfigurableSlot, ITagSeriali
         if (this.stock != null && this.stock.amount() <= 0) {
             this.stock = null;
         }
-        if (this.config == null || (this.stock != null && !this.config.equals(this.stock))) {
+        if (this.config == null || (this.stock != null && !this.config.what().matches(this.stock))) {
             return null;
         }
         if (this.stock == null) {
@@ -52,10 +59,10 @@ public abstract class ExportOnlyAESlot implements IConfigurableSlot, ITagSeriali
             return copy(this.stock);
         }
         if (this.config != null && this.stock != null) {
-            if (this.config.equals(this.stock) && this.config.amount() < this.stock.amount()) {
+            if (this.config.what().matches(this.stock) && this.config.amount() < this.stock.amount()) {
                 return copy(this.stock, this.stock.amount() - this.config.amount());
             }
-            if (!this.config.equals(this.stock)) {
+            if (!this.config.what().matches(this.stock)) {
                 return copy(this.stock);
             }
         }

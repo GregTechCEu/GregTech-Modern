@@ -1,7 +1,9 @@
 package com.gregtechceu.gtceu.integration.ae2.machines;
 
 import appeng.api.config.Actionable;
+import appeng.api.networking.GridHelper;
 import appeng.api.networking.security.IActionSource;
+import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.GenericStack;
 import appeng.api.storage.MEStorage;
 import appeng.helpers.externalstorage.GenericStackInv;
@@ -11,18 +13,28 @@ import com.gregtechceu.gtceu.api.gui.UITemplate;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
+import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.integration.ae2.gui.widget.AEItemGridWidget;
 import com.gregtechceu.gtceu.integration.ae2.util.SerializableGenericStackInv;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
+import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
 import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
+import com.lowdragmc.lowdraglib.syncdata.annotation.ReadOnlyManaged;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import net.minecraft.core.NonNullList;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.StreamSupport;
 
 /**
  * @Author GlodBlock
@@ -33,14 +45,16 @@ public class MEOutputBusPartMachine extends MEBusPartMachine {
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(MEOutputBusPartMachine.class, MEBusPartMachine.MANAGED_FIELD_HOLDER);
 
     @Persisted
-    private final SerializableGenericStackInv internalBuffer;
-    private final InaccessibleInfiniteSlot inaccessibleInfiniteSlot;
+    private SerializableGenericStackInv internalBuffer;
 
     public MEOutputBusPartMachine(IMachineBlockEntity holder, Object... args) {
         super(holder, IO.OUT, args);
-        this.workingEnabled = true;
+    }
+
+    @Override
+    protected NotifiableItemStackHandler createInventory(Object... args) {
         this.internalBuffer = new SerializableGenericStackInv(this::onChanged, 16);
-        this.inaccessibleInfiniteSlot = new InaccessibleInfiniteSlot(this, this.internalBuffer);
+        return new InaccessibleInfiniteSlot(this, this.internalBuffer);
     }
 
     @Override
@@ -54,13 +68,12 @@ public class MEOutputBusPartMachine extends MEBusPartMachine {
                     MEStorage aeNetwork = this.getMainNode().getGrid().getStorageService().getInventory();
                     for (int slot = 0; slot < this.internalBuffer.size(); ++slot) {
                         GenericStack item = this.internalBuffer.getStack(slot);
-                        long notInserted = aeNetwork.insert(item.what(), item.amount(), Actionable.MODULATE, this.actionSource);
-                        if (notInserted > 0) {
-                            item = new GenericStack(item.what(), notInserted);
-                        } else {
-                            item = new GenericStack(item.what(), 0);
+                        if (item == null) continue;
+                        long inserted = aeNetwork.insert(item.what(), item.amount(), Actionable.MODULATE, this.actionSource);
+                        if (inserted > 0) {
+                            item = new GenericStack(item.what(), (item.amount() - inserted));
                         }
-                        this.internalBuffer.setStack(slot, item);
+                        this.internalBuffer.setStack(slot, item.amount() == 0 ? null : item);
                     }
                 }
                 this.updateInventorySubscription();
@@ -97,14 +110,28 @@ public class MEOutputBusPartMachine extends MEBusPartMachine {
         return modularUI;
     }
 
-    private static class InaccessibleInfiniteSlot extends MachineTrait implements IItemTransfer {
+    protected void updateInventorySubscription() {
+        if (isWorkingEnabled() && !internalBuffer.isEmpty()
+                && GridHelper.getNodeHost(getLevel(), getPos().relative(getFrontFacing())) != null) {
+            autoIOSubs = subscribeServerTick(autoIOSubs, this::autoIO);
+        } else if (autoIOSubs != null) {
+            autoIOSubs.unsubscribe();
+            autoIOSubs = null;
+        }
+    }
+
+    @Override
+    public ManagedFieldHolder getFieldHolder() {
+        return MANAGED_FIELD_HOLDER;
+    }
+
+    private static class InaccessibleInfiniteSlot extends NotifiableItemStackHandler implements IItemTransfer {
         protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(InaccessibleInfiniteSlot.class);
 
         private final GenericStackInv internalBuffer;
 
         public InaccessibleInfiniteSlot(MetaMachine holder, GenericStackInv internalBuffer) {
-            super(holder);
-            holder.attachTraits(this);
+            super(holder, internalBuffer.size(), IO.OUT);
             this.internalBuffer = internalBuffer;
         }
 
@@ -113,6 +140,17 @@ public class MEOutputBusPartMachine extends MEBusPartMachine {
             GenericStack stack1 = GenericStack.fromItemStack(stack);
             this.internalBuffer.insert(slot, stack1.what(), stack1.amount(), Actionable.MODULATE);
             this.machine.onChanged();
+        }
+
+        @Override
+        public List<Ingredient> handleRecipeInner(IO io, GTRecipe recipe, List<Ingredient> left, @Nullable String slotName, boolean simulate) {
+            return handleIngredient(io, left, simulate, this.handlerIO, new ItemStackTransfer(16) {
+                @NotNull
+                @Override
+                public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate, boolean notifyChanges) {
+                    return InaccessibleInfiniteSlot.this.insertItem(slot, stack, simulate, notifyChanges);
+                }
+            });
         }
 
         @NotNull
@@ -143,12 +181,6 @@ public class MEOutputBusPartMachine extends MEBusPartMachine {
         @NotNull
         @Override
         public ItemStack extractItem(int slot, int amount, boolean simulate, boolean notifyChanges) {
-            return null;
-        }
-
-        @Nonnull
-        @Override
-        public ItemStack extractItem(int slot, int amount, boolean simulate) {
             return ItemStack.EMPTY;
         }
 
@@ -165,12 +197,24 @@ public class MEOutputBusPartMachine extends MEBusPartMachine {
         @NotNull
         @Override
         public Object createSnapshot() {
-            return null;
+            GenericStack[] stacks = new GenericStack[this.internalBuffer.size()];
+            for (int i = 0; i < this.internalBuffer.size(); ++i) {
+                stacks[i] = this.internalBuffer.getStack(i);
+            }
+            return stacks;
         }
 
         @Override
         public void restoreFromSnapshot(Object snapshot) {
-
+            if (snapshot instanceof GenericStack[] stacks) {
+                this.internalBuffer.beginBatch();
+                for (int i = 0; i < stacks.length; ++i) {
+                    GenericStack stack = stacks[i];
+                    if (stack == null) continue;
+                    this.internalBuffer.insert(i, stack.what(), stack.amount(), Actionable.MODULATE);
+                }
+                this.internalBuffer.endBatch();
+            }
         }
 
         @Override

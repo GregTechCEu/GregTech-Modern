@@ -22,6 +22,7 @@ import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidStorage;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
+import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
@@ -32,6 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MEOutputHatchPartMachine extends MEHatchPartMachine implements IInWorldGridNodeHost, IGridConnectedBlockEntity {
+    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(MEOutputHatchPartMachine.class, MEHatchPartMachine.MANAGED_FIELD_HOLDER);
 
     @Persisted
     private final SerializableGenericStackInv internalBuffer;
@@ -81,5 +83,10 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine implements IInW
                 this.updateTankSubscription();
             }
         }
+    }
+
+    @Override
+    public ManagedFieldHolder getFieldHolder() {
+        return MANAGED_FIELD_HOLDER;
     }
 }

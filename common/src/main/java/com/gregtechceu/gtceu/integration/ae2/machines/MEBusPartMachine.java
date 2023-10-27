@@ -13,27 +13,33 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.ae2.util.SerializableManagedGridNode;
 import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
+import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
+import com.lowdragmc.lowdraglib.syncdata.annotation.ReadOnlyManaged;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import lombok.Getter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
+import java.util.EnumSet;
 
 public abstract class MEBusPartMachine extends ItemBusPartMachine implements IInWorldGridNodeHost, IGridConnectedBlockEntity {
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(MEBusPartMachine.class, ItemBusPartMachine.MANAGED_FIELD_HOLDER);
-
     public final static int ME_UPDATE_INTERVAL = ConfigHolder.INSTANCE.compat.ae2.updateIntervals;
 
     @Getter
-    private final IManagedGridNode mainNode = createMainNode()
+    @Persisted @ReadOnlyManaged(onDirtyMethod = "onGridNodeDirty", serializeMethod = "serializeGridNode", deserializeMethod = "deserializeGridNode")
+    private final SerializableManagedGridNode mainNode = (SerializableManagedGridNode) createMainNode()
             .setFlags(GridFlags.REQUIRE_CHANNEL)
             .setVisualRepresentation(getDefinition().getItem())
+            .setIdlePowerUsage(ConfigHolder.INSTANCE.compat.ae2.meHatchEnergyUsage)
             .setInWorldNode(true)
+            .setExposedOnSides(this.hasFrontFacing() ? EnumSet.of(this.getFrontFacing()) : EnumSet.allOf(Direction.class))
             .setTagName("proxy");
     protected final IActionSource actionSource = IActionSource.ofMachine(mainNode::getNode);
     @DescSynced
@@ -113,5 +119,21 @@ public abstract class MEBusPartMachine extends ItemBusPartMachine implements IIn
     @Override
     public ManagedFieldHolder getFieldHolder() {
         return MANAGED_FIELD_HOLDER;
+    }
+
+    @SuppressWarnings("unused")
+    public boolean onGridNodeDirty(SerializableManagedGridNode node) {
+        return node != null && node.isActive() && node.isOnline();
+    }
+
+    @SuppressWarnings("unused")
+    public CompoundTag serializeGridNode(SerializableManagedGridNode node) {
+        return node.serializeNBT();
+    }
+
+    @SuppressWarnings("unused")
+    public SerializableManagedGridNode deserializeGridNode(CompoundTag tag) {
+        this.mainNode.deserializeNBT(tag);
+        return this.mainNode;
     }
 }

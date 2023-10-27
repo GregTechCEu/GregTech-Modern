@@ -18,6 +18,7 @@ import com.gregtechceu.gtceu.api.gui.UITemplate;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.syncdata.RequireRerender;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.ItemBusPartMachine;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -26,22 +27,30 @@ import com.gregtechceu.gtceu.integration.ae2.util.ExportOnlyAESlot;
 import com.gregtechceu.gtceu.integration.ae2.util.SerializableManagedGridNode;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
+import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
 import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.mojang.datafixers.util.Pair;
 import lombok.Getter;
+import net.minecraft.core.NonNullList;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
+import java.util.Arrays;
+import java.util.List;
 
 public class MEInputBusPartMachine extends MEBusPartMachine implements IInWorldGridNodeHost, IGridConnectedBlockEntity {
+    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(MEInputBusPartMachine.class, MEBusPartMachine.MANAGED_FIELD_HOLDER);
     private final static int CONFIG_SIZE = 16;
+
     private ExportOnlyAEItemList aeItemHandler;
     private IGrid aeProxy;
 
@@ -53,7 +62,7 @@ public class MEInputBusPartMachine extends MEBusPartMachine implements IInWorldG
     @Override
     protected NotifiableItemStackHandler createInventory(Object... args) {
         this.aeItemHandler = new ExportOnlyAEItemList(this, CONFIG_SIZE);
-        return super.createInventory(args);
+        return this.aeItemHandler;
     }
 
     @Override
@@ -108,6 +117,11 @@ public class MEInputBusPartMachine extends MEBusPartMachine implements IInWorldG
         return modularUI;
     }
 
+    @Override
+    public ManagedFieldHolder getFieldHolder() {
+        return MANAGED_FIELD_HOLDER;
+    }
+
     private static class ExportOnlyAEItemList extends NotifiableItemStackHandler {
         public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(ExportOnlyAEItemList.class, NotifiableItemStackHandler.MANAGED_FIELD_HOLDER);
 
@@ -121,7 +135,7 @@ public class MEInputBusPartMachine extends MEBusPartMachine implements IInWorldG
                 this.inventory[i] = new ExportOnlyAEItem(null, null);
             }
             for (ExportOnlyAEItem slot : this.inventory) {
-                slot.trigger = this::onContentsChanged;
+                slot.setOnContentsChanged(this::onContentsChanged);
             }
         }
 
@@ -129,6 +143,21 @@ public class MEInputBusPartMachine extends MEBusPartMachine implements IInWorldG
         public void onContentsChanged() {
             super.onContentsChanged();
             this.machine.onChanged();
+        }
+
+        @Override
+        public List<Ingredient> handleRecipeInner(IO io, GTRecipe recipe, List<Ingredient> left, @Nullable String slotName, boolean simulate) {
+            return handleIngredient(io, left, simulate, this.handlerIO, new ItemStackTransfer(NonNullList.of(ItemStack.EMPTY, Arrays.stream(inventory).map(item -> item.getStackInSlot(0)).toArray(ItemStack[]::new))) {
+                @NotNull
+                @Override
+                public ItemStack extractItem(int slot, int amount, boolean simulate, boolean notifyChanges) {
+                    ItemStack extracted = super.extractItem(slot, amount, simulate, notifyChanges);
+                    if (!extracted.isEmpty()) {
+                        inventory[slot].extractItem(0, amount, simulate, notifyChanges);
+                    }
+                    return extracted;
+                }
+            });
         }
 
         @Override
@@ -177,7 +206,6 @@ public class MEInputBusPartMachine extends MEBusPartMachine implements IInWorldG
     }
 
     public static class ExportOnlyAEItem extends ExportOnlyAESlot implements IItemTransfer {
-        private Runnable trigger;
 
         public ExportOnlyAEItem(GenericStack config, GenericStack stock) {
             super(config, stock);
@@ -228,13 +256,13 @@ public class MEInputBusPartMachine extends MEBusPartMachine implements IInWorldG
                 ItemStack result = this.stock.what() instanceof AEItemKey itemKey ? itemKey.toStack((int) this.stock.amount()) : ItemStack.EMPTY.copy();
                 result.setCount(extracted);
                 if (!simulate) {
-                    this.stock = this.copy(this.stock, this.stock.amount() - extracted);
+                    this.stock = ExportOnlyAESlot.copy(this.stock, this.stock.amount() - extracted);
                     if (this.stock.amount() == 0) {
                         this.stock = null;
                     }
                 }
-                if (notifyChanges && this.trigger != null) {
-                    this.trigger.run();
+                if (notifyChanges && this.onContentsChanged != null) {
+                    this.onContentsChanged.run();
                 }
                 return result;
             }
@@ -246,9 +274,9 @@ public class MEInputBusPartMachine extends MEBusPartMachine implements IInWorldG
             if (this.stock == null) {
                 this.stock = stack;
             } else {
-                GenericStack.sum(this.stock, stack);
+                this.stock = GenericStack.sum(this.stock, stack);
             }
-            this.trigger.run();
+            this.onContentsChanged.run();
         }
 
         @Override

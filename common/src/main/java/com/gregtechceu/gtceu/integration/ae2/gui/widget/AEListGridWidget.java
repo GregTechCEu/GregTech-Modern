@@ -25,7 +25,7 @@ public abstract class AEListGridWidget extends DraggableScrollableWidgetGroup {
     protected final static int ROW_CHANGE_ID = 2;
     protected final static int CONTENT_CHANGE_ID = 3;
 
-    private final Object2LongMap<GenericStack> changeMap = new Object2LongOpenHashMap<>();
+    protected final Object2LongMap<GenericStack> changeMap = new Object2LongOpenHashMap<>();
     protected final GenericInternalInventory cached = new GenericStackInv(() -> {}, 16);
     protected final GenericInternalInventory displayList = new GenericStackInv(() -> {}, 16);
 
@@ -71,52 +71,8 @@ public abstract class AEListGridWidget extends DraggableScrollableWidgetGroup {
         this.writeListChange();
     }
 
-    protected void writeListChange() {
-        this.changeMap.clear();
-        // Remove item
-        for (int i = 0; i < this.cached.size(); ++i) {
-            GenericStack item = this.cached.getStack(i);
-            boolean matched = false;
-            for (int j = 0; j < this.list.size(); ++j) {
-                GenericStack item2 = this.list.getStack(j);
-                if (item.what().matches(item2) && item2.amount() == 0) {
-                    this.changeMap.put(ExportOnlyAESlot.copy(item), -item.amount());
-                    this.cached.setStack(i, new GenericStack(item.what(), 0));
-                    matched = true;
-                    break;
-                }
-            }
-            if (!matched) {
-                this.changeMap.put(ExportOnlyAESlot.copy(item), -item.amount());
-                this.cached.setStack(i, new GenericStack(item.what(), 0));
-            }
-        }
-        // Change/Add item
-        for (int i = 0; i < this.list.size(); ++i) {
-            GenericStack item = this.list.getStack(i);
-            for (int j = 0; j < this.cached.size(); ++j) {
-                GenericStack cachedItem = this.cached.getStack(j);
-                if (item.what().matches(cachedItem) && cachedItem.amount() == 0) {
-                    this.changeMap.put(ExportOnlyAESlot.copy(item), item.amount());
-                    this.cached.insert(j, item.what(), item.amount(), Actionable.MODULATE);
-                    break;
-                } else {
-                    if (cachedItem.amount() != item.amount()) {
-                        this.changeMap.put(ExportOnlyAESlot.copy(item), item.amount() - cachedItem.amount());
-                        this.cached.insert(j, item.what(), item.amount() - cachedItem.amount(), Actionable.MODULATE);
-                        break;
-                    }
-                }
-            }
-        }
-        this.writeUpdateInfo(CONTENT_CHANGE_ID, buf -> {
-            buf.writeVarInt(this.changeMap.size());
-            for (GenericStack item : this.changeMap.keySet()) {
-                buf.writeItem(GenericStack.wrapInItemStack(item));
-                buf.writeVarLong(this.changeMap.getLong(item));
-            }
-        });
-    }
+    protected abstract void writeListChange();
+
     @Override
     public void readUpdateInfo(int id, FriendlyByteBuf buffer) {
         super.readUpdateInfo(id, buffer);

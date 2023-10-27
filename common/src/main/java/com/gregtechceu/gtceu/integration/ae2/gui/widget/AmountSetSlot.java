@@ -10,7 +10,6 @@ import com.lowdragmc.lowdraglib.utils.Position;
 import lombok.Getter;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
 
 import static com.lowdragmc.lowdraglib.gui.util.DrawerHelper.drawStringSized;
@@ -24,24 +23,15 @@ public class AmountSetSlot extends Widget {
 
     private int index = -1;
     @Getter
-    private final LongInputWidget amountText;
+    private final TextFieldWidget amountText;
     private final AEConfigWidget parentWidget;
 
     public AmountSetSlot(int x, int y, AEConfigWidget widget) {
         super(x, y, 80, 30);
         this.parentWidget = widget;
-        this.amountText = new LongInputWidget(x + 3, y + 14, 60, 15, this::getAmount, this::setNewAmount) {
-            protected void buildUI() {
-                int buttonWidth = Mth.clamp(this.getSize().width / 5, 15, 40);
-                int textFieldWidth = this.getSize().width - (2 * buttonWidth) - 4;
-                this.textField = new TextFieldWidget(buttonWidth + 2, 0, textFieldWidth, 20,
-                        () -> toText(getValueSupplier().get()),
-                        stringValue -> this.setValue(clamp(fromText(stringValue), getMin(), getMax()))
-                );
-                this.updateTextFieldRange();
-                this.addWidget(this.textField);
-            }
-        };
+        this.amountText = new TextFieldWidget(x + 3, y + 14, 60, 15, this::getAmountStr, this::setNewAmount)
+                .setNumbersOnly(0, Integer.MAX_VALUE)
+                .setMaxStringLength(10);
     }
 
     public void setSlotIndex(int slotIndex) {
@@ -49,19 +39,23 @@ public class AmountSetSlot extends Widget {
         writeClientAction(0, buf -> buf.writeVarInt(this.index));
     }
 
-    public long getAmount() {
+    public String getAmountStr() {
         if (this.index < 0) {
-            return 0;
+            return "0";
         }
         IConfigurableSlot slot = this.parentWidget.getConfig(this.index);
         if (slot.getConfig() != null) {
-            return slot.getConfig().amount();
+            return String.valueOf(slot.getConfig().amount());
         }
-        return 0;
+        return "0";
     }
 
-    public void setNewAmount(long amount) {
-        writeClientAction(1, buf -> buf.writeVarLong(amount));
+    public void setNewAmount(String amount) {
+        try {
+            long newAmount = Long.parseLong(amount);
+            writeClientAction(1, buf -> buf.writeVarLong(newAmount));
+        } catch (NumberFormatException ignore) {
+        }
     }
 
     @Override

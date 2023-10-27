@@ -28,6 +28,7 @@ import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidStorage;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
+import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.mojang.datafixers.util.Pair;
 import lombok.Getter;
 import net.minecraft.server.TickTask;
@@ -41,6 +42,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MEInputHatchPartMachine extends MEHatchPartMachine implements IInWorldGridNodeHost, IGridConnectedBlockEntity {
+    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(MEInputHatchPartMachine.class, MEHatchPartMachine.MANAGED_FIELD_HOLDER);
 
     @Persisted
     private ExportOnlyAEFluid[] aeFluidTanks;
@@ -110,12 +112,18 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine implements IInWo
         }
     }
 
+    @Override
+    public ManagedFieldHolder getFieldHolder() {
+        return MANAGED_FIELD_HOLDER;
+    }
+
     public static class ExportOnlyAEFluid extends ExportOnlyAESlot implements IFluidStorage, IFluidTransfer {
         private MetaMachine holder;
 
         public ExportOnlyAEFluid(MetaMachine holder, GenericStack config, GenericStack stock) {
             super(config, stock);
             this.holder = holder;
+            this.setOnContentsChanged(holder::onChanged);
         }
 
         public ExportOnlyAEFluid() {
@@ -222,8 +230,8 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine implements IInWo
         }
 
         private void trigger() {
-            if (holder != null) {
-                holder.markDirty();
+            if (onContentsChanged != null) {
+                onContentsChanged.run();
             }
         }
 
