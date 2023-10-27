@@ -236,9 +236,7 @@ public class GTMachines {
             .rotationState(RotationState.ALL)
             .tier(LV)
             .renderer(() -> new TieredHullMachineRenderer(LV, GTCEu.id("block/machine/ld_item_endpoint_machine")))
-            .tooltips(Component.translatable("gtceu.machine.endpoint.tooltip.1"),
-                    Component.translatable("gtceu.machine.endpoint.tooltip.2"),
-                    Component.translatable("gtceu.machine.endpoint.tooltip.3"))
+            .tooltips(LangHandler.getMultiLang("gtceu.machine.endpoint.tooltip").toArray(Component[]::new))
             .tooltipBuilder((stack, tooltip) -> {
                 if (ConfigHolder.INSTANCE.machines.ldItemPipeMinDistance > 0) {
                     tooltip.add(Component.translatable("gtceu.machine.endpoint.tooltip.min_length", ConfigHolder.INSTANCE.machines.ldItemPipeMinDistance));

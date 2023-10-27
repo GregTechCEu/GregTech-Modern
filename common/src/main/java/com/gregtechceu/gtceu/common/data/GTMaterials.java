@@ -205,18 +205,18 @@ public class GTMaterials {
         block.setIgnored(Blaze);
         block.setIgnored(Lapotron);
 
-        stone.setIgnored(Marble);
-        stone.setIgnored(Granite, Blocks.GRANITE);
-        stone.setIgnored(Granite, Blocks.POLISHED_GRANITE);
-        stone.setIgnored(GraniteRed);
-        stone.setIgnored(Andesite, Blocks.ANDESITE);
-        stone.setIgnored(Andesite, Blocks.POLISHED_ANDESITE);
-        stone.setIgnored(Diorite, Blocks.DIORITE);
-        stone.setIgnored(Diorite, Blocks.POLISHED_DIORITE);
-        stone.setIgnored(Stone, Blocks.STONE);
-        stone.setIgnored(Netherrack, Blocks.NETHERRACK);
-        stone.setIgnored(Obsidian, Blocks.OBSIDIAN);
-        stone.setIgnored(Endstone, Blocks.END_STONE);
+        rock.setIgnored(Marble);
+        rock.setIgnored(Granite, Blocks.GRANITE);
+        rock.setIgnored(Granite, Blocks.POLISHED_GRANITE);
+        rock.setIgnored(GraniteRed);
+        rock.setIgnored(Andesite, Blocks.ANDESITE);
+        rock.setIgnored(Andesite, Blocks.POLISHED_ANDESITE);
+        rock.setIgnored(Diorite, Blocks.DIORITE);
+        rock.setIgnored(Diorite, Blocks.POLISHED_DIORITE);
+        rock.setIgnored(Stone, Blocks.STONE);
+        rock.setIgnored(Netherrack, Blocks.NETHERRACK);
+        rock.setIgnored(Obsidian, Blocks.OBSIDIAN);
+        rock.setIgnored(Endstone, Blocks.END_STONE);
 
         crushed.addSecondaryMaterial(new MaterialStack(Stone, dust.materialAmount()));
 
