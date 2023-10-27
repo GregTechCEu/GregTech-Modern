@@ -30,8 +30,6 @@ import com.mojang.serialization.DataResult;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -43,7 +41,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.MapColor;
 import org.apache.logging.log4j.util.TriConsumer;
 
@@ -74,7 +71,7 @@ public class TagPrefix {
         return PREFIXES.get(name);
     }
 
-    public static final TagPrefix ore = oreTagPrefix("ore")
+    public static final TagPrefix ore = oreTagPrefix("stone")
             .langValue("%s Ore")
             .materialIconType(MaterialIconType.ore)
             .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
@@ -690,7 +687,7 @@ public class TagPrefix {
             .unificationEnabled(true);
 
     // Prefix to determine which kind of Rock this is.
-    public static final TagPrefix stone = new TagPrefix("stone")
+    public static final TagPrefix rock = new TagPrefix("rock")
             .defaultTagPath(FORGE, "%s")
             .defaultTagPath(FABRIC, "%s")
             .langValue("%s")
