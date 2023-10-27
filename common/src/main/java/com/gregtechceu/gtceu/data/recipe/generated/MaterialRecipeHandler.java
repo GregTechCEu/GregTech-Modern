@@ -18,6 +18,7 @@ import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
@@ -491,20 +492,21 @@ public class MaterialRecipeHandler {
             blockEntry = new UnificationEntry(dust, material);
         }
 
-        ArrayList<Object> result = new ArrayList<>();
-        for (int index = 0; index < materialAmount / M; index++) {
-            result.add(blockEntry);
-        }
-
         //do not allow handcrafting or uncrafting, extruding or alloy smelting of blacklisted blocks
         if (!material.hasFlag(EXCLUDE_BLOCK_CRAFTING_RECIPES)) {
 
+            //do not allow non-perfect square root material amounts
+            int size = (int) (materialAmount / M);
+            int sizeSqrt = Math.round(Mth.sqrt(size));
             //do not allow handcrafting or uncrafting of blacklisted blocks
-            if (!material.hasFlag(EXCLUDE_BLOCK_CRAFTING_BY_HAND_RECIPES) && !ConfigHolder.INSTANCE.recipes.disableManualCompression) {
-                VanillaRecipeHelper.addShapelessRecipe(provider, String.format("block_compress_%s", material), blockStack, result.toArray());
+            if (!material.hasFlag(EXCLUDE_BLOCK_CRAFTING_BY_HAND_RECIPES) && !ConfigHolder.INSTANCE.recipes.disableManualCompression && sizeSqrt*sizeSqrt == size) {
+                String patternString = "B".repeat(Math.max(0, sizeSqrt));
+                String[] pattern = new String[sizeSqrt];
+                Arrays.fill(pattern, patternString);
+                VanillaRecipeHelper.addShapedRecipe(provider, String.format("block_compress_%s", material), blockStack, pattern, 'B', blockEntry);
 
                 VanillaRecipeHelper.addShapelessRecipe(provider, String.format("block_decompress_%s", material),
-                        GTUtil.copyAmount((int) (materialAmount / M), ChemicalHelper.get(blockEntry.tagPrefix, blockEntry.material)),
+                        GTUtil.copyAmount(size, ChemicalHelper.get(blockEntry.tagPrefix, blockEntry.material)),
                         new UnificationEntry(blockPrefix, material));
             }
 
