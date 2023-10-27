@@ -110,8 +110,7 @@ public class MEOutputBusPartMachine extends MEBusPartMachine {
         return modularUI;
     }
 
-    // fuck why is this part multithreaded
-    protected synchronized void updateInventorySubscription() {
+    protected void updateInventorySubscription() {
         if (isWorkingEnabled() && !internalBuffer.isEmpty() && getLevel() != null
                 && GridHelper.getNodeHost(getLevel(), getPos().relative(getFrontFacing())) != null) {
             autoIOSubs = subscribeServerTick(autoIOSubs, this::autoIO);

@@ -105,8 +105,8 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine implements IInW
     }
 
     @Override
-    protected synchronized void updateTankSubscription() {
-        if (isWorkingEnabled() && !internalBuffer.isEmpty()
+    protected void updateTankSubscription() {
+        if (isWorkingEnabled() && !internalBuffer.isEmpty() && this.getLevel() != null
                 && GridHelper.getNodeHost(getLevel(), getPos().relative(getFrontFacing())) != null) {
             autoIOSubs = subscribeServerTick(autoIOSubs, this::autoIO);
         } else if (autoIOSubs != null) {

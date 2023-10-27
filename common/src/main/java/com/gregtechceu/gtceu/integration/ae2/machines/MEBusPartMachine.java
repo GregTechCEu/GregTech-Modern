@@ -64,9 +64,8 @@ public abstract class MEBusPartMachine extends ItemBusPartMachine implements IIn
         }
     }
 
-    // fuck why is this part multithreaded
-    protected synchronized void updateInventorySubscription() {
-        if (isWorkingEnabled() && ((io == IO.OUT && !getInventory().isEmpty()) || io == IO.IN)
+    protected void updateInventorySubscription() {
+        if (isWorkingEnabled() && ((io == IO.OUT && !getInventory().isEmpty()) || io == IO.IN) && this.getLevel() != null
                 && GridHelper.getNodeHost(getLevel(), getPos().relative(getFrontFacing())) != null) {
             autoIOSubs = subscribeServerTick(autoIOSubs, this::autoIO);
         } else if (autoIOSubs != null) {
