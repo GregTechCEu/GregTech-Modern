@@ -149,6 +149,16 @@ public class VanillaRecipeHelper {
                     }
                 }
             }
+            if (o instanceof String[] pattern) {
+                for (String s : pattern) {
+                    builder.pattern(s);
+                    for (Character c : TOOLS.keySet()) {
+                        if (s.indexOf(c) >= 0) {
+                            set.add(c.charValue());
+                        }
+                    }
+                }
+            }
             if (o instanceof Character sign) {
                 var content = recipe[i + 1];
                 i++;
