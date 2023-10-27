@@ -216,6 +216,20 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
     }
 
     @Override
+    public long fill(FluidStack resource, boolean simulate, boolean notifyChanges) {
+        if (resource.isEmpty()) return 0;
+        long filled = 0;
+        for (int i = 0; i < getTanks(); i++) {
+            filled += fill(i, resource.copy(resource.getAmount() - filled), simulate, notifyChanges);
+            if (filled == resource.getAmount()) break;
+        }
+        if (notifyChanges && filled > 0 && !simulate) {
+            onContentsChanged();
+        }
+        return filled;
+    }
+
+    @Override
     public long fill(int tank, FluidStack resource, boolean simulate, boolean notifyChanges) {
         if (tank >= 0 && tank < storages.length && canCapInput()) {
             return storages[tank].fill(resource, simulate, notifyChanges);
