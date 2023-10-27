@@ -1,14 +1,10 @@
 package com.gregtechceu.gtceu.integration.ae2.util;
 
-import appeng.api.config.FuzzyMode;
-import appeng.api.stacks.GenericStack;
 import appeng.helpers.externalstorage.GenericStackInv;
 import com.gregtechceu.gtceu.core.mixins.ae2.GenericStackInvAccessor;
 import com.lowdragmc.lowdraglib.syncdata.IContentChangeAware;
 import com.lowdragmc.lowdraglib.syncdata.ITagSerializable;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import org.jetbrains.annotations.Nullable;
 
 /**

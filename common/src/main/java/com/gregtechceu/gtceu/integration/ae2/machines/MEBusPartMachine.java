@@ -56,7 +56,16 @@ public abstract class MEBusPartMachine extends ItemBusPartMachine implements IIn
         return this.meUpdateTick % ME_UPDATE_INTERVAL == 0;
     }
 
-    protected void updateInventorySubscription() {
+    @Override
+    public void setFrontFacing(Direction facing) {
+        super.setFrontFacing(facing);
+        if (isFacingValid(facing)) {
+            this.mainNode.setExposedOnSides(this.hasFrontFacing() ? EnumSet.of(facing) : EnumSet.allOf(Direction.class));
+        }
+    }
+
+    // fuck why is this part multithreaded
+    protected synchronized void updateInventorySubscription() {
         if (isWorkingEnabled() && ((io == IO.OUT && !getInventory().isEmpty()) || io == IO.IN)
                 && GridHelper.getNodeHost(getLevel(), getPos().relative(getFrontFacing())) != null) {
             autoIOSubs = subscribeServerTick(autoIOSubs, this::autoIO);

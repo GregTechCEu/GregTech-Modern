@@ -41,7 +41,6 @@ public abstract class MEHatchPartMachine extends FluidHatchPartMachine implement
             .setTagName("proxy");
     protected final IActionSource actionSource = IActionSource.ofMachine(mainNode::getNode);
     @DescSynced
-    @RequireRerender
     protected boolean isOnline;
     protected int meUpdateTick;
     private IGrid aeProxy;
@@ -54,13 +53,23 @@ public abstract class MEHatchPartMachine extends FluidHatchPartMachine implement
         return this.meUpdateTick % ME_UPDATE_INTERVAL == 0;
     }
 
+    @Override
+    public void setFrontFacing(Direction facing) {
+        super.setFrontFacing(facing);
+        if (isFacingValid(facing)) {
+            this.mainNode.setExposedOnSides(this.hasFrontFacing() ? EnumSet.of(facing) : EnumSet.allOf(Direction.class));
+        }
+    }
+
     /**
      * Update me network connection status.
      * @return the updated status.
      */
     public boolean updateMEStatus() {
-        if (this.aeProxy != null) {
+        if (this.aeProxy == null) {
             this.aeProxy = this.mainNode.getGrid();
+        }
+        if (this.aeProxy != null) {
             this.isOnline = this.mainNode.isOnline() && this.mainNode.isPowered();
         } else {
             this.isOnline = false;
@@ -73,7 +82,7 @@ public abstract class MEHatchPartMachine extends FluidHatchPartMachine implement
     }
 
     protected void updateTankSubscription() {
-        if (isWorkingEnabled() && ((io == IO.OUT && !tank.isEmpty()) || io == IO.IN)
+        if (isWorkingEnabled() && ((io == IO.OUT && !tank.isEmpty()) || io == IO.IN) && getLevel() != null
                 && GridHelper.getNodeHost(getLevel(), getPos().relative(getFrontFacing())) != null) {
             autoIOSubs = subscribeServerTick(autoIOSubs, this::autoIO);
         } else if (autoIOSubs != null) {
