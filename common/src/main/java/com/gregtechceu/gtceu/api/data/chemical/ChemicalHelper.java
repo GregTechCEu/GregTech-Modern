@@ -1,25 +1,33 @@
 package com.gregtechceu.gtceu.api.data.chemical;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.FluidProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.ItemMaterialInfo;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.data.tag.TagUtil;
+import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.data.tags.TagsHandler;
+import com.lowdragmc.lowdraglib.Platform;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Fluids;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -39,12 +47,16 @@ public class ChemicalHelper {
     /** Used for custom material data for items that do not fall into the normal "prefix, material" pair */
     public static final Map<ItemLike, ItemMaterialInfo> ITEM_MATERIAL_INFO = new Object2ObjectLinkedOpenHashMap<>();
     /** Mapping of an item to a "prefix, material" pair */
-    public static final Map<ItemLike, UnificationEntry> ITEM_UNIFICATION_ENTRY = new HashMap<>();
+    public static final Map<ItemLike, UnificationEntry> ITEM_UNIFICATION_ENTRY = new Object2ObjectLinkedOpenHashMap<>();
+    /** Mapping of a tag to a "prefix, material" pair */
+    public static final Map<TagKey<Item>, UnificationEntry> TAG_UNIFICATION_ENTRY = new Object2ObjectLinkedOpenHashMap<>();
+    /** Mapping of a fluid to a material */
+    public static final Map<Fluid, Material> FLUID_MATERIAL = new Object2ObjectLinkedOpenHashMap<>();
     /** Mapping of all items that represent a "prefix, material" pair */
     public static final Map<UnificationEntry, ArrayList<ItemLike>> UNIFICATION_ENTRY_ITEM = new Object2ObjectLinkedOpenHashMap<>();
     public static final Map<UnificationEntry, ArrayList<Block>> UNIFICATION_ENTRY_BLOCK = new Object2ObjectLinkedOpenHashMap<>();
     /** Mapping of stone type blockState to "prefix, material" */
-    public static final Map<Supplier<BlockState>, TagPrefix> ORES_INVERSE = new HashMap<>();
+    public static final Map<Supplier<BlockState>, TagPrefix> ORES_INVERSE = new Object2ObjectLinkedOpenHashMap<>();
 
     public static void registerMaterialInfo(ItemLike item, ItemMaterialInfo materialInfo) {
         ITEM_MATERIAL_INFO.put(item, materialInfo);
@@ -104,6 +116,27 @@ public class ChemicalHelper {
         }
         ItemMaterialInfo info = ITEM_MATERIAL_INFO.get(itemLike);
         return info == null ? null : info.getMaterial().copy();
+    }
+
+    @Nullable
+    public static Material getMaterial(Fluid fluid) {
+        return FLUID_MATERIAL.computeIfAbsent(fluid, f -> {
+            for (Material material : GTRegistries.MATERIALS) {
+                if (material.hasProperty(PropertyKey.FLUID)) {
+                    FluidProperty property = material.getProperty(PropertyKey.FLUID);
+                    for (FluidStorageKey key : FluidStorageKey.allKeys()) {
+                        Fluid stored = property.getStorage().get(key);
+                        TagKey<Fluid> tag = TagUtil.createFluidTag(BuiltInRegistries.FLUID.getKey(stored).getPath());
+                        if (!Platform.isForge() && tag.location().equals(new ResourceLocation("water")) && !stored.isSame(Fluids.WATER)) continue;
+                        if (!Platform.isForge() && tag.location().equals(new ResourceLocation("lava")) && !stored.isSame(Fluids.LAVA)) continue;
+                        if (f == stored || f.is(tag)) {
+                            return material;
+                        }
+                    }
+                }
+            }
+            return null;
+        });
     }
 
     @Nullable
@@ -168,6 +201,29 @@ public class ChemicalHelper {
     @Nullable
     public static UnificationEntry getUnificationEntry(ItemLike item) {
         return ITEM_UNIFICATION_ENTRY.get(item);
+    }
+
+    // TODO optimize this so it can be used in tooltips/etc.
+    public static UnificationEntry getUnificationEntry(TagKey<Item> tag) {
+        return TAG_UNIFICATION_ENTRY.computeIfAbsent(tag, tagKey -> {
+            for (TagPrefix prefix : TagPrefix.values()) {
+                for (Material material : GTRegistries.MATERIALS) {
+                    if (Arrays.stream(prefix.getItemTags(material)).anyMatch(tagKey1 -> tagKey1.location().equals(tagKey.location()))) {
+                        return new UnificationEntry(prefix, material);
+                    }
+                }
+            }
+            return new UnificationEntry.EmptyMapMarkerEntry();
+        });
+    }
+
+    @Nullable
+    public static UnificationEntry getOrComputeUnificationEntry(ItemLike item) {
+        return ITEM_UNIFICATION_ENTRY.computeIfAbsent(item, itemLike -> {
+            Holder<Item> holder = BuiltInRegistries.ITEM.wrapAsHolder(itemLike.asItem());
+            return holder.tags().map(ChemicalHelper::getUnificationEntry).filter(Objects::nonNull)
+                    .filter(entry -> !(entry instanceof UnificationEntry.EmptyMapMarkerEntry)).findFirst().orElse(null);
+        });
     }
 
     public static List<ItemLike> getItems(UnificationEntry unificationEntry) {
@@ -261,6 +317,7 @@ public class ChemicalHelper {
         ChemicalHelper.UNIFICATION_ENTRY_ITEM.clear();
         ChemicalHelper.UNIFICATION_ENTRY_BLOCK.clear();
         ChemicalHelper.ITEM_UNIFICATION_ENTRY.clear();
+        ChemicalHelper.FLUID_MATERIAL.clear();
 
         // Load new data
         TagsHandler.initExtraUnificationEntries();

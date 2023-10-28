@@ -30,8 +30,6 @@ import com.mojang.serialization.DataResult;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -43,7 +41,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.MapColor;
 import org.apache.logging.log4j.util.TriConsumer;
 
@@ -689,6 +686,14 @@ public class TagPrefix {
             .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
             .unificationEnabled(true);
 
+    // Prefix to determine which kind of Rock this is.
+    public static final TagPrefix rock = new TagPrefix("rock")
+            .defaultTagPath(FORGE, "%s")
+            .defaultTagPath(FABRIC, "%s")
+            .langValue("%s")
+            .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
+            .unificationEnabled(true);
+
     public static final TagPrefix frameGt = new TagPrefix("frameGt")
             .defaultTagPath(FORGE, "frames/%s")
             .defaultTagPath(FABRIC, "%s_frames")
@@ -895,6 +900,7 @@ public class TagPrefix {
             // Blocks (4 materials)
             Map.entry(new UnificationEntry(TagPrefix.block, GTMaterials.Amethyst), GTValues.M * 4),
             Map.entry(new UnificationEntry(TagPrefix.block, GTMaterials.Brick), GTValues.M * 4),
+            Map.entry(new UnificationEntry(TagPrefix.block, GTMaterials.CertusQuartz), GTValues.M * 4),
             Map.entry(new UnificationEntry(TagPrefix.block, GTMaterials.Clay), GTValues.M * 4),
             Map.entry(new UnificationEntry(TagPrefix.block, GTMaterials.Glowstone), GTValues.M * 4),
             Map.entry(new UnificationEntry(TagPrefix.block, GTMaterials.NetherQuartz), GTValues.M * 4),

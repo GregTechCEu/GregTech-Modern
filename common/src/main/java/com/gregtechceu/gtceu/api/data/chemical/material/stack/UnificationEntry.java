@@ -45,4 +45,25 @@ public class UnificationEntry {
         return tagPrefix.name + (material != null ? material.toCamelCaseString() : "");
     }
 
+    public static class EmptyMapMarkerEntry extends UnificationEntry {
+
+        public EmptyMapMarkerEntry() {
+            super(null);
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            return this == o;
+        }
+
+        @Override
+        public int hashCode() {
+            return 0;
+        }
+
+        @Override
+        public String toString() {
+            return "EMPTY UNIFICATION ENTRY";
+        }
+    }
 }

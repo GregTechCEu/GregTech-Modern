@@ -1,5 +1,7 @@
 # ChangeLog
 
-* fix feature order cycle on fabric
-* make some API methods more addon dev friendly
-* add tags for all purified/refined ores
+* fix stone ores having broken translations
+* fix transfer + fix ldlib
+* fix fluid slot overflow
+* fix assembly line recipe handling
+* update zh_cn lang
