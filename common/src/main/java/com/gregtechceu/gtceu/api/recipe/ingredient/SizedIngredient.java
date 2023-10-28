@@ -59,7 +59,11 @@ public class SizedIngredient extends Ingredient {
 
     public static SizedIngredient copy(Ingredient ingredient) {
         if (ingredient instanceof SizedIngredient sizedIngredient) {
-            return SizedIngredient.create(sizedIngredient.inner, sizedIngredient.amount);
+            var copied = SizedIngredient.create(sizedIngredient.inner, sizedIngredient.amount);
+            if (sizedIngredient.itemStacks != null) {
+                copied.itemStacks = Arrays.stream(sizedIngredient.itemStacks).map(ItemStack::copy).toArray(ItemStack[]::new);
+            }
+            return copied;
         }
         return SizedIngredient.create(ingredient);
     }
