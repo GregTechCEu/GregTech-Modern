@@ -1,6 +1,8 @@
 package com.gregtechceu.gtceu.integration.ae2.gui.widget;
 
 import appeng.api.stacks.GenericStack;
+import com.gregtechceu.gtceu.integration.ae2.util.AEConfigSlot;
+import com.gregtechceu.gtceu.integration.ae2.util.AmountSetSlot;
 import com.gregtechceu.gtceu.integration.ae2.util.IConfigurableSlot;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;

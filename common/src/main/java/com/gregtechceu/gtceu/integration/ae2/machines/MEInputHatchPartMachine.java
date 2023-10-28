@@ -93,10 +93,10 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine implements IInWo
                         long total = exceedFluid.amount();
                         long inserted = aeNetwork.insert(exceedFluid.what(), exceedFluid.amount(), Actionable.MODULATE, this.actionSource);
                         if (inserted > 0) {
-                            aeTank.drain((int) (total - inserted), true);
+                            aeTank.drain(inserted, false);
                             continue;
                         } else {
-                            aeTank.drain((int) total, true);
+                            aeTank.drain(total, false);
                         }
                     }
                     // Fill it
@@ -172,7 +172,6 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine implements IInWo
             }
             return totalDrained == null ? FluidStack.empty() : totalDrained;
         }
-
 
         @NotNull
         @Override

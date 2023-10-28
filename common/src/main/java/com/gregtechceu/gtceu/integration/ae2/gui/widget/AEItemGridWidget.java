@@ -45,16 +45,17 @@ public class AEItemGridWidget extends AEListGridWidget {
         for (int i = 0; i < this.cached.size(); ++i) {
             GenericStack item = this.cached.getStack(i);
             boolean matched = false;
+            if (item == null) continue;
             for (int j = 0; j < this.list.size(); ++j) {
                 GenericStack item2 = this.list.getStack(j);
-                if (item != null && (item.what().matches(item2) && item2.amount() == 0)) {
+                if (item.what().matches(item2) && item2.amount() == 0) {
                     this.changeMap.put(ExportOnlyAESlot.copy(item), -item.amount());
                     this.cached.setStack(i, new GenericStack(item.what(), 0));
                     matched = true;
                     break;
                 }
             }
-            if (!matched && item != null) {
+            if (!matched) {
                 this.changeMap.put(ExportOnlyAESlot.copy(item), -item.amount());
                 this.cached.setStack(i, new GenericStack(item.what(), 0));
             }
@@ -62,19 +63,20 @@ public class AEItemGridWidget extends AEListGridWidget {
         // Change/Add item
         for (int i = 0; i < this.list.size(); ++i) {
             GenericStack item = this.list.getStack(i);
+            if (item == null) continue;
+            boolean matched = false;
             for (int j = 0; j < this.cached.size(); ++j) {
                 GenericStack cachedItem = this.cached.getStack(j);
-                if (item != null && (item.what().matches(cachedItem) && cachedItem.amount() == 0)) {
-                    this.changeMap.put(ExportOnlyAESlot.copy(item), item.amount());
-                    this.cached.insert(j, item.what(), item.amount(), Actionable.MODULATE);
+                if (item.what().matches(cachedItem) && cachedItem.amount() != item.amount()) {
+                    this.changeMap.put(ExportOnlyAESlot.copy(item), item.amount() - cachedItem.amount());
+                    this.cached.insert(j, item.what(), item.amount() - cachedItem.amount(), Actionable.MODULATE);
+                    matched = true;
                     break;
-                } else {
-                    if (cachedItem != null && item != null && cachedItem.amount() != item.amount()) {
-                        this.changeMap.put(ExportOnlyAESlot.copy(item), item.amount() - cachedItem.amount());
-                        this.cached.insert(j, item.what(), item.amount() - cachedItem.amount(), Actionable.MODULATE);
-                        break;
-                    }
                 }
+            }
+            if (!matched) {
+                this.changeMap.put(ExportOnlyAESlot.copy(item), item.amount());
+                this.cached.insert(i, item.what(), item.amount(), Actionable.MODULATE);
             }
         }
         this.writeUpdateInfo(CONTENT_CHANGE_ID, buf -> {
@@ -83,7 +85,7 @@ public class AEItemGridWidget extends AEListGridWidget {
                 if (item.what() instanceof AEItemKey key) {
                     ItemStack stack = new ItemStack(key.getItem(), (int) item.amount());
                     if (key.hasTag()) {
-                        stack.setTag(key.getTag());
+                        stack.setTag(key.getTag().copy());
                     }
                     buf.writeItem(stack);
                     buf.writeVarLong(this.changeMap.getLong(item));

@@ -28,6 +28,7 @@ import com.gregtechceu.gtceu.integration.ae2.util.SerializableManagedGridNode;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
+import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
@@ -80,7 +81,7 @@ public class MEInputBusPartMachine extends MEBusPartMachine implements IInWorldG
                         long total = exceedItem.amount();
                         long inserted = aeNetwork.insert(exceedItem.what(), exceedItem.amount(), Actionable.MODULATE, this.actionSource);
                         if (inserted > 0) {
-                            aeSlot.extractItem(0, (int) (total - inserted), false);
+                            aeSlot.extractItem(0, (int) inserted, false);
                             continue;
                         } else {
                             aeSlot.extractItem(0, (int) total, false);
@@ -202,6 +203,22 @@ public class MEInputBusPartMachine extends MEBusPartMachine implements IInWorldG
         @Override
         public ManagedFieldHolder getFieldHolder() {
             return MANAGED_FIELD_HOLDER;
+        }
+
+
+        @NotNull
+        @Override
+        public Object createSnapshot() {
+            return Arrays.stream(inventory).map(IItemTransfer::createSnapshot).toArray(Object[]::new);
+        }
+
+        @Override
+        public void restoreFromSnapshot(Object snapshot) {
+            if (snapshot instanceof Object[] array && array.length == inventory.length) {
+                for (int i = 0; i < array.length; i++) {
+                    inventory[i].restoreFromSnapshot(array[i]);
+                }
+            }
         }
     }
 

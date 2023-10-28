@@ -10,7 +10,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import static com.gregtechceu.gtceu.integration.ae2.gui.widget.AEConfigSlot.drawSelectionOverlay;
+import static com.gregtechceu.gtceu.integration.ae2.util.AEConfigSlot.drawSelectionOverlay;
 import static com.lowdragmc.lowdraglib.gui.util.DrawerHelper.drawItemStack;
 import static com.lowdragmc.lowdraglib.gui.util.DrawerHelper.drawText;
 

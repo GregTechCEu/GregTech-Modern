@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.integration.ae2.gui.widget;
 
-import com.gregtechceu.gtceu.integration.ae2.machines.MEBusPartMachine;
 import com.gregtechceu.gtceu.integration.ae2.machines.MEInputBusPartMachine;
+import com.gregtechceu.gtceu.integration.ae2.util.AEItemConfigSlot;
 import com.gregtechceu.gtceu.integration.ae2.util.IConfigurableSlot;
 
 /**

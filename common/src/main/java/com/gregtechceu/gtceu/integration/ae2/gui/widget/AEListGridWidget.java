@@ -60,7 +60,10 @@ public abstract class AEListGridWidget extends DraggableScrollableWidgetGroup {
     public void detectAndSendChanges() {
         super.detectAndSendChanges();
         if (this.list == null) return;
-        int amountOfTypes = this.list.size();
+        int amountOfTypes = 0;
+        for (int i = 0; i < this.list.size(); ++i) {
+            if (this.list.getStack(i) != null) ++amountOfTypes;
+        }
         int slotRowsRequired = Math.max(this.slotAmountY, amountOfTypes);
         if (this.slotRowsAmount != slotRowsRequired) {
             int slotsToAdd = slotRowsRequired - this.slotRowsAmount;
@@ -85,16 +88,5 @@ public abstract class AEListGridWidget extends DraggableScrollableWidgetGroup {
         }
     }
 
-    protected void readListChange(FriendlyByteBuf buffer) {
-        int size = buffer.readVarInt();
-        for (int i = 0; i < size; i++) {
-            ItemStack item = buffer.readItem();
-            item.setCount(1);
-            long delta = buffer.readVarLong();
-            if (!item.isEmpty()) {
-                GenericStack stack = GenericStack.fromItemStack(item);
-                this.displayList.insert(i, stack.what(), delta, Actionable.MODULATE);
-            }
-        }
-    }
+    protected abstract void readListChange(FriendlyByteBuf buffer);
 }

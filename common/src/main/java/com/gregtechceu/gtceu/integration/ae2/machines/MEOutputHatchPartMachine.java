@@ -121,7 +121,7 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine implements IInW
     }
 
     private static class InaccessibleInfiniteSlot extends NotifiableFluidTank implements IItemTransfer {
-        protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(InaccessibleInfiniteSlot.class);
+        protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(InaccessibleInfiniteSlot.class, NotifiableFluidTank.MANAGED_FIELD_HOLDER);
 
         private final GenericStackInv internalBuffer;
 

@@ -1,17 +1,14 @@
-package com.gregtechceu.gtceu.integration.ae2.gui.widget;
+package com.gregtechceu.gtceu.integration.ae2.util;
 
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.GenericStack;
 import com.google.common.collect.Lists;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.integration.ae2.util.IConfigurableSlot;
+import com.gregtechceu.gtceu.integration.ae2.gui.widget.AEConfigWidget;
 import com.lowdragmc.lowdraglib.gui.ingredient.Target;
 import com.lowdragmc.lowdraglib.gui.util.TextFormattingUtil;
 import com.lowdragmc.lowdraglib.utils.Position;
 import com.lowdragmc.lowdraglib.utils.Size;
-import com.mojang.blaze3d.systems.RenderSystem;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
@@ -23,7 +20,8 @@ import javax.annotation.Nonnull;
 import java.util.Collections;
 import java.util.List;
 
-import static com.lowdragmc.lowdraglib.gui.util.DrawerHelper.*;
+import static com.lowdragmc.lowdraglib.gui.util.DrawerHelper.drawItemStack;
+import static com.lowdragmc.lowdraglib.gui.util.DrawerHelper.drawStringFixedCorner;
 
 /**
  * @Author GlodBlock
@@ -105,6 +103,15 @@ public class AEItemConfigSlot extends AEConfigSlot {
                 this.select = true;
             }
             return true;
+        } else if (mouseOverStock(mouseX, mouseY)) {
+            // Left click to pick up
+            if (button == 0) {
+                GenericStack stack = this.parentWidget.getDisplay(this.index).getStock();
+                if (stack != null) {
+                    writeClientAction(PICK_UP_ID, buf -> {});
+                }
+                return true;
+            }
         }
         return false;
     }
@@ -133,6 +140,18 @@ public class AEItemConfigSlot extends AEConfigSlot {
                 writeUpdateInfo(AMOUNT_CHANGE_ID, buf -> buf.writeVarLong(amt));
             }
         }
+        if (id == PICK_UP_ID) {
+            if (slot.getStock() != null && this.gui.getModularUIContainer().getCarried() == ItemStack.EMPTY && slot.getStock().what() instanceof AEItemKey key) {
+                ItemStack stack = new ItemStack(key.getItem(), Math.min((int) slot.getStock().amount(), key.getItem().getMaxStackSize()));
+                if (key.hasTag()) {
+                    stack.setTag(key.getTag().copy());
+                }
+                this.gui.getModularUIContainer().setCarried(stack);
+                GenericStack stack1 = ExportOnlyAESlot.copy(slot.getStock(), Math.max(0, (slot.getStock().amount() - stack.getCount())));
+                slot.setStock(stack1.amount() == 0 ? null : stack1);
+                writeUpdateInfo(PICK_UP_ID, buf -> {});
+            }
+        }
     }
 
     @Override
@@ -150,6 +169,17 @@ public class AEItemConfigSlot extends AEConfigSlot {
             if (slot.getConfig() != null) {
                 long amt = buffer.readVarLong();
                 slot.setConfig(new GenericStack(slot.getConfig().what(), amt));
+            }
+        }
+        if (id == PICK_UP_ID) {
+            if (slot.getStock() != null && slot.getStock().what() instanceof AEItemKey key) {
+                ItemStack stack = new ItemStack(key.getItem(), Math.min((int) slot.getStock().amount(), key.getItem().getMaxStackSize()));
+                if (key.hasTag()) {
+                    stack.setTag(key.getTag().copy());
+                }
+                this.gui.getModularUIContainer().setCarried(stack);
+                GenericStack stack1 = ExportOnlyAESlot.copy(slot.getStock(), Math.max(0, (slot.getStock().amount() - stack.getCount())));
+                slot.setStock(stack1.amount() == 0 ? null : stack1);
             }
         }
     }

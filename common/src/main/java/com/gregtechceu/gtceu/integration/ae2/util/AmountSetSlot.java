@@ -1,8 +1,9 @@
-package com.gregtechceu.gtceu.integration.ae2.gui.widget;
+package com.gregtechceu.gtceu.integration.ae2.util;
 
 import appeng.api.stacks.GenericStack;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.LongInputWidget;
+import com.gregtechceu.gtceu.integration.ae2.gui.widget.AEConfigWidget;
 import com.gregtechceu.gtceu.integration.ae2.util.IConfigurableSlot;
 import com.lowdragmc.lowdraglib.gui.widget.TextFieldWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;

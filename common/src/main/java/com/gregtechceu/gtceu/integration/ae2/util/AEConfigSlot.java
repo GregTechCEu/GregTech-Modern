@@ -1,5 +1,6 @@
-package com.gregtechceu.gtceu.integration.ae2.gui.widget;
+package com.gregtechceu.gtceu.integration.ae2.util;
 
+import com.gregtechceu.gtceu.integration.ae2.gui.widget.AEConfigWidget;
 import com.gregtechceu.gtceu.integration.ae2.util.IConfigurableSlot;
 import com.lowdragmc.lowdraglib.gui.ingredient.IGhostIngredientTarget;
 import com.lowdragmc.lowdraglib.gui.ingredient.Target;
@@ -33,6 +34,7 @@ public class AEConfigSlot extends Widget implements IGhostIngredientTarget {
     protected final static int REMOVE_ID = 1000;
     protected final static int UPDATE_ID = 1001;
     protected final static int AMOUNT_CHANGE_ID = 1002;
+    protected final static int PICK_UP_ID = 1003;
     protected boolean select = false;
 
     public AEConfigSlot(Position pos, Size size, AEConfigWidget widget, int index) {
@@ -64,7 +66,7 @@ public class AEConfigSlot extends Widget implements IGhostIngredientTarget {
         return isMouseOver(position.x, position.y, 18, 18, mouseX, mouseY);
     }
 
-    protected boolean mouseOverStock(int mouseX, int mouseY) {
+    protected boolean mouseOverStock(double mouseX, double mouseY) {
         Position position = getPosition();
         return isMouseOver(position.x, position.y + 18, 18, 18, mouseX, mouseY);
     }
