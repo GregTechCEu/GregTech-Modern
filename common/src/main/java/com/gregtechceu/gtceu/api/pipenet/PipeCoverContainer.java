@@ -171,7 +171,7 @@ public class PipeCoverContainer implements ICoverable, IEnhancedManaged {
 
     @SuppressWarnings("unused")
     private boolean onCoverDirty(CoverBehavior coverBehavior) {
-        return coverBehavior != null && coverBehavior.getSyncStorage().hasDirtyFields();
+        return coverBehavior != null && (coverBehavior.getSyncStorage().hasDirtySyncFields() || coverBehavior.getSyncStorage().hasDirtyPersistedFields());
     }
 
     @SuppressWarnings("unused")
