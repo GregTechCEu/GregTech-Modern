@@ -5,7 +5,7 @@ import appeng.api.stacks.GenericStack;
 import com.google.common.collect.Lists;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.integration.ae2.gui.widget.AEConfigWidget;
-import com.gregtechceu.gtceu.integration.ae2.machines.MEInputHatchPartMachine;
+import com.gregtechceu.gtceu.integration.ae2.machine.MEInputHatchPartMachine;
 import com.lowdragmc.lowdraglib.gui.ingredient.Target;
 import com.lowdragmc.lowdraglib.gui.util.DrawerHelper;
 import com.lowdragmc.lowdraglib.gui.util.TextFormattingUtil;

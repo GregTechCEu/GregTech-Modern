@@ -36,7 +36,7 @@ public abstract class AEListGridWidget extends DraggableScrollableWidgetGroup {
     }
 
     public GenericStack getAt(int index) {
-        return list.getStack(index);
+        return displayList.getStack(index);
     }
 
     protected abstract void addSlotRows(int amount);
@@ -89,4 +89,27 @@ public abstract class AEListGridWidget extends DraggableScrollableWidgetGroup {
     }
 
     protected abstract void readListChange(FriendlyByteBuf buffer);
+
+    @Override
+    public void writeInitialData(FriendlyByteBuf buffer) {
+        super.writeInitialData(buffer);
+        if (this.list == null) return;
+        int amountOfTypes = 0;
+        for (int i = 0; i < this.list.size(); ++i) {
+            if (this.list.getStack(i) != null) ++amountOfTypes;
+        }
+        int slotRowsRequired = Math.max(this.slotAmountY, amountOfTypes);
+        int slotsToAdd = slotRowsRequired - this.slotRowsAmount;
+        this.slotRowsAmount = slotRowsRequired;
+        this.modifySlotRows(slotsToAdd);
+        buffer.writeVarInt(slotsToAdd);
+        this.writeListChange();
+    }
+
+    @Override
+    public void readInitialData(FriendlyByteBuf buffer) {
+        super.readInitialData(buffer);
+        if (this.list == null) return;
+        this.modifySlotRows(buffer.readVarInt());
+    }
 }

@@ -1,30 +1,21 @@
-package com.gregtechceu.gtceu.integration.ae2.machines;
+package com.gregtechceu.gtceu.integration.ae2.machine;
 
 import appeng.api.config.Actionable;
-import appeng.api.networking.GridFlags;
 import appeng.api.networking.IInWorldGridNodeHost;
-import appeng.api.networking.IManagedGridNode;
-import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.GenericStack;
 import appeng.api.storage.MEStorage;
-import appeng.me.helpers.BlockEntityNodeListener;
 import appeng.me.helpers.IGridConnectedBlockEntity;
-import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.UITemplate;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
-import com.gregtechceu.gtceu.common.machine.multiblock.part.FluidHatchPartMachine;
 import com.gregtechceu.gtceu.integration.ae2.gui.widget.AEFluidConfigWidget;
-import com.gregtechceu.gtceu.integration.ae2.gui.widget.AEItemConfigWidget;
 import com.gregtechceu.gtceu.integration.ae2.util.ExportOnlyAESlot;
-import com.gregtechceu.gtceu.integration.ae2.util.SerializableManagedGridNode;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.misc.FluidStorage;
@@ -34,15 +25,11 @@ import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.mojang.datafixers.util.Pair;
-import lombok.Getter;
-import net.minecraft.server.TickTask;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -81,8 +68,6 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine implements IInWo
     @Override
     protected void autoIO() {
         if (getLevel().isClientSide) return;
-        this.meUpdateTick++;
-
         if (this.workingEnabled && this.shouldSyncME()) {
             if (this.updateMEStatus()) {
                 MEStorage aeNetwork = this.getMainNode().getGrid().getStorageService().getInventory();

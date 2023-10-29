@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.integration.ae2.machines;
+package com.gregtechceu.gtceu.integration.ae2.machine;
 
 import appeng.api.networking.*;
 import appeng.api.networking.security.IActionSource;
@@ -7,25 +7,19 @@ import appeng.me.helpers.IGridConnectedBlockEntity;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
-import com.gregtechceu.gtceu.api.syncdata.RequireRerender;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.ItemBusPartMachine;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.ae2.util.SerializableManagedGridNode;
-import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.annotation.ReadOnlyManaged;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import dev.architectury.injectables.annotations.ExpectPlatform;
 import lombok.Getter;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.Level;
 
-import javax.annotation.Nullable;
 import java.util.EnumSet;
 
 public abstract class MEBusPartMachine extends ItemBusPartMachine implements IInWorldGridNodeHost, IGridConnectedBlockEntity {
@@ -44,16 +38,14 @@ public abstract class MEBusPartMachine extends ItemBusPartMachine implements IIn
     protected final IActionSource actionSource = IActionSource.ofMachine(mainNode::getNode);
     @DescSynced
     protected boolean isOnline;
-    protected int meUpdateTick;
     private IGrid aeProxy;
 
     public MEBusPartMachine(IMachineBlockEntity holder, IO io, Object... args) {
         super(holder, GTValues.UHV, io, args);
-        this.meUpdateTick = 0;
     }
 
     protected boolean shouldSyncME() {
-        return this.meUpdateTick % ME_UPDATE_INTERVAL == 0;
+        return this.getOffsetTimer() % ME_UPDATE_INTERVAL == 0;
     }
 
     @Override

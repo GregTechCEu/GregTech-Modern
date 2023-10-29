@@ -1,17 +1,12 @@
-package com.gregtechceu.gtceu.integration.ae2.machines;
+package com.gregtechceu.gtceu.integration.ae2.machine;
 
 import appeng.api.config.Actionable;
-import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IInWorldGridNodeHost;
-import appeng.api.networking.IManagedGridNode;
-import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.GenericStack;
 import appeng.api.storage.MEStorage;
-import appeng.me.helpers.BlockEntityNodeListener;
 import appeng.me.helpers.IGridConnectedBlockEntity;
-import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.UITemplate;
@@ -19,25 +14,16 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.api.syncdata.RequireRerender;
-import com.gregtechceu.gtceu.common.machine.multiblock.part.ItemBusPartMachine;
-import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.ae2.gui.widget.AEItemConfigWidget;
 import com.gregtechceu.gtceu.integration.ae2.util.ExportOnlyAESlot;
-import com.gregtechceu.gtceu.integration.ae2.util.SerializableManagedGridNode;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
-import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.mojang.datafixers.util.Pair;
-import lombok.Getter;
 import net.minecraft.core.NonNullList;
-import net.minecraft.server.TickTask;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -57,7 +43,6 @@ public class MEInputBusPartMachine extends MEBusPartMachine implements IInWorldG
 
     public MEInputBusPartMachine(IMachineBlockEntity holder, Object... args) {
         super(holder, IO.IN, args);
-        this.meUpdateTick = 0;
     }
 
     @Override
@@ -69,8 +54,6 @@ public class MEInputBusPartMachine extends MEBusPartMachine implements IInWorldG
     @Override
     public void autoIO() {
         if (getLevel().isClientSide) return;
-        this.meUpdateTick++;
-
         if (this.workingEnabled && this.shouldSyncME()) {
             if (this.updateMEStatus()) {
                 MEStorage aeNetwork = this.getMainNode().getGrid().getStorageService().getInventory();

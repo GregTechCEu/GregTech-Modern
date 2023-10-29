@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.api.blockentity.forge;
 
 import appeng.api.networking.IInWorldGridNodeHost;
 import appeng.capabilities.Capabilities;
-import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.capability.*;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
@@ -17,7 +17,6 @@ import com.gregtechceu.gtceu.api.pipenet.longdistance.ILDEndpoint;
 import com.gregtechceu.gtceu.client.renderer.GTRendererProvider;
 import com.gregtechceu.gtceu.common.pipelike.fluidpipe.longdistance.LDFluidEndpointMachine;
 import com.gregtechceu.gtceu.common.pipelike.item.longdistance.LDItemEndpointMachine;
-import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
@@ -60,7 +59,7 @@ public class MetaMachineBlockEntityImpl extends MetaMachineBlockEntity {
     }
 
     @Nullable
-    public static <T> LazyOptional<T> getCapability(MetaMachine machine,  @NotNull Capability<T> cap, @Nullable Direction side) {
+    public static <T> LazyOptional<T> getCapability(MetaMachine machine, @NotNull Capability<T> cap, @Nullable Direction side) {
         if (cap == GTCapability.CAPABILITY_COVERABLE) {
             return GTCapability.CAPABILITY_COVERABLE.orEmpty(cap, LazyOptional.of(machine::getCoverContainer));
         } else if (cap == GTCapability.CAPABILITY_TOOLABLE) {
@@ -158,7 +157,7 @@ public class MetaMachineBlockEntityImpl extends MetaMachineBlockEntity {
             }
 
         }
-        if (LDLib.isModLoaded(GTValues.MODID_APPENG)) {
+        if (GTCEu.isAE2Loaded()) {
             if (cap == Capabilities.IN_WORLD_GRID_NODE_HOST) {
                 if (machine instanceof IInWorldGridNodeHost nodeHost) {
                     return Capabilities.IN_WORLD_GRID_NODE_HOST.orEmpty(cap, LazyOptional.of(() -> nodeHost));

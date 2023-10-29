@@ -4,8 +4,10 @@ import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.GenericStack;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.client.TooltipsHandler;
+import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.gui.util.DrawerHelper;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
+import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.lowdragmc.lowdraglib.utils.Position;
 import com.lowdragmc.lowdraglib.utils.Size;
@@ -62,13 +64,16 @@ public class AEFluidDisplayWidget extends Widget {
     public void drawInForeground(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
         if (isMouseOverElement(mouseX, mouseY)) {
             GenericStack fluid = this.gridWidget.getAt(this.index);
-            FluidStack fluidStack = fluid.what() instanceof AEFluidKey key ? FluidStack.create(key.getFluid(), fluid.amount(), key.getTag()) : FluidStack.empty();
             if (fluid != null) {
-                List<Component> hoverStringList = new ArrayList<>();
-                hoverStringList.add(fluidStack.getDisplayName());
-                hoverStringList.add(Component.literal(String.format("%,d L", fluid.amount())));
-                TooltipsHandler.appendFluidTooltips(fluidStack.getFluid(), hoverStringList, TooltipFlag.NORMAL);
-                graphics.renderTooltip(Minecraft.getInstance().font, hoverStringList, Optional.empty(), mouseX, mouseY);
+                FluidStack fluidStack = fluid.what() instanceof AEFluidKey key ? FluidStack.create(key.getFluid(), fluid.amount(), key.getTag()) : FluidStack.empty();
+                List<Component> tooltips = new ArrayList<>();
+                tooltips.add(fluidStack.getDisplayName());
+                tooltips.add(Component.literal(String.format("%,d ", fluid.amount())).append(FluidHelper.getUnit()));
+                if (!Platform.isForge()) {
+                    tooltips.add(Component.literal("§6mB:§r %d mB".formatted(fluidStack.getAmount() * 1000 / FluidHelper.getBucket())));
+                }
+                TooltipsHandler.appendFluidTooltips(fluidStack.getFluid(), tooltips, TooltipFlag.NORMAL);
+                graphics.renderTooltip(Minecraft.getInstance().font, tooltips, Optional.empty(), mouseX, mouseY);
             }
         }
     }

@@ -21,10 +21,6 @@ import java.io.IOException;
  */
 public class AEItemGridWidget extends AEListGridWidget {
 
-    private final Object2LongMap<GenericStack> changeMap = new Object2LongOpenHashMap<>();
-    protected final GenericInternalInventory cached = new GenericStackInv(() -> {}, 16);
-    protected final GenericInternalInventory displayList = new GenericStackInv(() -> {}, 16);
-
     public AEItemGridWidget(int x, int y, int slotsY, GenericInternalInventory internalList) {
         super(x, y, slotsY, internalList);
     }
@@ -103,7 +99,7 @@ public class AEItemGridWidget extends AEListGridWidget {
             long delta = buffer.readVarLong();
             if (!item.isEmpty()) {
                 GenericStack stack = new GenericStack(AEItemKey.of(item.getItem(), item.getTag()), delta);
-                this.displayList.insert(i, stack.what(), delta, Actionable.MODULATE);
+                this.displayList.setStack(i, stack);
             }
         }
     }

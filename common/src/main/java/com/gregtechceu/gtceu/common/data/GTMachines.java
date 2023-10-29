@@ -172,9 +172,10 @@ public class GTMachines {
     //////////////////////////////////////
     //***     SimpleTieredMachine    ***//
     //////////////////////////////////////
-    public final static MachineDefinition[] HULL = registerTieredMachines("machine_hull", TieredPartMachine::new, (tier, builder) -> builder
+    public final static MachineDefinition[] HULL = registerTieredMachines("machine_hull", HullMachine::new, (tier, builder) -> builder
             .rotationState(RotationState.ALL)
             .overlayTieredHullRenderer("hull")
+            .abilities(PartAbility.PASSTHROUGH_HATCH)
             .langValue("%s Machine Hull".formatted(VN[tier]))
             .tooltips(Component.translatable("gtceu.machine.hull.tooltip"))
             .compassNode("machine_hull")
@@ -1317,7 +1318,7 @@ public class GTMachines {
                     tooltip.add(Component.translatable("gtceu.machine.cleanroom.tooltip.6"));
                     tooltip.add(Component.translatable("gtceu.machine.cleanroom.tooltip.7"));
                     //tooltip.add(Component.translatable("gtceu.machine.cleanroom.tooltip.8"));
-                    if (LDLib.isModLoaded(GTValues.MODID_APPENG)) {
+                    if (GTCEu.isAE2Loaded()) {
                         tooltip.add(Component.translatable(AEConfig.instance().getChannelMode() == ChannelMode.INFINITE ? "gtceu.machine.cleanroom.tooltip.ae2.no_channels" : "gtceu.machine.cleanroom.tooltip.ae2.channels"));
                     }
                     tooltip.add(Component.empty());
@@ -1347,7 +1348,7 @@ public class GTMachines {
             .shapeInfos((controller) -> {
                 ArrayList<MultiblockShapeInfo> shapeInfo = new ArrayList<>();
                 MultiblockShapeInfo.ShapeInfoBuilder builder = MultiblockShapeInfo.builder()
-                        .aisle("XXXXX", "XIDLX", "XXXXX", "XXXXX", "XXXXX")
+                        .aisle("XXXXX", "XIHLX", "XXDXX", "XXXXX", "XXXXX")
                         .aisle("XXXXX", "X   X", "G   G", "X   X", "XFFFX")
                         .aisle("XXXXX", "X   X", "G   G", "X   X", "XFSFX")
                         .aisle("XXXXX", "X   X", "G   G", "X   X", "XFFFX")
@@ -1359,6 +1360,7 @@ public class GTMachines {
                         .where('E', GTMachines.ENERGY_INPUT_HATCH[GTValues.LV], Direction.SOUTH)
                         .where('I', GTMachines.ITEM_PASSTHROUGH_HATCH[GTValues.LV], Direction.NORTH)
                         .where('L', GTMachines.FLUID_PASSTHROUGH_HATCH[GTValues.LV], Direction.NORTH)
+                        .where('H', GTMachines.HULL[GTValues.HV], Direction.NORTH)
                         .where('D', GTMachines.DIODE[GTValues.HV], Direction.NORTH)
                         .where('O', Blocks.IRON_DOOR.defaultBlockState().setValue(DoorBlock.FACING, Direction.NORTH).setValue(DoorBlock.HALF, DoubleBlockHalf.LOWER))
                         .where('R', Blocks.IRON_DOOR.defaultBlockState().setValue(DoorBlock.FACING, Direction.NORTH).setValue(DoorBlock.HALF, DoubleBlockHalf.UPPER));
@@ -1786,7 +1788,7 @@ public class GTMachines {
         if (GTCEu.isCreateLoaded()) {
             GTCreateMachines.init();
         }
-        if (LDLib.isModLoaded(MODID_APPENG)) {
+        if (GTCEu.isAE2Loaded()) {
             GTAEMachines.init();
         }
         if (ConfigHolder.INSTANCE.machines.doBedrockOres || Platform.isDevEnv()) {

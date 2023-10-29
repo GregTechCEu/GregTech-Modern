@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.common.item;
 import appeng.api.util.AEColor;
 import appeng.blockentity.networking.CableBusBlockEntity;
 import com.google.common.collect.ImmutableMap;
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.item.component.IDurabilityBar;
@@ -291,7 +292,7 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
             } else return false;
         }
 
-        if (Platform.isModLoaded(GTValues.MODID_APPENG)) {
+        if (GTCEu.isAE2Loaded()) {
             if (be instanceof CableBusBlockEntity cable) {
                 // do not try to recolor if it already is this color
                 if (cable.getColor().ordinal() != color.ordinal()) {
@@ -392,7 +393,7 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
         }
 
         // AE2 cable special case
-        if (Platform.isModLoaded(GTValues.MODID_APPENG)) {
+        if (GTCEu.isAE2Loaded()) {
             if (be instanceof CableBusBlockEntity cable) {
                 // do not try to strip color if it is already colorless
                 if (cable.getColor() != AEColor.TRANSPARENT) {

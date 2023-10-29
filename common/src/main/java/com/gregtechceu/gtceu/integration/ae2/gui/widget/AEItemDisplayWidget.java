@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.integration.ae2.gui.widget;
 
+import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.GenericStack;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
@@ -40,7 +41,7 @@ public class AEItemDisplayWidget extends Widget {
         int stackX = position.x + 1;
         int stackY = position.y + 1;
         if (item != null) {
-            ItemStack realStack = GenericStack.wrapInItemStack(item);
+            ItemStack realStack = item.what() instanceof AEItemKey key ? new ItemStack(key.getItem(), (int) item.amount()) : ItemStack.EMPTY;
             realStack.setCount(1);
             drawItemStack(graphics, realStack, stackX, stackY, -1, null);
             String amountStr = String.format("x%,d", item.amount());

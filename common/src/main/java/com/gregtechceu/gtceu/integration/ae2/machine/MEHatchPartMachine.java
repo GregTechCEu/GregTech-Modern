@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.integration.ae2.machines;
+package com.gregtechceu.gtceu.integration.ae2.machine;
 
 import appeng.api.networking.*;
 import appeng.api.networking.security.IActionSource;
@@ -7,7 +7,6 @@ import appeng.me.helpers.IGridConnectedBlockEntity;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
-import com.gregtechceu.gtceu.api.syncdata.RequireRerender;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.FluidHatchPartMachine;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.ae2.util.SerializableManagedGridNode;
@@ -23,7 +22,7 @@ import net.minecraft.server.level.ServerLevel;
 
 import java.util.EnumSet;
 
-import static com.gregtechceu.gtceu.integration.ae2.machines.MEBusPartMachine.ME_UPDATE_INTERVAL;
+import static com.gregtechceu.gtceu.integration.ae2.machine.MEBusPartMachine.ME_UPDATE_INTERVAL;
 
 public abstract class MEHatchPartMachine extends FluidHatchPartMachine implements IInWorldGridNodeHost, IGridConnectedBlockEntity {
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(MEHatchPartMachine.class, FluidHatchPartMachine.MANAGED_FIELD_HOLDER);
@@ -42,7 +41,6 @@ public abstract class MEHatchPartMachine extends FluidHatchPartMachine implement
     protected final IActionSource actionSource = IActionSource.ofMachine(mainNode::getNode);
     @DescSynced
     protected boolean isOnline;
-    protected int meUpdateTick;
     private IGrid aeProxy;
 
     public MEHatchPartMachine(IMachineBlockEntity holder, IO io, Object... args) {
@@ -50,7 +48,7 @@ public abstract class MEHatchPartMachine extends FluidHatchPartMachine implement
     }
 
     protected boolean shouldSyncME() {
-        return this.meUpdateTick % ME_UPDATE_INTERVAL == 0;
+        return this.getOffsetTimer() % ME_UPDATE_INTERVAL == 0;
     }
 
     @Override

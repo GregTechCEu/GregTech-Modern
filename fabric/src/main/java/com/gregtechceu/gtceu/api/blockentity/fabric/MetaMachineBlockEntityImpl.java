@@ -2,12 +2,12 @@ package com.gregtechceu.gtceu.api.blockentity.fabric;
 
 import appeng.api.networking.IInWorldGridNodeHost;
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.capability.*;
 import com.gregtechceu.gtceu.api.capability.fabric.GTCapability;
 import com.gregtechceu.gtceu.api.capability.fabric.GTEnergyHelperImpl;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
@@ -16,7 +16,6 @@ import com.gregtechceu.gtceu.api.misc.LaserContainerList;
 import com.gregtechceu.gtceu.api.pipenet.longdistance.ILDEndpoint;
 import com.gregtechceu.gtceu.common.pipelike.fluidpipe.longdistance.LDFluidEndpointMachine;
 import com.gregtechceu.gtceu.common.pipelike.item.longdistance.LDItemEndpointMachine;
-import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 import com.lowdragmc.lowdraglib.side.fluid.fabric.FluidTransferHelperImpl;
@@ -143,13 +142,14 @@ public class MetaMachineBlockEntityImpl extends MetaMachineBlockEntity {
                 return list.isEmpty() ? null : GTEnergyHelperImpl.toEnergyStorage(list.get(0));
             }, type);
         }
-        if (LDLib.isModLoaded(GTValues.MODID_APPENG)) {
+        if (GTCEu.isAE2Loaded()) {
             IInWorldGridNodeHost.LOOKUP.registerForBlockEntity((blockEntity, side) -> {
-                if (((IMachineBlockEntity)blockEntity).getMetaMachine() instanceof IInWorldGridNodeHost gridNodeHost) {
+                MetaMachine machine = ((IMachineBlockEntity)blockEntity).getMetaMachine();
+                if (machine instanceof IInWorldGridNodeHost gridNodeHost) {
                     return gridNodeHost;
                 }
 
-                var list = ((IMachineBlockEntity)blockEntity).getMetaMachine().getTraits().stream().filter(IInWorldGridNodeHost.class::isInstance).map(IInWorldGridNodeHost.class::cast).toList();
+                var list = machine.getTraits().stream().filter(IInWorldGridNodeHost.class::isInstance).map(IInWorldGridNodeHost.class::cast).toList();
                 // TODO wrap list in the future (or not.)
                 return list.isEmpty() ? null : list.get(0);
             }, type);
