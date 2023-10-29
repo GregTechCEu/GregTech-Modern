@@ -20,7 +20,6 @@ import com.gregtechceu.gtceu.common.recipe.*;
 import com.gregtechceu.gtceu.integration.kjs.recipe.components.CapabilityMap;
 import com.gregtechceu.gtceu.integration.kjs.recipe.components.GTRecipeComponents;
 import com.lowdragmc.lowdraglib.LDLib;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import dev.latvian.mods.kubejs.fluid.FluidStackJS;
 import dev.latvian.mods.kubejs.fluid.InputFluid;
 import dev.latvian.mods.kubejs.item.InputItem;
@@ -108,8 +107,7 @@ public interface GTRecipeSchema {
         }
 
         public GTRecipeJS inputEU(long eu) {
-            input(EURecipeCapability.CAP, eu);
-            return this;
+            return input(EURecipeCapability.CAP, eu);
         }
 
         public GTRecipeJS EUt(long eu) {
@@ -128,8 +126,12 @@ public interface GTRecipeSchema {
             return output(EURecipeCapability.CAP, eu);
         }
 
-        public GTRecipeJS itemInputs(InputItem... inputs) {
-            return inputItems(inputs);
+        public GTRecipeJS inputLaser(long power) {
+            return input(LaserRecipeCapability.CAP, power);
+        }
+
+        public GTRecipeJS outputLaser(long power) {
+            return output(LaserRecipeCapability.CAP, power);
         }
 
         public GTRecipeJS itemInput(UnificationEntry input) {
@@ -156,10 +158,6 @@ public interface GTRecipeSchema {
 
         public GTRecipeJS inputItems(TagKey<Item> tag, int amount) {
             return inputItems(InputItem.of(SizedIngredient.create(tag, amount)));
-        }
-
-        public GTRecipeJS inputItems(TagKey<Item> tag) {
-            return inputItems(tag, 1);
         }
 
         public GTRecipeJS inputItems(Item input, int amount) {

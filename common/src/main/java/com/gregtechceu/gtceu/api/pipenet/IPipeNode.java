@@ -38,6 +38,10 @@ public interface IPipeNode<PipeType extends Enum<PipeType> & IPipeType<NodeDataT
      */
     void setConnections(int connections);
 
+    int getConnections();
+
+    int getNumConnections();
+
     /**
      * set to block connection from the specific side
      * @param side face
