@@ -33,7 +33,7 @@ dependencyResolutionManagement {
         def modMenuVersion = "7.1.0"
 //        def topFabricVersion = "1.19-6.0.0"
         def jadeFabricVersion = "11.2.2"
-        def registrateFabricVersion = "1.3.59-MC1.20"
+        def registrateFabricVersion = "1.3.62-MC1.20.1"
         def forgeConfigApiVersion = "8.0.0"
         def nightConfigVersion = "3.6.5"
         def teamRebornEnergyVersion = "2.3.0"

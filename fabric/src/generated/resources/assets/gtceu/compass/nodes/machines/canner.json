@@ -11,7 +11,12 @@
     "gtceu:iv_canner",
     "gtceu:luv_canner",
     "gtceu:zpm_canner",
-    "gtceu:uv_canner"
+    "gtceu:uv_canner",
+    "gtceu:uhv_canner",
+    "gtceu:uev_canner",
+    "gtceu:uiv_canner",
+    "gtceu:uxv_canner",
+    "gtceu:opv_canner"
   ],
   "page": "gtceu:machines/canner",
   "position": [

@@ -37,6 +37,11 @@ public class CustomTags {
     public static final TagKey<Item> ZPM_CIRCUITS = TagUtil.createPlatformItemTag("circuits/zpm", "zpm_circuits");
     public static final TagKey<Item> UV_CIRCUITS = TagUtil.createPlatformItemTag("circuits/uv", "uv_circuits");
     public static final TagKey<Item> UHV_CIRCUITS = TagUtil.createPlatformItemTag("circuits/uhv", "uhv_circuits");
+    public static final TagKey<Item> UEV_CIRCUITS = TagUtil.createPlatformItemTag("circuits/uev", "uev_circuits");
+    public static final TagKey<Item> UIV_CIRCUITS = TagUtil.createPlatformItemTag("circuits/uiv", "uiv_circuits");
+    public static final TagKey<Item> UXV_CIRCUITS = TagUtil.createPlatformItemTag("circuits/uxv", "uxv_circuits");
+    public static final TagKey<Item> OpV_CIRCUITS = TagUtil.createPlatformItemTag("circuits/opv", "opv_circuits");
+    public static final TagKey<Item> MAX_CIRCUITS = TagUtil.createPlatformItemTag("circuits/max", "max_circuits");
 
     public static final TagKey<Item> ULV_BATTERIES = TagUtil.createPlatformItemTag("batteries/ulv", "ulv_batteries");
     public static final TagKey<Item> LV_BATTERIES = TagUtil.createPlatformItemTag("batteries/lv", "lv_batteries");

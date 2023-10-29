@@ -12,7 +12,11 @@
     "gtceu:luv_quantum_chest",
     "gtceu:zpm_quantum_chest",
     "gtceu:uv_quantum_chest",
-    "gtceu:uhv_quantum_chest"
+    "gtceu:uhv_quantum_chest",
+    "gtceu:uev_quantum_chest",
+    "gtceu:uiv_quantum_chest",
+    "gtceu:uxv_quantum_chest",
+    "gtceu:opv_quantum_chest"
   ],
   "page": "gtceu:machines/super_chest",
   "position": [

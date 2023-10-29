@@ -11,7 +11,12 @@
     "gtceu:iv_extruder",
     "gtceu:luv_extruder",
     "gtceu:zpm_extruder",
-    "gtceu:uv_extruder"
+    "gtceu:uv_extruder",
+    "gtceu:uhv_extruder",
+    "gtceu:uev_extruder",
+    "gtceu:uiv_extruder",
+    "gtceu:uxv_extruder",
+    "gtceu:opv_extruder"
   ],
   "page": "gtceu:machines/extruder",
   "position": [

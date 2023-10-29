@@ -11,7 +11,12 @@
     "gtceu:iv_autoclave",
     "gtceu:luv_autoclave",
     "gtceu:zpm_autoclave",
-    "gtceu:uv_autoclave"
+    "gtceu:uv_autoclave",
+    "gtceu:uhv_autoclave",
+    "gtceu:uev_autoclave",
+    "gtceu:uiv_autoclave",
+    "gtceu:uxv_autoclave",
+    "gtceu:opv_autoclave"
   ],
   "page": "gtceu:machines/autoclave",
   "position": [

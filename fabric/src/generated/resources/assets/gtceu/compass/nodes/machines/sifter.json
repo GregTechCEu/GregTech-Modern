@@ -11,7 +11,12 @@
     "gtceu:iv_sifter",
     "gtceu:luv_sifter",
     "gtceu:zpm_sifter",
-    "gtceu:uv_sifter"
+    "gtceu:uv_sifter",
+    "gtceu:uhv_sifter",
+    "gtceu:uev_sifter",
+    "gtceu:uiv_sifter",
+    "gtceu:uxv_sifter",
+    "gtceu:opv_sifter"
   ],
   "page": "gtceu:machines/sifter",
   "position": [

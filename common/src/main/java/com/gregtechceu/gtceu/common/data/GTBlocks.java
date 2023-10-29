@@ -434,6 +434,11 @@ public class GTBlocks {
     public static final BlockEntry<Block> MACHINE_CASING_ZPM = createMachineCasingBlock(ZPM);
     public static final BlockEntry<Block> MACHINE_CASING_UV = createMachineCasingBlock(UV);
     public static final BlockEntry<Block> MACHINE_CASING_UHV = createMachineCasingBlock(UHV);
+    public static final BlockEntry<Block> MACHINE_CASING_UEV = GTCEu.isHighTier() ? createMachineCasingBlock(UEV) : null;
+    public static final BlockEntry<Block> MACHINE_CASING_UIV = GTCEu.isHighTier() ? createMachineCasingBlock(UIV) : null;
+    public static final BlockEntry<Block> MACHINE_CASING_UXV = GTCEu.isHighTier() ? createMachineCasingBlock(UXV) : null;
+    public static final BlockEntry<Block> MACHINE_CASING_OpV = GTCEu.isHighTier() ? createMachineCasingBlock(OpV) : null;
+    public static final BlockEntry<Block> MACHINE_CASING_MAX = GTCEu.isHighTier() ? createMachineCasingBlock(MAX) : null;
 
     // Hermetic Casings
     public static final BlockEntry<Block> HERMETIC_CASING_LV = createHermeticCasing(LV);
