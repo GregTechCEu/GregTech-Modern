@@ -434,11 +434,11 @@ public class GTBlocks {
     public static final BlockEntry<Block> MACHINE_CASING_ZPM = createMachineCasingBlock(ZPM);
     public static final BlockEntry<Block> MACHINE_CASING_UV = createMachineCasingBlock(UV);
     public static final BlockEntry<Block> MACHINE_CASING_UHV = createMachineCasingBlock(UHV);
-    public static final BlockEntry<Block> MACHINE_CASING_UEV = GTCEu.isHighTier() ? createMachineCasingBlock(UEV) : null;
-    public static final BlockEntry<Block> MACHINE_CASING_UIV = GTCEu.isHighTier() ? createMachineCasingBlock(UIV) : null;
-    public static final BlockEntry<Block> MACHINE_CASING_UXV = GTCEu.isHighTier() ? createMachineCasingBlock(UXV) : null;
-    public static final BlockEntry<Block> MACHINE_CASING_OpV = GTCEu.isHighTier() ? createMachineCasingBlock(OpV) : null;
-    public static final BlockEntry<Block> MACHINE_CASING_MAX = GTCEu.isHighTier() ? createMachineCasingBlock(MAX) : null;
+    public static final BlockEntry<Block> MACHINE_CASING_UEV = createMachineCasingBlock(UEV);
+    public static final BlockEntry<Block> MACHINE_CASING_UIV = createMachineCasingBlock(UIV);
+    public static final BlockEntry<Block> MACHINE_CASING_UXV = createMachineCasingBlock(UXV);
+    public static final BlockEntry<Block> MACHINE_CASING_OpV = createMachineCasingBlock(OpV);
+    public static final BlockEntry<Block> MACHINE_CASING_MAX = createMachineCasingBlock(MAX);
 
     // Hermetic Casings
     public static final BlockEntry<Block> HERMETIC_CASING_LV = createHermeticCasing(LV);
@@ -541,7 +541,7 @@ public class GTBlocks {
 
     private static BlockEntry<Block> createMachineCasingBlock(int tier) {
         String tierName = GTValues.VN[tier].toLowerCase(Locale.ROOT);
-        return REGISTRATE.block("%s_machine_casing".formatted(tierName), p -> (Block) new RendererBlock(p,
+        BlockEntry<Block> entry = REGISTRATE.block("%s_machine_casing".formatted(tierName), p -> (Block) new RendererBlock(p,
                         Platform.isClient() ? new TextureOverrideRenderer( GTCEu.id("block/cube_bottom_top_tintindex"),
                                 Map.of("bottom",  GTCEu.id("block/casings/voltage/%s/bottom".formatted(tierName)),
                                         "top",  GTCEu.id("block/casings/voltage/%s/top".formatted(tierName)),
@@ -555,11 +555,15 @@ public class GTBlocks {
                 .model(NonNullBiConsumer.noop())
                 .build()
                 .register();
+        if (!GTCEu.isHighTier() && tier > GTValues.UHV) {
+            REGISTRATE.setCreativeTab(entry, null);
+        }
+        return entry;
     }
 
     private static BlockEntry<Block> createHermeticCasing(int tier) {
         String tierName = GTValues.VN[tier].toLowerCase(Locale.ROOT);
-        return REGISTRATE.block("%s_hermetic_casing".formatted(tierName), p -> (Block) new RendererBlock(p,
+        BlockEntry<Block> entry = REGISTRATE.block("%s_hermetic_casing".formatted(tierName), p -> (Block) new RendererBlock(p,
                         Platform.isClient() ? new TextureOverrideRenderer( GTCEu.id("block/hermetic_casing"),
                                 Map.of("bot_bottom",  GTCEu.id("block/casings/voltage/%s/bottom".formatted(tierName)),
                                         "bot_top",  GTCEu.id("block/casings/voltage/%s/top".formatted(tierName)),
@@ -574,6 +578,10 @@ public class GTBlocks {
                 .model(NonNullBiConsumer.noop())
                 .build()
                 .register();
+        if (!GTCEu.isHighTier() && tier > GTValues.UHV) {
+            REGISTRATE.setCreativeTab(entry, null);
+        }
+        return entry;
     }
 
     private static BlockEntry<Block> createSteamCasing(String name, String material) {
