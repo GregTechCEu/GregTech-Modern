@@ -64,6 +64,15 @@ configurations {
 //    snapshotModImplementation {
 //        resolutionStrategy.cacheChangingModulesFor(0, "seconds")
 //    }
+
+    apiElements {
+        outgoing {
+            capability("net.minecraftforge:forge:${this.forge.versions.minecratfForge.get()}")
+            capability("com.lowdragmc.ldlib:ldlib-forge-${this.libs.versions.minecraft.get()}:${this.forge.versions.ldlib.get()}")
+            capability("com.tterrag.registrate:Registrate:${this.forge.versions.registrate.get()}")
+            capability("dev.toma.configuration:configuration-forge-${this.libs.versions.minecraft.get()}:${this.forge.versions.configuration.get()}")
+        }
+    }
 }
 
 //configurations.all {

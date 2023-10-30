@@ -34,6 +34,14 @@ configurations {
 //    snapshotModImplementation {
 //        resolutionStrategy.cacheChangingModulesFor(0, "seconds")
 //    }
+    apiElements {
+        outgoing {
+            capability("net.fabricmc.fabric-api:fabric-api-${this.libs.versions.minecraft.get()}:${this.fabric.versions.fabricApi.get()}")
+            capability("com.lowdragmc.ldlib:ldlib-common-${this.libs.versions.minecraft.get()}:${this.fabric.versions.ldlib.get()}")
+            capability("com.tterrag.registrate_fabric:Registrate:${this.fabric.versions.registrate.get()}")
+            capability("dev.toma.configuration:configuration-fabric-${this.libs.versions.minecraft.get()}:${this.fabric.versions.configuration.get()}")
+        }
+    }
 }
 
 //configurations.all {
