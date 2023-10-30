@@ -74,7 +74,7 @@ public class OreVeinBuilderJS {
         Supplier<HolderSet<Biome>> biomes = biomeFilter.isEmpty() ? null : () -> RegistryCodecs.homogeneousList(Registries.BIOME)
                 .decode(registryOps, biomeFilter.size() == 1 ? biomeFilter.get(0) : biomeFilter).map(Pair::getFirst).getOrThrow(false, GTCEu.LOGGER::error);
         isBuilt = true;
-        return new GTOreDefinition(id, clusterSize, density, weight, layer, dimensions, heightRange, discardChanceOnAirExposure, biomes, biomeWeightModifier, generator);
+        return new GTOreDefinition(id, clusterSize, density, weight, layer, dimensions, heightRange, discardChanceOnAirExposure, biomes, biomeWeightModifier, generator,  /* TODO */ null);
     }
 
 }
