@@ -251,108 +251,107 @@ public class MetaTileEntityMachineRecipeLoader {
                 .duration(1000).EUt(VA[UHV]).save(provider);
 
 
-        // Adjustable Transformers
-        // TODO Adjustable transformers
-/*
-        ASSEMBLER_RECIPES.recipeBuilder()
-                .inputItems(TRANSFORMER[ULV])
+
+        // Power Transformers
+
+        ASSEMBLER_RECIPES.recipeBuilder("ulv_power_transformer")
+                .inputItems(HI_AMP_TRANSFORMER_4A[ULV])
                 .inputItems(ELECTRIC_PUMP_LV)
-                .inputItems(wireGtQuadruple, Tin)
-                .inputItems(wireGtOctal, Lead)
+                .inputItems(cableGtOctal, Tin)
+                .inputItems(cableGtHex, Lead, 2)
                 .inputItems(springSmall, Lead)
                 .inputItems(spring, Tin)
                 .inputFluids(Lubricant.getFluid(2000))
-                .outputItems(ADJUSTABLE_TRANSFORMER[ULV])
+                .outputItems(POWER_TRANSFORMER[ULV])
                 .duration(200).EUt(VA[ULV]).save(provider);
 
-        ASSEMBLER_RECIPES.recipeBuilder()
-                .inputItems(TRANSFORMER[LV])
+        ASSEMBLER_RECIPES.recipeBuilder("lv_power_transformer")
+                .inputItems(HI_AMP_TRANSFORMER_4A[LV])
                 .inputItems(ELECTRIC_PUMP_LV)
-                .inputItems(wireGtQuadruple, Copper)
-                .inputItems(wireGtOctal, Tin)
+                .inputItems(cableGtOctal, Copper)
+                .inputItems(cableGtHex, Tin, 2)
                 .inputItems(springSmall, Tin)
                 .inputItems(spring, Copper)
                 .inputFluids(Lubricant.getFluid(2000))
-                .outputItems(ADJUSTABLE_TRANSFORMER[LV])
+                .outputItems(POWER_TRANSFORMER[LV])
                 .duration(200).EUt(VA[LV]).save(provider);
 
-        ASSEMBLER_RECIPES.recipeBuilder()
-                .inputItems(TRANSFORMER[MV])
+        ASSEMBLER_RECIPES.recipeBuilder("mv_power_transformer")
+                .inputItems(HI_AMP_TRANSFORMER_4A[MV])
                 .inputItems(ELECTRIC_PUMP_MV)
-                .inputItems(wireGtQuadruple, Gold)
-                .inputItems(wireGtOctal, Copper)
+                .inputItems(cableGtOctal, Gold)
+                .inputItems(cableGtHex, Copper, 2)
                 .inputItems(springSmall, Copper)
                 .inputItems(spring, Gold)
                 .inputFluids(Lubricant.getFluid(2000))
-                .outputItems(ADJUSTABLE_TRANSFORMER[MV])
+                .outputItems(POWER_TRANSFORMER[MV])
                 .duration(200).EUt(VA[MV]).save(provider);
 
-        ASSEMBLER_RECIPES.recipeBuilder()
-                .inputItems(TRANSFORMER[HV])
+        ASSEMBLER_RECIPES.recipeBuilder("hv_power_transformer")
+                .inputItems(HI_AMP_TRANSFORMER_4A[HV])
                 .inputItems(ELECTRIC_PUMP_MV)
-                .inputItems(wireGtQuadruple, Aluminium)
-                .inputItems(wireGtOctal, Gold)
+                .inputItems(cableGtOctal, Aluminium)
+                .inputItems(cableGtHex, Gold, 2)
                 .inputItems(springSmall, Gold)
                 .inputItems(spring, Aluminium)
                 .inputFluids(Lubricant.getFluid(2000))
-                .outputItems(ADJUSTABLE_TRANSFORMER[HV])
+                .outputItems(POWER_TRANSFORMER[HV])
                 .duration(200).EUt(VA[HV]).save(provider);
 
-        ASSEMBLER_RECIPES.recipeBuilder()
-                .inputItems(TRANSFORMER[EV])
+        ASSEMBLER_RECIPES.recipeBuilder("ev_power_transformer")
+                .inputItems(HI_AMP_TRANSFORMER_4A[EV])
                 .inputItems(ELECTRIC_PUMP_HV)
-                .inputItems(wireGtQuadruple, Tungsten)
-                .inputItems(wireGtOctal, Aluminium)
+                .inputItems(cableGtOctal, Tungsten)
+                .inputItems(cableGtHex, Aluminium, 2)
                 .inputItems(springSmall, Aluminium)
                 .inputItems(spring, Tungsten)
                 .inputFluids(Lubricant.getFluid(2000))
-                .outputItems(ADJUSTABLE_TRANSFORMER[EV])
+                .outputItems(POWER_TRANSFORMER[EV])
                 .duration(200).EUt(VA[EV]).save(provider);
 
-        ASSEMBLER_RECIPES.recipeBuilder()
-                .inputItems(TRANSFORMER[IV])
+        ASSEMBLER_RECIPES.recipeBuilder("iv_power_transformer")
+                .inputItems(HI_AMP_TRANSFORMER_4A[IV])
                 .inputItems(ELECTRIC_PUMP_HV)
-                .inputItems(wireGtQuadruple, NiobiumTitanium)
-                .inputItems(wireGtOctal, Tungsten)
+                .inputItems(cableGtOctal, NiobiumTitanium)
+                .inputItems(cableGtHex, Tungsten, 2)
                 .inputItems(springSmall, Tungsten)
                 .inputItems(spring, NiobiumTitanium)
                 .inputFluids(Lubricant.getFluid(2000))
-                .outputItems(ADJUSTABLE_TRANSFORMER[IV])
+                .outputItems(POWER_TRANSFORMER[IV])
                 .duration(200).EUt(VA[IV]).save(provider);
 
-        ASSEMBLER_RECIPES.recipeBuilder()
-                .inputItems(TRANSFORMER[LuV])
+        ASSEMBLER_RECIPES.recipeBuilder("luv_power_transformer")
+                .inputItems(HI_AMP_TRANSFORMER_4A[LuV])
                 .inputItems(ELECTRIC_PUMP_EV)
-                .inputItems(wireGtQuadruple, VanadiumGallium)
-                .inputItems(wireGtOctal, NiobiumTitanium)
+                .inputItems(cableGtOctal, VanadiumGallium)
+                .inputItems(cableGtHex, NiobiumTitanium, 2)
                 .inputItems(springSmall, NiobiumTitanium)
                 .inputItems(spring, VanadiumGallium)
                 .inputFluids(Lubricant.getFluid(2000))
-                .outputItems(ADJUSTABLE_TRANSFORMER[LuV])
+                .outputItems(POWER_TRANSFORMER[LuV])
                 .duration(200).EUt(VA[LuV]).save(provider);
 
-        ASSEMBLER_RECIPES.recipeBuilder()
-                .inputItems(TRANSFORMER[ZPM])
+        ASSEMBLER_RECIPES.recipeBuilder("zpm_power_transformer")
+                .inputItems(HI_AMP_TRANSFORMER_4A[ZPM])
                 .inputItems(ELECTRIC_PUMP_EV)
-                .inputItems(wireGtQuadruple, YttriumBariumCuprate)
-                .inputItems(wireGtOctal, VanadiumGallium)
+                .inputItems(cableGtOctal, YttriumBariumCuprate)
+                .inputItems(cableGtHex, VanadiumGallium, 2)
                 .inputItems(springSmall, VanadiumGallium)
                 .inputItems(spring, YttriumBariumCuprate)
                 .inputFluids(Lubricant.getFluid(2000))
-                .outputItems(ADJUSTABLE_TRANSFORMER[ZPM])
+                .outputItems(POWER_TRANSFORMER[ZPM])
                 .duration(200).EUt(VA[ZPM]).save(provider);
 
-        ASSEMBLER_RECIPES.recipeBuilder()
-                .inputItems(TRANSFORMER[UV])
+        ASSEMBLER_RECIPES.recipeBuilder("uv_power_transformer")
+                .inputItems(HI_AMP_TRANSFORMER_4A[UV])
                 .inputItems(ELECTRIC_PUMP_IV)
-                .inputItems(wireGtQuadruple, Europium)
-                .inputItems(wireGtOctal, YttriumBariumCuprate)
+                .inputItems(cableGtOctal, Europium)
+                .inputItems(cableGtHex, YttriumBariumCuprate, 2)
                 .inputItems(springSmall, YttriumBariumCuprate)
                 .inputItems(spring, Europium)
                 .inputFluids(Lubricant.getFluid(2000))
-                .outputItems(ADJUSTABLE_TRANSFORMER[UV])
+                .outputItems(POWER_TRANSFORMER[UV])
                 .duration(200).EUt(VA[UV]).save(provider);
-*/
 
         // 4A Energy Hatches
 
@@ -508,52 +507,50 @@ public class MetaTileEntityMachineRecipeLoader {
                 .duration(100).EUt(VA[UV]).save(provider);
 
         // 16A Dynamo Hatches
-        // TODO Adjustable transformers
-/*
-        ASSEMBLER_RECIPES.recipeBuilder()
-                .inputItems(ADJUSTABLE_TRANSFORMER[IV])
-                .inputItems(ENERGY_OUTPUT_HATCH_4A[1])
+
+        ASSEMBLER_RECIPES.recipeBuilder("dynamo_hatch_16a_ev")
+                .inputItems(HI_AMP_TRANSFORMER_4A[IV])
+                .inputItems(ENERGY_OUTPUT_HATCH_4A[IV])
                 .inputItems(HIGH_POWER_INTEGRATED_CIRCUIT, 2)
                 .inputItems(VOLTAGE_COIL_IV)
                 .inputItems(wireGtOctal, Tungsten, 2)
-                .outputItems(ENERGY_OUTPUT_HATCH_16A[0])
+                .outputItems(ENERGY_OUTPUT_HATCH_16A[EV])
                 .duration(200).EUt(VA[EV]).save(provider);
 
-        ASSEMBLER_RECIPES.recipeBuilder()
-                .inputItems(ADJUSTABLE_TRANSFORMER[LuV])
-                .inputItems(ENERGY_OUTPUT_HATCH_4A[2])
+        ASSEMBLER_RECIPES.recipeBuilder("dynamo_hatch_16a_iv")
+                .inputItems(HI_AMP_TRANSFORMER_4A[LuV])
+                .inputItems(ENERGY_OUTPUT_HATCH_4A[LuV])
                 .inputItems(HIGH_POWER_INTEGRATED_CIRCUIT, 2)
                 .inputItems(VOLTAGE_COIL_LuV)
                 .inputItems(wireGtOctal, NiobiumTitanium, 2)
-                .outputItems(ENERGY_OUTPUT_HATCH_16A[1])
+                .outputItems(ENERGY_OUTPUT_HATCH_16A[IV])
                 .duration(200).EUt(VA[IV]).save(provider);
 
-        ASSEMBLER_RECIPES.recipeBuilder()
-                .inputItems(ADJUSTABLE_TRANSFORMER[ZPM])
-                .inputItems(ENERGY_OUTPUT_HATCH_4A[3])
+        ASSEMBLER_RECIPES.recipeBuilder("dynamo_hatch_16a_luv")
+                .inputItems(HI_AMP_TRANSFORMER_4A[ZPM])
+                .inputItems(ENERGY_OUTPUT_HATCH_4A[ZPM])
                 .inputItems(ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT, 2)
                 .inputItems(VOLTAGE_COIL_ZPM)
                 .inputItems(wireGtOctal, VanadiumGallium, 2)
-                .outputItems(ENERGY_OUTPUT_HATCH_16A[2])
+                .outputItems(ENERGY_OUTPUT_HATCH_16A[LuV])
                 .duration(200).EUt(VA[LuV]).save(provider);
 
-        ASSEMBLER_RECIPES.recipeBuilder()
-                .inputItems(ADJUSTABLE_TRANSFORMER[UV])
-                .inputItems(ENERGY_OUTPUT_HATCH_4A[4])
+        ASSEMBLER_RECIPES.recipeBuilder("dynamo_hatch_16a_zpm")
+                .inputItems(HI_AMP_TRANSFORMER_4A[UV])
+                .inputItems(ENERGY_OUTPUT_HATCH_4A[UV])
                 .inputItems(ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT, 2)
                 .inputItems(VOLTAGE_COIL_UV)
                 .inputItems(wireGtOctal, YttriumBariumCuprate, 2)
-                .outputItems(ENERGY_OUTPUT_HATCH_16A[3])
+                .outputItems(ENERGY_OUTPUT_HATCH_16A[ZPM])
                 .duration(200).EUt(VA[ZPM]).save(provider);
 
-        ASSEMBLER_RECIPES.recipeBuilder()
-                .inputItems(ENERGY_OUTPUT_HATCH_4A[5], 2)
+        ASSEMBLER_RECIPES.recipeBuilder("dynamo_hatch_16a_uv")
+                .inputItems(ENERGY_OUTPUT_HATCH_4A[UHV], 2)
                 .inputItems(ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT, 2)
                 .inputItems(wireGtDouble, RutheniumTriniumAmericiumNeutronate)
                 .inputItems(wireGtOctal, Europium, 2)
-                .outputItems(ENERGY_OUTPUT_HATCH_16A[4])
+                .outputItems(ENERGY_OUTPUT_HATCH_16A[UV])
                 .duration(200).EUt(VA[UV]).save(provider);
- */
 
         // Maintenance Hatch
 
