@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.data.pack;
 
 import com.google.common.collect.Sets;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.gregtechceu.gtceu.GTCEu;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
@@ -20,6 +21,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.function.Supplier;
 
 public class GTDynamicResourcePack implements PackResources {
 
@@ -41,9 +43,22 @@ public class GTDynamicResourcePack implements PackResources {
         DATA.clear();
     }
 
-    public static void addModel(ResourceLocation loc, JsonObject obj) {
-        ResourceLocation l = getBlockModelLocation(loc);
+    public static void addBlockModel(ResourceLocation loc, JsonObject obj) {
+        ResourceLocation l = getModelLocation(loc);
         DATA.put(l, obj);
+    }
+
+    public static void addBlockModel(ResourceLocation loc, Supplier<JsonElement> obj) {
+        addBlockModel(loc, obj.get().getAsJsonObject());
+    }
+
+    public static void addItemModel(ResourceLocation loc, JsonObject obj) {
+        ResourceLocation l = getItemModelLocation(loc);
+        DATA.put(l, obj);
+    }
+
+    public static void addItemModel(ResourceLocation loc, Supplier<JsonElement> obj) {
+        addItemModel(loc, obj.get().getAsJsonObject());
     }
 
     public static void addBlockState(ResourceLocation loc, JsonObject stateJson) {
@@ -63,7 +78,7 @@ public class GTDynamicResourcePack implements PackResources {
 
     @Override
     public IoSupplier<InputStream> getResource(PackType type, ResourceLocation location) {
-        if (type == PackType.SERVER_DATA) {
+        if (type == PackType.CLIENT_RESOURCES) {
             if (DATA.containsKey(location))
                 return () -> new ByteArrayInputStream(DATA.get(location).toString().getBytes(StandardCharsets.UTF_8));
             else return null;
@@ -74,25 +89,28 @@ public class GTDynamicResourcePack implements PackResources {
 
     @Override
     public void listResources(PackType packType, String namespace, String path, ResourceOutput resourceOutput) {
-        if (packType == PackType.SERVER_DATA)
-            DATA.keySet().stream().filter(Objects::nonNull).filter(loc -> loc.getPath().startsWith(path)).forEach((id) -> {
+        if (packType == PackType.CLIENT_RESOURCES) {
+            if (!path.endsWith("/")) path += "/";
+            final String finalPath = path;
+            DATA.keySet().stream().filter(Objects::nonNull).filter(loc -> loc.getPath().startsWith(finalPath)).forEach((id) -> {
                 IoSupplier<InputStream> resource = this.getResource(packType, id);
                 if (resource != null) {
                     resourceOutput.accept(id, resource);
                 }
             });
+        }
     }
 
     @Override
     public Set<String> getNamespaces(PackType type) {
-        return type == PackType.SERVER_DATA ? CLIENT_DOMAINS : Set.of();
+        return type == PackType.CLIENT_RESOURCES ? CLIENT_DOMAINS : Set.of();
     }
 
     @Nullable
     @Override
     public <T> T getMetadataSection(MetadataSectionSerializer<T> metaReader) {
         if(metaReader == PackMetadataSection.TYPE) {
-            return (T) new PackMetadataSection(Component.literal("GTCEu dynamic assets"), SharedConstants.getCurrentVersion().getPackVersion(PackType.SERVER_DATA));
+            return (T) new PackMetadataSection(Component.literal("GTCEu dynamic assets"), SharedConstants.getCurrentVersion().getPackVersion(PackType.CLIENT_RESOURCES));
         }
         return null;
     }
@@ -111,8 +129,8 @@ public class GTDynamicResourcePack implements PackResources {
         return new ResourceLocation(blockId.getNamespace(), String.join("", "blockstates/", blockId.getPath(), ".json"));
     }
 
-    public static ResourceLocation getBlockModelLocation(ResourceLocation blockId) {
-        return new ResourceLocation(blockId.getNamespace(), String.join("", "models/block/", blockId.getPath(), ".json"));
+    public static ResourceLocation getModelLocation(ResourceLocation blockId) {
+        return new ResourceLocation(blockId.getNamespace(), String.join("", "models/", blockId.getPath(), ".json"));
     }
 
     public static ResourceLocation getItemModelLocation(ResourceLocation itemId) {

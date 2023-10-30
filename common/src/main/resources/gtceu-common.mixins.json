@@ -8,7 +8,7 @@
     "BlockModelMixin",
     "GuiGraphicsAccessor",
     "LevelRendererMixin",
-    "ModelManagerMixin",
+    "MinecraftMixin",
     "MultiPlayerGameModeMixin",
     "rei.FluidEntryRendererMixin"
   ],

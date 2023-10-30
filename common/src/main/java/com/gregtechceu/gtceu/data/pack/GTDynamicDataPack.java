@@ -109,13 +109,16 @@ public class GTDynamicDataPack implements PackResources {
 
     @Override
     public void listResources(PackType packType, String namespace, String path, ResourceOutput resourceOutput) {
-        if (packType == PackType.SERVER_DATA)
-            DATA.keySet().stream().filter(Objects::nonNull).filter(loc -> loc.getPath().startsWith(path)).forEach((id) -> {
+        if (packType == PackType.SERVER_DATA) {
+            if (!path.endsWith("/")) path += "/";
+            final String finalPath = path;
+            DATA.keySet().stream().filter(Objects::nonNull).filter(loc -> loc.getPath().startsWith(finalPath)).forEach((id) -> {
                 IoSupplier<InputStream> resource = this.getResource(packType, id);
                 if (resource != null) {
                     resourceOutput.accept(id, resource);
                 }
             });
+        }
     }
 
     @Override

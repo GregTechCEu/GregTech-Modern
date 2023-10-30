@@ -9,10 +9,15 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorage;
+import com.gregtechceu.gtceu.client.renderer.block.MaterialBlockRenderer;
+import com.gregtechceu.gtceu.client.renderer.item.TagPrefixItemRenderer;
+import com.gregtechceu.gtceu.client.renderer.item.ToolItemRenderer;
+import com.gregtechceu.gtceu.common.data.GTModels;
 import com.gregtechceu.gtceu.common.data.GTRecipes;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.mixins.BlockBehaviourAccessor;
 import com.gregtechceu.gtceu.data.pack.GTDynamicDataPack;
+import com.gregtechceu.gtceu.data.pack.GTDynamicResourcePack;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import dev.architectury.injectables.annotations.ExpectPlatform;
@@ -92,4 +97,23 @@ public class MixinHelpers {
         packResources.add(new GTDynamicDataPack("gtceu:dynamic_data", AddonFinder.getAddons().stream().map(IGTAddon::addonModId).collect(Collectors.toSet())));
         return packResources;
     }
+
+    public static List<PackResources> addDynamicAssets(Collection<PackResources> packs) {
+        List<PackResources> packResources = new ArrayList<>(packs);
+        // Clear old data
+        GTDynamicResourcePack.clearClient();
+
+        // Register recipes & unification data again
+        long startTime = System.currentTimeMillis();
+        MaterialBlockRenderer.reinitModels();
+        TagPrefixItemRenderer.reinitModels();
+        ToolItemRenderer.reinitModels();
+        GTModels.registerMaterialFluidModels();
+        GTCEu.LOGGER.info("GregTech Model loading took {}ms", System.currentTimeMillis() - startTime);
+
+        // Load the data
+        packResources.add(new GTDynamicResourcePack("gtceu:dynamic_assets", AddonFinder.getAddons().stream().map(IGTAddon::addonModId).collect(Collectors.toSet())));
+        return packResources;
+    }
+
 }
