@@ -66,6 +66,9 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
         for (FluidStorage storage : this.storages) {
             storage.setOnContentsChanged(this::onContentsChanged);
         }
+        if (io == IO.IN) {
+            this.allowSameFluids = true;
+        }
     }
 
     public NotifiableFluidTank(MetaMachine machine, int slots, long capacity, IO io) {
@@ -213,6 +216,36 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
     @Override
     public boolean isFluidValid(int tank, @NotNull FluidStack stack) {
         return storages[tank].isFluidValid(stack);
+    }
+
+    @Override
+    public long fill(FluidStack resource, boolean simulate, boolean notifyChanges) {
+        if (resource.isEmpty()) return 0;
+        long filled = 0;
+        FluidStorage existingStorage = null;
+        if (!allowSameFluids) {
+            for (var storage : storages) {
+                if (!storage.getFluid().isEmpty() && storage.getFluid().isFluidEqual(resource)) {
+                    existingStorage = storage;
+                    break;
+                }
+            }
+        }
+        if (existingStorage == null) {
+            for (int i = 0; i < getTanks(); i++) {
+                if (filled > 0 && !allowSameFluids) {
+                    break;
+                }
+                filled += fill(i, resource.copy(resource.getAmount() - filled), simulate, notifyChanges);
+                if (filled == resource.getAmount()) break;
+            }
+        } else {
+            filled += existingStorage.fill(resource.copy(resource.getAmount() - filled), simulate, notifyChanges);
+        }
+        if (notifyChanges && filled > 0 && !simulate) {
+            onContentsChanged();
+        }
+        return filled;
     }
 
     @Override

@@ -47,14 +47,10 @@ import org.apache.logging.log4j.util.TriConsumer;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
-import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
+import java.util.function.*;
 
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.Conditions.*;
-import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.LoaderType.FABRIC;
-import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.LoaderType.FORGE;
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.LoaderType.*;
 
 @Accessors(chain = true, fluent = true)
 public class TagPrefix {
@@ -75,7 +71,7 @@ public class TagPrefix {
         return PREFIXES.get(name);
     }
 
-    public static final TagPrefix ore = oreTagPrefix("ore")
+    public static final TagPrefix ore = oreTagPrefix("stone")
             .langValue("%s Ore")
             .materialIconType(MaterialIconType.ore)
             .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
@@ -691,7 +687,7 @@ public class TagPrefix {
             .unificationEnabled(true);
 
     // Prefix to determine which kind of Rock this is.
-    public static final TagPrefix stone = new TagPrefix("stone")
+    public static final TagPrefix rock = new TagPrefix("rock")
             .defaultTagPath(FORGE, "%s")
             .defaultTagPath(FABRIC, "%s")
             .langValue("%s")
