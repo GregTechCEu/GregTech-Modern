@@ -50,10 +50,21 @@ public class OreGenerator {
      * @return The generated vein for the specified chunk position.<br>
      * {@code Optional.empty()} if no vein exists at this chunk.
      */
-    public List<GeneratedVein> generate(WorldGenLevel level, ChunkGenerator chunkGenerator, ChunkPos chunkPos) {
+    public List<GeneratedVein> generate(WorldGenLevel level, List<GeneratedVeinPosition> veinPositions, ChunkPos chunkPos) {
+        return veinPositions.stream()
+                .map(pos -> new VeinConfiguration(
+                        pos.id(), pos.definition(),
+                        new XoroshiroRandomSource(level.getSeed() ^ chunkPos.toLong()),
+                        pos.center()
+                ))
+                .flatMap(config -> generate(config, level, chunkPos).stream())
+                .toList();
+    }
+
+    public List<GeneratedVeinPosition> generatePositions(WorldGenLevel level, ChunkGenerator chunkGenerator, ChunkPos chunkPos) {
         return createConfigs(level, chunkGenerator, chunkPos).stream()
                 .map(OreGenerator::logVeinGeneration)
-                .flatMap(config -> generate(config, level, chunkPos).stream())
+                .map(entry -> new GeneratedVeinPosition(entry.id, chunkPos, entry.origin, entry.entry))
                 .toList();
     }
 

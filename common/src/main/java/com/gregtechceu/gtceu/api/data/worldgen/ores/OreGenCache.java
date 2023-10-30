@@ -54,11 +54,21 @@ public class OreGenCache {
         return generatedVeins;
     }
 
+    private List<GeneratedVeinPosition> getOrCreateVeinPositions(WorldGenLevel level, ChunkGenerator generator, ChunkPos chunkPos) {
+        try {
+            return veinPositionsByOrigin
+                    .get(chunkPos, () -> oreGenerator.generatePositions(level, generator, chunkPos));
+        } catch (ExecutionException e) {
+            GTCEu.LOGGER.error("Cannot create vein position in chunk " + chunkPos, e);
+            return List.of();
+        }
+    }
+
     private List<GeneratedVein> getOrCreateSurroundingVeins(WorldGenLevel level, ChunkGenerator generator, ChunkAccess chunk) {
         return getSurroundingChunks(chunk.getPos()).flatMap(chunkPos -> {
             try {
                 return generatedVeinsByOrigin
-                        .get(chunkPos, () -> oreGenerator.generate(level, generator, chunkPos))
+                        .get(chunkPos, () -> oreGenerator.generate(level, getOrCreateVeinPositions(level, generator, chunkPos), chunkPos))
                         .stream();
             } catch (ExecutionException e) {
                 GTCEu.LOGGER.error("Cannot create vein in chunk " + chunkPos, e);
