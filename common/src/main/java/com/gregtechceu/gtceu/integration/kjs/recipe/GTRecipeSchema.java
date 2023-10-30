@@ -126,14 +126,6 @@ public interface GTRecipeSchema {
             return output(EURecipeCapability.CAP, eu);
         }
 
-        public GTRecipeJS inputLaser(long power) {
-            return input(LaserRecipeCapability.CAP, power);
-        }
-
-        public GTRecipeJS outputLaser(long power) {
-            return output(LaserRecipeCapability.CAP, power);
-        }
-
         public GTRecipeJS itemInput(UnificationEntry input) {
             return inputItems(input);
         }

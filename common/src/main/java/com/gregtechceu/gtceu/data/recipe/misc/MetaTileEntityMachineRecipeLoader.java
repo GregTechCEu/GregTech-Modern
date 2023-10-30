@@ -1,13 +1,10 @@
 package com.gregtechceu.gtceu.data.recipe.misc;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
-import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import net.minecraft.data.recipes.FinishedRecipe;
 
-import java.util.Arrays;
 import java.util.function.Consumer;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
@@ -23,7 +20,8 @@ import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.ASSEMBLY_LINE_RECI
 public class MetaTileEntityMachineRecipeLoader {
 
     public static void init(Consumer<FinishedRecipe> provider) {
-
+        registerLaserRecipes(provider);
+        
         // Energy Output Hatches
 
         VanillaRecipeHelper.addShapedRecipe(provider, true, "dynamo_hatch_ulv", ENERGY_OUTPUT_HATCH[ULV].asStack(),
@@ -678,5 +676,255 @@ public class MetaTileEntityMachineRecipeLoader {
                 .duration(600).EUt(24)
                 .save(provider);
 
+    }
+
+    // TODO clean this up with a CraftingComponent rework
+    private static void registerLaserRecipes(Consumer<FinishedRecipe> provider) {
+
+        // 256A Laser Target Hatches
+        ASSEMBLER_RECIPES.recipeBuilder("iv_256a_laser_target_hatch")
+                .inputItems(HULL[IV])
+                .inputItems(lens, Diamond)
+                .inputItems(EMITTER_IV)
+                .inputItems(ELECTRIC_PUMP_IV)
+                .inputItems(cableGtSingle, Platinum, 4)
+                .circuitMeta(1)
+                .outputItems(LASER_INPUT_HATCH_256[IV])
+                .duration(300).EUt(VA[IV]).save(provider);
+
+        ASSEMBLER_RECIPES.recipeBuilder("luv_256a_laser_target_hatch")
+                .inputItems(HULL[LuV])
+                .inputItems(lens, Diamond)
+                .inputItems(EMITTER_LuV)
+                .inputItems(ELECTRIC_PUMP_LuV)
+                .inputItems(cableGtSingle, NiobiumTitanium, 4)
+                .circuitMeta(1)
+                .outputItems(LASER_INPUT_HATCH_256[LuV])
+                .duration(300).EUt(VA[LuV]).save(provider);
+
+        ASSEMBLER_RECIPES.recipeBuilder("zpm_256a_laser_target_hatch")
+                .inputItems(HULL[ZPM])
+                .inputItems(lens, Diamond)
+                .inputItems(EMITTER_ZPM)
+                .inputItems(ELECTRIC_PUMP_ZPM)
+                .inputItems(cableGtSingle, VanadiumGallium, 4)
+                .circuitMeta(1)
+                .outputItems(LASER_INPUT_HATCH_256[ZPM])
+                .duration(300).EUt(VA[ZPM]).save(provider);
+
+        ASSEMBLER_RECIPES.recipeBuilder("uv_256a_laser_target_hatch")
+                .inputItems(HULL[UV])
+                .inputItems(lens, Diamond)
+                .inputItems(EMITTER_UV)
+                .inputItems(ELECTRIC_PUMP_UV)
+                .inputItems(cableGtSingle, YttriumBariumCuprate, 4)
+                .circuitMeta(1)
+                .outputItems(LASER_INPUT_HATCH_256[UV])
+                .duration(300).EUt(VA[UV]).save(provider);
+
+        // 256A Laser Source Hatches
+        ASSEMBLER_RECIPES.recipeBuilder("iv_256a_laser_source_hatch")
+                .inputItems(HULL[IV])
+                .inputItems(lens, Diamond)
+                .inputItems(SENSOR_IV)
+                .inputItems(ELECTRIC_PUMP_IV)
+                .inputItems(cableGtSingle, Platinum, 4)
+                .circuitMeta(1)
+                .outputItems(LASER_OUTPUT_HATCH_256[IV])
+                .duration(300).EUt(VA[IV]).save(provider);
+
+        ASSEMBLER_RECIPES.recipeBuilder("luv_256a_laser_source_hatch")
+                .inputItems(HULL[LuV])
+                .inputItems(lens, Diamond)
+                .inputItems(SENSOR_LuV)
+                .inputItems(ELECTRIC_PUMP_LuV)
+                .inputItems(cableGtSingle, NiobiumTitanium, 4)
+                .circuitMeta(1)
+                .outputItems(LASER_OUTPUT_HATCH_256[LuV])
+                .duration(300).EUt(VA[LuV]).save(provider);
+
+        ASSEMBLER_RECIPES.recipeBuilder("zpm_256a_laser_source_hatch")
+                .inputItems(HULL[ZPM])
+                .inputItems(lens, Diamond)
+                .inputItems(SENSOR_ZPM)
+                .inputItems(ELECTRIC_PUMP_ZPM)
+                .inputItems(cableGtSingle, VanadiumGallium, 4)
+                .circuitMeta(1)
+                .outputItems(LASER_OUTPUT_HATCH_256[ZPM])
+                .duration(300).EUt(VA[ZPM]).save(provider);
+
+        ASSEMBLER_RECIPES.recipeBuilder("uv_256a_laser_source_hatch")
+                .inputItems(HULL[UV])
+                .inputItems(lens, Diamond)
+                .inputItems(SENSOR_UV)
+                .inputItems(ELECTRIC_PUMP_UV)
+                .inputItems(cableGtSingle, YttriumBariumCuprate, 4)
+                .circuitMeta(1)
+                .outputItems(LASER_OUTPUT_HATCH_256[UV])
+                .duration(300).EUt(VA[UV]).save(provider);
+
+        // 1024A Laser Target Hatches
+        ASSEMBLER_RECIPES.recipeBuilder("iv_1024a_laser_target_hatch")
+                .inputItems(HULL[IV])
+                .inputItems(lens, Diamond, 2)
+                .inputItems(EMITTER_IV, 2)
+                .inputItems(ELECTRIC_PUMP_IV, 2)
+                .inputItems(cableGtDouble, Platinum, 4)
+                .circuitMeta(2)
+                .outputItems(LASER_INPUT_HATCH_1024[IV])
+                .duration(600).EUt(VA[IV]).save(provider);
+
+        ASSEMBLER_RECIPES.recipeBuilder("luv_1024a_laser_target_hatch")
+                .inputItems(HULL[LuV])
+                .inputItems(lens, Diamond, 2)
+                .inputItems(EMITTER_LuV, 2)
+                .inputItems(ELECTRIC_PUMP_LuV, 2)
+                .inputItems(cableGtDouble, NiobiumTitanium, 4)
+                .circuitMeta(2)
+                .outputItems(LASER_INPUT_HATCH_1024[LuV])
+                .duration(600).EUt(VA[LuV]).save(provider);
+
+        ASSEMBLER_RECIPES.recipeBuilder("zpm_1024a_laser_target_hatch")
+                .inputItems(HULL[ZPM])
+                .inputItems(lens, Diamond, 2)
+                .inputItems(EMITTER_ZPM, 2)
+                .inputItems(ELECTRIC_PUMP_ZPM, 2)
+                .inputItems(cableGtDouble, VanadiumGallium, 4)
+                .circuitMeta(2)
+                .outputItems(LASER_INPUT_HATCH_1024[ZPM])
+                .duration(600).EUt(VA[ZPM]).save(provider);
+
+        ASSEMBLER_RECIPES.recipeBuilder("uv_1024a_laser_target_hatch")
+                .inputItems(HULL[UV])
+                .inputItems(lens, Diamond, 2)
+                .inputItems(EMITTER_UV, 2)
+                .inputItems(ELECTRIC_PUMP_UV, 2)
+                .inputItems(cableGtDouble, YttriumBariumCuprate, 4)
+                .circuitMeta(2)
+                .outputItems(LASER_INPUT_HATCH_1024[UV])
+                .duration(600).EUt(VA[UV]).save(provider);
+
+        // 1024A Laser Source Hatches
+        ASSEMBLER_RECIPES.recipeBuilder("iv_1024a_laser_source_hatch")
+                .inputItems(HULL[IV])
+                .inputItems(lens, Diamond, 2)
+                .inputItems(SENSOR_IV, 2)
+                .inputItems(ELECTRIC_PUMP_IV, 2)
+                .inputItems(cableGtDouble, Platinum, 4)
+                .circuitMeta(2)
+                .outputItems(LASER_OUTPUT_HATCH_1024[IV])
+                .duration(600).EUt(VA[IV]).save(provider);
+
+        ASSEMBLER_RECIPES.recipeBuilder("luv_1024a_laser_source_hatch")
+                .inputItems(HULL[LuV])
+                .inputItems(lens, Diamond, 2)
+                .inputItems(SENSOR_LuV, 2)
+                .inputItems(ELECTRIC_PUMP_LuV, 2)
+                .inputItems(cableGtDouble, NiobiumTitanium, 4)
+                .circuitMeta(2)
+                .outputItems(LASER_OUTPUT_HATCH_1024[LuV])
+                .duration(600).EUt(VA[LuV]).save(provider);
+
+        ASSEMBLER_RECIPES.recipeBuilder("zpm_1024a_laser_source_hatch")
+                .inputItems(HULL[ZPM])
+                .inputItems(lens, Diamond, 2)
+                .inputItems(SENSOR_ZPM, 2)
+                .inputItems(ELECTRIC_PUMP_ZPM, 2)
+                .inputItems(cableGtDouble, VanadiumGallium, 4)
+                .circuitMeta(2)
+                .outputItems(LASER_OUTPUT_HATCH_1024[ZPM])
+                .duration(600).EUt(VA[ZPM]).save(provider);
+
+        ASSEMBLER_RECIPES.recipeBuilder("uv_1024a_laser_source_hatch")
+                .inputItems(HULL[UV])
+                .inputItems(lens, Diamond, 2)
+                .inputItems(SENSOR_UV, 2)
+                .inputItems(ELECTRIC_PUMP_UV, 2)
+                .inputItems(cableGtDouble, YttriumBariumCuprate, 4)
+                .circuitMeta(2)
+                .outputItems(LASER_OUTPUT_HATCH_1024[UV])
+                .duration(600).EUt(VA[UV]).save(provider);
+
+        // 4096A Laser Target Hatches
+        ASSEMBLER_RECIPES.recipeBuilder("iv_4096a_laser_target_hatch")
+                .inputItems(HULL[IV])
+                .inputItems(lens, Diamond, 4)
+                .inputItems(EMITTER_IV, 4)
+                .inputItems(ELECTRIC_PUMP_IV, 4)
+                .inputItems(cableGtQuadruple, Platinum, 4)
+                .circuitMeta(3)
+                .outputItems(LASER_INPUT_HATCH_4096[IV])
+                .duration(1200).EUt(VA[IV]).save(provider);
+
+        ASSEMBLER_RECIPES.recipeBuilder("luv_4096a_laser_target_hatch")
+                .inputItems(HULL[LuV])
+                .inputItems(lens, Diamond, 4)
+                .inputItems(EMITTER_LuV, 4)
+                .inputItems(ELECTRIC_PUMP_LuV, 4)
+                .inputItems(cableGtQuadruple, NiobiumTitanium, 4)
+                .circuitMeta(3)
+                .outputItems(LASER_INPUT_HATCH_4096[LuV])
+                .duration(1200).EUt(VA[LuV]).save(provider);
+
+        ASSEMBLER_RECIPES.recipeBuilder("zpm_4096a_laser_target_hatch")
+                .inputItems(HULL[ZPM])
+                .inputItems(lens, Diamond, 4)
+                .inputItems(EMITTER_ZPM, 4)
+                .inputItems(ELECTRIC_PUMP_ZPM, 4)
+                .inputItems(cableGtQuadruple, VanadiumGallium, 4)
+                .circuitMeta(3)
+                .outputItems(LASER_INPUT_HATCH_4096[ZPM])
+                .duration(1200).EUt(VA[ZPM]).save(provider);
+
+        ASSEMBLER_RECIPES.recipeBuilder("uv_4096a_laser_target_hatch")
+                .inputItems(HULL[UV])
+                .inputItems(lens, Diamond, 4)
+                .inputItems(EMITTER_UV, 4)
+                .inputItems(ELECTRIC_PUMP_UV, 4)
+                .inputItems(cableGtQuadruple, YttriumBariumCuprate, 4)
+                .circuitMeta(3)
+                .outputItems(LASER_INPUT_HATCH_4096[UV])
+                .duration(1200).EUt(VA[UV]).save(provider);
+
+        // 4096A Laser Source Hatches
+        ASSEMBLER_RECIPES.recipeBuilder("iv_4096a_laser_source_hatch")
+                .inputItems(HULL[IV])
+                .inputItems(lens, Diamond, 4)
+                .inputItems(SENSOR_IV, 4)
+                .inputItems(ELECTRIC_PUMP_IV, 4)
+                .inputItems(cableGtQuadruple, Platinum, 4)
+                .circuitMeta(3)
+                .outputItems(LASER_OUTPUT_HATCH_4096[IV])
+                .duration(1200).EUt(VA[IV]).save(provider);
+
+        ASSEMBLER_RECIPES.recipeBuilder("luv_4096a_laser_source_hatch")
+                .inputItems(HULL[LuV])
+                .inputItems(lens, Diamond, 4)
+                .inputItems(SENSOR_LuV, 4)
+                .inputItems(ELECTRIC_PUMP_LuV, 4)
+                .inputItems(cableGtQuadruple, NiobiumTitanium, 4)
+                .circuitMeta(3)
+                .outputItems(LASER_OUTPUT_HATCH_4096[LuV])
+                .duration(1200).EUt(VA[LuV]).save(provider);
+
+        ASSEMBLER_RECIPES.recipeBuilder("zpm_4096a_laser_source_hatch")
+                .inputItems(HULL[ZPM])
+                .inputItems(lens, Diamond, 4)
+                .inputItems(SENSOR_ZPM, 4)
+                .inputItems(ELECTRIC_PUMP_ZPM, 4)
+                .inputItems(cableGtQuadruple, VanadiumGallium, 4)
+                .circuitMeta(3)
+                .outputItems(LASER_OUTPUT_HATCH_4096[ZPM])
+                .duration(1200).EUt(VA[ZPM]).save(provider);
+
+        ASSEMBLER_RECIPES.recipeBuilder("uv_4096a_laser_source_hatch")
+                .inputItems(HULL[UV])
+                .inputItems(lens, Diamond, 4)
+                .inputItems(SENSOR_UV, 4)
+                .inputItems(ELECTRIC_PUMP_UV, 4)
+                .inputItems(cableGtQuadruple, YttriumBariumCuprate, 4)
+                .circuitMeta(3)
+                .outputItems(LASER_OUTPUT_HATCH_4096[UV])
+                .duration(1200).EUt(VA[UV]).save(provider);
     }
 }

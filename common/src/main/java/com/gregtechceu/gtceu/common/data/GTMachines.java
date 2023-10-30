@@ -4,8 +4,6 @@ import appeng.api.networking.pathing.ChannelMode;
 import appeng.core.AEConfig;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.addon.AddonFinder;
-import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.capability.IMiner;
@@ -714,54 +712,12 @@ public class GTMachines {
                     .register(),
             HV, EV, IV, LuV, ZPM, UV);
 
-    public static final MachineDefinition[] LASER_INPUT_HATCH_256A = registerTieredMachines("256a_laser_target_hatch", (holder, tier) -> new LaserHatchPartMachine(holder, IO.IN, tier, 256), (tier, builder) -> builder
-            .rotationState(RotationState.ALL)
-            .tooltips(Component.translatable("gtceu.machine.laser_hatch.target.tooltip.0"),
-                    Component.translatable("gtceu.machine.laser_hatch.target.tooltip.1"),
-                    Component.translatable("gtceu.universal.disabled"))
-            .abilities(PartAbility.INPUT_LASER)
-            .overlayTieredHullRenderer("laser_hatch.source")
-            .register(), HIGH_TIERS);
-    public static final MachineDefinition[] LASER_OUTPUT_HATCH_256A = registerTieredMachines("256a_laser_source_hatch", (holder, tier) -> new LaserHatchPartMachine(holder, IO.OUT, tier, 256), (tier, builder) -> builder
-            .rotationState(RotationState.ALL)
-            .tooltips(Component.translatable("gtceu.machine.laser_hatch.source.tooltip.0"),
-                    Component.translatable("gtceu.machine.laser_hatch.source.tooltip.1"),
-                    Component.translatable("gtceu.universal.disabled"))
-            .abilities(PartAbility.OUTPUT_LASER)
-            .overlayTieredHullRenderer("laser_hatch.source")
-            .register(), HIGH_TIERS);
-    public static final MachineDefinition[] LASER_INPUT_HATCH_1024A = registerTieredMachines("1024a_laser_target_hatch", (holder, tier) -> new LaserHatchPartMachine(holder, IO.IN, tier, 1024), (tier, builder) -> builder
-            .rotationState(RotationState.ALL)
-            .tooltips(Component.translatable("gtceu.machine.laser_hatch.target.tooltip.0"),
-                    Component.translatable("gtceu.machine.laser_hatch.target.tooltip.1"),
-                    Component.translatable("gtceu.universal.disabled"))
-            .abilities(PartAbility.INPUT_LASER)
-            .overlayTieredHullRenderer("laser_hatch.source")
-            .register(), HIGH_TIERS);
-    public static final MachineDefinition[] LASER_OUTPUT_HATCH_1024A = registerTieredMachines("1024a_laser_source_hatch", (holder, tier) -> new LaserHatchPartMachine(holder, IO.OUT, tier, 1024), (tier, builder) -> builder
-            .rotationState(RotationState.ALL)
-            .tooltips(Component.translatable("gtceu.machine.laser_hatch.source.tooltip.0"),
-                    Component.translatable("gtceu.machine.laser_hatch.source.tooltip.1"),
-                    Component.translatable("gtceu.universal.disabled"))
-            .abilities(PartAbility.OUTPUT_LASER)
-            .overlayTieredHullRenderer("laser_hatch.source")
-            .register(), HIGH_TIERS);
-    public static final MachineDefinition[] LASER_INPUT_HATCH_4096A = registerTieredMachines("4096a_laser_target_hatch", (holder, tier) -> new LaserHatchPartMachine(holder, IO.IN, tier, 4096), (tier, builder) -> builder
-            .rotationState(RotationState.ALL)
-            .tooltips(Component.translatable("gtceu.machine.laser_hatch.target.tooltip.0"),
-                    Component.translatable("gtceu.machine.laser_hatch.target.tooltip.1"),
-                    Component.translatable("gtceu.universal.disabled"))
-            .abilities(PartAbility.INPUT_LASER)
-            .overlayTieredHullRenderer("laser_hatch.source")
-            .register(), HIGH_TIERS);
-    public static final MachineDefinition[] LASER_OUTPUT_HATCH_4096A = registerTieredMachines("4096a_laser_source_hatch", (holder, tier) -> new LaserHatchPartMachine(holder, IO.OUT, tier, 4096), (tier, builder) -> builder
-            .rotationState(RotationState.ALL)
-            .tooltips(Component.translatable("gtceu.machine.laser_hatch.source.tooltip.0"),
-                    Component.translatable("gtceu.machine.laser_hatch.source.tooltip.1"),
-                    Component.translatable("gtceu.universal.disabled"))
-            .abilities(PartAbility.OUTPUT_LASER)
-            .overlayTieredHullRenderer("laser_hatch.source")
-            .register(), HIGH_TIERS);
+    public static final MachineDefinition[] LASER_INPUT_HATCH_256 = registerLaserHatch(IO.IN, 256, PartAbility.INPUT_LASER);
+    public static final MachineDefinition[] LASER_OUTPUT_HATCH_256 = registerLaserHatch(IO.OUT, 256, PartAbility.OUTPUT_LASER);
+    public static final MachineDefinition[] LASER_INPUT_HATCH_1024 = registerLaserHatch(IO.IN, 1024, PartAbility.INPUT_LASER);
+    public static final MachineDefinition[] LASER_OUTPUT_HATCH_1024 = registerLaserHatch(IO.OUT, 1024, PartAbility.OUTPUT_LASER);
+    public static final MachineDefinition[] LASER_INPUT_HATCH_4096 = registerLaserHatch(IO.IN, 4096, PartAbility.INPUT_LASER);
+    public static final MachineDefinition[] LASER_OUTPUT_HATCH_4096 = registerLaserHatch(IO.OUT, 4096, PartAbility.OUTPUT_LASER);
 
 
     //////////////////////////////////////
@@ -1630,6 +1586,18 @@ public class GTMachines {
                         .compassNode("charger")
                         .register(),
                 ALL_TIERS);
+    }
+
+    public static MachineDefinition[] registerLaserHatch(IO io, int amperage, PartAbility ability) {
+        String name = io == IO.IN ? "target" : "source";
+        return registerTieredMachines(amperage + "a_laser_" + name + "_hatch", (holder, tier) -> new LaserHatchPartMachine(holder, io, tier, amperage), (tier, builder) -> builder
+                .rotationState(RotationState.ALL)
+                .tooltips(Component.translatable("gtceu.machine.laser_hatch." + name + ".tooltip.0"),
+                        Component.translatable("gtceu.machine.laser_hatch." + name + ".tooltip.1"),
+                        Component.translatable("gtceu.universal.disabled"))
+                .abilities(ability)
+                .overlayTieredHullRenderer("laser_hatch." + name)
+                .register(), HIGH_TIERS);
     }
 
     public static MultiblockMachineDefinition[] registerTieredMultis(String name,

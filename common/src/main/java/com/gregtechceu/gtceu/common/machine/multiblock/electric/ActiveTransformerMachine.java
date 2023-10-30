@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.capability.recipe.LaserRecipeCapability;
 import com.gregtechceu.gtceu.api.machine.ConditionalSubscriptionHandler;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
@@ -72,7 +71,7 @@ public class ActiveTransformerMachine extends WorkableElectricMultiblockMachine 
                 var handlerIO = handler.getHandlerIO();
                 // If IO not compatible
                 if (io != IO.BOTH && handlerIO != IO.BOTH && io != handlerIO) continue;
-                if ((handler.getCapability() == EURecipeCapability.CAP || handler.getCapability() == LaserRecipeCapability.CAP) && handler instanceof IEnergyContainer container) {
+                if (handler.getCapability() == EURecipeCapability.CAP && handler instanceof IEnergyContainer container) {
                     if (handlerIO == IO.IN) {
                         powerInput.add(container);
                     } else if (handlerIO == IO.OUT) {

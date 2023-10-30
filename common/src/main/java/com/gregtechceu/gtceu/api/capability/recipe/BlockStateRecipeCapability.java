@@ -10,4 +10,9 @@ public class BlockStateRecipeCapability extends RecipeCapability<BlockState> {
     protected BlockStateRecipeCapability() {
         super("block_state", 0xFFABABAB, SerializerBlockState.INSTANCE);
     }
+
+    @Override
+    public BlockState copyInner(BlockState content) {
+        return content;
+    }
 }

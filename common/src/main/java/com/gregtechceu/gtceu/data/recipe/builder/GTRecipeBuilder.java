@@ -175,14 +175,6 @@ public class GTRecipeBuilder {
         return output(EURecipeCapability.CAP, eu);
     }
 
-    public GTRecipeBuilder inputLaser(long power) {
-        return input(LaserRecipeCapability.CAP, power);
-    }
-
-    public GTRecipeBuilder outputLaser(long power) {
-        return output(LaserRecipeCapability.CAP, power);
-    }
-
     public GTRecipeBuilder inputItems(Ingredient... inputs) {
         return input(ItemRecipeCapability.CAP, inputs);
     }

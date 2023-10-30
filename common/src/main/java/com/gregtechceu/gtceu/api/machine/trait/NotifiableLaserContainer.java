@@ -2,8 +2,6 @@ package com.gregtechceu.gtceu.api.machine.trait;
 
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.ILaserContainer;
-import com.gregtechceu.gtceu.api.capability.recipe.LaserRecipeCapability;
-import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import net.minecraft.core.Direction;
@@ -50,10 +48,5 @@ public class NotifiableLaserContainer extends NotifiableEnergyContainer implemen
                 setEnergyStored(getEnergyStored() - amperesUsed * outputVoltage);
             }
         }
-    }
-
-    @Override
-    public RecipeCapability<Long> getCapability() {
-        return LaserRecipeCapability.CAP;
     }
 }
