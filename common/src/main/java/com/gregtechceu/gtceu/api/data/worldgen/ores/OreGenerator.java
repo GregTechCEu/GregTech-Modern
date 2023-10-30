@@ -37,7 +37,7 @@ import java.util.stream.Stream;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class OreGenerator {
-    private record VeinConfiguration(ResourceLocation id, GTOreDefinition entry, RandomSource random, BlockPos origin) {
+    private record VeinConfiguration(ResourceLocation id, GTOreDefinition entry, BlockPos origin, RandomSource random) {
     }
 
     /**
@@ -53,9 +53,8 @@ public class OreGenerator {
     public List<GeneratedVein> generate(WorldGenLevel level, List<GeneratedVeinPosition> veinPositions, ChunkPos chunkPos) {
         return veinPositions.stream()
                 .map(pos -> new VeinConfiguration(
-                        pos.id(), pos.definition(),
-                        new XoroshiroRandomSource(level.getSeed() ^ chunkPos.toLong()),
-                        pos.center()
+                        pos.id(), pos.definition(), pos.center(),
+                        new XoroshiroRandomSource(level.getSeed() ^ chunkPos.toLong())
                 ))
                 .flatMap(config -> generate(config, level, chunkPos).stream())
                 .toList();
@@ -102,7 +101,7 @@ public class OreGenerator {
                             new IllegalStateException("Cannot determine y coordinate for the vein at " + veinCenter)
                     );
 
-                    return new VeinConfiguration(id, entry, random, origin);
+                    return new VeinConfiguration(id, entry, origin, random);
                 })
         ).toList();
     }
