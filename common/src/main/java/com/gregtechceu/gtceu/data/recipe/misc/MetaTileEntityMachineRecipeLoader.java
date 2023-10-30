@@ -599,7 +599,6 @@ public class MetaTileEntityMachineRecipeLoader {
                 .duration(400).EUt(VA[LuV]).save(provider);
 
         // Multiblock Fluid Drills
-        // TODO Multiblock fluid rigs
 
         ASSEMBLER_RECIPES.recipeBuilder("mv_fluid_drilling_rig")
                 .inputItems(HULL[MV])
