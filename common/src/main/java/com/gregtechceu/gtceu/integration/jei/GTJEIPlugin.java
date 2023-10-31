@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.integration.jei.multipage.MultiblockInfoCategory;
+import com.gregtechceu.gtceu.integration.jei.oreprocessing.GTOreProcessingInfoCategory;
 import com.gregtechceu.gtceu.integration.jei.recipe.GTRecipeTypeCategory;
 import com.lowdragmc.lowdraglib.LDLib;
 import mezz.jei.api.IModPlugin;
@@ -55,6 +56,7 @@ public class GTJEIPlugin implements IModPlugin {
         if (LDLib.isReiLoaded() || LDLib.isEmiLoaded()) return;
         MultiblockInfoCategory.registerRecipeCatalysts(registration);
         GTRecipeTypeCategory.registerRecipeCatalysts(registration);
+        GTOreProcessingInfoCategory.registerRecipeCatalysts(registration);
         for (MachineDefinition definition : GTMachines.ELECTRIC_FURNACE) {
             if (definition != null) {
                 registration.addRecipeCatalyst(definition.asStack(), RecipeTypes.SMELTING);
@@ -72,6 +74,7 @@ public class GTJEIPlugin implements IModPlugin {
         GTCEu.LOGGER.info("JEI register");
         MultiblockInfoCategory.registerRecipes(registration);
         GTRecipeTypeCategory.registerRecipes(registration);
+        GTOreProcessingInfoCategory.registerRecipes(registration);
     }
 
     @Override
