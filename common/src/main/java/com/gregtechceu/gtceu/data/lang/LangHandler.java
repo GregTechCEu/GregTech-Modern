@@ -696,6 +696,31 @@ public class LangHandler {
         provider.add("gtceu.machine.available_recipe_map_3.tooltip", "Available Recipe Maps: %s, %s, %s");
         provider.add("gtceu.machine.available_recipe_map_4.tooltip", "Available Recipe Maps: %s, %s, %s, %s");
 
+        multiLang(provider, "gtceu.machine.power_substation.tooltip",
+                "The heart of a centralized power grid",
+                "§fCapacitors§7 do not need to be all the same tier.",
+                "Allows up to §f%d Capacitor Layers§7.",
+                "Loses energy equal to §f1%%§7 of total capacity every §f24 hours§7.",
+                "Capped at §f%,d EU/t§7 passive loss per Capacitor Block."
+        );
+
+        multiLang(provider, "gtceu.machine.active_transformer.tooltip",
+                "Transformers: Lasers in Disguise",
+                "Can combine any number of Energy §fInputs§7 into any number of Energy §fOutputs§7.",
+                "Can transmit power at incredible distance with",
+                "Lasers§7."
+        );
+
+        multiLang(provider, "gtceu.machine.laser_hatch.source.tooltip",
+                "Transmitting power at distance",
+                "§cLaser Cables must be in a straight line!§7"
+        );
+
+        multiLang(provider, "gtceu.machine.laser_hatch.target.tooltip",
+                "Receiving power from distance",
+                "§cLaser Cables must be in a straight line!§7"
+        );
+
         multiLang(provider, "gtceu.machine.endpoint.tooltip",
                 "Connect with §fLong Distance Pipe§7 blocks to create a pipeline.",
                 "Pipelines must have exactly §f1 Input§7 and §f1 Output§7 endpoint.",

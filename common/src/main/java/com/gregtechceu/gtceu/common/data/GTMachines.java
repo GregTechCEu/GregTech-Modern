@@ -4,8 +4,6 @@ import appeng.api.networking.pathing.ChannelMode;
 import appeng.core.AEConfig;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.addon.AddonFinder;
-import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.capability.IMiner;
@@ -33,6 +31,7 @@ import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.api.registry.registrate.MultiblockMachineBuilder;
+import com.gregtechceu.gtceu.client.TooltipHelper;
 import com.gregtechceu.gtceu.client.renderer.machine.*;
 import com.gregtechceu.gtceu.common.block.BoilerFireboxType;
 import com.gregtechceu.gtceu.common.machine.electric.*;
@@ -250,9 +249,9 @@ public class GTMachines {
             .rotationState(RotationState.ALL)
             .tier(LV)
             .renderer(() -> new TieredHullMachineRenderer(LV, GTCEu.id("block/machine/ld_fluid_endpoint_machine")))
-            .tooltips(Component.translatable("gtceu.machine.endpoint.tooltip.1"),
-                    Component.translatable("gtceu.machine.endpoint.tooltip.2"),
-                    Component.translatable("gtceu.machine.endpoint.tooltip.3"))
+            .tooltips(Component.translatable("gtceu.machine.endpoint.tooltip.0"),
+                    Component.translatable("gtceu.machine.endpoint.tooltip.1"),
+                    Component.translatable("gtceu.machine.endpoint.tooltip.2"))
             .tooltipBuilder((stack, tooltip) -> {
                 if (ConfigHolder.INSTANCE.machines.ldFluidPipeMinDistance > 0) {
                     tooltip.add(Component.translatable("gtceu.machine.endpoint.tooltip.min_length", ConfigHolder.INSTANCE.machines.ldItemPipeMinDistance));
@@ -712,6 +711,13 @@ public class GTMachines {
                     .compassNode("rotor_holder")
                     .register(),
             HV, EV, IV, LuV, ZPM, UV);
+
+    public static final MachineDefinition[] LASER_INPUT_HATCH_256 = registerLaserHatch(IO.IN, 256, PartAbility.INPUT_LASER);
+    public static final MachineDefinition[] LASER_OUTPUT_HATCH_256 = registerLaserHatch(IO.OUT, 256, PartAbility.OUTPUT_LASER);
+    public static final MachineDefinition[] LASER_INPUT_HATCH_1024 = registerLaserHatch(IO.IN, 1024, PartAbility.INPUT_LASER);
+    public static final MachineDefinition[] LASER_OUTPUT_HATCH_1024 = registerLaserHatch(IO.OUT, 1024, PartAbility.OUTPUT_LASER);
+    public static final MachineDefinition[] LASER_INPUT_HATCH_4096 = registerLaserHatch(IO.IN, 4096, PartAbility.INPUT_LASER);
+    public static final MachineDefinition[] LASER_OUTPUT_HATCH_4096 = registerLaserHatch(IO.OUT, 4096, PartAbility.OUTPUT_LASER);
 
 
     //////////////////////////////////////
@@ -1425,6 +1431,27 @@ public class GTMachines {
                     .register(),
             IV, LuV) : null;
 
+    public static final MultiblockMachineDefinition ACTIVE_TRANSFORMER = REGISTRATE.multiblock("active_transformer", ActiveTransformerMachine::new)
+            .rotationState(RotationState.NON_Y_AXIS)
+            .recipeType(GTRecipeTypes.DUMMY_RECIPES)
+            .tooltips(Component.translatable("gtceu.machine.active_transformer.tooltip.0"),
+                    Component.translatable("gtceu.machine.active_transformer.tooltip.1"),
+                    Component.translatable("gtceu.machine.active_transformer.tooltip.2")
+                            .append(Component.translatable("gtceu.machine.active_transformer.tooltip.3")
+                                    .withStyle(TooltipHelper.RAINBOW_SLOW.getCurrent())))
+            .pattern((definition) -> FactoryBlockPattern.start()
+                    .aisle("XXX", "XXX", "XXX")
+                    .aisle("XXX", "XCX", "XXX")
+                    .aisle("XXX", "XSX", "XXX")
+                    .where('S', controller(blocks(definition.getBlock())))
+                    .where('X', blocks(GTBlocks.HIGH_POWER_CASING.get()).setMinGlobalLimited(12)
+                            .or(ActiveTransformerMachine.getHatchPredicates()))
+                    .where('C', blocks(GTBlocks.SUPERCONDUCTING_COIL.get()))
+                    .build())
+            .workableCasingRenderer(GTCEu.id("block/casings/hpca/high_power_casing"),
+                    GTCEu.id("block/multiblock/data_bank"), false)
+            .register();
+
 
     //////////////////////////////////////
     //**********     Misc     **********//
@@ -1559,6 +1586,18 @@ public class GTMachines {
                         .compassNode("charger")
                         .register(),
                 ALL_TIERS);
+    }
+
+    public static MachineDefinition[] registerLaserHatch(IO io, int amperage, PartAbility ability) {
+        String name = io == IO.IN ? "target" : "source";
+        return registerTieredMachines(amperage + "a_laser_" + name + "_hatch", (holder, tier) -> new LaserHatchPartMachine(holder, io, tier, amperage), (tier, builder) -> builder
+                .rotationState(RotationState.ALL)
+                .tooltips(Component.translatable("gtceu.machine.laser_hatch." + name + ".tooltip.0"),
+                        Component.translatable("gtceu.machine.laser_hatch." + name + ".tooltip.1"),
+                        Component.translatable("gtceu.universal.disabled"))
+                .abilities(ability)
+                .overlayTieredHullRenderer("laser_hatch." + name)
+                .register(), HIGH_TIERS);
     }
 
     public static MultiblockMachineDefinition[] registerTieredMultis(String name,
