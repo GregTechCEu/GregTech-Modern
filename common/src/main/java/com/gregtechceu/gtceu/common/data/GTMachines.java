@@ -57,6 +57,7 @@ import com.gregtechceu.gtceu.integration.kjs.GTRegistryObjectBuilderTypes;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.lowdragmc.lowdraglib.LDLib;
+import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.lowdragmc.lowdraglib.utils.BlockInfo;
@@ -1745,7 +1746,7 @@ public class GTMachines {
         if (GTCEu.isCreateLoaded()) {
             GTCreateMachines.init();
         }
-        if (ConfigHolder.INSTANCE.machines.doBedrockOres) {
+        if (ConfigHolder.INSTANCE.machines.doBedrockOres || Platform.isDevEnv()) {
             BEDROCK_ORE_MINER = registerTieredMultis("bedrock_ore_miner", BedrockOreMinerMachine::new, (tier, builder) -> builder
                             .rotationState(RotationState.NON_Y_AXIS)
                             .langValue("%s Bedrock Ore Miner %s".formatted(VLVH[tier], VLVT[tier]))

@@ -74,7 +74,7 @@ public class GTCEu {
     @ApiStatus.Internal
     public static void initializeHighTier() {
         if (highTierInitialized) throw new IllegalStateException("High-Tier is already initialized.");
-        highTier = ConfigHolder.INSTANCE.machines.highTierContent || AddonFinder.getAddons().stream().anyMatch(IGTAddon::requiresHighTier);
+        highTier = ConfigHolder.INSTANCE.machines.highTierContent || AddonFinder.getAddons().stream().anyMatch(IGTAddon::requiresHighTier) || Platform.isDevEnv();
         highTierInitialized = true;
 
         if (isHighTier()) GTCEu.LOGGER.info("High-Tier is Enabled.");
