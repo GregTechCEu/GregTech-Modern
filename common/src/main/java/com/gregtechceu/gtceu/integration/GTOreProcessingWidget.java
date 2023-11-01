@@ -1,13 +1,14 @@
 package com.gregtechceu.gtceu.integration;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.OreProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.utils.GTUtil;
+import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.gui.widget.ImageWidget;
 import com.lowdragmc.lowdraglib.gui.widget.PhantomSlotWidget;
 import com.lowdragmc.lowdraglib.gui.widget.TankWidget;
@@ -41,36 +42,37 @@ public class GTOreProcessingWidget extends WidgetGroup {
         List<List<ItemStack>> mainproducts = new ArrayList<>();
         List<List<ItemStack>> byproducts = new ArrayList<>();
         List<List<ItemStack>> machines = new ArrayList<>();
+        List<Content> chanceContent = new ArrayList<>();
         OreProperty prop = material.getProperty(PropertyKey.ORE);
         //Items
-        addItemSlots(mainproducts, byproducts, material, prop);
+        addItemSlots(mainproducts, byproducts, material, prop, chanceContent);
         //Machines
         addMachineSlots(machines);
         //GUI
-        setupGui(mainproducts, byproducts, machines, material, prop);
+        setupGui(mainproducts, byproducts, machines, material, prop, chanceContent);
     }
 
-    private void setupGui(List<List<ItemStack>> mainproducts, List<List<ItemStack>> byproducts, List<List<ItemStack>> machines, Material material, OreProperty prop) {
-        setupBaseGui(mainproducts, byproducts, machines);
+    private void setupGui(List<List<ItemStack>> mainproducts, List<List<ItemStack>> byproducts, List<List<ItemStack>> machines, Material material, OreProperty prop, List<Content> chanceContent) {
+        setupBaseGui(mainproducts, byproducts, machines, chanceContent);
         if(!material.hasProperty(PropertyKey.BLAST)){
             setupSmeltGui(mainproducts, machines);
         }
         if(prop.getWashedIn().getLeft() != null){
-            setupChemGui(mainproducts,byproducts,machines,prop);
+            setupChemGui(mainproducts,byproducts,machines,prop,chanceContent);
         }
         if(prop.getSeparatedInto() != null && !prop.getSeparatedInto().isEmpty()) {
-            setupSepGui(mainproducts, byproducts,machines);
+            setupSepGui(mainproducts,byproducts,machines,chanceContent);
         }
         if(material.hasProperty(PropertyKey.GEM)){
-            setupSiftGui(mainproducts, byproducts,machines);
+            setupSiftGui(mainproducts, byproducts,machines,chanceContent);
         }
     }
 
     //Base
 
-    private void setupBaseGui(List<List<ItemStack>> mainproducts, List<List<ItemStack>> byproducts, List<List<ItemStack>> machines) {
+    private void setupBaseGui(List<List<ItemStack>> mainproducts, List<List<ItemStack>> byproducts, List<List<ItemStack>> machines, List<Content> chanceContent) {
         addWidget(new ImageWidget(0,0,186,174,OREBY_BASE));
-        setupBaseGuiItems(mainproducts, byproducts);
+        setupBaseGuiItems(mainproducts, byproducts, chanceContent);
         setupBaseGuiMachines(machines);
     }
 
@@ -96,6 +98,7 @@ public class GTOreProcessingWidget extends WidgetGroup {
         washerSlot.setBackgroundTexture(null);
         addWidget(washerSlot);
         TankWidget waterSlot = new TankWidget(new FluidStorage(Water.getFluid(1000)),42,25,false,false);
+        waterSlot.initTemplate();
         addWidget(waterSlot);
         //Impure Dust -> Dust
         PhantomSlotWidget centrifugeSlot = new PhantomSlotWidget(new CycleItemStackHandler(machines),4,51,80);
@@ -123,15 +126,20 @@ public class GTOreProcessingWidget extends WidgetGroup {
         addWidget(cauldronWasherSlot3);
     }
 
-    private void setupBaseGuiItems(List<List<ItemStack>> mainproducts, List<List<ItemStack>> byproducts) {
+    private void setupBaseGuiItems(List<List<ItemStack>> mainproducts, List<List<ItemStack>> byproducts, List<Content> chanceContent) {
         //Ore
         addWidget(new PhantomSlotWidget(new CycleItemStackHandler(mainproducts),0,3,3));
         //Crushing Ore
         PhantomSlotWidget crushedSlot = new PhantomSlotWidget(new CycleItemStackHandler(mainproducts),2,3,47);
-        crushedSlot.setOnAddedTooltips((w, tooltips) -> tooltips.add(Component.translatable("gtceu.gui.content.chance_1", String.format("%.1f", 69f) + "%")));
         addWidget(crushedSlot);
         //Crushing Ore BP
-        addWidget(new PhantomSlotWidget(new CycleItemStackHandler(byproducts),0,3,65));
+        PhantomSlotWidget crushedOreBPSlot = new PhantomSlotWidget(new CycleItemStackHandler(byproducts),0,3,65);
+        crushedOreBPSlot.setOverlay(chanceContent.get(1).createOverlay(false));
+        crushedOreBPSlot.setOnAddedTooltips((w, tooltips) -> {
+            tooltips.add(Component.translatable("gtceu.gui.content.chance_1", String.format("%.1f", 14f) + "%"));
+            tooltips.add(Component.translatable("gtceu.gui.content.tier_boost", String.format("%.1f", 8.5) + "%"));
+        });
+        addWidget(crushedOreBPSlot);
         //Washing Crushed Ore
         addWidget(new PhantomSlotWidget(new CycleItemStackHandler(mainproducts),3,64,25));
         //Washing Crushed Ore BP
@@ -139,7 +147,13 @@ public class GTOreProcessingWidget extends WidgetGroup {
         //Crushing Crushed Ore
         addWidget(new PhantomSlotWidget(new CycleItemStackHandler(mainproducts),5,23,92));
         //Crushing Crushed Ore BP
-        addWidget(new PhantomSlotWidget(new CycleItemStackHandler(byproducts),0,23,110));
+        PhantomSlotWidget crushingCrushedOreBPSlot = new PhantomSlotWidget(new CycleItemStackHandler(byproducts),0,23,110);
+        crushingCrushedOreBPSlot.setOverlay(chanceContent.get(2).createOverlay(false));
+        crushingCrushedOreBPSlot.setOnAddedTooltips((w, tooltips) -> {
+            tooltips.add(Component.translatable("gtceu.gui.content.chance_1", String.format("%.1f", 14f) + "%"));
+            tooltips.add(Component.translatable("gtceu.gui.content.tier_boost", String.format("%.1f", 8.5) + "%"));
+        });
+        addWidget(crushingCrushedOreBPSlot);
         //Centrifuging Impure Dust
         addWidget(new PhantomSlotWidget(new CycleItemStackHandler(mainproducts),7,51,101));
         //Centrifuging Impure Dust BP
@@ -147,7 +161,13 @@ public class GTOreProcessingWidget extends WidgetGroup {
         //Crushing Washed Ore
         addWidget(new PhantomSlotWidget(new CycleItemStackHandler(mainproducts),6,137,47));
         //Crushing Washed Ore BP
-        addWidget(new PhantomSlotWidget(new CycleItemStackHandler(byproducts),3,155,47));
+        PhantomSlotWidget crushingWashedOreBPSlot = new PhantomSlotWidget(new CycleItemStackHandler(byproducts),3,155,47);
+        crushingWashedOreBPSlot.setOverlay(chanceContent.get(3).createOverlay(false));
+        crushingWashedOreBPSlot.setOnAddedTooltips((w, tooltips) -> {
+            tooltips.add(Component.translatable("gtceu.gui.content.chance_1", String.format("%.1f", 14f) + "%"));
+            tooltips.add(Component.translatable("gtceu.gui.content.tier_boost", String.format("%.1f", 8.5) + "%"));
+        });
+        addWidget(crushingWashedOreBPSlot);
         //Centrifuging Pure Dust
         addWidget(new PhantomSlotWidget(new CycleItemStackHandler(mainproducts),7,133,92));
         //Centrifuging Pure Dust BP
@@ -163,9 +183,15 @@ public class GTOreProcessingWidget extends WidgetGroup {
         //Crushing TC'ed Ore
         addWidget(new PhantomSlotWidget(new CycleItemStackHandler(mainproducts),7,70,101));
         //Crushing TC'ed Ore BP
-        addWidget(new PhantomSlotWidget(new CycleItemStackHandler(byproducts),4,70,119));
+        PhantomSlotWidget crushingTCedOreBPSlot = new PhantomSlotWidget(new CycleItemStackHandler(byproducts),4,70,119);
+        crushingTCedOreBPSlot.setOverlay(chanceContent.get(4).createOverlay(false));
+        crushingTCedOreBPSlot.setOnAddedTooltips((w, tooltips) -> {
+            tooltips.add(Component.translatable("gtceu.gui.content.chance_1", String.format("%.1f", 14f) + "%"));
+            tooltips.add(Component.translatable("gtceu.gui.content.tier_boost", String.format("%.1f", 8.5) + "%"));
+        });
+        addWidget(crushingTCedOreBPSlot);
         //Simple Washing Crushed Ore
-        addWidget(new PhantomSlotWidget(new CycleItemStackHandler(mainproducts),2,3,105));
+        addWidget(new PhantomSlotWidget(new CycleItemStackHandler(mainproducts),9,3,105));
         addWidget(new PhantomSlotWidget(new CycleItemStackHandler(mainproducts),3,3,145));
         //Simple Washing Impure Dust
         addWidget(new PhantomSlotWidget(new CycleItemStackHandler(mainproducts),5,23,145));
@@ -195,9 +221,9 @@ public class GTOreProcessingWidget extends WidgetGroup {
 
     //Bath
 
-    private void setupChemGui(List<List<ItemStack>> mainproducts, List<List<ItemStack>> byproducts, List<List<ItemStack>> machines, OreProperty prop) {
+    private void setupChemGui(List<List<ItemStack>> mainproducts, List<List<ItemStack>> byproducts, List<List<ItemStack>> machines, OreProperty prop, List<Content> chanceContent) {
         addWidget(new ImageWidget(0,0,186,174,OREBY_CHEM));
-        setupChemGuiItems(mainproducts,byproducts);
+        setupChemGuiItems(mainproducts,byproducts,chanceContent);
         setupChemGuiMachines(machines,prop);
     }
 
@@ -207,19 +233,26 @@ public class GTOreProcessingWidget extends WidgetGroup {
         chembathSlot.setBackgroundTexture(null);
         addWidget(chembathSlot);
         TankWidget washingReagentSlot = new TankWidget(new FluidStorage(reagent.getLeft().getFluid(reagent.getRight())),42,48,false,false);
+        washingReagentSlot.initTemplate();
         addWidget(washingReagentSlot);
     }
 
-    private void setupChemGuiItems(List<List<ItemStack>> mainproducts, List<List<ItemStack>> byproducts) {
+    private void setupChemGuiItems(List<List<ItemStack>> mainproducts, List<List<ItemStack>> byproducts, List<Content> chanceContent) {
         addWidget(new PhantomSlotWidget(new CycleItemStackHandler(mainproducts),3,64,48));
-        addWidget(new PhantomSlotWidget(new CycleItemStackHandler(byproducts),8,82,48));
+        PhantomSlotWidget bathingCrushedOreBPSlot = new PhantomSlotWidget(new CycleItemStackHandler(byproducts),8,82,48);
+        bathingCrushedOreBPSlot.setOverlay(chanceContent.get(5).createOverlay(false));
+        bathingCrushedOreBPSlot.setOnAddedTooltips((w, tooltips) -> {
+            tooltips.add(Component.translatable("gtceu.gui.content.chance_1", String.format("%.1f", 70f) + "%"));
+            tooltips.add(Component.translatable("gtceu.gui.content.tier_boost", String.format("%.1f", 5.8) + "%"));
+        });
+        addWidget(bathingCrushedOreBPSlot);
     }
 
     //Sep
 
-    private void setupSepGui(List<List<ItemStack>> mainproducts, List<List<ItemStack>> byproducts, List<List<ItemStack>> machines) {
+    private void setupSepGui(List<List<ItemStack>> mainproducts, List<List<ItemStack>> byproducts, List<List<ItemStack>> machines, List<Content> chanceContent) {
         addWidget(new ImageWidget(0,0,186,174,OREBY_SEP));
-        setupSepGuiItems(mainproducts,byproducts);
+        setupSepGuiItems(mainproducts,byproducts,chanceContent);
         setupSepGuiMachines(machines);
     }
 
@@ -229,17 +262,29 @@ public class GTOreProcessingWidget extends WidgetGroup {
         addWidget(separatorSlot);
     }
 
-    private void setupSepGuiItems(List<List<ItemStack>> mainproducts, List<List<ItemStack>> byproducts) {
+    private void setupSepGuiItems(List<List<ItemStack>> mainproducts, List<List<ItemStack>> byproducts, List<Content> chanceContent) {
         addWidget(new PhantomSlotWidget(new CycleItemStackHandler(mainproducts),7,155,92));
-        addWidget(new PhantomSlotWidget(new CycleItemStackHandler(byproducts),9,155,110));
-        addWidget(new PhantomSlotWidget(new CycleItemStackHandler(byproducts),10,155,128));
+        PhantomSlotWidget separatorBPSlot1 = new PhantomSlotWidget(new CycleItemStackHandler(byproducts),9,155,110);
+        separatorBPSlot1.setOverlay(chanceContent.get(6).createOverlay(false));
+        separatorBPSlot1.setOnAddedTooltips((w, tooltips) -> {
+            tooltips.add(Component.translatable("gtceu.gui.content.chance_1", String.format("%.1f", 40f) + "%"));
+            tooltips.add(Component.translatable("gtceu.gui.content.tier_boost", String.format("%.1f", 8.5) + "%"));
+        });
+        addWidget(separatorBPSlot1);
+        PhantomSlotWidget separatorBPSlot2 = new PhantomSlotWidget(new CycleItemStackHandler(byproducts),10,155,128);
+        separatorBPSlot2.setOverlay(chanceContent.get(7).createOverlay(false));
+        separatorBPSlot2.setOnAddedTooltips((w, tooltips) -> {
+            tooltips.add(Component.translatable("gtceu.gui.content.chance_1", String.format("%.1f", 20f) + "%"));
+            tooltips.add(Component.translatable("gtceu.gui.content.tier_boost", String.format("%.1f", 6f) + "%"));
+        });
+        addWidget(separatorBPSlot2);
     }
 
     //Sift
 
-    private void setupSiftGui(List<List<ItemStack>> mainproducts, List<List<ItemStack>> byproducts, List<List<ItemStack>> machines) {
+    private void setupSiftGui(List<List<ItemStack>> mainproducts, List<List<ItemStack>> byproducts, List<List<ItemStack>> machines, List<Content> chanceContent) {
         addWidget(new ImageWidget(0,0,186,174,OREBY_SIFT));
-        setupSiftGuiItems(mainproducts,byproducts);
+        setupSiftGuiItems(mainproducts,byproducts,chanceContent);
         setupSiftGuiMachines(machines);
     }
 
@@ -249,13 +294,49 @@ public class GTOreProcessingWidget extends WidgetGroup {
         addWidget(sifterSlot);
     }
 
-    private void setupSiftGuiItems(List<List<ItemStack>> mainproducts, List<List<ItemStack>> byproducts) {
-        addWidget(new PhantomSlotWidget(new CycleItemStackHandler(mainproducts),6,119,21));
-        addWidget(new PhantomSlotWidget(new CycleItemStackHandler(byproducts),11,119,3));
-        addWidget(new PhantomSlotWidget(new CycleItemStackHandler(byproducts),12,137,3));
-        addWidget(new PhantomSlotWidget(new CycleItemStackHandler(byproducts),13,155,3));
-        addWidget(new PhantomSlotWidget(new CycleItemStackHandler(byproducts),14,137,21));
-        addWidget(new PhantomSlotWidget(new CycleItemStackHandler(byproducts),15,155,21));
+    private void setupSiftGuiItems(List<List<ItemStack>> mainproducts, List<List<ItemStack>> byproducts, List<Content> chanceContent) {
+        PhantomSlotWidget exquisiteSlot = new PhantomSlotWidget(new CycleItemStackHandler(byproducts),11,119,3);
+        exquisiteSlot.setOverlay(chanceContent.get(8).createOverlay(false));
+        exquisiteSlot.setOnAddedTooltips((w, tooltips) -> {
+            tooltips.add(Component.translatable("gtceu.gui.content.chance_1", String.format("%.1f", 3f) + "%"));
+            tooltips.add(Component.translatable("gtceu.gui.content.tier_boost", String.format("%.1f", 1f) + "%"));
+        });
+        addWidget(exquisiteSlot);
+        PhantomSlotWidget flawlessSlot = new PhantomSlotWidget(new CycleItemStackHandler(byproducts),12,137,3);
+        flawlessSlot.setOverlay(chanceContent.get(9).createOverlay(false));
+        flawlessSlot.setOnAddedTooltips((w, tooltips) -> {
+            tooltips.add(Component.translatable("gtceu.gui.content.chance_1", String.format("%.1f", 3f) + "%"));
+            tooltips.add(Component.translatable("gtceu.gui.content.tier_boost", String.format("%.1f", 1f) + "%"));
+        });
+        addWidget(flawlessSlot);
+        PhantomSlotWidget gemSlot = new PhantomSlotWidget(new CycleItemStackHandler(byproducts),13,155,3);
+        gemSlot.setOverlay(chanceContent.get(10).createOverlay(false));
+        gemSlot.setOnAddedTooltips((w, tooltips) -> {
+            tooltips.add(Component.translatable("gtceu.gui.content.chance_1", String.format("%.1f", 3f) + "%"));
+            tooltips.add(Component.translatable("gtceu.gui.content.tier_boost", String.format("%.1f", 1f) + "%"));
+        });
+        addWidget(gemSlot);
+        PhantomSlotWidget dustSlot = new PhantomSlotWidget(new CycleItemStackHandler(mainproducts),6,119,21);
+        dustSlot.setOverlay(chanceContent.get(0).createOverlay(false));
+        dustSlot.setOnAddedTooltips((w, tooltips) -> {
+            tooltips.add(Component.translatable("gtceu.gui.content.chance_1", String.format("%.1f", 3f) + "%"));
+            tooltips.add(Component.translatable("gtceu.gui.content.tier_boost", String.format("%.1f", 1f) + "%"));
+        });
+        addWidget(dustSlot);
+        PhantomSlotWidget flawedSlot = new PhantomSlotWidget(new CycleItemStackHandler(byproducts),14,137,21);
+        flawlessSlot.setOverlay(chanceContent.get(11).createOverlay(false));
+        flawedSlot.setOnAddedTooltips((w, tooltips) -> {
+            tooltips.add(Component.translatable("gtceu.gui.content.chance_1", String.format("%.1f", 3f) + "%"));
+            tooltips.add(Component.translatable("gtceu.gui.content.tier_boost", String.format("%.1f", 1f) + "%"));
+        });
+        addWidget(flawedSlot);
+        PhantomSlotWidget chippedSlot = new PhantomSlotWidget(new CycleItemStackHandler(byproducts),15,155,21);
+        chippedSlot.setOverlay(chanceContent.get(12).createOverlay(false));
+        chippedSlot.setOnAddedTooltips((w, tooltips) -> {
+            tooltips.add(Component.translatable("gtceu.gui.content.chance_1", String.format("%.1f", 3f) + "%"));
+            tooltips.add(Component.translatable("gtceu.gui.content.tier_boost", String.format("%.1f", 1f) + "%"));
+        });
+        addWidget(chippedSlot);
     }
 
     //Slots
@@ -283,12 +364,12 @@ public class GTOreProcessingWidget extends WidgetGroup {
         machines.add(cauldronWasherSlot);
     }
 
-    private void addItemSlots(List<List<ItemStack>> mainproducts, List<List<ItemStack>> byproducts, Material material, OreProperty prop) {
-        setupMainProducts(mainproducts, material, prop);
-        setupByproducts(byproducts, material, prop);
+    private void addItemSlots(List<List<ItemStack>> mainproducts, List<List<ItemStack>> byproducts, Material material, OreProperty prop, List<Content> chanceContent) {
+        setupMainProducts(mainproducts, material, prop, chanceContent);
+        setupByproducts(byproducts, material, prop, chanceContent);
     }
 
-    private void setupMainProducts(List<List<ItemStack>> mainproducts, Material material, OreProperty prop) {
+    private void setupMainProducts(List<List<ItemStack>> mainproducts, Material material, OreProperty prop, List<Content> chanceContent) {
         //Ore
         List<ItemStack> oreSlot = Collections.singletonList(ChemicalHelper.get(ore, material));
         mainproducts.add(oreSlot);
@@ -324,13 +405,17 @@ public class GTOreProcessingWidget extends WidgetGroup {
         List<ItemStack> dustSlot = Collections.singletonList(ChemicalHelper.get(dust, material));
         mainproducts.add(dustSlot);
         //Gem
+        List<ItemStack> gemSlot = new ArrayList<>();
         if(material.hasProperty(PropertyKey.GEM)){
-            List<ItemStack> gemSlot = Collections.singletonList(ChemicalHelper.get(gem, material));
-            mainproducts.add(gemSlot);
+            gemSlot.add(ChemicalHelper.get(gem, material));
         }
+        mainproducts.add(gemSlot);
+        chanceContent.add(new Content(gemSlot,0.35f,0.05f,null,null));
+        List<ItemStack> simpleCrushedSlot = Collections.singletonList(ChemicalHelper.get(crushed, material));
+        mainproducts.add(simpleCrushedSlot);
     }
 
-    private void setupByproducts(List<List<ItemStack>> byproducts, Material material, OreProperty prop) {
+    private void setupByproducts(List<List<ItemStack>> byproducts, Material material, OreProperty prop, List<Content> chanceContent) {
         Material byproductMaterial1 = GTUtil.selectItemInList(0, material, prop.getOreByProducts(), Material.class);
         Material byproductMaterial2 = GTUtil.selectItemInList(1, material, prop.getOreByProducts(), Material.class);
         Material byproductMaterial3 = GTUtil.selectItemInList(3, material, prop.getOreByProducts(), Material.class);
@@ -340,6 +425,7 @@ public class GTOreProcessingWidget extends WidgetGroup {
         if (crushingOreByproductStack.isEmpty()) crushingOreByproductStack = ChemicalHelper.get(dust, byproductMaterial1);
         List<ItemStack> maceratorBPSlot1 = Collections.singletonList(crushingOreByproductStack);
         byproducts.add(maceratorBPSlot1);
+        chanceContent.add(new Content(crushingOreByproductStack,0.14f,0.07f,null,null));
         //Washing Crushed Ore BP
         ItemStack washingByproductStack = ChemicalHelper.get(dustTiny, byproductMaterial1, 3);
         List<ItemStack> washerBPSlot = Collections.singletonList(washingByproductStack);
@@ -348,14 +434,17 @@ public class GTOreProcessingWidget extends WidgetGroup {
         ItemStack crushingCrushedByproductStack = ChemicalHelper.get(dust, byproductMaterial1);
         List<ItemStack> maceratorBPSlot2 = Collections.singletonList(crushingCrushedByproductStack);
         byproducts.add(maceratorBPSlot2);
+        chanceContent.add(new Content(maceratorBPSlot2,0.14f,0.085f,null,null));
         //Crushing Washed Ore BP
         ItemStack crushingWashededByproductStack = ChemicalHelper.get(dust, byproductMaterial2);
         List<ItemStack> maceratorBPSlot3 = Collections.singletonList(crushingWashededByproductStack);
         byproducts.add(maceratorBPSlot3);
+        chanceContent.add(new Content(maceratorBPSlot3,0.14f,0.085f,null,null));
         //Crushing TC'ed Ore BP
         ItemStack crushingTCedByproductStack = ChemicalHelper.get(dust, byproductMaterial2);
         List<ItemStack> maceratorBPSlot4 = Collections.singletonList(crushingTCedByproductStack);
         byproducts.add(maceratorBPSlot4);
+        chanceContent.add(new Content(maceratorBPSlot4,0.14f,0.085f,null,null));
         //Centrifuging Impure Dust BP
         ItemStack centrifugingImpureDustByproductStack = ChemicalHelper.get(dustTiny, byproductMaterial1);
         List<ItemStack> centrifugeBPSlot = Collections.singletonList(centrifugingImpureDustByproductStack);
@@ -372,6 +461,7 @@ public class GTOreProcessingWidget extends WidgetGroup {
         ItemStack bathingCrushedByproductStack = ChemicalHelper.get(dust, byproductMaterial3);
         List<ItemStack> bathBPSlot = Collections.singletonList(bathingCrushedByproductStack);
         byproducts.add(bathBPSlot);
+        chanceContent.add(new Content(bathBPSlot,0.7f,0.58f,null,null));
         //Separating Pure Dust BP
         ItemStack separatedStack1 = new ItemStack(Items.AIR);
         ItemStack separatedStack2 = new ItemStack(Items.AIR);
@@ -384,8 +474,10 @@ public class GTOreProcessingWidget extends WidgetGroup {
         }
         List<ItemStack> sepBPSlot1 = Collections.singletonList(separatedStack1);
         byproducts.add(sepBPSlot1);
+        chanceContent.add(new Content(sepBPSlot1,0.4f,0.85f,null,null));
         List<ItemStack> sepBPSlot2 = Collections.singletonList(separatedStack2);
         byproducts.add(sepBPSlot2);
+        chanceContent.add(new Content(sepBPSlot2,0.2f,0.6f,null,null));
         //Sifting Washed Ore BP
         ItemStack exquisiteStack = new ItemStack(Items.AIR);
         ItemStack flawlessStack = new ItemStack(Items.AIR);
@@ -405,9 +497,14 @@ public class GTOreProcessingWidget extends WidgetGroup {
         List<ItemStack> siftBPSlot4 = Collections.singletonList(flawedStack);
         List<ItemStack> siftBPSlot5 = Collections.singletonList(chippedStack);
         byproducts.add(siftBPSlot1);
+        chanceContent.add(new Content(siftBPSlot1,0.03f,0.01f,null,null));
         byproducts.add(siftBPSlot2);
+        chanceContent.add(new Content(siftBPSlot2,0.1f,0.015f,null,null));
         byproducts.add(siftBPSlot3);
+        chanceContent.add(new Content(siftBPSlot3,0.5f,0.075f,null,null));
         byproducts.add(siftBPSlot4);
+        chanceContent.add(new Content(siftBPSlot4,0.25f,0.03f,null,null));
         byproducts.add(siftBPSlot5);
+        chanceContent.add(new Content(siftBPSlot5,0.35f,0.04f,null,null));
     }
 }
