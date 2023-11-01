@@ -776,6 +776,46 @@ public class GTItems {
                 lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 64 * 4 / 20));
             })))
             .register();
+    public static ItemEntry<ComponentItem> FLUID_REGULATOR_UHV = GTCEu.isHighTier() ? REGISTRATE.item("uhv_fluid_regulator", ComponentItem::create)
+            .lang("UHV Fluid Regulator")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_REGULATORS[8])))
+            .onRegister(attach(new TooltipBehavior(lines -> {
+                lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
+                lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 64 * 4 / 20));
+            })))
+            .register() : null;
+    public static ItemEntry<ComponentItem> FLUID_REGULATOR_UEV = GTCEu.isHighTier() ? REGISTRATE.item("uev_fluid_regulator", ComponentItem::create)
+            .lang("UEV Fluid Regulator")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_REGULATORS[9])))
+            .onRegister(attach(new TooltipBehavior(lines -> {
+                lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
+                lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 64 * 4 / 20));
+            })))
+            .register() : null;
+    public static ItemEntry<ComponentItem> FLUID_REGULATOR_UIV = GTCEu.isHighTier() ? REGISTRATE.item("uiv_fluid_regulator", ComponentItem::create)
+            .lang("UIV Fluid Regulator")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_REGULATORS[10])))
+            .onRegister(attach(new TooltipBehavior(lines -> {
+                lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
+                lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 64 * 4 / 20));
+            })))
+            .register() : null;
+    public static ItemEntry<ComponentItem> FLUID_REGULATOR_UXV = GTCEu.isHighTier() ? REGISTRATE.item("uxv_fluid_regulator", ComponentItem::create)
+            .lang("UXV Fluid Regulator")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_REGULATORS[11])))
+            .onRegister(attach(new TooltipBehavior(lines -> {
+                lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
+                lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 64 * 4 / 20));
+            })))
+            .register() : null;
+    public static ItemEntry<ComponentItem> FLUID_REGULATOR_OpV = GTCEu.isHighTier() ? REGISTRATE.item("opv_fluid_regulator", ComponentItem::create)
+            .lang("OpV Fluid Regulator")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_REGULATORS[12])))
+            .onRegister(attach(new TooltipBehavior(lines -> {
+                lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
+                lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 64 * 4 / 20));
+            })))
+            .register() : null;
 
     public static ItemEntry<ComponentItem> DYNAMITE; // TODO
 
