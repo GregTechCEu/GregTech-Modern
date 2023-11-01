@@ -28,25 +28,25 @@ public class NotifiableLaserContainer extends NotifiableEnergyContainer implemen
         amps = 0;
         if (getMachine().getLevel().isClientSide)
             return;
-        if (getEnergyStored() >= getOutputVoltage() && getOutputVoltage() > 0 && getOutputAmperage() > 0) {
-            long outputVoltage = getOutputVoltage();
-            long outputAmperes = Math.min(getEnergyStored() / outputVoltage, getOutputAmperage());
-            if (outputAmperes == 0) return;
-            long amperesUsed = 0;
-            for (Direction side : Direction.values()) {
-                if (!outputsEnergy(side)) continue;
-                BlockEntity tileEntity = getMachine().getLevel().getBlockEntity(getMachine().getPos().relative(side));
-                Direction oppositeSide = side.getOpposite();
-                ILaserContainer laserContainer = GTCapabilityHelper.getLaser(getMachine().getLevel(), getMachine().getPos().relative(side), oppositeSide);
-                if (tileEntity != null && laserContainer != null) {
-                    if (laserContainer == null || !laserContainer.inputsEnergy(oppositeSide)) continue;
-                    amperesUsed += laserContainer.acceptEnergyFromNetwork(oppositeSide, outputVoltage, outputAmperes - amperesUsed);
-                    if (amperesUsed == outputAmperes) break;
-                }
+        if (getEnergyStored() < getOutputVoltage() || getOutputVoltage() <= 0 || getOutputAmperage() <= 0)
+            return;
+        long outputVoltage = getOutputVoltage();
+        long outputAmperes = Math.min(getEnergyStored() / outputVoltage, getOutputAmperage());
+        if (outputAmperes == 0) return;
+        long amperesUsed = 0;
+        for (Direction side : Direction.values()) {
+            if (!outputsEnergy(side)) continue;
+            BlockEntity tileEntity = getMachine().getLevel().getBlockEntity(getMachine().getPos().relative(side));
+            Direction oppositeSide = side.getOpposite();
+            ILaserContainer laserContainer = GTCapabilityHelper.getLaser(getMachine().getLevel(), getMachine().getPos().relative(side), oppositeSide);
+            if (tileEntity != null && laserContainer != null) {
+                if (laserContainer == null || !laserContainer.inputsEnergy(oppositeSide)) continue;
+                amperesUsed += laserContainer.acceptEnergyFromNetwork(oppositeSide, outputVoltage, outputAmperes - amperesUsed);
+                if (amperesUsed == outputAmperes) break;
             }
-            if (amperesUsed > 0) {
-                setEnergyStored(getEnergyStored() - amperesUsed * outputVoltage);
-            }
+        }
+        if (amperesUsed > 0) {
+            setEnergyStored(getEnergyStored() - amperesUsed * outputVoltage);
         }
     }
 }
