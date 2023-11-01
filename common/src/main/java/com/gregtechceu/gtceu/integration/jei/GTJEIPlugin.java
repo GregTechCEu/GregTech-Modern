@@ -44,6 +44,7 @@ public class GTJEIPlugin implements IModPlugin {
         GTCEu.LOGGER.info("JEI register categories");
         IJeiHelpers jeiHelpers = registry.getJeiHelpers();
         registry.addRecipeCategories(new MultiblockInfoCategory(jeiHelpers));
+        registry.addRecipeCategories(new GTOreProcessingInfoCategory(jeiHelpers));
         for (RecipeType<?> recipeType : Registry.RECIPE_TYPE) {
             if (recipeType instanceof GTRecipeType gtRecipeType) {
                 registry.addRecipeCategories(new GTRecipeTypeCategory(jeiHelpers, gtRecipeType));
