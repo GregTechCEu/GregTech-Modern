@@ -32,7 +32,7 @@ import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.ingot;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
 
 public class GTOreProcessingDisplayCategory extends ModularUIDisplayCategory<GTOreProcessingDisplay> {
-    public static final CategoryIdentifier<GTOreProcessingDisplay> CATEGORY = CategoryIdentifier.of(new ResourceLocation(GTCEu.MOD_ID + ":ore_processing_diagram"));
+    public static final CategoryIdentifier<GTOreProcessingDisplay> CATEGORY = CategoryIdentifier.of(new ResourceLocation(GTCEu.id("ore_processing_diagram")));
     @Getter
     private final Renderer icon;
 
