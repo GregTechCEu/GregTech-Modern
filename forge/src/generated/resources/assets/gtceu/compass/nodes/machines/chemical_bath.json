@@ -11,7 +11,12 @@
     "gtceu:iv_chemical_bath",
     "gtceu:luv_chemical_bath",
     "gtceu:zpm_chemical_bath",
-    "gtceu:uv_chemical_bath"
+    "gtceu:uv_chemical_bath",
+    "gtceu:uhv_chemical_bath",
+    "gtceu:uev_chemical_bath",
+    "gtceu:uiv_chemical_bath",
+    "gtceu:uxv_chemical_bath",
+    "gtceu:opv_chemical_bath"
   ],
   "page": "gtceu:machines/chemical_bath",
   "position": [

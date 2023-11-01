@@ -11,7 +11,12 @@
     "gtceu:iv_compressor",
     "gtceu:luv_compressor",
     "gtceu:zpm_compressor",
-    "gtceu:uv_compressor"
+    "gtceu:uv_compressor",
+    "gtceu:uhv_compressor",
+    "gtceu:uev_compressor",
+    "gtceu:uiv_compressor",
+    "gtceu:uxv_compressor",
+    "gtceu:opv_compressor"
   ],
   "page": "gtceu:machines/compressor",
   "position": [

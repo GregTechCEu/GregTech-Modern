@@ -11,7 +11,12 @@
     "gtceu:iv_assembler",
     "gtceu:luv_assembler",
     "gtceu:zpm_assembler",
-    "gtceu:uv_assembler"
+    "gtceu:uv_assembler",
+    "gtceu:uhv_assembler",
+    "gtceu:uev_assembler",
+    "gtceu:uiv_assembler",
+    "gtceu:uxv_assembler",
+    "gtceu:opv_assembler"
   ],
   "page": "gtceu:machines/assembler",
   "position": [

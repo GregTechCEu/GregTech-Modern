@@ -11,7 +11,12 @@
     "gtceu:iv_mixer",
     "gtceu:luv_mixer",
     "gtceu:zpm_mixer",
-    "gtceu:uv_mixer"
+    "gtceu:uv_mixer",
+    "gtceu:uhv_mixer",
+    "gtceu:uev_mixer",
+    "gtceu:uiv_mixer",
+    "gtceu:uxv_mixer",
+    "gtceu:opv_mixer"
   ],
   "page": "gtceu:machines/mixer",
   "position": [

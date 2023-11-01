@@ -11,7 +11,12 @@
     "gtceu:iv_cutter",
     "gtceu:luv_cutter",
     "gtceu:zpm_cutter",
-    "gtceu:uv_cutter"
+    "gtceu:uv_cutter",
+    "gtceu:uhv_cutter",
+    "gtceu:uev_cutter",
+    "gtceu:uiv_cutter",
+    "gtceu:uxv_cutter",
+    "gtceu:opv_cutter"
   ],
   "page": "gtceu:machines/cutter",
   "position": [

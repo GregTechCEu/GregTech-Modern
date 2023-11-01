@@ -11,7 +11,12 @@
     "gtceu:iv_distillery",
     "gtceu:luv_distillery",
     "gtceu:zpm_distillery",
-    "gtceu:uv_distillery"
+    "gtceu:uv_distillery",
+    "gtceu:uhv_distillery",
+    "gtceu:uev_distillery",
+    "gtceu:uiv_distillery",
+    "gtceu:uxv_distillery",
+    "gtceu:opv_distillery"
   ],
   "page": "gtceu:machines/distillery",
   "position": [

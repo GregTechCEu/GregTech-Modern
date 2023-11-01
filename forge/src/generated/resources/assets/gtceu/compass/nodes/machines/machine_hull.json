@@ -13,7 +13,12 @@
     "gtceu:luv_machine_hull",
     "gtceu:zpm_machine_hull",
     "gtceu:uv_machine_hull",
-    "gtceu:uhv_machine_hull"
+    "gtceu:uhv_machine_hull",
+    "gtceu:uev_machine_hull",
+    "gtceu:uiv_machine_hull",
+    "gtceu:uxv_machine_hull",
+    "gtceu:opv_machine_hull",
+    "gtceu:max_machine_hull"
   ],
   "page": "gtceu:machines/machine_hull",
   "position": [
