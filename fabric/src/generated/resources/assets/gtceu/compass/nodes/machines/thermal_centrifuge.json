@@ -11,7 +11,12 @@
     "gtceu:iv_thermal_centrifuge",
     "gtceu:luv_thermal_centrifuge",
     "gtceu:zpm_thermal_centrifuge",
-    "gtceu:uv_thermal_centrifuge"
+    "gtceu:uv_thermal_centrifuge",
+    "gtceu:uhv_thermal_centrifuge",
+    "gtceu:uev_thermal_centrifuge",
+    "gtceu:uiv_thermal_centrifuge",
+    "gtceu:uxv_thermal_centrifuge",
+    "gtceu:opv_thermal_centrifuge"
   ],
   "page": "gtceu:machines/thermal_centrifuge",
   "position": [

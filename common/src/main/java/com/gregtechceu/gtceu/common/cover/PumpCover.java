@@ -85,7 +85,7 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
         super(definition, coverHolder, attachedSide);
         this.tier = tier;
 
-        this.maxMilliBucketsPerTick = 64 * (long) Math.pow(4, tier - 1); // .5b 2b 8b
+        this.maxMilliBucketsPerTick = 64 * (long) Math.pow(4, Math.min(tier - 1, GTValues.IV)); // .5b 2b 8b
 
         this.currentMilliBucketsPerTick = maxMilliBucketsPerTick;
         this.milliBucketsLeftToTransferLastSecond = currentMilliBucketsPerTick * 20;

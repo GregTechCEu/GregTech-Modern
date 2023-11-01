@@ -25,6 +25,10 @@ import java.util.Locale;
  */
 public class GTCovers {
 
+    public static final int[] ALL_TIERS = GTCEu.isHighTier() ?
+            new int[] {GTValues.LV, GTValues.MV, GTValues.HV, GTValues.EV, GTValues.IV, GTValues.LuV, GTValues.ZPM, GTValues.UV, GTValues.UHV, GTValues.UEV, GTValues.UIV, GTValues.UXV, GTValues.OpV} :
+            new int[] {GTValues.LV, GTValues.MV, GTValues.HV, GTValues.EV, GTValues.IV, GTValues.LuV, GTValues.ZPM, GTValues.UV};
+
     public final static CoverDefinition FACADE = register(
             "facade", FacadeCover::new,
             FacadeCoverRenderer.INSTANCE
@@ -47,22 +51,22 @@ public class GTCovers {
 
     public final static CoverDefinition[] CONVEYORS = registerTiered(
             "conveyor", ConveyorCover::new,
-            tier -> ConveyorCoverRenderer.INSTANCE, GTValues.LV, GTValues.MV, GTValues.HV, GTValues.EV, GTValues.IV, GTValues.LuV, GTValues.ZPM, GTValues.UV
+            tier -> ConveyorCoverRenderer.INSTANCE, ALL_TIERS
     );
 
     public final static CoverDefinition[] ROBOT_ARMS = registerTiered(
             "robot_arm", RobotArmCover::new,
-            tier -> RobotArmCoverRenderer.INSTANCE, GTValues.LV, GTValues.MV, GTValues.HV, GTValues.EV, GTValues.IV, GTValues.LuV, GTValues.ZPM, GTValues.UV
+            tier -> RobotArmCoverRenderer.INSTANCE, ALL_TIERS
     );
 
     public final static CoverDefinition[] PUMPS = registerTiered(
             "pump", PumpCover::new,
-            tier -> PumpCoverRenderer.INSTANCE, GTValues.LV, GTValues.MV, GTValues.HV, GTValues.EV, GTValues.IV, GTValues.LuV, GTValues.ZPM, GTValues.UV
+            tier -> PumpCoverRenderer.INSTANCE, ALL_TIERS
     );
 
     public final static CoverDefinition[] FLUID_REGULATORS = registerTiered(
             "fluid_regulator", FluidRegulatorCover::new,
-            tier -> FluidRegulatorCoverRenderer.INSTANCE, GTValues.LV, GTValues.MV, GTValues.HV, GTValues.EV, GTValues.IV, GTValues.LuV, GTValues.ZPM, GTValues.UV
+            tier -> FluidRegulatorCoverRenderer.INSTANCE, ALL_TIERS
     );
 
     public final static CoverDefinition COMPUTER_MONITOR = register(

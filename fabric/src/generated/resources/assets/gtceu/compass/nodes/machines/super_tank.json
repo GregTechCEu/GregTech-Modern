@@ -12,7 +12,11 @@
     "gtceu:luv_quantum_tank",
     "gtceu:zpm_quantum_tank",
     "gtceu:uv_quantum_tank",
-    "gtceu:uhv_quantum_tank"
+    "gtceu:uhv_quantum_tank",
+    "gtceu:uev_quantum_tank",
+    "gtceu:uiv_quantum_tank",
+    "gtceu:uxv_quantum_tank",
+    "gtceu:opv_quantum_tank"
   ],
   "page": "gtceu:machines/super_tank",
   "position": [

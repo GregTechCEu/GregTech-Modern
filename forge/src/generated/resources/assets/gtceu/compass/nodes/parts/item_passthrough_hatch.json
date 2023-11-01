@@ -11,7 +11,12 @@
     "gtceu:iv_item_passthrough_hatch",
     "gtceu:luv_item_passthrough_hatch",
     "gtceu:zpm_item_passthrough_hatch",
-    "gtceu:uv_item_passthrough_hatch"
+    "gtceu:uv_item_passthrough_hatch",
+    "gtceu:uhv_item_passthrough_hatch",
+    "gtceu:uev_item_passthrough_hatch",
+    "gtceu:uiv_item_passthrough_hatch",
+    "gtceu:uxv_item_passthrough_hatch",
+    "gtceu:opv_item_passthrough_hatch"
   ],
   "page": "gtceu:parts/item_passthrough_hatch",
   "position": [

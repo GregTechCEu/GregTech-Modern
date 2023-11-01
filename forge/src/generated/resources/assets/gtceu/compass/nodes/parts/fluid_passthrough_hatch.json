@@ -11,7 +11,12 @@
     "gtceu:iv_fluid_passthrough_hatch",
     "gtceu:luv_fluid_passthrough_hatch",
     "gtceu:zpm_fluid_passthrough_hatch",
-    "gtceu:uv_fluid_passthrough_hatch"
+    "gtceu:uv_fluid_passthrough_hatch",
+    "gtceu:uhv_fluid_passthrough_hatch",
+    "gtceu:uev_fluid_passthrough_hatch",
+    "gtceu:uiv_fluid_passthrough_hatch",
+    "gtceu:uxv_fluid_passthrough_hatch",
+    "gtceu:opv_fluid_passthrough_hatch"
   ],
   "page": "gtceu:parts/fluid_passthrough_hatch",
   "position": [

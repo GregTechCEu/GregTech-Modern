@@ -255,6 +255,18 @@ public class ConfigHolder {
         @Configurable
         @Configurable.Comment({"Minimum distance betweeb Long Distance Fluid Pipe Endpoints", "Default: 50"})
         public int ldFluidPipeMinDistance = 50;
+
+        /**
+         * <strong>Addons mods should not reference this config directly.</strong>
+         * Use {@link GTCEu#isHighTier()} instead.
+         */
+        @Configurable
+        @Configurable.Comment({"If High Tier (>UV-tier) GT content should be registered.",
+                "Items and Machines enabled with this config will have missing recipes by default.",
+                "This is intended for modpack developers only, and is not playable without custom tweaks or addons.",
+                "Other mods can override this to true, regardless of the config file.",
+                "Default: false"})
+        public boolean highTierContent = false;
     }
 
     public static class ClientConfigs {
