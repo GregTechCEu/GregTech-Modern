@@ -23,7 +23,7 @@ import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
 public class GTOreProcessingEmiCategory extends ModularUIEmiRecipeCategory {
     public static final GTOreProcessingEmiCategory CATEGORY = new GTOreProcessingEmiCategory();
     public GTOreProcessingEmiCategory() {
-        super(new ResourceLocation(GTCEu.MOD_ID + ":ore_processing_diagram"), EmiStack.of(Items.IRON_ORE));
+        super(GTCEu.id("ore_processing_diagram"), EmiStack.of(Items.IRON_ORE));
     }
 
     public static void registerDisplays(EmiRegistry registry) {
