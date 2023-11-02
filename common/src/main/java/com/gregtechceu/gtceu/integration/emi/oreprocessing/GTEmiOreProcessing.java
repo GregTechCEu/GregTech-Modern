@@ -24,6 +24,6 @@ public class GTEmiOreProcessing extends ModularEmiRecipe<WidgetGroup> {
 
     @Override
     public @Nullable ResourceLocation getId() {
-        return GTCEu.id("ore_processing_diagram");
+        return GTCEu.id(material.getName());
     }
 }

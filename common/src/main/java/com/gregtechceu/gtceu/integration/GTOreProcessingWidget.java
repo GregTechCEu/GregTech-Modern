@@ -15,6 +15,8 @@ import com.lowdragmc.lowdraglib.gui.widget.TankWidget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.misc.FluidStorage;
 import com.lowdragmc.lowdraglib.utils.CycleItemStackHandler;
+import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -387,22 +389,22 @@ public class GTOreProcessingWidget extends WidgetGroup {
         }
         mainproducts.add(smeltSlot);
         //Crushed Ore
-        List<ItemStack> crushedSlot = Collections.singletonList(ChemicalHelper.get(crushed, material, 2 * prop.getOreMultiplier()));
+        List<ItemStack> crushedSlot = Registry.ITEM.getOrCreateTag(ChemicalHelper.getTag(TagPrefix.crushed, material)).stream().map(Holder::value).map(item -> new ItemStack(item, 2 * prop.getOreMultiplier())).toList();
         mainproducts.add(crushedSlot);
         //Washed Ore
-        List<ItemStack> crushedPurifiedSlot = Collections.singletonList(ChemicalHelper.get(crushedPurified, material));
+        List<ItemStack> crushedPurifiedSlot = Registry.ITEM.getOrCreateTag(ChemicalHelper.getTag(crushedPurified, material)).stream().map(Holder::value).map(ItemStack::new).toList();
         mainproducts.add(crushedPurifiedSlot);
         //TC'ed Ore
-        List<ItemStack> crushedRefinedSlot = Collections.singletonList(ChemicalHelper.get(crushedRefined, material));
+        List<ItemStack> crushedRefinedSlot = Registry.ITEM.getOrCreateTag(ChemicalHelper.getTag(crushedRefined, material)).stream().map(Holder::value).map(ItemStack::new).toList();
         mainproducts.add(crushedRefinedSlot);
         //Impure Dust
-        List<ItemStack> dustImpureSlot = Collections.singletonList(ChemicalHelper.get(dustImpure, material));
+        List<ItemStack> dustImpureSlot = Registry.ITEM.getOrCreateTag(ChemicalHelper.getTag(dustImpure, material)).stream().map(Holder::value).map(ItemStack::new).toList();
         mainproducts.add(dustImpureSlot);
         //Pure Dust
-        List<ItemStack> dustPureSlot = Collections.singletonList(ChemicalHelper.get(dustPure, material));
+        List<ItemStack> dustPureSlot = Registry.ITEM.getOrCreateTag(ChemicalHelper.getTag(dustPure, material)).stream().map(Holder::value).map(ItemStack::new).toList();
         mainproducts.add(dustPureSlot);
         //Dust
-        List<ItemStack> dustSlot = Collections.singletonList(ChemicalHelper.get(dust, material));
+        List<ItemStack> dustSlot = Registry.ITEM.getOrCreateTag(ChemicalHelper.getTag(dust, material)).stream().map(Holder::value).map(ItemStack::new).toList();
         mainproducts.add(dustSlot);
         //Gem
         List<ItemStack> gemSlot = new ArrayList<>();
@@ -411,7 +413,7 @@ public class GTOreProcessingWidget extends WidgetGroup {
         }
         mainproducts.add(gemSlot);
         chanceContent.add(new Content(gemSlot,0.35f,0.05f,null,null));
-        List<ItemStack> simpleCrushedSlot = Collections.singletonList(ChemicalHelper.get(crushed, material));
+        List<ItemStack> simpleCrushedSlot = Registry.ITEM.getOrCreateTag(ChemicalHelper.getTag(crushed, material)).stream().map(Holder::value).map(ItemStack::new).toList();
         mainproducts.add(simpleCrushedSlot);
     }
 
@@ -427,39 +429,31 @@ public class GTOreProcessingWidget extends WidgetGroup {
         byproducts.add(maceratorBPSlot1);
         chanceContent.add(new Content(crushingOreByproductStack,0.14f,0.07f,null,null));
         //Washing Crushed Ore BP
-        ItemStack washingByproductStack = ChemicalHelper.get(dustTiny, byproductMaterial1, 3);
-        List<ItemStack> washerBPSlot = Collections.singletonList(washingByproductStack);
+        List<ItemStack> washerBPSlot = Registry.ITEM.getOrCreateTag(ChemicalHelper.getTag(dustTiny, byproductMaterial1)).stream().map(Holder::value).map(item -> new ItemStack(item,3)).toList();
         byproducts.add(washerBPSlot);
         //Crushing Crushed Ore BP
-        ItemStack crushingCrushedByproductStack = ChemicalHelper.get(dust, byproductMaterial1);
-        List<ItemStack> maceratorBPSlot2 = Collections.singletonList(crushingCrushedByproductStack);
+        List<ItemStack> maceratorBPSlot2 = Registry.ITEM.getOrCreateTag(ChemicalHelper.getTag(dust, byproductMaterial1)).stream().map(Holder::value).map(ItemStack::new).toList();;
         byproducts.add(maceratorBPSlot2);
         chanceContent.add(new Content(maceratorBPSlot2,0.14f,0.085f,null,null));
         //Crushing Washed Ore BP
-        ItemStack crushingWashededByproductStack = ChemicalHelper.get(dust, byproductMaterial2);
-        List<ItemStack> maceratorBPSlot3 = Collections.singletonList(crushingWashededByproductStack);
+        List<ItemStack> maceratorBPSlot3 = Registry.ITEM.getOrCreateTag(ChemicalHelper.getTag(dust, byproductMaterial2)).stream().map(Holder::value).map(ItemStack::new).toList();
         byproducts.add(maceratorBPSlot3);
         chanceContent.add(new Content(maceratorBPSlot3,0.14f,0.085f,null,null));
         //Crushing TC'ed Ore BP
-        ItemStack crushingTCedByproductStack = ChemicalHelper.get(dust, byproductMaterial2);
-        List<ItemStack> maceratorBPSlot4 = Collections.singletonList(crushingTCedByproductStack);
+        List<ItemStack> maceratorBPSlot4 = Registry.ITEM.getOrCreateTag(ChemicalHelper.getTag(dust, byproductMaterial2)).stream().map(Holder::value).map(ItemStack::new).toList();
         byproducts.add(maceratorBPSlot4);
         chanceContent.add(new Content(maceratorBPSlot4,0.14f,0.085f,null,null));
         //Centrifuging Impure Dust BP
-        ItemStack centrifugingImpureDustByproductStack = ChemicalHelper.get(dustTiny, byproductMaterial1);
-        List<ItemStack> centrifugeBPSlot = Collections.singletonList(centrifugingImpureDustByproductStack);
+        List<ItemStack> centrifugeBPSlot = Registry.ITEM.getOrCreateTag(ChemicalHelper.getTag(dustTiny, byproductMaterial1)).stream().map(Holder::value).map(ItemStack::new).toList();
         byproducts.add(centrifugeBPSlot);
         //Centrifuging Pure Dust BP
-        ItemStack centrifugingPureDustByproductStack = ChemicalHelper.get(dustTiny, byproductMaterial2);
-        List<ItemStack> centrifugeBPSlot2 = Collections.singletonList(centrifugingPureDustByproductStack);
+        List<ItemStack> centrifugeBPSlot2 = Registry.ITEM.getOrCreateTag(ChemicalHelper.getTag(dustTiny, byproductMaterial2)).stream().map(Holder::value).map(ItemStack::new).toList();
         byproducts.add(centrifugeBPSlot2);
         //TC'ing Crushed/Washed Ore BP
-        ItemStack tcCrushedWashedByproductStack = ChemicalHelper.get(dustTiny, byproductMaterial2, 3);
-        List<ItemStack> tcBPSlot = Collections.singletonList(tcCrushedWashedByproductStack);
+        List<ItemStack> tcBPSlot = Registry.ITEM.getOrCreateTag(ChemicalHelper.getTag(dustTiny, byproductMaterial2)).stream().map(Holder::value).map(item -> new ItemStack(item,3)).toList();
         byproducts.add(tcBPSlot);
         //Bathing Crushed Ore BP
-        ItemStack bathingCrushedByproductStack = ChemicalHelper.get(dust, byproductMaterial3);
-        List<ItemStack> bathBPSlot = Collections.singletonList(bathingCrushedByproductStack);
+        List<ItemStack> bathBPSlot = Registry.ITEM.getOrCreateTag(ChemicalHelper.getTag(dust, byproductMaterial3)).stream().map(Holder::value).map(ItemStack::new).toList();
         byproducts.add(bathBPSlot);
         chanceContent.add(new Content(bathBPSlot,0.7f,0.58f,null,null));
         //Separating Pure Dust BP
@@ -479,32 +473,22 @@ public class GTOreProcessingWidget extends WidgetGroup {
         byproducts.add(sepBPSlot2);
         chanceContent.add(new Content(sepBPSlot2,0.2f,0.6f,null,null));
         //Sifting Washed Ore BP
-        ItemStack exquisiteStack = new ItemStack(Items.AIR);
-        ItemStack flawlessStack = new ItemStack(Items.AIR);
-        ItemStack gemStack =  new ItemStack(Items.AIR);
-        ItemStack flawedStack = new ItemStack(Items.AIR);
-        ItemStack chippedStack = new ItemStack(Items.AIR);
         if(material.hasProperty(PropertyKey.GEM)){
-            exquisiteStack = ChemicalHelper.get(gemExquisite, material);
-            flawlessStack = ChemicalHelper.get(gemFlawless, material);
-            gemStack = ChemicalHelper.get(gem, material);
-            flawedStack = ChemicalHelper.get(gemFlawed, material);
-            chippedStack = ChemicalHelper.get(gemChipped, material);
+            List<ItemStack> siftBPSlot1 = Registry.ITEM.getOrCreateTag(ChemicalHelper.getTag(gemExquisite, material)).stream().map(Holder::value).map(ItemStack::new).toList();
+            List<ItemStack> siftBPSlot2 = Registry.ITEM.getOrCreateTag(ChemicalHelper.getTag(gemFlawless, material)).stream().map(Holder::value).map(ItemStack::new).toList();
+            List<ItemStack> siftBPSlot3 = Registry.ITEM.getOrCreateTag(ChemicalHelper.getTag(gem, material)).stream().map(Holder::value).map(ItemStack::new).toList();
+            List<ItemStack> siftBPSlot4 = Registry.ITEM.getOrCreateTag(ChemicalHelper.getTag(gemFlawed, material)).stream().map(Holder::value).map(ItemStack::new).toList();
+            List<ItemStack> siftBPSlot5 = Registry.ITEM.getOrCreateTag(ChemicalHelper.getTag(gemChipped, material)).stream().map(Holder::value).map(ItemStack::new).toList();
+            byproducts.add(siftBPSlot1);
+            chanceContent.add(new Content(siftBPSlot1,0.03f,0.01f,null,null));
+            byproducts.add(siftBPSlot2);
+            chanceContent.add(new Content(siftBPSlot2,0.1f,0.015f,null,null));
+            byproducts.add(siftBPSlot3);
+            chanceContent.add(new Content(siftBPSlot3,0.5f,0.075f,null,null));
+            byproducts.add(siftBPSlot4);
+            chanceContent.add(new Content(siftBPSlot4,0.25f,0.03f,null,null));
+            byproducts.add(siftBPSlot5);
+            chanceContent.add(new Content(siftBPSlot5,0.35f,0.04f,null,null));
         }
-        List<ItemStack> siftBPSlot1 = Collections.singletonList(exquisiteStack);
-        List<ItemStack> siftBPSlot2 = Collections.singletonList(flawlessStack);
-        List<ItemStack> siftBPSlot3 = Collections.singletonList(gemStack);
-        List<ItemStack> siftBPSlot4 = Collections.singletonList(flawedStack);
-        List<ItemStack> siftBPSlot5 = Collections.singletonList(chippedStack);
-        byproducts.add(siftBPSlot1);
-        chanceContent.add(new Content(siftBPSlot1,0.03f,0.01f,null,null));
-        byproducts.add(siftBPSlot2);
-        chanceContent.add(new Content(siftBPSlot2,0.1f,0.015f,null,null));
-        byproducts.add(siftBPSlot3);
-        chanceContent.add(new Content(siftBPSlot3,0.5f,0.075f,null,null));
-        byproducts.add(siftBPSlot4);
-        chanceContent.add(new Content(siftBPSlot4,0.25f,0.03f,null,null));
-        byproducts.add(siftBPSlot5);
-        chanceContent.add(new Content(siftBPSlot5,0.35f,0.04f,null,null));
     }
 }

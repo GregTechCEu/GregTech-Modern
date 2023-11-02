@@ -8,6 +8,7 @@ import com.lowdragmc.lowdraglib.rei.ModularDisplay;
 import me.shedaniel.rei.api.common.entry.EntryIngredient;
 import me.shedaniel.rei.api.common.entry.EntryStack;
 import me.shedaniel.rei.api.common.entry.type.VanillaEntryTypes;
+import me.shedaniel.rei.api.common.util.EntryIngredients;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,20 +27,20 @@ public class GTOreProcessingDisplay extends ModularDisplay<WidgetGroup> {
     @Override
     public List<EntryIngredient> getInputEntries() {
         List<EntryIngredient> ingredients = new ArrayList<>();
-        ingredients.add(EntryIngredient.of(EntryStack.of(VanillaEntryTypes.ITEM, ChemicalHelper.get(ore, material))));
-        ingredients.add(EntryIngredient.of(EntryStack.of(VanillaEntryTypes.ITEM, ChemicalHelper.get(rawOre, material))));
+        ingredients.add(EntryIngredients.ofItemTag(ChemicalHelper.getTag(ore, material)));
+        ingredients.add(EntryIngredients.ofItemTag(ChemicalHelper.getTag(rawOre, material)));
         return ingredients;
     }
 
     @Override
     public List<EntryIngredient> getOutputEntries() {
         List<EntryIngredient> outputs = new ArrayList<>();
-        outputs.add(EntryIngredient.of(EntryStack.of(VanillaEntryTypes.ITEM, ChemicalHelper.get(crushed, material))));
-        outputs.add(EntryIngredient.of(EntryStack.of(VanillaEntryTypes.ITEM, ChemicalHelper.get(crushedPurified, material))));
-        outputs.add(EntryIngredient.of(EntryStack.of(VanillaEntryTypes.ITEM, ChemicalHelper.get(crushedRefined, material))));
-        outputs.add(EntryIngredient.of(EntryStack.of(VanillaEntryTypes.ITEM, ChemicalHelper.get(dust, material))));
-        outputs.add(EntryIngredient.of(EntryStack.of(VanillaEntryTypes.ITEM, ChemicalHelper.get(dustImpure, material))));
-        outputs.add(EntryIngredient.of(EntryStack.of(VanillaEntryTypes.ITEM, ChemicalHelper.get(dustPure, material))));
+        outputs.add(EntryIngredients.ofItemTag(ChemicalHelper.getTag(crushed, material)));
+        outputs.add(EntryIngredients.ofItemTag(ChemicalHelper.getTag(crushedPurified, material)));
+        outputs.add(EntryIngredients.ofItemTag(ChemicalHelper.getTag(crushedRefined, material)));
+        outputs.add(EntryIngredients.ofItemTag(ChemicalHelper.getTag(dust, material)));
+        outputs.add(EntryIngredients.ofItemTag(ChemicalHelper.getTag(dustImpure, material)));
+        outputs.add(EntryIngredients.ofItemTag(ChemicalHelper.getTag(dustPure, material)));
         return outputs;
     }
 }

@@ -24,7 +24,7 @@ import static com.gregtechceu.gtceu.common.data.GTMaterials.Aluminium;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.Iron;
 
 public class GTOreProcessingInfoCategory extends ModularUIRecipeCategory<GTOreProcessingInfoWrapper> {
-    public final static RecipeType<GTOreProcessingInfoWrapper> RECIPE_TYPE = new RecipeType<>(new ResourceLocation(GTCEu.id("ore_processing_diagram")), GTOreProcessingInfoWrapper.class);
+    public final static RecipeType<GTOreProcessingInfoWrapper> RECIPE_TYPE = new RecipeType<>(GTCEu.id("ore_processing_diagram"), GTOreProcessingInfoWrapper.class);
     private final IDrawable background;
     private final IDrawable icon;
 
