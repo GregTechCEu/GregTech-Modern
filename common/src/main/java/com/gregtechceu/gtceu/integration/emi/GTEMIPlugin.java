@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.integration.emi.multipage.MultiblockInfoEmiCategory;
+import com.gregtechceu.gtceu.integration.emi.oreprocessing.GTOreProcessingEmiCategory;
 import com.gregtechceu.gtceu.integration.emi.recipe.GTRecipeTypeEmiCategory;
 import dev.emi.emi.api.EmiEntrypoint;
 import dev.emi.emi.api.EmiPlugin;
@@ -23,6 +24,7 @@ public class GTEMIPlugin implements EmiPlugin {
     @Override
     public void register(EmiRegistry registry) {
         registry.addCategory(MultiblockInfoEmiCategory.CATEGORY);
+        registry.addCategory(GTOreProcessingEmiCategory.CATEGORY);
         for (RecipeType<?> recipeType : BuiltInRegistries.RECIPE_TYPE) {
             if (recipeType instanceof GTRecipeType gtRecipeType) {
                 registry.addCategory(GTRecipeTypeEmiCategory.CATEGORIES.apply(gtRecipeType));
@@ -31,9 +33,11 @@ public class GTEMIPlugin implements EmiPlugin {
         // recipes
         MultiblockInfoEmiCategory.registerDisplays(registry);
         GTRecipeTypeEmiCategory.registerDisplays(registry);
+        GTOreProcessingEmiCategory.registerDisplays(registry);
         // workstations
         MultiblockInfoEmiCategory.registerWorkStations(registry);
         GTRecipeTypeEmiCategory.registerWorkStations(registry);
+        GTOreProcessingEmiCategory.registerWorkStations(registry);
         for (MachineDefinition definition : GTMachines.ELECTRIC_FURNACE) {
             if (definition != null) {
                 registry.addWorkstation(VanillaEmiRecipeCategories.SMELTING, EmiStack.of(definition.asStack()));

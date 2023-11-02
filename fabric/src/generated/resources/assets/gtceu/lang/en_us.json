@@ -2053,6 +2053,7 @@
   "gtceu.jei.ore.sporadic.1": "Spawns anywhere in the vein",
   "gtceu.jei.ore.surface_rock.0": "Surface Rocks with this material denote vein spawn locations.",
   "gtceu.jei.ore.surface_rock.1": "They can be broken for 3 Tiny Piles of the dust, with Fortune giving a bonus.",
+  "gtceu.jei.ore_processing_diagram": "Ore Processing Diagram",
   "gtceu.key.armor_charging": "Armor Charging to Inventory Toggle",
   "gtceu.key.armor_hover": "Armor Hover Toggle",
   "gtceu.key.armor_mode_switch": "Armor Mode Switch",
