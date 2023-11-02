@@ -55,6 +55,6 @@ public class GTOreProcessingEmiCategory extends ModularUIEmiRecipeCategory {
 
     @Override
     public Component getName() {
-        return Component.translatable(GTCEu.id("ore_processing_diagram"));
+        return Component.translatable("gtceu.jei.ore_processing_diagram");
     }
 }
