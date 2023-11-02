@@ -70,22 +70,23 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine implements IInW
     @Override
     protected void autoIO() {
         if (getLevel().isClientSide) return;
-        if (this.workingEnabled && this.shouldSyncME()) {
-            if (this.updateMEStatus()) {
-                if (!this.internalBuffer.isEmpty()) {
-                    MEStorage aeNetwork = this.getMainNode().getGrid().getStorageService().getInventory();
-                    for (int slot = 0; slot < this.internalBuffer.size(); ++slot) {
-                        GenericStack item = this.internalBuffer.getStack(slot);
-                        if (item == null) continue;
-                        long inserted = aeNetwork.insert(item.what(), item.amount(), Actionable.MODULATE, this.actionSource);
-                        if (inserted > 0) {
-                            item = new GenericStack(item.what(), (item.amount() - inserted));
-                        }
-                        this.internalBuffer.setStack(slot, item);
+        if (!this.isWorkingEnabled()) return;
+        if (!this.shouldSyncME()) return;
+
+        if (this.updateMEStatus()) {
+            if (!this.internalBuffer.isEmpty()) {
+                MEStorage aeNetwork = this.getMainNode().getGrid().getStorageService().getInventory();
+                for (int slot = 0; slot < this.internalBuffer.size(); ++slot) {
+                    GenericStack item = this.internalBuffer.getStack(slot);
+                    if (item == null) continue;
+                    long inserted = aeNetwork.insert(item.what(), item.amount(), Actionable.MODULATE, this.actionSource);
+                    if (inserted > 0) {
+                        item = new GenericStack(item.what(), (item.amount() - inserted));
                     }
+                    this.internalBuffer.setStack(slot, item);
                 }
-                this.updateTankSubscription();
             }
+            this.updateTankSubscription();
         }
     }
 
@@ -125,11 +126,11 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine implements IInW
         @Override
         public List<FluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<FluidIngredient> left, @Nullable String slotName, boolean simulate) {
             return handleIngredient(io, left, simulate, this.handlerIO, Stream.generate(() -> new FluidStorage(0) {
-                    @Override
-                    public long fill(FluidStack resource, boolean simulate, boolean notifyChanges) {
-                        return InaccessibleInfiniteSlot.this.fill(resource, simulate, notifyChanges);
-                    }
-                }).limit(this.internalBuffer.size()).toArray(FluidStorage[]::new));
+                @Override
+                public long fill(FluidStack resource, boolean simulate, boolean notifyChanges) {
+                    return InaccessibleInfiniteSlot.this.fill(resource, simulate, notifyChanges);
+                }
+            }).limit(this.internalBuffer.size()).toArray(FluidStorage[]::new));
         }
 
         @NotNull

@@ -54,22 +54,23 @@ public class MEOutputBusPartMachine extends MEBusPartMachine {
     @Override
     public void autoIO() {
         if (getLevel().isClientSide) return;
-        if (this.workingEnabled && this.shouldSyncME()) {
-            if (this.updateMEStatus()) {
-                if (!this.internalBuffer.isEmpty()) {
-                    MEStorage aeNetwork = this.getMainNode().getGrid().getStorageService().getInventory();
-                    for (int slot = 0; slot < this.internalBuffer.size(); ++slot) {
-                        GenericStack item = this.internalBuffer.getStack(slot);
-                        if (item == null) continue;
-                        long inserted = aeNetwork.insert(item.what(), item.amount(), Actionable.MODULATE, this.actionSource);
-                        if (inserted > 0) {
-                            item = new GenericStack(item.what(), (item.amount() - inserted));
-                        }
-                        this.internalBuffer.setStack(slot, item.amount() == 0 ? null : item);
+        if (!this.isWorkingEnabled()) return;
+        if (!this.shouldSyncME()) return;
+
+        if (this.updateMEStatus()) {
+            if (!this.internalBuffer.isEmpty()) {
+                MEStorage aeNetwork = this.getMainNode().getGrid().getStorageService().getInventory();
+                for (int slot = 0; slot < this.internalBuffer.size(); ++slot) {
+                    GenericStack item = this.internalBuffer.getStack(slot);
+                    if (item == null) continue;
+                    long inserted = aeNetwork.insert(item.what(), item.amount(), Actionable.MODULATE, this.actionSource);
+                    if (inserted > 0) {
+                        item = new GenericStack(item.what(), (item.amount() - inserted));
                     }
+                    this.internalBuffer.setStack(slot, item.amount() == 0 ? null : item);
                 }
-                this.updateInventorySubscription();
             }
+            this.updateInventorySubscription();
         }
     }
 

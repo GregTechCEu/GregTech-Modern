@@ -73,7 +73,7 @@ public abstract class AEConfigWidget extends WidgetGroup {
             GenericStack nStock = newSlot.getStock();
             GenericStack oConfig = oldSlot.getConfig();
             GenericStack oStock = oldSlot.getStock();
-            if (!areAEStackCountEquals(nConfig, oConfig) || !areAEStackCountEquals(nStock, oStock)) {
+            if (!areAEStackCountsEqual(nConfig, oConfig) || !areAEStackCountsEqual(nStock, oStock)) {
                 this.changeMap.put(index, newSlot.copy());
                 this.cached[index] = this.config[index].copy();
                 this.gui.holder.markAsDirty();
@@ -133,7 +133,7 @@ public abstract class AEConfigWidget extends WidgetGroup {
         return this.displayList[index];
     }
 
-    protected final boolean areAEStackCountEquals(GenericStack s1, GenericStack s2) {
+    protected final boolean areAEStackCountsEqual(GenericStack s1, GenericStack s2) {
         if (s2 == s1) {
             return true;
         }

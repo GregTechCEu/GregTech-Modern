@@ -54,33 +54,34 @@ public class MEInputBusPartMachine extends MEBusPartMachine implements IInWorldG
     @Override
     public void autoIO() {
         if (getLevel().isClientSide) return;
-        if (this.workingEnabled && this.shouldSyncME()) {
-            if (this.updateMEStatus()) {
-                MEStorage aeNetwork = this.getMainNode().getGrid().getStorageService().getInventory();
-                for (ExportOnlyAEItem aeSlot : this.aeItemHandler.inventory) {
-                    // Try to clear the wrong item
-                    GenericStack exceedItem = aeSlot.exceedStack();
-                    if (exceedItem != null) {
-                        long total = exceedItem.amount();
-                        long inserted = aeNetwork.insert(exceedItem.what(), exceedItem.amount(), Actionable.MODULATE, this.actionSource);
-                        if (inserted > 0) {
-                            aeSlot.extractItem(0, (int) inserted, false);
-                            continue;
-                        } else {
-                            aeSlot.extractItem(0, (int) total, false);
-                        }
-                    }
-                    // Fill it
-                    GenericStack reqItem = aeSlot.requestStack();
-                    if (reqItem != null) {
-                        long extracted = aeNetwork.extract(reqItem.what(), reqItem.amount(), Actionable.MODULATE, this.actionSource);
-                        if (extracted != 0) {
-                            aeSlot.addStack(new GenericStack(reqItem.what(), extracted));
-                        }
+        if (!this.isWorkingEnabled()) return;
+        if (!this.shouldSyncME()) return;
+        
+        if (this.updateMEStatus()) {
+            MEStorage aeNetwork = this.getMainNode().getGrid().getStorageService().getInventory();
+            for (ExportOnlyAEItem aeSlot : this.aeItemHandler.inventory) {
+                // Try to clear the wrong item
+                GenericStack exceedItem = aeSlot.exceedStack();
+                if (exceedItem != null) {
+                    long total = exceedItem.amount();
+                    long inserted = aeNetwork.insert(exceedItem.what(), exceedItem.amount(), Actionable.MODULATE, this.actionSource);
+                    if (inserted > 0) {
+                        aeSlot.extractItem(0, (int) inserted, false);
+                        continue;
+                    } else {
+                        aeSlot.extractItem(0, (int) total, false);
                     }
                 }
-                this.updateInventorySubscription();
+                // Fill it
+                GenericStack reqItem = aeSlot.requestStack();
+                if (reqItem != null) {
+                    long extracted = aeNetwork.extract(reqItem.what(), reqItem.amount(), Actionable.MODULATE, this.actionSource);
+                    if (extracted != 0) {
+                        aeSlot.addStack(new GenericStack(reqItem.what(), extracted));
+                    }
+                }
             }
+            this.updateInventorySubscription();
         }
     }
 
