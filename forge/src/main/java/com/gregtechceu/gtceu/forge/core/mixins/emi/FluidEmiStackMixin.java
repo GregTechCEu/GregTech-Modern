@@ -19,7 +19,7 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import java.util.List;
 import java.util.Map;
 
-@Mixin(FluidEmiStack.class)
+@Mixin(value = FluidEmiStack.class, remap = false)
 public class FluidEmiStackMixin {
 
     @Shadow @Final private Fluid fluid;
