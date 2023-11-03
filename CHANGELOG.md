@@ -1,7 +1,8 @@
 # ChangeLog
 
-* fix stone ores having broken translations
-* fix transfer + fix ldlib
-* fix fluid slot overflow
-* fix assembly line recipe handling
-* update zh_cn lang
+* Add ME stocking input bus/hatch, ME output bus/hatch
+* add laser cables
+* add high-tier content config option
+* add ore processing chart recipeviewer page
+* make manual compression recipes be shaped
+* switch certus quartz material amount to 4
