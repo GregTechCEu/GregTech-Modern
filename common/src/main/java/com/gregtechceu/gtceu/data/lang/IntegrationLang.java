@@ -12,6 +12,7 @@ public class IntegrationLang {
     /** JEI, REI, EMI */
     private static void initRecipeViewerLang(RegistrateLangProvider provider) {
         provider.add("gtceu.jei.multiblock_info", "Multiblock Info");
+        provider.add("gtceu.jei.ore_processing_diagram", "Ore Processing Diagram");
     }
 
     /** Jade, TheOneProbe, WTHIT */

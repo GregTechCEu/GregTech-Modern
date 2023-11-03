@@ -102,6 +102,14 @@ public class GuiTextures {
     public static final ResourceTexture MAINTENANCE_ICON = new ResourceTexture("gtceu:textures/block/overlay/machine/overlay_maintenance.png");
     public static final ResourceTexture BUTTON_MINER_MODES = new ResourceTexture("gtceu:textures/gui/widget/button_miner_modes.png");
 
+    //ORE PROCESSING
+    public static final ResourceTexture OREBY_BASE = new ResourceTexture("gtceu:textures/gui/arrows/oreby-base.png");
+    public static final ResourceTexture OREBY_CHEM = new ResourceTexture("gtceu:textures/gui/arrows/oreby-chem.png");
+    public static final ResourceTexture OREBY_SEP = new ResourceTexture("gtceu:textures/gui/arrows/oreby-sep.png");
+    public static final ResourceTexture OREBY_SIFT = new ResourceTexture("gtceu:textures/gui/arrows/oreby-sift.png");
+    public static final ResourceTexture OREBY_SMELT = new ResourceTexture("gtceu:textures/gui/arrows/oreby-smelt.png");
+
+
     //PRIMITIVE
     public static final ResourceBorderTexture PRIMITIVE_BACKGROUND = new ResourceBorderTexture("gtceu:textures/gui/primitive/primitive_background.png", 176, 166, 3, 3);
     public static final ResourceBorderTexture PRIMITIVE_SLOT = new ResourceBorderTexture("gtceu:textures/gui/primitive/primitive_slot.png", 18, 18, 1, 1);
