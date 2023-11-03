@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
+import com.gregtechceu.gtceu.api.misc.LaserContainerList;
 import com.gregtechceu.gtceu.api.pipenet.longdistance.ILDEndpoint;
 import com.gregtechceu.gtceu.common.pipelike.fluidpipe.longdistance.LDFluidEndpointMachine;
 import com.gregtechceu.gtceu.common.pipelike.item.longdistance.LDItemEndpointMachine;
@@ -121,6 +122,13 @@ public class MetaMachineBlockEntityImpl extends MetaMachineBlockEntity {
             }
             var transfer = ((IMachineBlockEntity)blockEntity).getMetaMachine().getFluidTransferCap(side);
             return transfer == null ? null : FluidTransferHelperImpl.toFluidVariantStorage(transfer);
+        }, type);
+        GTCapability.CAPABILITY_LASER.registerForBlockEntity((blockEntity, side) -> {
+            if (((IMachineBlockEntity)blockEntity).getMetaMachine() instanceof ILaserContainer energyContainer) {
+                return energyContainer;
+            }
+            var list = ((IMachineBlockEntity)blockEntity).getMetaMachine().getTraits().stream().filter(ILaserContainer.class::isInstance).filter(t -> t.hasCapability(side)).map(ILaserContainer.class::cast).toList();
+            return list.isEmpty() ? null : list.size() == 1 ? list.get(0) : new LaserContainerList(list);
         }, type);
         if (GTCEu.isRebornEnergyLoaded()) {
             EnergyStorage.SIDED.registerForBlockEntity((blockEntity, side) -> {

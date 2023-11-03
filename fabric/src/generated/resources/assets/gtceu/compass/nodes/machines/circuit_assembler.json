@@ -11,7 +11,12 @@
     "gtceu:iv_circuit_assembler",
     "gtceu:luv_circuit_assembler",
     "gtceu:zpm_circuit_assembler",
-    "gtceu:uv_circuit_assembler"
+    "gtceu:uv_circuit_assembler",
+    "gtceu:uhv_circuit_assembler",
+    "gtceu:uev_circuit_assembler",
+    "gtceu:uiv_circuit_assembler",
+    "gtceu:uxv_circuit_assembler",
+    "gtceu:opv_circuit_assembler"
   ],
   "page": "gtceu:machines/circuit_assembler",
   "position": [

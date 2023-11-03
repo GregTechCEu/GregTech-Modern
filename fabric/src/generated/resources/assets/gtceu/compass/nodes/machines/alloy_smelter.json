@@ -11,7 +11,12 @@
     "gtceu:iv_alloy_smelter",
     "gtceu:luv_alloy_smelter",
     "gtceu:zpm_alloy_smelter",
-    "gtceu:uv_alloy_smelter"
+    "gtceu:uv_alloy_smelter",
+    "gtceu:uhv_alloy_smelter",
+    "gtceu:uev_alloy_smelter",
+    "gtceu:uiv_alloy_smelter",
+    "gtceu:uxv_alloy_smelter",
+    "gtceu:opv_alloy_smelter"
   ],
   "page": "gtceu:machines/alloy_smelter",
   "position": [

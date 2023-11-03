@@ -11,7 +11,12 @@
     "gtceu:iv_forge_hammer",
     "gtceu:luv_forge_hammer",
     "gtceu:zpm_forge_hammer",
-    "gtceu:uv_forge_hammer"
+    "gtceu:uv_forge_hammer",
+    "gtceu:uhv_forge_hammer",
+    "gtceu:uev_forge_hammer",
+    "gtceu:uiv_forge_hammer",
+    "gtceu:uxv_forge_hammer",
+    "gtceu:opv_forge_hammer"
   ],
   "page": "gtceu:machines/forge_hammer",
   "position": [

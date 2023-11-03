@@ -23,6 +23,7 @@ public class GTCapability {
     public static final Capability<IElectricItem> CAPABILITY_ELECTRIC_ITEM = CapabilityManager.get(new CapabilityToken<>() {});
     public static final Capability<ICleanroomReceiver> CAPABILITY_CLEANROOM_RECEIVER = CapabilityManager.get(new CapabilityToken<>() {});
     public static final Capability<IMaintenanceMachine> CAPABILITY_MAINTENANCE_MACHINE = CapabilityManager.get(new CapabilityToken<>() {});
+    public static final Capability<ILaserContainer> CAPABILITY_LASER = CapabilityManager.get(new CapabilityToken<>() {});
 
     public static void register(RegisterCapabilitiesEvent event) {
         event.register(IEnergyContainer.class);

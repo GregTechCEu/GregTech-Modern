@@ -11,7 +11,12 @@
     "gtceu:iv_bender",
     "gtceu:luv_bender",
     "gtceu:zpm_bender",
-    "gtceu:uv_bender"
+    "gtceu:uv_bender",
+    "gtceu:uhv_bender",
+    "gtceu:uev_bender",
+    "gtceu:uiv_bender",
+    "gtceu:uxv_bender",
+    "gtceu:opv_bender"
   ],
   "page": "gtceu:machines/bender",
   "position": [

@@ -11,7 +11,12 @@
     "gtceu:iv_fermenter",
     "gtceu:luv_fermenter",
     "gtceu:zpm_fermenter",
-    "gtceu:uv_fermenter"
+    "gtceu:uv_fermenter",
+    "gtceu:uhv_fermenter",
+    "gtceu:uev_fermenter",
+    "gtceu:uiv_fermenter",
+    "gtceu:uxv_fermenter",
+    "gtceu:opv_fermenter"
   ],
   "page": "gtceu:machines/fermenter",
   "position": [

@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.recipe.content;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
+import com.gregtechceu.gtceu.GTCEu;
 import com.mojang.serialization.JsonOps;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -63,7 +64,7 @@ public class SerializerBlockState implements IContentSerializer<BlockState> {
 
     @Override
     public BlockState fromJson(JsonElement json) {
-        return BlockState.CODEC.decode(JsonOps.INSTANCE, json).get().map(Function.identity(), right -> null).getFirst();
+        return BlockState.CODEC.parse(JsonOps.INSTANCE, json).getOrThrow(false, GTCEu.LOGGER::error);
     }
 
     @Override

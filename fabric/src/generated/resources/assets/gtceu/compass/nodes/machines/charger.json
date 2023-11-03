@@ -13,7 +13,12 @@
     "gtceu:luv_charger_4x",
     "gtceu:zpm_charger_4x",
     "gtceu:uv_charger_4x",
-    "gtceu:uhv_charger_4x"
+    "gtceu:uhv_charger_4x",
+    "gtceu:uev_charger_4x",
+    "gtceu:uiv_charger_4x",
+    "gtceu:uxv_charger_4x",
+    "gtceu:opv_charger_4x",
+    "gtceu:max_charger_4x"
   ],
   "page": "gtceu:machines/charger",
   "position": [

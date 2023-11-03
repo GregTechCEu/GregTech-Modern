@@ -35,6 +35,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.apache.commons.lang3.function.TriFunction;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Arrays;
 import java.util.IdentityHashMap;
@@ -126,6 +127,10 @@ public abstract class GTRegistrate extends Registrate {
 
     public boolean isInCreativeTab(RegistryEntry<?> entry, RegistryEntry<CreativeModeTab> tab) {
         return TAB_LOOKUP.get(entry) == tab;
+    }
+
+    public void setCreativeTab(RegistryEntry<?> entry, @Nullable RegistryEntry<CreativeModeTab> tab) {
+        TAB_LOOKUP.put(entry, tab);
     }
 
     protected <R, T extends R> RegistryEntry<T> accept(String name, ResourceKey<? extends Registry<R>> type, Builder<R, T, ?, ?> builder, NonNullSupplier<? extends T> creator, NonNullFunction<RegistryObject<T>, ? extends RegistryEntry<T>> entryFactory) {

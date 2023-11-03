@@ -11,7 +11,12 @@
     "gtceu:iv_brewery",
     "gtceu:luv_brewery",
     "gtceu:zpm_brewery",
-    "gtceu:uv_brewery"
+    "gtceu:uv_brewery",
+    "gtceu:uhv_brewery",
+    "gtceu:uev_brewery",
+    "gtceu:uiv_brewery",
+    "gtceu:uxv_brewery",
+    "gtceu:opv_brewery"
   ],
   "page": "gtceu:machines/brewery",
   "position": [

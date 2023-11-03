@@ -11,7 +11,12 @@
     "gtceu:iv_chemical_reactor",
     "gtceu:luv_chemical_reactor",
     "gtceu:zpm_chemical_reactor",
-    "gtceu:uv_chemical_reactor"
+    "gtceu:uv_chemical_reactor",
+    "gtceu:uhv_chemical_reactor",
+    "gtceu:uev_chemical_reactor",
+    "gtceu:uiv_chemical_reactor",
+    "gtceu:uxv_chemical_reactor",
+    "gtceu:opv_chemical_reactor"
   ],
   "page": "gtceu:machines/chemical_reactor",
   "position": [
