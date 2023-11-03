@@ -259,9 +259,7 @@ public class CustomMultiblockBuilder extends MultiblockMachineBuilder {
             public CustomMultiblockBuilder recipeTypes(GTRecipeType... recipeTypes) {
                 for (var builder : builders) {
                     if (builder == null) continue;
-                    for(GTRecipeType type : recipeTypes){
-                        builder.recipeType(type);
-                    }
+                    builder.recipeTypes(recipeTypes);
                 }
                 return this;
             }
