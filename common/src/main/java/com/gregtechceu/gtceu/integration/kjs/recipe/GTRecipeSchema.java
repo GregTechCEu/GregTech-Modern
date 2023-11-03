@@ -126,6 +126,10 @@ public interface GTRecipeSchema {
             return output(EURecipeCapability.CAP, eu);
         }
 
+        public GTRecipeJS itemInputs(InputItem... inputs) {
+            return inputItems(inputs);
+        }
+
         public GTRecipeJS itemInput(UnificationEntry input) {
             return inputItems(input);
         }
