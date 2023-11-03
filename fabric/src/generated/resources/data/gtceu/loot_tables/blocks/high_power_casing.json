@@ -11,7 +11,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "gtceu:opv_machine_casing"
+          "name": "gtceu:high_power_casing"
         }
       ],
       "rolls": 1.0
