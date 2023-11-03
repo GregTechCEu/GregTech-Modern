@@ -1,11 +1,13 @@
 package com.gregtechceu.gtceu.api.blockentity.fabric;
 
+import appeng.api.networking.IInWorldGridNodeHost;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.capability.*;
 import com.gregtechceu.gtceu.api.capability.fabric.GTCapability;
 import com.gregtechceu.gtceu.api.capability.fabric.GTEnergyHelperImpl;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
@@ -138,6 +140,18 @@ public class MetaMachineBlockEntityImpl extends MetaMachineBlockEntity {
                 var list = ((IMachineBlockEntity)blockEntity).getMetaMachine().getTraits().stream().filter(IPlatformEnergyStorage.class::isInstance).filter(t -> t.hasCapability(side)).map(IPlatformEnergyStorage.class::cast).toList();
                 // TODO wrap list in the future
                 return list.isEmpty() ? null : GTEnergyHelperImpl.toEnergyStorage(list.get(0));
+            }, type);
+        }
+        if (GTCEu.isAE2Loaded()) {
+            IInWorldGridNodeHost.LOOKUP.registerForBlockEntity((blockEntity, side) -> {
+                MetaMachine machine = ((IMachineBlockEntity)blockEntity).getMetaMachine();
+                if (machine instanceof IInWorldGridNodeHost gridNodeHost) {
+                    return gridNodeHost;
+                }
+
+                var list = machine.getTraits().stream().filter(IInWorldGridNodeHost.class::isInstance).map(IInWorldGridNodeHost.class::cast).toList();
+                // TODO wrap list in the future (or not.)
+                return list.isEmpty() ? null : list.get(0);
             }, type);
         }
     }

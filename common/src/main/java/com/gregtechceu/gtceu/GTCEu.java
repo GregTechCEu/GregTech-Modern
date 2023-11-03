@@ -63,6 +63,10 @@ public class GTCEu {
         return Platform.isForge() || LDLib.isModLoaded(GTValues.MODID_REBORN_ENERGY);
     }
 
+    public static boolean isAE2Loaded() {
+        return LDLib.isModLoaded(GTValues.MODID_APPENG);
+    }
+
     public static boolean isAlmostUnifiedLoaded() {
         return LDLib.isModLoaded(GTValues.MODID_ALMOSTUNIFIED);
     }

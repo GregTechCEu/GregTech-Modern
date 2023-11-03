@@ -1,0 +1,17 @@
+{
+	"credit": "Made with Blockbench",
+	"parent": "block/block",
+	"textures": {
+		"particle": "#overlay_item_hatch",
+		"overlay_item_hatch": "gtceu:block/overlay/appeng/me_output_bus"
+	},
+	"elements": [
+		{
+			"from": [0, 0, 0],
+			"to": [16, 16, 0],
+			"faces": {
+				"north": {"uv": [0, 0, 16, 16], "texture": "#overlay_item_hatch", "cullface": "north", "emissivity":  15}
+			}
+		}
+	]
+}

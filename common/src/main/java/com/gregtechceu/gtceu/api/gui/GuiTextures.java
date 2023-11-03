@@ -287,4 +287,10 @@ public class GuiTextures {
             TIER[i] = new ResourceTexture("gtceu:textures/gui/overlay/tier.png").getSubTexture(0, i * offset, 1, offset);
         }
     }
+
+    // ME hatch/bus
+    public static final ResourceTexture NUMBER_BACKGROUND = new ResourceTexture("gtceu:textures/gui/widget/number_background.png");
+    public static final ResourceTexture CONFIG_ARROW = new ResourceTexture("gtceu:textures/gui/widget/config_arrow.png");
+    public static final ResourceTexture CONFIG_ARROW_DARK = new ResourceTexture("gtceu:textures/gui/widget/config_arrow_dark.png");
+    public static final ResourceTexture SELECT_BOX = new ResourceTexture("gtceu:textures/gui/widget/select_box.png");
 }

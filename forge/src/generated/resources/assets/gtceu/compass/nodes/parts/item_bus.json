@@ -35,11 +35,13 @@
     "gtceu:opv_output_bus",
     "gtceu:max_output_bus",
     "gtceu:steam_input_bus",
-    "gtceu:steam_output_bus"
+    "gtceu:steam_output_bus",
+    "gtceu:me_input_bus",
+    "gtceu:me_output_bus"
   ],
   "page": "gtceu:parts/item_bus",
   "position": [
-    -200,
+    -150,
     0
   ],
   "section": "gtceu:parts"

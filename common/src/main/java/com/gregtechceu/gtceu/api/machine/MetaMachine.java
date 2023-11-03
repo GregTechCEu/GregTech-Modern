@@ -45,6 +45,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
@@ -186,6 +187,19 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
     public void onLoad() {
         traits.forEach(MachineTrait::onMachineLoad);
         coverContainer.onLoad();
+    }
+
+    /**
+     * Use for data not able to be saved with the SyncData system, like optional mod compatiblity in internal machines.
+     * @param tag the CompoundTag to load data from
+     * @param forDrop if the save is done for dropping the machine as an item.
+     */
+    public void saveCustomPersistedData(CompoundTag tag, boolean forDrop) {
+
+    }
+
+    public void loadCustomPersistedData(CompoundTag tag) {
+
     }
 
     //////////////////////////////////////
