@@ -36,6 +36,7 @@
     "TagLoaderMixin",
     "TagManagerMixin",
     "WorldLoaderPackConfigMixin",
+    "ae2.GenericStackInvAccessor",
     "create.RotationPropagatorMixin",
     "kjs.KubeJSMixin",
     "kjs.RecipeEventJSMixin",

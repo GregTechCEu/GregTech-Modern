@@ -20,10 +20,10 @@
     "gtceu:opv_machine_hull",
     "gtceu:max_machine_hull"
   ],
-  "page": "gtceu:machines/machine_hull",
+  "page": "gtceu:parts/machine_hull",
   "position": [
-    -350,
+    -200,
     0
   ],
-  "section": "gtceu:machines"
+  "section": "gtceu:parts"
 }

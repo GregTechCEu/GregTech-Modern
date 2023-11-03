@@ -99,6 +99,9 @@ public class ConfigHolder {
         @Configurable.Comment("Config options regarding GTEU compatibility with other energy systems")
         public EnergyCompatConfig energy = new EnergyCompatConfig();
 
+        @Configurable.Comment("Config options regarding GTCEu compatibility with AE2")
+        public AE2CompatConfig ae2 = new AE2CompatConfig();
+
         @Configurable
         @Configurable.Comment({"Whether to hide facades of all blocks in JEI and creative search menu.", "Default: true"})
         public boolean hideFacadesInJEI = true;
@@ -130,6 +133,16 @@ public class ConfigHolder {
             @Configurable.Comment({"GTEU to Platform native Energy ratio for converting EU to FE.", "Affects native conversion and Converters.", "Default: 4 FE/Energy == 1 EU"})
             @Configurable.Range(min = 1, max = 16)
             public int euToPlatformRatio = 4;
+        }
+
+        public static class AE2CompatConfig {
+            @Configurable.Comment({"The interval between ME Hatch/Bus interact ME network.", "It may cause lag if the interval is too small.", "Default: 2 sec"})
+            @Configurable.Range(min = 1, max = 80)
+            public int updateIntervals = 40;
+
+            @Configurable.Comment({"The energy consumption of ME Hatch/Bus.", "Default: 1.0AE/t"})
+            @Configurable.DecimalRange(min = 0.0, max = 10.0)
+            public double meHatchEnergyUsage = 1.0;
         }
     }
 

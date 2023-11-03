@@ -7,6 +7,8 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
+import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
+import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 import com.mojang.blaze3d.platform.InputConstants;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.client.Minecraft;
@@ -311,6 +313,25 @@ public class GTUtil {
             return material.getProperty(PropertyKey.FLUID).getStorage().get(FluidStorageKeys.MOLTEN);
         if (!TagPrefix.ingotHot.doGenerateItem(material) && material.hasProperty(PropertyKey.FLUID))
             return material.getProperty(PropertyKey.FLUID).getStorage().get(FluidStorageKeys.LIQUID);
+        return null;
+    }
+
+    /**
+     * Get fluidstack from a container.
+     *
+     * @param ingredient the fluidstack or fluid container item
+     * @return the fluidstack in container
+     */
+    @Nullable
+    public static FluidStack getFluidFromContainer(Object ingredient) {
+        if (ingredient instanceof FluidStack) {
+            return (FluidStack) ingredient;
+        } else if (ingredient instanceof ItemStack) {
+            ItemStack itemStack = (ItemStack) ingredient;
+            IFluidTransfer fluidHandler = FluidTransferHelper.getFluidTransfer(itemStack);
+            if (fluidHandler != null)
+                return fluidHandler.drain(Integer.MAX_VALUE, false);
+        }
         return null;
     }
 
