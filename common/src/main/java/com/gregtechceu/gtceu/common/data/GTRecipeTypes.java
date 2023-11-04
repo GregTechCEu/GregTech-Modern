@@ -586,6 +586,7 @@ public class GTRecipeTypes {
         GTRegistries.register(Registry.RECIPE_SERIALIZER, GTCEu.id("gt_recipe_serializer"), GTRecipeSerializer.SERIALIZER);
         GTRegistries.register(Registry.RECIPE_SERIALIZER, GTCEu.id("facade_cover_serializer"), FacadeCoverRecipe.SERIALIZER);
         GTRegistries.register(Registry.RECIPE_SERIALIZER, GTCEu.id("strict_shaped_recipe_serializer"), StrictShapedRecipe.SERIALIZER);
+        GTRegistries.register(Registry.RECIPE_SERIALIZER, GTCEu.id("shaped_energy_transfer_recipe_serializer"), ShapedEnergyTransferRecipe.SERIALIZER);
     }
 
     public static GTRecipeType get(String name) {
