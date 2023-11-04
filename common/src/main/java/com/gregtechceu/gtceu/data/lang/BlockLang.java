@@ -81,6 +81,12 @@ public class BlockLang {
         replace(provider, "block.gtceu.titanium_firebox", "Titanium Firebox Casing");
         replace(provider, "block.gtceu.tungstensteel_firebox", "Tungstensteel Firebox Casing");
 
+        //GCyM Casings
+        replace(provider, "block.gtceu.laser_safe_engraving_casing", "Laser-Safe Engraving Casing");
+        replace(provider, "block.gtceu.large_scale_assembler_casing", "Large-Scale Assembler Casing");
+        replace(provider, "block.gtceu.reaction_safe_mixing_casing", "Reaction-Safe Mixing Casing");
+        replace(provider, "block.gtceu.vibration_safe_casing", "Vibration-Safe Casing");
+
         // todo multiblock tanks
         //replace(provider, "tile.steam_casing.wood_wall.name", "Wooden Wall");
 
@@ -221,6 +227,6 @@ public class BlockLang {
         provider.add("tile.wire_coil.tooltip_pyro", "§8Pyrolyse Oven:");
         provider.add("tile.wire_coil.tooltip_speed_pyro", "  §bProcessing Speed: §f%s%%");
         provider.add("tile.wire_coil.tooltip_cracking", "§8Cracking Unit:");
-        provider.add(" tile.wire_coil.tooltip_energy_cracking", "  §aEnergy Usage: §f%s%%");
+        provider.add("tile.wire_coil.tooltip_energy_cracking", "  §aEnergy Usage: §f%s%%");
     }
 }

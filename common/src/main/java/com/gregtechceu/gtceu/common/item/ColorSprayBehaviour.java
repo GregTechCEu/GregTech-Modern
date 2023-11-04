@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.common.item;
 import appeng.api.util.AEColor;
 import appeng.blockentity.networking.CableBusBlockEntity;
 import com.google.common.collect.ImmutableMap;
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.item.component.IDurabilityBar;
@@ -22,6 +23,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.util.Tuple;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -37,10 +39,8 @@ import net.minecraft.world.level.block.StainedGlassPaneBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
-import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Nullable;
 
-import java.awt.*;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -95,15 +95,15 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
                 shulkerBoxBuilder.put(color, BuiltInRegistries.BLOCK.get(getId(GTValues.MODID_TINTED, color, "shulker_box")));
                 candleBuilder.put(color, BuiltInRegistries.BLOCK.get(getId(GTValues.MODID_TINTED, color, "candle")));
             } else {
-                glassBuilder.put(color, BuiltInRegistries.BLOCK.get(getId("", color, "stained_glass")));
-                glassPaneBuilder.put(color, BuiltInRegistries.BLOCK.get(getId("", color, "stained_glass_pane")));
-                terracottaBuilder.put(color, BuiltInRegistries.BLOCK.get(getId("", color, "terracotta")));
-                woolBuilder.put(color, BuiltInRegistries.BLOCK.get(getId("", color, "wool")));
-                carpetBuilder.put(color, BuiltInRegistries.BLOCK.get(getId("", color, "carpet")));
-                concreteBuilder.put(color, BuiltInRegistries.BLOCK.get(getId("", color, "concrete")));
-                concretePowderBuilder.put(color, BuiltInRegistries.BLOCK.get(getId("", color, "concrete_powder")));
-                shulkerBoxBuilder.put(color, BuiltInRegistries.BLOCK.get(getId("", color, "shulker_box")));
-                candleBuilder.put(color, BuiltInRegistries.BLOCK.get(getId("", color, "candle")));
+                glassBuilder.put(color, BuiltInRegistries.BLOCK.get(getId("minecraft", color, "stained_glass")));
+                glassPaneBuilder.put(color, BuiltInRegistries.BLOCK.get(getId("minecraft", color, "stained_glass_pane")));
+                terracottaBuilder.put(color, BuiltInRegistries.BLOCK.get(getId("minecraft", color, "terracotta")));
+                woolBuilder.put(color, BuiltInRegistries.BLOCK.get(getId("minecraft", color, "wool")));
+                carpetBuilder.put(color, BuiltInRegistries.BLOCK.get(getId("minecraft", color, "carpet")));
+                concreteBuilder.put(color, BuiltInRegistries.BLOCK.get(getId("minecraft", color, "concrete")));
+                concretePowderBuilder.put(color, BuiltInRegistries.BLOCK.get(getId("minecraft", color, "concrete_powder")));
+                shulkerBoxBuilder.put(color, BuiltInRegistries.BLOCK.get(getId("minecraft", color, "shulker_box")));
+                candleBuilder.put(color, BuiltInRegistries.BLOCK.get(getId("minecraft", color, "candle")));
 
                 /* somehow didn't want to work, it seems registry isn't fully loaded yet (forge) so `BuiltInRegistries.BLOCK.getId` returns air for modded blocks
                 if (GTCEu.isCreateLoaded()) {
@@ -129,7 +129,7 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
     private final Supplier<ItemStack> empty;
     private final DyeColor color;
     public final int totalUses;
-    private final Pair<Color, Color> durabilityBarColors;
+    private final Tuple<float[], float[]> durabilityBarColors;
 
 
     public ColorSprayBehaviour(Supplier<ItemStack> empty, int totalUses, int color) {
@@ -150,18 +150,21 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
     @Override
     public int getBarColor(ItemStack stack) {
         float f = Math.max(0.0F, getDurabilityForDisplay(stack));
-        return mixColors(f, durabilityBarColors.getLeft(), durabilityBarColors.getRight()).getRGB();
+        return mixColors(f, durabilityBarColors.getA(), durabilityBarColors.getB());
     }
 
-    private static Color mixColors(float ratio, Color... colors) {
-        int r = 0, g = 0, b = 0;
+    private static int mixColors(float ratio, float[]... colors) {
+        float r = 0, g = 0, b = 0;
         ratio = ratio * (1.0f / colors.length);
-        for (Color color : colors) {
-            r += color.getRed() * ratio;
-            g += color.getGreen() * ratio;
-            b += color.getBlue() * ratio;
+        for (float[] color : colors) {
+            r += color[0] * ratio;
+            g += color[1] * ratio;
+            b += color[2] * ratio;
         }
-        return new Color(r, g, b);
+        //noinspection PointlessBitwiseExpression
+        return ((int)(r * 255) & 0xFF) << 16 |
+                ((int)(g * 255) & 0xFF) << 8 |
+                ((int)(b * 255) & 0xFF) << 0;
     }
 
     @Override
@@ -215,7 +218,7 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
     }
 
     private boolean tryPaintSpecialBlock(Player player, Level world, BlockPos pos, Block block) {
-        if (block.defaultBlockState().is(CustomTags.GLASS_BLOCKS)) {
+        if (block.defaultBlockState().is(CustomTags.GLASS_BLOCKS_BLOCK)) {
             if (recolorBlockNoState(GLASS_MAP, this.color, world, pos, Blocks.GLASS)) {
                 return true;
             }
@@ -289,7 +292,7 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
             } else return false;
         }
 
-        if (Platform.isModLoaded(GTValues.MODID_APPENG)) {
+        if (GTCEu.isAE2Loaded()) {
             if (be instanceof CableBusBlockEntity cable) {
                 // do not try to recolor if it already is this color
                 if (cable.getColor().ordinal() != color.ordinal()) {
@@ -390,7 +393,7 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
         }
 
         // AE2 cable special case
-        if (Platform.isModLoaded(GTValues.MODID_APPENG)) {
+        if (GTCEu.isAE2Loaded()) {
             if (be instanceof CableBusBlockEntity cable) {
                 // do not try to strip color if it is already colorless
                 if (cable.getColor() != AEColor.TRANSPARENT) {

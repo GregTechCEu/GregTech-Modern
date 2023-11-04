@@ -40,6 +40,12 @@ public class ItemHandlerProxyTrait extends MachineTrait implements IItemTransfer
     //////////////////////////////////////
     //*******     Capability    ********//
     //////////////////////////////////////
+
+    @Override
+    public void onContentsChanged() {
+        if (proxy != null) proxy.onContentsChanged();
+    }
+
     @Override
     public int getSlots() {
         return proxy == null ? 0 : proxy.getSlots();
@@ -60,9 +66,9 @@ public class ItemHandlerProxyTrait extends MachineTrait implements IItemTransfer
 
     @NotNull
     @Override
-    public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
+    public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate, boolean notifyChanges) {
         if (proxy != null && canCapInput()) {
-            return proxy.insertItem(slot, stack, simulate);
+            return proxy.insertItem(slot, stack, simulate, notifyChanges);
         }
         return stack;
     }
@@ -73,9 +79,9 @@ public class ItemHandlerProxyTrait extends MachineTrait implements IItemTransfer
 
     @NotNull
     @Override
-    public ItemStack extractItem(int slot, int amount, boolean simulate) {
+    public ItemStack extractItem(int slot, int amount, boolean simulate, boolean notifyChanges) {
         if (proxy != null && canCapOutput()) {
-            return proxy.extractItem(slot, amount, simulate);
+            return proxy.extractItem(slot, amount, simulate, notifyChanges);
         }
         return ItemStack.EMPTY;
     }
@@ -92,6 +98,19 @@ public class ItemHandlerProxyTrait extends MachineTrait implements IItemTransfer
     @Override
     public boolean isItemValid(int slot, @NotNull ItemStack stack) {
         return proxy != null && proxy.isItemValid(slot, stack);
+    }
+
+    @NotNull
+    @Override
+    public Object createSnapshot() {
+        return proxy != null ? proxy.createSnapshot() : new Object();
+    }
+
+    @Override
+    public void restoreFromSnapshot(Object snapshot) {
+        if (proxy != null) {
+            proxy.restoreFromSnapshot(snapshot);
+        }
     }
 
     public boolean isEmpty() {

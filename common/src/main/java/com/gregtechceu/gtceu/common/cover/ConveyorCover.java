@@ -11,9 +11,13 @@ import com.gregtechceu.gtceu.api.cover.filter.FilterHandler;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandlers;
 import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
 import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
 import com.gregtechceu.gtceu.api.machine.ConditionalSubscriptionHandler;
 import com.gregtechceu.gtceu.api.syncdata.RequireRerender;
+import com.gregtechceu.gtceu.common.blockentity.ItemPipeBlockEntity;
+import com.gregtechceu.gtceu.common.cover.data.DistributionMode;
+import com.gregtechceu.gtceu.common.cover.data.ManualImportExportMode;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
@@ -59,28 +63,36 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
     protected int transferRate;
     @Persisted @DescSynced @Getter @RequireRerender
     protected IO io;
+    @Persisted @DescSynced @Getter
+    protected DistributionMode distributionMode;
+    @Persisted @DescSynced @Getter
+    protected ManualImportExportMode manualImportExportMode = ManualImportExportMode.DISABLED;
     @Persisted @Getter
     protected boolean isWorkingEnabled = true;
     protected int itemsLeftToTransferLastSecond;
     private Widget ioModeSwitch;
 
-    @Persisted @DescSynced
+    @Persisted @DescSynced @Getter
     protected final FilterHandler<ItemStack, ItemFilter> filterHandler;
     protected final ConditionalSubscriptionHandler subscriptionHandler;
 
     public ConveyorCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide, int tier) {
         super(definition, coverHolder, attachedSide);
         this.tier = tier;
-        this.maxItemTransferRate = 2 * (int) Math.pow(4, tier); // 8 32 128 512 1024
+        this.maxItemTransferRate = 2 * (int) Math.pow(4, Math.min(tier, GTValues.LuV)); // 8 32 128 512 1024
         this.transferRate = maxItemTransferRate;
         this.itemsLeftToTransferLastSecond = transferRate;
         this.io = IO.OUT;
+        this.distributionMode = DistributionMode.INSERT_FIRST;
 
         subscriptionHandler = new ConditionalSubscriptionHandler(coverHolder, this::update, this::isSubscriptionActive);
-        filterHandler = FilterHandlers.item(this).onFilterLoaded(f -> configureFilterHandler());
+        filterHandler = FilterHandlers.item(this)
+                .onFilterLoaded(f -> configureFilter())
+                .onFilterUpdated(f -> configureFilter())
+                .onFilterRemoved(f -> configureFilter());
     }
 
-    private boolean isSubscriptionActive() {
+    protected boolean isSubscriptionActive() {
         return isWorkingEnabled() && getAdjacentItemTransfer() != null;
     }
 
@@ -115,6 +127,17 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
         if (io == IO.IN || io == IO.OUT) {
             this.io = io;
         }
+        coverHolder.markDirty();
+    }
+
+    public void setDistributionMode(DistributionMode distributionMode) {
+        this.distributionMode = distributionMode;
+        coverHolder.markDirty();
+    }
+
+    protected void setManualImportExportMode(ManualImportExportMode manualImportExportMode) {
+        this.manualImportExportMode = manualImportExportMode;
+        coverHolder.markDirty();
     }
 
     @Override
@@ -155,12 +178,13 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
         }
     }
 
-    private void update() {
+    protected void update() {
         long timer = coverHolder.getOffsetTimer();
         if (timer % 5 == 0) {
             if (itemsLeftToTransferLastSecond > 0) {
                 var adjacentItemTransfer = getAdjacentItemTransfer();
                 var myItemHandler = getOwnItemTransfer();
+
                 if (adjacentItemTransfer != null && myItemHandler != null) {
                     int totalTransferred = switch (io) {
                         case IN -> doTransferItems(adjacentItemTransfer, myItemHandler, itemsLeftToTransferLastSecond);
@@ -222,7 +246,7 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
         int itemsLeftToExtract = itemInfo.totalCount;
 
         for (int i = 0; i < itemInfo.slots.size(); i++) {
-            int slotIndex = itemInfo.slots.get(i);
+            int slotIndex = itemInfo.slots.getInt(i);
             ItemStack extractedStack = sourceInventory.extractItem(slotIndex, itemsLeftToExtract, true);
             if (!extractedStack.isEmpty() &&
                     ItemStack.isSameItemSameTags(resultStack, extractedStack)) {
@@ -254,7 +278,7 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
         //perform real extraction of the items from the source inventory now
         itemsLeftToExtract = itemInfo.totalCount;
         for (int i = 0; i < itemInfo.slots.size(); i++) {
-            int slotIndex = itemInfo.slots.get(i);
+            int slotIndex = itemInfo.slots.getInt(i);
             ItemStack extractedStack = sourceInventory.extractItem(slotIndex, itemsLeftToExtract, false);
             if (!extractedStack.isEmpty() &&
                     ItemStack.isSameItemSameTags(resultStack, extractedStack)) {
@@ -375,15 +399,26 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
                 (clickData, value) -> {
                     setIo(value ? IO.IN : IO.OUT);
                     ioModeSwitch.setHoverTooltips(
-                            LocalizationUtils.format("cover.conveyor.mode", LocalizationUtils.format(io.localeName))
+                            LocalizationUtils.format("cover.conveyor.mode", LocalizationUtils.format(io.tooltip))
                     );
                 })
                 .setTexture(
                         new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, IO.OUT.icon),
                         new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, IO.IN.icon))
                 .setPressed(io == IO.IN)
-                .setHoverTooltips(LocalizationUtils.format("cover.conveyor.mode", LocalizationUtils.format(io.localeName)));
+                .setHoverTooltips(LocalizationUtils.format("cover.conveyor.mode", LocalizationUtils.format(io.tooltip)));
         group.addWidget(ioModeSwitch);
+        group.addWidget(new EnumSelectorWidget<>(7, 166, 116, 20,
+                ManualImportExportMode.VALUES, ManualImportExportMode.DISABLED,
+                this::setManualImportExportMode)
+                .setHoverTooltips("cover.universal.manual_import_export.mode.description"));
+
+        if (coverHolder.getLevel().getBlockEntity(coverHolder.getPos()) instanceof ItemPipeBlockEntity ||
+                coverHolder.getLevel().getBlockEntity(coverHolder.getPos().relative(attachedSide)) instanceof ItemPipeBlockEntity) {
+            group.addWidget(new EnumSelectorWidget<>(149, 166, 20, 20,
+                    DistributionMode.VALUES, DistributionMode.INSERT_FIRST,
+                    this::setDistributionMode));
+        }
 
         group.addWidget(filterHandler.createFilterSlotUI(148, 107));
         group.addWidget(filterHandler.createFilterConfigUI(10, 70, 156, 60));
@@ -402,7 +437,7 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
         // Do nothing in the base implementation. This is intended to be overridden by subclasses.
     }
 
-    protected void configureFilterHandler() {
+    protected void configureFilter() {
         // Do nothing in the base implementation. This is intended to be overridden by subclasses.
     }
 }

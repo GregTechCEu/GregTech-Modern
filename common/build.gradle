@@ -52,10 +52,7 @@ dependencies {
     // dependencies must also be pulled in to minimize problems, from remapping issues to compile errors.
     // All dependencies except Flywheel and Registrate are NOT safe to use!
     // Flywheel and Registrate must also be used carefully due to differences.
-//    modCompileOnly fabric.createFabric
-    // TODO wait for Create Fabric
-    modCompileOnly("com.simibubi.create:create-${libs.versions.minecraft.get()}:${forge.versions.createForge.get()}:all") { transitive = false }
-    modCompileOnly forge.flywheel
+    modCompileOnly fabric.createFabric
 
     modCompileOnly fabric.ldlib.common
     modCompileOnly fabric.registrate
@@ -80,13 +77,17 @@ dependencies {
     // Jade
     modCompileOnly fabric.jade
 
+    // AE2
+    modImplementation(fabric.ae2) { transitive = false }
+
+    //AlmostUnified
+    modImplementation(fabric.almostUnified.common)
+
     // KJS
-//    modCompileOnly fabric.kubejs
+    modCompileOnly fabric.kubejs
 
     // Configuration
     modCompileOnly fabric.configuration
-
-    modCompileOnly fabric.ae2
 }
 
 publishing {

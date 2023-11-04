@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.client.renderer.block;
 
+import com.google.common.base.Suppliers;
 import com.gregtechceu.gtceu.client.model.ItemBakedModel;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
@@ -43,7 +44,7 @@ public class OreBlockRenderer extends BlockStateRenderer {
     private final boolean emissive;
 
     public OreBlockRenderer(Supplier<BlockState> stone, Supplier<ResourceLocation> overlaySupplier, boolean emissive) {
-        this.stone = stone;
+        this.stone = Suppliers.memoize(stone::get);
         this.overlaySupplier = overlaySupplier;
         this.emissive = emissive;
         if (LDLib.isClient()) {

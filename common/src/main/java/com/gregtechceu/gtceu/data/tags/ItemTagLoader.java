@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.tterrag.registrate.providers.RegistrateTagsProvider;
 import com.tterrag.registrate.util.entry.RegistryEntry;
+import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -22,10 +23,11 @@ import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 public class ItemTagLoader {
 
     public static void init(RegistrateTagsProvider<Item> provider) {
-        create(provider, lens, Color.White, GTItems.MATERIAL_ITEMS.get(lens, Glass).getId());
+        create(provider, lens, Color.White, GTItems.MATERIAL_ITEMS.get(lens, Glass).getId(), GTItems.MATERIAL_ITEMS.get(lens, NetherStar).getId());
         create(provider, lens, Color.LightBlue, GTItems.MATERIAL_ITEMS.get(lens, Diamond).getId());
         create(provider, lens, Color.Red, GTItems.MATERIAL_ITEMS.get(lens, Ruby).getId());
         create(provider, lens, Color.Green, GTItems.MATERIAL_ITEMS.get(lens, Emerald).getId());
+        create(provider, lens, Color.Blue, GTItems.MATERIAL_ITEMS.get(lens, Sapphire).getId());
 
         create(provider, "pistons", rl("piston"), rl("sticky_piston"));
 
@@ -51,11 +53,9 @@ public class ItemTagLoader {
         create(provider, ChemicalHelper.getTag(prefix, material), rls);
     }
 
+    @ExpectPlatform
     private static void create(RegistrateTagsProvider<Item> provider, TagKey<Item> tagKey, ResourceLocation... rls) {
-        var builder = provider.addTag(tagKey);
-        for (ResourceLocation rl : rls) {
-            builder.addOptional(rl);
-        }
+        throw new AssertionError();
     }
 
     private static ResourceLocation rl(String name) {

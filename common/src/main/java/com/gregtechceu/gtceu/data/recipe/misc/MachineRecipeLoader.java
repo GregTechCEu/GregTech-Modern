@@ -1,15 +1,22 @@
 package com.gregtechceu.gtceu.data.recipe.misc;
 
+import com.google.common.collect.ImmutableList;
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMachines;
+import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
+import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
+import com.gregtechceu.gtceu.integration.ae2.GTAEMachines;
+import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.tterrag.registrate.util.entry.ItemEntry;
 import net.minecraft.data.recipes.FinishedRecipe;
@@ -18,11 +25,17 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
+import org.apache.logging.log4j.LogManager;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.function.Consumer;
+import java.util.logging.Logger;
 
+import static com.gregtechceu.gtceu.GTCEu.LOGGER;
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
+import static com.gregtechceu.gtceu.common.data.GCyMBlocks.*;
 import static com.gregtechceu.gtceu.common.data.GTItems.*;
 import static com.gregtechceu.gtceu.common.data.GTMachines.*;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
@@ -645,7 +658,7 @@ public class MachineRecipeLoader {
                 .inputItems(ELECTRIC_PUMP_MV, 4)
                 .inputItems(gear, VanadiumSteel, 4)
                 .circuitMeta(2)
-                .outputItems(FLUID_DRILLING_RIG[0])
+                .outputItems(FLUID_DRILLING_RIG[MV])
                 .duration(400).EUt(VA[MV]).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("fluid_drill_ev")
@@ -656,7 +669,7 @@ public class MachineRecipeLoader {
                 .inputItems(ELECTRIC_PUMP_EV, 4)
                 .inputItems(gear, TungstenCarbide, 4)
                 .circuitMeta(2)
-                .outputItems(FLUID_DRILLING_RIG[1])
+                .outputItems(FLUID_DRILLING_RIG[HV])
                 .duration(400).EUt(VA[EV]).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("fluid_drill_luv")
@@ -667,49 +680,8 @@ public class MachineRecipeLoader {
                 .inputItems(ELECTRIC_PUMP_LuV, 4)
                 .inputItems(gear, Osmiridium, 4)
                 .circuitMeta(2)
-                .outputItems(FLUID_DRILLING_RIG[2])
+                .outputItems(FLUID_DRILLING_RIG[EV])
                 .duration(400).EUt(VA[LuV]).save(provider);
-
-        ASSEMBLY_LINE_RECIPES.recipeBuilder("fusion_reactor_1")
-                .inputItems(GTBlocks.SUPERCONDUCTING_COIL.asStack())
-                .inputItems(CustomTags.ZPM_CIRCUITS, 4)
-                .inputItems(plateDouble, Plutonium241)
-                .inputItems(plateDouble, Osmiridium)
-                .inputItems(FIELD_GENERATOR_IV, 2)
-                .inputItems(ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT, 64)
-                .inputItems(wireGtSingle, IndiumTinBariumTitaniumCuprate, 32)
-                .inputFluids(SolderingAlloy.getFluid(L * 8))
-                .inputFluids(NiobiumTitanium.getFluid(L * 8))
-                .outputItems(FUSION_REACTOR[0].asStack())
-                .duration(800).EUt(VA[LuV]).save(provider);
-
-        ASSEMBLY_LINE_RECIPES.recipeBuilder("fusion_reactor_2")
-                .inputItems(GTBlocks.FUSION_COIL.asStack())
-                .inputItems(CustomTags.UV_CIRCUITS, 4)
-                .inputItems(plateDouble, Naquadria)
-                .inputItems(plateDouble, Europium)
-                .inputItems(FIELD_GENERATOR_LuV, 2)
-                .inputItems(ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT, 64)
-                .inputItems(ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT, 32)
-                .inputItems(wireGtSingle, UraniumRhodiumDinaquadide, 32)
-                .inputFluids(SolderingAlloy.getFluid(L * 8))
-                .inputFluids(VanadiumGallium.getFluid(L * 8))
-                .outputItems(FUSION_REACTOR[1].asStack())
-                .duration(1000).EUt(61440).save(provider);
-
-        ASSEMBLY_LINE_RECIPES.recipeBuilder("fusion_reactor_3")
-                .inputItems(GTBlocks.FUSION_COIL.asStack())
-                .inputItems(CustomTags.UHV_CIRCUITS, 4)
-                .inputItems(QUANTUM_STAR)
-                .inputItems(plateDouble, Americium)
-                .inputItems(FIELD_GENERATOR_ZPM, 2)
-                .inputItems(ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT, 64)
-                .inputItems(ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT, 64)
-                .inputItems(wireGtSingle, EnrichedNaquadahTriniumEuropiumDuranide, 32)
-                .inputFluids(SolderingAlloy.getFluid(L * 8))
-                .inputFluids(YttriumBariumCuprate.getFluid(L * 8))
-                .outputItems(FUSION_REACTOR[2].asStack())
-                .duration(1000).EUt(VA[ZPM]).save(provider);
     }
 
     private static void registerBlastFurnaceRecipes(Consumer<FinishedRecipe> provider) {
@@ -1116,5 +1088,12 @@ public class MachineRecipeLoader {
                 "d", "B", 'B', STEAM_IMPORT_BUS.asStack());
         VanillaRecipeHelper.addShapedRecipe(provider, "steam_bus_input_to_output", STEAM_IMPORT_BUS.asStack(),
                 "d", "B", 'B', STEAM_EXPORT_BUS.asStack());
+
+        if (GTCEu.isAE2Loaded()) {
+            VanillaRecipeHelper.addShapedRecipe(provider, "me_fluid_hatch_output_to_input", GTAEMachines.FLUID_IMPORT_HATCH.asStack(), "d", "B", 'B', GTAEMachines.FLUID_EXPORT_HATCH.asStack());
+            VanillaRecipeHelper.addShapedRecipe(provider, "me_fluid_hatch_input_to_output", GTAEMachines.FLUID_EXPORT_HATCH.asStack(), "d", "B", 'B', GTAEMachines.FLUID_IMPORT_HATCH.asStack());
+            VanillaRecipeHelper.addShapedRecipe(provider, "me_item_bus_output_to_input", GTAEMachines.ITEM_IMPORT_BUS.asStack(), "d", "B", 'B', GTAEMachines.ITEM_EXPORT_BUS.asStack());
+            VanillaRecipeHelper.addShapedRecipe(provider, "me_item_bus_input_to_output", GTAEMachines.ITEM_EXPORT_BUS.asStack(), "d", "B", 'B', GTAEMachines.ITEM_IMPORT_BUS.asStack());
+        }
     }
 }

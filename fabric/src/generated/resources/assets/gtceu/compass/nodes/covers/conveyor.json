@@ -11,7 +11,12 @@
     "gtceu:iv_conveyor_module",
     "gtceu:luv_conveyor_module",
     "gtceu:zpm_conveyor_module",
-    "gtceu:uv_conveyor_module"
+    "gtceu:uv_conveyor_module",
+    "gtceu:uhv_conveyor_module",
+    "gtceu:uev_conveyor_module",
+    "gtceu:uiv_conveyor_module",
+    "gtceu:uxv_conveyor_module",
+    "gtceu:opv_conveyor_module"
   ],
   "page": "gtceu:covers/conveyor",
   "position": [

@@ -1,0 +1,51 @@
+{
+  "parent": "block/block",
+  "textures": {
+    "particle": "gtceu:block/casings/voltage/lv/side",
+    "bottom": "gtceu:block/casings/voltage/lv/bottom",
+    "top": "gtceu:block/casings/voltage/lv/top",
+    "side": "gtceu:block/casings/voltage/lv/side",
+    "overlay_bottom": "gtceu:block/pipe/ld_fluid_pipe/overlay_bottom",
+    "overlay_left": "gtceu:block/pipe/ld_fluid_pipe/overlay_left",
+    "overlay_right": "gtceu:block/pipe/ld_fluid_pipe/overlay_right",
+    "overlay_top": "gtceu:block/pipe/ld_fluid_pipe/overlay_top",
+    "overlay_pipe_in": "gtceu:block/overlay/machine/overlay_pipe_in",
+    "overlay_fluid_hatch_in": "gtceu:block/overlay/machine/overlay_fluid_hatch_input",
+    "overlay_fluid_hatch_out": "gtceu:block/overlay/machine/overlay_fluid_hatch_output",
+    "overlay_pipe_out": "gtceu:block/overlay/machine/overlay_pipe_out"
+  },
+  "elements": [
+    {
+      "from": [  0,  0,  0 ],
+      "to":   [ 16, 16, 16 ],
+      "faces": {
+        "down":  { "texture": "#bottom", "cullface": "down", "tintindex": 1 },
+        "up":    { "texture": "#top", "cullface": "up", "tintindex": 1 },
+        "north": { "texture": "#side", "cullface": "north", "tintindex": 1 },
+        "south": { "texture": "#side", "cullface": "south", "tintindex": 1 },
+        "west":  { "texture": "#side", "cullface": "west", "tintindex": 1 },
+        "east":  { "texture": "#side", "cullface": "east", "tintindex": 1 }
+      }
+    },
+    {
+      "from": [0, 0, 0],
+      "to": [16, 16, 16],
+      "faces": {
+        "north": {"uv": [0, 0, 16, 16], "texture": "#overlay_pipe_in", "cullface": "north", "tintindex": 2},
+        "south": {"uv": [0, 0, 16, 16], "texture": "#overlay_pipe_out", "cullface": "south", "tintindex": 2},
+        "up": {"uv": [0, 0, 16, 16], "texture": "#overlay_top", "cullface": "up", "tintindex": 2},
+        "down": {"uv": [0, 0, 16, 16], "texture": "#overlay_bottom", "cullface": "down", "tintindex": 2},
+        "west": {"uv": [0, 0, 16, 16], "texture": "#overlay_left", "cullface": "west", "tintindex": 2},
+        "east": {"uv": [0, 0, 16, 16], "texture": "#overlay_right", "cullface": "east", "tintindex": 2}
+      }
+    },
+    {
+      "from": [0, 0, 0],
+      "to": [16, 16, 16],
+      "faces": {
+        "north": {"uv": [0, 0, 16, 16], "texture": "#overlay_fluid_hatch_in", "cullface": "north", "tintindex": 2},
+        "south": {"uv": [0, 0, 16, 16], "texture": "#overlay_fluid_hatch_out", "cullface": "south", "tintindex": 2}
+      }
+    }
+  ]
+}

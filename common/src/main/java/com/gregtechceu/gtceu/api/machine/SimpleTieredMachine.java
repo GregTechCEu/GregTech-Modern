@@ -19,6 +19,7 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.lowdragmc.lowdraglib.gui.texture.*;
 import com.lowdragmc.lowdraglib.gui.widget.*;
+import com.lowdragmc.lowdraglib.misc.FluidTransferList;
 import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
 import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
 import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
@@ -50,7 +51,6 @@ import org.jetbrains.annotations.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 import java.util.function.BiFunction;
-import java.util.function.Function;
 
 /**
  * @author KilaBash
@@ -107,7 +107,7 @@ public class SimpleTieredMachine extends WorkableTieredMachine implements IAutoO
     }
 
     protected NotifiableItemStackHandler createCircuitItemHandler(Object... args) {
-        return new NotifiableItemStackHandler(this, 1, IO.IN).setFilter(IntCircuitBehaviour::isIntegratedCircuit);
+        return new NotifiableItemStackHandler(this, 1, IO.IN, IO.NONE).setFilter(IntCircuitBehaviour::isIntegratedCircuit);
     }
 
     //////////////////////////////////////
@@ -370,12 +370,12 @@ public class SimpleTieredMachine extends WorkableTieredMachine implements IAutoO
         return group;
     }, (template, machine) -> {
         if (machine instanceof SimpleTieredMachine tieredMachine) {
-            tieredMachine.recipeType.createEditableUITemplate(false, false).setupUI(template,
+            tieredMachine.getRecipeType().createEditableUITemplate(false, false).setupUI(template,
                     new GTRecipeType.RecipeHolder(tieredMachine.recipeLogic::getProgressPercent,
                             tieredMachine.importItems.storage,
                             tieredMachine.exportItems.storage,
-                            tieredMachine.importFluids.storages,
-                            tieredMachine.exportFluids.storages,
+                            tieredMachine.importFluids,
+                            tieredMachine.exportFluids,
                             false, false));
             createEnergyBar().setupUI(template, tieredMachine);
             createBatterySlot().setupUI(template, tieredMachine);

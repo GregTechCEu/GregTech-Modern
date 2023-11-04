@@ -1,9 +1,6 @@
 package com.gregtechceu.gtceu.data.fabric;
 
-import appeng.core.definitions.AEDamageTypes;
-import appeng.init.worldgen.InitBiomes;
-import appeng.init.worldgen.InitDimensionTypes;
-import appeng.init.worldgen.InitStructures;
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.CompassNode;
 import com.gregtechceu.gtceu.api.registry.registrate.CompassSection;
@@ -11,10 +8,12 @@ import com.gregtechceu.gtceu.api.registry.registrate.SoundEntryBuilder;
 import com.gregtechceu.gtceu.common.data.GTConfiguredFeatures;
 import com.gregtechceu.gtceu.common.data.GTDamageTypes;
 import com.gregtechceu.gtceu.common.data.GTPlacements;
+import com.gregtechceu.gtceu.common.data.GTWorldgen;
+import io.github.fabricators_of_create.porting_lib.data.ExistingFileHelper;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
+import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.loader.api.FabricLoader;
-import io.github.fabricators_of_create.porting_lib.data.ExistingFileHelper;
 import net.minecraft.Util;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistryAccess;
@@ -23,9 +22,12 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.registries.VanillaRegistries;
-
-import java.util.concurrent.CompletableFuture;
+import net.minecraft.data.worldgen.NoiseData;
+import net.minecraft.data.worldgen.biome.BiomeData;
 import net.minecraft.server.packs.PackType;
+
+import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * @author KilaBash
@@ -43,21 +45,23 @@ public class GregTechDatagen implements DataGeneratorEntrypoint {
         var pack = generator.createPack();
         GTRegistries.REGISTRATE.setupDatagen(pack, helper);
         // sound
-        pack.addProvider((FabricDataGenerator.Pack.Factory<DataProvider>) SoundEntryBuilder.SoundEntryProvider::new);
+        pack.addProvider((FabricDataOutput output) -> new SoundEntryBuilder.SoundEntryProvider(output, GTCEu.MOD_ID));
         // compass
         pack.addProvider((FabricDataGenerator.Pack.Factory<CompassSection.CompassSectionProvider>) packOutput -> new CompassSection.CompassSectionProvider(packOutput, rl -> helper.exists(rl, PackType.CLIENT_RESOURCES)));
         pack.addProvider((FabricDataGenerator.Pack.Factory<DataProvider>) packOutput -> new CompassNode.CompassNodeProvider(packOutput, rl -> helper.exists(rl, PackType.CLIENT_RESOURCES)));
         // biome tags
+        var set = Set.of(GTCEu.MOD_ID);
         var registryAccess = RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY);
         var registries = createProvider(registryAccess);
         pack.addProvider((FabricDataGenerator.Pack.Factory<DataProvider>) output -> new BiomeTagsProviderImpl(output, registries));
         pack.addProvider((FabricDataGenerator.Pack.Factory<DataProvider>) output -> new GTRegistriesDatapackGenerator(
                 output, registries, new RegistrySetBuilder()
-                .add(Registries.DAMAGE_TYPE, GTDamageTypes::bootstrap), "DamageType Data"));
+                .add(Registries.DAMAGE_TYPE, GTDamageTypes::bootstrap), set, "DamageType Data"));
         pack.addProvider((FabricDataGenerator.Pack.Factory<DataProvider>) output -> new GTRegistriesDatapackGenerator(
                 output, registries, new RegistrySetBuilder()
                 .add(Registries.CONFIGURED_FEATURE, GTConfiguredFeatures::bootstrap)
-                .add(Registries.PLACED_FEATURE, GTPlacements::bootstrap), "Worldgen Data"));
+                .add(Registries.PLACED_FEATURE, GTPlacements::bootstrap)
+                .add(Registries.DENSITY_FUNCTION, GTWorldgen::bootstrapDensityFunctions), set, "Worldgen Data"));
     }
 
     /**
@@ -69,11 +73,8 @@ public class GregTechDatagen implements DataGeneratorEntrypoint {
 
         return vanillaLookup.thenApply(provider -> {
             var builder = new RegistrySetBuilder()
-                    .add(Registries.DIMENSION_TYPE, InitDimensionTypes::init)
-                    .add(Registries.STRUCTURE, InitStructures::initDatagenStructures)
-                    .add(Registries.STRUCTURE_SET, InitStructures::initDatagenStructureSets)
-                    .add(Registries.BIOME, InitBiomes::init)
-                    .add(Registries.DAMAGE_TYPE, AEDamageTypes::init);
+                    .add(Registries.NOISE, NoiseData::bootstrap)
+                    .add(Registries.BIOME, BiomeData::bootstrap);
 
             return builder.buildPatch(registryAccess, provider);
         });

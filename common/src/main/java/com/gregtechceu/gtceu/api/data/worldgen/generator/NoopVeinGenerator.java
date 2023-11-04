@@ -1,7 +1,8 @@
 package com.gregtechceu.gtceu.api.data.worldgen.generator;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.data.worldgen.GTOreFeatureEntry;
+import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
+import com.gregtechceu.gtceu.api.data.worldgen.ores.OreBlockPlacer;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
@@ -9,6 +10,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.state.BlockState;
 
+import java.util.List;
 import java.util.Map;
 
 public class NoopVeinGenerator extends VeinGenerator {
@@ -16,18 +18,23 @@ public class NoopVeinGenerator extends VeinGenerator {
     public static final Codec<NoopVeinGenerator> CODEC = Codec.unit(() -> INSTANCE);
 
     @Override
-    public Map<Either<BlockState, Material>, Integer> getAllEntries() {
-        return Map.of();
+    public List<Map.Entry<Either<BlockState, Material>, Integer>> getAllEntries() {
+        return List.of();
     }
 
     @Override
-    public boolean generate(WorldGenLevel level, RandomSource random, GTOreFeatureEntry entry, BlockPos origin) {
-        return true;
+    public Map<BlockPos, OreBlockPlacer> generate(WorldGenLevel level, RandomSource random, GTOreDefinition entry, BlockPos origin) {
+        return Map.of();
     }
 
     @Override
     public VeinGenerator build() {
         return this;
+    }
+
+    @Override
+    public VeinGenerator copy() {
+        return INSTANCE;
     }
 
     @Override

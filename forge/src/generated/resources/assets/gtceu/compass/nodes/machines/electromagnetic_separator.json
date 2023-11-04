@@ -11,11 +11,16 @@
     "gtceu:iv_electromagnetic_separator",
     "gtceu:luv_electromagnetic_separator",
     "gtceu:zpm_electromagnetic_separator",
-    "gtceu:uv_electromagnetic_separator"
+    "gtceu:uv_electromagnetic_separator",
+    "gtceu:uhv_electromagnetic_separator",
+    "gtceu:uev_electromagnetic_separator",
+    "gtceu:uiv_electromagnetic_separator",
+    "gtceu:uxv_electromagnetic_separator",
+    "gtceu:opv_electromagnetic_separator"
   ],
   "page": "gtceu:machines/electromagnetic_separator",
   "position": [
-    -350,
+    -400,
     100
   ],
   "section": "gtceu:machines"

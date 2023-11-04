@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.data.worldgen.GTOreFeatureConfiguration;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.data.worldgen.features.FeatureUtils;
@@ -23,7 +22,6 @@ import net.minecraft.world.level.levelgen.feature.trunkplacers.ForkingTrunkPlace
  */
 public class GTConfiguredFeatures {
     public static final ResourceKey<ConfiguredFeature<?, ?>> RUBBER = ResourceKey.create(Registries.CONFIGURED_FEATURE, GTCEu.id("rubber_tree"));
-    public static final ResourceKey<ConfiguredFeature<?, ?>> ORE = ResourceKey.create(Registries.CONFIGURED_FEATURE, GTCEu.id("ore"));
 
     public static void bootstrap(BootstapContext<ConfiguredFeature<?, ?>> ctx) {
         FeatureUtils.register(ctx, RUBBER, Feature.TREE, new TreeConfiguration.TreeConfigurationBuilder(
@@ -32,6 +30,5 @@ public class GTConfiguredFeatures {
                 BlockStateProvider.simple(GTBlocks.RUBBER_LEAVES.get()),
                 new MegaJungleFoliagePlacer(ConstantInt.of(1), UniformInt.of(0, 1), 1),
                 new TwoLayersFeatureSize(1, 0, 2)).ignoreVines().build());
-        FeatureUtils.register(ctx, ORE, GTFeatures.ORE, new GTOreFeatureConfiguration());
     }
 }

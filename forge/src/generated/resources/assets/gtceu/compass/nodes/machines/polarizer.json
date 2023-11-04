@@ -11,11 +11,16 @@
     "gtceu:iv_polarizer",
     "gtceu:luv_polarizer",
     "gtceu:zpm_polarizer",
-    "gtceu:uv_polarizer"
+    "gtceu:uv_polarizer",
+    "gtceu:uhv_polarizer",
+    "gtceu:uev_polarizer",
+    "gtceu:uiv_polarizer",
+    "gtceu:uxv_polarizer",
+    "gtceu:opv_polarizer"
   ],
   "page": "gtceu:machines/polarizer",
   "position": [
-    -150,
+    -200,
     150
   ],
   "section": "gtceu:machines"

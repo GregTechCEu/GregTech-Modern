@@ -7,18 +7,27 @@ import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterial;
 import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlag;
+import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.AlloyBlastProperty;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.BlastProperty;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
+import com.gregtechceu.gtceu.api.fluids.FluidBuilder;
+import com.gregtechceu.gtceu.api.fluids.FluidState;
+import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.materials.*;
+import com.gregtechceu.gtceu.data.recipe.misc.alloyblast.CustomAlloyBlastRecipeProducer;
+import com.gregtechceu.gtceu.integration.kjs.GTRegistryObjectBuilderTypes;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper.registerUnificationItems;
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.*;
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
 
@@ -106,6 +115,9 @@ public class GTMaterials {
          * - Reserved for CraftTweaker: 32000-32767
          */
 
+        //Gregicality Multiblocks
+        GCyMMaterials.register();
+
         CHEMICAL_DYES = new Material[]{
                 GTMaterials.DyeWhite, GTMaterials.DyeOrange,
                 GTMaterials.DyeMagenta, GTMaterials.DyeLightBlue,
@@ -177,15 +189,7 @@ public class GTMaterials {
         block.setIgnored(Coal, Blocks.COAL_BLOCK);
         block.setIgnored(Amethyst, Blocks.AMETHYST_BLOCK);
         block.setIgnored(Glass, Blocks.GLASS);
-        block.setIgnored(Marble);
-        block.setIgnored(Granite, Blocks.GRANITE);
-        block.setIgnored(GraniteRed);
-        block.setIgnored(Andesite, Blocks.ANDESITE);
-        block.setIgnored(Diorite, Blocks.DIORITE);
-        block.setIgnored(Stone, Blocks.STONE);
         block.setIgnored(Glowstone, Blocks.GLOWSTONE);
-        block.setIgnored(Endstone, Blocks.END_STONE);
-        block.setIgnored(Wheat, Blocks.HAY_BLOCK);
         block.setIgnored(Oilsands);
         block.setIgnored(Wood);
         block.setIgnored(TreatedWood);
@@ -195,13 +199,24 @@ public class GTMaterials {
         block.setIgnored(Bone, Blocks.BONE_BLOCK);
         block.setIgnored(NetherQuartz, Blocks.QUARTZ_BLOCK);
         block.setIgnored(Ice, Blocks.ICE);
-        block.setIgnored(Netherrack, Blocks.NETHERRACK);
         block.setIgnored(Concrete, Blocks.WHITE_CONCRETE, Blocks.ORANGE_CONCRETE, Blocks.MAGENTA_CONCRETE, Blocks.LIGHT_BLUE_CONCRETE, Blocks.YELLOW_CONCRETE, Blocks.LIME_CONCRETE,
                 Blocks.PINK_CONCRETE, Blocks.GRAY_CONCRETE, Blocks.LIGHT_GRAY_CONCRETE, Blocks.CYAN_CONCRETE, Blocks.PURPLE_CONCRETE, Blocks.BLUE_CONCRETE,
                 Blocks.BROWN_CONCRETE, Blocks.GREEN_CONCRETE, Blocks.RED_CONCRETE, Blocks.BLACK_CONCRETE);
         block.setIgnored(Blaze);
         block.setIgnored(Lapotron);
-        block.setIgnored(Obsidian, Blocks.OBSIDIAN);
+
+        rock.setIgnored(Marble);
+        rock.setIgnored(Granite, Blocks.GRANITE);
+        rock.setIgnored(Granite, Blocks.POLISHED_GRANITE);
+        rock.setIgnored(GraniteRed);
+        rock.setIgnored(Andesite, Blocks.ANDESITE);
+        rock.setIgnored(Andesite, Blocks.POLISHED_ANDESITE);
+        rock.setIgnored(Diorite, Blocks.DIORITE);
+        rock.setIgnored(Diorite, Blocks.POLISHED_DIORITE);
+        rock.setIgnored(Stone, Blocks.STONE);
+        rock.setIgnored(Netherrack, Blocks.NETHERRACK);
+        rock.setIgnored(Obsidian, Blocks.OBSIDIAN);
+        rock.setIgnored(Endstone, Blocks.END_STONE);
 
         crushed.addSecondaryMaterial(new MaterialStack(Stone, dust.materialAmount()));
 
@@ -217,11 +232,11 @@ public class GTMaterials {
         pipeHugeFluid.setIgnored(TreatedWood);
         pipeQuadrupleFluid.setIgnored(TreatedWood);
         pipeNonupleFluid.setIgnored(TreatedWood);
-        // TODO Item pipes
-        //pipeSmallRestrictive.addSecondaryMaterial(new MaterialStack(Iron, ring.materialAmount() * 2));
-        //pipeNormalRestrictive.addSecondaryMaterial(new MaterialStack(Iron, ring.materialAmount() * 2));
-        //pipeLargeRestrictive.addSecondaryMaterial(new MaterialStack(Iron, ring.materialAmount() * 2));
-        //pipeHugeRestrictive.addSecondaryMaterial(new MaterialStack(Iron, ring.materialAmount() * 2));
+
+        pipeSmallRestrictive.addSecondaryMaterial(new MaterialStack(Iron, ring.materialAmount() * 2));
+        pipeNormalRestrictive.addSecondaryMaterial(new MaterialStack(Iron, ring.materialAmount() * 2));
+        pipeLargeRestrictive.addSecondaryMaterial(new MaterialStack(Iron, ring.materialAmount() * 2));
+        pipeHugeRestrictive.addSecondaryMaterial(new MaterialStack(Iron, ring.materialAmount() * 2));
 
         cableGtSingle.addSecondaryMaterial(new MaterialStack(Rubber, plate.materialAmount()));
         cableGtDouble.addSecondaryMaterial(new MaterialStack(Rubber, plate.materialAmount()));
@@ -256,7 +271,7 @@ public class GTMaterials {
         dye.setIgnored(DyeWhite, Items.WHITE_DYE);
 
         // register vanilla materials
-        registerUnificationItems(ingot, Clay, Items.CLAY_BALL);
+        /* Adding back the GT ores. It'd be too much pain to replace the loot tables.
         ore.setIgnored(Redstone, Blocks.REDSTONE_ORE);
         oreDeepslate.setIgnored(Redstone, Blocks.DEEPSLATE_REDSTONE_ORE);
         ore.setIgnored(Coal, Blocks.COAL_ORE);
@@ -275,6 +290,7 @@ public class GTMaterials {
         ore.setIgnored(Copper, Blocks.COPPER_ORE);
         oreDeepslate.setIgnored(Copper, Blocks.DEEPSLATE_COPPER_ORE);
         oreNetherrack.setIgnored(NetherQuartz, Blocks.NETHER_QUARTZ_ORE);
+         */
 
         rawOre.setIgnored(Gold, Items.RAW_GOLD);
         rawOre.setIgnored(Iron, Items.RAW_IRON);
@@ -293,8 +309,20 @@ public class GTMaterials {
       
         AddonFinder.getAddons().forEach(IGTAddon::registerMaterials);
         if (GTCEu.isKubeJSLoaded()) {
-//            GTRegistryObjectBuilderTypes.registerFor(GTRegistries.MATERIALS.getRegistryName());
+            GTRegistryObjectBuilderTypes.registerFor(GTRegistries.MATERIALS.getRegistryName());
         }
+
+        for (Material material : GTRegistries.MATERIALS) {
+            if (!material.hasFlag(MaterialFlags.DISABLE_ALLOY_PROPERTY)) {
+                addAlloyBlastProperty(material);
+            }
+        }
+        // Alloy Blast Overriding
+        AlloyBlastProperty property = NiobiumNitride.getProperty(PropertyKey.ALLOY_BLAST);
+        property.setRecipeProducer(new CustomAlloyBlastRecipeProducer(1, 11, -1));
+
+        property = IndiumTinBariumTitaniumCuprate.getProperty(PropertyKey.ALLOY_BLAST);
+        property.setRecipeProducer(new CustomAlloyBlastRecipeProducer(-1, -1, 16));
     }
 
     public static Material get(String name) {
@@ -311,6 +339,29 @@ public class GTMaterials {
         gemFlawed.setIgnored(material);
         gemFlawless.setIgnored(material);
         gemExquisite.setIgnored(material);
+    }
+
+    public static void addAlloyBlastProperty(@Nonnull Material material) {
+        final List<MaterialStack> components = material.getMaterialComponents();
+        // ignore materials which are not alloys
+        if (components.size() < 2) return;
+
+        BlastProperty blastProperty = material.getProperty(PropertyKey.BLAST);
+        if (blastProperty == null) return;
+
+        if (!material.hasProperty(PropertyKey.FLUID)) return;
+
+        // if there are more than 2 fluid-only components in the material, do not generate a hot fluid
+        if (components.stream().filter(GTMaterials::isMaterialStackFluidOnly).limit(3).count() > 2) {
+            return;
+        }
+
+        material.setProperty(PropertyKey.ALLOY_BLAST, new AlloyBlastProperty(material.getBlastTemperature()));
+        material.getProperty(PropertyKey.FLUID).getStorage().enqueueRegistration(FluidStorageKeys.MOLTEN, new FluidBuilder().state(FluidState.MOLTEN));
+    }
+
+    private static boolean isMaterialStackFluidOnly(@Nonnull MaterialStack ms) {
+        return !ms.material().hasProperty(PropertyKey.DUST) && ms.material().hasProperty(PropertyKey.FLUID);
     }
 
     public static final List<MaterialFlag> STD_METAL = new ArrayList<>();
@@ -490,7 +541,6 @@ public class GTMaterials {
     public static Material Chromite;
     public static Material Cinnabar;
     public static Material Water;
-    public static Material LiquidOxygen;
     public static Material Coal;
     public static Material Cobaltite;
     public static Material Cooperite;
@@ -510,7 +560,6 @@ public class GTMaterials {
     public static Material Invar;
     public static Material Kanthal;
     public static Material Lazurite;
-    public static Material LiquidHelium;
     public static Material Magnalium;
     public static Material Magnesite;
     public static Material Magnetite;
@@ -966,4 +1015,22 @@ public class GTMaterials {
     public static Material BasalticMineralSand;
     public static Material HSSE;
     public static Material HSSS;
+
+    /**
+     * GCyM Materials
+     */
+    public static Material TantalumCarbide;
+    public static Material HSLASteel;
+    public static Material MolybdenumDisilicide;
+    public static Material Zeron100;
+    public static Material WatertightSteel;
+    public static Material IncoloyMA956;
+    public static Material MaragingSteel300;
+    public static Material HastelloyX;
+    public static Material Stellite100;
+    public static Material TitaniumCarbide;
+    public static Material TitaniumTungstenCarbide;
+    public static Material HastelloyC276;
+
+
 }

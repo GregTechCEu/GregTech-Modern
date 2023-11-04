@@ -88,11 +88,8 @@ dependencies {
     modImplementation fabric.nightConfigCore
     modImplementation fabric.nightConfigToml
 
-    // Create - dependencies are added transitively
-//    modImplementation fabric.createFabric
-    // TODO wait for fabric create
-    modCompileOnly("com.simibubi.create:create-${libs.versions.minecraft.get()}:${forge.versions.createForge.get()}:all") { transitive = false }
-    modCompileOnly forge.flywheel
+    // Create
+    modImplementation fabric.createFabric
 
     // Development QOL
     modCompileOnly fabric.lazydfu
@@ -118,8 +115,14 @@ dependencies {
     // Jade
     modImplementation fabric.jade
 
+    // AE2
+    modImplementation(fabric.ae2) { transitive = false }
+
+    //AlmostUnified
+    modImplementation(fabric.almostUnified.fabric)
+
     // KJS
-//    modImplementation fabric.kubejs
+    modImplementation fabric.kubejs
 
     // Configuration
     modImplementation(fabric.configuration)
@@ -133,8 +136,6 @@ dependencies {
 //        exclude(group: "net.fabricmc.fabric-api")
 //    }
 //    modRuntimeOnly(fabric.worldStripper)
-
-    modImplementation(fabric.ae2) { transitive = false }
 }
 
 processResources {

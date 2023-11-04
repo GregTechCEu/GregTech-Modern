@@ -12,13 +12,6 @@ import net.minecraft.world.level.levelgen.GenerationStep;
  */
 public class GTFeaturesImpl {
     public static void register() {
-        // ore
-        BiomeModifications.addFeature(
-                ctx -> true,
-                GenerationStep.Decoration.UNDERGROUND_ORES,
-                GTPlacements.ORE
-        );
-
         // rubber tree
         BiomeModifications.addFeature(
                 ctx -> ctx.hasTag(CustomTags.HAS_RUBBER_TREE),

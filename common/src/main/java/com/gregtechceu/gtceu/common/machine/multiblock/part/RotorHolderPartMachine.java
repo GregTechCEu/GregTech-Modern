@@ -175,6 +175,7 @@ public class RotorHolderPartMachine extends TieredPartMachine implements IMachin
     @Override
     public void setRotorStack(ItemStack rotorStack) {
         inventory.setStackInSlot(0, rotorStack);
+        inventory.onContentsChanged();
     }
 
     //////////////////////////////////////

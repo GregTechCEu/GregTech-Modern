@@ -1,8 +1,14 @@
 package com.gregtechceu.gtceu.utils;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
+import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
+import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 import com.mojang.blaze3d.platform.InputConstants;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.client.Minecraft;
@@ -13,14 +19,15 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.material.Fluid;
 import org.lwjgl.glfw.GLFW;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.awt.*;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 import java.util.Map.Entry;
 
 
@@ -30,13 +37,6 @@ import java.util.Map.Entry;
  * @implNote GTUtil
  */
 public class GTUtil {
-    private static final NavigableMap<Long, Byte> tierByVoltage = new TreeMap<>();
-
-    static {
-        for (int i = 0; i < GTValues.V.length; i++) {
-            tierByVoltage.put(GTValues.V[i], (byte) i);
-        }
-    }
 
     @Nullable
     public static Direction determineWrenchingSide(Direction facing, float x, float y, float z) {
@@ -96,22 +96,63 @@ public class GTUtil {
     }
 
     /**
-     * @return lowest tier that can handle passed voltage
+     * @param array Array sorted with natural order
+     * @param value Value to search for
+     * @return Index of the nearest value lesser or equal than {@code value},
+     * or {@code -1} if there's no entry matching the condition
+     */
+    public static int nearestLesserOrEqual(@Nonnull long[] array, long value) {
+        int low = 0, high = array.length - 1;
+        while (true) {
+            int median = (low + high) / 2;
+            if (array[median] <= value) {
+                if (low == high) return low;
+                low = median + 1;
+            } else {
+                if (low == high) return low - 1;
+                high = median - 1;
+            }
+        }
+    }
+
+    /**
+     * @param array Array sorted with natural order
+     * @param value Value to search for
+     * @return Index of the nearest value lesser than {@code value},
+     * or {@code -1} if there's no entry matching the condition
+     */
+    public static int nearestLesser(@Nonnull long[] array, long value) {
+        int low = 0, high = array.length - 1;
+        while (true) {
+            int median = (low + high) / 2;
+            if (array[median] < value) {
+                if (low == high) return low;
+                low = median + 1;
+            } else {
+                if (low == high) return low - 1;
+                high = median - 1;
+            }
+        }
+    }
+
+    /**
+     * @return Lowest tier of the voltage that can handle {@code voltage}; that is,
+     * a voltage with value greater than equal than {@code voltage}. If there's no
+     * tier that can handle it, {@code MAX} is returned.
      */
     public static byte getTierByVoltage(long voltage) {
-        // TODO do we really need UHV+
-        if (voltage > GTValues.V[GTValues.UV]) return GTValues.UV;
-        return tierByVoltage.ceilingEntry(voltage).getValue();
+        // Yes, yes we do need UHV+.
+        return (byte) Math.min(GTValues.MAX, nearestLesser(GTValues.V, voltage) + 1);
     }
 
     /**
      * Ex: This method turns both 1024 and 512 into HV.
      *
-     * @return the highest tier below or equal to the voltage value given
+     * @return the highest voltage tier with value below or equal to {@code voltage}, or
+     * {@code ULV} if there's no tier below
      */
     public static byte getFloorTierByVoltage(long voltage) {
-        if (voltage < GTValues.V[GTValues.ULV]) return GTValues.ULV;
-        return tierByVoltage.floorEntry(voltage).getValue();
+        return (byte) Math.max(GTValues.ULV, nearestLesserOrEqual(GTValues.V, voltage));
     }
 
     public static ItemStack copy(ItemStack... stacks) {
@@ -205,6 +246,14 @@ public class GTUtil {
         return false;
     }
 
+    public static boolean isAltDown() {
+        if (LDLib.isClient()) {
+            var id = Minecraft.getInstance().getWindow().getWindow();
+            return InputConstants.isKeyDown(id, GLFW.GLFW_KEY_LEFT_ALT) || InputConstants.isKeyDown(id, GLFW.GLFW_KEY_RIGHT_ALT);
+        }
+        return false;
+    }
+
     public static boolean isFluidStackAmountDivisible(FluidStack fluidStack, int divisor) {
         return fluidStack.getAmount() % divisor == 0 && fluidStack.getAmount() % divisor != fluidStack.getAmount() && fluidStack.getAmount() / divisor != 0;
     }
@@ -222,15 +271,15 @@ public class GTUtil {
      * Determines dye color nearest to specified RGB color
      */
     public static DyeColor determineDyeColor(int rgbColor) {
-        Color c = new Color(rgbColor);
+        float[] c = GradientUtil.getRGB(rgbColor);
 
         Map<Double, DyeColor> distances = new HashMap<>();
         for (DyeColor dyeColor : DyeColor.values()) {
-            Color c2 = new Color(dyeColor.getTextColor());
+            float[] c2 = GradientUtil.getRGB(dyeColor.getTextColor());
 
-            double distance = (c.getRed() - c2.getRed()) * (c.getRed() - c2.getRed())
-                    + (c.getGreen() - c2.getGreen()) * (c.getGreen() - c2.getGreen())
-                    + (c.getBlue() - c2.getBlue()) * (c.getBlue() - c2.getBlue());
+            double distance = (c[0] - c2[0]) * (c[0] - c2[0])
+                    + (c[1] - c2[1]) * (c[1] - c2[1])
+                    + (c[2] - c2[2]) * (c[2] - c2[2]);
 
             distances.put(distance, dyeColor);
         }
@@ -239,9 +288,51 @@ public class GTUtil {
         return distances.get(min);
     }
 
+    public static int convertRGBtoARGB(int colorValue) {
+        return convertRGBtoARGB(colorValue, 0xFF);
+    }
+
+    public static int convertRGBtoARGB(int colorValue, int opacity) {
+        // preserve existing opacity if present
+        if (((colorValue >> 24) & 0xFF) != 0) return colorValue;
+        return opacity << 24 | colorValue;
+    }
+
     @ExpectPlatform
     public static long getPumpBiomeModifier(Holder<Biome> biome) {
         throw new AssertionError();
+    }
+
+    /**
+     * @param material the material to use
+     * @return the correct "molten" fluid for a material
+     */
+    @Nullable
+    public static Fluid getMoltenFluid(@Nonnull Material material) {
+        if (material.hasProperty(PropertyKey.ALLOY_BLAST))
+            return material.getProperty(PropertyKey.FLUID).getStorage().get(FluidStorageKeys.MOLTEN);
+        if (!TagPrefix.ingotHot.doGenerateItem(material) && material.hasProperty(PropertyKey.FLUID))
+            return material.getProperty(PropertyKey.FLUID).getStorage().get(FluidStorageKeys.LIQUID);
+        return null;
+    }
+
+    /**
+     * Get fluidstack from a container.
+     *
+     * @param ingredient the fluidstack or fluid container item
+     * @return the fluidstack in container
+     */
+    @Nullable
+    public static FluidStack getFluidFromContainer(Object ingredient) {
+        if (ingredient instanceof FluidStack) {
+            return (FluidStack) ingredient;
+        } else if (ingredient instanceof ItemStack) {
+            ItemStack itemStack = (ItemStack) ingredient;
+            IFluidTransfer fluidHandler = FluidTransferHelper.getFluidTransfer(itemStack);
+            if (fluidHandler != null)
+                return fluidHandler.drain(Integer.MAX_VALUE, false);
+        }
+        return null;
     }
 
 }

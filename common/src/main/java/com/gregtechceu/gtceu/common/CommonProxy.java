@@ -31,6 +31,8 @@ public class CommonProxy {
     public static void init() {
         GTCEu.LOGGER.info("GTCEu common proxy init!");
         ConfigHolder.init();
+        GTCEu.initializeHighTier();
+
         UIFactory.register(MachineUIFactory.INSTANCE);
         UIFactory.register(CoverUIFactory.INSTANCE);
         UIFactory.register(GTUIEditorFactory.INSTANCE);
@@ -61,8 +63,7 @@ public class CommonProxy {
         // fabric exclusive, squeeze this in here to register before stuff is used
         GTRegistries.REGISTRATE.registerRegistrate();
         WorldGenLayers.registerAll();
-        GTOres.init();
-        GTBedrockFluids.init();
         GTFeatures.init();
+        GTFeatures.register();
     }
 }

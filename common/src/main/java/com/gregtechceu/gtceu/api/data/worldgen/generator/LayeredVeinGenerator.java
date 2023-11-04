@@ -3,12 +3,14 @@ package com.gregtechceu.gtceu.api.data.worldgen.generator;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.worldgen.GTLayerPattern;
-import com.gregtechceu.gtceu.api.data.worldgen.GTOreFeature;
-import com.gregtechceu.gtceu.api.data.worldgen.GTOreFeatureEntry;
+import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
+import com.gregtechceu.gtceu.api.data.worldgen.ores.OreBlockPlacer;
+import com.gregtechceu.gtceu.api.data.worldgen.ores.OreVeinUtil;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
 import net.minecraft.util.Mth;
@@ -18,8 +20,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.BulkSectionAccess;
 import net.minecraft.world.level.chunk.LevelChunkSection;
+import net.minecraft.world.level.levelgen.XoroshiroRandomSource;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
-import org.apache.commons.lang3.mutable.MutableInt;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,12 +40,12 @@ public class LayeredVeinGenerator extends VeinGenerator {
 
     public List<GTLayerPattern> layerPatterns;
 
-    public LayeredVeinGenerator(GTOreFeatureEntry entry) {
+    public LayeredVeinGenerator(GTOreDefinition entry) {
         super(entry);
     }
 
     @Override
-    public Map<Either<BlockState, Material>, Integer> getAllEntries() {
+    public List<Map.Entry<Either<BlockState, Material>, Integer>> getAllEntries() {
         return layerPatterns.stream()
                 .flatMap(pattern -> pattern.layers.stream())
                 .map(layer -> Map.entry(layer.targets.stream().flatMap(entry ->
@@ -55,137 +57,129 @@ public class LayeredVeinGenerator extends VeinGenerator {
                     return Stream.generate(() -> Map.entry(iterator.next(), entry.getValue())).limit(entry.getKey().size());
                 })
                 .distinct()
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+                .collect(Collectors.toList());
     }
 
     @Override
-    public boolean generate(WorldGenLevel level, RandomSource random, GTOreFeatureEntry entry, BlockPos origin) {
+    public Map<BlockPos, OreBlockPlacer> generate(WorldGenLevel level, RandomSource random, GTOreDefinition entry, BlockPos origin) {
+        Map<BlockPos, OreBlockPlacer> generatedBlocks = new Object2ObjectOpenHashMap<>();
         var patternPool = this.layerPatterns;
 
         if (patternPool.isEmpty())
-            return false;
+            return Map.of();
 
         GTLayerPattern layerPattern = patternPool.get(random.nextInt(patternPool.size()));
 
-        MutableInt placedAmount = new MutableInt(0);
         int size = entry.getClusterSize();
         float density = entry.getDensity();
+
         int radius = Mth.ceil(size / 2f);
-        int x0 = origin.getX() - radius;
-        int y0 = origin.getY() - radius;
-        int z0 = origin.getZ() - radius;
-        int width = size + 1;
-        int length = size + 1;
-        int height = size + 1;
+
+        int xMin = origin.getX() - radius;
+        int yMin = origin.getY() - radius;
+        int zMin = origin.getZ() - radius;
+        int width = (radius * 2) + 1;
+        int length = (radius * 2) + 1;
+        int height = (radius * 2) + 1;
 
         if (origin.getY() >= level.getMaxBuildHeight())
-            return false;
+            return Map.of();
 
 
         List<GTLayerPattern.Layer> resolvedLayers = new ArrayList<>();
         List<Float> layerDiameterOffsets = new ArrayList<>();
 
         BlockPos.MutableBlockPos posCursor = new BlockPos.MutableBlockPos();
-        BulkSectionAccess access = new BulkSectionAccess(level);
         int layerCoordinate = random.nextInt(4);
         int slantyCoordinate = random.nextInt(3);
         float slope = random.nextFloat() * .75f;
 
-        try {
+        for (int xOffset = 0; xOffset < width; xOffset++) {
+            float sizeFractionX = xOffset * 2f / width - 1;
+            if ((sizeFractionX * sizeFractionX) > 1)
+                continue;
 
-            for (int xC = 0; xC < width; xC++) {
-                float dx = xC * 2f / width - 1;
-                if (dx * dx > 1)
+            for (int yOffset = 0; yOffset < height; yOffset++) {
+                float sizeFractionY = yOffset * 2f / height - 1;
+                if ((sizeFractionX * sizeFractionX) + (sizeFractionY * sizeFractionY) > 1)
+                    continue;
+                if (level.isOutsideBuildHeight(yMin + yOffset))
                     continue;
 
-                for (int yC = 0; yC < height; yC++) {
-                    float dy = yC * 2f / height - 1;
-                    if (dx * dx + dy * dy > 1)
-                        continue;
-                    if (level.isOutsideBuildHeight(y0 + yC))
-                        continue;
+                for (int zOffset = 0; zOffset < length; zOffset++) {
+                    float sizeFractionZ = zOffset * 2f / length - 1;
 
-                    for (int zC = 0; zC < length; zC++) {
-                        float dz = zC * 2f / height - 1;
+                    int layerIndex = layerCoordinate == 0 ? zOffset : layerCoordinate == 1 ? xOffset : yOffset;
+                    if (slantyCoordinate != layerCoordinate)
+                        layerIndex += Mth.floor(slantyCoordinate == 0 ? zOffset : slantyCoordinate == 1 ? xOffset : yOffset) * slope;
 
-                        int layerIndex = layerCoordinate == 0 ? zC : layerCoordinate == 1 ? xC : yC;
-                        if (slantyCoordinate != layerCoordinate)
-                            layerIndex += Mth.floor(slantyCoordinate == 0 ? zC : slantyCoordinate == 1 ? xC : yC) * slope;
-
-                        while (layerIndex >= resolvedLayers.size()) {
-                            GTLayerPattern.Layer next = layerPattern.rollNext(
-                                    resolvedLayers.isEmpty() ? null : resolvedLayers.get(resolvedLayers.size() - 1),
-                                    random);
-                            float offset = random.nextFloat() * .5f + .5f;
-                            for (int i = 0; i < next.minSize + random.nextInt(1 + next.maxSize - next.minSize); i++) {
-                                resolvedLayers.add(next);
-                                layerDiameterOffsets.add(offset);
-                            }
+                    while (layerIndex >= resolvedLayers.size()) {
+                        GTLayerPattern.Layer next = layerPattern.rollNext(
+                                resolvedLayers.isEmpty() ? null : resolvedLayers.get(resolvedLayers.size() - 1),
+                                random);
+                        float offset = random.nextFloat() * .5f + .5f;
+                        for (int i = 0; i < next.minSize + random.nextInt(1 + next.maxSize - next.minSize); i++) {
+                            resolvedLayers.add(next);
+                            layerDiameterOffsets.add(offset);
                         }
-
-                        if (dx * dx + dy * dy + dz * dz > 1 * layerDiameterOffsets.get(layerIndex))
-                            continue;
-
-                        GTLayerPattern.Layer layer = resolvedLayers.get(layerIndex);
-                        Either<List<OreConfiguration.TargetBlockState>, Material> state = layer.rollBlock(random);
-
-                        int currentX = x0 + xC;
-                        int currentY = y0 + yC;
-                        int currentZ = z0 + zC;
-
-                        posCursor.set(currentX, currentY, currentZ);
-                        if (!level.ensureCanWrite(posCursor))
-                            continue;
-                        LevelChunkSection levelchunksection = access.getSection(posCursor);
-                        if (levelchunksection == null)
-                            continue;
-
-                        int x = SectionPos.sectionRelative(currentX);
-                        int y = SectionPos.sectionRelative(currentY);
-                        int z = SectionPos.sectionRelative(currentZ);
-                        BlockState blockstate = levelchunksection.getBlockState(x, y, z);
-
-                        if (random.nextFloat() <= density) {
-                            state.ifLeft(blockStates -> {
-                                for (OreConfiguration.TargetBlockState targetState : blockStates) {
-                                    if (!GTOreFeature.canPlaceOre(blockstate, access::getBlockState, random, entry, targetState, posCursor))
-                                        continue;
-                                    if (targetState.state.isAir())
-                                        continue;
-                                    levelchunksection.setBlockState(x, y, z, targetState.state, false);
-                                    placedAmount.increment();
-                                    break;
-                                }
-                            }).ifRight(material -> {
-                                if (!GTOreFeature.canPlaceOre(blockstate, access::getBlockState, random, entry, posCursor))
-                                    return;
-                                BlockState currentState = access.getBlockState(posCursor);
-                                var prefix = ChemicalHelper.ORES_INVERSE.get(currentState);
-                                if (prefix == null) return;
-                                Block toPlace = ChemicalHelper.getBlock(prefix, material);
-                                if (toPlace == null || toPlace.defaultBlockState().isAir())
-                                    return;
-                                levelchunksection.setBlockState(x, y, z, toPlace.defaultBlockState(), false);
-                                placedAmount.increment();
-                            });
-                        }
-
                     }
+
+                    if ((sizeFractionX * sizeFractionX) + (sizeFractionY * sizeFractionY) + (sizeFractionZ * sizeFractionZ) > 1 * layerDiameterOffsets.get(layerIndex))
+                        continue;
+
+                    GTLayerPattern.Layer layer = resolvedLayers.get(layerIndex);
+                    Either<List<OreConfiguration.TargetBlockState>, Material> state = layer.rollBlock(random);
+
+                    int currentX = xMin + xOffset;
+                    int currentY = yMin + yOffset;
+                    int currentZ = zMin + zOffset;
+
+                    final var randomSeed = random.nextLong(); // Fully deterministic regardless of chunk order
+
+                    BlockPos currentPos = new BlockPos(currentX, currentY, currentZ);
+                    generatedBlocks.put(currentPos, (access, section) ->
+                            placeBlock(access, section, randomSeed, entry, density, state, currentPos)
+                    );
                 }
             }
-
-        } catch (Throwable throwable1) {
-            try {
-                access.close();
-            } catch (Throwable throwable) {
-                throwable1.addSuppressed(throwable);
-            }
-
-            throw throwable1;
         }
 
-        access.close();
-        return placedAmount.getValue() > 0;
+        return generatedBlocks;
+    }
+
+    private static void placeBlock(BulkSectionAccess access, LevelChunkSection section, long randomSeed,
+                                   GTOreDefinition entry, float density,
+                                   Either<List<OreConfiguration.TargetBlockState>, Material> state, BlockPos pos) {
+        RandomSource random = new XoroshiroRandomSource(randomSeed);
+        int x = SectionPos.sectionRelative(pos.getX());
+        int y = SectionPos.sectionRelative(pos.getY());
+        int z = SectionPos.sectionRelative(pos.getZ());
+
+        BlockState blockstate = section.getBlockState(x, y, z);
+        BlockPos.MutableBlockPos posCursor = pos.mutable();
+
+        if (random.nextFloat() <= density) {
+            state.ifLeft(blockStates -> {
+                for (OreConfiguration.TargetBlockState targetState : blockStates) {
+                    if (!OreVeinUtil.canPlaceOre(blockstate, access::getBlockState, random, entry, targetState, posCursor))
+                        continue;
+                    if (targetState.state.isAir())
+                        continue;
+                    section.setBlockState(x, y, z, targetState.state, false);
+                    break;
+                }
+            }).ifRight(material -> {
+                if (!OreVeinUtil.canPlaceOre(blockstate, access::getBlockState, random, entry, posCursor))
+                    return;
+                BlockState currentState = access.getBlockState(posCursor);
+                var prefix = ChemicalHelper.getOrePrefix(currentState);
+                if (prefix.isEmpty()) return;
+                Block toPlace = ChemicalHelper.getBlock(prefix.get(), material);
+                if (toPlace == null || toPlace.defaultBlockState().isAir())
+                    return;
+                section.setBlockState(x, y, z, toPlace.defaultBlockState(), false);
+            });
+        }
     }
 
     public LayeredVeinGenerator(List<GTLayerPattern> layerPatterns) {
@@ -205,6 +199,11 @@ public class LayeredVeinGenerator extends VeinGenerator {
                 .toList();
         this.layerPatterns = layerPatterns;
         return this;
+    }
+
+    @Override
+    public VeinGenerator copy() {
+        return new LayeredVeinGenerator(this.layerPatterns);
     }
 
     @Override

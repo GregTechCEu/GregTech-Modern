@@ -65,7 +65,7 @@ public class GTEnergyHelperImpl {
 
             @Override
             public long insert(long maxAmount, TransactionContext transaction) {
-                return energyStorage.insert((int) maxAmount, false);
+                return energyStorage.insert(maxAmount, false);
             }
 
             @Override
@@ -75,7 +75,7 @@ public class GTEnergyHelperImpl {
 
             @Override
             public long extract(long maxAmount, TransactionContext transaction) {
-                return energyStorage.extract((int) maxAmount, false);
+                return energyStorage.extract(maxAmount, false);
             }
 
             @Override

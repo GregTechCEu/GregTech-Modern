@@ -11,7 +11,12 @@
     "gtceu:iv_electric_pump",
     "gtceu:luv_electric_pump",
     "gtceu:zpm_electric_pump",
-    "gtceu:uv_electric_pump"
+    "gtceu:uv_electric_pump",
+    "gtceu:uhv_electric_pump",
+    "gtceu:uev_electric_pump",
+    "gtceu:uiv_electric_pump",
+    "gtceu:uxv_electric_pump",
+    "gtceu:opv_electric_pump"
   ],
   "page": "gtceu:covers/pump",
   "position": [

@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.api.registry.registrate.SoundEntryBuilder;
 import com.gregtechceu.gtceu.common.data.GTConfiguredFeatures;
 import com.gregtechceu.gtceu.common.data.GTDamageTypes;
 import com.gregtechceu.gtceu.common.data.GTPlacements;
+import com.gregtechceu.gtceu.common.data.GTWorldgen;
 import com.gregtechceu.gtceu.common.data.forge.GTBiomeModifiers;
 import net.minecraft.Util;
 import net.minecraft.core.HolderLookup;
@@ -22,6 +23,8 @@ import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.registries.VanillaRegistries;
+import net.minecraft.data.worldgen.NoiseData;
+import net.minecraft.data.worldgen.biome.BiomeData;
 import net.minecraft.server.packs.PackType;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -42,7 +45,7 @@ public class DataGenerators {
         var registries = createProvider(registryAccess);
         if (event.includeServer()) {
             var set = Set.of(GTCEu.MOD_ID);
-            generator.addProvider(true, new SoundEntryBuilder.SoundEntryProvider(generator.getPackOutput()));
+            generator.addProvider(true, new SoundEntryBuilder.SoundEntryProvider(generator.getPackOutput(), GTCEu.MOD_ID));
             generator.addProvider(true, new CompassSection.CompassSectionProvider(generator.getPackOutput(), rl -> event.getExistingFileHelper().exists(rl, PackType.CLIENT_RESOURCES)));
             generator.addProvider(true, new CompassNode.CompassNodeProvider(generator.getPackOutput(), rl -> event.getExistingFileHelper().exists(rl, PackType.CLIENT_RESOURCES)));
             generator.addProvider(true, bindRegistries(BiomeTagsProviderImpl::new, registries));
@@ -53,6 +56,7 @@ public class DataGenerators {
                     output, registries, new RegistrySetBuilder()
                     .add(Registries.CONFIGURED_FEATURE, GTConfiguredFeatures::bootstrap)
                     .add(Registries.PLACED_FEATURE, GTPlacements::bootstrap)
+                    .add(Registries.DENSITY_FUNCTION, GTWorldgen::bootstrapDensityFunctions)
                     .add(ForgeRegistries.Keys.BIOME_MODIFIERS, ctx -> GTBiomeModifiers.bootstrap(ctx, provider)),
                     set, "Worldgen Data"), registries));
         }
@@ -73,11 +77,8 @@ public class DataGenerators {
 
         return vanillaLookup.thenApply(provider -> {
             var builder = new RegistrySetBuilder()
-                    .add(Registries.DIMENSION_TYPE, InitDimensionTypes::init)
-                    .add(Registries.STRUCTURE, InitStructures::initDatagenStructures)
-                    .add(Registries.STRUCTURE_SET, InitStructures::initDatagenStructureSets)
-                    .add(Registries.BIOME, InitBiomes::init)
-                    .add(Registries.DAMAGE_TYPE, AEDamageTypes::init);
+                    .add(Registries.NOISE, NoiseData::bootstrap)
+                    .add(Registries.BIOME, BiomeData::bootstrap);
 
             return builder.buildPatch(registryAccess, provider);
         });

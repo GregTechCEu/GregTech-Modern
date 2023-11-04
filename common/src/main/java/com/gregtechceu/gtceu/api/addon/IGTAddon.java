@@ -1,16 +1,24 @@
 package com.gregtechceu.gtceu.api.addon;
 
+import com.gregtechceu.gtceu.api.addon.events.KJSRecipeKeyEvent;
 import com.gregtechceu.gtceu.api.addon.events.MaterialCasingCollectionEvent;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.function.Consumer;
 
 public interface IGTAddon {
 
     /**
-     * You can freely initialize blocks/items/etc. here, this runs after GTCEu has setup it's content
+     * This runs after GTCEu has setup it's content.
      */
     void initializeAddon();
+
+    /**
+     * this addon's Mod id.
+     * @return the Mod ID this addon uses for content.
+     */
+    String addonModId();
 
     /**
      * Call init on your custom TagPrefix class(es) here
@@ -48,20 +56,6 @@ public interface IGTAddon {
     }
 
     /**
-     * Call init on your custom RecipeType class(es) here
-     */
-    default void registerRecipeTypes() {
-
-    }
-
-    /**
-     * Call init on your custom Machine class(es) here
-     */
-    default void registerMachines() {
-
-    }
-
-    /**
      * Call init on your custom IWorldGenLayer class(es) here
      */
     default void registerWorldgenLayers() {
@@ -75,7 +69,11 @@ public interface IGTAddon {
 
     }
 
-    default void initializeRecipes(Consumer<FinishedRecipe> provider) {
+    default void addRecipes(Consumer<FinishedRecipe> provider) {
+
+    }
+
+    default void removeRecipes(Consumer<ResourceLocation> consumer) {
 
     }
 
@@ -86,7 +84,15 @@ public interface IGTAddon {
 
     }
 
-//    default void registerRecipeKeys(KJSRecipeKeyEvent event) {
-//
-//    }
+    default void registerRecipeKeys(KJSRecipeKeyEvent event) {
+
+    }
+
+    /**
+     * Does this addon require high-tier content to be enabled?
+     * @return if this addon requires highTier.
+     */
+    default boolean requiresHighTier() {
+        return false;
+    }
 }

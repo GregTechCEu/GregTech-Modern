@@ -12,6 +12,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.material.Fluid;
 
 import java.util.List;
 
@@ -37,7 +38,7 @@ public class TooltipsHandler {
         }
 
         // Formula
-        var unificationEntry = ChemicalHelper.getUnificationEntry(stack.getItem());
+        var unificationEntry = ChemicalHelper.getUnificationEntry(stack.getItem()); // TODO optimize getOrComputeUnificationEntry so we can use that
         if (unificationEntry != null && unificationEntry.material != null) {
             if (unificationEntry.material.getChemicalFormula() != null && !unificationEntry.material.getChemicalFormula().isEmpty())
                 tooltips.add(1, Component.literal(unificationEntry.material.getChemicalFormula()).withStyle(ChatFormatting.YELLOW));
@@ -55,6 +56,14 @@ public class TooltipsHandler {
                     tooltips.addAll(1, multiLang);
                 }
             }
+        }
+    }
+
+    public static void appendFluidTooltips(Fluid fluid, List<Component> tooltips, TooltipFlag flag) {
+        var material = ChemicalHelper.getMaterial(fluid);
+        if (material != null) {
+            if (material.getChemicalFormula() != null && !material.getChemicalFormula().isEmpty())
+                tooltips.add(1, Component.literal(material.getChemicalFormula()).withStyle(ChatFormatting.YELLOW));
         }
     }
 }

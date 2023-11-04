@@ -75,6 +75,11 @@ public class MaterialFlags {
      */
     public static final MaterialFlag STICKY = new MaterialFlag.Builder("sticky").build();
 
+    /**
+     * Add to material if it is some kind of phosphorescent
+     */
+    public static final MaterialFlag PHOSPHORESCENT = new MaterialFlag.Builder("phosphorescent").build();
+
     //////////////////
     //     DUST     //
     //////////////////
@@ -172,6 +177,23 @@ public class MaterialFlags {
 
     public static final MaterialFlag BLAST_FURNACE_CALCITE_TRIPLE = new MaterialFlag.Builder("blast_furnace_calcite_triple")
             .requireProps(PropertyKey.DUST)
+            .build();
+
+
+    // GCyM
+    /**
+     * Use to disable alloy blast recipes from generating
+     */
+    public static final MaterialFlag DISABLE_ALLOY_BLAST = new MaterialFlag.Builder("disable_alloy_blast")
+            .requireProps(PropertyKey.BLAST, PropertyKey.FLUID)
+            .build();
+
+    /**
+     * Use to disable everything related to alloy blasting
+     */
+    public static final MaterialFlag DISABLE_ALLOY_PROPERTY = new MaterialFlag.Builder("disable_alloy_property")
+            .requireProps(PropertyKey.BLAST, PropertyKey.FLUID)
+            .requireFlags(DISABLE_ALLOY_BLAST)
             .build();
 
     /////////////////

@@ -32,26 +32,28 @@ public class SoundEntryBuilder {
 
     public static class SoundEntryProvider implements DataProvider {
         private final PackOutput output;
+        private final String modId;
 
-        public SoundEntryProvider(PackOutput output) {
+        public SoundEntryProvider(PackOutput output, String modId) {
             this.output = output;
+            this.modId = modId;
         }
 
         @Override
         public CompletableFuture<?> run(CachedOutput cache) {
-            return generate(output.getOutputFolder(PackOutput.Target.RESOURCE_PACK).resolve(GTCEu.MOD_ID), cache);
+            return generate(output.getOutputFolder(PackOutput.Target.RESOURCE_PACK).resolve(modId), cache);
         }
 
         @Override
         public String getName() {
-            return "GTCEU's Custom Sounds";
+            return modId + "'s Custom Sounds";
         }
 
         public CompletableFuture<?> generate(Path path, CachedOutput cache) {
             JsonObject json = new JsonObject();
             try {
                 for (SoundEntry sound : GTRegistries.SOUNDS) {
-                    sound.write(json);
+                    if (sound.getId().getNamespace().equals(modId)) sound.write(json);
                 }
             } catch (Exception ignored) {
             }

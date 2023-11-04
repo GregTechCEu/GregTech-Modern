@@ -1,0 +1,15 @@
+{
+  "replace": false,
+  "values": [
+    "gtceu:oil",
+    "gtceu:flowing_oil",
+    "gtceu:oil_heavy",
+    "gtceu:flowing_oil_heavy",
+    "gtceu:oil_medium",
+    "gtceu:flowing_oil_medium",
+    "gtceu:oil_light",
+    "gtceu:flowing_oil_light",
+    "gtceu:natural_gas",
+    "gtceu:flowing_natural_gas"
+  ]
+}

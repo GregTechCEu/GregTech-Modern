@@ -4,7 +4,8 @@ import com.google.common.collect.Lists;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
-import com.gregtechceu.gtceu.api.data.worldgen.GTOreFeatureEntry;
+import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
+import com.gregtechceu.gtceu.api.data.worldgen.ores.OreBlockPlacer;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.mojang.datafixers.util.Either;
 import com.mojang.datafixers.util.Pair;
@@ -16,8 +17,7 @@ import lombok.experimental.Accessors;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.SectionPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
@@ -33,6 +33,8 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.BuddingAmethystBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.chunk.BulkSectionAccess;
+import net.minecraft.world.level.chunk.LevelChunkSection;
 import net.minecraft.world.level.levelgen.GeodeCrackSettings;
 import net.minecraft.world.level.levelgen.GeodeLayerSettings;
 import net.minecraft.world.level.levelgen.LegacyRandomSource;
@@ -100,24 +102,28 @@ public class GeodeVeinGenerator extends VeinGenerator {
     @Setter
     public int invalidBlocksThreshold = 0;
 
-    public GeodeVeinGenerator(GTOreFeatureEntry entry) {
+    public GeodeVeinGenerator(GTOreDefinition entry) {
         super(entry);
     }
 
     @Override
-    public Map<Either<BlockState, Material>, Integer> getAllEntries() {
+    public List<Map.Entry<Either<BlockState, Material>, Integer>> getAllEntries() {
         RandomSource source = new LegacyRandomSource(0);
-        return Map.of(
-                geodeBlockSettings.fillingProvider.mapBoth(provider -> provider.getState(source, BlockPos.ZERO), Function.identity()), 1,
-                geodeBlockSettings.innerLayerProvider.mapBoth(provider -> provider.getState(source, BlockPos.ZERO), Function.identity()), 1,
-                geodeBlockSettings.alternateInnerLayerProvider.mapBoth(provider -> provider.getState(source, BlockPos.ZERO), Function.identity()), 1,
-                geodeBlockSettings.middleLayerProvider.mapBoth(provider -> provider.getState(source, BlockPos.ZERO), Function.identity()), 1,
-                geodeBlockSettings.outerLayerProvider.mapBoth(provider -> provider.getState(source, BlockPos.ZERO), Function.identity()), 1
+        return List.of(
+                Map.entry(geodeBlockSettings.fillingProvider.mapBoth(provider -> provider.getState(source, BlockPos.ZERO), Function.identity()), 1),
+                Map.entry(geodeBlockSettings.innerLayerProvider.mapBoth(provider -> provider.getState(source, BlockPos.ZERO), Function.identity()), 1),
+                Map.entry(geodeBlockSettings.alternateInnerLayerProvider.mapBoth(provider -> provider.getState(source, BlockPos.ZERO), Function.identity()), 1),
+                Map.entry(geodeBlockSettings.middleLayerProvider.mapBoth(provider -> provider.getState(source, BlockPos.ZERO), Function.identity()), 1),
+                Map.entry(geodeBlockSettings.outerLayerProvider.mapBoth(provider -> provider.getState(source, BlockPos.ZERO), Function.identity()), 1)
         );
     }
 
     @Override
-    public boolean generate(WorldGenLevel level, RandomSource random, GTOreFeatureEntry entry, BlockPos origin) {
+    public Map<BlockPos, OreBlockPlacer> generate(WorldGenLevel level, RandomSource random, GTOreDefinition entry, BlockPos origin) {
+        // TODO refactor geode sizes for the new ore generation system. For now, geode veins are still generated in place.
+
+        BulkSectionAccess access = new BulkSectionAccess(level);
+
         BlockState blockState;
         int offset;
         int offset2;
@@ -139,9 +145,9 @@ public class GeodeVeinGenerator extends VeinGenerator {
         for (offset2 = 0; offset2 < distributionSample; ++offset2) {
             offset = this.outerWallDistance.sample(random);
             BlockPos origin2 = origin.offset(offset, this.outerWallDistance.sample(random), this.outerWallDistance.sample(random));
-            blockState = level.getBlockState(origin2);
+            blockState = access.getBlockState(origin2);
             if ((blockState.isAir() || blockState.is(BlockTags.GEODE_INVALID_BLOCKS)) && ++invalidBlocksCount > this.invalidBlocksThreshold) {
-                return false;
+                return Map.of();
             }
             points.add(Pair.of(origin2, this.pointOffset.sample(random)));
         }
@@ -179,8 +185,13 @@ public class GeodeVeinGenerator extends VeinGenerator {
                 t += Mth.fastInvSqrt(pos.distSqr(origin4) + (double)geodeCrackSettings.crackPointOffset) + noiseValue;
             }
             if (s < outerSize) continue;
+            if (!level.ensureCanWrite(pos))
+                continue;
+            LevelChunkSection section = access.getSection(pos);
+            if (section == null)
+                continue;
             if (doCrack && t >= crackSize && s < fillingSize) {
-                this.safeSetBlock(level, pos, Blocks.AIR.defaultBlockState(), placementPredicate);
+                this.safeSetBlock(access, section, pos, Blocks.AIR.defaultBlockState(), placementPredicate);
                 for (Direction direction : DIRECTIONS) {
                     BlockPos origin5 = pos.relative(direction);
                     FluidState fluidState = level.getFluidState(origin5);
@@ -190,26 +201,26 @@ public class GeodeVeinGenerator extends VeinGenerator {
                 continue;
             }
             if (s >= fillingSize) {
-                this.safeSetBlock(level, pos, getStateFromEither(geodeBlockSettings.fillingProvider, geodeBlockSettings, random, pos), placementPredicate);
+                this.safeSetBlock(access, section, pos, getStateFromEither(geodeBlockSettings.fillingProvider, geodeBlockSettings, random, pos), placementPredicate);
                 continue;
             }
             if (s >= innerSize) {
                 boolean useAltLayer = (double)random.nextFloat() < this.useAlternateLayer0Chance;
                 if (useAltLayer) {
-                    this.safeSetBlock(level, pos, getStateFromEither(geodeBlockSettings.alternateInnerLayerProvider, geodeBlockSettings, random, pos), placementPredicate);
+                    this.safeSetBlock(access, section, pos, getStateFromEither(geodeBlockSettings.alternateInnerLayerProvider, geodeBlockSettings, random, pos), placementPredicate);
                 } else {
-                    this.safeSetBlock(level, pos, getStateFromEither(geodeBlockSettings.innerLayerProvider, geodeBlockSettings, random, pos), placementPredicate);
+                    this.safeSetBlock(access, section, pos, getStateFromEither(geodeBlockSettings.innerLayerProvider, geodeBlockSettings, random, pos), placementPredicate);
                 }
                 if (this.placementsRequireLayer0Alternate && !useAltLayer || !((double)random.nextFloat() < this.usePotentialPlacementsChance)) continue;
                 positions.add(pos.immutable());
                 continue;
             }
             if (s >= middleSize) {
-                this.safeSetBlock(level, pos, getStateFromEither(geodeBlockSettings.middleLayerProvider, geodeBlockSettings, random, pos), placementPredicate);
+                this.safeSetBlock(access, section, pos, getStateFromEither(geodeBlockSettings.middleLayerProvider, geodeBlockSettings, random, pos), placementPredicate);
                 continue;
             }
             if (!(s >= outerSize)) continue;
-            this.safeSetBlock(level, pos, getStateFromEither(geodeBlockSettings.outerLayerProvider, geodeBlockSettings, random, pos), placementPredicate);
+            this.safeSetBlock(access, section, pos, getStateFromEither(geodeBlockSettings.outerLayerProvider, geodeBlockSettings, random, pos), placementPredicate);
         }
         List<BlockState> innerPlacements = geodeBlockSettings.innerPlacements;
         block5: for (BlockPos origin2 : positions) {
@@ -219,22 +230,32 @@ public class GeodeVeinGenerator extends VeinGenerator {
                     blockState = blockState.setValue(BlockStateProperties.FACING, direction2);
                 }
                 BlockPos origin6 = origin2.relative(direction2);
-                BlockState blockState2 = level.getBlockState(origin6);
+                BlockState blockState2 = access.getBlockState(origin6);
                 if (blockState.hasProperty(BlockStateProperties.WATERLOGGED)) {
                     blockState = blockState.setValue(BlockStateProperties.WATERLOGGED, blockState2.getFluidState().isSource());
                 }
                 if (!BuddingAmethystBlock.canClusterGrowAtState(blockState2)) continue;
-                this.safeSetBlock(level, origin6, blockState, placementPredicate);
+                if (!level.ensureCanWrite(origin6))
+                    continue;
+                LevelChunkSection section = access.getSection(origin6);
+                if (section == null)
+                    continue;
+                this.safeSetBlock(access, section, origin6, blockState, placementPredicate);
                 continue block5;
             }
         }
-        return true;
+
+        access.close();
+        return Map.of();
     }
 
 
-    protected void safeSetBlock(WorldGenLevel level, BlockPos pos, BlockState state, Predicate<BlockState> oldState) {
+    protected void safeSetBlock(BulkSectionAccess level, LevelChunkSection section, BlockPos pos, BlockState state, Predicate<BlockState> oldState) {
         if (oldState.test(level.getBlockState(pos))) {
-            level.setBlock(pos, state, 2);
+            int x = SectionPos.sectionRelative(pos.getX());
+            int y = SectionPos.sectionRelative(pos.getY());
+            int z = SectionPos.sectionRelative(pos.getZ());
+            section.setBlockState(x, y, z, state, false);
         }
     }
 
@@ -245,6 +266,11 @@ public class GeodeVeinGenerator extends VeinGenerator {
     @Override
     public VeinGenerator build() {
         return this;
+    }
+
+    @Override
+    public VeinGenerator copy() {
+        return new GeodeVeinGenerator(this.geodeBlockSettings, this.geodeLayerSettings, this.geodeCrackSettings, this.usePotentialPlacementsChance, this.useAlternateLayer0Chance, this.placementsRequireLayer0Alternate, this.outerWallDistance, this.distributionPoints, this.pointOffset, this.minGenOffset, this.maxGenOffset, this.noiseMultiplier, this.invalidBlocksThreshold);
     }
 
     @Override

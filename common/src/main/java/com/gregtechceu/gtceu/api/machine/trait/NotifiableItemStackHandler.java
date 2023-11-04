@@ -47,7 +47,7 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
         this.handlerIO = handlerIO;
         this.storage = transferFactory.apply(slots);
         this.capabilityIO = capabilityIO;
-        this.storage.setOnContentsChanged(this::onContentChanged);
+        this.storage.setOnContentsChanged(this::onContentsChanged);
     }
 
     public NotifiableItemStackHandler(MetaMachine machine, int slots, IO handlerIO, IO capabilityIO) {
@@ -63,7 +63,7 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
         return this;
     }
 
-    protected void onContentChanged() {
+    public void onContentsChanged() {
         isEmpty = null;
         updateTimeStamp(machine.getLevel());
         notifyListeners();
@@ -155,6 +155,7 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
         var level = getMachine().getLevel();
         var pos = getMachine().getPos();
         for (Direction facing : facings) {
+            if (facing == null) continue; // TODO find actual fix
             ItemTransferHelper.exportToTarget(this, Integer.MAX_VALUE, f -> true, level, pos.relative(facing), facing.getOpposite());
         }
     }
@@ -183,9 +184,9 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
 
     @NotNull
     @Override
-    public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
+    public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate, boolean notifyChange) {
         if (canCapInput()) {
-            return storage.insertItem(slot, stack, simulate);
+            return storage.insertItem(slot, stack, simulate, notifyChange);
         }
         return stack;
     }
@@ -196,9 +197,9 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
 
     @NotNull
     @Override
-    public ItemStack extractItem(int slot, int amount, boolean simulate) {
+    public ItemStack extractItem(int slot, int amount, boolean simulate, boolean notifyChange) {
         if (canCapOutput()) {
-            return storage.extractItem(slot, amount, simulate);
+            return storage.extractItem(slot, amount, simulate, notifyChange);
         }
         return ItemStack.EMPTY;
     }
@@ -215,6 +216,17 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
     @Override
     public boolean isItemValid(int slot, @NotNull ItemStack stack) {
         return storage.isItemValid(slot, stack);
+    }
+
+    @NotNull
+    @Override
+    public Object createSnapshot() {
+        return storage.createSnapshot();
+    }
+
+    @Override
+    public void restoreFromSnapshot(Object snapshot) {
+        storage.restoreFromSnapshot(snapshot);
     }
 
 }

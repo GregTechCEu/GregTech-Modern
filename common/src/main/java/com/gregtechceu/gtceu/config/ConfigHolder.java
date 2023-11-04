@@ -30,6 +30,8 @@ public class ConfigHolder {
     @Configurable
     @Configurable.Comment("Config options for Mod Compatibility")
     public CompatibilityConfigs compat = new CompatibilityConfigs();
+    @Configurable
+    public DeveloperConfigs dev = new DeveloperConfigs();
 
     public static class RecipeConfigs {
         @Configurable
@@ -97,6 +99,9 @@ public class ConfigHolder {
         @Configurable.Comment("Config options regarding GTEU compatibility with other energy systems")
         public EnergyCompatConfig energy = new EnergyCompatConfig();
 
+        @Configurable.Comment("Config options regarding GTCEu compatibility with AE2")
+        public AE2CompatConfig ae2 = new AE2CompatConfig();
+
         @Configurable
         @Configurable.Comment({"Whether to hide facades of all blocks in JEI and creative search menu.", "Default: true"})
         public boolean hideFacadesInJEI = true;
@@ -129,34 +134,77 @@ public class ConfigHolder {
             @Configurable.Range(min = 1, max = 16)
             public int euToPlatformRatio = 4;
         }
+
+        public static class AE2CompatConfig {
+            @Configurable.Comment({"The interval between ME Hatch/Bus interact ME network.", "It may cause lag if the interval is too small.", "Default: 2 sec"})
+            @Configurable.Range(min = 1, max = 80)
+            public int updateIntervals = 40;
+
+            @Configurable.Comment({"The energy consumption of ME Hatch/Bus.", "Default: 1.0AE/t"})
+            @Configurable.DecimalRange(min = 0.0, max = 10.0)
+            public double meHatchEnergyUsage = 1.0;
+        }
     }
 
     public static class WorldGenConfigs {
         @Configurable
+        @Configurable.Comment({"Rubber Tree spawn chance (% per chunk)", "Default: 0.5"})
+        public float rubberTreeSpawnChance = 0.5f;
+
+        @Configurable
         @Configurable.Comment({"Should all Stone Types drop unique Ore Item Blocks?", "Default: false (meaning only Stone, Netherrack, and Endstone)"})
-        public boolean allUniqueStoneTypes;
+        public boolean allUniqueStoneTypes = false;
 
         @Configurable
         @Configurable.Comment({"Should Sand-like ores fall?", "This includes gravel, sand, and red sand ores.", "Default: false (no falling ores)"})
-        public boolean sandOresFall;
+        public boolean sandOresFall = false;
 
         @Configurable
-        @Configurable.Range(min = 0, max = 127)
-        @Configurable.Comment({"Radius that ore veins will check for existing ones.", "If one is found, the vein will not spawn.", "Default: 3"})
-        public int oreVeinScanRadius = 3;
+        public OreVeinConfigs oreVeins = new OreVeinConfigs();
 
-        @Configurable
-        @Configurable.Range(min = 0, max = 8)
-        @Configurable.Comment({"Maximum worldgen feature size in chunks",
-                "if a vein is larger than this, Minecraft complains in logs.",
-                "If that happens, either increase this or make your veins smaller.",
-                "NOTE: Larger veins can cause noticeable worldgen lag!",
-                "Default: 2"})
-        public int maxFeatureChunkSize = 2;
+        public static class OreVeinConfigs {
+            @Configurable
+            @Configurable.Range(min = 1, max = 32)
+            @Configurable.Comment({
+                    "The grid size (in chunks) for ore vein generation",
+                    "Default: 3"
+            })
+            public int oreVeinGridSize = 3;
 
-        @Configurable
-        @Configurable.Comment({"Debug ore vein placement? (will print placed veins to server's debug.log)", "Default: false (no placement printout in debug.log)"})
-        public boolean debugWorldgen;
+            @Configurable
+            @Configurable.Range(min = 0, max = 32 * 16)
+            @Configurable.Comment({
+                    "The maximum random offset (in blocks) from the grid for generating an ore vein.",
+                    "Default: 12"
+            })
+            public int oreVeinRandomOffset = 12;
+
+            @Configurable
+            @Configurable.Comment({"Prevents regular vanilla ores from being generated outside GregTech ore veins", "Default: true"})
+            public boolean removeVanillaOreGen = true;
+
+            @Configurable
+            @Configurable.Comment({"Prevents vanilla's large ore veins from being generated", "Default: true"})
+            public boolean removeVanillaLargeOreVeins = true;
+
+
+            @Configurable
+            @Configurable.Comment({"Multiplier to bedrock ore generation amount", "Default: 1.0f"})
+            public float bedrockOreMultiplier = 1.0f;
+            @Configurable
+            @Configurable.Comment({"Make bedrock ore/fluid veins infinite?", "Default: false"})
+            public boolean infiniteBedrockOresFluids = false;
+
+            @Configurable
+            @Configurable.Comment({
+                    "Sets the maximum number of chunks that may be cached for ore vein generation.",
+                    "Higher values may improve world generation performance, but at the cost of more RAM usage.",
+                    "If you substantially increase the ore vein grid size, random vein offset, or have very large (custom) veins, you may need to increase this value as well.",
+                    "Default: 512 (requires restarting the server / re-opening the world)"
+            })
+            public int oreGenerationChunkCacheSize = 512;
+
+        }
     }
 
     public static class MachineConfigs {
@@ -167,14 +215,14 @@ public class ConfigHolder {
 
         @Configurable
         @Configurable.Comment({"Whether to require a Wrench, Wirecutter, or other GregTech tools to break machines, casings, wires, and more.", "Default: false"})
-        public boolean requireGTToolsForBlocks;
+        public boolean requireGTToolsForBlocks = false;
         @Configurable
         @Configurable.Comment({"Whether machines explode in rainy weather or when placed next to certain terrain, such as fire or lava", "Default: false"})
-        public boolean doTerrainExplosion;
+        public boolean doTerrainExplosion = false;
         @Configurable
         @Configurable.Comment({"Whether machines or boilers damage the terrain when they explode.",
                 "Note machines and boilers always explode when overloaded with power or met with special conditions, regardless of this config.", "Default: true"})
-        public boolean doesExplosionDamagesTerrain;
+        public boolean doesExplosionDamagesTerrain = false;
         @Configurable
         @Configurable.Comment({"Divisor for Recipe Duration per Overclock.", "Default: 2.0"})
         @Configurable.DecimalRange(min = 2.0, max = 3.0)
@@ -185,7 +233,7 @@ public class ConfigHolder {
         public boolean machineSounds = true;
         @Configurable
         @Configurable.Comment({"Whether Steam Multiblocks should use Steel instead of Bronze.", "Default: false"})
-        public boolean steelSteamMultiblocks;
+        public boolean steelSteamMultiblocks = false;
         @Configurable
         @Configurable.Comment({"Whether to enable the cleanroom, required for various recipes.", "Default: true"})
         public boolean enableCleanroom = true;
@@ -210,6 +258,28 @@ public class ConfigHolder {
         @Configurable
         @Configurable.Comment({"Wether to add a \"Processing Array\"", "Default: true"})
         public boolean doProcessingArray = true;
+        @Configurable
+        @Configurable.Comment({"Makes nearly every GCYM Multiblock require blocks which set their maximum voltages.",
+                "Default: false"})
+        public boolean enableTieredCasings = false;
+        @Configurable
+        @Configurable.Comment({"Minimum distance between Long Distance Item Pipe Endpoints", "Default: 50"})
+        public int ldItemPipeMinDistance = 50;
+        @Configurable
+        @Configurable.Comment({"Minimum distance betweeb Long Distance Fluid Pipe Endpoints", "Default: 50"})
+        public int ldFluidPipeMinDistance = 50;
+
+        /**
+         * <strong>Addons mods should not reference this config directly.</strong>
+         * Use {@link GTCEu#isHighTier()} instead.
+         */
+        @Configurable
+        @Configurable.Comment({"If High Tier (>UV-tier) GT content should be registered.",
+                "Items and Machines enabled with this config will have missing recipes by default.",
+                "This is intended for modpack developers only, and is not playable without custom tweaks or addons.",
+                "Other mods can override this to true, regardless of the config file.",
+                "Default: false"})
+        public boolean highTierContent = false;
     }
 
     public static class ClientConfigs {
@@ -224,4 +294,12 @@ public class ConfigHolder {
         public String defaultPaintingColor = "#FFFFFF";
     }
 
+    public static class DeveloperConfigs {
+        @Configurable
+        @Configurable.Comment({"Debug ore vein placement? (will print placed veins to server's debug.log)", "Default: false (no placement printout in debug.log)"})
+        public boolean debugWorldgen = false;
+        @Configurable
+        @Configurable.Comment({"Dump all registered GT recipes?", "Default: false"})
+        public boolean dumpRecipes = false;
+    }
 }

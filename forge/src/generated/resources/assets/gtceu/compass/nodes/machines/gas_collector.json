@@ -11,11 +11,16 @@
     "gtceu:iv_gas_collector",
     "gtceu:luv_gas_collector",
     "gtceu:zpm_gas_collector",
-    "gtceu:uv_gas_collector"
+    "gtceu:uv_gas_collector",
+    "gtceu:uhv_gas_collector",
+    "gtceu:uev_gas_collector",
+    "gtceu:uiv_gas_collector",
+    "gtceu:uxv_gas_collector",
+    "gtceu:opv_gas_collector"
   ],
   "page": "gtceu:machines/gas_collector",
   "position": [
-    -200,
+    -250,
     200
   ],
   "section": "gtceu:machines"

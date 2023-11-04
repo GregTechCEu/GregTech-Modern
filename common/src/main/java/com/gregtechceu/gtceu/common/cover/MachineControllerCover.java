@@ -177,7 +177,7 @@ public class MachineControllerCover extends CoverBehavior implements IUICover {
         Level level = coverHolder.getLevel();
         BlockPos sourcePos = coverHolder.getPos().relative(attachedSide);
 
-        return level.getBlockState(sourcePos).getSignal(level, sourcePos, attachedSide.getOpposite());
+        return level.getBlockState(sourcePos).getSignal(level, sourcePos, attachedSide);
     }
 
 
@@ -261,8 +261,14 @@ public class MachineControllerCover extends CoverBehavior implements IUICover {
                 .map(CoverBehavior::getAttachItem)
                 .map(ItemStack::copy)
                 .ifPresentOrElse(
-                        item -> sideCoverSlot.setStackInSlot(0, item),
-                        () -> sideCoverSlot.setStackInSlot(0, ItemStack.EMPTY)
+                        item -> {
+                            sideCoverSlot.setStackInSlot(0, item);
+                            sideCoverSlot.onContentsChanged(0);
+                        },
+                        () -> {
+                            sideCoverSlot.setStackInSlot(0, ItemStack.EMPTY);
+                            sideCoverSlot.onContentsChanged(0);
+                        }
                 );
     }
 }

@@ -71,7 +71,10 @@ public abstract class CoverBehavior implements IEnhancedManaged, IToolGridHighLi
 
     @Override
     public void onChanged() {
-        coverHolder.markDirty();
+        var level = coverHolder.getLevel();
+        if (level != null && !level.isClientSide && level.getServer() != null) {
+            level.getServer().execute(coverHolder::markDirty);
+        }
     }
 
     /**

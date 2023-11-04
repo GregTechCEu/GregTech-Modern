@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.data.chemical.material.info;
 
 import com.google.common.base.Preconditions;
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.integration.kjs.GTRegistryObjectBuilderTypes;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -35,7 +36,6 @@ public class MaterialIconSet {
     public static final MaterialIconSet CERTUS = new MaterialIconSet("certus", QUARTZ);
     public static final MaterialIconSet LAPIS = new MaterialIconSet("lapis", QUARTZ);
     public static final MaterialIconSet FLUID = new MaterialIconSet("fluid");
-    public static final MaterialIconSet GAS = new MaterialIconSet("gas");
 
     // Implementation -----------------------------------------------------------------------------------------------
 
@@ -95,7 +95,7 @@ public class MaterialIconSet {
 
     public static void init() {
         if (GTCEu.isKubeJSLoaded()) {
-//            GTRegistryObjectBuilderTypes.registerFor(GTRegistryObjectBuilderTypes.MATERIAL_ICON_SET.registryKey);
+            GTRegistryObjectBuilderTypes.registerFor(GTRegistryObjectBuilderTypes.MATERIAL_ICON_SET.registryKey);
         }
     }
 }

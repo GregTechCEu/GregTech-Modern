@@ -53,4 +53,9 @@ public class ElectricContainerBlockProvider extends CapabilityBlockProvider<IEne
                 )
         );
     }
+
+    @Override
+    protected boolean allowDisplaying(IEnergyContainer capability) {
+        return !capability.isOneProbeHidden();
+    }
 }

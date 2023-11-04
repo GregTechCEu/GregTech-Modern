@@ -19,4 +19,7 @@ public interface Filter<T, S extends Filter<T, S>> extends Predicate<T> {
 
     void setOnUpdated(Consumer<S> onUpdated);
 
+    default boolean isBlackList() {
+        return false;
+    }
 }

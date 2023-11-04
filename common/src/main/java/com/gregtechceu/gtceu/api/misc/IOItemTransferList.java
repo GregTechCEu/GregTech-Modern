@@ -27,14 +27,14 @@ public class IOItemTransferList extends ItemTransferList {
     }
 
     @Override
-    public @NotNull ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
+    public @NotNull ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate, boolean notifyChanges) {
         if (io != IO.IN && io != IO.BOTH) return stack;
-        return super.insertItem(slot, stack, simulate);
+        return super.insertItem(slot, stack, simulate, notifyChanges);
     }
 
     @Override
-    public @NotNull ItemStack extractItem(int slot, int amount, boolean simulate) {
+    public @NotNull ItemStack extractItem(int slot, int amount, boolean simulate, boolean notifyChanges) {
         if (io != IO.OUT && io != IO.BOTH) return ItemStack.EMPTY;
-        return super.extractItem(slot, amount, simulate);
+        return super.extractItem(slot, amount, simulate, notifyChanges);
     }
 }

@@ -14,6 +14,7 @@ public class GregTechDatagen {
     public static void init() {
         GTRegistries.REGISTRATE.addDataGenerator(ProviderType.ITEM_TAGS, TagsHandler::initItem);
         GTRegistries.REGISTRATE.addDataGenerator(ProviderType.BLOCK_TAGS, TagsHandler::initBlock);
+        GTRegistries.REGISTRATE.addDataGenerator(ProviderType.FLUID_TAGS, TagsHandler::initFluid);
         GTRegistries.REGISTRATE.addDataGenerator(ProviderType.LANG, LangHandler::init);
     }
 }

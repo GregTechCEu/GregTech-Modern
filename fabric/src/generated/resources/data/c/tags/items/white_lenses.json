@@ -4,6 +4,10 @@
     {
       "id": "gtceu:glass_lens",
       "required": false
+    },
+    {
+      "id": "gtceu:nether_star_lens",
+      "required": false
     }
   ]
 }

@@ -3,7 +3,9 @@ package com.gregtechceu.gtceu.api.machine.feature;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.*;
+import com.gregtechceu.gtceu.api.machine.WorkableTieredMachine;
 import com.gregtechceu.gtceu.api.machine.fancyconfigurator.AutoOutputFancyConfigurator;
+import com.gregtechceu.gtceu.api.machine.fancyconfigurator.MachineModeFancyConfigurator;
 import com.gregtechceu.gtceu.api.machine.fancyconfigurator.OverclockFancyConfigurator;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
@@ -103,6 +105,9 @@ public interface IFancyUIMachine extends IUIMachine, IFancyUIProvider {
                     .setTooltipsSupplier(pressed -> List.of(
                             Component.translatable(pressed ? "behaviour.soft_hammer.enabled" : "behaviour.soft_hammer.disabled")
                     )));
+        }
+        if (this instanceof IRecipeLogicMachine rLMachine && rLMachine.getRecipeTypes().length > 1) {
+            configuratorPanel.attachConfigurators(new MachineModeFancyConfigurator(rLMachine));
         }
         configuratorPanel.attachConfigurators(self().getCoverContainer());
         if (this instanceof IAutoOutputItem || this instanceof IAutoOutputFluid) {
