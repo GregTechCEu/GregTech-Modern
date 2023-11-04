@@ -7,6 +7,8 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.*;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
+import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CraftingComponent;
@@ -16,6 +18,7 @@ import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
@@ -61,14 +64,14 @@ public class MaterialRecipeHandler {
             ItemStack smallDarkAshStack = ChemicalHelper.get(dustSmall, DarkAsh);
 
             if (mat.hasFlag(CRYSTALLIZABLE)) {
-                AUTOCLAVE_RECIPES.recipeBuilder("autoclave_" + id + "water")
+                AUTOCLAVE_RECIPES.recipeBuilder("autoclave_" + id + "_water")
                         .inputItems(dustStack)
                         .inputFluids(Water.getFluid(250))
                         .chancedOutput(gemStack, 7000, 1000)
                         .duration(1200).EUt(24)
                         .save(provider);
 
-                AUTOCLAVE_RECIPES.recipeBuilder("autoclave_" + id + "distilled")
+                AUTOCLAVE_RECIPES.recipeBuilder("autoclave_" + id + "_distilled")
                         .inputItems(dustStack)
                         .inputFluids(DistilledWater.getFluid(50))
                         .outputItems(gemStack)
@@ -77,14 +80,14 @@ public class MaterialRecipeHandler {
             }
 
             if (!mat.hasFlag(EXPLOSIVE) && !mat.hasFlag(FLAMMABLE)) {
-                IMPLOSION_RECIPES.recipeBuilder("implode" + id + "tnt")
+                IMPLOSION_RECIPES.recipeBuilder("implode_" + id + "_tnt")
                         .inputItems(GTUtil.copyAmount(4, dustStack))
                         .outputItems(GTUtil.copyAmount(3, gemStack), smallDarkAshStack)
                         .explosivesAmount(2)
                         .save(provider);
 
                 // TODO Dynamite
-                //IMPLOSION_RECIPES.recipeBuilder("implode_" + id + "dynamite")
+                //IMPLOSION_RECIPES.recipeBuilder("implode_" + id + "_dynamite")
                 //        .inputItems(GTUtil.copyAmount(4, dustStack))
                 //        .outputItems(GTUtil.copyAmount(3, gemStack), smallDarkAshStack)
                 //        .explosivesType(GTItems.DYNAMITE.asStack())
@@ -94,7 +97,7 @@ public class MaterialRecipeHandler {
             if (oreProperty != null) {
                 Material smeltingResult = oreProperty.getDirectSmeltResult();
                 if (smeltingResult != null) {
-                    VanillaRecipeHelper.addSmeltingRecipe(provider, id + "ingot",
+                    VanillaRecipeHelper.addSmeltingRecipe(provider, id + "_ingot",
                             ChemicalHelper.getTag(dustPrefix, mat), ChemicalHelper.get(ingot, smeltingResult));
                 }
             }
@@ -116,7 +119,7 @@ public class MaterialRecipeHandler {
                     // smelting magnetic dusts is handled elsewhere
                     if (!mat.hasFlag(IS_MAGNETIC)) {
                         // do not register inputs by ore dict here. Let other mods register their own dust -> ingots
-                        VanillaRecipeHelper.addSmeltingRecipe(provider, id + "demagnetize_from_dust",
+                        VanillaRecipeHelper.addSmeltingRecipe(provider, id + "_demagnetize_from_dust",
                                 ChemicalHelper.getTag(dustPrefix, mat), ingotStack);
                     }
                 } else {
@@ -144,7 +147,7 @@ public class MaterialRecipeHandler {
                 if (smeltingResult != null) {
                     ItemStack ingotStack = ChemicalHelper.get(ingot, smeltingResult);
                     if (!ingotStack.isEmpty()) {
-                        VanillaRecipeHelper.addSmeltingRecipe(provider, id + "dust_to_ingot",
+                        VanillaRecipeHelper.addSmeltingRecipe(provider, id + "_dust_to_ingot",
                                 ChemicalHelper.getTag(dustPrefix, mat), ingotStack);
                     }
                 }
@@ -169,7 +172,7 @@ public class MaterialRecipeHandler {
                 .EUt(EUt);
 
         if (gasTier != null) {
-            FluidStack gas = CraftingComponent.EBF_GASES.get(gasTier).copy();
+            FluidIngredient gas = CraftingComponent.EBF_GASES.get(gasTier).copy();
 
             blastBuilder.copy("blast_" + material.getName())
                     .circuitMeta(1)
@@ -200,7 +203,7 @@ public class MaterialRecipeHandler {
             } else {
                 VACUUM_RECIPES.recipeBuilder("cool_hot_" + material.getName() + "_ingot")
                         .inputItems(ingotHot, material)
-                        .inputFluids(LiquidHelium.getFluid(500))
+                        .inputFluids(Helium.getFluid(FluidStorageKeys.LIQUID, 500))
                         .outputItems(ingot, material)
                         .outputFluids(Helium.getFluid(250))
                         .duration((int) material.getMass() * 3)
@@ -218,13 +221,13 @@ public class MaterialRecipeHandler {
         VanillaRecipeHelper.addShapedRecipe(provider, String.format("small_dust_assembling_%s", material),
                 dustStack, "XX", "XX", 'X', new UnificationEntry(orePrefix, material));
 
-        PACKER_RECIPES.recipeBuilder("package_" + material.getName() + "small_dust")
+        PACKER_RECIPES.recipeBuilder("package_" + material.getName() + "_small_dust")
                 .inputItems(orePrefix, material, 4)
                 .circuitMeta(1)
                 .outputItems(dustStack)
                 .save(provider);
 
-        PACKER_RECIPES.recipeBuilder("unpackage_" + material.getName() + "small_dust")
+        PACKER_RECIPES.recipeBuilder("unpackage_" + material.getName() + "_small_dust")
                 .inputItems(dust, material)
                 .circuitMeta(2)
                 .outputItems(GTUtil.copyAmount(4, smallDustStack))
@@ -240,13 +243,13 @@ public class MaterialRecipeHandler {
         VanillaRecipeHelper.addShapedRecipe(provider, String.format("tiny_dust_assembling_%s", material),
                 dustStack, "XXX", "XXX", "XXX", 'X', new UnificationEntry(orePrefix, material));
 
-        PACKER_RECIPES.recipeBuilder("package_" + material.getName() + "tiny_dust")
+        PACKER_RECIPES.recipeBuilder("package_" + material.getName() + "_tiny_dust")
                 .inputItems(orePrefix, material, 9)
                 .circuitMeta(1)
                 .outputItems(dustStack)
                 .save(provider);
 
-        PACKER_RECIPES.recipeBuilder("unpackage_" + material.getName() + "tiny_dust")
+        PACKER_RECIPES.recipeBuilder("unpackage_" + material.getName() + "_tiny_dust")
                 .inputItems(dust, material)
                 .circuitMeta(1)
                 .outputItems(GTUtil.copyAmount(9, tinyDustStack))
@@ -489,20 +492,21 @@ public class MaterialRecipeHandler {
             blockEntry = new UnificationEntry(dust, material);
         }
 
-        ArrayList<Object> result = new ArrayList<>();
-        for (int index = 0; index < materialAmount / M; index++) {
-            result.add(blockEntry);
-        }
-
         //do not allow handcrafting or uncrafting, extruding or alloy smelting of blacklisted blocks
         if (!material.hasFlag(EXCLUDE_BLOCK_CRAFTING_RECIPES)) {
 
+            //do not allow non-perfect square root material amounts
+            int size = (int) (materialAmount / M);
+            int sizeSqrt = Math.round(Mth.sqrt(size));
             //do not allow handcrafting or uncrafting of blacklisted blocks
-            if (!material.hasFlag(EXCLUDE_BLOCK_CRAFTING_BY_HAND_RECIPES) && !ConfigHolder.INSTANCE.recipes.disableManualCompression) {
-                VanillaRecipeHelper.addShapelessRecipe(provider, String.format("block_compress_%s", material), blockStack, result.toArray());
+            if (!material.hasFlag(EXCLUDE_BLOCK_CRAFTING_BY_HAND_RECIPES) && !ConfigHolder.INSTANCE.recipes.disableManualCompression && sizeSqrt*sizeSqrt == size) {
+                String patternString = "B".repeat(Math.max(0, sizeSqrt));
+                String[] pattern = new String[sizeSqrt];
+                Arrays.fill(pattern, patternString);
+                VanillaRecipeHelper.addShapedRecipe(provider, String.format("block_compress_%s", material), blockStack, pattern, 'B', blockEntry);
 
                 VanillaRecipeHelper.addShapelessRecipe(provider, String.format("block_decompress_%s", material),
-                        GTUtil.copyAmount((int) (materialAmount / M), ChemicalHelper.get(blockEntry.tagPrefix, blockEntry.material)),
+                        GTUtil.copyAmount(size, ChemicalHelper.get(blockEntry.tagPrefix, blockEntry.material)),
                         new UnificationEntry(blockPrefix, material));
             }
 

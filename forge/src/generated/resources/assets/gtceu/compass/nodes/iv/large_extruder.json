@@ -1,0 +1,15 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:large_extruder"
+  },
+  "items": [
+    "gtceu:large_extruder"
+  ],
+  "page": "gtceu:iv/large_extruder",
+  "position": [
+    -200,
+    200
+  ],
+  "section": "gtceu:iv"
+}

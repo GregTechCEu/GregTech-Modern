@@ -1,0 +1,15 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:large_distillery"
+  },
+  "items": [
+    "gtceu:large_distillery"
+  ],
+  "page": "gtceu:iv/large_distillery",
+  "position": [
+    -50,
+    150
+  ],
+  "section": "gtceu:iv"
+}

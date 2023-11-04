@@ -57,6 +57,9 @@ public class GTRecipes {
         ComponentRecipes.init(consumer);
         MetaTileEntityLoader.init(consumer);
 
+        //GCyM
+        GCyMRecipes.init(consumer);
+
         // Config-dependent recipes
         RecipeAddition.init(consumer);
         // Must run recycling recipes very last
@@ -67,7 +70,7 @@ public class GTRecipes {
             CreateRecipeLoader.init(consumer);
         }
 
-        AddonFinder.getAddons().forEach(addon -> addon.initializeRecipes(consumer));
+        AddonFinder.getAddons().forEach(addon -> addon.addRecipes(consumer));
     }
 
     /*
@@ -77,5 +80,7 @@ public class GTRecipes {
      */
     public static void recipeRemoval(Consumer<ResourceLocation> consumer) {
         RecipeRemoval.init(consumer);
+
+        AddonFinder.getAddons().forEach(addon -> addon.removeRecipes(consumer));
     }
 }

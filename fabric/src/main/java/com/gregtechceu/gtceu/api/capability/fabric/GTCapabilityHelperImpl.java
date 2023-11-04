@@ -82,4 +82,9 @@ public class GTCapabilityHelperImpl {
     public static IMaintenanceMachine getMaintenanceMachine(Level level, BlockPos pos, @Nullable Direction side) {
         return GTCapability.CAPABILITY_MAINTENANCE_MACHINE.find(level, pos, side);
     }
+
+    @Nullable
+    public static ILaserContainer getLaser(Level level, BlockPos pos, @Nullable Direction side) {
+        return GTCapability.CAPABILITY_LASER.find(level, pos, side);
+    }
 }

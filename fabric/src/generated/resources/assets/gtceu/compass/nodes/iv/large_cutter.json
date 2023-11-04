@@ -1,0 +1,15 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:large_cutter"
+  },
+  "items": [
+    "gtceu:large_cutter"
+  ],
+  "page": "gtceu:iv/large_cutter",
+  "position": [
+    -100,
+    150
+  ],
+  "section": "gtceu:iv"
+}

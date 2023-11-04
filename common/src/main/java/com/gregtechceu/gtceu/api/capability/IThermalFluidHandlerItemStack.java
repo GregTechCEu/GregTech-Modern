@@ -1,16 +1,17 @@
 package com.gregtechceu.gtceu.api.capability;
 
-import com.gregtechceu.gtceu.api.data.chemical.fluid.FluidType;
-import com.gregtechceu.gtceu.api.data.chemical.fluid.FluidTypes;
+import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttribute;
+import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttributes;
+import com.gregtechceu.gtceu.api.fluids.attribute.IAttributedFluid;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import net.minecraft.world.level.material.Fluid;
 
 /**
  * Interface for FluidHandlerItemStacks which handle GT's unique fluid mechanics
- * @see FluidType
- * @see FluidTypes
- * @see MaterialFluid
+ * @see FluidAttribute
+ * @see FluidAttributes
+ * @see IAttributedFluid
  */
 public interface IThermalFluidHandlerItemStack {
 
@@ -41,35 +42,35 @@ public interface IThermalFluidHandlerItemStack {
     }
 
     /**
-     * This is always checked, regardless of the contained fluid being a {@link MaterialFluid} or not
+     * This is always checked, regardless of the contained fluid being a {@link IAttributedFluid} or not
      *
      * @return the maximum allowed temperature for a fluid to be stored in this container
      */
     int getMaxFluidTemperature();
 
     /**
-     * This is always checked, regardless of the contained fluid being a {@link MaterialFluid} or not
+     * This is always checked, regardless of the contained fluid being a {@link IAttributedFluid} or not
      *
      * @return true if this fluid container allows gases, otherwise false
      */
     boolean isGasProof();
 
     /**
-     * @see FluidTypes
+     * @see FluidAttributes
      *
      * @return true if this fluid container allows acids, otherwise false
      */
     boolean isAcidProof();
 
     /**
-     * @see FluidTypes
+     * @see FluidAttributes
      *
      * @return true if this fluid container allows cryogenics, otherwise false
      */
     boolean isCryoProof();
 
     /**
-     * @see FluidTypes
+     * @see FluidAttributes
      *
      * @return true if this fluid container allows plasmas, otherwise false
      */

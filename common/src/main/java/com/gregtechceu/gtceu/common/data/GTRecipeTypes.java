@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.data;
 
+import com.google.common.collect.ImmutableList;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.addon.AddonFinder;
@@ -7,8 +8,11 @@ import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.recipe.*;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
+import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.common.recipe.RPMCondition;
 import com.gregtechceu.gtceu.common.recipe.RockBreakerCondition;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
@@ -168,7 +172,6 @@ public class GTRecipeTypes {
             .setProgressBar(GuiTextures.PROGRESS_BAR_ARROW_MULTIPLE, LEFT_TO_RIGHT)
             .setSound(GTValues.FOOLS.get() ? GTSoundEntries.SCIENCE : GTSoundEntries.CHEMICAL)
             .setMaxTooltips(4)
-            // TODO consider allowing LCR to just read these recipes? instead of generating new (minimize extra jsons)
             .onRecipeBuild((recipeBuilder, provider) -> GTRecipeTypes.LARGE_CHEMICAL_RECIPES.copyFrom(recipeBuilder).save(provider));
 
     public final static GTRecipeType COMPRESSOR_RECIPES = register("compressor", ELECTRIC).setMaxIOSize(1, 1, 0, 0).setEUIO(IO.IN)
@@ -267,7 +270,6 @@ public class GTRecipeTypes {
 
     public final static GTRecipeType FORGE_HAMMER_RECIPES = register("forge_hammer", ELECTRIC).setMaxIOSize(1, 1, 0, 0).setEUIO(IO.IN)
             .setSlotOverlay(false, false, GuiTextures.HAMMER_OVERLAY)
-            .setSpecialTexture(78, 42, 20, 6, GuiTextures.PROGRESS_BAR_HAMMER_BASE)
             .setProgressBar(GuiTextures.PROGRESS_BAR_HAMMER, UP_TO_DOWN)
             .setSteamProgressBar(GuiTextures.PROGRESS_BAR_HAMMER_STEAM, UP_TO_DOWN)
             .setSound(GTSoundEntries.FORGE_HAMMER);
@@ -282,7 +284,6 @@ public class GTRecipeTypes {
             .setSlotOverlay(false, false, GuiTextures.PIPE_OVERLAY_1)
             .setSlotOverlay(true, false, false, GuiTextures.PIPE_OVERLAY_2)
             .setSlotOverlay(true, false, true, GuiTextures.DUST_OVERLAY)
-            .setSpecialTexture(98, 24, 5, 18, GuiTextures.PROGRESS_BAR_LATHE_BASE)
             .setProgressBar(GuiTextures.PROGRESS_BAR_LATHE, LEFT_TO_RIGHT)
             .setSound(GTSoundEntries.CUT);
 
@@ -442,15 +443,15 @@ public class GTRecipeTypes {
                 if (recipeBuilder.data.getBoolean("disable_distillery")) return;
                 if (recipeBuilder.output.containsKey(FluidRecipeCapability.CAP)) {
                     long EUt = EURecipeCapability.CAP.of(recipeBuilder.tickInput.get(EURecipeCapability.CAP).get(0).getContent());
-                    FluidStack input = FluidRecipeCapability.CAP.of(recipeBuilder.input.get(FluidRecipeCapability.CAP).get(0).getContent());
+                    FluidIngredient input = FluidRecipeCapability.CAP.of(recipeBuilder.input.get(FluidRecipeCapability.CAP).get(0).getContent());
                     ItemStack[] outputs = recipeBuilder.output.containsKey(ItemRecipeCapability.CAP) ? ItemRecipeCapability.CAP.of(recipeBuilder.output.get(ItemRecipeCapability.CAP).get(0).getContent()).getItems() : null;
                     ItemStack outputItem = outputs == null || outputs.length == 0 ? ItemStack.EMPTY : outputs[0];
-                    if (input.isEmpty()) return;
+                    if (input.isEmpty() || input.getStacks().length == 0) return;
                     List<Content> contents = recipeBuilder.output.get(FluidRecipeCapability.CAP);
                     for (int i = 0; i < contents.size(); ++i) {
-                        FluidStack output = FluidRecipeCapability.CAP.of(contents.get(i).getContent());
-                        if (output.isEmpty()) continue;
-                        GTRecipeBuilder builder = DISTILLERY_RECIPES.recipeBuilder("distill_" + Registry.FLUID.getKey(input.getFluid()).getPath() + "_to_" + Registry.FLUID.getKey(output.getFluid()).getPath()).EUt(Math.max(1, EUt / 4)).circuitMeta(i + 1);
+                        FluidIngredient output = FluidRecipeCapability.CAP.of(contents.get(i).getContent());
+                        if (output.isEmpty() || output.getStacks().length == 0) continue;
+                        GTRecipeBuilder builder = DISTILLERY_RECIPES.recipeBuilder("distill_" + Registry.FLUID.getKey(input.getStacks()[0].getFluid()).getPath() + "_to_" + Registry.FLUID.getKey(output.getStacks()[0].getFluid()).getPath()).EUt(Math.max(1, EUt / 4)).circuitMeta(i + 1);
 
                         int ratio = RecipeHelper.getRatioForDistillery(input, output, outputItem);
                         int recipeDuration = (int) (recipeBuilder.duration * OverclockingLogic.STANDARD_OVERCLOCK_DURATION_DIVISOR);
@@ -459,8 +460,10 @@ public class GTRecipeTypes {
                         boolean fluidsDivisible = RecipeHelper.isFluidStackDivisibleForDistillery(input, ratio) &&
                                 RecipeHelper.isFluidStackDivisibleForDistillery(output, ratio);
 
-                        FluidStack dividedInputFluid = FluidStack.create(input, Math.max(1, input.getAmount() / ratio));
-                        FluidStack dividedOutputFluid = FluidStack.create(output, Math.max(1, output.getAmount() / ratio));
+                        FluidIngredient dividedInputFluid = input.copy();
+                        dividedInputFluid.setAmount(Math.max(1, dividedInputFluid.getAmount() / ratio));
+                        FluidIngredient dividedOutputFluid = output.copy();
+                        dividedOutputFluid.setAmount(Math.max(1, dividedOutputFluid.getAmount() / ratio));
 
                         if (shouldDivide && fluidsDivisible) {
                             builder.inputFluids(dividedInputFluid)
@@ -555,6 +558,7 @@ public class GTRecipeTypes {
     }
 
     public static void init() {
+        GCyMRecipeTypes.init();
         if (GTCEu.isCreateLoaded()) {
             CREATE_MIXER_RECIPES = register("create_mixer", KINETIC).setMaxIOSize(6, 1, 2, 1).setEUIO(IO.IN)
                     .setSlotOverlay(false, false, GuiTextures.DUST_OVERLAY)
@@ -563,7 +567,7 @@ public class GTRecipeTypes {
                     .setSound(GTSoundEntries.MIXER)
                     .setMaxTooltips(4)
                     .setUiBuilder((recipe, group) -> {
-                        if (recipe.conditions.size() > 0 && recipe.conditions.get(0) instanceof RPMCondition) {
+                        if (!recipe.conditions.isEmpty() && recipe.conditions.get(0) instanceof RPMCondition) {
                             var transfer = new ItemStackTransfer(AllBlocks.SHAFT.asStack());
                             group.addWidget(new SlotWidget(transfer, 0, group.getSize().width - 30, group.getSize().height - 30, false, false));
                         }
@@ -576,7 +580,6 @@ public class GTRecipeTypes {
                         .save(provider);
             });
         }
-        AddonFinder.getAddons().forEach(IGTAddon::registerRecipeTypes);
         if (GTCEu.isKubeJSLoaded()) {
             GTRegistryObjectBuilderTypes.registerFor(GTRegistries.RECIPE_TYPES.getRegistryName());
         }

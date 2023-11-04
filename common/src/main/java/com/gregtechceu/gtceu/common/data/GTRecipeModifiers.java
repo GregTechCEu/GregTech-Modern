@@ -1,11 +1,13 @@
 package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.capability.IParallelHatch;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeCapabilityHolder;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IOverclockMachine;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
+import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.CoilWorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
@@ -18,6 +20,7 @@ import net.minecraft.util.Tuple;
 
 import javax.annotation.Nonnull;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -40,6 +43,11 @@ public class GTRecipeModifiers {
         }
         return recipe;
     });
+
+    public static final BiFunction<OverclockingLogic, Function<OverclockingLogic, BiFunction<MetaMachine, GTRecipe, GTRecipe>>, BiFunction<MetaMachine, GTRecipe, GTRecipe>> PARALLEL_HATCH = Util.memoize((overclockingLogic, function) -> ((machine, recipe) -> {
+        var paralleledRecipe = GTRecipeModifiers.hatchParallel(machine, recipe, false);
+        return function.apply(overclockingLogic).apply(machine, paralleledRecipe.getA());
+    }));
 
     /**
      * Fast parallel, the parallel amount is always the 2 times the divisor of maxParallel。
@@ -71,6 +79,9 @@ public class GTRecipeModifiers {
      * @return modified recipe and parallel amount
      */
     public static Tuple<GTRecipe, Integer> accurateParallel(MetaMachine machine, @Nonnull GTRecipe recipe, int maxParallel, boolean modifyDuration) {
+        if (maxParallel == 1) {
+            return new Tuple<>(recipe, 1);
+        }
         if (machine instanceof IRecipeCapabilityHolder holder) {
             var parallel = tryParallel(holder, recipe, 1, maxParallel, modifyDuration);
             return parallel == null ? new Tuple<>(recipe, 1) : parallel;
@@ -96,6 +107,17 @@ public class GTRecipeModifiers {
             var tryMore = tryParallel(holder, original, mid + 1, max, modifyDuration);
             return tryMore != null ? tryMore : new Tuple<>(copied, mid);
         }
+    }
+
+    public static Tuple<GTRecipe, Integer> hatchParallel(MetaMachine machine, @Nonnull GTRecipe recipe, boolean modifyDuration) {
+        if (machine instanceof IMultiController controller && controller.isFormed()) {
+            Optional<IParallelHatch> optional = controller.getParts().stream().filter(IParallelHatch.class::isInstance).map(IParallelHatch.class::cast).findAny();
+            if (optional.isPresent()) {
+                IParallelHatch hatch = optional.get();
+                return accurateParallel(machine, recipe, hatch.getCurrentParallel(), modifyDuration);
+            }
+        }
+        return new Tuple<>(recipe, 1);
     }
 
     public static GTRecipe crackerOverclock(MetaMachine machine, @Nonnull GTRecipe recipe) {

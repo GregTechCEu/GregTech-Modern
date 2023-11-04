@@ -112,14 +112,14 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
             }
 
             @Override
-            public @NotNull ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
-                var remained = super.insertItem(slot, stack, simulate).copy();
+            public @NotNull ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate, boolean notifyChanges) {
+                var remained = super.insertItem(slot, stack, simulate, notifyChanges).copy();
                 if (!remained.isEmpty()) {
                     if (ItemTransferHelper.canItemStacksStack(getStackInSlot(0), remained)) {
                         int added = Math.min(maxStoredItems - itemsStoredInside, remained.getCount());
-                        if (!simulate) {
+                        if (!simulate && notifyChanges) {
                             itemsStoredInside += added;
-                            onContentChanged();
+                            onContentsChanged();
                         }
                         remained.shrink(added);
                         if (isVoiding) {
@@ -131,12 +131,12 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
             }
 
             @Override
-            public @NotNull ItemStack extractItem(int slot, int amount, boolean simulate) {
-                var extracted = super.extractItem(slot, amount, simulate).copy();
+            public @NotNull ItemStack extractItem(int slot, int amount, boolean simulate, boolean notifyChanges) {
+                var extracted = super.extractItem(slot, amount, simulate, notifyChanges).copy();
                 if (!extracted.isEmpty()) {
                     var additional = Math.min(amount - extracted.getCount(), itemsStoredInside);
                     extracted.grow(additional);
-                    if (!simulate) {
+                    if (!simulate && notifyChanges) {
                         itemsStoredInside -= additional;
                         if (getStackInSlot(0).isEmpty() && itemsStoredInside > 0) {
                             var copied = extracted.copy();
@@ -144,15 +144,15 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
                             itemsStoredInside -= copied.getCount();
                             setStackInSlot(0, copied);
                         }
-                        onContentChanged();
+                        onContentsChanged();
                     }
                 }
                 return extracted;
             }
 
             @Override
-            protected void onContentChanged() {
-                super.onContentChanged();
+            public void onContentsChanged() {
+                super.onContentsChanged();
                 if (!isRemote()) {
                     stored = getStackInSlot(0).copy();
                     storedAmount = stored.getCount();
@@ -326,6 +326,7 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
         } else if (!locked) {
             lockedItem.setStackInSlot(0, ItemStack.EMPTY);
         }
+        lockedItem.onContentsChanged(0);
     }
 
     //////////////////////////////////////
@@ -345,6 +346,7 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
             var item = importItems.getStackInSlot(0).copy();
             if (!item.isEmpty()) {
                 importItems.setStackInSlot(0, ItemStack.EMPTY);
+                importItems.onContentsChanged(0);
                 cache.insertItem(0, item.copy(), false);
             }
         });

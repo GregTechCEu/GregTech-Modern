@@ -101,6 +101,15 @@ public class RecipeRemoval {
 
     private static void nerfWoodCrafting(Consumer<ResourceLocation> registry) {
         registry.accept(new ResourceLocation("minecraft:stick"));
+        registry.accept(new ResourceLocation("minecraft:oak_planks"));
+        registry.accept(new ResourceLocation("minecraft:spruce_planks"));
+        registry.accept(new ResourceLocation("minecraft:birch_planks"));
+        registry.accept(new ResourceLocation("minecraft:jungle_planks"));
+        registry.accept(new ResourceLocation("minecraft:acacia_planks"));
+        registry.accept(new ResourceLocation("minecraft:dark_oak_planks"));
+        registry.accept(new ResourceLocation("minecraft:mangrove_planks"));
+        registry.accept(new ResourceLocation("minecraft:crimson_planks"));
+        registry.accept(new ResourceLocation("minecraft:warped_planks"));
     }
 
     private static void hardWoodRecipes(Consumer<ResourceLocation> registry) {

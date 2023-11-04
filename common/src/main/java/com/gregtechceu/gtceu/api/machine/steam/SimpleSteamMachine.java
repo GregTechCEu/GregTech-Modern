@@ -15,17 +15,15 @@ import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.common.recipe.VentCondition;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
-import com.lowdragmc.lowdraglib.side.fluid.IFluidStorage;
+import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import it.unimi.dsi.fastutil.longs.LongIntMutablePair;
-import it.unimi.dsi.fastutil.longs.LongIntPair;
+import com.lowdragmc.lowdraglib.utils.Position;
 import lombok.Setter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
@@ -129,15 +127,14 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
                 return null;
             }
 
-            var modified = RecipeHelper.applyOverclock(new OverclockingLogic((_recipe, recipeEUt, maxVoltage, duration, amountOC) ->
-                            LongIntMutablePair.of(steamMachine.isHighPressure ? recipeEUt * 2 : recipeEUt, steamMachine.isHighPressure ? duration : duration * 2)),
-                    recipe, GTValues.V[GTValues.LV]);
+            var modified = recipe.copy();
+            modified.conditions.add(VentCondition.INSTANCE);
 
-            if (modified == recipe) {
-                modified = recipe.copy();
+            if (!steamMachine.isHighPressure) {
+                modified.duration *= 2;
+                RecipeHelper.setInputEUt(modified, RecipeHelper.getInputEUt(recipe) / 2);
             }
 
-            modified.conditions.add(VentCondition.INSTANCE);
             return modified;
         }
         return null;
@@ -156,13 +153,14 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
 
     @Override
     public ModularUI createUI(Player entityPlayer) {
-        var group = recipeType.createUITemplate(recipeLogic::getProgressPercent, importItems.storage, exportItems.storage, new IFluidStorage[0], new IFluidStorage[0], true, isHighPressure);
-        group.addSelfPosition((176 - group.getSize().width) / 2, 37);
+        var group = getRecipeType().createUITemplate(recipeLogic::getProgressPercent, importItems.storage, exportItems.storage, IFluidTransfer.EMPTY, IFluidTransfer.EMPTY, true, isHighPressure);
+        Position pos = new Position((Math.max(group.getSize().width + 4 + 8, 176) - 4 - group.getSize().width) / 2 + 4, 32);
+        group.setSelfPosition(pos);
         return new ModularUI(176, 166, this, entityPlayer)
                 .background(GuiTextures.BACKGROUND_STEAM.get(isHighPressure))
                 .widget(group)
                 .widget(new LabelWidget(5, 5, getBlockState().getBlock().getDescriptionId()))
-                .widget(new PredicatedImageWidget(79, 42, 18, 18, GuiTextures.INDICATOR_NO_STEAM.get(isHighPressure))
+                .widget(new PredicatedImageWidget(pos.x + group.getSize().width / 2 - 9, pos.y + group.getSize().height / 2 - 9, 18, 18, GuiTextures.INDICATOR_NO_STEAM.get(isHighPressure))
                         .setPredicate(recipeLogic::isWaiting))
                 .widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(), GuiTextures.SLOT_STEAM.get(isHighPressure), 7, 84, true));
     }

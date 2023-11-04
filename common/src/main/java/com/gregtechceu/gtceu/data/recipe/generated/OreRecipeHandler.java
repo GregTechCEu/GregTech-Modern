@@ -36,6 +36,7 @@ public class OreRecipeHandler {
             }
         } else {
             ore.executeHandler(PropertyKey.ORE, (tagPrefix, material, property) -> processOre(tagPrefix, material, property, provider));
+            oreDeepslate.executeHandler(PropertyKey.ORE, (tagPrefix, material, property) -> processOre(tagPrefix, material, property, provider));
             oreEndstone.executeHandler(PropertyKey.ORE, (tagPrefix, material, property) -> processOre(tagPrefix, material, property, provider));
             oreNetherrack.executeHandler(PropertyKey.ORE, (tagPrefix, material, property) -> processOre(tagPrefix, material, property, provider));
         }
@@ -162,6 +163,20 @@ public class OreRecipeHandler {
                     ChemicalHelper.getTag(orePrefix, material), ingotStack, xp);
             VanillaRecipeHelper.addBlastingRecipe(provider, "smelt_" + orePrefix.name + "_" + material.getName() + "_ore_to_ingot",
                     ChemicalHelper.getTag(orePrefix, material), ingotStack, xp);
+        }
+
+        if (!ConfigHolder.INSTANCE.recipes.disableManualCompression) {
+            VanillaRecipeHelper.addShapedRecipe(provider, "compress_" + material.getName() + "_to_ore_block",
+                    ChemicalHelper.get(rawOreBlock, material),
+                    "BBB", "BBB", "BBB",
+                    'B', ChemicalHelper.getTag(rawOre, material));
+            VanillaRecipeHelper.addShapelessRecipe(provider, "decompress_" + material.getName() + "_from_ore_block",
+                    ChemicalHelper.get(rawOre, material, 9),
+                    ChemicalHelper.getTag(rawOreBlock, material));
+            COMPRESSOR_RECIPES.recipeBuilder("compress_" + material.getName() + "to_ore_block")
+                    .inputItems(rawOre, material, 9)
+                    .outputItems(rawOreBlock, material)
+                    .duration(300).EUt(2).save(provider);
         }
     }
 

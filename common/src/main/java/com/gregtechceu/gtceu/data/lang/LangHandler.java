@@ -105,12 +105,18 @@ public class LangHandler {
         multilineLang(provider, "gtceu.multiblock.primitive_water_pump.extra2", "Hatch Multipliers:\n  Pump Hatch: 1x\n  ULV Output Hatch: 2x\n  LV Output Hatch: 4x\n\nWhile raining in the Pump's Biome, the total water production will be increased by 50%%.");
         provider.add("gtceu.multiblock.processing_array.description", "The Processing Array combines up to 16 single block machine(s) in a single multiblock, effectively easing automation.");
         provider.add("gtceu.multiblock.advanced_processing_array.description", "The Processing Array combines up to 64 single block machine(s) in a single multiblock, effectively easing automation.");
+        provider.add("gtceu.multiblock.parallelizable.tooltip", "Can parallelize with Parallel Control Hatches.");
+        provider.add("gtceu.parallel_hatch_mk5", "Allows to run up to 4 recipes in parallel.");
+        provider.add("gtceu.parallel_hatch_mk6", "Allows to run up to 16 recipes in parallel.");
+        provider.add("gtceu.parallel_hatch_mk7", "Allows to run up to 64 recipes in parallel.");
+        provider.add("gtceu.parallel_hatch_mk8", "Allows to run up to 256 recipes in parallel.");
+
         provider.add("item.invalid.name", "Invalid item");
         provider.add("fluid.empty", "Empty");
-        provider.add("gtceu.tooltip.hold_shift", "Hold SHIFT for more info");
-        provider.add("gtceu.tooltip.hold_ctrl", "Hold CTRL for more info");
-        provider.add("gtceu.tooltip.fluid_pipe_hold_shift", "Hold SHIFT to show Fluid Containment Info");
-        provider.add("gtceu.tooltip.tool_fluid_hold_shift", "Hold SHIFT to show Fluid Containment and Tool Info");
+        provider.add("gtceu.tooltip.hold_shift", "§7Hold SHIFT for more info");
+        provider.add("gtceu.tooltip.hold_ctrl", "§7Hold CTRL for more info");
+        provider.add("gtceu.tooltip.fluid_pipe_hold_shift", "§7Hold SHIFT to show Fluid Containment Info");
+        provider.add("gtceu.tooltip.tool_fluid_hold_shift", "§7Hold SHIFT to show Fluid Containment and Tool Info");
         provider.add("metaitem.generic.fluid_container.tooltip", "%d/%dL %s");
         provider.add("metaitem.generic.electric_item.tooltip", "%d/%d EU - Tier %s");
         provider.add("metaitem.generic.electric_item.stored", "%d/%d EU(%s)");
@@ -395,6 +401,9 @@ public class LangHandler {
         replace(provider, GTMaterials.OilHeavy.getUnlocalizedName(), "Heavy Oil");
         replace(provider, GTMaterials.OilLight.getUnlocalizedName(), "Light Oil");
         replace(provider, GTMaterials.RawOil.getUnlocalizedName(), "Raw Oil");
+        replace(provider, GTMaterials.HSLASteel.getUnlocalizedName(), "HSLA-Steel");
+
+        provider.add("item.netherrack_nether_quartz", "Nether Quartz Ore");
 
         provider.add("item.gunpowder_tiny_dust", "Tiny Pile of Gunpowder");
         provider.add("item.gunpowder_small_dust", "Small Pile of Gunpowder");
@@ -692,37 +701,64 @@ public class LangHandler {
         provider.add("gtceu.machine.fluid_drilling_rig.ev.tooltip", "Well Drainer");
         provider.add("gtceu.machine.cleanroom.tooltip", "Keeping those pesky particles out");
         provider.add("gtceu.machine.charcoal_pile.tooltip", "Underground fuel bakery");
-        provider.add("gtceu.machine.item_bus.import.tooltip", "Item Input for Multiblocks");
+        provider.add("gtceu.machine.available_recipe_map_1.tooltip", "Available Recipe Maps: %s");
+        provider.add("gtceu.machine.available_recipe_map_2.tooltip", "Available Recipe Maps: %s, %s");
+        provider.add("gtceu.machine.available_recipe_map_3.tooltip", "Available Recipe Maps: %s, %s, %s");
+        provider.add("gtceu.machine.available_recipe_map_4.tooltip", "Available Recipe Maps: %s, %s, %s, %s");
+
+        multiLang(provider, "gtceu.machine.power_substation.tooltip",
+                "The heart of a centralized power grid",
+                "§fCapacitors§7 do not need to be all the same tier.",
+                "Allows up to §f%d Capacitor Layers§7.",
+                "Loses energy equal to §f1%%§7 of total capacity every §f24 hours§7.",
+                "Capped at §f%,d EU/t§7 passive loss per Capacitor Block."
+        );
+
+        multiLang(provider, "gtceu.machine.active_transformer.tooltip",
+                "Transformers: Lasers in Disguise",
+                "Can combine any number of Energy §fInputs§7 into any number of Energy §fOutputs§7.",
+                "Can transmit power at incredible distance with",
+                "Lasers§7."
+        );
+
+        multiLang(provider, "gtceu.machine.laser_hatch.source.tooltip",
+                "Transmitting power at distance",
+                "§cLaser Cables must be in a straight line!§7"
+        );
+
+        multiLang(provider, "gtceu.machine.laser_hatch.target.tooltip",
+                "Receiving power from distance",
+                "§cLaser Cables must be in a straight line!§7"
+        );
+
+        multiLang(provider, "gtceu.machine.endpoint.tooltip",
+                "Connect with §fLong Distance Pipe§7 blocks to create a pipeline.",
+                "Pipelines must have exactly §f1 Input§7 and §f1 Output§7 endpoint.",
+                "Only pipeline endpoints need to be §fchunk-loaded§7.");
+        provider.add("gtceu.machine.endpoint.tooltip.min_length", "§bMinimum Endpoint Distance: §f%d Blocks");
+
         provider.add("gtceu.universal.disabled", "Multiblock Sharing §4Disabled");
         provider.add("gtceu.universal.enabled", "Multiblock Sharing §aEnabled");
-
-
-        provider.add("gtceu.machine.item_bus.export.tooltip", "Item Output for Multiblocks");
-
 
         provider.add("gtceu.bus.collapse_true", "Bus will collapse Items");
         provider.add("gtceu.bus.collapse_false", "Bus will not collapse Items");
         provider.add("gtceu.bus.collapse.error", "Bus must be attached to multiblock first");
+
+        provider.add("gtceu.machine.item_bus.import.tooltip", "Item Input for Multiblocks");
+        provider.add("gtceu.machine.item_bus.export.tooltip", "Item Output for Multiblocks");
         provider.add("gtceu.machine.fluid_hatch.import.tooltip", "Fluid Input for Multiblocks");
-
-
         provider.add("gtceu.machine.fluid_hatch.export.tooltip", "Fluid Output for Multiblocks");
-
-
         provider.add("gtceu.machine.energy_hatch.input.tooltip", "Energy Input for Multiblocks");
-
-
         provider.add("gtceu.machine.energy_hatch.input_hi_amp.tooltip", "Multiple Ampere Energy Input for Multiblocks");
-
-
         provider.add("gtceu.machine.energy_hatch.output.tooltip", "Energy Output for Multiblocks");
-
-
         provider.add("gtceu.machine.energy_hatch.output_hi_amp.tooltip", "Multiple Ampere Energy Output for Multiblocks");
-
+        provider.add("gtceu.machine.me.item_export.tooltip", "Stores items directly into an ME network.");
+        provider.add("gtceu.machine.me.fluid_export.tooltip", "Stores fluids directly into an ME network.");
+        provider.add("gtceu.machine.me.fluid_import.tooltip", "Fetches fluids from an ME network automatically.");
+        provider.add("gtceu.machine.me.item_import.tooltip", "Fetches items from an ME network automatically.");
+        provider.add("gtceu.machine.me.export.tooltip", "Has infinite capacity before connecting to ME network.");
 
         multiLang(provider, "gtceu.machine.rotor_holder.tooltip", "Rotor Holder for Multiblocks", "Holds Rotor in place so it will not fly away");
-
 
         provider.add("gtceu.machine.maintenance_hatch.tooltip", "For maintaining Multiblocks");
 
@@ -769,10 +805,10 @@ public class LangHandler {
         provider.add("gtceu.universal.tooltip.item_stored", "§dItem Stored: §f%s, %d items");
         provider.add("gtceu.universal.tooltip.item_transfer_rate", "§bTransfer Rate: §f%d items/s");
         provider.add("gtceu.universal.tooltip.item_transfer_rate_stacks", "§bTransfer Rate: §f%d stacks/s");
-        provider.add("gtceu.universal.tooltip.fluid_storage_capacity", "§9Fluid Capacity: §f%d L");
+        provider.add("gtceu.universal.tooltip.fluid_storage_capacity", "§9Fluid Capacity: §f%d mB");
         provider.add("gtceu.universal.tooltip.fluid_storage_capacity_mult", "§9Fluid Capacity: §f%d §7Tanks, §f%d L §7each");
-        provider.add("gtceu.universal.tooltip.fluid_stored", "§dFluid Stored: §f%s, %d L");
-        provider.add("gtceu.universal.tooltip.fluid_transfer_rate", "§bTransfer Rate: §f%d L/t");
+        provider.add("gtceu.universal.tooltip.fluid_stored", "§dFluid Stored: §f%s, %d mB");
+        provider.add("gtceu.universal.tooltip.fluid_transfer_rate", "§bTransfer Rate: §f%d mB/t");
         provider.add("gtceu.universal.tooltip.parallel", "§dMax Parallel: §f%d");
         provider.add("gtceu.universal.tooltip.working_area", "§bWorking Area: §f%dx%d");
         provider.add("gtceu.universal.tooltip.chunk_mode", "Chunk Mode: ");
@@ -822,10 +858,14 @@ public class LangHandler {
         provider.add("gtceu.tool_action.hammer", "§8Use Hard Hammer to muffle Sounds");
         provider.add("gtceu.tool_action.crowbar", "§8Use Crowbar to remove Covers");
         provider.add("gtceu.tool_action.tape", "§8Use Tape to fix Maintenance Problems");
+        provider.add("gtceu.fluid.liquid_generic", "Liquid %s");
         provider.add("gtceu.fluid.generic", "%s");
+        provider.add("gtceu.fluid.gas_generic", "%s Gas");
+        provider.add("gtceu.fluid.gas_vapor", "%s Vapor");
         provider.add("gtceu.fluid.plasma", "%s Plasma");
+        provider.add("gtceu.fluid.molten", "Molten %s");
         provider.add("gtceu.fluid.empty", "Empty");
-        provider.add("gtceu.fluid.amount", "§9Amount: %d/%d L");
+        provider.add("gtceu.fluid.amount", "§9Amount: %d/%d mB");
         provider.add("gtceu.fluid.temperature", "§cTemperature: %d K");
         provider.add("gtceu.fluid.temperature.cryogenic", "§bCryogenic! Handle with care!");
         provider.add("gtceu.fluid.state_gas", "§aState: Gaseous");
@@ -900,7 +940,7 @@ public class LangHandler {
         provider.add("gtceu.cable.amperage", "Max Amperage: §e%d");
         provider.add("gtceu.cable.loss_per_block", "Loss/Meter/Ampere: §c%d§7 EU-Volt");
         provider.add("gtceu.cable.superconductor", "§d%s Superconductor");
-        provider.add("gtceu.fluid_pipe.capacity", "§9Capacity: §f%d L");
+        provider.add("gtceu.fluid_pipe.capacity", "§9Capacity: §f%d mB");
         provider.add("gtceu.fluid_pipe.max_temperature", "§cTemperature Limit: §f%d K");
         provider.add("gtceu.fluid_pipe.channels", "§eChannels: §f%d");
         provider.add("gtceu.fluid_pipe.gas_proof", "§6Can handle Gases");
@@ -1084,6 +1124,8 @@ public class LangHandler {
         provider.add("gtceu.gui.overclock.title", "Overclock Tier");
         provider.add("gtceu.gui.overclock.range", "Available Tiers [%s, %s]");
 
+        provider.add("gtceu.gui.machinemode.title", "Active Machine Mode");
+
         provider.add("gtceu.gui.content.chance_0", "§cNot Consumed§r");
         provider.add("gtceu.gui.content.chance_0_short", "§cNC§r");
         provider.add("gtceu.gui.content.chance_1", "§eChance: %s§r");
@@ -1095,6 +1137,8 @@ public class LangHandler {
 
         provider.add("gtceu.gui.content.units.per_tick", "/t");
         provider.add("gtceu.gui.content.units.per_second", "/s");
+
+        provider.add("gtceu.machine.parallel_hatch.display", "Adjust the maximum parallel of the multiblock");
     }
 
     /**

@@ -28,7 +28,12 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFe
      * RecipeType held
      */
     @Nonnull
+    GTRecipeType[] getRecipeTypes();
+    @Nonnull
     GTRecipeType getRecipeType();
+
+    int getActiveRecipeType();
+    void setActiveRecipeType(int type);
 
     /**
      * Called when recipe logic status changed

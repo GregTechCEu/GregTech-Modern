@@ -23,6 +23,7 @@ dependencyResolutionManagement {
         def emiVersion = "1.0.5+1.19.2"
         def ae2Version = "12.9.5"
         def kjsVersion = "1902.6.1-build.307"
+        def auVersion = "1.19.2-0.6.0"
 
         // Fabric
         def fabricLoaderVersion = "0.14.21" // https://fabricmc.net/develop/
@@ -57,7 +58,7 @@ dependencyResolutionManagement {
         def architecturyLoomVersion = "1.0-SNAPSHOT"
         def vineFlowerVersion = "1.+"
         def macheteVersion = "1.+"
-        def ldLibVersion = "1.0.17"
+        def ldLibVersion = "1.0.20.a"
 
         fabric {
             def parchment = version("parchment", parchmentVersion)
@@ -126,6 +127,10 @@ dependencyResolutionManagement {
 
             def ae2 = version("ae2", ae2Version)
             library("ae2", "appeng", "appliedenergistics2-fabric").versionRef(ae2)
+
+            def au = version("au", auVersion)
+            library("almostUnified-common", "com.almostreliable.mods", "almostunified-common").versionRef(au)
+            library("almostUnified-fabric", "com.almostreliable.mods", "almostunified-fabric").versionRef(au)
         }
 
         forge {
@@ -175,6 +180,9 @@ dependencyResolutionManagement {
 
             def ae2 = version("ae2", ae2Version)
             library("ae2", "appeng", "appliedenergistics2-forge").versionRef(ae2)
+
+            def au = version("au", auVersion)
+            library("almostUnified-forge", "com.almostreliable.mods", "almostunified-forge").versionRef(au)
         }
 
         libs {

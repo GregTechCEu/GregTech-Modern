@@ -8,10 +8,12 @@
     "BlockModelMixin",
     "LevelRendererMixin",
     "ModelBakeryMixin",
-    "MultiPlayerGameModeMixin"
+    "MultiPlayerGameModeMixin",
+    "rei.FluidEntryRendererMixin"
   ],
   "mixins": [
     "BlockBehaviourAccessor",
+    "ChunkGeneratorMixin",
     "ChunkMixin",
     "IFoliagePlacerTypeAccessor",
     "IHolderReferenceAccessor",
@@ -19,7 +21,10 @@
     "ITrunkPlacerTypeAccessor",
     "LevelMixin",
     "LootTablesMixin",
-    "PlacedFeatureMixin",
+    "MinecraftServerMixin",
+    "MixinEnchantmentCategory",
+    "OreConfigurationMixin",
+    "OreVeinifierMixin",
     "RecipeManagerAccessor",
     "RecipeManagerInvoker",
     "RecipeManagerMixin",
@@ -30,10 +35,12 @@
     "SidedRedstoneConnectivityMixin",
     "TagLoaderMixin",
     "TagManagerMixin",
-    "WorldGenRegionMixin",
+    "WorldLoaderPackConfigMixin",
+    "ae2.GenericStackInvAccessor",
     "create.RotationPropagatorMixin",
     "kjs.KubeJSMixin",
     "kjs.RecipeEventJSMixin",
+    "rhino.InterpreterMixin",
     "top.ConfigMixin"
   ],
   "injectors": {

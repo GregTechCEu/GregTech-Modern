@@ -7,6 +7,7 @@ import com.google.gson.JsonParseException;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefinition;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.common.data.GTBedrockFluids;
 import com.gregtechceu.gtceu.integration.kjs.GTCEuServerEvents;
 import com.gregtechceu.gtceu.integration.kjs.events.GTFluidVeinEventJS;
 import com.mojang.datafixers.util.Pair;
@@ -37,7 +38,12 @@ public class FluidVeinLoader extends SimpleJsonResourceReloadListener {
 
     @Override
     protected void apply(Map<ResourceLocation, JsonElement> resourceList, ResourceManager resourceManager, ProfilerFiller profiler) {
-        RegistryOps<JsonElement> ops = RegistryOps.create(JsonOps.INSTANCE, RegistryAccess.BUILTIN.get());
+        GTRegistries.BEDROCK_FLUID_DEFINITIONS.registry().clear();
+        GTBedrockFluids.init();
+        if (GTCEu.isKubeJSLoaded()) {
+            RunKJSEventInSeparateClassBecauseForgeIsDumb.fireKJSEvent();
+        }
+        RegistryOps<JsonElement> ops = RegistryOps.create(JsonOps.INSTANCE, GTRegistries.builtinRegistry());
         for(Map.Entry<ResourceLocation, JsonElement> entry : resourceList.entrySet()) {
             ResourceLocation location = entry.getKey();
 
@@ -56,9 +62,6 @@ public class FluidVeinLoader extends SimpleJsonResourceReloadListener {
             } catch (IllegalArgumentException | JsonParseException jsonParseException) {
                 LOGGER.error("Parsing error loading ore vein {}", location, jsonParseException);
             }
-        }
-        if (GTCEu.isKubeJSLoaded()) {
-            RunKJSEventInSeparateClassBecauseForgeIsDumb.fireKJSEvent();
         }
     }
 

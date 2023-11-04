@@ -1,10 +1,7 @@
 package com.gregtechceu.gtceu.common.machine.storage;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.data.chemical.fluid.FluidTypes;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.FluidPipeProperties;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.FluidProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
@@ -45,7 +42,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 
@@ -90,19 +86,7 @@ public class DrumMachine extends MetaMachine implements IAutoOutputFluid, IDropS
 
     protected NotifiableFluidTank createCacheFluidHandler(Object... args) {
         return new NotifiableFluidTank(this, 1, maxStoredFluids, IO.BOTH)
-                .setFilter(stack -> {
-                    if (stack == null || stack.getFluid() == null) return false;
-
-                    Fluid fluid = stack.getFluid();
-                    FluidPipeProperties pipeProperties = material.getProperty(PropertyKey.FLUID_PIPE);
-                    if (GTFluids.PLASMA_FLUIDS.get(fluid) != null && !pipeProperties.isPlasmaProof()) return false;
-                    FluidProperty fluidMaterial = GTFluids.MATERIAL_FLUIDS.get(fluid);
-                    if (fluidMaterial == null) return true; // not a GT fluid, just skip
-                    if (fluidMaterial.getFluidTemperature() > pipeProperties.getMaxFluidTemperature()) return false;
-                    if (fluidMaterial.getFluidTemperature() < 120 && !pipeProperties.isCryoProof()) return false;
-                    if (fluidMaterial.isGas() && !pipeProperties.isGasProof()) return false;
-                    return fluidMaterial.getFluidType() != FluidTypes.ACID || pipeProperties.isAcidProof();
-                });
+                .setFilter(material.getProperty(PropertyKey.FLUID_PIPE));
     }
 
     @Override
@@ -138,6 +122,9 @@ public class DrumMachine extends MetaMachine implements IAutoOutputFluid, IDropS
     @Override
     public void loadFromItem(CompoundTag tag) {
         IDropSaveMachine.super.loadFromItem(tag);
+        if (!tag.contains("Fluid")) {
+            stored = FluidStack.empty();
+        }
         // "stored" may not be same as cache (due to item's fluid cap). we should update it.
         cache.storages[0].setFluid(stored.copy());
     }
@@ -160,7 +147,7 @@ public class DrumMachine extends MetaMachine implements IAutoOutputFluid, IDropS
 
     // always is facing down, and can never accept fluids from output side
     @Override public void setAllowInputFromOutputSideFluids(boolean allow) {}
-    @Override public void setOutputFacingFluids(Direction outputFacing) {
+    @Override public void setOutputFacingFluids(@Nullable Direction outputFacing) {
         updateAutoOutputSubscription();
     }
 
@@ -195,6 +182,7 @@ public class DrumMachine extends MetaMachine implements IAutoOutputFluid, IDropS
         }
     }
 
+    @SuppressWarnings("resource")
     @Override
     public InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         var currentStack = player.getMainHandItem();
@@ -209,7 +197,9 @@ public class DrumMachine extends MetaMachine implements IAutoOutputFluid, IDropS
                         ItemStack remainingStack = FluidTransferHelper.tryFillContainer(currentStack, fluidTank, Integer.MAX_VALUE, null, true).getResult();
                         currentStack.shrink(1);
                         SoundEvent soundevent = FluidHelper.getFillSound(initialFluid);
-                        player.level.playSound(null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, soundevent, SoundSource.BLOCKS, 1.0F, 1.0F);
+                        if (soundevent != null) {
+                            player.getLevel().playSound(null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, soundevent, SoundSource.BLOCKS, 1.0F, 1.0F);
+                        }
                         if (!remainingStack.isEmpty() && !player.addItem(remainingStack)) {
                             Block.popResource(player.getLevel(), player.getOnPos(), remainingStack);
                         }
@@ -222,7 +212,9 @@ public class DrumMachine extends MetaMachine implements IAutoOutputFluid, IDropS
                     ItemStack remainingStack = FluidTransferHelper.tryEmptyContainer(currentStack, fluidTank, Integer.MAX_VALUE, null, true).getResult();
                     currentStack.shrink(1);
                     SoundEvent soundevent = FluidHelper.getEmptySound(fluidTank.getFluid());
-                    player.level.playSound(null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, soundevent, SoundSource.BLOCKS, 1.0F, 1.0F);
+                    if (soundevent != null) {
+                        player.getLevel().playSound(null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, soundevent, SoundSource.BLOCKS, 1.0F, 1.0F);
+                    }
                     if (!remainingStack.isEmpty() && !player.getInventory().add(remainingStack)) {
                         Block.popResource(player.getLevel(), player.getOnPos(), remainingStack);
                     }

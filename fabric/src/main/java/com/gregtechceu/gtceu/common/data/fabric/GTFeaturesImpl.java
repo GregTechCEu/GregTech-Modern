@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.common.data.fabric;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.worldgen.BiomeWeightModifier;
 import com.gregtechceu.gtceu.api.data.worldgen.modifier.BiomePlacement;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTPlacements;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -33,20 +32,6 @@ import java.util.List;
  */
 public class GTFeaturesImpl {
     public static void register() {
-        //ores
-        for (var entry : GTRegistries.ORE_VEINS.entries()) {
-            ResourceLocation id = entry.getKey();
-            var datagenExt = entry.getValue().getVeinGenerator();
-            if (datagenExt != null) {
-                Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, id, datagenExt.createConfiguredFeature());
-            }
-        }
-        BiomeModifications.addFeature(
-                ctx -> true,
-                GenerationStep.Decoration.UNDERGROUND_ORES,
-                ResourceKey.create(Registry.PLACED_FEATURE_REGISTRY, GTCEu.id("ore"))
-        );
-
         // rubber tree
         ResourceLocation id = GTCEu.id("trees_rubber");
         ResourceLocation vegetationId = GTCEu.id("rubber_vegetation");
@@ -63,7 +48,7 @@ public class GTFeaturesImpl {
                 PlacementUtils.countExtra(0, ConfigHolder.INSTANCE.worldgen.rubberTreeSpawnChance, 1),
                 InSquarePlacement.spread(),
                 VegetationPlacements.TREE_THRESHOLD,
-                PlacementUtils.HEIGHTMAP_OCEAN_FLOOR,
+                PlacementUtils.HEIGHTMAP_TOP_SOLID,
                 BiomeFilter.biome(),
                 PlacementUtils.filteredByBlockSurvival(GTBlocks.RUBBER_SAPLING.get())
         ));

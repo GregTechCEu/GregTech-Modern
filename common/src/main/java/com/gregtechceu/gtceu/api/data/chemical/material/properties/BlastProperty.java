@@ -89,10 +89,6 @@ public class BlastProperty implements IMaterialProperty<BlastProperty> {
     @Override
     public void verifyProperty(MaterialProperties properties) {
         properties.ensureSet(PropertyKey.INGOT, true);
-
-        FluidProperty fluidProperty = properties.getProperty(PropertyKey.FLUID);
-        if (fluidProperty != null && fluidProperty.getFluidTemperature() == FluidProperty.BASE_TEMP)
-            fluidProperty.setFluidTemperature(blastTemperature);
     }
 
     public static GasTier validateGasTier(String gasTierName) {

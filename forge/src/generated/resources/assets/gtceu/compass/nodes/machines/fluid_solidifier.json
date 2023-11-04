@@ -11,11 +11,16 @@
     "gtceu:iv_fluid_solidifier",
     "gtceu:luv_fluid_solidifier",
     "gtceu:zpm_fluid_solidifier",
-    "gtceu:uv_fluid_solidifier"
+    "gtceu:uv_fluid_solidifier",
+    "gtceu:uhv_fluid_solidifier",
+    "gtceu:uev_fluid_solidifier",
+    "gtceu:uiv_fluid_solidifier",
+    "gtceu:uxv_fluid_solidifier",
+    "gtceu:opv_fluid_solidifier"
   ],
   "page": "gtceu:machines/fluid_solidifier",
   "position": [
-    -100,
+    -150,
     100
   ],
   "section": "gtceu:machines"

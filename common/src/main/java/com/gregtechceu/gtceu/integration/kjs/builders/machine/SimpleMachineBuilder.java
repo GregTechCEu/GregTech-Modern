@@ -55,12 +55,11 @@ public class SimpleMachineBuilder extends MachineBuilder<MachineDefinition> {
     private static SimpleMachineBuilder[] tieredMachines(String name,
                                                          BiConsumer<SimpleMachineBuilder, Integer> builderConsumer,
                                                          Integer... tiers) {
-        SimpleMachineBuilder[] builders = new SimpleMachineBuilder[tiers.length];
-        for (int i = 0; i < tiers.length; i++) {
-            int tier = tiers[i];
+        SimpleMachineBuilder[] builders = new SimpleMachineBuilder[GTValues.TIER_COUNT];
+        for (int tier : tiers) {
             SimpleMachineBuilder register = new SimpleMachineBuilder(GTValues.VN[tier].toLowerCase(Locale.ROOT) + "_" + name, holder -> new SimpleTieredMachine(holder, tier, defaultTankSizeFunction)).tier(tier);
             builderConsumer.accept(register, tier);
-            builders[i] = register;
+            builders[tier] = register;
         }
         return builders;
     }

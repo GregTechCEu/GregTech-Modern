@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
 import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
+import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.NBTIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
@@ -20,6 +21,7 @@ import com.gregtechceu.gtceu.integration.kjs.recipe.components.CapabilityMap;
 import com.gregtechceu.gtceu.integration.kjs.recipe.components.GTRecipeComponents;
 import com.lowdragmc.lowdraglib.LDLib;
 import dev.latvian.mods.kubejs.fluid.FluidStackJS;
+import dev.latvian.mods.kubejs.fluid.InputFluid;
 import dev.latvian.mods.kubejs.item.InputItem;
 import dev.latvian.mods.kubejs.item.OutputItem;
 import dev.latvian.mods.kubejs.recipe.RecipeJS;
@@ -105,8 +107,7 @@ public interface GTRecipeSchema {
         }
 
         public GTRecipeJS inputEU(long eu) {
-            input(EURecipeCapability.CAP, eu);
-            return this;
+            return input(EURecipeCapability.CAP, eu);
         }
 
         public GTRecipeJS EUt(long eu) {
@@ -152,11 +153,7 @@ public interface GTRecipeSchema {
         }
 
         public GTRecipeJS inputItems(TagKey<Item> tag, int amount) {
-            return inputItems(InputItem.of(SizedIngredient.create(Ingredient.of(tag), amount), amount));
-        }
-
-        public GTRecipeJS inputItems(TagKey<Item> tag) {
-            return inputItems(InputItem.of(Ingredient.of(tag), 1));
+            return inputItems(InputItem.of(SizedIngredient.create(tag, amount)));
         }
 
         public GTRecipeJS inputItems(Item input, int amount) {
@@ -295,7 +292,7 @@ public interface GTRecipeSchema {
             return this;
         }
 
-        public GTRecipeJS chancedFluidInput(FluidStackJS stack, int chance, int tierChanceBoost) {
+        public GTRecipeJS chancedFluidInput(GTRecipeComponents.FluidIngredientJS stack, int chance, int tierChanceBoost) {
             float lastChance = this.chance;
             float lastTierChanceBoost = this.tierChanceBoost;
             this.chance = chance / 10000f;
@@ -325,7 +322,7 @@ public interface GTRecipeSchema {
             return chancedOutput(OutputItem.of(ChemicalHelper.get(tag, mat, count), chance), chance, tierChanceBoost);
         }
 
-        public GTRecipeJS inputFluids(FluidStackJS... inputs) {
+        public GTRecipeJS inputFluids(GTRecipeComponents.FluidIngredientJS... inputs) {
             return input(FluidRecipeCapability.CAP, (Object[]) inputs);
         }
 
@@ -354,6 +351,13 @@ public interface GTRecipeSchema {
         public GTRecipeJS addData(String key, int data) {
             if (getValue(DATA) == null) setValue(DATA, new CompoundTag());
             getValue(DATA).putInt(key, data);
+            save();
+            return this;
+        }
+
+        public GTRecipeJS addData(String key, long data) {
+            if (getValue(DATA) == null) setValue(DATA, new CompoundTag());
+            getValue(DATA).putLong(key, data);
             save();
             return this;
         }
@@ -393,6 +397,14 @@ public interface GTRecipeSchema {
 
         public GTRecipeJS solderMultiplier(int multiplier) {
             return addData("solderMultiplier", multiplier);
+        }
+
+        public GTRecipeJS disableDistilleryRecipes(boolean flag) {
+            return addData("disable_distillery", flag);
+        }
+
+        public GTRecipeJS fusionStartEU(long eu) {
+            return addData("eu_to_start", eu);
         }
 
         //////////////////////////////////////
@@ -493,6 +505,17 @@ public interface GTRecipeSchema {
         @Override
         public JsonElement writeOutputItem(OutputItem value) {
             return SizedIngredient.create(value.item).toJson();
+        }
+
+        @Override
+        public JsonElement writeInputFluid(InputFluid value) {
+            var fluid = ((FluidStackJS)value).getFluidStack();
+            return FluidIngredient.of(fluid.getAmount(), fluid.getFluid()).toJson();
+        }
+
+        @Override
+        public InputFluid readInputFluid(Object from) {
+            return super.readInputFluid(from);
         }
     }
 

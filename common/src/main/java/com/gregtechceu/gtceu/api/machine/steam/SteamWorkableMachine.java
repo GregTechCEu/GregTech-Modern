@@ -47,26 +47,27 @@ import java.util.List;
 @MethodsReturnNonnullByDefault
 public abstract class SteamWorkableMachine extends SteamMachine implements IRecipeLogicMachine, IMufflableMachine {
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(SteamWorkableMachine.class, SteamMachine.MANAGED_FIELD_HOLDER);
-    @Nullable
-    @Getter @Setter
+    @Nullable @Getter @Setter
     private ICleanroomProvider cleanroom;
-    @Getter
-    @Persisted
-    @DescSynced
+    @Getter @Persisted @DescSynced
     public final RecipeLogic recipeLogic;
     @Getter
-    public final GTRecipeType recipeType;
+    public final GTRecipeType[] recipeTypes;
+    @Getter @Setter
+    public int activeRecipeType;
     @Persisted @DescSynced @Getter @RequireRerender
     protected Direction outputFacing;
     @Persisted @DescSynced @Getter @Setter
     protected boolean isMuffled;
+    protected boolean previouslyMuffled = true;
     @Getter
     protected final Table<IO, RecipeCapability<?>, List<IRecipeHandler<?>>> capabilitiesProxy;
     protected final List<ISubscription> traitSubscriptions;
 
     public SteamWorkableMachine(IMachineBlockEntity holder, boolean isHighPressure, Object... args) {
         super(holder, isHighPressure, args);
-        this.recipeType = getDefinition().getRecipeType();
+        this.recipeTypes = getDefinition().getRecipeTypes();
+        this.activeRecipeType = 0;
         this.recipeLogic = createRecipeLogic(args);
         this.capabilitiesProxy = Tables.newCustomTable(new EnumMap<>(IO.class), HashMap::new);
         this.traitSubscriptions = new ArrayList<>();
@@ -125,6 +126,27 @@ public abstract class SteamWorkableMachine extends SteamMachine implements IReci
             return InteractionResult.CONSUME;
         }
         return super.onWrenchClick(playerIn, hand, gridSide, hitResult);
+    }
+
+    @Override
+    public boolean keepSubscribing() {
+        return false;
+    }
+
+    @NotNull
+    @Override
+    public GTRecipeType getRecipeType() {
+        return recipeTypes[activeRecipeType];
+    }
+
+    @Override
+    public void clientTick() {
+        if (previouslyMuffled != isMuffled) {
+            previouslyMuffled = isMuffled;
+
+            if (recipeLogic != null)
+                recipeLogic.updateSound();
+        }
     }
 
     //////////////////////////////////////

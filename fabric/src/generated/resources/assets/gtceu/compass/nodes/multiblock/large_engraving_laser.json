@@ -1,0 +1,15 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:large_engraving_laser"
+  },
+  "items": [
+    "gtceu:large_engraving_laser"
+  ],
+  "page": "gtceu:multiblock/large_engraving_laser",
+  "position": [
+    -50,
+    200
+  ],
+  "section": "gtceu:multiblock"
+}

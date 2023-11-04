@@ -59,7 +59,10 @@ public class PipeCoverContainer implements ICoverable, IEnhancedManaged {
 
     @Override
     public void onChanged() {
-        markDirty();
+        var level = getLevel();
+        if (level != null && !level.isClientSide && level.getServer() != null) {
+            level.getServer().execute(this::markDirty);
+        }
     }
 
     @Override
@@ -168,7 +171,7 @@ public class PipeCoverContainer implements ICoverable, IEnhancedManaged {
 
     @SuppressWarnings("unused")
     private boolean onCoverDirty(CoverBehavior coverBehavior) {
-        return coverBehavior != null && coverBehavior.getSyncStorage().hasDirtyFields();
+        return coverBehavior != null && (coverBehavior.getSyncStorage().hasDirtySyncFields() || coverBehavior.getSyncStorage().hasDirtyPersistedFields());
     }
 
     @SuppressWarnings("unused")

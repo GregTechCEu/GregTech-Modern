@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import lombok.Getter;
@@ -31,7 +32,7 @@ public abstract class SteamMachine extends MetaMachine implements ITieredMachine
         super(holder);
         this.isHighPressure = isHighPressure;
         this.steamTank = createSteamTank(args);
-        this.steamTank.setFilter(fluid -> GTMaterials.Steam.getFluid() == fluid.getFluid());
+        this.steamTank.setFilter(fluidStack -> fluidStack.getFluid().is(CustomTags.STEAM));
     }
 
     //////////////////////////////////////

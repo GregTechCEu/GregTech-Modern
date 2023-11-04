@@ -1,9 +1,9 @@
 # ChangeLog
 
-* add compass system for in-game guide
-* add computer monitor cover and machine controller cover
-* incress rubber tree generating rate
-* fix localization
-* fix oven hatch rendering + auto output
-* fix bolt name
-* improve recipe searching significantly by parallel searching + fast ingredient copy + fast recipe copy + fast storage copy
+* Bump ldlib version up
+* Fix incorrect maximum voltage for multiblocks
+* Fix crash on startup for 1.19
+* Fix LP steam machines not running slower than HP steam machines
+* Add missing recipe for item voiding cover
+* Add circuit 2 to recipe for monocrystalline silicon boule
+* Make protected methods in TagPrefix public

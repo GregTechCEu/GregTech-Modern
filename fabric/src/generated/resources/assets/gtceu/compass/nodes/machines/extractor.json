@@ -11,11 +11,16 @@
     "gtceu:iv_extractor",
     "gtceu:luv_extractor",
     "gtceu:zpm_extractor",
-    "gtceu:uv_extractor"
+    "gtceu:uv_extractor",
+    "gtceu:uhv_extractor",
+    "gtceu:uev_extractor",
+    "gtceu:uiv_extractor",
+    "gtceu:uxv_extractor",
+    "gtceu:opv_extractor"
   ],
   "page": "gtceu:machines/extractor",
   "position": [
-    -300,
+    -350,
     100
   ],
   "section": "gtceu:machines"

@@ -19,7 +19,7 @@ public class GrowthMediumRecipes {
     public static void init(Consumer<FinishedRecipe> provider) {
 
         // Bio Chaff
-        MACERATOR_RECIPES.recipeBuilder("bio_chaff").duration(200)
+        MACERATOR_RECIPES.recipeBuilder("bio_chaff").EUt(4).duration(200)
                 .inputItems(PLANT_BALL, 2)
                 .outputItems(BIO_CHAFF)
                 .outputItems(BIO_CHAFF)
@@ -27,7 +27,7 @@ public class GrowthMediumRecipes {
                 .chancedOutput(BIO_CHAFF.asStack(), 2500, 0)
                 .save(provider);
 
-        MACERATOR_RECIPES.recipeBuilder("dirt_from_bio_chaff").duration(300)
+        MACERATOR_RECIPES.recipeBuilder("dirt_from_bio_chaff").EUt(4).duration(300)
                 .inputItems(BIO_CHAFF)
                 .outputItems(Blocks.DIRT.asItem())
                 .save(provider);

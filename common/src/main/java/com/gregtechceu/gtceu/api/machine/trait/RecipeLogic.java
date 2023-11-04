@@ -129,7 +129,10 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     }
 
     public boolean needFuel() {
-        return machine.getRecipeType().isFuelRecipeType();
+        if (machine.getRecipeType().isFuelRecipeType()){
+            return true;
+        }
+        return false;
     }
 
     /**

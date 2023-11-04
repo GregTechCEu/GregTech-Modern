@@ -1,0 +1,15 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:large_wiremill"
+  },
+  "items": [
+    "gtceu:large_wiremill"
+  ],
+  "page": "gtceu:multiblock/large_wiremill",
+  "position": [
+    -300,
+    300
+  ],
+  "section": "gtceu:multiblock"
+}

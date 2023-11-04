@@ -9,7 +9,7 @@
   "page": "gtceu:multiblock/ev_large_miner",
   "position": [
     -150,
-    150
+    100
   ],
   "section": "gtceu:multiblock"
 }

@@ -59,7 +59,10 @@ public class MachineCoverContainer implements ICoverable, IEnhancedManaged {
 
     @Override
     public void onChanged() {
-        markDirty();
+        var level = getLevel();
+        if (level != null && !level.isClientSide && level.getServer() != null) {
+            level.getServer().execute(this::markDirty);
+        }
     }
 
     @Override
@@ -175,7 +178,7 @@ public class MachineCoverContainer implements ICoverable, IEnhancedManaged {
             for (IRef ref : coverBehavior.getSyncStorage().getNonLazyFields()) {
                 ref.update();
             }
-            return coverBehavior.getSyncStorage().hasDirtyFields();
+            return coverBehavior.getSyncStorage().hasDirtySyncFields() || coverBehavior.getSyncStorage().hasDirtyPersistedFields();
         }
         return false;
     }

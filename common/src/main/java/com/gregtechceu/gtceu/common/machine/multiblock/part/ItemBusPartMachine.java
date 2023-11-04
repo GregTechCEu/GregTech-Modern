@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.machine.fancyconfigurator.CircuitFancyConfigura
 import com.gregtechceu.gtceu.api.machine.feature.IMachineModifyDrops;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDistinctPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
+import com.gregtechceu.gtceu.api.machine.trait.ItemHandlerProxyRecipeTrait;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -32,6 +33,7 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author KilaBash
@@ -43,8 +45,9 @@ import java.util.List;
 public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinctPart, IMachineModifyDrops {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(ItemBusPartMachine.class, TieredIOPartMachine.MANAGED_FIELD_HOLDER);
+    @Getter
     @Persisted
-    public final NotifiableItemStackHandler inventory;
+    private final NotifiableItemStackHandler inventory;
     @Nullable
     protected TickableSubscription autoIOSubs;
     @Nullable
@@ -52,11 +55,14 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
     @Getter
     @Persisted
     protected final NotifiableItemStackHandler circuitInventory;
+    @Getter
+    protected final ItemHandlerProxyRecipeTrait combinedInventory;
 
     public ItemBusPartMachine(IMachineBlockEntity holder, int tier, IO io, Object... args) {
         super(holder, tier, io);
         this.inventory = createInventory(args);
         this.circuitInventory = createCircuitItemHandler(io);
+        this.combinedInventory = createCombinedItemHandler(io);
     }
 
     //////////////////////////////////////
@@ -77,17 +83,24 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
     }
 
     protected NotifiableItemStackHandler createCircuitItemHandler(Object... args) {
-        if (args.length > 0 && args[0] instanceof  IO io && io == IO.IN) {
-            return new NotifiableItemStackHandler(this, 1, IO.IN).setFilter(IntCircuitBehaviour::isIntegratedCircuit);
-        }
-        else {
+        if (args.length > 0 && args[0] instanceof IO io && io == IO.IN) {
+            return new NotifiableItemStackHandler(this, 1, IO.IN, IO.NONE).setFilter(IntCircuitBehaviour::isIntegratedCircuit);
+        } else {
             return new NotifiableItemStackHandler(this, 0, IO.NONE);
+        }
+    }
+
+    protected ItemHandlerProxyRecipeTrait createCombinedItemHandler(Object... args) {
+        if (args.length > 0 && args[0] instanceof IO io && io == IO.IN) {
+            return new ItemHandlerProxyRecipeTrait(this, Set.of(getInventory(), circuitInventory), IO.IN, IO.NONE);
+        } else {
+            return new ItemHandlerProxyRecipeTrait(this, Set.of(getInventory(), circuitInventory), IO.NONE, IO.NONE);
         }
     }
 
     @Override
     public void onDrops(List<ItemStack> drops, Player entity) {
-        clearInventory(drops, inventory.storage);
+        clearInventory(drops, getInventory().storage);
 
         if (!ConfigHolder.INSTANCE.machines.ghostCircuit) {
             clearInventory(drops, circuitInventory.storage);
@@ -100,7 +113,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
         if (getLevel() instanceof ServerLevel serverLevel) {
             serverLevel.getServer().tell(new TickTask(0, this::updateInventorySubscription));
         }
-        inventorySubs = inventory.addChangedListener(this::updateInventorySubscription);
+        inventorySubs = getInventory().addChangedListener(this::updateInventorySubscription);
     }
 
     @Override
@@ -114,12 +127,14 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
 
     @Override
     public boolean isDistinct() {
-        return inventory.isDistinct();
+        return getInventory().isDistinct() && circuitInventory.isDistinct();
     }
 
     @Override
     public void setDistinct(boolean isDistinct) {
-        inventory.setDistinct(isDistinct);
+        getInventory().setDistinct(isDistinct);
+        circuitInventory.setDistinct(isDistinct);
+        combinedInventory.setDistinct(isDistinct);
     }
 
     //////////////////////////////////////
@@ -139,7 +154,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
     }
 
     protected void updateInventorySubscription() {
-        if (isWorkingEnabled() && ((io == IO.OUT && !inventory.isEmpty()) || io == IO.IN)
+        if (isWorkingEnabled() && ((io == IO.OUT && !getInventory().isEmpty()) || io == IO.IN)
                 && ItemTransferHelper.getItemTransfer(getLevel(), getPos().relative(getFrontFacing()), getFrontFacing().getOpposite()) != null) {
             autoIOSubs = subscribeServerTick(autoIOSubs, this::autoIO);
         } else if (autoIOSubs != null) {
@@ -152,9 +167,9 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
         if (getOffsetTimer() % 5 == 0) {
             if (isWorkingEnabled()) {
                 if (io == IO.OUT) {
-                    inventory.exportToNearby(getFrontFacing());
+                    getInventory().exportToNearby(getFrontFacing());
                 } else if (io == IO.IN) {
-                    inventory.importFromNearby(getFrontFacing());
+                    getInventory().importFromNearby(getFrontFacing());
                 }
             }
             updateInventorySubscription();
@@ -172,7 +187,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
     //////////////////////////////////////
 
     public void attachConfigurators(ConfiguratorPanel configuratorPanel) {
-        super.attachConfigurators(configuratorPanel);
+        IDistinctPart.super.attachConfigurators(configuratorPanel);
         if (this.io == IO.IN) {
             configuratorPanel.attachConfigurators(new CircuitFancyConfigurator(circuitInventory.storage));
         }
@@ -191,7 +206,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
         int index = 0;
         for (int y = 0; y < colSize; y++) {
             for (int x = 0; x < rowSize; x++) {
-                container.addWidget(new SlotWidget(inventory.storage, index++, 4 + x * 18, 4 + y * 18, true, io.support(IO.IN))
+                container.addWidget(new SlotWidget(getInventory().storage, index++, 4 + x * 18, 4 + y * 18, true, io.support(IO.IN))
                         .setBackgroundTexture(GuiTextures.SLOT));
             }
         }
