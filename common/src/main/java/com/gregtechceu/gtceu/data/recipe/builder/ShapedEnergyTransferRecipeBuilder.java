@@ -67,7 +67,7 @@ public class ShapedEnergyTransferRecipeBuilder extends Builder<Ingredient, Shape
         return where(cha, ingredient);
     }
 
-    public ShapedEnergyTransferRecipeBuilder chargeStack(Ingredient chargeIngredient) {
+    public ShapedEnergyTransferRecipeBuilder chargeIngredient(Ingredient chargeIngredient) {
         this.chargeIngredient = chargeIngredient;
         return (ShapedEnergyTransferRecipeBuilder) this;
     }
