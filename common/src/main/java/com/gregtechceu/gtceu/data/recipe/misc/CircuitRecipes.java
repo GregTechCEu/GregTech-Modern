@@ -33,6 +33,7 @@ public class CircuitRecipes {
                 .inputItems(dust, Silicon, 32)
                 .inputItems(dustSmall, GalliumArsenide)
                 .outputItems(SILICON_BOULE)
+                .circuitMeta(2)
                 .blastFurnaceTemp(1784)
                 .duration(9000).EUt(VA[MV]).save(provider);
 
