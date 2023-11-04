@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.data.recipe;
 
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
@@ -31,4 +30,5 @@ public class RecipeHelper {
     public static boolean isFluidStackDivisibleForDistillery(FluidIngredient fluidStack, int divisor) {
         return fluidStack.getAmount() % divisor == 0 && fluidStack.getAmount() / divisor >= 25;
     }
+
 }
