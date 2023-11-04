@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.data.recipe.builder;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.recipe.StrictShapedRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.NBTIngredient;
 import com.lowdragmc.lowdraglib.LDLib;
@@ -131,7 +132,7 @@ public class ShapedRecipeBuilder extends Builder<Ingredient, ShapedRecipeBuilder
         }
 
         if (output.isEmpty()) {
-            LDLib.LOGGER.error("shaped recipe {} output is empty", id);
+            GTCEu.LOGGER.error("shaped recipe {} output is empty", id);
             throw new IllegalArgumentException(id + ": output items is empty");
         } else {
             JsonObject result = new JsonObject();

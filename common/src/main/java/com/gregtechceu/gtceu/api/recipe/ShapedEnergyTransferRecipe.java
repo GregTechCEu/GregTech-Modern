@@ -33,16 +33,16 @@ public class ShapedEnergyTransferRecipe extends ShapedRecipe {
     private CraftingContainer craftingContainer;
 
     @Getter
-    private final ItemStack chargeStack;
+    private final Ingredient chargeIngredient;
     @Getter
     private final boolean transferMaxCharge;
     @Getter
     private final boolean overrideCharge;
 
 
-    public ShapedEnergyTransferRecipe(ResourceLocation id, String group, int width, int height, ItemStack chargeStack, boolean overrideCharge, boolean transferMaxCharge, NonNullList<Ingredient> recipeItems, ItemStack result) {
+    public ShapedEnergyTransferRecipe(ResourceLocation id, String group, int width, int height, Ingredient chargeIngredient, boolean overrideCharge, boolean transferMaxCharge, NonNullList<Ingredient> recipeItems, ItemStack result) {
         super(id, group, width, height, recipeItems, result);
-        this.chargeStack = chargeStack;
+        this.chargeIngredient = chargeIngredient;
         this.transferMaxCharge = transferMaxCharge;
         this.overrideCharge = overrideCharge;
     }
@@ -58,18 +58,20 @@ public class ShapedEnergyTransferRecipe extends ShapedRecipe {
         long maxCharge = 0L;
         long charge = 0L;
         ItemStack resultStack = super.getResultItem();
-        for (int i = 0; i < craftingContainer.getContainerSize(); i++) {
-            if (craftingContainer.getItem(i).sameItemStackIgnoreDurability(chargeStack)) {
-                ItemStack stack = craftingContainer.getItem(i);
-                IElectricItem electricItem = GTCapabilityHelper.getElectricItem(stack);
-                if (electricItem != null) {
-                    maxCharge += electricItem.getMaxCharge();
-                    charge += electricItem.getCharge();
-                    resultStack.getOrCreateTag().putLong("MaxCharge", maxCharge);
-                    resultStack.getOrCreateTag().putLong("Charge", charge);
-                    return resultStack;
+        for (ItemStack chargeStack : chargeIngredient.getItems()) {
+            for (int i = 0; i < craftingContainer.getContainerSize(); i++) {
+                if (craftingContainer.getItem(i).sameItemStackIgnoreDurability(chargeStack)) {
+                    ItemStack stack = craftingContainer.getItem(i);
+                    IElectricItem electricItem = GTCapabilityHelper.getElectricItem(stack);
+                    if (electricItem != null) {
+                        maxCharge += electricItem.getMaxCharge();
+                        charge += electricItem.getCharge();
+                        resultStack.getOrCreateTag().putLong("MaxCharge", maxCharge);
+                        resultStack.getOrCreateTag().putLong("Charge", charge);
+                        return resultStack;
+                    }
                 }
-            }
+        }
         }
         return resultStack;
     }
@@ -88,9 +90,9 @@ public class ShapedEnergyTransferRecipe extends ShapedRecipe {
             NonNullList<Ingredient> nonNullList = ShapedRecipeInvoker.callDissolvePattern(strings, map, i, j);
             boolean overrideCharge = GsonHelper.getAsBoolean(json, "overrideCharge");
             boolean transferMaxCharge = GsonHelper.getAsBoolean(json, "transferMaxCharge");
-            ItemStack chargeStack = ShapedEnergyTransferRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(json, "chargeStack"));
+            Ingredient chargeIngredient = Ingredient.fromJson(GsonHelper.getAsJsonObject(json, "chargeIngredient"));
             ItemStack itemStack = ShapedEnergyTransferRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(json, "result"));
-            return new ShapedEnergyTransferRecipe(recipeId, string, i, j, chargeStack, overrideCharge, transferMaxCharge, nonNullList, itemStack);
+            return new ShapedEnergyTransferRecipe(recipeId, string, i, j, chargeIngredient, overrideCharge, transferMaxCharge, nonNullList, itemStack);
         }
 
         @Override
@@ -99,12 +101,12 @@ public class ShapedEnergyTransferRecipe extends ShapedRecipe {
             int j = buffer.readVarInt();
             boolean overrideCharge = buffer.readBoolean();
             boolean transferMaxCharge = buffer.readBoolean();
-            ItemStack chargeStack = buffer.readItem();
+            Ingredient chargeIngredient = Ingredient.fromNetwork(buffer);
             String string = buffer.readUtf();
             NonNullList<Ingredient> nonNullList = NonNullList.withSize(i * j, Ingredient.EMPTY);
             nonNullList.replaceAll(ignored -> Ingredient.fromNetwork(buffer));
             ItemStack itemStack = buffer.readItem();
-            return new ShapedEnergyTransferRecipe(recipeId, string, i, j, chargeStack, overrideCharge, transferMaxCharge, nonNullList, itemStack);
+            return new ShapedEnergyTransferRecipe(recipeId, string, i, j, chargeIngredient, overrideCharge, transferMaxCharge, nonNullList, itemStack);
         }
 
         @Override
@@ -113,7 +115,7 @@ public class ShapedEnergyTransferRecipe extends ShapedRecipe {
             buffer.writeVarInt(recipe.getHeight());
             buffer.writeBoolean(recipe.isOverrideCharge());
             buffer.writeBoolean(recipe.isTransferMaxCharge());
-            buffer.writeItem(recipe.getChargeStack());
+            recipe.getChargeIngredient().toNetwork(buffer);
             buffer.writeUtf(recipe.getGroup());
             for (Ingredient ingredient : recipe.getIngredients()) {
                 ingredient.toNetwork(buffer);

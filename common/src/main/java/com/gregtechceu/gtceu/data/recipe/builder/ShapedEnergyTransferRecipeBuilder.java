@@ -2,9 +2,9 @@ package com.gregtechceu.gtceu.data.recipe.builder;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.recipe.ShapedEnergyTransferRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.NBTIngredient;
-import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.utils.Builder;
 import com.lowdragmc.lowdraglib.utils.NBTToJsonConverter;
 import net.minecraft.core.Registry;
@@ -29,7 +29,7 @@ import java.util.function.Consumer;
  */
 public class ShapedEnergyTransferRecipeBuilder extends Builder<Ingredient, ShapedEnergyTransferRecipeBuilder> {
     protected ItemStack output = ItemStack.EMPTY;
-    protected ItemStack chargeStack = ItemStack.EMPTY;
+    protected Ingredient chargeIngredient = Ingredient.EMPTY;
     protected ResourceLocation id;
     protected String group;
     protected boolean transferMaxCharge;
@@ -67,8 +67,8 @@ public class ShapedEnergyTransferRecipeBuilder extends Builder<Ingredient, Shape
         return where(cha, ingredient);
     }
 
-    public ShapedEnergyTransferRecipeBuilder chargeStack(ItemStack chargeStack) {
-        this.chargeStack = chargeStack;
+    public ShapedEnergyTransferRecipeBuilder chargeStack(Ingredient chargeIngredient) {
+        this.chargeIngredient = chargeIngredient;
         return (ShapedEnergyTransferRecipeBuilder) this;
     }
 
@@ -145,16 +145,14 @@ public class ShapedEnergyTransferRecipeBuilder extends Builder<Ingredient, Shape
 
         json.addProperty("overrideCharge", overrideCharge);
         json.addProperty("transferMaxCharge", transferMaxCharge);
-        if (chargeStack.isEmpty()) {
-            LDLib.LOGGER.error("shaped energy transfer recipe {} chargeStack is empty", id);
-            throw new IllegalArgumentException(id + ": chargeStack item is empty");
+        if (chargeIngredient.isEmpty()) {
+            GTCEu.LOGGER.error("shaped energy transfer recipe {} chargeIngredient is empty", id);
+            throw new IllegalArgumentException(id + ": chargeIngredient is empty");
         } else {
-            JsonObject result = new JsonObject();
-            result.addProperty("item", Registry.ITEM.getKey(chargeStack.getItem()).toString());
-            json.add("chargeStack", result);
+            json.add("chargeIngredient", chargeIngredient.toJson());
         }
         if (output.isEmpty()) {
-            LDLib.LOGGER.error("shaped energy transfer recipe {} output is empty", id);
+            GTCEu.LOGGER.error("shaped energy transfer recipe {} output is empty", id);
             throw new IllegalArgumentException(id + ": output items is empty");
         } else {
             JsonObject result = new JsonObject();
