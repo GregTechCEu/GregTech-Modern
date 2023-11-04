@@ -92,7 +92,12 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
 
     @Override
     public List<FluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<FluidIngredient> left, @Nullable String slotName, boolean simulate) {
-        if (io != this.handlerIO) return left;
+        return handleIngredient(io, left, simulate, this.handlerIO, storages);
+    }
+
+    @Nullable
+    public static List<FluidIngredient> handleIngredient(IO io, List<FluidIngredient> left, boolean simulate, IO handlerIO, FluidStorage[] storages) {
+        if (io != handlerIO) return left;
         var capabilities = simulate ? Arrays.stream(storages).map(FluidStorage::copy).toArray(FluidStorage[]::new) : storages;
         for (FluidStorage capability : capabilities) {
             Iterator<FluidIngredient> iterator = left.iterator();

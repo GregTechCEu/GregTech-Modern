@@ -77,6 +77,10 @@ public class TooltipHelper {
             }
         }
 
+        public ChatFormatting getCurrent() {
+            return codes[index];
+        }
+
         @Override
         public String toString() {
             return codes[index].toString();

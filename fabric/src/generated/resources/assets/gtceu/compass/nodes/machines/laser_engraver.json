@@ -11,11 +11,16 @@
     "gtceu:iv_laser_engraver",
     "gtceu:luv_laser_engraver",
     "gtceu:zpm_laser_engraver",
-    "gtceu:uv_laser_engraver"
+    "gtceu:uv_laser_engraver",
+    "gtceu:uhv_laser_engraver",
+    "gtceu:uev_laser_engraver",
+    "gtceu:uiv_laser_engraver",
+    "gtceu:uxv_laser_engraver",
+    "gtceu:opv_laser_engraver"
   ],
   "page": "gtceu:machines/laser_engraver",
   "position": [
-    -100,
+    -150,
     150
   ],
   "section": "gtceu:machines"

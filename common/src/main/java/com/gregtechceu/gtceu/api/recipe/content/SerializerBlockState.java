@@ -5,6 +5,7 @@ import com.google.common.collect.UnmodifiableIterator;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
+import com.gregtechceu.gtceu.GTCEu;
 import com.mojang.serialization.JsonOps;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
@@ -67,7 +68,7 @@ public class SerializerBlockState implements IContentSerializer<BlockState> {
 
     @Override
     public BlockState fromJson(JsonElement json) {
-        return BlockState.CODEC.decode(JsonOps.INSTANCE, json).get().map(Function.identity(), right -> null).getFirst();
+        return BlockState.CODEC.parse(JsonOps.INSTANCE, json).getOrThrow(false, GTCEu.LOGGER::error);
     }
 
     @Override

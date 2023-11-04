@@ -7,6 +7,7 @@ import com.lowdragmc.lowdraglib.syncdata.blockentity.IAutoPersistBlockEntity;
 import com.lowdragmc.lowdraglib.syncdata.blockentity.IRPCBlockEntity;
 import com.lowdragmc.lowdraglib.syncdata.managed.MultiManagedStorage;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
@@ -66,4 +67,15 @@ public interface IMachineBlockEntity extends IToolGridHighLight, IAsyncAutoSyncB
 
     MultiManagedStorage getRootStorage();
 
+    @Override
+    default void saveCustomPersistedData(CompoundTag tag, boolean forDrop) {
+        IAutoPersistBlockEntity.super.saveCustomPersistedData(tag, forDrop);
+        getMetaMachine().saveCustomPersistedData(tag, forDrop);
+    }
+
+    @Override
+    default void loadCustomPersistedData(CompoundTag tag) {
+        IAutoPersistBlockEntity.super.loadCustomPersistedData(tag);
+        getMetaMachine().loadCustomPersistedData(tag);
+    }
 }

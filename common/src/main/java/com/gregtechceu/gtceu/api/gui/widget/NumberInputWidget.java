@@ -197,7 +197,7 @@ public abstract class NumberInputWidget<T extends Number> extends WidgetGroup {
         return this;
     }
 
-    private void updateTextFieldRange() {
+    protected void updateTextFieldRange() {
         setTextFieldRange(textField, min, max);
 
         this.setValue(clamp(valueSupplier.get(), min, max));
