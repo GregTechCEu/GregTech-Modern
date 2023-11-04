@@ -34,6 +34,8 @@ public class PartAbility {
     public static final PartAbility TANK_VALVE = new PartAbility("tank_valve");
     public static final PartAbility PASSTHROUGH_HATCH = new PartAbility("passthrough_hatch");
     public static final PartAbility PARALLEL_HATCH = new PartAbility("parallel_hatch");
+    public static final PartAbility INPUT_LASER = new PartAbility("input_laser");
+    public static final PartAbility OUTPUT_LASER = new PartAbility("output_laser");
 
     /**
      * tier -> available blocks

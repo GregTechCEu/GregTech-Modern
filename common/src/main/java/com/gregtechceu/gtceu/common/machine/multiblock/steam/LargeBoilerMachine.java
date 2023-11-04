@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDisplayUIMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.util.ClickData;
@@ -127,7 +128,7 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
 
             if (hasDrainedWater) {
                 // fill steam
-                var fillSteam = List.of(FluidIngredient.of(CustomTags.STEAM, drained * STEAM_PER_WATER));
+                var fillSteam = List.of(FluidIngredient.of(GTMaterials.Steam.getFluid(drained * STEAM_PER_WATER)));
                 List<IRecipeHandler<?>> outputTanks = new ArrayList<>();
                 if (getCapabilitiesProxy().contains(IO.OUT, FluidRecipeCapability.CAP)) {
                     outputTanks.addAll(Objects.requireNonNull(getCapabilitiesProxy().get(IO.OUT, FluidRecipeCapability.CAP)));

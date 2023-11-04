@@ -11,11 +11,16 @@
     "gtceu:iv_macerator",
     "gtceu:luv_macerator",
     "gtceu:zpm_macerator",
-    "gtceu:uv_macerator"
+    "gtceu:uv_macerator",
+    "gtceu:uhv_macerator",
+    "gtceu:uev_macerator",
+    "gtceu:uiv_macerator",
+    "gtceu:uxv_macerator",
+    "gtceu:opv_macerator"
   ],
   "page": "gtceu:machines/macerator",
   "position": [
-    -250,
+    -300,
     200
   ],
   "section": "gtceu:machines"

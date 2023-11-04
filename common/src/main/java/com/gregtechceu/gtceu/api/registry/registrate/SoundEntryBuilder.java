@@ -42,7 +42,7 @@ public class SoundEntryBuilder {
 
         @Override
         public void run(CachedOutput cache) {
-            generate(generator.getOutputFolder().resolve(modId), cache);
+            generate(generator.getOutputFolder(), cache);
         }
 
         @Override
@@ -51,7 +51,7 @@ public class SoundEntryBuilder {
         }
 
         public void generate(Path path, CachedOutput cache) {
-            path = path.resolve("assets/" + GTCEu.MOD_ID);
+            path = path.resolve("assets/" + modId);
 
             try {
                 JsonObject json = new JsonObject();

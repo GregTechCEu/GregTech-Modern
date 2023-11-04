@@ -68,7 +68,7 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
     @Persisted(key = "cover")
     protected final PipeCoverContainer coverContainer;
 
-    @Setter
+    @Getter @Setter
     @DescSynced
     @Persisted
     @RequireRerender
@@ -131,6 +131,17 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
     public void clearRemoved() {
         super.clearRemoved();
         coverContainer.onLoad();
+    }
+
+    @Override
+    public int getNumConnections() {
+        int count = 0;
+        int connections = getConnections();
+        while (connections > 0) {
+            count++;
+            connections = connections & (connections - 1);
+        }
+        return count;
     }
 
     @Nullable

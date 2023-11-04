@@ -11,11 +11,16 @@
     "gtceu:iv_ore_washer",
     "gtceu:luv_ore_washer",
     "gtceu:zpm_ore_washer",
-    "gtceu:uv_ore_washer"
+    "gtceu:uv_ore_washer",
+    "gtceu:uhv_ore_washer",
+    "gtceu:uev_ore_washer",
+    "gtceu:uiv_ore_washer",
+    "gtceu:uxv_ore_washer",
+    "gtceu:opv_ore_washer"
   ],
   "page": "gtceu:machines/ore_washer",
   "position": [
-    -250,
+    -300,
     150
   ],
   "section": "gtceu:machines"

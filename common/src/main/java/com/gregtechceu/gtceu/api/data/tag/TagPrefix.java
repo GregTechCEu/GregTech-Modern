@@ -75,7 +75,7 @@ public class TagPrefix {
         return PREFIXES.get(name);
     }
 
-    public static final TagPrefix ore = oreTagPrefix("ore")
+    public static final TagPrefix ore = oreTagPrefix("stone")
             .langValue("%s Ore")
             .materialIconType(MaterialIconType.ore)
             .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
@@ -691,7 +691,7 @@ public class TagPrefix {
             .unificationEnabled(true);
 
     // Prefix to determine which kind of Rock this is.
-    public static final TagPrefix stone = new TagPrefix("stone")
+    public static final TagPrefix rock = new TagPrefix("rock")
             .defaultTagPath(FORGE, "%s")
             .defaultTagPath(FABRIC, "%s")
             .langValue("%s")
@@ -828,7 +828,7 @@ public class TagPrefix {
         PREFIXES.put(name, this);
     }
 
-    protected static TagPrefix oreTagPrefix(String name) {
+    public static TagPrefix oreTagPrefix(String name) {
         return new TagPrefix(name)
                 .prefixTagPath(FORGE, "ores/%s/%s")
                 .defaultTagPath(FORGE, "ores/%s")
@@ -845,27 +845,27 @@ public class TagPrefix {
         secondaryMaterials.add(secondaryMaterial);
     }
 
-    protected TagPrefix registerOre(Supplier<BlockState> stoneType) {
+    public TagPrefix registerOre(Supplier<BlockState> stoneType) {
         return registerOre(stoneType, net.minecraft.world.level.material.Material.STONE);
     }
 
-    protected TagPrefix registerOre(Supplier<BlockState> stoneType, boolean isNether) {
+    public TagPrefix registerOre(Supplier<BlockState> stoneType, boolean isNether) {
         return registerOre(stoneType, isNether, net.minecraft.world.level.material.Material.STONE);
     }
 
-    protected TagPrefix registerOre(Supplier<BlockState> stoneType, net.minecraft.world.level.material.Material material) {
+    public TagPrefix registerOre(Supplier<BlockState> stoneType, net.minecraft.world.level.material.Material material) {
         return registerOre(stoneType, false, material);
     }
 
-    protected TagPrefix registerOre(Supplier<BlockState> stoneType, boolean isNether, net.minecraft.world.level.material.Material material) {
+    public TagPrefix registerOre(Supplier<BlockState> stoneType, boolean isNether, net.minecraft.world.level.material.Material material) {
         return registerOre(stoneType, false, material, material.getColor(), SoundType.STONE);
     }
 
-    protected TagPrefix registerOre(Supplier<BlockState> stoneType, MaterialColor color) {
+    public TagPrefix registerOre(Supplier<BlockState> stoneType, MaterialColor color) {
         return registerOre(stoneType, false, color);
     }
 
-    protected TagPrefix registerOre(Supplier<BlockState> stoneType, boolean isNether, MaterialColor color) {
+    public TagPrefix registerOre(Supplier<BlockState> stoneType, boolean isNether, MaterialColor color) {
         return registerOre(stoneType, isNether, net.minecraft.world.level.material.Material.STONE, color, SoundType.STONE);
     }
 

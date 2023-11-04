@@ -15,18 +15,15 @@ import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.common.recipe.VentCondition;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
-import com.lowdragmc.lowdraglib.side.fluid.IFluidStorage;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.utils.Position;
-import it.unimi.dsi.fastutil.longs.LongIntMutablePair;
 import lombok.Setter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
@@ -130,15 +127,14 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
                 return null;
             }
 
-            var modified = RecipeHelper.applyOverclock(new OverclockingLogic((_recipe, recipeEUt, maxVoltage, duration, amountOC) ->
-                            LongIntMutablePair.of(steamMachine.isHighPressure ? recipeEUt * 2 : recipeEUt, steamMachine.isHighPressure ? duration : duration * 2)),
-                    recipe, GTValues.V[GTValues.LV]);
+            var modified = recipe.copy();
+            modified.conditions.add(VentCondition.INSTANCE);
 
-            if (modified == recipe) {
-                modified = recipe.copy();
+            if (!steamMachine.isHighPressure) {
+                modified.duration *= 2;
+                RecipeHelper.setInputEUt(modified, RecipeHelper.getInputEUt(recipe) / 2);
             }
 
-            modified.conditions.add(VentCondition.INSTANCE);
             return modified;
         }
         return null;
