@@ -1,10 +1,7 @@
 package com.gregtechceu.gtceu.common.pipelike.item.longdistance;
 
-import com.gregtechceu.gtceu.api.pipenet.longdistance.ILDEndpoint;
 import com.gregtechceu.gtceu.api.pipenet.longdistance.LongDistancePipeType;
-import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import net.minecraft.world.level.block.state.BlockState;
 
 public class LDItemPipeType extends LongDistancePipeType {
 
@@ -12,16 +9,6 @@ public class LDItemPipeType extends LongDistancePipeType {
 
     private LDItemPipeType() {
         super("item");
-    }
-
-    @Override
-    public boolean isValidBlock(BlockState blockState) {
-        return GTBlocks.LD_ITEM_PIPE.is(blockState.getBlock());
-    }
-
-    @Override
-    public boolean isValidEndpoint(ILDEndpoint endpoint) {
-        return endpoint instanceof LDItemEndpointMachine;
     }
 
     @Override

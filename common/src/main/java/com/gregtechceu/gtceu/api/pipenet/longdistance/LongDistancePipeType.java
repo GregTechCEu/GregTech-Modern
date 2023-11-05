@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.common.pipelike.item.longdistance.LDItemPipeType;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
 
 import javax.annotation.Nonnull;
 import java.util.Objects;
@@ -16,9 +15,6 @@ import java.util.Objects;
 public abstract class LongDistancePipeType {
 
     private static final Object2ObjectOpenHashMap<String, LongDistancePipeType> PIPE_TYPES = new Object2ObjectOpenHashMap<>();
-
-    private static LDFluidPipeType FLUID;
-    private static LDItemPipeType ITEM;
 
     private final String name;
 
@@ -35,38 +31,21 @@ public abstract class LongDistancePipeType {
         PIPE_TYPES.put(name, this);
     }
 
-    public static void init() {
-        FLUID = LDFluidPipeType.INSTANCE;
-        ITEM = LDItemPipeType.INSTANCE;
-    }
-
     public static LDFluidPipeType fluid() {
-        return FLUID;
+        return LDFluidPipeType.INSTANCE;
     }
 
     public static LDItemPipeType item() {
-        return ITEM;
+        return LDItemPipeType.INSTANCE;
     }
 
     public static LongDistancePipeType getPipeType(String name) {
         return PIPE_TYPES.get(name);
     }
 
-    /**
-     * Checks if the given block state is a valid ld pipe block for this type
-     *
-     * @param blockState potential ld pipe block
-     * @return if the given block state is a valid ld pipe block for this type
-     */
-    public abstract boolean isValidBlock(BlockState blockState);
-
-    /**
-     * Checks if the given endpoint is a valid endpoint for this type
-     *
-     * @param endpoint potential endpoint
-     * @return if the given endpoint is a valid endpoint for this type
-     */
-    public abstract boolean isValidEndpoint(ILDEndpoint endpoint);
+    public boolean isValidPart(ILDNetworkPart networkPart) {
+        return networkPart != null && networkPart.getPipeType() == this;
+    }
 
     /**
      * @return The minimum required distance (not pipe count) between two endpoints to work.

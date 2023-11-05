@@ -437,7 +437,7 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
         return !hasFrontFacing() || getFrontFacing() != direction;
     }
 
-    public Direction getFrontFacing() {
+    public @NotNull Direction getFrontFacing() {
         var blockState = getBlockState();
         if (blockState.getBlock() instanceof MetaMachineBlock machineBlock) {
             return machineBlock.getFrontFacing(blockState);
