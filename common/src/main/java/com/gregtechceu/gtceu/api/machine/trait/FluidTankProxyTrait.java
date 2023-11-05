@@ -116,7 +116,7 @@ public class FluidTankProxyTrait extends MachineTrait implements IFluidTransfer,
     @NotNull
     @Override
     public FluidStack drain(long maxDrain, boolean simulate, boolean notifyChanges) {
-        if (proxy != null && canCapInput()) {
+        if (proxy != null && canCapOutput()) {
             return proxy.drain(maxDrain, simulate, notifyChanges);
         }
         return FluidStack.empty();
@@ -125,7 +125,7 @@ public class FluidTankProxyTrait extends MachineTrait implements IFluidTransfer,
     @NotNull
     @Override
     public FluidStack drain(FluidStack resource, boolean simulate, boolean notifyChanges) {
-        if (proxy != null && canCapInput()) {
+        if (proxy != null && canCapOutput()) {
             return proxy.drain(resource, simulate, notifyChanges);
         }
         return FluidStack.empty();

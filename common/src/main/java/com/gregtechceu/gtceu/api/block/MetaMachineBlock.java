@@ -193,7 +193,7 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
         if (tileEntity instanceof IMachineBlockEntity holder) {
             var machine = holder.getMetaMachine();
             for (Direction direction : Direction.values()) {
-                machine.getCoverContainer().removeCover(direction);
+                machine.getCoverContainer().removeCover(direction, null);
             }
             if (machine instanceof IMachineModifyDrops machineModifyDrops && entity instanceof Player) {
                 machineModifyDrops.onDrops(drops, (Player) entity);
