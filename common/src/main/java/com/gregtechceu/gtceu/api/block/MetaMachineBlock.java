@@ -31,7 +31,6 @@ import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
@@ -194,7 +193,7 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
         if (tileEntity instanceof IMachineBlockEntity holder) {
             var machine = holder.getMetaMachine();
             for (Direction direction : Direction.values()) {
-                machine.getCoverContainer().removeCover(direction);
+                machine.getCoverContainer().removeCover(direction, null);
             }
             if (machine instanceof IMachineModifyDrops machineModifyDrops && entity instanceof Player) {
                 machineModifyDrops.onDrops(drops, (Player) entity);

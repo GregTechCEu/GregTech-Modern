@@ -1,20 +1,20 @@
 package com.gregtechceu.gtceu.api.blockentity;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.block.BlockProperties;
 import com.gregtechceu.gtceu.api.block.MaterialPipeBlock;
+import com.gregtechceu.gtceu.api.capability.ICoverable;
+import com.gregtechceu.gtceu.api.capability.IToolable;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
-import com.gregtechceu.gtceu.api.pipenet.PipeCoverContainer;
-import com.gregtechceu.gtceu.api.block.BlockProperties;
-import com.gregtechceu.gtceu.api.capability.ICoverable;
-import com.gregtechceu.gtceu.api.capability.IToolable;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.IToolGridHighLight;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.pipenet.IAttachData;
+import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
 import com.gregtechceu.gtceu.api.pipenet.IPipeType;
+import com.gregtechceu.gtceu.api.pipenet.PipeCoverContainer;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.syncdata.EnhancedFieldManagedStorage;
 import com.gregtechceu.gtceu.api.syncdata.IEnhancedManaged;
@@ -286,7 +286,7 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
         } else if (toolType == GTToolType.CROWBAR) {
             if (coverBehavior != null) {
                 if (!isRemote()) {
-                    getCoverContainer().removeCover(gridSide);
+                    getCoverContainer().removeCover(gridSide, playerIn);
                 }
                 return InteractionResult.CONSUME;
             }
