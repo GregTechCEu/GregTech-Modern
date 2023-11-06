@@ -41,4 +41,7 @@ public class GTCapability {
 
     public static final BlockApiLookup<IMaintenanceMachine, Direction> CAPABILITY_MAINTENANCE_MACHINE =
             BlockApiLookup.get(GTCEu.id("maintenance_machine"), IMaintenanceMachine.class, Direction.class);
+
+    public static final BlockApiLookup<ILaserContainer, Direction> CAPABILITY_LASER =
+            BlockApiLookup.get(GTCEu.id("laser_container"), ILaserContainer.class, Direction.class);
 }

@@ -11,11 +11,16 @@
     "gtceu:iv_fluid_heater",
     "gtceu:luv_fluid_heater",
     "gtceu:zpm_fluid_heater",
-    "gtceu:uv_fluid_heater"
+    "gtceu:uv_fluid_heater",
+    "gtceu:uhv_fluid_heater",
+    "gtceu:uev_fluid_heater",
+    "gtceu:uiv_fluid_heater",
+    "gtceu:uxv_fluid_heater",
+    "gtceu:opv_fluid_heater"
   ],
   "page": "gtceu:machines/fluid_heater",
   "position": [
-    -150,
+    -200,
     100
   ],
   "section": "gtceu:machines"

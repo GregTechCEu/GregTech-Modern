@@ -87,4 +87,12 @@ public interface IGTAddon {
     default void registerRecipeKeys(KJSRecipeKeyEvent event) {
 
     }
+
+    /**
+     * Does this addon require high-tier content to be enabled?
+     * @return if this addon requires highTier.
+     */
+    default boolean requiresHighTier() {
+        return false;
+    }
 }

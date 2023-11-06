@@ -38,7 +38,7 @@ public class SteamItemBusPartMachine extends ItemBusPartMachine {
         for (int y = 0; y < rowSize; y++) {
             for (int x = 0; x < rowSize; x++) {
                 int index = y * rowSize + x;
-                modular.widget(new SlotWidget(inventory.storage, index,
+                modular.widget(new SlotWidget(getInventory().storage, index,
                         (88 - rowSize * 9 + x * 18) + xOffset, 18 + y * 18, true, io.support(IO.IN))
                         .setBackgroundTexture(GuiTextures.SLOT));
             }

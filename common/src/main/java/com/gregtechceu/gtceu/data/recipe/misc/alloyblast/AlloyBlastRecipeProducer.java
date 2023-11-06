@@ -24,6 +24,8 @@ import net.minecraft.world.level.material.Fluid;
 import javax.annotation.Nonnull;
 import java.util.function.Consumer;
 
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.ingotHot;
+
 public class AlloyBlastRecipeProducer {
 
     public static final AlloyBlastRecipeProducer DEFAULT_PRODUCER = new AlloyBlastRecipeProducer();
@@ -44,7 +46,13 @@ public class AlloyBlastRecipeProducer {
         if (componentAmount < 2) return;
 
         // get the output fluid
-        Fluid molten = GTUtil.getMoltenFluid(material);
+        Fluid molten;
+        if (ingotHot.doGenerateItem(material)) {
+            molten = GTUtil.getMoltenFluid(material);
+            addFreezerRecipes(material, molten, property.getBlastTemperature(), provider);
+        }else {
+            molten = material.getFluid();
+        }
         if (molten == null) return;
 
         GTRecipeBuilder builder = createBuilder(property, material);
@@ -53,11 +61,6 @@ public class AlloyBlastRecipeProducer {
         if (outputAmount <= 0) return;
 
         buildRecipes(property, molten, outputAmount, componentAmount, builder, provider);
-
-        // if the material does not need a vacuum freezer, exit
-        if (!TagPrefix.ingotHot.doGenerateItem(material)) return;
-
-        addFreezerRecipes(material, molten, property.getBlastTemperature(), provider);
     }
 
     /**

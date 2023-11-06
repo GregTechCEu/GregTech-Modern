@@ -11,11 +11,16 @@
     "gtceu:iv_wiremill",
     "gtceu:luv_wiremill",
     "gtceu:zpm_wiremill",
-    "gtceu:uv_wiremill"
+    "gtceu:uv_wiremill",
+    "gtceu:uhv_wiremill",
+    "gtceu:uev_wiremill",
+    "gtceu:uiv_wiremill",
+    "gtceu:uxv_wiremill",
+    "gtceu:opv_wiremill"
   ],
   "page": "gtceu:machines/wiremill",
   "position": [
-    -350,
+    -400,
     200
   ],
   "section": "gtceu:machines"

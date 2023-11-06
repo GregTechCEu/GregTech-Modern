@@ -15,7 +15,6 @@ import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.core.Direction;
-import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -92,7 +91,12 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
 
     @Override
     public List<FluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<FluidIngredient> left, @Nullable String slotName, boolean simulate) {
-        if (io != this.handlerIO) return left;
+        return handleIngredient(io, left, simulate, this.handlerIO, storages);
+    }
+
+    @Nullable
+    public static List<FluidIngredient> handleIngredient(IO io, List<FluidIngredient> left, boolean simulate, IO handlerIO, FluidStorage[] storages) {
+        if (io != handlerIO) return left;
         var capabilities = simulate ? Arrays.stream(storages).map(FluidStorage::copy).toArray(FluidStorage[]::new) : storages;
         for (FluidStorage capability : capabilities) {
             Iterator<FluidIngredient> iterator = left.iterator();
@@ -330,7 +334,7 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
     @NotNull
     @Override
     public FluidStack drain(long maxDrain, boolean simulate) {
-        if (canCapInput()) {
+        if (canCapOutput()) {
             return drainInternal(maxDrain, simulate);
         }
         return FluidStack.empty();

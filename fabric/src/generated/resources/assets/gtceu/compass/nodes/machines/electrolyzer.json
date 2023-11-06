@@ -11,12 +11,17 @@
     "gtceu:iv_electrolyzer",
     "gtceu:luv_electrolyzer",
     "gtceu:zpm_electrolyzer",
-    "gtceu:uv_electrolyzer"
+    "gtceu:uv_electrolyzer",
+    "gtceu:uhv_electrolyzer",
+    "gtceu:uev_electrolyzer",
+    "gtceu:uiv_electrolyzer",
+    "gtceu:uxv_electrolyzer",
+    "gtceu:opv_electrolyzer"
   ],
   "page": "gtceu:machines/electrolyzer",
   "position": [
-    -400,
-    100
+    -50,
+    50
   ],
   "section": "gtceu:machines"
 }

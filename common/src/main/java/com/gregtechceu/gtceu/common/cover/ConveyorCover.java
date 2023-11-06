@@ -79,7 +79,7 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
     public ConveyorCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide, int tier) {
         super(definition, coverHolder, attachedSide);
         this.tier = tier;
-        this.maxItemTransferRate = 2 * (int) Math.pow(4, tier); // 8 32 128 512 1024
+        this.maxItemTransferRate = 2 * (int) Math.pow(4, Math.min(tier, GTValues.LuV)); // 8 32 128 512 1024
         this.transferRate = maxItemTransferRate;
         this.itemsLeftToTransferLastSecond = transferRate;
         this.io = IO.OUT;

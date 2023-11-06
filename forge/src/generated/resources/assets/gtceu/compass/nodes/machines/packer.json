@@ -11,11 +11,16 @@
     "gtceu:iv_packer",
     "gtceu:luv_packer",
     "gtceu:zpm_packer",
-    "gtceu:uv_packer"
+    "gtceu:uv_packer",
+    "gtceu:uhv_packer",
+    "gtceu:uev_packer",
+    "gtceu:uiv_packer",
+    "gtceu:uxv_packer",
+    "gtceu:opv_packer"
   ],
   "page": "gtceu:machines/packer",
   "position": [
-    -200,
+    -250,
     150
   ],
   "section": "gtceu:machines"

@@ -11,11 +11,16 @@
     "gtceu:iv_lathe",
     "gtceu:luv_lathe",
     "gtceu:zpm_lathe",
-    "gtceu:uv_lathe"
+    "gtceu:uv_lathe",
+    "gtceu:uhv_lathe",
+    "gtceu:uev_lathe",
+    "gtceu:uiv_lathe",
+    "gtceu:uxv_lathe",
+    "gtceu:opv_lathe"
   ],
   "page": "gtceu:machines/lathe",
   "position": [
-    -350,
+    -400,
     150
   ],
   "section": "gtceu:machines"
