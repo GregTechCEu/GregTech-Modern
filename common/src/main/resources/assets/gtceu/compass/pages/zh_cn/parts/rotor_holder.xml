@@ -1,0 +1,27 @@
+<page>
+ <h1>Rotor Holder</h1>
+ <h3>Source</h3>
+ <text pwt="true"><style color="0xaaaaaa" italic="true" pwt="true">Note: this page is ported from MCMOD's GTCEu wiki.<br/>Author: <style color="0xa4e7ff" hover-info="url" pwt="true" underlined="true" url-link="https://center.mcmod.cn/191113/">Quaerere</style>, <style color="0xa4e7ff" hover-info="url" pwt="true" underlined="true" url-link="https://center.mcmod.cn/2/">重生是希望</style><br/></style></text>
+ <h2 font-color="0xff0000">WARNING!!!</h2>
+ <text isCenter="true">
+  <style color="0xff0000" pwt="true">The warning means this is not a reliable page.</style>
+  <br/>
+  <style bold="true" color="0xffaa00" pwt="true">Please do not report any mistakes on the page, either discord or github.</style>
+  <br/>
+  This page is translated from the Chinese wiki which hasn't been reviewed and polished yet. It may contain errors and inaccuracies. We are looking forward to your help by improving this page.
+ </text>
+ <text>
+  <br/>
+  <style lang="zh-cn">
+   搭建大型蒸汽涡轮、大型燃气涡轮和大型等离子体涡轮的必备方块，用于放置
+   <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">涡轮转子</style>
+   。
+  </style>
+  <br/>
+  <br/>
+  <style lang="zh-cn">
+   不同机器所需转子支架的最低等级不同，在最低等级的基础上转子支架每提升一个电压等级，转子效率提升 10 %，基准输出功率×2。
+  </style>
+  <br/>
+ </text>
+</page>

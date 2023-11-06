@@ -1,0 +1,388 @@
+<page>
+ <h1>Hot Ingot</h1>
+ <h3>Source</h3>
+ <text pwt="true"><style color="0xaaaaaa" italic="true" pwt="true">Note: this page is ported from MCMOD's GTCEu wiki.<br/>Author: <style color="0xa4e7ff" hover-info="url" pwt="true" underlined="true" url-link="https://center.mcmod.cn/179043/">花海</style>, <style color="0xa4e7ff" hover-info="url" pwt="true" underlined="true" url-link="https://center.mcmod.cn/285765/">TBS</style>, <style color="0xa4e7ff" hover-info="url" pwt="true" underlined="true" url-link="https://center.mcmod.cn/119280/">Oganesson897</style><br/></style></text>
+ <h2 font-color="0xff0000">WARNING!!!</h2>
+ <text isCenter="true">
+  <style color="0xff0000" pwt="true">The warning means this is not a reliable page.</style>
+  <br/>
+  <style bold="true" color="0xffaa00" pwt="true">Please do not report any mistakes on the page, either discord or github.</style>
+  <br/>
+  This page is translated from the Chinese wiki which hasn't been reviewed and polished yet. It may contain errors and inaccuracies. We are looking forward to your help by improving this page.
+ </text>
+ <text>
+  <br/>
+  <style lang="zh-cn">
+   <style color="0xaaaaaa" italic="true" lang="zh-cn" pwt="true">材料部件中的热*锭，单个热锭所含有的材料相当于 1 个锭（144 mB）。</style>
+  </style>
+  <br/>
+  <br/>
+  <style lang="zh-cn">
+   <style color="0xaaaaaa" italic="true" lang="zh-cn" pwt="true">热锭通常在                       电力高炉                      中通过加热金属粉产出。存在部分例外，例如通过二氧化硅粉和碳粉在电力高炉中混合冶炼，将会生成热硅锭。</style>
+  </style>
+  <br/>
+  <br/>
+  <style lang="zh-cn">
+   <style color="0xaaaaaa" italic="true" lang="zh-cn" pwt="true">并非所有的锭材料都具有相应的热锭形态，而仅有冶炼温度大于 1,750 K 的锭材料才拥有热锭形态，并且在电力高炉中以任意不小于材料冶炼温度的炉温加热相应的粉时将生成对应的热锭，否则将会直接生成                       锭                      。</style>
+   <br/>
+  </style>
+  <br/>
+  <br/>
+  <style lang="zh-cn">
+   <style color="0xaaaaaa" italic="true" lang="zh-cn" pwt="true">当至少任意一种热锭处于玩家的主手、副手或物品栏中时，玩家每秒都将会受到高温伤害，单次伤害值的计算公式为 ((材料冶炼温度 － 1,750) ÷ 1,000 ＋ 2)。背包内的堆叠数量不影响伤害大小与伤害实施间隔，若同时存在多种热锭则只取其中温度最高的热锭来计算伤害。玩家因高温而死亡的消息提示为“[玩家名称] 的大脑被烧焦了”。</style>
+  </style>
+  <br/>
+  <br/>
+  <style lang="zh-cn">
+   <style color="0xaaaaaa" italic="true" lang="zh-cn" pwt="true">热锭需要在                       真空冷冻机                      中经过冷却处理后才能够形成可直接利用的锭，单次处理能够冷却 1 个热锭，未超频状态下耗时刻数是该种材料质量数的 3 倍。若材料冶炼温度大于等于 5,000 K，则单次冷却还需要额外消耗 500 L 液氦来执行，处理完成后返还 250 L 氦。</style>
+  </style>
+  <br/>
+  <br/>
+  <style lang="zh-cn">
+   <style color="0xaaaaaa" italic="true" lang="zh-cn" pwt="true">热坎塔尔合金锭和热硅锭仅需利用 100 L 水或 100 L 蒸馏水在                       化学浸洗器                      中以最低 MV 级电压（120 EU/t）浸洗即可冷却成锭。</style>
+  </style>
+  <br/>
+  <br/>
+  <style lang="zh-cn">
+   这里仅上传了一个模板，具体数值请看游戏内。
+  </style>
+  <br/>
+  ------------------
+  <br/>
+  <style lang="zh-cn">
+   矿物词典前缀：ingotHot；
+  </style>
+  <br/>
+  <br/>
+  <style lang="zh-cn">
+   矿物词典：ingotHot + 材料名称，例如 ingotHotEuropium。
+  </style>
+  <br/>
+  ------------------
+  <br/>
+  <style lang="zh-cn">
+   支持热*锭的材料列表（格式为材料中文名-材料名-温度）：
+   <br/>
+  </style>
+  <br/>
+ </text>
+ <text left-margin="10">
+  •
+  <style lang="zh-cn">
+   铕 - Europium - 6000K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   铱 - Iridium - 4500K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   铌 - Niobium - 2750K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   锇 - Osmium - 4500K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钯 - Palladium - 1828K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   铑 - Rhodium - 2237K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钌 - Ruthenium - 2607K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钐 - Samarium - 5400K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钛 - Titanium - 1941K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钨 - Tungsten - 3600K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钒 - Vanadium - 2183K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钇 - Yttrium - 1799K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   硅岩 - Naquadah - 5000K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   富集硅岩 - NaquadahEnriched - 7000K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   超能硅岩 - Naquadria - 9000K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   三元金属 - Trinium - 7200K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   坎塔尔合金 - Kanthal - 1800K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   镍铬合金 - Nichrome - 2700K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   氮化铌 - NiobiumNitride - 2846K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   铌钛合金 - NiobiumTitanium - 4500K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   黑青铜 - BlackBronze - 2000K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钌铱合金 - Ruridit - 4500K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   哈氏合金 - Ultimet - 2700K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钒镓合金 - VanadiumGallium - 4500K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钇钡铜氧合金 - YttriumBariumCuprate - 4500K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   铱锇合金 - Osmiridium - 4500K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   碳化钨 - TungstenCarbide - 3058K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   二硼化镁 - MagnesiumDiboride - 2500K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   汞钡铜酸钙 - MercuryBariumCalciumCuprate - 3300K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   三铂化铀 - UraniumTriplatinum - 4400K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   氧化钐铁砷合金 - SamariumIronArsenicOxide - 5200K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   铟锡钡钛铜合金 - IndiumTinBariumTitaniumCuprate - 6000K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   铀铑硅岩合金 - UraniumRhodiumDinaquadide - 9000K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   富集硅岩三元铕铿铀合金 - EnrichedNaquadahTriniumEuropiumDuranide - 9900K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钌三元镅中子素合金 - RutheniumTriniumAmericiumNeutronate - 10800K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钨钢 - TungstenSteel - 3000K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   硅岩合金 - NaquadahAlloy - 7200K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   镀铑钯合金锭 - RhodiumPlatedPalladium - 4500K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   高速钢-G - Hssg - 4200K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   高速钢-E - Hsse - 5000K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   高速钢-S - Hsss - 5000K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   司太立100合金 - Stellite100 - 3790K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   防水钢 - WatertightSteel - 3850K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   马氏体时效钢300 - MaragingSteel300 - 4001K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   哈斯特洛依合金-C276 - HastelloyC276 - 4625K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   哈斯特洛依合金-X - HastelloyX - 4200K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   碳化特林-钍瑞铌合金 - Trinaquadalloy - 8747K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   赛龙-100 - Zeron100 - 3693K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   碳化钛 - TitaniumCarbide - 3430K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   碳化钽 - TantalumCarbide - 4120K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   二硅化钼 - MolybdenumDisilicide - 2300K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   碳化钛钨 - TitaniumTungstenCarbide - 3800K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   耐热铬铁合金-MA956 - IncoloyMa956 - 3625K
+  </style>
+  <br/>
+ </text>
+</page>

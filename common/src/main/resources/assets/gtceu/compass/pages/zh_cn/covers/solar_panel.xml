@@ -1,0 +1,26 @@
+<page>
+ <h1>Solar Panel</h1>
+ <h3>Source</h3>
+ <text pwt="true"><style color="0xaaaaaa" italic="true" pwt="true">Note: this page is ported from MCMOD's GTCEu wiki.<br/>Author: <style color="0xa4e7ff" hover-info="url" pwt="true" underlined="true" url-link="https://center.mcmod.cn/179043/">花海</style>, <style color="0xa4e7ff" hover-info="url" pwt="true" underlined="true" url-link="https://center.mcmod.cn/2/">重生是希望</style><br/></style></text>
+ <h2 font-color="0xff0000">WARNING!!!</h2>
+ <text isCenter="true">
+  <style color="0xff0000" pwt="true">The warning means this is not a reliable page.</style>
+  <br/>
+  <style bold="true" color="0xffaa00" pwt="true">Please do not report any mistakes on the page, either discord or github.</style>
+  <br/>
+  This page is translated from the Chinese wiki which hasn't been reviewed and polished yet. It may contain errors and inaccuracies. We are looking forward to your help by improving this page.
+ </text>
+ <text>
+  <br/>
+  <style lang="zh-cn">
+   太阳能覆盖板的电压等级分为 ULV（8 V）级 ~ EV 级，可以被安装在任意拥有能量缓存的机器的顶面。
+  </style>
+  <br/>
+  <br/>
+  <style lang="zh-cn">
+   当有太阳照射，处在非雨天或雷雨天气，且机器正上方没有非透明方块时，太阳能覆盖板将会为机器不断提供与覆盖板的电压等级相等的电压，1 A 电流的能量。
+   <br/>
+  </style>
+  <br/>
+ </text>
+</page>

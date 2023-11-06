@@ -1,0 +1,32 @@
+<page>
+ <h1>Chemical Dye</h1>
+ <h3>Source</h3>
+ <text pwt="true"><style color="0xaaaaaa" italic="true" pwt="true">Note: this page is ported from MCMOD's GTCEu wiki.<br/>Author: <style color="0xa4e7ff" hover-info="url" pwt="true" underlined="true" url-link="https://center.mcmod.cn/179043/">花海</style>, <style color="0xa4e7ff" hover-info="url" pwt="true" underlined="true" url-link="https://center.mcmod.cn/2/">重生是希望</style><br/></style></text>
+ <h2 font-color="0xff0000">WARNING!!!</h2>
+ <text isCenter="true">
+  <style color="0xff0000" pwt="true">The warning means this is not a reliable page.</style>
+  <br/>
+  <style bold="true" color="0xffaa00" pwt="true">Please do not report any mistakes on the page, either discord or github.</style>
+  <br/>
+  This page is translated from the Chinese wiki which hasn't been reviewed and polished yet. It may contain errors and inaccuracies. We are looking forward to your help by improving this page.
+ </text>
+ <text>
+  <br/>
+  <style lang="zh-cn">
+   化学染料与原版中的染料一致，共有 16 种颜色，且与原版和其它模组中同色的染料通用。
+  </style>
+  <br/>
+  <br/>
+  <style lang="zh-cn">
+   化学染料由 72 L 流体状态下的同色化学染料在
+   <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">流体固化机</style>
+   中配合
+   <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">模具(球)</style>
+   凝固而成。而流体状态下的化学染料需要在
+   <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">化学反应釜</style>
+   中由盐溶于硫酸，并加入 1 个任意的同色染料（可以是原版或其它模组中的染料）制成，单次反应生成 288 L （4 个）化学染料。
+   <br/>
+  </style>
+  <br/>
+ </text>
+</page>

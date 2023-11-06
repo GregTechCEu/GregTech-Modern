@@ -1,0 +1,15 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:fertilizer"
+  },
+  "items": [
+    "gtceu:fertilizer"
+  ],
+  "page": "gtceu:misc/fertilizer",
+  "position": [
+    -350,
+    300
+  ],
+  "section": "gtceu:misc"
+}

@@ -1,0 +1,15 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:quantum_eye"
+  },
+  "items": [
+    "gtceu:quantum_eye"
+  ],
+  "page": "gtceu:misc/quantum_eye",
+  "position": [
+    -150,
+    150
+  ],
+  "section": "gtceu:misc"
+}

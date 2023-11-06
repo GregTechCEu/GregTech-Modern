@@ -353,6 +353,7 @@ public class GTMachines {
             .tooltips(Component.translatable("gtceu.creative_tooltip.1"),
                     Component.translatable("gtceu.creative_tooltip.2"),
                     Component.translatable("gtceu.creative_tooltip.3"))
+            .compassNodeSelf()
             .register();
 
     public static BiConsumer<ItemStack, List<Component>> CHEST_TOOLTIPS = (stack, list) -> {
@@ -631,7 +632,7 @@ public class GTMachines {
             .abilities(PartAbility.MAINTENANCE)
             .tooltips(Component.translatable("gtceu.universal.disabled"))
             .renderer(() -> new MaintenanceHatchPartRenderer(1, GTCEu.id("block/machine/part/maintenance")))
-            .compassNode("maintenance")
+            .compassNodeSelf()
             .register();
 
     public static final MachineDefinition CONFIGURABLE_MAINTENANCE_HATCH = REGISTRATE.machine("configurable_maintenance_hatch", (blockEntity) -> new MaintenanceHatchPartMachine(blockEntity, true))
@@ -639,7 +640,7 @@ public class GTMachines {
             .abilities(PartAbility.MAINTENANCE)
             .tooltips(Component.translatable("gtceu.universal.disabled"))
             .renderer(() -> new MaintenanceHatchPartRenderer(3, GTCEu.id("block/machine/part/maintenance.configurable")))
-            .compassNode("maintenance")
+            .compassNodeSelf()
             .register();
 
     public static final MachineDefinition CLEANING_MAINTENANCE_HATCH = REGISTRATE.machine("cleaning_maintenance_hatch", CleaningMaintenanceHatchPartMachine::new)
@@ -654,7 +655,7 @@ public class GTMachines {
                 }
             })
             .renderer(() -> new MaintenanceHatchPartRenderer(3, GTCEu.id("block/machine/part/maintenance.cleaning")))
-            .compassNode("maintenance")
+            .compassNodeSelf()
             .register();
 
     public static final MachineDefinition AUTO_MAINTENANCE_HATCH = REGISTRATE.machine("auto_maintenance_hatch", AutoMaintenanceHatchPartMachine::new)
@@ -662,7 +663,7 @@ public class GTMachines {
             .abilities(PartAbility.MAINTENANCE)
             .tooltips(Component.translatable("gtceu.universal.disabled"))
             .renderer(() -> new MaintenanceHatchPartRenderer(3, GTCEu.id("block/machine/part/maintenance.full_auto")))
-            .compassNode("maintenance")
+            .compassNodeSelf()
             .register();
 
 
@@ -1260,7 +1261,7 @@ public class GTMachines {
                             .build())
                     .workableCasingRenderer(FluidDrillMachine.getBaseTexture(tier), GTCEu.id("block/multiblock/fluid_drilling_rig"), false)
                     .compassSections(GTCompassSections.TIER[MV])
-                    .compassNodeSelf()
+                    .compassNode("fluid_drilling_rig")
                     .register(),
             MV, HV, EV);
 
@@ -1296,7 +1297,7 @@ public class GTMachines {
                         tooltip.add(Component.translatable("gtceu.universal.tooltip.energy_tier_range", GTValues.VNF[tier], GTValues.VNF[tier + 1]));
                     })
                     .compassSections(GTCompassSections.TIER[EV])
-                    .compassNodeSelf()
+                    .compassNode("large_miner")
                     .register(),
             EV, IV, LuV);
 
@@ -1437,7 +1438,7 @@ public class GTMachines {
                             GTCEu.id("block/casings/solid/machine_casing_study_hsse"),
                             GTCEu.id("block/multiblock/processing_array")))
                     .compassSections(GTCompassSections.TIER[IV])
-                    .compassNodeSelf()
+                    .compassNode("processing_array")
                     .register(),
             IV, LuV) : null;
 

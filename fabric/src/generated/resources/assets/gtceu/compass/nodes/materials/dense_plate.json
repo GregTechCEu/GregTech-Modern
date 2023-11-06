@@ -1,0 +1,18 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:darmstadtium_dense_plate"
+  },
+  "items": [
+    "gtceu:darmstadtium_dense_plate",
+    "gtceu:tungsten_steel_dense_plate",
+    "gtceu:naquadah_alloy_dense_plate",
+    "gtceu:rhodium_plated_palladium_dense_plate"
+  ],
+  "page": "gtceu:materials/dense_plate",
+  "position": [
+    -100,
+    200
+  ],
+  "section": "gtceu:materials"
+}

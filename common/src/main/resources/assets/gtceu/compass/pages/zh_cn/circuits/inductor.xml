@@ -1,0 +1,57 @@
+<page>
+ <h1>Inductor</h1>
+ <h3>Source</h3>
+ <text pwt="true"><style color="0xaaaaaa" italic="true" pwt="true">Note: this page is ported from MCMOD's GTCEu wiki.<br/>Author: <style color="0xa4e7ff" hover-info="url" pwt="true" underlined="true" url-link="https://center.mcmod.cn/179043/">花海</style><br/></style></text>
+ <h2 font-color="0xff0000">WARNING!!!</h2>
+ <text isCenter="true">
+  <style color="0xff0000" pwt="true">The warning means this is not a reliable page.</style>
+  <br/>
+  <style bold="true" color="0xffaa00" pwt="true">Please do not report any mistakes on the page, either discord or github.</style>
+  <br/>
+  This page is translated from the Chinese wiki which hasn't been reviewed and polished yet. It may contain errors and inaccuracies. We are looking forward to your help by improving this page.
+ </text>
+ <text>
+  <br/>
+  <style lang="zh-cn">
+   <style color="0xaaaaaa" italic="true" lang="zh-cn" pwt="true">“一个小线圈”</style>
+  </style>
+  <br/>
+  <br/>
+  <style lang="zh-cn">
+   玻璃管由 1 个钢环和 2 个细铜导线在
+   <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">组装机</style>
+   中配合 36 L 聚乙烯 (PE) 制造而成，需要 MV 级电压（120 EU/t）运行，未超频状态下单次处理耗时 12 秒并产出 2 个玻璃管。
+  </style>
+  <br/>
+ </text>
+ <text left-margin="10">
+  •
+  <style lang="zh-cn">
+   可以使用镍锌铁氧体环代替钢环参与组装，这样做能够使单次产量翻倍；
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   可以使用细退火铜导线代替细铜导线参与组装，这样做能够使单次产量再次翻倍。
+  </style>
+  <br/>
+ </text>
+ <text>
+  <br/>
+  <style lang="zh-cn">
+   在
+   <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">电路组装机</style>
+   中，玻璃管能够参与利用
+   <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">集成处理器</style>
+   （MV 级电路）制成
+   <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">处理器组件</style>
+   （HV 级电路），以及利用
+   <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">工作站</style>
+   （EV 级电路）制成
+   <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">电脑主机</style>
+   （IV 级电路）。
+  </style>
+  <br/>
+ </text>
+</page>

@@ -1,0 +1,42 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:aluminium_wrench_tip"
+  },
+  "items": [
+    "gtceu:aluminium_wrench_tip",
+    "gtceu:iron_wrench_tip",
+    "gtceu:titanium_wrench_tip",
+    "gtceu:neutronium_wrench_tip",
+    "gtceu:duranium_wrench_tip",
+    "gtceu:bronze_wrench_tip",
+    "gtceu:diamond_wrench_tip",
+    "gtceu:invar_wrench_tip",
+    "gtceu:sterling_silver_wrench_tip",
+    "gtceu:rose_gold_wrench_tip",
+    "gtceu:stainless_steel_wrench_tip",
+    "gtceu:steel_wrench_tip",
+    "gtceu:ultimet_wrench_tip",
+    "gtceu:wrought_iron_wrench_tip",
+    "gtceu:tungsten_carbide_wrench_tip",
+    "gtceu:polybenzimidazole_wrench_tip",
+    "gtceu:polyethylene_wrench_tip",
+    "gtceu:polytetrafluoroethylene_wrench_tip",
+    "gtceu:rubber_wrench_tip",
+    "gtceu:wood_wrench_tip",
+    "gtceu:damascus_steel_wrench_tip",
+    "gtceu:tungsten_steel_wrench_tip",
+    "gtceu:cobalt_brass_wrench_tip",
+    "gtceu:vanadium_steel_wrench_tip",
+    "gtceu:naquadah_alloy_wrench_tip",
+    "gtceu:red_steel_wrench_tip",
+    "gtceu:blue_steel_wrench_tip",
+    "gtceu:hsse_wrench_tip"
+  ],
+  "page": "gtceu:materials/wrench_tip",
+  "position": [
+    -300,
+    250
+  ],
+  "section": "gtceu:materials"
+}

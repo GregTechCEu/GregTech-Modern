@@ -1,0 +1,78 @@
+<page>
+ <h1>
+  Arc Furnace
+ </h1>
+ <h3>
+  Source
+ </h3>
+ <text><style color="0xaaaaaa" italic="true">Note: this page is ported from MCMOD's GTCEu wiki.<br/>Author: <style color="0xa4e7ff" hover-info="url" underlined="true" url-link="https://center.mcmod.cn/179043/">花海</style>, <style color="0xa4e7ff" hover-info="url" underlined="true" url-link="https://center.mcmod.cn/508290/">morningglory</style>, <style color="0xa4e7ff" hover-info="url" underlined="true" url-link="https://center.mcmod.cn/119280/">Oganesson897</style>, <style color="0xa4e7ff" hover-info="url" underlined="true" url-link="https://center.mcmod.cn/2/">重生是希望</style><br/></style></text>
+ <h2 font-color="0xff0000">
+  WARNING!!!
+ </h2>
+ <text isCenter="true">
+  <style color="0xff0000">The warning means this is not a reliable page.</style>
+  <br/>
+  <style bold="true" color="0xffaa00">Please do not report any mistakes on the page, either discord or github.</style>
+  <br/>
+  This page is translated from the Chinese wiki which hasn't been reviewed and polished yet. It may contain errors and inaccuracies. We are looking forward to your help by improving this page.
+ </text>
+ <text>
+  <br/>
+  <style>
+   <style color="0xaaaaaa" italic="true">"Who needs a blast furnace?" / "Discharge heater" / "Short circuit heater"</style>
+   <br/>
+  </style>
+  <br/>
+  <br/>
+  <style>
+   An electric arc furnace is similar to an electric
+   <style color="0xafff00" hover-info="click link" link="gtceu:links" underlined="true">
+</style>
+   is made by reacting in a sterile clean room environment and generates bacterial sludge at the same time, which requires LuV level voltage to operate.
+  </style>
+  <br/>
+ </text>
+ <text left-margin="10">
+  •
+  <style>
+   If the items being processed contain wood (including
+   <style color="0xafff00" hover-info="click link" link="gtceu:links" underlined="true">Book</style>
+   Note that these two are not the same thing
+   <style color="0xafff00" hover-info="click link" link="gtceu:links" underlined="true">Paper</style>
+   ) or plastic components (including different types of rubber, epoxy resin, polyethylene, polybenzimidazole, etc.), will be converted into ash when produced;
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   If the processed item contains iron or copper components, it will be converted into wrought iron (annealed copper) when produced. This is also one of the important sources of wrought iron (annealed copper);
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   If the processed items contain diamonds, they will be converted into carbon powder when produced;
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   If the processed items contain magnetic components, they will be demagnetized during output;
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Any color
+   <style color="0xafff00" hover-info="click link" link="gtceu:links" underlined="true">
+ wooden crate made of 4 wooden boards of any variety and 4 iron screws crate in 
+</style>
+   will be obtained after electric arc furnace treatment
+   <style color="0xafff00" hover-info="click link" link="gtceu:links" underlined="true">Tempered glass</style>
+   . at
+   <style color="0xafff00" hover-info="click link" link="gtceu:links" underlined="true">electric blast furnace</style>
+   Medium-processed glass can also produce strengthened glass, but compared to the former, it consumes more electricity and oxygen.
+  </style>
+  <br/>
+ </text>
+</page>

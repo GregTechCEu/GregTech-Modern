@@ -1,0 +1,53 @@
+<page>
+ <h1>Crystal SoC</h1>
+ <h3>Source</h3>
+ <text pwt="true"><style color="0xaaaaaa" italic="true" pwt="true">Note: this page is ported from MCMOD's GTCEu wiki.<br/>Author: <style color="0xa4e7ff" hover-info="url" pwt="true" underlined="true" url-link="https://center.mcmod.cn/179043/">花海</style>, <style color="0xa4e7ff" hover-info="url" pwt="true" underlined="true" url-link="https://center.mcmod.cn/508290/">morningglory</style><br/></style></text>
+ <h2 font-color="0xff0000">WARNING!!!</h2>
+ <text isCenter="true">
+  <style color="0xff0000" pwt="true">The warning means this is not a reliable page.</style>
+  <br/>
+  <style bold="true" color="0xffaa00" pwt="true">Please do not report any mistakes on the page, either discord or github.</style>
+  <br/>
+  This page is translated from the Chinese wiki which hasn't been reviewed and polished yet. It may contain errors and inaccuracies. We are looking forward to your help by improving this page.
+ </text>
+ <text>
+  <br/>
+  <style lang="zh-cn">
+   <style color="0xaaaaaa" italic="true" lang="zh-cn" pwt="true">“芯片上的晶体系统”</style>
+   <br/>
+  </style>
+  <br/>
+  <br/>
+  <style lang="zh-cn">
+   晶体SoC 由
+   <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">晶体处理器</style>
+   在
+   <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">精密激光蚀刻机</style>
+   中配合任意一种蓝色透镜蚀刻而成，需要 ZPM 级电压运行（40,000 EU/t），且需要在
+   <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">超净间</style>
+   环境下处理。
+   <br/>
+  </style>
+  <br/>
+  <br/>
+  <style lang="zh-cn">
+   晶体SoC 可在
+   <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">电路组装机</style>
+   中用于生产
+   <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">晶体处理器</style>
+   ，这种组装方式相比于利用
+   <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">晶体处理器</style>
+   作为原料而言，需要的电压等级更高（86,000 EU/t），但是能够省去
+   <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">高级贴片晶体管</style>
+   和
+   <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">高级贴片电容</style>
+   的使用，且单次生产的晶体处理器数量更多，资源的利用效率更高。
+  </style>
+  <br/>
+  <br/>
+  <style lang="zh-cn">
+   <style color="0xaaaaaa" italic="true" lang="zh-cn" pwt="true">注意这两个不是一个东西</style>
+  </style>
+  <br/>
+ </text>
+</page>
