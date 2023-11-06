@@ -1,0 +1,396 @@
+<page>
+ <h1>Wire and Cable</h1>
+ <h3>Source</h3>
+ <text pwt="true"><style color="0xaaaaaa" italic="true" pwt="true">Note: this page is ported from MCMOD's GTCEu wiki.<br/>Author: <style color="0xa4e7ff" hover-info="url" pwt="true" underlined="true" url-link="https://center.mcmod.cn/119280/">Oganesson897</style><br/></style></text>
+ <h2 font-color="0xff0000">WARNING!!!</h2>
+ <text isCenter="true">
+  <style color="0xff0000" pwt="true">The warning means this is not a reliable page.</style>
+  <br/>
+  <style bold="true" color="0xffaa00" pwt="true">Please do not report any mistakes on the page, either discord or github.</style>
+  <br/>
+  This page is translated from the Chinese wiki which hasn't been reviewed and polished yet. It may contain errors and inaccuracies. We are looking forward to your help by improving this page.
+ </text>
+ <text>
+  <br/>
+  <style lang="zh-cn">
+   材料部件中的线，是板的子类，并且该模板同时合并了1x，2x，4x，8x，16x以及导线与线缆的部分
+  </style>
+  <br/>
+  <br/>
+  <style lang="zh-cn">
+   这里仅上传了一个模板，具体数值请看游戏内。
+  </style>
+  <br/>
+  ------------------
+  <br/>
+  <style lang="zh-cn">
+   导线矿物词典前缀：wireGt
+  </style>
+  <br/>
+  <br/>
+  <style lang="zh-cn">
+   线缆矿物词典前缀：cableGt
+  </style>
+  <br/>
+  <br/>
+  <style lang="zh-cn">
+   1x的线则需要在前缀后加上Single
+  </style>
+  <br/>
+  <br/>
+  <style lang="zh-cn">
+   2x的线需要加上Double
+  </style>
+  <br/>
+  <br/>
+  <style lang="zh-cn">
+   4x的线需要加上Quadruple
+  </style>
+  <br/>
+  <br/>
+  <style lang="zh-cn">
+   8x的线需要加上Octal
+  </style>
+  <br/>
+  <br/>
+  <style lang="zh-cn">
+   16x的线需要加上Hex
+  </style>
+  <br/>
+  <br/>
+  <style lang="zh-cn">
+   矿物词典：前缀+材料名称，例如wireGtSingleAluminium
+  </style>
+  <br/>
+  ------------------
+  <br/>
+  <style lang="zh-cn">
+   注册名
+  </style>
+  <br/>
+  <br/>
+  <style lang="zh-cn">
+   导线的注册名前缀为wire
+  </style>
+  <br/>
+  <br/>
+  <style lang="zh-cn">
+   线缆则是cable
+  </style>
+  <br/>
+  <br/>
+  <style lang="zh-cn">
+   1x的注册名后缀为single
+  </style>
+  <br/>
+  <br/>
+  <style lang="zh-cn">
+   2x则double
+  </style>
+  <br/>
+  <br/>
+  <style lang="zh-cn">
+   4x则quadruple
+  </style>
+  <br/>
+  <br/>
+  <style lang="zh-cn">
+   8x则octal
+  </style>
+  <br/>
+  <br/>
+  <style lang="zh-cn">
+   16x则hex
+  </style>
+  <br/>
+  <br/>
+  <style lang="zh-cn">
+   输入注册名时需要加上下划线将前缀与后缀合并，例如16x导线注册名为gregtech:wire_hex
+  </style>
+  <br/>
+  ------------------
+  <br/>
+  <style lang="zh-cn">
+   支持线的材料列表（格式为材料中文名-材料名）：
+   <br/>
+  </style>
+  <br/>
+ </text>
+ <text left-margin="10">
+  •
+  <style lang="zh-cn">
+   铝 - Aluminium
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钴 - Cobalt
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   铜 - Copper
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   铕 - Europium
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   金 - Gold
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   铁 - Iron
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   铅 - Lead
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   镍 - Nickel
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   锇 - Osmium
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   铂 - Platinum
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   银 - Silver
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   锡 - Tin
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钨 - Tungsten
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   硅岩（官中） - Naquadah
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   三钛合金 - Tritanium
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   三元金属 - Trinium
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   退火铜 - AnnealedCopper
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   白铜 - Cupronickel
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   琥珀金 - Electrum
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   坎塔尔合金 - Kanthal
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   镍铬合金 - Nichrome
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   氮化铌 - NiobiumNitride
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   铌钛合金 - NiobiumTitanium
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钢 - Steel
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钒镓合金 - VanadiumGallium
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钇钡铜氧合金 - YttriumBariumCuprate
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   石墨烯 - Graphene
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   磷化镓 - IndiumGalliumPhosphide
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   二硼化镁 - MagnesiumDiboride
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   汞钡铜酸钙 - MercuryBariumCalciumCuprate
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   三铂化铀 - UraniumTriplatinum
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   氧化钐铁砷合金 - SamariumIronArsenicOxide
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   铟锡钡钛铜合金 - IndiumTinBariumTitaniumCuprate
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   铀铑硅岩合金 - UraniumRhodiumDinaquadide
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   富集硅岩三元铕铿铀合金 - EnrichedNaquadahTriniumEuropiumDuranide
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钌三元镅中子素合金 - RutheniumTriniumAmericiumNeutronate
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   黑钢 - BlackSteel
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钨钢 - TungstenSteel
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   硅岩合金 - NaquadahAlloy
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   高速钢-G - Hssg
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   红色合金 - RedAlloy
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   碳纳米管 - Carbon Nanotube
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   碲化镉汞 - Mercury Cadmium Telluride
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   PEDOT:PSS - Pedot Pss
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   PEDOT-TMA - Pedot Tma
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   碳化硅 - Silicon Carbide
+  </style>
+  <br/>
+ </text>
+</page>

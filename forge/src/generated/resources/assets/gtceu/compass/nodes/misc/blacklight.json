@@ -1,0 +1,15 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:blacklight"
+  },
+  "items": [
+    "gtceu:blacklight"
+  ],
+  "page": "gtceu:misc/blacklight",
+  "position": [
+    -300,
+    300
+  ],
+  "section": "gtceu:misc"
+}

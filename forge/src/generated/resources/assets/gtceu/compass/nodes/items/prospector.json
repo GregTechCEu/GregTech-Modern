@@ -1,0 +1,17 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:prospector.lv"
+  },
+  "items": [
+    "gtceu:prospector.lv",
+    "gtceu:prospector.hv",
+    "gtceu:prospector.luv"
+  ],
+  "page": "gtceu:items/prospector",
+  "position": [
+    -150,
+    100
+  ],
+  "section": "gtceu:items"
+}

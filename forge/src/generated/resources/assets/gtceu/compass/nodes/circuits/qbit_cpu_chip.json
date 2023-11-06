@@ -1,0 +1,15 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:qbit_cpu_chip"
+  },
+  "items": [
+    "gtceu:qbit_cpu_chip"
+  ],
+  "page": "gtceu:circuits/qbit_cpu_chip",
+  "position": [
+    -250,
+    50
+  ],
+  "section": "gtceu:circuits"
+}

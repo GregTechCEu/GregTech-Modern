@@ -1,0 +1,77 @@
+<page>
+ <h1>Ore Dictionary Filter</h1>
+ <h3>Source</h3>
+ <text pwt="true"><style color="0xaaaaaa" italic="true" pwt="true">Note: this page is ported from MCMOD's GTCEu wiki.<br/>Author: <style color="0xa4e7ff" hover-info="url" pwt="true" underlined="true" url-link="https://center.mcmod.cn/58396/">Sofuras</style><br/></style></text>
+ <h2 font-color="0xff0000">WARNING!!!</h2>
+ <text isCenter="true">
+  <style color="0xff0000" pwt="true">The warning means this is not a reliable page.</style>
+  <br/>
+  <style bold="true" color="0xffaa00" pwt="true">Please do not report any mistakes on the page, either discord or github.</style>
+  <br/>
+  This page is translated from the Chinese wiki which hasn't been reviewed and polished yet. It may contain errors and inaccuracies. We are looking forward to your help by improving this page.
+ </text>
+ <text>
+  <br/>
+  <style lang="zh-cn">
+   用法如下：
+   <br/>
+  </style>
+  <br/>
+  <br/>
+  <style lang="zh-cn">
+   贴在容器或机器上，用螺丝刀右键打开，可以看到最底下有一个可以输入的框，上面的感叹号提示用法，其中：
+  </style>
+  <br/>
+  <br/>
+  <style lang="zh-cn">
+   1.“*”在其中的解释是“通配符”，
+   <style color="0xaaaaaa" italic="true" lang="zh-cn" pwt="true">翻译成人话</style>
+   就是“某“，这是矿物词典的核心，比如说你想让所有类型的（无视大小种类）的板通过，那就在框内输入”plate*“。
+  </style>
+  <br/>
+  <br/>
+  <style lang="zh-cn">
+   2.“&”表示“与”，就比如你想只让小撮粉通过，那就在框内输入“dust* & *Tiny*”，
+   <style color="0xaaaaaa" italic="true" lang="zh-cn" pwt="true">“                          Tiny”“Double”等限定内容（就姑且这么叫吧），首字母要大写。</style>
+  </style>
+  <br/>
+  <br/>
+  <style lang="zh-cn">
+   3.“|”表示“或”，就好比你想让粉和板都通过，就在框内输入“dust* | plate*”。
+  </style>
+  <br/>
+  <br/>
+  <style lang="zh-cn">
+   4.“^”表示“异或”，大概的意思就是如果符号两边的判断式都满足，或者都不满足，则这个物品无法通过，反之可以。
+   <style color="0xaaaaaa" italic="true" lang="zh-cn" pwt="true">比如，你想除了双重板以外的其他板通过，就输入“plate* ^ *Double*”。</style>
+   <style color="0xaaaaaa" italic="true" lang="zh-cn" pwt="true">但是不知道为什么，这么做没有达不到想要的效果。</style>
+  </style>
+  <br/>
+  <br/>
+  <style lang="zh-cn">
+   5.“!”表示“非”，很简单，比如说你想让除了锭以外所有东西通过，那就输入”!ingot*“。
+  </style>
+  <br/>
+  <br/>
+  <style lang="zh-cn">
+   6.“()”表示“优先运算”，和数学里一样，这会使程序优先运算（或者叫比较）括号内的内容，不过GTCEu可没有中括号或者大括号。
+  </style>
+  <br/>
+  <br/>
+  <style lang="zh-cn">
+   完事收工。那么考考你，“让双重板和除了小撮粉以外的粉都通过”的表达式该怎么写呢？
+  </style>
+  <br/>
+  <br/>
+  <style lang="zh-cn">
+   <br/>
+  </style>
+  <br/>
+  <br/>
+  <style lang="zh-cn">
+   答案：
+   <style color="0xaaaaaa" italic="true" lang="zh-cn" pwt="true">(plate* & *Double*) | (dust* & !*Tiny*)</style>
+  </style>
+  <br/>
+ </text>
+</page>

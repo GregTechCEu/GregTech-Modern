@@ -1,0 +1,181 @@
+<page>
+ <h1>
+  Spring
+ </h1>
+ <h3>
+  Source
+ </h3>
+ <text><style color="0xaaaaaa" italic="true">Note: this page is ported from MCMOD's GTCEu wiki.<br/>Author: <style color="0xa4e7ff" hover-info="url" underlined="true" url-link="https://center.mcmod.cn/119280/">Oganesson897</style><br/></style></text>
+ <h2 font-color="0xff0000">
+  WARNING!!!
+ </h2>
+ <text isCenter="true">
+  <style color="0xff0000">The warning means this is not a reliable page.</style>
+  <br/>
+  <style bold="true" color="0xffaa00">Please do not report any mistakes on the page, either discord or github.</style>
+  <br/>
+  This page is translated from the Chinese wiki which hasn't been reviewed and polished yet. It may contain errors and inaccuracies. We are looking forward to your help by improving this page.
+ </text>
+ <text>
+  <br/>
+  <style>
+   The spring in the material component is a subclass of the long* rod and can be configured to be generated.
+  </style>
+  <br/>
+  <br/>
+  <style>
+   Only one template is uploaded here, please see the game for specific values.
+  </style>
+  <br/>
+  ------------------
+  <br/>
+  <style>
+   Mineral dictionary prefix: spring
+  </style>
+  <br/>
+  <br/>
+  <style>
+   Mineral dictionary: spring + material name, such as springAluminum
+  </style>
+  <br/>
+  ------------------
+  <br/>
+  <style>
+   Material list that supports springs (the format is Chinese name of material-material name):
+  </style>
+  <br/>
+ </text>
+ <text left-margin="10">
+  •
+  <style>
+   Aluminum - Aluminum
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Copper - Copper
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Europium - Europium
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   High speed steel-S - Hsss - ((FeW)5CrMo2V)6Ir2Os
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Cyclohexane - Cyclohexane
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Lead - Lead
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Tin - Tin
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   tungsten - Tungsten
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Silica (Guanzhong) - Naquadah
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Neutronium
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Cupronickel
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Kanthal Alloy - Kanthal
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   night vision goggles
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Niobium Titanium Alloy - NiobiumTitanium
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   camera
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Vanadium Gallium Alloy - VanadiumGallium
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Red Alloy - RedAlloy
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Tungsten steel - TungstenSteel
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Silica Alloy - NaquadahAlloy
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   High speed steel-G - Hssg
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   ), from small fluid pipeline to
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   HSLA Steel - HslaSteel
+  </style>
+  <br/>
+ </text>
+</page>

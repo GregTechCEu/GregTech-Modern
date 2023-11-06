@@ -1,0 +1,15 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:ilc_chip"
+  },
+  "items": [
+    "gtceu:ilc_chip"
+  ],
+  "page": "gtceu:circuits/ilc_chip",
+  "position": [
+    -350,
+    50
+  ],
+  "section": "gtceu:circuits"
+}

@@ -1,0 +1,15 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:advanced_power_thruster"
+  },
+  "items": [
+    "gtceu:advanced_power_thruster"
+  ],
+  "page": "gtceu:misc/advanced_power_thruster",
+  "position": [
+    -100,
+    250
+  ],
+  "section": "gtceu:misc"
+}

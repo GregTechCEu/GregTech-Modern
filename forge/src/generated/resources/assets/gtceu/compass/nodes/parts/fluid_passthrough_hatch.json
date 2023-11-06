@@ -20,8 +20,8 @@
   ],
   "page": "gtceu:parts/fluid_passthrough_hatch",
   "position": [
-    -150,
-    100
+    -200,
+    150
   ],
   "section": "gtceu:parts"
 }

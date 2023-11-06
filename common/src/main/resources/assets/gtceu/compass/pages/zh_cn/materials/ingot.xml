@@ -1,0 +1,757 @@
+<page>
+ <h1>Ingot</h1>
+ <h3>Source</h3>
+ <text pwt="true"><style color="0xaaaaaa" italic="true" pwt="true">Note: this page is ported from MCMOD's GTCEu wiki.<br/>Author: <style color="0xa4e7ff" hover-info="url" pwt="true" underlined="true" url-link="https://center.mcmod.cn/119280/">Oganesson897</style><br/></style></text>
+ <h2 font-color="0xff0000">WARNING!!!</h2>
+ <text isCenter="true">
+  <style color="0xff0000" pwt="true">The warning means this is not a reliable page.</style>
+  <br/>
+  <style bold="true" color="0xffaa00" pwt="true">Please do not report any mistakes on the page, either discord or github.</style>
+  <br/>
+  This page is translated from the Chinese wiki which hasn't been reviewed and polished yet. It may contain errors and inaccuracies. We are looking forward to your help by improving this page.
+ </text>
+ <text>
+  <br/>
+  <style lang="zh-cn">
+   材料部件中的锭，需要144份对应的材料单位。
+   <br/>
+  </style>
+  <br/>
+  <br/>
+  <style lang="zh-cn">
+   这里仅上传了一个模板，具体数值请看游戏内。
+  </style>
+  <br/>
+  ------------------
+  <br/>
+  <style lang="zh-cn">
+   矿物词典前缀：ingot
+  </style>
+  <br/>
+  <br/>
+  <style lang="zh-cn">
+   矿物词典：ingot+材料名称，例如ingotAluminium
+  </style>
+  <br/>
+  <br/>
+  <style lang="zh-cn">
+   可以使用/give @s gregtech:meta_ingot (物品的MetaID) 来获取物品。
+  </style>
+  <br/>
+  ------------------
+  <br/>
+  <style lang="zh-cn">
+   支持锭的材料列表（格式为材料中文名-材料名-化学式-物品的MetaID）：
+  </style>
+  <br/>
+ </text>
+ <text left-margin="10">
+  •
+  <style lang="zh-cn">
+   铝 - Aluminium - Al - 2
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   镅 - Americium - Am - 3
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   锑 - Antimony - Sb - 4
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   铍 - Beryllium  - Be - 10
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   铋 - Bismuth - Bi - 11
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   铬 - Chrome - Cr - 22
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钴 - Cobalt - Co - 23
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   铜 - Copper - Cu - 25
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   鐽/钅达 - Darmstadtium - Ds - 27
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   铕 - Europium - Eu - 33
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   镓 - Gallium - Ga - 39
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   铟 - Indium - In - 48
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   铱 - Iridium - Ir - 50
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   铅 - Lead - Pb - 55
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   锰 - Manganese - Mn - 61
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钼 - Molybdenum - Mo - 64
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钕 - Neodymium - Nd - 66
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   镍 - Nickel - Ni - 69
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   铌 - Niobium - Nb - 71
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   锇 - Osmium - Os - 75
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钯 - Palladium - Pd - 77
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   铂 - Platinum - Pt - 80
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钚 239 - Plutonium - Pu - 239 - 81
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钚 241 - Plutonium241 - Pu - 241 - 82
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   铑 - Rhodium - Rh - 90
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钌 - Ruthenium - Ru - 93
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钐 - Samarium - Sm - 95
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   硅 - Silicon - Si - 99
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   银 - Silver - Ag - 100
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钽 - Tantalum - Ta - 104
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钍 - Thorium - Th - 109
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   锡 - Tin - Sn - 112
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钛 - Titanium - Ti - 113
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钨 - Tungsten - W - 115
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   铀 238 - Uranium - U - 238 - 116
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   铀 235 - Uranium235 - U - 235 - 117
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钒 - Vanadium - V - 118
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钇 - Yttrium - Y - 121
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   锌 - Zinc - Zn - 122
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   硅岩（官中） - Naquadah - Nq - 124
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   富集硅岩（官中） - NaquadahEnriched - Nq+ - 125
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   超能硅岩（官中） - Naquadria - *Nq* - 126
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   中子素 - Neutronium - Nt - 127
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   三钛合金 - Tritanium - Tr - 128
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   铿铀 - Duranium - Dr - 129
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   三元金属 - Trinium - Ke - 130
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   退火铜 - AnnealedCopper - Cu - 252
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   电池合金 - BatteryAlloy - Pb4Sb - 256
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   黄铜 - Brass - ZnCu3 - 259
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   青铜 - Bronze - SnCu3 - 260
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   白铜 - Cupronickel - CuNi - 274
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   琥珀金 - Electrum - AgAu - 277
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   殷钢 - Invar - Fe2Ni - 287
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   坎塔尔合金 - Kanthal - FeAlCr - 288
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   镁铝合金 - Magnalium - MgAl2 - 290
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   镍铬合金 - Nichrome - Ni4Cr - 294
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   氮化铌 - NiobiumNitride - NbN - 295
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   铌钛合金 - NiobiumTitanium - NbTi - 296
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   标准纯银 - SterlingSilver - CuAg4 - 300
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   玫瑰金 - RoseGold - CuAu4 - 301
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   黑青铜 - BlackBronze - AuAgCu3 - 302
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   铋青铜 - BismuthBronze - BiZnCu3 - 303
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钌铱合金 - Ruridit - Ru2Ir - 310
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   焊锡 - SolderingAlloy - Sn6Pb3Sb - 320
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   不锈钢 - StainlessSteel - Fe6CrMnNi - 323
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钢 - Steel - Fe - 324
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   锡铁合金 - TinAlloy - SnFe - 328
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   哈氏合金 - Ultimet - Co5Cr2NiMo - 331
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钒镓合金 - VanadiumGallium - V3Ga - 334
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   锻铁 - WroughIron - Fe - 335
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钇钡铜氧合金 - YttriumBariumCuprate - YBa2Cu3O7 - 338
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   铱锇合金 - Osmiridium - Ir3Os - 344
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   砷化镓 - GalliumArsenide - AsGa - 351
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   磷化镓 - IndiumGalliumPhosphide - InGaP - 354
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   镍锌铁氧体 - NickelZincFerrite - NiZnFe4O8 -
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   磁化铁 - IronMagnetic - Fe - 355
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   碳化钨 - TungstenCarbide - WC - 395
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   磁化钕 - NeodymiumMagnetic - Nd - 396
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   磁化钐 - SamariumMagnetic - Sm - 418
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   磷化锰 - ManganesePhosphide - MnP - 423
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   二硼化镁 - MagnesiumDiboride - MgB2 - 424
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   汞钡铜酸钙 - MercuryBariumCalciumCuprate - HgBa2Ca2Cu3O8 - 425
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   三铂化铀 - UraniumTriplatinum - UPt3 - 426
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   氧化钐铁砷合金 - SamariumIronArsenicOxide - SmFeAsO - 427
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   铟锡钡钛铜合金 - IndiumTinBariumTitaniumCuprate - In4Sn2Ba2TiCu7O14 - 429
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   铀铑硅岩合金 - UraniumRhodiumDinaquadide - URhNq2 - 430
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   富集硅岩三元铕铿铀合金 - EnrichedNaquadahTriniumEuropiumDuranide - Nq+4Ke3Eu2Dr -
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钌三元镅中子素合金 - RutheniumTriniumAmericiumNeutronate - RuKe2AmNt2O8 -
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   聚乙烯丁醛 - PolyvinylButyral - (C4H8O)(C4H6O2) - 431
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   黑钢 - BlackSteel - Ni(AuAgCu3)Fe3 - 2011
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   大马士革钢 - DamascusSteel - Fe - 2012
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钨钢 - TungstenSteel - FeW - 2013
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钴黄铜 - CobaltBrass - (ZnCu3)7AlCo - 2014
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   磁化钢 - SteelMagnetic - Fe - 2035
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钒钢 - VanadiumSteel - VCrFe7 - 2036
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   粗青铜合金 - Potin - Cu6Sn2Pb - 2037
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   硅岩合金 - NaquadahAlloy - Nq2(Ir3Os)Ke - 2042
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   镀铑钯合金锭 - RhodiumPlatedPalladium - Rd3Rh - 2062
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   红钢 - RedSteel - (CuAg4)(BiZnCu3)Fe2(Ni(AuAgCu3)Fe3)4 -
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   蓝钢 - BlueSteel - (CuAu4)(ZnCu3)Fe2(Ni(AuAgCu3)Fe3)4 -
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   高速钢-G - Hssg - (FeW)5CrMo2V -
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   红色合金 - RedAlloy - Cu(Si(FeS2)5(CrAl2O3)Hg3)4 -
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   高速钢-E - Hsse - ((FeW)5CrMo2V)6CoMnSi -
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   高速钢-S - Hsss - ((FeW)5CrMo2V)6Ir2Os -
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   蓝色合金 - BlueAlloy - ((Si(FeS2)5(CrAl2O3)Hg3)(AgAu))4Ag -
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   司太立100合金 - Stellite100 - Fe4Cr3W2Mo -
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   防水钢 - WatertightSteel - Fe7Al4Ni2CrS -
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   马氏体时效钢300 - MaragingSteel300 - Fe16TiAlNi4Co2 -
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   哈斯特洛依合金-C276 - HastelloyC276 - Ni12Mo8Cr7WCoCu -
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   哈斯特洛依合金-X - HastelloyX - Ni8Fe3W4Mo2CrNb -
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   碳化特林-钍瑞铌合金 - Trinaquadalloy - Ke6Nq2C -
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   赛龙-100 - Zeron100 - Fe10Ni2W2NbCo -
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   碳化钛 - TitaniumCarbide - TiC -
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   碳化钽 - TantalumCarbide - TaC -
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   二硅化钼 - MolybdenumDisilicide - MoSi2 -
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   HSLA钢 - HslaSteel - (Fe2Ni)2VTiMo -
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   碳化钛钨 - TitaniumTungstenCarbide - (WC)(TiC)2 -
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   耐热铬铁合金-MA956 - IncoloyMa956 - (VCrFe7)4Mn2Al5Y2 -
+  </style>
+  <br/>
+ </text>
+</page>
