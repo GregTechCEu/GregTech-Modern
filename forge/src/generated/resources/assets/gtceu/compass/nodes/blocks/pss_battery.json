@@ -1,0 +1,23 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:empty_tier_i_battery"
+  },
+  "items": [
+    "gtceu:empty_tier_i_battery",
+    "gtceu:lapotronic_ev_battery",
+    "gtceu:lapotronic_iv_battery",
+    "gtceu:empty_tier_ii_battery",
+    "gtceu:lapotronic_luv_battery",
+    "gtceu:lapotronic_zpm_battery",
+    "gtceu:empty_tier_iii_battery",
+    "gtceu:lapotronic_uv_battery",
+    "gtceu:ultimate_uhv_battery"
+  ],
+  "page": "gtceu:blocks/pss_battery",
+  "position": [
+    -50,
+    0
+  ],
+  "section": "gtceu:blocks"
+}

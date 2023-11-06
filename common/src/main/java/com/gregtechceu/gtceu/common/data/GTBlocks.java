@@ -19,6 +19,7 @@ import com.gregtechceu.gtceu.api.item.MaterialBlockItem;
 import com.gregtechceu.gtceu.api.item.MaterialPipeBlockItem;
 import com.gregtechceu.gtceu.api.item.RendererBlockItem;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
+import com.gregtechceu.gtceu.api.machine.multiblock.IBatteryData;
 import com.gregtechceu.gtceu.api.pipenet.longdistance.LongDistancePipeBlock;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.CompassNode;
@@ -365,6 +366,7 @@ public class GTBlocks {
     public static final BlockEntry<Block> CASING_TUNGSTENSTEEL_ROBUST = createCasingBlock("robust_machine_casing", GTCEu.id("block/casings/solid/machine_casing_robust_tungstensteel"));
     public static final BlockEntry<Block> CASING_PTFE_INERT = createCasingBlock("inert_machine_casing", GTCEu.id("block/casings/solid/machine_casing_inert_ptfe"));
     public static final BlockEntry<Block> CASING_HSSE_STURDY = createCasingBlock("sturdy_machine_casing", GTCEu.id("block/casings/solid/machine_casing_study_hsse"));
+    public static final BlockEntry<Block> CASING_PALLADIUM_SUBSTATION = createCasingBlock("palladium_substation", GTCEu.id("block/casings/solid/palladium_substation"));
     public static final BlockEntry<Block> CASING_TEMPERED_GLASS = createGlassCasingBlock("tempered_glass", GTCEu.id("block/casings/transparent/tempered_glass"), () -> RenderType::translucent);
 
 
@@ -497,10 +499,23 @@ public class GTBlocks {
     public static final BlockEntry<CoilBlock> COIL_TRINIUM = createCoilBlock(CoilBlock.CoilType.TRINIUM);
     public static final BlockEntry<CoilBlock> COIL_TRITANIUM = createCoilBlock(CoilBlock.CoilType.TRITANIUM);
 
+    // PSS batteries
+    public static final Map<IBatteryData, Supplier<BatteryBlock>> PSS_BATTERIES = new HashMap<>();
+    public static final BlockEntry<BatteryBlock> BATTERY_EMPTY_TIER_I = createPSSBatteryBlock(BatteryBlock.BatteryPartType.EMPTY_TIER_I);
+    public static final BlockEntry<BatteryBlock> BATTERY_LAPOTRONIC_EV = createPSSBatteryBlock(BatteryBlock.BatteryPartType.LAPOTRONIC_EV);
+    public static final BlockEntry<BatteryBlock> BATTERY_LAPOTRONIC_IV = createPSSBatteryBlock(BatteryBlock.BatteryPartType.LAPOTRONIC_IV);
+    public static final BlockEntry<BatteryBlock> BATTERY_EMPTY_TIER_II = createPSSBatteryBlock(BatteryBlock.BatteryPartType.EMPTY_TIER_II);
+    public static final BlockEntry<BatteryBlock> BATTERY_LAPOTRONIC_LuV = createPSSBatteryBlock(BatteryBlock.BatteryPartType.LAPOTRONIC_LuV);
+    public static final BlockEntry<BatteryBlock> BATTERY_LAPOTRONIC_ZPM = createPSSBatteryBlock(BatteryBlock.BatteryPartType.LAPOTRONIC_ZPM);
+    public static final BlockEntry<BatteryBlock> BATTERY_EMPTY_TIER_III = createPSSBatteryBlock(BatteryBlock.BatteryPartType.EMPTY_TIER_III);
+    public static final BlockEntry<BatteryBlock> BATTERY_LAPOTRONIC_UV = createPSSBatteryBlock(BatteryBlock.BatteryPartType.LAPOTRONIC_UV);
+    public static final BlockEntry<BatteryBlock> BATTERY_ULTIMATE_UHV = createPSSBatteryBlock(BatteryBlock.BatteryPartType.ULTIMATE_UHV);
+
+    // Intake casing
     public static final BlockEntry<ActiveBlock> CASING_ENGINE_INTAKE = createActiveCasing("engine_intake_casing", "block/variant/engine_intake");
     public static final BlockEntry<ActiveBlock> CASING_EXTREME_ENGINE_INTAKE = createActiveCasing("extreme_engine_intake_casing", "block/variant/extreme_engine_intake");
 
-    //Fusion
+    // Fusion
     public static final Map<IFusionCasingType, Supplier<FusionCasingBlock>> ALL_FUSION_CASINGS = new HashMap<>();
     public static final BlockEntry<FusionCasingBlock> SUPERCONDUCTING_COIL = createFusionCasing(FusionCasingBlock.CasingType.SUPERCONDUCTING_COIL);
     public static final BlockEntry<FusionCasingBlock> FUSION_COIL = createFusionCasing(FusionCasingBlock.CasingType.FUSION_COIL);
@@ -646,6 +661,21 @@ public class GTBlocks {
                 .build()
                 .register();
         ALL_COILS.put(coilType, coilBlock);
+        return coilBlock;
+    }
+
+    private static BlockEntry<BatteryBlock> createPSSBatteryBlock(IBatteryData batteryData) {
+        BlockEntry<BatteryBlock> coilBlock = REGISTRATE.block("%s_battery".formatted(batteryData.getBatteryName()), p -> new BatteryBlock(p, batteryData, Platform.isClient() ? new TextureOverrideRenderer(new ResourceLocation("block/cube_bottom_top"), Map.of("bottom", GTCEu.id("casings/battery/" + batteryData.getBatteryName() + "/top"), "top", GTCEu.id("casings/battery/" + batteryData.getBatteryName() + "/top"), "side", GTCEu.id("casings/battery/" + batteryData.getBatteryName() + "/side"))) : null))
+                .initialProperties(() -> Blocks.IRON_BLOCK)
+                .addLayer(() -> RenderType::cutoutMipped)
+                .blockstate(NonNullBiConsumer.noop())
+                .tag(GTToolType.WRENCH.harvestTag, BlockTags.MINEABLE_WITH_PICKAXE)
+                .item(RendererBlockItem::new)
+                .model(NonNullBiConsumer.noop())
+                .onRegister(compassNodeExist(GTCompassSections.BLOCKS, "pss_battery"))
+                .build()
+                .register();
+        PSS_BATTERIES.put(batteryData, coilBlock);
         return coilBlock;
     }
 
