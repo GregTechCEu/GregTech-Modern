@@ -42,6 +42,48 @@ public class GTCompassSections {
             .priority(priority++)
             .register();
 
+    public final static CompassSection MATERIALS = CompassSection.create("materials")
+            .icon(() -> new ItemStackTexture(GTItems.MATERIAL_ITEMS.get(TagPrefix.gear, GTMaterials.Steel).asStack()))
+            .background(() -> GuiTextures.DISPLAY)
+            .priority(priority++)
+            .register();
+
+    public final static CompassSection ITEMS = CompassSection.create("items")
+            .icon(() -> new ItemStackTexture(GTItems.SHAPE_MOLD_INGOT.asStack()))
+            .background(() -> GuiTextures.DISPLAY)
+            .priority(priority++)
+            .register();
+
+    public final static CompassSection MISC = CompassSection.create("misc")
+            .icon(() -> new ItemStackTexture(GTItems.COIN_GOLD_ANCIENT.asStack()))
+            .background(() -> GuiTextures.DISPLAY)
+            .priority(priority++)
+            .register();
+
+    public final static CompassSection CIRCUITS = CompassSection.create("circuits")
+            .icon(() -> new ItemStackTexture(GTItems.ELECTRONIC_CIRCUIT_LV.asStack()))
+            .background(() -> GuiTextures.DISPLAY)
+            .priority(priority++)
+            .register();
+
+    public final static CompassSection COMPONENTS = CompassSection.create("components")
+            .icon(() -> new ItemStackTexture(GTItems.ELECTRIC_MOTOR_LV.asStack()))
+            .background(() -> GuiTextures.DISPLAY)
+            .priority(priority++)
+            .register();
+
+    public final static CompassSection BATTERIES = CompassSection.create("batteries")
+            .icon(() -> new ItemStackTexture(GTItems.BATTERY_HV_SODIUM.asStack()))
+            .background(() -> GuiTextures.DISPLAY)
+            .priority(priority++)
+            .register();
+
+    public final static CompassSection BLOCKS = CompassSection.create("blocks")
+            .icon(() -> new ItemStackTexture(GTBlocks.COIL_CUPRONICKEL.asStack()))
+            .background(() -> GuiTextures.DISPLAY)
+            .priority(priority++)
+            .register();
+
     public final static CompassSection MACHINES = CompassSection.create("machines")
             .icon(() -> new ItemStackTexture(GTMachines.CHEMICAL_REACTOR[GTValues.LV].asStack()))
             .background(() -> GuiTextures.DISPLAY)

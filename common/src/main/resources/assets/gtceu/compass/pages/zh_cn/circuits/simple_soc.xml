@@ -1,0 +1,42 @@
+<page>
+ <h1>Simple SoC</h1>
+ <h3>Source</h3>
+ <text pwt="true"><style color="0xaaaaaa" italic="true" pwt="true">Note: this page is ported from MCMOD's GTCEu wiki.<br/>Author: <style color="0xa4e7ff" hover-info="url" pwt="true" underlined="true" url-link="https://center.mcmod.cn/666666/">六氯环己烷</style><br/></style></text>
+ <h2 font-color="0xff0000">WARNING!!!</h2>
+ <text isCenter="true">
+  <style color="0xff0000" pwt="true">The warning means this is not a reliable page.</style>
+  <br/>
+  <style bold="true" color="0xffaa00" pwt="true">Please do not report any mistakes on the page, either discord or github.</style>
+  <br/>
+  This page is translated from the Chinese wiki which hasn't been reviewed and polished yet. It may contain errors and inaccuracies. We are looking forward to your help by improving this page.
+ </text>
+ <text>
+  <br/>
+  <style lang="zh-cn">
+   <style color="0xaaaaaa" italic="true" lang="zh-cn" pwt="true">“简易的系统芯片”</style>
+  </style>
+  <br/>
+  <br/>
+  <style lang="zh-cn">
+   简易 SoC 由
+   <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">简易 SoC 晶片</style>
+   在
+   <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">切割机</style>
+   中切割而成，单个简易 SoC 晶片经过处理能够产出 6 个 简易 SoC，生产需要最低 MV 级电压。
+  </style>
+  <br/>
+  <br/>
+  <style lang="zh-cn">
+   简易 SoC 可在
+   <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">电路组装机</style>
+   中用于组装
+   <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">NAND芯片</style>
+   （ULV 级电路）。在使用
+   <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">优质电路板</style>
+   参与组装时，单个简易 SoC 能够制成 8 个NAND芯片，而在由
+   <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">塑料电路板</style>
+   参与组装时能够制成 12 个。
+  </style>
+  <br/>
+ </text>
+</page>

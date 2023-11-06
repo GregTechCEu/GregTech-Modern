@@ -1,0 +1,15 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:advanced_integrated_circuit"
+  },
+  "items": [
+    "gtceu:advanced_integrated_circuit"
+  ],
+  "page": "gtceu:circuits/advanced_integrated_circuit",
+  "position": [
+    -200,
+    150
+  ],
+  "section": "gtceu:circuits"
+}

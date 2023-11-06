@@ -228,6 +228,7 @@ public class GTBlocks {
                             .item(MaterialPipeBlockItem::new)
                             .model(NonNullBiConsumer.noop())
                             .color(() -> MaterialPipeBlockItem::tintColor)
+                            .onRegister(compassNodeExist(GTCompassSections.MATERIALS, "wire_and_cable"))
                             .build()
                             .register();
                     builder.put(insulation.tagPrefix, material, entry);
@@ -595,6 +596,7 @@ public class GTBlocks {
                 .tag(GTToolType.WRENCH.harvestTag, BlockTags.MINEABLE_WITH_PICKAXE)
                 .item(RendererBlockItem::new)
                 .model(NonNullBiConsumer.noop())
+                .onRegister(compassNodeExist(GTCompassSections.BLOCKS, "coil_block"))
                 .build()
                 .register();
         ALL_COILS.put(coilType, coilBlock);

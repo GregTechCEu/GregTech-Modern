@@ -1,0 +1,15 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:simple_soc"
+  },
+  "items": [
+    "gtceu:simple_soc"
+  ],
+  "page": "gtceu:circuits/simple_soc",
+  "position": [
+    -200,
+    50
+  ],
+  "section": "gtceu:circuits"
+}

@@ -1,0 +1,22 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:lv_sensor"
+  },
+  "items": [
+    "gtceu:lv_sensor",
+    "gtceu:mv_sensor",
+    "gtceu:hv_sensor",
+    "gtceu:ev_sensor",
+    "gtceu:iv_sensor",
+    "gtceu:luv_sensor",
+    "gtceu:zpm_sensor",
+    "gtceu:uv_sensor"
+  ],
+  "page": "gtceu:components/sensor",
+  "position": [
+    -50,
+    50
+  ],
+  "section": "gtceu:components"
+}

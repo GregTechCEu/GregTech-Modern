@@ -1,0 +1,15 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:crystal_processor_assembly"
+  },
+  "items": [
+    "gtceu:crystal_processor_assembly"
+  ],
+  "page": "gtceu:circuits/crystal_processor_assembly",
+  "position": [
+    -100,
+    250
+  ],
+  "section": "gtceu:circuits"
+}
