@@ -217,7 +217,7 @@ public class GTBlocks {
         ImmutableTable.Builder<TagPrefix, Material, BlockEntry<CableBlock>> builder = ImmutableTable.builder();
         for (Insulation insulation : Insulation.values()) {
             for (Material material : GTRegistries.MATERIALS) {
-                if (material.hasProperty(PropertyKey.WIRE) && !insulation.tagPrefix.isIgnored(material)) {
+                if (material.hasProperty(PropertyKey.WIRE) && !insulation.tagPrefix.isIgnored(material) && !(insulation.isCable && material.getProperty(PropertyKey.WIRE).isSuperconductor())) {
                     var entry = REGISTRATE.block("%s_%s".formatted(material.getName(), insulation.name), p -> new CableBlock(p, insulation, material))
                             .initialProperties(() -> Blocks.IRON_BLOCK)
                             .properties(p -> p.dynamicShape().noOcclusion().noLootTable())

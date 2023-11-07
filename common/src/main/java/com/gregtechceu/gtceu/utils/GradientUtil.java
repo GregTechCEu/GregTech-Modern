@@ -8,6 +8,12 @@ public class GradientUtil {
     private GradientUtil() {
     }
 
+    public static int argbToABGR(int argbColor) {
+        int r = (argbColor >> 16) & 0xFF;
+        int b = argbColor & 0xFF;
+        return (argbColor & 0xFF00FF00) | (b << 16) | r;
+    }
+
     public static float[] getRGB(int color) {
         float r = ((color >> 16) & 0xFF) / 255f;
         float g = ((color >> 8) & 0xFF) / 255f;

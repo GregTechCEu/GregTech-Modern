@@ -21,12 +21,14 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.function.Supplier;
 
 public class GTDynamicResourcePack implements PackResources {
 
     protected static final ObjectSet<String> CLIENT_DOMAINS = new ObjectOpenHashSet<>();
-    protected static final Map<ResourceLocation, JsonObject> DATA = new HashMap<>();
+    protected static final ConcurrentMap<ResourceLocation, IoSupplier<InputStream>> DATA = new ConcurrentHashMap<>();
 
     private final String name;
 
@@ -43,31 +45,51 @@ public class GTDynamicResourcePack implements PackResources {
         DATA.clear();
     }
 
-    public static void addBlockModel(ResourceLocation loc, JsonObject obj) {
+    public static void addBlockModel(ResourceLocation loc, JsonElement obj) {
         ResourceLocation l = getModelLocation(loc);
-        DATA.put(l, obj);
+        DATA.put(l, () -> new ByteArrayInputStream(obj.toString().getBytes(StandardCharsets.UTF_8)));
     }
 
     public static void addBlockModel(ResourceLocation loc, Supplier<JsonElement> obj) {
-        addBlockModel(loc, obj.get().getAsJsonObject());
+        addBlockModel(loc, obj.get());
     }
 
-    public static void addItemModel(ResourceLocation loc, JsonObject obj) {
+    public static void addItemModel(ResourceLocation loc, JsonElement obj) {
         ResourceLocation l = getItemModelLocation(loc);
-        DATA.put(l, obj);
+        DATA.put(l, () -> new ByteArrayInputStream(obj.toString().getBytes(StandardCharsets.UTF_8)));
     }
 
     public static void addItemModel(ResourceLocation loc, Supplier<JsonElement> obj) {
-        addItemModel(loc, obj.get().getAsJsonObject());
+        addItemModel(loc, obj.get());
     }
 
-    public static void addBlockState(ResourceLocation loc, JsonObject stateJson) {
+    public static void addBlockState(ResourceLocation loc, JsonElement stateJson) {
         ResourceLocation l = getBlockStateLocation(loc);
-        DATA.put(l, stateJson);
+        DATA.put(l, () -> new ByteArrayInputStream(stateJson.toString().getBytes(StandardCharsets.UTF_8)));
     }
 
-    public static void addBlockState(ResourceLocation loc, BlockStateGenerator generator) {
-        addBlockState(loc, generator.get().getAsJsonObject());
+    public static void addBlockState(ResourceLocation loc, Supplier<JsonElement> generator) {
+        addBlockState(loc, generator.get());
+    }
+
+    public static void addBlockTexture(ResourceLocation loc, byte[] data) {
+        ResourceLocation l = getTextureLocation("block", loc);
+        DATA.put(l, () -> new ByteArrayInputStream(data));
+    }
+
+    public static void addBlockTexture(ResourceLocation loc, IoSupplier<InputStream> data) {
+        ResourceLocation l = getTextureLocation("block", loc);
+        DATA.put(l, data);
+    }
+
+    public static void addItemTexture(ResourceLocation loc, byte[] data) {
+        ResourceLocation l = getTextureLocation("item", loc);
+        DATA.put(l, () -> new ByteArrayInputStream(data));
+    }
+
+    public static void addItemTexture(ResourceLocation loc, IoSupplier<InputStream> data) {
+        ResourceLocation l = getTextureLocation("item", loc);
+        DATA.put(l, data);
     }
 
     @Nullable
@@ -79,9 +101,7 @@ public class GTDynamicResourcePack implements PackResources {
     @Override
     public IoSupplier<InputStream> getResource(PackType type, ResourceLocation location) {
         if (type == PackType.CLIENT_RESOURCES) {
-            if (DATA.containsKey(location))
-                return () -> new ByteArrayInputStream(DATA.get(location).toString().getBytes(StandardCharsets.UTF_8));
-            else return null;
+            return DATA.getOrDefault(location, null);
         } else {
             return null;
         }
@@ -137,7 +157,7 @@ public class GTDynamicResourcePack implements PackResources {
         return new ResourceLocation(itemId.getNamespace(), String.join("", "models/item/", itemId.getPath(), ".json"));
     }
 
-    public static ResourceLocation getTagLocation(String ResourceLocation, ResourceLocation tagId) {
-        return new ResourceLocation(tagId.getNamespace(), String.join("", "tags/", ResourceLocation, "/", tagId.getPath(), ".json"));
+    public static ResourceLocation getTextureLocation(String path, ResourceLocation tagId) {
+        return new ResourceLocation(tagId.getNamespace(), String.join("", "textures/", path, path == null || path.isBlank() ? "" : "/", tagId.getPath(), ".png"));
     }
 }
