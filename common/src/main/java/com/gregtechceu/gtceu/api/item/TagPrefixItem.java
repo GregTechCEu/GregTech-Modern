@@ -42,7 +42,7 @@ public class TagPrefixItem extends Item {
         this.tagPrefix = tagPrefix;
         this.material = material;
         if (Platform.isClient()) {
-            TagPrefixItemRenderer.getOrCreate(this, tagPrefix.materialIconType(), material.getMaterialIconSet());
+            TagPrefixItemRenderer.create(this, tagPrefix.materialIconType(), material.getMaterialIconSet());
         }
     }
 

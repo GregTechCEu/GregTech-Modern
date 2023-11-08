@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.core.MixinHelpers;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import net.minecraft.client.Minecraft;
 import net.minecraft.server.packs.PackResources;
+import net.minecraft.server.packs.resources.ReloadInstance;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
@@ -16,6 +17,6 @@ public class MinecraftMixin {
             at = @At(value = "INVOKE", target = "Lnet/minecraft/server/packs/repository/PackRepository;openAllSelected()Ljava/util/List;")
     )
     private List<PackResources> gtceu$loadPacks(List<PackResources> resources) {
-        return MixinHelpers.addDynamicAssets(resources);
+        return MixinHelpers.addDynamicResourcePack(resources);
     }
 }

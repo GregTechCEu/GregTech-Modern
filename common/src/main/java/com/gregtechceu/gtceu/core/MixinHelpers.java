@@ -32,10 +32,9 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class MixinHelpers {
@@ -82,7 +81,7 @@ public class MixinHelpers {
         throw new AssertionError();
     }
 
-    public static List<PackResources> addDynamicData(Collection<PackResources> packs) {
+    public static List<PackResources> addDynamicDataPack(Collection<PackResources> packs) {
         List<PackResources> packResources = new ArrayList<>(packs);
         // Clear old data
         GTDynamicDataPack.clearServer();
@@ -98,7 +97,7 @@ public class MixinHelpers {
         return packResources;
     }
 
-    public static List<PackResources> addDynamicAssets(Collection<PackResources> packs) {
+    public static List<PackResources> addDynamicResourcePack(Collection<PackResources> packs) {
         List<PackResources> packResources = new ArrayList<>(packs);
         // Clear old data
         GTDynamicResourcePack.clearClient();
@@ -116,4 +115,8 @@ public class MixinHelpers {
         return packResources;
     }
 
+    public static void initializeDynamicTextures(Consumer<ResourceLocation> provider) {
+        MaterialBlockRenderer.initTextures(provider);
+        TagPrefixItemRenderer.initTextures(provider);
+    }
 }

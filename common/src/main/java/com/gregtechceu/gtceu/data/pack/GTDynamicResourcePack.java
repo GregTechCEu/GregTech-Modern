@@ -2,12 +2,11 @@ package com.gregtechceu.gtceu.data.pack;
 
 import com.google.common.collect.Sets;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.gregtechceu.gtceu.GTCEu;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.SharedConstants;
-import net.minecraft.data.models.blockstates.BlockStateGenerator;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackResources;
@@ -15,20 +14,27 @@ import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.metadata.MetadataSectionSerializer;
 import net.minecraft.server.packs.metadata.pack.PackMetadataSection;
 import net.minecraft.server.packs.resources.IoSupplier;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.Collection;
+import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.Supplier;
 
+@MethodsReturnNonnullByDefault
+@ParametersAreNonnullByDefault
 public class GTDynamicResourcePack implements PackResources {
 
     protected static final ObjectSet<String> CLIENT_DOMAINS = new ObjectOpenHashSet<>();
-    protected static final ConcurrentMap<ResourceLocation, IoSupplier<InputStream>> DATA = new ConcurrentHashMap<>();
+    @ApiStatus.Internal
+    public static final ConcurrentMap<ResourceLocation, byte[]> DATA = new ConcurrentHashMap<>();
 
     private final String name;
 
@@ -47,7 +53,7 @@ public class GTDynamicResourcePack implements PackResources {
 
     public static void addBlockModel(ResourceLocation loc, JsonElement obj) {
         ResourceLocation l = getModelLocation(loc);
-        DATA.put(l, () -> new ByteArrayInputStream(obj.toString().getBytes(StandardCharsets.UTF_8)));
+        DATA.put(l, obj.toString().getBytes(StandardCharsets.UTF_8));
     }
 
     public static void addBlockModel(ResourceLocation loc, Supplier<JsonElement> obj) {
@@ -55,8 +61,7 @@ public class GTDynamicResourcePack implements PackResources {
     }
 
     public static void addItemModel(ResourceLocation loc, JsonElement obj) {
-        ResourceLocation l = getItemModelLocation(loc);
-        DATA.put(l, () -> new ByteArrayInputStream(obj.toString().getBytes(StandardCharsets.UTF_8)));
+        DATA.put(loc, obj.toString().getBytes(StandardCharsets.UTF_8));
     }
 
     public static void addItemModel(ResourceLocation loc, Supplier<JsonElement> obj) {
@@ -65,7 +70,7 @@ public class GTDynamicResourcePack implements PackResources {
 
     public static void addBlockState(ResourceLocation loc, JsonElement stateJson) {
         ResourceLocation l = getBlockStateLocation(loc);
-        DATA.put(l, () -> new ByteArrayInputStream(stateJson.toString().getBytes(StandardCharsets.UTF_8)));
+        DATA.put(l, stateJson.toString().getBytes(StandardCharsets.UTF_8));
     }
 
     public static void addBlockState(ResourceLocation loc, Supplier<JsonElement> generator) {
@@ -74,20 +79,10 @@ public class GTDynamicResourcePack implements PackResources {
 
     public static void addBlockTexture(ResourceLocation loc, byte[] data) {
         ResourceLocation l = getTextureLocation("block", loc);
-        DATA.put(l, () -> new ByteArrayInputStream(data));
-    }
-
-    public static void addBlockTexture(ResourceLocation loc, IoSupplier<InputStream> data) {
-        ResourceLocation l = getTextureLocation("block", loc);
         DATA.put(l, data);
     }
 
     public static void addItemTexture(ResourceLocation loc, byte[] data) {
-        ResourceLocation l = getTextureLocation("item", loc);
-        DATA.put(l, () -> new ByteArrayInputStream(data));
-    }
-
-    public static void addItemTexture(ResourceLocation loc, IoSupplier<InputStream> data) {
         ResourceLocation l = getTextureLocation("item", loc);
         DATA.put(l, data);
     }
@@ -101,10 +96,10 @@ public class GTDynamicResourcePack implements PackResources {
     @Override
     public IoSupplier<InputStream> getResource(PackType type, ResourceLocation location) {
         if (type == PackType.CLIENT_RESOURCES) {
-            return DATA.getOrDefault(location, null);
-        } else {
-            return null;
+            if (DATA.containsKey(location))
+                return () -> new ByteArrayInputStream(DATA.get(location));
         }
+        return null;
     }
 
     @Override
@@ -157,7 +152,10 @@ public class GTDynamicResourcePack implements PackResources {
         return new ResourceLocation(itemId.getNamespace(), String.join("", "models/item/", itemId.getPath(), ".json"));
     }
 
-    public static ResourceLocation getTextureLocation(String path, ResourceLocation tagId) {
-        return new ResourceLocation(tagId.getNamespace(), String.join("", "textures/", path, path == null || path.isBlank() ? "" : "/", tagId.getPath(), ".png"));
+    public static ResourceLocation getTextureLocation(@Nullable String path, ResourceLocation tagId) {
+        if (path == null) {
+            return new ResourceLocation(tagId.getNamespace(), String.join("", "textures/", tagId.getPath(), ".png"));
+        }
+        return new ResourceLocation(tagId.getNamespace(), String.join("", "textures/", path, "/", tagId.getPath(), ".png"));
     }
 }

@@ -1,8 +1,5 @@
 package com.gregtechceu.gtceu.client.renderer.item;
 
-import com.google.common.collect.Table;
-import com.google.common.collect.Tables;
-import com.gregtechceu.gtceu.api.block.MaterialBlock;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.item.TagPrefixItem;
@@ -10,14 +7,25 @@ import com.gregtechceu.gtceu.data.pack.GTDynamicResourcePack;
 import com.gregtechceu.gtceu.utils.GradientUtil;
 import com.mojang.blaze3d.platform.NativeImage;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.texture.DynamicTexture;
+import net.minecraft.client.renderer.texture.SpriteContents;
+import net.minecraft.client.resources.metadata.animation.FrameSize;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.data.models.model.DelegatedModel;
+import net.minecraft.data.models.model.ModelTemplates;
+import net.minecraft.data.models.model.TextureMapping;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.world.item.Item;
 
 import java.io.IOException;
-import java.util.HashMap;
+import java.io.InputStream;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+
+import static com.gregtechceu.gtceu.client.renderer.block.MaterialBlockRenderer.EMPTY_ANIMATION_META;
+import static com.gregtechceu.gtceu.client.renderer.block.MaterialBlockRenderer.LAYER_2_SUFFIX;
 
 /**
  * @author KilaBash
@@ -25,33 +33,63 @@ import java.util.HashMap;
  * @implNote TagPrefixItemRenderer
  */
 public class TagPrefixItemRenderer {
-    private static final Table<MaterialIconType, MaterialIconSet, TagPrefixItemRenderer> MODELS = Tables.newCustomTable(new HashMap<>(), HashMap::new);
+    private static final Set<TagPrefixItemRenderer> MODELS = new HashSet<>();
+
+    public static void create(Item item, MaterialIconType type, MaterialIconSet iconSet) {
+        MODELS.add(new TagPrefixItemRenderer(item, type, iconSet));
+    }
 
     public static void reinitModels() {
-        for (TagPrefixItemRenderer model : MODELS.values()) {
+        for (TagPrefixItemRenderer model : MODELS) {
             ResourceLocation itemId = BuiltInRegistries.ITEM.getKey(model.item);
-            GTDynamicResourcePack.addItemModel(itemId, new DelegatedModel(model.type.getItemModelPath(model.iconSet, true)));
+            //GTDynamicResourcePack.addItemModel(itemId, new DelegatedModel(model.type.getItemModelPath(model.iconSet, true)));
+            ModelTemplates.FLAT_ITEM.create(GTDynamicResourcePack.getItemModelLocation(itemId), TextureMapping.layer0(itemId.withPrefix("item/")), GTDynamicResourcePack::addItemModel);
+        }
+    }
 
-            try {
-                if (!(model.item instanceof TagPrefixItem materialBlock)) continue;
-                ResourceLocation itemTexturePath = GTDynamicResourcePack.getTextureLocation(null, model.type.getItemTexturePath(model.iconSet, true));
-                Resource file = Minecraft.getInstance().getResourceManager().getResource(itemTexturePath).orElse(null);
-                if (file == null) continue;
+    public static void initTextures(Consumer<ResourceLocation> provider) {
+        for (TagPrefixItemRenderer model : MODELS) {
+            ResourceLocation itemId = BuiltInRegistries.ITEM.getKey(model.item);
 
-                NativeImage image = NativeImage.read(file.open());
-                for (int x = 0; x < image.getWidth(); ++x) {
-                    for (int y = 0; y < image.getHeight(); ++y) {
-                        image.blendPixel(x, y, GradientUtil.argbToABGR(materialBlock.material.getMaterialARGB()));
+            Resource file1 = Minecraft.getInstance().getResourceManager().getResource(GTDynamicResourcePack.getTextureLocation(null, model.type.getItemTexturePath(model.iconSet, true)/*.withSuffix("_layer1")*/)).orElse(null);
+            if (file1 == null) continue;
+            try(InputStream stream1 = file1.open()) {
+                if (!(model.item instanceof TagPrefixItem prefixItem)) continue;
+                int materialRGBA = GradientUtil.argbToRgba(prefixItem.material.getMaterialARGB());
+                int materialSecondaryRGBA = GradientUtil.argbToRgba(prefixItem.material.getMaterialSecondaryARGB());
+
+                NativeImage image1 = NativeImage.read(stream1);
+                try (NativeImage result = new NativeImage(image1.getWidth(), image1.getHeight(), true)) {
+                    for (int x = 0; x < image1.getWidth(); ++x) {
+                        for (int y = 0; y < image1.getHeight(); ++y) {
+                            int color = image1.getPixelRGBA(x, y);
+                            result.setPixelRGBA(x, y, GradientUtil.multiplyBlendRGBA(color, materialRGBA));
+                        }
                     }
+                    if (prefixItem.material.getMaterialSecondaryRGB() != -1) {
+                        Resource file2 = Minecraft.getInstance().getResourceManager().getResource(GTDynamicResourcePack.getTextureLocation(null, model.type.getItemTexturePath(model.iconSet, true).withSuffix(LAYER_2_SUFFIX))).orElse(null);
+                        if (file2 != null) {
+                            try(InputStream stream2 = file2.open()) {
+                                NativeImage image2 = NativeImage.read(stream2);
+                                for (int x = 0; x < image1.getWidth(); ++x) {
+                                    for (int y = 0; y < image1.getHeight(); ++y) {
+                                        int color = image2.getPixelRGBA(x, y);
+                                        result.blendPixel(x, y, GradientUtil.multiplyBlendRGBA(color, materialSecondaryRGBA));
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    GTDynamicResourcePack.addItemTexture(itemId, result.asByteArray());
+                    //Minecraft.getInstance().getTextureManager().register(GTDynamicResourcePack.getTextureLocation("item", itemId), new DynamicTexture(result));
+                    //provider.accept(itemId.withPrefix("item/"));
                 }
-                GTDynamicResourcePack.addItemTexture(itemId, image.asByteArray());
-            } catch (
-                    IOException e) {
+            } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         }
     }
-
 
     private final Item item;
     private final MaterialIconType type;
@@ -61,12 +99,5 @@ public class TagPrefixItemRenderer {
         this.item = item;
         this.type = type;
         this.iconSet = iconSet;
-    }
-
-    public static TagPrefixItemRenderer getOrCreate(Item item, MaterialIconType type, MaterialIconSet iconSet) {
-        if (!MODELS.contains(type, iconSet)) {
-            MODELS.put(type, iconSet, new TagPrefixItemRenderer(item, type, iconSet));
-        }
-        return MODELS.get(type, iconSet);
     }
 }

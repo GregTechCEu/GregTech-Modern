@@ -46,7 +46,7 @@ public class MaterialBlock extends AppearanceBlock implements IBlockRendererProv
         this.tagPrefix = tagPrefix;
         this.renderer = null;
         if (Platform.isClient()) {
-            MaterialBlockRenderer.getOrCreate(this, tagPrefix.materialIconType(), material.getMaterialIconSet());
+            MaterialBlockRenderer.create(this, tagPrefix.materialIconType(), material.getMaterialIconSet());
         }
     }
 

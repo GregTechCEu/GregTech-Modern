@@ -10,6 +10,7 @@
     "LevelRendererMixin",
     "MinecraftMixin",
     "MultiPlayerGameModeMixin",
+    "SpriteResourceLoaderMixin",
     "rei.FluidEntryRendererMixin"
   ],
   "mixins": [

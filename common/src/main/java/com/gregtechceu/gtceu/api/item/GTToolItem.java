@@ -50,7 +50,7 @@ public class GTToolItem extends DiggerItem implements IItemUseFirst {
         super(toolType.attackDamageModifier, toolType.attackSpeedModifier, tier, toolType.harvestTag, properties);
         this.toolType = toolType;
         if (Platform.isClient()) {
-            ToolItemRenderer.getOrCreate(this, toolType);
+            ToolItemRenderer.create(this, toolType);
         }
     }
 

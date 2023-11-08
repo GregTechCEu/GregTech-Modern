@@ -83,7 +83,7 @@ public class GTModels {
                     if (fluid instanceof GTFluid gtFluid) {
                         FluidStack testFor = FluidStack.create(gtFluid, FluidHelper.getBucket());
                         GTDynamicResourcePack.addItemModel(
-                                BuiltInRegistries.ITEM.getKey(gtFluid.getBucket()),
+                                GTDynamicResourcePack.getItemModelLocation(BuiltInRegistries.ITEM.getKey(gtFluid.getBucket())),
                                 new DelegatedModel(GTCEu.id("item/bucket/" + (FluidHelper.isLighterThanAir(testFor) ? "bucket_gas" : "bucket")))
                         );
                     }
