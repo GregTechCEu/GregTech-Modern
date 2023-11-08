@@ -115,8 +115,8 @@ public class MixinHelpers {
         return packResources;
     }
 
-    public static void initializeDynamicTextures(Consumer<ResourceLocation> provider) {
-        MaterialBlockRenderer.initTextures(provider);
-        TagPrefixItemRenderer.initTextures(provider);
+    public static void initializeDynamicTextures() {
+        MaterialBlockRenderer.initTextures();
+        TagPrefixItemRenderer.initTextures();
     }
 }

@@ -47,7 +47,7 @@ public class TagPrefixItemRenderer {
         }
     }
 
-    public static void initTextures(Consumer<ResourceLocation> provider) {
+    public static void initTextures() {
         for (TagPrefixItemRenderer model : MODELS) {
             ResourceLocation itemId = BuiltInRegistries.ITEM.getKey(model.item);
 
@@ -82,8 +82,6 @@ public class TagPrefixItemRenderer {
                     }
 
                     GTDynamicResourcePack.addItemTexture(itemId, result.asByteArray());
-                    //Minecraft.getInstance().getTextureManager().register(GTDynamicResourcePack.getTextureLocation("item", itemId), new DynamicTexture(result));
-                    //provider.accept(itemId.withPrefix("item/"));
                 }
             } catch (IOException e) {
                 throw new RuntimeException(e);

@@ -54,7 +54,7 @@ public class MaterialBlockRenderer {
         }
     }
 
-    public static void initTextures(Consumer<ResourceLocation> provider) {
+    public static void initTextures() {
         for (MaterialBlockRenderer model : MODELS) {
             ResourceLocation blockId = BuiltInRegistries.BLOCK.getKey(model.block);
 
@@ -89,8 +89,6 @@ public class MaterialBlockRenderer {
                     }
 
                     GTDynamicResourcePack.addBlockTexture(blockId, result.asByteArray());
-                    //Minecraft.getInstance().getTextureManager().register(GTDynamicResourcePack.getTextureLocation("block", blockId), new DynamicTexture(result));
-                    //provider.accept(blockId.withPrefix("block/"));
                 }
             } catch (IOException e) {
                 throw new RuntimeException(e);

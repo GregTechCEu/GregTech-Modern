@@ -25,10 +25,6 @@ public class SpriteResourceLoaderMixin {
     @Inject(method = "load", at = @At(value = "RETURN"), locals = LocalCapture.CAPTURE_FAILHARD)
     private static void injectLoad(ResourceManager resourceManager, ResourceLocation location, CallbackInfoReturnable<SpriteResourceLoader> cir, ResourceLocation resourceLocation, List<SpriteSource> list) {
         if (!location.equals(new ResourceLocation("blocks"))) return;
-        Set<ResourceLocation> sprites = new HashSet<>();
-        MixinHelpers.initializeDynamicTextures(sprites::add);
-        for (ResourceLocation sprite : sprites) {
-            list.add(new SingleFile(sprite, Optional.empty()));
-        }
+        MixinHelpers.initializeDynamicTextures();
     }
 }
