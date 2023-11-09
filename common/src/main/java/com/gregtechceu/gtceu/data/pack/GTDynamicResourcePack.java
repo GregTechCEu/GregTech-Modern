@@ -3,6 +3,8 @@ package com.gregtechceu.gtceu.data.pack;
 import com.google.common.collect.Sets;
 import com.google.gson.JsonElement;
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.lowdragmc.lowdraglib.Platform;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -19,14 +21,20 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.Supplier;
+
+import static com.gregtechceu.gtceu.data.pack.GTDynamicDataPack.writeJson;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -53,6 +61,10 @@ public class GTDynamicResourcePack implements PackResources {
 
     public static void addBlockModel(ResourceLocation loc, JsonElement obj) {
         ResourceLocation l = getModelLocation(loc);
+        if (ConfigHolder.INSTANCE.dev.dumpAssets) {
+            Path parent = Platform.getGamePath().resolve("gtceu/dumped/assets");
+            writeJson(l, null, parent, obj);
+        }
         DATA.put(l, obj.toString().getBytes(StandardCharsets.UTF_8));
     }
 
@@ -62,6 +74,10 @@ public class GTDynamicResourcePack implements PackResources {
 
     public static void addItemModel(ResourceLocation loc, JsonElement obj) {
         ResourceLocation l = getItemModelLocation(loc);
+        if (ConfigHolder.INSTANCE.dev.dumpAssets) {
+            Path parent = Platform.getGamePath().resolve("gtceu/dumped/assets");
+            writeJson(l, null, parent, obj);
+        }
         DATA.put(l, obj.toString().getBytes(StandardCharsets.UTF_8));
     }
 
@@ -71,6 +87,10 @@ public class GTDynamicResourcePack implements PackResources {
 
     public static void addBlockState(ResourceLocation loc, JsonElement stateJson) {
         ResourceLocation l = getBlockStateLocation(loc);
+        if (ConfigHolder.INSTANCE.dev.dumpAssets) {
+            Path parent = Platform.getGamePath().resolve("gtceu/dumped/assets");
+            writeJson(l, null, parent, stateJson);
+        }
         DATA.put(l, stateJson.toString().getBytes(StandardCharsets.UTF_8));
     }
 
@@ -80,12 +100,37 @@ public class GTDynamicResourcePack implements PackResources {
 
     public static void addBlockTexture(ResourceLocation loc, byte[] data) {
         ResourceLocation l = getTextureLocation("block", loc);
+        if (ConfigHolder.INSTANCE.dev.dumpAssets) {
+            Path parent = Platform.getGamePath().resolve("gtceu/dumped/assets");
+            writeByteArray(l, null, parent, data);
+        }
         DATA.put(l, data);
     }
 
     public static void addItemTexture(ResourceLocation loc, byte[] data) {
         ResourceLocation l = getTextureLocation("item", loc);
+        if (ConfigHolder.INSTANCE.dev.dumpAssets) {
+            Path parent = Platform.getGamePath().resolve("gtceu/dumped/assets");
+            writeByteArray(l, null, parent, data);
+        }
         DATA.put(l, data);
+    }
+    @ApiStatus.Internal
+    public static void writeByteArray(ResourceLocation id, @Nullable String subdir, Path parent, byte[] data) {
+        try {
+            Path file;
+            if (subdir != null) {
+                file = parent.resolve(id.getNamespace()).resolve(subdir).resolve(id.getPath() + ".png"); // assume PNG
+            } else {
+                file = parent.resolve(id.getNamespace()).resolve(id.getPath());
+            }
+            Files.createDirectories(file.getParent());
+            try(OutputStream output = Files.newOutputStream(file)) {
+                output.write(data);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Nullable

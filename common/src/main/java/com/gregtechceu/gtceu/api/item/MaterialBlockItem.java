@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.MaterialBlock;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.DustProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
+import com.lowdragmc.lowdraglib.client.renderer.IBlockRendererProvider;
 import com.lowdragmc.lowdraglib.client.renderer.IItemRendererProvider;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import dev.architectury.injectables.annotations.ExpectPlatform;
@@ -60,7 +61,10 @@ public class MaterialBlockItem extends BlockItem implements IItemRendererProvide
     @Override
     @Environment(EnvType.CLIENT)
     public IRenderer getRenderer(ItemStack stack) {
-        return getBlock().getRenderer(getBlock().defaultBlockState());
+        if (getBlock() instanceof IBlockRendererProvider provider) {
+            return provider.getRenderer(getBlock().defaultBlockState());
+        }
+        return null;
     }
 
     @Override

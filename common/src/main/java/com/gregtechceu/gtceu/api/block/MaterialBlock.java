@@ -34,34 +34,22 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class MaterialBlock extends AppearanceBlock implements IBlockRendererProvider {
+public class MaterialBlock extends AppearanceBlock {
 
     public final TagPrefix tagPrefix;
     public final Material material;
-    public final IRenderer renderer;
 
-    public MaterialBlock(Properties properties, TagPrefix tagPrefix, Material material) {
+    public MaterialBlock(Properties properties, TagPrefix tagPrefix, Material material, boolean registerModel) {
         super(properties);
         this.material = material;
         this.tagPrefix = tagPrefix;
-        this.renderer = null;
-        if (Platform.isClient()) {
+        if (registerModel && Platform.isClient()) {
             MaterialBlockRenderer.create(this, tagPrefix.materialIconType(), material.getMaterialIconSet());
         }
     }
 
-    public MaterialBlock(Properties properties, TagPrefix tagPrefix, Material material, IRenderer renderer) {
-        super(properties);
-        this.material = material;
-        this.tagPrefix = tagPrefix;
-        this.renderer = renderer;
-    }
-
-    @Nullable
-    @Override
-    @Environment(EnvType.CLIENT)
-    public IRenderer getRenderer(BlockState state) {
-        return renderer;
+    public MaterialBlock(Properties properties, TagPrefix tagPrefix, Material material) {
+        this(properties, tagPrefix, material, true);
     }
 
     @Environment(EnvType.CLIENT)
