@@ -21,7 +21,7 @@ public class ToolItemRenderer {
 
     public static void reinitModels() {
         for (ToolItemRenderer model : MODELS) {
-            GTDynamicResourcePack.addItemModel(GTDynamicResourcePack.getItemModelLocation(BuiltInRegistries.ITEM.getKey(model.item)), new DelegatedModel(model.toolType.modelLocation));
+            GTDynamicResourcePack.addItemModel(BuiltInRegistries.ITEM.getKey(model.item), new DelegatedModel(model.toolType.modelLocation));
         }
     }
 

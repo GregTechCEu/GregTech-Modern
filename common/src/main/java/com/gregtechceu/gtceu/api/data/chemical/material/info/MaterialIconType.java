@@ -104,6 +104,7 @@ public record MaterialIconType(String name) {
 
     private static final Table<MaterialIconType, MaterialIconSet, ResourceLocation> ITEM_MODEL_CACHE = HashBasedTable.create();
     private static final Table<MaterialIconType, MaterialIconSet, ResourceLocation> ITEM_TEXTURE_CACHE = HashBasedTable.create();
+    private static final Table<MaterialIconType, MaterialIconSet, ResourceLocation> BLOCK_MODEL_CACHE = HashBasedTable.create();
     private static final Table<MaterialIconType, MaterialIconSet, ResourceLocation> BLOCK_TEXTURE_CACHE = HashBasedTable.create();
 
     public MaterialIconType(String name) {
@@ -144,6 +145,31 @@ public record MaterialIconType(String name) {
 
         ResourceLocation location = GTCEu.id(String.format("block/material_sets/%s/%s", iconSet.name, this.name));
         BLOCK_TEXTURE_CACHE.put(this, materialIconSet, location);
+
+        return location;
+    }
+
+    @Nonnull
+    public ResourceLocation getBlockModelPath(@Nonnull MaterialIconSet materialIconSet, boolean doReadCache) {
+        if (doReadCache) {
+            if (BLOCK_MODEL_CACHE.contains(this, materialIconSet)) {
+                return BLOCK_MODEL_CACHE.get(this, materialIconSet);
+            }
+        }
+
+        MaterialIconSet iconSet = materialIconSet;
+        //noinspection ConstantConditions
+        if (!iconSet.isRootIconset && Platform.isClient() && Minecraft.getInstance() != null && Minecraft.getInstance().getResourceManager() != null) { // check minecraft for null for CI environments
+            while (!iconSet.isRootIconset) {
+                ResourceLocation location = GTCEu.id(String.format("models/block/material_sets/%s/%s.json", iconSet.name, this.name));
+                if (ResourceHelper.isResourceExist(location) || ResourceHelper.isResourceExistRaw(location))
+                    break;
+                iconSet = iconSet.parentIconset;
+            }
+        }
+
+        ResourceLocation location = GTCEu.id(String.format("block/material_sets/%s/%s", iconSet.name, this.name));
+        ITEM_MODEL_CACHE.put(this, materialIconSet, location);
 
         return location;
     }

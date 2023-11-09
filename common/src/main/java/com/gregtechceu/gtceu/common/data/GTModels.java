@@ -75,32 +75,17 @@ public class GTModels {
     public static void registerMaterialFluidModels() {
         for (var material : GTRegistries.MATERIALS) {
             var fluidProperty = material.getProperty(PropertyKey.FLUID);
+            if (fluidProperty == null) continue;
 
-            if (fluidProperty != null) {
-                for (FluidStorageKey key : FluidStorageKey.allKeys()) {
-                    FluidStorage storage = fluidProperty.getStorage();
-                    Fluid fluid = storage.get(key);
-                    if (fluid instanceof GTFluid gtFluid) {
-                        FluidStack testFor = FluidStack.create(gtFluid, FluidHelper.getBucket());
-                        GTDynamicResourcePack.addItemModel(
-                                GTDynamicResourcePack.getItemModelLocation(BuiltInRegistries.ITEM.getKey(gtFluid.getBucket())),
-                                new DelegatedModel(GTCEu.id("item/bucket/" + (FluidHelper.isLighterThanAir(testFor) ? "bucket_gas" : "bucket")))
-                        );
-                    }
-                    FluidStorage.FluidEntry fluidEntry = storage.getEntry(key);
-                    if (fluidEntry != null) {
-                        boolean isNull = false;
-                        if (fluidEntry.getStillTexture() == null) {
-                            ResourceLocation foundTexture = key.getIconType().getBlockTexturePath(material.getMaterialIconSet(), false);
-                            fluidEntry.setStillTexture(foundTexture);
-                            isNull = true;
-                        }
-                        if (fluidEntry.getFlowTexture() == null) {
-                            fluidEntry.setFlowTexture(fluidEntry.getStillTexture());
-                            isNull = true;
-                        }
-                        if (isNull) MixinHelpers.addFluidTexture(material, fluidEntry);
-                    }
+            for (FluidStorageKey key : FluidStorageKey.allKeys()) {
+                FluidStorage storage = fluidProperty.getStorage();
+                Fluid fluid = storage.get(key);
+                if (fluid instanceof GTFluid gtFluid) {
+                    FluidStack testFor = FluidStack.create(gtFluid, FluidHelper.getBucket());
+                    GTDynamicResourcePack.addItemModel(
+                            BuiltInRegistries.ITEM.getKey(gtFluid.getBucket()),
+                            new DelegatedModel(GTCEu.id("item/bucket/" + (FluidHelper.isLighterThanAir(testFor) ? "bucket_gas" : "bucket")))
+                    );
                 }
             }
         }

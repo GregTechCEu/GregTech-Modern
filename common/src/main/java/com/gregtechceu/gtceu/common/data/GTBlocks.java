@@ -20,9 +20,7 @@ import com.gregtechceu.gtceu.api.item.MaterialPipeBlockItem;
 import com.gregtechceu.gtceu.api.item.RendererBlockItem;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.pipenet.longdistance.LongDistancePipeBlock;
-import com.gregtechceu.gtceu.api.pipenet.longdistance.LongDistancePipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.api.data.tag.TagUtil;
 import com.gregtechceu.gtceu.api.registry.registrate.CompassNode;
 import com.gregtechceu.gtceu.api.registry.registrate.CompassSection;
 import com.gregtechceu.gtceu.client.renderer.block.CTMModelRenderer;
@@ -56,7 +54,6 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.FoliageColor;
@@ -110,7 +107,7 @@ public class GTBlocks {
                 var entry = REGISTRATE.block("%s_block".formatted(material.getName()), properties -> new MaterialBlock(properties.noLootTable(), TagPrefix.block, material))
                         .initialProperties(() -> Blocks.IRON_BLOCK)
                         .transform(unificationBlock(TagPrefix.block, material))
-                        .addLayer(() -> RenderType::solid)
+                        .addLayer(() -> RenderType::translucent)
                         .setData(ProviderType.BLOCKSTATE, NonNullBiConsumer.noop())
                         .setData(ProviderType.LANG, NonNullBiConsumer.noop())
                         .setData(ProviderType.LOOT, NonNullBiConsumer.noop())
@@ -130,7 +127,7 @@ public class GTBlocks {
                         .initialProperties(() -> Blocks.IRON_BLOCK)
                         .properties(properties -> properties.noOcclusion().noLootTable())
                         .transform(unificationBlock(TagPrefix.frameGt, material))
-                        .addLayer(() -> RenderType::cutoutMipped)
+                        .addLayer(() -> RenderType::translucent)
                         .blockstate(NonNullBiConsumer.noop())
                         .setData(ProviderType.LANG, NonNullBiConsumer.noop())
                         .setData(ProviderType.LOOT, NonNullBiConsumer.noop())
@@ -150,7 +147,7 @@ public class GTBlocks {
                     var entry = REGISTRATE.block("raw_%s_block".formatted(material.getName()), properties -> new MaterialBlock(properties.noLootTable(), TagPrefix.rawOreBlock, material))
                             .initialProperties(() -> Blocks.IRON_BLOCK)
                             .transform(unificationBlock(TagPrefix.rawOreBlock, material))
-                            .addLayer(() -> RenderType::solid)
+                            .addLayer(() -> RenderType::translucent)
                             .setData(ProviderType.BLOCKSTATE, NonNullBiConsumer.noop())
                             .setData(ProviderType.LANG, NonNullBiConsumer.noop())
                             .setData(ProviderType.LOOT, NonNullBiConsumer.noop())

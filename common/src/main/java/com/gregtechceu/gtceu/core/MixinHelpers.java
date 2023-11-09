@@ -115,8 +115,9 @@ public class MixinHelpers {
         return packResources;
     }
 
+    // unused on purpose. Do not call, will destroy ram usage.
     public static void initializeDynamicTextures() {
-        MaterialBlockRenderer.initTextures();
-        TagPrefixItemRenderer.initTextures();
+        //MaterialBlockRenderer.initTextures();
+        //TagPrefixItemRenderer.initTextures();
     }
 }

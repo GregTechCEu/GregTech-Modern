@@ -9,8 +9,8 @@
     "GuiGraphicsAccessor",
     "LevelRendererMixin",
     "MinecraftMixin",
+    "ModelManagerMixin",
     "MultiPlayerGameModeMixin",
-    "SpriteResourceLoaderMixin",
     "rei.FluidEntryRendererMixin"
   ],
   "mixins": [

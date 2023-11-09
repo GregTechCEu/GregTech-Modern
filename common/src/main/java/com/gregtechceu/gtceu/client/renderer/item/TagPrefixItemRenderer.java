@@ -7,12 +7,8 @@ import com.gregtechceu.gtceu.data.pack.GTDynamicResourcePack;
 import com.gregtechceu.gtceu.utils.GradientUtil;
 import com.mojang.blaze3d.platform.NativeImage;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.texture.DynamicTexture;
-import net.minecraft.client.renderer.texture.SpriteContents;
-import net.minecraft.client.resources.metadata.animation.FrameSize;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.data.models.model.ModelTemplates;
-import net.minecraft.data.models.model.TextureMapping;
+import net.minecraft.data.models.model.DelegatedModel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.world.item.Item;
@@ -21,10 +17,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
 
-import static com.gregtechceu.gtceu.client.renderer.block.MaterialBlockRenderer.EMPTY_ANIMATION_META;
 import static com.gregtechceu.gtceu.client.renderer.block.MaterialBlockRenderer.LAYER_2_SUFFIX;
 
 /**
@@ -42,8 +35,8 @@ public class TagPrefixItemRenderer {
     public static void reinitModels() {
         for (TagPrefixItemRenderer model : MODELS) {
             ResourceLocation itemId = BuiltInRegistries.ITEM.getKey(model.item);
-            //GTDynamicResourcePack.addItemModel(itemId, new DelegatedModel(model.type.getItemModelPath(model.iconSet, true)));
-            ModelTemplates.FLAT_ITEM.create(GTDynamicResourcePack.getItemModelLocation(itemId), TextureMapping.layer0(itemId.withPrefix("item/")), GTDynamicResourcePack::addItemModel);
+            GTDynamicResourcePack.addItemModel(itemId, new DelegatedModel(model.type.getItemModelPath(model.iconSet, true)));
+            //ModelTemplates.FLAT_ITEM.create(GTDynamicResourcePack.getItemModelLocation(itemId), TextureMapping.layer0(itemId.withPrefix("item/")), GTDynamicResourcePack::addItemModel);
         }
     }
 

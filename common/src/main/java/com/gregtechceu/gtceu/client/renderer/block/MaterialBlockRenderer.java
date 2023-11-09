@@ -1,8 +1,6 @@
 package com.gregtechceu.gtceu.client.renderer.block;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Table;
-import com.google.common.collect.Tables;
 import com.gregtechceu.gtceu.api.block.MaterialBlock;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
@@ -10,11 +8,8 @@ import com.gregtechceu.gtceu.data.pack.GTDynamicResourcePack;
 import com.gregtechceu.gtceu.utils.GradientUtil;
 import com.mojang.blaze3d.platform.NativeImage;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.texture.DynamicTexture;
-import net.minecraft.client.renderer.texture.SpriteContents;
 import net.minecraft.client.resources.metadata.animation.AnimationFrame;
 import net.minecraft.client.resources.metadata.animation.AnimationMetadataSection;
-import net.minecraft.client.resources.metadata.animation.FrameSize;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.models.BlockModelGenerators;
 import net.minecraft.data.models.model.*;
@@ -24,11 +19,8 @@ import net.minecraft.world.level.block.Block;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 /**
  * @author KilaBash
@@ -36,9 +28,6 @@ import java.util.function.Supplier;
  * @implNote MaterialBlockRenderer
  */
 public class MaterialBlockRenderer {
-    public static final AnimationMetadataSection EMPTY_ANIMATION_META = new AnimationMetadataSection(
-            ImmutableList.of(new AnimationFrame(0, -1)), 16, 16, 1, false
-    );
     public static final String LAYER_2_SUFFIX = "_layer2";
     private static final Set<MaterialBlockRenderer> MODELS = new HashSet<>();
 
@@ -49,8 +38,13 @@ public class MaterialBlockRenderer {
     public static void reinitModels() {
         for (MaterialBlockRenderer model : MODELS) {
             ResourceLocation blockId = BuiltInRegistries.BLOCK.getKey(model.block);
-            GTDynamicResourcePack.addBlockState(blockId, BlockModelGenerators.createSimpleBlock(model.block, ModelTemplates.CUBE_ALL.create(model.block, TextureMapping.cube(blockId.withPrefix("block/")), GTDynamicResourcePack::addBlockModel)));
-            GTDynamicResourcePack.addItemModel(GTDynamicResourcePack.getItemModelLocation(BuiltInRegistries.ITEM.getKey(model.block.asItem())), new DelegatedModel(ModelLocationUtils.getModelLocation(model.block)));
+            ResourceLocation modelId = blockId.withPrefix("block/");
+            GTDynamicResourcePack.addBlockModel(modelId, new DelegatedModel(model.type.getBlockModelPath(model.iconSet, true)));
+            GTDynamicResourcePack.addBlockState(blockId, BlockModelGenerators.createSimpleBlock(model.block, modelId));
+            //        ModelTemplates.CUBE_ALL.create(model.block,
+            //                cubeTwoLayer(model.type.getBlockTexturePath(model.iconSet, true), model.type.getBlockTexturePath(model.iconSet, true).withSuffix(LAYER_2_SUFFIX)),
+            //                GTDynamicResourcePack::addBlockModel)));
+            GTDynamicResourcePack.addItemModel(BuiltInRegistries.ITEM.getKey(model.block.asItem()), new DelegatedModel(ModelLocationUtils.getModelLocation(model.block)));
         }
     }
 

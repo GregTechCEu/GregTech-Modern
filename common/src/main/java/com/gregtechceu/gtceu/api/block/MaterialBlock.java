@@ -68,7 +68,11 @@ public class MaterialBlock extends AppearanceBlock implements IBlockRendererProv
     public static BlockColor tintedColor() {
         return (state, reader, pos, tintIndex) -> {
             if (state.getBlock() instanceof MaterialBlock block) {
-                return block.material.getMaterialRGB();
+                if (tintIndex == 1 && block.material.getMaterialSecondaryRGB() != -1) {
+                    return block.material.getMaterialSecondaryRGB();
+                } else {
+                    return block.material.getMaterialRGB();
+                }
             }
             return -1;
         };

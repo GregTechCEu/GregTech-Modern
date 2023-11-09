@@ -9,7 +9,11 @@ import net.minecraft.world.level.material.FlowingFluid;
 
 public class MixinHelpersImpl {
 
+    private static boolean hasRegisteredFluidTextures = false;
+
     public static void addFluidTexture(Material material, FluidStorage.FluidEntry value) {
+        if (hasRegisteredFluidTextures) return;
+        hasRegisteredFluidTextures = true;
         if (value.getFluid().get() instanceof FlowingFluid flowingFluid) {
             FluidVariantRendering.register(flowingFluid.getFlowing(), new GTFluidVariantRenderHandler());
             FluidVariantRendering.register(flowingFluid.getSource(), new GTFluidVariantRenderHandler());

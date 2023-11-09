@@ -61,7 +61,8 @@ public class GTDynamicResourcePack implements PackResources {
     }
 
     public static void addItemModel(ResourceLocation loc, JsonElement obj) {
-        DATA.put(loc, obj.toString().getBytes(StandardCharsets.UTF_8));
+        ResourceLocation l = getItemModelLocation(loc);
+        DATA.put(l, obj.toString().getBytes(StandardCharsets.UTF_8));
     }
 
     public static void addItemModel(ResourceLocation loc, Supplier<JsonElement> obj) {
