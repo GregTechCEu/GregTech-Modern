@@ -1,6 +1,7 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "gtceu:item/material_sets/quartz/dust"
+    "layer0": "gtceu:item/material_sets/quartz/dust",
+    "layer1": "gtceu:item/material_sets/quartz/dust_secondary"
   }
 }

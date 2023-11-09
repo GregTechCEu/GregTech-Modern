@@ -1,6 +1,7 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "gtceu:item/material_sets/metallic/round"
+    "layer0": "gtceu:item/material_sets/metallic/round",
+    "layer1": "gtceu:item/material_sets/metallic/round_secondary"
   }
 }

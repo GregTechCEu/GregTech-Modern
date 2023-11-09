@@ -2,6 +2,7 @@
   "parent": "item/generated",
   "textures": {
     "layer0": "gtceu:item/material_sets/dull/lens",
-    "layer1": "gtceu:item/material_sets/dull/lens_overlay"
+    "layer1": "gtceu:item/material_sets/dull/lens_secondary",
+    "layer2": "gtceu:item/material_sets/dull/lens_overlay"
   }
 }

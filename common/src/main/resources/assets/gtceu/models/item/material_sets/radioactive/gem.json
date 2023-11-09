@@ -1,0 +1,6 @@
+{
+  "parent": "gtceu:item/material_sets/dull/gem",
+  "textures": {
+    "layer1": "gtceu:item/material_sets/radioactive/gem_secondary"
+  }
+}

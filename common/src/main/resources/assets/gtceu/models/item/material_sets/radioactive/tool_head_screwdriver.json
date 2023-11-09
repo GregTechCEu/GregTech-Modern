@@ -1,0 +1,6 @@
+{
+  "parent": "gtceu:item/material_sets/dull/tool_head_screwdriver",
+  "textures": {
+    "layer1": "gtceu:item/material_sets/radioactive/tool_head_screwdriver_secondary"
+  }
+}

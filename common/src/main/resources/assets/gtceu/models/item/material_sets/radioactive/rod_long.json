@@ -1,0 +1,6 @@
+{
+  "parent": "gtceu:item/material_sets/metallic/rod_long",
+  "textures": {
+    "layer1": "gtceu:item/material_sets/radioactive/rod_long_secondary"
+  }
+}

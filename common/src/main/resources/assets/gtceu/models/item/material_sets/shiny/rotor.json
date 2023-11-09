@@ -1,0 +1,8 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "gtceu:item/material_sets/shiny/rotor",
+    "layer1": "gtceu:item/material_sets/shiny/rotor_secondary",
+    "layer2": "gtceu:item/material_sets/shiny/rotor_overlay"
+  }
+}

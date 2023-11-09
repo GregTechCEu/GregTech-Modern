@@ -1,6 +1,7 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "gtceu:item/material_sets/wood/gear"
+    "layer0": "gtceu:item/material_sets/wood/gear",
+    "layer1": "gtceu:item/material_sets/wood/gear_secondary"
   }
 }

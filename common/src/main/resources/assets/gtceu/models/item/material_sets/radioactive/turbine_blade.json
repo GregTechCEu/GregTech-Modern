@@ -1,0 +1,6 @@
+{
+  "parent": "gtceu:item/material_sets/dull/turbine_blade",
+  "textures": {
+    "layer1": "gtceu:item/material_sets/radioactive/turbine_blade_secondary"
+  }
+}

@@ -1,6 +1,7 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "gtceu:item/material_sets/rough/plate_dense"
+    "layer0": "gtceu:item/material_sets/rough/plate_dense",
+    "layer1": "gtceu:item/material_sets/rough/plate_dense_secondary"
   }
 }

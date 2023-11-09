@@ -2,6 +2,7 @@
   "parent": "item/generated",
   "textures": {
     "layer0": "gtceu:item/material_sets/sand/dust_small",
-    "layer1": "gtceu:item/material_sets/sand/dust_small_overlay"
+    "layer1": "gtceu:item/material_sets/sand/dust_small_secondary",
+    "layer2": "gtceu:item/material_sets/sand/dust_small_overlay"
   }
 }

@@ -1,0 +1,6 @@
+{
+  "parent": "gtceu:item/material_sets/metallic/dust",
+  "textures": {
+    "layer1": "gtceu:item/material_sets/radioactive/dust_secondary"
+  }
+}

@@ -1,6 +1,7 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "gtceu:item/material_sets/metallic/raw_ore"
+    "layer0": "gtceu:item/material_sets/metallic/raw_ore",
+    "layer1": "gtceu:item/material_sets/metallic/raw_ore_secondary"
   }
 }

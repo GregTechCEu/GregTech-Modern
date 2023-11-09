@@ -2,6 +2,7 @@
     "parent": "item/generated",
     "textures": {
         "layer0": "gtceu:item/material_sets/metallic/screw",
-        "layer1": "gtceu:item/material_sets/shiny/screw_overlay"
+        "layer1": "gtceu:item/material_sets/metallic/screw_secondary",
+        "layer2": "gtceu:item/material_sets/shiny/screw_overlay"
     }
 }

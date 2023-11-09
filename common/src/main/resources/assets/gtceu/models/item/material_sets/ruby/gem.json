@@ -1,6 +1,7 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "gtceu:item/material_sets/ruby/gem"
+    "layer0": "gtceu:item/material_sets/ruby/gem",
+    "layer1": "gtceu:item/material_sets/ruby/gem_secondary"
   }
 }

@@ -1,0 +1,6 @@
+{
+  "parent": "gtceu:item/material_sets/dull/crushed",
+  "textures": {
+    "layer1": "gtceu:item/material_sets/radioactive/crushed_secondary"
+  }
+}

@@ -1,7 +1,6 @@
 {
-  "parent": "item/generated",
+  "parent": "gtceu:item/material_sets/shiny/ingot",
   "textures": {
-    "layer0": "gtceu:item/material_sets/shiny/ingot_double",
-    "layer1": "gtceu:item/material_sets/shiny/ingot_double_overlay"
+    "layer3": "gtceu:item/material_sets/shiny/ingot_double_overlay"
   }
 }

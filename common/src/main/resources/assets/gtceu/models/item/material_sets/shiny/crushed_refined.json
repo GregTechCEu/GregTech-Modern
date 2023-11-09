@@ -1,0 +1,9 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "gtceu:item/material_sets/dull/crushed_refined",
+    "layer1": "gtceu:item/material_sets/dull/crushed_refined_secondary",
+    "layer2": "gtceu:item/material_sets/shiny/crushed_refined_overlay",
+    "layer3": "gtceu:item/material_sets/dull/crushed_refined_overlay"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "gtceu:item/material_sets/shiny/spring",
+    "layer1": "gtceu:item/material_sets/shiny/spring_secondary",
+    "layer2": "gtceu:item/material_sets/shiny/spring_overlay"
+  }
+}

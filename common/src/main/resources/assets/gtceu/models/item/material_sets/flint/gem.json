@@ -1,6 +1,7 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "gtceu:item/material_sets/flint/gem"
+    "layer0": "gtceu:item/material_sets/flint/gem",
+    "layer1": "gtceu:item/material_sets/flint/gem_secondary"
   }
 }

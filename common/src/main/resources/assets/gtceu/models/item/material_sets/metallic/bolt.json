@@ -1,6 +1,7 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "gtceu:item/material_sets/metallic/bolt"
+    "layer0": "gtceu:item/material_sets/metallic/bolt",
+    "layer1": "gtceu:item/material_sets/metallic/bolt_secondary"
   }
 }

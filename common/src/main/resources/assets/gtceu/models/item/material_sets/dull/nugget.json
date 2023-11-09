@@ -1,6 +1,7 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "gtceu:item/material_sets/dull/nugget"
+    "layer0": "gtceu:item/material_sets/dull/nugget",
+    "layer1": "gtceu:item/material_sets/dull/nugget_secondary"
   }
 }

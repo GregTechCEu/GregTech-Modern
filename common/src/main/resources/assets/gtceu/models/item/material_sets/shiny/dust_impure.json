@@ -1,6 +1,7 @@
 {
   "parent": "gtceu:item/material_sets/dull/dust_impure",
   "textures": {
-    "layer0": "gtceu:item/material_sets/shiny/dust"
+    "layer0": "gtceu:item/material_sets/shiny/dust",
+    "layer1": "gtceu:item/material_sets/shiny/dust_secondary"
   }
 }

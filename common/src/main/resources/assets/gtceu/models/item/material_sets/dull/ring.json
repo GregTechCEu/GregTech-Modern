@@ -2,6 +2,7 @@
   "parent": "item/generated",
   "textures": {
     "layer0": "gtceu:item/material_sets/dull/ring",
-    "layer1": "gtceu:item/material_sets/dull/ring_overlay"
+    "layer1": "gtceu:item/material_sets/dull/ring_secondary",
+    "layer2": "gtceu:item/material_sets/dull/ring_overlay"
   }
 }

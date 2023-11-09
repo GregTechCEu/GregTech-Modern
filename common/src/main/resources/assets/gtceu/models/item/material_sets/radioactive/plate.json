@@ -1,0 +1,6 @@
+{
+  "parent": "gtceu:item/material_sets/metallic/plate",
+  "textures": {
+    "layer1": "gtceu:item/material_sets/radioactive/plate_secondary"
+  }
+}

@@ -1,6 +1,7 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "gtceu:item/material_sets/wood/plate"
+    "layer0": "gtceu:item/material_sets/wood/plate",
+    "layer1": "gtceu:item/material_sets/wood/plate_secondary"
   }
 }

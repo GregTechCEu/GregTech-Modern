@@ -1,0 +1,6 @@
+{
+  "parent": "gtceu:item/material_sets/dull/ingot_hot",
+  "textures": {
+    "layer1": "gtceu:item/material_sets/radioactive/ingot_hot_secondary"
+  }
+}

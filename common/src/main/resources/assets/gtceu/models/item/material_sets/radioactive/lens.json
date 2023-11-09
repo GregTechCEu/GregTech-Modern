@@ -1,0 +1,6 @@
+{
+  "parent": "gtceu:item/material_sets/dull/lens",
+  "textures": {
+    "layer1": "gtceu:item/material_sets/radioactive/lens_secondary"
+  }
+}
