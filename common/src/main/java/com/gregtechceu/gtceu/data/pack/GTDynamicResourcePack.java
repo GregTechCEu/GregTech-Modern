@@ -115,6 +115,7 @@ public class GTDynamicResourcePack implements PackResources {
         }
         DATA.put(l, data);
     }
+
     @ApiStatus.Internal
     public static void writeByteArray(ResourceLocation id, @Nullable String subdir, Path parent, byte[] data) {
         try {
