@@ -168,9 +168,9 @@ public class GTBlocks {
                     var oreTag = ore.getKey();
                     final TagPrefix.OreType oreType = ore.getValue();
                     var entry = REGISTRATE.block("%s%s_ore".formatted(oreTag != TagPrefix.ore ? FormattingUtil.toLowerCaseUnder(oreTag.name) + "_" : "", material.getName()),
-//                                    oreType.material(),
                                     properties -> new RendererMaterialBlock(properties, oreTag, material, Platform.isClient() ? new OreBlockRenderer(oreType.stoneType(),
                                             Suppliers.memoize(() -> Objects.requireNonNull(oreTag.materialIconType()).getBlockTexturePath(material.getMaterialIconSet(), true)),
+                                            Suppliers.memoize(() -> Objects.requireNonNull(oreTag.materialIconType()).getBlockTexturePath(material.getMaterialIconSet(), "layer2", true)),
                                             oreProperty.isEmissive()) : null))
                             .initialProperties(() -> {
                                 if (oreType.stoneType().get().isAir()) { // if the block is not registered (yet), fallback to stone
