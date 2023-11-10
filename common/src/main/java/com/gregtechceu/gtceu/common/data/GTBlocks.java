@@ -32,6 +32,7 @@ import com.gregtechceu.gtceu.common.pipelike.fluidpipe.FluidPipeType;
 import com.gregtechceu.gtceu.common.pipelike.fluidpipe.longdistance.LDFluidPipeType;
 import com.gregtechceu.gtceu.common.pipelike.item.ItemPipeType;
 import com.gregtechceu.gtceu.common.pipelike.item.longdistance.LDItemPipeType;
+import com.gregtechceu.gtceu.common.pipelike.laser.LaserPipeType;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.lowdragmc.lowdraglib.Platform;
@@ -307,14 +308,14 @@ public class GTBlocks {
     //////////////////////////////////////
     //*****     General Pipes     ******//
     //////////////////////////////////////
-    public static final BlockEntry<LaserPipeBlock>[] LASER_PIPES = new BlockEntry[DyeColor.values().length];
+    public static final BlockEntry<LaserPipeBlock>[] LASER_PIPES = new BlockEntry[LaserPipeType.values().length];
 
     public static void generateLaserPipeBlocks() {
         REGISTRATE.creativeModeTab(() -> GTCreativeModeTabs.MATERIAL_PIPE);
 
-        for (int i = 0; i < DyeColor.values().length; ++i) {
-            var color = DyeColor.values()[i];
-            LASER_PIPES[i] = REGISTRATE.block("%s_laser_pipe".formatted(color.getSerializedName()), p -> new LaserPipeBlock(p, color))
+        for (int i = 0; i < LaserPipeType.values().length; ++i) {
+            var type = LaserPipeType.values()[i];
+            LASER_PIPES[i] = REGISTRATE.block("%s_laser_pipe".formatted(type.getSerializedName()), (p) -> new LaserPipeBlock(p, type))
                     .initialProperties(() -> Blocks.IRON_BLOCK)
                     .properties(p -> p.dynamicShape().noOcclusion().noLootTable())
                     .blockstate(NonNullBiConsumer.noop())

@@ -4,6 +4,8 @@ import appeng.core.definitions.AEItems;
 import appeng.core.definitions.AEParts;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
+import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
+import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.integration.ae2.GTAEMachines;
@@ -14,8 +16,7 @@ import java.util.function.Consumer;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
-import static com.gregtechceu.gtceu.common.data.GTBlocks.LD_FLUID_PIPE;
-import static com.gregtechceu.gtceu.common.data.GTBlocks.LD_ITEM_PIPE;
+import static com.gregtechceu.gtceu.common.data.GTBlocks.*;
 import static com.gregtechceu.gtceu.common.data.GTItems.*;
 import static com.gregtechceu.gtceu.common.data.GTMachines.*;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
@@ -963,5 +964,13 @@ public class MetaTileEntityMachineRecipeLoader {
                 .circuitMeta(3)
                 .outputItems(LASER_OUTPUT_HATCH_4096[UV])
                 .duration(1200).EUt(VA[UV]).save(provider);
+
+        ASSEMBLER_RECIPES.recipeBuilder("laser_cable")
+                .inputItems(GTBlocks.CASING_LAMINATED_GLASS.get().asItem(), 1)
+                .inputItems(foil, Osmiridium, 2)
+                .inputFluids(Polytetrafluoroethylene.getFluid(L))
+                .outputItems(LASER_PIPES[0])
+                .cleanroom(CleanroomType.CLEANROOM)
+                .duration(100).EUt(VA[IV]).save(provider);
     }
 }
