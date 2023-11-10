@@ -36,7 +36,7 @@ public class LaserPipeBlock extends PipeBlock<LaserPipeType, LaserPipeNet.LaserD
 
     public LaserPipeBlock(Properties properties, LaserPipeType type) {
         super(properties, type);
-        this.model = new PipeModel(LaserPipeType.NORMAL.getThickness(), () -> GTCEu.id("block/pipe/pipe_laser_side"), () -> GTCEu.id("block/pipe/pipe_laser_in"));
+        this.model = new PipeModel(LaserPipeType.NORMAL.getThickness(), () -> GTCEu.id("block/pipe/pipe_laser_side"), () -> GTCEu.id("block/pipe/pipe_laser_in"), null, null);
         this.renderer = new PipeBlockRenderer(this.model);
     }
 
