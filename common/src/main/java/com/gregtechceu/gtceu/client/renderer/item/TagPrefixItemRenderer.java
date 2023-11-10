@@ -2,12 +2,10 @@ package com.gregtechceu.gtceu.client.renderer.item;
 
 import com.google.common.collect.Table;
 import com.google.common.collect.Tables;
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
 import com.lowdragmc.lowdraglib.client.renderer.impl.IModelRenderer;
-import lombok.Setter;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.block.model.BlockModel;
@@ -16,9 +14,9 @@ import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 
 import javax.annotation.Nullable;
-import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 /**
  * @author KilaBash
@@ -28,16 +26,14 @@ import java.util.function.Consumer;
 public class TagPrefixItemRenderer extends IModelRenderer {
     private static final Table<MaterialIconType, MaterialIconSet, TagPrefixItemRenderer> MODELS = Tables.newCustomTable(new HashMap<>(), HashMap::new);
 
+    @Nullable
     private ResourceLocation modelLocation;
+    @Nullable
+    private Supplier<ResourceLocation> modelLocationSupplier;
 
     private TagPrefixItemRenderer(MaterialIconType type, MaterialIconSet iconSet) {
-        super(type.getItemModelPath(iconSet, true));
-        this.modelLocation = type.getItemModelPath(iconSet, true);
-    }
-
-    public void setModelLocation(ResourceLocation newModelLocation) {
-        this.modelLocation = newModelLocation;
-        this.itemModel = null;
+        super(null);
+        this.modelLocationSupplier = () -> type.getItemModelPath(iconSet, true);
     }
 
     public static TagPrefixItemRenderer getOrCreate(MaterialIconType type, MaterialIconSet iconSet) {
@@ -85,6 +81,15 @@ public class TagPrefixItemRenderer extends IModelRenderer {
     @Override
     @Environment(EnvType.CLIENT)
     public void onAdditionalModel(Consumer<ResourceLocation> registry) {
-        // no-op, handled in ModelBakeryMixin.java
+        if (modelLocationSupplier != null) {
+            modelLocation = modelLocationSupplier.get();
+        }
+        registry.accept(modelLocation);
+    }
+
+    @Override
+    @Environment(EnvType.CLIENT)
+    public boolean isGui3d() {
+        return false;
     }
 }

@@ -5,7 +5,7 @@ import com.google.gson.JsonObject;
 import com.gregtechceu.gtceu.GTCEu;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import it.unimi.dsi.fastutil.ints.IntList;
-import net.minecraft.core.Registry;
+import lombok.Getter;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -20,8 +20,9 @@ import java.util.stream.Stream;
 public class SizedIngredient extends Ingredient {
     public static final ResourceLocation TYPE = GTCEu.id("sized");
 
+    @Getter
     protected final int amount;
-    protected String tag;
+    @Getter
     protected final Ingredient inner;
     protected ItemStack[] itemStacks = null;
 
@@ -31,14 +32,8 @@ public class SizedIngredient extends Ingredient {
         this.inner = inner;
     }
 
-    protected SizedIngredient(String tag, int amount) {
-        this(Ingredient.of(TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation(tag.toLowerCase()))), amount);
-        this.tag = tag;
-    }
-
-    protected SizedIngredient(TagKey<Item> tag, int amount) {
+    protected SizedIngredient(@NotNull TagKey<Item> tag, int amount) {
         this(Ingredient.of(tag), amount);
-        this.tag = tag.location().toString();
     }
 
     protected SizedIngredient(ItemStack itemStack) {
@@ -56,21 +51,29 @@ public class SizedIngredient extends Ingredient {
     }
 
     @ExpectPlatform
-    public static SizedIngredient create(TagKey<Item> tag, int amount) {
+    public static SizedIngredient create(Ingredient inner) {
         throw new AssertionError();
     }
 
     @ExpectPlatform
-    public static SizedIngredient create(String tag, int amount) {
+    public static SizedIngredient create(TagKey<Item> tag, int amount) {
         throw new AssertionError();
     }
 
-    public int getAmount() {
-        return amount;
+    public static SizedIngredient copy(Ingredient ingredient) {
+        if (ingredient instanceof SizedIngredient sizedIngredient) {
+            var copied = SizedIngredient.create(sizedIngredient.inner, sizedIngredient.amount);
+            if (sizedIngredient.itemStacks != null) {
+                copied.itemStacks = Arrays.stream(sizedIngredient.itemStacks).map(ItemStack::copy).toArray(ItemStack[]::new);
+            }
+            return copied;
+        }
+        return SizedIngredient.create(ingredient);
     }
 
-    public Ingredient getInner() {
-        return inner;
+    @ExpectPlatform
+    public static SizedIngredient fromJson(JsonObject json) {
+        throw new AssertionError();
     }
 
     @Override
@@ -79,11 +82,7 @@ public class SizedIngredient extends Ingredient {
         json.addProperty("type", TYPE.toString());
         json.addProperty("fabric:type", TYPE.toString());
         json.addProperty("count", amount);
-        if (tag != null) {
-            json.addProperty("tag", tag);
-        } else {
-            json.add("ingredient", inner.toJson());
-        }
+        json.add("ingredient", inner.toJson());
         return json;
     }
 
@@ -111,13 +110,5 @@ public class SizedIngredient extends Ingredient {
     @Override
     public boolean isEmpty() {
         return inner.isEmpty();
-    }
-
-    public boolean isTag() {
-        return tag != null;
-    }
-
-    public String getTag() {
-        return tag;
     }
 }

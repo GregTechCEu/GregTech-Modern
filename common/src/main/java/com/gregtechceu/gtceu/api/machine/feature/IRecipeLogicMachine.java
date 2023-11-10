@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.machine.feature;
 
+import com.gregtechceu.gtceu.api.capability.ICleanroomReceiver;
 import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeCapabilityHolder;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
@@ -16,13 +17,23 @@ import javax.annotation.Nullable;
  * @implNote IRecipeMachine
  * A machine can handle recipes.
  */
-public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFeature, IWorkable {
+public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFeature, IWorkable, ICleanroomReceiver {
+
+    @Override
+    default int getChanceTier() {
+        return self() instanceof ITieredMachine tieredMachine ? tieredMachine.getTier() : self().getDefinition().getTier();
+    }
 
     /**
      * RecipeType held
      */
     @Nonnull
+    GTRecipeType[] getRecipeTypes();
+    @Nonnull
     GTRecipeType getRecipeType();
+
+    int getActiveRecipeType();
+    void setActiveRecipeType(int type);
 
     /**
      * Called when recipe logic status changed
@@ -44,7 +55,7 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFe
      */
     @Nullable
     default GTRecipe modifyRecipe(GTRecipe recipe) {
-        return recipe;
+        return self().getDefinition().getRecipeModifier().apply(self(), recipe);
     }
 
     /**
@@ -95,6 +106,16 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFe
      */
     default boolean dampingWhenWaiting() {
         return true;
+    }
+
+
+    /**
+     * Always try {@link IRecipeLogicMachine#modifyRecipe(GTRecipe)} before setup recipe.
+     * @return ture - will map {@link RecipeLogic#lastOriginRecipe} to the latest recipe for next round when finish.
+     * false - keep using the {@link RecipeLogic#lastRecipe}, which is already modified.
+     */
+    default boolean alwaysTryModifyRecipe() {
+        return self().getDefinition().isAlwaysTryModifyRecipe();
     }
 
     default boolean shouldWorkingPlaySound() {

@@ -6,9 +6,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.machine.feature.*;
 import com.gregtechceu.gtceu.api.machine.trait.*;
-import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
-import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
@@ -22,6 +20,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.EnumMap;
@@ -35,17 +34,19 @@ import java.util.List;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public abstract class WorkableTieredMachine extends TieredEnergyMachine implements IRecipeLogicMachine, ICleanroomReceiver, IMachineModifyDrops, IMufflableMachine {
+public abstract class WorkableTieredMachine extends TieredEnergyMachine implements IRecipeLogicMachine, IMachineModifyDrops, IMufflableMachine, IOverclockMachine {
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(WorkableTieredMachine.class, TieredEnergyMachine.MANAGED_FIELD_HOLDER);
 
     @Getter
     @Persisted @DescSynced
     public final RecipeLogic recipeLogic;
     @Getter
-    public final GTRecipeType recipeType;
+    public final GTRecipeType[] recipeTypes;
+    @Getter @Setter @Persisted
+    public int activeRecipeType;
     @Getter
     public final Int2LongFunction tankScalingFunction;
-    @Getter @Setter
+    @Nullable @Getter @Setter
     private ICleanroomProvider cleanroom;
     @Persisted
     public final NotifiableItemStackHandler importItems;
@@ -57,16 +58,18 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
     public final NotifiableFluidTank exportFluids;
     @Getter
     protected final Table<IO, RecipeCapability<?>, List<IRecipeHandler<?>>> capabilitiesProxy;
-    @Persisted
+    @Persisted @Getter
     protected int overclockTier;
     protected final List<ISubscription> traitSubscriptions;
     @Persisted @DescSynced @Getter @Setter
     protected boolean isMuffled;
+    protected boolean previouslyMuffled = true;
 
     public WorkableTieredMachine(IMachineBlockEntity holder, int tier, Int2LongFunction tankScalingFunction, Object... args) {
         super(holder, tier, args);
         this.overclockTier = getMaxOverclockTier();
-        this.recipeType = getDefinition().getRecipeType();
+        this.recipeTypes = getDefinition().getRecipeTypes();
+        this.activeRecipeType = 0;
         this.tankScalingFunction = tankScalingFunction;
         this.capabilitiesProxy = Tables.newCustomTable(new EnumMap<>(IO.class), HashMap::new);
         this.traitSubscriptions = new ArrayList<>();
@@ -162,24 +165,53 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
     }
 
     //////////////////////////////////////
-    //******     RECIPE LOGIC    *******//
+    //********     OVERCLOCK   *********//
     //////////////////////////////////////
 
+    @Override
     public int getMaxOverclockTier() {
         return GTUtil.getTierByVoltage(Math.max(energyContainer.getInputVoltage(), energyContainer.getOutputVoltage()));
     }
 
     @Override
-    @Nullable
-    public GTRecipe modifyRecipe(GTRecipe recipe) {
-        if (RecipeHelper.getRecipeEUtTier(recipe) > getTier()) {
-            return null;
+    public int getMinOverclockTier() {
+        return 0;
+    }
+
+    @Override
+    public void setOverclockTier(int tier) {
+        if (!isRemote() && tier >= getMinOverclockTier() && tier <= getMaxOverclockTier()) {
+            this.overclockTier = tier;
+            this.recipeLogic.markLastRecipeDirty();
         }
-        return RecipeHelper.applyOverclock(getDefinition().getOverclockingLogic(), recipe, Math.min(GTValues.V[overclockTier], Math.max(energyContainer.getInputVoltage(), energyContainer.getOutputVoltage())));
+    }
+
+    @Override
+    public long getOverclockVoltage() {
+        return Math.min(GTValues.V[getOverclockTier()], Math.max(energyContainer.getInputVoltage(), energyContainer.getOutputVoltage()));
+    }
+
+    //////////////////////////////////////
+    //******     RECIPE LOGIC    *******//
+    //////////////////////////////////////
+
+    @Override
+    public void clientTick() {
+        if (previouslyMuffled != isMuffled) {
+            previouslyMuffled = isMuffled;
+
+            if (recipeLogic != null)
+                recipeLogic.updateSound();
+        }
     }
 
     @Override
     public boolean keepSubscribing() {
         return false;
+    }
+
+    @Nonnull
+    public GTRecipeType getRecipeType() {
+        return recipeTypes[activeRecipeType];
     }
 }

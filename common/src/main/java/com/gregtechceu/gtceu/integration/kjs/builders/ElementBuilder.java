@@ -1,11 +1,8 @@
 package com.gregtechceu.gtceu.integration.kjs.builders;
 
 import com.gregtechceu.gtceu.api.data.chemical.Element;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
 import com.gregtechceu.gtceu.common.data.GTElements;
-import com.gregtechceu.gtceu.integration.kjs.GregTechKubeJSPlugin;
-import dev.latvian.mods.kubejs.RegistryObjectBuilderTypes;
 import net.minecraft.resources.ResourceLocation;
 
 public class ElementBuilder extends BuilderBase<Element> {
@@ -15,7 +12,7 @@ public class ElementBuilder extends BuilderBase<Element> {
 
     public ElementBuilder(ResourceLocation i, Object... args) {
         super(i);
-        protons = ((Number)args[0]).intValue();
+        protons = args[0] instanceof Number number ? number.intValue() : Double.valueOf(args[0].toString()).intValue(); // special handling if somehow called from create(name, type, args...) (it does that)
         neutrons = ((Number)args[1]).intValue();
         halfLifeSeconds = ((Number)args[2]).intValue();
         decayTo = args[3] == null ? null : args[3].toString();

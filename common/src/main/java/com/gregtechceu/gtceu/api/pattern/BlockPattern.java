@@ -1,14 +1,14 @@
 package com.gregtechceu.gtceu.api.pattern;
 
 import com.gregtechceu.gtceu.api.block.ActiveBlock;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
-import com.gregtechceu.gtceu.api.pattern.error.PatternError;
-import com.gregtechceu.gtceu.api.pattern.error.SinglePredicateError;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
+import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
+import com.gregtechceu.gtceu.api.pattern.error.PatternError;
 import com.gregtechceu.gtceu.api.pattern.error.PatternStringError;
+import com.gregtechceu.gtceu.api.pattern.error.SinglePredicateError;
 import com.gregtechceu.gtceu.api.pattern.predicates.SimplePredicate;
 import com.gregtechceu.gtceu.api.pattern.util.PatternMatchContext;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
@@ -109,7 +109,7 @@ public class BlockPattern {
                         if (!worldState.update(pos, predicate)) {
                             return false;
                         }
-                        if (!predicate.isAny()) {
+                        if (predicate.addCache()) {
                             worldState.addPosCache(pos);
                             if (savePredicate) {
                                 matchContext.getOrCreate("predicates", HashMap::new).put(pos, predicate);
@@ -306,19 +306,21 @@ public class BlockPattern {
         }
         Direction frontFacing = controller.self().getFrontFacing();
         blocks.forEach((pos, block) -> { // adjust facing
-            if (block instanceof BlockState) {
-                resetFacing(pos, (BlockState) block, frontFacing, (p, f) -> {
-                    Object object = blocks.get(p.relative(f));
-                    return object == null || (object instanceof BlockState && ((BlockState) object).getBlock() == Blocks.AIR);
-                }, state -> world.setBlock(pos, state, 3));
-            } else if (block instanceof MetaMachine machine) {
-                resetFacing(pos, machine.getBlockState(), frontFacing, (p, f) -> {
-                    Object object = blocks.get(p.relative(f));
-                    if (object == null || (object instanceof BlockState blockState && blockState.isAir())) {
-                        return machine.isFacingValid(f);
-                    }
-                    return false;
-                }, state -> world.setBlock(pos, state, 3));
+            if (!(block instanceof IMultiController)) {
+                if (block instanceof BlockState) {
+                    resetFacing(pos, (BlockState) block, frontFacing, (p, f) -> {
+                        Object object = blocks.get(p.relative(f));
+                        return object == null || (object instanceof BlockState && ((BlockState) object).getBlock() == Blocks.AIR);
+                    }, state -> world.setBlock(pos, state, 3));
+                } else if (block instanceof MetaMachine machine) {
+                    resetFacing(pos, machine.getBlockState(), frontFacing, (p, f) -> {
+                        Object object = blocks.get(p.relative(f));
+                        if (object == null || (object instanceof BlockState blockState && blockState.isAir())) {
+                            return machine.isFacingValid(f);
+                        }
+                        return false;
+                    }, state -> world.setBlock(pos, state, 3));
+                }
             }
         });
     }
@@ -490,9 +492,9 @@ public class BlockPattern {
 
     private void resetFacing(BlockPos pos, BlockState blockState, Direction facing, BiFunction<BlockPos, Direction, Boolean> checker, Consumer<BlockState> consumer) {
         if (blockState.hasProperty(BlockStateProperties.FACING)) {
-            tryFacings(blockState, pos, checker, consumer, BlockStateProperties.FACING, facing == null ? FACINGS : ArrayUtils.add(FACINGS, facing));
+            tryFacings(blockState, pos, checker, consumer, BlockStateProperties.FACING, facing == null ? FACINGS : ArrayUtils.addAll(new Direction[]{facing}, FACINGS));
         } else if (blockState.hasProperty(BlockStateProperties.HORIZONTAL_FACING)) {
-            tryFacings(blockState, pos, checker, consumer, BlockStateProperties.HORIZONTAL_FACING, facing == null || facing.getAxis() == Direction.Axis.Y ? FACINGS_H : ArrayUtils.add(FACINGS_H, facing));
+            tryFacings(blockState, pos, checker, consumer, BlockStateProperties.HORIZONTAL_FACING, facing == null || facing.getAxis() == Direction.Axis.Y ? FACINGS_H : ArrayUtils.addAll(new Direction[]{facing}, FACINGS_H));
         }
     }
 

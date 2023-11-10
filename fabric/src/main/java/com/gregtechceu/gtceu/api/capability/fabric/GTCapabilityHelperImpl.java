@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.capability.fabric;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.*;
+import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.minecraft.core.BlockPos;
@@ -55,11 +56,35 @@ public class GTCapabilityHelperImpl {
     }
 
     @Nullable
+    public static IPlatformEnergyStorage getPlatformEnergyItem(ItemStack itemStack) {
+        if (GTCEu.isRebornEnergyLoaded()) {
+            var energyItem = ContainerItemContext.withConstant(itemStack).find(EnergyStorage.ITEM);
+            return energyItem == null ? null : GTEnergyHelperImpl.toPlatformEnergyStorage(energyItem);
+        }
+        return null;
+    }
+
+    @Nullable
     public static IPlatformEnergyStorage getPlatformEnergy(Level level, BlockPos pos, @Nullable Direction side) {
         if (GTCEu.isRebornEnergyLoaded()) {
             var energyStorage = EnergyStorage.SIDED.find(level, pos, side);
             return energyStorage == null ? null : GTEnergyHelperImpl.toPlatformEnergyStorage(energyStorage);
         }
         return null;
+    }
+
+    @Nullable
+    public static ICleanroomReceiver getCleanroomReceiver(Level level, BlockPos pos, @Nullable Direction side) {
+        return GTCapability.CAPABILITY_CLEANROOM_RECEIVER.find(level, pos, side);
+    }
+
+    @Nullable
+    public static IMaintenanceMachine getMaintenanceMachine(Level level, BlockPos pos, @Nullable Direction side) {
+        return GTCapability.CAPABILITY_MAINTENANCE_MACHINE.find(level, pos, side);
+    }
+
+    @Nullable
+    public static ILaserContainer getLaser(Level level, BlockPos pos, @Nullable Direction side) {
+        return GTCapability.CAPABILITY_LASER.find(level, pos, side);
     }
 }

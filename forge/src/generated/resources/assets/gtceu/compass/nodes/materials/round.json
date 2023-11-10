@@ -1,0 +1,17 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:tritanium_round"
+  },
+  "items": [
+    "gtceu:tritanium_round",
+    "gtceu:osmiridium_round",
+    "gtceu:hsss_round"
+  ],
+  "page": "gtceu:materials/round",
+  "position": [
+    -250,
+    250
+  ],
+  "section": "gtceu:materials"
+}

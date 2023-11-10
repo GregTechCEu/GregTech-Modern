@@ -1,15 +1,11 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
-import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.UITemplate;
-import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
-import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.widget.*;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
@@ -21,7 +17,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.Nullable;
 
@@ -34,7 +29,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class FluidHatchPartMachine extends TieredIOPartMachine implements IUIMachine {
+public class FluidHatchPartMachine extends TieredIOPartMachine {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(FluidHatchPartMachine.class, TieredIOPartMachine.MANAGED_FIELD_HOLDER);
     private static final long INITIAL_TANK_CAPACITY = 8 * FluidHelper.getBucket();
@@ -133,19 +128,14 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IUIMac
     //**********     GUI     ***********//
     //////////////////////////////////////
     @Override
-    public ModularUI createUI(Player entityPlayer) {
-        return new ModularUI(176, 166, this, entityPlayer)
-                .background(GuiTextures.BACKGROUND)
-                .widget(new ImageWidget(7, 16, 81, 55, GuiTextures.DISPLAY))
-                .widget(new LabelWidget(11, 20, "gtceu.gui.fluid_amount"))
-                .widget(new LabelWidget(11, 30, () -> String.valueOf(tank.getFluidInTank(0).getAmount())).setTextColor(-1).setDropShadow(true))
-                .widget(new LabelWidget(6, 6, getBlockState().getBlock().getDescriptionId()))
-                .widget(new TankWidget(tank.storages[0], 90, 35, true, io.support(IO.IN))
-                        .setBackground(GuiTextures.FLUID_SLOT))
-                .widget(new ToggleButtonWidget(7, 53, 18, 18,
-                        GuiTextures.BUTTON_FLUID_OUTPUT, this::isWorkingEnabled, this::setWorkingEnabled)
-                        .setShouldUseBaseBackground()
-                        .setTooltipText("gtceu.gui.fluid_auto_input.tooltip"))
-                .widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(), GuiTextures.SLOT, 7, 84, true));
+    public Widget createUIWidget() {
+        var group = new WidgetGroup(0, 0, 89, 63);
+        group.addWidget(new ImageWidget(4, 4, 81, 55, GuiTextures.DISPLAY))
+                .addWidget(new LabelWidget(8, 8, "gtceu.gui.fluid_amount"))
+                .addWidget(new LabelWidget(8, 18, () -> String.valueOf(tank.getFluidInTank(0).getAmount())).setTextColor(-1).setDropShadow(true))
+                .addWidget(new TankWidget(tank.storages[0], 67, 22, true, io.support(IO.IN))
+                        .setBackground(GuiTextures.FLUID_SLOT));
+        group.setBackground(GuiTextures.BACKGROUND_INVERSE);
+        return group;
     }
 }

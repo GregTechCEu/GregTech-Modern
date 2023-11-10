@@ -6,6 +6,8 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.*;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.gregtechceu.gtceu.common.item.TurbineRotorBehaviour;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
@@ -32,8 +34,7 @@ public class PartsRecipeHandler {
         plateDouble.executeHandler(PropertyKey.INGOT, (tagPrefix, material, property) -> processPlateDouble(tagPrefix, material, property, provider));
         plateDense.executeHandler(PropertyKey.INGOT, (tagPrefix, material, property) -> processPlateDense(tagPrefix, material, property, provider));
 
-        // todo turbine rotors
-        //turbineBlade.executeHandler(PropertyKey.INGOT, (tagPrefix, material, property) -> processTurbine(tagPrefix, material, property, provider));
+        turbineBlade.executeHandler(PropertyKey.INGOT, (tagPrefix, material, property) -> processTurbine(tagPrefix, material, property, provider));
         rotor.executeHandler(PropertyKey.INGOT, (tagPrefix, material, property) -> processRotor(tagPrefix, material, property, provider));
         bolt.executeHandler(PropertyKey.DUST, (tagPrefix, material, property) -> processBolt(tagPrefix, material, property, provider));
         screw.executeHandler(PropertyKey.DUST, (tagPrefix, material, property) -> processScrew(tagPrefix, material, property, provider));
@@ -110,6 +111,14 @@ public class PartsRecipeHandler {
                 .circuitMeta(1)
                 .save(provider);
 
+        BENDER_RECIPES.recipeBuilder("bend_" + material.getName() + "_ingot_to_foil")
+                .inputItems(ingot, material)
+                .outputItems(foilPrefix, material, 4)
+                .duration((int) material.getMass())
+                .EUt(24)
+                .circuitMeta(10)
+                .save(provider);
+
         if (material.hasFlag(NO_SMASHING)) {
             EXTRUDER_RECIPES.recipeBuilder("extrude_" + material.getName() + "_ingot_to_foil")
                     .inputItems(ingot, material)
@@ -174,7 +183,7 @@ public class PartsRecipeHandler {
                     .save(provider);
 
             if (material.hasFlag(NO_SMASHING)) {
-                EXTRUDER_RECIPES.recipeBuilder("extrude_" + material.getName() + "_ingot_to_gear")
+                EXTRUDER_RECIPES.recipeBuilder("extrude_" + material.getName() + "_dust_to_gear")
                         .inputItems(dust, material, 4)
                         .notConsumable(GTItems.SHAPE_EXTRUDER_GEAR)
                         .outputItems(gearPrefix, material)
@@ -234,7 +243,7 @@ public class PartsRecipeHandler {
     }
 
     public static void processLens(TagPrefix lensPrefix, Material material, GemProperty property, Consumer<FinishedRecipe> provider) {
-        //ItemStack stack = ChemicalHelper.get(lensPrefix, material);
+        ItemStack stack = ChemicalHelper.get(lensPrefix, material);
 
         LATHE_RECIPES.recipeBuilder("lathe_" + material.getName() + "_plate_to_lens")
                 .inputItems(plate, material)
@@ -249,23 +258,6 @@ public class PartsRecipeHandler {
                     .outputItems(dust, material, 2)
                     .duration(2400).EUt(30).save(provider);
         }
-        // TODO Colored lenses
-/*
-        if (material == Diamond) { // override Diamond Lens to be LightBlue
-            OreDictUnifier.registerOre(stack, craftingLens, MarkerColor.LightBlue);
-        } else if (material == Ruby) { // override Ruby Lens to be Red
-            OreDictUnifier.registerOre(stack, craftingLens, MarkerColor.Red);
-        } else if (material == Emerald) { // override Emerald Lens to be Green
-            OreDictUnifier.registerOre(stack, craftingLens, MarkerColor.Green);
-        } else if (material == Glass) { // the overriding is done in OreDictionaryLoader to prevent log spam
-            OreDictUnifier.registerOre(stack, craftingLens.name() + material.toCamelCaseString());
-        } else { // add more custom lenses here if needed
-
-            // Default behavior for determining lens color, left for addons and CraftTweaker
-            DyeColor dyeColor = GTUtil.determineDyeColor(material.getMaterialRGB());
-            MarkerMaterial colorMaterial = MarkerMaterials.Color.COLORS.get(dyeColor);
-            OreDictUnifier.registerOre(stack, craftingLens, colorMaterial);
-        }*/
     }
 
     public static void processPlate(TagPrefix platePrefix, Material material, DustProperty property, Consumer<FinishedRecipe> provider) {
@@ -504,16 +496,14 @@ public class PartsRecipeHandler {
         }
     }
 
-    // TODO Turbine rotors
-    /*
     public static void processTurbine(TagPrefix toolPrefix, Material material, IngotProperty property, Consumer<FinishedRecipe> provider) {
         ItemStack rotorStack = GTItems.TURBINE_ROTOR.asStack();
         //noinspection ConstantConditions
-        TurbineRotorBehavior.getInstanceFor(rotorStack).setPartMaterial(rotorStack, material);
+        TurbineRotorBehaviour.getBehaviour(rotorStack).setPartMaterial(rotorStack, material);
 
         ASSEMBLER_RECIPES.recipeBuilder("assemble_" + material.getName() + "_turbine_blade")
                 .inputItems(turbineBlade, material, 8)
-                .inputItems(rodLong, Magnalium)
+                .inputItems(rodLong, GTMaterials.Magnalium)
                 .outputItems(rotorStack)
                 .duration(200)
                 .EUt(400)
@@ -532,7 +522,7 @@ public class PartsRecipeHandler {
                 "PPP", "SPS", "fPd",
                 'P', new UnificationEntry(plateDouble, material),
                 'S', new UnificationEntry(screw, material));
-    }*/
+    }
 
     public static void processRound(TagPrefix roundPrefix, Material material, IngotProperty property, Consumer<FinishedRecipe> provider) {
         if (!material.hasFlag(NO_SMASHING)) {

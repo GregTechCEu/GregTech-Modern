@@ -1,18 +1,20 @@
 package com.gregtechceu.gtceu.common;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.addon.AddonFinder;
+import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.worldgen.WorldGenLayers;
-import com.gregtechceu.gtceu.api.gui.CoverUIFactory;
-import com.gregtechceu.gtceu.api.gui.MachineUIFactory;
+import com.gregtechceu.gtceu.api.gui.factory.CoverUIFactory;
+import com.gregtechceu.gtceu.api.gui.factory.GTUIEditorFactory;
+import com.gregtechceu.gtceu.api.gui.factory.MachineUIFactory;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.common.data.materials.GTFoods;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.GregTechDatagen;
-import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
 import com.lowdragmc.lowdraglib.gui.factory.UIFactory;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 
@@ -29,8 +31,11 @@ public class CommonProxy {
     public static void init() {
         GTCEu.LOGGER.info("GTCEu common proxy init!");
         ConfigHolder.init();
+        GTCEu.initializeHighTier();
+
         UIFactory.register(MachineUIFactory.INSTANCE);
         UIFactory.register(CoverUIFactory.INSTANCE);
+        UIFactory.register(GTUIEditorFactory.INSTANCE);
         GTPlacerTypes.init();
         GTRecipeCapabilities.init();
         GTRecipeConditions.init();
@@ -40,6 +45,8 @@ public class CommonProxy {
         GTMaterials.init();
         TagPrefix.init();
         GTSoundEntries.init();
+        GTCompassSections.init();
+        GTCompassNodes.init();
         GTCovers.init();
         GTFluids.init();
         GTBlocks.init();
@@ -49,11 +56,11 @@ public class CommonProxy {
         GTFoods.init();
         GTItems.init();
         GregTechDatagen.init();
+        AddonFinder.getAddons().forEach(IGTAddon::initializeAddon);
 
         // fabric exclusive, squeeze this in here to register before stuff is used
         GTRegistries.REGISTRATE.registerRegistrate();
         WorldGenLayers.registerAll();
-        GTOres.init();
         GTFeatures.init();
     }
 }

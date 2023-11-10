@@ -1,0 +1,763 @@
+<page>
+ <h1>
+  Ingot
+ </h1>
+ <h3>
+  Source
+ </h3>
+ <text><style color="0xaaaaaa" italic="true">Note: this page is ported from MCMOD's GTCEu wiki.<br/>Author: <style color="0xa4e7ff" hover-info="url" underlined="true" url-link="https://center.mcmod.cn/119280/">Oganesson897</style><br/></style></text>
+ <h2 font-color="0xff0000">
+  WARNING!!!
+ </h2>
+ <text isCenter="true">
+  <style color="0xff0000">The warning means this is not a reliable page.</style>
+  <br/>
+  <style bold="true" color="0xffaa00">Please do not report any mistakes on the page, either discord or github.</style>
+  <br/>
+  This page is translated from the Chinese wiki which hasn't been reviewed and polished yet. It may contain errors and inaccuracies. We are looking forward to your help by improving this page.
+ </text>
+ <text>
+  <br/>
+  <style>
+   The ingots in the material component require 144 corresponding material units.
+   <br/>
+  </style>
+  <br/>
+  <br/>
+  <style>
+   Only one template is uploaded here, please see the game for specific values.
+  </style>
+  <br/>
+  ------------------
+  <br/>
+  <style>
+   Mineral dictionary prefix: ingot
+  </style>
+  <br/>
+  <br/>
+  <style>
+   Mineral dictionary: ingot+material name, such as ingotAluminium
+  </style>
+  <br/>
+  <br/>
+  <style>
+   You can use /give @s gregtech:meta_ingot (the MetaID of the item) to get the item.
+  </style>
+  <br/>
+  ------------------
+  <br/>
+  <style>
+   List of materials that support ingots (the format is the Chinese name of the material-the name of the material-the chemical formula-the MetaID of the item):
+  </style>
+  <br/>
+ </text>
+ <text left-margin="10">
+  •
+  <style>
+   Aluminum - Aluminum - Al - 2
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Americium - Americium - Am - 3
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Antimony - Antimony - Sb - 4
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Beryllium - Beryllium - Be - 10
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Bismuth - Bismuth - Bi - 11
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Chromium - Chrome - Cr - 22
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Cobalt - Cobalt - Co - 23
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Copper - Copper - Cu - 25
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Darmstadtium - Darmstadtium - Ds - 27
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Europium - Europium - Eu - 33
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Gallium - Gallium - Ga - 39
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Indium - Indium - In - 48
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Samarium - Samarium
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Lead - Lead - Pb - 55
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Manganese - Manganese - Mn - 61
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Mercury - Mercury
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Neodymium - Neodymium - Nd - 66
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Nickel - Nickel - Ni - 69
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Niobium - Niobium - Nb - 71
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Osmium - Osmium - Os - 75
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Palladium - Palladium - Pd - 77
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Platinum - Platinum - Pt - 80
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Plutonium 239 - Plutonium - Pu - 239 - 81
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Plutonium 241 - Plutonium241 - Pu - 241 - 82
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Rhodium - Rh - 90
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Ruthenium - Ruthenium - Ru - 93
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Samarium - Samarium - Sm - 95
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Silicon - Silicon - Si - 99
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Silver - Silver - Ag - 100
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Tantalum - Tantalum - Ta - 104
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Thorium - Thorium - Th - 109
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Tin - Tin - Sn - 112
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Titanium - Titanium - Ti - 113
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Tungsten - Tungsten - W - 115
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Uranium 238 - Uranium - U - 238 - 116
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Uranium 235 - Uranium235 - U - 235 - 117
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Vanadium - Vanadium - V - 118
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Yttrium - Yttrium - Y - 121
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Zinc - Zinc - Zn - 122
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Silica (Guanzhong) - Naquadah - Nq - 124
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Enriched Silica Rock (Guanzhong) - NaquadahEnriched - Nq+ - 125
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Super Silica Rock (Guanzhong) - Naquadria - *Nq* - 126
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Neutronium - Neutronium - Nt - 127
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Tritanium - Tr - 128
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Duranium - Duranium - Dr - 129
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Trinium - Trinium - Ke - 130
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Annealed Copper - AnnealedCopper - Cu - 252
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Battery Alloy - BatteryAlloy - Pb4Sb - 256
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Brass - Brass - ZnCu3 - 259
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Bronze - Bronze - SnCu3 - 260
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Cupronickel - CuNi - 274
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Amber Gold - Electrum - AgAu - 277
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Invar - Fe2Ni - 287
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Kanthal alloy - Kanthal - FeAlCr - 288
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Magnesium aluminum alloy - Magnalium - MgAl2 - 290
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Nickel chromium alloy - Nichrome - Ni4Cr - 294
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Niobium Nitride - NiobiumNitride - NbN - 295
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Niobium Titanium Alloy - NiobiumTitanium - NbTi - 296
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Standard Sterling Silver - SterlingSilver - CuAg4 - 300
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Rose Gold - RoseGold - CuAu4 - 301
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   BlackBronze - BlackBronze - AuAgCu3 - 302
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Bismuth Bronze - BismuthBronze - BiZnCu3 - 303
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Ruthenium Iridium Alloy - Ruridit - Ru2Ir - 310
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Soldering - SolderingAlloy - Sn6Pb3Sb - 320
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Stainless steel - StainlessSteel - Fe6CrMnNi - 323
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Steel - Steel - Fe - 324
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Tin-iron alloy - TinAlloy - SnFe - 328
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Hastelloy - Ultimet - Co5Cr2NiMo - 331
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Vanadium Gallium Alloy - VanadiumGallium - V3Ga - 334
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Polybenzimidazole (PBI) - Polybenzimidazole
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Yttrium Barium Copper Oxygen Alloy - YttriumBariumCuprate - YBa2Cu3O7 - 338
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Iridium-osmium alloy - Osmiridium - Ir3Os - 344
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Gallium Arsenide - GalliumArsenide - AsGa - 351
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Gallium Phosphide - IndiumGalliumPhosphide - InGaP - 354
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Nickel Zinc Ferrite - NickelZincFerrite - NiZnFe4O8 -
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Magnetic iron - IronMagnetic - Fe - 355
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Tungsten Carbide - TungstenCarbide - WC - 395
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Magnetized Neodymium - NeodymiumMagnetic - Nd - 396
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Magnetized samarium - SamariumMagnetic - Sm - 418
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   ManganesePhosphide - ManganesePhosphide - MnP - 423
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Magnesium Diboride - MagnesiumDiboride - MgB2 - 424
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   MercuryBariumCalciumCuprate - MercuryBariumCalciumCuprate - HgBa2Ca2Cu3O8 - 425
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   ) is processed into the corresponding crack variant;
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Samarium Iron Arsenic Oxide - SamariumIronArsenicOxide - SmFeAsO - 427
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Indium Tin Barium Titanium Copper Alloy - IndiumTinBariumTitaniumCuprate - In4Sn2Ba2TiCu7O14 - 429
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Uranium-rhodium silica alloy - UraniumRhodiumDinaquadide - URhNq2 - 430
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   EnrichedNaquadahTriniumEuropiumDuranide - Nq+4Ke3Eu2Dr -
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   RutheniumTriniumAmericiumNeutronate - RuKe2AmNt2O8 -
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   PolyvinylButyral - PolyvinylButyral - (C4H8O)(C4H6O2) - 431
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   黑steel - BlackSteel - Ni(AuAgCu3)Fe3 - 2011
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Damascus Steel - DamascusSteel - Fe - 2012
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Tungsten Steel - TungstenSteel - FeW - 2013
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Cobalt Brass - CobaltBrass - (ZnCu3)7AlCo - 2014
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Magnetic Steel - SteelMagnetic - Fe - 2035
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Vanadium Steel - VanadiumSteel - VCrFe7 - 2036
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Coarse Bronze Alloy - Potin - Cu6Sn2Pb - 2037
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Silica Alloy - NaquadahAlloy - Nq2(Ir3Os)Ke - 2042
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Rhodium-plated palladium alloy ingot - RhodiumPlatedPalladium - Rd3Rh - 2062
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   RedSteel - (CuAg4)(BiZnCu3)Fe2(Ni(AuAgCu3)Fe3)4 -
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   BlueSteel - (CuAu4)(ZnCu3)Fe2(Ni(AuAgCu3)Fe3)4 -
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   High speed steel-G - Hssg - (FeW)5CrMo2V -
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Red Alloy - RedAlloy - Cu(Si(FeS2)5(CrAl2O3)Hg3)4 -
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   High speed steel-E - Hsse - ((FeW)5CrMo2V)6CoMnSi -
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   High speed steel-S - Hsss - ((FeW)5CrMo2V)6Ir2Os -
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Blue Alloy - BlueAlloy - ((Si(FeS2)5(CrAl2O3)Hg3)(AgAu))4Ag -
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Stellite100 alloy - Stellite100 - Fe4Cr3W2Mo -
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   WatertightSteel - Fe7Al4Ni2CrS -
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Maraging Steel 300 - MaragingSteel300 - Fe16TiAlNi4Co2 -
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Hastelloy-C276 - HastelloyC276 - Ni12Mo8Cr7WCoCu -
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Hastelloy-X - HastelloyX - Ni8Fe3W4Mo2CrNb -
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Damascus Steel - DamascusSteel
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Zeron-100 - Zeron100 - Fe10Ni2W2NbCo -
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Titanium Carbide - TitaniumCarbide - TiC -
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Tantalum Carbide - TantalumCarbide - TaC -
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Molybdenum Disilicide - MolybdenumDisilicide - MoSi2 -
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   HSLA Steel - HslaSteel - (Fe2Ni)2VTiMo -
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Titanium Tungsten Carbide - TitaniumTungstenCarbide - (WC)(TiC)2 -
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Heat-resistant ferrochromium alloy-MA956 - IncoloyMa956 - (VCrFe7)4Mn2Al5Y2 -
+  </style>
+  <br/>
+ </text>
+</page>

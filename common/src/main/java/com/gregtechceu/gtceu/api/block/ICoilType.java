@@ -31,7 +31,6 @@ public interface ICoilType {
      *
      * @return the energy discount of the Heating Coil
      */
-    @SuppressWarnings("unused")
     int getEnergyDiscount();
 
     /**

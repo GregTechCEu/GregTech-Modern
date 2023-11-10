@@ -1,0 +1,15 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:large_electromagnet"
+  },
+  "items": [
+    "gtceu:large_electromagnet"
+  ],
+  "page": "gtceu:multiblock/large_electromagnet",
+  "position": [
+    -300,
+    200
+  ],
+  "section": "gtceu:multiblock"
+}

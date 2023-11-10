@@ -4,15 +4,18 @@ import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials.Color;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
+import com.gregtechceu.gtceu.common.recipe.RockBreakerCondition;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.tterrag.registrate.util.entry.ItemEntry;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.material.Fluids;
 
 import java.util.function.Consumer;
 
@@ -27,10 +30,9 @@ public class MiscRecipeLoader {
     public static void init(Consumer<FinishedRecipe> provider) {
 
         // Basic Terminal Recipe
-        // TODO Terminal
-        //VanillaRecipeHelper.addShapedRecipe(provider, true, "basic_terminal", TERMINAL,
-        //        "SGS", "PBP", "PWP", 'S', new UnificationEntry(screw, WroughtIron), 'G', OreDictHelper.get("paneGlass"), 'B', new ItemStack(Items.BOOK),
-        //                                'P', new UnificationEntry(plate, WroughtIron), 'W', new UnificationEntry(wireGtSingle, RedAlloy));
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "basic_terminal", TERMINAL.asStack(),
+                "SGS", "PBP", "PWP", 'S', new UnificationEntry(screw, WroughtIron), 'G', CustomTags.GLASS_PANES, 'B', new ItemStack(Items.BOOK),
+                                        'P', new UnificationEntry(plate, WroughtIron), 'W', new UnificationEntry(wireGtSingle, RedAlloy));
 
         // Potin Recipe
         VanillaRecipeHelper.addShapelessRecipe(provider, "potin_dust", ChemicalHelper.get(dust, Potin, 8),
@@ -82,6 +84,8 @@ public class MiscRecipeLoader {
                 .outputItems(Blocks.COBBLESTONE.asItem())
                 .duration(16)
                 .EUt(VA[ULV])
+                .addData("fluidA", "minecraft:lava")
+                .addData("fluidB", "minecraft:water")
                 .save(provider);
 
         ROCK_BREAKER_RECIPES.recipeBuilder("stone")
@@ -89,6 +93,8 @@ public class MiscRecipeLoader {
                 .outputItems(Blocks.STONE.asItem())
                 .duration(16)
                 .EUt(VA[ULV])
+                .addData("fluidA", "minecraft:lava")
+                .addData("fluidB", "minecraft:water")
                 .save(provider);
 
         ROCK_BREAKER_RECIPES.recipeBuilder("andesite")
@@ -96,6 +102,8 @@ public class MiscRecipeLoader {
                 .outputItems(Blocks.ANDESITE.asItem())
                 .duration(16)
                 .EUt(60)
+                .addData("fluidA", "minecraft:lava")
+                .addData("fluidB", "minecraft:water")
                 .save(provider);
 
         ROCK_BREAKER_RECIPES.recipeBuilder("granite")
@@ -103,6 +111,8 @@ public class MiscRecipeLoader {
                 .outputItems(Blocks.GRANITE.asItem())
                 .duration(16)
                 .EUt(60)
+                .addData("fluidA", "minecraft:lava")
+                .addData("fluidB", "minecraft:water")
                 .save(provider);
 
         ROCK_BREAKER_RECIPES.recipeBuilder("diorite")
@@ -110,6 +120,8 @@ public class MiscRecipeLoader {
                 .outputItems(Blocks.DIORITE.asItem())
                 .duration(16)
                 .EUt(60)
+                .addData("fluidA", "minecraft:lava")
+                .addData("fluidB", "minecraft:water")
                 .save(provider);
 
         ROCK_BREAKER_RECIPES.recipeBuilder("obsidian")
@@ -117,6 +129,8 @@ public class MiscRecipeLoader {
                 .outputItems(Blocks.OBSIDIAN.asItem())
                 .duration(16)
                 .EUt(240)
+                .addData("fluidA", "minecraft:lava")
+                .addData("fluidB", "minecraft:water")
                 .save(provider);
 
         // TODO stone types
@@ -337,12 +351,10 @@ public class MiscRecipeLoader {
          */
 
         // Tempered Glass in Arc Furnace
-        // TODO Glass
-        //ARC_FURNACE_RECIPES.recipeBuilder("tempered_glass").duration(60).EUt(VA[LV])
-        //        .inputItems(block, Glass)
-        //        .outputItems(MetaBlocks.TRANSPARENT_CASING.getItemVariant(
-        //                BlockGlassCasing.CasingType.TEMPERED_GLASS))
-        //        .save(provider);
+        ARC_FURNACE_RECIPES.recipeBuilder("tempered_glass").duration(60).EUt(VA[LV])
+                .inputItems(block, Glass)
+                .outputItems(GTBlocks.CASING_TEMPERED_GLASS.asStack())
+                .save(provider);
 
         // Dyed Lens Decomposition
         for (ItemEntry<Item> item : GLASS_LENSES.values()) {
@@ -435,12 +447,11 @@ public class MiscRecipeLoader {
                 .outputFluids(Water.getFluid(1000))
                 .duration(100).EUt(VA[LV]).save(provider);
 
-        // TODO Glass blocks
-        //FORMING_PRESS_RECIPES.recipeBuilder()
-        //        .inputItems(GTBlocks.CASING.get().getItemVariant(BlockGlassCasing.CasingType.TEMPERED_GLASS, 2))
-        //        .inputItems(plate, PolyvinylButyral)
-        //        .outputItems(GTBlocks.CASING.get().getItemVariant(BlockGlassCasing.CasingType.LAMINATED_GLASS))
-        //        .duration(200).EUt(VA[HV]).save(provider);
+        FORMING_PRESS_RECIPES.recipeBuilder("laminated_glass")
+                .inputItems(GTBlocks.CASING_TEMPERED_GLASS.asStack(2))
+                .inputItems(plate, PolyvinylButyral)
+                .outputItems(GTBlocks.CASING_LAMINATED_GLASS.asStack())
+                .duration(200).EUt(VA[HV]).save(provider);
 
         LATHE_RECIPES.recipeBuilder("treated_wood_sticks")
                 .inputItems(GTBlocks.TREATED_WOOD_PLANK.asStack())

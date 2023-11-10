@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.block;
 
+import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.pipenet.IAttachData;
 import com.gregtechceu.gtceu.api.pipenet.IMaterialPipeType;
 import com.gregtechceu.gtceu.api.pipenet.IPipeType;
@@ -8,8 +9,12 @@ import com.gregtechceu.gtceu.client.renderer.block.PipeBlockRenderer;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.lowdragmc.lowdraglib.pipelike.LevelPipeNet;
 import com.lowdragmc.lowdraglib.pipelike.PipeNet;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
@@ -37,15 +42,21 @@ public abstract class MaterialPipeBlock<PipeType extends Enum<PipeType> & IPipeT
         this.renderer = new PipeBlockRenderer(this.model);
     }
 
-    public static int tintedColor(BlockState blockState, @Nullable BlockAndTintGetter blockAndTintGetter, @Nullable BlockPos blockPos, int index) {
-        if (blockState.getBlock() instanceof MaterialPipeBlock block) {
-            return block.tinted(blockState, blockAndTintGetter, blockPos, index);
-        }
-        return -1;
+    @Environment(EnvType.CLIENT)
+    public static BlockColor tintedColor() {
+        return (blockState, level, blockPos, index) -> {
+            if (blockState.getBlock() instanceof MaterialPipeBlock<?,?,?> block) {
+                if (blockPos != null && level != null && level.getBlockEntity(blockPos) instanceof PipeBlockEntity<?,?> pipe && pipe.isPainted()) {
+                    return pipe.getRealColor();
+                }
+                return block.tinted(blockState, level, blockPos, index);
+            }
+            return -1;
+        };
     }
 
     public int tinted(BlockState blockState, @Nullable BlockAndTintGetter blockAndTintGetter, @Nullable BlockPos blockPos, int index) {
-        return material.getMaterialRGB();
+        return index == 0 || index == 1 ? material.getMaterialRGB() : -1;
     }
 
     @Override
@@ -74,6 +85,11 @@ public abstract class MaterialPipeBlock<PipeType extends Enum<PipeType> & IPipeT
 
     @Override
     public String getDescriptionId() {
-        return pipeType.getTagPrefix().getLocalNameForItem(material);
+        return pipeType.getTagPrefix().getUnlocalizedName(material);
+    }
+
+    @Override
+    public MutableComponent getName() {
+        return pipeType.getTagPrefix().getLocalizedName(material);
     }
 }

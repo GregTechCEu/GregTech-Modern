@@ -5,12 +5,15 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.data.worldgen.GTOreFeatureEntry;
+import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
+import com.gregtechceu.gtceu.api.data.worldgen.generator.NoopVeinGenerator;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.common.data.GTOres;
 import com.gregtechceu.gtceu.integration.kjs.GTCEuServerEvents;
 import com.gregtechceu.gtceu.integration.kjs.events.GTOreVeinEventJS;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.JsonOps;
-import net.minecraft.core.RegistryAccess;
+import dev.latvian.mods.kubejs.script.ScriptType;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -21,6 +24,7 @@ import net.minecraft.world.level.storage.loot.Deserializers;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.Iterator;
 import java.util.Map;
 
 public class OreDataLoader extends SimpleJsonResourceReloadListener {
@@ -35,34 +39,46 @@ public class OreDataLoader extends SimpleJsonResourceReloadListener {
 
     @Override
     protected void apply(Map<ResourceLocation, JsonElement> resourceList, ResourceManager resourceManager, ProfilerFiller profiler) {
-        RegistryOps<JsonElement> ops = RegistryOps.create(JsonOps.INSTANCE, RegistryAccess.BUILTIN.get());
+        GTRegistries.ORE_VEINS.registry().clear();
+        GTOres.init();
+        if (GTCEu.isKubeJSLoaded()) {
+            RunKJSEventInSeparateClassBecauseForgeIsDumb.fireKJSEvent();
+        }
+        RegistryOps<JsonElement> ops = RegistryOps.create(JsonOps.INSTANCE, GTRegistries.builtinRegistry());
         for(Map.Entry<ResourceLocation, JsonElement> entry : resourceList.entrySet()) {
             ResourceLocation location = entry.getKey();
 
             try {
-                GTOreFeatureEntry ore = fromJson(location, GsonHelper.convertToJsonObject(entry.getValue(), "top element"), ops);
+                GTOreDefinition ore = fromJson(location, GsonHelper.convertToJsonObject(entry.getValue(), "top element"), ops);
                 if (ore == null) {
                     LOGGER.info("Skipping loading ore vein {} as it's serializer returned null", location);
-                } else if(ore.getVeinGenerator() instanceof GTOreFeatureEntry.NoopVeinGenerator) {
+                } else if (ore.getVeinGenerator() instanceof NoopVeinGenerator) {
                     LOGGER.info("Removing ore vein {} as it's generator was marked as no-operation", location);
-                    GTOreFeatureEntry.ALL.remove(location);
+                    GTRegistries.ORE_VEINS.remove(location);
+                } else if (GTRegistries.ORE_VEINS.containKey(location)) {
+                    GTRegistries.ORE_VEINS.replace(location, ore);
                 } else {
-                    GTOreFeatureEntry.ALL.put(location, ore);
+                    GTRegistries.ORE_VEINS.register(location, ore);
                 }
             } catch (IllegalArgumentException | JsonParseException jsonParseException) {
                 LOGGER.error("Parsing error loading ore vein {}", location, jsonParseException);
             }
         }
-        if (GTCEu.isKubeJSLoaded()) {
-            RunKJSEventInSeparateClassBecauseForgeIsDumb.fireKJSEvent();
+        Iterator<Map.Entry<ResourceLocation, GTOreDefinition>> iterator = GTRegistries.ORE_VEINS.entries().iterator();
+        while (iterator.hasNext()) {
+            var entry = iterator.next().getValue();
+            if (entry.getVeinGenerator() != null) {
+                entry.getVeinGenerator().build();
+            } else {
+                iterator.remove();
+            }
         }
-        for (GTOreFeatureEntry entry : GTOreFeatureEntry.ALL.values()) {
-            entry.getVeinGenerator().build();
-        }
+
+        GTOres.updateLargestVeinSize();
     }
 
-    public static GTOreFeatureEntry fromJson(ResourceLocation id, JsonObject json, RegistryOps<JsonElement> ops) {
-        return GTOreFeatureEntry.FULL_CODEC.decode(ops, json).map(Pair::getFirst).getOrThrow(false, LOGGER::error);
+    public static GTOreDefinition fromJson(ResourceLocation id, JsonObject json, RegistryOps<JsonElement> ops) {
+        return GTOreDefinition.FULL_CODEC.decode(ops, json).map(Pair::getFirst).getOrThrow(false, LOGGER::error);
     }
 
     /**
@@ -70,7 +86,7 @@ public class OreDataLoader extends SimpleJsonResourceReloadListener {
      */
     public static final class RunKJSEventInSeparateClassBecauseForgeIsDumb {
         public static void fireKJSEvent() {
-            GTCEuServerEvents.ORE_VEIN_MODIFICATION.post(new GTOreVeinEventJS());
+            GTCEuServerEvents.ORE_VEIN_MODIFICATION.post(ScriptType.SERVER, new GTOreVeinEventJS());
         }
     }
 }

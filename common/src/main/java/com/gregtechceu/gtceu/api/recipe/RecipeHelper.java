@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
+import it.unimi.dsi.fastutil.longs.LongIntMutablePair;
 import it.unimi.dsi.fastutil.longs.LongIntPair;
 
 import javax.annotation.Nonnull;
@@ -93,9 +94,9 @@ public class RecipeHelper {
         if (recipeTier == GTValues.ULV) numberOfOCs--; // no ULV overclocking
 
         // cannot overclock, so return the starting values
-        if (numberOfOCs <= 0) return LongIntPair.of(EUt, recipe.duration);
+        if (numberOfOCs <= 0) return LongIntMutablePair.of(EUt, recipe.duration);
 
-        return logic.runOverclockingLogic(recipe, EUt, maxOverclockVoltage, recipe.duration, numberOfOCs);
+        return logic.getLogic().runOverclockingLogic(recipe, EUt, maxOverclockVoltage, recipe.duration, numberOfOCs);
     }
 
 }

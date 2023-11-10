@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.client.renderer.block;
 
+import com.google.common.base.Suppliers;
 import com.gregtechceu.gtceu.client.model.ItemBakedModel;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
@@ -39,20 +40,17 @@ import java.util.function.Supplier;
  */
 public class OreBlockRenderer extends BlockStateRenderer {
     private final Supplier<BlockState> stone;
+    private Supplier<ResourceLocation> overlaySupplier;
     private ResourceLocation overlay;
     private final boolean emissive;
 
-    public OreBlockRenderer(Supplier<BlockState> stone, ResourceLocation overlay, boolean emissive) {
-        this.stone = stone;
-        this.overlay = overlay;
+    public OreBlockRenderer(Supplier<BlockState> stone, Supplier<ResourceLocation> overlaySupplier, boolean emissive) {
+        this.stone = Suppliers.memoize(stone::get);
+        this.overlaySupplier = overlaySupplier;
         this.emissive = emissive;
         if (LDLib.isClient()) {
             registerEvent();
         }
-    }
-
-    public void setOverlayTexture(ResourceLocation newOverlay) {
-        this.overlay = newOverlay;
     }
 
     @Override
@@ -68,6 +66,7 @@ public class OreBlockRenderer extends BlockStateRenderer {
         Minecraft.getInstance().getItemRenderer().render(stack, transformType, leftHand, matrixStack, buffer, combinedLight, combinedOverlay,
                 new ItemBakedModel() {
                     @Override
+                    @Environment(EnvType.CLIENT)
                     public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction direction, RandomSource random) {
                         List<BakedQuad> quads = new LinkedList<>();
                         if (direction != null) {
@@ -94,6 +93,9 @@ public class OreBlockRenderer extends BlockStateRenderer {
     public void onPrepareTextureAtlas(ResourceLocation atlasName, Consumer<ResourceLocation> register) {
         super.onPrepareTextureAtlas(atlasName, register);
         if (atlasName.equals(TextureAtlas.LOCATION_BLOCKS)) {
+            if (overlaySupplier != null) {
+                overlay = overlaySupplier.get();
+            }
             register.accept(overlay);
         }
     }

@@ -9,6 +9,7 @@ import dev.emi.emi.api.stack.EmiStack;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.Registry;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeType;
 
@@ -36,11 +37,19 @@ public class GTRecipeTypeEmiCategory extends ModularUIEmiRecipeCategory {
     public static void registerWorkStations(EmiRegistry registry) {
         for (GTRecipeType gtRecipeType : GTRegistries.RECIPE_TYPES) {
             for (MachineDefinition machine : GTRegistries.MACHINES) {
-                if (machine.getRecipeType() == gtRecipeType) {
-                    registry.addWorkstation(GTRecipeTypeEmiCategory.CATEGORIES.apply(gtRecipeType), EmiStack.of(machine.asStack()));
+                if (machine.getRecipeTypes() != null) {
+                    for (GTRecipeType type : machine.getRecipeTypes()){
+                        if (type == gtRecipeType) {
+                            registry.addWorkstation(GTRecipeTypeEmiCategory.CATEGORIES.apply(gtRecipeType), EmiStack.of(machine.asStack()));
+                        }
+                    }
                 }
             }
         }
     }
 
+    @Override
+    public Component getName() {
+        return Component.translatable(recipeType.registryName.toLanguageKey());
+    }
 }

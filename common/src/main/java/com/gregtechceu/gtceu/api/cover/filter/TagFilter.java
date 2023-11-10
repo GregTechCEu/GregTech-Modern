@@ -7,7 +7,6 @@ import com.lowdragmc.lowdraglib.gui.widget.ImageWidget;
 import com.lowdragmc.lowdraglib.gui.widget.TextFieldWidget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import lombok.Getter;
-import lombok.Setter;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.MutableComponent;
 
@@ -31,8 +30,10 @@ public abstract class TagFilter<T, S extends Filter<T, S>> implements Filter<T, 
 
     @Getter
     protected String oreDictFilterExpression = "";
-    @Setter
-    protected Consumer<S> onUpdated;
+
+    protected Consumer<S> itemWriter = filter -> {};
+    protected Consumer<S> onUpdated = filter -> itemWriter.accept(filter);
+
     protected final List<OreDictExprFilter.MatchRule> matchRules = new ArrayList<>();
 
     protected TagFilter() {
@@ -114,4 +115,11 @@ public abstract class TagFilter<T, S extends Filter<T, S>> implements Filter<T, 
         return group;
     }
 
+    @Override
+    public void setOnUpdated(Consumer<S> onUpdated) {
+        this.onUpdated = filter -> {
+            this.itemWriter.accept(filter);
+            onUpdated.accept(filter);
+        };
+    }
 }

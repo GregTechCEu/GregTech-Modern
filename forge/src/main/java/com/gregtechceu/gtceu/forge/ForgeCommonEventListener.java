@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.forge;
 
+import appeng.hooks.ticking.TickHandler;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.capability.forge.compat.EUToFEProvider;
@@ -7,9 +8,13 @@ import com.gregtechceu.gtceu.api.item.forge.ComponentItemImpl;
 import com.gregtechceu.gtceu.api.item.forge.DrumMachineItemImpl;
 import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.common.ServerCommands;
+import com.gregtechceu.gtceu.data.loader.forge.FluidVeinLoaderImpl;
 import com.gregtechceu.gtceu.data.loader.forge.OreDataLoaderImpl;
+import com.gregtechceu.gtceu.utils.TaskHandler;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
@@ -17,7 +22,9 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.jetbrains.annotations.NotNull;
@@ -74,10 +81,25 @@ public class ForgeCommonEventListener {
     @SubscribeEvent
     public static void registerReloadListeners(AddReloadListenerEvent event) {
         event.addListener(new OreDataLoaderImpl());
+        event.addListener(new FluidVeinLoaderImpl());
     }
 
     @SubscribeEvent
     public static void attachCapabilities(AttachCapabilitiesEvent<BlockEntity> event) {
         event.addCapability(GTCEu.id("fe_capability"), new EUToFEProvider(event.getObject()));
+    }
+
+    @SubscribeEvent
+    public static void levelTick(TickEvent.LevelTickEvent event) {
+        if (event.level instanceof ServerLevel serverLevel && event.phase.equals(TickEvent.Phase.END)) {
+            TaskHandler.onTickUpdate(serverLevel);
+        }
+    }
+
+    @SubscribeEvent
+    public static void worldUnload(LevelEvent.Unload event) {
+        if (event.getLevel() instanceof ServerLevel serverLevel) {
+            TaskHandler.onWorldUnLoad(serverLevel);
+        }
     }
 }

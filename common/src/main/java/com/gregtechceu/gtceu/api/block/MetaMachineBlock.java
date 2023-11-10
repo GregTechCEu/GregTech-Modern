@@ -192,6 +192,9 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
         var drops = super.getDrops(pState, pBuilder);
         if (tileEntity instanceof IMachineBlockEntity holder) {
             var machine = holder.getMetaMachine();
+            for (Direction direction : Direction.values()) {
+                machine.getCoverContainer().removeCover(direction);
+            }
             if (machine instanceof IMachineModifyDrops machineModifyDrops && entity instanceof Player) {
                 machineModifyDrops.onDrops(drops, (Player) entity);
             }
@@ -232,34 +235,38 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
 
     @Override
     public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-        if (getMachine(world, pos) instanceof IInteractedMachine interactedMachine) {
-            return interactedMachine.onUse(state, world, pos, player, hand, hit);
+        var machine = getMachine(world, pos);
+        if (machine instanceof IInteractedMachine interactedMachine) {
+            var result = interactedMachine.onUse(state, world, pos, player, hand, hit);
+            if (result != InteractionResult.PASS) return result;
+        }
+        if (machine instanceof IUIMachine uiMachine) {
+            return uiMachine.tryToOpenUI(player, hand, hit);
         }
         return InteractionResult.PASS;
     }
 
+
+    public boolean canConnectRedstone(BlockGetter level, BlockPos pos, Direction side) {
+        return getMachine(level, pos).canConnectRedstone(side);
+    }
+
     @Override
+    @SuppressWarnings("deprecation") // This is fine to override, just not to be called.
     public int getSignal(BlockState state, BlockGetter level, BlockPos pos, Direction direction) {
-        if (getMachine(level, pos) instanceof IRedstoneSignalMachine redstoneSignalMachine) {
-            return redstoneSignalMachine.getOutputSignal(direction);
-        }
-        return super.getSignal(state, level, pos, direction);
+        return getMachine(level, pos).getOutputSignal(direction);
     }
 
     @Override
+    @SuppressWarnings("deprecation") // This is fine to override, just not to be called.
     public int getDirectSignal(BlockState state, BlockGetter level, BlockPos pos, Direction direction) {
-        if (getMachine(level, pos) instanceof IRedstoneSignalMachine redstoneSignalMachine) {
-            return redstoneSignalMachine.getOutputDirectSignal(direction);
-        }
-        return super.getDirectSignal(state, level, pos, direction);
+        return getMachine(level, pos).getOutputDirectSignal(direction);
     }
 
     @Override
+    @SuppressWarnings("deprecation") // This is fine to override, just not to be called.
     public int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos) {
-        if (getMachine(level, pos) instanceof IRedstoneSignalMachine redstoneSignalMachine) {
-            return redstoneSignalMachine.getAnalogOutputSignal();
-        }
-        return super.getAnalogOutputSignal(state, level, pos);
+        return getMachine(level, pos).getAnalogOutputSignal();
     }
 
     @Override

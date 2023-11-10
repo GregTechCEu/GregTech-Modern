@@ -104,7 +104,9 @@ public class MultiblockState {
         if (this.blockState == null) {
             this.blockState = this.world.getBlockState(this.pos);
         }
-
+        if (this.blockState == null) {
+            System.out.printf("error");
+        }
         return this.blockState;
     }
 
@@ -164,7 +166,7 @@ public class MultiblockState {
             } else {
                 IMultiController controller = getController();
                 if (controller != null) {
-                    if (controller.checkPattern()) {
+                    if (controller.checkPatternWithLock()) {
                         if (controller.isFormed() && state.getBlock() instanceof ActiveBlock) {
                             LongSet activeBlocks = getMatchContext().getOrDefault("vaBlocks", LongSets.emptySet());
                             if (activeBlocks.contains(pos.asLong())) {

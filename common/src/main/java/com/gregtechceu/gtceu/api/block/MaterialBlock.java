@@ -1,20 +1,24 @@
 package com.gregtechceu.gtceu.api.block;
 
-import com.gregtechceu.gtceu.client.renderer.block.MaterialBlockRenderer;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.client.renderer.block.MaterialBlockRenderer;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.client.renderer.IBlockRendererProvider;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.item.FallingBlockEntity;
-import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.FallingBlock;
@@ -40,7 +44,7 @@ public class MaterialBlock extends AppearanceBlock implements IBlockRendererProv
         super(properties);
         this.material = material;
         this.tagPrefix = tagPrefix;
-        this.renderer = MaterialBlockRenderer.getOrCreate(tagPrefix.materialIconType(), material.getMaterialIconSet());
+        this.renderer = Platform.isClient() ? MaterialBlockRenderer.getOrCreate(tagPrefix.materialIconType(), material.getMaterialIconSet()) : null;
     }
 
     public MaterialBlock(Properties properties, TagPrefix tagPrefix, Material material, IRenderer renderer) {
@@ -52,15 +56,19 @@ public class MaterialBlock extends AppearanceBlock implements IBlockRendererProv
 
     @Nullable
     @Override
+    @Environment(EnvType.CLIENT)
     public IRenderer getRenderer(BlockState state) {
         return renderer;
     }
 
-    public static int tintedColor(BlockState blockState, @Nullable BlockAndTintGetter blockAndTintGetter, @Nullable BlockPos blockPos, int index) {
-        if (blockState.getBlock() instanceof MaterialBlock block) {
-            return block.material.getMaterialRGB();
-        }
-        return -1;
+    @Environment(EnvType.CLIENT)
+    public static BlockColor tintedColor() {
+        return (state, reader, pos, tintIndex) -> {
+            if (state.getBlock() instanceof MaterialBlock block) {
+                return block.material.getMaterialRGB();
+            }
+            return -1;
+        };
     }
 
 
@@ -94,9 +102,7 @@ public class MaterialBlock extends AppearanceBlock implements IBlockRendererProv
     @Override
     public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
         if (!TagPrefix.ORES.containsKey(this.tagPrefix) || super.material != net.minecraft.world.level.material.Material.SAND || !ConfigHolder.INSTANCE.worldgen.sandOresFall) return;
-
-        BlockPos blockPos;
-        if (random.nextInt(16) == 0 && FallingBlock.isFree(level.getBlockState(blockPos = pos.below()))) {
+        if (random.nextInt(16) == 0 && FallingBlock.isFree(level.getBlockState(pos.below()))) {
             double d = (double)pos.getX() + random.nextDouble();
             double e = (double)pos.getY() - 0.05;
             double f = (double)pos.getZ() + random.nextDouble();
@@ -115,7 +121,12 @@ public class MaterialBlock extends AppearanceBlock implements IBlockRendererProv
 
     @Override
     public String getDescriptionId() {
-        return tagPrefix.getLocalNameForItem(material);
+        return tagPrefix.getUnlocalizedName(material);
+    }
+
+    @Override
+    public MutableComponent getName() {
+        return tagPrefix.getLocalizedName(material);
     }
 
 }

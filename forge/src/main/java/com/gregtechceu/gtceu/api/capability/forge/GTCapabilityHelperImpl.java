@@ -1,13 +1,13 @@
 package com.gregtechceu.gtceu.api.capability.forge;
 
 import com.gregtechceu.gtceu.api.capability.*;
+import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.energy.EnergyStorage;
 import net.minecraftforge.energy.IEnergyStorage;
 
 import javax.annotation.Nullable;
@@ -89,6 +89,12 @@ public class GTCapabilityHelperImpl {
         return itemStack.getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM).resolve().orElse(null);
     }
 
+    @Nullable
+    public static IPlatformEnergyStorage getPlatformEnergyItem(ItemStack itemStack) {
+        IEnergyStorage energyItemStorage = itemStack.getCapability(ForgeCapabilities.ENERGY).resolve().orElse(null);
+        return energyItemStorage == null ? null : GTEnergyHelperImpl.toPlatformEnergyStorage(energyItemStorage);
+    }
+
     @SuppressWarnings({"DataFlowIssue", "ConstantValue"})
     @Nullable
     public static IPlatformEnergyStorage getPlatformEnergy(Level level, BlockPos pos, @Nullable Direction side) {
@@ -97,6 +103,39 @@ public class GTCapabilityHelperImpl {
             if (blockEntity != null) {
                 IEnergyStorage energyStorage = blockEntity.getCapability(ForgeCapabilities.ENERGY, side).orElse(null);
                 return energyStorage == null ? null : GTEnergyHelperImpl.toPlatformEnergyStorage(energyStorage);
+            }
+        }
+        return null;
+    }
+
+    @Nullable
+    public static ICleanroomReceiver getCleanroomReceiver(Level level, BlockPos pos, @Nullable Direction side) {
+        if (level.getBlockState(pos).hasBlockEntity()) {
+            var blockEntity = level.getBlockEntity(pos);
+            if (blockEntity != null) {
+                return blockEntity.getCapability(GTCapability.CAPABILITY_CLEANROOM_RECEIVER, side).resolve().orElse(null);
+            }
+        }
+        return null;
+    }
+
+    @Nullable
+    public static IMaintenanceMachine getMaintenanceMachine(Level level, BlockPos pos, @Nullable Direction side) {
+        if (level.getBlockState(pos).hasBlockEntity()) {
+            var blockEntity = level.getBlockEntity(pos);
+            if (blockEntity != null) {
+                return blockEntity.getCapability(GTCapability.CAPABILITY_MAINTENANCE_MACHINE, side).resolve().orElse(null);
+            }
+        }
+        return null;
+    }
+
+    @Nullable
+    public static ILaserContainer getLaser(Level level, BlockPos pos, @Nullable Direction side) {
+        if (level.getBlockState(pos).hasBlockEntity()) {
+            var blockEntity = level.getBlockEntity(pos);
+            if (blockEntity != null) {
+                return blockEntity.getCapability(GTCapability.CAPABILITY_LASER, side).resolve().orElse(null);
             }
         }
         return null;

@@ -132,6 +132,12 @@ dependencies {
     // Jade
     modImplementation forge.jade
 
+    // AE2
+    modImplementation(forge.ae2) { transitive = false }
+
+    //AlmostUnified
+    modImplementation(forge.almostUnified.forge)
+
     // KJS
     modImplementation forge.kubejs
 
@@ -140,7 +146,7 @@ dependencies {
     include(forge.configuration)
 
     // Runtime only testing mods
-    modRuntimeOnly(forge.worldStripper)
+    //modRuntimeOnly(forge.worldStripper)
 }
 
 processResources {
@@ -153,8 +159,7 @@ processResources {
             "mod_license", mod_license,
             "mod_name", mod_name,
             "mod_description", mod_description,
-            "mod_url", mod_url,
-            "ldlib_version", forge.versions.ldlib.get()
+            "mod_url", mod_url
     )
     properties.forEach((k, v) -> inputs.property(k, v))
 
@@ -168,17 +173,17 @@ shadowJar {
     exclude "architectury.common.json"
 
     configurations = [project.configurations.shadowCommon]
-    classifier "dev-shadow"
+    archiveClassifier = "dev-shadow"
 }
 
 remapJar {
     input.set shadowJar.archiveFile
     dependsOn shadowJar
-    classifier null
+    archiveClassifier = null
 }
 
 jar {
-    classifier "dev"
+    archiveClassifier = "dev"
 }
 
 sourcesJar {
@@ -204,5 +209,12 @@ publishing {
     // See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
     repositories {
         // Add repositories to publish to here.
+        maven {
+            url "https://maven.firstdarkdev.xyz/snapshots"
+            credentials {
+                username System.getenv("MAVEN_USER")
+                password System.getenv("MAVEN_PASS")
+            }
+        }
     }
 }

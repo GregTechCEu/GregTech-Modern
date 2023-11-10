@@ -1,24 +1,36 @@
 package com.gregtechceu.gtceu.api.blockentity.forge;
 
+import appeng.api.networking.IInWorldGridNodeHost;
+import appeng.capabilities.Capabilities;
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
-import com.gregtechceu.gtceu.api.capability.IControllable;
-import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
-import com.gregtechceu.gtceu.api.capability.IPlatformEnergyStorage;
-import com.gregtechceu.gtceu.api.capability.IWorkable;
+import com.gregtechceu.gtceu.api.capability.*;
+import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.capability.forge.GTEnergyHelperImpl;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
-import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
-import com.gregtechceu.gtceu.common.machine.trait.ConverterTrait;
+import com.gregtechceu.gtceu.api.misc.LaserContainerList;
+import com.gregtechceu.gtceu.api.pipenet.longdistance.ILDEndpoint;
+import com.gregtechceu.gtceu.client.renderer.GTRendererProvider;
+import com.gregtechceu.gtceu.common.pipelike.fluidpipe.longdistance.LDFluidEndpointMachine;
+import com.gregtechceu.gtceu.common.pipelike.item.longdistance.LDItemEndpointMachine;
+import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
+import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
+import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 import com.lowdragmc.lowdraglib.side.fluid.forge.FluidTransferHelperImpl;
+import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.side.item.forge.ItemTransferHelperImpl;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
@@ -47,7 +59,7 @@ public class MetaMachineBlockEntityImpl extends MetaMachineBlockEntity {
     }
 
     @Nullable
-    public static <T> LazyOptional<T> getCapability(MetaMachine machine,  @NotNull Capability<T> cap, @Nullable Direction side) {
+    public static <T> LazyOptional<T> getCapability(MetaMachine machine, @NotNull Capability<T> cap, @Nullable Direction side) {
         if (cap == GTCapability.CAPABILITY_COVERABLE) {
             return GTCapability.CAPABILITY_COVERABLE.orEmpty(cap, LazyOptional.of(machine::getCoverContainer));
         } else if (cap == GTCapability.CAPABILITY_TOOLABLE) {
@@ -84,18 +96,44 @@ public class MetaMachineBlockEntityImpl extends MetaMachineBlockEntity {
             if (!list.isEmpty()) {
                 return GTCapability.CAPABILITY_ENERGY_CONTAINER.orEmpty(cap, LazyOptional.of(() -> list.size() == 1 ? list.get(0) : new EnergyContainerList(list)));
             }
-        } else if (cap == GTCapability.CAPABILITY_CONVERTER) {
-            for (MachineTrait trait : machine.getTraits()) {
-                if (trait instanceof ConverterTrait converter) {
-                    return GTCapability.CAPABILITY_CONVERTER.orEmpty(cap, LazyOptional.of(() -> converter));
-                }
+        } else if (cap == GTCapability.CAPABILITY_CLEANROOM_RECEIVER) {
+            if (machine instanceof ICleanroomReceiver cleanroomReceiver) {
+                return GTCapability.CAPABILITY_CLEANROOM_RECEIVER.orEmpty(cap, LazyOptional.of(() -> cleanroomReceiver));
+            }
+        } else if (cap == GTCapability.CAPABILITY_MAINTENANCE_MACHINE ) {
+            if (machine instanceof IMaintenanceMachine maintenanceMachine) {
+                return GTCapability.CAPABILITY_MAINTENANCE_MACHINE.orEmpty(cap, LazyOptional.of(() -> maintenanceMachine));
             }
         } else if (cap == ForgeCapabilities.ITEM_HANDLER) {
+            if (machine instanceof LDItemEndpointMachine fluidEndpointMachine) {
+                if (machine.getLevel().isClientSide) return null;
+                ILDEndpoint endpoint = fluidEndpointMachine.getLink();
+                if (endpoint == null) return null;
+                Direction outputFacing = fluidEndpointMachine.getOutputFacing();
+                IItemTransfer transfer = ItemTransferHelperImpl.getItemTransfer(machine.getLevel(), endpoint.getPos().relative(outputFacing), outputFacing.getOpposite());
+                if (transfer != null) {
+                    return ForgeCapabilities.ITEM_HANDLER.orEmpty(cap, LazyOptional.of(() ->
+                            ItemTransferHelperImpl.toItemHandler(new LDItemEndpointMachine.ItemHandlerWrapper(transfer))
+                    ));
+                }
+            }
             var transfer = machine.getItemTransferCap(side);
             if (transfer != null) {
                 return ForgeCapabilities.ITEM_HANDLER.orEmpty(cap, LazyOptional.of(() -> ItemTransferHelperImpl.toItemHandler(transfer)));
             }
         } else if (cap == ForgeCapabilities.FLUID_HANDLER) {
+            if (machine instanceof LDFluidEndpointMachine fluidEndpointMachine) {
+                if (machine.getLevel().isClientSide) return null;
+                ILDEndpoint endpoint = fluidEndpointMachine.getLink();
+                if (endpoint == null) return null;
+                Direction outputFacing = fluidEndpointMachine.getOutputFacing();
+                IFluidTransfer transfer = FluidTransferHelper.getFluidTransfer(machine.getLevel(), endpoint.getPos().relative(outputFacing), outputFacing.getOpposite());
+                if (transfer != null) {
+                    return ForgeCapabilities.FLUID_HANDLER.orEmpty(cap, LazyOptional.of(() ->
+                            FluidTransferHelperImpl.toFluidHandler(new LDFluidEndpointMachine.FluidHandlerWrapper(transfer))
+                    ));
+                }
+            }
             var transfer = machine.getFluidTransferCap(side);
             if (transfer != null) {
                 return ForgeCapabilities.FLUID_HANDLER.orEmpty(cap, LazyOptional.of(() -> FluidTransferHelperImpl.toFluidHandler(transfer)));
@@ -109,10 +147,53 @@ public class MetaMachineBlockEntityImpl extends MetaMachineBlockEntity {
                 // TODO wrap list in the future
                 return ForgeCapabilities.ENERGY.orEmpty(cap, LazyOptional.of(() -> GTEnergyHelperImpl.toEnergyStorage(list.get(0))));
             }
+        } else if (cap == GTCapability.CAPABILITY_LASER) {
+            if (machine instanceof ILaserContainer energyContainer) {
+                return GTCapability.CAPABILITY_ENERGY_CONTAINER.orEmpty(cap, LazyOptional.of(() -> energyContainer));
+            }
+            var list = machine.getTraits().stream().filter(ILaserContainer.class::isInstance).filter(t -> t.hasCapability(side)).map(ILaserContainer.class::cast).toList();
+            if (!list.isEmpty()) {
+                return GTCapability.CAPABILITY_ENERGY_CONTAINER.orEmpty(cap, LazyOptional.of(() -> list.size() == 1 ? list.get(0) : new LaserContainerList(list)));
+            }
+
+        }
+        if (GTCEu.isAE2Loaded()) {
+            if (cap == Capabilities.IN_WORLD_GRID_NODE_HOST) {
+                if (machine instanceof IInWorldGridNodeHost nodeHost) {
+                    return Capabilities.IN_WORLD_GRID_NODE_HOST.orEmpty(cap, LazyOptional.of(() -> nodeHost));
+                }
+                var list = machine.getTraits().stream().filter(IInWorldGridNodeHost.class::isInstance).filter(t -> t.hasCapability(side)).map(IInWorldGridNodeHost.class::cast).toList();
+                if (!list.isEmpty()) {
+                    // TODO wrap list in the future (or not.)
+                    return Capabilities.IN_WORLD_GRID_NODE_HOST.orEmpty(cap, LazyOptional.of(() -> list.get(0)));
+                }
+            }
         }
         return null;
     }
 
     public static void onBlockEntityRegister(BlockEntityType<BlockEntity> metaMachineBlockEntityBlockEntityType) {
+    }
+
+    /**
+     * Why, Forge, Why?
+     * Why must you make me add a method for no good reason?
+     */
+    @OnlyIn(Dist.CLIENT)
+    @Override
+    public AABB getRenderBoundingBox() {
+        GTRendererProvider instance = GTRendererProvider.getInstance();
+        if (instance != null) {
+            IRenderer renderer = instance.getRenderer(this);
+            if (renderer != null) {
+                if (renderer.getViewDistance() == 64 /*the default*/) {
+                    return new AABB(worldPosition.offset(-1, 0, -1), worldPosition.offset(2, 2, 2));
+                }
+
+                int viewDistHalf = renderer.getViewDistance() / 2;
+                return new AABB(worldPosition).inflate(viewDistHalf);
+            }
+        }
+        return new AABB(worldPosition.offset(-1, 0, -1), worldPosition.offset(2, 2, 2));
     }
 }

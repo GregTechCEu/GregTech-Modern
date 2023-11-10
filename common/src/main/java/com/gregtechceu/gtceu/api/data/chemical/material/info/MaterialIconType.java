@@ -12,6 +12,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,6 +26,8 @@ public record MaterialIconType(String name) {
     public static final MaterialIconType dustImpure = new MaterialIconType("dustImpure");
     public static final MaterialIconType dustPure = new MaterialIconType("dustPure");
 
+    public static final MaterialIconType rawOre = new MaterialIconType("rawOre");
+    public static final MaterialIconType rawOreBlock = new MaterialIconType("rawOreBlock");
     public static final MaterialIconType crushed = new MaterialIconType("crushed");
     public static final MaterialIconType crushedPurified = new MaterialIconType("crushedPurified");
     public static final MaterialIconType crushedRefined = new MaterialIconType("crushedRefined");
@@ -84,11 +87,15 @@ public record MaterialIconType(String name) {
     public static final MaterialIconType turbineBlade = new MaterialIconType("turbineBlade");
 
     // BLOCK TEXTURES
+    public static final MaterialIconType liquid = new MaterialIconType("liquid");
+    public static final MaterialIconType gas = new MaterialIconType("gas");
+    public static final MaterialIconType plasma = new MaterialIconType("plasma");
+    public static final MaterialIconType molten = new MaterialIconType("molten");
     public static final MaterialIconType block = new MaterialIconType("block");
-    public static final MaterialIconType fluid = new MaterialIconType("fluid");
     public static final MaterialIconType ore = new MaterialIconType("ore");
     public static final MaterialIconType oreSmall = new MaterialIconType("oreSmall");
     public static final MaterialIconType frameGt = new MaterialIconType("frameGt");
+    public static final MaterialIconType wire = new MaterialIconType("wire");
 
     // USED FOR GREGIFICATION ADDON
     public static final MaterialIconType seed = new MaterialIconType("seed");
@@ -114,7 +121,7 @@ public record MaterialIconType(String name) {
         return ICON_TYPES.get(name);
     }
 
-    @Nonnull
+    @Nullable // Safe: only null on registration on fabric, and no "required" textures are resolved at that point.
     public ResourceLocation getBlockTexturePath(@Nonnull MaterialIconSet materialIconSet, boolean doReadCache) {
         if (doReadCache) {
             if (BLOCK_TEXTURE_CACHE.contains(this, materialIconSet)) {
@@ -124,10 +131,12 @@ public record MaterialIconType(String name) {
 
         MaterialIconSet iconSet = materialIconSet;
         //noinspection ConstantConditions
-        if (!iconSet.isRootIconset && Platform.isClient() && Minecraft.getInstance() != null && Minecraft.getInstance().getResourceManager() != null) { // check minecraft for null for CI environments
+        if (!Platform.isClient() || Minecraft.getInstance() == null || Minecraft.getInstance().getResourceManager() == null) return null; // check minecraft for null for CI environments
+        if (!iconSet.isRootIconset) {
             while (!iconSet.isRootIconset) {
                 ResourceLocation location = GTCEu.id(String.format("textures/block/material_sets/%s/%s.png", iconSet.name, this.name));
-                if (ResourceHelper.isResourceExist(location)) break;
+                if (ResourceHelper.isResourceExist(location) || ResourceHelper.isResourceExistRaw(location))
+                    break;
                 iconSet = iconSet.parentIconset;
             }
         }

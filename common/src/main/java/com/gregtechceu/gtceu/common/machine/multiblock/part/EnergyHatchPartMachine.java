@@ -13,6 +13,9 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import lombok.Getter;
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -55,13 +58,18 @@ public class EnergyHatchPartMachine extends TieredIOPartMachine implements IExpl
         if (io == IO.OUT) {
             container = NotifiableEnergyContainer.emitterContainer(this, GTValues.V[tier] * 64L * amperage, GTValues.V[tier], amperage);
             container.setSideOutputCondition(s -> s == getFrontFacing() && isWorkingEnabled());
-            container.setCapabilityValidator(s -> s == getFrontFacing());
+            container.setCapabilityValidator(s -> s == null || s == getFrontFacing());
         } else {
             container = NotifiableEnergyContainer.receiverContainer(this, GTValues.V[tier] * 16L * amperage, GTValues.V[tier], amperage);
             container.setSideInputCondition(s -> s == getFrontFacing() && isWorkingEnabled());
-            container.setCapabilityValidator(s -> s == getFrontFacing());
+            container.setCapabilityValidator(s -> s == null || s == getFrontFacing());
         }
         return container;
+    }
+
+    @Override
+    public boolean shouldOpenUI(Player player, InteractionHand hand, BlockHitResult hit) {
+        return false;
     }
 
     @Override

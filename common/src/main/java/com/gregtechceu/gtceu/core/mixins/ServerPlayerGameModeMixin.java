@@ -22,6 +22,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
  */
 @Mixin({ServerPlayerGameMode.class})
 public class ServerPlayerGameModeMixin {
+
     @Inject(
             method = {"useItemOn"},
             at = {@At(

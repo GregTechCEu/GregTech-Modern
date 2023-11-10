@@ -1,0 +1,18 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:facade_cover"
+  },
+  "items": [
+    "gtceu:facade_cover"
+  ],
+  "page": "gtceu:covers/facade_cover",
+  "position": [
+    -200,
+    200
+  ],
+  "pre_nodes": [
+    "gtceu:covers/cover"
+  ],
+  "section": "gtceu:covers"
+}

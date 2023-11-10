@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.machine;
 import com.gregtechceu.gtceu.api.block.BlockProperties;
 import com.gregtechceu.gtceu.api.block.IAppearance;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
+import com.gregtechceu.gtceu.api.blockentity.IPaintable;
 import com.gregtechceu.gtceu.api.blockentity.ITickSubscription;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IControllable;
@@ -12,37 +13,39 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.gui.fancy.IFancyTooltip;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.IToolGridHighLight;
-import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputFluid;
-import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputItem;
-import com.gregtechceu.gtceu.api.machine.feature.IMachineFeature;
-import com.gregtechceu.gtceu.api.machine.feature.IMufflableMachine;
+import com.gregtechceu.gtceu.api.machine.feature.*;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.misc.IOFluidTransferList;
 import com.gregtechceu.gtceu.api.misc.IOItemTransferList;
 import com.gregtechceu.gtceu.api.syncdata.EnhancedFieldManagedStorage;
 import com.gregtechceu.gtceu.api.syncdata.IEnhancedManaged;
+import com.gregtechceu.gtceu.api.syncdata.RequireRerender;
 import com.gregtechceu.gtceu.common.cover.FluidFilterCover;
 import com.gregtechceu.gtceu.common.cover.ItemFilterCover;
 import com.lowdragmc.lowdraglib.LDLib;
+import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.misc.FluidTransferList;
 import com.lowdragmc.lowdraglib.misc.ItemTransferList;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
-import com.lowdragmc.lowdraglib.syncdata.IManaged;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 import lombok.Getter;
+import lombok.Setter;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
@@ -79,7 +82,7 @@ import java.util.function.Predicate;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscription, IAppearance, IToolGridHighLight {
+public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscription, IAppearance, IToolGridHighLight, IFancyTooltip, IPaintable, IRedstoneSignalMachine {
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(MetaMachine.class);
     @Getter
     private final EnhancedFieldManagedStorage syncStorage = new EnhancedFieldManagedStorage(this);
@@ -89,6 +92,9 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
     @DescSynced
     @Persisted(key = "cover")
     protected final MachineCoverContainer coverContainer;
+    @Getter @Setter
+    @Persisted @DescSynced @RequireRerender
+    private int paintingColor = -1;
     @Getter
     protected final List<MachineTrait> traits;
     private final List<TickableSubscription> serverTicks;
@@ -117,7 +123,10 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
 
     @Override
     public void onChanged() {
-        markDirty();
+        var level = getLevel();
+        if (level != null && !level.isClientSide && level.getServer() != null) {
+            level.getServer().execute(this::markDirty);
+        }
     }
 
     public Level getLevel() {
@@ -127,7 +136,7 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
     public BlockPos getPos() {
         return holder.pos();
     }
-    
+
     public BlockState getBlockState() {
         return holder.getSelf().getBlockState();
     }
@@ -142,6 +151,16 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
 
     public void scheduleRenderUpdate() {
         holder.scheduleRenderUpdate();
+    }
+
+    public void scheduleNeighborShapeUpdate() {
+        Level level = getLevel();
+        BlockPos pos = getPos();
+
+        if (level == null || pos == null)
+            return;
+
+        level.getBlockState(pos).updateNeighbourShapes(level, pos, Block.UPDATE_ALL);
     }
 
     public long getOffsetTimer() {
@@ -168,6 +187,19 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
     public void onLoad() {
         traits.forEach(MachineTrait::onMachineLoad);
         coverContainer.onLoad();
+    }
+
+    /**
+     * Use for data not able to be saved with the SyncData system, like optional mod compatiblity in internal machines.
+     * @param tag the CompoundTag to load data from
+     * @param forDrop if the save is done for dropping the machine as an item.
+     */
+    public void saveCustomPersistedData(CompoundTag tag, boolean forDrop) {
+
+    }
+
+    public void loadCustomPersistedData(CompoundTag tag) {
+
     }
 
     //////////////////////////////////////
@@ -280,8 +312,9 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
     protected InteractionResult onHardHammerClick(Player playerIn, InteractionHand hand, Direction gridSide, BlockHitResult hitResult) {
         if (this instanceof IMufflableMachine mufflableMachine) {
             if (!isRemote()) {
-                mufflableMachine.setMuffled(mufflableMachine.isMuffled());
+                mufflableMachine.setMuffled(!mufflableMachine.isMuffled());
             }
+
             return InteractionResult.CONSUME;
         }
         return InteractionResult.PASS;
@@ -346,6 +379,7 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
             ItemStack stackInSlot = inventory.getStackInSlot(i);
             if (!stackInSlot.isEmpty()) {
                 inventory.setStackInSlot(i, ItemStack.EMPTY);
+                inventory.onContentsChanged();
                 itemBuffer.add(stackInSlot);
             }
         }
@@ -399,6 +433,10 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
         collisionList.add(Shapes.block());
     }
 
+    public boolean canSetIoOnSide(@Nullable Direction direction) {
+        return !hasFrontFacing() || getFrontFacing() != direction;
+    }
+
     public Direction getFrontFacing() {
         var blockState = getBlockState();
         if (blockState.getBlock() instanceof MetaMachineBlock machineBlock) {
@@ -435,13 +473,9 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
 
     }
 
-    public int getPaintingColor() {
-        return getDefinition().getDefaultPaintingColor();
-    }
-
     public int tintColor(int index) {
         if (index == 1) {
-            return getPaintingColor();
+            return getRealColor();
         }
         return -1;
     }
@@ -463,6 +497,28 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
             if (appearance != null) return appearance;
         }
         return getDefinition().getAppearance().get();
+    }
+
+    @Override
+    public int getOutputSignal(@Nullable Direction side) {
+        if (side == null) return 0;
+
+        // For some reason, Minecraft requests the output signal from the opposite side...
+        CoverBehavior cover = getCoverContainer().getCoverAtSide(side.getOpposite());
+        if (cover == null) return 0;
+
+        return cover.getRedstoneSignalOutput();
+    }
+
+    @Override
+    public boolean canConnectRedstone(Direction side) {
+        if (side == null) return false;
+
+        // For some reason, Minecraft requests the output signal from the opposite side...
+        CoverBehavior cover = getCoverContainer().getCoverAtSide(side);
+        if (cover == null) return false;
+
+        return cover.canConnectRedstone();
     }
 
     //////////////////////////////////////
@@ -515,4 +571,36 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
         return null;
     }
 
+    //////////////////////////////////////
+    //********       GUI       *********//
+    //////////////////////////////////////
+    @Override
+    public IGuiTexture getFancyTooltipIcon() {
+        return GuiTextures.INFO_ICON;
+    }
+
+    @Override
+    public final List<Component> getFancyTooltip() {
+        var tooltips = new ArrayList<Component>();
+        onAddFancyInformationTooltip(tooltips);
+        return tooltips;
+    }
+
+    @Override
+    public boolean showFancyTooltip() {
+        return !getFancyTooltip().isEmpty();
+    }
+
+    public void onAddFancyInformationTooltip(List<Component> tooltips) {
+        getDefinition().getTooltipBuilder().accept(getDefinition().asStack(), tooltips);
+        String mainKey = String.format("%s.machine.%s.tooltip", getDefinition().getId().getNamespace(), getDefinition().getId().getPath());
+        if (LocalizationUtils.exist(mainKey)) {
+            tooltips.add(0, Component.translatable(mainKey));
+        }
+    }
+
+    @Override
+    public int getDefaultPaintingColor() {
+        return getDefinition().getDefaultPaintingColor();
+    }
 }

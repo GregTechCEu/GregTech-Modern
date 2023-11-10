@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.api.capability.forge;
 
 import com.gregtechceu.gtceu.api.capability.*;
+import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
-import com.gregtechceu.gtceu.common.machine.trait.ConverterTrait;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.CapabilityToken;
@@ -21,7 +21,9 @@ public class GTCapability {
     public static final Capability<IControllable> CAPABILITY_CONTROLLABLE = CapabilityManager.get(new CapabilityToken<>() {});
     public static final Capability<RecipeLogic> CAPABILITY_RECIPE_LOGIC = CapabilityManager.get(new CapabilityToken<>() {});
     public static final Capability<IElectricItem> CAPABILITY_ELECTRIC_ITEM = CapabilityManager.get(new CapabilityToken<>() {});
-    public static final Capability<ConverterTrait> CAPABILITY_CONVERTER = CapabilityManager.get(new CapabilityToken<>() {});
+    public static final Capability<ICleanroomReceiver> CAPABILITY_CLEANROOM_RECEIVER = CapabilityManager.get(new CapabilityToken<>() {});
+    public static final Capability<IMaintenanceMachine> CAPABILITY_MAINTENANCE_MACHINE = CapabilityManager.get(new CapabilityToken<>() {});
+    public static final Capability<ILaserContainer> CAPABILITY_LASER = CapabilityManager.get(new CapabilityToken<>() {});
 
     public static void register(RegisterCapabilitiesEvent event) {
         event.register(IEnergyContainer.class);
@@ -31,7 +33,8 @@ public class GTCapability {
         event.register(IControllable.class);
         event.register(RecipeLogic.class);
         event.register(IElectricItem.class);
-        event.register(ConverterTrait.class);
+        event.register(ICleanroomReceiver.class);
+        event.register(IMaintenanceMachine.class);
     }
 
 }

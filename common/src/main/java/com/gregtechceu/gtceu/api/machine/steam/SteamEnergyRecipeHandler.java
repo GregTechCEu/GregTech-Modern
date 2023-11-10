@@ -6,14 +6,15 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 /**
  * @author KilaBash
@@ -33,14 +34,14 @@ public class SteamEnergyRecipeHandler implements IRecipeHandler<Long> {
     @Override
     public List<Long> handleRecipeInner(IO io, GTRecipe recipe, List<Long> left, @Nullable String slotName, boolean simulate) {
         long sum = left.stream().reduce(0L, Long::sum);
-        long realSum = (long) Math.ceil(sum / conversionRate);
+        long realSum = (long) Math.ceil(sum * conversionRate);
         if (realSum > 0) {
-            var steam = GTMaterials.Steam.getFluid(realSum);
-            var list = new ArrayList<FluidStack>();
+            var steam = io == IO.IN ? FluidIngredient.of(CustomTags.STEAM, realSum) : FluidIngredient.of(GTMaterials.Steam.getFluid(realSum));
+            var list = new ArrayList<FluidIngredient>();
             list.add(steam);
             var leftSteam = steamTank.handleRecipeInner(io, recipe, list, slotName, simulate);
             if (leftSteam == null || leftSteam.isEmpty()) return null;
-            sum = (long) (leftSteam.get(0).getAmount() * conversionRate);
+            sum = (long) (leftSteam.get(0).getAmount() / conversionRate);
         }
         return sum <= 0 ? null : Collections.singletonList(sum);
     }

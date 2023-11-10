@@ -1,6 +1,8 @@
 package com.gregtechceu.gtceu.api.data.chemical.material.properties;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.annotation.Nullable;
 
@@ -9,58 +11,29 @@ public class IngotProperty implements IMaterialProperty<IngotProperty> {
     /**
      * Specifies a material into which this material parts turn when heated
      */
-    private Material smeltInto;
+    @Getter @Setter
+    private Material smeltingInto;
 
     /**
      * Specifies a material into which this material parts turn when heated in arc furnace
      */
-    private Material arcSmeltInto;
+    @Getter @Setter
+    private Material arcSmeltingInto;
 
     /**
      * Specifies a Material into which this Material Macerates into.
      * <p>
      * Default: this Material.
      */
+    @Getter @Setter
     private Material macerateInto;
 
     /**
      * Material which obtained when this material is polarized
      */
     @Nullable
+    @Getter @Setter
     private Material magneticMaterial;
-
-    public void setSmeltingInto(Material smeltInto) {
-        this.smeltInto = smeltInto;
-    }
-
-    public Material getSmeltingInto() {
-        return this.smeltInto;
-    }
-
-    public void setArcSmeltingInto(Material arcSmeltingInto) {
-        this.arcSmeltInto = arcSmeltingInto;
-    }
-
-    public Material getArcSmeltInto() {
-        return this.arcSmeltInto;
-    }
-
-    public void setMagneticMaterial(@Nullable Material magneticMaterial) {
-        this.magneticMaterial = magneticMaterial;
-    }
-
-    @Nullable
-    public Material getMagneticMaterial() {
-        return magneticMaterial;
-    }
-
-    public void setMacerateInto(Material macerateInto) {
-        this.macerateInto = macerateInto;
-    }
-
-    public Material getMacerateInto() {
-        return macerateInto;
-    }
 
     @Override
     public void verifyProperty(MaterialProperties properties) {
@@ -71,11 +44,11 @@ public class IngotProperty implements IMaterialProperty<IngotProperty> {
                             " has both Ingot and Gem Property, which is not allowed!");
         }
 
-        if (smeltInto == null) smeltInto = properties.getMaterial();
-        else smeltInto.getProperties().ensureSet(PropertyKey.INGOT, true);
+        if (smeltingInto == null) smeltingInto = properties.getMaterial();
+        else smeltingInto.getProperties().ensureSet(PropertyKey.INGOT, true);
 
-        if (arcSmeltInto == null) arcSmeltInto = properties.getMaterial();
-        else arcSmeltInto.getProperties().ensureSet(PropertyKey.INGOT, true);
+        if (arcSmeltingInto == null) arcSmeltingInto = properties.getMaterial();
+        else arcSmeltingInto.getProperties().ensureSet(PropertyKey.INGOT, true);
 
         if (macerateInto == null) macerateInto = properties.getMaterial();
         else macerateInto.getProperties().ensureSet(PropertyKey.INGOT, true);

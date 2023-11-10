@@ -6,8 +6,10 @@ import com.gregtechceu.gtceu.api.gui.UITemplate;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
+import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.widget.ImageWidget;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
@@ -25,7 +27,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class SteamHatchPartMachine extends FluidHatchPartMachine implements IUIMachine {
+public class SteamHatchPartMachine extends FluidHatchPartMachine {
     public static final long INITIAL_TANK_CAPACITY = 64 * FluidHelper.getBucket();
     public static final boolean IS_STEEL = ConfigHolder.INSTANCE.machines.steelSteamMultiblocks;
 
@@ -35,7 +37,7 @@ public class SteamHatchPartMachine extends FluidHatchPartMachine implements IUIM
 
     @Override
     protected NotifiableFluidTank createTank(Object... args) {
-        return super.createTank(args).setFilter(fluidStack -> fluidStack.getFluid() == GTMaterials.Steam.getFluid());
+        return super.createTank(args).setFilter(fluidStack -> FluidIngredient.of(CustomTags.STEAM, 1).test(fluidStack));
     }
 
     @Override

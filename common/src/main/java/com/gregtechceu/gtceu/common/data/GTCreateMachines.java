@@ -8,8 +8,10 @@ import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.client.instance.SplitShaftInstance;
 import com.gregtechceu.gtceu.client.renderer.machine.KineticWorkableTieredHullMachineRenderer;
@@ -30,6 +32,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Locale;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -91,9 +94,11 @@ public class GTCreateMachines {
                 (holder, tier) -> new SimpleKineticElectricWorkableMachine(holder, tier, defaultTankSizeFunction), (tier, builder) -> builder
                         .langValue("%s %s %s".formatted(VLVH[tier], toEnglishName(name), VLVT[tier]))
                         .rotationState(RotationState.NON_Y_AXIS)
+                        .editableUI(SimpleTieredMachine.EDITABLE_UI_CREATOR.apply(GTCEu.id(name), recipeType))
                         .blockProp(BlockBehaviour.Properties::dynamicShape)
                         .blockProp(BlockBehaviour.Properties::noOcclusion)
                         .recipeType(recipeType)
+                        .recipeModifier(GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
                         .renderer(() -> new KineticWorkableTieredHullMachineRenderer(tier, GTCEu.id("block/machine/kinetic_electric_machine"), GTCEu.id("block/machines/" + name)))
                         .tooltips(explosion())
                         .tooltips(workableTiered(tier, GTValues.V[tier], GTValues.V[tier] * 64, recipeType, defaultTankSizeFunction.apply(tier), true))
@@ -116,10 +121,9 @@ public class GTCreateMachines {
                                                                     @Nullable NonNullSupplier<BiFunction<MaterialManager, KineticMachineBlockEntity, BlockEntityInstance<? super KineticMachineBlockEntity>>> instanceFactory,
                                                                     boolean renderNormally,
                                                                     int... tiers) {
-        KineticMachineDefinition[] definitions = new KineticMachineDefinition[tiers.length];
-        for (int i = 0; i < tiers.length; i++) {
-            int tier = tiers[i];
-            var register =  REGISTRATE.machine(GTValues.VN[tier].toLowerCase() + "_" + name,
+        KineticMachineDefinition[] definitions = new KineticMachineDefinition[GTValues.TIER_COUNT];
+        for (int tier : tiers) {
+            var register = REGISTRATE.machine(GTValues.VN[tier].toLowerCase(Locale.ROOT) + "_" + name,
                             id -> definitionFactory.apply(tier, id),
                             holder -> factory.apply(holder, tier),
                             KineticMachineBlock::new,
@@ -128,7 +132,7 @@ public class GTCreateMachines {
                     .tier(tier)
                     .hasTESR(instanceFactory != null)
                     .onBlockEntityRegister(type -> KineticMachineBlockEntity.onBlockEntityRegister(type, instanceFactory, renderNormally));
-            definitions[i] = builder.apply(tier, register);
+            definitions[tier] = builder.apply(tier, register);
         }
         return definitions;
     }

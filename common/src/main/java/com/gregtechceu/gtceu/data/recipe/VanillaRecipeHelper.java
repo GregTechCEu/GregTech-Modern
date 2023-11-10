@@ -11,10 +11,12 @@ import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.data.recipe.builder.*;
 import com.tterrag.registrate.util.entry.ItemEntry;
+import com.tterrag.registrate.util.entry.ItemProviderEntry;
 import it.unimi.dsi.fastutil.chars.*;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -23,6 +25,7 @@ import net.minecraft.world.level.ItemLike;
 
 import javax.annotation.Nonnull;
 import java.util.Comparator;
+import java.util.Locale;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -34,27 +37,47 @@ import java.util.stream.Collectors;
 public class VanillaRecipeHelper {
 
     public static void addSmeltingRecipe(Consumer<FinishedRecipe> provider, @Nonnull String regName, TagKey<Item> input, ItemStack output) {
+        addSmeltingRecipe(provider, GTCEu.id(regName.toLowerCase(Locale.ROOT)), input, output);
+    }
+
+    public static void addSmeltingRecipe(Consumer<FinishedRecipe> provider, @Nonnull ResourceLocation regName, TagKey<Item> input, ItemStack output) {
         addSmeltingRecipe(provider, regName, input, output, 0.0f);
     }
 
     public static void addSmeltingRecipe(Consumer<FinishedRecipe> provider, @Nonnull String regName, TagKey<Item> input, ItemStack output, float experience) {
-        new SmeltingRecipeBuilder(GTCEu.id(regName.toLowerCase())).input(input).output(output).cookingTime(200).experience(experience).save(provider);
+        addSmeltingRecipe(provider, GTCEu.id(regName.toLowerCase(Locale.ROOT)), input, output, experience);
+    }
+
+    public static void addSmeltingRecipe(Consumer<FinishedRecipe> provider, @Nonnull ResourceLocation regName, TagKey<Item> input, ItemStack output, float experience) {
+        new SmeltingRecipeBuilder(regName).input(input).output(output).cookingTime(200).experience(experience).save(provider);
     }
 
     public static void addBlastingRecipe(Consumer<FinishedRecipe> provider, @Nonnull String regName, TagKey<Item> input, ItemStack output, float experience) {
-        new BlastingRecipeBuilder(GTCEu.id(regName.toLowerCase())).input(input).output(output).cookingTime(100).experience(experience).save(provider);
+        addBlastingRecipe(provider, GTCEu.id(regName.toLowerCase(Locale.ROOT)), input, output, experience);
+    }
+
+    public static void addBlastingRecipe(Consumer<FinishedRecipe> provider, @Nonnull ResourceLocation regName, TagKey<Item> input, ItemStack output, float experience) {
+        new BlastingRecipeBuilder(regName).input(input).output(output).cookingTime(100).experience(experience).save(provider);
     }
 
     public static void addSmokingRecipe(Consumer<FinishedRecipe> provider, @Nonnull String regName, TagKey<Item> input, ItemStack output, float experience) {
-        new SmokingRecipeBuilder(GTCEu.id(regName.toLowerCase())).input(input).output(output).cookingTime(100).experience(experience).save(provider);
+        addSmokingRecipe(provider, GTCEu.id(regName.toLowerCase(Locale.ROOT)), input, output, experience);
+    }
+
+    public static void addSmokingRecipe(Consumer<FinishedRecipe> provider, @Nonnull ResourceLocation regName, TagKey<Item> input, ItemStack output, float experience) {
+        new SmokingRecipeBuilder(regName).input(input).output(output).cookingTime(100).experience(experience).save(provider);
     }
 
     public static void addSmeltingRecipe(Consumer<FinishedRecipe> provider, @Nonnull String regName, ItemStack input, ItemStack output) {
-        addSmeltingRecipe(provider, regName, input, output, 0.0f);
+        addSmeltingRecipe(provider, GTCEu.id(regName.toLowerCase(Locale.ROOT)), input, output, 0.0f);
     }
 
     public static void addSmeltingRecipe(Consumer<FinishedRecipe> provider, @Nonnull String regName, ItemStack input, ItemStack output, float experience) {
-        new SmeltingRecipeBuilder(GTCEu.id(regName.toLowerCase())).input(input).output(output).cookingTime(200).experience(experience).save(provider);
+        addSmeltingRecipe(provider, GTCEu.id(regName.toLowerCase(Locale.ROOT)), input, output, experience);
+    }
+
+    public static void addSmeltingRecipe(Consumer<FinishedRecipe> provider, @Nonnull ResourceLocation regName, ItemStack input, ItemStack output, float experience) {
+        new SmeltingRecipeBuilder(regName).input(input).output(output).cookingTime(200).experience(experience).save(provider);
     }
 
     private static final Char2ObjectMap<TagKey<Item>> TOOLS = new Char2ObjectArrayMap<>();
@@ -72,7 +95,19 @@ public class VanillaRecipeHelper {
     }
 
     public static void addShapedRecipe(Consumer<FinishedRecipe> provider, @Nonnull String regName, @Nonnull ItemStack result, @Nonnull Object... recipe) {
+        addShapedRecipe(provider, GTCEu.id(regName.toLowerCase(Locale.ROOT)), result, recipe);
+    }
+
+    public static void addShapedRecipe(Consumer<FinishedRecipe> provider, @Nonnull ResourceLocation regName, @Nonnull ItemStack result, @Nonnull Object... recipe) {
         addShapedRecipe(provider, false, regName, result, recipe);
+    }
+
+    public static void addStrictShapedRecipe(Consumer<FinishedRecipe> provider, @Nonnull String regName, @Nonnull ItemStack result, @Nonnull Object... recipe) {
+        addStrictShapedRecipe(provider, GTCEu.id(regName.toLowerCase(Locale.ROOT)), result, recipe);
+    }
+
+    public static void addStrictShapedRecipe(Consumer<FinishedRecipe> provider, @Nonnull ResourceLocation regName, @Nonnull ItemStack result, @Nonnull Object... recipe) {
+        addStrictShapedRecipe(provider, false, regName, result, recipe);
     }
 
     /**
@@ -100,8 +135,9 @@ public class VanillaRecipeHelper {
      * @param result  the output for the recipe
      * @param recipe  the contents of the recipe
      */
-    public static void addShapedRecipe(Consumer<FinishedRecipe> provider, boolean withUnificationData, @Nonnull String regName, @Nonnull ItemStack result, @Nonnull Object... recipe) {
-        var builder = new ShapedRecipeBuilder(GTCEu.id(regName.toLowerCase())).output(result);
+    public static void addShapedRecipe(Consumer<FinishedRecipe> provider, boolean withUnificationData, boolean isStrict, @Nonnull ResourceLocation regName, @Nonnull ItemStack result, @Nonnull Object... recipe) {
+        var builder = new ShapedRecipeBuilder(regName).output(result);
+        builder.isStrict(isStrict);
         CharSet set = new CharOpenHashSet();
         for (int i = 0; i < recipe.length; i++) {
             var o = recipe[i];
@@ -110,6 +146,16 @@ public class VanillaRecipeHelper {
                 for (Character c : TOOLS.keySet()) {
                     if (pattern.indexOf(c) >= 0) {
                         set.add(c.charValue());
+                    }
+                }
+            }
+            if (o instanceof String[] pattern) {
+                for (String s : pattern) {
+                    builder.pattern(s);
+                    for (Character c : TOOLS.keySet()) {
+                        if (s.indexOf(c) >= 0) {
+                            set.add(c.charValue());
+                        }
                     }
                 }
             }
@@ -129,7 +175,7 @@ public class VanillaRecipeHelper {
                     if (tag != null) {
                         builder.define(sign, tag);
                     } else builder.define(sign, ChemicalHelper.get(entry.tagPrefix, entry.material));
-                } else if (content instanceof ItemEntry<?> entry) {
+                } else if (content instanceof ItemProviderEntry<?> entry) {
                     builder.define(sign, entry.asStack());
                 }
             }
@@ -144,8 +190,83 @@ public class VanillaRecipeHelper {
         }
     }
 
+    public static void addShapedRecipe(Consumer<FinishedRecipe> provider, boolean withUnificationData, @Nonnull String regName, @Nonnull ItemStack result, @Nonnull Object... recipe) {
+        addShapedRecipe(provider, withUnificationData, GTCEu.id(regName.toLowerCase(Locale.ROOT)), result, recipe);
+    }
+
+    public static void addShapedRecipe(Consumer<FinishedRecipe> provider, boolean withUnificationData, @Nonnull ResourceLocation regName, @Nonnull ItemStack result, @Nonnull Object... recipe) {
+        addShapedRecipe(provider, withUnificationData, false, regName, result, recipe);
+    }
+
+    public static void addStrictShapedRecipe(Consumer<FinishedRecipe> provider, boolean withUnificationData, @Nonnull ResourceLocation regName, @Nonnull ItemStack result, @Nonnull Object... recipe) {
+        addShapedRecipe(provider, withUnificationData, true, regName, result, recipe);
+    }
+
     public static void addShapelessRecipe(Consumer<FinishedRecipe> provider, @Nonnull String regName, @Nonnull ItemStack result, @Nonnull Object... recipe) {
-        var builder = new ShapelessRecipeBuilder(GTCEu.id(regName.toLowerCase())).output(result);
+        addShapelessRecipe(provider, GTCEu.id(regName.toLowerCase(Locale.ROOT)), result, recipe);
+    }
+
+    public static void addShapedEnergyTransferRecipe(Consumer<FinishedRecipe> provider, boolean withUnificationData, boolean overrideCharge, boolean transferMaxCharge, @Nonnull ResourceLocation regName, @Nonnull Ingredient chargeIngredient, @Nonnull ItemStack result, @Nonnull Object... recipe) {
+        var builder = new ShapedEnergyTransferRecipeBuilder(regName).output(result);
+        builder.chargeIngredient(chargeIngredient).overrideCharge(overrideCharge).transferMaxCharge(transferMaxCharge);
+        CharSet set = new CharOpenHashSet();
+        for (int i = 0; i < recipe.length; i++) {
+            var o = recipe[i];
+            if (o instanceof String pattern) {
+                builder.pattern(pattern);
+                for (Character c : TOOLS.keySet()) {
+                    if (pattern.indexOf(c) >= 0) {
+                        set.add(c.charValue());
+                    }
+                }
+            }
+            if (o instanceof String[] pattern) {
+                for (String s : pattern) {
+                    builder.pattern(s);
+                    for (Character c : TOOLS.keySet()) {
+                        if (s.indexOf(c) >= 0) {
+                            set.add(c.charValue());
+                        }
+                    }
+                }
+            }
+            if (o instanceof Character sign) {
+                var content = recipe[i + 1];
+                i++;
+                if (content instanceof Ingredient ingredient) {
+                    builder.define(sign, ingredient);
+                } else if (content instanceof ItemStack itemStack) {
+                    builder.define(sign, itemStack);
+                } else if (content instanceof TagKey<?> key) {
+                    builder.define(sign, (TagKey<Item>) key);
+                } else if (content instanceof ItemLike itemLike) {
+                    builder.define(sign, itemLike);
+                } else if (content instanceof UnificationEntry entry) {
+                    TagKey<Item> tag = ChemicalHelper.getTag(entry.tagPrefix, entry.material);
+                    if (tag != null) {
+                        builder.define(sign, tag);
+                    } else builder.define(sign, ChemicalHelper.get(entry.tagPrefix, entry.material));
+                } else if (content instanceof ItemProviderEntry<?> entry) {
+                    builder.define(sign, entry.asStack());
+                }
+            }
+        }
+        for (Character c : set) {
+            builder.define(c, TOOLS.get(c.charValue()));
+        }
+        builder.save(provider);
+
+        if (withUnificationData) {
+            ChemicalHelper.registerMaterialInfo(result.getItem(), getRecyclingIngredients(result.getCount(), recipe));
+        }
+    }
+
+    public static void addShapedEnergyTransferRecipe(Consumer<FinishedRecipe> provider, boolean withUnificationData, boolean overrideCharge, boolean transferMaxCharge, @Nonnull String regName, @Nonnull Ingredient chargeIngredient, @Nonnull ItemStack result, @Nonnull Object... recipe) {
+        addShapedEnergyTransferRecipe(provider, withUnificationData, overrideCharge, transferMaxCharge, GTCEu.id(regName.toLowerCase(Locale.ROOT)), chargeIngredient, result, recipe);
+    }
+
+    public static void addShapelessRecipe(Consumer<FinishedRecipe> provider, @Nonnull ResourceLocation regName, @Nonnull ItemStack result, @Nonnull Object... recipe) {
+        var builder = new ShapelessRecipeBuilder(regName).output(result);
         for (Object content : recipe) {
             if (content instanceof Ingredient ingredient) {
                 builder.requires(ingredient);

@@ -1,15 +1,12 @@
 package com.gregtechceu.gtceu.api.machine.feature;
 
-import com.gregtechceu.gtceu.api.gui.MachineUIFactory;
+import com.gregtechceu.gtceu.api.gui.factory.MachineUIFactory;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.modular.IUIHolder;
-import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
 /**
@@ -17,18 +14,21 @@ import net.minecraft.world.phys.BlockHitResult;
  * @date 2023/2/17
  * @implNote A machine that has gui. can be opened via right click.
  */
-public interface IUIMachine extends IUIHolder, IInteractedMachine, IMachineFeature {
+public interface IUIMachine extends IUIHolder, IMachineFeature {
 
     default boolean shouldOpenUI(Player player, InteractionHand hand, BlockHitResult hit) {
         return true;
     }
 
-    @Override
-    default InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-        if (this.shouldOpenUI(player, hand, hit)  && player instanceof ServerPlayer serverPlayer) {
-            MachineUIFactory.INSTANCE.openUI(self(), serverPlayer);
+    default InteractionResult tryToOpenUI(Player player, InteractionHand hand, BlockHitResult hit) {
+        if (this.shouldOpenUI(player, hand, hit)) {
+            if (player instanceof ServerPlayer serverPlayer) {
+                MachineUIFactory.INSTANCE.openUI(self(), serverPlayer);
+            }
+        } else {
+            return InteractionResult.PASS;
         }
-        return InteractionResult.sidedSuccess(world.isClientSide);
+        return InteractionResult.sidedSuccess(player.level.isClientSide);
     }
 
     @Override

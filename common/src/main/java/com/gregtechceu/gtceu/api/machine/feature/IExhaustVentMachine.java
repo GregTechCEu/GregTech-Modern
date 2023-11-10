@@ -33,6 +33,8 @@ public interface IExhaustVentMachine extends IMachineFeature {
      */
     boolean needsVenting();
 
+    void setNeedsVenting(boolean needsVenting);
+
     /**
      * Mark the machine as no longer needing venting
      */
@@ -42,6 +44,21 @@ public interface IExhaustVentMachine extends IMachineFeature {
      * @return the damage to deal to entities in the vent area
      */
     float getVentingDamage();
+
+    /**
+     * Checks the venting state. Performs venting only if required.
+     * <strong>Server-Side Only.</strong>
+     *
+     * @return if the machine does not need venting
+     */
+    default boolean checkVenting() {
+        if (needsVenting()) {
+            if (self().getLevel() instanceof ServerLevel serverLevel) {
+                tryDoVenting(serverLevel, self().getPos());
+            }
+        }
+        return !needsVenting();
+    }
 
     /**
      * @return if venting is being blocked by something

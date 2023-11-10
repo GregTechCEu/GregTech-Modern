@@ -4,6 +4,8 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.BlastProperty.GasTier;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.ToolProperty;
+import com.gregtechceu.gtceu.api.fluids.FluidBuilder;
+import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.*;
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet.*;
@@ -91,12 +93,12 @@ public class HigherDegreeMaterials {
                 .buildAndRegister();
 
         RedAlloy = new Material.Builder("red_alloy")
-                .ingot(0).fluid()
+                .ingot(0)
+                .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(1400))
                 .color(0xC80000)
                 .appendFlags(STD_METAL, GENERATE_FINE_WIRE, GENERATE_BOLT_SCREW, DISABLE_DECOMPOSITION)
                 .components(Copper, 1, Redstone, 4)
                 .cableProperties(GTValues.V[0], 1, 0)
-                .fluidTemp(1400)
                 .buildAndRegister();
 
         BasalticMineralSand = new Material.Builder("basaltic_mineral_sand")
@@ -164,12 +166,12 @@ public class HigherDegreeMaterials {
                 .buildAndRegister();
 
         BlueAlloy = new Material.Builder("blue_alloy")
-                .ingot().fluid()
+                .ingot()
+                .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(1400))
                 .color(0x64B4FF).iconSet(DULL)
                 .flags(GENERATE_PLATE, GENERATE_BOLT_SCREW, DISABLE_DECOMPOSITION)
                 .components(Electrotine, 4, Silver, 1)
                 .cableProperties(GTValues.V[GTValues.HV], 2, 1)
-                .fluidTemp(1400)
                 .buildAndRegister();
     }
 }

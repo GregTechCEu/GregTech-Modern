@@ -1,13 +1,12 @@
 package com.gregtechceu.gtceu.api.cover.filter;
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.gui.widget.ScrollablePhantomFluidWidget;
 import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
-import com.lowdragmc.lowdraglib.gui.widget.PhantomFluidWidget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.misc.FluidStorage;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import lombok.Getter;
-import lombok.Setter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -32,8 +31,14 @@ public class SimpleFluidFilter implements FluidFilter {
     protected boolean ignoreNbt;
     @Getter
     protected FluidStack[] matches = new FluidStack[9];
-    @Setter
-    protected Consumer<FluidFilter> onUpdated;
+
+    protected Consumer<FluidFilter> itemWriter = filter -> {};
+    protected Consumer<FluidFilter> onUpdated = filter -> itemWriter.accept(filter);
+
+    @Getter
+    protected long maxStackSize = 1L;
+
+    private FluidStorage[] fluidStorageSlots = new FluidStorage[9];
 
     protected SimpleFluidFilter() {
         Arrays.fill(matches, FluidStack.empty());
@@ -43,9 +48,9 @@ public class SimpleFluidFilter implements FluidFilter {
         return loadFilter(itemStack.getOrCreateTag(), filter -> itemStack.setTag(filter.saveFilter()));
     }
 
-    public static SimpleFluidFilter loadFilter(CompoundTag tag, Consumer<FluidFilter> onUpdated) {
+    private static SimpleFluidFilter loadFilter(CompoundTag tag, Consumer<FluidFilter> itemWriter) {
         var handler = new SimpleFluidFilter();
-        handler.setOnUpdated(onUpdated);
+        handler.itemWriter = itemWriter;
         handler.isBlackList = tag.getBoolean("isBlackList");
         handler.ignoreNbt = tag.getBoolean("matchNbt");
         var list = tag.getList("matches", Tag.TAG_COMPOUND);
@@ -53,6 +58,14 @@ public class SimpleFluidFilter implements FluidFilter {
             handler.matches[i] = FluidStack.loadFromTag((CompoundTag) list.get(i));
         }
         return handler;
+    }
+
+    @Override
+    public void setOnUpdated(Consumer<FluidFilter> onUpdated) {
+        this.onUpdated = filter -> {
+            this.itemWriter.accept(filter);
+            onUpdated.accept(filter);
+        };
     }
 
     public CompoundTag saveFilter() {
@@ -80,17 +93,33 @@ public class SimpleFluidFilter implements FluidFilter {
 
     public WidgetGroup openConfigurator(int x, int y) {
         WidgetGroup group = new WidgetGroup(x, y, 18 * 3 + 25, 18 * 3); // 80 55
+        fluidStorageSlots = new FluidStorage[9];
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
                 final int index = i * 3 + j;
-                var handler = new FluidStorage(1000);
-                handler.setFluid(matches[index]);
-                var tank = new PhantomFluidWidget(handler, i * 18, j * 18);
-                tank.setShowAmount(false);
+
+                fluidStorageSlots[index] = new FluidStorage(maxStackSize);
+                fluidStorageSlots[index].setFluid(matches[index]);
+
+                var tank = new ScrollablePhantomFluidWidget(fluidStorageSlots[index], i * 18, j * 18) {
+                    @Override
+                    public void updateScreen() {
+                        super.updateScreen();
+                        setShowAmount(maxStackSize > 1L);
+                    }
+
+                    @Override
+                    public void detectAndSendChanges() {
+                        super.detectAndSendChanges();
+                        setShowAmount(maxStackSize > 1L);
+                    }
+                };
+
                 tank.setChangeListener(() -> {
-                    matches[index] = handler.getFluidInTank(0);
+                    matches[index] = fluidStorageSlots[index].getFluidInTank(0);
                     onUpdated.accept(this);
                 }).setBackground(GuiTextures.SLOT);
+
                 group.addWidget(tank);
             }
         }
@@ -103,17 +132,45 @@ public class SimpleFluidFilter implements FluidFilter {
 
     @Override
     public boolean test(FluidStack other) {
-        boolean found = false;
-        for (var match : matches) {
-            if (ignoreNbt) {
-                found = match.getFluid() == other.getFluid();
-            } else {
-                found = match.isFluidEqual(other);
-            }
-            if (found) {
-                break;
+        return testFluidAmount(other) > 0L;
+    }
+
+    @Override
+    public long testFluidAmount(FluidStack fluidStack) {
+        long totalFluidAmount = getTotalConfiguredFluidAmount(fluidStack);
+
+        if (isBlackList) {
+            return (totalFluidAmount > 0L) ? 0L : Long.MAX_VALUE;
+        }
+
+        return totalFluidAmount;
+    }
+
+    public long getTotalConfiguredFluidAmount(FluidStack fluidStack) {
+        long totalAmount = 0L;
+
+        for (var candidate : matches) {
+            if (ignoreNbt && candidate.getFluid() == fluidStack.getFluid()) {
+                totalAmount += candidate.getAmount();
+            } else if (candidate.isFluidEqual(fluidStack)) {
+                totalAmount += candidate.getAmount();
             }
         }
-        return isBlackList != found;
+
+        return totalAmount;
+    }
+
+    public void setMaxStackSize(long maxStackSize) {
+        this.maxStackSize = maxStackSize;
+
+        for (FluidStorage slot : fluidStorageSlots) {
+            if (slot != null)
+                slot.setCapacity(maxStackSize);
+        }
+
+        for (FluidStack match : matches) {
+            if (!match.isEmpty())
+                match.setAmount(Math.min(match.getAmount(), maxStackSize));
+        }
     }
 }

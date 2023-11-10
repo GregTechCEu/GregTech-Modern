@@ -8,7 +8,6 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.syncdata.EnhancedFieldManagedStorage;
 import com.gregtechceu.gtceu.api.syncdata.IEnhancedManaged;
 import com.gregtechceu.gtceu.api.syncdata.UpdateListener;
-import com.lowdragmc.lowdraglib.syncdata.IManagedStorage;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.annotation.ReadOnlyManaged;
@@ -19,15 +18,11 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author KilaBash
@@ -64,7 +59,10 @@ public class MachineCoverContainer implements ICoverable, IEnhancedManaged {
 
     @Override
     public void onChanged() {
-        markDirty();
+        var level = getLevel();
+        if (level != null && !level.isClientSide && level.getServer() != null) {
+            level.getServer().execute(this::markDirty);
+        }
     }
 
     @Override
@@ -98,44 +96,13 @@ public class MachineCoverContainer implements ICoverable, IEnhancedManaged {
     }
 
     @Override
+    public void scheduleNeighborShapeUpdate() {
+        machine.scheduleNeighborShapeUpdate();
+    }
+
+    @Override
     public boolean isInValid() {
         return machine.isInValid();
-    }
-
-    @Override
-    public boolean placeCoverOnSide(Direction side, ItemStack itemStack, CoverDefinition coverDefinition, ServerPlayer player) {
-        CoverBehavior coverBehavior = coverDefinition.createCoverBehavior(this, side);
-        if (!canPlaceCoverOnSide(coverDefinition, side) || !coverBehavior.canAttach()) {
-            return false;
-        }
-        if (getCoverAtSide(side) != null) {
-            removeCover(side);
-        }
-        coverBehavior.onAttached(itemStack, player);
-        coverBehavior.onLoad();
-        setCoverAtSide(coverBehavior, side);
-        notifyBlockUpdate();
-        markDirty();
-        // TODO achievement
-//        AdvancementTriggers.FIRST_COVER_PLACE.trigger((EntityPlayerMP) player);
-        return true;
-    }
-
-    @Override
-    public boolean removeCover(Direction side) {
-        CoverBehavior coverBehavior = getCoverAtSide(side);
-        if (coverBehavior == null) {
-            return false;
-        }
-        List<ItemStack> drops = coverBehavior.getDrops();
-        coverBehavior.onRemoved();
-        setCoverAtSide(null, side);
-        for (ItemStack dropStack : drops) {
-            Block.popResource(getLevel(), getPos(), dropStack);
-        }
-        notifyBlockUpdate();
-        markDirty();
-        return true;
     }
 
     @Override
@@ -156,10 +123,6 @@ public class MachineCoverContainer implements ICoverable, IEnhancedManaged {
         return 0;
     }
 
-    @Override
-    public int getPaintingColorForRendering() {
-        return -1;
-    }
 
     @Override
     public Direction getFrontFacing() {
@@ -194,7 +157,8 @@ public class MachineCoverContainer implements ICoverable, IEnhancedManaged {
         };
     }
 
-    private void setCoverAtSide(@Nullable CoverBehavior coverBehavior, Direction side) {
+    @Override
+    public void setCoverAtSide(@Nullable CoverBehavior coverBehavior, Direction side) {
         switch (side) {
             case UP -> up = coverBehavior;
             case SOUTH -> south = coverBehavior;
@@ -214,7 +178,7 @@ public class MachineCoverContainer implements ICoverable, IEnhancedManaged {
             for (IRef ref : coverBehavior.getSyncStorage().getNonLazyFields()) {
                 ref.update();
             }
-            return coverBehavior.getSyncStorage().hasDirtyFields();
+            return coverBehavior.getSyncStorage().hasDirtySyncFields() || coverBehavior.getSyncStorage().hasDirtyPersistedFields();
         }
         return false;
     }

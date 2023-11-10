@@ -1,8 +1,10 @@
 package com.gregtechceu.gtceu.api.registry.registrate;
 
 import com.google.common.base.Suppliers;
+import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
-import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
+import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.block.IMachineBlock;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
@@ -14,12 +16,15 @@ import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.common.data.GTCompassNodes;
+import com.gregtechceu.gtceu.common.data.GTCompassSections;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import com.tterrag.registrate.Registrate;
 import com.tterrag.registrate.builders.BlockBuilder;
 import com.tterrag.registrate.builders.ItemBuilder;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import com.tterrag.registrate.util.nullness.NonNullUnaryOperator;
+import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -60,12 +65,16 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
     private Comparator<IMultiPart> partSorter = (a, b) -> 0;
     @Setter
     private TriFunction<IMultiController, IMultiPart, Direction, BlockState> partAppearance;
+    @Getter
+    @Setter
+    private BiConsumer<IMultiController, List<Component>> additionalDisplay = (m, l) -> {};
 
     protected MultiblockMachineBuilder(Registrate registrate, String name, Function<IMachineBlockEntity, ? extends MultiblockControllerMachine> metaMachine,
                                        BiFunction<BlockBehaviour.Properties, MultiblockMachineDefinition, IMachineBlock> blockFactory,
                                        BiFunction<IMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
                                        TriFunction<BlockEntityType<?>, BlockPos, BlockState, IMachineBlockEntity> blockEntityFactory) {
         super(registrate, name, MultiblockMachineDefinition::createDefinition, metaMachine::apply, blockFactory, itemFactory, blockEntityFactory);
+        this.compassSections(GTCompassSections.MULTIBLOCK);
     }
 
     public static MultiblockMachineBuilder createMulti(Registrate registrate, String name, Function<IMachineBlockEntity, ? extends MultiblockControllerMachine> metaMachine,
@@ -136,8 +145,13 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
     }
 
     @Override
-    public MultiblockMachineBuilder recipeType(GTRecipeType recipeType) {
-        return (MultiblockMachineBuilder) super.recipeType(recipeType);
+    public MultiblockMachineBuilder recipeTypes(GTRecipeType... recipeTypes) {
+        return (MultiblockMachineBuilder) super.recipeTypes(recipeTypes);
+    }
+
+    @Override
+    public MultiblockMachineBuilder recipeType(GTRecipeType recipeTypes) {
+        return (MultiblockMachineBuilder) super.recipeType(recipeTypes);
     }
 
     @Override
@@ -148,11 +162,6 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
     @Override
     public MultiblockMachineBuilder itemColor(BiFunction<ItemStack, Integer, Integer> itemColor) {
         return (MultiblockMachineBuilder) super.itemColor(itemColor);
-    }
-
-    @Override
-    public MultiblockMachineBuilder overclockingLogic(OverclockingLogic overclockingLogic) {
-        return (MultiblockMachineBuilder) super.overclockingLogic(overclockingLogic);
     }
 
     @Override
@@ -234,6 +243,56 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
     }
 
     @Override
+    public MultiblockMachineBuilder recipeModifier(BiFunction<MetaMachine, GTRecipe, GTRecipe> recipeModifier) {
+        return (MultiblockMachineBuilder) super.recipeModifier(recipeModifier);
+    }
+
+    @Override
+    public MultiblockMachineBuilder recipeModifier(BiFunction<MetaMachine, GTRecipe, GTRecipe> recipeModifier, boolean alwaysTryModifyRecipe) {
+        return (MultiblockMachineBuilder) super.recipeModifier(recipeModifier, alwaysTryModifyRecipe);
+    }
+
+    @Override
+    public MultiblockMachineBuilder alwaysTryModifyRecipe(boolean alwaysTryModifyRecipe) {
+        return (MultiblockMachineBuilder) super.alwaysTryModifyRecipe(alwaysTryModifyRecipe);
+    }
+
+    @Override
+    public MultiblockMachineBuilder editableUI(@Nullable EditableMachineUI editableUI) {
+        return (MultiblockMachineBuilder) super.editableUI(editableUI);
+    }
+
+    @Override
+    public MultiblockMachineBuilder compassSections(CompassSection... sections) {
+        return (MultiblockMachineBuilder) super.compassSections(sections);
+    }
+
+    @Override
+    public MultiblockMachineBuilder compassNodeSelf() {
+        return (MultiblockMachineBuilder) super.compassNodeSelf();
+    }
+
+    @Override
+    public MultiblockMachineBuilder compassNode(String compassNode) {
+        return (MultiblockMachineBuilder) super.compassNode(compassNode);
+    }
+
+    @Override
+    public MultiblockMachineBuilder compassPreNodes(CompassSection section, String... compassNodes) {
+        return (MultiblockMachineBuilder) super.compassPreNodes(section, compassNodes);
+    }
+
+    @Override
+    public MultiblockMachineBuilder compassPreNodes(ResourceLocation... compassNodes) {
+        return (MultiblockMachineBuilder) super.compassPreNodes(compassNodes);
+    }
+
+    @Override
+    public MultiblockMachineBuilder compassPreNodes(CompassNode... compassNodes) {
+        return (MultiblockMachineBuilder) super.compassPreNodes(compassNodes);
+    }
+
+    @Override
     public MultiblockMachineBuilder onBlockEntityRegister(NonNullConsumer<BlockEntityType<BlockEntity>> onBlockEntityRegister) {
         return (MultiblockMachineBuilder) super.onBlockEntityRegister(onBlockEntityRegister);
     }
@@ -254,6 +313,7 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
             partAppearance = (controller, part, side) -> definition.getAppearance().get();
         }
         definition.setPartAppearance(partAppearance);
+        definition.setAdditionalDisplay(additionalDisplay);
         return definition;
     }
 }

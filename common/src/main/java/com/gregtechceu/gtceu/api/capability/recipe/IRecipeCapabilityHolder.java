@@ -15,4 +15,11 @@ public interface IRecipeCapabilityHolder {
     @Nonnull
     Table<IO, RecipeCapability<?>, List<IRecipeHandler<?>>> getCapabilitiesProxy();
 
+    /**
+     * get Tier for chance boost.
+     */
+    default int getChanceTier() {
+        return 0;
+    }
+
 }

@@ -16,7 +16,6 @@ import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
 import com.lowdragmc.lowdraglib.gui.widget.ProgressWidget;
 import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
-import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
@@ -38,7 +37,7 @@ import java.util.List;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class SteamSolidBoilerMachine extends SteamBoilerMachine  implements IMachineModifyDrops {
+public class SteamSolidBoilerMachine extends SteamBoilerMachine implements IMachineModifyDrops {
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(SteamSolidBoilerMachine.class, SteamBoilerMachine.MANAGED_FIELD_HOLDER);
     public static final Object2BooleanMap<Item> FUEL_CACHE = new Object2BooleanOpenHashMap<>();
 
@@ -51,7 +50,7 @@ public class SteamSolidBoilerMachine extends SteamBoilerMachine  implements IMac
             if (isRemote())  return true;
             return recipeLogic.getRecipeManager().getAllRecipesFor(getRecipeType()).stream().anyMatch(recipe -> {
                 var list = recipe.inputs.getOrDefault(ItemRecipeCapability.CAP, Collections.emptyList());
-                if (list.size() > 0) {
+                if (!list.isEmpty()) {
                     return Arrays.stream(ItemRecipeCapability.CAP.of(list.get(0).content).getItems()).map(ItemStack::getItem).anyMatch(i -> i == item);
                 }
                 return false;
@@ -78,15 +77,15 @@ public class SteamSolidBoilerMachine extends SteamBoilerMachine  implements IMac
 
     @Override
     protected long getBaseSteamOutput() {
-        return (isHighPressure ? 300 : 120) * FluidHelper.getBucket() / 1000;
+        return (isHighPressure ? 300 : 120);
     }
 
     @Override
     public void afterWorking() {
         super.afterWorking();
-        if (recipeLogic.lastRecipe != null) {
-            var inputs = recipeLogic.lastRecipe.inputs.getOrDefault(ItemRecipeCapability.CAP, Collections.emptyList());
-            if (inputs.size() > 0) {
+        if (recipeLogic.getLastRecipe() != null) {
+            var inputs = recipeLogic.getLastRecipe().inputs.getOrDefault(ItemRecipeCapability.CAP, Collections.emptyList());
+            if (!inputs.isEmpty()) {
                 var input = ItemRecipeCapability.CAP.of(inputs.get(0).content).getItems();
                 if (input.length > 0) {
                     var remaining = getBurningFuelRemainder(input[0]);
@@ -125,7 +124,7 @@ public class SteamSolidBoilerMachine extends SteamBoilerMachine  implements IMac
                 .widget(new SlotWidget(this.ashHandler.storage,  0, 115, 26, true, false)
                         .setBackgroundTexture(new GuiTextureGroup(GuiTextures.SLOT_STEAM.get(isHighPressure), GuiTextures.DUST_OVERLAY_STEAM.get(isHighPressure))))
                 .widget(new ProgressWidget(recipeLogic::getProgressPercent, 115, 44, 18, 18)
-                        .setProgressBar(GuiTextures.PROGRESS_BAR_BOILER_FUEL.get(isHighPressure).getSubTexture(0, 0, 1, 0.5),
+                        .setProgressTexture(GuiTextures.PROGRESS_BAR_BOILER_FUEL.get(isHighPressure).getSubTexture(0, 0, 1, 0.5),
                                 GuiTextures.PROGRESS_BAR_BOILER_FUEL.get(isHighPressure).getSubTexture(0, 0.5, 1, 0.5))
                         .setFillDirection(ProgressTexture.FillDirection.DOWN_TO_UP));
     }

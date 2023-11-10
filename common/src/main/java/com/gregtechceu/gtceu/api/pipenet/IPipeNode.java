@@ -1,8 +1,10 @@
 package com.gregtechceu.gtceu.api.pipenet;
 
 import com.gregtechceu.gtceu.api.block.PipeBlock;
+import com.gregtechceu.gtceu.api.blockentity.IPaintable;
 import com.gregtechceu.gtceu.api.blockentity.ITickSubscription;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.pipelike.Node;
 import com.lowdragmc.lowdraglib.pipelike.PipeNet;
@@ -15,7 +17,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 
 import javax.annotation.Nullable;
 
-public interface IPipeNode<PipeType extends Enum<PipeType> & IPipeType<NodeDataType>, NodeDataType extends IAttachData> extends ITickSubscription {
+public interface IPipeNode<PipeType extends Enum<PipeType> & IPipeType<NodeDataType>, NodeDataType extends IAttachData> extends ITickSubscription, IPaintable {
 
     long getOffsetTimer();
 
@@ -35,6 +37,10 @@ public interface IPipeNode<PipeType extends Enum<PipeType> & IPipeType<NodeDataT
      * In general, you shouldn't call it yourself.
      */
     void setConnections(int connections);
+
+    int getConnections();
+
+    int getNumConnections();
 
     /**
      * set to block connection from the specific side
@@ -183,4 +189,21 @@ public interface IPipeNode<PipeType extends Enum<PipeType> & IPipeType<NodeDataT
         getCoverContainer().onNeighborChanged(block, fromPos, isMoving);
     }
 
+    default void scheduleNeighborShapeUpdate() {
+        Level level = getPipeLevel();
+        BlockPos pos = getPipePos();
+
+        if (level == null || pos == null)
+            return;
+
+        level.getBlockState(pos).updateNeighbourShapes(level, pos, Block.UPDATE_ALL);
+    }
+
+    @Override
+    default int getDefaultPaintingColor() {
+        return 0xFFFFFF;
+    }
+
+    @Nullable
+    Material getFrameMaterial();
 }

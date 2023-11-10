@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.capability;
 
+import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.core.BlockPos;
@@ -18,6 +19,12 @@ public class GTCapabilityHelper {
     @ExpectPlatform
     @Nullable
     public static IElectricItem getElectricItem(ItemStack itemStack) {
+        throw new AssertionError();
+    }
+
+    @ExpectPlatform
+    @Nullable
+    public static IPlatformEnergyStorage getPlatformEnergyItem(ItemStack itemStack) {
         throw new AssertionError();
     }
 
@@ -60,6 +67,24 @@ public class GTCapabilityHelper {
     @ExpectPlatform
     @Nullable
     public static IPlatformEnergyStorage getPlatformEnergy(Level level, BlockPos pos, @Nullable Direction side) {
+        throw new AssertionError();
+    }
+
+    @ExpectPlatform
+    @Nullable
+    public static ICleanroomReceiver getCleanroomReceiver(Level level, BlockPos pos, @Nullable Direction side) {
+        throw new AssertionError();
+    }
+
+    @ExpectPlatform
+    @Nullable
+    public static IMaintenanceMachine getMaintenanceMachine(Level level, BlockPos pos, @Nullable Direction side) {
+        throw new AssertionError();
+    }
+
+    @ExpectPlatform
+    @Nullable
+    public static ILaserContainer getLaser(Level level, BlockPos pos, @Nullable Direction side) {
         throw new AssertionError();
     }
 }

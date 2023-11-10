@@ -80,9 +80,24 @@ public class GTValues {
     public static final int OpV = 13;
     public static final int MAX = 14;
 
+    public static final int TIER_COUNT = 15;
+
     public static final String
             MODID_TOP = "theoneprobe",
-            MODID_JEI = "jei";
+            MODID_JEI = "jei",
+            MODID_APPENG = "ae2",
+            MODID_KUBEJS = "kubejs",
+            MODID_IRIS = "iris",
+            MODID_CREATE = "create",
+            MODID_REBORN_ENERGY = "team_reborn_energy",
+            MODID_ALMOSTUNIFIED = "almostunified";
+
+    /**
+     * Spray painting compat modids
+     */
+    public static final String
+            MODID_TINTED = "tinted";
+
     /**
      * The short names for the voltages, used for registration primarily
      */
@@ -189,4 +204,5 @@ public class GTValues {
 
 
     public static final String CUSTOM_TAG_SOURCE = "GTCEu Custom Tags";
+
 }

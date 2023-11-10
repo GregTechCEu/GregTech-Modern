@@ -1,5 +1,7 @@
 package com.gregtechceu.gtceu.api.data.chemical.material.properties;
 
+import lombok.Getter;
+
 public class DustProperty implements IMaterialProperty<DustProperty> {
 
     /**
@@ -7,6 +9,7 @@ public class DustProperty implements IMaterialProperty<DustProperty> {
      * <p>
      * Default: 2 (Iron).
      */
+    @Getter
     private int harvestLevel;
 
     /**
@@ -15,6 +18,7 @@ public class DustProperty implements IMaterialProperty<DustProperty> {
      * <p>
      * Default: 0.
      */
+    @Getter
     private int burnTime;
 
     public DustProperty(int harvestLevel, int burnTime) {
@@ -34,24 +38,11 @@ public class DustProperty implements IMaterialProperty<DustProperty> {
         this.harvestLevel = harvestLevel;
     }
 
-    public int getHarvestLevel() {
-        return this.harvestLevel;
-    }
-
     public void setBurnTime(int burnTime) {
         if (burnTime < 0) throw new IllegalArgumentException("Burn Time cannot be negative!");
         this.burnTime = burnTime;
     }
 
-    public int getBurnTime() {
-        return burnTime;
-    }
-
     @Override
-    public void verifyProperty(MaterialProperties properties) {
-        FluidProperty prop = properties.getProperty(PropertyKey.FLUID);
-        if (prop != null && prop.getFluidTemperature() == FluidProperty.BASE_TEMP) {
-            prop.setFluidTemperature(1200);
-        }
-    }
+    public void verifyProperty(MaterialProperties properties) {}
 }

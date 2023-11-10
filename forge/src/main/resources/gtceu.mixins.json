@@ -6,7 +6,10 @@
   "client": [
   ],
   "mixins": [
-    "AppearanceBlockMixin"
+    "AppearanceBlockMixin",
+    "ServerPlayerGameModeMixin",
+    "emi.FluidEmiStackMixin",
+    "jei.FluidHelperMixin"
   ],
   "injectors": {
     "defaultRequire": 1

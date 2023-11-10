@@ -1,0 +1,50 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:almandine_flawed_gem"
+  },
+  "items": [
+    "gtceu:almandine_flawed_gem",
+    "gtceu:andradite_flawed_gem",
+    "gtceu:blue_topaz_flawed_gem",
+    "gtceu:cinnabar_flawed_gem",
+    "gtceu:coal_flawed_gem",
+    "gtceu:diamond_flawed_gem",
+    "gtceu:emerald_flawed_gem",
+    "gtceu:green_sapphire_flawed_gem",
+    "gtceu:grossular_flawed_gem",
+    "gtceu:rutile_flawed_gem",
+    "gtceu:lazurite_flawed_gem",
+    "gtceu:pyrope_flawed_gem",
+    "gtceu:rock_salt_flawed_gem",
+    "gtceu:ruby_flawed_gem",
+    "gtceu:salt_flawed_gem",
+    "gtceu:sapphire_flawed_gem",
+    "gtceu:sodalite_flawed_gem",
+    "gtceu:coke_flawed_gem",
+    "gtceu:spessartine_flawed_gem",
+    "gtceu:topaz_flawed_gem",
+    "gtceu:uvarovite_flawed_gem",
+    "gtceu:nether_quartz_flawed_gem",
+    "gtceu:certus_quartz_flawed_gem",
+    "gtceu:quartzite_flawed_gem",
+    "gtceu:realgar_flawed_gem",
+    "gtceu:malachite_flawed_gem",
+    "gtceu:sugar_flawed_gem",
+    "gtceu:glass_flawed_gem",
+    "gtceu:olivine_flawed_gem",
+    "gtceu:opal_flawed_gem",
+    "gtceu:amethyst_flawed_gem",
+    "gtceu:lapis_flawed_gem",
+    "gtceu:apatite_flawed_gem",
+    "gtceu:red_garnet_flawed_gem",
+    "gtceu:yellow_garnet_flawed_gem",
+    "gtceu:monazite_flawed_gem"
+  ],
+  "page": "gtceu:materials/flawed_gem",
+  "position": [
+    -150,
+    250
+  ],
+  "section": "gtceu:materials"
+}

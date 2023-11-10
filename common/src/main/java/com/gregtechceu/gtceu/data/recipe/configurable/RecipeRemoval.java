@@ -5,9 +5,8 @@ import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Blocks;
 
+import java.util.Locale;
 import java.util.function.Consumer;
 
 public class RecipeRemoval {
@@ -32,7 +31,7 @@ public class RecipeRemoval {
     }
 
     private static void generalRemovals(Consumer<ResourceLocation> registry) {
-        registry.accept(new ResourceLocation("minecraft:tnt"));
+        if (ConfigHolder.INSTANCE.recipes.removeVanillaTNTRecipe) registry.accept(new ResourceLocation("minecraft:tnt"));
 
         // todo
         /*
@@ -101,7 +100,16 @@ public class RecipeRemoval {
     }
 
     private static void nerfWoodCrafting(Consumer<ResourceLocation> registry) {
-        registry.accept(new ResourceLocation("minecraft:rod"));
+        registry.accept(new ResourceLocation("minecraft:stick"));
+        registry.accept(new ResourceLocation("minecraft:oak_planks"));
+        registry.accept(new ResourceLocation("minecraft:spruce_planks"));
+        registry.accept(new ResourceLocation("minecraft:birch_planks"));
+        registry.accept(new ResourceLocation("minecraft:jungle_planks"));
+        registry.accept(new ResourceLocation("minecraft:acacia_planks"));
+        registry.accept(new ResourceLocation("minecraft:dark_oak_planks"));
+        registry.accept(new ResourceLocation("minecraft:mangrove_planks"));
+        registry.accept(new ResourceLocation("minecraft:crimson_planks"));
+        registry.accept(new ResourceLocation("minecraft:warped_planks"));
     }
 
     private static void hardWoodRecipes(Consumer<ResourceLocation> registry) {
@@ -254,8 +262,8 @@ public class RecipeRemoval {
         registry.accept(new ResourceLocation("minecraft:glass_bottle"));
         registry.accept(new ResourceLocation("minecraft:glass_pane"));
         for (DyeColor color : DyeColor.values()) {
-            registry.accept(new ResourceLocation(String.format("minecraft:%s_stained_glass_pane_from_glass_pane", color.name().toLowerCase())));
-            registry.accept(new ResourceLocation(String.format("minecraft:%s_stained_glass_pane", color.name().toLowerCase())));
+            registry.accept(new ResourceLocation(String.format("minecraft:%s_stained_glass_pane_from_glass_pane", color.name().toLowerCase(Locale.ROOT))));
+            registry.accept(new ResourceLocation(String.format("minecraft:%s_stained_glass_pane", color.name().toLowerCase(Locale.ROOT))));
         }
     }
 

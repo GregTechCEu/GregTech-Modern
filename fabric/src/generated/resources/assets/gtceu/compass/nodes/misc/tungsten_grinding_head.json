@@ -1,0 +1,15 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:tungsten_grinding_head"
+  },
+  "items": [
+    "gtceu:tungsten_grinding_head"
+  ],
+  "page": "gtceu:misc/tungsten_grinding_head",
+  "position": [
+    -200,
+    150
+  ],
+  "section": "gtceu:misc"
+}

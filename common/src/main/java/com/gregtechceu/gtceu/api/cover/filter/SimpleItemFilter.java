@@ -7,7 +7,6 @@ import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
 import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
 import lombok.Getter;
-import lombok.Setter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -32,20 +31,26 @@ public class SimpleItemFilter implements ItemFilter {
     protected boolean ignoreNbt;
     @Getter
     protected ItemStack[] matches = new ItemStack[9];
-    @Setter
-    protected Consumer<ItemFilter> onUpdated;
+
+    protected Consumer<ItemFilter> itemWriter = filter -> {};
+    protected Consumer<ItemFilter> onUpdated = filter -> itemWriter.accept(filter);
+
+    @Getter
+    protected int maxStackSize;
+
 
     protected SimpleItemFilter() {
         Arrays.fill(matches, ItemStack.EMPTY);
+        maxStackSize = 1;
     }
 
     public static SimpleItemFilter loadFilter(ItemStack itemStack) {
         return loadFilter(itemStack.getOrCreateTag(), filter -> itemStack.setTag(filter.saveFilter()));
     }
 
-    public static SimpleItemFilter loadFilter(CompoundTag tag, Consumer<ItemFilter> onUpdated) {
+    private static SimpleItemFilter loadFilter(CompoundTag tag, Consumer<ItemFilter> itemWriter) {
         var handler = new SimpleItemFilter();
-        handler.setOnUpdated(onUpdated);
+        handler.itemWriter = itemWriter;
         handler.isBlackList = tag.getBoolean("isBlackList");
         handler.ignoreNbt = tag.getBoolean("matchNbt");
         var list = tag.getList("matches", Tag.TAG_COMPOUND);
@@ -53,6 +58,14 @@ public class SimpleItemFilter implements ItemFilter {
             handler.matches[i] = ItemStack.of((CompoundTag) list.get(i));
         }
         return handler;
+    }
+
+    @Override
+    public void setOnUpdated(Consumer<ItemFilter> onUpdated) {
+        this.onUpdated = filter -> {
+            this.itemWriter.accept(filter);
+            onUpdated.accept(filter);
+        };
     }
 
     public CompoundTag saveFilter() {
@@ -83,36 +96,73 @@ public class SimpleItemFilter implements ItemFilter {
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
                 final int index = i * 3 + j;
+
                 var handler = new ItemStackTransfer(matches[index]);
-                var slot = new PhantomSlotWidget(handler, 0, i * 18, j * 18);
-                slot.setMaxStackSize(1);
+
+                var slot = new PhantomSlotWidget(handler, 0, i * 18, j * 18) {
+                    @Override
+                    public void updateScreen() {
+                        super.updateScreen();
+                        setMaxStackSize(maxStackSize);
+                    }
+
+                    @Override
+                    public void detectAndSendChanges() {
+                        super.detectAndSendChanges();
+                        setMaxStackSize(maxStackSize);
+                    }
+                };
+
                 slot.setChangeListener(() -> {
                     matches[index] = handler.getStackInSlot(0);
                     onUpdated.accept(this);
                 }).setBackground(GuiTextures.SLOT);
+
                 group.addWidget(slot);
             }
         }
-        group.addWidget(new ToggleButtonWidget(18 * 3 + 5, 0, 20, 20,
+        group.addWidget(new ToggleButtonWidget(18 * 3 + 2, 9, 18, 18,
                 GuiTextures.BUTTON_BLACKLIST, this::isBlackList, this::setBlackList));
-        group.addWidget(new ToggleButtonWidget(18 * 3 + 5, 20, 20, 20,
+        group.addWidget(new ToggleButtonWidget(18 * 3 + 2, (18) + 9, 18, 18,
                 GuiTextures.BUTTON_FILTER_NBT, this::isIgnoreNbt, this::setIgnoreNbt));
         return group;
     }
 
     @Override
     public boolean test(ItemStack itemStack) {
-        boolean found = false;
-        for (var match : matches) {
-            if (ignoreNbt) {
-                found = match.sameItem(itemStack);
-            } else {
-                found = ItemTransferHelper.canItemStacksStack(match, itemStack);
-            }
-            if (found) {
-                break;
+        return testItemCount(itemStack) > 0;
+    }
+
+    @Override
+    public int testItemCount(ItemStack itemStack) {
+        int totalItemCount = getTotalConfiguredItemCount(itemStack);
+
+        if (isBlackList) {
+            return (totalItemCount > 0) ? 0 : Integer.MAX_VALUE;
+        }
+
+        return totalItemCount;
+    }
+
+    public int getTotalConfiguredItemCount(ItemStack itemStack) {
+        int totalCount = 0;
+
+        for (var candidate : matches) {
+            if (ignoreNbt && candidate.sameItem(itemStack)) {
+                totalCount += candidate.getCount();
+            } else if (ItemTransferHelper.canItemStacksStack(candidate, itemStack)) {
+                totalCount += candidate.getCount();
             }
         }
-        return isBlackList != found;
+
+        return totalCount;
+    }
+
+    public void setMaxStackSize(int maxStackSize) {
+        this.maxStackSize = maxStackSize;
+
+        for (ItemStack match : matches) {
+            match.setCount(Math.min(match.getCount(), maxStackSize));
+        }
     }
 }

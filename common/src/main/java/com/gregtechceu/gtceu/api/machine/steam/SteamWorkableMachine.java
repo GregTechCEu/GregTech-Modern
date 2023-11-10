@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.feature.ICleanroomProvider;
 import com.gregtechceu.gtceu.api.machine.feature.IMufflableMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.trait.IRecipeHandlerTrait;
@@ -29,6 +30,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
@@ -45,25 +47,28 @@ import java.util.List;
 @MethodsReturnNonnullByDefault
 public abstract class SteamWorkableMachine extends SteamMachine implements IRecipeLogicMachine, IMufflableMachine {
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(SteamWorkableMachine.class, SteamMachine.MANAGED_FIELD_HOLDER);
-
-    @Getter
-    @Persisted
-    @DescSynced
+    @Nullable @Getter @Setter
+    private ICleanroomProvider cleanroom;
+    @Getter @Persisted @DescSynced
     public final RecipeLogic recipeLogic;
     @Getter
-    public final GTRecipeType recipeType;
+    public final GTRecipeType[] recipeTypes;
+    @Getter @Setter
+    public int activeRecipeType;
     @Persisted @DescSynced @Getter @RequireRerender
     protected Direction outputFacing;
     @Persisted @DescSynced @Getter @Setter
     protected boolean isMuffled;
+    protected boolean previouslyMuffled = true;
     @Getter
     protected final Table<IO, RecipeCapability<?>, List<IRecipeHandler<?>>> capabilitiesProxy;
     protected final List<ISubscription> traitSubscriptions;
 
     public SteamWorkableMachine(IMachineBlockEntity holder, boolean isHighPressure, Object... args) {
         super(holder, isHighPressure, args);
+        this.recipeTypes = getDefinition().getRecipeTypes();
+        this.activeRecipeType = 0;
         this.recipeLogic = createRecipeLogic(args);
-        this.recipeType = getDefinition().getRecipeType();
         this.capabilitiesProxy = Tables.newCustomTable(new EnumMap<>(IO.class), HashMap::new);
         this.traitSubscriptions = new ArrayList<>();
         this.outputFacing = hasFrontFacing() ? getFrontFacing().getOpposite() : Direction.UP;
@@ -121,6 +126,27 @@ public abstract class SteamWorkableMachine extends SteamMachine implements IReci
             return InteractionResult.CONSUME;
         }
         return super.onWrenchClick(playerIn, hand, gridSide, hitResult);
+    }
+
+    @Override
+    public boolean keepSubscribing() {
+        return false;
+    }
+
+    @NotNull
+    @Override
+    public GTRecipeType getRecipeType() {
+        return recipeTypes[activeRecipeType];
+    }
+
+    @Override
+    public void clientTick() {
+        if (previouslyMuffled != isMuffled) {
+            previouslyMuffled = isMuffled;
+
+            if (recipeLogic != null)
+                recipeLogic.updateSound();
+        }
     }
 
     //////////////////////////////////////

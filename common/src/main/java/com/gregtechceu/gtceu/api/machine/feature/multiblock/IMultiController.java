@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.machine.feature.multiblock;
 
-import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineFeature;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.pattern.MultiblockState;
 import net.minecraft.core.BlockPos;
@@ -11,6 +11,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.concurrent.locks.Lock;
 
 /**
  * @author KilaBash
@@ -19,8 +20,16 @@ import java.util.List;
  */
 public interface IMultiController extends IMachineFeature {
 
+    @Override
+    default MultiblockControllerMachine self() {
+        return (MultiblockControllerMachine) this;
+    }
+
     /**
      * Check MultiBlock Pattern. Just checking pattern without any other logic.
+     * You can override it but it's unsafe for calling. because it will also be called in an async thread.
+     * <br>
+     * you should always use {@link IMultiController#checkPatternWithLock()} and {@link IMultiController#checkPatternWithTryLock()} instead.
      * @return whether it can be formed.
      */
     default boolean checkPattern() {
@@ -28,13 +37,38 @@ public interface IMultiController extends IMachineFeature {
         return pattern != null && pattern.checkPatternAt(getMultiblockState(), false);
     }
 
+    /**
+     * Check pattern with a lock.
+     */
+    default boolean checkPatternWithLock() {
+        var lock = getPatternLock();
+        lock.lock();
+        var result = checkPattern();
+        lock.unlock();
+        return result;
+    }
+
+    /**
+     * Check pattern with a try lock
+     * @return false - checking failed or cant get the lock.
+     */
+    default boolean checkPatternWithTryLock() {
+        var lock = getPatternLock();
+        if (lock.tryLock()) {
+            var result = checkPattern();
+            lock.unlock();
+            return result;
+        } else {
+            return false;
+        }
+    }
 
     /**
      * Get structure pattern.
      * You can override it to create dynamic patterns.
      */
     default BlockPattern getPattern() {
-        return ((MultiblockMachineDefinition)self().getDefinition()).getPatternFactory().get();
+        return self().getDefinition().getPatternFactory().get();
     }
 
     /**
@@ -98,12 +132,24 @@ public interface IMultiController extends IMachineFeature {
     void onPartUnload();
 
     /**
+     * Get lock for pattern checking.
+     */
+    Lock getPatternLock();
+
+    /**
+     * should add part to the part list.
+     */
+    default boolean shouldAddPartToController(IMultiPart part) {
+        return true;
+    }
+
+    /**
      * get parts' Appearance. same as IForgeBlock.getAppearance() / IFabricBlock.getAppearance()
      */
     @Nullable
     default BlockState getPartAppearance(IMultiPart part, Direction side, BlockState sourceState, BlockPos sourcePos) {
         if (isFormed()) {
-            return ((MultiblockMachineDefinition)self().getDefinition()).getPartAppearance().apply(this, part, side);
+            return self().getDefinition().getPartAppearance().apply(this, part, side);
         }
         return null;
     }

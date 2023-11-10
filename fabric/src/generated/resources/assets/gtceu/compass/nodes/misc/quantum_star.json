@@ -1,0 +1,15 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:quantum_star"
+  },
+  "items": [
+    "gtceu:quantum_star"
+  ],
+  "page": "gtceu:misc/quantum_star",
+  "position": [
+    -100,
+    150
+  ],
+  "section": "gtceu:misc"
+}

@@ -1,9 +1,8 @@
 package com.gregtechceu.gtceu.api.cover;
 
-import com.google.common.collect.Lists;
-import com.gregtechceu.gtceu.api.gui.CoverUIFactory;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.gui.factory.CoverUIFactory;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.IToolGridHighLight;
 import com.gregtechceu.gtceu.api.syncdata.EnhancedFieldManagedStorage;
@@ -26,8 +25,9 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -47,6 +47,8 @@ public abstract class CoverBehavior implements IEnhancedManaged, IToolGridHighLi
     public final Direction attachedSide;
     @Getter @Persisted @DescSynced
     protected ItemStack attachItem = ItemStack.EMPTY;
+    @Getter @Persisted
+    protected int redstoneSignalOutput = 0;
 
     public CoverBehavior(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {
         this.coverDefinition = definition;
@@ -69,7 +71,10 @@ public abstract class CoverBehavior implements IEnhancedManaged, IToolGridHighLi
 
     @Override
     public void onChanged() {
-        coverHolder.markDirty();
+        var level = coverHolder.getLevel();
+        if (level != null && !level.isClientSide && level.getServer() != null) {
+            level.getServer().execute(coverHolder::markDirty);
+        }
     }
 
     /**
@@ -108,8 +113,11 @@ public abstract class CoverBehavior implements IEnhancedManaged, IToolGridHighLi
         return attachItem;
     }
 
-    public List<ItemStack> getDrops() {
-        return Lists.newArrayList(getPickItem());
+    /**
+     * Append additional drops. It doesn't include itself.
+     */
+    public List<ItemStack> getAdditionalDrops() {
+        return new ArrayList<>();
     }
 
     /**
@@ -120,6 +128,16 @@ public abstract class CoverBehavior implements IEnhancedManaged, IToolGridHighLi
     }
 
     public void onNeighborChanged(Block block, BlockPos fromPos, boolean isMoving) {
+    }
+
+    public void setRedstoneSignalOutput(int redstoneSignalOutput) {
+        this.redstoneSignalOutput = redstoneSignalOutput;
+        coverHolder.notifyBlockUpdate();
+        coverHolder.markDirty();
+    }
+
+    public boolean canConnectRedstone() {
+        return false;
     }
 
     //////////////////////////////////////

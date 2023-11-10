@@ -23,10 +23,6 @@ public class SizedIngredientImpl extends SizedIngredient {
         super(inner, amount);
     }
 
-    protected SizedIngredientImpl(String tag, int amount) {
-        super(tag, amount);
-    }
-
     protected SizedIngredientImpl(TagKey<Item> tag, int amount) {
         super(tag, amount);
     }
@@ -43,10 +39,6 @@ public class SizedIngredientImpl extends SizedIngredient {
         return new SizedIngredientImpl(tag, amount);
     }
 
-    public static SizedIngredient create(String tag, int amount) {
-        return new SizedIngredientImpl(tag, amount);
-    }
-
     public static SizedIngredient create(ItemStack inner) {
         return new SizedIngredientImpl(inner);
     }
@@ -57,42 +49,32 @@ public class SizedIngredientImpl extends SizedIngredient {
         return SERIALIZER;
     }
 
+    public static SizedIngredient fromJson(JsonObject json) {
+        return SERIALIZER.parse(json);
+    }
+
+    public static SizedIngredient create(Ingredient inner) {
+        return new SizedIngredientImpl(inner, 1);
+    }
+
     public static final IIngredientSerializer<SizedIngredientImpl> SERIALIZER = new IIngredientSerializer<>() {
         @Override
         public @NotNull SizedIngredientImpl parse(FriendlyByteBuf buffer) {
             int amount = buffer.readVarInt();
-            if (buffer.readBoolean()) {
-                return new SizedIngredientImpl(buffer.readUtf(), amount);
-            } else {
-                return new SizedIngredientImpl(Ingredient.fromNetwork(buffer), amount);
-            }
+            return new SizedIngredientImpl(Ingredient.fromNetwork(buffer), amount);
         }
 
         @Override
         public @NotNull SizedIngredientImpl parse(JsonObject json) {
             int amount = json.get("count").getAsInt();
-            if (json.has("tag")) {
-                return new SizedIngredientImpl(json.get("tag").getAsString(), amount);
-            } else {
-                try {
-                    Ingredient inner = Ingredient.fromJson(json.get("ingredient"));
-                    return new SizedIngredientImpl(inner, amount);
-                } catch (Exception e) {
-                    throw e;
-                }
-            }
+            Ingredient inner = Ingredient.fromJson(json.get("ingredient"));
+            return new SizedIngredientImpl(inner, amount);
         }
 
         @Override
         public void write(FriendlyByteBuf buffer, SizedIngredientImpl ingredient) {
             buffer.writeVarInt(ingredient.getAmount());
-            if (ingredient.tag != null) {
-                buffer.writeBoolean(true);
-                buffer.writeUtf(ingredient.tag);
-            } else {
-                buffer.writeBoolean(false);
-                ingredient.inner.toNetwork(buffer);
-            }
+            ingredient.inner.toNetwork(buffer);
         }
     };
 }

@@ -14,7 +14,6 @@ import com.lowdragmc.lowdraglib.client.renderer.IBlockRendererProvider;
 import com.lowdragmc.lowdraglib.pipelike.LevelPipeNet;
 import com.lowdragmc.lowdraglib.pipelike.Node;
 import com.lowdragmc.lowdraglib.pipelike.PipeNet;
-import com.lowdragmc.lowdraglib.utils.RayTraceHelper;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -33,13 +32,15 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.phys.shapes.CollisionContext;
-import net.minecraft.world.phys.shapes.EntityCollisionContext;
-import net.minecraft.world.phys.shapes.Shapes;
-import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
+import net.minecraft.world.phys.shapes.*;
+import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.List;
 
 /**
  * @author KilaBash
@@ -178,20 +179,29 @@ public abstract class PipeBlock <PipeType extends Enum<PipeType> & IPipeType<Nod
     }
 
     @Override
+    public boolean isCollisionShapeFullBlock(BlockState state, BlockGetter level, BlockPos pos) {
+        return false;
+    }
+
+    @Override
     public VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext context) {
         var pipeNode = getPileTile(pLevel, pPos);
         var connections = 0;
         if (pipeNode != null) {
-            if (context instanceof EntityCollisionContext entityCtx && entityCtx.getEntity() instanceof Player player){
+            connections = pipeNode.getVisualConnections();
+            VoxelShape shape = getPipeModel().getShapes(connections);
+            shape = Shapes.or(shape, pipeNode.getCoverContainer().addCoverCollisionBoundingBox());
+
+            if (context instanceof EntityCollisionContext entityCtx && entityCtx.getEntity() instanceof Player player) {
                 var coverable = pipeNode.getCoverContainer();
                 var held = player.getMainHandItem();
                 if (held.is(GTToolType.WIRE_CUTTER.itemTag) || held.is(GTToolType.WRENCH.itemTag) ||
                         CoverPlaceBehavior.isCoverBehaviorItem(held, coverable::hasAnyCover, coverDef -> ICoverable.canPlaceCover(coverDef, coverable)) ||
                         (held.getItem() instanceof BlockItem blockItem && blockItem.getBlock() instanceof PipeBlock<?,?,?> pipeBlock && pipeBlock.pipeType.type().equals(pipeType.type()))) {
-                    return Shapes.block();
+                    return Shapes.or(Shapes.block(), shape);
                 }
             }
-            connections = pipeNode.getVisualConnections();
+            return shape;
         }
         return getPipeModel().getShapes(connections);
     }
@@ -222,4 +232,15 @@ public abstract class PipeBlock <PipeType extends Enum<PipeType> & IPipeType<Nod
         return super.getBlockAppearance(state, level, pos, side, sourceState, sourcePos);
     }
 
+    @Override
+    public List<ItemStack> getDrops(BlockState state, LootContext.Builder builder) {
+        LootContext context = builder.withParameter(LootContextParams.BLOCK_STATE, state).create(LootContextParamSets.BLOCK);
+        BlockEntity tileEntity = context.getParamOrNull(LootContextParams.BLOCK_ENTITY);
+        if (tileEntity instanceof IPipeNode<?,?> pipeTile) {
+            for (Direction direction : Direction.values()) {
+                pipeTile.getCoverContainer().removeCover(direction);
+            }
+        }
+        return super.getDrops(state, builder);
+    }
 }

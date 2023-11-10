@@ -1,0 +1,22 @@
+{
+  "parent": "block/block",
+  "textures": {
+    "particle": "gtceu:block/casings/solid/machine_casing_solid_steel",
+    "side": "gtceu:block/casings/solid/machine_casing_solid_steel",
+    "end": "gtceu:block/pipe/pipe_normal_in"
+  },
+  "elements": [
+    {
+      "from": [4, 0, 4],
+      "to": [12, 16, 12],
+      "faces": {
+        "up": {"texture": "#end", "cullface": "up"},
+        "down": {"texture": "#end", "cullface": "down"},
+        "north": {"texture": "#side", "cullface": "north"},
+        "south": {"texture": "#side", "cullface": "south"},
+        "west": {"texture": "#side", "cullface": "west"},
+        "east": {"texture": "#side", "cullface": "east"}
+      }
+    }
+  ]
+}

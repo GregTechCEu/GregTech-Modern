@@ -5,7 +5,10 @@
   "name": "${mod_name}",
   "description": "${mod_description}",
   "authors": [
-    "KilaBash"
+    "KilaBash",
+    "screret",
+    "serenibyss",
+    "Tech22"
   ],
   "contact": {
     "homepage": "${mod_url}",
@@ -50,7 +53,6 @@
   "depends": {
     "minecraft": "${minecraft_version}",
     "fabricloader": ">=${fabric_loader_version}",
-    "fabric-api": ">=${fabric_api_version}",
-    "ldlib": "${ldlib_version}"
+    "fabric-api": ">=${fabric_api_version}"
   }
 }

@@ -25,10 +25,14 @@ import com.gregtechceu.gtceu.integration.kjs.GTRegistryObjectBuilderTypes;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -43,16 +47,22 @@ import org.apache.logging.log4j.util.TriConsumer;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
-import java.util.function.*;
+import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.Conditions.*;
-import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.LoaderType.*;
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.LoaderType.FABRIC;
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.LoaderType.FORGE;
 
 @Accessors(chain = true, fluent = true)
 public class TagPrefix {
 
     public final static Map<String, TagPrefix> PREFIXES = new HashMap<>();
     public static final Map<TagPrefix, OreType> ORES = new HashMap<>();
+
+    public static final Codec<TagPrefix> CODEC = Codec.STRING.flatXmap(str -> Optional.ofNullable(get(str)).map(DataResult::success).orElseGet(() -> DataResult.error("invalid TagPrefix: " + str)), prefix -> DataResult.success(prefix.name));
 
     public static void init() {
         AddonFinder.getAddons().forEach(IGTAddon::registerTagPrefixes);
@@ -65,7 +75,7 @@ public class TagPrefix {
         return PREFIXES.get(name);
     }
 
-    public static final TagPrefix ore = oreTagPrefix("")
+    public static final TagPrefix ore = oreTagPrefix("stone")
             .langValue("%s Ore")
             .materialIconType(MaterialIconType.ore)
             .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
@@ -73,7 +83,7 @@ public class TagPrefix {
             .generationCondition(hasOreProperty)
             .registerOre(Blocks.STONE::defaultBlockState);
 
-    public static final TagPrefix oreGranite = oreTagPrefix("granite_")
+    public static final TagPrefix oreGranite = oreTagPrefix("granite")
             .langValue("Granite %s Ore")
             .materialIconType(MaterialIconType.ore)
             .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
@@ -81,7 +91,7 @@ public class TagPrefix {
             .generationCondition(hasOreProperty)
             .registerOre(Blocks.GRANITE::defaultBlockState, MaterialColor.DIRT);
 
-    public static final TagPrefix oreDiorite = oreTagPrefix("diorite_")
+    public static final TagPrefix oreDiorite = oreTagPrefix("diorite")
             .langValue("Diorite %s Ore")
             .materialIconType(MaterialIconType.ore)
             .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
@@ -89,7 +99,7 @@ public class TagPrefix {
             .generationCondition(hasOreProperty)
             .registerOre(Blocks.DIORITE::defaultBlockState, MaterialColor.QUARTZ);
 
-    public static final TagPrefix oreAndesite = oreTagPrefix("andesite_")
+    public static final TagPrefix oreAndesite = oreTagPrefix("andesite")
             .langValue("Andesite %s Ore")
             .materialIconType(MaterialIconType.ore)
             .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
@@ -97,7 +107,7 @@ public class TagPrefix {
             .generationCondition(hasOreProperty)
             .registerOre(Blocks.ANDESITE::defaultBlockState);
 
-    public static final TagPrefix oreDeepslate = oreTagPrefix("deepslate_")
+    public static final TagPrefix oreDeepslate = oreTagPrefix("deepslate")
             .langValue("Deepslate %s Ore")
             .materialIconType(MaterialIconType.ore)
             .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
@@ -105,7 +115,7 @@ public class TagPrefix {
             .generationCondition(hasOreProperty)
             .registerOre(Blocks.DEEPSLATE::defaultBlockState, MaterialColor.DEEPSLATE);
 
-    public static final TagPrefix oreTuff = oreTagPrefix("tuff_")
+    public static final TagPrefix oreTuff = oreTagPrefix("tuff")
             .langValue("Tuff %s Ore")
             .materialIconType(MaterialIconType.ore)
             .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
@@ -113,7 +123,7 @@ public class TagPrefix {
             .generationCondition(hasOreProperty)
             .registerOre(Blocks.TUFF::defaultBlockState, MaterialColor.DEEPSLATE);
 
-    public static final TagPrefix oreSand = oreTagPrefix("sand_")
+    public static final TagPrefix oreSand = oreTagPrefix("sand")
             .langValue("Sand %s Ore")
             .materialIconType(MaterialIconType.ore)
             .miningToolTag(BlockTags.MINEABLE_WITH_SHOVEL)
@@ -121,7 +131,7 @@ public class TagPrefix {
             .generationCondition(hasOreProperty)
             .registerOre(Blocks.SAND::defaultBlockState, false, net.minecraft.world.level.material.Material.SAND, MaterialColor.SAND, SoundType.SAND);
 
-    public static final TagPrefix oreRedSand = oreTagPrefix("redSand_")
+    public static final TagPrefix oreRedSand = oreTagPrefix("redSand")
             .langValue("Red Sand %s Ore")
             .materialIconType(MaterialIconType.ore)
             .miningToolTag(BlockTags.MINEABLE_WITH_SHOVEL)
@@ -129,7 +139,7 @@ public class TagPrefix {
             .generationCondition(hasOreProperty)
             .registerOre(Blocks.RED_SAND::defaultBlockState, false, net.minecraft.world.level.material.Material.SAND, MaterialColor.COLOR_ORANGE, SoundType.SAND);
 
-    public static final TagPrefix oreGravel = oreTagPrefix("gravel_")
+    public static final TagPrefix oreGravel = oreTagPrefix("gravel")
             .langValue("Gravel %s Ore")
             .materialIconType(MaterialIconType.ore)
             .miningToolTag(BlockTags.MINEABLE_WITH_SHOVEL)
@@ -137,7 +147,7 @@ public class TagPrefix {
             .generationCondition(hasOreProperty)
             .registerOre(Blocks.GRAVEL::defaultBlockState, false, net.minecraft.world.level.material.Material.SAND, MaterialColor.STONE, SoundType.GRAVEL);
 
-    public static final TagPrefix oreBasalt = oreTagPrefix("basalt_")
+    public static final TagPrefix oreBasalt = oreTagPrefix("basalt")
             .langValue("Basalt %s Ore")
             .materialIconType(MaterialIconType.ore)
             .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
@@ -145,7 +155,7 @@ public class TagPrefix {
             .generationCondition(hasOreProperty)
             .registerOre(Blocks.BASALT::defaultBlockState, true, MaterialColor.COLOR_BLACK);
 
-    public static final TagPrefix oreNetherrack = oreTagPrefix("netherrack_")
+    public static final TagPrefix oreNetherrack = oreTagPrefix("netherrack")
             .langValue("Nether %s Ore")
             .materialIconType(MaterialIconType.ore)
             .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
@@ -153,7 +163,7 @@ public class TagPrefix {
             .generationCondition(hasOreProperty)
             .registerOre(Blocks.NETHERRACK::defaultBlockState, true, MaterialColor.NETHER);
 
-    public static final TagPrefix oreEndstone = oreTagPrefix("endstone_")
+    public static final TagPrefix oreEndstone = oreTagPrefix("endstone")
             .langValue("End %s Ore")
             .materialIconType(MaterialIconType.ore)
             .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
@@ -161,9 +171,29 @@ public class TagPrefix {
             .generationCondition(hasOreProperty)
             .registerOre(Blocks.END_STONE::defaultBlockState, true, MaterialColor.SAND);
 
+    public static final TagPrefix rawOre = new TagPrefix("raw", true)
+            .defaultTagPath(FORGE, "raw_materials/%s")
+            .defaultTagPath(FABRIC, "raw_%s_ores")
+            .langValue("Raw %s")
+            .materialIconType(MaterialIconType.rawOre)
+            .unificationEnabled(true)
+            .generateItem(true)
+            .generationCondition(hasOreProperty);
+
+    public static final TagPrefix rawOreBlock = new TagPrefix("rawOreBlock")
+            .defaultTagPath(FORGE, "storage_blocks/raw_%s")
+            .defaultTagPath(FABRIC, "raw_%s_blocks")
+            .langValue("Block of Raw %s")
+            .materialIconType(MaterialIconType.rawOreBlock)
+            .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
+            .unificationEnabled(true)
+            .generationCondition(hasOreProperty);
+
     public static final TagPrefix crushedRefined = new TagPrefix("refinedOre")
             .defaultTagPath(FORGE, "refined_ores/%s")
             .defaultTagPath(FABRIC, "%s_refined_ores")
+            .defaultTagPath(FORGE, "refined_ores")
+            .defaultTagPath(FABRIC, "refined_ores")
             .langValue("Refined %s Ore")
             .materialIconType(MaterialIconType.crushedRefined)
             .unificationEnabled(true)
@@ -173,6 +203,8 @@ public class TagPrefix {
     public static final TagPrefix crushedPurified = new TagPrefix("purifiedOre")
             .defaultTagPath(FORGE, "purified_ores/%s")
             .defaultTagPath(FABRIC, "%s_purified_ores")
+            .defaultTagPath(FORGE, "purified_ores")
+            .defaultTagPath(FABRIC, "purified_ores")
             .langValue("Purified %s Ore")
             .materialIconType(MaterialIconType.crushedPurified)
             .unificationEnabled(true)
@@ -512,7 +544,7 @@ public class TagPrefix {
             .generationCondition(mat -> mat.hasFlag(MaterialFlags.GENERATE_SPRING) && !mat.hasFlag(MaterialFlags.NO_SMASHING));
 
     // consisting out of 1/8 Ingot or 1/4 Wire.
-    public static final TagPrefix wireFine = new TagPrefix("fireWire")
+    public static final TagPrefix wireFine = new TagPrefix("fineWire")
             .defaultTagPath(FORGE, "wires/fine/%s")
             .defaultTagPath(FABRIC, "%s_fine_wires")
             .unformattedTagPath(FORGE, "wires/fine")
@@ -574,6 +606,13 @@ public class TagPrefix {
             .unificationEnabled(true)
             .generateItem(true)
             .generationCondition(mat -> mat.hasFlag(MaterialFlags.GENERATE_LENS));
+
+    public static final TagPrefix dye = new TagPrefix("dye")
+            .defaultTagPath(FORGE, "dyes/%s")
+            .defaultTagPath(FABRIC, "%s_dyes")
+            .unformattedTagPath(FORGE, "dyes")
+            .unformattedTagPath(FABRIC, "dyes")
+            .materialAmount(-1);
 
     // made of 4 Ingots.
     public static final TagPrefix toolHeadBuzzSaw = new TagPrefix("buzzSawBlade")
@@ -644,9 +683,18 @@ public class TagPrefix {
     public static final TagPrefix block = new TagPrefix("block")
             .defaultTagPath(FORGE, "storage_blocks/%s")
             .defaultTagPath(FABRIC, "%s_blocks")
+            .unformattedTagPath(FORGE, "storage_blocks")
             .langValue("Block of %s")
             .materialAmount(GTValues.M * 9)
             .materialIconType(MaterialIconType.block)
+            .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
+            .unificationEnabled(true);
+
+    // Prefix to determine which kind of Rock this is.
+    public static final TagPrefix rock = new TagPrefix("rock")
+            .defaultTagPath(FORGE, "%s")
+            .defaultTagPath(FABRIC, "%s")
+            .langValue("%s")
             .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
             .unificationEnabled(true);
 
@@ -670,24 +718,22 @@ public class TagPrefix {
     public static final TagPrefix pipeQuadrupleFluid = new TagPrefix("pipeQuadrupleFluid").itemTable(() -> GTBlocks.FLUID_PIPE_BLOCKS).langValue("Quadruple %s Fluid Pipe").miningToolTag(GTToolType.WRENCH.harvestTag).materialAmount(GTValues.M * 4).unificationEnabled(true);
     public static final TagPrefix pipeNonupleFluid = new TagPrefix("pipeNonupleFluid").itemTable(() -> GTBlocks.FLUID_PIPE_BLOCKS).langValue("Nonuple %s Fluid Pipe").miningToolTag(GTToolType.WRENCH.harvestTag).materialAmount(GTValues.M * 9).unificationEnabled(true);
 
-    // TODO Item pipes<
-    //public static final TagPrefix pipeTinyItem = new TagPrefix("pipeTinyItem").itemTable(() -> GTBlocks.ITEM_PIPE_BLOCKS).langValue("Tiny %s Item Pipe").miningToolTag(GTToolType.WRENCH.harvestTag).materialAmount(GTValues.M / 2).unificationEnabled(true);
-    //public static final TagPrefix pipeSmallItem = new TagPrefix("pipeSmallItem").itemTable(() -> GTBlocks.ITEM_PIPE_BLOCKS).langValue("Small %s Item Pipe").miningToolTag(GTToolType.WRENCH.harvestTag).materialAmount(GTValues.M).unificationEnabled(true);
-    //public static final TagPrefix pipeNormalItem = new TagPrefix("pipeNormalItem").itemTable(() -> GTBlocks.ITEM_PIPE_BLOCKS).langValue("Normal %s Item Pipe").miningToolTag(GTToolType.WRENCH.harvestTag).materialAmount(GTValues.M * 3).unificationEnabled(true);
-    //public static final TagPrefix pipeLargeItem = new TagPrefix("pipeLargeItem").itemTable(() -> GTBlocks.ITEM_PIPE_BLOCKS).langValue("Large %s Item Pipe").miningToolTag(GTToolType.WRENCH.harvestTag).materialAmount(GTValues.M * 6).unificationEnabled(true);
-    //public static final TagPrefix pipeHugeItem = new TagPrefix("pipeHugeItem").itemTable(() -> GTBlocks.ITEM_PIPE_BLOCKS).langValue("Huge %s Item Pipe").miningToolTag(GTToolType.WRENCH.harvestTag).materialAmount(GTValues.M * 12).unificationEnabled(true);
+    public static final TagPrefix pipeSmallItem = new TagPrefix("pipeSmallItem").itemTable(() -> GTBlocks.ITEM_PIPE_BLOCKS).langValue("Small %s Item Pipe").miningToolTag(GTToolType.WRENCH.harvestTag).materialAmount(GTValues.M).unificationEnabled(true);
+    public static final TagPrefix pipeNormalItem = new TagPrefix("pipeNormalItem").itemTable(() -> GTBlocks.ITEM_PIPE_BLOCKS).langValue("Normal %s Item Pipe").miningToolTag(GTToolType.WRENCH.harvestTag).materialAmount(GTValues.M * 3).unificationEnabled(true);
+    public static final TagPrefix pipeLargeItem = new TagPrefix("pipeLargeItem").itemTable(() -> GTBlocks.ITEM_PIPE_BLOCKS).langValue("Large %s Item Pipe").miningToolTag(GTToolType.WRENCH.harvestTag).materialAmount(GTValues.M * 6).unificationEnabled(true);
+    public static final TagPrefix pipeHugeItem = new TagPrefix("pipeHugeItem").itemTable(() -> GTBlocks.ITEM_PIPE_BLOCKS).langValue("Huge %s Item Pipe").miningToolTag(GTToolType.WRENCH.harvestTag).materialAmount(GTValues.M * 12).unificationEnabled(true);
 
-    //public static final TagPrefix pipeSmallRestrictive = new TagPrefix("pipeSmallRestrictive").itemTable(() -> GTBlocks.ITEM_PIPE_BLOCKS).langValue("Small Restrictive %s Item Pipe").miningToolTag(GTToolType.WRENCH.harvestTag).materialAmount(GTValues.M).unificationEnabled(true);
-    //public static final TagPrefix pipeNormalRestrictive = new TagPrefix("pipeNormalRestrictive").itemTable(() -> GTBlocks.ITEM_PIPE_BLOCKS).langValue("Normal Restrictive %s Item Pipe").miningToolTag(GTToolType.WRENCH.harvestTag).materialAmount(GTValues.M * 3).unificationEnabled(true);
-    //public static final TagPrefix pipeLargeRestrictive = new TagPrefix("pipeLargeRestrictive").itemTable(() -> GTBlocks.ITEM_PIPE_BLOCKS).langValue("Large Restrictive %s Item Pipe").miningToolTag(GTToolType.WRENCH.harvestTag).materialAmount(GTValues.M * 6).unificationEnabled(true);
-    //public static final TagPrefix pipeHugeRestrictive = new TagPrefix("pipeHugeRestrictive").itemTable(() -> GTBlocks.ITEM_PIPE_BLOCKS).langValue("Huge Restrictive %s Item Pipe").miningToolTag(GTToolType.WRENCH.harvestTag).materialAmount(GTValues.M * 12).unificationEnabled(true);
+    public static final TagPrefix pipeSmallRestrictive = new TagPrefix("pipeSmallRestrictive").itemTable(() -> GTBlocks.ITEM_PIPE_BLOCKS).langValue("Small Restrictive %s Item Pipe").miningToolTag(GTToolType.WRENCH.harvestTag).materialAmount(GTValues.M).unificationEnabled(true);
+    public static final TagPrefix pipeNormalRestrictive = new TagPrefix("pipeNormalRestrictive").itemTable(() -> GTBlocks.ITEM_PIPE_BLOCKS).langValue("Normal Restrictive %s Item Pipe").miningToolTag(GTToolType.WRENCH.harvestTag).materialAmount(GTValues.M * 3).unificationEnabled(true);
+    public static final TagPrefix pipeLargeRestrictive = new TagPrefix("pipeLargeRestrictive").itemTable(() -> GTBlocks.ITEM_PIPE_BLOCKS).langValue("Large Restrictive %s Item Pipe").miningToolTag(GTToolType.WRENCH.harvestTag).materialAmount(GTValues.M * 6).unificationEnabled(true);
+    public static final TagPrefix pipeHugeRestrictive = new TagPrefix("pipeHugeRestrictive").itemTable(() -> GTBlocks.ITEM_PIPE_BLOCKS).langValue("Huge Restrictive %s Item Pipe").miningToolTag(GTToolType.WRENCH.harvestTag).materialAmount(GTValues.M * 12).unificationEnabled(true);
 
     // Wires and cables
-    public static final TagPrefix wireGtHex = new TagPrefix("wireGtHex").itemTable(() -> GTBlocks.CABLE_BLOCKS).langValue("16x %s Wire").miningToolTag(GTToolType.WIRE_CUTTER.harvestTag).materialAmount(GTValues.M * 8).unificationEnabled(true);
-    public static final TagPrefix wireGtOctal = new TagPrefix("wireGtOctal").itemTable(() -> GTBlocks.CABLE_BLOCKS).langValue("8x %s Wire").miningToolTag(GTToolType.WIRE_CUTTER.harvestTag).materialAmount(GTValues.M * 4).unificationEnabled(true);
-    public static final TagPrefix wireGtQuadruple = new TagPrefix("wireGtQuadruple").itemTable(() -> GTBlocks.CABLE_BLOCKS).langValue("4x %s Wire").miningToolTag(GTToolType.WIRE_CUTTER.harvestTag).materialAmount(GTValues.M * 2).unificationEnabled(true);
-    public static final TagPrefix wireGtDouble = new TagPrefix("wireGtDouble").itemTable(() -> GTBlocks.CABLE_BLOCKS).langValue("2x %s Wire").miningToolTag(GTToolType.WIRE_CUTTER.harvestTag).materialAmount(GTValues.M).unificationEnabled(true);
-    public static final TagPrefix wireGtSingle = new TagPrefix("wireGtSingle").itemTable(() -> GTBlocks.CABLE_BLOCKS).langValue("1x %s Wire").miningToolTag(GTToolType.WIRE_CUTTER.harvestTag).materialAmount(GTValues.M / 2).unificationEnabled(true);
+    public static final TagPrefix wireGtHex = new TagPrefix("wireGtHex").itemTable(() -> GTBlocks.CABLE_BLOCKS).langValue("16x %s Wire").miningToolTag(GTToolType.WIRE_CUTTER.harvestTag).materialAmount(GTValues.M * 8).materialIconType(MaterialIconType.wire).unificationEnabled(true);
+    public static final TagPrefix wireGtOctal = new TagPrefix("wireGtOctal").itemTable(() -> GTBlocks.CABLE_BLOCKS).langValue("8x %s Wire").miningToolTag(GTToolType.WIRE_CUTTER.harvestTag).materialAmount(GTValues.M * 4).materialIconType(MaterialIconType.wire).unificationEnabled(true);
+    public static final TagPrefix wireGtQuadruple = new TagPrefix("wireGtQuadruple").itemTable(() -> GTBlocks.CABLE_BLOCKS).langValue("4x %s Wire").miningToolTag(GTToolType.WIRE_CUTTER.harvestTag).materialAmount(GTValues.M * 2).materialIconType(MaterialIconType.wire).unificationEnabled(true);
+    public static final TagPrefix wireGtDouble = new TagPrefix("wireGtDouble").itemTable(() -> GTBlocks.CABLE_BLOCKS).langValue("2x %s Wire").miningToolTag(GTToolType.WIRE_CUTTER.harvestTag).materialAmount(GTValues.M).materialIconType(MaterialIconType.wire).unificationEnabled(true);
+    public static final TagPrefix wireGtSingle = new TagPrefix("wireGtSingle").itemTable(() -> GTBlocks.CABLE_BLOCKS).langValue("1x %s Wire").miningToolTag(GTToolType.WIRE_CUTTER.harvestTag).materialAmount(GTValues.M / 2).materialIconType(MaterialIconType.wire).unificationEnabled(true);
 
     public static final TagPrefix cableGtHex = new TagPrefix("cableGtHex").itemTable(() -> GTBlocks.CABLE_BLOCKS).langValue("16x %s Cable").miningToolTag(GTToolType.WIRE_CUTTER.harvestTag).materialAmount(GTValues.M * 8).unificationEnabled(true);
     public static final TagPrefix cableGtOctal = new TagPrefix("cableGtOctal").itemTable(() -> GTBlocks.CABLE_BLOCKS).langValue("8x %s Cable").miningToolTag(GTToolType.WIRE_CUTTER.harvestTag).materialAmount(GTValues.M * 4).unificationEnabled(true);
@@ -726,6 +772,8 @@ public class TagPrefix {
 
     @Getter
     public final String name;
+    @Getter
+    public final boolean invertedName;
 
     private final List<TagType> forgeTags = new ArrayList<>();
     private final List<TagType> fabricTags = new ArrayList<>();
@@ -741,6 +789,7 @@ public class TagPrefix {
     @Setter
     private boolean generateItem;
 
+    @Getter
     @Setter
     private @Nullable
     Predicate<Material> generationCondition;
@@ -756,7 +805,7 @@ public class TagPrefix {
     @Setter
     private BiConsumer<Material, List<Component>> tooltip;
 
-    private final Set<Material> ignoredMaterials = new HashSet<>();
+    private final Map<Material, ItemLike[]> ignoredMaterials = new HashMap<>();
 
     @Getter
     @Setter
@@ -769,12 +818,17 @@ public class TagPrefix {
     protected final Set<TagKey<Block>> miningToolTag = new HashSet<>();
 
     public TagPrefix(String name) {
+        this(name, false);
+    }
+
+    public TagPrefix(String name, boolean invertedName) {
         this.name = name;
+        this.invertedName = invertedName;
         this.langValue = "%s " + FormattingUtil.toEnglishName(FormattingUtil.toLowerCaseUnder(name));
         PREFIXES.put(name, this);
     }
 
-    protected static TagPrefix oreTagPrefix(String name) {
+    public static TagPrefix oreTagPrefix(String name) {
         return new TagPrefix(name)
                 .prefixTagPath(FORGE, "ores/%s/%s")
                 .defaultTagPath(FORGE, "ores/%s")
@@ -791,27 +845,27 @@ public class TagPrefix {
         secondaryMaterials.add(secondaryMaterial);
     }
 
-    protected TagPrefix registerOre(Supplier<BlockState> stoneType) {
+    public TagPrefix registerOre(Supplier<BlockState> stoneType) {
         return registerOre(stoneType, net.minecraft.world.level.material.Material.STONE);
     }
 
-    protected TagPrefix registerOre(Supplier<BlockState> stoneType, boolean isNether) {
+    public TagPrefix registerOre(Supplier<BlockState> stoneType, boolean isNether) {
         return registerOre(stoneType, isNether, net.minecraft.world.level.material.Material.STONE);
     }
 
-    protected TagPrefix registerOre(Supplier<BlockState> stoneType, net.minecraft.world.level.material.Material material) {
+    public TagPrefix registerOre(Supplier<BlockState> stoneType, net.minecraft.world.level.material.Material material) {
         return registerOre(stoneType, false, material);
     }
 
-    protected TagPrefix registerOre(Supplier<BlockState> stoneType, boolean isNether, net.minecraft.world.level.material.Material material) {
+    public TagPrefix registerOre(Supplier<BlockState> stoneType, boolean isNether, net.minecraft.world.level.material.Material material) {
         return registerOre(stoneType, false, material, material.getColor(), SoundType.STONE);
     }
 
-    protected TagPrefix registerOre(Supplier<BlockState> stoneType, MaterialColor color) {
+    public TagPrefix registerOre(Supplier<BlockState> stoneType, MaterialColor color) {
         return registerOre(stoneType, false, color);
     }
 
-    protected TagPrefix registerOre(Supplier<BlockState> stoneType, boolean isNether, MaterialColor color) {
+    public TagPrefix registerOre(Supplier<BlockState> stoneType, boolean isNether, MaterialColor color) {
         return registerOre(stoneType, isNether, net.minecraft.world.level.material.Material.STONE, color, SoundType.STONE);
     }
 
@@ -889,7 +943,22 @@ public class TagPrefix {
 
     @SuppressWarnings("unchecked")
     public TagKey<Item>[] getItemTags(@Nonnull Material mat) {
+        return (Platform.isForge() ? forgeTags : fabricTags).stream().filter(type -> !type.isParentTag()).map(type -> type.getTag(this, mat)).toArray(TagKey[]::new);
+    }
+
+    @SuppressWarnings("unchecked")
+    public TagKey<Item>[] getAllItemTags(@Nonnull Material mat) {
         return (Platform.isForge() ? forgeTags : fabricTags).stream().map(type -> type.getTag(this, mat)).toArray(TagKey[]::new);
+    }
+
+    @SuppressWarnings("unchecked")
+    public TagKey<Block>[] getBlockTags(@Nonnull Material mat) {
+        return (Platform.isForge() ? forgeTags : fabricTags).stream().filter(type -> !type.isParentTag()).map(type -> type.getTag(this, mat)).map(itemTagKey -> TagKey.create(Registry.BLOCK_REGISTRY, itemTagKey.location())).toArray(TagKey[]::new);
+    }
+
+    @SuppressWarnings("unchecked")
+    public TagKey<Block>[] getAllBlockTags(@Nonnull Material mat) {
+        return (Platform.isForge() ? forgeTags : fabricTags).stream().map(type -> type.getTag(this, mat)).map(itemTagKey -> TagKey.create(Registry.BLOCK_REGISTRY, itemTagKey.location())).toArray(TagKey[]::new);
     }
 
     public boolean hasItemTable() {
@@ -906,7 +975,7 @@ public class TagPrefix {
     }
 
     public boolean doGenerateItem(Material material) {
-        return generateItem && !isIgnored(material) && (generationCondition == null || generationCondition.test(material));
+        return (generateItem && !isIgnored(material) && (generationCondition == null || generationCondition.test(material))) || (hasItemTable() && this.itemTable.get() != null && getItemFromTable(material) != null);
     }
 
     public <T extends IMaterialProperty<T>> void executeHandler(PropertyKey<T> propertyKey, TriConsumer<TagPrefix, Material, T> handler) {
@@ -921,31 +990,44 @@ public class TagPrefix {
         return "tagprefix." + FormattingUtil.toLowerCaseUnderscore(name);
     }
 
-    public String getLocalNameForItem(Material material) {
-        return LocalizationUtils.format(getUnlocalizedName(), LocalizationUtils.format(material.getUnlocalizedName()));
+    public MutableComponent getLocalizedName(Material material) {
+        return Component.translatable(getUnlocalizedName(material), material.getLocalizedName());
     }
 
-    private String findUnlocalizedName(Material material) {
+    public String getUnlocalizedName(Material material) {
+        String formattedPrefix = FormattingUtil.toLowerCaseUnderscore(this.name);
+        String matSpecificKey = String.format("item.%s_%s", this.invertedName ? material.getName() : formattedPrefix, this.invertedName ? formattedPrefix : material.getName());
+        if (LocalizationUtils.exist(matSpecificKey)) {
+            return matSpecificKey;
+        }
         if(material.hasProperty(PropertyKey.POLYMER)) {
-            String localizationKey = String.format("item.material.oreprefix.polymer.%s", this.name);
-            // Not every polymer ore prefix gets a special name
+            String localizationKey = String.format("tagprefix.polymer.%s", formattedPrefix);
+            // Not every polymer tag prefix gets a special name
             if(LocalizationUtils.exist(localizationKey)) {
                 return localizationKey;
             }
         }
 
-        return String.format("item.material.oreprefix.%s", this.name);
+        return getUnlocalizedName();
     }
 
     public boolean isIgnored(Material material) {
-        return ignoredMaterials.contains(material);
+        return ignoredMaterials.containsKey(material);
     }
 
     public void setIgnored(Material material, ItemLike... items) {
-        ignoredMaterials.add(material);
+        ignoredMaterials.put(material, items);
         if (items.length > 0) {
             ChemicalHelper.registerUnificationItems(this, material, items);
         }
+    }
+
+    public void removeIgnored(Material material) {
+        ignoredMaterials.remove(material);
+    }
+
+    public Map<Material, ItemLike[]> getIgnored() {
+        return new HashMap<>(ignoredMaterials);
     }
 
     @Override

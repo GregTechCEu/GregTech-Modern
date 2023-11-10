@@ -43,8 +43,13 @@ public abstract class CapabilityBlockProvider<C> implements IBlockComponentProvi
         if (be == null) return;
 
         var side = block.getSide();
-        var capData = block.getServerData().getCompound(uid.toString()).getCompound(side == null ? "null" : side.getName());
-        if (capData.isEmpty()) return;
+        CompoundTag capData = null;
+        if (side != null) {
+            capData = block.getServerData().getCompound(uid.toString()).getCompound(side.getName());
+        }
+        if (side == null || capData.isEmpty()) {
+            capData = block.getServerData().getCompound(uid.toString()).getCompound("null");
+        }
 
         addTooltip(capData, tooltip, block.getPlayer(), block, be, config);
     }

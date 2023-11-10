@@ -10,11 +10,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Tier;
-import net.minecraft.world.item.Tiers;
 
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
+import java.util.Locale;
 import java.util.function.Function;
 
 /**
@@ -39,7 +37,7 @@ public class GTItemsImpl {
         // no-op
     }
 
-    public static List<? extends Tier> getAllToolTiers() {
-        return Arrays.asList(Tiers.values());
+    public static ResourceLocation getTierName(Tier tier) {
+        return new ResourceLocation(tier.toString().toLowerCase(Locale.ROOT));
     }
 }

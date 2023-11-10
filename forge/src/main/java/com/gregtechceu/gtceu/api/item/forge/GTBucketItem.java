@@ -1,6 +1,8 @@
 package com.gregtechceu.gtceu.api.item.forge;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
+import com.gregtechceu.gtceu.api.fluids.GTFluid;
 import com.gregtechceu.gtceu.client.renderer.item.GTBucketItemRenderer;
 import com.lowdragmc.lowdraglib.client.renderer.IItemRendererProvider;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
@@ -10,6 +12,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fluids.capability.wrappers.FluidBucketWrapper;
@@ -27,11 +30,13 @@ public class GTBucketItem extends BucketItem implements IItemRendererProvider {
 
     IRenderer renderer;
     final Material material;
+    final String langKey;
 
-    public GTBucketItem(Supplier<? extends Fluid> fluid, Properties properties, boolean isGas, Material material) {
+    public GTBucketItem(Supplier<? extends Fluid> fluid, Properties properties, boolean isGas, Material material, String langKey) {
         super(fluid, properties);
         this.renderer = isGas ? GTBucketItemRenderer.INSTANCE_GAS : GTBucketItemRenderer.INSTANCE;
         this.material = material;
+        this.langKey = langKey;
     }
 
     @Override
@@ -59,7 +64,8 @@ public class GTBucketItem extends BucketItem implements IItemRendererProvider {
 
     @Override
     public Component getDescription() {
-        return Component.translatable("item.gtceu.bucket", material.getLocalizedName());
+        Component materialName = material.getLocalizedName();
+        return Component.translatable("item.gtceu.bucket", Component.translatable(this.langKey, materialName));
     }
 
     @Override
@@ -67,4 +73,15 @@ public class GTBucketItem extends BucketItem implements IItemRendererProvider {
         return this.getDescription();
     }
 
+    @Override
+    public int getBurnTime(ItemStack itemStack, @Nullable RecipeType<?> recipeType) {
+        var property = material.getProperty(PropertyKey.FLUID);
+        if (property != null) {
+            var fluid = material.getFluid();
+            if (fluid instanceof GTFluid gtFluid) {
+                return gtFluid.getBurnTime();
+            }
+        }
+        return -1;
+    }
 }

@@ -1,0 +1,15 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:wetware_processor_assembly"
+  },
+  "items": [
+    "gtceu:wetware_processor_assembly"
+  ],
+  "page": "gtceu:circuits/wetware_processor_assembly",
+  "position": [
+    -250,
+    300
+  ],
+  "section": "gtceu:circuits"
+}

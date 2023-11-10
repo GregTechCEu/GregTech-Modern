@@ -1,0 +1,28 @@
+{
+	"credit": "Made with Blockbench",
+	"parent": "block/block",
+	"textures": {
+		"overlay_pipe_in": "gtceu:block/overlay/machine/overlay_pipe_in",
+		"overlay_item_hatch_input": "gtceu:block/overlay/machine/overlay_item_hatch_input",
+		"overlay_item_hatch_output": "gtceu:block/overlay/machine/overlay_item_hatch_output",
+		"overlay_pipe_out": "gtceu:block/overlay/machine/overlay_pipe_out"
+	},
+	"elements": [
+		{
+			"from": [0, 0, 0],
+			"to": [16, 16, 16],
+			"faces": {
+				"north": {"uv": [0, 0, 16, 16], "texture": "#overlay_pipe_in", "cullface": "north"},
+				"south": {"uv": [0, 0, 16, 16], "texture": "#overlay_pipe_out", "cullface": "south"}
+			}
+		},
+		{
+			"from": [0, 0, 0],
+			"to": [16, 16, 16],
+			"faces": {
+				"north": {"uv": [0, 0, 16, 16], "texture": "#overlay_item_hatch_input", "cullface": "north"},
+				"south": {"uv": [0, 0, 16, 16], "texture": "#overlay_item_hatch_output", "cullface": "south"}
+			}
+		}
+	]
+}

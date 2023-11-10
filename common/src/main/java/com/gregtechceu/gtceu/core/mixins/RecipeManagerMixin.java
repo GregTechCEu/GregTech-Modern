@@ -27,25 +27,8 @@ public abstract class RecipeManagerMixin {
     @Shadow private Map<RecipeType<?>, Map<ResourceLocation, Recipe<?>>> recipes;
 
     @Inject(method = "apply(Ljava/util/Map;Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/util/profiling/ProfilerFiller;)V",
-            at = @At(value = "HEAD"))
-    private void injectApplyHead(Map<ResourceLocation, JsonElement> map, ResourceManager resourceManager, ProfilerFiller profiler, CallbackInfo ci) {
-        GTCEu.LOGGER.info("Ignore errors about 'duplicated recipes', they're simply overrides. (DO note them if your custom recipe isn't working.)");
-        GTRecipes.recipeRemoval(rl -> {
-            if (map.remove(rl) == null) {
-                GTCEu.LOGGER.error("failed to remove recipe {}, could not find matching recipe", rl);
-            }
-        });
-        GTRecipes.recipeAddition(recipe -> {
-            var id = recipe.getId();
-            if (map.put(id, recipe.serializeRecipe()) != null) {
-                GTCEu.LOGGER.error("duplicated recipe: {}", id);
-            }
-        });
-    }
-
-    @Inject(method = "apply(Ljava/util/Map;Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/util/profiling/ProfilerFiller;)V",
             at = @At(value = "TAIL"))
-    private void injectApplyTail(Map<ResourceLocation, JsonElement> map, ResourceManager resourceManager, ProfilerFiller profiler, CallbackInfo ci) {
+    private void gtceu$cloneVanillaRecipes(Map<ResourceLocation, JsonElement> map, ResourceManager resourceManager, ProfilerFiller profiler, CallbackInfo ci) {
         for (RecipeType<?> recipeType : Registry.RECIPE_TYPE) {
             if (recipeType instanceof GTRecipeType gtRecipeType) {
                 var proxyRecipes = gtRecipeType.getProxyRecipes();

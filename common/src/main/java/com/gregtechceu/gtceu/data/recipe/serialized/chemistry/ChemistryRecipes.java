@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.data.recipe.serialized.chemistry;
 
+import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Items;
@@ -69,12 +70,12 @@ public class ChemistryRecipes {
 
         VACUUM_RECIPES.recipeBuilder("liquid_oxygen")
                 .inputFluids(Oxygen.getFluid(1000))
-                .outputFluids(LiquidOxygen.getFluid(1000))
+                .outputFluids(Oxygen.getFluid(FluidStorageKeys.LIQUID, 1000))
                 .duration(240).EUt(VA[EV]).save(provider);
 
         VACUUM_RECIPES.recipeBuilder("liquid_helium")
                 .inputFluids(Helium.getFluid(1000))
-                .outputFluids(LiquidHelium.getFluid(1000))
+                .outputFluids(Helium.getFluid(FluidStorageKeys.LIQUID, 1000))
                 .duration(240).EUt(VA[EV]).save(provider);
 
         BLAST_RECIPES.recipeBuilder("nickel_zinc_ferrite")
@@ -103,13 +104,13 @@ public class ChemistryRecipes {
         GAS_COLLECTOR_RECIPES.recipeBuilder("nether_air")
                 .circuitMeta(2)
                 .outputFluids(NetherAir.getFluid(10000))
-                .dimension(new ResourceLocation("nether"))
+                .dimension(new ResourceLocation("the_nether"))
                 .duration(200).EUt(64).save(provider);
 
         GAS_COLLECTOR_RECIPES.recipeBuilder("ender_air")
                 .circuitMeta(3)
                 .outputFluids(EnderAir.getFluid(10000))
-                .dimension(new ResourceLocation("end"))
+                .dimension(new ResourceLocation("the_end"))
                 .duration(200).EUt(256).save(provider);
 
         // CaCO3 + 2NaCl -> Na2CO3 + CaCl2

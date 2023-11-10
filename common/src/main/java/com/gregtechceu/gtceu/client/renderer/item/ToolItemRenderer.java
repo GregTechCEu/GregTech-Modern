@@ -2,6 +2,8 @@ package com.gregtechceu.gtceu.client.renderer.item;
 
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.lowdragmc.lowdraglib.client.renderer.impl.IModelRenderer;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -25,4 +27,9 @@ public class ToolItemRenderer extends IModelRenderer {
         return MODELS.get(toolType);
     }
 
+    @Override
+    @Environment(EnvType.CLIENT)
+    public boolean isGui3d() {
+        return false;
+    }
 }

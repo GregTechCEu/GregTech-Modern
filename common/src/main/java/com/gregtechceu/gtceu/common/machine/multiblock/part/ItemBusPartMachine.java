@@ -2,21 +2,25 @@ package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.UITemplate;
-import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
+import com.gregtechceu.gtceu.api.gui.fancy.ConfiguratorPanel;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
+import com.gregtechceu.gtceu.api.machine.fancyconfigurator.CircuitFancyConfigurator;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineModifyDrops;
-import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
+import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDistinctPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
+import com.gregtechceu.gtceu.api.machine.trait.ItemHandlerProxyRecipeTrait;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
-import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
-import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
+import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
+import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import lombok.Getter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -29,6 +33,7 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author KilaBash
@@ -37,19 +42,27 @@ import java.util.List;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class ItemBusPartMachine extends TieredIOPartMachine implements IMachineModifyDrops, IUIMachine {
+public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinctPart, IMachineModifyDrops {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(ItemBusPartMachine.class, TieredIOPartMachine.MANAGED_FIELD_HOLDER);
+    @Getter
     @Persisted
-    public final NotifiableItemStackHandler inventory;
+    private final NotifiableItemStackHandler inventory;
     @Nullable
     protected TickableSubscription autoIOSubs;
     @Nullable
     protected ISubscription inventorySubs;
+    @Getter
+    @Persisted
+    protected final NotifiableItemStackHandler circuitInventory;
+    @Getter
+    protected final ItemHandlerProxyRecipeTrait combinedInventory;
 
     public ItemBusPartMachine(IMachineBlockEntity holder, int tier, IO io, Object... args) {
         super(holder, tier, io);
         this.inventory = createInventory(args);
+        this.circuitInventory = createCircuitItemHandler(io);
+        this.combinedInventory = createCombinedItemHandler(io);
     }
 
     //////////////////////////////////////
@@ -69,9 +82,29 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IMachineM
         return new NotifiableItemStackHandler(this, getInventorySize(), io);
     }
 
+    protected NotifiableItemStackHandler createCircuitItemHandler(Object... args) {
+        if (args.length > 0 && args[0] instanceof IO io && io == IO.IN) {
+            return new NotifiableItemStackHandler(this, 1, IO.IN, IO.NONE).setFilter(IntCircuitBehaviour::isIntegratedCircuit);
+        } else {
+            return new NotifiableItemStackHandler(this, 0, IO.NONE);
+        }
+    }
+
+    protected ItemHandlerProxyRecipeTrait createCombinedItemHandler(Object... args) {
+        if (args.length > 0 && args[0] instanceof IO io && io == IO.IN) {
+            return new ItemHandlerProxyRecipeTrait(this, Set.of(getInventory(), circuitInventory), IO.IN, IO.NONE);
+        } else {
+            return new ItemHandlerProxyRecipeTrait(this, Set.of(getInventory(), circuitInventory), IO.NONE, IO.NONE);
+        }
+    }
+
     @Override
     public void onDrops(List<ItemStack> drops, Player entity) {
-        clearInventory(drops, inventory.storage);
+        clearInventory(drops, getInventory().storage);
+
+        if (!ConfigHolder.INSTANCE.machines.ghostCircuit) {
+            clearInventory(drops, circuitInventory.storage);
+        }
     }
 
     @Override
@@ -80,7 +113,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IMachineM
         if (getLevel() instanceof ServerLevel serverLevel) {
             serverLevel.getServer().tell(new TickTask(0, this::updateInventorySubscription));
         }
-        inventorySubs = inventory.addChangedListener(this::updateInventorySubscription);
+        inventorySubs = getInventory().addChangedListener(this::updateInventorySubscription);
     }
 
     @Override
@@ -90,6 +123,18 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IMachineM
             inventorySubs.unsubscribe();
             inventorySubs = null;
         }
+    }
+
+    @Override
+    public boolean isDistinct() {
+        return getInventory().isDistinct() && circuitInventory.isDistinct();
+    }
+
+    @Override
+    public void setDistinct(boolean isDistinct) {
+        getInventory().setDistinct(isDistinct);
+        circuitInventory.setDistinct(isDistinct);
+        combinedInventory.setDistinct(isDistinct);
     }
 
     //////////////////////////////////////
@@ -109,7 +154,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IMachineM
     }
 
     protected void updateInventorySubscription() {
-        if (isWorkingEnabled() && ((io == IO.OUT && !inventory.isEmpty()) || io == IO.IN)
+        if (isWorkingEnabled() && ((io == IO.OUT && !getInventory().isEmpty()) || io == IO.IN)
                 && ItemTransferHelper.getItemTransfer(getLevel(), getPos().relative(getFrontFacing()), getFrontFacing().getOpposite()) != null) {
             autoIOSubs = subscribeServerTick(autoIOSubs, this::autoIO);
         } else if (autoIOSubs != null) {
@@ -122,9 +167,9 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IMachineM
         if (getOffsetTimer() % 5 == 0) {
             if (isWorkingEnabled()) {
                 if (io == IO.OUT) {
-                    inventory.exportToNearby(getFrontFacing());
-                } else if (io == IO.IN){
-                    inventory.importFromNearby(getFrontFacing());
+                    getInventory().exportToNearby(getFrontFacing());
+                } else if (io == IO.IN) {
+                    getInventory().importFromNearby(getFrontFacing());
                 }
             }
             updateInventorySubscription();
@@ -140,29 +185,35 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IMachineM
     //////////////////////////////////////
     //**********     GUI     ***********//
     //////////////////////////////////////
-    @Override
-    public ModularUI createUI(Player entityPlayer) {
-        int rowSize = (int) Math.sqrt(getInventorySize());
-        int xOffset = rowSize == 10 ? 9 : 0;
-        var modular = new ModularUI(176 + xOffset * 2,
-                18 + 18 * rowSize + 94, this, entityPlayer)
-                .background(GuiTextures.BACKGROUND)
-                .widget(new LabelWidget(10, 5, getBlockState().getBlock().getDescriptionId()))
-                .widget(new ToggleButtonWidget(2, 18 + 18 * rowSize + 12 - 20, 18, 18,
-                        GuiTextures.BUTTON_ITEM_OUTPUT, this::isWorkingEnabled, this::setWorkingEnabled)
-                        .setShouldUseBaseBackground()
-                        .setTooltipText("gtceu.gui.item_auto_input.tooltip"))
-                .widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(), GuiTextures.SLOT, 7 + xOffset, 18 + 18 * rowSize + 12, true));
 
-        for (int y = 0; y < rowSize; y++) {
+    public void attachConfigurators(ConfiguratorPanel configuratorPanel) {
+        IDistinctPart.super.attachConfigurators(configuratorPanel);
+        if (this.io == IO.IN) {
+            configuratorPanel.attachConfigurators(new CircuitFancyConfigurator(circuitInventory.storage));
+        }
+    }
+
+    @Override
+    public Widget createUIWidget() {
+        int rowSize = (int) Math.sqrt(getInventorySize());
+        int colSize = rowSize;
+        if (getInventorySize() == 8) {
+            rowSize = 4;
+            colSize = 2;
+        }
+        var group = new WidgetGroup(0, 0, 18 * rowSize + 16, 18 * colSize + 16);
+        var container = new WidgetGroup(4, 4, 18 * rowSize + 8, 18 * colSize + 8);
+        int index = 0;
+        for (int y = 0; y < colSize; y++) {
             for (int x = 0; x < rowSize; x++) {
-                int index = y * rowSize + x;
-                modular.widget(new SlotWidget(inventory.storage, index,
-                        (88 - rowSize * 9 + x * 18) + xOffset, 18 + y * 18, true, io.support(IO.IN))
+                container.addWidget(new SlotWidget(getInventory().storage, index++, 4 + x * 18, 4 + y * 18, true, io.support(IO.IN))
                         .setBackgroundTexture(GuiTextures.SLOT));
             }
         }
 
-        return modular;
+        container.setBackground(GuiTextures.BACKGROUND_INVERSE);
+        group.addWidget(container);
+
+        return group;
     }
 }

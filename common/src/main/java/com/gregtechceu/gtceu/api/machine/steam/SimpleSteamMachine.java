@@ -8,30 +8,31 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.UITemplate;
 import com.gregtechceu.gtceu.api.gui.widget.PredicatedImageWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IExhaustVentMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineModifyDrops;
 import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.common.recipe.VentCondition;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
-import com.lowdragmc.lowdraglib.side.fluid.IFluidStorage;
+import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import it.unimi.dsi.fastutil.longs.LongIntPair;
+import com.lowdragmc.lowdraglib.utils.Position;
+import lombok.Setter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
@@ -45,6 +46,7 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
     public final NotifiableItemStackHandler importItems;
     @Persisted
     public final NotifiableItemStackHandler exportItems;
+    @Setter
     @Persisted
     private boolean needsVenting;
 
@@ -82,7 +84,6 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
         // Fine, we use it to provide eu cap for recipe, simulating an EU machine.
         capabilitiesProxy.put(IO.IN, EURecipeCapability.CAP,
                 List.of(new SteamEnergyRecipeHandler(steamTank, FluidHelper.getBucket() / 1000d)));
-        subscribeServerTick(this::tryDoVenting);
     }
 
     @Override
@@ -95,34 +96,9 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
     //******     Venting Logic    ******//
     //////////////////////////////////////
 
-    public void tryDoVenting() {
-        // check venting every 10 ticks
-        if (getOffsetTimer() % 10 == 0) {
-            checkVenting();
-        }
-    }
-
     @Override
     public float getVentingDamage() {
         return isHighPressure() ? 12F : 6F;
-    }
-
-    /**
-     * Checks the venting state. Performs venting only if required.
-     * <strong>Server-Side Only.</strong>
-     *
-     * @return if the machine does not need venting
-     */
-    protected boolean checkVenting() {
-        if (needsVenting()) {
-            if (getLevel() instanceof ServerLevel serverLevel) {
-                tryDoVenting(serverLevel, getPos());
-            } else {
-                throw new IllegalStateException("Must be Sever-Side to check steam venting");
-            }
-        }
-
-        return !needsVenting();
     }
 
     @Override
@@ -145,34 +121,30 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
     //////////////////////////////////////
 
     @Nullable
-    @Override
-    public GTRecipe modifyRecipe(GTRecipe recipe) {
-        if (RecipeHelper.getRecipeEUtTier(recipe) > GTValues.LV || !checkVenting()) {
-            return null;
-        }
-
-        var modified = RecipeHelper.applyOverclock(new OverclockingLogic(false) {
-            @Override
-            protected LongIntPair runOverclockingLogic(@NotNull GTRecipe recipe, long recipeEUt, long maxVoltage, int duration, int amountOC) {
-                return LongIntPair.of(isHighPressure ? recipeEUt * 2 : recipeEUt, isHighPressure ? duration : duration * 2);
+    public static GTRecipe recipeModifier(MetaMachine machine, @Nonnull GTRecipe recipe) {
+        if (machine instanceof SimpleSteamMachine steamMachine) {
+            if (RecipeHelper.getRecipeEUtTier(recipe) > GTValues.LV || !steamMachine.checkVenting()) {
+                return null;
             }
-        }, recipe, GTValues.V[GTValues.LV]);
 
-        if (modified == recipe) {
-            modified = recipe.copy();
+            var modified = recipe.copy();
+            modified.conditions.add(VentCondition.INSTANCE);
+
+            if (!steamMachine.isHighPressure) {
+                modified.duration *= 2;
+                RecipeHelper.setInputEUt(modified, RecipeHelper.getInputEUt(recipe) / 2);
+            }
+
+            return modified;
         }
-
-        modified.conditions.add(VentCondition.INSTANCE);
-        return modified;
+        return null;
     }
 
     @Override
     public void afterWorking() {
         super.afterWorking();
-        if (!getLevel().isClientSide()) {
-            needsVenting = true;
-            checkVenting();
-        }
+        needsVenting = true;
+        checkVenting();
     }
 
     //////////////////////////////////////
@@ -181,14 +153,15 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
 
     @Override
     public ModularUI createUI(Player entityPlayer) {
-        var group = recipeType.createUITemplate(recipeLogic::getProgressPercent, importItems.storage, exportItems.storage, new IFluidStorage[0], new IFluidStorage[0], true, isHighPressure);
-        group.addSelfPosition(0, 20);
+        var group = getRecipeType().createUITemplate(recipeLogic::getProgressPercent, importItems.storage, exportItems.storage, IFluidTransfer.EMPTY, IFluidTransfer.EMPTY, true, isHighPressure);
+        Position pos = new Position((Math.max(group.getSize().width + 4 + 8, 176) - 4 - group.getSize().width) / 2 + 4, 32);
+        group.setSelfPosition(pos);
         return new ModularUI(176, 166, this, entityPlayer)
                 .background(GuiTextures.BACKGROUND_STEAM.get(isHighPressure))
                 .widget(group)
                 .widget(new LabelWidget(5, 5, getBlockState().getBlock().getDescriptionId()))
-                .widget(new PredicatedImageWidget(79, 42, 18, 18, GuiTextures.INDICATOR_NO_STEAM.get(isHighPressure))
-                        .setPredicate(recipeLogic::isHasNotEnoughEnergy))
+                .widget(new PredicatedImageWidget(pos.x + group.getSize().width / 2 - 9, pos.y + group.getSize().height / 2 - 9, 18, 18, GuiTextures.INDICATOR_NO_STEAM.get(isHighPressure))
+                        .setPredicate(recipeLogic::isWaiting))
                 .widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(), GuiTextures.SLOT_STEAM.get(isHighPressure), 7, 84, true));
     }
 }

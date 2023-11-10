@@ -1,18 +1,20 @@
 package com.gregtechceu.gtceu.core.forge;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.FluidProperty;
+import com.gregtechceu.gtceu.api.fluids.store.FluidStorage;
 import com.gregtechceu.gtceu.api.registry.registrate.forge.GTClientFluidTypeExtensions;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 
 public class MixinHelpersImpl {
 
-    public static void addFluidTexture(Material material, FluidProperty prop) {
-        GTClientFluidTypeExtensions extensions = GTClientFluidTypeExtensions.FLUID_TYPES.get(ForgeRegistries.FLUIDS.getKey(prop.getFluid()));
-        if (extensions != null) {
-            extensions.setFlowingTexture(prop.getFlowTexture());
-            extensions.setStillTexture(prop.getStillTexture());
-            extensions.setTintColor(material.getMaterialRGB());
+    public static void addFluidTexture(Material material, FluidStorage.FluidEntry value) {
+        if (value != null) {
+            IClientFluidTypeExtensions extensions = IClientFluidTypeExtensions.of(value.getFluid().get());
+            if (extensions instanceof GTClientFluidTypeExtensions gtExtensions) {
+                gtExtensions.setFlowingTexture(value.getFlowTexture());
+                gtExtensions.setStillTexture(value.getStillTexture());
+                gtExtensions.setTintColor(material.getMaterialARGB());
+            }
         }
     }
 }

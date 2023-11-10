@@ -9,7 +9,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputFluid;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputItem;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.client.model.ItemBakedModel;
-import com.gregtechceu.gtceu.client.renderer.block.CTMModelRenderer;
+import com.gregtechceu.gtceu.client.renderer.block.TextureOverrideRenderer;
 import com.gregtechceu.gtceu.client.renderer.cover.ICoverableRenderer;
 import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
@@ -46,7 +46,7 @@ import java.util.function.Consumer;
  * @date 2023/2/26
  * @implNote MachineRenderer
  */
-public class MachineRenderer extends CTMModelRenderer implements ICoverableRenderer, IPartRenderer, ICTMPredicate {
+public class MachineRenderer extends TextureOverrideRenderer implements ICoverableRenderer, IPartRenderer, ICTMPredicate {
 
     public static final ResourceLocation PIPE_OVERLAY = GTCEu.id("block/overlay/machine/overlay_pipe");
     public static final ResourceLocation FLUID_OUTPUT_OVERLAY = GTCEu.id("block/overlay/machine/overlay_fluid_output");
@@ -76,6 +76,7 @@ public class MachineRenderer extends CTMModelRenderer implements ICoverableRende
             Minecraft.getInstance().getItemRenderer().render(stack, transformType, leftHand, matrixStack, buffer, combinedLight, combinedOverlay,
                     new ItemBakedModel() {
                         @Override
+                        @Environment(EnvType.CLIENT)
                         public List<BakedQuad> getQuads(@org.jetbrains.annotations.Nullable BlockState state, @org.jetbrains.annotations.Nullable Direction direction, RandomSource random) {
                             List<BakedQuad> quads = new LinkedList<>();
                             renderMachine(quads, machineItem.getDefinition(), null, Direction.NORTH, direction, random, direction, BlockModelRotation.X0_Y0);
@@ -88,10 +89,10 @@ public class MachineRenderer extends CTMModelRenderer implements ICoverableRende
 
     @Override
     @Environment(EnvType.CLIENT)
-    public final List<BakedQuad> renderModel(BlockAndTintGetter level, BlockPos pos, BlockState state, Direction side, RandomSource rand) {
-        if (state.getBlock() instanceof MetaMachineBlock machineBlock) {
+    public final List<BakedQuad> renderModel(@Nullable BlockAndTintGetter level, @Nullable BlockPos pos, @Nullable BlockState state, @Nullable Direction side, RandomSource rand) {
+        if (state != null && state.getBlock() instanceof MetaMachineBlock machineBlock) {
             var frontFacing = machineBlock.getFrontFacing(state);
-            var machine = machineBlock.getMachine(level, pos);
+            var machine = (level == null || pos == null) ? null : machineBlock.getMachine(level, pos);
             if (machine != null) {
                 var definition = machine.getDefinition();
                 var modelState = ModelFactory.getRotation(frontFacing);
@@ -159,7 +160,7 @@ public class MachineRenderer extends CTMModelRenderer implements ICoverableRende
      */
     @Environment(EnvType.CLIENT)
     public void renderMachine(List<BakedQuad> quads, MachineDefinition definition, @Nullable MetaMachine machine, Direction frontFacing, @Nullable Direction side, RandomSource rand, @Nullable Direction modelFacing, ModelState modelState) {
-        if (!(machine instanceof IMultiPart part) || !renderReplacedPartMachine(quads, part, frontFacing, side, rand, modelFacing, modelState)) {
+        if (!(machine instanceof IMultiPart part) || !part.replacePartModelWhenFormed() || !renderReplacedPartMachine(quads, part, frontFacing, side, rand, modelFacing, modelState)) {
             renderBaseModel(quads, definition, machine, frontFacing, side, rand);
         }
     }

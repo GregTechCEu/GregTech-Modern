@@ -32,7 +32,7 @@ public interface ICoverableRenderer extends IRenderer {
     @Override
     @Environment(EnvType.CLIENT)
     default List<BakedQuad> renderModel(BlockAndTintGetter level, BlockPos pos, BlockState state, Direction side, RandomSource rand) {
-        var blockEntity = level.getBlockEntity(pos);
+        var blockEntity = level == null ? null : level.getBlockEntity(pos);
         if (blockEntity != null) {
             var coverable = GTCapabilityHelper.getCoverable(blockEntity.getLevel(), blockEntity.getBlockPos(), null);
             if (coverable != null) {
@@ -64,9 +64,9 @@ public interface ICoverableRenderer extends IRenderer {
                             normal.getY() == 0 ? 0.999 : normal.getY() > 0 ? 0.999 : min,
                             normal.getZ() == 0 ? 0.999 : normal.getZ() > 0 ? 0.999 : min);
                     if (side == null) { // render back
-                        quads.add(FaceQuad.builder(face.getOpposite(), ModelFactory.getBlockSprite(GTCEu.id("block/cable/wire"))).cube(cube).cubeUV().tintIndex(-1).bake());
+                        quads.add(FaceQuad.builder(face.getOpposite(), ModelFactory.getBlockSprite(GTCEu.id("block/material_sets/dull/wire"))).cube(cube).cubeUV().tintIndex(-1).bake());
                     } else if (side != face.getOpposite()){ // render sides
-                        quads.add(FaceQuad.builder(side, ModelFactory.getBlockSprite(GTCEu.id("block/cable/wire"))).cube(cube).cubeUV().tintIndex(-1).bake());
+                        quads.add(FaceQuad.builder(side, ModelFactory.getBlockSprite(GTCEu.id("block/material_sets/dull/wire"))).cube(cube).cubeUV().tintIndex(-1).bake());
                     }
                 }
                 cover.getCoverRenderer().renderCover(quads, side, rand, cover, modelFacing, modelState);

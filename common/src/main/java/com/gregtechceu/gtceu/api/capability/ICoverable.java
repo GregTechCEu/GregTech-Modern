@@ -4,8 +4,13 @@ import com.gregtechceu.gtceu.api.block.IAppearance;
 import com.gregtechceu.gtceu.api.blockentity.ITickSubscription;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
+import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.gui.fancy.IFancyConfigurator;
+import com.gregtechceu.gtceu.api.gui.widget.CoverContainerConfigurator;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.lowdragmc.lowdraglib.LDLib;
+import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.utils.RayTraceHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -23,13 +28,14 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
 
-public interface ICoverable extends ITickSubscription, IAppearance {
+public interface ICoverable extends ITickSubscription, IAppearance, IFancyConfigurator {
 
     Level getLevel();
 
@@ -45,20 +51,70 @@ public interface ICoverable extends ITickSubscription, IAppearance {
 
     void scheduleRenderUpdate();
 
-    boolean placeCoverOnSide(Direction side, ItemStack itemStack, CoverDefinition coverDefinition, ServerPlayer player);
-
-    boolean removeCover(Direction side);
+    void scheduleNeighborShapeUpdate();
 
     boolean canPlaceCoverOnSide(CoverDefinition definition, Direction side);
 
-    CoverBehavior getCoverAtSide(Direction side);
-
     double getCoverPlateThickness();
 
-    int getPaintingColorForRendering();
     Direction getFrontFacing();
 
     boolean shouldRenderBackSide();
+
+    /**
+     * Its an internal method, you should never call it yourself.
+     * <br>
+     * Use {@link ICoverable#removeCover(boolean, Direction)} and {@link ICoverable#placeCoverOnSide(Direction, ItemStack, CoverDefinition, ServerPlayer)} instead
+     * @param coverBehavior
+     * @param side
+     */
+    void setCoverAtSide(@Nullable CoverBehavior coverBehavior, Direction side);
+
+    @Nullable
+    CoverBehavior getCoverAtSide(Direction side);
+
+    default boolean placeCoverOnSide(Direction side, ItemStack itemStack, CoverDefinition coverDefinition, ServerPlayer player) {
+        CoverBehavior coverBehavior = coverDefinition.createCoverBehavior(this, side);
+        if (!canPlaceCoverOnSide(coverDefinition, side) || !coverBehavior.canAttach()) {
+            return false;
+        }
+        if (getCoverAtSide(side) != null) {
+            removeCover(side);
+        }
+        coverBehavior.onAttached(itemStack, player);
+        coverBehavior.onLoad();
+        setCoverAtSide(coverBehavior, side);
+        notifyBlockUpdate();
+        markDirty();
+        scheduleNeighborShapeUpdate();
+        // TODO achievement
+//        AdvancementTriggers.FIRST_COVER_PLACE.trigger((EntityPlayerMP) player);
+        return true;
+    }
+
+    default boolean removeCover(boolean dropItself, Direction side) {
+        CoverBehavior coverBehavior = getCoverAtSide(side);
+        if (coverBehavior == null) {
+            return false;
+        }
+        List<ItemStack> drops = coverBehavior.getAdditionalDrops();
+        if (dropItself) {
+            drops.add(coverBehavior.getPickItem());
+        }
+        coverBehavior.onRemoved();
+        setCoverAtSide(null, side);
+        for (ItemStack dropStack : drops) {
+            Block.popResource(getLevel(), getPos(), dropStack);
+        }
+        notifyBlockUpdate();
+        markDirty();
+        scheduleNeighborShapeUpdate();
+        return true;
+    }
+
+    default boolean removeCover(Direction side) {
+        return removeCover(true, side);
+    }
 
     default List<CoverBehavior> getCovers() {
         return Arrays.stream(Direction.values()).map(this::getCoverAtSide).filter(Objects::nonNull).collect(Collectors.toList());
@@ -97,16 +153,18 @@ public interface ICoverable extends ITickSubscription, IAppearance {
         return getLevel() == null ? LDLib.isRemote() : getLevel().isClientSide;
     }
 
-    default void addCoverCollisionBoundingBox(List<? super VoxelShape> collisionList) {
+    default VoxelShape[] addCoverCollisionBoundingBox() {
         double plateThickness = getCoverPlateThickness();
+        List<VoxelShape> shapes = new ArrayList<>();
         if (plateThickness > 0.0) {
             for (Direction side : Direction.values()) {
                 if (getCoverAtSide(side) != null) {
                     var coverBox = getCoverPlateBox(side, plateThickness);
-                    collisionList.add(coverBox);
+                    shapes.add(coverBox);
                 }
             }
         }
+        return shapes.toArray(VoxelShape[]::new);
     }
 
     static boolean doesCoverCollide(Direction side, List<VoxelShape> collisionBox, double plateThickness) {
@@ -147,20 +205,6 @@ public interface ICoverable extends ITickSubscription, IAppearance {
 
     @Nullable
     static Direction traceCoverSide(BlockHitResult result) {
-//        if (result instanceof CuboidRayTraceResult) {
-//            CuboidRayTraceResult rayTraceResult = (CuboidRayTraceResult) result;
-//            if (rayTraceResult.cuboid6.data == null) {
-//                return determineGridSideHit(result);
-//            } else if (rayTraceResult.cuboid6.data instanceof CoverSideData) {
-//                return ((CoverSideData) rayTraceResult.cuboid6.data).side;
-//            } else if (rayTraceResult.cuboid6.data instanceof BlockPipe.PipeConnectionData) {
-//                return ((PipeConnectionData) rayTraceResult.cuboid6.data).side;
-//            } else if (rayTraceResult.cuboid6.data instanceof PrimaryBoxData) {
-//                PrimaryBoxData primaryBoxData = (PrimaryBoxData) rayTraceResult.cuboid6.data;
-//                return primaryBoxData.usePlacementGrid ? determineGridSideHit(result) : result.sideHit;
-//            } //unknown hit type, fall through
-//        }
-        //normal collision ray trace, return side hit
         return determineGridSideHit(result);
     }
 
@@ -202,5 +246,24 @@ public interface ICoverable extends ITickSubscription, IAppearance {
             return getCoverAtSide(side).getAppearance(sourceState, sourcePos);
         }
         return null;
+    }
+
+    //////////////////////////////////////
+    //*********    Fancy Gui   *********//
+    //////////////////////////////////////
+
+    @Override
+    default String getTitle() {
+        return "gtceu.gui.cover_setting.title";
+    }
+
+    @Override
+    default IGuiTexture getIcon() {
+        return GuiTextures.TOOL_COVER_SETTINGS;
+    }
+
+    @Override
+    default Widget createConfigurator() {
+        return new CoverContainerConfigurator(this);
     }
 }

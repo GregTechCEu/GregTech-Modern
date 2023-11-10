@@ -12,7 +12,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import static com.gregtechceu.gtceu.utils.FormattingUtil.toEnglishName;
 
@@ -32,6 +31,7 @@ public class LangHandler {
         MachineLang.init(provider);
         ToolLang.init(provider);
         ConfigurationLang.init(provider);
+        CompassLang.init(provider);
 
         // CreativeModeTabs
         provider.add(GTCreativeModeTabs.MATERIAL_FLUID, "GregTech %ss".formatted(toEnglishName(GTCreativeModeTabs.MATERIAL_FLUID.getGroupId())));
@@ -45,8 +45,15 @@ public class LangHandler {
 
         provider.add("gtceu.gui.editor.tips.citation", "Number of citations");
         provider.add("gtceu.gui.editor.group.recipe_type", "cap");
-        provider.add("ldlib.gui.editor.register.editor.ui.rtui", "RecipeType UI Project");
-        provider.add("ldlib.gui.editor.register.editor.recipe_type_tab", "Recipe Types");
+        provider.add("ldlib.gui.editor.register.editor.gtceu.rtui", "RecipeType UI Project");
+        provider.add("ldlib.gui.editor.register.editor.gtceu.mui", "Machine UI Project");
+        provider.add("ldlib.gui.editor.register.editor.gtceu.template_tab", "templates");
+        //capabilities
+        provider.add("recipe.capability.eu.name", "GTCEu Energy");
+        provider.add("recipe.capability.fluid.name", "Fluid");
+        provider.add("recipe.capability.item.name", "Item");
+        provider.add("recipe.capability.su.name", "Create Stress");
+
         provider.add("recipe.condition.rpm.tooltip", "RPM: %d");
         provider.add("recipe.condition.thunder.tooltip", "Thunder Level: %d");
         provider.add("recipe.condition.rain.tooltip", "Rain Level: %d");
@@ -56,6 +63,11 @@ public class LangHandler {
         provider.add("recipe.condition.steam_vent.tooltip", "Clean steam vent");
         provider.add("recipe.condition.rock_breaker.tooltip", "Fluid blocks around");
         provider.add("recipe.condition.eu_to_start.tooltip", "EU to start: %d");
+
+        provider.add("gtceu.io.import", "Import");
+        provider.add("gtceu.io.export", "Export");
+        provider.add("gtceu.io.both", "Both");
+        provider.add("gtceu.io.none", "None");
 
         provider.add("enchantment.disjunction", "Disjunction");
         provider.add("gtceu.multiblock.steam_grinder.description", "A Multiblock Macerator at the Steam Age. Requires at least 14 Bronze Casings to form. Cannot use normal Input/Output busses, nor Fluid Hatches other than the Steam Hatch.");
@@ -82,9 +94,9 @@ public class LangHandler {
         provider.add("gtceu.multiblock.large_boiler.description", "Large Boilers are multiblocks that generate steam from an energy source and water. Said energy source is either any Solid Fuel with a Burn Time, or a Diesel/Semi-Fluid Fuel. Can be throttled back in increments of 5%% to reduce Steam output and Fuel consumption.");
         provider.add("gtceu.multiblock.large_turbine.description", "Large Turbines are multiblocks that generate power from steam, gases, and plasma by having them spin the turbine's rotor. Energy output is based on rotor efficiency and current speed of turbine. Gearbox casings are used in the center of the structure.");
         provider.add("gtceu.multiblock.assembly_line.description", "The Assembly Line is a large multiblock structure consisting of 5 to 16 \"slices\". In theory, it's large Assembling Machine, used for creating advanced crafting components.");
-        provider.add("gtceu.multiblock.fusion_reactor.luv.description", "The Fusion Reactor Mark 1 is a large multiblock structure used for fusing elements into heavier ones. It can only use LuV, ZPM, and UV Energy Hatches. For every Hatch it has, its buffer increases by 10M EU, and has a maximum of 160M.");
-        provider.add("gtceu.multiblock.fusion_reactor.zpm.description", "The Fusion Reactor Mark 2 is a large multiblock structure used for fusing elements into heavier ones. It can only use ZPM and UV Energy Hatches. For every Hatch it has, its buffer increases by 20M EU, and has a maximum of 320M.");
-        provider.add("gtceu.multiblock.fusion_reactor.uv.description", "The Fusion Reactor Mark 3 is a large multiblock structure used for fusing elements into heavier ones. It can only use UV Energy Hatches. For every Hatch it has, its buffer increases by 40M EU, and has a maximum of 640M.");
+        provider.add("gtceu.multiblock.fusion_reactor.luv.description", "The Fusion Reactor MK 1 is a large multiblock structure used for fusing elements into heavier ones. It can only use LuV, ZPM, and UV Energy Hatches. For every Hatch it has, its buffer increases by 10M EU, and has a maximum of 160M.");
+        provider.add("gtceu.multiblock.fusion_reactor.zpm.description", "The Fusion Reactor MK 2 is a large multiblock structure used for fusing elements into heavier ones. It can only use ZPM and UV Energy Hatches. For every Hatch it has, its buffer increases by 20M EU, and has a maximum of 320M.");
+        provider.add("gtceu.multiblock.fusion_reactor.uv.description", "The Fusion Reactor MK 3 is a large multiblock structure used for fusing elements into heavier ones. It can only use UV Energy Hatches. For every Hatch it has, its buffer increases by 40M EU, and has a maximum of 640M.");
         provider.add("gtceu.multiblock.fusion_reactor.energy", "EU: %d / %d");
         provider.add("gtceu.multiblock.fusion_reactor.heat", "Heat: %d");
         provider.add("gtceu.multiblock.large_chemical_reactor.description", "The Large Chemical Reactor performs chemical reactions at 100%% energy efficiency. Overclocks multiply both speed and energy by 4. The multiblock requires exactly 1 Cupronickel Coil Block, which must be placed adjacent to the PTFE Pipe casing located in the center.");
@@ -93,12 +105,18 @@ public class LangHandler {
         multilineLang(provider, "gtceu.multiblock.primitive_water_pump.extra2", "Hatch Multipliers:\n  Pump Hatch: 1x\n  ULV Output Hatch: 2x\n  LV Output Hatch: 4x\n\nWhile raining in the Pump's Biome, the total water production will be increased by 50%%.");
         provider.add("gtceu.multiblock.processing_array.description", "The Processing Array combines up to 16 single block machine(s) in a single multiblock, effectively easing automation.");
         provider.add("gtceu.multiblock.advanced_processing_array.description", "The Processing Array combines up to 64 single block machine(s) in a single multiblock, effectively easing automation.");
+        provider.add("gtceu.multiblock.parallelizable.tooltip", "Can parallelize with Parallel Control Hatches.");
+        provider.add("gtceu.parallel_hatch_mk5", "Allows to run up to 4 recipes in parallel.");
+        provider.add("gtceu.parallel_hatch_mk6", "Allows to run up to 16 recipes in parallel.");
+        provider.add("gtceu.parallel_hatch_mk7", "Allows to run up to 64 recipes in parallel.");
+        provider.add("gtceu.parallel_hatch_mk8", "Allows to run up to 256 recipes in parallel.");
+
         provider.add("item.invalid.name", "Invalid item");
         provider.add("fluid.empty", "Empty");
-        provider.add("gtceu.tooltip.hold_shift", "Hold SHIFT for more info");
-        provider.add("gtceu.tooltip.hold_ctrl", "Hold CTRL for more info");
-        provider.add("gtceu.tooltip.fluid_pipe_hold_shift", "Hold SHIFT to show Fluid Containment Info");
-        provider.add("gtceu.tooltip.tool_fluid_hold_shift", "Hold SHIFT to show Fluid Containment and Tool Info");
+        provider.add("gtceu.tooltip.hold_shift", "§7Hold SHIFT for more info");
+        provider.add("gtceu.tooltip.hold_ctrl", "§7Hold CTRL for more info");
+        provider.add("gtceu.tooltip.fluid_pipe_hold_shift", "§7Hold SHIFT to show Fluid Containment Info");
+        provider.add("gtceu.tooltip.tool_fluid_hold_shift", "§7Hold SHIFT to show Fluid Containment and Tool Info");
         provider.add("metaitem.generic.fluid_container.tooltip", "%d/%dL %s");
         provider.add("metaitem.generic.electric_item.tooltip", "%d/%d EU - Tier %s");
         provider.add("metaitem.generic.electric_item.stored", "%d/%d EU(%s)");
@@ -295,6 +313,7 @@ public class LangHandler {
         multilineLang(provider, "cover.smart_item_filter.filtering_mode.description", "Select Machine this Smart Filter will use for filtering.\nIt will automatically pick right portions of items for robotic arm.");
         provider.add("cover.conveyor.title", "Conveyor Cover Settings (%s)");
         provider.add("cover.conveyor.transfer_rate", "§7items/sec");
+        provider.add("cover.conveyor.mode", "Mode: %s");
         provider.add("cover.conveyor.mode.export", "Mode: Export");
         provider.add("cover.conveyor.mode.import", "Mode: Import");
         multilineLang(provider, "cover.conveyor.distribution.round_robin_enhanced", "Distribution Mode\n§bEnhanced Round Robin§r\n§7Splits items equally to all inventories");
@@ -318,8 +337,8 @@ public class LangHandler {
         provider.add("cover.pump.mode.export", "Mode: Export");
         provider.add("cover.pump.mode.import", "Mode: Import");
         provider.add("cover.pump.fluid_filter.title", "Fluid Filter");
-        provider.add("cover.bucket.mode.bucket", "kL/s");
-        provider.add("cover.bucket.mode.milli_bucket", "L/s");
+        provider.add("cover.bucket.mode.bucket", "kL");
+        provider.add("cover.bucket.mode.milli_bucket", "L");
         provider.add("cover.fluid_regulator.title", "Fluid Regulator Settings (%s)");
         multilineLang(provider, "cover.fluid_regulator.transfer_mode.description", "§eTransfer Any§r - in this mode, cover will transfer as many fluids matching its filter as possible.\n§eSupply Exact§r - in this mode, cover will supply fluids in portions specified in the window underneath this button. If amount of fluids is less than portion size, fluids won't be moved.\n§eKeep Exact§r - in this mode, cover will keep specified amount of fluids in the destination inventory, supplying additional amount of fluids if required.\n§7Tip: shift click will multiply increase/decrease amounts by 10 and ctrl click will multiply by 100.");
         provider.add("cover.fluid_regulator.supply_exact", "Supply Exact: %s");
@@ -327,7 +346,8 @@ public class LangHandler {
         provider.add("cover.machine_controller.title", "Machine Controller Settings");
         provider.add("cover.machine_controller.normal", "Normal");
         provider.add("cover.machine_controller.inverted", "Inverted");
-        multilineLang(provider, "cover.machine_controller.inverted.description", "§eNormal§r - in this mode, the cover will require a signal weaker than the set redstone level to run\n§eInverted§r - in this mode, the cover will require a signal stronger than the set redstone level to run");
+        multilineLang(provider, "cover.machine_controller.invert.enabled", "§eInverted§r - in this mode, the cover will require a signal stronger than the set redstone level to run");
+        multilineLang(provider, "cover.machine_controller.invert.disabled", "§eNormal§r - in this mode, the cover will require a signal weaker than the set redstone level to run");
         provider.add("cover.machine_controller.redstone", "Min Redstone Strength: %d");
         provider.add("cover.machine_controller.mode.machine", "Control Machine");
         provider.add("cover.machine_controller.mode.cover_up", "Control Cover (Top)");
@@ -342,21 +362,33 @@ public class LangHandler {
         multilineLang(provider, "cover.ender_fluid_link.private.tooltip.disabled", "Switch to private tank mode\nPrivate mode uses the player who originally placed the cover");
         provider.add("cover.ender_fluid_link.private.tooltip.enabled", "Switch to public tank mode");
         multilineLang(provider, "cover.ender_fluid_link.incomplete_hex", "Inputted color is incomplete!\nIt will be applied once complete (all 8 hex digits)\nClosing the gui will lose edits!");
+        provider.add("cover.detector_base.message_normal_state", "Monitoring Status: Normal");
+        provider.add("cover.detector_base.message_inverted_state", "Monitoring Status: Inverted");
+
         provider.add("cover.advanced_energy_detector.label", "Advanced Energy Detector");
-        provider.add("cover.advanced_energy_detector.min", "Minimum EU");
-        provider.add("cover.advanced_energy_detector.max", "Maximum EU");
-        multilineLang(provider, "cover.advanced_energy_detector.invert_tooltip", "Toggle to invert the redstone logic\nBy default, redstone is emitted when less than the minimum EU, and stops emitting when greater than the max EU");
-        provider.add("cover.advanced_energy_detector.invert_label", "Inverted:");
-        provider.add("cover.advanced_energy_detector.normal", "Normal");
-        provider.add("cover.advanced_energy_detector.inverted", "Inverted");
+        provider.add("cover.advanced_energy_detector.min", "Min");
+        provider.add("cover.advanced_energy_detector.max", "Max");
+
+        var advancedEnergyDetectorInvertDescription = "Toggle to invert the redstone logic\nBy default, redstone is emitted when less than the minimum EU, and stops emitting when greater than the max EU";
+        multilineLang(provider, "cover.advanced_energy_detector.invert.enabled", "Output: Inverted\n\n" + advancedEnergyDetectorInvertDescription);
+        multilineLang(provider, "cover.advanced_energy_detector.invert.disabled", "Output: Normal\n\n" + advancedEnergyDetectorInvertDescription);
+        var advancedEnergyDetectorModeDescription = "Change between using discrete EU values or percentages for comparing min/max against an attached energy storage.";
+        multilineLang(provider, "cover.advanced_energy_detector.use_percent.enabled", "Mode: Percentage\n\n" + advancedEnergyDetectorModeDescription);
+        multilineLang(provider, "cover.advanced_energy_detector.use_percent.disabled", "Mode: Discrete EU\n\n" + advancedEnergyDetectorModeDescription);
+
         provider.add("cover.advanced_fluid_detector.label", "Advanced Fluid Detector");
-        multilineLang(provider, "cover.advanced_fluid_detector.invert_tooltip", "Toggle to invert the redstone logic\nBy default, redstone stops emitting when less than the minimum L of fluid, and starts emitting when greater than the min L of fluid up to the set maximum");
-        provider.add("cover.advanced_fluid_detector.max", "Maximum Fluid:");
-        provider.add("cover.advanced_fluid_detector.min", "Minimum Fluid:");
+        var advancedFluidDetectorInvertDescription = "Toggle to invert the redstone logic\nBy default, redstone stops emitting when less than the minimum L of fluid, and starts emitting when greater than the min L of fluid up to the set maximum";
+        multilineLang(provider, "cover.advanced_fluid_detector.invert.enabled", "Output: Inverted\n\n" + advancedFluidDetectorInvertDescription);
+        multilineLang(provider, "cover.advanced_fluid_detector.invert.disabled", "Output: Normal\n\n" + advancedFluidDetectorInvertDescription);
+        provider.add("cover.advanced_fluid_detector.max", "Max Fluid (L)");
+        provider.add("cover.advanced_fluid_detector.min", "Min Fluid (L)");
+
         provider.add("cover.advanced_item_detector.label", "Advanced Item Detector");
-        multilineLang(provider, "cover.advanced_item_detector.invert_tooltip", "Toggle to invert the redstone logic\nBy default, redstone stops emitting when less than the minimum amount of items, and starts emitting when greater than the min amount of items up to the set maximum");
-        provider.add("cover.advanced_item_detector.max", "Maximum Items:");
-        provider.add("cover.advanced_item_detector.min", "Minimum Items:");
+        var advancedItemDetectorInvertDescription = "Toggle to invert the redstone logic\nBy default, redstone stops emitting when less than the minimum amount of items, and starts emitting when greater than the min amount of items up to the set maximum";
+        multilineLang(provider, "cover.advanced_item_detector.invert.enabled", "Output: Inverted\n\n" + advancedItemDetectorInvertDescription);
+        multilineLang(provider, "cover.advanced_item_detector.invert.disabled", "Output: Normal\n\n" + advancedItemDetectorInvertDescription);
+        provider.add("cover.advanced_item_detector.max", "Max Items");
+        provider.add("cover.advanced_item_detector.min", "Min Items");
 
         replace(provider, "item.gtceu.bucket", "%s Bucket");
         replace(provider, GTMaterials.FullersEarth.getUnlocalizedName(), "Fuller's Earth");
@@ -369,144 +401,145 @@ public class LangHandler {
         replace(provider, GTMaterials.OilHeavy.getUnlocalizedName(), "Heavy Oil");
         replace(provider, GTMaterials.OilLight.getUnlocalizedName(), "Light Oil");
         replace(provider, GTMaterials.RawOil.getUnlocalizedName(), "Raw Oil");
+        replace(provider, GTMaterials.HSLASteel.getUnlocalizedName(), "HSLA-Steel");
 
-        // TODO all individual material item overrides do not work
-        provider.add("item.nether_quartz.oreNetherrack", "Nether Quartz Ore");
-        provider.add("item.gunpowder.dustTiny", "Tiny Pile of Gunpowder");
-        provider.add("item.gunpowder.dustSmall", "Small Pile of Gunpowder");
-        provider.add("item.paper.dustTiny", "Tiny Pile of Chad");
-        provider.add("item.paper.dustSmall", "Small Pile of Chad");
-        provider.add("item.paper.dust", "Chad");
-        provider.add("item.rare_earth.dustTiny", "Tiny Pile of Rare Earth");
-        provider.add("item.rare_earth.dustSmall", "Small Pile of Rare Earth");
-        provider.add("item.rare_earth.dust", "Rare Earth");
-        provider.add("item.ash.dustTiny", "Tiny Pile of Ashes");
-        provider.add("item.ash.dustSmall", "Small Pile of Ashes");
-        provider.add("item.ash.dust", "Ashes");
-        provider.add("item.bone.dustTiny", "Tiny Pile of Bone Meal");
-        provider.add("item.bone.dustSmall", "Small Pile of Bone Meal");
-        provider.add("item.bone.dust", "Bone Meal");
-        provider.add("item.cassiterite_sand.crushedRefined", "Refined Cassiterite Sand");
-        provider.add("item.cassiterite_sand.crushedPurified", "Purified Cassiterite Sand");
-        provider.add("item.cassiterite_sand.crushed", "Ground Cassiterite Sand");
-        provider.add("item.cassiterite_sand.dustTiny", "Tiny Pile of Cassiterite Sand");
-        provider.add("item.cassiterite_sand.dustSmall", "Small Pile of Cassiterite Sand");
-        provider.add("item.cassiterite_sand.dustImpure", "Impure Pile of Cassiterite Sand");
-        provider.add("item.cassiterite_sand.dustPure", "Purified Pile of Cassiterite Sand");
-        provider.add("item.cassiterite_sand.dust", "Cassiterite Sand");
-        provider.add("item.dark_ash.dustTiny", "Tiny Pile of Dark Ashes");
-        provider.add("item.dark_ash.dustSmall", "Small Pile of Dark Ashes");
-        provider.add("item.dark_ash.dust", "Dark Ashes");
-        provider.add("item.ice.dustTiny", "Tiny Pile of Crushed Ice");
-        provider.add("item.ice.dustSmall", "Small Pile of Crushed Ice");
-        provider.add("item.ice.dust", "Crushed Ice");
-        provider.add("item.sugar.gem", "Sugar Cube");
-        provider.add("item.sugar.gemChipped", "Small Sugar Cubes");
-        provider.add("item.sugar.gemFlawed", "Tiny Sugar Cube");
-        provider.add("item.rock_salt.dustTiny", "Tiny Pile of Rock Salt");
-        provider.add("item.rock_salt.dustSmall", "Small Pile of Rock Salt");
-        provider.add("item.rock_salt.dustImpure", "Impure Pile of Rock Salt");
-        provider.add("item.rock_salt.dustPure", "Purified Pile of Rock Salt");
-        provider.add("item.rock_salt.dust", "Rock Salt");
-        provider.add("item.salt.dustTiny", "Tiny Pile of Salt");
-        provider.add("item.salt.dustSmall", "Small Pile of Salt");
-        provider.add("item.salt.dustImpure", "Impure Pile of Salt");
-        provider.add("item.salt.dustPure", "Purified Pile of Salt");
-        provider.add("item.salt.dust", "Salt");
-        provider.add("item.wood.dustTiny", "Tiny Pile of Wood Pulp");
-        provider.add("item.wood.dustSmall", "Small Pile of Wood Pulp");
-        provider.add("item.wood.dust", "Wood Pulp");
-        provider.add("item.wood.plate", "Wood Plank");
-        provider.add("item.wood.rodLong", "Long Wood Stick");
-        provider.add("item.wood.bolt", "Short Wood Stick");
-        provider.add("item.treated_wood.dustTiny", "Tiny Pile of Treated Wood Pulp");
-        provider.add("item.treated_wood.dustSmall", "Small Pile of Treated Wood Pulp");
-        provider.add("item.treated_wood.dust", "Treated Wood Pulp");
-        provider.add("item.treated_wood.plate", "Treated Wood Plank");
-        provider.add("item.treated_wood.rod", "Treated Wood Stick");
-        provider.add("item.treated_wood.rodLong", "Long Treated Wood Stick");
-        provider.add("item.treated_wood.bolt", "Short Treated Wood Stick");
-        provider.add("item.glass.gem", "Glass Crystal");
-        provider.add("item.glass.gemChipped", "Chipped Glass Crystal");
-        provider.add("item.glass.gemFlawed", "Flawed Glass Crystal");
-        provider.add("item.glass.gemFlawless", "Flawless Glass Crystal");
-        provider.add("item.glass.gemExquisite", "Exquisite Glass Crystal");
-        provider.add("item.glass.plate", "Glass Pane");
-        provider.add("item.blaze.dustTiny", "Tiny Pile of Blaze Powder");
-        provider.add("item.blaze.dustSmall", "Small Pile of Blaze Powder");
-        provider.add("item.sugar.dustTiny", "Tiny Pile of Sugar");
-        provider.add("item.sugar.dustSmall", "Small Pile of Sugar");
-        provider.add("item.basaltic_mineral_sand.dustTiny", "Tiny Pile of Basaltic Mineral Sand");
-        provider.add("item.basaltic_mineral_sand.dustSmall", "Small Pile of Basaltic Mineral Sand");
-        provider.add("item.basaltic_mineral_sand.dust", "Basaltic Mineral Sand");
-        provider.add("item.granitic_mineral_sand.dustTiny", "Tiny Pile of Granitic Mineral Sand");
-        provider.add("item.granitic_mineral_sand.dustSmall", "Small Pile of Granitic Mineral Sand");
-        provider.add("item.granitic_mineral_sand.dust", "Granitic Mineral Sand");
-        provider.add("item.garnet_sand.dustTiny", "Tiny Pile of Garnet Sand");
-        provider.add("item.garnet_sand.dustSmall", "Small Pile of Garnet Sand");
-        provider.add("item.garnet_sand.dust", "Garnet Sand");
-        provider.add("item.quartz_sand.dustTiny", "Tiny Pile of Quartz Sand");
-        provider.add("item.quartz_sand.dustSmall", "Small Pile of Quartz Sand");
-        provider.add("item.quartz_sand.dust", "Quartz Sand");
-        provider.add("item.glauconite_sand.dustTiny", "Tiny Pile of Glauconite Sand");
-        provider.add("item.glauconite_sand.dustSmall", "Small Pile of Glauconite Sand");
-        provider.add("item.glauconite_sand.dust", "Glauconite Sand");
-        provider.add("item.bentonite.crushedRefined", "Refined Bentonite");
-        provider.add("item.bentonite.crushedPurified", "Purified Bentonite");
-        provider.add("item.bentonite.crushed", "Ground Bentonite");
-        provider.add("item.bentonite.dustTiny", "Tiny Pile of Bentonite");
-        provider.add("item.bentonite.dustSmall", "Small Pile of Bentonite");
-        provider.add("item.bentonite.dustImpure", "Impure Pile of Bentonite");
-        provider.add("item.bentonite.dustPure", "Purified Pile of Bentonite");
-        provider.add("item.bentonite.dust", "Bentonite");
-        provider.add("item.fullers_earth.dustTiny", "Tiny Pile of Fullers Earth");
-        provider.add("item.fullers_earth.dustSmall", "Small Pile of Fullers Earth");
-        provider.add("item.fullers_earth.dust", "Fullers Earth");
-        provider.add("item.pitchblende.crushedRefined", "Refined Pitchblende");
-        provider.add("item.pitchblende.crushedPurified", "Purified Pitchblende");
-        provider.add("item.pitchblende.crushed", "Ground Pitchblende");
-        provider.add("item.pitchblende.dustTiny", "Tiny Pile of Pitchblende");
-        provider.add("item.pitchblende.dustSmall", "Small Pile of Pitchblende");
-        provider.add("item.pitchblende.dustImpure", "Impure Pile of Pitchblende");
-        provider.add("item.pitchblende.dustPure", "Purified Pile of Pitchblende");
-        provider.add("item.pitchblende.dust", "Pitchblende");
-        provider.add("item.talc.crushedRefined", "Refined Talc");
-        provider.add("item.talc.crushedPurified", "Purified Talc");
-        provider.add("item.talc.crushed", "Ground Talc");
-        provider.add("item.talc.dustTiny", "Tiny Pile of Talc");
-        provider.add("item.talc.dustSmall", "Small Pile of Talc");
-        provider.add("item.talc.dustImpure", "Impure Pile of Talc");
-        provider.add("item.talc.dustPure", "Purified Pile of Talc");
-        provider.add("item.talc.dust", "Talc");
-        provider.add("item.wheat.dustTiny", "Tiny Pile of Flour");
-        provider.add("item.wheat.dustSmall", "Small Pile of Flour");
-        provider.add("item.wheat.dust", "Flour");
-        provider.add("item.meat.dustTiny", "Tiny Pile of Mince Meat");
-        provider.add("item.meat.dustSmall", "Small Pile of Mince Meat");
-        provider.add("item.meat.dust", "Mince Meat");
-        provider.add("item.borosilicate_glass.ingot", "Borosilicate Glass Bar");
-        provider.add("item.borosilicate_glass.wireFine", "Borosilicate Glass Fibers");
-        provider.add("item.platinum_group_sludge.dustTiny", "Tiny Clump of Platinum Group Sludge");
-        provider.add("item.platinum_group_sludge.dustSmall", "Small Clump of Platinum Group Sludge");
-        provider.add("item.platinum_group_sludge.dust", "Platinum Group Sludge");
-        provider.add("item.platinum_raw.dustTiny", "Tiny Pile of Raw Platinum Powder");
-        provider.add("item.platinum_raw.dustSmall", "Small Pile of Raw Platinum Powder");
-        provider.add("item.platinum_raw.dust", "Raw Platinum Powder");
-        provider.add("item.palladium_raw.dustTiny", "Tiny Pile of Raw Palladium Powder");
-        provider.add("item.palladium_raw.dustSmall", "Small Pile of Raw Palladium Powder");
-        provider.add("item.palladium_raw.dust", "Raw Palladium Powder");
-        provider.add("item.inert_metal_mixture.dustTiny", "Tiny Pile of Inert Metal Mixture");
-        provider.add("item.inert_metal_mixture.dustSmall", "Small Pile of Inert Metal Mixture");
-        provider.add("item.inert_metal_mixture.dust", "Inert Metal Mixture");
-        provider.add("item.rarest_metal_mixture.dustTiny", "Tiny Pile of Rarest Metal Mixture");
-        provider.add("item.rarest_metal_mixture.dustSmall", "Small Pile of Rarest Metal Mixture");
-        provider.add("item.rarest_metal_mixture.dust", "Rarest Metal Mixture");
-        provider.add("item.platinum_sludge_residue.dustTiny", "Tiny Pile of Platinum Sludge Residue");
-        provider.add("item.platinum_sludge_residue.dustSmall", "Small Pile of Platinum Sludge Residue");
-        provider.add("item.platinum_sludge_residue.dust", "Platinum Sludge Residue");
-        provider.add("item.iridium_metal_residue.dustTiny", "Tiny Pile of Iridium Metal Residue");
-        provider.add("item.iridium_metal_residue.dustSmall", "Small Pile of Iridium Metal Residue");
-        provider.add("item.iridium_metal_residue.dust", "Iridium Metal Residue");
+        provider.add("item.netherrack_nether_quartz", "Nether Quartz Ore");
+
+        provider.add("item.gunpowder_tiny_dust", "Tiny Pile of Gunpowder");
+        provider.add("item.gunpowder_small_dust", "Small Pile of Gunpowder");
+        provider.add("item.paper_tiny_dust", "Tiny Pile of Chad");
+        provider.add("item.paper_small_dust", "Small Pile of Chad");
+        provider.add("item.paper_dust", "Chad");
+        provider.add("item.rare_earth_tiny_dust", "Tiny Pile of Rare Earth");
+        provider.add("item.rare_earth_small_dust", "Small Pile of Rare Earth");
+        provider.add("item.rare_earth_dust", "Rare Earth");
+        provider.add("item.ash_tiny_dust", "Tiny Pile of Ashes");
+        provider.add("item.ash_small_dust", "Small Pile of Ashes");
+        provider.add("item.ash_dust", "Ashes");
+        provider.add("item.bone_tiny_dust", "Tiny Pile of Bone Meal");
+        provider.add("item.bone_small_dust", "Small Pile of Bone Meal");
+        provider.add("item.bone_dust", "Bone Meal");
+        provider.add("item.cassiterite_sand_refined_ore", "Refined Cassiterite Sand");
+        provider.add("item.cassiterite_sand_purified_ore", "Purified Cassiterite Sand");
+        provider.add("item.cassiterite_sand_crushed", "Ground Cassiterite Sand");
+        provider.add("item.cassiterite_sand_tiny_dust", "Tiny Pile of Cassiterite Sand");
+        provider.add("item.cassiterite_sand_small_dust", "Small Pile of Cassiterite Sand");
+        provider.add("item.cassiterite_sand_impure_dust", "Impure Pile of Cassiterite Sand");
+        provider.add("item.cassiterite_sand_pure_dust", "Purified Pile of Cassiterite Sand");
+        provider.add("item.cassiterite_sand_dust", "Cassiterite Sand");
+        provider.add("item.dark_ash_tiny_dust", "Tiny Pile of Dark Ashes");
+        provider.add("item.dark_ash_small_dust", "Small Pile of Dark Ashes");
+        provider.add("item.dark_ash_dust", "Dark Ashes");
+        provider.add("item.ice_tiny_dust", "Tiny Pile of Crushed Ice");
+        provider.add("item.ice_small_dust", "Small Pile of Crushed Ice");
+        provider.add("item.ice_dust", "Crushed Ice");
+        provider.add("item.sugar_gem", "Sugar Cube");
+        provider.add("item.sugar_chipped_gem", "Small Sugar Cubes");
+        provider.add("item.sugar_flawed_gem", "Tiny Sugar Cube");
+        provider.add("item.rock_salt_tiny_dust", "Tiny Pile of Rock Salt");
+        provider.add("item.rock_salt_small_dust", "Small Pile of Rock Salt");
+        provider.add("item.rock_salt_impure_dust", "Impure Pile of Rock Salt");
+        provider.add("item.rock_salt_pure_dust", "Purified Pile of Rock Salt");
+        provider.add("item.rock_salt_dust", "Rock Salt");
+        provider.add("item.salt_tiny_dust", "Tiny Pile of Salt");
+        provider.add("item.salt_small_dust", "Small Pile of Salt");
+        provider.add("item.salt_impure_dust", "Impure Pile of Salt");
+        provider.add("item.salt_pure_dust", "Purified Pile of Salt");
+        provider.add("item.salt_dust", "Salt");
+        provider.add("item.wood_tiny_dust", "Tiny Pile of Wood Pulp");
+        provider.add("item.wood_small_dust", "Small Pile of Wood Pulp");
+        provider.add("item.wood_dust", "Wood Pulp");
+        provider.add("item.wood_plate", "Wood Plank");
+        provider.add("item.wood_rodLong", "Long Wood Stick");
+        provider.add("item.wood_bolt", "Short Wood Stick");
+        provider.add("item.treated_wood_tiny_dust", "Tiny Pile of Treated Wood Pulp");
+        provider.add("item.treated_wood_small_dust", "Small Pile of Treated Wood Pulp");
+        provider.add("item.treated_wood_dust", "Treated Wood Pulp");
+        provider.add("item.treated_wood_plate", "Treated Wood Plank");
+        provider.add("item.treated_wood_rod", "Treated Wood Stick");
+        provider.add("item.treated_wood_rodLong", "Long Treated Wood Stick");
+        provider.add("item.treated_wood_bolt", "Short Treated Wood Stick");
+        provider.add("item.glass_gem", "Glass Crystal");
+        provider.add("item.glass_chipped_gem", "Chipped Glass Crystal");
+        provider.add("item.glass_flawed_gem", "Flawed Glass Crystal");
+        provider.add("item.glass_gemFlawless", "Flawless Glass Crystal");
+        provider.add("item.glass_gemExquisite", "Exquisite Glass Crystal");
+        provider.add("item.glass_plate", "Glass Pane");
+        provider.add("item.blaze_tiny_dust", "Tiny Pile of Blaze Powder");
+        provider.add("item.blaze_small_dust", "Small Pile of Blaze Powder");
+        provider.add("item.sugar_tiny_dust", "Tiny Pile of Sugar");
+        provider.add("item.sugar_small_dust", "Small Pile of Sugar");
+        provider.add("item.basaltic_mineral_sand_tiny_dust", "Tiny Pile of Basaltic Mineral Sand");
+        provider.add("item.basaltic_mineral_sand_small_dust", "Small Pile of Basaltic Mineral Sand");
+        provider.add("item.basaltic_mineral_sand_dust", "Basaltic Mineral Sand");
+        provider.add("item.granitic_mineral_sand_tiny_dust", "Tiny Pile of Granitic Mineral Sand");
+        provider.add("item.granitic_mineral_sand_small_dust", "Small Pile of Granitic Mineral Sand");
+        provider.add("item.granitic_mineral_sand_dust", "Granitic Mineral Sand");
+        provider.add("item.garnet_sand_tiny_dust", "Tiny Pile of Garnet Sand");
+        provider.add("item.garnet_sand_small_dust", "Small Pile of Garnet Sand");
+        provider.add("item.garnet_sand_dust", "Garnet Sand");
+        provider.add("item.quartz_sand_tiny_dust", "Tiny Pile of Quartz Sand");
+        provider.add("item.quartz_sand_small_dust", "Small Pile of Quartz Sand");
+        provider.add("item.quartz_sand_dust", "Quartz Sand");
+        provider.add("item.glauconite_sand_tiny_dust", "Tiny Pile of Glauconite Sand");
+        provider.add("item.glauconite_sand_small_dust", "Small Pile of Glauconite Sand");
+        provider.add("item.glauconite_sand_dust", "Glauconite Sand");
+        provider.add("item.bentonite_refined_ore", "Refined Bentonite");
+        provider.add("item.bentonite_purified_ore", "Purified Bentonite");
+        provider.add("item.bentonite_crushed", "Ground Bentonite");
+        provider.add("item.bentonite_tiny_dust", "Tiny Pile of Bentonite");
+        provider.add("item.bentonite_small_dust", "Small Pile of Bentonite");
+        provider.add("item.bentonite_impure_dust", "Impure Pile of Bentonite");
+        provider.add("item.bentonite_pure_dust", "Purified Pile of Bentonite");
+        provider.add("item.bentonite_dust", "Bentonite");
+        provider.add("item.fullers_earth_tiny_dust", "Tiny Pile of Fullers Earth");
+        provider.add("item.fullers_earth_small_dust", "Small Pile of Fullers Earth");
+        provider.add("item.fullers_earth_dust", "Fullers Earth");
+        provider.add("item.pitchblende_refined_ore", "Refined Pitchblende");
+        provider.add("item.pitchblende_purified_ore", "Purified Pitchblende");
+        provider.add("item.pitchblende_crushed", "Ground Pitchblende");
+        provider.add("item.pitchblende_tiny_dust", "Tiny Pile of Pitchblende");
+        provider.add("item.pitchblende_small_dust", "Small Pile of Pitchblende");
+        provider.add("item.pitchblende_impure_dust", "Impure Pile of Pitchblende");
+        provider.add("item.pitchblende_pure_dust", "Purified Pile of Pitchblende");
+        provider.add("item.pitchblende_dust", "Pitchblende");
+        provider.add("item.talc_refined_ore", "Refined Talc");
+        provider.add("item.talc_purified_ore", "Purified Talc");
+        provider.add("item.talc_crushed", "Ground Talc");
+        provider.add("item.talc_tiny_dust", "Tiny Pile of Talc");
+        provider.add("item.talc_small_dust", "Small Pile of Talc");
+        provider.add("item.talc_impure_dust", "Impure Pile of Talc");
+        provider.add("item.talc_pure_dust", "Purified Pile of Talc");
+        provider.add("item.talc_dust", "Talc");
+        provider.add("item.wheat_tiny_dust", "Tiny Pile of Flour");
+        provider.add("item.wheat_small_dust", "Small Pile of Flour");
+        provider.add("item.wheat_dust", "Flour");
+        provider.add("item.meat_tiny_dust", "Tiny Pile of Mince Meat");
+        provider.add("item.meat_small_dust", "Small Pile of Mince Meat");
+        provider.add("item.meat_dust", "Mince Meat");
+        provider.add("item.borosilicate_glass_ingot", "Borosilicate Glass Bar");
+        provider.add("item.borosilicate_glass_wireFine", "Borosilicate Glass Fibers");
+        provider.add("item.platinum_group_sludge_tiny_dust", "Tiny Clump of Platinum Group Sludge");
+        provider.add("item.platinum_group_sludge_small_dust", "Small Clump of Platinum Group Sludge");
+        provider.add("item.platinum_group_sludge_dust", "Platinum Group Sludge");
+        provider.add("item.platinum_raw_tiny_dust", "Tiny Pile of Raw Platinum Powder");
+        provider.add("item.platinum_raw_small_dust", "Small Pile of Raw Platinum Powder");
+        provider.add("item.platinum_raw_dust", "Raw Platinum Powder");
+        provider.add("item.palladium_raw_tiny_dust", "Tiny Pile of Raw Palladium Powder");
+        provider.add("item.palladium_raw_small_dust", "Small Pile of Raw Palladium Powder");
+        provider.add("item.palladium_raw_dust", "Raw Palladium Powder");
+        provider.add("item.inert_metal_mixture_tiny_dust", "Tiny Pile of Inert Metal Mixture");
+        provider.add("item.inert_metal_mixture_small_dust", "Small Pile of Inert Metal Mixture");
+        provider.add("item.inert_metal_mixture_dust", "Inert Metal Mixture");
+        provider.add("item.rarest_metal_mixture_tiny_dust", "Tiny Pile of Rarest Metal Mixture");
+        provider.add("item.rarest_metal_mixture_small_dust", "Small Pile of Rarest Metal Mixture");
+        provider.add("item.rarest_metal_mixture_dust", "Rarest Metal Mixture");
+        provider.add("item.platinum_sludge_residue_tiny_dust", "Tiny Pile of Platinum Sludge Residue");
+        provider.add("item.platinum_sludge_residue_small_dust", "Small Pile of Platinum Sludge Residue");
+        provider.add("item.platinum_sludge_residue_dust", "Platinum Sludge Residue");
+        provider.add("item.iridium_metal_residue_tiny_dust", "Tiny Pile of Iridium Metal Residue");
+        provider.add("item.iridium_metal_residue_small_dust", "Small Pile of Iridium Metal Residue");
+        provider.add("item.iridium_metal_residue_dust", "Iridium Metal Residue");
 
         provider.add("behaviour.hoe", "Can till dirt");
         provider.add("behaviour.soft_hammer", "Activates and Deactivates Machines");
@@ -527,10 +560,11 @@ public class LangHandler {
         provider.add("tile.gtceu.reinforced_stone.name", "Reinforced Stone");
         provider.add("tile.brittle_charcoal.name", "Brittle Charcoal");
         multilineLang(provider, "tile.brittle_charcoal.tooltip", "Produced by the Charcoal Pile Igniter.\nMine this to get Charcoal.");
-        provider.add("metaitem.prospector.mode.ores", "§aOre Prospection Mode");
-        provider.add("metaitem.prospector.mode.fluid", "§bFluid Prospection Mode");
-        provider.add("metaitem.prospector.tooltip.ores", "Scans Ores in a %s Chunk Radius");
-        provider.add("metaitem.prospector.tooltip.fluids", "Scans Ores and Fluids in a %s Chunk Radius");
+        provider.add("metaitem.prospector.mode.ores", "§aOre Prospection Mode§r");
+        provider.add("metaitem.prospector.mode.fluid", "§bFluid Prospection Mode§r");
+        provider.add("metaitem.prospector.mode.bedrock_ore", "§bBedrock Ore Prospection Mode§r");
+        provider.add("metaitem.prospector.tooltip.radius", "Scans range in a %s Chunk Radius");
+        provider.add("metaitem.prospector.tooltip.modes", "Available Modes:");
         provider.add("behavior.prospector.not_enough_energy", "Not Enough Energy!");
         provider.add("metaitem.tricorder_scanner.tooltip", "Tricorder");
         provider.add("metaitem.debug_scanner.tooltip", "Tricorder");
@@ -667,37 +701,64 @@ public class LangHandler {
         provider.add("gtceu.machine.fluid_drilling_rig.ev.tooltip", "Well Drainer");
         provider.add("gtceu.machine.cleanroom.tooltip", "Keeping those pesky particles out");
         provider.add("gtceu.machine.charcoal_pile.tooltip", "Underground fuel bakery");
-        provider.add("gtceu.machine.item_bus.import.tooltip", "Item Input for Multiblocks");
+        provider.add("gtceu.machine.available_recipe_map_1.tooltip", "Available Recipe Maps: %s");
+        provider.add("gtceu.machine.available_recipe_map_2.tooltip", "Available Recipe Maps: %s, %s");
+        provider.add("gtceu.machine.available_recipe_map_3.tooltip", "Available Recipe Maps: %s, %s, %s");
+        provider.add("gtceu.machine.available_recipe_map_4.tooltip", "Available Recipe Maps: %s, %s, %s, %s");
+
+        multiLang(provider, "gtceu.machine.power_substation.tooltip",
+                "The heart of a centralized power grid",
+                "§fCapacitors§7 do not need to be all the same tier.",
+                "Allows up to §f%d Capacitor Layers§7.",
+                "Loses energy equal to §f1%%§7 of total capacity every §f24 hours§7.",
+                "Capped at §f%,d EU/t§7 passive loss per Capacitor Block."
+        );
+
+        multiLang(provider, "gtceu.machine.active_transformer.tooltip",
+                "Transformers: Lasers in Disguise",
+                "Can combine any number of Energy §fInputs§7 into any number of Energy §fOutputs§7.",
+                "Can transmit power at incredible distance with",
+                "Lasers§7."
+        );
+
+        multiLang(provider, "gtceu.machine.laser_hatch.source.tooltip",
+                "Transmitting power at distance",
+                "§cLaser Cables must be in a straight line!§7"
+        );
+
+        multiLang(provider, "gtceu.machine.laser_hatch.target.tooltip",
+                "Receiving power from distance",
+                "§cLaser Cables must be in a straight line!§7"
+        );
+
+        multiLang(provider, "gtceu.machine.endpoint.tooltip",
+                "Connect with §fLong Distance Pipe§7 blocks to create a pipeline.",
+                "Pipelines must have exactly §f1 Input§7 and §f1 Output§7 endpoint.",
+                "Only pipeline endpoints need to be §fchunk-loaded§7.");
+        provider.add("gtceu.machine.endpoint.tooltip.min_length", "§bMinimum Endpoint Distance: §f%d Blocks");
+
         provider.add("gtceu.universal.disabled", "Multiblock Sharing §4Disabled");
         provider.add("gtceu.universal.enabled", "Multiblock Sharing §aEnabled");
-
-
-        provider.add("gtceu.machine.item_bus.export.tooltip", "Item Output for Multiblocks");
-
 
         provider.add("gtceu.bus.collapse_true", "Bus will collapse Items");
         provider.add("gtceu.bus.collapse_false", "Bus will not collapse Items");
         provider.add("gtceu.bus.collapse.error", "Bus must be attached to multiblock first");
+
+        provider.add("gtceu.machine.item_bus.import.tooltip", "Item Input for Multiblocks");
+        provider.add("gtceu.machine.item_bus.export.tooltip", "Item Output for Multiblocks");
         provider.add("gtceu.machine.fluid_hatch.import.tooltip", "Fluid Input for Multiblocks");
-
-
         provider.add("gtceu.machine.fluid_hatch.export.tooltip", "Fluid Output for Multiblocks");
-
-
         provider.add("gtceu.machine.energy_hatch.input.tooltip", "Energy Input for Multiblocks");
-
-
         provider.add("gtceu.machine.energy_hatch.input_hi_amp.tooltip", "Multiple Ampere Energy Input for Multiblocks");
-
-
         provider.add("gtceu.machine.energy_hatch.output.tooltip", "Energy Output for Multiblocks");
-
-
         provider.add("gtceu.machine.energy_hatch.output_hi_amp.tooltip", "Multiple Ampere Energy Output for Multiblocks");
-
+        provider.add("gtceu.machine.me.item_export.tooltip", "Stores items directly into an ME network.");
+        provider.add("gtceu.machine.me.fluid_export.tooltip", "Stores fluids directly into an ME network.");
+        provider.add("gtceu.machine.me.fluid_import.tooltip", "Fetches fluids from an ME network automatically.");
+        provider.add("gtceu.machine.me.item_import.tooltip", "Fetches items from an ME network automatically.");
+        provider.add("gtceu.machine.me.export.tooltip", "Has infinite capacity before connecting to ME network.");
 
         multiLang(provider, "gtceu.machine.rotor_holder.tooltip", "Rotor Holder for Multiblocks", "Holds Rotor in place so it will not fly away");
-
 
         provider.add("gtceu.machine.maintenance_hatch.tooltip", "For maintaining Multiblocks");
 
@@ -711,6 +772,7 @@ public class LangHandler {
         provider.add("gtceu.maintenance.configurable_duration", "Duration: %fx");
         provider.add("gtceu.maintenance.configurable_duration.unchanged_description", "Recipes will run at normal speed. Change configuration to update.");
         provider.add("gtceu.maintenance.configurable_duration.changed_description", "Recipes will run with %fx duration, applied before overclocking.");
+        provider.add("gtceu.maintenance.configurable_duration.modify", "Modify Duration:");
         provider.add("gtceu.maintenance.configurable_time", "Time: %fx");
         provider.add("gtceu.maintenance.configurable_time.unchanged_description", "Maintenance problems will occur at normal rate. Change configuration to update.");
         provider.add("gtceu.maintenance.configurable_time.changed_description", "Maintenance problems will occur at %fx the normal rate.");
@@ -743,12 +805,15 @@ public class LangHandler {
         provider.add("gtceu.universal.tooltip.item_stored", "§dItem Stored: §f%s, %d items");
         provider.add("gtceu.universal.tooltip.item_transfer_rate", "§bTransfer Rate: §f%d items/s");
         provider.add("gtceu.universal.tooltip.item_transfer_rate_stacks", "§bTransfer Rate: §f%d stacks/s");
-        provider.add("gtceu.universal.tooltip.fluid_storage_capacity", "§9Fluid Capacity: §f%d L");
+        provider.add("gtceu.universal.tooltip.fluid_storage_capacity", "§9Fluid Capacity: §f%d mB");
         provider.add("gtceu.universal.tooltip.fluid_storage_capacity_mult", "§9Fluid Capacity: §f%d §7Tanks, §f%d L §7each");
-        provider.add("gtceu.universal.tooltip.fluid_stored", "§dFluid Stored: §f%s, %d L");
-        provider.add("gtceu.universal.tooltip.fluid_transfer_rate", "§bTransfer Rate: §f%d L/t");
+        provider.add("gtceu.universal.tooltip.fluid_stored", "§dFluid Stored: §f%s, %d mB");
+        provider.add("gtceu.universal.tooltip.fluid_transfer_rate", "§bTransfer Rate: §f%d mB/t");
         provider.add("gtceu.universal.tooltip.parallel", "§dMax Parallel: §f%d");
         provider.add("gtceu.universal.tooltip.working_area", "§bWorking Area: §f%dx%d");
+        provider.add("gtceu.universal.tooltip.chunk_mode", "Chunk Mode: ");
+        provider.add("gtceu.universal.tooltip.silk_touch", "Silk Touch: ");
+        provider.add("gtceu.universal.tooltip.working_area_chunks", "§bWorking Area: §f%dx%d Chunks");
         provider.add("gtceu.universal.tooltip.working_area_max", "§bMax Working Area: §f%dx%d");
         provider.add("gtceu.universal.tooltip.working_area_chunks_max", "§bMax Working Area: §f%dx%d Chunks");
         provider.add("gtceu.universal.tooltip.uses_per_tick", "Uses §f%d EU/t §7while working");
@@ -793,10 +858,14 @@ public class LangHandler {
         provider.add("gtceu.tool_action.hammer", "§8Use Hard Hammer to muffle Sounds");
         provider.add("gtceu.tool_action.crowbar", "§8Use Crowbar to remove Covers");
         provider.add("gtceu.tool_action.tape", "§8Use Tape to fix Maintenance Problems");
+        provider.add("gtceu.fluid.liquid_generic", "Liquid %s");
         provider.add("gtceu.fluid.generic", "%s");
+        provider.add("gtceu.fluid.gas_generic", "%s Gas");
+        provider.add("gtceu.fluid.gas_vapor", "%s Vapor");
         provider.add("gtceu.fluid.plasma", "%s Plasma");
+        provider.add("gtceu.fluid.molten", "Molten %s");
         provider.add("gtceu.fluid.empty", "Empty");
-        provider.add("gtceu.fluid.amount", "§9Amount: %d/%d L");
+        provider.add("gtceu.fluid.amount", "§9Amount: %d/%d mB");
         provider.add("gtceu.fluid.temperature", "§cTemperature: %d K");
         provider.add("gtceu.fluid.temperature.cryogenic", "§bCryogenic! Handle with care!");
         provider.add("gtceu.fluid.state_gas", "§aState: Gaseous");
@@ -871,7 +940,7 @@ public class LangHandler {
         provider.add("gtceu.cable.amperage", "Max Amperage: §e%d");
         provider.add("gtceu.cable.loss_per_block", "Loss/Meter/Ampere: §c%d§7 EU-Volt");
         provider.add("gtceu.cable.superconductor", "§d%s Superconductor");
-        provider.add("gtceu.fluid_pipe.capacity", "§9Capacity: §f%d L");
+        provider.add("gtceu.fluid_pipe.capacity", "§9Capacity: §f%d mB");
         provider.add("gtceu.fluid_pipe.max_temperature", "§cTemperature Limit: §f%d K");
         provider.add("gtceu.fluid_pipe.channels", "§eChannels: §f%d");
         provider.add("gtceu.fluid_pipe.gas_proof", "§6Can handle Gases");
@@ -884,6 +953,7 @@ public class LangHandler {
         provider.add("gtceu.multiblock.running", "Running perfectly.");
         provider.add("gtceu.multiblock.idling", "Idling.");
         provider.add("gtceu.multiblock.not_enough_energy", "WARNING: Machine needs more energy.");
+        provider.add("gtceu.multiblock.waiting", "WARNING: Machine is waiting.");
         provider.add("gtceu.multiblock.progress", "Progress: %s%%");
         provider.add("gtceu.multiblock.invalid_structure", "Invalid structure.");
         provider.add("gtceu.multiblock.invalid_structure.tooltip", "This block is a controller of the multiblock structure. For building help, see structure template in JEI.");
@@ -1014,193 +1084,6 @@ public class LangHandler {
         provider.add("gtceu.creative.energy.voltage", "Voltage");
         provider.add("gtceu.creative.activity.on", "Active");
         provider.add("gtceu.creative.activity.off", "Not active");
-        provider.add("gtceu.terminal.app_name.items", "Item Guides");
-        provider.add("gtceu.terminal.app_name.machines", "Machine Guides");
-        provider.add("gtceu.terminal.app_name.multiblocks", "Multiblock Guides");
-        provider.add("gtceu.terminal.app_name.tutorials", "Tutorials");
-        provider.add("gtceu.terminal.app_name.settings", "System Settings");
-        provider.add("gtceu.terminal.app_name.guide_editor", "Guide Editor");
-        provider.add("gtceu.terminal.app_name.recipe_chart", "Recipe Chart");
-        provider.add("gtceu.terminal.app_name.ore_prospector", "Ore Prospector");
-        provider.add("gtceu.terminal.app_name.fluid_prospector", "Fluid Prospector");
-        provider.add("gtceu.terminal.app_name.pong", "Pong");
-        provider.add("gtceu.terminal.app_name.minesweeper", "Minesweeper");
-        provider.add("gtceu.terminal.app_name.maze", "Theseus's Escape");
-        provider.add("gtceu.terminal.app_name.console", "GT Console");
-        provider.add("gtceu.terminal.app_name.battery", "Battery Manager");
-        provider.add("gtceu.terminal.app_name.hardware", "Hardware Manager");
-        provider.add("gtceu.terminal.app_name.store", "App Store");
-        provider.add("gtceu.terminal.app_name.multiblock_ar", "Multiblock Helper");
-        provider.add("gtceu.terminal.app_name.world_prospector", "World Prospector");
-        provider.add("gtceu.terminal.app_name.vtank_viewer", "Virtual Tank Viewer");
-        provider.add("gtceu.terminal.app_name.cape_selector", "Cape Selector");
-        provider.add("gtceu.terminal.app_name.teleport", "Teleporter");
-        provider.add("terminal.app_name.description", "No description.");
-        provider.add("terminal.app_name.tier", "Tier %d");
-        provider.add("terminal.app_name.maximize.unsupported", "This App does not support maximize.");
-        provider.add("terminal.items.description", "A guide book about items.");
-        provider.add("terminal.machines.description", "A guide book about gt machines.");
-        provider.add("terminal.multiblocks.description", "A guide book about multi-blocks.");
-        provider.add("terminal.tutorials.description", "Introduces all kinds of things, CT integration, tips, tutorials and more.");
-        provider.add("terminal.pong.description", "A classic pong game, if you're really that bored of waiting for that tungstensteel.");
-        provider.add("terminal.minesweeper.description", "A classic minesweeper game, if you're in class.");
-        provider.add("terminal.maze.description", "A GTOS exclusive game finding you racing through an endless labyrinth to survive the Minotaur!");
-        provider.add("terminal.cape_selector.description", "An app that allows you to equip GT capes that you've unlocked through advancements.");
-        provider.add("terminal.teleport.description", "Open portals to any coordinate in any dimension. Be careful not to teleport into a wall!");
-        provider.add("texture.modify_gui_texture.missing", "Missing Texture");
-        provider.add("texture.url_texture.fail", "Load Failed");
-        provider.add("terminal.hw.battery", "Battery");
-        provider.add("terminal.hw.device", "Device");
-        provider.add("terminal.os.shutdown_confirm", "Confirm shutdown? (Press ESC again to see ok)");
-        provider.add("terminal.os.hw_demand", "Missing mounting hardware:");
-        provider.add("terminal.system_call.null", "NULL");
-        provider.add("terminal.system_call.call_menu", "Call Menu");
-        provider.add("terminal.system_call.full_screen", "Full Screen");
-        provider.add("terminal.system_call.minimize_focus_app", "Back to Desktop");
-        provider.add("terminal.system_call.close_focus_app", "Close App");
-        provider.add("terminal.system_call.shutdown", "Shutdown");
-        provider.add("terminal.system_call.open_app", "Open App");
-        provider.add("terminal.menu.close", "Close App");
-        provider.add("terminal.menu.minimize", "Minimize App");
-        provider.add("terminal.menu.maximize", "Full Screen/Recover");
-        provider.add("terminal.component.new_page", "New Page");
-        provider.add("terminal.component.page_name", "Page Name");
-        provider.add("terminal.component.load_file", "Load File");
-        provider.add("terminal.component.load_file.error", "An error occurred while loading the file.");
-        provider.add("terminal.component.save_file", "Save File");
-        provider.add("terminal.component.save_file.error", "An error occurred while saving the file.");
-        provider.add("terminal.component.confirm", "Are you sure?");
-        provider.add("terminal.component.error", "ERROR");
-        provider.add("terminal.component.warning", "WARNING");
-        provider.add("terminal.component.searching", "searching");
-        provider.add("terminal.component.reload", "reload resource");
-        provider.add("terminal.dialog.notice", "NOTICE");
-        provider.add("terminal.dialog.error_path", "error file path:");
-        provider.add("terminal.dialog.no_file_selected", "No file selected.");
-        provider.add("terminal.dialog.folder", "Open Folder");
-        provider.add("terminal.guide_editor.description", "An interactive guide page editor that allows you to create guide pages easily.");
-        provider.add("terminal.guide_editor.up", "Up");
-        provider.add("terminal.guide_editor.down", "Down");
-        provider.add("terminal.guide_editor.remove", "Remove");
-        provider.add("terminal.guide_editor.add_stream", "Add to stream");
-        provider.add("terminal.guide_editor.add_fixed", "Add to fixed");
-        provider.add("terminal.guide_editor.update", "Update");
-        provider.add("terminal.guide_editor.add_slot", "Add Slot");
-        provider.add("terminal.guide_editor.default", "Default Value");
-        provider.add("terminal.guide_editor.page_config", "Page Config");
-        provider.add("terminal.guide_editor.widgets_box", "Widgets Box");
-        provider.add("terminal.guide_editor.widget_config", "Widget Config");
-        provider.add("terminal.guide_editor.error_type", "Item types do not match and will still be saved, but will not be seen in app.");
-        provider.add("terminal.settings.description", "The system settings for GTOS.");
-        provider.add("terminal.settings.theme", "Theme");
-        provider.add("terminal.settings.theme.color", "Theme Color Settings");
-        provider.add("terminal.settings.theme.wallpaper", "Wallpaper Settings");
-        provider.add("terminal.settings.theme.wallpaper.resource", "resource");
-        provider.add("terminal.settings.theme.wallpaper.url", "url");
-        provider.add("terminal.settings.theme.wallpaper.color", "color");
-        provider.add("terminal.settings.theme.wallpaper.file", "file");
-        provider.add("terminal.settings.theme.select", "Select");
-        provider.add("terminal.settings.theme.image", "Image File");
-        provider.add("terminal.settings.home", "Home Button");
-        provider.add("terminal.settings.home.double", "Double");
-        provider.add("terminal.settings.home.action", "Click Action");
-        provider.add("terminal.settings.home.args", "Args");
-        provider.add("terminal.settings.home.click", "click");
-        provider.add("terminal.settings.home.double_click", "double Click");
-        provider.add("terminal.settings.os", "Os settings");
-        provider.add("terminal.settings.os.double_check", "Double Check");
-        provider.add("terminal.settings.os.double_check.desc", "Should Double Check when shutdown.");
-        provider.add("terminal.recipe_chart.description", "A tool for analyzing recipe chains, with which you can easily build a recipe graph and even calculate the ingredients needed like JEC.");
-        provider.add("terminal.recipe_chart.limit", "Page limit.");
-        provider.add("terminal.recipe_chart.delete", "Delete Page");
-        provider.add("terminal.recipe_chart.add_slot", "Add Root Slot");
-        provider.add("terminal.recipe_chart.demand", "Demand");
-        provider.add("terminal.recipe_chart.calculator", "Calculator");
-        provider.add("terminal.recipe_chart.add", "Set the item from inventory");
-        provider.add("terminal.recipe_chart.drag", "Drag ingredients here.");
-        provider.add("terminal.recipe_chart.visible", "Visible");
-        provider.add("terminal.recipe_chart.jei", "JEI Focus");
-        provider.add("terminal.recipe_chart.tier", "Tier:");
-        provider.add("terminal.recipe_chart.ratio", "Weight");
-        multiLang(provider, "terminal.recipe_chart.tier", IntStream.of(4)
-                .map(i -> i + 5)
-                .mapToObj(Integer::toString)
-                .map(i -> "cache of " + i + " pages")
-                .toArray(String[]::new));
-        provider.add("terminal.prospector.vis_mode", "Switch color mode");
-        provider.add("terminal.prospector.list", "All Resources");
-        provider.add("terminal.prospector.ore", "Ore Data");
-        provider.add("terminal.prospector.fluid", "Fluid Deposit Data");
-        provider.add("terminal.prospector.fluid.info", "%s %s - %s%%");
-        provider.add("terminal.ore_prospector.description", "Hate the scanner toy? Don't want to run around looking for ores? Come and look at it.");
-        multiLang(provider, "terminal.ore_prospector.tier", IntStream.of(6)
-                .map(i -> i + 1)
-                .mapToObj(Integer::toString)
-                .map(i -> "radius size " + i)
-                .toArray(String[]::new));
-        provider.add("terminal.fluid_prospector.description", "You know, there's gold in bedrocks.");
-        multiLang(provider, "terminal.fluid_prospector.tier", IntStream.of(6)
-                .map(i -> i + 1)
-                .mapToObj(Integer::toString)
-                .map(i -> "radius size " + i)
-                .toArray(String[]::new));
-        provider.add("terminal.console.description", "A tool to help you free your inventory, it's time to say goodbye to wrench, screwdriver, hammer, and crowbar.");
-        provider.add("terminal.console.notice", "Please shift-right-click a machine when opening the terminal.");
-        provider.add("terminal.console.front", "Set as front");
-        provider.add("terminal.console.items", "set as items output");
-        provider.add("terminal.console.fluids", "set as fluids output");
-        provider.add("terminal.console.auto_output", "allow auto output");
-        provider.add("terminal.console.input", "allow input from output");
-        provider.add("terminal.console.cover_rs", "signal: %s");
-        provider.add("terminal.console.cover_gui", "Gui");
-        provider.add("terminal.console.gui", "Open machine gui");
-        provider.add("terminal.console.maintenance", "Fix all problems");
-        provider.add("terminal.console.venting", "set as venting");
-        provider.add("terminal.console.controllable", "set working enable");
-        provider.add("terminal.hardware.description", "Hardware Manager, masterpieces of elegance and precision. How can a tablet be without hardware?");
-        provider.add("terminal.hardware.select", "Mounting hardware");
-        provider.add("terminal.hardware.remove", "Remove hardware");
-        provider.add("terminal.hardware.remove.full", "There are no empty slots in inventory");
-        provider.add("terminal.hardware.tip.remove", "§4right-click remove the hardware");
-        provider.add("terminal.battery.description", "Battery manager, visually analyze your app's energy consumption.");
-        provider.add("terminal.battery.hover", "%s: Usage %d eu/s");
-        provider.add("terminal.battery.low_energy", "Low power! Plz recharge the terminal.");
-        provider.add("terminal.store.description", "App store, check out what you got? Install and upgrade the app.");
-        provider.add("terminal.store.match", "Detected required item in inventory, install/upgrade App?");
-        provider.add("terminal.store.miss", "Requires %s (%d).");
-        provider.add("terminal.ar.open", "Open AR");
-        provider.add("terminal.multiblock_ar.description", "Remember the §cFreedom Wrench§r?  Unfortunately, it it's gone. It doesn't matter, we have a new technology now. This app can also help you build your multi-block machine.");
-        multiLang(provider, "terminal.multiblock_ar.tier", "AR Camera", "3D Builder");
-        provider.add("terminal.multiblock_ar.unlock", "Unlock this mode after the upgrade");
-        provider.add("terminal.multiblock_ar.builder.hover", "3D Builder");
-        provider.add("terminal.multiblock_ar.builder.auto", "Automatic Build");
-        provider.add("terminal.multiblock_ar.builder.place", "Place block");
-        provider.add("terminal.multiblock_ar.builder.debug", "Debug");
-        multilineLang(provider, "terminal.world_prospector.description", "\"I wish I had X-ray vision.\"\n\"Sir, I'm sorry, but we don't sell superpowers. You should trust the science.\"");
-        multiLang(provider, "terminal.world_prospector.tier", "Radius 15m (1 slot)", "Radius 30m (2 slot)", "Radius 60m (4 slot)");
-        provider.add("terminal.world_prospector.radius", "Radius %sm");
-        provider.add("terminal.world_prospector.reference", "Select a reference");
-        provider.add("terminal.world_prospector.color", "Select box color");
-        provider.add("terminal.vtank_viewer.description", "Never lose any fluids to changing ender link frequencies again! Here's a scrollable list of every virtual tank that you have access to in your world.");
-        provider.add("terminal.vtank_viewer.title", "Virtual Tank Viewer");
-        provider.add("terminal.vtank_viewer.refresh", "Refresh tank index");
-        provider.add("terminal.teleporter.dimension", "Dimension:");
-        provider.add("terminal.teleporter.spawn_portal", "Engage");
-        provider.add("terminal.maze.title", "Theseus's Escape");
-        provider.add("terminal.maze.play", "Play");
-        provider.add("terminal.maze.continue", "Continue");
-        provider.add("terminal.maze.pause", "Game Paused");
-        multiLang(provider, "terminal.maze.death", "Oh no! You were eaten by the Minotaur!", "You got through %s mazes before losing.", "Try again?");
-        provider.add("terminal.maze.death.3", "Try again?");
-        provider.add("terminal.maze.retry", "Retry");
-        provider.add("terminal.minesweeper.time", "%s seconds elapsed");
-        provider.add("terminal.minesweeper.lose", "You lost. Game will restart in %s seconds.");
-        multiLang(provider, "terminal.minesweeper.win", "You won in %s seconds!", "Game will restart in %s");
-        provider.add("terminal.cape_selector.empty", "It looks like you haven't unlocked any capes yet!");
-        provider.add("terminal.cape_selector.select", "Click on an unlocked cape to select it!");
-        provider.add("terminal.cape_selector.tip", "You can get these from high-level advancements.");
-        provider.add("metaitem.cover.digital.title.mode", "Mode:");
-        provider.add("metaitem.cover.digital.title.spin", "Spin:");
         multiLang(provider, "metaitem.cover.digital.wireless.tooltip",
                 "§fWirelessly§7 connects machines to the §fCentral Monitor§7 as §fCover§7.",
                 "§fRight Click§7 on the §fCentral Monitor§7 to remotely bind to it.",
@@ -1223,7 +1106,39 @@ public class LangHandler {
         provider.add("config.jade.plugin_gtceu.workable_provider", "[GTCEu] Workable");
         provider.add("config.jade.plugin_gtceu.electric_container_provider", "[GTCEu] Electric Container");
         provider.add("config.jade.plugin_gtceu.recipe_logic_provider", "[GTCEu] Recipe Logic");
+        // gui
         provider.add("gtceu.recipe_type.show_recipes", "Show Recipes");
+        provider.add("gtceu.recipe_logic.insufficient_fuel", "Insufficient Fuel");
+        provider.add("gtceu.recipe_logic.insufficient_in", "Insufficient Inputs");
+        provider.add("gtceu.recipe_logic.insufficient_out", "Insufficient Outputs");
+        provider.add("gtceu.recipe_logic.condition_fails", "Condition Fails");
+        provider.add("gtceu.gui.cover_setting.title", "Cover Settings");
+        provider.add("gtceu.gui.output_setting.title", "Output Settings");
+        provider.add("gtceu.gui.circuit.title", "Circuit Settings");
+        multiLang(provider, "gtceu.gui.output_setting.tooltips", "left-click to tune the item auto output", "right-click to tune the fluid auto output.");
+        provider.add("gtceu.gui.item_auto_output.allow_input.enabled", "allow items input from the output side");
+        provider.add("gtceu.gui.item_auto_output.allow_input.disabled", "disable items input from the output side");
+        provider.add("gtceu.gui.fluid_auto_output.allow_input.enabled", "allow fluids input from the output side");
+        provider.add("gtceu.gui.fluid_auto_output.allow_input.disabled", "disable fluids input from the output side");
+        provider.add("gtceu.gui.auto_output.name", "auto");
+        provider.add("gtceu.gui.overclock.title", "Overclock Tier");
+        provider.add("gtceu.gui.overclock.range", "Available Tiers [%s, %s]");
+
+        provider.add("gtceu.gui.machinemode.title", "Active Machine Mode");
+
+        provider.add("gtceu.gui.content.chance_0", "§cNot Consumed§r");
+        provider.add("gtceu.gui.content.chance_0_short", "§cNC§r");
+        provider.add("gtceu.gui.content.chance_1", "§eChance: %s§r");
+        provider.add("gtceu.gui.content.tier_boost", "§eTier Chance: +%s/tier§r");
+
+        provider.add("gtceu.gui.content.per_tick", "§aConsumed/Produced Per Tick§r");
+        provider.add("gtceu.gui.content.tips.per_tick_short", "§a/tick§r");
+        provider.add("gtceu.gui.content.tips.per_second_short", "§a/second§r");
+
+        provider.add("gtceu.gui.content.units.per_tick", "/t");
+        provider.add("gtceu.gui.content.units.per_second", "/s");
+
+        provider.add("gtceu.machine.parallel_hatch.display", "Adjust the maximum parallel of the multiblock");
     }
 
     /**
@@ -1330,6 +1245,23 @@ public class LangHandler {
             next = getSubKey(key, ++i);
         }
         return outputKeys.stream().map(k -> Component.translatable(k, args)).collect(Collectors.toList());
+    }
+
+    /**
+     * See {@link #getMultiLang(String)}. If no multiline key is available, get single instead.
+     *
+     * @param key Base key of the multi lang. E.g. "terminal.fluid_prospector.tier".
+     * @returnReturns all translation components from a multi lang's sub-keys.
+     */
+    public static List<MutableComponent> getSingleOrMultiLang(String key) {
+        List<MutableComponent> multiLang = getMultiLang(key);
+
+        if (!multiLang.isEmpty()) {
+            return multiLang;
+        }
+
+
+        return List.of(Component.translatable(key));
     }
 
     /**

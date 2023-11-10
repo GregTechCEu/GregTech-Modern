@@ -1,15 +1,15 @@
 package com.gregtechceu.gtceu.data.recipe;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.BlastProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
-import com.gregtechceu.gtceu.api.data.tag.TagUtil;
+import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 
@@ -30,10 +30,14 @@ public class CraftingComponent {
     public static Component WIRE_OCT;
     public static Component WIRE_HEX;
     public static Component CABLE;
+    public static Component CABLE_DOUBLE;
     public static Component CABLE_QUAD;
     public static Component CABLE_OCT;
     public static Component CABLE_HEX;
     public static Component CABLE_TIER_UP;
+    public static Component CABLE_TIER_UP_DOUBLE;
+    public static Component CABLE_TIER_UP_QUAD;
+    public static Component CABLE_TIER_UP_HEX;
     public static Component CASING;
     public static Component HULL;
     public static Component PIPE_NORMAL;
@@ -64,14 +68,14 @@ public class CraftingComponent {
     public static Component VOLTAGE_COIL;
     public static Component SPRING;
 
-    public static final Map<BlastProperty.GasTier, FluidStack> EBF_GASES = new EnumMap<>(BlastProperty.GasTier.class);
+    public static final Map<BlastProperty.GasTier, FluidIngredient> EBF_GASES = new EnumMap<>(BlastProperty.GasTier.class);
 
     static {
-        EBF_GASES.put(BlastProperty.GasTier.LOW, GTMaterials.Nitrogen.getFluid(1000));
-        EBF_GASES.put(BlastProperty.GasTier.MID, GTMaterials.Helium.getFluid(100));
-        EBF_GASES.put(BlastProperty.GasTier.HIGH, GTMaterials.Argon.getFluid(50));
-        EBF_GASES.put(BlastProperty.GasTier.HIGHER, GTMaterials.Neon.getFluid(25));
-        EBF_GASES.put(BlastProperty.GasTier.HIGHEST, GTMaterials.Krypton.getFluid(10));
+        EBF_GASES.put(BlastProperty.GasTier.LOW, FluidIngredient.of(1000, GTMaterials.Nitrogen.getFluid()));
+        EBF_GASES.put(BlastProperty.GasTier.MID, FluidIngredient.of(100, GTMaterials.Helium.getFluid()));
+        EBF_GASES.put(BlastProperty.GasTier.HIGH, FluidIngredient.of(50, GTMaterials.Argon.getFluid()));
+        EBF_GASES.put(BlastProperty.GasTier.HIGHER, FluidIngredient.of(25, GTMaterials.Neon.getFluid()));
+        EBF_GASES.put(BlastProperty.GasTier.HIGHEST, FluidIngredient.of(10, GTMaterials.Krypton.getFluid()));
     }
 
     public static void initializeComponents() {
@@ -91,6 +95,11 @@ public class CraftingComponent {
                 {7, CustomTags.ZPM_CIRCUITS},
                 {8, CustomTags.UV_CIRCUITS},
                 {9, CustomTags.UHV_CIRCUITS},
+                {10, CustomTags.UEV_CIRCUITS},
+                {11, CustomTags.UIV_CIRCUITS},
+                {12, CustomTags.UXV_CIRCUITS},
+                {13, CustomTags.OpV_CIRCUITS},
+                {14, CustomTags.MAX_CIRCUITS},
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
@@ -105,6 +114,11 @@ public class CraftingComponent {
                 {6, CustomTags.ZPM_CIRCUITS},
                 {7, CustomTags.UV_CIRCUITS},
                 {8, CustomTags.UHV_CIRCUITS},
+                {10, CustomTags.UEV_CIRCUITS},
+                {11, CustomTags.UIV_CIRCUITS},
+                {12, CustomTags.UXV_CIRCUITS},
+                {13, CustomTags.OpV_CIRCUITS},
+                {14, CustomTags.MAX_CIRCUITS},
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
@@ -120,6 +134,16 @@ public class CraftingComponent {
                 {8, GTItems.ELECTRIC_PUMP_UV.asStack()},
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
+
+        if (GTCEu.isHighTier()) {
+            PUMP.appendIngredients(Stream.of(new Object[][]{
+                    {9, GTItems.ELECTRIC_PUMP_UHV.asStack()},
+                    {10, GTItems.ELECTRIC_PUMP_UEV.asStack()},
+                    {11, GTItems.ELECTRIC_PUMP_UIV.asStack()},
+                    {12, GTItems.ELECTRIC_PUMP_UXV.asStack()},
+                    {13, GTItems.ELECTRIC_PUMP_OpV.asStack()},
+            }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
+        }
 
         WIRE_ELECTRIC = new Component(Stream.of(new Object[][]{
 
@@ -192,6 +216,21 @@ public class CraftingComponent {
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
+        CABLE_DOUBLE = new Component(Stream.of(new Object[][]{
+
+                {0, new UnificationEntry(TagPrefix.cableGtDouble, GTMaterials.RedAlloy)},
+                {1, new UnificationEntry(TagPrefix.cableGtDouble, GTMaterials.Tin)},
+                {2, new UnificationEntry(TagPrefix.cableGtDouble, GTMaterials.Copper)},
+                {3, new UnificationEntry(TagPrefix.cableGtDouble, GTMaterials.Gold)},
+                {4, new UnificationEntry(TagPrefix.cableGtDouble, GTMaterials.Aluminium)},
+                {5, new UnificationEntry(TagPrefix.cableGtDouble, GTMaterials.Platinum)},
+                {6, new UnificationEntry(TagPrefix.cableGtDouble, GTMaterials.NiobiumTitanium)},
+                {7, new UnificationEntry(TagPrefix.cableGtDouble, GTMaterials.VanadiumGallium)},
+                {8, new UnificationEntry(TagPrefix.cableGtDouble, GTMaterials.YttriumBariumCuprate)},
+                {9, new UnificationEntry(TagPrefix.cableGtDouble, GTMaterials.Europium)},
+
+        }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
+
         CABLE_QUAD = new Component(Stream.of(new Object[][]{
 
                 {0, new UnificationEntry(TagPrefix.cableGtQuadruple, GTMaterials.RedAlloy)},
@@ -252,6 +291,51 @@ public class CraftingComponent {
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
+        CABLE_TIER_UP_DOUBLE = new Component(Stream.of(new Object[][]{
+
+                {0, new UnificationEntry(TagPrefix.cableGtDouble, GTMaterials.Tin)},
+                {1, new UnificationEntry(TagPrefix.cableGtDouble, GTMaterials.Copper)},
+                {2, new UnificationEntry(TagPrefix.cableGtDouble, GTMaterials.Gold)},
+                {3, new UnificationEntry(TagPrefix.cableGtDouble, GTMaterials.Aluminium)},
+                {4, new UnificationEntry(TagPrefix.cableGtDouble, GTMaterials.Platinum)},
+                {5, new UnificationEntry(TagPrefix.cableGtDouble, GTMaterials.NiobiumTitanium)},
+                {6, new UnificationEntry(TagPrefix.cableGtDouble, GTMaterials.VanadiumGallium)},
+                {7, new UnificationEntry(TagPrefix.cableGtDouble, GTMaterials.YttriumBariumCuprate)},
+                {8, new UnificationEntry(TagPrefix.cableGtDouble, GTMaterials.Europium)},
+                {FALLBACK, new UnificationEntry(TagPrefix.cableGtDouble, GTMaterials.Europium)},
+
+        }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
+
+        CABLE_TIER_UP_QUAD = new Component(Stream.of(new Object[][]{
+
+                {0, new UnificationEntry(TagPrefix.cableGtQuadruple, GTMaterials.Tin)},
+                {1, new UnificationEntry(TagPrefix.cableGtQuadruple, GTMaterials.Copper)},
+                {2, new UnificationEntry(TagPrefix.cableGtQuadruple, GTMaterials.Gold)},
+                {3, new UnificationEntry(TagPrefix.cableGtQuadruple, GTMaterials.Aluminium)},
+                {4, new UnificationEntry(TagPrefix.cableGtQuadruple, GTMaterials.Platinum)},
+                {5, new UnificationEntry(TagPrefix.cableGtQuadruple, GTMaterials.NiobiumTitanium)},
+                {6, new UnificationEntry(TagPrefix.cableGtQuadruple, GTMaterials.VanadiumGallium)},
+                {7, new UnificationEntry(TagPrefix.cableGtQuadruple, GTMaterials.YttriumBariumCuprate)},
+                {8, new UnificationEntry(TagPrefix.cableGtQuadruple, GTMaterials.Europium)},
+                {FALLBACK, new UnificationEntry(TagPrefix.cableGtQuadruple, GTMaterials.Europium)},
+
+        }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
+
+        CABLE_TIER_UP_HEX = new Component(Stream.of(new Object[][]{
+
+                {0, new UnificationEntry(TagPrefix.cableGtHex, GTMaterials.Tin)},
+                {1, new UnificationEntry(TagPrefix.cableGtHex, GTMaterials.Copper)},
+                {2, new UnificationEntry(TagPrefix.cableGtHex, GTMaterials.Gold)},
+                {3, new UnificationEntry(TagPrefix.cableGtHex, GTMaterials.Aluminium)},
+                {4, new UnificationEntry(TagPrefix.cableGtHex, GTMaterials.Platinum)},
+                {5, new UnificationEntry(TagPrefix.cableGtHex, GTMaterials.NiobiumTitanium)},
+                {6, new UnificationEntry(TagPrefix.cableGtHex, GTMaterials.VanadiumGallium)},
+                {7, new UnificationEntry(TagPrefix.cableGtHex, GTMaterials.YttriumBariumCuprate)},
+                {8, new UnificationEntry(TagPrefix.cableGtHex, GTMaterials.Europium)},
+                {FALLBACK, new UnificationEntry(TagPrefix.cableGtHex, GTMaterials.Europium)},
+
+        }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
+
         HULL = new Component(Stream.of(new Object[][]{
 
                 {0, GTMachines.HULL[0].asStack()},
@@ -267,6 +351,16 @@ public class CraftingComponent {
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
+        if (GTCEu.isHighTier()) {
+            HULL.appendIngredients(Stream.of(new Object[][]{
+                    {10, GTMachines.HULL[10].asStack()},
+                    {11, GTMachines.HULL[11].asStack()},
+                    {12, GTMachines.HULL[12].asStack()},
+                    {13, GTMachines.HULL[13].asStack()},
+                    {14, GTMachines.HULL[14].asStack()},
+            }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
+        }
+
         CASING = new Component(Stream.of(new Object[][]{
 
                 {0, GTBlocks.MACHINE_CASING_ULV.asStack()},
@@ -281,6 +375,16 @@ public class CraftingComponent {
                 {9, GTBlocks.MACHINE_CASING_UHV.asStack()},
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
+
+        if (GTCEu.isHighTier()) {
+            CASING.appendIngredients(Stream.of(new Object[][]{
+                    {10, GTBlocks.MACHINE_CASING_UEV.asStack()},
+                    {11, GTBlocks.MACHINE_CASING_UIV.asStack()},
+                    {12, GTBlocks.MACHINE_CASING_UXV.asStack()},
+                    {13, GTBlocks.MACHINE_CASING_OpV.asStack()},
+                    {14, GTBlocks.MACHINE_CASING_MAX.asStack()},
+            }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
+        }
 
         PIPE_NORMAL = new Component(Stream.of(new Object[][]{
 
@@ -311,7 +415,6 @@ public class CraftingComponent {
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
 
-        //TODO, Glass Tiers
         /*
         Glass: Steam-MV
         Tempered: HV, EV
@@ -320,23 +423,17 @@ public class CraftingComponent {
          */
         GLASS = new Component(Stream.of(new Object[][]{
 
-                {GTValues.FALLBACK, TagUtil.createBlockTag("glass")},
-                {ULV, TagUtil.createBlockTag("glass")},
-                {LV, TagUtil.createBlockTag("glass")},
-                {MV, TagUtil.createBlockTag("glass")},
-//                {HV, MetaBlocks.TRANSPARENT_CASING.getItemVariant(
-//                        BlockGlassCasing.CasingType.TEMPERED_GLASS)},
-//                {EV, MetaBlocks.TRANSPARENT_CASING.getItemVariant(
-//                        BlockGlassCasing.CasingType.TEMPERED_GLASS)},
-//                {IV, MetaBlocks.TRANSPARENT_CASING.getItemVariant(
-//                        BlockGlassCasing.CasingType.LAMINATED_GLASS)},
-//                {LuV, MetaBlocks.TRANSPARENT_CASING.getItemVariant(
-//                        BlockGlassCasing.CasingType.LAMINATED_GLASS)},
-//                {ZPM, MetaBlocks.TRANSPARENT_CASING.getItemVariant(
-//                        BlockGlassCasing.CasingType.FUSION_GLASS)},
-//                {UV, MetaBlocks.TRANSPARENT_CASING.getItemVariant(
-//                        BlockGlassCasing.CasingType.FUSION_GLASS)}
-//
+                {GTValues.FALLBACK, CustomTags.GLASS_BLOCKS},
+                {ULV, CustomTags.GLASS_BLOCKS},
+                {LV, CustomTags.GLASS_BLOCKS},
+                {MV, CustomTags.GLASS_BLOCKS},
+                {HV, GTBlocks.CASING_TEMPERED_GLASS.asStack()},
+                {EV, GTBlocks.CASING_TEMPERED_GLASS.asStack()},
+                {IV, GTBlocks.CASING_LAMINATED_GLASS.asStack()},
+                {LuV, GTBlocks.CASING_LAMINATED_GLASS.asStack()},
+                {ZPM, GTBlocks.FUSION_GLASS.asStack()},
+                {UV, GTBlocks.FUSION_GLASS.asStack()}
+
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
         PLATE = new Component(Stream.of(new Object[][]{
@@ -409,6 +506,16 @@ public class CraftingComponent {
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
+        if (GTCEu.isHighTier()) {
+            SENSOR.appendIngredients(Stream.of(new Object[][]{
+                    { 9, GTItems.SENSOR_UHV.asStack()},
+                    {10, GTItems.SENSOR_UEV.asStack()},
+                    {11, GTItems.SENSOR_UIV.asStack()},
+                    {12, GTItems.SENSOR_UXV.asStack()},
+                    {13, GTItems.SENSOR_OpV.asStack()},
+            }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
+        }
+
         GRINDER = new Component(Stream.of(new Object[][]{
 
                 {0, new UnificationEntry(TagPrefix.gem, GTMaterials.Diamond)},
@@ -455,6 +562,16 @@ public class CraftingComponent {
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
+        if (GTCEu.isHighTier()) {
+            PISTON.appendIngredients(Stream.of(new Object[][]{
+                    { 9, GTItems.ELECTRIC_PISTON_UHV.asStack()},
+                    {10, GTItems.ELECTRIC_PISTON_UEV.asStack()},
+                    {11, GTItems.ELECTRIC_PISTON_UIV.asStack()},
+                    {12, GTItems.ELECTRIC_PISTON_UXV.asStack()},
+                    {13, GTItems.ELECTRIC_PISTON_OpV.asStack()},
+            }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
+        }
+
         EMITTER = new Component(Stream.of(new Object[][]{
 
                 {1, GTItems.EMITTER_LV.asStack()},
@@ -481,6 +598,16 @@ public class CraftingComponent {
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
+        if (GTCEu.isHighTier()) {
+            CONVEYOR.appendIngredients(Stream.of(new Object[][]{
+                    { 9, GTItems.CONVEYOR_MODULE_UHV.asStack()},
+                    {10, GTItems.CONVEYOR_MODULE_UEV.asStack()},
+                    {11, GTItems.CONVEYOR_MODULE_UIV.asStack()},
+                    {12, GTItems.CONVEYOR_MODULE_UXV.asStack()},
+                    {13, GTItems.CONVEYOR_MODULE_OpV.asStack()},
+            }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
+        }
+
         ROBOT_ARM = new Component(Stream.of(new Object[][]{
 
                 {1, GTItems.ROBOT_ARM_LV.asStack()},
@@ -493,6 +620,16 @@ public class CraftingComponent {
                 {8, GTItems.ROBOT_ARM_UV.asStack()},
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
+
+        if (GTCEu.isHighTier()) {
+            ROBOT_ARM.appendIngredients(Stream.of(new Object[][]{
+                    { 9, GTItems.ROBOT_ARM_UHV.asStack()},
+                    {10, GTItems.ROBOT_ARM_UEV.asStack()},
+                    {11, GTItems.ROBOT_ARM_UIV.asStack()},
+                    {12, GTItems.ROBOT_ARM_UXV.asStack()},
+                    {13, GTItems.ROBOT_ARM_OpV.asStack()},
+            }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
+        }
 
         COIL_HEATING = new Component(Stream.of(new Object[][]{
 
@@ -578,6 +715,16 @@ public class CraftingComponent {
                 {8, GTItems.FIELD_GENERATOR_UV.asStack()},
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
+
+        if (GTCEu.isHighTier()) {
+            FIELD_GENERATOR.appendIngredients(Stream.of(new Object[][]{
+                    { 9, GTItems.FIELD_GENERATOR_UHV.asStack()},
+                    {10, GTItems.FIELD_GENERATOR_UEV.asStack()},
+                    {11, GTItems.FIELD_GENERATOR_UIV.asStack()},
+                    {12, GTItems.FIELD_GENERATOR_UXV.asStack()},
+                    {13, GTItems.FIELD_GENERATOR_OpV.asStack()},
+            }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
+        }
 
         STICK_ELECTROMAGNETIC = new Component(Stream.of(new Object[][]{
 
