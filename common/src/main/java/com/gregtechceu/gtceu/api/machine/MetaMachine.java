@@ -547,28 +547,36 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
 
     @Nullable
     public ItemTransferList getItemTransferCap(@Nullable Direction side) {
-        var list = getTraits().stream().filter(IItemTransfer.class::isInstance).filter(t -> t.hasCapability(side)).map(IItemTransfer.class::cast).toList();
-        if (!list.isEmpty()) {
-            var io = IO.BOTH;
-            if (side != null && this instanceof IAutoOutputItem autoOutput && autoOutput.getOutputFacingItems() == side && !autoOutput.isAllowInputFromOutputSideItems()) {
-                io = IO.OUT;
-            }
-            return new IOItemTransferList(list, io, getItemCapFilter(side));
+        var list = getTraits().stream()
+                .filter(IItemTransfer.class::isInstance)
+                .filter(t -> t.hasCapability(side))
+                .map(IItemTransfer.class::cast)
+                .toList();
+
+        if (list.isEmpty()) return null;
+
+        var io = IO.BOTH;
+        if (side != null && this instanceof IAutoOutputItem autoOutput && autoOutput.getOutputFacingItems() == side && !autoOutput.isAllowInputFromOutputSideItems()) {
+            io = IO.OUT;
         }
-        return null;
+        return new IOItemTransferList(list, io, getItemCapFilter(side));
     }
 
     @Nullable
     public FluidTransferList getFluidTransferCap(@Nullable Direction side) {
-        var list = getTraits().stream().filter(IFluidTransfer.class::isInstance).filter(t -> t.hasCapability(side)).map(IFluidTransfer.class::cast).toList();
-        if (!list.isEmpty()) {
-            var io = IO.BOTH;
-            if (side != null && this instanceof IAutoOutputFluid autoOutput && autoOutput.getOutputFacingFluids() == side && !autoOutput.isAllowInputFromOutputSideFluids()) {
-                io = IO.OUT;
-            }
-            return new IOFluidTransferList(list, io, getFluidCapFilter(side));
+        var list = getTraits().stream()
+                .filter(IFluidTransfer.class::isInstance)
+                .filter(t -> t.hasCapability(side))
+                .map(IFluidTransfer.class::cast)
+                .toList();
+
+        if (list.isEmpty()) return null;
+
+        var io = IO.BOTH;
+        if (side != null && this instanceof IAutoOutputFluid autoOutput && autoOutput.getOutputFacingFluids() == side && !autoOutput.isAllowInputFromOutputSideFluids()) {
+            io = IO.OUT;
         }
-        return null;
+        return new IOFluidTransferList(list, io, getFluidCapFilter(side));
     }
 
     //////////////////////////////////////
