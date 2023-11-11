@@ -1,0 +1,22 @@
+<page>
+ <h1>Data Stick</h1>
+ <h3>Source</h3>
+ <text pwt="true"><style color="0xaaaaaa" italic="true" pwt="true">Note: this page is ported from MCMOD's GTCEu wiki.<br/>Author: <style color="0xa4e7ff" hover-info="url" pwt="true" underlined="true" url-link="https://center.mcmod.cn/514346/">Magic_Sweepy</style><br/></style></text>
+ <h2 font-color="0xff0000">WARNING!!!</h2>
+ <text isCenter="true">
+  <style color="0xff0000" pwt="true">The warning means this is not a reliable page.</style>
+  <br/>
+  <style bold="true" color="0xffaa00" pwt="true">Please do not report any mistakes on the page, either discord or github.</style>
+  <br/>
+  This page is translated from the Chinese wiki which hasn't been reviewed and polished yet. It may contain errors and inaccuracies. We are looking forward to your help by improving this page.
+ </text>
+ <text>
+  <br/>
+  <br/>
+  <br/>
+  <style lang="zh-cn">
+   <style color="0xaaaaaa" italic="true" lang="zh-cn" pwt="true">闪存是一种用于存储简单数据的物品，使用各等级                       扫描器                      来扫描对应的物品可以获得用于解锁对应配方的闪存，将其放入（已成型的）                       装配线                      的                       数据访问仓                      中可以使装配线解锁闪存中存储的配方。</style>
+  </style>
+  <br/>
+ </text>
+</page>

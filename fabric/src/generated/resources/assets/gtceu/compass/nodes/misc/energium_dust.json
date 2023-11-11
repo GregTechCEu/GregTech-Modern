@@ -1,0 +1,15 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:energium_dust"
+  },
+  "items": [
+    "gtceu:energium_dust"
+  ],
+  "page": "gtceu:misc/energium_dust",
+  "position": [
+    -100,
+    200
+  ],
+  "section": "gtceu:misc"
+}

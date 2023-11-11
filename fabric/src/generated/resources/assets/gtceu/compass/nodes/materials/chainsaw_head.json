@@ -1,0 +1,42 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:aluminium_chainsaw_head"
+  },
+  "items": [
+    "gtceu:aluminium_chainsaw_head",
+    "gtceu:iron_chainsaw_head",
+    "gtceu:titanium_chainsaw_head",
+    "gtceu:neutronium_chainsaw_head",
+    "gtceu:duranium_chainsaw_head",
+    "gtceu:bronze_chainsaw_head",
+    "gtceu:diamond_chainsaw_head",
+    "gtceu:invar_chainsaw_head",
+    "gtceu:sterling_silver_chainsaw_head",
+    "gtceu:rose_gold_chainsaw_head",
+    "gtceu:stainless_steel_chainsaw_head",
+    "gtceu:steel_chainsaw_head",
+    "gtceu:ultimet_chainsaw_head",
+    "gtceu:wrought_iron_chainsaw_head",
+    "gtceu:tungsten_carbide_chainsaw_head",
+    "gtceu:polybenzimidazole_chainsaw_head",
+    "gtceu:polyethylene_chainsaw_head",
+    "gtceu:polytetrafluoroethylene_chainsaw_head",
+    "gtceu:rubber_chainsaw_head",
+    "gtceu:wood_chainsaw_head",
+    "gtceu:damascus_steel_chainsaw_head",
+    "gtceu:tungsten_steel_chainsaw_head",
+    "gtceu:cobalt_brass_chainsaw_head",
+    "gtceu:vanadium_steel_chainsaw_head",
+    "gtceu:naquadah_alloy_chainsaw_head",
+    "gtceu:red_steel_chainsaw_head",
+    "gtceu:blue_steel_chainsaw_head",
+    "gtceu:hsse_chainsaw_head"
+  ],
+  "page": "gtceu:materials/chainsaw_head",
+  "position": [
+    -350,
+    250
+  ],
+  "section": "gtceu:materials"
+}

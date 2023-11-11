@@ -1,0 +1,15 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:phosphorus_boule"
+  },
+  "items": [
+    "gtceu:phosphorus_boule"
+  ],
+  "page": "gtceu:circuits/phosphorus_boule",
+  "position": [
+    -300,
+    0
+  ],
+  "section": "gtceu:circuits"
+}

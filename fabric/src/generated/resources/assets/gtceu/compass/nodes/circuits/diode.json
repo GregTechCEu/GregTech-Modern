@@ -1,0 +1,15 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:diode"
+  },
+  "items": [
+    "gtceu:diode"
+  ],
+  "page": "gtceu:circuits/diode",
+  "position": [
+    -200,
+    100
+  ],
+  "section": "gtceu:circuits"
+}

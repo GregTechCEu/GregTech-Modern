@@ -1,0 +1,15 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:quantum_processor_computer"
+  },
+  "items": [
+    "gtceu:quantum_processor_computer"
+  ],
+  "page": "gtceu:circuits/quantum_processor_computer",
+  "position": [
+    -250,
+    250
+  ],
+  "section": "gtceu:circuits"
+}

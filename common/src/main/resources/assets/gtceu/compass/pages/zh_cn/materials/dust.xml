@@ -1,0 +1,1845 @@
+<page>
+ <h1>Dust</h1>
+ <h3>Source</h3>
+ <text pwt="true"><style color="0xaaaaaa" italic="true" pwt="true">Note: this page is ported from MCMOD's GTCEu wiki.<br/>Author: <style color="0xa4e7ff" hover-info="url" pwt="true" underlined="true" url-link="https://center.mcmod.cn/119280/">Oganesson897</style><br/></style></text>
+ <h2 font-color="0xff0000">WARNING!!!</h2>
+ <text isCenter="true">
+  <style color="0xff0000" pwt="true">The warning means this is not a reliable page.</style>
+  <br/>
+  <style bold="true" color="0xffaa00" pwt="true">Please do not report any mistakes on the page, either discord or github.</style>
+  <br/>
+  This page is translated from the Chinese wiki which hasn't been reviewed and polished yet. It may contain errors and inaccuracies. We are looking forward to your help by improving this page.
+ </text>
+ <text>
+  <br/>
+  <style lang="zh-cn">
+   <style color="0xaaaaaa" italic="true" lang="zh-cn" pwt="true">材料部件中的粉，需要144份对应的材料单位。</style>
+   <br/>
+  </style>
+  <br/>
+  <br/>
+  <style lang="zh-cn">
+   这里仅上传了一个模板，具体数值请看游戏内。
+  </style>
+  <br/>
+  ------------------
+  <br/>
+  <style lang="zh-cn">
+   矿物词典前缀：dust
+  </style>
+  <br/>
+  <br/>
+  <style lang="zh-cn">
+   矿物词典：dust+材料名称，例如dustAluminium
+  </style>
+  <br/>
+  ------------------
+  <br/>
+  <style lang="zh-cn">
+   支持粉的材料列表（格式为材料中文名-材料名）：
+   <br/>
+  </style>
+  <br/>
+ </text>
+ <text left-margin="10">
+  •
+  <style lang="zh-cn">
+   铝 - Aluminium
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   镅 - Americium
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   锑 - Antimony
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   砷 - Arsenic
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钡 - Barium
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   铍 - Beryllium
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   铋 - Bismuth
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   硼 - Boron
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   铯 - Caesium
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钙 - Calcium
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   碳 - Carbon
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   镉 - Cadmium
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   铈 - Cerium
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   铬 - Chrome
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钴 - Cobalt
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   铜 - Copper
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   鐽/钅达 - Darmstadtium
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   铕 - Europium
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   镓 - Gallium
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   金 - Gold
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   铟 - Indium
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   铱 - Iridium
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   铁 - Iron
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   镧 - Lanthanum
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   铅 - Lead
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   锂 - Lithium
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   镥 - Lutetium
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   镁 - Magnesium
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钼 - Molybdenum
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钕 - Neodymium
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   镍 - Nickel
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   铌 - Niobium
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   锇 - Osmium
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钯 - Palladium
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   磷 - Phosphorus
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   铂 - Platinum
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钚 239 - Plutonium
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钚 241 - Plutonium241
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钾 - Potassium
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   铑 - Rhodium
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钌 - Ruthenium
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钐 - Samarium
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   硅 - Silicon
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   银 - Silver
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钠 - Sodium
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   硫 - Sulfur
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钽 - Tantalum
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钍 - Thorium
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   锡 - Tin
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钛 - Titanium
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钨 - Tungsten
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   铀 238 - Uranium
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   铀 235 - Uranium235
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钒 - Vanadium
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钇 - Yttrium
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   锌 - Zinc
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   硅岩（官中） - Naquadah
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   富集硅岩（官中） - NaquadahEnriched
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   超能硅岩（官中） - Naquadria
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   中子素 - Neutronium
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   三钛合金 - Tritanium
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   铿铀 - Duranium
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   三元金属 - Trinium
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   赛特斯石英 - CertusQuartz
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   铁铝榴石 - Almandine
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钙铁榴石 - Andradite
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   退火铜 - AnnealedCopper
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   石棉 - Asbestos
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   带状铁矿 - BandedIron
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   电池合金 - BatteryAlloy
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   蓝黄玉 - BlueTopaz
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   黄铜 - Brass
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   青铜 - Bronze
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   棕色褐铁矿 - BrownLimonite
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   方解石 - Calcite
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   锡石 - Cassiterite
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   黄铜矿 - Chalcopyrite
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   木炭 - Charcoal
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   铬铁矿 - Chromite
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   朱砂 - Cinnabar
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   煤炭 - Coal
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   辉钴矿 - Cobaltite
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   谢尔顿矿 - Cooperite
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   白铜 - Cupronickel
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钻石 - Diamond
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   琥珀金 - Electrum
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   绿宝石 - Emerald
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   方铅 - Galena
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   硅镁镍矿 - Garnierite
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   绿色蓝宝石 - GreenSapphire
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钙铝榴石 - Grossular
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钛铁矿 - Ilmenite
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   金红石 - Rutile
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   铝土 - Bauxite
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   殷钢 - Invar
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   坎塔尔合金 - Kanthal
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   蓝金石 - Lazurite
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   镁铝合金 - Magnalium
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   菱镁矿 - Magnesite
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   磁铁矿 - Magnetite
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   辉钼矿 - Molybdenite
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   镍铬合金 - Nichrome
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   氮化铌 - NiobiumNitride
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   铌钛合金 - NiobiumTitanium
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   黑曜石 - Obsidian
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   磷酸盐 - Phosphate
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   未加工的铂 - PlatinumRaw
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   标准纯银 - SterlingSilver
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   玫瑰金 - RoseGold
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   黑青铜 - BlackBronze
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   铋青铜 - BismuthBronze
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   黑云母 - Biotite
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钼钨钙矿 - Powellite
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   黄铁矿 - Pyrite
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   软锰矿 - Pyrolusite
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   镁铝榴石 - Pyrope
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钌铱合金 - Ruridit
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   红宝石 - Ruby
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   硝石 - Saltpeter
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   蓝宝石 - Sapphire
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   白钨矿 - Scheelite
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   方钠石 - Sodalite
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   亚硫酸铝 - AluminiumSulfite
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钽铁矿 - Tantalite
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   焦炭 - Coke
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   焊锡 - SolderingAlloy
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   锰铝榴石 - Spessartine
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   闪锌矿 - Sphalerite
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   不锈钢 - StainlessSteel
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钢 - Steel
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   辉锑矿 - Stibnite
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   黝铜矿 - Tetrahedrite
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   锡铁合金 - TinAlloy
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   黄玉 - Topaz
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钨酸锂 - Tungstate
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   哈氏合金 - Ultimet
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   晶质铀矿 - Uraninite
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钙铬榴石 - Uvarovite
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钒镓合金 - VanadiumGallium
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   锻铁 - WroughIron
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钼铅矿 - Wulfenite
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   黄褐铁矿 - YellowLimonite
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钇钡铜氧合金 - YttriumBariumCuprate
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   下界石英 - NetherQuartz
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   石英岩 - Quartzite
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   石墨 - Graphite
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   石墨烯 - Graphene
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钨酸 - TungsticAcid
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   铱锇合金 - Osmiridium
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   无水氯化锂 - LithiumChloride
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   氯化钙 - CalciumChloride
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   班铜矿 - Bornite
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   辉铜矿 - Chalcocite
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   砷化镓 - GalliumArsenide
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钾碱 - Potash
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   纯碱 - SodaAsh
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   磷化镓 - IndiumGalliumPhosphide
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   镍锌铁氧体 - NickelZincFerrite
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   二氧化硅 - SiliconDioxide
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   氯化镁 - MagnesiumChloride
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   硫化钠 - SodiumSulfide
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   五氧化二磷 - PhosphorusPentoxide
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   生石灰 - Quicklime
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   硫酸氢钠 - SodiumBisulfate
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   铁氧体混合物 - FerriteMixture
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   氧化镁（苦土）- Magnesia
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   雄黄 - Realgar
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   碳酸氢钠 - SodiumBicarbonate
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   重铬酸钾 - PotassiumDichromate
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   三氧化铬 - ChromiumTrioxide
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   三氧化二锑 - AntimonyTrioxide
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   锌矿 - Zincite
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   氧化铜 - CupricOxide
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   氧化钴 - CobaltOxide
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   三氧化砷（砒霜）- ArsenicTrioxide
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   铅黄 - Massicot
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   铁辉石 - Ferrosilite
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   金属混合物 - MetalMixture
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   氢氧化钠 - SodiumHydroxide
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   氟碳镧铈矿 - Bastnasite
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   镍黄铁矿 - Pentlandite
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   锂辉石 - Spodumene
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   锂云母 - Lepidolite
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   孔雀石 - Malachite
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   云母 - Mica
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   重晶石 - Barite
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   明矾石 - Alunite
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   滑石 - Talc
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   皂石 - Soapstone
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   蓝晶石 - Kyanite
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   磁化铁 - IronMagnetic
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   碳化钨 - TungstenCarbide
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   末影珍珠 - EnderPearl
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钾长石 - PotassiumFeldspar
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   磁化钕 - NeodymiumMagnetic
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   磁化钐 - SamariumMagnetic
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   磷化锰 - ManganesePhosphide
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   二硼化镁 - MagnesiumDiboride
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   汞钡铜酸钙 - MercuryBariumCalciumCuprate
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   三铂化铀 - UraniumTriplatinum
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   氧化钐铁砷合金 - SamariumIronArsenicOxide
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   铟锡钡钛铜合金 - IndiumTinBariumTitaniumCuprate
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   铀铑硅岩合金 - UraniumRhodiumDinaquadide
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   富集硅岩三元铕铿铀合金 - EnrichedNaquadahTriniumEuropiumDuranide
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钌三元镅中子素合金 - RutheniumTriniumAmericiumNeutronate
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   四氧化钌 - RutheniumTetroxide
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   氯化铱 - IridiumChloride
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   三氟化钛 - TitaniumTrifluoride
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   磷化钙 - CalciumPhosphide
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   磷化铟 - IndiumPhosphide
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   硫化钡 - BariumSulfide
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   硫化特林 - TriniumSulfide
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   硫化锌 - ZincSulfide
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   硫化镓 - GalliumSulfide
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   三氟化锑 - AntimonyTrifluoride
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   硫酸富集硅岩 - EnrichedNaquadahSulfate
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   硫酸硅岩 - NaquadriaSulfate
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   烧绿石 - Pyrochlore
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   生丁苯橡胶 - RawStyreneButadieneRubber
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   聚二甲基硅氧烷 - Polydimethylsiloxane
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   环已酮肟 - CyclohexanoneOxime
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   环氧乙烷 - Caprolactam
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   聚乙烯丁醛 - PolyvinylButyral
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   油砂 - Oilsands
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   石头 - Stone
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   下界之星 - NetherStar
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   末地石 - Endstone
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   地狱岩 - Netherrack
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   胶原蛋白 - Collagen
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   凝胶 - Gelatin
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   琼脂 - Agar
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   可可 - Cocoa
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   面粉 - Wheat
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   蓝波顿 - Lapotron
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   玻璃 - Glass
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   珍珠岩 - Perlite
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   硼砂 - Borax
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   橄榄石 - Olivine
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   猫眼石 - Opal
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   紫水晶 - Amethyst
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   青金石 - Lapis
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   磷灰石 - Apatite
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   黑钢 - BlackSteel
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   大马士革钢 - DamascusSteel
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钨钢 - TungstenSteel
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钴黄铜 - CobaltBrass
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   磷酸三钙 - TricalciumPhosphate
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   红石榴石 - GarnetRed
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   黄石榴石 - GarnetYellow
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   大理石 - Marble
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   黑花岗岩 - GraniteBlack
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   红花岗岩 - GraniteRed
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钒磁铁矿 - VanadiumMagnetite
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   铯榴石 - Pollucite
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   独居石 - Monazite
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   芒硝 - Mirabilite
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   天然碱 - Trona
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   石膏 - Gypsum
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   沸石 - Zeolite
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   混凝土 - Concrete
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   磁化钢 - SteelMagnetic
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钒钢 - VanadiumSteel
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   粗青铜合金 - Potin
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   硼硅玻璃 - BorosilicateGlass
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   安山岩 - Andesite
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   硅岩合金 - NaquadahAlloy
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   燧石 - Flint
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   未加工的钯 - PalladiumRaw
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   氯化铵 - AmmoniumChloride
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   镀铑钯合金锭 - RhodiumPlatedPalladium
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   粘土 - Clay
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   蓝石 - Electrotine
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   末影之眼 - EnderEye
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   硅藻土 - Diatomite
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   红钢 - RedSteel
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   蓝钢 - BlueSteel
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   玄武岩 - Basalt
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   红岩 - Redrock
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   高速钢-G - Hssg
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   红色合金 - RedAlloy
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   高速钢-E - Hsse
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   高速钢-S - Hsss
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   花岗岩 - Granite
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   砖 - Brick
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   耐火粘土 - Fireclay
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   闪长岩 - Diorite
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   蓝色合金 - BlueAlloy
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   司太立100合金 - Stellite100
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   防水钢 - WatertightSteel
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   马氏体时效钢300 - MaragingSteel300
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   哈斯特洛依合金-C276
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   哈斯特洛依合金-X - HastelloyX
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   碳化特林-钍瑞铌合金 - Trinaquadalloy
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   赛龙-100 - Zeron100
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   碳化钛 - TitaniumCarbide
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   碳化钽 - TantalumCarbide
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   二硅化钼 - MolybdenumDisilicide
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   HSLA钢 - HslaSteel
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   碳化钛钨 - TitaniumTungstenCarbide
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   耐热铬铁合金-MA956 - IncoloyMa956
+  </style>
+  <br/>
+ </text>
+</page>
