@@ -1,0 +1,35 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:aluminium_spring"
+  },
+  "items": [
+    "gtceu:aluminium_spring",
+    "gtceu:copper_spring",
+    "gtceu:europium_spring",
+    "gtceu:gold_spring",
+    "gtceu:iron_spring",
+    "gtceu:lead_spring",
+    "gtceu:tin_spring",
+    "gtceu:tungsten_spring",
+    "gtceu:naquadah_spring",
+    "gtceu:cupronickel_spring",
+    "gtceu:kanthal_spring",
+    "gtceu:nichrome_spring",
+    "gtceu:niobium_titanium_spring",
+    "gtceu:steel_spring",
+    "gtceu:vanadium_gallium_spring",
+    "gtceu:yttrium_barium_cuprate_spring",
+    "gtceu:tungsten_steel_spring",
+    "gtceu:naquadah_alloy_spring",
+    "gtceu:hssg_spring",
+    "gtceu:hsla_steel_spring",
+    "gtceu:molybdenum_disilicide_spring"
+  ],
+  "page": "gtceu:materials/spring",
+  "position": [
+    -300,
+    50
+  ],
+  "section": "gtceu:materials"
+}

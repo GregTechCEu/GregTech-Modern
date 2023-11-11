@@ -1,0 +1,25 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:aluminium_small_spring"
+  },
+  "items": [
+    "gtceu:aluminium_small_spring",
+    "gtceu:copper_small_spring",
+    "gtceu:gold_small_spring",
+    "gtceu:iron_small_spring",
+    "gtceu:lead_small_spring",
+    "gtceu:tin_small_spring",
+    "gtceu:tungsten_small_spring",
+    "gtceu:niobium_titanium_small_spring",
+    "gtceu:steel_small_spring",
+    "gtceu:vanadium_gallium_small_spring",
+    "gtceu:yttrium_barium_cuprate_small_spring"
+  ],
+  "page": "gtceu:materials/small_spring",
+  "position": [
+    -200,
+    200
+  ],
+  "section": "gtceu:materials"
+}

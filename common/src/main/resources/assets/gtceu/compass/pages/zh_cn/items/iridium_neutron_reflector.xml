@@ -1,0 +1,39 @@
+<page>
+ <h1>Iridium Neutron Reflector</h1>
+ <h3>Source</h3>
+ <text pwt="true"><style color="0xaaaaaa" italic="true" pwt="true">Note: this page is ported from MCMOD's GTCEu wiki.<br/>Author: <style color="0xa4e7ff" hover-info="url" pwt="true" underlined="true" url-link="https://center.mcmod.cn/179043/">花海</style>, <style color="0xa4e7ff" hover-info="url" pwt="true" underlined="true" url-link="https://center.mcmod.cn/191113/">Quaerere</style><br/></style></text>
+ <h2 font-color="0xff0000">WARNING!!!</h2>
+ <text isCenter="true">
+  <style color="0xff0000" pwt="true">The warning means this is not a reliable page.</style>
+  <br/>
+  <style bold="true" color="0xffaa00" pwt="true">Please do not report any mistakes on the page, either discord or github.</style>
+  <br/>
+  This page is translated from the Chinese wiki which hasn't been reviewed and polished yet. It may contain errors and inaccuracies. We are looking forward to your help by improving this page.
+ </text>
+ <text>
+  <br/>
+  <style lang="zh-cn">
+   <style color="0xaaaaaa" italic="true" lang="zh-cn" pwt="true">“坚不可摧”</style>
+   <br/>
+  </style>
+  <br/>
+  <br/>
+  <style lang="zh-cn">
+   铱中子反射板由双重铍板、双重碳化钨板和钌铱合金板配合熔融态的锡铁合金在
+   <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">组装机</style>
+   中制造而成，需要 MV 级电压来运行。
+  </style>
+  <br/>
+  <br/>
+  <style lang="zh-cn">
+   可以在组装机内进一步制造，生产
+   <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">聚变反应堆玻璃</style>
+   、
+   <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">聚变机械方块</style>
+   和
+   <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">聚变线圈方块</style>
+   。
+  </style>
+  <br/>
+ </text>
+</page>

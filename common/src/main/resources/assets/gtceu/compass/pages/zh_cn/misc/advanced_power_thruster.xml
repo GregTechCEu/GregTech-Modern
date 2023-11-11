@@ -1,0 +1,31 @@
+<page>
+ <h1>Advanced Power Thruster</h1>
+ <h3>Source</h3>
+ <text pwt="true"><style color="0xaaaaaa" italic="true" pwt="true">Note: this page is ported from MCMOD's GTCEu wiki.<br/>Author: <style color="0xa4e7ff" hover-info="url" pwt="true" underlined="true" url-link="https://center.mcmod.cn/179043/">花海</style><br/></style></text>
+ <h2 font-color="0xff0000">WARNING!!!</h2>
+ <text isCenter="true">
+  <style color="0xff0000" pwt="true">The warning means this is not a reliable page.</style>
+  <br/>
+  <style bold="true" color="0xffaa00" pwt="true">Please do not report any mistakes on the page, either discord or github.</style>
+  <br/>
+  This page is translated from the Chinese wiki which hasn't been reviewed and polished yet. It may contain errors and inaccuracies. We are looking forward to your help by improving this page.
+ </text>
+ <text>
+  <br/>
+  <style lang="zh-cn">
+   先进电力推进器由
+   <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">HV 电动马达</style>
+   等材料在
+   <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">组装机</style>
+   中制造而成，组装需要 LV 级电压（30 EU/t）。
+  </style>
+  <br/>
+  <br/>
+  <style lang="zh-cn">
+   先进电力推进器是制造
+   <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">高级推进喷气背包</style>
+   所需的重要元件之一，一台高级推进喷气背包需要安装 2 个先进电力推进器。
+  </style>
+  <br/>
+ </text>
+</page>

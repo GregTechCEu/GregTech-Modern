@@ -1,0 +1,49 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:aluminium_turbine_blade"
+  },
+  "items": [
+    "gtceu:aluminium_turbine_blade",
+    "gtceu:chromium_turbine_blade",
+    "gtceu:iridium_turbine_blade",
+    "gtceu:iron_turbine_blade",
+    "gtceu:manganese_turbine_blade",
+    "gtceu:molybdenum_turbine_blade",
+    "gtceu:neodymium_turbine_blade",
+    "gtceu:osmium_turbine_blade",
+    "gtceu:titanium_turbine_blade",
+    "gtceu:tungsten_turbine_blade",
+    "gtceu:naquadah_turbine_blade",
+    "gtceu:neutronium_turbine_blade",
+    "gtceu:tritanium_turbine_blade",
+    "gtceu:brass_turbine_blade",
+    "gtceu:bronze_turbine_blade",
+    "gtceu:invar_turbine_blade",
+    "gtceu:magnalium_turbine_blade",
+    "gtceu:sterling_silver_turbine_blade",
+    "gtceu:rose_gold_turbine_blade",
+    "gtceu:black_bronze_turbine_blade",
+    "gtceu:bismuth_bronze_turbine_blade",
+    "gtceu:stainless_steel_turbine_blade",
+    "gtceu:steel_turbine_blade",
+    "gtceu:ultimet_turbine_blade",
+    "gtceu:wrought_iron_turbine_blade",
+    "gtceu:osmiridium_turbine_blade",
+    "gtceu:tungsten_carbide_turbine_blade",
+    "gtceu:tungsten_steel_turbine_blade",
+    "gtceu:cobalt_brass_turbine_blade",
+    "gtceu:vanadium_steel_turbine_blade",
+    "gtceu:naquadah_alloy_turbine_blade",
+    "gtceu:rhodium_plated_palladium_turbine_blade",
+    "gtceu:hssg_turbine_blade",
+    "gtceu:hsse_turbine_blade",
+    "gtceu:hsss_turbine_blade"
+  ],
+  "page": "gtceu:materials/turbine_blade",
+  "position": [
+    -50,
+    200
+  ],
+  "section": "gtceu:materials"
+}

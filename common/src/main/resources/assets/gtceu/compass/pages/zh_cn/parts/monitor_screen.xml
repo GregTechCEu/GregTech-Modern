@@ -1,0 +1,27 @@
+<page>
+ <h1>Monitor Screen</h1>
+ <h3>Source</h3>
+ <text pwt="true"><style color="0xaaaaaa" italic="true" pwt="true">Note: this page is ported from MCMOD's GTCEu wiki.<br/>Author: <style color="0xa4e7ff" hover-info="url" pwt="true" underlined="true" url-link="https://center.mcmod.cn/482827/">存档是希望</style><br/></style></text>
+ <h2 font-color="0xff0000">WARNING!!!</h2>
+ <text isCenter="true">
+  <style color="0xff0000" pwt="true">The warning means this is not a reliable page.</style>
+  <br/>
+  <style bold="true" color="0xffaa00" pwt="true">Please do not report any mistakes on the page, either discord or github.</style>
+  <br/>
+  This page is translated from the Chinese wiki which hasn't been reviewed and polished yet. It may contain errors and inaccuracies. We are looking forward to your help by improving this page.
+ </text>
+ <text>
+  <br/>
+  <style lang="zh-cn">
+   用于搭建
+   <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">中央显示器</style>
+   ，屏幕尺寸可以是3×2到14×9(宽 × 高)之间任意两个个整数，默认高度是3，但是可以在结构成型前在中央显示器的GUI中设置高度。
+  </style>
+  <br/>
+  <br/>
+  <style lang="zh-cn">
+   每个屏幕都会增加50 EU/s的能量消耗。
+  </style>
+  <br/>
+ </text>
+</page>

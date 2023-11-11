@@ -1,0 +1,34 @@
+<page>
+ <h1>Ore Drilling Plant</h1>
+ <h3>Source</h3>
+ <text pwt="true"><style color="0xaaaaaa" italic="true" pwt="true">Note: this page is ported from MCMOD's GTCEu wiki.<br/>Author: <style color="0xa4e7ff" hover-info="url" pwt="true" underlined="true" url-link="https://center.mcmod.cn/191113/">Quaerere</style>, <style color="0xa4e7ff" hover-info="url" pwt="true" underlined="true" url-link="https://center.mcmod.cn/2/">重生是希望</style><br/></style></text>
+ <h2 font-color="0xff0000">WARNING!!!</h2>
+ <text isCenter="true">
+  <style color="0xff0000" pwt="true">The warning means this is not a reliable page.</style>
+  <br/>
+  <style bold="true" color="0xffaa00" pwt="true">Please do not report any mistakes on the page, either discord or github.</style>
+  <br/>
+  This page is translated from the Chinese wiki which hasn't been reviewed and polished yet. It may contain errors and inaccuracies. We are looking forward to your help by improving this page.
+ </text>
+ <text>
+  <br/>
+  <style lang="zh-cn">
+   多方块版本的
+   <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">采矿机</style>
+   ，拥有3个等级，不同等级的采矿场均可进行一次超频，超频后消耗钻井液速度翻倍。
+  </style>
+  <br/>
+  <br/>
+  <style lang="zh-cn">
+   除了可以产生4倍于研磨机产量的粉碎矿石以外，其他和
+   <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">采矿机</style>
+   一致。
+  </style>
+  <br/>
+  <br/>
+  <style lang="zh-cn">
+   搭建方式类似于流体钻机，详见JEI对应结构页面。
+  </style>
+  <br/>
+ </text>
+</page>
