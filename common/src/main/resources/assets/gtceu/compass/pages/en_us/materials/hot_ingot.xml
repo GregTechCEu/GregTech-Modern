@@ -1,0 +1,405 @@
+<page>
+ <h1>
+  Hot Ingot
+ </h1>
+ <h3>
+  Source
+ </h3>
+ <text><style color="0xaaaaaa" italic="true">Note: this page is ported from MCMOD's GTCEu wiki.<br/>Author: <style color="0xa4e7ff" hover-info="url" underlined="true" url-link="https://center.mcmod.cn/179043/">花海</style>, <style color="0xa4e7ff" hover-info="url" underlined="true" url-link="https://center.mcmod.cn/285765/">TBS</style>, <style color="0xa4e7ff" hover-info="url" underlined="true" url-link="https://center.mcmod.cn/119280/">Oganesson897</style><br/></style></text>
+ <h2 font-color="0xff0000">
+  WARNING!!!
+ </h2>
+ <text isCenter="true">
+  <style color="0xff0000">The warning means this is not a reliable page.</style>
+  <br/>
+  <style bold="true" color="0xffaa00">Please do not report any mistakes on the page, either discord or github.</style>
+  <br/>
+  This page is translated from the Chinese wiki which hasn't been reviewed and polished yet. It may contain errors and inaccuracies. We are looking forward to your help by improving this page.
+ </text>
+ <text>
+  <br/>
+  <style>
+   <style color="0xaaaaaa" italic="true">Thermal* Ingots in the Materials component, a single Thermal Ingot contains the material equivalent of 1 Ingot (144 mB).</style>
+  </style>
+  <br/>
+  <br/>
+  <style>
+   Advanced SMD Transistor
+   <style color="0xaaaaaa" italic="true">Hot Ingots are usually produced by heating metal powder in an Electric Blast Furnace. There are some exceptions, such as hot silicon ingots produced by mixing silica powder and carbon powder in an electric blast furnace.</style>
+   Advanced chip capacitors
+  </style>
+  <br/>
+  <br/>
+  <style>
+   <style color="0xaaaaaa" italic="true">Not all ingot materials have the corresponding hot ingot form, but only ingot materials with a smelting temperature greater than 1,750 K have the hot ingot form, and when the corresponding powder is heated in an electric blast furnace at any furnace temperature not less than the smelting temperature of the material The corresponding hot ingot will be generated, otherwise the ingot will be generated directly.</style>
+   <br/>
+   ) or plastic components (including different types of rubber, epoxy resin, polyethylene, polybenzimidazole, etc.), will be converted into ash when produced;
+  </style>
+  <br/>
+  <br/>
+  <style>
+   <style color="0xaaaaaa" italic="true">
+ Material list that supports bolts (the format is Chinese name of material-material name): 
+</style>
+   Mineral dictionary: bolt + material name, such as boltAluminium
+  </style>
+  <br/>
+  <br/>
+  <style>
+   <style color="0xaaaaaa" italic="true">
+ Cobalt - Cobalt
+</style>
+  </style>
+  <br/>
+  <br/>
+  <style>
+   <style color="0xaaaaaa" italic="true">Hot Kantal alloy ingots and hot silicon ingots can be cooled into ingots by simply immersing them in a chemical soaker with 100 L of water or 100 L of distilled water at a minimum MV level voltage (120 EU/t).</style>
+   iridium - Iridium
+  </style>
+  <br/>
+  <br/>
+  <style>
+   Only one template is uploaded here, please see the game for specific values.
+  </style>
+  <br/>
+  ------------------
+  <br/>
+  <style>
+   Synthesized from 
+ (requires LV level voltage); and producing a metal crate requires consuming 4 
+ of the corresponding material
+  </style>
+  <br/>
+  <br/>
+  <style>
+   Mineral Dictionary: ingotHot + material name, such as ingotHotEuropium.
+  </style>
+  <br/>
+  ------------------
+  <br/>
+  <style>
+   Material list that supports hot * ingots (the format is Chinese name of material-material name-temperature):
+   <br/>
+  </style>
+  <br/>
+ </text>
+ <text left-margin="10">
+  •
+  <style>
+   Europium - Europium - 6000K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Tungsten steel - TungstenSteel
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Niobium - Niobium - 2750K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Osmium - Osmium - 4500K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Palladium - Palladium - 1828K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Rhodium - Rhodium - 2237K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Ruthenium - Ruthenium - 2607K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Samarium - Samarium - 5400K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Lead - Lead
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Tungsten - Tungsten - 3600K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Vanadium - Vanadium - 2183K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Yttrium - Yttrium - 1799K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Silica - Naquadah - 5000K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Enriched silica - NaquadahEnriched - 7000K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   A model with pipes extending downwards when mined, but without actual blocks or hitboxes.
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Used to form multi-block structures: large diesel engines.
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Kanthal - Kanthal - 1800K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Nickel chromium alloy - Nichrome - 2700K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Niobium Nitride - NiobiumNitride - 2846K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Niobium Titanium Alloy - NiobiumTitanium - 4500K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   BlackBronze - BlackBronze - 2000K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Ruthenium Iridium Alloy - Ruridit - 4500K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Hastelloy - Ultimet - 2700K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Vanadium Gallium Alloy - VanadiumGallium - 4500K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Yttrium Barium Copper Oxygen Alloy - YttriumBariumCuprate - 4500K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Iridium-Osmium Alloy - Osmiridium - 4500K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Tungsten Carbide - TungstenCarbide - 3058K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Magnesium Diboride - MagnesiumDiboride - 2500K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   MercuryBariumCalciumCuprate - MercuryBariumCalciumCuprate - 3300K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Uranium Triplatinum - UraniumTriplatinum - 4400K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Samarium Iron Arsenic Oxide - SamariumIronArsenicOxide - 5200K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Samarium - Samarium
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Uranium-rhodium silica alloy - UraniumRhodiumDinaquadide - 9000K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   EnrichedNaquadahTriniumEuropiumDuranide - 9900K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Coarse Bronze Alloy - Potin
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Tungsten steel - TungstenSteel - 3000K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   at
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Rhodium-plated palladium alloy ingot - RhodiumPlatedPalladium - 4500K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   High speed steel-G - Hssg - 4200K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   High speed steel-E - Hsse - 5000K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   High speed steel-S - Hsss - 5000K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Stellite100 alloy - Stellite100 - 3790K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   For each item in the list, there is a recipe that consumes the powder form or ingot form of raw material 1 and raw material 2 (if present) to smelt the ingot form of the product. All recipes in this list can be executed with only LV level voltage (16 EU/t) and take (number of products × 2.5) seconds;
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Maraging Steel 300 - MaragingSteel300 - 4001K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   research station
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   is processed into several corresponding types of
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Carbonized Trina-Thori-Niobium Alloy - Trinaquadalloy - 8747K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Zeron-100 - Zeron100 - 3693K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Titanium Carbide - TitaniumCarbide - 3430K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Tantalum Carbide - TantalumCarbide - 4120K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Molybdenum Disilicide - MolybdenumDisilicide - 2300K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Titanium Tungsten Carbide - TitaniumTungstenCarbide - 3800K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Heat-resistant ferrochromium alloy-MA956 - IncoloyMa956 - 3625K
+  </style>
+  <br/>
+ </text>
+</page>

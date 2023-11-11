@@ -1,0 +1,264 @@
+<page>
+ <h1>
+  Wire Fine
+ </h1>
+ <h3>
+  Source
+ </h3>
+ <text><style color="0xaaaaaa" italic="true">Note: this page is ported from MCMOD's GTCEu wiki.<br/>Author: <style color="0xa4e7ff" hover-info="url" underlined="true" url-link="https://center.mcmod.cn/119280/">Oganesson897</style><br/></style></text>
+ <h2 font-color="0xff0000">
+  WARNING!!!
+ </h2>
+ <text isCenter="true">
+  <style color="0xff0000">The warning means this is not a reliable page.</style>
+  <br/>
+  <style bold="true" color="0xffaa00">Please do not report any mistakes on the page, either discord or github.</style>
+  <br/>
+  This page is translated from the Chinese wiki which hasn't been reviewed and polished yet. It may contain errors and inaccuracies. We are looking forward to your help by improving this page.
+ </text>
+ <text>
+  <br/>
+  <style>
+  </style>
+  <br/>
+  <br/>
+  <style>
+   Only one template is uploaded here, please see the game for specific values.
+  </style>
+  <br/>
+  ------------------
+  <br/>
+  <style>
+   Mineral dictionary prefix: wireFine
+  </style>
+  <br/>
+  <br/>
+  <style>
+   stem cell
+  </style>
+  <br/>
+  ------------------
+  <br/>
+  <style>
+   Material list that supports thin* wires (the format is Chinese name of material-material name):
+  </style>
+  <br/>
+ </text>
+ <text left-margin="10">
+  •
+  <style>
+   Aluminum - Aluminum
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Diphenyl Isophthalate
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Copper - Copper
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Europium - Europium
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   金 - Gold
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Silica Alloy - NaquadahAlloy - Nq2(Ir3Os)Ke
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Lead - Lead
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   ULPIC chip
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Platinum - Platinum
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Rhodium - Rhodium
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   It is a tape used by TechnoBrain Airlines (TBA) in the game "I am a Air Traffic Controller". Because it needs to increase the difficulty for players, and using a real company will be discredited, he was created—— TBA. Since TBA's aircraft in the game often experience malfunctions and flight accidents, this tape...
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Tin - Tin
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Zinc - Zinc
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Silica (Guanzhong) - Naquadah
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Super Silica Rock (Guanzhong) - Naquadria
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Tritanium alloy - Tritanium
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Annealed Copper - AnnealedCopper
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Naphthalene - Naphthalene
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Amber Gold - Electrum
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Niobium Titanium Alloy - NiobiumTitanium
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Ruthenium Iridium Alloy - Ruridit
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Steel - Steel
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Yttrium Barium Cuprate-YttriumBariumCuprate
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Iridium-osmium alloy - Osmiridium
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Indium Tin Barium Titanium Copper Alloy - IndiumTinBariumTitaniumCuprate
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   ;
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Bronze - Bronze
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   黑steel - BlackSteel
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Tungsten steel - TungstenSteel
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   High speed steel-G - Hssg
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Red Alloy - RedAlloy
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Carbon Nanotube - Carbon Nanotube
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Mercury Cadmium Telluride - Mercury Cadmium Telluride
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Thallium Copper Chloride
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Silicon Carbide - Silicon Carbide
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   PEDOT:PSS - Pedot Pss
+  </style>
+  <br/>
+ </text>
+</page>

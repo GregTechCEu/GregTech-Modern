@@ -1,0 +1,62 @@
+<page>
+ <h1>
+  Capacitor
+ </h1>
+ <h3>
+  Source
+ </h3>
+ <text><style color="0xaaaaaa" italic="true">Note: this page is ported from MCMOD's GTCEu wiki.<br/>Author: <style color="0xa4e7ff" hover-info="url" underlined="true" url-link="https://center.mcmod.cn/179043/">花海</style><br/></style></text>
+ <h2 font-color="0xff0000">
+  WARNING!!!
+ </h2>
+ <text isCenter="true">
+  <style color="0xff0000">The warning means this is not a reliable page.</style>
+  <br/>
+  <style bold="true" color="0xffaa00">Please do not report any mistakes on the page, either discord or github.</style>
+  <br/>
+  This page is translated from the Chinese wiki which hasn't been reviewed and polished yet. It may contain errors and inaccuracies. We are looking forward to your help by improving this page.
+ </text>
+ <text>
+  <br/>
+  <style>
+   <style color="0xaaaaaa" italic="true">"Basic electronic components"</style>
+   <br/>
+  </style>
+  <br/>
+  <br/>
+  <style>
+   Transistors are made from Thin Polyethylene (PE) Sheet and Aluminum Foil in
+   <style color="0xafff00" hover-info="click link" link="gtceu:links" underlined="true">Assembly machine</style>
+   is assembled with 144 L of molten polyethylene (PE), requires MV level voltage (120 EU/t) to operate, takes 16 seconds without overclocking and produces 8 transistors at a time.
+  </style>
+  <br/>
+  <br/>
+  <style>
+   Transistors can be found in
+   <style color="0xafff00" hover-info="click link" link="gtceu:links" underlined="true">
+ Lazurite - Lazurite
+</style>
+   Participate in the assembly of different circuits in 
+. Circuits that can participate in assembly include:
+   <style color="0xafff00" hover-info="click link" link="gtceu:links" underlined="true">
+ Lightly Steamcracked Light Fuel
+</style>
+   (LV level circuit),
+   <style color="0xafff00" hover-info="click link" link="gtceu:links" underlined="true">integrated processor</style>
+   (MV level circuit),
+   <style color="0xafff00" hover-info="click link" link="gtceu:links" underlined="true">Processor components</style>
+   (EV level circuit) and
+   <style color="0xafff00" hover-info="click link" link="gtceu:links" underlined="true">computer host</style>
+   (Class IV circuit).
+  </style>
+  <br/>
+  <br/>
+  <style>
+   <style color="0xafff00" hover-info="click link" link="gtceu:links" underlined="true">Chip transistor</style>
+   and
+   <style color="0xafff00" hover-info="click link" link="gtceu:links" underlined="true">Advanced SMD Transistor</style>
+   They are also transistors, but they are more advanced and can participate in the assembly of higher voltage circuits.
+  </style>
+  <br/>
+ </text>
+</page>

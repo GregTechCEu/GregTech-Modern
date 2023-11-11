@@ -1,0 +1,15 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:inductor"
+  },
+  "items": [
+    "gtceu:inductor"
+  ],
+  "page": "gtceu:circuits/inductor",
+  "position": [
+    -150,
+    100
+  ],
+  "section": "gtceu:circuits"
+}

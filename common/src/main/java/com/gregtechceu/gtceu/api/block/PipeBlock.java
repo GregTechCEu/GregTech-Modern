@@ -35,8 +35,10 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
-import net.minecraft.world.phys.shapes.*;
-import org.apache.commons.lang3.ArrayUtils;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.EntityCollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -238,7 +240,7 @@ public abstract class PipeBlock <PipeType extends Enum<PipeType> & IPipeType<Nod
         BlockEntity tileEntity = context.getParamOrNull(LootContextParams.BLOCK_ENTITY);
         if (tileEntity instanceof IPipeNode<?,?> pipeTile) {
             for (Direction direction : Direction.values()) {
-                pipeTile.getCoverContainer().removeCover(direction);
+                pipeTile.getCoverContainer().removeCover(direction, null);
             }
         }
         return super.getDrops(state, builder);

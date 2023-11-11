@@ -1,0 +1,277 @@
+<page>
+ <h1>Gear</h1>
+ <h3>Source</h3>
+ <text pwt="true"><style color="0xaaaaaa" italic="true" pwt="true">Note: this page is ported from MCMOD's GTCEu wiki.<br/>Author: <style color="0xa4e7ff" hover-info="url" pwt="true" underlined="true" url-link="https://center.mcmod.cn/119280/">Oganesson897</style><br/></style></text>
+ <h2 font-color="0xff0000">WARNING!!!</h2>
+ <text isCenter="true">
+  <style color="0xff0000" pwt="true">The warning means this is not a reliable page.</style>
+  <br/>
+  <style bold="true" color="0xffaa00" pwt="true">Please do not report any mistakes on the page, either discord or github.</style>
+  <br/>
+  This page is translated from the Chinese wiki which hasn't been reviewed and polished yet. It may contain errors and inaccuracies. We are looking forward to your help by improving this page.
+ </text>
+ <text>
+  <br/>
+  <style lang="zh-cn">
+   材料部件中的齿轮。
+  </style>
+  <br/>
+  <br/>
+  <style lang="zh-cn">
+   这里仅上传了一个模板，具体数值请看游戏内。
+  </style>
+  <br/>
+  ------------------
+  <br/>
+  <style lang="zh-cn">
+   矿物词典前缀：gear
+  </style>
+  <br/>
+  <br/>
+  <style lang="zh-cn">
+   矿物词典：gear+材料名称，例如gearAluminium
+  </style>
+  <br/>
+  ------------------
+  <br/>
+  <style lang="zh-cn">
+   支持齿轮的材料列表（格式为材料中文名-材料名）：
+  </style>
+  <br/>
+ </text>
+ <text left-margin="10">
+  •
+  <style lang="zh-cn">
+   铝 - Aluminium
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   铱 - Iridium
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   铁 - Iron
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   铑 - Rhodium
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钌 - Ruthenium
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钛 - Titanium
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钨 - Tungsten
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   超能硅岩（官中） - Naquadria
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   三钛合金 - Tritanium
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   铿铀 - Duranium
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   三元金属 - Trinium
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   青铜 - Bronze
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钻石 - Diamond
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   殷钢 - Invar
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   黑青铜 - BlackBronze
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钌铱合金 - Ruridit
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   不锈钢 - StainlessSteel
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钢 - Steel
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   哈氏合金 - Ultimet
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   锻铁 - WroughIron
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   铱锇合金 - Osmiridium
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   碳化钨 - TungstenCarbide
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   硅胶 - SiliconeRubber
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   橡胶 - Rubber
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   石头 - Stone
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   木 - Wood
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   黑钢 - BlackSteel
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   黑钢 - BlackSteel
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钨钢 - TungstenSteel
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钴黄铜 - CobaltBrass
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钒钢 - VanadiumSteel
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   粗青铜合金 - Potin
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   硅岩合金 - NaquadahAlloy
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   红钢 - RedSteel
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   蓝钢 - BlueSteel
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   高速钢-G - Hssg
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   高速钢-S - Hsss
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   山铜 - Orichalcum
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   精金 - Adamantium
+  </style>
+  <br/>
+ </text>
+</page>

@@ -1,0 +1,15 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:terminal"
+  },
+  "items": [
+    "gtceu:terminal"
+  ],
+  "page": "gtceu:items/terminal",
+  "position": [
+    -100,
+    100
+  ],
+  "section": "gtceu:items"
+}

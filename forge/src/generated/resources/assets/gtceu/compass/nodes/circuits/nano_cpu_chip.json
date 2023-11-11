@@ -1,0 +1,15 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:nano_cpu_chip"
+  },
+  "items": [
+    "gtceu:nano_cpu_chip"
+  ],
+  "page": "gtceu:circuits/nano_cpu_chip",
+  "position": [
+    -300,
+    50
+  ],
+  "section": "gtceu:circuits"
+}

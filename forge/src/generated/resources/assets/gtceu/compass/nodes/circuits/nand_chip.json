@@ -1,0 +1,15 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:nand_chip"
+  },
+  "items": [
+    "gtceu:nand_chip"
+  ],
+  "page": "gtceu:circuits/nand_chip",
+  "position": [
+    -150,
+    150
+  ],
+  "section": "gtceu:circuits"
+}

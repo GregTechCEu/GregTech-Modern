@@ -1,0 +1,15 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:micro_processor_computer"
+  },
+  "items": [
+    "gtceu:micro_processor_computer"
+  ],
+  "page": "gtceu:circuits/micro_processor_computer",
+  "position": [
+    -300,
+    200
+  ],
+  "section": "gtceu:circuits"
+}

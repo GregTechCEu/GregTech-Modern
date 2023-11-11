@@ -1,0 +1,20 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:diamond_lens"
+  },
+  "items": [
+    "gtceu:diamond_lens",
+    "gtceu:emerald_lens",
+    "gtceu:ruby_lens",
+    "gtceu:sapphire_lens",
+    "gtceu:nether_star_lens",
+    "gtceu:glass_lens"
+  ],
+  "page": "gtceu:materials/lens",
+  "position": [
+    -150,
+    150
+  ],
+  "section": "gtceu:materials"
+}
