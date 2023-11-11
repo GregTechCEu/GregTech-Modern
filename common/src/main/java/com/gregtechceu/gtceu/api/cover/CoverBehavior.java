@@ -9,6 +9,8 @@ import com.gregtechceu.gtceu.api.syncdata.EnhancedFieldManagedStorage;
 import com.gregtechceu.gtceu.api.syncdata.IEnhancedManaged;
 import com.gregtechceu.gtceu.client.renderer.cover.ICoverRenderer;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
+import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
+import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
@@ -199,4 +201,17 @@ public abstract class CoverBehavior implements IEnhancedManaged, IToolGridHighLi
         return null;
     }
 
+    //////////////////////////////////////
+    //*******    Capabilities    *******//
+    //////////////////////////////////////
+
+    // TODO possibly refactor this in the future, using some sort of cross-platform capability-like system
+
+    public IItemTransfer getItemTransferCap(Direction side, IItemTransfer defaultValue) {
+        return defaultValue;
+    }
+
+    public IFluidTransfer getFluidTransferCap(Direction side, IFluidTransfer defaultValue) {
+        return defaultValue;
+    }
 }

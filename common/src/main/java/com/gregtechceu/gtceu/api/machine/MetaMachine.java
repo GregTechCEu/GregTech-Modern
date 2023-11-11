@@ -29,8 +29,6 @@ import com.gregtechceu.gtceu.common.cover.ItemFilterCover;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
-import com.lowdragmc.lowdraglib.misc.FluidTransferList;
-import com.lowdragmc.lowdraglib.misc.ItemTransferList;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
@@ -546,7 +544,7 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
     }
 
     @Nullable
-    public ItemTransferList getItemTransferCap(@Nullable Direction side) {
+    public IItemTransfer getItemTransferCap(@Nullable Direction side) {
         var list = getTraits().stream()
                 .filter(IItemTransfer.class::isInstance)
                 .filter(t -> t.hasCapability(side))
@@ -559,11 +557,16 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
         if (side != null && this instanceof IAutoOutputItem autoOutput && autoOutput.getOutputFacingItems() == side && !autoOutput.isAllowInputFromOutputSideItems()) {
             io = IO.OUT;
         }
-        return new IOItemTransferList(list, io, getItemCapFilter(side));
+
+        IOItemTransferList transferList = new IOItemTransferList(list, io, getItemCapFilter(side));
+        if (side == null) return transferList;
+
+        CoverBehavior cover = getCoverContainer().getCoverAtSide(side);
+        return cover != null ? cover.getItemTransferCap(side, transferList) : transferList;
     }
 
     @Nullable
-    public FluidTransferList getFluidTransferCap(@Nullable Direction side) {
+    public IFluidTransfer getFluidTransferCap(@Nullable Direction side) {
         var list = getTraits().stream()
                 .filter(IFluidTransfer.class::isInstance)
                 .filter(t -> t.hasCapability(side))
@@ -576,7 +579,12 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
         if (side != null && this instanceof IAutoOutputFluid autoOutput && autoOutput.getOutputFacingFluids() == side && !autoOutput.isAllowInputFromOutputSideFluids()) {
             io = IO.OUT;
         }
-        return new IOFluidTransferList(list, io, getFluidCapFilter(side));
+
+        IOFluidTransferList transferList = new IOFluidTransferList(list, io, getFluidCapFilter(side));
+        if (side == null) return transferList;
+
+        CoverBehavior cover = getCoverContainer().getCoverAtSide(side);
+        return cover != null ? cover.getFluidTransferCap(side, transferList) : transferList;
     }
 
     //////////////////////////////////////
