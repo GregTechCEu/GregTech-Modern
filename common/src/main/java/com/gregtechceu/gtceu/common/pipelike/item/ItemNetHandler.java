@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
+import com.gregtechceu.gtceu.api.misc.RateCounter;
 import com.gregtechceu.gtceu.common.blockentity.ItemPipeBlockEntity;
 import com.gregtechceu.gtceu.common.cover.ConveyorCover;
 import com.gregtechceu.gtceu.common.cover.ItemFilterCover;
@@ -34,7 +35,10 @@ public class ItemNetHandler implements IItemTransfer {
     private final Level world;
     private final Direction facing;
     private final Map<FacingPos, Integer> simulatedTransfersGlobalRoundRobin = new HashMap<>();
-    private int simulatedTransfers = 0;
+
+    private final RateCounter simulatedCounter = new RateCounter(this::getLevelTime, 20);
+    private final RateCounter transferredCounter = new RateCounter(this::getLevelTime, 20);
+
     private final ItemStackTransfer testHandler = new ItemStackTransfer(1);
 
     public ItemNetHandler(ItemPipeNet net, ItemPipeBlockEntity pipe, Direction facing) {
@@ -44,12 +48,18 @@ public class ItemNetHandler implements IItemTransfer {
         this.world = pipe.getPipeLevel();
     }
 
+    private long getLevelTime() {
+        return net.getLevel().getGameTime();
+    }
+
     public void updateNetwork(ItemPipeNet net) {
         this.net = net;
     }
 
     private void copyTransferred() {
-        simulatedTransfers = pipe.getTransferredItems();
+        simulatedCounter.clear();
+        simulatedCounter.addUsed(transferredCounter.getUsedSum());
+
         simulatedTransfersGlobalRoundRobin.clear();
         simulatedTransfersGlobalRoundRobin.putAll(pipe.getTransferred());
     }
@@ -390,17 +400,15 @@ public class ItemNetHandler implements IItemTransfer {
 
     private int checkTransferable(float rate, int amount, boolean simulate) {
         int max = (int) ((rate * 64) + 0.5);
-        if (simulate)
-            return Math.max(0, Math.min(max - simulatedTransfers, amount));
-        else
-            return Math.max(0, Math.min(max - pipe.getTransferredItems(), amount));
+        RateCounter rateCounter = simulate ? simulatedCounter : transferredCounter;
+
+        return Math.max(0, Math.min(max - (int) rateCounter.getUsedSum(), amount));
     }
 
     private void transfer(boolean simulate, int amount) {
-        if (simulate)
-            simulatedTransfers += amount;
-        else
-            pipe.transferItems(amount);
+        RateCounter rateCounter = simulate ? simulatedCounter : transferredCounter;
+
+        rateCounter.addUsed(amount);
     }
 
     @Override
