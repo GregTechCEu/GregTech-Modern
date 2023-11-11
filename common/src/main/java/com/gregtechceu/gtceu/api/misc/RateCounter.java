@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.misc;
 import net.minecraft.MethodsReturnNonnullByDefault;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.Arrays;
 import java.util.function.LongSupplier;
 
 
@@ -48,6 +49,10 @@ public class RateCounter {
 
         usedAmounts[idx] += amount;
         updateTimes[idx] = currentTime;
+    }
+
+    public void clear() {
+        Arrays.fill(usedAmounts, 0L);
     }
 
     public RateCounter copy() {
