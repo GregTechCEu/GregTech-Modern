@@ -1,0 +1,15 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:turbine_rotor"
+  },
+  "items": [
+    "gtceu:turbine_rotor"
+  ],
+  "page": "gtceu:misc/turbine_rotor",
+  "position": [
+    -400,
+    250
+  ],
+  "section": "gtceu:misc"
+}

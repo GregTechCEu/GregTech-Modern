@@ -1,0 +1,15 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:diamond_grinding_head"
+  },
+  "items": [
+    "gtceu:diamond_grinding_head"
+  ],
+  "page": "gtceu:misc/diamond_grinding_head",
+  "position": [
+    -250,
+    150
+  ],
+  "section": "gtceu:misc"
+}

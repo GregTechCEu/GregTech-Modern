@@ -1,0 +1,15 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:neuro_processing_unit"
+  },
+  "items": [
+    "gtceu:neuro_processing_unit"
+  ],
+  "page": "gtceu:misc/neuro_processing_unit",
+  "position": [
+    -350,
+    250
+  ],
+  "section": "gtceu:misc"
+}

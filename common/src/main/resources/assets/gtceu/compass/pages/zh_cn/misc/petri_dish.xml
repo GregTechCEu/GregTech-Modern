@@ -1,0 +1,34 @@
+<page>
+ <h1>Petri Dish</h1>
+ <h3>Source</h3>
+ <text pwt="true"><style color="0xaaaaaa" italic="true" pwt="true">Note: this page is ported from MCMOD's GTCEu wiki.<br/>Author: <style color="0xa4e7ff" hover-info="url" pwt="true" underlined="true" url-link="https://center.mcmod.cn/179043/">花海</style>, <style color="0xa4e7ff" hover-info="url" pwt="true" underlined="true" url-link="https://center.mcmod.cn/508290/">morningglory</style><br/></style></text>
+ <h2 font-color="0xff0000">WARNING!!!</h2>
+ <text isCenter="true">
+  <style color="0xff0000" pwt="true">The warning means this is not a reliable page.</style>
+  <br/>
+  <style bold="true" color="0xffaa00" pwt="true">Please do not report any mistakes on the page, either discord or github.</style>
+  <br/>
+  This page is translated from the Chinese wiki which hasn't been reviewed and polished yet. It may contain errors and inaccuracies. We are looking forward to your help by improving this page.
+ </text>
+ <text>
+  <br/>
+  <style lang="zh-cn">
+   <style color="0xaaaaaa" italic="true" lang="zh-cn" pwt="true">“用以培养细胞”</style>
+   <br/>
+  </style>
+  <br/>
+  <br/>
+  <style lang="zh-cn">
+   培养皿由 18 L 聚苯并咪唑 (PBI) 或 36 L 聚四氟乙烯 (PTFE) 在
+   <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">流体固化机</style>
+   中配合
+   <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">模具(圆柱)</style>
+   凝固而成，需要 HV 级电压运行。是在
+   <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">电路组装机</style>
+   中合成
+   <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">湿件生物电路基板</style>
+   所需的原材料之一。
+  </style>
+  <br/>
+ </text>
+</page>

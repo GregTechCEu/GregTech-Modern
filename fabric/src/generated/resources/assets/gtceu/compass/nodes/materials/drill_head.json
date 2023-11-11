@@ -1,0 +1,42 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:aluminium_drill_head"
+  },
+  "items": [
+    "gtceu:aluminium_drill_head",
+    "gtceu:iron_drill_head",
+    "gtceu:titanium_drill_head",
+    "gtceu:neutronium_drill_head",
+    "gtceu:duranium_drill_head",
+    "gtceu:bronze_drill_head",
+    "gtceu:diamond_drill_head",
+    "gtceu:invar_drill_head",
+    "gtceu:sterling_silver_drill_head",
+    "gtceu:rose_gold_drill_head",
+    "gtceu:stainless_steel_drill_head",
+    "gtceu:steel_drill_head",
+    "gtceu:ultimet_drill_head",
+    "gtceu:wrought_iron_drill_head",
+    "gtceu:tungsten_carbide_drill_head",
+    "gtceu:polybenzimidazole_drill_head",
+    "gtceu:polyethylene_drill_head",
+    "gtceu:polytetrafluoroethylene_drill_head",
+    "gtceu:rubber_drill_head",
+    "gtceu:wood_drill_head",
+    "gtceu:damascus_steel_drill_head",
+    "gtceu:tungsten_steel_drill_head",
+    "gtceu:cobalt_brass_drill_head",
+    "gtceu:vanadium_steel_drill_head",
+    "gtceu:naquadah_alloy_drill_head",
+    "gtceu:red_steel_drill_head",
+    "gtceu:blue_steel_drill_head",
+    "gtceu:hsse_drill_head"
+  ],
+  "page": "gtceu:materials/drill_head",
+  "position": [
+    -200,
+    50
+  ],
+  "section": "gtceu:materials"
+}

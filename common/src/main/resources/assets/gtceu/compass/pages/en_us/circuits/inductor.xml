@@ -1,0 +1,65 @@
+<page>
+ <h1>
+  Inductor
+ </h1>
+ <h3>
+  Source
+ </h3>
+ <text><style color="0xaaaaaa" italic="true">Note: this page is ported from MCMOD's GTCEu wiki.<br/>Author: <style color="0xa4e7ff" hover-info="url" underlined="true" url-link="https://center.mcmod.cn/179043/">花海</style><br/></style></text>
+ <h2 font-color="0xff0000">
+  WARNING!!!
+ </h2>
+ <text isCenter="true">
+  <style color="0xff0000">The warning means this is not a reliable page.</style>
+  <br/>
+  <style bold="true" color="0xffaa00">Please do not report any mistakes on the page, either discord or github.</style>
+  <br/>
+  This page is translated from the Chinese wiki which hasn't been reviewed and polished yet. It may contain errors and inaccuracies. We are looking forward to your help by improving this page.
+ </text>
+ <text>
+  <br/>
+  <style>
+   N
+   <style color="0xaaaaaa" italic="true">"A small coil"</style>
+   N
+  </style>
+  <br/>
+  <br/>
+  <style>
+   @ n @ Glass tube consists of 1 steel ring and 2 thin copper wires at @ n @
+   <style color="0xafff00" hover-info="click link" link="gtceu:links" underlined="true">assembly machine</style>
+   Made in @ n @ with 36L polyethylene (PE), it requires MV voltage (120 EU/t) to operate, and the single treatment takes 12 seconds and produces 2 glass tubes without overclocking. @ n @
+  </style>
+  <br/>
+ </text>
+ <text left-margin="10">
+  •
+  <style>
+   @ n @ nickel-zinc ferrite rings can be used instead of steel rings to participate in assembly, which can double the single production; @ n @
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   @ n @ Fine annealed copper wires can be used instead of fine copper wires to participate in assembly, which can double the single production again. @ n @
+  </style>
+  <br/>
+ </text>
+ <text>
+  <br/>
+  <style>
+   @ n @ at @ n @
+   <style color="0xafff00" hover-info="click link" link="gtceu:links" underlined="true">Circuit assembly machine</style>
+   In @ n @, the glass tube can participate in the use of @ n @
+   <style color="0xafff00" hover-info="click link" link="gtceu:links" underlined="true">Integrated Processor</style>
+   @ n @ (MV class circuit) made of @ n @
+   <style color="0xafff00" hover-info="click link" link="gtceu:links" underlined="true">Input warehouse</style>
+   @ n @ (HV class circuit), and utilizing @ n @
+   <style color="0xafff00" hover-info="click link" link="gtceu:links" underlined="true">Workstations</style>
+   @ n @ (EV grade circuit) made of @ n @
+   <style color="0xafff00" hover-info="click link" link="gtceu:links" underlined="true">Desktop computer</style>
+   @ n @ Arsenic @ n @
+  </style>
+  <br/>
+ </text>
+</page>

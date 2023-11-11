@@ -1,0 +1,15 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:purple_drink"
+  },
+  "items": [
+    "gtceu:purple_drink"
+  ],
+  "page": "gtceu:misc/purple_drink",
+  "position": [
+    -300,
+    200
+  ],
+  "section": "gtceu:misc"
+}

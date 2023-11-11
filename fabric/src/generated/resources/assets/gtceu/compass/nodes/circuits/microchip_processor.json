@@ -1,0 +1,15 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:microchip_processor"
+  },
+  "items": [
+    "gtceu:microchip_processor"
+  ],
+  "page": "gtceu:circuits/microchip_processor",
+  "position": [
+    -100,
+    150
+  ],
+  "section": "gtceu:circuits"
+}

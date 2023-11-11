@@ -298,7 +298,7 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
         } else if (toolType == GTToolType.CROWBAR) {
             if (coverBehavior != null) {
                 if (!isRemote()) {
-                    getCoverContainer().removeCover(gridSide);
+                    getCoverContainer().removeCover(gridSide, playerIn);
                 }
                 return InteractionResult.CONSUME;
             }
