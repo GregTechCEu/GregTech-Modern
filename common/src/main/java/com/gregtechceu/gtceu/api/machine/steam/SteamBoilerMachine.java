@@ -22,10 +22,12 @@ import com.lowdragmc.lowdraglib.gui.widget.TankWidget;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
+import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import lombok.Getter;
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
@@ -59,7 +61,7 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine implements
 
     @Persisted
     public final NotifiableFluidTank waterTank;
-    @Persisted
+    @Persisted @DescSynced
     private int currentTemperature;
     @Persisted
     private int timeBeforeCoolingDown;
@@ -168,7 +170,7 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine implements
                 if (currentTemperature < getMaxTemperature())
                     if (isHighPressure) {
                         currentTemperature++;
-                    } else if (getOffsetTimer() % 24 == 0){
+                    } else if (getOffsetTimer() % 24 == 0) {
                         currentTemperature++;
                     }
             }
@@ -180,7 +182,7 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine implements
         } else --timeBeforeCoolingDown;
 
         if (getOffsetTimer() % 10 == 0) {
-            if (currentTemperature >= 100 ) {
+            if (currentTemperature >= 100) {
                 long fillAmount = (long) (getBaseSteamOutput() * (currentTemperature / (getMaxTemperature() * 1.0)) / 2);
                 boolean hasDrainedWater = !waterTank.drainInternal(FluidHelper.getBucket() / 1000, false).isEmpty();
                 var filledSteam = 0L;
@@ -280,7 +282,8 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine implements
                 .widget(new LabelWidget(6, 6, getBlockState().getBlock().getDescriptionId()))
                 .widget(new ProgressWidget(this::getTemperaturePercent, 96, 26, 10, 54)
                         .setProgressTexture(GuiTextures.PROGRESS_BAR_BOILER_EMPTY.get(isHighPressure), GuiTextures.PROGRESS_BAR_BOILER_HEAT)
-                        .setFillDirection(ProgressTexture.FillDirection.DOWN_TO_UP))
+                        .setFillDirection(ProgressTexture.FillDirection.DOWN_TO_UP)
+                        .setDynamicHoverTips(pct -> I18n.get("gtceu.multiblock.large_boiler.temperature", (int) (currentTemperature + 274.15), (int) (getMaxTemperature() + 274.15))))
                 .widget(new TankWidget(waterTank.storages[0], 83, 26, 10, 54, false, true)
                         .setShowAmount(false)
                         .setFillDirection(ProgressTexture.FillDirection.DOWN_TO_UP)
