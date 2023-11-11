@@ -27,6 +27,6 @@ public interface ILDNetworkPart {
 
     @Nullable
     static ILDNetworkPart tryGet(LevelAccessor level, BlockPos pos, BlockState blockState) {
-        return blockState instanceof ILDNetworkPart part ? part : ILDEndpoint.tryGet(level, pos);
+        return blockState.getBlock() instanceof ILDNetworkPart part ? part : ILDEndpoint.tryGet(level, pos);
     }
 }
