@@ -1,0 +1,6 @@
+{
+  "parent": "gtceu:block/tinted_cube_all_0",
+  "textures": {
+    "all": "gtceu:block/material_sets/dull/raw_ore_block"
+  }
+}

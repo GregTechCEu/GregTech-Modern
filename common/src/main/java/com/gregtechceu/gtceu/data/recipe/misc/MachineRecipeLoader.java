@@ -47,6 +47,8 @@ public class MachineRecipeLoader {
     }
 
     public static void init(Consumer<FinishedRecipe> provider) {
+        ComputerRecipes.init(provider);
+
         registerDecompositionRecipes(provider);
         registerBlastFurnaceRecipes(provider);
         registerAssemblerRecipes(provider);

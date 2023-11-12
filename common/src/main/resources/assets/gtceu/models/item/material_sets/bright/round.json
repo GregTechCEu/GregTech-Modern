@@ -1,6 +1,6 @@
 {
   "parent": "gtceu:item/material_sets/shiny/round",
   "textures": {
-    "layer1": "gtceu:item/material_sets/bright/round_overlay"
+    "layer2": "gtceu:item/material_sets/bright/round_overlay"
   }
 }

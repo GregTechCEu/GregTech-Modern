@@ -58,11 +58,21 @@ public class GTValues {
      */
     public static final long[] V = new long[]{8, 32, 128, 512, 2048, 8192, 32768, 131072, 524288, 2097152, 8388608, 33554432, 134217728, 536870912, Integer.MAX_VALUE};
 
+    /**
+     * The Voltage Tiers divided by 2.
+     */
+    public static final int[] VH = {4, 16, 64, 256, 1024, 4096, 16384, 65536, 262144, 1048576, 4194304, 16777216, 67108864, 268435456, 1073741824};
+
 
     /**
      * The Voltage Tiers adjusted for cable loss. Use this for recipe EU/t to avoid full-amp recipes
      */
     public static final int[] VA = new int[]{7, 30, 120, 480, 1920, 7680, 30720, 122880, 491520, 1966080, 7864320, 31457280, 125829120, 503316480, 2013265920};
+
+    /**
+     * The Voltage Tiers adjusted for cable loss, divided by 2.
+     */
+    public static final int[] VHA = {7, 16, 60, 240, 960, 3840, 15360, 61440, 245760, 983040, 3932160, 15728640, 62914560, 251658240, 1006632960};
 
     public static final int ULV = 0;
     public static final int LV = 1;

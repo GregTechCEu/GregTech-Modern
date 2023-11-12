@@ -384,11 +384,52 @@ public class LangHandler {
         replace(provider, GTMaterials.HSSE.getUnlocalizedName(), "HSS-E");
         replace(provider, GTMaterials.HSSS.getUnlocalizedName(), "HSS-S");
         replace(provider, GTMaterials.UUMatter.getUnlocalizedName(), "UU-Matter");
+        replace(provider, GTMaterials.PCBCoolant.getUnlocalizedName(), "PCB Coolant");
         replace(provider, GTMaterials.TungstenSteel.getUnlocalizedName(), "Tungstensteel");
         replace(provider, GTMaterials.OilHeavy.getUnlocalizedName(), "Heavy Oil");
+        replace(provider, "block.gtceu.oil_heavy", "Heavy Oil");
         replace(provider, GTMaterials.OilLight.getUnlocalizedName(), "Light Oil");
+        replace(provider, "block.gtceu.oil_light", "Light Oil");
         replace(provider, GTMaterials.RawOil.getUnlocalizedName(), "Raw Oil");
-        replace(provider, GTMaterials.HSLASteel.getUnlocalizedName(), "HSLA-Steel");
+        replace(provider, "block.gtceu.oil_medium", "Raw Oil");
+
+        replace(provider, GTMaterials.HydroCrackedButadiene.getUnlocalizedName(), "Hydro-Cracked Butadiene");
+        replace(provider, GTMaterials.HydroCrackedButane.getUnlocalizedName(), "Hydro-Cracked Butane");
+        replace(provider, GTMaterials.HydroCrackedButene.getUnlocalizedName(), "Hydro-Cracked Butene");
+        replace(provider, GTMaterials.HydroCrackedButene.getUnlocalizedName(), "Hydro-Cracked Butene");
+        replace(provider, GTMaterials.HydroCrackedEthane.getUnlocalizedName(), "Hydro-Cracked Ethane");
+        replace(provider, GTMaterials.HydroCrackedEthylene.getUnlocalizedName(), "Hydro-Cracked Ethylene");
+        replace(provider, GTMaterials.HydroCrackedPropane.getUnlocalizedName(), "Hydro-Cracked Propane");
+        replace(provider, GTMaterials.HydroCrackedPropene.getUnlocalizedName(), "Hydro-Cracked Propene");
+        replace(provider, GTMaterials.SteamCrackedButadiene.getUnlocalizedName(), "Steam-Cracked Butadiene");
+        replace(provider, GTMaterials.SteamCrackedButane.getUnlocalizedName(), "Steam-Cracked Butane");
+        replace(provider, GTMaterials.SteamCrackedButene.getUnlocalizedName(), "Steam-Cracked Butene");
+        replace(provider, GTMaterials.SteamCrackedButene.getUnlocalizedName(), "Steam-Cracked Butene");
+        replace(provider, GTMaterials.SteamCrackedEthane.getUnlocalizedName(), "Steam-Cracked Ethane");
+        replace(provider, GTMaterials.SteamCrackedEthylene.getUnlocalizedName(), "Steam-Cracked Ethylene");
+        replace(provider, GTMaterials.SteamCrackedPropane.getUnlocalizedName(), "Steam-Cracked Propane");
+        replace(provider, GTMaterials.SteamCrackedPropene.getUnlocalizedName(), "Steam-Cracked Propene");
+        replace(provider, GTMaterials.LightlyHydroCrackedGas.getUnlocalizedName(), "Lightly Hydro-Cracked Gas");
+        replace(provider, GTMaterials.LightlyHydroCrackedHeavyFuel.getUnlocalizedName(), "Lightly Hydro-Cracked Heavy Fuel");
+        replace(provider, GTMaterials.LightlyHydroCrackedLightFuel.getUnlocalizedName(), "Lightly Hydro-Cracked Light Fuel");
+        replace(provider, GTMaterials.LightlyHydroCrackedNaphtha.getUnlocalizedName(), "Lightly Hydro-Cracked Naphtha");
+        replace(provider, GTMaterials.LightlySteamCrackedGas.getUnlocalizedName(), "Lightly Steam-Cracked Gas");
+        replace(provider, GTMaterials.LightlySteamCrackedHeavyFuel.getUnlocalizedName(), "Lightly Steam-Cracked Heavy Fuel");
+        replace(provider, GTMaterials.LightlySteamCrackedLightFuel.getUnlocalizedName(), "Lightly Steam-Cracked Light Fuel");
+        replace(provider, GTMaterials.LightlySteamCrackedNaphtha.getUnlocalizedName(), "Lightly Steam-Cracked Naphtha");
+        replace(provider, GTMaterials.SeverelyHydroCrackedGas.getUnlocalizedName(), "Severely Hydro-Cracked Gas");
+        replace(provider, GTMaterials.SeverelyHydroCrackedHeavyFuel.getUnlocalizedName(), "Severely Hydro-Cracked Heavy Fuel");
+        replace(provider, GTMaterials.SeverelyHydroCrackedLightFuel.getUnlocalizedName(), "Severely Hydro-Cracked Light Fuel");
+        replace(provider, GTMaterials.SeverelyHydroCrackedNaphtha.getUnlocalizedName(), "Severely Hydro-Cracked Naphtha");
+        replace(provider, GTMaterials.SeverelySteamCrackedGas.getUnlocalizedName(), "Severely Steam-Cracked Gas");
+        replace(provider, GTMaterials.SeverelySteamCrackedHeavyFuel.getUnlocalizedName(), "Severely Steam-Cracked Heavy Fuel");
+        replace(provider, GTMaterials.SeverelySteamCrackedLightFuel.getUnlocalizedName(), "Severely Steam-Cracked Light Fuel");
+        replace(provider, GTMaterials.SeverelySteamCrackedNaphtha.getUnlocalizedName(), "Severely Steam-Cracked Naphtha");
+
+        replace(provider, GTMaterials.Zeron100.getUnlocalizedName(), "Zeron-100");
+        replace(provider, GTMaterials.IncoloyMA956.getUnlocalizedName(), "Incoloy MA-956");
+        replace(provider, GTMaterials.Stellite100.getUnlocalizedName(), "Stellite-100");
+        replace(provider, GTMaterials.HastelloyC276.getUnlocalizedName(), "Hastelloy C-276");
 
         provider.add("item.netherrack_nether_quartz", "Nether Quartz Ore");
 
@@ -437,14 +478,14 @@ public class LangHandler {
         provider.add("item.wood_small_dust", "Small Pile of Wood Pulp");
         provider.add("item.wood_dust", "Wood Pulp");
         provider.add("item.wood_plate", "Wood Plank");
-        provider.add("item.wood_rodLong", "Long Wood Stick");
+        provider.add("item.wood_long_rod", "Long Wood Stick");
         provider.add("item.wood_bolt", "Short Wood Stick");
         provider.add("item.treated_wood_tiny_dust", "Tiny Pile of Treated Wood Pulp");
         provider.add("item.treated_wood_small_dust", "Small Pile of Treated Wood Pulp");
         provider.add("item.treated_wood_dust", "Treated Wood Pulp");
         provider.add("item.treated_wood_plate", "Treated Wood Plank");
         provider.add("item.treated_wood_rod", "Treated Wood Stick");
-        provider.add("item.treated_wood_rodLong", "Long Treated Wood Stick");
+        provider.add("item.treated_wood_long_rod", "Long Treated Wood Stick");
         provider.add("item.treated_wood_bolt", "Short Treated Wood Stick");
         provider.add("item.glass_gem", "Glass Crystal");
         provider.add("item.glass_chipped_gem", "Chipped Glass Crystal");
@@ -492,7 +533,7 @@ public class LangHandler {
         provider.add("item.pitchblende_dust", "Pitchblende");
         provider.add("item.talc_refined_ore", "Refined Talc");
         provider.add("item.talc_purified_ore", "Purified Talc");
-        provider.add("item.talc_crushed", "Ground Talc");
+        provider.add("item.talc_crushed_ore", "Ground Talc");
         provider.add("item.talc_tiny_dust", "Tiny Pile of Talc");
         provider.add("item.talc_small_dust", "Small Pile of Talc");
         provider.add("item.talc_impure_dust", "Impure Pile of Talc");
@@ -505,7 +546,7 @@ public class LangHandler {
         provider.add("item.meat_small_dust", "Small Pile of Mince Meat");
         provider.add("item.meat_dust", "Mince Meat");
         provider.add("item.borosilicate_glass_ingot", "Borosilicate Glass Bar");
-        provider.add("item.borosilicate_glass_wireFine", "Borosilicate Glass Fibers");
+        provider.add("item.borosilicate_glass_fine_wire", "Borosilicate Glass Fibers");
         provider.add("item.platinum_group_sludge_tiny_dust", "Tiny Clump of Platinum Group Sludge");
         provider.add("item.platinum_group_sludge_small_dust", "Small Clump of Platinum Group Sludge");
         provider.add("item.platinum_group_sludge_dust", "Platinum Group Sludge");
@@ -1238,7 +1279,7 @@ public class LangHandler {
      * See {@link #getMultiLang(String)}. If no multiline key is available, get single instead.
      *
      * @param key Base key of the multi lang. E.g. "terminal.fluid_prospector.tier".
-     * @returnReturns all translation components from a multi lang's sub-keys.
+     * @return Returns all translation components from a multi lang's sub-keys.
      */
     public static List<MutableComponent> getSingleOrMultiLang(String key) {
         List<MutableComponent> multiLang = getMultiLang(key);

@@ -682,5 +682,33 @@ public class ReactorRecipes {
                 .inputFluids(PolyvinylAcetate.getFluid(144))
                 .outputFluids(PolyvinylButyral.getFluid(144))
                 .duration(400).EUt(VA[HV]).save(provider);
+
+        CHEMICAL_RECIPES.recipeBuilder("biphenyl_from_toluene")
+                .inputFluids(Benzene.getFluid(1000))
+                .inputFluids(Toluene.getFluid(1000))
+                .outputItems(dust, Biphenyl, 2)
+                .outputFluids(Methane.getFluid(1000))
+                .duration(200).EUt(VH[HV]).save(provider);
+
+        CHEMICAL_RECIPES.recipeBuilder("biphenyl_from_oxygen")
+                .inputFluids(Benzene.getFluid(2000))
+                .inputFluids(Oxygen.getFluid(1000))
+                .circuitMeta(1)
+                .outputItems(dust, Biphenyl, 2)
+                .outputFluids(Water.getFluid(1000))
+                .duration(400).EUt(VA[HV]).save(provider);
+
+        CHEMICAL_RECIPES.recipeBuilder("benzene_from_biphenyl")
+                .inputItems(dust, Biphenyl, 2)
+                .inputFluids(Hydrogen.getFluid(2000))
+                .outputFluids(Benzene.getFluid(2000))
+                .duration(400).EUt(VA[EV]).save(provider);
+
+        CHEMICAL_RECIPES.recipeBuilder("polychlorinated_biphenyl")
+                .inputItems(dust, Biphenyl, 2)
+                .inputFluids(Chlorine.getFluid(4000))
+                .outputFluids(PolychlorinatedBiphenyl.getFluid(1000))
+                .outputFluids(HydrochloricAcid.getFluid(2000))
+                .duration(200).EUt(VH[HV]).save(provider);
     }
 }

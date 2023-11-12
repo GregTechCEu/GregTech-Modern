@@ -64,6 +64,16 @@ configurations {
 //    snapshotModImplementation {
 //        resolutionStrategy.cacheChangingModulesFor(0, "seconds")
 //    }
+
+    apiElements {
+        outgoing {
+            capability("net.minecraftforge:forge:${this.forge.versions.minecratfForge.get()}")
+            capability("com.lowdragmc.ldlib:ldlib-forge-${this.libs.versions.minecraft.get()}:${this.forge.versions.ldlib.get()}")
+            capability("com.tterrag.registrate:Registrate:${this.forge.versions.registrate.get()}")
+            capability("dev.toma.configuration:configuration-forge-${this.libs.versions.minecraft.get()}:${this.forge.versions.configuration.get()}")
+            capability("io.github.llamalad7:mixinextras-forge:${this.forge.versions.mixinextras.get()}")
+        }
+    }
 }
 
 //configurations.all {
@@ -134,7 +144,10 @@ dependencies {
 
     // KJS
     modImplementation forge.kubejs
-    implementation forge.mixinextras
+
+    // Mixin Extras
+    implementation(annotationProcessor("io.github.llamalad7:mixinextras-common:${this.forge.versions.mixinextras.get()}"))
+    implementation(include("io.github.llamalad7:mixinextras-forge:${this.forge.versions.mixinextras.get()}"))
 
     // Configuration
     modImplementation(forge.configuration)

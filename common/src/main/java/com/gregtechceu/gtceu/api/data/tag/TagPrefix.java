@@ -691,6 +691,7 @@ public class TagPrefix {
             .unificationEnabled(true);
 
     // Prefix to determine which kind of Rock this is.
+    // Also has a base tag path of only the material, for things like obsidian etc.
     public static final TagPrefix rock = new TagPrefix("rock")
             .defaultTagPath(FORGE, "%s")
             .defaultTagPath(FABRIC, "%s")
