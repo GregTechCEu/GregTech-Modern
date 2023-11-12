@@ -544,7 +544,7 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
     }
 
     @Nullable
-    public IItemTransfer getItemTransferCap(@Nullable Direction side) {
+    public IItemTransfer getItemTransferCap(@Nullable Direction side, boolean useCoverCapability) {
         var list = getTraits().stream()
                 .filter(IItemTransfer.class::isInstance)
                 .filter(t -> t.hasCapability(side))
@@ -559,14 +559,14 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
         }
 
         IOItemTransferList transferList = new IOItemTransferList(list, io, getItemCapFilter(side));
-        if (side == null) return transferList;
+        if (!useCoverCapability || side == null) return transferList;
 
         CoverBehavior cover = getCoverContainer().getCoverAtSide(side);
         return cover != null ? cover.getItemTransferCap(side, transferList) : transferList;
     }
 
     @Nullable
-    public IFluidTransfer getFluidTransferCap(@Nullable Direction side) {
+    public IFluidTransfer getFluidTransferCap(@Nullable Direction side, boolean useCoverCapability) {
         var list = getTraits().stream()
                 .filter(IFluidTransfer.class::isInstance)
                 .filter(t -> t.hasCapability(side))
@@ -581,7 +581,7 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
         }
 
         IOFluidTransferList transferList = new IOFluidTransferList(list, io, getFluidCapFilter(side));
-        if (side == null) return transferList;
+        if (!useCoverCapability || side == null) return transferList;
 
         CoverBehavior cover = getCoverContainer().getCoverAtSide(side);
         return cover != null ? cover.getFluidTransferCap(side, transferList) : transferList;

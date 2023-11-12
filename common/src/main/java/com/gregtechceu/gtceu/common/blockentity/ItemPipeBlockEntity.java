@@ -1,12 +1,14 @@
 package com.gregtechceu.gtceu.common.blockentity;
 
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
+import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.common.block.ItemPipeBlock;
 import com.gregtechceu.gtceu.common.pipelike.item.ItemNetHandler;
 import com.gregtechceu.gtceu.common.pipelike.item.ItemPipeData;
 import com.gregtechceu.gtceu.common.pipelike.item.ItemPipeNet;
 import com.gregtechceu.gtceu.common.pipelike.item.ItemPipeType;
 import com.gregtechceu.gtceu.utils.FacingPos;
+import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import lombok.Getter;
@@ -94,5 +96,13 @@ public class ItemPipeBlockEntity extends PipeBlockEntity<ItemPipeType, ItemPipeD
 
     public void resetTransferred() {
         transferred.clear();
+    }
+
+    public IItemTransfer getHandler(@Nullable Direction side, boolean useCoverCapability) {
+        ItemNetHandler handler = getHandlers().getOrDefault(side, getDefaultHandler());
+        if (!useCoverCapability || side == null) return handler;
+
+        CoverBehavior cover = getCoverContainer().getCoverAtSide(side);
+        return cover != null ? cover.getItemTransferCap(side, handler) : handler;
     }
 }

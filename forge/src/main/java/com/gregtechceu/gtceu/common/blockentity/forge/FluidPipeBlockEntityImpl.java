@@ -8,7 +8,9 @@ import com.gregtechceu.gtceu.common.cover.FluidFilterCover;
 import com.gregtechceu.gtceu.common.pipelike.fluidpipe.FluidPipeData;
 import com.gregtechceu.gtceu.common.pipelike.fluidpipe.FluidPipeNet;
 import com.gregtechceu.gtceu.common.pipelike.fluidpipe.PipeNetRoutePath;
+import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 import com.lowdragmc.lowdraglib.side.fluid.forge.FluidHelperImpl;
+import com.lowdragmc.lowdraglib.side.fluid.forge.FluidTransferHelperImpl;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import lombok.Setter;
@@ -75,6 +77,11 @@ public class FluidPipeBlockEntityImpl extends FluidPipeBlockEntity {
             return new FluidPipeHandler(net, this, side);
         }
         return null;
+    }
+
+    @Override
+    public IFluidTransfer getNetHandler(@Nullable Direction side) {
+        return FluidTransferHelperImpl.toFluidTransfer(getFluidHandler(side));
     }
 
     public static void onBlockEntityRegister(BlockEntityType<FluidPipeBlockEntity> cableBlockEntityBlockEntityType) {

@@ -4,16 +4,16 @@ import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 
-public enum ManualImportExportMode implements EnumSelectorWidget.SelectableEnum {
+public enum ManualIOMode implements EnumSelectorWidget.SelectableEnum {
     DISABLED("disabled"),
     FILTERED("filtered"),
     UNFILTERED("unfiltered");
 
-    public static final ManualImportExportMode[] VALUES = values();
+    public static final ManualIOMode[] VALUES = values();
 
     public final String localeName;
 
-    ManualImportExportMode(String localeName) {
+    ManualIOMode(String localeName) {
         this.localeName = localeName;
     }
 
