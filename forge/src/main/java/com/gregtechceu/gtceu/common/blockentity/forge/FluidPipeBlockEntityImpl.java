@@ -79,9 +79,8 @@ public class FluidPipeBlockEntityImpl extends FluidPipeBlockEntity {
         return null;
     }
 
-    @Override
-    public IFluidTransfer getNetHandler(@Nullable Direction side) {
-        return FluidTransferHelperImpl.toFluidTransfer(getFluidHandler(side));
+    public static IFluidTransfer getNetHandler(FluidPipeBlockEntity pipe, @Nullable Direction side) {
+        return FluidTransferHelperImpl.toFluidTransfer(((FluidPipeBlockEntityImpl) pipe).getFluidHandler(side));
     }
 
     public static void onBlockEntityRegister(BlockEntityType<FluidPipeBlockEntity> cableBlockEntityBlockEntityType) {

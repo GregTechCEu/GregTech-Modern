@@ -45,7 +45,7 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType, FluidPi
     }
 
     @ExpectPlatform
-    public IFluidTransfer getNetHandler(@Nullable Direction side) {
+    public static IFluidTransfer getNetHandler(FluidPipeBlockEntity pipe, @Nullable Direction side) {
         throw new AssertionError();
     }
 
@@ -75,7 +75,7 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType, FluidPi
     }
 
     public IFluidTransfer getHandler(@Nullable Direction side, boolean useCoverCapability) {
-        IFluidTransfer handler = getNetHandler(side);
+        IFluidTransfer handler = getNetHandler(this, side);
         if (!useCoverCapability || side == null) return handler;
 
         CoverBehavior cover = getCoverContainer().getCoverAtSide(side);

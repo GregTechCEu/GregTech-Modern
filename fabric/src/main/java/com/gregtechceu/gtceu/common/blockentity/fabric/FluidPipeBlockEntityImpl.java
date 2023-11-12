@@ -75,9 +75,8 @@ public class FluidPipeBlockEntityImpl extends FluidPipeBlockEntity {
         return null;
     }
 
-    @Override
-    public IFluidTransfer getNetHandler(@Nullable Direction side) {
-        Storage<FluidVariant> fluidStorage = getFluidStorage(side);
+    public static IFluidTransfer getNetHandler(FluidPipeBlockEntity pipe, @Nullable Direction side) {
+        Storage<FluidVariant> fluidStorage = ((FluidPipeBlockEntityImpl) pipe).getFluidStorage(side);
 
         if (fluidStorage == null)
             fluidStorage = Storage.empty();
