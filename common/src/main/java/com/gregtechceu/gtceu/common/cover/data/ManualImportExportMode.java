@@ -1,14 +1,13 @@
 package com.gregtechceu.gtceu.common.cover.data;
 
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
-import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
+import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 
 public enum ManualImportExportMode implements EnumSelectorWidget.SelectableEnum {
-    DISABLED("cover.universal.manual_import_export.mode.disabled"),
-    FILTERED("cover.universal.manual_import_export.mode.filtered"),
-    UNFILTERED("cover.universal.manual_import_export.mode.unfiltered");
+    DISABLED("disabled"),
+    FILTERED("filtered"),
+    UNFILTERED("unfiltered");
 
     public static final ManualImportExportMode[] VALUES = values();
 
@@ -20,11 +19,11 @@ public enum ManualImportExportMode implements EnumSelectorWidget.SelectableEnum 
 
     @Override
     public String getTooltip() {
-        return localeName;
+        return "cover.universal.manual_import_export.mode." + localeName;
     }
 
     @Override
     public IGuiTexture getIcon() {
-        return new TextTexture(localeName);
+        return new ResourceTexture("gtceu:textures/gui/icon/manual_io_mode/" + localeName + ".png");
     }
 }

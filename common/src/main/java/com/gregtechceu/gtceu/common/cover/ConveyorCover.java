@@ -66,7 +66,7 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
     @Persisted @DescSynced @Getter
     protected DistributionMode distributionMode;
     @Persisted @DescSynced @Getter
-    protected ManualImportExportMode manualImportExportMode = ManualImportExportMode.DISABLED;
+    protected ManualImportExportMode manualIOMode = ManualImportExportMode.DISABLED;
     @Persisted @Getter
     protected boolean isWorkingEnabled = true;
     protected int itemsLeftToTransferLastSecond;
@@ -135,8 +135,8 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
         coverHolder.markDirty();
     }
 
-    protected void setManualImportExportMode(ManualImportExportMode manualImportExportMode) {
-        this.manualImportExportMode = manualImportExportMode;
+    protected void setManualIOMode(ManualImportExportMode manualIOMode) {
+        this.manualIOMode = manualIOMode;
         coverHolder.markDirty();
     }
 
@@ -389,7 +389,7 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
     //////////////////////////////////////
     @Override
     public Widget createUIWidget() {
-        final var group = new WidgetGroup(0, 0, 176, 135);
+        final var group = new WidgetGroup(0, 0, 176, 137);
         group.addWidget(new LabelWidget(10, 5, LocalizationUtils.format(getUITitle(), GTValues.VN[tier])));
 
         group.addWidget(new IntInputWidget(10, 20, 156, 20, () -> this.transferRate, this::setTransferRate)
@@ -408,24 +408,27 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
                 .setPressed(io == IO.IN)
                 .setHoverTooltips(LocalizationUtils.format("cover.conveyor.mode", LocalizationUtils.format(io.tooltip)));
         group.addWidget(ioModeSwitch);
-        group.addWidget(new EnumSelectorWidget<>(7, 166, 116, 20,
-                ManualImportExportMode.VALUES, ManualImportExportMode.DISABLED,
-                this::setManualImportExportMode)
-                .setHoverTooltips("cover.universal.manual_import_export.mode.description"));
 
-        if (coverHolder.getLevel().getBlockEntity(coverHolder.getPos()) instanceof ItemPipeBlockEntity ||
-                coverHolder.getLevel().getBlockEntity(coverHolder.getPos().relative(attachedSide)) instanceof ItemPipeBlockEntity) {
-            group.addWidget(new EnumSelectorWidget<>(149, 166, 20, 20,
-                    DistributionMode.VALUES, DistributionMode.INSERT_FIRST,
-                    this::setDistributionMode));
+        if (shouldDisplayDistributionMode()) {
+            group.addWidget(new EnumSelectorWidget<>(146, 67, 20, 20,
+                    DistributionMode.VALUES, distributionMode, this::setDistributionMode));
         }
 
-        group.addWidget(filterHandler.createFilterSlotUI(148, 107));
-        group.addWidget(filterHandler.createFilterConfigUI(10, 70, 156, 60));
+        group.addWidget(new EnumSelectorWidget<>(146, 107, 20, 20,
+                ManualImportExportMode.VALUES, manualIOMode, this::setManualIOMode)
+                .setHoverTooltips("cover.universal.manual_import_export.mode.description"));
+
+        group.addWidget(filterHandler.createFilterSlotUI(125, 108));
+        group.addWidget(filterHandler.createFilterConfigUI(10, 72, 156, 60));
 
         buildAdditionalUI(group);
 
         return group;
+    }
+
+    private boolean shouldDisplayDistributionMode() {
+        return coverHolder.getLevel().getBlockEntity(coverHolder.getPos()) instanceof ItemPipeBlockEntity ||
+                coverHolder.getLevel().getBlockEntity(coverHolder.getPos().relative(attachedSide)) instanceof ItemPipeBlockEntity;
     }
 
     @NotNull

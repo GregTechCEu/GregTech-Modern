@@ -16,6 +16,7 @@ import com.gregtechceu.gtceu.api.gui.widget.NumberInputWidget;
 import com.gregtechceu.gtceu.api.machine.ConditionalSubscriptionHandler;
 import com.gregtechceu.gtceu.api.syncdata.RequireRerender;
 import com.gregtechceu.gtceu.common.cover.data.BucketMode;
+import com.gregtechceu.gtceu.common.cover.data.ManualImportExportMode;
 import com.gregtechceu.gtceu.utils.FluidStackHashStrategy;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
@@ -34,7 +35,6 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.NotNull;
@@ -66,6 +66,8 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
     protected IO io = IO.OUT;
     @Persisted @DescSynced @Getter
     protected BucketMode bucketMode = BucketMode.MILLI_BUCKET;
+    @Persisted @DescSynced @Getter
+    protected ManualImportExportMode manualIOMode = ManualImportExportMode.DISABLED;
 
     @Persisted @Getter
     protected boolean isWorkingEnabled = true;
@@ -191,6 +193,11 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
         }
     }
 
+    protected void setManualIOMode(ManualImportExportMode manualIOMode) {
+        this.manualIOMode = manualIOMode;
+        coverHolder.markDirty();
+    }
+
     protected void update() {
         long timer = coverHolder.getOffsetTimer();
         if (timer % 5 != 0)
@@ -271,7 +278,7 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
 
     @Override
     public Widget createUIWidget() {
-        final var group = new WidgetGroup(0, 0, 176, 135);
+        final var group = new WidgetGroup(0, 0, 176, 137);
         group.addWidget(new LabelWidget(10, 5, LocalizationUtils.format(getUITitle(), GTValues.VN[tier])));
 
         transferRateWidget = new LongInputWidget(10, 20, 134, 20,
@@ -287,8 +294,12 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
 
         group.addWidget(new EnumSelectorWidget<>(10, 45, 20, 20, List.of(IO.IN, IO.OUT), io, this::setIo));
 
-        group.addWidget(filterHandler.createFilterSlotUI(148, 107));
-        group.addWidget(filterHandler.createFilterConfigUI(10, 70, 156, 60));
+        group.addWidget(new EnumSelectorWidget<>(146, 107, 20, 20,
+                ManualImportExportMode.VALUES, manualIOMode, this::setManualIOMode)
+                .setHoverTooltips("cover.universal.manual_import_export.mode.description"));
+
+        group.addWidget(filterHandler.createFilterSlotUI(125, 108));
+        group.addWidget(filterHandler.createFilterConfigUI(10, 72, 156, 60));
 
         buildAdditionalUI(group);
 
