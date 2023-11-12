@@ -7,10 +7,9 @@
   "client": [
     "BlockModelMixin",
     "LevelRendererMixin",
-    "MinecraftMixin",
-    "kjs.GeneratedClientResourcePackMixin",
     "ModelBakeryMixin",
     "MultiPlayerGameModeMixin",
+    "PackRepositoryMixin",
     "rei.FluidEntryRendererMixin"
   ],
   "mixins": [
