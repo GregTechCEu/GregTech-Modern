@@ -1,0 +1,15 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:aluminium_tiny_dust"
+  },
+  "items": [
+    "#c:tiny_dusts"
+  ],
+  "page": "gtceu:materials/tiny_dust",
+  "position": [
+    -50,
+    50
+  ],
+  "section": "gtceu:materials"
+}

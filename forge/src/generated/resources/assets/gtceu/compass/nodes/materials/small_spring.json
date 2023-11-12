@@ -1,0 +1,15 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:aluminium_small_spring"
+  },
+  "items": [
+    "#forge:springs/small"
+  ],
+  "page": "gtceu:materials/small_spring",
+  "position": [
+    -200,
+    200
+  ],
+  "section": "gtceu:materials"
+}

@@ -1,0 +1,134 @@
+<page>
+ <h1>Neutronium-doped Wafer</h1>
+ <h3>Source</h3>
+ <text pwt="true"><style color="0xaaaaaa" italic="true" pwt="true">Note: this page is ported from MCMOD's GTCEu wiki.<br/>Author: <style color="0xa4e7ff" hover-info="url" pwt="true" underlined="true" url-link="https://center.mcmod.cn/119280/">Oganesson897</style><br/></style></text>
+ <h2 font-color="0xff0000">WARNING!!!</h2>
+ <text isCenter="true">
+  <style color="0xff0000" pwt="true">The warning means this is not a reliable page.</style>
+  <br/>
+  <style bold="true" color="0xffaa00" pwt="true">Please do not report any mistakes on the page, either discord or github.</style>
+  <br/>
+  This page is translated from the Chinese wiki which hasn't been reviewed and polished yet. It may contain errors and inaccuracies. We are looking forward to your help by improving this page.
+ </text>
+ <text>
+  <br/>
+  <style lang="zh-cn">
+   <style color="0xaaaaaa" italic="true" lang="zh-cn" pwt="true">“待处理电路”</style>
+  </style>
+  <br/>
+  <br/>
+  <style lang="zh-cn">
+   合成材料，可以被合成，属于晶圆类合成材料，但用途与等级不同。
+  </style>
+  <br/>
+  ------------------
+ </text>
+ <text left-margin="10">
+  •
+  <style lang="zh-cn">
+   可以在
+   <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">精密激光蚀刻机</style>
+   内搭配红色（红宝石）透镜可以合成
+   <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">集成逻辑电路</style>
+   ；
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   搭配绿色（绿宝石）透镜可以合成
+   <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">RAM 晶片</style>
+   ；
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   搭配淡蓝色（钻石）透镜可以合成
+   <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">CPU 晶片</style>
+   ；
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   搭配蓝色（蓝宝石）透镜可以合成
+   <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">ULPIC 晶片</style>
+   ；
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   搭配橙色透镜可以合成
+   <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">LPIC 晶片</style>
+   ；
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   搭配青色透镜可以合成
+   <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">简单 SoC 晶片</style>
+   ；
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   搭配灰色透镜可以合成
+   <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">NAND 晶片</style>
+   ；
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   搭配粉红色透镜可以合成
+   <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">NOR 晶片</style>
+   ；
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   搭配棕色透镜可以合成
+   <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">PIC 晶片</style>
+   ；
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   搭配黄色透镜可以合成
+   <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">SoC 晶片</style>
+   ；
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   搭配紫色透镜可以合成
+   <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">ASOC 晶片</style>
+   ；
+  </style>
+  <br/>
+ </text>
+ <text>
+  <br/>
+  <style lang="zh-cn">
+   上述精密激光蚀刻机配方中，继承自硅晶圆的配方电量总计 384,000 EU，继承自
+   <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">荧石掺杂的晶圆</style>
+   的配方电量总计 1,536,000 EU，继承自
+   <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">硅岩掺杂的晶圆</style>
+   硅岩掺杂的晶圆的配方电量总计 3,840,000 EU，其余配方电量总计 6,912,000 EU，耗能功率 7,680 EU/t （IV），继承自
+   <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">硅晶圆</style>
+   的配方耗时减少到 2.5s，继承自
+   <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">荧石掺杂的晶圆</style>
+   的配方耗时减少到 10s，继承自
+   <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">硅岩掺杂的晶圆</style>
+   硅岩掺杂的晶圆的配方耗时减少到 25s，其余耗时 45s ，不消耗透镜，需要超净间。
+  </style>
+  <br/>
+ </text>
+</page>

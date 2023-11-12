@@ -1,0 +1,7 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:basic_electronic_circuit"
+  },
+  "priority": 7
+}

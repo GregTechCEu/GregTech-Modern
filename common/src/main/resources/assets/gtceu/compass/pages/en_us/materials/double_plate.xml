@@ -1,0 +1,748 @@
+<page>
+ <h1>
+  Double Plate
+ </h1>
+ <h3>
+  Source
+ </h3>
+ <text><style color="0xaaaaaa" italic="true">Note: this page is ported from MCMOD's GTCEu wiki.<br/>Author: <style color="0xa4e7ff" hover-info="url" underlined="true" url-link="https://center.mcmod.cn/119280/">Oganesson897</style><br/></style></text>
+ <h2 font-color="0xff0000">
+  WARNING!!!
+ </h2>
+ <text isCenter="true">
+  <style color="0xff0000">The warning means this is not a reliable page.</style>
+  <br/>
+  <style bold="true" color="0xffaa00">Please do not report any mistakes on the page, either discord or github.</style>
+  <br/>
+  This page is translated from the Chinese wiki which hasn't been reviewed and polished yet. It may contain errors and inaccuracies. We are looking forward to your help by improving this page.
+ </text>
+ <text>
+  <br/>
+  <style>
+   Double* plates in material components are subtypes of plates, but not all plates have double* plates.
+  </style>
+  <br/>
+  <br/>
+  <style>
+   Only one template is uploaded here, please see the game for specific values.
+  </style>
+  <br/>
+  ------------------
+  <br/>
+  <style>
+   Mineral dictionary prefix: plateDouble
+  </style>
+  <br/>
+  <br/>
+  <style>
+   Mineral dictionary: plateDouble+material name, such as plateDoubleAluminium
+  </style>
+  <br/>
+  ------------------
+  <br/>
+  <style>
+   Indium Tin Barium Titanium Copper Alloy - IndiumTinBariumTitaniumCuprate
+   <br/>
+   Titanium - Titanium
+  </style>
+  <br/>
+ </text>
+ <text left-margin="10">
+  •
+  <style>
+   Wulfenite
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Enriched Bacterial Sludge
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Adamantium
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Chromium - Chrome
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Cobalt - Cobalt
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Copper - Copper
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   鐐/钅达 - Darmstadtium
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Europium - Europium
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Gallium - Gallium
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   金 - Gold
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   iridium - Iridium
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   铁 - Iron
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Lead - Lead
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Manganese - Manganese
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Molybdenum - Molybdenum
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   and
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Nickel - Nickel
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   osmium - Osmium
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Palladium - Palladium
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Sapphire Slurry - Sapphire Slurry
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Plutonium 241 - Plutonium241
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Rhodium - Rhodium
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   (default 
+ (0, 115, 255)): "Add to Fixed Parts" button;
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Silicon - Silicon
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   银 - Silver
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Tantalum - Tantalum
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Thorium - Thorium
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Tin - Tin
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Obtaining the Ultimate Battery for the first time will complete the challenge "What Now?" (Description: Make an Ultimate Battery).
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   (default value 
+ (148, 226, 193)): highlight color of some configuration options (relative to COLOR_7), slider color in the guide editor editing area/recipe chart and other interfaces, surround in the battery manager The color of the bright spots, etc.;
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Uranium 238 - Uranium
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Soldering - SolderingAlloy - Sn6Pb3Sb
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Zinc - Zinc
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Silica (Guanzhong) - Naquadah
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Enriched Silica Rock (Guanzhong) - NaquadahEnriched
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Diamond - Diamond
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Neutronium
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Tritanium alloy - Tritanium
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Trinium metal - Trinium
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Annealed Copper - AnnealedCopper
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Battery Alloy - BatteryAlloy
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   allows the wallpaper to be set by resource path, URL or file path, and can also be set to a solid color.
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Bronze - Bronze
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Cupronickel
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Amber Gold - Electrum
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Invar - Invar
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Kanthal Alloy - Kanthal
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Magnesium aluminum alloy - Magnalium
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Nickel chromium alloy - Nichrome
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Niobium Nitride - NiobiumNitride
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Niobium Titanium Alloy - NiobiumTitanium
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Sterling Silver - SterlingSilver
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Rose Gold - RoseGold
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   BlackBronze - BlackBronze
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Bismuth Bronze - BismuthBronze
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Ruthenium Iridium Alloy - Ruridit
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Stainless Steel - StainlessSteel
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Steel - Steel
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Tin-iron alloy - TinAlloy
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Hastelloy - Ultimet
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Vanadium Gallium Alloy - VanadiumGallium
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   It is made from a mixture of water, distilled water, and molten black steel or blue steel. It is a HV-class rechargeable battery with a maximum capacity of 6,400,000 EU and can continuously supply energy for 10 minutes (625 seconds).
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Yttrium Barium Cuprate-YttriumBariumCuprate
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Iridium-osmium alloy - Osmiridium
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Advanced electric thrusters are manufactured
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Gallium Phosphide - IndiumGalliumPhosphide
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Tungsten Carbide - TungstenCarbide
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Indium Tin Barium Titanium Copper Alloy - IndiumTinBariumTitaniumCuprate
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Vanadium Steel - VanadiumSteel
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Enriched NaquadahTriniumEuropiumDuranide
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   黑steel - BlackSteel
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Damascus Steel - DamascusSteel
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Tungsten steel - TungstenSteel
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Cobalt Brass - CobaltBrass
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   High speed steel-E - Hsse - ((FeW)5CrMo2V)6CoMnSi
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Coarse Bronze Alloy - Potin
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Silica Alloy - NaquadahAlloy
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Rhodium-plated palladium alloy ingot - RhodiumPlatedPalladium
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   红steel - RedSteel
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   蓝Steel - BlueSteel
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   High speed steel-G - Hssg
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Red Alloy - RedAlloy
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   High speed steel-E - Hsse
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   , or 9 (some materials are 4, such as
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   BLUE ALLOY - BlueAlloy
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Indium Tin Barium Titanium Copper Alloy - IndiumTinBariumTitaniumCuprate
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Watertight Steel - WatertightSteel
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Pollucite - Pollucite
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Bentonite - Bentonite
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Hastelloy-X - HastelloyX
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Carbonized Trina-Thori-Niobium Alloy - Trinaquadalloy
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Zeron-100 - Zeron100
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Titanium Carbide - TitaniumCarbide
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Tantalum Carbide - TantalumCarbide
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Molybdenum Disilicide - MolybdenumDisilicide
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   HSLA Steel - HslaSteel
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Titanium Tungsten Carbide - TitaniumTungstenCarbide
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Heat-resistant ferrochromium alloy-MA956 - IncoloyMa956
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Lithium-6 - Lithium-6
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Orichalcum
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Sapphire - Sapphire
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Adamantium
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Phosphorene - Phosphorene
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Gallium Nitride - Gallium Nitride
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Almost.
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Carbon Nanotube - Carbon Nanotube
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Nickel Zinc Ferrite - NickelZincFerrite
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Bismuth-antimony chalcogenide - Bismuth Chalcogenide
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Mercury Cadmium Telluride - Mercury Cadmium Telluride
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Fullerene - Fullerene
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Phosphorus Pentoxide - PhosphorusPentoxide
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Silicon Carbide - Silicon Carbide
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Polystyrene Sulfonate - Polystyrene Sulfonate
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   PEDOT:PSS - Pedot Pss
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   PEDOT-TMA - Pedot Tma
+  </style>
+  <br/>
+ </text>
+</page>

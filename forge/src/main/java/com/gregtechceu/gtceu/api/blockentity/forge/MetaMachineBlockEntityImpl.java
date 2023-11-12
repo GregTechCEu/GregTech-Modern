@@ -1,5 +1,8 @@
 package com.gregtechceu.gtceu.api.blockentity.forge;
 
+import appeng.api.networking.IInWorldGridNodeHost;
+import appeng.capabilities.Capabilities;
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.capability.*;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
@@ -56,7 +59,7 @@ public class MetaMachineBlockEntityImpl extends MetaMachineBlockEntity {
     }
 
     @Nullable
-    public static <T> LazyOptional<T> getCapability(MetaMachine machine,  @NotNull Capability<T> cap, @Nullable Direction side) {
+    public static <T> LazyOptional<T> getCapability(MetaMachine machine, @NotNull Capability<T> cap, @Nullable Direction side) {
         if (cap == GTCapability.CAPABILITY_COVERABLE) {
             return GTCapability.CAPABILITY_COVERABLE.orEmpty(cap, LazyOptional.of(machine::getCoverContainer));
         } else if (cap == GTCapability.CAPABILITY_TOOLABLE) {
@@ -146,13 +149,25 @@ public class MetaMachineBlockEntityImpl extends MetaMachineBlockEntity {
             }
         } else if (cap == GTCapability.CAPABILITY_LASER) {
             if (machine instanceof ILaserContainer energyContainer) {
-                return GTCapability.CAPABILITY_ENERGY_CONTAINER.orEmpty(cap, LazyOptional.of(() -> energyContainer));
+                return GTCapability.CAPABILITY_LASER.orEmpty(cap, LazyOptional.of(() -> energyContainer));
             }
             var list = machine.getTraits().stream().filter(ILaserContainer.class::isInstance).filter(t -> t.hasCapability(side)).map(ILaserContainer.class::cast).toList();
             if (!list.isEmpty()) {
-                return GTCapability.CAPABILITY_ENERGY_CONTAINER.orEmpty(cap, LazyOptional.of(() -> list.size() == 1 ? list.get(0) : new LaserContainerList(list)));
+                return GTCapability.CAPABILITY_LASER.orEmpty(cap, LazyOptional.of(() -> list.size() == 1 ? list.get(0) : new LaserContainerList(list)));
             }
 
+        }
+        if (GTCEu.isAE2Loaded()) {
+            if (cap == Capabilities.IN_WORLD_GRID_NODE_HOST) {
+                if (machine instanceof IInWorldGridNodeHost nodeHost) {
+                    return Capabilities.IN_WORLD_GRID_NODE_HOST.orEmpty(cap, LazyOptional.of(() -> nodeHost));
+                }
+                var list = machine.getTraits().stream().filter(IInWorldGridNodeHost.class::isInstance).filter(t -> t.hasCapability(side)).map(IInWorldGridNodeHost.class::cast).toList();
+                if (!list.isEmpty()) {
+                    // TODO wrap list in the future (or not.)
+                    return Capabilities.IN_WORLD_GRID_NODE_HOST.orEmpty(cap, LazyOptional.of(() -> list.get(0)));
+                }
+            }
         }
         return null;
     }

@@ -4,29 +4,7 @@
     "res": "gtceu:aluminium_mining_hammer"
   },
   "items": [
-    "gtceu:aluminium_mining_hammer",
-    "gtceu:iron_mining_hammer",
-    "gtceu:titanium_mining_hammer",
-    "gtceu:neutronium_mining_hammer",
-    "gtceu:duranium_mining_hammer",
-    "gtceu:bronze_mining_hammer",
-    "gtceu:diamond_mining_hammer",
-    "gtceu:invar_mining_hammer",
-    "gtceu:sterling_silver_mining_hammer",
-    "gtceu:rose_gold_mining_hammer",
-    "gtceu:stainless_steel_mining_hammer",
-    "gtceu:steel_mining_hammer",
-    "gtceu:ultimet_mining_hammer",
-    "gtceu:wrought_iron_mining_hammer",
-    "gtceu:tungsten_carbide_mining_hammer",
-    "gtceu:damascus_steel_mining_hammer",
-    "gtceu:tungsten_steel_mining_hammer",
-    "gtceu:cobalt_brass_mining_hammer",
-    "gtceu:vanadium_steel_mining_hammer",
-    "gtceu:naquadah_alloy_mining_hammer",
-    "gtceu:red_steel_mining_hammer",
-    "gtceu:blue_steel_mining_hammer",
-    "gtceu:hsse_mining_hammer"
+    "#c:mining_hammers"
   ],
   "page": "gtceu:tools/mining_hammer",
   "position": [

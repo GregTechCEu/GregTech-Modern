@@ -1,0 +1,15 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:aluminium_ingot"
+  },
+  "items": [
+    "#c:ingots"
+  ],
+  "page": "gtceu:materials/ingot",
+  "position": [
+    -150,
+    100
+  ],
+  "section": "gtceu:materials"
+}

@@ -1,11 +1,7 @@
 {
-  "background_texture": {
-    "type": "resource",
-    "res": "gtceu:textures/gui/base/display.png"
-  },
   "button_texture": {
     "type": "item",
     "res": "gtceu:maintenance_hatch"
   },
-  "priority": 5
+  "priority": 12
 }

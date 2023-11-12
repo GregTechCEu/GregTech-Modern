@@ -9,7 +9,10 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.TieredMachine;
-import com.gregtechceu.gtceu.api.machine.feature.*;
+import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputItem;
+import com.gregtechceu.gtceu.api.machine.feature.IDropSaveMachine;
+import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
+import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.syncdata.RequireRerender;
 import com.lowdragmc.lowdraglib.gui.editor.Icons;
@@ -74,7 +77,7 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
     protected ISubscription exportItemSubs;
     @Persisted @Getter @Setter
     private boolean isVoiding;
-    @Persisted @Getter
+    @Persisted @DescSynced @Getter
     private final ItemStackTransfer lockedItem;
 
     public QuantumChestMachine(IMachineBlockEntity holder, int tier, int maxStoredItems, Object... args) {

@@ -1,0 +1,36 @@
+<page>
+ <h1>Carbon Fiber Mesh</h1>
+ <h3>Source</h3>
+ <text pwt="true"><style color="0xaaaaaa" italic="true" pwt="true">Note: this page is ported from MCMOD's GTCEu wiki.<br/>Author: <style color="0xa4e7ff" hover-info="url" pwt="true" underlined="true" url-link="https://center.mcmod.cn/179043/">花海</style><br/></style></text>
+ <h2 font-color="0xff0000">WARNING!!!</h2>
+ <text isCenter="true">
+  <style color="0xff0000" pwt="true">The warning means this is not a reliable page.</style>
+  <br/>
+  <style bold="true" color="0xffaa00" pwt="true">Please do not report any mistakes on the page, either discord or github.</style>
+  <br/>
+  This page is translated from the Chinese wiki which hasn't been reviewed and polished yet. It may contain errors and inaccuracies. We are looking forward to your help by improving this page.
+ </text>
+ <text>
+  <br/>
+  <style lang="zh-cn">
+   碳纤维网由 2 个
+   <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">碳纤维原料</style>
+   在
+   <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">压缩机</style>
+   中压缩而成，制造需要 ULV 级电压（2 EU/t），未超频时耗时 5 秒。
+  </style>
+  <br/>
+  <br/>
+  <style lang="zh-cn">
+   碳纤维网可以在压缩机中进一步压制成
+   <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">碳纤维板材</style>
+   ，也可以在
+   <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">组装机</style>
+   中作为生产
+   <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">布莱恩科技航空专用强化胶带 FAL-84 型</style>
+   所需的原材料之一。
+   <br/>
+  </style>
+  <br/>
+ </text>
+</page>

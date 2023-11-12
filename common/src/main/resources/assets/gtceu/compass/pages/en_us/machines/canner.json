@@ -1,0 +1,22 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:lv_canner"
+  },
+  "items": [
+    "gtceu:lv_canner",
+    "gtceu:mv_canner",
+    "gtceu:hv_canner",
+    "gtceu:ev_canner",
+    "gtceu:iv_canner",
+    "gtceu:luv_canner",
+    "gtceu:zpm_canner",
+    "gtceu:uv_canner"
+  ],
+  "page": "gtceu:machines/canner",
+  "position": [
+    -350,
+    50
+  ],
+  "section": "gtceu:machines"
+}

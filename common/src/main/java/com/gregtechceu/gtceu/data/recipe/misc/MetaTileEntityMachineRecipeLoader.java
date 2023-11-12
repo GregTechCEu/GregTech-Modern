@@ -1,9 +1,14 @@
 package com.gregtechceu.gtceu.data.recipe.misc;
 
+import appeng.core.definitions.AEItems;
+import appeng.core.definitions.AEParts;
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
+import com.gregtechceu.gtceu.integration.ae2.GTAEMachines;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.function.Consumer;
 
@@ -671,6 +676,42 @@ public class MetaTileEntityMachineRecipeLoader {
                 .outputItems(LD_FLUID_PIPE, 64)
                 .duration(600).EUt(24)
                 .save(provider);
+
+        // ME Parts
+
+        if (GTCEu.isAE2Loaded()) {
+
+            ItemStack meInterface = AEParts.INTERFACE.stack(1);
+            ItemStack accelerationCard = AEItems.SPEED_CARD.stack(2);
+
+            ASSEMBLER_RECIPES.recipeBuilder("me_export_hatch")
+                    .inputItems(FLUID_EXPORT_HATCH[EV])
+                    .inputItems(meInterface.copy())
+                    .inputItems(accelerationCard.copy())
+                    .outputItems(GTAEMachines.FLUID_EXPORT_HATCH.asStack())
+                    .duration(300).EUt(VA[HV]).save(provider);
+
+            ASSEMBLER_RECIPES.recipeBuilder("me_import_hatch")
+                    .inputItems(FLUID_IMPORT_HATCH[EV])
+                    .inputItems(meInterface.copy())
+                    .inputItems(accelerationCard.copy())
+                    .outputItems(GTAEMachines.FLUID_IMPORT_HATCH.asStack())
+                    .duration(300).EUt(VA[HV]).save(provider);
+
+            ASSEMBLER_RECIPES.recipeBuilder("me_export_bus")
+                    .inputItems(ITEM_EXPORT_BUS[EV])
+                    .inputItems(meInterface.copy())
+                    .inputItems(accelerationCard.copy())
+                    .outputItems(GTAEMachines.ITEM_EXPORT_BUS.asStack())
+                    .duration(300).EUt(VA[HV]).save(provider);
+
+            ASSEMBLER_RECIPES.recipeBuilder("me_import_bus")
+                    .inputItems(ITEM_IMPORT_BUS[EV])
+                    .inputItems(meInterface.copy())
+                    .inputItems(accelerationCard.copy())
+                    .outputItems(GTAEMachines.ITEM_IMPORT_BUS.asStack())
+                    .duration(300).EUt(VA[HV]).save(provider);
+        }
 
     }
 

@@ -1,0 +1,15 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:aluminium_ring"
+  },
+  "items": [
+    "#c:rings"
+  ],
+  "page": "gtceu:materials/ring",
+  "position": [
+    -100,
+    0
+  ],
+  "section": "gtceu:materials"
+}

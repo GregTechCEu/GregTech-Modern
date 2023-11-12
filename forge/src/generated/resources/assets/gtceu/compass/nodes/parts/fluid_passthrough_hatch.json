@@ -21,7 +21,7 @@
   "page": "gtceu:parts/fluid_passthrough_hatch",
   "position": [
     -200,
-    100
+    150
   ],
   "section": "gtceu:parts"
 }

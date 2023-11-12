@@ -1,0 +1,15 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:aluminium_small_gear"
+  },
+  "items": [
+    "#forge:gears/small"
+  ],
+  "page": "gtceu:materials/small_gear",
+  "position": [
+    -350,
+    50
+  ],
+  "section": "gtceu:materials"
+}

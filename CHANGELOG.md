@@ -1,7 +1,7 @@
 # ChangeLog
 
-* fix stone ores having broken translations
-* fix transfer + fix ldlib
-* fix fluid slot overflow
-* fix assembly line recipe handling
-* update zh_cn lang
+Version: 1.0.15
+
+* Bump ldlib version for better compass
+* fix lag with pattern checking
+* fix the Machine mode selector

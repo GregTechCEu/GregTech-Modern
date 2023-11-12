@@ -21,7 +21,7 @@
   "page": "gtceu:parts/diode",
   "position": [
     -150,
-    100
+    150
   ],
   "section": "gtceu:parts"
 }

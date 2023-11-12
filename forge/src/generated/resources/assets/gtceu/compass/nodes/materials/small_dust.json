@@ -1,0 +1,15 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:aluminium_small_dust"
+  },
+  "items": [
+    "#forge:dusts/small"
+  ],
+  "page": "gtceu:materials/small_dust",
+  "position": [
+    -300,
+    200
+  ],
+  "section": "gtceu:materials"
+}

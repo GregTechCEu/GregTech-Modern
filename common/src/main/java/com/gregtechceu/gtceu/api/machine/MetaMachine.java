@@ -37,6 +37,7 @@ import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import com.lowdragmc.lowdraglib.utils.DummyWorld;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 import lombok.Getter;
 import lombok.Setter;
@@ -45,6 +46,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
@@ -188,6 +190,19 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
         coverContainer.onLoad();
     }
 
+    /**
+     * Use for data not able to be saved with the SyncData system, like optional mod compatiblity in internal machines.
+     * @param tag the CompoundTag to load data from
+     * @param forDrop if the save is done for dropping the machine as an item.
+     */
+    public void saveCustomPersistedData(CompoundTag tag, boolean forDrop) {
+
+    }
+
+    public void loadCustomPersistedData(CompoundTag tag) {
+
+    }
+
     //////////////////////////////////////
     //*****     Tickable Manager    ****//
     //////////////////////////////////////
@@ -213,6 +228,10 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
                 }
             }
             return subscription;
+        } else if (getLevel() instanceof DummyWorld) {
+            var subscription = new TickableSubscription(runnable);
+            waitingToAdd.add(subscription);
+            return subscription;
         }
         return null;
     }
@@ -224,6 +243,26 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
     }
 
     public final void serverTick() {
+        executeTick();
+        if (serverTicks.isEmpty() && waitingToAdd.isEmpty() && !isInValid()) {
+            getLevel().setBlockAndUpdate(getPos(), getBlockState().setValue(BlockProperties.SERVER_TICK, false));
+        }
+    }
+
+    public boolean isFirstDummyWorldTick = true;
+
+    @Environment(EnvType.CLIENT)
+    public void clientTick() {
+        if (getLevel() instanceof DummyWorld) {
+            if (isFirstDummyWorldTick) {
+                isFirstDummyWorldTick = false;
+                onLoad();
+            }
+            executeTick();
+        }
+    }
+
+    private void executeTick() {
         if (!waitingToAdd.isEmpty()) {
             serverTicks.addAll(waitingToAdd);
             waitingToAdd.clear();
@@ -239,14 +278,6 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
                 iter.remove();
             }
         }
-        if (serverTicks.isEmpty() && waitingToAdd.isEmpty() && !isInValid()) {
-            getLevel().setBlockAndUpdate(getPos(), getBlockState().setValue(BlockProperties.SERVER_TICK, false));
-        }
-    }
-
-    @Environment(EnvType.CLIENT)
-    public void clientTick() {
-
     }
 
     //////////////////////////////////////
@@ -284,7 +315,7 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
         } else if (toolType == GTToolType.CROWBAR) {
             if (coverBehavior != null) {
                 if (!isRemote()) {
-                    getCoverContainer().removeCover(gridSide);
+                    getCoverContainer().removeCover(gridSide, playerIn);
                 }
                 return InteractionResult.CONSUME;
             }

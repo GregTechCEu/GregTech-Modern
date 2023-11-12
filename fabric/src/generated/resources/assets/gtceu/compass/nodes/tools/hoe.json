@@ -4,29 +4,7 @@
     "res": "gtceu:aluminium_hoe"
   },
   "items": [
-    "gtceu:aluminium_hoe",
-    "gtceu:iron_hoe",
-    "gtceu:titanium_hoe",
-    "gtceu:neutronium_hoe",
-    "gtceu:duranium_hoe",
-    "gtceu:bronze_hoe",
-    "gtceu:diamond_hoe",
-    "gtceu:invar_hoe",
-    "gtceu:sterling_silver_hoe",
-    "gtceu:rose_gold_hoe",
-    "gtceu:stainless_steel_hoe",
-    "gtceu:steel_hoe",
-    "gtceu:ultimet_hoe",
-    "gtceu:wrought_iron_hoe",
-    "gtceu:tungsten_carbide_hoe",
-    "gtceu:damascus_steel_hoe",
-    "gtceu:tungsten_steel_hoe",
-    "gtceu:cobalt_brass_hoe",
-    "gtceu:vanadium_steel_hoe",
-    "gtceu:naquadah_alloy_hoe",
-    "gtceu:red_steel_hoe",
-    "gtceu:blue_steel_hoe",
-    "gtceu:hsse_hoe"
+    "#minecraft:hoes"
   ],
   "page": "gtceu:tools/hoe",
   "position": [

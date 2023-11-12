@@ -1,0 +1,15 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:gravitation_engine_unit"
+  },
+  "items": [
+    "gtceu:gravitation_engine_unit"
+  ],
+  "page": "gtceu:misc/gravitation_engine_unit",
+  "position": [
+    -50,
+    250
+  ],
+  "section": "gtceu:misc"
+}

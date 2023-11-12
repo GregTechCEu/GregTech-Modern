@@ -4,29 +4,7 @@
     "res": "gtceu:aluminium_sword"
   },
   "items": [
-    "gtceu:aluminium_sword",
-    "gtceu:iron_sword",
-    "gtceu:titanium_sword",
-    "gtceu:neutronium_sword",
-    "gtceu:duranium_sword",
-    "gtceu:bronze_sword",
-    "gtceu:diamond_sword",
-    "gtceu:invar_sword",
-    "gtceu:sterling_silver_sword",
-    "gtceu:rose_gold_sword",
-    "gtceu:stainless_steel_sword",
-    "gtceu:steel_sword",
-    "gtceu:ultimet_sword",
-    "gtceu:wrought_iron_sword",
-    "gtceu:tungsten_carbide_sword",
-    "gtceu:damascus_steel_sword",
-    "gtceu:tungsten_steel_sword",
-    "gtceu:cobalt_brass_sword",
-    "gtceu:vanadium_steel_sword",
-    "gtceu:naquadah_alloy_sword",
-    "gtceu:red_steel_sword",
-    "gtceu:blue_steel_sword",
-    "gtceu:hsse_sword"
+    "#forge:tools/swords"
   ],
   "page": "gtceu:tools/sword",
   "position": [

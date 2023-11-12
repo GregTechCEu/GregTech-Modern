@@ -1,0 +1,1024 @@
+<page>
+ <h1>
+  Nugget
+ </h1>
+ <h3>
+  Source
+ </h3>
+ <text><style color="0xaaaaaa" italic="true">Note: this page is ported from MCMOD's GTCEu wiki.<br/>Author: <style color="0xa4e7ff" hover-info="url" underlined="true" url-link="https://center.mcmod.cn/119280/">Oganesson897</style><br/></style></text>
+ <h2 font-color="0xff0000">
+  WARNING!!!
+ </h2>
+ <text isCenter="true">
+  <style color="0xff0000">The warning means this is not a reliable page.</style>
+  <br/>
+  <style bold="true" color="0xffaa00">Please do not report any mistakes on the page, either discord or github.</style>
+  <br/>
+  This page is translated from the Chinese wiki which hasn't been reviewed and polished yet. It may contain errors and inaccuracies. We are looking forward to your help by improving this page.
+ </text>
+ <text>
+  <br/>
+  <style>
+   The grains in material components require 16 material units.
+  </style>
+  <br/>
+  <br/>
+  <style>
+   Only one template is uploaded here, please see the game for specific values.
+  </style>
+  <br/>
+  ------------------
+  <br/>
+  <style>
+   Mineral dictionary prefix: nugget
+  </style>
+  <br/>
+  <br/>
+  <style>
+   Mineral dictionary: nugget+material name, such as nuggetAluminum
+  </style>
+  <br/>
+  ------------------
+  <br/>
+  <style>
+   List of materials that support granules (the format is Chinese name of material-material name-chemical formula):
+   <br/>
+  </style>
+  <br/>
+ </text>
+ <text left-margin="10">
+  •
+  <style>
+   Mineral dictionary prefix: screw
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   ICE - Ice
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Antimony - Antimony - Sb
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Beryllium - Beryllium - Be
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Bismuth - Bismuth - Bi
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Chromium - Chrome - Cr
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Cobalt - Cobalt - Co
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   utilize
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   鐐/钅达 - Darmstadtium - Ds
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Europium - Europium - Eu
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Gallium - Gallium - Ga
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Indium - Indium - In
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   iridium - Iridium - Ir
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Lead - Lead - Pb
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Manganese - Manganese - Mn
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Molybdenum - Molybdenum - Mo
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Neodymium - Neodymium - Nd
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Nickel - Nickel - Ni
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Niobium - Niobium - Nb
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   osmium - Osmium - Os
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Palladium - Palladium - Pd
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Platinum - Platinum - Pt
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Plutonium 239 - Plutonium - Pu - 239
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   made into 1
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Rhodium - Rhodium - Rh
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Ruthenium - Ruthenium - Ru
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Samarium - Samarium - Sm
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Silicon - Silicon - Si
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Silver - Silver - Ag
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Tantalum - Tantalum - Ta
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Thorium - Thorium - Th
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Tin - Tin - Sn
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Titanium - Titanium - Ti
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   tungsten - Tungsten - W
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   . The water here can be replaced by distilled water, molten blue steel or red steel. Using molten red steel as raw material saves resources and energy the most;
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Uranium 235 - Uranium235 - U - 235
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Vanadium - Vanadium - V
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Yttrium - Yttrium - Y
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Zinc - Zinc - Zn
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   is manufactured; there is no need to consume redundant small iron gears in the assembly machine, and there is no need for other tools to assist in the synthesis.
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Enriched Silica Rock (Guanzhong) - NaquadahEnriched - Nq+
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Super Silica Rock (Guanzhong) - Naquadria - *Nq*
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Neutronium - Neutronium - Nt
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Tritanium - Tr
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   gravity star
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   ternary metal - Trinium - Ke
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Annealed Copper - AnnealedCopper - Cu
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Battery Alloy - BatteryAlloy - Pb4Sb
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Brass - Brass - ZnCu3
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Bronze - Bronze - SnCu3
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Cupronickel - Cupronickel - CuNi
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Gas collectors collect gases from the surrounding environment. The air collection speed has nothing to do with whether there are blocks around it. In the non-overclocked state, it is fixed at 10,000 L of air every 10 seconds.
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Invar - Invar - Fe2Ni
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Kanthal alloy - Kanthal - FeAlCr
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Magnesium aluminum alloy - Magnalium - MgAl2
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Nickel chromium alloy - Nichrome - Ni4Cr
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Niobium Titanium Alloy - NiobiumTitanium - NbTi
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Sterling Silver - SterlingSilver - CuAg4
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Rose Gold - RoseGold - CuAu4
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   BlackBronze - BlackBronze - AuAgCu3
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Bismuth Bronze - BismuthBronze - BiZnCu3
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Polyvinyl Chloride - Polyvinyl Chloride
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Soldering - SolderingAlloy - Sn6Pb3Sb
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Stainless steel - StainlessSteel - Fe6CrMnNi
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Steel - Steel - Fe
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Tin-iron alloy - TinAlloy - SnFe
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Hastelloy - Ultimet - Co5Cr2NiMo
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Vanadium Gallium Alloy - VanadiumGallium - V3Ga
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   wrought iron - WroughIron - Fe
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Yttrium Barium Copper Oxygen Alloy - YttriumBariumCuprate - YBa2Cu3O7
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Not all powder materials can be melted directly in the extraction machine. All must be in
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Ingots can be obtained by smelting in 
+, but not in
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Gallium Phosphide - IndiumGalliumPhosphide - InGaP
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Nickel Zinc Ferrite - NickelZincFerrite - NiZnFe4O8
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Magnetic iron - IronMagnetic - Fe
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Tungsten Carbide - TungstenCarbide - WC
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Extract raw rubber pulp, etc. from 
+.
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Magnetized samarium - SamariumMagnetic - Sm
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   ManganesePhosphide - ManganesePhosphide - MnP
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Magnesium Diboride - MagnesiumDiboride - MgB2
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   advanced processing array
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Uranium Triplatinum - UraniumTriplatinum - UPt3
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Butene - Butene
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Indium Tin Barium Titanium Copper Alloy - IndiumTinBariumTitaniumCuprate - In4Sn2Ba2TiCu7O14
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Uranium-rhodium silica alloy - UraniumRhodiumDinaquadide - URhNq2
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   EnrichedNaquadahTriniumEuropiumDuranide - Nq+4Ke3Eu2Dr
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Ruthenium Trinium Americium Neutronate Alloy - RutheniumTriniumAmericiumNeutronate - RuKe2AmNt2O8
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Silicone Rubber - SiliconeRubber - C2H6OSi
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   StyreneButadieneRubber - StyreneButadieneRubber
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Fiber reinforced epoxy resin - ReinforcedEpoxyResin
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Polyvinyl chloride (PVC) - PolyvinylChloride
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Polyphenylene Sulfide - PolyphenyleneSulfide
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Polybenzimidazole - Polybenzimidazole
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Acetic Acid - Acetic Acid
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Epoxy Resin - Epoxy
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Polycaprolactam - Polycaprolactam
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Polytetrafluoroethylene - Polytetrafluoroethylene
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Rubber - Rubber
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   <style color="0xaaaaaa" italic="true">PolyvinylButyral - PolyvinylButyral - (C4H8O)(C4H6O2)</style>
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Black Steel - BlackSteel - Ni(AuAgCu3)Fe3
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Damascus Steel - DamascusSteel - Fe
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Tungsten steel - TungstenSteel - FeW
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Cobalt Brass - CobaltBrass - (ZnCu3)7AlCo
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Made in 
+. The sheet material can also be replaced by higher-end materials such as silicone rubber, polycaprolactam or polybenzimidazole to increase the number of tapes produced in a single process without changing the quantity of raw materials.
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Vanadium Steel - VanadiumSteel - VCrFe7
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Coarse Bronze Alloy - Potin - Cu6Sn2Pb
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Silica Alloy - NaquadahAlloy - Nq2(Ir3Os)Ke
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Rhodium-plated palladium alloy ingot - RhodiumPlatedPalladium - Rd3Rh
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   , wooden multi-block storage tank,
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   蓝Steel - BlueSteel - (CuAu4)(ZnCu3)Fe2(Ni(AuAgCu3)Fe3)4
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   High speed steel-G - Hssg - (FeW)5CrMo2V
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Red Alloy - RedAlloy - Cu(Si(FeS2)5(CrAl2O3)Hg3)4
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   High speed steel-E - Hsse - ((FeW)5CrMo2V)6CoMnSi
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   High speed steel-S - Hsss - ((FeW)5CrMo2V)6Ir2Os
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Blue Alloy - BlueAlloy - ((Si(FeS2)5(CrAl2O3)Hg3)(AgAu))4Ag
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Stellite100 alloy - Stellite100 - Fe4Cr3W2Mo
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   tungsten - Tungsten
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Maraging Steel 300 - MaragingSteel300 - Fe16TiAlNi4Co2
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Hastelloy-C276 - HastelloyC276 - Ni12Mo8Cr7WCoCu
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   ;
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   SoC chip
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Zeron-100 - Zeron100 - Fe10Ni2W2NbCo
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Titanium Carbide - TitaniumCarbide - TiC
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Biomass - Biomass
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Biodiesel - Bio Diesel
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   HSLA Steel - HslaSteel - (Fe2Ni)2VTiMo
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Vanadium Gallium Alloy - VanadiumGallium
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Heat-resistant ferrochromium alloy-MA956 - IncoloyMa956 - (VCrFe7)4Mn2Al5Y2
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Lithium-6 - Lithium-6
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Lithium-7 - Lithium-7
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Beryllium-7 - Beryllium-7
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Coal - Coal
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Vibranium
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   The first generation EV circuit, developed by
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Beryllium Oxide - Beryllium Oxide
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Amorphous Boron Nitride - Amorphous Boron Nitride
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Lithium Hydride - Lithium Hydride
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Phosphorene - Phosphorene
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   GST Glass - GST Glass
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   ZBLAN Glass - ZBLAN Glass
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Gallium Nitride - Gallium Nitride
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Plutonium Phosphide - Plutonium Phosphide
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Cable mineral dictionary prefix: cableGt
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Neptunium Aluminide - Neptunium Aluminide
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Bismuth-antimony chalcogenide - Bismuth Chalcogenide
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Conveyor belt (LV)
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   workbench covering board
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Thallium Copper Chloride
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Silicon Carbide - Silicon Carbide
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Chromium Germanium Telluride - Cgt (Chromium Germanium Telluride)
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Sealing Alloys - Kovar
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Erbium-Doped ZBLAN Glass - Erbium-Doped ZBLAN Glass
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Prseodymium-Doped ZBLAN Glass - Prseodymium-Doped ZBLAN Glass
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Magnetized Chromium Germanium Telluride - Cgt Magnetic
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Polyimide Kapton-K - Kapton K
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   The cable is cable
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Kevlar - Kevlar
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Polymethyl methacrylate (PMMA) - Polymethylmethacrylate
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Polystyrene Sulfonate - Polystyrene Sulfonate
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   Carbon - Carbon
+  </style>
+  <br/>
+  <br/>
+  •
+  <style>
+   PEDOT-TMA - Pedot Tma
+  </style>
+  <br/>
+ </text>
+</page>

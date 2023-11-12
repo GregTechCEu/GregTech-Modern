@@ -1,0 +1,15 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:aluminium_fine_wire"
+  },
+  "items": [
+    "#forge:wires/fine"
+  ],
+  "page": "gtceu:materials/fine_wire",
+  "position": [
+    -200,
+    150
+  ],
+  "section": "gtceu:materials"
+}

@@ -1,0 +1,15 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:aluminium_double_plate"
+  },
+  "items": [
+    "#forge:plates/double"
+  ],
+  "page": "gtceu:materials/double_plate",
+  "position": [
+    -200,
+    250
+  ],
+  "section": "gtceu:materials"
+}

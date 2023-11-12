@@ -52,6 +52,7 @@ import com.gregtechceu.gtceu.common.pipelike.fluidpipe.longdistance.LDFluidEndpo
 import com.gregtechceu.gtceu.common.pipelike.item.longdistance.LDItemEndpointMachine;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
+import com.gregtechceu.gtceu.integration.ae2.GTAEMachines;
 import com.gregtechceu.gtceu.integration.kjs.GTRegistryObjectBuilderTypes;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -171,9 +172,10 @@ public class GTMachines {
     //////////////////////////////////////
     //***     SimpleTieredMachine    ***//
     //////////////////////////////////////
-    public final static MachineDefinition[] HULL = registerTieredMachines("machine_hull", TieredPartMachine::new, (tier, builder) -> builder
+    public final static MachineDefinition[] HULL = registerTieredMachines("machine_hull", HullMachine::new, (tier, builder) -> builder
             .rotationState(RotationState.ALL)
             .overlayTieredHullRenderer("hull")
+            .abilities(PartAbility.PASSTHROUGH_HATCH)
             .langValue("%s Machine Hull".formatted(VN[tier]))
             .tooltips(Component.translatable("gtceu.machine.hull.tooltip"))
             .compassNode("machine_hull")
@@ -351,6 +353,7 @@ public class GTMachines {
             .tooltips(Component.translatable("gtceu.creative_tooltip.1"),
                     Component.translatable("gtceu.creative_tooltip.2"),
                     Component.translatable("gtceu.creative_tooltip.3"))
+            .compassNodeSelf()
             .register();
 
     public static BiConsumer<ItemStack, List<Component>> CHEST_TOOLTIPS = (stack, list) -> {
@@ -629,7 +632,7 @@ public class GTMachines {
             .abilities(PartAbility.MAINTENANCE)
             .tooltips(Component.translatable("gtceu.universal.disabled"))
             .renderer(() -> new MaintenanceHatchPartRenderer(1, GTCEu.id("block/machine/part/maintenance")))
-            .compassNode("maintenance")
+            .compassNodeSelf()
             .register();
 
     public static final MachineDefinition CONFIGURABLE_MAINTENANCE_HATCH = REGISTRATE.machine("configurable_maintenance_hatch", (blockEntity) -> new MaintenanceHatchPartMachine(blockEntity, true))
@@ -637,7 +640,7 @@ public class GTMachines {
             .abilities(PartAbility.MAINTENANCE)
             .tooltips(Component.translatable("gtceu.universal.disabled"))
             .renderer(() -> new MaintenanceHatchPartRenderer(3, GTCEu.id("block/machine/part/maintenance.configurable")))
-            .compassNode("maintenance")
+            .compassNodeSelf()
             .register();
 
     public static final MachineDefinition CLEANING_MAINTENANCE_HATCH = REGISTRATE.machine("cleaning_maintenance_hatch", CleaningMaintenanceHatchPartMachine::new)
@@ -652,7 +655,7 @@ public class GTMachines {
                 }
             })
             .renderer(() -> new MaintenanceHatchPartRenderer(3, GTCEu.id("block/machine/part/maintenance.cleaning")))
-            .compassNode("maintenance")
+            .compassNodeSelf()
             .register();
 
     public static final MachineDefinition AUTO_MAINTENANCE_HATCH = REGISTRATE.machine("auto_maintenance_hatch", AutoMaintenanceHatchPartMachine::new)
@@ -660,7 +663,7 @@ public class GTMachines {
             .abilities(PartAbility.MAINTENANCE)
             .tooltips(Component.translatable("gtceu.universal.disabled"))
             .renderer(() -> new MaintenanceHatchPartRenderer(3, GTCEu.id("block/machine/part/maintenance.full_auto")))
-            .compassNode("maintenance")
+            .compassNodeSelf()
             .register();
 
 
@@ -1258,7 +1261,7 @@ public class GTMachines {
                             .build())
                     .workableCasingRenderer(FluidDrillMachine.getBaseTexture(tier), GTCEu.id("block/multiblock/fluid_drilling_rig"), false)
                     .compassSections(GTCompassSections.TIER[MV])
-                    .compassNodeSelf()
+                    .compassNode("fluid_drilling_rig")
                     .register(),
             MV, HV, EV);
 
@@ -1294,7 +1297,7 @@ public class GTMachines {
                         tooltip.add(Component.translatable("gtceu.universal.tooltip.energy_tier_range", GTValues.VNF[tier], GTValues.VNF[tier + 1]));
                     })
                     .compassSections(GTCompassSections.TIER[EV])
-                    .compassNodeSelf()
+                    .compassNode("large_miner")
                     .register(),
             EV, IV, LuV);
 
@@ -1316,7 +1319,7 @@ public class GTMachines {
                     tooltip.add(Component.translatable("gtceu.machine.cleanroom.tooltip.6"));
                     tooltip.add(Component.translatable("gtceu.machine.cleanroom.tooltip.7"));
                     //tooltip.add(Component.translatable("gtceu.machine.cleanroom.tooltip.8"));
-                    if (LDLib.isModLoaded(GTValues.MODID_APPENG)) {
+                    if (GTCEu.isAE2Loaded()) {
                         tooltip.add(Component.translatable(AEConfig.instance().getChannelMode() == ChannelMode.INFINITE ? "gtceu.machine.cleanroom.tooltip.ae2.no_channels" : "gtceu.machine.cleanroom.tooltip.ae2.channels"));
                     }
                     tooltip.add(Component.empty());
@@ -1346,7 +1349,7 @@ public class GTMachines {
             .shapeInfos((controller) -> {
                 ArrayList<MultiblockShapeInfo> shapeInfo = new ArrayList<>();
                 MultiblockShapeInfo.ShapeInfoBuilder builder = MultiblockShapeInfo.builder()
-                        .aisle("XXXXX", "XIDLX", "XXXXX", "XXXXX", "XXXXX")
+                        .aisle("XXXXX", "XIHLX", "XXDXX", "XXXXX", "XXXXX")
                         .aisle("XXXXX", "X   X", "G   G", "X   X", "XFFFX")
                         .aisle("XXXXX", "X   X", "G   G", "X   X", "XFSFX")
                         .aisle("XXXXX", "X   X", "G   G", "X   X", "XFFFX")
@@ -1358,6 +1361,7 @@ public class GTMachines {
                         .where('E', GTMachines.ENERGY_INPUT_HATCH[GTValues.LV], Direction.SOUTH)
                         .where('I', GTMachines.ITEM_PASSTHROUGH_HATCH[GTValues.LV], Direction.NORTH)
                         .where('L', GTMachines.FLUID_PASSTHROUGH_HATCH[GTValues.LV], Direction.NORTH)
+                        .where('H', GTMachines.HULL[GTValues.HV], Direction.NORTH)
                         .where('D', GTMachines.DIODE[GTValues.HV], Direction.NORTH)
                         .where('O', Blocks.IRON_DOOR.defaultBlockState().setValue(DoorBlock.FACING, Direction.NORTH).setValue(DoorBlock.HALF, DoubleBlockHalf.LOWER))
                         .where('R', Blocks.IRON_DOOR.defaultBlockState().setValue(DoorBlock.FACING, Direction.NORTH).setValue(DoorBlock.HALF, DoubleBlockHalf.UPPER));
@@ -1434,7 +1438,7 @@ public class GTMachines {
                             GTCEu.id("block/casings/solid/machine_casing_study_hsse"),
                             GTCEu.id("block/multiblock/processing_array")))
                     .compassSections(GTCompassSections.TIER[IV])
-                    .compassNodeSelf()
+                    .compassNode("processing_array")
                     .register(),
             IV, LuV) : null;
 
@@ -1469,13 +1473,13 @@ public class GTMachines {
                 .langValue("Low Pressure " + FormattingUtil.toEnglishName(name))
                 .compassSections(GTCompassSections.STEAM)
                 .compassNode(name)
-                .compassPreNodes(GTCompassNodes.LOW_PRESSURE)
+                .compassPreNodes(GTCompassNodes.STEAM)
                 .tier(0));
         MachineDefinition highTier = builder.apply(true, REGISTRATE.machine("hp_%s".formatted(name), holder -> factory.apply(holder, true))
                 .langValue("High Pressure " + FormattingUtil.toEnglishName(name))
                 .compassSections(GTCompassSections.STEAM)
                 .compassNode(name)
-                .compassPreNodes(GTCompassNodes.HIGH_PRESSURE)
+                .compassPreNodes(GTCompassNodes.STEAM)
                 .tier(1));
         return Pair.of(lowTier, highTier);
     }
@@ -1784,6 +1788,9 @@ public class GTMachines {
         GCyMMachines.init();
         if (GTCEu.isCreateLoaded()) {
             GTCreateMachines.init();
+        }
+        if (GTCEu.isAE2Loaded()) {
+            GTAEMachines.init();
         }
         if (ConfigHolder.INSTANCE.machines.doBedrockOres || Platform.isDevEnv()) {
             BEDROCK_ORE_MINER = registerTieredMultis("bedrock_ore_miner", BedrockOreMinerMachine::new, (tier, builder) -> builder
