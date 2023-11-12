@@ -1473,13 +1473,13 @@ public class GTMachines {
                 .langValue("Low Pressure " + FormattingUtil.toEnglishName(name))
                 .compassSections(GTCompassSections.STEAM)
                 .compassNode(name)
-                .compassPreNodes(GTCompassNodes.LOW_PRESSURE)
+                .compassPreNodes(GTCompassNodes.STEAM)
                 .tier(0));
         MachineDefinition highTier = builder.apply(true, REGISTRATE.machine("hp_%s".formatted(name), holder -> factory.apply(holder, true))
                 .langValue("High Pressure " + FormattingUtil.toEnglishName(name))
                 .compassSections(GTCompassSections.STEAM)
                 .compassNode(name)
-                .compassPreNodes(GTCompassNodes.HIGH_PRESSURE)
+                .compassPreNodes(GTCompassNodes.STEAM)
                 .tier(1));
         return Pair.of(lowTier, highTier);
     }

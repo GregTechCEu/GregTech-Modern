@@ -4,9 +4,7 @@
     "res": "gtceu:tritanium_round"
   },
   "items": [
-    "gtceu:tritanium_round",
-    "gtceu:osmiridium_round",
-    "gtceu:hsss_round"
+    "#forge:rounds"
   ],
   "page": "gtceu:materials/round",
   "position": [

@@ -1,0 +1,22 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:lv_extractor"
+  },
+  "items": [
+    "gtceu:lv_extractor",
+    "gtceu:mv_extractor",
+    "gtceu:hv_extractor",
+    "gtceu:ev_extractor",
+    "gtceu:iv_extractor",
+    "gtceu:luv_extractor",
+    "gtceu:zpm_extractor",
+    "gtceu:uv_extractor"
+  ],
+  "page": "gtceu:machines/extractor",
+  "position": [
+    -300,
+    100
+  ],
+  "section": "gtceu:machines"
+}

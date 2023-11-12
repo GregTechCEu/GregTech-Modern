@@ -4,21 +4,7 @@
     "res": "gtceu:aluminium_small_gear"
   },
   "items": [
-    "gtceu:aluminium_small_gear",
-    "gtceu:darmstadtium_small_gear",
-    "gtceu:iron_small_gear",
-    "gtceu:titanium_small_gear",
-    "gtceu:tritanium_small_gear",
-    "gtceu:bronze_small_gear",
-    "gtceu:stainless_steel_small_gear",
-    "gtceu:steel_small_gear",
-    "gtceu:osmiridium_small_gear",
-    "gtceu:tungsten_carbide_small_gear",
-    "gtceu:tungsten_steel_small_gear",
-    "gtceu:naquadah_alloy_small_gear",
-    "gtceu:rhodium_plated_palladium_small_gear",
-    "gtceu:hssg_small_gear",
-    "gtceu:hsss_small_gear"
+    "#forge:gears/small"
   ],
   "page": "gtceu:materials/small_gear",
   "position": [

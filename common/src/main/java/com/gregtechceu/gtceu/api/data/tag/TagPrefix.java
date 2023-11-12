@@ -935,6 +935,11 @@ public class TagPrefix {
     }
 
     @SuppressWarnings("unchecked")
+    public TagKey<Item>[] getItemParentTags() {
+        return (Platform.isForge() ? forgeTags : fabricTags).stream().filter(TagType::isParentTag).map(type -> type.getTag(this, null)).toArray(TagKey[]::new);
+    }
+
+    @SuppressWarnings("unchecked")
     public TagKey<Item>[] getItemTags(@Nonnull Material mat) {
         return (Platform.isForge() ? forgeTags : fabricTags).stream().filter(type -> !type.isParentTag()).map(type -> type.getTag(this, mat)).toArray(TagKey[]::new);
     }

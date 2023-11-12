@@ -3,26 +3,6 @@
     "type": "item",
     "res": "gtceu:aluminium_screwdriver_tip"
   },
-  "items": [
-    "gtceu:aluminium_screwdriver_tip",
-    "gtceu:iron_screwdriver_tip",
-    "gtceu:titanium_screwdriver_tip",
-    "gtceu:bronze_screwdriver_tip",
-    "gtceu:invar_screwdriver_tip",
-    "gtceu:sterling_silver_screwdriver_tip",
-    "gtceu:rose_gold_screwdriver_tip",
-    "gtceu:stainless_steel_screwdriver_tip",
-    "gtceu:steel_screwdriver_tip",
-    "gtceu:ultimet_screwdriver_tip",
-    "gtceu:wrought_iron_screwdriver_tip",
-    "gtceu:tungsten_carbide_screwdriver_tip",
-    "gtceu:wood_screwdriver_tip",
-    "gtceu:tungsten_steel_screwdriver_tip",
-    "gtceu:cobalt_brass_screwdriver_tip",
-    "gtceu:vanadium_steel_screwdriver_tip",
-    "gtceu:naquadah_alloy_screwdriver_tip",
-    "gtceu:hsse_screwdriver_tip"
-  ],
   "page": "gtceu:materials/screwdriver_tip",
   "position": [
     -250,

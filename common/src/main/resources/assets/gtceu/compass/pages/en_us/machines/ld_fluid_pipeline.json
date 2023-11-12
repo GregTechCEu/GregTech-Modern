@@ -1,0 +1,15 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:long_distance_fluid_pipeline_endpoint"
+  },
+  "items": [
+    "gtceu:long_distance_fluid_pipeline_endpoint"
+  ],
+  "page": "gtceu:machines/ld_fluid_pipeline",
+  "position": [
+    -200,
+    250
+  ],
+  "section": "gtceu:machines"
+}
