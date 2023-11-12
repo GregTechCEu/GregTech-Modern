@@ -3,9 +3,8 @@ package com.gregtechceu.gtceu.data.recipe.builder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.recipe.StrictShapedRecipe;
+import com.gregtechceu.gtceu.api.recipe.ShapedEnergyTransferRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.NBTIngredient;
-import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.utils.Builder;
 import com.lowdragmc.lowdraglib.utils.NBTToJsonConverter;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -22,34 +21,37 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Consumer;
 
+
 /**
- * @author KilaBash
- * @date 2023/2/21
- * @implNote ShapedRecipeBuilder
+ * @author Irgendwer01
+ * @date 2023/11/4
+ * @implNote ShapedEnergyTransferRecipeBuilder
  */
-public class ShapedRecipeBuilder extends Builder<Ingredient, ShapedRecipeBuilder> {
+public class ShapedEnergyTransferRecipeBuilder extends Builder<Ingredient, ShapedEnergyTransferRecipeBuilder> {
     protected ItemStack output = ItemStack.EMPTY;
+    protected Ingredient chargeIngredient = Ingredient.EMPTY;
     protected ResourceLocation id;
     protected String group;
-    protected boolean isStrict;
+    protected boolean transferMaxCharge;
+    protected boolean overrideCharge;
 
-    public ShapedRecipeBuilder(@Nullable ResourceLocation id) {
+    public ShapedEnergyTransferRecipeBuilder(@Nullable ResourceLocation id) {
         this.id = id;
     }
 
-    public ShapedRecipeBuilder() {
+    public ShapedEnergyTransferRecipeBuilder() {
         this(null);
     }
 
-    public ShapedRecipeBuilder pattern(String slice) {
+    public ShapedEnergyTransferRecipeBuilder pattern(String slice) {
         return aisle(slice);
     }
 
-    public ShapedRecipeBuilder define(char cha, TagKey<Item> itemStack) {
+    public ShapedEnergyTransferRecipeBuilder define(char cha, TagKey<Item> itemStack) {
         return where(cha, Ingredient.of(itemStack));
     }
 
-    public ShapedRecipeBuilder define(char cha, ItemStack itemStack) {
+    public ShapedEnergyTransferRecipeBuilder define(char cha, ItemStack itemStack) {
         if (itemStack.hasTag() || itemStack.getDamageValue() >0) {
             return where(cha, NBTIngredient.createNBTIngredient(itemStack));
         }else {
@@ -57,54 +59,64 @@ public class ShapedRecipeBuilder extends Builder<Ingredient, ShapedRecipeBuilder
         }
     }
 
-    public ShapedRecipeBuilder define(char cha, ItemLike itemLike) {
+    public ShapedEnergyTransferRecipeBuilder define(char cha, ItemLike itemLike) {
         return where(cha, Ingredient.of(itemLike));
     }
 
-    public ShapedRecipeBuilder define(char cha, Ingredient ingredient) {
+    public ShapedEnergyTransferRecipeBuilder define(char cha, Ingredient ingredient) {
         return where(cha, ingredient);
     }
 
-    public ShapedRecipeBuilder output(ItemStack itemStack) {
-        this.output = itemStack.copy();
-        return (ShapedRecipeBuilder) this;
+    public ShapedEnergyTransferRecipeBuilder chargeIngredient(Ingredient chargeIngredient) {
+        this.chargeIngredient = chargeIngredient;
+        return this;
     }
 
-    public ShapedRecipeBuilder output(ItemStack itemStack, int count) {
+    public ShapedEnergyTransferRecipeBuilder overrideCharge(boolean overrideCharge) {
+        this.overrideCharge = overrideCharge;
+        return this;
+    }
+
+    public ShapedEnergyTransferRecipeBuilder transferMaxCharge(boolean transferMaxCharge) {
+        this.transferMaxCharge = transferMaxCharge;
+        return this;
+    }
+
+    public ShapedEnergyTransferRecipeBuilder output(ItemStack itemStack) {
+        this.output = itemStack.copy();
+        return this;
+    }
+
+    public ShapedEnergyTransferRecipeBuilder output(ItemStack itemStack, int count) {
         this.output = itemStack.copy();
         this.output.setCount(count);
-        return (ShapedRecipeBuilder) this;
+        return this;
     }
 
-    public ShapedRecipeBuilder output(ItemStack itemStack, int count, CompoundTag nbt) {
+    public ShapedEnergyTransferRecipeBuilder output(ItemStack itemStack, int count, CompoundTag nbt) {
         this.output = itemStack.copy();
         this.output.setCount(count);
         this.output.setTag(nbt);
         return this;
     }
 
-    public ShapedRecipeBuilder id(ResourceLocation id) {
+    public ShapedEnergyTransferRecipeBuilder id(ResourceLocation id) {
         this.id = id;
         return this;
     }
 
-    public ShapedRecipeBuilder id(String id) {
+    public ShapedEnergyTransferRecipeBuilder id(String id) {
         this.id = new ResourceLocation(id);
         return this;
     }
 
-    public ShapedRecipeBuilder group(String group) {
+    public ShapedEnergyTransferRecipeBuilder group(String group) {
         this.group = group;
         return this;
     }
 
-    public ShapedRecipeBuilder isStrict(boolean isStrict) {
-        this.isStrict = isStrict;
-        return this;
-    }
-
     @Override
-    public ShapedRecipeBuilder shallowCopy() {
+    public ShapedEnergyTransferRecipeBuilder shallowCopy() {
         var builder = super.shallowCopy();
         builder.output = output.copy();
         return builder;
@@ -131,8 +143,16 @@ public class ShapedRecipeBuilder extends Builder<Ingredient, ShapedRecipeBuilder
             json.add("key", key);
         }
 
+        json.addProperty("overrideCharge", overrideCharge);
+        json.addProperty("transferMaxCharge", transferMaxCharge);
+        if (chargeIngredient.isEmpty()) {
+            GTCEu.LOGGER.error("shaped energy transfer recipe {} chargeIngredient is empty", id);
+            throw new IllegalArgumentException(id + ": chargeIngredient is empty");
+        } else {
+            json.add("chargeIngredient", chargeIngredient.toJson());
+        }
         if (output.isEmpty()) {
-            GTCEu.LOGGER.error("shaped recipe {} output is empty", id);
+            GTCEu.LOGGER.error("shaped energy transfer recipe {} output is empty", id);
             throw new IllegalArgumentException(id + ": output items is empty");
         } else {
             JsonObject result = new JsonObject();
@@ -166,7 +186,7 @@ public class ShapedRecipeBuilder extends Builder<Ingredient, ShapedRecipeBuilder
 
             @Override
             public RecipeSerializer<?> getType() {
-                return isStrict ? StrictShapedRecipe.SERIALIZER : RecipeSerializer.SHAPED_RECIPE;
+                return ShapedEnergyTransferRecipe.SERIALIZER;
             }
 
             @Nullable

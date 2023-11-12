@@ -207,6 +207,65 @@ public class VanillaRecipeHelper {
         addShapelessRecipe(provider, GTCEu.id(regName.toLowerCase(Locale.ROOT)), result, recipe);
     }
 
+    public static void addShapedEnergyTransferRecipe(Consumer<FinishedRecipe> provider, boolean withUnificationData, boolean overrideCharge, boolean transferMaxCharge, @Nonnull ResourceLocation regName, @Nonnull Ingredient chargeIngredient, @Nonnull ItemStack result, @Nonnull Object... recipe) {
+        var builder = new ShapedEnergyTransferRecipeBuilder(regName).output(result);
+        builder.chargeIngredient(chargeIngredient).overrideCharge(overrideCharge).transferMaxCharge(transferMaxCharge);
+        CharSet set = new CharOpenHashSet();
+        for (int i = 0; i < recipe.length; i++) {
+            var o = recipe[i];
+            if (o instanceof String pattern) {
+                builder.pattern(pattern);
+                for (Character c : TOOLS.keySet()) {
+                    if (pattern.indexOf(c) >= 0) {
+                        set.add(c.charValue());
+                    }
+                }
+            }
+            if (o instanceof String[] pattern) {
+                for (String s : pattern) {
+                    builder.pattern(s);
+                    for (Character c : TOOLS.keySet()) {
+                        if (s.indexOf(c) >= 0) {
+                            set.add(c.charValue());
+                        }
+                    }
+                }
+            }
+            if (o instanceof Character sign) {
+                var content = recipe[i + 1];
+                i++;
+                if (content instanceof Ingredient ingredient) {
+                    builder.define(sign, ingredient);
+                } else if (content instanceof ItemStack itemStack) {
+                    builder.define(sign, itemStack);
+                } else if (content instanceof TagKey<?> key) {
+                    builder.define(sign, (TagKey<Item>) key);
+                } else if (content instanceof ItemLike itemLike) {
+                    builder.define(sign, itemLike);
+                } else if (content instanceof UnificationEntry entry) {
+                    TagKey<Item> tag = ChemicalHelper.getTag(entry.tagPrefix, entry.material);
+                    if (tag != null) {
+                        builder.define(sign, tag);
+                    } else builder.define(sign, ChemicalHelper.get(entry.tagPrefix, entry.material));
+                } else if (content instanceof ItemProviderEntry<?> entry) {
+                    builder.define(sign, entry.asStack());
+                }
+            }
+        }
+        for (Character c : set) {
+            builder.define(c, TOOLS.get(c.charValue()));
+        }
+        builder.save(provider);
+
+        if (withUnificationData) {
+            ChemicalHelper.registerMaterialInfo(result.getItem(), getRecyclingIngredients(result.getCount(), recipe));
+        }
+    }
+
+    public static void addShapedEnergyTransferRecipe(Consumer<FinishedRecipe> provider, boolean withUnificationData, boolean overrideCharge, boolean transferMaxCharge, @Nonnull String regName, @Nonnull Ingredient chargeIngredient, @Nonnull ItemStack result, @Nonnull Object... recipe) {
+        addShapedEnergyTransferRecipe(provider, withUnificationData, overrideCharge, transferMaxCharge, GTCEu.id(regName.toLowerCase(Locale.ROOT)), chargeIngredient, result, recipe);
+    }
+
     public static void addShapelessRecipe(Consumer<FinishedRecipe> provider, @Nonnull ResourceLocation regName, @Nonnull ItemStack result, @Nonnull Object... recipe) {
         var builder = new ShapelessRecipeBuilder(regName).output(result);
         for (Object content : recipe) {
