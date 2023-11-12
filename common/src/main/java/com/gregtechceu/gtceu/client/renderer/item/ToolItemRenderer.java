@@ -1,35 +1,39 @@
 package com.gregtechceu.gtceu.client.renderer.item;
 
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
-import com.lowdragmc.lowdraglib.client.renderer.impl.IModelRenderer;
+import com.gregtechceu.gtceu.data.pack.GTDynamicResourcePack;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.data.models.model.DelegatedModel;
+import net.minecraft.world.item.Item;
 
-import java.util.EnumMap;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author KilaBash
  * @date 2023/2/16
  * @implNote TagPrefixItemRenderer
  */
-public class ToolItemRenderer extends IModelRenderer {
-    private static final Map<GTToolType, ToolItemRenderer> MODELS = new EnumMap<>(GTToolType.class);
+public class ToolItemRenderer {
+    private static final Set<ToolItemRenderer> MODELS = new HashSet<>();
 
-    protected ToolItemRenderer(GTToolType toolType) {
-        super(toolType.modelLocation);
-    }
-
-    public static ToolItemRenderer getOrCreate(GTToolType toolType) {
-        if (!MODELS.containsKey(toolType)) {
-            MODELS.put(toolType, new ToolItemRenderer(toolType));
+    public static void reinitModels() {
+        for (ToolItemRenderer model : MODELS) {
+            GTDynamicResourcePack.addItemModel(BuiltInRegistries.ITEM.getKey(model.item), new DelegatedModel(model.toolType.modelLocation));
         }
-        return MODELS.get(toolType);
     }
 
-    @Override
-    @Environment(EnvType.CLIENT)
-    public boolean isGui3d() {
-        return false;
+    private final Item item;
+    private final GTToolType toolType;
+
+    protected ToolItemRenderer(Item item, GTToolType toolType) {
+        this.item = item;
+        this.toolType = toolType;
+    }
+
+    public static void create(Item item, GTToolType toolType) {
+        MODELS.add(new ToolItemRenderer(item, toolType));
     }
 }

@@ -34,38 +34,33 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class MaterialBlock extends AppearanceBlock implements IBlockRendererProvider {
+public class MaterialBlock extends AppearanceBlock {
 
     public final TagPrefix tagPrefix;
     public final Material material;
-    public final IRenderer renderer;
+
+    public MaterialBlock(Properties properties, TagPrefix tagPrefix, Material material, boolean registerModel) {
+        super(properties);
+        this.material = material;
+        this.tagPrefix = tagPrefix;
+        if (registerModel && Platform.isClient()) {
+            MaterialBlockRenderer.create(this, tagPrefix.materialIconType(), material.getMaterialIconSet());
+        }
+    }
 
     public MaterialBlock(Properties properties, TagPrefix tagPrefix, Material material) {
-        super(properties);
-        this.material = material;
-        this.tagPrefix = tagPrefix;
-        this.renderer = Platform.isClient() ? MaterialBlockRenderer.getOrCreate(tagPrefix.materialIconType(), material.getMaterialIconSet()) : null;
-    }
-
-    public MaterialBlock(Properties properties, TagPrefix tagPrefix, Material material, IRenderer renderer) {
-        super(properties);
-        this.material = material;
-        this.tagPrefix = tagPrefix;
-        this.renderer = renderer;
-    }
-
-    @Nullable
-    @Override
-    @Environment(EnvType.CLIENT)
-    public IRenderer getRenderer(BlockState state) {
-        return renderer;
+        this(properties, tagPrefix, material, true);
     }
 
     @Environment(EnvType.CLIENT)
     public static BlockColor tintedColor() {
         return (state, reader, pos, tintIndex) -> {
             if (state.getBlock() instanceof MaterialBlock block) {
-                return block.material.getMaterialRGB();
+                if (tintIndex == 1 && block.material.getMaterialSecondaryRGB() != -1) {
+                    return block.material.getMaterialSecondaryRGB();
+                } else {
+                    return block.material.getMaterialRGB();
+                }
             }
             return -1;
         };

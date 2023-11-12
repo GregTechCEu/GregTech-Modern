@@ -31,6 +31,7 @@ import com.gregtechceu.gtceu.common.pipelike.fluidpipe.FluidPipeType;
 import com.gregtechceu.gtceu.common.pipelike.fluidpipe.longdistance.LDFluidPipeType;
 import com.gregtechceu.gtceu.common.pipelike.item.ItemPipeType;
 import com.gregtechceu.gtceu.common.pipelike.item.longdistance.LDItemPipeType;
+import com.gregtechceu.gtceu.common.pipelike.laser.LaserPipeType;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.lowdragmc.lowdraglib.Platform;
@@ -110,7 +111,7 @@ public class GTBlocks {
                 var entry = REGISTRATE.block("%s_block".formatted(material.getName()), properties -> new MaterialBlock(properties.noLootTable(), TagPrefix.block, material))
                         .initialProperties(() -> Blocks.IRON_BLOCK)
                         .transform(unificationBlock(TagPrefix.block, material))
-                        .addLayer(() -> RenderType::solid)
+                        .addLayer(() -> RenderType::translucent)
                         .setData(ProviderType.BLOCKSTATE, NonNullBiConsumer.noop())
                         .setData(ProviderType.LANG, NonNullBiConsumer.noop())
                         .setData(ProviderType.LOOT, NonNullBiConsumer.noop())
@@ -130,7 +131,7 @@ public class GTBlocks {
                         .initialProperties(() -> Blocks.IRON_BLOCK)
                         .properties(properties -> properties.noOcclusion().noLootTable())
                         .transform(unificationBlock(TagPrefix.frameGt, material))
-                        .addLayer(() -> RenderType::cutoutMipped)
+                        .addLayer(() -> RenderType::translucent)
                         .blockstate(NonNullBiConsumer.noop())
                         .setData(ProviderType.LANG, NonNullBiConsumer.noop())
                         .setData(ProviderType.LOOT, NonNullBiConsumer.noop())
@@ -150,7 +151,7 @@ public class GTBlocks {
                     var entry = REGISTRATE.block("raw_%s_block".formatted(material.getName()), properties -> new MaterialBlock(properties.noLootTable(), TagPrefix.rawOreBlock, material))
                             .initialProperties(() -> Blocks.IRON_BLOCK)
                             .transform(unificationBlock(TagPrefix.rawOreBlock, material))
-                            .addLayer(() -> RenderType::solid)
+                            .addLayer(() -> RenderType::translucent)
                             .setData(ProviderType.BLOCKSTATE, NonNullBiConsumer.noop())
                             .setData(ProviderType.LANG, NonNullBiConsumer.noop())
                             .setData(ProviderType.LOOT, NonNullBiConsumer.noop())
@@ -172,8 +173,9 @@ public class GTBlocks {
                     final TagPrefix.OreType oreType = ore.getValue();
                     var entry = REGISTRATE.block("%s%s_ore".formatted(oreTag != TagPrefix.ore ? FormattingUtil.toLowerCaseUnder(oreTag.name) + "_" : "", material.getName()),
                                     oreType.material(),
-                                    properties -> new MaterialBlock(properties, oreTag, material, Platform.isClient() ? new OreBlockRenderer(oreType.stoneType(),
-                                            () -> Objects.requireNonNull(oreTag.materialIconType()).getBlockTexturePath(material.getMaterialIconSet(), true),
+                                    properties -> new RendererMaterialBlock(properties, oreTag, material, Platform.isClient() ? new OreBlockRenderer(oreType.stoneType(),
+                                            Suppliers.memoize(() -> Objects.requireNonNull(oreTag.materialIconType()).getBlockTexturePath(material.getMaterialIconSet(), true)),
+                                            Suppliers.memoize(() -> Objects.requireNonNull(oreTag.materialIconType()).getBlockTexturePath(material.getMaterialIconSet(), "layer2", true)),
                                             oreProperty.isEmissive()) : null))
                             .initialProperties(() -> {
                                 if (oreType.stoneType().get().isAir()) { // if the block is not registered (yet), fallback to stone
@@ -220,7 +222,7 @@ public class GTBlocks {
         ImmutableTable.Builder<TagPrefix, Material, BlockEntry<CableBlock>> builder = ImmutableTable.builder();
         for (Insulation insulation : Insulation.values()) {
             for (Material material : GTRegistries.MATERIALS) {
-                if (material.hasProperty(PropertyKey.WIRE) && !insulation.tagPrefix.isIgnored(material)) {
+                if (material.hasProperty(PropertyKey.WIRE) && !insulation.tagPrefix.isIgnored(material) && !(insulation.isCable && material.getProperty(PropertyKey.WIRE).isSuperconductor())) {
                     var entry = REGISTRATE.block("%s_%s".formatted(material.getName(), insulation.name), p -> new CableBlock(p, insulation, material))
                             .initialProperties(() -> Blocks.IRON_BLOCK)
                             .properties(p -> p.dynamicShape().noOcclusion().noLootTable())
@@ -313,14 +315,14 @@ public class GTBlocks {
     //////////////////////////////////////
     //*****     General Pipes     ******//
     //////////////////////////////////////
-    public static final BlockEntry<LaserPipeBlock>[] LASER_PIPES = new BlockEntry[DyeColor.values().length];
+    public static final BlockEntry<LaserPipeBlock>[] LASER_PIPES = new BlockEntry[LaserPipeType.values().length];
 
     public static void generateLaserPipeBlocks() {
         REGISTRATE.creativeModeTab(() -> GTCreativeModeTabs.MATERIAL_PIPE);
 
-        for (int i = 0; i < DyeColor.values().length; ++i) {
-            var color = DyeColor.values()[i];
-            LASER_PIPES[i] = REGISTRATE.block("%s_laser_pipe".formatted(color.getSerializedName()), p -> new LaserPipeBlock(p, color))
+        for (int i = 0; i < LaserPipeType.values().length; ++i) {
+            var type = LaserPipeType.values()[i];
+            LASER_PIPES[i] = REGISTRATE.block("%s_laser_pipe".formatted(type.getSerializedName()), (p) -> new LaserPipeBlock(p, type))
                     .initialProperties(() -> Blocks.IRON_BLOCK)
                     .properties(p -> p.dynamicShape().noOcclusion().noLootTable())
                     .blockstate(NonNullBiConsumer.noop())

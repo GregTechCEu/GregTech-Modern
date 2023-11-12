@@ -3,8 +3,11 @@ package com.gregtechceu.gtceu.common.pipelike.laser;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.pipenet.IPipeType;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.StringRepresentable;
 
-public enum LaserPipeType implements IPipeType<LaserPipeNet.LaserData> {
+import java.util.Locale;
+
+public enum LaserPipeType implements IPipeType<LaserPipeNet.LaserData>, StringRepresentable {
     NORMAL;
 
     public static final ResourceLocation TYPE_ID = GTCEu.id("laser");
@@ -27,5 +30,10 @@ public enum LaserPipeType implements IPipeType<LaserPipeNet.LaserData> {
     @Override
     public ResourceLocation type() {
         return TYPE_ID;
+    }
+
+    @Override
+    public String getSerializedName() {
+        return name().toLowerCase(Locale.ROOT);
     }
 }

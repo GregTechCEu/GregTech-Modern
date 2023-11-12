@@ -13,14 +13,7 @@ public class BlockLang {
     private static void initCasingLang(RegistrateLangProvider provider) {
 
         // Coils
-        replace(provider, "block.gtceu.wire_coil_cupronickel", "Cupronickel Coil Block");
-        replace(provider, "block.gtceu.wire_coil_kanthal", "Kanthal Coil Block");
-        replace(provider, "block.gtceu.wire_coil_nichrome", "Nichrome Coil Block");
-        replace(provider, "block.gtceu.wire_coil_tungstensteel", "Tungstensteel Coil Block");
-        replace(provider, "block.gtceu.wire_coil_hss_g", "HSS-G Coil Block");
-        replace(provider, "block.gtceu.wire_coil_naquadah", "Naquadah Coil Block");
-        replace(provider, "block.gtceu.wire_coil_trinium", "Trinium Coil Block");
-        replace(provider, "block.gtceu.wire_coil_tritanium", "Tritanium Coil Block");
+        replace(provider, "block.gtceu.hssg_coil_block", "HSS-G Coil Block");
 
         replace(provider, "block.gtceu.wire_coil.tooltip_extended_info", "§7Hold SHIFT to show Coil Bonus Info");
         replace(provider, "block.gtceu.wire_coil.tooltip_heat", "§cBase Heat Capacity: §f%d K");
@@ -35,33 +28,30 @@ public class BlockLang {
         // Casings
         replace(provider, "block.gtceu.casing_bronze_bricks", "Bronze Machine Casing");
         replace(provider, "block.gtceu.casing_primitive_bricks", "Firebricks");
-        replace(provider, "block.gtceu.casing_invar_heatproof", "Heat Proof Invar Machine Casing");
-        replace(provider, "block.gtceu.casing_aluminium_frostproof", "Frost Proof Aluminium Machine Casing");
-        replace(provider, "block.gtceu.casing_steel_solid", "Solid Steel Machine Casing");
-        replace(provider, "block.gtceu.casing_stainless_clean", "Clean Stainless Steel Casing");
-        replace(provider, "block.gtceu.casing_titanium_stable", "Stable Titanium Machine Casing");
-        replace(provider, "block.gtceu.casing_tungstensteel_robust", "Robust Tungstensteel Machine Casing");
+        replace(provider, "block.gtceu.heatproof_machine_casing", "Heat Proof Invar Machine Casing");
+        replace(provider, "block.gtceu.frostproof_machine_casing", "Frost Proof Aluminium Machine Casing");
+        replace(provider, "block.gtceu.steel_machine_casing", "Solid Steel Machine Casing");
+        replace(provider, "block.gtceu.clean_machine_casing", "Clean Stainless Steel Casing");
+        replace(provider, "block.gtceu.stable_machine_casing", "Stable Titanium Machine Casing");
+        replace(provider, "block.gtceu.robust_machine_casing", "Robust Tungstensteel Machine Casing");
         replace(provider, "block.gtceu.casing_coke_bricks", "Coke Oven Bricks");
-        replace(provider, "block.gtceu.casing_ptfe_inert", "Chemically Inert PTFE Machine Casing");
-        replace(provider, "block.gtceu.casing_hsse_sturdy", "Sturdy HSS-E Machine Casing");
+        replace(provider, "block.gtceu.inert_machine_casing", "Chemically Inert PTFE Machine Casing");
+        replace(provider, "block.gtceu.sturdy_machine_casing", "Sturdy HSS-E Machine Casing");
         replace(provider, "block.gtceu.casing_grate", "Grate Machine Casing");
-        replace(provider, "block.gtceu.casing_assembly_control", "Assembly Control Casing");
-        replace(provider, "block.gtceu.casing_polytetrafluoroethylene_pipe", "PTFE Pipe Casing");
-        replace(provider, "block.gtceu.casing_laminated_glass", "Laminated Glass");
-        replace(provider, "block.gtceu.casing_bronze_gearbox", "Bronze Gearbox Casing");
-        replace(provider, "block.gtceu.casing_steel_gearbox", "Steel Gearbox Casing");
-        replace(provider, "block.gtceu.casing_stainless_steel_gearbox", "Stainless Steel Gearbox Casing");
-        replace(provider, "block.gtceu.casing_titanium_gearbox", "Titanium Gearbox Casing");
-        replace(provider, "block.gtceu.casing_tungstensteel_gearbox", "Tungstensteel Gearbox Casing");
-        replace(provider, "block.gtceu.casing_steel_turbine", "Steel Turbine Casing");
-        replace(provider, "block.gtceu.casing_titanium_turbine", "Titanium Turbine Casing");
-        replace(provider, "block.gtceu.casing_stainless_turbine", "Stainless Turbine Casing");
-        replace(provider, "block.gtceu.casing_tungstensteel_turbine", "Tungstensteel Turbine Casing");
-        replace(provider, "block.gtceu.casing_bronze_pipe", "Bronze Pipe Casing");
-        replace(provider, "block.gtceu.casing_steel_pipe", "Steel Pipe Casing");
-        replace(provider, "block.gtceu.casing_titanium_pipe", "Titanium Pipe Casing");
-        replace(provider, "block.gtceu.casing_tungstensteel_pipe", "Tungstensteel Pipe Casing");
-        replace(provider, "block.gtceu.casing_pump_deck", "Pump Deck");
+        replace(provider, "block.gtceu.assembly_line_unit", "Assembly Control Casing");
+        replace(provider, "block.gtceu.ptfe_pipe_casing", "PTFE Pipe Casing");
+        replace(provider, "block.gtceu.bronze_gearbox", "Bronze Gearbox Casing");
+        replace(provider, "block.gtceu.steel_gearbox", "Steel Gearbox Casing");
+        replace(provider, "block.gtceu.stainless_steel_gearbox", "Stainless Steel Gearbox Casing");
+        replace(provider, "block.gtceu.titanium_gearbox", "Titanium Gearbox Casing");
+        replace(provider, "block.gtceu.tungstensteel_gearbox", "Tungstensteel Gearbox Casing");
+        replace(provider, "block.gtceu.titanium_turbine_casing", "Titanium Turbine Casing");
+        replace(provider, "block.gtceu.stainless_steel_turbine_casing", "Stainless Turbine Casing");
+        replace(provider, "block.gtceu.tungstensteel_turbine_casing", "Tungstensteel Turbine Casing");
+        replace(provider, "block.gtceu.bronze_pipe_casing", "Bronze Pipe Casing");
+        replace(provider, "block.gtceu.steel_pipe_casing", "Steel Pipe Casing");
+        replace(provider, "block.gtceu.titanium_pipe_casing", "Titanium Pipe Casing");
+        replace(provider, "block.gtceu.tungstensteel_pipe_casing", "Tungstensteel Pipe Casing");
 
         replace(provider, "block.gtceu.steam_casing_bronze", "Bronze Hull");
         provider.add("block.gtceu.steam_casing_bronze.tooltip", "§7For your first Steam Machines");
@@ -71,15 +61,6 @@ public class BlockLang {
         provider.add("block.gtceu.steam_casing_steel.tooltip", "§7For improved Steam Machines");
         replace(provider, "block.gtceu.steam_casing_bricked_steel", "Bricked Wrought Iron Hull");
         provider.add("block.gtceu.steam_casing_bricked_steel.tooltip", "§7For improved Steam Machines");
-
-        replace(provider, "block.gtceu.active_casing_engine_intake", "Engine Intake Casing");
-        replace(provider, "block.gtceu.active_casing_extreme_engine_intake", "Extreme Engine Intake Casing");
-        replace(provider, "block.gtceu.active_casing_assembly_line", "Assembly Line Casing");
-
-        replace(provider, "block.gtceu.bronze_firebox", "Bronze Firebox Casing");
-        replace(provider, "block.gtceu.steel_firebox", "Steel Firebox Casing");
-        replace(provider, "block.gtceu.titanium_firebox", "Titanium Firebox Casing");
-        replace(provider, "block.gtceu.tungstensteel_firebox", "Tungstensteel Firebox Casing");
 
         //GCyM Casings
         replace(provider, "block.gtceu.laser_safe_engraving_casing", "Laser-Safe Engraving Casing");
@@ -91,11 +72,11 @@ public class BlockLang {
         //replace(provider, "tile.steam_casing.wood_wall.name", "Wooden Wall");
 
         // todo fusion
-        replace(provider, "block.superconducting_coil", "Superconducting Coil Block");
-        replace(provider, "block.fusion_coil", "Fusion Coil Block");
-        replace(provider, "block.fusion_casing", "Fusion Machine Casing");
-        replace(provider, "block.fusion_casing_mk2", "Fusion Machine Casing MK II");
-        replace(provider, "block.fusion_casing_mk3", "Fusion Machine Casing MK III");
+        replace(provider, "block.gtceu.superconducting_coil", "Superconducting Coil Block");
+        replace(provider, "block.gtceu.fusion_coil", "Fusion Coil Block");
+        replace(provider, "block.gtceu.fusion_casing", "Fusion Machine Casing");
+        replace(provider, "block.gtceu.fusion_casing_mk2", "Fusion Machine Casing MK II");
+        replace(provider, "block.gtceu.fusion_casing_mk3", "Fusion Machine Casing MK III");
 
         provider.add("block.filter.tooltip", "Creates a §aParticle-Free§7 environment");
         provider.add("block.filter_sterile.tooltip", "Creates a §aSterilized§7 environment");
@@ -218,15 +199,5 @@ public class BlockLang {
         provider.add("tile.stone_bricks_square.concrete_light.name", "Square Light Concrete Bricks");
         provider.add("tile.stone_bricks_square.concrete_dark.name", "Square Dark Concrete Bricks");
          */
-        provider.add("tile.stone_bricks_square.concrete_dark.name", "Square Dark Concrete Bricks");
-        provider.add("tile.wire_coil.tooltip_extended_info", "Hold SHIFT to show Coil Bonus Info");
-        provider.add("tile.wire_coil.tooltip_heat", "§cBase Heat Capacity: §f%d K");
-        provider.add("tile.wire_coil.tooltip_smelter", "§8Multi Smelter:");
-        provider.add("tile.wire_coil.tooltip_parallel_smelter", "  §5Max Parallel: §f%s");
-        provider.add("tile.wire_coil.tooltip_energy_smelter", "  §aEnergy Usage: §f%s EU/t §8per recipe");
-        provider.add("tile.wire_coil.tooltip_pyro", "§8Pyrolyse Oven:");
-        provider.add("tile.wire_coil.tooltip_speed_pyro", "  §bProcessing Speed: §f%s%%");
-        provider.add("tile.wire_coil.tooltip_cracking", "§8Cracking Unit:");
-        provider.add("tile.wire_coil.tooltip_energy_cracking", "  §aEnergy Usage: §f%s%%");
     }
 }
