@@ -9,6 +9,12 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.syncdata.EnhancedFieldManagedStorage;
 import com.gregtechceu.gtceu.api.syncdata.IEnhancedManaged;
 import com.gregtechceu.gtceu.api.syncdata.UpdateListener;
+import com.gregtechceu.gtceu.api.transfer.fluid.NoOpFluidTransfer;
+import com.gregtechceu.gtceu.api.transfer.item.NoOpItemTransfer;
+import com.gregtechceu.gtceu.common.blockentity.FluidPipeBlockEntity;
+import com.gregtechceu.gtceu.common.blockentity.ItemPipeBlockEntity;
+import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
+import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.annotation.ReadOnlyManaged;
@@ -141,6 +147,24 @@ public class PipeCoverContainer implements ICoverable, IEnhancedManaged {
     @Override
     public void unsubscribe(@Nullable TickableSubscription current) {
         pipeTile.unsubscribe(current);
+    }
+
+    @Override
+    public IItemTransfer getItemTransferCap(@Nullable Direction side, boolean useCoverCapability) {
+        if (pipeTile instanceof ItemPipeBlockEntity itemPipe) {
+            return itemPipe.getHandler(side, useCoverCapability);
+        } else {
+            return NoOpItemTransfer.INSTANCE;
+        }
+    }
+
+    @Override
+    public IFluidTransfer getFluidTransferCap(@Nullable Direction side, boolean useCoverCapability) {
+        if (pipeTile instanceof FluidPipeBlockEntity fluidPipe) {
+            return fluidPipe.getHandler(side, useCoverCapability);
+        } else {
+            return NoOpFluidTransfer.INSTANCE;
+        }
     }
 
     @Override

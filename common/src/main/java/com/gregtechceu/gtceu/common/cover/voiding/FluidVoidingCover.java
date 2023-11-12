@@ -60,7 +60,7 @@ public class FluidVoidingCover extends PumpCover {
         final Map<FluidStack, Long> fluidAmounts = enumerateDistinctFluids(fluidTransfer, TransferDirection.EXTRACT);
 
         for (FluidStack fluidStack : fluidAmounts.keySet()) {
-            if (!filterHandler.getFilter().test(fluidStack))
+            if (!filterHandler.test(fluidStack))
                 continue;
 
             var toDrain = fluidStack.copy();

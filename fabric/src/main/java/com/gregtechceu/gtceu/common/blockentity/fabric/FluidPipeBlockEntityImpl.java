@@ -8,7 +8,9 @@ import com.gregtechceu.gtceu.common.pipelike.fluidpipe.FluidPipeData;
 import com.gregtechceu.gtceu.common.pipelike.fluidpipe.FluidPipeNet;
 import com.gregtechceu.gtceu.common.pipelike.fluidpipe.PipeNetRoutePath;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
+import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 import com.lowdragmc.lowdraglib.side.fluid.fabric.FluidHelperImpl;
+import com.lowdragmc.lowdraglib.side.fluid.fabric.FluidTransferHelperImpl;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import lombok.Setter;
@@ -71,6 +73,15 @@ public class FluidPipeBlockEntityImpl extends FluidPipeBlockEntity {
             return new FluidVariantStorage(net, this, side);
         }
         return null;
+    }
+
+    public static IFluidTransfer getNetHandler(FluidPipeBlockEntity pipe, @Nullable Direction side) {
+        Storage<FluidVariant> fluidStorage = ((FluidPipeBlockEntityImpl) pipe).getFluidStorage(side);
+
+        if (fluidStorage == null)
+            fluidStorage = Storage.empty();
+
+        return FluidTransferHelperImpl.toFluidTransfer(fluidStorage);
     }
 
     class FluidVariantStorage extends SnapshotParticipant<FluidPipeNet.Snapshot> implements Storage<FluidVariant> {

@@ -1,11 +1,13 @@
 package com.gregtechceu.gtceu.common.blockentity;
 
-import com.gregtechceu.gtceu.common.block.FluidPipeBlock;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
+import com.gregtechceu.gtceu.api.cover.CoverBehavior;
+import com.gregtechceu.gtceu.common.block.FluidPipeBlock;
 import com.gregtechceu.gtceu.common.pipelike.fluidpipe.FluidPipeData;
 import com.gregtechceu.gtceu.common.pipelike.fluidpipe.FluidPipeNet;
 import com.gregtechceu.gtceu.common.pipelike.fluidpipe.FluidPipeType;
 import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
+import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -42,6 +44,11 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType, FluidPi
         throw new AssertionError();
     }
 
+    @ExpectPlatform
+    public static IFluidTransfer getNetHandler(FluidPipeBlockEntity pipe, @Nullable Direction side) {
+        throw new AssertionError();
+    }
+
     @Override
     public boolean canAttachTo(Direction side) {
         if (level != null) {
@@ -65,5 +72,13 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType, FluidPi
             }
         }
         return this.currentFluidPipeNet.get();
+    }
+
+    public IFluidTransfer getHandler(@Nullable Direction side, boolean useCoverCapability) {
+        IFluidTransfer handler = getNetHandler(this, side);
+        if (!useCoverCapability || side == null) return handler;
+
+        CoverBehavior cover = getCoverContainer().getCoverAtSide(side);
+        return cover != null ? cover.getFluidTransferCap(side, handler) : handler;
     }
 }

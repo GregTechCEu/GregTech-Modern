@@ -117,7 +117,7 @@ public class MetaMachineBlockEntityImpl extends MetaMachineBlockEntity {
                     ));
                 }
             }
-            var transfer = machine.getItemTransferCap(side);
+            var transfer = machine.getItemTransferCap(side, true);
             if (transfer != null) {
                 return ForgeCapabilities.ITEM_HANDLER.orEmpty(cap, LazyOptional.of(() -> ItemTransferHelperImpl.toItemHandler(transfer)));
             }
@@ -134,7 +134,7 @@ public class MetaMachineBlockEntityImpl extends MetaMachineBlockEntity {
                     ));
                 }
             }
-            var transfer = machine.getFluidTransferCap(side);
+            var transfer = machine.getFluidTransferCap(side, true);
             if (transfer != null) {
                 return ForgeCapabilities.FLUID_HANDLER.orEmpty(cap, LazyOptional.of(() -> FluidTransferHelperImpl.toFluidHandler(transfer)));
             }

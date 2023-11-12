@@ -11,6 +11,8 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
+import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
+import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.utils.RayTraceHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -60,6 +62,10 @@ public interface ICoverable extends ITickSubscription, IAppearance, IFancyConfig
     Direction getFrontFacing();
 
     boolean shouldRenderBackSide();
+
+    // TODO replace getItemTransferCap and getFluidTransferCap with a cross-platform capability implementation
+    IItemTransfer getItemTransferCap(@Nullable Direction side, boolean useCoverCapability);
+    IFluidTransfer getFluidTransferCap(@Nullable Direction side, boolean useCoverCapability);
 
     /**
      * Its an internal method, you should never call it yourself.
