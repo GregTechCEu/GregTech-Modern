@@ -4,29 +4,7 @@
     "res": "gtceu:aluminium_pickaxe"
   },
   "items": [
-    "gtceu:aluminium_pickaxe",
-    "gtceu:iron_pickaxe",
-    "gtceu:titanium_pickaxe",
-    "gtceu:neutronium_pickaxe",
-    "gtceu:duranium_pickaxe",
-    "gtceu:bronze_pickaxe",
-    "gtceu:diamond_pickaxe",
-    "gtceu:invar_pickaxe",
-    "gtceu:sterling_silver_pickaxe",
-    "gtceu:rose_gold_pickaxe",
-    "gtceu:stainless_steel_pickaxe",
-    "gtceu:steel_pickaxe",
-    "gtceu:ultimet_pickaxe",
-    "gtceu:wrought_iron_pickaxe",
-    "gtceu:tungsten_carbide_pickaxe",
-    "gtceu:damascus_steel_pickaxe",
-    "gtceu:tungsten_steel_pickaxe",
-    "gtceu:cobalt_brass_pickaxe",
-    "gtceu:vanadium_steel_pickaxe",
-    "gtceu:naquadah_alloy_pickaxe",
-    "gtceu:red_steel_pickaxe",
-    "gtceu:blue_steel_pickaxe",
-    "gtceu:hsse_pickaxe"
+    "#minecraft:pickaxes"
   ],
   "page": "gtceu:tools/pickaxe",
   "position": [

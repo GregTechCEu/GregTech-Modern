@@ -162,6 +162,7 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
 
     @Override
     public void clientTick() {
+        super.clientTick();
         if (previouslyMuffled != isMuffled) {
             previouslyMuffled = isMuffled;
 

@@ -23,17 +23,11 @@ public class GTCompassNodes {
             .size(40)
             .lang("How to find Ore?");
 
-    public final static CompassNode LOW_PRESSURE = CompassNode.getOrCreate(GTCompassSections.STEAM, "low_pressure")
+    public final static CompassNode STEAM = CompassNode.getOrCreate(GTCompassSections.STEAM, "steam_age")
             .icon(() -> new ItemStackTexture(GTItems.MATERIAL_ITEMS.get(TagPrefix.plate, GTMaterials.Bronze).asStack()))
             .position(50, 50)
             .size(40)
-            .lang("Low Pressure");
-
-    public final static CompassNode HIGH_PRESSURE = CompassNode.getOrCreate(GTCompassSections.STEAM, "high_pressure")
-            .icon(() -> new ItemStackTexture(GTItems.MATERIAL_ITEMS.get(TagPrefix.plate, GTMaterials.Steel).asStack()))
-            .position(50, 100)
-            .size(40)
-            .lang("High Pressure");
+            .lang("Steam Age");
 
     public static void init() {
 

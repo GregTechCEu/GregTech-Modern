@@ -57,7 +57,7 @@ dependencyResolutionManagement {
         def vineFlowerVersion = "1.+"
         def macheteVersion = "1.+"
         def configurationVersion = "2.2.0"
-        def ldLibVersion = "1.0.20.a"
+        def ldLibVersion = "1.0.21.a"
         def mixinextrasVersion = "0.2.0-rc.5"
 
         fabric {

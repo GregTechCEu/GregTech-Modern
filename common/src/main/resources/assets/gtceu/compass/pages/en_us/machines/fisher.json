@@ -1,0 +1,18 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:lv_fisher"
+  },
+  "items": [
+    "gtceu:lv_fisher",
+    "gtceu:mv_fisher",
+    "gtceu:hv_fisher",
+    "gtceu:ev_fisher"
+  ],
+  "page": "gtceu:machines/fisher",
+  "position": [
+    -400,
+    300
+  ],
+  "section": "gtceu:machines"
+}

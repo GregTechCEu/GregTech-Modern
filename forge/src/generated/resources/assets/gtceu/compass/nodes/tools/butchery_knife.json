@@ -4,29 +4,7 @@
     "res": "gtceu:aluminium_butchery_knife"
   },
   "items": [
-    "gtceu:aluminium_butchery_knife",
-    "gtceu:iron_butchery_knife",
-    "gtceu:titanium_butchery_knife",
-    "gtceu:neutronium_butchery_knife",
-    "gtceu:duranium_butchery_knife",
-    "gtceu:bronze_butchery_knife",
-    "gtceu:diamond_butchery_knife",
-    "gtceu:invar_butchery_knife",
-    "gtceu:sterling_silver_butchery_knife",
-    "gtceu:rose_gold_butchery_knife",
-    "gtceu:stainless_steel_butchery_knife",
-    "gtceu:steel_butchery_knife",
-    "gtceu:ultimet_butchery_knife",
-    "gtceu:wrought_iron_butchery_knife",
-    "gtceu:tungsten_carbide_butchery_knife",
-    "gtceu:damascus_steel_butchery_knife",
-    "gtceu:tungsten_steel_butchery_knife",
-    "gtceu:cobalt_brass_butchery_knife",
-    "gtceu:vanadium_steel_butchery_knife",
-    "gtceu:naquadah_alloy_butchery_knife",
-    "gtceu:red_steel_butchery_knife",
-    "gtceu:blue_steel_butchery_knife",
-    "gtceu:hsse_butchery_knife"
+    "#forge:tools/butchery_knives"
   ],
   "page": "gtceu:tools/butchery_knife",
   "position": [
