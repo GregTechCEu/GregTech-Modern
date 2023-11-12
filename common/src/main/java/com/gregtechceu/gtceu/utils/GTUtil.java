@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.utils;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
@@ -9,9 +10,13 @@ import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
+import com.mojang.authlib.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 import com.mojang.blaze3d.platform.InputConstants;
 import dev.architectury.injectables.annotations.ExpectPlatform;
-import net.minecraft.client.Minecraft;
+import io.github.fabricators_of_create.porting_lib.util.MinecraftClientUtil;
+import net.minecraft.world.level.Level;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.util.RandomSource;
@@ -19,6 +24,7 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.material.Fluid;
 import org.lwjgl.glfw.GLFW;
 
@@ -333,6 +339,22 @@ public class GTUtil {
                 return fluidHandler.drain(Integer.MAX_VALUE, false);
         }
         return null;
+    }
+
+    public static boolean canSeeSunClearly(Level world, BlockPos blockPos) {
+        if (!world.canSeeSky(blockPos.above())) {
+            return false;
+        }
+        Biome biome = world.getBiome(blockPos.above()).value();
+        if (!world.isRaining()) {
+            if (biome.warmEnoughToRain(blockPos.above()) || biome.coldEnoughToSnow(blockPos.above())) {
+                return false;
+            }
+        }
+
+        GTCEu.LOGGER.info(String.valueOf(world.isDay()));
+        return world.isDay();
+
     }
 
 }

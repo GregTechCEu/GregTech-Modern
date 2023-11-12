@@ -137,6 +137,11 @@ public class GTCovers {
             new SimpleCoverRenderer(GTCEu.id("block/cover/overlay_maintenance_detector"))
     );
 
+    // Solar Panels
+    public final static CoverDefinition SOLAR_PANEL = registerTiered(
+            "ulv_solar_panel", CoverSolarPanel::new,
+            new SimpleCoverRenderer(GTCEu.id("block/cover/overlay_solar_panel"), 2)
+    );
 
     ///////////////////////////////////////////////
     //***********     UTIL METHODS    ***********//

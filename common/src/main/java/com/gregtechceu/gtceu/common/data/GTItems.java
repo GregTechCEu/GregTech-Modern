@@ -1470,7 +1470,7 @@ public class GTItems {
     public static ItemEntry<ComponentItem> COVER_SOLAR_PANEL_ULV = REGISTRATE.item("ulv_solar_panel", ComponentItem::create).lang("Ultra Low Voltage Solar Panel").onRegister(attach(new TooltipBehavior(lines -> {
         lines.addAll(LangHandler.getMultiLang("metaitem.cover.solar.panel.tooltip"));
         lines.add(Component.translatable("gtceu.universal.tooltip.voltage_out", GTValues.V[GTValues.ULV], GTValues.VNF[GTValues.ULV]));
-    }))).onRegister(compassNodeExist(GTCompassSections.COVERS, "solar_panel", GTCompassNodes.COVER)).register();
+    }))).onRegister(attach(new CoverPlaceBehavior(GTCovers.SOLAR_PANEL_ULV))).onRegister(compassNodeExist(GTCompassSections.COVERS, "solar_panel", GTCompassNodes.COVER)).register();
     public static ItemEntry<ComponentItem> COVER_SOLAR_PANEL_LV = REGISTRATE.item("lv_solar_panel", ComponentItem::create).lang("Low Voltage Solar Panel").onRegister(attach(new TooltipBehavior(lines -> {
         lines.addAll(LangHandler.getMultiLang("metaitem.cover.solar.panel.tooltip"));
         lines.add(Component.translatable("gtceu.universal.tooltip.voltage_out", GTValues.V[GTValues.LV], GTValues.VNF[GTValues.LV]));
