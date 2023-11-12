@@ -36,7 +36,7 @@ public class ItemPipeBlockEntityImpl extends ItemPipeBlockEntity {
             if (getHandlers().size() == 0)
                 initHandlers();
             checkNetwork();
-            return ForgeCapabilities.ITEM_HANDLER.orEmpty(cap, LazyOptional.of(() -> ItemTransferHelperImpl.toItemHandler(getHandlers().getOrDefault(side, getDefaultHandler()))));
+            return ForgeCapabilities.ITEM_HANDLER.orEmpty(cap, LazyOptional.of(() -> ItemTransferHelperImpl.toItemHandler(getHandler(side, true))));
         } else if (cap == GTCapability.CAPABILITY_COVERABLE) {
             return GTCapability.CAPABILITY_COVERABLE.orEmpty(cap, LazyOptional.of(this::getCoverContainer));
         } else if (cap == GTCapability.CAPABILITY_TOOLABLE) {
