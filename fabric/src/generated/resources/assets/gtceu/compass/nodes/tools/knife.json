@@ -4,30 +4,7 @@
     "res": "gtceu:aluminium_knife"
   },
   "items": [
-    "gtceu:aluminium_knife",
-    "gtceu:iron_knife",
-    "gtceu:titanium_knife",
-    "gtceu:neutronium_knife",
-    "gtceu:duranium_knife",
-    "gtceu:bronze_knife",
-    "gtceu:diamond_knife",
-    "gtceu:invar_knife",
-    "gtceu:sterling_silver_knife",
-    "gtceu:rose_gold_knife",
-    "gtceu:stainless_steel_knife",
-    "gtceu:steel_knife",
-    "gtceu:ultimet_knife",
-    "gtceu:wrought_iron_knife",
-    "gtceu:tungsten_carbide_knife",
-    "gtceu:damascus_steel_knife",
-    "gtceu:tungsten_steel_knife",
-    "gtceu:cobalt_brass_knife",
-    "gtceu:vanadium_steel_knife",
-    "gtceu:naquadah_alloy_knife",
-    "gtceu:flint_knife",
-    "gtceu:red_steel_knife",
-    "gtceu:blue_steel_knife",
-    "gtceu:hsse_knife"
+    "#c:knives"
   ],
   "page": "gtceu:tools/knife",
   "position": [

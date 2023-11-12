@@ -4,10 +4,7 @@
     "res": "gtceu:darmstadtium_dense_plate"
   },
   "items": [
-    "gtceu:darmstadtium_dense_plate",
-    "gtceu:tungsten_steel_dense_plate",
-    "gtceu:naquadah_alloy_dense_plate",
-    "gtceu:rhodium_plated_palladium_dense_plate"
+    "#c:dense_plates"
   ],
   "page": "gtceu:materials/dense_plate",
   "position": [
