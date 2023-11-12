@@ -1547,7 +1547,7 @@ public class GTMachines {
         return registerTieredMachines(name, (holder, tier) -> new SimpleGeneratorMachine(holder, tier, tankScalingFunction), (tier, builder) -> builder
                 .langValue("%s %s Generator %s".formatted(VLVH[tier], toEnglishName(name), VLVT[tier]))
                 .editableUI(SimpleGeneratorMachine.EDITABLE_UI_CREATOR.apply(GTCEu.id(name), recipeType))
-                .rotationState(RotationState.NON_Y_AXIS)
+                .rotationState(RotationState.ALL)
                 .recipeType(recipeType)
                 .recipeModifier(SimpleGeneratorMachine::recipeModifier, true)
                 .renderer(() -> new SimpleGeneratorMachineRenderer(tier, GTCEu.id("block/generators/" + name)))
@@ -1648,7 +1648,7 @@ public class GTMachines {
                 .recoveryItems(() -> new ItemLike[]{GTItems.MATERIAL_ITEMS.get(TagPrefix.dustTiny, GTMaterials.Ash).get()})
                 .renderer(() -> new LargeBoilerRenderer(texture, firebox, GTCEu.id("block/multiblock/generator/large_%s_boiler".formatted(name))))
                 .tooltips(
-                        Component.translatable("gtceu.multiblock.large_boiler.max_temperature", (int)(maxTemperature * 274.15), maxTemperature),
+                        Component.translatable("gtceu.multiblock.large_boiler.max_temperature", (int)(maxTemperature + 274.15), maxTemperature),
                         Component.translatable("gtceu.multiblock.large_boiler.heat_time_tooltip", maxTemperature / heatSpeed / 20),
                         Component.translatable("gtceu.multiblock.large_boiler.explosion_tooltip").withStyle(ChatFormatting.DARK_RED))
                 .compassSections(GTCompassSections.STEAM)
