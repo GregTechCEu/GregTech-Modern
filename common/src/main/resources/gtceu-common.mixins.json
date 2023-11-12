@@ -8,8 +8,8 @@
     "BlockModelMixin",
     "LevelRendererMixin",
     "ModelBakeryMixin",
-    "MinecraftMixin",
     "MultiPlayerGameModeMixin",
+    "PackRepositoryMixin",
     "rei.FluidEntryRendererMixin"
   ],
   "mixins": [

@@ -18,4 +18,4 @@ Version: 1.0.15
 * fix item pipes stopping transfer after their transfer rate per second has been reached once
 * fix capability IO directions
 * fix laser pipes not connecting to hatches
-* fix diodes being counted as energy input in cleanrooms
+* fix diodes and hulls being counted as energy input in cleanrooms

@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.data;
 
+import com.google.common.base.Suppliers;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableTable;
 import com.google.common.collect.Table;

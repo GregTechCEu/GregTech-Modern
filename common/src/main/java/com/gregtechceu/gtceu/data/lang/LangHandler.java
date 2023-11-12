@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.data.lang;
 
+import com.gregtechceu.gtceu.common.data.GTCreativeModeTabs;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 import com.tterrag.registrate.providers.RegistrateLangProvider;
@@ -11,6 +12,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.gregtechceu.gtceu.utils.FormattingUtil.toEnglishName;
 
 /**
  * @author KilaBash

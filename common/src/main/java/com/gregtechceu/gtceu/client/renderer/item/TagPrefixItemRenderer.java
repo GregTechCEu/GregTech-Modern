@@ -9,7 +9,7 @@ import com.gregtechceu.gtceu.data.pack.GTDynamicResourcePack;
 import com.gregtechceu.gtceu.utils.GradientUtil;
 import com.mojang.blaze3d.platform.NativeImage;
 import net.minecraft.client.Minecraft;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Registry;
 import net.minecraft.data.models.model.DelegatedModel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
@@ -36,7 +36,7 @@ public class TagPrefixItemRenderer {
 
     public static void reinitModels() {
         for (TagPrefixItemRenderer model : MODELS) {
-            ResourceLocation itemId = BuiltInRegistries.ITEM.getKey(model.item);
+            ResourceLocation itemId = Registry.ITEM.getKey(model.item);
             GTDynamicResourcePack.addItemModel(itemId, new DelegatedModel(model.type.getItemModelPath(model.iconSet, true)));
             //ModelTemplates.FLAT_ITEM.create(GTDynamicResourcePack.getItemModelLocation(itemId), TextureMapping.layer0(itemId.withPrefix("item/")), GTDynamicResourcePack::addItemModel);
         }
@@ -44,7 +44,7 @@ public class TagPrefixItemRenderer {
 
     public static void initTextures() {
         for (TagPrefixItemRenderer model : MODELS) {
-            ResourceLocation itemId = BuiltInRegistries.ITEM.getKey(model.item);
+            ResourceLocation itemId = Registry.ITEM.getKey(model.item);
 
             Resource file1 = Minecraft.getInstance().getResourceManager().getResource(GTDynamicResourcePack.getTextureLocation(null, model.type.getItemTexturePath(model.iconSet, true)/*.withSuffix("_layer1")*/)).orElse(null);
             if (file1 == null) continue;
@@ -62,7 +62,8 @@ public class TagPrefixItemRenderer {
                         }
                     }
                     if (prefixItem.material.getMaterialSecondaryRGB() != -1) {
-                        Resource file2 = Minecraft.getInstance().getResourceManager().getResource(GTDynamicResourcePack.getTextureLocation(null, model.type.getItemTexturePath(model.iconSet, true).withSuffix(LAYER_2_SUFFIX))).orElse(null);
+                        ResourceLocation path = model.type.getItemTexturePath(model.iconSet, true);
+                        Resource file2 = Minecraft.getInstance().getResourceManager().getResource(GTDynamicResourcePack.getTextureLocation(null, new ResourceLocation(path.getNamespace(), path.getPath() + LAYER_2_SUFFIX))).orElse(null);
                         if (file2 != null) {
                             try(InputStream stream2 = file2.open()) {
                                 NativeImage image2 = NativeImage.read(stream2);

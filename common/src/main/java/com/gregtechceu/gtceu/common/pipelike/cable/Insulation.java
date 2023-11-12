@@ -79,8 +79,14 @@ public enum Insulation implements IMaterialPipeType<CableData> {
     }
 
     public PipeModel createPipeModel(Material material) {
-        Supplier<ResourceLocation> wireSideTexturePath = () -> MaterialIconType.wire.getBlockTexturePath(material.getMaterialIconSet(), true).withSuffix("_side");
-        Supplier<ResourceLocation> wireEndTexturePath = () -> MaterialIconType.wire.getBlockTexturePath(material.getMaterialIconSet(), true).withSuffix("_end");
+        Supplier<ResourceLocation> wireSideTexturePath = () -> {
+            ResourceLocation location = MaterialIconType.wire.getBlockTexturePath(material.getMaterialIconSet(), true);
+            return new ResourceLocation(location.getNamespace(), location.getPath() + "_side");
+        };
+        Supplier<ResourceLocation> wireEndTexturePath = () -> {
+            ResourceLocation location = MaterialIconType.wire.getBlockTexturePath(material.getMaterialIconSet(), true);
+            return new ResourceLocation(location.getNamespace(), location.getPath() + "_end");
+        };
         Supplier<@Nullable ResourceLocation> wireSideOverlayTexturePath = () -> MaterialIconType.wire.getBlockTexturePath(material.getMaterialIconSet(), "side_overlay", true);
         Supplier<@Nullable ResourceLocation> wireEndOverlayTexturePath = () -> MaterialIconType.wire.getBlockTexturePath(material.getMaterialIconSet(), "end_overlay", true);
         PipeModel model = new PipeModel(thickness, isCable ? () -> GTCEu.id("block/cable/insulation_5") : wireSideTexturePath, wireEndTexturePath, wireSideOverlayTexturePath, wireEndOverlayTexturePath);
