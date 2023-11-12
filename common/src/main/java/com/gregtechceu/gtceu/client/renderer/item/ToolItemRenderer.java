@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.data.pack.GTDynamicResourcePack;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Registry;
 import net.minecraft.data.models.model.DelegatedModel;
 import net.minecraft.world.item.Item;
 
@@ -21,7 +21,7 @@ public class ToolItemRenderer {
 
     public static void reinitModels() {
         for (ToolItemRenderer model : MODELS) {
-            GTDynamicResourcePack.addItemModel(BuiltInRegistries.ITEM.getKey(model.item), new DelegatedModel(model.toolType.modelLocation));
+            GTDynamicResourcePack.addItemModel(Registry.ITEM.getKey(model.item), new DelegatedModel(model.toolType.modelLocation));
         }
     }
 

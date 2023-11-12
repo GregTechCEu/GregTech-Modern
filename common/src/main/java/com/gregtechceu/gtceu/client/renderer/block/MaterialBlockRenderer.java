@@ -10,7 +10,7 @@ import com.mojang.blaze3d.platform.NativeImage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.metadata.animation.AnimationFrame;
 import net.minecraft.client.resources.metadata.animation.AnimationMetadataSection;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Registry;
 import net.minecraft.data.models.BlockModelGenerators;
 import net.minecraft.data.models.model.*;
 import net.minecraft.resources.ResourceLocation;
@@ -37,20 +37,20 @@ public class MaterialBlockRenderer {
 
     public static void reinitModels() {
         for (MaterialBlockRenderer model : MODELS) {
-            ResourceLocation blockId = BuiltInRegistries.BLOCK.getKey(model.block);
-            ResourceLocation modelId = blockId.withPrefix("block/");
+            ResourceLocation blockId = Registry.BLOCK.getKey(model.block);
+            ResourceLocation modelId = new ResourceLocation(blockId.getNamespace(), "block/" + blockId.getPath());
             GTDynamicResourcePack.addBlockModel(modelId, new DelegatedModel(model.type.getBlockModelPath(model.iconSet, true)));
             GTDynamicResourcePack.addBlockState(blockId, BlockModelGenerators.createSimpleBlock(model.block, modelId));
             //        ModelTemplates.CUBE_ALL.create(model.block,
             //                cubeTwoLayer(model.type.getBlockTexturePath(model.iconSet, true), model.type.getBlockTexturePath(model.iconSet, true).withSuffix(LAYER_2_SUFFIX)),
             //                GTDynamicResourcePack::addBlockModel)));
-            GTDynamicResourcePack.addItemModel(BuiltInRegistries.ITEM.getKey(model.block.asItem()), new DelegatedModel(ModelLocationUtils.getModelLocation(model.block)));
+            GTDynamicResourcePack.addItemModel(Registry.ITEM.getKey(model.block.asItem()), new DelegatedModel(ModelLocationUtils.getModelLocation(model.block)));
         }
     }
 
     public static void initTextures() {
         for (MaterialBlockRenderer model : MODELS) {
-            ResourceLocation blockId = BuiltInRegistries.BLOCK.getKey(model.block);
+            ResourceLocation blockId = Registry.BLOCK.getKey(model.block);
 
             Resource file1 = Minecraft.getInstance().getResourceManager().getResource(GTDynamicResourcePack.getTextureLocation(null, model.type.getBlockTexturePath(model.iconSet, true)/*.withSuffix("_layer1")*/)).orElse(null);
             if (file1 == null) continue;
@@ -68,7 +68,8 @@ public class MaterialBlockRenderer {
                     }
                     if (materialBlock.material.getMaterialSecondaryRGB() != -1) {
                         int materialSecondaryRGBA = GradientUtil.argbToRgba(materialBlock.material.getMaterialSecondaryARGB());
-                        Resource file2 = Minecraft.getInstance().getResourceManager().getResource(GTDynamicResourcePack.getTextureLocation(null, model.type.getBlockTexturePath(model.iconSet, true).withSuffix(LAYER_2_SUFFIX))).orElse(null);
+                        ResourceLocation path = model.type.getBlockTexturePath(model.iconSet, true);
+                        Resource file2 = Minecraft.getInstance().getResourceManager().getResource(GTDynamicResourcePack.getTextureLocation(null, new ResourceLocation(path.getNamespace(), path.getPath() + LAYER_2_SUFFIX))).orElse(null);
                         if (file2 != null) {
                             try(InputStream stream2 = file2.open()) {
                                 NativeImage image2 = NativeImage.read(stream2);

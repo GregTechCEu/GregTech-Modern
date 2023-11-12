@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.At;
 
 import java.util.List;
 
-@Mixin(Minecraft.class)
+@Mixin(value = Minecraft.class, priority = 900)
 public class MinecraftMixin {
     @ModifyExpressionValue(
             method = {"reloadResourcePacks(Z)Ljava/util/concurrent/CompletableFuture;", "<init>"},

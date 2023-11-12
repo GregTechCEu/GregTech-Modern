@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.lowdragmc.lowdraglib.Platform;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
+import lombok.Getter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.SharedConstants;
 import net.minecraft.network.chat.Component;
@@ -15,24 +16,23 @@ import net.minecraft.server.packs.PackResources;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.metadata.MetadataSectionSerializer;
 import net.minecraft.server.packs.metadata.pack.PackMetadataSection;
-import net.minecraft.server.packs.resources.IoSupplier;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import static com.gregtechceu.gtceu.data.pack.GTDynamicDataPack.writeJson;
 
@@ -44,6 +44,7 @@ public class GTDynamicResourcePack implements PackResources {
     @ApiStatus.Internal
     public static final ConcurrentMap<ResourceLocation, byte[]> DATA = new ConcurrentHashMap<>();
 
+    @Getter
     private final String name;
 
     static {
@@ -136,30 +137,32 @@ public class GTDynamicResourcePack implements PackResources {
 
     @Nullable
     @Override
-    public IoSupplier<InputStream> getRootResource(String... elements) {
-        return null;
+    public InputStream getRootResource(String elements) {
+        throw new UnsupportedOperationException("Dynamic Resource Pack cannot have root resources");
     }
 
     @Override
-    public IoSupplier<InputStream> getResource(PackType type, ResourceLocation location) {
+    public InputStream getResource(PackType type, ResourceLocation location) {
         if (type == PackType.CLIENT_RESOURCES) {
             if (DATA.containsKey(location))
-                return () -> new ByteArrayInputStream(DATA.get(location));
+                return new ByteArrayInputStream(DATA.get(location));
         }
-        return null;
+        return new ByteArrayInputStream(new byte[0]);
     }
 
     @Override
-    public void listResources(PackType packType, String namespace, String path, ResourceOutput resourceOutput) {
-        if (packType == PackType.CLIENT_RESOURCES) {
-            if (!path.endsWith("/")) path += "/";
-            final String finalPath = path;
-            DATA.keySet().stream().filter(Objects::nonNull).filter(loc -> loc.getPath().startsWith(finalPath)).forEach((id) -> {
-                IoSupplier<InputStream> resource = this.getResource(packType, id);
-                if (resource != null) {
-                    resourceOutput.accept(id, resource);
-                }
-            });
+    public Collection<ResourceLocation> getResources(PackType type, String namespace, String path, Predicate<ResourceLocation> filter) {
+        if (type == PackType.CLIENT_RESOURCES)
+            return DATA.keySet().stream().filter(loc -> loc.getPath().startsWith(path.endsWith("/") ? path : path + "/") && filter.test(loc)).collect(Collectors.toList());
+        return Collections.emptyList();//LANG.keySet().stream().filter(loc -> loc.getPath().startsWith(path) && filter.test(loc.getPath())).collect(Collectors.toList());
+    }
+
+    @Override
+    public boolean hasResource(PackType type, ResourceLocation location) {
+        if (type == PackType.SERVER_DATA) {
+            return false;
+        } else {
+            return DATA.containsKey(location);
         }
     }
 
@@ -171,15 +174,10 @@ public class GTDynamicResourcePack implements PackResources {
     @Nullable
     @Override
     public <T> T getMetadataSection(MetadataSectionSerializer<T> metaReader) {
-        if(metaReader == PackMetadataSection.TYPE) {
-            return (T) new PackMetadataSection(Component.literal("GTCEu dynamic assets"), SharedConstants.getCurrentVersion().getPackVersion(PackType.CLIENT_RESOURCES));
+        if(metaReader == PackMetadataSection.SERIALIZER) {
+            return (T) new PackMetadataSection(Component.literal("GTCEu dynamic assets"), SharedConstants.getCurrentVersion().getPackVersion(com.mojang.bridge.game.PackType.RESOURCE));
         }
         return null;
-    }
-
-    @Override
-    public String packId() {
-        return this.name;
     }
 
     @Override
