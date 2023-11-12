@@ -4,29 +4,7 @@
     "res": "gtceu:aluminium_hammer"
   },
   "items": [
-    "gtceu:aluminium_hammer",
-    "gtceu:iron_hammer",
-    "gtceu:titanium_hammer",
-    "gtceu:neutronium_hammer",
-    "gtceu:duranium_hammer",
-    "gtceu:bronze_hammer",
-    "gtceu:diamond_hammer",
-    "gtceu:invar_hammer",
-    "gtceu:sterling_silver_hammer",
-    "gtceu:rose_gold_hammer",
-    "gtceu:stainless_steel_hammer",
-    "gtceu:steel_hammer",
-    "gtceu:ultimet_hammer",
-    "gtceu:wrought_iron_hammer",
-    "gtceu:tungsten_carbide_hammer",
-    "gtceu:damascus_steel_hammer",
-    "gtceu:tungsten_steel_hammer",
-    "gtceu:cobalt_brass_hammer",
-    "gtceu:vanadium_steel_hammer",
-    "gtceu:naquadah_alloy_hammer",
-    "gtceu:red_steel_hammer",
-    "gtceu:blue_steel_hammer",
-    "gtceu:hsse_hammer"
+    "#forge:tools/hammers"
   ],
   "page": "gtceu:tools/hammer",
   "position": [

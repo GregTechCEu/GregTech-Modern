@@ -1,0 +1,22 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:lv_thermal_centrifuge"
+  },
+  "items": [
+    "gtceu:lv_thermal_centrifuge",
+    "gtceu:mv_thermal_centrifuge",
+    "gtceu:hv_thermal_centrifuge",
+    "gtceu:ev_thermal_centrifuge",
+    "gtceu:iv_thermal_centrifuge",
+    "gtceu:luv_thermal_centrifuge",
+    "gtceu:zpm_thermal_centrifuge",
+    "gtceu:uv_thermal_centrifuge"
+  ],
+  "page": "gtceu:machines/thermal_centrifuge",
+  "position": [
+    -400,
+    200
+  ],
+  "section": "gtceu:machines"
+}

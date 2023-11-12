@@ -18,6 +18,7 @@ import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 
 import javax.annotation.Nullable;
@@ -49,6 +50,7 @@ public class CompassNode {
     private Position position = null;
     private final Set<ResourceLocation> preNodes = new HashSet<>();
     private final List<Supplier<? extends Item>> items = new ArrayList<>();
+    private final Set<TagKey<Item>> tags = new HashSet<>();
     @Setter @Nullable
     private Supplier<IGuiTexture> icon = null;
     @Setter @Getter
@@ -100,6 +102,16 @@ public class CompassNode {
 
     public CompassNode addItem(Supplier<? extends Item> item) {
         items.add(item);
+        return this;
+    }
+
+    public CompassNode addTag(TagKey<Item>... tags) {
+        this.tags.addAll(List.of(tags));
+        return this;
+    }
+
+    public CompassNode iconIfNull(Supplier<IGuiTexture> icon) {
+        this.icon = this.icon == null ? icon : this.icon;
         return this;
     }
 
@@ -187,11 +199,18 @@ public class CompassNode {
                 }
                 json.add("pre_nodes", pre);
             }
+            var items = new JsonArray();
+            if (!node.tags.isEmpty()) {
+                for (var tag : node.tags) {
+                    items.add("#" + tag.location());
+                }
+            }
             if (!node.items.isEmpty()) {
-                var items = new JsonArray();
                 for (var item : node.items) {
                     items.add(Registry.ITEM.getKey(item.get()).toString());
                 }
+            }
+            if (!items.isEmpty()) {
                 json.add("items", items);
             }
 
