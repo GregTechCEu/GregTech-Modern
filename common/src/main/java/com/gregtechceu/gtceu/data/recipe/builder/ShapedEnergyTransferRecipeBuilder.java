@@ -69,28 +69,28 @@ public class ShapedEnergyTransferRecipeBuilder extends Builder<Ingredient, Shape
 
     public ShapedEnergyTransferRecipeBuilder chargeIngredient(Ingredient chargeIngredient) {
         this.chargeIngredient = chargeIngredient;
-        return (ShapedEnergyTransferRecipeBuilder) this;
+        return this;
     }
 
     public ShapedEnergyTransferRecipeBuilder overrideCharge(boolean overrideCharge) {
         this.overrideCharge = overrideCharge;
-        return (ShapedEnergyTransferRecipeBuilder) this;
+        return this;
     }
 
     public ShapedEnergyTransferRecipeBuilder transferMaxCharge(boolean transferMaxCharge) {
         this.transferMaxCharge = transferMaxCharge;
-        return (ShapedEnergyTransferRecipeBuilder) this;
+        return this;
     }
 
     public ShapedEnergyTransferRecipeBuilder output(ItemStack itemStack) {
         this.output = itemStack.copy();
-        return (ShapedEnergyTransferRecipeBuilder) this;
+        return this;
     }
 
     public ShapedEnergyTransferRecipeBuilder output(ItemStack itemStack, int count) {
         this.output = itemStack.copy();
         this.output.setCount(count);
-        return (ShapedEnergyTransferRecipeBuilder) this;
+        return this;
     }
 
     public ShapedEnergyTransferRecipeBuilder output(ItemStack itemStack, int count, CompoundTag nbt) {
