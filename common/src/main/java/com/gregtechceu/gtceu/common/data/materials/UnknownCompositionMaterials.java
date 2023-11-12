@@ -551,5 +551,8 @@ public class UnknownCompositionMaterials {
                         .temperature(300)
                         .customStill())
                 .buildAndRegister();
+
+        PCBCoolant = new Material.Builder("pcb_coolant")
+                .fluid().color(0xD5D69C).buildAndRegister();
     }
 }

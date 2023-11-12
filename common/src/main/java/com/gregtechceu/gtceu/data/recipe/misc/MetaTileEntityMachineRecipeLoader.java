@@ -964,13 +964,5 @@ public class MetaTileEntityMachineRecipeLoader {
                 .circuitMeta(3)
                 .outputItems(LASER_OUTPUT_HATCH_4096[UV])
                 .duration(1200).EUt(VA[UV]).save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("laser_cable")
-                .inputItems(GTBlocks.CASING_LAMINATED_GLASS.get().asItem(), 1)
-                .inputItems(foil, Osmiridium, 2)
-                .inputFluids(Polytetrafluoroethylene.getFluid(L))
-                .outputItems(LASER_PIPES[0])
-                .cleanroom(CleanroomType.CLEANROOM)
-                .duration(100).EUt(VA[IV]).save(provider);
     }
 }
