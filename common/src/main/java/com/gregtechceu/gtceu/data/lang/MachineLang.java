@@ -8,6 +8,10 @@ public class MachineLang {
 
     protected static void init(RegistrateLangProvider provider) {
 
+        replace(provider, "block.gtceu.steam_large_turbine", "Large Steam Turbine");
+        replace(provider, "block.gtceu.gas_large_turbine", "Large Gas Turbine");
+        replace(provider, "block.gtceu.plasma_large_turbine", "Large Plasma Turbine");
+
         // Steam machines
         replace(provider, "block.gtceu.steam_solid_boiler.bronze", "Small Steam Solid Boiler");
         replace(provider, "block.gtceu.steam_liquid_boiler.bronze", "Small Steam Liquid Boiler");
