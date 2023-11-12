@@ -49,7 +49,7 @@ public class ToolHelper {
     }
 
     public static boolean canUse(ItemStack stack) {
-        return stack.getDamageValue() < stack.getMaxDamage();
+        return stack.getDamageValue() <= stack.getMaxDamage();
     }
 
     public static void damageItem(@Nonnull ItemStack stack, RandomSource random, @Nullable ServerPlayer user) {

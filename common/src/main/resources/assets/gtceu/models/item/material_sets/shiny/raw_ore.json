@@ -1,6 +1,8 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "gtceu:item/material_sets/shiny/raw_ore"
+    "layer0": "gtceu:item/material_sets/shiny/raw_ore",
+    "layer1": "gtceu:item/material_sets/blank",
+    "layer2": "gtceu:item/material_sets/shiny/raw_ore_overlay"
   }
 }

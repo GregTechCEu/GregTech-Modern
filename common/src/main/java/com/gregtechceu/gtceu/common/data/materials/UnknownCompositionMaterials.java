@@ -16,13 +16,18 @@ public class UnknownCompositionMaterials {
     public static void register() {
 
         WoodGas = new Material.Builder("wood_gas")
-                .gas().color(0xDECD87).buildAndRegister();
+                .gas()
+                .color(0xDECD87).secondaryColor(0xdeb287)
+                .buildAndRegister();
 
         WoodVinegar = new Material.Builder("wood_vinegar")
-                .fluid().color(0xD45500).buildAndRegister();
+                .fluid()
+                .color(0xD45500).secondaryColor(0x905800)
+                .buildAndRegister();
 
         WoodTar = new Material.Builder("wood_tar")
-                .fluid().color(0x28170B)
+                .fluid()
+                .color(0x3a271a).secondaryColor(0x28170B)
                 .flags(STICKY, FLAMMABLE).buildAndRegister();
 
         CharcoalByproducts = new Material.Builder("charcoal_byproducts")
@@ -331,7 +336,7 @@ public class UnknownCompositionMaterials {
 
         Gunpowder = new Material.Builder("gunpowder")
                 .dust(0)
-                .color(0x808080).iconSet(ROUGH)
+                .color(0xa4a4a4).secondaryColor(0x767676).iconSet(ROUGH)
                 .flags(FLAMMABLE, EXPLOSIVE, NO_SMELTING, NO_SMASHING)
                 .buildAndRegister();
 
@@ -343,12 +348,12 @@ public class UnknownCompositionMaterials {
 
         RareEarth = new Material.Builder("rare_earth")
                 .dust(0)
-                .color(0x808064).iconSet(FINE)
+                .color(0xffdc88).secondaryColor(0xe99673).iconSet(FINE)
                 .buildAndRegister();
 
         Stone = new Material.Builder("stone")
                 .dust(2)
-                .color(0xCDCDCD).iconSet(ROUGH)
+                .color(0x8f8f8f).secondaryColor(0x898989).iconSet(ROUGH)
                 .flags(MORTAR_GRINDABLE, GENERATE_GEAR, NO_SMASHING, NO_SMELTING)
                 .buildAndRegister();
 
@@ -358,7 +363,7 @@ public class UnknownCompositionMaterials {
         Glowstone = new Material.Builder("glowstone")
                 .dust(1)
                 .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(500))
-                .color(0xFFFF00).iconSet(SHINY)
+                .color(0xfcb34c).secondaryColor(0xce7533).iconSet(SHINY)
                 .flags(NO_SMASHING, GENERATE_PLATE, EXCLUDE_PLATE_COMPRESSOR_RECIPE, EXCLUDE_BLOCK_CRAFTING_BY_HAND_RECIPES)
                 .buildAndRegister();
 
@@ -388,34 +393,34 @@ public class UnknownCompositionMaterials {
 
         Collagen = new Material.Builder("collagen")
                 .dust(1)
-                .color(0x80471C).iconSet(ROUGH)
+                .color(0xffadb7).secondaryColor(0x80471C).iconSet(ROUGH)
                 .buildAndRegister();
 
         Gelatin = new Material.Builder("gelatin")
                 .dust(1)
-                .color(0x588BAE).iconSet(ROUGH)
+                .color(0xfaf7cb).secondaryColor(0x693d00).iconSet(ROUGH)
                 .buildAndRegister();
 
         Agar = new Material.Builder("agar")
                 .dust(1)
-                .color(0x4F7942).iconSet(ROUGH)
+                .color(0xbdd168).secondaryColor(0x403218).iconSet(ROUGH)
                 .buildAndRegister();
 
         Milk = new Material.Builder("milk")
                 .fluid(FluidStorageKeys.LIQUID, new FluidBuilder()
                         .temperature(295)
                         .customStill())
-                .color(0xFEFEFE).iconSet(FINE)
+                .color(0xfffbf0).secondaryColor(0xf6eac8).iconSet(FINE)
                 .buildAndRegister();
 
         Cocoa = new Material.Builder("cocoa")
                 .dust(0)
-                .color(0x643200).iconSet(FINE)
+                .color(0x976746).secondaryColor(0x301a0a).iconSet(FINE)
                 .buildAndRegister();
 
         Wheat = new Material.Builder("wheat")
                 .dust(0)
-                .color(0xFFFFC4).iconSet(FINE)
+                .color(0xdcbb65).secondaryColor(0x565138).iconSet(FINE)
                 .buildAndRegister();
 
         Meat = new Material.Builder("meat")
@@ -425,7 +430,7 @@ public class UnknownCompositionMaterials {
 
         Wood = new Material.Builder("wood")
                 .wood()
-                .color(0x643200).iconSet(WOOD)
+                .color(0xfcfcf2).secondaryColor(0x643200).iconSet(WOOD)
                 .fluidPipeProperties(340, 5, false)
                 .toolStats(ToolProperty.Builder.of(1.0F, 1.0F, 128, 1, GTToolType.SOFT_MALLET).build())
                 .flags(GENERATE_PLATE, GENERATE_ROD, GENERATE_BOLT_SCREW, GENERATE_LONG_ROD, FLAMMABLE, GENERATE_GEAR, GENERATE_FRAME)
@@ -433,7 +438,7 @@ public class UnknownCompositionMaterials {
 
         Paper = new Material.Builder("paper")
                 .dust(0)
-                .color(0xFAFAFA).iconSet(FINE)
+                .color(0xFAFAFA).secondaryColor(0x878787).iconSet(FINE)
                 .flags(GENERATE_PLATE, FLAMMABLE, NO_SMELTING, NO_SMASHING,
                         MORTAR_GRINDABLE, EXCLUDE_PLATE_COMPRESSOR_RECIPE)
                 .buildAndRegister();
@@ -536,7 +541,7 @@ public class UnknownCompositionMaterials {
 
         TreatedWood = new Material.Builder("treated_wood")
                 .wood()
-                .color(0x502800).iconSet(WOOD)
+                .color(0x644218).secondaryColor(0x4e0b00).iconSet(WOOD)
                 .fluidPipeProperties(340, 10, false)
                 .flags(GENERATE_PLATE, FLAMMABLE, GENERATE_ROD, GENERATE_FRAME)
                 .buildAndRegister();
@@ -546,5 +551,8 @@ public class UnknownCompositionMaterials {
                         .temperature(300)
                         .customStill())
                 .buildAndRegister();
+
+        PCBCoolant = new Material.Builder("pcb_coolant")
+                .fluid().color(0xD5D69C).buildAndRegister();
     }
 }
