@@ -1,0 +1,22 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:lv_lathe"
+  },
+  "items": [
+    "gtceu:lv_lathe",
+    "gtceu:mv_lathe",
+    "gtceu:hv_lathe",
+    "gtceu:ev_lathe",
+    "gtceu:iv_lathe",
+    "gtceu:luv_lathe",
+    "gtceu:zpm_lathe",
+    "gtceu:uv_lathe"
+  ],
+  "page": "gtceu:machines/lathe",
+  "position": [
+    -350,
+    150
+  ],
+  "section": "gtceu:machines"
+}

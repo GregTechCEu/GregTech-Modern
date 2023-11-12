@@ -1,0 +1,17 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:lv_steam_turbine"
+  },
+  "items": [
+    "gtceu:lv_steam_turbine",
+    "gtceu:mv_steam_turbine",
+    "gtceu:hv_steam_turbine"
+  ],
+  "page": "gtceu:machines/steam_turbine",
+  "position": [
+    -50,
+    200
+  ],
+  "section": "gtceu:machines"
+}

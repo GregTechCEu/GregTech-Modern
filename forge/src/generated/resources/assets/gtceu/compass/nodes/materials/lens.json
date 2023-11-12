@@ -4,12 +4,7 @@
     "res": "gtceu:diamond_lens"
   },
   "items": [
-    "gtceu:diamond_lens",
-    "gtceu:emerald_lens",
-    "gtceu:ruby_lens",
-    "gtceu:sapphire_lens",
-    "gtceu:nether_star_lens",
-    "gtceu:glass_lens"
+    "#forge:lenses"
   ],
   "page": "gtceu:materials/lens",
   "position": [

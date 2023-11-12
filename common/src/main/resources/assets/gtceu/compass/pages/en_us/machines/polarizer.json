@@ -1,0 +1,22 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:lv_polarizer"
+  },
+  "items": [
+    "gtceu:lv_polarizer",
+    "gtceu:mv_polarizer",
+    "gtceu:hv_polarizer",
+    "gtceu:ev_polarizer",
+    "gtceu:iv_polarizer",
+    "gtceu:luv_polarizer",
+    "gtceu:zpm_polarizer",
+    "gtceu:uv_polarizer"
+  ],
+  "page": "gtceu:machines/polarizer",
+  "position": [
+    -150,
+    150
+  ],
+  "section": "gtceu:machines"
+}

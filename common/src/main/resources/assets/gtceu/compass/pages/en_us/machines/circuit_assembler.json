@@ -1,0 +1,22 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:lv_circuit_assembler"
+  },
+  "items": [
+    "gtceu:lv_circuit_assembler",
+    "gtceu:mv_circuit_assembler",
+    "gtceu:hv_circuit_assembler",
+    "gtceu:ev_circuit_assembler",
+    "gtceu:iv_circuit_assembler",
+    "gtceu:luv_circuit_assembler",
+    "gtceu:zpm_circuit_assembler",
+    "gtceu:uv_circuit_assembler"
+  ],
+  "page": "gtceu:machines/circuit_assembler",
+  "position": [
+    -300,
+    200
+  ],
+  "section": "gtceu:machines"
+}
