@@ -4,29 +4,7 @@
     "res": "gtceu:aluminium_file"
   },
   "items": [
-    "gtceu:aluminium_file",
-    "gtceu:iron_file",
-    "gtceu:titanium_file",
-    "gtceu:neutronium_file",
-    "gtceu:duranium_file",
-    "gtceu:bronze_file",
-    "gtceu:diamond_file",
-    "gtceu:invar_file",
-    "gtceu:sterling_silver_file",
-    "gtceu:rose_gold_file",
-    "gtceu:stainless_steel_file",
-    "gtceu:steel_file",
-    "gtceu:ultimet_file",
-    "gtceu:wrought_iron_file",
-    "gtceu:tungsten_carbide_file",
-    "gtceu:damascus_steel_file",
-    "gtceu:tungsten_steel_file",
-    "gtceu:cobalt_brass_file",
-    "gtceu:vanadium_steel_file",
-    "gtceu:naquadah_alloy_file",
-    "gtceu:red_steel_file",
-    "gtceu:blue_steel_file",
-    "gtceu:hsse_file"
+    "#forge:tools/files"
   ],
   "page": "gtceu:tools/file",
   "position": [

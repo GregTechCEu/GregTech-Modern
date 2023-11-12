@@ -1,0 +1,15 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:long_distance_item_pipeline_endpoint"
+  },
+  "items": [
+    "gtceu:long_distance_item_pipeline_endpoint"
+  ],
+  "page": "gtceu:machines/ld_item_pipeline",
+  "position": [
+    -250,
+    250
+  ],
+  "section": "gtceu:machines"
+}

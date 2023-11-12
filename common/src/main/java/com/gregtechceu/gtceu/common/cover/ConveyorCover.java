@@ -15,9 +15,10 @@ import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
 import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
 import com.gregtechceu.gtceu.api.machine.ConditionalSubscriptionHandler;
 import com.gregtechceu.gtceu.api.syncdata.RequireRerender;
+import com.gregtechceu.gtceu.api.transfer.item.ItemTransferDelegate;
 import com.gregtechceu.gtceu.common.blockentity.ItemPipeBlockEntity;
 import com.gregtechceu.gtceu.common.cover.data.DistributionMode;
-import com.gregtechceu.gtceu.common.cover.data.ManualImportExportMode;
+import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
@@ -45,6 +46,7 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
@@ -66,7 +68,7 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
     @Persisted @DescSynced @Getter
     protected DistributionMode distributionMode;
     @Persisted @DescSynced @Getter
-    protected ManualImportExportMode manualImportExportMode = ManualImportExportMode.DISABLED;
+    protected ManualIOMode manualIOMode = ManualIOMode.DISABLED;
     @Persisted @Getter
     protected boolean isWorkingEnabled = true;
     protected int itemsLeftToTransferLastSecond;
@@ -97,7 +99,7 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
     }
 
     protected @Nullable IItemTransfer getOwnItemTransfer() {
-        return ItemTransferHelper.getItemTransfer(coverHolder.getLevel(), coverHolder.getPos(), attachedSide);
+        return coverHolder.getItemTransferCap(attachedSide, false);
     }
 
     protected @Nullable IItemTransfer getAdjacentItemTransfer() {
@@ -135,8 +137,8 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
         coverHolder.markDirty();
     }
 
-    protected void setManualImportExportMode(ManualImportExportMode manualImportExportMode) {
-        this.manualImportExportMode = manualImportExportMode;
+    protected void setManualIOMode(ManualIOMode manualIOMode) {
+        this.manualIOMode = manualIOMode;
         coverHolder.markDirty();
     }
 
@@ -389,7 +391,7 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
     //////////////////////////////////////
     @Override
     public Widget createUIWidget() {
-        final var group = new WidgetGroup(0, 0, 176, 135);
+        final var group = new WidgetGroup(0, 0, 176, 137);
         group.addWidget(new LabelWidget(10, 5, LocalizationUtils.format(getUITitle(), GTValues.VN[tier])));
 
         group.addWidget(new IntInputWidget(10, 20, 156, 20, () -> this.transferRate, this::setTransferRate)
@@ -408,24 +410,27 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
                 .setPressed(io == IO.IN)
                 .setHoverTooltips(LocalizationUtils.format("cover.conveyor.mode", LocalizationUtils.format(io.tooltip)));
         group.addWidget(ioModeSwitch);
-        group.addWidget(new EnumSelectorWidget<>(7, 166, 116, 20,
-                ManualImportExportMode.VALUES, ManualImportExportMode.DISABLED,
-                this::setManualImportExportMode)
-                .setHoverTooltips("cover.universal.manual_import_export.mode.description"));
 
-        if (coverHolder.getLevel().getBlockEntity(coverHolder.getPos()) instanceof ItemPipeBlockEntity ||
-                coverHolder.getLevel().getBlockEntity(coverHolder.getPos().relative(attachedSide)) instanceof ItemPipeBlockEntity) {
-            group.addWidget(new EnumSelectorWidget<>(149, 166, 20, 20,
-                    DistributionMode.VALUES, DistributionMode.INSERT_FIRST,
-                    this::setDistributionMode));
+        if (shouldDisplayDistributionMode()) {
+            group.addWidget(new EnumSelectorWidget<>(146, 67, 20, 20,
+                    DistributionMode.VALUES, distributionMode, this::setDistributionMode));
         }
 
-        group.addWidget(filterHandler.createFilterSlotUI(148, 107));
-        group.addWidget(filterHandler.createFilterConfigUI(10, 70, 156, 60));
+        group.addWidget(new EnumSelectorWidget<>(146, 107, 20, 20,
+                ManualIOMode.VALUES, manualIOMode, this::setManualIOMode)
+                .setHoverTooltips("cover.universal.manual_import_export.mode.description"));
+
+        group.addWidget(filterHandler.createFilterSlotUI(125, 108));
+        group.addWidget(filterHandler.createFilterConfigUI(10, 72, 156, 60));
 
         buildAdditionalUI(group);
 
         return group;
+    }
+
+    private boolean shouldDisplayDistributionMode() {
+        return coverHolder.getLevel().getBlockEntity(coverHolder.getPos()) instanceof ItemPipeBlockEntity ||
+                coverHolder.getLevel().getBlockEntity(coverHolder.getPos().relative(attachedSide)) instanceof ItemPipeBlockEntity;
     }
 
     @NotNull
@@ -439,5 +444,51 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
 
     protected void configureFilter() {
         // Do nothing in the base implementation. This is intended to be overridden by subclasses.
+    }
+
+
+    /////////////////////////////////////
+    //***    CAPABILITY OVERRIDE    ***//
+    /////////////////////////////////////
+
+    private final Map<Direction, IItemTransfer> itemTransferWrappers = new EnumMap<>(Direction.class);
+
+    @Override
+    public IItemTransfer getItemTransferCap(Direction side, IItemTransfer defaultValue) {
+        return itemTransferWrappers.computeIfAbsent(side, s -> new CoverableItemTransferWrapper(defaultValue));
+    }
+
+    private class CoverableItemTransferWrapper extends ItemTransferDelegate {
+        public CoverableItemTransferWrapper(IItemTransfer delegate) {
+            super(delegate);
+        }
+
+        @NotNull
+        @Override
+        public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate, boolean notifyChanges) {
+            if (io == IO.OUT && manualIOMode == ManualIOMode.DISABLED) {
+                return stack;
+            }
+            if (manualIOMode == ManualIOMode.FILTERED && !filterHandler.test(stack)) {
+                return stack;
+            }
+            return super.insertItem(slot, stack, simulate, notifyChanges);
+        }
+
+        @NotNull
+        @Override
+        public ItemStack extractItem(int slot, int amount, boolean simulate, boolean notifyChanges) {
+            if (io == IO.IN && manualIOMode == ManualIOMode.DISABLED) {
+                return ItemStack.EMPTY;
+            }
+            if (manualIOMode == ManualIOMode.FILTERED) {
+                ItemStack result = super.extractItem(slot, amount, true, notifyChanges);
+                if (result.isEmpty() || !filterHandler.test(result)) {
+                    return ItemStack.EMPTY;
+                }
+                return simulate ? result : super.extractItem(slot, amount, false, notifyChanges);
+            }
+            return super.extractItem(slot, amount, simulate, notifyChanges);
+        }
     }
 }

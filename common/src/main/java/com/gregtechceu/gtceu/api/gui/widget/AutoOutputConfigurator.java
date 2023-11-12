@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputFluid;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputItem;
-import com.lowdragmc.lowdraglib.client.scene.ISceneRenderHook;
+import com.lowdragmc.lowdraglib.client.scene.ISceneBlockRenderHook;
 import com.lowdragmc.lowdraglib.client.scene.WorldSceneRenderer;
 import com.lowdragmc.lowdraglib.gui.editor.ColorPattern;
 import com.lowdragmc.lowdraglib.gui.util.ClickData;
@@ -62,7 +62,7 @@ public class AutoOutputConfigurator extends WidgetGroup {
                             machine.getPos().south(),
                             machine.getPos().east(),
                             machine.getPos().west()
-                    ), new ISceneRenderHook() {
+                    ), new ISceneBlockRenderHook() {
                         @Override
                         @Environment(EnvType.CLIENT)
                         public void apply(boolean isTESR, RenderType layer) {

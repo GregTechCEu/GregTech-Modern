@@ -1,13 +1,13 @@
 package com.gregtechceu.gtceu.common.cover.data;
 
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
+import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 
 public enum DistributionMode implements EnumSelectorWidget.SelectableEnum {
-    ROUND_ROBIN_GLOBAL("cover.conveyor.distribution.round_robin_enhanced"),
-    ROUND_ROBIN_PRIO("cover.conveyor.distribution.round_robin"),
-    INSERT_FIRST("cover.conveyor.distribution.first_insert");
+    ROUND_ROBIN_GLOBAL("round_robin_global"),
+    ROUND_ROBIN_PRIO("round_robin_prio"),
+    INSERT_FIRST("insert_first");
 
     public static final DistributionMode[] VALUES = values();
     private static final float OFFSET = 1.0f / VALUES.length;
@@ -20,11 +20,11 @@ public enum DistributionMode implements EnumSelectorWidget.SelectableEnum {
 
     @Override
     public String getTooltip() {
-        return localeName;
+        return "cover.conveyor.distribution." + localeName;
     }
 
     @Override
     public IGuiTexture getIcon() {
-        return GuiTextures.DISTRIBUTION_MODE.getSubTexture(0, this.ordinal() * OFFSET, 1, OFFSET);
+        return new ResourceTexture("gtceu:textures/gui/icon/distribution_mode/" + localeName + ".png");
     }
 }

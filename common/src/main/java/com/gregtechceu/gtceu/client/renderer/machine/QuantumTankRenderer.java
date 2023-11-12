@@ -19,7 +19,6 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.BakedModel;
@@ -54,7 +53,8 @@ public class QuantumTankRenderer extends TieredHullMachineRenderer {
             poseStack.translate(-0.5D, -0.5D, -0.5D);
 
             FluidStack tank = FluidStack.loadFromTag(stack.getOrCreateTagElement("stored"));
-            renderTank(poseStack, buffer, Direction.NORTH, tank);
+            // Don't need to handle locked fluids here since they don't get saved to the item
+            renderTank(poseStack, buffer, Direction.NORTH, tank, FluidStack.empty());
 
             poseStack.popPose();
         }
@@ -65,38 +65,39 @@ public class QuantumTankRenderer extends TieredHullMachineRenderer {
     @Environment(EnvType.CLIENT)
     public void render(BlockEntity blockEntity, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int combinedLight, int combinedOverlay) {
         if (blockEntity instanceof IMachineBlockEntity machineBlockEntity && machineBlockEntity.getMetaMachine() instanceof QuantumTankMachine machine) {
-            renderTank(poseStack, buffer, machine.getFrontFacing(), machine.getStored());
+            renderTank(poseStack, buffer, machine.getFrontFacing(), machine.getStored(), machine.getLockedFluid().getFluid());
         }
     }
 
     @Environment(EnvType.CLIENT)
-    public void renderTank(PoseStack poseStack, MultiBufferSource buffer, Direction frontFacing, FluidStack stored) {
-        if (!stored.isEmpty()) {
-            var fluidTexture = FluidHelper.getStillTexture(stored);
-            if (fluidTexture == null) {
-                fluidTexture = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(MissingTextureAtlasSprite.getLocation());
-            }
-            poseStack.pushPose();
-            VertexConsumer builder = buffer.getBuffer(Sheets.translucentCullBlockSheet());
-            RenderBufferUtils.renderCubeFace(poseStack, builder, 2.5f / 16, 2.5f / 16, 2.5f / 16, 13.5f / 16, 13.5f / 16, 13.5f / 16, FluidHelper.getColor(stored) | 0xff000000, 0xf000f0, fluidTexture);
-            poseStack.popPose();
+    public void renderTank(PoseStack poseStack, MultiBufferSource buffer, Direction frontFacing, FluidStack stored, FluidStack locked) {
+        FluidStack fluid = !stored.isEmpty() ? stored : locked;
+        if (fluid.isEmpty()) return;
 
-            poseStack.pushPose();
-            RenderSystem.disableDepthTest();
-            poseStack.translate(frontFacing.getStepX() * -1 / 16f, frontFacing.getStepY() * -1 / 16f, frontFacing.getStepZ() * -1 / 16f);
-            RenderUtils.moveToFace(poseStack, 0, 0, 0, frontFacing);
-            if (frontFacing.getAxis() == Direction.Axis.Y) {
-                RenderUtils.rotateToFace(poseStack, frontFacing, frontFacing == Direction.UP ? Direction.SOUTH : Direction.NORTH);
-            } else {
-                RenderUtils.rotateToFace(poseStack, frontFacing, null);
-            }
-            var amount = TextFormattingUtil.formatLongToCompactString(stored.getAmount() / (FluidHelper.getBucket() / 1000), 4);
-            poseStack.scale(1f / 64, 1f / 64, 0);
-            poseStack.translate(-32, -32, 0);
-            new TextTexture(amount).draw(GuiGraphicsAccessor.create(Minecraft.getInstance(), poseStack, MultiBufferSource.immediate(Tesselator.getInstance().getBuilder())), 0, 0, 0, 24, 64, 28);
-            RenderSystem.enableDepthTest();
-            poseStack.popPose();
+        var fluidTexture = FluidHelper.getStillTexture(fluid);
+        if (fluidTexture == null) {
+            fluidTexture = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(MissingTextureAtlasSprite.getLocation());
         }
+        poseStack.pushPose();
+        VertexConsumer builder = buffer.getBuffer(Sheets.translucentCullBlockSheet());
+        RenderBufferUtils.renderCubeFace(poseStack, builder, 2.5f / 16, 2.5f / 16, 2.5f / 16, 13.5f / 16, 13.5f / 16, 13.5f / 16, FluidHelper.getColor(fluid) | 0xff000000, 0xf000f0, fluidTexture);
+        poseStack.popPose();
+
+        poseStack.pushPose();
+        RenderSystem.disableDepthTest();
+        poseStack.translate(frontFacing.getStepX() * -1 / 16f, frontFacing.getStepY() * -1 / 16f, frontFacing.getStepZ() * -1 / 16f);
+        RenderUtils.moveToFace(poseStack, 0, 0, 0, frontFacing);
+        if (frontFacing.getAxis() == Direction.Axis.Y) {
+            RenderUtils.rotateToFace(poseStack, frontFacing, frontFacing == Direction.UP ? Direction.SOUTH : Direction.NORTH);
+        } else {
+            RenderUtils.rotateToFace(poseStack, frontFacing, null);
+        }
+        var amount = stored.isEmpty() ? "*" : TextFormattingUtil.formatLongToCompactString(fluid.getAmount() / (FluidHelper.getBucket() / 1000), 4);
+        poseStack.scale(1f / 64, 1f / 64, 0);
+        poseStack.translate(-32, -32, 0);
+        new TextTexture(amount).draw(GuiGraphicsAccessor.create(Minecraft.getInstance(), poseStack, MultiBufferSource.immediate(Tesselator.getInstance().getBuilder())), 0, 0, 0, 24, 64, 28);
+        RenderSystem.enableDepthTest();
+        poseStack.popPose();
     }
 
     @Environment(EnvType.CLIENT)

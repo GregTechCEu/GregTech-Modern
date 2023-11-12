@@ -14,7 +14,6 @@ import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
-import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.util.ClickData;
 import com.lowdragmc.lowdraglib.gui.widget.ComponentPanelWidget;
@@ -191,7 +190,7 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
     public void addDisplayText(List<Component> textList) {
         IDisplayUIMachine.super.addDisplayText(textList);
         if (isFormed()){
-            textList.add(Component.translatable("gtceu.multiblock.large_boiler.temperature", (int) (currentTemperature * 274.15), (int) (maxTemperature * 274.15)));
+            textList.add(Component.translatable("gtceu.multiblock.large_boiler.temperature", (int) (currentTemperature + 274.15), (int) (maxTemperature + 274.15)));
             textList.add(Component.translatable("gtceu.multiblock.large_boiler.steam_output", currentTemperature));
 
             var throttleText = Component.translatable("gtceu.multiblock.large_boiler.throttle",

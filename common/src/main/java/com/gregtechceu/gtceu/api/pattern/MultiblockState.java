@@ -166,15 +166,15 @@ public class MultiblockState {
             } else {
                 IMultiController controller = getController();
                 if (controller != null) {
-                    if (controller.checkPatternWithLock()) {
-                        if (controller.isFormed() && state.getBlock() instanceof ActiveBlock) {
-                            LongSet activeBlocks = getMatchContext().getOrDefault("vaBlocks", LongSets.emptySet());
-                            if (activeBlocks.contains(pos.asLong())) {
-                                // fine! it's caused by active blocks.
-                                // speed up here!
-                                return;
-                            }
+                    if (controller.isFormed() && state.getBlock() instanceof ActiveBlock) {
+                        LongSet activeBlocks = getMatchContext().getOrDefault("vaBlocks", LongSets.emptySet());
+                        if (activeBlocks.contains(pos.asLong())) {
+                            // fine! it's caused by active blocks.
+                            // speed up here!
+                            return;
                         }
+                    }
+                    if (controller.checkPatternWithLock()) {
                         // refresh structure
                         controller.onStructureFormed();
                     } else {

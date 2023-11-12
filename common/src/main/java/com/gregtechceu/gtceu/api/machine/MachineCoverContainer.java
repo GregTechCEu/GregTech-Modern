@@ -8,6 +8,8 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.syncdata.EnhancedFieldManagedStorage;
 import com.gregtechceu.gtceu.api.syncdata.IEnhancedManaged;
 import com.gregtechceu.gtceu.api.syncdata.UpdateListener;
+import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
+import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.annotation.ReadOnlyManaged;
@@ -170,6 +172,16 @@ public class MachineCoverContainer implements ICoverable, IEnhancedManaged {
         if (coverBehavior != null) {
             coverBehavior.getSyncStorage().markAllDirty();
         }
+    }
+
+    @Override
+    public IItemTransfer getItemTransferCap(@Nullable Direction side, boolean useCoverCapability) {
+        return machine.getItemTransferCap(side, useCoverCapability);
+    }
+
+    @Override
+    public IFluidTransfer getFluidTransferCap(@Nullable Direction side, boolean useCoverCapability) {
+        return machine.getFluidTransferCap(side, useCoverCapability);
     }
 
     @SuppressWarnings("unused")

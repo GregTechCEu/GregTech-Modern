@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.data.lang;
 
-import com.gregtechceu.gtceu.common.data.GTCreativeModeTabs;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 import com.tterrag.registrate.providers.RegistrateLangProvider;
@@ -12,8 +11,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static com.gregtechceu.gtceu.utils.FormattingUtil.toEnglishName;
 
 /**
  * @author KilaBash
@@ -306,14 +303,14 @@ public class LangHandler {
         provider.add("cover.conveyor.mode", "Mode: %s");
         provider.add("cover.conveyor.mode.export", "Mode: Export");
         provider.add("cover.conveyor.mode.import", "Mode: Import");
-        multilineLang(provider, "cover.conveyor.distribution.round_robin_enhanced", "Distribution Mode\n§bEnhanced Round Robin§r\n§7Splits items equally to all inventories");
-        multilineLang(provider, "cover.conveyor.distribution.round_robin", "Distribution Mode\n§bRound Robin§r with Priority\n§7Tries to split items equally to inventories");
-        multilineLang(provider, "cover.conveyor.distribution.first_insert", "Distribution Mode\n§bFirst Insert§r\n§7Will insert into the first inventory it finds");
+        multilineLang(provider, "cover.conveyor.distribution.round_robin_global", "Distribution Mode: §bRound Robin\n§7Splits items equally across connected inventories");
+        multilineLang(provider, "cover.conveyor.distribution.round_robin_prio", "Distribution Mode: §bRound Robin with Priority\n§7Tries to split items across connected inventories and considers higher priorities first.\n§7Restrictive item pipes lower the priority of a path.");
+        multilineLang(provider, "cover.conveyor.distribution.insert_first", "Distribution Mode: §bPriority\n§7Will insert into the first inventory with the highest priority it can find.\n§7Restrictive item pipes lower the priority of a path.");
         multilineLang(provider, "cover.conveyor.blocks_input.enabled", "If enabled, items will not be inserted when cover is set to pull items from the inventory into pipe.\n§aEnabled");
         multilineLang(provider, "cover.conveyor.blocks_input.disabled", "If enabled, items will not be inserted when cover is set to pull items from the inventory into pipe.\n§cDisabled");
-        provider.add("cover.universal.manual_import_export.mode.disabled", "Manual I/O: Disabled");
-        provider.add("cover.universal.manual_import_export.mode.filtered", "Manual I/O: Filtered");
-        provider.add("cover.universal.manual_import_export.mode.unfiltered", "Manual I/O: Unfiltered");
+        provider.add("cover.universal.manual_import_export.mode.disabled", "Manual I/O: §bDisabled\n§7Items / Fluids will only move as specified by the cover and its filter.");
+        provider.add("cover.universal.manual_import_export.mode.filtered", "Manual I/O: §bFiltered\n§7Items / Fluids can be extracted and inserted independently of the cover mode, as long as its filter matches (if any)");
+        provider.add("cover.universal.manual_import_export.mode.unfiltered", "Manual I/O: §bUnfiltered\n§7Items / Fluids can be moved independently of the cover mode. The filter only applies to what is inserted or extracted by this cover itself.");
         multilineLang(provider, "cover.universal.manual_import_export.mode.description", "§eDisabled§r - Items/fluids will only move as specified by the cover and its filter. \n§eAllow Filtered§r - Items/fluids can be extracted and inserted independently of the cover mode, as long as its filter matches (if any). \n§eAllow Unfiltered§r - Items/fluids can be moved independently of the cover mode. Filter applies to the items inserted or extracted by this cover");
         provider.add("cover.conveyor.item_filter.title", "Item Filter");
         multiLang(provider, "cover.conveyor.ore_dictionary.title", "Ore Dictionary Name", "(use * for wildcard)");

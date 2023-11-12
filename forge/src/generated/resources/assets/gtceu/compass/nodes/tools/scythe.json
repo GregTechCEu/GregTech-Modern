@@ -4,29 +4,7 @@
     "res": "gtceu:aluminium_scythe"
   },
   "items": [
-    "gtceu:aluminium_scythe",
-    "gtceu:iron_scythe",
-    "gtceu:titanium_scythe",
-    "gtceu:neutronium_scythe",
-    "gtceu:duranium_scythe",
-    "gtceu:bronze_scythe",
-    "gtceu:diamond_scythe",
-    "gtceu:invar_scythe",
-    "gtceu:sterling_silver_scythe",
-    "gtceu:rose_gold_scythe",
-    "gtceu:stainless_steel_scythe",
-    "gtceu:steel_scythe",
-    "gtceu:ultimet_scythe",
-    "gtceu:wrought_iron_scythe",
-    "gtceu:tungsten_carbide_scythe",
-    "gtceu:damascus_steel_scythe",
-    "gtceu:tungsten_steel_scythe",
-    "gtceu:cobalt_brass_scythe",
-    "gtceu:vanadium_steel_scythe",
-    "gtceu:naquadah_alloy_scythe",
-    "gtceu:red_steel_scythe",
-    "gtceu:blue_steel_scythe",
-    "gtceu:hsse_scythe"
+    "#forge:tools/scythes"
   ],
   "page": "gtceu:tools/scythe",
   "position": [

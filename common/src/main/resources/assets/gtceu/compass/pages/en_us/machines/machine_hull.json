@@ -1,0 +1,24 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:ulv_machine_hull"
+  },
+  "items": [
+    "gtceu:ulv_machine_hull",
+    "gtceu:lv_machine_hull",
+    "gtceu:mv_machine_hull",
+    "gtceu:hv_machine_hull",
+    "gtceu:ev_machine_hull",
+    "gtceu:iv_machine_hull",
+    "gtceu:luv_machine_hull",
+    "gtceu:zpm_machine_hull",
+    "gtceu:uv_machine_hull",
+    "gtceu:uhv_machine_hull"
+  ],
+  "page": "gtceu:machines/machine_hull",
+  "position": [
+    -350,
+    0
+  ],
+  "section": "gtceu:machines"
+}

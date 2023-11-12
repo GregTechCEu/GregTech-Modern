@@ -1,0 +1,22 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:lv_brewery"
+  },
+  "items": [
+    "gtceu:lv_brewery",
+    "gtceu:mv_brewery",
+    "gtceu:hv_brewery",
+    "gtceu:ev_brewery",
+    "gtceu:iv_brewery",
+    "gtceu:luv_brewery",
+    "gtceu:zpm_brewery",
+    "gtceu:uv_brewery"
+  ],
+  "page": "gtceu:machines/brewery",
+  "position": [
+    -400,
+    50
+  ],
+  "section": "gtceu:machines"
+}

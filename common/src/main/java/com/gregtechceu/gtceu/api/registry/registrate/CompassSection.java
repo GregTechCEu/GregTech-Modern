@@ -16,6 +16,7 @@ import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -37,8 +38,8 @@ public class CompassSection {
     private final ResourceLocation sectionID;
     @Setter
     private Supplier<IGuiTexture> icon = () -> IGuiTexture.EMPTY;
-    @Setter
-    private Supplier<IGuiTexture> background = () -> IGuiTexture.EMPTY;
+    @Setter @Nullable
+    private Supplier<IGuiTexture> background = null;
     @Setter
     private int priority = 99;
     @Setter @Getter
@@ -89,7 +90,9 @@ public class CompassSection {
                 }
                 JsonObject json = new JsonObject();
                 json.add("button_texture",SimpleIGuiTextureJsonUtils.toJson(section.icon.get()));
-                json.add("background_texture",SimpleIGuiTextureJsonUtils.toJson(section.background.get()));
+                if (section.background != null) {
+                    json.add("background_texture",SimpleIGuiTextureJsonUtils.toJson(section.background.get()));
+                }
                 json.addProperty("priority", section.priority);
                 return DataProvider.saveStable(cache, json, path.resolve(resourcePath));
             }).filter(Objects::nonNull).toArray(CompletableFuture[]::new));
