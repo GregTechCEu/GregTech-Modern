@@ -35,7 +35,7 @@ public class Content {
     }
 
     public Content copy(RecipeCapability<?> capability, @Nullable ContentModifier modifier) {
-        if (modifier == null) {
+        if (modifier == null || chance == 0) {
             return new Content(capability.copyContent(content), chance, tierChanceBoost, slotName, uiName);
         } else {
             return new Content(capability.copyContent(content, modifier), chance, tierChanceBoost, slotName, uiName);
