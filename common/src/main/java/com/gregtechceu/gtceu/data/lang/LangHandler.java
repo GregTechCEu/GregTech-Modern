@@ -387,10 +387,14 @@ public class LangHandler {
         replace(provider, GTMaterials.HSSE.getUnlocalizedName(), "HSS-E");
         replace(provider, GTMaterials.HSSS.getUnlocalizedName(), "HSS-S");
         replace(provider, GTMaterials.UUMatter.getUnlocalizedName(), "UU-Matter");
+        replace(provider, GTMaterials.PCBCoolant.getUnlocalizedName(), "PCB Coolant");
         replace(provider, GTMaterials.TungstenSteel.getUnlocalizedName(), "Tungstensteel");
         replace(provider, GTMaterials.OilHeavy.getUnlocalizedName(), "Heavy Oil");
+        replace(provider, "block.gtceu.oil_heavy", "Heavy Oil");
         replace(provider, GTMaterials.OilLight.getUnlocalizedName(), "Light Oil");
+        replace(provider, "block.gtceu.oil_light", "Light Oil");
         replace(provider, GTMaterials.RawOil.getUnlocalizedName(), "Raw Oil");
+        replace(provider, "block.gtceu.oil_medium", "Raw Oil");
 
         replace(provider, GTMaterials.HydroCrackedButadiene.getUnlocalizedName(), "Hydro-Cracked Butadiene");
         replace(provider, GTMaterials.HydroCrackedButane.getUnlocalizedName(), "Hydro-Cracked Butane");
@@ -1278,7 +1282,7 @@ public class LangHandler {
      * See {@link #getMultiLang(String)}. If no multiline key is available, get single instead.
      *
      * @param key Base key of the multi lang. E.g. "terminal.fluid_prospector.tier".
-     * @returnReturns all translation components from a multi lang's sub-keys.
+     * @return Returns all translation components from a multi lang's sub-keys.
      */
     public static List<MutableComponent> getSingleOrMultiLang(String key) {
         List<MutableComponent> multiLang = getMultiLang(key);

@@ -106,6 +106,7 @@ public record MaterialIconType(String name) {
     private static final Table<MaterialIconType, MaterialIconSet, ResourceLocation> ITEM_TEXTURE_CACHE = HashBasedTable.create();
     private static final Table<MaterialIconType, MaterialIconSet, ResourceLocation> BLOCK_MODEL_CACHE = HashBasedTable.create();
     private static final Table<MaterialIconType, MaterialIconSet, ResourceLocation> BLOCK_TEXTURE_CACHE = HashBasedTable.create();
+    private static final Table<MaterialIconType, MaterialIconSet, ResourceLocation> BLOCK_TEXTURE_CACHE_SECONDARY = HashBasedTable.create();
 
     public MaterialIconType(String name) {
         this.name = CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, name);
@@ -131,8 +132,10 @@ public record MaterialIconType(String name) {
     @Nullable // Safe: only null on registration on fabric, and no "required" textures are resolved at that point.
     public ResourceLocation getBlockTexturePath(@Nonnull MaterialIconSet materialIconSet, String suffix, boolean doReadCache) {
         if (doReadCache) {
-            if (BLOCK_TEXTURE_CACHE.contains(this, materialIconSet)) {
-                return BLOCK_TEXTURE_CACHE.get(this, materialIconSet);
+            if (suffix == null || suffix.isBlank()) {
+                if (BLOCK_TEXTURE_CACHE.contains(this, materialIconSet)) return BLOCK_TEXTURE_CACHE.get(this, materialIconSet);
+            } else {
+                if (BLOCK_TEXTURE_CACHE_SECONDARY.contains(this, materialIconSet)) return BLOCK_TEXTURE_CACHE_SECONDARY.get(this, materialIconSet);
             }
         }
 
@@ -155,7 +158,11 @@ public record MaterialIconType(String name) {
             return null;
         }
         location = GTCEu.id(String.format("block/material_sets/%s/%s%s", iconSet.name, this.name, suffix));
-        BLOCK_TEXTURE_CACHE.put(this, materialIconSet, location);
+        if (suffix.isEmpty()) {
+            BLOCK_TEXTURE_CACHE.put(this, materialIconSet, location);
+        } else {
+            BLOCK_TEXTURE_CACHE_SECONDARY.put(this, materialIconSet, location);
+        }
 
         return location;
     }

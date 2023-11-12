@@ -107,7 +107,7 @@ public class PipeModel {
         if (side != null) {
             if (thickness == 1) { // full block
                 List<BakedQuad> quads = new ArrayList<>();
-                quads.add(FaceQuad.builder(side, sideSprite).cube(coreCube.inflate(-0.001)).cubeUV().tintIndex(0).bake());
+                quads.add(FaceQuad.builder(side, sideSprite).cube(coreCube).cubeUV().tintIndex(0).bake());
                 if (secondarySideSprite != null) {
                     quads.add(FaceQuad.builder(side, secondarySideSprite).cube(coreCube).cubeUV().tintIndex(0).bake());
                 }
@@ -121,7 +121,7 @@ public class PipeModel {
                     quads.add(FaceQuad.builder(side, secondaryEndSprite).cube(sideCubes.get(side)).cubeUV().tintIndex(1).bake());
                 }
                 if (endOverlaySprite != null) {
-                    quads.add(FaceQuad.builder(side, endOverlaySprite).cube(sideCubes.get(side)).cubeUV().tintIndex(1).bake());
+                    quads.add(FaceQuad.builder(side, endOverlaySprite).cube(sideCubes.get(side)).cubeUV().tintIndex(0).bake());
                 }
                 if (sideOverlaySprite != null) {
                     for (Direction face : Direction.values()) {
@@ -150,7 +150,7 @@ public class PipeModel {
                 for (Direction facing : Direction.values()) {
                     if (facing.getAxis() != face.getAxis()) {
                         if (isConnected(connections, facing)) {
-                            quads.add(FaceQuad.builder(face, sideSprite).cube(sideCubes.get(facing).inflate(-0.001)).cubeUV().tintIndex(0).bake());
+                            quads.add(FaceQuad.builder(face, sideSprite).cube(sideCubes.get(facing)).cubeUV().tintIndex(0).bake());
                             if (secondarySideSprite != null) {
                                 quads.add(FaceQuad.builder(face, secondarySideSprite).cube(sideCubes.get(facing)).cubeUV().tintIndex(0).bake());
                             }
