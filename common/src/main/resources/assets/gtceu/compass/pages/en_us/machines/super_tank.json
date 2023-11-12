@@ -1,0 +1,23 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:lv_super_tank"
+  },
+  "items": [
+    "gtceu:lv_super_tank",
+    "gtceu:mv_super_tank",
+    "gtceu:hv_super_tank",
+    "gtceu:ev_super_tank",
+    "gtceu:iv_quantum_tank",
+    "gtceu:luv_quantum_tank",
+    "gtceu:zpm_quantum_tank",
+    "gtceu:uv_quantum_tank",
+    "gtceu:uhv_quantum_tank"
+  ],
+  "page": "gtceu:machines/super_tank",
+  "position": [
+    -200,
+    300
+  ],
+  "section": "gtceu:machines"
+}

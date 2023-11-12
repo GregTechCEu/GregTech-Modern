@@ -1,0 +1,22 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:lv_fermenter"
+  },
+  "items": [
+    "gtceu:lv_fermenter",
+    "gtceu:mv_fermenter",
+    "gtceu:hv_fermenter",
+    "gtceu:ev_fermenter",
+    "gtceu:iv_fermenter",
+    "gtceu:luv_fermenter",
+    "gtceu:zpm_fermenter",
+    "gtceu:uv_fermenter"
+  ],
+  "page": "gtceu:machines/fermenter",
+  "position": [
+    -200,
+    100
+  ],
+  "section": "gtceu:machines"
+}

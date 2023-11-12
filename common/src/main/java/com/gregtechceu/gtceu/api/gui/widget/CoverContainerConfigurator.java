@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.item.ComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
 import com.gregtechceu.gtceu.common.item.CoverPlaceBehavior;
-import com.lowdragmc.lowdraglib.client.scene.ISceneRenderHook;
+import com.lowdragmc.lowdraglib.client.scene.ISceneBlockRenderHook;
 import com.lowdragmc.lowdraglib.gui.animation.Animation;
 import com.lowdragmc.lowdraglib.gui.animation.Transform;
 import com.lowdragmc.lowdraglib.gui.editor.ColorPattern;
@@ -79,7 +79,7 @@ public class CoverContainerConfigurator extends WidgetGroup {
                             coverable.getPos().south(),
                             coverable.getPos().east(),
                             coverable.getPos().west()
-                    ), new ISceneRenderHook() {
+                    ), new ISceneBlockRenderHook() {
                         @Override
                         @Environment(EnvType.CLIENT)
                         public void apply(boolean isTESR, RenderType layer) {
