@@ -123,7 +123,7 @@ public class GTDynamicResourcePack implements PackResources {
             if (subdir != null) {
                 file = parent.resolve(id.getNamespace()).resolve(subdir).resolve(id.getPath() + ".png"); // assume PNG
             } else {
-                file = parent.resolve(id.getNamespace()).resolve(id.getPath());
+                file = parent.resolve(id.getNamespace()).resolve(id.getPath()); // assume the file type is also appended if a full path is given.
             }
             Files.createDirectories(file.getParent());
             try(OutputStream output = Files.newOutputStream(file)) {

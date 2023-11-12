@@ -85,9 +85,9 @@ public class GTDynamicDataPack implements PackResources {
         try {
             Path file;
             if (subdir != null) {
-                file = parent.resolve(id.getNamespace()).resolve(subdir).resolve(id.getPath() + ".json");
+                file = parent.resolve(id.getNamespace()).resolve(subdir).resolve(id.getPath() + ".json"); // assume JSON
             } else {
-                file = parent.resolve(id.getNamespace()).resolve(id.getPath());
+                file = parent.resolve(id.getNamespace()).resolve(id.getPath()); // assume the file type is also appended if a full path is given.
             }
             Files.createDirectories(file.getParent());
             try(OutputStream output = Files.newOutputStream(file)) {
