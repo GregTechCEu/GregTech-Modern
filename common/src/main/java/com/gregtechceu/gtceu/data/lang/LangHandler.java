@@ -305,7 +305,7 @@ public class LangHandler {
         provider.add("cover.conveyor.mode.import", "Mode: Import");
         multilineLang(provider, "cover.conveyor.distribution.round_robin_global", "Distribution Mode: §bRound Robin\n§7Splits items equally across connected inventories");
         multilineLang(provider, "cover.conveyor.distribution.round_robin_prio", "Distribution Mode: §bRound Robin with Priority\n§7Tries to split items across connected inventories and considers higher priorities first.\n§7Restrictive item pipes lower the priority of a path.");
-        multilineLang(provider, "cover.conveyor.distribution.insert_first", "Distribution Mode: §bFirst Insert\n§7Will insert into the first inventory it finds");
+        multilineLang(provider, "cover.conveyor.distribution.insert_first", "Distribution Mode: §bPriority\n§7Will insert into the first inventory with the highest priority it can find.\n§7Restrictive item pipes lower the priority of a path.");
         multilineLang(provider, "cover.conveyor.blocks_input.enabled", "If enabled, items will not be inserted when cover is set to pull items from the inventory into pipe.\n§aEnabled");
         multilineLang(provider, "cover.conveyor.blocks_input.disabled", "If enabled, items will not be inserted when cover is set to pull items from the inventory into pipe.\n§cDisabled");
         provider.add("cover.universal.manual_import_export.mode.disabled", "Manual I/O: §bDisabled\n§7Items / Fluids will only move as specified by the cover and its filter.");
