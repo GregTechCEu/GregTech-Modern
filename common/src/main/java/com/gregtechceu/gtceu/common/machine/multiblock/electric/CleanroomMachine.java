@@ -7,8 +7,6 @@ import com.gregtechceu.gtceu.api.block.IFilterType;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.ICleanroomReceiver;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
-import com.gregtechceu.gtceu.common.machine.multiblock.part.DiodePartMachine;
-import com.gregtechceu.gtceu.common.machine.trait.CleanroomLogic;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
@@ -19,14 +17,23 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDisplayUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMufflerMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
-import com.gregtechceu.gtceu.api.machine.multiblock.*;
+import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
+import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
+import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
-import com.gregtechceu.gtceu.api.pattern.*;
+import com.gregtechceu.gtceu.api.pattern.BlockPattern;
+import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
+import com.gregtechceu.gtceu.api.pattern.Predicates;
+import com.gregtechceu.gtceu.api.pattern.TraceabilityPredicate;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
+import com.gregtechceu.gtceu.common.machine.electric.HullMachine;
+import com.gregtechceu.gtceu.common.machine.multiblock.part.DiodePartMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.CokeOvenMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.PrimitiveBlastFurnaceMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.PrimitivePumpMachine;
+import com.gregtechceu.gtceu.common.machine.trait.CleanroomLogic;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
@@ -53,7 +60,8 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.*;
 
-import static com.gregtechceu.gtceu.api.pattern.Predicates.*;
+import static com.gregtechceu.gtceu.api.pattern.Predicates.abilities;
+import static com.gregtechceu.gtceu.api.pattern.Predicates.states;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -158,9 +166,9 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine implemen
         List<IEnergyContainer> energyContainers = new ArrayList<>();
         Map<Long, IO> ioMap = getMultiblockState().getMatchContext().getOrCreate("ioMap", Long2ObjectMaps::emptyMap);
         for (IMultiPart part : getParts()) {
-            if (part instanceof DiodePartMachine) continue;
+            if (isPartIgnored(part)) continue;
             IO io = ioMap.getOrDefault(part.self().getPos().asLong(), IO.BOTH);
-            if(io == IO.NONE || io == IO.OUT) continue;
+            if (io == IO.NONE || io == IO.OUT) continue;
             for (var handler : part.getRecipeHandlers()) {
                 // If IO not compatible
                 if (io != IO.BOTH && handler.getHandlerIO() != IO.BOTH && io != handler.getHandlerIO()) continue;
@@ -174,6 +182,14 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine implemen
         }
         this.inputEnergyContainers = new EnergyContainerList(energyContainers);
         getRecipeLogic().setEnergyContainer(this.inputEnergyContainers);
+    }
+
+    @SuppressWarnings("RedundantIfStatement") // `return false` being a separate statement is better for readability
+    private static boolean isPartIgnored(IMultiPart part) {
+        if (part instanceof DiodePartMachine) return true;
+        if (part instanceof HullMachine) return true;
+
+        return false;
     }
 
     /**
@@ -376,7 +392,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine implemen
     @Nonnull
     protected static TraceabilityPredicate doorPredicate() {
         return Predicates.custom(blockWorldState -> blockWorldState.getBlockState().getBlock() instanceof DoorBlock,
-                () -> new BlockInfo[] {new BlockInfo(Blocks.IRON_DOOR.defaultBlockState()), new BlockInfo(Blocks.IRON_DOOR.defaultBlockState().setValue(DoorBlock.HALF, DoubleBlockHalf.UPPER))});
+                () -> new BlockInfo[]{new BlockInfo(Blocks.IRON_DOOR.defaultBlockState()), new BlockInfo(Blocks.IRON_DOOR.defaultBlockState().setValue(DoorBlock.HALF, DoubleBlockHalf.UPPER))});
     }
 
     @Nonnull
