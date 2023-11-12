@@ -4,29 +4,7 @@
     "res": "gtceu:aluminium_saw"
   },
   "items": [
-    "gtceu:aluminium_saw",
-    "gtceu:iron_saw",
-    "gtceu:titanium_saw",
-    "gtceu:neutronium_saw",
-    "gtceu:duranium_saw",
-    "gtceu:bronze_saw",
-    "gtceu:diamond_saw",
-    "gtceu:invar_saw",
-    "gtceu:sterling_silver_saw",
-    "gtceu:rose_gold_saw",
-    "gtceu:stainless_steel_saw",
-    "gtceu:steel_saw",
-    "gtceu:ultimet_saw",
-    "gtceu:wrought_iron_saw",
-    "gtceu:tungsten_carbide_saw",
-    "gtceu:damascus_steel_saw",
-    "gtceu:tungsten_steel_saw",
-    "gtceu:cobalt_brass_saw",
-    "gtceu:vanadium_steel_saw",
-    "gtceu:naquadah_alloy_saw",
-    "gtceu:red_steel_saw",
-    "gtceu:blue_steel_saw",
-    "gtceu:hsse_saw"
+    "#c:saws"
   ],
   "page": "gtceu:tools/saw",
   "position": [
