@@ -202,4 +202,18 @@ public abstract class CoverBehavior implements IEnhancedManaged, IToolGridHighLi
     public BlockState getAppearance(BlockState sourceState, BlockPos sourcePos) {
         return null;
     }
+
+    //////////////////////////////////////
+    //*******    Capabilities    *******//
+    //////////////////////////////////////
+
+    // TODO possibly refactor this in the future, using some sort of cross-platform capability-like system
+
+    public IItemTransfer getItemTransferCap(Direction side, IItemTransfer defaultValue) {
+        return defaultValue;
+    }
+
+    public IFluidTransfer getFluidTransferCap(Direction side, IFluidTransfer defaultValue) {
+        return defaultValue;
+    }
 }
