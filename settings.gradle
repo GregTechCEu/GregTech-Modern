@@ -58,7 +58,8 @@ dependencyResolutionManagement {
         def architecturyLoomVersion = "1.0-SNAPSHOT"
         def vineFlowerVersion = "1.+"
         def macheteVersion = "1.+"
-        def ldLibVersion = "1.0.20.a"
+        def ldLibVersion = "1.0.21.a"
+        def mixinextrasVersion = "0.2.0-rc.2"
 
         fabric {
             def parchment = version("parchment", parchmentVersion)
@@ -122,6 +123,10 @@ dependencyResolutionManagement {
             def configuration = version("configuration", configurationFabricFile)
             library("configuration", "curse.maven", "configuration-444699").versionRef(configuration)
 
+            def mixinextras = version("mixinextras", mixinextrasVersion)
+            library("mixinextras", "io.github.llamalad7", "mixinextras-fabric").versionRef(mixinextras)
+            library("mixinextras-common", "io.github.llamalad7", "mixinextras-common").versionRef(mixinextras)
+
             def worldStripper = version("worldStripper", worldStripperFabricFile)
             library("worldStripper", "curse.maven", "worldStripper-250603").versionRef(worldStripper)
 
@@ -171,6 +176,9 @@ dependencyResolutionManagement {
 
             def kubejs = version("kubejs", kjsVersion)
             library("kubejs", "dev.latvian.mods", "kubejs-forge").versionRef(kubejs)
+
+            def mixinextras = version("mixinextras", mixinextrasVersion)
+            library("mixinextras-forge", "io.github.llamalad7", "mixinextras-forge").versionRef(mixinextras)
 
             def configuration = version("configuration", configurationForgeFile)
             library("configuration", "curse.maven", "configuration-444699").versionRef(configuration)

@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.item.ComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
 import com.gregtechceu.gtceu.common.item.CoverPlaceBehavior;
-import com.lowdragmc.lowdraglib.client.scene.ISceneRenderHook;
+import com.lowdragmc.lowdraglib.client.scene.ISceneBlockRenderHook;
 import com.lowdragmc.lowdraglib.gui.animation.Animation;
 import com.lowdragmc.lowdraglib.gui.animation.Transform;
 import com.lowdragmc.lowdraglib.gui.editor.ColorPattern;
@@ -25,9 +25,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.phys.Vec2;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -81,7 +79,7 @@ public class CoverContainerConfigurator extends WidgetGroup {
                             coverable.getPos().south(),
                             coverable.getPos().east(),
                             coverable.getPos().west()
-                    ), new ISceneRenderHook() {
+                    ), new ISceneBlockRenderHook() {
                         @Override
                         @Environment(EnvType.CLIENT)
                         public void apply(boolean isTESR, RenderType layer) {
@@ -105,7 +103,7 @@ public class CoverContainerConfigurator extends WidgetGroup {
         if (getGui().entityPlayer instanceof ServerPlayer serverPlayer && side != null) {
             var item = transfer.getStackInSlot(0);
             if (coverable.getCoverAtSide(side) != null) {
-                coverable.removeCover(false, side);
+                coverable.removeCover(false, side, serverPlayer);
             }
             if (!item.isEmpty() && coverable.getCoverAtSide(side) == null) {
                 if (item.getItem() instanceof ComponentItem componentItem) {

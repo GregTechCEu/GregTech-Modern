@@ -1,6 +1,7 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "gtceu:item/material_sets/sand/crushed_purified"
+    "layer0": "gtceu:item/material_sets/dull/crushed_purified",
+    "layer1": "gtceu:item/material_sets/blank"
   }
 }

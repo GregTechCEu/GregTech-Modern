@@ -197,6 +197,7 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
 
     @Override
     public void clientTick() {
+        super.clientTick();
         if (previouslyMuffled != isMuffled) {
             previouslyMuffled = isMuffled;
 

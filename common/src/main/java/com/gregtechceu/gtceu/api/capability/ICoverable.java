@@ -11,6 +11,8 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
+import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
+import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.utils.RayTraceHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -61,10 +63,14 @@ public interface ICoverable extends ITickSubscription, IAppearance, IFancyConfig
 
     boolean shouldRenderBackSide();
 
+    // TODO replace getItemTransferCap and getFluidTransferCap with a cross-platform capability implementation
+    IItemTransfer getItemTransferCap(@Nullable Direction side, boolean useCoverCapability);
+    IFluidTransfer getFluidTransferCap(@Nullable Direction side, boolean useCoverCapability);
+
     /**
      * Its an internal method, you should never call it yourself.
      * <br>
-     * Use {@link ICoverable#removeCover(boolean, Direction)} and {@link ICoverable#placeCoverOnSide(Direction, ItemStack, CoverDefinition, ServerPlayer)} instead
+     * Use {@link ICoverable#removeCover(boolean, Direction, Player)} and {@link ICoverable#placeCoverOnSide(Direction, ItemStack, CoverDefinition, ServerPlayer)} instead
      * @param coverBehavior
      * @param side
      */
@@ -79,7 +85,7 @@ public interface ICoverable extends ITickSubscription, IAppearance, IFancyConfig
             return false;
         }
         if (getCoverAtSide(side) != null) {
-            removeCover(side);
+            removeCover(side, player);
         }
         coverBehavior.onAttached(itemStack, player);
         coverBehavior.onLoad();
@@ -92,7 +98,7 @@ public interface ICoverable extends ITickSubscription, IAppearance, IFancyConfig
         return true;
     }
 
-    default boolean removeCover(boolean dropItself, Direction side) {
+    default boolean removeCover(boolean dropItself, Direction side, @Nullable Player player) {
         CoverBehavior coverBehavior = getCoverAtSide(side);
         if (coverBehavior == null) {
             return false;
@@ -104,7 +110,11 @@ public interface ICoverable extends ITickSubscription, IAppearance, IFancyConfig
         coverBehavior.onRemoved();
         setCoverAtSide(null, side);
         for (ItemStack dropStack : drops) {
+            if (player != null && player.getInventory().add(dropStack))
+                continue;
+
             Block.popResource(getLevel(), getPos(), dropStack);
+
         }
         notifyBlockUpdate();
         markDirty();
@@ -112,8 +122,8 @@ public interface ICoverable extends ITickSubscription, IAppearance, IFancyConfig
         return true;
     }
 
-    default boolean removeCover(Direction side) {
-        return removeCover(true, side);
+    default boolean removeCover(Direction side, @Nullable Player player) {
+        return removeCover(true, side, player);
     }
 
     default List<CoverBehavior> getCovers() {

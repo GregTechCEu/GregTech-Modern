@@ -4,29 +4,7 @@
     "res": "gtceu:aluminium_wrench"
   },
   "items": [
-    "gtceu:aluminium_wrench",
-    "gtceu:iron_wrench",
-    "gtceu:titanium_wrench",
-    "gtceu:neutronium_wrench",
-    "gtceu:duranium_wrench",
-    "gtceu:bronze_wrench",
-    "gtceu:diamond_wrench",
-    "gtceu:invar_wrench",
-    "gtceu:sterling_silver_wrench",
-    "gtceu:rose_gold_wrench",
-    "gtceu:stainless_steel_wrench",
-    "gtceu:steel_wrench",
-    "gtceu:ultimet_wrench",
-    "gtceu:wrought_iron_wrench",
-    "gtceu:tungsten_carbide_wrench",
-    "gtceu:damascus_steel_wrench",
-    "gtceu:tungsten_steel_wrench",
-    "gtceu:cobalt_brass_wrench",
-    "gtceu:vanadium_steel_wrench",
-    "gtceu:naquadah_alloy_wrench",
-    "gtceu:red_steel_wrench",
-    "gtceu:blue_steel_wrench",
-    "gtceu:hsse_wrench"
+    "#forge:tools/wrenches"
   ],
   "page": "gtceu:tools/wrench",
   "position": [

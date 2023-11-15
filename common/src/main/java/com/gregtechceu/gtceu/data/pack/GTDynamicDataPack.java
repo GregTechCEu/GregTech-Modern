@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.data.pack;
 
 import com.google.common.collect.Sets;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.common.data.GTRecipes;
@@ -14,6 +15,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackResources;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.metadata.MetadataSectionSerializer;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
@@ -64,9 +66,22 @@ public class GTDynamicDataPack implements PackResources {
         }
     }
 
-    private static void writeJson(ResourceLocation id, String subdir, Path parent, JsonObject json){
+    /**
+     * if subdir is null, no file ending is appended.
+     * @param id the resource location of the file to be written.
+     * @param subdir a nullable subdirectory for the data.
+     * @param parent the parent folder where to write data to.
+     * @param json the json to write.
+     */
+    @ApiStatus.Internal
+    public static void writeJson(ResourceLocation id, @Nullable String subdir, Path parent, JsonElement json) {
         try {
-            Path file = parent.resolve(id.getNamespace()).resolve(subdir).resolve(id.getPath() + ".json");
+            Path file;
+            if (subdir != null) {
+                file = parent.resolve(id.getNamespace()).resolve(subdir).resolve(id.getPath() + ".json"); // assume JSON
+            } else {
+                file = parent.resolve(id.getNamespace()).resolve(id.getPath()); // assume the file type is also appended if a full path is given.
+            }
             Files.createDirectories(file.getParent());
             try(OutputStream output = Files.newOutputStream(file)) {
                 output.write(json.toString().getBytes());
@@ -111,7 +126,7 @@ public class GTDynamicDataPack implements PackResources {
     @Override
     public Collection<ResourceLocation> getResources(PackType type, String namespace, String path, Predicate<ResourceLocation> filter) {
         if (type == PackType.SERVER_DATA)
-            return DATA.keySet().stream().filter(loc -> loc.getPath().startsWith(path) && filter.test(loc)).collect(Collectors.toList());
+            return DATA.keySet().stream().filter(loc -> loc.getPath().startsWith(path.endsWith("/") ? path : path + "/") && filter.test(loc)).collect(Collectors.toList());
         return Collections.emptyList();//LANG.keySet().stream().filter(loc -> loc.getPath().startsWith(path) && filter.test(loc.getPath())).collect(Collectors.toList());
     }
 

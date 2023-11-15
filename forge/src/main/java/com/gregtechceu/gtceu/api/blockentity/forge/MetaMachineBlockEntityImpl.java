@@ -117,7 +117,7 @@ public class MetaMachineBlockEntityImpl extends MetaMachineBlockEntity {
                     ));
                 }
             }
-            var transfer = machine.getItemTransferCap(side);
+            var transfer = machine.getItemTransferCap(side, true);
             if (transfer != null) {
                 return ForgeCapabilities.ITEM_HANDLER.orEmpty(cap, LazyOptional.of(() -> ItemTransferHelperImpl.toItemHandler(transfer)));
             }
@@ -134,7 +134,7 @@ public class MetaMachineBlockEntityImpl extends MetaMachineBlockEntity {
                     ));
                 }
             }
-            var transfer = machine.getFluidTransferCap(side);
+            var transfer = machine.getFluidTransferCap(side, true);
             if (transfer != null) {
                 return ForgeCapabilities.FLUID_HANDLER.orEmpty(cap, LazyOptional.of(() -> FluidTransferHelperImpl.toFluidHandler(transfer)));
             }
@@ -149,11 +149,11 @@ public class MetaMachineBlockEntityImpl extends MetaMachineBlockEntity {
             }
         } else if (cap == GTCapability.CAPABILITY_LASER) {
             if (machine instanceof ILaserContainer energyContainer) {
-                return GTCapability.CAPABILITY_ENERGY_CONTAINER.orEmpty(cap, LazyOptional.of(() -> energyContainer));
+                return GTCapability.CAPABILITY_LASER.orEmpty(cap, LazyOptional.of(() -> energyContainer));
             }
             var list = machine.getTraits().stream().filter(ILaserContainer.class::isInstance).filter(t -> t.hasCapability(side)).map(ILaserContainer.class::cast).toList();
             if (!list.isEmpty()) {
-                return GTCapability.CAPABILITY_ENERGY_CONTAINER.orEmpty(cap, LazyOptional.of(() -> list.size() == 1 ? list.get(0) : new LaserContainerList(list)));
+                return GTCapability.CAPABILITY_LASER.orEmpty(cap, LazyOptional.of(() -> list.size() == 1 ? list.get(0) : new LaserContainerList(list)));
             }
 
         }

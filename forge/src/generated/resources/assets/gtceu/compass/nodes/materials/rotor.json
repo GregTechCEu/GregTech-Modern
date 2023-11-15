@@ -4,20 +4,7 @@
     "res": "gtceu:chromium_rotor"
   },
   "items": [
-    "gtceu:chromium_rotor",
-    "gtceu:darmstadtium_rotor",
-    "gtceu:iron_rotor",
-    "gtceu:lead_rotor",
-    "gtceu:tin_rotor",
-    "gtceu:titanium_rotor",
-    "gtceu:bronze_rotor",
-    "gtceu:stainless_steel_rotor",
-    "gtceu:steel_rotor",
-    "gtceu:osmiridium_rotor",
-    "gtceu:tungsten_steel_rotor",
-    "gtceu:naquadah_alloy_rotor",
-    "gtceu:rhodium_plated_palladium_rotor",
-    "gtceu:hsss_rotor"
+    "#forge:rotors"
   ],
   "page": "gtceu:materials/rotor",
   "position": [

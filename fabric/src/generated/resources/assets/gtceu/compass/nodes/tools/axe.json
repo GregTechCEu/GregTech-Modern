@@ -4,29 +4,7 @@
     "res": "gtceu:aluminium_axe"
   },
   "items": [
-    "gtceu:aluminium_axe",
-    "gtceu:iron_axe",
-    "gtceu:titanium_axe",
-    "gtceu:neutronium_axe",
-    "gtceu:duranium_axe",
-    "gtceu:bronze_axe",
-    "gtceu:diamond_axe",
-    "gtceu:invar_axe",
-    "gtceu:sterling_silver_axe",
-    "gtceu:rose_gold_axe",
-    "gtceu:stainless_steel_axe",
-    "gtceu:steel_axe",
-    "gtceu:ultimet_axe",
-    "gtceu:wrought_iron_axe",
-    "gtceu:tungsten_carbide_axe",
-    "gtceu:damascus_steel_axe",
-    "gtceu:tungsten_steel_axe",
-    "gtceu:cobalt_brass_axe",
-    "gtceu:vanadium_steel_axe",
-    "gtceu:naquadah_alloy_axe",
-    "gtceu:red_steel_axe",
-    "gtceu:blue_steel_axe",
-    "gtceu:hsse_axe"
+    "#minecraft:axes"
   ],
   "page": "gtceu:tools/axe",
   "position": [

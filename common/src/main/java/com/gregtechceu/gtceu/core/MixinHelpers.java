@@ -9,15 +9,26 @@ import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.fluids.GTFluid;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorage;
+import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.client.renderer.block.MaterialBlockRenderer;
+import com.gregtechceu.gtceu.client.renderer.item.TagPrefixItemRenderer;
+import com.gregtechceu.gtceu.client.renderer.item.ToolItemRenderer;
 import com.gregtechceu.gtceu.common.data.GTRecipes;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.mixins.BlockBehaviourAccessor;
 import com.gregtechceu.gtceu.data.pack.GTDynamicDataPack;
+import com.gregtechceu.gtceu.data.pack.GTDynamicResourcePack;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
+import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
+import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import dev.architectury.injectables.annotations.ExpectPlatform;
+import net.minecraft.core.Registry;
 import net.minecraft.data.loot.BlockLoot;
+import net.minecraft.data.models.model.DelegatedModel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackResources;
 import net.minecraft.tags.BlockTags;
@@ -25,13 +36,13 @@ import net.minecraft.tags.TagEntry;
 import net.minecraft.tags.TagKey;
 import net.minecraft.tags.TagLoader;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class MixinHelpers {
@@ -78,7 +89,7 @@ public class MixinHelpers {
         throw new AssertionError();
     }
 
-    public static List<PackResources> addDynamicData(Collection<PackResources> packs) {
+    public static List<PackResources> addDynamicDataPack(Collection<PackResources> packs) {
         List<PackResources> packResources = new ArrayList<>(packs);
         // Clear old data
         GTDynamicDataPack.clearServer();
@@ -92,5 +103,51 @@ public class MixinHelpers {
         // Load the data
         packResources.add(new GTDynamicDataPack("gtceu:dynamic_data", AddonFinder.getAddons().stream().map(IGTAddon::addonModId).collect(Collectors.toSet())));
         return packResources;
+    }
+
+    public static List<PackResources> addDynamicResourcePack(Collection<PackResources> packs) {
+        List<PackResources> packResources = new ArrayList<>(packs);
+        // Clear old data
+        GTDynamicResourcePack.clearClient();
+
+        // Register recipes & unification data again
+        long startTime = System.currentTimeMillis();
+        MaterialBlockRenderer.reinitModels();
+        TagPrefixItemRenderer.reinitModels();
+        ToolItemRenderer.reinitModels();
+        registerMaterialFluidModels();
+        GTCEu.LOGGER.info("GregTech Model loading took {}ms", System.currentTimeMillis() - startTime);
+
+        // Load the data
+        packResources.add(new GTDynamicResourcePack("gtceu:dynamic_assets", AddonFinder.getAddons().stream().map(IGTAddon::addonModId).collect(Collectors.toSet())));
+        return packResources;
+    }
+
+    /**
+     * register fluid models for materials
+     */
+    public static void registerMaterialFluidModels() {
+        for (var material : GTRegistries.MATERIALS) {
+            var fluidProperty = material.getProperty(PropertyKey.FLUID);
+            if (fluidProperty == null) continue;
+
+            for (FluidStorageKey key : FluidStorageKey.allKeys()) {
+                FluidStorage storage = fluidProperty.getStorage();
+                Fluid fluid = storage.get(key);
+                if (fluid instanceof GTFluid gtFluid) {
+                    FluidStack testFor = FluidStack.create(gtFluid, FluidHelper.getBucket());
+                    GTDynamicResourcePack.addItemModel(
+                            Registry.ITEM.getKey(gtFluid.getBucket()),
+                            new DelegatedModel(GTCEu.id("item/bucket/" + (FluidHelper.isLighterThanAir(testFor) ? "bucket_gas" : "bucket")))
+                    );
+                }
+            }
+        }
+    }
+
+    // unused on purpose. Do not call, will destroy ram usage.
+    public static void initializeDynamicTextures() {
+        //MaterialBlockRenderer.initTextures();
+        //TagPrefixItemRenderer.initTextures();
     }
 }

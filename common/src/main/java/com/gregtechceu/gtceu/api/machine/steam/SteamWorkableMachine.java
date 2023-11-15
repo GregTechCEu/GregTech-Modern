@@ -141,6 +141,7 @@ public abstract class SteamWorkableMachine extends SteamMachine implements IReci
 
     @Override
     public void clientTick() {
+        super.clientTick();
         if (previouslyMuffled != isMuffled) {
             previouslyMuffled = isMuffled;
 

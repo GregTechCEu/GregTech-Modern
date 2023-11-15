@@ -29,14 +29,13 @@ import com.gregtechceu.gtceu.common.cover.ItemFilterCover;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
-import com.lowdragmc.lowdraglib.misc.FluidTransferList;
-import com.lowdragmc.lowdraglib.misc.ItemTransferList;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import com.lowdragmc.lowdraglib.utils.DummyWorld;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 import lombok.Getter;
 import lombok.Setter;
@@ -227,6 +226,10 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
                 }
             }
             return subscription;
+        } else if (getLevel() instanceof DummyWorld) {
+            var subscription = new TickableSubscription(runnable);
+            waitingToAdd.add(subscription);
+            return subscription;
         }
         return null;
     }
@@ -238,6 +241,26 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
     }
 
     public final void serverTick() {
+        executeTick();
+        if (serverTicks.isEmpty() && waitingToAdd.isEmpty() && !isInValid()) {
+            getLevel().setBlockAndUpdate(getPos(), getBlockState().setValue(BlockProperties.SERVER_TICK, false));
+        }
+    }
+
+    public boolean isFirstDummyWorldTick = true;
+
+    @Environment(EnvType.CLIENT)
+    public void clientTick() {
+        if (getLevel() instanceof DummyWorld) {
+            if (isFirstDummyWorldTick) {
+                isFirstDummyWorldTick = false;
+                onLoad();
+            }
+            executeTick();
+        }
+    }
+
+    private void executeTick() {
         if (!waitingToAdd.isEmpty()) {
             serverTicks.addAll(waitingToAdd);
             waitingToAdd.clear();
@@ -253,14 +276,6 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
                 iter.remove();
             }
         }
-        if (serverTicks.isEmpty() && waitingToAdd.isEmpty() && !isInValid()) {
-            getLevel().setBlockAndUpdate(getPos(), getBlockState().setValue(BlockProperties.SERVER_TICK, false));
-        }
-    }
-
-    @Environment(EnvType.CLIENT)
-    public void clientTick() {
-
     }
 
     //////////////////////////////////////
@@ -298,7 +313,7 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
         } else if (toolType == GTToolType.CROWBAR) {
             if (coverBehavior != null) {
                 if (!isRemote()) {
-                    getCoverContainer().removeCover(gridSide);
+                    getCoverContainer().removeCover(gridSide, playerIn);
                 }
                 return InteractionResult.CONSUME;
             }
@@ -546,29 +561,47 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
     }
 
     @Nullable
-    public ItemTransferList getItemTransferCap(@Nullable Direction side) {
-        var list = getTraits().stream().filter(IItemTransfer.class::isInstance).filter(t -> t.hasCapability(side)).map(IItemTransfer.class::cast).toList();
-        if (!list.isEmpty()) {
-            var io = IO.BOTH;
-            if (side != null && this instanceof IAutoOutputItem autoOutput && autoOutput.getOutputFacingItems() == side && !autoOutput.isAllowInputFromOutputSideItems()) {
-                io = IO.OUT;
-            }
-            return new IOItemTransferList(list, io, getItemCapFilter(side));
+    public IItemTransfer getItemTransferCap(@Nullable Direction side, boolean useCoverCapability) {
+        var list = getTraits().stream()
+                .filter(IItemTransfer.class::isInstance)
+                .filter(t -> t.hasCapability(side))
+                .map(IItemTransfer.class::cast)
+                .toList();
+
+        if (list.isEmpty()) return null;
+
+        var io = IO.BOTH;
+        if (side != null && this instanceof IAutoOutputItem autoOutput && autoOutput.getOutputFacingItems() == side && !autoOutput.isAllowInputFromOutputSideItems()) {
+            io = IO.OUT;
         }
-        return null;
+
+        IOItemTransferList transferList = new IOItemTransferList(list, io, getItemCapFilter(side));
+        if (!useCoverCapability || side == null) return transferList;
+
+        CoverBehavior cover = getCoverContainer().getCoverAtSide(side);
+        return cover != null ? cover.getItemTransferCap(side, transferList) : transferList;
     }
 
     @Nullable
-    public FluidTransferList getFluidTransferCap(@Nullable Direction side) {
-        var list = getTraits().stream().filter(IFluidTransfer.class::isInstance).filter(t -> t.hasCapability(side)).map(IFluidTransfer.class::cast).toList();
-        if (!list.isEmpty()) {
-            var io = IO.BOTH;
-            if (side != null && this instanceof IAutoOutputFluid autoOutput && autoOutput.getOutputFacingFluids() == side && !autoOutput.isAllowInputFromOutputSideFluids()) {
-                io = IO.OUT;
-            }
-            return new IOFluidTransferList(list, io, getFluidCapFilter(side));
+    public IFluidTransfer getFluidTransferCap(@Nullable Direction side, boolean useCoverCapability) {
+        var list = getTraits().stream()
+                .filter(IFluidTransfer.class::isInstance)
+                .filter(t -> t.hasCapability(side))
+                .map(IFluidTransfer.class::cast)
+                .toList();
+
+        if (list.isEmpty()) return null;
+
+        var io = IO.BOTH;
+        if (side != null && this instanceof IAutoOutputFluid autoOutput && autoOutput.getOutputFacingFluids() == side && !autoOutput.isAllowInputFromOutputSideFluids()) {
+            io = IO.OUT;
         }
-        return null;
+
+        IOFluidTransferList transferList = new IOFluidTransferList(list, io, getFluidCapFilter(side));
+        if (!useCoverCapability || side == null) return transferList;
+
+        CoverBehavior cover = getCoverContainer().getCoverAtSide(side);
+        return cover != null ? cover.getFluidTransferCap(side, transferList) : transferList;
     }
 
     //////////////////////////////////////

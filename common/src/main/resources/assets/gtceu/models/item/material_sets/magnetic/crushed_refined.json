@@ -1,6 +1,6 @@
 {
   "parent": "gtceu:item/material_sets/dull/crushed_refined",
   "textures": {
-    "layer1": "gtceu:item/material_sets/magnetic/magnetic_overlay"
+    "layer2": "gtceu:item/material_sets/magnetic/magnetic_overlay"
   }
 }

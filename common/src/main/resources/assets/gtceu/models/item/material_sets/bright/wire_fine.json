@@ -1,0 +1,6 @@
+{
+  "parent": "gtceu:item/material_sets/shiny/wire_fine",
+  "textures": {
+    "layer2": "gtceu:item/material_sets/bright/wire_fine_overlay"
+  }
+}

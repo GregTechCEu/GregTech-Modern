@@ -82,6 +82,10 @@ public abstract class FilterHandler<T, F extends Filter<T, F>> implements IEnhan
         return this.filter;
     }
 
+    public boolean test(T resource) {
+        return getFilter().test(resource);
+    }
+
     public FilterHandler<T, F> onFilterLoaded(Consumer<F> onFilterLoaded) {
         this.onFilterLoaded = onFilterLoaded;
         return this;

@@ -1,7 +1,6 @@
 {
   "parent": "gtceu:item/material_sets/dull/gem_chipped",
   "textures": {
-    "layer0": "gtceu:item/material_sets/magnetic/gem_chipped",
-    "layer1": "gtceu:item/material_sets/magnetic/magnetic_overlay"
+    "layer3": "gtceu:item/material_sets/magnetic/magnetic_overlay"
   }
 }

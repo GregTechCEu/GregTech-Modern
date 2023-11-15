@@ -19,7 +19,7 @@ public class OrganicChemistryMaterials {
         SiliconeRubber = new Material.Builder("silicone_rubber")
                 .polymer()
                 .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(900))
-                .color(0xDCDCDC)
+                .color(0xF0F0F0).secondaryColor(0xE8E8E0)
                 .flags(GENERATE_GEAR, GENERATE_RING, GENERATE_FOIL)
                 .components(Carbon, 2, Hydrogen, 6, Oxygen, 1, Silicon, 1)
                 .buildAndRegister();
@@ -33,13 +33,13 @@ public class OrganicChemistryMaterials {
 
         RawRubber = new Material.Builder("raw_rubber")
                 .polymer()
-                .color(0xCCC789)
+                .color(0x54503D).secondaryColor(0x54403D)
                 .components(Carbon, 5, Hydrogen, 8)
                 .buildAndRegister();
 
         RawStyreneButadieneRubber = new Material.Builder("raw_styrene_butadiene_rubber")
                 .dust()
-                .color(0x54403D).iconSet(SHINY)
+                .color(0x54403D).secondaryColor(0x241520).iconSet(SHINY)
                 .flags(DISABLE_DECOMPOSITION, FLAMMABLE)
                 .components(Carbon, 20, Hydrogen, 26)
                 .buildAndRegister()
@@ -48,7 +48,7 @@ public class OrganicChemistryMaterials {
         StyreneButadieneRubber = new Material.Builder("styrene_butadiene_rubber")
                 .polymer()
                 .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(1000))
-                .color(0x211A18).iconSet(SHINY)
+                .color(0x34312b).secondaryColor(0x110B09).iconSet(SHINY)
                 .flags(GENERATE_FOIL, GENERATE_RING)
                 .components(Carbon, 20, Hydrogen, 26)
                 .buildAndRegister()
@@ -72,7 +72,7 @@ public class OrganicChemistryMaterials {
         PolyvinylChloride = new Material.Builder("polyvinyl_chloride")
                 .polymer()
                 .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(373))
-                .color(0xD7E6E6)
+                .color(0xFF9955)
                 .appendFlags(EXT_METAL, GENERATE_FOIL)
                 .components(Carbon, 2, Hydrogen, 3, Chlorine, 1)
                 .itemPipeProperties(512, 4)
@@ -147,7 +147,7 @@ public class OrganicChemistryMaterials {
 
         Sugar = new Material.Builder("sugar")
                 .gem(1)
-                .color(0xFAFAFA).iconSet(FINE)
+                .color(0xFFFFFF).secondaryColor(0x545468).iconSet(FINE)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Carbon, 6, Hydrogen, 12, Oxygen, 6)
                 .buildAndRegister();
@@ -485,7 +485,7 @@ public class OrganicChemistryMaterials {
         Rubber = new Material.Builder("rubber")
                 .polymer(0)
                 .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(400))
-                .color(0x000000).iconSet(SHINY)
+                .color(0x353529).secondaryColor(0x080808).iconSet(SHINY)
                 .toolStats(ToolProperty.Builder.of(1.0F, 1.0F, 128, 1, GTToolType.SOFT_MALLET).build())
                 .flags(GENERATE_GEAR, GENERATE_RING, GENERATE_FOIL, GENERATE_BOLT_SCREW)
                 .components(Carbon, 5, Hydrogen, 8)
@@ -533,5 +533,21 @@ public class OrganicChemistryMaterials {
                 .flags(GENERATE_PLATE, DISABLE_DECOMPOSITION, NO_SMASHING)
                 .components(Butyraldehyde, 1, PolyvinylAcetate, 1)
                 .buildAndRegister();
+
+        Biphenyl = new Material.Builder("biphenyl")
+                .dust()
+                .color(0x8B8C4F).iconSet(FINE)
+                .flags(DISABLE_DECOMPOSITION)
+                .components(Carbon, 12, Hydrogen, 10)
+                .buildAndRegister()
+                .setFormula("(C6H5)2", true);
+
+        PolychlorinatedBiphenyl = new Material.Builder("polychlorinated_biphenyl")
+                .fluid()
+                .color(0xCACC0E)
+                .flags(DISABLE_DECOMPOSITION)
+                .components(Carbon, 12, Hydrogen, 8, Chlorine, 2)
+                .buildAndRegister()
+                .setFormula("(C6H4Cl)2", true);
     }
 }

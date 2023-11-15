@@ -31,32 +31,23 @@ import org.jetbrains.annotations.Nullable;
 @MethodsReturnNonnullByDefault
 public class LaserPipeBlock extends PipeBlock<LaserPipeType, LaserPipeNet.LaserData, LevelLaserPipeNet> {
 
-    public final DyeColor color;
     public final PipeBlockRenderer renderer;
     public final PipeModel model;
 
-    public LaserPipeBlock(Properties properties, DyeColor color) {
-        super(properties, LaserPipeType.NORMAL);
-        this.color = color;
-        this.model = new PipeModel(LaserPipeType.NORMAL.getThickness(), () -> GTCEu.id("block/pipe/pipe_laser_side"), () -> GTCEu.id("block/pipe/pipe_laser_in"));
+    public LaserPipeBlock(Properties properties, LaserPipeType type) {
+        super(properties, type);
+        this.model = new PipeModel(LaserPipeType.NORMAL.getThickness(), () -> GTCEu.id("block/pipe/pipe_laser_side"), () -> GTCEu.id("block/pipe/pipe_laser_in"), null, null);
         this.renderer = new PipeBlockRenderer(this.model);
     }
 
     @Environment(EnvType.CLIENT)
     public static BlockColor tintedColor() {
         return (blockState, level, blockPos, index) -> {
-            if (blockState.getBlock() instanceof LaserPipeBlock block) {
-                if (blockPos != null && level != null && level.getBlockEntity(blockPos) instanceof PipeBlockEntity<?,?> pipe && pipe.isPainted()) {
-                    return pipe.getRealColor();
-                }
-                return block.tinted(blockState, level, blockPos, index);
+            if (blockPos != null && level != null && level.getBlockEntity(blockPos) instanceof PipeBlockEntity<?,?> pipe && pipe.isPainted()) {
+                return pipe.getRealColor();
             }
             return -1;
         };
-    }
-
-    public int tinted(BlockState blockState, @Nullable BlockAndTintGetter blockAndTintGetter, @Nullable BlockPos blockPos, int index) {
-        return color.getTextColor();
     }
 
     @Override

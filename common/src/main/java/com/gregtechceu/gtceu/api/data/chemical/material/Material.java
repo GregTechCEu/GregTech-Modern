@@ -282,8 +282,16 @@ public class Material implements Comparable<Material> {
         return materialInfo.color | 0xff000000;
     }
 
+    public int getMaterialSecondaryARGB() {
+        return materialInfo.secondaryColor | 0xff000000;
+    }
+
     public int getMaterialRGB() {
         return materialInfo.color;
+    }
+
+    public int getMaterialSecondaryRGB() {
+        return materialInfo.secondaryColor;
     }
 
     public boolean hasFluidColor() {
@@ -755,6 +763,18 @@ public class Material implements Comparable<Material> {
             return this;
         }
 
+        /**
+         * Set the secondary color of this Material.<br>
+         * Defaults to 0xFFFFFF unless {@link Builder#colorAverage()} was called, where
+         * it will be a weighted average of the components of the Material.
+         *
+         * @param color         The RGB-formatted Color.
+         */
+        public Builder secondaryColor(int color) {
+            this.materialInfo.secondaryColor = color;
+            return this;
+        }
+
         public Builder colorAverage() {
             this.averageRGB = true;
             return this;
@@ -1035,6 +1055,14 @@ public class Material implements Comparable<Material> {
          * Default: 0xFFFFFF if no Components, otherwise it will be the average of Components.
          */
         private int color = -1;
+
+        /**
+         * The secondary color of this Material.
+         * If this is default, then it's not used.
+         * <p>
+         * Default: 0xFFFFFF if no Components, otherwise it will be the average of Components.
+         */
+        private int secondaryColor = -1;
 
         /**
          * The color of this Material.

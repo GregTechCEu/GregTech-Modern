@@ -108,7 +108,7 @@ public class MetaMachineBlockEntityImpl extends MetaMachineBlockEntity {
                     return ItemTransferHelperImpl.toItemVariantStorage(new LDItemEndpointMachine.ItemHandlerWrapper(transfer));
                 }
             }
-            var transfer = ((IMachineBlockEntity)blockEntity).getMetaMachine().getItemTransferCap(side);
+            var transfer = ((IMachineBlockEntity)blockEntity).getMetaMachine().getItemTransferCap(side, true);
             return transfer == null ? null : ItemTransferHelperImpl.toItemVariantStorage(transfer);
         }, type);
         FluidStorage.SIDED.registerForBlockEntity((blockEntity, side) -> {
@@ -122,7 +122,7 @@ public class MetaMachineBlockEntityImpl extends MetaMachineBlockEntity {
                     return FluidTransferHelperImpl.toFluidVariantStorage(new LDFluidEndpointMachine.FluidHandlerWrapper(transfer));
                 }
             }
-            var transfer = ((IMachineBlockEntity)blockEntity).getMetaMachine().getFluidTransferCap(side);
+            var transfer = ((IMachineBlockEntity)blockEntity).getMetaMachine().getFluidTransferCap(side, true);
             return transfer == null ? null : FluidTransferHelperImpl.toFluidVariantStorage(transfer);
         }, type);
         GTCapability.CAPABILITY_LASER.registerForBlockEntity((blockEntity, side) -> {
