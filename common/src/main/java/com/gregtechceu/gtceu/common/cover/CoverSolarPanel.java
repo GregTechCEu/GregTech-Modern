@@ -54,7 +54,6 @@ public class CoverSolarPanel extends CoverBehavior {
             IEnergyContainer energyContainer = getEnergyContainer();
             if (energyContainer != null) {
                 energyContainer.acceptEnergyFromNetwork(null, EUt, 1);
-                GTCEu.LOGGER.info("yes, i am inserting power into this. if not appear, the canSeeSunClearly function broke.");
             }
         }
 
