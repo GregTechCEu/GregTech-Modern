@@ -346,13 +346,17 @@ public class GTUtil {
             return false;
         }
         Biome biome = world.getBiome(blockPos.above()).value();
-        if (!world.isRaining()) {
+        if (world.isRaining()) {
             if (biome.warmEnoughToRain(blockPos.above()) || biome.coldEnoughToSnow(blockPos.above())) {
                 return false;
             }
         }
 
-        GTCEu.LOGGER.info(String.valueOf(world.isDay()));
+
+        if (world.getBiome(blockPos.above()).is(Biomes.THE_END.registry())) {
+            return false;
+        };
+
         return world.isDay();
 
     }
