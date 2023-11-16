@@ -4,9 +4,13 @@ import com.google.common.annotations.VisibleForTesting;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.gui.fancy.IFancyUIProvider;
+import com.gregtechceu.gtceu.api.gui.fancy.TooltipsPanel;
 import com.gregtechceu.gtceu.api.machine.ConditionalSubscriptionHandler;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDisplayUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
@@ -17,13 +21,18 @@ import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
+import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
+import com.lowdragmc.lowdraglib.gui.widget.*;
+import com.lowdragmc.lowdraglib.syncdata.annotation.LazyManaged;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
 import lombok.Getter;
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.Style;
+import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.math.BigInteger;
@@ -33,8 +42,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-public class PowerSubstationMachine extends WorkableMultiblockMachine implements IDisplayUIMachine {
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(PowerSubstationMachine.PowerStationEnergyBank.class, WorkableMultiblockMachine.MANAGED_FIELD_HOLDER);
+public class PowerSubstationMachine extends WorkableMultiblockMachine implements IFancyUIMachine, IDisplayUIMachine {
+    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(PowerSubstationMachine.class, WorkableMultiblockMachine.MANAGED_FIELD_HOLDER);
 
     // Structure Constants
     public static final int MAX_BATTERY_LAYERS = 18;
@@ -68,7 +77,8 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine implements
 
     public PowerSubstationMachine(IMachineBlockEntity holder) {
         super(holder);
-        this.tickSubscription = new ConditionalSubscriptionHandler(this, this::transferEnergyTick, this::isSubscriptionActive);
+        this.tickSubscription = new ConditionalSubscriptionHandler(this, this::transferEnergyTick, this::isFormed);
+        this.energyBank = new PowerStationEnergyBank(this, List.of());
     }
 
     @Override
@@ -156,7 +166,7 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine implements
                 netIOLastSec = 0;
             }
 
-            if (isWorkingEnabled()) {
+            if (isWorkingEnabled() && isFormed()) {
                 // Bank from Energy Input Hatches
                 long energyBanked = energyBank.fill(inputHatches.getEnergyStored());
                 inputHatches.changeEnergy(-energyBanked);
@@ -178,6 +188,24 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine implements
     public void addDisplayText(List<Component> textList) {
         IDisplayUIMachine.super.addDisplayText(textList);
         if (isFormed()) {
+            if (!isWorkingEnabled()) {
+                textList.add(Component.translatable("gtceu.multiblock.work_paused"));
+
+            } else if (isActive()) {
+                textList.add(Component.translatable("gtceu.multiblock.running"));
+                int currentProgress = (int) (recipeLogic.getProgressPercent() * 100);
+//                if (this.recipeMapWorkable.getParallelLimit() != 1) {
+//                    textList.add(Component.translatable("gtceu.multiblock.parallel", this.recipeMapWorkable.getParallelLimit()));
+//                }
+                textList.add(Component.translatable("gtceu.multiblock.progress", currentProgress));
+            } else {
+                textList.add(Component.translatable("gtceu.multiblock.idling"));
+            }
+
+            if (recipeLogic.isWaiting()) {
+                textList.add(Component.translatable("gtceu.multiblock.waiting").setStyle(Style.EMPTY.withColor(ChatFormatting.RED)));
+            }
+
             if (energyBank != null) {
                 BigInteger energyStored = energyBank.getStored();
                 BigInteger energyCapacity = energyBank.getCapacity();
@@ -197,6 +225,7 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine implements
                 }
             }
         }
+        getDefinition().getAdditionalDisplay().accept(this, textList);
     }
 
     private static Component getTimeToFillDrainText(BigInteger timeToFillSeconds) {
@@ -233,6 +262,14 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine implements
 
     public long getPassiveDrain() {
         if (ConfigHolder.INSTANCE.machines.enableMaintenance) {
+            if (maintenance == null) {
+                for (IMultiPart part : getParts()) {
+                    if (part instanceof IMaintenanceMachine maintenanceMachine) {
+                        this.maintenance = maintenanceMachine;
+                        break;
+                    }
+                }
+            }
             int multiplier = 1 + maintenance.getNumMaintenanceProblems();
             double modifier = maintenance.getDurationMultiplier();
             return (long) (passiveDrain * multiplier * modifier);
@@ -257,6 +294,37 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine implements
     @Override
     public @NotNull ManagedFieldHolder getFieldHolder() {
         return MANAGED_FIELD_HOLDER;
+    }
+
+    @Override
+    public Widget createUIWidget() {
+        var group = new WidgetGroup(0, 0, 170 + 8, 129 + 8);
+        var container = new WidgetGroup(4, 4, 170, 129);
+        container.addWidget(new DraggableScrollableWidgetGroup(4, 4, 162, 121).setBackground(getScreenTexture())
+                .addWidget(new LabelWidget(4, 5, self().getBlockState().getBlock().getDescriptionId()))
+                .addWidget(new ComponentPanelWidget(4, 17, this::addDisplayText)
+                        .setMaxWidthLimit(150)
+                        .clickHandler(this::handleDisplayClick)));
+        container.setBackground(GuiTextures.BACKGROUND_INVERSE);
+        group.addWidget(container);
+        return group;
+    }
+
+    @Override
+    public ModularUI createUI(Player entityPlayer) {
+        return IFancyUIMachine.super.createUI(entityPlayer);
+    }
+
+    @Override
+    public List<IFancyUIProvider> getSubTabs() {
+        return getParts().stream().filter(IFancyUIProvider.class::isInstance).map(IFancyUIProvider.class::cast).toList();
+    }
+
+    @Override
+    public void attachTooltips(TooltipsPanel tooltipsPanel) {
+        for (IMultiPart part : getParts()) {
+            part.attachFancyTooltipsToController(this, tooltipsPanel);
+        }
     }
 
     public static class PowerStationEnergyBank extends MachineTrait {

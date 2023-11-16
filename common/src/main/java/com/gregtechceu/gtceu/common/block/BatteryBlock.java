@@ -31,16 +31,16 @@ public class BatteryBlock extends AppearanceBlock implements IBlockRendererProvi
 
     public enum BatteryPartType implements StringRepresentable, IBatteryData {
         EMPTY_TIER_I,
-        LAPOTRONIC_EV(GTValues.EV, 25_000_000L * 6),      // Lapotron Crystal * 6
-        LAPOTRONIC_IV(GTValues.IV, 250_000_000L * 6),     // Lapotronic Orb * 6
+        EV_LAPOTRONIC(GTValues.EV, 25_000_000L * 6),      // Lapotron Crystal * 6
+        IV_LAPOTRONIC(GTValues.IV, 250_000_000L * 6),     // Lapotronic Orb * 6
 
         EMPTY_TIER_II,
-        LAPOTRONIC_LuV(GTValues.LuV, 1_000_000_000L * 6), // Lapotronic Orb Cluster * 6
-        LAPOTRONIC_ZPM(GTValues.ZPM, 4_000_000_000L * 6), // Energy Orb * 6
+        LuV_LAPOTRONIC(GTValues.LuV, 1_000_000_000L * 6), // Lapotronic Orb Cluster * 6
+        ZPM_LAPOTRONIC(GTValues.ZPM, 4_000_000_000L * 6), // Energy Orb * 6
 
         EMPTY_TIER_III,
-        LAPOTRONIC_UV(GTValues.UV, 16_000_000_000L * 6),  // Energy Cluster * 6
-        ULTIMATE_UHV(GTValues.UHV, Long.MAX_VALUE),       // Ultimate Battery
+        UV_LAPOTRONIC(GTValues.UV, 16_000_000_000L * 6),  // Energy Cluster * 6
+        UHV_ULTIMATE(GTValues.UHV, Long.MAX_VALUE),       // Ultimate Battery
         ;
 
         private final int tier;

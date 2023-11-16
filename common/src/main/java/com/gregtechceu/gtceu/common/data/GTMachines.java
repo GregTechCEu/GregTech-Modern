@@ -1504,7 +1504,7 @@ public class GTMachines {
                     Component.translatable("gtceu.machine.power_substation.tooltip.4", PowerSubstationMachine.PASSIVE_DRAIN_MAX_PER_STORAGE),
                     Component.translatable("gtceu.machine.power_substation.tooltip.5").append(Component.translatable("gtceu.machine.power_substation.tooltip.6").withStyle(TooltipHelper.RAINBOW_SLOW.getCurrent())))
             .appearanceBlock(CASING_PALLADIUM_SUBSTATION)
-            .pattern(definition -> FactoryBlockPattern.start(RIGHT, FRONT, UP)
+            .pattern(definition -> FactoryBlockPattern.start(RIGHT, BACK, UP)
                     .aisle("XXSXX", "XXXXX", "XXXXX", "XXXXX", "XXXXX")
                     .aisle("XXXXX", "XCCCX", "XCCCX", "XCCCX", "XXXXX")
                     .aisle("GGGGG", "GBBBG", "GBBBG", "GBBBG", "GGGGG").setRepeatable(1, PowerSubstationMachine.MAX_BATTERY_LAYERS)
