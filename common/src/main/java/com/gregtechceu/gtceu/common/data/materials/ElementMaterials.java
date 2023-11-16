@@ -178,7 +178,7 @@ public class ElementMaterials {
                 .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(1768))
                 .ore() // leave for TiCon ore processing
                 .color(0xf1e2d1).secondaryColor(0x1d1dd6).iconSet(METALLIC)
-                .appendFlags(EXT_METAL)
+                .appendFlags(EXT_METAL, GENERATE_FINE_WIRE)
                 .element(GTElements.Co)
                 .cableProperties(GTValues.V[LV], 2, 2)
                 .itemPipeProperties(2560, 2.0f)
@@ -357,7 +357,7 @@ public class ElementMaterials {
                 .ingot(3)
                 .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(2719))
                 .color(0xfdfce9).secondaryColor(0x3d011b).iconSet(METALLIC)
-                .appendFlags(EXT2_METAL, GENERATE_FINE_WIRE, GENERATE_GEAR)
+                .appendFlags(EXT2_METAL, GENERATE_FINE_WIRE, GENERATE_GEAR, GENERATE_FRAME)
                 .element(GTElements.Ir)
                 .rotorStats(7.0f, 3.0f, 2560)
                 .fluidPipeProperties(3398, 250, true, false, true, false)
