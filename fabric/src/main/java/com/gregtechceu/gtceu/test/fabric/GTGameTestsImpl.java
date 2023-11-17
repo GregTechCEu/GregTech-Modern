@@ -1,11 +1,11 @@
-package com.gregtechceu.gtceu;
+package com.gregtechceu.gtceu.test.fabric;
 
-import net.fabricmc.fabric.impl.gametest.FabricGameTestHelper;
+import com.gregtechceu.gtceu.test.GTGameTests;
 import net.minecraft.gametest.framework.GameTestRegistry;
 
 public class GTGameTestsImpl {
 
-    static {
+    public static void registerGameTests() {
         GTGameTests.registerTests(GameTestRegistry::register);
     }
 }

@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.api.machine.trait;
+package com.gregtechceu.gtceu.test.api.machine.trait;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
+import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.core.mixins.RecipeManagerAccessor;
@@ -16,16 +17,13 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 public class RecipeLogicTest {
 
-    @GameTest(setupTicks = 20L)
+    @GameTest(setupTicks = 20L, template = "gtceu:recipelogic")
     public static void recipeLogicTest(GameTestHelper helper) {
-        Level world = helper.getLevel();
-
         BlockEntity holder = helper.getBlockEntity(helper.relativePos(new BlockPos(0, 1, 0)));
         if (!(holder instanceof MetaMachineBlockEntity atte)) return;
         MetaMachine machine = atte.getMetaMachine();
@@ -41,27 +39,27 @@ public class RecipeLogicTest {
 
         RecipeLogic arl = rlm.getRecipeLogic();
 
-        arl.searchRecipe();
+        arl.findAndHandleRecipe();
 
         // no recipe found
         helper.assertFalse(arl.isActive(), "Recipe logic is active");
-        helper.assertTrue(arl.lastRecipe == null, "Recipe logic found a recipe");
+        helper.assertTrue(arl.getLastRecipe() == null, "Recipe logic found a recipe");
 
         // put an item in the inventory that will trigger recipe recheck
         ((IItemTransfer)rlm.getCapabilitiesProxy().get(IO.IN, ItemRecipeCapability.CAP).get(0)).insertItem(0, new ItemStack(Blocks.COBBLESTONE, 16), false);
         // Inputs change. did we detect it ?
-        helper.assertTrue(arl.recipeDirty, "Recipe is not dirty");
-        arl.searchRecipe();
-        helper.assertFalse(arl.lastRecipe == null, "Last recipe is empty");
+        helper.assertTrue(arl.isRecipeDirty(), "Recipe is not dirty");
+        arl.findAndHandleRecipe();
+        helper.assertFalse(arl.getLastRecipe() == null, "Last recipe is empty");
         helper.assertFalse(arl.isActive(), "Recipelogic is active.");
         helper.assertTrue(((IItemTransfer)rlm.getCapabilitiesProxy().get(IO.IN, ItemRecipeCapability.CAP).get(0)).getStackInSlot(0).getCount() == 15, "Count is wrong");
 
         // Save a reference to the old recipe so we can make sure it's getting reused
-        GTRecipe prev = arl.lastRecipe;
+        GTRecipe prev = arl.getLastRecipe();
 
         // Finish the recipe, the output should generate, and the next iteration should begin
         arl.serverTick();
-        helper.assertTrue(arl.lastRecipe == prev, "lastRecipe is wrong");
+        helper.assertTrue(arl.getLastRecipe() == prev, "lastRecipe is wrong");
         helper.assertTrue(ItemStack.isSameItem(((IItemTransfer)rlm.getCapabilitiesProxy().get(IO.OUT, ItemRecipeCapability.CAP).get(0)).getStackInSlot(0),
                 new ItemStack(Blocks.STONE, 1)), "wrong output stack.");
         helper.assertTrue(arl.isActive(), "RecipeLogic is not active.");
@@ -81,5 +79,8 @@ public class RecipeLogicTest {
         arl.serverTick();
         helper.assertTrue(arl.isActive(), "Recipelogic is inactive.");
         helper.assertTrue(ItemStack.isSameItem(((IItemTransfer)rlm.getCapabilitiesProxy().get(IO.OUT, ItemRecipeCapability.CAP).get(0)).getStackInSlot(0), new ItemStack(Blocks.STONE, 1)), "Wrong stack.");
+
+        // Finish.
+        helper.succeed();
     }
 }

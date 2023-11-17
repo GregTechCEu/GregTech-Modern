@@ -90,7 +90,7 @@ dependencies {
     modImplementation(fabric.ae2) { transitive = false }
 
     //AlmostUnified
-    modImplementation(fabric.almostUnified.common)
+    modCompileOnly(fabric.almostUnified.common)
 
     // KJS
     modCompileOnly fabric.kubejs
