@@ -7,7 +7,7 @@
     </h3>
     <text><style color="0xaaaaaa" italic="true">Author: <style color="0xa4e7ff" hover-info="TacoMonkey's Github" underlined="true" url-link="https://github.com/tacomonkey11">TacoMonkey</style><br/></style></text>
     <text>
-        Behaves similarly to the vanilla axe. Logs are vein mined upwards, breaking one tick at a time.
+        Behaves similarly to the vanilla axe. Logs are vein mined upwards, breaking one block every game tick.
         <br/>
         <br/>
         1 Durability is lost for every log broken.

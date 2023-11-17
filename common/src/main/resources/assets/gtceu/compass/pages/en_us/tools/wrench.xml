@@ -17,7 +17,7 @@
   <br/>
   • Whilst crouching:
    You can rotate the machine depending on the side you click.
-     Each time the above operation is performed, the wrench will consume 1 durability point (Creative mode causes no durability to be lost). A wrench with a durability of 0 will be no longer be able to rotate or change the output side of a machine.
+     Each time the above operation is performed, the wrench will consume 1 durability point (Creative mode causes no durability to be lost). A wrench with a durability of 0 will be no longer be able to rotate or change the output side of a machine (Bug).
   <br/>
  </text>
  <text> Similarly to the <style color="0xafff00" hover-info="click link" link="gtceu:tools/wire_cutter" underlined="true">wire cutter</style>, wrenches may also be used to interact with placed item/fluid pipes. You can connect or disconnect pipes from machines and other pipes.</text>
