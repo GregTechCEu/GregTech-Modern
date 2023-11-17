@@ -14,6 +14,7 @@ architectury {
 subprojects {
     apply plugin: "dev.architectury.loom"
     apply plugin: "io.github.juuxel.loom-vineflower"
+    apply plugin: "java-test-fixtures"
 
     loom {
         silentMojangMappingsLicense()
@@ -79,6 +80,11 @@ subprojects {
         annotationProcessor 'org.projectlombok:lombok:1.18.24'
 
         implementation 'com.google.code.findbugs:jsr305:3.0.2'
+
+        // tests
+        testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.9.2'
+        testImplementation 'io.javalin:javalin:5.4.2'
+        testImplementation 'org.mockito:mockito-core:5.2.0'
     }
 }
 

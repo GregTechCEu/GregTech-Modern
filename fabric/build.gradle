@@ -79,6 +79,8 @@ repositories {
 }
 
 dependencies {
+    testImplementation(testFixtures(project(path: ":${mod_id}-common")))
+
     modImplementation fabric.fabricLoader
     modImplementation fabric.fabricApi
 
