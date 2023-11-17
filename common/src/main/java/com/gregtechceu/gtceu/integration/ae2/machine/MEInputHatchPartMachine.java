@@ -32,10 +32,12 @@ import org.jetbrains.annotations.Nullable;
 import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Predicate;
 
 public class MEInputHatchPartMachine extends MEHatchPartMachine implements IInWorldGridNodeHost, IGridConnectedBlockEntity {
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(MEInputHatchPartMachine.class, MEHatchPartMachine.MANAGED_FIELD_HOLDER);
 
+    @Persisted
     private ExportOnlyAEFluidList aeFluidTanks;
 
     public MEInputHatchPartMachine(IMachineBlockEntity holder, Object... args) {
@@ -108,7 +110,7 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine implements IInWo
         public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(ExportOnlyAEFluidList.class, NotifiableFluidTank.MANAGED_FIELD_HOLDER);
 
         @Persisted
-        private ExportOnlyAEFluid[] tanks;
+        private final ExportOnlyAEFluid[] tanks;
 
         public ExportOnlyAEFluidList(MetaMachine machine, int slots, long capacity, IO io) {
             super(machine, slots, capacity, io);
@@ -125,13 +127,7 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine implements IInWo
 
         @Override
         public List<FluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<FluidIngredient> left, @Nullable String slotName, boolean simulate) {
-            return handleIngredient(io, left, simulate, this.handlerIO, Arrays.stream(this.tanks).map(tank -> new FluidStorage(tank.getCapacity()) {
-                @NotNull
-                @Override
-                public FluidStack drain(FluidStack maxDrain, boolean simulate, boolean notifyChanges) {
-                    return tank.drain(maxDrain, simulate, notifyChanges);
-                }
-            }).toArray(FluidStorage[]::new));
+            return handleIngredient(io, left, simulate, this.handlerIO, Arrays.stream(this.tanks).map(tank -> new WrappingFluidStorage(tank.getCapacity(), tank)).toArray(FluidStorage[]::new));
         }
 
         public FluidStack drainInternal(long maxDrain, boolean simulate) {
@@ -171,6 +167,39 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine implements IInWo
                 for (int i = 0; i < array.length; i++) {
                     tanks[i].restoreFromSnapshot(array[i]);
                 }
+            }
+        }
+
+        private class WrappingFluidStorage extends FluidStorage {
+            private final ExportOnlyAEFluid fluid;
+
+            public WrappingFluidStorage(long capacity, ExportOnlyAEFluid fluid) {
+                super(capacity);
+                this.fluid = fluid;
+            }
+
+            public WrappingFluidStorage(long capacity, Predicate<FluidStack> validator, ExportOnlyAEFluid fluid) {
+                super(capacity, validator);
+                this.fluid = fluid;
+            }
+
+            @Override
+            @Nonnull
+            public FluidStack getFluid() {
+                return this.fluid.getFluid().copy();
+            }
+
+            @NotNull
+            @Override
+            public FluidStack drain(FluidStack maxDrain, boolean simulate, boolean notifyChanges) {
+                return fluid.drain(maxDrain, simulate, notifyChanges);
+            }
+
+            @Override
+            public FluidStorage copy() {
+                var storage = new WrappingFluidStorage(capacity, validator, this.fluid);
+                storage.setFluid(super.fluid.copy());
+                return storage;
             }
         }
     }
