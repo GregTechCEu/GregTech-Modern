@@ -10,7 +10,6 @@ import com.gregtechceu.gtceu.common.ServerCommands;
 import com.gregtechceu.gtceu.common.fabric.CommonProxyImpl;
 import com.gregtechceu.gtceu.data.loader.fabric.FluidVeinLoaderImpl;
 import com.gregtechceu.gtceu.data.loader.fabric.OreDataLoaderImpl;
-import com.gregtechceu.gtceu.test.fabric.GTGameTestsImpl;
 import com.gregtechceu.gtceu.utils.TaskHandler;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
@@ -52,6 +51,5 @@ public class GTCEuFabric implements ModInitializer {
         if (GTCEu.isRebornEnergyLoaded()) {
             GTCapability.CAPABILITY_ENERGY.registerFallback(new EUToREProvider(EnergyStorage.SIDED::find));
         }
-        GTGameTestsImpl.registerGameTests();
     }
 }

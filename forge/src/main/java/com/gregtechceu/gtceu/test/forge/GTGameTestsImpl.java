@@ -11,6 +11,6 @@ public class GTGameTestsImpl {
 
     @SubscribeEvent
     public static void registerGameTests(RegisterGameTestsEvent event) {
-        GTGameTests.registerTests(event::register);
+        event.register(GTGameTests.class);
     }
 }

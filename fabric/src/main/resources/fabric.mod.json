@@ -39,6 +39,9 @@
     "fabric-datagen": [
       "com.gregtechceu.gtceu.data.fabric.GregTechDatagen"
     ],
+    "fabric-gametest": [
+      "com.gregtechceu.gtceu.test.GTGameTests"
+    ],
     "emi": [
       "com.gregtechceu.gtceu.integration.emi.GTEMIPlugin"
     ],
