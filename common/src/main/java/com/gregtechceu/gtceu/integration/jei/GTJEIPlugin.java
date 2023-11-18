@@ -6,6 +6,8 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.integration.jei.multipage.MultiblockInfoCategory;
 import com.gregtechceu.gtceu.integration.jei.oreprocessing.GTOreProcessingInfoCategory;
+import com.gregtechceu.gtceu.integration.jei.orevein.GTBedrockFluidInfoCategory;
+import com.gregtechceu.gtceu.integration.jei.orevein.GTOreVeinInfoCategory;
 import com.gregtechceu.gtceu.integration.jei.recipe.GTRecipeTypeCategory;
 import com.lowdragmc.lowdraglib.LDLib;
 import mezz.jei.api.IModPlugin;
@@ -76,6 +78,8 @@ public class GTJEIPlugin implements IModPlugin {
         MultiblockInfoCategory.registerRecipes(registration);
         GTRecipeTypeCategory.registerRecipes(registration);
         GTOreProcessingInfoCategory.registerRecipes(registration);
+        GTOreVeinInfoCategory.registerRecipes(registration);
+        GTBedrockFluidInfoCategory.registerRecipes(registration);
     }
 
     @Override
