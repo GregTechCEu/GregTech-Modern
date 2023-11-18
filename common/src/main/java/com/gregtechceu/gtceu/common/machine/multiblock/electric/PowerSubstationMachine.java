@@ -23,12 +23,11 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.widget.*;
-import com.lowdragmc.lowdraglib.syncdata.annotation.LazyManaged;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
 import lombok.Getter;
 import net.minecraft.ChatFormatting;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.Style;
@@ -62,7 +61,6 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine implements
 
     private IMaintenanceMachine maintenance;
 
-    @Persisted
     private PowerStationEnergyBank energyBank;
     private EnergyContainerList inputHatches;
     private EnergyContainerList outputHatches;
@@ -327,15 +325,31 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine implements
         }
     }
 
+    @Override
+    public void saveCustomPersistedData(CompoundTag tag, boolean forDrop) {
+        super.saveCustomPersistedData(tag, forDrop);
+        CompoundTag bankTag = energyBank.writeToNBT(new CompoundTag());
+        tag.put("energyBank", bankTag);
+    }
+
+    @Override
+    public void loadCustomPersistedData(CompoundTag tag) {
+        super.loadCustomPersistedData(tag);
+        energyBank.readFromNBT(tag.getCompound("energyBank"));
+    }
+
     public static class PowerStationEnergyBank extends MachineTrait {
         protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(PowerSubstationMachine.PowerStationEnergyBank.class);
+        private static final String NBT_SIZE = "Size";
+        private static final String NBT_STORED = "Stored";
+        private static final String NBT_MAX = "Max";
 
-        @Persisted(key = "Stored")
-        private final long[] storage;
-        @Persisted(key = "Max")
-        private final long[] maximums;
+        //@Persisted(key = NBT_STORED)
+        private long[] storage;
+        //@Persisted(key = NBT_MAX)
+        private long[] maximums;
         @Getter
-        private final BigInteger capacity;
+        private BigInteger capacity;
         private int index;
 
         public PowerStationEnergyBank(MetaMachine machine, List<IBatteryData> batteries) {
@@ -346,6 +360,33 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine implements
                 maximums[i] = batteries.get(i).getCapacity();
             }
             capacity = summarize(maximums);
+        }
+
+        public void readFromNBT(CompoundTag storageTag) {
+            int size = storageTag.getInt(NBT_SIZE);
+            storage = new long[size];
+            maximums = new long[size];
+            for (int i = 0; i < size; i++) {
+                CompoundTag subtag = storageTag.getCompound(String.valueOf(i));
+                if (subtag.contains(NBT_STORED)) {
+                    storage[i] = subtag.getLong(NBT_STORED);
+                }
+                maximums[i] = subtag.getLong(NBT_MAX);
+            }
+            capacity = summarize(maximums);
+        }
+
+        public CompoundTag writeToNBT(CompoundTag compound) {
+            compound.putInt(NBT_SIZE, storage.length);
+            for (int i = 0; i < storage.length; i++) {
+                CompoundTag subtag = new CompoundTag();
+                if (storage[i] > 0) {
+                    subtag.putLong(NBT_STORED, storage[i]);
+                }
+                subtag.putLong(NBT_MAX, maximums[i]);
+                compound.put(String.valueOf(i), subtag);
+            }
+            return compound;
         }
 
         /**
