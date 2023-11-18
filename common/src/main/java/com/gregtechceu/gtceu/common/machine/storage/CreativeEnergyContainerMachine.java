@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.common.machine.storage;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
+import com.gregtechceu.gtceu.api.capability.ILaserContainer;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
@@ -26,7 +27,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Arrays;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class CreativeEnergyContainerMachine extends MetaMachine implements IEnergyContainer, IUIMachine {
+public class CreativeEnergyContainerMachine extends MetaMachine implements ILaserContainer, IUIMachine {
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(CreativeEnergyContainerMachine.class, MetaMachine.MANAGED_FIELD_HOLDER);
 
     @Persisted
@@ -83,6 +84,10 @@ public class CreativeEnergyContainerMachine extends MetaMachine implements IEner
         for (var facing : Direction.values()) {
             var opposite = facing.getOpposite();
             IEnergyContainer container = GTCapabilityHelper.getEnergyContainer(getLevel(), getPos().relative(facing), opposite);
+            // Try to get laser capability
+            if (container == null)
+                container = GTCapabilityHelper.getLaser(getLevel(), getPos().relative(facing), opposite);
+
             if (container != null && container.inputsEnergy(opposite) && container.getEnergyCanBeInserted() > 0) {
                 ampsUsed += container.acceptEnergyFromNetwork(opposite, voltage, amps - ampsUsed);
                 if (ampsUsed >= amps) {
@@ -210,8 +215,8 @@ public class CreativeEnergyContainerMachine extends MetaMachine implements IEner
                         amps = Integer.MAX_VALUE;
                         setTier = 14;
                     }
-                }).setTexture(new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON, new TextTexture("Sink")),
-                                new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON, new TextTexture("Source")))
+                }).setTexture(new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON, new TextTexture("gtceu.creative.energy.sink")),
+                                new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON, new TextTexture("gtceu.creative.energy.source")))
                         .setPressed(source))
                 .widget(new SelectorWidget(7, 7, 30, 20, Arrays.stream(GTValues.VNF).toList(), -1)
                         .setOnChanged(tier -> {

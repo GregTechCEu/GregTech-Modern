@@ -1129,6 +1129,8 @@ public class LangHandler {
         provider.add("gtceu.creative.tank.tpc", "Ticks per Cycle");
         provider.add("gtceu.creative.energy.amperage", "Amperage");
         provider.add("gtceu.creative.energy.voltage", "Voltage");
+        provider.add("gtceu.creative.energy.sink", "Sink");
+        provider.add("gtceu.creative.energy.source", "Source");
         provider.add("gtceu.creative.activity.on", "Active");
         provider.add("gtceu.creative.activity.off", "Not active");
         multiLang(provider, "metaitem.cover.digital.wireless.tooltip",
