@@ -22,6 +22,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.crafting.RecipeManager;
+import org.jetbrains.annotations.VisibleForTesting;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -66,6 +67,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     protected int fuelMaxTime;
     @Getter
     protected long timeStamp;
+    @Getter(onMethod_ = @VisibleForTesting)
     protected boolean recipeDirty;
     @Persisted
     @Getter
