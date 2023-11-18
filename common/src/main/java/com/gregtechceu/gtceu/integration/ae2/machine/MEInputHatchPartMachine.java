@@ -18,12 +18,15 @@ import com.gregtechceu.gtceu.integration.ae2.gui.widget.AEFluidConfigWidget;
 import com.gregtechceu.gtceu.integration.ae2.util.ExportOnlyAESlot;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
+import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.misc.FluidStorage;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidStorage;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import com.lowdragmc.lowdraglib.utils.Position;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
@@ -51,20 +54,17 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine implements IInWo
     }
 
     @Override
-    public ModularUI createUI(Player entityPlayer) {
-        ModularUI modularUI = new ModularUI(176, 18 + 18 * 4 + 94, this, entityPlayer)
-                .background(GuiTextures.BACKGROUND)
-                .widget(new LabelWidget(10, 5, getDefinition().getName()));
+    public Widget createUIWidget() {
+        WidgetGroup group = new WidgetGroup(new Position(0, 0));
         // ME Network status
-        modularUI.widget(new LabelWidget(10, 15, () -> this.isOnline ?
+        group.addWidget(new LabelWidget(3, 0, () -> this.isOnline ?
                 "gtceu.gui.me_network.online" :
                 "gtceu.gui.me_network.offline"));
 
         // Config slots
-        modularUI.widget(new AEFluidConfigWidget(16, 25, this.aeFluidTanks.tanks));
+        group.addWidget(new AEFluidConfigWidget(3, 10, this.aeFluidTanks.tanks));
 
-        modularUI.widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(), GuiTextures.SLOT, 7, 18 + 18 * 4 + 12, true));
-        return modularUI;
+        return group;
     }
 
     @Override
