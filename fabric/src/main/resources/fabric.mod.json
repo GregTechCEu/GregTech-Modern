@@ -25,7 +25,7 @@
       "com.gregtechceu.gtceu.client.fabric.ClientProxyImpl"
     ],
     "top_plugin": [
-      "com.gregtechceu.gtceu.integration.top.fabric.TheOneProbePluginImpl"
+      "com.gregtechceu.gtceu.integration.top.TheOneProbePlugin"
     ],
     "rei_client": [
       "com.gregtechceu.gtceu.integration.rei.GTREIPlugin"
@@ -38,6 +38,9 @@
     ],
     "fabric-datagen": [
       "com.gregtechceu.gtceu.data.fabric.GregTechDatagen"
+    ],
+    "fabric-gametest": [
+      "com.gregtechceu.gtceu.test.GTGameTests"
     ],
     "emi": [
       "com.gregtechceu.gtceu.integration.emi.GTEMIPlugin"

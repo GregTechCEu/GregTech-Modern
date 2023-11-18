@@ -1,3 +1,5 @@
+import net.fabricmc.loom.task.RemapJarTask
+
 plugins {
     alias libs.plugins.architectury
     alias libs.plugins.architectury.loom apply false
@@ -79,6 +81,18 @@ subprojects {
         annotationProcessor 'org.projectlombok:lombok:1.18.24'
 
         implementation 'com.google.code.findbugs:jsr305:3.0.2'
+
+        // tests
+        testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.9.2'
+        testImplementation 'io.javalin:javalin:5.4.2'
+        testImplementation 'org.mockito:mockito-core:5.2.0'
+    }
+
+    tasks.register('remapSlimJar', RemapJarTask) {
+        dependsOn(jar)
+        inputFile.set(jar.archiveFile)
+        addNestedDependencies = false
+        archiveClassifier.set("slim")
     }
 }
 

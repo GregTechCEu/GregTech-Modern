@@ -34,6 +34,15 @@ loom {
         client {
             programArgs("--username", "Player")
         }
+        create("gameTestServer") {
+            server()
+            name("Minecraft Game Test")
+            source("main")
+
+            property("fabric-api.gametest", "true")
+            property("fabric-api.gametest.command", "true")
+        }
+
     }
 }
 

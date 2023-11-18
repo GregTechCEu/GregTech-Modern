@@ -52,6 +52,22 @@ loom {
             }
         }
     }
+    runs {
+        create("gameTestServer") {
+            server()
+            name("Minecraft Game Test")
+            source("main")
+
+            property("forge.enabledGameTestNamespaces", mod_id)
+            property("forge.gameTestServer", "true")
+
+            mods {
+                create(mod_id) {
+                    sourceSet("main")
+                }
+            }
+        }
+    }
 }
 
 configurations {
