@@ -620,7 +620,7 @@ public class GTOres {
     }
 
     public static Set<ResourceKey<Level>> overworld() {
-        return Set.of(Level.OVERWORLD);
+        return Set.of(Level.OVERWORLD, Level.NETHER, Level.END);
     }
 
     public static Set<ResourceKey<Level>> nether() {

@@ -128,7 +128,7 @@ dependencies {
 
     // EMI
     modCompileOnly("dev.emi:emi-forge:${fabric.versions.emi.get()}:api")
-    modCompileOnly forge.emi
+    modImplementation forge.emi
 
     // TOP
     modCompileOnly(forge.theoneprobe) { transitive = false }
