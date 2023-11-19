@@ -1154,8 +1154,9 @@ public class GTItems {
     public static ItemEntry<Item> SENSOR_OpV= GTCEuAPI.isHighTier() ? REGISTRATE.item("opv_sensor", Item::new).lang("OpV Sensor").onRegister(compassNodeExist(GTCompassSections.COMPONENTS, "sensor")).register() : null;
 
 
-    public static ItemEntry<Item> TOOL_DATA_STICK= REGISTRATE.item("data_stick", Item::new).lang("Data Stick").onRegister(compassNode(GTCompassSections.COMPONENTS)).register();
-    public static ItemEntry<Item> TOOL_DATA_ORB= REGISTRATE.item("data_orb", Item::new).lang("Data Orb").onRegister(compassNode(GTCompassSections.COMPONENTS)).register();
+    public static ItemEntry<ComponentItem> TOOL_DATA_STICK= REGISTRATE.item("data_stick", ComponentItem::create).lang("Data Stick").onRegister(compassNode(GTCompassSections.COMPONENTS)).register();
+    public static ItemEntry<ComponentItem> TOOL_DATA_ORB= REGISTRATE.item("data_orb", ComponentItem::create).lang("Data Orb").onRegister(compassNode(GTCompassSections.COMPONENTS)).register();
+    public static ItemEntry<ComponentItem> TOOL_DATA_MODULE = REGISTRATE.item("data_module", ComponentItem::create).lang("Data Module").onRegister(compassNode(GTCompassSections.COMPONENTS)).register();
 
     public static final Map<MarkerMaterial, ItemEntry<Item>> GLASS_LENSES = new HashMap<>();
 
