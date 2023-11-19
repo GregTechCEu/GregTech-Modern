@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.integration;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefinition;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
 import com.lowdragmc.lowdraglib.gui.widget.TankWidget;
@@ -68,8 +67,11 @@ public class GTOreVeinWidget extends WidgetGroup {
 
     private String range(GTOreDefinition oreDefinition) {
         HeightProvider height = oreDefinition.getRange().height;
-        int maxHeight = height instanceof UniformHeight ? ((UniformHeight) height).maxInclusive.resolveY(null) : 0;
-        int minHeight = height instanceof UniformHeight ? ((UniformHeight) height).minInclusive.resolveY(null) : 0;
+        int minHeight = 0, maxHeight = 0;
+        if (height instanceof UniformHeight uniform) {
+            minHeight = uniform.minInclusive.resolveY(null);
+            maxHeight = uniform.maxInclusive.resolveY(null);
+        }
         return String.format("%d - %d", minHeight, maxHeight);
     }
 
@@ -101,7 +103,7 @@ public class GTOreVeinWidget extends WidgetGroup {
 
     private void setupText(){
         addWidget(new LabelWidget(5, 0,
-                LocalizationUtils.format("gtceu.jei.ore_vein_" + name)));
+                LocalizationUtils.format("gtceu.jei.ore_vein." + name)));
         addWidget(new LabelWidget(5, 40,
                 LocalizationUtils.format("gtceu.jei.ore_vein_diagram.spawn_range")));
         addWidget(new LabelWidget(5, 50, range));
@@ -117,7 +119,7 @@ public class GTOreVeinWidget extends WidgetGroup {
         AtomicInteger counter = new AtomicInteger(0);
         if (dimensionFilter == null) return "Overworld";
         return dimensionFilter.stream()
-                .map(dimension -> FormattingUtil.toEnglishName(dimension.location().getPath()))
+                .map(dimension -> dimension.location().toString())
                 .map(name -> counter.getAndIncrement() % 2 == 1 ? name + "\n" : name + ", ")
                 .collect(Collectors.collectingAndThen(
                         Collectors.joining(""),
