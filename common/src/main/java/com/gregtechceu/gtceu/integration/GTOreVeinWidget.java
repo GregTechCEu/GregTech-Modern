@@ -114,7 +114,7 @@ public class GTOreVeinWidget extends WidgetGroup {
     }
 
     private String dimensions() {
-        if (dimensionFilter == null) return "Overworld";
+        if (dimensionFilter == null) return "minecraft:overworld";
         return dimensionFilter.stream()
                 .map(dimension -> dimension.location().toString())
                 .collect(Collectors.joining("\n"));
