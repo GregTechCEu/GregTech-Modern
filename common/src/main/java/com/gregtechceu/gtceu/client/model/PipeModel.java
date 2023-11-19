@@ -7,6 +7,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import lombok.Setter;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -24,6 +25,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
@@ -174,11 +176,16 @@ public class PipeModel {
         return sideSprite;
     }
 
+    private final Function<Optional<Direction>, List<BakedQuad>> modelBaker = Util.memoize(direction ->
+            bakeQuads(direction.orElse(null), ITEM_CONNECTIONS)
+    );
+
     @Environment(EnvType.CLIENT)
     public void renderItem(ItemStack stack, ItemDisplayContext transformType, boolean leftHand, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight, int combinedOverlay, BakedModel model) {
         IItemRendererProvider.disabled.set(true);
         Minecraft.getInstance().getItemRenderer().render(stack, transformType, leftHand, matrixStack, buffer, combinedLight, combinedOverlay,
-                (ItemBakedModel) (state, direction, random) -> bakeQuads(direction, ITEM_CONNECTIONS));
+                (ItemBakedModel) (state, direction, random) -> modelBaker.apply(Optional.ofNullable(direction))
+        );
         IItemRendererProvider.disabled.set(false);
     }
 
