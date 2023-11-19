@@ -102,7 +102,7 @@ public class GTOreVeinWidget extends WidgetGroup {
     }
 
     private void setupText(){
-        addWidget(new LabelWidget(5, 0,
+        addWidget(new LabelWidget(5, 4,
                 LocalizationUtils.format("gtceu.jei.ore_vein." + name)));
         addWidget(new LabelWidget(5, 40,
                 LocalizationUtils.format("gtceu.jei.ore_vein_diagram.spawn_range")));
@@ -116,15 +116,10 @@ public class GTOreVeinWidget extends WidgetGroup {
     }
 
     private String dimensions() {
-        AtomicInteger counter = new AtomicInteger(0);
         if (dimensionFilter == null) return "Overworld";
         return dimensionFilter.stream()
                 .map(dimension -> dimension.location().toString())
-                .map(name -> counter.getAndIncrement() % 2 == 1 ? name + "\n" : name + ", ")
-                .collect(Collectors.collectingAndThen(
-                        Collectors.joining(""),
-                        s -> s.endsWith(", ") ? s.substring(0, s.length() - 2) : s
-                ));
+                .collect(Collectors.joining("\n"));
     }
 
 
