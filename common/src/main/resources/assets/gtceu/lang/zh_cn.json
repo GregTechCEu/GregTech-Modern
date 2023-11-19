@@ -1740,6 +1740,7 @@
     "gtceu.jei.ore.sporadic.1":"生成在矿脉的任何地方",
     "gtceu.jei.ore.surface_rock.0":"带有这种材料的地表岩石表示矿脉生成的位置。",
     "gtceu.jei.ore.surface_rock.1":"挖掘掉落3小撮粉受时运加成",
+    "gtceu.jei.ore_processing_diagram": "矿物处理流程图",
     "gtceu.key.armor_charging":"启用/禁用盔甲向物品栏充能",
     "gtceu.key.armor_hover":"切换盔甲悬浮模式",
     "gtceu.key.armor_mode_switch":"切换盔甲模式",
