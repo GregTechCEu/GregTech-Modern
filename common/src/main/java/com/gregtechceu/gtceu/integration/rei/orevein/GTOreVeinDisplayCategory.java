@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.integration.GTOreVeinWidget;
 import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
 import com.lowdragmc.lowdraglib.rei.IGui2Renderer;
 import com.lowdragmc.lowdraglib.rei.ModularUIDisplayCategory;
@@ -29,7 +30,7 @@ public class GTOreVeinDisplayCategory extends ModularUIDisplayCategory<GTOreVein
 
     public GTOreVeinDisplayCategory() {
         this.icon = IGui2Renderer.toDrawable(new ItemStackTexture(Items.IRON_INGOT.asItem()));
-        this.size = new Size(130, 140);
+        this.size = new Size(10 + GTOreVeinWidget.width, 140);
     }
 
     @Override

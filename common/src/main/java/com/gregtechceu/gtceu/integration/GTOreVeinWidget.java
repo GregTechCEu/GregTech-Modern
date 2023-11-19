@@ -3,10 +3,8 @@ package com.gregtechceu.gtceu.integration;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefinition;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
-import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
-import com.lowdragmc.lowdraglib.gui.widget.TankWidget;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
+import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
+import com.lowdragmc.lowdraglib.gui.widget.*;
 import com.lowdragmc.lowdraglib.jei.IngredientIO;
 import com.lowdragmc.lowdraglib.misc.FluidStorage;
 import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
@@ -26,7 +24,6 @@ import net.minecraft.world.level.material.Fluid;
 
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 /**
@@ -40,9 +37,10 @@ public class GTOreVeinWidget extends WidgetGroup {
     private final String range;
     private final String dimensions;
     private final Set<ResourceKey<Level>> dimensionFilter;
+    public final static int width = 120;
 
     public GTOreVeinWidget(GTOreDefinition oreDefinition) {
-        super(0, 0, 120, 160);
+        super(0, 0, width, 160);
         this.name = getOreName(oreDefinition);
         this.weight = oreDefinition.getWeight();
         this.dimensionFilter = oreDefinition.getDimensionFilter();
@@ -54,7 +52,7 @@ public class GTOreVeinWidget extends WidgetGroup {
     }
 
     public GTOreVeinWidget(BedrockFluidDefinition fluid) {
-        super(0, 0, 120, 140);
+        super(0, 0, width, 140);
         this.name = getFluidName(fluid);
         this.weight = fluid.getWeight();
         this.dimensionFilter = fluid.getDimensionFilter();
@@ -81,7 +79,7 @@ public class GTOreVeinWidget extends WidgetGroup {
         List<Integer> chances = oreDefinition.getVeinGenerator().getAllChances();
         blocks.forEach(block -> containedOresAsItemStacks.add(block.getBlock().asItem().getDefaultInstance()));
         int n = containedOresAsItemStacks.size();
-        int x = (120 - 18 * n) / 2;
+        int x = (width - 18 * n) / 2;
         for (int i = 0; i < n; i++) {
             SlotWidget oreSlot = new SlotWidget(new ItemStackTransfer(containedOresAsItemStacks), i, x, 18, false, false);
             int finalI = i;
@@ -102,8 +100,8 @@ public class GTOreVeinWidget extends WidgetGroup {
     }
 
     private void setupText(){
-        addWidget(new LabelWidget(5, 4,
-                LocalizationUtils.format("gtceu.jei.ore_vein." + name)));
+        addWidget(new ImageWidget(5, 0, width - 10, 16,
+                new TextTexture("gtceu.jei.ore_vein." + name).setType(TextTexture.TextType.LEFT_ROLL).setWidth(width - 10)));
         addWidget(new LabelWidget(5, 40,
                 LocalizationUtils.format("gtceu.jei.ore_vein_diagram.spawn_range")));
         addWidget(new LabelWidget(5, 50, range));
