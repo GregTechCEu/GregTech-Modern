@@ -116,7 +116,8 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine implements IInWo
             super(machine, slots, capacity, io);
             this.tanks = new ExportOnlyAEFluid[slots];
             for (int i = 0; i < slots; i ++) {
-                this.tanks[i] = new ExportOnlyAEFluid(machine, null, null);
+                this.tanks[i] = new ExportOnlyAEFluid(null, null);
+                this.tanks[i].setOnContentsChanged(this::onContentsChanged);
             }
         }
 
@@ -170,7 +171,12 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine implements IInWo
             }
         }
 
-        private class WrappingFluidStorage extends FluidStorage {
+        @Override
+        public ManagedFieldHolder getFieldHolder() {
+            return MANAGED_FIELD_HOLDER;
+        }
+
+        private static class WrappingFluidStorage extends FluidStorage {
             private final ExportOnlyAEFluid fluid;
 
             public WrappingFluidStorage(long capacity, ExportOnlyAEFluid fluid) {
@@ -186,13 +192,18 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine implements IInWo
             @Override
             @Nonnull
             public FluidStack getFluid() {
-                return this.fluid.getFluid().copy();
+                return this.fluid.getFluid();
             }
 
             @NotNull
             @Override
             public FluidStack drain(FluidStack maxDrain, boolean simulate, boolean notifyChanges) {
                 return fluid.drain(maxDrain, simulate, notifyChanges);
+            }
+
+            @Override
+            public long fill(int tank, FluidStack resource, boolean simulate, boolean notifyChange) {
+                return fluid.fill(tank, resource, simulate, notifyChange);
             }
 
             @Override
@@ -205,12 +216,10 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine implements IInWo
     }
 
     public static class ExportOnlyAEFluid extends ExportOnlyAESlot implements IFluidStorage, IFluidTransfer {
-        private MetaMachine holder;
 
-        public ExportOnlyAEFluid(MetaMachine holder, GenericStack config, GenericStack stock) {
+        public ExportOnlyAEFluid(GenericStack config, GenericStack stock) {
             super(config, stock);
-            this.holder = holder;
-            this.setOnContentsChanged(holder::onChanged);
+            //this.setOnContentsChanged(holder::onChanged);
         }
 
         public ExportOnlyAEFluid() {
@@ -230,7 +239,7 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine implements IInWo
         @Override
         public FluidStack getFluid() {
             if (this.stock != null && this.stock.what() instanceof AEFluidKey fluidKey) {
-                return FluidStack.create(fluidKey.getFluid(), this.stock.amount(), fluidKey.getTag());
+                return FluidStack.create(fluidKey.getFluid(), this.stock == null ? 0 : this.stock.amount(), fluidKey.getTag());
             }
             return FluidStack.empty();
         }
@@ -331,7 +340,6 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine implements IInWo
         @Override
         public ExportOnlyAEFluid copy() {
             return new ExportOnlyAEFluid(
-                    this.holder,
                     this.config == null ? null : ExportOnlyAESlot.copy(this.config),
                     this.stock == null ? null : ExportOnlyAESlot.copy(this.stock)
             );
