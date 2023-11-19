@@ -11,11 +11,11 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "gtceu:lapotronic_luv_battery"
+          "name": "gtceu:luv_lapotronic_battery"
         }
       ],
       "rolls": 1.0
     }
   ],
-  "random_sequence": "gtceu:blocks/lapotronic_luv_battery"
+  "random_sequence": "gtceu:blocks/luv_lapotronic_battery"
 }

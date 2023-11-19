@@ -5,14 +5,14 @@
   },
   "items": [
     "gtceu:empty_tier_i_battery",
-    "gtceu:lapotronic_ev_battery",
-    "gtceu:lapotronic_iv_battery",
+    "gtceu:ev_lapotronic_battery",
+    "gtceu:iv_lapotronic_battery",
     "gtceu:empty_tier_ii_battery",
-    "gtceu:lapotronic_luv_battery",
-    "gtceu:lapotronic_zpm_battery",
+    "gtceu:luv_lapotronic_battery",
+    "gtceu:zpm_lapotronic_battery",
     "gtceu:empty_tier_iii_battery",
-    "gtceu:lapotronic_uv_battery",
-    "gtceu:ultimate_uhv_battery"
+    "gtceu:uv_lapotronic_battery",
+    "gtceu:uhv_ultimate_battery"
   ],
   "page": "gtceu:blocks/pss_battery",
   "position": [
