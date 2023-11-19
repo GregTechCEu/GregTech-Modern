@@ -2254,6 +2254,7 @@
   "gtceu.jei.ore_processing_diagram": "Ore Processing Diagram",
   "gtceu.jei.ore_vein_diagram": "Ore Vein Diagram",
   "gtceu.jei.bedrock_fluid_diagram": "Bedrock Fluid Diagram",
+  "gtceu.jei.ore_vein_diagram.chance": "§eChance: %s§r",
   "gtceu.jei.ore_vein_diagram.spawn_range": "Spawn Range:",
   "gtceu.jei.ore_vein_diagram.weight": "Weight: %s",
   "gtceu.jei.ore_vein_diagram.dimensions": "Dimensions:",

@@ -135,16 +135,16 @@ dependencies {
     // JEI
     modCompileOnly(forge.jei.common.api) { transitive = false }
     modCompileOnly(forge.jei.forge.api) { transitive = false }
-    modImplementation (forge.jei.forge.impl) { transitive = false }
+    modCompileOnly(forge.jei.forge.impl) { transitive = false }
 
     // REI
     modCompileOnly forge.rei.plugin
     modCompileOnly forge.rei.api
-    modCompileOnly forge.rei.forge
+    modImplementation forge.rei.forge
 
     // EMI
     modCompileOnly("dev.emi:emi-forge:${fabric.versions.emi.get()}:api")
-    modImplementation forge.emi
+    modCompileOnly forge.emi
 
     // TOP
     modCompileOnly(forge.theoneprobe) { transitive = false }
