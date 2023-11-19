@@ -48,7 +48,7 @@ public class GTOreVeinWidget extends WidgetGroup {
         this.range = range(oreDefinition);
         setClientSideWidget();
         setupBaseGui(oreDefinition);
-        setupText();
+        setupText(oreDefinition);
     }
 
     public GTOreVeinWidget(BedrockFluidDefinition fluid) {
@@ -60,7 +60,7 @@ public class GTOreVeinWidget extends WidgetGroup {
         this.range = "NULL";
         setClientSideWidget();
         setupBaseGui(fluid);
-        setupText();
+        setupText(fluid);
     }
 
     private String range(GTOreDefinition oreDefinition) {
@@ -99,7 +99,7 @@ public class GTOreVeinWidget extends WidgetGroup {
         addWidget(fluidSlot);
     }
 
-    private void setupText(){
+    private void setupText(GTOreDefinition oreDefinition){
         addWidget(new ImageWidget(5, 0, width - 10, 16,
                 new TextTexture("gtceu.jei.ore_vein." + name).setType(TextTexture.TextType.LEFT_ROLL).setWidth(width - 10)));
         addWidget(new LabelWidget(5, 40,
@@ -113,8 +113,18 @@ public class GTOreVeinWidget extends WidgetGroup {
         addWidget(new LabelWidget(5, 80, dimensions));
     }
 
+    private void setupText(BedrockFluidDefinition fluid){
+        addWidget(new ImageWidget(5, 0, width - 10, 16,
+                new TextTexture("gtceu.jei.bedrock_fluid." + name).setType(TextTexture.TextType.LEFT_ROLL).setWidth(width - 10)));
+        addWidget(new LabelWidget(5, 40,
+                LocalizationUtils.format("gtceu.jei.ore_vein_diagram.weight", weight)));
+        addWidget(new LabelWidget(5, 50,
+                LocalizationUtils.format("gtceu.jei.ore_vein_diagram.dimensions")));
+        addWidget(new LabelWidget(5, 60, dimensions));
+    }
+
     private String dimensions() {
-        if (dimensionFilter == null) return "minecraft:overworld";
+        if (dimensionFilter == null) return "Any";
         return dimensionFilter.stream()
                 .map(dimension -> dimension.location().toString())
                 .collect(Collectors.joining("\n"));

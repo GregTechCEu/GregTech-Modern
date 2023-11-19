@@ -32,7 +32,7 @@ public class IntegrationLang {
         GTBedrockFluids.init();
         for (BedrockFluidDefinition fluid:GTRegistries.BEDROCK_FLUID_DEFINITIONS){
             String name = GTRegistries.BEDROCK_FLUID_DEFINITIONS.getKey(fluid).getPath();
-            provider.add("gtceu.jei.ore_vein." + name, RegistrateLangProvider.toEnglishName(name));
+            provider.add("gtceu.jei.bedrock_fluid." + name, RegistrateLangProvider.toEnglishName(name));
         }
     }
 
