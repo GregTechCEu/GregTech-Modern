@@ -1,0 +1,22 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:lv_sifter"
+  },
+  "items": [
+    "gtceu:lv_sifter",
+    "gtceu:mv_sifter",
+    "gtceu:hv_sifter",
+    "gtceu:ev_sifter",
+    "gtceu:iv_sifter",
+    "gtceu:luv_sifter",
+    "gtceu:zpm_sifter",
+    "gtceu:uv_sifter"
+  ],
+  "page": "gtceu:machines/sifter",
+  "position": [
+    -50,
+    150
+  ],
+  "section": "gtceu:machines"
+}

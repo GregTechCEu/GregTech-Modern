@@ -11,17 +11,18 @@ import com.lowdragmc.lowdraglib.utils.BlockInfo;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.BlockModelRotation;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockAndTintGetter;
@@ -38,14 +39,17 @@ import java.util.function.Supplier;
  * @date 2023/2/27
  * @implNote OreBlockRenderer
  */
+@MethodsReturnNonnullByDefault
 public class OreBlockRenderer extends BlockStateRenderer {
     private final Supplier<BlockState> stone;
     private final Supplier<ResourceLocation> overlaySupplier;
+    private final Supplier<@Nullable ResourceLocation> secondaryOverlaySupplier;
     private final boolean emissive;
 
-    public OreBlockRenderer(Supplier<BlockState> stone, Supplier<ResourceLocation> overlaySupplier, boolean emissive) {
+    public OreBlockRenderer(Supplier<BlockState> stone, Supplier<ResourceLocation> overlaySupplier, Supplier<@Nullable ResourceLocation> secondaryOverlaySupplier, boolean emissive) {
         this.stone = Suppliers.memoize(stone::get);
         this.overlaySupplier = overlaySupplier;
+        this.secondaryOverlaySupplier = secondaryOverlaySupplier;
         this.emissive = emissive;
         if (LDLib.isClient()) {
             registerEvent();
@@ -69,7 +73,8 @@ public class OreBlockRenderer extends BlockStateRenderer {
                     public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction direction, RandomSource random) {
                         List<BakedQuad> quads = new LinkedList<>();
                         if (direction != null) {
-                            quads.add(FaceQuad.bakeFace(direction, ModelFactory.getBlockSprite(overlaySupplier.get()), BlockModelRotation.X0_Y0, 1, emissive ? 15 : 0, true, !emissive));
+                            quads.add(FaceQuad.bakeFace(direction, ModelFactory.getBlockSprite(overlaySupplier.get()), BlockModelRotation.X0_Y0, 0, emissive ? 15 : 0, true, !emissive));
+                            if (secondaryOverlaySupplier.get() != null) quads.add(FaceQuad.bakeFace(direction, ModelFactory.getBlockSprite(secondaryOverlaySupplier.get()), BlockModelRotation.X0_Y0, 1, emissive ? 15 : 0, true, !emissive));
                         }
                         return quads;
                     }
@@ -82,7 +87,8 @@ public class OreBlockRenderer extends BlockStateRenderer {
     public List<BakedQuad> renderModel(BlockAndTintGetter level, BlockPos pos, BlockState state, Direction side, RandomSource rand) {
         List<BakedQuad> quads = new LinkedList<>(super.renderModel(level, pos, state, side, rand));
         if (side != null) {
-            quads.add(FaceQuad.bakeFace(side, ModelFactory.getBlockSprite(overlaySupplier.get()), BlockModelRotation.X0_Y0, 1, emissive ? 15 : 0, true, !emissive));
+            quads.add(FaceQuad.bakeFace(side, ModelFactory.getBlockSprite(overlaySupplier.get()), BlockModelRotation.X0_Y0, 0, emissive ? 15 : 0, true, !emissive));
+            if (secondaryOverlaySupplier.get() != null) quads.add(FaceQuad.bakeFace(side, ModelFactory.getBlockSprite(secondaryOverlaySupplier.get()), BlockModelRotation.X0_Y0, 1, emissive ? 15 : 0, true, !emissive));
         }
         return quads;
     }
@@ -91,8 +97,9 @@ public class OreBlockRenderer extends BlockStateRenderer {
     @Environment(EnvType.CLIENT)
     public void onPrepareTextureAtlas(ResourceLocation atlasName, Consumer<ResourceLocation> register) {
         super.onPrepareTextureAtlas(atlasName, register);
-        if (atlasName.equals(TextureAtlas.LOCATION_BLOCKS)) {
+        if (atlasName.equals(InventoryMenu.BLOCK_ATLAS)) {
             register.accept(overlaySupplier.get());
+            if (secondaryOverlaySupplier.get() != null) register.accept(secondaryOverlaySupplier.get());
         }
     }
 

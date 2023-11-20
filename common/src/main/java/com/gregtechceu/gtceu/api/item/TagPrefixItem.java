@@ -1,14 +1,13 @@
 package com.gregtechceu.gtceu.api.item;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.DustProperty;
-import com.gregtechceu.gtceu.client.renderer.item.TagPrefixItemRenderer;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.DustProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.client.renderer.item.TagPrefixItemRenderer;
 import com.gregtechceu.gtceu.common.data.GTDamageTypes;
-import com.lowdragmc.lowdraglib.client.renderer.IItemRendererProvider;
-import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
+import com.lowdragmc.lowdraglib.Platform;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -34,7 +33,7 @@ import java.util.List;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class TagPrefixItem extends Item implements IItemRendererProvider {
+public class TagPrefixItem extends Item {
     public final TagPrefix tagPrefix;
     public final Material material;
 
@@ -42,7 +41,9 @@ public class TagPrefixItem extends Item implements IItemRendererProvider {
         super(properties);
         this.tagPrefix = tagPrefix;
         this.material = material;
-        TagPrefixItemRenderer.getOrCreate(tagPrefix.materialIconType(), material.getMaterialIconSet());
+        if (Platform.isClient()) {
+            TagPrefixItemRenderer.create(this, tagPrefix.materialIconType(), material.getMaterialIconSet());
+        }
     }
 
     @ExpectPlatform
@@ -124,10 +125,4 @@ public class TagPrefixItem extends Item implements IItemRendererProvider {
     }
 
     // TODO BEACON PAYMENT
-
-    @Nullable
-    @Override
-    public IRenderer getRenderer(ItemStack stack) {
-        return TagPrefixItemRenderer.getOrCreate(tagPrefix.materialIconType(), material.getMaterialIconSet());
-    }
 }

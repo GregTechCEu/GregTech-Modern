@@ -1,6 +1,6 @@
 {
   "parent": "gtceu:item/material_sets/dull/lens",
   "textures": {
-    "layer1": "gtceu:item/material_sets/magnetic/lens_overlay"
+    "layer3": "gtceu:item/material_sets/magnetic/magnetic_overlay"
   }
 }

@@ -4,11 +4,7 @@
     "res": "gtceu:polybenzimidazole_mallet"
   },
   "items": [
-    "gtceu:polybenzimidazole_mallet",
-    "gtceu:polyethylene_mallet",
-    "gtceu:polytetrafluoroethylene_mallet",
-    "gtceu:rubber_mallet",
-    "gtceu:wood_mallet"
+    "#c:mallets"
   ],
   "page": "gtceu:tools/mallet",
   "position": [

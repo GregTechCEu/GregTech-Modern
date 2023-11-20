@@ -1,6 +1,6 @@
 {
-  "parent": "item/generated",
+  "parent": "gtceu:item/material_sets/rough/plate",
   "textures": {
-    "layer0": "gtceu:item/material_sets/rough/plate_double"
+    "layer3": "gtceu:item/material_sets/dull/plate_double_overlay"
   }
 }

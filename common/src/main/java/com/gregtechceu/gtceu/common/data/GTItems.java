@@ -36,6 +36,7 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
+import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
@@ -72,7 +73,6 @@ import java.util.stream.Collectors;
 import static com.gregtechceu.gtceu.api.registry.GTRegistries.REGISTRATE;
 import static com.gregtechceu.gtceu.common.data.GTCreativeModeTabs.*;
 import static com.gregtechceu.gtceu.common.data.GTModels.*;
-import static com.gregtechceu.gtceu.utils.FormattingUtil.*;
 import static com.gregtechceu.gtceu.utils.FormattingUtil.toEnglishName;
 import static com.gregtechceu.gtceu.utils.FormattingUtil.toLowerCaseUnder;
 
@@ -116,7 +116,7 @@ public class GTItems {
                                 .model(NonNullBiConsumer.noop())
                                 .color(() -> TagPrefixItem::tintColor)
                                 .onRegister(GTItems::cauldronInteraction)
-                                .onRegister(compassNodeExist(GTCompassSections.MATERIALS, FormattingUtil.toLowerCaseUnderscore(tagPrefix.name)))
+                                .onRegister(item -> CompassNode.getOrCreate(GTCompassSections.MATERIALS, FormattingUtil.toLowerCaseUnderscore(tagPrefix.name)).iconIfNull(() -> new ItemStackTexture(item)).addTag(tagPrefix.getItemParentTags()))
                                 .register());
                     }
                 }
@@ -163,7 +163,7 @@ public class GTItems {
                                 .setData(ProviderType.LANG, NonNullBiConsumer.noop())
                                 .model(NonNullBiConsumer.noop())
                                 .color(() -> GTToolItem::tintColor)
-                                .onRegister(compassNodeExist(GTCompassSections.TOOLS, toolType.name))
+                                .onRegister(item -> CompassNode.getOrCreate(GTCompassSections.TOOLS, FormattingUtil.toLowerCaseUnderscore(toolType.name)).iconIfNull(() -> new ItemStackTexture(item)).addTag(toolType.itemTag))
                                 //.tag(toolType.itemTag)
                                 .register());
                     }

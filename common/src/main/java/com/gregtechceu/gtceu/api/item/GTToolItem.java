@@ -7,8 +7,7 @@ import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.item.tool.TreeFellingHelper;
 import com.gregtechceu.gtceu.client.renderer.item.ToolItemRenderer;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
-import com.lowdragmc.lowdraglib.client.renderer.IItemRendererProvider;
-import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
+import com.lowdragmc.lowdraglib.Platform;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import lombok.Getter;
 import net.fabricmc.api.EnvType;
@@ -27,7 +26,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -38,8 +36,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class GTToolItem extends DiggerItem implements IItemRendererProvider, IItemUseFirst {
-    public static boolean isReqairingRecipe = false;
+public class GTToolItem extends DiggerItem implements IItemUseFirst {
 
     @Getter
     protected final GTToolType toolType;
@@ -52,7 +49,9 @@ public class GTToolItem extends DiggerItem implements IItemRendererProvider, IIt
     protected GTToolItem(GTToolType toolType, MaterialToolTier tier, Properties properties) {
         super(toolType.attackDamageModifier, toolType.attackSpeedModifier, tier, toolType.harvestTag, properties);
         this.toolType = toolType;
-        ToolItemRenderer.getOrCreate(toolType);
+        if (Platform.isClient()) {
+            ToolItemRenderer.create(this, toolType);
+        }
     }
 
     @Override
@@ -84,12 +83,6 @@ public class GTToolItem extends DiggerItem implements IItemRendererProvider, IIt
             }
             return -1;
         };
-    }
-
-    @Nullable
-    @Override
-    public IRenderer getRenderer(ItemStack stack) {
-        return ToolItemRenderer.getOrCreate(toolType);
     }
 
     @Override

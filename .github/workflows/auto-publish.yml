@@ -3,8 +3,17 @@ name: Auto Publish, Releasing
 on:
   workflow_dispatch:
     inputs:
-      releaseType:
-        description: 'release type'
+      forge_releaseType:
+        description: 'forge release type'
+        required: true
+        type: choice
+        default: 'beta'
+        options:
+          - 'release'
+          - 'beta'
+          - 'alpha'
+      fabric_releaseType:
+        description: 'fabric release type'
         required: true
         type: choice
         default: 'alpha'
@@ -85,7 +94,7 @@ jobs:
 
           name: GregTechCEu ${{ steps.var.outputs.fabric_version }}-fabric
           version: mc${{ steps.var.outputs.fabric_version }}-fabric
-          version-type: ${{ inputs.releaseType }}
+          version-type: ${{ inputs.fabric_releaseType }}
           changelog-file: CHANGELOG.*
 
           loaders: |
@@ -119,7 +128,7 @@ jobs:
 
           name: GregTechCEu ${{ steps.var.outputs.forge_version }}-forge
           version: mc${{ steps.var.outputs.forge_version }}-forge
-          version-type: ${{ inputs.releaseType }}
+          version-type: ${{ inputs.forge_releaseType }}
           changelog-file: CHANGELOG.*
 
           loaders: |

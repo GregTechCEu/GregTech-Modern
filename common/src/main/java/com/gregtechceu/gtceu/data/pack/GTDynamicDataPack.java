@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.data.pack;
 
 import com.google.common.collect.Sets;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.common.data.GTRecipes;
@@ -18,6 +19,7 @@ import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.metadata.MetadataSectionSerializer;
 import net.minecraft.server.packs.metadata.pack.PackMetadataSection;
 import net.minecraft.server.packs.resources.IoSupplier;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -71,9 +73,22 @@ public class GTDynamicDataPack implements PackResources {
         }
     }
 
-    private static void writeJson(ResourceLocation id, String subdir, Path parent, JsonObject json) {
+    /**
+     * if subdir is null, no file ending is appended.
+     * @param id the resource location of the file to be written.
+     * @param subdir a nullable subdirectory for the data.
+     * @param parent the parent folder where to write data to.
+     * @param json the json to write.
+     */
+    @ApiStatus.Internal
+    public static void writeJson(ResourceLocation id, @Nullable String subdir, Path parent, JsonElement json) {
         try {
-            Path file = parent.resolve(id.getNamespace()).resolve(subdir).resolve(id.getPath() + ".json");
+            Path file;
+            if (subdir != null) {
+                file = parent.resolve(id.getNamespace()).resolve(subdir).resolve(id.getPath() + ".json"); // assume JSON
+            } else {
+                file = parent.resolve(id.getNamespace()).resolve(id.getPath()); // assume the file type is also appended if a full path is given.
+            }
             Files.createDirectories(file.getParent());
             try(OutputStream output = Files.newOutputStream(file)) {
                 output.write(json.toString().getBytes());
@@ -109,13 +124,16 @@ public class GTDynamicDataPack implements PackResources {
 
     @Override
     public void listResources(PackType packType, String namespace, String path, ResourceOutput resourceOutput) {
-        if (packType == PackType.SERVER_DATA)
-            DATA.keySet().stream().filter(Objects::nonNull).filter(loc -> loc.getPath().startsWith(path)).forEach((id) -> {
+        if (packType == PackType.SERVER_DATA) {
+            if (!path.endsWith("/")) path += "/";
+            final String finalPath = path;
+            DATA.keySet().stream().filter(Objects::nonNull).filter(loc -> loc.getPath().startsWith(finalPath)).forEach((id) -> {
                 IoSupplier<InputStream> resource = this.getResource(packType, id);
                 if (resource != null) {
                     resourceOutput.accept(id, resource);
                 }
             });
+        }
     }
 
     @Override

@@ -1,6 +1,6 @@
 {
   "parent": "gtceu:item/material_sets/shiny/plate_double",
   "textures": {
-    "layer1": "gtceu:item/material_sets/bright/plate_double_overlay"
+    "layer2": "gtceu:item/material_sets/bright/plate_double_overlay"
   }
 }

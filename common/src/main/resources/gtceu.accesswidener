@@ -5,4 +5,6 @@ accessible method net/minecraft/data/loot/BlockLootSubProvider applyExplosionDec
 accessible method net/minecraft/data/loot/BlockLootSubProvider createSilkTouchDispatchTable (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/world/level/storage/loot/entries/LootPoolEntryContainer$Builder;)Lnet/minecraft/world/level/storage/loot/LootTable$Builder;
 accessible method net/minecraft/data/loot/BlockLootSubProvider createLeavesDrops (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/world/level/block/Block;[F)Lnet/minecraft/world/level/storage/loot/LootTable$Builder;
 
+accessible method net/minecraft/data/models/BlockModelGenerators createSimpleBlock (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/resources/ResourceLocation;)Lnet/minecraft/data/models/blockstates/MultiVariantGenerator;
+
 extendable method net/minecraft/server/packs/resources/SimplePreparableReloadListener reload (Lnet/minecraft/server/packs/resources/PreparableReloadListener$PreparationBarrier;Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/util/profiling/ProfilerFiller;Lnet/minecraft/util/profiling/ProfilerFiller;Ljava/util/concurrent/Executor;Ljava/util/concurrent/Executor;)Ljava/util/concurrent/CompletableFuture;

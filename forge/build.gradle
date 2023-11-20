@@ -52,6 +52,22 @@ loom {
             }
         }
     }
+    runs {
+        create("gameTestServer") {
+            server()
+            name("Minecraft Game Test")
+            source("main")
+
+            property("forge.enabledGameTestNamespaces", mod_id)
+            property("forge.gameTestServer", "true")
+
+            mods {
+                create(mod_id) {
+                    sourceSet("main")
+                }
+            }
+        }
+    }
 }
 
 configurations {
@@ -64,6 +80,16 @@ configurations {
 //    snapshotModImplementation {
 //        resolutionStrategy.cacheChangingModulesFor(0, "seconds")
 //    }
+
+    apiElements {
+        outgoing {
+            capability("net.minecraftforge:forge:${this.forge.versions.minecratfForge.get()}")
+            capability("com.lowdragmc.ldlib:ldlib-forge-${this.libs.versions.minecraft.get()}:${this.forge.versions.ldlib.get()}")
+            capability("com.tterrag.registrate:Registrate:${this.forge.versions.registrate.get()}")
+            capability("dev.toma.configuration:configuration-forge-${this.libs.versions.minecraft.get()}:${this.forge.versions.configuration.get()}")
+            capability("io.github.llamalad7:mixinextras-forge:${this.forge.versions.mixinextras.get()}")
+        }
+    }
 }
 
 //configurations.all {
@@ -134,14 +160,17 @@ dependencies {
 
     // KJS
     modImplementation forge.kubejs
-    implementation forge.mixinextras
+
+    // Mixin Extras
+    implementation(annotationProcessor("io.github.llamalad7:mixinextras-common:${this.forge.versions.mixinextras.get()}"))
+    implementation(include("io.github.llamalad7:mixinextras-forge:${this.forge.versions.mixinextras.get()}"))
 
     // Configuration
     modImplementation(forge.configuration)
     include(forge.configuration)
 
     // Runtime only testing mods
-    modRuntimeOnly(forge.worldStripper)
+    //modRuntimeOnly(forge.worldStripper)
 }
 
 processResources {

@@ -114,6 +114,12 @@ public class MixerRecipes {
                 .outputItems(dust, EnderPearl, 10)
                 .save(provider);
 
+        MIXER_RECIPES.recipeBuilder("pcb_coolant").duration(200).EUt(VA[HV])
+                .inputFluids(PolychlorinatedBiphenyl.getFluid(750))
+                .inputFluids(DistilledWater.getFluid(250))
+                .outputFluids(PCBCoolant.getFluid(1000))
+                .save(provider);
+
         // Alloys
         VanillaRecipeHelper.addShapelessRecipe(provider, "dust_brass", ChemicalHelper.get(dust, Brass, 3),
                 new UnificationEntry(dust, Copper),

@@ -1,6 +1,6 @@
 {
   "parent": "gtceu:item/material_sets/dull/foil",
   "textures": {
-    "layer2": "gtceu:item/material_sets/magnetic/magnetic_overlay"
+    "layer3": "gtceu:item/material_sets/magnetic/magnetic_overlay"
   }
 }

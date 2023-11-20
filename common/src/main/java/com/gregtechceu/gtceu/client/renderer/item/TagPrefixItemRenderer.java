@@ -1,90 +1,94 @@
 package com.gregtechceu.gtceu.client.renderer.item;
 
-import com.google.common.base.Suppliers;
-import com.google.common.collect.Table;
-import com.google.common.collect.Tables;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
-import com.lowdragmc.lowdraglib.client.model.ModelFactory;
-import com.lowdragmc.lowdraglib.client.renderer.impl.IModelRenderer;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.minecraft.client.renderer.block.model.BlockModel;
-import net.minecraft.client.resources.model.*;
-import net.minecraft.core.Direction;
+import com.gregtechceu.gtceu.api.item.TagPrefixItem;
+import com.gregtechceu.gtceu.data.pack.GTDynamicResourcePack;
+import com.gregtechceu.gtceu.utils.GradientUtil;
+import com.mojang.blaze3d.platform.NativeImage;
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.data.models.model.DelegatedModel;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.Resource;
+import net.minecraft.world.item.Item;
 
-import javax.annotation.Nullable;
-import java.util.HashMap;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.HashSet;
+import java.util.Set;
+
+import static com.gregtechceu.gtceu.client.renderer.block.MaterialBlockRenderer.LAYER_2_SUFFIX;
 
 /**
  * @author KilaBash
  * @date 2023/2/16
  * @implNote TagPrefixItemRenderer
  */
-public class TagPrefixItemRenderer extends IModelRenderer {
-    private static final Table<MaterialIconType, MaterialIconSet, TagPrefixItemRenderer> MODELS = Tables.newCustomTable(new HashMap<>(), HashMap::new);
+public class TagPrefixItemRenderer {
+    private static final Set<TagPrefixItemRenderer> MODELS = new HashSet<>();
 
-    private final Supplier<ResourceLocation> modelLocationSupplier;
-
-    private TagPrefixItemRenderer(MaterialIconType type, MaterialIconSet iconSet) {
-        super(null);
-        this.modelLocationSupplier = Suppliers.memoize(() -> type.getItemModelPath(iconSet, true));
+    public static void create(Item item, MaterialIconType type, MaterialIconSet iconSet) {
+        MODELS.add(new TagPrefixItemRenderer(item, type, iconSet));
     }
 
-    public static TagPrefixItemRenderer getOrCreate(MaterialIconType type, MaterialIconSet iconSet) {
-        if (!MODELS.contains(type, iconSet)) {
-            MODELS.put(type, iconSet, new TagPrefixItemRenderer(type, iconSet));
+    public static void reinitModels() {
+        for (TagPrefixItemRenderer model : MODELS) {
+            ResourceLocation itemId = BuiltInRegistries.ITEM.getKey(model.item);
+            GTDynamicResourcePack.addItemModel(itemId, new DelegatedModel(model.type.getItemModelPath(model.iconSet, true)));
+            //ModelTemplates.FLAT_ITEM.create(GTDynamicResourcePack.getItemModelLocation(itemId), TextureMapping.layer0(itemId.withPrefix("item/")), GTDynamicResourcePack::addItemModel);
         }
-        return MODELS.get(type, iconSet);
     }
 
-    @Environment(EnvType.CLIENT)
-    @Override
-    protected UnbakedModel getModel() {
-        return ModelFactory.getUnBakedModel(modelLocationSupplier.get());
-    }
+    public static void initTextures() {
+        for (TagPrefixItemRenderer model : MODELS) {
+            ResourceLocation itemId = BuiltInRegistries.ITEM.getKey(model.item);
 
-    @Environment(EnvType.CLIENT)
-    @Nullable
-    @Override
-    protected BakedModel getItemBakedModel() {
-        if (itemModel == null) {
-            var model = getModel();
-            if (model instanceof BlockModel blockModel && blockModel.getRootModel() == ModelBakery.GENERATION_MARKER) {
-                // fabric doesn't help us to fix vanilla bakery, so we have to do it ourselves
-                model = ModelFactory.ITEM_MODEL_GENERATOR.generateBlockModel(Material::sprite, blockModel);
+            Resource file1 = Minecraft.getInstance().getResourceManager().getResource(GTDynamicResourcePack.getTextureLocation(null, model.type.getItemTexturePath(model.iconSet, true)/*.withSuffix("_layer1")*/)).orElse(null);
+            if (file1 == null) continue;
+            try(InputStream stream1 = file1.open()) {
+                if (!(model.item instanceof TagPrefixItem prefixItem)) continue;
+                int materialRGBA = GradientUtil.argbToRgba(prefixItem.material.getMaterialARGB());
+                int materialSecondaryRGBA = GradientUtil.argbToRgba(prefixItem.material.getMaterialSecondaryARGB());
+
+                NativeImage image1 = NativeImage.read(stream1);
+                try (NativeImage result = new NativeImage(image1.getWidth(), image1.getHeight(), true)) {
+                    for (int x = 0; x < image1.getWidth(); ++x) {
+                        for (int y = 0; y < image1.getHeight(); ++y) {
+                            int color = image1.getPixelRGBA(x, y);
+                            result.setPixelRGBA(x, y, GradientUtil.multiplyBlendRGBA(color, materialRGBA));
+                        }
+                    }
+                    if (prefixItem.material.getMaterialSecondaryRGB() != -1) {
+                        Resource file2 = Minecraft.getInstance().getResourceManager().getResource(GTDynamicResourcePack.getTextureLocation(null, model.type.getItemTexturePath(model.iconSet, true).withSuffix(LAYER_2_SUFFIX))).orElse(null);
+                        if (file2 != null) {
+                            try(InputStream stream2 = file2.open()) {
+                                NativeImage image2 = NativeImage.read(stream2);
+                                for (int x = 0; x < image1.getWidth(); ++x) {
+                                    for (int y = 0; y < image1.getHeight(); ++y) {
+                                        int color = image2.getPixelRGBA(x, y);
+                                        result.blendPixel(x, y, GradientUtil.multiplyBlendRGBA(color, materialSecondaryRGBA));
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    GTDynamicResourcePack.addItemTexture(itemId, result.asByteArray());
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
-            itemModel = model.bake(
-                    ModelFactory.getModeBaker(),
-                    Material::sprite,
-                    BlockModelRotation.X0_Y0,
-                    modelLocationSupplier.get());
         }
-        return itemModel;
     }
 
-    @Environment(EnvType.CLIENT)
-    @Override
-    public BakedModel getRotatedModel(Direction frontFacing) {
-        return blockModels.computeIfAbsent(frontFacing, facing -> getModel().bake(
-                ModelFactory.getModeBaker(),
-                Material::sprite,
-                ModelFactory.getRotation(facing),
-                modelLocationSupplier.get()));
-    }
+    private final Item item;
+    private final MaterialIconType type;
+    private final MaterialIconSet iconSet;
 
-    @Override
-    @Environment(EnvType.CLIENT)
-    public void onAdditionalModel(Consumer<ResourceLocation> registry) {
-        registry.accept(modelLocationSupplier.get());
-    }
-
-    @Override
-    @Environment(EnvType.CLIENT)
-    public boolean isGui3d() {
-        return false;
+    private TagPrefixItemRenderer(Item item, MaterialIconType type, MaterialIconSet iconSet) {
+        this.item = item;
+        this.type = type;
+        this.iconSet = iconSet;
     }
 }

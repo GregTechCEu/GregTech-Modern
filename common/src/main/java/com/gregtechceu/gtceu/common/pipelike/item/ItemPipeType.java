@@ -73,9 +73,10 @@ public enum ItemPipeType implements IMaterialPipeType<ItemPipeData> {
     public PipeModel createPipeModel(Material material) {
         PipeModel model;
         if (material.hasProperty(PropertyKey.WOOD)) {
-            model = new PipeModel(thickness, () -> GTCEu.id("block/pipe/pipe_side_wood"), () -> GTCEu.id("block/pipe/pipe_%s_in_wood".formatted(this.isRestrictive() ? values()[this.ordinal() - 4].name : name)));
+            model = new PipeModel(thickness, () -> GTCEu.id("block/pipe/pipe_side_wood"), () -> GTCEu.id("block/pipe/pipe_%s_in_wood".formatted(this.isRestrictive() ? values()[this.ordinal() - 4].name : name)), null, null);
         } else {
-            model = new PipeModel(thickness, () -> GTCEu.id("block/pipe/pipe_side"), () -> GTCEu.id("block/pipe/pipe_%s_in".formatted(this.isRestrictive() ? values()[this.ordinal() - 4].name : name)));
+            model = new PipeModel(thickness, () -> GTCEu.id("block/pipe/pipe_side"), () -> GTCEu.id("block/pipe/pipe_%s_in".formatted(this.isRestrictive() ? values()[this.ordinal() - 4].name : name)),
+                    null, null/*() -> GTCEu.id("block/pipe/pipe_side_secondary"), () -> GTCEu.id("block/pipe/pipe_%s_in_secondary".formatted(this.isRestrictive() ? values()[this.ordinal() - 4].name : name)) TODO enable once the textures are added*/);
         }
         if (isRestrictive()) {
             model.setSideOverlayTexture(GTCEu.id("block/pipe/pipe_restrictive"));

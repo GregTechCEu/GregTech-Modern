@@ -691,6 +691,7 @@ public class TagPrefix {
             .unificationEnabled(true);
 
     // Prefix to determine which kind of Rock this is.
+    // Also has a base tag path of only the material, for things like obsidian etc.
     public static final TagPrefix rock = new TagPrefix("rock")
             .defaultTagPath(FORGE, "%s")
             .defaultTagPath(FABRIC, "%s")
@@ -932,6 +933,11 @@ public class TagPrefix {
 
     public static TagPrefix getPrefix(String prefixName, @Nullable TagPrefix replacement) {
         return PREFIXES.getOrDefault(prefixName, replacement);
+    }
+
+    @SuppressWarnings("unchecked")
+    public TagKey<Item>[] getItemParentTags() {
+        return (Platform.isForge() ? forgeTags : fabricTags).stream().filter(TagType::isParentTag).map(type -> type.getTag(this, null)).toArray(TagKey[]::new);
     }
 
     @SuppressWarnings("unchecked")

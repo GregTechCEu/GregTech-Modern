@@ -25,7 +25,7 @@ public class LaserPipeBlockItem extends PipeBlockItem implements IItemRendererPr
     public static ItemColor tintColor() {
         return (itemStack, index) -> {
             if (itemStack.getItem() instanceof LaserPipeBlockItem materialBlockItem) {
-                return materialBlockItem.getBlock().tinted(materialBlockItem.getBlock().defaultBlockState(), null, null, index);
+                return LaserPipeBlock.tintedColor().getColor(materialBlockItem.getBlock().defaultBlockState(), null, null, index);
             }
             return -1;
         };
