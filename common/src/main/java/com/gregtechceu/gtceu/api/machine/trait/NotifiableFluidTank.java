@@ -224,7 +224,7 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
 
     @Override
     public long fill(FluidStack resource, boolean simulate, boolean notifyChanges) {
-        if (resource.isEmpty() || !getCapabilityIO().support(IO.IN)) return 0;
+        if (resource.isEmpty() || !canCapInput()) return 0;
         long filled = 0;
         FluidStorage existingStorage = null;
         if (!allowSameFluids) {
