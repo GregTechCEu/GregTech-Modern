@@ -31,6 +31,7 @@ import com.lowdragmc.lowdraglib.utils.Size;
 import dev.emi.emi.api.EmiApi;
 import it.unimi.dsi.fastutil.bytes.Byte2ObjectArrayMap;
 import it.unimi.dsi.fastutil.bytes.Byte2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
 import me.shedaniel.rei.api.client.view.ViewSearchBuilder;
@@ -46,7 +47,9 @@ import org.jetbrains.annotations.Nullable;
 import java.io.DataInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.DoubleSupplier;
 
@@ -78,6 +81,7 @@ public class GTRecipeTypeUI {
 
     private CompoundTag customUICache;
     private Size jeiSize;
+    private final Map<String, Collection<GTRecipe>> researchEntries = new Object2ObjectOpenHashMap<>();
 
     /**
      * @param recipeType the recipemap corresponding to this ui

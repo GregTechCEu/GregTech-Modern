@@ -207,6 +207,7 @@ public class GuiTextures {
     public static final ResourceTexture DATA_ORB_OVERLAY = new ResourceTexture("gtceu:textures/gui/overlay/data_orb_overlay.png");
     public static final ResourceTexture SCANNER_OVERLAY = new ResourceTexture("gtceu:textures/gui/overlay/scanner_overlay.png");
     public static final ResourceTexture DUCT_TAPE_OVERLAY = new ResourceTexture("gtceu:textures/gui/overlay/duct_tape_overlay.png");
+    public static final ResourceTexture RESEARCH_STATION_OVERLAY = new ResourceTexture("gtceu:textures/gui/overlay/research_station_overlay.png");
 
     //PROGRESS BARS
     public static final ResourceTexture PROGRESS_BAR_ARC_FURNACE = new ResourceTexture("gtceu:textures/gui/progress_bar/progress_bar_arc_furnace.png");

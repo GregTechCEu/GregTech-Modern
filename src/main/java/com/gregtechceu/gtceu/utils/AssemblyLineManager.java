@@ -1,14 +1,27 @@
 package com.gregtechceu.gtceu.utils;
 
+import com.gregtechceu.gtceu.api.item.ComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IDataItem;
+import com.gregtechceu.gtceu.api.item.component.IItemComponent;
+import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
+import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
+import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
+import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Recipe;
 import org.jetbrains.annotations.ApiStatus;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Consumer;
 
 public final class AssemblyLineManager {
 
@@ -32,17 +45,17 @@ public final class AssemblyLineManager {
 
     @ApiStatus.Internal
     public static void registerScannerLogic() {
-        RecipeMapScanner.registerCustomScannerLogic(new DataStickCopyScannerLogic());
+        GTRecipeType.registerCustomScannerLogic(new DataStickCopyScannerLogic());
     }
 
     /**
      * @param stackCompound the compound contained on the ItemStack to write to
      * @param researchId    the research id
      */
-    public static void writeResearchToNBT(@Nonnull NBTTagCompound stackCompound, @Nonnull String researchId) {
-        NBTTagCompound compound = new NBTTagCompound();
-        compound.setString(RESEARCH_ID_NBT_TAG, researchId);
-        stackCompound.setTag(RESEARCH_NBT_TAG, compound);
+    public static void writeResearchToNBT(@Nonnull CompoundTag stackCompound, @Nonnull String researchId) {
+        CompoundTag compound = new CompoundTag();
+        compound.putString(RESEARCH_ID_NBT_TAG, researchId);
+        stackCompound.put(RESEARCH_NBT_TAG, compound);
     }
 
     /**
@@ -51,10 +64,10 @@ public final class AssemblyLineManager {
      */
     @Nullable
     public static String readResearchId(@Nonnull ItemStack stack) {
-        NBTTagCompound compound = stack.getTagCompound();
+        CompoundTag compound = stack.getTag();
         if (!hasResearchTag(compound)) return null;
 
-        NBTTagCompound researchCompound = compound.getCompoundTag(RESEARCH_NBT_TAG);
+        CompoundTag researchCompound = compound.getCompound(RESEARCH_NBT_TAG);
         String researchId = researchCompound.getString(RESEARCH_ID_NBT_TAG);
         return researchId.isEmpty() ? null : researchId;
     }
@@ -65,10 +78,8 @@ public final class AssemblyLineManager {
      * @return if the stack is a data item
      */
     public static boolean isStackDataItem(@Nonnull ItemStack stack, boolean isDataBank) {
-        if (stack.getItem() instanceof MetaItem<?> metaItem) {
-            MetaItem<?>.MetaValueItem valueItem = metaItem.getItem(stack);
-            if (valueItem == null) return false;
-            for (IItemBehaviour behaviour : valueItem.getBehaviours()) {
+        if (stack.getItem() instanceof ComponentItem metaItem) {
+            for (IItemComponent behaviour : metaItem.getComponents()) {
                 if (behaviour instanceof IDataItem dataItem) {
                     return !dataItem.requireDataBank() || isDataBank;
                 }
@@ -79,19 +90,19 @@ public final class AssemblyLineManager {
 
     /**
      * @param stack the stack to check
-     * @return if the stack has the research NBTTagCompound
+     * @return if the stack has the research CompoundTag
      */
     public static boolean hasResearchTag(@Nonnull ItemStack stack) {
-        return hasResearchTag(stack.getTagCompound());
+        return hasResearchTag(stack.getTag());
     }
 
     /**
      * @param compound the compound to check
-     * @return if the tag has  the research NBTTagCompound
+     * @return if the tag has  the research CompoundTag
      */
-    private static boolean hasResearchTag(@Nullable NBTTagCompound compound) {
+    private static boolean hasResearchTag(@Nullable CompoundTag compound) {
         if (compound == null || compound.isEmpty()) return false;
-        return compound.hasKey(RESEARCH_NBT_TAG, Constants.NBT.TAG_COMPOUND);
+        return compound.contains(RESEARCH_NBT_TAG, Tag.TAG_COMPOUND);
     }
 
     /**
@@ -99,61 +110,60 @@ public final class AssemblyLineManager {
      *
      * @param builder the builder to retrieve recipe info from
      */
-    public static void createDefaultResearchRecipe(@Nonnull AssemblyLineRecipeBuilder builder) {
-        if (!ConfigHolder.machines.enableResearch) return;
+    public static void createDefaultResearchRecipe(@Nonnull GTRecipeBuilder builder, Consumer<FinishedRecipe> provider) {
+        if (!ConfigHolder.INSTANCE.machines.enableResearch) return;
 
-        for (AssemblyLineRecipeBuilder.ResearchRecipeEntry entry : builder.getRecipeEntries()) {
-            createDefaultResearchRecipe(entry.getResearchId(), entry.getResearchStack(), entry.getDataStack(), entry.getDuration(), entry.getEUt(), entry.getCWUt());
+        for (GTRecipeBuilder.ResearchRecipeEntry entry : builder.recipeEntries()) {
+            createDefaultResearchRecipe(entry.researchId(), entry.researchStack(), entry.dataStack(), entry.duration(), entry.EUt(), entry.CWUt(), provider);
         }
     }
 
-    public static void createDefaultResearchRecipe(@Nonnull String researchId, @Nonnull ItemStack researchItem, @Nonnull ItemStack dataItem, int duration, int EUt, int CWUt) {
-        if (!ConfigHolder.machines.enableResearch) return;
+    public static void createDefaultResearchRecipe(@Nonnull String researchId, @Nonnull ItemStack researchItem, @Nonnull ItemStack dataItem, int duration, int EUt, int CWUt, Consumer<FinishedRecipe> provider) {
+        if (!ConfigHolder.INSTANCE.machines.enableResearch) return;
 
-        NBTTagCompound compound = GTUtility.getOrCreateNbtCompound(dataItem);
+        CompoundTag compound = dataItem.getOrCreateTag();
         writeResearchToNBT(compound, researchId);
 
         if (CWUt > 0) {
-            RecipeMaps.RESEARCH_STATION_RECIPES.recipeBuilder()
-                    .inputNBT(dataItem.getItem(), 1, dataItem.getMetadata(), NBTMatcher.ANY, NBTCondition.ANY)
-                    .inputs(researchItem)
-                    .outputs(dataItem)
+            GTRecipeTypes.RESEARCH_STATION_RECIPES.recipeBuilder(researchId)
+                    .inputItems(dataItem.getItem())
+                    .inputItems(researchItem)
+                    .outputItems(dataItem)
                     .EUt(EUt)
                     .CWUt(CWUt)
                     .totalCWU(duration)
-                    .buildAndRegister();
+                    .save(provider);
         } else {
-            RecipeBuilder<?> builder = RecipeMaps.SCANNER_RECIPES.recipeBuilder()
-                    .inputNBT(dataItem.getItem(), 1, dataItem.getMetadata(), NBTMatcher.ANY, NBTCondition.ANY)
-                    .inputs(researchItem)
-                    .outputs(dataItem)
+            GTRecipeTypes.SCANNER_RECIPES.recipeBuilder(researchId)
+                    .inputItems(dataItem.getItem())
+                    .inputItems(researchItem)
+                    .outputItems(dataItem)
                     .duration(duration)
-                    .EUt(EUt);
-            builder.applyProperty(ScanProperty.getInstance(), true);
-            builder.buildAndRegister();
+                    .EUt(EUt)
+                    .researchScan(true)
+                    .save(provider);
         }
     }
 
-    public static class DataStickCopyScannerLogic implements IScannerRecipeMap.ICustomScannerLogic {
+    public static class DataStickCopyScannerLogic implements GTRecipeType.ICustomScannerLogic {
 
         private static final int EUT = 2;
         private static final int DURATION = 100;
 
         @Override
-        public Recipe createCustomRecipe(long voltage, List<ItemStack> inputs, List<FluidStack> fluidInputs, boolean exactVoltage) {
+        public GTRecipe createCustomRecipe(long voltage, List<ItemStack> inputs, List<FluidStack> fluidInputs) {
             if (inputs.size() > 1) {
                 // try the data recipe both ways, prioritizing overwriting the first
-                Recipe recipe = createDataRecipe(inputs.get(0), inputs.get(1));
+                GTRecipe recipe = createDataRecipe(inputs.get(0), inputs.get(1));
                 if (recipe != null) return recipe;
 
-                return createDataRecipe(inputs.get(1), inputs.get(0));
+                createDataRecipe(inputs.get(1), inputs.get(0));
             }
             return null;
         }
 
-        @Nullable
-        private Recipe createDataRecipe(@Nonnull ItemStack first, @Nonnull ItemStack second) {
-            NBTTagCompound compound = second.getTagCompound();
+        private GTRecipe createDataRecipe(@Nonnull ItemStack first, @Nonnull ItemStack second) {
+            CompoundTag compound = second.getTag();
             if (compound == null) return null;
 
             // Both must be data items
@@ -161,30 +171,30 @@ public final class AssemblyLineManager {
             if (!isStackDataItem(second, true)) return null;
 
             ItemStack output = first.copy();
-            output.setTagCompound(compound.copy());
-            return RecipeMaps.SCANNER_RECIPES.recipeBuilder()
-                    .inputs(first)
+            output.setTag(compound.copy());
+            return GTRecipeTypes.SCANNER_RECIPES.recipeBuilder(GTStringUtils.itemStackToString(output))
+                    .inputItems(first)
                     .notConsumable(second)
-                    .outputs(output)
-                    .duration(DURATION).EUt(EUT).build().getResult();
+                    .outputItems(output)
+                    .duration(DURATION).EUt(EUT).buildRawRecipe();
         }
 
         @Nullable
         @Override
-        public List<Recipe> getRepresentativeRecipes() {
-            ItemStack copiedStick = MetaItems.TOOL_DATA_STICK.getStackForm();
-            copiedStick.setTranslatableName("gregtech.scanner.copy_stick_from");
-            ItemStack emptyStick = MetaItems.TOOL_DATA_STICK.getStackForm();
-            emptyStick.setTranslatableName("gregtech.scanner.copy_stick_empty");
-            ItemStack resultStick = MetaItems.TOOL_DATA_STICK.getStackForm();
-            resultStick.setTranslatableName("gregtech.scanner.copy_stick_to");
+        public List<GTRecipe> getRepresentativeRecipes() {
+            ItemStack copiedStick = GTItems.TOOL_DATA_STICK.asStack();
+            copiedStick.setHoverName(Component.translatable("gtceu.scanner.copy_stick_from"));
+            ItemStack emptyStick = GTItems.TOOL_DATA_STICK.asStack();
+            emptyStick.setHoverName(Component.translatable("gtceu.scanner.copy_stick_empty"));
+            ItemStack resultStick = GTItems.TOOL_DATA_STICK.asStack();
+            resultStick.setHoverName(Component.translatable("gtceu.scanner.copy_stick_to"));
             return Collections.singletonList(
-                    RecipeMaps.SCANNER_RECIPES.recipeBuilder()
-                            .inputs(emptyStick)
+                    GTRecipeTypes.SCANNER_RECIPES.recipeBuilder("copy_" + GTStringUtils.itemStackToString(copiedStick))
+                            .inputItems(emptyStick)
                             .notConsumable(copiedStick)
-                            .outputs(resultStick)
+                            .outputItems(resultStick)
                             .duration(DURATION).EUt(EUT)
-                            .build().getResult());
+                            .buildRawRecipe());
         }
     }
 }

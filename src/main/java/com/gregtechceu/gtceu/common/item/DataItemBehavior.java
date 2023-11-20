@@ -3,17 +3,16 @@ package com.gregtechceu.gtceu.common.item;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.IDataItem;
-import com.gregtechceu.gtceu.api.item.component.IItemComponent;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
+import com.gregtechceu.gtceu.utils.AssemblyLineManager;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
 import java.util.Collection;
 import java.util.List;
 
@@ -36,9 +35,9 @@ public class DataItemBehavior implements IAddInformation, IDataItem {
 
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
-        String researchId = AssemblyLineManager.readResearchId(itemStack);
+        String researchId = AssemblyLineManager.readResearchId(stack);
         if (researchId == null) return;
-        Collection<GTRecipe> recipes = ((IResearchRecipeMap) RecipeMaps.ASSEMBLY_LINE_RECIPES).getDataStickEntry(researchId);
+        Collection<GTRecipe> recipes = GTRecipeTypes.ASSEMBLY_LINE_RECIPES.getDataStickEntry(researchId);
         if (recipes != null && !recipes.isEmpty()) {
             tooltipComponents.add(Component.translatable("behavior.data_item.assemblyline.title"));
             Collection<ItemStack> added = new ObjectOpenHashSet<>();

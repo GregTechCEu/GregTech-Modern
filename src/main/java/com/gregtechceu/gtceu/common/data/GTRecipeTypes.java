@@ -19,6 +19,8 @@ import com.gregtechceu.gtceu.common.recipe.RockBreakerCondition;
 import com.gregtechceu.gtceu.data.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
+import com.gregtechceu.gtceu.utils.AssemblyLineManager;
+import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
 import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
 import com.lowdragmc.lowdraglib.gui.widget.TankWidget;
 import com.lowdragmc.lowdraglib.misc.FluidStorage;
@@ -369,6 +371,13 @@ public class GTRecipeTypes {
             .setMaxTooltips(4)
             .setSound(GTSoundEntries.COOLING);
 
+    public static final GTRecipeType RESEARCH_STATION_RECIPES = register("research_station", ELECTRIC)
+            .setMaxIOSize(2, 1, 0, 0)
+            .setProgressBar(GuiTextures.PROGRESS_BAR_ARROW, LEFT_TO_RIGHT)
+            .setSlotOverlay(false, false, GuiTextures.SCANNER_OVERLAY)
+            .setSlotOverlay(true, false, GuiTextures.RESEARCH_STATION_OVERLAY)
+            .setSound(GTValues.FOOLS.get() ? GTSoundEntries.SCIENCE : GTSoundEntries.COMPUTATION);
+
     public final static GTRecipeType ROCK_BREAKER_RECIPES = register("rock_breaker", ELECTRIC).setMaxIOSize(1, 4, 0, 0).setEUIO(IO.IN)
             .setSlotOverlay(false, false, GuiTextures.DUST_OVERLAY)
             .setSlotOverlay(true, false, GuiTextures.CRUSHED_ORE_OVERLAY)
@@ -389,6 +398,13 @@ public class GTRecipeTypes {
             })
             .setMaxTooltips(4)
             .setSound(GTSoundEntries.FIRE);
+
+    public static final GTRecipeType SCANNER_RECIPES = register("scanner", ELECTRIC)
+            .setMaxIOSize(2, 1, 1, 0)
+            .setSlotOverlay(false, false, GuiTextures.DATA_ORB_OVERLAY)
+            .setSlotOverlay(false, false, true, GuiTextures.SCANNER_OVERLAY)
+            .setProgressBar(GuiTextures.PROGRESS_BAR_ARROW, LEFT_TO_RIGHT)
+            .setSound(GTSoundEntries.ELECTROLYZER);
 
     //////////////////////////////////////
     //*******     Generator      *******//
@@ -543,7 +559,8 @@ public class GTRecipeTypes {
 
     public final static GTRecipeType ASSEMBLY_LINE_RECIPES = register("assembly_line", MULTIBLOCK).setMaxIOSize(16, 1, 4, 0).setEUIO(IO.IN)
             .setProgressBar(GuiTextures.PROGRESS_BAR_ARROW, LEFT_TO_RIGHT)
-            .setSound(GTSoundEntries.ASSEMBLER);
+            .setSound(GTSoundEntries.ASSEMBLER)
+            .onRecipeBuild(AssemblyLineManager::createDefaultResearchRecipe);
 
     public static final GTRecipeType LARGE_CHEMICAL_RECIPES = register("large_chemical_reactor", MULTIBLOCK).setMaxIOSize(3, 3, 5, 4).setEUIO(IO.IN)
             .prepareBuilder(recipeBuilder -> recipeBuilder.EUt(GTValues.VA[GTValues.LV]))

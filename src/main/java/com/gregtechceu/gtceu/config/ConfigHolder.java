@@ -267,6 +267,9 @@ public class ConfigHolder {
         @Configurable.Comment({"Block to replace mined ores with in the miner and multiblock miner.", "Default: minecraft:cobblestone"})
         public String replaceMinedBlocksWith = "minecraft:cobblestone";
         @Configurable
+        @Configurable.Comment({"Whether to enable Assembly Line research for recipes.", "Default: true"})
+        public boolean enableResearch = true;
+        @Configurable
         @Configurable.Comment({"Whether to enable the Maintenance Hatch, required for Multiblocks.", "Default: true"})
         public boolean enableMaintenance = true;
 
