@@ -664,7 +664,7 @@ public class GTBlocks {
     }
 
     private static BlockEntry<BatteryBlock> createBatteryBlock(IBatteryData batteryData) {
-        BlockEntry<BatteryBlock> coilBlock = REGISTRATE.block("%s_battery".formatted(batteryData.getBatteryName()),
+        BlockEntry<BatteryBlock> batteryBlock = REGISTRATE.block("%s_battery".formatted(batteryData.getBatteryName()),
                         p -> new BatteryBlock(p, batteryData, Platform.isClient() ?
                                 new TextureOverrideRenderer(new ResourceLocation("block/cube_bottom_top"),
                                         Map.of("bottom", GTCEu.id("block/casings/battery/" + batteryData.getBatteryName() + "/top"),
@@ -680,8 +680,8 @@ public class GTBlocks {
                 .onRegister(compassNodeExist(GTCompassSections.BLOCKS, "pss_battery"))
                 .build()
                 .register();
-        PSS_BATTERIES.put(batteryData, coilBlock);
-        return coilBlock;
+        PSS_BATTERIES.put(batteryData, batteryBlock);
+        return batteryBlock;
     }
 
     private static BlockEntry<FusionCasingBlock> createFusionCasing(IFusionCasingType casingType) {
