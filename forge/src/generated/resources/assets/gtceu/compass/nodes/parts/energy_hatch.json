@@ -57,7 +57,19 @@
     "gtceu:luv_energy_output_hatch_16a",
     "gtceu:zpm_energy_output_hatch_16a",
     "gtceu:uv_energy_output_hatch_16a",
-    "gtceu:uhv_energy_output_hatch_16a"
+    "gtceu:uhv_energy_output_hatch_16a",
+    "gtceu:ev_substation_input_hatch_64a",
+    "gtceu:iv_substation_input_hatch_64a",
+    "gtceu:luv_substation_input_hatch_64a",
+    "gtceu:zpm_substation_input_hatch_64a",
+    "gtceu:uv_substation_input_hatch_64a",
+    "gtceu:uhv_substation_input_hatch_64a",
+    "gtceu:ev_substation_output_hatch_64a",
+    "gtceu:iv_substation_output_hatch_64a",
+    "gtceu:luv_substation_output_hatch_64a",
+    "gtceu:zpm_substation_output_hatch_64a",
+    "gtceu:uv_substation_output_hatch_64a",
+    "gtceu:uhv_substation_output_hatch_64a"
   ],
   "page": "gtceu:parts/energy_hatch",
   "position": [

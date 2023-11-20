@@ -16,7 +16,6 @@ public class AEFluidConfigWidget extends AEConfigWidget {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     void init() {
         int line;
         this.displayList = new IConfigurableSlot[this.config.length];
