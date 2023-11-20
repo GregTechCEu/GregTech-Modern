@@ -108,23 +108,23 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine implements
         this.inputHatches = new EnergyContainerList(inputs);
         this.outputHatches = new EnergyContainerList(outputs);
 
-        List<IBatteryData> parts = new ArrayList<>();
+        List<IBatteryData> batteries = new ArrayList<>();
         for (Map.Entry<String, Object> battery : getMultiblockState().getMatchContext().entrySet()) {
             if (battery.getKey().startsWith(PMC_BATTERY_HEADER) && battery.getValue() instanceof BatteryMatchWrapper wrapper) {
                 for (int i = 0; i < wrapper.amount; i++) {
-                    parts.add(wrapper.partType);
+                    batteries.add(wrapper.partType);
                 }
             }
         }
-        if (parts.isEmpty()) {
+        if (batteries.isEmpty()) {
             // only empty batteries found in the structure
             onStructureInvalid();
             return;
         }
         if (this.energyBank == null) {
-            this.energyBank = new PowerStationEnergyBank(this, parts);
+            this.energyBank = new PowerStationEnergyBank(this, batteries);
         } else {
-            this.energyBank = energyBank.rebuild(parts);
+            this.energyBank = energyBank.rebuild(batteries);
         }
         this.passiveDrain = this.energyBank.getPassiveDrainPerTick();
     }
@@ -140,19 +140,6 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine implements
         netIOLastSec = 0;
         averageIOLastSec = 0;
         super.onStructureInvalid();
-    }
-
-    protected boolean isSubscriptionActive() {
-        if (energyBank != null && energyBank.hasEnergy())
-            return true;
-
-        if (energyBank == null)
-            return false;
-
-        if (!energyBank.hasEnergy())
-            return false;
-
-        return energyBank.getStored().compareTo(energyBank.getCapacity()) < 0;
     }
 
     protected void transferEnergyTick() {
