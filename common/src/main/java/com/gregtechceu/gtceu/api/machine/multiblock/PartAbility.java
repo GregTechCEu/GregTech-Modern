@@ -22,6 +22,8 @@ public class PartAbility {
     public static final PartAbility IMPORT_FLUIDS = new PartAbility("import_fluids");
     public static final PartAbility INPUT_ENERGY = new PartAbility("input_energy");
     public static final PartAbility OUTPUT_ENERGY = new PartAbility("output_energy");
+    public static final PartAbility SUBSTATION_INPUT_ENERGY = new PartAbility("substation_input_energy");
+    public static final PartAbility SUBSTATION_OUTPUT_ENERGY = new PartAbility("substation_output_energy");
     public static final PartAbility INPUT_KINETIC = new PartAbility("input_kinetic");
     public static final PartAbility OUTPUT_KINETIC = new PartAbility("output_kinetic");
     public static final PartAbility ROTOR_HOLDER = new PartAbility("rotor_holder");

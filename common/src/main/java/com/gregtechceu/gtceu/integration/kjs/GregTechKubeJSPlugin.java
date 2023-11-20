@@ -15,6 +15,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.worldgen.*;
+import com.gregtechceu.gtceu.api.data.worldgen.generator.DikeVeinGenerator;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinGenerator;
 import com.gregtechceu.gtceu.api.fluids.FluidBuilder;
 import com.gregtechceu.gtceu.api.fluids.FluidState;
@@ -169,6 +170,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
 
         event.add("GTOreVein", GTOreDefinition.class);
         event.add("GTLayerPattern", GTLayerPattern.class);
+        event.add("GTDikeBlockDefinition", DikeVeinGenerator.DikeBlockDefinition.class);
         event.add("GTOres", GTOres.class);
         event.add("GTRecipeModifiers", GTRecipeModifiers.class);
         event.add("OverclockingLogic", OverclockingLogic.class);

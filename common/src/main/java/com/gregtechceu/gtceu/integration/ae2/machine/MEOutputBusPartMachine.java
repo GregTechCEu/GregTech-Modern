@@ -17,10 +17,13 @@ import com.gregtechceu.gtceu.integration.ae2.gui.widget.AEItemGridWidget;
 import com.gregtechceu.gtceu.integration.ae2.util.SerializableGenericStackInv;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
+import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
 import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import com.lowdragmc.lowdraglib.utils.Position;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -87,20 +90,17 @@ public class MEOutputBusPartMachine extends MEBusPartMachine {
     }
 
     @Override
-    public ModularUI createUI(Player entityPlayer) {
-        ModularUI modularUI = new ModularUI(176, 18 + 18 * 4 + 94, this, entityPlayer)
-                .background(GuiTextures.BACKGROUND)
-                .widget(new LabelWidget(10, 5, getDefinition().getName()));
+    public Widget createUIWidget() {
+        WidgetGroup group = new WidgetGroup(new Position(0, 0));
         // ME Network status
-        modularUI.widget(new LabelWidget(10, 15, () -> this.isOnline ?
+        group.addWidget(new LabelWidget(10, 15, () -> this.isOnline ?
                 "gtceu.gui.me_network.online" :
                 "gtceu.gui.me_network.offline"));
-        modularUI.widget(new LabelWidget(10, 25, "gtceu.gui.waiting_list"));
+        group.addWidget(new LabelWidget(10, 25, "gtceu.gui.waiting_list"));
         // Config slots
-        modularUI.widget(new AEItemGridWidget(10, 35, 3, this.internalBuffer));
+        group.addWidget(new AEItemGridWidget(10, 35, 3, this.internalBuffer));
 
-        modularUI.widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(), GuiTextures.SLOT, 7, 18 + 18 * 4 + 12, true));
-        return modularUI;
+        return group;
     }
 
     protected void updateInventorySubscription() {

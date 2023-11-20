@@ -739,7 +739,9 @@ public class LangHandler {
                 "§fCapacitors§7 do not need to be all the same tier.",
                 "Allows up to §f%d Capacitor Layers§7.",
                 "Loses energy equal to §f1%%§7 of total capacity every §f24 hours§7.",
-                "Capped at §f%,d EU/t§7 passive loss per Capacitor Block."
+                "Capped at §f%,d EU/t§7 passive loss per Capacitor Block.",
+                "Can use",
+                " Laser Hatches§7."
         );
 
         multiLang(provider, "gtceu.machine.active_transformer.tooltip",
@@ -778,8 +780,10 @@ public class LangHandler {
         provider.add("gtceu.machine.fluid_hatch.export.tooltip", "Fluid Output for Multiblocks");
         provider.add("gtceu.machine.energy_hatch.input.tooltip", "Energy Input for Multiblocks");
         provider.add("gtceu.machine.energy_hatch.input_hi_amp.tooltip", "Multiple Ampere Energy Input for Multiblocks");
+        provider.add("gtceu.machine.substation_hatch.input.tooltip", "Energy Input for the Power Substation");
         provider.add("gtceu.machine.energy_hatch.output.tooltip", "Energy Output for Multiblocks");
         provider.add("gtceu.machine.energy_hatch.output_hi_amp.tooltip", "Multiple Ampere Energy Output for Multiblocks");
+        provider.add("gtceu.machine.substation_hatch.output.tooltip", "Energy Output for the Power Substation");
         provider.add("gtceu.machine.me.item_export.tooltip", "Stores items directly into an ME network.");
         provider.add("gtceu.machine.me.fluid_export.tooltip", "Stores fluids directly into an ME network.");
         provider.add("gtceu.machine.me.fluid_import.tooltip", "Fetches fluids from an ME network automatically.");
@@ -1017,6 +1021,7 @@ public class LangHandler {
         multiLang(provider, "gtceu.multiblock.pattern.error.limited", "§cMaximum: %d§r", "§cMinimum: %d§r", "§cMaximum: %d per layer§r", "§cMinimum: %d per layer§r");
         provider.add("gtceu.multiblock.pattern.error.coils", "§cAll heating coils must be the same§r");
         provider.add("gtceu.multiblock.pattern.error.filters", "§cAll filters must be the same§r");
+        provider.add("gtceu.multiblock.pattern.error.batteries", "§cAll batteries must be the same§r");
         provider.add("gtceu.multiblock.pattern.clear_amount_1", "§6Must have a clear 1x1x1 space in front§r");
         provider.add("gtceu.multiblock.pattern.clear_amount_3", "§6Must have a clear 3x3x1 space in front§r");
         provider.add("gtceu.multiblock.pattern.single", "§6Only this block can be used§r");
@@ -1064,6 +1069,20 @@ public class LangHandler {
         provider.add("gtceu.multiblock.large_miner.needsfluid", "Needs Drilling Fluid");
         provider.add("gtceu.multiblock.pyrolyse_oven.speed", "Processing Speed: %s%%");
         provider.add("gtceu.multiblock.cracking_unit.energy", "Energy Usage: %s%%");
+        provider.add("gtceu.multiblock.power_substation.stored", "Stored: %s EU");
+        provider.add("gtceu.multiblock.power_substation.capacity", "Capacity: %s EU");
+        provider.add("gtceu.multiblock.power_substation.passive_drain", "Passive Drain: %s EU/t");
+        provider.add("gtceu.multiblock.power_substation.average_io", "Avg. I/O: %s EU/t");
+        provider.add("gtceu.multiblock.power_substation.average_io_hover", "The average change in energy of the Power Substation's internal energy bank");
+        provider.add("gtceu.multiblock.power_substation.time_to_fill", "Time to fill: %s");
+        provider.add("gtceu.multiblock.power_substation.time_to_drain", "Time to drain: %s");
+        provider.add("gtceu.multiblock.power_substation.time_seconds", "%s Seconds");
+        provider.add("gtceu.multiblock.power_substation.time_minutes", "%s Minutes");
+        provider.add("gtceu.multiblock.power_substation.time_hours", "%s Hours");
+        provider.add("gtceu.multiblock.power_substation.time_days", "%s Days");
+        provider.add("gtceu.multiblock.power_substation.time_years", "%s Years");
+        provider.add("gtceu.multiblock.power_substation.time_forever", "Forever");
+        provider.add("gtceu.multiblock.power_substation.under_one_hour_left", "Less than 1 hour until fully drained!");
         provider.add("gtceu.command.usage", "Usage: /gtceu <worldgen/hand/recipecheck>");
         provider.add("gtceu.command.worldgen.usage", "Usage: /gtceu worldgen <reload>");
         provider.add("gtceu.command.worldgen.reload.usage", "Usage: /gtceu worldgen reload");
@@ -1110,6 +1129,8 @@ public class LangHandler {
         provider.add("gtceu.creative.tank.tpc", "Ticks per Cycle");
         provider.add("gtceu.creative.energy.amperage", "Amperage");
         provider.add("gtceu.creative.energy.voltage", "Voltage");
+        provider.add("gtceu.creative.energy.sink", "Sink");
+        provider.add("gtceu.creative.energy.source", "Source");
         provider.add("gtceu.creative.activity.on", "Active");
         provider.add("gtceu.creative.activity.off", "Not active");
         multiLang(provider, "metaitem.cover.digital.wireless.tooltip",
@@ -1165,6 +1186,13 @@ public class LangHandler {
 
         provider.add("gtceu.gui.content.units.per_tick", "/t");
         provider.add("gtceu.gui.content.units.per_second", "/s");
+
+        provider.add("gtceu.gui.me_network.online", "Network Status: §2Online§r");
+        provider.add("gtceu.gui.me_network.offline", "Network Status: §4Offline§r");
+        provider.add("gtceu.gui.config_slot", "§fConfig Slot§r");
+        provider.add("gtceu.gui.config_slot.set", "§7Click to §bset/select§7 config slot.§r");
+        provider.add("gtceu.gui.config_slot.scroll", "§7Scroll wheel to §achange§7 config amount.§r");
+        provider.add("gtceu.gui.config_slot.remove", "§7Right click to §4clear§7 config slot.§r");
 
         provider.add("gtceu.machine.parallel_hatch.display", "Adjust the maximum parallel of the multiblock");
     }
