@@ -15,7 +15,7 @@
         <br/>
         在机器上安装较低电压的覆盖板是§9安全§r的。
     </text>
-    <compass range="3">
+    <compass range="3" tick-scene="true">
         <frame>
             <description>
                 泵覆盖板的简单示例。
@@ -248,8 +248,28 @@
                 电动泵覆盖板的默认模式是输出。你需要<style color="0xffafff00" underlined="true" link="gtceu:tools/screwdriver" hover-info="click link">螺丝刀</style>来调整它的配置。
             </information>
             <scene>
+                <add-entity type="player" id="0" pos="-0.5 0 -0.5">
+                    <nbt>
+                        {
+                            Inventory: [
+                                {
+                                    Count: 1b,
+                                    Slot: 0b,
+                                    id: "gtceu:iron_screwdriver"
+                                }
+                            ],
+                            SelectedItemSlot: 0,
+                            Rotation: [
+                                -70f,
+                                0f
+                            ]
+                        }
+                    </nbt>
+                </add-entity>
+            </scene>
+            <scene>
                 <tooltip pos="0 1.5 0.5" duration="70" screen-offset="0.2 0.5" item="gtceu:iron_screwdriver">
-                    使用螺丝刀右键单击覆盖板以打开其设置界面。
+                    用螺丝刀右键单击覆盖板，可以打开它的GUI。
                 </tooltip>
                 <modify pos="-1 1 0" block="gtceu:gold_normal_fluid_pipe">
                     <nbt>
@@ -345,6 +365,19 @@
             </information>
             <scene delay="20">
                 <modify pos="0 1 0" block="minecraft:air"/>
+                <modify-entity id="0">
+                    <nbt>
+                        {
+                            Inventory: [
+                                {
+                                    Count: 1b,
+                                    Slot: 0b,
+                                    id: "gtceu:iron_crowbar"
+                                }
+                            ]
+                        }
+                    </nbt>
+                </modify-entity>
             </scene>
             <scene>
                 <tooltip pos="0 1.5 0.5" duration="70" screen-offset="0.2 0.5" item="gtceu:iron_crowbar">
@@ -359,10 +392,31 @@
                         }
                     </nbt>
                 </modify>
+                <add-entity pos="0.5 2 0" type="minecraft:item" id="1">
+                    <nbt>
+                        {
+                            Item: {
+                                Count: 1b,
+                                id: "gtceu:mv_electric_pump"
+                            }
+                        }
+                    </nbt>
+                </add-entity>
             </scene>
             <scene>
                 <modify pos="0 0 0" block="gtceu:lv_super_tank"/>
+                <add-entity pos="0.5 2 0" type="minecraft:item" id="2">
+                    <nbt>
+                        {
+                            Item: {
+                                Count: 1b,
+                                id: "gtceu:mv_electric_pump"
+                            }
+                        }
+                    </nbt>
+                </add-entity>
             </scene>
+            <scene delay="30"/>
         </frame>
     </compass>
 </page>

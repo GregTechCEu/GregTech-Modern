@@ -1,87 +1,33 @@
 <page>
- <h1>Wrench</h1>
- <h3>Source</h3>
- <text pwt="true"><style color="0xaaaaaa" italic="true" pwt="true">Note: this page is ported from MCMOD's GTCEu wiki.<br/>Author: <style color="0xa4e7ff" hover-info="url" pwt="true" underlined="true" url-link="https://center.mcmod.cn/179043/">花海</style>, <style color="0xa4e7ff" hover-info="url" pwt="true" underlined="true" url-link="https://center.mcmod.cn/119280/">Oganesson897</style><br/></style></text>
- <h2 font-color="0xff0000">WARNING!!!</h2>
- <text isCenter="true">
-  <style color="0xff0000" pwt="true">The warning means this is not a reliable page.</style>
-  <br/>
-  <style bold="true" color="0xffaa00" pwt="true">Please do not report any mistakes on the page, either discord or github.</style>
-  <br/>
-  This page is translated from the Chinese wiki which hasn't been reviewed and polished yet. It may contain errors and inaccuracies. We are looking forward to your help by improving this page.
- </text>
+ <h1>
+  扳手
+ </h1>
+ <h3>
+  来源
+ </h3>
+ <text><style color="0xaaaaaa" italic="true" pwt="true">注释：本页转载于MCMOD的GTCEu维基<br/>作者：<style color="0xa4e7ff" hover-info="url" pwt="true" underlined="true" url-link="https://center.mcmod.cn/179043/">花海</style>，<style color="0xa4e7ff" hover-info="url" pwt="true" underlined="true" url-link="https://center.mcmod.cn/119280/">Oganesson897</style><br/></style>，<style color="0xa4e7ff" hover-info="TacoMonkey's Github" underlined="true" url-link="https://github.com/TacoMonkey11">TacoMonkey</style><br/></style></text>
  <text>
-  <br/>
-  <style lang="zh-cn">
-   扳手由 4 个同种材质的锭配合
-   <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">锻造锤</style>
-   在
-   <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">工作台</style>
-   中合成得到。
-  </style>
-  <br/>
-  <br/>
-  <style lang="zh-cn">
-   扳手可作为采掘工具使用。手持扳手对准本模组新增的各类机器、
-   <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">导线</style>
-   （线缆或流体管道）、
-   <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">机械外壳</style>
-   、
-   <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">机械方块</style>
-   、
-   <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">框架</style>
-   、
-   <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">线圈方块</style>
-   等方块按住
-   <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">摧毁</style>
-   键（默认为鼠标左键）即可快速拆除，并掉落其自身。
-   <br/>
-  </style>
-  <br/>
-  <br/>
-  <style lang="zh-cn">
-   当手持扳手时按下
-   <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">使用</style>
-   键（默认为鼠标右键）时：
-  </style>
-  <br/>
+  当使用扳手右击机器时：
  </text>
+ <br/>
  <text left-margin="10">
-  •
-  <style lang="zh-cn">
-   若对准机器的任意一面，则可以将机器的主动输出方向（即有黑色正方形的一面）调整为对应面（正面不可被设置为输出方向）；
-  </style>
+  • 站立时：
+   如果您瞄准机器的任意一侧，可以将机器的主动输出方向（既带有开口的一侧）调整到你设置的方向（正面不能被设置为输出方向）。也可以通过机器GUI调整输出口方向。
   <br/>
   <br/>
-  •
-  <style lang="zh-cn">
-   若对准其它能够调整方向的方块（如
-   <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">楼梯</style>
-   ），则可以自由旋转该方块。
-  </style>
+  • 蹲下时：
+   你可以根据点击的朝向旋转机器。
+     每次执行上述操作，扳手都会消耗1点耐久度（创造模式除外）。耐久度为0的扳手无法再旋转机器或改变机器的输出口方向（Bug）。
   <br/>
  </text>
+ <text> 类似于<style color="0xafff00" hover-info="click link" link="gtceu:tools/wire_cutter" underlined="true">剪线钳</style>，扳手也可以连接或断开物品/流体管道。</text>
  <text>
   <br/>
-  <style lang="zh-cn">
-   在工作台中，扳手也可以参与物品的合成。在工作台中合成不同电压等级的机器外壳、电动工具、框架等物品都需要用到扳手。
-  </style>
-  <br/>
-  <br/>
-  <style lang="zh-cn">
-   以上操作每进行一次，扳手都会消耗 1 点耐久（在
-   <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">创造模式</style>
-   下使用不消耗耐久），耐久为 0 的扳手再使用一次后会被直接销毁，非满耐久的扳手可以在
-   <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">铁砧</style>
-   中利用对应的材料或材料
-   <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">板</style>
-   来修复（可用于修复的物品会在当鼠标悬浮在扳手上方并按住 Shift 键时显示在其 Tooltip 的最下方）。可以使用电动扳手来代替普通的扳手使用。
-  </style>
-  <br/>
-  <br/>
-  <style lang="zh-cn">
-   这里只上传了一个模板，作为添加合成时使用，每种材料的扳手属性见下表；带有“带磁性”备注则表明使用该工具挖掘方块时的掉落物将会被直接传输至玩家的背包内。
-  </style>
-  <br/>
+   扳手也是一个合成工具。制作机器外壳，电动工具，框架等等其他物品都需要扳手。您可以使用JEI等配方浏览器查看扳手的所有用途。
  </text>
+ <br/>
+
+ <recipe id="gtceu:shaped/wrench_iron"/>
+ <br/>
+ <text isCenter="true">这只是扳手配方的一个例子，大多数格雷科技材料都可以制作扳手。</text>
 </page>
