@@ -17,7 +17,7 @@ import javax.annotation.Nullable;
  * @implNote IRecipeMachine
  * A machine can handle recipes.
  */
-public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFeature, IWorkable, ICleanroomReceiver {
+public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFeature, IWorkable, ICleanroomReceiver, IVoidable {
 
     @Override
     default int getChanceTier() {

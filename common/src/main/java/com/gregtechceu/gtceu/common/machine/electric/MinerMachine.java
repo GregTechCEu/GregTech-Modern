@@ -70,7 +70,7 @@ public class MinerMachine extends WorkableTieredMachine implements IMiner, ICont
     protected ISubscription exportItemSubs, energySubs;
 
     public MinerMachine(IMachineBlockEntity holder, int tier, int speed, int maximumRadius, int fortune, Object... args) {
-        super(holder, tier, GTMachines.defaultTankSizeFunction, args, (tier + 1) * (tier + 1), fortune, speed, maximumRadius);
+        super(holder, tier, GTMachines.defaultTankSizeFunction, true, args, (tier + 1) * (tier + 1), fortune, speed, maximumRadius);
         this.energyPerTick = GTValues.V[tier - 1];
         this.chargerInventory = createChargerItemHandler();
     }

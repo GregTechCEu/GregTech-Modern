@@ -1,6 +1,10 @@
 package com.gregtechceu.gtceu.api.machine;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
+import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
+import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
+import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
@@ -20,6 +24,7 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.Map;
 import java.util.function.BiFunction;
 
 /**
@@ -32,7 +37,7 @@ import java.util.function.BiFunction;
 public class SimpleGeneratorMachine extends WorkableTieredMachine implements IFancyUIMachine {
 
     public SimpleGeneratorMachine(IMachineBlockEntity holder, int tier, Int2LongFunction tankScalingFunction, Object... args) {
-        super(holder, tier, tankScalingFunction, args);
+        super(holder, tier, tankScalingFunction, false, args);
     }
 
     //////////////////////////////////////
@@ -116,4 +121,13 @@ public class SimpleGeneratorMachine extends WorkableTieredMachine implements IFa
         }
     }));
 
+    @Override
+    public boolean canVoidRecipeOutputs(RecipeCapability<?> capability) {
+        return capability != EURecipeCapability.CAP && !handlesRecipeOutputs;
+    }
+
+    @Override
+    public Map<RecipeCapability<?>, Integer> getOutputLimits() {
+        return Map.of(ItemRecipeCapability.CAP, 0, FluidRecipeCapability.CAP, 0);
+    }
 }

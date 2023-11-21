@@ -48,7 +48,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-@SuppressWarnings("unchecked")
+@SuppressWarnings({"unchecked", "ConfusingArgumentToVarargsMethod"})
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 @Accessors(chain = true, fluent = true)
@@ -86,6 +86,23 @@ public class GTRecipeBuilder {
         this.recipeType = recipeType;
     }
 
+    public GTRecipeBuilder(GTRecipe toCopy, GTRecipeType recipeType) {
+        this.id = toCopy.id;
+        this.recipeType = recipeType;
+        toCopy.inputs.forEach((cap, contents) -> this.input(cap, contents.toArray()));
+        toCopy.tickInputs.forEach((cap, contents) -> {
+            this.perTick = true;
+            this.input(cap, contents.toArray());
+            this.perTick = false;
+        });
+        toCopy.outputs.forEach((cap, contents) -> this.output(cap, contents.toArray()));
+        toCopy.tickOutputs.forEach((cap, contents) -> {
+            this.perTick = true;
+            this.output(cap, contents.toArray());
+            this.perTick = false;
+        });
+    }
+
     public static GTRecipeBuilder of(ResourceLocation id, GTRecipeType recipeType) {
         return new GTRecipeBuilder(id, recipeType);
     }
@@ -120,14 +137,14 @@ public class GTRecipeBuilder {
         return builder.copy(builder.id).onSave(null).recipeType(recipeType);
     }
 
-    public <T> GTRecipeBuilder input(RecipeCapability<T> capability, T... obj) {
+    public <T> GTRecipeBuilder input(RecipeCapability<T> capability, Object... obj) {
         (perTick ? tickInput : input).computeIfAbsent(capability, c -> new ArrayList<>()).addAll(Arrays.stream(obj)
                 .map(capability::of)
                 .map(o -> new Content(o, chance, tierChanceBoost, slotName, uiName)).toList());
         return this;
     }
 
-    public <T> GTRecipeBuilder output(RecipeCapability<T> capability, T... obj) {
+    public <T> GTRecipeBuilder output(RecipeCapability<T> capability, Object... obj) {
         (perTick ? tickOutput : output).computeIfAbsent(capability, c -> new ArrayList<>()).addAll(Arrays.stream(obj)
                 .map(capability::of)
                 .map(o -> new Content(o, chance, tierChanceBoost, slotName, uiName)).toList());

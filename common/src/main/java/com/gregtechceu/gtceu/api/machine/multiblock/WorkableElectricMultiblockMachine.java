@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
+import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.IFancyUIProvider;
 import com.gregtechceu.gtceu.api.gui.fancy.TooltipsPanel;
@@ -26,6 +27,7 @@ import net.minecraft.world.entity.player.Player;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author KilaBash
@@ -215,5 +217,15 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
 
     public long getMaxVoltage() {
         return GTValues.V[GTUtil.getFloorTierByVoltage(getMaxHatchVoltage())];
+    }
+
+    @Override
+    public boolean canVoidRecipeOutputs(RecipeCapability<?> capability) {
+        return false;
+    }
+
+    @Override
+    public Map<RecipeCapability<?>, Integer> getOutputLimits() {
+        return Map.of();
     }
 }

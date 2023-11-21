@@ -4,10 +4,13 @@ import com.google.common.collect.Table;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
+import com.gregtechceu.gtceu.api.machine.feature.IVoidable;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
+import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import lombok.Getter;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -22,6 +25,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.*;
 import java.util.function.Supplier;
 
@@ -30,7 +34,9 @@ import java.util.function.Supplier;
  * @date 2023/2/20
  * @implNote GTRecipe
  */
-@SuppressWarnings("ALL")
+@SuppressWarnings({"ConstantValue", "rawtypes", "unchecked"})
+@MethodsReturnNonnullByDefault
+@ParametersAreNonnullByDefault
 public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Container> {
     public final GTRecipeType recipeType;
     public final ResourceLocation id;
@@ -213,12 +219,20 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
 
     public boolean handleTickRecipeIO(IO io, IRecipeCapabilityHolder holder) {
         if (!holder.hasProxies() || io == IO.BOTH) return false;
-        return handleRecipe(io, holder, io == IO.IN ? tickInputs : tickOutputs);
+        GTRecipe trimmed = this;
+        if (holder instanceof IVoidable voidable) {
+            trimmed = this.trimRecipeOutputs(this.recipeType, voidable.getOutputLimits());
+        }
+        return handleRecipe(io, holder, io == IO.IN ? trimmed.tickInputs : trimmed.tickOutputs);
     }
 
     public boolean handleRecipeIO(IO io, IRecipeCapabilityHolder holder) {
         if (!holder.hasProxies() || io == IO.BOTH) return false;
-        return handleRecipe(io, holder, io == IO.IN ? inputs : outputs);
+        GTRecipe trimmed = this;
+        if (holder instanceof IVoidable voidable) {
+            trimmed = this.trimRecipeOutputs(this.recipeType, voidable.getOutputLimits());
+        }
+        return handleRecipe(io, holder, io == IO.IN ? trimmed.inputs : trimmed.outputs);
     }
 
     public boolean handleRecipe(IO io, IRecipeCapabilityHolder holder, Map<RecipeCapability<?>, List<Content>> contents) {
@@ -389,8 +403,105 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
     }
 
     /**
+     * Trims the recipe outputs, chanced outputs, and fluid outputs based on the performing Machine's trim limit.
+     */
+    public GTRecipe trimRecipeOutputs(GTRecipeType recipeType, Map<RecipeCapability<?>, Integer> trimLimits) {
+        // Fast return early if no trimming desired
+        if (trimLimits.isEmpty() || trimLimits.values().stream().allMatch(integer -> integer == -1)) {
+            return this;
+        }
+
+        GTRecipe current = this.copy();
+
+        GTRecipeBuilder builder = new GTRecipeBuilder(this, recipeType);
+
+        builder.output.clear();
+        builder.tickOutput.clear();
+
+        Map<RecipeCapability<?>, List<Content>> recipeOutputs = doTrim(current.outputs, trimLimits);
+        Map<RecipeCapability<?>, List<Content>> recipeTickOutputs = doTrim(current.tickOutputs, trimLimits);
+
+        recipeOutputs.forEach((cap, list) -> {
+            builder.output.computeIfAbsent(cap, $ -> new ArrayList<>()).addAll(list);
+        });
+        recipeTickOutputs.forEach((cap, list) -> {
+            builder.tickOutput.computeIfAbsent(cap, $ -> new ArrayList<>()).addAll(list);
+        });
+
+        return builder.buildRawRecipe();
+    }
+
+    /**
+     * Returns the maximum possible recipe outputs from a recipe, divided into regular and chanced outputs
+     * Takes into account any specific output limiters, ie macerator slots, to trim down the output list
+     * Trims from chanced outputs first, then regular outputs
      *
-     * @param isSuccessi is action success
+     * @param trimLimits The limit(s) on the number of outputs, -1 for disabled.
+     * @return All recipe outputs, limited by some factor(s)
+     */
+    public Map<RecipeCapability<?>, List<Content>> doTrim(Map<RecipeCapability<?>, List<Content>> current, Map<RecipeCapability<?>, Integer> trimLimits) {
+        Map<RecipeCapability<?>, List<Content>> outputs = new HashMap<>();
+
+        Set<RecipeCapability<?>> trimmed = new HashSet<>();
+        for (Map.Entry<RecipeCapability<?>, Integer> entry : trimLimits.entrySet()) {
+            List<Content> nonChanced = new ArrayList<>();
+            List<Content> chanced = new ArrayList<>();
+            List<Content> outputContents = current.get(entry.getKey());
+            for (Content content : outputContents) {
+                if (content.chance <= 0 || content.chance >= 1) nonChanced.add(content);
+                else chanced.add(content);
+            }
+
+            int outputLimit = entry.getValue();
+            if (outputLimit == -1) {
+                outputs.computeIfAbsent(entry.getKey(), key -> new ArrayList<>()).addAll(outputContents);
+            }
+            // If just the regular outputs would satisfy the outputLimit
+            else if (nonChanced.size() >= outputLimit) {
+                outputs.computeIfAbsent(entry.getKey(), key -> new ArrayList<>())
+                        .addAll(nonChanced.stream()
+                                .map(cont -> cont.copy(entry.getKey(), null))
+                                .toList()
+                                .subList(0, Math.min(outputLimit, nonChanced.size())));
+
+                chanced.clear();
+            }
+
+            // If the regular outputs and chanced outputs are required to satisfy the outputLimit
+            else if (!nonChanced.isEmpty() && (nonChanced.size() + chanced.size()) >= outputLimit) {
+                outputs.computeIfAbsent(entry.getKey(), key -> new ArrayList<>()).addAll(nonChanced.stream().map(cont -> cont.copy(entry.getKey(), null)).toList());
+
+                // Calculate the number of chanced outputs after adding all the regular outputs
+                int numChanced = outputLimit - nonChanced.size();
+
+                chanced = chanced.subList(0, Math.min(numChanced, chanced.size()));
+            }
+            // There are only chanced outputs to satisfy the outputLimit
+            else if (nonChanced.isEmpty()) {
+                chanced = chanced.subList(0, Math.min(outputLimit, chanced.size()));
+            }
+            // The number of outputs + chanced outputs is lower than the trim number, so just add everything
+            else {
+                outputs.computeIfAbsent(entry.getKey(), key -> new ArrayList<>()).addAll(nonChanced.stream().map(cont -> cont.copy(entry.getKey(), null)).toList());
+                // Chanced outputs are taken care of in the original copy
+            }
+
+            if (!chanced.isEmpty())
+                outputs.computeIfAbsent(entry.getKey(), key -> new ArrayList<>()).addAll(chanced.stream().map(cont -> cont.copy(entry.getKey(), null)).toList());
+
+            trimmed.add(entry.getKey());
+        }
+        for (Map.Entry<RecipeCapability<?>, List<Content>> entry : current.entrySet()) {
+            if (trimmed.contains(entry.getKey())) continue;
+            outputs.computeIfAbsent(entry.getKey(), $ -> new ArrayList<>()).addAll(entry.getValue());
+        }
+
+        return outputs;
+    }
+
+    /**
+     *
+     * @param isSuccess is action success
      * @param reason if fail, fail reason
      * @param expectingRate if recipe matching fail, the expecting rate of one cap.
      *                    <br>

@@ -5,6 +5,7 @@ import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import lombok.Getter;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
@@ -14,6 +15,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import javax.annotation.Nullable;
 
 public class Content {
+    @Getter
     public Object content;
     public float chance;
     public float tierChanceBoost;
@@ -28,10 +30,6 @@ public class Content {
         this.tierChanceBoost = tierChanceBoost;
         this.slotName = slotName;
         this.uiName = uiName;
-    }
-
-    public Object getContent() {
-        return content;
     }
 
     public Content copy(RecipeCapability<?> capability, @Nullable ContentModifier modifier) {
