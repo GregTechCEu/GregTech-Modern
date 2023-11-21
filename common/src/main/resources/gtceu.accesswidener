@@ -12,3 +12,5 @@ accessible method net/minecraft/data/loot/BlockLootSubProvider createLeavesDrops
 accessible method net/minecraft/data/models/BlockModelGenerators createSimpleBlock (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/resources/ResourceLocation;)Lnet/minecraft/data/models/blockstates/MultiVariantGenerator;
 
 extendable method net/minecraft/server/packs/resources/SimplePreparableReloadListener reload (Lnet/minecraft/server/packs/resources/PreparableReloadListener$PreparationBarrier;Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/util/profiling/ProfilerFiller;Lnet/minecraft/util/profiling/ProfilerFiller;Ljava/util/concurrent/Executor;Ljava/util/concurrent/Executor;)Ljava/util/concurrent/CompletableFuture;
+
+accessible field net/minecraft/world/item/HoeItem TILLABLES Ljava/util/Map;
