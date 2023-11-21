@@ -1533,9 +1533,9 @@ public class GTMachines {
                         .where('N', GTMachines.SUBSTATION_ENERGY_INPUT_HATCH[EV], Direction.SOUTH)
                         .where('O', GTMachines.ENERGY_OUTPUT_HATCH[HV], Direction.SOUTH)
                         .where('T', GTMachines.SUBSTATION_ENERGY_OUTPUT_HATCH[EV], Direction.SOUTH)
-                        .where('M', () -> ConfigHolder.INSTANCE.machines.enableMaintenance
-                                        ? GTMachines.MAINTENANCE_HATCH.getBlock()
-                                        : CASING_PALLADIUM_SUBSTATION.get());
+                        .where('M', ConfigHolder.INSTANCE.machines.enableMaintenance
+                                        ? GTMachines.MAINTENANCE_HATCH.getBlock().defaultBlockState().setValue(GTMachines.MAINTENANCE_HATCH.get().getRotationState().property, Direction.SOUTH)
+                                        : CASING_PALLADIUM_SUBSTATION.get().defaultBlockState());
 
                 GTBlocks.PSS_BATTERIES.entrySet().stream()
                         // filter out empty batteries in example structures, though they are still
