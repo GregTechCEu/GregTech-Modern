@@ -58,7 +58,7 @@ public class DrumMachine extends MetaMachine implements IAutoOutputFluid, IDropS
     protected boolean autoOutputFluids;
     @Getter
     private final int maxStoredFluids;
-    @Persisted @DropSaved
+    @Persisted
     protected final NotifiableFluidTank cache;
     @Nullable
     protected TickableSubscription autoOutputSubs;
@@ -92,7 +92,7 @@ public class DrumMachine extends MetaMachine implements IAutoOutputFluid, IDropS
     @Override
     public void onLoad() {
         super.onLoad();
-        this.stored = cache.getFluidInTank(0);
+        updateStoredFluidFromCache();
         if (getLevel() instanceof ServerLevel serverLevel) {
             serverLevel.getServer().tell(new TickTask(0, this::updateAutoOutputSubscription));
         }
@@ -101,9 +101,14 @@ public class DrumMachine extends MetaMachine implements IAutoOutputFluid, IDropS
 
     private void onFluidChanged() {
         if (!isRemote()) {
-            this.stored = cache.getFluidInTank(0);
+            updateStoredFluidFromCache();
             updateAutoOutputSubscription();
         }
+    }
+
+    private void updateStoredFluidFromCache() {
+        FluidStack cachedFluid = cache.getFluidInTank(0);
+        this.stored = cachedFluid.isEmpty() ? FluidStack.empty() : cachedFluid;
     }
 
     @Override
