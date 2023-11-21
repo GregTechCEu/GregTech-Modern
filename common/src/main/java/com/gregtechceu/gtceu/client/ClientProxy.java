@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.client;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.gui.compass.GTCompassUIConfig;
 import com.gregtechceu.gtceu.api.gui.compass.GTRecipeViewCreator;
+import com.gregtechceu.gtceu.api.gui.compass.MultiblockAction;
 import com.lowdragmc.lowdraglib.gui.compass.CompassManager;
 import com.lowdragmc.lowdraglib.gui.compass.component.RecipeComponent;
 import net.fabricmc.api.EnvType;
@@ -18,5 +19,6 @@ public class ClientProxy {
     public static void init() {
         RecipeComponent.registerRecipeViewCreator(new GTRecipeViewCreator());
         CompassManager.INSTANCE.registerUIConfig(GTCEu.MOD_ID, new GTCompassUIConfig());
+        CompassManager.INSTANCE.registerAction("multiblock", MultiblockAction::new);
     }
 }

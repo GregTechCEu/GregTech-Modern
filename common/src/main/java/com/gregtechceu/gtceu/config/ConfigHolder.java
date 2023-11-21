@@ -287,11 +287,15 @@ public class ConfigHolder {
         @Configurable.Comment({"Whether or not to enable Emissive Textures for GregTech Machines.", "Default: true"})
         public boolean machinesEmissiveTextures = true;
         @Configurable
-        @Configurable.Comment({"The default color to overlay onto machines.", "16777215 (0xFFFFFF in decimal) is no coloring (default).",
-                "13819135 (0xD2DCFF in decimal) is the classic blue from GT5."})
-        @Configurable.Range(min = 0, max = 0xFFFFFF)
+        @Configurable.Comment({"The default color to overlay onto machines.", "#FFFFFF is no coloring (default).",
+                "#D2DCFF is the classic blue from GT5."})
+        @Configurable.StringPattern(value = "#[0-9a-fA-F]{1,6}")
         @Configurable.Gui.ColorValue
-        public int defaultPaintingColor = 0xFFFFFF;
+        public String defaultPaintingColor = "#FFFFFF";
+        @Configurable
+        @Configurable.Comment({"Use VBO cache for multiblock preview.", "Disable it if you have issues with rendering multiblocks.", "Default: true"})
+        @Configurable.Gui.ColorValue
+        public boolean useVBO = true;
     }
 
     public static class DeveloperConfigs {
