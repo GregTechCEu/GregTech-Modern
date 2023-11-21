@@ -1,0 +1,181 @@
+<page>
+ <h1>
+  弹簧
+ </h1>
+ <h3>
+  来源
+ </h3>
+ <text><style color="0xaaaaaa" italic="true" pwt="true">注释：本页转载于MCMOD的GTCEu维基<br/>作者：<style color="0xa4e7ff" hover-info="url" pwt="true" underlined="true" url-link="https://center.mcmod.cn/119280/">Oganesson897</style><br/></style></text>
+ <h2 font-color="0xff0000">
+  警告！！！
+ </h2>
+ <text isCenter="true">
+  <style color="0xff0000" pwt="true">这个警告表示这不是一个可靠的页面。</style>
+  <br/>
+  <style bold="true" color="0xffaa00" pwt="true">请不要在discord或github上报告任何和本页面相关的错误。</style>
+  <br/>
+  本页面翻译自中文维基，尚未经过审核和润色。可能存在错误和不准确之处。我们希望您能帮助我们改进本页面。
+ </text>
+ <text>
+  <br/>
+  <style lang="zh-cn">
+   材料部件中的弹簧，是长*杆的子类，可配置生成。
+  </style>
+  <br/>
+  <br/>
+  <style lang="zh-cn">
+   这里仅上传了一个模板，具体数值请看游戏内。
+  </style>
+  <br/>
+  ------------------
+  <br/>
+  <style lang="zh-cn">
+   矿物词典前缀：spring
+  </style>
+  <br/>
+  <br/>
+  <style lang="zh-cn">
+   矿物词典：spring+材料名称，例如springAluminium
+  </style>
+  <br/>
+  ------------------
+  <br/>
+  <style lang="zh-cn">
+   支持弹簧的材料列表（格式为材料中文名-材料名）：
+  </style>
+  <br/>
+ </text>
+ <text left-margin="10">
+  •
+  <style lang="zh-cn">
+   铝 - Aluminium
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   铜 - Copper
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   铕 - Europium
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   金 - Gold
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   铁 - Iron
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   铅 - Lead
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   锡 - Tin
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钨 - Tungsten
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   硅岩（官中） - Naquadah
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   中子素 - Neutronium
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   白铜 - Cupronickel
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   坎塔尔合金 - Kanthal
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   镍铬合金 - Nichrome
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   铌钛合金 - NiobiumTitanium
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钢 - Steel
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钒镓合金 - VanadiumGallium
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钇钡铜氧合金 - YttriumBariumCuprate
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   钨钢 - TungstenSteel
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   硅岩合金 - NaquadahAlloy
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   高速钢-G - Hssg
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   二硅化钼 - MolybdenumDisilicide
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   HSLA钢 - HslaSteel
+  </style>
+  <br/>
+ </text>
+</page>

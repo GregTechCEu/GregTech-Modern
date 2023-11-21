@@ -1,0 +1,57 @@
+<page>
+ <h1>
+  电容
+ </h1>
+ <h3>
+  来源
+ </h3>
+ <text><style color="0xaaaaaa" italic="true" pwt="true">注释：本页转载于MCMOD的GTCEu维基<br/>作者：<style color="0xa4e7ff" hover-info="url" pwt="true" underlined="true" url-link="https://center.mcmod.cn/179043/">花海</style><br/></style></text>
+ <h2 font-color="0xff0000">
+  警告！！！
+ </h2>
+ <text isCenter="true">
+  <style color="0xff0000" pwt="true">这个警告表示这不是一个可靠的页面。</style>
+  <br/>
+  <style bold="true" color="0xffaa00" pwt="true">请不要在discord或github上报告任何和本页面相关的错误。</style>
+  <br/>
+  本页面翻译自中文维基，尚未经过审核和润色。可能存在错误和不准确之处。我们希望您能帮助我们改进本页面。
+ </text>
+ <text>
+  <br/>
+  <style lang="zh-cn">
+   <style color="0xaaaaaa" italic="true" lang="zh-cn" pwt="true">“基本的电子元件”</style>
+   <br/>
+  </style>
+  <br/>
+  <br/>
+  <style lang="zh-cn">
+   晶体管由 Thin 聚乙烯 (PE) Sheet 和铝箔在
+   <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">组装机</style>
+   中配合 144 L 熔融态的聚乙烯 (PE) 组装而成，需要 MV 级电压（120 EU/t）运行，未超频状态下耗时 16 秒并每次产出 8 个晶体管。
+  </style>
+  <br/>
+  <br/>
+  <style lang="zh-cn">
+   晶体管可以在
+   <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">电路组装机</style>
+   中参与不同电路的组装。能够参与组装的电路包括：
+   <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">微型处理器</style>
+   （LV 级电路）、
+   <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">集成处理器</style>
+   （MV 级电路）、
+   <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">处理器组件</style>
+   （EV 级电路）和
+   <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">电脑主机</style>
+   （IV 级电路）。
+  </style>
+  <br/>
+  <br/>
+  <style lang="zh-cn">
+   <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">贴片晶体管</style>
+   和
+   <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">高级贴片晶体管</style>
+   同样属于晶体管，但是它们更加高级，能够参与更高电压等级电路的组装。
+  </style>
+  <br/>
+ </text>
+</page>

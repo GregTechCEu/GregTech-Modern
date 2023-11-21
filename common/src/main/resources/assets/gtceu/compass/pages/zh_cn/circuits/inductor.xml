@@ -1,0 +1,63 @@
+<page>
+ <h1>
+  电感
+ </h1>
+ <h3>
+  来源
+ </h3>
+ <text><style color="0xaaaaaa" italic="true" pwt="true">注释：本页转载于MCMOD的GTCEu维基<br/>作者：<style color="0xa4e7ff" hover-info="url" pwt="true" underlined="true" url-link="https://center.mcmod.cn/179043/">花海</style><br/></style></text>
+ <h2 font-color="0xff0000">
+  警告！！！
+ </h2>
+ <text isCenter="true">
+  <style color="0xff0000" pwt="true">这个警告表示这不是一个可靠的页面。</style>
+  <br/>
+  <style bold="true" color="0xffaa00" pwt="true">请不要在discord或github上报告任何和本页面相关的错误。</style>
+  <br/>
+  本页面翻译自中文维基，尚未经过审核和润色。可能存在错误和不准确之处。我们希望您能帮助我们改进本页面。
+ </text>
+ <text>
+  <br/>
+  <style lang="zh-cn">
+   <style color="0xaaaaaa" italic="true" lang="zh-cn" pwt="true">“一个小线圈”</style>
+  </style>
+  <br/>
+  <br/>
+  <style lang="zh-cn">
+   玻璃管由 1 个钢环和 2 个细铜导线在
+   <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">组装机</style>
+   中配合 36 L 聚乙烯 (PE) 制造而成，需要 MV 级电压（120 EU/t）运行，未超频状态下单次处理耗时 12 秒并产出 2 个玻璃管。
+  </style>
+  <br/>
+ </text>
+ <text left-margin="10">
+  •
+  <style lang="zh-cn">
+   可以使用镍锌铁氧体环代替钢环参与组装，这样做能够使单次产量翻倍；
+  </style>
+  <br/>
+  <br/>
+  •
+  <style lang="zh-cn">
+   可以使用细退火铜导线代替细铜导线参与组装，这样做能够使单次产量再次翻倍。
+  </style>
+  <br/>
+ </text>
+ <text>
+  <br/>
+  <style lang="zh-cn">
+   在
+   <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">电路组装机</style>
+   中，玻璃管能够参与利用
+   <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">集成处理器</style>
+   （MV 级电路）制成
+   <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">处理器组件</style>
+   （HV 级电路），以及利用
+   <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">工作站</style>
+   （EV 级电路）制成
+   <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">电脑主机</style>
+   （IV 级电路）。
+  </style>
+  <br/>
+ </text>
+</page>

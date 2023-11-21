@@ -1,0 +1,33 @@
+<page>
+ <h1>
+  单晶硅
+ </h1>
+ <h3>
+  来源
+ </h3>
+ <text><style color="0xaaaaaa" italic="true" pwt="true">注释：本页转载于MCMOD的GTCEu维基<br/>作者：<style color="0xa4e7ff" hover-info="url" pwt="true" underlined="true" url-link="https://center.mcmod.cn/179043/">花海</style>，<style color="0xa4e7ff" hover-info="url" pwt="true" underlined="true" url-link="https://center.mcmod.cn/508290/">morningglory</style><br/></style></text>
+ <h2 font-color="0xff0000">
+  警告！！！
+ </h2>
+ <text isCenter="true">
+  <style color="0xff0000" pwt="true">这个警告表示这不是一个可靠的页面。</style>
+  <br/>
+  <style bold="true" color="0xffaa00" pwt="true">请不要在discord或github上报告任何和本页面相关的错误。</style>
+  <br/>
+  本页面翻译自中文维基，尚未经过审核和润色。可能存在错误和不准确之处。我们希望您能帮助我们改进本页面。
+ </text>
+ <text>
+  <br/>
+  <style lang="zh-cn">
+   单晶硅由硅粉在
+   <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">电力高炉</style>
+   中配合小堆砷化镓粉冶炼而成，1 个单晶硅可以在
+   <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">板材切割机</style>
+   中切割成 16 个
+   <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">硅晶圆</style>
+   ，需要 MV 级电压来处理。首次得到单晶硅时能够取得进度“单晶硅”（描述：生产一个单晶硅）。
+   <br/>
+  </style>
+  <br/>
+ </text>
+</page>
