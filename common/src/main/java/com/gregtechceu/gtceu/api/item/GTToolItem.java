@@ -31,6 +31,7 @@ import net.minecraft.world.item.*;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.CampfireBlock;
+import net.minecraft.world.level.block.LevelEvent;
 import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.WeatheringCopper;
 import net.minecraft.world.level.block.state.BlockState;
@@ -141,7 +142,7 @@ public class GTToolItem extends DiggerItem implements IItemUseFirst {
                 blockState3 = blockState2;
             } else if (blockState.getBlock() instanceof CampfireBlock && blockState.getValue(CampfireBlock.LIT)) {
                 if (!level.isClientSide()) {
-                    level.levelEvent(null, 1009, blockPos, 0);
+                    level.levelEvent(null, LevelEvent.SOUND_EXTINGUISH_FIRE, blockPos, 0);
                 }
 
                 CampfireBlock.dowse(context.getPlayer(), level, blockPos, blockState);
@@ -185,11 +186,11 @@ public class GTToolItem extends DiggerItem implements IItemUseFirst {
             result = strippable;
         } else if (cleanable.isPresent()) {
             level.playSound(player, blockPos, SoundEvents.AXE_SCRAPE, SoundSource.BLOCKS, 1.0F, 1.0F);
-            level.levelEvent(player, 3005, blockPos, 0);
+            level.levelEvent(player, LevelEvent.PARTICLES_SCRAPE, blockPos, 0);
             result = cleanable;
         } else if (waxable.isPresent()) {
             level.playSound(player, blockPos, SoundEvents.AXE_WAX_OFF, SoundSource.BLOCKS, 1.0F, 1.0F);
-            level.levelEvent(player, 3004, blockPos, 0);
+            level.levelEvent(player, LevelEvent.PARTICLES_WAX_OFF, blockPos, 0);
             result = waxable;
         }
 
